@@ -1,0 +1,4 @@
+installPackage(Modelica);getErrorString();
+installPackage(Buildings);getErrorString();
+loadFile("SolarTestModel.mo");getErrorString();
+buildModelFMU(SolarTestModel, version = "2.0", fmuType = "cs");getErrorString();

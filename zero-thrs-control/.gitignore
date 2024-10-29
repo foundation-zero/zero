@@ -1,0 +1,9 @@
+.DS_Store
+index.html
+SolarTestModel_FMU.libs
+SolarTestModel_FMU.log
+SolarTestModel_FMU.makefile
+SolarTestModel_info.json
+SolarTestModel.fmu
+SolarTestModel.ipynb
+SolarTestModel.log
