@@ -5,11 +5,11 @@ This repo contains code to:
 
 To do so:
 
-Create an FMU for the SolarTestModelSimple.mo model by running generateFMU.mos srcipt using 
-'omc generateFMU.mos'
+Create an FMU for the SolarTestModelSimple.mo model by running generateFMU.mos script using 
+`omc generateFMU.mos`
 
 A notebook that runs the model can be generated using 
-'fmpy create-jupyter-notebook SolarTestModel.fmu'
+`fmpy create-jupyter-notebook SolarTestModel.fmu`
 
 The notebook control_test.ipynb implements a simple control on the model 
 
