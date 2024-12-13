@@ -15,7 +15,7 @@ const delegatedProps = computed(() => {
 <template>
   <TabsList
     v-bind="delegatedProps"
-    :class="cn('flex items-center justify-evenly p-2 text-muted-foreground w-full', props.class)"
+    :class="cn('flex items-center justify-evenly py-2 text-muted-foreground w-full', props.class)"
   >
     <slot />
   </TabsList>

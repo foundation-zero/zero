@@ -14,7 +14,7 @@ import ToggleAV from "./components/ToggleAV.vue";
       <ToggleAV />
     </template>
   </TopNavigation>
-  <main class="container px-6 pt-[96px]">
+  <main class="container px-0 pt-[70px] h-full max-sm:pb-[60px] flex flex-col justify-evenly">
     <RouterView />
   </main>
   <BottomNavigation class="md:hidden" />

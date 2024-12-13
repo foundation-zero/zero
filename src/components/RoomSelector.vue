@@ -10,7 +10,7 @@ import {
   DrawerTitle,
   DrawerTrigger,
 } from "@/components/ui/drawer";
-import { MapPin } from "lucide-vue-next";
+import { MapPin, ShipWheel } from "lucide-vue-next";
 import { ref } from "vue";
 
 const goal = ref(350);
@@ -24,7 +24,7 @@ const goal = ref(350);
         size="sm"
         class="text-sm font-bold dark:text-gray-100"
       >
-        <MapPin stroke-width="2" />
+        <ShipWheel stroke-width="2" />
         The Californian</Button
       >
     </DrawerTrigger>

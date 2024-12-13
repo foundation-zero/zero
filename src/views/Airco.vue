@@ -4,16 +4,16 @@ import RoomTemperature from "@/components/RoomTemperature.vue";
 </script>
 
 <template>
-  <RoomTemperature class="mt-16" />
-  <div class="flex flex-col items-center mt-[68px] md:mt-[96px]">
+  <RoomTemperature />
+  <div class="flex flex-col items-center">
     <BarSlider />
 
-    <div class="flex flex-col items-center justify-center mt-6">
-      <div>
-        <span class="text-3xl font-bold">21</span>
-        <sup class="text-xl -ml-0 font-extralight">&deg;</sup>
+    <div>
+      <div class="inline-flex flex-col items-center justify-center mt-6">
+        <span class="text-3xl md:text-5xl font-bold">21</span>
+        <span class="text-xs md:text-md font-extralight">Set to</span>
       </div>
-      <span class="text-xs font-extralight -ml-2.5">Set to</span>
+      <sup class="text-xl md:text-3xl font-extralight">&deg;</sup>
     </div>
   </div>
 </template>

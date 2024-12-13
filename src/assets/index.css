@@ -73,3 +73,9 @@
     @apply bg-background text-foreground;
   }
 }
+
+body,
+#app,
+main {
+  min-height: 100vh;
+}
