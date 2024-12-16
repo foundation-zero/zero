@@ -1,40 +1,47 @@
 <script setup lang="ts">
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/bottom-tabs";
+import { useUIStore } from "@/stores/ui";
 import { Blinds, LampCeiling, Snowflake } from "lucide-vue-next";
+import { toRefs } from "vue";
+import { useRoute } from "vue-router";
+
+const { hasScroll, isBottom } = toRefs(useUIStore());
+const { path } = toRefs(useRoute());
 </script>
 
 <template>
   <Tabs
-    default-value="airco"
+    :model-value="path"
     class="fixed bottom-0 w-full"
   >
-    <TabsList class="">
+    <div
+      class="absolute left-0 right-0 top-0 bottom-0 backdrop-blur-lg transition-all"
+      :class="{ 'border-t': hasScroll && !isBottom }"
+    ></div>
+    <TabsList class="relative">
       <RouterLink to="/airco">
-        <TabsTrigger value="airco">
+        <TabsTrigger value="/airco">
           <Snowflake
             :size="24"
             stroke-width="2"
-            class="mb-1"
           />
           Airco
         </TabsTrigger>
       </RouterLink>
       <RouterLink to="/lights">
-        <TabsTrigger value="lights">
+        <TabsTrigger value="/lights">
           <LampCeiling
             :size="24"
             stroke-width="2"
-            class="mb-1"
           />
           Lights
         </TabsTrigger>
       </RouterLink>
       <RouterLink to="/blinds">
-        <TabsTrigger value="blinds">
+        <TabsTrigger value="/blinds">
           <Blinds
             :size="24"
             stroke-width="2"
-            class="mb-1"
           />
           Blinds
         </TabsTrigger>

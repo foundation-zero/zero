@@ -6,6 +6,9 @@ import ToggleAV from "./components/ToggleAV.vue";
 </script>
 
 <template>
+  <main class="pt-[96px] flex flex-col h-svh pb-[96px]">
+    <RouterView />
+  </main>
   <TopNavigation>
     <template #left>
       <RoomSelector />
@@ -14,9 +17,6 @@ import ToggleAV from "./components/ToggleAV.vue";
       <ToggleAV />
     </template>
   </TopNavigation>
-  <main class="container px-0 pt-[70px] h-full max-sm:pb-[60px] flex flex-col justify-evenly">
-    <RouterView />
-  </main>
   <BottomNavigation class="md:hidden" />
 </template>
 

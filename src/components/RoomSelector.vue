@@ -10,10 +10,12 @@ import {
   DrawerTitle,
   DrawerTrigger,
 } from "@/components/ui/drawer";
-import { MapPin, ShipWheel } from "lucide-vue-next";
-import { ref } from "vue";
+import { useUIStore } from "@/stores/ui";
+import { MinusIcon, PlusIcon, ShipWheel } from "lucide-vue-next";
+import { ref, toRefs } from "vue";
 
 const goal = ref(350);
+const { isScrolling } = toRefs(useUIStore());
 </script>
 
 <template>
@@ -22,9 +24,19 @@ const goal = ref(350);
       <Button
         variant="ghost"
         size="sm"
-        class="text-sm font-bold dark:text-gray-100"
+        class="text-sm font-bold dark:text-gray-100 transition-all px-0"
+        :disabled="isScrolling"
+        :class="{
+          '!opacity-100': isScrolling,
+          disabled: isScrolling,
+          'max-sm:ml-[50%]': isScrolling,
+          'max-sm:translate-x-[-50%]': isScrolling,
+        }"
       >
-        <ShipWheel stroke-width="2" />
+        <ShipWheel
+          stroke-width="2"
+          :class="{ 'max-sm:hidden md:opacity-0': isScrolling }"
+        />
         The Californian</Button
       >
     </DrawerTrigger>

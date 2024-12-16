@@ -1,5 +1,5 @@
 <template>
-  <section class="w-100 flex justify-around">
+  <section class="w-100 flex justify-around items-center">
     <div>
       <span class="inline-flex flex-col items-center justify-center">
         <span class="text-5xl md:text-7xl font-bold">18</span>
