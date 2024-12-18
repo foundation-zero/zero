@@ -1,5 +1,5 @@
 <template>
-  <section class="w-100 flex justify-around items-center">
+  <article class="w-100 flex justify-around items-center">
     <div>
       <span class="inline-flex flex-col items-center justify-center">
         <span class="text-5xl md:text-7xl font-bold">18</span>
@@ -15,5 +15,5 @@
       </span>
       <sup class="text-3xl md:text-5xl font-extralight">&deg;</sup>
     </div>
-  </section>
+  </article>
 </template>

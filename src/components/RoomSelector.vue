@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { Room } from "@/@types";
 import { Button } from "@/components/ui/button";
 import {
   Drawer,
@@ -10,21 +11,30 @@ import {
   DrawerTitle,
   DrawerTrigger,
 } from "@/components/ui/drawer";
+import { useRoomStore } from "@/stores/rooms";
 import { useUIStore } from "@/stores/ui";
-import { MinusIcon, PlusIcon, ShipWheel } from "lucide-vue-next";
+import { ArrowBigRight, ArrowRight, Check, CircleArrowRight, ShipWheel } from "lucide-vue-next";
 import { ref, toRefs } from "vue";
+import { ScrollArea } from "./ui/scroll-area";
 
-const goal = ref(350);
 const { isScrolling } = toRefs(useUIStore());
+const { areas, currentRoom } = toRefs(useRoomStore());
+const { setRoom } = useRoomStore();
+const isActive = ref(false);
+
+const selectRoom = (room: Room) => {
+  isActive.value = false;
+  setRoom(room);
+};
 </script>
 
 <template>
-  <Drawer modal>
+  <Drawer v-model:open="isActive">
     <DrawerTrigger as-child>
       <Button
         variant="ghost"
         size="sm"
-        class="text-sm font-bold dark:text-gray-100 transition-all px-0"
+        class="text-sm font-bold dark:text-gray-100 transition-all px-0 hover:bg-transparent"
         :disabled="isScrolling"
         :class="{
           '!opacity-100': isScrolling,
@@ -37,52 +47,51 @@ const { isScrolling } = toRefs(useUIStore());
           stroke-width="2"
           :class="{ 'max-sm:hidden md:opacity-0': isScrolling }"
         />
-        The Californian</Button
+        {{ currentRoom.name }}</Button
       >
     </DrawerTrigger>
     <DrawerContent>
-      <div class="mx-auto w-full max-w-sm">
-        <DrawerHeader>
-          <DrawerTitle>Move Goal</DrawerTitle>
-          <DrawerDescription>Set your daily activity goal.</DrawerDescription>
-        </DrawerHeader>
-        <div class="p-4 pb-0">
-          <div class="flex items-center justify-center space-x-2">
-            <Button
-              variant="outline"
-              size="icon"
-              class="h-8 w-8 shrink-0 rounded-full"
-              :disabled="goal <= 200"
-              @click="goal -= 10"
+      <div class="flex flex-col">
+        <DrawerHeader class="dark:border-b shadow-sm dark:shadow-none">
+          <div class="mx-auto w-full max-w-sm text-center">
+            <DrawerTitle>ZERO rooms</DrawerTitle>
+            <DrawerDescription class="mt-1"
+              >Here you can select the room from which you want to operate the household
+              controls</DrawerDescription
             >
-              <MinusIcon class="h-4 w-4" />
-              <span class="sr-only">Decrease</span>
-            </Button>
-            <div class="flex-1 text-center">
-              <div class="text-7xl font-bold tracking-tighter">
-                {{ goal }}
-              </div>
-              <div class="text-[0.70rem] uppercase text-muted-foreground">Calories/day</div>
-            </div>
-            <Button
-              variant="outline"
-              size="icon"
-              class="h-8 w-8 shrink-0 rounded-full"
-              :disabled="goal >= 400"
-              @click="goal += 10"
-            >
-              <PlusIcon class="h-4 w-4" />
-              <span class="sr-only">Increase</span>
-            </Button>
           </div>
-          <div class="my-3 px-3 h-[120px]"></div>
-        </div>
-        <DrawerFooter>
-          <Button>Submit</Button>
-          <DrawerClose as-child>
-            <Button variant="outline"> Cancel </Button>
-          </DrawerClose>
-        </DrawerFooter>
+        </DrawerHeader>
+
+        <ScrollArea
+          class="grow mx-auto w-full max-w-sm"
+          style="height: calc(100svh - 200px)"
+        >
+          <div class="pb-8 px-6">
+            <template
+              v-for="area in areas"
+              :key="area.name"
+            >
+              <header class="uppercase text-xs mt-8">{{ area.name }}</header>
+              <ul
+                class="mt-2 bg-muted rounded-xl py-0 overflow-hidden hover:cursor-pointer grid grid-cols-1 divide-y"
+              >
+                <li
+                  v-for="room in area.rooms"
+                  :key="room.name"
+                  :class="{
+                    'font-bold': currentRoom.name === room.name,
+                    'font-light': currentRoom.name !== room.name,
+                  }"
+                  @click="selectRoom(room)"
+                  class="flex p-6 items-center hover:bg-muted-foreground justify-between gap-2 whitespace-nowrap transition-colors disabled:pointer-events-none disabled:opacity-50 h-8 rounded-md text-md"
+                >
+                  <span>{{ room.name }}</span>
+                  <CircleArrowRight v-if="currentRoom.name === room.name" />
+                </li>
+              </ul>
+            </template>
+          </div>
+        </ScrollArea>
       </div>
     </DrawerContent>
   </Drawer>

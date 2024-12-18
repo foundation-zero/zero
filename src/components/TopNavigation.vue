@@ -12,22 +12,22 @@ const { path } = toRefs(useRoute());
 <template>
   <Tabs
     :model-value="path"
-    class="fixed top-0 w-full container transition-all"
+    class="fixed top-0 transition-all w-full"
     :class="{
       'pt-5': !isScrolling,
-      'max-sm:py-1 md:pt-1 max-sm:shadow-md max-sm:bg-background dark:border-b': isScrolling,
+      'max-sm:py-1 md:pt-2 max-sm:shadow-sm max-sm:bg-background max-md:dark:border-b': isScrolling,
     }"
   >
-    <div class="flex flex-row items-center transition-all justify-between">
+    <div class="flex flex-row container items-center transition-all justify-between relative">
       <div
-        class="grow transition-opacity"
+        class="transition-opacity grow"
         :class="{ 'md:opacity-0': isScrolling }"
       >
         <slot name="left"> </slot>
       </div>
 
-      <div class="grow max-sm:hidden">
-        <TabsList class="backdrop-blur-xl bg-gray-100 dark:bg-gray-900 bg-opacity-80">
+      <div class="absolute left-[50%] translate-x-[-50%] max-md:hidden">
+        <TabsList class="bg-black dark:bg-white !bg-opacity-5 backdrop-blur-md">
           <RouterLink to="/airco">
             <TabsTrigger value="/airco">
               <Snowflake
@@ -62,7 +62,7 @@ const { path } = toRefs(useRoute());
       </div>
 
       <div
-        class="grow items-end flex flex-row justify-end transition-opacity"
+        class="items-end flex flex-row justify-end transition-opacity grow"
         :class="{ 'md:opacity-0': isScrolling, 'max-sm:hidden': isScrolling }"
       >
         <slot name="right"> </slot>
