@@ -14,7 +14,7 @@ const rooms = ref<Room[]>([
 
 <template>
   <section
-    class="grid container grid-cols-1 md:grid-cols-2 landscape:md:grid-cols-3 xl:grid-cols-3 gap-10 max-sm:pb-[96px] md:pb-[32px]"
+    class="grid container grid-cols-1 md:grid-cols-2 landscape:lg:grid-cols-3 xl:grid-cols-3 gap-10 max-sm:pb-[96px] md:pb-[32px]"
   >
     <LightGroup
       v-for="(room, index) in rooms"

@@ -1,30 +1,26 @@
 <script setup lang="ts">
-import { Tabs, TabsList, TabsTrigger } from "@/components/ui/bottom-tabs";
-import { useUIStore } from "@/stores/ui";
+import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Blinds, LampCeiling, Snowflake } from "lucide-vue-next";
 import { toRefs } from "vue";
 import { useRoute } from "vue-router";
-
-const { hasScroll, isBottom } = toRefs(useUIStore());
 const { path } = toRefs(useRoute());
 </script>
 
 <template>
   <Tabs
-    as="nav"
     :model-value="path"
-    class="fixed bottom-0 w-full"
+    class="absolute left-[50%] translate-x-[-50%] max-md:hidden"
   >
-    <div
-      class="absolute left-0 right-0 top-0 bottom-0 bg-background transition-all sm:bg-background"
-      :class="{ 'border-t': hasScroll && !isBottom }"
-    ></div>
-    <TabsList class="relative">
+    <TabsList
+      class="bg-black dark:bg-white !bg-opacity-5 backdrop-blur-md"
+      as="nav"
+    >
       <RouterLink to="/airco">
         <TabsTrigger value="/airco">
           <Snowflake
-            :size="24"
+            :size="16"
             stroke-width="2"
+            class="inline mr-2"
           />
           Airco
         </TabsTrigger>
@@ -32,8 +28,9 @@ const { path } = toRefs(useRoute());
       <RouterLink to="/lights">
         <TabsTrigger value="/lights">
           <LampCeiling
-            :size="24"
+            :size="16"
             stroke-width="2"
+            class="inline mr-2"
           />
           Lights
         </TabsTrigger>
@@ -41,8 +38,9 @@ const { path } = toRefs(useRoute());
       <RouterLink to="/blinds">
         <TabsTrigger value="/blinds">
           <Blinds
-            :size="24"
+            :size="16"
             stroke-width="2"
+            class="inline mr-2"
           />
           Blinds
         </TabsTrigger>

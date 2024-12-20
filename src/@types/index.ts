@@ -13,3 +13,12 @@ export interface ShipArea {
   name: string;
   rooms: Room[];
 }
+
+export interface Breakpoints {
+  tablet: boolean;
+  phone: boolean;
+  landscape: boolean;
+  portrait: boolean;
+  mobile: boolean;
+  desktop: boolean;
+}

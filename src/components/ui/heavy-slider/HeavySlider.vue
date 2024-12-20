@@ -37,14 +37,14 @@ const positions = computed(() =>
     orientation="vertical"
   >
     <SliderTrack
-      class="relative h-1.5 w-full data-[orientation=vertical]:w-full grow overflow-hidden rounded-3xl bg-primary/20"
+      class="relative h-1.5 w-full data-[orientation=vertical]:w-full grow overflow-hidden rounded-3xl bg-primary/10"
     >
-      <SliderRange class="absolute h-full data-[orientation=vertical]:w-full bg-primary" />
+      <SliderRange class="absolute h-full data-[orientation=vertical]:w-full bg-primary/90" />
     </SliderTrack>
     <div
       v-for="pos in positions"
       :style="{ bottom: pos + '%' }"
-      class="block absolute translate-y-[65%] h-3 w-10 rounded-full cursor-pointer disabled:cursor-default border-2 border-primary bg-background ring-offset-background transition-color focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50"
+      class="block absolute translate-y-[65%] h-3 w-10 rounded-full cursor-pointer disabled:cursor-default border-2 border-primary/90 bg-background ring-offset-background transition-color focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50"
     />
   </SliderRoot>
 </template>

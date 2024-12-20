@@ -1,4 +1,5 @@
 const animate = require("tailwindcss-animate");
+const plugin = require("tailwindcss/plugin");
 
 /** @type {import('tailwindcss').Config} */
 module.exports = {
@@ -12,11 +13,12 @@ module.exports = {
     container: {
       center: true,
       padding: "2rem",
-      screens: {
-        "2xl": "1400px",
-      },
     },
     extend: {
+      screens: {
+        "2xl": "1400px",
+        tablet: "768px",
+      },
       colors: {
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",
@@ -84,5 +86,11 @@ module.exports = {
       },
     },
   },
-  plugins: [animate],
+  plugins: [
+    animate,
+    plugin(function ({ addVariant }) {
+      addVariant("mobile", "&.mobile-only");
+      addVariant("desktop", "&.desktop-only");
+    }),
+  ],
 };
