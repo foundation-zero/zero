@@ -1,0 +1,14 @@
+[tool.poetry]
+name = "zero-domestic-control"
+version = "0.1.0"
+description = ""
+authors = ["Boudewijn van Groos <boudewijn.vangroos@foundationzero.org>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.13"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
