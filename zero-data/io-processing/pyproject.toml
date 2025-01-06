@@ -1,0 +1,33 @@
+[tool.poetry]
+name = "io-processing"
+version = "0.1.0"
+description = ""
+authors = ["Boudewijn van Groos <boudewijn.vangroos@foundationzero.org>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.13"
+polars = "^1.16.0"
+fastexcel = "^0.12.0"
+pypika = "^0.48.9"
+sqlparse = "^0.5.2"
+pyyaml = "^6.0.2"
+jsonschema = "^4.23.0"
+openpyxl = "^3.1.5"
+pydantic = "^2.10.4"
+aiomqtt = "^2.3.0"
+
+
+[tool.poetry.group.dev.dependencies]
+ipykernel = "^6.29.5"
+pandas = "^2.2.3" # Pandas used by VS Code Data Wrangler extension
+black = "^24.10.0"
+datamodel-code-generator = "^0.26.4"
+
+
+[tool.poetry.group.test.dependencies]
+pytest = "^8.3.4"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
