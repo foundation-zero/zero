@@ -32,6 +32,7 @@ const selectRoom = (room: Room) => {
           @click="selectRoom(room)"
         >
           <span>{{ room.name }}</span>
+
           <CircleArrowRight v-if="currentRoom?.name === room.name" />
         </ListItem>
       </List>

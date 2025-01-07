@@ -56,8 +56,11 @@ const areas: ShipArea[] = [
 
 export const useRoomStore = defineStore("rooms", () => {
   const currentRoom = ref(areas[0].rooms[4]);
+  const scrollPosition = ref(0);
 
   const setRoom = (room: Room) => (currentRoom.value = room);
 
-  return { areas, currentRoom, setRoom };
+  const setScrollPosition = (val: number) => (scrollPosition.value = val);
+
+  return { areas, currentRoom, setRoom, scrollPosition, setScrollPosition };
 });

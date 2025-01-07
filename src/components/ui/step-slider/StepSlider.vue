@@ -47,7 +47,7 @@ const stepPositions = computed(() =>
     <SliderTrack
       class="relative h-1.5 w-full data-[orientation=vertical]:w-full grow overflow-hidden bg-primary/90 rounded-md"
     >
-      <SliderRange class="absolute h-full data-[orientation=vertical]:w-full bg-muted" />
+      <SliderRange class="absolute h-full data-[orientation=vertical]:w-full bg-muted/80" />
     </SliderTrack>
     <div
       v-for="step in stepPositions"

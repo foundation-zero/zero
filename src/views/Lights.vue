@@ -13,15 +13,15 @@ const rooms = ref<Room[]>([
 </script>
 
 <template>
-  <section
-    class="grid container grid-cols-1 md:grid-cols-2 landscape:lg:grid-cols-3 xl:grid-cols-3 gap-10 max-sm:pb-[96px] md:pb-[32px]"
-  >
-    <LightGroup
-      v-for="(room, index) in rooms"
-      :key="index"
-      class="columns-1"
-      :name="room.name"
-      :lights="room.lights"
-    />
+  <section class="container px-6 max-sm:pb-[96px] md:pb-[32px]">
+    <div class="grid grid-cols-1 md:grid-cols-2 landscape:lg:grid-cols-3 xl:grid-cols-3 gap-6">
+      <LightGroup
+        v-for="(room, index) in rooms"
+        :key="index"
+        class="columns-1"
+        :name="room.name"
+        :lights="room.lights"
+      />
+    </div>
   </section>
 </template>

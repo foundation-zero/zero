@@ -4,6 +4,11 @@ export interface LightControl {
   brightness: number;
 }
 
+export interface BlindsControl {
+  name: string;
+  position: number;
+}
+
 export interface Room {
   name: string;
   lights: LightControl[];

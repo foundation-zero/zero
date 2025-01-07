@@ -7,14 +7,14 @@ const value = ref([100 / 6]);
 
 <template>
   <section class="h-full container flex flex-col justify-evenly">
-    <div class="flex flex-col items-center">
+    <div class="flex flex-col items-center md:mx-8 bg-muted/30 rounded-xl py-10 border">
       <div class="h-[300px] w-[150px] my-4">
         <StepSlider
+          v-model:model-value="value"
           :max="100"
           :min="0"
           :min-steps-between-thumbs="3"
           :steps="6"
-          v-model:model-value="value"
         />
       </div>
 
