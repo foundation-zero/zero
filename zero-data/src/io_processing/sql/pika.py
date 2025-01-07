@@ -44,11 +44,10 @@ class MqttConnector(Connector):
     qos: Literal["at_most_once", "at_least_once", "exactly_once"]
     username: str
     password: str
-    max_packet_size: int
     encode: Literal["bytes", "json"]
 
     def __str__(self):
-        return f"""(connector = 'mqtt',\nurl = '{self.url}',\ntopic = '{self.topic}',\nqos = '{self.qos}',\nusername = '{self.username}',\npassword = '{self.password}',\nmax_packet_size = {self.max_packet_size}\n) FORMAT PLAIN ENCODE {self.encode.upper()}"""
+        return f"""(connector = 'mqtt',\nurl = '{self.url}',\ntopic = '{self.topic}',\nqos = '{self.qos}',\nusername = '{self.username}',\npassword = '{self.password}') FORMAT PLAIN ENCODE {self.encode.upper()}"""
 
 
 @dataclass

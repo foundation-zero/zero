@@ -1,5 +1,7 @@
 from functools import reduce
 import json
+from pathlib import Path
+
 from polars import DataFrame
 from yaml import load, Loader
 import polars as pl
@@ -13,7 +15,7 @@ _SUPPLIERS = {IoFlavor.AMCS: "marpower"}
 
 class Components:
     def __init__(self, file: str) -> None:
-        with open("./components.schema.json", "r") as f:
+        with open(Path(__file__).parent/"../../components.schema.json", "r") as f:
             _schema = json.load(f)
         with open(file, "r") as f:
             description = load(f, Loader=Loader)

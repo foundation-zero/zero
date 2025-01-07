@@ -4,6 +4,7 @@ version = "0.1.0"
 description = ""
 authors = ["Boudewijn van Groos <boudewijn.vangroos@foundationzero.org>"]
 readme = "README.md"
+packages = [{include = "io_processing", from="src"}]
 
 [tool.poetry.dependencies]
 python = "^3.13"
@@ -27,6 +28,14 @@ datamodel-code-generator = "^0.26.4"
 
 [tool.poetry.group.test.dependencies]
 pytest = "^8.3.4"
+
+
+[tool.poetry.group.dbt.dependencies]
+dbt = "^1.0.0.38.22"
+dbt-risingwave = "^1.9.0"
+
+[tool.pytest.ini_options]
+testpaths = [ "tests" ]
 
 [build-system]
 requires = ["poetry-core"]
