@@ -1,8 +1,5 @@
-# IO processing
-
-This folder contains the scripts to process the IO lists supplied by various parties into the SQL
-needed to process the values published by those parties.
-
+# Zero Data
+This repository contains the Zero data platform and the scripts to process the IO lists supplied by various parties into the SQL needed to process the values published by those parties.
 
 ## Commands
 ```bash
