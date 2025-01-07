@@ -1,53 +1,33 @@
 <script setup lang="ts">
-import { LampCeiling, LampWallUp } from "lucide-vue-next";
-import { Card, CardTitle, CardHeader, CardContent } from "./ui/card";
-import { Slider } from "./ui/slider";
-import { Switch } from "./ui/switch";
-import { LightControl } from "@/@types";
+import { BlindsControl } from "@/@types";
 import { toRefs } from "vue";
-import List from "./ui/list/List.vue";
+import StepSlider from "./ui/step-slider/StepSlider.vue";
 
-const props = defineProps<{ name: string; lights: LightControl[] }>();
-const { lights, name } = toRefs(props);
+const props = defineProps<{ name: string; blinds: BlindsControl[] }>();
+const { blinds, name } = toRefs(props);
 </script>
 
 <template>
-  <article class="grid">
+  <article>
     <header class="text-xs uppercase">{{ name }}</header>
-    <List class="border">
+    <ul
+      class="grid divide-x border"
+      :class="{ 'grid-cols-1': blinds.length === 1, 'grid-cols-2': blinds.length === 2 }"
+    >
       <li
-        v-for="(light, index) in lights"
-        :key="light.name"
+        v-for="blind in blinds"
+        :key="blind.name"
       >
-        <CardHeader>
-          <CardTitle class="flex justify-between items-center">
-            <span class="text-md">
-              <LampCeiling
-                v-if="index == 0"
-                class="inline mr-3"
-                :size="18"
-              />
-              <LampWallUp
-                v-if="index == 1"
-                class="inline mr-3"
-                :size="18"
-              />
-              {{ light.name }}</span
-            >
-            <Switch v-model:checked="light.on"></Switch>
-          </CardTitle>
-        </CardHeader>
-        <CardContent>
-          <Slider
-            :disabled="!light.on"
-            :min="0"
-            :max="100"
-            :model-value="[light.on ? light.brightness : 0]"
-            :class="{ 'opacity-50': !light.on }"
-            @update:model-value="(val) => (light.brightness = val?.[0] ?? 0)"
-          />
-        </CardContent>
+        <span class="text-md"> {{ blind.name }}</span>
+        <StepSlider
+          :model-value="[blind.position]"
+          :max="100"
+          :min="0"
+          :min-steps-between-thumbs="3"
+          :steps="6"
+          @update:model-value="(val) => (blind.position = val![0])"
+        />
       </li>
-    </List>
+    </ul>
   </article>
 </template>

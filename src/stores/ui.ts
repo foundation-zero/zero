@@ -1,10 +1,10 @@
 import { Breakpoints } from "@/@types";
 import {
-  useBreakpoints,
   breakpointsTailwind,
+  useBreakpoints,
+  useScreenOrientation,
   useScroll,
   useWindowSize,
-  useScreenOrientation,
 } from "@vueuse/core";
 import { defineStore } from "pinia";
 import { computed, ref, watch } from "vue";

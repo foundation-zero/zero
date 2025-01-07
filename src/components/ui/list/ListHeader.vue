@@ -1,5 +1,5 @@
 <template>
-  <header class="uppercase text-xs">
+  <header class="text-xs uppercase">
     <slot />
   </header>
 </template>

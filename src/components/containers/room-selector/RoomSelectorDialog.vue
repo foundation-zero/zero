@@ -32,7 +32,7 @@ const isActive = ref(false);
         </DialogDescription>
       </DialogHeader>
 
-      <ScrollArea class="grow w-full portrait:h-[600px] landscape:h-[500px]">
+      <ScrollArea class="w-full grow portrait:h-[600px] landscape:h-[500px]">
         <RoomsList
           class="py-8"
           @room-selected="isActive = false"

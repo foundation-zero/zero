@@ -16,7 +16,7 @@ const { path } = toRefs(useRoute());
     class="fixed bottom-0 w-full"
   >
     <div
-      class="absolute left-0 right-0 top-0 bottom-0 bg-background transition-all sm:bg-background"
+      class="absolute bottom-0 left-0 right-0 top-0 bg-background transition-all sm:bg-background"
       :class="{ 'border-t': hasScroll && !isBottom }"
     ></div>
     <TabsList class="relative">

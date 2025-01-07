@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import type { SliderRootEmits, SliderRootProps } from "radix-vue";
 import { cn } from "@/lib/utils";
+import type { SliderRootEmits, SliderRootProps } from "radix-vue";
 import { SliderRange, SliderRoot, SliderThumb, SliderTrack, useForwardPropsEmits } from "radix-vue";
 import { computed, type HTMLAttributes } from "vue";
 
@@ -20,21 +20,21 @@ const forwarded = useForwardPropsEmits(delegatedProps, emits);
   <SliderRoot
     :class="
       cn(
-        'relative flex w-full touch-none select-none items-center data-[orientation=vertical]:flex-col data-[orientation=vertical]:w-1.5 data-[orientation=vertical]:h-full',
+        'relative flex w-full touch-none select-none items-center data-[orientation=vertical]:h-full data-[orientation=vertical]:w-1.5 data-[orientation=vertical]:flex-col',
         props.class,
       )
     "
     v-bind="forwarded"
   >
     <SliderTrack
-      class="relative h-1.5 w-full data-[orientation=vertical]:w-1.5 grow overflow-hidden rounded-full bg-primary/20"
+      class="relative h-1.5 w-full grow overflow-hidden rounded-full bg-primary/20 data-[orientation=vertical]:w-1.5"
     >
-      <SliderRange class="absolute h-full data-[orientation=vertical]:w-full bg-primary" />
+      <SliderRange class="absolute h-full bg-primary data-[orientation=vertical]:w-full" />
     </SliderTrack>
     <SliderThumb
       v-for="(_, key) in modelValue"
       :key="key"
-      class="block h-5 w-5 rounded-full cursor-pointer disabled:cursor-default border-2 border-primary bg-background ring-offset-background transition-color focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50"
+      class="transition-color block h-5 w-5 cursor-pointer rounded-full border-2 border-primary bg-background ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:cursor-default disabled:opacity-50"
     />
   </SliderRoot>
 </template>

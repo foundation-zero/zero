@@ -12,7 +12,7 @@ const { path } = toRefs(useRoute());
     class="absolute left-[50%] translate-x-[-50%] max-md:hidden"
   >
     <TabsList
-      class="bg-black dark:bg-white !bg-opacity-5 backdrop-blur-md"
+      class="bg-black !bg-opacity-5 backdrop-blur-md dark:bg-white"
       as="nav"
     >
       <RouterLink to="/airco">
@@ -20,7 +20,7 @@ const { path } = toRefs(useRoute());
           <Snowflake
             :size="16"
             stroke-width="2"
-            class="inline mr-2"
+            class="mr-2 inline"
           />
           Airco
         </TabsTrigger>
@@ -30,7 +30,7 @@ const { path } = toRefs(useRoute());
           <LampCeiling
             :size="16"
             stroke-width="2"
-            class="inline mr-2"
+            class="mr-2 inline"
           />
           Lights
         </TabsTrigger>
@@ -40,7 +40,7 @@ const { path } = toRefs(useRoute());
           <Blinds
             :size="16"
             stroke-width="2"
-            class="inline mr-2"
+            class="mr-2 inline"
           />
           Blinds
         </TabsTrigger>

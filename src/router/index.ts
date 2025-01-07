@@ -1,7 +1,7 @@
 import Airco from "@/views/Airco.vue";
-import Lights from "@/views/Lights.vue";
 import Blinds from "@/views/Blinds.vue";
-import { createWebHistory, createRouter } from "vue-router";
+import Lights from "@/views/Lights.vue";
+import { createRouter, createWebHistory } from "vue-router";
 
 const routes = [
   { path: "/airco", component: Airco },

@@ -1,18 +1,18 @@
 <script setup lang="ts">
-import TopNavigation from "./components/TopNavigation.vue";
-import BottomNavigation from "./components/BottomNavigation.vue";
-import RoomSelectorDrawer from "./components/containers/room-selector/RoomSelectorDrawer.vue";
-import ToggleAV from "./components/ToggleAV.vue";
 import { toRefs } from "vue";
-import { useUIStore } from "./stores/ui";
-import NavPills from "./components/NavPills.vue";
+import BottomNavigation from "./components/BottomNavigation.vue";
 import RoomSelectorDialog from "./components/containers/room-selector/RoomSelectorDialog.vue";
+import RoomSelectorDrawer from "./components/containers/room-selector/RoomSelectorDrawer.vue";
+import NavPills from "./components/NavPills.vue";
+import ToggleAV from "./components/ToggleAV.vue";
+import TopNavigation from "./components/TopNavigation.vue";
+import { useUIStore } from "./stores/ui";
 
 const { breakpoints } = toRefs(useUIStore());
 </script>
 
 <template>
-  <main class="pt-[96px] flex flex-col h-svh pb-[96px]">
+  <main class="flex h-svh flex-col pb-[96px] pt-[96px]">
     <RouterView />
   </main>
   <TopNavigation>

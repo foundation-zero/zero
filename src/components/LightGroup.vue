@@ -1,11 +1,11 @@
 <script setup lang="ts">
+import { LightControl } from "@/@types";
 import { LampCeiling, LampWallUp } from "lucide-vue-next";
-import { Card, CardTitle, CardHeader, CardContent } from "./ui/card";
+import { toRefs } from "vue";
+import { CardContent, CardHeader, CardTitle } from "./ui/card";
+import List from "./ui/list/List.vue";
 import { Slider } from "./ui/slider";
 import { Switch } from "./ui/switch";
-import { LightControl } from "@/@types";
-import { toRefs } from "vue";
-import List from "./ui/list/List.vue";
 
 const props = defineProps<{ name: string; lights: LightControl[] }>();
 const { lights, name } = toRefs(props);
@@ -20,16 +20,16 @@ const { lights, name } = toRefs(props);
         :key="light.name"
       >
         <CardHeader>
-          <CardTitle class="flex justify-between items-center">
+          <CardTitle class="flex items-center justify-between">
             <span class="text-md">
               <LampCeiling
                 v-if="index == 0"
-                class="inline mr-3"
+                class="mr-3 inline"
                 :size="18"
               />
               <LampWallUp
                 v-if="index == 1"
-                class="inline mr-3"
+                class="mr-3 inline"
                 :size="18"
               />
               {{ light.name }}</span

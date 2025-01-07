@@ -14,10 +14,10 @@ const { currentRoom } = toRefs(useRoomStore());
   <Button
     variant="ghost"
     size="sm"
-    class="text-sm font-bold dark:text-gray-100 transition-all px-0 hover:bg-transparent"
+    class="px-0 text-sm font-bold transition-all hover:bg-transparent dark:text-gray-100"
     :disabled="isScrolling"
     :class="{
-      '!opacity-100 disabled max-sm:ml-[50%] landscape:max-md:ml-[50%] landscape:max-md:translate-x-[-50%] max-sm:translate-x-[-50%]':
+      'disabled !opacity-100 max-sm:ml-[50%] max-sm:translate-x-[-50%] landscape:max-md:ml-[50%] landscape:max-md:translate-x-[-50%]':
         isScrolling,
     }"
   >

@@ -16,14 +16,28 @@ export default [
   pluginJs.configs.recommended,
   {
     rules: {
-      "no-unused-vars": "off",
+      "no-unused-vars": [
+        "warn",
+        {
+          argsIgnorePattern: "^_",
+          varsIgnorePattern: "^_",
+          caughtErrorsIgnorePattern: "^_",
+        },
+      ],
       "no-undef": "off",
     },
   },
   ...tseslint.configs.recommended,
   {
     rules: {
-      "@typescript-eslint/no-unused-vars": "warn",
+      "@typescript-eslint/no-unused-vars": [
+        "warn",
+        {
+          argsIgnorePattern: "^_",
+          varsIgnorePattern: "^_",
+          caughtErrorsIgnorePattern: "^_",
+        },
+      ],
       "@typescript-eslint/no-explicit-any": "warn",
     },
   },
@@ -39,6 +53,7 @@ export default [
       ...vueConfigTypescript.rules,
       ...vueConfigPrettier.rules,
       "vue/multi-word-component-names": "off",
+      "vue/require-default-prop": "off",
       "@typescript-eslint/no-require-imports": "off",
     },
   },

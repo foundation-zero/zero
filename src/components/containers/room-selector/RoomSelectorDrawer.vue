@@ -22,7 +22,7 @@ const isActive = ref(false);
     </DrawerTrigger>
     <DrawerContent>
       <div class="flex flex-col">
-        <DrawerHeader class="dark:border-b shadow-sm dark:shadow-none">
+        <DrawerHeader class="shadow-sm dark:border-b dark:shadow-none">
           <div class="mx-auto w-full max-w-sm text-center">
             <DrawerTitle>ZERO rooms</DrawerTitle>
             <DrawerDescription class="mt-1"
@@ -33,11 +33,11 @@ const isActive = ref(false);
         </DrawerHeader>
 
         <ScrollArea
-          class="grow w-full"
+          class="w-full grow"
           style="height: calc(100svh - 200px)"
         >
           <RoomsList
-            class="py-8 px-6"
+            class="px-6 py-8"
             @room-selected="isActive = false"
           />
         </ScrollArea>

@@ -29,20 +29,20 @@ const { isScrolling } = toRefs(useUIStore());
 }
 
 .bar {
-  @apply flex container items-center justify-between;
+  @apply container flex items-center justify-between;
 }
 
 .left {
-  @apply transition-opacity grow;
+  @apply grow transition-opacity;
 }
 
 .right {
-  @apply items-end flex flex-row justify-end transition-opacity grow;
+  @apply flex grow flex-row items-end justify-end transition-opacity;
 }
 
 .top-nav.--scrolling {
   .bar {
-    @apply max-sm:py-1 md:pt-2 max-sm:shadow-sm max-sm:bg-background max-md:dark:border-b;
+    @apply max-md:dark:border-b max-sm:bg-background max-sm:py-1 max-sm:shadow-sm md:pt-2;
   }
 
   .left {
@@ -50,7 +50,7 @@ const { isScrolling } = toRefs(useUIStore());
   }
 
   .right {
-    @apply md:opacity-0 max-sm:hidden;
+    @apply max-sm:hidden md:opacity-0;
   }
 }
 

@@ -14,11 +14,7 @@ defineProps<{ selected?: boolean }>();
 
 <style lang="scss" scoped>
 li {
-  @apply flex items-center whitespace-nowrap justify-between gap-2
-  p-6 h-8 
-  border-primary/5 transition-colors disabled:opacity-50 hover:bg-muted-foreground
-  disabled:pointer-events-none
-  text-base;
+  @apply flex h-8 items-center justify-between gap-2 whitespace-nowrap border-primary/5 p-6 text-base transition-colors hover:bg-muted-foreground disabled:pointer-events-none disabled:opacity-50;
 
   &.selected {
     @apply font-bold;

@@ -1,10 +1,10 @@
 <template>
   <section>
     <div
-      class="dark:bg-muted bg-gray-100 w-[150px] md:w-[175px] h-[300px] md:h-[350px] rounded-3xl overflow-hidden flex flex-col justify-end"
+      class="flex h-[300px] w-[150px] flex-col justify-end overflow-hidden rounded-3xl bg-gray-100 dark:bg-muted md:h-[350px] md:w-[175px]"
     >
-      <div class="h-[80%] w-full bg-gray-900 dark:bg-white flex justify-center pt-2.5">
-        <div class="w-[36px] h-[5px] bg-white dark:bg-black rounded-xl cursor-pointer" />
+      <div class="flex h-[80%] w-full justify-center bg-gray-900 pt-2.5 dark:bg-white">
+        <div class="h-[5px] w-[36px] cursor-pointer rounded-xl bg-white dark:bg-black" />
       </div>
     </div>
   </section>

@@ -20,10 +20,10 @@ const isOff = computed(() => value.value[0] == MIN_VALUE);
 </script>
 
 <template>
-  <section class="h-full container flex flex-col justify-evenly">
+  <section class="container flex h-full flex-col justify-evenly">
     <RoomTemperature />
-    <div class="flex flex-col items-center md:mx-8 bg-muted/30 rounded-xl py-10 border">
-      <div class="h-[300px] w-[150px] my-4 overflow-hidden">
+    <div class="flex flex-col items-center rounded-xl border bg-muted/30 py-10 md:mx-8">
+      <div class="my-4 h-[300px] w-[150px] overflow-hidden">
         <HeavySlider
           v-model:model-value="value"
           :max="24"
@@ -34,20 +34,20 @@ const isOff = computed(() => value.value[0] == MIN_VALUE);
         />
       </div>
 
-      <div class="flex flex-col items-center justify-center mt-6">
-        <div class="inline-flex items-end relative">
-          <span class="text-3xl md:text-5xl font-bold uppercase">
+      <div class="mt-6 flex flex-col items-center justify-center">
+        <div class="relative inline-flex items-end">
+          <span class="text-3xl font-bold uppercase md:text-5xl">
             <span>{{ !isOff ? Math.floor(value[0]) : "Off" }}</span>
           </span>
           <span
             v-if="!isOff"
-            class="font-light text-sm md:text-2xl ml-0.5 max-md:mb-[2.5px]"
+            class="ml-0.5 text-sm font-light max-md:mb-[2.5px] md:text-2xl"
           >
             {{ Math.round((value[0] % 1) * 10) }}
           </span>
           <sup
             v-show="!isOff"
-            class="text-2xl md:text-3xl font-light pt-1 absolute max-md:mt-[-2px] -top-1 md:-top-1.5 md:mr-[1.5px] right-0"
+            class="absolute -top-1 right-0 pt-1 text-2xl font-light max-md:mt-[-2px] md:-top-1.5 md:mr-[1.5px] md:text-3xl"
             >&deg;</sup
           >
         </div>

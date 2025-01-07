@@ -6,9 +6,6 @@
 
 <style lang="scss" scoped>
 ul {
-  @apply mt-2 py-0
-    grid grid-cols-1 divide-y
-    bg-muted/80 rounded-xl overflow-hidden 
-    hover:cursor-pointer;
+  @apply mt-2 grid grid-cols-1 divide-y overflow-hidden rounded-xl bg-muted/80 py-0 hover:cursor-pointer;
 }
 </style>
