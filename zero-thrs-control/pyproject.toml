@@ -1,0 +1,21 @@
+[tool.poetry]
+name = "thrs-control"
+version = "0.1.0"
+description = ""
+authors = ["Alje <alje.vandam@foundationzero.org>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.11,<3.14"
+pydantic = "^2.10.4"
+fmpy = "^0.3.22"
+jupyter = "^1.1.1"
+pyside6 = "^6.8.1.1"
+pyqtgraph = "^0.13.7"
+plotly = "^5.24.1"
+matplotlib = "^3.10.0"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
