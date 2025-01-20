@@ -15,7 +15,9 @@ const orientation = useScreenOrientation();
 const isMobile = () => window.navigator.userAgent.toLowerCase().includes("mobi");
 
 export const useUIStore = defineStore("UI", () => {
-  const scroll = useScroll(window);
+  const scroll = useScroll(window, { behavior: "smooth" });
+
+  const scrollPositions = ref<Record<string, number>>({});
 
   const isScrolling = computed(() => scroll.y.value > 45);
   const isBottom = ref(false);
@@ -33,6 +35,8 @@ export const useUIStore = defineStore("UI", () => {
     portrait: !!orientation.orientation.value?.includes("portrait"),
   }));
 
+  const setScrollPosition = (key: string, value: number) => (scrollPositions.value[key] = value);
+
   watch(
     [scroll.y, useWindowSize().height, useRoute()],
     () => {
@@ -42,5 +46,13 @@ export const useUIStore = defineStore("UI", () => {
     { immediate: true },
   );
 
-  return { scroll, isScrolling, hasScroll, isBottom, breakpoints };
+  return {
+    scroll,
+    isScrolling,
+    hasScroll,
+    isBottom,
+    breakpoints,
+    scrollPositions,
+    setScrollPosition,
+  };
 });

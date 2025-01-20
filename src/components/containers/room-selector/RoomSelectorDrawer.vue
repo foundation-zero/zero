@@ -7,12 +7,15 @@ import {
   DrawerTitle,
   DrawerTrigger,
 } from "@/components/ui/drawer";
-import { ref } from "vue";
+import { useUIStore } from "@/stores/ui";
+import { ref, toRefs } from "vue";
 import { ScrollArea } from "../../ui/scroll-area";
 import RoomSelectorButton from "./RoomSelectorButton.vue";
 import RoomsList from "./RoomsList.vue";
 
 const isActive = ref(false);
+const { setScrollPosition } = useUIStore();
+const { scrollPositions } = toRefs(useUIStore());
 </script>
 
 <template>
@@ -33,8 +36,11 @@ const isActive = ref(false);
         </DrawerHeader>
 
         <ScrollArea
+          ref="scroll"
+          :scroll-position="scrollPositions['rooms']"
           class="w-full grow"
           style="height: calc(100svh - 200px)"
+          @scroll-y="(val) => setScrollPosition('rooms', val)"
         >
           <RoomsList
             class="px-6 py-8"

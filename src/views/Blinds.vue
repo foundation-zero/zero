@@ -1,31 +1,76 @@
 <script setup lang="ts">
-import { StepSlider } from "@/components/ui/step-slider";
-import { ref } from "vue";
+import { BlindsGroup } from "@/@types";
+import { BlindsControl } from "@/components/containers/blinds-control";
+import { BlindsSlider } from "@/components/ui/blinds-slider";
+import BlindsValue from "@/components/ui/blinds-value/BlindsValue.vue";
+import { List, ListHeader, ListItem, ListRoot } from "@/components/ui/list";
 
-const value = ref([100 / 6]);
+import { useRoomStore } from "@/stores/rooms";
+import { ref, toRefs, watch } from "vue";
+
+const { currentRoom } = toRefs(useRoomStore());
+const selected = ref<BlindsGroup>();
+
+watch(currentRoom, (next, prev) => {
+  if (next !== prev) {
+    selected.value = undefined;
+  }
+});
 </script>
 
 <template>
-  <section class="container flex h-full flex-col justify-evenly">
-    <div class="flex flex-col items-center rounded-xl border bg-muted/30 py-10">
-      <div class="h-[300px] w-[150px]">
-        <StepSlider
-          v-model:model-value="value"
-          :max="100"
-          :min="0"
-          :min-steps-between-thumbs="3"
-          :steps="6"
-        />
-      </div>
+  <section
+    class="container flex grow flex-wrap items-center justify-center max-md:pb-[64px] md:px-6 md:pb-[32px]"
+    :class="{ 'px-3': currentRoom.blinds.length > 1, 'px-6': currentRoom.blinds.length === 1 }"
+  >
+    <ListRoot
+      v-for="(group, index) in currentRoom.blinds"
+      :key="index"
+      class="w-full md:px-3"
+      :class="{
+        'w-1/2 px-1.5': currentRoom.blinds.length > 1,
+        'md:w-1/2 xl:w-1/3 landscape:lg:w-1/3':
+          group.controls.length === 1 || currentRoom.blinds.length > 1,
+        'xl:w-2/3 landscape:lg:w-2/3':
+          group.controls.length === 2 && currentRoom.blinds.length === 1,
+      }"
+    >
+      <ListHeader v-if="currentRoom.blinds.length > 1">{{ group.name }}</ListHeader>
+      <List
+        orientation="horizontal"
+        :size="group.controls.length"
+      >
+        <ListItem
+          v-for="(item, controlIndex) in group.controls"
+          :key="item.name"
+          class="flex-col pb-6"
+          @click="selected = group"
+        >
+          <span
+            :class="{
+              'text-base font-medium': currentRoom.blinds.length === 1,
+              'text-sm': currentRoom.blinds.length > 1,
+            }"
+          >
+            {{ item.name }}</span
+          >
+          <BlindsSlider
+            v-if="currentRoom.blinds.length === 1"
+            v-model:position="item.position"
+            class="mt-3"
+          />
+          <BlindsValue
+            v-else
+            :position="item.position"
+            :color="controlIndex === 0 ? ' bg-primary/90' : 'bg-primary/45'"
+          />
+        </ListItem>
+      </List>
+    </ListRoot>
 
-      <div class="mt-6 flex flex-col items-center justify-center">
-        <div class="inline-flex items-end">
-          <span class="text-3xl font-bold uppercase md:text-5xl">
-            <span>{{ Math.round(100 - value[0]) }}</span>
-          </span>
-          <span class="ml-0.5">&percnt;</span>
-        </div>
-      </div>
-    </div>
+    <BlindsControl
+      v-if="currentRoom.blinds.length > 1"
+      v-model:group="selected"
+    />
   </section>
 </template>

@@ -4,7 +4,7 @@ const plugin = require("tailwindcss/plugin");
 /** @type {import('tailwindcss').Config} */
 module.exports = {
   darkMode: ["class"],
-  safelist: ["dark"],
+  safelist: ["dark", "grid-cols-1", "grid-cols-2", "grid-cols-3"],
   prefix: "",
 
   content: ["./src/**/*.{ts,tsx,vue}"],

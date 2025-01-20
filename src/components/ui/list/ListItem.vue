@@ -1,20 +1,19 @@
 <script setup lang="ts">
-defineProps<{ selected?: boolean }>();
+import { cn } from "@/lib/utils";
+import { HTMLAttributes } from "vue";
+
+const props = defineProps<{ selected?: boolean; class?: HTMLAttributes["class"] }>();
 </script>
 
 <template>
-  <li
-    :class="{
-      selected,
-    }"
-  >
+  <li :class="cn(['gap-2 px-6 py-4'], props.class)">
     <slot />
   </li>
 </template>
 
 <style lang="scss" scoped>
 li {
-  @apply flex h-8 items-center justify-between gap-2 whitespace-nowrap border-primary/5 p-6 text-base transition-colors hover:bg-muted-foreground disabled:pointer-events-none disabled:opacity-50;
+  @apply flex items-center justify-between border-primary/5 transition-colors disabled:pointer-events-none disabled:opacity-50;
 
   &.selected {
     @apply font-bold;

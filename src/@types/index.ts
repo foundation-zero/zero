@@ -11,7 +11,8 @@ export interface BlindsControl {
 
 export interface Room {
   name: string;
-  lights: LightControl[];
+  lights: ControlGroup<LightControl>[];
+  blinds: ControlGroup<BlindsControl>[];
 }
 
 export interface ShipArea {
@@ -27,3 +28,11 @@ export interface Breakpoints {
   mobile: boolean;
   desktop: boolean;
 }
+
+export interface ControlGroup<T> {
+  name: string;
+  controls: T[];
+}
+
+export type LightGroup = ControlGroup<LightControl>;
+export type BlindsGroup = ControlGroup<BlindsControl>;

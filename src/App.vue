@@ -12,7 +12,7 @@ const { breakpoints } = toRefs(useUIStore());
 </script>
 
 <template>
-  <main class="flex h-svh flex-col pb-[96px] pt-[96px]">
+  <main class="flex h-svh flex-col pt-[96px]">
     <RouterView />
   </main>
   <TopNavigation>

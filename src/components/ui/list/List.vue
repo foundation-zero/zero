@@ -1,11 +1,26 @@
+<script setup lang="ts">
+defineProps<{ orientation?: "horizontal" | "vertical"; size?: number }>();
+</script>
+
 <template>
-  <ul>
+  <ul
+    class="list"
+    :class="[orientation ?? 'vertical', `grid-cols-${size ?? 1}`]"
+  >
     <slot />
   </ul>
 </template>
 
 <style lang="scss" scoped>
-ul {
-  @apply mt-2 grid grid-cols-1 divide-y overflow-hidden rounded-xl bg-muted/80 py-0 hover:cursor-pointer;
+.list {
+  @apply grid overflow-hidden rounded-xl border border-primary/10 bg-muted/80 hover:cursor-pointer;
+
+  &.vertical {
+    @apply divide-y;
+  }
+
+  &.horizontal {
+    @apply divide-x;
+  }
 }
 </style>
