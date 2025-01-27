@@ -7,8 +7,9 @@ from yaml import dump
 
 from io_processing.components import Components
 from io_processing.data_gen.gen import Generator, Strategy
-from io_processing.io_list import IoFlavor, normalize_io_list
-from io_processing.marpower import read_excel
+from io_processing.generator import generate
+from io_processing.io_list import IoFlavor
+from io_processing.marpower import normalize_amcs_io_list, read_amcs_excel
 
 
 def parser():
@@ -44,14 +45,17 @@ def parser():
     )
     signals_list_orphans.set_defaults(func=list_orphaned_signals)
     signals_generate = signals_sub_parser.add_parser("generate", help="generate values")
-    signals_generate.set_defaults(func=generate)
+    signals_generate.set_defaults(func=generate_data)
+
+    generate_parser = sub_parser.add_parser("generate", help="generate all dbt resources")
+    generate_parser.set_defaults(func=generate_dbt)
 
     return parser
 
 
 def process_excel() ->(DataFrame, Components):
-    df = read_excel(Path(__file__).parent/"../../io_lists/52422003_3210_AMCS IO-List R1.11.xlsx")
-    io_list = normalize_io_list(df, IoFlavor.AMCS)
+    df = read_amcs_excel(Path(__file__).parent / "../../io_lists/52422003_3210_AMCS IO-List R1.11.xlsx")
+    io_list = normalize_amcs_io_list(df)
     components = Components("./components.yaml")
 
     return io_list, components
@@ -80,8 +84,11 @@ def list_orphaned_signals():
     result = components.orphan_signals(io_list).to_dicts()
     print(dump(result, sort_keys=False))
 
+def generate_dbt():
+    return generate()
 
-def generate():
+
+def generate_data():
     io_list, components = process_excel()
     genny = Generator(
         components.combine_io(io_list, IoFlavor.AMCS),

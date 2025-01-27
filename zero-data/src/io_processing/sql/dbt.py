@@ -29,7 +29,6 @@ def _source(flavor: IoFlavor) -> io_pika.Queryable:
         "at_least_once",
         "power-hub",
         "power-hub",
-        2000000,
         "bytes",
     )
 

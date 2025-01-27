@@ -50,7 +50,7 @@ class Components:
                 return expr.when(
                     (pl.col("component_type") == type.id)
                     & (pl.col("tag").str.contains(value.name))
-                    & (pl.col("type") == value.type)
+                    & (pl.col("data_type") == value.type)
                 ).then(pl.lit(key))
 
             return reduce(_value_replacer, type.values.items(), expr)
