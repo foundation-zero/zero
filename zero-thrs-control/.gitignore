@@ -7,3 +7,4 @@ SolarTestModel_info.json
 SolarTestModel.fmu
 SolarTestModel.ipynb
 SolarTestModel.log
+**/__pycache__

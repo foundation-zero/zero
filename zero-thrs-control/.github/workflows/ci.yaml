@@ -1,0 +1,21 @@
+on:
+  push
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: abatilo/actions-poetry@v3
+        with:
+          poetry-version: 1.8.4
+
+      - run: poetry install
+
+      - run: poetry run fmpy compile simulation/XRGTestModel/FMUInterfaceTester_MECS_regular.fmu
+
+      - run: poetry run pyright
+
+      - run: poetry run pytest -v

@@ -1,12 +1,12 @@
 [tool.poetry]
-name = "thrs-control"
+name = "simulation"
 version = "0.1.0"
 description = ""
-authors = ["Alje <alje.vandam@foundationzero.org>"]
+authors = ["Alje van Dam <alje.vandam@foundationzero.org>", "Boudewijn van Groos <boudewijn.vangroos@foundationzero.org>"]
 readme = "README.md"
 
 [tool.poetry.dependencies]
-python = "^3.11,<3.14"
+python = "^3.12,<3.14"
 pydantic = "^2.10.4"
 fmpy = "^0.3.22"
 jupyter = "^1.1.1"
@@ -15,6 +15,10 @@ pyqtgraph = "^0.13.7"
 plotly = "^5.24.1"
 matplotlib = "^3.10.0"
 
+
+[tool.poetry.group.test.dependencies]
+pytest = "^8.3.4"
+pyright = "^1.1.392.post0"
 
 [build-system]
 requires = ["poetry-core"]
