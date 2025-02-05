@@ -1,0 +1,136 @@
+DROP TABLE IF EXISTS rooms CASCADE;
+CREATE TABLE rooms (
+  id TEXT PRIMARY KEY,
+  name TEXT,
+  "group" TEXT,
+  actual_temperature REAL,
+  temperature_setpoint REAL,
+  actual_humidity REAL,
+  thermal_comfort_index REAL,
+  last_movement TIMESTAMPTZ,
+  amplifier_on BOOLEAN
+);
+
+DROP TYPE IF EXISTS blind_opacity CASCADE;
+CREATE TYPE blind_opacity AS ENUM ('shear', 'blind');
+
+DROP TABLE IF EXISTS blinds CASCADE;
+CREATE TABLE blinds (
+  id TEXT PRIMARY KEY,
+  room_id VARCHAR REFERENCES rooms(id),
+  name TEXT,
+  opacity blind_opacity,
+  "group" TEXT,
+  level REAL
+);
+
+DROP TABLE IF EXISTS lighting_groups CASCADE;
+CREATE TABLE lighting_groups (
+  id TEXT PRIMARY KEY,
+  room_id VARCHAR REFERENCES rooms(id),
+  name TEXT,
+  level REAL
+);
+
+INSERT INTO rooms (id, name, "group") VALUES 
+('owners-cabin', 'Owners cabin', 'AFT'), 
+('dutch-cabin', 'Dutch cabin', 'AFT'), 
+('french-cabin', 'French cabin', 'AFT'),
+('italian-cabin', 'Italian cabin', 'AFT'),
+('californian-cabin', 'Californian cabin', 'AFT'),
+('polynesian-cabin', 'Polynesian cabin', 'MID'),
+('galley', 'Galley', 'MID'),
+('crew-mess', 'Crew mess', 'MID'),
+('mission-room', 'Mission room', 'MID'),
+('laundry', 'Laundy', 'MID'),
+('engineers-office', 'Engineers office', 'MID'),
+('captains-cabin', 'Captains cabin', 'FORE'),
+('crew-sb-aft-cabin', 'Crew SB AFT cabin', 'FORE'),
+('crew-sb-mid-cabin', 'Crew SB MID cabin', 'FORE'),
+('crew-sb-fwd-cabin', 'Crew SB FWD cabin', 'FORE'),
+('crew-ps-mid-cabin', 'Crew PS MID cabin', 'FORE'),
+('crew-ps-fwd-cabin', 'Crew PS FWD cabin', 'FORE'),
+('owners-deckhouse', 'Owners deckhouse', 'UPPERDECK'),
+('main-deckhouse', 'Main deckhouse', 'UPPERDECK'),
+('owners-stairway', 'Owners stairway', 'HALLWAYS'),
+('guest-corridor', 'Guest corridor', 'HALLWAYS'),
+('polynesian-corridor', 'Polynesian corridor', 'HALLWAYS');
+
+INSERT INTO blinds (id, room_id, name, opacity, "group") VALUES 
+('owners-cabin/main/shear', 'owners-cabin', 'Main', 'shear', 'MAIN'),
+('owners-cabin/main/blind', 'owners-cabin', 'Main', 'blind', 'MAIN'),
+('owners-cabin/port/shear', 'owners-cabin', 'Port', 'shear', 'PORT'),
+('owners-cabin/port/blind', 'owners-cabin', 'Port', 'blind', 'PORT'),
+('owners-cabin/starboard/shear', 'owners-cabin', 'Starboard', 'shear', 'STARBOARD'),
+('owners-cabin/starboard/blind', 'owners-cabin', 'Starboard', 'blind', 'STARBOARD'),
+('owners-cabin/skyline_main/shear', 'owners-cabin', 'Skyline (main)', 'shear', 'SKYLINE_MAIN'),
+('owners-cabin/skyline_main/blind', 'owners-cabin', 'Skyline (main)', 'blind', 'SKYLINE_MAIN'),
+('owners-cabin/skyline_port/shear', 'owners-cabin', 'Skyline (port)', 'shear', 'SKYLINE_PORT'),
+('owners-cabin/skyline_port/blind', 'owners-cabin', 'Skyline (port)', 'blind', 'SKYLINE_PORT'),
+('owners-cabin/skyline_starboard/shear', 'owners-cabin', 'Skyline (starboard)', 'shear', 'SKYLINE_STARBOARD'),
+('owners-cabin/skyline_starboard/blind', 'owners-cabin', 'Skyline (starboard)', 'blind', 'SKYLINE_STARBOARD'),
+('dutch-cabin/blind', 'dutch-cabin', 'Main', 'blind', null),
+('french-cabin/blind', 'french-cabin', 'Main', 'blind', null),
+('italian-cabin/blind', 'italian-cabin', 'Main', 'blind', null),
+('californian-cabin/blind', 'californian-cabin', 'Main', 'blind', null),
+('polynesian-cabin/blind', 'polynesian-cabin', 'Main', 'blind', null),
+('galley/blind', 'galley', 'Main', 'blind', null),
+('crew-mess/blind', 'crew-mess', 'Main', 'blind', null),
+('mission-room/blind', 'mission-room', 'Main', 'blind', null),
+('laundry/blind', 'laundry', 'Main', 'blind', null),
+('engineers-office/blind', 'engineers-office', 'Main', 'blind', null),
+('captains-cabin/blind', 'captains-cabin', 'Main', 'blind', null),
+('crew-sb-aft-cabin/blind', 'crew-sb-aft-cabin', 'Main', 'blind', null),
+('crew-sb-mid-cabin/blind', 'crew-sb-mid-cabin', 'Main', 'blind', null),
+('crew-sb-fwd-cabin/blind', 'crew-sb-fwd-cabin', 'Main', 'blind', null),
+('crew-ps-mid-cabin/blind', 'crew-ps-mid-cabin', 'Main', 'blind', null),
+('crew-ps-fwd-cabin/blind', 'crew-ps-fwd-cabin', 'Main', 'blind', null),
+('owners-deckhouse/blind', 'owners-deckhouse', 'Blinds', 'blind', null),
+('owners-deckhouse/shear', 'owners-deckhouse', 'Shears', 'shear', null),
+('main-deckhouse/blind', 'main-deckhouse', 'Blinds', 'blind', null),
+('main-deckhouse/shear', 'main-deckhouse', 'Shears', 'shear', null),
+('owners-stairway/blind', 'owners-stairway', 'Main', 'blind', null),
+('guest-corridor/blind', 'owners-stairway', 'Main', 'blind', null);
+
+INSERT INTO lighting_groups (id, room_id, name) VALUES 
+('owners-cabin/ambient', 'owners-cabin', 'Ambient'), 
+('owners-cabin/mood', 'owners-cabin', 'Mood'),
+('dutch-cabin/ambient', 'dutch-cabin', 'Ambient'), 
+('dutch-cabin/mood', 'dutch-cabin', 'Mood'),
+('french-cabin/ambient', 'french-cabin', 'Ambient'), 
+('french-cabin/mood', 'french-cabin', 'Mood'),
+('italian-cabin/ambient', 'italian-cabin', 'Ambient'), 
+('italian-cabin/mood', 'italian-cabin', 'Mood'),
+('californian-cabin/ambient', 'californian-cabin', 'Ambient'), 
+('californian-cabin/mood', 'californian-cabin', 'Mood'),
+('polynesian-cabin/ambient', 'polynesian-cabin', 'Ambient'), 
+('polynesian-cabin/mood', 'polynesian-cabin', 'Mood'),
+('galley/ambient', 'galley', 'Ambient'), 
+('galley/mood', 'galley', 'Mood'),
+('crew-mess/ambient', 'crew-mess', 'Ambient'), 
+('crew-mess/mood', 'crew-mess', 'Mood'),
+('mission-room/ambient', 'mission-room', 'Ambient'), 
+('mission-room/mood', 'mission-room', 'Mood'),
+('laundry/ambient', 'laundry', 'Ambient'), 
+('laundry/mood', 'laundry', 'Mood'),
+('engineers-office/ambient', 'engineers-office', 'Ambient'), 
+('engineers-office/mood', 'engineers-office', 'Mood'),
+('captains-cabin/ambient', 'captains-cabin', 'Ambient'), 
+('captains-cabin/mood', 'captains-cabin', 'Mood'),
+('crew-sb-aft-cabin/ambient', 'crew-sb-aft-cabin', 'Ambient'), 
+('crew-sb-aft-cabin/mood', 'crew-sb-aft-cabin', 'Mood'),
+('crew-sb-mid-cabin/ambient', 'crew-sb-mid-cabin', 'Ambient'), 
+('crew-sb-mid-cabin/mood', 'crew-sb-mid-cabin', 'Mood'),
+('crew-sb-fwd-cabin/ambient', 'crew-sb-fwd-cabin', 'Ambient'), 
+('crew-sb-fwd-cabin/mood', 'crew-sb-fwd-cabin', 'Mood'),
+('crew-ps-mid-cabin/ambient', 'crew-ps-mid-cabin', 'Ambient'), 
+('crew-ps-mid-cabin/mood', 'crew-ps-mid-cabin', 'Mood'),
+('crew-ps-fwd-cabin/ambient', 'crew-ps-fwd-cabin', 'Ambient'), 
+('crew-ps-fwd-cabin/mood', 'crew-ps-fwd-cabin', 'Mood'),
+('owners-deckhouse/ambient', 'owners-deckhouse', 'Ambient'), 
+('owners-deckhouse/mood', 'owners-deckhouse', 'Mood'),
+('main-deckhouse/ambient', 'main-deckhouse', 'Ambient'), 
+('main-deckhouse/mood', 'main-deckhouse', 'Mood'),
+('owners-stairway/main', 'owners-stairway', 'Main'),
+('guest-corridor/main', 'guest-corridor', 'Main'),
+('polynesian-corrido/main', 'polynesian-corridor', 'Main');

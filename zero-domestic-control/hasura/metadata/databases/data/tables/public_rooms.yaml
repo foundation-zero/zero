@@ -1,0 +1,34 @@
+table:
+  name: rooms
+  schema: public
+array_relationships:
+  - name: blinds
+    using:
+      foreign_key_constraint_on:
+        column: room_id
+        table:
+          name: blinds
+          schema: public
+  - name: lighting_groups
+    using:
+      foreign_key_constraint_on:
+        column: room_id
+        table:
+          name: lighting_groups
+          schema: public
+select_permissions:
+  - role: user
+    permission:
+      columns:
+        - amplifier_on
+        - actual_humidity
+        - actual_temperature
+        - temperature_setpoint
+        - thermal_comfort_index
+        - id
+        - name
+        - group
+        - last_movement
+      filter: {}
+      allow_aggregations: true
+    comment: ""

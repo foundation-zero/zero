@@ -7,7 +7,30 @@ readme = "README.md"
 
 [tool.poetry.dependencies]
 python = "^3.13"
+starlette-graphene3 = "^0.6.0"
+strawberry-graphql = {extras = ["debug-server", "fastapi"], version = "^0.256.1"}
+pymodbustcp = "^0.3.0"
+fastapi = {extras = ["standard"], version = "^0.115.6"}
+aiomqtt = "^2.3.0"
+psycopg = {extras = ["binary"], version = "^3.2.3"}
+pyjwt = "^2.10.1"
+pydantic-settings = "^2.7.1"
 
+
+[tool.poetry.group.dev.dependencies]
+black = "^24.10.0"
+mypy = "^1.14.1"
+
+
+[tool.poetry.group.test.dependencies]
+pytest = "^8.3.4"
+pytest-asyncio = "^0.25.1"
+
+[tool.mypy]
+plugins = "pydantic.mypy,strawberry.ext.mypy_plugin"
+
+[tool.pytest.ini_options]
+asyncio_mode = "auto"
 
 [build-system]
 requires = ["poetry-core"]

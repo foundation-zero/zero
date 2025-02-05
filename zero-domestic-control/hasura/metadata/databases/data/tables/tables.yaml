@@ -1,0 +1,3 @@
+- "!include public_blinds.yaml"
+- "!include public_lighting_groups.yaml"
+- "!include public_rooms.yaml"

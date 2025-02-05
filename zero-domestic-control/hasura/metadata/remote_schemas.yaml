@@ -1,0 +1,25 @@
+- name: domestic_control
+  definition:
+    url: '{{DOMESTIC_CONTROL_URL}}'
+    timeout_seconds: 60
+    customization: {}
+  comment: ""
+  permissions:
+    - role: user
+      definition:
+        schema: |
+          schema {
+            query: Query
+            mutation: Mutation
+          }
+          scalar Void
+          type Mutation {
+            set_amplifier(id: ID!, on: Boolean!): Void
+            set_blind(id: ID!, level: Float!): Void
+            set_lighting_group(id: ID!, level: Float!): Void
+            set_lighting_groups(ids: [ID!]!, level: Float!): Void
+            set_room_temperature_setpoint(id: ID!, temperature: Int!): Void
+          }
+          type Query {
+            version: String!
+          }

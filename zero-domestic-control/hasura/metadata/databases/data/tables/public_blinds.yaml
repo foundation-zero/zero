@@ -1,0 +1,16 @@
+table:
+  name: blinds
+  schema: public
+select_permissions:
+  - role: user
+    permission:
+      columns:
+        - room_id
+        - level
+        - id
+        - name
+        - group
+        - opacity
+      filter: {}
+      allow_aggregations: true
+    comment: ""
