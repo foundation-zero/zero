@@ -15,11 +15,11 @@ jobs:
       image_tag: ${{ steps.image_tag.outputs.image_tag }}
     steps:
       - uses: actions/checkout@v4
-
+        with:
+          fetch-depth: '0'
       - uses: actions/setup-python@v5
         with:
           python-version: 3.13
-
       - run: pipx install poetry==2.0.1
       - run: poetry check
       - uses: astral-sh/ruff-action@v3
@@ -41,8 +41,6 @@ jobs:
       id-token: 'write'
     steps:
       - uses: actions/checkout@v4
-        with:
-          fetch-depth: '0'
       # Set up in https://github.com/foundation-zero/gcp-common
       - id: auth
         name: Authenticate with Google Cloud
