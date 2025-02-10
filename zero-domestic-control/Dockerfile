@@ -1,7 +1,7 @@
 FROM python:3.13-slim AS builder
 
 # --- Install Poetry ---
-ARG POETRY_VERSION=1.8
+ARG POETRY_VERSION=2.0.1
 
 ENV POETRY_HOME=/opt/poetry
 ENV POETRY_NO_INTERACTION=1

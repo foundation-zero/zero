@@ -28,8 +28,8 @@ pydantic-settings = "^2.7.1"
 poetry-dynamic-versioning = { version = ">=1.0.0,<2.0.0", extras = ["plugin"] }
 
 [tool.poetry.group.dev.dependencies]
-black = "^24.10.0"
 mypy = "^1.14.1"
+ruff = "^0.9.5"
 
 
 [tool.poetry.group.test.dependencies]
@@ -43,6 +43,8 @@ plugins = "pydantic.mypy,strawberry.ext.mypy_plugin"
 enable = true
 
 [tool.pytest.ini_options]
+testpaths = ["tests"]
+asyncio_default_fixture_loop_scope = "function"
 asyncio_mode = "auto"
 
 [build-system]
