@@ -4,7 +4,6 @@ import codecs
 
 import jwt
 import psycopg
-from psycopg import sql
 
 from zero_domestic_control.config import Settings
 

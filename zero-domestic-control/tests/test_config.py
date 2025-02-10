@@ -8,7 +8,7 @@ def test_config():
         "jwt_secret": "test_secret",
         "pg_url": "localhost:5432",
         "risingwave_url": "localhost:4566",
-        "mqtt_host": "localhost"
+        "mqtt_host": "localhost",
     }
 
     config = Settings.model_validate_json(json.dumps(input_config))
