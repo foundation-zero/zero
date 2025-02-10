@@ -96,9 +96,7 @@ services:
   backend:
     command: ["fastapi", "run", "./zero_domestic_control/app.py"]
     build:
-      dockerfile: python.Dockerfile
-      args:
-        - POETRY_VERSION=1.8.3
+      context: .
     environment:
       PG_URL: "postgres://${PG_USER}:${PG_PASSWORD}@postgres:5432/${PG_DB}"
       RISINGWAVE_URL: "postgres://root@risingwave:4566/dev"
@@ -110,9 +108,7 @@ services:
       - setup
     command: ["zero_domestic_control", "setup"]
     build:
-      dockerfile: python.Dockerfile
-      args:
-        - POETRY_VERSION=1.8.3
+      context: .
     environment:
       PG_URL: "postgres://${PG_USER}:${PG_PASSWORD}@postgres:5432/${PG_DB}"
       RISINGWAVE_URL: "postgres://root@risingwave:4566/dev"
