@@ -1,0 +1,8 @@
+{{ config(materialized='table_with_connector') }}
+CREATE TABLE {{ this }} (
+	FLOW_LAZARET_HOT_WATER	REAL,
+	FLOW_LAZARET_COLD_WATER	REAL,
+	FLOW_WATER_SOFTNER_COLD_WATER	REAL,
+	FLOW_MAIN_TECH_SPACE_HOT_WATER	REAL,
+)
+{{ mqtt_with('KEB1_AI23') }}

@@ -1,4 +1,13 @@
 services:
+  datagen:
+    build:
+      context: .
+    environment:
+      "MQTT_HOST": "vernemq"
+    command:
+      - generate-data
+    depends_on:
+      - vernemq
   vernemq:
     image: vernemq/vernemq:2.0.0-alpine
     container_name: vernemq

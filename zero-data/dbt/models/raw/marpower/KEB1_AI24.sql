@@ -1,0 +1,8 @@
+{{ config(materialized='table_with_connector') }}
+CREATE TABLE {{ this }} (
+	FLOW_MAIN_TECH_SPACE_COLD_WATER	REAL,
+	FLOW_MAIN_TECH_SPACE_FR45_COLD_WATER	REAL,
+	LEVEL_FRESH_WATER_TANK_1_FR_45_PS	REAL,
+	LEVEL_FRESH_WATER_TANK_2_FR_45_SB	REAL,
+)
+{{ mqtt_with('KEB1_AI24') }}

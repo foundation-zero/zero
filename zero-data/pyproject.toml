@@ -1,42 +1,49 @@
-[tool.poetry]
+[project]
 name = "io-processing"
-version = "0.1.0"
 description = ""
-authors = ["Boudewijn van Groos <boudewijn.vangroos@foundationzero.org>"]
+authors = [
+    { name = "Floris Smit", email = "floris.smit@foundationzero.org" },
+    { name = "Boudewijn van Groos", email = "boudewijn.vangroos@foundationzero.org>" }
+]
 readme = "README.md"
-packages = [{include = "io_processing", from="src"}]
+packages = [{ include = "io_processing", from = "src" }]
+requires-python = ">= 3.13.1,<4.0"
+dynamic = ["dependencies", "version"]
+
+[tool.poetry]
+version = "0.0.0"
 
 [tool.poetry.dependencies]
-python = "^3.13"
 polars = "^1.16.0"
-fastexcel = "^0.12.0"
-pypika = "^0.48.9"
-sqlparse = "^0.5.2"
-pyyaml = "^6.0.2"
-jsonschema = "^4.23.0"
 openpyxl = "^3.1.5"
-pydantic = "^2.10.4"
 aiomqtt = "^2.3.0"
+pydantic-settings = "^2.7.1"
 
+[tool.poetry.requires-plugins]
+poetry-dynamic-versioning = { version = ">=1.0.0,<2.0.0", extras = ["plugin"] }
 
 [tool.poetry.group.dev.dependencies]
 ipykernel = "^6.29.5"
 pandas = "^2.2.3" # Pandas used by VS Code Data Wrangler extension
-black = "^24.10.0"
-datamodel-code-generator = "^0.26.4"
-
+notebook = "^7.3.2"
+ruff = "^0.9.3"
 
 [tool.poetry.group.test.dependencies]
 pytest = "^8.3.4"
-
+pytest-asyncio = "^0.25.3"
 
 [tool.poetry.group.dbt.dependencies]
 dbt = "^1.0.0.38.22"
 dbt-risingwave = "^1.9.0"
 
+[tool.poetry-dynamic-versioning]
+enable = true
+
 [tool.pytest.ini_options]
-testpaths = [ "tests" ]
+testpaths = ["tests"]
+asyncio_default_fixture_loop_scope = "function"
+asyncio_mode = "auto"
 
 [build-system]
-requires = ["poetry-core"]
-build-backend = "poetry.core.masonry.api"
+requires = ["poetry-core>=1.0.0", "poetry-dynamic-versioning>=1.0.0,<2.0.0"]
+build-backend = "poetry_dynamic_versioning.backend"
