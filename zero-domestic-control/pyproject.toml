@@ -1,12 +1,19 @@
-[tool.poetry]
+[project]
 name = "zero-domestic-control"
-version = "0.1.0"
 description = ""
-authors = ["Boudewijn van Groos <boudewijn.vangroos@foundationzero.org>"]
+authors = [
+    { name = "Boudewijn van Groos", email = "boudewijn.vangroos@foundationzero.org>" },
+    { name = "Floris Smit", email = "floris.smit@foundationzero.org" }
+]
 readme = "README.md"
+packages = [{ include = "io_processing", from = "src" }]
+requires-python = ">= 3.13.1,<4.0"
+dynamic = ["dependencies", "version"]
+
+[tool.poetry]
+version = "0.0.0"
 
 [tool.poetry.dependencies]
-python = "^3.13"
 starlette-graphene3 = "^0.6.0"
 strawberry-graphql = {extras = ["debug-server", "fastapi"], version = "^0.256.1"}
 pymodbustcp = "^0.3.0"
@@ -16,6 +23,9 @@ psycopg = {extras = ["binary"], version = "^3.2.3"}
 pyjwt = "^2.10.1"
 pydantic-settings = "^2.7.1"
 
+
+[tool.poetry.requires-plugins]
+poetry-dynamic-versioning = { version = ">=1.0.0,<2.0.0", extras = ["plugin"] }
 
 [tool.poetry.group.dev.dependencies]
 black = "^24.10.0"
@@ -29,9 +39,13 @@ pytest-asyncio = "^0.25.1"
 [tool.mypy]
 plugins = "pydantic.mypy,strawberry.ext.mypy_plugin"
 
+[tool.poetry-dynamic-versioning]
+enable = true
+
 [tool.pytest.ini_options]
 asyncio_mode = "auto"
 
 [build-system]
-requires = ["poetry-core"]
-build-backend = "poetry.core.masonry.api"
+requires = ["poetry-core>=1.0.0", "poetry-dynamic-versioning>=1.0.0,<2.0.0"]
+build-backend = "poetry_dynamic_versioning.backend"
+
