@@ -1,14 +1,11 @@
 <script setup lang="ts">
-import { LightControl } from "@/@types";
-import { LampCeiling, LampWallUp } from "lucide-vue-next";
+import { LightingGroups } from "@/gql/graphql";
 import { toRefs } from "vue";
-import { LightsSlider } from "../lights-slider";
-import { List, ListItem, ListRoot } from "../list";
+import { List, ListRoot } from "../list";
 import ListHeader from "../list/ListHeader.vue";
-import { ZSpacer } from "../spacer";
-import { Switch } from "../switch";
+import LightGroupItem from "./LightGroupItem.vue";
 
-const props = defineProps<{ name: string; lights: LightControl[] }>();
+const props = defineProps<{ name: string; lights: LightingGroups[] }>();
 const { lights, name } = toRefs(props);
 </script>
 
@@ -16,32 +13,13 @@ const { lights, name } = toRefs(props);
   <ListRoot>
     <ListHeader>{{ name }}</ListHeader>
     <List>
-      <ListItem
-        v-for="(light, index) in lights"
-        :key="light.name"
+      <LightGroupItem
+        v-for="light in lights"
+        :key="light.name!"
+        v-model:level="light.level"
+        :name="light.name!"
         class="flex-col space-y-3 py-6"
-      >
-        <span class="flex w-full items-center">
-          <LampCeiling
-            v-if="index == 0"
-            class="mr-3 inline"
-            :size="18"
-          />
-          <LampWallUp
-            v-if="index == 1"
-            class="mr-3 inline"
-            :size="18"
-          />
-          <span class="text-md font-medium"> {{ light.name }}</span>
-          <ZSpacer />
-          <Switch v-model:checked="light.on"></Switch>
-        </span>
-
-        <LightsSlider
-          v-model:brightness="light.brightness"
-          :on="light.on"
-        />
-      </ListItem>
+      />
     </List>
   </ListRoot>
 </template>

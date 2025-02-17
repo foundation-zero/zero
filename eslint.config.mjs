@@ -58,7 +58,7 @@ export default [
     },
   },
   {
-    ignores: ["node_modules", ".nuxt", ".output", "dist"],
+    ignores: ["node_modules", ".nuxt", ".output", "dist", ".vite"],
   },
   // prettier
   prettier,

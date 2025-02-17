@@ -1,16 +1,15 @@
 <script setup lang="ts">
-import { BlindsGroup } from "@/@types";
 import {
   Dialog,
   DialogContent,
   DialogDescription,
   DialogHeader,
   DialogTitle,
+  DialogTrigger,
 } from "@/components/ui/dialog";
-import BlindsList from "./BlindsList.vue";
 
-const open = defineModel<boolean>("open");
-defineProps<{ group: BlindsGroup }>();
+const open = defineModel<boolean>("open", { required: true });
+defineProps<{ title: string; description: string }>();
 </script>
 
 <template>
@@ -19,16 +18,16 @@ defineProps<{ group: BlindsGroup }>();
     modal
     class="p-0"
   >
+    <DialogTrigger>
+      <slot name="trigger" />
+    </DialogTrigger>
     <DialogContent class="max-w-[450px] overflow-hidden">
       <DialogHeader>
-        <DialogTitle>{{ group.name }}</DialogTitle>
-        <DialogDescription> Control the blinds and sheers </DialogDescription>
+        <DialogTitle>{{ title }}</DialogTitle>
+        <DialogDescription>{{ description }}</DialogDescription>
       </DialogHeader>
 
-      <BlindsList
-        :group="group"
-        class="w-full"
-      />
+      <slot />
     </DialogContent>
   </Dialog>
 </template>

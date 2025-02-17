@@ -26,12 +26,12 @@ watch(currentRoom, (next, prev) => {
     <ListRoot
       v-for="(group, index) in currentRoom.blinds"
       :key="index"
-      class="w-full md:px-3"
+      class="md:px-3"
       :class="{
-        'w-1/2 px-1.5': currentRoom.blinds.length > 1,
-        'md:w-1/2 xl:w-1/3 landscape:lg:w-1/3':
-          group.controls.length === 1 || currentRoom.blinds.length > 1,
-        'xl:w-2/3 landscape:lg:w-2/3':
+        'w-1/2 px-1.5 xl:w-1/3 landscape:lg:w-1/3': currentRoom.blinds.length > 1,
+        'w-full md:w-1/2 xl:w-1/3 landscape:lg:w-1/3':
+          group.controls.length === 1 && currentRoom.blinds.length === 1,
+        'w-full xl:w-2/3 landscape:lg:w-2/3':
           group.controls.length === 2 && currentRoom.blinds.length === 1,
       }"
     >
@@ -42,7 +42,7 @@ watch(currentRoom, (next, prev) => {
       >
         <ListItem
           v-for="(item, controlIndex) in group.controls"
-          :key="item.name"
+          :key="item.name!"
           class="flex-col pb-6"
           @click="selected = group"
         >
@@ -56,12 +56,12 @@ watch(currentRoom, (next, prev) => {
           >
           <BlindsSlider
             v-if="currentRoom.blinds.length === 1"
-            v-model:position="item.position"
+            v-model:level="item.level"
             class="mt-3"
           />
           <BlindsValue
             v-else
-            :position="item.position"
+            :level="item.level"
             :color="controlIndex === 0 ? ' bg-primary/90' : 'bg-primary/45'"
           />
         </ListItem>

@@ -26,7 +26,7 @@ const { path } = toRefs(useRoute());
             :size="24"
             stroke-width="2"
           />
-          Airco
+          A/C
         </TabsTrigger>
       </RouterLink>
       <RouterLink to="/lights">

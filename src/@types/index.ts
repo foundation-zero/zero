@@ -1,23 +1,24 @@
-export interface LightControl {
-  name: string;
-  on: boolean;
-  brightness: number;
-}
-
-export interface BlindsControl {
-  name: string;
-  position: number;
-}
+import { Blinds, LightingGroups } from "@/gql/graphql";
 
 export interface Room {
+  id: string;
   name: string;
-  lights: ControlGroup<LightControl>[];
-  blinds: ControlGroup<BlindsControl>[];
+  lights: LightGroup[];
+  blinds: BlindsGroup[];
 }
 
 export interface ShipArea {
   name: string;
+  group: RoomGroup;
   rooms: Room[];
+}
+
+export const enum RoomGroup {
+  AFT = "AFT",
+  MID = "MID",
+  FORE = "FORE",
+  UPPERDECK = "UPPERDECK",
+  HALLWAYS = "HALLWAYS",
 }
 
 export interface Breakpoints {
@@ -34,5 +35,5 @@ export interface ControlGroup<T> {
   controls: T[];
 }
 
-export type LightGroup = ControlGroup<LightControl>;
-export type BlindsGroup = ControlGroup<BlindsControl>;
+export type LightGroup = ControlGroup<LightingGroups>;
+export type BlindsGroup = ControlGroup<Blinds>;

@@ -1,15 +1,14 @@
 <script setup lang="ts">
 import { BlindsGroup } from "@/@types";
+import { ResponsivePopup } from "@/components/ui/responsive-dialog";
 import { useUIStore } from "@/stores/ui";
-import { computed, defineAsyncComponent, ref, toRefs, watch } from "vue";
+import { useTimeoutFn } from "@vueuse/core";
+import { computed, ref, toRefs, watch } from "vue";
+import BlindsList from "./BlindsList.vue";
 
 const group = defineModel<BlindsGroup>("group");
+
 const { breakpoints } = toRefs(useUIStore());
-
-const drawer = defineAsyncComponent(() => import("./BlindsControlDrawer.vue"));
-const dialog = defineAsyncComponent(() => import("./BlindsControlDialog.vue"));
-
-const wrapper = computed(() => (breakpoints.value.phone ? drawer : dialog));
 const _open = ref(false);
 const open = computed<boolean>({
   get() {
@@ -17,9 +16,7 @@ const open = computed<boolean>({
   },
   set(val) {
     _open.value = val;
-    if (!val) {
-      setTimeout(() => (group.value = undefined), 500);
-    }
+    useTimeoutFn(() => (group.value = undefined), 500);
   },
 });
 
@@ -31,9 +28,15 @@ watch(group, (val) => {
 </script>
 
 <template>
-  <wrapper
+  <ResponsivePopup
     v-if="group"
     v-model:open="open"
-    :group="group"
-  />
+    :title="group.name"
+    description="Control the blinds and shears"
+  >
+    <BlindsList
+      :group="group"
+      :class="{ 'mx-3 mb-3': breakpoints.phone, 'w-full': !breakpoints.phone }"
+    />
+  </ResponsivePopup>
 </template>

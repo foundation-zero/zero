@@ -12,7 +12,7 @@ const isDark = useDark();
       for="av-toggle"
       class="font-light"
     >
-      AV System
+      Audio System
     </Label>
     <Switch
       id="av-toggle"

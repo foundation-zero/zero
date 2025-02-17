@@ -25,6 +25,6 @@ const { currentRoom } = toRefs(useRoomStore());
       stroke-width="2"
       :class="{ 'max-sm:hidden md:opacity-0': isScrolling }"
     />
-    {{ currentRoom.name }}</Button
+    {{ currentRoom?.name ?? "" }}</Button
   >
 </template>

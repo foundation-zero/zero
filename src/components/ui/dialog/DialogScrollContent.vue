@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { cn } from "@/lib/utils";
 import { Cross2Icon } from "@radix-icons/vue";
+import { PointerDownOutsideEvent } from "node_modules/radix-vue/dist/DismissableLayer";
 import {
   DialogClose,
   DialogContent,
@@ -22,6 +23,13 @@ const delegatedProps = computed(() => {
 });
 
 const forwarded = useForwardPropsEmits(delegatedProps, emits);
+const onPointerDownOutside = (event: PointerDownOutsideEvent) => {
+  const originalEvent = event.detail.originalEvent;
+  const target = originalEvent.target as HTMLElement;
+  if (originalEvent.offsetX > target.clientWidth || originalEvent.offsetY > target.clientHeight) {
+    event.preventDefault();
+  }
+};
 </script>
 
 <template>
@@ -37,18 +45,7 @@ const forwarded = useForwardPropsEmits(delegatedProps, emits);
           )
         "
         v-bind="forwarded"
-        @pointer-down-outside="
-          (event) => {
-            const originalEvent = event.detail.originalEvent;
-            const target = originalEvent.target as HTMLElement;
-            if (
-              originalEvent.offsetX > target.clientWidth ||
-              originalEvent.offsetY > target.clientHeight
-            ) {
-              event.preventDefault();
-            }
-          }
-        "
+        @pointer-down-outside="onPointerDownOutside"
       >
         <slot />
 

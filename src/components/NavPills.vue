@@ -22,7 +22,7 @@ const { path } = toRefs(useRoute());
             stroke-width="2"
             class="mr-2 inline"
           />
-          Airco
+          A/C
         </TabsTrigger>
       </RouterLink>
       <RouterLink to="/lights">

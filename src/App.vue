@@ -1,8 +1,7 @@
 <script setup lang="ts">
 import { toRefs } from "vue";
 import BottomNavigation from "./components/BottomNavigation.vue";
-import RoomSelectorDialog from "./components/containers/room-selector/RoomSelectorDialog.vue";
-import RoomSelectorDrawer from "./components/containers/room-selector/RoomSelectorDrawer.vue";
+import RoomSelector from "./components/containers/room-selector/RoomSelector.vue";
 import NavPills from "./components/NavPills.vue";
 import ToggleAV from "./components/ToggleAV.vue";
 import TopNavigation from "./components/TopNavigation.vue";
@@ -17,8 +16,7 @@ const { breakpoints } = toRefs(useUIStore());
   </main>
   <TopNavigation>
     <template #left>
-      <RoomSelectorDrawer v-if="breakpoints.phone" />
-      <RoomSelectorDialog v-if="!breakpoints.phone" />
+      <RoomSelector />
     </template>
     <template #center>
       <NavPills v-if="!breakpoints.phone" />

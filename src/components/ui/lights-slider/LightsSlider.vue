@@ -6,7 +6,6 @@ const brightness = defineModel<number>("brightness", { required: true });
 
 <template>
   <Slider
-    :disabled="!on"
     :min="0"
     :max="100"
     :model-value="[on ? brightness : 0]"

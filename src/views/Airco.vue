@@ -33,7 +33,7 @@ const isOff = computed(() => value.value[0] == MIN_VALUE);
           :size="1"
         >
           <ListItem class="flex-col pb-6">
-            <span class="text-lg font-medium">Airco</span>
+            <span class="text-lg font-medium">A/C</span>
             <HeavySlider
               v-model:model-value="value"
               class="aspect-[1/2] !h-[40svh] !w-auto"

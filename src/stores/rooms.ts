@@ -1,85 +1,83 @@
-import { BlindsGroup, LightGroup, Room, ShipArea } from "@/@types";
-import { toBlindsGroup, toLightGroup } from "@/lib/mappers";
+import { BlindsGroup, Room, RoomGroup, ShipArea } from "@/@types";
+import { QueryRoot, Rooms } from "@/gql/graphql";
+import client from "@/graphql/client";
+import { getAll } from "@/graphql/queries/rooms";
+import { isDefined } from "@/lib/utils";
 import { defineStore } from "pinia";
-import { ref } from "vue";
+import { computed, ref, watch } from "vue";
 
-const defaultLightsFn = (groupNames = ["Main"]): LightGroup[] =>
-  groupNames.map(toLightGroup("Main", "Ambient"));
-const defaultBlindsFn = (groupNames: string[] = ["Main"]): BlindsGroup[] =>
-  groupNames.map(toBlindsGroup("Blinds"));
-const blindsAndSheersFn = (...groupNames: string[]): BlindsGroup[] =>
-  groupNames.map(toBlindsGroup("Blinds", "Sheers"));
-
-type RoomDef = [name: string, lightGroups?: LightGroup[], blindsGroups?: BlindsGroup[]];
-
-const createRooms = (...defs: RoomDef[]): Room[] =>
-  defs.map(([name, lights = defaultLightsFn(), blinds = defaultBlindsFn()]) => ({
+const createArea = (group: RoomGroup, name: string, allRooms: Rooms[]): ShipArea => {
+  return {
     name,
-    lights,
-    blinds,
-  }));
+    group,
+    rooms: allRooms
+      .filter((room) => (room.group as unknown) === group)
+      .map((room) => {
+        return {
+          id: room.id,
+          name: room.name!,
+          blinds: Object.values(Object.groupBy(room.blinds, ({ group }) => group))
+            .filter(isDefined)
+            .map<BlindsGroup>((blinds) => ({
+              name: blinds[0].name!,
+              controls: blinds.map((blind) => ({
+                ...blind,
+                name: blind.opacity === "blind" ? "Blinds" : "Shears",
+                level: blind.level ?? 0,
+              })),
+            })),
+          lights: [
+            {
+              name: "Lights",
+              controls: room.lighting_groups.map((light) => ({
+                ...light,
+                level: light.level ?? 0,
+              })),
+            },
+          ],
+        };
+      }),
+  };
+};
 
-const areas: ShipArea[] = [
-  {
-    name: "Aftship",
-    rooms: createRooms(
-      [
-        "Owners cabin",
-        defaultLightsFn(),
-        blindsAndSheersFn(
-          "Main",
-          "Skyline (main)",
-          "Port",
-          "Skyline (port)",
-          "Starboard",
-          "Skyline (starboard)",
-        ),
-      ],
-      ["Dutch cabin"],
-      ["French cabin"],
-      ["Italian cabin"],
-      ["Californian cabin"],
-    ),
-  },
-  {
-    name: "Midship",
-    rooms: createRooms(
-      ["Polynesian cabin"],
-      ["Galley"],
-      ["Crew mess"],
-      ["Mission room"],
-      ["Laundry"],
-      ["Engineers office"],
-    ),
-  },
-  {
-    name: "Foreship",
-    rooms: createRooms(
-      ["Captains cabin"],
-      ["Crew SB AFT cabin"],
-      ["Crew SB MID cabin"],
-      ["Crew SB FWD cabin"],
-      ["Crew PS MID cabin"],
-      ["Crew PS FWD cabin"],
-    ),
-  },
-  {
-    name: "Upperdeck",
-    rooms: createRooms(
-      ["Owners deckhouse", defaultLightsFn(), [toBlindsGroup("Port", "Starboard")("Blinds")]],
-      ["Main deckhouse", defaultLightsFn(), [toBlindsGroup("Port", "Starboard")("Blinds")]],
-    ),
-  },
-  {
-    name: "Hallways",
-    rooms: createRooms(["Owners stairway"], ["Guest corridor"], ["Polynesian corridor"]),
-  },
-];
+type GetAllRoomsQuery = Pick<QueryRoot, "rooms">;
+
+const EMPTY_ROOM: Room = {
+  name: "Empty",
+  blinds: [],
+  lights: [],
+  id: "empty",
+};
 
 export const useRoomStore = defineStore("rooms", () => {
-  const currentRoom = ref(areas[0].rooms[4]);
+  const currentRoom = ref<Room>(EMPTY_ROOM);
 
   const setRoom = (room: Room) => (currentRoom.value = room);
+  client.query<GetAllRoomsQuery>(getAll, {});
 
-  return { areas, currentRoom, setRoom };
+  const rooms = ref<Rooms[]>([]);
+
+  const init = async () => {
+    const response = await client.query<GetAllRoomsQuery>(getAll, {});
+
+    rooms.value = response.data?.rooms ?? [];
+  };
+
+  const areas = computed<ShipArea[]>(() => {
+    return [
+      createArea(RoomGroup.AFT, "Aftship", rooms.value),
+      createArea(RoomGroup.MID, "Midship", rooms.value),
+      createArea(RoomGroup.FORE, "Foreship", rooms.value),
+      createArea(RoomGroup.UPPERDECK, "Upperdeck", rooms.value),
+      createArea(RoomGroup.HALLWAYS, "Hallways", rooms.value),
+    ];
+  });
+
+  watch(areas, () => {
+    currentRoom.value = areas.value[0].rooms[4] ?? EMPTY_ROOM;
+  });
+
+  init();
+
+  return { areas, rooms, currentRoom, setRoom, init };
 });

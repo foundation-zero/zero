@@ -13,12 +13,12 @@ defineProps<{ group: BlindsGroup }>();
   >
     <ListItem
       v-for="item in group.controls"
-      :key="item.name"
+      :key="item.name!"
       class="flex-col pb-6"
     >
       <span class="text-lg font-medium"> {{ item.name }}</span>
       <BlindsSlider
-        v-model:position="item.position"
+        v-model:level="item.level"
         class="mt-3"
         @touchstart.stop.prevent
         @mousedown.stop.prevent
