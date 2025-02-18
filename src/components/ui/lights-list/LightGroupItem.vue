@@ -9,12 +9,21 @@ import { Switch } from "../switch";
 defineProps<{ name: string }>();
 const level = defineModel<number>("level", { required: true });
 
+const levelPercentage = computed({
+  get() {
+    return level.value! * 100;
+  },
+  set(val: number) {
+    level.value = val / 100;
+  },
+});
+
 const on = computed({
   get() {
     return level.value! > 0;
   },
   set(val: boolean) {
-    level.value = val ? 100 : 0;
+    level.value = val ? 1 : 0;
   },
 });
 </script>
@@ -37,7 +46,7 @@ const on = computed({
     </span>
 
     <LightsSlider
-      v-model:brightness="level"
+      v-model:brightness="levelPercentage"
       :on="on"
     />
   </ListItem>
