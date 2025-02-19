@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { ratioAsPercentage } from "@/lib/utils";
 import { LampCeiling, LampWallUp } from "lucide-vue-next";
 import { computed } from "vue";
 import { LightsSlider } from "../lights-slider";
@@ -9,14 +10,7 @@ import { Switch } from "../switch";
 defineProps<{ name: string }>();
 const level = defineModel<number>("level", { required: true });
 
-const levelPercentage = computed({
-  get() {
-    return level.value! * 100;
-  },
-  set(val: number) {
-    level.value = val / 100;
-  },
-});
+const levelPercentage = ratioAsPercentage(level);
 
 const on = computed({
   get() {

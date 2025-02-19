@@ -1,16 +1,18 @@
 <script setup lang="ts">
+import { ratioAsPercentage } from "@/lib/utils";
 import { ClassValue } from "class-variance-authority/types";
 import { computed } from "vue";
 import { StepSlider } from "../step-slider";
 
 defineProps<{ class: ClassValue }>();
 const level = defineModel<number>("level", { required: true });
+const levelPercentage = ratioAsPercentage(level);
 const blindsPosition = computed({
   get() {
-    return [Math.round(100 - (level.value ?? 0))];
+    return [Math.round(100 - (levelPercentage.value ?? 0))];
   },
   set([val]: number[]) {
-    level.value = Math.round(100 - (val ?? 0));
+    levelPercentage.value = Math.round(100 - (val ?? 0));
   },
 });
 </script>
@@ -27,7 +29,7 @@ const blindsPosition = computed({
   />
   <div class="mt-3 inline-flex items-center">
     <span class="text-3xl font-extrabold md:text-4xl">
-      <span>{{ level ?? 0 }}</span>
+      <span>{{ blindsPosition ?? 0 }}</span>
     </span>
     <span class="mx-1.5 text-3xl md:text-4xl">/</span>
     <span class="text-xl font-extralight md:text-2xl">100</span>
