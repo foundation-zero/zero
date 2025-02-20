@@ -42,7 +42,7 @@ INSERT INTO rooms (id, name, "group", actual_temperature, temperature_setpoint, 
 ('galley', 'Galley', 'MID', 22.5, 21.0, true),
 ('crew-mess', 'Crew mess', 'MID', 22.5, 21.0, true),
 ('mission-room', 'Mission room', 'MID', 22.5, 21.0, true),
-('laundry', 'Laundy', 'MID', 22.5, 21.0, true),
+('laundry', 'Laundry', 'MID', 22.5, 21.0, true),
 ('engineers-office', 'Engineers office', 'MID', 22.5, 21.0, true),
 ('captains-cabin', 'Captains cabin', 'FORE', 22.5, 21.0, true),
 ('crew-sb-aft-cabin', 'Crew SB AFT cabin', 'FORE', 22.5, 21.0, true),
@@ -133,4 +133,4 @@ INSERT INTO lighting_groups (id, room_id, name, level) VALUES
 ('main-deckhouse/mood', 'main-deckhouse', 'Mood', 0),
 ('owners-stairway/main', 'owners-stairway', 'Main', 0),
 ('guest-corridor/main', 'guest-corridor', 'Main', 0),
-('polynesian-corrido/main', 'polynesian-corridor', 'Main', 0);
+('polynesian-corridor/main', 'polynesian-corridor', 'Main', 0);
