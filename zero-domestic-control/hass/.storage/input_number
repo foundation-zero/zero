@@ -1,0 +1,33 @@
+{
+  "version": 1,
+  "minor_version": 1,
+  "key": "input_number",
+  "data": {
+    "items": [
+      {
+        "id": "owner_s_cabin_mood",
+        "min": 0.0,
+        "max": 100.0,
+        "name": "Owner's cabin - Mood",
+        "mode": "slider",
+        "step": 1.0
+      },
+      {
+        "id": "owner_s_cabin_ambient",
+        "min": 0.0,
+        "max": 100.0,
+        "name": "Owner's cabin - Ambient",
+        "mode": "slider",
+        "step": 1.0
+      },
+      {
+        "id": "owners_cabin_main_shear",
+        "min": 0.0,
+        "max": 100.0,
+        "name": "Owners cabin main shear",
+        "mode": "slider",
+        "step": 1.0
+      }
+    ]
+  }
+}

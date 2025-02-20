@@ -44,3 +44,15 @@ Apply hasura metadata
 cd hasura
 hasura metadata apply --admin-secret myadminsecretkey
 ```
+
+## Home Assistant
+
+You can log into home assistant by running:
+
+```bash
+docker compose up hass
+```
+
+Go to http://localhost:8123 and log in with the following credentials:
+Username: root
+Password: zerozerozero

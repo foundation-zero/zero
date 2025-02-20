@@ -97,11 +97,21 @@ services:
     command: ["fastapi", "run", "./zero_domestic_control/app.py"]
     build:
       context: .
-    environment:
+    environment: &app_env
       PG_URL: "postgres://${PG_USER}:${PG_PASSWORD}@postgres:5432/${PG_DB}"
       RISINGWAVE_URL: "postgres://root@risingwave:4566/dev"
       JWT_SECRET: ${JWT_SECRET}
       MQTT_HOST: "mosquitto"
+      HOME_ASSISTANT_URL: http://hass:8123/api
+      HOME_ASSISTANT_WS_URL: ws://hass:8123/api/websocket
+      HOME_ASSISTANT_TOKEN: ${HOME_ASSISTANT_TOKEN}
+
+  control:
+    command: ["zero_domestic_control", "control"]
+    build:
+      context: .
+    environment:
+      <<: *app_env
 
   setup:
     profiles:
@@ -119,6 +129,16 @@ services:
         condition: service_healthy
       postgres:
         condition: service_healthy
+
+  hass:
+    image: "ghcr.io/home-assistant/home-assistant:stable"
+    volumes:
+      - ./hass:/config
+      - /etc/localtime:/etc/localtime:ro
+      - /run/dbus:/run/dbus:ro
+    restart: unless-stopped
+    ports:
+      - "8123:8123"
 
 volumes:
   db_data:

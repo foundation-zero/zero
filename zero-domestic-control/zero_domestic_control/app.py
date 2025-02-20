@@ -1,6 +1,6 @@
 from dataclasses import dataclass
 from typing import Annotated
-from aiomqtt import Client
+from aiomqtt import Client as MqttClient
 from fastapi import Depends, FastAPI
 import strawberry
 from strawberry.schema.config import StrawberryConfig
@@ -9,7 +9,13 @@ from strawberry.schema.config import StrawberryConfig
 from strawberry.fastapi import GraphQLRouter, BaseContext
 
 from zero_domestic_control.config import Settings
+from zero_domestic_control.hass import Hass
 from zero_domestic_control.mqtt import Blind, LightingGroup, Mqtt, Room
+
+import logging
+import os
+
+logging.basicConfig(level=os.environ.get("LOGLEVEL", "INFO").upper())
 
 settings = Settings()
 
@@ -17,17 +23,24 @@ settings = Settings()
 @dataclass
 class MyContext(BaseContext):
     mqtt: Mqtt
+    hass: Hass
 
 
 async def mqtt():
-    async with Client(settings.mqtt_host, 1883) as client:
+    async with MqttClient(settings.mqtt_host, 1883) as client:
         yield Mqtt(client)
+
+
+async def hass_client():
+    async with Hass.init_from_settings(settings) as hass:
+        yield hass
 
 
 async def get_context(
     mqtt: Annotated[Mqtt, Depends(mqtt)],
+    hass_client: Annotated[Hass, Depends(hass_client)],
 ) -> MyContext:
-    return MyContext(mqtt)
+    return MyContext(mqtt, hass_client)
 
 
 @strawberry.type
@@ -69,7 +82,7 @@ class Mutation:
             strawberry.argument(description="desired brightness as ratio 0..1"),
         ],
     ) -> None:
-        await info.context.mqtt.send_blind(Blind(id=id, level=level))
+        await info.context.hass.set_blind(Blind(id=id, level=level))
 
     @strawberry.mutation
     async def set_lighting_group(
@@ -81,7 +94,7 @@ class Mutation:
             strawberry.argument(description="desired brightness as ratio 0..1"),
         ],
     ) -> None:
-        await info.context.mqtt.send_lighting_group(LightingGroup(id=id, level=level))
+        await info.context.hass.set_lighting_group(LightingGroup(id=id, level=level))
 
     @strawberry.mutation
     async def set_lighting_groups(
@@ -94,7 +107,7 @@ class Mutation:
         ],
     ) -> None:
         for lighting_group_id in ids:
-            await info.context.mqtt.send_lighting_group(
+            await info.context.hass.set_lighting_group(
                 LightingGroup(id=lighting_group_id, level=level)
             )
 

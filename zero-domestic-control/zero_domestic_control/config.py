@@ -10,3 +10,7 @@ class Settings(BaseSettings):
     pg_url: str
     risingwave_url: str
     mqtt_host: str
+
+    home_assistant_url: str
+    home_assistant_ws_url: str
+    home_assistant_token: str

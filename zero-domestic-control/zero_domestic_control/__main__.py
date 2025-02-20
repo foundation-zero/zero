@@ -20,6 +20,9 @@ async def run():
     generate_jwt_cmd = sub_parser.add_parser("generate-jwt")
     generate_jwt_cmd.set_defaults(func=generate_jwt)
 
+    control_cmd = sub_parser.add_parser("control")
+    control_cmd.set_defaults(func=control)
+
     await parser.parse_args().func()
 
 
@@ -53,6 +56,14 @@ async def setup():
                 "./zero_domestic_control/risingwave.sql", encoding="utf-8"
             ) as query:
                 await cur.execute(bytes(query.read(), "utf-8"))
+
+
+async def control():
+    from zero_domestic_control.control import Control
+
+    async with Control.init_from_settings(settings) as control:
+        print("Running control")
+        await control.run()
 
 
 if __name__ == "__main__":

@@ -1,14 +1,14 @@
 DROP TABLE IF EXISTS rooms CASCADE;
 CREATE TABLE rooms (
   id TEXT PRIMARY KEY,
-  name TEXT NOT NULL,
-  "group" TEXT NOT NULL,
-  actual_temperature REAL NOT NULL,
-  temperature_setpoint REAL NOT NULL,
+  name TEXT,
+  "group" TEXT,
+  actual_temperature REAL,
+  temperature_setpoint REAL,
   actual_humidity REAL,
   thermal_comfort_index REAL,
   last_movement TIMESTAMPTZ,
-  amplifier_on BOOLEAN NOT NULL
+  amplifier_on BOOLEAN
 );
 
 DROP TYPE IF EXISTS blind_opacity CASCADE;
@@ -18,18 +18,18 @@ DROP TABLE IF EXISTS blinds CASCADE;
 CREATE TABLE blinds (
   id TEXT PRIMARY KEY,
   room_id VARCHAR REFERENCES rooms(id),
-  name TEXT NOT NULL,
-  opacity blind_opacity NOT NULL,
-  "group" TEXT NOT NULL,
-  level REAL NOT NULL
+  name TEXT,
+  opacity blind_opacity,
+  "group" TEXT,
+  level REAL
 );
 
 DROP TABLE IF EXISTS lighting_groups CASCADE;
 CREATE TABLE lighting_groups (
   id TEXT PRIMARY KEY,
   room_id VARCHAR REFERENCES rooms(id),
-  name TEXT NOT NULL,
-  level REAL NOT NULL
+  name TEXT,
+  level REAL
 );
 
 INSERT INTO rooms (id, name, "group", actual_temperature, temperature_setpoint, amplifier_on) VALUES 

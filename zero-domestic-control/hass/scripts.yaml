@@ -1,0 +1,13 @@
+set_input_helper:
+  sequence:
+  - variables:
+      input_number_id:
+      value:
+  - action: number.set_value
+    metadata: {}
+    target:
+      entity_id: '{{ input_number_id }}'
+    data:
+      value: '{{ value }}'
+  alias: Set input helper
+  description: ''

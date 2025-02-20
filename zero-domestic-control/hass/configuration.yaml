@@ -1,0 +1,36 @@
+
+# Loads default set of integrations. Do not remove.
+default_config:
+
+# Load frontend themes from the themes folder
+frontend:
+  themes: !include_dir_merge_named themes
+
+light:
+  - platform: b2p
+    name: "Owner's cabin - Ambient"
+    host: host.docker.internal
+    pdc: 1
+    channel: 1
+  - platform: b2p
+    name: "Owner's cabin - Mood"
+    host: host.docker.internal
+    pdc: 1
+    channel: 2
+
+cover:
+  - platform: template
+    covers:
+      owners_cabin_main_shear:
+        friendly_name: "Owner's cabin main shear"
+        position_template: "{{ states.input_number.owners_cabin_main_shear.state | float }}"
+        set_cover_position:
+          service: input_number.set_value
+          target:
+            entity_id: input_number.owners_cabin_main_shear
+          data:
+            value: "{{position}}"
+
+automation: !include automations.yaml
+script: !include scripts.yaml
+scene: !include scenes.yaml

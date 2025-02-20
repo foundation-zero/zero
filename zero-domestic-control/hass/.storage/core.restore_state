@@ -1,0 +1,167 @@
+{
+  "version": 1,
+  "minor_version": 1,
+  "key": "core.restore_state",
+  "data": [
+    {
+      "state": {"entity_id":"person.root","state":"unknown","attributes":{"editable":true,"id":"root","device_trackers":[],"user_id":"e2e3a3e713eb438aac42cee42c619956","friendly_name":"root"},"last_changed":"2025-02-18T14:55:50.957933+00:00","last_reported":"2025-02-18T14:55:52.063204+00:00","last_updated":"2025-02-18T14:55:52.063204+00:00","context":{"id":"01JMCRXV7Z8K3RC6TGMXVYGQ9Z","parent_id":null,"user_id":null}},
+      "extra_data": null,
+      "last_seen": "2025-02-18T15:10:52.071966+00:00"
+    },
+    {
+      "state": {"entity_id":"conversation.home_assistant","state":"unknown","attributes":{"friendly_name":"Home Assistant","supported_features":1},"last_changed":"2025-02-18T14:55:51.522025+00:00","last_reported":"2025-02-18T14:55:51.522025+00:00","last_updated":"2025-02-18T14:55:51.522025+00:00","context":{"id":"01JMCRXTQ266Z23VG6EB9QT7KS","parent_id":null,"user_id":null}},
+      "extra_data": null,
+      "last_seen": "2025-02-18T15:10:52.071966+00:00"
+    },
+    {
+      "state": {"entity_id":"script.set_input_helper","state":"off","attributes":{"last_triggered":null,"mode":"single","current":0,"friendly_name":"Set input helper"},"last_changed":"2025-02-18T14:55:51.531260+00:00","last_reported":"2025-02-18T14:55:51.531260+00:00","last_updated":"2025-02-18T14:55:51.531260+00:00","context":{"id":"01JMCRXTQBNC5Z7R2M7P9YWJEE","parent_id":null,"user_id":null}},
+      "extra_data": null,
+      "last_seen": "2025-02-18T15:10:52.071966+00:00"
+    },
+    {
+      "state": {"entity_id":"input_number.owners_cabin_mood","state":"59.0","attributes":{"initial":null,"editable":true,"min":0.0,"max":100.0,"step":1.0,"mode":"slider","friendly_name":"Owner's cabin - Mood"},"last_changed":"2025-02-18T14:55:51.531632+00:00","last_reported":"2025-02-18T14:55:51.531632+00:00","last_updated":"2025-02-18T14:55:51.531632+00:00","context":{"id":"01JMCRXTQB5QHGN1AANA5P25PS","parent_id":null,"user_id":null}},
+      "extra_data": null,
+      "last_seen": "2025-02-18T15:10:52.071966+00:00"
+    },
+    {
+      "state": {"entity_id":"input_number.owners_cabin_ambient","state":"100.0","attributes":{"initial":null,"editable":true,"min":0.0,"max":100.0,"step":1.0,"mode":"slider","friendly_name":"Owner's cabin - Ambient"},"last_changed":"2025-02-18T14:55:51.531670+00:00","last_reported":"2025-02-18T14:55:51.531670+00:00","last_updated":"2025-02-18T14:55:51.531670+00:00","context":{"id":"01JMCRXTQBY16WRZMYNFPRJCZH","parent_id":null,"user_id":null}},
+      "extra_data": null,
+      "last_seen": "2025-02-18T15:10:52.071966+00:00"
+    },
+    {
+      "state": {"entity_id":"input_number.owners_cabin_main_shear","state":"50.0","attributes":{"initial":null,"editable":true,"min":0.0,"max":100.0,"step":1.0,"mode":"slider","friendly_name":"Owners cabin main shear"},"last_changed":"2025-02-18T15:09:35.250052+00:00","last_reported":"2025-02-18T15:09:35.250052+00:00","last_updated":"2025-02-18T15:09:35.250052+00:00","context":{"id":"01JMCSPZ4D0WVQHES2D66YSRE9","parent_id":null,"user_id":"e2e3a3e713eb438aac42cee42c619956"}},
+      "extra_data": null,
+      "last_seen": "2025-02-18T15:10:52.071966+00:00"
+    },
+    {
+      "state": {"entity_id":"automation.owner_s_cabin_ambient","state":"on","attributes":{"id":"1739785047573","last_triggered":"2025-02-18T09:09:52.021969+00:00","mode":"single","current":0,"friendly_name":"Owner's cabin - Ambient"},"last_changed":"2025-02-18T14:55:52.047237+00:00","last_reported":"2025-02-18T14:55:52.047237+00:00","last_updated":"2025-02-18T14:55:52.047237+00:00","context":{"id":"01JMCRXV7FTRFVKB5TWZR050SG","parent_id":null,"user_id":null}},
+      "extra_data": null,
+      "last_seen": "2025-02-18T15:10:52.071966+00:00"
+    },
+    {
+      "state": {"entity_id":"automation.owner_s_cabin_mood","state":"on","attributes":{"id":"1739785071863","last_triggered":"2025-02-18T09:07:14.475606+00:00","mode":"single","current":0,"friendly_name":"Owner's cabin - Mood"},"last_changed":"2025-02-18T14:55:52.047303+00:00","last_reported":"2025-02-18T14:55:52.047303+00:00","last_updated":"2025-02-18T14:55:52.047303+00:00","context":{"id":"01JMCRXV7FGW129NV7WY8MMG1E","parent_id":null,"user_id":null}},
+      "extra_data": null,
+      "last_seen": "2025-02-18T15:10:52.071966+00:00"
+    },
+    {
+      "state": {"entity_id":"tts.google_translate_en_com","state":"unknown","attributes":{"friendly_name":"Google Translate en com"},"last_changed":"2025-02-18T14:55:52.055939+00:00","last_reported":"2025-02-18T14:55:52.055939+00:00","last_updated":"2025-02-18T14:55:52.055939+00:00","context":{"id":"01JMCRXV7QYPRNM5TTA1WQ2J1M","parent_id":null,"user_id":null}},
+      "extra_data": null,
+      "last_seen": "2025-02-18T15:10:52.071966+00:00"
+    },
+    {
+      "state": {"entity_id":"update.hacs_update","state":"off","attributes":{"auto_update":false,"display_precision":0,"installed_version":"2.0.5","in_progress":false,"latest_version":"2.0.5","release_summary":null,"release_url":"https://github.com/hacs/integration/releases/2.0.5","skipped_version":null,"title":null,"update_percentage":null,"entity_picture":"https://brands.home-assistant.io/_/hacs/icon.png","friendly_name":"HACS update","supported_features":23},"last_changed":"2025-02-18T14:55:52.060728+00:00","last_reported":"2025-02-18T14:55:52.060728+00:00","last_updated":"2025-02-18T14:55:52.060728+00:00","context":{"id":"01JMCRXV7W7D14QE96K8JP81YB","parent_id":null,"user_id":null}},
+      "extra_data": null,
+      "last_seen": "2025-02-18T15:10:52.071966+00:00"
+    },
+    {
+      "state": {"entity_id":"update.b2p_update","state":"off","attributes":{"auto_update":false,"display_precision":0,"installed_version":"1846d84","in_progress":false,"latest_version":"1846d84","release_summary":null,"release_url":"https://github.com/foundation-zero/homeassistant-b2p","skipped_version":null,"title":null,"update_percentage":null,"entity_picture":"https://brands.home-assistant.io/_/b2p/icon.png","friendly_name":"b2p update","supported_features":23},"last_changed":"2025-02-18T14:55:52.061043+00:00","last_reported":"2025-02-18T14:55:52.061043+00:00","last_updated":"2025-02-18T14:55:52.061043+00:00","context":{"id":"01JMCRXV7X06277HRES2VDQCJY","parent_id":null,"user_id":null}},
+      "extra_data": null,
+      "last_seen": "2025-02-18T15:10:52.071966+00:00"
+    },
+    {
+      "state": {"entity_id":"alarm_control_panel.security","state":"disarmed","attributes":{"code_format":"number","changed_by":null,"code_arm_required":true,"previous_state":null,"next_state":null,"friendly_name":"Security","supported_features":63},"last_changed":"2025-02-18T14:40:45.347054+00:00","last_reported":"2025-02-18T14:40:45.347054+00:00","last_updated":"2025-02-18T14:40:45.347054+00:00","context":{"id":"01JMCR25S3FTSZR1M5XAK7XSR8","parent_id":null,"user_id":null}},
+      "extra_data": null,
+      "last_seen": "2025-02-18T14:44:40.108762+00:00"
+    },
+    {
+      "state": {"entity_id":"button.push","state":"unknown","attributes":{"friendly_name":"Push"},"last_changed":"2025-02-18T14:40:45.347626+00:00","last_reported":"2025-02-18T14:40:45.347626+00:00","last_updated":"2025-02-18T14:40:45.347626+00:00","context":{"id":"01JMCR25S3F25ESYKV9K0EFXXG","parent_id":null,"user_id":null}},
+      "extra_data": null,
+      "last_seen": "2025-02-18T14:44:40.109322+00:00"
+    },
+    {
+      "state": {"entity_id":"event.push_button_press","state":"unknown","attributes":{"event_types":["pressed"],"event_type":null,"device_class":"button","friendly_name":"Push Button press"},"last_changed":"2025-02-18T14:40:45.351785+00:00","last_reported":"2025-02-18T14:40:45.351785+00:00","last_updated":"2025-02-18T14:40:45.351785+00:00","context":{"id":"01JMCR25S7ESZTDYE09FR2V740","parent_id":null,"user_id":null}},
+      "extra_data": {
+        "last_event_type": null,
+        "last_event_attributes": null
+      },
+      "last_seen": "2025-02-18T14:44:40.111171+00:00"
+    },
+    {
+      "state": {"entity_id":"notify.notifier","state":"unknown","attributes":{"friendly_name":"Notifier","supported_features":1},"last_changed":"2025-02-18T14:40:45.356750+00:00","last_reported":"2025-02-18T14:40:45.356750+00:00","last_updated":"2025-02-18T14:40:45.356750+00:00","context":{"id":"01JMCR25SCFQ7M888Q4C9YAR31","parent_id":null,"user_id":null}},
+      "extra_data": null,
+      "last_seen": "2025-02-18T14:44:40.114430+00:00"
+    },
+    {
+      "state": {"entity_id":"sensor.total_energy_kwh","state":"2.0","attributes":{"state_class":"total","unit_of_measurement":"kWh","device_class":"energy"},"last_changed":"2025-02-18T14:40:45.358474+00:00","last_reported":"2025-02-18T14:40:45.358474+00:00","last_updated":"2025-02-18T14:40:45.358474+00:00","context":{"id":"01JMCR25SET4YV8AVDTQXA66VD","parent_id":null,"user_id":null}},
+      "extra_data": {
+        "native_value": 2.0,
+        "native_unit_of_measurement": "kWh"
+      },
+      "last_seen": "2025-02-18T14:44:40.115295+00:00"
+    },
+    {
+      "state": {"entity_id":"sensor.total_energy_mwh","state":"0.001","attributes":{"state_class":"total","unit_of_measurement":"MWh","device_class":"energy"},"last_changed":"2025-02-18T14:40:45.358556+00:00","last_reported":"2025-02-18T14:40:45.358556+00:00","last_updated":"2025-02-18T14:40:45.358556+00:00","context":{"id":"01JMCR25SEYD0G50GBYZWXG6YM","parent_id":null,"user_id":null}},
+      "extra_data": {
+        "native_value": 0.001,
+        "native_unit_of_measurement": "MWh"
+      },
+      "last_seen": "2025-02-18T14:44:40.115351+00:00"
+    },
+    {
+      "state": {"entity_id":"sensor.total_gas_m3","state":"0.1","attributes":{"state_class":"total","unit_of_measurement":"m³","device_class":"gas"},"last_changed":"2025-02-18T14:40:45.358622+00:00","last_reported":"2025-02-18T14:40:45.358622+00:00","last_updated":"2025-02-18T14:40:45.358622+00:00","context":{"id":"01JMCR25SEJ5AJFHP9KFKDQAZ6","parent_id":null,"user_id":null}},
+      "extra_data": {
+        "native_value": 0.1,
+        "native_unit_of_measurement": "m³"
+      },
+      "last_seen": "2025-02-18T14:44:40.115393+00:00"
+    },
+    {
+      "state": {"entity_id":"sensor.total_gas_ft3","state":"0.11","attributes":{"state_class":"total","unit_of_measurement":"m³","device_class":"gas"},"last_changed":"2025-02-18T14:40:45.358796+00:00","last_reported":"2025-02-18T14:40:45.358796+00:00","last_updated":"2025-02-18T14:40:45.358796+00:00","context":{"id":"01JMCR25SEPKGJF0A8PQ5M4MBR","parent_id":null,"user_id":null}},
+      "extra_data": {
+        "native_value": 4.0,
+        "native_unit_of_measurement": "ft³"
+      },
+      "last_seen": "2025-02-18T14:44:40.115456+00:00"
+    },
+    {
+      "state": {"entity_id":"stt.demo_stt","state":"unknown","attributes":{"friendly_name":"Demo STT"},"last_changed":"2025-02-18T14:40:45.359404+00:00","last_reported":"2025-02-18T14:40:45.359404+00:00","last_updated":"2025-02-18T14:40:45.359404+00:00","context":{"id":"01JMCR25SF66FWJM3DSC5K7ZG0","parent_id":null,"user_id":null}},
+      "extra_data": null,
+      "last_seen": "2025-02-18T14:44:40.115742+00:00"
+    },
+    {
+      "state": {"entity_id":"update.demo_update_no_install","state":"on","attributes":{"auto_update":false,"display_precision":0,"installed_version":"1.0.0","in_progress":false,"latest_version":"1.0.1","release_summary":"Awesome update, fixing everything!","release_url":"https://www.example.com/release/1.0.1","skipped_version":null,"title":"Awesomesoft Inc.","update_percentage":null,"entity_picture":"https://brands.home-assistant.io/_/demo/icon.png","friendly_name":"Demo Update No Install","supported_features":0},"last_changed":"2025-02-18T14:40:45.360919+00:00","last_reported":"2025-02-18T14:40:45.360919+00:00","last_updated":"2025-02-18T14:40:45.360919+00:00","context":{"id":"01JMCR25SG3JBAGEXT5NGZXC8D","parent_id":null,"user_id":null}},
+      "extra_data": null,
+      "last_seen": "2025-02-18T14:44:40.116241+00:00"
+    },
+    {
+      "state": {"entity_id":"update.demo_no_update","state":"off","attributes":{"auto_update":false,"display_precision":0,"installed_version":"1.0.0","in_progress":false,"latest_version":"1.0.0","release_summary":null,"release_url":null,"skipped_version":null,"title":"AdGuard Home","update_percentage":null,"entity_picture":"https://brands.home-assistant.io/_/demo/icon.png","friendly_name":"Demo No Update","supported_features":11},"last_changed":"2025-02-18T14:40:45.360977+00:00","last_reported":"2025-02-18T14:40:45.360977+00:00","last_updated":"2025-02-18T14:40:45.360977+00:00","context":{"id":"01JMCR25SGEYQEQM3K5718QP4N","parent_id":null,"user_id":null}},
+      "extra_data": null,
+      "last_seen": "2025-02-18T14:44:40.116297+00:00"
+    },
+    {
+      "state": {"entity_id":"update.demo_add_on","state":"on","attributes":{"auto_update":false,"display_precision":0,"installed_version":"1.0.0","in_progress":false,"latest_version":"1.0.1","release_summary":"Awesome update, fixing everything!","release_url":"https://www.example.com/release/1.0.1","skipped_version":null,"title":"AdGuard Home","update_percentage":null,"entity_picture":"https://brands.home-assistant.io/_/demo/icon.png","friendly_name":"Demo add-on","supported_features":11},"last_changed":"2025-02-18T14:40:45.361021+00:00","last_reported":"2025-02-18T14:40:45.361021+00:00","last_updated":"2025-02-18T14:40:45.361021+00:00","context":{"id":"01JMCR25SHH2TVCEGRWZEHD52Y","parent_id":null,"user_id":null}},
+      "extra_data": null,
+      "last_seen": "2025-02-18T14:44:40.116337+00:00"
+    },
+    {
+      "state": {"entity_id":"update.demo_living_room_bulb_update","state":"on","attributes":{"auto_update":false,"display_precision":0,"installed_version":"1.93.3","in_progress":false,"latest_version":"1.94.2","release_summary":"Added support for effects","release_url":"https://www.example.com/release/1.93.3","skipped_version":null,"title":"Philips Lamps Firmware","update_percentage":null,"device_class":"firmware","entity_picture":"https://brands.home-assistant.io/_/demo/icon.png","friendly_name":"Demo Living Room Bulb Update","supported_features":11},"last_changed":"2025-02-18T14:40:45.361097+00:00","last_reported":"2025-02-18T14:40:45.361097+00:00","last_updated":"2025-02-18T14:40:45.361097+00:00","context":{"id":"01JMCR25SH0VY7CANMARNESCMX","parent_id":null,"user_id":null}},
+      "extra_data": null,
+      "last_seen": "2025-02-18T14:44:40.116396+00:00"
+    },
+    {
+      "state": {"entity_id":"update.demo_update_with_progress","state":"on","attributes":{"auto_update":false,"display_precision":0,"installed_version":"1.93.3","in_progress":false,"latest_version":"1.94.2","release_summary":"Added support for effects","release_url":"https://www.example.com/release/1.93.3","skipped_version":null,"title":"Philips Lamps Firmware","update_percentage":null,"device_class":"firmware","entity_picture":"https://brands.home-assistant.io/_/demo/icon.png","friendly_name":"Demo Update with Progress","supported_features":31},"last_changed":"2025-02-18T14:40:45.361140+00:00","last_reported":"2025-02-18T14:40:45.361140+00:00","last_updated":"2025-02-18T14:40:45.361140+00:00","context":{"id":"01JMCR25SHBMHBNQ7GYF5Z6TGC","parent_id":null,"user_id":null}},
+      "extra_data": null,
+      "last_seen": "2025-02-18T14:44:40.116448+00:00"
+    },
+    {
+      "state": {"entity_id":"update.demo_update_with_decimal_progress","state":"on","attributes":{"auto_update":false,"display_precision":2,"installed_version":"1.93.3","in_progress":false,"latest_version":"1.94.2","release_summary":"Added support for effects","release_url":"https://www.example.com/release/1.93.3","skipped_version":null,"title":"Philips Lamps Firmware","update_percentage":null,"device_class":"firmware","entity_picture":"https://brands.home-assistant.io/_/demo/icon.png","friendly_name":"Demo Update with Decimal Progress","supported_features":31},"last_changed":"2025-02-18T14:40:45.361173+00:00","last_reported":"2025-02-18T14:40:45.361173+00:00","last_updated":"2025-02-18T14:40:45.361173+00:00","context":{"id":"01JMCR25SH7WGBK83ZYRNYEH60","parent_id":null,"user_id":null}},
+      "extra_data": null,
+      "last_seen": "2025-02-18T14:44:40.116485+00:00"
+    },
+    {
+      "state": {"entity_id":"input_number.owner_s_cabin_mood","state":"0.0","attributes":{"initial":null,"editable":true,"min":0.0,"max":100.0,"step":1.0,"mode":"slider","friendly_name":"Owner's cabin - Mood"},"last_changed":"2025-02-17T09:32:42.459201+00:00","last_reported":"2025-02-17T09:32:42.459201+00:00","last_updated":"2025-02-17T09:32:42.459201+00:00","context":{"id":"01JM9M1D2VP1EC7GBB0EJF6S0K","parent_id":null,"user_id":null}},
+      "extra_data": null,
+      "last_seen": "2025-02-17T09:56:08.580150+00:00"
+    },
+    {
+      "state": {"entity_id":"input_number.owner_s_cabin_ambient","state":"0.0","attributes":{"initial":null,"editable":true,"min":0.0,"max":100.0,"step":1.0,"mode":"slider","friendly_name":"Owner's cabin - Ambient"},"last_changed":"2025-02-17T09:32:42.459244+00:00","last_reported":"2025-02-17T09:32:42.459244+00:00","last_updated":"2025-02-17T09:32:42.459244+00:00","context":{"id":"01JM9M1D2V29G1WC4XXZR41VBF","parent_id":null,"user_id":null}},
+      "extra_data": null,
+      "last_seen": "2025-02-17T09:56:01.415498+00:00"
+    },
+    {
+      "state": {"entity_id":"input_button.test_test","state":"unknown","attributes":{"editable":true,"friendly_name":"test__test"},"last_changed":"2025-02-17T10:55:56.570223+00:00","last_reported":"2025-02-17T10:56:02.585153+00:00","last_updated":"2025-02-17T10:55:56.570223+00:00","context":{"id":"01JM9RST4TM6EZA4YYQ0E9H214","parent_id":null,"user_id":null}},
+      "extra_data": null,
+      "last_seen": "2025-02-17T10:56:19.643470+00:00"
+    }
+  ]
+}

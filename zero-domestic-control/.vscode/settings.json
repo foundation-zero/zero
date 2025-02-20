@@ -1,0 +1,8 @@
+{
+  "python.testing.pytestArgs": [
+    "tests",
+    "--run=all"
+  ],
+  "python.testing.unittestEnabled": false,
+  "python.testing.pytestEnabled": true
+}
