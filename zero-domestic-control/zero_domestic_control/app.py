@@ -127,7 +127,7 @@ class Mutation:
 
 
 schema = strawberry.Schema(
-    query=Query, mutation=Mutation, config=StrawberryConfig(auto_camel_case=False)
+    query=Query, mutation=Mutation, config=StrawberryConfig(auto_camel_case=True)
 )
 app = FastAPI()
 app.include_router(
