@@ -8,6 +8,7 @@ from strawberry.schema.config import StrawberryConfig
 
 from strawberry.fastapi import GraphQLRouter, BaseContext
 
+from zero_domestic_control.av import Av, Gude
 from zero_domestic_control.config import Settings
 from zero_domestic_control.hass import Hass
 from zero_domestic_control.mqtt import Blind, LightingGroup, Mqtt, Room
@@ -24,11 +25,16 @@ settings = Settings()
 class MyContext(BaseContext):
     mqtt: Mqtt
     hass: Hass
+    av: Av
 
 
-async def mqtt():
+async def mqtt_client():
     async with MqttClient(settings.mqtt_host, 1883) as client:
-        yield Mqtt(client)
+        yield client
+
+
+async def mqtt(mqtt_client: Annotated[MqttClient, Depends(mqtt_client)]):
+    yield Mqtt(mqtt_client)
 
 
 async def hass_client():
@@ -36,11 +42,19 @@ async def hass_client():
         yield hass
 
 
+async def av(
+    mqtt_client: Annotated[MqttClient, Depends(mqtt_client)],
+    mqtt: Annotated[Mqtt, Depends(mqtt)],
+):
+    yield Av(Gude(mqtt_client), mqtt)
+
+
 async def get_context(
     mqtt: Annotated[Mqtt, Depends(mqtt)],
     hass_client: Annotated[Hass, Depends(hass_client)],
+    av: Annotated[Av, Depends(av)],
 ) -> MyContext:
-    return MyContext(mqtt, hass_client)
+    return MyContext(mqtt, hass_client, av)
 
 
 @strawberry.type
@@ -115,15 +129,7 @@ class Mutation:
     async def set_amplifier(
         self, info: strawberry.Info[MyContext], id: strawberry.ID, on: bool
     ) -> None:
-        await info.context.mqtt.send_room(
-            Room(
-                id=id,
-                actual_temperature=None,
-                temperature_setpoint=None,
-                actual_humidity=None,
-                amplifier_on=on,
-            )
-        )
+        await info.context.av.set_amplifier(id, on)
 
 
 schema = strawberry.Schema(

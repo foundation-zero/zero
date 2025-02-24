@@ -11,6 +11,7 @@ import re
 
 from zero_domestic_control.messages import Blind, LightingGroup
 from zero_domestic_control.mqtt import Mqtt
+from zero_domestic_control.util import invert_dict
 
 logger = logging.getLogger(__name__)
 
@@ -42,8 +43,8 @@ _LIGHT_GROUP_IDS = {
         "french-cabin/mood",
         "italian-cabin/ambient",
         "italian-cabin/mood",
-        "californian-cabin/ambient",
-        "californian-cabin/mood",
+        "californian-lounge/ambient",
+        "californian-lounge/mood",
         "polynesian-cabin/ambient",
         "polynesian-cabin/mood",
         "galley/ambient",
@@ -96,7 +97,7 @@ _BLIND_IDS = {
         "dutch-cabin/blind",
         "french-cabin/blind",
         "italian-cabin/blind",
-        "californian-cabin/blind",
+        "californian-lounge/blind",
         "polynesian-cabin/blind",
         "galley/blind",
         "crew-mess/blind",
@@ -119,12 +120,8 @@ _BLIND_IDS = {
 }
 
 
-def _invert_dict(mapping):
-    return {v: k for k, v in mapping.items()}
-
-
-_LIGHT_GROUP_IDS_INV = _invert_dict(_LIGHT_GROUP_IDS)
-_BLIND_IDS_INV = _invert_dict(_BLIND_IDS)
+_LIGHT_GROUP_IDS_INV = invert_dict(_LIGHT_GROUP_IDS)
+_BLIND_IDS_INV = invert_dict(_BLIND_IDS)
 
 
 class Hass:

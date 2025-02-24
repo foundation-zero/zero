@@ -3,7 +3,7 @@ from pydantic_settings import SettingsConfigDict
 from zero_domestic_control.config import Settings
 
 
-class TestSettings(Settings):
+class ConfigTestSettings(Settings):
     model_config = SettingsConfigDict(
         env_file=None, env_prefix="REQUIRE_TEST_TO_CONTAIN_ALL_VALUES"
     )
@@ -20,7 +20,7 @@ def test_config():
         "home_assistant_token": "home_assistant_token",
     }
 
-    config = TestSettings(**input_config)
+    config = ConfigTestSettings(**input_config)
     assert config.jwt_secret == "test_secret"
     assert config.pg_url == "localhost:5432"
     assert config.risingwave_url == "localhost:4566"
