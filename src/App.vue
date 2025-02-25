@@ -5,9 +5,12 @@ import RoomSelector from "./components/containers/room-selector/RoomSelector.vue
 import NavPills from "./components/NavPills.vue";
 import ToggleAV from "./components/ToggleAV.vue";
 import TopNavigation from "./components/TopNavigation.vue";
+import { ProgressBar } from "./components/ui/progress-bar";
+import { useRoomStore } from "./stores/rooms";
 import { useUIStore } from "./stores/ui";
 
 const { breakpoints } = toRefs(useUIStore());
+const { hasPendingMutations } = toRefs(useRoomStore());
 </script>
 
 <template>
@@ -15,6 +18,7 @@ const { breakpoints } = toRefs(useUIStore());
     <RouterView />
   </main>
   <TopNavigation>
+    <ProgressBar :pending="hasPendingMutations" />
     <template #left>
       <RoomSelector />
     </template>

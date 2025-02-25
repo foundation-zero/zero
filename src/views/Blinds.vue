@@ -8,11 +8,12 @@ import { List, ListHeader, ListItem, ListRoot } from "@/components/ui/list";
 import { useRoomStore } from "@/stores/rooms";
 import { ref, toRefs, watch } from "vue";
 
-const { currentRoom } = toRefs(useRoomStore());
+const { currentRoom, hasPendingMutations } = toRefs(useRoomStore());
+const { setBlindsLevel } = useRoomStore();
 const selected = ref<BlindsGroup>();
 
 watch(currentRoom, (next, prev) => {
-  if (next !== prev) {
+  if (next.id !== prev.id) {
     selected.value = undefined;
   }
 });
@@ -58,6 +59,8 @@ watch(currentRoom, (next, prev) => {
             v-if="currentRoom.blinds.length === 1"
             v-model:level="item.level"
             class="mt-3"
+            :disabled="hasPendingMutations"
+            @update:level="setBlindsLevel(item.id, $event)"
           />
           <BlindsValue
             v-else

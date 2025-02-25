@@ -2,19 +2,24 @@
 import RoomTemperature from "@/components/RoomTemperature.vue";
 import { HeavySlider } from "@/components/ui/heavy-slider";
 import { List, ListItem, ListRoot } from "@/components/ui/list";
-import { computed, ref } from "vue";
+import { useRoomStore } from "@/stores/rooms";
+import { computed, toRefs } from "vue";
 
-let _value = ref(21);
-const MIN_VALUE = 17.9;
+const MIN_VALUE = 18;
+
+const { currentRoom, hasPendingMutations } = toRefs(useRoomStore());
+const { setTemperatureSetpoint } = useRoomStore();
 
 const value = computed<number[]>({
   get() {
-    return [_value.value];
+    return [currentRoom.value.temperatureSetpoint];
   },
   set([val]: number[]) {
     if (val < MIN_VALUE) return;
 
-    _value.value = val;
+    currentRoom.value.temperatureSetpoint = val;
+
+    setTemperatureSetpoint(val);
   },
 });
 const isOff = computed(() => value.value[0] == MIN_VALUE);
@@ -24,7 +29,10 @@ const isOff = computed(() => value.value[0] == MIN_VALUE);
   <section
     class="container flex grow flex-col items-center justify-center max-md:pb-[64px] md:pb-[32px]"
   >
-    <RoomTemperature class="mb-8 w-full" />
+    <RoomTemperature
+      class="mb-8 w-full"
+      :room="currentRoom"
+    />
 
     <div class="flex w-full flex-wrap justify-center">
       <ListRoot class="w-full pb-6 md:w-1/2 md:px-3 xl:w-1/3 landscape:lg:w-1/3">
@@ -38,10 +46,11 @@ const isOff = computed(() => value.value[0] == MIN_VALUE);
               v-model:model-value="value"
               class="aspect-[1/2] !h-[40svh] !w-auto"
               :max="24"
-              :min="17.6"
+              :min="17"
               :min-steps-between-thumbs="3"
-              :class="{ 'opacity-70': isOff }"
-              :step="0.1"
+              :class="{ 'opacity-70': isOff, 'opacity-50': hasPendingMutations }"
+              :step="1"
+              :disabled="hasPendingMutations"
             />
 
             <div class="mt-6 flex flex-col items-center justify-center">

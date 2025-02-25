@@ -20,7 +20,7 @@ const forwarded = useForwardPropsEmits(delegatedProps, emits);
   <SliderRoot
     :class="
       cn(
-        'relative flex w-full touch-none select-none items-center data-[orientation=vertical]:h-full data-[orientation=vertical]:w-1.5 data-[orientation=vertical]:flex-col',
+        'relative flex w-full touch-none select-none items-center disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-50 data-[orientation=vertical]:h-full data-[orientation=vertical]:w-1.5 data-[orientation=vertical]:flex-col',
         props.class,
       )
     "

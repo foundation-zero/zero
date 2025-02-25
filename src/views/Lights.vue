@@ -3,7 +3,8 @@ import LightGroup from "@/components/ui/lights-list/LightGroup.vue";
 import { useRoomStore } from "@/stores/rooms";
 import { toRefs } from "vue";
 
-const { currentRoom } = toRefs(useRoomStore());
+const { currentRoom, hasPendingMutations } = toRefs(useRoomStore());
+const { setLightLevel } = useRoomStore();
 </script>
 
 <template>
@@ -13,8 +14,10 @@ const { currentRoom } = toRefs(useRoomStore());
     <LightGroup
       v-for="(group, index) in currentRoom.lights"
       :key="index"
+      :disabled="hasPendingMutations"
       :name="group.name"
       :lights="group.controls"
+      @update:level="setLightLevel($event.id, $event.level)"
     />
   </section>
 </template>

@@ -3,6 +3,11 @@ import { Blinds, LightingGroups } from "@/gql/graphql";
 export interface Room {
   id: string;
   name: string;
+  group: RoomGroup;
+  amplifierOn: boolean;
+  temperatureSetpoint: number;
+  actualTemperature: number;
+  actualHumidity: number;
   lights: LightGroup[];
   blinds: BlindsGroup[];
 }

@@ -9,6 +9,7 @@ const { isScrolling } = toRefs(useUIStore());
     class="top-nav"
     :class="{ '--scrolling': isScrolling }"
   >
+    <slot />
     <div class="bar">
       <div class="left">
         <slot name="left"> </slot>

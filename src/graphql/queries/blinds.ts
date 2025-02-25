@@ -1,22 +1,18 @@
 import { gql } from "@urql/vue";
 
 export const BlindsFragment = gql`
-  fragment BlindsItem on blinds {
+  fragment BlindsItem on Blinds {
     id
     name
     level
-    room_id
+    roomId
     opacity
     group
   }
 `;
 
-export const byRoomId = gql`
-  query GetBlindsByRoom($roomId: String!) {
-    blinds(where: { room_id: { _eq: $roomId } }) {
-      ...BlindsItem
-    }
+export const setBlindsLevelMutation = gql`
+  mutation SetBlindsLevel($id: ID!, $level: Float!) {
+    setBlind(id: $id, level: $level)
   }
-
-  ${BlindsFragment}
 `;

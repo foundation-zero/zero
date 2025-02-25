@@ -14,12 +14,17 @@ import type { TypedDocumentNode as DocumentNode } from '@graphql-typed-document-
  * Learn more about it here: https://the-guild.dev/graphql/codegen/plugins/presets/preset-client#reducing-bundle-size
  */
 const documents = {
-    "\n  fragment BlindsItem on blinds {\n    id\n    name\n    level\n    room_id\n    opacity\n    group\n  }\n": types.BlindsItemFragmentDoc,
-    "\n  query GetBlindsByRoom($roomId: String!) {\n    blinds(where: { room_id: { _eq: $roomId } }) {\n      ...BlindsItem\n    }\n  }\n\n  \n": types.GetBlindsByRoomDocument,
-    "\n  fragment LightGroupItem on lighting_groups {\n    id\n    name\n    level\n    room_id\n  }\n": types.LightGroupItemFragmentDoc,
-    "\n  query GetLightGroupsByRoom($roomId: String!) {\n    lighting_groups(where: { room_id: { _eq: $roomId } }) {\n      ...LightGroupItem\n    }\n  }\n\n  \n": types.GetLightGroupsByRoomDocument,
-    "\n  fragment RoomItem on rooms {\n    id\n    amplifier_on\n    actual_temperature\n    actual_humidity\n    temperature_setpoint\n    thermal_comfort_index\n    name\n    group\n    last_movement\n    blinds {\n      ...BlindsItem\n    }\n    lighting_groups {\n      ...LightGroupItem\n    }\n\n    \n    \n  }\n": types.RoomItemFragmentDoc,
-    "\n  query GetAllRooms {\n    rooms {\n      ...RoomItem\n    }\n  }\n\n  \n": types.GetAllRoomsDocument,
+    "\n  fragment BlindsItem on Blinds {\n    id\n    name\n    level\n    roomId\n    opacity\n    group\n  }\n": types.BlindsItemFragmentDoc,
+    "\n  mutation SetBlindsLevel($id: ID!, $level: Float!) {\n    setBlind(id: $id, level: $level)\n  }\n": types.SetBlindsLevelDocument,
+    "\n  fragment LightGroupItem on LightingGroups {\n    id\n    name\n    level\n    roomId\n  }\n": types.LightGroupItemFragmentDoc,
+    "\n  subscription GetLightGroupsByRoom($roomId: String!) {\n    lightingGroups(where: { roomId: { _eq: $roomId } }) {\n      ...LightGroupItem\n    }\n  }\n\n  \n": types.GetLightGroupsByRoomDocument,
+    "\n  mutation SetLightLevel($id: ID!, $level: Float!) {\n    setLightingGroup(id: $id, level: $level)\n  }\n": types.SetLightLevelDocument,
+    "\n  fragment RoomItem on Rooms {\n    id\n    amplifierOn\n    actualTemperature\n    actualHumidity\n    temperatureSetpoint\n    thermalComfortIndex\n    name\n    group\n    lastMovement\n  }\n": types.RoomItemFragmentDoc,
+    "\n  query GetAllRooms {\n    rooms {\n      id\n      name\n      group\n    }\n  }\n": types.GetAllRoomsDocument,
+    "\n  subscription SubscribeToRoom($roomId: String!) {\n    rooms(where: { id: { _eq: $roomId } }) {\n      ...RoomItem\n      blinds {\n        ...BlindsItem\n      }\n      lightingGroups {\n        ...LightGroupItem\n      }\n    }\n  }\n\n  \n  \n  \n": types.SubscribeToRoomDocument,
+    "\n  query GetRoomById($roomId: String!) {\n    rooms(where: { id: { _eq: $roomId } }) {\n      ...RoomItem\n      blinds {\n        ...BlindsItem\n      }\n      lightingGroups {\n        ...LightGroupItem\n      }\n    }\n  }\n\n  \n  \n  \n": types.GetRoomByIdDocument,
+    "\n  mutation SetTemperatureSetpoint($id: ID!, $temperature: Int!) {\n    setRoomTemperatureSetpoint(id: $id, temperature: $temperature)\n  }\n": types.SetTemperatureSetpointDocument,
+    "\n  mutation SetAmplifier($id: ID!, $on: Boolean!) {\n    setAmplifier(id: $id, on: $on)\n  }\n": types.SetAmplifierDocument,
 };
 
 /**
@@ -39,27 +44,47 @@ export function graphql(source: string): unknown;
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
-export function graphql(source: "\n  fragment BlindsItem on blinds {\n    id\n    name\n    level\n    room_id\n    opacity\n    group\n  }\n"): (typeof documents)["\n  fragment BlindsItem on blinds {\n    id\n    name\n    level\n    room_id\n    opacity\n    group\n  }\n"];
+export function graphql(source: "\n  fragment BlindsItem on Blinds {\n    id\n    name\n    level\n    roomId\n    opacity\n    group\n  }\n"): (typeof documents)["\n  fragment BlindsItem on Blinds {\n    id\n    name\n    level\n    roomId\n    opacity\n    group\n  }\n"];
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
-export function graphql(source: "\n  query GetBlindsByRoom($roomId: String!) {\n    blinds(where: { room_id: { _eq: $roomId } }) {\n      ...BlindsItem\n    }\n  }\n\n  \n"): (typeof documents)["\n  query GetBlindsByRoom($roomId: String!) {\n    blinds(where: { room_id: { _eq: $roomId } }) {\n      ...BlindsItem\n    }\n  }\n\n  \n"];
+export function graphql(source: "\n  mutation SetBlindsLevel($id: ID!, $level: Float!) {\n    setBlind(id: $id, level: $level)\n  }\n"): (typeof documents)["\n  mutation SetBlindsLevel($id: ID!, $level: Float!) {\n    setBlind(id: $id, level: $level)\n  }\n"];
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
-export function graphql(source: "\n  fragment LightGroupItem on lighting_groups {\n    id\n    name\n    level\n    room_id\n  }\n"): (typeof documents)["\n  fragment LightGroupItem on lighting_groups {\n    id\n    name\n    level\n    room_id\n  }\n"];
+export function graphql(source: "\n  fragment LightGroupItem on LightingGroups {\n    id\n    name\n    level\n    roomId\n  }\n"): (typeof documents)["\n  fragment LightGroupItem on LightingGroups {\n    id\n    name\n    level\n    roomId\n  }\n"];
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
-export function graphql(source: "\n  query GetLightGroupsByRoom($roomId: String!) {\n    lighting_groups(where: { room_id: { _eq: $roomId } }) {\n      ...LightGroupItem\n    }\n  }\n\n  \n"): (typeof documents)["\n  query GetLightGroupsByRoom($roomId: String!) {\n    lighting_groups(where: { room_id: { _eq: $roomId } }) {\n      ...LightGroupItem\n    }\n  }\n\n  \n"];
+export function graphql(source: "\n  subscription GetLightGroupsByRoom($roomId: String!) {\n    lightingGroups(where: { roomId: { _eq: $roomId } }) {\n      ...LightGroupItem\n    }\n  }\n\n  \n"): (typeof documents)["\n  subscription GetLightGroupsByRoom($roomId: String!) {\n    lightingGroups(where: { roomId: { _eq: $roomId } }) {\n      ...LightGroupItem\n    }\n  }\n\n  \n"];
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
-export function graphql(source: "\n  fragment RoomItem on rooms {\n    id\n    amplifier_on\n    actual_temperature\n    actual_humidity\n    temperature_setpoint\n    thermal_comfort_index\n    name\n    group\n    last_movement\n    blinds {\n      ...BlindsItem\n    }\n    lighting_groups {\n      ...LightGroupItem\n    }\n\n    \n    \n  }\n"): (typeof documents)["\n  fragment RoomItem on rooms {\n    id\n    amplifier_on\n    actual_temperature\n    actual_humidity\n    temperature_setpoint\n    thermal_comfort_index\n    name\n    group\n    last_movement\n    blinds {\n      ...BlindsItem\n    }\n    lighting_groups {\n      ...LightGroupItem\n    }\n\n    \n    \n  }\n"];
+export function graphql(source: "\n  mutation SetLightLevel($id: ID!, $level: Float!) {\n    setLightingGroup(id: $id, level: $level)\n  }\n"): (typeof documents)["\n  mutation SetLightLevel($id: ID!, $level: Float!) {\n    setLightingGroup(id: $id, level: $level)\n  }\n"];
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
-export function graphql(source: "\n  query GetAllRooms {\n    rooms {\n      ...RoomItem\n    }\n  }\n\n  \n"): (typeof documents)["\n  query GetAllRooms {\n    rooms {\n      ...RoomItem\n    }\n  }\n\n  \n"];
+export function graphql(source: "\n  fragment RoomItem on Rooms {\n    id\n    amplifierOn\n    actualTemperature\n    actualHumidity\n    temperatureSetpoint\n    thermalComfortIndex\n    name\n    group\n    lastMovement\n  }\n"): (typeof documents)["\n  fragment RoomItem on Rooms {\n    id\n    amplifierOn\n    actualTemperature\n    actualHumidity\n    temperatureSetpoint\n    thermalComfortIndex\n    name\n    group\n    lastMovement\n  }\n"];
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(source: "\n  query GetAllRooms {\n    rooms {\n      id\n      name\n      group\n    }\n  }\n"): (typeof documents)["\n  query GetAllRooms {\n    rooms {\n      id\n      name\n      group\n    }\n  }\n"];
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(source: "\n  subscription SubscribeToRoom($roomId: String!) {\n    rooms(where: { id: { _eq: $roomId } }) {\n      ...RoomItem\n      blinds {\n        ...BlindsItem\n      }\n      lightingGroups {\n        ...LightGroupItem\n      }\n    }\n  }\n\n  \n  \n  \n"): (typeof documents)["\n  subscription SubscribeToRoom($roomId: String!) {\n    rooms(where: { id: { _eq: $roomId } }) {\n      ...RoomItem\n      blinds {\n        ...BlindsItem\n      }\n      lightingGroups {\n        ...LightGroupItem\n      }\n    }\n  }\n\n  \n  \n  \n"];
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(source: "\n  query GetRoomById($roomId: String!) {\n    rooms(where: { id: { _eq: $roomId } }) {\n      ...RoomItem\n      blinds {\n        ...BlindsItem\n      }\n      lightingGroups {\n        ...LightGroupItem\n      }\n    }\n  }\n\n  \n  \n  \n"): (typeof documents)["\n  query GetRoomById($roomId: String!) {\n    rooms(where: { id: { _eq: $roomId } }) {\n      ...RoomItem\n      blinds {\n        ...BlindsItem\n      }\n      lightingGroups {\n        ...LightGroupItem\n      }\n    }\n  }\n\n  \n  \n  \n"];
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(source: "\n  mutation SetTemperatureSetpoint($id: ID!, $temperature: Int!) {\n    setRoomTemperatureSetpoint(id: $id, temperature: $temperature)\n  }\n"): (typeof documents)["\n  mutation SetTemperatureSetpoint($id: ID!, $temperature: Int!) {\n    setRoomTemperatureSetpoint(id: $id, temperature: $temperature)\n  }\n"];
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(source: "\n  mutation SetAmplifier($id: ID!, $on: Boolean!) {\n    setAmplifier(id: $id, on: $on)\n  }\n"): (typeof documents)["\n  mutation SetAmplifier($id: ID!, $on: Boolean!) {\n    setAmplifier(id: $id, on: $on)\n  }\n"];
 
 export function graphql(source: string) {
   return (documents as any)[source] ?? {};

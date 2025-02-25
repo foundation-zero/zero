@@ -15,6 +15,9 @@ module.exports = {
       padding: "2rem",
     },
     extend: {
+      transformOrigin: {
+        "left-right": "0% 50%",
+      },
       screens: {
         "2xl": "1400px",
         tablet: "768px",
@@ -61,6 +64,11 @@ module.exports = {
         sm: "calc(var(--radius) - 4px)",
       },
       keyframes: {
+        progress: {
+          "0%": { transform: " translateX(0) scaleX(0)" },
+          "40%": { transform: "translateX(0) scaleX(0.4)" },
+          "100%": { transform: "translateX(100%) scaleX(0.5)" },
+        },
         "accordion-down": {
           from: { height: 0 },
           to: { height: "var(--radix-accordion-content-height)" },
@@ -79,6 +87,7 @@ module.exports = {
         },
       },
       animation: {
+        progress: "progress 1s infinite linear",
         "accordion-down": "accordion-down 0.2s ease-out",
         "accordion-up": "accordion-up 0.2s ease-out",
         "collapsible-down": "collapsible-down 0.2s ease-in-out",

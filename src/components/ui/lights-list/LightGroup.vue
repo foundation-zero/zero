@@ -1,12 +1,17 @@
 <script setup lang="ts">
 import { LightingGroups } from "@/gql/graphql";
-import { toRefs } from "vue";
 import { List, ListRoot } from "../list";
 import ListHeader from "../list/ListHeader.vue";
 import LightGroupItem from "./LightGroupItem.vue";
 
-const props = defineProps<{ name: string; lights: LightingGroups[] }>();
-const { lights, name } = toRefs(props);
+defineProps<{ name: string; lights: LightingGroups[]; disabled?: boolean }>();
+
+const emit = defineEmits(["update:level"]);
+
+const updateLevel = (level: number, group: LightingGroups) => {
+  group.level = level;
+  emit("update:level", group);
+};
 </script>
 
 <template>
@@ -16,9 +21,11 @@ const { lights, name } = toRefs(props);
       <LightGroupItem
         v-for="light in lights"
         :key="light.name!"
-        v-model:level="light.level"
+        :disabled="disabled"
+        :level="light.level"
         :name="light.name!"
         class="flex-col space-y-3 py-6"
+        @update:level="updateLevel($event, light)"
       />
     </List>
   </ListRoot>

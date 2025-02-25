@@ -15,6 +15,13 @@ export default defineConfig(({ mode }) => {
           target: env.VITE_GRAPHQL_SERVER,
           changeOrigin: true,
         },
+        "/graphql-ws": {
+          target: env.VITE_GRAPHQL_WS_SERVER,
+          ws: true,
+          rewrite(path) {
+            return path.replace(/^\/graphql-ws/, "graphql");
+          },
+        },
       },
     },
     css: {

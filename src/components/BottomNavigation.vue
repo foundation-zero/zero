@@ -19,6 +19,7 @@ const { path } = toRefs(useRoute());
       class="absolute bottom-0 left-0 right-0 top-0 bg-background transition-all sm:bg-background"
       :class="{ 'border-t': hasScroll && !isBottom }"
     ></div>
+
     <TabsList class="relative">
       <RouterLink to="/airco">
         <TabsTrigger value="/airco">

@@ -2,8 +2,11 @@
 import { BlindsGroup } from "@/@types";
 import { BlindsSlider } from "@/components/ui/blinds-slider";
 import { List, ListItem } from "@/components/ui/list";
+import { useRoomStore } from "@/stores/rooms";
 
 defineProps<{ group: BlindsGroup }>();
+
+const { setBlindsLevel } = useRoomStore();
 </script>
 
 <template>
@@ -20,6 +23,7 @@ defineProps<{ group: BlindsGroup }>();
       <BlindsSlider
         v-model:level="item.level"
         class="mt-3"
+        @update:level="setBlindsLevel(item.id, $event)"
         @touchstart.stop.prevent
         @mousedown.stop.prevent
       />

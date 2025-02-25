@@ -7,7 +7,7 @@ import { ListItem } from "../list";
 import { ZSpacer } from "../spacer";
 import { Switch } from "../switch";
 
-defineProps<{ name: string }>();
+defineProps<{ name: string; disabled?: boolean }>();
 const level = defineModel<number>("level", { required: true });
 
 const levelPercentage = ratioAsPercentage(level);
@@ -36,12 +36,16 @@ const on = computed({
       />
       <span class="text-md font-medium"> {{ name }}</span>
       <ZSpacer />
-      <Switch v-model:checked="on"></Switch>
+      <Switch
+        v-model:checked="on"
+        :disabled="disabled"
+      ></Switch>
     </span>
 
     <LightsSlider
       v-model:brightness="levelPercentage"
       :on="on"
+      :disabled="disabled"
     />
   </ListItem>
 </template>
