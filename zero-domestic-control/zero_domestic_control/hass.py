@@ -221,23 +221,30 @@ class HassControl:
         with self._hass.listen_events("state_changed") as events:
             for event in events:
                 if event.data["entity_id"].startswith("input_number."):
-                    data = InputNumberChanged(**event.data)
+                    number_change = InputNumberChanged(**event.data)
                     if (
-                        data.id in _LIGHT_GROUP_IDS.keys() and data.id is not None
+                        number_change.id in _LIGHT_GROUP_IDS.keys()
+                        and number_change.id is not None
                     ):  # is not None check superfluous, just for type checking
-                        msg = LightingGroup(
-                            id=data.id,
-                            level=data.new_state.state / 100,  # hass uses 0..100 values
+                        lighting_group_msg = LightingGroup(
+                            id=number_change.id,
+                            level=number_change.new_state.state
+                            / 100,  # hass uses 0..100 values
                         )
-                        loop.create_task(self._mqtt.send_lighting_group(msg))
+                        loop.create_task(
+                            self._mqtt.send_lighting_group(lighting_group_msg)
+                        )
                 elif event.data["entity_id"].startswith("cover."):
-                    data = CoverChanged(**event.data)
-                    if (data.id in _BLIND_IDS.keys()) and data.id is not None:
-                        msg = Blind(
-                            id=data.id,
-                            level=data.new_state.attributes.current_position / 100,
+                    cover_change = CoverChanged(**event.data)
+                    if (
+                        cover_change.id in _BLIND_IDS.keys()
+                    ) and cover_change.id is not None:
+                        blind_msg = Blind(
+                            id=cover_change.id,
+                            level=cover_change.new_state.attributes.current_position
+                            / 100,
                         )
-                        loop.create_task(self._mqtt.send_blind(msg))
+                        loop.create_task(self._mqtt.send_blind(blind_msg))
 
     async def run(self):
         loop = asyncio.get_event_loop()

@@ -24,6 +24,7 @@ jobs:
       - run: poetry check
       - uses: astral-sh/ruff-action@v3
       - run: poetry install
+      - run: poetry run mypy zero_domestic_control
       - name: Unit Test
         run: poetry run pytest --run=unit
       - name: Run services

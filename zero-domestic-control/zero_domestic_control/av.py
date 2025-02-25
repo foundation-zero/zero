@@ -1,4 +1,4 @@
-from asyncio import Future, TaskGroup, sleep
+from asyncio import TaskGroup, sleep
 from contextlib import asynccontextmanager
 import re
 import time
@@ -101,6 +101,7 @@ class Gude:
             if match:
                 pdu = match.group(1)
                 return pdu, Telemetry.model_validate_json(message.payload)
+        return None
 
     async def listen_to_all_telemetry(self):
         await self._mqtt_client.subscribe(
@@ -182,7 +183,6 @@ class AvPduStub:
         self._mqtt_client = mqtt_client
         self._ports = {port: False for port in range(1, 11)}
         self._pdu = pdu
-        self._started = Future()
 
     async def step(self):
         async with TaskGroup() as tg:
@@ -221,7 +221,6 @@ class AvPduStub:
 
     async def send_telemetry(self):
         telemetry = self._create_telemetry(self._ports)
-        print(f"Sent telemetry for {self._pdu}")
         await self._mqtt_client.publish(
             f"de/gudesystems/epc/{self._pdu}/device/telemetry",
             telemetry.model_dump_json(),

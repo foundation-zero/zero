@@ -67,7 +67,7 @@ services:
       HASURA_GRAPHQL_METADATA_DEFAULTS: '{"backend_configs":{"dataconnector":{"athena":{"uri":"http://data-connector-agent:8081/api/v1/athena"},"mariadb":{"uri":"http://data-connector-agent:8081/api/v1/mariadb"},"mysql8":{"uri":"http://data-connector-agent:8081/api/v1/mysql"},"oracle":{"uri":"http://data-connector-agent:8081/api/v1/oracle"},"snowflake":{"uri":"http://data-connector-agent:8081/api/v1/snowflake"}}}}'
       HASURA_GRAPHQL_ENABLE_REMOTE_SCHEMA_PERMISSIONS: "true"
       HASURA_GRAPHQL_JWT_SECRET: '{ "type": "HS256", "key": "${JWT_SECRET}" }'
-      HASURA_GRAPHQL_EXPERIMENTAL_FEATURES: 'naming_convention'
+      HASURA_GRAPHQL_EXPERIMENTAL_FEATURES: "naming_convention"
       HASURA_GRAPHQL_STREAMING_QUERIES_MULTIPLEXED_REFETCH_INTERVAL: 200
     depends_on:
       data-connector-agent:
@@ -98,6 +98,9 @@ services:
     command: ["fastapi", "run", "./zero_domestic_control/app.py"]
     build:
       context: .
+    depends_on:
+      - hass
+      - mosquitto
     environment: &app_env
       PG_URL: "postgres://${PG_USER}:${PG_PASSWORD}@postgres:5432/${PG_DB}"
       RISINGWAVE_URL: "postgres://root@risingwave:4566/dev"
@@ -111,6 +114,9 @@ services:
     command: ["zero_domestic_control", "control"]
     build:
       context: .
+    depends_on:
+      - hass
+      - mosquitto
     environment:
       <<: *app_env
 
