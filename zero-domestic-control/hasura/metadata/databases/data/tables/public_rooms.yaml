@@ -9,7 +9,7 @@ array_relationships:
         table:
           name: blinds
           schema: public
-  - name: lighting_groups
+  - name: lightingGroups
     using:
       foreign_key_constraint_on:
         column: room_id
