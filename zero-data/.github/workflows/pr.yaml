@@ -1,6 +1,8 @@
-name: Test
+name: Test and Push Docker image
 on:
   push:
+    paths-ignore:
+      - 'charts/**'
   release:
     types: [released]
 

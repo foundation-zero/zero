@@ -1,0 +1,50 @@
+name: Deploy zero-data chart
+on:
+  pull_request:
+    types: [closed]
+    branches:
+      - main
+    paths:
+      - "charts/zero_data/**"
+
+# Authenticate with GAR and push helm chart to the /charts registry
+jobs:
+  helm-push:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: 'read'
+      id-token: 'write'
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+      - name: Get Chart name
+        uses: mikefarah/yq@master
+        id: chart_name
+        with:
+          cmd: yq '.name' './charts/zero_data/Chart.yaml'
+      - name: Get Chart name
+        uses: mikefarah/yq@master
+        id: chart_version
+        with:
+          cmd: yq '.version' './charts/zero_data/Chart.yaml'
+      - id: auth
+        name: Authenticate with Google Cloud
+        uses: google-github-actions/auth@v2
+        with:
+          token_format: access_token
+          project_id: ${{ vars.GCP_COMMON_PROJECT_ID }}
+          workload_identity_provider: ${{ vars.GCP_COMMON_WORKLOAD_IDENTITY_PROVIDER }}
+          service_account: ${{ vars.GCP_COMMON_SERVICE_ACCOUNT }}
+          access_token_lifetime: 300s
+      - name: Login to Artifact Registry
+        uses: docker/login-action@v1
+        with:
+          registry: europe-west1-docker.pkg.dev
+          username: oauth2accesstoken
+          password: ${{ steps.auth.outputs.access_token }}
+      - name: Set up Helm
+        uses: azure/setup-helm@v4
+      - name: Publish Helm chart
+        run: |
+          helm package ./charts/zero_data
+          helm push ${{ steps.chart_name.outputs.result }}-${{ steps.chart_version.outputs.result }}.tgz oci://europe-west1-docker.pkg.dev/common-449414/common
