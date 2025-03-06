@@ -13,8 +13,10 @@ class Parameters(BaseModel):
 class ControlValues(BaseModel):
     r: float
 
+
 class InvalidControlValues(BaseModel):
     s: float
+
 
 class SensorValues(BaseModel):
     T_Raum_degC: float

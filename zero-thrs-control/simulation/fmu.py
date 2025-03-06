@@ -93,7 +93,7 @@ class Fmu[ControlValues: BaseModel, SensorValues: BaseModel]:
         output_names = self._sensors_cls.model_fields.keys()
         outputs = self._fmu.getReal(self._var_mapper(output_names))
         return self._sensors_cls(**dict(zip(output_names, outputs)))
-    
+
     @property
     def time(self):
         return self._time
