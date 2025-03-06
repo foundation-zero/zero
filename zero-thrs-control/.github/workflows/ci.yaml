@@ -14,7 +14,7 @@ jobs:
 
       - run: poetry install
 
-      - run: poetry run fmpy compile simulation/XRGTestModel/FMUInterfaceTester_MECS_regular.fmu
+      - run: poetry run fmpy compile simulation/models/XRGTestModel/FMUInterfaceTester_MECS_regular.fmu
 
       - run: poetry run pyright
 
