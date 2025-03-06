@@ -1,7 +1,9 @@
 from dataclasses import dataclass
 from datetime import datetime
+
 from pydantic import AliasGenerator, BaseModel, ConfigDict
-from simulation.utils.string import hyphenize
+
+from utils.string import hyphenize
 
 
 class ThrsModel(BaseModel):

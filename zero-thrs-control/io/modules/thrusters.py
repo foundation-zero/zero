@@ -1,7 +1,7 @@
+import io.control as control
+import io.sensor as sensor
+from io.base import Meta, ThrsModel
 from typing import Annotated
-from simulation.io.base import ThrsModel, Meta
-import simulation.io.sensor as sensor
-import simulation.io.control as control
 
 
 class ThrustersSensors(ThrsModel):
@@ -35,11 +35,13 @@ class ThrustersSensors(ThrsModel):
 
 
 class ThrustersControls(ThrsModel):
-    thruster_pump_1: Annotated[control.Pump, Meta("5001015")]
-    thruster_pump_2: Annotated[control.Pump, Meta("5001016")]
+    thrusters_pump_1: Annotated[control.Pump, Meta("5001015")]
+    thrusters_pump_2: Annotated[control.Pump, Meta("5001016")]
     thrusters_mix_aft: Annotated[control.Valve, Meta("5001042-01")]
     thrusters_mix_fwd: Annotated[control.Valve, Meta("5001042-02")]
-    thrusters_mix_exchanger: Annotated[control.Valve, Meta("5001045-03")]
+    thrusters_mix_exchanger: Annotated[control.Valve, Meta("5001045-02")]
     thrusters_flowcontrol_aft: Annotated[control.Valve, Meta("5001064-01")]
     thrusters_flowcontrol_fwd: Annotated[control.Valve, Meta("5001064-02")]
     thrusters_shutoff_recovery: Annotated[control.Valve, Meta("5001069-10")]
+    thrusters_switch_aft: Annotated[control.Valve, Meta("5001091-01")]
+    thrusters_switch_fwd: Annotated[control.Valve, Meta("5001091-02")]

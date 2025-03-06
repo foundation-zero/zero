@@ -2,6 +2,7 @@ from datetime import timedelta
 from pathlib import Path
 
 from pydantic import BaseModel
+
 from simulation.fmu import Fmu
 
 
@@ -12,6 +13,8 @@ class Parameters(BaseModel):
 class ControlValues(BaseModel):
     r: float
 
+class InvalidControlValues(BaseModel):
+    s: float
 
 class SensorValues(BaseModel):
     T_Raum_degC: float
@@ -20,8 +23,8 @@ class SensorValues(BaseModel):
 def test_fmu():
     with Fmu(
         str(
-            Path(__file__).parent
-            / "../simulation/XRGTestModel/FMUInterfaceTester_MECS_regular.fmu"
+            Path(__file__).resolve().parent.parent
+            / "../simulation/models/XRGTestModel/FMUInterfaceTester_MECS_regular.fmu"
         ),
         Parameters(),
         SensorValues,

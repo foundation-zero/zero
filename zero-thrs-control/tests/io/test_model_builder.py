@@ -1,7 +1,8 @@
 from typing import Annotated
-from simulation.io.base import ThrsModel, Meta
-from simulation.io.model_builder import ModelBuilder
-from simulation.io.sensor import FlowSensor
+
+from io.base import Meta, ThrsModel
+from io.model_builder import ModelBuilder
+from io.sensor import FlowSensor
 
 
 class SimpleSensors(ThrsModel):

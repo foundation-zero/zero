@@ -1,5 +1,5 @@
-from simulation.io.base import ThrsModel, Stamped
-from simulation.io.units import Celsius, LMin, Hz, Ratio, Bar
+from simulation.io.base import Stamped, ThrsModel
+from simulation.io.units import Bar, Celsius, Hz, LMin, Ratio
 
 
 class FlowSensor(ThrsModel):

@@ -1,11 +1,12 @@
+import os
 from collections.abc import Sequence
 from datetime import timedelta
-import os
 from types import TracebackType
 from typing import Any, Callable, Iterable, Self
-from fmpy import read_model_description, extract
-from fmpy.model_description import ModelDescription
+
+from fmpy import extract, read_model_description
 from fmpy.fmi2 import FMU2Slave
+from fmpy.model_description import ModelDescription
 from pydantic import BaseModel
 
 
