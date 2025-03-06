@@ -25,7 +25,7 @@ class ThrustersSensors(ThrsModel):
     ]
     thrusters_mix_aft: Annotated[sensor.Valve, Meta("5001042-01")]
     thrusters_mix_fwd: Annotated[sensor.Valve, Meta("5001042-02")]
-    thrusters_mix_exchanger: Annotated[sensor.Valve, Meta("5001045-03")]
+    thrusters_mix_exchanger: Annotated[sensor.Valve, Meta("5001045-02")]
     thrusters_flow_fwd: Annotated[sensor.FlowSensor, Meta("50001057-22")]
     thrusters_flow_aft: Annotated[sensor.FlowSensor, Meta("50001057-23")]
     thrusters_flowcontrol_aft: Annotated[sensor.Valve, Meta("5001064-01")]

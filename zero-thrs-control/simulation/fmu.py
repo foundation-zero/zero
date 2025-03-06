@@ -9,6 +9,8 @@ from fmpy.fmi2 import FMU2Slave
 from fmpy.model_description import ModelDescription
 from pydantic import BaseModel
 
+from input_output.base import ThrsModel
+
 
 def _var_mapper(
     model_description: ModelDescription,
@@ -20,7 +22,7 @@ def _var_mapper(
     return lambda names: [_var_name_to_ref[name] for name in names]
 
 
-class Fmu[ControlValues: BaseModel, SensorValues: BaseModel]:
+class Fmu[ControlValues: ThrsModel, SensorValues: ThrsModel]:
     def __init__(
         self,
         file: str,

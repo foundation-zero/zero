@@ -3,6 +3,7 @@ from pathlib import Path
 
 from pydantic import BaseModel
 
+from input_output.base import ThrsModel
 from simulation.fmu import Fmu
 
 
@@ -10,15 +11,11 @@ class Parameters(BaseModel):
     pass
 
 
-class ControlValues(BaseModel):
+class ControlValues(ThrsModel):
     r: float
 
 
-class InvalidControlValues(BaseModel):
-    s: float
-
-
-class SensorValues(BaseModel):
+class SensorValues(ThrsModel):
     T_Raum_degC: float
 
 
