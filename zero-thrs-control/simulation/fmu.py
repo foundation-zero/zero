@@ -1,5 +1,6 @@
 from collections.abc import Sequence
 from datetime import timedelta
+import os
 from types import TracebackType
 from typing import Any, Callable, Iterable, Self
 from fmpy import read_model_description, extract
@@ -60,6 +61,8 @@ class Fmu[ControlValues: BaseModel, SensorValues: BaseModel]:
     ) -> bool:
         self._fmu.terminate()
         self._fmu.freeInstance()
+        if value is not None:
+            raise value
         return True
 
     def tick(
