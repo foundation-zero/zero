@@ -18,4 +18,8 @@ jobs:
 
       - run: poetry run pyright
 
+      - run: poetry run black . 
+
+      - run: poetry run isort .
+
       - run: poetry run pytest -v
