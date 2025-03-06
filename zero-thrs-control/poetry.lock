@@ -906,6 +906,21 @@ files = [
 arrow = ">=0.15.0"
 
 [[package]]
+name = "isort"
+version = "6.0.1"
+description = "A Python utility / library to sort Python imports."
+optional = false
+python-versions = ">=3.9.0"
+files = [
+    {file = "isort-6.0.1-py3-none-any.whl", hash = "sha256:2dc5d7f65c9678d94c88dfc29161a320eec67328bc97aad576874cb4be1e9615"},
+    {file = "isort-6.0.1.tar.gz", hash = "sha256:1cb5df28dfbc742e490c5e41bad6da41b805b0a8be7bc93cd0fb2a8a890ac450"},
+]
+
+[package.extras]
+colors = ["colorama"]
+plugins = ["setuptools"]
+
+[[package]]
 name = "jedi"
 version = "0.19.2"
 description = "An autocompletion tool for Python that can be used for text editors."
@@ -3246,4 +3261,4 @@ files = [
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.12,<3.14"
-content-hash = "234af6ebdde447e64fa63ae92a948e3763f7814b1af5af6092eca5b66ae909e2"
+content-hash = "50f6c9868628c1f5dcb93b464a996c4bf582ffcfc610e387ebef3c11ead118ed"

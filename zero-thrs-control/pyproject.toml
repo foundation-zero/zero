@@ -14,6 +14,7 @@ pyside6 = "^6.8.1.1"
 pyqtgraph = "^0.13.7"
 plotly = "^5.24.1"
 matplotlib = "^3.10.0"
+isort = "^6.0.1"
 
 
 [tool.poetry.group.test.dependencies]
