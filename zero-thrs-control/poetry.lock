@@ -3131,6 +3131,22 @@ files = [
 ]
 
 [[package]]
+name = "simple-pid"
+version = "2.0.1"
+description = "A simple, easy to use PID controller"
+optional = false
+python-versions = ">=3.6"
+files = [
+    {file = "simple_pid-2.0.1-py3-none-any.whl", hash = "sha256:1d53ed76b03d949ceea46b538fb22999d27899e2e655aa19b99c40f6edcedca6"},
+    {file = "simple_pid-2.0.1.tar.gz", hash = "sha256:5771761c54541c900e597d6c2e4ea93fd2cc98f4e48cb9eca265fba2e65be99e"},
+]
+
+[package.extras]
+doc = ["furo (==2023.3.27)", "myst-parser (==1.0.0)", "sphinx (==6.2.1)", "sphinx-copybutton (==0.5.2)"]
+examples = ["matplotlib", "numpy"]
+test = ["pytest"]
+
+[[package]]
 name = "six"
 version = "1.17.0"
 description = "Python 2 and 3 compatibility utilities"
@@ -3387,4 +3403,4 @@ files = [
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.12,<3.14"
-content-hash = "ff604cb5b26ea29bd599117f752e0e73af0c6f43448d73c093cd483f88e98396"
+content-hash = "1a69db7e41183d7fe9fff4d564d99d2592a5a866b0c814bae39ef1c3828f8b51"

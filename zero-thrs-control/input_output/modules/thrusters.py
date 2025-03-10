@@ -6,8 +6,8 @@ from input_output.base import Meta, ThrsModel
 
 
 class ThrustersSensors(ThrsModel):
-    thruster_pump_1: Annotated[sensor.Pump, Meta("5001015")]
-    thruster_pump_2: Annotated[sensor.Pump, Meta("5001016")]
+    thrusters_pump_1: Annotated[sensor.Pump, Meta("5001015")]
+    thrusters_pump_2: Annotated[sensor.Pump, Meta("5001016")]
     thrusters_temperature_aft_return: Annotated[
         sensor.TemperatureSensor, Meta("5001038-01")
     ]

@@ -4,7 +4,7 @@ from pathlib import Path
 from pydantic import BaseModel
 from pytest import fixture
 
-from control.modules.thrusters import simple_cooling, simple_recovery
+from control.modules.thrusters import ThrustersControl, ThrustersSetpoints
 from input_output.base import Stamped
 from input_output.control import Pump, Valve
 from input_output.modules.thrusters import ThrustersControls, ThrustersSensors
@@ -45,9 +45,18 @@ def simple_thrusters():
     )
 
 
-def test_simple_cooling(simple_thrusters):
+@fixture
+def thrusters_control():
+    return ThrustersControl(ThrustersSetpoints(cooling_mix_setpoint=40.0))
 
-    simple_thrusters.set_control_values(simple_cooling(simple_thrusters.time))
+
+def test_simple_cooling(simple_thrusters, thrusters_control):
+
+    simple_thrusters.set_control_values(
+        thrusters_control.simple_cooling(
+            simple_thrusters.last_sensor_values, simple_thrusters.time
+        )
+    )
     simple_thrusters.run()
     sensors = simple_thrusters.last_sensor_values
 
@@ -59,25 +68,31 @@ def test_simple_cooling(simple_thrusters):
         sensors.thrusters_temperature_supply.temperature.value
         < sensors.thrusters_temperature_fwd_return.temperature.value
     )
-    # from model output assert thrusters_module_inflow.flow = 0
-    # from model output verify thrusters_module_outflow.flow = 0
-    # from model output verify thrusters_seawater.temperature > simple_environmentals.seawater_temperature
+    # from model output assert thrusters_module_supply.flow = 0
+    # from model output verify thrusters_module_return.flow = 0
+    # from model output verify thrusters_seawater_supply.temperature < thrusters_seawater_return.temperature
 
 
-def test_simple_recovery(simple_thrusters):
-
-    simple_thrusters.set_control_values(simple_recovery(simple_thrusters.time))
+def test_simple_recovery(simple_thrusters, thrusters_control):
+    simple_thrusters.set_control_values(
+        thrusters_control.simple_recovery(simple_thrusters.time)
+    )
     simple_thrusters.run()
-    result = simple_thrusters.last_sensor_values
+    sensors = simple_thrusters.last_sensor_values
 
     assert (
-        result.thrusters_temperature_supply.temperature.value
-        < result.thrusters_temperature_aft_return.temperature.value
+        sensors.thrusters_temperature_supply.temperature.value
+        < sensors.thrusters_temperature_aft_return.temperature.value
     )
     assert (
-        result.thrusters_temperature_supply.temperature.value
-        < result.thrusters_temperature_fwd_return.temperature.value
+        sensors.thrusters_temperature_supply.temperature.value
+        < sensors.thrusters_temperature_fwd_return.temperature.value
     )
-    # from model output assert thrusters_module_inflow.flow > 0
-    # from model output verify thrusters_module_outflow.flow > 0
-    # from model output verify thrusters_module_outflow.temperature > thrusters_module_inflow.temperature
+    assert (
+        sensors.thrusters_temperature_aft_supply.flow.value
+        == sensors.thrusters_temperature_fwd_supply.flow.value
+        == sensors.thrusters_module_supply.flow.value
+    )
+    # from model output assert thrusters_module_supply.flow > 0
+    # from model output verify thrusters_module_return.flow > 0
+    # from model output verify thrusters_module_return.temperature > thrusters_module_supply.temperature

@@ -1,5 +1,3 @@
-import os
-from collections.abc import Sequence
 from datetime import timedelta
 from types import TracebackType
 from typing import Any, Callable, Iterable, Self
