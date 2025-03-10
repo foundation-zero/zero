@@ -97,5 +97,5 @@ class Fmu[ControlValues: ThrsModel, SensorValues: ThrsModel]:
         return self._sensors_cls(**dict(zip(output_names, outputs)))
 
     @property
-    def time(self):
+    def solver_time(self):
         return self._time

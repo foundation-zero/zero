@@ -31,8 +31,8 @@ def test_fmu():
     ) as fmu:
         result = fmu.tick(ControlValues(r=1), {}, timedelta(seconds=1))
         assert result.T_Raum_degC > -271.15
-        assert fmu.time == 1.0
+        assert fmu.solver_time == 1.0
 
         result = fmu.tick(ControlValues(r=1), {}, timedelta(seconds=2))
         assert result.T_Raum_degC > -271.15
-        assert fmu.time == 3.0
+        assert fmu.solver_time == 3.0

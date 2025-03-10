@@ -1,14 +1,18 @@
 from datetime import datetime, timedelta
+from typing import TypeVar
 
 from input_output.base import ThrsModel
 from simulation.environmentals import Environmentals
 from simulation.fmu import Fmu
 
+ControlValues = TypeVar("ControlValues", bound=ThrsModel)
+SensorValues = TypeVar("SensorValues", bound=ThrsModel)
 
-class Executor:
+
+class Executor(Fmu[ControlValues, SensorValues]):
     def __init__(
         self,
-        fmu: Fmu,
+        fmu: Fmu[ControlValues, SensorValues],
         environmentals: Environmentals,
         start: datetime,
         stop: datetime,
@@ -29,5 +33,13 @@ class Executor:
             )
             self._time += self._tick_duration
 
-    def set_control_values(self, control_values: ThrsModel):
+    def set_control_values(self, control_values: ControlValues):
         self._last_control_values = control_values
+
+    @property
+    def time(self) -> datetime:
+        return self._time
+
+    @property
+    def last_sensor_values(self) -> SensorValues:
+        return self._last_sensor_values

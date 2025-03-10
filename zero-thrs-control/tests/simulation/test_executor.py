@@ -32,7 +32,7 @@ def test_executor():
             ),
             Parameters(),
             SensorValues,
-            timedelta(seconds=1),
+            timedelta(seconds=0.1),
         ),
         Environmentals(),
         start_time,
