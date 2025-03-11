@@ -41,7 +41,7 @@ docker compose up setup
 
 Apply hasura metadata
 ```bash
-cd hasura
+cd volumes/hasura
 hasura metadata apply --admin-secret myadminsecretkey
 ```
 
