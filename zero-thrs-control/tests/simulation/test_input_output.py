@@ -26,14 +26,14 @@ def valid_dataframe():
     )
 
 
-def test_valid_environmentals(valid_dataframe):
-    environmentals = SimpleInputs(a=1.0, b=valid_dataframe)
-    assert isinstance(environmentals, SimpleInputs)
-    assert environmentals.a == 1.0
-    assert environmentals.b.equals(valid_dataframe)
+def test_valid_inputs(valid_dataframe):
+    inputs = SimpleInputs(a=1.0, b=valid_dataframe)
+    assert isinstance(inputs, SimpleInputs)
+    assert inputs.a == 1.0
+    assert inputs.b.equals(valid_dataframe)
 
 
-def test_invalid_environmentals(valid_dataframe):
+def test_invalid_inputs(valid_dataframe):
     invalid_dataframe = pl.DataFrame({"value": [1, 2, 3]})
 
     with pytest.raises(ValidationError, match="DataFrame schema must be"):
@@ -43,32 +43,32 @@ def test_invalid_environmentals(valid_dataframe):
         SimpleInputs(a="hello", b=valid_dataframe)  # type: ignore
 
 
-def test_environmentals_selection(valid_dataframe):
-    environmentals = SimpleInputs(a=1.0, b=valid_dataframe)
+def test_inputs_selection(valid_dataframe):
+    inputs = SimpleInputs(a=1.0, b=valid_dataframe)
 
-    assert environmentals.get_values_at_time(datetime(2025, 1, 1)) == {
+    assert inputs.get_values_at_time(datetime(2025, 1, 1)).model_dump() == {
         "a": 1.0,
         "b": 1.0,
     }
-    assert environmentals.get_values_at_time(datetime(2025, 1, 2, hour=5)) == {
+    assert inputs.get_values_at_time(datetime(2025, 1, 2, hour=5)).model_dump() == {
         "a": 1.0,
         "b": 2.0,
     }
-    assert environmentals.get_values_at_time(datetime(2025, 1, 3)) == {
+    assert inputs.get_values_at_time(datetime(2025, 1, 3)).model_dump() == {
         "a": 1.0,
         "b": 3.0,
     }
 
     with pytest.raises(ValueError, match="Time"):
-        environmentals.get_values_at_time(datetime(2024, 1, 1))
+        inputs.get_values_at_time(datetime(2024, 1, 1))
 
     with pytest.raises(ValueError, match="Time"):
-        environmentals.get_values_at_time(datetime(2026, 1, 1))
+        inputs.get_values_at_time(datetime(2026, 1, 1))
 
 
 def test_environmentals_serialization(valid_dataframe):
-    environmentals = SimpleInputs(a=1.0, b=valid_dataframe)
-    serialized = environmentals.model_dump_json()
+    siumlation_inputs = SimpleInputs(a=1.0, b=valid_dataframe)
+    serialized = siumlation_inputs.model_dump_json()
     model_dict = json.loads(serialized)
     assert model_dict["a"] == 1.0
     assert pl.read_json(

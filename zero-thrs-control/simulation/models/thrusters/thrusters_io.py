@@ -1,5 +1,7 @@
+from pydantic import BaseModel
+
 from input_output.units import Celsius, LMin, Watt
-from simulation.input_output import SimulationInputs, SimulationOutputs
+from simulation.input_output import SimulationInputs
 
 
 class ThrustersSimulationInputs(SimulationInputs):
@@ -10,7 +12,7 @@ class ThrustersSimulationInputs(SimulationInputs):
     module_supply_temperature: Celsius
 
 
-class TrustersSimulationOutputs(SimulationOutputs):
+class ThrustersSimulationOutputs(BaseModel):
     seawater_supply_temperature: Celsius
     seawater_supply_flow: LMin
     seawater_return_temperature: Celsius

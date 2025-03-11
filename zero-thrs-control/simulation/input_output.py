@@ -1,8 +1,8 @@
 from datetime import datetime
-from typing import Any
 
 import polars as pl
-from pydantic import BaseModel, ConfigDict, field_serializer, field_validator
+from pydantic import (BaseModel, ConfigDict, create_model, field_serializer,
+                      field_validator)
 
 
 class SimulationInputs(BaseModel):
@@ -33,7 +33,7 @@ class SimulationInputs(BaseModel):
             )
         return value
 
-    def get_values_at_time(self, time: datetime) -> dict[str, Any]:
+    def get_values_at_time(self, time: datetime) -> "SimulationInputs":
         result = {}
         for field_name in self.model_fields:
             value = getattr(self, field_name)
@@ -56,8 +56,10 @@ class SimulationInputs(BaseModel):
             else:
                 result[field_name] = value
 
-        return result
+        SelectedInputsModel = create_model(
+            "SimulationInputs",
+            __base__=SimulationInputs,
+            **{field_name: (float, ...) for field_name in result.keys()},  # type: ignore
+        )  # type: ignore
 
-
-class SimulationOutputs(BaseModel):
-    pass
+        return SelectedInputsModel(**result)

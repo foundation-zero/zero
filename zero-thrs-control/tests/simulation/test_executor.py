@@ -21,6 +21,10 @@ class SensorValues(ThrsModel):
     T_Raum_degC: float
 
 
+class SimulationOutputs(BaseModel):
+    pass
+
+
 def test_executor():
 
     start_time = datetime.now()
@@ -32,6 +36,7 @@ def test_executor():
             ),
             Parameters(),
             SensorValues,
+            SimulationOutputs,
             timedelta(seconds=0.1),
         ),
         SimulationInputs(),

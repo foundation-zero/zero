@@ -8,6 +8,7 @@ from fmpy.model_description import ModelDescription
 from pydantic import BaseModel
 
 from input_output.base import ThrsModel
+from simulation.input_output import SimulationInputs
 
 
 def _var_mapper(
@@ -20,12 +21,13 @@ def _var_mapper(
     return lambda names: [_var_name_to_ref[name] for name in names]
 
 
-class Fmu[ControlValues: ThrsModel, SensorValues: ThrsModel]:
+class Fmu[ControlValues: ThrsModel, SensorValues: ThrsModel, SimulationOutputs]:
     def __init__(
         self,
         file: str,
         parameters: BaseModel,
         sensor_values_cls: type[SensorValues],
+        simulation_outputs_cls: type[SimulationOutputs],
         solver_step_size: timedelta,
     ):
         model_description = read_model_description(file)
@@ -41,6 +43,7 @@ class Fmu[ControlValues: ThrsModel, SensorValues: ThrsModel]:
         self._time = 0.0
         self._step_size = solver_step_size.total_seconds()
         self._sensors_cls = sensor_values_cls
+        self._simulation_outputs_cls = simulation_outputs_cls
         self._fmu.instantiate()
         self._fmu.setupExperiment(startTime=0.0)
         self._fmu.enterInitializationMode()
@@ -73,17 +76,18 @@ class Fmu[ControlValues: ThrsModel, SensorValues: ThrsModel]:
     def tick(
         self,
         control_values: ControlValues,
-        simulation_inputs: dict[str, Any],
+        simulation_inputs: SimulationInputs,
         duration: timedelta,
-    ) -> SensorValues:
+    ) -> tuple[SensorValues, SimulationOutputs]:
         stop = self._time + duration.total_seconds()
 
         control_dict = control_values.model_dump()
+        simulation_inputs_dict = simulation_inputs.model_dump()
 
         self._fmu.setReal(
             self._var_mapper(control_dict.keys())
-            + self._var_mapper(simulation_inputs.keys()),
-            list(control_dict.values()) + list(simulation_inputs.values()),
+            + self._var_mapper(simulation_inputs_dict.keys()),
+            list(control_dict.values()) + list(simulation_inputs_dict.values()),
         )
 
         while self._time < stop:
@@ -96,7 +100,10 @@ class Fmu[ControlValues: ThrsModel, SensorValues: ThrsModel]:
 
         output_names = self._sensors_cls.model_fields.keys()
         outputs = self._fmu.getReal(self._var_mapper(output_names))
-        return self._sensors_cls(**dict(zip(output_names, outputs)))
+        output_dict = dict(zip(output_names, outputs))
+        return self._sensors_cls(**output_dict), self._simulation_outputs_cls(
+            **output_dict
+        )
 
     @property
     def solver_time(self):

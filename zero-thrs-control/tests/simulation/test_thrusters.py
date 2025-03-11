@@ -9,7 +9,8 @@ from input_output.modules.thrusters import (ThrustersControlValues,
                                             ThrustersSensors)
 from simulation.executor import Executor
 from simulation.fmu import Fmu
-from simulation.models.thrusters.thrusters_io import ThrustersSimulationInputs
+from simulation.models.thrusters.thrusters_io import (
+    ThrustersSimulationInputs, ThrustersSimulationOutputs)
 
 
 class Parameters(BaseModel):
@@ -26,15 +27,18 @@ simple_inputs = ThrustersSimulationInputs(
 
 
 @fixture
-def simple_thrusters() -> Executor[ThrustersControlValues, ThrustersSensors]:
+def simple_thrusters() -> (
+    Executor[ThrustersControlValues, ThrustersSensors, ThrustersSimulationOutputs]
+):
     return Executor(
-        Fmu[ThrustersControlValues, ThrustersSensors](
+        Fmu[ThrustersControlValues, ThrustersSensors, ThrustersSimulationOutputs](
             str(
                 Path(__file__).resolve().parent.parent
                 / "../simulation/models/thrusters/thruster_moduleV3.fmu"
             ),
             Parameters(),
             ThrustersSensors,
+            ThrustersSimulationOutputs,
             timedelta(seconds=1),
         ),
         simple_inputs,
