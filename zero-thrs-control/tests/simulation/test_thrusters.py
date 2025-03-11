@@ -5,40 +5,39 @@ from pydantic import BaseModel
 from pytest import fixture
 
 from control.modules.thrusters import ThrustersControl, ThrustersSetpoints
-from input_output.base import Stamped
-from input_output.control import Pump, Valve
-from input_output.modules.thrusters import ThrustersControls, ThrustersSensors
+from input_output.modules.thrusters import (ThrustersControlValues,
+                                            ThrustersSensors)
 from simulation.executor import Executor
 from simulation.fmu import Fmu
-from simulation.models.thrusters.thrustersmodule import ThrustersEnvironmentals
+from simulation.models.thrusters.thrusters_io import ThrustersSimulationInputs
 
 
 class Parameters(BaseModel):
     pass
 
 
-simple_environmentals = ThrustersEnvironmentals(
+simple_inputs = ThrustersSimulationInputs(
     aft_heat_flow=9000.0,
     fwd_heat_flow=4300.0,
-    seawater_temperature=10.0,
-    seawater_flow=50.0,
-    module_inflow_temperature=50.0,
+    seawater_supply_temperature=10.0,
+    seawater_supply_flow=50.0,
+    module_supply_temperature=50.0,
 )
 
 
 @fixture
-def simple_thrusters():
+def simple_thrusters() -> Executor[ThrustersControlValues, ThrustersSensors]:
     return Executor(
-        Fmu[ThrustersControls, ThrustersSensors](
+        Fmu[ThrustersControlValues, ThrustersSensors](
             str(
                 Path(__file__).resolve().parent.parent
-                / "../simulation/models/thrusters/thruster_moduleV2.fmu"
+                / "../simulation/models/thrusters/thruster_moduleV3.fmu"
             ),
             Parameters(),
             ThrustersSensors,
             timedelta(seconds=1),
         ),
-        simple_environmentals,
+        simple_inputs,
         datetime.now(),
         datetime.now() + timedelta(minutes=1),
         timedelta(seconds=1),
@@ -46,7 +45,7 @@ def simple_thrusters():
 
 
 @fixture
-def thrusters_control():
+def thrusters_control() -> ThrustersControl:
     return ThrustersControl(ThrustersSetpoints(cooling_mix_setpoint=40.0))
 
 

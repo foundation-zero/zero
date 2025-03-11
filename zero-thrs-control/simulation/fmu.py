@@ -51,6 +51,10 @@ class Fmu[ControlValues: ThrsModel, SensorValues: ThrsModel]:
             parameter_values.values(),
         )
 
+        output_names = self._sensors_cls.model_fields.keys()
+        outputs = self._fmu.getReal(self._var_mapper(output_names))
+        self._initial_values = self._sensors_cls(**dict(zip(output_names, outputs)))
+
     def __enter__(self) -> Self:
         return self
 
@@ -69,7 +73,7 @@ class Fmu[ControlValues: ThrsModel, SensorValues: ThrsModel]:
     def tick(
         self,
         control_values: ControlValues,
-        environmentals: dict[str, Any],
+        simulation_inputs: dict[str, Any],
         duration: timedelta,
     ) -> SensorValues:
         stop = self._time + duration.total_seconds()
@@ -78,8 +82,8 @@ class Fmu[ControlValues: ThrsModel, SensorValues: ThrsModel]:
 
         self._fmu.setReal(
             self._var_mapper(control_dict.keys())
-            + self._var_mapper(environmentals.keys()),
-            list(control_dict.values()) + list(environmentals.values()),
+            + self._var_mapper(simulation_inputs.keys()),
+            list(control_dict.values()) + list(simulation_inputs.values()),
         )
 
         while self._time < stop:

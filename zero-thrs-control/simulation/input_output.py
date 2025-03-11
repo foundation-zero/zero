@@ -5,7 +5,7 @@ import polars as pl
 from pydantic import BaseModel, ConfigDict, field_serializer, field_validator
 
 
-class Environmentals(BaseModel):
+class SimulationInputs(BaseModel):
 
     model_config = ConfigDict(extra="forbid", arbitrary_types_allowed=True)
 
@@ -57,3 +57,7 @@ class Environmentals(BaseModel):
                 result[field_name] = value
 
         return result
+
+
+class SimulationOutputs(BaseModel):
+    pass

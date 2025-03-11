@@ -6,10 +6,10 @@ import polars as pl
 import pytest
 from pydantic import ValidationError
 
-from simulation.environmentals import Environmentals
+from simulation.input_output import SimulationInputs
 
 
-class SimpleEnvironmentals(Environmentals):
+class SimpleInputs(SimulationInputs):
     a: float
     b: pl.DataFrame
 
@@ -27,8 +27,8 @@ def valid_dataframe():
 
 
 def test_valid_environmentals(valid_dataframe):
-    environmentals = SimpleEnvironmentals(a=1.0, b=valid_dataframe)
-    assert isinstance(environmentals, SimpleEnvironmentals)
+    environmentals = SimpleInputs(a=1.0, b=valid_dataframe)
+    assert isinstance(environmentals, SimpleInputs)
     assert environmentals.a == 1.0
     assert environmentals.b.equals(valid_dataframe)
 
@@ -37,14 +37,14 @@ def test_invalid_environmentals(valid_dataframe):
     invalid_dataframe = pl.DataFrame({"value": [1, 2, 3]})
 
     with pytest.raises(ValidationError, match="DataFrame schema must be"):
-        SimpleEnvironmentals(a=1.0, b=invalid_dataframe)
+        SimpleInputs(a=1.0, b=invalid_dataframe)
 
     with pytest.raises(ValidationError, match="Fields must be"):
-        SimpleEnvironmentals(a="hello", b=valid_dataframe)  # type: ignore
+        SimpleInputs(a="hello", b=valid_dataframe)  # type: ignore
 
 
 def test_environmentals_selection(valid_dataframe):
-    environmentals = SimpleEnvironmentals(a=1.0, b=valid_dataframe)
+    environmentals = SimpleInputs(a=1.0, b=valid_dataframe)
 
     assert environmentals.get_values_at_time(datetime(2025, 1, 1)) == {
         "a": 1.0,
@@ -67,7 +67,7 @@ def test_environmentals_selection(valid_dataframe):
 
 
 def test_environmentals_serialization(valid_dataframe):
-    environmentals = SimpleEnvironmentals(a=1.0, b=valid_dataframe)
+    environmentals = SimpleInputs(a=1.0, b=valid_dataframe)
     serialized = environmentals.model_dump_json()
     model_dict = json.loads(serialized)
     assert model_dict["a"] == 1.0

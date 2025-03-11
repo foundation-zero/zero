@@ -4,9 +4,9 @@ from pathlib import Path
 from pydantic import BaseModel
 
 from input_output.base import ThrsModel
-from simulation.environmentals import Environmentals
 from simulation.executor import Executor
 from simulation.fmu import Fmu
+from simulation.input_output import SimulationInputs
 
 
 class Parameters(BaseModel):
@@ -34,7 +34,7 @@ def test_executor():
             SensorValues,
             timedelta(seconds=0.1),
         ),
-        Environmentals(),
+        SimulationInputs(),
         start_time,
         start_time + timedelta(seconds=2),
         timedelta(seconds=1),

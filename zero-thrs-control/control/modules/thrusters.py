@@ -3,7 +3,8 @@ from pydantic import BaseModel
 from control.controllers import HeatDumpController
 from input_output.base import Stamped
 from input_output.control import Pump, Valve
-from input_output.modules.thrusters import ThrustersControls, ThrustersSensors
+from input_output.modules.thrusters import (ThrustersControlValues,
+                                            ThrustersSensors)
 from input_output.units import Celsius
 
 
@@ -13,15 +14,13 @@ class ThrustersSetpoints(BaseModel):
 
 class ThrustersControl:
     def __init__(self, setpoints: ThrustersSetpoints):
-        self._setpoints = ThrustersSetpoints
-        self._heat_dump_controller = HeatDumpController(
-            ThrustersSetpoints.cooling_mix_setpoint
-        )
+        self._setpoints = setpoints
+        self._heat_dump_controller = HeatDumpController(setpoints.cooling_mix_setpoint)
 
     def simple_cooling(
         self, sensor_values: ThrustersSensors, time
-    ) -> ThrustersControls:
-        return ThrustersControls(
+    ) -> ThrustersControlValues:
+        return ThrustersControlValues(
             thrusters_pump_1=Pump(
                 dutypoint=Stamped(value=0.5, timestamp=time),
                 on=Stamped(value=True, timestamp=time),
@@ -51,9 +50,9 @@ class ThrustersControl:
             thrusters_switch_fwd=Valve(setpoint=Stamped(value=0, timestamp=time)),
         )
 
-    def simple_recovery(self, time) -> ThrustersControls:
+    def simple_recovery(self, time) -> ThrustersControlValues:
         # recovery without mixing
-        return ThrustersControls(
+        return ThrustersControlValues(
             thrusters_pump_1=Pump(
                 dutypoint=Stamped(value=0.5, timestamp=time),
                 on=Stamped(value=True, timestamp=time),

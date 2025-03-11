@@ -35,7 +35,7 @@ class ThrustersSensors(ThrsModel):
     thrusters_pressure_cooling: Annotated[sensor.PressureSensor, Meta("5001097-02")]
 
 
-class ThrustersControls(ThrsModel):
+class ThrustersControlValues(ThrsModel):
     thrusters_pump_1: Annotated[control.Pump, Meta("5001015")]
     thrusters_pump_2: Annotated[control.Pump, Meta("5001016")]
     thrusters_mix_aft: Annotated[control.Valve, Meta("5001042-01")]
