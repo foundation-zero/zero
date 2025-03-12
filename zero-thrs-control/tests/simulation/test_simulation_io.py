@@ -66,9 +66,9 @@ def test_inputs_selection(valid_dataframe):
         inputs.get_values_at_time(datetime(2026, 1, 1))
 
 
-def test_environmentals_serialization(valid_dataframe):
-    siumlation_inputs = SimpleInputs(a=1.0, b=valid_dataframe)
-    serialized = siumlation_inputs.model_dump_json()
+def test_output_serialization(valid_dataframe):
+    simulation_inputs = SimpleInputs(a=1.0, b=valid_dataframe)
+    serialized = simulation_inputs.model_dump_json()
     model_dict = json.loads(serialized)
     assert model_dict["a"] == 1.0
     assert pl.read_json(
