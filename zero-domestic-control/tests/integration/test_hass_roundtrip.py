@@ -5,9 +5,9 @@ from homeassistant_api import Client as HassClient, WebsocketClient as HassWsCli
 from aiomqtt import Client as MqttClient
 from zero_domestic_control.app import app
 from zero_domestic_control.config import Settings
-from zero_domestic_control.hass import Hass, HassControl
+from zero_domestic_control.services.hass import Hass, HassControl
 from zero_domestic_control.messages import Blind, LightingGroup
-from zero_domestic_control.mqtt import Mqtt
+from zero_domestic_control.mqtt import DataCollection
 
 
 @fixture
@@ -66,7 +66,7 @@ async def test_lighting_group_to_hass(hass):
 async def test_hass_lighting_group_to_control_to_mqtt(
     mqtt: MqttClient, mqtt_two: MqttClient, hass_ws, hass
 ):
-    mqtt_wrapper = Mqtt(mqtt)
+    mqtt_wrapper = DataCollection(mqtt)
     control = HassControl(hass_ws, mqtt_wrapper)
 
     hass_wrapped = Hass(hass)
@@ -77,7 +77,7 @@ async def test_hass_lighting_group_to_control_to_mqtt(
     diff_msg = LightingGroup(id="owners-cabin/mood", level=0.1)
     await hass_wrapped.set_lighting_group(diff_msg)
 
-    await mqtt_two.subscribe("domestic/lighting_groups")
+    await mqtt_two.subscribe("domestic/lighting-groups")
     msg = LightingGroup(id="owners-cabin/mood", level=0.5)
     await hass_wrapped.set_lighting_group(msg)
 
@@ -85,7 +85,7 @@ async def test_hass_lighting_group_to_control_to_mqtt(
     if LightingGroup.model_validate_json(result.payload).level == 0.1:
         result = await anext(mqtt_two.messages)
 
-    assert result.topic.value == "domestic/lighting_groups"
+    assert result.topic.value == "domestic/lighting-groups"
     assert LightingGroup.model_validate_json(result.payload) == msg
 
     control_task.cancel()
@@ -109,7 +109,7 @@ async def test_blind_to_hass(hass):
 async def test_hass_blind_to_control_to_mqtt(
     mqtt: MqttClient, mqtt_two: MqttClient, hass_ws, hass
 ):
-    mqtt_wrapper = Mqtt(mqtt)
+    mqtt_wrapper = DataCollection(mqtt)
     control = HassControl(hass_ws, mqtt_wrapper)
 
     hass_wrapped = Hass(hass)

@@ -124,6 +124,13 @@ services:
     environment:
       <<: *app_env
 
+  stub:
+    command: ["zero_domestic_control", "stub"]
+    build:
+      context: .
+    environment:
+      <<: *app_env
+
   setup:
     profiles:
       - setup

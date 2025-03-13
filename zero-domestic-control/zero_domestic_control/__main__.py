@@ -23,6 +23,9 @@ async def run():
     control_cmd = sub_parser.add_parser("control")
     control_cmd.set_defaults(func=control)
 
+    stub_cmd = sub_parser.add_parser("stub")
+    stub_cmd.set_defaults(func=stub)
+
     await parser.parse_args().func()
 
 
@@ -64,6 +67,14 @@ async def control():
     async with Control.init_from_settings(settings) as control:
         print("Running control")
         await control.run()
+
+
+async def stub():
+    from zero_domestic_control.services.stubs import Stub
+
+    stub = await Stub.from_settings(settings)
+    print("Running stub")
+    await stub.run()
 
 
 if __name__ == "__main__":

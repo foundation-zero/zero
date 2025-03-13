@@ -8,10 +8,16 @@ from strawberry.schema.config import StrawberryConfig
 
 from strawberry.fastapi import GraphQLRouter, BaseContext
 
-from zero_domestic_control.av import Av, Gude
+from zero_domestic_control.services.ac import Ac
+from zero_domestic_control.services.av import Av, Gude
 from zero_domestic_control.config import Settings
-from zero_domestic_control.hass import Hass
-from zero_domestic_control.mqtt import Blind, LightingGroup, Mqtt, Room
+from zero_domestic_control.services.hass import Hass
+from zero_domestic_control.mqtt import (
+    Blind,
+    ControlSend,
+    DataCollection,
+    LightingGroup,
+)
 
 import logging
 import os
@@ -23,9 +29,10 @@ settings = Settings()
 
 @dataclass
 class MyContext(BaseContext):
-    mqtt: Mqtt
+    data_collection: DataCollection
     hass: Hass
     av: Av
+    ac: Ac
 
 
 async def mqtt_client():
@@ -33,8 +40,8 @@ async def mqtt_client():
         yield client
 
 
-async def mqtt(mqtt_client: Annotated[MqttClient, Depends(mqtt_client)]):
-    yield Mqtt(mqtt_client)
+async def data_collection(mqtt_client: Annotated[MqttClient, Depends(mqtt_client)]):
+    yield DataCollection(mqtt_client)
 
 
 async def hass_client():
@@ -44,17 +51,22 @@ async def hass_client():
 
 async def av(
     mqtt_client: Annotated[MqttClient, Depends(mqtt_client)],
-    mqtt: Annotated[Mqtt, Depends(mqtt)],
+    data_collection: Annotated[DataCollection, Depends(data_collection)],
 ):
-    yield Av(Gude(mqtt_client), mqtt)
+    yield Av(Gude(mqtt_client), data_collection)
+
+
+async def ac(mqtt_client: Annotated[MqttClient, Depends(mqtt_client)]):
+    yield Ac(ControlSend(mqtt_client))
 
 
 async def get_context(
-    mqtt: Annotated[Mqtt, Depends(mqtt)],
+    data_collection: Annotated[DataCollection, Depends(data_collection)],
     hass_client: Annotated[Hass, Depends(hass_client)],
     av: Annotated[Av, Depends(av)],
+    ac: Annotated[Ac, Depends(ac)],
 ) -> MyContext:
-    return MyContext(mqtt, hass_client, av)
+    return MyContext(data_collection, hass_client, av, ac)
 
 
 @strawberry.type
@@ -76,15 +88,7 @@ class Mutation:
             strawberry.argument(description="desired temperature in degrees Celsius"),
         ],
     ) -> None:
-        await info.context.mqtt.send_room(
-            Room(
-                id=id,
-                actual_temperature=temperature,
-                temperature_setpoint=temperature,
-                actual_humidity=None,
-                amplifier_on=None,
-            )
-        )
+        await info.context.ac.write_room_temperature_setpoint(id, temperature)
 
     @strawberry.mutation
     async def set_blind(

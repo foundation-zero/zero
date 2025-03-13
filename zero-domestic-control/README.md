@@ -19,6 +19,16 @@ Run backend
 poetry run fastapi dev zero_domestic_control/app.py
 ```
 
+Run control
+```bash
+poetry run python -m zero_domestic_control setup
+```
+
+Run stubs
+```bash
+poetry run python -m zero_domestic_control stub
+```
+
 Apply hasura metadata
 ```bash
 cd hasura

@@ -3,17 +3,16 @@ import asyncio
 import json
 from pytest import fixture
 import pytest
-from zero_domestic_control.av import (
+from zero_domestic_control.services.av import (
     AFT_PDU,
-    AV_STUB_TELEMETRY_INTERVAL,
     FWD_PDU,
     Av,
     AvControl,
-    AvStub,
     Gude,
 )
+from zero_domestic_control.services.stubs.av import AV_STUB_TELEMETRY_INTERVAL, AvStub
 from zero_domestic_control.config import Settings
-from zero_domestic_control.mqtt import Mqtt
+from zero_domestic_control.mqtt import DataCollection
 from aiomqtt import Client as MqttClient
 from fastapi.testclient import TestClient
 from zero_domestic_control.app import app
@@ -40,7 +39,6 @@ async def expect_result(fn, result, timeout):
             while True:
                 if fn() == result:
                     return True
-                print("waiting")
                 await asyncio.sleep(0.05)
         return False
     except asyncio.TimeoutError:
@@ -75,7 +73,7 @@ async def test_stub(mqtt_client, mqtt_client2):
 
 @pytest.mark.timeout(10)
 async def test_av_send(mqtt_client, mqtt_client2):
-    av = Av(Gude(mqtt_client), Mqtt(mqtt_client))
+    av = Av(Gude(mqtt_client), DataCollection(mqtt_client))
     stub = AvStub(mqtt_client2)
 
     stub_task = create_task(stub.run())
@@ -92,7 +90,7 @@ async def test_av_send(mqtt_client, mqtt_client2):
 
 @pytest.mark.timeout(10)
 async def test_av_control_receive(mqtt_client, mqtt_client2, mqtt_client3):
-    av_control = AvControl(Gude(mqtt_client), Mqtt(mqtt_client))
+    av_control = AvControl(Gude(mqtt_client), DataCollection(mqtt_client))
     stub = AvStub(mqtt_client2)
 
     await mqtt_client3.subscribe("domestic/rooms")

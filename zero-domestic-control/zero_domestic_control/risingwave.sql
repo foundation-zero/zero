@@ -128,7 +128,7 @@ WITH
   (
     connector = 'mqtt',
     url = 'tcp://mosquitto',
-    topic = 'domestic/lighting_groups',
+    topic = 'domestic/lighting-groups',
     qos = 'at_least_once',
   ) FORMAT PLAIN ENCODE JSON;
 

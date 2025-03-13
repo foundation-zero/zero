@@ -10,7 +10,7 @@ from zero_domestic_control.config import Settings
 import re
 
 from zero_domestic_control.messages import Blind, LightingGroup
-from zero_domestic_control.mqtt import Mqtt
+from zero_domestic_control.mqtt import DataCollection
 from zero_domestic_control.util import invert_dict
 
 logger = logging.getLogger(__name__)
@@ -125,7 +125,6 @@ _BLIND_IDS_INV = invert_dict(_BLIND_IDS)
 
 
 class Hass:
-
     def __init__(self, client: HassClient):
         self._client = client
 
@@ -211,10 +210,9 @@ class CoverChanged(BaseModel):
 
 
 class HassControl:
-
-    def __init__(self, hass: HassWsClient, mqtt: Mqtt):
+    def __init__(self, hass: HassWsClient, data: DataCollection):
         self._hass = hass
-        self._mqtt = mqtt
+        self._data = data
 
     # _run is wrapped into run_in_executor to avoid blocking the event loop
     def _run(self, loop: asyncio.AbstractEventLoop):
@@ -232,7 +230,7 @@ class HassControl:
                             / 100,  # hass uses 0..100 values
                         )
                         loop.create_task(
-                            self._mqtt.send_lighting_group(lighting_group_msg)
+                            self._data.send_lighting_group(lighting_group_msg)
                         )
                 elif event.data["entity_id"].startswith("cover."):
                     cover_change = CoverChanged(**event.data)
@@ -244,7 +242,7 @@ class HassControl:
                             level=cover_change.new_state.attributes.current_position
                             / 100,
                         )
-                        loop.create_task(self._mqtt.send_blind(blind_msg))
+                        loop.create_task(self._data.send_blind(blind_msg))
 
     async def run(self):
         loop = asyncio.get_event_loop()
