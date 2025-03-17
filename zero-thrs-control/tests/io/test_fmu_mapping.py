@@ -3,7 +3,7 @@ from datetime import timedelta
 
 from input_output.base import Stamped, ThrsModel
 from input_output.fmu_mapping import build_inputs_for_fmu, build_outputs_from_fmu
-from input_output.sensor import FlowSensor
+from input_output.definitions.sensor import FlowSensor
 
 
 class MiniModel(ThrsModel):

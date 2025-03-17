@@ -4,7 +4,7 @@ import pytest
 from pydantic import ValidationError
 
 from input_output.base import Stamped
-from input_output.units import LMin
+from input_output.definitions.units import LMin
 
 
 def test_lmin():

@@ -2,7 +2,7 @@ from typing import Annotated
 
 from input_output.base import Meta, ThrsModel
 from input_output.model_builder import ModelBuilder
-from input_output.sensor import FlowSensor
+from input_output.definitions.sensor import FlowSensor
 
 
 class SimpleSensors(ThrsModel):

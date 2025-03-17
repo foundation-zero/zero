@@ -1,5 +1,5 @@
 from input_output.base import Stamped, ThrsModel
-from input_output.units import Ratio
+from input_output.definitions.units import Ratio
 
 
 class Pump(ThrsModel):

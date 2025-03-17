@@ -5,7 +5,7 @@ from functools import reduce
 from pydantic.fields import FieldInfo
 
 from input_output.base import Stamped, ThrsModel
-from input_output.units import unit_meta
+from input_output.definitions.units import unit_meta
 
 
 def groupby(iterable, key):

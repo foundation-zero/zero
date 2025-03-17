@@ -1,5 +1,5 @@
 from input_output.base import Stamped, ThrsModel
-from input_output.units import Bar, Celsius, Hz, LMin, Ratio
+from input_output.definitions.units import Bar, Celsius, Hz, LMin, Ratio
 
 
 class FlowSensor(ThrsModel):

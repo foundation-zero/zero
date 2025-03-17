@@ -1,5 +1,5 @@
 from input_output.base import Stamped, ThrsModel
-from input_output.units import Celsius, LMin, Watt
+from input_output.definitions.units import Celsius, LMin, Watt
 
 
 class HeatSource(ThrsModel):

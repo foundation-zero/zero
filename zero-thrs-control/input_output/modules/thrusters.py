@@ -1,8 +1,8 @@
 from typing import Annotated
 
-import input_output.control as control
-import input_output.sensor as sensor
-from input_output import simulation
+import input_output.definitions.control as control
+import input_output.definitions.sensor as sensor
+from input_output.definitions import simulation
 from input_output.base import Meta, SimulationInputs, ThrsModel
 
 
