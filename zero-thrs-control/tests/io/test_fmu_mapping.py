@@ -1,4 +1,4 @@
-from datetime import timedelta
+from datetime import datetime
 
 
 from input_output.base import Stamped, ThrsModel
@@ -38,14 +38,16 @@ def test_fmu_inputs():
 
 
 def test_fmu_roundtrip():
+    time = datetime.now()
     control_values = MiniModel(
         flow_sensor=FlowSensor(
-            flow=Stamped.stamp(12.12), temperature=Stamped.stamp(17.12)
+            flow=Stamped(value=12.12, timestamp=time),
+            temperature=Stamped(value=17.12, timestamp=time),
         )
     )
 
     control_values = build_inputs_for_fmu(control_values)
 
     assert control_values, control_values == build_outputs_from_fmu(
-        [MiniModel], control_values, timedelta(seconds=1)
-    )  # type: ignore
+        [MiniModel], control_values, time
+    )

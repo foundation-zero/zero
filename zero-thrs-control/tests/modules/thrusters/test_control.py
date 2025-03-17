@@ -20,8 +20,8 @@ from simulation.executor import Executor
 from simulation.fmu import Fmu
 
 simple_inputs = ThrustersSimulationInputs(
-    thruster_aft=HeatSource(heat_flow=Stamped.stamp(9000)),
-    thruster_fwd=HeatSource(heat_flow=Stamped.stamp(4300)),
+    thrusters_aft=HeatSource(heat_flow=Stamped.stamp(9000)),
+    thrusters_fwd=HeatSource(heat_flow=Stamped.stamp(4300)),
     thrusters_seawater_supply=Boundary(
         temperature=Stamped.stamp(10), flow=Stamped.stamp(50)
     ),
@@ -35,7 +35,7 @@ def thrusters() -> Executor:
         Fmu(
             str(
                 Path(__file__).resolve().parent.parent
-                / "../../simulation/models/thrusters/thruster_moduleV4.fmu"
+                / "../../simulation/models/thrusters/thruster_moduleV5.fmu"
             ),
             timedelta(seconds=0.1),
         ),

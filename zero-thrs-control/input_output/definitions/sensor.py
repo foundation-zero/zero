@@ -4,7 +4,7 @@ from input_output.definitions.units import Bar, Celsius, Hz, LMin, Ratio, second
 
 class FlowSensor(ThrsModel):
     flow: Stamped[LMin]
-    # temperature: Stamped[Celsius] #Commented out since it has to be added to the fmu
+    temperature: Stamped[Celsius]
 
 
 class Pump(ThrsModel):

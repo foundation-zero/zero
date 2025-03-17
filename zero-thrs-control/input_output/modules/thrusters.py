@@ -3,13 +3,12 @@ from typing import Annotated
 import input_output.definitions.control as control
 import input_output.definitions.sensor as sensor
 from input_output.definitions import simulation
-from input_output.base import Meta, SimulationInputs, ThrsModel
+from input_output.base import Meta, ThrsModel
 
 
-# Variables that still have to be added to the latest version of the FMU are commented out
 class ThrustersSensorValues(ThrsModel):
-    # thrusters_pump1: Annotated[sensor.Pump, Meta("5001015")]
-    # thrusters_pump2: Annotated[sensor.Pump, Meta("5001016")]
+    thrusters_pump1: Annotated[sensor.Pump, Meta("5001015")]
+    thrusters_pump2: Annotated[sensor.Pump, Meta("5001016")]
     thrusters_temperature_aft_return: Annotated[
         sensor.TemperatureSensor, Meta("5001038-01")
     ]
@@ -33,8 +32,6 @@ class ThrustersSensorValues(ThrsModel):
     thrusters_flowcontrol_aft: Annotated[sensor.Valve, Meta("5001064-01")]
     thrusters_flowcontrol_fwd: Annotated[sensor.Valve, Meta("5001064-02")]
     thrusters_shutoff_recovery: Annotated[sensor.Valve, Meta("5001069-10")]
-    # thrusters_pressure_recovery: Annotated[sensor.PressureSensor, Meta("5001097-01")]
-    # thrusters_pressure_cooling: Annotated[sensor.PressureSensor, Meta("5001097-02")]
     thrusters_switch_aft: Annotated[sensor.Valve, Meta("50001091-01")]
     thrusters_switch_fwd: Annotated[sensor.Valve, Meta("50001091-02")]
 
@@ -53,8 +50,8 @@ class ThrustersControlValues(ThrsModel):
 
 
 class ThrustersSimulationInputs(ThrsModel):
-    thruster_aft: simulation.HeatSource  # TODO: fix typo in FMU
-    thruster_fwd: simulation.HeatSource  # TODO: fix typo in FMU
+    thrusters_aft: simulation.HeatSource
+    thrusters_fwd: simulation.HeatSource
     thrusters_seawater_supply: simulation.Boundary
     thrusters_module_supply: simulation.TemperatureBoundary
 

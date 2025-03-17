@@ -28,12 +28,10 @@ def test_modelica_names():
         {
             **build_inputs_for_fmu(ThrustersControlValues.zero()),
             **build_inputs_for_fmu(ThrustersSimulationInputs.zero()),
+            **build_inputs_for_fmu(ThrustersSensorValues.zero()),
+            **build_inputs_for_fmu(ThrustersSimulationOutputs.zero()),
         }.keys()
     )
-    py_outputs_keys = set(
-        build_inputs_for_fmu(ThrustersSensorValues.zero()).keys()
-    ) | set(build_inputs_for_fmu(ThrustersSimulationOutputs.zero()).keys())
-
     missing_in_py = thrusters_variables - py_keys
     missing_in_sheet = py_keys - thrusters_variables
 

@@ -1,4 +1,3 @@
-from typing import Optional
 
 from input_output.base import Stamped, ThrsModel
 from input_output.definitions.units import Celsius, LMin, Watt
