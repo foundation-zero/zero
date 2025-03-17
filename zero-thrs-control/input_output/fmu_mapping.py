@@ -39,11 +39,10 @@ def build_inputs_for_fmu(
 
 
 def build_outputs_from_fmu(
-    sensor_values_cls: type[ThrsModel],
-    simulation_outputs_cls: type[ThrsModel],
+    clss: list[type[ThrsModel]],
     values: dict[str, float],
     timestamp: datetime,
-) -> tuple[ThrsModel, ThrsModel]:
+) -> list[ThrsModel]:
     # first part is the component name, second part is the field name, third (if any) is the unit
     # ignore third, build dict of dict of first part and second part
     def _split_component_field(key: str):
@@ -62,6 +61,4 @@ def build_outputs_from_fmu(
         for component, field_values in grouped_by_component
     }
 
-    return sensor_values_cls.model_validate(
-        nested_values
-    ), simulation_outputs_cls.model_validate(nested_values)
+    return [cls(**nested_values) for cls in clss]

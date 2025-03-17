@@ -8,5 +8,5 @@ from input_output.units import LMin
 
 
 def test_lmin():
-    with pytest.raises(ValidationError) as exc_info:
+    with pytest.raises(ValidationError):
         Stamped[LMin](value=-1, timestamp=datetime.now())

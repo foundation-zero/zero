@@ -15,11 +15,11 @@ jobs:
       - run: poetry install
 
       - run: poetry run fmpy compile simulation/models/XRGTestModel/FMUInterfaceTester_MECS_regular.fmu
+      
+      - run: poetry run fmpy compile simulation/models/thrusters/thruster_moduleV4.fmu
 
       - run: poetry run pyright
 
-      - run: poetry run black . 
-
-      - run: poetry run isort .
+      - run: poetry run ruff check input_output simulation tests
 
       - run: poetry run pytest -v

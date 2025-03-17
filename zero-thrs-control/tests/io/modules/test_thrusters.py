@@ -1,37 +1,18 @@
-from datetime import timedelta
-from pathlib import Path
-
 import polars as pl
-from pytest import fixture
 
 from input_output.fmu_mapping import build_inputs_for_fmu
-from input_output.modules.thrusters import (ThrustersControlValues,
-                                            ThrustersSensorValues,
-                                            ThrustersSimulationInputs,
-                                            ThrustersSimulationOutputs)
-from simulation.executor import Executor
-from simulation.fmu import Fmu
+from input_output.modules.thrusters import (
+    ThrustersControlValues,
+    ThrustersSensorValues,
+    ThrustersSimulationInputs,
+    ThrustersSimulationOutputs,
+)
 
 # TODO: before open sourcing set to view only on link
 SHEET_URL = "https://docs.google.com/spreadsheets/d/1YyfkKmqL8MZuJfStljTjhgFxawcco2cp2qCmBGFrR04/export?gid=0&format=csv"
 
 
-@fixture
-def executor():
-    return Executor(
-        Fmu(
-            str(
-                Path(__file__).resolve().parent.parent
-                / "../../simulation/models/thrusters/thruster_moduleV4.fmu"
-            ),
-            timedelta(seconds=0.1),
-        ),
-        ThrustersSensorValues,
-        ThrustersSimulationOutputs,
-    )
-
-
-def test_modelica_names(executor):
+def test_modelica_names():
     sheet = pl.read_csv(SHEET_URL, skip_lines=1)
     thrusters_variables = set(
         sheet.lazy()
@@ -50,10 +31,8 @@ def test_modelica_names(executor):
         }.keys()
     )
     py_outputs_keys = set(
-        build_inputs_for_fmu(
-            ThrustersSensorValues.zero(), ThrustersSimulationOutputs.zero()  # type: ignore
-        ).keys()
-    )
+        build_inputs_for_fmu(ThrustersSensorValues.zero()).keys()
+    ) | set(build_inputs_for_fmu(ThrustersSimulationOutputs.zero()).keys())
 
     missing_in_py = thrusters_variables - py_inputs_keys - py_outputs_keys
     missing_in_sheet = py_inputs_keys.union(py_outputs_keys) - thrusters_variables

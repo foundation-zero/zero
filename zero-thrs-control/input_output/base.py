@@ -8,12 +8,9 @@ from pydantic import (
     BaseModel,
     ConfigDict,
     create_model,
-    field_serializer,
     field_validator,
 )
-from pydantic.fields import FieldInfo
 
-from input_output.units import unit_meta
 from utils.string import hyphenize
 
 

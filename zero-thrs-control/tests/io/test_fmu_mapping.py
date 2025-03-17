@@ -1,13 +1,9 @@
 from datetime import timedelta
-from pathlib import Path
 
-from pytest import fixture
 
 from input_output.base import Stamped, ThrsModel
 from input_output.fmu_mapping import build_inputs_for_fmu, build_outputs_from_fmu
 from input_output.sensor import FlowSensor
-from simulation.executor import Executor
-from simulation.fmu import Fmu
 
 
 class MiniModel(ThrsModel):
@@ -51,4 +47,4 @@ def test_fmu_roundtrip():
 
     control_values = build_inputs_for_fmu(control_values)
 
-    assert control_values, control_values == build_outputs_from_fmu(MiniModel, MiniModel, control_values, timedelta(seconds=1))  # type: ignore
+    assert control_values, control_values == build_outputs_from_fmu([MiniModel], control_values, timedelta(seconds=1))  # type: ignore

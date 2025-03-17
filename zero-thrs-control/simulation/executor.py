@@ -1,8 +1,7 @@
 from datetime import datetime, timedelta
 
 from input_output.base import SimulationInputs, ThrsModel
-from input_output.fmu_mapping import (build_inputs_for_fmu,
-                                      build_outputs_from_fmu)
+from input_output.fmu_mapping import build_inputs_for_fmu, build_outputs_from_fmu
 from simulation.fmu import Fmu
 
 
@@ -33,9 +32,9 @@ class Executor:
             tick_duration,
         )
 
-        return build_outputs_from_fmu(
-            self._sensor_values_cls,
-            self._simulation_outputs_cls,
+        sensor_values, simulation_outputs = build_outputs_from_fmu(
+            [self._sensor_values_cls, self._simulation_outputs_cls],
             fmu_outputs,
             time + tick_duration,
         )
+        return sensor_values, simulation_outputs
