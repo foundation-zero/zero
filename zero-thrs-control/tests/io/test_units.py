@@ -1,6 +1,7 @@
 from datetime import datetime
-from pydantic import ValidationError
+
 import pytest
+from pydantic import ValidationError
 
 from input_output.base import Stamped
 from input_output.units import LMin

@@ -2,10 +2,11 @@ from typing import Annotated
 
 import input_output.control as control
 import input_output.sensor as sensor
-from input_output.base import Meta, ThrsModel
+from input_output import simulation
+from input_output.base import Meta, SimulationInputs, ThrsModel
 
 
-class ThrustersSensors(ThrsModel):
+class ThrustersSensorValues(ThrsModel):
     thrusters_pump_1: Annotated[sensor.Pump, Meta("5001015")]
     thrusters_pump_2: Annotated[sensor.Pump, Meta("5001016")]
     thrusters_temperature_aft_return: Annotated[
@@ -46,3 +47,17 @@ class ThrustersControlValues(ThrsModel):
     thrusters_shutoff_recovery: Annotated[control.Valve, Meta("5001069-10")]
     thrusters_switch_aft: Annotated[control.Valve, Meta("5001091-01")]
     thrusters_switch_fwd: Annotated[control.Valve, Meta("5001091-02")]
+
+
+class ThrustersSimulationInputs(SimulationInputs):
+    aft: simulation.HeatSource
+    fwd: simulation.HeatSource
+    seawater_supply: simulation.Boundary
+    module_supply: simulation.Boundary
+
+
+class ThrustersSimulationOutputs(ThrsModel):
+    seawater_supply: simulation.Boundary
+    seawater_return: simulation.Boundary
+    module_supply: simulation.Boundary
+    module_return: simulation.Boundary

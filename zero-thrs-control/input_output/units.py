@@ -1,12 +1,24 @@
 # Per https://docs.google.com/document/d/11EGlLqZ21uHy4ICmhvPx9uKOwm0guKgWxY6-1zSQ2mQ/edit?tab=t.0#heading=h.l7ph84h61wda
-from typing import Annotated
 from dataclasses import dataclass
+from typing import Annotated, Any, get_args
+
 from pydantic import Field
 
 
 @dataclass(eq=True, frozen=True)
 class UnitMeta:
     modelica_name: str
+
+
+def unit_meta(unit: Any) -> UnitMeta | None:
+    return (
+        next(
+            (meta for meta in get_args(unit.__value__) if isinstance(meta, UnitMeta)),
+            None,
+        )
+        if unit and hasattr(unit, "__value__")
+        else None
+    )
 
 
 type Celsius = Annotated[float, Field(ge=-273.15), UnitMeta(modelica_name="C")]

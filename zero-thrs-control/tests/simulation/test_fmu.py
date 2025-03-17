@@ -1,12 +1,9 @@
 from datetime import timedelta
 from pathlib import Path
 
-from pydantic import BaseModel
 from pytest import approx
 
-from input_output.base import ThrsModel
 from simulation.fmu import Fmu
-from simulation.input_output import SimulationInputs
 
 
 def test_fmu():

@@ -1,21 +1,20 @@
 from dataclasses import dataclass
 from datetime import datetime
-from functools import reduce
-from typing import Generic, Self, TypeVar, get_args
+from typing import Any, Generic, Self, TypeVar
 
-from pydantic import AliasGenerator, BaseModel, ConfigDict
+import polars as pl
+from pydantic import (
+    AliasGenerator,
+    BaseModel,
+    ConfigDict,
+    create_model,
+    field_serializer,
+    field_validator,
+)
 from pydantic.fields import FieldInfo
 
-from input_output.units import UnitMeta
+from input_output.units import unit_meta
 from utils.string import hyphenize
-import operator
-
-
-def groupby(iterable, key):
-    from itertools import groupby as _groupby
-
-    data = sorted(iterable, key=key)
-    return _groupby(data, key)
 
 
 class ThrsModel(BaseModel):
@@ -32,7 +31,7 @@ class ThrsModel(BaseModel):
         def _zero_component(component):
             return component(
                 **{
-                    field_name: Stamped.stamp(0)
+                    field_name: Stamped.stamp(0.0)
                     for field_name in component.model_fields.keys()
                 }
             )
@@ -43,55 +42,9 @@ class ThrsModel(BaseModel):
         }
         return cls(**vals)
 
-    def values_for_fmu(self) -> dict[str, float]:
-        def _values_for_component(component_name, component):
-            def _name_for_field(field_name, field: FieldInfo):
-                unit = next(iter(field.annotation.__pydantic_generic_metadata__["args"]), None)  # type: ignore
-                unit_meta = (
-                    next(
-                        (
-                            meta
-                            for meta in get_args(unit.__value__)
-                            if isinstance(meta, UnitMeta)
-                        ),
-                        None,
-                    )
-                    if unit and hasattr(unit, "__value__")
-                    else None
-                )
-                if unit_meta:
-                    return f"{component_name}__{field_name}__{unit_meta.modelica_name}"
-                else:
-                    return f"{component_name}__{field_name}"
 
-            return {
-                _name_for_field(field_name, field): getattr(component, field_name).value
-                for field_name, field in component.model_fields.items()
-            }
-
-        vals = [
-            _values_for_component(component_name, getattr(self, component_name))
-            for component_name in self.model_fields.keys()
-        ]
-        return reduce(operator.ior, vals, {})
-
-    @classmethod
-    def build_from_fmu(cls, values: dict[str, float]) -> Self:
-        # first part is the component name, second part is the field name, third (if any) is the unit
-        # ignore third, build dict of dict of first part and second part
-        def _split_component_field(key: str):
-            component, field, *_ = key.split("__")
-            return component, field
-
-        split_values = [
-            (*_split_component_field(key), value) for key, value in values.items()
-        ]
-        grouped_by_component = groupby(split_values, key=operator.itemgetter(0))
-        nested_values = {
-            component: {field: Stamped.stamp(value) for _, field, value in field_values}
-            for component, field_values in grouped_by_component
-        }
-        return cls.model_validate(nested_values)
+def _unit_for_stamp(annotation):
+    return next(iter(annotation.__pydantic_generic_metadata__["args"]), None)  # type: ignore
 
 
 T = TypeVar("T")
@@ -105,7 +58,87 @@ class Stamped(ThrsModel, Generic[T]):
     def stamp[V](value: V) -> "Stamped[V]":
         return Stamped(value=value, timestamp=datetime.now())
 
+    @classmethod
+    def unit(cls) -> Any:
+        return _unit_for_stamp(cls)
+
+
+T2 = TypeVar("T2")
+
+
+class StampedDf(ThrsModel, Generic[T2]):
+    model_config = ConfigDict(arbitrary_types_allowed=True)
+
+    value: pl.DataFrame
+
+    @field_validator("value", mode="before")
+    def validate_field(cls, value):
+        if isinstance(value, pl.DataFrame):
+            expected_schema = {
+                "time": pl.Datetime(time_unit="us", time_zone=None),
+                "value": pl.Float64,
+            }
+            if value.schema != expected_schema:
+                raise ValueError(
+                    f"DataFrame schema must be {expected_schema}, got {value.schema}"
+                )
+        elif not isinstance(value, float):
+            raise ValueError(
+                "Fields must be either a float or a Polars DataFrame with 'time' (Datetime) and 'value' (Float64)."
+            )
+        return value
+
+    @staticmethod
+    def stamp(value: pl.DataFrame) -> "StampedDf[Any]":
+        return StampedDf(value=value)
+
+    @classmethod
+    def unit(cls) -> Any:
+        return _unit_for_stamp(cls)
+
 
 @dataclass
 class Meta:
     yard_tag: str
+
+
+class SimulationInputs(ThrsModel):
+
+    model_config = ConfigDict(extra="forbid", arbitrary_types_allowed=True)
+
+    def get_values_at_time(self, time: datetime) -> "SimulationInputs":
+        values = {}
+        fields = {}
+        for field_name, field in self.model_fields.items():
+            unit = field.annotation.unit()  # type: ignore
+            value = getattr(self, field_name).value
+
+            if isinstance(value, pl.DataFrame):
+                sorted_df = value.sort("time")
+                filtered_df = (
+                    sorted_df.filter(sorted_df["time"] <= time).select("value").tail(1)
+                )
+
+                if (
+                    sorted_df.select("time").tail(1).item() < time
+                    or filtered_df.is_empty()
+                ):
+                    raise ValueError(
+                        f"Time {time} is outside the range of given data for field {field_name}."
+                    )
+                else:
+                    values[field_name] = Stamped(
+                        value=filtered_df.item(), timestamp=time
+                    )
+                    fields[field_name] = unit
+            else:
+                values[field_name] = Stamped(value=value, timestamp=time)
+                fields[field_name] = unit
+
+        SelectedInputsModel = create_model(
+            "SimulationInputs",
+            __base__=SimulationInputs,
+            **{field_name: (Stamped[unit], ...) for field_name, unit in fields.items()},  # type: ignore
+        )  # type: ignore
+
+        return SelectedInputsModel(**values)
