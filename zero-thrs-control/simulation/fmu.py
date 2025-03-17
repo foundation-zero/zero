@@ -44,7 +44,6 @@ class Fmu:
             for var in model_description.modelVariables
             if var.causality == "output"
         ]
-        self._initial_outputs = dict(zip(self._output_names, self._fmu.getReal(self._var_mapper(self._output_names))))  # type: ignore
 
     def __enter__(self) -> Self:
         return self
@@ -66,7 +65,6 @@ class Fmu:
         inputs: dict[str, Any],
         duration: timedelta,
     ) -> dict[str, Any]:
-
         stop = self._time + duration.total_seconds()
 
         self._fmu.setReal(self._var_mapper(inputs.keys()), list(inputs.values()))
@@ -79,7 +77,15 @@ class Fmu:
 
             self._time += self._step_size
 
-        return cast(dict[str, Any], dict(zip(self._output_names, self._fmu.getReal(self._var_mapper(self._output_names)))))  # type: ignore
+        return cast(
+            dict[str, Any],
+            dict(
+                zip(
+                    self._output_names,
+                    self._fmu.getReal(self._var_mapper(self._output_names)),
+                )
+            ),
+        )  # type: ignore
 
     @property
     def solver_time(self):

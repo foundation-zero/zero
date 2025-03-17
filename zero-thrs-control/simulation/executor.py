@@ -23,7 +23,6 @@ class Executor:
         time: datetime,
         tick_duration: timedelta,
     ) -> tuple[ThrsModel, ThrsModel]:
-
         fmu_outputs = self._fmu.tick(
             {
                 **build_inputs_for_fmu(control_values),

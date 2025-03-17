@@ -1,3 +1,5 @@
+from typing import Optional
+
 from input_output.base import Stamped, ThrsModel
 from input_output.definitions.units import Celsius, LMin, Watt
 
@@ -8,4 +10,12 @@ class HeatSource(ThrsModel):
 
 class Boundary(ThrsModel):
     temperature: Stamped[Celsius]
+    flow: Stamped[LMin]
+
+
+class TemperatureBoundary(ThrsModel):
+    temperature: Stamped[Celsius]
+
+
+class FlowBoundary(ThrsModel):
     flow: Stamped[LMin]

@@ -24,7 +24,10 @@ def unit_meta(unit: Any) -> UnitMeta | None:
 type Celsius = Annotated[float, Field(ge=-273.15), UnitMeta(modelica_name="C")]
 type LMin = Annotated[float, Field(ge=0), UnitMeta(modelica_name="l_min")]
 type Hz = Annotated[float, Field(ge=0), UnitMeta(modelica_name="Hz")]
-type Ratio = Annotated[float, Field(ge=0, le=1), UnitMeta(modelica_name="ratio")]
+type Ratio = Annotated[
+    float, UnitMeta(modelica_name="ratio")
+]  # TODO: bound between 0 and 1 in fmu
 type Bar = Annotated[float, Field(ge=0), UnitMeta(modelica_name="Bar")]
 type Watt = Annotated[float, UnitMeta(modelica_name="Watt")]
 type seconds = Annotated[float, UnitMeta(modelica_name="s")]
+type OnOff = Annotated[bool, UnitMeta(modelica_name="bool")]

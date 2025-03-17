@@ -15,7 +15,6 @@ class SecondMiniModel(ThrsModel):
 
 
 def test_fmu_inputs():
-
     assert {
         "flow_sensor__flow__l_min": 12.12,
         "flow_sensor__temperature__C": 17.12,
@@ -47,4 +46,6 @@ def test_fmu_roundtrip():
 
     control_values = build_inputs_for_fmu(control_values)
 
-    assert control_values, control_values == build_outputs_from_fmu([MiniModel], control_values, timedelta(seconds=1))  # type: ignore
+    assert control_values, control_values == build_outputs_from_fmu(
+        [MiniModel], control_values, timedelta(seconds=1)
+    )  # type: ignore

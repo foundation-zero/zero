@@ -1,14 +1,16 @@
 from input_output.base import Stamped, ThrsModel
-from input_output.definitions.units import Bar, Celsius, Hz, LMin, Ratio
+from input_output.definitions.units import Bar, Celsius, Hz, LMin, Ratio, seconds
 
 
 class FlowSensor(ThrsModel):
     flow: Stamped[LMin]
-    temperature: Stamped[Celsius]
+    # temperature: Stamped[Celsius] #Commented out since it has to be added to the fmu
 
 
 class Pump(ThrsModel):
     speed: Stamped[Hz]
+    op_time: Stamped[seconds]
+    flow: Stamped[LMin]
 
 
 class TemperatureSensor(ThrsModel):
@@ -16,7 +18,7 @@ class TemperatureSensor(ThrsModel):
 
 
 class Valve(ThrsModel):
-    relative_position: Stamped[Ratio]
+    position_rel: Stamped[Ratio]
 
 
 class PressureSensor(ThrsModel):
