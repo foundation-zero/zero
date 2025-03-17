@@ -1,11 +1,18 @@
 # Per https://docs.google.com/document/d/11EGlLqZ21uHy4ICmhvPx9uKOwm0guKgWxY6-1zSQ2mQ/edit?tab=t.0#heading=h.l7ph84h61wda
 from typing import Annotated
-
+from dataclasses import dataclass
 from pydantic import Field
 
-type Celsius = Annotated[float, Field(ge=-273.15)]
-type LMin = Annotated[float, Field(ge=0)]
-type Hz = Annotated[float, Field(ge=0)]
-type Ratio = Annotated[float, Field(ge=0, le=1)]
-type Bar = Annotated[float, Field(ge=0)]
-type Watt = Annotated[float, Field(ge=0)]
+
+@dataclass(eq=True, frozen=True)
+class UnitMeta:
+    modelica_name: str
+
+
+type Celsius = Annotated[float, Field(ge=-273.15), UnitMeta(modelica_name="C")]
+type LMin = Annotated[float, Field(ge=0), UnitMeta(modelica_name="l_min")]
+type Hz = Annotated[float, Field(ge=0), UnitMeta(modelica_name="Hz")]
+type Ratio = Annotated[float, Field(ge=0, le=1), UnitMeta(modelica_name="ratio")]
+type Bar = Annotated[float, Field(ge=0), UnitMeta(modelica_name="Bar")]
+type Watt = Annotated[float, UnitMeta(modelica_name="Watt")]
+type seconds = Annotated[float, UnitMeta(modelica_name="s")]
