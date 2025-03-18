@@ -1,14 +1,15 @@
-from dataclasses import dataclass
-from typing import List
+from pathlib import Path
+from .types import IOResult, Source
 
 
-@dataclass
-class IOValue:
-    name: str
-    data_type: str
+def read_io_list(path: Path, type: Source) -> IOResult:
+    if type == "marpower":
+        from .readers.marpower import MarpowerReader
 
+        return MarpowerReader().read_io_list(path)
+    elif type == "vitters":
+        from .readers.vitters import VittersReader
 
-@dataclass
-class IOTopic:
-    topic: str
-    fields: List[IOValue]
+        return VittersReader().read_io_list(path)
+    else:
+        raise ValueError(f"Unsupported IOSource type: {type}")

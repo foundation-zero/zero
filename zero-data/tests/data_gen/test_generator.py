@@ -3,8 +3,8 @@ import json
 from unittest.mock import AsyncMock, patch
 
 from io_processing.config import MQTTConfig
-from io_processing.data_gen.gen import Generator
-from io_processing.io_list import IOTopic, IOValue
+from io_processing.data_gen.generator import Generator
+from io_processing.io_list.types import IOTopic, IOValue
 
 
 async def test_generator():
@@ -19,7 +19,7 @@ async def test_generator():
     mock_client.__aenter__.return_value = mock_client
     mock_client.__aexit__.return_value = mock_client
 
-    with patch("io_processing.data_gen.gen.Client", return_value=mock_client):
+    with patch("io_processing.data_gen.generator.Client", return_value=mock_client):
         gen = Generator(1, mqtt_config, topics)
 
         try:

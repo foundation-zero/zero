@@ -5,16 +5,16 @@ from typing import List
 from aiomqtt import Client
 
 from io_processing.config import MQTTConfig
-from io_processing.io_list import IOTopic
+from io_processing.io_list.types import IOTopic
 
 
 class Generator:
     def __init__(
         self, interval: int | float, mqtt_config: MQTTConfig, topics: List[IOTopic]
     ):
-        self.interval = interval
-        self.mqtt_config = mqtt_config
-        self.topics = topics
+        self.interval: int | float = interval
+        self.mqtt_config: MQTTConfig = mqtt_config
+        self.topics: List[IOTopic] = topics
 
     async def _send_values(self, client: Client):
         print(

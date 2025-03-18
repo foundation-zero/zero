@@ -1,14 +1,14 @@
 from pathlib import Path, PosixPath
 from unittest.mock import patch
 
-import io_processing.generator.io_metadata as io_metadata
+from io_processing.dbt_gen.io_metadata import IOMetadataWriter
 
 
-def test_io_metadata(marpower_normalized_df):
+def test_io_metadata(marpower_io_list):
     with patch("polars.dataframe.DataFrame.write_csv", create=True) as mock_write_csv:
-        io_metadata_df = io_metadata.IOMetadataWriter(
-            Path("/not-used"), marpower_normalized_df
-        ).write_io_metadata_csv()
+        io_metadata_df = IOMetadataWriter(Path("/not-used")).write_io_metadata_csv(
+            marpower_io_list
+        )
         mock_write_csv.assert_called_with(
             PosixPath("/not-used/seeds/io_metadata.csv"), quote_style="non_numeric"
         )

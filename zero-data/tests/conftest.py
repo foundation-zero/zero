@@ -1,25 +1,19 @@
-from pathlib import Path
 from typing import List
 
 import pytest
+from io_processing.io_list.types import IOTopic
+from io_processing.io_list import read_io_list
+from polars import DataFrame
+from pathlib import Path
 
-from io_processing.io_list import IOTopic
-from io_processing.io_list.marpower import (
-    read_amcs_excel,
-    normalize_amcs_io_list,
-    io_topics,
-)
-
-
-@pytest.fixture
-def marpower_normalized_df():
-    repo_root = Path(__file__).parent / ".."
-    amcs_df = read_amcs_excel(
-        repo_root / "io_lists/52422003_3210_AMCS IO-List R1.11.xlsx"
-    )
-    return normalize_amcs_io_list(amcs_df)
+io_result = read_io_list(Path("io_lists/test/marpower_test.xlsx"), "marpower")
 
 
 @pytest.fixture
-def marpower_io_topics(marpower_normalized_df) -> List[IOTopic]:
-    return io_topics(marpower_normalized_df)
+def marpower_io_list() -> DataFrame:
+    return io_result.io_list
+
+
+@pytest.fixture
+def marpower_io_topics() -> List[IOTopic]:
+    return io_result.topics

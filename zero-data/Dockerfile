@@ -28,7 +28,9 @@ COPY --from=builder ${VIRTUAL_ENV} ${VIRTUAL_ENV}
 
 WORKDIR /app
 
-COPY io_lists /io_lists
+COPY io_lists/ ./io_lists
+COPY dbt/ ./dbt
+RUN mkdir -p /dbts/seeds
 COPY src/ ./
 
 ENTRYPOINT ["python", "-m", "io_processing.main"]

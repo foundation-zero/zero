@@ -1,15 +1,19 @@
 # Zero Data
 This repository contains the Zero data platform and the scripts to process the IO lists supplied by various parties into the SQL needed to process the values published by those parties.
 
-## Commands
+## Development
 ```bash
 poetry install
 ```
 
-```bash
-poetry run datamodel-codegen --input-file-type jsonschema --input components.schema.json --output src/io_processing/generated_components.py --class-name Description
-```
+# Local testing
 
 ```bash
-poetry run python -m io_processing --help
+docker compose up
 ```
+
+This will setup
+ - VerneMQ: MQTT Client
+ - RisingWave: Streaming database
+ - dbt_gen: DBT Model based on IO List
+ - data_gen: MQTT signals based on IO list
