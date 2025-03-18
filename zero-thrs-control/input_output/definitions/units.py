@@ -2,7 +2,7 @@
 from dataclasses import dataclass
 from typing import Annotated, Any, get_args
 
-from pydantic import Field
+from pydantic import AfterValidator, Field
 
 
 @dataclass(eq=True, frozen=True)
@@ -19,14 +19,22 @@ def unit_meta(unit: Any) -> UnitMeta | None:
         if unit and hasattr(unit, "__value__")
         else None
     )
-
+    
+def validate_ratio_within_precision(value: float) -> float:
+    if value < 0 and value > -1e-10:
+        return 0.0
+    if value > 1 and value < 1 + 1e-10:
+        return 1.0
+    if 1 < value < 0:
+        raise ValueError(f"Value {value} is outside bounds.")
+    return value
 
 type Celsius = Annotated[float, Field(ge=-273.15), UnitMeta(modelica_name="C")]
 type LMin = Annotated[float, Field(ge=0), UnitMeta(modelica_name="l_min")]
 type Hz = Annotated[float, Field(ge=0), UnitMeta(modelica_name="Hz")]
 type Ratio = Annotated[
-    float, UnitMeta(modelica_name="ratio")
-]  # TODO: bound between 0 and 1 in fmu
+    float, AfterValidator(validate_ratio_within_precision), UnitMeta(modelica_name="ratio")
+]
 type Bar = Annotated[float, Field(ge=0), UnitMeta(modelica_name="Bar")]
 type Watt = Annotated[float, UnitMeta(modelica_name="Watt")]
 type seconds = Annotated[float, UnitMeta(modelica_name="s")]
