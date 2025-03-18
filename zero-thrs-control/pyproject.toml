@@ -3,6 +3,14 @@ name = "simulation"
 version = "0.1.0"
 description = ""
 authors = ["Alje van Dam <alje.vandam@foundationzero.org>", "Boudewijn van Groos <boudewijn.vangroos@foundationzero.org>"]
+packages = [
+  { include = "control", from = "src" },
+  { include = "input_output", from = "src" },
+  { include = "orchestration", from = "src" },
+  { include = "simulation", from = "src" },
+  { include = "types", from = "src" },
+  { include = "utils", from = "src" },
+]
 readme = "README.md"
 
 [tool.poetry.dependencies]
@@ -16,14 +24,21 @@ plotly = "^5.24.1"
 matplotlib = "^3.10.0"
 polars = "^1.24.0"
 simple-pid = "^2.0.1"
+aiomqtt = "^2.3.0"
+pydantic-settings = "^2.8.1"
 
 
 [tool.poetry.group.test.dependencies]
 pytest = "^8.3.4"
 pyright = "^1.1.392.post0"
+pytest-asyncio = "^0.25.3"
 
 [tool.poetry.group.dev.dependencies]
 ruff = "^0.11.0"
+
+[tool.pytest.ini_options]
+asyncio_default_fixture_loop_scope = "function"
+asyncio_mode = "auto"
 
 [build-system]
 requires = ["poetry-core"]

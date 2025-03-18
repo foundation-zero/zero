@@ -16,8 +16,8 @@ from input_output.definitions.simulation import (
     HeatSource,
     TemperatureBoundary,
 )
-from simulation.executor import Executor
 from simulation.fmu import Fmu
+from simulation.io_mapping import IoMapping
 
 simple_inputs = ThrustersSimulationInputs(
     thrusters_aft=HeatSource(heat_flow=Stamped.stamp(9000)),
@@ -30,8 +30,8 @@ simple_inputs = ThrustersSimulationInputs(
 
 
 @fixture
-def thrusters() -> Executor:
-    return Executor(
+def thrusters() -> IoMapping:
+    return IoMapping(
         Fmu(
             str(
                 Path(__file__).resolve().parent.parent

@@ -9,8 +9,8 @@ from simulation.fmu import Fmu
 def test_fmu():
     with Fmu(
         str(
-            Path(__file__).resolve().parent.parent
-            / "../simulation/models/XRGTestModel/FMUInterfaceTester_MECS_regular.fmu"
+            Path(__file__).resolve().parent.parent.parent
+            / "src/simulation/models/XRGTestModel/FMUInterfaceTester_MECS_regular.fmu"
         ),
         timedelta(seconds=0.2),
     ) as fmu:
