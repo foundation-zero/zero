@@ -8,7 +8,7 @@ packages = [
   { include = "input_output", from = "src" },
   { include = "orchestration", from = "src" },
   { include = "simulation", from = "src" },
-  { include = "types", from = "src" },
+  { include = "classes", from = "src" },
   { include = "utils", from = "src" },
 ]
 readme = "README.md"

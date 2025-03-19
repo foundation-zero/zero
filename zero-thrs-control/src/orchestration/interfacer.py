@@ -1,6 +1,6 @@
 from orchestration.collector import Collector
 from orchestration.executor import Executor, SimulationExecutionResult
-from types.control import Control
+from classes.control import Control
 
 
 class Interfacer:

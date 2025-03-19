@@ -1,13 +1,12 @@
 from asyncio import create_task
 import asyncio
-from datetime import datetime
 
 from aiomqtt import Client
 import pytest
 from input_output.base import Stamped
 from input_output.definitions.sensor import FlowSensor
 from orchestration.config import Config
-from orchestration.executor import ExecutionResult, Executor, MqttExecutor
+from orchestration.executor import MqttExecutor
 from tests.orchestration.simples import SimpleExecutor, SimpleInOut
 
 

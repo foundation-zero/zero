@@ -7,7 +7,7 @@ from aiomqtt import Client
 from input_output.base import SimulationInputs, ThrsModel
 from simulation.io_mapping import IoMapping
 
-from types.executor import ExecutionResult, Executor, SimulationExecutionResult
+from classes.executor import ExecutionResult, Executor, SimulationExecutionResult
 
 
 class MqttExecutor[S: ThrsModel, C: ThrsModel](Executor[S, C]):

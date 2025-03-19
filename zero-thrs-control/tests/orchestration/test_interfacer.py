@@ -1,6 +1,6 @@
 from orchestration.collector import NullCollector
 from orchestration.interfacer import Interfacer
-from tests.orchestration.simples import SimpleControl, SimpleExecutor, SimpleInOut
+from tests.orchestration.simples import SimpleControl, SimpleExecutor
 
 
 async def test_interfacer():
