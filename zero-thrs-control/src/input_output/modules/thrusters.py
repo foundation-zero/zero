@@ -3,7 +3,7 @@ from typing import Annotated
 import input_output.definitions.control as control
 import input_output.definitions.sensor as sensor
 from input_output.definitions import simulation
-from input_output.base import Meta, ThrsModel
+from input_output.base import Meta, SimulationInputs, ThrsModel
 
 
 class ThrustersSensorValues(ThrsModel):
@@ -49,7 +49,7 @@ class ThrustersControlValues(ThrsModel):
     thrusters_switch_fwd: Annotated[control.Valve, Meta("5001091-02")]
 
 
-class ThrustersSimulationInputs(ThrsModel):
+class ThrustersSimulationInputs(SimulationInputs):
     thrusters_aft: simulation.HeatSource
     thrusters_fwd: simulation.HeatSource
     thrusters_seawater_supply: simulation.Boundary

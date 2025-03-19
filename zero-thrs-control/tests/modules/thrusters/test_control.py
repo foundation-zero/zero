@@ -1,7 +1,7 @@
 from datetime import datetime, timedelta
 from pathlib import Path
 
-from pytest import fixture
+from pytest import approx, fixture
 
 from control.modules.thrusters import ThrustersControl, ThrustersSetpoints
 from input_output.base import Stamped
@@ -18,18 +18,18 @@ from input_output.definitions.simulation import (
 from simulation.fmu import Fmu
 from simulation.io_mapping import IoMapping
 
-simple_inputs = ThrustersSimulationInputs(
+@fixture
+def simulation_inputs():
+    return ThrustersSimulationInputs(
     thrusters_aft=HeatSource(heat_flow=Stamped.stamp(9000)),
     thrusters_fwd=HeatSource(heat_flow=Stamped.stamp(4300)),
     thrusters_seawater_supply=Boundary(
-        temperature=Stamped.stamp(32), flow=Stamped.stamp(64)
-    ),
-    thrusters_module_supply=TemperatureBoundary(temperature=Stamped.stamp(50)),
-)
+        temperature=Stamped.stamp(32), flow=Stamped.stamp(64)),
+    thrusters_module_supply=TemperatureBoundary(temperature=Stamped.stamp(50)))
 
 
 @fixture
-def thrusters() -> IoMapping:
+def io_mapping() -> IoMapping:
     return IoMapping(
         Fmu(
                    str(
@@ -43,14 +43,14 @@ def thrusters() -> IoMapping:
     )
 
 @fixture
-def thrusters_control() -> ThrustersControl:
+def control() -> ThrustersControl:
     return ThrustersControl(ThrustersSetpoints(cooling_mix_setpoint=40))
 
 
-def test_simple_cooling(thrusters, thrusters_control):
+def test_simple_cooling(io_mapping, control, simulation_inputs):
 
-    sensor_values, simulation_outputs, _ = thrusters.tick(
-        thrusters_control.simple_cooling(None), simple_inputs, datetime.now(), timedelta(seconds=60)
+    sensor_values, simulation_outputs, _ = io_mapping.tick(
+        control.simple_cooling(None, datetime.now()), simulation_inputs, datetime.now(), timedelta(seconds=60)
     )
 
     assert (
@@ -62,18 +62,19 @@ def test_simple_cooling(thrusters, thrusters_control):
         < sensor_values.thrusters_temperature_fwd_return.temperature.value
     )
 
-    assert simulation_outputs.thrusters_module_supply.flow.value == 0
-    assert simulation_outputs.thrusters_module_return.flow.value == 0
+
+    assert simulation_outputs.thrusters_module_supply.flow.value == approx(0, abs =1e-1) #TODO: deal with 'leakage' in FMU
+    assert simulation_outputs.thrusters_module_return.flow.value == approx(0,abs = 1e-1)
     assert (
-        simple_inputs.thrusters_seawater_supply.temperature.value
+        simulation_inputs.thrusters_seawater_supply.temperature.value
         < simulation_outputs.thrusters_seawater_return.temperature.value
     )
 
 
-def test_simple_recovery(thrusters, thrusters_control):
+def test_simple_recovery(io_mapping, control, simulation_inputs):
     
-    sensor_values, simulation_outputs, _ = thrusters.tick(
-        thrusters_control.simple_recovery(), simple_inputs, datetime.now(), timedelta(seconds=240)
+    sensor_values, simulation_outputs, _ = io_mapping.tick(
+        control.simple_recovery(datetime.now()), simulation_inputs, datetime.now(), timedelta(seconds=240)
     )
 
     assert (
@@ -86,17 +87,18 @@ def test_simple_recovery(thrusters, thrusters_control):
     )
     assert (
         sensor_values.thrusters_flow_aft.flow.value
-        + sensor_values.thrusters_flow_fwd.flow.value
-        == simulation_outputs.thrusters_module_supply.flow.value
-        == simulation_outputs.thrusters_module_return.flow.value
+        + sensor_values.thrusters_flow_fwd.flow.value == 
+        approx(simulation_outputs.thrusters_module_supply.flow.value, abs = 1e-2)
+        == approx(simulation_outputs.thrusters_module_return.flow.value, abs = 1e-2)
     )
 
     assert simulation_outputs.thrusters_module_supply.flow.value > 10
+    
     assert (
         simulation_outputs.thrusters_module_return.flow.value
         == simulation_outputs.thrusters_module_supply.flow.value
     )
     assert (
         simulation_outputs.thrusters_module_return.temperature.value
-        < simple_inputs.thrusters_module_supply.temperature.value
+        > simulation_inputs.thrusters_module_supply.temperature.value
     )

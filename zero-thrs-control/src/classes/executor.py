@@ -18,5 +18,8 @@ class SimulationExecutionResult(ExecutionResult):
 
 
 class Executor[S: ThrsModel, C: ThrsModel](Protocol):
+    def __init__(self, start_time):
+        self._start_time: datetime
+
     async def start(self): ...
     async def tick(self, control_values: C) -> ExecutionResult[S]: ...
