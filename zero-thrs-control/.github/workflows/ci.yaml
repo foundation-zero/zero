@@ -20,7 +20,7 @@ jobs:
 
       - run: poetry run pyright
 
-      - run: poetry run ruff check input_output src tests
+      - run: poetry run ruff check src tests
 
       - run: docker compose up -d
 
