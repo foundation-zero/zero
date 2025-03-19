@@ -1,5 +1,6 @@
 from asyncio import create_task
 import asyncio
+from datetime import datetime
 
 from aiomqtt import Client
 import pytest
@@ -23,7 +24,7 @@ mqtt_client2 = pytest.fixture(_mqtt_client)
 
 
 async def test_mqtt_executor(mqtt_client, mqtt_client2):
-    simple_executor = SimpleExecutor()
+    simple_executor = SimpleExecutor(datetime.now())
     executor = MqttExecutor(
         simple_executor,
         mqtt_client,

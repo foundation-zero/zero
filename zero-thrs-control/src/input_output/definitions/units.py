@@ -49,7 +49,7 @@ def validate_ratio_within_precision(value: float) -> float:
         return 0.0
     if value > 1 and value < 1 + 1e-10:
         return 1.0
-    if 1 < value < 0:
+    if value < 0 or value > 1:
         raise ValueError(f"Value {value} is outside bounds.")
     return value
 
