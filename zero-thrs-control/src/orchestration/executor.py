@@ -93,6 +93,7 @@ class SimulationExecutor(Executor):
         sensor_values, simulation_outputs, raw = self._io_mapping.tick(
             control_values, bounds, time, self._tick_duration
         )
+        self._ticks += 1
         return SimulationExecutionResult(
             timestamp=time,
             sensor_values=sensor_values,

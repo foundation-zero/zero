@@ -14,4 +14,4 @@ class Interfacer:
             result = await self._executor.tick(control_values)
             if isinstance(result, SimulationExecutionResult):
                 collector.collect(result.raw, result.timestamp)
-            control_values = self._control.control(result.sensor_values, result.timestamp)
+            control_values = self._control.control(result.sensor_values, result.timestamp).control_values
