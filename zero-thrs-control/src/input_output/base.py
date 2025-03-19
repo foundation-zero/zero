@@ -11,6 +11,7 @@ from pydantic import (
     field_validator,
 )
 
+from input_output.definitions.units import unit_for_annotation
 from utils.string import hyphenize
 
 
@@ -40,10 +41,6 @@ class ThrsModel(BaseModel):
         return cls(**vals)
 
 
-def _unit_for_stamp(annotation):
-    return next(iter(annotation.__pydantic_generic_metadata__["args"]), None)  # type: ignore
-
-
 T = TypeVar("T")
 
 
@@ -54,10 +51,6 @@ class Stamped(ThrsModel, Generic[T]):
     @staticmethod
     def stamp[V](value: V) -> "Stamped[V]":
         return Stamped(value=value, timestamp=datetime.now())
-
-    @classmethod
-    def unit(cls) -> Any:
-        return _unit_for_stamp(cls)
 
 
 T2 = TypeVar("T2")
@@ -89,10 +82,6 @@ class StampedDf(ThrsModel, Generic[T2]):
     def stamp(value: pl.DataFrame) -> "StampedDf[Any]":
         return StampedDf(value=value)
 
-    @classmethod
-    def unit(cls) -> Any:
-        return _unit_for_stamp(cls)
-
 
 @dataclass
 class Meta:
@@ -103,38 +92,65 @@ class SimulationInputs(ThrsModel):
     model_config = ConfigDict(extra="forbid", arbitrary_types_allowed=True)
 
     def get_values_at_time(self, time: datetime) -> "SimulationInputs":
-        values = {}
-        fields = {}
-        for field_name, field in self.model_fields.items():
-            unit = field.annotation.unit()  # type: ignore
-            value = getattr(self, field_name).value
+        def _component(component_name, component):
+            component_value = getattr(self, component_name)
 
-            if isinstance(value, pl.DataFrame):
-                sorted_df = value.sort("time")
-                filtered_df = (
-                    sorted_df.filter(sorted_df["time"] <= time).select("value").tail(1)
-                )
+            def _field_type(field):
+                return (Stamped[unit_for_annotation(field.annotation)], ...)
 
-                if (
-                    sorted_df.select("time").tail(1).item() < time
-                    or filtered_df.is_empty()
-                ):
-                    raise ValueError(
-                        f"Time {time} is outside the range of given data for field {field_name}."
+            def _field_value(field_name):
+                value = getattr(component_value, field_name).value
+
+                if isinstance(value, pl.DataFrame):
+                    sorted_df = value.sort("time")
+                    filtered_df = (
+                        sorted_df.filter(sorted_df["time"] <= time)
+                        .select("value")
+                        .tail(1)
                     )
+
+                    if (
+                        sorted_df.select("time").tail(1).item() < time
+                        or filtered_df.is_empty()
+                    ):
+                        raise ValueError(
+                            f"Time {time} is outside the range of given data for field {component_name}."
+                        )
+
+                    return Stamped(value=filtered_df.item(), timestamp=time)
                 else:
-                    values[field_name] = Stamped(
-                        value=filtered_df.item(), timestamp=time
-                    )
-                    fields[field_name] = unit
-            else:
-                values[field_name] = Stamped(value=value, timestamp=time)
-                fields[field_name] = unit
+                    return Stamped(value=value, timestamp=time)
+
+            fields = {
+                field_name: _field_type(field)
+                for field_name, field in component_value.model_fields.items()
+            }
+            model = create_model(
+                str(component.annotation), __base__=component.annotation, **fields  # type: ignore
+            )  # type: ignore
+            values = {
+                field_name: _field_value(field_name)
+                for field_name in component_value.model_fields.keys()
+            }
+            return (model, ...), model(**values)
+
+        components_with_values = {
+            component_name: _component(component_name, component)
+            for component_name, component in self.model_fields.items()
+        }
+        components = {
+            component_name: component
+            for component_name, (component, _) in components_with_values.items()
+        }
+        values = {
+            component_name: value
+            for component_name, (_, value) in components_with_values.items()
+        }
 
         SelectedInputsModel = create_model(
             "SimulationInputs",
             __base__=SimulationInputs,
-            **{field_name: (Stamped[unit], ...) for field_name, unit in fields.items()},  # type: ignore
+            **components,  # type: ignore
         )  # type: ignore
 
         return SelectedInputsModel(**values)

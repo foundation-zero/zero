@@ -5,7 +5,7 @@ from functools import reduce
 from pydantic.fields import FieldInfo
 
 from input_output.base import Stamped, ThrsModel
-from input_output.definitions.units import unit_meta
+from input_output.definitions.units import unit_for_annotation, unit_meta
 
 
 def groupby(iterable, key):
@@ -20,7 +20,7 @@ def build_inputs_for_fmu(
 ) -> dict[str, float]:
     def _values_for_component(component_name, component):
         def _name_for_field(field_name, field: FieldInfo):
-            meta = unit_meta(field.annotation.unit())  # type: ignore
+            meta = unit_meta(unit_for_annotation(field.annotation))  # type: ignore
             if meta:
                 return f"{component_name}__{field_name}__{meta.modelica_name}"
             else:

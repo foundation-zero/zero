@@ -41,7 +41,9 @@ class ThrustersControl(Control):
             thrusters_mix_exchanger=Valve(
                 setpoint=Stamped.stamp(
                     value=self._heat_dump_controller(
-                        sensor_values.thrusters_temperature_supply.temperature.value if sensor_values else 0
+                        sensor_values.thrusters_temperature_supply.temperature.value
+                        if sensor_values
+                        else 0
                     ),
                 )
             ),

@@ -5,11 +5,12 @@ import pytest
 from pydantic import ValidationError
 
 from input_output.base import SimulationInputs, Stamped, StampedDf
+from input_output.definitions.simulation import HeatSource
 
 
 class SimpleInputs(SimulationInputs):
-    a: Stamped[float]
-    b: StampedDf[float]
+    a: HeatSource
+    b: HeatSource
 
 
 @pytest.fixture
@@ -25,10 +26,15 @@ def valid_dataframe():
 
 
 def test_valid_inputs(valid_dataframe):
-    inputs = SimpleInputs(a=Stamped.stamp(1.0), b=StampedDf.stamp(valid_dataframe))
+    inputs = SimpleInputs(
+        a=HeatSource(heat_flow=Stamped.stamp(1.0)),
+        b=HeatSource(heat_flow=StampedDf.stamp(valid_dataframe)),
+    )
     assert isinstance(inputs, SimpleInputs)
-    assert inputs.a.value == 1.0
-    assert inputs.b.value.equals(valid_dataframe)
+    assert isinstance(inputs.a.heat_flow.value, float)
+    assert inputs.a.heat_flow.value == 1.0
+    assert isinstance(inputs.b.heat_flow.value, pl.DataFrame)
+    assert inputs.b.heat_flow.value.equals(valid_dataframe)
 
 
 def test_invalid_inputs():
@@ -39,19 +45,22 @@ def test_invalid_inputs():
 
 
 def test_inputs_selection(valid_dataframe):
-    inputs = SimpleInputs(a=Stamped.stamp(1.0), b=StampedDf.stamp(valid_dataframe))
+    inputs = SimpleInputs(
+        a=HeatSource(heat_flow=Stamped.stamp(1.0)),
+        b=HeatSource(heat_flow=StampedDf.stamp(valid_dataframe)),
+    )
 
     values = inputs.get_values_at_time(datetime(2025, 1, 1)).model_dump()
-    assert values["a"]["value"] == 1.0
-    assert values["b"]["value"] == 1.0
+    assert values["a"]["heat_flow"]["value"] == 1.0
+    assert values["b"]["heat_flow"]["value"] == 1.0
 
     values = inputs.get_values_at_time(datetime(2025, 1, 2, hour=5)).model_dump()
-    assert values["a"]["value"] == 1.0
-    assert values["b"]["value"] == 2.0
+    assert values["a"]["heat_flow"]["value"] == 1.0
+    assert values["b"]["heat_flow"]["value"] == 2.0
 
     values = inputs.get_values_at_time(datetime(2025, 1, 3)).model_dump()
-    assert values["a"]["value"] == 1.0
-    assert values["b"]["value"] == 3.0
+    assert values["a"]["heat_flow"]["value"] == 1.0
+    assert values["b"]["heat_flow"]["value"] == 3.0
 
     with pytest.raises(ValueError, match="Time"):
         inputs.get_values_at_time(datetime(2024, 1, 1))
