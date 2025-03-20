@@ -10,7 +10,7 @@ from simulation.io_mapping import IoMapping
 
 
 @dataclass
-class SimulationModel:
+class SimulatorModel:
     fmu_path: str
     sensor_values_cls: type[ThrsModel]
     control_values_cls: type[ThrsModel]
@@ -22,8 +22,8 @@ class SimulationModel:
     solver_step_size: timedelta = timedelta(seconds=0.001)
 
 
-class Simulation:
-    def __init__(self, model: SimulationModel):
+class Simulator:
+    def __init__(self, model: SimulatorModel):
         self._model = model
         self._executor = SimulationExecutor(
             IoMapping(

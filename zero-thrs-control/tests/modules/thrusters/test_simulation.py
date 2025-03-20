@@ -14,9 +14,9 @@ from input_output.modules.thrusters import (
 from orchestration.collector import PolarsCollector
 from orchestration.executor import SimulationExecutor
 from orchestration.interfacer import Interfacer
+from orchestration.simulator import Simulator, SimulatorModel
 from simulation.fmu import Fmu
 from simulation.io_mapping import IoMapping
-from simulation.simulation import Simulation, SimulationModel
 
 @fixture
 def simulation_inputs():
@@ -64,13 +64,14 @@ async def test_interfacer(executor, io_mapping, simulation_inputs, control):
         datetime.now(),
         timedelta(seconds=1),
     )[2]
-    assert set(frame.columns) == set(mock_fmu_outputs.keys()) | {"time"}  # type: ignore
-    assert frame["time"][-1] - frame["time"][0] == timedelta(seconds=19)  # type: ignore
+    assert frame is not None 
+    assert set(frame.columns) == set(mock_fmu_outputs.keys()) | {"time"}  
+    assert frame["time"][-1] - frame["time"][0] == timedelta(seconds=19) 
 
 
 async def test_simulation(simulation_inputs, control):
 
-    thrusters_model = SimulationModel(
+    thrusters_model = SimulatorModel(
         fmu_path=str(
             Path(__file__).resolve().parent.parent.parent.parent
             / "src/simulation/models/thrusters/thruster_moduleV5.fmu"
@@ -81,7 +82,7 @@ async def test_simulation(simulation_inputs, control):
         simulation_inputs=simulation_inputs,
         control = control)
     
-    simulation = Simulation(thrusters_model)
+    simulation = Simulator(thrusters_model)
 
     result = await simulation.run(20)
 
