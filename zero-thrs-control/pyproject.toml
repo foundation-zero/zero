@@ -26,6 +26,7 @@ polars = "^1.24.0"
 simple-pid = "^2.0.1"
 aiomqtt = "^2.3.0"
 pydantic-settings = "^2.8.1"
+pytransitions = "^0.9.2"
 
 
 [tool.poetry.group.test.dependencies]
@@ -39,6 +40,7 @@ ruff = "^0.11.0"
 [tool.pytest.ini_options]
 asyncio_default_fixture_loop_scope = "function"
 asyncio_mode = "auto"
+testpaths = ["tests"]
 
 [build-system]
 requires = ["poetry-core"]

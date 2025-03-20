@@ -6,7 +6,7 @@ from input_output.base import ThrsModel
 @dataclass
 class ControlResult[C: ThrsModel]:
     timestamp: datetime
-    control_values: C
+    values: C
 
 class Control[S: ThrsModel, C: ThrsModel](Protocol):
 

@@ -9,8 +9,8 @@ class Pump(ThrsModel):
 
 
 class Valve(ThrsModel):
-    SWITCH_CLOSED: ClassVar = 0.0
-    SWITCH_OPEN: ClassVar = 1.0
+    CLOSED: ClassVar = 0.0
+    OPEN: ClassVar = 1.0
 
     SWITCH_BRANCH: ClassVar = 0.0
     SWITCH_STRAIGHT: ClassVar = 1.0
@@ -23,7 +23,7 @@ class Valve(ThrsModel):
     The setpoint of the valve, represented as a ratio between 0 and 1.
 
     Valve Conventions:
-        - 2-Way Switch Valve:
+        - 2-Way Switch or Needle Valve:
             - 0: Closed
             - 1: Open
         - 3-Way Switch Valve:
