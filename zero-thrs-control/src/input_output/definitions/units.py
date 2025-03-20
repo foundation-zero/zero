@@ -44,10 +44,10 @@ def unit_meta(unit: Any) -> UnitMeta | None:
     )
 
 
-def validate_ratio_within_precision(value: float) -> float:
-    if value < 0 and value > -1e-10:
+def validate_ratio_within_precision(value: float, tolerance: float = 1e-7) -> float:
+    if value < 0 and value > -tolerance:
         return 0.0
-    if value > 1 and value < 1 + 1e-10:
+    if value > 1 and value < 1 + tolerance:
         return 1.0
     if value < 0 or value > 1:
         raise ValueError(f"Value {value} is outside bounds.")
