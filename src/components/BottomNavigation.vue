@@ -3,10 +3,13 @@ import { Tabs, TabsList, TabsTrigger } from "@/components/ui/bottom-tabs";
 import { useUIStore } from "@/stores/ui";
 import { Blinds, LampCeiling, Snowflake } from "lucide-vue-next";
 import { toRefs } from "vue";
+import { useI18n } from "vue-i18n";
 import { useRoute } from "vue-router";
 
 const { hasScroll, isBottom } = toRefs(useUIStore());
 const { path } = toRefs(useRoute());
+
+const { t } = useI18n();
 </script>
 
 <template>
@@ -27,7 +30,7 @@ const { path } = toRefs(useRoute());
             :size="24"
             stroke-width="2"
           />
-          A/C
+          {{ t("labels.airconditioning") }}
         </TabsTrigger>
       </RouterLink>
       <RouterLink to="/lights">
@@ -36,7 +39,7 @@ const { path } = toRefs(useRoute());
             :size="24"
             stroke-width="2"
           />
-          Lights
+          {{ t("labels.lights") }}
         </TabsTrigger>
       </RouterLink>
       <RouterLink to="/blinds">
@@ -45,7 +48,7 @@ const { path } = toRefs(useRoute());
             :size="24"
             stroke-width="2"
           />
-          Blinds
+          {{ t("labels.blinds") }}
         </TabsTrigger>
       </RouterLink>
     </TabsList>

@@ -1,0 +1,31 @@
+{
+  "labels": {
+    "airconditioning": "A/C",
+    "lights": "Lights",
+    "blinds": "Blinds",
+    "shears": "Shears",
+    "inside": "Inside",
+    "outside": "Outside",
+    "audioSystem": "Audio System",
+    "emptyRoom": "Empty Room",
+    "temperature": "Temperature",
+    "humidity": "Humidity",
+    "setTo": "Set to",
+    "roomGroup": {
+      "aftship": "Aftship",
+      "foreship": "Foreship",
+      "midship": "Midship",
+      "hallways": "Hallways",
+      "upperdeck": "Upper Deck"
+    }
+  },
+  "views": {
+    "blinds": {
+      "description": "Control the blinds and shears in the room"
+    },
+    "roomSelection": {
+      "description": "Here you can select the room from which you want to operate the household controls",
+      "title": "ZERO rooms"
+    }
+  }
+}

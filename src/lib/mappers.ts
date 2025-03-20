@@ -1,5 +1,6 @@
 import { BlindsGroup, Room, RoomGroup, ShipArea } from "@/@types";
 import { Rooms } from "@/gql/graphql";
+import i18n from "@/i18n";
 import { compareByName, isDefined } from "./utils";
 
 export const toRoom = (room: Rooms): Room => ({
@@ -11,13 +12,16 @@ export const toRoom = (room: Rooms): Room => ({
       name: blinds[0].name!,
       controls: blinds.map((blind) => ({
         ...blind,
-        name: blind.opacity === "blind" ? "Blinds" : "Shears",
+        name:
+          blind.opacity === "blind"
+            ? i18n.global.t("labels.blinds")
+            : i18n.global.t("labels.shears"),
       })),
     }))
     .sort(compareByName),
   lights: [
     {
-      name: "Lights",
+      name: i18n.global.t("labels.lights"),
       controls: (room.lightingGroups ?? []).sort(compareByName),
     },
   ],

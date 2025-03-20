@@ -23,26 +23,29 @@ import { useMutation, UseMutationResponse, useSubscription } from "@urql/vue";
 import { useDebounceFn, useLocalStorage, useTimeoutFn } from "@vueuse/core";
 import { defineStore } from "pinia";
 import { computed, ref } from "vue";
+import { useI18n } from "vue-i18n";
 
 const MUTATION_DELAY_IN_MS = 500;
 
 type GetAllRoomsQuery = Pick<QueryRoot, "rooms">;
 
-const EMPTY_ROOM: Room = {
-  name: "empty",
-  group: RoomGroup.AFT,
-  amplifierOn: false,
-  temperatureSetpoint: 23,
-  actualTemperature: 21,
-  actualHumidity: 40,
-  blinds: [],
-  lights: [],
-  id: "empty",
-};
-
 export const useRoomStore = defineStore("rooms", () => {
-  const currentRoomId = useLocalStorage("currentRoomId", () => EMPTY_ROOM.id);
-  const currentRoom = ref<Room>(EMPTY_ROOM);
+  const { t } = useI18n();
+
+  const emptyRoom: Room = {
+    name: t("labels.emptyRoom"),
+    group: RoomGroup.AFT,
+    amplifierOn: false,
+    temperatureSetpoint: 23,
+    actualTemperature: 21,
+    actualHumidity: 40,
+    blinds: [],
+    lights: [],
+    id: "empty",
+  };
+
+  const currentRoomId = useLocalStorage("currentRoomId", () => emptyRoom.id);
+  const currentRoom = ref<Room>(emptyRoom);
   const areas = ref<ShipArea[]>([]);
   const hasPendingMutations = ref(false);
 
@@ -92,7 +95,7 @@ export const useRoomStore = defineStore("rooms", () => {
     {
       query: subscribeToRoom,
       variables: { roomId: currentRoomId },
-      pause: computed(() => currentRoomId.value === EMPTY_ROOM.id),
+      pause: computed(() => currentRoomId.value === emptyRoom.id),
     },
     (_prev, result) => {
       if (result.rooms.length > 0) {
@@ -111,14 +114,14 @@ export const useRoomStore = defineStore("rooms", () => {
     const rooms = data?.rooms.map(toRoom) ?? [];
 
     areas.value = [
-      createArea(RoomGroup.AFT, "Aftship", rooms),
-      createArea(RoomGroup.MID, "Midship", rooms),
-      createArea(RoomGroup.FORE, "Foreship", rooms),
-      createArea(RoomGroup.UPPERDECK, "Upperdeck", rooms),
-      createArea(RoomGroup.HALLWAYS, "Hallways", rooms),
+      createArea(RoomGroup.AFT, t("labels.roomGroup.aftship"), rooms),
+      createArea(RoomGroup.MID, t("labels.roomGroup.midship"), rooms),
+      createArea(RoomGroup.FORE, t("labels.roomGroup.foreship"), rooms),
+      createArea(RoomGroup.UPPERDECK, t("labels.roomGroup.upperdeck"), rooms),
+      createArea(RoomGroup.HALLWAYS, t("labels.roomGroup.hallways"), rooms),
     ];
 
-    if (currentRoomId.value === EMPTY_ROOM.id && rooms.length > 0) {
+    if (currentRoomId.value === emptyRoom.id && rooms.length > 0) {
       currentRoomId.value = rooms[0].id;
     }
   })();

@@ -4,11 +4,12 @@ import { HeavySlider } from "@/components/ui/heavy-slider";
 import { List, ListItem, ListRoot } from "@/components/ui/list";
 import { useRoomStore } from "@/stores/rooms";
 import { computed, toRefs } from "vue";
-
+import { useI18n } from "vue-i18n";
 const MIN_VALUE = 18;
 
 const { currentRoom, hasPendingMutations } = toRefs(useRoomStore());
 const { setTemperatureSetpoint } = useRoomStore();
+const { t } = useI18n();
 
 const value = computed<number[]>({
   get() {
@@ -41,7 +42,7 @@ const isOff = computed(() => value.value[0] == MIN_VALUE);
           :size="1"
         >
           <ListItem class="flex-col pb-6">
-            <span class="text-lg font-medium">A/C</span>
+            <span class="text-lg font-medium">{{ t("labels.airconditioning") }}</span>
             <HeavySlider
               v-model:model-value="value"
               class="aspect-[1/2] !h-[40svh] !w-auto"
@@ -73,7 +74,7 @@ const isOff = computed(() => value.value[0] == MIN_VALUE);
               <span
                 class="text-xs font-extralight md:text-base"
                 :class="{ invisible: isOff }"
-                >Set to</span
+                >{{ t("labels.setTo") }}</span
               >
             </div>
           </ListItem>

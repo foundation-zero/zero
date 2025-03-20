@@ -5,9 +5,12 @@ import { useRoomStore } from "@/stores/rooms";
 import { useDark } from "@vueuse/core";
 import { computed, toRefs, watch } from "vue";
 
+import { useI18n } from "vue-i18n";
 const { toggleAmplifier } = useRoomStore();
 const { currentRoom } = toRefs(useRoomStore());
 const isDark = useDark();
+
+const { t } = useI18n();
 
 const isOn = computed({
   get: () => currentRoom.value.amplifierOn,
@@ -28,7 +31,7 @@ watch(currentRoom, (newRoom) => {
       for="av-toggle"
       class="font-light"
     >
-      Audio System
+      {{ t("labels.audioSystem") }}
     </Label>
     <Switch
       id="av-toggle"

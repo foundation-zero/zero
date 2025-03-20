@@ -4,9 +4,12 @@ import { ResponsivePopup } from "@/components/ui/responsive-dialog";
 import { useUIStore } from "@/stores/ui";
 import { useTimeoutFn } from "@vueuse/core";
 import { computed, ref, toRefs, watch } from "vue";
+import { useI18n } from "vue-i18n";
 import BlindsList from "./BlindsList.vue";
 
 const group = defineModel<BlindsGroup>("group");
+
+const { t } = useI18n();
 
 const { breakpoints } = toRefs(useUIStore());
 const _open = ref(false);
@@ -32,7 +35,7 @@ watch(group, (val) => {
     v-if="group"
     v-model:open="open"
     :title="group.name"
-    description="Control the blinds and shears"
+    :description="t('views.blinds.description')"
   >
     <BlindsList
       :group="group"

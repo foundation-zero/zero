@@ -6,6 +6,8 @@ import { ref, toRefs } from "vue";
 import RoomSelectorButton from "./RoomSelectorButton.vue";
 import RoomsList from "./RoomsList.vue";
 
+import { useI18n } from "vue-i18n";
+const { t } = useI18n();
 const isOpen = ref(false);
 const { breakpoints } = toRefs(useUIStore());
 
@@ -16,8 +18,8 @@ const { scrollPositions } = toRefs(useUIStore());
 <template>
   <ResponsivePopup
     v-model:open="isOpen"
-    title="ZERO rooms"
-    description="Here you can select the room from which you want to operate the household controls"
+    :title="t('views.roomSelection.title')"
+    :description="t('views.roomSelection.description')"
   >
     <template #trigger><RoomSelectorButton /></template>
     <ScrollArea
