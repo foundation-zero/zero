@@ -34,7 +34,7 @@ def io_mapping() -> IoMapping:
         Fmu(
                    str(
             Path(__file__).resolve().parent.parent.parent.parent
-            / "src/simulation/models/thrusters/thruster_moduleV5.fmu"
+            / "src/simulation/models/thrusters/thruster_moduleV6.fmu"
         ),
             timedelta(seconds=0.001),
         ),
@@ -63,8 +63,8 @@ def test_simple_cooling(io_mapping, control, simulation_inputs):
     )
 
 
-    assert simulation_outputs.thrusters_module_supply.flow.value == approx(0, abs =1e-1) #TODO: deal with 'leakage' in FMU
-    assert simulation_outputs.thrusters_module_return.flow.value == approx(0,abs = 1e-1)
+    assert simulation_outputs.thrusters_module_supply.flow.value == approx(0, abs =1e-3) 
+    assert simulation_outputs.thrusters_module_return.flow.value == approx(0,abs = 1e-3)
     assert (
         simulation_inputs.thrusters_seawater_supply.temperature.value
         < simulation_outputs.thrusters_seawater_return.temperature.value

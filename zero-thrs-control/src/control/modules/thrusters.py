@@ -52,8 +52,8 @@ class ThrustersControl(Control):
             thrusters_flowcontrol_aft=Valve(setpoint=Stamped(value=1, timestamp = time)),
             thrusters_flowcontrol_fwd=Valve(setpoint=Stamped(value=1, timestamp = time)),
             thrusters_shutoff_recovery=Valve(setpoint=Stamped(value=0, timestamp = time)),
-            thrusters_switch_aft=Valve(setpoint=Stamped(value=0, timestamp = time)),#TODO: inconsistent with convention
-            thrusters_switch_fwd=Valve(setpoint=Stamped(value=0, timestamp = time)),
+            thrusters_switch_aft=Valve(setpoint=Stamped(value=1, timestamp = time)),
+            thrusters_switch_fwd=Valve(setpoint=Stamped(value=1, timestamp = time)),
         )
 
     def simple_recovery(self, time: datetime) -> ThrustersControlValues:
@@ -75,6 +75,6 @@ class ThrustersControl(Control):
             thrusters_flowcontrol_aft=Valve(setpoint=Stamped(value=1, timestamp = time)),
             thrusters_flowcontrol_fwd=Valve(setpoint=Stamped(value=1, timestamp = time)),
             thrusters_shutoff_recovery=Valve(setpoint=Stamped(value=1, timestamp = time)),
-            thrusters_switch_aft=Valve(setpoint=Stamped(value=1, timestamp = time)),#TODO: inconsistent with convention
-            thrusters_switch_fwd=Valve(setpoint=Stamped(value=1, timestamp = time)),
+            thrusters_switch_aft=Valve(setpoint=Stamped(value=0, timestamp = time)),
+            thrusters_switch_fwd=Valve(setpoint=Stamped(value=0, timestamp = time)),
         )

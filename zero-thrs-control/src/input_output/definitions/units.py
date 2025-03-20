@@ -53,9 +53,15 @@ def validate_ratio_within_precision(value: float, tolerance: float = 1e-7) -> fl
         raise ValueError(f"Value {value} is outside bounds.")
     return value
 
+def validate_flow_within_precision(value: float, tolerance: float = 1e-7) -> float:
+    if value < 0 and value > -tolerance:
+        return 0.0
+    if value < -tolerance:
+        raise ValueError(f"Value {value} is outside bounds.")
+    return value
 
 type Celsius = Annotated[float, Field(ge=-273.15), UnitMeta(modelica_name="C")]
-type LMin = Annotated[float, Field(ge=0), UnitMeta(modelica_name="l_min")]
+type LMin = Annotated[float, AfterValidator(validate_flow_within_precision), UnitMeta(modelica_name="l_min")]
 type Hz = Annotated[float, Field(ge=0), UnitMeta(modelica_name="Hz")]
 type Ratio = Annotated[
     float,

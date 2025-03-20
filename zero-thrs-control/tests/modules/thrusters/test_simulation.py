@@ -34,7 +34,7 @@ def io_mapping() -> IoMapping:
         Fmu(
                    str(
             Path(__file__).resolve().parent.parent.parent.parent
-            / "src/simulation/models/thrusters/thruster_moduleV5.fmu"
+            / "src/simulation/models/thrusters/thruster_moduleV6.fmu"
         ),
             timedelta(seconds=0.001),
         ),
@@ -74,7 +74,7 @@ async def test_simulation(simulation_inputs, control):
     thrusters_model = SimulatorModel(
         fmu_path=str(
             Path(__file__).resolve().parent.parent.parent.parent
-            / "src/simulation/models/thrusters/thruster_moduleV5.fmu"
+            / "src/simulation/models/thrusters/thruster_moduleV6.fmu"
         ),
         sensor_values_cls=ThrustersSensorValues,
         control_values_cls=ThrustersControlValues,
