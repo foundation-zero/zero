@@ -1,4 +1,4 @@
-name: Deploy zero-data chart
+name: Deploy zero-dbt-gen chart
 on:
   pull_request:
     types: [closed]
