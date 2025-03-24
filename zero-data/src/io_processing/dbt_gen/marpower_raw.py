@@ -19,7 +19,7 @@ class MarpowerRawGenerator:
             with open(file_path, "w") as f:
                 f.write(table)
         number_of_new_files = len(topics)
-        print(f"Written marpower raw tables to {self.dbt_path.resolve()}")
+        print(f"Written raw tables to {self.dbt_path.resolve()}")
         print(
             f"""
             Created: {number_of_new_files}

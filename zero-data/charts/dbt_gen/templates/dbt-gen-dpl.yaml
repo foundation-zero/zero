@@ -1,0 +1,35 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "zero-dbt-gen.fullname" . }}
+  namespace: {{ .Release.Namespace }}
+  labels:
+    {{- include "zero-dbt-gen.labels" . | nindent 4 }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      {{- include "zero-dbt-gen.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      labels:
+        {{- include "zero-dbt-gen.labels" . | nindent 8 }}
+    spec:
+      securityContext:
+        fsGroupChangePolicy: Always
+        sysctls: []
+        supplementalGroups: []
+        fsGroup: 1001
+      containers:
+        - name: dbt-gen
+          securityContext:
+            runAsNonRoot: true
+            allowPrivilegeEscalation: false
+            seccompProfile:
+              type: RuntimeDefault
+            capabilities:
+              drop: ["ALL"]
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+          command: ["generate-dbt"]
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}

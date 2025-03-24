@@ -5,12 +5,9 @@ from typing import Annotated
 from io_processing.io_list.types import Source
 
 
-class IOList(BaseSettings):
-    files: Annotated[
-        dict[str, Source], Field(description="List of IO files to process")
-    ]
-
-    model_config = SettingsConfigDict(env_prefix="io_")
+io_lists: list[tuple[Source, str]] = [
+    ("marpower", "52422003_3210_AMCS IO-List R1.11.xlsx")
+]
 
 
 class MQTTConfig(BaseSettings):

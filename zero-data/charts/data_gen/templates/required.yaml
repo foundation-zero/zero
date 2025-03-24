@@ -1,0 +1,2 @@
+{{- $_ := required "mqtt.host is a required value" .Values.mqtt.host }}
+{{- $_ := required "mqtt.port is a required value" .Values.mqtt.port }}
