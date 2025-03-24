@@ -5,11 +5,11 @@ on:
     branches:
       - main
     paths:
-      - "charts/zero_data_gen/**"
+      - "charts/data_gen/**"
 
-# Authenticate with GAR and push helm chart to the /charts registry
 jobs:
   helm-push:
+    if: github.event.pull_request.merged == true
     runs-on: ubuntu-latest
     permissions:
       contents: 'read'
@@ -21,12 +21,12 @@ jobs:
         uses: mikefarah/yq@v4
         id: chart_name
         with:
-          cmd: yq '.name' './charts/zero_data_gen/Chart.yaml'
+          cmd: yq '.name' './charts/data_gen/Chart.yaml'
       - name: Get Chart version
         uses: mikefarah/yq@v4
         id: chart_version
         with:
-          cmd: yq '.version' './charts/zero_data_gen/Chart.yaml'
+          cmd: yq '.version' './charts/data_gen/Chart.yaml'
       - id: auth
         name: Authenticate with Google Cloud
         uses: google-github-actions/auth@v2
@@ -46,5 +46,5 @@ jobs:
         uses: azure/setup-helm@v4
       - name: Publish Helm chart
         run: |
-          helm package ./charts/zero_data_gen
+          helm package ./charts/data_gen
           helm push ${{ steps.chart_name.outputs.result }}-${{ steps.chart_version.outputs.result }}.tgz oci://europe-west1-docker.pkg.dev/common-449414/common
