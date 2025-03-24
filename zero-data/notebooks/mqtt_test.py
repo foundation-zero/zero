@@ -15,6 +15,7 @@ Get mqtt broker that client is connected to:
 vmq-admin session show --client_id --node --topic --topic=robustness_test_topic
 """
 
+
 async def producer(host: str, port: int):
     message_number = 0
     client = aiomqtt.Client(host, port=port, identifier="test_client_producer")
@@ -38,7 +39,9 @@ async def producer(host: str, port: int):
 
 async def consumer(host: str, port: int):
     message_number = None
-    client = aiomqtt.Client(host, port=port, clean_session=False, identifier="test_client_consumer")
+    client = aiomqtt.Client(
+        host, port=port, clean_session=False, identifier="test_client_consumer"
+    )
     disconnected_time = None
     async with client:
         await client.subscribe(TEST_TOPIC, qos=2)
@@ -50,15 +53,18 @@ async def consumer(host: str, port: int):
                         print(f"Reconnected after {datetime.now() - disconnected_time}")
                         disconnected_time = None
                     this_number = int(message.payload)
-                    if message_number is None or message_number+1 == this_number:
+                    if message_number is None or message_number + 1 == this_number:
                         print(f"Received and matched #{this_number}")
                         message_number = this_number
                     else:
-                        print(f"-------Message missed: Expected: {message_number+1} Got: {str(message.payload) }")
+                        print(
+                            f"-------Message missed: Expected: {message_number + 1} Got: {str(message.payload)}"
+                        )
                         message_number = this_number
         except aiomqtt.MqttError:
             disconnected_time = datetime.now()
             await asyncio.sleep(RECONNECT_INTERVAL)
+
 
 def parse_args():
     parser = argparse.ArgumentParser()
@@ -66,6 +72,7 @@ def parse_args():
     parser.add_argument("--host", type=str, default="localhost")
     parser.add_argument("--port", type=int, default=1883)
     return parser.parse_args()
+
 
 async def main():
     args = parse_args()

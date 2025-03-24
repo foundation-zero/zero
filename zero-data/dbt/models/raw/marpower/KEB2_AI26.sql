@@ -1,8 +1,0 @@
-{{ config(materialized='table_with_connector') }}
-CREATE TABLE {{ this }} (
-	FLOW_CREW_CABIN_PS_FWD_HOT_WATER	REAL,
-	FLOW_CREW_CABIN_PS_FWD_COLD_WATER	REAL,
-	FLOW_DECKHOUSE_HOT_WATER	REAL,
-	FLOW_DECKHOUSE_COLD_WATER	REAL,
-)
-{{ mqtt_with('KEB2_AI26') }}

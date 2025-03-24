@@ -49,12 +49,11 @@ class MarpowerReader(ReaderBase):
     def _get_io_topics(df: pl.DataFrame) -> List[IOTopic]:
         result = []
         for row in (
-            df.group_by("device", "module")
+            df.group_by("system")
             .agg(pl.col("tag"), pl.col("data_type"))
             .iter_rows(named=True)
         ):
-            module_suffix = f"_{row['module']}" if row["module"] else ""
-            topic = f"{row['device']}{module_suffix}"
+            topic = row["system"].replace(" ", "_").lower()
             values = [
                 IOValue(name=t, data_type=dt)
                 for t, dt in zip(row["tag"], row["data_type"])

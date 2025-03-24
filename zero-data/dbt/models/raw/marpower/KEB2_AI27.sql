@@ -1,8 +1,0 @@
-{{ config(materialized='table_with_connector') }}
-CREATE TABLE {{ this }} (
-	FLOW_DECK_FR48_SB_TECH_COR_HOT_WATER	REAL,
-	FLOW_DECK_FR48_SB_TECH_COR_COLD_WATER	REAL,
-	PRESS_FR_46_SYSTEM_BEH_PRES_PUMPS	REAL,
-	ACC_SENSOR_1_OUTPX	REAL,
-)
-{{ mqtt_with('KEB2_AI27') }}

@@ -2,18 +2,23 @@ from typing import List
 
 import pytest
 from io_processing.io_list.types import IOTopic
-from io_processing.io_list import read_io_list
+from io_processing.io_list import read_io_list, IOResult
 from polars import DataFrame
 from pathlib import Path
 
-io_result = read_io_list(Path("io_lists/test/marpower_test.xlsx"), "marpower")
+
+@pytest.fixture
+def marpower_io_result() -> IOResult:
+    return read_io_list(
+        (Path(__file__).parent / "../io_lists/test/marpower_test.xlsx"), "marpower"
+    )
 
 
 @pytest.fixture
-def marpower_io_list() -> DataFrame:
-    return io_result.io_list
+def marpower_io_list(marpower_io_result: IOResult) -> DataFrame:
+    return marpower_io_result.io_list
 
 
 @pytest.fixture
-def marpower_io_topics() -> List[IOTopic]:
-    return io_result.topics
+def marpower_io_topics(marpower_io_result: IOResult) -> List[IOTopic]:
+    return marpower_io_result.topics

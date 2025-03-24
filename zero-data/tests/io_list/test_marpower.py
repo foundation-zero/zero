@@ -1,12 +1,6 @@
-from io_processing.io_list import read_io_list
-from pathlib import Path
-
-
-def test_marpower_io_excel():
-    io_result = read_io_list(Path("io_lists/test/marpower_test.xlsx"), "marpower")
-
-    assert io_result.io_list.shape == (390, 71)
-    assert io_result.io_list.columns == [
+def test_marpower_io_excel(marpower_io_result):
+    assert marpower_io_result.io_list.shape == (390, 71)
+    assert marpower_io_result.io_list.columns == [
         "rev.",
         "deleted",
         "target_type",
@@ -79,8 +73,4 @@ def test_marpower_io_excel():
         "timestamp",
         "data_type",
     ]
-
-
-def test_marpower_io_values():
-    io_result = read_io_list(Path("io_lists/test/marpower_test.xlsx"), "marpower")
-    assert len(io_result.topics) == 56
+    assert len(marpower_io_result.topics) == 21
