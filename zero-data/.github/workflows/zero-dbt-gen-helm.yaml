@@ -7,7 +7,6 @@ on:
     paths:
       - "charts/dbt_gen/**"
 
-# Authenticate with GAR and push helm chart to the /charts registry
 jobs:
   helm-push:
     if: github.event.pull_request.merged == true

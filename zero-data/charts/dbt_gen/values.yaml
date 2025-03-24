@@ -1,6 +1,6 @@
 # This sets the container image more information can be found here: https://kubernetes.io/docs/concepts/containers/images/
 image:
-  repository: europe-west1-docker.pkg.dev/common-449414/common/zero-dbt-gen # TODO: Configure proxy to private repo in Harbor
+  repository: europe-west1-docker.pkg.dev/common-449414/common/zero-data
   # This sets the pull policy for images.
   pullPolicy: IfNotPresent
   # Overrides the image tag whose default is the chart appVersion.
