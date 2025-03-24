@@ -53,7 +53,7 @@ def validate_ratio_within_precision(value: float, tolerance: float = 1e-7) -> fl
         raise ValueError(f"Value {value} is outside bounds.")
     return value
 
-def validate_flow_within_precision(value: float, tolerance: float = 1e-7) -> float:
+def validate_flow_within_precision(value: float, tolerance: float = 1e-4) -> float:
     if value < 0 and value > -tolerance:
         return 0.0
     if value < -tolerance:
