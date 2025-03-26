@@ -146,15 +146,13 @@ class ThrustersControl(Control):
         )
 
     def _control_heat_dump_mix(
-        self, sensor_values: ThrustersSensorValues | None, time: datetime
+        self, sensor_values: ThrustersSensorValues, time: datetime
     ):
         self._current_values.thrusters_mix_exchanger.setpoint = Stamped(
             value=(
                 self._heat_dump_controller(
                     sensor_values.thrusters_temperature_supply.temperature.value
                 )
-                if sensor_values
-                else Valve.MIXING_A_TO_AB
             ),
             timestamp=time,
         )
@@ -186,12 +184,6 @@ class ThrustersControl(Control):
 
         self._control_heat_dump_mix(sensor_values, self._time)
         self._control_recovery_mixes(sensor_values, self._time)
-        # self._current_values.thrusters_mix_exchanger.setpoint = Stamped(
-        #     value=self._heat_dump_controller(
-        #         sensor_values.thrusters_temperature_supply.temperature.value
-        #     ),
-        #     timestamp=self._time,
-        # )
 
     def _cooling(self, sensor_values: ThrustersSensorValues):
         self._safe(sensor_values)
@@ -204,7 +196,7 @@ class ThrustersControl(Control):
             value=self._parameters.recovery_pump_dutypoint, timestamp=self._time
         )
 
-        # self._control_heat_dump_mix(sensor_values, self._time)
+        self._control_heat_dump_mix(sensor_values, self._time)
         self._control_recovery_mixes(sensor_values, self._time)
 
     def _activate_pump(self):

@@ -140,8 +140,14 @@ async def test_recovery_mixing_hot(io_mapping, thrusters_control, simulation_inp
                 Valve.MIXING_A_TO_AB, abs=1e-2
             )
 
-    assert result.sensor_values.thrusters_temperature_aft_return.temperature.value > 70
-    assert result.sensor_values.thrusters_temperature_fwd_return.temperature.value > 70
+    assert (
+        result.sensor_values.thrusters_temperature_aft_return.temperature.value
+        == approx(60, abs=5)
+    )
+    assert (
+        result.sensor_values.thrusters_temperature_fwd_return.temperature.value
+        == approx(60, abs=5)
+    )
 
 
 async def test_heat_dump_with_cold_sea(
