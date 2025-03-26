@@ -186,3 +186,49 @@ async def test_recovery_mixing_hot(io_mapping, control, simulation_inputs):
 
     assert result.sensor_values.thrusters_temperature_aft_return.temperature.value > 70
     assert result.sensor_values.thrusters_temperature_fwd_return.temperature.value > 70
+
+
+async def test_heat_dump_with_cold_sea(io_mapping, control, simulation_inputs):
+    simulation_inputs.thrusters_seawater_supply.temperature = Stamped.stamp(15)
+    executor = SimulationExecutor(
+        io_mapping, simulation_inputs, datetime.now(), timedelta(seconds=60)
+    )
+    result = await executor.tick(
+        control.simple_cooling(None, datetime.now()),
+    )
+
+    # stabilise
+    for i in range(2):
+        control_values = control.simple_cooling(result.sensor_values, executor.time())
+        result = await executor.tick(control_values)
+
+    for i in range(40):
+        control_values = control.simple_cooling(result.sensor_values, datetime.now())
+        result = await executor.tick(
+            control_values,
+        )
+
+        assert result.sensor_values.thrusters_temperature_supply.temperature.value > 35
+
+
+async def test_heat_dump_with_hot_sea(io_mapping, control, simulation_inputs):
+    simulation_inputs.thrusters_seawater_supply.temperature = Stamped.stamp(45)
+    executor = SimulationExecutor(
+        io_mapping, simulation_inputs, datetime.now(), timedelta(seconds=60)
+    )
+    result = await executor.tick(
+        control.simple_cooling(None, datetime.now()),
+    )
+
+    # stabilise
+    for i in range(2):
+        control_values = control.simple_cooling(result.sensor_values, executor.time())
+        result = await executor.tick(control_values)
+
+    for i in range(40):
+        control_values = control.simple_cooling(result.sensor_values, datetime.now())
+        result = await executor.tick(
+            control_values,
+        )
+
+        assert result.sensor_values.thrusters_temperature_supply.temperature.value < 65

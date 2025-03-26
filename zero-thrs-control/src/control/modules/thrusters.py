@@ -73,29 +73,19 @@ class ThrustersControl(Control):
         pump = self.select_pump()
         pump.on = Stamped(value=True, timestamp=time)
         pump.dutypoint = Stamped(value=0.5, timestamp=time)
-        self._current_values.thrusters_mix_exchanger.setpoint = Stamped(
-            value=(
-                self._heat_dump_controller(
-                    sensor_values.thrusters_temperature_supply.temperature.value
-                )
-                if sensor_values
-                else 1.0
-            ),
-            timestamp=time,
-        )
-        self.control_recovery_mixes(sensor_values, time)
+        self._control_heat_dump_mix(sensor_values, time)
+        self._control_recovery_mixes(sensor_values, time)
         self.select_mode("cooling", time)
         return self._current_values
 
-    def simple_recovery(self, sensor_values: ThrustersSensorValues | None, time: datetime) -> ThrustersControlValues:
+    def simple_recovery(
+        self, sensor_values: ThrustersSensorValues | None, time: datetime
+    ) -> ThrustersControlValues:
         pump = self.select_pump()
         pump.on = Stamped(value=True, timestamp=time)
         pump.dutypoint = Stamped(value=0.5, timestamp=time)
-        self._current_values.thrusters_mix_exchanger.setpoint = Stamped(
-            value=1.0,
-            timestamp=time,
-        )
-        self.control_recovery_mixes(sensor_values, time)
+        self._control_heat_dump_mix(sensor_values, time)
+        self._control_recovery_mixes(sensor_values, time)
         self.select_mode("recovery", time)
         return self._current_values
 
@@ -108,7 +98,7 @@ class ThrustersControl(Control):
             value=switch_valve_position, timestamp=time
         )
 
-    def control_recovery_mixes(
+    def _control_recovery_mixes(
         self, sensor_values: ThrustersSensorValues | None, time: datetime
     ):
         self._current_values.thrusters_mix_aft.setpoint = Stamped(
@@ -128,6 +118,20 @@ class ThrustersControl(Control):
                 )
                 if sensor_values
                 else 1.0
+            ),
+            timestamp=time,
+        )
+
+    def _control_heat_dump_mix(
+        self, sensor_values: ThrustersSensorValues | None, time: datetime
+    ):
+        self._current_values.thrusters_mix_exchanger.setpoint = Stamped(
+            value=(
+                self._heat_dump_controller(
+                    sensor_values.thrusters_temperature_supply.temperature.value
+                )
+                if sensor_values
+                else Valve.MIXING_A_TO_AB
             ),
             timestamp=time,
         )
