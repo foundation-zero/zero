@@ -87,8 +87,11 @@ class SimulationExecutor(Executor):
     async def start(self):
         pass 
 
+    def time(self):
+        return self._start_time + self._ticks * self._tick_duration
+
     async def tick(self, control_values: ThrsModel) -> ExecutionResult:
-        time = self._start_time + self._ticks * self._tick_duration
+        time = self.time()
         bounds = self._boundaries.get_values_at_time(time)
         sensor_values, simulation_outputs, raw = self._io_mapping.tick(
             control_values, bounds, time, self._tick_duration

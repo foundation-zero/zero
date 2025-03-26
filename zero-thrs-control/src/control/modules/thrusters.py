@@ -2,7 +2,7 @@ from datetime import datetime
 from typing import Literal
 from pydantic import BaseModel
 
-from control.controllers import HeatDumpController
+from control.controllers import HeatDumpController, HeatSupplyController
 from input_output.base import Stamped
 from input_output.definitions.control import Pump, Valve
 from input_output.modules.thrusters import ThrustersControlValues, ThrustersSensorValues
@@ -12,6 +12,7 @@ from classes.control import Control, ControlResult
 
 class ThrustersSetpoints(BaseModel):
     cooling_mix_setpoint: Celsius
+    recovery_mix_setpoint: Celsius
 
 
 _ZERO_TIME = datetime.fromtimestamp(0)
@@ -48,6 +49,12 @@ class ThrustersControl(Control):
     def __init__(self, setpoints: ThrustersSetpoints):
         self._setpoints = setpoints
         self._heat_dump_controller = HeatDumpController(setpoints.cooling_mix_setpoint)
+        self._fwd_heat_supply_controller = HeatSupplyController(
+            setpoints.recovery_mix_setpoint
+        )
+        self._aft_heat_supply_controller = HeatSupplyController(
+            setpoints.recovery_mix_setpoint
+        )
         self._current_values = _INITIAL_CONTROL_VALUES.model_copy(deep=True)
         self._most_recently_used_pump: None | Literal["pump1", "pump2"] = None
 
@@ -76,11 +83,11 @@ class ThrustersControl(Control):
             ),
             timestamp=time,
         )
+        self.control_recovery_mixes(sensor_values, time)
         self.select_mode("cooling", time)
         return self._current_values
 
-    def simple_recovery(self, time: datetime) -> ThrustersControlValues:
-        # recovery without mixing
+    def simple_recovery(self, sensor_values: ThrustersSensorValues | None, time: datetime) -> ThrustersControlValues:
         pump = self.select_pump()
         pump.on = Stamped(value=True, timestamp=time)
         pump.dutypoint = Stamped(value=0.5, timestamp=time)
@@ -88,6 +95,7 @@ class ThrustersControl(Control):
             value=1.0,
             timestamp=time,
         )
+        self.control_recovery_mixes(sensor_values, time)
         self.select_mode("recovery", time)
         return self._current_values
 
@@ -98,6 +106,30 @@ class ThrustersControl(Control):
         )
         self._current_values.thrusters_switch_fwd.setpoint = Stamped(
             value=switch_valve_position, timestamp=time
+        )
+
+    def control_recovery_mixes(
+        self, sensor_values: ThrustersSensorValues | None, time: datetime
+    ):
+        self._current_values.thrusters_mix_aft.setpoint = Stamped(
+            value=(
+                self._aft_heat_supply_controller(
+                    sensor_values.thrusters_temperature_aft_return.temperature.value
+                )
+                if sensor_values
+                else 1.0
+            ),
+            timestamp=time,
+        )
+        self._current_values.thrusters_mix_fwd.setpoint = Stamped(
+            value=(
+                self._fwd_heat_supply_controller(
+                    sensor_values.thrusters_temperature_fwd_return.temperature.value
+                )
+                if sensor_values
+                else 1.0
+            ),
+            timestamp=time,
         )
 
     def select_pump(self) -> Pump:
