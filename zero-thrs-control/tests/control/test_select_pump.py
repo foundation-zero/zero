@@ -1,4 +1,4 @@
-def test_select_deselect_pump(thrusters_control):
+def test_activate_pump(thrusters_control):
     assert thrusters_control._active_pump is None 
     thrusters_control._activate_pump()
     assert thrusters_control._active_pump is thrusters_control._current_values.thrusters_pump1
@@ -10,7 +10,7 @@ def test_select_deselect_pump(thrusters_control):
     thrusters_control._activate_pump()
     assert thrusters_control._active_pump is thrusters_control._current_values.thrusters_pump2
 
-def test_select_pump_on_mode(thrusters_control):
+def test_activate_pump_on_mode(thrusters_control):
     assert thrusters_control._active_pump is None 
     thrusters_control.to_recovery() 
     assert thrusters_control._active_pump is thrusters_control._current_values.thrusters_pump1

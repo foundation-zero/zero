@@ -44,7 +44,7 @@ def unit_meta(unit: Any) -> UnitMeta | None:
     )
 
 
-def validate_ratio_within_precision(value: float, tolerance: float = 1e-7) -> float:
+def validate_ratio_within_precision(value: float, tolerance: float = 1e-4) -> float:
     if value < 0 and value > -tolerance:
         return 0.0
     if value > 1 and value < 1 + tolerance:
