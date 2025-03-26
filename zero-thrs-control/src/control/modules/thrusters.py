@@ -106,8 +106,6 @@ class ThrustersControl(Control):
         return self.state  # type: ignore
 
     def initial(self, time: datetime) -> ControlResult[ThrustersControlValues]:
-        self._current_values = _INITIAL_CONTROL_VALUES.model_copy(deep=True)
-        self._time = time
         return ControlResult(time, self._current_values)
 
     def _is_overheating(self, sensor_values: ThrustersSensorValues):
