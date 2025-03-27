@@ -61,21 +61,38 @@ _INITIAL_CONTROL_VALUES = ThrustersControlValues(
 
 states = [
     State(name="idle", on_exit="_activate_pump", on_enter="_deactivate_pump"),
-    State(name="recovery", on_enter="_set_valves_to_recovery"),
-    State(name="cooling", on_enter="_set_valves_to_cooling"),
-    State(name="safe", on_enter="_set_valves_to_cooling"),
+    State(
+        name="recovery",
+        on_enter=["_set_valves_to_recovery", "_enable_recovery_mixes"],
+        on_exit="_disable_recovery_mixes",
+    ),
+    State(
+        name="cooling",
+        on_enter=["_set_valves_to_cooling", "_enable_heat_dump_mix"],
+        on_exit="_disable_heat_dump_mix",
+    ),
+    State(
+        name="safe",
+        on_enter=["_set_valves_to_cooling", "_enable_heat_dump_mix"],
+        on_exit="_disable_heat_dump_mix",
+    ),
 ]
 
 
 class ThrustersControl(Control):
     def __init__(self, parameters: ThrustersParameters):
         self._parameters = parameters
-        self._heat_dump_controller = HeatDumpController(parameters.cooling_mix_setpoint)
-        self._fwd_heat_supply_controller = HeatSupplyController(
-            parameters.recovery_mix_setpoint
+        self._heat_dump_controller = HeatDumpController(
+            _INITIAL_CONTROL_VALUES.thrusters_mix_exchanger.setpoint.value,
+            parameters.cooling_mix_setpoint,
         )
         self._aft_heat_supply_controller = HeatSupplyController(
-            parameters.recovery_mix_setpoint
+            _INITIAL_CONTROL_VALUES.thrusters_mix_aft.setpoint.value,
+            parameters.recovery_mix_setpoint,
+        )
+        self._fwd_heat_supply_controller = HeatSupplyController(
+            _INITIAL_CONTROL_VALUES.thrusters_mix_fwd.setpoint.value,
+            parameters.recovery_mix_setpoint,
         )
         self.machine = Machine(model=self, states=states, initial="idle")
 
@@ -121,6 +138,20 @@ class ThrustersControl(Control):
             value=Valve.OPEN, timestamp=self._time
         )
 
+    def _enable_recovery_mixes(self):
+        self._aft_heat_supply_controller.enable()
+        self._fwd_heat_supply_controller.enable()
+
+    def _disable_recovery_mixes(self):
+        self._aft_heat_supply_controller.disable()
+        self._fwd_heat_supply_controller.disable()
+
+    def _enable_heat_dump_mix(self):
+        self._heat_dump_controller.enable()
+
+    def _disable_heat_dump_mix(self):
+        self._heat_dump_controller.disable()
+
     def _control_recovery_mixes(
         self, sensor_values: ThrustersSensorValues, time: datetime
     ):
@@ -129,8 +160,6 @@ class ThrustersControl(Control):
                 self._aft_heat_supply_controller(
                     sensor_values.thrusters_temperature_aft_return.temperature.value
                 )
-                if sensor_values
-                else 1.0
             ),
             timestamp=time,
         )
@@ -139,8 +168,6 @@ class ThrustersControl(Control):
                 self._fwd_heat_supply_controller(
                     sensor_values.thrusters_temperature_fwd_return.temperature.value
                 )
-                if sensor_values
-                else 1.0
             ),
             timestamp=time,
         )
@@ -165,6 +192,9 @@ class ThrustersControl(Control):
         if self._is_overheating(sensor_values):
             self.to_cooling()  # type: ignore
 
+        self._control_recovery_mixes(sensor_values, time)
+        self._control_heat_dump_mix(sensor_values, time)
+
         if self.mode == "cooling":
             self._cooling(sensor_values)
         elif self.mode == "recovery":
@@ -182,9 +212,6 @@ class ThrustersControl(Control):
             value=self._parameters.cooling_pump_dutypoint, timestamp=self._time
         )
 
-        self._control_heat_dump_mix(sensor_values, self._time)
-        self._control_recovery_mixes(sensor_values, self._time)
-
     def _cooling(self, sensor_values: ThrustersSensorValues):
         self._safe(sensor_values)
 
@@ -195,9 +222,6 @@ class ThrustersControl(Control):
         self._active_pump.dutypoint = Stamped(
             value=self._parameters.recovery_pump_dutypoint, timestamp=self._time
         )
-
-        self._control_heat_dump_mix(sensor_values, self._time)
-        self._control_recovery_mixes(sensor_values, self._time)
 
     def _activate_pump(self):
         if self._active_pump:
