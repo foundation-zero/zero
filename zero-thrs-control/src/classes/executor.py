@@ -14,6 +14,7 @@ class ExecutionResult[S: ThrsModel]:
 @dataclass
 class SimulationExecutionResult(ExecutionResult):
     simulation_outputs: ThrsModel
+    simulation_inputs: ThrsModel
     raw: dict[str, float]
 
 

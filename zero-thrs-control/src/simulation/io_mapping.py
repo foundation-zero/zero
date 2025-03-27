@@ -26,9 +26,9 @@ class IoMapping:
 
         fmu_outputs = self._fmu.tick(
             {
-                **build_inputs_for_fmu(control_values),
-                **build_inputs_for_fmu(simulation_inputs),
-            },
+            **build_inputs_for_fmu(control_values),
+            **build_inputs_for_fmu(simulation_inputs),
+        },
             tick_duration,
         )
 
@@ -37,4 +37,4 @@ class IoMapping:
             fmu_outputs,
             time + tick_duration,
         )
-        return sensor_values, simulation_outputs, fmu_outputs
+        return sensor_values, simulation_outputs, {**fmu_outputs, **build_inputs_for_fmu(simulation_inputs)}

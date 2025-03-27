@@ -101,5 +101,6 @@ class SimulationExecutor(Executor):
             timestamp=time,
             sensor_values=sensor_values,
             simulation_outputs=simulation_outputs,
+            simulation_inputs=bounds,
             raw=raw,
         )
