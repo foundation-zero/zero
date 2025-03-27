@@ -103,7 +103,7 @@ class SimulationInputs(ThrsModel):
                 if isinstance(value, pl.DataFrame):
                     if value.select(pl.min("time")).item() > time:
                         warn(
-                            f"Time {time} is before than the given range of data for field {component_name}."
+                            f"Time {time} is before the given range of data for field {component_name}."
                         )
 
                     if value.select(pl.max("time")).item() < time:
