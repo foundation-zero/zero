@@ -62,8 +62,12 @@ def test_inputs_selection(valid_dataframe):
     assert values["a"]["heat_flow"]["value"] == 1.0
     assert values["b"]["heat_flow"]["value"] == 3.0
 
-    with pytest.raises(ValueError, match="Time"):
-        inputs.get_values_at_time(datetime(2024, 1, 1))
+    with pytest.warns(match="Time"):
+        values = inputs.get_values_at_time(datetime(2024, 1, 1)).model_dump()
+        assert values["a"]["heat_flow"]["value"] == 1.0
+        assert values["b"]["heat_flow"]["value"] == 1.0
 
-    with pytest.raises(ValueError, match="Time"):
-        inputs.get_values_at_time(datetime(2026, 1, 1))
+    with pytest.warns(match="Time"):
+        values = inputs.get_values_at_time(datetime(2026, 1, 1)).model_dump()
+        assert values["a"]["heat_flow"]["value"] == 1.0
+        assert values["b"]["heat_flow"]["value"] == 3.0

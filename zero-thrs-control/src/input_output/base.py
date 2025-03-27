@@ -1,6 +1,7 @@
 from dataclasses import dataclass
 from datetime import datetime
 from typing import Any, Generic, Self, TypeVar
+from warnings import warn
 
 import polars as pl
 from pydantic import (
@@ -27,12 +28,10 @@ class ThrsModel(BaseModel):
     @classmethod
     def zero(cls) -> Self:
         def _zero_component(component):
-            return component(
-                **{
-                    field_name: Stamped.stamp(0.0)
-                    for field_name in component.model_fields.keys()
-                }
-            )
+            return component(**{
+                field_name: Stamped.stamp(0.0)
+                for field_name in component.model_fields.keys()
+            })
 
         vals = {
             component_name: _zero_component(component.annotation)
@@ -102,22 +101,28 @@ class SimulationInputs(ThrsModel):
                 value = getattr(component_value, field_name).value
 
                 if isinstance(value, pl.DataFrame):
-                    sorted_df = value.sort("time")
-                    filtered_df = (
-                        sorted_df.filter(sorted_df["time"] <= time)
-                        .select("value")
-                        .tail(1)
-                    )
-
-                    if (
-                        sorted_df.select("time").tail(1).item() < time
-                        or filtered_df.is_empty()
-                    ):
-                        raise ValueError(
-                            f"Time {time} is outside the range of given data for field {component_name}."
+                    if value.select(pl.min("time")).item() > time:
+                        warn(
+                            f"Time {time} is before than the given range of data for field {component_name}."
                         )
 
-                    return Stamped(value=filtered_df.item(), timestamp=time)
+                    if value.select(pl.max("time")).item() < time:
+                        warn(
+                            f"Time {time} is before than the given range of data for field {component_name}."
+                        )
+
+                    m = (pl.col("time") - time).abs()
+
+                    return Stamped(
+                        value=value.filter(
+                            (m := (pl.col("time") - time).abs()).min() == m
+                        )
+                        .limit(1)
+                        .select("value")
+                        .item(),
+                        timestamp=time,
+                    )
+
                 else:
                     return Stamped(value=value, timestamp=time)
 
@@ -126,7 +131,9 @@ class SimulationInputs(ThrsModel):
                 for field_name, field in component_value.model_fields.items()
             }
             model = create_model(
-                str(component.annotation), __base__=component.annotation, **fields  # type: ignore
+                str(component.annotation),
+                __base__=component.annotation,
+                **fields,  # type: ignore
             )  # type: ignore
             values = {
                 field_name: _field_value(field_name)
