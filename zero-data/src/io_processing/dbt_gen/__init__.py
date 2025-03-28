@@ -15,5 +15,5 @@ def generate_dbt():
     for source, file_name in io_lists:
         io_result = read_io_list(Path(f"io_lists/{file_name}"), source)
 
-        writer.write_io_metadata_csv(io_result.io_list, file_name)
+        writer.write_io_metadata_csv(io_result.io_list, source)
         dbt_generator.generate(io_result.topics)
