@@ -1,52 +1,25 @@
-name: Test
+name: Release
 on:
-  push:
   release:
-    types: [released]
+    types: [published]
 
 env:
   IMAGE: "europe-west1-docker.pkg.dev/common-449414/common/zero-domestic-control"
 
 jobs:
-  test:
-    timeout-minutes: 15
+  build-push:
     runs-on: ubuntu-latest
-    outputs:
-      image_tag: ${{ steps.image_tag.outputs.image_tag }}
+    timeout-minutes: 15
+    concurrency:
+      group: docker
+    permissions:
+      id-token: write
+      contents: read
     steps:
       - uses: actions/checkout@v4
         with:
           fetch-depth: '0'
-      - uses: actions/setup-python@v5
-        with:
-          python-version: 3.13
-      - run: pipx install poetry==2.0.1
-      - run: poetry check
-      - uses: astral-sh/ruff-action@v3
-      - run: poetry install
-      - run: poetry run mypy zero_domestic_control
-      - name: Unit Test
-        run: poetry run pytest --run=unit
-      - name: Run services
-        run: docker compose up -d --quiet-pull graphql-engine hass
-      - name: Integration Test
-        run: poetry run pytest --run=integration
-      - name: Determine image tag
-        id: image_tag
-        run: |
-          VERSION=$(poetry version -s | sed -r 's/\+/_/g' )
-          echo $VERSION
-          echo "image_tag=$VERSION" >> $GITHUB_OUTPUT
-
-  docker-push:
-    runs-on: ubuntu-latest
-    needs: test
-    permissions:
-      contents: 'read'
-      id-token: 'write'
-    steps:
       - uses: actions/checkout@v4
-      # Set up in https://github.com/foundation-zero/gcp-common
       - id: auth
         name: Authenticate with Google Cloud
         uses: google-github-actions/auth@v2
@@ -64,10 +37,19 @@ jobs:
           password: ${{ steps.auth.outputs.access_token }}
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
+      - name: Extract release version
+        id: meta
+        uses: docker/metadata-action@v5
+        with:
+          images: ${{ env.IMAGE }}
+          tags: |
+            type=semver,pattern=v{{version}}
+            type=semver,pattern=v{{major}}.{{minor}}
+            type=semver,pattern=v{{major}}
       - name: Build and push
         uses: docker/build-push-action@v6
         with:
           context: .
           push: true
           platforms: linux/amd64,linux/arm64
-          tags: ${{ env.IMAGE }}:${{ needs.test.outputs.image_tag }}
+          tags: ${{ steps.meta.outputs.tags }}

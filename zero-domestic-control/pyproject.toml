@@ -11,7 +11,7 @@ requires-python = ">= 3.13.1,<4.0"
 dynamic = ["dependencies", "version"]
 
 [tool.poetry]
-version = "0.0.0"
+version = "0.1.0"
 
 [tool.poetry.dependencies]
 starlette-graphene3 = "^0.6.0"
@@ -24,14 +24,12 @@ pyjwt = "^2.10.1"
 pydantic-settings = "^2.7.1"
 homeassistant-api = "^5.0.0"
 
-
 [tool.poetry.requires-plugins]
 poetry-dynamic-versioning = { version = ">=1.0.0,<2.0.0", extras = ["plugin"] }
 
 [tool.poetry.group.dev.dependencies]
 mypy = "^1.14.1"
 ruff = "^0.9.5"
-
 
 [tool.poetry.group.test.dependencies]
 pytest = "^8.3.4"
