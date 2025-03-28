@@ -1,6 +1,8 @@
 name: Deploy zero-dbt-gen chart
 on:
-  push:
+  pull_request:
+    types:
+      - closed
     branches:
       - main
     paths:

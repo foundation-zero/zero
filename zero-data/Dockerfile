@@ -33,4 +33,6 @@ COPY dbt/ ./dbt
 RUN mkdir -p /dbts/seeds
 COPY src/ ./
 
+RUN ["python", "-m", "io_processing.main", "generate-dbt"]
+
 ENTRYPOINT ["python", "-m", "io_processing.main"]
