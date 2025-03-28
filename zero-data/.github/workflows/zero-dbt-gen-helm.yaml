@@ -1,11 +1,10 @@
 name: Deploy zero-dbt-gen chart
 on:
-  pull_request:
-    types: [closed]
+  push:
     branches:
       - main
     paths:
-      - "charts/dbt_gen/**"
+      - 'charts/dbt-gen/**'
 
 jobs:
   helm-push:

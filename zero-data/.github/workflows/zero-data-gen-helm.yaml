@@ -1,11 +1,10 @@
 name: Deploy zero-data-gen chart
 on:
-  pull_request:
-    types: [closed]
+  push:
     branches:
       - main
     paths:
-      - "charts/data_gen/**"
+      - 'charts/data-gen/**'
 
 jobs:
   helm-push:
