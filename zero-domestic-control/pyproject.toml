@@ -11,7 +11,7 @@ requires-python = ">= 3.13.1,<4.0"
 dynamic = ["dependencies", "version"]
 
 [tool.poetry]
-version = "0.1.0"
+version = "0.2.0"
 
 [tool.poetry.dependencies]
 starlette-graphene3 = "^0.6.0"
