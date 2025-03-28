@@ -23,12 +23,18 @@ spec:
       containers:
         - name: data-gen
           securityContext:
-            runAsNonRoot: true
             allowPrivilegeEscalation: false
+            capabilities:
+              drop:
+              - ALL
+            privileged: false
+            readOnlyRootFilesystem: true
+            runAsGroup: 1001
+            runAsNonRoot: true
+            runAsUser: 1001
+            seLinuxOptions: {}
             seccompProfile:
               type: RuntimeDefault
-            capabilities:
-              drop: ["ALL"]
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
           command: ["generate-data"]
           imagePullPolicy: {{ .Values.image.pullPolicy }}
