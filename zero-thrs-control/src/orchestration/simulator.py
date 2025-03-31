@@ -4,7 +4,7 @@ from classes.control import Control
 from input_output.base import SimulationInputs, ThrsModel
 from orchestration.collector import PolarsCollector
 from orchestration.executor import SimulationExecutor
-from orchestration.interfacer import Interfacer
+from orchestration.cycler import Cycler
 from simulation.fmu import Fmu
 from simulation.io_mapping import IoMapping
 
@@ -35,7 +35,7 @@ class Simulator:
             model.start_time,
             model.tick_duration,
         )
-        self._interfacer = Interfacer(model.control, self._executor)
+        self._interfacer = Cycler(model.control, self._executor)
 
     async def run(self, n_ticks: int):
         collector = PolarsCollector()

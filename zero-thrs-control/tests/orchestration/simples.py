@@ -3,7 +3,7 @@ from classes.control import ControlResult
 from input_output.base import ThrsModel
 from input_output.definitions.sensor import FlowSensor
 from orchestration.executor import ExecutionResult, Executor
-from orchestration.interfacer import Control
+from orchestration.cycler import Control
 
 
 class SimpleInOut(ThrsModel):

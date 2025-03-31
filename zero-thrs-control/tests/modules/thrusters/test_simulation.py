@@ -9,8 +9,9 @@ from input_output.modules.thrusters import (
 )
 from orchestration.collector import PolarsCollector
 from orchestration.executor import SimulationExecutor
-from orchestration.interfacer import Interfacer
+from orchestration.cycler import Cycler
 from orchestration.simulator import Simulator, SimulatorModel
+
 
 @fixture
 def executor(io_mapping, simulation_inputs):
@@ -21,7 +22,7 @@ def executor(io_mapping, simulation_inputs):
 
 async def test_interfacer(executor, io_mapping, simulation_inputs, thrusters_control):
     collector = PolarsCollector()
-    interfacer = Interfacer(thrusters_control, executor)
+    interfacer = Cycler(thrusters_control, executor)
     await interfacer.run(20, collector)
     frame = collector.result()
     mock_fmu_outputs = io_mapping.tick(
@@ -46,8 +47,9 @@ async def test_simulation(simulation_inputs, thrusters_control):
         control_values_cls=ThrustersControlValues,
         simulation_outputs_cls=ThrustersSimulationOutputs,
         simulation_inputs=simulation_inputs,
-        control = thrusters_control)
-    
+        control=thrusters_control,
+    )
+
     simulation = Simulator(thrusters_model)
 
     result = await simulation.run(20)
