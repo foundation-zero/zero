@@ -95,12 +95,12 @@ heat = pl.DataFrame({
     ),
     "thrusters_aft_heat": compute_heat(
         df["thrusters_temperature_aft_return__temperature__C"],
-        df["thrusters_temperature_aft_supply__temperature__C"],
+        df["thrusters_temperature_supply__temperature__C"],
         df["thrusters_flow_aft__flow__l_min"],
     ),
     "thrusters_fwd_heat": compute_heat(
         df["thrusters_temperature_fwd_return__temperature__C"],
-        df["thrusters_temperature_fwd_supply__temperature__C"],
+        df["thrusters_temperature_supply__temperature__C"],
         df["thrusters_flow_fwd__flow__l_min"],
     ),
 })
