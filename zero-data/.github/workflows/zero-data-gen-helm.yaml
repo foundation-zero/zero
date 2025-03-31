@@ -6,7 +6,7 @@ on:
     branches:
       - main
     paths:
-      - "charts/data-gen/**"
+      - "charts/data_gen/**"
 jobs:
   helm-push:
     if: github.event.pull_request.merged == true

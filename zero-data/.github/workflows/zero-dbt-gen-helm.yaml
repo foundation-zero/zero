@@ -6,7 +6,7 @@ on:
     branches:
       - main
     paths:
-      - "charts/dbt-gen/**"
+      - "charts/dbt_gen/**"
 
 jobs:
   helm-push:
