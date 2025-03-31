@@ -3,4 +3,4 @@ name: zero-dbt-gen-chart
 description: This repository contains the Zero data platform.
 type: application
 version: 0.2.0
-appVersion: "0.1.0"
+appVersion: "0.5.0"
