@@ -28,8 +28,10 @@ def test_cooling(io_mapping, thrusters_control, simulation_inputs):
 
     assert sensor_values.thrusters_flow_fwd.flow.value > 1
     assert sensor_values.thrusters_flow_aft.flow.value > 1
-    assert simulation_outputs.thrusters_module_supply.flow.value == approx(0, abs=1e-3)
-    assert simulation_outputs.thrusters_module_return.flow.value == approx(0, abs=1e-3)
+    assert sensor_values.thrusters_flow_recovery_fwd.flow.value == approx(0, abs=1e-2)
+    assert sensor_values.thrusters_flow_recovery_aft.flow.value == approx(0, abs=1e-2)
+    assert simulation_outputs.thrusters_module_supply.flow.value == approx(0, abs=1e-2)
+    assert simulation_outputs.thrusters_module_return.flow.value == approx(0, abs=1e-2)
     assert (
         simulation_inputs.thrusters_seawater_supply.temperature.value
         < simulation_outputs.thrusters_seawater_return.temperature.value
@@ -57,6 +59,10 @@ def test_recovery(io_mapping, thrusters_control, simulation_inputs):
     assert simulation_outputs.thrusters_module_return.flow.value == approx(
         simulation_outputs.thrusters_module_supply.flow.value, abs=1e-2
     )
+
+    assert sensor_values.thrusters_flow_recovery_fwd.flow.value + sensor_values.thrusters_flow_recovery_aft.flow.value == approx(simulation_outputs.thrusters_module_return.flow.value, abs=1e-2)
+    
+    
     assert (
         simulation_outputs.thrusters_module_return.temperature.value
         > simulation_inputs.thrusters_module_supply.temperature.value

@@ -1,5 +1,4 @@
 import polars as pl
-import pytest
 
 from input_output.fmu_mapping import build_inputs_for_fmu
 from input_output.modules.thrusters import (
@@ -13,7 +12,6 @@ from input_output.modules.thrusters import (
 SHEET_URL = "https://docs.google.com/spreadsheets/d/1YyfkKmqL8MZuJfStljTjhgFxawcco2cp2qCmBGFrR04/export?gid=0&format=csv"
 
 
-@pytest.mark.skip("Skip until V7 of FMU is available ")
 def test_modelica_names():
     sheet = pl.read_csv(SHEET_URL, skip_lines=1)
     thrusters_variables = set(

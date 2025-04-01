@@ -21,11 +21,11 @@ class ThrustersParameters(BaseModel):
 
 _ZERO_TIME = datetime.fromtimestamp(0)
 _INITIAL_CONTROL_VALUES = ThrustersControlValues(
-    thrusters_pump1=Pump(
+    thrusters_pump_1=Pump(
         dutypoint=Stamped(value=0.0, timestamp=_ZERO_TIME),
         on=Stamped(value=False, timestamp=_ZERO_TIME),
     ),
-    thrusters_pump2=Pump(
+    thrusters_pump_2=Pump(
         dutypoint=Stamped(value=0.0, timestamp=_ZERO_TIME),
         on=Stamped(value=False, timestamp=_ZERO_TIME),
     ),
@@ -227,11 +227,11 @@ class ThrustersControl(Control):
         else:
             if self._most_recently_active_pump == "pump1":
                 self._most_recently_active_pump = "pump2"
-                self._active_pump = self._current_values.thrusters_pump2
+                self._active_pump = self._current_values.thrusters_pump_2
 
             else:
                 self._most_recently_active_pump = "pump1"
-                self._active_pump = self._current_values.thrusters_pump1
+                self._active_pump = self._current_values.thrusters_pump_1
 
         self._active_pump.on = Stamped(value=True, timestamp=self._time)
 

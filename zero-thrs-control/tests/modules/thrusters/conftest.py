@@ -24,7 +24,7 @@ def io_mapping() -> IoMapping:
         Fmu(
                    str(
             Path(__file__).resolve().parent.parent.parent.parent
-            / "src/simulation/models/thrusters/thruster_moduleV6.fmu"
+            / "src/simulation/models/thrusters/thruster_moduleV8.fmu"
         ),
             timedelta(seconds=0.001),
         ),

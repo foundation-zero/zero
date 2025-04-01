@@ -7,8 +7,8 @@ from input_output.base import Meta, SimulationInputs, ThrsModel
 
 
 class ThrustersSensorValues(ThrsModel):
-    thrusters_pump1: Annotated[sensor.Pump, Meta("5001015")]
-    thrusters_pump2: Annotated[sensor.Pump, Meta("5001016")]
+    thrusters_pump_1: Annotated[sensor.Pump, Meta("5001015")]
+    thrusters_pump_2: Annotated[sensor.Pump, Meta("5001016")]
     thrusters_temperature_aft_return: Annotated[
         sensor.TemperatureSensor, Meta("5001038-01")
     ]
@@ -18,10 +18,10 @@ class ThrustersSensorValues(ThrsModel):
     thrusters_temperature_supply: Annotated[
         sensor.TemperatureSensor, Meta("5001038-28")
     ]
-    thrusters_temperature_fwd_supply: Annotated[
+    thrusters_temperature_fwd_mix: Annotated[
         sensor.TemperatureSensor, Meta("5001038-29")
     ]
-    thrusters_temperature_aft_supply: Annotated[
+    thrusters_temperature_aft_mix: Annotated[
         sensor.TemperatureSensor, Meta("5001038-30")
     ]
     thrusters_mix_aft: Annotated[sensor.Valve, Meta("5001042-01")]
@@ -34,11 +34,13 @@ class ThrustersSensorValues(ThrsModel):
     thrusters_shutoff_recovery: Annotated[sensor.Valve, Meta("5001069-10")]
     thrusters_switch_aft: Annotated[sensor.Valve, Meta("50001091-01")]
     thrusters_switch_fwd: Annotated[sensor.Valve, Meta("50001091-02")]
+    thrusters_flow_recovery_aft: Annotated[sensor.FlowSensor, Meta("5001093-01")]
+    thrusters_flow_recovery_fwd: Annotated[sensor.FlowSensor, Meta("5001093-02")]
 
 
 class ThrustersControlValues(ThrsModel):
-    thrusters_pump1: Annotated[control.Pump, Meta("5001015")]
-    thrusters_pump2: Annotated[control.Pump, Meta("5001016")]
+    thrusters_pump_1: Annotated[control.Pump, Meta("5001015")]
+    thrusters_pump_2: Annotated[control.Pump, Meta("5001016")]
     thrusters_mix_aft: Annotated[control.Valve, Meta("5001042-01")]
     thrusters_mix_fwd: Annotated[control.Valve, Meta("5001042-02")]
     thrusters_mix_exchanger: Annotated[control.Valve, Meta("5001045-02")]

@@ -41,7 +41,7 @@ async def test_simulation(simulation_inputs, thrusters_control):
     thrusters_model = SimulatorModel(
         fmu_path=str(
             Path(__file__).resolve().parent.parent.parent.parent
-            / "src/simulation/models/thrusters/thruster_moduleV6.fmu"
+            / "src/simulation/models/thrusters/thruster_moduleV8.fmu"
         ),
         sensor_values_cls=ThrustersSensorValues,
         control_values_cls=ThrustersControlValues,
