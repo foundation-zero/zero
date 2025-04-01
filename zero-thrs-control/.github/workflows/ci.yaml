@@ -16,7 +16,7 @@ jobs:
 
       - run: poetry run fmpy compile src/simulation/models/XRGTestModel/FMUInterfaceTester_MECS_regular.fmu
       
-      - run: poetry run fmpy compile src/simulation/models/thrusters/thruster_moduleV6.fmu
+      - run: poetry run fmpy compile src/simulation/models/thrusters/thruster_moduleV8.fmu
 
       - run: poetry run pyright
 
@@ -25,3 +25,7 @@ jobs:
       - run: docker compose up -d
 
       - run: poetry run pytest -v
+
+      - run: poetry run jupyter nbconvert --to notebook --execute analysis/thrusters_plot.ipynb
+
+      - run: poetry run

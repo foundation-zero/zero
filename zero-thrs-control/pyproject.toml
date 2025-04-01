@@ -10,6 +10,7 @@ packages = [
   { include = "simulation", from = "src" },
   { include = "classes", from = "src" },
   { include = "utils", from = "src" },
+  { include = "analysis" }
 ]
 readme = "README.md"
 
