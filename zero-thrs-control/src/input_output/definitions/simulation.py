@@ -1,6 +1,6 @@
 
 from input_output.base import Stamped, StampedDf, ThrsModel
-from input_output.definitions.units import Celsius, LMin, Watt
+from input_output.definitions.units import Celsius, LMin, Ratio, Watt
 
 type Stamp[T] = Stamped[T] | StampedDf[T]
 
@@ -19,3 +19,6 @@ class TemperatureBoundary(ThrsModel):
 
 class FlowBoundary(ThrsModel):
     flow: Stamp[LMin]
+
+class ValvePosition(ThrsModel):
+    position_rel: Stamp[Ratio]

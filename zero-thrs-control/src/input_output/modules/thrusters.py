@@ -36,6 +36,8 @@ class ThrustersSensorValues(ThrsModel):
     thrusters_switch_fwd: Annotated[sensor.Valve, Meta("50001091-02")]
     thrusters_flow_recovery_aft: Annotated[sensor.FlowSensor, Meta("5001093-01")]
     thrusters_flow_recovery_fwd: Annotated[sensor.FlowSensor, Meta("5001093-02")]
+    thrusters_pressure_recovery: Annotated[sensor.PressureSensor, Meta("50001097-01")]
+    thrusters_pressure_cooling: Annotated[sensor.PressureSensor, Meta("50001097-02")]
 
 
 class ThrustersControlValues(ThrsModel):

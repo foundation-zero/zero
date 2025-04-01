@@ -2,7 +2,7 @@ import polars as pl
 
 from input_output.base import ThrsModel
 from input_output.fmu_mapping import build_inputs_for_fmu
-from input_output.modules.PVT import PvtControlValues, PvtSensorValues, PvtSimulationInputs, PvtSimulationOutputs
+from input_output.modules.pvt import PvtControlValues, PvtSensorValues, PvtSimulationInputs, PvtSimulationOutputs
 from input_output.modules.thrusters import (
     ThrustersControlValues,
     ThrustersSensorValues,
