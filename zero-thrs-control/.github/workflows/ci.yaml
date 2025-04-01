@@ -26,6 +26,4 @@ jobs:
 
       - run: poetry run pytest -v
 
-      - run: poetry run jupyter nbconvert --to notebook --execute analysis/thrusters_plot.ipynb
-
-      - run: poetry run
+      - run: poetry run jupyter nbconvert --to notebook --execute analysis/thrusters.ipynb
