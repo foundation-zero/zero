@@ -44,6 +44,7 @@ watch(currentRoom, (next, prev) => {
         <ListItem
           v-for="(item, controlIndex) in group.controls"
           :key="item.name!"
+          data-testid="blinds-control"
           class="flex-col pb-6"
           @click="selected = group"
         >

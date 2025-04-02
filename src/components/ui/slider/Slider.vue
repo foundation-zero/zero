@@ -18,6 +18,7 @@ const forwarded = useForwardPropsEmits(delegatedProps, emits);
 
 <template>
   <SliderRoot
+    data-testid="slider"
     :class="
       cn(
         'relative flex w-full touch-none select-none items-center disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-50 data-[orientation=vertical]:h-full data-[orientation=vertical]:w-1.5 data-[orientation=vertical]:flex-col',
@@ -27,6 +28,7 @@ const forwarded = useForwardPropsEmits(delegatedProps, emits);
     v-bind="forwarded"
   >
     <SliderTrack
+      data-testid="slider-track"
       class="relative h-1.5 w-full grow overflow-hidden rounded-full bg-primary/20 data-[orientation=vertical]:w-1.5"
     >
       <SliderRange class="absolute h-full bg-primary data-[orientation=vertical]:w-full" />

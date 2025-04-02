@@ -36,6 +36,7 @@ watch(currentRoom, (newRoom) => {
     <Switch
       id="av-toggle"
       v-model:checked="isOn"
+      data-testid="av-toggle"
     >
     </Switch>
   </div>

@@ -55,7 +55,10 @@ const isOff = computed(() => value.value[0] == MIN_VALUE);
             />
 
             <div class="mt-6 flex flex-col items-center justify-center">
-              <div class="relative inline-flex items-end">
+              <div
+                class="relative inline-flex items-end"
+                data-testid="temperatureSetpoint"
+              >
                 <span class="text-3xl font-bold uppercase md:text-5xl">
                   <span>{{ !isOff ? Math.floor(value[0]) : "Off" }}</span>
                 </span>
@@ -72,6 +75,7 @@ const isOff = computed(() => value.value[0] == MIN_VALUE);
                 >
               </div>
               <span
+                data-testid="temperatureSetpointLabel"
                 class="text-xs font-extralight md:text-base"
                 :class="{ invisible: isOff }"
                 >{{ t("labels.setTo") }}</span

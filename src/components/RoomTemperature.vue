@@ -10,9 +10,11 @@ const { t } = useI18n();
   <article class="w-100 flex items-center justify-around">
     <div>
       <span class="inline-flex flex-col items-center justify-center">
-        <span class="text-5xl font-bold lg:text-7xl md:portrait:text-7xl">{{
-          room.actualTemperature
-        }}</span>
+        <span
+          id="actualTemperature"
+          class="text-5xl font-bold lg:text-7xl md:portrait:text-7xl"
+          >{{ room.actualTemperature }}</span
+        >
         <span class="text-md font-extralight">{{ t("labels.inside") }}</span>
       </span>
       <sup class="text-3xl font-extralight lg:text-5xl md:portrait:text-5xl">&deg;</sup>
@@ -20,7 +22,11 @@ const { t } = useI18n();
 
     <div>
       <span class="inline-flex flex-col items-center justify-center">
-        <span class="text-5xl font-bold lg:text-7xl md:portrait:text-7xl">33</span>
+        <span
+          id="outsideTemperature"
+          class="text-5xl font-bold lg:text-7xl md:portrait:text-7xl"
+          >33</span
+        >
         <span class="text-md font-extralight">{{ t("labels.outside") }}</span>
       </span>
       <sup class="text-3xl font-extralight lg:text-5xl md:portrait:text-5xl">&deg;</sup>

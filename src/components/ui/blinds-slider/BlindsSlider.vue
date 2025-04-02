@@ -31,7 +31,10 @@ const blindsPosition = computed({
       :steps="6"
     />
     <div class="mt-3 inline-flex items-center">
-      <span class="text-3xl font-extrabold md:text-4xl">
+      <span
+        class="text-3xl font-extrabold md:text-4xl"
+        data-testid="blindsPosition"
+      >
         <span>{{ blindsPosition[0] ?? 0 }}</span>
       </span>
       <span class="mx-1.5 text-3xl md:text-4xl">/</span>

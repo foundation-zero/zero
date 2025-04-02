@@ -13,6 +13,7 @@ const { currentRoom } = toRefs(useRoomStore());
 <template>
   <Button
     variant="ghost"
+    data-testid="room-selector-button"
     size="sm"
     class="px-0 text-sm font-bold transition-all hover:bg-transparent dark:text-gray-100"
     :disabled="isScrolling"

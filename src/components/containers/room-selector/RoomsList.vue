@@ -28,6 +28,7 @@ const selectRoom = (room: Room) => {
         <ListItem
           v-for="room in area.rooms"
           :key="room.name!"
+          :data-testid="room.id"
           :selected="currentRoom?.name === room.name"
           @click="selectRoom(room)"
         >
