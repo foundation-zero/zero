@@ -6,7 +6,6 @@ class FlowSensor(ThrsModel):
     flow: Stamped[LMin]
     temperature: Stamped[Celsius]
 
-
 class Pump(ThrsModel):
     speed: Stamped[Hz]
     op_time: Stamped[seconds]
