@@ -27,7 +27,7 @@ class PvtSensorValues(ThrsModel):
     pvt_flowcontrol_main_fwd: Annotated[sensor.Valve, Meta('50001067-01')]
     pvt_flowcontrol_main_aft: Annotated[sensor.Valve, Meta('50001067-02')]
     pvt_flowcontrol_owners: Annotated[sensor.Valve, Meta('50001069-01')]
-    
+
 
 
 class PvtControlValues(ThrsModel):

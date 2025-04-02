@@ -85,7 +85,7 @@ class SimulationExecutor(Executor):
         self._io_mapping = io_mapping
 
     async def start(self):
-        pass 
+        pass
 
     def time(self):
         return self._start_time + self._ticks * self._tick_duration

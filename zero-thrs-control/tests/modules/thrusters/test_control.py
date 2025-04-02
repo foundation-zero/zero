@@ -61,8 +61,8 @@ def test_recovery(io_mapping, thrusters_control, simulation_inputs):
     )
 
     assert sensor_values.thrusters_flow_recovery_fwd.flow.value + sensor_values.thrusters_flow_recovery_aft.flow.value == approx(simulation_outputs.thrusters_module_return.flow.value, abs=1e-2)
-    
-    
+
+
     assert (
         simulation_outputs.thrusters_module_return.temperature.value
         > simulation_inputs.thrusters_module_supply.temperature.value

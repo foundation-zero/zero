@@ -13,8 +13,8 @@ class SimpleInOut(ThrsModel):
 class SimpleExecutor(Executor):
     def __init__(self, start_time):
         self.controls = []
-        self._start_time = start_time 
-        
+        self._start_time = start_time
+
     async def start(self):
         pass
 
