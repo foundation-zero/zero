@@ -127,7 +127,7 @@ class ThrustersControl(Control):
         self._time = datetime.now()
 
     @property
-    def mode(self) -> Literal["cooling", "recovery", "safe"]:
+    def mode(self) -> Literal["idle", "cooling", "recovery", "safe"]:
         return self.state  # type: ignore
 
     def initial(self, time: datetime) -> ControlResult[ThrustersControlValues]:
@@ -225,15 +225,15 @@ class ThrustersControl(Control):
         self._control_heat_dump_mix(sensor_values, time)
 
         if self.mode == "cooling":
-            self._cooling(sensor_values)
+            self._cooling()
         elif self.mode == "recovery":
-            self._recovery(sensor_values)
+            self._recovery()
         elif self.mode == "safe":
-            self._safe(sensor_values)
+            self._safe()
 
         return ControlResult(time, self._current_values)
 
-    def _safe(self, sensor_values: ThrustersSensorValues):
+    def _safe(self):
         if not self._active_pump:
             raise Warning("No pump active in safe mode")
 
@@ -252,7 +252,7 @@ class ThrustersControl(Control):
         )
         self._safe(sensor_values)
 
-    def _recovery(self, sensor_values: ThrustersSensorValues):
+    def _recovery(self):
         if not self._active_pump:
             raise Warning("No pump active in recovery mode")
 
