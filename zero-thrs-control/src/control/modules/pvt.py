@@ -115,6 +115,12 @@ class PvtControl(Control):
         self._main_aft_heat_supply_controller.disable()
         self._owners_heat_supply_controller.disable()
 
+    def _enable_heat_dump_mix(self):
+        self._heat_dump_controller.enable()
+
+    def _disable_heat_dump_mix(self):
+        self._heat_dump_controller.disable()
+
     def _control_recovery_mixes(self, sensor_values: PvtSensorValues, time: datetime):
         self._current_values.pvt_mix_main_fwd.setpoint = Stamped(
             value=(
@@ -135,7 +141,8 @@ class PvtControl(Control):
         self._current_values.pvt_mix_owners.setpoint = Stamped(
             value=(
                 self._owners_heat_supply_controller(
-                    sensor_values.pvt_temperature_owners_return.temperature.value
+                    #sensor_values.pvt_temperature_owners_return.temperature.value
+                    sensor_values.pvt_temperature_main_aft_return.temperature.value
                 )
             ),
             timestamp=time,
@@ -161,7 +168,7 @@ class PvtControl(Control):
 
         return ControlResult(time, self._current_values)
 
-    def _activate_pump(self):
+    def _activate_pumps(self):
         self._current_values.pvt_pump_main_fwd.on = Stamped(
             value=True, timestamp=self._time
         )
@@ -172,7 +179,7 @@ class PvtControl(Control):
             value=True, timestamp=self._time
         )
 
-    def _deactivate_pump(self):
+    def _deactivate_pumps(self):
         self._current_values.pvt_pump_main_fwd.on = Stamped(
             value=False, timestamp=self._time
         )

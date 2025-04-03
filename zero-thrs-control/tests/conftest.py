@@ -1,5 +1,6 @@
 from pytest import fixture
 
+from control.modules.pvt import PvtControl, PvtParameters
 from control.modules.thrusters import ThrustersControl, ThrustersParameters
 
 

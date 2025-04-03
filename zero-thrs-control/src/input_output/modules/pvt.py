@@ -19,10 +19,16 @@ class PvtSensorValues(ThrsModel):
     pvt_temperature_main_aft_supply: Annotated[
         sensor.TemperatureSensor, Meta("50001038-22")
     ]
-    pvt_temperature_owners_return: Annotated[
+    #pvt_temperature_owners_return: Annotated[
+    #    sensor.TemperatureSensor, Meta("50001038-04")
+    #] #TODO:change name in next FMU version
+    pvt_temperature_main_aft_return: Annotated[
         sensor.TemperatureSensor, Meta("50001038-04")
     ]
-    pvt_temperature_owners_supply: Annotated[
+    #pvt_temperature_owners_supply: Annotated[
+    #    sensor.TemperatureSensor, Meta("50001038-21")
+    #] #TODO:change name in next FMU version
+    pvt_temperature_main_aft_supply: Annotated[
         sensor.TemperatureSensor, Meta("50001038-21")
     ]
     pvt_mix_main_fwd: Annotated[sensor.Valve, Meta("50001044-01")]
@@ -31,9 +37,9 @@ class PvtSensorValues(ThrsModel):
     pvt_flow_main_fwd: Annotated[sensor.FlowSensor, Meta("50001058-12")]
     pvt_flow_main_aft: Annotated[sensor.FlowSensor, Meta("50001058-13")]
     pvt_flow_owners: Annotated[sensor.FlowSensor, Meta("50001057-03")]
-    pvt_pressure_main_fwd: Annotated[sensor.PressureSensor, Meta("50001097-03")]
-    pvt_pressure_main_aft: Annotated[sensor.PressureSensor, Meta("50001097-04")]
-    pvt_pressure_owners: Annotated[sensor.PressureSensor, Meta("50001097-05")]
+    #pvt_pressure_main_fwd: Annotated[sensor.PressureSensor, Meta("50001097-03")] #TODO:include in next FMU version
+    #pvt_pressure_main_aft: Annotated[sensor.PressureSensor, Meta("50001097-04")] #TODO:include in next FMU version
+    #pvt_pressure_owners: Annotated[sensor.PressureSensor, Meta("50001097-05")] #TODO:include in next FMU version
     pvt_flowcontrol_main_fwd: Annotated[sensor.Valve, Meta("50001067-01")]
     pvt_flowcontrol_main_aft: Annotated[sensor.Valve, Meta("50001067-02")]
     pvt_flowcontrol_owners: Annotated[sensor.Valve, Meta("50001069-01")]
