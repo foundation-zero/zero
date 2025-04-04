@@ -4,12 +4,14 @@ from input_output.definitions.units import Celsius, Ratio
 
 
 class _Controller:
+    TUNING = (0, 0, 0)
 
     def __init__(self, initial: Ratio, setpoint: Celsius):
+        kp, ki, kd = self.TUNING
         self._pid = PID(
-            -1,
-            0,
-            0,
+            kp,
+            ki,
+            kd,
             setpoint=setpoint,
             sample_time=0.1,
             output_limits=(0, 1),
@@ -32,9 +34,17 @@ class _Controller:
         return pid_result if pid_result is not None else self._initial
 
 
-class HeatDumpController(_Controller):
+class _HeatController(_Controller):
+    TUNING = (-1, 0, 0)
+
+
+class HeatDumpController(_HeatController):
     pass
 
 
-class HeatSupplyController(_Controller):
+class HeatSupplyController(_HeatController):
     pass
+
+
+class PumpFlowController(_Controller):
+    TUNING = (1, 0.1, 0)

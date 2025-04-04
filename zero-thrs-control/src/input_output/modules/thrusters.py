@@ -39,6 +39,10 @@ class ThrustersSensorValues(ThrsModel):
     thrusters_pressure_recovery: Annotated[sensor.PressureSensor, Meta("50001097-01")]
     thrusters_pressure_cooling: Annotated[sensor.PressureSensor, Meta("50001097-02")]
 
+    thrusters_aft: Annotated[sensor.Thruster, Meta("15001001", included_in_fmu=False)]
+    thrusters_fwd: Annotated[sensor.Thruster, Meta("15001002", included_in_fmu=False)]
+    thrusters_pcs: Annotated[sensor.Pcs, Meta("1500", included_in_fmu=False)]
+
 
 class ThrustersControlValues(ThrsModel):
     thrusters_pump_1: Annotated[control.Pump, Meta("5001015")]
@@ -54,10 +58,11 @@ class ThrustersControlValues(ThrsModel):
 
 
 class ThrustersSimulationInputs(SimulationInputs):
-    thrusters_aft: simulation.HeatSource
-    thrusters_fwd: simulation.HeatSource
+    thrusters_aft: simulation.Thruster
+    thrusters_fwd: simulation.Thruster
     thrusters_seawater_supply: simulation.Boundary
     thrusters_module_supply: simulation.TemperatureBoundary
+    thrusters_pcs: simulation.Pcs
 
 
 class ThrustersSimulationOutputs(ThrsModel):

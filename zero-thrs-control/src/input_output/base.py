@@ -1,6 +1,6 @@
 from dataclasses import dataclass
 from datetime import datetime
-from typing import Any, Generic, Self, TypeVar
+from typing import Annotated, Any, Generic, Self, TypeVar
 from warnings import warn
 
 import polars as pl
@@ -11,8 +11,8 @@ from pydantic import (
     create_model,
     field_validator,
 )
-
-from input_output.definitions.units import unit_for_annotation
+from pydantic.fields import FieldInfo
+from input_output.definitions.units import unit_for_annotation, zero_for_unit
 from utils.string import hyphenize
 
 
@@ -28,10 +28,16 @@ class ThrsModel(BaseModel):
     @classmethod
     def zero(cls) -> Self:
         def _zero_component(component):
-            return component(**{
-                field_name: Stamped.stamp(0.0)
-                for field_name in component.model_fields.keys()
-            })
+            def _zero_value(field: FieldInfo):
+                unit = unit_for_annotation(field.annotation)
+                return zero_for_unit(unit) if unit else 0.0
+
+            return component(
+                **{
+                    field_name: Stamped.stamp(_zero_value(field))
+                    for field_name, field in component.model_fields.items()
+                }
+            )
 
         vals = {
             component_name: _zero_component(component.annotation)
@@ -85,6 +91,12 @@ class StampedDf(ThrsModel, Generic[T2]):
 @dataclass
 class Meta:
     yard_tag: str
+    included_in_fmu: bool = True
+
+
+@dataclass
+class FieldMeta:
+    included_in_fmu: bool = True
 
 
 class SimulationInputs(ThrsModel):
@@ -95,7 +107,19 @@ class SimulationInputs(ThrsModel):
             component_value = getattr(self, component_name)
 
             def _field_type(field):
-                return (Stamped[unit_for_annotation(field.annotation)], ...)
+                if field.metadata:
+                    info = FieldInfo.from_annotation(
+                        Annotated[
+                            Stamped[unit_for_annotation(field.annotation)],
+                            *field.metadata,
+                        ]  # type: ignore
+                    )
+                    return Annotated[
+                        Stamped[unit_for_annotation(field.annotation)], info
+                    ]
+
+                else:
+                    return (Stamped[unit_for_annotation(field.annotation)], ...)
 
             def _field_value(field_name):
                 value = getattr(component_value, field_name).value

@@ -1,7 +1,8 @@
 # Per https://docs.google.com/document/d/11EGlLqZ21uHy4ICmhvPx9uKOwm0guKgWxY6-1zSQ2mQ/edit?tab=t.0#heading=h.l7ph84h61wda
 from dataclasses import dataclass
 from types import GenericAlias, UnionType
-from typing import Annotated, Any, get_args
+from typing import Annotated, Any, Literal, TypeAliasType, get_args, get_origin
+from typing_extensions import _AnnotatedAlias
 
 from pydantic import AfterValidator, Field
 
@@ -44,6 +45,21 @@ def unit_meta(unit: Any) -> UnitMeta | None:
     )
 
 
+def zero_for_unit(unit: Any) -> Any:
+    if isinstance(unit, TypeAliasType):
+        unit = unit.__value__
+        if isinstance(unit, _AnnotatedAlias):
+            unit = get_args(unit)[0]
+    if unit is float:
+        return 0.0
+    elif get_origin(unit) is Literal:
+        return get_args(unit)[0]
+    elif unit is bool:
+        return False
+    else:
+        raise ValueError(f"Unsupported unit type: {unit}")
+
+
 def validate_ratio_within_precision(value: float, tolerance: float = 1e-4) -> float:
     if value < 0 and value > -tolerance:
         return 0.0
@@ -53,6 +69,7 @@ def validate_ratio_within_precision(value: float, tolerance: float = 1e-4) -> fl
         raise ValueError(f"Value {value} is outside bounds.")
     return value
 
+
 def validate_flow_within_precision(value: float, tolerance: float = 1e-4) -> float:
     if value < 0 and value > -tolerance:
         return 0.0
@@ -60,8 +77,13 @@ def validate_flow_within_precision(value: float, tolerance: float = 1e-4) -> flo
         raise ValueError(f"Value {value} is outside bounds.")
     return value
 
+
 type Celsius = Annotated[float, Field(ge=-273.15), UnitMeta(modelica_name="C")]
-type LMin = Annotated[float, AfterValidator(validate_flow_within_precision), UnitMeta(modelica_name="l_min")]
+type LMin = Annotated[
+    float,
+    AfterValidator(validate_flow_within_precision),
+    UnitMeta(modelica_name="l_min"),
+]
 type Hz = Annotated[float, Field(ge=0), UnitMeta(modelica_name="Hz")]
 type Ratio = Annotated[
     float,
@@ -72,3 +94,4 @@ type Bar = Annotated[float, Field(ge=-2e-2), UnitMeta(modelica_name="Bar")] #TOD
 type Watt = Annotated[float, UnitMeta(modelica_name="Watt")]
 type seconds = Annotated[float, UnitMeta(modelica_name="s")]
 type OnOff = Annotated[bool, UnitMeta(modelica_name="bool")]
+type PcsMode = Literal["off", "maneuvering", "propulsion", "regeneration"]
