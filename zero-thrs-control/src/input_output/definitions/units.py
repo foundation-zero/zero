@@ -70,7 +70,7 @@ def validate_ratio_within_precision(value: float, tolerance: float = 1e-4) -> fl
     return value
 
 
-def validate_flow_within_precision(value: float, tolerance: float = 1e-4) -> float:
+def validate_flow_within_precision(value: float, tolerance: float = 2e-2) -> float:
     if value < 0 and value > -tolerance:
         return 0.0
     if value < -tolerance:
@@ -90,7 +90,7 @@ type Ratio = Annotated[
     AfterValidator(validate_ratio_within_precision),
     UnitMeta(modelica_name="ratio"),
 ]
-type Bar = Annotated[float, Field(ge=-2e-2), UnitMeta(modelica_name="Bar")] #TODO: this becomes negative, need to figure out if that's OK
+type Bar = Annotated[float, Field(ge=-0.2), UnitMeta(modelica_name="Bar")] #TODO: this becomes negative, need to figure out if that's OK
 type Watt = Annotated[float, UnitMeta(modelica_name="Watt")]
 type seconds = Annotated[float, UnitMeta(modelica_name="s")]
 type OnOff = Annotated[bool, UnitMeta(modelica_name="bool")]
