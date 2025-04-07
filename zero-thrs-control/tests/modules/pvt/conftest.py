@@ -1,6 +1,7 @@
 from datetime import timedelta
 from pathlib import Path
 from pytest import fixture
+from control.modules.pvt import PvtControl, PvtParameters
 from input_output.base import Stamped
 from input_output.definitions.control import Valve
 from input_output.definitions.simulation import (
@@ -16,6 +17,14 @@ from input_output.modules.pvt import (
 )
 from simulation.fmu import Fmu
 from simulation.io_mapping import IoMapping
+
+
+@fixture
+def fmu_path():
+    return str(
+        Path(__file__).resolve().parent.parent.parent.parent
+        / "src/simulation/models/pvt/PVT_module1_1.fmu"
+    )
 
 
 @fixture
@@ -41,15 +50,27 @@ def simulation_inputs():
 
 
 @fixture
-def io_mapping() -> IoMapping:
+def io_mapping(fmu_path) -> IoMapping:
     return IoMapping(
         Fmu(
-            str(
-                Path(__file__).resolve().parent.parent.parent.parent
-                / "src/simulation/models/pvt/PVT_module1_1.fmu"
-            ),
+            fmu_path,
             timedelta(seconds=0.001),
         ),
         PvtSensorValues,
         PvtSimulationOutputs,
+    )
+
+
+@fixture
+def pvt_control() -> PvtControl:
+    return PvtControl(
+        PvtParameters(
+            cooling_mix_setpoint=65,
+            main_fwd_mix_setpoint=65,
+            main_aft_mix_setpoint=65,
+            owners_mix_setpoint=65,
+            main_fwd_pump_dutypoint=0.6,
+            main_aft_pump_dutypoint=0.6,
+            owners_pump_dutypoint=0.25,
+        )
     )

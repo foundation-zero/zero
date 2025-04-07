@@ -1,6 +1,7 @@
 from datetime import timedelta
 from pathlib import Path
 from pytest import fixture
+from control.modules.thrusters import ThrustersControl, ThrustersParameters
 from input_output.base import Stamped
 from input_output.definitions.simulation import (
     Boundary,
@@ -15,6 +16,14 @@ from input_output.modules.thrusters import (
 )
 from simulation.fmu import Fmu
 from simulation.io_mapping import IoMapping
+
+
+@fixture
+def fmu_path():
+    return str(
+        Path(__file__).resolve().parent.parent.parent.parent
+        / "src/simulation/models/thrusters/thruster_module_V8.fmu"
+    )
 
 
 @fixture
@@ -35,15 +44,25 @@ def simulation_inputs():
 
 
 @fixture
-def io_mapping() -> IoMapping:
+def io_mapping(fmu_path) -> IoMapping:
     return IoMapping(
         Fmu(
-            str(
-                Path(__file__).resolve().parent.parent.parent.parent
-                / "src/simulation/models/thrusters/thruster_moduleV8.fmu"
-            ),
+            fmu_path,
             timedelta(seconds=0.001),
         ),
         ThrustersSensorValues,
         ThrustersSimulationOutputs,
+    )
+
+
+@fixture
+def control() -> ThrustersControl:
+    return ThrustersControl(
+        ThrustersParameters(
+            cooling_mix_setpoint=40,
+            recovery_thruster_flow=10,  # 50-S001 50-S002 per thruster
+            cooling_thruster_flow=22,   # 50-S012 50-S013 per thruster
+            max_temp=80,
+            recovery_mix_setpoint=60,
+        )
     )
