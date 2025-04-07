@@ -225,15 +225,15 @@ class ThrustersControl(Control):
         self._control_heat_dump_mix(sensor_values, time)
 
         if self.mode == "cooling":
-            self._cooling()
+            self._cooling(sensor_values)
         elif self.mode == "recovery":
-            self._recovery()
+            self._recovery(sensor_values)
         elif self.mode == "safe":
-            self._safe()
+            self._safe(sensor_values)
 
         return ControlResult(time, self._current_values)
 
-    def _safe(self):
+    def _safe(self, sensor_values: ThrustersSensorValues):
         if not self._active_pump:
             raise Warning("No pump active in safe mode")
 
@@ -252,7 +252,7 @@ class ThrustersControl(Control):
         )
         self._safe(sensor_values)
 
-    def _recovery(self):
+    def _recovery(self, sensor_values: ThrustersSensorValues):
         if not self._active_pump:
             raise Warning("No pump active in recovery mode")
 

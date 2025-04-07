@@ -121,40 +121,44 @@ class PvtControl(Control):
     def _disable_heat_dump_mix(self):
         self._heat_dump_controller.disable()
 
-    def _control_recovery_mixes(self, sensor_values: PvtSensorValues, time: datetime):
+    def _control_recovery_mixes(self, sensor_values: PvtSensorValues):
         self._current_values.pvt_mix_main_fwd.setpoint = Stamped(
             value=(
                 self._main_fwd_heat_supply_controller(
-                    sensor_values.pvt_temperature_main_fwd_return.temperature.value
+                    sensor_values.pvt_temperature_main_fwd_return.temperature.value,
+                    self._time,
                 )
             ),
-            timestamp=time,
+            timestamp=self._time,
         )
         self._current_values.pvt_mix_main_aft.setpoint = Stamped(
             value=(
                 self._main_aft_heat_supply_controller(
-                    sensor_values.pvt_temperature_main_aft_return.temperature.value
+                    sensor_values.pvt_temperature_main_aft_return.temperature.value,
+                    self._time,
                 )
             ),
-            timestamp=time,
+            timestamp=self._time,
         )
         self._current_values.pvt_mix_owners.setpoint = Stamped(
             value=(
                 self._owners_heat_supply_controller(
-                    sensor_values.pvt_temperature_aft_return.temperature.value # TODO: replace after update FMU
+                    sensor_values.pvt_temperature_aft_return.temperature.value,  # TODO: replace after update FMU
+                    self._time,
                 )
             ),
-            timestamp=time,
+            timestamp=self._time,
         )
 
-    def _control_heat_dump_mix(self, sensor_values: PvtSensorValues, time: datetime):
+    def _control_heat_dump_mix(self, sensor_values: PvtSensorValues):
         self._current_values.pvt_mix_exchanger.setpoint = Stamped(
             value=(
                 self._heat_dump_controller(
-                    sensor_values.pvt_temperature_exchanger.temperature.value
+                    sensor_values.pvt_temperature_exchanger.temperature.value,
+                    self._time,
                 )
             ),
-            timestamp=time,
+            timestamp=self._time,
         )
 
     def control(
@@ -162,8 +166,8 @@ class PvtControl(Control):
     ) -> ControlResult[PvtControlValues]:
         self._time = time
 
-        self._control_recovery_mixes(sensor_values, time)
-        self._control_heat_dump_mix(sensor_values, time)
+        self._control_recovery_mixes(sensor_values)
+        self._control_heat_dump_mix(sensor_values)
 
         return ControlResult(time, self._current_values)
 

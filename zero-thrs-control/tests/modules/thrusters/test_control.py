@@ -212,25 +212,25 @@ async def test_heat_dump_with_hot_sea(io_mapping, control, simulation_inputs):
         assert result.sensor_values.thrusters_temperature_supply.temperature.value < 65
 
 
-async def test_pump_flow_recovery(io_mapping, thrusters_control, simulation_inputs):
+async def test_pump_flow_recovery(io_mapping, control, simulation_inputs):
     simulation_inputs.thrusters_seawater_supply.temperature = Stamped.stamp(45)
     executor = SimulationExecutor(
         io_mapping, simulation_inputs, datetime.now(), timedelta(seconds=6)
     )
-    thrusters_control.to_recovery()
+    control.to_recovery()
     result = await executor.tick(
-        thrusters_control.control(ThrustersSensorValues.zero(), executor.time()).values,
+        control.control(ThrustersSensorValues.zero(), executor.time()).values,
     )
 
     # stabilise
     for i in range(20):
-        control_values = thrusters_control.control(
+        control_values = control.control(
             result.sensor_values, executor.time()
         ).values
         result = await executor.tick(control_values)
 
     for i in range(80):
-        control_values = thrusters_control.control(
+        control_values = control.control(
             result.sensor_values, executor.time()
         ).values
         result = await executor.tick(control_values)
@@ -245,13 +245,13 @@ async def test_pump_flow_recovery(io_mapping, thrusters_control, simulation_inpu
 
     # stabilise
     for i in range(20):
-        control_values = thrusters_control.control(
+        control_values = control.control(
             result.sensor_values, executor.time()
         ).values
         result = await executor.tick(control_values)
 
     for i in range(80):
-        control_values = thrusters_control.control(
+        control_values = control.control(
             result.sensor_values, executor.time()
         ).values
         result = await executor.tick(control_values)
@@ -266,13 +266,13 @@ async def test_pump_flow_recovery(io_mapping, thrusters_control, simulation_inpu
 
     # stabilise
     for i in range(20):
-        control_values = thrusters_control.control(
+        control_values = control.control(
             result.sensor_values, executor.time()
         ).values
         result = await executor.tick(control_values)
 
     for i in range(80):
-        control_values = thrusters_control.control(
+        control_values = control.control(
             result.sensor_values, executor.time()
         ).values
         result = await executor.tick(control_values)
@@ -281,25 +281,25 @@ async def test_pump_flow_recovery(io_mapping, thrusters_control, simulation_inpu
         assert result.sensor_values.thrusters_flow_fwd.flow.value == approx(0, abs=0.5)
 
 
-async def test_pump_flow_cooling(io_mapping, thrusters_control, simulation_inputs):
+async def test_pump_flow_cooling(io_mapping, control, simulation_inputs):
     simulation_inputs.thrusters_seawater_supply.temperature = Stamped.stamp(45)
     executor = SimulationExecutor(
         io_mapping, simulation_inputs, datetime.now(), timedelta(seconds=6)
     )
-    thrusters_control.to_cooling()
+    control.to_cooling()
     result = await executor.tick(
-        thrusters_control.control(ThrustersSensorValues.zero(), executor.time()).values,
+        control.control(ThrustersSensorValues.zero(), executor.time()).values,
     )
 
     # stabilise
     for i in range(20):
-        control_values = thrusters_control.control(
+        control_values = control.control(
             result.sensor_values, executor.time()
         ).values
         result = await executor.tick(control_values)
 
     for i in range(80):
-        control_values = thrusters_control.control(
+        control_values = control.control(
             result.sensor_values, executor.time()
         ).values
         result = await executor.tick(control_values)
@@ -314,13 +314,13 @@ async def test_pump_flow_cooling(io_mapping, thrusters_control, simulation_input
 
     # stabilise
     for i in range(20):
-        control_values = thrusters_control.control(
+        control_values = control.control(
             result.sensor_values, executor.time()
         ).values
         result = await executor.tick(control_values)
 
     for i in range(80):
-        control_values = thrusters_control.control(
+        control_values = control.control(
             result.sensor_values, executor.time()
         ).values
         result = await executor.tick(control_values)
@@ -335,13 +335,13 @@ async def test_pump_flow_cooling(io_mapping, thrusters_control, simulation_input
 
     # stabilise
     for i in range(20):
-        control_values = thrusters_control.control(
+        control_values = control.control(
             result.sensor_values, executor.time()
         ).values
         result = await executor.tick(control_values)
 
     for i in range(80):
-        control_values = thrusters_control.control(
+        control_values = control.control(
             result.sensor_values, executor.time()
         ).values
         result = await executor.tick(control_values)
@@ -350,25 +350,25 @@ async def test_pump_flow_cooling(io_mapping, thrusters_control, simulation_input
         assert result.sensor_values.thrusters_flow_fwd.flow.value == approx(0, abs=0.5)
 
 
-async def test_pump_flow_safe(io_mapping, thrusters_control, simulation_inputs):
+async def test_pump_flow_safe(io_mapping, control, simulation_inputs):
     simulation_inputs.thrusters_seawater_supply.temperature = Stamped.stamp(45)
     executor = SimulationExecutor(
         io_mapping, simulation_inputs, datetime.now(), timedelta(seconds=6)
     )
-    thrusters_control.to_safe()
+    control.to_safe()
     result = await executor.tick(
-        thrusters_control.control(ThrustersSensorValues.zero(), datetime.now()).values,
+        control.control(ThrustersSensorValues.zero(), datetime.now()).values,
     )
 
     # stabilise
     for i in range(20):
-        control_values = thrusters_control.control(
+        control_values = control.control(
             result.sensor_values, executor.time()
         ).values
         result = await executor.tick(control_values)
 
     for i in range(80):
-        control_values = thrusters_control.control(
+        control_values = control.control(
             result.sensor_values, executor.time()
         ).values
         result = await executor.tick(control_values)
@@ -383,13 +383,13 @@ async def test_pump_flow_safe(io_mapping, thrusters_control, simulation_inputs):
 
     # stabilise
     for i in range(20):
-        control_values = thrusters_control.control(
+        control_values = control.control(
             result.sensor_values, executor.time()
         ).values
         result = await executor.tick(control_values)
 
     for i in range(80):
-        control_values = thrusters_control.control(
+        control_values = control.control(
             result.sensor_values, executor.time()
         ).values
         result = await executor.tick(control_values)
@@ -404,13 +404,13 @@ async def test_pump_flow_safe(io_mapping, thrusters_control, simulation_inputs):
 
     # stabilise
     for i in range(20):
-        control_values = thrusters_control.control(
+        control_values = control.control(
             result.sensor_values, executor.time()
         ).values
         result = await executor.tick(control_values)
 
     for i in range(80):
-        control_values = thrusters_control.control(
+        control_values = control.control(
             result.sensor_values, executor.time()
         ).values
         result = await executor.tick(control_values)
