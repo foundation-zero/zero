@@ -1,5 +1,5 @@
-apiVersion: apps/v1
-kind: Deployment
+apiVersion: batch/v1
+kind: Job
 metadata:
   name: {{ include "zero-dbt-gen.fullname" . }}
   namespace: {{ .Release.Namespace }}
@@ -15,6 +15,7 @@ spec:
       labels:
         {{- include "zero-dbt-gen.labels" . | nindent 8 }}
     spec:
+      restartPolicy: Never
       securityContext:
         fsGroupChangePolicy: Always
         sysctls: []
@@ -36,6 +37,6 @@ spec:
             seccompProfile:
               type: RuntimeDefault
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
-          args: ["generate-dbt"]
+          command: ["/bin/bash", "dbt", "run", "--project-dir", "/dbt", "--profiles-dir", "/dbt", "--target", "{{ .Values.dbt.target }}"]
           resources:
             {{- toYaml .Values.resources | nindent 12 }}

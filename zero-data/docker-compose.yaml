@@ -3,22 +3,24 @@ services:
   dbt_gen:
     build:
       context: .
-    command:
-      - generate-dbt
-    env_file:
-      .env
+    command: dbt build --project-dir ./dbt --profiles-dir ./dbt --target local
+    environment:
+      MQTT_HOST: mqtt://vernemq:1883
     depends_on:
-      - vernemq
+      vernemq:
+        condition: service_healthy
 
   data_gen:
     build:
       context: .
-    command:
-      - generate-data
+    command: python -m io_processing.main generate-data
     env_file:
       .env
     depends_on:
-      - vernemq
+      vernemq:
+        condition: service_healthy
+      dbt_gen:
+        condition: service_completed_successfully
 
   vernemq:
     image: vernemq/vernemq:2.0.0-alpine

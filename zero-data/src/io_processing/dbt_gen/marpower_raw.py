@@ -12,6 +12,7 @@ class MarpowerRawGenerator:
 
     def generate(self, topics: List[IOTopic]):
         number_of_files_removed = self._clean_folder()
+        self.dbt_path.mkdir(parents=True, exist_ok=True)
         for topic in topics:
             file_name = topic.topic.lower()
             file_path = (self.dbt_path / f"{file_name}.sql").resolve()

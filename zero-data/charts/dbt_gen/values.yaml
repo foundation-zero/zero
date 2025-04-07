@@ -6,5 +6,11 @@ image:
   # Overrides the image tag whose default is the chart appVersion.
   tag: ""
 
+dbt:
+  # dbt profile:
+  #   dev: Connects to risingwave via tailscale URL
+  #   singel: Connects to risingwave via kubernetes service
+  target: ""
+
 # resources left to user
 resources: {}

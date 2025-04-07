@@ -1,0 +1,34 @@
+# example profiles.yml file
+zero_data:
+  target: local
+  outputs:
+    local:
+      type: risingwave
+      host: risingwave
+      user: root
+      password: ''
+      port: 4566
+      dbname: dev
+      schema: public
+      threads: 1
+
+    dev:
+      type: risingwave
+      host: risingwave-singel.tail0b4840.ts.net
+      user: root
+      password: ''
+      port: 4567
+      dbname: dev
+      schema: public
+      threads: 1
+
+    singel:
+      type: risingwave
+      host: risingwave.risingwave-frontend.svc.cluster.local
+      user: root
+      password: ''
+      port: 4566
+      dbname: dev
+      schema: public
+      threads: 1
+

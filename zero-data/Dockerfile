@@ -17,7 +17,7 @@ RUN pip install "poetry==${POETRY_VERSION}"
 WORKDIR /app
 COPY pyproject.toml poetry.lock README.md ./
 
-RUN poetry install --no-root --only main
+RUN poetry install --no-root
 
 FROM python:3.13-slim-bookworm AS runtime
 
@@ -34,5 +34,3 @@ RUN mkdir -p /dbts/seeds
 COPY src/ ./
 
 RUN ["python", "-m", "io_processing.main", "generate-dbt"]
-
-ENTRYPOINT ["python", "-m", "io_processing.main"]
