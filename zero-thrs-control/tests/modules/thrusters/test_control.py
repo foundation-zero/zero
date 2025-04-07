@@ -127,6 +127,7 @@ async def test_recovery_mixing_hot(io_mapping, thrusters_control, simulation_inp
         result = await executor.tick(control_values)
 
     for i in range(40):
+        # Have consumers take 10 degrees off the supply to prevent overheating
         simulation_inputs.thrusters_module_supply.temperature = Stamped.stamp(
             result.sensor_values.thrusters_temperature_fwd_return.temperature.value - 10
         )
