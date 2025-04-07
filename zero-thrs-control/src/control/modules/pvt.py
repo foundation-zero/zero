@@ -141,8 +141,7 @@ class PvtControl(Control):
         self._current_values.pvt_mix_owners.setpoint = Stamped(
             value=(
                 self._owners_heat_supply_controller(
-                    #sensor_values.pvt_temperature_owners_return.temperature.value
-                    sensor_values.pvt_temperature_main_aft_return.temperature.value
+                    sensor_values.pvt_temperature_aft_return.temperature.value # TODO: replace after update FMU
                 )
             ),
             timestamp=time,

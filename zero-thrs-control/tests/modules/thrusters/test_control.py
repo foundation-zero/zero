@@ -8,10 +8,10 @@ from input_output.modules.thrusters import ThrustersSensorValues
 from orchestration.executor import SimulationExecutor
 
 
-def test_cooling(io_mapping, thrusters_control, simulation_inputs):
-    thrusters_control.to_cooling()
+def test_cooling(io_mapping, control, simulation_inputs):
+    control.to_cooling()
     sensor_values, simulation_outputs, _ = io_mapping.tick(
-        thrusters_control.control(ThrustersSensorValues.zero(), datetime.now()).values,
+        control.control(ThrustersSensorValues.zero(), datetime.now()).values,
         simulation_inputs,
         datetime.now(),
         timedelta(seconds=60),
@@ -36,10 +36,10 @@ def test_cooling(io_mapping, thrusters_control, simulation_inputs):
     )
 
 
-def test_recovery(io_mapping, thrusters_control, simulation_inputs):
-    thrusters_control.to_recovery()
+def test_recovery(io_mapping, control, simulation_inputs):
+    control.to_recovery()
     sensor_values, simulation_outputs, _ = io_mapping.tick(
-        thrusters_control.control(ThrustersSensorValues.zero(), datetime.now()).values,
+        control.control(ThrustersSensorValues.zero(), datetime.now()).values,
         simulation_inputs,
         datetime.now(),
         timedelta(seconds=240),
@@ -70,25 +70,25 @@ def test_recovery(io_mapping, thrusters_control, simulation_inputs):
     )
 
 
-async def test_recovery_mixing_cold(io_mapping, thrusters_control, simulation_inputs):
+async def test_recovery_mixing_cold(io_mapping, control, simulation_inputs):
     simulation_inputs.thrusters_module_supply.temperature = Stamped.stamp(20)
     executor = SimulationExecutor(
         io_mapping, simulation_inputs, datetime.now(), timedelta(seconds=20)
     )
-    thrusters_control.to_recovery()
+    control.to_recovery()
     result = await executor.tick(
-        thrusters_control.control(ThrustersSensorValues.zero(), datetime.now()).values,
+        control.control(ThrustersSensorValues.zero(), datetime.now()).values,
     )
 
     # stabilise
     for i in range(6):
-        control_values = thrusters_control.control(
+        control_values = control.control(
             result.sensor_values, executor.time()
         ).values
         result = await executor.tick(control_values)
 
     for i in range(40):
-        control_values = thrusters_control.control(
+        control_values = control.control(
             result.sensor_values, datetime.now()
         ).values
         result = await executor.tick(
@@ -109,19 +109,19 @@ async def test_recovery_mixing_cold(io_mapping, thrusters_control, simulation_in
     assert result.sensor_values.thrusters_temperature_fwd_return.temperature.value > 45
 
 
-async def test_recovery_mixing_hot(io_mapping, thrusters_control, simulation_inputs):
+async def test_recovery_mixing_hot(io_mapping, control, simulation_inputs):
     simulation_inputs.thrusters_module_supply.temperature = Stamped.stamp(20)
     executor = SimulationExecutor(
         io_mapping, simulation_inputs, datetime.now(), timedelta(seconds=20)
     )
-    thrusters_control.to_recovery()
+    control.to_recovery()
     result = await executor.tick(
-        thrusters_control.control(ThrustersSensorValues.zero(), executor.time()).values
+        control.control(ThrustersSensorValues.zero(), executor.time()).values
     )
 
     # stabilise
     for i in range(6):
-        control_values = thrusters_control.control(
+        control_values = control.control(
             result.sensor_values, executor.time()
         ).values
         result = await executor.tick(control_values)
@@ -131,7 +131,7 @@ async def test_recovery_mixing_hot(io_mapping, thrusters_control, simulation_inp
         simulation_inputs.thrusters_module_supply.temperature = Stamped.stamp(
             result.sensor_values.thrusters_temperature_fwd_return.temperature.value - 10
         )
-        control_values = thrusters_control.control(
+        control_values = control.control(
             result.sensor_values, executor.time()
         ).values
         result = await executor.tick(
@@ -159,26 +159,26 @@ async def test_recovery_mixing_hot(io_mapping, thrusters_control, simulation_inp
 
 
 async def test_heat_dump_with_cold_sea(
-    io_mapping, thrusters_control, simulation_inputs
+    io_mapping, control, simulation_inputs
 ):
     simulation_inputs.thrusters_seawater_supply.temperature = Stamped.stamp(15)
     executor = SimulationExecutor(
         io_mapping, simulation_inputs, datetime.now(), timedelta(seconds=60)
     )
-    thrusters_control.to_recovery()
+    control.to_recovery()
     result = await executor.tick(
-        thrusters_control.control(ThrustersSensorValues.zero(), executor.time()).values,
+        control.control(ThrustersSensorValues.zero(), executor.time()).values,
     )
 
     # stabilise
     for i in range(2):
-        control_values = thrusters_control.control(
+        control_values = control.control(
             result.sensor_values, executor.time()
         ).values
         result = await executor.tick(control_values)
 
     for i in range(40):
-        control_values = thrusters_control.control(
+        control_values = control.control(
             result.sensor_values, executor.time()
         ).values
         result = await executor.tick(control_values)
@@ -186,25 +186,25 @@ async def test_heat_dump_with_cold_sea(
         assert result.sensor_values.thrusters_temperature_supply.temperature.value > 35
 
 
-async def test_heat_dump_with_hot_sea(io_mapping, thrusters_control, simulation_inputs):
+async def test_heat_dump_with_hot_sea(io_mapping, control, simulation_inputs):
     simulation_inputs.thrusters_seawater_supply.temperature = Stamped.stamp(45)
     executor = SimulationExecutor(
         io_mapping, simulation_inputs, datetime.now(), timedelta(seconds=60)
     )
-    thrusters_control.to_recovery()
+    control.to_recovery()
     result = await executor.tick(
-        thrusters_control.control(ThrustersSensorValues.zero(), executor.time()).values,
+        control.control(ThrustersSensorValues.zero(), executor.time()).values,
     )
 
     # stabilise
     for i in range(2):
-        control_values = thrusters_control.control(
+        control_values = control.control(
             result.sensor_values, executor.time()
         ).values
         result = await executor.tick(control_values)
 
     for i in range(40):
-        control_values = thrusters_control.control(
+        control_values = control.control(
             result.sensor_values, executor.time()
         ).values
         result = await executor.tick(control_values)

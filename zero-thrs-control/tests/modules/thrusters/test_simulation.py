@@ -20,9 +20,9 @@ def executor(io_mapping, simulation_inputs):
     )
 
 
-async def test_interfacer(executor, io_mapping, simulation_inputs, thrusters_control):
+async def test_interfacer(executor, io_mapping, simulation_inputs, control):
     collector = PolarsCollector()
-    interfacer = Cycler(thrusters_control, executor)
+    interfacer = Cycler(control, executor)
     await interfacer.run(20, collector)
     frame = collector.result()
     mock_fmu_outputs = io_mapping.tick(
@@ -36,7 +36,7 @@ async def test_interfacer(executor, io_mapping, simulation_inputs, thrusters_con
     assert frame["time"][-1] - frame["time"][0] == timedelta(seconds=19)
 
 
-async def test_simulation(simulation_inputs, thrusters_control):
+async def test_simulation(simulation_inputs, control):
 
     thrusters_model = SimulatorModel(
         fmu_path=str(
@@ -47,7 +47,7 @@ async def test_simulation(simulation_inputs, thrusters_control):
         control_values_cls=ThrustersControlValues,
         simulation_outputs_cls=ThrustersSimulationOutputs,
         simulation_inputs=simulation_inputs,
-        control=thrusters_control,
+        control=control,
     )
 
     simulation = Simulator(thrusters_model)
