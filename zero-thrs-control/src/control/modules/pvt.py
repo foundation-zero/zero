@@ -4,21 +4,39 @@ from pydantic import BaseModel, Field
 from transitions import Machine, State
 
 from classes.control import Control, ControlResult
-from control.controllers import HeatDumpController, HeatSupplyController
+from control.controllers import (
+    HeatDumpController,
+    HeatSupplyController,
+    PumpFlowController,
+)
 from input_output.base import ParameterMeta, Stamped
 from input_output.definitions.control import Pump, Valve
-from input_output.definitions.units import Celsius, Ratio
+from input_output.definitions.units import Celsius, LMin
 from input_output.modules.pvt import PvtControlValues, PvtSensorValues
 
 
 class PvtParameters(BaseModel):
-    cooling_mix_setpoint: Annotated[Celsius, Field(le=90), ParameterMeta("50-S027")] = 90
-    main_fwd_mix_setpoint: Annotated[Celsius, Field(ge = 40, le=90), ParameterMeta("50-S019")] = 65
-    main_aft_mix_setpoint: Annotated[Celsius, Field(ge = 40, le=90), ParameterMeta("50-S019")] = 65
-    owners_mix_setpoint: Annotated[Celsius, Field(ge = 40, le=90), ParameterMeta("50-S019")] = 65
-    main_fwd_pump_dutypoint: Ratio
-    main_aft_pump_dutypoint: Ratio
-    owners_pump_dutypoint: Ratio
+    cooling_mix_setpoint: Annotated[Celsius, Field(le=90), ParameterMeta("50-S027")] = (
+        90
+    )
+    main_fwd_mix_setpoint: Annotated[
+        Celsius, Field(ge=40, le=90), ParameterMeta("50-S019")
+    ] = 65
+    main_aft_mix_setpoint: Annotated[
+        Celsius, Field(ge=40, le=90), ParameterMeta("50-S019")
+    ] = 65
+    owners_mix_setpoint: Annotated[
+        Celsius, Field(ge=40, le=90), ParameterMeta("50-S019")
+    ] = 65
+    main_fwd_flow_setpoint: Annotated[LMin, Field(le=38), ParameterMeta("50-S020")] = (
+        30  # TODO: add minimum based of FDS
+    )
+    main_aft_flow_setpoint: Annotated[LMin, Field(le=38), ParameterMeta("50-S023")] = (
+        30  # TODO: add minimum based of FDS
+    )
+    owners_flow_setpoint: Annotated[LMin, Field(le=15), ParameterMeta("50-S020")] = (
+        23  # TODO: add minimum based of FDS
+    )
 
 
 _ZERO_TIME = datetime.fromtimestamp(0)
@@ -93,6 +111,15 @@ class PvtControl(Control):
         self._owners_heat_supply_controller = HeatSupplyController(
             _INITIAL_CONTROL_VALUES.pvt_mix_owners.setpoint.value,
             parameters.owners_mix_setpoint,
+        )
+        self._main_fwd_pump_flow_controller = PumpFlowController(
+            _INITIAL_CONTROL_VALUES.pvt_pump_main_fwd.dutypoint.value, 0
+        )
+        self._main_aft_pump_flow_controller = PumpFlowController(
+            _INITIAL_CONTROL_VALUES.pvt_pump_main_aft.dutypoint.value, 0
+        )
+        self._owners_pump_flow_controller = PumpFlowController(
+            _INITIAL_CONTROL_VALUES.pvt_pump_owners.dutypoint.value, 0
         )
         self.machine = Machine(model=self, states=states, initial="idle")
         self._current_values = _INITIAL_CONTROL_VALUES.model_copy(deep=True)
@@ -169,7 +196,32 @@ class PvtControl(Control):
         self._control_recovery_mixes(sensor_values)
         self._control_heat_dump_mix(sensor_values)
 
+        self._control_pumps(sensor_values)
+
         return ControlResult(time, self._current_values)
+
+    def _control_pumps(self, sensor_values: PvtSensorValues):
+        self._current_values.pvt_pump_main_fwd.dutypoint = Stamped(
+            value=self._main_fwd_pump_flow_controller(
+                sensor_values.pvt_flow_main_fwd.flow.value,
+                self._time,
+            ),
+            timestamp=self._time,
+        )
+        self._current_values.pvt_pump_main_aft.dutypoint = Stamped(
+            value=self._main_aft_pump_flow_controller(
+                sensor_values.pvt_flow_main_aft.flow.value,
+                self._time,
+            ),
+            timestamp=self._time,
+        )
+        self._current_values.pvt_pump_owners.dutypoint = Stamped(
+            value=self._owners_pump_flow_controller(
+                sensor_values.pvt_flow_owners.flow.value,
+                self._time,
+            ),
+            timestamp=self._time,
+        )
 
     def _activate_pumps(self):
         self._current_values.pvt_pump_main_fwd.on = Stamped(
@@ -182,6 +234,20 @@ class PvtControl(Control):
             value=True, timestamp=self._time
         )
 
+        self._main_fwd_pump_flow_controller.setpoint = (
+            self._parameters.main_fwd_flow_setpoint
+        )
+        self._main_aft_pump_flow_controller.setpoint = (
+            self._parameters.main_aft_flow_setpoint
+        )
+        self._owners_pump_flow_controller.setpoint = (
+            self._parameters.owners_flow_setpoint
+        )
+
+        self._main_fwd_pump_flow_controller.enable()
+        self._main_aft_pump_flow_controller.enable()
+        self._owners_pump_flow_controller.enable()
+
     def _deactivate_pumps(self):
         self._current_values.pvt_pump_main_fwd.on = Stamped(
             value=False, timestamp=self._time
@@ -192,3 +258,6 @@ class PvtControl(Control):
         self._current_values.pvt_pump_owners.on = Stamped(
             value=False, timestamp=self._time
         )
+        self._main_fwd_pump_flow_controller.disable()
+        self._main_aft_pump_flow_controller.disable()
+        self._owners_pump_flow_controller.disable()
