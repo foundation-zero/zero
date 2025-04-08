@@ -42,7 +42,7 @@ def simulation_inputs():
         pvt_pump_failure_switch_owners=ValvePosition(
             position_rel=Stamped.stamp(Valve.CLOSED)
         ),
-        pvt_module_supply=TemperatureBoundary(temperature=Stamped.stamp(50)),
+        pvt_module_supply=TemperatureBoundary(temperature=Stamped.stamp(65)),
         pvt_seawater_supply=Boundary(
             temperature=Stamped.stamp(32), flow=Stamped.stamp(64)
         ),
@@ -62,15 +62,5 @@ def io_mapping(fmu_path) -> IoMapping:
 
 
 @fixture
-def pvt_control() -> PvtControl:
-    return PvtControl(
-        PvtParameters(
-            cooling_mix_setpoint=65,
-            main_fwd_mix_setpoint=65,
-            main_aft_mix_setpoint=65,
-            owners_mix_setpoint=65,
-            main_fwd_pump_dutypoint=0.6,
-            main_aft_pump_dutypoint=0.6,
-            owners_pump_dutypoint=0.25,
-        )
-    )
+def control() -> PvtControl:
+    return PvtControl(PvtParameters())

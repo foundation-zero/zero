@@ -5,8 +5,8 @@ from transitions import Machine, State
 
 from classes.control import Control, ControlResult
 from control.controllers import (
-    HeatDumpController,
     HeatSupplyController,
+    InvertedHeatDumpController,
     PumpFlowController,
 )
 from input_output.base import ParameterMeta, Stamped
@@ -34,8 +34,8 @@ class PvtParameters(BaseModel):
     main_aft_flow_setpoint: Annotated[LMin, Field(le=38), ParameterMeta("50-S023")] = (
         30  # TODO: add minimum based of FDS
     )
-    owners_flow_setpoint: Annotated[LMin, Field(le=15), ParameterMeta("50-S020")] = (
-        23  # TODO: add minimum based of FDS
+    owners_flow_setpoint: Annotated[LMin, Field(le=23), ParameterMeta("50-S020")] = (
+        15  # TODO: add minimum based of FDS
     )
 
 
@@ -96,7 +96,7 @@ states = [
 class PvtControl(Control):
     def __init__(self, parameters: PvtParameters):
         self._parameters = parameters
-        self._heat_dump_controller = HeatDumpController(
+        self._heat_dump_controller = InvertedHeatDumpController(
             _INITIAL_CONTROL_VALUES.pvt_mix_exchanger.setpoint.value,
             parameters.cooling_mix_setpoint,
         )

@@ -1,5 +1,5 @@
 from typing import Annotated
-from input_output.base import ComponentMeta, ThrsModel
+from input_output.base import ComponentMeta, SimulationInputs, ThrsModel
 from input_output.definitions import control, sensor, simulation
 
 
@@ -62,7 +62,7 @@ class PvtControlValues(ThrsModel):
     pvt_mix_exchanger: Annotated[control.Valve, ComponentMeta("50001047-02")]
 
 
-class PvtSimulationInputs(ThrsModel):
+class PvtSimulationInputs(SimulationInputs):
     pvt_main_fwd: simulation.HeatSource
     pvt_main_aft: simulation.HeatSource
     pvt_owners: simulation.HeatSource

@@ -55,6 +55,8 @@ class _HeatController(_Controller[Ratio, Celsius]):
 class HeatDumpController(_HeatController):
     pass
 
+class InvertedHeatDumpController(_HeatController):
+    TUNING = (0.1, 0.01, 0)
 
 class HeatSupplyController(_HeatController):
     pass
