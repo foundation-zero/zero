@@ -1,12 +1,16 @@
 import allRooms from "../../data/all-rooms";
 import { expect, test as testBase } from "../../mocks/playwright";
+import { getAllRooms } from "../../mocks/queries";
 import BlindsPage from "./page";
 
 const test = testBase.extend<{ blindsPage: BlindsPage }>({
   blindsPage: [
-    async ({ page, subscriptions }, use) => {
+    async ({ worker, page, subscriptions }, use) => {
+      worker.use(getAllRooms);
+
       await page.goto("/blinds");
       await page.waitForTimeout(1000);
+      await page.screenshot({ path: "screenshots/blinds.png" });
       await use(new BlindsPage(page, subscriptions));
     },
     { auto: true },

@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { cn } from "@/lib/utils";
 import { Cross2Icon } from "@radix-icons/vue";
-import { PointerDownOutsideEvent } from "node_modules/radix-vue/dist/DismissableLayer";
+
 import {
   DialogClose,
   DialogContent,
@@ -21,6 +21,10 @@ const delegatedProps = computed(() => {
 
   return delegated;
 });
+
+export type PointerDownOutsideEvent = CustomEvent<{
+  originalEvent: PointerEvent;
+}>;
 
 const forwarded = useForwardPropsEmits(delegatedProps, emits);
 const onPointerDownOutside = (event: PointerDownOutsideEvent) => {

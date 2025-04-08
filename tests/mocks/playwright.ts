@@ -15,11 +15,11 @@ const test = base.extend<{
   graphql: typeof graphql;
   subscriptions: SubscriptionFixture<ZeroSubscriptions>;
 }>({
-  worker: createWorkerFixture(),
+  worker: createWorkerFixture([], { graphqlUrl: process.env.VITE_GRAPHQL_URL }),
   http,
   graphql,
   subscriptions: createSubscriptionFixture<ZeroSubscriptions>({
-    url: "ws://localhost:8080/v1/graphql",
+    url: process.env.VITE_GRAPHQL_WS_URL!,
     autoAck: true,
   }),
 });

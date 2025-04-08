@@ -1,15 +1,19 @@
 import { expect, test } from "../../mocks/playwright";
+import { getAllRooms } from "../../mocks/queries";
 import { ConnectionInitMessage } from "../../types";
 
 test.describe("App", () => {
-  test("has correct title", async ({ page }) => {
+  test("has correct title", async ({ worker, page }) => {
+    worker.use(getAllRooms);
     await page.goto("/");
     await page.waitForTimeout(1000);
 
+    await page.screenshot({ path: "screenshots/app.png" });
     await expect(page).toHaveTitle(/Zero/);
   });
 
-  test("connects to graphql server", async ({ page, subscriptions }) => {
+  test("connects to graphql server", async ({ worker, page, subscriptions }) => {
+    worker.use(getAllRooms);
     await page.goto("/");
     await page.waitForTimeout(1000);
 

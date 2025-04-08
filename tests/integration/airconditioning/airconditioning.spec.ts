@@ -10,6 +10,7 @@ const test = testBase.extend<{ aircoPage: AirconditioningPage }>({
 
       await page.goto("/airco");
       await page.waitForTimeout(1000);
+      await page.screenshot({ path: "screenshots/airconditioning.png" });
       await use(new AirconditioningPage(page, subscriptions));
     },
     { auto: true },

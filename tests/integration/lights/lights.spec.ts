@@ -10,6 +10,7 @@ const test = testBase.extend<{ lightsPage: LightsPage }>({
 
       await page.goto("/lights");
       await page.waitForTimeout(1000);
+      await page.screenshot({ path: "screenshots/lights.png" });
       await use(new LightsPage(page, subscriptions));
     },
     { auto: true },

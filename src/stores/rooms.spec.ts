@@ -9,7 +9,6 @@ import {
   subscribeToRoom,
 } from "@/graphql/queries/rooms";
 import RoomStoreWrapper from "@/tests/helpers/RoomStoreWrapper.vue";
-import allRooms from "@tests/data/all-rooms.json";
 import * as urql from "@urql/vue";
 import { mount } from "@vue/test-utils";
 import { graphql, HttpResponse } from "msw";
@@ -18,7 +17,16 @@ import { afterEach } from "node:test";
 import { createPinia, setActivePinia } from "pinia";
 import { afterAll, beforeAll, beforeEach, describe, expect, Mock, test, vi } from "vitest";
 import { ref } from "vue";
+import { useI18n } from "vue-i18n";
+import allRooms from "../../tests/data/all-rooms";
 import { useRoomStore } from "./rooms";
+
+vi.mock(import("vue-i18n"), async (importOriginal) => ({
+  ...(await importOriginal()),
+  useI18n: vi.fn(() => ({
+    t: (key: string) => key,
+  })) as unknown as typeof useI18n,
+}));
 
 vi.mock(import("@urql/vue"), async (importOriginal) => ({
   ...(await importOriginal()),

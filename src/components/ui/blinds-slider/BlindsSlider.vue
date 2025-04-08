@@ -1,10 +1,10 @@
 <script setup lang="ts">
 import { ratioAsPercentage } from "@/lib/utils";
-import { ClassValue } from "class-variance-authority/types";
-import { computed } from "vue";
+
+import { computed, HTMLAttributes } from "vue";
 import { StepSlider } from "../step-slider";
 
-defineProps<{ class: ClassValue; disabled?: boolean }>();
+defineProps<{ class: HTMLAttributes["class"]; disabled?: boolean }>();
 const level = defineModel<number>("level", { required: true });
 const levelPercentage = ratioAsPercentage(level);
 const blindsPosition = computed({
