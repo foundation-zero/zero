@@ -13,11 +13,16 @@ logger = logging.getLogger(__name__)
 
 class Generator:
     def __init__(
-        self, interval: int | float, mqtt_config: MQTTConfig, topics: List[IOTopic]
+        self,
+        interval: int | float,
+        mqtt_config: MQTTConfig,
+        topics: List[IOTopic],
+        source: str,
     ):
         self.interval: int | float = interval
         self.mqtt_config: MQTTConfig = mqtt_config
         self.topics: List[IOTopic] = topics
+        self.prefix: str = source + "/"
 
     async def _send_values(self, client: Client):
         logger.info(
@@ -25,7 +30,7 @@ class Generator:
         )
         for topic in self.topics:
             next_value = self._next_value(topic)
-            await client.publish(topic.topic, json.dumps(next_value))
+            await client.publish(self.prefix + topic.topic, json.dumps(next_value))
 
     async def run(self):
         async with Client(self.mqtt_config.host, port=self.mqtt_config.port) as client:

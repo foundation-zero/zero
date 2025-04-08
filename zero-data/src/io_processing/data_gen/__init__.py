@@ -17,5 +17,5 @@ def generate_data():
         logger.debug(f"Processing {source} {file_name}")
         io_result = read_io_list(Path(f"io_lists/{file_name}"), source)
 
-        generator = Generator(10, mqtt_config, io_result.topics)
+        generator = Generator(10, mqtt_config, io_result.topics, source)
         asyncio.run(generator.run())

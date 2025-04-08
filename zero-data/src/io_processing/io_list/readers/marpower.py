@@ -40,9 +40,13 @@ class MarpowerReader(ReaderBase):
             .filter(pl.col("system") != "SPARE")
             .filter(pl.col("tag") != "SPARE")
         )
-        typed_df = filter_df.with_columns(
-            pl.col("target_type").replace_strict(_DATA_TYPES).alias("data_type")
-        ).with_columns(yard_tag=pl.col("yard_tag").str.replace_all(r"-|_", "-"))
+        typed_df = (
+            filter_df.with_columns(
+                pl.col("target_type").replace_strict(_DATA_TYPES).alias("data_type")
+            )
+            .with_columns(yard_tag=pl.col("yard_tag").str.replace_all(r"_|\.", "-"))
+            .with_columns(tag=pl.col("tag").str.replace_all(r"-|\.", "_"))
+        )
         return typed_df
 
     @staticmethod
