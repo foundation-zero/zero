@@ -1,21 +1,21 @@
 from datetime import datetime
-from typing import Literal
-from pydantic import BaseModel
+from typing import Annotated, Literal
+from pydantic import BaseModel, Field
 from transitions import Machine, State
 
 from classes.control import Control, ControlResult
 from control.controllers import HeatDumpController, HeatSupplyController
-from input_output.base import Stamped
+from input_output.base import ParameterMeta, Stamped
 from input_output.definitions.control import Pump, Valve
 from input_output.definitions.units import Celsius, Ratio
 from input_output.modules.pvt import PvtControlValues, PvtSensorValues
 
 
 class PvtParameters(BaseModel):
-    cooling_mix_setpoint: Celsius
-    main_fwd_mix_setpoint: Celsius
-    main_aft_mix_setpoint: Celsius
-    owners_mix_setpoint: Celsius
+    cooling_mix_setpoint: Annotated[Celsius, Field(le=90), ParameterMeta("50-S027")] = 90
+    main_fwd_mix_setpoint: Annotated[Celsius, Field(ge = 40, le=90), ParameterMeta("50-S019")] = 65
+    main_aft_mix_setpoint: Annotated[Celsius, Field(ge = 40, le=90), ParameterMeta("50-S019")] = 65
+    owners_mix_setpoint: Annotated[Celsius, Field(ge = 40, le=90), ParameterMeta("50-S019")] = 65
     main_fwd_pump_dutypoint: Ratio
     main_aft_pump_dutypoint: Ratio
     owners_pump_dutypoint: Ratio

@@ -89,10 +89,13 @@ class StampedDf(ThrsModel, Generic[T2]):
 
 
 @dataclass
-class Meta:
+class ComponentMeta:
     yard_tag: str
     included_in_fmu: bool = True
 
+@dataclass
+class ParameterMeta:
+    fds_tag: str
 
 @dataclass
 class FieldMeta:

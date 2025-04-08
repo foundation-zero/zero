@@ -2,7 +2,7 @@ from datetime import datetime
 from typing import Annotated
 
 
-from input_output.base import FieldMeta, Meta, Stamped, ThrsModel
+from input_output.base import FieldMeta, ComponentMeta, Stamped, ThrsModel
 from input_output.definitions.units import Ratio
 from input_output.fmu_mapping import build_inputs_for_fmu, build_outputs_from_fmu, extract_non_fmu_values
 from input_output.definitions.sensor import FlowSensor
@@ -29,7 +29,7 @@ class ExcludedSensor(ThrsModel):
 
 
 class ExcludedSensorValues(ThrsModel):
-    excluded_component: Annotated[ExcludedSensor, Meta("", included_in_fmu=False)]
+    excluded_component: Annotated[ExcludedSensor, ComponentMeta("", included_in_fmu=False)]
 
 
 def test_fmu_simple_inputs():

@@ -1,6 +1,6 @@
 from datetime import datetime
-from typing import Literal
-from pydantic import BaseModel
+from typing import Annotated, Literal
+from pydantic import BaseModel, Field
 from transitions import Machine, State
 
 from control.controllers import (
@@ -8,7 +8,7 @@ from control.controllers import (
     HeatSupplyController,
     PumpFlowController,
 )
-from input_output.base import Stamped
+from input_output.base import ParameterMeta, Stamped
 from input_output.definitions.control import Pump, Valve
 from input_output.modules.thrusters import ThrustersControlValues, ThrustersSensorValues
 from input_output.definitions.units import Celsius, LMin
@@ -16,11 +16,11 @@ from classes.control import Control, ControlResult
 
 
 class ThrustersParameters(BaseModel):
-    cooling_mix_setpoint: Celsius
-    recovery_thruster_flow: LMin
-    cooling_thruster_flow: LMin
-    max_temp: Celsius
-    recovery_mix_setpoint: Celsius
+    cooling_mix_setpoint: Annotated[Celsius, ParameterMeta("50-S016")] = 38
+    recovery_thruster_flow: Annotated[LMin, Field(le=30), ParameterMeta("50-S003 and 50-S004")] = 10 #TODO: add minimum from FDS
+    cooling_thruster_flow: Annotated[LMin, Field(le=23.5), ParameterMeta("50-S014 and 50-S015")] = 22 #TODO: add minimum from FDS
+    max_temp: Celsius = 80 #TODO: add to FDS
+    recovery_mix_setpoint: Annotated[Celsius, ParameterMeta("50-S007 and 50-S008")] = 60 #TODO: add minimum based on max inlet temperature of thrusters
 
 
 _ZERO_TIME = datetime.fromtimestamp(0)

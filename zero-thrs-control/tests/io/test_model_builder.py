@@ -1,13 +1,13 @@
 from typing import Annotated
 
-from input_output.base import Meta, ThrsModel
+from input_output.base import ComponentMeta, ThrsModel
 from input_output.model_builder import ModelBuilder
 from input_output.definitions.sensor import FlowSensor
 
 
 class SimpleSensors(ThrsModel):
-    thrusters_flow_fwd: Annotated[FlowSensor, Meta("50001057-22")]
-    thrusters_flow_aft: Annotated[FlowSensor, Meta("50001057-23")]
+    thrusters_flow_fwd: Annotated[FlowSensor, ComponentMeta("50001057-22")]
+    thrusters_flow_aft: Annotated[FlowSensor, ComponentMeta("50001057-23")]
 
 
 def test_builder():
