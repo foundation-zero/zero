@@ -1,6 +1,9 @@
 from pathlib import Path
 
 from polars import DataFrame
+import logging
+
+logger = logging.getLogger(__name__)
 
 
 class IOMetadataWriter:
@@ -26,5 +29,7 @@ class IOMetadataWriter:
         metadata_path = self.dbt_path / f"seeds/io_metadata_{name}.csv"
         df = df.select(*self.io_metadata_cols)
         df.write_csv(metadata_path, quote_style="non_numeric")
-        print(f"Wrote {df.shape[0]} rows and {df.shape[1]} columns to {metadata_path}")
+        logger.info(
+            f"Wrote {df.shape[0]} rows and {df.shape[1]} columns to {metadata_path}"
+        )
         return df

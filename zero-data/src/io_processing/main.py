@@ -1,6 +1,9 @@
 from io_processing.dbt_gen import generate_dbt
 from io_processing.data_gen import generate_data
 from argparse import ArgumentParser
+from .logging import setup_logging
+
+setup_logging()
 
 
 def parser():

@@ -1,14 +1,13 @@
 import argparse
 import asyncio
 from datetime import datetime
-
 import aiomqtt
 
 TEST_TOPIC = "robustness_test_topic"
 RECONNECT_INTERVAL = 0.1
 """
 Test script that allows to test robustness of the mqtt client.
-Run two instances of the script with producer and consumer modes. 
+Run two instances of the script with producer and consumer modes.
 Then kill broker pods, or k8s nodes to see the impact on the clients.
 
 Get mqtt broker that client is connected to:

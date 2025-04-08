@@ -6,6 +6,9 @@ from aiomqtt import Client
 
 from io_processing.config import MQTTConfig
 from io_processing.io_list.types import IOTopic
+import logging
+
+logger = logging.getLogger(__name__)
 
 
 class Generator:
@@ -17,7 +20,7 @@ class Generator:
         self.topics: List[IOTopic] = topics
 
     async def _send_values(self, client: Client):
-        print(
+        logger.info(
             f"Sending values to {len(self.topics)} topics with an interval of {self.interval}"
         )
         for topic in self.topics:

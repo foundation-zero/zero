@@ -19,8 +19,6 @@ services:
     depends_on:
       vernemq:
         condition: service_healthy
-      dbt_gen:
-        condition: service_completed_successfully
 
   vernemq:
     image: vernemq/vernemq:2.0.0-alpine

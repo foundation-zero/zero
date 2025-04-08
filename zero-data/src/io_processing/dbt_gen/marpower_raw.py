@@ -4,6 +4,9 @@ from pathlib import Path
 from typing import List
 
 from io_processing.io_list.types import IOTopic, IOValue
+import logging
+
+logger = logging.getLogger(__name__)
 
 
 class MarpowerRawGenerator:
@@ -20,8 +23,8 @@ class MarpowerRawGenerator:
             with open(file_path, "w") as f:
                 f.write(table)
         number_of_new_files = len(topics)
-        print(f"Written raw tables to {self.dbt_path.resolve()}")
-        print(
+        logger.info(f"Written raw tables to {self.dbt_path.resolve()}")
+        logger.info(
             f"""
             Created: {number_of_new_files}
             Removed: {number_of_files_removed}
