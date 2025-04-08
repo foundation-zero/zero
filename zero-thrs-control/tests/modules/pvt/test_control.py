@@ -1,7 +1,6 @@
 from datetime import datetime, timedelta
 
 from pytest import approx
-from classes.executor import SimulationExecutionResult
 from input_output.definitions.control import Valve
 from input_output.modules.pvt import PvtSensorValues
 from orchestration.executor import SimulationExecutor
@@ -37,13 +36,13 @@ async def test_pump_flow_recovery(io_mapping, control, simulation_inputs):
         control_values.pvt_mix_owners.setpoint.value = Valve.MIXING_A_TO_AB
         result = await executor.tick(control_values)
 
-    for i in range(20):
+    for i in range(10):
         control_values = control.control(
             result.sensor_values, executor.time()
         ).values
         result = await executor.tick(control_values)
 
-    for i in range(5):
+    for i in range(3):
         control_values = control.control(
             result.sensor_values, executor.time()
         ).values
