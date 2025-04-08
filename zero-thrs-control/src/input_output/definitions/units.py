@@ -1,5 +1,6 @@
 # Per https://docs.google.com/document/d/11EGlLqZ21uHy4ICmhvPx9uKOwm0guKgWxY6-1zSQ2mQ/edit?tab=t.0#heading=h.l7ph84h61wda
 from dataclasses import dataclass
+from functools import partial
 from types import GenericAlias, UnionType
 from typing import Annotated, Any, Literal, TypeAliasType, get_args, get_origin
 from typing_extensions import _AnnotatedAlias
@@ -70,7 +71,7 @@ def validate_ratio_within_precision(value: float, tolerance: float = 1e-4) -> fl
     return value
 
 
-def validate_flow_within_precision(value: float, tolerance: float = 2e-2) -> float:
+def validate_nonzero_float_within_precision(value: float, tolerance: float) -> float:
     if value < 0 and value > -tolerance:
         return 0.0
     if value < -tolerance:
@@ -81,16 +82,16 @@ def validate_flow_within_precision(value: float, tolerance: float = 2e-2) -> flo
 type Celsius = Annotated[float, Field(ge=-273.15), UnitMeta(modelica_name="C")]
 type LMin = Annotated[
     float,
-    AfterValidator(validate_flow_within_precision),
+    AfterValidator(partial(validate_nonzero_float_within_precision, tolerance = 2e-2)),
     UnitMeta(modelica_name="l_min"),
 ]
-type Hz = Annotated[float, Field(ge=-1e-17), UnitMeta(modelica_name="Hz")]
+type Hz = Annotated[float, partial(validate_nonzero_float_within_precision, tolerance = 1e-17), UnitMeta(modelica_name="Hz")] # TODO: XRG checks if this can be negative.
 type Ratio = Annotated[
     float,
     AfterValidator(validate_ratio_within_precision),
     UnitMeta(modelica_name="ratio"),
 ]
-type Bar = Annotated[float, Field(ge=-0.2), UnitMeta(modelica_name="Bar")] #TODO: this becomes negative, need to figure out if that's OK
+type Bar = Annotated[float, Field(ge=-1), UnitMeta(modelica_name="Bar")] #TODO: for now the pressure is relative. Wil be changed to absolute (and thus nonnegative) in the future.
 type Watt = Annotated[float, UnitMeta(modelica_name="Watt")]
 type seconds = Annotated[float, UnitMeta(modelica_name="s")]
 type OnOff = Annotated[bool, UnitMeta(modelica_name="bool")]
