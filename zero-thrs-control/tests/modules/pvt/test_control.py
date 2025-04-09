@@ -42,7 +42,7 @@ async def test_pump_flow_recovery(io_mapping, control, simulation_inputs):
         ).values
         result = await executor.tick(control_values)
 
-    for i in range(3):
+    for i in range(60):
         control_values = control.control(
             result.sensor_values, executor.time()
         ).values
