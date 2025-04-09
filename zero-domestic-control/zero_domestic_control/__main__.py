@@ -18,6 +18,9 @@ async def run():
     setup_cmd.set_defaults(func=setup)
 
     generate_jwt_cmd = sub_parser.add_parser("generate-jwt")
+    generate_jwt_cmd.add_argument(
+        "roles", type=str, nargs="*", help="any additional roles to generate jwt for"
+    )
     generate_jwt_cmd.set_defaults(func=generate_jwt)
 
     control_cmd = sub_parser.add_parser("control")
@@ -26,24 +29,37 @@ async def run():
     stub_cmd = sub_parser.add_parser("stub")
     stub_cmd.set_defaults(func=stub)
 
-    await parser.parse_args().func()
+    args = parser.parse_args()
+
+    args.func(args)
 
 
-async def generate_jwt():
+SUPPORTED_ROLES = {"user", "admin"}
+
+
+async def generate_jwt(args):
+    unique_roles = set(["user"] + args.roles)
+    roles = list(unique_roles)
+
+    if unsupported_roles := (unique_roles - SUPPORTED_ROLES):
+        raise ValueError(
+            f"Roles {unsupported_roles} are not supported. Supported roles are: {', '.join(SUPPORTED_ROLES)}"
+        )
+
     token = jwt.encode(
         {
             "https://hasura.io/jwt/claims": {
                 "x-hasura-default-role": "user",
-                "x-hasura-allowed-roles": ["user"],
+                "x-hasura-allowed-roles": roles,
             }
         },
         settings.jwt_secret,
         algorithm="HS256",
     )
-    print(f"JWT: {token}")
+    print(f"JWT for roles ({", ".join(roles)}): {token}")
 
 
-async def setup():
+async def setup(_args):
     print("Setting up postgres")
     async with await psycopg.AsyncConnection.connect(settings.pg_url) as conn:
         async with conn.cursor() as cur:
@@ -61,7 +77,7 @@ async def setup():
                 await cur.execute(bytes(query.read(), "utf-8"))
 
 
-async def control():
+async def control(_args):
     from zero_domestic_control.control import Control
 
     async with Control.init_from_settings(settings) as control:
@@ -69,7 +85,7 @@ async def control():
         await control.run()
 
 
-async def stub():
+async def stub(_args):
     from zero_domestic_control.services.stubs import Stub
 
     stub = await Stub.from_settings(settings)

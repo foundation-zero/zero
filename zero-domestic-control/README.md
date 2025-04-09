@@ -14,6 +14,11 @@ Run database setup
 poetry run python -m zero_domestic_control setup
 ```
 
+Generate JWT
+```bash
+poetry run python -m zero_domestic_control generate-jwt
+```
+
 Run backend
 ```bash
 poetry run fastapi dev zero_domestic_control/app.py
