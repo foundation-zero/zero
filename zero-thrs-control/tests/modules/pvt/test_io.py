@@ -1,8 +1,6 @@
-import pytest
 from input_output.modules.pvt import PvtControlValues, PvtSensorValues, PvtSimulationInputs, PvtSimulationOutputs
 from tests.modules.conftest import compare_fmu_to_class, compare_modelica_names
 
-@pytest.mark.skip("Skip until next version of FMU is available ")
 def test_pvt_sheet_names():
     missing_in_py, missing_in_sheet = compare_modelica_names(
         "PVT",

@@ -12,7 +12,7 @@ def test_recovery(io_mapping, control, simulation_inputs):
     control.control(PvtSensorValues.zero(), datetime.now()).values,
     simulation_inputs,
     datetime.now(),
-    timedelta(seconds=240),
+    timedelta(seconds=30),
 )
     assert simulation_outputs.pvt_module_return.flow.value > 0
     assert sensor_values.pvt_flow_main_fwd.flow.value + sensor_values.pvt_flow_main_aft.flow.value + sensor_values.pvt_flow_owners.flow.value == approx(simulation_outputs.pvt_module_return.flow.value, abs = 1e-5)

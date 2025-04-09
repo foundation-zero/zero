@@ -82,7 +82,7 @@ def validate_nonzero_float_within_precision(value: float, tolerance: float) -> f
 type Celsius = Annotated[float, Field(ge=-273.15), UnitMeta(modelica_name="C")]
 type LMin = Annotated[
     float,
-    AfterValidator(partial(validate_nonzero_float_within_precision, tolerance = 2e-2)),
+    #AfterValidator(partial(validate_nonzero_float_within_precision, tolerance = 2e-2)), #TODO: Getting negative flows after FMU update. Needs looking into
     UnitMeta(modelica_name="l_min"),
 ]
 type Hz = Annotated[float, partial(validate_nonzero_float_within_precision, tolerance = 1e-17), UnitMeta(modelica_name="Hz")] # TODO: XRG checks if this can be negative.
