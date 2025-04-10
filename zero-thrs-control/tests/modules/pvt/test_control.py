@@ -1,27 +1,27 @@
-from datetime import datetime, timedelta
-
 from pytest import approx
 from input_output.definitions.control import Valve
 from input_output.modules.pvt import PvtSensorValues
-from orchestration.executor import SimulationExecutor
 
 
-def test_recovery(io_mapping, control, simulation_inputs):
+async def test_recovery(control, executor):
+
     control.to_recovery()
-    sensor_values, simulation_outputs, _ = io_mapping.tick(
-    control.control(PvtSensorValues.zero(), datetime.now()).values,
-    simulation_inputs,
-    datetime.now(),
-    timedelta(seconds=30),
-)
-    assert simulation_outputs.pvt_module_return.flow.value > 0
-    assert sensor_values.pvt_flow_main_fwd.flow.value + sensor_values.pvt_flow_main_aft.flow.value + sensor_values.pvt_flow_owners.flow.value == approx(simulation_outputs.pvt_module_return.flow.value, abs = 1e-5)
-    assert simulation_outputs.pvt_module_supply.flow.value == approx(simulation_outputs.pvt_module_return.flow.value, abs = 1e-5)
-
-async def test_pump_flow_recovery(io_mapping, control, simulation_inputs):
-    executor = SimulationExecutor(
-        io_mapping, simulation_inputs, datetime.now(), timedelta(seconds=1)
+    result = await executor.tick(
+        control.control(PvtSensorValues.zero(), executor.time()).values,
     )
+
+    for i in range(30):
+        control_values = control.control(
+            result.sensor_values, executor.time()
+        ).values
+        result = await executor.tick(control_values)
+
+    assert result.simulation_outputs.pvt_module_return.flow.value > 0
+    assert result.sensor_values.pvt_flow_main_fwd.flow.value + result.sensor_values.pvt_flow_main_aft.flow.value + result.sensor_values.pvt_flow_owners.flow.value == approx(result.simulation_outputs.pvt_module_return.flow.value, abs = 1e-5)
+    assert result.simulation_outputs.pvt_module_supply.flow.value == approx(result.simulation_outputs.pvt_module_return.flow.value, abs = 1e-5)
+
+async def test_pump_flow_recovery(control, executor):
+
     control.to_recovery()
     result = await executor.tick(
         control.control(PvtSensorValues.zero(), executor.time()).values,

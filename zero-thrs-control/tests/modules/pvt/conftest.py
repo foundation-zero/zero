@@ -1,4 +1,4 @@
-from datetime import timedelta
+from datetime import datetime, timedelta
 from pathlib import Path
 from pytest import fixture
 from control.modules.pvt import PvtControl, PvtParameters
@@ -15,6 +15,7 @@ from input_output.modules.pvt import (
     PvtSimulationInputs,
     PvtSimulationOutputs,
 )
+from orchestration.executor import SimulationExecutor
 from simulation.fmu import Fmu
 from simulation.io_mapping import IoMapping
 
@@ -64,3 +65,9 @@ def io_mapping(fmu_path) -> IoMapping:
 @fixture
 def control() -> PvtControl:
     return PvtControl(PvtParameters())
+
+@fixture
+def executor(io_mapping, simulation_inputs):
+    return SimulationExecutor(
+        io_mapping, simulation_inputs, datetime.now(), timedelta(seconds=1)
+    )
