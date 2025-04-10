@@ -91,7 +91,7 @@ type Ratio = Annotated[
     AfterValidator(validate_ratio_within_precision),
     UnitMeta(modelica_name="ratio"),
 ]
-type Bar = Annotated[float, Field(ge=-1), UnitMeta(modelica_name="Bar")] #TODO: for now the pressure is relative. Wil be changed to absolute (and thus nonnegative) in the future.
+type Bar = Annotated[float, Field(ge=0), UnitMeta(modelica_name="Bar")]
 type Watt = Annotated[float, UnitMeta(modelica_name="Watt")]
 type seconds = Annotated[float, UnitMeta(modelica_name="s")]
 type OnOff = Annotated[bool, UnitMeta(modelica_name="bool")]

@@ -15,7 +15,7 @@ from input_output.definitions.units import (
 @pytest.mark.skip('Skip until negative flows are figured out')
 def test_lmin():
     with pytest.raises(ValidationError):
-        Stamped[LMin](value=-1, timestamp=datetime.now())
+        Stamped[LMin](value=0, timestamp=datetime.now())
 
 
 def test_unit_for_annotation_stamped():
