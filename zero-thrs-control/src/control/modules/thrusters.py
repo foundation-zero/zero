@@ -4,6 +4,7 @@ from pydantic import BaseModel, Field
 from transitions import Machine, State
 
 from control.controllers import (
+    FlowBalanceController,
     HeatDumpController,
     HeatSupplyController,
     PumpFlowController,
@@ -64,12 +65,21 @@ _INITIAL_CONTROL_VALUES = ThrustersControlValues(
 
 
 states = [
-    State(name="idle", on_exit="_activate_pump", on_enter="_deactivate_pump"),
+    State(
+        name="idle",
+        on_exit="_activate_pump",
+        on_enter=[
+            "_deactivate_pump",
+            "_disable_thruster_flow_control",
+            "_set_flow_balance_to_idle",
+        ],
+    ),
     State(
         name="recovery",
         on_enter=[
             "_set_valves_to_recovery",
             "_enable_recovery_mixes",
+            "_set_flow_balance_to_recovery",
         ],
         on_exit="_disable_recovery_mixes",
     ),
@@ -78,6 +88,7 @@ states = [
         on_enter=[
             "_set_valves_to_cooling",
             "_enable_heat_dump_mix",
+            "_set_flow_balance_to_cooling",
         ],
         on_exit="_disable_heat_dump_mix",
     ),
@@ -87,6 +98,8 @@ states = [
             "_set_valves_to_cooling",
             "_enable_heat_dump_mix",
             "_set_safe_pump_setpoint",
+            "_enable_thruster_flow_control",
+            "_set_flow_balance_to_cooling",
         ],
         on_exit="_disable_heat_dump_mix",
     ),
@@ -119,9 +132,16 @@ class ThrustersControl(Control):
             _INITIAL_CONTROL_VALUES.thrusters_pump_1.dutypoint.value,
             0,
         )
+
         self.machine = Machine(model=self, states=states, initial="idle")
 
         self._current_values = _INITIAL_CONTROL_VALUES.model_copy(deep=True)
+        self._flow_balance_controller = FlowBalanceController(
+            [
+                self._current_values.thrusters_flowcontrol_aft,
+                self._current_values.thrusters_flowcontrol_fwd,
+            ]
+        )
         self._most_recently_active_pump: None | Literal["pump1", "pump2"] = None
         self._active_pump: None | Pump = None
         self._time = datetime.now()
@@ -169,6 +189,25 @@ class ThrustersControl(Control):
         self._aft_heat_supply_controller.disable()
         self._fwd_heat_supply_controller.disable()
 
+    def _enable_thruster_flow_control(self):
+        self._flow_balance_controller.set_actives([True, True])
+
+    def _disable_thruster_flow_control(self):
+        self._flow_balance_controller.set_actives([False, False])
+
+    def _set_flow_balance_to_idle(self):
+        self._flow_balance_controller.set_setpoint(0)
+
+    def _set_flow_balance_to_cooling(self):
+        self._flow_balance_controller.set_setpoint(
+            self._parameters.cooling_thruster_flow
+        )
+
+    def _set_flow_balance_to_recovery(self):
+        self._flow_balance_controller.set_setpoint(
+            self._parameters.recovery_thruster_flow
+        )
+
     def _enable_heat_dump_mix(self):
         self._heat_dump_controller.enable()
 
@@ -213,6 +252,17 @@ class ThrustersControl(Control):
             timestamp=time,
         )
 
+    def _control_flow_balance(
+        self, sensor_values: ThrustersSensorValues, time: datetime
+    ):
+        self._flow_balance_controller(
+            [
+                sensor_values.thrusters_flow_aft.flow.value,
+                sensor_values.thrusters_flow_fwd.flow.value,
+            ],
+            time,
+        )
+
     def control(
         self, sensor_values: ThrustersSensorValues, time: datetime
     ) -> ControlResult[ThrustersControlValues]:
@@ -231,34 +281,42 @@ class ThrustersControl(Control):
         elif self.mode == "safe":
             self._safe(sensor_values)
 
+        self._control_flow_balance(sensor_values, time)
+
         return ControlResult(time, self._current_values)
 
     def _safe(self, sensor_values: ThrustersSensorValues):
-        if not self._active_pump:
-            raise Warning("No pump active in safe mode")
-
-        self._active_pump.dutypoint = Stamped(
-            value=self._pump_flow_controller(
-                sensor_values.thrusters_flow_aft.flow.value
-                + sensor_values.thrusters_flow_fwd.flow.value,
-                self._time,
-            ),
-            timestamp=self._time,
-        )
+        # In safe mode pump setpoints are set on mode transition
+        self._control_pump(sensor_values)
 
     def _cooling(self, sensor_values: ThrustersSensorValues):
         self._pump_flow_controller.setpoint = (
             active_thrusters(sensor_values) * self._parameters.cooling_thruster_flow
         )
-        self._safe(sensor_values)
+        self._flow_balance_controller.set_actives(
+            [
+                sensor_values.thrusters_aft.active.value,
+                sensor_values.thrusters_fwd.active.value,
+            ]
+        )
+        self._control_pump(sensor_values)
 
     def _recovery(self, sensor_values: ThrustersSensorValues):
-        if not self._active_pump:
-            raise Warning("No pump active in recovery mode")
-
         self._pump_flow_controller.setpoint = (
             active_thrusters(sensor_values) * self._parameters.recovery_thruster_flow
         )
+        self._flow_balance_controller.set_actives(
+            [
+                sensor_values.thrusters_aft.active.value,
+                sensor_values.thrusters_fwd.active.value,
+            ]
+        )
+        self._control_pump(sensor_values)
+
+    def _control_pump(self, sensor_values: ThrustersSensorValues):
+        if not self._active_pump:
+            raise Warning("No pump active in recovery mode")
+
         self._active_pump.dutypoint = Stamped(
             value=self._pump_flow_controller(
                 sensor_values.thrusters_flow_aft.flow.value

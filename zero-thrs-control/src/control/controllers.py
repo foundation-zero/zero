@@ -2,6 +2,8 @@ from datetime import datetime
 from typing import cast
 from simple_pid import PID
 
+from input_output.base import Stamped
+from input_output.definitions.control import Valve
 from input_output.definitions.units import Celsius, LMin, Ratio
 
 
@@ -9,8 +11,13 @@ class _Controller[ValueUnit: float, SetpointUnit: float]:
     TUNING = (0, 0, 0)
     OUTPUT_LIMITS = (0, 1)
 
-    def __init__(self, initial: ValueUnit, setpoint: SetpointUnit):
-        kp, ki, kd = self.TUNING
+    def __init__(
+        self,
+        initial: ValueUnit,
+        setpoint: SetpointUnit,
+        tuning: tuple[float, float, float] | None = None,
+    ):
+        kp, ki, kd = tuning or self.TUNING
         self._pid = PID(
             kp,
             ki,
@@ -22,6 +29,9 @@ class _Controller[ValueUnit: float, SetpointUnit: float]:
         )
         self._initial = initial
 
+    def enabled(self) -> bool:
+        return self._pid.auto_mode
+
     def enable(self):
         if self._pid.auto_mode:
             raise Exception("PID is already enabled")
@@ -31,7 +41,6 @@ class _Controller[ValueUnit: float, SetpointUnit: float]:
         if not self._pid.auto_mode:
             raise Exception("PID is already disabled")
         self._pid.auto_mode = False
-
 
     @property
     def setpoint(self) -> SetpointUnit:
@@ -62,6 +71,42 @@ class HeatSupplyController(_HeatController):
     pass
 
 
-class PumpFlowController(_Controller[Ratio, LMin]):
-    TUNING = (0.0, 0.002, 0)
+class _FlowController(_Controller[Ratio, LMin]):
     OUTPUT_LIMITS = (0, 1.0)
+
+
+class FlowBalanceController:
+    def __init__(self, valves: list[Valve]):
+        self._controllers = [
+            _FlowController(Valve.CLOSED, 0.0, (0.0, 0.002, 0)) for _ in valves
+        ]
+        self._valves = valves
+
+    def set_actives(self, actives: list[bool]):
+        for controller, active in zip(self._controllers, actives):
+            if not controller.enabled() and active:
+                controller.enable()
+            elif controller.enabled() and not active:
+                controller.disable()
+
+    def set_setpoint(self, setpoint: LMin):
+        for controller in self._controllers:
+            controller.setpoint = setpoint
+
+    def __call__(self, measurements: list[LMin], time: datetime):
+        controller_values = [
+            controller(measurement, time)
+            for controller, measurement in zip(self._controllers, measurements)
+        ]
+        offset = 1 - max(*controller_values)
+        for value, controller, valve in zip(
+            controller_values, self._controllers, self._valves
+        ):
+            if controller.enabled():
+                valve.setpoint = Stamped(value=value + offset, timestamp=time)
+            else:
+                valve.setpoint = Stamped(value=Valve.CLOSED, timestamp=time)
+
+
+class PumpFlowController(_FlowController):
+    TUNING = (0.0, 0.002, 0)
