@@ -1,11 +1,29 @@
 - name: domestic_control
   definition:
-    url: '{{DOMESTIC_CONTROL_URL}}'
+    url: "{{DOMESTIC_CONTROL_URL}}"
     timeout_seconds: 60
     customization: {}
   comment: ""
   permissions:
     - role: user
+      definition:
+        schema: |
+          schema {
+            query: Query
+            mutation: Mutation
+          }
+          scalar Void
+          type Mutation {
+            setAmplifier(id: ID! @preset(value: "x-hasura-cabin"), on: Boolean!): Void
+            setBlind(id: ID!, level: Float!): Void
+            setLightingGroup(id: ID!, level: Float!): Void
+            setLightingGroups(ids: [ID!]!, level: Float!): Void
+            setRoomTemperatureSetpoint(id: ID! @preset(value: "x-hasura-cabin"), temperature: Int!): Void
+          }
+          type Query {
+            version: String!
+          }
+    - role: admin
       definition:
         schema: |
           schema {

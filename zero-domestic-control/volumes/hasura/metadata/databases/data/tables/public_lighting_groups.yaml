@@ -9,6 +9,17 @@ select_permissions:
         - level
         - id
         - name
+      filter:
+        room_id: { _eq: X-Hasura-Cabin }
+      allow_aggregations: true
+    comment: ""
+  - role: admin
+    permission:
+      columns:
+        - room_id
+        - level
+        - id
+        - name
       filter: {}
       allow_aggregations: true
     comment: ""

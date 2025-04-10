@@ -16,7 +16,12 @@ poetry run python -m zero_domestic_control setup
 
 Generate JWT
 ```bash
+# With default 'user' role
 poetry run python -m zero_domestic_control generate-jwt
+# With additional role(s)
+poetry run python -m zero_domestic_control generate-jwt admin
+# With cabin (for guests)
+poetry run python -m zero_domestic_control generate-jwt --cabin dutch-cabin
 ```
 
 Run backend

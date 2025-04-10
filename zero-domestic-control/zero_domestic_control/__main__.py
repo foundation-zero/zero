@@ -21,6 +21,10 @@ async def run():
     generate_jwt_cmd.add_argument(
         "roles", type=str, nargs="*", help="any additional roles to generate jwt for"
     )
+    generate_jwt_cmd.add_argument(
+        "--cabin", type=str, help="specify the cabin for the JWT"
+    )
+
     generate_jwt_cmd.set_defaults(func=generate_jwt)
 
     control_cmd = sub_parser.add_parser("control")
@@ -31,7 +35,7 @@ async def run():
 
     args = parser.parse_args()
 
-    args.func(args)
+    await args.func(args)
 
 
 SUPPORTED_ROLES = {"user", "admin"}
@@ -45,13 +49,18 @@ async def generate_jwt(args):
         raise ValueError(
             f"Roles {unsupported_roles} are not supported. Supported roles are: {', '.join(SUPPORTED_ROLES)}"
         )
+    
+    claims = {
+        "x-hasura-default-role": "user",
+        "x-hasura-allowed-roles": roles,
+    }
+    
+    if args.cabin:
+        claims["x-hasura-cabin"] = args.cabin
 
     token = jwt.encode(
         {
-            "https://hasura.io/jwt/claims": {
-                "x-hasura-default-role": "user",
-                "x-hasura-allowed-roles": roles,
-            }
+            "https://hasura.io/jwt/claims": claims
         },
         settings.jwt_secret,
         algorithm="HS256",
