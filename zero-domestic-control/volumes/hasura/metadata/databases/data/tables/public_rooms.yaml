@@ -33,18 +33,3 @@ select_permissions:
         id: { _eq: X-Hasura-Cabin }
       allow_aggregations: true
     comment: ""
-  - role: admin
-    permission:
-      columns:
-        - amplifier_on
-        - actual_humidity
-        - actual_temperature
-        - temperature_setpoint
-        - thermal_comfort_index
-        - id
-        - name
-        - group
-        - last_movement
-      filter: {}
-      allow_aggregations: true
-    comment: ""
