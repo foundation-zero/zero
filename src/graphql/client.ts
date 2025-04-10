@@ -6,11 +6,11 @@ import { createClient as createWSClient } from "graphql-ws";
 const wsClient = createWSClient({
   url: `${import.meta.env.VITE_GRAPHQL_WS_URL}`,
 
-  connectionParams: {
+  connectionParams: () => ({
     headers: {
-      Authorization: `Bearer ${import.meta.env.VITE_GRAPHQL_TOKEN}`,
+      Authorization: `Bearer ${localStorage.getItem("token") ?? import.meta.env.VITE_GRAPHQL_TOKEN}`,
     },
-  },
+  }),
 });
 
 const client = new Client({
@@ -18,7 +18,7 @@ const client = new Client({
   exchanges: [
     cacheExchange,
     authExchange(async (utils) => {
-      const token = import.meta.env.VITE_GRAPHQL_TOKEN;
+      const token = localStorage.getItem("token") ?? import.meta.env.VITE_GRAPHQL_TOKEN;
 
       return {
         addAuthToOperation(operation) {

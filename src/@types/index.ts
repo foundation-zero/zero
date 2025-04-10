@@ -42,3 +42,15 @@ export interface ControlGroup<T> {
 
 export type LightGroup = ControlGroup<LightingGroups>;
 export type BlindsGroup = ControlGroup<Blinds>;
+
+export const enum Roles {
+  User = "user",
+  Admin = "admin",
+}
+
+export interface HasuraJWTToken {
+  "https://hasura.io/jwt/claims": {
+    "x-hasura-default-role": Roles;
+    "x-hasura-allowed-roles": Array<Roles>;
+  };
+}

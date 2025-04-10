@@ -9,4 +9,4 @@ import router from "./router";
 
 const store = createPinia();
 
-createApp(App).use(router).use(store).use(urql, client).use(i18n).mount("#app");
+createApp(App).use(store).use(router).use(urql, client).use(i18n).mount("#app");
