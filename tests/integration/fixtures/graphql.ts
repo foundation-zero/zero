@@ -1,5 +1,5 @@
 import { PlaywrightTestArgs, TestFixture, WebSocketRoute } from "@playwright/test";
-import { SubscribeMessage, WebsocketMessage } from "../types";
+import { SubscribeMessage, WebsocketMessage } from "../../types";
 
 export interface SubscriptionFixtureOptions {
   url: string;
@@ -21,6 +21,7 @@ export interface SubscriptionFixture<Subs extends Subscriptions> {
   subscribers: <K extends keyof Subs>(key: K) => SubscribeMessage[];
   incoming: WebsocketMessage[];
   outgoing: WebsocketMessage[];
+  reset(): void;
 }
 
 export const createSubscriptionFixture = <Subs extends Subscriptions>(
@@ -33,7 +34,7 @@ export const createSubscriptionFixture = <Subs extends Subscriptions>(
   },
 ] => [
   async ({ page }, use) => {
-    let socket: WebSocketRoute;
+    let socket: WebSocketRoute | undefined;
     const incoming: WebsocketMessage[] = [];
     const outgoing: WebsocketMessage[] = [];
     const sockets: WebSocketRoute[] = [];
@@ -61,9 +62,18 @@ export const createSubscriptionFixture = <Subs extends Subscriptions>(
     const subscribers = (key: keyof Subs) =>
       subscriptions().filter((sub) => sub.payload?.operationName === key);
 
+    const reset = () => {
+      incoming.length = 0;
+      outgoing.length = 0;
+      sockets.forEach((socket) => socket.close());
+      sockets.length = 0;
+      socket = undefined;
+    };
+
     use({
       incoming,
       outgoing,
+      reset,
       subscribers,
       dispatch: <K extends keyof Subs>(key: K, data?: Subs[K]) => {
         const subscription = subscribers(key)[0];

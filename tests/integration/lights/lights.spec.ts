@@ -5,11 +5,11 @@ import LightsPage from "./page";
 
 const test = testBase.extend<{ lightsPage: LightsPage }>({
   lightsPage: [
-    async ({ page, worker, subscriptions }, use) => {
+    async ({ page, worker, subscriptions, auth }, use) => {
       worker.use(getAllRooms, setLightLevel);
 
       await page.goto("/lights");
-      await page.waitForTimeout(1000);
+      await auth.asUser();
       await page.screenshot({ path: "screenshots/lights.png" });
       await use(new LightsPage(page, subscriptions));
     },

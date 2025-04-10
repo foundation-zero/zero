@@ -5,11 +5,11 @@ import AirconditioningPage from "./page";
 
 const test = testBase.extend<{ aircoPage: AirconditioningPage }>({
   aircoPage: [
-    async ({ page, worker, subscriptions }, use) => {
+    async ({ page, worker, subscriptions, auth }, use) => {
       worker.use(getAllRooms);
 
       await page.goto("/airco");
-      await page.waitForTimeout(1000);
+      await auth.asUser();
       await page.screenshot({ path: "screenshots/airconditioning.png" });
       await use(new AirconditioningPage(page, subscriptions));
     },

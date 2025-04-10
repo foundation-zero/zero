@@ -14,7 +14,9 @@ import { setBlindsLevelMutation } from "@/graphql/queries/blinds";
 import { setLightLevelMutation } from "@/graphql/queries/light-groups";
 import {
   getAll,
+  setAmplifierForRoomMutation,
   setAmplifierMutation,
+  setTemperatureSetpointForRoomMutation,
   setTemperatureSetpointMutation,
   subscribeToRoom,
 } from "@/graphql/queries/rooms";
@@ -22,8 +24,9 @@ import { createArea, toRoom } from "@/lib/mappers";
 import { useMutation, UseMutationResponse, useSubscription } from "@urql/vue";
 import { useDebounceFn, useLocalStorage, useTimeoutFn } from "@vueuse/core";
 import { defineStore } from "pinia";
-import { computed, ref } from "vue";
+import { computed, ref, toRefs, watch } from "vue";
 import { useI18n } from "vue-i18n";
+import { useAuthStore } from "./auth";
 
 const MUTATION_DELAY_IN_MS = 500;
 
@@ -31,6 +34,7 @@ type GetAllRoomsQuery = Pick<QueryRoot, "rooms">;
 
 export const useRoomStore = defineStore("rooms", () => {
   const { t } = useI18n();
+  const { decodedToken, isAdmin } = toRefs(useAuthStore());
 
   const emptyRoom: Room = {
     name: t("labels.emptyRoom"),
@@ -49,6 +53,14 @@ export const useRoomStore = defineStore("rooms", () => {
   const areas = ref<ShipArea[]>([]);
   const hasPendingMutations = ref(false);
 
+  const setRoomFromToken = () => {
+    if (decodedToken.value?.["https://hasura.io/jwt/claims"]?.["x-hasura-cabin"]) {
+      currentRoomId.value = decodedToken.value["https://hasura.io/jwt/claims"]["x-hasura-cabin"];
+    }
+  };
+
+  watch(decodedToken, setRoomFromToken, { immediate: true });
+
   const setRoom = (room: Room) => {
     currentRoomId.value = room.id;
   };
@@ -65,18 +77,23 @@ export const useRoomStore = defineStore("rooms", () => {
       return query.executeMutation(fn(...args));
     }, MUTATION_DELAY_IN_MS);
 
+  // TODO: Find a better way to handle admin and user mutations
   const setTemperatureSetpoint = useDebounceMutation(
-    useMutation<Rooms, MutationRootSetRoomTemperatureSetpointArgs>(setTemperatureSetpointMutation),
+    useMutation<Rooms, MutationRootSetRoomTemperatureSetpointArgs>(
+      isAdmin.value ? setTemperatureSetpointForRoomMutation : setTemperatureSetpointMutation,
+    ),
     (temperature: number) => ({
-      id: currentRoomId.value,
+      id: isAdmin.value ? currentRoomId.value : undefined,
       temperature,
     }),
   );
 
   const toggleAmplifier = useDebounceMutation(
-    useMutation<Rooms, MutationRootSetAmplifierArgs>(setAmplifierMutation),
+    useMutation<Rooms, MutationRootSetAmplifierArgs>(
+      isAdmin.value ? setAmplifierForRoomMutation : setAmplifierMutation,
+    ),
     (amplifierOn: boolean) => ({
-      id: currentRoomId.value,
+      id: isAdmin.value ? currentRoomId.value : undefined,
       on: amplifierOn,
     }),
   );

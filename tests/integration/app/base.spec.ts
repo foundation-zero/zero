@@ -3,20 +3,18 @@ import { getAllRooms } from "../../mocks/queries";
 import { ConnectionInitMessage } from "../../types";
 
 test.describe("App", () => {
-  test("has correct title", async ({ worker, page }) => {
+  test.beforeEach(async ({ worker, page, auth }) => {
     worker.use(getAllRooms);
     await page.goto("/");
-    await page.waitForTimeout(1000);
+    await auth.asUser();
+  });
 
+  test("has correct title", async ({ page }) => {
     await page.screenshot({ path: "screenshots/app.png" });
     await expect(page).toHaveTitle(/Zero/);
   });
 
-  test("connects to graphql server", async ({ worker, page, subscriptions }) => {
-    worker.use(getAllRooms);
-    await page.goto("/");
-    await page.waitForTimeout(1000);
-
+  test("connects to graphql server", async ({ subscriptions }) => {
     expect(subscriptions.incoming).toHaveLength(2);
 
     const message = subscriptions.incoming[0] as ConnectionInitMessage;

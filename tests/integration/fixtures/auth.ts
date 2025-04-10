@@ -1,0 +1,38 @@
+import { PlaywrightTestArgs, TestFixture } from "@playwright/test";
+import { Roles } from "../../../src/@types";
+
+export interface AuthFixture {
+  asAdmin(): Promise<void>;
+  asUser(): Promise<void>;
+}
+
+const tokens: Record<Roles, string> = {
+  [Roles.Admin]:
+    "eyJ0eXAiOiJKV1QiLCJhbGciOiJFUzI1NiIsImtpZCI6ImNlMTdlMWQ2MGY5YTBkODRmOTA2YmVhZGRlYjkxYTBhIn0.eyJodHRwczovL2hhc3VyYS5pby9qd3QvY2xhaW1zIjp7IngtaGFzdXJhLWRlZmF1bHQtcm9sZSI6InVzZXIiLCJ4LWhhc3VyYS1hbGxvd2VkLXJvbGVzIjpbInVzZXIiLCJhZG1pbiJdfX0.cPDZfwzO8fnrEZPZrW3kdtiGWiUvD680fsqTgyoZCS-GPO5787cJFTA0koRkIuE8lLA5aS-lCtb4I2wPBv11-A",
+  [Roles.User]:
+    "eyJ0eXAiOiJKV1QiLCJhbGciOiJFUzI1NiIsImtpZCI6ImNlMTdlMWQ2MGY5YTBkODRmOTA2YmVhZGRlYjkxYTBhIn0.eyJodHRwczovL2hhc3VyYS5pby9qd3QvY2xhaW1zIjp7IngtaGFzdXJhLWRlZmF1bHQtcm9sZSI6InVzZXIiLCJ4LWhhc3VyYS1hbGxvd2VkLXJvbGVzIjpbInVzZXIiXSwieC1oYXN1cmEtY2FiaW4iOiJkdXRjaC1jYWJpbiJ9fQ.ITbZpZczKw7HnS2zmp2bcgYFmszWizS_1GGVTylzKowliktF57P-4wCOJo9gEJszWYRTm9AZWB6LnxI4ENThIw",
+};
+
+export const createAuthFixture = (): [
+  TestFixture<AuthFixture, PlaywrightTestArgs>,
+  {
+    scope: "test";
+    auto: boolean;
+  },
+] => [
+  async ({ page }, use) => {
+    const asRole = (role: Roles) => async () => {
+      await page.evaluate((token) => window.localStorage.setItem("token", token), tokens[role]);
+      await page.waitForTimeout(1000);
+    };
+
+    const asAdmin = asRole(Roles.Admin);
+    const asUser = asRole(Roles.User);
+
+    use({ asAdmin, asUser });
+  },
+  {
+    scope: "test",
+    auto: true,
+  },
+];

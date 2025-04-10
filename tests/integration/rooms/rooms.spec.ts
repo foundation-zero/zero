@@ -5,10 +5,11 @@ import RoomsPage from "./page";
 
 const test = testBase.extend<{ roomsPage: RoomsPage }>({
   roomsPage: [
-    async ({ page, worker, subscriptions }, use) => {
+    async ({ page, worker, subscriptions, auth }, use) => {
       worker.use(getAllRooms);
+
       await page.goto("/");
-      await page.waitForTimeout(1000);
+      await auth.asUser();
       await use(new RoomsPage(page, subscriptions));
     },
     { auto: true },
@@ -43,29 +44,38 @@ test.describe("Rooms", () => {
     await expect(roomsPage.audioSystemToggle).toHaveAttribute("data-state", "checked");
   });
 
-  test.describe("room selection", () => {
-    test("it opens the room selection dialog", async ({ roomsPage }) => {
-      await expect(roomsPage.dialog).not.toBeVisible();
-
-      await roomsPage.trigger.click();
-
-      await expect(roomsPage.dialog).toBeVisible();
+  test.describe("as admin", () => {
+    test.beforeEach(async ({ auth, subscriptions, page }) => {
+      await auth.asAdmin();
+      subscriptions.reset();
+      await page.reload();
+      await page.waitForTimeout(1000);
     });
 
-    test("it shows the correct amount of rooms", async ({ roomsPage }) => {
-      await roomsPage.trigger.click();
+    test.describe("room selection", () => {
+      test("it opens the room selection dialog", async ({ roomsPage }) => {
+        await expect(roomsPage.dialog).not.toBeVisible();
 
-      await expect(roomsPage.roomList).toHaveCount(allRooms.rooms.length);
-    });
+        await roomsPage.trigger.click();
 
-    test("updates the subscription", async ({ page, roomsPage }) => {
-      await roomsPage.trigger.click();
+        await expect(roomsPage.dialog).toBeVisible();
+      });
 
-      await roomsPage.roomItem(allRooms.rooms[1].id).click();
-      await page.waitForTimeout(100);
+      test("it shows the correct amount of rooms", async ({ roomsPage }) => {
+        await roomsPage.trigger.click();
 
-      expect(roomsPage.subscribers).toHaveLength(2);
-      expect(roomsPage.subscribers[1].payload!.variables?.roomId).toBe(allRooms.rooms[1].id);
+        await expect(roomsPage.roomList).toHaveCount(allRooms.rooms.length);
+      });
+
+      test("updates the subscription", async ({ page, roomsPage }) => {
+        await roomsPage.trigger.click();
+
+        await roomsPage.roomItem(allRooms.rooms[1].id).click();
+        await page.waitForTimeout(100);
+
+        expect(roomsPage.subscribers).toHaveLength(2);
+        expect(roomsPage.subscribers[1].payload!.variables?.roomId).toBe(allRooms.rooms[1].id);
+      });
     });
   });
 });

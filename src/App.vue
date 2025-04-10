@@ -2,15 +2,18 @@
 import { toRefs } from "vue";
 import BottomNavigation from "./components/BottomNavigation.vue";
 import RoomSelector from "./components/containers/room-selector/RoomSelector.vue";
+import RoomSelectorButton from "./components/containers/room-selector/RoomSelectorButton.vue";
 import NavPills from "./components/NavPills.vue";
 import ToggleAV from "./components/ToggleAV.vue";
 import TopNavigation from "./components/TopNavigation.vue";
 import { ProgressBar } from "./components/ui/progress-bar";
+import { useAuthStore } from "./stores/auth";
 import { useRoomStore } from "./stores/rooms";
 import { useUIStore } from "./stores/ui";
 
 const { breakpoints } = toRefs(useUIStore());
 const { hasPendingMutations } = toRefs(useRoomStore());
+const { isAdmin } = toRefs(useAuthStore());
 </script>
 
 <template>
@@ -20,7 +23,8 @@ const { hasPendingMutations } = toRefs(useRoomStore());
   <TopNavigation>
     <ProgressBar :pending="hasPendingMutations" />
     <template #left>
-      <RoomSelector />
+      <RoomSelector v-if="isAdmin" />
+      <RoomSelectorButton v-else />
     </template>
     <template #center>
       <NavPills v-if="!breakpoints.phone" />

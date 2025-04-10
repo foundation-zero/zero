@@ -8,17 +8,27 @@ import {
   setTemperatureSetpointMutation,
   subscribeToRoom,
 } from "@/graphql/queries/rooms";
-import RoomStoreWrapper from "@/tests/helpers/RoomStoreWrapper.vue";
+import { createTestingPinia, TestingPinia } from "@pinia/testing";
 import * as urql from "@urql/vue";
-import { mount } from "@vue/test-utils";
 import { graphql, HttpResponse } from "msw";
 import { setupServer } from "msw/node";
 import { afterEach } from "node:test";
-import { createPinia, setActivePinia } from "pinia";
-import { afterAll, beforeAll, beforeEach, describe, expect, Mock, test, vi } from "vitest";
+import { setActivePinia } from "pinia";
+import {
+  afterAll,
+  beforeAll,
+  beforeEach,
+  describe,
+  expect,
+  Mock,
+  MockedObject,
+  test,
+  vi,
+} from "vitest";
 import { ref } from "vue";
 import { useI18n } from "vue-i18n";
 import allRooms from "../../tests/data/all-rooms";
+import { useAuthStore } from "./auth";
 import { useRoomStore } from "./rooms";
 
 vi.mock(import("vue-i18n"), async (importOriginal) => ({
@@ -52,13 +62,16 @@ afterEach(() => server.resetHandlers());
 
 describe("Rooms Store", () => {
   let store: ReturnType<typeof useRoomStore>;
+  let authStore: MockedObject<ReturnType<typeof useAuthStore>>;
+  let pinia: TestingPinia;
   const useSubscription = urql.useSubscription as Mock<typeof urql.useSubscription>;
   const useMutation = urql.useMutation as Mock<typeof urql.useMutation>;
   const executeMutation = vi.fn();
   let subscriptionCallback: urql.SubscriptionHandler<GetAllRoomsQuery, Room>;
 
   beforeEach(async () => {
-    setActivePinia(createPinia());
+    pinia = createTestingPinia({ stubActions: false });
+    setActivePinia(pinia);
     useSubscription.mockImplementationOnce((_, cb) => {
       subscriptionCallback = cb as urql.SubscriptionHandler<GetAllRoomsQuery, Room>;
       return {} as urql.UseSubscriptionResponse;
@@ -75,10 +88,10 @@ describe("Rooms Store", () => {
       operation: ref(),
     }));
 
+    authStore = vi.mocked(useAuthStore(pinia));
+    store = useRoomStore(pinia);
     vi.spyOn(client, "executeMutation");
 
-    const wrapper = mount(RoomStoreWrapper, { global: { provide: { $urql: ref(client) } } });
-    store = wrapper.vm.store;
     await store.isReady;
   });
 
@@ -160,27 +173,58 @@ describe("Rooms Store", () => {
   });
 
   describe("control", () => {
-    test("it sends a mutation to change the temperature setpoint", async () => {
-      const nextTemperature = 99;
+    describe("as an admin", () => {
+      beforeEach(() => {
+        authStore.isAdmin = true;
+      });
+      test("it sends a mutation to change the temperature setpoint", async () => {
+        const nextTemperature = 99;
 
-      await store.setTemperatureSetpoint(nextTemperature);
+        await store.setTemperatureSetpoint(nextTemperature);
 
-      expect(useMutation).toHaveBeenCalledWith(setTemperatureSetpointMutation);
-      expect(executeMutation).toHaveBeenCalledWith({
-        id: "owners-cabin",
-        temperature: nextTemperature,
+        expect(useMutation).toHaveBeenCalledWith(setTemperatureSetpointMutation);
+        expect(executeMutation).toHaveBeenCalledWith({
+          id: "owners-cabin",
+          temperature: nextTemperature,
+        });
+      });
+
+      test("it sends a mutation to change the amplifier state", async () => {
+        const nextState = true;
+
+        await store.toggleAmplifier(nextState);
+
+        expect(useMutation).toHaveBeenCalledWith(setAmplifierMutation);
+        expect(executeMutation).toHaveBeenCalledWith({
+          id: "owners-cabin",
+          on: nextState,
+        });
       });
     });
 
-    test("it sends a mutation to change the amplifier state", async () => {
-      const nextState = true;
+    describe("as a user", () => {
+      test("it sends a mutation to change the temperature setpoint", async () => {
+        const nextTemperature = 99;
 
-      await store.toggleAmplifier(nextState);
+        await store.setTemperatureSetpoint(nextTemperature);
 
-      expect(useMutation).toHaveBeenCalledWith(setAmplifierMutation);
-      expect(executeMutation).toHaveBeenCalledWith({
-        id: "owners-cabin",
-        on: nextState,
+        expect(useMutation).toHaveBeenCalledWith(setTemperatureSetpointMutation);
+        expect(executeMutation).toHaveBeenCalledWith({
+          id: undefined,
+          temperature: nextTemperature,
+        });
+      });
+
+      test("it sends a mutation to change the amplifier state", async () => {
+        const nextState = true;
+
+        await store.toggleAmplifier(nextState);
+
+        expect(useMutation).toHaveBeenCalledWith(setAmplifierMutation);
+        expect(executeMutation).toHaveBeenCalledWith({
+          id: undefined,
+          on: nextState,
+        });
       });
     });
 

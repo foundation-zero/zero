@@ -1,8 +1,8 @@
 import { Locator, Page } from "@playwright/test";
 import { Rooms } from "../../../src/gql/graphql";
 import allRooms from "../../data/all-rooms";
-import { SubscriptionFixture } from "../../mocks/graphql";
 import { ZeroSubscriptions } from "../../mocks/playwright";
+import { SubscriptionFixture } from "../fixtures/graphql";
 
 export type LightControl = [slider: Locator, track: Locator, toggle: Locator, value: string | null];
 

@@ -5,11 +5,12 @@ import BlindsPage from "./page";
 
 const test = testBase.extend<{ blindsPage: BlindsPage }>({
   blindsPage: [
-    async ({ worker, page, subscriptions }, use) => {
+    async ({ worker, page, subscriptions, auth }, use) => {
       worker.use(getAllRooms);
 
       await page.goto("/blinds");
-      await page.waitForTimeout(1000);
+      await auth.asUser();
+
       await page.screenshot({ path: "screenshots/blinds.png" });
       await use(new BlindsPage(page, subscriptions));
     },
@@ -42,6 +43,7 @@ test.describe("Blinds", () => {
     test.beforeEach(async ({ blindsPage }) => {
       blindsPage.setBlindLevels([], room);
     });
+
     test("shows the correct amount of controls", async ({ blindsPage }) => {
       await expect(blindsPage.listItems).toHaveCount(room.blinds.length);
     });
@@ -50,8 +52,9 @@ test.describe("Blinds", () => {
       expect(await blindsPage.textValues()).toEqual([]);
     });
 
-    test("shows a modal with controls", async ({ blindsPage }) => {
+    test("shows a modal with controls", async ({ blindsPage, page }) => {
       await blindsPage.listItems.first().click();
+      await page.waitForTimeout(500);
 
       expect(await blindsPage.textValues()).toEqual(["0", "0"]);
     });

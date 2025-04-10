@@ -1,16 +1,27 @@
+import { useAuthStore } from "@/stores/auth";
 import { authExchange } from "@urql/exchange-auth";
 import { cacheExchange, Client, fetchExchange, subscriptionExchange } from "@urql/vue";
 
 import { createClient as createWSClient } from "graphql-ws";
 
+const getHeaders = () => {
+  const authStore = useAuthStore();
+  const token = authStore.token ?? import.meta.env.VITE_GRAPHQL_TOKEN;
+
+  return {
+    Authorization: `Bearer ${token}`,
+    "x-hasura-role": authStore.isAdmin ? "admin" : "user",
+  };
+};
+
 const wsClient = createWSClient({
   url: `${import.meta.env.VITE_GRAPHQL_WS_URL}`,
 
-  connectionParams: () => ({
-    headers: {
-      Authorization: `Bearer ${localStorage.getItem("token") ?? import.meta.env.VITE_GRAPHQL_TOKEN}`,
-    },
-  }),
+  connectionParams: () => {
+    return {
+      headers: getHeaders(),
+    };
+  },
 });
 
 const client = new Client({
@@ -18,13 +29,9 @@ const client = new Client({
   exchanges: [
     cacheExchange,
     authExchange(async (utils) => {
-      const token = localStorage.getItem("token") ?? import.meta.env.VITE_GRAPHQL_TOKEN;
-
       return {
         addAuthToOperation(operation) {
-          return utils.appendHeaders(operation, {
-            Authorization: `Bearer ${token}`,
-          });
+          return utils.appendHeaders(operation, getHeaders());
         },
         didAuthError() {
           return false;

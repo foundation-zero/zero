@@ -1,6 +1,6 @@
 import { HasuraJWTToken, Roles } from "@/@types";
-import { parseJwt } from "@/lib/utils";
 import { useLocalStorage } from "@vueuse/core";
+import { jwtDecode } from "jwt-decode";
 import { defineStore } from "pinia";
 import { computed } from "vue";
 
@@ -8,7 +8,9 @@ export const useAuthStore = defineStore("auth", () => {
   const token = useLocalStorage<string | null>("token", null);
   const isLoggedIn = computed(() => !!token.value);
 
-  const decodedToken = computed(() => (token.value ? parseJwt<HasuraJWTToken>(token.value) : null));
+  const decodedToken = computed(() =>
+    token.value ? jwtDecode<HasuraJWTToken>(token.value) : null,
+  );
   const roles = computed(
     () => decodedToken.value?.["https://hasura.io/jwt/claims"]?.["x-hasura-allowed-roles"] ?? [],
   );

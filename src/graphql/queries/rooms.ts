@@ -63,12 +63,24 @@ export const getRoomById = gql`
 `;
 
 export const setTemperatureSetpointMutation = gql`
-  mutation SetTemperatureSetpoint($id: ID!, $temperature: Int!) {
+  mutation SetTemperatureSetpointForRoom($temperature: Int!) {
+    setRoomTemperatureSetpoint(temperature: $temperature)
+  }
+`;
+
+export const setTemperatureSetpointForRoomMutation = gql`
+  mutation SetTemperatureSetpointForRoom($id: ID!, $temperature: Int!) {
     setRoomTemperatureSetpoint(id: $id, temperature: $temperature)
   }
 `;
 
 export const setAmplifierMutation = gql`
+  mutation SetAmplifier($on: Boolean!) {
+    setAmplifier(on: $on)
+  }
+`;
+
+export const setAmplifierForRoomMutation = gql`
   mutation SetAmplifier($id: ID!, $on: Boolean!) {
     setAmplifier(id: $id, on: $on)
   }

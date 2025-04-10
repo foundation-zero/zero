@@ -52,5 +52,6 @@ export interface HasuraJWTToken {
   "https://hasura.io/jwt/claims": {
     "x-hasura-default-role": Roles;
     "x-hasura-allowed-roles": Array<Roles>;
+    "x-hasura-cabin"?: string;
   };
 }
