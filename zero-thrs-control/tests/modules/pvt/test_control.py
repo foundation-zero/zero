@@ -20,26 +20,21 @@ def test_recovery(io_mapping, control, simulation_inputs):
 
 async def test_pump_flow_recovery(io_mapping, control, simulation_inputs):
     executor = SimulationExecutor(
-        io_mapping, simulation_inputs, datetime.now(), timedelta(seconds=6)
+        io_mapping, simulation_inputs, datetime.now(), timedelta(seconds=1)
     )
     control.to_recovery()
     result = await executor.tick(
         control.control(PvtSensorValues.zero(), executor.time()).values,
     )
 
-    while result.simulation_outputs.pvt_module_return.temperature.value < 68: # type: ignore
+    #owners takes longest to warm up
+    while result.sensor_values.pvt_temperature_owners_return.temperature.value < 68: # type: ignore
         control_values = control.control(
             result.sensor_values, executor.time()
         ).values
         control_values.pvt_mix_main_fwd.setpoint.value = Valve.MIXING_A_TO_AB
         control_values.pvt_mix_main_aft.setpoint.value = Valve.MIXING_A_TO_AB
         control_values.pvt_mix_owners.setpoint.value = Valve.MIXING_A_TO_AB
-        result = await executor.tick(control_values)
-
-    for i in range(10):
-        control_values = control.control(
-            result.sensor_values, executor.time()
-        ).values
         result = await executor.tick(control_values)
 
     for i in range(60):

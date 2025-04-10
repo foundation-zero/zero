@@ -1,4 +1,4 @@
-from datetime import timedelta
+from datetime import datetime, timedelta
 from pathlib import Path
 from pytest import fixture
 from control.modules.thrusters import ThrustersControl, ThrustersParameters
@@ -14,6 +14,7 @@ from input_output.modules.thrusters import (
     ThrustersSimulationInputs,
     ThrustersSimulationOutputs,
 )
+from orchestration.executor import SimulationExecutor
 from simulation.fmu import Fmu
 from simulation.io_mapping import IoMapping
 
@@ -57,6 +58,11 @@ def io_mapping(fmu_path) -> IoMapping:
 
 @fixture
 def control() -> ThrustersControl:
-    return ThrustersControl(
-        ThrustersParameters()
+    return ThrustersControl(ThrustersParameters())
+
+
+@fixture
+def executor(io_mapping, simulation_inputs)-> SimulationExecutor:
+    return SimulationExecutor(
+        io_mapping, simulation_inputs, datetime.now(), timedelta(seconds=1)
     )
