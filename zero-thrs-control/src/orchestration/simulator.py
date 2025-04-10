@@ -35,11 +35,11 @@ class Simulator:
             model.start_time,
             model.tick_duration,
         )
-        self._interfacer = Cycler(model.control, self._executor)
+        self._cycler = Cycler(model.control, self._executor)
 
     async def run(self, n_ticks: int):
         collector = PolarsCollector()
-        await self._interfacer.run(n_ticks, collector)
+        await self._cycler.run(n_ticks, collector)
         self._result = collector.result()
         return self._result
 

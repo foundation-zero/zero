@@ -32,12 +32,10 @@ class ThrsModel(BaseModel):
                 unit = unit_for_annotation(field.annotation)
                 return zero_for_unit(unit) if unit else 0.0
 
-            return component(
-                **{
-                    field_name: Stamped.stamp(_zero_value(field))
-                    for field_name, field in component.model_fields.items()
-                }
-            )
+            return component(**{
+                field_name: Stamped.stamp(_zero_value(field))
+                for field_name, field in component.model_fields.items()
+            })
 
         vals = {
             component_name: _zero_component(component.annotation)
@@ -69,13 +67,13 @@ class StampedDf(ThrsModel, Generic[T2]):
     @field_validator("value", mode="before")
     def validate_field(cls, value):
         if isinstance(value, pl.DataFrame):
-            expected_schema = {
-                "time": pl.Datetime(time_unit="us", time_zone=None),
-                "value": pl.Float64,
-            }
-            if value.schema != expected_schema:
+            expected_schema = [
+                {"time": pl.Datetime(time_unit="us", time_zone=None), "value": type}
+                for type in [pl.Float64, pl.Int64, pl.Boolean, pl.String]
+            ]
+            if value.schema not in expected_schema:
                 raise ValueError(
-                    f"DataFrame schema must be {expected_schema}, got {value.schema}"
+                    f"DataFrame schema must be in {expected_schema}, got {value.schema}"
                 )
         elif not isinstance(value, float):
             raise ValueError(
@@ -93,9 +91,11 @@ class ComponentMeta:
     yard_tag: str
     included_in_fmu: bool = True
 
+
 @dataclass
 class ParameterMeta:
     fds_tag: str
+
 
 @dataclass
 class FieldMeta:

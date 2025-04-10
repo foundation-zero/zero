@@ -1,5 +1,5 @@
 from datetime import datetime
-from typing import Protocol
+from typing import Any, Protocol
 import polars as pl
 
 
@@ -17,11 +17,12 @@ class PolarsCollector(Collector):
         self._data = None
         self._times = pl.Series("time", dtype=pl.Datetime)
 
-    def collect(self, values: dict[str, float], time: datetime):
+    def collect(self, values: dict[str, Any], time: datetime):
         if self._data is None:
             self._data = pl.DataFrame(values)
+            self._schema = self._data.schema
         else:
-            self._data.vstack(pl.DataFrame(values), in_place=True)
+            self._data.vstack(pl.DataFrame(values, schema_overrides = self._schema), in_place=True)
         self._times.append(pl.Series("time", [time]))
 
     def result(self) -> None | pl.DataFrame:
