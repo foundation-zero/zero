@@ -3,9 +3,9 @@ services:
   dbt_gen:
     build:
       context: .
-    command: dbt build --project-dir ./dbt --profiles-dir ./dbt --target local
-    environment:
-      MQTT_HOST: mqtt://vernemq:1883
+    command: dbt run --project-dir ./dbt --profiles-dir ./dbt --target docker
+    env_file:
+      .env
     depends_on:
       vernemq:
         condition: service_healthy

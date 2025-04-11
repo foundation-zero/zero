@@ -5,6 +5,7 @@ from unittest.mock import AsyncMock, patch
 from io_processing.config import MQTTConfig
 from io_processing.data_gen.generator import Generator
 from io_processing.io_list.types import IOTopic, IOValue
+import random
 
 
 async def test_generator():
@@ -21,6 +22,8 @@ async def test_generator():
     mock_client.__aexit__.return_value = mock_client
 
     with patch("io_processing.data_gen.generator.Client", return_value=mock_client):
+        random.seed(1)
+
         gen = Generator(1, mqtt_config, topics, source)
 
         try:
@@ -31,14 +34,16 @@ async def test_generator():
 
         # Ensure the MQTT client was created once
         mock_client.__aenter__.assert_called_once()
-
         # Verify the publish calls
         expected_calls = [
             (
-                source + "/" + topics[0].topic,
-                json.dumps({"field1": False, "field2": 100.5}),
+                topics[0].topic,
+                json.dumps({"field1": True, "field2": 10.60040562252202}),
             ),
-            (source + "/" + topics[1].topic, json.dumps({"field1": 10, "field2": 1})),
+            (
+                topics[1].topic,
+                json.dumps({"field1": 8, "field2": 5}),
+            ),
         ]
 
         actual_calls = [

@@ -5,4 +5,4 @@ CREATE TABLE {{ this }} (
 	DB_GEN_SERVICE_14E1_02V01_FAULT	BOOLEAN,
 	DB_GEN_SERVICE_14E1_02V02_FAULT	BOOLEAN,
 )
-{{ mqtt_with('4500_24vdc_system') }}
+{{ mqtt_with('marpower/4500_24vdc_system') }}

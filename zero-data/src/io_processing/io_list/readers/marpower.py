@@ -16,8 +16,12 @@ _DATA_TYPES = {
 
 
 class MarpowerReader(ReaderBase):
+    def __init__(self):
+        self.topic_prefix = "marpower/"
+
     @staticmethod
     def _read_headers(workbook):
+        """Determine the header starting from the first non-empty row of the Excel sheet"""
         last_main_header = None
         for col in workbook.columns:
             if col[0].value is None and col[1].value is None:
@@ -34,6 +38,7 @@ class MarpowerReader(ReaderBase):
 
     @staticmethod
     def _normalize_amcs_io_list(df: pl.DataFrame):
+        """Normalize the IO list by renaming columns and filtering out unnecessary rows"""
         renamed_df = df.rename(lambda c: c.replace(" ", "_").lower())
         filter_df = (
             renamed_df.filter(pl.col("deleted").is_null())
@@ -49,15 +54,17 @@ class MarpowerReader(ReaderBase):
         )
         return typed_df
 
-    @staticmethod
-    def _get_io_topics(df: pl.DataFrame) -> List[IOTopic]:
+    def _get_io_topics(self, df: pl.DataFrame) -> List[IOTopic]:
+        """Get the IO topics from the DataFrame"""
         result = []
         for row in (
-            df.group_by("system")
+            df.unique(subset=["system", "tag", "data_type"])
+            .sort("tag")
+            .group_by("system")
             .agg(pl.col("tag"), pl.col("data_type"))
             .iter_rows(named=True)
         ):
-            topic = row["system"].replace(" ", "_").lower()
+            topic = self.determine_topic(row)
             values = [
                 IOValue(name=t, data_type=dt)
                 for t, dt in zip(row["tag"], row["data_type"])
@@ -65,8 +72,13 @@ class MarpowerReader(ReaderBase):
             result.append(IOTopic(topic, values))
         return result
 
+    def determine_topic(self, row: dict) -> str:
+        """Create the topic out of a fixed prefix and a name that is a function of the IO list"""
+        return self.topic_prefix + row["system"].replace(" ", "_").lower()
+
     @classmethod
     def _read_bordered_column(cls, ws, col: int):
+        """Read a column from the Excel sheet, returning only the values with borders"""
         last_val = None
         for cell in next(ws.iter_cols(col, col, 3)):
             if cell.border.top.style is not None:
@@ -75,6 +87,7 @@ class MarpowerReader(ReaderBase):
 
     @classmethod
     def _read_amcs_excel(cls, path: Path) -> pl.DataFrame:
+        """Read the AMCS Excel file and return a DataFrame"""
         workbook = load_workbook(path, data_only=True)
         headers = cls._read_headers(workbook["IO-List"])
         data = {
@@ -84,6 +97,7 @@ class MarpowerReader(ReaderBase):
         return pl.DataFrame(data).filter(~pl.all_horizontal(pl.all().is_null()))
 
     def read_io_list(self, path: Path) -> IOResult:
+        """Read the IO list from the given path and return an IOResult"""
         df = self._read_amcs_excel(path)
 
         io_list = self._normalize_amcs_io_list(df)

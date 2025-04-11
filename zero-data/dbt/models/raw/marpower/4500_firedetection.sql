@@ -2,4 +2,4 @@
 CREATE TABLE {{ this }} (
 	FIRE_DETECT_FAULT	BOOLEAN,
 )
-{{ mqtt_with('4500_firedetection') }}
+{{ mqtt_with('marpower/4500_firedetection') }}

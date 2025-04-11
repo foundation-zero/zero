@@ -10,6 +10,7 @@ logger = logging.getLogger(__name__)
 
 
 def generate_data():
+    """Generate data for all IO lists."""
     logger.info("Generating data for all IO lists")
     mqtt_config = MQTTConfig()  # pyright: ignore
 

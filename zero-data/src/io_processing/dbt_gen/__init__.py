@@ -10,6 +10,7 @@ logger = logging.getLogger(__name__)
 
 
 def generate_dbt():
+    """Generate dbt models for all IO lists."""
     logger.info("Generating dbt models")
     dbt_path = Path("dbt/")
 

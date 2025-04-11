@@ -18,5 +18,5 @@ def test_marpower_raw():
         MarpowerRawGenerator(Path("/not-used")).generate(marpower_io_topics)
         mkdir_mock.assert_called_once_with(parents=True, exist_ok=True)
         open_mock.assert_called_with(
-            PosixPath("/not-used/models/raw/marpower/test_topic.sql"), "w"
+            PosixPath("/not-used/models/raw/test_topic.sql"), "w"
         )

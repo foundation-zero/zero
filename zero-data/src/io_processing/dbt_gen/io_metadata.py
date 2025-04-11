@@ -26,6 +26,7 @@ class IOMetadataWriter:
         ]
 
     def write_io_metadata_csv(self, df: DataFrame, name: str):
+        """Take the metadata columns of the IO List and write them to a CSV file."""
         metadata_path = self.dbt_path / f"seeds/io_metadata_{name}.csv"
         df = df.select(*self.io_metadata_cols)
         df.write_csv(metadata_path, quote_style="non_numeric")
