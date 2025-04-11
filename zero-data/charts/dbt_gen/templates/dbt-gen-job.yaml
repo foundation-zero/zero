@@ -34,6 +34,6 @@ spec:
             seccompProfile:
               type: RuntimeDefault
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
-          command: ["dbt", "run", "--project-dir", "/dbt", "--profiles-dir", "/dbt", "--target", "{{ .Values.dbt.target }}"]
+          command: ["dbt", "run", "--project-dir", "./dbt", "--profiles-dir", "./dbt", "--target", "{{ .Values.dbt.target }}"]
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
