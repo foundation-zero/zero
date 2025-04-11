@@ -1,5 +1,6 @@
 from typing import Annotated
 
+from input_output.alarms import BaseAlarms
 import input_output.definitions.control as control
 import input_output.definitions.sensor as sensor
 from input_output.definitions import simulation
@@ -34,13 +35,25 @@ class ThrustersSensorValues(ThrsModel):
     thrusters_shutoff_recovery: Annotated[sensor.Valve, ComponentMeta("5001069-10")]
     thrusters_switch_aft: Annotated[sensor.Valve, ComponentMeta("50001091-01")]
     thrusters_switch_fwd: Annotated[sensor.Valve, ComponentMeta("50001091-02")]
-    thrusters_flow_recovery_aft: Annotated[sensor.FlowSensor, ComponentMeta("5001093-01")]
-    thrusters_flow_recovery_fwd: Annotated[sensor.FlowSensor, ComponentMeta("5001093-02")]
-    thrusters_pressure_recovery: Annotated[sensor.PressureSensor, ComponentMeta("50001097-01")]
-    thrusters_pressure_cooling: Annotated[sensor.PressureSensor, ComponentMeta("50001097-02")]
+    thrusters_flow_recovery_aft: Annotated[
+        sensor.FlowSensor, ComponentMeta("5001093-01")
+    ]
+    thrusters_flow_recovery_fwd: Annotated[
+        sensor.FlowSensor, ComponentMeta("5001093-02")
+    ]
+    thrusters_pressure_recovery: Annotated[
+        sensor.PressureSensor, ComponentMeta("50001097-01")
+    ]
+    thrusters_pressure_cooling: Annotated[
+        sensor.PressureSensor, ComponentMeta("50001097-02")
+    ]
 
-    thrusters_aft: Annotated[sensor.Thruster, ComponentMeta("15001001", included_in_fmu=False)]
-    thrusters_fwd: Annotated[sensor.Thruster, ComponentMeta("15001002", included_in_fmu=False)]
+    thrusters_aft: Annotated[
+        sensor.Thruster, ComponentMeta("15001001", included_in_fmu=False)
+    ]
+    thrusters_fwd: Annotated[
+        sensor.Thruster, ComponentMeta("15001002", included_in_fmu=False)
+    ]
     thrusters_pcs: Annotated[sensor.Pcs, ComponentMeta("1500", included_in_fmu=False)]
 
 
@@ -69,3 +82,16 @@ class ThrustersSimulationOutputs(ThrsModel):
     thrusters_seawater_return: simulation.TemperatureBoundary
     thrusters_module_supply: simulation.FlowBoundary
     thrusters_module_return: simulation.Boundary
+
+class ThrustersAlarms(BaseAlarms):
+    def check_overheating(
+        self,
+        sensor_values: ThrustersSensorValues,
+        control_values: ThrustersControlValues,
+        control: ThrustersControlValues,
+    ) -> bool:
+        return (
+            sensor_values.thrusters_temperature_aft_return.temperature.value
+            < 80
+            and sensor_values.thrusters_temperature_fwd_return.temperature.value < 80
+        )

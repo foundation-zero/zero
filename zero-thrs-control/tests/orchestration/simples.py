@@ -1,5 +1,6 @@
 from datetime import datetime
 from classes.control import ControlResult
+from input_output.alarms import BaseAlarms
 from input_output.base import ThrsModel
 from input_output.definitions.sensor import FlowSensor
 from orchestration.executor import ExecutionResult, Executor
@@ -29,3 +30,6 @@ class SimpleControl(Control[SimpleInOut, SimpleInOut]):
 
     def control(self, sensor_values: SimpleInOut, time: datetime) -> ControlResult[SimpleInOut]:
         return ControlResult(time, sensor_values)
+
+class SimpleAlarms(BaseAlarms[SimpleInOut, SimpleInOut, SimpleControl]):
+    pass

@@ -10,6 +10,7 @@ from input_output.definitions.simulation import (
     Thruster,
 )
 from input_output.modules.thrusters import (
+    ThrustersAlarms,
     ThrustersSensorValues,
     ThrustersSimulationInputs,
     ThrustersSimulationOutputs,
@@ -66,3 +67,7 @@ def executor(io_mapping, simulation_inputs)-> SimulationExecutor:
     return SimulationExecutor(
         io_mapping, simulation_inputs, datetime.now(), timedelta(seconds=1)
     )
+
+@fixture
+def alarms() -> ThrustersAlarms:
+    return ThrustersAlarms()

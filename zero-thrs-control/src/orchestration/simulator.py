@@ -1,6 +1,7 @@
 from dataclasses import dataclass
 from datetime import datetime, timedelta
 from classes.control import Control
+from input_output.alarms import BaseAlarms
 from input_output.base import SimulationInputs, ThrsModel
 from orchestration.collector import PolarsCollector
 from orchestration.executor import SimulationExecutor
@@ -16,6 +17,7 @@ class SimulatorModel:
     control_values_cls: type[ThrsModel]
     simulation_outputs_cls: type[ThrsModel]
     control: Control
+    alarms: BaseAlarms
     simulation_inputs: SimulationInputs
     start_time: datetime = datetime.now()
     tick_duration: timedelta = timedelta(seconds=1)
@@ -35,7 +37,7 @@ class Simulator:
             model.start_time,
             model.tick_duration,
         )
-        self._cycler = Cycler(model.control, self._executor)
+        self._cycler = Cycler(model.control, self._executor, model.alarms)
 
     async def run(self, n_ticks: int):
         collector = PolarsCollector()
