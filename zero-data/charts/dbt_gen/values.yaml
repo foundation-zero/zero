@@ -9,7 +9,7 @@ image:
 dbt:
   # dbt profile:
   #   dev: Connects to risingwave via tailscale URL
-  #   singel: Connects to risingwave via kubernetes service
+  #   singel: Connects to risingwave via kubernetes service URL
   target: ""
 
 # resources left to user

@@ -7,9 +7,6 @@ metadata:
     {{- include "zero-dbt-gen.labels" . | nindent 4 }}
 spec:
   replicas: 1
-  selector:
-    matchLabels:
-      {{- include "zero-dbt-gen.selectorLabels" . | nindent 6 }}
   template:
     metadata:
       labels:
