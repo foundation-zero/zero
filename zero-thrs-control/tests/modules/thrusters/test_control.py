@@ -109,7 +109,7 @@ async def test_recovery_mixing_cold(control, executor):
         assert result.sensor_values.thrusters_temperature_aft_return.temperature.value > 45
         assert result.sensor_values.thrusters_temperature_fwd_return.temperature.value > 45
 
-@pytest.mark.skip(reason="Need to fix bug re setting module supply temperature")
+#@pytest.mark.skip(reason="Need to fix bug re setting module supply temperature")
 async def test_recovery_mixing_hot(control, executor):
     executor._boundaries.thrusters_module_supply.temperature = Stamped.stamp(55)
 

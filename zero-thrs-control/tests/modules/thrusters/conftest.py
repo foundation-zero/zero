@@ -23,7 +23,7 @@ from simulation.io_mapping import IoMapping
 def fmu_path():
     return str(
         Path(__file__).resolve().parent.parent.parent.parent
-        / "src/simulation/models/thrusters/thruster_moduleV9.fmu"
+        / "src/simulation/models/thrusters/thruster_moduleV10.fmu"
     )
 
 
