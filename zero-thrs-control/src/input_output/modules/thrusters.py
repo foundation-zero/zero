@@ -1,6 +1,5 @@
 from typing import Annotated
 
-from input_output.alarms import BaseAlarms
 import input_output.definitions.control as control
 import input_output.definitions.sensor as sensor
 from input_output.definitions import simulation
@@ -83,15 +82,3 @@ class ThrustersSimulationOutputs(ThrsModel):
     thrusters_module_supply: simulation.FlowBoundary
     thrusters_module_return: simulation.Boundary
 
-class ThrustersAlarms(BaseAlarms):
-    def check_overheating(
-        self,
-        sensor_values: ThrustersSensorValues,
-        control_values: ThrustersControlValues,
-        control: ThrustersControlValues,
-    ) -> bool:
-        return (
-            sensor_values.thrusters_temperature_aft_return.temperature.value
-            < 80
-            and sensor_values.thrusters_temperature_fwd_return.temperature.value < 80
-        )

@@ -9,6 +9,7 @@ from control.controllers import (
     HeatSupplyController,
     PumpFlowController,
 )
+from input_output.alarms import BaseAlarms, Severity, alarm
 from input_output.base import ParameterMeta, Stamped
 from input_output.definitions.control import Pump, Valve
 from input_output.modules.thrusters import ThrustersControlValues, ThrustersSensorValues
@@ -18,10 +19,16 @@ from classes.control import Control, ControlResult
 
 class ThrustersParameters(BaseModel):
     cooling_mix_setpoint: Annotated[Celsius, ParameterMeta("50-S016")] = 38
-    recovery_thruster_flow: Annotated[LMin, Field(le=30), ParameterMeta("50-S003 and 50-S004")] = 10 #TODO: add minimum from FDS
-    cooling_thruster_flow: Annotated[LMin, Field(le=23.5), ParameterMeta("50-S014 and 50-S015")] = 22 #TODO: add minimum from FDS
-    max_temp: Celsius = 80 #TODO: add to FDS
-    recovery_mix_setpoint: Annotated[Celsius, ParameterMeta("50-S007 and 50-S008")] = 60 #TODO: add minimum based on max inlet temperature of thrusters
+    recovery_thruster_flow: Annotated[
+        LMin, Field(le=30), ParameterMeta("50-S003 and 50-S004")
+    ] = 10  # TODO: add minimum from FDS
+    cooling_thruster_flow: Annotated[
+        LMin, Field(le=23.5), ParameterMeta("50-S014 and 50-S015")
+    ] = 22  # TODO: add minimum from FDS
+    max_temp: Celsius = 80  # TODO: add to FDS
+    recovery_mix_setpoint: Annotated[Celsius, ParameterMeta("50-S007 and 50-S008")] = (
+        60  # TODO: add minimum based on max inlet temperature of thrusters
+    )
 
 
 _ZERO_TIME = datetime.fromtimestamp(0)
@@ -348,3 +355,17 @@ class ThrustersControl(Control):
         self._active_pump.on = Stamped(value=False, timestamp=self._time)
         self._active_pump = None
         self._pump_flow_controller.disable()
+
+
+class ThrustersAlarms(BaseAlarms):
+    @alarm("A004", severity=Severity.ALARM)
+    def check_overheating(
+        self,
+        sensor_values: ThrustersSensorValues,
+        control_values: ThrustersControlValues,
+        control: ThrustersControl,
+    ) -> bool:
+        return (
+            sensor_values.thrusters_temperature_aft_return.temperature.value > 80
+            or sensor_values.thrusters_temperature_fwd_return.temperature.value > 80
+        )

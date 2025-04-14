@@ -47,7 +47,7 @@ def alarm[**P](
     def _check(f: Callable[P, bool]):
         @wraps(f)
         def _do(*args: P.args, **kwargs: P.kwargs) -> Alarm | None:
-            if not f(*args, **kwargs):
+            if f(*args, **kwargs):
                 return Alarm(code, severity)
             else:
                 return None

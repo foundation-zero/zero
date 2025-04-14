@@ -1,7 +1,7 @@
 from datetime import datetime, timedelta
 from pathlib import Path
 from pytest import fixture
-from control.modules.thrusters import ThrustersControl, ThrustersParameters
+from control.modules.thrusters import ThrustersAlarms, ThrustersControl, ThrustersParameters
 from input_output.base import Stamped
 from input_output.definitions.simulation import (
     Boundary,
@@ -10,7 +10,6 @@ from input_output.definitions.simulation import (
     Thruster,
 )
 from input_output.modules.thrusters import (
-    ThrustersAlarms,
     ThrustersSensorValues,
     ThrustersSimulationInputs,
     ThrustersSimulationOutputs,
