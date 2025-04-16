@@ -1,91 +1,82 @@
 from datetime import timedelta
+import shutil
 from types import TracebackType
-from typing import Any, Callable, Iterable, Self, cast
-
-from fmpy import extract, read_model_description
-from fmpy.fmi2 import FMU2Slave
-from fmpy.model_description import ModelDescription
-
-
-def _var_mapper(
-    model_description: ModelDescription,
-) -> Callable[[Iterable[str]], list[int]]:
-    _var_name_to_ref = {
-        variable.name: variable.valueReference
-        for variable in model_description.modelVariables
-    }
-    return lambda names: [_var_name_to_ref[name] for name in names]
+from typing import Any, Self
+from fmpy import extract, read_model_description, instantiate_fmu, simulate_fmu
+from fmpy.simulation import apply_start_values
 
 
 class Fmu:
     def __init__(
         self,
         file: str,
-        solver_step_size: timedelta,
     ):
-        model_description = read_model_description(file)
-        temp_unzip_dir = extract(file)
+        self._temp_unzip_dir = extract(file)
+        self._model_description = read_model_description(self._temp_unzip_dir)
 
-        self._fmu = FMU2Slave(
-            guid=model_description.guid,
-            unzipDirectory=temp_unzip_dir,
-            modelIdentifier=model_description.coSimulation.modelIdentifier,
+        self._fmu_instance = instantiate_fmu(
+            unzipdir=self._temp_unzip_dir, model_description=self._model_description
+        )
+        self._time = 0
+        self._stabilize()
+
+    def _stabilize(self):
+        simulate_fmu(
+            filename=self._temp_unzip_dir,
+            model_description=self._model_description,
+            start_time=self._time,
+            stop_time=self._time + 1,
+            set_stop_time=False,
+            terminate=False,
+            output_interval=1,
+            initialize=True,
+            fmu_instance=self._fmu_instance,
+            step_size = 0.001
         )
 
-        self._var_mapper = _var_mapper(model_description)
-        self._time = 0.0
-        self._step_size = solver_step_size.total_seconds()
-        self._fmu.instantiate()
-        self._fmu.setupExperiment(startTime=0.0)
-        self._fmu.enterInitializationMode()
-        self._fmu.exitInitializationMode()
-        self._output_names = [
-            var.name
-            for var in model_description.modelVariables
-            if var.causality == "output"
-        ]
-
-    def __enter__(self) -> Self:
-        return self
-
-    def __exit__(
-        self,
-        type_: type[BaseException] | None,
-        value: BaseException | None,
-        traceback: TracebackType | None,
-    ) -> bool:
-        self._fmu.terminate()
-        self._fmu.freeInstance()
-        if value is not None:
-            raise value
-        return True
+        self._time = 1
 
     def tick(
         self,
         inputs: dict[str, Any],
         duration: timedelta,
     ) -> dict[str, Any]:
-        stop = self._time + duration.total_seconds()
+        apply_start_values(
+            fmu=self._fmu_instance,
+            model_description=self._model_description,
+            start_values=inputs,
+        )
 
-        self._fmu.setReal(self._var_mapper(inputs.keys()), list(inputs.values()))
+        result = simulate_fmu(
+            filename=self._temp_unzip_dir,
+            model_description=self._model_description,
+            start_time=self._time,
+            stop_time=self._time + duration.total_seconds(),
+            set_stop_time=False,
+            terminate=False,
+            output_interval=duration.total_seconds(),
+            initialize=False,
+            fmu_instance=self._fmu_instance,
+            step_size = 0.001
+        )
 
-        while self._time < stop:
-            self._fmu.doStep(
-                currentCommunicationPoint=self._time,
-                communicationStepSize=self._step_size,
-            )
+        self._time += duration.total_seconds()
 
-            self._time += self._step_size
+        return {name: result[-1][name].item() for name in result.dtype.names if name != 'time'}
 
-        return cast(
-            dict[str, Any],
-            dict(
-                zip(
-                    self._output_names,
-                    self._fmu.getReal(self._var_mapper(self._output_names)),
-                )
-            ),
-        )  # type: ignore
+    def __enter__(self) -> Self:
+        return self
+
+    def __exit__(self,
+        type_: type[BaseException] | None,
+        value: BaseException | None,
+        traceback: TracebackType | None,):
+        self._fmu_instance.terminate()
+        self._fmu_instance.freeInstance()
+        shutil.rmtree(self._temp_unzip_dir)
+        if value is not None:
+            raise value
+        return True
 
     @property
     def solver_time(self):

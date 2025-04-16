@@ -11,13 +11,12 @@ def test_fmu():
         str(
             Path(__file__).resolve().parent.parent.parent
             / "src/simulation/models/XRGTestModel/FMUInterfaceTester_MECS_regular.fmu"
-        ),
-        timedelta(seconds=0.2),
+        )
     ) as fmu:
         outputs = fmu.tick({"r": 1.0}, timedelta(seconds=1))
         assert outputs["T_Raum_degC"] > -271.15
-        assert fmu.solver_time == approx(1.0)
+        assert fmu.solver_time == approx(2)
 
         outputs = fmu.tick({"r": 1.0}, timedelta(seconds=2))
         assert outputs["T_Raum_degC"] > -271.15
-        assert fmu.solver_time == approx(3.0)
+        assert fmu.solver_time == approx(4)

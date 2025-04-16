@@ -1,6 +1,6 @@
 from dataclasses import dataclass
 from datetime import datetime
-from typing import Protocol
+from typing import Any, Protocol
 
 from input_output.base import ThrsModel
 
@@ -15,7 +15,7 @@ class ExecutionResult[S: ThrsModel]:
 class SimulationExecutionResult(ExecutionResult):
     simulation_outputs: ThrsModel
     simulation_inputs: ThrsModel
-    raw: dict[str, float]
+    raw: dict[str, Any]
 
 
 class Executor[S: ThrsModel, C: ThrsModel](Protocol):

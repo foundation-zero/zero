@@ -22,7 +22,7 @@ class PolarsCollector(Collector):
             self._data = pl.DataFrame(values)
             self._schema = self._data.schema
         else:
-            self._data.vstack(pl.DataFrame(values, schema_overrides = self._schema), in_place=True)
+            self._data.vstack(pl.DataFrame(values, schema_overrides = self._schema, strict = False), in_place=True)
         self._times.append(pl.Series("time", [time]))
 
     def result(self) -> None | pl.DataFrame:

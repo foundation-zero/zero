@@ -29,7 +29,7 @@ class Simulator:
         self._model = model
         self._executor = SimulationExecutor(
             IoMapping(
-                Fmu(model.fmu_path, model.solver_step_size),
+                Fmu(model.fmu_path),
                 model.sensor_values_cls,
                 model.simulation_outputs_cls,
             ),

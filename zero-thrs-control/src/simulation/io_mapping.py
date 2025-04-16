@@ -1,4 +1,5 @@
 from datetime import datetime, timedelta
+from typing import Any
 
 from input_output.base import SimulationInputs, ThrsModel
 from input_output.fmu_mapping import (
@@ -26,7 +27,7 @@ class IoMapping:
         simulation_inputs: SimulationInputs,
         time: datetime,
         tick_duration: timedelta,
-    ) -> tuple[ThrsModel, ThrsModel, dict[str, float]]:
+    ) -> tuple[ThrsModel, ThrsModel, dict[str, Any]]:
         fmu_inputs = {
             **build_inputs_for_fmu(control_values),
             **build_inputs_for_fmu(simulation_inputs)

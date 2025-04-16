@@ -23,7 +23,7 @@ from simulation.io_mapping import IoMapping
 def fmu_path():
     return str(
         Path(__file__).resolve().parent.parent.parent.parent
-        / "src/simulation/models/thrusters/thruster_moduleV10.fmu"
+        / "src/simulation/models/thrusters/thruster_moduleV10_1.fmu"
     )
 
 
@@ -45,19 +45,16 @@ def simulation_inputs():
 
 
 @fixture
-def io_mapping(fmu_path) -> IoMapping:
+def io_mapping(fmu_path):
     return IoMapping(
-        Fmu(
-            fmu_path,
-            timedelta(seconds=0.001),
-        ),
+        Fmu(fmu_path),
         ThrustersSensorValues,
         ThrustersSimulationOutputs,
     )
 
 
 @fixture
-def control() -> ThrustersControl:
+def control():
     return ThrustersControl(ThrustersParameters())
 
 

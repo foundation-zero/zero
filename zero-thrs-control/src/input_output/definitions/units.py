@@ -1,6 +1,5 @@
 # Per https://docs.google.com/document/d/11EGlLqZ21uHy4ICmhvPx9uKOwm0guKgWxY6-1zSQ2mQ/edit?tab=t.0#heading=h.l7ph84h61wda
 from dataclasses import dataclass
-from functools import partial
 from types import GenericAlias, UnionType
 from typing import Annotated, Any, Literal, TypeAliasType, get_args, get_origin
 from typing_extensions import _AnnotatedAlias
@@ -82,10 +81,10 @@ def validate_nonzero_float_within_precision(value: float, tolerance: float = 1e-
 type Celsius = Annotated[float, Field(ge=-273.15), UnitMeta(modelica_name="C")]
 type LMin = Annotated[
     float,
-    AfterValidator(partial(validate_nonzero_float_within_precision, tolerance = 1e-5)),
+    Field(ge=-1),
     UnitMeta(modelica_name="l_min"),
 ]
-type Hz = Annotated[float, partial(validate_nonzero_float_within_precision, tolerance = 1e-17), UnitMeta(modelica_name="Hz")] # TODO: XRG checks if this can be negative.
+type Hz = Annotated[float, UnitMeta(modelica_name="Hz")]
 type Ratio = Annotated[
     float,
     AfterValidator(validate_ratio_within_precision),

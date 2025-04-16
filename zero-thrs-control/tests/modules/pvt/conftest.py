@@ -51,11 +51,10 @@ def simulation_inputs():
 
 
 @fixture
-def io_mapping(fmu_path) -> IoMapping:
+def io_mapping(fmu_path):
     return IoMapping(
         Fmu(
-            fmu_path,
-            timedelta(seconds=0.001),
+            fmu_path
         ),
         PvtSensorValues,
         PvtSimulationOutputs,
@@ -63,7 +62,7 @@ def io_mapping(fmu_path) -> IoMapping:
 
 
 @fixture
-def control() -> PvtControl:
+def control():
     return PvtControl(PvtParameters())
 
 @fixture

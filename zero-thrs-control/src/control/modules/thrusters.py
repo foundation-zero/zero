@@ -63,10 +63,10 @@ _INITIAL_CONTROL_VALUES = ThrustersControlValues(
         setpoint=Stamped(value=Valve.OPEN, timestamp=_ZERO_TIME)
     ),
     thrusters_switch_aft=Valve(
-        setpoint=Stamped(value=Valve.SWITCH_STRAIGHT, timestamp=_ZERO_TIME)
+        setpoint=Stamped(value=Valve.SWITCH_BRANCH, timestamp=_ZERO_TIME)
     ),
     thrusters_switch_fwd=Valve(
-        setpoint=Stamped(value=Valve.SWITCH_STRAIGHT, timestamp=_ZERO_TIME)
+        setpoint=Stamped(value=Valve.SWITCH_BRANCH, timestamp=_ZERO_TIME)
     ),
 )
 
