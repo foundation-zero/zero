@@ -102,10 +102,10 @@ class FieldMeta:
     included_in_fmu: bool = True
 
 
-class SimulationInputs(ThrsModel):
+class SimulationInputs[T: ThrsModel](ThrsModel):
     model_config = ConfigDict(extra="forbid", arbitrary_types_allowed=True)
 
-    def get_values_at_time(self, time: datetime) -> "SimulationInputs":
+    def get_values_at_time(self, time: datetime) -> Self:
         def _component(component_name, component):
             component_value = getattr(self, component_name)
 

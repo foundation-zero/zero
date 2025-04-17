@@ -10,12 +10,12 @@ from input_output.fmu_mapping import (
 from simulation.fmu import Fmu
 
 
-class IoMapping:
+class IoMapping[S: ThrsModel, C: ThrsModel, I: SimulationInputs, O: ThrsModel]:
     def __init__(
         self,
         fmu: Fmu,
-        sensor_values_cls: type[ThrsModel],
-        simulation_outputs_cls: type[ThrsModel],
+        sensor_values_cls: type[S],
+        simulation_outputs_cls: type[O],
     ):
         self._fmu = fmu
         self._sensor_values_cls = sensor_values_cls
@@ -23,14 +23,14 @@ class IoMapping:
 
     def tick(
         self,
-        control_values: ThrsModel,
-        simulation_inputs: SimulationInputs,
+        control_values: C,
+        simulation_inputs: I,
         time: datetime,
         tick_duration: timedelta,
-    ) -> tuple[ThrsModel, ThrsModel, dict[str, Any]]:
+    ) -> tuple[S, O, dict[str, Any]]:
         fmu_inputs = {
             **build_inputs_for_fmu(control_values),
-            **build_inputs_for_fmu(simulation_inputs)
+            **build_inputs_for_fmu(simulation_inputs),
         }
 
         fmu_outputs = self._fmu.tick(
@@ -42,7 +42,7 @@ class IoMapping:
         )
 
         sensor_values, simulation_outputs = build_outputs_from_fmu(
-            [self._sensor_values_cls, self._simulation_outputs_cls],
+            (self._sensor_values_cls, self._simulation_outputs_cls),
             fmu_outputs,
             time + tick_duration,
             sensor_extra_values,

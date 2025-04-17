@@ -44,10 +44,10 @@ async def test_set_module_temperature(control, executor):
     control_values.thrusters_pump_1.on.value = True
 
     #allow valves to turn
+    result = None
     for i in range(90):
-        result = await executor.tick(
-            control_values,
-            )
+        result = await executor.tick(control_values)
+    assert result is not None
 
     #allow temp to stabilize
     for i in range(300):

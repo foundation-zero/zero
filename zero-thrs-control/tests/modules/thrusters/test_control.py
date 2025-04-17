@@ -4,16 +4,21 @@ from control.modules.thrusters import ThrustersControl
 from input_output.base import Stamped
 from input_output.definitions.control import Valve
 from orchestration.executor import SimulationExecutor
+from tests.modules.thrusters.conftest import ThrustersSimulationExecutor
 
 
-async def test_cooling(control: ThrustersControl, executor: SimulationExecutor):
-    #stabilize
+async def test_cooling(
+    control: ThrustersControl, executor: ThrustersSimulationExecutor
+):
+    # stabilize
     control_values = control.initial(executor.time()).values
+    result = None
     for i in range(90):
         result = await executor.tick(control_values)
+    assert result is not None
 
-    control.to_cooling() # type: ignore
-    #set valves and stabilize 10s
+    control.to_cooling()  # type: ignore
+    # set valves and stabilize 10s
     for i in range(100):
         control_values = control.control(result.sensor_values, executor.time()).values
         result = await executor.tick(control_values)
@@ -33,11 +38,26 @@ async def test_cooling(control: ThrustersControl, executor: SimulationExecutor):
     assert result.sensor_values.thrusters_flow_recovery_aft.flow.value == approx(
         0, abs=1e-2
     )
+
+    assert isinstance(
+        result.simulation_outputs.thrusters_module_supply.flow.value, float
+    )
     assert result.simulation_outputs.thrusters_module_supply.flow.value == approx(
         0, abs=1e-2
     )
+
+    assert isinstance(
+        result.simulation_outputs.thrusters_module_return.flow.value, float
+    )
     assert result.simulation_outputs.thrusters_module_return.flow.value == approx(
         0, abs=1e-2
+    )
+
+    assert isinstance(
+        result.simulation_inputs.thrusters_seawater_supply.temperature.value, float
+    )
+    assert isinstance(
+        result.simulation_outputs.thrusters_seawater_return.temperature.value, float
     )
     assert (
         result.simulation_inputs.thrusters_seawater_supply.temperature.value
@@ -46,13 +66,15 @@ async def test_cooling(control: ThrustersControl, executor: SimulationExecutor):
 
 
 async def test_recovery(control: ThrustersControl, executor: SimulationExecutor):
-    #stabilize
+    # stabilize
     control_values = control.initial(executor.time()).values
+    result = None
     for i in range(90):
         result = await executor.tick(control_values)
+    assert result is not None
 
-    control.to_recovery() # type: ignore
-    #set valves and stabilize 10s
+    control.to_recovery()  # type: ignore
+    # set valves and stabilize 10s
     for i in range(100):
         control_values = control.control(result.sensor_values, executor.time()).values
         result = await executor.tick(control_values)
@@ -84,16 +106,20 @@ async def test_recovery(control: ThrustersControl, executor: SimulationExecutor)
     )
 
 
-async def test_recovery_mixing_cold(control: ThrustersControl, executor: SimulationExecutor):
+async def test_recovery_mixing_cold(
+    control: ThrustersControl, executor: SimulationExecutor
+):
     executor._boundaries.thrusters_module_supply.temperature = Stamped.stamp(20)
 
-    #stabilize
+    # stabilize
     control_values = control.initial(executor.time()).values
+    result = None
     for i in range(90):
         result = await executor.tick(control_values)
+    assert result is not None
 
-    control.to_recovery() # type: ignore
-    #set valves and stabilize 10s
+    control.to_recovery()  # type: ignore
+    # set valves and stabilize 10s
     for i in range(100):
         control_values = control.control(result.sensor_values, executor.time()).values
         result = await executor.tick(control_values)
@@ -122,17 +148,21 @@ async def test_recovery_mixing_cold(control: ThrustersControl, executor: Simulat
         )
 
 
-async def test_recovery_mixing_hot(control: ThrustersControl, executor: SimulationExecutor):
+async def test_recovery_mixing_hot(
+    control: ThrustersControl, executor: SimulationExecutor
+):
     executor._boundaries.thrusters_module_supply.temperature = Stamped.stamp(100)
 
-    #stabilize
+    # stabilize
     control_values = control.initial(executor.time()).values
+    result = None
     for i in range(90):
         result = await executor.tick(control_values)
+    assert result is not None
 
-    control.to_recovery() # type: ignore
-    #set valves and stabilize 5m
-    for i in range(90+300):
+    control.to_recovery()  # type: ignore
+    # set valves and stabilize 5m
+    for i in range(90 + 300):
         control_values = control.control(result.sensor_values, executor.time()).values
         result = await executor.tick(control_values)
 
@@ -156,24 +186,24 @@ async def test_recovery_mixing_hot(control: ThrustersControl, executor: Simulati
                 Valve.MIXING_B_TO_AB, abs=1e-2
             )
 
-    assert (
-            result.sensor_values.thrusters_temperature_supply.temperature.value > 70
-        )
-    assert (
-            control.mode == 'recovery'
-        )
+    assert result.sensor_values.thrusters_temperature_supply.temperature.value > 70
+    assert control.mode == "recovery"
 
 
-async def test_heat_dump_with_cold_sea(control: ThrustersControl, executor: SimulationExecutor):
+async def test_heat_dump_with_cold_sea(
+    control: ThrustersControl, executor: SimulationExecutor
+):
     executor._boundaries.thrusters_seawater_supply.temperature = Stamped.stamp(10)
 
-    #stabilize
+    # stabilize
     control_values = control.initial(executor.time()).values
+    result = None
     for i in range(90):
         result = await executor.tick(control_values)
+    assert result is not None
 
-    control.to_cooling() # type: ignore
-    #set valves and stabilize 2m
+    control.to_cooling()  # type: ignore
+    # set valves and stabilize 2m
     for i in range(210):
         control_values = control.control(result.sensor_values, executor.time()).values
         result = await executor.tick(control_values)
@@ -182,19 +212,26 @@ async def test_heat_dump_with_cold_sea(control: ThrustersControl, executor: Simu
         control_values = control.control(result.sensor_values, executor.time()).values
         result = await executor.tick(control_values)
 
-        assert result.sensor_values.thrusters_temperature_supply.temperature.value == approx(38, abs = 1)
+        assert (
+            result.sensor_values.thrusters_temperature_supply.temperature.value
+            == approx(38, abs=1)
+        )
 
 
-async def test_heat_dump_with_hot_sea(control: ThrustersControl, executor: SimulationExecutor):
+async def test_heat_dump_with_hot_sea(
+    control: ThrustersControl, executor: SimulationExecutor
+):
     executor._boundaries.thrusters_seawater_supply.temperature = Stamped.stamp(45)
 
-    #stabilize
+    # stabilize
     control_values = control.initial(executor.time()).values
+    result = None
     for i in range(90):
         result = await executor.tick(control_values)
+    assert result is not None
 
-    control.to_cooling() # type: ignore
-    #set valves and stabilize 10s
+    control.to_cooling()  # type: ignore
+    # set valves and stabilize 10s
     for i in range(100):
         control_values = control.control(result.sensor_values, executor.time()).values
         result = await executor.tick(control_values)
@@ -203,17 +240,24 @@ async def test_heat_dump_with_hot_sea(control: ThrustersControl, executor: Simul
         control_values = control.control(result.sensor_values, executor.time()).values
         result = await executor.tick(control_values)
 
-        assert result.sensor_values.thrusters_mix_exchanger.position_rel.value == approx(Valve.MIXING_A_TO_AB)
+        assert (
+            result.sensor_values.thrusters_mix_exchanger.position_rel.value
+            == approx(Valve.MIXING_A_TO_AB)
+        )
 
 
-async def test_pump_flow_recovery(control: ThrustersControl, executor: SimulationExecutor):
-    #stabilize
+async def test_pump_flow_recovery(
+    control: ThrustersControl, executor: SimulationExecutor
+):
+    # stabilize
     control_values = control.initial(executor.time()).values
+    result = None
     for i in range(90):
         result = await executor.tick(control_values)
+    assert result is not None
 
-    control.to_recovery() # type: ignore
-    #set valves and stabilize 10s
+    control.to_recovery()  # type: ignore
+    # set valves and stabilize 10s
     for i in range(100):
         control_values = control.control(result.sensor_values, executor.time()).values
         result = await executor.tick(control_values)
@@ -228,7 +272,7 @@ async def test_pump_flow_recovery(control: ThrustersControl, executor: Simulatio
     executor._boundaries.thrusters_aft.active = Stamped.stamp(False)
     executor._boundaries.thrusters_aft.heat_flow = Stamped.stamp(0)
 
-    #set valves and stabilize 30s
+    # set valves and stabilize 30s
     for i in range(120):
         control_values = control.control(result.sensor_values, executor.time()).values
         result = await executor.tick(control_values)
@@ -237,13 +281,13 @@ async def test_pump_flow_recovery(control: ThrustersControl, executor: Simulatio
         control_values = control.control(result.sensor_values, executor.time()).values
         result = await executor.tick(control_values)
 
-        assert result.sensor_values.thrusters_flow_aft.flow.value == approx(0, abs=.1)
+        assert result.sensor_values.thrusters_flow_aft.flow.value == approx(0, abs=0.1)
         assert result.sensor_values.thrusters_flow_fwd.flow.value == approx(10, abs=1)
 
     executor._boundaries.thrusters_fwd.active = Stamped.stamp(False)
     executor._boundaries.thrusters_fwd.heat_flow = Stamped.stamp(0)
 
-    #set valves and stabilize 30s
+    # set valves and stabilize 30s
     for i in range(120):
         control_values = control.control(result.sensor_values, executor.time()).values
         result = await executor.tick(control_values)
@@ -252,18 +296,22 @@ async def test_pump_flow_recovery(control: ThrustersControl, executor: Simulatio
         control_values = control.control(result.sensor_values, executor.time()).values
         result = await executor.tick(control_values)
 
-        assert result.sensor_values.thrusters_flow_aft.flow.value == approx(0, abs=.1)
-        assert result.sensor_values.thrusters_flow_fwd.flow.value == approx(0, abs=.1)
+        assert result.sensor_values.thrusters_flow_aft.flow.value == approx(0, abs=0.1)
+        assert result.sensor_values.thrusters_flow_fwd.flow.value == approx(0, abs=0.1)
 
 
-async def test_pump_flow_cooling(control: ThrustersControl, executor: SimulationExecutor):
-    #stabilize
+async def test_pump_flow_cooling(
+    control: ThrustersControl, executor: SimulationExecutor
+):
+    # stabilize
     control_values = control.initial(executor.time()).values
+    result = None
     for i in range(90):
         result = await executor.tick(control_values)
+    assert result is not None
 
-    control.to_cooling() # type: ignore
-    #set valves and stabilize 10s
+    control.to_cooling()  # type: ignore
+    # set valves and stabilize 10s
     for i in range(100):
         control_values = control.control(result.sensor_values, executor.time()).values
         result = await executor.tick(control_values)
@@ -278,7 +326,7 @@ async def test_pump_flow_cooling(control: ThrustersControl, executor: Simulation
     executor._boundaries.thrusters_aft.active = Stamped.stamp(False)
     executor._boundaries.thrusters_aft.heat_flow = Stamped.stamp(0)
 
-    #set valves and stabilize 30s
+    # set valves and stabilize 30s
     for i in range(120):
         control_values = control.control(result.sensor_values, executor.time()).values
         result = await executor.tick(control_values)
@@ -287,13 +335,13 @@ async def test_pump_flow_cooling(control: ThrustersControl, executor: Simulation
         control_values = control.control(result.sensor_values, executor.time()).values
         result = await executor.tick(control_values)
 
-        assert result.sensor_values.thrusters_flow_aft.flow.value == approx(0, abs=.1)
+        assert result.sensor_values.thrusters_flow_aft.flow.value == approx(0, abs=0.1)
         assert result.sensor_values.thrusters_flow_fwd.flow.value == approx(22, abs=1)
 
     executor._boundaries.thrusters_fwd.active = Stamped.stamp(False)
     executor._boundaries.thrusters_fwd.heat_flow = Stamped.stamp(0)
 
-    #set valves and stabilize 30s
+    # set valves and stabilize 30s
     for i in range(120):
         control_values = control.control(result.sensor_values, executor.time()).values
         result = await executor.tick(control_values)
@@ -302,18 +350,20 @@ async def test_pump_flow_cooling(control: ThrustersControl, executor: Simulation
         control_values = control.control(result.sensor_values, executor.time()).values
         result = await executor.tick(control_values)
 
-        assert result.sensor_values.thrusters_flow_aft.flow.value == approx(0, abs=.1)
-        assert result.sensor_values.thrusters_flow_fwd.flow.value == approx(0, abs=.1)
+        assert result.sensor_values.thrusters_flow_aft.flow.value == approx(0, abs=0.1)
+        assert result.sensor_values.thrusters_flow_fwd.flow.value == approx(0, abs=0.1)
 
 
 async def test_pump_flow_safe(control: ThrustersControl, executor: SimulationExecutor):
-    #stabilize
+    # stabilize
     control_values = control.initial(executor.time()).values
+    result = None
     for i in range(90):
         result = await executor.tick(control_values)
+    assert result is not None
 
-    control.to_safe() # type: ignore
-    #set valves and stabilize 10s
+    control.to_safe()  # type: ignore
+    # set valves and stabilize 10s
     for i in range(100):
         control_values = control.control(result.sensor_values, executor.time()).values
         result = await executor.tick(control_values)
@@ -328,7 +378,7 @@ async def test_pump_flow_safe(control: ThrustersControl, executor: SimulationExe
     executor._boundaries.thrusters_aft.active = Stamped.stamp(False)
     executor._boundaries.thrusters_aft.heat_flow = Stamped.stamp(0)
 
-    #set valves and stabilize 30s
+    # set valves and stabilize 30s
     for i in range(120):
         control_values = control.control(result.sensor_values, executor.time()).values
         result = await executor.tick(control_values)
@@ -343,7 +393,7 @@ async def test_pump_flow_safe(control: ThrustersControl, executor: SimulationExe
     executor._boundaries.thrusters_fwd.active = Stamped.stamp(False)
     executor._boundaries.thrusters_fwd.heat_flow = Stamped.stamp(0)
 
-    #set valves and stabilize 30s
+    # set valves and stabilize 30s
     for i in range(120):
         control_values = control.control(result.sensor_values, executor.time()).values
         result = await executor.tick(control_values)

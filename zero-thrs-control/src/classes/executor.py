@@ -2,7 +2,7 @@ from dataclasses import dataclass
 from datetime import datetime
 from typing import Any, Protocol
 
-from input_output.base import ThrsModel
+from input_output.base import SimulationInputs, ThrsModel
 
 
 @dataclass
@@ -12,9 +12,9 @@ class ExecutionResult[S: ThrsModel]:
 
 
 @dataclass
-class SimulationExecutionResult(ExecutionResult):
-    simulation_outputs: ThrsModel
-    simulation_inputs: ThrsModel
+class SimulationExecutionResult[S: ThrsModel, I: SimulationInputs, O: ThrsModel](ExecutionResult[S]):
+    simulation_outputs: O
+    simulation_inputs: I
     raw: dict[str, Any]
 
 

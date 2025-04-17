@@ -31,7 +31,7 @@ class Fmu:
             output_interval=1,
             initialize=True,
             fmu_instance=self._fmu_instance,
-            step_size = 0.001
+            step_size=0.001,
         )
 
         self._time = 1
@@ -57,20 +57,26 @@ class Fmu:
             output_interval=duration.total_seconds(),
             initialize=False,
             fmu_instance=self._fmu_instance,
-            step_size = 0.001
+            step_size=0.001,
         )
 
         self._time += duration.total_seconds()
 
-        return {name: result[-1][name].item() for name in result.dtype.names if name != 'time'}
+        return {
+            name: result[-1][name].item()
+            for name in result.dtype.names
+            if name != "time"
+        }
 
     def __enter__(self) -> Self:
         return self
 
-    def __exit__(self,
+    def __exit__(
+        self,
         type_: type[BaseException] | None,
         value: BaseException | None,
-        traceback: TracebackType | None,):
+        traceback: TracebackType | None,
+    ):
         self._fmu_instance.terminate()
         self._fmu_instance.freeInstance()
         shutil.rmtree(self._temp_unzip_dir)

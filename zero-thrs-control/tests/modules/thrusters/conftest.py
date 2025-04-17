@@ -10,6 +10,7 @@ from input_output.definitions.simulation import (
     Thruster,
 )
 from input_output.modules.thrusters import (
+    ThrustersControlValues,
     ThrustersSensorValues,
     ThrustersSimulationInputs,
     ThrustersSimulationOutputs,
@@ -18,6 +19,7 @@ from orchestration.executor import SimulationExecutor
 from simulation.fmu import Fmu
 from simulation.io_mapping import IoMapping
 
+type ThrustersSimulationExecutor = SimulationExecutor[ThrustersSensorValues, ThrustersControlValues, ThrustersSimulationInputs, ThrustersSimulationOutputs]
 
 @fixture
 def fmu_path():
@@ -59,7 +61,7 @@ def control():
 
 
 @fixture
-def executor(io_mapping, simulation_inputs)-> SimulationExecutor:
+def executor(io_mapping, simulation_inputs) -> ThrustersSimulationExecutor:
     return SimulationExecutor(
         io_mapping, simulation_inputs, datetime.now(), timedelta(seconds=1)
     )

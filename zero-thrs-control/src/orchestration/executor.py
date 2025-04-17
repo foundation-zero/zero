@@ -70,11 +70,11 @@ class MqttExecutor[S: ThrsModel, C: ThrsModel](Executor[S, C]):
         return await self._sensors.get()
 
 
-class SimulationExecutor(Executor):
+class SimulationExecutor[S: ThrsModel, C: ThrsModel, I: SimulationInputs, O: ThrsModel](Executor[S,C]):
     def __init__(
         self,
-        io_mapping: IoMapping,
-        boundaries: SimulationInputs,
+        io_mapping: IoMapping[S,C,I,O],
+        boundaries: I,
         start_time: datetime,
         tick_duration: timedelta,
     ):
@@ -90,7 +90,7 @@ class SimulationExecutor(Executor):
     def time(self):
         return self._start_time + self._ticks * self._tick_duration
 
-    async def tick(self, control_values: ThrsModel) -> ExecutionResult:
+    async def tick(self, control_values: C) -> SimulationExecutionResult[S, I, O]:
         time = self.time()
         bounds = self._boundaries.get_values_at_time(time)
         sensor_values, simulation_outputs, raw = self._io_mapping.tick(

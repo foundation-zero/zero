@@ -1,7 +1,7 @@
 import operator
 from datetime import datetime
 from functools import reduce
-from typing import Any
+from typing import Any, overload
 
 from pydantic.fields import FieldInfo
 
@@ -65,12 +65,24 @@ def extract_non_fmu_values(
     }
 
 
+@overload
+def build_outputs_from_fmu[T: ThrsModel](clss: tuple[type[T]], values: dict[str, float],
+    timestamp: datetime,
+    extra_values: dict[str, dict[str, Stamped[Any]]] = {},
+) -> tuple[T]: ...
+
+@overload
+def build_outputs_from_fmu[T: ThrsModel, T2: ThrsModel](clss: tuple[type[T], type[T2]], values: dict[str, float],
+    timestamp: datetime,
+    extra_values: dict[str, dict[str, Stamped[Any]]] = {},
+) -> tuple[T, T2]: ...
+
 def build_outputs_from_fmu(
-    clss: list[type[ThrsModel]],
+    clss: tuple[type[ThrsModel], ...],
     values: dict[str, float],
     timestamp: datetime,
     extra_values: dict[str, dict[str, Stamped[Any]]] = {},
-) -> list[ThrsModel]:
+) -> tuple[ThrsModel, ...]:
     # first part is the component name, second part is the field name, third (if any) is the unit
     # ignore third, build dict of dict of first part and second part
     def _split_component_field(key: str):
@@ -95,4 +107,4 @@ def build_outputs_from_fmu(
     }
     with_extras = nested_values | unused_extra_values
 
-    return [cls(**with_extras) for cls in clss]
+    return tuple([cls(**with_extras) for cls in clss])

@@ -88,4 +88,4 @@ def test_fmu_roundtrip():
 
     values = build_inputs_for_fmu(values)
 
-    assert values, values == build_outputs_from_fmu([MiniModel], values, time)
+    assert values, values == build_outputs_from_fmu((MiniModel,), values, time)
