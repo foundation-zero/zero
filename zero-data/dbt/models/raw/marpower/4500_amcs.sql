@@ -1,5 +1,6 @@
 {{ config(materialized='table_with_connector') }}
 CREATE TABLE {{ this }} (
+	TIMESTAMP	TIMESTAMP,
 	ACC_SENSOR_1_OUTPX	REAL,
 	ACC_SENSOR_1_OUTPY	REAL,
 	ACC_SENSOR_1_OUTPZ	REAL,

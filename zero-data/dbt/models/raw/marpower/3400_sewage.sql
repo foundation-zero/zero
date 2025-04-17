@@ -1,5 +1,6 @@
 {{ config(materialized='table_with_connector') }}
 CREATE TABLE {{ this }} (
+	TIMESTAMP	TIMESTAMP,
 	LEVEL_GREY_WATER_TANK_AFT_PS	REAL,
 	LEVEL_GREY_WATER_TANK_AFT_SB	REAL,
 	LEVEL_GREY_WATER_TANK_FWD_SB	REAL,

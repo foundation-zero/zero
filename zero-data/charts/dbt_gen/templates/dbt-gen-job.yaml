@@ -34,6 +34,15 @@ spec:
             seccompProfile:
               type: RuntimeDefault
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
-          command: ["dbt", "run", "--project-dir", "./dbt", "--profiles-dir", "./dbt", "--target", "{{ .Values.dbt.target }}"]
+          command: ["dbt", "run", "--project-dir", "./dbt", "--profiles-dir", "./dbt", "--target-path", "/dbt_output", "--log-path", "/dbt_output","--target", "{{ .Values.dbt.target }}"]
+          volumeMounts:
+            - name: dbt-output
+              mountPath: /dbt_output
+          envFrom:
+            - configMapRef:
+                name: {{ include "zero-dbt-gen.fullname" . }}-envvars
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
+      volumes:
+        - name: dbt-output
+          emptyDir: {}

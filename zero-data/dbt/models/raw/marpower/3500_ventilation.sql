@@ -1,5 +1,6 @@
 {{ config(materialized='table_with_connector') }}
 CREATE TABLE {{ this }} (
+	TIMESTAMP	TIMESTAMP,
 	BATT_VENT_AFT_PS_ON_FAULT	BOOLEAN,
 	BATT_VENT_AFT_PS_ON_READY	BOOLEAN,
 	BATT_VENT_AFT_PS_ON_RUN	BOOLEAN,

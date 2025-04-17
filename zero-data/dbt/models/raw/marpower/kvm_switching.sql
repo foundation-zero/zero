@@ -1,5 +1,6 @@
 {{ config(materialized='table_with_connector') }}
 CREATE TABLE {{ this }} (
+	TIMESTAMP	TIMESTAMP,
 	CAPT_CAB_DISP_TOGG	BOOLEAN,
 	CREW_MESS_DISP_TOGG	BOOLEAN,
 	HELM_PS_IN_DISP_AMCS	BOOLEAN,

@@ -1,5 +1,6 @@
 {{ config(materialized='table_with_connector') }}
 CREATE TABLE {{ this }} (
+	TIMESTAMP	TIMESTAMP,
 	BILGE_FRAME13_ALARM	BOOLEAN,
 	BILGE_FRAME15_ALARM	BOOLEAN,
 	BILGE_FRAME30_ALARM	BOOLEAN,

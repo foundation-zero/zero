@@ -6,6 +6,11 @@ image:
   # Overrides the image tag whose default is the chart appVersion.
   tag: ""
 
+# Required: MQTT URI (mqtt://<host>:<port>)
+mqtt:
+  host: ""
+  port: ""
+
 dbt:
   # dbt profile:
   #   dev: Connects to risingwave via tailscale URL

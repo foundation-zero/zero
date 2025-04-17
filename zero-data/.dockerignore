@@ -60,3 +60,7 @@ temp/
 *.bak
 *.tmp
 *.old
+
+# dbt
+.user.yml
+dbt/target/*

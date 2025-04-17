@@ -1,5 +1,6 @@
 {{ config(materialized='table_with_connector') }}
 CREATE TABLE {{ this }} (
+	TIMESTAMP	TIMESTAMP,
 	AFT_DECKH_ACCESS_DOOR	BOOLEAN,
 	AFT_DECKH_VENT_HATCH	BOOLEAN,
 	AFT_DECKH_VENT_HATCH_PERC	REAL,

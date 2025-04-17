@@ -63,3 +63,4 @@ temp/
 
 # dbt
 .user.yml
+dbt/target/*

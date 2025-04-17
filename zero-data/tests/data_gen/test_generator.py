@@ -6,6 +6,7 @@ from io_processing.config import MQTTConfig
 from io_processing.data_gen.generator import Generator
 from io_processing.io_list.types import IOTopic, IOValue
 import random
+import datetime
 
 
 async def test_generator():
@@ -14,7 +15,6 @@ async def test_generator():
         IOTopic("a", [IOValue("field1", "BOOLEAN"), IOValue("field2", "REAL")]),
         IOTopic("b", [IOValue("field1", "BIGINT"), IOValue("field2", "INTEGER")]),
     ]
-    source = "test"
 
     mock_client = AsyncMock()
     # Ensure it works with "async with"
@@ -24,7 +24,7 @@ async def test_generator():
     with patch("io_processing.data_gen.generator.Client", return_value=mock_client):
         random.seed(1)
 
-        gen = Generator(1, mqtt_config, topics, source)
+        gen = Generator(1, mqtt_config, topics)
 
         try:
             async with asyncio.timeout(0.1):
@@ -37,12 +37,28 @@ async def test_generator():
         # Verify the publish calls
         expected_calls = [
             (
-                topics[0].topic,
-                json.dumps({"field1": True, "field2": 10.60040562252202}),
+                "a",
+                json.dumps(
+                    {
+                        "timestamp": datetime.datetime.now().strftime(
+                            "%Y-%m-%d %H:%M:%S"
+                        ),
+                        "field1": True,
+                        "field2": 10.60040562252202,
+                    }
+                ),
             ),
             (
-                topics[1].topic,
-                json.dumps({"field1": 8, "field2": 5}),
+                "b",
+                json.dumps(
+                    {
+                        "timestamp": datetime.datetime.now().strftime(
+                            "%Y-%m-%d %H:%M:%S"
+                        ),
+                        "field1": 8,
+                        "field2": 5,
+                    }
+                ),
             ),
         ]
 

@@ -10,6 +10,7 @@ import logging
 
 import random
 
+import datetime
 
 logger = logging.getLogger(__name__)
 
@@ -20,7 +21,6 @@ class Generator:
         interval: int | float,
         mqtt_config: MQTTConfig,
         topics: List[IOTopic],
-        source: str,
     ):
         self.interval: int | float = interval
         self.mqtt_config: MQTTConfig = mqtt_config
@@ -46,10 +46,12 @@ class Generator:
 
     def _next_value(self, topic: IOTopic):
         """Generate the next value for a given topic."""
-        return {
+        timestamp = {"timestamp": datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")}
+        content = {
             field.name: self._next_field_value(field.data_type)
             for field in topic.fields
         }
+        return timestamp | content
 
     @staticmethod
     def _next_field_value(data_type: str):
@@ -63,4 +65,6 @@ class Generator:
                 return random.randint(0, 100)
             case "INTEGER":
                 return random.binomialvariate(n=10, p=0.5)
+            case "TIMESTAMP":
+                return datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
         raise KeyError(f"Unknown type: {data_type}")

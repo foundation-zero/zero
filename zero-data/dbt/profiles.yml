@@ -34,10 +34,10 @@ zero_data:
 
     singel:
       type: risingwave
-      host: risingwave.risingwave-frontend.svc.cluster.local
+      host: risingwave-frontend.risingwave.svc.cluster.local
       user: root
       password: ''
-      port: 4566
+      port: 4567
       dbname: dev
       schema: public
       threads: 1

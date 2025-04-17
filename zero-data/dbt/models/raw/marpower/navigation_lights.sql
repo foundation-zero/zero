@@ -1,5 +1,6 @@
 {{ config(materialized='table_with_connector') }}
 CREATE TABLE {{ this }} (
+	TIMESTAMP	TIMESTAMP,
 	Anchor_Aft_BACKUPCtrl	BOOLEAN,
 	Anchor_Aft_BACKUPOpTime	BIGINT,
 	Anchor_Aft_BACKUPStatus	BOOLEAN,

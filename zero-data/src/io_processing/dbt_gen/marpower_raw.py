@@ -47,8 +47,14 @@ class MarpowerRawGenerator:
     def _generate_topic(cls, topic: IOTopic) -> str:
         """Generate the SQL for a given topic."""
         with_mqtt = cls._with_mqtt(topic.topic)
+        timestamp = cls._add_timestamp()
         fields = "".join([cls._generate_field(io_val) for io_val in topic.fields])
-        return f"{{{{ config(materialized='table_with_connector') }}}}\nCREATE TABLE {{{{ this }}}} (\n{fields})\n{with_mqtt}\n"
+        return f"{{{{ config(materialized='table_with_connector') }}}}\nCREATE TABLE {{{{ this }}}} (\n{timestamp}{fields})\n{with_mqtt}\n"
+
+    @staticmethod
+    def _add_timestamp():
+        """Generate the SQL for the timestamp."""
+        return "\tTIMESTAMP\tTIMESTAMP,\n"
 
     @staticmethod
     def _generate_field(io_value: IOValue):
