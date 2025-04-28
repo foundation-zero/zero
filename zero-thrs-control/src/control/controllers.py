@@ -68,7 +68,7 @@ class InvertedHeatDumpController(_HeatController):
     TUNING = (0.1, 0.01, 0)
 
 class HeatSupplyController(_HeatController):
-    pass
+    TUNING = (-0.5, -0.002, 0.1)
 
 
 class _FlowController(_Controller[Ratio, LMin]):

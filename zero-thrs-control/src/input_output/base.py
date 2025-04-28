@@ -133,22 +133,34 @@ class SimulationInputs(ThrsModel):
                             f"Time {time} is before the given range of data for field {component_name}."
                         )
 
+                        return Stamped(
+                            value=value.sort("time").head(1).select("value").item(),
+                            timestamp=time,
+                        )
+
                     if value.select(pl.max("time")).item() < time:
                         warn(
-                            f"Time {time} is before than the given range of data for field {component_name}."
+                            f"Time {time} is after the given range of data for field {component_name}."
                         )
 
-                    m = (pl.col("time") - time).abs()
-
-                    return Stamped(
-                        value=value.filter(
-                            (m := (pl.col("time") - time).abs()).min() == m
+                        return Stamped(
+                            value=value.sort("time").tail(1).select("value").item(),
+                            timestamp=time,
                         )
-                        .limit(1)
-                        .select("value")
-                        .item(),
-                        timestamp=time,
-                    )
+
+                    else:
+                        return Stamped(
+                            value=value.filter(
+                                (m := (pl.col("time") - time).abs())
+                                .filter(pl.col("time") <= time)
+                                .min()
+                                == m
+                            )
+                            .limit(1)
+                            .select("value")
+                            .item(),
+                            timestamp=time,
+                        )
 
                 else:
                     return Stamped(value=value, timestamp=time)
