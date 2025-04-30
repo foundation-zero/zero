@@ -2,7 +2,7 @@
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 import { useRoomStore } from "@/stores/rooms";
-import { useDark } from "@vueuse/core";
+import { useDark, useTimeoutFn } from "@vueuse/core";
 import { computed, toRefs, watch } from "vue";
 
 import { useI18n } from "vue-i18n";
@@ -21,7 +21,7 @@ const isOn = computed({
 });
 
 watch(currentRoom, (newRoom) => {
-  isDark.value = !!newRoom.amplifierOn;
+  useTimeoutFn(() => (isDark.value = !!newRoom.amplifierOn), 500);
 });
 </script>
 

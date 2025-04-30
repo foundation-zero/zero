@@ -19,12 +19,14 @@ export const toRoom = (room: Rooms): Room => ({
       })),
     }))
     .sort(compareByName),
-  lights: [
-    {
-      name: i18n.global.t("labels.lights"),
-      controls: (room.lightingGroups ?? []).sort(compareByName),
-    },
-  ],
+  lights: room.lightingGroups?.length
+    ? [
+        {
+          name: i18n.global.t("labels.lights"),
+          controls: (room.lightingGroups ?? []).sort(compareByName),
+        },
+      ]
+    : [],
 });
 
 export const createArea = (group: RoomGroup, name: string, allRooms: Room[]): ShipArea => {

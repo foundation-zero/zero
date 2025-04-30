@@ -5,71 +5,67 @@ import RoomsPage from "./page";
 
 const test = testBase.extend<{ roomsPage: RoomsPage }>({
   roomsPage: [
-    async ({ page, worker, subscriptions, auth }, use) => {
+    async ({ page, worker, subscriptions }, use) => {
       worker.use(getAllRooms);
 
-      await page.goto("/");
-      await auth.asUser();
-      await use(new RoomsPage(page, subscriptions));
+      const roomsPage = new RoomsPage(page, subscriptions);
+
+      await use(roomsPage);
     },
     { auto: true },
   ],
 });
 
+const dutchCabin = allRooms.rooms.find((room) => room.id === "dutch-cabin")!;
+
 test.describe("Rooms", () => {
-  const room = allRooms.rooms[0];
+  test.describe("as a user", () => {
+    test.beforeEach(async ({ auth, roomsPage }) => {
+      await auth.asUser();
 
-  test("subscribes to a room", async ({ roomsPage }) => {
-    expect(roomsPage.subscribers).toHaveLength(1);
-    expect(roomsPage.subscribers[0].payload!.variables?.roomId).toBe(allRooms.rooms[0].id);
-  });
+      roomsPage.updateRoom(dutchCabin);
+    });
 
-  test("gets all rooms", async () => {
-    expect(getAllRooms.isUsed).toBe(true);
-  });
+    test("subscribes to a room", async ({ roomsPage }) => {
+      expect(roomsPage.subscribers).toHaveLength(1);
+      expect(roomsPage.subscribers[0].payload!.variables?.roomId).toBe(dutchCabin.id);
+    });
 
-  test("shows the current room", async ({ roomsPage }) => {
-    roomsPage.updateRoom(room);
+    test("shows the current room", async ({ roomsPage }) => {
+      await expect(roomsPage.title).toHaveText(dutchCabin.name);
+    });
 
-    await expect(roomsPage.trigger).toHaveText(room.name);
-  });
+    test("shows the correct state of the audio system", async ({ roomsPage }) => {
+      roomsPage.updateRoom(dutchCabin, { amplifierOn: false });
 
-  test("shows the correct state of the audio system", async ({ roomsPage }) => {
-    roomsPage.updateRoom(room, { amplifierOn: false });
+      await expect(roomsPage.audioSystemToggle).toHaveAttribute("data-state", "unchecked");
 
-    await expect(roomsPage.audioSystemToggle).toHaveAttribute("data-state", "unchecked");
+      roomsPage.updateRoom(dutchCabin, { amplifierOn: true });
 
-    roomsPage.updateRoom(room, { amplifierOn: true });
-
-    await expect(roomsPage.audioSystemToggle).toHaveAttribute("data-state", "checked");
+      await expect(roomsPage.audioSystemToggle).toHaveAttribute("data-state", "checked");
+    });
   });
 
   test.describe("as admin", () => {
-    test.beforeEach(async ({ auth, subscriptions, page }) => {
+    test.beforeEach(async ({ auth }) => {
       await auth.asAdmin();
-      subscriptions.reset();
-      await page.reload();
-      await page.waitForTimeout(1000);
+    });
+
+    test("gets all rooms", async () => {
+      expect(getAllRooms.isUsed).toBe(true);
     });
 
     test.describe("room selection", () => {
-      test("it opens the room selection dialog", async ({ roomsPage }) => {
-        await expect(roomsPage.dialog).not.toBeVisible();
-
-        await roomsPage.trigger.click();
-
-        await expect(roomsPage.dialog).toBeVisible();
+      test("it shows the side navigation", async ({ page, roomsPage }) => {
+        await expect(roomsPage.dialog).toHaveClass("show");
+        await page.screenshot({ path: "screenshots/rooms_admin.png" });
       });
 
       test("it shows the correct amount of rooms", async ({ roomsPage }) => {
-        await roomsPage.trigger.click();
-
         await expect(roomsPage.roomList).toHaveCount(allRooms.rooms.length);
       });
 
       test("updates the subscription", async ({ page, roomsPage }) => {
-        await roomsPage.trigger.click();
-
         await roomsPage.roomItem(allRooms.rooms[1].id).click();
         await page.waitForTimeout(100);
 

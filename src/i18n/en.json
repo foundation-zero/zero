@@ -1,6 +1,18 @@
 {
   "labels": {
-    "airconditioning": "A/C",
+    "airconditioning": {
+      "short": "A/C",
+      "long": "Air conditioning"
+    },
+    "back": "Back",
+    "environment": "Environment",
+    "eco": "ECO Setpoint",
+    "zero": "ZERO",
+    "rooms": "Rooms",
+    "water": "Water",
+    "heating": "Heating",
+    "power": "Power",
+    "ventilation": "Ventilation",
     "lights": "Lights",
     "blinds": "Blinds",
     "shears": "Shears",
@@ -11,6 +23,15 @@
     "temperature": "Temperature",
     "humidity": "Humidity",
     "setTo": "Set to",
+    "admin": "Admin",
+    "settings": "Settings",
+    "climateControl": "Climate control",
+    "dashboard": "Dashboard",
+    "co2": "CO2",
+    "utilities": "Utilities",
+    "percentage": "Percentage",
+    "more": "More",
+    "save": "Save",
     "roomGroup": {
       "aftship": "Aftship",
       "foreship": "Foreship",
@@ -26,6 +47,10 @@
     "roomSelection": {
       "description": "Here you can select the room from which you want to operate the household controls",
       "title": "ZERO rooms"
+    },
+    "humiditySettings": {
+      "description": "Set the target humidity level (35% - 70%) for all rooms.",
+      "title": "Humidity settings"
     }
   }
 }

@@ -7,7 +7,7 @@ import { useI18n } from "vue-i18n";
 import { useRoute } from "vue-router";
 
 const { hasScroll, isBottom } = toRefs(useUIStore());
-const { path } = toRefs(useRoute());
+const { name } = toRefs(useRoute());
 
 const { t } = useI18n();
 </script>
@@ -15,7 +15,7 @@ const { t } = useI18n();
 <template>
   <Tabs
     as="nav"
-    :model-value="path"
+    :model-value="String(name)"
     class="fixed bottom-0 w-full"
   >
     <div
@@ -23,18 +23,24 @@ const { t } = useI18n();
       :class="{ 'border-t': hasScroll && !isBottom }"
     ></div>
 
-    <TabsList class="relative">
-      <RouterLink to="/airco">
-        <TabsTrigger value="/airco">
+    <TabsList class="relative grid grid-cols-3">
+      <RouterLink
+        :to="{ name: 'cabin:airconditioning' }"
+        class="text-center"
+      >
+        <TabsTrigger value="cabin:airconditioning">
           <Snowflake
-            :size="24"
+            :size="22"
             stroke-width="2"
           />
-          {{ t("labels.airconditioning") }}
+          {{ t("labels.airconditioning.short") }}
         </TabsTrigger>
       </RouterLink>
-      <RouterLink to="/lights">
-        <TabsTrigger value="/lights">
+      <RouterLink
+        :to="{ name: 'cabin:lights' }"
+        class="text-center"
+      >
+        <TabsTrigger value="cabin:lights">
           <LampCeiling
             :size="24"
             stroke-width="2"
@@ -42,10 +48,13 @@ const { t } = useI18n();
           {{ t("labels.lights") }}
         </TabsTrigger>
       </RouterLink>
-      <RouterLink to="/blinds">
-        <TabsTrigger value="/blinds">
+      <RouterLink
+        :to="{ name: 'cabin:blinds' }"
+        class="text-center"
+      >
+        <TabsTrigger value="cabin:blinds">
           <Blinds
-            :size="24"
+            :size="22"
             stroke-width="2"
           />
           {{ t("labels.blinds") }}

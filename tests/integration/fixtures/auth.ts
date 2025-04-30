@@ -16,13 +16,12 @@ const tokens: Record<Roles, string> = {
 export const createAuthFixture = (): [
   TestFixture<AuthFixture, PlaywrightTestArgs>,
   {
-    scope: "test";
     auto: boolean;
   },
 ] => [
   async ({ page }, use) => {
     const asRole = (role: Roles) => async () => {
-      await page.evaluate((token) => window.localStorage.setItem("token", token), tokens[role]);
+      await page.goto(`/auth?token=${tokens[role]}`);
       await page.waitForTimeout(1000);
     };
 
@@ -32,7 +31,6 @@ export const createAuthFixture = (): [
     use({ asAdmin, asUser });
   },
   {
-    scope: "test",
     auto: true,
   },
 ];

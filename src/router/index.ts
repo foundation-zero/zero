@@ -1,22 +1,103 @@
+import { Roles } from "@/@types";
+import HumiditySettings from "@/components/environment/humidity-settings/HumiditySettings.vue";
+import Admin from "@/layouts/AdminLayout.vue";
+import CabinLayout from "@/layouts/CabinLayout.vue";
 import { useAuthStore } from "@/stores/auth";
-import Airco from "@/views/Airco.vue";
-import Blinds from "@/views/Blinds.vue";
-import Lights from "@/views/Lights.vue";
+import Airco from "@/views/cabin/Airco.vue";
+import Blinds from "@/views/cabin/Blinds.vue";
+import Lights from "@/views/cabin/Lights.vue";
+import Humidity from "@/views/environment/Humidity.vue";
+import Temperature from "@/views/environment/Temperature.vue";
 import { createRouter, createWebHistory, RouteRecordRaw } from "vue-router";
+import { waitForRoom } from "./guards";
+
+const envRoutes: RouteRecordRaw[] = [
+  {
+    path: "/environment",
+    name: "environement",
+    meta: { layout: Admin, role: Roles.Admin },
+    children: [
+      {
+        path: "temperature",
+        name: "env:temperature",
+        component: Temperature,
+      },
+      {
+        path: "ventilation",
+        name: "env:ventilation",
+        redirect: { name: "env:temperature" },
+      },
+      {
+        path: "lights",
+        name: "env:lights",
+        redirect: { name: "env:temperature" },
+      },
+      {
+        path: "humidity",
+        name: "env:humidity",
+        component: Humidity,
+        meta: { settings: HumiditySettings },
+      },
+    ],
+  },
+];
+
+const cabinRoutes: RouteRecordRaw[] = [
+  {
+    path: "/cabin",
+    name: "cabin",
+    meta: { layout: CabinLayout, beforeResolve: waitForRoom },
+    children: [
+      {
+        path: "airconditioning",
+        name: "cabin:airconditioning",
+        component: Airco,
+      },
+      {
+        path: "lights",
+        name: "cabin:lights",
+        component: Lights,
+      },
+      {
+        path: "blinds",
+        name: "cabin:blinds",
+        component: Blinds,
+      },
+    ],
+  },
+];
 
 const routes: RouteRecordRaw[] = [
-  { path: "/airco", component: Airco },
-  { path: "/lights", component: Lights },
-  { path: "/blinds", component: Blinds },
-  { path: "/", component: Airco },
+  ...envRoutes,
+  ...cabinRoutes,
+  {
+    path: "/",
+    redirect: () => {
+      const { isLoggedIn, isAdmin } = useAuthStore();
+
+      if (isLoggedIn) {
+        return isAdmin ? { name: "env:temperature" } : { name: "cabin:airconditioning", query: {} };
+      }
+
+      return { name: "unauthorised" };
+    },
+  },
   {
     path: "/auth",
+    name: "auth",
+    meta: { requiresAuth: false },
     redirect: (to) => {
-      const authStore = useAuthStore();
       const token = to.query.token;
-      authStore.setToken(token as string);
 
-      return { path: "/", query: {} };
+      const { cabin } = useAuthStore().setToken(String(token));
+
+      if (cabin.value) {
+        localStorage.setItem("currentRoomId", cabin.value);
+      }
+
+      return {
+        path: "/",
+      };
     },
   },
 ];

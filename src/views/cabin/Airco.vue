@@ -1,15 +1,17 @@
 <script setup lang="ts">
-import RoomTemperature from "@/components/RoomTemperature.vue";
+import RoomTemperature from "@/components/cabin/RoomTemperature.vue";
 import { HeavySlider } from "@/components/ui/heavy-slider";
 import { List, ListItem, ListRoot } from "@/components/ui/list";
 import { useRoomStore } from "@/stores/rooms";
+import { useUIStore } from "@/stores/ui";
 import { computed, toRefs } from "vue";
 import { useI18n } from "vue-i18n";
 const MIN_VALUE = 18;
 
-const { currentRoom, hasPendingMutations } = toRefs(useRoomStore());
+const { currentRoom, hasPendingRequests } = toRefs(useRoomStore());
 const { setTemperatureSetpoint } = useRoomStore();
 const { t } = useI18n();
+const { breakpoints } = useUIStore();
 
 const value = computed<number[]>({
   get() {
@@ -28,7 +30,8 @@ const isOff = computed(() => value.value[0] == MIN_VALUE);
 
 <template>
   <section
-    class="container flex grow flex-col items-center justify-center max-md:pb-[64px] md:pb-[32px]"
+    class="flex grow flex-col items-center justify-center max-md:pb-[64px] md:pb-[32px]"
+    :class="{ container: !breakpoints.touch, 'w-full px-4 md:px-6': breakpoints.touch }"
   >
     <RoomTemperature
       class="mb-8 w-full"
@@ -36,22 +39,22 @@ const isOff = computed(() => value.value[0] == MIN_VALUE);
     />
 
     <div class="flex w-full flex-wrap justify-center">
-      <ListRoot class="w-full pb-6 md:w-1/2 md:px-3 xl:w-1/3 landscape:lg:w-1/3">
+      <ListRoot class="w-full landscape:max-w-[800px]">
         <List
           orientation="horizontal"
           :size="1"
         >
-          <ListItem class="flex-col pb-6">
-            <span class="text-lg font-medium">{{ t("labels.airconditioning") }}</span>
+          <ListItem class="flex-col gap-2">
+            <span class="text-lg font-medium">{{ t("labels.airconditioning.long") }}</span>
             <HeavySlider
               v-model:model-value="value"
               class="aspect-[1/2] !h-[40svh] !w-auto"
               :max="24"
               :min="17"
               :min-steps-between-thumbs="3"
-              :class="{ 'opacity-70': isOff, 'opacity-50': hasPendingMutations }"
+              :class="{ 'opacity-70': isOff, 'opacity-50': hasPendingRequests }"
               :step="1"
-              :disabled="hasPendingMutations"
+              :disabled="hasPendingRequests"
             />
 
             <div class="mt-6 flex flex-col items-center justify-center">

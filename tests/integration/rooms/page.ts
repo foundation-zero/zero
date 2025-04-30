@@ -22,16 +22,20 @@ export default class RoomsPage {
     return this.page.getByTestId("room-selector-button");
   }
 
+  public get title(): Locator {
+    return this.page.getByTestId("room-name");
+  }
+
   public get dialog(): Locator {
-    return this.page.getByRole("dialog");
+    return this.page.locator("aside");
   }
 
   public get roomList(): Locator {
-    return this.page.getByRole("dialog").locator("li");
+    return this.dialog.locator("[role='list'] li");
   }
 
   public roomItem(roomId: string): Locator {
-    return this.page.getByRole("dialog").getByTestId(roomId);
+    return this.dialog.getByTestId(`room-${roomId}`);
   }
 
   public get audioSystemToggle(): Locator {

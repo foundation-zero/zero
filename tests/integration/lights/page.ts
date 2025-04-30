@@ -12,6 +12,10 @@ export default class LightsPage {
     private readonly subscriptions: SubscriptionFixture<ZeroSubscriptions>,
   ) {}
 
+  public open(): Promise<void> {
+    return this.page.getByRole("tab").nth(1).click();
+  }
+
   public setLightLevels(
     lightLevels: number[],
     room: Rooms = allRooms.rooms.find((room) => room.lightingGroups.length === lightLevels.length)!,

@@ -31,7 +31,7 @@ export interface Breakpoints {
   phone: boolean;
   landscape: boolean;
   portrait: boolean;
-  mobile: boolean;
+  touch: boolean;
   desktop: boolean;
 }
 

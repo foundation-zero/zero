@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { BlindsGroup } from "@/@types";
-import { BlindsControl } from "@/components/containers/blinds-control";
+import { BlindsControl } from "@/components/cabin/blinds-control";
 import { BlindsSlider } from "@/components/ui/blinds-slider";
 import BlindsValue from "@/components/ui/blinds-value/BlindsValue.vue";
 import { List, ListHeader, ListItem, ListRoot } from "@/components/ui/list";
@@ -8,7 +8,7 @@ import { List, ListHeader, ListItem, ListRoot } from "@/components/ui/list";
 import { useRoomStore } from "@/stores/rooms";
 import { ref, toRefs, watch } from "vue";
 
-const { currentRoom, hasPendingMutations } = toRefs(useRoomStore());
+const { currentRoom, hasPendingRequests } = toRefs(useRoomStore());
 const { setBlindsLevel } = useRoomStore();
 const selected = ref<BlindsGroup>();
 
@@ -21,13 +21,15 @@ watch(currentRoom, (next, prev) => {
 
 <template>
   <section
-    class="container flex grow flex-wrap items-center justify-center max-md:pb-[64px] md:px-6 md:pb-[32px]"
-    :class="{ 'px-3': currentRoom.blinds.length > 1, 'px-6': currentRoom.blinds.length === 1 }"
+    class="-mx-1.5 flex w-full grow flex-wrap items-center justify-center max-md:pb-[64px] md:px-6 md:pb-[32px]"
+    :class="{
+      'px-3': currentRoom.blinds.length > 1,
+      'px-4 md:px-6': currentRoom.blinds.length === 1,
+    }"
   >
     <ListRoot
       v-for="(group, index) in currentRoom.blinds"
       :key="index"
-      class="md:px-3"
       :class="{
         'w-1/2 px-1.5 xl:w-1/3 landscape:lg:w-1/3': currentRoom.blinds.length > 1,
         'w-full md:w-1/2 xl:w-1/3 landscape:lg:w-1/3':
@@ -60,7 +62,7 @@ watch(currentRoom, (next, prev) => {
             v-if="currentRoom.blinds.length === 1"
             v-model:level="item.level"
             class="mt-3"
-            :disabled="hasPendingMutations"
+            :disabled="hasPendingRequests"
             @update:level="setBlindsLevel(item.id, $event)"
           />
           <BlindsValue

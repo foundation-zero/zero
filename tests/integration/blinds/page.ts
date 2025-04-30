@@ -12,6 +12,10 @@ export default class BlindsPage {
     private readonly subscriptions: SubscriptionFixture<ZeroSubscriptions>,
   ) {}
 
+  public open(): Promise<void> {
+    return this.page.getByRole("tab").nth(2).click();
+  }
+
   public setBlindLevels(
     blindLevels: number[],
     room: Rooms = allRooms.rooms.find((room) => room.blinds.length === blindLevels.length)!,

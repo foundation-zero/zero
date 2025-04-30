@@ -22,6 +22,8 @@ export const getAll = gql`
       id
       name
       group
+      actualTemperature
+      temperatureSetpoint
     }
   }
 `;

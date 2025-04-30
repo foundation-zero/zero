@@ -24,7 +24,7 @@ import { createArea, toRoom } from "@/lib/mappers";
 import { useMutation, UseMutationResponse, useSubscription } from "@urql/vue";
 import { useDebounceFn, useLocalStorage, useTimeoutFn } from "@vueuse/core";
 import { defineStore } from "pinia";
-import { computed, ref, toRefs, watch } from "vue";
+import { computed, ref, toRefs } from "vue";
 import { useI18n } from "vue-i18n";
 import { useAuthStore } from "./auth";
 
@@ -34,7 +34,7 @@ type GetAllRoomsQuery = Pick<QueryRoot, "rooms">;
 
 export const useRoomStore = defineStore("rooms", () => {
   const { t } = useI18n();
-  const { decodedToken, isAdmin } = toRefs(useAuthStore());
+  const { isAdmin, cabin } = toRefs(useAuthStore());
 
   const emptyRoom: Room = {
     name: t("labels.emptyRoom"),
@@ -51,18 +51,13 @@ export const useRoomStore = defineStore("rooms", () => {
   const currentRoomId = useLocalStorage("currentRoomId", () => emptyRoom.id);
   const currentRoom = ref<Room>(emptyRoom);
   const areas = ref<ShipArea[]>([]);
-  const hasPendingMutations = ref(false);
+  const hasPendingRequests = ref(false);
 
-  const setRoomFromToken = () => {
-    if (decodedToken.value?.["https://hasura.io/jwt/claims"]?.["x-hasura-cabin"]) {
-      currentRoomId.value = decodedToken.value["https://hasura.io/jwt/claims"]["x-hasura-cabin"];
+  const setRoom = (roomId: string) => {
+    if (currentRoomId.value !== roomId && (isAdmin.value || roomId === cabin.value)) {
+      hasPendingRequests.value = true;
+      currentRoomId.value = roomId;
     }
-  };
-
-  watch(decodedToken, setRoomFromToken, { immediate: true });
-
-  const setRoom = (room: Room) => {
-    currentRoomId.value = room.id;
   };
 
   // We debounce the mutation to prevent hammering the server with requests.
@@ -72,8 +67,8 @@ export const useRoomStore = defineStore("rooms", () => {
     fn: (...args: Args) => T,
   ) =>
     useDebounceFn((...args: Args) => {
-      hasPendingMutations.value = true;
-      useTimeoutFn(() => (hasPendingMutations.value = false), 2000);
+      hasPendingRequests.value = true;
+      useTimeoutFn(() => (hasPendingRequests.value = false), 2000);
       return query.executeMutation(fn(...args));
     }, MUTATION_DELAY_IN_MS);
 
@@ -119,7 +114,7 @@ export const useRoomStore = defineStore("rooms", () => {
         currentRoom.value = toRoom(result.rooms[0]);
       }
 
-      hasPendingMutations.value = false;
+      hasPendingRequests.value = false;
 
       return currentRoom.value;
     },
@@ -127,6 +122,8 @@ export const useRoomStore = defineStore("rooms", () => {
 
   // We need this ready state mainly for testing purposes.
   const isReady = (async function init() {
+    // if (!isAdmin.value) return;
+
     const { data } = await client.query<GetAllRoomsQuery>(getAll, {});
     const rooms = data?.rooms.map(toRoom) ?? [];
 
@@ -146,8 +143,9 @@ export const useRoomStore = defineStore("rooms", () => {
   return {
     areas,
     currentRoom,
+    currentRoomId,
     setRoom,
-    hasPendingMutations,
+    hasPendingRequests,
     setTemperatureSetpoint,
     toggleAmplifier,
     setLightLevel,

@@ -8,11 +8,18 @@ const test = testBase.extend<{ blindsPage: BlindsPage }>({
     async ({ worker, page, subscriptions, auth }, use) => {
       worker.use(getAllRooms);
 
-      await page.goto("/blinds");
+      const blindsPage = new BlindsPage(page, subscriptions);
+
       await auth.asUser();
 
+      blindsPage.setBlindLevels([0, 0]);
+      await page.waitForTimeout(500);
+      await blindsPage.open();
+
+      await page.waitForTimeout(500);
+
       await page.screenshot({ path: "screenshots/blinds.png" });
-      await use(new BlindsPage(page, subscriptions));
+      await use(blindsPage);
     },
     { auto: true },
   ],

@@ -5,12 +5,12 @@ import { ConnectionInitMessage } from "../../types";
 test.describe("Auth", () => {
   test.describe("using the authentication route", () => {
     const token =
-      "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IlByYXZlZW4gRHVyYWlyYWp1IiwiaWF0IjoxNTE2MjM5MDIyfQ.5hffgKYLre_YU4Cdgv7FUo4-LKiKooGKf3QnOMbM2gs";
+      "eyJ0eXAiOiJKV1QiLCJhbGciOiJFUzI1NiIsImtpZCI6ImNlMTdlMWQ2MGY5YTBkODRmOTA2YmVhZGRlYjkxYTBhIn0.eyJodHRwczovL2hhc3VyYS5pby9qd3QvY2xhaW1zIjp7IngtaGFzdXJhLWRlZmF1bHQtcm9sZSI6InVzZXIiLCJ4LWhhc3VyYS1hbGxvd2VkLXJvbGVzIjpbInVzZXIiXSwieC1oYXN1cmEtY2FiaW4iOiJkdXRjaC1jYWJpbiJ9fQ.ITbZpZczKw7HnS2zmp2bcgYFmszWizS_1GGVTylzKowliktF57P-4wCOJo9gEJszWYRTm9AZWB6LnxI4ENThIw";
 
     test("uses the new token for authentication", async ({ worker, subscriptions, page }) => {
       worker.use(getAllRooms);
       await page.goto(`/auth?token=${token}`);
-      await page.waitForTimeout(1000);
+      await page.waitForTimeout(3000);
 
       expect(subscriptions.incoming).toHaveLength(2);
 

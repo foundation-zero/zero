@@ -1,17 +1,24 @@
+import allRooms from "../../data/all-rooms";
 import { setLightLevel } from "../../mocks/mutations";
 import { expect, test as testBase } from "../../mocks/playwright";
 import { getAllRooms } from "../../mocks/queries";
 import LightsPage from "./page";
+
+const dutchCabin = allRooms.rooms.find((room) => room.id === "dutch-cabin")!;
 
 const test = testBase.extend<{ lightsPage: LightsPage }>({
   lightsPage: [
     async ({ page, worker, subscriptions, auth }, use) => {
       worker.use(getAllRooms, setLightLevel);
 
-      await page.goto("/lights");
+      const lightsPage = new LightsPage(page, subscriptions);
       await auth.asUser();
-      await page.screenshot({ path: "screenshots/lights.png" });
-      await use(new LightsPage(page, subscriptions));
+      lightsPage.setLightLevels([0, 0], dutchCabin);
+      await lightsPage.open();
+      await page.waitForTimeout(500);
+
+      await page.screenshot({ path: "screenshots/lights_before.png" });
+      await use(lightsPage);
     },
     { auto: true },
   ],
@@ -20,8 +27,9 @@ const test = testBase.extend<{ lightsPage: LightsPage }>({
 test.describe("Lights", () => {
   test.describe("with multiple lights", () => {
     const targetLevels = [0.51, 0.75];
-    test.beforeEach(async ({ lightsPage }) => {
-      lightsPage.setLightLevels(targetLevels);
+    test.beforeEach(async ({ lightsPage, page }) => {
+      lightsPage.setLightLevels(targetLevels, dutchCabin);
+      await page.screenshot({ path: "screenshots/lights_after.png" });
     });
 
     test("shows controls for each light", async ({ lightsPage }) => {
@@ -41,7 +49,7 @@ test.describe("Lights", () => {
     const targetLevels = [0.51, 0.75];
 
     test.beforeEach(async ({ lightsPage }) => {
-      lightsPage.setLightLevels(targetLevels);
+      lightsPage.setLightLevels(targetLevels, dutchCabin);
     });
 
     test("pushes a mutation", async ({ lightsPage, page }) => {
@@ -57,7 +65,7 @@ test.describe("Lights", () => {
   test.describe("toggle light", () => {
     test.describe("when light is off", () => {
       test.beforeEach(async ({ lightsPage }) => {
-        lightsPage.setLightLevels([0, 0]);
+        lightsPage.setLightLevels([0, 0], dutchCabin);
 
         await lightsPage.switches.first().click();
       });
@@ -76,7 +84,7 @@ test.describe("Lights", () => {
 
     test.describe("when light is on", () => {
       test.beforeEach(async ({ lightsPage }) => {
-        lightsPage.setLightLevels([0.1, 0.1]);
+        lightsPage.setLightLevels([0.1, 0.1], dutchCabin);
 
         await lightsPage.switches.first().click();
       });

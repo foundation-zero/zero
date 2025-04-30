@@ -21,3 +21,5 @@ export const ratioAsPercentage = (ratio: Ref<number>) =>
       ratio.value = percentage / 100;
     },
   });
+
+export const randomHumidity = () => (30 + Math.random() * 40).toFixed(0);

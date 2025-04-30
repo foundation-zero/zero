@@ -1,10 +1,12 @@
-import { Room } from "@/@types";
+import { Roles, Room } from "@/@types";
 import { GetAllRoomsQuery, LightingGroups, Rooms } from "@/gql/graphql";
 import client from "@/graphql/client";
 import { setBlindsLevelMutation } from "@/graphql/queries/blinds";
 import { setLightLevelMutation } from "@/graphql/queries/light-groups";
 import {
+  setAmplifierForRoomMutation,
   setAmplifierMutation,
+  setTemperatureSetpointForRoomMutation,
   setTemperatureSetpointMutation,
   subscribeToRoom,
 } from "@/graphql/queries/rooms";
@@ -14,21 +16,11 @@ import { graphql, HttpResponse } from "msw";
 import { setupServer } from "msw/node";
 import { afterEach } from "node:test";
 import { setActivePinia } from "pinia";
-import {
-  afterAll,
-  beforeAll,
-  beforeEach,
-  describe,
-  expect,
-  Mock,
-  MockedObject,
-  test,
-  vi,
-} from "vitest";
+import { afterAll, beforeAll, beforeEach, describe, expect, Mock, test, vi } from "vitest";
 import { ref } from "vue";
 import { useI18n } from "vue-i18n";
+import { tokens } from "../../tests/auth";
 import allRooms from "../../tests/data/all-rooms";
-import { useAuthStore } from "./auth";
 import { useRoomStore } from "./rooms";
 
 vi.mock(import("vue-i18n"), async (importOriginal) => ({
@@ -62,14 +54,15 @@ afterEach(() => server.resetHandlers());
 
 describe("Rooms Store", () => {
   let store: ReturnType<typeof useRoomStore>;
-  let authStore: MockedObject<ReturnType<typeof useAuthStore>>;
+
   let pinia: TestingPinia;
   const useSubscription = urql.useSubscription as Mock<typeof urql.useSubscription>;
   const useMutation = urql.useMutation as Mock<typeof urql.useMutation>;
   const executeMutation = vi.fn();
   let subscriptionCallback: urql.SubscriptionHandler<GetAllRoomsQuery, Room>;
 
-  beforeEach(async () => {
+  const setupStore = async (role: Roles) => {
+    localStorage.setItem("token", tokens[role]);
     pinia = createTestingPinia({ stubActions: false });
     setActivePinia(pinia);
     useSubscription.mockImplementationOnce((_, cb) => {
@@ -88,14 +81,16 @@ describe("Rooms Store", () => {
       operation: ref(),
     }));
 
-    authStore = vi.mocked(useAuthStore(pinia));
     store = useRoomStore(pinia);
     vi.spyOn(client, "executeMutation");
 
     await store.isReady;
-  });
+  };
 
   describe("setup", () => {
+    beforeEach(async () => {
+      await setupStore(Roles.Admin);
+    });
     test("it fetches list of rooms", () => {
       expect(store.areas.flatMap((area) => area.rooms)).toHaveLength(allRooms.rooms.length);
     });
@@ -174,15 +169,15 @@ describe("Rooms Store", () => {
 
   describe("control", () => {
     describe("as an admin", () => {
-      beforeEach(() => {
-        authStore.isAdmin = true;
+      beforeEach(async () => {
+        await setupStore(Roles.Admin);
       });
       test("it sends a mutation to change the temperature setpoint", async () => {
         const nextTemperature = 99;
 
         await store.setTemperatureSetpoint(nextTemperature);
 
-        expect(useMutation).toHaveBeenCalledWith(setTemperatureSetpointMutation);
+        expect(useMutation).toHaveBeenCalledWith(setTemperatureSetpointForRoomMutation);
         expect(executeMutation).toHaveBeenCalledWith({
           id: "owners-cabin",
           temperature: nextTemperature,
@@ -194,7 +189,7 @@ describe("Rooms Store", () => {
 
         await store.toggleAmplifier(nextState);
 
-        expect(useMutation).toHaveBeenCalledWith(setAmplifierMutation);
+        expect(useMutation).toHaveBeenCalledWith(setAmplifierForRoomMutation);
         expect(executeMutation).toHaveBeenCalledWith({
           id: "owners-cabin",
           on: nextState,
@@ -203,6 +198,10 @@ describe("Rooms Store", () => {
     });
 
     describe("as a user", () => {
+      beforeEach(async () => {
+        await setupStore(Roles.User);
+      });
+
       test("it sends a mutation to change the temperature setpoint", async () => {
         const nextTemperature = 99;
 
@@ -226,29 +225,29 @@ describe("Rooms Store", () => {
           on: nextState,
         });
       });
-    });
 
-    test("it sends a mutation to change the blinds level", async () => {
-      const nextLevel = 0.75;
+      test("it sends a mutation to change the blinds level", async () => {
+        const nextLevel = 0.75;
 
-      await store.setBlindsLevel("1", nextLevel);
+        await store.setBlindsLevel("1", nextLevel);
 
-      expect(useMutation).toHaveBeenCalledWith(setBlindsLevelMutation);
-      expect(executeMutation).toHaveBeenCalledWith({
-        id: "1",
-        level: nextLevel,
+        expect(useMutation).toHaveBeenCalledWith(setBlindsLevelMutation);
+        expect(executeMutation).toHaveBeenCalledWith({
+          id: "1",
+          level: nextLevel,
+        });
       });
-    });
 
-    test("it sends a mutation to change the light level", async () => {
-      const nextLevel = 0.75;
+      test("it sends a mutation to change the light level", async () => {
+        const nextLevel = 0.75;
 
-      await store.setLightLevel("1", nextLevel);
+        await store.setLightLevel("1", nextLevel);
 
-      expect(useMutation).toHaveBeenCalledWith(setLightLevelMutation);
-      expect(executeMutation).toHaveBeenCalledWith({
-        id: "1",
-        level: nextLevel,
+        expect(useMutation).toHaveBeenCalledWith(setLightLevelMutation);
+        expect(executeMutation).toHaveBeenCalledWith({
+          id: "1",
+          level: nextLevel,
+        });
       });
     });
   });

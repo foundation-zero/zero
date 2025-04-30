@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { useUIStore } from "@/stores/ui";
 import { toRefs } from "vue";
-const { isScrolling } = toRefs(useUIStore());
+const { isScrolling, breakpoints } = toRefs(useUIStore());
 </script>
 
 <template>
@@ -10,7 +10,10 @@ const { isScrolling } = toRefs(useUIStore());
     :class="{ '--scrolling': isScrolling }"
   >
     <slot />
-    <div class="bar">
+    <div
+      class="bar"
+      :class="{ 'xl:container xl:px-6': !breakpoints.touch }"
+    >
       <div class="left">
         <slot name="left"> </slot>
       </div>
@@ -26,11 +29,11 @@ const { isScrolling } = toRefs(useUIStore());
 
 <style lang="scss" scoped>
 .top-nav {
-  @apply fixed top-0 w-full;
+  @apply fixed left-0 right-0 top-0 transition-all;
 }
 
 .bar {
-  @apply container flex items-center justify-between;
+  @apply flex items-center justify-between px-4 md:px-6;
 }
 
 .left {
@@ -57,7 +60,7 @@ const { isScrolling } = toRefs(useUIStore());
 
 .top-nav:not(.--scrolling) {
   .bar {
-    @apply pt-5;
+    @apply pt-3 md:pt-4;
   }
 }
 </style>
