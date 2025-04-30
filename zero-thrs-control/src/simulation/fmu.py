@@ -20,6 +20,7 @@ class Fmu:
         self._time = 0
         self._stabilize()
 
+    #take one step so that FMU initial conditions are consistent, improving numerical stability
     def _stabilize(self):
         simulate_fmu(
             filename=self._temp_unzip_dir,
