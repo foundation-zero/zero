@@ -43,6 +43,7 @@ export const useRoomStore = defineStore("rooms", () => {
     temperatureSetpoint: 23,
     actualTemperature: 21,
     actualHumidity: 40,
+    actualCO2: 500,
     blinds: [],
     lights: [],
     id: "empty",

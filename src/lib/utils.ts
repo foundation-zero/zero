@@ -22,4 +22,13 @@ export const ratioAsPercentage = (ratio: Ref<number>) =>
     },
   });
 
-export const randomHumidity = () => (30 + Math.random() * 40).toFixed(0);
+export const formatNumber =
+  (digits: number) =>
+  (value: number, locale: string = "en-US") => {
+    return new Intl.NumberFormat(locale, {
+      minimumFractionDigits: digits,
+      maximumFractionDigits: digits,
+    }).format(value);
+  };
+
+export const formatInt = formatNumber(0);

@@ -51,6 +51,10 @@
     "humiditySettings": {
       "description": "Set the target humidity level (35% - 70%) for all rooms.",
       "title": "Humidity settings"
+    },
+    "co2Settings": {
+      "description": "Set the target CO2 level (400 ppm - 1000 ppm) for all rooms.",
+      "title": "CO2 settings"
     }
   }
 }

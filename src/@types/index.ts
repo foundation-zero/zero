@@ -8,6 +8,7 @@ export interface Room {
   temperatureSetpoint: number;
   actualTemperature: number;
   actualHumidity: number;
+  actualCO2: number;
   lights: LightGroup[];
   blinds: BlindsGroup[];
 }
@@ -55,3 +56,16 @@ export interface HasuraJWTToken {
     "x-hasura-cabin"?: string;
   };
 }
+
+export const enum ValidationStatus {
+  OK = "ok",
+  WARN = "warn",
+  FAIL = "fail",
+  UNKNOWN = "unknown",
+}
+
+export const enum Units {
+  PPM = "ppm",
+}
+
+export type ValidateFn<T> = (value: T) => ValidationStatus;

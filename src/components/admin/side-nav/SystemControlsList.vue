@@ -47,7 +47,6 @@ const route = useRoute();
       <NavListItem
         :to="{ name: 'env:ventilation' }"
         :active="route.name === 'env:ventilation'"
-        disabled
       >
         <Fan
           :size="16"

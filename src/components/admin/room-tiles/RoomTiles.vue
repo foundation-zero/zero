@@ -1,7 +1,11 @@
 <script setup lang="ts">
+import { Room, ValidateFn, ValidationStatus } from "@/@types";
 import { useRoomStore } from "@/stores/rooms";
 import { useUIStore } from "@/stores/ui";
+import { ExclamationTriangleIcon } from "@radix-icons/vue";
 import { toRefs } from "vue";
+
+const { validate } = defineProps<{ validate?: ValidateFn<Room> }>();
 
 const { areas } = toRefs(useRoomStore());
 const { showSideNav } = toRefs(useUIStore());
@@ -11,15 +15,15 @@ const { showSideNav } = toRefs(useUIStore());
   <section
     v-for="area in areas"
     :key="area.name"
-    class="landscape:lg:[1rem] pb-12 text-[1rem] sm:text-[0.8rem] xl:text-[1rem]"
+    class="pb-8 text-[0.8rem] md:pb-12 md:text-[0.9rem] lg:text-[0.95rem] xl:text-[1.2rem] portrait:lg:text-[1rem]"
   >
     <header
-      class="border-b pb-2 text-rbase font-bold uppercase tracking-tight text-primary/75 dark:text-primary/65 md:text-rxl"
+      class="border-b pb-2 text-rxl font-bold uppercase tracking-tight text-primary/75 dark:text-primary/65 md:pb-4"
     >
       {{ area.name }}
     </header>
     <ul
-      class="grid grid-cols-1 gap-4 text-rbase transition-all md:mt-4"
+      class="mt-4 grid grid-cols-2 gap-4 text-rbase transition-all md:mt-6 md:gap-6"
       :class="{
         'md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-4': !showSideNav,
         'md:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4': showSideNav,
@@ -28,25 +32,35 @@ const { showSideNav } = toRefs(useUIStore());
       <li
         v-for="room in area.rooms"
         :key="room.id"
-        class="relative flex aspect-video flex-col justify-between rounded-lg bg-primary/5 px-2.5 py-1 text-primary/80 dark:bg-primary/10 lg:px-3 lg:py-2"
+        :class="[validate?.(room) ?? ValidationStatus.UNKNOWN]"
+        class="flex aspect-[16/10] flex-col justify-between rounded-lg border border-primary/20 bg-primary/5 px-[0.625em] py-[0.3em] text-primary/85 dark:bg-primary/10"
       >
-        <slot
-          name="top-left"
-          v-bind="{ room }"
-        >
-          <span class="md:text-rlg">{{ room.name }}</span>
-        </slot>
+        <span class="flex w-full items-center">
+          <slot
+            name="top-left"
+            v-bind="{ room }"
+          >
+            <span class="overflow-hidden text-ellipsis whitespace-nowrap pr-1 text-rlg">{{
+              room.name
+            }}</span>
+          </slot>
+          <span class="grow" />
+          <slot
+            name="top-right"
+            v-bind="{ room }"
+          >
+            <ExclamationTriangleIcon class="h-[1.25em] w-[1.25em] text-primary/90" />
+          </slot>
+        </span>
 
-        <span
-          class="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 text-r6xl font-bold"
-        >
+        <span class="flex place-items-baseline justify-center text-r5xl font-bold">
           <slot
             name="center"
             v-bind="{ room }"
           />
         </span>
 
-        <span class="flex w-full items-center">
+        <span class="flex min-h-3 w-full items-center">
           <slot
             name="bottom-left"
             v-bind="{ room }"
@@ -61,3 +75,27 @@ const { showSideNav } = toRefs(useUIStore());
     </ul>
   </section>
 </template>
+
+<style lang="scss" scoped>
+li {
+  &.unknown,
+  &.ok {
+    --primary: 0 0% 20%;
+
+    &:is(.dark *) {
+      --primary: 0 0% 80%;
+    }
+
+    svg {
+      display: none;
+    }
+  }
+
+  &.warn {
+    --primary: 32.5 83.5% 50%;
+  }
+  &.fail {
+    --primary: 0 84% 60%;
+  }
+}
+</style>

@@ -1,4 +1,5 @@
 import { Roles } from "@/@types";
+import CO2Settings from "@/components/environment/co2-settings/CO2Settings.vue";
 import HumiditySettings from "@/components/environment/humidity-settings/HumiditySettings.vue";
 import Admin from "@/layouts/AdminLayout.vue";
 import CabinLayout from "@/layouts/CabinLayout.vue";
@@ -8,6 +9,7 @@ import Blinds from "@/views/cabin/Blinds.vue";
 import Lights from "@/views/cabin/Lights.vue";
 import Humidity from "@/views/environment/Humidity.vue";
 import Temperature from "@/views/environment/Temperature.vue";
+import Ventilation from "@/views/environment/Ventilation.vue";
 import { createRouter, createWebHistory, RouteRecordRaw } from "vue-router";
 import { waitForRoom } from "./guards";
 
@@ -25,7 +27,8 @@ const envRoutes: RouteRecordRaw[] = [
       {
         path: "ventilation",
         name: "env:ventilation",
-        redirect: { name: "env:temperature" },
+        component: Ventilation,
+        meta: { settings: CO2Settings },
       },
       {
         path: "lights",
