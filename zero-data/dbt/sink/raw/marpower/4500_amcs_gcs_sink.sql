@@ -1,0 +1,1 @@
+{{ gcs_sink('raw', '4500_amcs', '4500_amcs_gcs_sink') }}

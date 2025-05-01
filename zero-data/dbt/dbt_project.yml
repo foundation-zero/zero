@@ -11,7 +11,7 @@ profile: 'zero_data'
 # These configurations specify where dbt should look for different types of files.
 # The `model-paths` config, for example, states that models in this project can be
 # found in the "models/" directory. You probably won't need to change these!
-model-paths: ["models"]
+model-paths: ["models", "sink"]
 analysis-paths: ["analyses"]
 test-paths: ["tests"]
 seed-paths: ["seeds"]
@@ -31,5 +31,4 @@ clean-targets:         # directories to be removed by `dbt clean`
 models:
   zero_data:
     raw:
-      marpower:
-        +materialized: view
+      +materialized: view

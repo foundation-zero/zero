@@ -1,0 +1,1 @@
+{{ gcs_sink('raw', '4500_firedetection', '4500_firedetection_gcs_sink') }}

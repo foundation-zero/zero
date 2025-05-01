@@ -1,0 +1,1 @@
+{{ gcs_sink('raw', '7500_deck_crane', '7500_deck_crane_gcs_sink') }}

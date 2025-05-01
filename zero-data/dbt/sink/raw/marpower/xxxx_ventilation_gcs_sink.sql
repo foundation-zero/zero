@@ -1,0 +1,1 @@
+{{ gcs_sink('raw', 'xxxx_ventilation', 'xxxx_ventilation_gcs_sink') }}

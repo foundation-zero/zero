@@ -31,6 +31,7 @@ ipykernel = "^6.29.5"
 pandas = "^2.2.3"
 notebook = "^7.3.2"
 ruff = "^0.9.3"
+python-dotenv = "^1.1.0"
 
 [tool.poetry.group.test]
 optional = true
@@ -49,6 +50,9 @@ enable = true
 testpaths = ["tests"]
 asyncio_default_fixture_loop_scope = "function"
 asyncio_mode = "auto"
+
+[tool.dotenv]
+location = ".env"
 
 [build-system]
 requires = ["poetry-core>=1.0.0", "poetry-dynamic-versioning>=1.0.0,<2.0.0"]

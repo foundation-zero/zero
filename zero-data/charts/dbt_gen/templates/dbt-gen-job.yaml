@@ -38,6 +38,12 @@ spec:
           volumeMounts:
             - name: dbt-output
               mountPath: /dbt_output
+          env:
+            - name: GCS_CREDENTIAL
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.gcs.existingSecret }}
+                  key: {{ .Values.gcs.existingSecretGCSCredentialKey }}
           envFrom:
             - configMapRef:
                 name: {{ include "zero-dbt-gen.fullname" . }}-envvars

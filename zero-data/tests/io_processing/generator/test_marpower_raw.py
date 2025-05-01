@@ -16,7 +16,8 @@ def test_marpower_raw():
         patch("pathlib.Path.mkdir", mkdir_mock),
     ):
         MarpowerRawGenerator(Path("/not-used")).generate(marpower_io_topics)
-        mkdir_mock.assert_called_once_with(parents=True, exist_ok=True)
-        open_mock.assert_called_with(
-            PosixPath("/not-used/models/raw/test_topic.sql"), "w"
+        mkdir_mock.assert_called_with(parents=True, exist_ok=True)
+        open_mock.assert_any_call(PosixPath("/not-used/models/raw/test_topic.sql"), "w")
+        open_mock.assert_any_call(
+            PosixPath("/not-used/sink/raw/test_topic_gcs_sink.sql"), "w"
         )

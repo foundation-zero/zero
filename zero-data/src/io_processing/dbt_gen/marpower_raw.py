@@ -1,5 +1,3 @@
-import os
-import glob
 from pathlib import Path
 from typing import List
 
@@ -11,37 +9,29 @@ logger = logging.getLogger(__name__)
 
 class MarpowerRawGenerator:
     def __init__(self, dbt_path: Path):
-        self.dbt_path = dbt_path / "models/raw/"
+        self.table_path = dbt_path / "models/raw/"
+        self.sink_path = dbt_path / "sink/raw/"
 
     def generate(self, topics: List[IOTopic]):
         """Generate dbt models for the given topics."""
-        number_of_files_removed = self._clean_folder()
         for topic in topics:
             file_name = topic.topic.lower()
-            # Create subfolders for nested topics
-            subfolder_path = self.dbt_path / file_name.rsplit("/", 1)[0]
-            subfolder_path.mkdir(parents=True, exist_ok=True)
-
-            file_path = (self.dbt_path / f"{file_name}.sql").resolve()
             table = self._generate_topic(topic)
-            with open(file_path, "w") as f:
-                f.write(table)
-        number_of_new_files = len(topics)
-        logger.info(f"Written raw tables to {self.dbt_path.resolve()}")
-        logger.info(
-            f"""
-            Created: {number_of_new_files}
-            Removed: {number_of_files_removed}
-            Delta: {number_of_new_files - number_of_files_removed}"""
-        )
+            self._write_file(self.table_path, file_name, table)
 
-    def _clean_folder(self) -> int:
-        """Remove all files in the dbt path."""
-        path = str((self.dbt_path / "*.sql").resolve())
-        files = glob.glob(path)
-        for file in files:
-            os.remove(file)
-        return len(files)
+            sink = self._generate_gcs_sink(topic)
+            self._write_file(self.sink_path, f"{file_name}_gcs_sink", sink)
+
+    @classmethod
+    def _write_file(cls, path: Path, file_name: str, content: str):
+        """Write the content to a file."""
+        file_path = (path / f"{file_name}.sql").resolve()
+
+        # Ensure folder exists
+        file_path.parent.mkdir(parents=True, exist_ok=True)
+
+        with open(file_path, "w") as f:
+            f.write(content)
 
     @classmethod
     def _generate_topic(cls, topic: IOTopic) -> str:
@@ -50,6 +40,12 @@ class MarpowerRawGenerator:
         timestamp = cls._add_timestamp()
         fields = "".join([cls._generate_field(io_val) for io_val in topic.fields])
         return f"{{{{ config(materialized='table_with_connector') }}}}\nCREATE TABLE {{{{ this }}}} (\n{timestamp}{fields})\n{with_mqtt}\n"
+
+    @classmethod
+    def _generate_gcs_sink(cls, topic: IOTopic) -> str:
+        """Generate the SQL for a given sink."""
+        topic_table = topic.topic.split("/")[-1]
+        return f"{{{{ gcs_sink('raw', '{topic_table}', '{topic_table}_gcs_sink') }}}}"
 
     @staticmethod
     def _add_timestamp():

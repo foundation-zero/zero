@@ -8,3 +8,4 @@ metadata:
 data:
     MQTT_HOST: {{ .Values.mqtt.host | quote }}
     MQTT_PORT: {{ .Values.mqtt.port | quote }}
+    GCS_BUCKET_NAME: {{ .Values.gcs.bucketName | quote }}

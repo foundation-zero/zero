@@ -1,0 +1,1 @@
+{{ gcs_sink('raw', '2100_bilge_fifi', '2100_bilge_fifi_gcs_sink') }}

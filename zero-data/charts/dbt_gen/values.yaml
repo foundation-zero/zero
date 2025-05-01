@@ -17,5 +17,10 @@ dbt:
   #   singel: Connects to risingwave via kubernetes service URL
   target: ""
 
+gcs:
+  bucketName: ""
+  existingSecret: ""
+  existingSecretGCSCredentialKey: ""
+
 # resources left to user
 resources: {}
