@@ -2,15 +2,21 @@ from datetime import datetime, timedelta
 from pathlib import Path
 
 from pytest import fixture
+import pytest
 from input_output.modules.thrusters import (
     ThrustersControlValues,
     ThrustersSensorValues,
+    ThrustersSimulationInputs,
     ThrustersSimulationOutputs,
 )
 from orchestration.collector import PolarsCollector
 from orchestration.executor import SimulationExecutor
 from orchestration.cycler import Cycler
 from orchestration.simulator import Simulator, SimulatorModel
+from simulation.fmu import Fmu
+from simulation.io_mapping import IoMapping
+
+from tests.modules.helpers.simulation_inputs import simulator_input_field_setters
 
 
 @fixture
@@ -57,3 +63,33 @@ async def test_simulation(simulation_inputs, control, alarms):
 
     assert result is not None
     assert result["time"].len() == 20
+
+
+@fixture(params=list(simulator_input_field_setters(ThrustersSimulationInputs)))
+def incorrect_simulation_inputs(simulation_inputs, request):
+    inputs = simulation_inputs.get_values_at_time(datetime.now())
+    request.param(inputs, -9e7)
+    return inputs
+
+
+async def test_thrusters_simulation_inputs(incorrect_simulation_inputs, control):
+    with Fmu(
+        str(
+            Path(__file__).resolve().parent.parent.parent.parent
+            / "src/simulation/models/thrusters/thruster_moduleV9.fmu"
+        ),
+        timedelta(seconds=0.001),
+    ) as fmu:
+        mapping = IoMapping(
+            fmu,
+            ThrustersSensorValues,
+            ThrustersSimulationOutputs,
+        )
+
+        with pytest.raises(Exception):
+            mapping.tick(
+                control.initial(datetime.now()).values,
+                incorrect_simulation_inputs,
+                datetime.now(),
+                timedelta(seconds=1),
+            )
