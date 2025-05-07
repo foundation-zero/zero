@@ -1,4 +1,5 @@
 from asyncio import TaskGroup
+from contextlib import asynccontextmanager
 from zero_domestic_control.config import Settings
 from aiomqtt import Client as MqttClient
 
@@ -21,8 +22,9 @@ class Stub:
             tg.create_task(self._ac_stub.run())
 
     @staticmethod
+    @asynccontextmanager
     async def from_settings(settings: Settings):
         async with MqttClient(settings.mqtt_host) as mqtt_client:
-            return Stub(
+            yield Stub(
                 mqtt_client, (settings.termodinamica_host, settings.termodinamica_port)
             )

@@ -113,6 +113,8 @@ services:
       HOME_ASSISTANT_URL: http://hass:8123/api
       HOME_ASSISTANT_WS_URL: ws://hass:8123/api/websocket
       HOME_ASSISTANT_TOKEN: ${HOME_ASSISTANT_TOKEN}
+      TERMODINAMICA_HOST: "stub"
+      TERMODINAMICA_PORT: 502
 
   control:
     command: ["zero_domestic_control", "control"]
@@ -121,6 +123,7 @@ services:
     depends_on:
       - hass
       - mosquitto
+      - stub
     environment:
       <<: *app_env
 
@@ -128,8 +131,11 @@ services:
     command: ["zero_domestic_control", "stub"]
     build:
       context: .
+    depends_on:
+      - mosquitto
     environment:
       <<: *app_env
+      TERMODINAMICA_HOST: "0.0.0.0"
 
   setup:
     profiles:

@@ -97,9 +97,9 @@ async def control(_args):
 async def stub(_args):
     from zero_domestic_control.services.stubs import Stub
 
-    stub = await Stub.from_settings(settings)
-    print("Running stub")
-    await stub.run()
+    async with Stub.from_settings(settings) as stub:
+        print("Running stub")
+        await stub.run()
 
 
 if __name__ == "__main__":
