@@ -76,9 +76,8 @@ async def test_thrusters_simulation_inputs(incorrect_simulation_inputs, control)
     with Fmu(
         str(
             Path(__file__).resolve().parent.parent.parent.parent
-            / "src/simulation/models/thrusters/thruster_moduleV9.fmu"
-        ),
-        timedelta(seconds=0.001),
+            / "src/simulation/models/thrusters/thruster_moduleV10_1.fmu"
+        )
     ) as fmu:
         mapping = IoMapping(
             fmu,

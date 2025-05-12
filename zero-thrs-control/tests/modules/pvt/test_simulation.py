@@ -37,8 +37,7 @@ async def test_thrusters_simulation_inputs(incorrect_simulation_inputs, control)
         str(
             Path(__file__).resolve().parent.parent.parent.parent
             / "src/simulation/models/pvt/pvt_moduleV2.fmu"
-        ),
-        timedelta(seconds=0.1),
+        )
     ) as fmu:
         mapping = IoMapping(
             fmu,
