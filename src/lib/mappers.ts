@@ -5,7 +5,7 @@ import { compareByName, isDefined } from "./utils";
 
 export const toRoom = (room: Rooms): Room => ({
   ...room,
-  actualCO2: 300 + Math.random() * 2000,
+  actualCO2: 400 + Math.random() * 2000,
   actualHumidity: 30 + Math.random() * 40,
   group: room.group as RoomGroup,
   blinds: Object.values(Object.groupBy(room.blinds ?? [], ({ group }) => group))

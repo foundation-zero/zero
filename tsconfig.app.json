@@ -4,7 +4,7 @@
     "target": "ES2020",
     "useDefineForClassFields": true,
     "module": "ESNext",
-    "lib": ["ES2020", "DOM", "DOM.Iterable", "ES2024.Object"],
+    "lib": ["ES2020", "DOM", "DOM.Iterable", "ES2024.Object", "ES2023.Array"],
     "skipLibCheck": true,
 
     /* Bundler mode */

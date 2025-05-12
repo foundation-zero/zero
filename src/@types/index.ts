@@ -69,3 +69,12 @@ export const enum Units {
 }
 
 export type ValidateFn<T> = (value: T) => ValidationStatus;
+
+export interface ValueObject<V> {
+  value: V;
+}
+
+export type NumValueObject = ValueObject<number>;
+
+export type Thresholds = [lower: number, upper: number, ...other: number[]];
+export type SafeRangeThresholds = [min: number, max: number];
