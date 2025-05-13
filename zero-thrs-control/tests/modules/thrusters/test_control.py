@@ -134,7 +134,7 @@ async def test_recovery_mixing_cold(
                 Valve.MIXING_B_TO_AB, abs=1e-2
             )
 
-    for i in range(40):
+    for i in range(20*60):
         control_values = control.control(result.sensor_values, executor.time()).values
         result = await executor.tick(
             control_values,
@@ -151,7 +151,7 @@ async def test_recovery_mixing_cold(
 async def test_recovery_mixing_hot(
     control: ThrustersControl, executor: SimulationExecutor
 ):
-    executor._boundaries.thrusters_module_supply.temperature = Stamped.stamp(100)
+    executor._boundaries.thrusters_module_supply.temperature = Stamped.stamp(70)
 
     # stabilize
     control_values = control.initial(executor.time()).values
@@ -161,8 +161,8 @@ async def test_recovery_mixing_hot(
     assert result is not None
 
     control.to_recovery()  # type: ignore
-    # set valves and stabilize 5m
-    for i in range(90 + 300):
+    # set valves and stabilize 20m
+    for i in range(90 + 20*60):
         control_values = control.control(result.sensor_values, executor.time()).values
         result = await executor.tick(control_values)
 
@@ -186,7 +186,7 @@ async def test_recovery_mixing_hot(
                 Valve.MIXING_B_TO_AB, abs=1e-2
             )
 
-    assert result.sensor_values.thrusters_temperature_supply.temperature.value > 70
+    assert result.sensor_values.thrusters_temperature_supply.temperature.value == approx(70, abs = .2)
     assert control.mode == "recovery"
 
 

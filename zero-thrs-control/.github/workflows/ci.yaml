@@ -3,6 +3,7 @@ on:
 
 jobs:
   test:
+    timeout-minutes: 15
     runs-on: ubuntu-latest
 
     steps:
@@ -16,9 +17,13 @@ jobs:
 
       - run: poetry run fmpy compile src/simulation/models/XRGTestModel/FMUInterfaceTester_MECS_regular.fmu
       
-      - run: poetry run fmpy compile src/simulation/models/thrusters/thruster_moduleV10_1.fmu
+      - run: poetry run fmpy compile src/simulation/models/thruster_moduleV10_1.fmu #version without glycol 
 
-      - run: poetry run fmpy compile src/simulation/models/pvt/pvt_moduleV2.fmu
+      - run: poetry run fmpy compile src/simulation/models/pvt_moduleV2_1.fmu
+
+      - run: poetry run fmpy compile src/simulation/models/consumers_moduleV1_1.fmu
+
+      - run: poetry run fmpy compile src/simulation/models/HTsystem_moduleV1_1.fmu
 
       - run: poetry run pyright
 
@@ -26,6 +31,6 @@ jobs:
 
       - run: docker compose up -d
 
-      - run: poetry run pytest -n auto
+      - run: poetry run pytest -v
 
       - run: poetry run jupyter nbconvert --to notebook --execute analysis/thrusters.ipynb

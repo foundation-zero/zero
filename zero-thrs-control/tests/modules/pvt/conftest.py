@@ -1,5 +1,4 @@
 from datetime import datetime, timedelta
-from pathlib import Path
 from pytest import fixture
 from control.modules.pvt import PvtControl, PvtParameters
 from input_output.base import Stamped
@@ -18,14 +17,7 @@ from input_output.modules.pvt import (
 from orchestration.executor import SimulationExecutor
 from simulation.fmu import Fmu
 from simulation.io_mapping import IoMapping
-
-
-@fixture
-def fmu_path():
-    return str(
-        Path(__file__).resolve().parent.parent.parent.parent
-        / "src/simulation/models/pvt/pvt_moduleV2.fmu"
-    )
+from simulation.models.fmu_paths import pvt_path
 
 
 @fixture
@@ -51,11 +43,9 @@ def simulation_inputs():
 
 
 @fixture
-def io_mapping(fmu_path):
+def io_mapping():
     return IoMapping(
-        Fmu(
-            fmu_path
-        ),
+        Fmu(pvt_path),
         PvtSensorValues,
         PvtSimulationOutputs,
     )
@@ -64,6 +54,7 @@ def io_mapping(fmu_path):
 @fixture
 def control():
     return PvtControl(PvtParameters())
+
 
 @fixture
 def executor(io_mapping, simulation_inputs):

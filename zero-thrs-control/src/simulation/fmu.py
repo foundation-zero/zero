@@ -32,7 +32,6 @@ class Fmu:
             output_interval=1,
             initialize=True,
             fmu_instance=self._fmu_instance,
-            step_size=0.001,
         )
 
         self._time = 1
@@ -57,8 +56,7 @@ class Fmu:
             terminate=False,
             output_interval=duration.total_seconds(),
             initialize=False,
-            fmu_instance=self._fmu_instance,
-            step_size=0.001,
+            fmu_instance=self._fmu_instance
         )
 
         self._time += duration.total_seconds()

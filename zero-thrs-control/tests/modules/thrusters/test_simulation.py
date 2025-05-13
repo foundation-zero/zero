@@ -1,5 +1,4 @@
 from datetime import datetime, timedelta
-from pathlib import Path
 
 from pytest import fixture
 import pytest
@@ -15,7 +14,7 @@ from orchestration.cycler import Cycler
 from orchestration.simulator import Simulator, SimulatorModel
 from simulation.fmu import Fmu
 from simulation.io_mapping import IoMapping
-
+from simulation.models.fmu_paths import thrusters_path
 from tests.modules.helpers.simulation_inputs import simulator_input_field_setters
 
 
@@ -43,12 +42,8 @@ async def test_interfacer(executor, io_mapping, simulation_inputs, control, alar
 
 
 async def test_simulation(simulation_inputs, control, alarms):
-
     thrusters_model = SimulatorModel(
-        fmu_path=str(
-            Path(__file__).resolve().parent.parent.parent.parent
-            / "src/simulation/models/thrusters/thruster_moduleV10_1.fmu"
-        ),
+        fmu_path=thrusters_path,
         sensor_values_cls=ThrustersSensorValues,
         control_values_cls=ThrustersControlValues,
         simulation_outputs_cls=ThrustersSimulationOutputs,
@@ -74,11 +69,7 @@ def incorrect_simulation_inputs(simulation_inputs, request):
 
 async def test_thrusters_simulation_inputs(incorrect_simulation_inputs, control):
     with Fmu(
-        str(
-            Path(__file__).resolve().parent.parent.parent.parent
-            / "src/simulation/models/thrusters/thruster_moduleV10_1.fmu"
-        )
-    ) as fmu:
+        thrusters_path) as fmu:
         mapping = IoMapping(
             fmu,
             ThrustersSensorValues,
@@ -86,9 +77,10 @@ async def test_thrusters_simulation_inputs(incorrect_simulation_inputs, control)
         )
 
         with pytest.raises(Exception):
-            mapping.tick(
-                control.initial(datetime.now()).values,
-                incorrect_simulation_inputs,
-                datetime.now(),
-                timedelta(seconds=1),
-            )
+            for i in range(100):
+                mapping.tick(
+                    control.initial(datetime.now()).values,
+                    incorrect_simulation_inputs,
+                    datetime.now(),
+                    timedelta(seconds=1),
+                )

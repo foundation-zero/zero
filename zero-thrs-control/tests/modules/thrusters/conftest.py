@@ -1,5 +1,4 @@
 from datetime import datetime, timedelta
-from pathlib import Path
 from pytest import fixture
 from control.modules.thrusters import ThrustersAlarms, ThrustersControl, ThrustersParameters
 from input_output.base import Stamped
@@ -18,15 +17,10 @@ from input_output.modules.thrusters import (
 from orchestration.executor import SimulationExecutor
 from simulation.fmu import Fmu
 from simulation.io_mapping import IoMapping
+from simulation.models.fmu_paths import thrusters_path
 
 type ThrustersSimulationExecutor = SimulationExecutor[ThrustersSensorValues, ThrustersControlValues, ThrustersSimulationInputs, ThrustersSimulationOutputs]
 
-@fixture
-def fmu_path():
-    return str(
-        Path(__file__).resolve().parent.parent.parent.parent
-        / "src/simulation/models/thrusters/thruster_moduleV10_1.fmu"
-    )
 
 
 @fixture
@@ -47,9 +41,9 @@ def simulation_inputs():
 
 
 @fixture
-def io_mapping(fmu_path):
+def io_mapping():
     return IoMapping(
-        Fmu(fmu_path),
+        Fmu(thrusters_path),
         ThrustersSensorValues,
         ThrustersSimulationOutputs,
     )
