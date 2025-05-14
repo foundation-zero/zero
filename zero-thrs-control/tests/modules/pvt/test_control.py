@@ -47,3 +47,35 @@ async def test_pump_flow_recovery(control, executor):
         assert result.sensor_values.pvt_flow_main_aft.flow.value == approx(30, abs=1)
 
         assert result.sensor_values.pvt_flow_owners.flow.value == approx(15, abs=1)
+
+async def test_pump_flow_pump_failure(control, pump_failure_executor):
+    executor = pump_failure_executor
+
+    control.to_pump_failure()
+    result = await executor.tick(
+        control.control(PvtSensorValues.zero(), executor.time()).values,
+    )
+
+    #owners takes longest to warm up
+    while result.sensor_values.pvt_temperature_owners_return.temperature.value < 68: # type: ignore
+        control_values = control.control(
+            result.sensor_values, executor.time()
+        ).values
+        # Simulate pump failure
+        control_values.pvt_pump_main_fwd.dutypoint.value = 0
+        control_values.pvt_pump_main_fwd.on.value = False
+        result = await executor.tick(control_values)
+
+    for i in range(60):
+        control_values = control.control(
+            result.sensor_values, executor.time()
+        ).values
+        # Simulate pump failure
+        control_values.pvt_pump_main_fwd.dutypoint.value = 0
+        control_values.pvt_pump_main_fwd.on.value = False
+
+        result = await executor.tick(control_values)
+
+        assert result.sensor_values.pvt_flow_main_fwd.flow.value == approx(30, abs=5)
+        assert result.sensor_values.pvt_flow_main_aft.flow.value == approx(30, abs=5)
+        assert result.sensor_values.pvt_flow_owners.flow.value == approx(15, abs=2)

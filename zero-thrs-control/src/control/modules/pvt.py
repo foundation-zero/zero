@@ -90,6 +90,10 @@ states = [
         on_enter="_enable_recovery_mixes",
         on_exit="_disable_recovery_mixes",
     ),
+    State(
+        name="pump_failure",
+        on_enter="_set_recovery_mixes_to_a"
+    )
 ]
 
 
@@ -126,7 +130,7 @@ class PvtControl(Control):
         self._time = datetime.now()
 
     @property
-    def mode(self) -> Literal["idle", "recovery"]:
+    def mode(self) -> Literal["idle", "recovery", "pump_failure"]:
         return self.state  # type: ignore
 
     def initial(self, time: datetime) -> ControlResult[PvtControlValues]:
@@ -148,34 +152,49 @@ class PvtControl(Control):
     def _disable_heat_dump_mix(self):
         self._heat_dump_controller.disable()
 
-    def _control_recovery_mixes(self, sensor_values: PvtSensorValues):
+    def _set_recovery_mixes_to_a(self):
         self._current_values.pvt_mix_main_fwd.setpoint = Stamped(
-            value=(
-                self._main_fwd_heat_supply_controller(
-                    sensor_values.pvt_temperature_main_fwd_return.temperature.value,
-                    self._time,
-                )
-            ),
+            value=Valve.MIXING_A_TO_AB,
             timestamp=self._time,
         )
         self._current_values.pvt_mix_main_aft.setpoint = Stamped(
-            value=(
-                self._main_aft_heat_supply_controller(
-                    sensor_values.pvt_temperature_main_aft_return.temperature.value,
-                    self._time,
-                )
-            ),
+            value=Valve.MIXING_A_TO_AB,
             timestamp=self._time,
         )
         self._current_values.pvt_mix_owners.setpoint = Stamped(
-            value=(
-                self._owners_heat_supply_controller(
-                    sensor_values.pvt_temperature_owners_return.temperature.value,
-                    self._time,
-                )
-            ),
+            value=Valve.MIXING_A_TO_AB,
             timestamp=self._time,
         )
+
+    def _control_recovery_mixes(self, sensor_values: PvtSensorValues):
+        if self.mode == "recovery":
+            self._current_values.pvt_mix_main_fwd.setpoint = Stamped(
+                value=(
+                    self._main_fwd_heat_supply_controller(
+                        sensor_values.pvt_temperature_main_fwd_return.temperature.value,
+                        self._time,
+                    )
+                ),
+                timestamp=self._time,
+            )
+            self._current_values.pvt_mix_main_aft.setpoint = Stamped(
+                value=(
+                    self._main_aft_heat_supply_controller(
+                        sensor_values.pvt_temperature_main_aft_return.temperature.value,
+                        self._time,
+                    )
+                ),
+                timestamp=self._time,
+            )
+            self._current_values.pvt_mix_owners.setpoint = Stamped(
+                value=(
+                    self._owners_heat_supply_controller(
+                        sensor_values.pvt_temperature_owners_return.temperature.value,
+                        self._time,
+                    )
+                ),
+                timestamp=self._time,
+            )
 
     def _control_heat_dump_mix(self, sensor_values: PvtSensorValues):
         self._current_values.pvt_mix_exchanger.setpoint = Stamped(

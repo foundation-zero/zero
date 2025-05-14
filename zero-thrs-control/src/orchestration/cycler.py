@@ -20,7 +20,7 @@ class Cycler:
                 result.sensor_values, result.timestamp
             ).values
             alarms = self._alarms.check(
-                result.sensor_values, control_values, self._control.control
+                result.sensor_values, control_values, self._control
             )
             if alarms:
                 raise Exception(f"Alarms detected: {alarms}")

@@ -43,6 +43,20 @@ def simulation_inputs():
 
 
 @fixture
+def pump_failure_simulation_inputs(simulation_inputs):
+    simulation_inputs.pvt_pump_failure_switch_main_fwd = ValvePosition(
+        position_rel=Stamped.stamp(Valve.OPEN)
+    )
+    simulation_inputs.pvt_pump_failure_switch_main_aft = ValvePosition(
+        position_rel=Stamped.stamp(Valve.OPEN)
+    )
+    simulation_inputs.pvt_pump_failure_switch_owners = ValvePosition(
+        position_rel=Stamped.stamp(Valve.OPEN)
+    )
+    return simulation_inputs
+
+
+@fixture
 def io_mapping():
     return IoMapping(
         Fmu(pvt_path),
@@ -60,4 +74,11 @@ def control():
 def executor(io_mapping, simulation_inputs):
     return SimulationExecutor(
         io_mapping, simulation_inputs, datetime.now(), timedelta(seconds=1)
+    )
+
+
+@fixture
+def pump_failure_executor(io_mapping, pump_failure_simulation_inputs):
+    return SimulationExecutor(
+        io_mapping, pump_failure_simulation_inputs, datetime.now(), timedelta(seconds=1)
     )

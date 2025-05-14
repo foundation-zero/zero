@@ -365,7 +365,4 @@ class ThrustersAlarms(BaseAlarms):
         control_values: ThrustersControlValues,
         control: ThrustersControl,
     ) -> bool:
-        return (
-            sensor_values.thrusters_temperature_aft_return.temperature.value > 80
-            or sensor_values.thrusters_temperature_fwd_return.temperature.value > 80
-        )
+        return control._is_overheating(sensor_values)

@@ -84,7 +84,7 @@ type LMin = Annotated[
     Field(ge=-1),
     UnitMeta(modelica_name="l_min"),
 ]
-type Hz = Annotated[float, Field(ge = 0), UnitMeta(modelica_name="Hz")]
+type Hz = Annotated[float, Field(ge = -0.1), UnitMeta(modelica_name="Hz")]
 type Ratio = Annotated[
     float,
     AfterValidator(validate_ratio_within_precision),
