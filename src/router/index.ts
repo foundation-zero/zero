@@ -3,6 +3,7 @@ import CO2Settings from "@/components/environment/co2-settings/CO2Settings.vue";
 import HumiditySettings from "@/components/environment/humidity-settings/HumiditySettings.vue";
 import Admin from "@/layouts/AdminLayout.vue";
 import CabinLayout from "@/layouts/CabinLayout.vue";
+import EmptyLayout from "@/layouts/EmptyLayout.vue";
 import { useAuthStore } from "@/stores/auth";
 import Airco from "@/views/cabin/Airco.vue";
 import Blinds from "@/views/cabin/Blinds.vue";
@@ -76,31 +77,36 @@ const routes: RouteRecordRaw[] = [
   {
     path: "/",
     redirect: () => {
-      const { isLoggedIn, isAdmin } = useAuthStore();
+      const { isAdmin } = useAuthStore();
 
-      if (isLoggedIn) {
-        return isAdmin ? { name: "env:temperature" } : { name: "cabin:airconditioning", query: {} };
-      }
-
-      return { name: "unauthorised" };
+      return { name: isAdmin ? "env:temperature" : "cabin:airconditioning", query: {} };
     },
   },
   {
     path: "/auth",
     name: "auth",
-    meta: { requiresAuth: false },
-    redirect: (to) => {
+    meta: { requiresAuth: false, layout: EmptyLayout },
+    component: () => import("@/views/Unauthorised.vue"),
+    beforeEnter: async (to) => {
       const token = to.query.token;
 
-      const { cabin } = useAuthStore().setToken(String(token));
+      if (!token) return true;
 
-      if (cabin.value) {
-        localStorage.setItem("currentRoomId", cabin.value);
+      const authStore = useAuthStore();
+
+      const { cabin } = authStore.setToken(String(token));
+
+      try {
+        await authStore.verifyToken();
+
+        if (cabin.value) {
+          localStorage.setItem("currentRoomId", cabin.value);
+        }
+
+        return { path: "/" };
+      } catch {
+        return true;
       }
-
-      return {
-        path: "/",
-      };
     },
   },
 ];

@@ -1,12 +1,12 @@
 import allRooms from "../../data/all-rooms";
 import { expect, test as testBase } from "../../mocks/playwright";
-import { getAllRooms } from "../../mocks/queries";
+import { getAllRooms, getVersion } from "../../mocks/queries";
 import RoomsPage from "./page";
 
 const test = testBase.extend<{ roomsPage: RoomsPage }>({
   roomsPage: [
     async ({ page, worker, subscriptions }, use) => {
-      worker.use(getAllRooms);
+      worker.use(getAllRooms, getVersion);
 
       const roomsPage = new RoomsPage(page, subscriptions);
 

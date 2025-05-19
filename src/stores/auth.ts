@@ -1,4 +1,6 @@
 import { HasuraJWTToken, Roles } from "@/@types";
+import client from "@/graphql/client";
+import { getVersion } from "@/graphql/queries/app";
 import { useLocalStorage } from "@vueuse/core";
 import { jwtDecode } from "jwt-decode";
 import { defineStore } from "pinia";
@@ -28,7 +30,17 @@ export const useAuthStore = defineStore("auth", () => {
   function setToken(newToken: string) {
     token.value = newToken;
 
-    return { cabin, roles, isAdmin, isUser };
+    return { cabin, roles, isAdmin, isUser, isLoggedIn };
+  }
+
+  async function verifyToken() {
+    if (!isLoggedIn.value) throw new Error("No roles defined in token");
+
+    const response = await client.query(getVersion, {});
+
+    if (response.error) {
+      throw new Error("Token verification failed");
+    }
   }
 
   function clearToken() {
@@ -46,5 +58,6 @@ export const useAuthStore = defineStore("auth", () => {
     isLoggedIn,
     setToken,
     clearToken,
+    verifyToken,
   };
 });

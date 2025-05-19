@@ -17,7 +17,7 @@ export const withGuards = (router: Router) => {
         (route) => route.meta.role && !authStore.hasRole(route.meta.role as Roles).value,
       )
     ) {
-      return { name: "unauthorised" };
+      return { name: "auth" };
     }
   });
 

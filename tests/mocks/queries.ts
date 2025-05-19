@@ -6,3 +6,9 @@ export const getAllRooms = graphql.query("GetAllRooms", () =>
     data: allRooms,
   }),
 );
+
+export const getVersion = graphql.query("GetVersion", () =>
+  HttpResponse.json({
+    data: { version: "1.0.0" },
+  }),
+);

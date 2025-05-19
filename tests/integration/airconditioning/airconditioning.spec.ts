@@ -1,6 +1,6 @@
 import allRooms from "../../data/all-rooms";
 import { expect, test as testBase } from "../../mocks/playwright";
-import { getAllRooms } from "../../mocks/queries";
+import { getAllRooms, getVersion } from "../../mocks/queries";
 import AirconditioningPage from "./page";
 
 const dutchCabin = allRooms.rooms.find((room) => room.id === "dutch-cabin")!;
@@ -8,7 +8,7 @@ const dutchCabin = allRooms.rooms.find((room) => room.id === "dutch-cabin")!;
 const test = testBase.extend<{ aircoPage: AirconditioningPage }>({
   aircoPage: [
     async ({ page, worker, subscriptions, auth }, use) => {
-      worker.use(getAllRooms);
+      worker.use(getAllRooms, getVersion);
 
       const aircoPage = new AirconditioningPage(page, subscriptions);
       await auth.asUser();

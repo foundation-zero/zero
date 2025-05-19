@@ -1,5 +1,5 @@
 import { expect, test } from "../../mocks/playwright";
-import { getAllRooms } from "../../mocks/queries";
+import { getAllRooms, getVersion } from "../../mocks/queries";
 import { ConnectionInitMessage } from "../../types";
 
 test.describe("Auth", () => {
@@ -8,7 +8,7 @@ test.describe("Auth", () => {
       "eyJ0eXAiOiJKV1QiLCJhbGciOiJFUzI1NiIsImtpZCI6ImNlMTdlMWQ2MGY5YTBkODRmOTA2YmVhZGRlYjkxYTBhIn0.eyJodHRwczovL2hhc3VyYS5pby9qd3QvY2xhaW1zIjp7IngtaGFzdXJhLWRlZmF1bHQtcm9sZSI6InVzZXIiLCJ4LWhhc3VyYS1hbGxvd2VkLXJvbGVzIjpbInVzZXIiXSwieC1oYXN1cmEtY2FiaW4iOiJkdXRjaC1jYWJpbiJ9fQ.ITbZpZczKw7HnS2zmp2bcgYFmszWizS_1GGVTylzKowliktF57P-4wCOJo9gEJszWYRTm9AZWB6LnxI4ENThIw";
 
     test("uses the new token for authentication", async ({ worker, subscriptions, page }) => {
-      worker.use(getAllRooms);
+      worker.use(getAllRooms, getVersion);
       await page.goto(`/auth?token=${token}`);
       await page.waitForTimeout(3000);
 
