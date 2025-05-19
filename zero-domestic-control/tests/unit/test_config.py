@@ -19,6 +19,7 @@ def test_config():
         "pg_db": "test_db",
         "risingwave_url": "localhost:4566",
         "mqtt_host": "localhost",
+        "mqtt_port": "1883",
         "home_assistant_url": "http://localhost:8123/api",
         "home_assistant_ws_url": "ws://localhost:8123/api/websocket",
         "home_assistant_token": "home_assistant_token",
@@ -33,7 +34,9 @@ def test_config():
     assert config.pg_user == "test_user"
     assert config.pg_password == "test_password"
     assert config.pg_db == "test_db"
-    assert config.pg_url == "postgresql://test_user:test_password@localhost:5432/test_db"
+    assert (
+        config.pg_url == "postgresql://test_user:test_password@localhost:5432/test_db"
+    )
     assert config.risingwave_url == "localhost:4566"
     assert config.mqtt_host == "localhost"
     assert config.home_assistant_url == "http://localhost:8123/api"

@@ -9,6 +9,7 @@ from zero_domestic_control.services.ac import (
     HUMIDITY_SETPOINT_START_ADDRESS,
     TEMPERATURE_SETPOINT_START_ADDRESS,
 )
+import logging
 
 
 class TermodinamicaDataBank(DataBank):
@@ -32,7 +33,10 @@ class TermodinamicaStub:
     """Stub for a Termodinamica AC Modbus TCP control system"""
 
     def __init__(self, host, port):
-        self._server = ModbusServer(host=host, port=port, data_bank=TermodinamicaDataBank())
+        self._server = ModbusServer(
+            host=host, port=port, data_bank=TermodinamicaDataBank()
+        )
+        logging.info(f"Starting Termodinamica stub on {host}:{port}")
 
     def _start_server(self) -> Task[None]:
         async def _start():

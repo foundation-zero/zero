@@ -1,6 +1,6 @@
 apiVersion: v2
-name: zero-domestic-control-chart
+name: zero-domestic-control
 description: This repository contains the Zero domestic-control platform.
 type: application
-version: 0.2.0
-appVersion: "0.3.0"
+version: 0.3.0
+appVersion: "0.3.1"

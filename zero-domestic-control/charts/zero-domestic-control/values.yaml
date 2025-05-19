@@ -2,48 +2,55 @@
 replicaCount:
   backend: 1
 
-  control: 1
-
 # This sets the container image more information can be found here: https://kubernetes.io/docs/concepts/containers/images/
 image:
-  repository: common/zero-domestic-control # TODO: Configure proxy to private repo in Harbor
+  repository: europe-west1-docker.pkg.dev/common-449414/common/zero-domestic-control
   # This sets the pull policy for images.
   pullPolicy: IfNotPresent
   # Overrides the image tag whose default is the chart appVersion.
-  tag: "latest"
+  tag: ""
 
 # Required: MQTT host
 mqtt:
-  host: ""
+  host:
+  port:
 
 # Required: Risingwave URL
 risingwave:
-  url: ""
+  url:
 
 # Required: PostgresQL configuration
 postgresql:
-  host: ""
-  port: ""
-  user: ""
-  password: ""
-  db: ""
-  existingSecret: ""
-  existingSecretPasswordKey: ""
+  host:
+  port:
+  user:
+  db:
+  password:
+  existingSecret:
+  existingSecretPasswordKey:
 
 # Required: Hasura configuration
 hasura:
   secret:
-  existingSecret: ""
-  existingSecretPasswordKey: ""
+  existingSecret:
+  existingSecretJwtKey:
+
+stub:
+  enabled: false
+  host: stub.zero-domestic-control.svc.cluster.local
+  port: 502
 
 # Required: Home Assistant configuration
-home_assistant:
-  url: ""
-  ws_url: ""
-  token: ""
+homeAssistant:
+  url:
+  websocketUrl:
+  token:
+  existingSecret:
+  existingSecretTokenKey:
 
 # This is for the secrets for pulling an image from a private repository more information can be found here: https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/
-imagePullSecrets: []
+imagePullSecrets:
+  - name:
 
 # This is to override the chart name.
 nameOverride: ""

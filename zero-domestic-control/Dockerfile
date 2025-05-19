@@ -20,6 +20,9 @@ RUN poetry install --no-root --only main
 
 FROM python:3.13-slim-bookworm AS runtime
 
+ENV PYTHONDONTWRITEBYTECODE=1 \
+    PYTHONUNBUFFERED=1
+
 ENV VIRTUAL_ENV=/app/.venv
 ENV PATH="/app/.venv/bin:$PATH"
 

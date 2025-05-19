@@ -6,6 +6,10 @@ import jwt
 import psycopg
 
 from zero_domestic_control.config import Settings
+import logging
+from .logging import setup_logging
+
+setup_logging()
 
 settings = Settings()
 
@@ -49,27 +53,25 @@ async def generate_jwt(args):
         raise ValueError(
             f"Roles {unsupported_roles} are not supported. Supported roles are: {', '.join(SUPPORTED_ROLES)}"
         )
-    
+
     claims = {
         "x-hasura-default-role": "user",
         "x-hasura-allowed-roles": roles,
     }
-    
+
     if args.cabin:
         claims["x-hasura-cabin"] = args.cabin
 
     token = jwt.encode(
-        {
-            "https://hasura.io/jwt/claims": claims
-        },
+        {"https://hasura.io/jwt/claims": claims},
         settings.jwt_secret,
         algorithm="HS256",
     )
-    print(f"JWT for roles ({", ".join(roles)}): {token}")
+    print(f"JWT for roles ({', '.join(roles)}): {token}")
 
 
 async def setup(_args):
-    print("Setting up postgres")
+    logging.info("Setting up postgres")
     async with await psycopg.AsyncConnection.connect(settings.pg_url) as conn:
         async with conn.cursor() as cur:
             with codecs.open(
@@ -77,7 +79,7 @@ async def setup(_args):
             ) as query:
                 await cur.execute(bytes(query.read(), "utf-8"))
 
-    print("Setting up risingwave")
+    logging.info("Setting up risingwave")
     async with await psycopg.AsyncConnection.connect(settings.risingwave_url) as conn:
         async with conn.cursor() as cur:
             with codecs.open(
@@ -90,7 +92,7 @@ async def control(_args):
     from zero_domestic_control.control import Control
 
     async with Control.init_from_settings(settings) as control:
-        print("Running control")
+        logging.info("Running control")
         await control.run()
 
 
@@ -98,7 +100,7 @@ async def stub(_args):
     from zero_domestic_control.services.stubs import Stub
 
     async with Stub.from_settings(settings) as stub:
-        print("Running stub")
+        logging.info("Running stub")
         await stub.run()
 
 

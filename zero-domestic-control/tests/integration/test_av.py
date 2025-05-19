@@ -24,7 +24,7 @@ def settings():
 
 
 async def _mqtt_client(settings):
-    async with MqttClient(settings.mqtt_host, 1883) as client:
+    async with MqttClient(settings.mqtt_host, settings.mqtt_port) as client:
         yield client
 
 

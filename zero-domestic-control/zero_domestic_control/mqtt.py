@@ -8,6 +8,7 @@ from zero_domestic_control.messages import (
     Room,
     RoomTemperatureSetpoint,
 )
+import logging
 
 
 async def send_message(mqtt: Client, message: Message):
@@ -57,7 +58,7 @@ class ControlReceive:
 
     async def listen(self):
         for topic in _CONTROL_LISTEN_MESSAGE:
-            print(f"listening to {topic.wildcard().value}")
+            logging.debug(f"listening to {topic.wildcard().value}")
             await self._mqtt.subscribe(topic.wildcard().value, qos=1)
 
     def _parse_message(self, message: MqttMessage) -> ControlMessages | None:

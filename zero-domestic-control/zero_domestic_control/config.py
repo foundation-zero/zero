@@ -15,7 +15,9 @@ class Settings(BaseSettings):
     pg_db: str
 
     risingwave_url: str
+
     mqtt_host: str
+    mqtt_port: int
 
     home_assistant_url: str
     home_assistant_ws_url: str

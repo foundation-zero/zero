@@ -5,12 +5,14 @@ from aiomqtt import Client as MqttClient
 
 from zero_domestic_control.services.stubs.ac import TermodinamicaStub
 from zero_domestic_control.services.stubs.av import AvStub
+import logging
 
 
 class Stub:
     """Main stub class for the domestic control system delegating to various substubs"""
 
     def __init__(self, mqtt_client: MqttClient, modbus_settings: tuple[str, int]):
+        logging.debug(f"Modbus settings: {modbus_settings}")
         self._av_stub = AvStub(mqtt_client)
         self._ac_stub = TermodinamicaStub(
             host=modbus_settings[0], port=modbus_settings[1]

@@ -46,12 +46,14 @@ class Control:
         ) as hass:
             async with (
                 MqttClient(
-                    settings.mqtt_host, 1883, identifier="domestic_ac"
+                    settings.mqtt_host, settings.mqtt_port, identifier="domestic_ac"
                 ) as ac_client,
                 MqttClient(
-                    settings.mqtt_host, 1883, identifier="domestic_av"
+                    settings.mqtt_host, settings.mqtt_port, identifier="domestic_av"
                 ) as av_client,
-                MqttClient(settings.mqtt_host, 1883, identifier="data") as data_client,
+                MqttClient(
+                    settings.mqtt_host, settings.mqtt_port, identifier="data"
+                ) as data_client,
             ):
                 modbus_client = ModbusClient(
                     host=settings.termodinamica_host,

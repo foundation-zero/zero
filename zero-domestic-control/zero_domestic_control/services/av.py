@@ -167,5 +167,5 @@ class AvControl:
     @asynccontextmanager
     @staticmethod
     async def init_from_settings(settings: Settings):
-        async with MqttClient(settings.mqtt_host, 1883) as mqtt_client:
+        async with MqttClient(settings.mqtt_host, settings.mqtt_port) as mqtt_client:
             yield AvControl(Gude(mqtt_client), DataCollection(mqtt_client))

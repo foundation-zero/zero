@@ -31,6 +31,10 @@ If release name contains chart name it will be used as a full name.
   {{- printf "%s-control" (include "zero-domestic-control.fullname" .) -}}
 {{- end -}}
 
+{{- define "zero-domestic-control.stub" -}}
+  {{- printf "%s-stub" (include "zero-domestic-control.fullname" .) -}}
+{{- end -}}
+
 {{/*
 Create chart name and version as used by the chart label.
 */}}
@@ -56,4 +60,37 @@ Selector labels
 {{- define "zero-domestic-control.selectorLabels" -}}
 app.kubernetes.io/name: {{ include "zero-domestic-control.name" . }}
 app.kubernetes.io/instance: {{ .Release.Name }}
+{{- end }}
+
+{{/*
+Common envs from secrets
+*/}}
+{{- define "zero-domestic-control.postgresqlPasswordEnvFromSecret" -}}
+{{- if .Values.postgresql.existingSecret -}}
+- name: PG_PASSWORD
+  valueFrom:
+    secretKeyRef:
+      name: {{ .Values.postgresql.existingSecret }}
+      key: {{ .Values.postgresql.existingSecretPasswordKey }}
+{{- end -}}
+{{- end -}}
+
+{{- define "zero-domestic-control.hasuraJwtEnvFromSecret" -}}
+{{- if .Values.hasura.existingSecret }}
+- name: JWT_SECRET
+  valueFrom:
+    secretKeyRef:
+      name: {{ .Values.hasura.existingSecret }}
+      key: {{ .Values.hasura.existingSecretJwtKey }}
+{{- end }}
+{{- end }}
+
+{{- define "zero-domestic-control.homeAssistantTokenEnvFromSecret" -}}
+{{- if .Values.homeAssistant.existingSecret }}
+- name: HOME_ASSISTANT_TOKEN
+  valueFrom:
+    secretKeyRef:
+      name: {{ .Values.homeAssistant.existingSecret }}
+      key: {{ .Values.homeAssistant.existingSecretTokenKey }}
+{{- end }}
 {{- end }}

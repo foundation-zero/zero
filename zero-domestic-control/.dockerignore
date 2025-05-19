@@ -60,8 +60,3 @@ temp/
 *.bak
 *.tmp
 *.old
-
-# Home assistant
-volumes/hass
-volumes/hass/*
-!volumes/hass/.storage/auth

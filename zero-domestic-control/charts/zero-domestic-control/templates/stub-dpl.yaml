@@ -1,19 +1,20 @@
+{{- if .Values.stub.enabled }}
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ include "zero-domestic-control.backend" . }}
+  name: {{ include "zero-domestic-control.stub" . }}
   namespace: {{ .Release.Namespace }}
   labels:
     {{- include "zero-domestic-control.labels" . | nindent 4 }}
     app.kubernetes.io/part-of: zero-domestic-control
-    app.kubernetes.io/component: backend
+    app.kubernetes.io/component: stub
 spec:
-  replicas: {{ .Values.replicaCount.backend }}
+  replicas: 1
   selector:
     matchLabels:
       {{- include "zero-domestic-control.selectorLabels" . | nindent 6 }}
       app.kubernetes.io/part-of: zero-domestic-control
-      app.kubernetes.io/component: backend
+      app.kubernetes.io/component: stub
   template:
     metadata:
       {{- with .Values.podAnnotations }}
@@ -26,7 +27,7 @@ spec:
         {{- toYaml . | nindent 8 }}
         {{- end }}
         app.kubernetes.io/part-of: zero-domestic-control
-        app.kubernetes.io/component: backend
+        app.kubernetes.io/component: stub
     spec:
       {{- with .Values.imagePullSecrets }}
       imagePullSecrets:
@@ -38,7 +39,7 @@ spec:
         supplementalGroups: []
         fsGroup: 1001
       containers:
-        - name: domestic-control-backend
+        - name: domestic-control-stub
           securityContext:
             allowPrivilegeEscalation: false
             capabilities:
@@ -54,10 +55,10 @@ spec:
               type: RuntimeDefault
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
-          command: ["fastapi", "run", "./zero_domestic_control/app.py"]
+          command: ["python", "-m", "zero_domestic_control", "stub"]
           ports:
-            - name: http
-              containerPort: {{ .Values.service.backend.port }}
+            - name: modbus
+              containerPort: 502
               protocol: TCP
           resources:
             {{- toYaml .Values.resources.backend | nindent 12 }}
@@ -66,9 +67,10 @@ spec:
               value: "0.0.0.0"
             - name: TERMODINAMICA_PORT
               value: {{ .Values.stub.port | quote }}
-            {{- include "zero-domestic-control.postgresqlPasswordEnvFromSecret" . | nindent 12 }}
-            {{- include "zero-domestic-control.hasuraJwtEnvFromSecret" . | indent 12 }}
+            {{- include "zero-domestic-control.postgresqlPasswordEnvFromSecret" . | nindent 12 -}}
+            {{- include "zero-domestic-control.hasuraJwtEnvFromSecret" . | indent 12 -}}
             {{- include "zero-domestic-control.homeAssistantTokenEnvFromSecret" . | indent 12 }}
           envFrom:
             - configMapRef:
                 name: {{ include "zero-domestic-control.fullname" . }}-envvars
+{{ end }}

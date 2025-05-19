@@ -110,6 +110,7 @@ services:
       RISINGWAVE_URL: "postgres://root@risingwave:4566/dev"
       JWT_SECRET: ${JWT_SECRET}
       MQTT_HOST: "mosquitto"
+      MQTT_PORT: 1883
       HOME_ASSISTANT_URL: http://hass:8123/api
       HOME_ASSISTANT_WS_URL: ws://hass:8123/api/websocket
       HOME_ASSISTANT_TOKEN: ${HOME_ASSISTANT_TOKEN}

@@ -5,6 +5,7 @@ from typing import Literal, cast
 from aiomqtt import Client as MqttClient, Message
 
 from zero_domestic_control.services.av import AFT_PDU, FWD_PDU, PortState, Telemetry
+import logging
 
 MQTT_CMD_REGEX = re.compile(r"de/gudesystems/epc/([^/]+)/cmdres/port/(\d+)")
 AV_STUB_TELEMETRY_INTERVAL = 0.5
@@ -55,7 +56,7 @@ class AvPduStub:
 
     async def send_telemetry(self):
         telemetry = self._create_telemetry(self._ports)
-        print(f"Sent telemetry for {self._pdu}")
+        logging.debug(f"Sent telemetry for {self._pdu}")
         await self._mqtt_client.publish(
             f"de/gudesystems/epc/{self._pdu}/device/telemetry",
             telemetry.model_dump_json(),
