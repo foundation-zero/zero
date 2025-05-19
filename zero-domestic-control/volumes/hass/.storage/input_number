@@ -149,10 +149,10 @@
         "icon": "mdi:blinds"
       },
       {
-        "id": "californian_cabin_blind",
+        "id": "californian_lounge_blind",
         "min": 0,
         "max": 100,
-        "name": "Californian cabin - Blind",
+        "name": "Californian lounge - Blind",
         "mode": "slider",
         "step": 1,
         "icon": "mdi:blinds"
@@ -363,10 +363,10 @@
         "step": 1
       },
       {
-        "id": "californian_cabin_ambient",
+        "id": "californian_lounge_ambient",
         "min": 0,
         "max": 100,
-        "name": "Californian cabin - Ambient",
+        "name": "Californian lounge - Ambient",
         "mode": "slider",
         "step": 1,
         "icon": "mdi:wall-sconce"
@@ -660,10 +660,10 @@
         "icon": "mdi:globe-light"
       },
       {
-        "id": "californian_cabin_mood",
+        "id": "californian_lounge_mood",
         "min": 0,
         "max": 100,
-        "name": "Californian cabin - Mood",
+        "name": "Californian lounge - Mood",
         "icon": "mdi:wall-sconce",
         "mode": "slider",
         "step": 1

@@ -3,14 +3,36 @@ from asyncio import (
     create_task,
     get_running_loop,
 )
-from pyModbusTCP.server import ModbusServer
+from pyModbusTCP.server import DataBank, ModbusServer
+
+from zero_domestic_control.services.ac import (
+    HUMIDITY_SETPOINT_START_ADDRESS,
+    TEMPERATURE_SETPOINT_START_ADDRESS,
+)
+
+
+class TermodinamicaDataBank(DataBank):
+    def on_holding_registers_change(
+        self, address, from_value, to_value, srv_info
+    ) -> None:
+        if address >= TEMPERATURE_SETPOINT_START_ADDRESS.start and address < (
+            TEMPERATURE_SETPOINT_START_ADDRESS.start + 100
+        ):
+            self.set_holding_registers(address - 100, [to_value])
+        elif address >= HUMIDITY_SETPOINT_START_ADDRESS.start and address < (
+            HUMIDITY_SETPOINT_START_ADDRESS.start + 100
+        ):
+            self.set_holding_registers(address - 100, [to_value])
+        return super().on_holding_registers_change(
+            address, from_value, to_value, srv_info
+        )
 
 
 class TermodinamicaStub:
     """Stub for a Termodinamica AC Modbus TCP control system"""
 
     def __init__(self, host, port):
-        self._server = ModbusServer(host=host, port=port)
+        self._server = ModbusServer(host=host, port=port, data_bank=TermodinamicaDataBank())
 
     def _start_server(self) -> Task[None]:
         async def _start():

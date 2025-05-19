@@ -48,13 +48,13 @@
         "floor_id": "aftship",
         "humidity_entity_id": null,
         "icon": "mdi:palm-tree",
-        "id": "californian_cabin",
+        "id": "californian_lounge",
         "labels": [],
-        "name": "Californian cabin",
+        "name": "Californian lounge",
         "picture": null,
         "temperature_entity_id": null,
         "created_at": "2025-02-20T10:20:21.800787+00:00",
-        "modified_at": "2025-02-20T10:56:12.504571+00:00"
+        "modified_at": "2025-05-12T12:19:28.260883+00:00"
       },
       {
         "aliases": [],

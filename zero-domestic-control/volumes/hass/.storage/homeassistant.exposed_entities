@@ -376,7 +376,7 @@
           }
         }
       },
-      "cover.californian_cabin_blind": {
+      "cover.californian_lounge_blind": {
         "assistants": {
           "conversation": {
             "should_expose": true

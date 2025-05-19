@@ -170,14 +170,14 @@ cover:
             entity_id: input_number.italian_cabin_blind
           data:
             value: "{{position}}"
-      californian_cabin_blind:
-        unique_id: template_californian_cabin_blind
+      californian_lounge_blind:
+        unique_id: template_californian_lounge_blind
         friendly_name: "Californian cabin blind"
-        position_template: "{{ states.input_number.californian_cabin_blind.state | float }}"
+        position_template: "{{ states.input_number.californian_lounge_blind.state | float }}"
         set_cover_position:
           service: input_number.set_value
           target:
-            entity_id: input_number.californian_cabin_blind
+            entity_id: input_number.californian_lounge_blind
           data:
             value: "{{position}}"
       polynesian_cabin_blind:
