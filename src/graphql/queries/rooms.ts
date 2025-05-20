@@ -24,13 +24,36 @@ export const getAll = gql`
       group
       actualTemperature
       temperatureSetpoint
+      lightingGroups {
+        ...LightGroupItem
+      }
     }
   }
+
+  ${LightGroupFragment}
 `;
 
 export const subscribeToRoom = gql`
   subscription SubscribeToRoom($roomId: String!) {
     rooms(where: { id: { _eq: $roomId } }) {
+      ...RoomItem
+      blinds {
+        ...BlindsItem
+      }
+      lightingGroups {
+        ...LightGroupItem
+      }
+    }
+  }
+
+  ${RoomFragment}
+  ${BlindsFragment}
+  ${LightGroupFragment}
+`;
+
+export const subscribeToRooms = gql`
+  subscription SubscribeToRoom {
+    rooms {
       ...RoomItem
       blinds {
         ...BlindsItem

@@ -1,10 +1,13 @@
 <script setup lang="ts">
 import SideNav from "@/components/admin/side-nav/SideNav.vue";
 import TopNavigation from "@/components/TopNavigation.vue";
+import { ProgressBar } from "@/components/ui/progress-bar";
+import { useRoomStore } from "@/stores/rooms";
 import { useUIStore } from "@/stores/ui";
 import { Sidebar } from "lucide-vue-next";
 import { toRefs } from "vue";
 
+const { hasPendingRequests } = toRefs(useRoomStore());
 const { showSideNav, breakpoints, toggleNav } = toRefs(useUIStore());
 </script>
 
@@ -20,6 +23,10 @@ const { showSideNav, breakpoints, toggleNav } = toRefs(useUIStore());
       <slot />
     </article>
     <TopNavigation :class="{ 'md:!left-[250px] lg:!left-[300px]': showSideNav }">
+      <ProgressBar
+        :pending="hasPendingRequests"
+        class="absolute left-0 right-0"
+      />
       <template #left>
         <button
           v-if="breakpoints.touch"

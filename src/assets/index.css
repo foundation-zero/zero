@@ -78,3 +78,11 @@ body,
 #app {
   min-height: 100svh;
 }
+
+/* Set pending element and all child elements to wait cursor. Double specificity for pending class to be 100% sure. */
+.pending.pending,
+.pending .cursor-pointer,
+.pending .cursor-not-allowed,
+.pending .cursor-default {
+  cursor: wait !important;
+}

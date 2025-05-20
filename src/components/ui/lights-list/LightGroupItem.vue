@@ -1,23 +1,38 @@
 <script setup lang="ts">
+import { LightingGroups } from "@/gql/graphql";
 import { ratioAsPercentage } from "@/lib/utils";
 import { LampCeiling, LampWallUp } from "lucide-vue-next";
-import { computed } from "vue";
+import { computed, inject, ref, toRef, watch } from "vue";
 import { LightsSlider } from "../lights-slider";
 import { ListItem } from "../list";
 import { ZSpacer } from "../spacer";
 import { Switch } from "../switch";
 
-defineProps<{ name: string; disabled?: boolean }>();
-const level = defineModel<number>("level", { required: true });
+const props = defineProps<{ light: LightingGroups }>();
+const brightness = ref(props.light.level);
 
-const levelPercentage = ratioAsPercentage(level);
+watch(
+  toRef(props, "light"),
+  (light) => {
+    brightness.value = light.level;
+  },
+  { immediate: true },
+);
+
+const emit = defineEmits<{
+  "update:level": [number];
+}>();
+
+const brightnessPercentage = ratioAsPercentage(brightness);
+const disabled = inject<boolean>("disabled");
 
 const on = computed({
   get() {
-    return level.value! > 0;
+    return brightness.value! > 0;
   },
   set(val: boolean) {
-    level.value = val ? 1 : 0;
+    brightness.value = val ? 1 : 0;
+    emit("update:level", val ? 1 : 0);
   },
 });
 </script>
@@ -25,7 +40,7 @@ const on = computed({
   <ListItem class="flex-col space-y-3 py-6">
     <span class="flex w-full items-center">
       <LampCeiling
-        v-if="name === 'Ambient'"
+        v-if="light.name === 'Ambient'"
         class="mr-3 inline"
         :size="18"
       />
@@ -34,7 +49,7 @@ const on = computed({
         class="mr-3 inline"
         :size="18"
       />
-      <span class="text-md font-medium"> {{ name }}</span>
+      <span class="text-md font-medium"> {{ light.name }}</span>
       <ZSpacer />
       <Switch
         v-model:checked="on"
@@ -43,9 +58,11 @@ const on = computed({
     </span>
 
     <LightsSlider
-      v-model:brightness="levelPercentage"
+      v-model:brightness="brightnessPercentage"
       :on="on"
       :disabled="disabled"
+      @click="emit('update:level', brightness)"
+      @touchend="emit('update:level', brightness)"
     />
   </ListItem>
 </template>

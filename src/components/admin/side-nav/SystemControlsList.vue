@@ -59,7 +59,6 @@ const route = useRoute();
       <NavListItem
         :to="{ name: 'env:lights' }"
         :active="route.name === 'env:lights'"
-        disabled
       >
         <LampCeiling
           :size="16"

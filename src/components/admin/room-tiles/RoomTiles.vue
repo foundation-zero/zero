@@ -1,10 +1,12 @@
 <script setup lang="ts">
 import { useRoomStore } from "@/stores/rooms";
 import { useUIStore } from "@/stores/ui";
-import { toRefs } from "vue";
+import { provide, toRefs } from "vue";
 
-const { areas } = toRefs(useRoomStore());
+const { areas, hasPendingRequests } = toRefs(useRoomStore());
 const { showSideNav } = toRefs(useUIStore());
+
+provide("disabled", hasPendingRequests);
 </script>
 
 <template>
@@ -14,15 +16,22 @@ const { showSideNav } = toRefs(useUIStore());
     class="pb-8 text-[0.8rem] md:pb-12 md:text-[0.9rem] lg:text-[0.95rem] xl:text-[1.2rem] portrait:lg:text-[1rem]"
   >
     <header
-      class="border-b pb-2 text-rxl font-bold uppercase tracking-tight text-primary/75 dark:text-primary/65 md:pb-4"
+      class="flex items-center border-b pb-2 text-rxl font-bold uppercase tracking-tight text-primary/75 dark:text-primary/65 md:pb-4"
     >
       {{ area.name }}
+
+      <span class="grow" />
+      <slot
+        name="header"
+        v-bind="{ area }"
+      />
     </header>
     <ul
       class="mt-4 grid grid-cols-2 gap-4 text-rbase transition-all md:mt-6"
       :class="{
         'md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-4': !showSideNav,
         'md:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4': showSideNav,
+        'opacity-50': hasPendingRequests,
       }"
     >
       <slot

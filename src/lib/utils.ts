@@ -24,6 +24,30 @@ export const ratioAsPercentage = (ratio: Ref<number>) =>
     },
   });
 
+export const valueWithValidation = <T>(val: Ref<T>, validateFn: (next: T) => boolean) =>
+  computed({
+    get() {
+      return val.value;
+    },
+    set(next: T) {
+      if (validateFn(next)) {
+        val.value = next;
+      }
+    },
+  });
+
+export const valueAsArray = <T>(value: Ref<T>) =>
+  computed({
+    get() {
+      return [value.value];
+    },
+    set(next: T[]) {
+      if (next.length === 0) throw new Error("Array cannot be empty");
+
+      value.value = next[0];
+    },
+  });
+
 export const formatNumber =
   (digits: number) =>
   (value: number, locale: string = "en-US") => {

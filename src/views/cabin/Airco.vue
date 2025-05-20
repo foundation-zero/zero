@@ -2,9 +2,10 @@
 import RoomTemperature from "@/components/cabin/RoomTemperature.vue";
 import { HeavySlider } from "@/components/ui/heavy-slider";
 import { List, ListItem, ListRoot } from "@/components/ui/list";
+import { valueAsArray, valueWithValidation } from "@/lib/utils";
 import { useRoomStore } from "@/stores/rooms";
 import { useUIStore } from "@/stores/ui";
-import { computed, toRefs } from "vue";
+import { computed, ref, toRefs, watch } from "vue";
 import { useI18n } from "vue-i18n";
 const MIN_VALUE = 18;
 
@@ -13,19 +14,16 @@ const { setTemperatureSetpoint } = useRoomStore();
 const { t } = useI18n();
 const { breakpoints } = useUIStore();
 
-const value = computed<number[]>({
-  get() {
-    return [currentRoom.value.temperatureSetpoint];
-  },
-  set([val]: number[]) {
-    if (val < MIN_VALUE) return;
+const temperature = ref(currentRoom.value.temperatureSetpoint);
 
-    currentRoom.value.temperatureSetpoint = val;
-
-    setTemperatureSetpoint(val);
-  },
+watch(currentRoom, (room) => {
+  temperature.value = room.temperatureSetpoint;
 });
-const isOff = computed(() => value.value[0] == MIN_VALUE);
+
+const value = valueAsArray(valueWithValidation(temperature, (val) => val >= MIN_VALUE));
+const isOff = computed(() => value.value[0] === MIN_VALUE);
+
+const commit = () => setTemperatureSetpoint(temperature.value);
 </script>
 
 <template>
@@ -52,9 +50,10 @@ const isOff = computed(() => value.value[0] == MIN_VALUE);
               :max="24"
               :min="17"
               :min-steps-between-thumbs="3"
-              :class="{ 'opacity-70': isOff, 'opacity-50': hasPendingRequests }"
+              :class="{ 'opacity-70': isOff, disabled: hasPendingRequests }"
               :step="1"
-              :disabled="hasPendingRequests"
+              @click.stop.prevent="commit()"
+              @touchend.stop.prevent="commit()"
             />
 
             <div class="mt-6 flex flex-col items-center justify-center">

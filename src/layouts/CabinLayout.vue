@@ -2,7 +2,7 @@
 import SideNav from "@/components/admin/side-nav/SideNav.vue";
 import AsAdmin from "@/components/ui/with-role/AsAdmin.vue";
 import { Sidebar } from "lucide-vue-next";
-import { toRefs } from "vue";
+import { provide, toRefs } from "vue";
 import BottomNavigation from "../components/cabin/BottomNavigation.vue";
 import NavPills from "../components/cabin/NavPills.vue";
 import ToggleAV from "../components/cabin/ToggleAV.vue";
@@ -13,6 +13,8 @@ import { useUIStore } from "../stores/ui";
 
 const { showSideNav, breakpoints, toggleNav } = toRefs(useUIStore());
 const { hasPendingRequests, currentRoom } = toRefs(useRoomStore());
+
+provide("disabled", hasPendingRequests);
 </script>
 
 <template>
@@ -25,6 +27,7 @@ const { hasPendingRequests, currentRoom } = toRefs(useRoomStore());
       :class="{
         'border-l border-r bg-[hsl(var(--primary)/0.025)] px-0 2xl:container xl:px-6':
           !breakpoints.touch,
+        'pending opacity-50': hasPendingRequests,
       }"
     >
       <slot />

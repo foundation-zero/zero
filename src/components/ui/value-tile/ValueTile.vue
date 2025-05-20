@@ -1,14 +1,21 @@
 <script setup lang="ts">
 import { ValidationStatus } from "@/@types";
 import { ExclamationTriangleIcon } from "@radix-icons/vue";
+import { inject, Ref } from "vue";
 
-defineProps<{ state?: ValidationStatus; title: string }>();
+defineProps<{ state?: ValidationStatus; title: string; selectable?: boolean }>();
+
+const disabled = inject<Ref<boolean>>("disabled");
 </script>
 
 <template>
   <li
-    :class="[state ?? ValidationStatus.UNKNOWN]"
-    class="relative flex aspect-[4/3] flex-col justify-between rounded-lg border border-primary/20 bg-primary/5 px-[0.625em] py-[0.3em] text-primary/85 dark:bg-primary/10"
+    class="relative flex aspect-[4/3] flex-col justify-between rounded-lg border border-primary/20 bg-primary/5 px-[0.625em] py-[0.3em] text-primary/85 transition-all dark:bg-primary/10 2xl:aspect-[16/10]"
+    :class="{
+      'cursor-pointer hover:bg-primary/15 hover:text-primary/100': selectable && !disabled,
+      'cursor-wait': disabled,
+      [state ?? ValidationStatus.UNKNOWN]: true,
+    }"
   >
     <div class="absolute bottom-0 left-0 right-0 top-8">
       <slot name="background" />

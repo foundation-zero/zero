@@ -1,0 +1,50 @@
+<script setup lang="ts">
+import { Room } from "@/@types";
+import { Switch } from "@/components/ui/switch";
+import { ValueTile } from "@/components/ui/value-tile";
+import { Lightbulb, LightbulbOff } from "lucide-vue-next";
+import { computed } from "vue";
+import { useToggleableLights } from ".";
+
+const props = defineProps<{ room: Room }>();
+
+const { controls, someLightsAreOn, toggle } = useToggleableLights(computed(() => [props.room]));
+</script>
+
+<template>
+  <ValueTile
+    v-if="controls.length > 0"
+    :title="room.name"
+    :class="{ on: someLightsAreOn }"
+    selectable
+    @click="toggle"
+  >
+    <template #center>
+      <Switch
+        :checked="someLightsAreOn"
+        class="mb-1"
+      />
+    </template>
+
+    <template #bottom-right>
+      <Lightbulb
+        v-if="someLightsAreOn"
+        class="mb-1 h-[1.5em] w-[1.5em]"
+        stroke-width="2.5"
+      />
+      <LightbulbOff
+        v-else
+        class="mb-1 h-[1.5em] w-[1.5em]"
+        stroke-width="1"
+      />
+    </template>
+  </ValueTile>
+</template>
+
+<style lang="css" scoped>
+li.on,
+li.on:is(.dark *) {
+  --primary: 46 95% 48%;
+  @apply border-primary/50;
+}
+</style>

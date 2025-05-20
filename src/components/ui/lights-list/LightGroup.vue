@@ -4,14 +4,11 @@ import { List, ListRoot } from "../list";
 import ListHeader from "../list/ListHeader.vue";
 import LightGroupItem from "./LightGroupItem.vue";
 
-defineProps<{ name: string; lights: LightingGroups[]; disabled?: boolean }>();
+defineProps<{ name: string; lights: LightingGroups[] }>();
 
-const emit = defineEmits(["update:level"]);
-
-const updateLevel = (level: number, group: LightingGroups) => {
-  group.level = level;
-  emit("update:level", group);
-};
+const emit = defineEmits<{
+  "update:level": [string, number];
+}>();
 </script>
 
 <template>
@@ -21,11 +18,9 @@ const updateLevel = (level: number, group: LightingGroups) => {
       <LightGroupItem
         v-for="light in lights"
         :key="light.name!"
-        :disabled="disabled"
-        :level="light.level"
-        :name="light.name!"
+        :light="light"
         class="flex-col space-y-3 py-6"
-        @update:level="updateLevel($event, light)"
+        @update:level="emit('update:level', light.id, $event)"
       />
     </List>
   </ListRoot>

@@ -24,3 +24,9 @@ export const setLightLevelMutation = gql`
     setLightingGroup(id: $id, level: $level)
   }
 `;
+
+export const setLightingGroupsLevelMutation = gql`
+  mutation SetGroupLightLevel($ids: [ID!]!, $level: Float!) {
+    setLightingGroups(ids: $ids, level: $level)
+  }
+`;

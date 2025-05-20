@@ -1,12 +1,18 @@
 <script setup lang="ts">
 import { ratioAsPercentage } from "@/lib/utils";
 
-import { computed, HTMLAttributes } from "vue";
+import { computed, HTMLAttributes, ref, watch } from "vue";
 import { StepSlider } from "../step-slider";
 
 defineProps<{ class: HTMLAttributes["class"]; disabled?: boolean }>();
 const level = defineModel<number>("level", { required: true });
-const levelPercentage = ratioAsPercentage(level);
+const targetLevel = ref(level.value);
+
+watch(level, (newLevel) => {
+  targetLevel.value = newLevel;
+});
+
+const levelPercentage = ratioAsPercentage(targetLevel);
 const blindsPosition = computed({
   get() {
     return [levelPercentage.value ?? 0];
@@ -15,6 +21,8 @@ const blindsPosition = computed({
     levelPercentage.value = Math.round(val ?? 0);
   },
 });
+
+const commit = () => (level.value = targetLevel.value);
 </script>
 
 <template>
@@ -29,6 +37,8 @@ const blindsPosition = computed({
       :min-steps-between-thumbs="3"
       :disabled="disabled"
       :steps="6"
+      @touchend.stop.prevent="commit()"
+      @click.stop.prevent="commit()"
     />
     <div class="mt-3 inline-flex items-center">
       <span

@@ -28,7 +28,7 @@ test.describe("Rooms", () => {
 
     test("subscribes to a room", async ({ roomsPage }) => {
       expect(roomsPage.subscribers).toHaveLength(1);
-      expect(roomsPage.subscribers[0].payload!.variables?.roomId).toBe(dutchCabin.id);
+      expect(roomsPage.subscribers[0].payload!.variables).toEqual({});
     });
 
     test("shows the current room", async ({ roomsPage }) => {
@@ -47,12 +47,14 @@ test.describe("Rooms", () => {
   });
 
   test.describe("as admin", () => {
-    test.beforeEach(async ({ auth }) => {
+    test.beforeEach(async ({ auth, subscriptions }) => {
       await auth.asAdmin();
+      subscriptions.dispatch("SubscribeToRoom", allRooms);
     });
 
-    test("gets all rooms", async () => {
-      expect(getAllRooms.isUsed).toBe(true);
+    test("subscribes to a room", async ({ roomsPage }) => {
+      expect(roomsPage.subscribers).toHaveLength(1);
+      expect(roomsPage.subscribers[0].payload!.variables).toEqual({});
     });
 
     test.describe("room selection", () => {
@@ -63,14 +65,6 @@ test.describe("Rooms", () => {
 
       test("it shows the correct amount of rooms", async ({ roomsPage }) => {
         await expect(roomsPage.roomList).toHaveCount(allRooms.rooms.length);
-      });
-
-      test("updates the subscription", async ({ page, roomsPage }) => {
-        await roomsPage.roomItem(allRooms.rooms[1].id).click();
-        await page.waitForTimeout(100);
-
-        expect(roomsPage.subscribers).toHaveLength(2);
-        expect(roomsPage.subscribers[1].payload!.variables?.roomId).toBe(allRooms.rooms[1].id);
       });
     });
   });

@@ -3,7 +3,7 @@ import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 import { useRoomStore } from "@/stores/rooms";
 import { useDark, useTimeoutFn } from "@vueuse/core";
-import { computed, toRefs, watch } from "vue";
+import { computed, inject, toRefs, watch } from "vue";
 
 import { useI18n } from "vue-i18n";
 const { toggleAmplifier } = useRoomStore();
@@ -23,6 +23,8 @@ const isOn = computed({
 watch(currentRoom, (newRoom) => {
   useTimeoutFn(() => (isDark.value = !!newRoom.amplifierOn), 500);
 });
+
+const disabled = inject<boolean>("disabled");
 </script>
 
 <template>
@@ -36,6 +38,7 @@ watch(currentRoom, (newRoom) => {
     <Switch
       id="av-toggle"
       v-model:checked="isOn"
+      :disabled="disabled"
       data-testid="av-toggle"
     >
     </Switch>

@@ -5,30 +5,33 @@ import {
   MutationRootSetAmplifierArgs,
   MutationRootSetBlindArgs,
   MutationRootSetLightingGroupArgs,
+  MutationRootSetLightingGroupsArgs,
   MutationRootSetRoomTemperatureSetpointArgs,
   QueryRoot,
   Rooms,
 } from "@/gql/graphql";
-import client from "@/graphql/client";
 import { setBlindsLevelMutation } from "@/graphql/queries/blinds";
-import { setLightLevelMutation } from "@/graphql/queries/light-groups";
 import {
-  getAll,
+  setLightingGroupsLevelMutation,
+  setLightLevelMutation,
+} from "@/graphql/queries/light-groups";
+import {
   setAmplifierForRoomMutation,
   setAmplifierMutation,
   setTemperatureSetpointForRoomMutation,
   setTemperatureSetpointMutation,
-  subscribeToRoom,
+  subscribeToRooms,
 } from "@/graphql/queries/rooms";
 import { createArea, toRoom } from "@/lib/mappers";
 import { useMutation, UseMutationResponse, useSubscription } from "@urql/vue";
 import { useDebounceFn, useLocalStorage, useTimeoutFn } from "@vueuse/core";
+
 import { defineStore } from "pinia";
-import { computed, ref, toRefs } from "vue";
+import { computed, MaybeRefOrGetter, ref, toRefs, watch } from "vue";
 import { useI18n } from "vue-i18n";
 import { useAuthStore } from "./auth";
 
-const MUTATION_DELAY_IN_MS = 500;
+const MUTATION_DELAY_IN_MS = 5;
 
 type GetAllRoomsQuery = Pick<QueryRoot, "rooms">;
 
@@ -49,16 +52,11 @@ export const useRoomStore = defineStore("rooms", () => {
     id: "empty",
   };
 
-  const currentRoomId = useLocalStorage("currentRoomId", () => emptyRoom.id);
-  const currentRoom = ref<Room>(emptyRoom);
-  const areas = ref<ShipArea[]>([]);
+  const currentRoomId = useLocalStorage("currentRoomId", () => cabin.value ?? emptyRoom.id);
   const hasPendingRequests = ref(false);
 
   const setRoom = (roomId: string) => {
-    if (currentRoomId.value !== roomId && (isAdmin.value || roomId === cabin.value)) {
-      hasPendingRequests.value = true;
-      currentRoomId.value = roomId;
-    }
+    currentRoomId.value = roomId;
   };
 
   // We debounce the mutation to prevent hammering the server with requests.
@@ -66,12 +64,14 @@ export const useRoomStore = defineStore("rooms", () => {
   const useDebounceMutation = <T extends object = object, Args extends unknown[] = unknown[]>(
     query: UseMutationResponse<unknown, T>,
     fn: (...args: Args) => T,
+    delay: MaybeRefOrGetter<number> = MUTATION_DELAY_IN_MS,
   ) =>
     useDebounceFn((...args: Args) => {
       hasPendingRequests.value = true;
-      useTimeoutFn(() => (hasPendingRequests.value = false), 2000);
+      const timeout = useTimeoutFn(() => (hasPendingRequests.value = false), 2000);
+      watch(hasPendingRequests, () => timeout.stop(), { once: true });
       return query.executeMutation(fn(...args));
-    }, MUTATION_DELAY_IN_MS);
+    }, delay);
 
   // TODO: Find a better way to handle admin and user mutations
   const setTemperatureSetpoint = useDebounceMutation(
@@ -92,6 +92,7 @@ export const useRoomStore = defineStore("rooms", () => {
       id: isAdmin.value ? currentRoomId.value : undefined,
       on: amplifierOn,
     }),
+    0,
   );
 
   const setLightLevel = useDebounceMutation(
@@ -99,47 +100,44 @@ export const useRoomStore = defineStore("rooms", () => {
     (lightId: string, level: number) => ({ id: lightId, level }),
   );
 
+  const setLightingGroupsLevel = useDebounceMutation(
+    useMutation<LightingGroups, MutationRootSetLightingGroupsArgs>(setLightingGroupsLevelMutation),
+    (lightIds: string[], level: number) => ({ ids: lightIds, level }),
+    0,
+  );
+
   const setBlindsLevel = useDebounceMutation(
     useMutation<Blinds, MutationRootSetBlindArgs>(setBlindsLevelMutation),
     (blindId: string, level: number) => ({ id: blindId, level }),
   );
 
-  useSubscription<GetAllRoomsQuery, Room>(
+  const { data: roomData } = useSubscription<GetAllRoomsQuery, Room[]>(
     {
-      query: subscribeToRoom,
-      variables: { roomId: currentRoomId },
-      pause: computed(() => currentRoomId.value === emptyRoom.id),
+      query: subscribeToRooms,
     },
-    (_prev, result) => {
-      if (result.rooms.length > 0) {
-        currentRoom.value = toRoom(result.rooms[0]);
-      }
-
-      hasPendingRequests.value = false;
-
-      return currentRoom.value;
-    },
+    (_prev, result) => result.rooms.map(toRoom) ?? [],
   );
 
-  // We need this ready state mainly for testing purposes.
-  const isReady = (async function init() {
-    // if (!isAdmin.value) return;
+  const rooms = computed(() => roomData.value ?? []);
+  const currentRoom = computed<Room>(
+    () => rooms.value.find((room) => room.id === currentRoomId.value) ?? emptyRoom,
+  );
 
-    const { data } = await client.query<GetAllRoomsQuery>(getAll, {});
-    const rooms = data?.rooms.map(toRoom) ?? [];
+  const areas = computed<ShipArea[]>(() => [
+    createArea(RoomGroup.AFT, t("labels.roomGroup.aftship"), rooms.value),
+    createArea(RoomGroup.MID, t("labels.roomGroup.midship"), rooms.value),
+    createArea(RoomGroup.FORE, t("labels.roomGroup.foreship"), rooms.value),
+    createArea(RoomGroup.UPPERDECK, t("labels.roomGroup.upperdeck"), rooms.value),
+    createArea(RoomGroup.HALLWAYS, t("labels.roomGroup.hallways"), rooms.value),
+  ]);
 
-    areas.value = [
-      createArea(RoomGroup.AFT, t("labels.roomGroup.aftship"), rooms),
-      createArea(RoomGroup.MID, t("labels.roomGroup.midship"), rooms),
-      createArea(RoomGroup.FORE, t("labels.roomGroup.foreship"), rooms),
-      createArea(RoomGroup.UPPERDECK, t("labels.roomGroup.upperdeck"), rooms),
-      createArea(RoomGroup.HALLWAYS, t("labels.roomGroup.hallways"), rooms),
-    ];
-
+  watch(rooms, (rooms) => {
     if (currentRoomId.value === emptyRoom.id && rooms.length > 0) {
       currentRoomId.value = rooms[0].id;
     }
-  })();
+
+    hasPendingRequests.value = false;
+  });
 
   return {
     areas,
@@ -150,7 +148,7 @@ export const useRoomStore = defineStore("rooms", () => {
     setTemperatureSetpoint,
     toggleAmplifier,
     setLightLevel,
+    setLightingGroupsLevel,
     setBlindsLevel,
-    isReady,
   };
 });

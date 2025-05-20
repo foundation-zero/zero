@@ -4,9 +4,10 @@ import { useRoomStore } from "@/stores/rooms";
 import { useUIStore } from "@/stores/ui";
 import { toRefs } from "vue";
 
-const { currentRoom, hasPendingRequests } = toRefs(useRoomStore());
+const roomStore = useRoomStore();
+const { currentRoom } = toRefs(roomStore);
 const { breakpoints } = toRefs(useUIStore());
-const { setLightLevel } = useRoomStore();
+const { setLightLevel } = roomStore;
 </script>
 
 <template>
@@ -20,10 +21,9 @@ const { setLightLevel } = useRoomStore();
     <LightGroup
       v-for="(group, index) in currentRoom.lights"
       :key="index"
-      :disabled="hasPendingRequests"
       :name="group.name"
       :lights="group.controls"
-      @update:level="setLightLevel($event.id, $event.level)"
+      @update:level="setLightLevel"
     />
   </section>
 </template>

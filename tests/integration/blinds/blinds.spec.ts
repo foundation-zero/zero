@@ -3,6 +3,8 @@ import { expect, test as testBase } from "../../mocks/playwright";
 import { getAllRooms, getVersion } from "../../mocks/queries";
 import BlindsPage from "./page";
 
+const dutchCabin = allRooms.rooms.find((room) => room.id === "dutch-cabin")!;
+
 const test = testBase.extend<{ blindsPage: BlindsPage }>({
   blindsPage: [
     async ({ worker, page, subscriptions, auth }, use) => {
@@ -12,13 +14,14 @@ const test = testBase.extend<{ blindsPage: BlindsPage }>({
 
       await auth.asUser();
 
-      blindsPage.setBlindLevels([0, 0]);
+      blindsPage.setBlindLevels([0, 0], dutchCabin);
       await page.waitForTimeout(500);
       await blindsPage.open();
 
-      await page.waitForTimeout(500);
+      await page.waitForTimeout(1000);
 
       await page.screenshot({ path: "screenshots/blinds.png" });
+
       await use(blindsPage);
     },
     { auto: true },
@@ -26,11 +29,13 @@ const test = testBase.extend<{ blindsPage: BlindsPage }>({
 });
 
 test.describe("Blinds", () => {
+  const roomWithTwoBlinds = allRooms.rooms.find((room) => room.blinds.length === 2)!;
+
   test.describe("with 2 blinds", () => {
     const targetLevels = [0.51, 0.75];
 
-    test.beforeEach(async ({ blindsPage }) => {
-      blindsPage.setBlindLevels(targetLevels);
+    test.beforeEach(({ blindsPage }) => {
+      blindsPage.setBlindLevels(targetLevels, { ...dutchCabin, blinds: roomWithTwoBlinds.blinds });
     });
 
     test("shows two controls", async ({ blindsPage }) => {
@@ -45,14 +50,14 @@ test.describe("Blinds", () => {
   });
 
   test.describe("with > 2 blinds", () => {
-    const room = allRooms.rooms.find((room) => room.blinds.length > 2)!;
+    const roomWithMoreThanTwoBlinds = allRooms.rooms.find((room) => room.blinds.length > 2)!;
 
     test.beforeEach(async ({ blindsPage }) => {
-      blindsPage.setBlindLevels([], room);
+      blindsPage.setBlindLevels([], { ...dutchCabin, blinds: roomWithMoreThanTwoBlinds.blinds });
     });
 
     test("shows the correct amount of controls", async ({ blindsPage }) => {
-      await expect(blindsPage.listItems).toHaveCount(room.blinds.length);
+      await expect(blindsPage.listItems).toHaveCount(roomWithMoreThanTwoBlinds.blinds.length);
     });
 
     test("does not show numeral values", async ({ blindsPage }) => {
