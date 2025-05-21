@@ -7,8 +7,8 @@ import matplotlib.dates as mdates
 
 def compute_heat(temp1, temp2, flow):
     return (
-        (temp1 - temp2) * flow * 4184 / 60
-    )  # TODO: check exact specific heat capacity of medium
+        (temp1 - temp2) * flow * 3769 / 60
+    )  # 3769 is specific heat capacity of glycol mixture
 
 
 def plot_frames(frames: list[pd.DataFrame], path: str):

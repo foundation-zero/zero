@@ -29,9 +29,10 @@ class Fmu:
             stop_time=self._time + 1,
             set_stop_time=False,
             terminate=False,
-            output_interval=1,
+            output_interval=.1,
             initialize=True,
             fmu_instance=self._fmu_instance,
+            relative_tolerance=1e-6
         )
 
         self._time = 1
@@ -54,9 +55,10 @@ class Fmu:
             stop_time=self._time + duration.total_seconds(),
             set_stop_time=False,
             terminate=False,
-            output_interval=duration.total_seconds(),
+            output_interval=.1,
             initialize=False,
-            fmu_instance=self._fmu_instance
+            fmu_instance=self._fmu_instance,
+            relative_tolerance=1e-6
         )
 
         self._time += duration.total_seconds()

@@ -17,13 +17,13 @@ jobs:
 
       - run: poetry run fmpy compile src/simulation/models/XRGTestModel/FMUInterfaceTester_MECS_regular.fmu
       
-      - run: poetry run fmpy compile src/simulation/models/thruster_moduleV10_1.fmu #version without glycol 
+      - run: poetry run fmpy compile src/simulation/models/thruster_moduleV11_Glycol.fmu
 
-      - run: poetry run fmpy compile src/simulation/models/pvt_moduleV2_1.fmu
+      - run: poetry run fmpy compile src/simulation/models/pvt_moduleV2_Glycol.fmu
 
-      - run: poetry run fmpy compile src/simulation/models/consumers_moduleV1_1.fmu
+      - run: poetry run fmpy compile src/simulation/models/consumers_moduleV2_Glycol.fmu
 
-      - run: poetry run fmpy compile src/simulation/models/HTsystem_moduleV1_1.fmu
+      - run: poetry run fmpy compile src/simulation/models/HTsystem_moduleV2.fmu
 
       - run: poetry run pyright
 
