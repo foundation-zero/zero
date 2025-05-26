@@ -47,5 +47,9 @@ class LightingGroup(Message):
 
 class RoomTemperatureSetpoint(Message):
     TOPIC: ClassVar[str] = "domestic/control/room-temperature-setpoint/:id"
-
     temperature: float
+
+
+class RoomHumiditySetpoint(Message):
+    TOPIC: ClassVar[str] = "domestic/control/room-humidity-setpoint/:id"
+    humidity: float

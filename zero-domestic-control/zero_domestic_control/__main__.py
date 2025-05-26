@@ -71,7 +71,7 @@ async def generate_jwt(args):
 
 
 async def setup(_args):
-    logging.info("Setting up postgres")
+    logging.info("Initializing postgres tables")
     async with await psycopg.AsyncConnection.connect(settings.pg_url) as conn:
         async with conn.cursor() as cur:
             with codecs.open(
@@ -79,7 +79,7 @@ async def setup(_args):
             ) as query:
                 await cur.execute(bytes(query.read(), "utf-8"))
 
-    logging.info("Setting up risingwave")
+    logging.info("Initializing risingwave tables, views and sinks")
     async with await psycopg.AsyncConnection.connect(settings.risingwave_url) as conn:
         async with conn.cursor() as cur:
             with codecs.open(

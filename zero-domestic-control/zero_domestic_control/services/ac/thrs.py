@@ -12,6 +12,13 @@ class RoomTemperatureSetpoint(Message):
     temperature: float
 
 
+class RoomHumiditySetpoint(Message):
+    TOPIC: ClassVar[str] = "thrs/room-humidity-setpoint/:id"
+
+    id: str
+    humidity: float
+
+
 class Thrs:
     def __init__(self, mqtt_client: MqttClient):
         self._mqtt = mqtt_client
@@ -20,3 +27,6 @@ class Thrs:
         await send_message(
             self._mqtt, RoomTemperatureSetpoint(id=room, temperature=temperature)
         )
+
+    async def set_room_humidity_setpoint(self, room: str, humidity: float):
+        await send_message(self._mqtt, RoomHumiditySetpoint(id=room, humidity=humidity))

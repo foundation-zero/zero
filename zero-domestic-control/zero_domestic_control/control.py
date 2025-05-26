@@ -60,4 +60,10 @@ class Control:
                     port=settings.termodinamica_port,
                     auto_open=True,
                 )
-                yield Control(hass, data_client, av_client, ac_client, modbus_client)
+                yield Control(
+                    hass=hass,
+                    data_client=data_client,
+                    av_client=av_client,
+                    ac_client=ac_client,
+                    modbus_client=modbus_client,
+                )

@@ -41,6 +41,7 @@ pytest-mock = "^3.14.0"
 [tool.mypy]
 plugins = "pydantic.mypy,strawberry.ext.mypy_plugin"
 mypy_path = "./typings"
+check_untyped_defs = true
 
 [tool.poetry-dynamic-versioning]
 enable = true

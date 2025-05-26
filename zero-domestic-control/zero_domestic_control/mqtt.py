@@ -7,6 +7,7 @@ from zero_domestic_control.messages import (
     Message,
     Room,
     RoomTemperatureSetpoint,
+    RoomHumiditySetpoint,
 )
 import logging
 
@@ -40,14 +41,20 @@ class ControlSend:
     def __init__(self, mqtt: Client):
         self._mqtt = mqtt
 
-    async def send_room_setpoint(self, room: str, temperature: float):
+    async def send_room_temperature_setpoint(self, room: str, temperature: float):
         await send_message(
             self._mqtt, RoomTemperatureSetpoint(id=room, temperature=temperature)
         )
 
+    async def send_room_humidity_setpoint(self, room: str, humidity: float):
+        await send_message(self._mqtt, RoomHumiditySetpoint(id=room, humidity=humidity))
 
-type ControlMessages = RoomTemperatureSetpoint
-_CONTROL_LISTEN_MESSAGE = [RoomTemperatureSetpoint]
+
+type ControlMessages = RoomTemperatureSetpoint | RoomHumiditySetpoint
+_CONTROL_LISTEN_MESSAGE: list[type[ControlMessages]] = [
+    RoomTemperatureSetpoint,
+    RoomHumiditySetpoint,
+]
 
 
 class ControlReceive:

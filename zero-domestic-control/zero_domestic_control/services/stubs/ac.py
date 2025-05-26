@@ -5,7 +5,7 @@ from asyncio import (
 )
 from pyModbusTCP.server import DataBank, ModbusServer
 
-from zero_domestic_control.services.ac import (
+from zero_domestic_control.services.ac.constants import (
     HUMIDITY_SETPOINT_START_ADDRESS,
     TEMPERATURE_SETPOINT_START_ADDRESS,
 )

@@ -38,22 +38,24 @@ mqtt_client3 = fixture(_mqtt_client)
 
 
 async def test_control_receive(settings, mqtt_client, mqtt_client2):
+    """Test that the ControlSend messages reach ControlReceive"""
     control_send = ControlSend(mqtt_client)
     control_receive = ControlReceive(mqtt_client2)
 
     await control_receive.listen()
 
-    await control_send.send_room_setpoint("owners-cabin", 20)
+    await control_send.send_room_temperature_setpoint("owners-cabin", 10)
     await asyncio.sleep(1)
     async for message in control_receive.messages:
         assert message.id == "owners-cabin"
-        assert message.temperature == 20
+        assert message.temperature == 10
         break
 
 
 async def test_termodinamica_adjustment_forwarded_to_thrs(
     settings, modbus_client, mqtt_client, mqtt_client2, mqtt_client3
 ):
+    """Test that the Termodinamica adjustments are forwarded to THRS and domestic/rooms topics"""
     stub = TermodinamicaStub(settings.termodinamica_host, settings.termodinamica_port)
     termodinamica = TermodinamicaAc(modbus_client)
     thrs = Thrs(mqtt_client)
@@ -70,25 +72,24 @@ async def test_termodinamica_adjustment_forwarded_to_thrs(
             received_messages.append(message)
 
     stub_run = create_task(stub.run())
-    await asyncio.sleep(0.1)
-    termodinamica.write_room_temperature_setpoint("owners-cabin", 20)
-
     receive = create_task(_receive())
     ac_run = create_task(ac_control.run())
 
     try:
         await asyncio.sleep(0.1)
-        thrs_message = next(
-            m
+        termodinamica.write_room_temperature_setpoint("dutch-cabin", 15)
+        await asyncio.sleep(0.2)
+        assert next(
+            True
             for m in received_messages
-            if m.topic.value == "thrs/room-temperature-setpoint/owners-cabin"
+            if m.topic.value == "thrs/room-temperature-setpoint/dutch-cabin"
+            and m.payload == b'{"temperature":15.0}'
         )
-        assert thrs_message.payload == b'{"temperature":20.0}'
         assert next(
             True
             for m in received_messages
             if m.topic.value == "domestic/rooms"
-            and m.payload == b'{"id":"owners-cabin","temperature_setpoint":20.0}'
+            and m.payload == b'{"id":"dutch-cabin","temperature_setpoint":15.0}'
         )
     finally:
         stub_run.cancel()
@@ -96,9 +97,10 @@ async def test_termodinamica_adjustment_forwarded_to_thrs(
         receive.cancel()
 
 
-async def test_setting_setpoint(
+async def test_setting_setpoints(
     settings, modbus_client, mqtt_client, mqtt_client2, mqtt_client3
 ):
+    """Test that the setpoint is set correctly in Termodinamica and sent to THRS and domestic/rooms topics"""
     stub = TermodinamicaStub(settings.termodinamica_host, settings.termodinamica_port)
     termodinamica = TermodinamicaAc(modbus_client)
     thrs = Thrs(mqtt_client)
@@ -122,20 +124,38 @@ async def test_setting_setpoint(
 
     try:
         await asyncio.sleep(0.1)
-        await ac.write_room_temperature_setpoint("owners-cabin", 20)
+        await ac.write_room_temperature_setpoint("french-cabin", 20)
         await asyncio.sleep(0.2)
-        assert termodinamica.read_room_temperature_setpoint("owners-cabin") == 20
+        assert termodinamica.read_room_temperature_setpoint("french-cabin") == 20
         assert next(
             True
             for m in received_messages
-            if m.topic.value == "thrs/room-temperature-setpoint/owners-cabin"
+            if m.topic.value == "thrs/room-temperature-setpoint/french-cabin"
             and m.payload == b'{"temperature":20.0}'
         )
         assert next(
             True
             for m in received_messages
             if m.topic.value == "domestic/rooms"
-            and m.payload == b'{"id":"owners-cabin","temperature_setpoint":20.0}'
+            and m.payload == b'{"id":"french-cabin","temperature_setpoint":20.0}'
+        )
+        received_messages = []
+        await asyncio.sleep(0.1)
+        await ac.write_room_humidity_setpoint("italian-cabin", 1)
+        await asyncio.sleep(0.2)
+        assert termodinamica.read_room_humidity_setpoint("italian-cabin") == 1
+        assert next(
+            True
+            for m in received_messages
+            if m.topic.value == "thrs/room-humidity-setpoint/italian-cabin"
+            and m.payload == b'{"humidity":1.0}'
+        )
+        assert next(
+            True
+            for m in received_messages
+            if m.topic.value == "domestic/rooms"
+            and m.payload
+            == b'{"id":"italian-cabin","temperature_setpoint":0.0,"humidity_setpoint":1.0}'
         )
     finally:
         stub_run.cancel()

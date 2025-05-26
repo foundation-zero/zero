@@ -91,6 +91,18 @@ class Mutation:
         await info.context.ac.write_room_temperature_setpoint(id, temperature)
 
     @strawberry.mutation
+    async def set_room_humidity_setpoint(
+        self,
+        info: strawberry.Info[MyContext],
+        id: strawberry.ID,
+        humidity: Annotated[
+            int,
+            strawberry.argument(description="desired humidity in ?"),
+        ],
+    ) -> None:
+        await info.context.ac.write_room_humidity_setpoint(id, humidity)
+
+    @strawberry.mutation
     async def set_blind(
         self,
         info: strawberry.Info[MyContext],
