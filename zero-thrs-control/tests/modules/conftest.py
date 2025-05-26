@@ -25,7 +25,7 @@ def modelica_names_from_class(
 
 
 def compare_modelica_names(
-    module_name: str,
+    module_name: str | list[str],
     sensor_values: ThrsModel,
     control_values: ThrsModel,
     simulation_inputs: ThrsModel,
@@ -36,10 +36,13 @@ def compare_modelica_names(
     """
     sheet = pl.read_csv(SHEET_URL, skip_lines=1)
 
+    if isinstance(module_name, str):
+        module_name = [module_name]
+
     variables = set(
         sheet.lazy()
         .filter(
-            pl.col("Simulation module") == module_name,
+            pl.col("Simulation module").is_in(module_name),
             pl.col("Included in simulation").is_in(["yes", "optional"]),
         )
         .collect()["Modelica name"]

@@ -15,6 +15,8 @@ def simulator_input_field_setters(cls: type[SimulationInputs], ignore=None):
         for field_name, field in cast(
             BaseModel, component.annotation
         ).model_fields.items():
+            if (component_name, field_name) in ignore:
+                continue
             if included_in_fmu(field):
 
                 def _setter(component_name, field_name, simulation_inputs, value):
