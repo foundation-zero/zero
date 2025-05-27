@@ -16,9 +16,7 @@ from input_output.modules.pvt import PvtControlValues, PvtSensorValues
 
 
 class PvtParameters(BaseModel):
-    cooling_mix_setpoint: Annotated[Celsius, Field(le=90), ParameterMeta("50-S027")] = (
-        90
-    )
+    cooling_mix_setpoint: Annotated[Celsius, Field(le=90)] = 85
     main_fwd_mix_setpoint: Annotated[
         Celsius, Field(ge=40, le=90), ParameterMeta("50-S019")
     ] = 65
@@ -90,10 +88,7 @@ states = [
         on_enter="_enable_recovery_mixes",
         on_exit="_disable_recovery_mixes",
     ),
-    State(
-        name="pump_failure",
-        on_enter="_set_recovery_mixes_to_a"
-    )
+    State(name="pump_failure", on_enter="_set_recovery_mixes_to_a"),
 ]
 
 
@@ -197,10 +192,21 @@ class PvtControl(Control):
             )
 
     def _control_heat_dump_mix(self, sensor_values: PvtSensorValues):
+        # Using the max of the three temperatures to control the heat dump
+        # This should limit the output temperature
+        # Possibly this is too slow, if there is a sudden drop in heat consumption
+        # At that point we should instead predict the output temperature based on the
+        # exchanger temperature and the PVT heat flow
+        # FIXME: either have the FDS adapted to match this functionality
+        # (inclusive) or change the control logic
         self._current_values.pvt_mix_exchanger.setpoint = Stamped(
             value=(
                 self._heat_dump_controller(
-                    sensor_values.pvt_temperature_exchanger.temperature.value,
+                    max(
+                        sensor_values.pvt_temperature_main_aft_return.temperature.value,
+                        sensor_values.pvt_temperature_main_fwd_return.temperature.value,
+                        sensor_values.pvt_temperature_owners_return.temperature.value,
+                    ),
                     self._time,
                 )
             ),
