@@ -11,6 +11,7 @@ from zero_domestic_control.services.stubs.ac import TermodinamicaStub
 from zero_domestic_control.services.ac.thrs import Thrs
 
 from pyModbusTCP.client import ModbusClient
+import json
 
 
 @fixture
@@ -83,13 +84,14 @@ async def test_termodinamica_adjustment_forwarded_to_thrs(
             True
             for m in received_messages
             if m.topic.value == "thrs/room-temperature-setpoint/dutch-cabin"
-            and m.payload == b'{"temperature":15.0}'
+            and json.loads(m.payload).get("temperature") == 15.0
         )
         assert next(
             True
             for m in received_messages
             if m.topic.value == "domestic/rooms"
-            and m.payload == b'{"id":"dutch-cabin","temperature_setpoint":15.0}'
+            and _pick_json(m.payload, ["id", "temperature_setpoint"])
+            == {"id": "dutch-cabin", "temperature_setpoint": 15.0}
         )
     finally:
         stub_run.cancel()
@@ -131,33 +133,59 @@ async def test_setting_setpoints(
             True
             for m in received_messages
             if m.topic.value == "thrs/room-temperature-setpoint/french-cabin"
-            and m.payload == b'{"temperature":20.0}'
+            and json.loads(m.payload).get("temperature") == 20.0
         )
         assert next(
             True
             for m in received_messages
             if m.topic.value == "domestic/rooms"
-            and m.payload == b'{"id":"french-cabin","temperature_setpoint":20.0}'
+            and _pick_json(m.payload, ["id", "temperature_setpoint"])
+            == {"id": "french-cabin", "temperature_setpoint": 20.0}
         )
         received_messages = []
         await asyncio.sleep(0.1)
-        await ac.write_room_humidity_setpoint("italian-cabin", 1)
+        await ac.write_room_humidity_setpoint("italian-cabin", 0.5)
         await asyncio.sleep(0.2)
-        assert termodinamica.read_room_humidity_setpoint("italian-cabin") == 1
+        assert termodinamica.read_room_humidity_setpoint("italian-cabin") == 0.5
         assert next(
             True
             for m in received_messages
             if m.topic.value == "thrs/room-humidity-setpoint/italian-cabin"
-            and m.payload == b'{"humidity":1.0}'
+            and json.loads(m.payload).get("humidity") == 0.5
         )
         assert next(
             True
             for m in received_messages
             if m.topic.value == "domestic/rooms"
-            and m.payload
-            == b'{"id":"italian-cabin","temperature_setpoint":0.0,"humidity_setpoint":1.0}'
+            and _pick_json(m.payload, ["id", "humidity_setpoint"])
+            == {"id": "italian-cabin", "humidity_setpoint": 0.5}
+        )
+        received_messages = []
+        await asyncio.sleep(0.1)
+        await ac.write_room_co2_setpoint("californian-lounge", 0.4)
+        await asyncio.sleep(0.2)
+        assert termodinamica.read_room_co2_setpoint("californian-lounge") == 0.4
+        assert next(
+            True
+            for m in received_messages
+            if m.topic.value == "thrs/room-co2-setpoint/californian-lounge"
+            and json.loads(m.payload).get("co2") == 0.4
+        )
+        assert next(
+            True
+            for m in received_messages
+            if m.topic.value == "domestic/rooms"
+            and _pick_json(m.payload, ["id", "co2_setpoint"])
+            == {"id": "californian-lounge", "co2_setpoint": 0.4}
         )
     finally:
         stub_run.cancel()
         ac_run.cancel()
         receive.cancel()
+
+
+def _pick_json(message: str, fields: list[str]) -> dict:
+    """Pick specific fields from a JSON message."""
+    data = json.loads(message)
+    picked_data = {key: value for key, value in data.items() if key in fields}
+    return picked_data

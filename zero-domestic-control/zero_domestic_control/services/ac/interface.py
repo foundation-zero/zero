@@ -10,6 +10,8 @@ from .constants import (
     TEMPERATURE_SETPOINT_START_ADDRESS,
     ACTUAL_HUMIDITY_START_ADDRESS,
     HUMIDITY_SETPOINT_START_ADDRESS,
+    ACTUAL_CO2_START_ADDRESS,
+    CO2_SETPOINT_START_ADDRESS,
 )
 
 
@@ -34,6 +36,7 @@ class TermodinamicaAc:
         if result is None:
             raise ValueError(f"failed to write {address}")
 
+    # Temperature
     def read_room_temperature(self, room: str) -> float:
         return self._read(room, ACTUAL_TEMPERATURE_START_ADDRESS)
 
@@ -43,6 +46,7 @@ class TermodinamicaAc:
     def write_room_temperature_setpoint(self, room: str, value: float) -> None:
         return self._write(room, TEMPERATURE_SETPOINT_START_ADDRESS, value)
 
+    # Humidity
     def read_room_humidity(self, room: str) -> float:
         return self._read(room, ACTUAL_HUMIDITY_START_ADDRESS)
 
@@ -51,6 +55,16 @@ class TermodinamicaAc:
 
     def write_room_humidity_setpoint(self, room: str, value: float) -> None:
         return self._write(room, HUMIDITY_SETPOINT_START_ADDRESS, value)
+
+    # CO2
+    def read_room_co2(self, room: str) -> float:
+        return self._read(room, ACTUAL_CO2_START_ADDRESS)
+
+    def read_room_co2_setpoint(self, room: str) -> float:
+        return self._read(room, CO2_SETPOINT_START_ADDRESS)
+
+    def write_room_co2_setpoint(self, room: str, value: float) -> None:
+        return self._write(room, CO2_SETPOINT_START_ADDRESS, value)
 
     @staticmethod
     def init_from_settings(settings: Settings):
@@ -71,3 +85,6 @@ class Ac:
 
     async def write_room_humidity_setpoint(self, room: str, humidity: float):
         await self._control.send_room_humidity_setpoint(room, humidity)
+
+    async def write_room_co2_setpoint(self, room: str, co2: float):
+        await self._control.send_room_co2_setpoint(room, co2)

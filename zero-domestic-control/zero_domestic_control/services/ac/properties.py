@@ -77,3 +77,28 @@ class HumiditySetpoint(AcProperty):
 
     def set(self, room: Room):
         room.humidity_setpoint = self.value
+
+
+### CO2 ###
+@dataclass
+class ActualCo2(AcProperty):
+    value: float
+
+    @staticmethod
+    def get(room: Room) -> float | None:
+        return room.actual_co2
+
+    def set(self, room: Room):
+        room.actual_co2 = self.value
+
+
+@dataclass
+class Co2Setpoint(AcProperty):
+    value: float
+
+    @staticmethod
+    def get(room: Room) -> float | None:
+        return room.co2_setpoint
+
+    def set(self, room: Room):
+        room.co2_setpoint = self.value

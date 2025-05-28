@@ -6,6 +6,9 @@ CREATE TABLE rooms (
   actual_temperature REAL,
   temperature_setpoint REAL,
   actual_humidity REAL,
+  humidity_setpoint REAL,
+  actual_co2 REAL,
+  co2_setpoint REAL,
   thermal_comfort_index REAL,
   last_movement TIMESTAMPTZ,
   amplifier_on BOOLEAN
@@ -32,7 +35,7 @@ CREATE TABLE lighting_groups (
   level REAL
 );
 
-INSERT INTO rooms (id, name, "group") VALUES 
+INSERT INTO rooms (id, name, "group") VALUES
 ('owners-cabin', 'Owners cabin', 'AFT'),
 ('dutch-cabin', 'Dutch cabin', 'AFT'),
 ('french-cabin', 'French cabin', 'AFT'),
@@ -58,7 +61,7 @@ INSERT INTO rooms (id, name, "group") VALUES
 ('guest-corridor', 'Guest corridor', 'HALLWAYS'),
 ('polynesian-corridor', 'Polynesian corridor', 'HALLWAYS');
 
-INSERT INTO blinds (id, room_id, name, opacity, "group") VALUES 
+INSERT INTO blinds (id, room_id, name, opacity, "group") VALUES
 ('owners-cabin/main/shear', 'owners-cabin', 'Main', 'shear', 'MAIN'),
 ('owners-cabin/main/blind', 'owners-cabin', 'Main', 'blind', 'MAIN'),
 ('owners-cabin/port/shear', 'owners-cabin', 'Port', 'shear', 'PORT'),
@@ -94,7 +97,7 @@ INSERT INTO blinds (id, room_id, name, opacity, "group") VALUES
 ('owners-stairway/blind', 'owners-stairway', 'Main', 'blind', 'none'),
 ('guest-corridor/blind', 'owners-stairway', 'Main', 'blind', 'none');
 
-INSERT INTO lighting_groups (id, room_id, name) VALUES 
+INSERT INTO lighting_groups (id, room_id, name) VALUES
 ('owners-cabin/ambient', 'owners-cabin', 'Ambient'),
 ('owners-cabin/mood', 'owners-cabin', 'Mood'),
 ('dutch-cabin/ambient', 'dutch-cabin', 'Ambient'),

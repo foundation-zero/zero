@@ -118,13 +118,13 @@ class Av:
 
     def __init__(self, gude: Gude, data: DataCollection):
         self._gude = gude
-        self._mqtt = data
+        self._data = data
 
     async def set_amplifier(self, room_id: str, on: bool):
         pdu, switch = lookup_pdu_switch(room_id)
         await self._gude.switch(pdu, switch, on)
         # Also send directly to MQTT, telemetry is only send every so often, so this will be faster
-        await self._mqtt.send_room(
+        await self._data.send_room(
             Room(
                 id=room_id,
                 amplifier_on=on,
@@ -132,6 +132,8 @@ class Av:
                 temperature_setpoint=None,
                 actual_humidity=None,
                 humidity_setpoint=None,
+                actual_co2=None,
+                co2_setpoint=None,
             )
         )
 
@@ -155,6 +157,8 @@ class AvControl:
                         temperature_setpoint=None,
                         actual_humidity=None,
                         humidity_setpoint=None,
+                        actual_co2=None,
+                        co2_setpoint=None,
                     )
                 )
 

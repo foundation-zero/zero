@@ -8,6 +8,7 @@ from pyModbusTCP.server import DataBank, ModbusServer
 from zero_domestic_control.services.ac.constants import (
     HUMIDITY_SETPOINT_START_ADDRESS,
     TEMPERATURE_SETPOINT_START_ADDRESS,
+    CO2_SETPOINT_START_ADDRESS,
 )
 import logging
 
@@ -22,6 +23,10 @@ class TermodinamicaDataBank(DataBank):
             self.set_holding_registers(address - 100, [to_value])
         elif address >= HUMIDITY_SETPOINT_START_ADDRESS.start and address < (
             HUMIDITY_SETPOINT_START_ADDRESS.start + 100
+        ):
+            self.set_holding_registers(address - 100, [to_value])
+        elif address >= CO2_SETPOINT_START_ADDRESS.start and address < (
+            CO2_SETPOINT_START_ADDRESS.start + 100
         ):
             self.set_holding_registers(address - 100, [to_value])
         return super().on_holding_registers_change(

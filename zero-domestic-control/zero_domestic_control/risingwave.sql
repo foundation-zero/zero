@@ -7,6 +7,9 @@ CREATE TABLE
     actual_temperature REAL,
     temperature_setpoint REAL,
     actual_humidity REAL,
+    humidity_setpoint REAL,
+    actual_co2 REAL,
+    co2_setpoint REAL,
     thermal_comfort_index REAL,
     last_movement TIMESTAMPTZ,
     amplifier_on BOOLEAN,
@@ -48,6 +51,30 @@ SELECT DISTINCT
         when actual_humidity is not null then time
       end desc nulls last
   ) actual_humidity,
+  first_value (humidity_setpoint) OVER (
+    partition by
+      id
+    order BY
+      case
+        when humidity_setpoint is not null then time
+      end desc nulls last
+  ) humidity_setpoint,
+  first_value (actual_co2) OVER (
+    partition by
+      id
+    order BY
+      case
+        when actual_co2 is not null then time
+      end desc nulls last
+  ) actual_co2,
+  first_value (co2_setpoint) OVER (
+    partition by
+      id
+    order BY
+      case
+        when co2_setpoint is not null then time
+      end desc nulls last
+  ) co2_setpoint,
   10 thermal_comfort_index,
   first_value (last_movement) OVER (
     partition by
@@ -150,33 +177,33 @@ WITH
     primary_key = 'id'
   );
 
-INSERT INTO rooms (id, actual_temperature, temperature_setpoint, amplifier_on) VALUES 
-('owners-cabin', 22.5, 21.0, true),
-('dutch-cabin', 22.5, 21.0, true),
-('french-cabin', 22.5, 21.0, true),
-('italian-cabin', 22.5, 21.0, true),
-('californian-lounge', 22.5, 21.0, true),
-('polynesian-cabin', 22.5, 21.0, true),
-('galley', 22.5, 21.0, true),
-('crew-mess', 22.5, 21.0, true),
-('mission-room', 22.5, 21.0, true),
-('laundry', 22.5, 21.0, true),
-('engineers-office', 22.5, 21.0, true),
-('captains-cabin', 22.5, 21.0, true),
-('crew-sb-aft-cabin', 22.5, 21.0, true),
-('crew-sb-mid-cabin', 22.5, 21.0, true),
-('crew-sb-fwd-cabin', 22.5, 21.0, true),
-('crew-ps-mid-cabin', 22.5, 21.0, true),
-('crew-ps-fwd-cabin', 22.5, 21.0, true),
-('owners-deckhouse', 22.5, 21.0, true),
-('owners-cockpit', 22.5, 21.0, true),
-('main-deckhouse', 22.5, 21.0, true),
-('main-cockpit', 22.5, 21.0, true),
-('owners-stairway', 22.5, 21.0, true),
-('guest-corridor', 22.5, 21.0, true),
-('polynesian-corridor', 22.5, 21.0, true);
+INSERT INTO rooms (id, actual_temperature, temperature_setpoint, actual_humidity, humidity_setpoint, actual_co2, co2_setpoint, amplifier_on) VALUES
+('owners-cabin', 22.5, 21.0, 60.0, 50.0, 0.08, 0.07, true),
+('dutch-cabin', 22.5, 21.0, 60.0, 50.0, 0.08, 0.07, true),
+('french-cabin', 22.5, 21.0, 60.0, 50.0, 0.08, 0.07, true),
+('italian-cabin', 22.5, 21.0, 60.0, 50.0, 0.08, 0.07, true),
+('californian-lounge', 22.5, 21.0, 60.0, 50.0, 0.08, 0.07, true),
+('polynesian-cabin', 22.5, 21.0, 60.0, 50.0, 0.08, 0.07, true),
+('galley', 22.5, 21.0, 60.0, 50.0, 0.08, 0.07, true),
+('crew-mess', 22.5, 21.0, 60.0, 50.0, 0.08, 0.07, true),
+('mission-room', 22.5, 21.0, 60.0, 50.0, 0.08, 0.07, true),
+('laundry', 22.5, 21.0, 60.0, 50.0, 0.08, 0.07, true),
+('engineers-office', 22.5, 21.0, 60.0, 50.0, 0.08, 0.07, true),
+('captains-cabin', 22.5, 21.0, 60.0, 50.0, 0.08, 0.07, true),
+('crew-sb-aft-cabin', 22.5, 21.0, 60.0, 50.0, 0.08, 0.07, true),
+('crew-sb-mid-cabin', 22.5, 21.0, 60.0, 50.0, 0.08, 0.07, true),
+('crew-sb-fwd-cabin', 22.5, 21.0, 60.0, 50.0, 0.08, 0.07, true),
+('crew-ps-mid-cabin', 22.5, 21.0, 60.0, 50.0, 0.08, 0.07, true),
+('crew-ps-fwd-cabin', 22.5, 21.0, 60.0, 50.0, 0.08, 0.07, true),
+('owners-deckhouse', 22.5, 21.0, 60.0, 50.0, 0.08, 0.07, true),
+('owners-cockpit', 22.5, 21.0, 60.0, 50.0, 0.08, 0.07, true),
+('main-deckhouse', 22.5, 21.0, 60.0, 50.0, 0.08, 0.07, true),
+('main-cockpit', 22.5, 21.0, 60.0, 50.0, 0.08, 0.07, true),
+('owners-stairway', 22.5, 21.0, 60.0, 50.0, 0.08, 0.07, true),
+('guest-corridor', 22.5, 21.0, 60.0, 50.0, 0.08, 0.07, true),
+('polynesian-corridor', 22.5, 21.0, 60.0, 50.0, 0.08, 0.07, true);
 
-INSERT INTO blinds (id, level) VALUES 
+INSERT INTO blinds (id, level) VALUES
 ('owners-cabin/main/shear', 0),
 ('owners-cabin/main/blind', 0),
 ('owners-cabin/port/shear', 0),
@@ -212,7 +239,7 @@ INSERT INTO blinds (id, level) VALUES
 ('owners-stairway/blind', 0),
 ('guest-corridor/blind', 0);
 
-INSERT INTO lighting_groups (id, level) VALUES 
+INSERT INTO lighting_groups (id, level) VALUES
 ('owners-cabin/ambient', 0),
 ('owners-cabin/mood', 0),
 ('dutch-cabin/ambient', 0),

@@ -1,5 +1,9 @@
 # Zero Domestic Control
 
+## Architecture
+
+https://miro.com/app/board/uXjVI85VEAc=/?share_link_id=164545697008
+
 ## Development
 
 Install Hasura CLI: https://hasura.io/docs/2.0/hasura-cli/install-hasura-cli/

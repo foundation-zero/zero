@@ -7,6 +7,7 @@ from zero_domestic_control.messages import (
     Room,
     RoomTemperatureSetpoint,
     RoomHumiditySetpoint,
+    RoomCo2Setpoint,
 )
 from zero_domestic_control.mqtt import (
     ControlMessages,
@@ -22,6 +23,8 @@ from .properties import (
     ActualTemperature,
     ActualHumidity,
     HumiditySetpoint,
+    ActualCo2,
+    Co2Setpoint,
 )
 from .constants import ROOM_INDICES
 
@@ -58,6 +61,8 @@ class AcControl:
                 temperature_setpoint=None,
                 actual_humidity=None,
                 humidity_setpoint=None,
+                actual_co2=None,
+                co2_setpoint=None,
                 amplifier_on=None,
             )
             for id in ROOM_INDICES.keys()
@@ -79,11 +84,16 @@ class AcControl:
                     TemperatureSetpoint,
                 ),
                 (self._termodinamica.read_room_temperature, ActualTemperature),
-                (self._termodinamica.read_room_humidity, ActualHumidity),
                 (
                     self._termodinamica.read_room_humidity_setpoint,
                     HumiditySetpoint,
                 ),
+                (self._termodinamica.read_room_humidity, ActualHumidity),
+                (
+                    self._termodinamica.read_room_co2_setpoint,
+                    Co2Setpoint,
+                ),
+                (self._termodinamica.read_room_co2, ActualCo2),
             ]:
                 for room_id in ROOM_INDICES.keys():
                     yield partial(_read_data, op, room_id, property)
@@ -143,6 +153,16 @@ class AcControl:
                     msg_hum.id, msg_hum.humidity
                 )
                 await self._data_collection.send_room(self._rooms[message.id])
+            elif isinstance(message, RoomCo2Setpoint):
+                self._rooms[message.id].co2_setpoint = message.co2
+                msg_co2: RoomCo2Setpoint = message
+                await self._write_ops.put(
+                    lambda: self._termodinamica.write_room_co2_setpoint(
+                        msg_co2.id, msg_co2.co2
+                    )
+                )
+                await self._thrs.set_room_co2_setpoint(msg_co2.id, msg_co2.co2)
+                await self._data_collection.send_room(self._rooms[message.id])
             elif isinstance(message, TermodinamicaUpdate):
                 if isinstance(message.value, TemperatureSetpoint):
                     await self._thrs.set_room_temperature_setpoint(
@@ -152,9 +172,13 @@ class AcControl:
                     await self._thrs.set_room_humidity_setpoint(
                         message.room, message.value.value
                     )
+                elif isinstance(message.value, Co2Setpoint):
+                    await self._thrs.set_room_co2_setpoint(
+                        message.room, message.value.value
+                    )
                 await self._data_collection.send_room(self._rooms[message.room])
             else:
-                assert_never(message)
+                assert_never(message)  # type: ignore
 
     async def run(self):
         async with TaskGroup() as tg:

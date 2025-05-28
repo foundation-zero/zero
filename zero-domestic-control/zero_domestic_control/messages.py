@@ -32,6 +32,8 @@ class Room(Message):
     temperature_setpoint: Optional[float]
     actual_humidity: Optional[float]
     humidity_setpoint: Optional[float]
+    actual_co2: Optional[float]
+    co2_setpoint: Optional[float]
     amplifier_on: Optional[bool]
 
 
@@ -53,3 +55,8 @@ class RoomTemperatureSetpoint(Message):
 class RoomHumiditySetpoint(Message):
     TOPIC: ClassVar[str] = "domestic/control/room-humidity-setpoint/:id"
     humidity: float
+
+
+class RoomCo2Setpoint(Message):
+    TOPIC: ClassVar[str] = "domestic/control/room-co2-setpoint/:id"
+    co2: float
