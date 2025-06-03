@@ -53,7 +53,7 @@ async def test_lighting_group_to_hass(hass):
     response = client.post(
         "/graphql",
         json={
-            "query": """mutation { setLightingGroup(id: "owners-cabin/mood", level: 0.5) }"""
+            "query": """mutation { setLightingGroups(ids: "owners-cabin/mood", level: 0.5) { code success message } }"""
         },
     )
 
@@ -96,7 +96,7 @@ async def test_blind_to_hass(hass):
     response = client.post(
         "/graphql",
         json={
-            "query": """mutation { setBlind(id: "owners-cabin/main/shear", level: 0.5) }"""
+            "query": """mutation { setBlinds(ids: "owners-cabin/main/shear", level: 0.5) { code success message } }"""
         },
     )
 

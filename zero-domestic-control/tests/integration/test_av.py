@@ -118,7 +118,9 @@ async def test_av_through_gq(mqtt_client):
     client = TestClient(app)
     response = client.post(
         "/graphql",
-        json={"query": """mutation { setAmplifier(id: "owners-cabin", on: true) }"""},
+        json={
+            "query": """mutation { setAmplifiers(ids: "owners-cabin", on: true) { code success message } }"""
+        },
     )
 
     assert response.status_code == 200

@@ -14,11 +14,12 @@
           }
           scalar Void
           type Mutation {
-            setAmplifier(id: ID! @preset(value: "x-hasura-cabin"), on: Boolean!): Void
-            setBlind(id: ID!, level: Float!): Void
-            setLightingGroup(id: ID!, level: Float!): Void
-            setLightingGroups(ids: [ID!]!, level: Float!): Void
-            setRoomTemperatureSetpoint(id: ID! @preset(value: "x-hasura-cabin"), temperature: Int!): Void
+            setAmplifiers(ids: ID! @preset(value: "x-hasura-cabin"), on: Boolean!): Void
+            setBlinds(ids: ID!, level: Float!): Void
+            setLightingGroups(ids: ID!, level: Float!): Void
+            setRoomTemperatureSetpoints(ids: ID! @preset(value: "x-hasura-cabin"), temperature: Float!): Void
+            setRoomHumiditySetpoints(ids: ID! @preset(value: "x-hasura-cabin"), humidity: Float!): Void
+            setRoomCo2Setpoints(ids: ID! @preset(value: "x-hasura-cabin"), co2: Float!): Void
           }
           type Query {
             version: String!

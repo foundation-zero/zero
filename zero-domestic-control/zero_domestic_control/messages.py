@@ -1,6 +1,6 @@
-from typing import ClassVar, Optional
+from typing import ClassVar, Optional, Annotated
 from aiomqtt import Topic, Wildcard
-from pydantic import BaseModel, model_validator
+from pydantic import BaseModel, model_validator, Field
 
 
 class Message(BaseModel):
@@ -39,12 +39,12 @@ class Room(Message):
 
 class Blind(Message):
     TOPIC: ClassVar[str] = "domestic/blinds"
-    level: float
+    level: Annotated[float, Field(ge=0, le=1)]
 
 
 class LightingGroup(Message):
     TOPIC: ClassVar[str] = "domestic/lighting-groups"
-    level: float
+    level: Annotated[float, Field(ge=0, le=1)]
 
 
 class RoomTemperatureSetpoint(Message):

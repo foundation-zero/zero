@@ -12,6 +12,7 @@ from .constants import (
     HUMIDITY_SETPOINT_START_ADDRESS,
     ACTUAL_CO2_START_ADDRESS,
     CO2_SETPOINT_START_ADDRESS,
+    ROOM_INDICES,
 )
 
 
@@ -79,12 +80,24 @@ class Ac:
 
     def __init__(self, control: ControlSend):
         self._control = control
+        self._rooms = ROOM_INDICES.keys()
 
     async def write_room_temperature_setpoint(self, room: str, temperature: float):
+        self.validate_room_id(room)
         await self._control.send_room_temperature_setpoint(room, temperature)
 
     async def write_room_humidity_setpoint(self, room: str, humidity: float):
+        self.validate_room_id(room)
         await self._control.send_room_humidity_setpoint(room, humidity)
 
     async def write_room_co2_setpoint(self, room: str, co2: float):
+        self.validate_room_id(room)
         await self._control.send_room_co2_setpoint(room, co2)
+
+    def validate_room_id(self, id: str):
+        if id not in self._rooms:
+            raise ValueError(f"Invalid room ID {id}")
+
+    def validate_room_ids(self, ids: list[str]):
+        if invalid := set(ids) - set(self._rooms):
+            raise ValueError(f"Invalid room IDs {invalid}")

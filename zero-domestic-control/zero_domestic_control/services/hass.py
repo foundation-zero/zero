@@ -12,6 +12,7 @@ import re
 from zero_domestic_control.messages import Blind, LightingGroup
 from zero_domestic_control.mqtt import DataCollection
 from zero_domestic_control.util import invert_dict
+from asyncio import TaskGroup
 
 logger = logging.getLogger(__name__)
 
@@ -129,8 +130,7 @@ class Hass:
         self._client = client
 
     async def set_lighting_group(self, lighting_group: LightingGroup):
-        if lighting_group.id not in _LIGHT_GROUP_IDS:
-            raise ValueError(f"unknown lighting group id {lighting_group.id}")
+        self.validate_lighting_group_ids([lighting_group.id])
         number = await self._client.async_get_domain("input_number")
         if number is None:
             raise Exception("unable to find input_number domain")
@@ -145,9 +145,17 @@ class Hass:
             entity_id=f"input_number.{id_to_hass_id(lighting_group.id)}",
         )
 
+    async def set_lighting_group_all(self, level: float):
+        async with TaskGroup() as tg:
+            for lighting_group_id in _LIGHT_GROUP_IDS.keys():
+                tg.create_task(
+                    self.set_lighting_group(
+                        LightingGroup(id=lighting_group_id, level=level)
+                    )
+                )
+
     async def set_blind(self, blind: Blind):
-        if blind.id not in _BLIND_IDS:
-            raise ValueError(f"unknown blind id {blind.id}")
+        self.validate_blind_group_ids([blind.id])
         cover = await self._client.async_get_domain("cover")
         if cover is None:
             raise Exception("unable to find cover domain")
@@ -158,6 +166,14 @@ class Hass:
         await set_cover_position.async_trigger(
             position=blind.level * 100, entity_id=f"cover.{id_to_hass_id(blind.id)}"
         )
+
+    def validate_lighting_group_ids(self, ids: list[str]):
+        if invalid := set(ids) - set(_LIGHT_GROUP_IDS):
+            raise ValueError(f"unknown lighting group IDs {invalid}")
+
+    def validate_blind_group_ids(self, ids: list[str]):
+        if invalid := set(ids) - set(_BLIND_IDS):
+            raise ValueError(f"unknown blind group IDs {invalid}")
 
     @asynccontextmanager
     @staticmethod

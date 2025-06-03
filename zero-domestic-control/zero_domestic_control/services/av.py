@@ -137,6 +137,10 @@ class Av:
             )
         )
 
+    def validate_room_ids(self, ids: list[str]):
+        if invalid := set(ids) - (set(FWD_PORTS.keys()) | set(AFT_PORTS.keys())):
+            raise ValueError(f"Invalid room IDs {invalid}")
+
 
 class AvControl:
     """AV control which collects and forwards the PDU telemetry to MQTT"""
