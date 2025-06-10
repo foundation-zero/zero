@@ -26,4 +26,4 @@ CREATE TABLE {{ this }} (
 	PCS_CB_11_PITCH_FOLL_UP_FAIL_ALARM	BOOLEAN,
 	PCS_CB_11_POWER_DISTR_INS	BOOLEAN,
 )
-{{ mqtt_with('marpower/pcs') }}
+{{ mqtt_with('marpower/150000_pcs') }}

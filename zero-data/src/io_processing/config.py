@@ -6,7 +6,7 @@ from io_processing.io_list.types import Source
 
 
 io_lists: list[tuple[Source, str]] = [
-    ("marpower", "52422003_3210_AMCS IO-List R2.1.xlsx")
+    ("marpower", "52422003_3210_AMCS IO-List R2.5.xlsx")
 ]
 
 

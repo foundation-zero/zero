@@ -1,9 +1,17 @@
+import logging
+import sys
+
 from io_processing.dbt_gen import generate_dbt
 from io_processing.data_gen import generate_data
 from argparse import ArgumentParser
-from .logging import setup_logging
 
-setup_logging()
+
+def setup_logging():
+    logging.basicConfig(
+        level=logging.INFO,
+        format="%(asctime)s | %(levelname)-8s | %(message)s",
+        stream=sys.stdout,
+    )
 
 
 def parser():
@@ -31,6 +39,7 @@ def parser():
 
 
 def run():
+    setup_logging()
     args = parser().parse_args()
     args.func()
 

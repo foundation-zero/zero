@@ -1,6 +1,6 @@
 {{ config(materialized='table_with_connector') }}
 CREATE TABLE {{ this }} (
 	TIMESTAMP	TIMESTAMP,
-	BILGE_LEVEL_SUB_PUMP3_ALARM	BOOLEAN,
+	STEER_FREQ_DR_FAIL	BOOLEAN,
 )
-{{ mqtt_with('marpower/2102_bilge_fifi') }}
+{{ mqtt_with('marpower/170000_steering_stystem') }}

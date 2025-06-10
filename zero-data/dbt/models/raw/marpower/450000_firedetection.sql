@@ -1,6 +1,6 @@
 {{ config(materialized='table_with_connector') }}
 CREATE TABLE {{ this }} (
 	TIMESTAMP	TIMESTAMP,
-	PNEUMATIC_PRESSURE	REAL,
+	FIRE_DETECT_FAULT	BOOLEAN,
 )
-{{ mqtt_with('marpower/2900_pneumatic_') }}
+{{ mqtt_with('marpower/450000_firedetection') }}

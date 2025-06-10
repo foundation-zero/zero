@@ -6,4 +6,4 @@ CREATE TABLE {{ this }} (
 	STERN_THRUST_BEARING_TEMP_DE	REAL,
 	STERN_THRUST_BEARING_TEMP_NDE	REAL,
 )
-{{ mqtt_with('marpower/1500_propulsion') }}
+{{ mqtt_with('marpower/150000_propulsion') }}
