@@ -2,6 +2,7 @@
 import { Room, Units } from "@/@types";
 import AreaChart from "@/components/ui/area-chart/AreaChart.vue";
 import { ValueTile } from "@/components/ui/value-tile";
+import { CO2_RANGE, CO2_THRESHOLDS } from "@/lib/consts";
 import {
   formatInt,
   toValueObject,
@@ -13,16 +14,13 @@ import { computed } from "vue";
 
 const props = defineProps<{ room: Room }>();
 
-const THRESHOLDS: [warning: number, critical: number] = [1000, 2000];
-const RANGE = [400, 2500];
-
 const history = useTransform(
-  useLiveRandomValues(24, { min: RANGE[0], max: RANGE[1] }),
+  useLiveRandomValues(24, { min: CO2_RANGE[0], max: CO2_RANGE[1] }),
   toValueObject,
 );
 
 const state = useThresholds(
-  THRESHOLDS,
+  CO2_THRESHOLDS,
   computed(() => props.room.actualCO2),
 );
 </script>
@@ -36,8 +34,8 @@ const state = useThresholds(
       <AreaChart
         :data="history"
         :min="0"
-        :max="RANGE[1]"
-        :thresholds="THRESHOLDS"
+        :max="CO2_RANGE[1]"
+        :thresholds="CO2_THRESHOLDS"
       />
     </template>
     <template #center>

@@ -7,7 +7,8 @@ import {
   Droplets,
   Fan,
   LampCeiling,
-  ThermometerSnowflake,
+  Table,
+  Thermometer,
 } from "lucide-vue-next";
 import { useRoute } from "vue-router";
 
@@ -21,10 +22,22 @@ const route = useRoute();
   >
     <NavList>
       <NavListItem
+        :to="{ name: 'env:overview' }"
+        :active="route.name === 'env:overview'"
+      >
+        <Table
+          :size="16"
+          stroke-width="2"
+        />
+        <span class="ml-2.5">
+          {{ $t("labels.overview") }}
+        </span>
+      </NavListItem>
+      <NavListItem
         :to="{ name: 'env:temperature' }"
         :active="route.name === 'env:temperature'"
       >
-        <ThermometerSnowflake
+        <Thermometer
           :size="16"
           stroke-width="2"
         />

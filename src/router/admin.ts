@@ -4,6 +4,7 @@ import HumiditySettings from "@/components/environment/humidity-settings/Humidit
 import Admin from "@/layouts/AdminLayout.vue";
 import Humidity from "@/views/environment/Humidity.vue";
 import Lights from "@/views/environment/Lights.vue";
+import Overview from "@/views/environment/Overview.vue";
 import Temperature from "@/views/environment/Temperature.vue";
 import Ventilation from "@/views/environment/Ventilation.vue";
 import { RouteRecordRaw } from "vue-router";
@@ -14,6 +15,11 @@ export const envRoutes: RouteRecordRaw[] = [
     name: "environment",
     meta: { layout: Admin, role: Roles.Admin },
     children: [
+      {
+        path: "overview",
+        name: "env:overview",
+        component: Overview,
+      },
       {
         path: "temperature",
         name: "env:temperature",

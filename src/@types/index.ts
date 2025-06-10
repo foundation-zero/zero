@@ -78,3 +78,15 @@ export type NumValueObject = ValueObject<number>;
 
 export type Thresholds = [lower: number, upper: number, ...other: number[]];
 export type SafeRangeThresholds = [min: number, max: number];
+
+export interface RoomState {
+  co2: ValidationStatus;
+  temperature: ValidationStatus;
+  humidity: ValidationStatus;
+  overall: ValidationStatus;
+}
+
+export interface RoomWithState {
+  room: Room;
+  state: RoomState;
+}

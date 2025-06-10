@@ -1,8 +1,16 @@
-import { SafeRangeThresholds, Thresholds, ValidationStatus, ValueObject } from "@/@types";
+import {
+  Room,
+  RoomState,
+  SafeRangeThresholds,
+  Thresholds,
+  ValidationStatus,
+  ValueObject,
+} from "@/@types";
 import { useIntervalFn } from "@vueuse/core";
 import { type ClassValue, clsx } from "clsx";
 import { twMerge } from "tailwind-merge";
 import { computed, ComputedRef, ref, Ref } from "vue";
+import { CO2_THRESHOLDS, HUMIDITY_THRESHOLDS, TEMPERATURE_THRESHOLDS } from "./consts";
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -13,6 +21,16 @@ export const isDefined = <T>(value: T | undefined | null): value is T =>
 
 export const compareByName = <T extends { name: string }>(a: T, b: T) =>
   a.name.localeCompare(b.name);
+
+export const validationStatusToNumber: Record<ValidationStatus, number> = {
+  [ValidationStatus.OK]: 0,
+  [ValidationStatus.WARN]: 1,
+  [ValidationStatus.FAIL]: 2,
+  [ValidationStatus.UNKNOWN]: 0,
+};
+
+export const compareByValidationStatus = (a: ValidationStatus, b: ValidationStatus) =>
+  validationStatusToNumber[a] - validationStatusToNumber[b];
 
 export const ratioAsPercentage = (ratio: Ref<number>) =>
   computed({
@@ -90,25 +108,50 @@ export const useTransform = <T>(
 
 export const toValueObject = <T>(value: T): ValueObject<T> => ({ value });
 
+export const validateSafeRange = (
+  thresholds: SafeRangeThresholds,
+  value: number,
+): ValidationStatus => {
+  if (value < thresholds[0] || value > thresholds[1]) {
+    return ValidationStatus.WARN;
+  }
+
+  return ValidationStatus.OK;
+};
+
 export const useSafeRange = (
   thresholds: SafeRangeThresholds,
   value: Ref<number>,
-): Ref<ValidationStatus> =>
-  computed(() => {
-    if (value.value < thresholds[0] || value.value > thresholds[1]) {
-      return ValidationStatus.WARN;
-    }
+): Ref<ValidationStatus> => computed(() => validateSafeRange(thresholds, value.value));
 
+export const validateThreshold = (thresholds: Thresholds, value: number): ValidationStatus => {
+  if (value >= thresholds[1]) {
+    return ValidationStatus.FAIL;
+  } else if (value >= thresholds[0]) {
+    return ValidationStatus.WARN;
+  } else {
     return ValidationStatus.OK;
-  });
+  }
+};
 
 export const useThresholds = (thresholds: Thresholds, value: Ref<number>): Ref<ValidationStatus> =>
-  computed(() => {
-    if (value.value >= thresholds[1]) {
-      return ValidationStatus.FAIL;
-    } else if (value.value >= thresholds[0]) {
-      return ValidationStatus.WARN;
-    } else {
-      return ValidationStatus.OK;
-    }
-  });
+  computed(() => validateThreshold(thresholds, value.value));
+
+export const getOverallState = (states: ValidationStatus[]): ValidationStatus => {
+  if (states.some((state) => state === ValidationStatus.FAIL)) return ValidationStatus.FAIL;
+  else if (states.some((state) => state === ValidationStatus.WARN)) return ValidationStatus.WARN;
+  else return ValidationStatus.OK;
+};
+
+export const getRoomState = (room: Room): RoomState => {
+  const stateCO2 = validateThreshold(CO2_THRESHOLDS, room.actualCO2);
+  const stateTemperature = validateThreshold(TEMPERATURE_THRESHOLDS, room.actualTemperature);
+  const stateHumidity = validateSafeRange(HUMIDITY_THRESHOLDS, room.actualHumidity);
+
+  return {
+    co2: stateCO2,
+    temperature: stateTemperature,
+    humidity: stateHumidity,
+    overall: getOverallState([stateTemperature, stateHumidity, stateCO2]),
+  };
+};

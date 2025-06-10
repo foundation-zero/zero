@@ -81,3 +81,13 @@ VITE_GRAPHQL_TOKEN="{{INSERT API TOKEN HERE}}"
 ```
 You can find or generate the token in the Zero Domestic Control repository: 
 https://github.com/foundation-zero/zero-domestic-control
+
+## Development
+
+### Adding new components
+
+In this project we use the [shadcn-vue](https://www.shadcn-vue.com) component library. In a recent version this library switched from Radix Vue to Reka UI for primitive components. Since this is not backwards-compatible with our current setup and components, we need to explicitly use the Radix distribution when adding new components from Shadcn.
+
+```sh
+pnpm dlx shadcn-vue@radix add {{COMPONENT}}
+```

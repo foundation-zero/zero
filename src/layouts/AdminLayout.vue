@@ -5,10 +5,12 @@ import { ProgressBar } from "@/components/ui/progress-bar";
 import { useRoomStore } from "@/stores/rooms";
 import { useUIStore } from "@/stores/ui";
 import { Sidebar } from "lucide-vue-next";
-import { toRefs } from "vue";
+import { provide, toRefs } from "vue";
 
 const { hasPendingRequests } = toRefs(useRoomStore());
 const { showSideNav, breakpoints, toggleNav } = toRefs(useUIStore());
+
+provide("showSideNav", showSideNav);
 </script>
 
 <template>

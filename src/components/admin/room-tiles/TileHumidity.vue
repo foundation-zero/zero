@@ -2,24 +2,22 @@
 import { Room } from "@/@types";
 import AreaChart from "@/components/ui/area-chart/AreaChart.vue";
 import { ValueTile } from "@/components/ui/value-tile";
+import { HUMIDITY_RANGE, HUMIDITY_THRESHOLDS } from "@/lib/consts";
 import { toValueObject, useLiveRandomValues, useSafeRange, useTransform } from "@/lib/utils";
 import { computed } from "vue";
 
 const props = defineProps<{ room: Room }>();
 
-const THRESHOLDS: [humidityLow: number, humidityHigh: number] = [35, 60];
-const RANGE = [30, 80];
-
 const history = useTransform(
   useLiveRandomValues(24, {
-    min: RANGE[0],
-    max: RANGE[1],
+    min: HUMIDITY_RANGE[0],
+    max: HUMIDITY_RANGE[1],
   }),
   toValueObject,
 );
 
 const state = useSafeRange(
-  THRESHOLDS,
+  HUMIDITY_THRESHOLDS,
   computed(() => props.room.actualHumidity),
 );
 </script>
@@ -32,9 +30,9 @@ const state = useSafeRange(
     <template #background>
       <AreaChart
         :data="history"
-        :min="RANGE[0]"
-        :max="RANGE[1]"
-        :thresholds="THRESHOLDS"
+        :min="HUMIDITY_RANGE[0]"
+        :max="HUMIDITY_RANGE[1]"
+        :thresholds="HUMIDITY_THRESHOLDS"
       >
         <template #unit>
           <span class="ml-[0.2em] text-rxs font-extralight">&percnt;</span>

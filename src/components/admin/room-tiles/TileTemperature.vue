@@ -2,14 +2,12 @@
 import { Room } from "@/@types";
 import AreaChart from "@/components/ui/area-chart/AreaChart.vue";
 import { ValueTile } from "@/components/ui/value-tile";
+import { TEMPERATURE_RANGE, TEMPERATURE_THRESHOLDS } from "@/lib/consts";
 import { toValueObject, useLiveRandomValues, useThresholds, useTransform } from "@/lib/utils";
 import { Droplets } from "lucide-vue-next";
 import { computed } from "vue";
 
 const props = defineProps<{ room: Room }>();
-
-const THRESHOLDS: [tempWarm: number, tempHot: number] = [25, 30];
-const RANGE = [15, 35];
 
 const history = useTransform(
   useLiveRandomValues(24, {
@@ -20,7 +18,7 @@ const history = useTransform(
 );
 
 const state = useThresholds(
-  THRESHOLDS,
+  TEMPERATURE_THRESHOLDS,
   computed(() => props.room.actualTemperature),
 );
 </script>
@@ -33,9 +31,9 @@ const state = useThresholds(
     <template #background>
       <AreaChart
         :data="history"
-        :min="RANGE[0]"
-        :max="RANGE[1]"
-        :thresholds="THRESHOLDS"
+        :min="TEMPERATURE_RANGE[0]"
+        :max="TEMPERATURE_RANGE[1]"
+        :thresholds="TEMPERATURE_THRESHOLDS"
       >
         <template #unit>
           <sup class="text-r2xs font-extralight">&deg;</sup>
