@@ -1,9 +1,9 @@
 <script setup lang="ts">
 import { BlindsGroup } from "@/@types";
-import { BlindsControl } from "@/components/cabin/blinds-control";
-import { BlindsSlider } from "@/components/ui/blinds-slider";
-import BlindsValue from "@/components/ui/blinds-value/BlindsValue.vue";
-import { List, ListHeader, ListItem, ListRoot } from "@/components/ui/list";
+import { List, ListHeader, ListItem, ListRoot } from "@components/shadcn/list";
+import { BlindsSlider } from "@components/shared/blinds-slider";
+import BlindsValue from "@components/shared/blinds-value/BlindsValue.vue";
+import { BlindsControl } from "@modules/cabin/blinds-control";
 
 import { useRoomStore } from "@/stores/rooms";
 import { ref, toRefs, watch } from "vue";

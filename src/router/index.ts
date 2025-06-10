@@ -19,7 +19,7 @@ const routes: RouteRecordRaw[] = [
     path: "/auth",
     name: "auth",
     meta: { requiresAuth: false, layout: EmptyLayout },
-    component: () => import("@/views/Unauthorised.vue"),
+    component: async () => await import("@/views/Unauthorised.vue"),
     beforeEnter: async (to) => {
       const token = to.query.token;
 

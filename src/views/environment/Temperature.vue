@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import RoomTiles from "@/components/admin/room-tiles/RoomTiles.vue";
-import TileTemperature from "@/components/admin/room-tiles/TileTemperature.vue";
+import RoomTiles from "@modules/admin/room-tiles/RoomTiles.vue";
+import TileTemperature from "@modules/admin/room-tiles/TileTemperature.vue";
 import { useI18n } from "vue-i18n";
 
 const { t } = useI18n();

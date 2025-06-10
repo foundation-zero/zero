@@ -1,13 +1,13 @@
 <script setup lang="ts">
-import SideNav from "@/components/admin/side-nav/SideNav.vue";
-import AsAdmin from "@/components/ui/with-role/AsAdmin.vue";
+import TopNavigation from "@components/shared/TopNavigation.vue";
+import { ProgressBar } from "@components/shared/progress-bar";
+import AsAdmin from "@components/shared/with-role/AsAdmin.vue";
+import SideNav from "@modules/admin/side-nav/SideNav.vue";
+import BottomNavigation from "@modules/cabin/BottomNavigation.vue";
+import NavPills from "@modules/cabin/NavPills.vue";
+import ToggleAV from "@modules/cabin/ToggleAV.vue";
 import { Sidebar } from "lucide-vue-next";
 import { provide, toRefs } from "vue";
-import BottomNavigation from "../components/cabin/BottomNavigation.vue";
-import NavPills from "../components/cabin/NavPills.vue";
-import ToggleAV from "../components/cabin/ToggleAV.vue";
-import TopNavigation from "../components/TopNavigation.vue";
-import { ProgressBar } from "../components/ui/progress-bar";
 import { useRoomStore } from "../stores/rooms";
 import { useUIStore } from "../stores/ui";
 

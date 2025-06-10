@@ -1,9 +1,9 @@
 <script setup lang="ts">
-import SideNav from "@/components/admin/side-nav/SideNav.vue";
-import TopNavigation from "@/components/TopNavigation.vue";
-import { ProgressBar } from "@/components/ui/progress-bar";
 import { useRoomStore } from "@/stores/rooms";
 import { useUIStore } from "@/stores/ui";
+import TopNavigation from "@components/shared/TopNavigation.vue";
+import { ProgressBar } from "@components/shared/progress-bar";
+import SideNav from "@modules/admin/side-nav/SideNav.vue";
 import { Sidebar } from "lucide-vue-next";
 import { provide, toRefs } from "vue";
 

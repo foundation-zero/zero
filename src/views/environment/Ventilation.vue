@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import RoomTiles from "@/components/admin/room-tiles/RoomTiles.vue";
-import TileCO2 from "@/components/admin/room-tiles/TileCO2.vue";
+import RoomTiles from "@modules/admin/room-tiles/RoomTiles.vue";
+import TileCO2 from "@modules/admin/room-tiles/TileCO2.vue";
 import { useI18n } from "vue-i18n";
 
 const { t } = useI18n();

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { SensorState } from "@/components/environment/sensor-state";
+import { SensorState } from "@modules/environment/sensor-state";
 
 import { useI18n } from "vue-i18n";
 

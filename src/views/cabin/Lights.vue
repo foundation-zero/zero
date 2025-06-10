@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import LightGroup from "@/components/ui/lights-list/LightGroup.vue";
 import { useRoomStore } from "@/stores/rooms";
 import { useUIStore } from "@/stores/ui";
+import LightGroup from "@components/shared/lights-list/LightGroup.vue";
 import { toRefs } from "vue";
 
 const roomStore = useRoomStore();

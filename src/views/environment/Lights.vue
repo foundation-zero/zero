@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import RoomsToggle from "@/components/admin/room-tiles/RoomsToggle.vue";
-import RoomTiles from "@/components/admin/room-tiles/RoomTiles.vue";
-import TileLights from "@/components/admin/room-tiles/TileLights.vue";
+import RoomsToggle from "@modules/admin/room-tiles/RoomsToggle.vue";
+import RoomTiles from "@modules/admin/room-tiles/RoomTiles.vue";
+import TileLights from "@modules/admin/room-tiles/TileLights.vue";
 import { useI18n } from "vue-i18n";
 
 const { t } = useI18n();

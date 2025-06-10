@@ -13,6 +13,11 @@ export default defineConfig({
   root: resolve(__dirname, "src"),
 
   resolve: {
-    alias: [{ find: "@", replacement: resolve(__dirname, "src") }],
+    alias: [
+      { find: "@", replacement: resolve(__dirname, "src") },
+      { find: "@tests", replacement: resolve(__dirname, "tests") },
+      { find: "@components", replacement: resolve(__dirname, "src/components/ui") },
+      { find: "@modules", replacement: resolve(__dirname, "src/components/modules") },
+    ],
   },
 });

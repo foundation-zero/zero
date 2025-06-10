@@ -1,10 +1,10 @@
 <script setup lang="ts">
-import RoomTemperature from "@/components/cabin/RoomTemperature.vue";
-import { HeavySlider } from "@/components/ui/heavy-slider";
-import { List, ListItem, ListRoot } from "@/components/ui/list";
 import { valueAsArray, valueWithValidation } from "@/lib/utils";
 import { useRoomStore } from "@/stores/rooms";
 import { useUIStore } from "@/stores/ui";
+import { List, ListItem, ListRoot } from "@components/shadcn/list";
+import { HeavySlider } from "@components/shared/heavy-slider";
+import RoomTemperature from "@modules/cabin/RoomTemperature.vue";
 import { computed, ref, toRefs, watch } from "vue";
 import { useI18n } from "vue-i18n";
 const MIN_VALUE = 18;
