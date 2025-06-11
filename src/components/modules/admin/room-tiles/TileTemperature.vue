@@ -4,6 +4,7 @@ import { TEMPERATURE_RANGE, TEMPERATURE_THRESHOLDS } from "@/lib/consts";
 import { toValueObject, useLiveRandomValues, useThresholds, useTransform } from "@/lib/utils";
 import AreaChart from "@components/shared/area-chart/AreaChart.vue";
 import { ValueTile } from "@components/shared/value-tile";
+import { SeriesOption } from "echarts/types/dist/shared";
 import { Droplets } from "lucide-vue-next";
 import { computed } from "vue";
 
@@ -16,6 +17,27 @@ const history = useTransform(
   }),
   toValueObject,
 );
+
+const setpointHistory = useTransform(
+  useLiveRandomValues(24, {
+    min: 20,
+    max: 23,
+  }),
+  toValueObject,
+);
+
+const setpointSeries = computed<SeriesOption[]>(() => [
+  {
+    type: "line",
+    data: setpointHistory.value,
+    showSymbol: false,
+    lineStyle: {
+      width: 1,
+      color: "currentColor",
+      type: "dashed",
+    },
+  },
+]);
 
 const state = useThresholds(
   TEMPERATURE_THRESHOLDS,
@@ -34,6 +56,7 @@ const state = useThresholds(
         :min="TEMPERATURE_RANGE[0]"
         :max="TEMPERATURE_RANGE[1]"
         :thresholds="TEMPERATURE_THRESHOLDS"
+        :extra-series="setpointSeries"
       >
         <template #unit>
           <sup class="text-r2xs font-extralight">&deg;</sup>

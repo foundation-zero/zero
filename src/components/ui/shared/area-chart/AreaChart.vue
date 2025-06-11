@@ -6,7 +6,7 @@ import { LineChart } from "echarts/charts";
 import { GridComponent, LegendComponent } from "echarts/components";
 import { use } from "echarts/core";
 import { SVGRenderer } from "echarts/renderers";
-import { ECBasicOption } from "echarts/types/dist/shared";
+import { ECBasicOption, SeriesOption } from "echarts/types/dist/shared";
 import { computed, ref, toRefs } from "vue";
 import VChart from "vue-echarts";
 
@@ -15,6 +15,7 @@ const props = defineProps<{
   min: number;
   data: NumValueObject[];
   thresholds?: number[];
+  extraSeries?: SeriesOption[];
 }>();
 const { max, data, min } = toRefs(props);
 const sortedThresholds = computed(() => props.thresholds?.toSorted((a, b) => a - b) ?? []);
@@ -27,6 +28,24 @@ const relativeThresholds = computed(() =>
 use([SVGRenderer, LineChart, GridComponent, LegendComponent]);
 
 const colorMode = useColorMode();
+
+const series = computed<SeriesOption[]>(() => {
+  const areaChart: SeriesOption = {
+    smooth: true,
+    type: "line",
+    showSymbol: false,
+    data: data.value,
+    lineStyle: {
+      width: 0,
+    },
+    areaStyle: {
+      color: "currentColor",
+      opacity: 0.2,
+    },
+  };
+
+  return [areaChart, ...(props.extraSeries ?? [])];
+});
 
 const option = ref<ECBasicOption>({
   animation: false,
@@ -61,21 +80,7 @@ const option = ref<ECBasicOption>({
       show: false,
     },
   },
-  series: [
-    {
-      smooth: true,
-      type: "line",
-      showSymbol: false,
-      data,
-      lineStyle: {
-        width: 0,
-      },
-      areaStyle: {
-        color: "currentColor",
-        opacity: 0.2,
-      },
-    },
-  ],
+  series,
 });
 </script>
 
