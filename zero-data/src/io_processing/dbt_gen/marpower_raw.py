@@ -15,7 +15,7 @@ class MarpowerRawGenerator:
     def generate(self, topics: List[IOTopic]):
         """Generate dbt models for the given topics."""
         for topic in topics:
-            file_name = topic.topic.lower()
+            file_name = topic.topic.lower().replace("+", "_").replace(".", "_")
             table = self._generate_topic(topic)
             self._write_file(self.table_path, file_name, table)
 
