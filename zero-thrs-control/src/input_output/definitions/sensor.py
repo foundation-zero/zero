@@ -1,5 +1,5 @@
 from input_output.base import Stamped, ThrsModel
-from input_output.definitions.units import Bar, Celsius, Hz, LMin, PcsMode, Ratio, seconds
+from input_output.definitions.units import Bar, Celsius, Charged, Hz, LMin, PcsMode, Ratio, seconds
 
 
 class FlowSensor(ThrsModel):
@@ -30,3 +30,6 @@ class Thruster(ThrsModel):
 
 class Pcs(ThrsModel):
     mode: Stamped[PcsMode]
+
+class Pcm(ThrsModel):
+    charged: Stamped[Charged]

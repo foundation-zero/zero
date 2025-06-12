@@ -25,6 +25,8 @@ jobs:
 
       - run: poetry run fmpy compile src/simulation/models/HTsystem_moduleV2.fmu
 
+      - run: poetry run fmpy compile src/simulation/models/pcm_moduleV2.fmu
+
       - run: poetry run pyright
 
       - run: poetry run ruff check src tests

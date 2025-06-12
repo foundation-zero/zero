@@ -33,3 +33,7 @@ class Valve(ThrsModel):
             - 0: Flow from B to AB
             - 1: Flow from A to AB
     """
+
+class Pcm(ThrsModel):
+    on: Stamped[OnOff]
+
