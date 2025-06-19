@@ -2,6 +2,13 @@ table:
   name: rooms
   schema: public
 array_relationships:
+  - name: amplifiers
+    using:
+      foreign_key_constraint_on:
+        column: room_id
+        table:
+          name: amplifiers
+          schema: public
   - name: blinds
     using:
       foreign_key_constraint_on:
@@ -16,23 +23,42 @@ array_relationships:
         table:
           name: lighting_groups
           schema: public
+  - name: rooms_controls
+    using:
+      foreign_key_constraint_on:
+        column: room_id
+        table:
+          name: rooms_controls
+          schema: public
+  - name: rooms_sensors
+    using:
+      foreign_key_constraint_on:
+        column: room_id
+        table:
+          name: rooms_sensors
+          schema: public
+  - name: rooms_controls_log
+    using:
+      foreign_key_constraint_on:
+        column: room_id
+        table:
+          name: rooms_controls_log
+          schema: public
+  - name: rooms_sensors_log
+    using:
+      foreign_key_constraint_on:
+        column: room_id
+        table:
+          name: rooms_sensors_log
+          schema: public
 select_permissions:
   - role: user
     permission:
       columns:
-        - amplifier_on
-        - actual_humidity
-        - humidity_setpoint
-        - actual_temperature
-        - temperature_setpoint
-        - actual_co2
-        - co2_setpoint
-        - thermal_comfort_index
         - id
         - name
         - group
-        - last_movement
       filter:
         id: { _eq: X-Hasura-Cabin }
-      allow_aggregations: true
+      allow_aggregations: false
     comment: ""

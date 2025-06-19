@@ -30,7 +30,7 @@ jobs:
       - name: Run services
         run: docker compose up -d --quiet-pull graphql-engine hass
       - name: Integration Test
-        run: poetry run pytest --run=integration
+        run: poetry run pytest --run=integration -vv
       - name: Determine image tag
         id: image_tag
         run: |

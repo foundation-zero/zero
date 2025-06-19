@@ -1,0 +1,17 @@
+table:
+  name: rooms_controls_log
+  schema: public
+select_permissions:
+  - role: user
+    permission:
+      columns:
+        - id
+        - room_id
+        - name
+        - type
+        - value
+        - time
+      filter:
+        room_id: { _eq: X-Hasura-Cabin }
+      allow_aggregations: false
+    comment: ""

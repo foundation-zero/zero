@@ -27,14 +27,18 @@ class Message(BaseModel):
 
 
 class Room(Message):
-    TOPIC: ClassVar[str] = "domestic/rooms"
+    TOPIC: ClassVar[str] = "domestic/ac"
     actual_temperature: Optional[float]
     temperature_setpoint: Optional[float]
     actual_humidity: Optional[float]
     humidity_setpoint: Optional[float]
     actual_co2: Optional[float]
     co2_setpoint: Optional[float]
-    amplifier_on: Optional[bool]
+
+
+class Amplifier(Message):
+    TOPIC: ClassVar[str] = "domestic/amplifiers"
+    is_on: bool
 
 
 class Blind(Message):

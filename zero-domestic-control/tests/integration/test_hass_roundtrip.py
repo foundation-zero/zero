@@ -84,6 +84,7 @@ async def test_hass_lighting_group_to_control_to_mqtt(
     result = await anext(mqtt_two.messages)
     if LightingGroup.model_validate_json(result.payload).level == 0.1:
         result = await anext(mqtt_two.messages)
+        print(4)
 
     assert result.topic.value == "domestic/lighting-groups"
     assert LightingGroup.model_validate_json(result.payload) == msg

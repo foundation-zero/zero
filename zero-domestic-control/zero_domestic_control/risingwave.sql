@@ -1,209 +1,28 @@
-DROP TABLE IF EXISTS rooms CASCADE;
+INSERT INTO ac_update ("id", actual_temperature, temperature_setpoint, actual_humidity, humidity_setpoint, actual_co2, co2_setpoint) VALUES
+('owners-cabin', 22.5, 21.0, 60.0, 50.0, 500, 600),
+('dutch-cabin', 22.5, 21.0, 60.0, 50.0, 500, 600),
+('french-cabin', 22.5, 21.0, 60.0, 50.0, 500, 600),
+('italian-cabin', 22.5, 21.0, 60.0, 50.0, 500, 600),
+('californian-lounge', 22.5, 21.0, 60.0, 50.0, 500, 600),
+('polynesian-cabin', 22.5, 21.0, 60.0, 50.0, 500, 600),
+('galley', 22.5, 21.0, 60.0, 50.0, 500, 600),
+('crew-mess', 22.5, 21.0, 60.0, 50.0, 500, 600),
+('mission-room', 22.5, 21.0, 60.0, 50.0, 500, 600),
+('laundry', 22.5, 21.0, 60.0, 50.0, 500, 600),
+('engineers-office', 22.5, 21.0, 60.0, 50.0, 500, 600),
+('captains-cabin', 22.5, 21.0, 60.0, 50.0, 500, 600),
+('crew-sb-aft-cabin', 22.5, 21.0, 60.0, 50.0, 500, 600),
+('crew-sb-mid-cabin', 22.5, 21.0, 60.0, 50.0, 500, 600),
+('crew-sb-fwd-cabin', 22.5, 21.0, 60.0, 50.0, 500, 600),
+('crew-ps-mid-cabin', 22.5, 21.0, 60.0, 50.0, 500, 600),
+('crew-ps-fwd-cabin', 22.5, 21.0, 60.0, 50.0, 500, 600),
+('owners-deckhouse', 22.5, 21.0, 60.0, 50.0, 500, 600),
+('main-deckhouse', 22.5, 21.0, 60.0, 50.0, 500, 600),
+('owners-stairway', 22.5, 21.0, 60.0, 50.0, 500, 600),
+('guest-corridor', 22.5, 21.0, 60.0, 50.0, 500, 600),
+('polynesian-corridor', 22.5, 21.0, 60.0, 50.0, 500, 600);
 
-CREATE TABLE
-  rooms (
-    id TEXT,
-    time TIMESTAMPTZ as proctime (),
-    actual_temperature REAL,
-    temperature_setpoint REAL,
-    actual_humidity REAL,
-    humidity_setpoint REAL,
-    actual_co2 REAL,
-    co2_setpoint REAL,
-    thermal_comfort_index REAL,
-    last_movement TIMESTAMPTZ,
-    amplifier_on BOOLEAN,
-  )
-WITH
-  (
-    connector = 'mqtt',
-    url = 'tcp://mosquitto',
-    topic = 'domestic/rooms',
-    qos = 'at_least_once',
-  ) FORMAT PLAIN ENCODE JSON;
-
-DROP MATERIALIZED VIEW IF EXISTS rooms_collected_status;
-
-CREATE MATERIALIZED VIEW rooms_collected_status AS
-SELECT DISTINCT
-  id,
-  first_value (actual_temperature) OVER (
-    partition by
-      id
-    order BY
-      case
-        when actual_temperature is not null then time
-      end desc nulls last
-  ) actual_temperature,
-  first_value (temperature_setpoint) OVER (
-    partition by
-      id
-    order BY
-      case
-        when temperature_setpoint is not null then time
-      end desc nulls last
-  ) temperature_setpoint,
-  first_value (actual_humidity) OVER (
-    partition by
-      id
-    order BY
-      case
-        when actual_humidity is not null then time
-      end desc nulls last
-  ) actual_humidity,
-  first_value (humidity_setpoint) OVER (
-    partition by
-      id
-    order BY
-      case
-        when humidity_setpoint is not null then time
-      end desc nulls last
-  ) humidity_setpoint,
-  first_value (actual_co2) OVER (
-    partition by
-      id
-    order BY
-      case
-        when actual_co2 is not null then time
-      end desc nulls last
-  ) actual_co2,
-  first_value (co2_setpoint) OVER (
-    partition by
-      id
-    order BY
-      case
-        when co2_setpoint is not null then time
-      end desc nulls last
-  ) co2_setpoint,
-  10 thermal_comfort_index,
-  first_value (last_movement) OVER (
-    partition by
-      id
-    order BY
-      case
-        when last_movement is not null then time
-      end desc nulls last
-  ) last_movement,
-  first_value (amplifier_on) OVER (
-    partition by
-      id
-    order by
-      case
-        when amplifier_on is not null then time
-      end desc nulls last
-  ) amplifier_on
-FROM
-  rooms;
-
-DROP SINK IF EXISTS rooms_pg_sink CASCADE;
-
-CREATE SINK rooms_pg_sink
-FROM
-  rooms_collected_status
-WITH
-  (
-    connector = 'jdbc',
-    jdbc.url = 'jdbc:postgresql://postgres:5432/domestic_control?user=postgres&password=postgrespassword',
-    table.name = 'rooms',
-    type = 'upsert',
-    primary_key = 'id'
-  );
-
-DROP TABLE IF EXISTS blinds CASCADE;
-
-CREATE TABLE
-  blinds (
-    id TEXT PRIMARY KEY,
-    time TIMESTAMPTZ as proctime (),
-    level REAL
-  )
-WITH
-  (
-    connector = 'mqtt',
-    url = 'tcp://mosquitto',
-    topic = 'domestic/blinds',
-    qos = 'at_least_once',
-  ) FORMAT PLAIN ENCODE JSON;
-
-DROP SINK IF EXISTS blinds_pg_sink CASCADE;
-
-CREATE SINK blinds_pg_sink AS (
-  SELECT
-    id,
-    level
-  FROM
-    blinds
-)
-WITH
-  (
-    connector = 'jdbc',
-    jdbc.url = 'jdbc:postgresql://postgres:5432/domestic_control?user=postgres&password=postgrespassword',
-    table.name = 'blinds',
-    type = 'upsert',
-    primary_key = 'id'
-  );
-
-DROP TABLE IF EXISTS lighting_groups CASCADE;
-
-CREATE TABLE
-  lighting_groups (
-    id TEXT PRIMARY KEY,
-    time TIMESTAMPTZ as proctime (),
-    level REAL
-  )
-WITH
-  (
-    connector = 'mqtt',
-    url = 'tcp://mosquitto',
-    topic = 'domestic/lighting-groups',
-    qos = 'at_least_once',
-  ) FORMAT PLAIN ENCODE JSON;
-
-DROP SINK IF EXISTS lighting_groups_pg_sink CASCADE;
-
-CREATE SINK lighting_groups_pg_sink AS (
-  SELECT
-    id,
-    level
-  FROM
-    lighting_groups
-)
-WITH
-  (
-    connector = 'jdbc',
-    jdbc.url = 'jdbc:postgresql://postgres:5432/domestic_control?user=postgres&password=postgrespassword',
-    table.name = 'lighting_groups',
-    type = 'upsert',
-    primary_key = 'id'
-  );
-
-INSERT INTO rooms (id, actual_temperature, temperature_setpoint, actual_humidity, humidity_setpoint, actual_co2, co2_setpoint, amplifier_on) VALUES
-('owners-cabin', 22.5, 21.0, 60.0, 50.0, 0.08, 0.07, true),
-('dutch-cabin', 22.5, 21.0, 60.0, 50.0, 0.08, 0.07, true),
-('french-cabin', 22.5, 21.0, 60.0, 50.0, 0.08, 0.07, true),
-('italian-cabin', 22.5, 21.0, 60.0, 50.0, 0.08, 0.07, true),
-('californian-lounge', 22.5, 21.0, 60.0, 50.0, 0.08, 0.07, true),
-('polynesian-cabin', 22.5, 21.0, 60.0, 50.0, 0.08, 0.07, true),
-('galley', 22.5, 21.0, 60.0, 50.0, 0.08, 0.07, true),
-('crew-mess', 22.5, 21.0, 60.0, 50.0, 0.08, 0.07, true),
-('mission-room', 22.5, 21.0, 60.0, 50.0, 0.08, 0.07, true),
-('laundry', 22.5, 21.0, 60.0, 50.0, 0.08, 0.07, true),
-('engineers-office', 22.5, 21.0, 60.0, 50.0, 0.08, 0.07, true),
-('captains-cabin', 22.5, 21.0, 60.0, 50.0, 0.08, 0.07, true),
-('crew-sb-aft-cabin', 22.5, 21.0, 60.0, 50.0, 0.08, 0.07, true),
-('crew-sb-mid-cabin', 22.5, 21.0, 60.0, 50.0, 0.08, 0.07, true),
-('crew-sb-fwd-cabin', 22.5, 21.0, 60.0, 50.0, 0.08, 0.07, true),
-('crew-ps-mid-cabin', 22.5, 21.0, 60.0, 50.0, 0.08, 0.07, true),
-('crew-ps-fwd-cabin', 22.5, 21.0, 60.0, 50.0, 0.08, 0.07, true),
-('owners-deckhouse', 22.5, 21.0, 60.0, 50.0, 0.08, 0.07, true),
-('owners-cockpit', 22.5, 21.0, 60.0, 50.0, 0.08, 0.07, true),
-('main-deckhouse', 22.5, 21.0, 60.0, 50.0, 0.08, 0.07, true),
-('main-cockpit', 22.5, 21.0, 60.0, 50.0, 0.08, 0.07, true),
-('owners-stairway', 22.5, 21.0, 60.0, 50.0, 0.08, 0.07, true),
-('guest-corridor', 22.5, 21.0, 60.0, 50.0, 0.08, 0.07, true),
-('polynesian-corridor', 22.5, 21.0, 60.0, 50.0, 0.08, 0.07, true);
-
-INSERT INTO blinds (id, level) VALUES
+INSERT INTO blinds_update ("id", "level") VALUES
 ('owners-cabin/main/shear', 0),
 ('owners-cabin/main/blind', 0),
 ('owners-cabin/port/shear', 0),
@@ -239,7 +58,7 @@ INSERT INTO blinds (id, level) VALUES
 ('owners-stairway/blind', 0),
 ('guest-corridor/blind', 0);
 
-INSERT INTO lighting_groups (id, level) VALUES
+INSERT INTO lighting_groups_update ("id", "level") VALUES
 ('owners-cabin/ambient', 0),
 ('owners-cabin/mood', 0),
 ('dutch-cabin/ambient', 0),

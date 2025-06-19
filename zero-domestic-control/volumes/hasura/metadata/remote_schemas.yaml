@@ -14,12 +14,18 @@
           }
           scalar Void
           type Mutation {
-            setAmplifiers(ids: ID! @preset(value: "x-hasura-cabin"), on: Boolean!): Void
-            setBlinds(ids: ID!, level: Float!): Void
-            setLightingGroups(ids: ID!, level: Float!): Void
-            setRoomTemperatureSetpoints(ids: ID! @preset(value: "x-hasura-cabin"), temperature: Float!): Void
-            setRoomHumiditySetpoints(ids: ID! @preset(value: "x-hasura-cabin"), humidity: Float!): Void
-            setRoomCo2Setpoints(ids: ID! @preset(value: "x-hasura-cabin"), co2: Float!): Void
+            setAmplifiers(ids: ID! @preset(value: "x-hasura-cabin"), on: Boolean!): MutationResponse
+            setBlinds(ids: ID! @preset(value: "x-hasura-cabin"), level: Float!): MutationResponse
+            setLightingGroups(ids: ID! @preset(value: "x-hasura-cabin"), level: Float!): MutationResponse
+            setRoomTemperatureSetpoints(ids: ID! @preset(value: "x-hasura-cabin"), temperature: Float!): MutationResponse
+            setRoomHumiditySetpoints(ids: ID! @preset(value: "x-hasura-cabin"), humidity: Float!): MutationResponse
+            setRoomCo2Setpoints(ids: ID! @preset(value: "x-hasura-cabin"), co2: Float!): MutationResponse
+
+            type MutationResponse {
+              code: Int!
+              message: String!
+              success: Boolean!
+            }
           }
           type Query {
             version: String!

@@ -5,13 +5,12 @@ select_permissions:
   - role: user
     permission:
       columns:
-        - room_id
-        - level
         - id
+        - room_id
         - name
-        - group
         - opacity
+        - group
       filter:
         room_id: { _eq: X-Hasura-Cabin }
-      allow_aggregations: true
+      allow_aggregations: false
     comment: ""

@@ -8,14 +8,26 @@ https://miro.com/app/board/uXjVI85VEAc=/?share_link_id=164545697008
 
 Install Hasura CLI: https://hasura.io/docs/2.0/hasura-cli/install-hasura-cli/
 
+Create environment
+```bash
+poetry install
+```
+
 Start external services
 ```bash
 DOMESTIC_CONTROL_URL=http://host.docker.internal:8000/graphql docker compose up graphql-engine
 ```
 
-Run database setup
+Run Postgres database setup
 ```bash
 poetry run python -m zero_domestic_control setup
+```
+
+Run dbt database setup
+```bash
+cd data/risingwave
+poetry run dbt compile
+poetry run dbt run
 ```
 
 Generate JWT
@@ -49,18 +61,35 @@ cd hasura
 hasura metadata apply --admin-secret myadminsecretkey
 ```
 
-### Without Python/poetry
+### Using Docker
 
 Install Hasura CLI: https://hasura.io/docs/2.0/hasura-cli/install-hasura-cli/
 
-Start services
+Start databases
 ```bash
-docker compose up
+docker compose up postgres risingwave -d
 ```
 
-Run database setup
+Run Postgres database setup
 ```bash
 docker compose up setup
+```
+
+Run dbt database setup
+```bash
+cd data/risingwave
+poetry run dbt compile
+poetry run dbt run
+```
+
+Run everything else
+```bash
+docker compose up -d
+```
+
+Run control proces
+```bash
+docker compose up control -d
 ```
 
 Apply hasura metadata

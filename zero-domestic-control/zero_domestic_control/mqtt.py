@@ -3,6 +3,7 @@ from aiomqtt import Client, Message as MqttMessage
 
 from zero_domestic_control.messages import (
     Blind,
+    Amplifier,
     LightingGroup,
     Message,
     Room,
@@ -28,6 +29,9 @@ class DataCollection:
 
     async def send_room(self, room: Room):
         await send_message(self._mqtt, room)
+
+    async def send_amplifier(self, amplifier: Amplifier):
+        await send_message(self._mqtt, amplifier)
 
     async def send_blind(self, blind: Blind):
         await send_message(self._mqtt, blind)

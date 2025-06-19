@@ -56,7 +56,7 @@ async def test_control_receive(settings, mqtt_client, mqtt_client2):
 async def test_termodinamica_adjustment_forwarded_to_thrs(
     settings, modbus_client, mqtt_client, mqtt_client2, mqtt_client3
 ):
-    """Test that the Termodinamica adjustments are forwarded to THRS and domestic/rooms topics"""
+    """Test that the Termodinamica adjustments are forwarded to THRS and domestic/ac topics"""
     stub = TermodinamicaStub(settings.termodinamica_host, settings.termodinamica_port)
     termodinamica = TermodinamicaAc(modbus_client)
     thrs = Thrs(mqtt_client)
@@ -65,7 +65,7 @@ async def test_termodinamica_adjustment_forwarded_to_thrs(
     ac_control = AcControl(control_receiver, termodinamica, thrs, data_collection)
 
     await mqtt_client3.subscribe("thrs/#", qos=1)
-    await mqtt_client3.subscribe("domestic/rooms", qos=1)
+    await mqtt_client3.subscribe("domestic/ac", qos=1)
     received_messages = []
 
     async def _receive():
@@ -89,7 +89,7 @@ async def test_termodinamica_adjustment_forwarded_to_thrs(
         assert next(
             True
             for m in received_messages
-            if m.topic.value == "domestic/rooms"
+            if m.topic.value == "domestic/ac"
             and _pick_json(m.payload, ["id", "temperature_setpoint"])
             == {"id": "dutch-cabin", "temperature_setpoint": 15.0}
         )
@@ -102,7 +102,7 @@ async def test_termodinamica_adjustment_forwarded_to_thrs(
 async def test_setting_setpoints(
     settings, modbus_client, mqtt_client, mqtt_client2, mqtt_client3
 ):
-    """Test that the setpoint is set correctly in Termodinamica and sent to THRS and domestic/rooms topics"""
+    """Test that the setpoint is set correctly in Termodinamica and sent to THRS and domestic/ac topics"""
     stub = TermodinamicaStub(settings.termodinamica_host, settings.termodinamica_port)
     termodinamica = TermodinamicaAc(modbus_client)
     thrs = Thrs(mqtt_client)
@@ -113,7 +113,7 @@ async def test_setting_setpoints(
     ac_control = AcControl(control_receiver, termodinamica, thrs, data_collection)
 
     await mqtt_client3.subscribe("thrs/#", qos=1)
-    await mqtt_client3.subscribe("domestic/rooms", qos=1)
+    await mqtt_client3.subscribe("domestic/ac", qos=1)
     received_messages = []
 
     async def _receive():
@@ -138,7 +138,7 @@ async def test_setting_setpoints(
         assert next(
             True
             for m in received_messages
-            if m.topic.value == "domestic/rooms"
+            if m.topic.value == "domestic/ac"
             and _pick_json(m.payload, ["id", "temperature_setpoint"])
             == {"id": "french-cabin", "temperature_setpoint": 20.0}
         )
@@ -156,7 +156,7 @@ async def test_setting_setpoints(
         assert next(
             True
             for m in received_messages
-            if m.topic.value == "domestic/rooms"
+            if m.topic.value == "domestic/ac"
             and _pick_json(m.payload, ["id", "humidity_setpoint"])
             == {"id": "italian-cabin", "humidity_setpoint": 0.5}
         )
@@ -174,7 +174,7 @@ async def test_setting_setpoints(
         assert next(
             True
             for m in received_messages
-            if m.topic.value == "domestic/rooms"
+            if m.topic.value == "domestic/ac"
             and _pick_json(m.payload, ["id", "co2_setpoint"])
             == {"id": "californian-lounge", "co2_setpoint": 0.4}
         )

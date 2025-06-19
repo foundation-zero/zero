@@ -27,10 +27,13 @@ from .properties import (
     Co2Setpoint,
 )
 from .constants import ROOM_INDICES
+import logging
 
 AC_CONTROL_BUS_INTERVAL = 0.1  # 100 ms
 
 type CommOp = Callable[[], None]
+
+logger = logging.getLogger(__name__)
 
 
 class AcControl:
@@ -63,7 +66,6 @@ class AcControl:
                 humidity_setpoint=None,
                 actual_co2=None,
                 co2_setpoint=None,
-                amplifier_on=None,
             )
             for id in ROOM_INDICES.keys()
         }
@@ -115,10 +117,13 @@ class AcControl:
                 room_id, property = read()
                 old_value = property.get(self._rooms[room_id])
                 if old_value != property.value:
+                    logging.info(
+                        f"Update for {room_id} {property}. Old value: {old_value}"
+                    )
                     await self._control_messages.put(
                         TermodinamicaUpdate(room=room_id, value=property)
                     )
-                property.set(self._rooms[room_id])
+                    property.set(self._rooms[room_id])
 
         while True:
             async with TaskGroup() as tg:
@@ -164,6 +169,9 @@ class AcControl:
                 await self._thrs.set_room_co2_setpoint(msg_co2.id, msg_co2.co2)
                 await self._data_collection.send_room(self._rooms[message.id])
             elif isinstance(message, TermodinamicaUpdate):
+                logging.info(
+                    f"Termodinamica update received: {message.room}: {message.value}"
+                )
                 if isinstance(message.value, TemperatureSetpoint):
                     await self._thrs.set_room_temperature_setpoint(
                         message.room, message.value.value

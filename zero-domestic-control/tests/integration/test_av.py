@@ -63,7 +63,7 @@ async def test_stub(mqtt_client, mqtt_client2):
     stub_run = create_task(stub.run())
     assert await expect_result(lambda: len(received), 2, 1)
     await asyncio.sleep(AV_STUB_TELEMETRY_INTERVAL)
-    assert await expect_result(lambda: len(received), 4, 0.5)
+    assert await expect_result(lambda: len(received), 6, 0.5)
     assert received[0].topic.value.startswith("de/gudesystems/epc/")
     assert received[1].topic.value.startswith("de/gudesystems/epc/")
 
@@ -79,10 +79,10 @@ async def test_av_send(mqtt_client, mqtt_client2):
     stub_task = create_task(stub.run())
 
     await asyncio.sleep(0.1)
-    await av.set_amplifier("owners-cockpit", True)
+    await av.set_amplifier("owners-cockpit/amplifier", True)
     assert await expect_result(lambda: stub.read_port(AFT_PDU, 1), True, 0.1)
 
-    await av.set_amplifier("office", True)
+    await av.set_amplifier("office/amplifier", True)
     assert await expect_result(lambda: stub.read_port(FWD_PDU, 1), True, 0.1)
 
     stub_task.cancel()
@@ -93,19 +93,19 @@ async def test_av_control_receive(mqtt_client, mqtt_client2, mqtt_client3):
     av_control = AvControl(Gude(mqtt_client), DataCollection(mqtt_client))
     stub = AvStub(mqtt_client2)
 
-    await mqtt_client3.subscribe("domestic/rooms")
+    await mqtt_client3.subscribe("domestic/amplifiers")
 
     control_task = create_task(av_control.run())
     stub_task = create_task(stub.run())
     stub.set_port(AFT_PDU, 1, True)
 
     async for message in mqtt_client3.messages:
-        if message.topic.value == "domestic/rooms" and isinstance(
+        if message.topic.value == "domestic/amplifiers" and isinstance(
             message.payload, str | bytes
         ):
             msg = json.loads(message.payload)
-            if msg["id"] == "owners-cockpit":
-                assert msg["amplifier_on"]
+            if msg["id"] == "owners-cockpit/amplifier":
+                assert msg["is_on"]
                 break
 
     stub_task.cancel()
@@ -114,22 +114,22 @@ async def test_av_control_receive(mqtt_client, mqtt_client2, mqtt_client3):
 
 @pytest.mark.timeout(10)
 async def test_av_through_gq(mqtt_client):
-    await mqtt_client.subscribe("domestic/rooms")
+    await mqtt_client.subscribe("domestic/amplifiers")
     client = TestClient(app)
     response = client.post(
         "/graphql",
         json={
-            "query": """mutation { setAmplifiers(ids: "owners-cabin", on: true) { code success message } }"""
+            "query": """mutation { setAmplifiers(ids: "owners-cabin/amplifier", on: true) { code success message } }"""
         },
     )
-
+    await asyncio.sleep(0.05)
     assert response.status_code == 200
 
     async for message in mqtt_client.messages:
-        if message.topic.value == "domestic/rooms" and isinstance(
+        if message.topic.value == "domestic/amplifiers" and isinstance(
             message.payload, str | bytes
         ):
             msg = json.loads(message.payload)
-            if msg["id"] == "owners-cabin":
-                assert msg["amplifier_on"]
+            if msg["id"] == "owners-cabin/amplifier":
+                assert msg["is_on"]
                 break

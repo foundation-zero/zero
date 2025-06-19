@@ -1,5 +1,6 @@
 import pathlib
 import pytest
+import os
 
 
 def pytest_addoption(parser):
@@ -21,3 +22,8 @@ def pytest_runtest_setup(item):
         "all",
     }:
         pytest.skip(f"skipping {item} because --run=unit was not specified")
+
+
+def pytest_configure(config):
+    os.environ["PG_HOST"] = "localhost"
+    os.environ["MQTT_HOST"] = "localhost"

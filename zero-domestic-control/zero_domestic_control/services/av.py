@@ -5,7 +5,7 @@ from pydantic import AliasChoices, BaseModel, Field
 from typing import Annotated, AsyncIterable, List, Literal
 
 from zero_domestic_control.config import Settings
-from zero_domestic_control.messages import Room
+from zero_domestic_control.messages import Amplifier
 from zero_domestic_control.mqtt import DataCollection
 from zero_domestic_control.util import invert_dict
 
@@ -13,21 +13,21 @@ FWD_PDU = "00:00:00:00:00:00"
 AFT_PDU = "00:00:00:00:00:01"
 
 FWD_PORTS = {
-    "office": 1,  # office
-    "lounge": 2,  # lounge
+    "office/amplifier": 1,  # office
+    "lounge/amplifier": 2,  # lounge
 }
 
 AFT_PORTS = {
-    "owners-cockpit": 1,  # owners cockpit
-    "owners-deckhouse": 2,  # owners private salon
-    "owners-cabin": 3,  # owners cabin
-    "main-cockpit": 4,  # main cockpit
-    "italian-cabin": 5,  # guest PS FWD
-    "galley": 6,  # galley
-    "french-cabin": 7,  # guest PS AFT
-    "dutch-cabin": 8,  # guest SB AFT
-    "polynesian-cabin": 9,  # guest PS MID (also incorrectly named SB MID in overview drawing)
-    "main-deckhouse": 10,  # main salon
+    "owners-cockpit/amplifier": 1,  # owners cockpit
+    "owners-deckhouse/amplifier": 2,  # owners private salon
+    "owners-cabin/amplifier": 3,  # owners cabin
+    "main-cockpit/amplifier": 4,  # main cockpit
+    "italian-cabin/amplifier": 5,  # guest PS FWD
+    "galley/amplifier": 6,  # galley
+    "french-cabin/amplifier": 7,  # guest PS AFT
+    "dutch-cabin/amplifier": 8,  # guest SB AFT
+    "polynesian-cabin/amplifier": 9,  # guest PS MID (also incorrectly named SB MID in overview drawing)
+    "main-deckhouse/amplifier": 10,  # main salon
 }
 
 
@@ -124,16 +124,10 @@ class Av:
         pdu, switch = lookup_pdu_switch(room_id)
         await self._gude.switch(pdu, switch, on)
         # Also send directly to MQTT, telemetry is only send every so often, so this will be faster
-        await self._data.send_room(
-            Room(
+        await self._data.send_amplifier(
+            Amplifier(
                 id=room_id,
-                amplifier_on=on,
-                actual_temperature=None,
-                temperature_setpoint=None,
-                actual_humidity=None,
-                humidity_setpoint=None,
-                actual_co2=None,
-                co2_setpoint=None,
+                is_on=on,
             )
         )
 
@@ -153,16 +147,10 @@ class AvControl:
         for port_state in telemetry.port_states:
             room_id = lookup_room_id(pdu, port_state.port)
             if room_id is not None:
-                await self._data.send_room(
-                    Room(
+                await self._data.send_amplifier(
+                    Amplifier(
                         id=room_id,
-                        amplifier_on=bool(port_state.state),
-                        actual_temperature=None,
-                        temperature_setpoint=None,
-                        actual_humidity=None,
-                        humidity_setpoint=None,
-                        actual_co2=None,
-                        co2_setpoint=None,
+                        is_on=bool(port_state.state),
                     )
                 )
 
