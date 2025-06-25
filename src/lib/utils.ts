@@ -1,7 +1,13 @@
 import {
+  ControlType,
+  ControlTypeMap,
   Room,
+  RoomControl,
+  RoomSensor,
   RoomState,
   SafeRangeThresholds,
+  SensorType,
+  SensorTypeMap,
   Thresholds,
   ValidationStatus,
   ValueObject,
@@ -110,13 +116,15 @@ export const toValueObject = <T>(value: T): ValueObject<T> => ({ value });
 
 export const validateSafeRange = (
   thresholds: SafeRangeThresholds,
-  value: number,
+  value?: number,
 ): ValidationStatus => {
-  if (value < thresholds[0] || value > thresholds[1]) {
+  if (value === undefined || isNaN(value)) {
+    return ValidationStatus.UNKNOWN;
+  } else if (value < thresholds[0] || value > thresholds[1]) {
     return ValidationStatus.WARN;
+  } else {
+    return ValidationStatus.OK;
   }
-
-  return ValidationStatus.OK;
 };
 
 export const useSafeRange = (
@@ -124,8 +132,10 @@ export const useSafeRange = (
   value: Ref<number>,
 ): Ref<ValidationStatus> => computed(() => validateSafeRange(thresholds, value.value));
 
-export const validateThreshold = (thresholds: Thresholds, value: number): ValidationStatus => {
-  if (value >= thresholds[1]) {
+export const validateThreshold = (thresholds: Thresholds, value?: number): ValidationStatus => {
+  if (value === undefined || isNaN(value)) {
+    return ValidationStatus.UNKNOWN;
+  } else if (value >= thresholds[1]) {
     return ValidationStatus.FAIL;
   } else if (value >= thresholds[0]) {
     return ValidationStatus.WARN;
@@ -144,9 +154,15 @@ export const getOverallState = (states: ValidationStatus[]): ValidationStatus =>
 };
 
 export const getRoomState = (room: Room): RoomState => {
-  const stateCO2 = validateThreshold(CO2_THRESHOLDS, room.actualCO2);
-  const stateTemperature = validateThreshold(TEMPERATURE_THRESHOLDS, room.actualTemperature);
-  const stateHumidity = validateSafeRange(HUMIDITY_THRESHOLDS, room.actualHumidity);
+  const stateCO2 = validateThreshold(CO2_THRESHOLDS, room.roomsSensors.find(isCO2Sensor)?.value);
+  const stateTemperature = validateThreshold(
+    TEMPERATURE_THRESHOLDS,
+    room.roomsSensors.find(isTemperatureSensor)?.value,
+  );
+  const stateHumidity = validateSafeRange(
+    HUMIDITY_THRESHOLDS,
+    room.roomsSensors.find(isHumiditySensor)?.value,
+  );
 
   return {
     co2: stateCO2,
@@ -155,3 +171,49 @@ export const getRoomState = (room: Room): RoomState => {
     overall: getOverallState([stateTemperature, stateHumidity, stateCO2]),
   };
 };
+
+export const isSensorType =
+  <T extends SensorType>(type: T) =>
+  (sensor: RoomSensor): sensor is SensorTypeMap[T] =>
+    sensor.type === type;
+
+export const isControlType =
+  <T extends ControlType>(type: T) =>
+  (control: RoomControl): control is ControlTypeMap[T] =>
+    control.type === type;
+
+export const isLightControl = isControlType(ControlType.LIGHT);
+export const isBlindsControl = isControlType(ControlType.BLIND);
+export const isTemperatureControl = isControlType(ControlType.TEMPERATURE);
+export const isHumidityControl = isControlType(ControlType.HUMIDITY);
+export const isCO2Control = isControlType(ControlType.CO2);
+export const isAmplifierControl = isControlType(ControlType.AMPLIFIER);
+
+export const isPresenceSensor = isSensorType(SensorType.PRESENCE);
+export const isTemperatureSensor = isSensorType(SensorType.TEMPERATURE);
+export const isHumiditySensor = isSensorType(SensorType.HUMIDITY);
+export const isCO2Sensor = isSensorType(SensorType.CO2);
+
+export const extractActualSensorValue =
+  <T extends SensorType>(type: T) =>
+  (room: Room) => {
+    const value = room.roomsSensors.find(isSensorType(type))?.value;
+    if (value !== undefined) return Number(value);
+  };
+
+export const extractActualControlValue =
+  <T extends ControlType>(type: T) =>
+  (room: Room) => {
+    const value = room.roomsControls.find(isControlType(type))?.value;
+    if (value !== undefined) return Number(value);
+  };
+
+export const extractActualHumidity = extractActualSensorValue(SensorType.HUMIDITY);
+export const extractActualTemperature = extractActualSensorValue(SensorType.TEMPERATURE);
+export const extractActualCO2 = extractActualSensorValue(SensorType.CO2);
+export const extractActualPresence = extractActualSensorValue(SensorType.PRESENCE);
+
+export const extractTemperatureSetpoint = extractActualControlValue(ControlType.TEMPERATURE);
+export const extractAmplifierStatus = extractActualControlValue(ControlType.AMPLIFIER);
+export const extractHumiditySetpoint = extractActualControlValue(ControlType.HUMIDITY);
+export const extractCO2Setpoint = extractActualControlValue(ControlType.CO2);

@@ -1,6 +1,6 @@
+import { ConnectionInitMessage } from "../../lib/types";
 import { expect, test } from "../../mocks/playwright";
 import { getAllRooms, getVersion } from "../../mocks/queries";
-import { ConnectionInitMessage } from "../../types";
 
 test.describe("App", () => {
   test.beforeEach(async ({ worker, page, auth }) => {

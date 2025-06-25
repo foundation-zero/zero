@@ -1,13 +1,17 @@
 <script setup lang="ts">
+import { groupLights } from "@/lib/mappers";
+import { isLightControl } from "@/lib/utils";
 import { useRoomStore } from "@/stores/rooms";
 import { useUIStore } from "@/stores/ui";
 import LightGroup from "@components/shared/lights-list/LightGroup.vue";
-import { toRefs } from "vue";
+import { computed, toRefs } from "vue";
 
 const roomStore = useRoomStore();
 const { currentRoom } = toRefs(roomStore);
 const { breakpoints } = toRefs(useUIStore());
 const { setLightLevel } = roomStore;
+
+const lights = computed(() => groupLights(currentRoom.value.roomsControls.filter(isLightControl)));
 </script>
 
 <template>
@@ -19,7 +23,7 @@ const { setLightLevel } = roomStore;
     }"
   >
     <LightGroup
-      v-for="(group, index) in currentRoom.lights"
+      v-for="(group, index) in lights"
       :key="index"
       :name="group.name"
       :lights="group.controls"

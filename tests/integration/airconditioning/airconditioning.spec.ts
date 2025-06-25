@@ -1,4 +1,5 @@
 import allRooms from "../../data/all-rooms";
+import { extractActualTemperature } from "../../lib/helpers";
 import { expect, test as testBase } from "../../mocks/playwright";
 import { getAllRooms, getVersion } from "../../mocks/queries";
 import AirconditioningPage from "./page";
@@ -13,7 +14,7 @@ const test = testBase.extend<{ aircoPage: AirconditioningPage }>({
       const aircoPage = new AirconditioningPage(page, subscriptions);
       await auth.asUser();
 
-      aircoPage.setInsideTemperature(dutchCabin, dutchCabin.actualTemperature);
+      aircoPage.setInsideTemperature(dutchCabin, extractActualTemperature(dutchCabin) ?? 20);
       await page.waitForTimeout(1000);
 
       await page.screenshot({ path: "screenshots/airconditioning.png" });

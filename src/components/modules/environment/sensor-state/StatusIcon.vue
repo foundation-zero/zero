@@ -16,6 +16,7 @@ defineProps<{ state: ValidationStatus; icon?: Component }>();
       'text-green-500/90': state === ValidationStatus.OK,
       'text-yellow-500/90': state === ValidationStatus.WARN,
       'text-red-500/90': state === ValidationStatus.FAIL,
+      'text-primary/20': state === ValidationStatus.UNKNOWN,
     }"
   />
   <template v-else>
@@ -30,6 +31,7 @@ defineProps<{ state: ValidationStatus; icon?: Component }>();
       :class="{
         'text-yellow-500/90': state === ValidationStatus.WARN,
         'text-red-500/90': state === ValidationStatus.FAIL,
+        'text-primary/20': state === ValidationStatus.UNKNOWN,
       }"
     />
   </template>

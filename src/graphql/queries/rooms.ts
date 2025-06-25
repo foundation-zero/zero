@@ -1,18 +1,26 @@
 import { gql } from "@urql/vue";
-import { BlindsFragment } from "./blinds";
+import { mutationResponse } from ".";
 import { LightGroupFragment } from "./light-groups";
 
 export const RoomFragment = gql`
   fragment RoomItem on Rooms {
     id
-    amplifierOn
-    actualTemperature
-    actualHumidity
-    temperatureSetpoint
-    thermalComfortIndex
     name
     group
-    lastMovement
+    roomsControls {
+      id
+      type
+      value
+      time
+      name
+    }
+    roomsSensors {
+      id
+      type
+      value
+      time
+      name
+    }
   }
 `;
 
@@ -22,10 +30,19 @@ export const getAll = gql`
       id
       name
       group
-      actualTemperature
-      temperatureSetpoint
-      lightingGroups {
-        ...LightGroupItem
+      roomsControls {
+        id
+        type
+        value
+        time
+        name
+      }
+      roomsSensors {
+        id
+        type
+        value
+        time
+        name
       }
     }
   }
@@ -37,76 +54,68 @@ export const subscribeToRoom = gql`
   subscription SubscribeToRoom($roomId: String!) {
     rooms(where: { id: { _eq: $roomId } }) {
       ...RoomItem
-      blinds {
-        ...BlindsItem
-      }
-      lightingGroups {
-        ...LightGroupItem
-      }
     }
   }
 
   ${RoomFragment}
-  ${BlindsFragment}
-  ${LightGroupFragment}
 `;
 
 export const subscribeToRooms = gql`
   subscription SubscribeToRoom {
     rooms {
       ...RoomItem
-      blinds {
-        ...BlindsItem
-      }
-      lightingGroups {
-        ...LightGroupItem
-      }
     }
   }
 
   ${RoomFragment}
-  ${BlindsFragment}
-  ${LightGroupFragment}
 `;
 
 export const getRoomById = gql`
   query GetRoomById($roomId: String!) {
     rooms(where: { id: { _eq: $roomId } }) {
       ...RoomItem
-      blinds {
-        ...BlindsItem
-      }
-      lightingGroups {
-        ...LightGroupItem
-      }
     }
   }
 
   ${RoomFragment}
-  ${BlindsFragment}
-  ${LightGroupFragment}
 `;
 
 export const setTemperatureSetpointMutation = gql`
-  mutation SetTemperatureSetpointForRoom($temperature: Int!) {
-    setRoomTemperatureSetpoint(temperature: $temperature)
+  mutation SetTemperatureSetpointForRoom($temperature: Float!) {
+    setRoomTemperatureSetpoints(temperature: $temperature) {
+      ...MutationResponse
+    }
   }
+
+  ${mutationResponse}
 `;
 
 export const setTemperatureSetpointForRoomMutation = gql`
-  mutation SetTemperatureSetpointForRoom($id: ID!, $temperature: Int!) {
-    setRoomTemperatureSetpoint(id: $id, temperature: $temperature)
+  mutation SetTemperatureSetpointForRoom($ids: [ID!]!, $temperature: Float!) {
+    setRoomTemperatureSetpoints(ids: $ids, temperature: $temperature) {
+      ...MutationResponse
+    }
   }
+
+  ${mutationResponse}
 `;
 
 export const setAmplifierMutation = gql`
   mutation SetAmplifier($on: Boolean!) {
-    setAmplifier(on: $on)
+    setAmplifiers(on: $on) {
+      ...MutationResponse
+    }
   }
+
+  ${mutationResponse}
 `;
 
 export const setAmplifierForRoomMutation = gql`
-  mutation SetAmplifier($id: ID!, $on: Boolean!) {
-    setAmplifier(id: $id, on: $on)
+  mutation SetAmplifier($ids: [ID!]!, $on: Boolean!) {
+    setAmplifiers(ids: $ids, on: $on) {
+      ...MutationResponse
+    }
   }
+
+  ${mutationResponse}
 `;

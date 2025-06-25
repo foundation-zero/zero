@@ -2,13 +2,13 @@ import { test as base, expect } from "@playwright/test";
 import { graphql, http } from "msw";
 import type { MockServiceWorker } from "playwright-msw";
 import { createWorkerFixture } from "playwright-msw";
-import { Rooms } from "../../src/gql/graphql";
+import { Room } from "../../src/@types";
 import { AuthFixture, createAuthFixture } from "../integration/fixtures/auth";
 import { createSubscriptionFixture, SubscriptionFixture } from "../integration/fixtures/graphql";
 import { createSessionFixture, SessionFixture } from "../integration/fixtures/session";
 
 export type ZeroSubscriptions = {
-  SubscribeToRoom: { rooms: Rooms[] };
+  SubscribeToRoom: { rooms: Room[] };
 };
 
 const test = base.extend<{

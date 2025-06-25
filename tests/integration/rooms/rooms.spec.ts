@@ -1,4 +1,5 @@
 import allRooms from "../../data/all-rooms";
+import { toAmplifierStatus } from "../../lib/helpers";
 import { expect, test as testBase } from "../../mocks/playwright";
 import { getAllRooms, getVersion } from "../../mocks/queries";
 import RoomsPage from "./page";
@@ -36,11 +37,11 @@ test.describe("Rooms", () => {
     });
 
     test("shows the correct state of the audio system", async ({ roomsPage }) => {
-      roomsPage.updateRoom(dutchCabin, { amplifierOn: false });
+      roomsPage.updateRoom(dutchCabin, { roomsControls: [toAmplifierStatus(false)] });
 
       await expect(roomsPage.audioSystemToggle).toHaveAttribute("data-state", "unchecked");
 
-      roomsPage.updateRoom(dutchCabin, { amplifierOn: true });
+      roomsPage.updateRoom(dutchCabin, { roomsControls: [toAmplifierStatus(true)] });
 
       await expect(roomsPage.audioSystemToggle).toHaveAttribute("data-state", "checked");
     });

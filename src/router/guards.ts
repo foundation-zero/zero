@@ -1,4 +1,5 @@
 import { Roles } from "@/@types";
+import { isBlindsControl, isLightControl } from "@/lib/utils";
 import { useAuthStore } from "@/stores/auth";
 import { useRoomStore } from "@/stores/rooms";
 import { toRefs, watch } from "vue";
@@ -48,8 +49,9 @@ export const waitForRoom: BeforeResolveGuard = (to) => {
         currentRoom,
         (next) => {
           const invalidRoute =
-            (to.name === "cabin:blinds" && next.blinds.length === 0) ||
-            (to.name === "cabin:lights" && next.lights.length === 0);
+            (to.name === "cabin:blinds" &&
+              next.roomsControls.filter(isBlindsControl).length === 0) ||
+            (to.name === "cabin:lights" && next.roomsControls.filter(isLightControl).length === 0);
 
           resolve({
             name: invalidRoute ? "cabin:airconditioning" : to.name,

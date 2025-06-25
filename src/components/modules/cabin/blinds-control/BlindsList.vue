@@ -21,7 +21,7 @@ const { setBlindsLevel } = useRoomStore();
     >
       <span class="text-lg font-medium"> {{ item.name }}</span>
       <BlindsSlider
-        v-model:level="item.level"
+        v-model:level="item.value"
         class="mt-3"
         @update:level="setBlindsLevel(item.id, $event)"
         @touchstart.stop.prevent

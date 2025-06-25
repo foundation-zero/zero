@@ -1,3 +1,3 @@
 import { graphql } from "msw";
 
-export const setLightLevel = graphql.mutation("SetLightLevel", () => {});
+export const setLightLevel = graphql.mutation("SetGroupLightLevel", () => {});

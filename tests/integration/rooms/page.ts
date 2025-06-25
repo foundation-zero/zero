@@ -1,7 +1,7 @@
 import { Locator, Page } from "@playwright/test";
-import { Rooms } from "../../../src/gql/graphql";
+import { Room } from "../../../src/@types";
+import { SubscribeMessage } from "../../lib/types";
 import { ZeroSubscriptions } from "../../mocks/playwright";
-import { SubscribeMessage } from "../../types";
 import { SubscriptionFixture } from "../fixtures/graphql";
 
 export type LightControl = [slider: Locator, track: Locator, toggle: Locator, value: string | null];
@@ -12,7 +12,7 @@ export default class RoomsPage {
     private readonly subscriptions: SubscriptionFixture<ZeroSubscriptions>,
   ) {}
 
-  public updateRoom(room: Rooms, delta: Partial<Rooms> = {}): void {
+  public updateRoom(room: Room, delta: Partial<Room> = {}): void {
     this.subscriptions.dispatch("SubscribeToRoom", {
       rooms: [{ ...room, ...delta }],
     });

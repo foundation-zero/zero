@@ -1,12 +1,22 @@
 <script setup lang="ts">
 import { Room } from "@/@types";
 import { HUMIDITY_RANGE, HUMIDITY_THRESHOLDS } from "@/lib/consts";
-import { toValueObject, useLiveRandomValues, useSafeRange, useTransform } from "@/lib/utils";
+import {
+  extractActualHumidity,
+  isHumiditySensor,
+  toValueObject,
+  useLiveRandomValues,
+  useSafeRange,
+  useTransform,
+} from "@/lib/utils";
 import AreaChart from "@components/shared/area-chart/AreaChart.vue";
 import { ValueTile } from "@components/shared/value-tile";
 import { computed } from "vue";
 
 const props = defineProps<{ room: Room }>();
+
+const hasHumiditySensor = computed(() => props.room.roomsSensors.some(isHumiditySensor));
+const actualHumidity = computed(() => extractActualHumidity(props.room) ?? 0);
 
 const history = useTransform(
   useLiveRandomValues(24, {
@@ -16,14 +26,12 @@ const history = useTransform(
   toValueObject,
 );
 
-const state = useSafeRange(
-  HUMIDITY_THRESHOLDS,
-  computed(() => props.room.actualHumidity),
-);
+const state = useSafeRange(HUMIDITY_THRESHOLDS, actualHumidity);
 </script>
 
 <template>
   <ValueTile
+    v-if="hasHumiditySensor"
     :title="room.name"
     :state="state"
   >
@@ -40,7 +48,7 @@ const state = useSafeRange(
       </AreaChart>
     </template>
     <template #center>
-      <span>{{ room.actualHumidity.toFixed(0) }}</span>
+      <span>{{ actualHumidity.toFixed(0) }}</span>
       <span class="ml-[0.25em] text-r2xs font-extralight">&percnt;</span>
     </template>
   </ValueTile>

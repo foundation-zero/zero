@@ -1,5 +1,10 @@
 <script setup lang="ts">
-import { valueAsArray, valueWithValidation } from "@/lib/utils";
+import {
+  extractTemperatureSetpoint,
+  isTemperatureControl,
+  valueAsArray,
+  valueWithValidation,
+} from "@/lib/utils";
 import { useRoomStore } from "@/stores/rooms";
 import { useUIStore } from "@/stores/ui";
 import { List, ListItem, ListRoot } from "@components/shadcn/list";
@@ -14,10 +19,13 @@ const { setTemperatureSetpoint } = useRoomStore();
 const { t } = useI18n();
 const { breakpoints } = useUIStore();
 
-const temperature = ref(currentRoom.value.temperatureSetpoint);
+const hasTemperatureControl = computed(() =>
+  currentRoom.value.roomsControls.some(isTemperatureControl),
+);
+const temperature = ref(extractTemperatureSetpoint(currentRoom.value) ?? 0);
 
 watch(currentRoom, (room) => {
-  temperature.value = room.temperatureSetpoint;
+  temperature.value = extractTemperatureSetpoint(room) ?? 0;
 });
 
 const value = valueAsArray(valueWithValidation(temperature, (val) => val >= MIN_VALUE));
@@ -36,7 +44,10 @@ const commit = () => setTemperatureSetpoint(temperature.value);
       :room="currentRoom"
     />
 
-    <div class="flex w-full flex-wrap justify-center">
+    <div
+      :class="{ 'pointer-events-none opacity-50': !hasTemperatureControl }"
+      class="flex w-full flex-wrap justify-center"
+    >
       <ListRoot class="w-full landscape:max-w-[800px]">
         <List
           orientation="horizontal"
@@ -62,16 +73,19 @@ const commit = () => setTemperatureSetpoint(temperature.value);
                 data-testid="temperatureSetpoint"
               >
                 <span class="text-3xl font-bold uppercase md:text-5xl">
-                  <span>{{ !isOff ? Math.floor(value[0]) : "Off" }}</span>
+                  <span v-if="hasTemperatureControl">{{
+                    !isOff ? Math.floor(value[0]) : "Off"
+                  }}</span>
+                  <span v-else>-</span>
                 </span>
                 <span
-                  v-if="!isOff"
+                  v-if="!isOff && hasTemperatureControl"
                   class="ml-0.5 text-sm font-light max-md:mb-[2.5px] md:text-2xl"
                 >
                   {{ Math.round((value[0] % 1) * 10) }}
                 </span>
                 <sup
-                  v-show="!isOff"
+                  v-if="!isOff && hasTemperatureControl"
                   class="absolute -top-1 right-0 pt-1 text-2xl font-light max-md:mt-[-2px] md:-top-1.5 md:mr-[1.5px] md:text-3xl"
                   >&deg;</sup
                 >

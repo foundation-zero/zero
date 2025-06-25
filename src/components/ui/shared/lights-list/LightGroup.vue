@@ -1,10 +1,10 @@
 <script setup lang="ts">
-import { LightingGroups } from "@/gql/graphql";
+import { LightingControl } from "@/@types";
 import { List, ListRoot } from "@components/shadcn/list";
 import ListHeader from "@components/shadcn/list/ListHeader.vue";
 import LightGroupItem from "./LightGroupItem.vue";
 
-defineProps<{ name: string; lights: LightingGroups[] }>();
+defineProps<{ name: string; lights: LightingControl[] }>();
 
 const emit = defineEmits<{
   "update:level": [string, number];

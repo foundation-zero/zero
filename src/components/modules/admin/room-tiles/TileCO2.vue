@@ -2,7 +2,9 @@
 import { Room, Units } from "@/@types";
 import { CO2_RANGE, CO2_THRESHOLDS } from "@/lib/consts";
 import {
+  extractActualCO2,
   formatInt,
+  isCO2Sensor,
   toValueObject,
   useLiveRandomValues,
   useThresholds,
@@ -14,19 +16,20 @@ import { computed } from "vue";
 
 const props = defineProps<{ room: Room }>();
 
+const hasCO2Sensor = computed(() => props.room.roomsSensors.some(isCO2Sensor));
+const actualCO2 = computed(() => extractActualCO2(props.room) ?? 0);
+
 const history = useTransform(
   useLiveRandomValues(24, { min: CO2_RANGE[0], max: CO2_RANGE[1] }),
   toValueObject,
 );
 
-const state = useThresholds(
-  CO2_THRESHOLDS,
-  computed(() => props.room.actualCO2),
-);
+const state = useThresholds(CO2_THRESHOLDS, actualCO2);
 </script>
 
 <template>
   <ValueTile
+    v-if="hasCO2Sensor"
     :title="room.name"
     :state="state"
   >
@@ -39,7 +42,7 @@ const state = useThresholds(
       />
     </template>
     <template #center>
-      <span>{{ formatInt(room.actualCO2) }}</span>
+      <span>{{ formatInt(actualCO2) }}</span>
     </template>
     <template #bottom-right>
       <span class="text-rlg font-extralight">{{ Units.PPM }}</span>

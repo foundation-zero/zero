@@ -1,4 +1,5 @@
 import { gql } from "@urql/vue";
+import { mutationResponse } from ".";
 
 export const BlindsFragment = gql`
   fragment BlindsItem on Blinds {
@@ -12,7 +13,11 @@ export const BlindsFragment = gql`
 `;
 
 export const setBlindsLevelMutation = gql`
-  mutation SetBlindsLevel($id: ID!, $level: Float!) {
-    setBlind(id: $id, level: $level)
+  mutation SetBlindsLevel($ids: [ID!]!, $level: Float!) {
+    setBlinds(ids: $ids, level: $level) {
+      ...MutationResponse
+    }
   }
+
+  ${mutationResponse}
 `;

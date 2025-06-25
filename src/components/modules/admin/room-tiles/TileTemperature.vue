@@ -1,7 +1,16 @@
 <script setup lang="ts">
 import { Room } from "@/@types";
 import { TEMPERATURE_RANGE, TEMPERATURE_THRESHOLDS } from "@/lib/consts";
-import { toValueObject, useLiveRandomValues, useThresholds, useTransform } from "@/lib/utils";
+import {
+  extractActualHumidity,
+  extractActualTemperature,
+  extractTemperatureSetpoint,
+  isTemperatureSensor,
+  toValueObject,
+  useLiveRandomValues,
+  useThresholds,
+  useTransform,
+} from "@/lib/utils";
 import AreaChart from "@components/shared/area-chart/AreaChart.vue";
 import { ValueTile } from "@components/shared/value-tile";
 import { SeriesOption } from "echarts/types/dist/shared";
@@ -26,6 +35,11 @@ const setpointHistory = useTransform(
   toValueObject,
 );
 
+const hasTemperatureSensor = computed(() => props.room.roomsSensors.some(isTemperatureSensor));
+const actualTemperature = computed(() => extractActualTemperature(props.room) ?? 0);
+const actualHumidity = computed(() => extractActualHumidity(props.room) ?? 0);
+const temperatureSetpoint = computed(() => extractTemperatureSetpoint(props.room) ?? 0);
+
 const setpointSeries = computed<SeriesOption[]>(() => [
   {
     type: "line",
@@ -39,14 +53,12 @@ const setpointSeries = computed<SeriesOption[]>(() => [
   },
 ]);
 
-const state = useThresholds(
-  TEMPERATURE_THRESHOLDS,
-  computed(() => props.room.actualTemperature),
-);
+const state = useThresholds(TEMPERATURE_THRESHOLDS, actualTemperature);
 </script>
 
 <template>
   <ValueTile
+    v-if="hasTemperatureSensor"
     :title="room.name"
     :state="state"
   >
@@ -64,14 +76,14 @@ const state = useThresholds(
       </AreaChart>
     </template>
     <template #center>
-      <span>{{ room.actualTemperature.toFixed(0) }}</span>
+      <span>{{ actualTemperature.toFixed(0) }}</span>
       <sup class="top-[-0.3em] text-rxs font-extralight">&deg;</sup>
     </template>
 
     <template #bottom-left>
       <Droplets class="inline h-[1em] w-[1em]" />
       <span>
-        <span class="ml-[0.5em] font-extrabold">{{ room.actualHumidity.toFixed(0) }}</span>
+        <span class="ml-[0.5em] font-extrabold">{{ actualHumidity.toFixed(0) }}</span>
         <span class="ml-[0.25em] text-rsm font-extralight">&percnt;</span>
       </span>
     </template>
@@ -80,7 +92,7 @@ const state = useThresholds(
       <span>
         <span class="text-rsm font-light">Set to</span>
         <span class="ml-[0.25em] font-extrabold">
-          {{ room.temperatureSetpoint }}
+          {{ temperatureSetpoint }}
         </span>
         <sup class="font-extralight">&deg;</sup>
       </span>

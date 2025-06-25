@@ -1,9 +1,10 @@
-import allRooms from "../../data/all-rooms";
+import { rooms } from "../../data/all-rooms";
+import { isBlindsControl } from "../../lib/helpers";
 import { expect, test as testBase } from "../../mocks/playwright";
 import { getAllRooms, getVersion } from "../../mocks/queries";
 import BlindsPage from "./page";
 
-const dutchCabin = allRooms.rooms.find((room) => room.id === "dutch-cabin")!;
+const dutchCabin = rooms.find((room) => room.id === "dutch-cabin")!;
 
 const test = testBase.extend<{ blindsPage: BlindsPage }>({
   blindsPage: [
@@ -29,13 +30,20 @@ const test = testBase.extend<{ blindsPage: BlindsPage }>({
 });
 
 test.describe("Blinds", () => {
-  const roomWithTwoBlinds = allRooms.rooms.find((room) => room.blinds.length === 2)!;
+  const roomWithTwoBlinds = rooms.find(
+    (room) => room.roomsControls.filter(isBlindsControl).length === 2,
+  )!;
 
   test.describe("with 2 blinds", () => {
     const targetLevels = [0.51, 0.75];
 
-    test.beforeEach(({ blindsPage }) => {
-      blindsPage.setBlindLevels(targetLevels, { ...dutchCabin, blinds: roomWithTwoBlinds.blinds });
+    test.beforeEach(async ({ page, blindsPage }) => {
+      blindsPage.setBlindLevels(targetLevels, {
+        ...dutchCabin,
+        roomsControls: roomWithTwoBlinds.roomsControls,
+      });
+
+      await page.waitForTimeout(500);
     });
 
     test("shows two controls", async ({ blindsPage }) => {
@@ -43,6 +51,8 @@ test.describe("Blinds", () => {
     });
 
     test("shows the correct values", async ({ blindsPage }) => {
+      await expect(blindsPage.listItems).toHaveCount(2);
+
       expect(await blindsPage.textValues()).toEqual(
         targetLevels.map((level) => (level * 100).toString()),
       );
@@ -50,14 +60,21 @@ test.describe("Blinds", () => {
   });
 
   test.describe("with > 2 blinds", () => {
-    const roomWithMoreThanTwoBlinds = allRooms.rooms.find((room) => room.blinds.length > 2)!;
+    const roomWithMoreThanTwoBlinds = rooms.find(
+      (room) => room.roomsControls.filter(isBlindsControl).length > 2,
+    )!;
 
     test.beforeEach(async ({ blindsPage }) => {
-      blindsPage.setBlindLevels([], { ...dutchCabin, blinds: roomWithMoreThanTwoBlinds.blinds });
+      blindsPage.setBlindLevels([], {
+        ...dutchCabin,
+        roomsControls: roomWithMoreThanTwoBlinds.roomsControls,
+      });
     });
 
     test("shows the correct amount of controls", async ({ blindsPage }) => {
-      await expect(blindsPage.listItems).toHaveCount(roomWithMoreThanTwoBlinds.blinds.length);
+      await expect(blindsPage.listItems).toHaveCount(
+        roomWithMoreThanTwoBlinds.roomsControls.filter(isBlindsControl).length,
+      );
     });
 
     test("does not show numeral values", async ({ blindsPage }) => {

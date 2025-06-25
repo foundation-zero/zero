@@ -7,14 +7,9 @@ import {
   MutationRootSetLightingGroupArgs,
   MutationRootSetLightingGroupsArgs,
   MutationRootSetRoomTemperatureSetpointArgs,
-  QueryRoot,
-  Rooms,
 } from "@/gql/graphql";
 import { setBlindsLevelMutation } from "@/graphql/queries/blinds";
-import {
-  setLightingGroupsLevelMutation,
-  setLightLevelMutation,
-} from "@/graphql/queries/light-groups";
+import { setLightingGroupsLevelMutation } from "@/graphql/queries/light-groups";
 import {
   setAmplifierForRoomMutation,
   setAmplifierMutation,
@@ -22,7 +17,7 @@ import {
   setTemperatureSetpointMutation,
   subscribeToRooms,
 } from "@/graphql/queries/rooms";
-import { createArea, toRoom } from "@/lib/mappers";
+import { createArea } from "@/lib/mappers";
 import { useMutation, UseMutationResponse, useSubscription } from "@urql/vue";
 import { useDebounceFn, useLocalStorage, useTimeoutFn } from "@vueuse/core";
 
@@ -33,7 +28,7 @@ import { useAuthStore } from "./auth";
 
 const MUTATION_DELAY_IN_MS = 5;
 
-type GetAllRoomsQuery = Pick<QueryRoot, "rooms">;
+type GetAllRoomsQuery = { rooms: Room[] };
 
 export const useRoomStore = defineStore("rooms", () => {
   const { t } = useI18n();
@@ -42,13 +37,8 @@ export const useRoomStore = defineStore("rooms", () => {
   const emptyRoom: Room = {
     name: t("labels.emptyRoom"),
     group: RoomGroup.AFT,
-    amplifierOn: false,
-    temperatureSetpoint: 23,
-    actualTemperature: 21,
-    actualHumidity: 40,
-    actualCO2: 500,
-    blinds: [],
-    lights: [],
+    roomsControls: [],
+    roomsSensors: [],
     id: "empty",
   };
 
@@ -75,29 +65,29 @@ export const useRoomStore = defineStore("rooms", () => {
 
   // TODO: Find a better way to handle admin and user mutations
   const setTemperatureSetpoint = useDebounceMutation(
-    useMutation<Rooms, MutationRootSetRoomTemperatureSetpointArgs>(
+    useMutation<Room, MutationRootSetRoomTemperatureSetpointArgs>(
       isAdmin.value ? setTemperatureSetpointForRoomMutation : setTemperatureSetpointMutation,
     ),
     (temperature: number) => ({
-      id: isAdmin.value ? currentRoomId.value : undefined,
+      ids: isAdmin.value ? currentRoomId.value : undefined,
       temperature,
     }),
   );
 
   const toggleAmplifier = useDebounceMutation(
-    useMutation<Rooms, MutationRootSetAmplifierArgs>(
+    useMutation<Room, MutationRootSetAmplifierArgs>(
       isAdmin.value ? setAmplifierForRoomMutation : setAmplifierMutation,
     ),
     (amplifierOn: boolean) => ({
-      id: isAdmin.value ? currentRoomId.value : undefined,
+      ids: isAdmin.value ? [currentRoomId.value] : undefined,
       on: amplifierOn,
     }),
     0,
   );
 
   const setLightLevel = useDebounceMutation(
-    useMutation<LightingGroups, MutationRootSetLightingGroupArgs>(setLightLevelMutation),
-    (lightId: string, level: number) => ({ id: lightId, level }),
+    useMutation<LightingGroups, MutationRootSetLightingGroupArgs>(setLightingGroupsLevelMutation),
+    (lightId: string, level: number) => ({ ids: lightId, level }),
   );
 
   const setLightingGroupsLevel = useDebounceMutation(
@@ -108,14 +98,14 @@ export const useRoomStore = defineStore("rooms", () => {
 
   const setBlindsLevel = useDebounceMutation(
     useMutation<Blinds, MutationRootSetBlindArgs>(setBlindsLevelMutation),
-    (blindId: string, level: number) => ({ id: blindId, level }),
+    (blindId: string, level: number) => ({ ids: blindId, level }),
   );
 
   const { data: roomData } = useSubscription<GetAllRoomsQuery, Room[]>(
     {
       query: subscribeToRooms,
     },
-    (_prev, result) => result.rooms.map(toRoom) ?? [],
+    (_prev, result) => result.rooms ?? [],
   );
 
   const rooms = computed(() => roomData.value ?? []);

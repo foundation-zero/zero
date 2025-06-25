@@ -906,32 +906,32 @@ export type MutationRoot = {
 
 /** mutation root */
 export type MutationRootSetAmplifierArgs = {
-  id: Scalars["ID"]["input"];
+  ids?: Scalars["ID"]["input"] | Array<Scalars["ID"]["input"]>;
   on: Scalars["Boolean"]["input"];
 };
 
 /** mutation root */
 export type MutationRootSetBlindArgs = {
-  id: Scalars["ID"]["input"];
+  ids?: Scalars["ID"]["input"] | Array<Scalars["ID"]["input"]>;
   level: Scalars["Float"]["input"];
 };
 
 /** mutation root */
 export type MutationRootSetLightingGroupArgs = {
-  id: Scalars["ID"]["input"];
+  ids?: Scalars["ID"]["input"] | Array<Scalars["ID"]["input"]>;
   level: Scalars["Float"]["input"];
 };
 
 /** mutation root */
 export type MutationRootSetLightingGroupsArgs = {
-  ids: Array<Scalars["ID"]["input"]>;
+  ids?: Array<Scalars["ID"]["input"]>;
   level: Scalars["Float"]["input"];
 };
 
 /** mutation root */
 export type MutationRootSetRoomTemperatureSetpointArgs = {
-  id: Scalars["ID"]["input"];
-  temperature: Scalars["Int"]["input"];
+  ids?: Scalars["ID"]["input"] | Array<Scalars["ID"]["input"]>;
+  temperature: Scalars["Float"]["input"];
 };
 
 export type QueryRoot = {

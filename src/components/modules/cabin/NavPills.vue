@@ -1,8 +1,9 @@
 <script setup lang="ts">
+import { isBlindsControl, isLightControl } from "@/lib/utils";
 import { useRoomStore } from "@/stores/rooms";
 import { useUIStore } from "@/stores/ui";
 import { Tabs, TabsList, TabsTrigger } from "@components/shadcn/tabs";
-import { toRefs } from "vue";
+import { computed, toRefs } from "vue";
 import { useI18n } from "vue-i18n";
 import { useRoute } from "vue-router";
 const { name } = toRefs(useRoute());
@@ -10,6 +11,8 @@ const { t } = useI18n();
 
 const { currentRoom } = toRefs(useRoomStore());
 const { showSideNav, breakpoints } = toRefs(useUIStore());
+const lights = computed(() => currentRoom.value.roomsControls.filter(isLightControl));
+const blinds = computed(() => currentRoom.value.roomsControls.filter(isBlindsControl));
 </script>
 
 <template>
@@ -27,7 +30,7 @@ const { showSideNav, breakpoints } = toRefs(useUIStore());
         </TabsTrigger>
       </RouterLink>
       <RouterLink
-        v-if="currentRoom?.lights?.length"
+        v-if="lights?.length"
         :to="{ name: 'cabin:lights' }"
       >
         <TabsTrigger value="cabin:lights">
@@ -35,7 +38,7 @@ const { showSideNav, breakpoints } = toRefs(useUIStore());
         </TabsTrigger>
       </RouterLink>
       <RouterLink
-        v-if="currentRoom?.blinds?.length"
+        v-if="blinds?.length"
         :to="{ name: 'cabin:blinds' }"
       >
         <TabsTrigger value="cabin:blinds">

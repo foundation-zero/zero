@@ -1,16 +1,85 @@
-import { Blinds, LightingGroups } from "@/gql/graphql";
+export const enum ControlType {
+  LIGHT = "lights",
+  BLIND = "blinds",
+  AMPLIFIER = "amplifier",
+  TEMPERATURE = "temperature",
+  HUMIDITY = "humidity",
+  CO2 = "co2",
+}
+
+export const enum SensorType {
+  TEMPERATURE = "temperature",
+  HUMIDITY = "humidity",
+  CO2 = "co2",
+  PRESENCE = "presence",
+}
+
+export interface ValueWithTime {
+  time: number;
+  value: number;
+}
+
+export interface RoomControl<Type extends ControlType = ControlType> {
+  id: string;
+  type: Type;
+  time: number;
+  value: number;
+  name: string;
+}
+
+export interface RoomSensor<Type extends SensorType = SensorType> {
+  id: string;
+  type: Type;
+  time: number;
+  value: number;
+  name?: string;
+}
+
+export interface Meta<T extends Record<string, unknown>> {
+  meta: T;
+}
+
+export type BlindsType = "blind" | "shear";
+
+export type BlindsMeta = {
+  opacity: BlindsType;
+  group: string;
+};
+
+export type LightingControl = RoomControl<ControlType.LIGHT>;
+export type BlindsControl = RoomControl<ControlType.BLIND> & Meta<BlindsMeta>;
+export type AmplifierControl = RoomControl<ControlType.AMPLIFIER>;
+export type TemperatureControl = RoomControl<ControlType.TEMPERATURE>;
+export type HumidityControl = RoomControl<ControlType.HUMIDITY>;
+export type CO2Control = RoomControl<ControlType.CO2>;
+
+export type TemperatureSensor = RoomSensor<SensorType.TEMPERATURE>;
+export type HumiditySensor = RoomSensor<SensorType.HUMIDITY>;
+export type CO2Sensor = RoomSensor<SensorType.CO2>;
+export type PresenceSensor = RoomSensor<SensorType.PRESENCE>;
+
+export type ControlTypeMap = {
+  [ControlType.CO2]: CO2Control;
+  [ControlType.TEMPERATURE]: TemperatureControl;
+  [ControlType.HUMIDITY]: HumidityControl;
+  [ControlType.AMPLIFIER]: AmplifierControl;
+  [ControlType.BLIND]: BlindsControl;
+  [ControlType.LIGHT]: LightingControl;
+};
+
+export type SensorTypeMap = {
+  [SensorType.CO2]: CO2Sensor;
+  [SensorType.TEMPERATURE]: TemperatureSensor;
+  [SensorType.HUMIDITY]: HumiditySensor;
+  [SensorType.PRESENCE]: PresenceSensor;
+};
 
 export interface Room {
   id: string;
   name: string;
   group: RoomGroup;
-  amplifierOn: boolean;
-  temperatureSetpoint: number;
-  actualTemperature: number;
-  actualHumidity: number;
-  actualCO2: number;
-  lights: LightGroup[];
-  blinds: BlindsGroup[];
+  roomsControls: RoomControl[];
+  roomsSensors: RoomSensor[];
 }
 
 export interface ShipArea {
@@ -41,8 +110,8 @@ export interface ControlGroup<T> {
   controls: T[];
 }
 
-export type LightGroup = ControlGroup<LightingGroups>;
-export type BlindsGroup = ControlGroup<Blinds>;
+export type LightGroup = ControlGroup<LightingControl>;
+export type BlindsGroup = ControlGroup<BlindsControl>;
 
 export const enum Roles {
   User = "user",

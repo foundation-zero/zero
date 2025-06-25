@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { LightingGroups } from "@/gql/graphql";
+import { LightingControl } from "@/@types";
 import { ratioAsPercentage } from "@/lib/utils";
 import { ListItem } from "@components/shadcn/list";
 import { Switch } from "@components/shadcn/switch";
@@ -8,13 +8,13 @@ import { ZSpacer } from "@components/shared/spacer";
 import { LampCeiling, LampWallUp } from "lucide-vue-next";
 import { computed, inject, ref, toRef, watch } from "vue";
 
-const props = defineProps<{ light: LightingGroups }>();
-const brightness = ref(props.light.level);
+const props = defineProps<{ light: LightingControl }>();
+const brightness = ref(props.light.value);
 
 watch(
   toRef(props, "light"),
   (light) => {
-    brightness.value = light.level;
+    brightness.value = light.value;
   },
   { immediate: true },
 );

@@ -1,5 +1,5 @@
 import { PlaywrightTestArgs, TestFixture, WebSocketRoute } from "@playwright/test";
-import { SubscribeMessage, WebsocketMessage } from "../../types";
+import { SubscribeMessage, WebsocketMessage } from "../../lib/types";
 
 export interface SubscriptionFixtureOptions {
   url: string;

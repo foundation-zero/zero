@@ -1,11 +1,21 @@
 <script setup lang="ts">
 import { Room, RoomState } from "@/@types";
-import { formatInt } from "@/lib/utils";
+import {
+  extractActualCO2,
+  extractActualHumidity,
+  extractActualTemperature,
+  formatInt,
+} from "@/lib/utils";
 import { TableCell, TableRow } from "@components/shadcn/table";
 import { DropletsIcon, Fan, ThermometerIcon } from "lucide-vue-next";
+import { computed } from "vue";
 import SensorStateValue from "./StatusIcon.vue";
 
-defineProps<{ room: Room; state: RoomState }>();
+const props = defineProps<{ room: Room; state: RoomState }>();
+
+const actualTemperature = computed(() => extractActualTemperature(props.room) ?? 0);
+const actualHumidity = computed(() => extractActualHumidity(props.room) ?? 0);
+const actualCO2 = computed(() => extractActualCO2(props.room) ?? 0);
 </script>
 
 <template>
@@ -18,7 +28,7 @@ defineProps<{ room: Room; state: RoomState }>();
         class="group-hover:hidden"
       />
       <div class="hidden group-hover:block">
-        <span>{{ room.actualTemperature.toFixed(0) }}</span>
+        <span>{{ actualTemperature.toFixed(0) }}</span>
         <sup class="top-[-0.3em] text-rxs font-extralight">&deg;</sup>
       </div>
     </TableCell>
@@ -29,7 +39,7 @@ defineProps<{ room: Room; state: RoomState }>();
         class="group-hover:hidden"
       />
       <div class="hidden group-hover:block">
-        <span>{{ room.actualHumidity.toFixed(0) }}</span>
+        <span>{{ actualHumidity.toFixed(0) }}</span>
         <span class="ml-[0.25em] text-r2xs font-extralight">&percnt;</span>
       </div>
     </TableCell>
@@ -40,7 +50,7 @@ defineProps<{ room: Room; state: RoomState }>();
         :icon="Fan"
       />
       <div class="hidden group-hover:block">
-        <span>{{ formatInt(room.actualCO2) }}</span>
+        <span>{{ formatInt(actualCO2) }}</span>
       </div>
     </TableCell>
   </TableRow>

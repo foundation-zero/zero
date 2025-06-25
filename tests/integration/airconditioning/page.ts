@@ -1,5 +1,6 @@
 import { Locator, Page } from "@playwright/test";
-import { Rooms } from "../../../src/gql/graphql";
+import { Room } from "../../../src/@types";
+import { toTemperatureControl, toTemperatureSensor } from "../../lib/helpers";
 import { ZeroSubscriptions } from "../../mocks/playwright";
 import { SubscriptionFixture } from "../fixtures/graphql";
 
@@ -11,23 +12,23 @@ export default class AirconditioningPage {
     private readonly subscriptions: SubscriptionFixture<ZeroSubscriptions>,
   ) {}
 
-  public setTemperatureSetpoint(room: Rooms, temperatureSetpoint: number): void {
+  public setTemperatureSetpoint(room: Room, temperatureSetpoint: number): void {
     this.subscriptions.dispatch("SubscribeToRoom", {
       rooms: [
         {
           ...room,
-          temperatureSetpoint,
+          roomsControls: [toTemperatureControl(temperatureSetpoint)],
         },
       ],
     });
   }
 
-  public setInsideTemperature(room: Rooms, temperature: number): void {
+  public setInsideTemperature(room: Room, temperature: number): void {
     this.subscriptions.dispatch("SubscribeToRoom", {
       rooms: [
         {
           ...room,
-          actualTemperature: temperature,
+          roomsSensors: [toTemperatureSensor(temperature)],
         },
       ],
     });

@@ -1,6 +1,7 @@
 import { Locator, Page } from "@playwright/test";
-import { Rooms } from "../../../src/gql/graphql";
+import { BlindsControl, Room } from "../../../src/@types";
 import allRooms from "../../data/all-rooms";
+import { isBlindsControl } from "../../lib/helpers";
 import { ZeroSubscriptions } from "../../mocks/playwright";
 import { SubscriptionFixture } from "../fixtures/graphql";
 
@@ -13,20 +14,25 @@ export default class BlindsPage {
   ) {}
 
   public open(): Promise<void> {
-    return this.page.getByRole("tab").nth(2).click();
+    return this.page.getByRole("tab").getByText("Blinds").click();
   }
 
   public setBlindLevels(
     blindLevels: number[],
-    room: Rooms = allRooms.rooms.find((room) => room.blinds.length === blindLevels.length)!,
+    room: Room = allRooms.rooms.find(
+      (room) => room.roomsControls.filter(isBlindsControl).length === blindLevels.length,
+    )!,
   ): void {
+    const blinds = room.roomsControls.filter(isBlindsControl);
+
     this.subscriptions.dispatch("SubscribeToRoom", {
       rooms: [
         {
           ...room,
-          blinds: room.blinds.map((blind, index) => ({
+          roomsControls: blinds.map<BlindsControl>((blind, index) => ({
             ...blind,
-            level: blindLevels[index] !== undefined ? blindLevels[index] : blind.level,
+            time: Date.now(),
+            value: blindLevels[index] !== undefined ? blindLevels[index] : blind.value,
           })),
         },
       ],

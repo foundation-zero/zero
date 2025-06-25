@@ -1,6 +1,8 @@
 import { Locator, Page } from "@playwright/test";
-import { Rooms } from "../../../src/gql/graphql";
+
+import { Room } from "../../../src/@types";
 import allRooms from "../../data/all-rooms";
+import { isLightControl } from "../../lib/helpers";
 import { ZeroSubscriptions } from "../../mocks/playwright";
 import { SubscriptionFixture } from "../fixtures/graphql";
 
@@ -13,20 +15,25 @@ export default class LightsPage {
   ) {}
 
   public open(): Promise<void> {
-    return this.page.getByRole("tab").nth(1).click();
+    return this.page.getByRole("tab").getByText("Lights").click();
   }
 
   public setLightLevels(
     lightLevels: number[],
-    room: Rooms = allRooms.rooms.find((room) => room.lightingGroups.length === lightLevels.length)!,
+    room: Room = allRooms.rooms.find(
+      (room) => room.roomsControls.filter(isLightControl).length === lightLevels.length,
+    )!,
   ): void {
+    const lights = room.roomsControls.filter(isLightControl);
+
     this.subscriptions.dispatch("SubscribeToRoom", {
       rooms: [
         {
           ...room,
-          lightingGroups: room.lightingGroups.map((light, index) => ({
+          roomsControls: lights.map((light, index) => ({
             ...light,
-            level: lightLevels[index] !== undefined ? lightLevels[index] : light.level,
+            value: lightLevels[index] !== undefined ? lightLevels[index] : light.value,
+            time: Date.now(),
           })),
         },
       ],

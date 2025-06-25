@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { extractAmplifierStatus, isAmplifierControl } from "@/lib/utils";
 import { useRoomStore } from "@/stores/rooms";
 import { Label } from "@components/shadcn/label";
 import { Switch } from "@components/shadcn/switch";
@@ -12,23 +13,33 @@ const isDark = useDark();
 
 const { t } = useI18n();
 
+const amplifierStatus = computed(() => extractAmplifierStatus(currentRoom.value));
+
 const isOn = computed({
-  get: () => currentRoom.value.amplifierOn,
+  get: () => amplifierStatus.value === 1,
   set: (val) => {
-    currentRoom.value.amplifierOn = val;
+    const amp = currentRoom.value.roomsControls.find(isAmplifierControl);
+
     toggleAmplifier(val);
+
+    if (!amp) return;
+
+    amp.value = val ? 1 : 0;
   },
 });
 
 watch(currentRoom, (newRoom) => {
-  useTimeoutFn(() => (isDark.value = !!newRoom.amplifierOn), 500);
+  useTimeoutFn(() => (isDark.value = extractAmplifierStatus(newRoom) === 1), 500);
 });
 
 const disabled = inject<boolean>("disabled");
 </script>
 
 <template>
-  <div class="flex items-center space-x-3 text-sm">
+  <div
+    v-if="amplifierStatus !== undefined"
+    class="flex items-center space-x-3 text-sm"
+  >
     <Label
       for="av-toggle"
       class="font-light"
