@@ -1,4 +1,4 @@
-{% macro sink_append(table) %}WITH (
+{% macro sink_append_pg(table) %}WITH (
   connector = 'jdbc',
   jdbc.url = 'jdbc:postgresql://postgres:{{ env_var('PG_PORT') }}/{{ env_var('PG_DB') }}?user={{ env_var('PG_USER') }}&password={{ env_var('PG_PASSWORD') }}',
   table.name = '{{ table}}',
