@@ -47,4 +47,4 @@ jobs:
       - name: Publish Helm chart
         run: |
           helm package ./charts/zero-domestic-control
-          helm push ${{ steps.chart_name.outputs.result }}-${{ steps.chart_version.outputs.result }}.tgz oci://europe-west1-docker.pkg.dev/common-449414/common
+          helm push ${{ steps.chart_name.outputs.result }}-chart-${{ steps.chart_version.outputs.result }}.tgz oci://europe-west1-docker.pkg.dev/common-449414/common
