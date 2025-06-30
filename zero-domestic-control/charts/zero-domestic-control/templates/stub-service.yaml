@@ -3,7 +3,7 @@ apiVersion: v1
 kind: Service
 metadata:
   namespace: {{ .Release.Namespace }}
-  name: stub
+  name: {{ include "zero-domestic-control.stub" . }}
 spec:
   ports:
   - port: {{ .Values.stub.port }}
@@ -11,7 +11,7 @@ spec:
     protocol: TCP
   selector:
     {{- include "zero-domestic-control.selectorLabels" . | nindent 4 }}
-    app.kubernetes.io/part-of: zero-domestic-control
+    app.kubernetes.io/part-of: domestic-control
     app.kubernetes.io/component: stub
   type: ClusterIP
 {{ end }}

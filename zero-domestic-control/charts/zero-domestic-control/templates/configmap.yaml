@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: {{ include "zero-domestic-control.fullname" . }}-envvars
+  name: {{ include "zero-domestic-control.envvars" . }}
   namespace: {{ .Release.Namespace }}
   labels:
     {{- include "zero-domestic-control.labels" . | nindent 4 }}

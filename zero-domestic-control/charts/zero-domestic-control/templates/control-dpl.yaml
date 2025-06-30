@@ -5,14 +5,14 @@ metadata:
   namespace: {{ .Release.Namespace }}
   labels:
     {{- include "zero-domestic-control.labels" . | nindent 4 }}
-    app.kubernetes.io/part-of: zero-domestic-control
+    app.kubernetes.io/part-of: domestic-control
     app.kubernetes.io/component: control
 spec:
   replicas: 1
   selector:
     matchLabels:
       {{- include "zero-domestic-control.selectorLabels" . | nindent 6 }}
-      app.kubernetes.io/part-of: zero-domestic-control
+      app.kubernetes.io/part-of: domestic-control
       app.kubernetes.io/component: control
   template:
     metadata:
@@ -25,7 +25,7 @@ spec:
         {{- with .Values.podLabels }}
         {{- toYaml . | nindent 8 }}
         {{- end }}
-        app.kubernetes.io/part-of: zero-domestic-control
+        app.kubernetes.io/part-of: domestic-control
         app.kubernetes.io/component: control
     spec:
       {{- with .Values.imagePullSecrets }}
@@ -67,4 +67,4 @@ spec:
             {{- include "zero-domestic-control.homeAssistantTokenEnvFromSecret" . | indent 12 }}
           envFrom:
             - configMapRef:
-                name: {{ include "zero-domestic-control.fullname" . }}-envvars
+                name: {{ include "zero-domestic-control.envvars" . }}

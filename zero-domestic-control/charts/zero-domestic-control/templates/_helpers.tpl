@@ -2,7 +2,7 @@
 Expand the name of the chart.
 */}}
 {{- define "zero-domestic-control.name" -}}
-{{- default .Chart.Name .Values.nameOverride | trunc 63 | trimSuffix "-" }}
+{{- default "domestic-control" .Values.nameOverride | trunc 63 | trimSuffix "-" }}
 {{- end }}
 
 {{/*
@@ -14,7 +14,7 @@ If release name contains chart name it will be used as a full name.
 {{- if .Values.fullnameOverride }}
 {{- .Values.fullnameOverride | trunc 63 | trimSuffix "-" }}
 {{- else }}
-{{- $name := default .Chart.Name .Values.nameOverride }}
+{{- $name := include "zero-domestic-control.name" . }}
 {{- $releaseName := regexReplaceAll "(-?[^a-z\\d\\-])+-?" (lower .Release.Name) "-" -}}
 {{- if contains $name $releaseName }}
 {{- $releaseName | trunc 63 | trimSuffix "-" }}
@@ -25,22 +25,26 @@ If release name contains chart name it will be used as a full name.
 {{- end }}
 
 {{- define "zero-domestic-control.backend" -}}
-  {{- printf "%s-backend" (include "zero-domestic-control.fullname" .) -}}
+  {{- printf "%s-backend" (include "zero-domestic-control.name" .) -}}
 {{- end -}}
 
 {{- define "zero-domestic-control.control" -}}
-  {{- printf "%s-control" (include "zero-domestic-control.fullname" .) -}}
+  {{- printf "%s-control" (include "zero-domestic-control.name" .) -}}
 {{- end -}}
 
 {{- define "zero-domestic-control.stub" -}}
-  {{- printf "%s-stub" (include "zero-domestic-control.fullname" .) -}}
+  {{- printf "%s-stub" (include "zero-domestic-control.name" .) -}}
+{{- end -}}
+
+{{- define "zero-domestic-control.envvars" -}}
+  {{- printf "%s-envvars" (include "zero-domestic-control.name" .) -}}
 {{- end -}}
 
 {{/*
 Create chart name and version as used by the chart label.
 */}}
 {{- define "zero-domestic-control.chart" -}}
-{{- printf "%s-%s" .Chart.Name .Chart.Version | replace "+" "_" | trunc 63 | trimSuffix "-" }}
+{{- printf "%s-%s" (include "zero-domestic-control.name" .) .Chart.Version | replace "+" "_" | trunc 63 | trimSuffix "-" }}
 {{- end }}
 
 {{/*
