@@ -42,7 +42,7 @@ services:
     environment:
       POSTGRES_USER: ${PG_USER}
       POSTGRES_PASSWORD: ${PG_PASSWORD}
-      POSTGRES_DB: "${PG_DB}"
+      POSTGRES_DB: ${PG_DB}
 
   graphql-engine:
     image: hasura/graphql-engine:v2.42.0
@@ -51,7 +51,7 @@ services:
     restart: always
     environment:
       ## postgres database to store Hasura metadata
-      HASURA_GRAPHQL_METADATA_DATABASE_URL: postgres://postgres:postgrespassword@postgres:5432/postgres
+      HASURA_GRAPHQL_METADATA_DATABASE_URL: postgres://${PG_USER}:${PG_PASSWORD}@postgres:5432/postgres
       ## this env var can be used to add the above postgres database to Hasura as a data source. this can be removed/updated based on your needs
       PG_DATABASE_URL: postgres://${PG_USER}:${PG_PASSWORD}@postgres:5432/${PG_DB}
       DOMESTIC_CONTROL_URL: "${DOMESTIC_CONTROL_URL}"

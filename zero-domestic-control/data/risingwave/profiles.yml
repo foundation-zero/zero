@@ -1,5 +1,5 @@
 risingwave:
-  target: local
+  target: singel
   outputs:
     local:
       type: risingwave
@@ -30,4 +30,3 @@ risingwave:
       dbname: dev
       schema: public
       threads: 1
-
