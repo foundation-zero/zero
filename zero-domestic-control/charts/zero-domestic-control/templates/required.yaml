@@ -1,0 +1,109 @@
+{{/*
+Compile all warnings into a single message, and call fail.
+*/}}
+{{- define "zero-domestic-control.validateValues" -}}
+{{- $messages := list -}}
+{{- $messages := append $messages (include "zero-domestic-control.validateValues.mqttHost" .) -}}
+{{- $messages := append $messages (include "zero-domestic-control.validateValues.mqttPort" .) -}}
+{{- $messages := append $messages (include "zero-domestic-control.validateValues.risingwaveUrl" .) -}}
+{{- $messages := append $messages (include "zero-domestic-control.validateValues.postgresqlHost" .) -}}
+{{- $messages := append $messages (include "zero-domestic-control.validateValues.postgresqlPort" .) -}}
+{{- $messages := append $messages (include "zero-domestic-control.validateValues.postgresqlDb" .) -}}
+{{- $messages := append $messages (include "zero-domestic-control.validateValues.homeAssistantUrl" .) -}}
+{{- $messages := append $messages (include "zero-domestic-control.validateValues.homeAssistantWebsocketUrl" .) -}}
+{{- $messages := append $messages (include "zero-domestic-control.validateValues.homeAssistantToken" .) -}}
+{{- $messages := append $messages (include "zero-domestic-control.validateValues.postgresqlPassword" .) -}}
+{{- $messages := append $messages (include "zero-domestic-control.validateValues.hasuraSecret" .) -}}
+{{- $messages := without $messages "" -}}
+{{- $message := join "\n" $messages -}}
+
+{{- if $message -}}
+{{-   printf "\nVALUES VALIDATION:\n%s" $message | fail -}}
+{{- end -}}
+{{- end -}}
+
+{{/* Must provide a host for MQTT */}}
+{{- define "zero-domestic-control.validateValues.mqttHost" -}}
+{{- if not .Values.mqtt.host  -}}
+    zero-domestic-control: mqtt.host is a required value
+{{- end -}}
+{{- end -}}
+
+{{/* Must provide a port for MQTT */}}
+{{- define "zero-domestic-control.validateValues.mqttPort" -}}
+{{- if not .Values.mqtt.port  -}}
+    zero-domestic-control: mqtt.port is a required value
+{{- end -}}
+{{- end -}}
+
+{{/* Must provide a URL for RisingWave */}}
+{{- define "zero-domestic-control.validateValues.risingwaveUrl" -}}
+{{- if not .Values.risingwave.url  -}}
+    zero-domestic-control: risingwave.url is a required value
+{{- end -}}
+{{- end -}}
+
+{{/* Must provide a host for PostgreSQL */}}
+{{- define "zero-domestic-control.validateValues.postgresqlHost" -}}
+{{- if not .Values.postgresql.host  -}}
+    zero-domestic-control: postgresql.host is a required value
+{{- end -}}
+{{- end -}}
+
+{{/* Must provide a port for PostgreSQL */}}
+{{- define "zero-domestic-control.validateValues.postgresqlPort" -}}
+{{- if not .Values.postgresql.port  -}}
+    zero-domestic-control: postgresql.port is a required value
+{{- end -}}
+{{- end -}}
+
+{{/* Must provide a database name for PostgreSQL */}}
+{{- define "zero-domestic-control.validateValues.postgresqlDb" -}}
+{{- if not .Values.postgresql.db  -}}
+    zero-domestic-control: postgresql.db is a required value
+{{- end -}}
+{{- end -}}
+
+{{/* Must provide a password for PostgreSQL */}}
+{{- define "zero-domestic-control.validateValues.postgresqlPassword" -}}
+{{- if not .Values.postgresql.password -}}
+  {{- if and (not .Values.postgresql.existingSecret) (not .Values.postgresql.existingSecretPasswordKey) -}}
+    zero-domestic-control: PostgreSQL password
+    A database password is required! Please set a password or provide an existing secret.
+  {{- end -}}
+{{- end -}}
+{{- end -}}
+
+{{/* Must provide a secret for Hasura */}}
+{{- define "zero-domestic-control.validateValues.hasuraSecret" -}}
+{{- if not .Values.hasura.secret -}}
+  {{- if and (not .Values.hasura.existingSecret) (not .Values.hasura.existingSecretPasswordKey) -}}
+    zero-domestic-control: Hasura secret
+    A secret key for Hasura is required! Please set a password or provide an existing secret.
+  {{- end -}}
+{{- end -}}
+{{- end -}}
+
+{{/* Must provide a URL for Home Assistant */}}
+{{- define "zero-domestic-control.validateValues.homeAssistantUrl" -}}
+{{- if not .Values.homeAssistant.url  -}}
+    zero-domestic-control: homeAssistant.url is a required value
+{{- end -}}
+{{- end -}}
+
+{{/* Must provide a WebSocket URL for Home Assistant */}}
+{{- define "zero-domestic-control.validateValues.homeAssistantWebsocketUrl" -}}
+{{- if not .Values.homeAssistant.websocketUrl -}}
+    zero-domestic-control: homeAssistant.websocketUrl is a required value
+{{- end -}}
+{{- end -}}
+
+{{/* Must provide a token for Home Assistant */}}
+{{- define "zero-domestic-control.validateValues.homeAssistantToken" -}}
+{{- if not .Values.homeAssistant.token -}}
+    {{- if and (not .Values.homeAssistant.existingSecret) (not .Values.homeAssistant.existingSecretTokenKey) -}}
+    zero-domestic-control: homeAssistant token
+    A token for Home Assistant is required! Please set a token or provide an existing secret.
+    {{- end -}}
+{{- end -}}
+{{- end -}}

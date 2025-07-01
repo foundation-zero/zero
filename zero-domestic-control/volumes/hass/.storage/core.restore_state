@@ -1,0 +1,425 @@
+{
+  "version": 1,
+  "minor_version": 1,
+  "key": "core.restore_state",
+  "data": [
+    {
+      "state": {"entity_id":"conversation.home_assistant","state":"unknown","attributes":{"friendly_name":"Home Assistant","supported_features":1},"last_changed":"2025-06-19T09:01:17.609160+00:00","last_reported":"2025-06-19T09:01:17.609160+00:00","last_updated":"2025-06-19T09:01:17.609160+00:00","context":{"id":"01JY3PQJD9K2DNWXCN1ZAPE8XF","parent_id":null,"user_id":null}},
+      "extra_data": null,
+      "last_seen": "2025-06-19T11:01:45.278760+00:00"
+    },
+    {
+      "state": {"entity_id":"event.backup_automatic_backup","state":"unknown","attributes":{"event_types":["completed","failed","in_progress"],"event_type":null,"friendly_name":"Backup Automatic backup"},"last_changed":"2025-06-19T09:01:17.646585+00:00","last_reported":"2025-06-19T09:01:17.646585+00:00","last_updated":"2025-06-19T09:01:17.646585+00:00","context":{"id":"01JY3PQJEEBRK6RTZSCC0T30TN","parent_id":null,"user_id":null}},
+      "extra_data": {
+        "last_event_type": null,
+        "last_event_attributes": null
+      },
+      "last_seen": "2025-06-19T11:01:45.278760+00:00"
+    },
+    {
+      "state": {"entity_id":"script.set_input_helper","state":"off","attributes":{"last_triggered":null,"mode":"single","current":0,"friendly_name":"Set input helper"},"last_changed":"2025-06-19T09:01:17.840251+00:00","last_reported":"2025-06-19T09:01:17.840251+00:00","last_updated":"2025-06-19T09:01:17.840251+00:00","context":{"id":"01JY3PQJMG8FXDVQ5MZN6NETC7","parent_id":null,"user_id":null}},
+      "extra_data": null,
+      "last_seen": "2025-06-19T11:01:45.278760+00:00"
+    },
+    {
+      "state": {"entity_id":"input_number.owners_cabin_mood","state":"50.0","attributes":{"initial":null,"editable":true,"min":0,"max":100,"step":1,"mode":"slider","icon":"mdi:wall-sconce","friendly_name":"Owner's cabin - Mood"},"last_changed":"2025-06-19T10:34:20.812228+00:00","last_reported":"2025-06-19T10:34:20.812228+00:00","last_updated":"2025-06-19T10:34:20.812228+00:00","context":{"id":"01JY3W1YRBQMK1HYMTRG0Z5WN7","parent_id":null,"user_id":"e2e3a3e713eb438aac42cee42c619956"}},
+      "extra_data": null,
+      "last_seen": "2025-06-19T11:01:45.278760+00:00"
+    },
+    {
+      "state": {"entity_id":"input_number.owners_cabin_ambient","state":"50.0","attributes":{"initial":null,"editable":true,"min":0,"max":100,"step":1,"mode":"slider","icon":"mdi:ceiling-light","friendly_name":"Owner's cabin - Ambient"},"last_changed":"2025-06-19T09:01:17.840510+00:00","last_reported":"2025-06-19T09:01:17.840510+00:00","last_updated":"2025-06-19T09:01:17.840510+00:00","context":{"id":"01JY3PQJMG97ZC2W1N70JNC61K","parent_id":null,"user_id":null}},
+      "extra_data": null,
+      "last_seen": "2025-06-19T11:01:45.278760+00:00"
+    },
+    {
+      "state": {"entity_id":"input_number.owners_cabin_main_shear","state":"50.0","attributes":{"initial":null,"editable":true,"min":0,"max":100,"step":1,"mode":"slider","friendly_name":"Owner's cabin main - Shear"},"last_changed":"2025-06-19T10:34:20.847928+00:00","last_reported":"2025-06-19T10:34:20.847928+00:00","last_updated":"2025-06-19T10:34:20.847928+00:00","context":{"id":"01JY3W1YSFGZYVXSN6HSP1G54H","parent_id":null,"user_id":"e2e3a3e713eb438aac42cee42c619956"}},
+      "extra_data": null,
+      "last_seen": "2025-06-19T11:01:45.278760+00:00"
+    },
+    {
+      "state": {"entity_id":"input_number.owners_cabin_main_blind","state":"17.0","attributes":{"initial":null,"editable":true,"min":0,"max":100,"step":1,"mode":"slider","friendly_name":"Owner's cabin main - Blind"},"last_changed":"2025-06-19T09:01:17.840546+00:00","last_reported":"2025-06-19T09:01:17.840546+00:00","last_updated":"2025-06-19T09:01:17.840546+00:00","context":{"id":"01JY3PQJMGPWBQQDQR0PEQ2D8K","parent_id":null,"user_id":null}},
+      "extra_data": null,
+      "last_seen": "2025-06-19T11:01:45.278760+00:00"
+    },
+    {
+      "state": {"entity_id":"input_number.owners_cabin_port_shear","state":"57.0","attributes":{"initial":null,"editable":true,"min":0,"max":100,"step":1,"mode":"slider","icon":"mdi:blinds-horizontal","friendly_name":"Owner's cabin port - Shear"},"last_changed":"2025-06-19T09:01:17.840563+00:00","last_reported":"2025-06-19T09:01:17.840563+00:00","last_updated":"2025-06-19T09:01:17.840563+00:00","context":{"id":"01JY3PQJMG7R8BCQT25MT0RM1N","parent_id":null,"user_id":null}},
+      "extra_data": null,
+      "last_seen": "2025-06-19T11:01:45.278760+00:00"
+    },
+    {
+      "state": {"entity_id":"input_number.owners_cabin_port_blind","state":"51.0","attributes":{"initial":null,"editable":true,"min":0,"max":100,"step":1,"mode":"slider","icon":"mdi:blinds","friendly_name":"Owner's cabin port - Blind"},"last_changed":"2025-06-19T09:01:17.840580+00:00","last_reported":"2025-06-19T09:01:17.840580+00:00","last_updated":"2025-06-19T09:01:17.840580+00:00","context":{"id":"01JY3PQJMGE8WTP9H7RECGVZFV","parent_id":null,"user_id":null}},
+      "extra_data": null,
+      "last_seen": "2025-06-19T11:01:45.278760+00:00"
+    },
+    {
+      "state": {"entity_id":"input_number.owners_cabin_starboard_shear","state":"0.0","attributes":{"initial":null,"editable":true,"min":0,"max":100,"step":1,"mode":"slider","friendly_name":"Owner's cabin starboard - Shear"},"last_changed":"2025-06-19T09:01:17.840595+00:00","last_reported":"2025-06-19T09:01:17.840595+00:00","last_updated":"2025-06-19T09:01:17.840595+00:00","context":{"id":"01JY3PQJMGB1R8FB03N7784SAS","parent_id":null,"user_id":null}},
+      "extra_data": null,
+      "last_seen": "2025-06-19T11:01:45.278760+00:00"
+    },
+    {
+      "state": {"entity_id":"input_number.owners_cabin_starboard_blind","state":"0.0","attributes":{"initial":null,"editable":true,"min":0,"max":100,"step":1,"mode":"slider","icon":"mdi:blinds","friendly_name":"Owner's cabin starboard - Blind"},"last_changed":"2025-06-19T09:01:17.840609+00:00","last_reported":"2025-06-19T09:01:17.840609+00:00","last_updated":"2025-06-19T09:01:17.840609+00:00","context":{"id":"01JY3PQJMG34T0EWXRT8P02H06","parent_id":null,"user_id":null}},
+      "extra_data": null,
+      "last_seen": "2025-06-19T11:01:45.278760+00:00"
+    },
+    {
+      "state": {"entity_id":"input_number.owners_cabin_skyline_main_shear","state":"73.0","attributes":{"initial":null,"editable":true,"min":0,"max":100,"step":1,"mode":"slider","friendly_name":"Owner's cabin skyline main - Shear"},"last_changed":"2025-06-19T09:01:17.840622+00:00","last_reported":"2025-06-19T09:01:17.840622+00:00","last_updated":"2025-06-19T09:01:17.840622+00:00","context":{"id":"01JY3PQJMGQGX0MB9Q43FJR6BM","parent_id":null,"user_id":null}},
+      "extra_data": null,
+      "last_seen": "2025-06-19T11:01:45.278760+00:00"
+    },
+    {
+      "state": {"entity_id":"input_number.owners_cabin_skyline_main_blind","state":"87.0","attributes":{"initial":null,"editable":true,"min":0,"max":100,"step":1,"mode":"slider","friendly_name":"Owner's cabin skyline main - Blind"},"last_changed":"2025-06-19T09:01:17.840634+00:00","last_reported":"2025-06-19T09:01:17.840634+00:00","last_updated":"2025-06-19T09:01:17.840634+00:00","context":{"id":"01JY3PQJMGQ3AAYSJEEB1VAWQN","parent_id":null,"user_id":null}},
+      "extra_data": null,
+      "last_seen": "2025-06-19T11:01:45.278760+00:00"
+    },
+    {
+      "state": {"entity_id":"input_number.owners_cabin_skyline_port_shear","state":"79.0","attributes":{"initial":null,"editable":true,"min":0,"max":100,"step":1,"mode":"slider","friendly_name":"Owner's cabin skyline port - Shear"},"last_changed":"2025-06-19T09:01:17.840648+00:00","last_reported":"2025-06-19T09:01:17.840648+00:00","last_updated":"2025-06-19T09:01:17.840648+00:00","context":{"id":"01JY3PQJMG4ZXYCTCFNAHC42K9","parent_id":null,"user_id":null}},
+      "extra_data": null,
+      "last_seen": "2025-06-19T11:01:45.278760+00:00"
+    },
+    {
+      "state": {"entity_id":"input_number.owners_cabin_skyline_port_blind","state":"82.0","attributes":{"initial":null,"editable":true,"min":0,"max":100,"step":1,"mode":"slider","friendly_name":"Owner's cabin skyline port - Blind"},"last_changed":"2025-06-19T09:01:17.840662+00:00","last_reported":"2025-06-19T09:01:17.840662+00:00","last_updated":"2025-06-19T09:01:17.840662+00:00","context":{"id":"01JY3PQJMG419JS84KEV73AVAG","parent_id":null,"user_id":null}},
+      "extra_data": null,
+      "last_seen": "2025-06-19T11:01:45.278760+00:00"
+    },
+    {
+      "state": {"entity_id":"input_number.owners_cabin_skyline_starboard_shear","state":"0.0","attributes":{"initial":null,"editable":true,"min":0,"max":100,"step":1,"mode":"slider","friendly_name":"Owner's cabin skyline starboard - Shear"},"last_changed":"2025-06-19T09:01:17.840674+00:00","last_reported":"2025-06-19T09:01:17.840674+00:00","last_updated":"2025-06-19T09:01:17.840674+00:00","context":{"id":"01JY3PQJMG3WKV1F1NGGZAE0A8","parent_id":null,"user_id":null}},
+      "extra_data": null,
+      "last_seen": "2025-06-19T11:01:45.278760+00:00"
+    },
+    {
+      "state": {"entity_id":"input_number.owners_cabin_skyline_starboard_blind","state":"0.0","attributes":{"initial":null,"editable":true,"min":0,"max":100,"step":1,"mode":"slider","friendly_name":"Owner's cabin skyline starboard - Blind"},"last_changed":"2025-06-19T09:01:17.840688+00:00","last_reported":"2025-06-19T09:01:17.840688+00:00","last_updated":"2025-06-19T09:01:17.840688+00:00","context":{"id":"01JY3PQJMG0TP7DZ8C466W67W4","parent_id":null,"user_id":null}},
+      "extra_data": null,
+      "last_seen": "2025-06-19T11:01:45.278760+00:00"
+    },
+    {
+      "state": {"entity_id":"input_number.dutch_cabin_blind","state":"48.0","attributes":{"initial":null,"editable":true,"min":0,"max":100,"step":1,"mode":"slider","icon":"mdi:blinds","friendly_name":"Dutch cabin - Blind"},"last_changed":"2025-06-19T09:01:17.840701+00:00","last_reported":"2025-06-19T09:01:17.840701+00:00","last_updated":"2025-06-19T09:01:17.840701+00:00","context":{"id":"01JY3PQJMGQECYSHTKC26CNEXY","parent_id":null,"user_id":null}},
+      "extra_data": null,
+      "last_seen": "2025-06-19T11:01:45.278760+00:00"
+    },
+    {
+      "state": {"entity_id":"input_number.french_cabin_blind","state":"20.0","attributes":{"initial":null,"editable":true,"min":0,"max":100,"step":1,"mode":"slider","icon":"mdi:blinds","friendly_name":"French cabin - Blind"},"last_changed":"2025-06-19T09:01:17.840714+00:00","last_reported":"2025-06-19T09:01:17.840714+00:00","last_updated":"2025-06-19T09:01:17.840714+00:00","context":{"id":"01JY3PQJMGTPGERF70T2HJ6Q91","parent_id":null,"user_id":null}},
+      "extra_data": null,
+      "last_seen": "2025-06-19T11:01:45.278760+00:00"
+    },
+    {
+      "state": {"entity_id":"input_number.italian_cabin_blind","state":"76.0","attributes":{"initial":null,"editable":true,"min":0,"max":100,"step":1,"mode":"slider","icon":"mdi:blinds","friendly_name":"Italian cabin - Blind"},"last_changed":"2025-06-19T09:01:17.840727+00:00","last_reported":"2025-06-19T09:01:17.840727+00:00","last_updated":"2025-06-19T09:01:17.840727+00:00","context":{"id":"01JY3PQJMG55TJ961884E4KBAB","parent_id":null,"user_id":null}},
+      "extra_data": null,
+      "last_seen": "2025-06-19T11:01:45.278760+00:00"
+    },
+    {
+      "state": {"entity_id":"input_number.californian_lounge_blind","state":"28.0","attributes":{"initial":null,"editable":true,"min":0,"max":100,"step":1,"mode":"slider","icon":"mdi:blinds","friendly_name":"Californian lounge - Blind"},"last_changed":"2025-06-19T09:01:17.840740+00:00","last_reported":"2025-06-19T09:01:17.840740+00:00","last_updated":"2025-06-19T09:01:17.840740+00:00","context":{"id":"01JY3PQJMGBZMHSNYS4YF1J8B8","parent_id":null,"user_id":null}},
+      "extra_data": null,
+      "last_seen": "2025-06-19T11:01:45.278760+00:00"
+    },
+    {
+      "state": {"entity_id":"input_number.polynesian_cabin_blind","state":"57.0","attributes":{"initial":null,"editable":true,"min":0,"max":100,"step":1,"mode":"slider","icon":"mdi:blinds","friendly_name":"Polynesian cabin - Blind"},"last_changed":"2025-06-19T09:01:17.840753+00:00","last_reported":"2025-06-19T09:01:17.840753+00:00","last_updated":"2025-06-19T09:01:17.840753+00:00","context":{"id":"01JY3PQJMGM0QZNEPD2CWZ63GG","parent_id":null,"user_id":null}},
+      "extra_data": null,
+      "last_seen": "2025-06-19T11:01:45.278760+00:00"
+    },
+    {
+      "state": {"entity_id":"input_number.galley_blind","state":"60.0","attributes":{"initial":null,"editable":true,"min":0,"max":100,"step":1,"mode":"slider","icon":"mdi:blinds","friendly_name":"Galley - Blind"},"last_changed":"2025-06-19T09:01:17.840765+00:00","last_reported":"2025-06-19T09:01:17.840765+00:00","last_updated":"2025-06-19T09:01:17.840765+00:00","context":{"id":"01JY3PQJMGGW748JYKTPYQ9QEY","parent_id":null,"user_id":null}},
+      "extra_data": null,
+      "last_seen": "2025-06-19T11:01:45.278760+00:00"
+    },
+    {
+      "state": {"entity_id":"input_number.crew_mess_blind","state":"20.0","attributes":{"initial":null,"editable":true,"min":0,"max":100,"step":1,"mode":"slider","icon":"mdi:blinds","friendly_name":"Crew mess - Blind"},"last_changed":"2025-06-19T09:01:17.840778+00:00","last_reported":"2025-06-19T09:01:17.840778+00:00","last_updated":"2025-06-19T09:01:17.840778+00:00","context":{"id":"01JY3PQJMGA1DDQT18EA2RDBKC","parent_id":null,"user_id":null}},
+      "extra_data": null,
+      "last_seen": "2025-06-19T11:01:45.278760+00:00"
+    },
+    {
+      "state": {"entity_id":"input_number.mission_room_blind","state":"69.0","attributes":{"initial":null,"editable":true,"min":0,"max":100,"step":1,"mode":"slider","icon":"mdi:blinds","friendly_name":"Mission room - Blind"},"last_changed":"2025-06-19T09:01:17.840791+00:00","last_reported":"2025-06-19T09:01:17.840791+00:00","last_updated":"2025-06-19T09:01:17.840791+00:00","context":{"id":"01JY3PQJMG4ZYRZQBGY3BQVZGV","parent_id":null,"user_id":null}},
+      "extra_data": null,
+      "last_seen": "2025-06-19T11:01:45.278760+00:00"
+    },
+    {
+      "state": {"entity_id":"input_number.laundry_blind","state":"72.0","attributes":{"initial":null,"editable":true,"min":0,"max":100,"step":1,"mode":"slider","icon":"mdi:blinds","friendly_name":"Laundry - Blind"},"last_changed":"2025-06-19T09:01:17.840805+00:00","last_reported":"2025-06-19T09:01:17.840805+00:00","last_updated":"2025-06-19T09:01:17.840805+00:00","context":{"id":"01JY3PQJMG6GENMSQ8HF7M9H6Z","parent_id":null,"user_id":null}},
+      "extra_data": null,
+      "last_seen": "2025-06-19T11:01:45.278760+00:00"
+    },
+    {
+      "state": {"entity_id":"input_number.engineers_office_blind","state":"91.0","attributes":{"initial":null,"editable":true,"min":0,"max":100,"step":1,"mode":"slider","icon":"mdi:blinds","friendly_name":"Engineers office - Blind"},"last_changed":"2025-06-19T09:01:17.840819+00:00","last_reported":"2025-06-19T09:01:17.840819+00:00","last_updated":"2025-06-19T09:01:17.840819+00:00","context":{"id":"01JY3PQJMG1G442S0GQAQ307GR","parent_id":null,"user_id":null}},
+      "extra_data": null,
+      "last_seen": "2025-06-19T11:01:45.278760+00:00"
+    },
+    {
+      "state": {"entity_id":"input_number.crew_sb_aft_cabin_blind","state":"65.0","attributes":{"initial":null,"editable":true,"min":0,"max":100,"step":1,"mode":"slider","icon":"mdi:blinds","friendly_name":"Crew starboard aft cabin - Blind"},"last_changed":"2025-06-19T09:01:17.840833+00:00","last_reported":"2025-06-19T09:01:17.840833+00:00","last_updated":"2025-06-19T09:01:17.840833+00:00","context":{"id":"01JY3PQJMG7TD2KAEJ7DFS6R09","parent_id":null,"user_id":null}},
+      "extra_data": null,
+      "last_seen": "2025-06-19T11:01:45.278760+00:00"
+    },
+    {
+      "state": {"entity_id":"input_number.crew_sb_mid_cabin_blind","state":"80.0","attributes":{"initial":null,"editable":true,"min":0,"max":100,"step":1,"mode":"slider","icon":"mdi:blinds","friendly_name":"Crew starboard mid cabin - Blind"},"last_changed":"2025-06-19T09:01:17.840860+00:00","last_reported":"2025-06-19T09:01:17.840860+00:00","last_updated":"2025-06-19T09:01:17.840860+00:00","context":{"id":"01JY3PQJMG1XH4X7SYR2GDZ8YN","parent_id":null,"user_id":null}},
+      "extra_data": null,
+      "last_seen": "2025-06-19T11:01:45.278760+00:00"
+    },
+    {
+      "state": {"entity_id":"input_number.crew_sb_fwd_cabin_blind","state":"68.0","attributes":{"initial":null,"editable":true,"min":0,"max":100,"step":1,"mode":"slider","icon":"mdi:blinds","friendly_name":"Crew starboard forward cabin - Blind"},"last_changed":"2025-06-19T09:01:17.840873+00:00","last_reported":"2025-06-19T09:01:17.840873+00:00","last_updated":"2025-06-19T09:01:17.840873+00:00","context":{"id":"01JY3PQJMGQN7SQBR3ZKT4AGX8","parent_id":null,"user_id":null}},
+      "extra_data": null,
+      "last_seen": "2025-06-19T11:01:45.278760+00:00"
+    },
+    {
+      "state": {"entity_id":"input_number.crew_ps_mid_cabin_blind","state":"71.0","attributes":{"initial":null,"editable":true,"min":0,"max":100,"step":1,"mode":"slider","icon":"mdi:blinds","friendly_name":"Crew port side mid cabin - Blind"},"last_changed":"2025-06-19T09:01:17.840972+00:00","last_reported":"2025-06-19T09:01:17.840972+00:00","last_updated":"2025-06-19T09:01:17.840972+00:00","context":{"id":"01JY3PQJMGNZ9FXASF2NZYFT89","parent_id":null,"user_id":null}},
+      "extra_data": null,
+      "last_seen": "2025-06-19T11:01:45.278760+00:00"
+    },
+    {
+      "state": {"entity_id":"input_number.crew_ps_fwd_cabin_blind","state":"36.0","attributes":{"initial":null,"editable":true,"min":0,"max":100,"step":1,"mode":"slider","icon":"mdi:blinds","friendly_name":"Crew port side forward cabin - Blind"},"last_changed":"2025-06-19T09:01:17.840988+00:00","last_reported":"2025-06-19T09:01:17.840988+00:00","last_updated":"2025-06-19T09:01:17.840988+00:00","context":{"id":"01JY3PQJMG6WYZ5DTMD7MRQYAB","parent_id":null,"user_id":null}},
+      "extra_data": null,
+      "last_seen": "2025-06-19T11:01:45.278760+00:00"
+    },
+    {
+      "state": {"entity_id":"input_number.owners_deckhouse_blind","state":"57.0","attributes":{"initial":null,"editable":true,"min":0,"max":100,"step":1,"mode":"slider","friendly_name":"Owner's deckhouse - Blind"},"last_changed":"2025-06-19T09:01:17.841003+00:00","last_reported":"2025-06-19T09:01:17.841003+00:00","last_updated":"2025-06-19T09:01:17.841003+00:00","context":{"id":"01JY3PQJMH9YDH3WHCZE75DKRG","parent_id":null,"user_id":null}},
+      "extra_data": null,
+      "last_seen": "2025-06-19T11:01:45.278760+00:00"
+    },
+    {
+      "state": {"entity_id":"input_number.owners_deckhouse_shear","state":"27.0","attributes":{"initial":null,"editable":true,"min":0,"max":100,"step":1,"mode":"slider","icon":"mdi:blinds-horizontal","friendly_name":"Owner's deckhouse - Shear"},"last_changed":"2025-06-19T09:01:17.841017+00:00","last_reported":"2025-06-19T09:01:17.841017+00:00","last_updated":"2025-06-19T09:01:17.841017+00:00","context":{"id":"01JY3PQJMHZCTKAR2447AEZYZM","parent_id":null,"user_id":null}},
+      "extra_data": null,
+      "last_seen": "2025-06-19T11:01:45.278760+00:00"
+    },
+    {
+      "state": {"entity_id":"input_number.main_deckhouse_blind","state":"100.0","attributes":{"initial":null,"editable":true,"min":0,"max":100,"step":1,"mode":"slider","icon":"mdi:blinds","friendly_name":"Main deckhouse - Blind"},"last_changed":"2025-06-19T09:01:17.841032+00:00","last_reported":"2025-06-19T09:01:17.841032+00:00","last_updated":"2025-06-19T09:01:17.841032+00:00","context":{"id":"01JY3PQJMHX19PT86A9WSSE7T3","parent_id":null,"user_id":null}},
+      "extra_data": null,
+      "last_seen": "2025-06-19T11:01:45.278760+00:00"
+    },
+    {
+      "state": {"entity_id":"input_number.main_deckhouse_shear","state":"62.0","attributes":{"initial":null,"editable":true,"min":0,"max":100,"step":1,"mode":"slider","icon":"mdi:blinds-horizontal","friendly_name":"Main deckhouse - Shear"},"last_changed":"2025-06-19T09:01:17.841044+00:00","last_reported":"2025-06-19T09:01:17.841044+00:00","last_updated":"2025-06-19T09:01:17.841044+00:00","context":{"id":"01JY3PQJMHW1853WD5QEZ6287G","parent_id":null,"user_id":null}},
+      "extra_data": null,
+      "last_seen": "2025-06-19T11:01:45.278760+00:00"
+    },
+    {
+      "state": {"entity_id":"input_number.owners_stairway_blind","state":"63.0","attributes":{"initial":null,"editable":true,"min":0,"max":100,"step":1,"mode":"slider","icon":"mdi:blinds","friendly_name":"Owner's stairway - Blind"},"last_changed":"2025-06-19T09:01:17.841058+00:00","last_reported":"2025-06-19T09:01:17.841058+00:00","last_updated":"2025-06-19T09:01:17.841058+00:00","context":{"id":"01JY3PQJMHH1NWY3CJHWMDGHXD","parent_id":null,"user_id":null}},
+      "extra_data": null,
+      "last_seen": "2025-06-19T11:01:45.278760+00:00"
+    },
+    {
+      "state": {"entity_id":"input_number.guest_corridor_blind","state":"32.0","attributes":{"initial":null,"editable":true,"min":0,"max":100,"step":1,"mode":"slider","icon":"mdi:blinds","friendly_name":"Guest corridor - Blind"},"last_changed":"2025-06-19T09:01:17.841072+00:00","last_reported":"2025-06-19T09:01:17.841072+00:00","last_updated":"2025-06-19T09:01:17.841072+00:00","context":{"id":"01JY3PQJMHEGYEZNB4J6NAZ7VW","parent_id":null,"user_id":null}},
+      "extra_data": null,
+      "last_seen": "2025-06-19T11:01:45.278760+00:00"
+    },
+    {
+      "state": {"entity_id":"input_number.dutch_cabin_ambient","state":"18.0","attributes":{"initial":null,"editable":true,"min":0,"max":100,"step":1,"mode":"slider","icon":"mdi:ceiling-light","friendly_name":"Dutch cabin - Ambient"},"last_changed":"2025-06-19T09:01:17.841086+00:00","last_reported":"2025-06-19T09:01:17.841086+00:00","last_updated":"2025-06-19T09:01:17.841086+00:00","context":{"id":"01JY3PQJMH1EFB68Y6NJ2TWGB6","parent_id":null,"user_id":null}},
+      "extra_data": null,
+      "last_seen": "2025-06-19T11:01:45.278760+00:00"
+    },
+    {
+      "state": {"entity_id":"input_number.dutch_cabin_mood","state":"94.0","attributes":{"initial":null,"editable":true,"min":0,"max":100,"step":1,"mode":"slider","icon":"mdi:wall-sconce","friendly_name":"Dutch cabin - Mood"},"last_changed":"2025-06-19T09:01:17.841098+00:00","last_reported":"2025-06-19T09:01:17.841098+00:00","last_updated":"2025-06-19T09:01:17.841098+00:00","context":{"id":"01JY3PQJMH2MD8ERB75X945NAN","parent_id":null,"user_id":null}},
+      "extra_data": null,
+      "last_seen": "2025-06-19T11:01:45.278760+00:00"
+    },
+    {
+      "state": {"entity_id":"input_number.french_cabin_ambient","state":"50.0","attributes":{"initial":null,"editable":true,"min":0,"max":100,"step":1,"mode":"slider","icon":"mdi:ceiling-light","friendly_name":"French cabin - Ambient"},"last_changed":"2025-06-19T09:01:17.841111+00:00","last_reported":"2025-06-19T09:01:17.841111+00:00","last_updated":"2025-06-19T09:01:17.841111+00:00","context":{"id":"01JY3PQJMH6ECBWNV80K1C7AZW","parent_id":null,"user_id":null}},
+      "extra_data": null,
+      "last_seen": "2025-06-19T11:01:45.278760+00:00"
+    },
+    {
+      "state": {"entity_id":"input_number.french_cabin_mood","state":"41.0","attributes":{"initial":null,"editable":true,"min":0,"max":100,"step":1,"mode":"slider","icon":"mdi:wall-sconce","friendly_name":"French cabin - Mood"},"last_changed":"2025-06-19T09:01:17.841125+00:00","last_reported":"2025-06-19T09:01:17.841125+00:00","last_updated":"2025-06-19T09:01:17.841125+00:00","context":{"id":"01JY3PQJMHMJ7C3E3X638CHYR9","parent_id":null,"user_id":null}},
+      "extra_data": null,
+      "last_seen": "2025-06-19T11:01:45.278760+00:00"
+    },
+    {
+      "state": {"entity_id":"input_number.italian_cabin_ambient","state":"55.0","attributes":{"initial":null,"editable":true,"min":0,"max":100,"step":1,"mode":"slider","icon":"mdi:ceiling-light","friendly_name":"Italian cabin - Ambient"},"last_changed":"2025-06-19T09:01:17.841138+00:00","last_reported":"2025-06-19T09:01:17.841138+00:00","last_updated":"2025-06-19T09:01:17.841138+00:00","context":{"id":"01JY3PQJMHBPCTSDEMS3M33EG4","parent_id":null,"user_id":null}},
+      "extra_data": null,
+      "last_seen": "2025-06-19T11:01:45.278760+00:00"
+    },
+    {
+      "state": {"entity_id":"input_number.italian_cabin_mood","state":"50.0","attributes":{"initial":null,"editable":true,"min":0,"max":100,"step":1,"mode":"slider","friendly_name":"Italian cabin - Mood"},"last_changed":"2025-06-19T09:01:17.841151+00:00","last_reported":"2025-06-19T09:01:17.841151+00:00","last_updated":"2025-06-19T09:01:17.841151+00:00","context":{"id":"01JY3PQJMH4EA9MT44VBG53C2D","parent_id":null,"user_id":null}},
+      "extra_data": null,
+      "last_seen": "2025-06-19T11:01:45.278760+00:00"
+    },
+    {
+      "state": {"entity_id":"input_number.californian_lounge_ambient","state":"77.0","attributes":{"initial":null,"editable":true,"min":0,"max":100,"step":1,"mode":"slider","icon":"mdi:wall-sconce","friendly_name":"Californian lounge - Ambient"},"last_changed":"2025-06-19T09:01:17.841163+00:00","last_reported":"2025-06-19T09:01:17.841163+00:00","last_updated":"2025-06-19T09:01:17.841163+00:00","context":{"id":"01JY3PQJMHBWRPGQ9DKE5ZKZWY","parent_id":null,"user_id":null}},
+      "extra_data": null,
+      "last_seen": "2025-06-19T11:01:45.278760+00:00"
+    },
+    {
+      "state": {"entity_id":"input_number.polynesian_cabin_ambient","state":"65.0","attributes":{"initial":null,"editable":true,"min":0,"max":100,"step":1,"mode":"slider","icon":"mdi:ceiling-light","friendly_name":"Polynesian cabin - Ambient"},"last_changed":"2025-06-19T09:01:17.841177+00:00","last_reported":"2025-06-19T09:01:17.841177+00:00","last_updated":"2025-06-19T09:01:17.841177+00:00","context":{"id":"01JY3PQJMHESGPMDZH8FT5QS47","parent_id":null,"user_id":null}},
+      "extra_data": null,
+      "last_seen": "2025-06-19T11:01:45.278760+00:00"
+    },
+    {
+      "state": {"entity_id":"input_number.polynesian_cabin_mood","state":"50.0","attributes":{"initial":null,"editable":true,"min":0,"max":100,"step":1,"mode":"slider","icon":"mdi:wall-sconce","friendly_name":"Polynesian cabin - Mood"},"last_changed":"2025-06-19T09:01:17.841190+00:00","last_reported":"2025-06-19T09:01:17.841190+00:00","last_updated":"2025-06-19T09:01:17.841190+00:00","context":{"id":"01JY3PQJMH684103PATQVXJTT3","parent_id":null,"user_id":null}},
+      "extra_data": null,
+      "last_seen": "2025-06-19T11:01:45.278760+00:00"
+    },
+    {
+      "state": {"entity_id":"input_number.galley_ambient","state":"32.0","attributes":{"initial":null,"editable":true,"min":0,"max":100,"step":1,"mode":"slider","icon":"mdi:ceiling-light","friendly_name":"Galley - Ambient"},"last_changed":"2025-06-19T09:01:17.841203+00:00","last_reported":"2025-06-19T09:01:17.841203+00:00","last_updated":"2025-06-19T09:01:17.841203+00:00","context":{"id":"01JY3PQJMHZFJMDMST686ZVWV1","parent_id":null,"user_id":null}},
+      "extra_data": null,
+      "last_seen": "2025-06-19T11:01:45.278760+00:00"
+    },
+    {
+      "state": {"entity_id":"input_number.galley_mood","state":"50.0","attributes":{"initial":null,"editable":true,"min":0,"max":100,"step":1,"mode":"slider","icon":"mdi:wall-sconce","friendly_name":"Galley - Mood"},"last_changed":"2025-06-19T09:01:17.841215+00:00","last_reported":"2025-06-19T09:01:17.841215+00:00","last_updated":"2025-06-19T09:01:17.841215+00:00","context":{"id":"01JY3PQJMH1SZFPYKT80EM1K2N","parent_id":null,"user_id":null}},
+      "extra_data": null,
+      "last_seen": "2025-06-19T11:01:45.278760+00:00"
+    },
+    {
+      "state": {"entity_id":"input_number.crew_mess_ambient","state":"59.0","attributes":{"initial":null,"editable":true,"min":0,"max":100,"step":1,"mode":"slider","icon":"mdi:ceiling-light","friendly_name":"Crew mess - Ambient"},"last_changed":"2025-06-19T09:01:17.841228+00:00","last_reported":"2025-06-19T09:01:17.841228+00:00","last_updated":"2025-06-19T09:01:17.841228+00:00","context":{"id":"01JY3PQJMH9QRVCVG00WYH1RBG","parent_id":null,"user_id":null}},
+      "extra_data": null,
+      "last_seen": "2025-06-19T11:01:45.278760+00:00"
+    },
+    {
+      "state": {"entity_id":"input_number.crew_mess_mood","state":"69.0","attributes":{"initial":null,"editable":true,"min":0,"max":100,"step":1,"mode":"slider","icon":"mdi:wall-sconce","friendly_name":"Crew mess - Mood"},"last_changed":"2025-06-19T09:01:17.841241+00:00","last_reported":"2025-06-19T09:01:17.841241+00:00","last_updated":"2025-06-19T09:01:17.841241+00:00","context":{"id":"01JY3PQJMHD4A23D5W5V2KG504","parent_id":null,"user_id":null}},
+      "extra_data": null,
+      "last_seen": "2025-06-19T11:01:45.278760+00:00"
+    },
+    {
+      "state": {"entity_id":"input_number.mission_room_ambient","state":"50.0","attributes":{"initial":null,"editable":true,"min":0,"max":100,"step":1,"mode":"slider","icon":"mdi:ceiling-light","friendly_name":"Mission room -Ambient"},"last_changed":"2025-06-19T09:01:17.841254+00:00","last_reported":"2025-06-19T09:01:17.841254+00:00","last_updated":"2025-06-19T09:01:17.841254+00:00","context":{"id":"01JY3PQJMHNG92J3RY6AFVZ9MJ","parent_id":null,"user_id":null}},
+      "extra_data": null,
+      "last_seen": "2025-06-19T11:01:45.278760+00:00"
+    },
+    {
+      "state": {"entity_id":"input_number.mission_room_mood","state":"50.0","attributes":{"initial":null,"editable":true,"min":0,"max":100,"step":1,"mode":"slider","icon":"mdi:wall-sconce","friendly_name":"Mission room - Mood"},"last_changed":"2025-06-19T09:01:17.841267+00:00","last_reported":"2025-06-19T09:01:17.841267+00:00","last_updated":"2025-06-19T09:01:17.841267+00:00","context":{"id":"01JY3PQJMH0ME3XGN15NKX6PEF","parent_id":null,"user_id":null}},
+      "extra_data": null,
+      "last_seen": "2025-06-19T11:01:45.278760+00:00"
+    },
+    {
+      "state": {"entity_id":"input_number.laundry_ambient","state":"50.0","attributes":{"initial":null,"editable":true,"min":0,"max":100,"step":1,"mode":"slider","icon":"mdi:ceiling-light","friendly_name":"Laundry - Ambient"},"last_changed":"2025-06-19T09:01:17.841282+00:00","last_reported":"2025-06-19T09:01:17.841282+00:00","last_updated":"2025-06-19T09:01:17.841282+00:00","context":{"id":"01JY3PQJMHCTC1H4VV60GV9KN2","parent_id":null,"user_id":null}},
+      "extra_data": null,
+      "last_seen": "2025-06-19T11:01:45.278760+00:00"
+    },
+    {
+      "state": {"entity_id":"input_number.laundry_mood","state":"50.0","attributes":{"initial":null,"editable":true,"min":0,"max":100,"step":1,"mode":"slider","icon":"mdi:wall-sconce","friendly_name":"Laundry - Mood"},"last_changed":"2025-06-19T09:01:17.841297+00:00","last_reported":"2025-06-19T09:01:17.841297+00:00","last_updated":"2025-06-19T09:01:17.841297+00:00","context":{"id":"01JY3PQJMH7G5RC4F6BS9CYYY8","parent_id":null,"user_id":null}},
+      "extra_data": null,
+      "last_seen": "2025-06-19T11:01:45.278760+00:00"
+    },
+    {
+      "state": {"entity_id":"input_number.engineers_office_ambient","state":"72.0","attributes":{"initial":null,"editable":true,"min":0,"max":100,"step":1,"mode":"slider","icon":"mdi:ceiling-light","friendly_name":"Engineers office - Ambient"},"last_changed":"2025-06-19T09:01:17.841310+00:00","last_reported":"2025-06-19T09:01:17.841310+00:00","last_updated":"2025-06-19T09:01:17.841310+00:00","context":{"id":"01JY3PQJMHNMFCYQVHQE61HQE0","parent_id":null,"user_id":null}},
+      "extra_data": null,
+      "last_seen": "2025-06-19T11:01:45.278760+00:00"
+    },
+    {
+      "state": {"entity_id":"input_number.engineers_office_mood","state":"89.0","attributes":{"initial":null,"editable":true,"min":0,"max":100,"step":1,"mode":"slider","icon":"mdi:wall-sconce","friendly_name":"Engineers office - Mood"},"last_changed":"2025-06-19T09:01:17.841322+00:00","last_reported":"2025-06-19T09:01:17.841322+00:00","last_updated":"2025-06-19T09:01:17.841322+00:00","context":{"id":"01JY3PQJMHT2C2JXGBDDE6DER5","parent_id":null,"user_id":null}},
+      "extra_data": null,
+      "last_seen": "2025-06-19T11:01:45.278760+00:00"
+    },
+    {
+      "state": {"entity_id":"input_number.captains_cabin_ambient","state":"16.0","attributes":{"initial":null,"editable":true,"min":0,"max":100,"step":1,"mode":"slider","icon":"mdi:ceiling-light","friendly_name":"Captains cabin - Ambient"},"last_changed":"2025-06-19T09:01:17.841334+00:00","last_reported":"2025-06-19T09:01:17.841334+00:00","last_updated":"2025-06-19T09:01:17.841334+00:00","context":{"id":"01JY3PQJMHGP8373JVCYFXQMT7","parent_id":null,"user_id":null}},
+      "extra_data": null,
+      "last_seen": "2025-06-19T11:01:45.278760+00:00"
+    },
+    {
+      "state": {"entity_id":"input_number.captains_cabin_mood","state":"17.0","attributes":{"initial":null,"editable":true,"min":0,"max":100,"step":1,"mode":"slider","icon":"mdi:wall-sconce","friendly_name":"Captains cabin - Mood"},"last_changed":"2025-06-19T09:01:17.841348+00:00","last_reported":"2025-06-19T09:01:17.841348+00:00","last_updated":"2025-06-19T09:01:17.841348+00:00","context":{"id":"01JY3PQJMHVMV6A48NW3RDNSKS","parent_id":null,"user_id":null}},
+      "extra_data": null,
+      "last_seen": "2025-06-19T11:01:45.278760+00:00"
+    },
+    {
+      "state": {"entity_id":"input_number.captains_cabin_blind","state":"73.0","attributes":{"initial":null,"editable":true,"min":0,"max":100,"step":1,"mode":"slider","icon":"mdi:blinds","friendly_name":"Captains cabin - Blind"},"last_changed":"2025-06-19T09:01:17.841360+00:00","last_reported":"2025-06-19T09:01:17.841360+00:00","last_updated":"2025-06-19T09:01:17.841360+00:00","context":{"id":"01JY3PQJMH75SB21CH84PBSEY9","parent_id":null,"user_id":null}},
+      "extra_data": null,
+      "last_seen": "2025-06-19T11:01:45.278760+00:00"
+    },
+    {
+      "state": {"entity_id":"input_number.crew_sb_aft_cabin_ambient","state":"50.0","attributes":{"initial":null,"editable":true,"min":0,"max":100,"step":1,"mode":"slider","icon":"mdi:ceiling-light","friendly_name":"Crew starboard aft cabin - Ambient"},"last_changed":"2025-06-19T09:01:17.841373+00:00","last_reported":"2025-06-19T09:01:17.841373+00:00","last_updated":"2025-06-19T09:01:17.841373+00:00","context":{"id":"01JY3PQJMHN4PQ5XJBS9K69VW9","parent_id":null,"user_id":null}},
+      "extra_data": null,
+      "last_seen": "2025-06-19T11:01:45.278760+00:00"
+    },
+    {
+      "state": {"entity_id":"input_number.crew_sb_aft_cabin_mood","state":"50.0","attributes":{"initial":null,"editable":true,"min":0,"max":100,"step":1,"mode":"slider","icon":"mdi:wall-sconce","friendly_name":"Crew starboard aft cabin - Mood"},"last_changed":"2025-06-19T09:01:17.841384+00:00","last_reported":"2025-06-19T09:01:17.841384+00:00","last_updated":"2025-06-19T09:01:17.841384+00:00","context":{"id":"01JY3PQJMH0FMKGJ1T028EBM1S","parent_id":null,"user_id":null}},
+      "extra_data": null,
+      "last_seen": "2025-06-19T11:01:45.278760+00:00"
+    },
+    {
+      "state": {"entity_id":"input_number.crew_sb_mid_cabin_ambient","state":"50.0","attributes":{"initial":null,"editable":true,"min":0,"max":100,"step":1,"mode":"slider","icon":"mdi:ceiling-light","friendly_name":"Crew starboard mid cabin - Ambient"},"last_changed":"2025-06-19T09:01:17.841398+00:00","last_reported":"2025-06-19T09:01:17.841398+00:00","last_updated":"2025-06-19T09:01:17.841398+00:00","context":{"id":"01JY3PQJMHY7CX39JG8EHKEF4R","parent_id":null,"user_id":null}},
+      "extra_data": null,
+      "last_seen": "2025-06-19T11:01:45.278760+00:00"
+    },
+    {
+      "state": {"entity_id":"input_number.crew_sb_mid_cabin_mood","state":"50.0","attributes":{"initial":null,"editable":true,"min":0,"max":100,"step":1,"mode":"slider","icon":"mdi:wall-sconce","friendly_name":"Crew starboard mid cabin - Mood"},"last_changed":"2025-06-19T09:01:17.841411+00:00","last_reported":"2025-06-19T09:01:17.841411+00:00","last_updated":"2025-06-19T09:01:17.841411+00:00","context":{"id":"01JY3PQJMHBVPJCCP52563D27X","parent_id":null,"user_id":null}},
+      "extra_data": null,
+      "last_seen": "2025-06-19T11:01:45.278760+00:00"
+    },
+    {
+      "state": {"entity_id":"input_number.crew_sb_fwd_cabin_ambient","state":"50.0","attributes":{"initial":null,"editable":true,"min":0,"max":100,"step":1,"mode":"slider","icon":"mdi:ceiling-light","friendly_name":"Crew starboard forward cabin - Ambient"},"last_changed":"2025-06-19T09:01:17.841422+00:00","last_reported":"2025-06-19T09:01:17.841422+00:00","last_updated":"2025-06-19T09:01:17.841422+00:00","context":{"id":"01JY3PQJMHMHCPE0R04YF8Z21W","parent_id":null,"user_id":null}},
+      "extra_data": null,
+      "last_seen": "2025-06-19T11:01:45.278760+00:00"
+    },
+    {
+      "state": {"entity_id":"input_number.crew_sb_fwd_cabin_mood","state":"50.0","attributes":{"initial":null,"editable":true,"min":0,"max":100,"step":1,"mode":"slider","icon":"mdi:wall-sconce","friendly_name":"Crew starboard forward cabin - Mood"},"last_changed":"2025-06-19T09:01:17.841435+00:00","last_reported":"2025-06-19T09:01:17.841435+00:00","last_updated":"2025-06-19T09:01:17.841435+00:00","context":{"id":"01JY3PQJMH18NV88RC6T230VH4","parent_id":null,"user_id":null}},
+      "extra_data": null,
+      "last_seen": "2025-06-19T11:01:45.278760+00:00"
+    },
+    {
+      "state": {"entity_id":"input_number.crew_ps_mid_cabin_ambient","state":"0.0","attributes":{"initial":null,"editable":true,"min":0,"max":100,"step":1,"mode":"slider","icon":"mdi:ceiling-light","friendly_name":"Crew port side mid cabin - Ambient"},"last_changed":"2025-06-19T09:01:17.841447+00:00","last_reported":"2025-06-19T09:01:17.841447+00:00","last_updated":"2025-06-19T09:01:17.841447+00:00","context":{"id":"01JY3PQJMHSDW6GF4RANZHX2NQ","parent_id":null,"user_id":null}},
+      "extra_data": null,
+      "last_seen": "2025-06-19T11:01:45.278760+00:00"
+    },
+    {
+      "state": {"entity_id":"input_number.crew_ps_mid_cabin_mood","state":"57.0","attributes":{"initial":null,"editable":true,"min":0,"max":100,"step":1,"mode":"slider","icon":"mdi:wall-sconce","friendly_name":"Crew port side mid cabin - Mood"},"last_changed":"2025-06-19T09:01:17.841460+00:00","last_reported":"2025-06-19T09:01:17.841460+00:00","last_updated":"2025-06-19T09:01:17.841460+00:00","context":{"id":"01JY3PQJMHMVR68H9R2Y519588","parent_id":null,"user_id":null}},
+      "extra_data": null,
+      "last_seen": "2025-06-19T11:01:45.278760+00:00"
+    },
+    {
+      "state": {"entity_id":"input_number.crew_ps_fwd_cabin_ambient","state":"11.0","attributes":{"initial":null,"editable":true,"min":0,"max":100,"step":1,"mode":"slider","icon":"mdi:ceiling-light","friendly_name":"Crew port side forward cabin - Ambient"},"last_changed":"2025-06-19T09:01:17.841473+00:00","last_reported":"2025-06-19T09:01:17.841473+00:00","last_updated":"2025-06-19T09:01:17.841473+00:00","context":{"id":"01JY3PQJMH9TCEHNBGYKP981S3","parent_id":null,"user_id":null}},
+      "extra_data": null,
+      "last_seen": "2025-06-19T11:01:45.278760+00:00"
+    },
+    {
+      "state": {"entity_id":"input_number.crew_ps_fwd_cabin_mood","state":"24.0","attributes":{"initial":null,"editable":true,"min":0,"max":100,"step":1,"mode":"slider","icon":"mdi:wall-sconce","friendly_name":"Crew port side forward cabin - Mood"},"last_changed":"2025-06-19T09:01:17.841485+00:00","last_reported":"2025-06-19T09:01:17.841485+00:00","last_updated":"2025-06-19T09:01:17.841485+00:00","context":{"id":"01JY3PQJMHY2T9RVYRNNW8DB97","parent_id":null,"user_id":null}},
+      "extra_data": null,
+      "last_seen": "2025-06-19T11:01:45.278760+00:00"
+    },
+    {
+      "state": {"entity_id":"input_number.owners_deckhouse_ambient","state":"50.0","attributes":{"initial":null,"editable":true,"min":0,"max":100,"step":1,"mode":"slider","icon":"mdi:ceiling-light","friendly_name":"Owners deckhouse - Ambient"},"last_changed":"2025-06-19T09:01:17.841499+00:00","last_reported":"2025-06-19T09:01:17.841499+00:00","last_updated":"2025-06-19T09:01:17.841499+00:00","context":{"id":"01JY3PQJMHNWQ70VW1KGSPH1BW","parent_id":null,"user_id":null}},
+      "extra_data": null,
+      "last_seen": "2025-06-19T11:01:45.278760+00:00"
+    },
+    {
+      "state": {"entity_id":"input_number.owners_deckhouse_mood","state":"37.0","attributes":{"initial":null,"editable":true,"min":0,"max":100,"step":1,"mode":"slider","icon":"mdi:wall-sconce","friendly_name":"Owner's deckhouse - Mood"},"last_changed":"2025-06-19T09:01:17.841512+00:00","last_reported":"2025-06-19T09:01:17.841512+00:00","last_updated":"2025-06-19T09:01:17.841512+00:00","context":{"id":"01JY3PQJMHW2TZ6ESVG85FSQ4Y","parent_id":null,"user_id":null}},
+      "extra_data": null,
+      "last_seen": "2025-06-19T11:01:45.278760+00:00"
+    },
+    {
+      "state": {"entity_id":"input_number.main_deckhouse_ambient","state":"50.0","attributes":{"initial":null,"editable":true,"min":0,"max":100,"step":1,"mode":"slider","icon":"mdi:ceiling-light","friendly_name":"Main deckhouse - Ambient"},"last_changed":"2025-06-19T09:01:17.841525+00:00","last_reported":"2025-06-19T09:01:17.841525+00:00","last_updated":"2025-06-19T09:01:17.841525+00:00","context":{"id":"01JY3PQJMHAHEQ68AC5HZDV6QP","parent_id":null,"user_id":null}},
+      "extra_data": null,
+      "last_seen": "2025-06-19T11:01:45.278760+00:00"
+    },
+    {
+      "state": {"entity_id":"input_number.main_deckhouse_mood","state":"50.0","attributes":{"initial":null,"editable":true,"min":0,"max":100,"step":1,"mode":"slider","icon":"mdi:wall-sconce","friendly_name":"Main deckhouse - Mood"},"last_changed":"2025-06-19T09:01:17.841537+00:00","last_reported":"2025-06-19T09:01:17.841537+00:00","last_updated":"2025-06-19T09:01:17.841537+00:00","context":{"id":"01JY3PQJMHN686QFV5A1AS91Z1","parent_id":null,"user_id":null}},
+      "extra_data": null,
+      "last_seen": "2025-06-19T11:01:45.278760+00:00"
+    },
+    {
+      "state": {"entity_id":"input_number.owners_stairway_main","state":"54.0","attributes":{"initial":null,"editable":true,"min":0,"max":100,"step":1,"mode":"slider","icon":"mdi:stairs","friendly_name":"Owners stairway - Main"},"last_changed":"2025-06-19T09:01:17.841550+00:00","last_reported":"2025-06-19T09:01:17.841550+00:00","last_updated":"2025-06-19T09:01:17.841550+00:00","context":{"id":"01JY3PQJMHXVCADV7QYSEWQTYS","parent_id":null,"user_id":null}},
+      "extra_data": null,
+      "last_seen": "2025-06-19T11:01:45.278760+00:00"
+    },
+    {
+      "state": {"entity_id":"input_number.guest_corridor_main","state":"50.0","attributes":{"initial":null,"editable":true,"min":0,"max":100,"step":1,"mode":"slider","icon":"mdi:globe-light","friendly_name":"Guest corridor - Main"},"last_changed":"2025-06-19T09:01:17.841561+00:00","last_reported":"2025-06-19T09:01:17.841561+00:00","last_updated":"2025-06-19T09:01:17.841561+00:00","context":{"id":"01JY3PQJMHCQE8RNQ463J55CY8","parent_id":null,"user_id":null}},
+      "extra_data": null,
+      "last_seen": "2025-06-19T11:01:45.278760+00:00"
+    },
+    {
+      "state": {"entity_id":"input_number.polynesian_corridor_main","state":"0.0","attributes":{"initial":null,"editable":true,"min":0,"max":100,"step":1,"mode":"slider","icon":"mdi:globe-light","friendly_name":"Polynesian corridor - Main"},"last_changed":"2025-06-19T09:01:17.841573+00:00","last_reported":"2025-06-19T09:01:17.841573+00:00","last_updated":"2025-06-19T09:01:17.841573+00:00","context":{"id":"01JY3PQJMHT6T1YB6J5B56Y93Z","parent_id":null,"user_id":null}},
+      "extra_data": null,
+      "last_seen": "2025-06-19T11:01:45.278760+00:00"
+    },
+    {
+      "state": {"entity_id":"input_number.californian_lounge_mood","state":"69.0","attributes":{"initial":null,"editable":true,"min":0,"max":100,"step":1,"mode":"slider","icon":"mdi:wall-sconce","friendly_name":"Californian lounge - Mood"},"last_changed":"2025-06-19T09:01:17.841585+00:00","last_reported":"2025-06-19T09:01:17.841585+00:00","last_updated":"2025-06-19T09:01:17.841585+00:00","context":{"id":"01JY3PQJMHSYA73D7B99YWS1FY","parent_id":null,"user_id":null}},
+      "extra_data": null,
+      "last_seen": "2025-06-19T11:01:45.278760+00:00"
+    },
+    {
+      "state": {"entity_id":"person.root","state":"unknown","attributes":{"editable":true,"id":"root","device_trackers":[],"user_id":"e2e3a3e713eb438aac42cee42c619956","friendly_name":"root"},"last_changed":"2025-06-19T09:01:17.841647+00:00","last_reported":"2025-06-19T09:01:18.302019+00:00","last_updated":"2025-06-19T09:01:18.302019+00:00","context":{"id":"01JY3PQK2YQEM8JEGE0PQD26DN","parent_id":null,"user_id":null}},
+      "extra_data": null,
+      "last_seen": "2025-06-19T11:01:45.278760+00:00"
+    },
+    {
+      "state": {"entity_id":"automation.owner_s_cabin_ambient","state":"on","attributes":{"id":"1739785047573","last_triggered":"2025-06-10T08:32:22.241233+00:00","mode":"single","current":0,"friendly_name":"Owner's cabin - Ambient"},"last_changed":"2025-06-19T09:01:18.278038+00:00","last_reported":"2025-06-19T09:01:18.278038+00:00","last_updated":"2025-06-19T09:01:18.278038+00:00","context":{"id":"01JY3PQK26K5JV423Z71X7K1G9","parent_id":null,"user_id":null}},
+      "extra_data": null,
+      "last_seen": "2025-06-19T11:01:45.278760+00:00"
+    },
+    {
+      "state": {"entity_id":"automation.owner_s_cabin_mood","state":"on","attributes":{"id":"1739785071863","last_triggered":"2025-06-19T10:34:20.812525+00:00","mode":"single","current":0,"friendly_name":"Owner's cabin - Mood"},"last_changed":"2025-06-19T09:01:18.278073+00:00","last_reported":"2025-06-19T10:34:20.814735+00:00","last_updated":"2025-06-19T10:34:20.814735+00:00","context":{"id":"01JY3W1YRC9RDV6GKXKEXQB0Y6","parent_id":"01JY3W1YRBQMK1HYMTRG0Z5WN7","user_id":null}},
+      "extra_data": null,
+      "last_seen": "2025-06-19T11:01:45.278760+00:00"
+    },
+    {
+      "state": {"entity_id":"tts.google_translate_en_com","state":"unknown","attributes":{"friendly_name":"Google Translate en com"},"last_changed":"2025-06-19T09:01:18.283015+00:00","last_reported":"2025-06-19T09:01:18.283015+00:00","last_updated":"2025-06-19T09:01:18.283015+00:00","context":{"id":"01JY3PQK2BPMA446ANV6VS74CD","parent_id":null,"user_id":null}},
+      "extra_data": null,
+      "last_seen": "2025-06-19T11:01:45.278760+00:00"
+    },
+    {
+      "state": {"entity_id":"update.hacs_update","state":"off","attributes":{"auto_update":false,"display_precision":0,"installed_version":"2.0.5","in_progress":false,"latest_version":"2.0.5","release_summary":null,"release_url":"https://github.com/hacs/integration/releases/2.0.5","skipped_version":null,"title":null,"update_percentage":null,"entity_picture":"https://brands.home-assistant.io/_/hacs/icon.png","friendly_name":"HACS update","supported_features":23},"last_changed":"2025-06-19T09:01:18.299549+00:00","last_reported":"2025-06-19T09:01:18.299549+00:00","last_updated":"2025-06-19T09:01:18.299549+00:00","context":{"id":"01JY3PQK2VMTRJ6HQ1FDBFW6XG","parent_id":null,"user_id":null}},
+      "extra_data": null,
+      "last_seen": "2025-06-19T11:01:45.278760+00:00"
+    }
+  ]
+}

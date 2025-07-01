@@ -1,0 +1,17 @@
+{{- if .Values.stub.enabled }}
+apiVersion: v1
+kind: Service
+metadata:
+  namespace: {{ .Release.Namespace }}
+  name: {{ include "zero-domestic-control.stub" . }}
+spec:
+  ports:
+  - port: {{ .Values.stub.port }}
+    targetPort: modbus
+    protocol: TCP
+  selector:
+    {{- include "zero-domestic-control.selectorLabels" . | nindent 4 }}
+    app.kubernetes.io/part-of: domestic-control
+    app.kubernetes.io/component: stub
+  type: ClusterIP
+{{ end }}

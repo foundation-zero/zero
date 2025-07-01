@@ -1,0 +1,14 @@
+table:
+  name: amplifiers
+  schema: public
+select_permissions:
+  - role: user
+    permission:
+      columns:
+        - id
+        - room_id
+        - name
+      filter:
+        room_id: { _eq: X-Hasura-Cabin }
+      allow_aggregations: false
+    comment: ""

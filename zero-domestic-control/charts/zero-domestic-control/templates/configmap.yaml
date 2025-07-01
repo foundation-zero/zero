@@ -1,0 +1,23 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "zero-domestic-control.envvars" . }}
+  namespace: {{ .Release.Namespace }}
+  labels:
+    {{- include "zero-domestic-control.labels" . | nindent 4 }}
+data:
+  PG_HOST: {{ .Values.postgresql.host }}
+  PG_PORT: {{ .Values.postgresql.port | quote }}
+  PG_USER: {{ .Values.postgresql.user }}
+  {{- if .Values.postgresql.password }}
+  PG_PASSWORD: {{ .Values.postgresql.password }}
+  {{- end }}
+  PG_DB: {{ .Values.postgresql.db }}
+  RISINGWAVE_URL: {{ .Values.risingwave.url }}
+  {{- if .Values.hasura.secret }}
+  JWT_SECRET: {{ .Values.hasura.secret }}
+  {{- end }}
+  MQTT_HOST: {{ .Values.mqtt.host }}
+  MQTT_PORT: {{ .Values.mqtt.port | quote }}
+  HOME_ASSISTANT_URL: {{ .Values.homeAssistant.url }}
+  HOME_ASSISTANT_WS_URL: {{ .Values.homeAssistant.websocketUrl }}

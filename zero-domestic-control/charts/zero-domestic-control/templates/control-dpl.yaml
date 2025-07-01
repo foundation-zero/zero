@@ -1,0 +1,70 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "zero-domestic-control.control" . }}
+  namespace: {{ .Release.Namespace }}
+  labels:
+    {{- include "zero-domestic-control.labels" . | nindent 4 }}
+    app.kubernetes.io/part-of: domestic-control
+    app.kubernetes.io/component: control
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      {{- include "zero-domestic-control.selectorLabels" . | nindent 6 }}
+      app.kubernetes.io/part-of: domestic-control
+      app.kubernetes.io/component: control
+  template:
+    metadata:
+      {{- with .Values.podAnnotations }}
+      annotations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      labels:
+        {{- include "zero-domestic-control.labels" . | nindent 8 }}
+        {{- with .Values.podLabels }}
+        {{- toYaml . | nindent 8 }}
+        {{- end }}
+        app.kubernetes.io/part-of: domestic-control
+        app.kubernetes.io/component: control
+    spec:
+      {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      securityContext:
+        fsGroupChangePolicy: Always
+        sysctls: []
+        supplementalGroups: []
+        fsGroup: 1001
+      containers:
+        - name: domestic-control
+          securityContext:
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop:
+              - ALL
+            privileged: false
+            readOnlyRootFilesystem: true
+            runAsGroup: 1001
+            runAsNonRoot: true
+            runAsUser: 1001
+            seLinuxOptions: {}
+            seccompProfile:
+              type: RuntimeDefault
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          command: ["python", "-m", "zero_domestic_control", "control"]
+          resources:
+            {{- toYaml .Values.resources.control | nindent 12 }}
+          env:
+            - name: TERMODINAMICA_HOST
+              value: {{ .Values.stub.host | quote }}
+            - name: TERMODINAMICA_PORT
+              value: {{ .Values.stub.port | quote }}
+            {{- include "zero-domestic-control.postgresqlPasswordEnvFromSecret" . | nindent 12 -}}
+            {{- include "zero-domestic-control.hasuraJwtEnvFromSecret" . | indent 12 -}}
+            {{- include "zero-domestic-control.homeAssistantTokenEnvFromSecret" . | indent 12 }}
+          envFrom:
+            - configMapRef:
+                name: {{ include "zero-domestic-control.envvars" . }}

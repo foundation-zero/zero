@@ -1,0 +1,62 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+.Python
+env/
+venv/
+*.env
+
+# Virtualenvs
+.venv/
+ENV/
+env.bak/
+venv.bak/
+
+# Byte-compiled and cache
+*.pyc
+*.pyo
+*.pyd
+*.pyc
+
+# OS generated
+.DS_Store
+Thumbs.db
+ehthumbs.db
+Icon?
+Desktop.ini
+
+# Git
+.git
+.gitignore
+.gitattributes
+
+# Logs
+*.log
+logs/
+*.out
+
+# IDEs and editors
+.vscode/
+.idea/
+*.sublime*
+*.swp
+
+# Build/output directories
+dist/
+build/
+tmp/
+temp/
+*.egg-info/
+
+# Tests
+.coverage
+.tox/
+.nox/
+.pytest_cache/
+
+# Other common files
+*.bak
+*.tmp
+*.old

@@ -1,0 +1,111 @@
+# Zero Domestic Control
+
+## Architecture
+
+https://miro.com/app/board/uXjVI85VEAc=/?share_link_id=164545697008
+
+## Development
+
+Install Hasura CLI: https://hasura.io/docs/2.0/hasura-cli/install-hasura-cli/
+
+Create environment
+```bash
+poetry install
+```
+
+Start external services
+```bash
+DOMESTIC_CONTROL_URL=http://host.docker.internal:8000/graphql docker compose up graphql-engine
+```
+
+Run Postgres database setup
+```bash
+poetry run python -m zero_domestic_control setup
+```
+
+Run dbt database setup
+```bash
+cd data/risingwave
+poetry run dbt compile
+poetry run dbt run
+```
+
+Generate JWT
+```bash
+# With default 'user' role
+poetry run python -m zero_domestic_control generate-jwt
+# With additional role(s)
+poetry run python -m zero_domestic_control generate-jwt admin
+# With cabin (for guests)
+poetry run python -m zero_domestic_control generate-jwt --cabin dutch-cabin
+```
+
+Run backend
+```bash
+poetry run fastapi dev zero_domestic_control/app.py
+```
+
+Run control
+```bash
+poetry run python -m zero_domestic_control setup
+```
+
+Run stubs
+```bash
+poetry run python -m zero_domestic_control stub
+```
+
+Apply hasura metadata
+```bash
+cd hasura
+hasura metadata apply --admin-secret myadminsecretkey
+```
+
+### Using Docker
+
+Install Hasura CLI: https://hasura.io/docs/2.0/hasura-cli/install-hasura-cli/
+
+Start databases
+```bash
+docker compose up postgres risingwave -d
+```
+
+Run Postgres database setup
+```bash
+docker compose up setup
+```
+
+Run dbt database setup
+```bash
+cd data/risingwave
+poetry run dbt compile
+poetry run dbt run
+```
+
+Run everything else
+```bash
+docker compose up -d
+```
+
+Run control proces
+```bash
+docker compose up control -d
+```
+
+Apply hasura metadata
+```bash
+cd volumes/hasura
+hasura metadata apply --admin-secret myadminsecretkey
+```
+
+## Home Assistant
+
+You can log into home assistant by running:
+
+```bash
+docker compose up hass
+```
+
+Go to http://localhost:8123 and log in with the following credentials:
+Username: root
+Password: zerozerozero

@@ -1,0 +1,16 @@
+table:
+  name: blinds
+  schema: public
+select_permissions:
+  - role: user
+    permission:
+      columns:
+        - id
+        - room_id
+        - name
+        - opacity
+        - group
+      filter:
+        room_id: { _eq: X-Hasura-Cabin }
+      allow_aggregations: false
+    comment: ""
