@@ -1,0 +1,85 @@
+name: "Domestic Control: Test and push Docker image"
+on:
+  push:
+    paths:
+      - 'zero-domestic-control/**'
+  release:
+    types: [released]
+    paths:
+      - 'zero-domestic-control/**'
+
+env:
+  IMAGE: "europe-west1-docker.pkg.dev/common-449414/common/zero-domestic-control"
+
+jobs:
+  test:
+    timeout-minutes: 15
+    runs-on: ubuntu-latest
+    outputs:
+      image_tag: ${{ steps.image_tag.outputs.image_tag }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: '0'
+      - uses: actions/setup-python@v5
+        with:
+          python-version: 3.13
+      - run: pipx install poetry==2.0.1
+        working-directory: zero-domestic-control
+      - run: poetry check
+        working-directory: zero-domestic-control
+      - uses: astral-sh/ruff-action@v3
+      - run: poetry install
+        working-directory: zero-domestic-control
+      - run: poetry run mypy zero_domestic_control
+        working-directory: zero-domestic-control
+      - name: Unit Test
+        run: poetry run pytest --run=unit
+        working-directory: zero-domestic-control
+      - name: Run services
+        run: docker compose up -d --quiet-pull graphql-engine hass
+        working-directory: zero-domestic-control
+      - name: Integration Test
+        run: poetry run pytest --run=integration -vv
+        working-directory: zero-domestic-control
+      - name: Determine image tag
+        id: image_tag
+        run: |
+          VERSION=$(poetry version -s | sed -r 's/\+/_/g' )
+          echo $VERSION
+          echo "image_tag=$VERSION" >> $GITHUB_OUTPUT
+        working-directory: zero-domestic-control
+
+  docker-push:
+    runs-on: ubuntu-latest
+    needs: test
+    permissions:
+      contents: 'read'
+      id-token: 'write'
+    steps:
+      - uses: actions/checkout@v4
+      # Set up in https://github.com/foundation-zero/gcp-common
+      - id: auth
+        name: Authenticate with Google Cloud
+        uses: google-github-actions/auth@v2
+        with:
+          token_format: access_token
+          project_id: ${{ vars.GCP_COMMON_PROJECT_ID }}
+          workload_identity_provider: ${{ vars.GCP_COMMON_WORKLOAD_IDENTITY_PROVIDER }}
+          service_account: ${{ vars.GCP_COMMON_SERVICE_ACCOUNT }}
+          access_token_lifetime: 300s
+      - name: Login to Artifact Registry
+        uses: docker/login-action@v1
+        with:
+          registry: europe-west1-docker.pkg.dev
+          username: oauth2accesstoken
+          password: ${{ steps.auth.outputs.access_token }}
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+      - name: Build and push
+        uses: docker/build-push-action@v6
+        with:
+          context: zero-domestic-control
+          push: true
+          platforms: linux/amd64,linux/arm64
+          tags: ${{ env.IMAGE }}:${{ needs.test.outputs.image_tag }}
