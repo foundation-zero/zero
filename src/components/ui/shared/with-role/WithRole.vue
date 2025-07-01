@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import { Roles } from "@/@types";
 import { useAuthStore } from "@/stores/auth";
-import { defineProps } from "vue";
 
 const auth = useAuthStore();
 

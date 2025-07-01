@@ -61,6 +61,33 @@
     "unauthorised": {
       "title": "Unauthorised",
       "description": "You are not authorised to access this page. Please contact the administrator."
+    },
+    "thrs": {
+      "hmi": {
+        "title": "THRS HMI",
+        "simulation": "Simulation",
+        "reset": "Reset",
+        "connect": "Connect",
+        "sensorValues": "Sensor values",
+        "controlValues": "Control values",
+        "controlParameters": "Control parameters",
+        "controlMode": "Control mode",
+        "simulationInputs": "Simulation inputs",
+        "setValues": "Set values",
+        "start": "Start",
+        "run": "Run",
+        "seconds": "Seconds"
+      }
+    }
+  },
+  "components": {
+    "thrs": {
+      "valueTable": {
+        "component": "Component",
+        "property": "Property",
+        "value": "Value",
+        "lastChange": "Last change"
+      }
     }
   }
 }

@@ -31,6 +31,8 @@ pnpm install
 pnpm run dev
 ```
 
+Generate a JWT in domestic control and then go to [http://localhost:5173/auth?token=<token>]()
+
 ### Type-Check, Compile and Minify for Production
 
 ```sh
@@ -44,6 +46,7 @@ pnpm run test:unit
 ```
 
 ### Run Integration Tests with [Playwright](https://playwright.dev)
+
 Integration tests are run against a hosted version on a webserver, so make sure the local (dev) version is running.
 
 ```sh
@@ -79,7 +82,8 @@ VITE_GRAPHQL_URL=/graphql
 VITE_GRAPHQL_SERVER=http://localhost:8080/v1
 VITE_GRAPHQL_TOKEN="{{INSERT API TOKEN HERE}}"
 ```
-You can find or generate the token in the Zero Domestic Control repository: 
+
+You can find or generate the token in the Zero Domestic Control repository:
 https://github.com/foundation-zero/zero-domestic-control
 
 ## Development

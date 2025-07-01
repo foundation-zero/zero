@@ -3,10 +3,12 @@ import { useAuthStore } from "@/stores/auth";
 import { createRouter, createWebHistory, RouteRecordRaw } from "vue-router";
 import { envRoutes } from "./admin";
 import { cabinRoutes } from "./cabin";
+import { routes as thrsRoutes } from "./thrs";
 
 const routes: RouteRecordRaw[] = [
   ...envRoutes,
   ...cabinRoutes,
+  ...thrsRoutes,
   {
     path: "/",
     redirect: () => {

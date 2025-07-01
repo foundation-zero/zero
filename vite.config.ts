@@ -3,6 +3,7 @@ import autoprefixer from "autoprefixer";
 import { fileURLToPath, URL } from "node:url";
 import tailwind from "tailwindcss";
 import { defineConfig, loadEnv } from "vite";
+import { nodePolyfills } from "vite-plugin-node-polyfills";
 
 // https://vite.dev/config/
 export default defineConfig(({ mode }) => {
@@ -22,6 +23,13 @@ export default defineConfig(({ mode }) => {
             return path.replace(/^\/graphql-ws/, "graphql");
           },
         },
+        "/thrs-ws": {
+          target: env.VITE_THRS_WS_SERVER,
+          ws: true,
+          rewrite(path) {
+            return path.replace(/^\/thrs-ws/, "");
+          },
+        },
       },
     },
     css: {
@@ -29,7 +37,15 @@ export default defineConfig(({ mode }) => {
         plugins: [tailwind(), autoprefixer()],
       },
     },
-    plugins: [vue()],
+    plugins: [
+      vue(),
+      nodePolyfills({
+        include: [],
+        globals: {
+          Buffer: true, // Buffer is used by @apidevtools/json-schema-ref-parser
+        },
+      }),
+    ],
     resolve: {
       alias: {
         "@": fileURLToPath(new URL("./src", import.meta.url)),
