@@ -1,0 +1,54 @@
+{
+  "version": 1,
+  "minor_version": 2,
+  "key": "core.floor_registry",
+  "data": {
+    "floors": [
+      {
+        "aliases": [],
+        "floor_id": "aftship",
+        "icon": null,
+        "level": null,
+        "name": "Aftship",
+        "created_at": "2025-02-20T10:56:12.501741+00:00",
+        "modified_at": "2025-02-20T10:56:12.501744+00:00"
+      },
+      {
+        "aliases": [],
+        "floor_id": "midship",
+        "icon": null,
+        "level": null,
+        "name": "Midship",
+        "created_at": "2025-02-20T10:57:16.327168+00:00",
+        "modified_at": "2025-02-20T10:57:16.327175+00:00"
+      },
+      {
+        "aliases": [],
+        "floor_id": "foreship",
+        "icon": null,
+        "level": null,
+        "name": "Foreship",
+        "created_at": "2025-02-20T10:58:15.427793+00:00",
+        "modified_at": "2025-02-20T10:58:15.427799+00:00"
+      },
+      {
+        "aliases": [],
+        "floor_id": "upperdeck",
+        "icon": null,
+        "level": null,
+        "name": "Upperdeck",
+        "created_at": "2025-02-20T10:58:33.647282+00:00",
+        "modified_at": "2025-02-20T10:58:33.647289+00:00"
+      },
+      {
+        "aliases": [],
+        "floor_id": "hallways",
+        "icon": null,
+        "level": null,
+        "name": "Hallways",
+        "created_at": "2025-02-20T10:59:04.595287+00:00",
+        "modified_at": "2025-02-20T10:59:04.595293+00:00"
+      }
+    ]
+  }
+}

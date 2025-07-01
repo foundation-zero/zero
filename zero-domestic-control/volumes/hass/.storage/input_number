@@ -1,0 +1,673 @@
+{
+  "version": 1,
+  "minor_version": 1,
+  "key": "input_number",
+  "data": {
+    "items": [
+      {
+        "id": "owner_s_cabin_mood",
+        "min": 0,
+        "max": 100,
+        "name": "Owner's cabin - Mood",
+        "mode": "slider",
+        "step": 1,
+        "icon": "mdi:wall-sconce"
+      },
+      {
+        "id": "owner_s_cabin_ambient",
+        "min": 0,
+        "max": 100,
+        "name": "Owner's cabin - Ambient",
+        "mode": "slider",
+        "step": 1,
+        "icon": "mdi:ceiling-light"
+      },
+      {
+        "id": "owners_cabin_main_shear",
+        "min": 0,
+        "max": 100,
+        "name": "Owner's cabin main - Shear",
+        "mode": "slider",
+        "step": 1
+      },
+      {
+        "id": "owners_cabin_main_blind",
+        "min": 0,
+        "max": 100,
+        "name": "Owner's cabin main - Blind",
+        "mode": "slider",
+        "step": 1
+      },
+      {
+        "id": "owner_s_cabin_port_shear",
+        "min": 0,
+        "max": 100,
+        "name": "Owner's cabin port - Shear",
+        "mode": "slider",
+        "step": 1,
+        "icon": "mdi:blinds-horizontal"
+      },
+      {
+        "id": "owner_s_cabin_port_blind",
+        "min": 0,
+        "max": 100,
+        "name": "Owner's cabin port - Blind",
+        "mode": "slider",
+        "step": 1,
+        "icon": "mdi:blinds"
+      },
+      {
+        "id": "owner_s_cabin_starboard_shear",
+        "min": 0,
+        "max": 100,
+        "name": "Owner's cabin starboard - Shear",
+        "mode": "slider",
+        "step": 1
+      },
+      {
+        "id": "owner_s_cabin_starboard_blind",
+        "min": 0,
+        "max": 100,
+        "name": "Owner's cabin starboard - Blind",
+        "mode": "slider",
+        "step": 1,
+        "icon": "mdi:blinds"
+      },
+      {
+        "id": "owner_s_cabin_skyline_main_shear",
+        "min": 0,
+        "max": 100,
+        "name": "Owner's cabin skyline main - Shear",
+        "mode": "slider",
+        "step": 1
+      },
+      {
+        "id": "owner_s_cabin_skyline_main_blind",
+        "min": 0,
+        "max": 100,
+        "name": "Owner's cabin skyline main - Blind",
+        "mode": "slider",
+        "step": 1
+      },
+      {
+        "id": "owner_s_cabin_skyline_port_shear",
+        "min": 0,
+        "max": 100,
+        "name": "Owner's cabin skyline port - Shear",
+        "mode": "slider",
+        "step": 1
+      },
+      {
+        "id": "owner_s_cabin_skyline_port_blind",
+        "min": 0,
+        "max": 100,
+        "name": "Owner's cabin skyline port - Blind",
+        "mode": "slider",
+        "step": 1
+      },
+      {
+        "id": "owner_s_cabin_skyline_starboard_shear",
+        "min": 0,
+        "max": 100,
+        "name": "Owner's cabin skyline starboard - Shear",
+        "mode": "slider",
+        "step": 1
+      },
+      {
+        "id": "owner_s_cabin_skyline_starboard_blind",
+        "min": 0,
+        "max": 100,
+        "name": "Owner's cabin skyline starboard - Blind",
+        "mode": "slider",
+        "step": 1
+      },
+      {
+        "id": "dutch_cabin_blind",
+        "min": 0,
+        "max": 100,
+        "name": "Dutch cabin - Blind",
+        "mode": "slider",
+        "step": 1,
+        "icon": "mdi:blinds"
+      },
+      {
+        "id": "french_cabin_blind",
+        "min": 0,
+        "max": 100,
+        "name": "French cabin - Blind",
+        "mode": "slider",
+        "step": 1,
+        "icon": "mdi:blinds"
+      },
+      {
+        "id": "italian_cabin_blind",
+        "min": 0,
+        "max": 100,
+        "name": "Italian cabin - Blind",
+        "mode": "slider",
+        "step": 1,
+        "icon": "mdi:blinds"
+      },
+      {
+        "id": "californian_lounge_blind",
+        "min": 0,
+        "max": 100,
+        "name": "Californian lounge - Blind",
+        "mode": "slider",
+        "step": 1,
+        "icon": "mdi:blinds"
+      },
+      {
+        "id": "polynesian_cabin_blind",
+        "min": 0,
+        "max": 100,
+        "name": "Polynesian cabin - Blind",
+        "mode": "slider",
+        "step": 1,
+        "icon": "mdi:blinds"
+      },
+      {
+        "id": "galley_blind",
+        "min": 0,
+        "max": 100,
+        "name": "Galley - Blind",
+        "mode": "slider",
+        "step": 1,
+        "icon": "mdi:blinds"
+      },
+      {
+        "id": "crew_mess_blind",
+        "min": 0,
+        "max": 100,
+        "name": "Crew mess - Blind",
+        "mode": "slider",
+        "step": 1,
+        "icon": "mdi:blinds"
+      },
+      {
+        "id": "mission_room_blind",
+        "min": 0,
+        "max": 100,
+        "name": "Mission room - Blind",
+        "mode": "slider",
+        "step": 1,
+        "icon": "mdi:blinds"
+      },
+      {
+        "id": "laundry_blind",
+        "min": 0,
+        "max": 100,
+        "name": "Laundry - Blind",
+        "mode": "slider",
+        "step": 1,
+        "icon": "mdi:blinds"
+      },
+      {
+        "id": "engineers_office_blind",
+        "min": 0,
+        "max": 100,
+        "name": "Engineers office - Blind",
+        "mode": "slider",
+        "step": 1,
+        "icon": "mdi:blinds"
+      },
+      {
+        "id": "crew_starboard_aft_cabin_blind",
+        "min": 0,
+        "max": 100,
+        "name": "Crew starboard aft cabin - Blind",
+        "mode": "slider",
+        "step": 1,
+        "icon": "mdi:blinds"
+      },
+      {
+        "id": "crew_starboard_mid_cabin_blind",
+        "min": 0,
+        "max": 100,
+        "name": "Crew starboard mid cabin - Blind",
+        "mode": "slider",
+        "step": 1,
+        "icon": "mdi:blinds"
+      },
+      {
+        "id": "crew_starboard_forward_cabin_blind",
+        "min": 0,
+        "max": 100,
+        "name": "Crew starboard forward cabin - Blind",
+        "mode": "slider",
+        "step": 1,
+        "icon": "mdi:blinds"
+      },
+      {
+        "id": "crew_port_side_mid_cabin_blind",
+        "min": 0,
+        "max": 100,
+        "name": "Crew port side mid cabin - Blind",
+        "mode": "slider",
+        "step": 1,
+        "icon": "mdi:blinds"
+      },
+      {
+        "id": "crew_port_side_forward_cabin_blind",
+        "min": 0,
+        "max": 100,
+        "name": "Crew port side forward cabin - Blind",
+        "mode": "slider",
+        "step": 1,
+        "icon": "mdi:blinds"
+      },
+      {
+        "id": "owner_s_deckhouse_blind",
+        "min": 0,
+        "max": 100,
+        "name": "Owner's deckhouse - Blind",
+        "mode": "slider",
+        "step": 1
+      },
+      {
+        "id": "owner_s_deckhouse_shear",
+        "min": 0,
+        "max": 100,
+        "name": "Owner's deckhouse - Shear",
+        "mode": "slider",
+        "step": 1,
+        "icon": "mdi:blinds-horizontal"
+      },
+      {
+        "id": "main_deckhouse_blind",
+        "min": 0,
+        "max": 100,
+        "name": "Main deckhouse - Blind",
+        "mode": "slider",
+        "step": 1,
+        "icon": "mdi:blinds"
+      },
+      {
+        "id": "main_deckhouse_shear",
+        "min": 0,
+        "max": 100,
+        "name": "Main deckhouse - Shear",
+        "mode": "slider",
+        "step": 1,
+        "icon": "mdi:blinds-horizontal"
+      },
+      {
+        "id": "owner_s_stairway_blind",
+        "min": 0,
+        "max": 100,
+        "name": "Owner's stairway - Blind",
+        "mode": "slider",
+        "step": 1,
+        "icon": "mdi:blinds"
+      },
+      {
+        "id": "guest_corridor_blind",
+        "min": 0,
+        "max": 100,
+        "name": "Guest corridor - Blind",
+        "mode": "slider",
+        "step": 1,
+        "icon": "mdi:blinds"
+      },
+      {
+        "id": "dutch_cabin_ambient",
+        "min": 0,
+        "max": 100,
+        "name": "Dutch cabin - Ambient",
+        "mode": "slider",
+        "step": 1,
+        "icon": "mdi:ceiling-light"
+      },
+      {
+        "id": "dutch_cabin_mood",
+        "min": 0,
+        "max": 100,
+        "name": "Dutch cabin - Mood",
+        "mode": "slider",
+        "step": 1,
+        "icon": "mdi:wall-sconce"
+      },
+      {
+        "id": "french_cabin_ambient",
+        "min": 0,
+        "max": 100,
+        "name": "French cabin - Ambient",
+        "mode": "slider",
+        "step": 1,
+        "icon": "mdi:ceiling-light"
+      },
+      {
+        "id": "french_cabin_mood",
+        "min": 0,
+        "max": 100,
+        "name": "French cabin - Mood",
+        "mode": "slider",
+        "step": 1,
+        "icon": "mdi:wall-sconce"
+      },
+      {
+        "id": "italian_cabin_ambient",
+        "min": 0,
+        "max": 100,
+        "name": "Italian cabin - Ambient",
+        "mode": "slider",
+        "step": 1,
+        "icon": "mdi:ceiling-light"
+      },
+      {
+        "id": "italian_cabin_mood",
+        "min": 0,
+        "max": 100,
+        "name": "Italian cabin - Mood",
+        "mode": "slider",
+        "step": 1
+      },
+      {
+        "id": "californian_lounge_ambient",
+        "min": 0,
+        "max": 100,
+        "name": "Californian lounge - Ambient",
+        "mode": "slider",
+        "step": 1,
+        "icon": "mdi:wall-sconce"
+      },
+      {
+        "id": "polynesian_cabin_ambient",
+        "min": 0,
+        "max": 100,
+        "name": "Polynesian cabin - Ambient",
+        "mode": "slider",
+        "step": 1,
+        "icon": "mdi:ceiling-light"
+      },
+      {
+        "id": "polynesian_cabin_mood",
+        "min": 0,
+        "max": 100,
+        "name": "Polynesian cabin - Mood",
+        "mode": "slider",
+        "step": 1,
+        "icon": "mdi:wall-sconce"
+      },
+      {
+        "id": "galley_ambient",
+        "min": 0,
+        "max": 100,
+        "name": "Galley - Ambient",
+        "mode": "slider",
+        "step": 1,
+        "icon": "mdi:ceiling-light"
+      },
+      {
+        "id": "galley_mood",
+        "min": 0,
+        "max": 100,
+        "name": "Galley - Mood",
+        "mode": "slider",
+        "step": 1,
+        "icon": "mdi:wall-sconce"
+      },
+      {
+        "id": "crew_mess_ambient",
+        "min": 0,
+        "max": 100,
+        "name": "Crew mess - Ambient",
+        "mode": "slider",
+        "step": 1,
+        "icon": "mdi:ceiling-light"
+      },
+      {
+        "id": "crew_mess_mood",
+        "min": 0,
+        "max": 100,
+        "name": "Crew mess - Mood",
+        "mode": "slider",
+        "step": 1,
+        "icon": "mdi:wall-sconce"
+      },
+      {
+        "id": "mission_room_ambient",
+        "min": 0,
+        "max": 100,
+        "name": "Mission room -Ambient",
+        "mode": "slider",
+        "step": 1,
+        "icon": "mdi:ceiling-light"
+      },
+      {
+        "id": "mission_room_mood",
+        "min": 0,
+        "max": 100,
+        "name": "Mission room - Mood",
+        "mode": "slider",
+        "step": 1,
+        "icon": "mdi:wall-sconce"
+      },
+      {
+        "id": "laundry_ambient",
+        "min": 0,
+        "max": 100,
+        "name": "Laundry - Ambient",
+        "mode": "slider",
+        "step": 1,
+        "icon": "mdi:ceiling-light"
+      },
+      {
+        "id": "laundry_mood",
+        "min": 0,
+        "max": 100,
+        "name": "Laundry - Mood",
+        "mode": "slider",
+        "step": 1,
+        "icon": "mdi:wall-sconce"
+      },
+      {
+        "id": "engineers_office_ambient",
+        "min": 0,
+        "max": 100,
+        "name": "Engineers office - Ambient",
+        "mode": "slider",
+        "step": 1,
+        "icon": "mdi:ceiling-light"
+      },
+      {
+        "id": "engineers_office_mood",
+        "min": 0,
+        "max": 100,
+        "name": "Engineers office - Mood",
+        "mode": "slider",
+        "step": 1,
+        "icon": "mdi:wall-sconce"
+      },
+      {
+        "id": "captains_cabin_ambient",
+        "min": 0,
+        "max": 100,
+        "name": "Captains cabin - Ambient",
+        "mode": "slider",
+        "step": 1,
+        "icon": "mdi:ceiling-light"
+      },
+      {
+        "id": "captains_cabin_mood",
+        "min": 0,
+        "max": 100,
+        "name": "Captains cabin - Mood",
+        "mode": "slider",
+        "step": 1,
+        "icon": "mdi:wall-sconce"
+      },
+      {
+        "id": "captains_cabin_blind",
+        "min": 0,
+        "max": 100,
+        "name": "Captains cabin - Blind",
+        "mode": "slider",
+        "step": 1,
+        "icon": "mdi:blinds"
+      },
+      {
+        "id": "crew_starboard_aft_cabin_ambient",
+        "min": 0,
+        "max": 100,
+        "name": "Crew starboard aft cabin - Ambient",
+        "mode": "slider",
+        "step": 1,
+        "icon": "mdi:ceiling-light"
+      },
+      {
+        "id": "crew_starboard_aft_cabin_mood",
+        "min": 0,
+        "max": 100,
+        "name": "Crew starboard aft cabin - Mood",
+        "mode": "slider",
+        "step": 1,
+        "icon": "mdi:wall-sconce"
+      },
+      {
+        "id": "crew_starboard_mid_cabin_ambient",
+        "min": 0,
+        "max": 100,
+        "name": "Crew starboard mid cabin - Ambient",
+        "mode": "slider",
+        "step": 1,
+        "icon": "mdi:ceiling-light"
+      },
+      {
+        "id": "crew_starboard_mid_cabin_mood",
+        "min": 0,
+        "max": 100,
+        "name": "Crew starboard mid cabin - Mood",
+        "mode": "slider",
+        "step": 1,
+        "icon": "mdi:wall-sconce"
+      },
+      {
+        "id": "crew_starboard_forward_cabin_ambient",
+        "min": 0,
+        "max": 100,
+        "name": "Crew starboard forward cabin - Ambient",
+        "mode": "slider",
+        "step": 1,
+        "icon": "mdi:ceiling-light"
+      },
+      {
+        "id": "crew_starboard_forward_cabin_mood",
+        "min": 0,
+        "max": 100,
+        "name": "Crew starboard forward cabin - Mood",
+        "mode": "slider",
+        "step": 1,
+        "icon": "mdi:wall-sconce"
+      },
+      {
+        "id": "crew_port_side_mid_cabin_ambient",
+        "min": 0,
+        "max": 100,
+        "name": "Crew port side mid cabin - Ambient",
+        "mode": "slider",
+        "step": 1,
+        "icon": "mdi:ceiling-light"
+      },
+      {
+        "id": "crew_port_side_mid_cabin_mood",
+        "min": 0,
+        "max": 100,
+        "name": "Crew port side mid cabin - Mood",
+        "mode": "slider",
+        "step": 1,
+        "icon": "mdi:wall-sconce"
+      },
+      {
+        "id": "crew_port_side_forward_cabin_ambient",
+        "min": 0,
+        "max": 100,
+        "name": "Crew port side forward cabin - Ambient",
+        "mode": "slider",
+        "step": 1,
+        "icon": "mdi:ceiling-light"
+      },
+      {
+        "id": "crew_port_side_forward_cabin_mood",
+        "min": 0,
+        "max": 100,
+        "name": "Crew port side forward cabin - Mood",
+        "mode": "slider",
+        "step": 1,
+        "icon": "mdi:wall-sconce"
+      },
+      {
+        "id": "owner_s_deckhouse_ambient",
+        "min": 0,
+        "max": 100,
+        "name": "Owners deckhouse - Ambient",
+        "mode": "slider",
+        "step": 1,
+        "icon": "mdi:ceiling-light"
+      },
+      {
+        "id": "owner_s_deckhouse_mood",
+        "min": 0,
+        "max": 100,
+        "name": "Owner's deckhouse - Mood",
+        "mode": "slider",
+        "step": 1,
+        "icon": "mdi:wall-sconce"
+      },
+      {
+        "id": "main_deckhouse_ambient",
+        "min": 0,
+        "max": 100,
+        "name": "Main deckhouse - Ambient",
+        "mode": "slider",
+        "step": 1,
+        "icon": "mdi:ceiling-light"
+      },
+      {
+        "id": "main_deckhouse_mood",
+        "min": 0,
+        "max": 100,
+        "name": "Main deckhouse - Mood",
+        "mode": "slider",
+        "step": 1,
+        "icon": "mdi:wall-sconce"
+      },
+      {
+        "id": "owners_stairway_main",
+        "min": 0,
+        "max": 100,
+        "name": "Owners stairway - Main",
+        "mode": "slider",
+        "step": 1,
+        "icon": "mdi:stairs"
+      },
+      {
+        "id": "guest_corridor_main",
+        "min": 0,
+        "max": 100,
+        "name": "Guest corridor - Main",
+        "mode": "slider",
+        "step": 1,
+        "icon": "mdi:globe-light"
+      },
+      {
+        "id": "polynesian_corridor_main",
+        "min": 0,
+        "max": 100,
+        "name": "Polynesian corridor - Main",
+        "mode": "slider",
+        "step": 1,
+        "icon": "mdi:globe-light"
+      },
+      {
+        "id": "californian_lounge_mood",
+        "min": 0,
+        "max": 100,
+        "name": "Californian lounge - Mood",
+        "icon": "mdi:wall-sconce",
+        "mode": "slider",
+        "step": 1
+      }
+    ]
+  }
+}
