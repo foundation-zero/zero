@@ -10,5 +10,5 @@ CREATE SINK {{ this }} AS (
   FROM
     {{ ref('rooms_sensors_log') }}
 )
-{{ sink_append_pg_dmc('rooms_sensors_log') }}
+{{ sink_append_pg('rooms_sensors_log', 'domestic_control') }}
 

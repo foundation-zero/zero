@@ -5,4 +5,4 @@ load_dotenv(dotenv_path=".env")
 
 subprocess.run(["poetry", "run", "dbt", "compile"])
 
-subprocess.run(["poetry", "run", "dbt", "run"])
+subprocess.run(["poetry", "run", "dbt", "run", "--full-refresh"])

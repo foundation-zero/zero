@@ -13,6 +13,10 @@ python-dotenv = "^1.1.0"
 dbt-risingwave = "^1.9.2"
 dbt-core = "^1.9.8"
 
+[tool.poetry]
+package-mode = false
+
 [build-system]
 requires = ["poetry-core>=2.0.0,<3.0.0"]
 build-backend = "poetry.core.masonry.api"
+
