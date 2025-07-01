@@ -8,7 +8,7 @@ CREATE SINK {{ this }} AS (
     "value",
     "time"
   FROM
-    {{ ref('rooms_controls_log') }}
+    {{ ref('rooms_sensors_log') }}
 )
-{{ sink_append_pg('rooms_controls_log') }}
+{{ sink_append_pg_dmc('rooms_sensors_log') }}
 
