@@ -1,0 +1,1 @@
+{{ sink_append_gcs('raw', 'navigation_lights', 'navigation_lights_sink') }}

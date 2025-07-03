@@ -9,8 +9,8 @@ logger = logging.getLogger(__name__)
 
 class MarpowerRawGenerator:
     def __init__(self, dbt_path: Path):
-        self.table_path = dbt_path / "models/raw/"
-        self.sink_path = dbt_path / "sink/raw/"
+        self.table_path = dbt_path / "models/00_source/"
+        self.sink_path = dbt_path / "models/40_sinks/"
 
     def generate(self, topics: List[IOTopic]):
         """Generate dbt models for the given topics."""
@@ -20,7 +20,7 @@ class MarpowerRawGenerator:
             self._write_file(self.table_path, file_name, table)
 
             sink = self._generate_gcs_sink(topic)
-            self._write_file(self.sink_path, f"{file_name}_gcs_sink", sink)
+            self._write_file(self.sink_path, f"{file_name}_sink", sink)
 
     @classmethod
     def _write_file(cls, path: Path, file_name: str, content: str):
@@ -45,7 +45,9 @@ class MarpowerRawGenerator:
     def _generate_gcs_sink(cls, topic: IOTopic) -> str:
         """Generate the SQL for a given sink."""
         topic_table = topic.topic.split("/")[-1]
-        return f"{{{{ gcs_sink('raw', '{topic_table}', '{topic_table}_gcs_sink') }}}}"
+        return (
+            f"{{{{ sink_append_gcs('raw', '{topic_table}', '{topic_table}_sink') }}}}"
+        )
 
     @staticmethod
     def _add_timestamp():

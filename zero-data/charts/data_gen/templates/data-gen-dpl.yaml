@@ -1,7 +1,7 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ include "zero-data-gen.fullname" . }}
+  name: {{ include "zero-data-gen.name" . }}
   namespace: {{ .Release.Namespace }}
   labels:
     {{- include "zero-data-gen.labels" . | nindent 4 }}
@@ -42,4 +42,4 @@ spec:
             {{- toYaml .Values.resources | nindent 12 }}
           envFrom:
             - configMapRef:
-                name: {{ include "zero-data-gen.fullname" . }}-envvars
+                name: {{ include "zero-data-gen.name" . }}-envvars

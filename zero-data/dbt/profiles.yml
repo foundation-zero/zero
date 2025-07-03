@@ -1,6 +1,6 @@
 # example profiles.yml file
 zero_data:
-  target: local
+  target: singel
   outputs:
     local:
       type: risingwave
@@ -22,7 +22,7 @@ zero_data:
       schema: public
       threads: 1
 
-    dev:
+    singel:
       type: risingwave
       host: risingwave-singel.tail0b4840.ts.net
       user: root
@@ -31,14 +31,3 @@ zero_data:
       dbname: dev
       schema: public
       threads: 1
-
-    singel:
-      type: risingwave
-      host: risingwave-frontend.risingwave.svc.cluster.local
-      user: root
-      password: ''
-      port: 4567
-      dbname: dev
-      schema: public
-      threads: 1
-

@@ -1,6 +1,0 @@
-apiVersion: v2
-name: zero-dbt
-description: This repository contains the Zero data platform.
-type: application
-version: 0.4.4
-appVersion: "0.7.0"
