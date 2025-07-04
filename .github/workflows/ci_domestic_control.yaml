@@ -3,8 +3,7 @@ on:
   push:
     paths:
       - 'zero-domestic-control/**'
-  release:
-    types: [released]
+  pull_request:
     paths:
       - 'zero-domestic-control/**'
 
@@ -45,8 +44,14 @@ jobs:
       - name: Determine image tag
         id: image_tag
         run: |
-          VERSION=$(poetry version -s | sed -r 's/\+/_/g' )
-          echo $VERSION
+          VERSION=$(poetry version -s | sed -r 's/\+/_/g')
+
+          if [[ "${{ github.event_name }}" == "pull_request" ]]; then
+            SHORT_SHA=$(echo "${{ github.sha }}" | cut -c1-7)
+            VERSION="${VERSION}-dev-${SHORT_SHA}"
+          fi
+
+          echo "Using image tag: $VERSION"
           echo "image_tag=$VERSION" >> $GITHUB_OUTPUT
         working-directory: zero-domestic-control
 

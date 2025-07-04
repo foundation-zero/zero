@@ -11,7 +11,7 @@ requires-python = ">= 3.13.1,<4.0"
 dynamic = ["dependencies", "version"]
 
 [tool.poetry]
-version = "0.0.0"
+version = "0.6.0"
 
 [tool.poetry.dependencies]
 starlette-graphene3 = "^0.6.0"
@@ -61,6 +61,6 @@ asyncio_mode = "auto"
 extend-exclude = ["hass"]
 
 [build-system]
-requires = ["poetry-core>=1.0.0", "poetry-dynamic-versioning>=1.0.0,<2.0.0"]
+requires = ["poetry-core>=1.0.0"]
 build-backend = "poetry_dynamic_versioning.backend"
 
