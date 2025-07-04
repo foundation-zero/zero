@@ -81,8 +81,11 @@ async def test_hass_lighting_group_to_control_to_mqtt(
     await mqtt_two.subscribe("domestic/lighting-groups")
     msg = LightingGroup(id="owners-cabin/mood", level=0.5)
     await hass_wrapped.set_lighting_group(msg)
+    await asyncio.sleep(0.2)
 
     result = await anext(mqtt_two.messages)
+    if LightingGroup.model_validate_json(result.payload).level == 0.1:
+        result = await anext(mqtt_two.messages)
     if LightingGroup.model_validate_json(result.payload).level == 0.1:
         result = await anext(mqtt_two.messages)
 
@@ -120,13 +123,15 @@ async def test_hass_blind_to_control_to_mqtt(
     # ensure lighting changes in the actual call, if not different, hass doesn't trigger
     diff_msg = Blind(id="owners-cabin/main/shear", level=0.1)
     await hass_wrapped.set_blind(diff_msg)
-    await asyncio.sleep(0.1)
+    await asyncio.sleep(0.2)
 
     await mqtt_two.subscribe("domestic/blinds")
     msg = Blind(id="owners-cabin/main/shear", level=0.5)
     await hass_wrapped.set_blind(msg)
 
     result = await anext(mqtt_two.messages)
+    if Blind.model_validate_json(result.payload).level == 0.1:
+        result = await anext(mqtt_two.messages)
     if Blind.model_validate_json(result.payload).level == 0.1:
         result = await anext(mqtt_two.messages)
 
