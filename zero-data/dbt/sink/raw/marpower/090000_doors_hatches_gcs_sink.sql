@@ -1,1 +1,0 @@
-{{ gcs_sink('raw', '090000_doors_hatches', '090000_doors_hatches_gcs_sink') }}

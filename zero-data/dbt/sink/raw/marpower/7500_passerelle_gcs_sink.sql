@@ -1,1 +1,0 @@
-{{ gcs_sink('raw', '7500_passerelle', '7500_passerelle_gcs_sink') }}

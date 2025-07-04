@@ -1,1 +1,0 @@
-{{ gcs_sink('raw', '3400_sewage', '3400_sewage_gcs_sink') }}

@@ -1,1 +1,0 @@
-{{ gcs_sink('raw', '2500_fresh_water', '2500_fresh_water_gcs_sink') }}

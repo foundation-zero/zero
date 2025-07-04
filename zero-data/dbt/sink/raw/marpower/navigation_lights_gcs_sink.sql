@@ -1,1 +1,0 @@
-{{ gcs_sink('raw', 'navigation_lights', 'navigation_lights_gcs_sink') }}

@@ -1,1 +1,0 @@
-{{ gcs_sink('raw', '450000_burglar', '450000_burglar_gcs_sink') }}

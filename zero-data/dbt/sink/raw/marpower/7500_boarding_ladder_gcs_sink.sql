@@ -1,1 +1,0 @@
-{{ gcs_sink('raw', '7500_boarding_ladder', '7500_boarding_ladder_gcs_sink') }}

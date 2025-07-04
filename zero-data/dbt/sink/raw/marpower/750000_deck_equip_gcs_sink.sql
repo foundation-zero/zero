@@ -1,1 +1,0 @@
-{{ gcs_sink('raw', '750000_deck_equip', '750000_deck_equip_gcs_sink') }}

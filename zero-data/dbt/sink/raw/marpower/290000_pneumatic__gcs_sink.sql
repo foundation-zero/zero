@@ -1,1 +1,0 @@
-{{ gcs_sink('raw', '290000_pneumatic_', '290000_pneumatic__gcs_sink') }}

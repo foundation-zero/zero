@@ -1,1 +1,0 @@
-{{ gcs_sink('raw', '3500_ventilation', '3500_ventilation_gcs_sink') }}

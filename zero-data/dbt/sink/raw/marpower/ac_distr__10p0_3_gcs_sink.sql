@@ -1,1 +1,0 @@
-{{ gcs_sink('raw', 'ac_distr_+10p0.3', 'ac_distr_+10p0.3_gcs_sink') }}
