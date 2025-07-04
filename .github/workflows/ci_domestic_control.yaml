@@ -1,6 +1,8 @@
 name: "Domestic Control: Test and push Docker image"
 on:
   push:
+    branches:
+      - main
     paths:
       - 'zero-domestic-control/**'
   pull_request:
