@@ -1,4 +1,4 @@
-name: "Domestic Control: Test and push Docker image"
+name: "Zero Data: Test and push Docker image"
 on:
   push:
     paths:

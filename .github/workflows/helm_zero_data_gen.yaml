@@ -1,4 +1,4 @@
-name: "Domestic Control: Deploy zero-domestic-control chart"
+name: "Zero Data: Deploy zero-data-gen chart"
 on:
   pull_request:
     types: [closed]
@@ -45,6 +45,6 @@ jobs:
         uses: azure/setup-helm@v4
       - name: Publish Helm chart
         run: |
-          helm package ./charts/zero-domestic-control
+          helm package ./charts/zero-data
           helm push ${{ steps.chart_name.outputs.result }}-${{ steps.chart_version.outputs.result }}.tgz oci://europe-west1-docker.pkg.dev/common-449414/common
         working-directory: zero-data
