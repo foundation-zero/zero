@@ -141,10 +141,9 @@ class AcControl:
                 msg_temp: RoomTemperatureSetpoint = message
                 await self._write_ops.put(
                     partial(
-                        lambda msg_temp: self._termodinamica.write_room_temperature_setpoint(
-                            msg_temp.id, msg_temp.temperature
-                        ),
-                        msg_temp,
+                        self._termodinamica.write_room_temperature_setpoint,
+                        msg_temp.id,
+                        msg_temp.temperature,
                     )
                 )
                 await self._thrs.set_room_temperature_setpoint(
@@ -159,10 +158,9 @@ class AcControl:
                 )
                 await self._write_ops.put(
                     partial(
-                        lambda msg_hum: self._termodinamica.write_room_humidity_setpoint(
-                            msg_hum.id, msg_hum.humidity
-                        ),
-                        msg_hum,
+                        self._termodinamica.write_room_humidity_setpoint,
+                        msg_hum.id,
+                        msg_hum.humidity,
                     )
                 )
                 await self._thrs.set_room_humidity_setpoint(
@@ -175,10 +173,9 @@ class AcControl:
                 logging.info(f"CO2 setpoint changed: {message.id}: {message.co2}")
                 await self._write_ops.put(
                     partial(
-                        lambda msg_co2: self._termodinamica.write_room_co2_setpoint(
-                            msg_co2.id, msg_co2.co2
-                        ),
-                        msg_co2,
+                        self._termodinamica.write_room_co2_setpoint,
+                        msg_co2.id,
+                        msg_co2.co2,
                     )
                 )
                 await self._thrs.set_room_co2_setpoint(msg_co2.id, msg_co2.co2)
