@@ -31,7 +31,7 @@ jobs:
       - uses: astral-sh/ruff-action@v3
       - run: poetry install
         working-directory: zero-data
-      - run: poetry run mypy zero_domestic_control
+      - run: poetry run mypy zero-data
         working-directory: zero-data
       - name: Unit Test
         run: poetry run pytest --run=unit

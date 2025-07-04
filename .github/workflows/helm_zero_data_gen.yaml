@@ -1,4 +1,4 @@
-name: "Domestic Control: Deploy zero-domestic-control chart"
+name: "Zero Data: Deploy zero-domestic-control chart"
 on:
   pull_request:
     types: [closed]
