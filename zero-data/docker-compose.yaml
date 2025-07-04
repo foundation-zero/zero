@@ -1,0 +1,45 @@
+services:
+
+  dbt_gen:
+    build:
+      context: .
+    command: dbt run --profiles-dir ./dbt --project-dir ./dbt --target docker
+    env_file:
+      .env
+    depends_on:
+      vernemq:
+        condition: service_healthy
+
+  data_gen:
+    build:
+      context: .
+    command: python -m io_processing.main generate-data
+    env_file:
+      .env
+    depends_on:
+      vernemq:
+        condition: service_healthy
+
+  vernemq:
+    image: vernemq/vernemq:2.0.0-alpine
+    container_name: vernemq
+    restart: always
+    ports:
+      - "1883:1883"
+      - "9001:9001"
+    environment:
+      DOCKER_VERNEMQ_ACCEPT_EULA: "yes"
+      DOCKER_VERNEMQ_ALLOW_ANONYMOUS: "on"
+      DOCKER_VERNEMQ_LISTENER__WS__DEFAULT: "0.0.0.0:9001"
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8888/health"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  risingwave:
+    image: risingwavelabs/risingwave:nightly-20241205
+    command: single_node
+    ports:
+      - 4566:4566
+      - 5691:5691

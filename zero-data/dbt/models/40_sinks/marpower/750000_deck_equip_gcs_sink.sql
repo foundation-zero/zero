@@ -1,0 +1,1 @@
+{{ sink_append_gcs('raw', '750000_deck_equip', '750000_deck_equip_sink') }}

@@ -1,0 +1,1 @@
+{{ gcs_sink('raw', '150000_pcs', '150000_pcs_gcs_sink') }}

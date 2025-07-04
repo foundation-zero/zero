@@ -1,0 +1,1 @@
+{{ gcs_sink('raw', '4500_24vdc_system', '4500_24vdc_system_gcs_sink') }}

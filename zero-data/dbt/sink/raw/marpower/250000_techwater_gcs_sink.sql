@@ -1,0 +1,1 @@
+{{ gcs_sink('raw', '250000_techwater', '250000_techwater_gcs_sink') }}

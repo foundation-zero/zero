@@ -1,0 +1,1 @@
+{{ sink_append_gcs('raw', '450000_24vdc_system', '450000_24vdc_system_sink') }}

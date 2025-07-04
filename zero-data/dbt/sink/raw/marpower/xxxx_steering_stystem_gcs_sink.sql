@@ -1,0 +1,1 @@
+{{ gcs_sink('raw', 'xxxx_steering_stystem', 'xxxx_steering_stystem_gcs_sink') }}
