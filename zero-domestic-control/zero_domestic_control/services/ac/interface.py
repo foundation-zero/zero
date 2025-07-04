@@ -14,6 +14,7 @@ from .constants import (
     CO2_SETPOINT_START_ADDRESS,
     ROOM_INDICES,
 )
+import logging
 
 
 class TermodinamicaAc:
@@ -23,6 +24,7 @@ class TermodinamicaAc:
         self._client = client
 
     def _read(self, room: str, address_range: AddressRange) -> float:
+        logging.debug(f"Reading {address_range} for room {room}")
         address = address_range.address_for_room(room)
         result = self._client.read_holding_registers(address, 1)
         if result is None:
@@ -31,6 +33,7 @@ class TermodinamicaAc:
         return address_range.scale_to_real(result[0])
 
     def _write(self, room: str, address_range: AddressRange, value: float) -> None:
+        logging.debug(f"Writing {value} to {address_range} for room {room}")
         address = address_range.address_for_room(room)
         modbus_value = address_range.scale_to_modbus(value)
         result = self._client.write_single_register(address, modbus_value)

@@ -116,7 +116,7 @@ class AcControl:
                 room_id, property = read()
                 old_value = property.get(self._rooms[room_id])
                 if old_value != property.value:
-                    logging.info(
+                    logging.debug(
                         f"Update for {room_id} {property}. Old value: {old_value}"
                     )
                     await self._control_messages.put(
@@ -135,10 +135,16 @@ class AcControl:
             if isinstance(message, RoomTemperatureSetpoint):
                 self._rooms[message.id].temperature_setpoint = message.temperature
                 # storing message to ensure type in lambda
+                logging.info(
+                    f"Temperature setpoint changed: {message.id}: {message.temperature}"
+                )
                 msg_temp: RoomTemperatureSetpoint = message
                 await self._write_ops.put(
-                    lambda: self._termodinamica.write_room_temperature_setpoint(
-                        msg_temp.id, msg_temp.temperature
+                    partial(
+                        lambda msg_temp: self._termodinamica.write_room_temperature_setpoint(
+                            msg_temp.id, msg_temp.temperature
+                        ),
+                        msg_temp,
                     )
                 )
                 await self._thrs.set_room_temperature_setpoint(
@@ -148,9 +154,15 @@ class AcControl:
             elif isinstance(message, RoomHumiditySetpoint):
                 self._rooms[message.id].humidity_setpoint = message.humidity
                 msg_hum: RoomHumiditySetpoint = message
+                logging.info(
+                    f"Humidity setpoint changed: {message.id}: {message.humidity}"
+                )
                 await self._write_ops.put(
-                    lambda: self._termodinamica.write_room_humidity_setpoint(
-                        msg_hum.id, msg_hum.humidity
+                    partial(
+                        lambda msg_hum: self._termodinamica.write_room_humidity_setpoint(
+                            msg_hum.id, msg_hum.humidity
+                        ),
+                        msg_hum,
                     )
                 )
                 await self._thrs.set_room_humidity_setpoint(
@@ -160,9 +172,13 @@ class AcControl:
             elif isinstance(message, RoomCo2Setpoint):
                 self._rooms[message.id].co2_setpoint = message.co2
                 msg_co2: RoomCo2Setpoint = message
+                logging.info(f"CO2 setpoint changed: {message.id}: {message.co2}")
                 await self._write_ops.put(
-                    lambda: self._termodinamica.write_room_co2_setpoint(
-                        msg_co2.id, msg_co2.co2
+                    partial(
+                        lambda msg_co2: self._termodinamica.write_room_co2_setpoint(
+                            msg_co2.id, msg_co2.co2
+                        ),
+                        msg_co2,
                     )
                 )
                 await self._thrs.set_room_co2_setpoint(msg_co2.id, msg_co2.co2)
