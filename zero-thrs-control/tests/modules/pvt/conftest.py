@@ -58,11 +58,13 @@ def pump_failure_simulation_inputs(simulation_inputs):
 
 @fixture
 def io_mapping():
-    return IoMapping(
-        Fmu(pvt_path),
-        PvtSensorValues,
-        PvtSimulationOutputs,
-    )
+    with Fmu(pvt_path) as fmu:
+        yield IoMapping(
+            fmu,
+            PvtSensorValues,
+            PvtSimulationOutputs,
+        )
+
 
 
 @fixture

@@ -42,11 +42,12 @@ def simulation_inputs():
 
 @fixture
 def io_mapping():
-    return IoMapping(
-        Fmu(thrusters_path),
-        ThrustersSensorValues,
-        ThrustersSimulationOutputs,
-    )
+    with Fmu(thrusters_path) as fmu:
+        yield IoMapping(
+            fmu,
+            ThrustersSensorValues,
+            ThrustersSimulationOutputs,
+        )
 
 
 @fixture

@@ -18,8 +18,7 @@ from simulation.models.fmu_paths import pcm_path
         simulator_input_field_setters(
             PcmSimulationInputs,
             ignore=[
-                ("pcm_freshwater_supply", "flow"),
-                ("pcm_producers_supply", "flow")  # Flows appear to just work, instead of break
+                ("pcm_producers_supply", "flow")  # Appears to just work, instead of break
             ]
         )
     )

@@ -44,6 +44,7 @@ def compare_modelica_names(
         .filter(
             pl.col("Simulation module").is_in(module_name),
             pl.col("Included in simulation").is_in(["yes", "optional"]),
+            pl.col("Variable type").is_in(["Input", "Output", "Simulation input", "Simulation output"]),
         )
         .collect()["Modelica name"]
         .to_list()

@@ -46,10 +46,10 @@ class PcmControlValues(ThrsModel):
 
 class PcmSimulationInputs(SimulationInputs):
     pcm_producers_supply: simulation.Boundary
-    pcm_consumers_return: simulation.TemperatureBoundary
+    pcm_consumers_supply: simulation.TemperatureBoundary
     pcm_freshwater_supply: simulation.Boundary
 
 class PcmSimulationOutputs(ThrsModel):
-    pcm_consumers_supply: simulation.Boundary
+    pcm_consumers_return: simulation.Boundary
     pcm_producers_return: simulation.Boundary
     pcm_freshwater_return: simulation.Boundary
