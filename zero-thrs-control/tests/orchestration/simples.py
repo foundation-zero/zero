@@ -26,10 +26,17 @@ class SimpleExecutor(Executor):
 
 class SimpleControl(Control[SimpleInOut, SimpleInOut]):
     def initial(self, time: datetime) -> ControlResult[SimpleInOut]:
-        return ControlResult(time,SimpleInOut.zero())
+        return ControlResult(time, SimpleInOut.zero())
 
-    def control(self, sensor_values: SimpleInOut, time: datetime) -> ControlResult[SimpleInOut]:
+    def control(
+        self, sensor_values: SimpleInOut, time: datetime
+    ) -> ControlResult[SimpleInOut]:
         return ControlResult(time, sensor_values)
+
+    @property
+    def mode(self) -> str | None:
+        return None
+
 
 class SimpleAlarms(BaseAlarms[SimpleInOut, SimpleInOut, SimpleControl]):
     pass

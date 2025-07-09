@@ -32,6 +32,6 @@ class Thruster(HeatSource):
 
 class Pcs(ThrsModel):
     mode: Annotated[
-        Stamped[PcsMode],
+        Stamp[PcsMode],
         FieldMeta(included_in_fmu=False),
     ]

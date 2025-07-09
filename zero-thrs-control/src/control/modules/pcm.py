@@ -55,7 +55,7 @@ class PcmControl(Control[PcmSensorValues, PcmControlValues]):
     def __init__(self, parameters: PcmParameters) -> None:
         self._parameters = parameters
 
-        states = [
+        self._states = [
             State(
                 name="supplying",
                 on_enter=[
@@ -77,11 +77,8 @@ class PcmControl(Control[PcmSensorValues, PcmControlValues]):
             State(name="idle", on_enter=[self._set_valves_to_idle, self._disable_pump]),
         ]
 
-        self.machine = Machine(model=self, states=states, initial="idle")
-        self._pump_flow_controller = PumpFlowController(
-            _INITIAL_CONTROL_VALUES.pcm_pump.dutypoint.value, 0
-        )
-        self.machine = Machine(model=self, states=states, initial="idle")
+        self.pcm_state_machine = Machine(model=self, states=self._states, initial="idle")
+
         self._pump_flow_controller = PumpFlowController(
             _INITIAL_CONTROL_VALUES.pcm_pump.dutypoint.value, 0
         )

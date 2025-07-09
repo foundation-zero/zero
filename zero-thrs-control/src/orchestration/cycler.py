@@ -1,3 +1,4 @@
+import warnings
 from input_output.alarms import BaseAlarms
 from orchestration.collector import Collector
 from orchestration.executor import Executor, SimulationExecutionResult
@@ -15,7 +16,7 @@ class Cycler:
         for _ in range(times):
             result = await self._executor.tick(control_values)
             if isinstance(result, SimulationExecutionResult):
-                collector.collect(result.raw, result.timestamp)
+                collector.collect(result.raw, self._control.mode, result.timestamp)
             control_values = self._control.control(
                 result.sensor_values, result.timestamp
             ).values
@@ -23,4 +24,4 @@ class Cycler:
                 result.sensor_values, control_values, self._control
             )
             if alarms:
-                raise Exception(f"Alarms detected: {alarms}")
+                warnings.warn(f"Alarms detected: {alarms}") #TODO: properly handle alarms

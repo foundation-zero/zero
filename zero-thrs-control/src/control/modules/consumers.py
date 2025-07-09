@@ -13,10 +13,10 @@ from input_output.modules.consumers import ConsumersControlValues, ConsumersSens
 
 
 class ConsumersParameters(BaseModel):
-    boosting_enabled: bool
-    boosting_flow_ratio_setpoint: Annotated[Ratio, Field(ge=0.0, le=1.0)]
-    fahrenheit_enabled: bool
-    fahrenheit_flow_ratio_setpoint: Annotated[Ratio, Field(ge=0.0, le=1.0)]
+    boosting_enabled: bool = True
+    boosting_flow_ratio_setpoint: Annotated[Ratio, Field(ge=0.0, le=1.0)] = .3
+    fahrenheit_enabled: bool = True
+    fahrenheit_flow_ratio_setpoint: Annotated[Ratio, Field(ge=0.0, le=1.0)] = .3
 
 
 _ZERO_TIME = datetime.fromtimestamp(0)
@@ -56,6 +56,9 @@ class ConsumersControl(Control[ConsumersSensorValues, ConsumersControlValues]):
                 self._current_values.consumers_flowcontrol_bypass,
             ]
         )
+    @property
+    def mode(self) -> None:
+        return None
 
     def initial(self, time: datetime) -> ControlResult[ConsumersControlValues]:
         return ControlResult(time, self._current_values)

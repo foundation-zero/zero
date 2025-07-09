@@ -71,12 +71,12 @@ async def test_charging(control: PcmControl, executor: PcmExecutor):
         result.simulation_inputs.get_values_at_time(
             executor.time()
         ).pcm_producers_supply.flow.value,
-        abs=1,
+        abs=.1,
     )  # type: ignore
     assert result.simulation_inputs.get_values_at_time(
         executor.time()
     ).pcm_producers_supply.flow.value == approx(
-        result.simulation_outputs.pcm_producers_return.flow.value, abs=0.1
+        result.simulation_outputs.pcm_producers_return.flow.value, abs=.1
     )  # type: ignore
 
 
@@ -103,16 +103,16 @@ async def test_supplying(control: PcmControl, executor: PcmExecutor):
         == approx(0.0, abs=0.01)
     )
     assert result.sensor_values.pcm_switch_discharging.position_rel.value == approx(1.0)
-    assert result.sensor_values.pcm_pump.flow.value == approx(pcm_flow, abs=2)  # type: ignore #TODO: large difference - flow is being generated in PCM?
+    assert result.sensor_values.pcm_pump.flow.value == approx(pcm_flow, abs=.1)
     assert result.simulation_inputs.get_values_at_time(
         executor.time()
     ).pcm_producers_supply.flow.value + pcm_flow == approx(
-        result.simulation_outputs.pcm_consumers_return.flow.value, abs=1
+        result.simulation_outputs.pcm_consumers_return.flow.value, abs=.1
     )  # type: ignore
     assert result.simulation_inputs.get_values_at_time(
         executor.time()
     ).pcm_producers_supply.flow.value == approx(
-        result.simulation_outputs.pcm_producers_return.flow.value, abs=0.1
+        result.simulation_outputs.pcm_producers_return.flow.value, abs=.1
     )  # type: ignore
 
 
@@ -142,10 +142,10 @@ async def test_boosting(control: PcmControl, executor: PcmExecutor):
         == approx(pcm_flow, abs=1)
     )  # type: ignore
     assert pcm_flow == approx(
-        result.simulation_outputs.pcm_consumers_return.flow.value, abs=1
+        result.simulation_outputs.pcm_consumers_return.flow.value, abs=.1
     )
     assert result.simulation_inputs.get_values_at_time(
         executor.time()
     ).pcm_producers_supply.flow.value == approx(
-        result.simulation_outputs.pcm_producers_return.flow.value, abs=0.1
+        result.simulation_outputs.pcm_producers_return.flow.value, abs=.1
     )  # type: ignore

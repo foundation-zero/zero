@@ -17,6 +17,18 @@ type PvtExecutor = SimulationExecutor[
     PvtSimulationOutputs,
 ]
 
+async def test_idle(control, executor: PvtExecutor):
+
+    control.to_idle()
+    result = await executor.tick(
+        control.control(PvtSensorValues.zero(), executor.time()).values,
+    )
+
+    for i in range(30):
+        control_values = control.control(result.sensor_values, executor.time()).values
+        result = await executor.tick(control_values)
+
+    assert result.simulation_outputs.pvt_module_return.flow.value == approx(0, abs =1) # type: ignore #TODO: reduce margin after fmu test (dutypoint of pump in idle mode currently set to .1)
 
 async def test_recovery(control, executor):
 
@@ -43,7 +55,7 @@ async def test_recovery(control, executor):
 
 async def test_recovery_heat_dump(control, executor: PvtExecutor):
     control.to_recovery()
-    executor._boundaries.pvt_module_supply.temperature = Stamped.stamp(65)
+    executor._simulation_inputs.pvt_module_supply.temperature = Stamped.stamp(65)
     result = await executor.tick(
         control.control(PvtSensorValues.zero(), executor.time()).values,
     )
@@ -59,7 +71,7 @@ async def test_recovery_heat_dump(control, executor: PvtExecutor):
 
     for i in range(900):
         # Increasing supply temperature by 5 degrees every tick within 65 to 90 degrees
-        executor._boundaries.pvt_module_supply.temperature = Stamped.stamp(
+        executor._simulation_inputs.pvt_module_supply.temperature = Stamped.stamp(
             max(
                 65,
                 min(
@@ -79,7 +91,7 @@ async def test_recovery_heat_dump(control, executor: PvtExecutor):
 
     assert (
         result.sensor_values.pvt_temperature_exchanger.temperature.value
-        < executor._boundaries.pvt_module_supply.temperature.value
+        < executor._simulation_inputs.pvt_module_supply.temperature.value
     )
 
 

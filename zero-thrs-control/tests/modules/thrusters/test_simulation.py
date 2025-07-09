@@ -2,6 +2,7 @@ from datetime import datetime, timedelta
 
 from pytest import fixture
 import pytest
+from input_output.definitions.control import Valve
 from input_output.modules.thrusters import (
     ThrustersControlValues,
     ThrustersSensorValues,
@@ -37,7 +38,7 @@ async def test_interfacer(executor, io_mapping, simulation_inputs, control, alar
         timedelta(seconds=1),
     )[2]
     assert frame is not None
-    assert set(frame.columns) == set(mock_fmu_outputs.keys()) | {"time"}
+    assert set(frame.columns) == set(mock_fmu_outputs.keys()) | {"time", "control_mode"}
     assert frame["time"][-1] - frame["time"][0] == timedelta(seconds=19)
 
 
@@ -68,19 +69,27 @@ def incorrect_simulation_inputs(simulation_inputs, request):
 
 
 async def test_thrusters_simulation_inputs(incorrect_simulation_inputs, control):
-    with Fmu(
-        thrusters_path) as fmu:
+    with Fmu(thrusters_path) as fmu:
         mapping = IoMapping(
             fmu,
             ThrustersSensorValues,
             ThrustersSimulationOutputs,
         )
 
+        control_values = control.initial(datetime.now()).values
+
+        control_values.thrusters_pump_1.dutypoint.value = 1
+        control_values.thrusters_mix_aft.setpoint.value = Valve.MIXING_A_TO_AB
+        control_values.thrusters_mix_fwd.setpoint.value = Valve.MIXING_A_TO_AB
+        control_values.thrusters_flowcontrol_aft.setpoint.value = Valve.OPEN
+        control_values.thrusters_flowcontrol_fwd.setpoint.value = Valve.OPEN
+        control_values.thrusters_pump_1.on.value = True
+
         with pytest.raises(Exception):
             for i in range(100):
                 mapping.tick(
-                    control.initial(datetime.now()).values,
+                    control._current_values,
                     incorrect_simulation_inputs,
                     datetime.now(),
-                    timedelta(seconds=1),
+                    timedelta(seconds=5),
                 )

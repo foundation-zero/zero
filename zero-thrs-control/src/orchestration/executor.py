@@ -74,14 +74,14 @@ class SimulationExecutor[S: ThrsModel, C: ThrsModel, I: SimulationInputs, O: Thr
     def __init__(
         self,
         io_mapping: IoMapping[S,C,I,O],
-        boundaries: I,
+        simulation_inputs: I,
         start_time: datetime,
         tick_duration: timedelta,
     ):
         self._start_time = start_time
         self._ticks = 0
         self._tick_duration = tick_duration
-        self._boundaries = boundaries
+        self._simulation_inputs = simulation_inputs
         self._io_mapping = io_mapping
 
     async def start(self):
@@ -92,15 +92,15 @@ class SimulationExecutor[S: ThrsModel, C: ThrsModel, I: SimulationInputs, O: Thr
 
     async def tick(self, control_values: C) -> SimulationExecutionResult[S, I, O]:
         time = self.time()
-        bounds = self._boundaries.get_values_at_time(time)
+        simulation_inputs = self._simulation_inputs.get_values_at_time(time)
         sensor_values, simulation_outputs, raw = self._io_mapping.tick(
-            control_values, bounds, time, self._tick_duration
+            control_values, simulation_inputs, time, self._tick_duration
         )
         self._ticks += 1
         return SimulationExecutionResult(
             timestamp=time,
             sensor_values=sensor_values,
             simulation_outputs=simulation_outputs,
-            simulation_inputs=bounds,
+            simulation_inputs=simulation_inputs,
             raw=raw,
         )

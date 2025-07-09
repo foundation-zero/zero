@@ -1,4 +1,5 @@
 from pytest import approx
+from input_output.definitions.control import Valve
 from input_output.modules.thrusters import (
     ThrustersControlValues,
     ThrustersSensorValues,
@@ -38,25 +39,24 @@ def test_thrusters_fmu_names():
 async def test_set_module_temperature(control, executor):
     control_values = control.initial(executor.time()).values
 
-    executor._boundaries.thrusters_aft.heat_flow.value = 0
-    executor._boundaries.thrusters_fwd.heat_flow.value = 0
-    executor._boundaries.thrusters_module_supply.temperature.value = 60
+    executor._simulation_inputs.thrusters_aft.heat_flow.value = 0
+    executor._simulation_inputs.thrusters_fwd.heat_flow.value = 0
+    executor._simulation_inputs.thrusters_module_supply.temperature.value = 60
 
     control_values.thrusters_pump_1.dutypoint.value = 1
+    control_values.thrusters_mix_aft.setpoint.value = Valve.MIXING_A_TO_AB
+    control_values.thrusters_mix_fwd.setpoint.value = Valve.MIXING_A_TO_AB
+    control_values.thrusters_flowcontrol_aft.setpoint.value = Valve.OPEN
+    control_values.thrusters_flowcontrol_fwd.setpoint.value = Valve.OPEN
     control_values.thrusters_pump_1.on.value = True
 
-    # allow valves to turn
-    result = None
-    for i in range(90):
-        result = await executor.tick(control_values)
-    assert result is not None
-
     # allow temp to stabilize
+    result = None
     for i in range(300):
         result = await executor.tick(
             control_values,
         )
-
+    assert result is not None
     assert (
         result.sensor_values.thrusters_temperature_supply.temperature.value
         == approx(60, abs=0.1)
