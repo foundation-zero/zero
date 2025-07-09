@@ -183,6 +183,14 @@ class ThrustersControl(Control):
         self._active_pump: None | Pump = None
 
     @property
+    def parameters(self) -> ThrustersParameters:
+        return self._parameters
+
+    @property
+    def modes(self) -> list[str]:
+        return list(self.thrusters_state_machine.states.keys())
+
+    @property
     def mode(self) -> Literal["idle", "cooling", "recovery", "safe"]:
         return self.state  # type: ignore
 

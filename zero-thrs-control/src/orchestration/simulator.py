@@ -1,6 +1,8 @@
+from contextlib import contextmanager
 from dataclasses import dataclass
 from datetime import datetime, timedelta
 from classes.control import Control
+from classes.executor import Executor
 from input_output.alarms import BaseAlarms
 from input_output.base import SimulationInputs, ThrsModel
 from orchestration.collector import PolarsCollector
@@ -23,20 +25,25 @@ class SimulatorModel:
     tick_duration: timedelta = timedelta(seconds=1)
     solver_step_size: timedelta = timedelta(seconds=0.001)
 
+    @contextmanager
+    def executor(self):
+        with Fmu(self.fmu_path) as fmu:
+            yield SimulationExecutor(
+                IoMapping(
+                    fmu,
+                    self.sensor_values_cls,
+                    self.simulation_outputs_cls,
+                ),
+                self.simulation_inputs,
+                self.start_time,
+                self.tick_duration,
+            )
+
 
 class Simulator:
-    def __init__(self, model: SimulatorModel):
+    def __init__(self, model: SimulatorModel, executor: Executor):
         self._model = model
-        self._executor = SimulationExecutor(
-            IoMapping(
-                Fmu(model.fmu_path),
-                model.sensor_values_cls,
-                model.simulation_outputs_cls,
-            ),
-            model.simulation_inputs,
-            model.start_time,
-            model.tick_duration,
-        )
+        self._executor = executor
         self._cycler = Cycler(model.control, self._executor, model.alarms)
 
     async def run(self, n_ticks: int):

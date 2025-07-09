@@ -15,7 +15,7 @@ class MqttExecutor[S: ThrsModel, C: ThrsModel](Executor[S, C]):
         self,
         inner: Executor,
         controller_client: Client,
-        world_client: Client,
+        environment_client: Client,
         sensor_topic: str,
         sensor_cls: type[S],
         control_topic: str,
@@ -23,7 +23,7 @@ class MqttExecutor[S: ThrsModel, C: ThrsModel](Executor[S, C]):
     ):
         self._inner = inner
         self._controller_client = controller_client
-        self._world_client = world_client
+        self._environment_client = environment_client
         self._sensor_topic = sensor_topic
         self._control_topic = control_topic
         self._sensors: asyncio.Queue[ExecutionResult[S]] = asyncio.Queue()
@@ -43,14 +43,14 @@ class MqttExecutor[S: ThrsModel, C: ThrsModel](Executor[S, C]):
             )
 
     async def _pass_controls_to_inner(self):
-        async for message in self._world_client.messages:
+        async for message in self._environment_client.messages:
             if not isinstance(message.payload, str | bytes):
                 raise ValueError(
                     f"Expected string or bytes, got {type(message.payload)}"
                 )
             self._last_controls = self._control_cls.model_validate_json(message.payload)
             execution_result = await self._inner.tick(self._last_controls)
-            await self._world_client.publish(
+            await self._environment_client.publish(
                 self._sensor_topic,
                 execution_result.sensor_values.model_dump_json(),
                 qos=1,
@@ -58,19 +58,27 @@ class MqttExecutor[S: ThrsModel, C: ThrsModel](Executor[S, C]):
 
     async def start(self):
         await self._controller_client.subscribe(self._sensor_topic, qos=1)
-        await self._world_client.subscribe(self._control_topic, qos=1)
+        await self._environment_client.subscribe(self._control_topic, qos=1)
+
+    async def run(self):
         async with TaskGroup() as tg:
             tg.create_task(self._listen_to_sensors())
             tg.create_task(self._pass_controls_to_inner())
 
     async def tick(self, control_values: ThrsModel) -> ExecutionResult[S]:
-        await self._world_client.publish(
+        await self._environment_client.publish(
             self._control_topic, control_values.model_dump_json(), qos=1
         )
         return await self._sensors.get()
 
+    @property
+    def start_time(self) -> datetime:
+        return self._inner.start_time
 
-class SimulationExecutor[S: ThrsModel, C: ThrsModel, I: SimulationInputs, O: ThrsModel](Executor[S,C]):
+
+class SimulationExecutor[S: ThrsModel, C: ThrsModel, I: SimulationInputs, O: ThrsModel](
+    Executor[S, C]
+):
     def __init__(
         self,
         io_mapping: IoMapping[S,C,I,O],
@@ -86,6 +94,10 @@ class SimulationExecutor[S: ThrsModel, C: ThrsModel, I: SimulationInputs, O: Thr
 
     async def start(self):
         pass
+
+    @property
+    def start_time(self) -> datetime:
+        return self._start_time
 
     def time(self):
         return self._start_time + self._ticks * self._tick_duration

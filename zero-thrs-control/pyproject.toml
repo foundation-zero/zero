@@ -16,7 +16,7 @@ readme = "README.md"
 
 [tool.poetry.dependencies]
 python = "^3.12,<3.14"
-pydantic = "^2.10.4"
+pydantic = "2.10.6"
 fmpy = "^0.3.22"
 jupyter = "^1.1.1"
 pyside6 = "^6.8.1.1"
@@ -32,12 +32,14 @@ pandas = "^2.2.3"
 pyarrow = "^19.0.1"
 seaborn = "^0.13.2"
 pytest-xdist = "^3.6.1"
+pydantic-partial = "^0.8.0"
 
 
 [tool.poetry.group.test.dependencies]
 pytest = "^8.3.4"
 pyright = "^1.1.392.post0"
 pytest-asyncio = "^0.25.3"
+pytest-timeout = "^2.4.0"
 
 [tool.poetry.group.dev.dependencies]
 ruff = "^0.11.0"

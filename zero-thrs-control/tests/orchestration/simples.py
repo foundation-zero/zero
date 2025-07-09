@@ -23,8 +23,16 @@ class SimpleExecutor(Executor):
         self.controls.append(control_values)
         return ExecutionResult(timestamp=datetime.now(), sensor_values=control_values)
 
+    @property
+    def start_time(self):
+        return self._start_time
 
-class SimpleControl(Control[SimpleInOut, SimpleInOut]):
+
+class SimpleParameters(ThrsModel):
+    pass
+
+
+class SimpleControl(Control[SimpleInOut, SimpleInOut, SimpleParameters]):
     def initial(self, time: datetime) -> ControlResult[SimpleInOut]:
         return ControlResult(time, SimpleInOut.zero())
 
@@ -34,8 +42,16 @@ class SimpleControl(Control[SimpleInOut, SimpleInOut]):
         return ControlResult(time, sensor_values)
 
     @property
+    def modes(self) -> list[str]:
+        return []
+
+    @property
     def mode(self) -> str | None:
         return None
+
+    @property
+    def parameters(self) -> SimpleParameters:
+        return SimpleParameters()
 
 
 class SimpleAlarms(BaseAlarms[SimpleInOut, SimpleInOut, SimpleControl]):

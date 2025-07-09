@@ -53,12 +53,13 @@ async def test_simulation(simulation_inputs, control, alarms):
         alarms=alarms,
     )
 
-    simulation = Simulator(thrusters_model)
+    with thrusters_model.executor() as executor:
+        simulation = Simulator(thrusters_model, executor)
 
-    result = await simulation.run(20)
+        result = await simulation.run(20)
 
-    assert result is not None
-    assert result["time"].len() == 20
+        assert result is not None
+        assert result["time"].len() == 20
 
 
 @fixture(params=list(simulator_input_field_setters(ThrustersSimulationInputs)))

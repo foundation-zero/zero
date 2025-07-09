@@ -9,6 +9,16 @@
       "purpose": ["debug-test"],
       "console": "integratedTerminal",
       "justMyCode": false,
+    },
+    {
+      "name": "THRS: Debug simulation thrusters",
+      "type": "debugpy",
+      "request": "launch",
+      "program": "${workspaceFolder}/src/cli/__main__.py",
+      "args": ["run", "thrusters"],
+      "console": "integratedTerminal",
+      "justMyCode": false,
+      "cwd": "${workspaceFolder}",
     }
   ],
 }

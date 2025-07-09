@@ -12,15 +12,17 @@ class ExecutionResult[S: ThrsModel]:
 
 
 @dataclass
-class SimulationExecutionResult[S: ThrsModel, I: SimulationInputs, O: ThrsModel](ExecutionResult[S]):
+class SimulationExecutionResult[S: ThrsModel, I: SimulationInputs, O: ThrsModel](
+    ExecutionResult[S]
+):
     simulation_outputs: O
     simulation_inputs: I
     raw: dict[str, Any]
 
 
 class Executor[S: ThrsModel, C: ThrsModel](Protocol):
-    def __init__(self, start_time):
-        self._start_time: datetime
-
     async def start(self): ...
     async def tick(self, control_values: C) -> ExecutionResult[S]: ...
+
+    @property
+    def start_time(self) -> datetime: ...

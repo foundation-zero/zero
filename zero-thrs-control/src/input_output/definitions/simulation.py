@@ -1,8 +1,9 @@
 from typing import Annotated
 from input_output.base import FieldMeta, Stamped, StampedDf, ThrsModel
 from input_output.definitions.units import Celsius, LMin, PcsMode, Ratio, Watt
+from pydantic.json_schema import SkipJsonSchema
 
-type Stamp[T] = Stamped[T] | StampedDf[T]
+type Stamp[T] = Stamped[T] | SkipJsonSchema[StampedDf[T]]
 
 
 class HeatSource(ThrsModel):

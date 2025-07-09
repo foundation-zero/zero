@@ -4,6 +4,7 @@ services:
     restart: unless-stopped
     ports:
       - "1883:1883"
+      - "8081:8080"
     volumes:
       - ./volumes/mosquitto:/etc/mosquitto
       - ./volumes/mosquitto/mosquitto.conf:/mosquitto/config/mosquitto.conf

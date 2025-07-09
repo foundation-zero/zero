@@ -12,7 +12,7 @@ class Cycler:
         self._alarms = alarms
 
     async def run(self, times: int, collector: Collector):
-        control_values = self._control.initial(self._executor._start_time).values
+        control_values = self._control.initial(self._executor.start_time).values
         for _ in range(times):
             result = await self._executor.tick(control_values)
             if isinstance(result, SimulationExecutionResult):

@@ -127,6 +127,14 @@ class PvtControl(Control):
         self._time = datetime.now()
 
     @property
+    def parameters(self) -> PvtParameters:
+        return self._parameters
+
+    @property
+    def modes(self) -> list[str]:
+        return list(self.pvt_state_machine.states.keys())
+
+    @property
     def mode(self) -> Literal["idle", "recovery", "pump_failure"]:
         return self.state  # type: ignore
 

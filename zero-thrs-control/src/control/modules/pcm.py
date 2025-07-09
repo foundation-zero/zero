@@ -2,17 +2,16 @@ from datetime import datetime
 from functools import partial
 from typing import Callable, Literal
 
-from pydantic import BaseModel
 from transitions import Machine, State
 from classes.control import Control, ControlResult
 from control.controllers import PumpFlowController
-from input_output.base import Stamped
+from input_output.base import Stamped, ThrsModel
 from input_output.definitions.control import Pcm, Pump, Valve
 from input_output.definitions.units import LMin
 from input_output.modules.pcm import PcmControlValues, PcmSensorValues
 
 
-class PcmParameters(BaseModel):
+class PcmParameters(ThrsModel):
     supplying_pump_flow: LMin = 60
     boosting_pump_flow: LMin = 20
 
@@ -51,7 +50,7 @@ _INITIAL_CONTROL_VALUES = PcmControlValues(
 )
 
 
-class PcmControl(Control[PcmSensorValues, PcmControlValues]):
+class PcmControl(Control[PcmSensorValues, PcmControlValues, PcmParameters]):
     def __init__(self, parameters: PcmParameters) -> None:
         self._parameters = parameters
 
@@ -60,7 +59,9 @@ class PcmControl(Control[PcmSensorValues, PcmControlValues]):
                 name="supplying",
                 on_enter=[
                     self._set_valves_to_discharge,
-                    partial(self._enable_pump, lambda : self._parameters.supplying_pump_flow),
+                    partial(
+                        self._enable_pump, lambda: self._parameters.supplying_pump_flow
+                    ),
                 ],
             ),
             State(
@@ -71,13 +72,17 @@ class PcmControl(Control[PcmSensorValues, PcmControlValues]):
                 name="boosting",
                 on_enter=[
                     self._set_valves_to_boosting,
-                    partial(self._enable_pump, lambda : self._parameters.boosting_pump_flow),
+                    partial(
+                        self._enable_pump, lambda: self._parameters.boosting_pump_flow
+                    ),
                 ],
             ),
             State(name="idle", on_enter=[self._set_valves_to_idle, self._disable_pump]),
         ]
 
-        self.pcm_state_machine = Machine(model=self, states=self._states, initial="idle")
+        self.pcm_state_machine = Machine(
+            model=self, states=self._states, initial="idle"
+        )
 
         self._pump_flow_controller = PumpFlowController(
             _INITIAL_CONTROL_VALUES.pcm_pump.dutypoint.value, 0
@@ -177,3 +182,11 @@ class PcmControl(Control[PcmSensorValues, PcmControlValues]):
         self._control_pump(sensor_values)
 
         return ControlResult(time, self._current_values)
+
+    @property
+    def parameters(self) -> PcmParameters:
+        return PcmParameters()
+
+    @property
+    def modes(self) -> list[str]:
+        return [""]

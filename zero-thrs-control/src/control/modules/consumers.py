@@ -1,22 +1,22 @@
 from datetime import datetime
 from typing import Annotated
 
-from pydantic import BaseModel, Field
+from pydantic import Field
 from classes.control import Control, ControlResult
 from control.controllers import (
     FlowDistributionController,
 )
-from input_output.base import Stamped
+from input_output.base import Stamped, ThrsModel
 from input_output.definitions.control import Valve
 from input_output.definitions.units import Ratio
 from input_output.modules.consumers import ConsumersControlValues, ConsumersSensorValues
 
 
-class ConsumersParameters(BaseModel):
+class ConsumersParameters(ThrsModel):
     boosting_enabled: bool = True
-    boosting_flow_ratio_setpoint: Annotated[Ratio, Field(ge=0.0, le=1.0)] = .3
+    boosting_flow_ratio_setpoint: Annotated[Ratio, Field(ge=0.0, le=1.0)] = 0.3
     fahrenheit_enabled: bool = True
-    fahrenheit_flow_ratio_setpoint: Annotated[Ratio, Field(ge=0.0, le=1.0)] = .3
+    fahrenheit_flow_ratio_setpoint: Annotated[Ratio, Field(ge=0.0, le=1.0)] = 0.3
 
 
 _ZERO_TIME = datetime.fromtimestamp(0)
@@ -45,7 +45,9 @@ _INITIAL_CONTROL_VALUES = ConsumersControlValues(
 )
 
 
-class ConsumersControl(Control[ConsumersSensorValues, ConsumersControlValues]):
+class ConsumersControl(
+    Control[ConsumersSensorValues, ConsumersControlValues, ConsumersParameters]
+):
     def __init__(self, parameters: ConsumersParameters) -> None:
         self._parameters = parameters
         self._current_values = _INITIAL_CONTROL_VALUES.model_copy(deep=True)
@@ -56,9 +58,6 @@ class ConsumersControl(Control[ConsumersSensorValues, ConsumersControlValues]):
                 self._current_values.consumers_flowcontrol_bypass,
             ]
         )
-    @property
-    def mode(self) -> None:
-        return None
 
     def initial(self, time: datetime) -> ControlResult[ConsumersControlValues]:
         return ControlResult(time, self._current_values)
@@ -130,3 +129,15 @@ class ConsumersControl(Control[ConsumersSensorValues, ConsumersControlValues]):
         )
 
         return ControlResult(time, self._current_values)
+
+    @property
+    def modes(self) -> list[str]:
+        return []
+
+    @property
+    def mode(self) -> str | None:
+        return None
+
+    @property
+    def parameters(self) -> ConsumersParameters:
+        return self._parameters

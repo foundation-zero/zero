@@ -69,3 +69,10 @@ async def test_set_module_temperature(control, executor):
         result.sensor_values.thrusters_temperature_fwd_mix.temperature.value
         == approx(60, abs=0.1)
     )
+
+
+def test_schema():
+    ThrustersSensorValues.model_json_schema()
+    ThrustersControlValues.model_json_schema()
+    ThrustersSimulationInputs.model_json_schema()
+    ThrustersSimulationOutputs.model_json_schema()

@@ -1,5 +1,4 @@
 from asyncio import create_task
-import asyncio
 from datetime import datetime
 
 from aiomqtt import Client
@@ -34,8 +33,8 @@ async def test_mqtt_executor(mqtt_client, mqtt_client2):
         settings.mqtt_control_topic,
         SimpleInOut,
     )
-    running = create_task(executor.start())
-    await asyncio.sleep(0.1)
+    await executor.start()
+    running = create_task(executor.run())
 
     try:
         result = await executor.tick(

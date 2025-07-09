@@ -32,10 +32,12 @@ class ThrsModel(BaseModel):
                 unit = unit_for_annotation(field.annotation)
                 return zero_for_unit(unit) if unit else 0.0
 
-            return component(**{
-                field_name: Stamped.stamp(_zero_value(field))
-                for field_name, field in component.model_fields.items()
-            })
+            return component(
+                **{
+                    field_name: Stamped.stamp(_zero_value(field))
+                    for field_name, field in component.model_fields.items()
+                }
+            )
 
         vals = {
             component_name: _zero_component(component.annotation)
