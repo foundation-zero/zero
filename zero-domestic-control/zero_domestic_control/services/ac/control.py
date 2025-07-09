@@ -1,7 +1,7 @@
 from asyncio import TaskGroup, sleep
 import asyncio
 from functools import partial
-from typing import Callable, Generator, assert_never
+from typing import Callable, Coroutine, Generator, assert_never
 
 from zero_domestic_control.messages import (
     Room,
@@ -101,7 +101,6 @@ class AcControl:
                     yield partial(_read_data, op, room_id, property)
 
     async def _receive_control_messages(self):
-        await self._receiver.listen()
         async for message in self._receiver.messages:
             await self._control_messages.put(message)
 
@@ -188,8 +187,18 @@ class AcControl:
             else:
                 assert_never(message)  # type: ignore
 
-    async def run(self):
-        async with TaskGroup() as tg:
-            tg.create_task(self._receive_control_messages())
-            tg.create_task(self._termodinamica_comms())
-            tg.create_task(self._control_systems())
+    async def run(self) -> Coroutine[None, None, None]:
+        """Run the AcControl service.
+
+        The returned awaitable finishes when the control is actually running.
+        Then the coroutine contained within can be run in an event loop.
+        """
+        await self._receiver.listen()
+
+        async def _run():
+            async with TaskGroup() as tg:
+                tg.create_task(self._receive_control_messages())
+                tg.create_task(self._termodinamica_comms())
+                tg.create_task(self._control_systems())
+
+        return _run()

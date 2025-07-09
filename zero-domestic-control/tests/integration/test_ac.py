@@ -1,5 +1,6 @@
 from asyncio import create_task
 import asyncio
+from typing import Callable
 
 from aiomqtt import Client as MqttClient
 from pytest import fixture
@@ -22,6 +23,20 @@ def settings():
 async def _mqtt_client(settings):
     async with MqttClient(settings.mqtt_host, settings.mqtt_port) as client:
         yield client
+
+
+async def eventually(
+    func: Callable[[], None], timeout: float = 5.0, interval: float = 0.1
+):
+    """Run a function until it succeeds or the timeout is reached."""
+    end_time = asyncio.get_event_loop().time() + timeout
+    while asyncio.get_event_loop().time() < end_time:
+        try:
+            func()
+            return
+        except AssertionError:
+            await asyncio.sleep(interval)
+    raise AssertionError("Function did not succeed within the timeout period.")
 
 
 @fixture
@@ -74,7 +89,7 @@ async def test_termodinamica_adjustment_forwarded_to_thrs(
 
     stub_run = create_task(stub.run())
     receive = create_task(_receive())
-    ac_run = create_task(ac_control.run())
+    ac_run = create_task(await ac_control.run())
 
     try:
         await asyncio.sleep(0.1)
@@ -122,10 +137,9 @@ async def test_setting_setpoints(
 
     receive = create_task(_receive())
     stub_run = create_task(stub.run())
-    ac_run = create_task(ac_control.run())
+    ac_run = create_task(await ac_control.run())
 
     try:
-        await asyncio.sleep(0.1)
         await ac.write_room_temperature_setpoint("french-cabin", 20)
         await asyncio.sleep(0.2)
         assert termodinamica.read_room_temperature_setpoint("french-cabin") == 20

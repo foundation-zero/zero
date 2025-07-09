@@ -2,7 +2,7 @@ from contextlib import asynccontextmanager
 import re
 from aiomqtt import Client as MqttClient, Message
 from pydantic import AliasChoices, BaseModel, Field
-from typing import Annotated, AsyncIterable, List, Literal
+from typing import Annotated, AsyncIterable, Coroutine, List, Literal
 
 from zero_domestic_control.config import Settings
 from zero_domestic_control.messages import Amplifier
@@ -154,11 +154,19 @@ class AvControl:
                     )
                 )
 
-    async def run(self):
+    async def run(self) -> Coroutine[None, None, None]:
+        """Run the AvControl service.
+
+        The returned awaitable finishes when the control is actually running.
+        Then the coroutine contained within can be run in an event loop.
+        """
         await self._gude.listen_to_all_telemetry()
 
-        async for pdu, telemetry in self._gude.telemetries:
-            await self.handle_telemetry(pdu, telemetry)
+        async def _run():
+            async for pdu, telemetry in self._gude.telemetries:
+                await self.handle_telemetry(pdu, telemetry)
+
+        return _run()
 
     @asynccontextmanager
     @staticmethod

@@ -33,10 +33,13 @@ class Control:
         )
 
     async def run(self):
+        av_control = await self._av_control.run()
+        ac_control = await self._ac_control.run()
+
         async with TaskGroup() as tg:
             tg.create_task(self._hass_control.run())
-            tg.create_task(self._av_control.run())
-            tg.create_task(self._ac_control.run())
+            tg.create_task(av_control)
+            tg.create_task(ac_control)
 
     @asynccontextmanager
     @staticmethod

@@ -1,7 +1,7 @@
 from asyncio import TaskGroup, sleep
 import re
 import time
-from typing import Literal, cast
+from typing import Coroutine, Literal, cast
 from aiomqtt import Client as MqttClient, Message
 
 from zero_domestic_control.services.av import AFT_PDU, FWD_PDU, PortState, Telemetry
@@ -90,10 +90,18 @@ class AvStub:
     def set_port(self, pdu: str, port: int, state: bool):
         self._lookup_pdu(pdu).set_port(port, state)
 
-    async def run(self):
+    async def run(self) -> Coroutine[None, None, None]:
+        """Run the AvStub.
+
+        The returned awaitable finishes when the control is actually running.
+        Then the coroutine contained within can be run in an event loop.
+        """
         await self._mqtt_client.subscribe("de/gudesystems/epc/+/cmdres/port/+", qos=1)
 
-        async with TaskGroup() as tg:
-            for pdu in self._pdus:
-                tg.create_task(pdu.run_telemetry())
-            tg.create_task(self.handle_messages())
+        async def _run():
+            async with TaskGroup() as tg:
+                for pdu in self._pdus:
+                    tg.create_task(pdu.run_telemetry())
+                tg.create_task(self.handle_messages())
+
+        return _run()

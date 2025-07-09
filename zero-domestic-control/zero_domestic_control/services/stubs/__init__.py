@@ -20,7 +20,7 @@ class Stub:
 
     async def run(self):
         async with TaskGroup() as tg:
-            tg.create_task(self._av_stub.run())
+            tg.create_task(await self._av_stub.run())
             tg.create_task(self._ac_stub.run())
 
     @staticmethod
