@@ -25,20 +25,6 @@ async def _mqtt_client(settings):
         yield client
 
 
-async def eventually(
-    func: Callable[[], None], timeout: float = 5.0, interval: float = 0.1
-):
-    """Run a function until it succeeds or the timeout is reached."""
-    end_time = asyncio.get_event_loop().time() + timeout
-    while asyncio.get_event_loop().time() < end_time:
-        try:
-            func()
-            return
-        except AssertionError:
-            await asyncio.sleep(interval)
-    raise AssertionError("Function did not succeed within the timeout period.")
-
-
 @fixture
 async def modbus_client(settings):
     return ModbusClient(
