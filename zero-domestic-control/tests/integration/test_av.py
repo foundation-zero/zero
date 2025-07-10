@@ -60,7 +60,7 @@ async def test_stub(mqtt_client, mqtt_client2):
 
     receive = create_task(_receive_messages())
 
-    stub_run = create_task(stub.run())
+    stub_run = create_task(await stub.run())
     assert await expect_result(lambda: len(received), 2, 1)
     await asyncio.sleep(AV_STUB_TELEMETRY_INTERVAL)
     assert await expect_result(lambda: len(received), 6, 0.5)
@@ -76,9 +76,8 @@ async def test_av_send(mqtt_client, mqtt_client2):
     av = Av(Gude(mqtt_client), DataCollection(mqtt_client))
     stub = AvStub(mqtt_client2)
 
-    stub_task = create_task(stub.run())
+    stub_task = create_task(await stub.run())
 
-    await asyncio.sleep(0.1)
     await av.set_amplifier("owners-cockpit/amplifier", True)
     assert await expect_result(lambda: stub.read_port(AFT_PDU, 1), True, 0.1)
 
@@ -95,8 +94,8 @@ async def test_av_control_receive(mqtt_client, mqtt_client2, mqtt_client3):
 
     await mqtt_client3.subscribe("domestic/amplifiers")
 
-    control_task = create_task(av_control.run())
-    stub_task = create_task(stub.run())
+    control_task = create_task(await av_control.run())
+    stub_task = create_task(await stub.run())
     stub.set_port(AFT_PDU, 1, True)
 
     async for message in mqtt_client3.messages:

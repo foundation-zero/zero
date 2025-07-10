@@ -74,7 +74,7 @@ async def test_termodinamica_adjustment_forwarded_to_thrs(
 
     stub_run = create_task(stub.run())
     receive = create_task(_receive())
-    ac_run = create_task(ac_control.run())
+    ac_run = create_task(await ac_control.run())
 
     try:
         await asyncio.sleep(0.1)
@@ -122,10 +122,9 @@ async def test_setting_setpoints(
 
     receive = create_task(_receive())
     stub_run = create_task(stub.run())
-    ac_run = create_task(ac_control.run())
+    ac_run = create_task(await ac_control.run())
 
     try:
-        await asyncio.sleep(0.1)
         await ac.write_room_temperature_setpoint("french-cabin", 20)
         await asyncio.sleep(0.2)
         assert termodinamica.read_room_temperature_setpoint("french-cabin") == 20
