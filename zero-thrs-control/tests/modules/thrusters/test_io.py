@@ -52,7 +52,7 @@ async def test_set_module_temperature(control, executor):
 
     # allow temp to stabilize
     result = None
-    for i in range(300):
+    for i in range(500):
         result = await executor.tick(
             control_values,
         )

@@ -80,9 +80,8 @@ async def test_cooling(
 async def test_recovery(control: ThrustersControl, executor: SimulationExecutor):
     result = await executor.tick(control.initial(executor.time()).values)
 
-    control.to_cooling(result.sensor_values)  # type: ignore
-    # set valves and stabilize 10s
-    for i in range(100):
+    control.to_recovery(result.sensor_values)  # type: ignore
+    for i in range(1000):
         control_values = control.control(result.sensor_values, executor.time()).values
         result = await executor.tick(control_values)
 
@@ -120,8 +119,7 @@ async def test_recovery_mixing_cold(
 
     result = await executor.tick(control.initial(executor.time()).values)
 
-    # set valves and stabilize 10s
-    for i in range(100):
+    for i in range(1000):
         control_values = control.control(result.sensor_values, executor.time()).values
         result = await executor.tick(control_values)
 
@@ -156,8 +154,7 @@ async def test_recovery_mixing_hot(
 
     result = await executor.tick(control.initial(executor.time()).values)
 
-    # set valves and stabilize 20m
-    for i in range(90 + 20 * 60):
+    for i in range(2000):
         control_values = control.control(result.sensor_values, executor.time()).values
         result = await executor.tick(control_values)
 
@@ -197,8 +194,7 @@ async def test_heat_dump_with_cold_sea(
 
     result = await executor.tick(control.initial(executor.time()).values)
     control.to_cooling(result.sensor_values)  # type: ignore
-    # set valves and stabilize 2m
-    for i in range(210):
+    for i in range(300):
         control_values = control.control(result.sensor_values, executor.time()).values
         result = await executor.tick(control_values)
 
@@ -221,8 +217,7 @@ async def test_heat_dump_with_hot_sea(
 
     result = await executor.tick(control.initial(executor.time()).values)
     control.to_cooling(result.sensor_values)  # type: ignore
-    # set valves and stabilize 10s
-    for i in range(100):
+    for i in range(500):
         control_values = control.control(result.sensor_values, executor.time()).values
         result = await executor.tick(control_values)
 
