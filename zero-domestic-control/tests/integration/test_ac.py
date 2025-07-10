@@ -1,6 +1,5 @@
 from asyncio import create_task
 import asyncio
-from typing import Callable
 
 from aiomqtt import Client as MqttClient
 from pytest import fixture
