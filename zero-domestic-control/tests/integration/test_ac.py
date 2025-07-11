@@ -205,7 +205,7 @@ async def test_multiple_mutations(
     ac_control = AcControl(control_receiver, termodinamica, thrs, data_collection)
 
     stub_run = create_task(stub.run())
-    ac_run = create_task(ac_control.run())
+    ac_run = create_task(await ac_control.run())
 
     try:
         await asyncio.sleep(0.1)
