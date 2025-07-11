@@ -1,3 +1,4 @@
+{{ config(materialized='materialized_view') }}
 SELECT
     row_number() OVER (PARTITION BY logs.id ORDER BY logs.time DESC) AS row_num,
     logs.id,

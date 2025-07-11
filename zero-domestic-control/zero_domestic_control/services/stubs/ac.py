@@ -17,6 +17,7 @@ class TermodinamicaDataBank(DataBank):
     def on_holding_registers_change(
         self, address, from_value, to_value, srv_info
     ) -> None:
+        logging.debug(f"Stub: adress: {address}, from: {from_value}, to: {to_value}")
         if address >= TEMPERATURE_SETPOINT_START_ADDRESS.start and address < (
             TEMPERATURE_SETPOINT_START_ADDRESS.start + 100
         ):

@@ -12,6 +12,7 @@ from zero_domestic_control.services.ac.thrs import Thrs
 
 from pyModbusTCP.client import ModbusClient
 import json
+from asyncio import TaskGroup
 
 
 @fixture
@@ -188,3 +189,35 @@ def _pick_json(message: str, fields: list[str]) -> dict:
     data = json.loads(message)
     picked_data = {key: value for key, value in data.items() if key in fields}
     return picked_data
+
+
+async def test_multiple_mutations(
+    settings: Settings, modbus_client, mqtt_client, mqtt_client2, mqtt_client3
+):
+    """When multiple mutations are made simultaneously to Termodinamica, test if they are forwarded correctly and not overwritten."""
+    stub = TermodinamicaStub(settings.termodinamica_host, settings.termodinamica_port)
+    termodinamica = TermodinamicaAc(modbus_client)
+    thrs = Thrs(mqtt_client)
+    data_collection = DataCollection(mqtt_client)
+    control_send = ControlSend(mqtt_client)
+    control_receiver = ControlReceive(mqtt_client2)
+    ac = Ac(control_send)
+    ac_control = AcControl(control_receiver, termodinamica, thrs, data_collection)
+
+    stub_run = create_task(stub.run())
+    ac_run = create_task(await ac_control.run())
+
+    try:
+        await asyncio.sleep(0.1)
+        async with TaskGroup() as tg:
+            for room_id in ["dutch-cabin", "californian-lounge"]:
+                tg.create_task(
+                    ac.write_room_temperature_setpoint(room=room_id, temperature=19)
+                )
+        await asyncio.sleep(1)
+
+        assert termodinamica.read_room_temperature_setpoint("dutch-cabin") == 19
+        assert termodinamica.read_room_temperature_setpoint("californian-lounge") == 19
+    finally:
+        stub_run.cancel()
+        ac_run.cancel()
