@@ -928,6 +928,16 @@ export type MutationRootSetLightingGroupsArgs = {
   level: Scalars["Float"]["input"];
 };
 
+export type MutationRootSetRoomHumiditySetpointsArgs = {
+  ids?: Array<Scalars["ID"]["input"]>;
+  humidity: Scalars["Float"]["input"];
+};
+
+export type MutationRootSetRoomCo2SetpointsArgs = {
+  ids?: Array<Scalars["ID"]["input"]>;
+  co2: Scalars["Float"]["input"];
+};
+
 /** mutation root */
 export type MutationRootSetRoomTemperatureSetpointArgs = {
   ids?: Scalars["ID"]["input"] | Array<Scalars["ID"]["input"]>;

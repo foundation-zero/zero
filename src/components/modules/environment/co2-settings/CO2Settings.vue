@@ -1,4 +1,7 @@
 <script setup lang="ts">
+import { CO2_SETPOINT_RANGE } from "@/lib/consts";
+import { isCO2Control, updateSetpointWhenControlsHaveChanged } from "@/lib/utils";
+import { useRoomStore } from "@/stores/rooms";
 import { Button } from "@components/shadcn/button";
 import {
   NumberField,
@@ -10,15 +13,33 @@ import {
 import { ResponsivePopup } from "@components/shared/responsive-dialog";
 
 import { Settings } from "lucide-vue-next";
-import { ref } from "vue";
+import { computed, ref, toRefs } from "vue";
 import { useI18n } from "vue-i18n";
+
+const store = useRoomStore();
+const { allControls, rooms } = toRefs(store);
+
+const roomsWithCO2Control = computed(() =>
+  rooms.value.filter((room) => room.roomsControls.some(isCO2Control)),
+);
+
+const controls = computed(() => allControls.value.filter(isCO2Control));
 
 const { t } = useI18n();
 
-const value = ref(400);
+const value = ref(controls.value?.[0]?.value ?? CO2_SETPOINT_RANGE[0]);
+
+updateSetpointWhenControlsHaveChanged(value, controls);
+
 const open = ref(false);
 
-const save = () => (open.value = false);
+const save = () => {
+  store.setCO2Setpoints(
+    roomsWithCO2Control.value.map((c) => c.id),
+    value.value,
+  );
+  open.value = false;
+};
 </script>
 
 <template>
@@ -28,27 +49,21 @@ const save = () => (open.value = false);
     :description="t('views.co2Settings.description')"
   >
     <template #trigger>
-      <button>
-        <Settings />
-      </button>
+      <button><Settings /></button>
     </template>
-
     <div class="max-md:p-4">
       <NumberField
         v-model="value"
         class="my-12"
-        :default-value="400"
+        :default-value="CO2_SETPOINT_RANGE[0]"
         :step="50"
-        :min="400"
-        :max="1000"
+        :min="CO2_SETPOINT_RANGE[0]"
+        :max="CO2_SETPOINT_RANGE[1]"
       >
         <NumberFieldContent>
-          <NumberFieldDecrement />
-          <NumberFieldInput class="text-xl" />
-          <NumberFieldIncrement />
+          <NumberFieldDecrement /> <NumberFieldInput class="text-xl" /> <NumberFieldIncrement />
         </NumberFieldContent>
       </NumberField>
-
       <Button
         class="mt-4 block w-full text-base"
         size="lg"

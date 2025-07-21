@@ -1,7 +1,7 @@
 import { rooms } from "../../data/all-rooms";
 import { isBlindsControl } from "../../lib/helpers";
 import { expect, test as testBase } from "../../mocks/playwright";
-import { getAllRooms, getVersion } from "../../mocks/queries";
+import { getAllRooms, getControlLogs, getSensorLogs, getVersion } from "../../mocks/queries";
 import BlindsPage from "./page";
 
 const dutchCabin = rooms.find((room) => room.id === "dutch-cabin")!;
@@ -9,7 +9,7 @@ const dutchCabin = rooms.find((room) => room.id === "dutch-cabin")!;
 const test = testBase.extend<{ blindsPage: BlindsPage }>({
   blindsPage: [
     async ({ worker, page, subscriptions, auth }, use) => {
-      worker.use(getAllRooms, getVersion);
+      worker.use(getAllRooms, getVersion, getSensorLogs, getControlLogs);
 
       const blindsPage = new BlindsPage(page, subscriptions);
 

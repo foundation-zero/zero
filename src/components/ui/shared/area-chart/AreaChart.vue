@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { NumValueObject } from "@/@types";
+import { NumValueObject, TimeValueTuple } from "@/@types";
 import { formatInt } from "@/lib/utils";
 import { useColorMode } from "@vueuse/core";
 import { LineChart } from "echarts/charts";
@@ -10,13 +10,23 @@ import { ECBasicOption, SeriesOption } from "echarts/types/dist/shared";
 import { computed, ref, toRefs } from "vue";
 import VChart from "vue-echarts";
 
-const props = defineProps<{
-  max: number;
-  min: number;
-  data: NumValueObject[];
-  thresholds?: number[];
-  extraSeries?: SeriesOption[];
-}>();
+const props = defineProps<
+  {
+    max: number;
+    min: number;
+    thresholds?: number[];
+    extraSeries?: SeriesOption[];
+  } & (
+    | {
+        data: NumValueObject[] | number[];
+        xAxis: "category";
+      }
+    | {
+        data: TimeValueTuple<number>[];
+        xAxis: "time";
+      }
+  )
+>();
 const { max, data, min } = toRefs(props);
 const sortedThresholds = computed(() => props.thresholds?.toSorted((a, b) => a - b) ?? []);
 const relativeThresholds = computed(() =>
@@ -63,7 +73,7 @@ const option = ref<ECBasicOption>({
     show: false,
   },
   xAxis: {
-    type: "category",
+    type: props.xAxis,
     show: false,
   },
   yAxis: {
@@ -104,8 +114,7 @@ const option = ref<ECBasicOption>({
       }"
       class="absolute w-full border-b border-dashed border-primary/35 p-0.5 text-right text-rsm font-light text-primary/80"
     >
-      <span>{{ formatInt(threshold) }}</span>
-      <slot name="unit" />
+      <span>{{ formatInt(threshold) }}</span> <slot name="unit" />
     </span>
   </div>
 </template>

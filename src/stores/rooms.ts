@@ -6,6 +6,8 @@ import {
   MutationRootSetBlindArgs,
   MutationRootSetLightingGroupArgs,
   MutationRootSetLightingGroupsArgs,
+  MutationRootSetRoomCo2SetpointsArgs,
+  MutationRootSetRoomHumiditySetpointsArgs,
   MutationRootSetRoomTemperatureSetpointArgs,
 } from "@/gql/graphql";
 import { setBlindsLevelMutation } from "@/graphql/queries/blinds";
@@ -13,6 +15,8 @@ import { setLightingGroupsLevelMutation } from "@/graphql/queries/light-groups";
 import {
   setAmplifierForRoomMutation,
   setAmplifierMutation,
+  setCO2SetpointMutation,
+  setHumiditySetpointMutation,
   setTemperatureSetpointForRoomMutation,
   setTemperatureSetpointMutation,
   subscribeToRooms,
@@ -101,6 +105,22 @@ export const useRoomStore = defineStore("rooms", () => {
     (blindId: string, level: number) => ({ ids: blindId, level }),
   );
 
+  const setHumiditySetpoints = useDebounceMutation(
+    useMutation<Room, MutationRootSetRoomHumiditySetpointsArgs>(setHumiditySetpointMutation),
+    (controlIds: string[], humidity: number) => ({
+      ids: controlIds,
+      humidity,
+    }),
+  );
+
+  const setCO2Setpoints = useDebounceMutation(
+    useMutation<Room, MutationRootSetRoomCo2SetpointsArgs>(setCO2SetpointMutation),
+    (controlIds: string[], co2: number) => ({
+      ids: controlIds,
+      co2,
+    }),
+  );
+
   const { data: roomData } = useSubscription<GetAllRoomsQuery, Room[]>(
     {
       query: subscribeToRooms,
@@ -121,6 +141,9 @@ export const useRoomStore = defineStore("rooms", () => {
     createArea(RoomGroup.HALLWAYS, t("labels.roomGroup.hallways"), rooms.value),
   ]);
 
+  const allControls = computed(() => rooms.value.flatMap((room) => room.roomsControls));
+  const allSensors = computed(() => rooms.value.flatMap((room) => room.roomsSensors));
+
   watch(rooms, (rooms) => {
     if (currentRoomId.value === emptyRoom.id && rooms.length > 0) {
       currentRoomId.value = rooms[0].id;
@@ -131,6 +154,9 @@ export const useRoomStore = defineStore("rooms", () => {
 
   return {
     areas,
+    rooms,
+    allControls,
+    allSensors,
     currentRoom,
     currentRoomId,
     setRoom,
@@ -140,5 +166,7 @@ export const useRoomStore = defineStore("rooms", () => {
     setLightLevel,
     setLightingGroupsLevel,
     setBlindsLevel,
+    setHumiditySetpoints,
+    setCO2Setpoints,
   };
 });

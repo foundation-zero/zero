@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { Room } from "@/@types";
 import Switch from "@components/shadcn/switch/Switch.vue";
-import { defineProps, toRef } from "vue";
+import { toRef } from "vue";
 import { useToggleableLights } from ".";
 
 const props = defineProps<{

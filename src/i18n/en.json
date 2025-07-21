@@ -43,6 +43,9 @@
     }
   },
   "views": {
+    "ac": {
+      "setTo": "Set to"
+    },
     "blinds": {
       "description": "Control the blinds and shears in the room"
     },

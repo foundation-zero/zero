@@ -25,7 +25,6 @@ const { controls, someLightsAreOn, toggle } = useToggleableLights(computed(() =>
         class="mb-1"
       />
     </template>
-
     <template #bottom-right>
       <Lightbulb
         v-if="someLightsAreOn"

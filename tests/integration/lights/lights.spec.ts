@@ -1,7 +1,7 @@
 import allRooms from "../../data/all-rooms";
 import { setLightLevel } from "../../mocks/mutations";
 import { expect, test as testBase } from "../../mocks/playwright";
-import { getAllRooms, getVersion } from "../../mocks/queries";
+import { getAllRooms, getControlLogs, getSensorLogs, getVersion } from "../../mocks/queries";
 import LightsPage from "./page";
 
 const dutchCabin = allRooms.rooms.find((room) => room.id === "dutch-cabin")!;
@@ -9,7 +9,7 @@ const dutchCabin = allRooms.rooms.find((room) => room.id === "dutch-cabin")!;
 const test = testBase.extend<{ lightsPage: LightsPage }>({
   lightsPage: [
     async ({ page, worker, subscriptions, auth }, use) => {
-      worker.use(getAllRooms, setLightLevel, getVersion);
+      worker.use(getAllRooms, setLightLevel, getVersion, getSensorLogs, getControlLogs);
 
       const lightsPage = new LightsPage(page, subscriptions);
       await auth.asUser();

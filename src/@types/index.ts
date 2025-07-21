@@ -15,9 +15,19 @@ export const enum SensorType {
 }
 
 export interface ValueWithTime {
-  time: number;
+  time: Date;
   value: number;
 }
+
+export type ControlLog<Type extends ControlType = ControlType> = ValueWithTime & {
+  id: string;
+  control: RoomControl<Type>;
+};
+
+export type SensorLog<Type extends SensorType = SensorType> = ValueWithTime & {
+  id: string;
+  sensor: RoomSensor<Type>;
+};
 
 export interface RoomControl<Type extends ControlType = ControlType> {
   id: string;
@@ -143,6 +153,12 @@ export interface ValueObject<V> {
   value: V;
 }
 
+export interface TimeValueObject<V> extends ValueObject<V> {
+  time: Date;
+}
+
+export type TimeValueTuple<V> = [time: Date, value: V];
+
 export type NumValueObject = ValueObject<number>;
 
 export type Thresholds = [lower: number, upper: number, ...other: number[]];
@@ -158,4 +174,12 @@ export interface RoomState {
 export interface RoomWithState {
   room: Room;
   state: RoomState;
+}
+
+export const enum ChartPeriod {
+  HOUR = "hour",
+  DAY = "day",
+  WEEK = "week",
+  MONTH = "month",
+  YEAR = "year",
 }

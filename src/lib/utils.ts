@@ -9,14 +9,16 @@ import {
   SensorType,
   SensorTypeMap,
   Thresholds,
+  TimeValueObject,
+  TimeValueTuple,
   ValidationStatus,
   ValueObject,
 } from "@/@types";
-import { useIntervalFn } from "@vueuse/core";
+import { ArgumentsType, useIntervalFn } from "@vueuse/core";
 import { type ClassValue, clsx } from "clsx";
 import { twMerge } from "tailwind-merge";
-import { computed, ComputedRef, ref, Ref } from "vue";
-import { CO2_THRESHOLDS, HUMIDITY_THRESHOLDS, TEMPERATURE_THRESHOLDS } from "./consts";
+import { computed, ComputedRef, ref, Ref, watch } from "vue";
+import { CO2_THRESHOLDS, DEMO_MODE, HUMIDITY_THRESHOLDS, TEMPERATURE_THRESHOLDS } from "./consts";
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -37,6 +39,16 @@ export const validationStatusToNumber: Record<ValidationStatus, number> = {
 
 export const compareByValidationStatus = (a: ValidationStatus, b: ValidationStatus) =>
   validationStatusToNumber[a] - validationStatusToNumber[b];
+
+export const updateSetpointWhenControlsHaveChanged = <T extends RoomControl>(
+  value: Ref<number>,
+  controls: Ref<T[]>,
+) =>
+  watch(controls, ([next], [prev]) => {
+    if (next?.value !== prev?.value && next !== undefined) {
+      value.value = next.value;
+    }
+  });
 
 export const ratioAsPercentage = (ratio: Ref<number>) =>
   computed({
@@ -84,7 +96,7 @@ export const formatNumber =
 export const formatInt = formatNumber(0);
 
 export const generateRandomValues = (amount: number, min: number = 0, max: number = 1000) =>
-  new Array(amount).fill(0).map(() => Math.floor(Math.random() * (max - min + 1) + min));
+  new Array(amount).fill(0).map(() => Math.random() * (max - min + 1) + min);
 
 export type LiveValuesOptions = {
   min: number;
@@ -107,12 +119,47 @@ export function useLiveRandomValues(
   return randomValues;
 }
 
+const ONE_DAY = 24 * 3600 * 1000;
+
+export const useDemoValues =
+  (demoMode: boolean) =>
+  <T extends TimeValueTuple<number>>(
+    prodValuesFn: () => Ref<T[]>,
+    ...args: ArgumentsType<typeof useLiveRandomValues>
+  ): Ref<TimeValueTuple<number>[]> =>
+    demoMode
+      ? useTransform(
+          useLiveRandomValues(...args),
+          (val, index) => [new Date(Date.now() + index * ONE_DAY), val] as T,
+        )
+      : prodValuesFn();
+
+export const useDemoControlValues = useDemoValues(DEMO_MODE);
+export const useDemoSensorValues = useDemoValues(DEMO_MODE);
+
+export const sortByTime = <T extends TimeValueTuple<unknown> | TimeValueObject<unknown>>(
+  a: T,
+  b: T,
+): number => {
+  if (Array.isArray(a) && Array.isArray(b)) return a[0].getTime() - b[0].getTime();
+  else if ("time" in a && "time" in b) return a.time.getTime() - b.time.getTime();
+  return 0;
+};
+
 export const useTransform = <T>(
   values: Ref<number[]>,
-  transformFn: (val: number) => T,
+  transformFn: (val: number, index: number) => T,
 ): ComputedRef<T[]> => computed(() => values.value.map(transformFn));
 
 export const toValueObject = <T>(value: T): ValueObject<T> => ({ value });
+export const toTimeValueObject = <T>([time, value]: TimeValueTuple<T>): TimeValueObject<T> => ({
+  time,
+  value,
+});
+export const toTimeValueTuple = <T>(value: TimeValueObject<T>): TimeValueTuple<T> => [
+  new Date(value.time),
+  value.value,
+];
 
 export const validateSafeRange = (
   thresholds: SafeRangeThresholds,
@@ -154,15 +201,12 @@ export const getOverallState = (states: ValidationStatus[]): ValidationStatus =>
 };
 
 export const getRoomState = (room: Room): RoomState => {
-  const stateCO2 = validateThreshold(CO2_THRESHOLDS, room.roomsSensors.find(isCO2Sensor)?.value);
+  const stateCO2 = validateThreshold(CO2_THRESHOLDS, extractActualCO2(room));
   const stateTemperature = validateThreshold(
     TEMPERATURE_THRESHOLDS,
-    room.roomsSensors.find(isTemperatureSensor)?.value,
+    extractActualTemperature(room),
   );
-  const stateHumidity = validateSafeRange(
-    HUMIDITY_THRESHOLDS,
-    room.roomsSensors.find(isHumiditySensor)?.value,
-  );
+  const stateHumidity = validateSafeRange(HUMIDITY_THRESHOLDS, extractActualHumidity(room));
 
   return {
     co2: stateCO2,

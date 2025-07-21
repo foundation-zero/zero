@@ -1,10 +1,10 @@
 import { ConnectionInitMessage } from "../../lib/types";
 import { expect, test } from "../../mocks/playwright";
-import { getAllRooms, getVersion } from "../../mocks/queries";
+import { getAllRooms, getControlLogs, getSensorLogs, getVersion } from "../../mocks/queries";
 
 test.describe("App", () => {
   test.beforeEach(async ({ worker, page, auth }) => {
-    worker.use(getAllRooms, getVersion);
+    worker.use(getAllRooms, getVersion, getControlLogs, getSensorLogs);
     await page.goto("/");
     await auth.asUser();
   });

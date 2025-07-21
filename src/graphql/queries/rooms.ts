@@ -119,3 +119,23 @@ export const setAmplifierForRoomMutation = gql`
 
   ${mutationResponse}
 `;
+
+export const setHumiditySetpointMutation = gql`
+  mutation SetRoomHumiditySetpoints($ids: [ID!]!, $humidity: Float!) {
+    setRoomHumiditySetpoints(ids: $ids, humidity: $humidity) {
+      ...MutationResponse
+    }
+  }
+
+  ${mutationResponse}
+`;
+
+export const setCO2SetpointMutation = gql`
+  mutation SetRoomCo2Setpoint($ids: [ID!]!, $co2: Float!) {
+    setRoomCo2Setpoint(ids: $ids, co2: $co2) {
+      ...MutationResponse
+    }
+  }
+
+  ${mutationResponse}
+`;
