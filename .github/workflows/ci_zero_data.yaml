@@ -29,6 +29,8 @@ jobs:
       - run: poetry check
         working-directory: zero-data
       - uses: astral-sh/ruff-action@v3
+        with:
+          src: "./zero-data"
       - run: poetry install --with test
       - run: poetry run mypy zero-data
         working-directory: zero-data
