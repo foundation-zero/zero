@@ -20,15 +20,15 @@ jobs:
 
       - run: poetry run fmpy compile src/simulation/models/XRGTestModel/FMUInterfaceTester_MECS_regular.fmu
       
-      - run: poetry run fmpy compile src/simulation/models/thruster_moduleV13.fmu
+      - run: poetry run fmpy compile src/simulation/models/thruster_moduleV14.fmu
 
-      - run: poetry run fmpy compile src/simulation/models/pvt_moduleV4.fmu
+      - run: poetry run fmpy compile src/simulation/models/pvt_moduleV5.fmu
 
-      - run: poetry run fmpy compile src/simulation/models/consumers_moduleV3.fmu
+      - run: poetry run fmpy compile src/simulation/models/consumers_moduleV4.fmu
 
-      - run: poetry run fmpy compile src/simulation/models/HTSystem_moduleV4.fmu
+      - run: poetry run fmpy compile src/simulation/models/HTSystem_moduleV6.fmu
 
-      - run: poetry run fmpy compile src/simulation/models/pcm_moduleV4.fmu
+      - run: poetry run fmpy compile src/simulation/models/pcm_moduleV5.fmu
 
       - run: poetry run pyright
 

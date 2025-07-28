@@ -32,7 +32,6 @@ def incorrect_simulation_inputs(simulation_inputs, request):
     request.param(inputs, -9e7)
     return inputs
 
-@pytest.mark.skip('Skip until HT module runs')
 async def test_high_temperature_simulation_inputs(incorrect_simulation_inputs, control):
     with Fmu(high_temperature_path) as fmu:
         mapping = IoMapping(

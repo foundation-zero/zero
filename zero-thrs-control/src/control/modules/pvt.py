@@ -39,17 +39,17 @@ class PvtParameters(BaseModel):
 
 _ZERO_TIME = datetime.fromtimestamp(0)
 _INITIAL_CONTROL_VALUES = (
-    PvtControlValues(  ##TODO: still need flow here to make simulation run
+    PvtControlValues(
         pvt_pump_main_fwd=Pump(
-            dutypoint=Stamped(value=0.1, timestamp=_ZERO_TIME),
+            dutypoint=Stamped(value=0.0, timestamp=_ZERO_TIME),
             on=Stamped(value=False, timestamp=_ZERO_TIME),
         ),
         pvt_pump_main_aft=Pump(
-            dutypoint=Stamped(value=0.1, timestamp=_ZERO_TIME),
+            dutypoint=Stamped(value=0.0, timestamp=_ZERO_TIME),
             on=Stamped(value=False, timestamp=_ZERO_TIME),
         ),
         pvt_pump_owners=Pump(
-            dutypoint=Stamped(value=0.1, timestamp=_ZERO_TIME),
+            dutypoint=Stamped(value=0.0, timestamp=_ZERO_TIME),
             on=Stamped(value=False, timestamp=_ZERO_TIME),
         ),
         pvt_mix_main_fwd=Valve(
