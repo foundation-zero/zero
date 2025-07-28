@@ -31,8 +31,9 @@ jobs:
       - uses: astral-sh/ruff-action@v3
         with:
           src: "./zero-data"
-      - run: poetry install --with test
-      - run: poetry run mypy zero-data
+      - run: poetry install --with dev,test
+        working-directory: zero-data
+      - run: poetry run mypy src
         working-directory: zero-data
       - name: Unit Test
         run: poetry run pytest .

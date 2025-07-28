@@ -9,9 +9,10 @@ readme = "README.md"
 packages = [{ include = "zero_domestic_control"}]
 requires-python = ">= 3.13.1,<4.0"
 dynamic = ["dependencies"]
+version = "0.6.0"
 
 [tool.poetry]
-version = "0.6.0"
+package-mode = false
 
 [tool.poetry.dependencies]
 pydantic-settings = "^2.7.1"
@@ -35,6 +36,9 @@ mypy = "^1.14.1"
 ruff = "^0.9.5"
 python-dotenv = "^1.1.0"
 
+[tool.poetry.group.test]
+optional = true
+
 [tool.poetry.group.test.dependencies]
 pytest = "^8.3.4"
 pytest-asyncio = "^0.25.1"
@@ -52,6 +56,9 @@ check_untyped_defs = true
 testpaths = ["tests"]
 asyncio_default_fixture_loop_scope = "function"
 asyncio_mode = "auto"
+
+[tool.ruff]
+# Needs to be included for Ruff to read required-version
 
 [tool.dotenv]
 location = ".env"

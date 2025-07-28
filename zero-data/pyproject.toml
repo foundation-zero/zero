@@ -9,9 +9,10 @@ readme = "README.md"
 packages = [{ include = "io_processing", from = "src" }]
 requires-python = ">= 3.13.1,<4.0"
 dynamic = ["dependencies"]
+version = "0.8.0"
 
 [tool.poetry]
-version = "0.8.0"
+package-mode = false
 
 [tool.poetry.dependencies]
 polars = "^1.16.0"
@@ -51,6 +52,9 @@ check_untyped_defs = true
 testpaths = ["tests"]
 asyncio_default_fixture_loop_scope = "function"
 asyncio_mode = "auto"
+
+[tool.ruff]
+# Needs to be included for Ruff to read required-version
 
 [tool.dotenv]
 location = ".env"
