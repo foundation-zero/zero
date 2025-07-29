@@ -16,15 +16,17 @@ class _Controller[ValueUnit: float, SetpointUnit: float]:
         initial: ValueUnit,
         setpoint: SetpointUnit,
         tuning: tuple[float, float, float] | None = None,
+        output_limits: tuple[float, float] | None = None,
     ):
         kp, ki, kd = tuning or self.TUNING
+        self.output_limits = output_limits or self.OUTPUT_LIMITS
         self._pid = PID(
             kp,
             ki,
             kd,
             setpoint=setpoint,
             sample_time=0.1,
-            output_limits=self.OUTPUT_LIMITS,
+            output_limits=self.output_limits,
             auto_mode=False,
         )
         self._initial = initial
@@ -56,24 +58,27 @@ class _Controller[ValueUnit: float, SetpointUnit: float]:
         return pid_result if pid_result is not None else self._initial
 
 
-class _HeatController(_Controller[Ratio, Celsius]):
+class FlowBasedTemperatureController(_Controller[LMin, Celsius]):
+    TUNING = (-.001, -0.0001, 0)
+
+
+class HeatDumpController(_Controller[Ratio, Celsius]):
     TUNING = (-0.1, -0.01, 0)
-    OUTPUT_LIMITS = (0, 1)
+    OUTPUT_LIMITS = (0, 1.0)
 
 
-class HeatDumpController(_HeatController):
-    pass
-
-
-class InvertedHeatDumpController(_HeatController):
+class InvertedHeatDumpController(_Controller[Ratio, Celsius]):
     TUNING = (0.1, 0.01, 0)
+    OUTPUT_LIMITS = (0, 1.0)
 
 
-class HeatSupplyController(_HeatController):
-    TUNING = (-0.5, -0.002, 0.1)
+class MixingValveController(_Controller[Ratio, Celsius]):
+    TUNING = (-0.001, -0.001, 0.1)
+    OUTPUT_LIMITS = (0, 1.0)
 
 
 class _FlowController(_Controller[Ratio, LMin]):
+    TUNING = (0.001, 0.001, 0)
     OUTPUT_LIMITS = (0, 1.0)
 
 
@@ -173,5 +178,61 @@ class FlowDistributionController:
         self._flow_balance_controller(measurements, time)
 
 
-class PumpFlowController(_FlowController):
-    TUNING = (0.0, 0.002, 0)
+class PumpFlowController(_Controller[Ratio, LMin]):
+    TUNING = (0.001, 0.001, 0)
+    OUTPUT_LIMITS = (0, 1.0)
+
+
+# class RecoveryFlowControl: #actually this is just for thrusters? will get reused in pvt but not with a single pump. Want to take pump logic out..
+#     def __init__(
+#         self,
+#         mixing_valves: list[Valve],
+#         flow_controllers: list[_TemperatureBasedFlowController],
+#         flow_balance_controller: FlowBalanceController,
+#         pump_controller: PumpFlowController,
+#     ):
+#         self._mixing_valves = mixing_valves
+#         self._flow_controllers = flow_controllers
+#         self._flow_balance_controller = flow_balance_controller
+#         self._pump_controller = pump_controller
+
+#     def set_actives(self, actives: list[bool]):
+#         self._flow_balance_controller.set_actives(actives)
+
+#     def set_temperature_setpoint(self, setpoint: Celsius):
+#         for controller in self._flow_controllers:
+#             controller.setpoint = setpoint
+
+#     def set_flow_setpoints(self, setpoints: list[LMin]):
+#         self._flow_balance_controller.set_setpoints(setpoints)
+
+#     def set_pump_setpoint(self, setpoint: Ratio):
+#         self._pump_controller.setpoint = setpoint
+
+#     def get_recovery_flow_setpoints(self, temperature_measurements: list[Celsius], time: datetime):
+
+#         if len(temperature_measurements) != len(self._flow_controllers):
+#             raise ValueError("Temperature measurements length must match controllers length")
+
+#         #Set flow setpoints based on temperature measurements
+#         flow_setpoints = [
+#             controller(measurement, time)
+#             for controller, measurement in zip(self._flow_controllers, temperature_measurements)
+#         ]
+
+
+#     def __call__(self, temperature_measurements: list[Celsius], flow_measurements: list[LMin], time: datetime):
+#         if len(temperature_measurements) != len(self._flow_controllers):
+#             raise ValueError("Temperature measurements length must match controllers length")
+
+#         #Set flow setpoints based on temperature measurements
+#         flow_setpoints = [
+#             controller(measurement, time)
+#             for controller, measurement in zip(self._flow_controllers, temperature_measurements)
+#         ]
+#         self.set_flow_setpoints(flow_setpoints)
+#         self.set_pump_setpoint(sum(flow_setpoints))
+
+#         #Update flow control valves and pump based on flow measurements
+#         self._flow_balance_controller(flow_measurements, time)
+#         self._pump_controller(sum(flow_measurements), time) #use separate measurement here?
