@@ -9,7 +9,7 @@ readme = "README.md"
 packages = [{ include = "zero_domestic_control"}]
 requires-python = ">= 3.13.1,<4.0"
 dynamic = ["dependencies"]
-version = "0.6.0"
+version = "0.7.0"
 
 [tool.poetry.dependencies]
 pydantic-settings = "^2.7.1"

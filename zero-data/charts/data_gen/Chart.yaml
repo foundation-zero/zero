@@ -2,5 +2,5 @@ apiVersion: v2
 name: zero-data-gen-chart
 description: This repository contains the Zero data platform.
 type: application
-version: 0.5.1
-appVersion: 0.8.0
+version: 0.6.0
+appVersion: 0.9.0
