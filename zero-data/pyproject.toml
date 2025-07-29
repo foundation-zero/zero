@@ -6,7 +6,7 @@ authors = [
     { name = "Boudewijn van Groos", email = "boudewijn.vangroos@foundationzero.org>" }
 ]
 readme = "README.md"
-packages = [{ include = "io_processing", from = "src" }]
+packages = [{ include = "zero_data", from = "src" }]
 requires-python = ">= 3.13.1,<4.0"
 dynamic = ["dependencies"]
 version = "0.8.0"

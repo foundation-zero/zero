@@ -2,7 +2,7 @@ from pydantic_settings import BaseSettings, SettingsConfigDict
 from pydantic import Field
 from typing import Annotated
 
-from io_processing.io_list.types import Source
+from zero_data.io_list.types import Source
 
 
 io_lists: list[tuple[Source, str]] = [

@@ -1,7 +1,7 @@
 from pathlib import Path
 from typing import List
 
-from io_processing.io_list.types import IOTopic, IOValue
+from zero_data.io_list.types import IOTopic, IOValue
 import logging
 
 logger = logging.getLogger(__name__)

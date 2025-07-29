@@ -1,8 +1,8 @@
 import logging
 import sys
 
-from io_processing.dbt_gen import generate_dbt
-from io_processing.data_gen import generate_data
+from zero_data.dbt_gen import generate_dbt
+from zero_data.data_gen import generate_data
 from argparse import ArgumentParser
 
 

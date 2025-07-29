@@ -37,4 +37,4 @@ COPY ./dbt ./dbt
 RUN mkdir -p /dbt/seeds
 COPY src/ ./
 
-RUN ["python", "-m", "io_processing.main", "generate-dbt"]
+RUN ["python", "-m", "zero_data.main", "generate-dbt"]

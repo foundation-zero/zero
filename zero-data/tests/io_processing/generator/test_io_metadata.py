@@ -1,7 +1,7 @@
 from pathlib import Path, PosixPath
 from unittest.mock import patch
 
-from io_processing.dbt_gen.io_metadata import IOMetadataWriter
+from zero_data.dbt_gen.io_metadata import IOMetadataWriter
 
 
 def test_io_metadata(marpower_io_list):

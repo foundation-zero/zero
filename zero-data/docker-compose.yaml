@@ -13,7 +13,7 @@ services:
   data_gen:
     build:
       context: .
-    command: python -m io_processing.main generate-data
+    command: python -m zero_data.main generate-data
     env_file:
       .env
     depends_on:

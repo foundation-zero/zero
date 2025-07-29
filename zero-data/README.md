@@ -37,6 +37,6 @@ This will setup
  - Create `.env` based on `.env.example`
     - Retrieve `GCS_CREDENTIALS` from `gcs-auth` secrets on the cluster or
     - [Follow these instructions](https://docs.risingwave.com/integrations/destinations/google-cloud-storage) to create a service account key in Google Cloud.
- - Generate DBT sql files: `poetry run python -m src.io_processing.main generate-dbt`
+ - Generate DBT sql files: `poetry run python -m src.zero_data.main generate-dbt`
  - Run DBT: `poetry run dbt run --profiles-dir ./dbt --project-dir ./dbt --target dev`
- - Start data mocker: `poetry run python -m src.io_processing.main generate-data`
+ - Start data mocker: `poetry run python -m src.zero_data.main generate-data`
