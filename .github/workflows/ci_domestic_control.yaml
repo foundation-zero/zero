@@ -26,7 +26,6 @@ jobs:
         with:
           python-version: 3.13
       - run: pipx install poetry==2.0.1
-        working-directory: zero-domestic-control
       - run: poetry check
         working-directory: zero-domestic-control
       - uses: astral-sh/ruff-action@v3
