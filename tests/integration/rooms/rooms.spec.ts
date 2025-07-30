@@ -50,7 +50,7 @@ test.describe("Rooms", () => {
   test.describe("as admin", () => {
     test.beforeEach(async ({ auth, subscriptions }) => {
       await auth.asAdmin();
-      subscriptions.dispatch("SubscribeToRoom", allRooms);
+      subscriptions.subscribe("SubscribeToRoom").dispatch(allRooms);
     });
 
     test("subscribes to a room", async ({ roomsPage }) => {

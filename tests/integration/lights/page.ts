@@ -1,21 +1,25 @@
 import { Locator, Page } from "@playwright/test";
 
+import { SubscriptionInterceptor } from "graphql-subscriptions-mock";
 import { Room } from "../../../src/@types";
 import allRooms from "../../data/all-rooms";
 import { isLightControl } from "../../lib/helpers";
 import { ZeroSubscriptions } from "../../mocks/playwright";
-import { SubscriptionFixture } from "../fixtures/graphql";
 
 export type LightControl = [slider: Locator, track: Locator, toggle: Locator, value: string | null];
 
 export default class LightsPage {
   public constructor(
     private readonly page: Page,
-    private readonly subscriptions: SubscriptionFixture<ZeroSubscriptions>,
+    private readonly subscriptions: SubscriptionInterceptor<ZeroSubscriptions>,
   ) {}
 
   public open(): Promise<void> {
     return this.page.getByRole("tab").getByText("Lights").click();
+  }
+
+  private get subscribeToRoom() {
+    return this.subscriptions.subscribe("SubscribeToRoom");
   }
 
   public setLightLevels(
@@ -26,7 +30,7 @@ export default class LightsPage {
   ): void {
     const lights = room.roomsControls.filter(isLightControl);
 
-    this.subscriptions.dispatch("SubscribeToRoom", {
+    this.subscribeToRoom.dispatch({
       rooms: [
         {
           ...room,

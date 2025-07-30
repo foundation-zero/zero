@@ -1,19 +1,23 @@
 import { Locator, Page } from "@playwright/test";
+import { SubscriptionInterceptor } from "graphql-subscriptions-mock";
 import { Room } from "../../../src/@types";
 import { SubscribeMessage } from "../../lib/types";
 import { ZeroSubscriptions } from "../../mocks/playwright";
-import { SubscriptionFixture } from "../fixtures/graphql";
 
 export type LightControl = [slider: Locator, track: Locator, toggle: Locator, value: string | null];
 
 export default class RoomsPage {
   public constructor(
     private readonly page: Page,
-    private readonly subscriptions: SubscriptionFixture<ZeroSubscriptions>,
+    private readonly subscriptions: SubscriptionInterceptor<ZeroSubscriptions>,
   ) {}
 
+  private get subscribeToRoom() {
+    return this.subscriptions.subscribe("SubscribeToRoom");
+  }
+
   public updateRoom(room: Room, delta: Partial<Room> = {}): void {
-    this.subscriptions.dispatch("SubscribeToRoom", {
+    this.subscribeToRoom.dispatch({
       rooms: [{ ...room, ...delta }],
     });
   }
@@ -43,7 +47,7 @@ export default class RoomsPage {
   }
 
   public get subscribers(): SubscribeMessage[] {
-    return this.subscriptions.subscribers("SubscribeToRoom");
+    return this.subscribeToRoom.subscribers;
   }
 
   public get actualTemperature(): Locator {
