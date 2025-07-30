@@ -29,8 +29,7 @@ tts
 
 # automatically downloaded dependencies
 deps
-lib
-
+lib!zero-ui/src/lib
 # Log files
 ozw_log.txt
 
@@ -268,3 +267,7 @@ $RECYCLE.BIN/
 *.lnk
 
 # End of https://www.toptal.com/developers/gitignore/api/windows,macos,python,dbt,git,homeassistant
+
+
+# Overrides for zero-ui
+!zero-ui/**/lib
