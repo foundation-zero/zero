@@ -1,1 +1,0 @@
-This folder contains the generator dbt files which need to be (manually) copied to the /data/risingwave folder
