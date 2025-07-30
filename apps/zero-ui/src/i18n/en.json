@@ -1,0 +1,96 @@
+{
+  "labels": {
+    "airconditioning": {
+      "short": "A/C",
+      "long": "Air conditioning"
+    },
+    "back": "Back",
+    "environment": "Environment",
+    "eco": "ECO Setpoint",
+    "zero": "ZERO",
+    "rooms": "Rooms",
+    "water": "Water",
+    "heating": "Heating",
+    "power": "Power",
+    "ventilation": "Ventilation",
+    "lights": "Lights",
+    "blinds": "Blinds",
+    "shears": "Shears",
+    "inside": "Inside",
+    "outside": "Outside",
+    "audioSystem": "Audio System",
+    "emptyRoom": "Empty Room",
+    "temperature": "Temperature",
+    "humidity": "Humidity",
+    "setTo": "Set to",
+    "admin": "Admin",
+    "settings": "Settings",
+    "climateControl": "Climate control",
+    "dashboard": "Dashboard",
+    "co2": "CO2",
+    "utilities": "Utilities",
+    "percentage": "Percentage",
+    "more": "More",
+    "save": "Save",
+    "overview": "Overview",
+    "status": "Status",
+    "roomGroup": {
+      "aftship": "Aftship",
+      "foreship": "Foreship",
+      "midship": "Midship",
+      "hallways": "Hallways",
+      "upperdeck": "Upper Deck"
+    }
+  },
+  "views": {
+    "ac": {
+      "setTo": "Set to"
+    },
+    "blinds": {
+      "description": "Control the blinds and shears in the room"
+    },
+    "roomSelection": {
+      "description": "Here you can select the room from which you want to operate the household controls",
+      "title": "ZERO rooms"
+    },
+    "humiditySettings": {
+      "description": "Set the target humidity level (35% - 70%) for all rooms.",
+      "title": "Humidity settings"
+    },
+    "co2Settings": {
+      "description": "Set the target CO2 level (400 ppm - 1000 ppm) for all rooms.",
+      "title": "CO2 settings"
+    },
+    "unauthorised": {
+      "title": "Unauthorised",
+      "description": "You are not authorised to access this page. Please contact the administrator."
+    },
+    "thrs": {
+      "hmi": {
+        "title": "THRS HMI",
+        "simulation": "Simulation",
+        "reset": "Reset",
+        "connect": "Connect",
+        "sensorValues": "Sensor values",
+        "controlValues": "Control values",
+        "controlParameters": "Control parameters",
+        "controlMode": "Control mode",
+        "simulationInputs": "Simulation inputs",
+        "setValues": "Set values",
+        "start": "Start",
+        "run": "Run",
+        "seconds": "Seconds"
+      }
+    }
+  },
+  "components": {
+    "thrs": {
+      "valueTable": {
+        "component": "Component",
+        "property": "Property",
+        "value": "Value",
+        "lastChange": "Last change"
+      }
+    }
+  }
+}

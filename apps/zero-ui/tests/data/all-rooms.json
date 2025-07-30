@@ -1,0 +1,947 @@
+{
+  "rooms": [
+    {
+      "id": "owners-cabin",
+      "amplifierOn": true,
+      "actualTemperature": 22.5,
+      "actualHumidity": 45,
+      "temperatureSetpoint": 21,
+      "thermalComfortIndex": null,
+      "name": "Owners cabin",
+      "group": "AFT",
+      "lastMovement": null,
+      "blinds": [
+        {
+          "id": "owners-cabin/main/shear",
+          "name": "Main",
+          "level": 0,
+          "roomId": "owners-cabin",
+          "opacity": "shear",
+          "group": "MAIN",
+          "__typename": "blinds"
+        },
+        {
+          "id": "owners-cabin/main/blind",
+          "name": "Main",
+          "level": 0,
+          "roomId": "owners-cabin",
+          "opacity": "blind",
+          "group": "MAIN",
+          "__typename": "blinds"
+        },
+        {
+          "id": "owners-cabin/port/shear",
+          "name": "Port",
+          "level": 0,
+          "roomId": "owners-cabin",
+          "opacity": "shear",
+          "group": "PORT",
+          "__typename": "blinds"
+        },
+        {
+          "id": "owners-cabin/port/blind",
+          "name": "Port",
+          "level": 0,
+          "roomId": "owners-cabin",
+          "opacity": "blind",
+          "group": "PORT",
+          "__typename": "blinds"
+        },
+        {
+          "id": "owners-cabin/starboard/shear",
+          "name": "Starboard",
+          "level": 0,
+          "roomId": "owners-cabin",
+          "opacity": "shear",
+          "group": "STARBOARD",
+          "__typename": "blinds"
+        },
+        {
+          "id": "owners-cabin/starboard/blind",
+          "name": "Starboard",
+          "level": 0,
+          "roomId": "owners-cabin",
+          "opacity": "blind",
+          "group": "STARBOARD",
+          "__typename": "blinds"
+        },
+        {
+          "id": "owners-cabin/skyline_main/shear",
+          "name": "Skyline (main)",
+          "level": 0,
+          "roomId": "owners-cabin",
+          "opacity": "shear",
+          "group": "SKYLINE_MAIN",
+          "__typename": "blinds"
+        },
+        {
+          "id": "owners-cabin/skyline_main/blind",
+          "name": "Skyline (main)",
+          "level": 0,
+          "roomId": "owners-cabin",
+          "opacity": "blind",
+          "group": "SKYLINE_MAIN",
+          "__typename": "blinds"
+        },
+        {
+          "id": "owners-cabin/skyline_port/shear",
+          "name": "Skyline (port)",
+          "level": 0,
+          "roomId": "owners-cabin",
+          "opacity": "shear",
+          "group": "SKYLINE_PORT",
+          "__typename": "blinds"
+        },
+        {
+          "id": "owners-cabin/skyline_port/blind",
+          "name": "Skyline (port)",
+          "level": 0,
+          "roomId": "owners-cabin",
+          "opacity": "blind",
+          "group": "SKYLINE_PORT",
+          "__typename": "blinds"
+        },
+        {
+          "id": "owners-cabin/skyline_starboard/shear",
+          "name": "Skyline (starboard)",
+          "level": 0,
+          "roomId": "owners-cabin",
+          "opacity": "shear",
+          "group": "SKYLINE_STARBOARD",
+          "__typename": "blinds"
+        },
+        {
+          "id": "owners-cabin/skyline_starboard/blind",
+          "name": "Skyline (starboard)",
+          "level": 0,
+          "roomId": "owners-cabin",
+          "opacity": "blind",
+          "group": "SKYLINE_STARBOARD",
+          "__typename": "blinds"
+        }
+      ],
+      "lightingGroups": [
+        {
+          "id": "owners-cabin/ambient",
+          "name": "Ambient",
+          "level": 0,
+          "roomId": "owners-cabin",
+          "__typename": "lightingGroups"
+        },
+        {
+          "id": "owners-cabin/mood",
+          "name": "Mood",
+          "level": 0,
+          "roomId": "owners-cabin",
+          "__typename": "lightingGroups"
+        }
+      ],
+      "__typename": "rooms"
+    },
+    {
+      "id": "dutch-cabin",
+      "amplifierOn": true,
+      "actualTemperature": 22.5,
+      "actualHumidity": 45,
+      "temperatureSetpoint": 21,
+      "thermalComfortIndex": null,
+      "name": "Dutch cabin",
+      "group": "AFT",
+      "lastMovement": null,
+      "blinds": [
+        {
+          "id": "dutch-cabin/blind",
+          "name": "Main",
+          "level": 0,
+          "roomId": "dutch-cabin",
+          "opacity": "blind",
+          "group": "none",
+          "__typename": "blinds"
+        }
+      ],
+      "lightingGroups": [
+        {
+          "id": "dutch-cabin/ambient",
+          "name": "Ambient",
+          "level": 0,
+          "roomId": "dutch-cabin",
+          "__typename": "lightingGroups"
+        },
+        {
+          "id": "dutch-cabin/mood",
+          "name": "Mood",
+          "level": 0,
+          "roomId": "dutch-cabin",
+          "__typename": "lightingGroups"
+        }
+      ],
+      "__typename": "rooms"
+    },
+    {
+      "id": "french-cabin",
+      "amplifierOn": true,
+      "actualTemperature": 22.5,
+      "actualHumidity": 45,
+      "temperatureSetpoint": 21,
+      "thermalComfortIndex": null,
+      "name": "French cabin",
+      "group": "AFT",
+      "lastMovement": null,
+      "blinds": [
+        {
+          "id": "french-cabin/blind",
+          "name": "Main",
+          "level": 0,
+          "roomId": "french-cabin",
+          "opacity": "blind",
+          "group": "none",
+          "__typename": "blinds"
+        }
+      ],
+      "lightingGroups": [
+        {
+          "id": "french-cabin/ambient",
+          "name": "Ambient",
+          "level": 0,
+          "roomId": "french-cabin",
+          "__typename": "lightingGroups"
+        },
+        {
+          "id": "french-cabin/mood",
+          "name": "Mood",
+          "level": 0,
+          "roomId": "french-cabin",
+          "__typename": "lightingGroups"
+        }
+      ],
+      "__typename": "rooms"
+    },
+    {
+      "id": "italian-cabin",
+      "amplifierOn": true,
+      "actualTemperature": 22.5,
+      "actualHumidity": 45,
+      "temperatureSetpoint": 21,
+      "thermalComfortIndex": null,
+      "name": "Italian cabin",
+      "group": "AFT",
+      "lastMovement": null,
+      "blinds": [
+        {
+          "id": "italian-cabin/blind",
+          "name": "Main",
+          "level": 0,
+          "roomId": "italian-cabin",
+          "opacity": "blind",
+          "group": "none",
+          "__typename": "blinds"
+        }
+      ],
+      "lightingGroups": [
+        {
+          "id": "italian-cabin/ambient",
+          "name": "Ambient",
+          "level": 0,
+          "roomId": "italian-cabin",
+          "__typename": "lightingGroups"
+        },
+        {
+          "id": "italian-cabin/mood",
+          "name": "Mood",
+          "level": 0,
+          "roomId": "italian-cabin",
+          "__typename": "lightingGroups"
+        }
+      ],
+      "__typename": "rooms"
+    },
+    {
+      "id": "californian-cabin",
+      "amplifierOn": true,
+      "actualTemperature": 22.5,
+      "actualHumidity": 45,
+      "temperatureSetpoint": 21,
+      "thermalComfortIndex": null,
+      "name": "Californian cabin",
+      "group": "AFT",
+      "lastMovement": null,
+      "blinds": [
+        {
+          "id": "californian-cabin/blind",
+          "name": "Main",
+          "level": 0,
+          "roomId": "californian-cabin",
+          "opacity": "blind",
+          "group": "none",
+          "__typename": "blinds"
+        }
+      ],
+      "lightingGroups": [
+        {
+          "id": "californian-cabin/ambient",
+          "name": "Ambient",
+          "level": 0,
+          "roomId": "californian-cabin",
+          "__typename": "lightingGroups"
+        },
+        {
+          "id": "californian-cabin/mood",
+          "name": "Mood",
+          "level": 0,
+          "roomId": "californian-cabin",
+          "__typename": "lightingGroups"
+        }
+      ],
+      "__typename": "rooms"
+    },
+    {
+      "id": "polynesian-cabin",
+      "amplifierOn": true,
+      "actualTemperature": 22.5,
+      "actualHumidity": 45,
+      "temperatureSetpoint": 21,
+      "thermalComfortIndex": null,
+      "name": "Polynesian cabin",
+      "group": "MID",
+      "lastMovement": null,
+      "blinds": [
+        {
+          "id": "polynesian-cabin/blind",
+          "name": "Main",
+          "level": 0,
+          "roomId": "polynesian-cabin",
+          "opacity": "blind",
+          "group": "none",
+          "__typename": "blinds"
+        }
+      ],
+      "lightingGroups": [
+        {
+          "id": "polynesian-cabin/ambient",
+          "name": "Ambient",
+          "level": 0,
+          "roomId": "polynesian-cabin",
+          "__typename": "lightingGroups"
+        },
+        {
+          "id": "polynesian-cabin/mood",
+          "name": "Mood",
+          "level": 0,
+          "roomId": "polynesian-cabin",
+          "__typename": "lightingGroups"
+        }
+      ],
+      "__typename": "rooms"
+    },
+    {
+      "id": "galley",
+      "amplifierOn": true,
+      "actualTemperature": 22.5,
+      "actualHumidity": 45,
+      "temperatureSetpoint": 21,
+      "thermalComfortIndex": null,
+      "name": "Galley",
+      "group": "MID",
+      "lastMovement": null,
+      "blinds": [
+        {
+          "id": "galley/blind",
+          "name": "Main",
+          "level": 0,
+          "roomId": "galley",
+          "opacity": "blind",
+          "group": "none",
+          "__typename": "blinds"
+        }
+      ],
+      "lightingGroups": [
+        {
+          "id": "galley/ambient",
+          "name": "Ambient",
+          "level": 0,
+          "roomId": "galley",
+          "__typename": "lightingGroups"
+        },
+        {
+          "id": "galley/mood",
+          "name": "Mood",
+          "level": 0,
+          "roomId": "galley",
+          "__typename": "lightingGroups"
+        }
+      ],
+      "__typename": "rooms"
+    },
+    {
+      "id": "crew-mess",
+      "amplifierOn": true,
+      "actualTemperature": 22.5,
+      "actualHumidity": 45,
+      "temperatureSetpoint": 21,
+      "thermalComfortIndex": null,
+      "name": "Crew mess",
+      "group": "MID",
+      "lastMovement": null,
+      "blinds": [
+        {
+          "id": "crew-mess/blind",
+          "name": "Main",
+          "level": 0,
+          "roomId": "crew-mess",
+          "opacity": "blind",
+          "group": "none",
+          "__typename": "blinds"
+        }
+      ],
+      "lightingGroups": [
+        {
+          "id": "crew-mess/ambient",
+          "name": "Ambient",
+          "level": 0,
+          "roomId": "crew-mess",
+          "__typename": "lightingGroups"
+        },
+        {
+          "id": "crew-mess/mood",
+          "name": "Mood",
+          "level": 0,
+          "roomId": "crew-mess",
+          "__typename": "lightingGroups"
+        }
+      ],
+      "__typename": "rooms"
+    },
+    {
+      "id": "mission-room",
+      "amplifierOn": true,
+      "actualTemperature": 22.5,
+      "actualHumidity": 45,
+      "temperatureSetpoint": 21,
+      "thermalComfortIndex": null,
+      "name": "Mission room",
+      "group": "MID",
+      "lastMovement": null,
+      "blinds": [
+        {
+          "id": "mission-room/blind",
+          "name": "Main",
+          "level": 0,
+          "roomId": "mission-room",
+          "opacity": "blind",
+          "group": "none",
+          "__typename": "blinds"
+        }
+      ],
+      "lightingGroups": [
+        {
+          "id": "mission-room/ambient",
+          "name": "Ambient",
+          "level": 0,
+          "roomId": "mission-room",
+          "__typename": "lightingGroups"
+        },
+        {
+          "id": "mission-room/mood",
+          "name": "Mood",
+          "level": 0,
+          "roomId": "mission-room",
+          "__typename": "lightingGroups"
+        }
+      ],
+      "__typename": "rooms"
+    },
+    {
+      "id": "laundry",
+      "amplifierOn": true,
+      "actualTemperature": 22.5,
+      "actualHumidity": 45,
+      "temperatureSetpoint": 21,
+      "thermalComfortIndex": null,
+      "name": "Laundy",
+      "group": "MID",
+      "lastMovement": null,
+      "blinds": [
+        {
+          "id": "laundry/blind",
+          "name": "Main",
+          "level": 0,
+          "roomId": "laundry",
+          "opacity": "blind",
+          "group": "none",
+          "__typename": "blinds"
+        }
+      ],
+      "lightingGroups": [
+        {
+          "id": "laundry/ambient",
+          "name": "Ambient",
+          "level": 0,
+          "roomId": "laundry",
+          "__typename": "lightingGroups"
+        },
+        {
+          "id": "laundry/mood",
+          "name": "Mood",
+          "level": 0,
+          "roomId": "laundry",
+          "__typename": "lightingGroups"
+        }
+      ],
+      "__typename": "rooms"
+    },
+    {
+      "id": "engineers-office",
+      "amplifierOn": true,
+      "actualTemperature": 22.5,
+      "actualHumidity": 45,
+      "temperatureSetpoint": 21,
+      "thermalComfortIndex": null,
+      "name": "Engineers office",
+      "group": "MID",
+      "lastMovement": null,
+      "blinds": [
+        {
+          "id": "engineers-office/blind",
+          "name": "Main",
+          "level": 0,
+          "roomId": "engineers-office",
+          "opacity": "blind",
+          "group": "none",
+          "__typename": "blinds"
+        }
+      ],
+      "lightingGroups": [
+        {
+          "id": "engineers-office/ambient",
+          "name": "Ambient",
+          "level": 0,
+          "roomId": "engineers-office",
+          "__typename": "lightingGroups"
+        },
+        {
+          "id": "engineers-office/mood",
+          "name": "Mood",
+          "level": 0,
+          "roomId": "engineers-office",
+          "__typename": "lightingGroups"
+        }
+      ],
+      "__typename": "rooms"
+    },
+    {
+      "id": "captains-cabin",
+      "amplifierOn": true,
+      "actualTemperature": 22.5,
+      "actualHumidity": 45,
+      "temperatureSetpoint": 21,
+      "thermalComfortIndex": null,
+      "name": "Captains cabin",
+      "group": "FORE",
+      "lastMovement": null,
+      "blinds": [
+        {
+          "id": "captains-cabin/blind",
+          "name": "Main",
+          "level": 0,
+          "roomId": "captains-cabin",
+          "opacity": "blind",
+          "group": "none",
+          "__typename": "blinds"
+        }
+      ],
+      "lightingGroups": [
+        {
+          "id": "captains-cabin/ambient",
+          "name": "Ambient",
+          "level": 0,
+          "roomId": "captains-cabin",
+          "__typename": "lightingGroups"
+        },
+        {
+          "id": "captains-cabin/mood",
+          "name": "Mood",
+          "level": 0,
+          "roomId": "captains-cabin",
+          "__typename": "lightingGroups"
+        }
+      ],
+      "__typename": "rooms"
+    },
+    {
+      "id": "crew-sb-aft-cabin",
+      "amplifierOn": true,
+      "actualTemperature": 22.5,
+      "actualHumidity": 45,
+      "temperatureSetpoint": 21,
+      "thermalComfortIndex": null,
+      "name": "Crew SB AFT cabin",
+      "group": "FORE",
+      "lastMovement": null,
+      "blinds": [
+        {
+          "id": "crew-sb-aft-cabin/blind",
+          "name": "Main",
+          "level": 0,
+          "roomId": "crew-sb-aft-cabin",
+          "opacity": "blind",
+          "group": "none",
+          "__typename": "blinds"
+        }
+      ],
+      "lightingGroups": [
+        {
+          "id": "crew-sb-aft-cabin/ambient",
+          "name": "Ambient",
+          "level": 0,
+          "roomId": "crew-sb-aft-cabin",
+          "__typename": "lightingGroups"
+        },
+        {
+          "id": "crew-sb-aft-cabin/mood",
+          "name": "Mood",
+          "level": 0,
+          "roomId": "crew-sb-aft-cabin",
+          "__typename": "lightingGroups"
+        }
+      ],
+      "__typename": "rooms"
+    },
+    {
+      "id": "crew-sb-mid-cabin",
+      "amplifierOn": true,
+      "actualTemperature": 22.5,
+      "actualHumidity": 45,
+      "temperatureSetpoint": 21,
+      "thermalComfortIndex": null,
+      "name": "Crew SB MID cabin",
+      "group": "FORE",
+      "lastMovement": null,
+      "blinds": [
+        {
+          "id": "crew-sb-mid-cabin/blind",
+          "name": "Main",
+          "level": 0,
+          "roomId": "crew-sb-mid-cabin",
+          "opacity": "blind",
+          "group": "none",
+          "__typename": "blinds"
+        }
+      ],
+      "lightingGroups": [
+        {
+          "id": "crew-sb-mid-cabin/ambient",
+          "name": "Ambient",
+          "level": 0,
+          "roomId": "crew-sb-mid-cabin",
+          "__typename": "lightingGroups"
+        },
+        {
+          "id": "crew-sb-mid-cabin/mood",
+          "name": "Mood",
+          "level": 0,
+          "roomId": "crew-sb-mid-cabin",
+          "__typename": "lightingGroups"
+        }
+      ],
+      "__typename": "rooms"
+    },
+    {
+      "id": "crew-sb-fwd-cabin",
+      "amplifierOn": true,
+      "actualTemperature": 22.5,
+      "actualHumidity": 45,
+      "temperatureSetpoint": 21,
+      "thermalComfortIndex": null,
+      "name": "Crew SB FWD cabin",
+      "group": "FORE",
+      "lastMovement": null,
+      "blinds": [
+        {
+          "id": "crew-sb-fwd-cabin/blind",
+          "name": "Main",
+          "level": 0,
+          "roomId": "crew-sb-fwd-cabin",
+          "opacity": "blind",
+          "group": "none",
+          "__typename": "blinds"
+        }
+      ],
+      "lightingGroups": [
+        {
+          "id": "crew-sb-fwd-cabin/ambient",
+          "name": "Ambient",
+          "level": 0,
+          "roomId": "crew-sb-fwd-cabin",
+          "__typename": "lightingGroups"
+        },
+        {
+          "id": "crew-sb-fwd-cabin/mood",
+          "name": "Mood",
+          "level": 0,
+          "roomId": "crew-sb-fwd-cabin",
+          "__typename": "lightingGroups"
+        }
+      ],
+      "__typename": "rooms"
+    },
+    {
+      "id": "crew-ps-mid-cabin",
+      "amplifierOn": true,
+      "actualTemperature": 22.5,
+      "actualHumidity": 45,
+      "temperatureSetpoint": 21,
+      "thermalComfortIndex": null,
+      "name": "Crew PS MID cabin",
+      "group": "FORE",
+      "lastMovement": null,
+      "blinds": [
+        {
+          "id": "crew-ps-mid-cabin/blind",
+          "name": "Main",
+          "level": 0,
+          "roomId": "crew-ps-mid-cabin",
+          "opacity": "blind",
+          "group": "none",
+          "__typename": "blinds"
+        }
+      ],
+      "lightingGroups": [
+        {
+          "id": "crew-ps-mid-cabin/ambient",
+          "name": "Ambient",
+          "level": 0,
+          "roomId": "crew-ps-mid-cabin",
+          "__typename": "lightingGroups"
+        },
+        {
+          "id": "crew-ps-mid-cabin/mood",
+          "name": "Mood",
+          "level": 0,
+          "roomId": "crew-ps-mid-cabin",
+          "__typename": "lightingGroups"
+        }
+      ],
+      "__typename": "rooms"
+    },
+    {
+      "id": "crew-ps-fwd-cabin",
+      "amplifierOn": true,
+      "actualTemperature": 22.5,
+      "actualHumidity": 45,
+      "temperatureSetpoint": 21,
+      "thermalComfortIndex": null,
+      "name": "Crew PS FWD cabin",
+      "group": "FORE",
+      "lastMovement": null,
+      "blinds": [
+        {
+          "id": "crew-ps-fwd-cabin/blind",
+          "name": "Main",
+          "level": 0,
+          "roomId": "crew-ps-fwd-cabin",
+          "opacity": "blind",
+          "group": "none",
+          "__typename": "blinds"
+        }
+      ],
+      "lightingGroups": [
+        {
+          "id": "crew-ps-fwd-cabin/ambient",
+          "name": "Ambient",
+          "level": 0,
+          "roomId": "crew-ps-fwd-cabin",
+          "__typename": "lightingGroups"
+        },
+        {
+          "id": "crew-ps-fwd-cabin/mood",
+          "name": "Mood",
+          "level": 0,
+          "roomId": "crew-ps-fwd-cabin",
+          "__typename": "lightingGroups"
+        }
+      ],
+      "__typename": "rooms"
+    },
+    {
+      "id": "owners-deckhouse",
+      "amplifierOn": true,
+      "actualTemperature": 22.5,
+      "actualHumidity": 45,
+      "temperatureSetpoint": 21,
+      "thermalComfortIndex": null,
+      "name": "Owners deckhouse",
+      "group": "UPPERDECK",
+      "lastMovement": null,
+      "blinds": [
+        {
+          "id": "owners-deckhouse/blind",
+          "name": "Blinds",
+          "level": 0,
+          "roomId": "owners-deckhouse",
+          "opacity": "blind",
+          "group": "none",
+          "__typename": "blinds"
+        },
+        {
+          "id": "owners-deckhouse/shear",
+          "name": "Shears",
+          "level": 0,
+          "roomId": "owners-deckhouse",
+          "opacity": "shear",
+          "group": "none",
+          "__typename": "blinds"
+        }
+      ],
+      "lightingGroups": [
+        {
+          "id": "owners-deckhouse/ambient",
+          "name": "Ambient",
+          "level": 0,
+          "roomId": "owners-deckhouse",
+          "__typename": "lightingGroups"
+        },
+        {
+          "id": "owners-deckhouse/mood",
+          "name": "Mood",
+          "level": 0,
+          "roomId": "owners-deckhouse",
+          "__typename": "lightingGroups"
+        }
+      ],
+      "__typename": "rooms"
+    },
+    {
+      "id": "main-deckhouse",
+      "amplifierOn": true,
+      "actualTemperature": 22.5,
+      "actualHumidity": 45,
+      "temperatureSetpoint": 21,
+      "thermalComfortIndex": null,
+      "name": "Main deckhouse",
+      "group": "UPPERDECK",
+      "lastMovement": null,
+      "blinds": [
+        {
+          "id": "main-deckhouse/blind",
+          "name": "Blinds",
+          "level": 0,
+          "roomId": "main-deckhouse",
+          "opacity": "blind",
+          "group": "none",
+          "__typename": "blinds"
+        },
+        {
+          "id": "main-deckhouse/shear",
+          "name": "Shears",
+          "level": 0,
+          "roomId": "main-deckhouse",
+          "opacity": "shear",
+          "group": "none",
+          "__typename": "blinds"
+        }
+      ],
+      "lightingGroups": [
+        {
+          "id": "main-deckhouse/ambient",
+          "name": "Ambient",
+          "level": 0,
+          "roomId": "main-deckhouse",
+          "__typename": "lightingGroups"
+        },
+        {
+          "id": "main-deckhouse/mood",
+          "name": "Mood",
+          "level": 0,
+          "roomId": "main-deckhouse",
+          "__typename": "lightingGroups"
+        }
+      ],
+      "__typename": "rooms"
+    },
+    {
+      "id": "owners-stairway",
+      "amplifierOn": true,
+      "actualTemperature": 22.5,
+      "actualHumidity": 45,
+      "temperatureSetpoint": 21,
+      "thermalComfortIndex": null,
+      "name": "Owners stairway",
+      "group": "HALLWAYS",
+      "lastMovement": null,
+      "blinds": [
+        {
+          "id": "owners-stairway/blind",
+          "name": "Main",
+          "level": 0,
+          "roomId": "owners-stairway",
+          "opacity": "blind",
+          "group": "none",
+          "__typename": "blinds"
+        },
+        {
+          "id": "guest-corridor/blind",
+          "name": "Main",
+          "level": 0,
+          "roomId": "owners-stairway",
+          "opacity": "blind",
+          "group": "none",
+          "__typename": "blinds"
+        }
+      ],
+      "lightingGroups": [
+        {
+          "id": "owners-stairway/main",
+          "name": "Main",
+          "level": 0,
+          "roomId": "owners-stairway",
+          "__typename": "lightingGroups"
+        }
+      ],
+      "__typename": "rooms"
+    },
+    {
+      "id": "guest-corridor",
+      "amplifierOn": true,
+      "actualTemperature": 22.5,
+      "actualHumidity": 45,
+      "temperatureSetpoint": 21,
+      "thermalComfortIndex": null,
+      "name": "Guest corridor",
+      "group": "HALLWAYS",
+      "lastMovement": null,
+      "blinds": [],
+      "lightingGroups": [
+        {
+          "id": "guest-corridor/main",
+          "name": "Main",
+          "level": 0,
+          "roomId": "guest-corridor",
+          "__typename": "lightingGroups"
+        }
+      ],
+      "__typename": "rooms"
+    },
+    {
+      "id": "polynesian-corridor",
+      "amplifierOn": true,
+      "actualTemperature": 22.5,
+      "actualHumidity": 45,
+      "temperatureSetpoint": 21,
+      "thermalComfortIndex": null,
+      "name": "Polynesian corridor",
+      "group": "HALLWAYS",
+      "lastMovement": null,
+      "blinds": [],
+      "lightingGroups": [
+        {
+          "id": "polynesian-corrido/main",
+          "name": "Main",
+          "level": 0,
+          "roomId": "polynesian-corridor",
+          "__typename": "lightingGroups"
+        }
+      ],
+      "__typename": "rooms"
+    }
+  ]
+}
