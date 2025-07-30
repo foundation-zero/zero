@@ -1,6 +1,6 @@
 # example profiles.yml file
 zero_data:
-  target: singel
+  target: local
   outputs:
     local:
       type: risingwave
