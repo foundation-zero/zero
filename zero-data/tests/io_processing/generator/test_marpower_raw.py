@@ -1,8 +1,8 @@
 from pathlib import Path, PosixPath
 from unittest.mock import patch, mock_open, MagicMock
 
-from io_processing.dbt_gen.marpower_raw import MarpowerRawGenerator
-from io_processing.io_list.types import IOTopic, IOValue
+from zero_data.dbt_gen.marpower_raw import MarpowerRawGenerator
+from zero_data.io_list.types import IOTopic, IOValue
 
 
 def test_marpower_raw():
@@ -12,7 +12,7 @@ def test_marpower_raw():
     open_mock = mock_open()
     mkdir_mock = MagicMock()
     with (
-        patch("io_processing.dbt_gen.marpower_raw.open", open_mock, create=True),
+        patch("zero_data.dbt_gen.marpower_raw.open", open_mock, create=True),
         patch("pathlib.Path.mkdir", mkdir_mock),
     ):
         MarpowerRawGenerator(Path("/not-used")).generate(marpower_io_topics)

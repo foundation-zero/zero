@@ -1,7 +1,7 @@
 import os
 from unittest import mock
 
-from io_processing.config import MQTTConfig
+from zero_data.config import MQTTConfig
 
 
 @mock.patch.dict(

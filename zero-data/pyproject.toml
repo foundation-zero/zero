@@ -1,17 +1,18 @@
 [project]
-name = "io-processing"
+name = "zero-data"
 description = ""
 authors = [
     { name = "Floris Smit", email = "floris.smit@foundationzero.org" },
     { name = "Boudewijn van Groos", email = "boudewijn.vangroos@foundationzero.org>" }
 ]
 readme = "README.md"
-packages = [{ include = "io_processing", from = "src" }]
+packages = [{ include = "zero_data", from = "src" }]
 requires-python = ">= 3.13.1,<4.0"
-dynamic = ["dependencies", "version"]
+dynamic = ["dependencies"]
+version = "0.9.0"
 
-[tool.poetry]
-version = "0.0.0"
+[project.scripts]
+zero-data = "zero_data.main:run"
 
 [tool.poetry.dependencies]
 polars = "^1.16.0"
@@ -27,11 +28,13 @@ dbt-risingwave = "^1.9.0"
 optional = true
 
 [tool.poetry.group.dev.dependencies]
+mypy = "^1.14.1"
+types-openpyxl = "^3.1.5.20250602"
+ruff = "^0.9.3"
+python-dotenv = "^1.1.0"
 ipykernel = "^6.29.5"
 pandas = "^2.2.3"
 notebook = "^7.3.2"
-ruff = "^0.9.3"
-python-dotenv = "^1.1.0"
 
 [tool.poetry.group.test]
 optional = true
@@ -39,21 +42,24 @@ optional = true
 [tool.poetry.group.test.dependencies]
 pytest = "^8.3.4"
 pytest-asyncio = "^0.25.3"
+pytest-env = "^1.1.5"
+pytest-mock = "^3.14.0"
 
-[tool.poetry.requires-plugins]
-poetry-dynamic-versioning = { version = ">=1.0.0,<2.0.0", extras = ["plugin"] }
-
-[tool.poetry-dynamic-versioning]
-enable = true
+[tool.mypy]
+plugins = "pydantic.mypy"
+check_untyped_defs = true
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
 asyncio_default_fixture_loop_scope = "function"
 asyncio_mode = "auto"
 
+[tool.ruff]
+# Needs to be included for Ruff to read required-version
+
 [tool.dotenv]
 location = ".env"
 
 [build-system]
-requires = ["poetry-core>=1.0.0", "poetry-dynamic-versioning>=1.0.0,<2.0.0"]
-build-backend = "poetry_dynamic_versioning.backend"
+requires = ["poetry-core>=2.0.0,<3.0.0"]
+build-backend = "poetry.core.masonry.api"

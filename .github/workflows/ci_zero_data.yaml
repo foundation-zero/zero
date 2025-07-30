@@ -1,10 +1,11 @@
 name: "Zero Data: Test and push Docker image"
 on:
   push:
+    branches:
+      - main
     paths:
       - 'zero-data/**'
-  release:
-    types: [released]
+  pull_request:
     paths:
       - 'zero-data/**'
 
@@ -25,32 +26,34 @@ jobs:
         with:
           python-version: 3.13
       - run: pipx install poetry==2.0.1
-        working-directory: zero-data
       - run: poetry check
         working-directory: zero-data
       - uses: astral-sh/ruff-action@v3
-      - run: poetry install
+        with:
+          src: "./zero-data"
+      - run: poetry install --with dev,test
         working-directory: zero-data
-      - run: poetry run mypy zero-data
+      - run: poetry run mypy src
         working-directory: zero-data
       - name: Unit Test
-        run: poetry run pytest --run=unit
-        working-directory: zero-data
-      - name: Run services
-        run: docker compose up -d --quiet-pull graphql-engine hass
-        working-directory: zero-data
-      - name: Integration Test
-        run: poetry run pytest --run=integration -vv
+        run: poetry run pytest .
         working-directory: zero-data
       - name: Determine image tag
         id: image_tag
         run: |
-          VERSION=$(poetry version -s | sed -r 's/\+/_/g' )
-          echo $VERSION
+          VERSION=$(poetry version -s | sed -r 's/\+/_/g')
+
+          if [[ "${{ github.event_name }}" == "pull_request" ]]; then
+            SHORT_SHA=$(echo "${{ github.sha }}" | cut -c1-7)
+            VERSION="${VERSION}-dev-${SHORT_SHA}"
+          fi
+
+          echo "Using image tag: $VERSION"
           echo "image_tag=$VERSION" >> $GITHUB_OUTPUT
         working-directory: zero-data
 
   docker-push:
+    timeout-minutes: 10
     runs-on: ubuntu-latest
     needs: test
     permissions:
@@ -67,13 +70,8 @@ jobs:
           project_id: ${{ vars.GCP_COMMON_PROJECT_ID }}
           workload_identity_provider: ${{ vars.GCP_COMMON_WORKLOAD_IDENTITY_PROVIDER }}
           service_account: ${{ vars.GCP_COMMON_SERVICE_ACCOUNT }}
-          access_token_lifetime: 300s
-      - name: Login to Artifact Registry
-        uses: docker/login-action@v1
-        with:
-          registry: europe-west1-docker.pkg.dev
-          username: oauth2accesstoken
-          password: ${{ steps.auth.outputs.access_token }}
+          access_token_lifetime: 600s
+      - run: gcloud auth configure-docker europe-west1-docker.pkg.dev
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
       - name: Build and push

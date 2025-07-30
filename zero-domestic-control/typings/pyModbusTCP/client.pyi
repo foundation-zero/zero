@@ -1,5 +1,33 @@
-from .constants import ENCAPSULATED_INTERFACE_TRANSPORT as ENCAPSULATED_INTERFACE_TRANSPORT, EXP_DETAILS as EXP_DETAILS, EXP_NONE as EXP_NONE, EXP_TXT as EXP_TXT, MB_CONNECT_ERR as MB_CONNECT_ERR, MB_ERR_TXT as MB_ERR_TXT, MB_EXCEPT_ERR as MB_EXCEPT_ERR, MB_NO_ERR as MB_NO_ERR, MB_RECV_ERR as MB_RECV_ERR, MB_SEND_ERR as MB_SEND_ERR, MB_SOCK_CLOSE_ERR as MB_SOCK_CLOSE_ERR, MB_TIMEOUT_ERR as MB_TIMEOUT_ERR, MEI_TYPE_READ_DEVICE_ID as MEI_TYPE_READ_DEVICE_ID, READ_COILS as READ_COILS, READ_DISCRETE_INPUTS as READ_DISCRETE_INPUTS, READ_HOLDING_REGISTERS as READ_HOLDING_REGISTERS, READ_INPUT_REGISTERS as READ_INPUT_REGISTERS, VERSION as VERSION, WRITE_MULTIPLE_COILS as WRITE_MULTIPLE_COILS, WRITE_MULTIPLE_REGISTERS as WRITE_MULTIPLE_REGISTERS, WRITE_READ_MULTIPLE_REGISTERS as WRITE_READ_MULTIPLE_REGISTERS, WRITE_SINGLE_COIL as WRITE_SINGLE_COIL, WRITE_SINGLE_REGISTER as WRITE_SINGLE_REGISTER
-from .utils import byte_length as byte_length, set_bit as set_bit, valid_host as valid_host
+from .constants import (
+    ENCAPSULATED_INTERFACE_TRANSPORT as ENCAPSULATED_INTERFACE_TRANSPORT,
+    EXP_DETAILS as EXP_DETAILS,
+    EXP_NONE as EXP_NONE,
+    EXP_TXT as EXP_TXT,
+    MB_CONNECT_ERR as MB_CONNECT_ERR,
+    MB_ERR_TXT as MB_ERR_TXT,
+    MB_EXCEPT_ERR as MB_EXCEPT_ERR,
+    MB_NO_ERR as MB_NO_ERR,
+    MB_RECV_ERR as MB_RECV_ERR,
+    MB_SEND_ERR as MB_SEND_ERR,
+    MB_SOCK_CLOSE_ERR as MB_SOCK_CLOSE_ERR,
+    MB_TIMEOUT_ERR as MB_TIMEOUT_ERR,
+    MEI_TYPE_READ_DEVICE_ID as MEI_TYPE_READ_DEVICE_ID,
+    READ_COILS as READ_COILS,
+    READ_DISCRETE_INPUTS as READ_DISCRETE_INPUTS,
+    READ_HOLDING_REGISTERS as READ_HOLDING_REGISTERS,
+    READ_INPUT_REGISTERS as READ_INPUT_REGISTERS,
+    VERSION as VERSION,
+    WRITE_MULTIPLE_COILS as WRITE_MULTIPLE_COILS,
+    WRITE_MULTIPLE_REGISTERS as WRITE_MULTIPLE_REGISTERS,
+    WRITE_READ_MULTIPLE_REGISTERS as WRITE_READ_MULTIPLE_REGISTERS,
+    WRITE_SINGLE_COIL as WRITE_SINGLE_COIL,
+    WRITE_SINGLE_REGISTER as WRITE_SINGLE_REGISTER,
+)
+from .utils import (
+    byte_length as byte_length,
+    set_bit as set_bit,
+    valid_host as valid_host,
+)
 from _typeshed import Incomplete
 from dataclasses import dataclass, field
 
@@ -10,7 +38,7 @@ class DeviceIdentificationResponse:
     conformity_level: int = ...
     more_follows: int = ...
     next_object_id: int = ...
-    objects_by_id: dict[int, bytes] = field(default_factory=Incomplete)
+    objects_by_id: dict[int, bytes] = field(default_factory=dict)
     @property
     def vendor_name(self): ...
     @property
@@ -28,20 +56,25 @@ class DeviceIdentificationResponse:
 
 class ModbusClient:
     class _InternalError(Exception): ...
+
     class _NetworkError(_InternalError):
         code: Incomplete
         message: Incomplete
         def __init__(self, code, message) -> None: ...
+
     class _ModbusExcept(_InternalError):
         code: Incomplete
         def __init__(self, code) -> None: ...
-    host: Incomplete
-    port: Incomplete
-    unit_id: Incomplete
-    timeout: Incomplete
-    auto_open: Incomplete
-    auto_close: Incomplete
-    def __init__(self, host: str = 'localhost', port: int = 502, unit_id: int = 1, timeout: float = 30.0, auto_open: bool = True, auto_close: bool = False) -> None: ...
+
+    def __init__(
+        self,
+        host: str = "localhost",
+        port: int = 502,
+        unit_id: int = 1,
+        timeout: float = 30.0,
+        auto_open: bool = True,
+        auto_close: bool = False,
+    ) -> None: ...
     def __del__(self) -> None: ...
     @property
     def version(self): ...
@@ -93,5 +126,7 @@ class ModbusClient:
     def write_single_register(self, reg_addr, reg_value): ...
     def write_multiple_coils(self, bits_addr, bits_value): ...
     def write_multiple_registers(self, regs_addr, regs_value): ...
-    def write_read_multiple_registers(self, write_addr, write_values, read_addr, read_nb: int = 1): ...
+    def write_read_multiple_registers(
+        self, write_addr, write_values, read_addr, read_nb: int = 1
+    ): ...
     def on_tx_rx(self, frame: bytes, is_tx: bool): ...
