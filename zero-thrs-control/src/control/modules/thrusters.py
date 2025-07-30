@@ -65,10 +65,10 @@ _INITIAL_CONTROL_VALUES = ThrustersControlValues(
         )
     ),
     thrusters_flowcontrol_aft=Valve(
-        setpoint=Stamped(value=Valve.CLOSED, timestamp=_ZERO_TIME)
+        setpoint=Stamped(value=Valve.OPEN, timestamp=_ZERO_TIME)
     ),
     thrusters_flowcontrol_fwd=Valve(
-        setpoint=Stamped(value=Valve.CLOSED, timestamp=_ZERO_TIME)
+        setpoint=Stamped(value=Valve.OPEN, timestamp=_ZERO_TIME)
     ),
     thrusters_shutoff_recovery=Valve(
         setpoint=Stamped(value=Valve.OPEN, timestamp=_ZERO_TIME)
@@ -363,7 +363,7 @@ class ThrustersControl(Control):
         self._flow_balance_controller.set_actives([
             sensor_values.thrusters_aft.active.value,
             sensor_values.thrusters_fwd.active.value,
-        ])
+        ])#not sure if we need to set actives here
 
         flow_setpoints = [
             self._get_temperature_based_flow_setpoint(
@@ -441,7 +441,7 @@ class ThrustersControl(Control):
         valve_open = mixing_valve.position_rel.value == approx(open_position, abs=0.05)
         if valve_open:  # Mixing mixing_valve open
             if not flow_controller.enabled():
-                flow_controller.enable()
+                flow_controller.enable(reset=True) #not sure if we need reset here 
             flow_setpoint = flow_controller(temperature_measurement, time)
         else:  # Mixing valve not open
             if flow_controller.enabled():
