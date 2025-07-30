@@ -1,0 +1,1 @@
+{{ sink_append_gcs('raw', 'kvm_switching', 'kvm_switching_sink') }}
