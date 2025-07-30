@@ -59,6 +59,7 @@ jobs:
         working-directory: zero-domestic-control
 
   docker-push:
+    timeout-minutes: 10
     runs-on: ubuntu-latest
     needs: test
     permissions:
@@ -75,7 +76,7 @@ jobs:
           project_id: ${{ vars.GCP_COMMON_PROJECT_ID }}
           workload_identity_provider: ${{ vars.GCP_COMMON_WORKLOAD_IDENTITY_PROVIDER }}
           service_account: ${{ vars.GCP_COMMON_SERVICE_ACCOUNT }}
-          access_token_lifetime: 300s
+          access_token_lifetime: 600s
       - name: Login to Artifact Registry
         uses: docker/login-action@v1
         with:
