@@ -16,9 +16,9 @@ def setup_logging():
 
 def parser():
     parser = ArgumentParser(
-        prog="io-processing",
+        prog="zero-data",
         description="""
-      IO processing is able to ingest various flavors of IO list (Marpower, Vitters)
+      Zero Data is able to ingest various flavors of IO list (Marpower, Vitters)
       and combine it with a component list to output a description of the components
       of that system.
 

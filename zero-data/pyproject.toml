@@ -11,6 +11,9 @@ requires-python = ">= 3.13.1,<4.0"
 dynamic = ["dependencies"]
 version = "0.9.0"
 
+[project.scripts]
+zero-data = "zero_data.main:run"
+
 [tool.poetry.dependencies]
 polars = "^1.16.0"
 openpyxl = "^3.1.5"
@@ -58,5 +61,5 @@ asyncio_mode = "auto"
 location = ".env"
 
 [build-system]
-requires = ["poetry-core>=1.0.0", "poetry-dynamic-versioning>=1.0.0,<2.0.0"]
+requires = ["poetry-core>=2.0.0,<3.0.0"]
 build-backend = "poetry.core.masonry.api"
