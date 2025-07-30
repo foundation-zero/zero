@@ -1,6 +1,13 @@
-name: Test
+name: "Zero UI Apps: Test and push Docker image"
 on:
   push:
+    branches:
+      - main
+    paths:
+      - "apps/zero-ui/**"
+  pull_request:
+    paths:
+      - "apps/zero-ui/**"
   release:
     types: [released]
 
@@ -16,27 +23,32 @@ jobs:
 
       - uses: pnpm/action-setup@v3
         with:
-          version: 9
+          package_json_file: apps/zero-ui/package.json
 
       - uses: actions/setup-node@v4
         with:
           node-version: "22.x"
           cache: "pnpm"
-          cache-dependency-path: pnpm-lock.yaml
+          cache-dependency-path: apps/zero-ui/pnpm-lock.yaml
 
       - name: Install dependencies
+        working-directory: apps/zero-ui
         run: pnpm install
 
       - name: Run ESLint
+        working-directory: apps/zero-ui
         run: pnpm lint --max-warnings 0
 
       - name: Run unit tests
+        working-directory: apps/zero-ui
         run: pnpm test:unit
 
       - name: Install Playwright Browsers
+        working-directory: apps/zero-ui
         run: pnpm exec playwright install --with-deps chromium
 
       - name: Run Playwright tests
+        working-directory: apps/zero-ui
         run: pnpm exec playwright test
         env:
           PLAYWRIGHT_TEST_BASE_URL: http://localhost:5173
@@ -47,13 +59,13 @@ jobs:
         if: ${{ !cancelled() }}
         with:
           name: playwright-report
-          path: playwright-report/
+          path: apps/zero-ui/playwright-report/
           retention-days: 7
       - uses: actions/upload-artifact@v4
         if: ${{ !cancelled() }}
         with:
           name: screenshots
-          path: screenshots/
+          path: apps/zero-ui/screenshots/
           retention-days: 7
 
   docker-push:
@@ -94,7 +106,7 @@ jobs:
       - name: Build and push
         uses: docker/build-push-action@v6
         with:
-          context: .
+          context: apps/zero-ui
           push: true
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
