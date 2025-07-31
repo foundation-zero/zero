@@ -1,44 +1,29 @@
 <script setup lang="ts">
 import { cn } from "@/lib/utils";
+import { reactiveOmit } from "@vueuse/core";
 import {
   ScrollAreaCorner,
   ScrollAreaRoot,
-  ScrollAreaViewport,
   type ScrollAreaRootProps,
-} from "radix-vue";
-import { computed, onMounted, type HTMLAttributes } from "vue";
+  ScrollAreaViewport,
+} from "reka-ui";
+import type { HTMLAttributes } from "vue";
 import ScrollBar from "./ScrollBar.vue";
 
-const props = defineProps<
-  ScrollAreaRootProps & { class?: HTMLAttributes["class"]; scrollPosition?: number }
->();
+const props = defineProps<ScrollAreaRootProps & { class?: HTMLAttributes["class"] }>();
 
-const delegatedProps = computed(() => {
-  const { class: _, ...delegated } = props;
-
-  return delegated;
-});
-
-const emit = defineEmits(["scrollY"]);
-
-const onScroll = (event: Event) => emit("scrollY", (event.target as HTMLElement).scrollTop);
-
-onMounted(() => {
-  if (props.scrollPosition) {
-    document.getElementById("scroll:rooms")?.scrollTo({ top: props.scrollPosition });
-  }
-});
+const delegatedProps = reactiveOmit(props, "class");
 </script>
 
 <template>
   <ScrollAreaRoot
+    data-slot="scroll-area"
     v-bind="delegatedProps"
-    :class="cn('relative overflow-hidden', props.class)"
+    :class="cn('relative', props.class)"
   >
     <ScrollAreaViewport
-      id="scroll:rooms"
-      class="h-full w-full rounded-[inherit]"
-      @scroll="onScroll"
+      data-slot="scroll-area-viewport"
+      class="focus-visible:ring-ring/50 size-full rounded-[inherit] transition-[color,box-shadow] outline-none focus-visible:ring-[3px] focus-visible:outline-1"
     >
       <slot />
     </ScrollAreaViewport>

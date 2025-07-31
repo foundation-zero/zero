@@ -90,8 +90,8 @@ https://github.com/foundation-zero/zero-domestic-control
 
 ### Adding new components
 
-In this project we use the [shadcn-vue](https://www.shadcn-vue.com) component library. In a recent version this library switched from Radix Vue to Reka UI for primitive components. Since this is not backwards-compatible with our current setup and components, we need to explicitly use the Radix distribution when adding new components from Shadcn.
+In this project we use the [shadcn-vue](https://www.shadcn-vue.com) component library. Use the following command to add a new UI component from shadcn to our own repository:
 
 ```sh
-pnpm dlx shadcn-vue@radix add {{COMPONENT}}
+pnpm dlx shadcn-vue@latest add {{COMPONENT}}
 ```

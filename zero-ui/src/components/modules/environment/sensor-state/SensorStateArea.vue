@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { RoomWithState, ShipArea } from "@/@types";
+import { Table, TableBody } from "@/components/ui/shadcn/table";
 import { compareByValidationStatus, getRoomState } from "@/lib/utils";
-import { Table, TableBody } from "@components/shadcn/table";
 import { computed } from "vue";
 import SensorStateRow from "./SensorStateRow.vue";
 
@@ -19,7 +19,7 @@ const roomsWithState = computed<RoomWithState[]>(() =>
     class="text-[0.8rem] md:text-[0.9rem] lg:text-[0.95rem] xl:text-[1.2rem] portrait:lg:text-[1rem]"
   >
     <header
-      class="flex items-center pb-2 text-rxl font-bold uppercase tracking-tight text-primary/75 dark:text-primary/65 md:pb-4"
+      class="text-rxl text-primary/75 dark:text-primary/65 flex items-center pb-2 font-bold tracking-tight uppercase md:pb-4"
     >
       {{ area.name }}
 

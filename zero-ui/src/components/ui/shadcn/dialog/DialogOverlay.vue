@@ -1,8 +1,7 @@
-<script lang="ts" setup>
+<script setup lang="ts">
 import { cn } from "@/lib/utils";
 import { reactiveOmit } from "@vueuse/core";
-import type { DialogOverlayProps } from "reka-ui";
-import { DrawerOverlay } from "vaul-vue";
+import { DialogOverlay, type DialogOverlayProps } from "reka-ui";
 import type { HTMLAttributes } from "vue";
 
 const props = defineProps<DialogOverlayProps & { class?: HTMLAttributes["class"] }>();
@@ -11,8 +10,8 @@ const delegatedProps = reactiveOmit(props, "class");
 </script>
 
 <template>
-  <DrawerOverlay
-    data-slot="drawer-overlay"
+  <DialogOverlay
+    data-slot="dialog-overlay"
     v-bind="delegatedProps"
     :class="
       cn(
@@ -20,5 +19,7 @@ const delegatedProps = reactiveOmit(props, "class");
         props.class,
       )
     "
-  />
+  >
+    <slot />
+  </DialogOverlay>
 </template>

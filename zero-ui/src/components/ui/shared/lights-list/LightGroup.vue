@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { LightingControl } from "@/@types";
-import { List, ListRoot } from "@components/shadcn/list";
-import ListHeader from "@components/shadcn/list/ListHeader.vue";
+import { List, ListRoot } from "@/components/ui/shared/list";
+import ListHeader from "@/components/ui/shared/list/ListHeader.vue";
 import LightGroupItem from "./LightGroupItem.vue";
 
 defineProps<{ name: string; lights: LightingControl[] }>();

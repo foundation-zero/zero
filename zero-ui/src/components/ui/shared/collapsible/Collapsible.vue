@@ -24,8 +24,8 @@ const toggle = () => {
 <template>
   <section>
     <header
-      class="flex cursor-pointer justify-between pb-2 pl-3 pr-3 text-sm font-bold uppercase tracking-tight text-primary/75"
-      :class="{ 'border-b border-primary/10': !isOpen }"
+      class="text-primary/75 flex cursor-pointer justify-between pr-3 pb-2 pl-3 text-sm font-bold tracking-tight uppercase"
+      :class="{ 'border-primary/10 border-b': !isOpen }"
       @click="toggle"
     >
       <span>{{ title }}</span>

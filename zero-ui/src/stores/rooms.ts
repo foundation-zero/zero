@@ -1,4 +1,4 @@
-import { Room, RoomGroup, ShipArea } from "@/@types";
+import { AmplifierControl, Room, RoomGroup, ShipArea } from "@/@types";
 import {
   Blinds,
   LightingGroups,
@@ -82,8 +82,8 @@ export const useRoomStore = defineStore("rooms", () => {
     useMutation<Room, MutationRootSetAmplifierArgs>(
       isAdmin.value ? setAmplifierForRoomMutation : setAmplifierMutation,
     ),
-    (amplifierOn: boolean) => ({
-      ids: isAdmin.value ? [currentRoomId.value] : undefined,
+    (amplifierOn: boolean, avControl: AmplifierControl) => ({
+      ids: isAdmin.value ? [avControl.id] : undefined,
       on: amplifierOn,
     }),
     0,

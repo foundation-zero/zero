@@ -1,4 +1,13 @@
 <script setup lang="ts">
+import { Button } from "@/components/ui/shadcn/button";
+import { Label } from "@/components/ui/shadcn/label";
+import {
+  NumberField,
+  NumberFieldContent,
+  NumberFieldDecrement,
+  NumberFieldIncrement,
+  NumberFieldInput,
+} from "@/components/ui/shadcn/number-field";
 import { formatNumber } from "@/lib/utils";
 import {
   extractField,
@@ -9,15 +18,6 @@ import {
   useThrsStore,
 } from "@/stores/thrs";
 import { JSONSchemaObject } from "@apidevtools/json-schema-ref-parser/dist/lib/types";
-import { Button } from "@components/shadcn/button";
-import { Label } from "@components/shadcn/label";
-import {
-  NumberField,
-  NumberFieldContent,
-  NumberFieldDecrement,
-  NumberFieldIncrement,
-  NumberFieldInput,
-} from "@components/shadcn/number-field";
 import FieldEdit from "@modules/thrs/FieldEdit.vue";
 import ValueTable from "@modules/thrs/ValueTable.vue";
 import { computedAsync } from "@vueuse/core";

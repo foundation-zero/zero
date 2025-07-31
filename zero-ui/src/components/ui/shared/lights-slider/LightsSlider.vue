@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { Slider } from "@components/shadcn/slider";
+import { Slider } from "@/components/ui/shadcn/slider";
 defineProps<{ disabled?: boolean }>();
 defineModel<boolean>("on", { required: true });
 const brightness = defineModel<number>("brightness", { required: true });

@@ -66,13 +66,13 @@ const state = useSafeRange(HUMIDITY_THRESHOLDS, actualHumidity);
         :extra-series="setpointSeries"
       >
         <template #unit>
-          <span class="ml-[0.2em] text-rxs font-extralight">&percnt;</span>
+          <span class="text-rxs ml-[0.2em] font-extralight">&percnt;</span>
         </template>
       </AreaChart>
     </template>
     <template #center>
       <span>{{ actualHumidity.toFixed(0) }}</span>
-      <span class="ml-[0.25em] text-r2xs font-extralight">&percnt;</span>
+      <span class="text-r2xs ml-[0.25em] font-extralight">&percnt;</span>
     </template>
   </ValueTile>
 </template>

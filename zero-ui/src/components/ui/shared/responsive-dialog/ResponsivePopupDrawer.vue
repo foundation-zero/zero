@@ -6,7 +6,7 @@ import {
   DrawerHeader,
   DrawerTitle,
   DrawerTrigger,
-} from "@components/shadcn/drawer";
+} from "@/components/ui/shadcn/drawer";
 const open = defineModel<boolean>("open", { required: true });
 defineProps<{ title: string; description: string }>();
 </script>

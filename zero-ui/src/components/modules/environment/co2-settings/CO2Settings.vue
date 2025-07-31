@@ -1,15 +1,15 @@
 <script setup lang="ts">
-import { CO2_SETPOINT_RANGE } from "@/lib/consts";
-import { isCO2Control, updateSetpointWhenControlsHaveChanged } from "@/lib/utils";
-import { useRoomStore } from "@/stores/rooms";
-import { Button } from "@components/shadcn/button";
+import { Button } from "@/components/ui/shadcn/button";
 import {
   NumberField,
   NumberFieldContent,
   NumberFieldDecrement,
   NumberFieldIncrement,
   NumberFieldInput,
-} from "@components/shadcn/number-field";
+} from "@/components/ui/shadcn/number-field";
+import { CO2_SETPOINT_RANGE } from "@/lib/consts";
+import { isCO2Control, updateSetpointWhenControlsHaveChanged } from "@/lib/utils";
+import { useRoomStore } from "@/stores/rooms";
 import { ResponsivePopup } from "@components/shared/responsive-dialog";
 
 import { Settings } from "lucide-vue-next";
