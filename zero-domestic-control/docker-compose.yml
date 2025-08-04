@@ -140,17 +140,27 @@ services:
       <<: *app_env
       TERMODINAMICA_HOST: "0.0.0.0"
 
-  setup:
+  setup_postgres:
     profiles:
       - setup
-    command: ["zero_domestic_control", "setup"]
+    command: ["zero_domestic_control", "setup", "postgres"]
     build:
       context: .
     environment:
       <<: *app_env
     depends_on:
-      risingwave:
+      postgres:
         condition: service_healthy
+
+  setup_risingwave:
+    profiles:
+      - setup
+    command: ["zero_domestic_control", "setup", "risingwave"]
+    build:
+      context: .
+    environment:
+      <<: *app_env
+    depends_on:
       postgres:
         condition: service_healthy
 
