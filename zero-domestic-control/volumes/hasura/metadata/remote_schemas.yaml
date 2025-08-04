@@ -8,25 +8,17 @@
     - role: user
       definition:
         schema: |
-          schema {
-            query: Query
-            mutation: Mutation
+          type MutationResponse {
+            code: Int!
+            message: String!
+            success: Boolean!
           }
-          scalar Void
-          type Mutation {
-            setAmplifiers(ids: ID! @preset(value: "x-hasura-cabin"), on: Boolean!): MutationResponse
-            setBlinds(ids: ID! @preset(value: "x-hasura-cabin"), level: Float!): MutationResponse
-            setLightingGroups(ids: ID! @preset(value: "x-hasura-cabin"), level: Float!): MutationResponse
-            setRoomTemperatureSetpoints(ids: ID! @preset(value: "x-hasura-cabin"), temperature: Float!): MutationResponse
-            setRoomHumiditySetpoints(ids: ID! @preset(value: "x-hasura-cabin"), humidity: Float!): MutationResponse
-            setRoomCo2Setpoints(ids: ID! @preset(value: "x-hasura-cabin"), co2: Float!): MutationResponse
 
-            type MutationResponse {
-              code: Int!
-              message: String!
-              success: Boolean!
-            }
-          }
-          type Query {
-            version: String!
-          }
+          type Mutation {
+            setAmplifiers(ids: ID!, on: Boolean!): MutationResponse
+            setBlinds(ids: ID!, level: Float!): MutationResponse
+            setLightingGroups(ids: ID!, level: Float!): MutationResponse
+            setRoomTemperatureSetpoints(ids: ID!, temperature: Float!): MutationResponse
+            setRoomHumiditySetpoints(ids: ID!, humidity: Float!): MutationResponse
+            setRoomCo2Setpoints(ids: ID!, co2: Float!): MutationResponse
+          }          type Query {            version: String!          }

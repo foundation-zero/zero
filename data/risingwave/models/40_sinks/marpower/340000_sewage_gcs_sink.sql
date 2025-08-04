@@ -1,1 +1,0 @@
-{{ sink_append_gcs('raw', '340000_sewage', '340000_sewage_sink') }}
