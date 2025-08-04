@@ -1,0 +1,22 @@
+risingwave:
+  target: local
+  outputs:
+    local:
+      type: risingwave
+      host: localhost
+      user: root
+      password: ''
+      port: 4566
+      dbname: dev
+      schema: public
+      threads: 1
+
+    docker:
+      type: risingwave
+      host: risingwave
+      user: root
+      password: ''
+      port: 4566
+      dbname: dev
+      schema: public
+      threads: 1
