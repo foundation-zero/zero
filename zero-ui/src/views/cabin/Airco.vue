@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { List, ListItem, ListRoot } from "@/components/ui/shared/list";
 import {
   extractTemperatureSetpoint,
   isTemperatureControl,
@@ -7,7 +8,6 @@ import {
 } from "@/lib/utils";
 import { useRoomStore } from "@/stores/rooms";
 import { useUIStore } from "@/stores/ui";
-import { List, ListItem, ListRoot } from "@components/shadcn/list";
 import { HeavySlider } from "@components/shared/heavy-slider";
 import RoomTemperature from "@modules/cabin/RoomTemperature.vue";
 import { computed, ref, toRefs, watch } from "vue";
@@ -57,7 +57,7 @@ const commit = () => setTemperatureSetpoint(temperature.value);
             <span class="text-lg font-medium">{{ t("labels.airconditioning.long") }}</span>
             <HeavySlider
               v-model:model-value="value"
-              class="aspect-[1/2] !h-[40svh] !w-auto"
+              class="aspect-1/2 h-[40svh]! w-auto!"
               :max="24"
               :min="17"
               :min-steps-between-thumbs="3"

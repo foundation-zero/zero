@@ -7,9 +7,7 @@ const levelPercentage = ratioAsPercentage(level);
 </script>
 
 <template>
-  <div
-    class="aspect-[1/2] w-full max-w-[20px] overflow-hidden rounded-md bg-primary/20 md:max-w-[30px]"
-  >
+  <div class="bg-primary/20 aspect-1/2 w-full max-w-[20px] overflow-hidden rounded md:max-w-[30px]">
     <div
       :style="{ height: `${100 - levelPercentage}%` }"
       :class="[color ?? 'bg-primary/90']"

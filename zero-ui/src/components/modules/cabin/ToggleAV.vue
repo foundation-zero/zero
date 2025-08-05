@@ -1,8 +1,8 @@
 <script setup lang="ts">
+import { Label } from "@/components/ui/shadcn/label";
+import { Switch } from "@/components/ui/shadcn/switch";
 import { extractAmplifierStatus, isAmplifierControl } from "@/lib/utils";
 import { useRoomStore } from "@/stores/rooms";
-import { Label } from "@components/shadcn/label";
-import { Switch } from "@components/shadcn/switch";
 import { useDark, useTimeoutFn } from "@vueuse/core";
 import { computed, inject, toRefs, watch } from "vue";
 
@@ -20,9 +20,9 @@ const isOn = computed({
   set: (val) => {
     const amp = currentRoom.value.roomsControls.find(isAmplifierControl);
 
-    toggleAmplifier(val);
-
     if (!amp) return;
+
+    toggleAmplifier(val, amp);
 
     amp.value = val ? 1 : 0;
   },
@@ -48,7 +48,7 @@ const disabled = inject<boolean>("disabled");
     </Label>
     <Switch
       id="av-toggle"
-      v-model:checked="isOn"
+      v-model="isOn"
       :disabled="disabled"
       data-testid="av-toggle"
     >

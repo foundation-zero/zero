@@ -6,7 +6,7 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from "@components/shadcn/dialog";
+} from "@/components/ui/shadcn/dialog";
 
 const open = defineModel<boolean>("open", { required: true });
 defineProps<{ title: string; description: string }>();

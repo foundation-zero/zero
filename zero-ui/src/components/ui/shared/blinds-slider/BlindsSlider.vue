@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ratioAsPercentage } from "@/lib/utils";
 
-import { StepSlider } from "@components/shadcn/step-slider";
+import { StepSlider } from "@/components/ui/shared/step-slider";
 import { computed, HTMLAttributes, ref, watch } from "vue";
 
 defineProps<{ class: HTMLAttributes["class"]; disabled?: boolean }>();
@@ -31,7 +31,7 @@ const commit = () => (level.value = targetLevel.value);
       v-model:model-value="blindsPosition"
       :max="100"
       :min="0"
-      class="aspect-[1/2] w-full max-w-[200px]"
+      class="aspect-1/2 w-full max-w-[200px]"
       :class="{ 'opacity-50': disabled }"
       v-bind="{ class: $props.class }"
       :min-steps-between-thumbs="3"

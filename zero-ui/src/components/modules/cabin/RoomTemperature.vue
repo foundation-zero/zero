@@ -11,7 +11,7 @@ const { t } = useI18n();
 </script>
 
 <template>
-  <article class="w-100 flex items-center justify-around">
+  <article class="flex w-100 items-center justify-around">
     <div>
       <span class="inline-flex flex-col items-center justify-center">
         <span

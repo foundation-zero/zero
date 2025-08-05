@@ -1,42 +1,46 @@
 <script setup lang="ts">
 import { cn } from "@/lib/utils";
-import type { SliderRootEmits, SliderRootProps } from "radix-vue";
-import { SliderRange, SliderRoot, SliderThumb, SliderTrack, useForwardPropsEmits } from "radix-vue";
-import { computed, type HTMLAttributes } from "vue";
+import { reactiveOmit } from "@vueuse/core";
+import type { SliderRootEmits, SliderRootProps } from "reka-ui";
+import { SliderRange, SliderRoot, SliderThumb, SliderTrack, useForwardPropsEmits } from "reka-ui";
+import type { HTMLAttributes } from "vue";
 
 const props = defineProps<SliderRootProps & { class?: HTMLAttributes["class"] }>();
 const emits = defineEmits<SliderRootEmits>();
 
-const delegatedProps = computed(() => {
-  const { class: _, ...delegated } = props;
-
-  return delegated;
-});
+const delegatedProps = reactiveOmit(props, "class");
 
 const forwarded = useForwardPropsEmits(delegatedProps, emits);
 </script>
 
 <template>
   <SliderRoot
-    data-testid="slider"
+    v-slot="{ modelValue }"
+    data-slot="slider"
     :class="
       cn(
-        'relative flex w-full touch-none select-none items-center disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-50 data-[orientation=vertical]:h-full data-[orientation=vertical]:w-1.5 data-[orientation=vertical]:flex-col',
+        'relative flex w-full touch-none items-center select-none data-[disabled]:opacity-50 data-[orientation=vertical]:h-full data-[orientation=vertical]:min-h-44 data-[orientation=vertical]:w-auto data-[orientation=vertical]:flex-col',
         props.class,
       )
     "
     v-bind="forwarded"
   >
     <SliderTrack
+      data-slot="slider-track"
       data-testid="slider-track"
-      class="relative h-1.5 w-full grow overflow-hidden rounded-full bg-primary/20 data-[orientation=vertical]:w-1.5"
+      class="bg-primary/20 relative grow overflow-hidden rounded-full data-[orientation=horizontal]:h-1.5 data-[orientation=horizontal]:w-full data-[orientation=vertical]:h-full data-[orientation=vertical]:w-1.5"
     >
-      <SliderRange class="absolute h-full bg-primary data-[orientation=vertical]:w-full" />
+      <SliderRange
+        data-slot="slider-range"
+        class="bg-primary absolute data-[orientation=horizontal]:h-full data-[orientation=vertical]:w-full"
+      />
     </SliderTrack>
+
     <SliderThumb
       v-for="(_, key) in modelValue"
       :key="key"
-      class="transition-color block h-5 w-5 cursor-pointer rounded-full border-2 border-primary bg-background ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:cursor-default disabled:opacity-50"
+      data-slot="slider-thumb"
+      class="border-primary bg-background ring-ring/50 block size-4 shrink-0 rounded-full border shadow-sm transition-[color,box-shadow] hover:ring-4 focus-visible:ring-4 focus-visible:outline-hidden disabled:pointer-events-none disabled:opacity-50"
     />
   </SliderRoot>
 </template>

@@ -1,14 +1,17 @@
 <script lang="ts" setup>
 import { cn } from "@/lib/utils";
-import type { HtmlHTMLAttributes } from "vue";
+import type { HTMLAttributes } from "vue";
 
 const props = defineProps<{
-  class?: HtmlHTMLAttributes["class"];
+  class?: HTMLAttributes["class"];
 }>();
 </script>
 
 <template>
-  <div :class="cn('mt-auto flex flex-col gap-2 p-4', props.class)">
+  <div
+    data-slot="drawer-footer"
+    :class="cn('mt-auto flex flex-col gap-2 p-4', props.class)"
+  >
     <slot />
   </div>
 </template>

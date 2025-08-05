@@ -1,8 +1,8 @@
 <script setup lang="ts">
+import { Tabs, TabsList, TabsTrigger } from "@/components/ui/shadcn/tabs";
 import { isBlindsControl, isLightControl } from "@/lib/utils";
 import { useRoomStore } from "@/stores/rooms";
 import { useUIStore } from "@/stores/ui";
-import { Tabs, TabsList, TabsTrigger } from "@components/shadcn/tabs";
 import { computed, toRefs } from "vue";
 import { useI18n } from "vue-i18n";
 import { useRoute } from "vue-router";
@@ -21,7 +21,7 @@ const blinds = computed(() => currentRoom.value.roomsControls.filter(isBlindsCon
     :class="{ 'max-lg:opacity-0': showSideNav && breakpoints.touch }"
   >
     <TabsList
-      class="bg-black !bg-opacity-5 backdrop-blur-md dark:bg-white"
+      class="bg-black/5 backdrop-blur-md dark:bg-white/5"
       as="nav"
     >
       <RouterLink :to="{ name: 'cabin:airconditioning' }">

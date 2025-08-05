@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { Room } from "@/@types";
-import Switch from "@components/shadcn/switch/Switch.vue";
+import Switch from "@/components/ui/shadcn/switch/Switch.vue";
 import { toRef } from "vue";
 import { useToggleableLights } from ".";
 

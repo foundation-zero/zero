@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { Room } from "@/@types";
-import { Switch } from "@components/shadcn/switch";
+import { Switch } from "@/components/ui/shadcn/switch";
 import { ValueTile } from "@components/shared/value-tile";
 import { Lightbulb, LightbulbOff } from "lucide-vue-next";
 import { computed } from "vue";
@@ -39,11 +39,3 @@ const { controls, someLightsAreOn, toggle } = useToggleableLights(computed(() =>
     </template>
   </ValueTile>
 </template>
-
-<style lang="css" scoped>
-li.on,
-li.on:is(.dark *) {
-  --primary: 46 95% 48%;
-  @apply border-primary/50;
-}
-</style>

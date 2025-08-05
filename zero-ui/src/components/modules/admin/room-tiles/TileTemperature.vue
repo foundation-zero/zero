@@ -82,13 +82,13 @@ const { t } = useI18n();
     </template>
     <template #center>
       <span>{{ actualTemperature.toFixed(0) }}</span>
-      <sup class="top-[-0.3em] text-rxs font-extralight">&deg;</sup>
+      <sup class="text-rxs top-[-0.3em] font-extralight">&deg;</sup>
     </template>
     <template #bottom-left>
       <Droplets class="inline h-[1em] w-[1em]" />
       <span>
         <span class="ml-[0.5em] font-extrabold">{{ actualHumidity.toFixed(0) }}</span>
-        <span class="ml-[0.25em] text-rsm font-extralight">&percnt;</span>
+        <span class="text-rsm ml-[0.25em] font-extralight">&percnt;</span>
       </span>
     </template>
     <template #bottom-right>

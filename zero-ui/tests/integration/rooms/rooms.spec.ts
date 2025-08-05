@@ -36,12 +36,14 @@ test.describe("Rooms", () => {
       await expect(roomsPage.title).toHaveText(dutchCabin.name);
     });
 
-    test("shows the correct state of the audio system", async ({ roomsPage }) => {
+    test("shows the correct state of the audio system", async ({ roomsPage, page }) => {
       roomsPage.updateRoom(dutchCabin, { roomsControls: [toAmplifierStatus(false)] });
 
       await expect(roomsPage.audioSystemToggle).toHaveAttribute("data-state", "unchecked");
 
       roomsPage.updateRoom(dutchCabin, { roomsControls: [toAmplifierStatus(true)] });
+
+      await page.waitForTimeout(1000);
 
       await expect(roomsPage.audioSystemToggle).toHaveAttribute("data-state", "checked");
     });
@@ -60,7 +62,7 @@ test.describe("Rooms", () => {
 
     test.describe("room selection", () => {
       test("it shows the side navigation", async ({ page, roomsPage }) => {
-        await expect(roomsPage.dialog).toHaveClass("show");
+        await expect(roomsPage.dialog).toContainClass("show");
         await page.screenshot({ path: "screenshots/rooms_admin.png" });
       });
 

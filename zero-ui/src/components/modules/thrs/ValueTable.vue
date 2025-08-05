@@ -7,7 +7,7 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "@components/shadcn/table";
+} from "@/components/ui/shadcn/table";
 import { useI18n } from "vue-i18n";
 
 const { t } = useI18n();

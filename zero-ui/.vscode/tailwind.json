@@ -32,12 +32,12 @@
       ]
     },
     {
-      "name": "@screen",
-      "description": "The `@screen` directive allows you to create media queries that reference your breakpoints by **name** instead of duplicating their values in your own CSS:\n```css\n@screen sm {\n  /* ... */\n}\n```\n…gets transformed into this:\n```css\n@media (min-width: 640px) {\n  /* ... */\n}\n```\n",
+      "name": "@custom-variant",
+      "description": "The `@custom-variant` directive allows you to create your own variants by defining them in your CSS:\n```css\n@custom-variant my-variant {\n  .btn {\n    background-color: #3182CE;\n  }\n}\n```\n",
       "references": [
         {
           "name": "Tailwind Documentation",
-          "url": "https://tailwindcss.com/docs/functions-and-directives#screen"
+          "url": "https://tailwindcss.com/docs/functions-and-directives#custom-variant-directive"
         }
       ]
     },
