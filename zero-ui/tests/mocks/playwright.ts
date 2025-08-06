@@ -1,6 +1,6 @@
+import { SubscriptionInterceptor } from "@foundation-zero/graphql-subscriptions-mock";
+import { createSubscriptionFixture } from "@foundation-zero/graphql-subscriptions-mock/adapters/playwright";
 import { test as base, expect } from "@playwright/test";
-import { SubscriptionInterceptor } from "graphql-subscriptions-mock";
-import { createSubscriptionFixture } from "graphql-subscriptions-mock/adapters/playwright";
 import { graphql, http } from "msw";
 import type { MockServiceWorker } from "playwright-msw";
 import { createWorkerFixture } from "playwright-msw";

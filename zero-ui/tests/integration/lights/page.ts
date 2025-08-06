@@ -1,6 +1,6 @@
 import { Locator, Page } from "@playwright/test";
 
-import { SubscriptionInterceptor } from "graphql-subscriptions-mock";
+import { SubscriptionInterceptor } from "@foundation-zero/graphql-subscriptions-mock";
 import { Room } from "../../../src/@types";
 import allRooms from "../../data/all-rooms";
 import { isLightControl } from "../../lib/helpers";
