@@ -11,6 +11,9 @@ importers:
       '@apidevtools/json-schema-ref-parser':
         specifier: ^14.1.1
         version: 14.1.1
+      '@foundation-zero/graphql-subscriptions-mock':
+        specifier: ^1.0.1
+        version: 1.0.1(playwright@1.54.1)
       '@radix-icons/vue':
         specifier: ^1.0.0
         version: 1.0.0(vue@3.5.18(typescript@5.8.3))
@@ -159,9 +162,6 @@ importers:
       globals:
         specifier: ^16.3.0
         version: 16.3.0
-      graphql-subscriptions-mock:
-        specifier: github:foundation-zero/graphql-subscriptions-mock
-        version: graphql-subs-mock@https://codeload.github.com/foundation-zero/graphql-subscriptions-mock/tar.gz/1f371b098d228b724b0b92379bcde46f259d79b4(playwright@1.54.1)
       jsdom:
         specifier: ^26.1.0
         version: 26.1.0
@@ -584,6 +584,11 @@ packages:
 
   '@floating-ui/vue@1.1.8':
     resolution: {integrity: sha512-SNJAa1jbT8Gh1LvWw2uIIViLL0saV2bCY59ISCvJzhbut5DSb2H3LKUK49Xkd7SixTNHKX4LFu59nbwIXt9jjQ==}
+
+  '@foundation-zero/graphql-subscriptions-mock@1.0.1':
+    resolution: {integrity: sha512-lShxtaoPt0ebz9/8ZV2mz1tw9F2Kcnnzur+2G4KUdmharZgIX+tweIgOqUxdbS1Z+97a0K9bS4YeYQ45lNZ3aA==}
+    peerDependencies:
+      playwright: ^1.54.1
 
   '@graphql-codegen/add@5.0.3':
     resolution: {integrity: sha512-SxXPmramkth8XtBlAHu4H4jYcYXM/o3p01+psU+0NADQowA8jtYkK6MW5rV6T+CxkEaNZItfSmZRPgIuypcqnA==}
@@ -2502,12 +2507,6 @@ packages:
     resolution: {integrity: sha512-p+XPfS4q7aIpKVcgmnZKhMNqhltk20hfXtkaIkTfjjmiKMJ5xrt5c743cL03y/K7y1rg3WrIC49xGiEQ4mxdNw==}
     peerDependencies:
       graphql: 14 - 16
-
-  graphql-subs-mock@https://codeload.github.com/foundation-zero/graphql-subscriptions-mock/tar.gz/1f371b098d228b724b0b92379bcde46f259d79b4:
-    resolution: {tarball: https://codeload.github.com/foundation-zero/graphql-subscriptions-mock/tar.gz/1f371b098d228b724b0b92379bcde46f259d79b4}
-    version: 1.0.1
-    peerDependencies:
-      playwright: ^1.54.1
 
   graphql-tag@2.12.6:
     resolution: {integrity: sha512-FdSNcu2QQcWnM2VNvSCCDCVS5PpPqpzgFT8+GXzqJuoDd0CBncxCY278u4mhRO7tMgo2JjgJA5aZ+nWSQ/Z+xg==}
@@ -4706,6 +4705,10 @@ snapshots:
     transitivePeerDependencies:
       - '@vue/composition-api'
       - vue
+
+  '@foundation-zero/graphql-subscriptions-mock@1.0.1(playwright@1.54.1)':
+    dependencies:
+      playwright: 1.54.1
 
   '@graphql-codegen/add@5.0.3(graphql@16.11.0)':
     dependencies:
@@ -7037,10 +7040,6 @@ snapshots:
       graphql: 16.11.0
     transitivePeerDependencies:
       - encoding
-
-  graphql-subs-mock@https://codeload.github.com/foundation-zero/graphql-subscriptions-mock/tar.gz/1f371b098d228b724b0b92379bcde46f259d79b4(playwright@1.54.1):
-    dependencies:
-      playwright: 1.54.1
 
   graphql-tag@2.12.6(graphql@16.11.0):
     dependencies:
