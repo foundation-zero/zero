@@ -32,7 +32,7 @@ class PvtParameters(BaseModel):
     main_aft_flow_setpoint: Annotated[LMin, Field(le=38), ParameterMeta("50-S023")] = (
         30  # TODO: add minimum based of FDS
     )
-    owners_flow_setpoint: Annotated[LMin, Field(le=23), ParameterMeta("50-S020")] = (
+    owners_flow_setpoint: Annotated[LMin, Field(le=23), ParameterMeta("50-S026")] = (
         15  # TODO: add minimum based of FDS
     )
 
@@ -94,7 +94,7 @@ class PvtControl(Control):
                 on_enter=self._enable_recovery_mixes,
                 on_exit=self._disable_recovery_mixes,
             ),
-            State(name="pump_failure", on_enter=self._set_recovery_mixes_to_a),
+            State(name="pump_failure", on_enter=[self._set_recovery_mixes_to_a, self._disable_recovery_mixes]),
         ]
 
         self._heat_dump_controller = InvertedHeatDumpController(
