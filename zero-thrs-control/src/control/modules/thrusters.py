@@ -1,20 +1,18 @@
 from datetime import datetime
 from typing import Annotated, Literal
 from pydantic import BaseModel
-from pytest import approx
 from transitions import Machine, State
 
 from control.controllers import (
     FlowBalanceController,
+    FlowController,
     HeatDumpController,
     MixingValveController,
     PumpFlowController,
-    FlowBasedTemperatureController,
 )
 from input_output.alarms import BaseAlarms, Severity, alarm
 from input_output.base import ParameterMeta, Stamped
 from input_output.definitions.control import Pump, Valve
-from input_output.definitions.sensor import Valve as ValveSensor
 from input_output.modules.thrusters import ThrustersControlValues, ThrustersSensorValues
 from input_output.definitions.units import Celsius, LMin, Ratio
 from classes.control import Control, ControlResult
@@ -22,24 +20,13 @@ from classes.control import Control, ControlResult
 
 class ThrustersParameters(BaseModel):
     cooling_target_temperature: Annotated[Celsius, ParameterMeta("50-S016")] = 38
-    minimum_recovery_flow: Annotated[LMin, ParameterMeta("50-R025")] = (
-        2  # TODO: get minima
-    )
-    maximum_recovery_flow: Annotated[LMin, ParameterMeta("50-R029")] = 15
-    minimum_cooling_flow: Annotated[LMin, ParameterMeta("50-R027")] = (
-        2  # TODO: get minima
-    )
-    maximum_cooling_flow: Annotated[LMin, ParameterMeta("50-R026")] = 23.5
     safe_mode_flow: Annotated[LMin, ParameterMeta("50-S003")] = (
         10  # TODO: check with FDS
     )
     max_inlet_temperature: Celsius = 80  # TODO: add to FDS
-    recovery_mix_target_temperature: Annotated[
-        Celsius, ParameterMeta("50-S007 and 50-S008")
-    ] = 65
-    recovery_flow_target_temperature: Annotated[
-        Celsius, ParameterMeta("50-S007 and 50-S008")
-    ] = 70
+    recovery_mix_target_temperature: Annotated[Celsius, ParameterMeta("")] = 65
+    recovery_flow_target_temperature: Annotated[Celsius, ParameterMeta("")] = 70
+    flowcontrol_valve_target_position: Annotated[Ratio, ParameterMeta("")] = 0.95
 
 
 _ZERO_TIME = datetime.fromtimestamp(0)
@@ -53,10 +40,12 @@ _INITIAL_CONTROL_VALUES = ThrustersControlValues(
         on=Stamped(value=False, timestamp=_ZERO_TIME),
     ),
     thrusters_mix_aft=Valve(
-        setpoint=Stamped(value=Valve.MIXING_B_TO_AB, timestamp=_ZERO_TIME)
+        #setpoint=Stamped(value=Valve.MIXING_B_TO_AB, timestamp=_ZERO_TIME)
+        setpoint=Stamped(value=Valve.MIXING_A_TO_AB, timestamp=_ZERO_TIME)
     ),
     thrusters_mix_fwd=Valve(
-        setpoint=Stamped(value=Valve.MIXING_B_TO_AB, timestamp=_ZERO_TIME)
+        #setpoint=Stamped(value=Valve.MIXING_B_TO_AB, timestamp=_ZERO_TIME)
+        setpoint=Stamped(value=Valve.MIXING_A_TO_AB, timestamp=_ZERO_TIME)
     ),
     thrusters_mix_exchanger=Valve(
         setpoint=Stamped(
@@ -103,7 +92,7 @@ class ThrustersControl(Control):
                     self._set_flow_balance_to_idle,
                     self._set_valves_to_recovery,
                 ],
-                on_exit=self._activate_pump,
+                on_exit=[self._activate_pump,self._enable_flow_control]
             ),
             State(
                 name="recovery",
@@ -172,45 +161,35 @@ class ThrustersControl(Control):
             parameters.cooling_target_temperature,
         )
 
-        self._aft_recovery_flow_controller = FlowBasedTemperatureController(
-            parameters.minimum_recovery_flow,
+        self._aft_flow_controller = FlowController(
+            _INITIAL_CONTROL_VALUES.thrusters_flowcontrol_aft.setpoint.value,
             parameters.recovery_flow_target_temperature,
-            tuning=(-0.1, -0.01, 0),
-            output_limits=(
-                parameters.minimum_recovery_flow,
-                parameters.maximum_recovery_flow,
-            ),
         )
 
-        self._fwd_recovery_flow_controller = FlowBasedTemperatureController(
-            parameters.minimum_recovery_flow,
+        self._fwd_flow_controller = FlowController(
+            _INITIAL_CONTROL_VALUES.thrusters_flowcontrol_fwd.setpoint.value,
             parameters.recovery_flow_target_temperature,
-            tuning=(-0.1, -0.01, 0),
-            output_limits=(
-                parameters.minimum_recovery_flow,
-                parameters.maximum_recovery_flow,
-            ),
         )
 
-        self._aft_cooling_flow_controller = FlowBasedTemperatureController(
-            parameters.minimum_cooling_flow,
-            parameters.cooling_target_temperature,
-            tuning=(-0.1, -0.01, 0),
-            output_limits=(
-                parameters.minimum_cooling_flow,
-                parameters.maximum_cooling_flow,
-            ),
-        )
+        # self._aft_cooling_flow_controller = FlowBasedTemperatureController(
+        #     parameters.minimum_cooling_flow,
+        #     parameters.cooling_target_temperature,
+        #     tuning=(-0.1, -0.01, 0),
+        #     output_limits=(
+        #         parameters.minimum_cooling_flow,
+        #         parameters.maximum_cooling_flow,
+        #     ),
+        # )
 
-        self._fwd_cooling_flow_controller = FlowBasedTemperatureController(
-            parameters.minimum_cooling_flow,
-            parameters.cooling_target_temperature,
-            tuning=(-0.1, -0.01, 0),
-            output_limits=(
-                parameters.minimum_cooling_flow,
-                parameters.maximum_cooling_flow,
-            ),
-        )
+        # self._fwd_cooling_flow_controller = FlowBasedTemperatureController(
+        #     parameters.minimum_cooling_flow,
+        #     parameters.cooling_target_temperature,
+        #     tuning=(-0.1, -0.01, 0),
+        #     output_limits=(
+        #         parameters.minimum_cooling_flow,
+        #         parameters.maximum_cooling_flow,
+        #     ),
+        # )
 
         self._aft_mixing_valve_controller = MixingValveController(
             _INITIAL_CONTROL_VALUES.thrusters_mix_aft.setpoint.value,
@@ -222,7 +201,8 @@ class ThrustersControl(Control):
         )
         self._pump_flow_controller = PumpFlowController(
             _INITIAL_CONTROL_VALUES.thrusters_pump_1.dutypoint.value,
-            0,  # TODO: add output limits
+            parameters.flowcontrol_valve_target_position,
+            output_limits=(0.15, 1),
         )
 
         self._flow_balance_controller = FlowBalanceController([
@@ -256,21 +236,11 @@ class ThrustersControl(Control):
 
         if self.mode == "cooling":
             self._control_heat_dump_mix(sensor_values, time)
-            self._set_cooling_flow_setpoints(
-                sensor_values,
-                time,
-            )
-            self._control_flow_balance(sensor_values, time)
             self._control_pump(sensor_values)
         elif self.mode == "recovery":
             self._check_overheat(sensor_values)  # type: ignore
             self._control_recovery_mixes(sensor_values, time)
-            self._set_recovery_flow_setpoints(
-                sensor_values,
-                time,
-            )
-            self._control_flow_balance(sensor_values, time)
-            self._control_pump(sensor_values)
+            self._control_flows(sensor_values, time)
         elif self.mode == "safe":
             self._set_safe_flow_setpoints(sensor_values, time)
             self._control_flow_balance(sensor_values, time)
@@ -332,23 +302,48 @@ class ThrustersControl(Control):
         self, sensor_values: ThrustersSensorValues, time: datetime
     ):
         self._current_values.thrusters_mix_aft.setpoint = Stamped(
-            value=(
-                self._aft_mixing_valve_controller(
-                    sensor_values.thrusters_temperature_aft_return.temperature.value,
-                    self._time,
-                )
-            ),
+            # value=(
+            #     self._aft_mixing_valve_controller(
+            #         sensor_values.thrusters_temperature_aft_return.temperature.value,
+            #         self._time,
+            #     )
+            # ),
+            value = 1,
             timestamp=time,
         )
         self._current_values.thrusters_mix_fwd.setpoint = Stamped(
-            value=(
-                self._fwd_mixing_valve_controller(
-                    sensor_values.thrusters_temperature_fwd_return.temperature.value,
-                    self._time,
-                )
+            # value=(
+            #     self._fwd_mixing_valve_controller(
+            #         sensor_values.thrusters_temperature_fwd_return.temperature.value,
+            #         self._time,
+            #     )
+            # ),
+            value = 1,
+            timestamp=time,
+        )
+
+    def _enable_flow_control(self, sensor_values: ThrustersSensorValues):
+        self._aft_flow_controller.enable()
+        self._fwd_flow_controller.enable()
+
+    def _control_flows(self, sensor_values: ThrustersSensorValues, time: datetime):
+        self._current_values.thrusters_flowcontrol_aft.setpoint = Stamped(
+            value=self._aft_flow_controller(
+                sensor_values.thrusters_temperature_aft_return.temperature.value,
+                self._time,
             ),
             timestamp=time,
         )
+
+        self._current_values.thrusters_flowcontrol_fwd.setpoint = Stamped(
+            value=self._fwd_flow_controller(
+                sensor_values.thrusters_temperature_fwd_return.temperature.value,
+                self._time,
+            ),
+            timestamp=time,
+        )
+
+        self._control_pump(sensor_values)
 
     def _set_safe_flow_setpoints(
         self, sensor_values: ThrustersSensorValues, time: datetime
@@ -357,100 +352,7 @@ class ThrustersControl(Control):
         self._flow_balance_controller.set_actives([True, True])
         self._pump_flow_controller.setpoint = 2 * self._parameters.safe_mode_flow
 
-    def _set_recovery_flow_setpoints(
-        self, sensor_values: ThrustersSensorValues, time: datetime
-    ):
-        self._flow_balance_controller.set_actives([
-            sensor_values.thrusters_aft.active.value,
-            sensor_values.thrusters_fwd.active.value,
-        ])#not sure if we need to set actives here
 
-        flow_setpoints = [
-            self._get_temperature_based_flow_setpoint(
-                valve, controller, measurement, time, Valve.MIXING_A_TO_AB
-            )
-            if active
-            else 0
-            for valve, controller, measurement, active in zip(
-                [
-                    sensor_values.thrusters_mix_aft,
-                    sensor_values.thrusters_mix_fwd,
-                ],
-                [
-                    self._aft_recovery_flow_controller,
-                    self._fwd_recovery_flow_controller,
-                ],
-                [
-                    sensor_values.thrusters_temperature_aft_return.temperature.value,
-                    sensor_values.thrusters_temperature_fwd_return.temperature.value,
-                ],
-                self._flow_balance_controller.get_actives(),
-            )
-        ]
-
-        self._flow_balance_controller.set_setpoints(flow_setpoints)
-
-        self._pump_flow_controller.setpoint = sum(flow_setpoints)
-
-    def _set_cooling_flow_setpoints(
-        self, sensor_values: ThrustersSensorValues, time: datetime
-    ):
-        self._flow_balance_controller.set_actives([
-            sensor_values.thrusters_aft.active.value,
-            sensor_values.thrusters_fwd.active.value,
-        ])
-
-        flow_setpoints = [
-            self._get_temperature_based_flow_setpoint(
-                sensor_values.thrusters_mix_exchanger,
-                controller,
-                measurement,
-                time,
-                Valve.MIXING_A_TO_AB,
-            )
-            if active
-            else 0
-            for controller, measurement, active in zip(
-                [
-                    self._aft_cooling_flow_controller,
-                    self._fwd_cooling_flow_controller,
-                ],
-                [
-                    sensor_values.thrusters_temperature_aft_return.temperature.value,
-                    sensor_values.thrusters_temperature_fwd_return.temperature.value,
-                ],
-                self._flow_balance_controller.get_actives(),
-            )
-        ]
-
-        self._flow_balance_controller.set_setpoints(flow_setpoints)
-        self._flow_balance_controller.set_actives([
-            sensor_values.thrusters_aft.active.value,
-            sensor_values.thrusters_fwd.active.value,
-        ])
-        self._pump_flow_controller.setpoint = sum(flow_setpoints)
-
-    def _get_temperature_based_flow_setpoint(
-        self,
-        mixing_valve: ValveSensor,
-        flow_controller: FlowBasedTemperatureController,
-        temperature_measurement: Celsius,
-        time: datetime,
-        open_position: Ratio = Valve.MIXING_A_TO_AB,
-    ) -> LMin:
-        valve_open = mixing_valve.position_rel.value == approx(open_position, abs=0.05)
-        if valve_open:  # Mixing mixing_valve open
-            if not flow_controller.enabled():
-                flow_controller.enable(reset=True) #not sure if we need reset here 
-            flow_setpoint = flow_controller(temperature_measurement, time)
-        else:  # Mixing valve not open
-            if flow_controller.enabled():
-                flow_controller.disable()
-            flow_setpoint = flow_controller.output_limits[
-                0
-            ]  # return minimum flow setpoint if valve is not fully open
-
-        return flow_setpoint
 
     def _control_heat_dump_mix(
         self, sensor_values: ThrustersSensorValues, time: datetime
@@ -480,10 +382,17 @@ class ThrustersControl(Control):
         if not self._active_pump:
             raise Warning("No pump active")
 
+        measurement = sensor_values.thrusters_flowcontrol_aft.position_rel.value if abs(
+                sensor_values.thrusters_flowcontrol_aft.position_rel.value
+                - self.parameters.flowcontrol_valve_target_position
+            ) < abs(
+                sensor_values.thrusters_flowcontrol_fwd.position_rel.value
+                - self.parameters.flowcontrol_valve_target_position
+            ) else sensor_values.thrusters_flowcontrol_fwd.position_rel.value
+
         self._active_pump.dutypoint = Stamped(
             value=self._pump_flow_controller(
-                sensor_values.thrusters_flow_aft.flow.value
-                + sensor_values.thrusters_flow_fwd.flow.value,
+                measurement,
                 self._time,
             ),
             timestamp=self._time,

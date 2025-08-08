@@ -68,9 +68,13 @@ class _Controller[ValueUnit: float, SetpointUnit: float]:
         return pid_result if pid_result is not None else self._initial
 
 
-class FlowBasedTemperatureController(_Controller[LMin, Celsius]):
-    TUNING = (-0.001, -0.0001, 0)
+class FlowController(_Controller[LMin, Celsius]):
+    TUNING = (-.1, -.003, -0.001)
+    OUTPUT_LIMITS = (0.01, 1.0)
 
+class PumpFlowController(_Controller[Ratio, LMin]):
+    TUNING = (-2, -.1, 0.0)
+    OUTPUT_LIMITS = (0, 1.0)
 
 class HeatDumpController(_Controller[Ratio, Celsius]):
     TUNING = (-0.1, -0.01, 0)
@@ -83,7 +87,7 @@ class InvertedHeatDumpController(_Controller[Ratio, Celsius]):
 
 
 class MixingValveController(_Controller[Ratio, Celsius]):
-    TUNING = (-0.001, -0.001, 0.1)
+    TUNING = (-.5, -0.0, 0.0)
     OUTPUT_LIMITS = (0, 1.0)
 
 
@@ -188,6 +192,3 @@ class FlowDistributionController:
         self._flow_balance_controller(measurements, time)
 
 
-class PumpFlowController(_Controller[Ratio, LMin]):
-    TUNING = (0.00, 0.02, 0.0)
-    OUTPUT_LIMITS = (0, 1.0)
