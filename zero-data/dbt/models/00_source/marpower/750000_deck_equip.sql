@@ -1,11 +1,9 @@
 {{ config(materialized='table_with_connector') }}
 CREATE TABLE {{ this }} (
-	TIMESTAMP	TIMESTAMP,
-	DECK_CRANE_GEN_ALARM	BOOLEAN,
-	GUEST_TENDER_HATCH_CL_LOCK	BOOLEAN,
-	MOB_TENDER_HATCH_CL_LOCK	BOOLEAN,
-	PASS_HATCH_CL_LOCK	BOOLEAN,
-	SBL_COMMON_ALARM	BOOLEAN,
-	SBL_SB_CLOSED_LOCKED	BOOLEAN,
+	time TIMESTAMPTZ AS proctime(),
+	"PASS_HATCH_CL_LOCK"	{{ marpower_struct("BOOLEAN") }},
+	"SBL_COMMON_ALARM"	{{ marpower_struct("BOOLEAN") }},
+	"SBL_SB_CLOSED_LOCKED"	{{ marpower_struct("BOOLEAN") }},
 )
-{{ mqtt_with('marpower/750000_deck_equip') }}
+INCLUDE partition AS topic
+{{ mqtt_with('marpower/750000-deck-equip/') }}

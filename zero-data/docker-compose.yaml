@@ -3,7 +3,7 @@ services:
   dbt_gen:
     build:
       context: .
-    command: dbt run --profiles-dir ./dbt --project-dir ./dbt --target docker
+    command: sh -c "dbt seed --profiles-dir ./dbt --project-dir ./dbt --target docker && dbt run --profiles-dir ./dbt --project-dir ./dbt --target docker"
     env_file:
       .env
     depends_on:
@@ -13,7 +13,7 @@ services:
   data_gen:
     build:
       context: .
-    command: python -m zero_data.main generate-data
+    command: python -m zero_data generate-data
     env_file:
       .env
     depends_on:
@@ -38,7 +38,7 @@ services:
       retries: 5
 
   risingwave:
-    image: risingwavelabs/risingwave:nightly-20241205
+    image: risingwavelabs/risingwave:nightly-20250811
     command: single_node
     ports:
       - 4566:4566

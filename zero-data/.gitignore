@@ -65,3 +65,4 @@ temp/
 .user.yml
 dbt/target/*
 .env
+.gsheet-sa-key.json

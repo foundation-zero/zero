@@ -12,13 +12,15 @@ dynamic = ["dependencies"]
 version = "0.9.0"
 
 [project.scripts]
-zero-data = "zero_data.main:run"
+zero-data = "zero_data.__main__:run"
 
 [tool.poetry.dependencies]
 polars = "^1.16.0"
 openpyxl = "^3.1.5"
 aiomqtt = "^2.3.0"
 pydantic-settings = "^2.7.1"
+gspread = "^6.2.1"
+pydantic = "^2.11.7"
 
 [tool.poetry.group.dbt.dependencies]
 dbt-core = "^1.9.3"

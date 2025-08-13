@@ -35,5 +35,7 @@ WORKDIR /app
 COPY ./io_lists ./io_lists
 RUN mkdir -p /output/seeds
 COPY src/ ./
+COPY dbt/ ./dbt
+COPY .gsheet-sa-key.json ./
 
-RUN ["python", "-m", "zero_data.main", "generate-dbt"]
+RUN ["python", "-m", "zero_data", "generate-dbt"]
