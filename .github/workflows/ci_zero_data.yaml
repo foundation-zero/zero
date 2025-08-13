@@ -5,9 +5,11 @@ on:
       - main
     paths:
       - 'zero-data/**'
+      - '.github/workflows/ci_zero_data.yaml'
   pull_request:
     paths:
       - 'zero-data/**'
+      - '.github/workflows/ci_zero_data.yaml'
 
 env:
   IMAGE: "europe-west1-docker.pkg.dev/common-449414/common/zero-data"
@@ -25,12 +27,14 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: 3.13
-      - run: pipx install poetry==2.0.1
+      - run: pipx install poetry==2.1.4
       - run: poetry check
         working-directory: zero-data
       - uses: astral-sh/ruff-action@v3
         with:
           src: "./zero-data"
+      # - run: poetry env use 3.13
+      #   working-directory: zero-data
       - run: poetry install --with dev,test
         working-directory: zero-data
       - run: poetry run mypy src
