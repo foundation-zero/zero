@@ -23,7 +23,7 @@ class MarpowerRawGenerator:
 
             sink = self._generate_gcs_sink(topic)
             self._write_file(self.sink_path, f"{file_name}_sink", sink)
-            
+
     def detect_same_format(self, topics: List[IOTopic]):
         """Detect topics with the same format and group them into a wildcard."""
         nested_topics = [topic for topic in topics if len(topic.topic.split("/")) >= 3]
@@ -34,19 +34,19 @@ class MarpowerRawGenerator:
         sorted_topics = sorted(nested_topics, key=_nesting)
         grouped = groupby(sorted_topics, key=_nesting)
         squashed_topics = []
-        unsquashed_topics = []
+        unsquashed_topics: list[IOTopic] = []
         for nest, group in grouped:
-            group = list(group)
-            if len(group) > 1:
+            list_of_group = list(group)
+            if len(list_of_group) > 1:
                 # Check if all topics in the group have the same format
-                if all(topic.fields == group[0].fields for topic in group):
+                if all(topic.fields == list_of_group[0].fields for topic in list_of_group):
                     logger.info(f"Generating single table for nesting: {nest}")
-                    squashed_topics.append(IOTopic(topic="/".join(["marpower", *nest, "#"]), fields=group[0].fields))
+                    squashed_topics.append(IOTopic(topic="/".join(["marpower", *nest, "#"]), fields=list_of_group[0].fields))
                 else:
                     logger.warning(f"Different formats found in nesting: {nest}, generating separate tables.")
-                    unsquashed_topics.extend(group)
+                    unsquashed_topics.extend(list_of_group)
             else:
-                unsquashed_topics.append(group[0])
+                unsquashed_topics.append(list_of_group[0])
         return unnested_topics + squashed_topics + unsquashed_topics
 
     @classmethod
@@ -79,7 +79,7 @@ class MarpowerRawGenerator:
     def _table(topic: str) -> str:
         """Generate the table name for a topic."""
         return f"marpower/{topic.removeprefix("marpower/").replace("/", "_").replace("-", "_").rstrip("#_")}"
-    
+
     @staticmethod
     def _timestamp() -> str:
         """Generate the SQL for the timestamp field."""
