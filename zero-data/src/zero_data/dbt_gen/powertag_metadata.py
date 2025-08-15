@@ -1,9 +1,12 @@
 import logging
+import os
 from pathlib import Path
 import gspread
 import polars as pl
 
-SERVICE_ACCOUNT_KEY_FILE = ".gsheet-sa-key.json"  # Stored in Bitwarden IT / Zero / Common GSheet Service Account
+SERVICE_ACCOUNT_KEY_FILE = os.getenv(
+    "GSHEET_SA_KEY_FILE", ".gsheet-sa-key.json"
+)  # Stored in Bitwarden IT / Zero / Common GSheet Service Account
 SHEET_ID = "1aPp87gaevQulzXpWf-wpg5ScPD3WNuJPkMSB4weMQd8"
 
 logger = logging.getLogger(__name__)
