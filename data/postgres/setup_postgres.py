@@ -5,7 +5,7 @@ import logging
 import psycopg
 from dotenv import load_dotenv
 
-from config import Settings
+from ..config import Settings
 
 load_dotenv(dotenv_path=".env")
 

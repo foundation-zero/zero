@@ -1,7 +1,7 @@
 import asyncio
 import codecs
 
-from config import Settings
+from ..config import Settings
 from dotenv import load_dotenv
 import psycopg
 import subprocess
