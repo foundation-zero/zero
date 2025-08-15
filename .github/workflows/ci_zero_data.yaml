@@ -33,8 +33,6 @@ jobs:
       - uses: astral-sh/ruff-action@v3
         with:
           src: "./zero-data"
-      # - run: poetry env use 3.13
-      #   working-directory: zero-data
       - run: poetry install --with dev,test
         working-directory: zero-data
       - run: poetry run mypy src

@@ -28,6 +28,7 @@ async def test_generator():
 
         try:
             async with asyncio.timeout(0.1):
+                now = datetime.datetime.now()
                 await gen.run()
         except asyncio.TimeoutError:
             pass
@@ -40,7 +41,7 @@ async def test_generator():
                 "a",
                 json.dumps(
                     {
-                        "timestamp": datetime.datetime.now().strftime(
+                        "timestamp": now.strftime(
                             "%Y-%m-%d %H:%M:%S"
                         ),
                         "field1": True,
@@ -52,7 +53,7 @@ async def test_generator():
                 "b",
                 json.dumps(
                     {
-                        "timestamp": datetime.datetime.now().strftime(
+                        "timestamp": now.strftime(
                             "%Y-%m-%d %H:%M:%S"
                         ),
                         "field1": 8,
