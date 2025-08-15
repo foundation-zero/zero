@@ -1,4 +1,4 @@
-name: "Zero Data: Test and push Docker image"
+name: "Data: Test
 on:
   push:
     branches:
