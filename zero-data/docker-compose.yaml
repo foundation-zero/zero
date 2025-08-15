@@ -21,7 +21,7 @@ services:
         condition: service_healthy
 
   vernemq:
-    image: vernemq/vernemq:2.0.0-alpine
+    image: vernemq/vernemq:2.1.1-alpine
     container_name: vernemq
     restart: always
     ports:

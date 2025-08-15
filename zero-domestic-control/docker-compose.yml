@@ -1,15 +1,23 @@
 services:
-  mosquitto:
-    image: eclipse-mosquitto
-    restart: unless-stopped
+  vernemq:
+    image: vernemq/vernemq:2.1.1-alpine
+    container_name: vernemq
+    restart: always
     ports:
-      - 1883:1883
-    volumes:
-      - ./volumes/mosquitto:/etc/mosquitto
-      - ./volumes/mosquitto/mosquitto.conf:/mosquitto/config/mosquitto.conf
+      - "1883:1883"
+      - "9001:9001"
+    environment:
+      DOCKER_VERNEMQ_ACCEPT_EULA: "yes"
+      DOCKER_VERNEMQ_ALLOW_ANONYMOUS: "on"
+      DOCKER_VERNEMQ_LISTENER__WS__DEFAULT: "0.0.0.0:9001"
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8888/health"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
 
   risingwave:
-    image: risingwavelabs/risingwave:latest
+    image: risingwavelabs/risingwave:nightly-20250811
     command: single_node
     ports:
       - 4566:4566
@@ -24,7 +32,7 @@ services:
       interval: 1s
       timeout: 5s
     depends_on:
-      - mosquitto
+      - vernemq
 
   postgres:
     image: postgres:15
@@ -102,7 +110,7 @@ services:
       - 8000:8000
     depends_on:
       - hass
-      - mosquitto
+      - vernemq
     environment: &app_env
       PG_HOST: postgres
       PG_PORT: ${PG_PORT}
@@ -111,7 +119,7 @@ services:
       PG_DB: ${PG_DB}
       RISINGWAVE_URL: "postgres://root@risingwave:4566/dev"
       JWT_SECRET: ${JWT_SECRET}
-      MQTT_HOST: mosquitto
+      MQTT_HOST: vernemq
       MQTT_PORT: 1883
       HOME_ASSISTANT_URL: http://hass:8123/api
       HOME_ASSISTANT_WS_URL: ws://hass:8123/api/websocket
@@ -125,7 +133,7 @@ services:
       context: .
     depends_on:
       - hass
-      - mosquitto
+      - vernemq
       - stub
     environment:
       <<: *app_env
@@ -135,34 +143,10 @@ services:
     build:
       context: .
     depends_on:
-      - mosquitto
+      - vernemq
     environment:
       <<: *app_env
       TERMODINAMICA_HOST: "0.0.0.0"
-
-  setup_postgres:
-    profiles:
-      - setup
-    command: ["zero_domestic_control", "setup", "postgres"]
-    build:
-      context: .
-    environment:
-      <<: *app_env
-    depends_on:
-      postgres:
-        condition: service_healthy
-
-  setup_risingwave:
-    profiles:
-      - setup
-    command: ["zero_domestic_control", "setup", "risingwave"]
-    build:
-      context: .
-    environment:
-      <<: *app_env
-    depends_on:
-      postgres:
-        condition: service_healthy
 
   hass:
     image: "ghcr.io/home-assistant/home-assistant:stable"

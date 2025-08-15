@@ -15,22 +15,19 @@ docker compose up postgres risingwave -d
 
 Run Postgres database setup
 ```bash
-docker compose up setup_postgres
+cd data/postgres
+poetry run python -m setup_postgres
 ```
 
 Run dbt database setup
 ```bash
 cd data/risingwave
-poetry run python -m run_dbt.py
-```
-
-Run Risingwave database setup
-```bash
-docker compose up setup_risingwave
+poetry run python -m run_dbt
 ```
 
 Run everything else
 ```bash
+cd zero-domestic-control
 docker compose up -d
 ```
 

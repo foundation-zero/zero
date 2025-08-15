@@ -1,5 +1,5 @@
-{{ config(materialized='table_with_connector') }}
-CREATE TABLE {{ this }} (
+{{ config(materialized='source') }}
+CREATE SOURCE {{ this }} (
     "id" TEXT,
     "time" TIMESTAMPTZ as proctime (),
     actual_temperature REAL,
