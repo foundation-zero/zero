@@ -1,4 +1,4 @@
-name: "Data: Test
+name: "Data: Test"
 on:
   push:
     branches:
