@@ -25,7 +25,7 @@ jobs:
       - run: pipx install poetry==2.1.4
       - run: poetry check
         working-directory: data/risingwave
-      - run: poetry install --with dev,test
+      - run: poetry install --no-root
         working-directory: data
       - name: Run services
         run: docker compose up -d --quiet-pull postgres risingwave vernemq
