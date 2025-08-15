@@ -31,14 +31,9 @@ cd zero-domestic-control
 docker compose up -d
 ```
 
-Run control proces
-```bash
-docker compose up control -d
-```
-
 Apply hasura metadata
 ```bash
-cd volumes/hasura
+cd ./volumes/hasura
 hasura metadata apply --admin-secret myadminsecretkey
 ```
 
