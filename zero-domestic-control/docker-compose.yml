@@ -1,6 +1,6 @@
 services:
   vernemq:
-    image: vernemq/vernemq:2.1.1-alpine
+    image: vernemq/vernemq:2.0.0-alpine
     container_name: vernemq
     restart: always
     ports:
@@ -132,9 +132,12 @@ services:
     build:
       context: .
     depends_on:
-      - hass
-      - vernemq
-      - stub
+      hass:
+        condition: service_healthy
+      vernemq:
+        condition: service_healthy
+      stub:
+        condition: service_started
     environment:
       <<: *app_env
 
@@ -143,7 +146,8 @@ services:
     build:
       context: .
     depends_on:
-      - vernemq
+      vernemq:
+        condition: service_healthy
     environment:
       <<: *app_env
       TERMODINAMICA_HOST: "0.0.0.0"
@@ -157,6 +161,11 @@ services:
     restart: unless-stopped
     ports:
       - 8123:8123
+    healthcheck:
+      test: ["CMD-SHELL", "curl --silent --fail http://localhost:8123/"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
 volumes:
   db_data:

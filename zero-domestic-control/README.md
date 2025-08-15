@@ -8,9 +8,9 @@ https://miro.com/app/board/uXjVI85VEAc=/?share_link_id=164545697008
 
 Install Hasura CLI: https://hasura.io/docs/2.0/hasura-cli/install-hasura-cli/
 
-Start databases
+Start databases and MQTT broker
 ```bash
-docker compose up postgres risingwave -d
+docker compose up postgres risingwave vernemq -d
 ```
 
 Run Postgres database setup
@@ -25,7 +25,7 @@ cd data/risingwave
 poetry run python -m run_dbt
 ```
 
-Run everything else
+Run everything else. Control and stub
 ```bash
 cd zero-domestic-control
 docker compose up -d
