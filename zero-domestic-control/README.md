@@ -8,7 +8,7 @@ https://miro.com/app/board/uXjVI85VEAc=/?share_link_id=164545697008
 
 Install Hasura CLI: https://hasura.io/docs/2.0/hasura-cli/install-hasura-cli/
 
-Start databases and MQTT broker
+Start databases and MQTT brokerpoet
 ```bash
 docker compose up postgres risingwave vernemq -d
 ```
