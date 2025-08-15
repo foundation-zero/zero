@@ -13,16 +13,11 @@ Start databases and MQTT broker
 docker compose up postgres risingwave vernemq -d
 ```
 
-Run Postgres database setup
+Run postgres and risingwave setup
 ```bash
-cd data/postgres
-poetry run python -m setup_postgres
-```
-
-Run dbt database setup
-```bash
-cd data/risingwave
-poetry run python -m run_dbt
+cd data
+poetry run python -m postgres/setup_postgres
+poetry run python -m risingwave/run_dbt
 ```
 
 Run everything else. Control and stub
