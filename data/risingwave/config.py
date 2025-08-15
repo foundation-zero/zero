@@ -9,10 +9,10 @@ class Settings(BaseSettings):
     pg_port: str
     pg_user: str
     pg_password: str
-    pg_db_dmc: str
+    pg_db: str
 
     risingwave_url: str
 
     @property
     def pg_url(self) -> str:
-        return f"postgresql://{self.pg_user}:{self.pg_password}@{self.pg_host}:{self.pg_port}/{self.pg_db_dmc}"
+        return f"postgresql://{self.pg_user}:{self.pg_password}@{self.pg_host}:{self.pg_port}/{self.pg_db}"
