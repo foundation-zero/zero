@@ -1,10 +1,11 @@
-import codecs
 import asyncio
+import codecs
+import logging
+
 import psycopg
+from dotenv import load_dotenv
 
 from config import Settings
-import logging
-from dotenv import load_dotenv
 
 load_dotenv(dotenv_path=".env")
 
