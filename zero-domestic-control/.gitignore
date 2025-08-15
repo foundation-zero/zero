@@ -29,3 +29,6 @@ webostv.conf
 # Log files
 home-assistant.log
 home-assistant.log.*
+
+# Environments
+.env
