@@ -18,8 +18,8 @@ def test_marpower_raw():
         MarpowerRawGenerator(Path("/not-used")).generate(marpower_io_topics)
         mkdir_mock.assert_called_with(parents=True, exist_ok=True)
         open_mock.assert_any_call(
-            PosixPath("/not-used/models/00_source/test_topic.sql"), "w"
+            PosixPath("/not-used/models/00_source/marpower/test_topic.sql"), "w"
         )
         open_mock.assert_any_call(
-            PosixPath("/not-used/models/40_sinks/test_topic_sink.sql"), "w"
+            PosixPath("/not-used/models/40_sinks/marpower/test_topic_sink.sql"), "w"
         )

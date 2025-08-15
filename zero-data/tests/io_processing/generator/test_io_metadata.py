@@ -17,4 +17,4 @@ def test_io_metadata(marpower_io_list):
             PosixPath("/not-used/seeds/io_metadata_marpower.csv"),
             quote_style="non_numeric",
         )
-        assert io_metadata_df.shape == (390, 13)
+        assert io_metadata_df.shape == (4187, 13)
