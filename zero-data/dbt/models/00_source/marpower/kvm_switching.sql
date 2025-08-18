@@ -1,20 +1,12 @@
 {{ config(materialized='table_with_connector') }}
 CREATE TABLE {{ this }} (
-	TIMESTAMP	TIMESTAMP,
-	CAPT_CAB_DISP_TOGG	BOOLEAN,
-	CREW_MESS_DISP_TOGG	BOOLEAN,
-	HELM_PS_IN_DISP_AMCS	BOOLEAN,
-	HELM_PS_IN_DISP_ON_OFF	BOOLEAN,
-	HELM_PS_IN_DISP_TOGG	BOOLEAN,
-	HELM_PS_IN_MOUSE_TOGG	BOOLEAN,
-	HELM_PS_OUT_DISP_ON_OFF	BOOLEAN,
-	HELM_PS_OUT_DISP_TOGG	BOOLEAN,
-	HELM_SB_IN_DISP_ON_OFF	BOOLEAN,
-	HELM_SB_IN_DISP_TOGG	BOOLEAN,
-	HELM_SB_IN_MOUSE_TOGG	BOOLEAN,
-	HELM_SB_OUT_DISP_ON_OFF	BOOLEAN,
-	HELM_SB_OUT_DISP_TOGG	BOOLEAN,
-	MISSION_RM_DISP_TOGG	BOOLEAN,
-	SHIPS_OFF_DISP_TOGG	BOOLEAN,
+	time TIMESTAMPTZ AS proctime(),
+	"HELM_PS_IN_DISP_AMCS"	{{ marpower_struct("BOOLEAN") }},
+	"HELM_PS_IN_DISP_ON_OFF"	{{ marpower_struct("BOOLEAN") }},
+	"HELM_PS_IN_DISP_TOGG"	{{ marpower_struct("BOOLEAN") }},
+	"HELM_PS_OUT_DISP_ON_OFF"	{{ marpower_struct("BOOLEAN") }},
+	"HELM_PS_OUT_DISP_TOGG"	{{ marpower_struct("BOOLEAN") }},
+	"SHIPS_OFF_DISP_TOGG"	{{ marpower_struct("BOOLEAN") }},
 )
-{{ mqtt_with('marpower/kvm_switching') }}
+INCLUDE partition AS topic
+{{ mqtt_with('marpower/kvm-switching/') }}

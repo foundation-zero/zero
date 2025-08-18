@@ -1,5 +1,5 @@
 <template>
-  <main class="flex h-[100svh] flex-col">
+  <main class="flex h-svh flex-col">
     <slot />
   </main>
 </template>

@@ -1,14 +1,13 @@
 <script lang="ts" setup generic="T extends 'number' | 'boolean' | 'string'">
-import { Field, TypeToType } from "@/stores/thrs";
-import { Checkbox } from "@components/shadcn/checkbox";
-import { Label } from "@components/shadcn/label";
+import { Checkbox } from "@/components/ui/shadcn/checkbox";
+import { Label } from "@/components/ui/shadcn/label";
 import {
   NumberField,
   NumberFieldContent,
   NumberFieldDecrement,
   NumberFieldIncrement,
   NumberFieldInput,
-} from "@components/shadcn/number-field";
+} from "@/components/ui/shadcn/number-field";
 import {
   Select,
   SelectContent,
@@ -16,7 +15,8 @@ import {
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@components/shadcn/select";
+} from "@/components/ui/shadcn/select";
+import { Field, TypeToType } from "@/stores/thrs";
 import { computed } from "vue";
 
 const props = defineProps<{

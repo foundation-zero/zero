@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import { defineProps } from "vue";
 import { RouteLocationRaw } from "vue-router";
 
 defineProps<{ to: RouteLocationRaw; active?: boolean; disabled?: boolean }>();
@@ -7,7 +6,7 @@ defineProps<{ to: RouteLocationRaw; active?: boolean; disabled?: boolean }>();
 
 <template>
   <li
-    class="rounded-xl hover:bg-primary/10"
+    class="hover:bg-primary/10 rounded-md"
     :class="{
       'bg-primary/10 font-medium': active,
     }"
@@ -21,7 +20,7 @@ defineProps<{ to: RouteLocationRaw; active?: boolean; disabled?: boolean }>();
     </RouterLink>
     <span
       v-else
-      class="pointer-events-none flex items-center px-3 py-2 text-primary/40"
+      class="text-primary/40 pointer-events-none flex items-center px-3 py-2"
     >
       <slot />
     </span>

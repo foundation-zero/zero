@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { BlindsGroup } from "@/@types";
+import { List, ListItem } from "@/components/ui/shared/list";
 import { useRoomStore } from "@/stores/rooms";
-import { List, ListItem } from "@components/shadcn/list";
 import { BlindsSlider } from "@components/shared/blinds-slider";
 
 defineProps<{ group: BlindsGroup }>();

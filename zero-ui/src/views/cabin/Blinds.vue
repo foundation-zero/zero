@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { BlindsGroup } from "@/@types";
-import { List, ListHeader, ListItem, ListRoot } from "@components/shadcn/list";
+import { List, ListHeader, ListItem, ListRoot } from "@/components/ui/shared/list";
 import { BlindsSlider } from "@components/shared/blinds-slider";
 import BlindsValue from "@components/shared/blinds-value/BlindsValue.vue";
 import { BlindsControl } from "@modules/cabin/blinds-control";

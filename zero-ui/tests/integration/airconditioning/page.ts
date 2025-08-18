@@ -1,5 +1,5 @@
+import { SubscriptionInterceptor } from "@foundation-zero/graphql-subscriptions-mock";
 import { Locator, Page } from "@playwright/test";
-import { SubscriptionInterceptor } from "graphql-subscriptions-mock";
 import { Room } from "../../../src/@types";
 import { toTemperatureControl, toTemperatureSensor } from "../../lib/helpers";
 import { ZeroSubscriptions } from "../../mocks/playwright";

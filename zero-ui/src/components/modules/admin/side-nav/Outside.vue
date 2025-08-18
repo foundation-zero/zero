@@ -9,7 +9,7 @@ import { Droplets, ThermometerSun } from "lucide-vue-next";
         :size="16"
         stroke-width="1"
       />
-      <span class="ml-1">65<span class="ml-0.5 text-rxs font-light">&percnt;</span> </span>
+      <span class="ml-1">65<span class="text-rxs ml-0.5 font-light">&percnt;</span> </span>
     </span>
 
     <span class="flex items-center">

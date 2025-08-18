@@ -1,0 +1,1 @@
+{{ sink_append_gcs('raw', '300000_dirty_oil', '300000_dirty_oil_sink') }}

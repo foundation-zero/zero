@@ -1,7 +1,6 @@
+import tailwindcss from "@tailwindcss/vite";
 import vue from "@vitejs/plugin-vue";
-import autoprefixer from "autoprefixer";
 import { fileURLToPath, URL } from "node:url";
-import tailwind from "tailwindcss";
 import { defineConfig, loadEnv } from "vite";
 import { nodePolyfills } from "vite-plugin-node-polyfills";
 
@@ -32,13 +31,9 @@ export default defineConfig(({ mode }) => {
         },
       },
     },
-    css: {
-      postcss: {
-        plugins: [tailwind(), autoprefixer()],
-      },
-    },
     plugins: [
       vue(),
+      tailwindcss(),
       nodePolyfills({
         include: [],
         globals: {

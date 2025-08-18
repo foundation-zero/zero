@@ -14,7 +14,7 @@ provide("showSideNav", showSideNav);
 </script>
 
 <template>
-  <main class="flex h-[100svh] flex-row md:flex-nowrap">
+  <main class="flex h-svh flex-row md:flex-nowrap">
     <SideNav :show="showSideNav" />
     <article
       class="flex w-full flex-col px-4 pt-[56px] md:px-6 md:pt-[64px]"
@@ -24,10 +24,10 @@ provide("showSideNav", showSideNav);
     >
       <slot />
     </article>
-    <TopNavigation :class="{ 'md:!left-[250px] lg:!left-[300px]': showSideNav }">
+    <TopNavigation :class="{ 'md:left-[250px]! lg:left-[300px]!': showSideNav }">
       <ProgressBar
         :pending="hasPendingRequests"
-        class="absolute left-0 right-0"
+        class="absolute right-0 left-0"
       />
       <template #left>
         <button

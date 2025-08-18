@@ -22,7 +22,7 @@ export const createAuthFixture = (): [
   async ({ page }, use) => {
     const asRole = (role: Roles) => async () => {
       await page.goto(`/auth?token=${tokens[role]}`);
-      await page.waitForTimeout(1000);
+      await page.waitForTimeout(2000);
     };
 
     const asAdmin = asRole(Roles.Admin);

@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import { LightingControl } from "@/@types";
+import { Switch } from "@/components/ui/shadcn/switch";
+import { ListItem } from "@/components/ui/shared/list";
 import { ratioAsPercentage } from "@/lib/utils";
-import { ListItem } from "@components/shadcn/list";
-import { Switch } from "@components/shadcn/switch";
 import { LightsSlider } from "@components/shared/lights-slider";
 import { ZSpacer } from "@components/shared/spacer";
 import { LampCeiling, LampWallUp } from "lucide-vue-next";
@@ -52,7 +52,7 @@ const on = computed({
       <span class="text-md font-medium"> {{ light.name }}</span>
       <ZSpacer />
       <Switch
-        v-model:checked="on"
+        v-model="on"
         :disabled="disabled"
       ></Switch>
     </span>

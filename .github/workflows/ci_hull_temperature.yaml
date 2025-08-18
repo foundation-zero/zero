@@ -1,0 +1,49 @@
+name: "Hull temperature: Test"
+on:
+  push:
+    paths:
+      - 'zero-hull-temperature/**'
+      - '.github/workflows/ci_hull_temperature.yaml'
+  release:
+    types: [released]
+    paths:
+      - 'zero-hull-temperature/**'
+
+env:
+  IMAGE: "europe-west1-docker.pkg.dev/common-449414/common/zero-hull-temperature"
+
+jobs:
+  test:
+    timeout-minutes: 10
+    runs-on: ubuntu-latest
+    outputs:
+      image_tag: ${{ steps.image_tag.outputs.image_tag }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: '0'
+      - uses: actions/setup-python@v5
+        with:
+          python-version: 3.13
+      - run: pipx install poetry==2.0.1
+        working-directory: zero-hull-temperature
+      - run: poetry check
+        working-directory: zero-hull-temperature
+      - run: poetry install
+        working-directory: zero-hull-temperature
+      - run: poetry run ruff check zero_hull_temperature tests
+        working-directory: zero-hull-temperature
+      - run: poetry run pyright
+        working-directory: zero-hull-temperature
+      - name: Run services
+        run: docker compose up -d --quiet-pull
+        working-directory: zero-hull-temperature
+      - name: Unit Test
+        run: poetry run pytest
+        working-directory: zero-hull-temperature
+      - name: Run stub
+        run: poetry run python -m zero_hull_temperature stub --mqtt-host localhost --mqtt-port 1883 --modbus-host localhost --modbus-port 11502 --seconds 30&
+        working-directory: zero-hull-temperature
+      - name: Read
+        run: poetry run python -m zero_hull_temperature run --mqtt-host localhost --mqtt-port 1883 --modbus-host localhost --modbus-port 11502 --seconds 10 -n 1 --send-topic hull-temperature/temperatures
+        working-directory: zero-hull-temperature

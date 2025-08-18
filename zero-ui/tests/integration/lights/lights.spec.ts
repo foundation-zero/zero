@@ -83,10 +83,14 @@ test.describe("Lights", () => {
     });
 
     test.describe("when light is on", () => {
-      test.beforeEach(async ({ lightsPage }) => {
+      test.beforeEach(async ({ lightsPage, page }) => {
         lightsPage.setLightLevels([0.1, 0.1], dutchCabin);
 
+        await page.waitForTimeout(1000);
+
         await lightsPage.switches.first().click();
+
+        await page.waitForTimeout(1000);
       });
 
       test("turns the light off", async ({ lightsPage }) => {

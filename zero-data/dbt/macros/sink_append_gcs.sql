@@ -1,5 +1,6 @@
-{% macro sink_append_gcs(layer, table, sink_name) %}{{ config(materialized='sink') }}CREATE SINK "{{ sink_name }}" AS
-SELECT * FROM "{{ table }}"
+{% macro sink_append_gcs(layer, table, sink_name) -%}
+{{ config(materialized='sink') }}CREATE SINK "{{ sink_name }}" AS
+SELECT * FROM {{ ref(table) }}
 WITH (
     connector               = 'gcs',
     gcs.path                = '{{layer }}/{{ table }}',

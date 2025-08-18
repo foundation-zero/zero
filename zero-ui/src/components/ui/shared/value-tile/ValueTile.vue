@@ -10,29 +10,29 @@ const disabled = inject<Ref<boolean>>("disabled");
 
 <template>
   <li
-    class="relative flex aspect-[4/3] flex-col justify-between rounded-lg border border-primary/20 bg-primary/5 px-[0.625em] py-[0.3em] text-primary/85 transition-all dark:bg-primary/10 2xl:aspect-[16/10]"
+    class="border-primary/20 bg-primary/5 text-primary/85 dark:bg-primary/10 relative flex aspect-4/3 flex-col justify-between rounded border px-[0.625em] py-[0.3em] transition-all 2xl:aspect-16/10"
     :class="{
-      'cursor-pointer hover:bg-primary/15 hover:text-primary/100': selectable && !disabled,
+      'hover:bg-primary/15 hover:text-primary cursor-pointer': selectable && !disabled,
       'cursor-wait': disabled,
       [state ?? ValidationStatus.UNKNOWN]: true,
     }"
   >
-    <div class="absolute bottom-0 left-0 right-0 top-8">
+    <div class="absolute top-8 right-0 bottom-0 left-0">
       <slot name="background" />
     </div>
     <span class="flex w-full items-center">
       <slot name="top-left">
-        <span class="overflow-hidden text-ellipsis whitespace-nowrap pr-1 text-rlg">{{
+        <span class="text-rlg overflow-hidden pr-1 text-ellipsis whitespace-nowrap">{{
           title
         }}</span>
       </slot>
       <span class="grow" />
       <slot name="top-right">
-        <ExclamationTriangleIcon class="h-[1.25em] w-[1.25em] text-primary/90" />
+        <ExclamationTriangleIcon class="text-primary/90 h-[1.25em] w-[1.25em]" />
       </slot>
     </span>
 
-    <span class="flex place-items-baseline justify-center text-r5xl font-bold">
+    <span class="text-r5xl flex place-items-baseline justify-center font-bold">
       <slot name="center" />
     </span>
 
@@ -48,10 +48,10 @@ const disabled = inject<Ref<boolean>>("disabled");
 li {
   &.unknown,
   &.ok {
-    --primary: 0 0% 20%;
+    --primary: oklch(0.3211 0 0);
 
     &:is(.dark *) {
-      --primary: 0 0% 80%;
+      --primary: oklch(0.8452 0 0);
     }
 
     svg {
@@ -60,10 +60,10 @@ li {
   }
 
   &.warn {
-    --primary: 32.5 83.5% 50%;
+    --primary: oklch(0.7176 0.1612 61.43);
   }
   &.fail {
-    --primary: 0 84% 60%;
+    --primary: oklch(0.6356 0.2082 25.38);
   }
 }
 </style>

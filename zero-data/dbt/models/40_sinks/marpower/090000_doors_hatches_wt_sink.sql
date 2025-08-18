@@ -1,0 +1,1 @@
+{{ sink_append_gcs('raw', '090000_doors_hatches_wt', '090000_doors_hatches_wt_sink') }}

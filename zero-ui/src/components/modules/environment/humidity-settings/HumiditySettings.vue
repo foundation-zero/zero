@@ -1,4 +1,12 @@
 <script setup lang="ts">
+import { Button } from "@/components/ui/shadcn/button";
+import {
+  NumberField,
+  NumberFieldContent,
+  NumberFieldDecrement,
+  NumberFieldIncrement,
+  NumberFieldInput,
+} from "@/components/ui/shadcn/number-field";
 import { HUMIDITY_SETPOINT_RANGE } from "@/lib/consts";
 import {
   isHumidityControl,
@@ -6,14 +14,6 @@ import {
   updateSetpointWhenControlsHaveChanged,
 } from "@/lib/utils";
 import { useRoomStore } from "@/stores/rooms";
-import { Button } from "@components/shadcn/button";
-import {
-  NumberField,
-  NumberFieldContent,
-  NumberFieldDecrement,
-  NumberFieldIncrement,
-  NumberFieldInput,
-} from "@components/shadcn/number-field";
 import { ResponsivePopup } from "@components/shared/responsive-dialog";
 
 import { Settings } from "lucide-vue-next";

@@ -1,0 +1,1 @@
+{{ sink_append_gcs('raw', '210000_bilge_fifi_strpump', '210000_bilge_fifi_strpump_sink') }}

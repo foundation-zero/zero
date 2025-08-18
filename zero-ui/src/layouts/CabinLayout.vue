@@ -18,14 +18,14 @@ provide("disabled", hasPendingRequests);
 </script>
 
 <template>
-  <main class="flex h-[100svh] flex-row md:flex-nowrap">
+  <main class="flex h-svh flex-row md:flex-nowrap">
     <AsAdmin>
       <SideNav :show="showSideNav" />
     </AsAdmin>
     <article
       class="flex w-full flex-col items-center pt-[64px] sm:pt-[96px]"
       :class="{
-        'border-l border-r bg-[hsl(var(--primary)/0.025)] px-0 2xl:container xl:px-6':
+        'border-r border-l bg-[hsl(var(--primary)/0.025)] px-0 xl:px-6 2xl:container':
           !breakpoints.touch,
         'pending opacity-50': hasPendingRequests,
       }"
@@ -33,10 +33,10 @@ provide("disabled", hasPendingRequests);
       <slot />
     </article>
   </main>
-  <TopNavigation :class="{ 'md:!left-[250px] lg:!left-[300px]': showSideNav }">
+  <TopNavigation :class="{ 'md:left-[250px]! lg:left-[300px]!': showSideNav }">
     <ProgressBar
       :pending="hasPendingRequests"
-      class="absolute left-0 right-0"
+      class="absolute right-0 left-0"
     />
     <template #left>
       <div

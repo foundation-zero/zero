@@ -104,7 +104,7 @@ const option = ref<ECBasicOption>({
   </v-chart>
   <div
     v-if="thresholds"
-    class="absolute left-0 top-0 h-full w-full"
+    class="absolute top-0 left-0 h-full w-full"
   >
     <span
       v-for="(threshold, i) in sortedThresholds"
@@ -112,7 +112,7 @@ const option = ref<ECBasicOption>({
       :style="{
         bottom: `${relativeThresholds[i]}%`,
       }"
-      class="absolute w-full border-b border-dashed border-primary/35 p-0.5 text-right text-rsm font-light text-primary/80"
+      class="border-primary/35 text-rsm text-primary/80 absolute w-full border-b border-dashed p-0.5 text-right font-light"
     >
       <span>{{ formatInt(threshold) }}</span> <slot name="unit" />
     </span>
