@@ -10,7 +10,6 @@ load_dotenv(dotenv_path=".env")
 
 settings = Settings()
 
-print(settings)
 print("Postgres: Initializing tables")
 
 

@@ -10,12 +10,9 @@ load_dotenv(dotenv_path=".env")
 
 settings = Settings()
 
-print(settings)
 print("Risingwave: Initializing tables")
 
 subprocess.run(["poetry", "run", "dbt", "build", "--full-refresh"], cwd="./risingwave")
-
-print(settings)
 
 
 async def setup_domestic_control():
@@ -28,5 +25,4 @@ async def setup_domestic_control():
 
 
 asyncio.run(setup_domestic_control())
-
 print("Risingwave: Done")
