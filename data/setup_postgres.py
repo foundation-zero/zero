@@ -1,6 +1,5 @@
 import asyncio
 import codecs
-import logging
 
 import psycopg
 from dotenv import load_dotenv
@@ -11,9 +10,7 @@ load_dotenv(dotenv_path=".env")
 
 settings = Settings()
 
-logging.info("Initializing postgres tables")
-
-print(settings)
+print("Postgres: Initializing tables")
 
 
 async def setup():
@@ -26,3 +23,4 @@ async def setup():
 
 
 asyncio.run(setup())
+print("Postgres: Done")

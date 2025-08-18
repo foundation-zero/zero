@@ -5,18 +5,19 @@ from config import Settings
 from dotenv import load_dotenv
 import psycopg
 import subprocess
-import logging
 
 settings = Settings()
 
 
 load_dotenv(dotenv_path=".env")
 
-logging.info("Initializing Risingwave tables")
+print("Risingwave: Initializing tables")
 
-subprocess.run(["poetry", "run", "dbt", "compile"])
+subprocess.run(["poetry", "run", "dbt", "compile"], cwd="./risingwave")
 
-subprocess.run(["poetry", "run", "dbt", "run", "--full-refresh"])
+subprocess.run(["poetry", "run", "dbt", "run", "--full-refresh"], cwd="./risingwave")
+
+print(settings)
 
 
 async def setup_domestic_control():
@@ -29,3 +30,5 @@ async def setup_domestic_control():
 
 
 asyncio.run(setup_domestic_control())
+
+print("Risingwave: Done")
