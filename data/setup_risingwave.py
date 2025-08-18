@@ -13,9 +13,7 @@ settings = Settings()
 print(settings)
 print("Risingwave: Initializing tables")
 
-subprocess.run(["poetry", "run", "dbt", "compile"], cwd="./risingwave")
-
-subprocess.run(["poetry", "run", "dbt", "run", "--full-refresh"], cwd="./risingwave")
+subprocess.run(["poetry", "run", "dbt", "build", "--full-refresh"], cwd="./risingwave")
 
 print(settings)
 
