@@ -10,8 +10,8 @@ logger = logging.getLogger(__name__)
 
 class MarpowerRawGenerator:
     def __init__(self, dbt_path: Path):
-        self.table_path = dbt_path / "output/00_source/"
-        self.sink_path = dbt_path / "output/40_sinks/"
+        self.table_path = dbt_path / "models/00_source/"
+        self.sink_path = dbt_path / "models/40_sinks/"
 
     def generate(self, topics: List[IOTopic]):
         """Generate dbt models for the given topics."""

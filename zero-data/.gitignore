@@ -68,3 +68,6 @@ dbt/target/*
 # Environments
 .env
 .gsheet-sa-key.json
+
+# Output
+output/**
