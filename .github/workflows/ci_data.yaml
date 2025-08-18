@@ -28,7 +28,7 @@ jobs:
       - run: poetry install --no-root
         working-directory: data
       - name: Run services
-        run: docker compose up -d --quiet-pull postgres risingwave vernemq
+        run: docker compose up -d --quiet-pull postgres risingwave
         working-directory: data
       - run: poetry run python -m setup_postgres
         working-directory: data
