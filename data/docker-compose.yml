@@ -1,7 +1,6 @@
 services:
   vernemq:
     image: vernemq/vernemq:2.0.0-alpine
-    container_name: vernemq
     restart: always
     ports:
       - "1883:1883"
@@ -19,6 +18,7 @@ services:
   risingwave:
     image: risingwavelabs/risingwave:nightly-20250811
     command: single_node
+    restart: always
     ports:
       - 4566:4566
       - 5691:5691
@@ -31,8 +31,6 @@ services:
         - bash -c 'printf \"GET / HTTP/1.1\n\n\" > /dev/tcp/127.0.0.1/5690; exit $$?;'
       interval: 1s
       timeout: 5s
-    depends_on:
-      - vernemq
 
   postgres:
     image: postgres:15
