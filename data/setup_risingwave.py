@@ -6,11 +6,11 @@ from dotenv import load_dotenv
 import psycopg
 import subprocess
 
-settings = Settings()
-
-
 load_dotenv(dotenv_path=".env")
 
+settings = Settings()
+
+print(settings)
 print("Risingwave: Initializing tables")
 
 subprocess.run(["poetry", "run", "dbt", "compile"], cwd="./risingwave")
