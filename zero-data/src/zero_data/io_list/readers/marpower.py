@@ -12,6 +12,8 @@ _DATA_TYPES = {
     "Bool": "BOOLEAN",
     "Uint32": "BIGINT",
     "Int32": "INTEGER",
+    "Int16": "INTEGER",
+    "String": "STRING",
 }
 
 
@@ -58,23 +60,23 @@ class MarpowerReader(ReaderBase):
         """Get the IO topics from the DataFrame"""
         result = []
         for row in (
-            df.unique(subset=["system", "tag", "data_type"])
+            df.unique(subset=["system", "mqtt_json_path", "data_type"])
             .sort("tag")
-            .group_by("system")
-            .agg(pl.col("tag"), pl.col("data_type"))
+            .group_by("mqtt_topic")
+            .agg(pl.col("mqtt_json_path"), pl.col("data_type"))
             .iter_rows(named=True)
         ):
             topic = self.determine_topic(row)
             values = [
-                IOValue(name=t, data_type=dt)
-                for t, dt in zip(row["tag"], row["data_type"])
+                IOValue.from_json_path(json_path=jp, data_type=dt)
+                for jp, dt in zip(row["mqtt_json_path"], row["data_type"])
             ]
             result.append(IOTopic(topic, values))
         return result
 
     def determine_topic(self, row: dict) -> str:
         """Create the topic out of a fixed prefix and a name that is a function of the IO list"""
-        return self.topic_prefix + row["system"].replace(" ", "_").lower()
+        return self.topic_prefix + row["mqtt_topic"].replace(" ", "-").replace("+", "").lower()
 
     @classmethod
     def _read_bordered_column(cls, ws, col: int):

@@ -25,6 +25,7 @@ FROM python:3.13-slim-bookworm AS runtime
 ENV PYTHONDONTWRITEBYTECODE=1 \
     PYTHONUNBUFFERED=1
 
+
 ENV VIRTUAL_ENV=/app/.venv
 ENV PATH="/app/.venv/bin:$PATH"
 
@@ -35,5 +36,8 @@ WORKDIR /app
 COPY ./io_lists ./io_lists
 RUN mkdir -p /output/seeds
 COPY src/ ./
+COPY dbt/ ./dbt
 
-RUN ["python", "-m", "zero_data.main", "generate-dbt"]
+RUN --mount=type=secret,id=gsheet_sa_key,required=true \
+  GSHEET_SA_KEY_FILE=/run/secrets/gsheet_sa_key \
+  python -m zero_data generate-dbt

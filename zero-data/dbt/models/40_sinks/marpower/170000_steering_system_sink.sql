@@ -1,0 +1,1 @@
+{{ sink_append_gcs('raw', '170000_steering_system', '170000_steering_system_sink') }}

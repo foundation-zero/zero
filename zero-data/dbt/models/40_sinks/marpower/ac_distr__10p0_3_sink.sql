@@ -1,1 +1,0 @@
-{{ sink_append_gcs('raw', 'ac_distr_+10p0.3', 'ac_distr_+10p0.3_sink') }}

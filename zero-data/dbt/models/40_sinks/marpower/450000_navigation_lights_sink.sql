@@ -1,0 +1,1 @@
+{{ sink_append_gcs('raw', '450000_navigation_lights', '450000_navigation_lights_sink') }}

@@ -1,6 +1,7 @@
 {{ config(materialized='table_with_connector') }}
 CREATE TABLE {{ this }} (
-	TIMESTAMP	TIMESTAMP,
-	PNEUMATIC_PRESSURE	REAL,
+	time TIMESTAMPTZ AS proctime(),
+	PNEUMATIC_PRESSURE	{{ marpower_struct("REAL") }},
 )
-{{ mqtt_with('marpower/290000_pneumatic_') }}
+INCLUDE partition AS topic
+{{ mqtt_with('marpower/290000-pneumatic-') }}

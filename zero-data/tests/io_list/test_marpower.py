@@ -1,5 +1,5 @@
 def test_marpower_io_excel(marpower_io_result):
-    assert marpower_io_result.io_list.shape == (390, 71)
+    assert marpower_io_result.io_list.shape == (4187, 75)
     assert marpower_io_result.io_list.columns == [
         "rev.",
         "deleted",
@@ -12,6 +12,8 @@ def test_marpower_io_excel(marpower_io_result):
         "prefix_device",
         "tag",
         "cabinet",
+        "opc_ua_node_id",
+        "opc_ua_publish_interval",
         "system",
         "yard_tag",
         "description",
@@ -21,8 +23,10 @@ def test_marpower_io_excel(marpower_io_result):
         "cable_id",
         "cable_type",
         "cable_core_no.",
-        "opc_ua_node_id",
-        "opc_ua_publish_interval",
+        "mqtt_device",
+        "mqtt_typical",
+        "mqtt_topic",
+        "mqtt_json_path",
         "modbus_slave_address",
         "modbus_data_type",
         "modbus_address",
@@ -73,4 +77,4 @@ def test_marpower_io_excel(marpower_io_result):
         "timestamp",
         "data_type",
     ]
-    assert len(marpower_io_result.topics) == 21
+    assert len(marpower_io_result.topics) == 54

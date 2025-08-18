@@ -1,12 +1,9 @@
 {{ config(materialized='table_with_connector') }}
 CREATE TABLE {{ this }} (
-	TIMESTAMP	TIMESTAMP,
-	BURGLAR_ALARM_206U01	BOOLEAN,
-	BURGLAR_ALARM_206U02	BOOLEAN,
-	BURGLAR_ALARM_206U03	BOOLEAN,
-	BURGLAR_ALARM_206U04	BOOLEAN,
-	BURGLAR_ALARM_206U05	BOOLEAN,
-	BURGLAR_ALARM_206U06	BOOLEAN,
-	BURGLAR_ALRM_SYSTEM_ON_OFF	BOOLEAN,
+	time TIMESTAMPTZ AS proctime(),
+	"BURGLAR_ALARM_206U01"	{{ marpower_struct("BOOLEAN") }},
+	"BURGLAR_ALARM_206U02"	{{ marpower_struct("BOOLEAN") }},
+	"BURGLAR_ALARM_206U03"	{{ marpower_struct("BOOLEAN") }},
 )
-{{ mqtt_with('marpower/450000_burglar') }}
+INCLUDE partition AS topic
+{{ mqtt_with('marpower/450000-burglar/') }}
