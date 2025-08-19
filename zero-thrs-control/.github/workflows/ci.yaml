@@ -1,0 +1,39 @@
+on:
+  push
+
+jobs:
+  test:
+    timeout-minutes: 15
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: abatilo/actions-poetry@v3
+        with:
+          poetry-version: 1.8.4
+
+      - name: Setup Graphviz
+        uses: ts-graphviz/setup-graphviz@v2
+
+      - run: poetry install
+
+      - run: poetry run fmpy compile src/simulation/models/XRGTestModel/FMUInterfaceTester_MECS_regular.fmu
+      
+      - run: poetry run fmpy compile src/simulation/models/thruster_moduleV13.fmu
+
+      - run: poetry run fmpy compile src/simulation/models/pvt_moduleV4.fmu
+
+      - run: poetry run fmpy compile src/simulation/models/consumers_moduleV3.fmu
+
+      - run: poetry run fmpy compile src/simulation/models/HTSystem_moduleV4.fmu
+
+      - run: poetry run fmpy compile src/simulation/models/pcm_moduleV4.fmu
+
+      - run: poetry run pyright
+
+      - run: poetry run ruff check src tests
+
+      - run: docker compose up -d
+
+      - run: poetry run pytest -v
