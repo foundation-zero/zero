@@ -1,5 +1,13 @@
+name: "THRS Control: Test"
 on:
-  push
+  push:
+    paths:
+      - 'zero-thrs-control/**'
+      - '.github/workflows/ci_thrs_control.yaml'
+  release:
+    types: [released]
+    paths:
+      - 'zero-thrs-control/**'
 
 jobs:
   test:
@@ -8,32 +16,48 @@ jobs:
 
     steps:
       - uses: actions/checkout@v4
-
-      - uses: abatilo/actions-poetry@v3
         with:
-          poetry-version: 1.8.4
+          fetch-depth: '0'
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: 3.13
+
+      - run: pipx install poetry==2.0.1
+        working-directory: zero-thrs-control
 
       - name: Setup Graphviz
         uses: ts-graphviz/setup-graphviz@v2
 
       - run: poetry install
+        working-directory: zero-thrs-control
 
       - run: poetry run fmpy compile src/simulation/models/XRGTestModel/FMUInterfaceTester_MECS_regular.fmu
+        working-directory: zero-thrs-control
       
       - run: poetry run fmpy compile src/simulation/models/thruster_moduleV13.fmu
+        working-directory: zero-thrs-control
 
       - run: poetry run fmpy compile src/simulation/models/pvt_moduleV4.fmu
+        working-directory: zero-thrs-control
 
       - run: poetry run fmpy compile src/simulation/models/consumers_moduleV3.fmu
+        working-directory: zero-thrs-control
 
       - run: poetry run fmpy compile src/simulation/models/HTSystem_moduleV4.fmu
+        working-directory: zero-thrs-control
 
       - run: poetry run fmpy compile src/simulation/models/pcm_moduleV4.fmu
+        working-directory: zero-thrs-control
 
       - run: poetry run pyright
+        working-directory: zero-thrs-control
 
       - run: poetry run ruff check src tests
+        working-directory: zero-thrs-control
 
       - run: docker compose up -d
+        working-directory: zero-thrs-control
 
       - run: poetry run pytest -v
+        working-directory: zero-thrs-control

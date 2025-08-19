@@ -4,7 +4,6 @@ from input_output.fmu_mapping import build_inputs_for_fmu
 
 import polars as pl
 
-# TODO: before open sourcing set to view only on link
 SHEET_URL = "https://docs.google.com/spreadsheets/d/1YyfkKmqL8MZuJfStljTjhgFxawcco2cp2qCmBGFrR04/export?gid=0&format=csv"
 
 
