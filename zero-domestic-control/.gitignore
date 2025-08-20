@@ -1,3 +1,22 @@
+# You can whitelist files/folders with !, these will not be ignored.
+!*.yaml
+!.gitignore
+!*.md
+
+# Ignore folders.
+.storage
+!volumes/hass/.storage/auth
+!volumes/hass/.storage/hacs.data
+!volumes/hass/.storage/hacs.repositories
+
+.cloud
+.google.token
+
+# Ensure these YAML files are ignored, otherwise your secret data/credentials will leak.
+ip_bans.yaml
+secrets.yaml
+known_devices.yaml
+
 # Log files
 home-assistant.log
 home-assistant.log.*

@@ -15,14 +15,14 @@ docker compose up postgres risingwave vernemq -d
 
 Run postgres and risingwave setup
 ```bash
-cd data
+cd ../data
 poetry run python -m setup_postgres
 poetry run python -m setup_risingwave
 ```
 
 Run everything else. Control and stub
 ```bash
-cd zero-domestic-control
+cd ../zero-domestic-control
 docker compose up -d
 ```
 
