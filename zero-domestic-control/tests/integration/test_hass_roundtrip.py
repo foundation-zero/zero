@@ -107,7 +107,6 @@ async def test_blind_to_hass(hass):
     assert response.status_code == 200
 
     blind = await hass.async_get_entity(entity_id="cover.owners_cabin_main_shear")
-    print(blind.state.attributes)
     assert blind.state.attributes["current_position"] == 50.0
 
 
