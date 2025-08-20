@@ -99,23 +99,6 @@
         "version": "2025.6.1"
       },
       {
-        "id": "ec01b2f72ad340dfb2e24cd3f78ea736",
-        "user_id": "e2e3a3e713eb438aac42cee42c619956",
-        "client_id": "http://localhost:8123/",
-        "client_name": null,
-        "client_icon": null,
-        "token_type": "normal",
-        "created_at": "2025-07-01T11:35:17.243268+00:00",
-        "access_token_expiration": 1800.0,
-        "token": "8dd18e62a6dd864946b9686a7a99d1da7beabc8b56d69948081f0e3ae5694523b13b6ad4a6253716253885db7b610ef098924580895001ea0916046d470201e9",
-        "jwt_key": "1718f05a21395d55180ddffec01074a20dfbc051475f61cceab5e8d279e35dbf962d9178b216fb77648627a30405ff5693045bdfebbd3467499eedcb87806f8c",
-        "last_used_at": "2025-07-01T11:35:17.243311+00:00",
-        "last_used_ip": "192.168.65.1",
-        "expire_at": 1759145717.243311,
-        "credential_id": "16ad4e70175241629d883b067b34760f",
-        "version": "2025.6.3"
-      },
-      {
         "id": "f223325e4e5547f9b4e211aad86d4a55",
         "user_id": "b8f6130e04264b5a99b32fb76fc5dd09",
         "client_id": null,
