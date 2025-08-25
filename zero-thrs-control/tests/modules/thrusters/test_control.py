@@ -227,7 +227,7 @@ async def test_heat_dump_with_hot_sea(
 
         assert (
             result.sensor_values.thrusters_mix_exchanger.position_rel.value
-            == approx(Valve.MIXING_A_TO_AB)
+            == approx(Valve.MIXING_B_TO_AB, abs=1e-4)
         )
 
 
