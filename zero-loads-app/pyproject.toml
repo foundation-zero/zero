@@ -1,0 +1,62 @@
+[project]
+name = "zero-loads-app"
+description = ""
+authors = [
+    { name = "Dustin van Weerlse", email = "dustin.vanweersel@foundationzero.org>" }
+]
+readme = "README.md"
+packages = [{ include = "zero_domestic_control"}]
+requires-python = ">= 3.13.1,<4.0"
+dynamic = ["dependencies"]
+version = "0.1.0"
+
+[tool.poetry.dependencies]
+pydantic-settings = "^2.7.1"
+fastapi = {extras = ["standard"], version = "^0.115.6"}
+strawberry-graphql = {extras = ["debug-server", "fastapi"], version = "^0.256.1"}
+psycopg = {extras = ["binary"], version = "^3.2.3"}
+homeassistant-api = "^5.0.0"
+
+[tool.poetry.group.dbt.dependencies]
+dbt-risingwave = "^1.9.2"
+dbt-core = "^1.9.8"
+
+[tool.poetry.group.dev]
+optional = true
+
+[tool.poetry.group.dev.dependencies]
+mypy = "^1.14.1"
+ruff = "^0.9.5"
+python-dotenv = "^1.1.0"
+
+[tool.poetry.group.test]
+optional = true
+
+[tool.poetry.group.test.dependencies]
+pytest = "^8.3.4"
+pytest-asyncio = "^0.25.1"
+pytest-env = "^1.1.5"
+httpx = "^0.28.1"
+pytest-timeout = "^2.3.1"
+pytest-mock = "^3.14.0"
+
+[tool.mypy]
+plugins = "pydantic.mypy,strawberry.ext.mypy_plugin"
+mypy_path = "./typings"
+check_untyped_defs = true
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+asyncio_default_fixture_loop_scope = "function"
+asyncio_mode = "auto"
+
+[tool.ruff]
+# Needs to be included for Ruff to read required-version
+
+[tool.dotenv]
+location = ".env"
+
+[build-system]
+requires = ["poetry-core>=2.0.0,<3.0.0"]
+build-backend = "poetry.core.masonry.api"
+
