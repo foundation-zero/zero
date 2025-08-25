@@ -16,15 +16,17 @@ class _Controller[ValueUnit: float, SetpointUnit: float]:
         initial: ValueUnit,
         setpoint: SetpointUnit,
         tuning: tuple[float, float, float] | None = None,
+        output_limits: tuple[float, float] | None = None,
     ):
         kp, ki, kd = tuning or self.TUNING
+        self.output_limits = output_limits or self.OUTPUT_LIMITS
         self._pid = PID(
             kp,
             ki,
             kd,
             setpoint=setpoint,
             sample_time=0.1,
-            output_limits=self.OUTPUT_LIMITS,
+            output_limits=self.output_limits,
             auto_mode=False,
         )
         self._initial = initial
@@ -32,9 +34,11 @@ class _Controller[ValueUnit: float, SetpointUnit: float]:
     def enabled(self) -> bool:
         return self._pid.auto_mode
 
-    def enable(self):
+    def enable(self, reset=False):
         if self._pid.auto_mode:
             raise Exception("PID is already enabled")
+        if reset:
+            self._pid.reset()
         self._pid.auto_mode = True
 
     def disable(self):
@@ -50,30 +54,45 @@ class _Controller[ValueUnit: float, SetpointUnit: float]:
     def setpoint(self, value: SetpointUnit):
         self._pid.setpoint = value
 
+    @property
+    def tuning(self) -> tuple[float, float, float]:
+        return (self._pid.Kp, self._pid.Ki, self._pid.Kp)
+
+    @tuning.setter
+    def tuning(self, tuning: tuple[float, float, float]):
+        self._pid.Kp, self._pid.Ki, self._pid.Kd = tuning
+
     def __call__(self, measurement: SetpointUnit, time: datetime) -> ValueUnit:
         self._pid.time_fn = lambda: time.timestamp()
         pid_result = cast(ValueUnit | None, self._pid(measurement))
         return pid_result if pid_result is not None else self._initial
 
 
-class _HeatController(_Controller[Ratio, Celsius]):
+class FlowController(_Controller[LMin, Celsius]):
+    TUNING = (-.1, -.003, -0.001)
+    OUTPUT_LIMITS = (0.01, 1.0)
+
+class PumpFlowController(_Controller[Ratio, LMin]):
+    TUNING = (-2, -.1, 0.0)
+    OUTPUT_LIMITS = (0, 1.0)
+
+class HeatDumpController(_Controller[Ratio, Celsius]):
     TUNING = (-0.1, -0.01, 0)
-    OUTPUT_LIMITS = (0, 1)
+    OUTPUT_LIMITS = (0, 1.0)
 
 
-class HeatDumpController(_HeatController):
-    pass
-
-
-class InvertedHeatDumpController(_HeatController):
+class InvertedHeatDumpController(_Controller[Ratio, Celsius]):
     TUNING = (0.1, 0.01, 0)
+    OUTPUT_LIMITS = (0, 1.0)
 
 
-class HeatSupplyController(_HeatController):
-    TUNING = (-0.5, -0.002, 0.1)
+class MixingValveController(_Controller[Ratio, Celsius]):
+    TUNING = (-.5, -0.0, 0.0)
+    OUTPUT_LIMITS = (0, 1.0)
 
 
 class _FlowController(_Controller[Ratio, LMin]):
+    TUNING = (0.00, 0.002, 0)
     OUTPUT_LIMITS = (0, 1.0)
 
 
@@ -120,7 +139,7 @@ class FlowBalanceController:
         for value, controller, valve in zip(
             controller_values, self._controllers, self._valves
         ):
-            if controller.enabled():
+            if controller.enabled():  # here calling the controller sets the valve. This is not the case for pump control..
                 valve.setpoint = Stamped(value=value + offset, timestamp=time)
             elif self._close_when_disabled:
                 valve.setpoint = Stamped(value=Valve.CLOSED, timestamp=time)
@@ -173,5 +192,3 @@ class FlowDistributionController:
         self._flow_balance_controller(measurements, time)
 
 
-class PumpFlowController(_FlowController):
-    TUNING = (0.0, 0.002, 0)
