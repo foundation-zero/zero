@@ -236,35 +236,35 @@ class PvtControl(Control):
 
     def _control_pumps(self, sensor_values: PvtSensorValues):
         strings_main_fwd_flow = (
-            sensor_values.pvt_flow_main_string_1_1.flow.value  # TODO: fix in simulation
-            # + sensor_values.pvt_flow_main_string_1_2.flow.value
-            # + sensor_values.pvt_flow_main_string_2_1.flow.value
-            # + sensor_values.pvt_flow_main_string_2_2.flow.value
-            # + sensor_values.pvt_flow_main_string_3.flow.value
-            # + sensor_values.pvt_flow_main_string_4.flow.value
-            # + sensor_values.pvt_flow_main_string_5_1.flow.value
-            # + sensor_values.pvt_flow_main_string_5_2.flow.value
-            # + sensor_values.pvt_flow_main_string_6_1.flow.value
-            # + sensor_values.pvt_flow_main_string_6_2.flow.value
+            sensor_values.pvt_flow_main_string_1_1.flow.value
+            + sensor_values.pvt_flow_main_string_1_2.flow.value
+            + sensor_values.pvt_flow_main_string_2_1.flow.value
+            + sensor_values.pvt_flow_main_string_2_2.flow.value
+            + sensor_values.pvt_flow_main_string_3.flow.value
+            + sensor_values.pvt_flow_main_string_4.flow.value
+            + sensor_values.pvt_flow_main_string_5_1.flow.value
+            + sensor_values.pvt_flow_main_string_5_2.flow.value
+            + sensor_values.pvt_flow_main_string_6_1.flow.value
+            + sensor_values.pvt_flow_main_string_6_2.flow.value
         )
 
         strings_main_aft_flow = (
-            sensor_values.pvt_flow_main_string_7_1.flow.value  # TODO: fix in simulation
-            # + sensor_values.pvt_flow_main_string_7_2.flow.value
-            # + sensor_values.pvt_flow_main_string_8_1.flow.value
-            # + sensor_values.pvt_flow_main_string_8_2.flow.value
-            # + sensor_values.pvt_flow_main_string_9.flow.value
-            # + sensor_values.pvt_flow_main_string_10.flow.value
-            # + sensor_values.pvt_flow_main_string_11_1.flow.value
+            sensor_values.pvt_flow_main_string_7_1.flow.value
+            + sensor_values.pvt_flow_main_string_7_2.flow.value
+            + sensor_values.pvt_flow_main_string_8_1.flow.value
+            + sensor_values.pvt_flow_main_string_8_2.flow.value
+            + sensor_values.pvt_flow_main_string_9.flow.value
+            + sensor_values.pvt_flow_main_string_10.flow.value
+            + sensor_values.pvt_flow_main_string_11_1.flow.value
         )
 
         strings_owners_flow = (
             sensor_values.pvt_flow_owners_string_1.flow.value
-            # + sensor_values.pvt_flow_owners_string_2.flow.value
-            # + sensor_values.pvt_flow_owners_string_3.flow.value
-            # + sensor_values.pvt_flow_owners_string_4.flow.value
-            # + sensor_values.pvt_flow_owners_string_5.flow.value
-            # + sensor_values.pvt_flow_owners_string_6.flow.value
+            + sensor_values.pvt_flow_owners_string_2.flow.value
+            + sensor_values.pvt_flow_owners_string_3.flow.value
+            + sensor_values.pvt_flow_owners_string_4.flow.value
+            + sensor_values.pvt_flow_owners_string_5.flow.value
+            + sensor_values.pvt_flow_owners_string_6.flow.value
         )
 
         self._current_values.pvt_pump_main_fwd.dutypoint = Stamped(
