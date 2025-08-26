@@ -35,8 +35,8 @@ This will setup
 
  - Install dependencies: `poetry install --with dev`
  - Create `.env` based on `.env.example`
-    - Retrieve `GCS_CREDENTIALS` from `gcs-auth` secrets on the cluster or
-    - [Follow these instructions](https://docs.risingwave.com/integrations/destinations/google-cloud-storage) to create a service account key in Google Cloud.
+    - Retrieve `GCS_CREDENTIALS` from `gcs-auth` secrets oin Bitwarde or
+    - [Follow these instructions](https://docs.risingwave.com/integrations/destinations/google-cloud-storage) to generate a new one.
  - Set up gsheet service account key file from Bitwarden
  - Generate DBT sql files: `poetry run zero-data generate-dbt`
  - Start data mocker: `poetry run zero-data generate-data`

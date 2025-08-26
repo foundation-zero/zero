@@ -1,1 +1,0 @@
-{{ sink_append_gcs('raw', '250000_techwater', '250000_techwater_sink') }}

@@ -1,9 +1,7 @@
 from argparse import ArgumentParser
 import asyncio
-import codecs
 
 import jwt
-import psycopg
 
 from zero_domestic_control.config import Settings
 import logging
@@ -17,9 +15,6 @@ settings = Settings()
 async def run():
     parser = ArgumentParser("zero_domestic_control")
     sub_parser = parser.add_subparsers()
-
-    setup_cmd = sub_parser.add_parser("setup")
-    setup_cmd.set_defaults(func=setup)
 
     generate_jwt_cmd = sub_parser.add_parser("generate-jwt")
     generate_jwt_cmd.add_argument(
@@ -68,24 +63,6 @@ async def generate_jwt(args):
         algorithm="HS256",
     )
     print(f"JWT for roles ({', '.join(roles)}): {token}")
-
-
-async def setup(_args):
-    logging.info("Initializing postgres tables")
-    async with await psycopg.AsyncConnection.connect(settings.pg_url) as conn:
-        async with conn.cursor() as cur:
-            with codecs.open(
-                "./zero_domestic_control/postgres.sql", encoding="utf-8"
-            ) as query:
-                await cur.execute(bytes(query.read(), "utf-8"))
-
-    logging.info("Initializing risingwave tables, views and sinks")
-    async with await psycopg.AsyncConnection.connect(settings.risingwave_url) as conn:
-        async with conn.cursor() as cur:
-            with codecs.open(
-                "./zero_domestic_control/risingwave.sql", encoding="utf-8"
-            ) as query:
-                await cur.execute(bytes(query.read(), "utf-8"))
 
 
 async def control(_args):

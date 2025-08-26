@@ -1,6 +1,7 @@
 {{ config(materialized='table_with_connector') }}
 CREATE TABLE {{ this }} (
-	TIMESTAMP	TIMESTAMP,
-	FIRE_DETECT_FAULT	BOOLEAN,
+	time TIMESTAMPTZ AS proctime(),
+	"FIRE_DETECT_FAULT"	{{ marpower_struct("BOOLEAN") }},
 )
-{{ mqtt_with('marpower/450000_firedetection') }}
+INCLUDE partition AS topic
+{{ mqtt_with('marpower/450000-firedetection') }}

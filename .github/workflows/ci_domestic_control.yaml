@@ -5,9 +5,11 @@ on:
       - main
     paths:
       - 'zero-domestic-control/**'
+      - '.github/workflows/ci_domestic_control.yaml'
   pull_request:
     paths:
       - 'zero-domestic-control/**'
+      - '.github/workflows/ci_domestic_control.yaml'
 
 env:
   IMAGE: "europe-west1-docker.pkg.dev/common-449414/common/zero-domestic-control"
@@ -22,10 +24,14 @@ jobs:
       - uses: actions/checkout@v4
         with:
           fetch-depth: '0'
+      - name: Create .env file from secret
+        run: |
+          echo "${{ secrets.ENV_ZERO_DOMESTIC_CONTROL }}" > .env
+        working-directory: data
       - uses: actions/setup-python@v5
         with:
           python-version: 3.13
-      - run: pipx install poetry==2.0.1
+      - run: pipx install poetry==2.1.4
       - run: poetry check
         working-directory: zero-domestic-control
       - uses: astral-sh/ruff-action@v3

@@ -1,1 +1,0 @@
-{{ sink_append_gcs('raw', '450000_gas_detection', '450000_gas_detection_sink') }}

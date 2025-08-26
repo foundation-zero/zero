@@ -1,7 +1,8 @@
 {{ config(materialized='table_with_connector') }}
 CREATE TABLE {{ this }} (
-	TIMESTAMP	TIMESTAMP,
-	DAS_DETECTION_PERCT	REAL,
-	GAS_DETECTION_LVL_SWITCH	BOOLEAN,
+	time TIMESTAMPTZ AS proctime(),
+	"GAS_DETECTION_LVL_SWITCH"	{{ marpower_struct("BOOLEAN") }},
+	"GAS_DETECTION_PERCT"	{{ marpower_struct("REAL") }},
 )
-{{ mqtt_with('marpower/450000_gas_detection') }}
+INCLUDE partition AS topic
+{{ mqtt_with('marpower/450000-gas-detection') }}

@@ -1,8 +1,9 @@
 {{ config(materialized='table_with_connector') }}
 CREATE TABLE {{ this }} (
-	TIMESTAMP	TIMESTAMP,
-	GEN_SERVICE_PUMP2_FLD_AVAIL_FDBCK	BOOLEAN,
-	GEN_SERVICE_PUMP2_FLD_FAULT_FDBCK	BOOLEAN,
-	GEN_SERVICE_PUMP2_FLD_RUN_FDBCK	BOOLEAN,
+	time TIMESTAMPTZ AS proctime(),
+	"GEN_SERVICE_PUMP2_FLD_AVAIL_FDBCK"	{{ marpower_struct("BOOLEAN") }},
+	"GEN_SERVICE_PUMP2_FLD_FAULT_FDBCK"	{{ marpower_struct("BOOLEAN") }},
+	"GEN_SERVICE_PUMP2_FLD_RUN_FDBCK"	{{ marpower_struct("BOOLEAN") }},
 )
-{{ mqtt_with('marpower/210000_general_service') }}
+INCLUDE partition AS topic
+{{ mqtt_with('marpower/210000-general-service') }}

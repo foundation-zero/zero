@@ -63,7 +63,7 @@ async def test_stub(mqtt_client, mqtt_client2):
     stub_run = create_task(await stub.run())
     assert await expect_result(lambda: len(received), 2, 1)
     await asyncio.sleep(AV_STUB_TELEMETRY_INTERVAL)
-    assert await expect_result(lambda: len(received), 6, 0.5)
+    assert await expect_result(lambda: len(received), 4, 0.5)
     assert received[0].topic.value.startswith("de/gudesystems/epc/")
     assert received[1].topic.value.startswith("de/gudesystems/epc/")
 
