@@ -2,7 +2,7 @@
 name = "zero-loads-app"
 description = ""
 authors = [
-    { name = "Dustin van Weerlse", email = "dustin.vanweersel@foundationzero.org>" }
+    { name = "Dustin van Weersel", email = "dustin.vanweersel@foundationzero.org>" }
 ]
 readme = "README.md"
 packages = [{ include = "zero_domestic_control"}]
@@ -16,6 +16,7 @@ fastapi = {extras = ["standard"], version = "^0.115.6"}
 strawberry-graphql = {extras = ["debug-server", "fastapi"], version = "^0.256.1"}
 psycopg = {extras = ["binary"], version = "^3.2.3"}
 homeassistant-api = "^5.0.0"
+python-can = "^4.6.1"
 
 [tool.poetry.group.dbt.dependencies]
 dbt-risingwave = "^1.9.2"
