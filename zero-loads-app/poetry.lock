@@ -434,6 +434,21 @@ files = [
 markers = {main = "platform_system == \"Windows\" or sys_platform == \"win32\"", test = "sys_platform == \"win32\""}
 
 [[package]]
+name = "construct"
+version = "2.10.70"
+description = "A powerful declarative symmetric parser/builder for binary data"
+optional = false
+python-versions = ">=3.6"
+groups = ["main"]
+files = [
+    {file = "construct-2.10.70-py3-none-any.whl", hash = "sha256:c80be81ef595a1a821ec69dc16099550ed22197615f4320b57cc9ce2a672cb30"},
+    {file = "construct-2.10.70.tar.gz", hash = "sha256:4d2472f9684731e58cc9c56c463be63baa1447d674e0d66aeb5627b22f512c29"},
+]
+
+[package.extras]
+extras = ["arrow", "cloudpickle", "cryptography", "lz4", "numpy", "ruamel.yaml"]
+
+[[package]]
 name = "daff"
 version = "1.4.2"
 description = "Diff and patch tables"
@@ -3563,4 +3578,4 @@ type = ["pytest-mypy"]
 [metadata]
 lock-version = "2.1"
 python-versions = ">= 3.13.1,<4.0"
-content-hash = "fc6fed487210da687e28dbcf9f50b8acffdbf880021e2ca7d60448d5c8a28b1f"
+content-hash = "f2703c4858a08a96f789809cf8789a4c2a407e5cf4c6ccb5b24ba6ee4ff9ebc6"

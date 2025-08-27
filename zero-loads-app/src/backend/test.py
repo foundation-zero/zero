@@ -1,20 +1,52 @@
-import can
+import asyncio
+import logging
+from stub.adapter import PCanAdapter
+from stub.can_frame import (
+    ClassicCAN_IPFrame,
+)
 
-# create a bus instance using 'with' statement,
-# this will cause bus.shutdown() to be called on the block exit;
-# many other interfaces are supported as well (see documentation)
-with can.Bus(iPPnterface='socketcan',
-              channel='vcan0',
-              receive_own_messages=True) as bus:
 
-   # send a message
-   message = can.Message(arbitration_id=123, is_extended_id=True,
-                         data=[0x11, 0x22, 0x33])
-   bus.send(message, timeout=0.2)
+logging.basicConfig(level=logging.DEBUG)
 
-   # iterate over received messages
-   for msg in bus:
-       print(f"{msg.arbitration_id:X}: {msg.data}")
+adapter = PCanAdapter(localIP="127.0.0.1", localPort=55001)
 
-   # or use an asynchronous notifier
-   notifier = can.Notifier(bus, [can.Logger("recorded.log"), can.Printer()])
+
+async def run():
+    print("read")
+    messages_construct = asyncio.create_task(adapter.read_construct())
+
+    print("send")
+    # Create a CAN frame (standard 11-bit ID)
+
+    msg = ClassicCAN_IPFrame.build(
+        {
+            "length": 16,
+            "message_type": 0x80,
+            "tag": b"test_tag",
+            "ts_low": 12345678,
+            "ts_high": 87654321,
+            "channel": 1,
+            "dlc": 4,
+            "flags": {"RTR": False, "EXTENDED": True},
+            "can_id": {
+                "id": 0x1FFFFFFF,
+                "reserved0": 0x00,
+                "rtr": False,
+                "extended": True,
+            },
+            "data": b"\x01\x02\x03\x04\x05\x06\x07\x08",
+        }
+    )
+
+    print(msg.hex())
+    await adapter.send(msg)
+
+    print("Read messages (construct):", messages_construct)
+
+
+async def main():
+    # await asyncio.gather(read(), send())
+    await asyncio.gather(run())
+
+
+asyncio.run(main())
