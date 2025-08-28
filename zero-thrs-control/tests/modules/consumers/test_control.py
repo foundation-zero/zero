@@ -50,7 +50,7 @@ async def test_boosting_disabled(
         control_values = control.control(result.sensor_values, executor.time()).values
         result = await executor.tick(control_values)
 
-    assert result.sensor_values.consumers_flow_boosting.flow.value == approx(0, abs=0.2)
+    assert result.sensor_values.consumers_flow_boosting.flow.value == approx(0, abs=0.1)
     assert result.sensor_values.consumers_flow_fahrenheit.flow.value == approx(
         result.sensor_values.consumers_flow_bypass.flow.value, abs=1.0
     )

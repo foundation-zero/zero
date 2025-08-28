@@ -53,13 +53,13 @@ _INITIAL_CONTROL_VALUES = (
             on=Stamped(value=False, timestamp=_ZERO_TIME),
         ),
         pvt_mix_main_fwd=Valve(
-            setpoint=Stamped(value=Valve.MIXING_A_TO_AB, timestamp=_ZERO_TIME)
+            setpoint=Stamped(value=Valve.MIXING_B_TO_AB, timestamp=_ZERO_TIME)
         ),
         pvt_mix_main_aft=Valve(
-            setpoint=Stamped(value=Valve.MIXING_A_TO_AB, timestamp=_ZERO_TIME)
+            setpoint=Stamped(value=Valve.MIXING_B_TO_AB, timestamp=_ZERO_TIME)
         ),
         pvt_mix_owners=Valve(
-            setpoint=Stamped(value=Valve.MIXING_A_TO_AB, timestamp=_ZERO_TIME)
+            setpoint=Stamped(value=Valve.MIXING_B_TO_AB, timestamp=_ZERO_TIME)
         ),
         pvt_flowcontrol_main_fwd=Valve(
             setpoint=Stamped(value=Valve.OPEN, timestamp=_ZERO_TIME)
@@ -94,7 +94,7 @@ class PvtControl(Control):
                 on_enter=self._enable_recovery_mixes,
                 on_exit=self._disable_recovery_mixes,
             ),
-            State(name="pump_failure", on_enter=[self._set_recovery_mixes_to_a, self._disable_recovery_mixes]),
+            State(name="pump_failure", on_enter=[self._set_recovery_mixes_to_a]),
         ]
 
         self._heat_dump_controller = InvertedHeatDumpController(

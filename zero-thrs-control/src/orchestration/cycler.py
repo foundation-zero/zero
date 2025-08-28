@@ -12,7 +12,7 @@ class Cycler:
         self._alarms = alarms
 
     async def run(self, times: int, collector: Collector):
-        control_values = self._control.initial(self._executor.start_time).values
+        control_values = self._control.initial(self._executor.start_time).values #TODO: should we use the _current_values here? this initiates the FMU with whatever the initial control values are set to
         for _ in range(times):
             result = await self._executor.tick(control_values)
             if isinstance(result, SimulationExecutionResult):

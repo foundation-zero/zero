@@ -92,7 +92,9 @@ type Ratio = Annotated[
     AfterValidator(validate_ratio_within_precision),
     UnitMeta(modelica_name="ratio"),
 ]
-type Bar = Annotated[float, Field(ge=0), UnitMeta(modelica_name="Bar")]
+type Bar = Annotated[
+    float, Field(ge=-100), UnitMeta(modelica_name="Bar")
+]  # TODO: contrain to 0 when fmu is fixed
 type Watt = Annotated[float, UnitMeta(modelica_name="Watt")]
 type seconds = Annotated[float, UnitMeta(modelica_name="s")]
 type OnOff = Annotated[bool, UnitMeta(modelica_name="bool")]
