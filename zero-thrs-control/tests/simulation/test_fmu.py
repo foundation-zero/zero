@@ -15,8 +15,8 @@ def test_fmu():
     ) as fmu:
         outputs = fmu.tick({"r": 1.0}, timedelta(seconds=1))
         assert outputs["T_Raum_degC"] > -271.15
-        assert fmu.solver_time == approx(2)
+        assert fmu.solver_time == approx(1)
 
         outputs = fmu.tick({"r": 1.0}, timedelta(seconds=2))
         assert outputs["T_Raum_degC"] > -271.15
-        assert fmu.solver_time == approx(4)
+        assert fmu.solver_time == approx(3)
