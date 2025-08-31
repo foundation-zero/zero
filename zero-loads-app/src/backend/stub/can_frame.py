@@ -11,8 +11,11 @@ from construct import (
     Int32ul,
     Bytes,
     Computed,
+    Const,
     this,
 )
+import binascii
+
 
 # -------------------------
 # Shared building blocks
@@ -51,6 +54,11 @@ FDFlags = FlagsEnum(
     ESI=0x0040,  # Error State Indicator
 )
 
+
+def crc32_func(data: bytes) -> int:
+    return binascii.crc32(data) & 0xFFFFFFFF
+
+
 # -------------------------
 # Frame definitions
 # -------------------------
@@ -58,7 +66,7 @@ FDFlags = FlagsEnum(
 # 1) Classic CAN 2.0 A/B (Message Type = 0x80)
 ClassicCAN_IPFrame = Struct(
     "length" / Int16ub,  # total packet length incl. this field
-    "message_type" / Int16ub,  # 0x80
+    "message_type" / Const(0x80, Int16ub),  # 0x80
     "tag" / Bytes(8),  # not used currently
     "ts_low" / Int32ub,  # timestamp (µs), low 32
     "ts_high" / Int32ub,  # timestamp (µs), high 32
@@ -75,7 +83,7 @@ ClassicCAN_IPFrame = Struct(
 # 2) Classic CAN 2.0 A/B WITH CRC32 (Message Type = 0x81)
 ClassicCAN_CRC_IPFrame = Struct(
     "length" / Int16ub,
-    "message_type" / Int16ub,  # 0x81
+    "message_type" / Const(0x81, Int16ub),  # 0x81
     "tag" / Bytes(8),
     "ts_low" / Int32ub,
     "ts_high" / Int32ub,
@@ -91,23 +99,24 @@ ClassicCAN_CRC_IPFrame = Struct(
 
 # 3) CAN FD (Message Type = 0x90)
 CANFD_IPFrame = Struct(
-    "length" / Int16ub,  # total packet length incl. this field
-    "message_type" / Int16ub,  # 0x90
+    "length" / Int16ub,
+    "message_type" / Const(0x90, Int16ub),  # 0x90
     "tag" / Bytes(8),
     "ts_low" / Int32ub,
     "ts_high" / Int32ub,
     "channel" / Int8ub,
-    "dlc" / Int8ub,  # number of data bytes (0..64 per spec here)
+    "dlc" / Int8ub,
     "flags" / FDFlags,  # EXTENDED, EDL, BRS, ESI
     "can_id" / CANID_FD,
     # For FD, only as many bytes as necessary are transmitted
     "data" / Bytes(this.dlc),
+    "payload" / Computed(lambda ctx: ctx.data),
 )
 
 # 4) CAN FD WITH CRC32 (Message Type = 0x91)
 CANFD_CRC_IPFrame = Struct(
     "length" / Int16ub,
-    "message_type" / Int16ub,  # 0x91
+    "message_type" / Const(0x91, Int16ub),  # 0x91
     "tag" / Bytes(8),
     "ts_low" / Int32ub,
     "ts_high" / Int32ub,
@@ -116,6 +125,6 @@ CANFD_CRC_IPFrame = Struct(
     "flags" / FDFlags,
     "can_id" / CANID_FD,
     "data" / Bytes(this.dlc),
-    # CRC32 is appended LITTLE-endian according to the spec
+    "payload" / Computed(lambda ctx: ctx.data),
     "crc32" / Int32ul,
 )

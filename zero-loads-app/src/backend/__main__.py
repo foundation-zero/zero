@@ -1,6 +1,6 @@
 import asyncio
 import logging
-from stub.adapter import PCanAdapter
+from adapter import PCanAdapter
 
 
 logging.basicConfig(level=logging.DEBUG)

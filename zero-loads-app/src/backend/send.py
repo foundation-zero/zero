@@ -1,5 +1,5 @@
 import logging
-from stub.can_frame import (
+from can_frame import (
     ClassicCAN_IPFrame,
 )
 import socket
@@ -27,6 +27,8 @@ msg = ClassicCAN_IPFrame.build(
         "data": b"\x01\x02\x03\x04\x05\x06\x07\x08",
     }
 )
+
+logging.info(type(msg))
 
 # Open a UDP socket
 sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)

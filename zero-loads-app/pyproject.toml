@@ -18,6 +18,7 @@ psycopg = {extras = ["binary"], version = "^3.2.3"}
 homeassistant-api = "^5.0.0"
 python-can = "^4.6.1"
 construct = "^2.10.70"
+aiomqtt = "^2.4.0"
 
 [tool.poetry.group.dbt.dependencies]
 dbt-risingwave = "^1.9.2"
