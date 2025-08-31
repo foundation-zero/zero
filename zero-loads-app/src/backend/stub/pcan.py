@@ -1,10 +1,14 @@
 import socket
+import time
 from .can_frame import (
     CANFD_IPFrame,
     ClassicCAN_CRC_IPFrame,
     ClassicCAN_IPFrame,
     CANFD_CRC_IPFrame,
 )
+import random
+
+SEND_INTERVAL = 5.0
 
 
 class PCanStub:
@@ -13,15 +17,18 @@ class PCanStub:
         self.port = port
         self.bufferSize = bufferSize
 
+    def run(self):
+        while True:
+            data = bytes([random.getrandbits(8) for _ in range(8)])
+            can_msg = self._create_can_msg(id=b"\x01", data=data)
+            self.send(can_msg)
+            time.sleep(self.SEND_INTERVAL)
+
     def send(self, msg: bytes):
         sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
         sock.sendto(msg, (self.ip, self.port))
 
     def _create_can_msg(self, id: bytes, data: bytes) -> bytes:
-        # TODO: Data check input
-        # TODO CRC?
-        # TODO: length calculation?
-        # TODO: timestamp
         msg = ClassicCAN_IPFrame.build(
             {
                 "length": 16,
