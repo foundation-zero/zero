@@ -6,18 +6,18 @@ use std::sync::atomic::{AtomicU64, Ordering};
 use std::time::Duration;
 
 use anyhow::Result;
-use circular::Buffer;
 use futures::TryStreamExt;
 use futures::{Stream, StreamExt};
 use futures_rx::RxExt;
-use nom::Err;
-use tokio::io::{AsyncReadExt, AsyncWriteExt};
+use tokio::io::AsyncWriteExt;
 use tokio::net::tcp::OwnedReadHalf;
 use tokio::net::{TcpListener, TcpStream};
 use tokio::sync::{broadcast, mpsc, watch};
 use tokio::task::JoinHandle;
 use tokio_stream::wrappers::errors::BroadcastStreamRecvError;
 use tokio_stream::wrappers::{BroadcastStream, IntervalStream, ReceiverStream};
+use tokio_util::bytes::{Buf, BytesMut};
+use tokio_util::codec::{Decoder, FramedRead};
 
 pub(crate) struct Interrogator {
     command_addr: String,
@@ -97,13 +97,15 @@ impl Interrogator {
             let (socket, _) = addr.accept().await.unwrap();
             log::info!("Accepted connection from {:?}", socket.peer_addr());
             let (rx, _tx) = socket.into_split();
-            let mut rx_command = CommandReceiver::serve(rx).await;
+            let rx_command = CommandReceiver::serve(rx).await;
             let tx = tx.clone();
             tokio::spawn(async move {
-                while let Some(cmd) = rx_command.next().await {
-                    log::info!("Received command: {:?}", cmd);
-                    tx.send(cmd).await.unwrap();
-                }
+                rx_command
+                    .for_each(|cmd| async {
+                        log::info!("Received command: {:?}", cmd);
+                        tx.send(cmd).await.unwrap();
+                    })
+                    .await;
                 log::info!("Command connection closed");
             });
         }
@@ -222,35 +224,36 @@ impl Controller {
     }
 }
 
+pub struct CommandMsgDecoder;
+impl Decoder for CommandMsgDecoder {
+    type Item = CommandMsg;
+    type Error = anyhow::Error;
+
+    fn decode(&mut self, src: &mut BytesMut) -> Result<Option<Self::Item>, Self::Error> {
+        match CommandMsg::parse(src) {
+            Ok((remaining, msg)) => {
+                let used = src.len() - remaining.len();
+                src.advance(used);
+                Ok(Some(msg))
+            }
+            Err(nom::Err::Incomplete(_)) => Ok(None),
+            Err(e) => Err(e.map_input(|i| i.to_vec()))?,
+        }
+    }
+}
+
 struct CommandReceiver;
 impl CommandReceiver {
-    async fn serve(mut rx: OwnedReadHalf) -> impl Stream<Item = Command> {
-        let (tx_command, rx_command) = mpsc::channel(1);
-        tokio::spawn(async move {
-            let mut buffer = Buffer::with_capacity(2 * 64 * 1024); // 128 KB buffer, biggest message is #SetUserData with 65534 bytes of argument
-            loop {
-                let read = rx.read(buffer.space()).await.unwrap();
-                buffer.fill(read);
-                if read != 0 {
-                    log::info!("Read {} bytes", buffer.available_data());
-                    match CommandMsg::parse(buffer.data()) {
-                        Ok((remaining, cmd)) => {
-                            buffer.consume(buffer.available_data() - remaining.len());
-                            tx_command.send(cmd.command).await.unwrap();
-                        }
-                        Err(Err::Incomplete(_)) => {
-                            // Wait for more data
-                        }
-                        Err(Err::Failure(_)) | Err(Err::Error(_)) => {
-                            log::error!("Failed to parse command message {:?}", buffer.data());
-                            buffer.reset();
-                        }
-                    }
+    async fn serve(rx: OwnedReadHalf) -> impl Stream<Item = Command> {
+        FramedRead::new(rx, CommandMsgDecoder).filter_map(|result| async {
+            match result {
+                Ok(cmd_msg) => Some(cmd_msg.command),
+                Err(e) => {
+                    log::error!("Failed to decode command: {:?}", e);
+                    None
                 }
             }
-        });
-
-        ReceiverStream::new(rx_command)
+        })
     }
 }
 

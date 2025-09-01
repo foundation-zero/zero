@@ -215,12 +215,6 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "2fd1289c04a9ea8cb22300a459a72a385d7c73d3259e2ed7dcb2af674838cfa9"
 
 [[package]]
-name = "circular"
-version = "0.3.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "b0fc239e0f6cb375d2402d48afb92f76f5404fd1df208a41930ec81eda078bea"
-
-[[package]]
 name = "clap"
 version = "4.5.45"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -1488,7 +1482,6 @@ dependencies = [
  "anyhow",
  "async-stream",
  "binrw",
- "circular",
  "clap",
  "config",
  "env_logger",

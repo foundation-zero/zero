@@ -1,10 +1,47 @@
 use anyhow::Result;
 use futures::TryStream;
-use tokio::io::AsyncReadExt;
 use tokio::net::TcpSocket;
-use tokio_stream::wrappers::ReceiverStream;
+use tokio_util::{
+    bytes::{Buf, BytesMut},
+    codec::Decoder,
+};
 
 use crate::msg::{self, PeaksReply, ReplyHeader};
+
+enum PeaksReplyDecoder {
+    WaitingHeader,
+    WaitingContent { header: ReplyHeader },
+}
+impl Decoder for PeaksReplyDecoder {
+    type Item = PeaksReply;
+    type Error = anyhow::Error;
+    fn decode(&mut self, buf: &mut BytesMut) -> Result<Option<PeaksReply>, anyhow::Error> {
+        match self {
+            PeaksReplyDecoder::WaitingHeader => match ReplyHeader::parse(buf) {
+                Ok((remaining, header)) => {
+                    let header_len = buf.len() - remaining.len();
+                    buf.advance(header_len);
+                    *self = PeaksReplyDecoder::WaitingContent { header };
+                    self.decode(buf)
+                }
+                Err(nom::Err::Incomplete(_)) => Ok(None),
+                Err(e) => Err(anyhow::anyhow!("Error parsing header: {:?}", e)),
+            },
+            PeaksReplyDecoder::WaitingContent { header } => {
+                match header.parse_content::<msg::PeaksReply>(buf) {
+                    Ok((remaining, peaks_reply)) => {
+                        let consumed = buf.len() - remaining.len();
+                        buf.advance(consumed);
+                        *self = PeaksReplyDecoder::WaitingHeader;
+                        Ok(Some(peaks_reply))
+                    }
+                    Err(nom::Err::Incomplete(_)) => Ok(None),
+                    Err(e) => Err(anyhow::anyhow!("Error parsing PeaksReply content: {:?}", e)),
+                }
+            }
+        }
+    }
+}
 
 pub struct PeaksClient;
 
@@ -12,48 +49,9 @@ impl PeaksClient {
     pub async fn stream_peaks(
         addr: &str,
     ) -> Result<impl TryStream<Ok = msg::PeaksReply, Error = anyhow::Error>> {
-        let a = TcpSocket::new_v4()?;
-        let (mut rx, _tx) = a.connect(addr.parse()?).await?.into_split();
-        let (tx_ch, rx_ch) = tokio::sync::mpsc::channel::<Result<PeaksReply, anyhow::Error>>(8);
-        tokio::spawn(async move {
-            let mut buffer = circular::Buffer::with_capacity(2 * 8 * 128); // Assuming max 128 peaks, each f64 is 8 bytes, double for safety
-            loop {
-                let read = rx.read(buffer.space()).await.unwrap();
-                buffer.fill(read);
-                if read != 0 {
-                    match ReplyHeader::parse(buffer.data()) {
-                        Ok((remaining, header)) => {
-                            buffer.consume(buffer.available_data() - remaining.len());
-                            loop {
-                                let read = rx.read(buffer.space()).await.unwrap();
-                                buffer.fill(read);
-                                match header.parse_content::<msg::PeaksReply>(buffer.data()) {
-                                    Ok((remaining, peaks_reply)) => {
-                                        buffer.consume(buffer.available_data() - remaining.len());
-                                        tx_ch.send(Ok(peaks_reply)).await.unwrap();
-                                        break;
-                                    }
-                                    Err(nom::Err::Incomplete(_)) => {
-                                        // Need more data
-                                    }
-                                    Err(e) => {
-                                        log::error!("Error parsing PeaksReply: {:?}", e);
-                                        break;
-                                    }
-                                }
-                            }
-                        }
-                        Err(nom::Err::Incomplete(_)) => {
-                            // Need more data
-                        }
-                        Err(e) => {
-                            log::error!("Error parsing PeaksReply: {:?}", e);
-                            break;
-                        }
-                    }
-                }
-            }
-        });
-        Ok(ReceiverStream::new(rx_ch))
+        let socket = TcpSocket::new_v4()?;
+        let (rx, _tx) = socket.connect(addr.parse()?).await?.into_split();
+        let framed = tokio_util::codec::FramedRead::new(rx, PeaksReplyDecoder::WaitingHeader);
+        Ok(framed)
     }
 }
