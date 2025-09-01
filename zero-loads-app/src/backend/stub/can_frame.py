@@ -14,7 +14,6 @@ from construct import (
     Const,
     this,
 )
-import binascii
 
 
 # -------------------------
@@ -55,10 +54,6 @@ FDFlags = FlagsEnum(
 )
 
 
-def crc32_func(data: bytes) -> int:
-    return binascii.crc32(data) & 0xFFFFFFFF
-
-
 # -------------------------
 # Frame definitions
 # -------------------------
@@ -76,7 +71,12 @@ ClassicCAN_IPFrame = Struct(
     "can_id" / CANID_Classical,
     # Spec says this field ALWAYS carries 8 bytes; bytes after DLC are invalid
     "data" / Bytes(8),
-    # Convenience: slice valid payload (not part of wire layout)
+    # Convcenience: computed CAN identifier (11 or 29 bits)
+    "can_identifier"
+    / Computed(
+        lambda ctx: ctx.can_id.id if ctx.can_id.extended else ctx.can_id.id & 0x7FF
+    ),
+    # Convenience: slice valid payload
     "payload" / Computed(lambda ctx: ctx.data[: ctx.dlc]),
 )
 
@@ -92,6 +92,10 @@ ClassicCAN_CRC_IPFrame = Struct(
     "flags" / ClassicalFlags,
     "can_id" / CANID_Classical,
     "data" / Bytes(8),
+    "can_identifier"
+    / Computed(
+        lambda ctx: ctx.can_id.id if ctx.can_id.extended else ctx.can_id.id & 0x7FF
+    ),
     "payload" / Computed(lambda ctx: ctx.data[: ctx.dlc]),
     # CRC32 is appended LITTLE-endian according to the spec
     "crc32" / Int32ul,
@@ -110,6 +114,10 @@ CANFD_IPFrame = Struct(
     "can_id" / CANID_FD,
     # For FD, only as many bytes as necessary are transmitted
     "data" / Bytes(this.dlc),
+    "can_identifier"
+    / Computed(
+        lambda ctx: ctx.can_id.id if ctx.can_id.extended else ctx.can_id.id & 0x7FF
+    ),
     "payload" / Computed(lambda ctx: ctx.data),
 )
 
@@ -125,6 +133,10 @@ CANFD_CRC_IPFrame = Struct(
     "flags" / FDFlags,
     "can_id" / CANID_FD,
     "data" / Bytes(this.dlc),
+    "can_identifier"
+    / Computed(
+        lambda ctx: ctx.can_id.id if ctx.can_id.extended else ctx.can_id.id & 0x7FF
+    ),
     "payload" / Computed(lambda ctx: ctx.data),
     "crc32" / Int32ul,
 )

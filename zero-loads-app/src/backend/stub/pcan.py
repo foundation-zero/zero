@@ -7,40 +7,48 @@ from .can_frame import (
     CANFD_CRC_IPFrame,
 )
 import random
-
-SEND_INTERVAL = 5.0
+import logging
+from datetime import datetime
 
 
 class PCanStub:
-    def __init__(self, ip: str, port: int, bufferSize: int = 1024):
+    def __init__(
+        self, ip: str, port: int, bufferSize: int = 1024, send_interval: float = 0.5
+    ):
         self.ip = ip
         self.port = port
         self.bufferSize = bufferSize
+        self.send_interval = send_interval
 
     def run(self):
+        logging.debug(
+            f"Sending mock messages to {self.ip}:{self.port} every {self.send_interval} seconds"
+        )
         while True:
             data = bytes([random.getrandbits(8) for _ in range(8)])
-            can_msg = self._create_can_msg(id=b"\x01", data=data)
-            self.send(can_msg)
-            time.sleep(self.SEND_INTERVAL)
+            can_msg = self.create_can_msg(id=b"\x01", data=data)
+            self.send_message(can_msg)
+            time.sleep(self.send_interval)
 
-    def send(self, msg: bytes):
+    def send_message(self, msg: bytes):
+        logging.debug(f"Sending message to {self.ip}:{self.port}")
         sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
         sock.sendto(msg, (self.ip, self.port))
 
-    def _create_can_msg(self, id: bytes, data: bytes) -> bytes:
+    def create_can_msg(self, id: bytes, data: bytes) -> bytes:
+        dt_low, dt_high = self._datetime_to_pcan_parts(datetime.now())
         msg = ClassicCAN_IPFrame.build(
             {
                 "length": 16,
                 "message_type": 0x80,
                 "tag": b"not_used",
-                "ts_low": 12345678,
-                "ts_high": 87654321,
+                "ts_low": dt_low,
+                "ts_high": dt_high,
                 "channel": 1,
                 "dlc": len(data),
                 "flags": {"RTR": False, "EXTENDED": True},
                 "can_id": {
-                    "id": 0x1FFFFFFF,
+                    "id": id,
                     "reserved0": 0x00,
                     "rtr": False,
                     "extended": True,
@@ -50,14 +58,15 @@ class PCanStub:
         )
         return msg
 
-    def _create_can_crc_msg(self, data: bytes) -> bytes:
+    def create_can_crc_msg(self, id: bytes, data: bytes) -> bytes:
+        dt_low, dt_high = self._datetime_to_pcan_parts(datetime.now())
         msg = ClassicCAN_CRC_IPFrame.build(
             {
                 "length": 16,
                 "message_type": 0x81,
                 "tag": b"not_used",
-                "ts_low": 12345678,
-                "ts_high": 87654321,
+                "ts_low": dt_low,
+                "ts_high": dt_high,
                 "channel": 1,
                 "dlc": len(data),
                 "flags": {
@@ -67,7 +76,7 @@ class PCanStub:
                     "ESI": False,
                 },
                 "can_id": {
-                    "id": 0x1FFFFFFF,
+                    "id": id,
                     "reserved0": 0x00,
                     "rtr": False,
                     "extended": True,
@@ -78,19 +87,20 @@ class PCanStub:
         )
         return msg
 
-    def _create_can_fd_msg(self, data) -> bytes:
+    def create_can_fd_msg(self, id: bytes, data: bytes) -> bytes:
+        dt_low, dt_high = self._datetime_to_pcan_parts(datetime.now())
         msg = CANFD_IPFrame.build(
             {
                 "length": 28 + len(data),
                 "message_type": 0x90,
                 "tag": b"not_used",
-                "ts_low": 12345678,
-                "ts_high": 87654321,
+                "ts_low": dt_low,
+                "ts_high": dt_high,
                 "channel": 1,
                 "dlc": len(data),
                 "flags": {"RTR": False, "EXTENDED": True},
                 "can_id": {
-                    "id": 0x1FFFFFFF,
+                    "id": id,
                     "reserved0": 0x00,
                     "rtr": False,
                     "extended": True,
@@ -100,19 +110,20 @@ class PCanStub:
         )
         return msg
 
-    def _create_can_fd_crc_msg(self, data: bytes) -> bytes:
+    def create_can_fd_crc_msg(self, id: bytes, data: bytes) -> bytes:
+        dt_low, dt_high = self._datetime_to_pcan_parts(datetime.now())
         msg = CANFD_CRC_IPFrame.build(
             {
                 "length": 16,
                 "message_type": 0x91,
                 "tag": b"not_used",
-                "ts_low": 12345678,
-                "ts_high": 87654321,
+                "ts_low": dt_low,
+                "ts_high": dt_high,
                 "channel": 1,
                 "dlc": len(data),
                 "flags": {"RTR": False, "EXTENDED": True},
                 "can_id": {
-                    "id": 0x1FFFFFFF,
+                    "id": id,
                     "reserved0": 0x00,
                     "rtr": False,
                     "extended": True,
@@ -122,3 +133,14 @@ class PCanStub:
             }
         )
         return msg
+
+    def _datetime_to_pcan_parts(self, dt: datetime):
+        """Convert a datetime to PCAN-style timestamp parts (low, high)."""
+        epoch = datetime(1970, 1, 1)
+
+        delta = dt - epoch
+        ts_us = int(delta.total_seconds() * 1_000_000)
+
+        low = ts_us & 0xFFFFFFFF  # lower 32 bits
+        high = (ts_us >> 32) & 0xFFFFFFFF  # upper 32 bits
+        return low, high

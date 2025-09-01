@@ -1,6 +1,6 @@
 import logging
 import socket
-from stub.can_frame import (
+from .stub.can_frame import (
     ClassicCAN_IPFrame,
     ClassicCAN_CRC_IPFrame,
     CANFD_IPFrame,
@@ -9,7 +9,7 @@ from stub.can_frame import (
 from aiomqtt import Client as MqttClient
 from .config import Settings
 from contextlib import asynccontextmanager
-import json
+from construct import Container
 
 
 class PCanAdapter:
@@ -50,28 +50,34 @@ class PCanAdapter:
         while True:
             try:
                 message = await self._read_message()
+                logging.debug(f"Forwarding message to MQTT: {message}")
                 await self._send_mqtt_message(message)
+                logging.debug("Done")
             except Exception as e:
                 logging.error(e)
                 break
 
-    async def _read_message(self) -> str:
+    async def _read_message(self):
+        """Read a message from the UDP socket and decode it"""
         message, address = self.socket.recvfrom(self.buffer_size)
-        clientMsg = "Data from Gateway:{}".format(message)
-        clientIP = "Gateway IP Address:{}".format(address[0])
-        clientPort = "Port:{}".format(address[1])
-        logging.debug(f"message: {clientMsg} on {clientIP}:{clientPort}")
+        logging.debug(f"message: {message} on {address[0]}:{address[1]}")
         return await self._decode_can_frame(message)
 
-    async def _send_mqtt_message(self, message: str):
-        message_json = json.loads(message)
-        payload = message_json.get("payload")
-        topic = message_json.get("can_id")
-        await self.mqtt.publish(topic, payload, qos=1)
+    async def _send_mqtt_message(self, message: Container):
+        """Send the decoded message to the MQTT broker"""
+
+        can_id = str(message.get("can_identifier"))
+        payload = await self._convert_payload(message)
+
+        await self.mqtt.publish(topic=can_id, payload=payload, qos=1)
+
+    async def _convert_payload(self, message: Container):
+        """Extract the payload from the message"""
+        return int.from_bytes(message.get("payload"), "little")
 
     @staticmethod
-    async def _decode_can_frame(message: bytes) -> str:
-        logging.debug("Decoding message")
+    async def _decode_can_frame(message: bytes):
+        """Decode a CAN frame from raw bytes"""
         if message[3] == 0x80:
             logging.debug("CAN 2.0a/b Frame")
             result = ClassicCAN_IPFrame.parse(message)
@@ -88,5 +94,4 @@ class PCanAdapter:
             logging.info("Not a valid CAN Frame type")
             result = None
         logging.debug("Done parsing")
-        logging.debug(result)
-        return str(result)
+        return result

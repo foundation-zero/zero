@@ -1,17 +1,18 @@
 import asyncio
 import logging
-from adapter import PCanAdapter
+from .adapter import PCanAdapter
+from .config import Settings
+from .logging import setup_logging
 
+setup_logging(logging.DEBUG)
 
-logging.basicConfig(level=logging.DEBUG)
-
-adapter = PCanAdapter(localIP="127.0.0.1", localPort=55001)
+settings = Settings()
 
 
 async def read():
-    logging.info("Read")
-    message = await adapter.read()
-    logging.info("Received message:", message)
+    async with PCanAdapter.init_from_settings(settings) as adapter:
+        await adapter.run()
 
 
-asyncio.run(read())
+if __name__ == "__main__":
+    asyncio.run(read())
