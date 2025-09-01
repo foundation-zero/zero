@@ -1,10 +1,7 @@
-import logging
 from .stub.pcan import PCanStub
 from .logging import setup_logging
 
 setup_logging()
-
-logging.info("send")
 
 pcan_stub = PCanStub("127.0.0.1", 55001)
 

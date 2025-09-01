@@ -1,11 +1,6 @@
 import logging
 import socket
-from .stub.can_frame import (
-    ClassicCAN_IPFrame,
-    ClassicCAN_CRC_IPFrame,
-    CANFD_IPFrame,
-    CANFD_CRC_IPFrame,
-)
+from .stub.can_frame import CAN_Frame, CAN_CRC_Frame, CAN_FD_Frame, CAN_FD_CRC_Frame
 from aiomqtt import Client as MqttClient
 from .config import Settings
 from contextlib import asynccontextmanager
@@ -80,16 +75,16 @@ class PCanAdapter:
         """Decode a CAN frame from raw bytes"""
         if message[3] == 0x80:
             logging.debug("CAN 2.0a/b Frame")
-            result = ClassicCAN_IPFrame.parse(message)
+            result = CAN_Frame.parse(message)
         elif message[3] == 0x81:
             logging.debug("CAN 2.0a/b Frame with CRC ")
-            result = ClassicCAN_CRC_IPFrame.parse(message)
+            result = CAN_CRC_Frame.parse(message)
         elif message[3] == 0x90:
             logging.debug("CAN FD Frame ")
-            result = CANFD_IPFrame.parse(message)
+            result = CAN_FD_Frame.parse(message)
         elif message[3] == 0x91:
             logging.debug("CAN FD Frame with CRC ")
-            result = CANFD_CRC_IPFrame.parse(message)
+            result = CAN_FD_CRC_Frame.parse(message)
         else:
             logging.info("Not a valid CAN Frame type")
             result = None

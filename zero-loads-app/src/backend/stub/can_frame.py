@@ -1,7 +1,6 @@
 from construct import (
     Struct,
     BitStruct,
-    Bitwise,
     BitsInteger,
     Flag,
     FlagsEnum,
@@ -20,37 +19,27 @@ from construct import (
 # Shared building blocks
 # -------------------------
 
-# 32-bit CAN ID field — classic CAN (has RTR bit)
-CANID_Classical = BitStruct(
+# 32-bit CAN ID field
+CAN_ID = BitStruct(
     "id" / BitsInteger(29),  # bits 0..28
     "reserved0" / BitsInteger(1),  # bit 29, fixed 0
     "rtr" / Flag,  # bit 30
     "extended" / Flag,  # bit 31 (1 = extended frame)
 )
 
-# 32-bit CAN ID field — CAN FD (no RTR bit; bits 29..30 fixed 0)
-CANID_FD = Bitwise(
-    BitStruct(
-        "id" / BitsInteger(29),  # bits 0..28
-        "reserved0" / BitsInteger(1),  # bits 29, fixed 0
-        "rtr" / BitsInteger(1),  # bit 30 (rtr)
-        "extended" / Flag,  # bit 31 (1 = extended frame)
-    )
-)
-
 # Flags fields
-ClassicalFlags = FlagsEnum(
+CLASSIC_FLAGS = FlagsEnum(
     Int16ub,
-    RTR=0x0001,  # Remote Transmission Request
-    EXTENDED=0x0002,  # Extended ID
+    RTR=0x01,  # Remote Transmission Request
+    EXTENDED=0x02,  # Extended ID
 )
 
-FDFlags = FlagsEnum(
+FD_FLAGS = FlagsEnum(
     Int16ub,
-    EXTENDED=0x0002,  # Extended ID
-    EDL=0x0010,  # Extended Data Length
-    BRS=0x0020,  # Bit Rate Switch
-    ESI=0x0040,  # Error State Indicator
+    EXTENDED=0x02,  # Extended ID
+    EDL=0x10,  # Extended Data Length
+    BRS=0x20,  # Bit Rate Switch
+    ESI=0x40,  # Error State Indicator
 )
 
 
@@ -59,7 +48,7 @@ FDFlags = FlagsEnum(
 # -------------------------
 
 # 1) Classic CAN 2.0 A/B (Message Type = 0x80)
-ClassicCAN_IPFrame = Struct(
+CAN_Frame = Struct(
     "length" / Int16ub,  # total packet length incl. this field
     "message_type" / Const(0x80, Int16ub),  # 0x80
     "tag" / Bytes(8),  # not used currently
@@ -67,8 +56,8 @@ ClassicCAN_IPFrame = Struct(
     "ts_high" / Int32ub,  # timestamp (µs), high 32
     "channel" / Int8ub,  # not used (route defines channel)
     "dlc" / Int8ub,  # number of valid data bytes (0..8)
-    "flags" / ClassicalFlags,  # RTR / EXTENDED
-    "can_id" / CANID_Classical,
+    "flags" / CLASSIC_FLAGS,  # RTR / EXTENDED
+    "can_id" / CAN_ID,
     # Spec says this field ALWAYS carries 8 bytes; bytes after DLC are invalid
     "data" / Bytes(8),
     # Convcenience: computed CAN identifier (11 or 29 bits)
@@ -81,7 +70,7 @@ ClassicCAN_IPFrame = Struct(
 )
 
 # 2) Classic CAN 2.0 A/B WITH CRC32 (Message Type = 0x81)
-ClassicCAN_CRC_IPFrame = Struct(
+CAN_CRC_Frame = Struct(
     "length" / Int16ub,
     "message_type" / Const(0x81, Int16ub),  # 0x81
     "tag" / Bytes(8),
@@ -89,8 +78,8 @@ ClassicCAN_CRC_IPFrame = Struct(
     "ts_high" / Int32ub,
     "channel" / Int8ub,
     "dlc" / Int8ub,
-    "flags" / ClassicalFlags,
-    "can_id" / CANID_Classical,
+    "flags" / CLASSIC_FLAGS,
+    "can_id" / CAN_ID,
     "data" / Bytes(8),
     "can_identifier"
     / Computed(
@@ -102,7 +91,7 @@ ClassicCAN_CRC_IPFrame = Struct(
 )
 
 # 3) CAN FD (Message Type = 0x90)
-CANFD_IPFrame = Struct(
+CAN_FD_Frame = Struct(
     "length" / Int16ub,
     "message_type" / Const(0x90, Int16ub),  # 0x90
     "tag" / Bytes(8),
@@ -110,8 +99,8 @@ CANFD_IPFrame = Struct(
     "ts_high" / Int32ub,
     "channel" / Int8ub,
     "dlc" / Int8ub,
-    "flags" / FDFlags,  # EXTENDED, EDL, BRS, ESI
-    "can_id" / CANID_FD,
+    "flags" / FD_FLAGS,  # EXTENDED, EDL, BRS, ESI
+    "can_id" / CAN_ID,
     # For FD, only as many bytes as necessary are transmitted
     "data" / Bytes(this.dlc),
     "can_identifier"
@@ -122,7 +111,7 @@ CANFD_IPFrame = Struct(
 )
 
 # 4) CAN FD WITH CRC32 (Message Type = 0x91)
-CANFD_CRC_IPFrame = Struct(
+CAN_FD_CRC_Frame = Struct(
     "length" / Int16ub,
     "message_type" / Const(0x91, Int16ub),  # 0x91
     "tag" / Bytes(8),
@@ -130,8 +119,8 @@ CANFD_CRC_IPFrame = Struct(
     "ts_high" / Int32ub,
     "channel" / Int8ub,
     "dlc" / Int8ub,
-    "flags" / FDFlags,
-    "can_id" / CANID_FD,
+    "flags" / FD_FLAGS,
+    "can_id" / CAN_ID,
     "data" / Bytes(this.dlc),
     "can_identifier"
     / Computed(

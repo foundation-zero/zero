@@ -1,11 +1,6 @@
 import socket
 import time
-from .can_frame import (
-    CANFD_IPFrame,
-    ClassicCAN_CRC_IPFrame,
-    ClassicCAN_IPFrame,
-    CANFD_CRC_IPFrame,
-)
+from .stub.can_frame import CAN_Frame, CAN_CRC_Frame, CAN_FD_Frame, CAN_FD_CRC_Frame
 import random
 import logging
 from datetime import datetime
@@ -37,7 +32,7 @@ class PCanStub:
 
     def create_can_msg(self, id: bytes, data: bytes) -> bytes:
         dt_low, dt_high = self._datetime_to_pcan_parts(datetime.now())
-        msg = ClassicCAN_IPFrame.build(
+        msg = CAN_Frame.build(
             {
                 "length": 16,
                 "message_type": 0x80,
@@ -60,7 +55,7 @@ class PCanStub:
 
     def create_can_crc_msg(self, id: bytes, data: bytes) -> bytes:
         dt_low, dt_high = self._datetime_to_pcan_parts(datetime.now())
-        msg = ClassicCAN_CRC_IPFrame.build(
+        msg = CAN_CRC_Frame.build(
             {
                 "length": 16,
                 "message_type": 0x81,
@@ -89,7 +84,7 @@ class PCanStub:
 
     def create_can_fd_msg(self, id: bytes, data: bytes) -> bytes:
         dt_low, dt_high = self._datetime_to_pcan_parts(datetime.now())
-        msg = CANFD_IPFrame.build(
+        msg = CAN_FD_Frame.build(
             {
                 "length": 28 + len(data),
                 "message_type": 0x90,
@@ -112,7 +107,7 @@ class PCanStub:
 
     def create_can_fd_crc_msg(self, id: bytes, data: bytes) -> bytes:
         dt_low, dt_high = self._datetime_to_pcan_parts(datetime.now())
-        msg = CANFD_CRC_IPFrame.build(
+        msg = CAN_FD_CRC_Frame.build(
             {
                 "length": 16,
                 "message_type": 0x91,
