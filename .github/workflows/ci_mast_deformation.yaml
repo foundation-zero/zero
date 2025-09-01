@@ -1,0 +1,65 @@
+name: "Mast deformation: Test"
+
+on:
+  push:
+    paths:
+      - 'zero-mast-deformation/**'
+      - .github/workflows/ci_mast_deformation.yaml
+  release:
+    types: [released]
+    paths:
+      - 'zero-mast-deformation/**'
+
+jobs:
+  test:
+    timeout-minutes: 10
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Set up Rust
+        uses: actions-rust-lang/setup-rust-toolchain@v1
+        with:
+          toolchain: stable
+          components: clippy, rustfmt
+
+      - name: Cache cargo registry
+        uses: actions/cache@v3
+        with:
+          path: ~/.cargo/registry
+          key: ${{ runner.os }}-cargo-registry-${{ hashFiles('**/Cargo.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-cargo-registry-
+
+      - name: Cache cargo build
+        uses: actions/cache@v3
+        with:
+          path: target
+          key: ${{ runner.os }}-cargo-build-${{ hashFiles('**/Cargo.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-cargo-build-
+
+
+      - name: Rustfmt Check
+        run: cargo fmt --all --check
+        working-directory: zero-mast-deformation
+
+      - name: Run cargo test
+        run: cargo test --all --all-features --locked
+        working-directory: zero-mast-deformation
+
+      - name: Run cargo clippy
+        run: cargo clippy --all --all-features --locked -- -D warnings
+        working-directory: zero-mast-deformation
+
+      - name: Run stub
+        run: |
+          cargo run stub --duration 30&
+          sleep 1
+        working-directory: zero-mast-deformation
+
+      - name: Run peaks client
+        run: cargo run peaks --duration 10
+        working-directory: zero-mast-deformation
