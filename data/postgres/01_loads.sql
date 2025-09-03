@@ -3,7 +3,7 @@ DROP TYPE IF EXISTS sea_state CASCADE;
 CREATE TYPE sea_state AS ENUM ('wet');
 
 DROP TYPE IF EXISTS unit CASCADE;
-CREATE TYPE unit AS ENUM ('tonne', 'meter', 'knots', 'percentage');
+CREATE TYPE unit AS ENUM ('tonne', 'meter', 'knot', 'percentage');
 
 DROP TYPE IF EXISTS pcs_mode CASCADE;
 CREATE TYPE pcs_mode AS ENUM ('idle', 'regeneration', 'propulsion');
@@ -22,6 +22,28 @@ CREATE TABLE sails (
   name TEXT
 );
 
+DROP TABLE IF EXISTS sail_sets CASCADE;
+CREATE TABLE sail_sets (
+  id TEXT PRIMARY KEY,
+  name TEXT NOT NULL
+);
+
+DROP TABLE IF EXISTS sail_conditions_sails CASCADE;
+CREATE TABLE sail_sets_sails (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  sail_id TEXT NOT NULL REFERENCES sails(id) ON DELETE RESTRICT,
+  sail_set_id TEXT NOT NULL REFERENCES sail_sets(id) ON DELETE RESTRICT
+);
+
+DROP VIEW IF EXISTS sail_sets_combined CASCADE;
+-- This view makes looking up the sail case easier by aggregating the sails into an array
+-- Lookup can be done by matching the (ordered) array of sails
+CREATE VIEW sail_sets_combined AS
+SELECT sail_sets.*, ARRAY_AGG(sail_sets_sails.sail_id ORDER BY sail_sets_sails.sail_id) AS sails
+FROM sail_sets
+JOIN sail_sets_sails ON sail_sets_sails.sail_set_id = sail_sets.id
+GROUP BY sail_sets.id;
+
 DROP TYPE IF EXISTS value_definition_scope CASCADE;
 CREATE TYPE value_definition_scope AS ENUM ('mast_specific', 'general');
 
@@ -33,9 +55,10 @@ CREATE TABLE value_definitions (
   scope value_definition_scope NOT NULL
 );
 
-DROP TABLE IF EXISTS sail_cases CASCADE;
-CREATE TABLE sail_cases (
+DROP TABLE IF EXISTS sail_conditions CASCADE;
+CREATE TABLE sail_conditions (
   id TEXT PRIMARY KEY,
+  sail_set_id TEXT REFERENCES sail_sets(id) ON DELETE RESTRICT,
   name TEXT NOT NULL,
   sea_state sea_state NOT NULL,
   awa numrange NOT NULL CHECK (lower(awa) >= 0 AND upper(awa) <= 180), -- sailing is symmetrical, so only 0-180 degrees needed, in fact a range might actually be -90..-45 & 45..90
@@ -44,26 +67,10 @@ CREATE TABLE sail_cases (
   pcs_mode_fwd pcs_mode[] NOT NULL
 );
 
-DROP TABLE IF EXISTS sail_cases_sails CASCADE;
-CREATE TABLE sail_cases_sails (
-  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-  sail_id TEXT NOT NULL REFERENCES sails(id) ON DELETE RESTRICT,
-  sail_case_id TEXT NOT NULL REFERENCES sail_cases(id) ON DELETE RESTRICT
-);
-
-DROP VIEW IF EXISTS sail_cases_combinations CASCADE;
--- This view makes looking up the sail case easier by aggregating the sails into an array
--- Lookup can be done by matching the (ordered) array of sails
-CREATE VIEW sail_cases_combinations AS
-SELECT sail_cases.*, ARRAY_AGG(sail_cases_sails.sail_id ORDER BY sail_cases_sails.sail_id) AS sails
-FROM sail_cases
-JOIN sail_cases_sails ON sail_cases_sails.sail_case_id = sail_cases.id
-GROUP BY sail_cases.id;
-
 DROP TABLE IF EXISTS reference_values;
 CREATE TABLE reference_values (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-  sail_case_id TEXT NOT NULL REFERENCES sail_cases(id) ON DELETE RESTRICT,
+  sail_case_id TEXT NOT NULL REFERENCES sail_conditions(id) ON DELETE RESTRICT,
   mast_id TEXT REFERENCES masts(id) ON DELETE RESTRICT,
   value_definition_id TEXT NOT NULL REFERENCES value_definitions(id) ON DELETE RESTRICT,
   value NUMERIC NOT NULL
@@ -79,74 +86,42 @@ INSERT INTO sails (id, mast_id, name) VALUES
   ('full-main-sail', 'main', 'Full Main Sail'),
   ('main-sail-reef1', 'main', 'Main Sail Reef 1'),
   ('main-sail-reef2', 'main', 'Main Sail Reef 2'),
-  ('main-j1', 'main', 'Main Jib 1'),
+  ('blade', 'main', 'Main Blade'),
   ('main-staysail', 'main', 'Main Staysail'),
   ('full-mizzen-sail', 'mizzen', 'Full Mizzen Sail'),
   ('mizzen-sail-reef1', 'mizzen', 'Mizzen Sail Reef 1'),
   ('mizzen-sail-reef2', 'mizzen', 'Mizzen Sail Reef 2'),
-  ('mizzen-j1', 'mizzen', 'Mizzen Jib 1'),
+  ('mizzen-jib', 'mizzen', 'Mizzen Jib'),
   ('mizzen-staysail', 'mizzen', 'Mizzen Staysail');
+
+INSERT INTO sail_sets (id, name) VALUES
+  ('upwind-blade', 'Upwind Blade'),
+  ('reach-blade-mzj', 'Reach Blade with Mizzen Jib');
+
+INSERT INTO sail_sets_sails (sail_set_id, sail_id) VALUES
+  ('upwind-blade', 'full-main-sail'),
+  ('upwind-blade', 'blade'),
+  ('upwind-blade', 'full-mizzen-sail'),
+
+  ('reach-blade-mzj', 'full-main-sail'),
+  ('reach-blade-mzj', 'blade'),
+  ('reach-blade-mzj', 'mizzen-jib'),
+  ('reach-blade-mzj', 'full-mizzen-sail');
 
 INSERT INTO value_definitions (id, name, unit, scope) VALUES
   ('headstay-load', 'Headstay load', 'tonne', 'mast_specific'),
-  ('boatspeed', 'Boat Speed', 'knots', 'general');
+  ('boatspeed', 'Boat Speed', 'knot', 'general');
 
-INSERT INTO sail_cases (id, name, sea_state, awa, aws, pcs_mode_aft, pcs_mode_fwd) VALUES
-  ('light-wind-close-hauled', 'Light wind close-hauled', 'wet', '[0,45)', '[0,10)', ARRAY['propulsion', 'regeneration', 'idle']::pcs_mode[], ARRAY['propulsion', 'regeneration', 'idle']::pcs_mode[]),
-  ('light-wind-beam-reach', 'Light wind beam reach', 'wet', '[45,135)', '[0,10)', ARRAY['propulsion', 'regeneration', 'idle']::pcs_mode[], ARRAY['propulsion', 'regeneration', 'idle']::pcs_mode[]),
-  ('light-wind-broad-reach', 'Light wind broad reach', 'wet', '[135,180]', '[0,10)', ARRAY['propulsion', 'regeneration', 'idle']::pcs_mode[], ARRAY['propulsion', 'regeneration', 'idle']::pcs_mode[]),
-  ('moderate-wind-close-hauled', 'Moderate wind close-hauled', 'wet', '[0,45)', '[10,20)', ARRAY['propulsion', 'regeneration', 'idle']::pcs_mode[], ARRAY['propulsion', 'regeneration', 'idle']::pcs_mode[]),
-  ('moderate-wind-beam-reach', 'Moderate wind beam reach', 'wet', '[45,135)', '[10,20)', ARRAY['propulsion', 'regeneration', 'idle']::pcs_mode[], ARRAY['propulsion', 'regeneration', 'idle']::pcs_mode[]),
-  ('moderate-wind-broad-reach', 'Moderate wind broad reach', 'wet', '[135,180]', '[10,20)', ARRAY['propulsion', 'regeneration', 'idle']::pcs_mode[], ARRAY['propulsion', 'regeneration', 'idle']::pcs_mode[]),
-  ('strong-wind-close-hauled', 'Strong wind close-hauled', 'wet', '[0,45)', '[20,30)', ARRAY['propulsion', 'regeneration', 'idle']::pcs_mode[], ARRAY['propulsion', 'regeneration', 'idle']::pcs_mode[]),
-  ('strong-wind-beam-reach', 'Strong wind beam reach', 'wet', '[45,135)', '[20,30)', ARRAY['propulsion', 'regeneration', 'idle']::pcs_mode[], ARRAY['propulsion', 'regeneration', 'idle']::pcs_mode[]),
-  ('strong-wind-broad-reach', 'Strong wind broad reach', 'wet', '[135,180]', '[20,30)', ARRAY['propulsion', 'regeneration', 'idle']::pcs_mode[], ARRAY['propulsion', 'regeneration', 'idle']::pcs_mode[]);
-
-INSERT INTO sail_cases_sails (sail_id, sail_case_id) VALUES
-  ('full-main-sail', 'light-wind-close-hauled'),
-  ('main-j1', 'light-wind-close-hauled'),
-  ('full-mizzen-sail', 'light-wind-close-hauled'),
-  ('mizzen-j1', 'light-wind-close-hauled'),
-
-  ('full-main-sail', 'light-wind-beam-reach'),
-  ('main-j1', 'light-wind-beam-reach'),
-  ('full-mizzen-sail', 'light-wind-beam-reach'),
-  ('mizzen-j1', 'light-wind-beam-reach'),
-
-  ('full-main-sail', 'light-wind-broad-reach'),
-  ('main-j1', 'light-wind-broad-reach'),
-  ('full-mizzen-sail', 'light-wind-broad-reach'),
-  ('mizzen-j1', 'light-wind-broad-reach'),
-
-  ('main-sail-reef1', 'moderate-wind-close-hauled'),
-  ('main-staysail', 'moderate-wind-close-hauled'),
-  ('mizzen-sail-reef1', 'moderate-wind-close-hauled'),
-  ('mizzen-staysail', 'moderate-wind-close-hauled'),
-
-  ('main-sail-reef1', 'moderate-wind-beam-reach'),
-  ('main-staysail', 'moderate-wind-beam-reach'),
-  ('mizzen-sail-reef1', 'moderate-wind-beam-reach'),
-  ('mizzen-staysail', 'moderate-wind-beam-reach'),
-
-  ('main-sail-reef1', 'moderate-wind-broad-reach'),
-  ('main-staysail', 'moderate-wind-broad-reach'),
-  ('mizzen-sail-reef1', 'moderate-wind-broad-reach'),
-  ('mizzen-staysail', 'moderate-wind-broad-reach'),
-
-  ('main-sail-reef2', 'strong-wind-close-hauled'),
-  ('main-staysail', 'strong-wind-close-hauled'),
-  ('mizzen-sail-reef2', 'strong-wind-close-hauled'),
-  ('mizzen-staysail', 'strong-wind-close-hauled'),
-
-  ('main-sail-reef2', 'strong-wind-beam-reach'),
-  ('main-staysail', 'strong-wind-beam-reach'),
-  ('mizzen-sail-reef2', 'strong-wind-beam-reach'),
-  ('mizzen-staysail', 'strong-wind-beam-reach'),
-
-  ('main-sail-reef2', 'strong-wind-broad-reach'),
-  ('main-staysail', 'strong-wind-broad-reach'),
-  ('mizzen-sail-reef2', 'strong-wind-broad-reach'),
-  ('mizzen-staysail', 'strong-wind-broad-reach');
+INSERT INTO sail_conditions (id, sail_set_id, name, sea_state, awa, aws, pcs_mode_aft, pcs_mode_fwd) VALUES
+  ('light-wind-close-hauled', 'reach-blade-mzj', 'Light wind close-hauled', 'wet', '[0,45)', '[0,10)', ARRAY['propulsion', 'regeneration', 'idle']::pcs_mode[], ARRAY['propulsion', 'regeneration', 'idle']::pcs_mode[]),
+  ('light-wind-beam-reach', 'upwind-blade', 'Light wind beam reach', 'wet', '[45,135)', '[0,10)', ARRAY['propulsion', 'regeneration', 'idle']::pcs_mode[], ARRAY['propulsion', 'regeneration', 'idle']::pcs_mode[]),
+  ('light-wind-broad-reach', 'upwind-blade', 'Light wind broad reach', 'wet', '[135,180]', '[0,10)', ARRAY['propulsion', 'regeneration', 'idle']::pcs_mode[], ARRAY['propulsion', 'regeneration', 'idle']::pcs_mode[]),
+  ('moderate-wind-close-hauled', 'upwind-blade', 'Moderate wind close-hauled', 'wet', '[0,45)', '[10,20)', ARRAY['propulsion', 'regeneration', 'idle']::pcs_mode[], ARRAY['propulsion', 'regeneration', 'idle']::pcs_mode[]),
+  ('moderate-wind-beam-reach', 'upwind-blade', 'Moderate wind beam reach', 'wet', '[45,135)', '[10,20)', ARRAY['propulsion', 'regeneration', 'idle']::pcs_mode[], ARRAY['propulsion', 'regeneration', 'idle']::pcs_mode[]),
+  ('moderate-wind-broad-reach', 'upwind-blade', 'Moderate wind broad reach', 'wet', '[135,180]', '[10,20)', ARRAY['propulsion', 'regeneration', 'idle']::pcs_mode[], ARRAY['propulsion', 'regeneration', 'idle']::pcs_mode[]),
+  ('strong-wind-close-hauled', 'reach-blade-mzj', 'Strong wind close-hauled', 'wet', '[0,45)', '[20,30)', ARRAY['propulsion', 'regeneration', 'idle']::pcs_mode[], ARRAY['propulsion', 'regeneration', 'idle']::pcs_mode[]),
+  ('strong-wind-beam-reach', 'upwind-blade', 'Strong wind beam reach', 'wet', '[45,135)', '[20,30)', ARRAY['propulsion', 'regeneration', 'idle']::pcs_mode[], ARRAY['propulsion', 'regeneration', 'idle']::pcs_mode[]),
+  ('strong-wind-broad-reach', 'upwind-blade', 'Strong wind broad reach', 'wet', '[135,180]', '[20,30)', ARRAY['propulsion', 'regeneration', 'idle']::pcs_mode[], ARRAY['propulsion', 'regeneration', 'idle']::pcs_mode[]);
 
 INSERT INTO reference_values (sail_case_id, mast_id, value_definition_id, value) VALUES
   ('light-wind-close-hauled', 'main', 'headstay-load', 2.0),
