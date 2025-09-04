@@ -28,7 +28,7 @@ CREATE TABLE sail_sets (
   name TEXT NOT NULL
 );
 
-DROP TABLE IF EXISTS sail_conditions_sails CASCADE;
+DROP TABLE IF EXISTS sail_sets_sails CASCADE;
 CREATE TABLE sail_sets_sails (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   sail_id TEXT NOT NULL REFERENCES sails(id) ON DELETE RESTRICT,
@@ -55,8 +55,8 @@ CREATE TABLE value_definitions (
   scope value_definition_scope NOT NULL
 );
 
-DROP TABLE IF EXISTS sail_conditions CASCADE;
-CREATE TABLE sail_conditions (
+DROP TABLE IF EXISTS conditions CASCADE;
+CREATE TABLE conditions (
   id TEXT PRIMARY KEY,
   sail_set_id TEXT REFERENCES sail_sets(id) ON DELETE RESTRICT,
   name TEXT NOT NULL,
@@ -70,7 +70,7 @@ CREATE TABLE sail_conditions (
 DROP TABLE IF EXISTS reference_values;
 CREATE TABLE reference_values (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-  sail_case_id TEXT NOT NULL REFERENCES sail_conditions(id) ON DELETE RESTRICT,
+  sail_case_id TEXT NOT NULL REFERENCES conditions(id) ON DELETE RESTRICT,
   mast_id TEXT REFERENCES masts(id) ON DELETE RESTRICT,
   value_definition_id TEXT NOT NULL REFERENCES value_definitions(id) ON DELETE RESTRICT,
   value NUMERIC NOT NULL,
@@ -116,7 +116,7 @@ INSERT INTO value_definitions (id, name, unit, scope) VALUES
   ('headstay-load', 'Headstay load', 'tonne', 'mast_specific'),
   ('boatspeed', 'Boat Speed', 'knot', 'general');
 
-INSERT INTO sail_conditions (id, sail_set_id, name, sea_state, awa, aws, pcs_mode_aft, pcs_mode_fwd) VALUES
+INSERT INTO conditions (id, sail_set_id, name, sea_state, awa, aws, pcs_mode_aft, pcs_mode_fwd) VALUES
   ('light-wind-close-hauled', 'reach-blade-mzj', 'Light wind close-hauled', 'wet', '[0,45)', '[0,10)', ARRAY['propulsion', 'regeneration', 'idle']::pcs_mode[], ARRAY['propulsion', 'regeneration', 'idle']::pcs_mode[]),
   ('light-wind-beam-reach', 'upwind-blade', 'Light wind beam reach', 'wet', '[45,135)', '[0,10)', ARRAY['propulsion', 'regeneration', 'idle']::pcs_mode[], ARRAY['propulsion', 'regeneration', 'idle']::pcs_mode[]),
   ('light-wind-broad-reach', 'upwind-blade', 'Light wind broad reach', 'wet', '[135,180]', '[0,10)', ARRAY['propulsion', 'regeneration', 'idle']::pcs_mode[], ARRAY['propulsion', 'regeneration', 'idle']::pcs_mode[]),
