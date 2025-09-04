@@ -73,7 +73,11 @@ CREATE TABLE reference_values (
   sail_case_id TEXT NOT NULL REFERENCES sail_conditions(id) ON DELETE RESTRICT,
   mast_id TEXT REFERENCES masts(id) ON DELETE RESTRICT,
   value_definition_id TEXT NOT NULL REFERENCES value_definitions(id) ON DELETE RESTRICT,
-  value NUMERIC NOT NULL
+  value NUMERIC NOT NULL,
+  error_too_low NUMERIC,
+  warning_too_low NUMERIC,
+  warning_too_high NUMERIC,
+  error_too_high NUMERIC
 );
 
 -- Seed
