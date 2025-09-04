@@ -1,9 +1,11 @@
 import socket
 import time
-from .stub.can_frame import CAN_Frame, CAN_CRC_Frame, CAN_FD_Frame, CAN_FD_CRC_Frame
+from .can_frame import CAN_Frame, CAN_CRC_Frame, CAN_FD_Frame, CAN_FD_CRC_Frame
 import random
 import logging
 from datetime import datetime
+from contextlib import asynccontextmanager
+from config import Settings
 
 
 class PCanStub:
@@ -15,7 +17,17 @@ class PCanStub:
         self.bufferSize = bufferSize
         self.send_interval = send_interval
 
+    @asynccontextmanager
+    @staticmethod
+    async def init_from_settings(settings: Settings):
+        yield PCanStub(
+            settings.canbus_ip,
+            settings.canbus_port,
+            settings.canbus_buffer_size,
+        )
+
     def run(self):
+        """Main run loop to send mock CAN messages"""
         logging.debug(
             f"Sending mock messages to {self.ip}:{self.port} every {self.send_interval} seconds"
         )
@@ -26,11 +38,13 @@ class PCanStub:
             time.sleep(self.send_interval)
 
     def send_message(self, msg: bytes):
+        """Send a message to the UDP socket"""
         logging.debug(f"Sending message to {self.ip}:{self.port}")
         sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
         sock.sendto(msg, (self.ip, self.port))
 
     def create_can_msg(self, id: bytes, data: bytes) -> bytes:
+        """Create a classic CAN message (11-bit or 29-bit ID)"""
         dt_low, dt_high = self._datetime_to_pcan_parts(datetime.now())
         msg = CAN_Frame.build(
             {
@@ -54,6 +68,7 @@ class PCanStub:
         return msg
 
     def create_can_crc_msg(self, id: bytes, data: bytes) -> bytes:
+        """Create a classic CAN message with CRC (11-bit or 29-bit ID)"""
         dt_low, dt_high = self._datetime_to_pcan_parts(datetime.now())
         msg = CAN_CRC_Frame.build(
             {
@@ -83,6 +98,7 @@ class PCanStub:
         return msg
 
     def create_can_fd_msg(self, id: bytes, data: bytes) -> bytes:
+        """Create a CAN FD message (11-bit or 29-bit ID)"""
         dt_low, dt_high = self._datetime_to_pcan_parts(datetime.now())
         msg = CAN_FD_Frame.build(
             {
@@ -106,6 +122,7 @@ class PCanStub:
         return msg
 
     def create_can_fd_crc_msg(self, id: bytes, data: bytes) -> bytes:
+        """Create a CAN FD message with CRC (11-bit or 29-bit ID)"""
         dt_low, dt_high = self._datetime_to_pcan_parts(datetime.now())
         msg = CAN_FD_CRC_Frame.build(
             {

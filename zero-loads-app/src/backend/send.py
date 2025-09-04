@@ -3,6 +3,8 @@ from .logging import setup_logging
 
 setup_logging()
 
+### Only used to test
+
 pcan_stub = PCanStub("127.0.0.1", 55001)
 
 
