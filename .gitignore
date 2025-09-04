@@ -269,6 +269,9 @@ $RECYCLE.BIN/
 
 # Environment
 .env
+!.env.example
+!.env.local.example
+.gsheet-sa-key.json
 
 # Overrides for zero-ui
 !zero-ui/**/lib
