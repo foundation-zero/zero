@@ -17,6 +17,7 @@ def settings():
     )
 
 
+@pytest.mark.timeout(10)
 @pytest.mark.asyncio
 async def test_receive_message(settings):
     # Prepare a valid CAN_Frame message (0x80)
