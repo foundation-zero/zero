@@ -5,7 +5,7 @@ from .config import Settings
 from .logging import setup_logging
 from .stub.pcan import PCanStub
 
-setup_logging(logging.DEBUG)
+setup_logging(logging.INFO)
 
 settings = Settings()
 

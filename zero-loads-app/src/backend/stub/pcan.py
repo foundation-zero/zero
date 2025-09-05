@@ -1,10 +1,11 @@
+import logging
+import random
 import socket
 import time
-from .can_frame import CAN_Frame, CAN_CRC_Frame, CAN_FD_Frame, CAN_FD_CRC_Frame
-import random
-import logging
-from datetime import datetime
 from contextlib import asynccontextmanager
+from datetime import datetime
+
+from .can_frame import CAN_CRC_Frame, CAN_FD_CRC_Frame, CAN_FD_Frame, CAN_Frame
 from config import Settings
 
 

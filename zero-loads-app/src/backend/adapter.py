@@ -1,10 +1,12 @@
 import logging
 import socket
-from .stub.can_frame import CAN_Frame, CAN_CRC_Frame, CAN_FD_Frame, CAN_FD_CRC_Frame
-from aiomqtt import Client as MqttClient
-from .config import Settings
 from contextlib import asynccontextmanager
+
+from aiomqtt import Client as MqttClient
 from construct import Container
+
+from .config import Settings
+from .stub.can_frame import CAN_Frame, CAN_CRC_Frame, CAN_FD_Frame, CAN_FD_CRC_Frame
 
 
 class PCanAdapter:
