@@ -27,8 +27,8 @@ ENV VIRTUAL_ENV=/app/.venv
 ENV PATH="/app/.venv/bin:$PATH"
 
 COPY --from=builder ${VIRTUAL_ENV} ${VIRTUAL_ENV}
-COPY zero_domestic_control /app/zero_domestic_control
+COPY zero_loads_app /app/zero_loads_app
 
 WORKDIR /app
 
-ENTRYPOINT ["python", "-m"]
+ENTRYPOINT ["python", "-m", "backend"]
