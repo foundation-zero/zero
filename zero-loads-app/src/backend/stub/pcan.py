@@ -48,14 +48,14 @@ class PCanStub:
         dt_low, dt_high = self._datetime_to_pcan_parts(datetime.now())
         msg = CAN_Frame.build(
             {
-                "length": 16,
+                "length": 36,
                 "message_type": 0x80,
                 "tag": b"not_used",
                 "ts_low": dt_low,
                 "ts_high": dt_high,
                 "channel": 1,
                 "dlc": len(data),
-                "flags": {"RTR": False, "EXTENDED": True},
+                "flags": {"rtr": False, "extended": True},
                 "can_id": {
                     "id": id,
                     "reserved0": 0x00,
@@ -72,7 +72,7 @@ class PCanStub:
         dt_low, dt_high = self._datetime_to_pcan_parts(datetime.now())
         msg = CAN_CRC_Frame.build(
             {
-                "length": 16,
+                "length": 40,
                 "message_type": 0x81,
                 "tag": b"not_used",
                 "ts_low": dt_low,
@@ -80,10 +80,10 @@ class PCanStub:
                 "channel": 1,
                 "dlc": len(data),
                 "flags": {
-                    "EXTENDED": True,
-                    "EDL": False,
-                    "BRS": False,
-                    "ESI": False,
+                    "extended": True,
+                    "edl": False,
+                    "brs": False,
+                    "esi": False,
                 },
                 "can_id": {
                     "id": id,
@@ -109,7 +109,7 @@ class PCanStub:
                 "ts_high": dt_high,
                 "channel": 1,
                 "dlc": len(data),
-                "flags": {"RTR": False, "EXTENDED": True},
+                "flags": {"rtr": False, "extended": True},
                 "can_id": {
                     "id": id,
                     "reserved0": 0x00,
@@ -126,14 +126,14 @@ class PCanStub:
         dt_low, dt_high = self._datetime_to_pcan_parts(datetime.now())
         msg = CAN_FD_CRC_Frame.build(
             {
-                "length": 16,
+                "length": 32 + len(data),
                 "message_type": 0x91,
                 "tag": b"not_used",
                 "ts_low": dt_low,
                 "ts_high": dt_high,
                 "channel": 1,
                 "dlc": len(data),
-                "flags": {"RTR": False, "EXTENDED": True},
+                "flags": {"rtr": False, "extended": True},
                 "can_id": {
                     "id": id,
                     "reserved0": 0x00,

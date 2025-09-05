@@ -41,13 +41,11 @@ class PCanAdapter:
 
     async def run(self):
         """Main run loop to read from the socket and pass messages to MQTT"""
-        logging.debug("Start read")
         while True:
             try:
                 message = await self._read_message()
                 logging.debug(f"Forwarding message to MQTT: {message}")
                 await self._send_mqtt_message(message)
-                logging.debug("Done")
             except Exception as e:
                 logging.error(e)
                 break
@@ -77,16 +75,15 @@ class PCanAdapter:
             logging.debug("CAN 2.0a/b Frame")
             result = CAN_Frame.parse(message)
         elif message[3] == 0x81:
-            logging.debug("CAN 2.0a/b Frame with CRC ")
+            logging.debug("CAN 2.0a/b Frame with CRC")
             result = CAN_CRC_Frame.parse(message)
         elif message[3] == 0x90:
-            logging.debug("CAN FD Frame ")
+            logging.debug("CAN FD Frame")
             result = CAN_FD_Frame.parse(message)
         elif message[3] == 0x91:
-            logging.debug("CAN FD Frame with CRC ")
+            logging.debug("CAN FD Frame with CRC")
             result = CAN_FD_CRC_Frame.parse(message)
         else:
             logging.info("Not a valid CAN Frame type")
             result = None
-        logging.debug("Done parsing")
         return result

@@ -23,23 +23,23 @@ from construct import (
 CAN_ID = BitStruct(
     "id" / BitsInteger(29),  # bits 0..28
     "reserved0" / BitsInteger(1),  # bit 29, fixed 0
-    "rtr" / Flag,  # bit 30
-    "extended" / Flag,  # bit 31 (1 = extended frame)
+    "rtr" / Flag,  # Remote Transmission Request, bit 30
+    "extended" / Flag,  # Extended ID, bit 31
 )
 
 # Flags fields
 CLASSIC_FLAGS = FlagsEnum(
     Int16ub,
-    RTR=0x01,  # Remote Transmission Request
-    EXTENDED=0x02,  # Extended ID
+    rtr=0x01,  # Remote Transmission Request
+    extended=0x02,  # Extended ID
 )
 
 FD_FLAGS = FlagsEnum(
     Int16ub,
-    EXTENDED=0x02,  # Extended ID
-    EDL=0x10,  # Extended Data Length
-    BRS=0x20,  # Bit Rate Switch
-    ESI=0x40,  # Error State Indicator
+    extended=0x02,  # Extended ID
+    edl=0x10,  # Extended Data Length
+    brs=0x20,  # Bit Rate Switch
+    esi=0x40,  # Error State Indicator
 )
 
 

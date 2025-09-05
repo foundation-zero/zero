@@ -5,10 +5,13 @@ authors = [
     { name = "Dustin van Weersel", email = "dustin.vanweersel@foundationzero.org>" }
 ]
 readme = "README.md"
-packages = [{ include = "zero_domestic_control"}]
+packages = [{ include = "backend", from = "src" }]
 requires-python = ">= 3.13.1,<4.0"
 dynamic = ["dependencies"]
 version = "0.1.0"
+
+[project.scripts]
+zero-loads-app = "backend.__main__"
 
 [tool.poetry.dependencies]
 pydantic-settings = "^2.7.1"
