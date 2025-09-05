@@ -1,17 +1,5 @@
 services:
 
-  dbt_gen:
-    build:
-      context: .
-      secrets:
-        - gsheet_sa_key
-    command: sh -c "dbt seed --profiles-dir ./dbt --project-dir ./dbt --target docker && dbt run --profiles-dir ./dbt --project-dir ./dbt --target docker"
-    env_file:
-      .env
-    depends_on:
-      vernemq:
-        condition: service_healthy
-
   data_gen:
     build:
       context: .

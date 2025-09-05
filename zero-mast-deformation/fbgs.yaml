@@ -1,0 +1,9 @@
+interrogators:
+  - ip: "127.0.0.1"
+    frequency: "1000"
+    channels:
+      - number: 1
+        fbgs:
+          - name: "FBG1"
+            wavelength: 1100
+            delay: 0

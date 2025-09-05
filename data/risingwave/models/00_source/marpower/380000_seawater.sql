@@ -1,11 +1,11 @@
 {{ config(materialized='table_with_connector') }}
 CREATE TABLE {{ this }} (
-	TIMESTAMP	TIMESTAMP,
-	SEA_WATER_COOL_PMP1_REMOTE	BOOLEAN,
-	SEA_WATER_COOL_PMP1_RUNNING	BOOLEAN,
-	SEA_WATER_COOL_PMP1_START_STOP	BOOLEAN,
-	SEA_WATER_COOL_PMP2_REMOTE	BOOLEAN,
-	SEA_WATER_COOL_PMP2_RUNNING	BOOLEAN,
-	SEA_WATER_COOL_PMP2_START_STOP	BOOLEAN,
+	time TIMESTAMPTZ AS proctime(),
+	"SEA_WATER_COOL_PMP1_REMOTE"	{{ marpower_struct("BOOLEAN") }},
+	"SEA_WATER_COOL_PMP1_RUNNING"	{{ marpower_struct("BOOLEAN") }},
+	"SEA_WATER_FLOW_IN"	{{ marpower_struct("REAL") }},
+	"SEA_WATER_FLOW_OUT"	{{ marpower_struct("REAL") }},
+	"SEA_WATER_VACUUM_ALARM"	{{ marpower_struct("BOOLEAN") }},
 )
-{{ mqtt_with('marpower/380000_seawater') }}
+INCLUDE partition AS topic
+{{ mqtt_with('marpower/380000-seawater/') }}

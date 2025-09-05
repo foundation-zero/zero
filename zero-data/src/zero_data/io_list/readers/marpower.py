@@ -60,7 +60,7 @@ class MarpowerReader(ReaderBase):
         """Get the IO topics from the DataFrame"""
         result = []
         for row in (
-            df.unique(subset=["system", "mqtt_json_path", "data_type"])
+            df
             .sort("tag")
             .group_by("mqtt_topic")
             .agg(pl.col("mqtt_json_path"), pl.col("data_type"))

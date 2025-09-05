@@ -1,0 +1,40 @@
+name: "Data: Test"
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - data/risingwave/**
+      - .github/workflows/ci_data_risingwave.yaml
+  pull_request:
+    paths:
+      - data/risingwave/**
+      - .github/workflows/ci_data_risingwave.yaml
+
+jobs:
+  test:
+    timeout-minutes: 15
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: '0'
+      - uses: actions/setup-python@v5
+        with:
+          python-version: 3.13
+      - run: pipx install poetry==2.1.4
+      - run: poetry check
+        working-directory: data
+      - name: Create .env file from secret
+        run: |
+          echo "${{ secrets.ENV_DATA }}" > .env
+        working-directory: data
+      - run: poetry install --no-root
+        working-directory: data
+      - name: Run services
+        run: docker compose up -d --quiet-pull postgres risingwave vernemq
+        working-directory: data
+      - run: poetry run python -m setup_postgres
+        working-directory: data
+      - run: poetry run python -m setup_risingwave
+        working-directory: data

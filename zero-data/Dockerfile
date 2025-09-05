@@ -36,7 +36,6 @@ WORKDIR /app
 COPY ./io_lists ./io_lists
 RUN mkdir -p /output/seeds
 COPY src/ ./
-COPY dbt/ ./dbt
 
 RUN --mount=type=secret,id=gsheet_sa_key,required=true \
   GSHEET_SA_KEY_FILE=/run/secrets/gsheet_sa_key \

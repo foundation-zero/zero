@@ -1,1 +1,0 @@
-{{ sink_append_gcs('raw', '450000_firedetection', '450000_firedetection_sink') }}

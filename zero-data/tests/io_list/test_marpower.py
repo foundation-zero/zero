@@ -77,4 +77,4 @@ def test_marpower_io_excel(marpower_io_result):
         "timestamp",
         "data_type",
     ]
-    assert len(marpower_io_result.topics) == 54
+    assert len(marpower_io_result.topics) == 258

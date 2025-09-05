@@ -28,9 +28,11 @@ class MarpowerRawGenerator:
         """Detect topics with the same format and group them into a wildcard."""
         nested_topics = [topic for topic in topics if len(topic.topic.split("/")) >= 3]
         unnested_topics = [topic for topic in topics if len(topic.topic.split("/")) < 3]
+
         def _nesting(topic: IOTopic):
             """Extract the nesting from the topic."""
             return topic.topic.split("/")[1:-1]
+
         sorted_topics = sorted(nested_topics, key=_nesting)
         grouped = groupby(sorted_topics, key=_nesting)
         squashed_topics = []
@@ -39,11 +41,20 @@ class MarpowerRawGenerator:
             list_of_group = list(group)
             if len(list_of_group) > 1:
                 # Check if all topics in the group have the same format
-                if all(topic.fields == list_of_group[0].fields for topic in list_of_group):
+                if all(
+                    topic.fields == list_of_group[0].fields for topic in list_of_group
+                ):
                     logger.info(f"Generating single table for nesting: {nest}")
-                    squashed_topics.append(IOTopic(topic="/".join(["marpower", *nest, "#"]), fields=list_of_group[0].fields))
+                    squashed_topics.append(
+                        IOTopic(
+                            topic="/".join(["marpower", *nest, "#"]),
+                            fields=list_of_group[0].fields,
+                        )
+                    )
                 else:
-                    logger.warning(f"Different formats found in nesting: {nest}, generating separate tables.")
+                    logger.warning(
+                        f"Different formats found in nesting: {nest}, generating separate tables."
+                    )
                     unsquashed_topics.extend(list_of_group)
             else:
                 unsquashed_topics.append(list_of_group[0])
@@ -78,7 +89,7 @@ class MarpowerRawGenerator:
     @staticmethod
     def _table(topic: str) -> str:
         """Generate the table name for a topic."""
-        return f"marpower/{topic.removeprefix("marpower/").replace("/", "_").replace("-", "_").rstrip("#_")}"
+        return f"marpower/{topic.removeprefix('marpower/').replace('/', '_').replace('-', '_').rstrip('#_')}"
 
     @staticmethod
     def _timestamp() -> str:
@@ -88,7 +99,7 @@ class MarpowerRawGenerator:
     @staticmethod
     def _generate_field(io_value: IOValue):
         """Generate the SQL for a given field."""
-        return f"\t\"{io_value.name.replace(" ", "")}\"\t{{{{ marpower_struct(\"{io_value.data_type}\") }}}},\n"
+        return f'\t"{io_value.name.replace(" ", "")}"\t{{{{ marpower_struct("{io_value.data_type}") }}}},\n'
 
     @staticmethod
     def _include_topic():

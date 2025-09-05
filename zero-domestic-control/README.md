@@ -4,6 +4,35 @@
 
 https://miro.com/app/board/uXjVI85VEAc=/?share_link_id=164545697008
 
+### Development (Docker)
+
+Install Hasura CLI: https://hasura.io/docs/2.0/hasura-cli/install-hasura-cli/
+
+Start databases and MQTT brokerpoet
+```bash
+docker compose up postgres risingwave vernemq -d
+```
+
+Run postgres and risingwave setup
+```bash
+cd ../data
+poetry run python -m setup_postgres
+poetry run python -m setup_risingwave
+```
+
+Run everything else. Control and stub
+```bash
+cd ../zero-domestic-control
+docker compose up -d
+```
+
+Apply hasura metadata
+```bash
+cd ./volumes/hasura
+hasura metadata apply --admin-secret myadminsecretkey
+```
+
+
 ## Development
 
 Install Hasura CLI: https://hasura.io/docs/2.0/hasura-cli/install-hasura-cli/
@@ -13,41 +42,30 @@ Create environment
 poetry install
 ```
 
-Start external services
+Start databases
 ```bash
-DOMESTIC_CONTROL_URL=http://host.docker.internal:8000/graphql docker compose up graphql-engine
+docker compose up postgres risingwave -d
 ```
 
 Run Postgres database setup
 ```bash
-poetry run python -m zero_domestic_control setup
+docker compose up setup_postgres
 ```
 
 Run dbt database setup
 ```bash
 cd data/risingwave
-poetry run dbt compile
-poetry run dbt run
+poetry run python -m run_dbt.py
 ```
 
-Generate JWT
+Run Risingwave database setup
 ```bash
-# With default 'user' role
-poetry run python -m zero_domestic_control generate-jwt
-# With additional role(s)
-poetry run python -m zero_domestic_control generate-jwt admin
-# With cabin (for guests)
-poetry run python -m zero_domestic_control generate-jwt --cabin dutch-cabin
+docker compose up setup_risingwave
 ```
 
 Run backend
 ```bash
 poetry run fastapi dev zero_domestic_control/app.py
-```
-
-Run control
-```bash
-poetry run python -m zero_domestic_control setup
 ```
 
 Run stubs
@@ -61,41 +79,16 @@ cd hasura
 hasura metadata apply --admin-secret myadminsecretkey
 ```
 
-### Using Docker
+### Generate JWT
 
-Install Hasura CLI: https://hasura.io/docs/2.0/hasura-cli/install-hasura-cli/
-
-Start databases
+Generate JWT
 ```bash
-docker compose up postgres risingwave -d
-```
-
-Run Postgres database setup
-```bash
-docker compose up setup
-```
-
-Run dbt database setup
-```bash
-cd data/risingwave
-poetry run dbt compile
-poetry run dbt run
-```
-
-Run everything else
-```bash
-docker compose up -d
-```
-
-Run control proces
-```bash
-docker compose up control -d
-```
-
-Apply hasura metadata
-```bash
-cd volumes/hasura
-hasura metadata apply --admin-secret myadminsecretkey
+# With default 'user' role
+poetry run python -m zero_domestic_control generate-jwt
+# With additional role(s)
+poetry run python -m zero_domestic_control generate-jwt admin
+# With cabin (for guests)
+poetry run python -m zero_domestic_control generate-jwt --cabin dutch-cabin
 ```
 
 ## Home Assistant
