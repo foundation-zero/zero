@@ -15,7 +15,11 @@ async def _mqtt_client(settings):
 @fixture
 def settings():
     return Settings(
-        canbus_port=56001,
+        mqtt_host="localhost",
+        mqtt_port=1883,
+        canbus_ip="127.0.0.1",
+        canbus_port=56000,
+        canbus_buffer_size=1024,
     )
 
 
