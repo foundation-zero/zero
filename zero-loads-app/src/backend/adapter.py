@@ -1,4 +1,3 @@
-import logging
 import socket
 from contextlib import asynccontextmanager
 
@@ -7,6 +6,10 @@ from construct import Container
 
 from .config import Settings
 from .stub.can_frame import CAN_Frame, CAN_CRC_Frame, CAN_FD_Frame, CAN_FD_CRC_Frame
+import asyncio
+import logging
+
+logger = logging.getLogger("adapter")
 
 
 class PCanAdapter:
@@ -26,7 +29,7 @@ class PCanAdapter:
 
         UDPServerSocket.bind((canbus_ip, canbus_port))
         self.socket = UDPServerSocket
-        logging.info(f"PCanAdapter up and listening on {self.ip}:{self.port}")
+        logger.info(f"PCanAdapter up and listening on {self.ip}:{self.port}")
 
     @asynccontextmanager
     @staticmethod
@@ -41,21 +44,24 @@ class PCanAdapter:
                 settings.canbus_buffer_size,
             )
 
-    async def run(self):
+    async def run(self) -> None:
         """Main run loop to read from the socket and pass messages to MQTT"""
         while True:
             try:
                 message = await self._read_message()
-                logging.debug(f"Forwarding message to MQTT: {message}")
+                logger.debug("Received message. Forwarding message to MQTT")
                 await self._send_mqtt_message(message)
             except Exception as e:
-                logging.error(e)
+                logger.error(e)
                 break
 
     async def _read_message(self):
         """Read a message from the UDP socket and decode it"""
-        message, address = self.socket.recvfrom(self.buffer_size)
-        logging.debug(f"message: {message} on {address[0]}:{address[1]}")
+        loop = asyncio.get_running_loop()
+        message, address = await loop.run_in_executor(
+            None, self.socket.recvfrom, self.buffer_size
+        )
+        logger.debug(f"message: {message}")
         return await self._decode_can_frame(message)
 
     async def _send_mqtt_message(self, message: Container):
@@ -74,18 +80,18 @@ class PCanAdapter:
     async def _decode_can_frame(message: bytes):
         """Decode a CAN frame from raw bytes"""
         if message[3] == 0x80:
-            logging.debug("CAN 2.0a/b Frame")
+            logger.debug("CAN 2.0a/b Frame")
             result = CAN_Frame.parse(message)
         elif message[3] == 0x81:
-            logging.debug("CAN 2.0a/b Frame with CRC")
+            logger.debug("CAN 2.0a/b Frame with CRC")
             result = CAN_CRC_Frame.parse(message)
         elif message[3] == 0x90:
-            logging.debug("CAN FD Frame")
+            logger.debug("CAN FD Frame")
             result = CAN_FD_Frame.parse(message)
         elif message[3] == 0x91:
-            logging.debug("CAN FD Frame with CRC")
+            logger.debug("CAN FD Frame with CRC")
             result = CAN_FD_CRC_Frame.parse(message)
         else:
-            logging.info("Not a valid CAN Frame type")
+            logger.info("Not a valid CAN Frame type")
             result = None
         return result

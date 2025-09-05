@@ -1,5 +1,5 @@
 [project]
-name = "zero-loads-app"
+name = "backend"
 version = "0.1.0"
 description = ""
 authors = [
@@ -22,7 +22,7 @@ dependencies = [
 ]
 
 [project.scripts]
-zero-loads-app = "backend.__main__"
+backend = "backend.__main__:run"
 
 [tool.poetry.group.dev]
 optional = true

@@ -5,7 +5,8 @@ from .config import Settings
 from .logging import setup_logging
 from .stub.pcan import PCanStub
 
-setup_logging(logging.INFO)
+# For development
+setup_logging(logging.DEBUG)
 
 settings = Settings()
 
@@ -17,9 +18,14 @@ async def adapter():
 
 async def stub():
     async with PCanStub.init_from_settings(settings) as stub:
-        stub.run()
+        await stub.run()
+
+
+async def main():
+    async with asyncio.TaskGroup() as tg:
+        tg.create_task(adapter())
+        tg.create_task(stub())
 
 
 if __name__ == "__main__":
-    asyncio.run(adapter())
-    asyncio.run(stub())
+    asyncio.run(main())
