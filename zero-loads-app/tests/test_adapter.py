@@ -2,14 +2,8 @@ import pytest
 import socket
 import asyncio
 from backend.adapter import PCanAdapter
-from aiomqtt import Client as MqttClient
 from pytest import fixture
 from backend.config import Settings
-
-
-async def _mqtt_client(settings):
-    async with MqttClient(settings.mqtt_host, settings.mqtt_port) as client:
-        yield client
 
 
 @fixture
@@ -23,11 +17,8 @@ def settings():
     )
 
 
-mqtt_client = fixture(_mqtt_client)
-
-
 @pytest.mark.asyncio
-async def test_receive_message(settings, mqtt_client):
+async def test_receive_message(settings):
     # Prepare a valid CAN_Frame message (0x80)
     frame_bytes = (
         b"\x00\x18"  # length = 24

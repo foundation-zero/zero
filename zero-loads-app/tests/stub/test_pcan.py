@@ -1,15 +1,9 @@
 import pytest
-from aiomqtt import Client as MqttClient
 from pytest import fixture
 from backend.config import Settings
 from backend.stub import PCanStub
 import socket
 from backend.stub.can_frame import CAN_Frame
-
-
-async def _mqtt_client(settings):
-    async with MqttClient(settings.mqtt_host, settings.mqtt_port) as client:
-        yield client
 
 
 @fixture
@@ -23,11 +17,8 @@ def settings():
     )
 
 
-mqtt_client = fixture(_mqtt_client)
-
-
 @pytest.mark.asyncio
-async def test_receive_message(settings, mqtt_client):
+async def test_receive_message(settings):
     UDPServerSocket = socket.socket(family=socket.AF_INET, type=socket.SOCK_DGRAM)
 
     UDPServerSocket.bind((settings.canbus_ip, settings.canbus_port))
