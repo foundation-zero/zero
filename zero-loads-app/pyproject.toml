@@ -45,6 +45,7 @@ pytest-mock = "^3.14.0"
 
 [tool.mypy]
 plugins = "pydantic.mypy,strawberry.ext.mypy_plugin"
+ignore_missing_imports = true
 check_untyped_defs = true
 
 [tool.pytest.ini_options]

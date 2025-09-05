@@ -61,7 +61,6 @@ class PCanAdapter:
         message, address = await loop.run_in_executor(
             None, self.socket.recvfrom, self.buffer_size
         )
-        logger.debug(f"message: {message}")
         return await self._decode_can_frame(message)
 
     async def _send_mqtt_message(self, message: Container):
