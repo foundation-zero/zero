@@ -1,6 +1,7 @@
 import pytest
 import socket
 import asyncio
+from unittest.mock import AsyncMock
 from backend.adapter import PCanAdapter
 from pytest import fixture
 from backend.config import Settings
@@ -39,15 +40,26 @@ async def test_receive_message(settings):
         with socket.socket(socket.AF_INET, socket.SOCK_DGRAM) as s:
             s.sendto(frame_bytes, (settings.canbus_ip, settings.canbus_port))
 
-    async with PCanAdapter.init_from_settings(settings) as adapter:
-        # Run the send_udp function in the background
-        asyncio.create_task(asyncio.to_thread(send_udp))
-        # Allow some time for the message to be sent and processed
-        await asyncio.sleep(0.2)
-        result = await adapter._read_message()
+    # Mock MQTT client
+    class DummyMQTT(AsyncMock):
+        async def publish(self, *args, **kwargs):
+            return None
 
-        assert result is not None
-        assert result.message_type == 0x80
-        assert result.dlc == 4
-        assert result.payload == b"\x01\x02\x03\x04"
-        assert result.can_identifier == 35931752
+    dummy_mqtt = DummyMQTT()
+
+    adapter = PCanAdapter(
+        dummy_mqtt,
+        settings.canbus_ip,
+        settings.canbus_port,
+        settings.canbus_buffer_size,
+    )
+
+    asyncio.create_task(asyncio.to_thread(send_udp))
+    await asyncio.sleep(0.2)
+    result = await adapter._read_message()
+
+    assert result is not None
+    assert result.message_type == 0x80
+    assert result.dlc == 4
+    assert result.payload == b"\x01\x02\x03\x04"
+    assert result.can_identifier == 35931752
