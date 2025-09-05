@@ -5,11 +5,11 @@ on:
       - main
     paths:
       - 'zero-loads-app/**'
-      - '.github/workflows/ci_zero_data.yaml'
+      - '.github/workflows/ci_zero_loads_app.yaml'
   pull_request:
     paths:
       - 'zero-loads-app/**'
-      - '.github/workflows/ci_zero_data.yaml'
+      - '.github/workflows/ci_zero_loads_app.yaml'
 
 env:
   IMAGE: "europe-west1-docker.pkg.dev/common-449414/common/zero-loads-app"
