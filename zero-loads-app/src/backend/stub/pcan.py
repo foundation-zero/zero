@@ -63,7 +63,7 @@ class PCanStub:
                 "flags": {"rtr": False, "extended": True},
                 "can_id": {
                     "id": id,
-                    "reserved0": 0x00,
+                    "reserved0": 0,
                     "rtr": False,
                     "extended": True,
                 },
@@ -92,7 +92,7 @@ class PCanStub:
                 },
                 "can_id": {
                     "id": id,
-                    "reserved0": 0x00,
+                    "reserved0": 0,
                     "rtr": False,
                     "extended": True,
                 },
@@ -117,7 +117,7 @@ class PCanStub:
                 "flags": {"rtr": False, "extended": True},
                 "can_id": {
                     "id": id,
-                    "reserved0": 0x00,
+                    "reserved0": 0,
                     "rtr": False,
                     "extended": True,
                 },
@@ -141,7 +141,7 @@ class PCanStub:
                 "flags": {"rtr": False, "extended": True},
                 "can_id": {
                     "id": id,
-                    "reserved0": 0x00,
+                    "reserved0": 0,
                     "rtr": False,
                     "extended": True,
                 },
