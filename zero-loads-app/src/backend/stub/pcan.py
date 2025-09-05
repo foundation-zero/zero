@@ -38,7 +38,7 @@ class PCanStub:
         )
         while True:
             data = bytes([random.getrandbits(8) for _ in range(8)])
-            can_msg = await self.create_can_msg(id=b"\x01", data=data)
+            can_msg = await self.create_can_msg(id=1, data=data)
             await self.send_message(can_msg)
             await asyncio.sleep(self.send_interval)
 
@@ -48,7 +48,7 @@ class PCanStub:
         sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
         sock.sendto(msg, (self.ip, self.port))
 
-    async def create_can_msg(self, id: bytes, data: bytes) -> bytes:
+    async def create_can_msg(self, id: int, data: bytes) -> bytes:
         """Create a classic CAN message (11-bit or 29-bit ID)"""
         dt_low, dt_high = self._datetime_to_pcan_parts(datetime.now())
         msg = CAN_Frame.build(
@@ -62,7 +62,7 @@ class PCanStub:
                 "dlc": len(data),
                 "flags": {"rtr": False, "extended": True},
                 "can_id": {
-                    "id": int.from_bytes(id, byteorder="big"),
+                    "id": id,
                     "reserved0": 0x00,
                     "rtr": False,
                     "extended": True,

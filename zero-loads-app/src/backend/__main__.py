@@ -3,7 +3,7 @@ import logging
 from .adapter import PCanAdapter
 from .config import Settings
 from .logging import setup_logging
-from .stub.pcan import PCanStub
+from .stub import PCanStub
 
 # For development
 setup_logging(logging.DEBUG)
