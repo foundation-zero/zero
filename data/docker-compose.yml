@@ -50,5 +50,21 @@ services:
       POSTGRES_PASSWORD: ${PG_PASSWORD}
       POSTGRES_DB: ${PG_DB}
 
+  data_gen:
+    image: europe-west1-docker.pkg.dev/common-449414/common/zero-data:0.9.0
+    secrets:
+      - gsheet_sa_key
+    command: python -m zero_data generate-data
+    env_file:
+      .env
+    depends_on:
+      vernemq:
+        condition: service_healthy
+
 volumes:
   db_data:
+
+secrets:
+  gsheet_sa_key:
+    file: .gsheet-sa-key.json
+
