@@ -5,8 +5,8 @@ from transitions import Machine, State
 
 from classes.control import Control, ControlResult
 from control.controllers import (
-    HeatSupplyController,
-    InvertedHeatDumpController,
+    HeatDumpController,
+    MixingValveController,
     PumpFlowController,
 )
 from input_output.base import ParameterMeta, Stamped
@@ -16,14 +16,8 @@ from input_output.modules.pvt import PvtControlValues, PvtSensorValues
 
 
 class PvtParameters(BaseModel):
-    cooling_mix_setpoint: Annotated[Celsius, Field(le=90)] = 85
-    main_fwd_mix_setpoint: Annotated[
-        Celsius, Field(ge=40, le=90), ParameterMeta("50-S019")
-    ] = 65
-    main_aft_mix_setpoint: Annotated[
-        Celsius, Field(ge=40, le=90), ParameterMeta("50-S019")
-    ] = 65
-    owners_mix_setpoint: Annotated[
+    cooling_mix_setpoint: Annotated[Celsius, Field(le=90)] = 80
+    mix_temperature_setpoint: Annotated[
         Celsius, Field(ge=40, le=90), ParameterMeta("50-S019")
     ] = 65
     main_fwd_flow_setpoint: Annotated[LMin, Field(le=38), ParameterMeta("50-S020")] = (
@@ -97,21 +91,21 @@ class PvtControl(Control):
             State(name="pump_failure", on_enter=[self._set_recovery_mixes_to_a]),
         ]
 
-        self._heat_dump_controller = InvertedHeatDumpController(
+        self._heat_dump_controller = HeatDumpController(
             _INITIAL_CONTROL_VALUES.pvt_mix_exchanger.setpoint.value,
             parameters.cooling_mix_setpoint,
         )
-        self._main_fwd_heat_supply_controller = HeatSupplyController(
+        self._main_fwd_heat_supply_controller = MixingValveController(
             _INITIAL_CONTROL_VALUES.pvt_mix_main_fwd.setpoint.value,
-            parameters.main_fwd_mix_setpoint,
+            parameters.mix_temperature_setpoint,
         )
-        self._main_aft_heat_supply_controller = HeatSupplyController(
+        self._main_aft_heat_supply_controller = MixingValveController(
             _INITIAL_CONTROL_VALUES.pvt_mix_main_aft.setpoint.value,
-            parameters.main_aft_mix_setpoint,
+            parameters.mix_temperature_setpoint,
         )
-        self._owners_heat_supply_controller = HeatSupplyController(
+        self._owners_heat_supply_controller = MixingValveController(
             _INITIAL_CONTROL_VALUES.pvt_mix_owners.setpoint.value,
-            parameters.owners_mix_setpoint,
+            parameters.mix_temperature_setpoint,
         )
         self._main_fwd_pump_flow_controller = PumpFlowController(
             _INITIAL_CONTROL_VALUES.pvt_pump_main_fwd.dutypoint.value, 0
