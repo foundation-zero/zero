@@ -13,21 +13,21 @@ FWD_PDU = "00:00:00:00:00:00"
 AFT_PDU = "00:00:00:00:00:01"
 
 FWD_PORTS = {
-    "office/amplifier": 1,  # office
-    "lounge/amplifier": 2,  # lounge
+    "office": 1,  # office
+    "lounge": 2,  # lounge
 }
 
 AFT_PORTS = {
-    "owners-cockpit/amplifier": 1,  # owners cockpit
-    "owners-deckhouse/amplifier": 2,  # owners private salon
-    "owners-cabin/amplifier": 3,  # owners cabin
-    "main-cockpit/amplifier": 4,  # main cockpit
-    "italian-cabin/amplifier": 5,  # guest PS FWD
-    "galley/amplifier": 6,  # galley
-    "french-cabin/amplifier": 7,  # guest PS AFT
-    "dutch-cabin/amplifier": 8,  # guest SB AFT
-    "polynesian-cabin/amplifier": 9,  # guest PS MID (also incorrectly named SB MID in overview drawing)
-    "main-deckhouse/amplifier": 10,  # main salon
+    "owners-cockpit": 1,  # owners cockpit
+    "owners-deckhouse": 2,  # owners private salon
+    "owners-cabin": 3,  # owners cabin
+    "main-cockpit": 4,  # main cockpit
+    "italian-cabin": 5,  # guest PS FWD
+    "galley": 6,  # galley
+    "french-cabin": 7,  # guest PS AFT
+    "dutch-cabin": 8,  # guest SB AFT
+    "polynesian-cabin": 9,  # guest PS MID (also incorrectly named SB MID in overview drawing)
+    "main-deckhouse": 10,  # main salon
 }
 
 
@@ -133,7 +133,7 @@ class Av:
 
     def validate_room_ids(self, ids: list[str]):
         if invalid := set(ids) - (set(FWD_PORTS.keys()) | set(AFT_PORTS.keys())):
-            raise ValueError(f"Invalid room IDs {invalid}")
+            raise ValueError(f"Invalid control IDs {invalid}")
 
 
 class AvControl:
