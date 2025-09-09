@@ -17,6 +17,7 @@ dependencies = [
     "python-can (>=4.6.1,<5.0.0)",
     "construct (>=2.10.70,<3.0.0)",
     "aiomqtt (>=2.4.0,<3.0.0)",
+    "pyjwt (>=2.10.1)",
     "dbt-risingwave (>=1.9.2,<2.0.0)",
     "dbt-core (>=1.9.8,<2.0.0)"
 ]

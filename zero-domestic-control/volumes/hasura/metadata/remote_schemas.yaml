@@ -15,10 +15,26 @@
           }
 
           type Mutation {
-            setAmplifiers(ids: ID!, on: Boolean!): MutationResponse
-            setBlinds(ids: ID!, level: Float!): MutationResponse
-            setLightingGroups(ids: ID!, level: Float!): MutationResponse
-            setRoomTemperatureSetpoints(ids: ID!, temperature: Float!): MutationResponse
-            setRoomHumiditySetpoints(ids: ID!, humidity: Float!): MutationResponse
-            setRoomCo2Setpoints(ids: ID!, co2: Float!): MutationResponse
-          }          type Query {            version: String!          }
+            setAmplifiers(room_ids: ID! @preset(value: "x-hasura-cabin"), on: Boolean!): MutationResponse
+            setBlinds(blind_ids: ID! @preset(value), level: Float!): MutationResponse
+            setLightingGroups(lighting_group_ids: ID!), level: Float!): MutationResponse
+            setRoomTemperatureSetpoints(room_ids: ID! @preset(value: "x-hasura-cabin"), temperature: Float!): MutationResponse
+            setRoomHumiditySetpoints(room_ids: ID! @preset(value: "x-hasura-cabin"), humidity: Float!): MutationResponse
+          }
+    - role: admin
+      definition:
+        schema: |
+          type MutationResponse {
+            code: Int!
+            message: String!
+            success: Boolean!
+          }
+
+          type Mutation {
+            setAmplifiers(room_ids: ID!, on: Boolean!): MutationResponse
+            setBlinds(blind_ids: ID!: MutationResponse
+            setLightingGroups(lighting_group_ids: ID!), level: Float!): MutationResponse
+            setRoomTemperatureSetpoints(room_ids: ID!, temperature: Float!): MutationResponse
+            setRoomHumiditySetpoints(room_ids: ID!, humidity: Float!): MutationResponse
+            setRoomCo2Setpoints(room_ids: ID!, co2: Float!): MutationResponse
+          }

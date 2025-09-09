@@ -1,0 +1,14 @@
+- role_name: captain
+  role_set:
+    - reader
+- role_name: engineer
+  role_set:
+    - reader
+    - editor
+- role_name: first_officer
+  role_set:
+    - reader
+- role_name: crew
+  role_set:
+    - reader
+

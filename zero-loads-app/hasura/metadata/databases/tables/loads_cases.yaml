@@ -1,0 +1,20 @@
+table:
+  schema: public
+  name: load_cases
+select_permissions:
+  - role: reader
+    permission:
+      columns: "*"
+      filter: {}
+      allow_aggregations: false
+update_permissions:
+  - role: editor
+    permission:
+      columns: "*"
+      filter: {}
+insert_permissions:
+  - role: editor
+    permission:
+      check: {}
+      set: {}
+      columns: "*"

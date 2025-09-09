@@ -115,16 +115,16 @@ class Mutation:
     async def set_room_temperature_setpoints(
         self,
         info: strawberry.Info[MyContext],
-        ids: list[strawberry.ID],
+        room_ids: list[strawberry.ID],
         temperature: Annotated[
             float,
             strawberry.argument(description="desired temperature in degrees Celsius"),
         ],
     ) -> MutationResponse:
-        info.context.ac.validate_room_ids([str(id) for id in ids])
+        info.context.ac.validate_room_ids([str(id) for id in room_ids])
 
         async with TaskGroup() as tg:
-            for room_id in ids:
+            for room_id in room_ids:
                 tg.create_task(
                     info.context.ac.write_room_temperature_setpoint(
                         room=room_id, temperature=temperature
@@ -134,7 +134,7 @@ class Mutation:
         return MutationResponse(
             code=200,
             success=True,
-            message=f"Temperature setpoint for room(s) {ids} set to {temperature}°C",
+            message=f"Temperature setpoint for room(s) {room_ids} set to {temperature}°C",
         )
 
     @strawberry.mutation
@@ -142,7 +142,7 @@ class Mutation:
     async def set_room_humidity_setpoints(
         self,
         info: strawberry.Info[MyContext],
-        ids: list[strawberry.ID],
+        room_ids: list[strawberry.ID],
         humidity: Annotated[
             float,
             strawberry.argument(
@@ -150,9 +150,9 @@ class Mutation:
             ),
         ],
     ) -> MutationResponse:
-        info.context.ac.validate_room_ids([str(id) for id in ids])
+        info.context.ac.validate_room_ids([str(id) for id in room_ids])
         async with TaskGroup() as tg:
-            for room_id in ids:
+            for room_id in room_ids:
                 tg.create_task(
                     info.context.ac.write_room_humidity_setpoint(
                         room=room_id, humidity=humidity
@@ -161,7 +161,7 @@ class Mutation:
         return MutationResponse(
             code=200,
             success=True,
-            message=f"Humidity setpoint for room(s) {ids} set to {humidity}",
+            message=f"Humidity setpoint for room(s) {room_ids} set to {humidity}",
         )
 
     @strawberry.mutation
@@ -169,22 +169,22 @@ class Mutation:
     async def set_room_co2_setpoint(
         self,
         info: strawberry.Info[MyContext],
-        ids: list[strawberry.ID],
+        room_ids: list[strawberry.ID],
         co2: Annotated[
             float,
             strawberry.argument(description="desired CO2 level in ppm"),
         ],
     ) -> MutationResponse:
-        info.context.ac.validate_room_ids([str(id) for id in ids])
+        info.context.ac.validate_room_ids([str(id) for id in room_ids])
         async with TaskGroup() as tg:
-            for room_id in ids:
+            for room_id in room_ids:
                 tg.create_task(
                     info.context.ac.write_room_co2_setpoint(room=room_id, co2=co2)
                 )
         return MutationResponse(
             code=200,
             success=True,
-            message=f"CO2 setpoint for room(s) {ids} set to {co2} ppm",
+            message=f"CO2 setpoint for room(s) {room_ids} set to {co2} ppm",
         )
 
     @strawberry.mutation
@@ -192,22 +192,22 @@ class Mutation:
     async def set_blinds(
         self,
         info: strawberry.Info[MyContext],
-        ids: list[strawberry.ID],
+        blind_ids: list[strawberry.ID],
         level: Annotated[
             float,
             strawberry.argument(description="desired brightness as ratio 0..1"),
         ],
     ) -> MutationResponse:
-        info.context.hass.validate_blind_group_ids([str(id) for id in ids])
+        info.context.hass.validate_blind_group_ids([str(id) for id in blind_ids])
         async with TaskGroup() as tg:
-            for room_id in ids:
+            for room_id in blind_ids:
                 tg.create_task(
                     info.context.hass.set_blind(Blind(id=room_id, level=level))
                 )
         return MutationResponse(
             code=200,
             success=True,
-            message=f"Blind(s) {ids} set to {level}",
+            message=f"Blind(s) {blind_ids} set to {level}",
         )
 
     @strawberry.mutation
