@@ -12,32 +12,38 @@ const { t } = useI18n();
 
 <template>
   <article class="flex w-100 items-center justify-around">
-    <div>
+    <section>
       <span class="inline-flex flex-col items-center justify-center">
         <span
           id="actualTemperature"
-          class="text-5xl font-bold lg:text-7xl md:portrait:text-7xl"
+          class="font-headers text-5xl font-bold lg:text-7xl md:portrait:text-7xl"
           >{{ actualTemperature !== undefined ? actualTemperature : "-" }}</span
         >
-        <span class="text-md font-extralight">{{ t("labels.inside") }}</span>
+        <label class="text-md text-muted-foreground font-extralight">{{
+          t("labels.inside")
+        }}</label>
       </span>
       <sup
         v-if="actualTemperature !== undefined"
-        class="text-3xl font-extralight lg:text-5xl md:portrait:text-5xl"
+        class="font-headers text-3xl font-extralight lg:text-5xl md:portrait:text-5xl"
         >&deg;</sup
       >
-    </div>
+    </section>
 
-    <div>
+    <section>
       <span class="inline-flex flex-col items-center justify-center">
         <span
           id="outsideTemperature"
-          class="text-5xl font-bold lg:text-7xl md:portrait:text-7xl"
+          class="font-headers text-5xl font-bold lg:text-7xl md:portrait:text-7xl"
           >33</span
         >
-        <span class="text-md font-extralight">{{ t("labels.outside") }}</span>
+        <label class="text-md text-muted-foreground font-extralight">{{
+          t("labels.outside")
+        }}</label>
       </span>
-      <sup class="text-3xl font-extralight lg:text-5xl md:portrait:text-5xl">&deg;</sup>
-    </div>
+      <sup class="font-headers text-3xl font-extralight lg:text-5xl md:portrait:text-5xl"
+        >&deg;</sup
+      >
+    </section>
   </article>
 </template>

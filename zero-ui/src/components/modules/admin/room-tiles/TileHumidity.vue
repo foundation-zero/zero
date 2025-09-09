@@ -72,7 +72,7 @@ const state = useSafeRange(HUMIDITY_THRESHOLDS, actualHumidity);
     </template>
     <template #center>
       <span>{{ actualHumidity.toFixed(0) }}</span>
-      <span class="text-r2xs ml-[0.25em] font-extralight">&percnt;</span>
+      <span class="text-r2xs text-muted-foreground ml-[0.25em] font-extralight">&percnt;</span>
     </template>
   </ValueTile>
 </template>

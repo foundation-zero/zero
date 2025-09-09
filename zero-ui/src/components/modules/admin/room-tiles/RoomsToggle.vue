@@ -14,6 +14,7 @@ const { someLightsAreOn, toggle } = useToggleableLights(toRef(props, "rooms"));
 <template>
   <Switch
     :checked="someLightsAreOn"
+    class="scale-125 md:scale-150"
     @click="toggle"
   />
 </template>

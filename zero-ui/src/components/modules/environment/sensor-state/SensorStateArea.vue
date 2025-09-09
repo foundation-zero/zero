@@ -19,7 +19,7 @@ const roomsWithState = computed<RoomWithState[]>(() =>
     class="text-[0.8rem] md:text-[0.9rem] lg:text-[0.95rem] xl:text-[1.2rem] portrait:lg:text-[1rem]"
   >
     <header
-      class="text-rxl text-primary/75 dark:text-primary/65 flex items-center pb-2 font-bold tracking-tight uppercase md:pb-4"
+      class="text-rxl text-muted-foreground flex items-center pb-2 font-bold tracking-wider uppercase md:pb-4"
     >
       {{ area.name }}
 
