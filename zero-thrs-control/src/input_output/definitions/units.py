@@ -70,7 +70,9 @@ def validate_ratio_within_precision(value: float, tolerance: float = 1e-4) -> fl
     return value
 
 
-def validate_nonzero_float_within_precision(value: float, tolerance: float = 1e-7) -> float:
+def validate_nonzero_float_within_precision(
+    value: float, tolerance: float = 1e-7
+) -> float:
     if value < 0 and value > -tolerance:
         return 0.0
     if value < -tolerance:
@@ -81,10 +83,10 @@ def validate_nonzero_float_within_precision(value: float, tolerance: float = 1e-
 type Celsius = Annotated[float, Field(ge=-273.15), UnitMeta(modelica_name="C")]
 type LMin = Annotated[
     float,
-    Field(ge=-1),
+    Field(ge=-0.01),
     UnitMeta(modelica_name="l_min"),
 ]
-type Hz = Annotated[float, Field(ge = -0.1), UnitMeta(modelica_name="Hz")]
+type Hz = Annotated[float, Field(ge=-0.1), UnitMeta(modelica_name="Hz")]
 type Ratio = Annotated[
     float,
     AfterValidator(validate_ratio_within_precision),
