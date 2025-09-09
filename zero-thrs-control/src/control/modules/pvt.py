@@ -5,8 +5,8 @@ from transitions import Machine, State
 
 from classes.control import Control, ControlResult
 from control.controllers import (
-    HeatSupplyController,
-    InvertedHeatDumpController,
+    HeatDumpController,
+    MixingValveController,
     PumpFlowController,
 )
 from input_output.base import ParameterMeta, Stamped
@@ -16,14 +16,8 @@ from input_output.modules.pvt import PvtControlValues, PvtSensorValues
 
 
 class PvtParameters(BaseModel):
-    cooling_mix_setpoint: Annotated[Celsius, Field(le=90)] = 85
-    main_fwd_mix_setpoint: Annotated[
-        Celsius, Field(ge=40, le=90), ParameterMeta("50-S019")
-    ] = 65
-    main_aft_mix_setpoint: Annotated[
-        Celsius, Field(ge=40, le=90), ParameterMeta("50-S019")
-    ] = 65
-    owners_mix_setpoint: Annotated[
+    cooling_mix_setpoint: Annotated[Celsius, Field(le=90)] = 80
+    mix_temperature_setpoint: Annotated[
         Celsius, Field(ge=40, le=90), ParameterMeta("50-S019")
     ] = 65
     main_fwd_flow_setpoint: Annotated[LMin, Field(le=38), ParameterMeta("50-S020")] = (
@@ -32,34 +26,34 @@ class PvtParameters(BaseModel):
     main_aft_flow_setpoint: Annotated[LMin, Field(le=38), ParameterMeta("50-S023")] = (
         30  # TODO: add minimum based of FDS
     )
-    owners_flow_setpoint: Annotated[LMin, Field(le=23), ParameterMeta("50-S020")] = (
+    owners_flow_setpoint: Annotated[LMin, Field(le=23), ParameterMeta("50-S026")] = (
         15  # TODO: add minimum based of FDS
     )
 
 
 _ZERO_TIME = datetime.fromtimestamp(0)
 _INITIAL_CONTROL_VALUES = (
-    PvtControlValues(  ##TODO: still need flow here to make simulation run
+    PvtControlValues(
         pvt_pump_main_fwd=Pump(
-            dutypoint=Stamped(value=0.1, timestamp=_ZERO_TIME),
+            dutypoint=Stamped(value=0.0, timestamp=_ZERO_TIME),
             on=Stamped(value=False, timestamp=_ZERO_TIME),
         ),
         pvt_pump_main_aft=Pump(
-            dutypoint=Stamped(value=0.1, timestamp=_ZERO_TIME),
+            dutypoint=Stamped(value=0.0, timestamp=_ZERO_TIME),
             on=Stamped(value=False, timestamp=_ZERO_TIME),
         ),
         pvt_pump_owners=Pump(
-            dutypoint=Stamped(value=0.1, timestamp=_ZERO_TIME),
+            dutypoint=Stamped(value=0.0, timestamp=_ZERO_TIME),
             on=Stamped(value=False, timestamp=_ZERO_TIME),
         ),
         pvt_mix_main_fwd=Valve(
-            setpoint=Stamped(value=Valve.MIXING_A_TO_AB, timestamp=_ZERO_TIME)
+            setpoint=Stamped(value=Valve.MIXING_B_TO_AB, timestamp=_ZERO_TIME)
         ),
         pvt_mix_main_aft=Valve(
-            setpoint=Stamped(value=Valve.MIXING_A_TO_AB, timestamp=_ZERO_TIME)
+            setpoint=Stamped(value=Valve.MIXING_B_TO_AB, timestamp=_ZERO_TIME)
         ),
         pvt_mix_owners=Valve(
-            setpoint=Stamped(value=Valve.MIXING_A_TO_AB, timestamp=_ZERO_TIME)
+            setpoint=Stamped(value=Valve.MIXING_B_TO_AB, timestamp=_ZERO_TIME)
         ),
         pvt_flowcontrol_main_fwd=Valve(
             setpoint=Stamped(value=Valve.OPEN, timestamp=_ZERO_TIME)
@@ -94,24 +88,24 @@ class PvtControl(Control):
                 on_enter=self._enable_recovery_mixes,
                 on_exit=self._disable_recovery_mixes,
             ),
-            State(name="pump_failure", on_enter=self._set_recovery_mixes_to_a),
+            State(name="pump_failure", on_enter=[self._set_recovery_mixes_to_a]),
         ]
 
-        self._heat_dump_controller = InvertedHeatDumpController(
+        self._heat_dump_controller = HeatDumpController(
             _INITIAL_CONTROL_VALUES.pvt_mix_exchanger.setpoint.value,
             parameters.cooling_mix_setpoint,
         )
-        self._main_fwd_heat_supply_controller = HeatSupplyController(
+        self._main_fwd_heat_supply_controller = MixingValveController(
             _INITIAL_CONTROL_VALUES.pvt_mix_main_fwd.setpoint.value,
-            parameters.main_fwd_mix_setpoint,
+            parameters.mix_temperature_setpoint,
         )
-        self._main_aft_heat_supply_controller = HeatSupplyController(
+        self._main_aft_heat_supply_controller = MixingValveController(
             _INITIAL_CONTROL_VALUES.pvt_mix_main_aft.setpoint.value,
-            parameters.main_aft_mix_setpoint,
+            parameters.mix_temperature_setpoint,
         )
-        self._owners_heat_supply_controller = HeatSupplyController(
+        self._owners_heat_supply_controller = MixingValveController(
             _INITIAL_CONTROL_VALUES.pvt_mix_owners.setpoint.value,
-            parameters.owners_mix_setpoint,
+            parameters.mix_temperature_setpoint,
         )
         self._main_fwd_pump_flow_controller = PumpFlowController(
             _INITIAL_CONTROL_VALUES.pvt_pump_main_fwd.dutypoint.value, 0
@@ -236,35 +230,35 @@ class PvtControl(Control):
 
     def _control_pumps(self, sensor_values: PvtSensorValues):
         strings_main_fwd_flow = (
-            sensor_values.pvt_flow_main_string_1_1.flow.value  # TODO: fix in simulation
-            # + sensor_values.pvt_flow_main_string_1_2.flow.value
-            # + sensor_values.pvt_flow_main_string_2_1.flow.value
-            # + sensor_values.pvt_flow_main_string_2_2.flow.value
-            # + sensor_values.pvt_flow_main_string_3.flow.value
-            # + sensor_values.pvt_flow_main_string_4.flow.value
-            # + sensor_values.pvt_flow_main_string_5_1.flow.value
-            # + sensor_values.pvt_flow_main_string_5_2.flow.value
-            # + sensor_values.pvt_flow_main_string_6_1.flow.value
-            # + sensor_values.pvt_flow_main_string_6_2.flow.value
+            sensor_values.pvt_flow_main_string_1_1.flow.value
+            + sensor_values.pvt_flow_main_string_1_2.flow.value
+            + sensor_values.pvt_flow_main_string_2_1.flow.value
+            + sensor_values.pvt_flow_main_string_2_2.flow.value
+            + sensor_values.pvt_flow_main_string_3.flow.value
+            + sensor_values.pvt_flow_main_string_4.flow.value
+            + sensor_values.pvt_flow_main_string_5_1.flow.value
+            + sensor_values.pvt_flow_main_string_5_2.flow.value
+            + sensor_values.pvt_flow_main_string_6_1.flow.value
+            + sensor_values.pvt_flow_main_string_6_2.flow.value
         )
 
         strings_main_aft_flow = (
-            sensor_values.pvt_flow_main_string_7_1.flow.value  # TODO: fix in simulation
-            # + sensor_values.pvt_flow_main_string_7_2.flow.value
-            # + sensor_values.pvt_flow_main_string_8_1.flow.value
-            # + sensor_values.pvt_flow_main_string_8_2.flow.value
-            # + sensor_values.pvt_flow_main_string_9.flow.value
-            # + sensor_values.pvt_flow_main_string_10.flow.value
-            # + sensor_values.pvt_flow_main_string_11_1.flow.value
+            sensor_values.pvt_flow_main_string_7_1.flow.value
+            + sensor_values.pvt_flow_main_string_7_2.flow.value
+            + sensor_values.pvt_flow_main_string_8_1.flow.value
+            + sensor_values.pvt_flow_main_string_8_2.flow.value
+            + sensor_values.pvt_flow_main_string_9.flow.value
+            + sensor_values.pvt_flow_main_string_10.flow.value
+            + sensor_values.pvt_flow_main_string_11_1.flow.value
         )
 
         strings_owners_flow = (
             sensor_values.pvt_flow_owners_string_1.flow.value
-            # + sensor_values.pvt_flow_owners_string_2.flow.value
-            # + sensor_values.pvt_flow_owners_string_3.flow.value
-            # + sensor_values.pvt_flow_owners_string_4.flow.value
-            # + sensor_values.pvt_flow_owners_string_5.flow.value
-            # + sensor_values.pvt_flow_owners_string_6.flow.value
+            + sensor_values.pvt_flow_owners_string_2.flow.value
+            + sensor_values.pvt_flow_owners_string_3.flow.value
+            + sensor_values.pvt_flow_owners_string_4.flow.value
+            + sensor_values.pvt_flow_owners_string_5.flow.value
+            + sensor_values.pvt_flow_owners_string_6.flow.value
         )
 
         self._current_values.pvt_pump_main_fwd.dutypoint = Stamped(
