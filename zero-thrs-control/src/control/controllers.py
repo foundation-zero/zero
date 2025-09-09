@@ -55,32 +55,23 @@ class _Controller[ValueUnit: float, SetpointUnit: float]:
         pid_result = cast(ValueUnit | None, self._pid(measurement))
         return pid_result if pid_result is not None else self._initial
 
+class HeatDumpController(_Controller[Ratio, Celsius]):
+    TUNING = (0.05, 0.001, 0)
 
-class _HeatController(_Controller[Ratio, Celsius]):
-    TUNING = (-0.1, -0.01, 0)
-    OUTPUT_LIMITS = (0, 1)
-
-
-class HeatDumpController(_HeatController):
-    pass
-
-
-class InvertedHeatDumpController(_HeatController):
-    TUNING = (0.1, 0.01, 0)
-
-
-class HeatSupplyController(_HeatController):
-    TUNING = (-0.5, -0.002, 0.1)
-
+class MixingValveController(_Controller[Ratio, Celsius]):
+    TUNING = (-0.05, -0.001, 0)
 
 class _FlowController(_Controller[Ratio, LMin]):
-    OUTPUT_LIMITS = (0, 1.0)
+    TUNING = (0.01, 0.001, 0.0)
+
+class PumpFlowController(_FlowController):
+    TUNING = (0.01, 0.001, 0)
 
 
 class FlowBalanceController:
     def __init__(self, valves: list[Valve], close_when_disabled: bool = True):
         self._controllers = [
-            _FlowController(Valve.CLOSED, 0.0, (0.4, 0.005, 0.0)) for _ in valves
+            _FlowController(Valve.CLOSED, 0.0) for _ in valves
         ]
         self._valves = valves
         self._close_when_disabled = close_when_disabled
@@ -173,5 +164,3 @@ class FlowDistributionController:
         self._flow_balance_controller(measurements, time)
 
 
-class PumpFlowController(_FlowController):
-    TUNING = (0.0, 0.002, 0)

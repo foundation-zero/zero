@@ -5,8 +5,8 @@ from transitions import Machine, State
 
 from control.controllers import (
     FlowBalanceController,
-    HeatSupplyController,
-    InvertedHeatDumpController,
+    HeatDumpController,
+    MixingValveController,
     PumpFlowController,
 )
 from input_output.alarms import BaseAlarms, Severity, alarm
@@ -159,15 +159,15 @@ class ThrustersControl(Control):
             model=self, states=self._states, transitions=self._transitions, initial="idle"
         )
 
-        self._heat_dump_controller = InvertedHeatDumpController(
+        self._heat_dump_controller =HeatDumpController(
             _INITIAL_CONTROL_VALUES.thrusters_mix_exchanger.setpoint.value,
             parameters.cooling_mix_setpoint,
         )
-        self._aft_heat_supply_controller = HeatSupplyController(
+        self._aft_heat_supply_controller = MixingValveController(
             _INITIAL_CONTROL_VALUES.thrusters_mix_aft.setpoint.value,
             parameters.recovery_mix_setpoint,
         )
-        self._fwd_heat_supply_controller = HeatSupplyController(
+        self._fwd_heat_supply_controller = MixingValveController(
             _INITIAL_CONTROL_VALUES.thrusters_mix_fwd.setpoint.value,
             parameters.recovery_mix_setpoint,
         )
