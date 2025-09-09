@@ -37,6 +37,10 @@ jobs:
         working-directory: zero-loads-app
       - run: poetry run mypy src
         working-directory: zero-loads-app
+      - name: Create .env file from secret
+        run: |
+          echo "${{ secrets.ENV_LOADS_APP }}" > .env
+        working-directory: data
       - name: Unit Test
         run: poetry run pytest .
         working-directory: zero-loads-app
@@ -69,17 +73,13 @@ jobs:
         uses: google-github-actions/auth@v2
         with:
           token_format: access_token
-          project_id: ${{ vars.GCP_COMMON_PROJECT_ID }}
-          workload_identity_provider: ${{ vars.GCP_COMMON_WORKLOAD_IDENTITY_PROVIDER }}
-          service_account: ${{ vars.GCP_COMMON_SERVICE_ACCOUNT }}
+          project_id: ${{ secrets.GCP_COMMON_PROJECT_ID }}
+          workload_identity_provider: ${{ secrets.GCP_COMMON_WORKLOAD_IDENTITY_PROVIDER }}
+          service_account: ${{ secrets.GCP_COMMON_SERVICE_ACCOUNT }}
           access_token_lifetime: 600s
       - run: gcloud auth configure-docker europe-west1-docker.pkg.dev
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
-      - run: 'echo "$GSHEET_SA_KEY" > .gsheet-sa-key.json'
-        working-directory: zero-loads-app
-        env:
-          GSHEET_SA_KEY: ${{ secrets.GSHEET_SA_KEY }}
       - name: Build and push
         uses: docker/build-push-action@v6
         with:
