@@ -194,13 +194,12 @@ describe("Rooms Store", () => {
 
       test("it sends a mutation to change the amplifier state", async () => {
         const nextState = true;
-        const amp = toAmplifierStatus(nextState);
 
-        await store.toggleAmplifier(nextState, amp);
+        await store.toggleAmplifier(nextState, room.id);
 
         expect(useMutation).toHaveBeenCalledWith(setAmplifierForRoomMutation);
         expect(executeMutation).toHaveBeenCalledWith({
-          ids: [amp.id],
+          ids: [room.id],
           on: nextState,
         });
       });
@@ -226,7 +225,7 @@ describe("Rooms Store", () => {
       test("it sends a mutation to change the amplifier state", async () => {
         const nextState = true;
 
-        await store.toggleAmplifier(nextState, toAmplifierStatus(false));
+        await store.toggleAmplifier(nextState, room.id);
 
         expect(useMutation).toHaveBeenCalledWith(setAmplifierMutation);
         expect(executeMutation).toHaveBeenCalledWith({

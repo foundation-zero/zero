@@ -1,4 +1,4 @@
-import { AmplifierControl, Room, RoomGroup, ShipArea } from "@/@types";
+import { Room, RoomGroup, ShipArea } from "@/@types";
 import {
   Blinds,
   LightingGroups,
@@ -82,8 +82,8 @@ export const useRoomStore = defineStore("rooms", () => {
     useMutation<Room, MutationRootSetAmplifierArgs>(
       isAdmin.value ? setAmplifierForRoomMutation : setAmplifierMutation,
     ),
-    (amplifierOn: boolean, avControl: AmplifierControl) => ({
-      ids: isAdmin.value ? [avControl.id] : undefined,
+    (amplifierOn: boolean, roomId: string) => ({
+      ids: isAdmin.value ? [roomId] : undefined,
       on: amplifierOn,
     }),
     0,
@@ -107,16 +107,16 @@ export const useRoomStore = defineStore("rooms", () => {
 
   const setHumiditySetpoints = useDebounceMutation(
     useMutation<Room, MutationRootSetRoomHumiditySetpointsArgs>(setHumiditySetpointMutation),
-    (controlIds: string[], humidity: number) => ({
-      ids: controlIds,
+    (roomIds: string[], humidity: number) => ({
+      ids: roomIds,
       humidity,
     }),
   );
 
   const setCO2Setpoints = useDebounceMutation(
     useMutation<Room, MutationRootSetRoomCo2SetpointsArgs>(setCO2SetpointMutation),
-    (controlIds: string[], co2: number) => ({
-      ids: controlIds,
+    (roomIds: string[], co2: number) => ({
+      ids: roomIds,
       co2,
     }),
   );
