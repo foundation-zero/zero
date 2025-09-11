@@ -33,9 +33,6 @@ lib!zero-ui/src/lib
 # Log files
 ozw_log.txt
 
-# Development files
-custom_components
-
 ### macOS ###
 # General
 .DS_Store

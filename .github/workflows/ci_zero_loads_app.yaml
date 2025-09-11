@@ -1,0 +1,89 @@
+name: "Zero Loads App: Test and push Docker image"
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'zero-loads-app/**'
+      - '.github/workflows/ci_zero_loads_app.yaml'
+  pull_request:
+    paths:
+      - 'zero-loads-app/**'
+      - '.github/workflows/ci_zero_loads_app.yaml'
+
+env:
+  IMAGE: "europe-west1-docker.pkg.dev/common-449414/common/zero-loads-app"
+
+jobs:
+  test:
+    timeout-minutes: 15
+    runs-on: ubuntu-latest
+    outputs:
+      image_tag: ${{ steps.image_tag.outputs.image_tag }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: '0'
+      - uses: actions/setup-python@v5
+        with:
+          python-version: 3.13
+      - run: pipx install poetry==2.1.4
+      - run: poetry check
+        working-directory: zero-loads-app
+      - uses: astral-sh/ruff-action@v3
+        with:
+          src: "./zero-loads-app"
+      - run: poetry install --with dev,test
+        working-directory: zero-loads-app
+      - run: poetry run mypy src
+        working-directory: zero-loads-app
+      - name: Create .env file from secret
+        run: |
+          echo "${{ secrets.ENV_LOADS_APP }}" > .env
+        working-directory: data
+      - name: Unit Test
+        run: poetry run pytest .
+        working-directory: zero-loads-app
+      - name: Determine image tag
+        id: image_tag
+        run: |
+          VERSION=$(poetry version -s | sed -r 's/\+/_/g')
+
+          if [[ "${{ github.event_name }}" == "pull_request" ]]; then
+            SHORT_SHA=$(echo "${{ github.sha }}" | cut -c1-7)
+            VERSION="${VERSION}-dev-${SHORT_SHA}"
+          fi
+
+          echo "Using image tag: $VERSION"
+          echo "image_tag=$VERSION" >> $GITHUB_OUTPUT
+        working-directory: zero-loads-app
+
+  docker-push:
+    timeout-minutes: 10
+    runs-on: ubuntu-latest
+    needs: test
+    permissions:
+      contents: 'read'
+      id-token: 'write'
+    steps:
+      - uses: actions/checkout@v4
+      # Set up in https://github.com/foundation-zero/gcp-common
+      - id: auth
+        name: Authenticate with Google Cloud
+        uses: google-github-actions/auth@v2
+        with:
+          token_format: access_token
+          project_id: ${{ secrets.GCP_COMMON_PROJECT_ID }}
+          workload_identity_provider: ${{ secrets.GCP_COMMON_WORKLOAD_IDENTITY_PROVIDER }}
+          service_account: ${{ secrets.GCP_COMMON_SERVICE_ACCOUNT }}
+          access_token_lifetime: 600s
+      - run: gcloud auth configure-docker europe-west1-docker.pkg.dev
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+      - name: Build and push
+        uses: docker/build-push-action@v6
+        with:
+          context: zero-loads-app
+          push: true
+          platforms: linux/amd64,linux/arm64
+          tags: ${{ env.IMAGE }}:${{ needs.test.outputs.image_tag }}
