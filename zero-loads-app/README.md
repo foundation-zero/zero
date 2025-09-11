@@ -22,4 +22,13 @@ This repository configures a PCanAdapter to listen on a specified IP address and
 
 
 # Api
- - `poetry run python -m api generate-jwt --roles captain`
+
+Run API
+```bash
+poetry run python -m api api
+```
+
+Generate JWT token for a role
+```bash
+poetry run python -m api generate-jwt --roles captain
+```

@@ -1,6 +1,6 @@
 import jwt
 
-from ..adapter.config import Settings
+from .config import Settings
 
 settings = Settings()
 

@@ -5,9 +5,6 @@ from sqlalchemy import Column, Integer, String, Float
 
 settings = Settings()
 
-
-DATABASE_URL = "postgresql+asyncpg://user:password@localhost:5432/mydb"
-
 engine = create_async_engine(settings.pg_url, echo=True)
 AsyncSessionLocal = async_sessionmaker(engine)
 
