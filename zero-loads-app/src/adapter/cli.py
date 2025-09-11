@@ -30,7 +30,7 @@ class StubCmd(Settings):
             await adapter.run()
 
 
-class ZeroLoadsBackend(BaseSettings, cli_kebab_case=True):
+class ZeroLoadsAdapter(BaseSettings, cli_kebab_case=True):
     model_config = SettingsConfigDict(
         env_file=".env",
         env_file_encoding="utf-8",
