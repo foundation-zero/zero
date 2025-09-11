@@ -2,9 +2,9 @@ import pytest
 import socket
 import asyncio
 from unittest.mock import AsyncMock
-from backend.adapter import PCanAdapter
+from adapter import PCanAdapter
 from pytest import fixture
-from backend.config import Settings
+from adapter.config import Settings
 
 
 @fixture
@@ -15,6 +15,7 @@ def settings():
         canbus_ip="127.0.0.1",
         canbus_port=56001,
         canbus_buffer_size=1024,
+        jwt_secret="test",
     )
 
 

@@ -14,4 +14,12 @@ This repository configures a PCanAdapter to listen on a specified IP address and
 
  - Create `.env` based on `.env-example`
  - `poetry install --with dev,test`
- - `poetry run python -m backend`
+
+
+## Adapter
+ - `poetry run python -m adapter adapter`
+ - `poetry run python -m adapter stub`
+
+
+# Api
+ - `poetry run python -m api generate-jwt --roles captain`

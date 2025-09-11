@@ -1,9 +1,9 @@
 import pytest
 from pytest import fixture
-from backend.config import Settings
-from backend.stub import PCanStub
+from adapter.config import Settings
+from adapter.stub import PCanStub
 import socket
-from backend.stub.can_frame import CAN_Frame
+from adapter.stub.can_frame import CAN_Frame
 
 
 @fixture
@@ -14,6 +14,7 @@ def settings():
         canbus_ip="127.0.0.1",
         canbus_port=56000,
         canbus_buffer_size=1024,
+        jwt_secret="test",
     )
 
 
