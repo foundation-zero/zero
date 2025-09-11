@@ -86,8 +86,7 @@ CAN_CRC_Frame = Struct(
         lambda ctx: ctx.can_id.id if ctx.can_id.extended else ctx.can_id.id & 0x7FF
     ),
     "payload" / Computed(lambda ctx: ctx.data[: ctx.dlc]),
-    # CRC32 is appended LITTLE-endian according to the spec
-    "crc32" / Int32ul,
+    "crc32" / Int32ul,  # CRC32 is appended little-endian
 )
 
 # 3) CAN FD (Message Type = 0x90)

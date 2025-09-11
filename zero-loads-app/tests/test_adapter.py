@@ -18,9 +18,9 @@ def settings():
     )
 
 
-@pytest.mark.timeout(10)
+@pytest.mark.timeout(2)
 @pytest.mark.asyncio
-async def test_receive_message(settings):
+async def test_receive_can_message(settings):
     # Prepare a valid CAN_Frame message (0x80)
     frame_bytes = (
         b"\x00\x18"  # length = 24
@@ -31,7 +31,7 @@ async def test_receive_message(settings):
         + b"\x01"  # channel
         + b"\x04"  # dlc
         + b"\x00\x02"  # flags (extended)
-        + b"\x11\x22\x33\x41"  # can_id
+        + b"\x05\xe3\x0a\x71"  # can_id
         + b"\x01\x02\x03\x04\x00\x00\x00\x00"  # data (4 bytes valid)
     )
 
@@ -62,4 +62,4 @@ async def test_receive_message(settings):
     assert result.message_type == 0x80
     assert result.dlc == 4
     assert result.payload == b"\x01\x02\x03\x04"
-    assert result.can_identifier == 35931752
+    assert result.can_identifier == 12345678
