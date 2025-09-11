@@ -54,10 +54,10 @@ class Fmu:
         value: BaseException | None,
         traceback: TracebackType | None,
     ) -> bool:
-        if self._fmu_instance is not None:
+        if self._fmu_instance:
             self._fmu_instance.terminate()
             self._fmu_instance.freeInstance()
-        if value is not None:
+        if value:
             raise value
         return True
 

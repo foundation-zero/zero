@@ -4,18 +4,16 @@ from simple_pid import PID
 
 from input_output.base import Stamped
 from input_output.definitions.control import Valve
-from input_output.definitions.units import Celsius, LMin, Ratio
+from input_output.definitions.units import LMin, Ratio
 
 
-class _Controller[ValueUnit: float, SetpointUnit: float]:
-    TUNING = (0, 0, 0)
-    OUTPUT_LIMITS = (0, 1)
-
+class Controller[ValueUnit: float, SetpointUnit: float]:
     def __init__(
         self,
         initial: ValueUnit,
         setpoint: SetpointUnit,
-        tuning: tuple[float, float, float] | None = None,
+        tuning: tuple[float, float, float],
+        output_limits: tuple[float, float] = (0, 1),
     ):
         kp, ki, kd = tuning or self.TUNING
         self._pid = PID(
@@ -23,8 +21,8 @@ class _Controller[ValueUnit: float, SetpointUnit: float]:
             ki,
             kd,
             setpoint=setpoint,
-            sample_time=0.1,
-            output_limits=self.OUTPUT_LIMITS,
+            sample_time=None,
+            output_limits=output_limits,
             auto_mode=False,
         )
         self._initial = initial
@@ -55,23 +53,16 @@ class _Controller[ValueUnit: float, SetpointUnit: float]:
         pid_result = cast(ValueUnit | None, self._pid(measurement))
         return pid_result if pid_result is not None else self._initial
 
-class HeatDumpController(_Controller[Ratio, Celsius]):
-    TUNING = (0.05, 0.001, 0)
-
-class MixingValveController(_Controller[Ratio, Celsius]):
-    TUNING = (-0.05, -0.001, 0)
-
-class _FlowController(_Controller[Ratio, LMin]):
-    TUNING = (0.01, 0.001, 0.0)
-
-class PumpFlowController(_FlowController):
-    TUNING = (0.01, 0.001, 0)
-
 
 class FlowBalanceController:
-    def __init__(self, valves: list[Valve], close_when_disabled: bool = True):
+    def __init__(
+        self,
+        valves: list[Valve],
+        tuning: tuple[float, float, float],
+        close_when_disabled: bool = True,
+    ):
         self._controllers = [
-            _FlowController(Valve.CLOSED, 0.0) for _ in valves
+            Controller[Ratio, LMin](Valve.CLOSED, 0.0, tuning) for _ in valves
         ]
         self._valves = valves
         self._close_when_disabled = close_when_disabled
@@ -118,9 +109,11 @@ class FlowBalanceController:
 
 
 class FlowDistributionController:
-    def __init__(self, valves: list[Valve]):
+    def __init__(self, valves: list[Valve], tuning):
         self._flow_balance_controller = FlowBalanceController(
-            valves, close_when_disabled=False
+            valves,
+            tuning,
+            close_when_disabled=False,
         )
 
     def set_actives(self, actives: list[bool]):
@@ -162,5 +155,3 @@ class FlowDistributionController:
         ]
         self._flow_balance_controller.set_setpoints(setpoints)
         self._flow_balance_controller(measurements, time)
-
-

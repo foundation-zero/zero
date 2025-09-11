@@ -93,10 +93,11 @@ type Ratio = Annotated[
     UnitMeta(modelica_name="ratio"),
 ]
 type Bar = Annotated[
-    float, Field(ge=-100), UnitMeta(modelica_name="Bar")
+    float, Field(ge=0), UnitMeta(modelica_name="Bar")
 ]  # TODO: contrain to 0 when fmu is fixed
 type Watt = Annotated[float, UnitMeta(modelica_name="Watt")]
 type seconds = Annotated[float, UnitMeta(modelica_name="s")]
 type OnOff = Annotated[bool, UnitMeta(modelica_name="bool")]
 type Charged = Annotated[bool, UnitMeta(modelica_name="bool")]
 type PcsMode = Literal["off", "maneuvering", "propulsion", "regeneration"]
+type Tuning = tuple[float, float, float]

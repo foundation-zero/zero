@@ -4,19 +4,15 @@ from pydantic import BaseModel, Field
 from transitions import Machine, State
 
 from classes.control import Control, ControlResult
-from control.controllers import (
-    HeatDumpController,
-    MixingValveController,
-    PumpFlowController,
-)
+from control.controllers import Controller
 from input_output.base import ParameterMeta, Stamped
 from input_output.definitions.control import Pump, Valve
-from input_output.definitions.units import Celsius, LMin
+from input_output.definitions.units import Celsius, LMin, Ratio, Tuning
 from input_output.modules.pvt import PvtControlValues, PvtSensorValues
 
 
 class PvtParameters(BaseModel):
-    cooling_mix_setpoint: Annotated[Celsius, Field(le=90)] = 80
+    heat_dump_setpoint: Annotated[Celsius, Field(le=90)] = 80
     mix_temperature_setpoint: Annotated[
         Celsius, Field(ge=40, le=90), ParameterMeta("50-S019")
     ] = 65
@@ -29,48 +25,53 @@ class PvtParameters(BaseModel):
     owners_flow_setpoint: Annotated[LMin, Field(le=23), ParameterMeta("50-S026")] = (
         15  # TODO: add minimum based of FDS
     )
+    heat_dump_tuning: Tuning = (0.05, 0.001, 0.0)
+    main_fwd_heat_supply_tuning: Tuning = (0.01, 0.001, 0.0)
+    main_aft_heat_supply_tuning: Tuning = (0.01, 0.001, 0.0)
+    owners_heat_supply_tuning: Tuning = (0.01, 0.001, 0.0)
+    main_fwd_pump_tuning: Tuning = (0.011, 0.01, 0.0)#0.022 ultimate gain
+    main_aft_pump_tuning: Tuning = (0.011, 0.01, 0.0)#0.22 ultimate gain
+    owners_pump_tuning: Tuning = (0.021, 0.01, 0.0)#0.042 ultimate gain
 
 
 _ZERO_TIME = datetime.fromtimestamp(0)
-_INITIAL_CONTROL_VALUES = (
-    PvtControlValues(
-        pvt_pump_main_fwd=Pump(
-            dutypoint=Stamped(value=0.0, timestamp=_ZERO_TIME),
-            on=Stamped(value=False, timestamp=_ZERO_TIME),
-        ),
-        pvt_pump_main_aft=Pump(
-            dutypoint=Stamped(value=0.0, timestamp=_ZERO_TIME),
-            on=Stamped(value=False, timestamp=_ZERO_TIME),
-        ),
-        pvt_pump_owners=Pump(
-            dutypoint=Stamped(value=0.0, timestamp=_ZERO_TIME),
-            on=Stamped(value=False, timestamp=_ZERO_TIME),
-        ),
-        pvt_mix_main_fwd=Valve(
-            setpoint=Stamped(value=Valve.MIXING_B_TO_AB, timestamp=_ZERO_TIME)
-        ),
-        pvt_mix_main_aft=Valve(
-            setpoint=Stamped(value=Valve.MIXING_B_TO_AB, timestamp=_ZERO_TIME)
-        ),
-        pvt_mix_owners=Valve(
-            setpoint=Stamped(value=Valve.MIXING_B_TO_AB, timestamp=_ZERO_TIME)
-        ),
-        pvt_flowcontrol_main_fwd=Valve(
-            setpoint=Stamped(value=Valve.OPEN, timestamp=_ZERO_TIME)
-        ),
-        pvt_flowcontrol_main_aft=Valve(
-            setpoint=Stamped(value=Valve.OPEN, timestamp=_ZERO_TIME)
-        ),
-        pvt_flowcontrol_owners=Valve(
-            setpoint=Stamped(value=Valve.OPEN, timestamp=_ZERO_TIME)
-        ),
-        pvt_mix_exchanger=Valve(
-            setpoint=Stamped(
-                value=Valve.MIXING_A_TO_AB,
-                timestamp=_ZERO_TIME,
-            )
-        ),
-    )
+_INITIAL_CONTROL_VALUES = PvtControlValues(
+    pvt_pump_main_fwd=Pump(
+        dutypoint=Stamped(value=0.0, timestamp=_ZERO_TIME),
+        on=Stamped(value=False, timestamp=_ZERO_TIME),
+    ),
+    pvt_pump_main_aft=Pump(
+        dutypoint=Stamped(value=0.0, timestamp=_ZERO_TIME),
+        on=Stamped(value=False, timestamp=_ZERO_TIME),
+    ),
+    pvt_pump_owners=Pump(
+        dutypoint=Stamped(value=0.0, timestamp=_ZERO_TIME),
+        on=Stamped(value=False, timestamp=_ZERO_TIME),
+    ),
+    pvt_mix_main_fwd=Valve(
+        setpoint=Stamped(value=Valve.MIXING_B_TO_AB, timestamp=_ZERO_TIME)
+    ),
+    pvt_mix_main_aft=Valve(
+        setpoint=Stamped(value=Valve.MIXING_B_TO_AB, timestamp=_ZERO_TIME)
+    ),
+    pvt_mix_owners=Valve(
+        setpoint=Stamped(value=Valve.MIXING_B_TO_AB, timestamp=_ZERO_TIME)
+    ),
+    pvt_flowcontrol_main_fwd=Valve(
+        setpoint=Stamped(value=Valve.OPEN, timestamp=_ZERO_TIME)
+    ),
+    pvt_flowcontrol_main_aft=Valve(
+        setpoint=Stamped(value=Valve.OPEN, timestamp=_ZERO_TIME)
+    ),
+    pvt_flowcontrol_owners=Valve(
+        setpoint=Stamped(value=Valve.OPEN, timestamp=_ZERO_TIME)
+    ),
+    pvt_mix_exchanger=Valve(
+        setpoint=Stamped(
+            value=Valve.MIXING_A_TO_AB,
+            timestamp=_ZERO_TIME,
+        )
+    ),
 )
 
 
@@ -91,32 +92,44 @@ class PvtControl(Control):
             State(name="pump_failure", on_enter=[self._set_recovery_mixes_to_a]),
         ]
 
-        self._heat_dump_controller = HeatDumpController(
+        self._heat_dump_controller = Controller[Ratio, Celsius](
             _INITIAL_CONTROL_VALUES.pvt_mix_exchanger.setpoint.value,
-            parameters.cooling_mix_setpoint,
+            parameters.heat_dump_setpoint,
+            parameters.heat_dump_tuning,
         )
-        self._main_fwd_heat_supply_controller = MixingValveController(
+        self._main_fwd_heat_supply_controller = Controller[Ratio, Celsius](
             _INITIAL_CONTROL_VALUES.pvt_mix_main_fwd.setpoint.value,
             parameters.mix_temperature_setpoint,
+            parameters.main_fwd_pump_tuning,
         )
-        self._main_aft_heat_supply_controller = MixingValveController(
+        self._main_aft_heat_supply_controller = Controller[Ratio, Celsius](
             _INITIAL_CONTROL_VALUES.pvt_mix_main_aft.setpoint.value,
             parameters.mix_temperature_setpoint,
+            parameters.main_aft_heat_supply_tuning,
         )
-        self._owners_heat_supply_controller = MixingValveController(
+        self._owners_heat_supply_controller = Controller[Ratio, Celsius](
             _INITIAL_CONTROL_VALUES.pvt_mix_owners.setpoint.value,
             parameters.mix_temperature_setpoint,
+            parameters.owners_heat_supply_tuning,
         )
-        self._main_fwd_pump_flow_controller = PumpFlowController(
-            _INITIAL_CONTROL_VALUES.pvt_pump_main_fwd.dutypoint.value, 0
+        self._main_fwd_pump_flow_controller = Controller[Ratio, LMin](
+            _INITIAL_CONTROL_VALUES.pvt_pump_main_fwd.dutypoint.value,
+            0,
+            parameters.main_fwd_pump_tuning,
         )
-        self._main_aft_pump_flow_controller = PumpFlowController(
-            _INITIAL_CONTROL_VALUES.pvt_pump_main_aft.dutypoint.value, 0
+        self._main_aft_pump_flow_controller = Controller[Ratio, LMin](
+            _INITIAL_CONTROL_VALUES.pvt_pump_main_aft.dutypoint.value,
+            0,
+            parameters.main_aft_pump_tuning,
         )
-        self._owners_pump_flow_controller = PumpFlowController(
-            _INITIAL_CONTROL_VALUES.pvt_pump_owners.dutypoint.value, 0
+        self._owners_pump_flow_controller = Controller[Ratio, LMin](
+            _INITIAL_CONTROL_VALUES.pvt_pump_owners.dutypoint.value,
+            0,
+            parameters.owners_pump_tuning
         )
-        self.pvt_state_machine = Machine(model=self, states=self._states, initial="idle")
+        self.pvt_state_machine = Machine(
+            model=self, states=self._states, initial="idle"
+        )
         self._current_values = _INITIAL_CONTROL_VALUES.model_copy(deep=True)
         self._time = datetime.now()
 

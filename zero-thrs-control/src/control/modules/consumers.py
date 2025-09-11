@@ -8,7 +8,7 @@ from control.controllers import (
 )
 from input_output.base import Stamped, ThrsModel
 from input_output.definitions.control import Valve
-from input_output.definitions.units import Ratio
+from input_output.definitions.units import Ratio, Tuning
 from input_output.modules.consumers import ConsumersControlValues, ConsumersSensorValues
 
 
@@ -17,7 +17,7 @@ class ConsumersParameters(ThrsModel):
     boosting_flow_ratio_setpoint: Annotated[Ratio, Field(ge=0.0, le=1.0)] = 0.3
     fahrenheit_enabled: bool = True
     fahrenheit_flow_ratio_setpoint: Annotated[Ratio, Field(ge=0.0, le=1.0)] = 0.3
-
+    flow_distribution_tuning: Tuning = (0.01,0.001,0)
 
 _ZERO_TIME = datetime.fromtimestamp(0)
 _INITIAL_CONTROL_VALUES = ConsumersControlValues(
@@ -56,7 +56,8 @@ class ConsumersControl(
                 self._current_values.consumers_flowcontrol_boosting,
                 self._current_values.consumers_flowcontrol_fahrenheit,
                 self._current_values.consumers_flowcontrol_bypass,
-            ]
+            ],
+            parameters.flow_distribution_tuning
         )
 
     def initial(self, time: datetime) -> ControlResult[ConsumersControlValues]:
