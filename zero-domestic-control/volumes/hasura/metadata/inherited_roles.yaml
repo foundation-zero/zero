@@ -1,1 +1,15 @@
-[]
+- role_name: captain
+  role_set:
+    - admin
+- role_name: engineer
+  role_set:
+    - admin
+- role_name: first_officer
+  role_set:
+    - user
+- role_name: crew
+  role_set:
+    - user
+- role_name: guest
+  role_set:
+    - user
