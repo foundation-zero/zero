@@ -21,7 +21,7 @@ const blinds = computed(() => currentRoom.value.roomsControls.filter(isBlindsCon
     :class="{ 'max-lg:opacity-0': showSideNav && breakpoints.touch }"
   >
     <TabsList
-      class="bg-black/5 backdrop-blur-md dark:bg-white/5"
+      class="backdrop-blur-md"
       as="nav"
     >
       <RouterLink :to="{ name: 'cabin:airconditioning' }">
