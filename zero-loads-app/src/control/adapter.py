@@ -25,10 +25,10 @@ class PCanAdapter:
         self.port = canbus_port
         self.buffer_size = canbus_buffer_size
 
-        UDPServerSocket = socket.socket(family=socket.AF_INET, type=socket.SOCK_DGRAM)
+        socket_udp = socket.socket(family=socket.AF_INET, type=socket.SOCK_DGRAM)
 
-        UDPServerSocket.bind((canbus_ip, canbus_port))
-        self.socket = UDPServerSocket
+        socket_udp.bind((canbus_ip, canbus_port))
+        self.socket = socket_udp
         logger.info(f"PCanAdapter up and listening on {self.ip}:{self.port}")
 
     @asynccontextmanager
@@ -80,17 +80,16 @@ class PCanAdapter:
         """Decode a CAN frame from raw bytes"""
         if message[3] == 0x80:
             logger.debug("CAN 2.0a/b Frame")
-            result = CAN_Frame.parse(message)
+            return CAN_Frame.parse(message)
         elif message[3] == 0x81:
             logger.debug("CAN 2.0a/b Frame with CRC")
-            result = CAN_CRC_Frame.parse(message)
+            return CAN_CRC_Frame.parse(message)
         elif message[3] == 0x90:
             logger.debug("CAN FD Frame")
-            result = CAN_FD_Frame.parse(message)
+            return CAN_FD_Frame.parse(message)
         elif message[3] == 0x91:
             logger.debug("CAN FD Frame with CRC")
-            result = CAN_FD_CRC_Frame.parse(message)
+            return CAN_FD_CRC_Frame.parse(message)
         else:
             logger.info("Not a valid CAN Frame type")
-            result = None
-        return result
+            return None

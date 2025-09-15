@@ -18,6 +18,7 @@ from construct import (
 # -------------------------
 # Shared building blocks
 # -------------------------
+# Based on https://www.peak-system.com/produktcd/Pdf/English/PCAN-Gateways_Developer-Documentation_eng.pdf
 
 # 32-bit CAN ID field
 CAN_ID = BitStruct(

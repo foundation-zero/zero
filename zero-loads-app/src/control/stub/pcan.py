@@ -13,11 +13,11 @@ logger = logging.getLogger("stub")
 
 class PCanStub:
     def __init__(
-        self, ip: str, port: int, bufferSize: int = 1024, send_interval: float = 1.0
+        self, ip: str, port: int, buffer_size: int = 1024, send_interval: float = 1.0
     ):
         self.ip = ip
         self.port = port
-        self.bufferSize = bufferSize
+        self.buffer_size = buffer_size
         self.send_interval = send_interval
 
         logger.info(f"Running PCanStub on {self.ip}:{self.port}")

@@ -1,7 +1,6 @@
-import pytest
 from pytest import fixture
-from backend.config import Settings
-from backend.stub.can_frame import (
+from control.config import Settings
+from control.stub.can_frame import (
     CAN_Frame,
     CAN_CRC_Frame,
     CAN_FD_Frame,
@@ -20,9 +19,30 @@ def settings():
     )
 
 
-@pytest.mark.timeout(2)
-@pytest.mark.asyncio
-async def test_can_message_parsing(settings):
+async def test_can_unextended_id_message_parsing(settings):
+    # Extended id = False
+    frame_bytes = (
+        b"\x00\x18"  # length = 24
+        b"\x00\x80"  # message_type = 0x80
+        + b"TAG12345"  # tag (8 bytes)
+        + b"\x00\x00\x00\x01"  # ts_low
+        + b"\x00\x00\x00\x02"  # ts_high
+        + b"\x01"  # channel
+        + b"\x04"  # dlc
+        + b"\x00\x00"  # flags (extended)
+        + b"\x05\xe3\x0a\x70"  # can_id
+        + b"\x01\x02\x03\x04\x00\x00\x00\x00"  # data (4 bytes valid)
+    )
+    frame = CAN_Frame.parse(frame_bytes)
+    assert not frame.flags.extended
+    assert not frame.can_id.extended
+    assert frame.can_id.id == 12345678
+    assert frame.can_identifier == 334
+    assert not frame.flags.rtr
+    assert not frame.can_id.rtr
+
+
+async def test_can_extended_id_message_parsing(settings):
     # Extended id = True
     frame_bytes = (
         b"\x00\x18"  # length = 24
@@ -47,30 +67,7 @@ async def test_can_message_parsing(settings):
     assert not frame.flags.rtr
     assert not frame.can_id.rtr
 
-    # Extended id = False
-    frame_bytes = (
-        b"\x00\x18"  # length = 24
-        b"\x00\x80"  # message_type = 0x80
-        + b"TAG12345"  # tag (8 bytes)
-        + b"\x00\x00\x00\x01"  # ts_low
-        + b"\x00\x00\x00\x02"  # ts_high
-        + b"\x01"  # channel
-        + b"\x04"  # dlc
-        + b"\x00\x00"  # flags (extended)
-        + b"\x05\xe3\x0a\x70"  # can_id
-        + b"\x01\x02\x03\x04\x00\x00\x00\x00"  # data (4 bytes valid)
-    )
-    frame = CAN_Frame.parse(frame_bytes)
-    assert not frame.flags.extended
-    assert not frame.can_id.extended
-    assert frame.can_id.id == 12345678
-    assert frame.can_identifier == 334
-    assert not frame.flags.rtr
-    assert not frame.can_id.rtr
 
-
-@pytest.mark.timeout(2)
-@pytest.mark.asyncio
 async def test_can_crc_message_parsing(settings):
     # Extended id = True
     frame_bytes = (
@@ -99,8 +96,6 @@ async def test_can_crc_message_parsing(settings):
     assert frame.crc32 == 305419896
 
 
-@pytest.mark.timeout(2)
-@pytest.mark.asyncio
 async def test_can_fd_message_parsing(settings):
     # Extended id = True
     frame_bytes = (
@@ -130,8 +125,6 @@ async def test_can_fd_message_parsing(settings):
     assert not frame.flags.esi
 
 
-@pytest.mark.timeout(2)
-@pytest.mark.asyncio
 async def test_can_fd_crc_message_parsing(settings):
     # Extended id = True
     frame_bytes = (
