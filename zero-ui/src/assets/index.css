@@ -187,6 +187,11 @@ h6 {
   --color-warning: var(--warning);
   --color-warning-muted: var(--warning-muted);
   --color-warning-dull: var(--warning-dull);
+
+  --color-background-inverse: #fafafa;
+  --color-foreground-inverse: #1e1406;
+  --color-background-subtle: #55493a;
+  --color-foreground-subtle: var(--color-foreground);
 }
 
 .dark {
