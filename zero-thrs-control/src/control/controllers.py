@@ -80,7 +80,7 @@ class _FlowController(_Controller[Ratio, LMin]):
 class FlowBalanceController:
     def __init__(self, valves: list[Valve], close_when_disabled: bool = True):
         self._controllers = [
-            _FlowController(Valve.CLOSED, 0.0, (0.0, 0.002, 0)) for _ in valves
+            _FlowController(Valve.CLOSED, 0.0, (0.4, 0.005, 0.0)) for _ in valves
         ]
         self._valves = valves
         self._close_when_disabled = close_when_disabled
