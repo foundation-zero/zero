@@ -1,33 +1,32 @@
 # Badge
 
-Small status indicators and labels for categorizing content and conveying information at a glance.
+A versatile component for displaying short pieces of information.
 
-## Import
-
-```vue
-<script setup lang="ts">
+<script setup>
 import { Badge } from '@/components/ui/shadcn/badge'
 </script>
+
+## Overview
+
+The Badge component is used to display labels, statuses, or short pieces of metadata. It supports different visual variants to convey different meanings and contexts.
+
+### Default Badge
+
+<div class="my-4 p-4 bg-background-muted">
+  <Badge>Default</Badge>
+</div>
+
+```vue
+<template>
+  <Badge>Default</Badge>
+</template>
 ```
 
 ## Examples
 
-### Default Badge
+### Secondary Badge
 
-<div style="padding: 1rem; border: 1px solid var(--vp-c-border); border-radius: 8px; margin: 1rem 0;">
-  <Badge>Default</Badge>
-</div>
-
-```vue
-<template>
-  <Badge>Default</Badge>
-</template>
-```
-
-### Variants
-
-#### Secondary
-<div style="padding: 1rem; border: 1px solid var(--vp-c-border); border-radius: 8px; margin: 1rem 0;">
+<div class="my-4 p-4 bg-background-muted">
   <Badge variant="secondary">Secondary</Badge>
 </div>
 
@@ -37,8 +36,9 @@ import { Badge } from '@/components/ui/shadcn/badge'
 </template>
 ```
 
-#### Brand
-<div style="padding: 1rem; border: 1px solid var(--vp-c-border); border-radius: 8px; margin: 1rem 0;">
+### Brand Badge
+
+<div class="my-4 p-4 bg-background-muted">
   <Badge variant="brand">Brand</Badge>
 </div>
 
@@ -48,19 +48,21 @@ import { Badge } from '@/components/ui/shadcn/badge'
 </template>
 ```
 
-#### Constructive
-<div style="padding: 1rem; border: 1px solid var(--vp-c-border); border-radius: 8px; margin: 1rem 0;">
-  <Badge variant="constructive">Success</Badge>
+### Constructive Badge
+
+<div class="my-4 p-4 bg-background-muted">
+  <Badge variant="constructive">Constructive</Badge>
 </div>
 
 ```vue
 <template>
-  <Badge variant="constructive">Success</Badge>
+  <Badge variant="constructive">Constructive</Badge>
 </template>
 ```
 
-#### Warning
-<div style="padding: 1rem; border: 1px solid var(--vp-c-border); border-radius: 8px; margin: 1rem 0;">
+### Warning Badge
+
+<div class="my-4 p-4 bg-background-muted">
   <Badge variant="warning">Warning</Badge>
 </div>
 
@@ -70,19 +72,21 @@ import { Badge } from '@/components/ui/shadcn/badge'
 </template>
 ```
 
-#### Destructive
-<div style="padding: 1rem; border: 1px solid var(--vp-c-border); border-radius: 8px; margin: 1rem 0;">
-  <Badge variant="destructive">Error</Badge>
+### Destructive Badge
+
+<div class="my-4 p-4 bg-background-muted">
+  <Badge variant="destructive">Destructive</Badge>
 </div>
 
 ```vue
 <template>
-  <Badge variant="destructive">Error</Badge>
+  <Badge variant="destructive">Destructive</Badge>
 </template>
 ```
 
-#### Outline
-<div style="padding: 1rem; border: 1px solid var(--vp-c-border); border-radius: 8px; margin: 1rem 0;">
+### Outline Badge
+
+<div class="my-4 p-4 bg-background-muted">
   <Badge variant="outline">Outline</Badge>
 </div>
 
@@ -92,134 +96,22 @@ import { Badge } from '@/components/ui/shadcn/badge'
 </template>
 ```
 
-### All Variants Together
+### Multiple Badges
 
-<div style="padding: 1rem; border: 1px solid var(--vp-c-border); border-radius: 8px; margin: 1rem 0;">
-  <div style="display: flex; flex-wrap: wrap; gap: 0.5rem;">
+<div class="my-4 p-4 bg-background-muted space-x-2">
+  <Badge>Default</Badge>
+  <Badge variant="secondary">Secondary</Badge>
+  <Badge variant="brand">Brand</Badge>
+  <Badge variant="outline">Outline</Badge>
+</div>
+
+```vue
+<template>
+  <div class="space-x-2">
     <Badge>Default</Badge>
     <Badge variant="secondary">Secondary</Badge>
     <Badge variant="brand">Brand</Badge>
-    <Badge variant="constructive">Success</Badge>
-    <Badge variant="warning">Warning</Badge>
-    <Badge variant="destructive">Error</Badge>
     <Badge variant="outline">Outline</Badge>
-  </div>
-</div>
-
-### With Icons
-
-```vue
-<script setup lang="ts">
-import { Badge } from '@/components/ui/shadcn/badge'
-import { CheckIcon, AlertTriangleIcon } from 'lucide-vue-next'
-</script>
-
-<template>
-  <div class="flex gap-2">
-    <Badge variant="constructive">
-      <CheckIcon />
-      Verified
-    </Badge>
-    
-    <Badge variant="warning">
-      <AlertTriangleIcon />
-      Warning
-    </Badge>
-  </div>
-</template>
-```
-
-### As Links
-
-```vue
-<template>
-  <div class="flex gap-2">
-    <Badge as="a" href="#" variant="brand">
-      Clickable Badge
-    </Badge>
-    
-    <Badge as="button" variant="outline" @click="handleClick">
-      Button Badge
-    </Badge>
-  </div>
-</template>
-```
-
-### Use Cases
-
-#### Status Indicators
-<div style="padding: 1rem; border: 1px solid var(--vp-c-border); border-radius: 8px; margin: 1rem 0;">
-  <div style="display: flex; flex-direction: column; gap: 0.5rem;">
-    <div style="display: flex; align-items: center; gap: 0.5rem;">
-      <span>Order Status:</span>
-      <Badge variant="constructive">Completed</Badge>
-    </div>
-    <div style="display: flex; align-items: center; gap: 0.5rem;">
-      <span>Payment:</span>
-      <Badge variant="warning">Pending</Badge>
-    </div>
-    <div style="display: flex; align-items: center; gap: 0.5rem;">
-      <span>Subscription:</span>
-      <Badge variant="destructive">Expired</Badge>
-    </div>
-  </div>
-</div>
-
-```vue
-<template>
-  <div class="space-y-2">
-    <div class="flex items-center gap-2">
-      <span>Order Status:</span>
-      <Badge variant="constructive">Completed</Badge>
-    </div>
-    
-    <div class="flex items-center gap-2">
-      <span>Payment:</span>
-      <Badge variant="warning">Pending</Badge>
-    </div>
-    
-    <div class="flex items-center gap-2">
-      <span>Subscription:</span>
-      <Badge variant="destructive">Expired</Badge>
-    </div>
-  </div>
-</template>
-```
-
-#### Tags and Categories
-<div style="padding: 1rem; border: 1px solid var(--vp-c-border); border-radius: 8px; margin: 1rem 0;">
-  <div style="display: flex; flex-wrap: wrap; gap: 0.25rem;">
-    <Badge variant="secondary">React</Badge>
-    <Badge variant="secondary">Vue</Badge>
-    <Badge variant="secondary">TypeScript</Badge>
-    <Badge variant="secondary">Tailwind</Badge>
-  </div>
-</div>
-
-```vue
-<template>
-  <div class="flex flex-wrap gap-1">
-    <Badge variant="secondary">React</Badge>
-    <Badge variant="secondary">Vue</Badge>
-    <Badge variant="secondary">TypeScript</Badge>
-    <Badge variant="secondary">Tailwind</Badge>
-  </div>
-</template>
-```
-
-#### Notifications
-<div style="padding: 1rem; border: 1px solid var(--vp-c-border); border-radius: 8px; margin: 1rem 0;">
-  <div style="display: flex; align-items: center; gap: 0.5rem;">
-    <span>Messages</span>
-    <Badge variant="destructive">3</Badge>
-  </div>
-</div>
-
-```vue
-<template>
-  <div class="flex items-center gap-2">
-    <span>Messages</span>
-    <Badge variant="destructive">3</Badge>
   </div>
 </template>
 ```
@@ -228,46 +120,38 @@ import { CheckIcon, AlertTriangleIcon } from 'lucide-vue-next'
 
 | Prop | Type | Default | Description |
 |------|------|---------|-------------|
-| `variant` | `"default" \| "secondary" \| "brand" \| "constructive" \| "warning" \| "destructive" \| "outline"` | `"default"` | Visual style variant |
-| `as` | `string \| Component` | `"span"` | HTML element or component to render |
-| `asChild` | `boolean` | `false` | Render as child element |
-| `class` | `string` | `undefined` | Additional CSS classes |
+| variant | 'default' \| 'secondary' \| 'brand' \| 'constructive' \| 'warning' \| 'destructive' \| 'outline' | 'default' | The visual style variant |
+| class | string | undefined | Additional CSS classes to apply |
 
-## Variants
+## Installation
 
-| Variant | Description | Use Case |
-|---------|-------------|----------|
-| `default` | High contrast dark badge | Primary labels, important information |
-| `secondary` | Subtle neutral badge | Tags, categories, secondary information |
-| `brand` | Brand colored badge | Promotional content, brand highlights |
-| `constructive` | Success/positive badge | Success states, completed actions |
-| `warning` | Warning/caution badge | Warnings, pending states |
-| `destructive` | Error/danger badge | Errors, failures, urgent attention |
-| `outline` | Outlined badge | Subtle emphasis, low priority information |
+```vue
+<script setup>
+import { Badge } from '@/components/ui/shadcn/badge'
+</script>
+
+<template>
+  <Badge>Badge</Badge>
+</template>
+```
 
 ## Accessibility
 
-- Uses semantic HTML elements
-- Supports keyboard navigation when used as interactive elements
-- Proper contrast ratios for all variants
-- Screen reader compatible
-- Focus management with visible focus indicators
+- Badges should have appropriate color contrast for readability
+- Use semantic meaning for different variants (e.g., destructive for errors)
+- Consider screen reader support for decorative badges
+- Ensure badges are not the only way to convey important information
 
-## Design Guidelines
+## Best Practices
 
-### When to Use
-- **Status indicators** - Show the state of an item or process
-- **Categories and tags** - Group and organize content
-- **Counts and notifications** - Display numeric values or alerts
-- **Labels** - Add descriptive information to elements
-
-### When Not to Use
-- **Large amounts of text** - Use cards or other components instead
-- **Primary actions** - Use buttons for main interactions
-- **Complex information** - Consider tooltips or other components
-
-### Best Practices
-- Keep text concise and clear
-- Use consistent variants for similar types of information
-- Don't overuse badges as they can create visual clutter
+- Use badges sparingly to avoid visual clutter
+- Choose appropriate variants based on semantic meaning:
+  - **Default**: General purpose labels
+  - **Secondary**: Less prominent information
+  - **Brand**: Brand-related content or highlights
+  - **Constructive**: Success states or positive feedback
+  - **Warning**: Caution or attention needed
+  - **Destructive**: Errors or dangerous actions
+  - **Outline**: Subtle labeling or secondary information
 - Ensure proper color contrast for accessibility
+- Keep badge text short and descriptive

@@ -36,8 +36,8 @@
 
   --background: var(--color-neutral-0);
   --foreground: var(--color-neutral-1000);
-
-  --muted: var(--color-neutral-50);
+  --input: var(--background);
+  --input-border: --muted: var(--color-neutral-50);
   --muted-foreground: var(--color-neutral-700);
   --destructive: var(--color-accent-a-600);
   --destructive-foreground: var(--color-accent-a-700);
@@ -196,6 +196,9 @@ h6 {
 
 .dark {
   --background: var(--color-neutral-900);
+  --input: var(--background);
+  --input-border: var(--color-neutral-700);
+
   --background-muted: var(--color-neutral-1000);
   --foreground: var(--color-neutral-0);
   --muted: var(--color-neutral-1000);
@@ -236,8 +239,7 @@ h6 {
   --secondary-foreground: oklch(0.985 0 0);
   --accent: oklch(0.269 0 0);
   --accent-foreground: oklch(0.985 0 0);
-  --input: oklch(0.269 0 0);
-  --ring: oklch(0.439 0 0);
+  --ring: oklch(0.484 0.0295 68.98);
   --chart-1: oklch(0.488 0.243 264.376);
   --chart-2: oklch(0.696 0.17 162.48);
   --chart-3: oklch(0.769 0.188 70.08);
@@ -310,6 +312,7 @@ h6 {
   --color-destructive-foreground: var(--destructive-foreground);
   --color-border: var(--border);
   --color-input: var(--input);
+  --color-input-border: var(--input-border);
   --color-ring: var(--ring);
   --color-chart-1: var(--chart-1);
   --color-chart-2: var(--chart-2);

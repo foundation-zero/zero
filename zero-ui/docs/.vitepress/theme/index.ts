@@ -1,14 +1,22 @@
-import DefaultTheme from "vitepress/theme";
+import type { Theme } from "vitepress";
 import type { App } from "vue";
+
+// Import our custom layout and styles
 import "../../../src/assets/index.css";
 import { Badge } from "../../../src/components/ui/shadcn/badge";
+import { Input } from "../../../src/components/ui/shadcn/input";
+import Layout from "./Layout.vue";
 
-export default {
-  extends: DefaultTheme,
+// Import VitePress styles wrapped in CSS layers
+import "./styles/vitepress-layered.css";
+
+const theme: Theme = {
+  Layout,
   enhanceApp({ app }: { app: App }) {
-    // Register components globally for use in documentation examples
+    // Register our UI components globally
     app.component("Badge", Badge);
-    // Temporarily disable Button component due to SSR issues
-    // app.component("UIButton", Button);
+    app.component("Input", Input);
   },
 };
+
+export default theme;
