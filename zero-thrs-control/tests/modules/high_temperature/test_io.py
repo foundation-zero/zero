@@ -1,10 +1,8 @@
 
-import pytest
 from input_output.modules.high_temperature import HighTemperatureControlValues, HighTemperatureSensorValues, HighTemperatureSimulationInputs, HighTemperatureSimulationOutputs
 from tests.modules.conftest import compare_fmu_to_class
 from simulation.models.fmu_paths import high_temperature_path
 
-@pytest.mark.skip('Skip until HT module runs')
 def test_high_temperature_fmu_names():
     missing_in_py, missing_in_fmu = compare_fmu_to_class(
         high_temperature_path,

@@ -55,14 +55,15 @@ watch(currentRoom, (next, prev) => {
           class="flex-col pb-6"
           @click="selected = group"
         >
-          <span
+          <header
+            class="text-primary/75 font-bold"
             :class="{
-              'text-base font-medium': blinds.length === 1,
+              'text-base': blinds.length === 1,
               'text-sm': blinds.length > 1,
             }"
           >
-            {{ item.name }}</span
-          >
+            {{ item.name }}
+          </header>
           <BlindsSlider
             v-if="blinds.length === 1"
             v-model:level="item.value"

@@ -22,7 +22,7 @@ const { controls, someLightsAreOn, toggle } = useToggleableLights(computed(() =>
     <template #center>
       <Switch
         :checked="someLightsAreOn"
-        class="mb-1"
+        class="mb-1 scale-125 md:scale-200"
       />
     </template>
     <template #bottom-right>

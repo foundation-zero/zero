@@ -82,7 +82,7 @@ const { t } = useI18n();
     </template>
     <template #center>
       <span>{{ actualTemperature.toFixed(0) }}</span>
-      <sup class="text-rxs top-[-0.3em] font-extralight">&deg;</sup>
+      <sup class="text-rxs text-muted-foreground top-[-0.3em] font-extralight">&deg;</sup>
     </template>
     <template #bottom-left>
       <Droplets class="inline h-[1em] w-[1em]" />
@@ -93,7 +93,7 @@ const { t } = useI18n();
     </template>
     <template #bottom-right>
       <span>
-        <span class="text-rsm font-light">{{ t("views.ac.setTo") }}</span>
+        <span class="text-rsm text-muted-foreground font-light">{{ t("views.ac.setTo") }}</span>
         <span class="ml-[0.25em] font-extrabold"> {{ temperatureSetpoint }} </span>
         <sup class="font-extralight">&deg;</sup>
       </span>

@@ -49,7 +49,7 @@ const on = computed({
         class="mr-3 inline"
         :size="18"
       />
-      <span class="text-md font-medium"> {{ light.name }}</span>
+      <label class="text-md text-muted-foreground font-medium"> {{ light.name }}</label>
       <ZSpacer />
       <Switch
         v-model="on"

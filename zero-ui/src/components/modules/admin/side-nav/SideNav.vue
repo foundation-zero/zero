@@ -33,7 +33,7 @@ watch([currentRoomId, route], toggle);
   >
     <nav
       role="navigation"
-      class="bg-background-theme border-border-theme fixed top-0 left-0 h-svh overflow-y-auto border-r py-3 transition-transform max-md:w-full md:min-w-[250px] lg:min-w-[300px]"
+      class="bg-background border-primary/10 fixed top-0 left-0 h-svh overflow-y-auto border-r py-3 transition-transform max-md:w-full md:min-w-[250px] lg:min-w-[300px]"
       :class="{ '-translate-x-full': !show }"
     >
       <div class="pr-6 pl-3">

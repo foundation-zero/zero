@@ -71,7 +71,7 @@ const state = useThresholds(CO2_THRESHOLDS, actualCO2);
       <span>{{ formatInt(actualCO2) }}</span>
     </template>
     <template #bottom-right>
-      <span class="text-rlg font-extralight">{{ Units.PPM }}</span>
+      <span class="text-rlg text-muted-foreground font-extralight">{{ Units.PPM }}</span>
     </template>
   </ValueTile>
 </template>

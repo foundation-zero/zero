@@ -17,9 +17,11 @@ provide("showSideNav", showSideNav);
   <main class="flex h-svh flex-row md:flex-nowrap">
     <SideNav :show="showSideNav" />
     <article
-      class="flex w-full flex-col px-4 pt-[56px] md:px-6 md:pt-[64px]"
+      class="flex w-full flex-col px-4 md:px-6"
       :class="{
         '2xl:container': !breakpoints.touch,
+        'pt-[56px] md:pt-[64px]': breakpoints.touch,
+        'pt-3 md:pt-4': !breakpoints.touch,
       }"
     >
       <slot />

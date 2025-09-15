@@ -16,7 +16,7 @@ provide("disabled", hasPendingRequests);
     class="pb-8 text-[0.8rem] md:pb-12 md:text-[0.9rem] lg:text-[0.95rem] xl:text-[1.2rem] portrait:lg:text-[1rem]"
   >
     <header
-      class="text-rxl text-primary/75 dark:text-primary/65 flex items-center border-b pb-2 font-bold tracking-tight uppercase md:pb-4"
+      class="text-rxl text-muted-foreground flex items-center pb-2 font-bold tracking-wider uppercase md:pb-4"
     >
       {{ area.name }}
 
@@ -27,7 +27,7 @@ provide("disabled", hasPendingRequests);
       />
     </header>
     <ul
-      class="text-rbase mt-4 grid grid-cols-2 gap-4 transition-all md:mt-6"
+      class="text-rbase grid grid-cols-2 gap-4 transition-all"
       :class="{
         'md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-4': !showSideNav,
         'md:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4': showSideNav,
