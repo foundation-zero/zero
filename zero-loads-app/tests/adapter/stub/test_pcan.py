@@ -1,9 +1,9 @@
 import pytest
 from pytest import fixture
-from adapter.config import Settings
-from adapter.stub import PCanStub
+from control.config import Settings
+from control.stub import PCanStub
 import socket
-from adapter.stub.can_frame import CAN_Frame
+from control.stub.can_frame import CAN_Frame
 
 
 @fixture

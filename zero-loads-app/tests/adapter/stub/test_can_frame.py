@@ -1,7 +1,7 @@
 import pytest
 from pytest import fixture
-from adapter.config import Settings
-from adapter.stub.can_frame import (
+from control.config import Settings
+from control.stub.can_frame import (
     CAN_Frame,
     CAN_CRC_Frame,
     CAN_FD_Frame,

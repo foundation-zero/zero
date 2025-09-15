@@ -1,5 +1,5 @@
 [project]
-name = "adapter"
+name = "control"
 version = "0.1.0"
 description = ""
 authors = [
@@ -7,7 +7,7 @@ authors = [
 ]
 readme = "README.md"
 packages = [
-    { include = "adapter", from = "src" },
+    { include = "control", from = "src" },
     { include = "api", from = "src" }
 ]
 requires-python = ">= 3.13.1,<4.0"

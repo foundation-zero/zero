@@ -2,9 +2,9 @@ import pytest
 import socket
 import asyncio
 from unittest.mock import AsyncMock
-from adapter import PCanAdapter
+from control import PCanAdapter
 from pytest import fixture
-from adapter.config import Settings
+from control.config import Settings
 
 
 @fixture
