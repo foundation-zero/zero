@@ -1,15 +1,35 @@
 from sqlalchemy.ext.asyncio import create_async_engine, async_sessionmaker
 from sqlalchemy.orm import declarative_base
 from .config import Settings
-from sqlalchemy import Column, Integer, String, Float
+from sqlalchemy import Column, Integer, String, Float, ARRAY
+from sqlalchemy.dialects.postgresql import NUMRANGE
 
 settings = Settings()
 
 engine = create_async_engine(settings.pg_url, echo=True)
 AsyncSessionLocal = async_sessionmaker(engine)
 
-
 Base = declarative_base()
+
+
+class SailSet(Base):
+    __tablename__ = "sail_sets_combined"
+
+    id = Column(String, primary_key=True)
+    name = Column(String)
+    sails = Column(ARRAY(String))
+
+
+class Conditions(Base):
+    __tablename__ = "conditions"
+
+    id = Column(String, primary_key=True)
+    name = Column(String, nullable=False)
+    sea_state = Column(String, nullable=False)
+    awa = Column(NUMRANGE, nullable=False)
+    aws = Column(NUMRANGE, nullable=False)
+    pcs_mode_aft = Column(ARRAY(String), nullable=False)
+    pcs_mode_fwd = Column(ARRAY(String), nullable=False)
 
 
 class ReferenceValue(Base):
