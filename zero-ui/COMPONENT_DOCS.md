@@ -80,24 +80,6 @@ sidebar: [
 ]
 ```
 
-## Deployment
-
-### GitHub Pages
-The repository includes a GitHub Actions workflow that automatically builds and deploys the documentation to GitHub Pages when you push to the main branch.
-
-### Netlify/Vercel
-For Netlify or Vercel, simply:
-1. Connect your repository
-2. Set build command: `pnpm docs:build`
-3. Set publish directory: `docs/.vitepress/dist`
-
-### Manual Deployment
-Use the build script for manual deployment:
-
-```bash
-./scripts/build-docs.sh
-```
-
 ## Features
 
 ✅ **Working Solution**: VitePress is fully compatible with your Vite 7 setup  
