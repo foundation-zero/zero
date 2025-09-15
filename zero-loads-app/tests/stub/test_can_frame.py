@@ -19,7 +19,7 @@ def settings():
     )
 
 
-async def test_can_unextended_id_message_parsing(settings):
+def test_can_unextended_id_message_parsing(settings):
     # Extended id = False
     frame_bytes = (
         b"\x00\x18"  # length = 24
@@ -34,6 +34,8 @@ async def test_can_unextended_id_message_parsing(settings):
         + b"\x01\x02\x03\x04\x00\x00\x00\x00"  # data (4 bytes valid)
     )
     frame = CAN_Frame.parse(frame_bytes)
+
+    assert frame is not None
     assert not frame.flags.extended
     assert not frame.can_id.extended
     assert frame.can_id.id == 12345678
@@ -42,7 +44,7 @@ async def test_can_unextended_id_message_parsing(settings):
     assert not frame.can_id.rtr
 
 
-async def test_can_extended_id_message_parsing(settings):
+def test_can_extended_id_message_parsing(settings):
     # Extended id = True
     frame_bytes = (
         b"\x00\x18"  # length = 24
@@ -58,6 +60,8 @@ async def test_can_extended_id_message_parsing(settings):
     )
 
     frame = CAN_Frame.parse(frame_bytes)
+
+    assert frame is not None
     assert frame.length == 24
     assert frame.dlc == 4
     assert frame.payload == b"\x01\x02\x03\x04"
@@ -68,7 +72,7 @@ async def test_can_extended_id_message_parsing(settings):
     assert not frame.can_id.rtr
 
 
-async def test_can_crc_message_parsing(settings):
+def test_can_crc_message_parsing(settings):
     # Extended id = True
     frame_bytes = (
         b"\x00\x18"  # length = 24
@@ -85,6 +89,8 @@ async def test_can_crc_message_parsing(settings):
     )
 
     frame = CAN_CRC_Frame.parse(frame_bytes)
+
+    assert frame is not None
     assert frame.length == 24
     assert frame.dlc == 4
     assert frame.payload == b"\x01\x02\x03\x04"
@@ -96,7 +102,7 @@ async def test_can_crc_message_parsing(settings):
     assert frame.crc32 == 305419896
 
 
-async def test_can_fd_message_parsing(settings):
+def test_can_fd_message_parsing(settings):
     # Extended id = True
     frame_bytes = (
         b"\x00\x18"  # length = 24
@@ -113,6 +119,8 @@ async def test_can_fd_message_parsing(settings):
     )
 
     frame = CAN_FD_Frame.parse(frame_bytes)
+
+    assert frame is not None
     assert frame.length == 24
     assert frame.dlc == 4
     assert frame.data == b"\x01\x02\x03\x04"
@@ -125,7 +133,7 @@ async def test_can_fd_message_parsing(settings):
     assert not frame.flags.esi
 
 
-async def test_can_fd_crc_message_parsing(settings):
+def test_can_fd_crc_message_parsing(settings):
     # Extended id = True
     frame_bytes = (
         b"\x00\x18"  # length = 24
@@ -143,4 +151,6 @@ async def test_can_fd_crc_message_parsing(settings):
     )
 
     frame = CAN_FD_CRC_Frame.parse(frame_bytes)
+
+    assert frame is not None
     assert frame.crc32 == 305419896

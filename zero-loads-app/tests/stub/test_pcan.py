@@ -35,5 +35,6 @@ async def test_receive_message(settings):
 
         frame = CAN_Frame.parse(result)
 
+        assert frame is not None
         assert frame.can_identifier == 12341234
         assert frame.data == b"\x01\x02\x03\x04\x00\x00\x00\x00"

@@ -73,10 +73,14 @@ class PCanAdapter:
 
     async def _convert_payload(self, message: Container):
         """Extract the payload from the message"""
-        return int.from_bytes(message.get("payload"), "little")
+        payload = message.get("payload")
+        if payload:
+            return int.from_bytes(payload, "little")
+        else:
+            logger.error("No payload found in message")
 
     @staticmethod
-    async def _decode_can_frame(message: bytes):
+    async def _decode_can_frame(message: bytes) -> Container | None:
         """Decode a CAN frame from raw bytes"""
         if message[3] == 0x80:
             logger.debug("CAN 2.0a/b Frame")
