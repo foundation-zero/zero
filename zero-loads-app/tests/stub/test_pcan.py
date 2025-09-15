@@ -17,8 +17,7 @@ def settings():
     )
 
 
-@pytest.mark.timeout(10)
-@pytest.mark.asyncio
+@pytest.mark.timeout(1)
 async def test_receive_message(settings):
     UDPServerSocket = socket.socket(family=socket.AF_INET, type=socket.SOCK_DGRAM)
 
