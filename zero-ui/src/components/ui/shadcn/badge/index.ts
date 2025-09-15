@@ -12,10 +12,10 @@ export const badgeVariants = cva(
           "border-transparent bg-background-inverse text-foreground-inverse [a&]:hover:bg-background-inverse/90",
         secondary:
           "border-transparent bg-background-subtle text-foreground-subtle [a&]:hover:bg-background-subtle/90",
-        brand: "border-transparent bg-brand text-foreground [a&]:hover:bg-brand/90",
+        brand: "border-transparent bg-brand text-foreground-inverse [a&]:hover:bg-brand/90",
         constructive:
-          "border-transparent bg-constructive text-foreground-constructive [a&]:hover:bg-constructive/90",
-        warning: "border-transparent bg-warning text-foreground [a&]:hover:bg-warning/90",
+          "border-transparent bg-constructive text-foreground-inverse [a&]:hover:bg-constructive/90",
+        warning: "border-transparent bg-warning text-foreground-inverse [a&]:hover:bg-warning/90",
         destructive:
           "border-transparent bg-destructive text-white [a&]:hover:bg-destructive/90 focus-visible:ring-destructive/20 dark:focus-visible:ring-destructive/40 dark:bg-destructive/60",
         outline: "text-foreground [a&]:hover:bg-accent [a&]:hover:text-accent-foreground",

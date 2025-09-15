@@ -21,12 +21,7 @@ export default defineConfig({
       },
       {
         text: "Components",
-        items: [
-          { text: "Badge", link: "/components/badge" },
-          { text: "Button", link: "/components/button" },
-          { text: "Card", link: "/components/card" },
-          { text: "Checkbox", link: "/components/checkbox" },
-        ],
+        items: [{ text: "Badge", link: "/components/badge" }],
       },
     ],
 
@@ -36,7 +31,7 @@ export default defineConfig({
   vite: {
     resolve: {
       alias: {
-        "@": new URL("../src", import.meta.url).pathname,
+        "@": new URL("../../src", import.meta.url).pathname,
       },
     },
   },

@@ -4,15 +4,9 @@ Welcome to the Zero UI component library. Below you'll find all available compon
 
 ## Available Components
 
-### UI Components
-- [Badge](/components/badge) - Status indicators and labels
-- [Button](/components/button) - Interactive buttons with multiple variants
+## UI Components
 
-### Form Components
-- [Checkbox](/components/checkbox) - Form input controls
-
-### Layout Components  
-- [Card](/components/card) - Content containers
+- [Badge](/components/badge) - Display status and categorization information
 
 ## Usage Pattern
 

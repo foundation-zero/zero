@@ -14,6 +14,10 @@ import { Badge } from '@/components/ui/shadcn/badge'
 
 ### Default Badge
 
+<div style="padding: 1rem; border: 1px solid var(--vp-c-border); border-radius: 8px; margin: 1rem 0;">
+  <Badge>Default</Badge>
+</div>
+
 ```vue
 <template>
   <Badge>Default</Badge>
@@ -23,6 +27,10 @@ import { Badge } from '@/components/ui/shadcn/badge'
 ### Variants
 
 #### Secondary
+<div style="padding: 1rem; border: 1px solid var(--vp-c-border); border-radius: 8px; margin: 1rem 0;">
+  <Badge variant="secondary">Secondary</Badge>
+</div>
+
 ```vue
 <template>
   <Badge variant="secondary">Secondary</Badge>
@@ -30,6 +38,10 @@ import { Badge } from '@/components/ui/shadcn/badge'
 ```
 
 #### Brand
+<div style="padding: 1rem; border: 1px solid var(--vp-c-border); border-radius: 8px; margin: 1rem 0;">
+  <Badge variant="brand">Brand</Badge>
+</div>
+
 ```vue
 <template>
   <Badge variant="brand">Brand</Badge>
@@ -37,6 +49,10 @@ import { Badge } from '@/components/ui/shadcn/badge'
 ```
 
 #### Constructive
+<div style="padding: 1rem; border: 1px solid var(--vp-c-border); border-radius: 8px; margin: 1rem 0;">
+  <Badge variant="constructive">Success</Badge>
+</div>
+
 ```vue
 <template>
   <Badge variant="constructive">Success</Badge>
@@ -44,6 +60,10 @@ import { Badge } from '@/components/ui/shadcn/badge'
 ```
 
 #### Warning
+<div style="padding: 1rem; border: 1px solid var(--vp-c-border); border-radius: 8px; margin: 1rem 0;">
+  <Badge variant="warning">Warning</Badge>
+</div>
+
 ```vue
 <template>
   <Badge variant="warning">Warning</Badge>
@@ -51,6 +71,10 @@ import { Badge } from '@/components/ui/shadcn/badge'
 ```
 
 #### Destructive
+<div style="padding: 1rem; border: 1px solid var(--vp-c-border); border-radius: 8px; margin: 1rem 0;">
+  <Badge variant="destructive">Error</Badge>
+</div>
+
 ```vue
 <template>
   <Badge variant="destructive">Error</Badge>
@@ -58,11 +82,29 @@ import { Badge } from '@/components/ui/shadcn/badge'
 ```
 
 #### Outline
+<div style="padding: 1rem; border: 1px solid var(--vp-c-border); border-radius: 8px; margin: 1rem 0;">
+  <Badge variant="outline">Outline</Badge>
+</div>
+
 ```vue
 <template>
   <Badge variant="outline">Outline</Badge>
 </template>
 ```
+
+### All Variants Together
+
+<div style="padding: 1rem; border: 1px solid var(--vp-c-border); border-radius: 8px; margin: 1rem 0;">
+  <div style="display: flex; flex-wrap: wrap; gap: 0.5rem;">
+    <Badge>Default</Badge>
+    <Badge variant="secondary">Secondary</Badge>
+    <Badge variant="brand">Brand</Badge>
+    <Badge variant="constructive">Success</Badge>
+    <Badge variant="warning">Warning</Badge>
+    <Badge variant="destructive">Error</Badge>
+    <Badge variant="outline">Outline</Badge>
+  </div>
+</div>
 
 ### With Icons
 
@@ -106,6 +148,23 @@ import { CheckIcon, AlertTriangleIcon } from 'lucide-vue-next'
 ### Use Cases
 
 #### Status Indicators
+<div style="padding: 1rem; border: 1px solid var(--vp-c-border); border-radius: 8px; margin: 1rem 0;">
+  <div style="display: flex; flex-direction: column; gap: 0.5rem;">
+    <div style="display: flex; align-items: center; gap: 0.5rem;">
+      <span>Order Status:</span>
+      <Badge variant="constructive">Completed</Badge>
+    </div>
+    <div style="display: flex; align-items: center; gap: 0.5rem;">
+      <span>Payment:</span>
+      <Badge variant="warning">Pending</Badge>
+    </div>
+    <div style="display: flex; align-items: center; gap: 0.5rem;">
+      <span>Subscription:</span>
+      <Badge variant="destructive">Expired</Badge>
+    </div>
+  </div>
+</div>
+
 ```vue
 <template>
   <div class="space-y-2">
@@ -128,6 +187,15 @@ import { CheckIcon, AlertTriangleIcon } from 'lucide-vue-next'
 ```
 
 #### Tags and Categories
+<div style="padding: 1rem; border: 1px solid var(--vp-c-border); border-radius: 8px; margin: 1rem 0;">
+  <div style="display: flex; flex-wrap: wrap; gap: 0.25rem;">
+    <Badge variant="secondary">React</Badge>
+    <Badge variant="secondary">Vue</Badge>
+    <Badge variant="secondary">TypeScript</Badge>
+    <Badge variant="secondary">Tailwind</Badge>
+  </div>
+</div>
+
 ```vue
 <template>
   <div class="flex flex-wrap gap-1">
@@ -140,6 +208,13 @@ import { CheckIcon, AlertTriangleIcon } from 'lucide-vue-next'
 ```
 
 #### Notifications
+<div style="padding: 1rem; border: 1px solid var(--vp-c-border); border-radius: 8px; margin: 1rem 0;">
+  <div style="display: flex; align-items: center; gap: 0.5rem;">
+    <span>Messages</span>
+    <Badge variant="destructive">3</Badge>
+  </div>
+</div>
+
 ```vue
 <template>
   <div class="flex items-center gap-2">
