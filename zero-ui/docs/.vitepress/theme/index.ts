@@ -4,6 +4,7 @@ import type { App } from "vue";
 // Import our custom layout and styles
 import "../../../src/assets/index.css";
 import { Badge } from "../../../src/components/ui/shadcn/badge";
+import { Button } from "../../../src/components/ui/shadcn/button";
 import { Input } from "../../../src/components/ui/shadcn/input";
 import Layout from "./Layout.vue";
 
@@ -15,6 +16,7 @@ const theme: Theme = {
   enhanceApp({ app }: { app: App }) {
     // Register our UI components globally
     app.component("Badge", Badge);
+    app.component("Button", Button);
     app.component("Input", Input);
   },
 };

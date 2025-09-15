@@ -23,13 +23,31 @@ pnpm dev
 pnpm docs:dev
 ```
 
-## Component Overview
+## Available Components
 
-Our component library includes:
+Our component library currently includes:
 
-- **Button** - Primary actions and navigation
-- **Card** - Content containers with headers and footers
-- **Checkbox** - Form input controls
-- And many more...
+### UI Components
 
-Browse the Components section to see all available components with live examples and code snippets.
+- **[Badge](/components/badge)** - Display status and categorization information with multiple variants
+- **[Button](/components/button)** - Interactive button component with multiple variants and sizes
+- **[Input](/components/input)** - Text input field for capturing user input with validation support
+
+Each component comes with:
+- Multiple visual variants for different use cases
+- Comprehensive accessibility features
+- TypeScript support with full type definitions
+- Live examples and code snippets
+- Best practice guidelines
+
+## Component Design Principles
+
+All components in Zero UI follow consistent design principles:
+
+- **Semantic variants** - Each variant has clear semantic meaning (default, destructive, secondary, etc.)
+- **Size consistency** - Standard sizing options (sm, default, lg) across components
+- **Accessibility first** - ARIA compliant with keyboard navigation support
+- **Customizable** - Easy to theme and extend with additional CSS classes
+- **TypeScript ready** - Full type safety and IntelliSense support
+
+Browse the [Components section](/components/) to explore all available components with interactive examples.
