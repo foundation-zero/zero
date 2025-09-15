@@ -32,4 +32,4 @@ WORKDIR /app
 
 COPY src/ ./
 
-ENTRYPOINT ["python", "-m", "backend"]
+ENTRYPOINT ["python", "-m", "control"]

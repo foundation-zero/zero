@@ -30,7 +30,7 @@ class PCSModeInput:
 
 @strawberry.input
 class CaseInput:
-    sails: list[strawberry.ID]
+    sails: list[str]
     sea_state: SeaState
     pcs_mode: PCSModeInput
     awa: float
@@ -51,9 +51,23 @@ class RangesType:
     error_too_high: float | None
 
 
+# @strawberry.type
+# class ReferenceValueType:
+#     value: ValueType
+#     target: float
+#     ranges: RangesType
+#     unit: Unit
+
+
 @strawberry.type
 class ReferenceValueType:
-    value: ValueType
-    target: float
-    ranges: RangesType
-    unit: Unit
+    id: strawberry.ID
+    sail_set_id: str
+    condition_id: str
+    mast_id: str
+    value_definition_id: str
+    value: float
+    error_too_low: float | None
+    error_too_high: float | None
+    warning_too_low: float | None
+    warning_too_high: float | None

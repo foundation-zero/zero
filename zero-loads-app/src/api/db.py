@@ -1,8 +1,8 @@
 from sqlalchemy.ext.asyncio import create_async_engine, async_sessionmaker
 from sqlalchemy.orm import declarative_base
 from .config import Settings
-from sqlalchemy import Column, Integer, String, Float, ARRAY
-from sqlalchemy.dialects.postgresql import NUMRANGE
+from sqlalchemy import Column, Integer, Float, String
+from sqlalchemy.dialects.postgresql import NUMRANGE, ARRAY
 
 settings = Settings()
 
@@ -12,7 +12,7 @@ AsyncSessionLocal = async_sessionmaker(engine)
 Base = declarative_base()
 
 
-class SailSet(Base):
+class SailSetCombined(Base):
     __tablename__ = "sail_sets_combined"
 
     id = Column(String, primary_key=True)
@@ -30,6 +30,15 @@ class Conditions(Base):
     aws = Column(NUMRANGE, nullable=False)
     pcs_mode_aft = Column(ARRAY(String), nullable=False)
     pcs_mode_fwd = Column(ARRAY(String), nullable=False)
+
+
+class ValueDefinition(Base):
+    __tablename__ = "value_definitions"
+
+    id = Column(String, primary_key=True)
+    name = Column(String, nullable=False)
+    description = Column(String, nullable=True)
+    unit = Column(String, nullable=False)
 
 
 class ReferenceValue(Base):

@@ -1,10 +1,15 @@
 import strawberry
-from sqlalchemy.future import select
-from .db import AsyncSessionLocal, ReferenceValue, SailSet, Conditions
+from .db import AsyncSessionLocal, SailSetCombined
 from fastapi import FastAPI
 from strawberry.fastapi import GraphQLRouter
 from typing import List, Optional
-from .types import ReferenceValueType, CaseInput
+from .types import CaseInput, ReferenceValueType
+import logging
+from sqlalchemy import select
+from sqlalchemy import cast
+from sqlalchemy.dialects.postgresql import TEXT, ARRAY
+
+logger = logging.getLogger("api")
 
 
 @strawberry.type
@@ -16,26 +21,64 @@ class Query:
         case: Optional[CaseInput] = None,
     ) -> List[ReferenceValueType]:
         async with AsyncSessionLocal() as session:
-            query = select(ReferenceValue).where(
-                ReferenceValue.value_definition_id.in_(values)
-            )
             if case:
-                sail_set_subq = query.where(SailSet.sails.contains(case.sails))
-
-                condition_subq = (
-                    query.where(Conditions.sea_state == case.sea_state.value)
-                    .where(Conditions.awa.contains(case.awa))
-                    .where(Conditions.aws.contains(case.aws))
+                print(f"Input: {values}")
+                print(case)
+                print(f"Sails: {case.sails}, {type(case.sails[0])}")
+                sail_set_subq = select(SailSetCombined.id).where(
+                    SailSetCombined.sails.contains(
+                        cast(
+                            case.sails,
+                            ARRAY(TEXT),
+                        )
+                    )
                 )
 
-                # query = query.where(ReferenceValue.sail_set_id == sail_set_id).where(
-                #     ReferenceValue.condition_id == case.sea_state.value
+                # condition_subq = (
+                #     select(Conditions.id)
+                #     .filter(Conditions.sea_state == case.sea_state.value)
+                #     .filter(Conditions.awa.contains(case.awa))
+                #     .filter(Conditions.aws.contains(case.aws))
+                #     .filter(Conditions.pcs_mode_fwd.contains([case.pcs_mode.fwd.value]))
+                #     .filter(Conditions.pcs_mode_aft.contains([case.pcs_mode.aft.value]))
+                #     .subquery()
                 # )
 
-            result = await session.execute(query)
-            rows = result.scalars().all()
+                # query = (
+                #     select(ReferenceValue)
+                #     .where(ReferenceValue.value_definition_id.in_(values))
+                #     # .join(
+                #     #     ValueDefinition,
+                #     #     ReferenceValue.value_definition_id == ValueDefinition.id,
+                #     # )
+                #     .filter(ReferenceValue.sail_set_id == sail_set_subq.c.id)
+                #     # .filter(ReferenceValue.condition_id == condition_subq.c.id)
+                # )
 
-            return rows
+                query = sail_set_subq
+
+                result = await session.execute(query)
+                rows = result.scalars().all()
+
+                print(f"rows: {rows}")
+
+                # # Convert SQLAlchemy objects to ReferenceValueType
+                # return [
+                #     ReferenceValueType(
+                #         id=row.id,
+                #         sail_set_id=row.sail_set_id,
+                #         condition_id=row.condition_id,
+                #         mast_id=row.mast_id,
+                #         value_definition_id=row.value_definition_id,
+                #         value=row.value,
+                #         error_too_low=row.error_too_low,
+                #         error_too_high=row.error_too_high,
+                #         warning_too_low=row.warning_too_low,
+                #         warning_too_high=row.warning_too_high,
+                #     )
+                #     for row in rows
+                # ]
+                return None
 
 
 schema = strawberry.Schema(query=Query)
