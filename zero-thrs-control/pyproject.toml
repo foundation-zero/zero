@@ -1,8 +1,11 @@
-[tool.poetry]
+[project]
 name = "simulation"
 version = "0.1.0"
 description = ""
-authors = ["Alje van Dam <alje.vandam@foundationzero.org>", "Boudewijn van Groos <boudewijn.vangroos@foundationzero.org>"]
+authors = [
+  { name = "Alje van Dam", email = "alje.vandam@foundationzero.org" },
+  { name = "Boudewijn van Groos", email = "boudewijn.vangroos@foundationzero.org" }
+]
 packages = [
   { include = "control", from = "src" },
   { include = "input_output", from = "src" },
@@ -13,6 +16,8 @@ packages = [
   { include = "analysis" }
 ]
 readme = "README.md"
+license = "MIT"
+license-files = ["LICENSE"]
 
 [tool.poetry.dependencies]
 python = "^3.12,<3.14"

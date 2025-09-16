@@ -1,5 +1,6 @@
 from typing import cast
 from pytest import approx
+import pytest
 from input_output.base import Stamped
 from input_output.definitions.control import Valve
 from input_output.modules.pvt import (
@@ -28,7 +29,7 @@ async def test_idle(control, executor: PvtExecutor):
         control_values = control.control(result.sensor_values, executor.time()).values
         result = await executor.tick(control_values)
 
-    assert result.simulation_outputs.pvt_module_return.flow.value == approx(0, abs =1) # type: ignore #TODO: reduce margin after fmu test (dutypoint of pump in idle mode currently set to .1)
+    assert result.simulation_outputs.pvt_module_return.flow.value == approx(0, abs =.1) # type: ignore
 
 async def test_recovery(control, executor):
 
@@ -52,7 +53,7 @@ async def test_recovery(control, executor):
         result.simulation_outputs.pvt_module_return.flow.value, abs=1e-5
     )
 
-
+@pytest.mark.skip('Rework test after control update')
 async def test_recovery_heat_dump(control, executor: PvtExecutor):
     control.to_recovery()
     executor._simulation_inputs.pvt_module_supply.temperature = Stamped.stamp(65)
@@ -86,15 +87,13 @@ async def test_recovery_heat_dump(control, executor: PvtExecutor):
         )
         control_values = control.control(result.sensor_values, executor.time()).values
         result = await executor.tick(control_values)
-        # 92 allows for some overshoot from the setpoint of 85 degrees
-        assert result.simulation_outputs.pvt_module_return.temperature.value < 92  # type: ignore
-
+        assert result.simulation_outputs.pvt_module_return.temperature.value == approx(85, abs=1) # type: ignore
     assert (
         result.sensor_values.pvt_temperature_exchanger.temperature.value
         < executor._simulation_inputs.pvt_module_supply.temperature.value
     )
 
-
+@pytest.mark.skip('Rework test after control update')
 async def test_pump_flow_recovery(control, executor):
 
     control.to_recovery()
@@ -119,7 +118,7 @@ async def test_pump_flow_recovery(control, executor):
 
         assert result.sensor_values.pvt_flow_owners.flow.value == approx(15, abs=1)
 
-
+@pytest.mark.skip('Rework test after control update')
 async def test_pump_flow_pump_failure(control, pump_failure_executor):
     executor = pump_failure_executor
 

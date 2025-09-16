@@ -112,7 +112,7 @@ const option = ref<ECBasicOption>({
       :style="{
         bottom: `${relativeThresholds[i]}%`,
       }"
-      class="border-primary/35 text-rsm text-primary/80 absolute w-full border-b border-dashed p-0.5 text-right font-light"
+      class="border-border text-rsm absolute w-full border-b border-dashed p-0.5 text-right font-light"
     >
       <span>{{ formatInt(threshold) }}</span> <slot name="unit" />
     </span>

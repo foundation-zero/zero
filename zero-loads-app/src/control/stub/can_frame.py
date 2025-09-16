@@ -14,11 +14,19 @@ from construct import (
     this,
 )
 
+# -------------------------
+# Construct doesn't support typing:
+# https://github.com/construct/construct/issues/1115
+# -------------------------
+
+# -------------------------
+# Definition of CAN frame formats as used by PEAK-System PCAN-USB devices
+# Based on https://www.peak-system.com/produktcd/Pdf/English/PCAN-Gateways_Developer-Documentation_eng.pdf
+# -------------------------
 
 # -------------------------
 # Shared building blocks
 # -------------------------
-# Based on https://www.peak-system.com/produktcd/Pdf/English/PCAN-Gateways_Developer-Documentation_eng.pdf
 
 # 32-bit CAN ID field
 CAN_ID = BitStruct(
@@ -61,7 +69,7 @@ CAN_Frame = Struct(
     "can_id" / CAN_ID,
     # Spec says this field ALWAYS carries 8 bytes; bytes after DLC are invalid
     "data" / Bytes(8),
-    # Convcenience: computed CAN identifier (11 or 29 bits)
+    # Convenience: computed CAN identifier (11 or 29 bits)
     "can_identifier"
     / Computed(
         lambda ctx: ctx.can_id.id if ctx.can_id.extended else ctx.can_id.id & 0x7FF

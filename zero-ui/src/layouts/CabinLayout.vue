@@ -25,8 +25,7 @@ provide("disabled", hasPendingRequests);
     <article
       class="flex w-full flex-col items-center pt-[64px] sm:pt-[96px]"
       :class="{
-        'border-r border-l bg-[hsl(var(--primary)/0.025)] px-0 xl:px-6 2xl:container':
-          !breakpoints.touch,
+        'border-r border-l px-0 xl:px-6 2xl:container': !breakpoints.touch,
         'pending opacity-50': hasPendingRequests,
       }"
     >
@@ -45,19 +44,16 @@ provide("disabled", hasPendingRequests);
       >
         <AsAdmin>
           <button
-            class="flex cursor-pointer items-center gap-2"
+            class="mr-2 flex cursor-pointer items-center"
             @click="toggleNav()"
           >
             <Sidebar
               v-if="breakpoints.touch"
               stroke-width="1.5"
             />
-            <span>{{ currentRoom.name }}</span>
           </button>
-          <template #fallback>
-            <span>{{ currentRoom.name }}</span>
-          </template>
         </AsAdmin>
+        <span>{{ currentRoom.name }}</span>
       </div>
     </template>
     <template #center>

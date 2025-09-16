@@ -3,13 +3,11 @@ import { Label } from "@/components/ui/shadcn/label";
 import { Switch } from "@/components/ui/shadcn/switch";
 import { extractAmplifierStatus, isAmplifierControl } from "@/lib/utils";
 import { useRoomStore } from "@/stores/rooms";
-import { useDark, useTimeoutFn } from "@vueuse/core";
-import { computed, inject, toRefs, watch } from "vue";
+import { computed, inject, toRefs } from "vue";
 
 import { useI18n } from "vue-i18n";
 const { toggleAmplifier } = useRoomStore();
 const { currentRoom } = toRefs(useRoomStore());
-const isDark = useDark();
 
 const { t } = useI18n();
 
@@ -26,10 +24,6 @@ const isOn = computed({
 
     amp.value = val ? 1 : 0;
   },
-});
-
-watch(currentRoom, (newRoom) => {
-  useTimeoutFn(() => (isDark.value = extractAmplifierStatus(newRoom) === 1), 500);
 });
 
 const disabled = inject<boolean>("disabled");

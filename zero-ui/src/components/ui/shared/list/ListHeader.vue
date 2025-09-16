@@ -1,5 +1,5 @@
 <template>
-  <header class="mb-2 text-xs uppercase">
+  <header class="text-muted-foreground mb-2 text-sm font-bold tracking-wider uppercase">
     <slot />
   </header>
 </template>

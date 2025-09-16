@@ -58,7 +58,7 @@ class PcmControl(Control[PcmSensorValues, PcmControlValues, PcmParameters]):
             State(
                 name="supplying",
                 on_enter=[
-                    self._set_valves_to_discharge,
+                    self._set_valves_to_supplying,
                     partial(
                         self._enable_pump, lambda: self._parameters.supplying_pump_flow
                     ),
@@ -66,7 +66,7 @@ class PcmControl(Control[PcmSensorValues, PcmControlValues, PcmParameters]):
             ),
             State(
                 name="charging",
-                on_enter=[self._set_valves_to_charge, self._disable_pump],
+                on_enter=[self._set_valves_to_charging, self._disable_pump],
             ),
             State(
                 name="boosting",
@@ -112,7 +112,7 @@ class PcmControl(Control[PcmSensorValues, PcmControlValues, PcmParameters]):
             value=Valve.OPEN, timestamp=self._time
         )
 
-    def _set_valves_to_discharge(self):
+    def _set_valves_to_supplying(self):
         self._current_values.pcm_switch_charging_return.setpoint = Stamped(
             value=Valve.CLOSED, timestamp=self._time
         )
@@ -126,7 +126,7 @@ class PcmControl(Control[PcmSensorValues, PcmControlValues, PcmParameters]):
             value=Valve.OPEN, timestamp=self._time
         )
 
-    def _set_valves_to_charge(self):
+    def _set_valves_to_charging(self):
         self._current_values.pcm_switch_charging_return.setpoint = Stamped(
             value=Valve.OPEN, timestamp=self._time
         )

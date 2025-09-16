@@ -17,7 +17,6 @@ dependencies = [
     "strawberry-graphql[debug-server, fastapi] (>=0.256.1,<0.257.0)",
     "psycopg[binary, async] (>=3.2.3,<4.0.0)",
     "homeassistant-api (>=5.0.0,<6.0.0)",
-    "python-can (>=4.6.1,<5.0.0)",
     "construct (>=2.10.70,<3.0.0)",
     "aiomqtt (>=2.4.0,<3.0.0)",
     "pyjwt (>=2.10.1)",
@@ -25,7 +24,6 @@ dependencies = [
     "dbt-core (>=1.9.8,<2.0.0)",
     "asyncpg (>=0.30.0,<0.31.0)",
     "sqlalchemy (>=2.0.43,<3.0.0)",
-    "databases (>=0.9.0,<0.10.0)",
     "greenlet (>=3.2.4,<4.0.0)"
 ]
 

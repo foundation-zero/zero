@@ -54,7 +54,9 @@ const commit = () => setTemperatureSetpoint(temperature.value);
           :size="1"
         >
           <ListItem class="flex-col gap-2">
-            <span class="text-lg font-medium">{{ t("labels.airconditioning.long") }}</span>
+            <header class="text-muted-foreground text-lg font-semibold">
+              {{ t("labels.airconditioning.long") }}
+            </header>
             <HeavySlider
               v-model:model-value="value"
               class="aspect-1/2 h-[40svh]! w-auto!"
@@ -72,7 +74,7 @@ const commit = () => setTemperatureSetpoint(temperature.value);
                 class="relative inline-flex items-end"
                 data-testid="temperatureSetpoint"
               >
-                <span class="text-3xl font-bold uppercase md:text-5xl">
+                <span class="font-headers text-3xl font-bold uppercase md:text-5xl">
                   <span v-if="hasTemperatureControl">{{
                     !isOff ? Math.floor(value[0]) : "Off"
                   }}</span>
@@ -80,21 +82,21 @@ const commit = () => setTemperatureSetpoint(temperature.value);
                 </span>
                 <span
                   v-if="!isOff && hasTemperatureControl"
-                  class="ml-0.5 text-sm font-light max-md:mb-[2.5px] md:text-2xl"
+                  class="font-headers ml-0.5 text-sm font-light max-md:mb-[2.5px] md:text-2xl"
                 >
                   {{ Math.round((value[0] % 1) * 10) }}
                 </span>
                 <sup
                   v-if="!isOff && hasTemperatureControl"
-                  class="absolute -top-1 right-0 pt-1 text-2xl font-light max-md:mt-[-2px] md:-top-1.5 md:mr-[1.5px] md:text-3xl"
+                  class="font-headers absolute -top-1 right-0 pt-1 text-2xl font-light max-md:mt-[-2px] md:-top-1.5 md:mr-[1.5px] md:text-3xl"
                   >&deg;</sup
                 >
               </div>
-              <span
+              <label
                 data-testid="temperatureSetpointLabel"
-                class="text-xs font-extralight md:text-base"
+                class="text-muted-foreground text-xs font-extralight md:text-base"
                 :class="{ invisible: isOff }"
-                >{{ t("labels.setTo") }}</span
+                >{{ t("labels.setTo") }}</label
               >
             </div>
           </ListItem>

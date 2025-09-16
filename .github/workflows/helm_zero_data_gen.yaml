@@ -31,9 +31,9 @@ jobs:
         uses: google-github-actions/auth@v2
         with:
           token_format: access_token
-          project_id: ${{ vars.GCP_COMMON_PROJECT_ID }}
-          workload_identity_provider: ${{ vars.GCP_COMMON_WORKLOAD_IDENTITY_PROVIDER }}
-          service_account: ${{ vars.GCP_COMMON_SERVICE_ACCOUNT }}
+          project_id: ${{ secrets.GCP_COMMON_PROJECT_ID }}
+          workload_identity_provider: ${{ secrets.GCP_COMMON_WORKLOAD_IDENTITY_PROVIDER }}
+          service_account: ${{ secrets.GCP_COMMON_SERVICE_ACCOUNT }}
           access_token_lifetime: 300s
       - name: Login to Artifact Registry
         uses: docker/login-action@v1
