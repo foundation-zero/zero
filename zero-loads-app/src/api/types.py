@@ -4,22 +4,23 @@ from enum import Enum
 
 @strawberry.enum
 class Unit(Enum):
-    TONNE = "tonne"
-    PERCENTAGE = "percentage"
-    METERS = "meters"
-    KNOTS = "knots"
+    tonne = "tonne"
+    percentage = "percentage"
+    meters = "meters"
+    knots = "knots"
 
 
 @strawberry.enum
 class SeaState(Enum):
-    WET = "wet"
+    wet = "wet"
+    dry = "dry"
 
 
 @strawberry.enum
 class ThrusterMode(Enum):
-    PROPULSION = "propulsion"
-    REGENERATION = "regeneration"
-    IDLE = "idle"
+    propulsion = "propulsion"
+    regeneration = "regeneration"
+    idle = "idle"
 
 
 @strawberry.input
@@ -51,23 +52,23 @@ class RangesType:
     error_too_high: float | None
 
 
-# @strawberry.type
-# class ReferenceValueType:
-#     value: ValueType
-#     target: float
-#     ranges: RangesType
-#     unit: Unit
-
-
 @strawberry.type
 class ReferenceValueType:
-    id: strawberry.ID
-    sail_set_id: str
-    condition_id: str
-    mast_id: str
-    value_definition_id: str
-    value: float
-    error_too_low: float | None
-    error_too_high: float | None
-    warning_too_low: float | None
-    warning_too_high: float | None
+    value: ValueType
+    target: float
+    ranges: RangesType
+    unit: Unit
+
+
+# @strawberry.type
+# class ReferenceValueType:
+#     id: strawberry.ID
+#     sail_set_id: str
+#     condition_id: str
+#     mast_id: str
+#     value_definition_id: str
+#     value: float
+#     error_too_low: float | None
+#     error_too_high: float | None
+#     warning_too_low: float | None
+#     warning_too_high: float | None
