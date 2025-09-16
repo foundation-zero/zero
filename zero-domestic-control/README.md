@@ -6,7 +6,9 @@ https://miro.com/app/board/uXjVI85VEAc=/?share_link_id=164545697008
 
 ### Development (Docker)
 
-Install Hasura CLI: https://hasura.io/docs/2.0/hasura-cli/install-hasura-cli/
+ - Install Hasura CLI: https://hasura.io/docs/2.0/hasura-cli/install-hasura-cli/
+ - Create `.env` based on `.env-example`
+
 
 Start databases and MQTT brokerpoet
 ```bash
