@@ -17,7 +17,8 @@ class ConsumersParameters(ThrsModel):
     boosting_flow_ratio_setpoint: Annotated[Ratio, Field(ge=0.0, le=1.0)] = 0.3
     fahrenheit_enabled: bool = True
     fahrenheit_flow_ratio_setpoint: Annotated[Ratio, Field(ge=0.0, le=1.0)] = 0.3
-    flow_distribution_tuning: Tuning = (0.01,0.001,0)
+    flow_distribution_tuning: Tuning = (0.01, 0.001, 0)
+
 
 _ZERO_TIME = datetime.fromtimestamp(0)
 _INITIAL_CONTROL_VALUES = ConsumersControlValues(
@@ -57,7 +58,7 @@ class ConsumersControl(
                 self._current_values.consumers_flowcontrol_fahrenheit,
                 self._current_values.consumers_flowcontrol_bypass,
             ],
-            parameters.flow_distribution_tuning
+            parameters.flow_distribution_tuning,
         )
 
     def initial(self, time: datetime) -> ControlResult[ConsumersControlValues]:
@@ -70,12 +71,10 @@ class ConsumersControl(
             self._parameters.boosting_enabled,
             self._parameters.fahrenheit_enabled,
         ]
-        self._flow_controller.set_actives(
-            [
-                *actives,
-                True,  # Bypass is always active
-            ]
-        )
+        self._flow_controller.set_actives([
+            *actives,
+            True,  # Bypass is always active
+        ])
         ratios = [
             ratio if active else None
             for ratio, active in zip(
@@ -86,12 +85,10 @@ class ConsumersControl(
                 actives,
             )
         ]
-        self._flow_controller.set_ratios(
-            [
-                *ratios,
-                1 - sum(ratio for ratio in ratios if ratio is not None),
-            ]
-        )
+        self._flow_controller.set_ratios([
+            *ratios,
+            1 - sum(ratio for ratio in ratios if ratio is not None),
+        ])
         self._flow_controller(
             [
                 sensor_values.consumers_flow_boosting.flow.value,

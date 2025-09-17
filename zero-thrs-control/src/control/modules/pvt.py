@@ -29,9 +29,9 @@ class PvtParameters(BaseModel):
     main_fwd_heat_supply_tuning: Tuning = (0.01, 0.001, 0.0)
     main_aft_heat_supply_tuning: Tuning = (0.01, 0.001, 0.0)
     owners_heat_supply_tuning: Tuning = (0.01, 0.001, 0.0)
-    main_fwd_pump_tuning: Tuning = (0.011, 0.01, 0.0)#0.022 ultimate gain
-    main_aft_pump_tuning: Tuning = (0.011, 0.01, 0.0)#0.22 ultimate gain
-    owners_pump_tuning: Tuning = (0.021, 0.01, 0.0)#0.042 ultimate gain
+    main_fwd_pump_tuning: Tuning = (0.011, 0.01, 0.0)#0.022 approximate ultimate gain (max Kp with sustained oscillations)
+    main_aft_pump_tuning: Tuning = (0.011, 0.01, 0.0)#0.22 approximate ultimate gain (max Kp with sustained oscillations)
+    owners_pump_tuning: Tuning = (0.021, 0.01, 0.0)#0.042 approximate ultimate gain (max Kp with sustained oscillations)
 
 
 _ZERO_TIME = datetime.fromtimestamp(0)
