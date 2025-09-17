@@ -14,7 +14,11 @@ export default defineConfig({
     sidebar: [
       {
         text: "Getting Started",
-        items: [{ text: "Introduction", link: "/" }],
+        items: [
+          { text: "Introduction", link: "/getting-started/" },
+          { text: "Colors", link: "/components/colors" },
+          { text: "Typography", link: "/typography" },
+        ],
       },
       {
         text: "Components",
