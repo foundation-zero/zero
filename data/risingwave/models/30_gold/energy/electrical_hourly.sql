@@ -1,40 +1,64 @@
 {{ config(materialized='materialized_view') }}
 SELECT
     topic,
-    power_hour,
-    power_wh
-FROM
-(
-    -- Select electrical consumption per topic, per hour for all completed hours (not including running hour)
+    hour,
+    energy_wh
+FROM ( (
+    -- Calculate energy (Wh) of completed hours (not running hour) proportionally by calculating average values per minute to determine which minutes have data.
+    -- The energy is then proportional to the amount of minutes with data compared to the total amount of minutes in the hour.
+    WITH per_minute AS (
+        SELECT
+            electrical_consumption.topic AS topic,
+            window_start AS min_start,
+            AVG(electrical_consumption.active_power) AS avg_w
+        FROM
+        TUMBLE (
+            {{ ref('electrical_consumption') }},
+            electrical_consumption.active_power_timestamp,
+            INTERVAL '1' MINUTE
+        )
+        GROUP BY
+          topic,
+          window_start
+    )
     SELECT
-        electrical_consumption.topic AS topic,
-        TO_TIMESTAMP(FLOOR(EXTRACT(EPOCH FROM electrical_consumption.active_power_timestamp) / 3600) * 3600) AS power_hour,
-
-        -- Calculate average power (Wh) over proportional hours: if hour contains only measurements of a part of the hour, the average power is diveded proportionally
-        AVG(electrical_consumption.active_power) * (MAX(date_part('minute', electrical_consumption.active_power_timestamp)) - MIN(date_part('minute',electrical_consumption.active_power_timestamp)) + 1) / 60.0
-            AS power_wh
-    FROM
-        {{ ref('electrical_consumption') }} AS electrical_consumption
-    WHERE
-        TO_TIMESTAMP(FLOOR(EXTRACT(EPOCH FROM electrical_consumption.active_power_timestamp) / 3600) * 3600) < NOW() - INTERVAL '1 hour'
+        topic,  
+        date_trunc('hour', min_start) AS hour,
+        SUM(avg_w) / 60.0 AS energy_wh
+    FROM per_minute
+    WHERE min_start < date_trunc('hour', NOW())
     GROUP BY
         topic,
-        power_hour
-    
-    UNION ALL
-    
-    -- Select electrical consumption per topic, per hour for running hour
-    SELECT
-        electrical_consumption.topic AS topic,
-        TO_TIMESTAMP(FLOOR(EXTRACT(EPOCH FROM electrical_consumption.active_power_timestamp) / 3600) * 3600) AS power_hour,
+        date_trunc('hour', min_start)
+    )
 
-        -- Calculate average power (Wh) for running hour: if measurements started later than the start of the hour, the average power is divided proportionally
-        AVG(electrical_consumption.active_power) * (60 - MIN(date_part('minute',electrical_consumption.active_power_timestamp))) / 60.0 AS power_wh
-    FROM
-        {{ ref('electrical_consumption') }} AS electrical_consumption
-    WHERE
-        TO_TIMESTAMP(FLOOR(EXTRACT(EPOCH FROM electrical_consumption.active_power_timestamp) / 3600) * 3600) >= NOW() - INTERVAL '1 hour'
+    UNION ALL (
+      
+    -- Calculate energy (Wh) of running hours proportionally by calculating average values per minute to determine which minutes have data.
+    -- The energy is then proportional to the amount of minutes with data compared to the total amount of minutes passed in the running hour.
+    WITH per_minute AS (
+        SELECT
+            electrical_consumption.topic AS topic,
+            window_start AS min_start,
+            AVG(electrical_consumption.active_power) AS avg_w
+        FROM
+        TUMBLE (
+            {{ ref('electrical_consumption') }},
+            electrical_consumption.active_power_timestamp,
+            INTERVAL '1' MINUTE
+        )
+        GROUP BY
+            topic,
+            window_start
+    )
+    SELECT
+        topic,
+        date_trunc('hour', min_start) AS hour,
+        SUM(avg_w) / (extract(MINUTE from MAX(min_start)) + 1) AS energy_wh
+    FROM per_minute
+    WHERE min_start >= date_trunc('hour', NOW())
     GROUP BY
         topic,
-        power_hour
+        date_trunc('hour', min_start)
+    )
 )
