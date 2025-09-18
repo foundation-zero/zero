@@ -1,6 +1,6 @@
 from datetime import datetime
 from typing import Literal
-from pydantic import BaseModel
+from pydantic import BaseModel, model_validator
 
 from transitions import Machine, State
 
@@ -17,7 +17,7 @@ from thrs.classes.control import Control, ControlResult
 
 
 class ThrustersParameters(BaseModel):
-    maximum_recovery_temperature: Celsius = 70  # TODO: can we set relative minimum and maximum setpoints (e.g. Field(le=self.cooling_temperature))?
+    maximum_recovery_temperature: Celsius = 70  # TODO: use field or model validator to set dependencies between parameters
     cooling_temperature: Celsius = 38
     recovery_temperature: Celsius = 63
     warmup_temperature: Celsius = 60
@@ -26,6 +26,15 @@ class ThrustersParameters(BaseModel):
     heat_dump_tuning: Tuning = (0.05, 0.01, 0)
     flow_balance_tuning: Tuning = (0.01, 0.001, 0)
 
+    @model_validator(mode="after")
+    def check_temperature_setpoints(self):
+        if self.maximum_recovery_temperature < self.recovery_temperature:
+            raise ValueError("Maximum recovery temperature must be greater than recovery temperature")
+        if self.recovery_temperature < self.warmup_temperature:
+            raise ValueError("Recovery temperature must be greater than warmup temperature")
+        if self.warmup_temperature < self.cooling_temperature:
+            raise ValueError("Warmup temperature must be greater than cooling temperature")
+        return self
 
 _ZERO_TIME = datetime.fromtimestamp(0)
 _INITIAL_CONTROL_VALUES = ThrustersControlValues(
