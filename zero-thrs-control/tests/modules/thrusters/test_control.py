@@ -1,16 +1,17 @@
 from pytest import approx
 
-from control.modules.thrusters import ThrustersControl
-from input_output.base import Stamped
-from input_output.definitions.control import Valve
-from orchestration.executor import SimulationExecutor
+from thrs.control.modules.thrusters import ThrustersControl
+from thrs.input_output.base import Stamped
+from thrs.input_output.definitions.control import Valve
+from thrs.input_output.definitions.units import PcsMode
+from thrs.orchestration.executor import SimulationExecutor
 from tests.modules.thrusters.conftest import ThrustersSimulationExecutor
 
 
 async def test_idle(control: ThrustersControl, executor: SimulationExecutor):
     executor._simulation_inputs.thrusters_aft.heat_flow = Stamped.stamp(0)
     executor._simulation_inputs.thrusters_fwd.heat_flow = Stamped.stamp(0)
-    executor._simulation_inputs.thrusters_pcs.mode = Stamped.stamp("off")
+    executor._simulation_inputs.thrusters_pcs.mode = Stamped.stamp(PcsMode.OFF)
 
     result = await executor.tick(control.initial(executor.time()).values)
 
@@ -111,16 +112,14 @@ async def test_recovery(control: ThrustersControl, executor: SimulationExecutor)
     )
 
 
-async def test_recovery_mixing(
-    control: ThrustersControl, executor: SimulationExecutor
-):
+async def test_recovery_mixing(control: ThrustersControl, executor: SimulationExecutor):
     executor._simulation_inputs.thrusters_module_supply.temperature = Stamped.stamp(
         control.parameters.recovery_mix_setpoint
     )
 
     result = await executor.tick(control.initial(executor.time()).values)
 
-    #during warm-up the mixing valves should be closed
+    # during warm-up the mixing valves should be closed
     while (
         result.sensor_values.thrusters_temperature_aft_return.temperature.value
         < control.parameters.recovery_mix_setpoint
@@ -146,13 +145,14 @@ async def test_recovery_mixing(
                 Valve.MIXING_B_TO_AB, abs=1e-2
             )
 
-    #if both aft and fwd are warm, mixing valves should be open
+    # if both aft and fwd are warm, mixing valves should be open
     for i in range(20):
         control_values = control.control(result.sensor_values, executor.time()).values
         result = await executor.tick(control_values)
 
         assert control_values.thrusters_mix_aft.setpoint.value > 0
         assert control_values.thrusters_mix_fwd.setpoint.value > 0
+
 
 async def test_heat_dump_with_cold_sea(
     control: ThrustersControl, executor: SimulationExecutor
@@ -200,9 +200,7 @@ async def test_heat_dump_with_hot_sea(
         )
 
 
-async def test_flow_recovery(
-    control: ThrustersControl, executor: SimulationExecutor
-):
+async def test_flow_recovery(control: ThrustersControl, executor: SimulationExecutor):
     result = await executor.tick(control.initial(executor.time()).values)
     # set valves and stabilize
     for i in range(90):
@@ -212,12 +210,18 @@ async def test_flow_recovery(
     for i in range(60):
         control_values = control.control(result.sensor_values, executor.time()).values
         result = await executor.tick(control_values)
-        assert control.mode == 'recovery'
-        assert result.sensor_values.thrusters_flow_aft.flow.value == approx(control.parameters.recovery_thruster_flow, abs=1)
-        assert result.sensor_values.thrusters_flow_fwd.flow.value == approx(control.parameters.recovery_thruster_flow, abs=1)
+        assert control.mode == "recovery"
+        assert result.sensor_values.thrusters_flow_aft.flow.value == approx(
+            control.parameters.recovery_thruster_flow, abs=1
+        )
+        assert result.sensor_values.thrusters_flow_fwd.flow.value == approx(
+            control.parameters.recovery_thruster_flow, abs=1
+        )
 
 
-async def test_flow_recovery_single_thruster(control: ThrustersControl, executor: SimulationExecutor):
+async def test_flow_recovery_single_thruster(
+    control: ThrustersControl, executor: SimulationExecutor
+):
     result = await executor.tick(control.initial(executor.time()).values)
 
     executor._simulation_inputs.thrusters_aft.active = Stamped.stamp(False)
@@ -233,9 +237,14 @@ async def test_flow_recovery_single_thruster(control: ThrustersControl, executor
         result = await executor.tick(control_values)
 
         assert result.sensor_values.thrusters_flow_aft.flow.value == approx(0, abs=0.1)
-        assert result.sensor_values.thrusters_flow_fwd.flow.value == approx(control.parameters.recovery_thruster_flow, abs=1)
+        assert result.sensor_values.thrusters_flow_fwd.flow.value == approx(
+            control.parameters.recovery_thruster_flow, abs=1
+        )
 
-async def test_flow_thrusters_off(control: ThrustersControl, executor: SimulationExecutor):
+
+async def test_flow_thrusters_off(
+    control: ThrustersControl, executor: SimulationExecutor
+):
     result = await executor.tick(control.initial(executor.time()).values)
 
     executor._simulation_inputs.thrusters_aft.active = Stamped.stamp(False)
@@ -256,10 +265,7 @@ async def test_flow_thrusters_off(control: ThrustersControl, executor: Simulatio
         assert result.sensor_values.thrusters_flow_fwd.flow.value == approx(0, abs=0.1)
 
 
-async def test_flow_cooling(
-    control: ThrustersControl, executor: SimulationExecutor
-):
-
+async def test_flow_cooling(control: ThrustersControl, executor: SimulationExecutor):
     result = await executor.tick(control.initial(executor.time()).values)
     control.to_cooling(result.sensor_values)  # type: ignore
     # set valves and stabilize
@@ -270,12 +276,18 @@ async def test_flow_cooling(
     for i in range(60):
         control_values = control.control(result.sensor_values, executor.time()).values
         result = await executor.tick(control_values)
-        assert control.mode == 'cooling'
-        assert result.sensor_values.thrusters_flow_aft.flow.value == approx(control.parameters.cooling_thruster_flow, abs=1)
-        assert result.sensor_values.thrusters_flow_fwd.flow.value == approx(control.parameters.cooling_thruster_flow, abs=1)
+        assert control.mode == "cooling"
+        assert result.sensor_values.thrusters_flow_aft.flow.value == approx(
+            control.parameters.cooling_thruster_flow, abs=1
+        )
+        assert result.sensor_values.thrusters_flow_fwd.flow.value == approx(
+            control.parameters.cooling_thruster_flow, abs=1
+        )
 
-async def test_flow_cooling_single_thruster(control: ThrustersControl, executor: SimulationExecutor):
 
+async def test_flow_cooling_single_thruster(
+    control: ThrustersControl, executor: SimulationExecutor
+):
     executor._simulation_inputs.thrusters_aft.active = Stamped.stamp(False)
     executor._simulation_inputs.thrusters_aft.heat_flow = Stamped.stamp(0)
 
@@ -291,7 +303,10 @@ async def test_flow_cooling_single_thruster(control: ThrustersControl, executor:
         result = await executor.tick(control_values)
 
         assert result.sensor_values.thrusters_flow_aft.flow.value == approx(0, abs=0.1)
-        assert result.sensor_values.thrusters_flow_fwd.flow.value == approx(control.parameters.cooling_thruster_flow, abs=1)
+        assert result.sensor_values.thrusters_flow_fwd.flow.value == approx(
+            control.parameters.cooling_thruster_flow, abs=1
+        )
+
 
 async def test_pump_flow_safe(control: ThrustersControl, executor: SimulationExecutor):
     result = await executor.tick(control.initial(executor.time()).values)
@@ -306,8 +321,12 @@ async def test_pump_flow_safe(control: ThrustersControl, executor: SimulationExe
         control_values = control.control(result.sensor_values, executor.time()).values
         result = await executor.tick(control_values)
 
-        assert result.sensor_values.thrusters_flow_aft.flow.value == approx(control.parameters.cooling_thruster_flow, abs=1)
-        assert result.sensor_values.thrusters_flow_fwd.flow.value == approx(control.parameters.cooling_thruster_flow, abs=1)
+        assert result.sensor_values.thrusters_flow_aft.flow.value == approx(
+            control.parameters.cooling_thruster_flow, abs=1
+        )
+        assert result.sensor_values.thrusters_flow_fwd.flow.value == approx(
+            control.parameters.cooling_thruster_flow, abs=1
+        )
 
     executor._simulation_inputs.thrusters_aft.active = Stamped.stamp(False)
     executor._simulation_inputs.thrusters_aft.heat_flow = Stamped.stamp(0)
@@ -321,8 +340,12 @@ async def test_pump_flow_safe(control: ThrustersControl, executor: SimulationExe
         control_values = control.control(result.sensor_values, executor.time()).values
         result = await executor.tick(control_values)
 
-        assert result.sensor_values.thrusters_flow_aft.flow.value == approx(control.parameters.cooling_thruster_flow, abs=1)
-        assert result.sensor_values.thrusters_flow_fwd.flow.value == approx(control.parameters.cooling_thruster_flow, abs=1)
+        assert result.sensor_values.thrusters_flow_aft.flow.value == approx(
+            control.parameters.cooling_thruster_flow, abs=1
+        )
+        assert result.sensor_values.thrusters_flow_fwd.flow.value == approx(
+            control.parameters.cooling_thruster_flow, abs=1
+        )
 
     executor._simulation_inputs.thrusters_fwd.active = Stamped.stamp(False)
     executor._simulation_inputs.thrusters_fwd.heat_flow = Stamped.stamp(0)
@@ -332,5 +355,9 @@ async def test_pump_flow_safe(control: ThrustersControl, executor: SimulationExe
         control_values = control.control(result.sensor_values, executor.time()).values
         result = await executor.tick(control_values)
 
-        assert result.sensor_values.thrusters_flow_aft.flow.value == approx(control.parameters.cooling_thruster_flow, abs=1)
-        assert result.sensor_values.thrusters_flow_fwd.flow.value == approx(control.parameters.cooling_thruster_flow, abs=1)
+        assert result.sensor_values.thrusters_flow_aft.flow.value == approx(
+            control.parameters.cooling_thruster_flow, abs=1
+        )
+        assert result.sensor_values.thrusters_flow_fwd.flow.value == approx(
+            control.parameters.cooling_thruster_flow, abs=1
+        )

@@ -2,20 +2,20 @@ from datetime import datetime, timedelta
 
 from pytest import fixture
 import pytest
-from input_output.definitions.control import Valve
-from input_output.modules.thrusters import (
+from thrs.input_output.definitions.control import Valve
+from thrs.input_output.modules.thrusters import (
     ThrustersControlValues,
     ThrustersSensorValues,
     ThrustersSimulationInputs,
     ThrustersSimulationOutputs,
 )
-from orchestration.collector import PolarsCollector
-from orchestration.executor import SimulationExecutor
-from orchestration.cycler import Cycler
-from orchestration.simulator import Simulator, SimulatorModel
-from simulation.fmu import Fmu
-from simulation.io_mapping import IoMapping
-from simulation.models.fmu_paths import thrusters_path
+from thrs.orchestration.collector import PolarsCollector
+from thrs.orchestration.executor import SimulationExecutor
+from thrs.orchestration.cycler import Cycler
+from thrs.orchestration.simulator import Simulator, SimulatorModel
+from thrs.simulation.fmu import Fmu
+from thrs.simulation.io_mapping import IoMapping
+from thrs.simulation.models.fmu_paths import thrusters_path
 from tests.modules.helpers.simulation_inputs import simulator_input_field_setters
 
 

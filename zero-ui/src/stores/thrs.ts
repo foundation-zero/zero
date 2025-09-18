@@ -1,185 +1,105 @@
-import { Component } from "@/@types/thrs";
-import { MqttClient } from "@/mqtt";
-import $RefParser, { JSONSchema } from "@apidevtools/json-schema-ref-parser";
-import { JSONSchemaObject } from "@apidevtools/json-schema-ref-parser/dist/lib/types";
+import { Stamped } from "@/@types/thrs";
+import { useClientHandle } from "@urql/vue";
 import { defineStore } from "pinia";
-import { EMPTY, map, Observable } from "rxjs";
-import { ref } from "vue";
+import { computed, ref, Ref, WritableComputedRef } from "vue";
 
-const parse = map((msg: string) => JSON.parse(msg));
+type FormValue<T> = {
+  value: WritableComputedRef<T>;
+  isDirty: Ref<boolean>;
+};
+type Unstamp<T> = T extends Stamped<infer U> ? U : never;
 
-export type SimulationState =
-  | "available"
-  | "mode_picking"
-  | "value_setting"
-  | "ready_to_start"
-  | "ready_to_run"
-  | "ran";
-export interface StatusMessage {
-  status: SimulationState;
-}
+const INPUT_TYPES = {
+  pump: "PumpInputType!",
+  valve: "ValveInputType!",
+};
 
-export interface AllowedModesMessage {
-  modes: string[];
-}
+const capitalizeFirst = (a: string) => {
+  const f = a.substring(0, 1).toUpperCase();
+  return `${f}${a.substring(1)}`;
+};
 
-export interface SchemaMessage {
-  sensors: object;
-  controls: object;
-  simulation_inputs: object;
-  simulation_inputs_values: object;
-  control_params: object;
-  control_modes: object;
-}
-
-export type FieldType = "number" | "boolean" | "string";
-
-export type TypeToType<T extends FieldType> = T extends "number"
-  ? number
-  : T extends "boolean"
-    ? boolean
-    : T extends "string"
-      ? string
-      : never;
-
-export interface Field<T extends FieldType> {
-  name: string;
-  type: T;
-  default?: TypeToType<T>;
-  minimum?: number;
-  maximum?: number;
-  description?: string;
-  items?: string[];
-  set: <V extends object>(src: V, value: TypeToType<T>) => V;
-  get: (src: object) => TypeToType<T> | undefined;
-}
-
-export type UndeterminedType = TypeToType<FieldType>;
-export type UndeterminedField = Field<FieldType>;
-
-export const extractField = (name: string, value: JSONSchemaObject): UndeterminedField =>
-  ({
-    name,
-    type: value.type as FieldType,
-    default: value.default,
-    minimum: value.minimum,
-    maximum: value.maximum,
-    items: value.enum,
-    description: value.description,
-    set: (src: Record<string, object>, val: UndeterminedType) => ({
-      ...src,
-      [name]: val,
+export const controlValuesForm = <
+  A extends Record<string, Stamped<boolean | number>>,
+  K extends keyof A,
+>(
+  componentName: string,
+  type: "pump" | "valve",
+  fields: K[],
+  controlValuesQuery: string,
+  props: { controlValues: A },
+  emit: (event: "update:controlValues", value: A) => void,
+): { submit: () => Promise<void>; isSubmitting: Ref<boolean>; error: Ref<null | string> } & {
+  [key in K]: FormValue<Unstamp<A[key]>>;
+} => {
+  const refs = Object.fromEntries(
+    fields.map((field: K) => {
+      const dirtyValue = ref<A[K] | null>(null);
+      return [
+        field,
+        {
+          value: computed<A[K]>({
+            get() {
+              return dirtyValue.value !== null
+                ? dirtyValue.value
+                : props.controlValues[field].value;
+            },
+            set(value) {
+              dirtyValue.value = value;
+            },
+          }),
+          isDirty: computed({
+            get() {
+              return dirtyValue.value !== null;
+            },
+            set(v: boolean) {
+              if (!v) {
+                dirtyValue.value = null;
+              }
+            },
+          }),
+        } as FormValue<A[K]>,
+      ];
     }),
-    get: (src: Record<string, UndeterminedType>) => {
-      if (name in src) {
-        return src[name] as UndeterminedType;
-      }
-      return undefined;
-    },
-  }) as UndeterminedField;
-
-export const parseSchema = async (schema: object): Promise<UndeterminedField[]> => {
-  const expanded = await $RefParser.dereference(schema);
-  if (!("properties" in expanded || typeof expanded.properties !== "object")) {
-    throw new Error("Schema does not contain properties");
-  }
-  return Object.entries(expanded.properties as object).map(([name, value]) =>
-    extractField(name, value as JSONSchemaObject),
   );
-};
+  const isSubmitting = ref(false);
+  const error = ref<null | string>(null);
+  const { client } = useClientHandle();
 
-export interface SchemaComponent {
-  name: string;
-  fields: UndeterminedField[];
-}
+  const submit = async () => {
+    const input = Object.fromEntries(
+      Object.entries(refs).map(([key, { value }]) => [key, value.value]),
+    );
+    const mutation = `set${capitalizeFirst(componentName)}`;
+    const query = `mutation ($input: ${INPUT_TYPES[type]}) {
+      ${mutation}(component: $input) {
+        ${controlValuesQuery}
+      }
+    }`;
+    try {
+      isSubmitting.value = true;
+      error.value = null;
 
-// Extracts stamped fields from a JSON schema
-const extractFields = (schema: JSONSchema): UndeterminedField[] => {
-  if (!("properties" in schema && typeof schema.properties === "object")) {
-    throw new Error("Schema does not contain properties");
-  }
-  return Object.entries(schema.properties).map(([name, value]) => {
-    if (
-      !(
-        "properties" in value &&
-        typeof value.properties === "object" &&
-        "value" in value.properties &&
-        "timestamp" in value.properties
-      )
-    ) {
-      throw new Error(`Field ${name} does not contain properties`);
+      const result = await client.mutation(query, { input });
+      const newControlValues = result.data[mutation];
+      emit("update:controlValues", newControlValues);
+      for (const ref in refs) {
+        refs[ref].isDirty.value = false;
+      }
+    } catch (_err) {
+      error.value = "Failed to submit";
+    } finally {
+      isSubmitting.value = false;
     }
-    return {
-      name,
-      type: value.properties.value.type as FieldType,
-      default: value.properties.value.default,
-      minimum: value.properties.value.minimum,
-      maximum: value.properties.value.maximum,
-      items: value.properties.value.enum,
-      description: value.description,
-      set: (src: object, val: number) => ({
-        ...src,
-        [name]: {
-          value: val,
-          timestamp: new Date().toISOString(),
-        },
-      }),
-      get: (src: Record<string, { value: UndeterminedType; timestamp: string }>) => {
-        if (name in src && "value" in src[name] && "timestamp" in src[name]) {
-          return (src[name] as { value: number; timestamp: string }).value;
-        }
-        return undefined;
-      },
-    };
-  }) as UndeterminedField[];
-};
-
-export const parseSchemaNested = async (schema: object): Promise<SchemaComponent[]> => {
-  const expanded = await $RefParser.dereference(schema);
-  if (!("properties" in expanded && typeof expanded.properties === "object")) {
-    throw new Error("Schema does not contain properties");
-  }
-
-  return Object.entries(expanded.properties).map(([name, value]) => ({
-    name,
-    fields: extractFields(value as JSONSchema).map((field) => ({
-      ...field,
-      set: (src: Record<string, UndeterminedType>, val: number) => ({
-        ...src,
-        [name]: field.set(src[name] || {}, val),
-      }),
-      get: (src: Record<string, Record<string, UndeterminedType>>) => field.get(src[name] || {}),
-    })),
-  })) as SchemaComponent[];
-};
-
-export const useThrsStore = defineStore("THRS", () => {
-  const sensorValues = ref<Observable<Component>>(EMPTY);
-  const controlValues = ref<Observable<Component>>(EMPTY);
-  const simulationStatus = ref<Observable<StatusMessage>>(EMPTY);
-  const allowedModes = ref<Observable<AllowedModesMessage>>(EMPTY);
-  const sendMessage = ref<(topic: string, payload: object) => Promise<void>>(async () => {});
-  const schemas = ref<Observable<SchemaMessage>>(EMPTY);
-
-  const initialize = async () => {
-    const client = await MqttClient.connect("ws://localhost:5173/thrs-ws");
-    sensorValues.value = client.topic("thrs/sensor_values").pipe(parse);
-    controlValues.value = client.topic("thrs/control_values").pipe(parse);
-    simulationStatus.value = client.topic("thrs/simulation/status").pipe(parse);
-    allowedModes.value = client.topic("thrs/simulation/allowed_modes").pipe(parse);
-    schemas.value = client.topic("thrs/simulation/schemas").pipe(parse);
-    sendMessage.value = async (topic: string, payload: object) => {
-      await client.publish(topic, payload);
-    };
   };
 
-  return {
-    sensorValues,
-    controlValues,
-    simulationStatus,
-    allowedModes,
-    schemas,
-    sendMessage,
-    initialize,
+  return { submit, isSubmitting, error, ...refs } as {
+    submit: () => Promise<void>;
+    isSubmitting: Ref<boolean>;
+    error: Ref<null | string>;
+  } & {
+    [key in K]: FormValue<Unstamp<A[key]>>;
   };
-});
+};
+
+defineStore("thrs", () => {});

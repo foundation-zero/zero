@@ -2,7 +2,7 @@ from datetime import datetime, timedelta
 
 from pytest import approx
 
-from orchestration.executor import SimulationExecutor
+from thrs.orchestration.executor import SimulationExecutor
 
 
 async def test_valve_movement(io_mapping, control, simulation_inputs):

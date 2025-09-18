@@ -1,23 +1,23 @@
 from datetime import datetime, timedelta
 from pytest import fixture
-from control.modules.pvt import PvtControl, PvtParameters
-from input_output.base import Stamped
-from input_output.definitions.control import Valve
-from input_output.definitions.simulation import (
+from thrs.control.modules.pvt import PvtControl, PvtParameters
+from thrs.input_output.base import Stamped
+from thrs.input_output.definitions.control import Valve
+from thrs.input_output.definitions.simulation import (
     Boundary,
     HeatSource,
     TemperatureBoundary,
     ValvePosition,
 )
-from input_output.modules.pvt import (
+from thrs.input_output.modules.pvt import (
     PvtSensorValues,
     PvtSimulationInputs,
     PvtSimulationOutputs,
 )
-from orchestration.executor import SimulationExecutor
-from simulation.fmu import Fmu
-from simulation.io_mapping import IoMapping
-from simulation.models.fmu_paths import pvt_path
+from thrs.orchestration.executor import SimulationExecutor
+from thrs.simulation.fmu import Fmu
+from thrs.simulation.io_mapping import IoMapping
+from thrs.simulation.models.fmu_paths import pvt_path
 
 
 @fixture
@@ -64,7 +64,6 @@ def io_mapping():
             PvtSensorValues,
             PvtSimulationOutputs,
         )
-
 
 
 @fixture

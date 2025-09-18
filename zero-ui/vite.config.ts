@@ -29,6 +29,13 @@ export default defineConfig(({ mode }) => {
             return path.replace(/^\/thrs-ws/, "");
           },
         },
+        "/api/thrs": {
+          target: env.VITE_THRS_API_SERVER,
+          changeOrigin: true,
+          rewrite(path) {
+            return path.replace(/^\/api\/thrs/, "");
+          },
+        },
       },
     },
     plugins: [

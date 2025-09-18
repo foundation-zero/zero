@@ -1,10 +1,10 @@
 from datetime import datetime
-from classes.control import ControlResult
-from input_output.alarms import BaseAlarms
-from input_output.base import ThrsModel
-from input_output.definitions.sensor import FlowSensor
-from orchestration.executor import ExecutionResult, Executor
-from orchestration.cycler import Control
+from thrs.classes.control import ControlResult
+from thrs.input_output.alarms import BaseAlarms
+from thrs.input_output.base import ThrsModel
+from thrs.input_output.definitions.sensor import FlowSensor
+from thrs.orchestration.executor import ExecutionResult, Executor
+from thrs.orchestration.cycler import Control
 
 
 class SimpleInOut(ThrsModel):

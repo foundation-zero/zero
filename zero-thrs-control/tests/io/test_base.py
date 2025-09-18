@@ -1,4 +1,4 @@
-from input_output.definitions.sensor import FlowSensor
+from thrs.input_output.definitions.sensor import FlowSensor
 
 
 def test_flow_sensor():

@@ -1,26 +1,35 @@
 from datetime import datetime, timedelta
 from pytest import fixture
-from control.modules.thrusters import ThrustersAlarms, ThrustersControl, ThrustersParameters
-from input_output.base import Stamped
-from input_output.definitions.simulation import (
+from thrs.control.modules.thrusters import (
+    ThrustersAlarms,
+    ThrustersControl,
+    ThrustersParameters,
+)
+from thrs.input_output.base import Stamped
+from thrs.input_output.definitions.simulation import (
     Boundary,
     Pcs,
     TemperatureBoundary,
     Thruster,
 )
-from input_output.modules.thrusters import (
+from thrs.input_output.definitions.units import PcsMode
+from thrs.input_output.modules.thrusters import (
     ThrustersControlValues,
     ThrustersSensorValues,
     ThrustersSimulationInputs,
     ThrustersSimulationOutputs,
 )
-from orchestration.executor import SimulationExecutor
-from simulation.fmu import Fmu
-from simulation.io_mapping import IoMapping
-from simulation.models.fmu_paths import thrusters_path
+from thrs.orchestration.executor import SimulationExecutor
+from thrs.simulation.fmu import Fmu
+from thrs.simulation.io_mapping import IoMapping
+from thrs.simulation.models.fmu_paths import thrusters_path
 
-type ThrustersSimulationExecutor = SimulationExecutor[ThrustersSensorValues, ThrustersControlValues, ThrustersSimulationInputs, ThrustersSimulationOutputs]
-
+type ThrustersSimulationExecutor = SimulationExecutor[
+    ThrustersSensorValues,
+    ThrustersControlValues,
+    ThrustersSimulationInputs,
+    ThrustersSimulationOutputs,
+]
 
 
 @fixture
@@ -36,7 +45,7 @@ def simulation_inputs():
             temperature=Stamped.stamp(32), flow=Stamped.stamp(64)
         ),
         thrusters_module_supply=TemperatureBoundary(temperature=Stamped.stamp(50)),
-        thrusters_pcs=Pcs(mode=Stamped.stamp("propulsion")),
+        thrusters_pcs=Pcs(mode=Stamped.stamp(PcsMode.PROPULSION)),
     )
 
 
@@ -60,6 +69,7 @@ def executor(io_mapping, simulation_inputs) -> ThrustersSimulationExecutor:
     return SimulationExecutor(
         io_mapping, simulation_inputs, datetime.now(), timedelta(seconds=1)
     )
+
 
 @fixture
 def alarms() -> ThrustersAlarms:

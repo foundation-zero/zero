@@ -2,15 +2,15 @@ from datetime import datetime, timedelta
 from pytest import fixture
 import pytest
 
-from input_output.modules.pcm import (
+from thrs.input_output.modules.pcm import (
     PcmSensorValues,
     PcmSimulationInputs,
     PcmSimulationOutputs,
 )
-from simulation.fmu import Fmu
-from simulation.io_mapping import IoMapping
+from thrs.simulation.fmu import Fmu
+from thrs.simulation.io_mapping import IoMapping
 from tests.modules.helpers.simulation_inputs import simulator_input_field_setters
-from simulation.models.fmu_paths import pcm_path
+from thrs.simulation.models.fmu_paths import pcm_path
 
 
 @fixture(
@@ -18,12 +18,14 @@ from simulation.models.fmu_paths import pcm_path
         simulator_input_field_setters(
             PcmSimulationInputs,
             ignore=[
-                ("pcm_producers_supply", "flow")  # Appears to just work, instead of break
-            ]
+                (
+                    "pcm_producers_supply",
+                    "flow",
+                )  # Appears to just work, instead of break
+            ],
         )
     )
 )
-
 def incorrect_simulation_inputs(simulation_inputs, request):
     inputs = simulation_inputs.get_values_at_time(datetime.now())
     request.param(inputs, -9e7)

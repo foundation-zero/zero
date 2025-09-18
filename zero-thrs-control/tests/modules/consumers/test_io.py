@@ -1,11 +1,11 @@
-from input_output.modules.consumers import (
+from thrs.input_output.modules.consumers import (
     ConsumersControlValues,
     ConsumersSensorValues,
     ConsumersSimulationInputs,
     ConsumersSimulationOutputs,
 )
 from tests.modules.conftest import compare_fmu_to_class, compare_modelica_names
-from simulation.models.fmu_paths import consumers_path
+from thrs.simulation.models.fmu_paths import consumers_path
 
 
 def test_consumers_sheet_names():

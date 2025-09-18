@@ -1,5 +1,5 @@
 [project]
-name = "simulation"
+name = "thrs"
 version = "0.1.0"
 description = ""
 authors = [
@@ -7,12 +7,7 @@ authors = [
   { name = "Boudewijn van Groos", email = "boudewijn.vangroos@foundationzero.org" }
 ]
 packages = [
-  { include = "control", from = "src" },
-  { include = "input_output", from = "src" },
-  { include = "orchestration", from = "src" },
-  { include = "simulation", from = "src" },
-  { include = "classes", from = "src" },
-  { include = "utils", from = "src" },
+  { include = "thrs", from = "src" },
   { include = "analysis" }
 ]
 readme = "README.md"
@@ -38,6 +33,7 @@ pyarrow = "^19.0.1"
 seaborn = "^0.13.2"
 pytest-xdist = "^3.6.1"
 pydantic-partial = "^0.8.0"
+strawberry-graphql = {extras = ["debug-server"], git = "https://github.com/foundation-zero/strawberry.git", branch = "feature/improved-pydantics"}
 
 
 [tool.poetry.group.test.dependencies]
