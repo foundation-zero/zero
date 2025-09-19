@@ -3,22 +3,17 @@ from typing import Annotated, Literal
 from pydantic import BaseModel, Field
 from transitions import Machine, State
 
-from control.controllers import (
-    FlowBalanceController,
-    HeatSupplyController,
-    InvertedHeatDumpController,
-    PumpFlowController,
-)
+from control.controllers import Controller, FlowBalanceController
 from input_output.alarms import BaseAlarms, Severity, alarm
 from input_output.base import ParameterMeta, Stamped
 from input_output.definitions.control import Pump, Valve
 from input_output.modules.thrusters import ThrustersControlValues, ThrustersSensorValues
-from input_output.definitions.units import Celsius, LMin
+from input_output.definitions.units import Celsius, LMin, Ratio, Tuning
 from classes.control import Control, ControlResult
 
 
 class ThrustersParameters(BaseModel):
-    cooling_mix_setpoint: Annotated[Celsius, ParameterMeta("50-S016")] = 38
+    heat_dump_setpoint: Annotated[Celsius, ParameterMeta("")] = 38
     recovery_thruster_flow: Annotated[
         LMin, Field(le=30), ParameterMeta("50-S003 and 50-S004")
     ] = 10  # TODO: add minimum from FDS
@@ -29,6 +24,11 @@ class ThrustersParameters(BaseModel):
     recovery_mix_setpoint: Annotated[Celsius, ParameterMeta("50-S007 and 50-S008")] = (
         60  # TODO: add minimum based on max inlet temperature of thrusters
     )
+    pump_tuning: Tuning = (0.01, 0.001, 0)
+    aft_heat_supply_tuning: Tuning = (-0.05, -0.001, 0)
+    fwd_heat_supply_tuning: Tuning = (-0.05, -0.001, 0)
+    heat_dump_tuning: Tuning = (0.05, 0.01, 0)
+    flow_balance_tuning: Tuning = (0.01, 0.001, 0)
 
 
 _ZERO_TIME = datetime.fromtimestamp(0)
@@ -156,29 +156,39 @@ class ThrustersControl(Control):
             # TODO: manual overrides
         ]
         self.thrusters_state_machine = Machine(
-            model=self, states=self._states, transitions=self._transitions, initial="idle"
+            model=self,
+            states=self._states,
+            transitions=self._transitions,
+            initial="idle",
         )
 
-        self._heat_dump_controller = InvertedHeatDumpController(
+        self._heat_dump_controller = Controller[Ratio, Celsius](
             _INITIAL_CONTROL_VALUES.thrusters_mix_exchanger.setpoint.value,
-            parameters.cooling_mix_setpoint,
+            parameters.heat_dump_setpoint,
+            parameters.heat_dump_tuning,
         )
-        self._aft_heat_supply_controller = HeatSupplyController(
+        self._aft_heat_supply_controller = Controller[Ratio, Celsius](
             _INITIAL_CONTROL_VALUES.thrusters_mix_aft.setpoint.value,
             parameters.recovery_mix_setpoint,
+            parameters.aft_heat_supply_tuning,
         )
-        self._fwd_heat_supply_controller = HeatSupplyController(
+        self._fwd_heat_supply_controller = Controller[Ratio, Celsius](
             _INITIAL_CONTROL_VALUES.thrusters_mix_fwd.setpoint.value,
             parameters.recovery_mix_setpoint,
+            parameters.fwd_heat_supply_tuning,
         )
-        self._pump_flow_controller = PumpFlowController(
+        self._pump_flow_controller = Controller[Ratio, LMin](
             _INITIAL_CONTROL_VALUES.thrusters_pump_1.dutypoint.value,
             0,
+            parameters.pump_tuning,
         )
-        self._flow_balance_controller = FlowBalanceController([
-            self._current_values.thrusters_flowcontrol_aft,
-            self._current_values.thrusters_flowcontrol_fwd,
-        ])
+        self._flow_balance_controller = FlowBalanceController(
+            [
+                self._current_values.thrusters_flowcontrol_aft,
+                self._current_values.thrusters_flowcontrol_fwd,
+            ],
+            parameters.flow_balance_tuning,
+        )
         self._most_recently_active_pump: None | Literal["pump1", "pump2"] = None
         self._active_pump: None | Pump = None
 

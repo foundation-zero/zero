@@ -36,8 +36,8 @@
 
   --background: var(--color-neutral-0);
   --foreground: var(--color-neutral-1000);
-
-  --muted: var(--color-neutral-50);
+  --input: var(--background);
+  --input-border: --muted: var(--color-neutral-50);
   --muted-foreground: var(--color-neutral-700);
   --destructive: var(--color-accent-a-600);
   --destructive-foreground: var(--color-accent-a-700);
@@ -187,10 +187,18 @@ h6 {
   --color-warning: var(--warning);
   --color-warning-muted: var(--warning-muted);
   --color-warning-dull: var(--warning-dull);
+
+  --color-background-inverse: #fafafa;
+  --color-foreground-inverse: #1e1406;
+  --color-background-subtle: #55493a;
+  --color-foreground-subtle: var(--color-foreground);
 }
 
 .dark {
   --background: var(--color-neutral-900);
+  --input: var(--background);
+  --input-border: var(--color-neutral-700);
+
   --background-muted: var(--color-neutral-1000);
   --foreground: var(--color-neutral-0);
   --muted: var(--color-neutral-1000);
@@ -231,8 +239,7 @@ h6 {
   --secondary-foreground: oklch(0.985 0 0);
   --accent: oklch(0.269 0 0);
   --accent-foreground: oklch(0.985 0 0);
-  --input: oklch(0.269 0 0);
-  --ring: oklch(0.439 0 0);
+  --ring: oklch(0.484 0.0295 68.98);
   --chart-1: oklch(0.488 0.243 264.376);
   --chart-2: oklch(0.696 0.17 162.48);
   --chart-3: oklch(0.769 0.188 70.08);
@@ -305,6 +312,7 @@ h6 {
   --color-destructive-foreground: var(--destructive-foreground);
   --color-border: var(--border);
   --color-input: var(--input);
+  --color-input-border: var(--input-border);
   --color-ring: var(--ring);
   --color-chart-1: var(--chart-1);
   --color-chart-2: var(--chart-2);
@@ -416,4 +424,451 @@ body,
 .pending .cursor-not-allowed,
 .pending .cursor-default {
   cursor: wait !important;
+}
+
+/* Force inclusion of all color tokens for documentation - invisible layer */
+@layer utilities {
+  /* Neutral colors */
+  .bg-neutral-0 {
+    background-color: var(--color-neutral-0);
+  }
+  .bg-neutral-50 {
+    background-color: var(--color-neutral-50);
+  }
+  .bg-neutral-100 {
+    background-color: var(--color-neutral-100);
+  }
+  .bg-neutral-200 {
+    background-color: var(--color-neutral-200);
+  }
+  .bg-neutral-300 {
+    background-color: var(--color-neutral-300);
+  }
+  .bg-neutral-400 {
+    background-color: var(--color-neutral-400);
+  }
+  .bg-neutral-500 {
+    background-color: var(--color-neutral-500);
+  }
+  .bg-neutral-600 {
+    background-color: var(--color-neutral-600);
+  }
+  .bg-neutral-700 {
+    background-color: var(--color-neutral-700);
+  }
+  .bg-neutral-800 {
+    background-color: var(--color-neutral-800);
+  }
+  .bg-neutral-900 {
+    background-color: var(--color-neutral-900);
+  }
+  .bg-neutral-1000 {
+    background-color: var(--color-neutral-1000);
+  }
+
+  /* Brand colors */
+  .bg-brand-a-0 {
+    background-color: var(--color-brand-a-0);
+  }
+  .bg-brand-a-50 {
+    background-color: var(--color-brand-a-50);
+  }
+  .bg-brand-a-100 {
+    background-color: var(--color-brand-a-100);
+  }
+  .bg-brand-a-200 {
+    background-color: var(--color-brand-a-200);
+  }
+  .bg-brand-a-300 {
+    background-color: var(--color-brand-a-300);
+  }
+  .bg-brand-a-400 {
+    background-color: var(--color-brand-a-400);
+  }
+  .bg-brand-a-500 {
+    background-color: var(--color-brand-a-500);
+  }
+  .bg-brand-a-600 {
+    background-color: var(--color-brand-a-600);
+  }
+  .bg-brand-a-700 {
+    background-color: var(--color-brand-a-700);
+  }
+  .bg-brand-a-800 {
+    background-color: var(--color-brand-a-800);
+  }
+  .bg-brand-a-900 {
+    background-color: var(--color-brand-a-900);
+  }
+  .bg-brand-a-1000 {
+    background-color: var(--color-brand-a-1000);
+  }
+
+  /* Accent A colors */
+  .bg-accent-a-0 {
+    background-color: var(--color-accent-a-0);
+  }
+  .bg-accent-a-50 {
+    background-color: var(--color-accent-a-50);
+  }
+  .bg-accent-a-100 {
+    background-color: var(--color-accent-a-100);
+  }
+  .bg-accent-a-200 {
+    background-color: var(--color-accent-a-200);
+  }
+  .bg-accent-a-300 {
+    background-color: var(--color-accent-a-300);
+  }
+  .bg-accent-a-400 {
+    background-color: var(--color-accent-a-400);
+  }
+  .bg-accent-a-500 {
+    background-color: var(--color-accent-a-500);
+  }
+  .bg-accent-a-600 {
+    background-color: var(--color-accent-a-600);
+  }
+  .bg-accent-a-700 {
+    background-color: var(--color-accent-a-700);
+  }
+  .bg-accent-a-800 {
+    background-color: var(--color-accent-a-800);
+  }
+  .bg-accent-a-900 {
+    background-color: var(--color-accent-a-900);
+  }
+  .bg-accent-a-1000 {
+    background-color: var(--color-accent-a-1000);
+  }
+
+  /* Accent B colors */
+  .bg-accent-b-0 {
+    background-color: var(--color-accent-b-0);
+  }
+  .bg-accent-b-50 {
+    background-color: var(--color-accent-b-50);
+  }
+  .bg-accent-b-100 {
+    background-color: var(--color-accent-b-100);
+  }
+  .bg-accent-b-200 {
+    background-color: var(--color-accent-b-200);
+  }
+  .bg-accent-b-300 {
+    background-color: var(--color-accent-b-300);
+  }
+  .bg-accent-b-400 {
+    background-color: var(--color-accent-b-400);
+  }
+  .bg-accent-b-500 {
+    background-color: var(--color-accent-b-500);
+  }
+  .bg-accent-b-600 {
+    background-color: var(--color-accent-b-600);
+  }
+  .bg-accent-b-700 {
+    background-color: var(--color-accent-b-700);
+  }
+  .bg-accent-b-800 {
+    background-color: var(--color-accent-b-800);
+  }
+  .bg-accent-b-900 {
+    background-color: var(--color-accent-b-900);
+  }
+  .bg-accent-b-1000 {
+    background-color: var(--color-accent-b-1000);
+  }
+
+  /* Accent C colors */
+  .bg-accent-c-0 {
+    background-color: var(--color-accent-c-0);
+  }
+  .bg-accent-c-50 {
+    background-color: var(--color-accent-c-50);
+  }
+  .bg-accent-c-100 {
+    background-color: var(--color-accent-c-100);
+  }
+  .bg-accent-c-200 {
+    background-color: var(--color-accent-c-200);
+  }
+  .bg-accent-c-300 {
+    background-color: var(--color-accent-c-300);
+  }
+  .bg-accent-c-400 {
+    background-color: var(--color-accent-c-400);
+  }
+  .bg-accent-c-500 {
+    background-color: var(--color-accent-c-500);
+  }
+  .bg-accent-c-600 {
+    background-color: var(--color-accent-c-600);
+  }
+  .bg-accent-c-700 {
+    background-color: var(--color-accent-c-700);
+  }
+  .bg-accent-c-800 {
+    background-color: var(--color-accent-c-800);
+  }
+  .bg-accent-c-900 {
+    background-color: var(--color-accent-c-900);
+  }
+  .bg-accent-c-1000 {
+    background-color: var(--color-accent-c-1000);
+  }
+
+  /* Semantic colors */
+  .bg-background {
+    background-color: var(--color-background);
+  }
+  .bg-background-muted {
+    background-color: var(--color-background-muted);
+  }
+  .bg-background-inverse {
+    background-color: var(--color-background-inverse);
+  }
+  .bg-background-subtle {
+    background-color: var(--color-background-subtle);
+  }
+  .bg-foreground {
+    background-color: var(--color-foreground);
+  }
+  .bg-foreground-inverse {
+    background-color: var(--color-foreground-inverse);
+  }
+  .bg-foreground-subtle {
+    background-color: var(--color-foreground-subtle);
+  }
+  .bg-primary {
+    background-color: var(--color-primary);
+  }
+  .bg-primary-foreground {
+    background-color: var(--color-primary-foreground);
+  }
+  .bg-secondary {
+    background-color: var(--color-secondary);
+  }
+  .bg-secondary-foreground {
+    background-color: var(--color-secondary-foreground);
+  }
+  .bg-muted {
+    background-color: var(--color-muted);
+  }
+  .bg-muted-foreground {
+    background-color: var(--color-muted-foreground);
+  }
+  .bg-accent {
+    background-color: var(--color-accent);
+  }
+  .bg-accent-foreground {
+    background-color: var(--color-accent-foreground);
+  }
+  .bg-destructive {
+    background-color: var(--color-destructive);
+  }
+  .bg-destructive-foreground {
+    background-color: var(--color-destructive-foreground);
+  }
+  .bg-constructive {
+    background-color: var(--color-constructive);
+  }
+  .bg-constructive-muted {
+    background-color: var(--color-constructive-muted);
+  }
+  .bg-constructive-dull {
+    background-color: var(--color-constructive-dull);
+  }
+  .bg-warning {
+    background-color: var(--color-warning);
+  }
+  .bg-warning-muted {
+    background-color: var(--color-warning-muted);
+  }
+  .bg-warning-dull {
+    background-color: var(--color-warning-dull);
+  }
+  .bg-brand {
+    background-color: var(--color-brand);
+  }
+  .bg-brand-muted {
+    background-color: var(--color-brand-muted);
+  }
+  .bg-brand-dull {
+    background-color: var(--color-brand-dull);
+  }
+  .bg-border {
+    background-color: var(--color-border);
+  }
+  .bg-input {
+    background-color: var(--color-input);
+  }
+  .bg-input-border {
+    background-color: var(--color-input-border);
+  }
+  .bg-ring {
+    background-color: var(--color-ring);
+  }
+  .bg-card {
+    background-color: var(--color-card);
+  }
+  .bg-card-foreground {
+    background-color: var(--color-card-foreground);
+  }
+  .bg-popover {
+    background-color: var(--color-popover);
+  }
+  .bg-popover-foreground {
+    background-color: var(--color-popover-foreground);
+  }
+  .bg-chart-1 {
+    background-color: var(--color-chart-1);
+  }
+  .bg-chart-2 {
+    background-color: var(--color-chart-2);
+  }
+  .bg-chart-3 {
+    background-color: var(--color-chart-3);
+  }
+  .bg-chart-4 {
+    background-color: var(--color-chart-4);
+  }
+  .bg-chart-5 {
+    background-color: var(--color-chart-5);
+  }
+  .bg-sidebar {
+    background-color: var(--color-sidebar);
+  }
+  .bg-sidebar-foreground {
+    background-color: var(--color-sidebar-foreground);
+  }
+  .bg-sidebar-primary {
+    background-color: var(--color-sidebar-primary);
+  }
+  .bg-sidebar-primary-foreground {
+    background-color: var(--color-sidebar-primary-foreground);
+  }
+  .bg-sidebar-accent {
+    background-color: var(--color-sidebar-accent);
+  }
+  .bg-sidebar-accent-foreground {
+    background-color: var(--color-sidebar-accent-foreground);
+  }
+  .bg-sidebar-border {
+    background-color: var(--color-sidebar-border);
+  }
+  .bg-sidebar-ring {
+    background-color: var(--color-sidebar-ring);
+  }
+
+  /* Typography classes for documentation - force inclusion */
+  .text-5xs {
+    font-size: var(--text-5xs);
+    line-height: var(--text-5xs--line-height);
+  }
+  .text-4xs {
+    font-size: var(--text-4xs);
+    line-height: var(--text-4xs--line-height);
+  }
+  .text-3xs {
+    font-size: var(--text-3xs);
+    line-height: var(--text-3xs--line-height);
+  }
+  .text-2xs {
+    font-size: var(--text-2xs);
+    line-height: var(--text-2xs--line-height);
+  }
+  .text-xs {
+    font-size: var(--text-xs);
+    line-height: var(--text-xs--line-height);
+  }
+  .text-sm {
+    font-size: var(--text-sm);
+    line-height: var(--text-sm--line-height);
+  }
+  .text-base {
+    font-size: var(--text-base);
+    line-height: var(--text-base--line-height);
+  }
+  .text-lg {
+    font-size: var(--text-lg);
+    line-height: var(--text-lg--line-height);
+  }
+  .text-xl {
+    font-size: var(--text-xl);
+    line-height: var(--text-xl--line-height);
+  }
+  .text-2xl {
+    font-size: var(--text-2xl);
+    line-height: var(--text-2xl--line-height);
+  }
+  .text-3xl {
+    font-size: var(--text-3xl);
+    line-height: var(--text-3xl--line-height);
+  }
+  .text-4xl {
+    font-size: var(--text-4xl);
+    line-height: var(--text-4xl--line-height);
+  }
+  .text-5xl {
+    font-size: var(--text-5xl);
+    line-height: var(--text-5xl--line-height);
+  }
+  .text-6xl {
+    font-size: var(--text-6xl);
+    line-height: var(--text-6xl--line-height);
+  }
+
+  .text-r4xs {
+    font-size: var(--text-r4xs);
+    line-height: var(--text-r4xs--line-height);
+  }
+  .text-r3xs {
+    font-size: var(--text-r3xs);
+    line-height: var(--text-r3xs--line-height);
+  }
+  .text-r2xs {
+    font-size: var(--text-r2xs);
+    line-height: var(--text-r2xs--line-height);
+  }
+  .text-rxs {
+    font-size: var(--text-rxs);
+    line-height: var(--text-rxs--line-height);
+  }
+  .text-rsm {
+    font-size: var(--text-rsm);
+    line-height: var(--text-rsm--line-height);
+  }
+  .text-rbase {
+    font-size: var(--text-rbase);
+    line-height: var(--text-rbase--line-height);
+  }
+  .text-rlg {
+    font-size: var(--text-rlg);
+    line-height: var(--text-rlg--line-height);
+  }
+  .text-rxl {
+    font-size: var(--text-rxl);
+    line-height: var(--text-rxl--line-height);
+  }
+  .text-r2xl {
+    font-size: var(--text-r2xl);
+    line-height: var(--text-r2xl--line-height);
+  }
+  .text-r3xl {
+    font-size: var(--text-r3xl);
+    line-height: var(--text-r3xl--line-height);
+  }
+  .text-r4xl {
+    font-size: var(--text-r4xl);
+    line-height: var(--text-r4xl--line-height);
+  }
+  .text-r5xl {
+    font-size: var(--text-r5xl);
+    line-height: var(--text-r5xl--line-height);
+  }
+  .text-r6xl {
+    font-size: var(--text-r6xl);
+    line-height: var(--text-r6xl--line-height);
+  }
 }

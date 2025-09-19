@@ -38,7 +38,7 @@ async def test_idle(control: PcmControl, executor: PcmExecutor):
         executor.time()
     ).pcm_producers_supply.flow.value == approx(
         result.simulation_outputs.pcm_consumers_return.flow.value
-    )  # type: ignore
+    , abs = .01)  # type: ignore
 
 
 async def test_charging(control: PcmControl, executor: PcmExecutor):

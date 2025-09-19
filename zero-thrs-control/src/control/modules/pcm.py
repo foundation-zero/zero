@@ -4,16 +4,17 @@ from typing import Callable, Literal
 
 from transitions import Machine, State
 from classes.control import Control, ControlResult
-from control.controllers import PumpFlowController
+from control.controllers import Controller
 from input_output.base import Stamped, ThrsModel
 from input_output.definitions.control import Pcm, Pump, Valve
-from input_output.definitions.units import LMin
+from input_output.definitions.units import LMin, Ratio, Tuning
 from input_output.modules.pcm import PcmControlValues, PcmSensorValues
 
 
 class PcmParameters(ThrsModel):
     supplying_pump_flow: LMin = 60
     boosting_pump_flow: LMin = 20
+    pump_tuning: Tuning = (0.001,0.01,0)
 
 
 _ZERO_TIME = datetime.fromtimestamp(0)
@@ -84,8 +85,8 @@ class PcmControl(Control[PcmSensorValues, PcmControlValues, PcmParameters]):
             model=self, states=self._states, initial="idle"
         )
 
-        self._pump_flow_controller = PumpFlowController(
-            _INITIAL_CONTROL_VALUES.pcm_pump.dutypoint.value, 0
+        self._pump_flow_controller = Controller[Ratio, LMin](
+            _INITIAL_CONTROL_VALUES.pcm_pump.dutypoint.value, 0, parameters.pump_tuning
         )
 
         self._current_values = _INITIAL_CONTROL_VALUES.model_copy(deep=True)

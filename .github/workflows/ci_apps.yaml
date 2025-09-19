@@ -43,6 +43,10 @@ jobs:
         working-directory: zero-ui
         run: pnpm test:unit
 
+      - name: Build documentation
+        working-directory: zero-ui
+        run: pnpm docs:build
+
       - name: Install Playwright Browsers
         working-directory: zero-ui
         run: pnpm exec playwright install --with-deps chromium
@@ -66,6 +70,12 @@ jobs:
         with:
           name: screenshots
           path: zero-ui/screenshots/
+          retention-days: 7
+      - uses: actions/upload-artifact@v4
+        if: ${{ !cancelled() }}
+        with:
+          name: zero-ui-docs
+          path: zero-ui/docs/.vitepress/dist
           retention-days: 7
 
   docker-push:

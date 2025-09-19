@@ -1,0 +1,30 @@
+/* 
+ * VitePress CSS Layer Wrapper
+ * 
+ * This file wraps all VitePress base styles in CSS layers, following the approach 
+ * from https://github.com/vuejs/vitepress/pull/4905 to ensure Tailwind v4 can 
+ * properly override VitePress styles.
+ */
+
+/* Define CSS layer order - this is crucial for Tailwind v4 compatibility */
+
+/* Wrap all VitePress base styles in the __vitepress_base layer */
+@layer __vitepress_base {
+  /* CSS Variables */
+  @import "../vitepress-styles/vars.css";
+
+  @import "../vitepress-styles/base.css";
+
+  /* Icon styles */
+  @import "../vitepress-styles/icons.css";
+
+  /* Utility classes */
+  @import "../vitepress-styles/utils.css";
+
+  /* VitePress component styles */
+  @import "../vitepress-styles/components/custom-block.css";
+  @import "../vitepress-styles/components/vp-code.css";
+  @import "../vitepress-styles/components/vp-code-group.css";
+  @import "../vitepress-styles/components/vp-doc.css";
+  @import "../vitepress-styles/components/vp-sponsor.css";
+}
