@@ -6,6 +6,7 @@ from sqlalchemy.dialects.postgresql import NUMRANGE, ARRAY
 from sqlalchemy import Enum as SAEnum
 from .types import SeaState, ThrusterMode
 
+
 settings = Settings()  # type: ignore
 
 engine = create_async_engine(settings.pg_url, echo=True)
@@ -14,35 +15,35 @@ AsyncSessionLocal = async_sessionmaker(engine)
 Base = declarative_base()
 
 
-class SailSetCombined(Base):
+class SailSetCombined(Base):  # type: ignore
     __tablename__ = "sail_sets_combined"
 
     id = Column(String, primary_key=True)
     name = Column(String)
-    sails = Column(ARRAY(String))
+    sails = Column(ARRAY(String))  # type: ignore
 
 
-class Conditions(Base):
+class Conditions(Base):  # type: ignore
     __tablename__ = "conditions"
 
     id = Column(String, primary_key=True)
     name = Column(String, nullable=False)
     sea_state = Column(
         SAEnum(SeaState, name="sea_state", create_constraint=False), nullable=False
-    )
+    )  # type: ignore
     awa = Column(NUMRANGE, nullable=False)
     aws = Column(NUMRANGE, nullable=False)
     pcs_mode_aft = Column(
         ARRAY(SAEnum(ThrusterMode, name="pcs_mode", create_constraint=False)),
         nullable=False,
-    )
+    )  # type: ignore
     pcs_mode_fwd = Column(
         ARRAY(SAEnum(ThrusterMode, name="pcs_mode", create_constraint=False)),
         nullable=False,
-    )
+    )  # type: ignore
 
 
-class ValueDefinitions(Base):
+class ValueDefinitions(Base):  # type: ignore
     __tablename__ = "value_definitions"
 
     id = Column(String, primary_key=True)
@@ -51,7 +52,7 @@ class ValueDefinitions(Base):
     scope = Column(String, nullable=False)
 
 
-class ReferenceValues(Base):
+class ReferenceValues(Base):  # type: ignore
     __tablename__ = "reference_values"
 
     id = Column(Integer, primary_key=True, index=True)
@@ -66,7 +67,7 @@ class ReferenceValues(Base):
     warning_too_high = Column(Float, nullable=True)
 
 
-class Masts(Base):
+class Masts(Base):  # type: ignore
     __tablename__ = "masts"
 
     id = Column(String, primary_key=True)

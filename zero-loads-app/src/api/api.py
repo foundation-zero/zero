@@ -57,8 +57,8 @@ class Query:
                 )
             else:
                 # TODO: Get these values from the control process
-                sail_set_subq = "upwind-blade"
-                condition_subq = "light-wind-close-hauled"
+                sail_set_subq = "upwind-blade"  # type: ignore
+                condition_subq = "light-wind-close-hauled"  # type: ignore
 
             query = (
                 select(ReferenceValues, ValueDefinitions, Masts)

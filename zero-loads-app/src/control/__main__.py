@@ -1,10 +1,10 @@
 from pydantic_settings import CliApp
 
-from .cli import ZeroLoadsAdapter
+from .cli import ZeroLoadsControl
 
 
 def run():
-    CliApp.run(ZeroLoadsAdapter)
+    CliApp.run(ZeroLoadsControl)
 
 
 if __name__ == "__main__":
