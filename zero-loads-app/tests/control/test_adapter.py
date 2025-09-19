@@ -2,7 +2,7 @@ import pytest
 import socket
 import asyncio
 from unittest.mock import AsyncMock
-from control import PCanAdapter
+from control.adapter import PCanAdapter
 from pytest import fixture
 from control.config import Settings
 
@@ -20,7 +20,6 @@ def settings():
 
 
 @pytest.mark.timeout(2)
-@pytest.mark.asyncio
 async def test_receive_can_message(settings):
     # Prepare a valid CAN_Frame message (0x80)
     frame_bytes = (

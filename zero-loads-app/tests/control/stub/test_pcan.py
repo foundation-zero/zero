@@ -18,8 +18,7 @@ def settings():
     )
 
 
-@pytest.mark.timeout(10)
-@pytest.mark.asyncio
+@pytest.mark.timeout(1)
 async def test_receive_message(settings):
     UDPServerSocket = socket.socket(family=socket.AF_INET, type=socket.SOCK_DGRAM)
 
@@ -36,5 +35,6 @@ async def test_receive_message(settings):
 
         frame = CAN_Frame.parse(result)
 
+        assert frame is not None
         assert frame.can_identifier == 12341234
         assert frame.data == b"\x01\x02\x03\x04\x00\x00\x00\x00"
