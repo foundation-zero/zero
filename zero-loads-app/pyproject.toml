@@ -24,7 +24,8 @@ dependencies = [
     "dbt-core (>=1.9.8,<2.0.0)",
     "asyncpg (>=0.30.0,<0.31.0)",
     "sqlalchemy (>=2.0.43,<3.0.0)",
-    "greenlet (>=3.2.4,<4.0.0)"
+    "greenlet (>=3.2.4,<4.0.0)",
+    "uvicorn (>=0.35.0,<0.36.0)"
 ]
 
 [project.scripts]

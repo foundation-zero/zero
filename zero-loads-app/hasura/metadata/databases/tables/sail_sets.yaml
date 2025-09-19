@@ -7,6 +7,11 @@ select_permissions:
       columns: "*"
       filter: {}
       allow_aggregations: false
+  - role: editor
+    permission:
+      columns: "*"
+      filter: {}
+      allow_aggregations: false
 update_permissions:
   - role: editor
     permission:
