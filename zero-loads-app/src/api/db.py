@@ -6,7 +6,7 @@ from sqlalchemy.dialects.postgresql import NUMRANGE, ARRAY
 from sqlalchemy import Enum as SAEnum
 from .types import SeaState, ThrusterMode
 
-settings = Settings()
+settings = Settings()  # type: ignore
 
 engine = create_async_engine(settings.pg_url, echo=True)
 AsyncSessionLocal = async_sessionmaker(engine)
@@ -42,7 +42,7 @@ class Conditions(Base):
     )
 
 
-class ValueDefinition(Base):
+class ValueDefinitions(Base):
     __tablename__ = "value_definitions"
 
     id = Column(String, primary_key=True)
@@ -51,7 +51,7 @@ class ValueDefinition(Base):
     scope = Column(String, nullable=False)
 
 
-class ReferenceValue(Base):
+class ReferenceValues(Base):
     __tablename__ = "reference_values"
 
     id = Column(Integer, primary_key=True, index=True)
@@ -64,3 +64,10 @@ class ReferenceValue(Base):
     error_too_high = Column(Float, nullable=True)
     warning_too_low = Column(Float, nullable=True)
     warning_too_high = Column(Float, nullable=True)
+
+
+class Masts(Base):
+    __tablename__ = "masts"
+
+    id = Column(String, primary_key=True)
+    name = Column(String, nullable=False)

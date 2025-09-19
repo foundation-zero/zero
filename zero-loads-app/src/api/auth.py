@@ -2,7 +2,7 @@ import jwt
 
 from .config import Settings
 
-settings = Settings()
+settings = Settings()  # type: ignore
 
 SUPPORTED_ROLES = {"captain", "engineer", "first_officer", "crew", "guest"}
 

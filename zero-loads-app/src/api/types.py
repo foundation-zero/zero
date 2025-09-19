@@ -4,23 +4,23 @@ from enum import Enum
 
 @strawberry.enum
 class Unit(Enum):
-    tonne = "tonne"
-    percentage = "percentage"
-    meters = "meters"
-    knots = "knots"
+    TONNE = "tonne"
+    PERCENTAGE = "percentage"
+    METERS = "meters"
+    KNOT = "knot"
 
 
 @strawberry.enum
 class SeaState(Enum):
-    wet = "wet"
-    dry = "dry"
+    WET = "wet"
+    DRY = "dry"
 
 
 @strawberry.enum
 class ThrusterMode(Enum):
-    propulsion = "propulsion"
-    regeneration = "regeneration"
-    idle = "idle"
+    PROPULSION = "propulsion"
+    REGENERATION = "regeneration"
+    IDLE = "idle"
 
 
 @strawberry.input
@@ -39,13 +39,25 @@ class CaseInput:
 
 
 @strawberry.type
+class MastType:
+    id: str
+    name: str
+
+
+@strawberry.type
 class ValueType:
     id: strawberry.ID
     name: str
 
 
 @strawberry.type
-class RangesType:
+class TargetType:
+    target: str
+    unit: Unit
+
+
+@strawberry.type
+class AlertType:
     error_too_low: float | None
     warning_too_low: float | None
     warning_too_high: float | None
@@ -55,20 +67,6 @@ class RangesType:
 @strawberry.type
 class ReferenceValueType:
     value: ValueType
-    target: float
-    ranges: RangesType
-    unit: Unit
-
-
-# @strawberry.type
-# class ReferenceValueType:
-#     id: strawberry.ID
-#     sail_set_id: str
-#     condition_id: str
-#     mast_id: str
-#     value_definition_id: str
-#     value: float
-#     error_too_low: float | None
-#     error_too_high: float | None
-#     warning_too_low: float | None
-#     warning_too_high: float | None
+    masts: MastType | None
+    target: TargetType
+    ranges: AlertType

@@ -3,17 +3,27 @@ from .db import (
     AsyncSessionLocal,
     SailSetCombined,
     Conditions,
-    ReferenceValue,
-    ValueDefinition,
+    ReferenceValues,
+    ValueDefinitions,
+    Masts,
 )
 from fastapi import FastAPI
 from strawberry.fastapi import GraphQLRouter
 from typing import List, Optional
-from .types import CaseInput, ReferenceValueType, ValueType, RangesType, Unit
+from .types import (
+    CaseInput,
+    ReferenceValueType,
+    ValueType,
+    TargetType,
+    Unit,
+    MastType,
+    AlertType,
+)
 import logging
 from sqlalchemy import select
 from sqlalchemy import cast
 from sqlalchemy.dialects.postgresql import TEXT, ARRAY, NUMERIC
+import uvicorn
 
 logger = logging.getLogger("api")
 
@@ -30,57 +40,65 @@ class Query:
             if case:
                 sail_set_subq = (
                     select(SailSetCombined.id)
-                    .where(SailSetCombined.sails == cast(case.sails, ARRAY(TEXT)))
+                    .where(
+                        SailSetCombined.sails == cast(sorted(case.sails), ARRAY(TEXT))
+                    )
                     .scalar_subquery()
                 )
 
                 condition_subq = (
                     select(Conditions.id)
-                    .where(Conditions.sea_state == case.sea_state)
+                    .where(Conditions.sea_state == case.sea_state.value)
                     .where(Conditions.awa.contains(cast(case.awa, NUMERIC)))
                     .where(Conditions.aws.contains(cast(case.aws, NUMERIC)))
                     .where(Conditions.pcs_mode_fwd.any(case.pcs_mode.fwd.value))
                     .where(Conditions.pcs_mode_aft.any(case.pcs_mode.aft.value))
                     .scalar_subquery()
                 )
+            else:
+                # TODO: Get these values from the control process
+                sail_set_subq = "upwind-blade"
+                condition_subq = "light-wind-close-hauled"
 
-                query = (
-                    select(ReferenceValue, ValueDefinition)
-                    .join(
-                        ValueDefinition,
-                        ReferenceValue.value_definition_id == ValueDefinition.id,
-                    )
-                    .where(ReferenceValue.value_definition_id.in_(values))
-                    .where(ReferenceValue.sail_set_id.in_(sail_set_subq))
-                    .where(ReferenceValue.condition_id.in_(condition_subq))
+            query = (
+                select(ReferenceValues, ValueDefinitions, Masts)
+                .join(
+                    ValueDefinitions,
+                    ReferenceValues.value_definition_id == ValueDefinitions.id,
                 )
+                .join(Masts, ReferenceValues.mast_id == Masts.id)
+                .where(ReferenceValues.value_definition_id.in_(values))
+                .where(ReferenceValues.sail_set_id == sail_set_subq)
+                .where(ReferenceValues.condition_id == condition_subq)
+            )
 
-                result = await session.execute(query)
-                rows = result.fetchall()
+            result = await session.execute(query)
+            rows = result.fetchall()
 
-                print(f"row: {rows}")
-                return [
-                    ReferenceValueType(
-                        value=ValueType(
-                            id=row[1].id,
-                            name=row[1].name,
-                        ),
-                        target=row[0].value,
-                        ranges=RangesType(
-                            error_too_low=row[0].error_too_low,
-                            warning_too_low=row[0].warning_too_low,
-                            warning_too_high=row[0].warning_too_high,
-                            error_too_high=row[0].error_too_high,
-                        ),
-                        unit=Unit(row[1].unit),
-                    )
-                    for row in rows
-                ]
-            return []
+            return [
+                ReferenceValueType(
+                    value=ValueType(
+                        id=definition.id,
+                        name=definition.name,
+                    ),
+                    masts=MastType(id=mast.id, name=mast.name),
+                    target=TargetType(
+                        target=reference.value, unit=Unit(definition.unit)
+                    ),
+                    ranges=AlertType(
+                        error_too_low=reference.error_too_low,
+                        warning_too_low=reference.warning_too_low,
+                        warning_too_high=reference.warning_too_high,
+                        error_too_high=reference.error_too_high,
+                    ),
+                )
+                for reference, definition, mast in rows
+            ]
 
 
 schema = strawberry.Schema(query=Query)
 graphql_app = GraphQLRouter(schema)
+
 app = FastAPI()
 app.include_router(graphql_app, prefix="/graphql")
 
