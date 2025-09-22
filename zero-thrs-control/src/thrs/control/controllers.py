@@ -119,31 +119,30 @@ class FlowBalanceController:
         if len(measurements) != len(self._valve_controllers):
             raise ValueError("Measurements length must match valves length")
 
-        if self.enabled:
-            controller_values = [
-                controller(measurement, time)
-                for controller, measurement in zip(
-                    self._valve_controllers, measurements
-                )
-            ]
-            offset = 1 - max(*controller_values)
-            for value, controller, valve in zip(
-                controller_values, self._valve_controllers, self._valves
-            ):
-                if controller.enabled():
-                    valve.setpoint = Stamped(value=value + offset, timestamp=time)
-                else:
-                    valve.setpoint = Stamped(value=Valve.CLOSED, timestamp=time)
-            if self._pump is not None:
-                self._pump_controller.setpoint = sum([
-                    setpoint * active
-                    for setpoint, active in zip(self.get_setpoints(), self.get_active_valves())
-                ])
-                self._pump.dutypoint = Stamped(
-                    value=self._pump_controller(sum(measurements), time), timestamp=time
-                )
+        controller_values = [
+            controller(measurement, time)
+            for controller, measurement in zip(self._valve_controllers, measurements)
+        ]
+        offset = 1 - max(*controller_values)
+        for value, controller, valve in zip(
+            controller_values, self._valve_controllers, self._valves
+        ):
+            if controller.enabled():
+                valve.setpoint = Stamped(value=value + offset, timestamp=time)
             else:
-                raise ValueError("No active pump")
+                valve.setpoint = Stamped(value=Valve.CLOSED, timestamp=time)
+        if self._pump is not None:
+            self._pump_controller.setpoint = sum([
+                setpoint * active
+                for setpoint, active in zip(
+                    self.get_setpoints(), self.get_active_valves()
+                )
+            ])
+            self._pump.dutypoint = Stamped(
+                value=self._pump_controller(sum(measurements), time), timestamp=time
+            )
+        else:
+            raise ValueError("No active pump")
 
 
 class FlowDistributionController:
