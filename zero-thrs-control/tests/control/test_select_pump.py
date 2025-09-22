@@ -4,11 +4,6 @@ from thrs.control.modules.thrusters import ThrustersControl, ThrustersParameters
 from thrs.input_output.modules.thrusters import ThrustersSensorValues
 
 
-@fixture
-def thrusters_control() -> ThrustersControl:
-    return ThrustersControl(ThrustersParameters())
-
-
 def test_activate_pump(thrusters_control):
     assert thrusters_control._active_pump is None
     thrusters_control._activate_pump(ThrustersSensorValues.zero())
