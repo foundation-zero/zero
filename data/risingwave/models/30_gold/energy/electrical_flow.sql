@@ -10,7 +10,7 @@ FROM
 		MAX(electrical_consumption.active_power_timestamp) AS timestamp,
 		electrical_consumption.consumer_group AS group_name,
 		AVG(electrical_consumption.active_power) AS avg_power
-	FROM public.electrical_consumption AS electrical_consumption
+	FROM {{ ref('electrical_consumption') }} AS electrical_consumption
 	WHERE
 		electrical_consumption.consumer_group IS NOT NULL
 		AND electrical_consumption.active_power_timestamp > NOW() - INTERVAL '5 minutes'
