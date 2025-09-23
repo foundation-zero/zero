@@ -48,6 +48,6 @@ export default class BlindsPage {
   }
 
   public async textValues() {
-    return await this.page.getByTestId("blindsPosition").allTextContents();
+    return (await this.page.getByTestId("blindsPosition").allTextContents()).map(Number);
   }
 }

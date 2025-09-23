@@ -33,7 +33,7 @@ watch([currentRoomId, route], toggle);
   >
     <nav
       role="navigation"
-      class="bg-background border-primary/10 fixed top-0 left-0 h-svh overflow-y-auto border-r py-3 transition-transform max-md:w-full md:min-w-[250px] lg:min-w-[300px]"
+      class="bg-background-muted border-primary/10 fixed top-0 left-0 h-svh overflow-y-auto border-r py-3 transition-transform max-md:w-full md:min-w-[250px] lg:min-w-[300px]"
       :class="{ '-translate-x-full': !show }"
     >
       <div class="pr-6 pl-3">
@@ -43,7 +43,7 @@ watch([currentRoomId, route], toggle);
           {{ $t("labels.zero") }}
           <Outside />
           <button
-            class="text-xl font-normal md:hidden"
+            class="cursor-pointer text-xl font-normal md:hidden"
             @click="() => toggleNav(false)"
           >
             <Cross2Icon class="h-5 w-5" />

@@ -1,17 +1,23 @@
 <script setup lang="ts">
 import { BlindsGroup } from "@/@types";
-import { List, ListHeader, ListItem, ListRoot } from "@/components/ui/shared/list";
-import { BlindsSlider } from "@components/shared/blinds-slider";
-import BlindsValue from "@components/shared/blinds-value/BlindsValue.vue";
-import { BlindsControl } from "@modules/cabin/blinds-control";
+import BlindsControl from "@/components/ui/shared/blinds-slider/BlindsControl.vue";
+import BlindsControlPopup from "@/components/ui/shared/blinds-slider/BlindsControlPopup.vue";
+import BlindsLabel from "@/components/ui/shared/blinds-slider/BlindsLabel.vue";
+import BlindsList from "@/components/ui/shared/blinds-slider/BlindsList.vue";
+import BlindsSlider from "@/components/ui/shared/blinds-slider/BlindsSlider.vue";
+import List from "@/components/ui/shared/list/List.vue";
+import ListHeader from "@/components/ui/shared/list/ListHeader.vue";
+import ListItem from "@/components/ui/shared/list/ListItem.vue";
+import ListRoot from "@/components/ui/shared/list/ListRoot.vue";
 
 import { groupBlindsByGroup } from "@/lib/mappers";
 import { isBlindsControl } from "@/lib/utils";
 import { useRoomStore } from "@/stores/rooms";
+import { useUIStore } from "@/stores/ui";
 import { computed, ref, toRefs, watch } from "vue";
 
-const { currentRoom, hasPendingRequests } = toRefs(useRoomStore());
-const { setBlindsLevel } = useRoomStore();
+const { currentRoom } = toRefs(useRoomStore());
+const { breakpoints } = toRefs(useUIStore());
 const selected = ref<BlindsGroup>();
 
 const blinds = computed(() =>
@@ -23,66 +29,63 @@ watch(currentRoom, (next, prev) => {
     selected.value = undefined;
   }
 });
+
+const setGroup = (group: BlindsGroup) => {
+  if (selected.value !== group) {
+    selected.value = group;
+  }
+};
 </script>
 
 <template>
   <section
-    class="-mx-1.5 flex w-full grow flex-wrap items-center justify-center max-md:pb-[64px] md:px-6 md:pb-[32px]"
+    v-if="blinds.length === 1"
+    class="flex w-full grow items-center justify-center max-md:pb-[96px] md:pb-[32px]"
+  >
+    <BlindsList
+      class="w-full"
+      editable
+      :group="blinds[0]"
+    />
+  </section>
+  <section
+    v-else
+    class="grid grid-cols-1 gap-6 px-4 max-md:pb-[96px] md:grid-cols-2 md:px-6 md:pb-[32px] xl:grid-cols-3 landscape:lg:grid-cols-3"
     :class="{
-      'px-3': blinds.length > 1,
-      'px-4 md:px-6': blinds.length === 1,
+      'max-xl:w-full xl:container xl:px-0': !breakpoints.touch,
+      'w-full': breakpoints.touch,
     }"
   >
     <ListRoot
-      v-for="(group, index) in blinds"
-      :key="index"
-      :class="{
-        'w-1/2 px-1.5 xl:w-1/3 landscape:lg:w-1/3': blinds.length > 1,
-        'w-full md:w-1/2 xl:w-1/3 landscape:lg:w-1/3':
-          group.controls.length === 1 && blinds.length === 1,
-        'w-full xl:w-2/3 landscape:lg:w-2/3': group.controls.length === 2 && blinds.length === 1,
-      }"
+      v-for="group in blinds"
+      :key="group.name"
     >
-      <ListHeader v-if="blinds.length > 1">{{ group.name }}</ListHeader>
+      <ListHeader>{{ group.name }}</ListHeader>
       <List
         orientation="horizontal"
         :size="group.controls.length"
+        class="hover:border-brand/60 hover:border"
+        @click="setGroup(group)"
       >
         <ListItem
-          v-for="(item, controlIndex) in group.controls"
-          :key="item.name!"
-          data-testid="blinds-control"
-          class="flex-col pb-6"
-          @click="selected = group"
+          v-for="control in group.controls"
+          :key="control.id"
+          class="cursor-pointer justify-around px-0 py-6"
         >
-          <header
-            class="text-primary/75 font-bold"
+          <BlindsControl
+            :control="control"
+            class="w-1/3"
             :class="{
-              'text-base': blinds.length === 1,
-              'text-sm': blinds.length > 1,
+              'max-md:text-5xl md:text-6xl': group.controls.length === 1,
+              'max-md:text-3xl md:text-4xl': group.controls.length === 2,
             }"
           >
-            {{ item.name }}
-          </header>
-          <BlindsSlider
-            v-if="blinds.length === 1"
-            v-model:level="item.value"
-            class="mt-3"
-            :disabled="hasPendingRequests"
-            @update:level="setBlindsLevel(item.id, $event)"
-          />
-          <BlindsValue
-            v-else
-            :level="item.value"
-            :color="controlIndex === 0 ? ' bg-primary/90' : 'bg-primary/45'"
-          />
+            <BlindsSlider @click="setGroup(group)" />
+            <BlindsLabel v-if="group.controls.length > 1" />
+          </BlindsControl>
         </ListItem>
       </List>
     </ListRoot>
-
-    <BlindsControl
-      v-if="blinds.length > 1"
-      v-model:group="selected"
-    />
+    <BlindsControlPopup v-model:group="selected" />
   </section>
 </template>

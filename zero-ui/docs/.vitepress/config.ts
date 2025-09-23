@@ -16,7 +16,7 @@ export default defineConfig({
         text: "Getting Started",
         items: [
           { text: "Introduction", link: "/getting-started/" },
-          { text: "Colors", link: "/components/colors" },
+          { text: "Colors", link: "/colors" },
           { text: "Typography", link: "/typography" },
         ],
       },

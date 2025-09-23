@@ -54,7 +54,7 @@ test.describe("Blinds", () => {
       await expect(blindsPage.listItems).toHaveCount(2);
 
       expect(await blindsPage.textValues()).toEqual(
-        targetLevels.map((level) => (level * 100).toString()),
+        targetLevels.map((level) => 100 - (level * 100).toString()),
       );
     });
   });
@@ -85,7 +85,7 @@ test.describe("Blinds", () => {
       await blindsPage.listItems.first().click();
       await page.waitForTimeout(500);
 
-      expect(await blindsPage.textValues()).toEqual(["0", "0"]);
+      expect(await blindsPage.textValues()).toEqual([100, 100]);
     });
   });
 });

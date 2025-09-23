@@ -6,25 +6,25 @@ import { ratioAsPercentage } from "@/lib/utils";
 import { LightsSlider } from "@components/shared/lights-slider";
 import { ZSpacer } from "@components/shared/spacer";
 import { LampCeiling, LampWallUp } from "lucide-vue-next";
-import { computed, inject, ref, toRef, watch } from "vue";
+import { computed, inject, Ref, ref, toRef, watch } from "vue";
+import { getContext } from ".";
 
-const props = defineProps<{ light: LightingControl }>();
-const brightness = ref(props.light.value);
+const props = defineProps<{ control: LightingControl }>();
+const control = toRef(props, "control");
+const brightness = ref(control.value.value);
+
+const context = getContext();
 
 watch(
-  toRef(props, "light"),
-  (light) => {
-    brightness.value = light.value;
+  control,
+  (control) => {
+    brightness.value = control.value;
   },
   { immediate: true },
 );
 
-const emit = defineEmits<{
-  "update:level": [number];
-}>();
-
 const brightnessPercentage = ratioAsPercentage(brightness);
-const disabled = inject<boolean>("disabled");
+const disabled = inject<Ref<boolean>>("disabled", ref(false));
 
 const on = computed({
   get() {
@@ -32,15 +32,17 @@ const on = computed({
   },
   set(val: boolean) {
     brightness.value = val ? 1 : 0;
-    emit("update:level", val ? 1 : 0);
+    commit();
   },
 });
+
+const commit = () => context.commit(props.control, brightness);
 </script>
 <template>
   <ListItem class="flex-col space-y-3 py-6">
     <span class="flex w-full items-center">
       <LampCeiling
-        v-if="light.name === 'Ambient'"
+        v-if="control.name === 'Ambient'"
         class="mr-3 inline"
         :size="18"
       />
@@ -49,7 +51,7 @@ const on = computed({
         class="mr-3 inline"
         :size="18"
       />
-      <label class="text-md text-muted-foreground font-medium"> {{ light.name }}</label>
+      <label class="text-md text-muted-foreground font-medium"> {{ control.name }}</label>
       <ZSpacer />
       <Switch
         v-model="on"
@@ -61,8 +63,8 @@ const on = computed({
       v-model:brightness="brightnessPercentage"
       :on="on"
       :disabled="disabled"
-      @click="emit('update:level', brightness)"
-      @touchend="emit('update:level', brightness)"
+      @click="commit()"
+      @touchend="commit()"
     />
   </ListItem>
 </template>

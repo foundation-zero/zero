@@ -1,17 +1,32 @@
 <script setup lang="ts">
+import { LightingControl } from "@/@types";
 import { groupLights } from "@/lib/mappers";
 import { isLightControl } from "@/lib/utils";
 import { useRoomStore } from "@/stores/rooms";
 import { useUIStore } from "@/stores/ui";
 import LightGroup from "@components/shared/lights-list/LightGroup.vue";
-import { computed, toRefs } from "vue";
+
+import { computed, provide, Ref, toRefs, watch } from "vue";
 
 const roomStore = useRoomStore();
-const { currentRoom } = toRefs(roomStore);
+const { currentRoom, hasPendingRequests } = toRefs(roomStore);
 const { breakpoints } = toRefs(useUIStore());
-const { setLightLevel } = roomStore;
 
 const lights = computed(() => groupLights(currentRoom.value.roomsControls.filter(isLightControl)));
+
+const commit = async (control: LightingControl, brightness: Ref<number>) => {
+  if (hasPendingRequests.value) return;
+
+  await roomStore.setLightLevel(control.id, brightness.value);
+
+  if (!hasPendingRequests.value) return;
+
+  watch(hasPendingRequests, () => (brightness.value = control.value), {
+    once: true,
+  });
+};
+
+provide("commit", commit);
 </script>
 
 <template>
@@ -25,9 +40,7 @@ const lights = computed(() => groupLights(currentRoom.value.roomsControls.filter
     <LightGroup
       v-for="(group, index) in lights"
       :key="index"
-      :name="group.name"
-      :lights="group.controls"
-      @update:level="setLightLevel"
+      :group="group"
     />
   </section>
 </template>

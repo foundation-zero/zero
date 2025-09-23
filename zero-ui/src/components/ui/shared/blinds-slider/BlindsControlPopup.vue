@@ -39,7 +39,8 @@ watch(group, (val) => {
   >
     <BlindsList
       :group="group"
-      :class="{ 'mx-3 mb-3': breakpoints.phone, 'w-full': !breakpoints.phone }"
+      editable
+      :class="{ 'mx-3 my-6': breakpoints.phone, 'my-6 w-full': !breakpoints.phone }"
     />
   </ResponsivePopup>
 </template>

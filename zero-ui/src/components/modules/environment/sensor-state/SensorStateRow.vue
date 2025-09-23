@@ -20,7 +20,7 @@ const actualCO2 = computed(() => extractActualCO2(props.room) ?? 0);
 
 <template>
   <TableRow class="group text-rbase">
-    <TableCell class="px-0 font-medium">{{ room.name }}</TableCell>
+    <TableCell class="px-0">{{ room.name }}</TableCell>
     <TableCell class="w-12 px-0">
       <SensorStateValue
         :state="state.temperature"

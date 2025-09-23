@@ -29,13 +29,13 @@ test.describe("Airconditioning", () => {
     const actualTemperature = 23.1;
     aircoPage.setInsideTemperature(dutchCabin, actualTemperature);
 
-    await expect(aircoPage.actualTemperature).toHaveText(actualTemperature.toString());
+    await expect(aircoPage.actualTemperature).toHaveText("231 ° ");
   });
 
   test("shows the correct setpoint", async ({ aircoPage }) => {
     const temperatureSetpoint = 25.3;
     aircoPage.setTemperatureSetpoint(dutchCabin, temperatureSetpoint);
 
-    await expect(aircoPage.temperatureSetpoint).toHaveText(`253°`);
+    await expect(aircoPage.temperatureSetpoint).toHaveText(`253 ° `);
   });
 });

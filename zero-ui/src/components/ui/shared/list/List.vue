@@ -1,11 +1,16 @@
 <script setup lang="ts">
-defineProps<{ orientation?: "horizontal" | "vertical"; size?: number }>();
+import { cn } from "@/lib/utils";
+
+defineProps<{ orientation?: "horizontal" | "vertical"; size?: number; class?: string }>();
 </script>
 
 <template>
   <ul
-    class="border-primary/10 bg-background grid overflow-hidden rounded-md border hover:cursor-pointer"
     :class="[
+      cn(
+        'border-primary/10 bg-background grid overflow-hidden rounded-md border hover:cursor-pointer',
+        $props.class,
+      ),
       { 'divide-y': orientation === 'vertical', 'divide-x': orientation !== 'vertical' },
       `grid-cols-${size ?? 1}`,
     ]"

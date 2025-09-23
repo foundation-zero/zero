@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { Room } from "@/@types";
+import { Room, ValidationStatus } from "@/@types";
 import { Switch } from "@/components/ui/shadcn/switch";
 import { ValueTile } from "@components/shared/value-tile";
 import { Lightbulb, LightbulbOff } from "lucide-vue-next";
@@ -17,6 +17,7 @@ const { controls, someLightsAreOn, toggle } = useToggleableLights(computed(() =>
     :title="room.name"
     :class="{ on: someLightsAreOn }"
     selectable
+    :state="ValidationStatus.UNKNOWN"
     @click="toggle"
   >
     <template #center>

@@ -13,10 +13,10 @@ defineProps<{ state: ValidationStatus; icon?: Component }>();
     v-if="icon"
     :size="16"
     :class="{
-      'text-green-500/90': state === ValidationStatus.OK,
-      'text-yellow-500/90': state === ValidationStatus.WARN,
-      'text-red-500/90': state === ValidationStatus.FAIL,
-      'text-primary/20': state === ValidationStatus.UNKNOWN,
+      'text-constructive': state === ValidationStatus.OK,
+      'text-warning': state === ValidationStatus.WARN,
+      'text-destructive': state === ValidationStatus.FAIL,
+      'text-foreground-disabled': state === ValidationStatus.UNKNOWN,
     }"
   />
   <template v-else>
@@ -29,9 +29,9 @@ defineProps<{ state: ValidationStatus; icon?: Component }>();
       v-else
       :size="16"
       :class="{
-        'text-yellow-500/90': state === ValidationStatus.WARN,
-        'text-red-500/90': state === ValidationStatus.FAIL,
-        'text-primary/20': state === ValidationStatus.UNKNOWN,
+        'text-warning': state === ValidationStatus.WARN,
+        'text-destructive': state === ValidationStatus.FAIL,
+        'text-foreground-disabled': state === ValidationStatus.UNKNOWN,
       }"
     />
   </template>

@@ -15,7 +15,6 @@ defineProps<{ title: string; description: string }>();
 <template>
   <Dialog
     v-model:open="open"
-    modal
     class="p-0"
   >
     <DialogTrigger>
