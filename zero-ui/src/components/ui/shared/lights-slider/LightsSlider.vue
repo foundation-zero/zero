@@ -10,7 +10,7 @@ const brightness = defineModel<number>("brightness", { required: true });
     :min="0"
     :max="100"
     :model-value="[on ? brightness : 0]"
-    :class="{ 'opacity-55': !on, 'opacity-30': disabled }"
+    :class="{ 'opacity-30': disabled }"
     :disabled="disabled"
     @update:model-value="(val) => (brightness = val?.[0] ?? 0)"
   />

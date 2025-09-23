@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { List, ListItem, ListRoot } from "@/components/ui/shared/list";
+import { TemperatureDisplay } from "@/components/ui/shared/temperature-display";
 import {
   extractTemperatureSetpoint,
   isTemperatureControl,
@@ -31,77 +31,65 @@ watch(currentRoom, (room) => {
 const value = valueAsArray(valueWithValidation(temperature, (val) => val >= MIN_VALUE));
 const isOff = computed(() => value.value[0] === MIN_VALUE);
 
-const commit = () => setTemperatureSetpoint(temperature.value);
+const commit = async () => {
+  await setTemperatureSetpoint(temperature.value);
+
+  if (!hasPendingRequests.value) return;
+
+  watch(
+    hasPendingRequests,
+    () => (temperature.value = extractTemperatureSetpoint(currentRoom.value) ?? 0),
+    { once: true },
+  );
+};
 </script>
 
 <template>
   <section
-    class="flex grow flex-col items-center justify-center max-md:pb-[64px] md:pb-[32px]"
+    class="flex grow flex-col items-center justify-around max-md:pb-[96px] md:pb-[32px]"
     :class="{ container: !breakpoints.touch, 'w-full px-4 md:px-6': breakpoints.touch }"
   >
     <RoomTemperature
-      class="mb-8 w-full"
+      class="w-full max-md:text-6xl md:text-7xl xl:text-8xl"
       :room="currentRoom"
     />
 
-    <div
-      :class="{ 'pointer-events-none opacity-50': !hasTemperatureControl }"
-      class="flex w-full flex-wrap justify-center"
-    >
-      <ListRoot class="w-full landscape:max-w-[800px]">
-        <List
-          orientation="horizontal"
-          :size="1"
-        >
-          <ListItem class="flex-col gap-2">
-            <header class="text-muted-foreground text-lg font-semibold">
-              {{ t("labels.airconditioning.long") }}
-            </header>
-            <HeavySlider
-              v-model:model-value="value"
-              class="aspect-1/2 h-[40svh]! w-auto!"
-              :max="24"
-              :min="17"
-              :min-steps-between-thumbs="3"
-              :class="{ 'opacity-70': isOff, disabled: hasPendingRequests }"
-              :step="1"
-              @click.stop.prevent="commit()"
-              @touchend.stop.prevent="commit()"
-            />
+    <div class="my-4 h-[40svh] max-w-2xs">
+      <HeavySlider
+        v-model:model-value="value"
+        class="aspect-1/2"
+        :max="24"
+        :min="17"
+        :min-steps-between-thumbs="3"
+        :class="{ 'opacity-70': isOff, disabled: hasPendingRequests }"
+        :step="1"
+        @click.stop.prevent="commit()"
+        @touchend.stop.prevent="commit()"
+      />
+    </div>
 
-            <div class="mt-6 flex flex-col items-center justify-center">
-              <div
-                class="relative inline-flex items-end"
-                data-testid="temperatureSetpoint"
-              >
-                <span class="font-headers text-3xl font-bold uppercase md:text-5xl">
-                  <span v-if="hasTemperatureControl">{{
-                    !isOff ? Math.floor(value[0]) : "Off"
-                  }}</span>
-                  <span v-else>-</span>
-                </span>
-                <span
-                  v-if="!isOff && hasTemperatureControl"
-                  class="font-headers ml-0.5 text-sm font-light max-md:mb-[2.5px] md:text-2xl"
-                >
-                  {{ Math.round((value[0] % 1) * 10) }}
-                </span>
-                <sup
-                  v-if="!isOff && hasTemperatureControl"
-                  class="font-headers absolute -top-1 right-0 pt-1 text-2xl font-light max-md:mt-[-2px] md:-top-1.5 md:mr-[1.5px] md:text-3xl"
-                  >&deg;</sup
-                >
-              </div>
-              <label
-                data-testid="temperatureSetpointLabel"
-                class="text-muted-foreground text-xs font-extralight md:text-base"
-                :class="{ invisible: isOff }"
-                >{{ t("labels.setTo") }}</label
-              >
-            </div>
-          </ListItem>
-        </List>
-      </ListRoot>
+    <div class="flex flex-col items-center gap-4 max-md:text-5xl md:text-6xl xl:text-7xl">
+      <TemperatureDisplay
+        v-if="hasTemperatureControl && !isOff"
+        data-testid="temperatureSetpoint"
+        class="text-foreground"
+        :value="value[0]"
+        :off="isOff"
+        :has-temperature-control="hasTemperatureControl"
+      />
+      <span
+        v-else
+        class="font-headers font-bold uppercase"
+      >
+        {{ isOff ? t("labels.off") : "-" }}
+      </span>
+
+      <label
+        data-testid="temperatureSetpointLabel"
+        class="text-muted-foreground text-r5xs font-extralight"
+        :class="{ invisible: isOff }"
+        >{{ t("labels.setTo") }}</label
+      >
     </div>
   </section>
 </template>

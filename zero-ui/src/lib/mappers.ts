@@ -25,6 +25,7 @@ export const groupBlindsByGroup = (blinds: BlindsControl[]): BlindsGroup[] =>
       name: blinds[0].name,
       controls: blinds.map((blind) => ({
         ...blind,
+        value: Number(blind.value ?? 0),
         name: blind.id.includes("blind")
           ? i18n.global.t("labels.blinds")
           : i18n.global.t("labels.shears"),

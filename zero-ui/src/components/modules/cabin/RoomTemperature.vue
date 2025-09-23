@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { Room } from "@/@types";
+import { TemperatureDisplay } from "@/components/ui/shared/temperature-display";
 import { extractActualTemperature } from "@/lib/utils";
 import { computed } from "vue";
 import { useI18n } from "vue-i18n";
@@ -11,39 +12,26 @@ const { t } = useI18n();
 </script>
 
 <template>
-  <article class="flex w-100 items-center justify-around">
-    <section>
-      <span class="inline-flex flex-col items-center justify-center">
-        <span
-          id="actualTemperature"
-          class="font-headers text-5xl font-bold lg:text-7xl md:portrait:text-7xl"
-          >{{ actualTemperature !== undefined ? actualTemperature : "-" }}</span
-        >
-        <label class="text-md text-muted-foreground font-extralight">{{
-          t("labels.inside")
-        }}</label>
-      </span>
-      <sup
-        v-if="actualTemperature !== undefined"
-        class="font-headers text-3xl font-extralight lg:text-5xl md:portrait:text-5xl"
-        >&deg;</sup
-      >
-    </section>
+  <section class="flex flex-col items-center gap-6">
+    <TemperatureDisplay
+      v-if="actualTemperature !== undefined"
+      id="actualTemperature"
+      :value="actualTemperature"
+    />
+    <span
+      v-else
+      class="font-headers font-bold"
+      >-</span
+    >
 
-    <section>
-      <span class="inline-flex flex-col items-center justify-center">
-        <span
-          id="outsideTemperature"
-          class="font-headers text-5xl font-bold lg:text-7xl md:portrait:text-7xl"
-          >33</span
-        >
-        <label class="text-md text-muted-foreground font-extralight">{{
-          t("labels.outside")
-        }}</label>
-      </span>
-      <sup class="font-headers text-3xl font-extralight lg:text-5xl md:portrait:text-5xl"
-        >&deg;</sup
+    <div class="text-muted-foreground text-r5xs">
+      <label class="mr-1.5 font-extralight">{{ t("labels.outside") }}</label>
+      <span
+        id="outsideTemperature"
+        class="font-bold"
+        >33</span
       >
-    </section>
-  </article>
+      <sup class="font-headers text-rxs font-extralight">&deg;</sup>
+    </div>
+  </section>
 </template>

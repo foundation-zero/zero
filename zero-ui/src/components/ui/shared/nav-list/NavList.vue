@@ -1,5 +1,5 @@
 <template>
-  <menu class="grid">
+  <menu class="grid gap-0.5">
     <slot />
   </menu>
 </template>

@@ -19,7 +19,7 @@ const { t } = useI18n();
     class="fixed bottom-0 w-full"
   >
     <div
-      class="bg-background sm:bg-background absolute top-0 right-0 bottom-0 left-0 transition-all"
+      class="bg-background/80 sm:bg-background absolute top-0 right-0 bottom-0 left-0 backdrop-blur-md transition-all"
       :class="{ 'border-t': hasScroll && !isBottom }"
     ></div>
 

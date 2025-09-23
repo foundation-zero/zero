@@ -4,7 +4,9 @@ import type { SliderRootEmits, SliderRootProps } from "reka-ui";
 import { SliderRange, SliderRoot, SliderThumb, SliderTrack, useForwardPropsEmits } from "reka-ui";
 import { computed, type HTMLAttributes } from "vue";
 
-const props = defineProps<SliderRootProps & { class?: HTMLAttributes["class"]; steps?: number }>();
+const props = defineProps<
+  SliderRootProps & { class?: HTMLAttributes["class"]; steps?: number; hideThumb?: boolean }
+>();
 const emits = defineEmits<SliderRootEmits>();
 
 const delegatedProps = computed(() => {
@@ -47,27 +49,29 @@ const stepPositions = computed(() =>
   >
     <SliderTrack
       data-slot="slider-track"
-      class="bg-primary/90 relative h-1.5 w-full grow overflow-hidden rounded data-[orientation=vertical]:w-full"
+      class="bg-brand relative h-1.5 w-full grow overflow-hidden rounded-sm data-[orientation=vertical]:w-full"
     >
       <SliderRange
         data-slot="slider-range"
-        class="bg-muted/80 absolute h-full rounded data-[orientation=vertical]:w-full"
+        class="bg-muted/80 absolute h-full data-[orientation=vertical]:w-full"
       />
     </SliderTrack>
     <div
       v-for="step in stepPositions"
       :key="step"
       :style="{ bottom: step + '%' }"
-      class="bg-muted-foreground absolute block h-px w-full translate-y-[65%]"
+      class="bg-brand-muted/45 absolute block h-px w-full translate-y-[65%]"
     ></div>
+
     <SliderThumb
       v-for="pos in positions"
       :key="pos"
       :style="{ bottom: pos + '%' }"
-      class="transition-color border-primary bg-background ring-offset-background focus-visible:ring-ring absolute -mx-[1.5%] block h-3 w-[105%] translate-y-[50%] cursor-pointer rounded-md border-2 shadow-sm focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none disabled:pointer-events-none disabled:cursor-default disabled:opacity-50"
+      :class="{ 'opacity-0': hideThumb }"
+      class="transition-color border-brand bg-background ring-offset-background focus-visible:ring-ring absolute -mx-[1.5%] block h-3 w-[105%] translate-y-[50%] cursor-pointer rounded-md border-2 shadow-sm focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none disabled:pointer-events-none disabled:cursor-default disabled:opacity-50"
     >
       <div
-        class="bg-primary absolute top-[50%] left-[50%] h-1 w-[20%] translate-x-[-50%] translate-y-[-50%] rounded-md"
+        class="bg-brand absolute top-[50%] left-[50%] h-1 w-[20%] translate-x-[-50%] translate-y-[-50%] rounded-md"
       ></div>
     </SliderThumb>
   </SliderRoot>
