@@ -8,7 +8,7 @@ SUPPORTED_ROLES = {"captain", "engineer", "first_officer", "crew", "guest"}
 
 
 async def generate_jwt(args):
-    unique_roles = set(args.roles)
+    unique_roles = set(args.roles.split(","))
     roles = list(unique_roles)
 
     if unsupported_roles := (unique_roles - SUPPORTED_ROLES):
