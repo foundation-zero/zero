@@ -13,7 +13,7 @@ const props = defineProps<{
   client: Client;
 }>();
 
-const COMPONENTS: { [key: string]: Component } = {
+const COMPONENTS: Record<"pump" | "valve", Component> = {
   pump: PumpControl,
   valve: ValveControl,
 };
@@ -111,7 +111,13 @@ const controlComponents = computed(() => {
             ?.value as StringValueNode
         ).value;
         if (componentType && componentType in COMPONENTS) {
-          return { key, componentType, yardTag, valveType, component: COMPONENTS[componentType] };
+          return {
+            key,
+            componentType,
+            yardTag,
+            valveType,
+            component: COMPONENTS[componentType as "pump" | "valve"],
+          };
         } else {
           return null;
         }
