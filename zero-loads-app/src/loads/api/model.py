@@ -1,10 +1,12 @@
+from typing import Sequence
+
 import strawberry
 from sqlalchemy import select, cast, Column
-from sqlalchemy.sql.selectable import ScalarSelect
-from sqlalchemy.sql.expression import ColumnElement
 from sqlalchemy.dialects.postgresql import ARRAY, NUMERIC, TEXT
 from sqlalchemy.ext.asyncio import AsyncSession
-from typing import Sequence
+from sqlalchemy.sql.expression import ColumnElement
+from sqlalchemy.sql.selectable import ScalarSelect
+
 from .schema import (
     Conditions,
     Masts,
