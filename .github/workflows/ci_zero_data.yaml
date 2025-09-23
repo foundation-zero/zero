@@ -4,12 +4,15 @@ on:
     branches:
       - main
     paths:
-      - 'zero-data/**'
-      - '.github/workflows/ci_zero_data.yaml'
+      - zero-data/**
+      - .github/workflows/ci_zero_data.yaml
   pull_request:
     paths:
-      - 'zero-data/**'
-      - '.github/workflows/ci_zero_data.yaml'
+      - zero-data/**
+      - .github/workflows/ci_zero_data.yaml
+  release:
+    types: [released]
+
 
 env:
   IMAGE: "europe-west1-docker.pkg.dev/common-449414/common/zero-data"

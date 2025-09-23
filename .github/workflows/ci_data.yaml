@@ -4,12 +4,14 @@ on:
     branches:
       - main
     paths:
-      - data/risingwave/**
-      - .github/workflows/ci_data_risingwave.yaml
+      - .github/workflows/ci_data.yaml
+      - data/**
   pull_request:
     paths:
-      - data/risingwave/**
-      - .github/workflows/ci_data_risingwave.yaml
+      - .github/workflows/ci_data.yaml
+      - data/**
+  release:
+    types: [released]
 
 jobs:
   test:

@@ -4,12 +4,14 @@ on:
     branches:
       - main
     paths:
-      - 'zero-loads-app/**'
-      - '.github/workflows/ci_zero_loads_app.yaml'
+      - zero-loads-app/**
+      - .github/workflows/ci_zero_loads_app.yaml
   pull_request:
     paths:
-      - 'zero-loads-app/**'
-      - '.github/workflows/ci_zero_loads_app.yaml'
+      - zero-loads-app/**
+      - .github/workflows/ci_zero_loads_app.yaml
+  release:
+    types: [released]
 
 env:
   IMAGE: "europe-west1-docker.pkg.dev/common-449414/common/zero-loads-app"

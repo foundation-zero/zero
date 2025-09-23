@@ -1,13 +1,17 @@
 name: "THRS Control: Test"
 on:
   push:
+    branches:
+      - main
     paths:
-      - 'zero-thrs-control/**'
-      - '.github/workflows/ci_thrs_control.yaml'
+      - zero-thrs-control/**
+      - .github/workflows/ci_thrs_control.yaml
+  pull_request:
+    paths:
+      - zero-thrs-control/**
+      - .github/workflows/ci_thrs_control.yaml
   release:
     types: [released]
-    paths:
-      - 'zero-thrs-control/**'
 
 jobs:
   test:
@@ -34,7 +38,7 @@ jobs:
 
       - run: poetry run fmpy compile src/thrs/simulation/models/XRGTestModel/FMUInterfaceTester_MECS_regular.fmu
         working-directory: zero-thrs-control
-      
+
       - run: poetry run fmpy compile src/thrs/simulation/models/thruster_moduleV16.fmu
         working-directory: zero-thrs-control
 

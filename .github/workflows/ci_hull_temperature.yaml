@@ -1,13 +1,17 @@
 name: "Hull temperature: Test"
 on:
   push:
+    branches:
+      - main
     paths:
-      - 'zero-hull-temperature/**'
-      - '.github/workflows/ci_hull_temperature.yaml'
+      - zero-hull-temperature/**
+      - .github/workflows/ci_hull_temperature.yaml
+  pull_request:
+    paths:
+      - zero-hull-temperature/**
+      - .github/workflows/ci_hull_temperature.yaml
   release:
     types: [released]
-    paths:
-      - 'zero-hull-temperature/**'
 
 env:
   IMAGE: "europe-west1-docker.pkg.dev/common-449414/common/zero-hull-temperature"
