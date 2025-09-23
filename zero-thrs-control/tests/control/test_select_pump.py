@@ -1,6 +1,3 @@
-from pytest import fixture
-
-from thrs.control.modules.thrusters import ThrustersControl, ThrustersParameters
 from thrs.input_output.modules.thrusters import ThrustersSensorValues
 
 

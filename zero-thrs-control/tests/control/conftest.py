@@ -1,6 +1,6 @@
 from pytest import fixture
 
-from control.modules.thrusters import ThrustersControl, ThrustersParameters
+from thrs.control.modules.thrusters import ThrustersControl, ThrustersParameters
 
 
 @fixture

@@ -6,7 +6,7 @@ from transitions import Machine, State
 
 from thrs.control.controllers import Controller, FlowBalanceController
 from thrs.input_output.alarms import BaseAlarms, Severity, alarm
-from thrs.input_output.base import ParameterMeta, Stamped
+from thrs.input_output.base import Stamped
 from thrs.input_output.definitions.control import Pump, Valve
 from thrs.input_output.modules.thrusters import (
     ThrustersControlValues,
