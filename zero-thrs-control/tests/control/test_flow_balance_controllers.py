@@ -1,11 +1,8 @@
-import pytest
 from thrs.control.modules.thrusters import ThrustersControl
 from thrs.input_output.modules.thrusters import ThrustersSensorValues
 
 
-def test_all_valves_active(
-    thrusters_control: ThrustersControl
-):
+def test_all_valves_active(thrusters_control: ThrustersControl):
     thrusters_control._activate_pump(ThrustersSensorValues.zero())
 
     thrusters_control._flow_balance_controller.enable([True, True])
@@ -14,8 +11,12 @@ def test_all_valves_active(
 
     thrusters_control._flow_balance_controller([10.0, 31.0], thrusters_control._time)
 
-    assert thrusters_control._current_values.thrusters_flowcontrol_aft.setpoint.value > 0
-    assert thrusters_control._current_values.thrusters_flowcontrol_fwd.setpoint.value < 1
+    assert (
+        thrusters_control._current_values.thrusters_flowcontrol_aft.setpoint.value > 0
+    )
+    assert (
+        thrusters_control._current_values.thrusters_flowcontrol_fwd.setpoint.value < 1
+    )
     assert thrusters_control._current_values.thrusters_pump_1.dutypoint.value > 0
 
 
@@ -27,15 +28,13 @@ def test_no_valves_active(thrusters_control: ThrustersControl):
 
     thrusters_control._flow_balance_controller([10.0, 31.0], thrusters_control._time)
 
-    assert thrusters_control._current_values.thrusters_flowcontrol_aft.setpoint.value == 0
-    assert thrusters_control._current_values.thrusters_flowcontrol_fwd.setpoint.value == 0
+    assert (
+        thrusters_control._current_values.thrusters_flowcontrol_aft.setpoint.value == 0
+    )
+    assert (
+        thrusters_control._current_values.thrusters_flowcontrol_fwd.setpoint.value == 0
+    )
     assert thrusters_control._current_values.thrusters_pump_1.dutypoint.value == 0
-
-
-def test_no_pump_active(thrusters_control: ThrustersControl):
-
-    with pytest.raises(ValueError, match="No active pump"):
-        thrusters_control._flow_balance_controller([10.0, 31.0], thrusters_control._time)
 
 
 def test_one_valve_active(thrusters_control: ThrustersControl):
@@ -48,7 +47,11 @@ def test_one_valve_active(thrusters_control: ThrustersControl):
 
     thrusters_control._flow_balance_controller([0, 29.0], thrusters_control._time)
 
-    assert thrusters_control._current_values.thrusters_flowcontrol_aft.setpoint.value == 0
-    assert thrusters_control._current_values.thrusters_flowcontrol_fwd.setpoint.value > 0
+    assert (
+        thrusters_control._current_values.thrusters_flowcontrol_aft.setpoint.value == 0
+    )
+    assert (
+        thrusters_control._current_values.thrusters_flowcontrol_fwd.setpoint.value > 0
+    )
     assert thrusters_control._pump_flow_controller.setpoint == 30.0
     assert thrusters_control._current_values.thrusters_pump_1.dutypoint.value > 0

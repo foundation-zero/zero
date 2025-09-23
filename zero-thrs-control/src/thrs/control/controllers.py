@@ -61,8 +61,8 @@ class FlowBalanceController:
         self,
         valves: list[Valve],
         valve_controllers: list[Controller[Ratio, LMin]],
-        pump: Pump | None,
-        pump_controller: Controller[Ratio, LMin],
+        pump: Pump | None = None,
+        pump_controller: Controller[Ratio, LMin] | None = None,
     ):
         self._valve_controllers = valve_controllers
         self._pump_controller = pump_controller
@@ -73,16 +73,19 @@ class FlowBalanceController:
         for controller in self._valve_controllers:
             if controller.enabled():
                 controller.disable()
-        self._pump_controller.disable()
+        if self._pump_controller is not None:
+            self._pump_controller.disable()
 
     def enable(self, actives: list[bool]):
         self.set_active_valves(actives)
-        self._pump_controller.enable()
+        if self._pump_controller is not None:
+            self._pump_controller.enable()
 
     @property
     def enabled(self) -> bool:
         return (
             any(controller.enabled() for controller in self._valve_controllers)
+            and self._pump_controller is not None
             and self._pump_controller.enabled()
         )
 
@@ -131,7 +134,7 @@ class FlowBalanceController:
                 valve.setpoint = Stamped(value=value + offset, timestamp=time)
             else:
                 valve.setpoint = Stamped(value=Valve.CLOSED, timestamp=time)
-        if self._pump is not None:
+        if self._pump is not None and self._pump_controller is not None:
             self._pump_controller.setpoint = sum([
                 setpoint * active
                 for setpoint, active in zip(
@@ -141,23 +144,21 @@ class FlowBalanceController:
             self._pump.dutypoint = Stamped(
                 value=self._pump_controller(sum(measurements), time), timestamp=time
             )
-        else:
-            raise ValueError("No active pump")
 
 
 class FlowDistributionController:
-    def __init__(self, valves: list[Valve], tuning):
-        self._flow_balance_controller = FlowBalanceController(
-            valves,
-            tuning,
-            close_when_disabled=False,
-        )
+    def __init__(
+        self,
+        valves: list[Valve],
+        valve_controllers: list[Controller[Ratio, LMin]],
+    ):
+        self._flow_balance_controller = FlowBalanceController(valves, valve_controllers)
 
-    def set_actives(self, actives: list[bool]):
-        self._flow_balance_controller.set_actives(actives)
+    def set_active_valves(self, actives: list[bool]):
+        self._flow_balance_controller.set_active_valves(actives)
 
     def set_ratios(self, ratios: list[Ratio | None]):
-        if len(ratios) != (len(self._flow_balance_controller._controllers)):
+        if len(ratios) != (len(self._flow_balance_controller._valve_controllers)):
             raise ValueError("Ratios length must be valves length")
         if sum(ratio for ratio in ratios if ratio is not None) != 1.0:
             raise ValueError("Ratios must sum to 1.0")
@@ -165,13 +166,13 @@ class FlowDistributionController:
         self._ratios = ratios
 
     def __call__(self, measurements: list[LMin], time: datetime):
-        if len(measurements) != len(self._flow_balance_controller._controllers):
+        if len(measurements) != len(self._flow_balance_controller._valve_controllers):
             raise ValueError("Measurements length must match valves length")
         if any(
             (
                 True
                 for ratio, active in zip(
-                    self._ratios, self._flow_balance_controller.get_actives()
+                    self._ratios, self._flow_balance_controller.get_active_valves()
                 )
                 if (ratio is None and active) or (ratio is not None and not active)
             )
@@ -187,7 +188,7 @@ class FlowDistributionController:
                 total_flow * ratio if ratio is not None else 0.0
             )  # 0s for inactive to comply with PID typing
             for ratio, active in zip(
-                self._ratios, self._flow_balance_controller.get_actives()
+                self._ratios, self._flow_balance_controller.get_active_valves()
             )
         ]
         self._flow_balance_controller.set_setpoints(setpoints)
