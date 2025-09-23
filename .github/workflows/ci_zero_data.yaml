@@ -1,8 +1,6 @@
 name: "Zero Data: Test and push Docker image"
 on:
   push:
-    branches:
-      - main
     paths:
       - zero-data/**
       - .github/workflows/ci_zero_data.yaml

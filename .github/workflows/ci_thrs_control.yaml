@@ -1,8 +1,6 @@
 name: "THRS Control: Test"
 on:
   push:
-    branches:
-      - main
     paths:
       - zero-thrs-control/**
       - .github/workflows/ci_thrs_control.yaml

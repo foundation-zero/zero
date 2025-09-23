@@ -1,8 +1,6 @@
 name: "Zero Loads App: Test and push Docker image"
 on:
   push:
-    branches:
-      - main
     paths:
       - zero-loads-app/**
       - .github/workflows/ci_zero_loads_app.yaml
