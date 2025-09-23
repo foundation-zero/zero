@@ -30,7 +30,7 @@ def incorrect_simulation_inputs(simulation_inputs, request):
     return inputs
 
 
-async def test_thrusters_simulation_inputs(incorrect_simulation_inputs, control):
+async def test_consumers_simulation_inputs(incorrect_simulation_inputs, control):
     with Fmu(consumers_path) as fmu:
         mapping = IoMapping(
             fmu,

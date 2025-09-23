@@ -44,8 +44,7 @@ async def test_set_module_temperature(control, executor):
     executor._simulation_inputs.thrusters_module_supply.temperature.value = 60
 
     control_values.thrusters_pump_1.dutypoint.value = 1
-    control_values.thrusters_mix_aft.setpoint.value = Valve.MIXING_A_TO_AB
-    control_values.thrusters_mix_fwd.setpoint.value = Valve.MIXING_A_TO_AB
+    control_values.thrusters_mix_recovery.setpoint.value = Valve.MIXING_A_TO_AB
     control_values.thrusters_flowcontrol_aft.setpoint.value = Valve.OPEN
     control_values.thrusters_flowcontrol_fwd.setpoint.value = Valve.OPEN
     control_values.thrusters_pump_1.on.value = True
@@ -62,11 +61,7 @@ async def test_set_module_temperature(control, executor):
         == approx(60, abs=0.1)
     )
     assert (
-        result.sensor_values.thrusters_temperature_aft_mix.temperature.value
-        == approx(60, abs=0.1)
-    )
-    assert (
-        result.sensor_values.thrusters_temperature_fwd_mix.temperature.value
+        result.sensor_values.thrusters_temperature_recovery_mix.temperature.value
         == approx(60, abs=0.1)
     )
 

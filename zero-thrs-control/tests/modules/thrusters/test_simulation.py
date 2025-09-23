@@ -80,8 +80,7 @@ async def test_thrusters_simulation_inputs(incorrect_simulation_inputs, control)
         control_values = control.initial(datetime.now()).values
 
         control_values.thrusters_pump_1.dutypoint.value = 1
-        control_values.thrusters_mix_aft.setpoint.value = Valve.MIXING_A_TO_AB
-        control_values.thrusters_mix_fwd.setpoint.value = Valve.MIXING_A_TO_AB
+        control_values.thrusters_mix_recovery.setpoint.value = Valve.MIXING_A_TO_AB
         control_values.thrusters_flowcontrol_aft.setpoint.value = Valve.OPEN
         control_values.thrusters_flowcontrol_fwd.setpoint.value = Valve.OPEN
         control_values.thrusters_pump_1.on.value = True
