@@ -16,9 +16,9 @@ from thrs.input_output.definitions.units import Celsius, LMin, PcsMode, Ratio, T
 from thrs.classes.control import Control, ControlResult
 
 
-class ThrustersParameters(BaseModel):
-    maximum_recovery_temperature: Celsius = (
-        70  # TODO: use field or model validator to set dependencies between parameters
+class ThrustersParameters(BaseModel):#TODO: Annotations
+    maximum_supply_temperature: Celsius = (
+        75
     )
     cooling_temperature: Celsius = 38
     cooling_flow: LMin = 25
@@ -34,7 +34,7 @@ class ThrustersParameters(BaseModel):
 
     @model_validator(mode="after")
     def check_temperature_setpoints(self):
-        if self.maximum_recovery_temperature < self.recovery_temperature:
+        if self.maximum_supply_temperature < self.recovery_temperature:
             raise ValueError(
                 "Maximum recovery temperature must be greater than recovery temperature"
             )
@@ -146,6 +146,12 @@ class ThrustersControl(Control):
             },
             {
                 "trigger": "_check_pcs_mode",
+                "source": ["cooling"],
+                "dest": None,
+                "conditions": lambda sensor_values: False,  # stay in cooling until manually changed
+            },
+            {
+                "trigger": "_check_pcs_mode",
                 "source": ["idle", "cooldown"],
                 "dest": "recovery",
                 "conditions": self._pcs_propulsion_hydrogeneration,
@@ -223,7 +229,7 @@ class ThrustersControl(Control):
         self._most_recently_active_pump: None | Literal["pump1", "pump2"] = None
         self._active_pump: None | Pump = None
 
-        self._flow_balance_controller = FlowBalanceController(
+        self._flow_balance_controller = FlowBalanceController(#TODO: might need to only enable the temperature control when the mixing valve is fully open.
             [
                 self._current_values.thrusters_flowcontrol_aft,
                 self._current_values.thrusters_flowcontrol_fwd,
@@ -325,7 +331,7 @@ class ThrustersControl(Control):
         self._flow_balance_controller.set_setpoint(self._parameters.cooling_flow)
 
     def _set_heat_dump_to_recovery(self, sensor_values: ThrustersSensorValues):
-        self._heat_dump_controller.setpoint = self._parameters.recovery_temperature
+        self._heat_dump_controller.setpoint = self._parameters.maximum_supply_temperature
 
     def _set_heat_dump_to_cooling(self, sensor_values: ThrustersSensorValues):
         self._heat_dump_controller.setpoint = self._parameters.cooling_temperature
