@@ -11,12 +11,12 @@
 
 Run Adapter
 ```bash
-poetry run python -m adapter adapter
+poetry run python -m control adapter
 ```
 
 Run stub
 ```bash
-poetry run python -m adapter stub
+poetry run python -m control stub
 ```
 
 
