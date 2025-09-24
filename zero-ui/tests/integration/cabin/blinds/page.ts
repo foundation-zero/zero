@@ -1,9 +1,9 @@
 import { SubscriptionInterceptor } from "@foundation-zero/graphql-subscriptions-mock";
 import { Locator, Page } from "@playwright/test";
-import { BlindsControl, Room } from "../../../src/@types";
-import allRooms from "../../data/all-rooms";
-import { isBlindsControl } from "../../lib/helpers";
-import { ZeroSubscriptions } from "../../mocks/playwright";
+import { BlindsControl, Room } from "../../../../src/@types";
+import allRooms from "../../../data/all-rooms";
+import { isBlindsControl } from "../../../lib/helpers";
+import { ZeroSubscriptions } from "../../../mocks/playwright";
 
 export type LightControl = [slider: Locator, track: Locator, toggle: Locator, value: string | null];
 

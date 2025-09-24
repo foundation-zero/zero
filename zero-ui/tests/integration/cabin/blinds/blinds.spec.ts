@@ -1,7 +1,7 @@
-import { rooms } from "../../data/all-rooms";
-import { isBlindsControl } from "../../lib/helpers";
-import { expect, test as testBase } from "../../mocks/playwright";
-import { getAllRooms, getControlLogs, getSensorLogs, getVersion } from "../../mocks/queries";
+import { rooms } from "../../../data/all-rooms";
+import { isBlindsControl } from "../../../lib/helpers";
+import { expect, test as testBase } from "../../../mocks/playwright";
+import { getAllRooms, getControlLogs, getSensorLogs, getVersion } from "../../../mocks/queries";
 import BlindsPage from "./page";
 
 const dutchCabin = rooms.find((room) => room.id === "dutch-cabin")!;

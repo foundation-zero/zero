@@ -1,9 +1,9 @@
-import { ConnectionInitMessage } from "../../lib/types";
-import { expect, test } from "../../mocks/playwright";
-import { getAllRooms, getControlLogs, getSensorLogs, getVersion } from "../../mocks/queries";
+import { ConnectionInitMessage } from "../../../lib/types";
+import { expect, test } from "../../../mocks/playwright";
+import { getAllRooms, getControlLogs, getSensorLogs, getVersion } from "../../../mocks/queries";
 
-import { Roles } from "../../../src/@types";
-import { tokens } from "../../lib/auth";
+import { Roles } from "../../../../src/@types";
+import { tokens } from "../../../lib/auth";
 
 test.describe("Auth", () => {
   test.describe("using the authentication route", () => {
