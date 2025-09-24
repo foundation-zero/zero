@@ -4,8 +4,8 @@ import polars as pl
 import pytest
 from pydantic import ValidationError
 
-from input_output.base import SimulationInputs, Stamped, StampedDf, ThrsModel
-from input_output.definitions.simulation import HeatSource
+from thrs.input_output.base import SimulationInputs, Stamped, StampedDf, ThrsModel
+from thrs.input_output.definitions.simulation import HeatSource
 
 
 class SimpleInputs(SimulationInputs):
@@ -43,13 +43,16 @@ def test_invalid_inputs():
     with pytest.raises(ValidationError, match="DataFrame schema must be"):
         StampedDf.stamp(invalid_dataframe)
 
+
 def test_json_dump():
     inputs = SimpleInputs(
         a=HeatSource(heat_flow=Stamped.stamp(1.0)),
         b=HeatSource(heat_flow=Stamped.stamp(2.0)),
     )
+
     class Test(ThrsModel):
         inputs: SimpleInputs
+
     model = Test(inputs=inputs)
     json = model.model_dump_json()
     assert model == Test.model_validate_json(json)

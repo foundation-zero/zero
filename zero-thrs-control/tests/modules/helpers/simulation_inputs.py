@@ -2,8 +2,8 @@ from functools import partial
 from typing import cast
 from pydantic import BaseModel
 import pytest
-from input_output.base import SimulationInputs
-from input_output.fmu_mapping import included_in_fmu
+from thrs.input_output.base import SimulationInputs
+from thrs.input_output.fmu_mapping import included_in_fmu
 
 
 def simulator_input_field_setters(cls: type[SimulationInputs], ignore=None):

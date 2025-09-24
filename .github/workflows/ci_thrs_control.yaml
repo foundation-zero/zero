@@ -32,22 +32,22 @@ jobs:
       - run: poetry install
         working-directory: zero-thrs-control
 
-      - run: poetry run fmpy compile src/simulation/models/XRGTestModel/FMUInterfaceTester_MECS_regular.fmu
+      - run: poetry run fmpy compile src/thrs/simulation/models/XRGTestModel/FMUInterfaceTester_MECS_regular.fmu
         working-directory: zero-thrs-control
       
-      - run: poetry run fmpy compile src/simulation/models/thruster_moduleV16.fmu
+      - run: poetry run fmpy compile src/thrs/simulation/models/thruster_moduleV16.fmu
         working-directory: zero-thrs-control
 
-      - run: poetry run fmpy compile src/simulation/models/pvt_moduleV12.fmu
+      - run: poetry run fmpy compile src/thrs/simulation/models/pvt_moduleV12.fmu
         working-directory: zero-thrs-control
 
-      - run: poetry run fmpy compile src/simulation/models/consumers_moduleV5.fmu
+      - run: poetry run fmpy compile src/thrs/simulation/models/consumers_moduleV5.fmu
         working-directory: zero-thrs-control
 
-      - run: poetry run fmpy compile src/simulation/models/HT_System_moduleV8.fmu
+      - run: poetry run fmpy compile src/thrs/simulation/models/HT_System_moduleV8.fmu
         working-directory: zero-thrs-control
 
-      - run: poetry run fmpy compile src/simulation/models/pcm_moduleV7.fmu
+      - run: poetry run fmpy compile src/thrs/simulation/models/pcm_moduleV7.fmu
         working-directory: zero-thrs-control
 
       - run: poetry run pyright

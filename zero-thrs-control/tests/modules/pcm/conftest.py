@@ -1,14 +1,18 @@
 from datetime import datetime, timedelta
 from pytest import fixture
 
-from control.modules.pcm import PcmControl, PcmParameters
-from input_output.base import Stamped
-from input_output.definitions.simulation import Boundary, TemperatureBoundary
-from input_output.modules.pcm import PcmSensorValues, PcmSimulationInputs, PcmSimulationOutputs
-from orchestration.executor import SimulationExecutor
-from simulation.fmu import Fmu
-from simulation.io_mapping import IoMapping
-from simulation.models.fmu_paths import pcm_path
+from thrs.control.modules.pcm import PcmControl, PcmParameters
+from thrs.input_output.base import Stamped
+from thrs.input_output.definitions.simulation import Boundary, TemperatureBoundary
+from thrs.input_output.modules.pcm import (
+    PcmSensorValues,
+    PcmSimulationInputs,
+    PcmSimulationOutputs,
+)
+from thrs.orchestration.executor import SimulationExecutor
+from thrs.simulation.fmu import Fmu
+from thrs.simulation.io_mapping import IoMapping
+from thrs.simulation.models.fmu_paths import pcm_path
 
 
 @fixture
@@ -28,6 +32,7 @@ def simulation_inputs():
         ),
     )
 
+
 @fixture
 def io_mapping():
     with Fmu(pcm_path) as fmu:
@@ -36,6 +41,7 @@ def io_mapping():
             PcmSensorValues,
             PcmSimulationOutputs,
         )
+
 
 @fixture
 def executor(io_mapping, simulation_inputs):

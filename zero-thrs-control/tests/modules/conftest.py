@@ -1,6 +1,6 @@
 import fmpy
-from input_output.base import ThrsModel
-from input_output.fmu_mapping import build_inputs_for_fmu
+from thrs.input_output.base import ThrsModel
+from thrs.input_output.fmu_mapping import build_inputs_for_fmu
 
 import polars as pl
 
@@ -43,7 +43,9 @@ def compare_modelica_names(
         .filter(
             pl.col("Simulation module").is_in(module_name),
             pl.col("Included in simulation").is_in(["yes", "optional"]),
-            pl.col("Variable type").is_in(["Input", "Output", "Simulation input", "Simulation output"]),
+            pl.col("Variable type").is_in(
+                ["Input", "Output", "Simulation input", "Simulation output"]
+            ),
         )
         .collect()["Modelica name"]
         .to_list()
@@ -64,11 +66,13 @@ def compare_fmu_to_class(
 ):
     model_description = fmpy.read_model_description(filename)
 
-    fmu_keys = set([
-        var.name
-        for var in model_description.modelVariables
-        if var.causality == "input" or var.causality == "output"
-    ])
+    fmu_keys = set(
+        [
+            var.name
+            for var in model_description.modelVariables
+            if var.causality == "input" or var.causality == "output"
+        ]
+    )
     py_keys = modelica_names_from_class(
         sensor_values, control_values, simulation_inputs, simulation_outputs
     )
