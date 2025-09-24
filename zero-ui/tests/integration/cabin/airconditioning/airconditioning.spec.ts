@@ -1,7 +1,7 @@
-import allRooms from "../../data/all-rooms";
-import { extractActualTemperature } from "../../lib/helpers";
-import { expect, test as testBase } from "../../mocks/playwright";
-import { getAllRooms, getControlLogs, getSensorLogs, getVersion } from "../../mocks/queries";
+import allRooms from "../../../data/all-rooms";
+import { extractActualTemperature } from "../../../lib/helpers";
+import { expect, test as testBase } from "../../../mocks/playwright";
+import { getAllRooms, getControlLogs, getSensorLogs, getVersion } from "../../../mocks/queries";
 import AirconditioningPage from "./page";
 
 const dutchCabin = allRooms.rooms.find((room) => room.id === "dutch-cabin")!;

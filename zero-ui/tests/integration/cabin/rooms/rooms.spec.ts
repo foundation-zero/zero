@@ -1,7 +1,7 @@
-import allRooms from "../../data/all-rooms";
-import { toAmplifierStatus } from "../../lib/helpers";
-import { expect, test as testBase } from "../../mocks/playwright";
-import { getAllRooms, getControlLogs, getSensorLogs, getVersion } from "../../mocks/queries";
+import allRooms from "../../../data/all-rooms";
+import { toAmplifierStatus } from "../../../lib/helpers";
+import { expect, test as testBase } from "../../../mocks/playwright";
+import { getAllRooms, getControlLogs, getSensorLogs, getVersion } from "../../../mocks/queries";
 import RoomsPage from "./page";
 
 const test = testBase.extend<{ roomsPage: RoomsPage }>({

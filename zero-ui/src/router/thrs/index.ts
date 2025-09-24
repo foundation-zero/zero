@@ -20,6 +20,15 @@ const thrsChildRoutes: RouteRecordRaw[] = [
     },
     component: () => import("@/views/thrs/SimulationControls.vue"),
   },
+  {
+    path: "",
+    name: "thrs",
+    meta: {
+      layout: defineAsyncComponent(() => import("@/layouts/THRSLayout.vue")),
+      requiresAuth: false,
+    },
+    component: () => import("@/components/modules/thrs/Schema.vue"),
+  },
 ];
 
 export const thrsRoutes: RouteRecordRaw = {
