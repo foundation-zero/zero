@@ -159,13 +159,11 @@ class UnstampedInput(ThrsModel):
     def generate_for_model(name: str, model: type[ThrsModel]):
         fields = {
             key: Annotated[
-                get_args(field.annotation.__pydantic_generic_metadata__["args"][0])[0],
+                get_args(field.annotation.__pydantic_generic_metadata__["args"][0])[0],  # type: ignore
                 Field(),
-            ]  # type: ignore
-            for key, field in model.model_fields.items()
-            if field.annotation.__pydantic_generic_metadata__[  # type: ignore
-                "origin"
             ]
+            for key, field in model.model_fields.items()
+            if field.annotation.__pydantic_generic_metadata__["origin"]  # type: ignore
             is Stamped
         }
         unstamped_model = create_model(name, **fields, __base__=UnstampedInput)  # type: ignore
