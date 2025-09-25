@@ -1,25 +1,24 @@
 [project]
 name = "zero-domestic-control"
+version = "0.7.1"
 description = ""
+readme = "README.md"
 authors = [
     { name = "Boudewijn van Groos", email = "boudewijn.vangroos@foundationzero.org>" },
-    { name = "Floris Smit", email = "floris.smit@foundationzero.org" }
+    { name = "Dustin van Weersel", email = "dustin.vanweersel@foundationzero.org>" }
 ]
-readme = "README.md"
-packages = [{ include = "zero_domestic_control"}]
 requires-python = ">= 3.13.1,<4.0"
-dynamic = ["dependencies"]
-version = "0.7.0"
-
-[tool.poetry.dependencies]
-pydantic-settings = "^2.7.1"
-fastapi = {extras = ["standard"], version = "^0.115.6"}
-strawberry-graphql = {extras = ["debug-server", "fastapi"], version = "^0.256.1"}
-psycopg = {extras = ["binary"], version = "^3.2.3"}
-pyjwt = "^2.10.1"
-pymodbustcp = "^0.3.0"
-aiomqtt = "^2.3.0"
-homeassistant-api = "^5.0.0"
+packages = [{ include = "zero_domestic_control"}]
+dependencies = [
+    "aiomqtt (>=2.3.0,<3.0.0)",
+    "fastapi[standard] (>=0.115.6,<1.0.0)",
+    "homeassistant-api (>=5.0.0,<6.0.0)",
+    "psycopg[binary] (>=3.2.3,<4.0.0)",
+    "pyjwt (>=2.10.1,<3.0.0)",
+    "pymodbustcp (>=0.3.0,<1.0.0)",
+    "pydantic-settings (>=2.7.1,<3.0.0)",
+    "strawberry-graphql[debug-server,fastapi] (>=0.256.1,<1.0.0)"
+]
 
 [tool.poetry.group.dbt.dependencies]
 dbt-risingwave = "^1.9.2"
