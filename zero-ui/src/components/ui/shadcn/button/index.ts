@@ -8,7 +8,7 @@ export const buttonVariants = cva(
     variants: {
       variant: {
         default:
-          "bg-inverse text-inverse-foreground text-primary-foreground shadow-xs hover:bg-inverse-muted active:bg-brand disabled:bg-disabled disabled:text-disabled-foreground",
+          "bg-inverse text-inverse-foreground shadow-xs hover:bg-inverse-muted active:bg-brand disabled:bg-disabled disabled:text-disabled-foreground",
         secondary:
           "bg-muted border-border-subtle border text-muted-foreground shadow-xs hover:bg-border-subtle hover:text-foreground active:bg-background active:text-muted-foreground disabled:bg-disabled disabled:text-disabled-foreground",
         ghost:

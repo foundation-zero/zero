@@ -222,6 +222,40 @@ The Select component provides a clean, accessible way to choose from a list of o
 </template>
 ```
 
+### Multiple Select with counter
+
+<div class="my-4">
+  <Select multiple>
+    <MultiSelectTrigger>
+      <MultiSelectValue>Add</MultiSelectValue>
+    </MultiSelectTrigger>
+    <SelectContent>
+      <SelectItem value="react">React</SelectItem>
+      <SelectItem value="vue">Vue</SelectItem>
+      <SelectItem value="angular">Angular</SelectItem>
+      <SelectItem value="svelte">Svelte</SelectItem>
+      <SelectItem value="solid">SolidJS</SelectItem>
+    </SelectContent>
+  </Select>
+</div>
+
+```vue
+<template>
+  <Select multiple>
+    <MultiSelectTrigger>
+      <MultiSelectValue>Add</MultiSelectValue>
+    </MultiSelectTrigger>
+    <SelectContent>
+      <SelectItem value="react">React</SelectItem>
+      <SelectItem value="vue">Vue</SelectItem>
+      <SelectItem value="angular">Angular</SelectItem>
+      <SelectItem value="svelte">Svelte</SelectItem>
+      <SelectItem value="solid">SolidJS</SelectItem>
+    </SelectContent>
+  </Select>
+</template>
+```
+
 ## API Reference
 
 ### Select

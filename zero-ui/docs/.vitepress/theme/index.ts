@@ -7,6 +7,8 @@ import { Badge } from "../../../src/components/ui/shadcn/badge";
 import { Button } from "../../../src/components/ui/shadcn/button";
 import { Input } from "../../../src/components/ui/shadcn/input";
 import {
+  MultiSelectTrigger,
+  MultiSelectValue,
   Select,
   SelectContent,
   SelectGroup,
@@ -44,6 +46,8 @@ const theme: Theme = {
     app.component("SelectSeparator", SelectSeparator);
     app.component("SelectTrigger", SelectTrigger);
     app.component("SelectValue", SelectValue);
+    app.component("MultiSelectTrigger", MultiSelectTrigger);
+    app.component("MultiSelectValue", MultiSelectValue);
   },
 };
 
