@@ -471,4 +471,4 @@ typing-extensions = ">=4.12.0"
 [metadata]
 lock-version = "2.1"
 python-versions = ">= 3.13.1,<4.0"
-content-hash = "94212d4ad7a5728df2f41eb823b5d5ab07757318ae8e750693056ec113746a50"
+content-hash = "e0a18f18a50d31320065f0f7207246f3ed035ea35d20f7b8d0aa4a5227bc4d80"
