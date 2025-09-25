@@ -23,8 +23,8 @@ const { t } = useI18n();
         {{ t("labels.dashboard") }}
       </TabsTrigger>
 
-      <RouterLink :to="{ name: 'thrs/main' }">
-        <TabsTrigger value="thrs/main">
+      <RouterLink :to="{ name: 'thrs' }">
+        <TabsTrigger value="thrs">
           {{ t("labels.thrs") }}
         </TabsTrigger>
       </RouterLink>
