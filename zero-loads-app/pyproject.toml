@@ -1,13 +1,14 @@
 [project]
-name = "backend"
+name = "loads"
 version = "0.1.0"
 description = ""
 authors = [
+    { name = "Boudewijn van Groos", email = "boudewijn.vangroos@foundationzero.org>" },
     { name = "Dustin van Weersel", email = "dustin.vanweersel@foundationzero.org>" }
 ]
 readme = "README.md"
 packages = [
-    { include = "backend", from = "src" },
+    { include = "loads", from = "src" },
 ]
 requires-python = ">= 3.13.1,<4.0"
 dependencies = [
@@ -28,7 +29,7 @@ dependencies = [
 ]
 
 [project.scripts]
-backend = "backend:run"
+loads = "loads.__main__:run"
 
 [tool.poetry.group.dev]
 optional = true

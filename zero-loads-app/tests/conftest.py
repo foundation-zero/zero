@@ -2,7 +2,7 @@ import pathlib
 import pytest
 import os
 from pytest import fixture
-from backend.config import Settings
+from loads.config import Settings
 
 
 def pytest_addoption(parser):

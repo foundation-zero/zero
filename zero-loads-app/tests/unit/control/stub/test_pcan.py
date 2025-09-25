@@ -1,7 +1,7 @@
 import pytest
-from backend.control.stub import PCanStub
+from loads.control.stub import PCanStub
 import socket
-from backend.control.stub.can_frame import CAN_Frame
+from loads.control.stub.can_frame import CAN_Frame
 
 
 @pytest.mark.timeout(1)

@@ -2,7 +2,7 @@ import pytest
 import socket
 import asyncio
 from unittest.mock import AsyncMock
-from backend.control import PCanAdapter
+from loads.control import PCanAdapter
 
 
 @pytest.mark.timeout(2)

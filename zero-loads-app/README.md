@@ -7,24 +7,24 @@
  - `hasura metadata apply --admin-secret adminsecretkey`
 
 
-## Backend
+## loads
 
 Run Adapter
 ```bash
-poetry run python -m backend adapter
+poetry run python -m loads adapter
 ```
 
 Run stub
 ```bash
-poetry run python -m backend stub
+poetry run python -m loads stub
 ```
 
 Run API
 ```bash
-poetry run python -m backend api
+poetry run python -m loads api
 ```
 
 Generate JWT token for a role
 ```bash
-poetry run python -m backend generate-jwt --roles captain
+poetry run python -m loads generate-jwt --roles captain
 ```

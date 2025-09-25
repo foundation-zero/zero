@@ -1,4 +1,4 @@
-from backend.control.stub.can_frame import (
+from loads.control.stub.can_frame import (
     CAN_Frame,
     CAN_CRC_Frame,
     CAN_FD_Frame,

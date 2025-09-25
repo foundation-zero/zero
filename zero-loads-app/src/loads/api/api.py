@@ -14,6 +14,10 @@ logger = logging.getLogger("api")
 @strawberry.type
 class Query:
     @strawberry.field
+    def version(self) -> str:
+        return "1.0.0"
+
+    @strawberry.field
     async def reference_values(
         self,
         values: list[strawberry.ID],

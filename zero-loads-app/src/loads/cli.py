@@ -4,7 +4,7 @@ from pydantic_settings import (
     CliSubCommand,
     SettingsConfigDict,
 )
-from backend.config import Settings
+from loads.config import Settings
 from .api.auth import generate_jwt
 from .control import PCanAdapter, PCanStub
 from .logging import setup_logging
@@ -18,7 +18,7 @@ logger = logging.getLogger("cli")
 
 class ApiCli(Settings):
     async def cli_cmd(self) -> None:
-        uvicorn.run("backend.api.api:app", reload=True)
+        uvicorn.run("loads.api.api:app", reload=True)
 
 
 class GenerateJWT(Settings):
