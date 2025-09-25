@@ -53,5 +53,5 @@ def test_one_valve_active(thrusters_control: ThrustersControl):
     assert (
         thrusters_control._current_values.thrusters_flowcontrol_fwd.setpoint.value > 0
     )
-    assert thrusters_control._pump_flow_controller.setpoint == 30.0
+    assert thrusters_control._pump_controller.setpoint == 30.0
     assert thrusters_control._current_values.thrusters_pump_1.dutypoint.value > 0

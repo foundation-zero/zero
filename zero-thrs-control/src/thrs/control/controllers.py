@@ -28,7 +28,7 @@ class Controller[ValueUnit: float, SetpointUnit: float]:
             time_fn= lambda: time.timestamp()
         )
         self._initial = initial
-
+        self._reset_time = False
     def enabled(self) -> bool:
         return self._pid.auto_mode
 
@@ -36,6 +36,7 @@ class Controller[ValueUnit: float, SetpointUnit: float]:
         if self._pid.auto_mode:
             raise Exception("PID is already enabled")
         self._pid.auto_mode = True
+        self._reset_time = True
 
     def disable(self):
         if not self._pid.auto_mode:
@@ -51,6 +52,8 @@ class Controller[ValueUnit: float, SetpointUnit: float]:
         self._pid.setpoint = value
 
     def __call__(self, measurement: SetpointUnit, time: datetime) -> ValueUnit:
+        if self._reset_time: #TODO: deal with dt is simulation versus reality. In simulation, passing dt = tick_duration works. In real time, having actual time would be nice..
+            self._reset_time = False
         self._pid.time_fn = lambda: time.timestamp()
         pid_result = cast(ValueUnit | None, self._pid(measurement))
         return (

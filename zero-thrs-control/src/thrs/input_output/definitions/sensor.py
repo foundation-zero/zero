@@ -22,7 +22,7 @@ class Pump(ThrsModel):
     flow: Stamped[LMin]
 
 
-class TemperatureSensor(ThrsModel):
+class  TemperatureSensor(ThrsModel):
     temperature: Stamped[Celsius]
 
 

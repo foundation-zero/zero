@@ -1,9 +1,12 @@
 from typing import Annotated
 
+from pydantic import computed_field
+
 import thrs.input_output.definitions.control as control
 import thrs.input_output.definitions.sensor as sensor
 from thrs.input_output.definitions import simulation
 from thrs.input_output.base import (
+    Stamped,
     component_meta,
     SimulationInputs,
     ThrsModel,
@@ -25,16 +28,36 @@ class ThrustersSensorValues(ThrsModel):
     thrusters_temperature_recovery_mix: Annotated[
         sensor.TemperatureSensor, component_meta(yard_tag="50001038-30")
     ]
-    thrusters_mix_recovery: Annotated[sensor.Valve, component_meta(yard_tag="50001074", valve_type="mix")]
-    thrusters_mix_exchanger: Annotated[sensor.Valve, component_meta(yard_tag="50001214-01", valve_type="mix")]
-    thrusters_flow_fwd: Annotated[sensor.FlowSensor, component_meta(yard_tag="50001057-22")]
-    thrusters_flow_aft: Annotated[sensor.FlowSensor, component_meta(yard_tag="50001057-23")]
-    thrusters_flowcontrol_aft: Annotated[sensor.Valve, component_meta(yard_tag="50001215", valve_type="flowcontrol")]
-    thrusters_flowcontrol_fwd: Annotated[sensor.Valve, component_meta(yard_tag="50001064-02", valve_type="flowcontrol")]
-    thrusters_shutoff_recovery: Annotated[sensor.Valve, component_meta(yard_tag="50001066-03", valve_type="shutoff")]
-    thrusters_switch_aft: Annotated[sensor.Valve, component_meta(yard_tag="50001091-01", valve_type="switch")]
-    thrusters_switch_fwd: Annotated[sensor.Valve, component_meta(yard_tag="50001091-02", valve_type="switch")]
-    thrusters_flow_recovery: Annotated[sensor.FlowSensor, component_meta(yard_tag="50001093-01")]
+    thrusters_mix_recovery: Annotated[
+        sensor.Valve, component_meta(yard_tag="50001074", valve_type="mix")
+    ]
+    thrusters_mix_exchanger: Annotated[
+        sensor.Valve, component_meta(yard_tag="50001214-01", valve_type="mix")
+    ]
+    thrusters_flow_fwd: Annotated[
+        sensor.FlowSensor, component_meta(yard_tag="50001057-22")
+    ]
+    thrusters_flow_aft: Annotated[
+        sensor.FlowSensor, component_meta(yard_tag="50001057-23")
+    ]
+    thrusters_flowcontrol_aft: Annotated[
+        sensor.Valve, component_meta(yard_tag="50001215", valve_type="flowcontrol")
+    ]
+    thrusters_flowcontrol_fwd: Annotated[
+        sensor.Valve, component_meta(yard_tag="50001064-02", valve_type="flowcontrol")
+    ]
+    thrusters_shutoff_recovery: Annotated[
+        sensor.Valve, component_meta(yard_tag="50001066-03", valve_type="shutoff")
+    ]
+    thrusters_switch_aft: Annotated[
+        sensor.Valve, component_meta(yard_tag="50001091-01", valve_type="switch")
+    ]
+    thrusters_switch_fwd: Annotated[
+        sensor.Valve, component_meta(yard_tag="50001091-02", valve_type="switch")
+    ]
+    thrusters_flow_recovery: Annotated[
+        sensor.FlowSensor, component_meta(yard_tag="50001093-01")
+    ]
     thrusters_pressure_pump: Annotated[
         sensor.PressureSensor, component_meta(yard_tag="50001097-01")
     ]
@@ -47,19 +70,76 @@ class ThrustersSensorValues(ThrsModel):
     thrusters_fwd: Annotated[
         sensor.Thruster, component_meta(yard_tag="150001002", included_in_fmu=False)
     ]
-    thrusters_pcs: Annotated[sensor.Pcs, component_meta(yard_tag="1500", included_in_fmu=False)]
+    thrusters_pcs: Annotated[
+        sensor.Pcs, component_meta(yard_tag="1500", included_in_fmu=False)
+    ]
+
+    @computed_field
+    @property
+    def thrusters_temperature_recovery(
+        self,
+    ) -> Annotated[
+        sensor.TemperatureSensor, component_meta(included_in_fmu=False)
+    ]:
+        total_flow = self.thrusters_flow_aft.flow.value + self.thrusters_flow_fwd.flow.value
+        if total_flow > 0.0:
+            averaged_return_temperature = (
+                self.thrusters_temperature_aft_return.temperature.value * self.thrusters_flow_aft.flow.value
+                + self.thrusters_temperature_fwd_return.temperature.value * self.thrusters_flow_fwd.flow.value
+            ) / total_flow
+        else:
+            averaged_return_temperature = 0.0  # TODO: 0 ok?
+
+        return sensor.TemperatureSensor(temperature=Stamped.stamp(averaged_return_temperature))
 
 
 class ThrustersControlValues(ThrsModel):
-    thrusters_pump_1: Annotated[control.Pump, component_meta(yard_tag="50001194", component_type="pump")]
-    thrusters_pump_2: Annotated[control.Pump, component_meta(yard_tag="50001195", component_type="pump")]
-    thrusters_mix_recovery: Annotated[control.Valve, component_meta(yard_tag="50001074", component_type="valve", valve_type="mix")]
-    thrusters_mix_exchanger: Annotated[control.Valve, component_meta(yard_tag="50001214-01", component_type="valve", valve_type="mix")]
-    thrusters_flowcontrol_aft: Annotated[control.Valve, component_meta(yard_tag="50001215", component_type="valve", valve_type="flowcontrol")]
-    thrusters_flowcontrol_fwd: Annotated[control.Valve, component_meta(yard_tag="50001064-02", component_type="valve", valve_type="flowcontrol")]
-    thrusters_shutoff_recovery: Annotated[control.Valve, component_meta(yard_tag="50001066-03", component_type="valve", valve_type="shutoff")]
-    thrusters_switch_aft: Annotated[control.Valve, component_meta(yard_tag="50001091-01", component_type="valve", valve_type="switch")]
-    thrusters_switch_fwd: Annotated[control.Valve, component_meta(yard_tag="50001091-02", component_type="valve", valve_type="switch")]
+    thrusters_pump_1: Annotated[
+        control.Pump, component_meta(yard_tag="50001194", component_type="pump")
+    ]
+    thrusters_pump_2: Annotated[
+        control.Pump, component_meta(yard_tag="50001195", component_type="pump")
+    ]
+    thrusters_mix_recovery: Annotated[
+        control.Valve,
+        component_meta(yard_tag="50001074", component_type="valve", valve_type="mix"),
+    ]
+    thrusters_mix_exchanger: Annotated[
+        control.Valve,
+        component_meta(
+            yard_tag="50001214-01", component_type="valve", valve_type="mix"
+        ),
+    ]
+    thrusters_flowcontrol_aft: Annotated[
+        control.Valve,
+        component_meta(
+            yard_tag="50001215", component_type="valve", valve_type="flowcontrol"
+        ),
+    ]
+    thrusters_flowcontrol_fwd: Annotated[
+        control.Valve,
+        component_meta(
+            yard_tag="50001064-02", component_type="valve", valve_type="flowcontrol"
+        ),
+    ]
+    thrusters_shutoff_recovery: Annotated[
+        control.Valve,
+        component_meta(
+            yard_tag="50001066-03", component_type="valve", valve_type="shutoff"
+        ),
+    ]
+    thrusters_switch_aft: Annotated[
+        control.Valve,
+        component_meta(
+            yard_tag="50001091-01", component_type="valve", valve_type="switch"
+        ),
+    ]
+    thrusters_switch_fwd: Annotated[
+        control.Valve,
+        component_meta(
+            yard_tag="50001091-02", component_type="valve", valve_type="switch"
+        ),
+    ]
 
 
 class ThrustersSimulationInputs(SimulationInputs):

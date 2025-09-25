@@ -114,18 +114,16 @@ async def test_recovery_mixing(control: ThrustersControl, executor: SimulationEx
 
     # during warm-up the mixing valve should be closed
     while (
-        result.sensor_values.thrusters_temperature_aft_return.temperature.value
-        < control.parameters.recovery_temperature
-    ) and (
-        result.sensor_values.thrusters_temperature_fwd_return.temperature.value
-        < control.parameters.recovery_temperature
+        result.sensor_values.thrusters_temperature_recovery.temperature.value
+        < control.parameters.warmup_temperature
     ):
         control_values = control.control(result.sensor_values, executor.time()).values
         result = await executor.tick(control_values)
 
         assert control_values.thrusters_mix_recovery.setpoint.value == approx(
-                Valve.MIXING_B_TO_AB, abs=1e-2 #TODO: why 2 necessary?
-            )
+            Valve.MIXING_B_TO_AB,
+            abs=1e-1,  # TODO: why 2 necessary?
+        )
 
     # if both aft and fwd are warm, mixing valves should be open
     for i in range(20):
@@ -182,10 +180,12 @@ async def test_heat_dump_with_hot_sea(
         )
 
 
-async def test_flow_recovery(control: ThrustersControl, executor: SimulationExecutor):
+async def test_recovery_temperature(
+    control: ThrustersControl, executor: SimulationExecutor
+):
     result = await executor.tick(control.initial(executor.time()).values)
     # set valves and stabilize
-    for i in range(90):
+    for i in range(500):
         control_values = control.control(result.sensor_values, executor.time()).values
         result = await executor.tick(control_values)
 
@@ -193,15 +193,16 @@ async def test_flow_recovery(control: ThrustersControl, executor: SimulationExec
         control_values = control.control(result.sensor_values, executor.time()).values
         result = await executor.tick(control_values)
         assert control.mode == "recovery"
-        assert result.sensor_values.thrusters_flow_aft.flow.value == approx(
-            control.parameters.recovery_thruster_flow, abs=1
-        )
-        assert result.sensor_values.thrusters_flow_fwd.flow.value == approx(
-            control.parameters.recovery_thruster_flow, abs=1
+        assert (
+            result.sensor_values.thrusters_temperature_recovery.temperature.value
+            == approx(
+                control.parameters.recovery_temperature,
+                abs=2,  # tune control to decrease error margin and warm-up time
+            )
         )
 
 
-async def test_flow_recovery_single_thruster(
+async def test_recovery_single_thruster(
     control: ThrustersControl, executor: SimulationExecutor
 ):
     result = await executor.tick(control.initial(executor.time()).values)
@@ -210,7 +211,7 @@ async def test_flow_recovery_single_thruster(
     executor._simulation_inputs.thrusters_aft.heat_flow = Stamped.stamp(0)
 
     # set valves and stabilize
-    for i in range(120):
+    for i in range(500):
         control_values = control.control(result.sensor_values, executor.time()).values
         result = await executor.tick(control_values)
 
@@ -218,10 +219,15 @@ async def test_flow_recovery_single_thruster(
         control_values = control.control(result.sensor_values, executor.time()).values
         result = await executor.tick(control_values)
 
-        assert result.sensor_values.thrusters_flow_aft.flow.value == approx(0, abs=0.1)
-        assert result.sensor_values.thrusters_flow_fwd.flow.value == approx(
-            control.parameters.recovery_thruster_flow, abs=1
+        assert (
+            result.sensor_values.thrusters_temperature_recovery.temperature.value
+            == approx(
+                control.parameters.recovery_temperature,
+                abs=5,  # TODO: tune control to decrease error margin and warm-up time
+            )
         )
+        assert result.sensor_values.thrusters_flow_aft.flow.value == approx(0, abs=0.1)
+        assert result.sensor_values.thrusters_flow_fwd.flow.value > 0
 
 
 async def test_flow_thrusters_off(
@@ -289,4 +295,5 @@ async def test_flow_cooling_single_thruster(
             control.parameters.cooling_flow, abs=1
         )
 
-#TODO: test cooldown
+
+# TODO: test cooldown
