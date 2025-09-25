@@ -8,15 +8,15 @@ export const buttonVariants = cva(
     variants: {
       variant: {
         default:
-          "bg-background-inverse text-foreground-inverse text-primary-foreground shadow-xs hover:bg-primary/90",
+          "bg-inverse text-inverse-foreground text-primary-foreground shadow-xs hover:bg-primary/90",
         destructive:
           "bg-destructive text-white shadow-xs hover:bg-destructive/90 focus-visible:ring-destructive/20 dark:focus-visible:ring-destructive/40 dark:bg-destructive/60",
         constructive:
-          "bg-constructive text-foreground-inverse shadow-xs hover:bg-constructive/90 focus-visible:ring-constructive/20 dark:focus-visible:ring-constructive/40",
+          "bg-constructive text-inverse-foreground shadow-xs hover:bg-constructive/90 focus-visible:ring-constructive/20 dark:focus-visible:ring-constructive/40",
         warning:
-          "bg-warning text-foreground-inverse shadow-xs hover:bg-warning/90 focus-visible:ring-warning/20 dark:focus-visible:ring-warning/40 ",
+          "bg-warning text-inverse-foreground shadow-xs hover:bg-warning/90 focus-visible:ring-warning/20 dark:focus-visible:ring-warning/40 ",
         brand:
-          "bg-brand text-foreground-inverse shadow-xs hover:bg-brand/90 focus-visible:ring-brand/20 dark:focus-visible:ring-brand/40",
+          "bg-brand text-inverse-foreground shadow-xs hover:bg-brand/90 focus-visible:ring-brand/20 dark:focus-visible:ring-brand/40",
         outline:
           "border bg-background shadow-xs hover:bg-accent hover:text-accent-foreground dark:bg-input/30 dark:border-input dark:hover:bg-input/50",
         secondary: "bg-background-subtle text-foreground-subtle shadow-xs hover:bg-secondary/80",

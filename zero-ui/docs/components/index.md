@@ -6,6 +6,7 @@ Welcome to the Zero UI component library. Below you'll find all available compon
 import { Badge } from '@/components/ui/shadcn/badge'
 import { Button } from '@/components/ui/shadcn/button'
 import { Input } from '@/components/ui/shadcn/input'
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/shadcn/select'
 </script>
 
 ## Available Components
@@ -15,6 +16,7 @@ import { Input } from '@/components/ui/shadcn/input'
 - [Badge](/components/badge) - Display status and categorization information
 - [Button](/components/button) - Interactive button component with multiple variants
 - [Input](/components/input) - Text input field for capturing user input
+- [Select](/components/select) - Dropdown selection component with enhanced functionality
 
 ## Quick Preview
 
@@ -44,6 +46,21 @@ Here's a quick preview of our components:
   <Input placeholder="Basic input example" />
   <Input type="email" placeholder="Email input example" />
   <Input placeholder="Disabled input example" disabled />
+</div>
+
+### Select Examples
+
+<div class="my-4 space-y-4 max-w-md">
+  <Select>
+    <SelectTrigger>
+      <SelectValue placeholder="Select an option" />
+    </SelectTrigger>
+    <SelectContent>
+      <SelectItem value="option1">Option 1</SelectItem>
+      <SelectItem value="option2">Option 2</SelectItem>
+      <SelectItem value="option3">Option 3</SelectItem>
+    </SelectContent>
+  </Select>
 </div>
 
 ## Usage Pattern

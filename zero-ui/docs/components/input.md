@@ -12,7 +12,7 @@ The Input component is a styled HTML input element that supports various types a
 
 ### Basic Input
 
-<div class="my-4  p-4 bg-background-muted">
+<div class="my-4  p-4 bg-muted">
   <Input placeholder="Enter your name..." />
 </div>
 
@@ -26,7 +26,7 @@ The Input component is a styled HTML input element that supports various types a
 
 ### Text Input
 
-<div class="my-4 p-4 bg-background-muted">
+<div class="my-4 p-4 bg-muted">
   <Input type="text" placeholder="Enter text..." />
 </div>
 
@@ -38,7 +38,7 @@ The Input component is a styled HTML input element that supports various types a
 
 ### Email Input
 
-<div class="my-4 p-4 bg-background-muted">
+<div class="my-4 p-4 bg-muted">
   <Input type="email" placeholder="Enter your email..." />
 </div>
 
@@ -50,7 +50,7 @@ The Input component is a styled HTML input element that supports various types a
 
 ### Password Input
 
-<div class="my-4 p-4 bg-background-muted">
+<div class="my-4 p-4 bg-muted">
   <Input type="password" placeholder="Enter password..." />
 </div>
 
@@ -62,13 +62,25 @@ The Input component is a styled HTML input element that supports various types a
 
 ### Disabled Input
 
-<div class="my-4 p-4 bg-background-muted">
+<div class="my-4 p-4 bg-muted">
   <Input placeholder="Disabled input" disabled />
 </div>
 
 ```vue
 <template>
   <Input placeholder="Disabled input" disabled />
+</template>
+```
+
+### Input with validation
+
+<div class="my-4 p-4 bg-muted">
+  <Input placeholder="Invalid input" invalid />
+</div>
+
+```vue
+<template>
+  <Input placeholder="Invalid input" invalid />
 </template>
 ```
 

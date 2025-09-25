@@ -5,6 +5,8 @@ export default defineConfig({
   description: "Component library documentation for Zero UI",
   base: "/zero-ui/",
 
+  appearance: true, // Enable dark mode toggle
+
   themeConfig: {
     nav: [
       { text: "Home", link: "/" },
@@ -15,9 +17,17 @@ export default defineConfig({
       {
         text: "Getting Started",
         items: [
-          { text: "Introduction", link: "/getting-started/" },
-          { text: "Colors", link: "/colors" },
+          { text: "Introduction", link: "/" },
           { text: "Typography", link: "/typography" },
+          { text: "Colors", link: "/colors" },
+        ],
+      },
+      {
+        text: "Colors",
+        items: [
+          { text: "Primitives", link: "/colors/primitives" },
+          { text: "Semantic", link: "/colors/semantic" },
+          { text: "Components", link: "/colors/components" },
         ],
       },
       {
@@ -26,6 +36,7 @@ export default defineConfig({
           { text: "Badge", link: "/components/badge" },
           { text: "Button", link: "/components/button" },
           { text: "Input", link: "/components/input" },
+          { text: "Select", link: "/components/select" },
         ],
       },
     ],

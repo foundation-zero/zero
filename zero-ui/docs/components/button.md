@@ -12,7 +12,7 @@ The Button component is a fundamental UI element for triggering actions and navi
 
 ### Default Button
 
-<div class="my-4 p-4 bg-background-muted">
+<div class="my-4 p-4 bg-muted">
   <Button>Default Button</Button>
 </div>
 
@@ -26,7 +26,7 @@ The Button component is a fundamental UI element for triggering actions and navi
 
 ### Destructive Button
 
-<div class="my-4 p-4 bg-background-muted">
+<div class="my-4 p-4 bg-muted">
   <Button variant="destructive">Delete Item</Button>
 </div>
 
@@ -38,7 +38,7 @@ The Button component is a fundamental UI element for triggering actions and navi
 
 ### Constructive Button
 
-<div class="my-4 p-4 bg-background-muted">
+<div class="my-4 p-4 bg-muted">
   <Button variant="constructive">Save Changes</Button>
 </div>
 
@@ -50,7 +50,7 @@ The Button component is a fundamental UI element for triggering actions and navi
 
 ### Warning Button
 
-<div class="my-4 p-4 bg-background-muted">
+<div class="my-4 p-4 bg-muted">
   <Button variant="warning">Warning Action</Button>
 </div>
 
@@ -62,7 +62,7 @@ The Button component is a fundamental UI element for triggering actions and navi
 
 ### Brand Button
 
-<div class="my-4 p-4 bg-background-muted">
+<div class="my-4 p-4 bg-muted">
   <Button variant="brand">Brand Action</Button>
 </div>
 
@@ -74,7 +74,7 @@ The Button component is a fundamental UI element for triggering actions and navi
 
 ### Outline Button
 
-<div class="my-4 p-4 bg-background-muted">
+<div class="my-4 p-4 bg-muted">
   <Button variant="outline">Outline Button</Button>
 </div>
 
@@ -86,7 +86,7 @@ The Button component is a fundamental UI element for triggering actions and navi
 
 ### Secondary Button
 
-<div class="my-4 p-4 bg-background-muted">
+<div class="my-4 p-4 bg-muted">
   <Button variant="secondary">Secondary Action</Button>
 </div>
 
@@ -98,7 +98,7 @@ The Button component is a fundamental UI element for triggering actions and navi
 
 ### Ghost Button
 
-<div class="my-4 p-4 bg-background-muted">
+<div class="my-4 p-4 bg-muted">
   <Button variant="ghost">Ghost Button</Button>
 </div>
 
@@ -110,7 +110,7 @@ The Button component is a fundamental UI element for triggering actions and navi
 
 ### Link Button
 
-<div class="my-4 p-4 bg-background-muted">
+<div class="my-4 p-4 bg-muted">
   <Button variant="link">Link Button</Button>
 </div>
 
@@ -124,7 +124,7 @@ The Button component is a fundamental UI element for triggering actions and navi
 
 ### Small Button
 
-<div class="my-4 p-4 bg-background-muted">
+<div class="my-4 p-4 bg-muted">
   <Button size="sm">Small Button</Button>
 </div>
 
@@ -136,7 +136,7 @@ The Button component is a fundamental UI element for triggering actions and navi
 
 ### Default Size
 
-<div class="my-4 p-4 bg-background-muted">
+<div class="my-4 p-4 bg-muted">
   <Button>Default Size</Button>
 </div>
 
@@ -148,7 +148,7 @@ The Button component is a fundamental UI element for triggering actions and navi
 
 ### Large Button
 
-<div class="my-4 p-4 bg-background-muted">
+<div class="my-4 p-4 bg-muted">
   <Button size="lg">Large Button</Button>
 </div>
 
@@ -160,7 +160,7 @@ The Button component is a fundamental UI element for triggering actions and navi
 
 ### Icon Button
 
-<div class="my-4 p-4 bg-background-muted">
+<div class="my-4 p-4 bg-muted">
   <Button size="icon" variant="outline">
     <svg class="size-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"/>
@@ -180,7 +180,7 @@ The Button component is a fundamental UI element for triggering actions and navi
 
 ### Disabled Button
 
-<div class="my-4 p-4 bg-background-muted space-x-2 flex flex-wrap gap-2">
+<div class="my-4 p-4 bg-muted space-x-2 flex flex-wrap gap-2">
   <Button disabled>Disabled Default</Button>
   <Button variant="destructive" disabled>Disabled Destructive</Button>
   <Button variant="constructive" disabled>Disabled Constructive</Button>
@@ -196,7 +196,7 @@ The Button component is a fundamental UI element for triggering actions and navi
 
 ### Button Combinations
 
-<div class="my-4 p-4 bg-background-muted space-x-2">
+<div class="my-4 p-4 bg-muted space-x-2">
   <Button>Primary Action</Button>
   <Button variant="outline">Secondary</Button>
   <Button variant="ghost">Cancel</Button>
@@ -214,7 +214,7 @@ The Button component is a fundamental UI element for triggering actions and navi
 
 ### All Variants
 
-<div class="my-4 p-4 bg-background-muted space-x-2 flex flex-wrap gap-2">
+<div class="my-4 p-4 bg-muted space-x-2 flex flex-wrap gap-2">
   <Button variant="default">Default</Button>
   <Button variant="destructive">Destructive</Button>
   <Button variant="constructive">Constructive</Button>
