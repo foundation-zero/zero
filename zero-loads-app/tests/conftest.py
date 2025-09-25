@@ -1,7 +1,5 @@
 import pathlib
 import pytest
-import os
-from pytest import fixture
 from loads.config import Settings
 
 
@@ -26,12 +24,7 @@ def pytest_runtest_setup(item):
         pytest.skip(f"skipping {item} because --run=unit was not specified")
 
 
-def pytest_configure(config):
-    os.environ["PG_HOST"] = "localhost"
-    os.environ["MQTT_HOST"] = "localhost"
-
-
-@fixture
+@pytest.fixture(scope="session")
 def settings():
     return Settings(
         mqtt_host="localhost",

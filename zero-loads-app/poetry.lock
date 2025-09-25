@@ -3300,7 +3300,7 @@ description = "Provider of IANA time zone data"
 optional = false
 python-versions = ">=2"
 groups = ["main"]
-markers = "sys_platform == \"win32\" or platform_system == \"Windows\""
+markers = "platform_system == \"Windows\" or sys_platform == \"win32\""
 files = [
     {file = "tzdata-2025.2-py2.py3-none-any.whl", hash = "sha256:1a403fada01ff9221ca8044d701868fa132215d84beb92242d9acd2147f667a8"},
     {file = "tzdata-2025.2.tar.gz", hash = "sha256:b60a638fcc0daffadf82fe0f57e53d06bdec2f36c4df66280ae79bce6bd6f2b9"},
@@ -3726,4 +3726,4 @@ type = ["pytest-mypy"]
 [metadata]
 lock-version = "2.1"
 python-versions = ">= 3.13.1,<4.0"
-content-hash = "52d69bc22363fc430881276ca057bd2d4ef2d1976f44ee36cf2ce6699467bd35"
+content-hash = "5fa5a9f25918e1e4252b1e7e02988314399efaed6ff59e08012da4b9933b4ff0"

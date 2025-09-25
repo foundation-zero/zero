@@ -1,6 +1,6 @@
 name: "Domestic Control: Test and push Docker image"
 on:
-  push:
+  pull_request:
     paths:
       - zero-domestic-control/**
       - .github/workflows/ci_domestic_control.yaml
@@ -23,7 +23,7 @@ jobs:
       - name: Create .env file from secret
         run: |
           echo "${{ secrets.ENV_ZERO_DOMESTIC_CONTROL }}" > .env
-        working-directory: data
+        working-directory: zero-domestic-control
       - uses: actions/setup-python@v5
         with:
           python-version: 3.13

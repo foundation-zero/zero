@@ -20,7 +20,7 @@ const isOn = computed({
 
     if (!amp) return;
 
-    toggleAmplifier(val, amp);
+    toggleAmplifier(val, currentRoom.value.id);
 
     amp.value = val ? 1 : 0;
   },

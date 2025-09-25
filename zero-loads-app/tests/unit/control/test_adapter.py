@@ -1,3 +1,4 @@
+from loads.config import Settings
 import pytest
 import socket
 import asyncio
@@ -6,7 +7,7 @@ from loads.control import PCanAdapter
 
 
 @pytest.mark.timeout(2)
-async def test_receive_can_message(settings):
+async def test_receive_can_message(settings: Settings):
     # Prepare a valid CAN_Frame message (0x80)
     frame_bytes = (
         b"\x00\x18"  # length = 24

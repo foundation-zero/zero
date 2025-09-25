@@ -3,8 +3,8 @@
 !.gitignore
 !*.md
 
-# Ignore folders.
-.storage
+# Ignore all .storage folders recursively
+**/.storage/
 
 .cloud
 .google.token
@@ -17,6 +17,10 @@ known_devices.yaml
 # Log files
 home-assistant.log
 home-assistant.log.*
+
+# Database files
+home-assistant_v2.db-shm
+home-assistant_v2.db-wal
 
 # Environments
 .env
