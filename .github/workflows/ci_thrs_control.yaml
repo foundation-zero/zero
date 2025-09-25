@@ -1,6 +1,6 @@
 name: "THRS Control: Test"
 on:
-  push:
+  pull_request:
     paths:
       - zero-thrs-control/**
       - .github/workflows/ci_thrs_control.yaml
@@ -27,7 +27,7 @@ jobs:
       - name: Setup Graphviz
         uses: ts-graphviz/setup-graphviz@v2
 
-      - run: poetry install
+      - run: poetry install --with dev,test
         working-directory: zero-thrs-control
 
       - run: poetry run fmpy compile src/thrs/simulation/models/XRGTestModel/FMUInterfaceTester_MECS_regular.fmu
