@@ -5,7 +5,7 @@ from contextlib import asynccontextmanager
 from datetime import datetime
 
 from .can_frame import CAN_CRC_Frame, CAN_FD_CRC_Frame, CAN_FD_Frame, CAN_Frame
-from ..config import Settings
+from ...config import Settings
 import logging
 
 logger = logging.getLogger("stub")

@@ -1,6 +1,6 @@
 import jwt
 
-from .config import Settings
+from backend.config import Settings
 
 settings = Settings()  # type: ignore
 

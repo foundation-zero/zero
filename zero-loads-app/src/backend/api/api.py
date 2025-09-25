@@ -20,10 +20,8 @@ from .types import (
     AlertType,
 )
 import logging
-from sqlalchemy import select
-from sqlalchemy import cast
+from sqlalchemy import select, cast
 from sqlalchemy.dialects.postgresql import TEXT, ARRAY, NUMERIC
-import uvicorn
 
 logger = logging.getLogger("api")
 
@@ -101,6 +99,3 @@ graphql_app = GraphQLRouter(schema)
 
 app = FastAPI()
 app.include_router(graphql_app, prefix="/graphql")
-
-if __name__ == "__main__":
-    uvicorn.run("main:app", reload=True)

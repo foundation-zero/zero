@@ -1,6 +1,6 @@
 from sqlalchemy.ext.asyncio import create_async_engine, async_sessionmaker
 from sqlalchemy.orm import declarative_base
-from .config import Settings
+from backend.config import Settings
 from sqlalchemy import Column, Integer, Float, String
 from sqlalchemy.dialects.postgresql import NUMRANGE, ARRAY
 from sqlalchemy import Enum as SAEnum

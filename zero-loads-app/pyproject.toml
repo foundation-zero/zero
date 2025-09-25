@@ -1,5 +1,5 @@
 [project]
-name = "control"
+name = "backend"
 version = "0.1.0"
 description = ""
 authors = [
@@ -7,8 +7,7 @@ authors = [
 ]
 readme = "README.md"
 packages = [
-    { include = "control", from = "src" },
-    { include = "api", from = "src" }
+    { include = "backend", from = "src" },
 ]
 requires-python = ">= 3.13.1,<4.0"
 dependencies = [
@@ -29,8 +28,7 @@ dependencies = [
 ]
 
 [project.scripts]
-control = "control.__main__:run"
-api = "api.__main__:run"
+backend = "__main__:run"
 
 [tool.poetry.group.dev]
 optional = true

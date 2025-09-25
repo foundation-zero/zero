@@ -4,7 +4,7 @@ from contextlib import asynccontextmanager
 from aiomqtt import Client as MqttClient
 from construct import Container
 
-from .config import Settings
+from backend.config import Settings
 from .stub.can_frame import CAN_Frame, CAN_CRC_Frame, CAN_FD_Frame, CAN_FD_CRC_Frame
 import asyncio
 import logging
