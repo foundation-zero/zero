@@ -3,10 +3,10 @@ from datetime import datetime
 
 from aiomqtt import Client
 import pytest
-from input_output.base import Stamped
-from input_output.definitions.sensor import FlowSensor
-from orchestration.config import Config
-from orchestration.executor import MqttExecutor
+from thrs.input_output.base import Stamped
+from thrs.input_output.definitions.sensor import FlowSensor
+from thrs.orchestration.config import Config
+from thrs.orchestration.executor import MqttExecutor
 from tests.orchestration.simples import SimpleExecutor, SimpleInOut
 
 

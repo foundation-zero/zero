@@ -1,13 +1,13 @@
 from pytest import approx
-from input_output.definitions.control import Valve
-from input_output.modules.thrusters import (
+from thrs.input_output.definitions.control import Valve
+from thrs.input_output.modules.thrusters import (
     ThrustersControlValues,
     ThrustersSensorValues,
     ThrustersSimulationInputs,
     ThrustersSimulationOutputs,
 )
 from tests.modules.conftest import compare_fmu_to_class, compare_modelica_names
-from simulation.models.fmu_paths import thrusters_path
+from thrs.simulation.models.fmu_paths import thrusters_path
 
 
 def test_thrusters_sheet_names():

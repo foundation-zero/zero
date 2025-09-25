@@ -1,12 +1,12 @@
 from pytest import approx
-from control.modules.consumers import ConsumersControl
-from input_output.modules.consumers import (
+from thrs.control.modules.consumers import ConsumersControl
+from thrs.input_output.modules.consumers import (
     ConsumersControlValues,
     ConsumersSensorValues,
     ConsumersSimulationInputs,
     ConsumersSimulationOutputs,
 )
-from orchestration.executor import SimulationExecutor
+from thrs.orchestration.executor import SimulationExecutor
 
 type ConsumersExecutor = SimulationExecutor[
     ConsumersSensorValues,
@@ -33,7 +33,8 @@ async def test_basic(control: ConsumersControl, executor: ConsumersExecutor):
     assert result.sensor_values.consumers_flow_boosting.flow.value == approx(
         total_flow * control._parameters.boosting_flow_ratio_setpoint, abs=1.0
     )
-    assert result.sensor_values.consumers_flow_fahrenheit.flow.value == approx(total_flow * control._parameters.fahrenheit_flow_ratio_setpoint, abs=1.0
+    assert result.sensor_values.consumers_flow_fahrenheit.flow.value == approx(
+        total_flow * control._parameters.fahrenheit_flow_ratio_setpoint, abs=1.0
     )
 
 

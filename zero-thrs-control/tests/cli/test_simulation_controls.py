@@ -6,7 +6,7 @@ from aiomqtt import Client, Message
 from pydantic import BaseModel
 import pytest
 
-from cli.simulation_controls import (
+from thrs.cli.simulation_controls import (
     AllowedModesMessage,
     ConnectMessage,
     MqttSequencer,
@@ -23,7 +23,7 @@ from cli.simulation_controls import (
 
 from pydantic_partial import create_partial_model
 
-from orchestration.config import Config
+from thrs.orchestration.config import Config
 
 
 class NestedModel(BaseModel):
@@ -67,7 +67,6 @@ def test_update_in_place_nested():
 
 
 def test_update_in_place_nested_stamped():
-
     class B(BaseModel):
         b: int
 
@@ -152,9 +151,9 @@ async def test_mqtt_sequencer():
     await fake_client.subscribe("test/wrong")
     await fake_client.publish("test/wrong", AMessage(a="test").model_dump_json())
     await asyncio.sleep(0)  # Wait for the event loop to process the message
-    assert not received[
-        0
-    ], "Should not receive on different topic (even if client was interfered)"
+    assert not received[0], (
+        "Should not receive on different topic (even if client was interfered)"
+    )
 
     await fake_client.publish("test/topic", AMessage(a="test").model_dump_json())
     await asyncio.sleep(0)  # Wait for the event loop to process the message

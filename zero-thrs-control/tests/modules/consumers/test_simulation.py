@@ -2,14 +2,14 @@ from datetime import datetime, timedelta
 from pytest import fixture
 import pytest
 
-from input_output.modules.consumers import (
+from thrs.input_output.modules.consumers import (
     ConsumersSensorValues,
     ConsumersSimulationInputs,
     ConsumersSimulationOutputs,
 )
-from simulation.fmu import Fmu
-from simulation.io_mapping import IoMapping
-from simulation.models.fmu_paths import consumers_path
+from thrs.simulation.fmu import Fmu
+from thrs.simulation.io_mapping import IoMapping
+from thrs.simulation.models.fmu_paths import consumers_path
 from tests.modules.helpers.simulation_inputs import simulator_input_field_setters
 
 
@@ -20,7 +20,7 @@ from tests.modules.helpers.simulation_inputs import simulator_input_field_setter
             ignore=[
                 ("consumers_fahrenheit_supply", "flow"),
                 ("consumers_module_supply", "flow"),
-            ], # Flows appear to just work, instead of break
+            ],  # Flows appear to just work, instead of break
         )
     )
 )

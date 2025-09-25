@@ -1,20 +1,20 @@
 from datetime import datetime, timedelta
 from pytest import fixture
 
-from input_output.base import Stamped
-from input_output.definitions.simulation import Boundary
-from input_output.modules.consumers import (
+from thrs.input_output.base import Stamped
+from thrs.input_output.definitions.simulation import Boundary
+from thrs.input_output.modules.consumers import (
     ConsumersSensorValues,
     ConsumersSimulationInputs,
     ConsumersSimulationOutputs,
 )
 
 
-from control.modules.consumers import ConsumersControl, ConsumersParameters
-from orchestration.executor import SimulationExecutor
-from simulation.fmu import Fmu
-from simulation.models.fmu_paths import consumers_path
-from simulation.io_mapping import IoMapping
+from thrs.control.modules.consumers import ConsumersControl, ConsumersParameters
+from thrs.orchestration.executor import SimulationExecutor
+from thrs.simulation.fmu import Fmu
+from thrs.simulation.models.fmu_paths import consumers_path
+from thrs.simulation.io_mapping import IoMapping
 
 
 @fixture
@@ -29,7 +29,6 @@ def parameters():
 
 @fixture
 def control(parameters):
-
     return ConsumersControl(parameters)
 
 

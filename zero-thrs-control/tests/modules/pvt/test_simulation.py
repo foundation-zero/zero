@@ -2,15 +2,15 @@ from datetime import datetime, timedelta
 from pytest import fixture
 import pytest
 
-from input_output.modules.pvt import (
+from thrs.input_output.modules.pvt import (
     PvtSensorValues,
     PvtSimulationInputs,
     PvtSimulationOutputs,
 )
-from simulation.fmu import Fmu
-from simulation.io_mapping import IoMapping
+from thrs.simulation.fmu import Fmu
+from thrs.simulation.io_mapping import IoMapping
 from tests.modules.helpers.simulation_inputs import simulator_input_field_setters
-from simulation.models.fmu_paths import pvt_path
+from thrs.simulation.models.fmu_paths import pvt_path
 
 
 @fixture(
@@ -21,7 +21,7 @@ from simulation.models.fmu_paths import pvt_path
                 "pvt_pump_failure_switch_main_fwd",
                 "pvt_pump_failure_switch_main_aft",
                 "pvt_pump_failure_switch_owners",
-                "pvt_module_supply"
+                "pvt_module_supply",
             ],  # Switches don't lend themselves to absurdation
         )
     )
@@ -33,8 +33,7 @@ def incorrect_simulation_inputs(simulation_inputs, request):
 
 
 async def test_thrusters_simulation_inputs(incorrect_simulation_inputs, control):
-    with Fmu(
-        pvt_path) as fmu:
+    with Fmu(pvt_path) as fmu:
         mapping = IoMapping(
             fmu,
             PvtSensorValues,

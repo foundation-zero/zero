@@ -3,14 +3,15 @@ from datetime import datetime
 import pytest
 from pydantic import ValidationError
 
-from input_output.base import Stamped, StampedDf, ThrsModel
-from input_output.definitions.units import (
+from thrs.input_output.base import Stamped, StampedDf, ThrsModel
+from thrs.input_output.definitions.units import (
     LMin,
     PcsMode,
     unit_for_annotation,
     Ratio,
     zero_for_unit,
 )
+
 
 def test_lmin():
     with pytest.raises(ValidationError):
@@ -56,5 +57,5 @@ def test_zero_for_unit_float_alias():
     assert zero_for_unit(Ratio) == 0.0
 
 
-def test_zero_for_unit_literal():
-    assert zero_for_unit(PcsMode) == "off"
+def test_zero_for_enum():
+    assert zero_for_unit(PcsMode) == PcsMode.OFF

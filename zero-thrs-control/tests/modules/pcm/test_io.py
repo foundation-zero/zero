@@ -1,7 +1,11 @@
-
-from input_output.modules.pcm import PcmControlValues, PcmSensorValues, PcmSimulationInputs, PcmSimulationOutputs
+from thrs.input_output.modules.pcm import (
+    PcmControlValues,
+    PcmSensorValues,
+    PcmSimulationInputs,
+    PcmSimulationOutputs,
+)
 from tests.modules.conftest import compare_fmu_to_class, compare_modelica_names
-from simulation.models.fmu_paths import pcm_path
+from thrs.simulation.models.fmu_paths import pcm_path
 
 
 def test_pcm_sheet_names():

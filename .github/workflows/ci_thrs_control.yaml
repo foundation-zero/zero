@@ -2,12 +2,10 @@ name: "THRS Control: Test"
 on:
   push:
     paths:
-      - 'zero-thrs-control/**'
-      - '.github/workflows/ci_thrs_control.yaml'
+      - zero-thrs-control/**
+      - .github/workflows/ci_thrs_control.yaml
   release:
     types: [released]
-    paths:
-      - 'zero-thrs-control/**'
 
 jobs:
   test:
@@ -23,7 +21,7 @@ jobs:
         with:
           python-version: 3.13
 
-      - run: pipx install poetry==2.0.1
+      - run: pipx install poetry==2.1.4
         working-directory: zero-thrs-control
 
       - name: Setup Graphviz
@@ -32,22 +30,22 @@ jobs:
       - run: poetry install
         working-directory: zero-thrs-control
 
-      - run: poetry run fmpy compile src/simulation/models/XRGTestModel/FMUInterfaceTester_MECS_regular.fmu
-        working-directory: zero-thrs-control
-      
-      - run: poetry run fmpy compile src/simulation/models/thruster_moduleV16.fmu
+      - run: poetry run fmpy compile src/thrs/simulation/models/XRGTestModel/FMUInterfaceTester_MECS_regular.fmu
         working-directory: zero-thrs-control
 
-      - run: poetry run fmpy compile src/simulation/models/pvt_moduleV12.fmu
+      - run: poetry run fmpy compile src/thrs/simulation/models/thruster_moduleV16.fmu
         working-directory: zero-thrs-control
 
-      - run: poetry run fmpy compile src/simulation/models/consumers_moduleV5.fmu
+      - run: poetry run fmpy compile src/thrs/simulation/models/pvt_moduleV12.fmu
         working-directory: zero-thrs-control
 
-      - run: poetry run fmpy compile src/simulation/models/HT_System_moduleV8.fmu
+      - run: poetry run fmpy compile src/thrs/simulation/models/consumers_moduleV5.fmu
         working-directory: zero-thrs-control
 
-      - run: poetry run fmpy compile src/simulation/models/pcm_moduleV7.fmu
+      - run: poetry run fmpy compile src/thrs/simulation/models/HT_System_moduleV8.fmu
+        working-directory: zero-thrs-control
+
+      - run: poetry run fmpy compile src/thrs/simulation/models/pcm_moduleV7.fmu
         working-directory: zero-thrs-control
 
       - run: poetry run pyright

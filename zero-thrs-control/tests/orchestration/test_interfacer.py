@@ -1,6 +1,6 @@
 from datetime import datetime
-from orchestration.collector import NullCollector
-from orchestration.cycler import Cycler
+from thrs.orchestration.collector import NullCollector
+from thrs.orchestration.cycler import Cycler
 from tests.orchestration.simples import SimpleAlarms, SimpleControl, SimpleExecutor
 
 

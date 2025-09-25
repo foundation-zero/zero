@@ -1,23 +1,35 @@
 from datetime import datetime, timedelta
 from pytest import fixture
 
-from control.modules.high_temperature import HighTemperatureControl, HighTemperatureParameters
-from input_output.base import Stamped
-from input_output.definitions.control import Valve
-from input_output.definitions.simulation import Boundary, HeatSource, Pcs, Thruster, ValvePosition
-from input_output.modules.high_temperature import HighTemperatureSensorValues, HighTemperatureSimulationInputs, HighTemperatureSimulationOutputs
-from orchestration.executor import SimulationExecutor
-from simulation.fmu import Fmu
-from simulation.io_mapping import IoMapping
-from simulation.models.fmu_paths import high_temperature_path
-
-
+from thrs.control.modules.high_temperature import (
+    HighTemperatureControl,
+    HighTemperatureParameters,
+)
+from thrs.input_output.base import Stamped
+from thrs.input_output.definitions.control import Valve
+from thrs.input_output.definitions.simulation import (
+    Boundary,
+    HeatSource,
+    Pcs,
+    Thruster,
+    ValvePosition,
+)
+from thrs.input_output.definitions.units import PcsMode
+from thrs.input_output.modules.high_temperature import (
+    HighTemperatureSensorValues,
+    HighTemperatureSimulationInputs,
+    HighTemperatureSimulationOutputs,
+)
+from thrs.orchestration.executor import SimulationExecutor
+from thrs.simulation.fmu import Fmu
+from thrs.simulation.io_mapping import IoMapping
+from thrs.simulation.models.fmu_paths import high_temperature_path
 
 
 @fixture
 def simulation_inputs():
     return HighTemperatureSimulationInputs(
-         thrusters_aft=Thruster(
+        thrusters_aft=Thruster(
             heat_flow=Stamped.stamp(9000), active=Stamped.stamp(True)
         ),
         thrusters_fwd=Thruster(
@@ -26,7 +38,7 @@ def simulation_inputs():
         thrusters_seawater_supply=Boundary(
             temperature=Stamped.stamp(32), flow=Stamped.stamp(64)
         ),
-        thrusters_pcs=Pcs(mode=Stamped.stamp("propulsion")),
+        thrusters_pcs=Pcs(mode=Stamped.stamp(PcsMode.PROPULSION)),
         pvt_main_fwd=HeatSource(heat_flow=Stamped.stamp(16000)),
         pvt_main_aft=HeatSource(heat_flow=Stamped.stamp(16000)),
         pvt_owners=HeatSource(heat_flow=Stamped.stamp(8000)),
@@ -53,9 +65,11 @@ def simulation_inputs():
         ),
     )
 
+
 @fixture
 def control():
     return HighTemperatureControl(HighTemperatureParameters())
+
 
 @fixture
 def io_mapping():
@@ -65,6 +79,7 @@ def io_mapping():
             HighTemperatureSensorValues,
             HighTemperatureSimulationOutputs,
         )
+
 
 @fixture
 def executor(io_mapping, simulation_inputs):

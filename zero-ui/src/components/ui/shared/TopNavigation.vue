@@ -11,11 +11,11 @@ const { isScrolling, breakpoints } = toRefs(useUIStore());
   >
     <slot />
     <div
-      class="flex items-center justify-between px-4 md:px-6"
+      class="flex items-center justify-between px-4 transition-all md:px-6"
       :class="{
         'xl:container xl:px-6': !breakpoints.touch,
         'pt-3 md:pt-4': !isScrolling,
-        'max-sm:bg-background max-sm:py-1 max-sm:shadow-sm md:pt-2 max-md:dark:border-b':
+        'max-md:bg-background/80 max-sm max-md:py-2 max-md:shadow-sm max-md:backdrop-blur-md md:pt-2 max-md:dark:border-b':
           isScrolling,
       }"
     >

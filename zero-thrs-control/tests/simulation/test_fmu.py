@@ -3,14 +3,14 @@ from pathlib import Path
 
 from pytest import approx
 
-from simulation.fmu import Fmu
+from thrs.simulation.fmu import Fmu
 
 
 def test_fmu():
     with Fmu(
         str(
             Path(__file__).resolve().parent.parent.parent
-            / "src/simulation/models/XRGTestModel/FMUInterfaceTester_MECS_regular.fmu"
+            / "src/thrs/simulation/models/XRGTestModel/FMUInterfaceTester_MECS_regular.fmu"
         )
     ) as fmu:
         outputs = fmu.tick({"r": 1.0}, timedelta(seconds=1))

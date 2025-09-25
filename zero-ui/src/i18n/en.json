@@ -13,6 +13,9 @@
     "heating": "Heating",
     "power": "Power",
     "ventilation": "Ventilation",
+    "electricity": "Electricity",
+    "thrs": "THRS",
+    "pumpControl": "Pump control",
     "lights": "Lights",
     "blinds": "Blinds",
     "shears": "Shears",
@@ -32,6 +35,7 @@
     "percentage": "Percentage",
     "more": "More",
     "save": "Save",
+    "off": "Off",
     "overview": "Overview",
     "status": "Status",
     "roomGroup": {

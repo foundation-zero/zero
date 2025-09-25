@@ -20,3 +20,21 @@ export CFLAGS="-I $(brew --prefix graphviz)/include"
 export LDFLAGS="-L $(brew --prefix graphviz)/lib"
 poetry install
 ```
+
+## GraphQL
+
+### Running API
+
+Run the API with
+
+```bash
+poetry run strawberry server thrs.graphql.strawberry
+```
+
+### Export schema
+
+Export the graphql schema to zero-ui with
+
+```bash
+poetry run strawberry export-schema thrs.graphql.strawberry --output ../zero-ui/src/graphql/thrs/schema.graphql
+```

@@ -5,7 +5,10 @@ on:
     branches:
       - main
     paths:
-      - "zero-data/charts/data_gen/**"
+      - .github/workflows/helm_zero_data_gen.yaml
+      - zero-data/charts/data_gen/**
+  release:
+    types: [released]
 
 jobs:
   helm-push:

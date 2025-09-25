@@ -50,15 +50,26 @@ export const updateSetpointWhenControlsHaveChanged = <T extends RoomControl>(
     }
   });
 
-export const ratioAsPercentage = (ratio: Ref<number>) =>
+export const ratioAsPercentage = (ratio: Ref<number | string>) =>
   computed({
     get() {
-      return ratio.value * 100;
+      return Number(ratio.value) * 100;
     },
     set(percentage: number) {
       ratio.value = percentage / 100;
     },
   });
+
+export const toInversedPercentage = (percentage: number) => 100 - percentage;
+export const separateDecimals = (
+  value: Ref<number>,
+  digits: number = 1,
+): { integer: Ref<number>; decimal: Ref<number> } => {
+  return {
+    integer: computed(() => Math.floor(value.value)),
+    decimal: computed(() => Math.round((value.value % 1) * 10 ** digits)),
+  };
+};
 
 export const valueWithValidation = <T>(val: Ref<T>, validateFn: (next: T) => boolean) =>
   computed({
@@ -81,6 +92,18 @@ export const valueAsArray = <T>(value: Ref<T>) =>
       if (next.length === 0) throw new Error("Array cannot be empty");
 
       value.value = next[0];
+    },
+  });
+
+export const writeProtected = <T>(value: Ref<T>, writeAllowed: Ref<boolean>) =>
+  computed({
+    get() {
+      return value.value;
+    },
+    set(next: T) {
+      if (writeAllowed.value) {
+        value.value = next;
+      }
     },
   });
 

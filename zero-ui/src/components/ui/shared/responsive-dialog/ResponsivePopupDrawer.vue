@@ -12,11 +12,14 @@ defineProps<{ title: string; description: string }>();
 </script>
 
 <template>
-  <Drawer v-model:open="open">
+  <Drawer
+    v-model:open="open"
+    class="mx-4"
+  >
     <DrawerTrigger as-child>
       <slot name="trigger" />
     </DrawerTrigger>
-    <DrawerContent>
+    <DrawerContent class="mx-4">
       <div class="flex flex-col">
         <DrawerHeader class="">
           <div class="mx-auto w-full max-w-sm text-center">

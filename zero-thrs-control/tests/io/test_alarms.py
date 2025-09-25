@@ -1,5 +1,5 @@
 from pydantic import BaseModel
-from input_output.alarms import BaseAlarms, Severity, alarm
+from thrs.input_output.alarms import BaseAlarms, Severity, alarm
 
 
 class MySensorValues(BaseModel):

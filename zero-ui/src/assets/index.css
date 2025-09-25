@@ -36,6 +36,9 @@
 
   --background: var(--color-neutral-0);
   --foreground: var(--color-neutral-1000);
+  --foreground-disabled: var(--color-neutral-500);
+  --background-disabled: var(--color-neutral-300);
+  --border-subtle: var(--color-neutral-100);
   --input: var(--background);
   --input-border: --muted: var(--color-neutral-50);
   --muted-foreground: var(--color-neutral-700);
@@ -198,8 +201,10 @@ h6 {
   --background: var(--color-neutral-900);
   --input: var(--background);
   --input-border: var(--color-neutral-700);
-
+  --foreground-disabled: var(--color-neutral-500);
+  --background-disabled: var(--color-neutral-700);
   --background-muted: var(--color-neutral-1000);
+  --border-subtle: var(--color-neutral-700);
   --foreground: var(--color-neutral-0);
   --muted: var(--color-neutral-1000);
   --muted-foreground: var(--color-neutral-100);
@@ -266,6 +271,12 @@ h6 {
   --text-4xs--line-height: 0.625rem;
   --text-5xs: 0.25rem;
   --text-5xs--line-height: 0.375rem;
+  --text-6xs: 0.175rem;
+  --text-6xs--line-height: 0.25rem;
+  --text-r6xs: 0.175em;
+  --text-r6xs--line-height: 0.25em;
+  --text-r5xs: 0.25em;
+  --text-r5xs--line-height: 0.375em;
   --text-r4xs: 0.375em;
   --text-r4xs--line-height: 0.625em;
   --text-r3xs: 0.5em;
@@ -331,6 +342,9 @@ h6 {
   --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
   --color-sidebar-border: var(--sidebar-border);
   --color-sidebar-ring: var(--sidebar-ring);
+  --color-foreground-disabled: var(--foreground-disabled);
+  --color-background-disabled: var(--background-disabled);
+  --color-border-subtle: var(--border-subtle);
 
   --animate-accordion-down: accordion-down 0.2s ease-out;
   --animate-accordion-up: accordion-up 0.2s ease-out;

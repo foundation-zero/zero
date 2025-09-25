@@ -16,7 +16,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/shadcn/select";
-import { Field, TypeToType } from "@/stores/thrs";
+import { Field, TypeToType } from "@/stores/thrs-simulation";
 import { computed } from "vue";
 
 const props = defineProps<{

@@ -6,9 +6,10 @@ defineProps<{ to: RouteLocationRaw; active?: boolean; disabled?: boolean }>();
 
 <template>
   <li
-    class="hover:bg-primary/10 rounded-md"
+    class="hover:bg-background rounded-md font-light transition-all duration-250"
     :class="{
-      'bg-primary/10 font-medium': active,
+      'text-brand font-medium': active,
+      'text-muted-foreground': !active,
     }"
   >
     <RouterLink

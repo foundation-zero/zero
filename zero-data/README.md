@@ -16,7 +16,7 @@ The version of `zero-data` they deploy is based on the `appVersion`.
 
  - Install dependencies: `poetry install`
  - Create `.env` based on `.env.example`
-    - Retrieve the `GCS_CREDENTIALS` from the cluster secret `gcs-auth`
+    - Retrieve the `GCS_CREDENTIALS` from Bitwardem
     - Alternatively [Follow these instructions](https://docs.risingwave.com/integrations/destinations/google-cloud-storage) to create a service account key in Google Cloud and create the base64 encoded key
 
 # Local testing (docker)

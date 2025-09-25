@@ -1,14 +1,14 @@
 from pytest import approx
 import pytest
-from input_output.base import Stamped
-from input_output.definitions.control import Valve
-from input_output.modules.pvt import (
+from thrs.input_output.base import Stamped
+from thrs.input_output.definitions.control import Valve
+from thrs.input_output.modules.pvt import (
     PvtControlValues,
     PvtSensorValues,
     PvtSimulationInputs,
     PvtSimulationOutputs,
 )
-from orchestration.executor import SimulationExecutor
+from thrs.orchestration.executor import SimulationExecutor
 
 type PvtExecutor = SimulationExecutor[
     PvtSensorValues,
@@ -57,7 +57,9 @@ async def test_recovery(control, executor):
 async def test_recovery_heat_dump(
     control, executor: PvtExecutor
 ):  # TODO: tune heat dump controller - test fails due to overshoot
-    executor._simulation_inputs.pvt_module_supply.temperature = Stamped.stamp(control.parameters.heat_dump_setpoint + 5)
+    executor._simulation_inputs.pvt_module_supply.temperature = Stamped.stamp(
+        control.parameters.heat_dump_setpoint + 5
+    )
     executor._simulation_inputs.pvt_seawater_supply.flow = Stamped.stamp(100)
     executor._simulation_inputs.pvt_seawater_supply.temperature = Stamped.stamp(10)
 
@@ -124,10 +126,16 @@ async def test_pump_flow_recovery(control, executor):  # TODO: tune pump control
         control_values = control.control(result.sensor_values, executor.time()).values
         result = await executor.tick(control_values)
 
-        assert result.sensor_values.pvt_flow_main_fwd.flow.value == approx(control._parameters.main_fwd_flow_setpoint, abs=1)
-        assert result.sensor_values.pvt_flow_main_aft.flow.value == approx(control._parameters.main_aft_flow_setpoint, abs=1)
+        assert result.sensor_values.pvt_flow_main_fwd.flow.value == approx(
+            control._parameters.main_fwd_flow_setpoint, abs=1
+        )
+        assert result.sensor_values.pvt_flow_main_aft.flow.value == approx(
+            control._parameters.main_aft_flow_setpoint, abs=1
+        )
 
-        assert result.sensor_values.pvt_flow_owners.flow.value == approx(control._parameters.owners_flow_setpoint, abs=1)
+        assert result.sensor_values.pvt_flow_owners.flow.value == approx(
+            control._parameters.owners_flow_setpoint, abs=1
+        )
 
 
 @pytest.mark.skip("Rework test after control update")
@@ -171,6 +179,10 @@ async def test_pump_flow_pump_failure(
         result = await pump_failure_executor.tick(control_values)
 
         assert result.sensor_values.pvt_flow_main_fwd.flow.value > 0
-        assert result.sensor_values.pvt_flow_main_aft.flow.value == approx(control._parameters.main_aft_flow_setpoint, abs=1)
+        assert result.sensor_values.pvt_flow_main_aft.flow.value == approx(
+            control._parameters.main_aft_flow_setpoint, abs=1
+        )
 
-        assert result.sensor_values.pvt_flow_owners.flow.value == approx(control._parameters.owners_flow_setpoint, abs=1)
+        assert result.sensor_values.pvt_flow_owners.flow.value == approx(
+            control._parameters.owners_flow_setpoint, abs=1
+        )

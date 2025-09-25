@@ -13,7 +13,6 @@ const delegatedProps = reactiveOmit(props, "class");
 const forwarded = useForwardPropsEmits(delegatedProps, emits);
 
 const positions = (modelValue: number[] | null = []) => {
-  console.log("positions", modelValue, delegatedProps.min, delegatedProps.max);
   const mappedValues = (modelValue ?? []).map((val) =>
     val < delegatedProps!.min! ? delegatedProps.min! : val,
   );
@@ -46,7 +45,7 @@ const positions = (modelValue: number[] | null = []) => {
     >
       <SliderRange
         data-slot="slider-range"
-        class="bg-primary/90 absolute h-full data-[orientation=vertical]:w-full"
+        class="bg-brand absolute h-full data-[orientation=vertical]:w-full"
       />
     </SliderTrack>
     <SliderThumb
@@ -54,7 +53,7 @@ const positions = (modelValue: number[] | null = []) => {
       :key="pos"
       :style="{ bottom: pos + '%' }"
       data-slot="slider-thumb"
-      class="transition-color border-primary/90 bg-background ring-offset-background focus-visible:ring-ring absolute block h-3 w-10 translate-y-[65%] cursor-pointer rounded-full border-2 focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none disabled:pointer-events-none disabled:cursor-default disabled:opacity-50"
+      class="transition-color border-brand bg-background ring-offset-background focus-visible:ring-ring absolute block h-3 w-10 translate-y-[65%] cursor-pointer rounded-full border-2 focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none disabled:pointer-events-none disabled:cursor-default disabled:opacity-50"
     />
   </SliderRoot>
 </template>
