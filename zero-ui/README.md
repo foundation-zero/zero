@@ -95,3 +95,5 @@ In this project we use the [shadcn-vue](https://www.shadcn-vue.com) component li
 ```sh
 pnpm dlx shadcn-vue@latest add {{COMPONENT}}
 ```
+
+I am a useless change

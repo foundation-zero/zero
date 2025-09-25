@@ -38,3 +38,5 @@ Export the graphql schema to zero-ui with
 ```bash
 poetry run strawberry export-schema thrs.graphql.strawberry --output ../zero-ui/src/graphql/thrs/schema.graphql
 ```
+
+I am a useless change
