@@ -1,5 +1,9 @@
 name: "Zero UI Apps: Test and push Docker image"
 on:
+  pull_request:
+    paths:
+      - .github/workflows/ci_apps.yaml
+      - zero-ui/**
   push:
     paths:
       - .github/workflows/ci_apps.yaml

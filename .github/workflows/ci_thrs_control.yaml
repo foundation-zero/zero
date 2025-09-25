@@ -1,5 +1,9 @@
 name: "THRS Control: Test"
 on:
+  pull_request:
+    paths:
+      - zero-thrs-control/**
+      - .github/workflows/ci_thrs_control.yaml
   push:
     paths:
       - zero-thrs-control/**

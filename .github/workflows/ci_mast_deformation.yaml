@@ -1,6 +1,10 @@
 name: "Mast deformation: Test"
 
 on:
+  pull_request:
+    paths:
+      - zero-mast-deformation/**
+      - .github/workflows/ci_mast_deformation.yaml
   push:
     paths:
       - zero-mast-deformation/**

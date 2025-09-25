@@ -1,5 +1,9 @@
 name: "Data: Test"
 on:
+  pull_request:
+    paths:
+      - .github/workflows/ci_data.yaml
+      - data/**
   push:
     paths:
       - .github/workflows/ci_data.yaml

@@ -1,5 +1,9 @@
 name: "Domestic Control: Test and push Docker image"
 on:
+  pull_request:
+    paths:
+      - zero-domestic-control/**
+      - .github/workflows/ci_domestic_control.yaml
   push:
     paths:
       - zero-domestic-control/**

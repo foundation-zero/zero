@@ -1,5 +1,9 @@
 name: "Zero Data: Test and push Docker image"
 on:
+  pull_request:
+    paths:
+      - zero-data/**
+      - .github/workflows/ci_zero_data.yaml
   push:
     paths:
       - zero-data/**
