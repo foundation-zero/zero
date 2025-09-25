@@ -28,7 +28,7 @@ dependencies = [
 ]
 
 [project.scripts]
-backend = "__main__:run"
+backend = "backend:run"
 
 [tool.poetry.group.dev]
 optional = true
