@@ -25,7 +25,7 @@ jobs:
         run: |
           echo "${{ secrets.ENV_DATA }}" > .env
         working-directory: data
-      - run: poetry install --no-root
+      - run: poetry install
         working-directory: data
       - name: Run services
         run: docker compose up -d --quiet-pull postgres risingwave vernemq

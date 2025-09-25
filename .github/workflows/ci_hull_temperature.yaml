@@ -27,7 +27,7 @@ jobs:
         working-directory: zero-hull-temperature
       - run: poetry check
         working-directory: zero-hull-temperature
-      - run: poetry install
+      - run: poetry install --with dev,test
         working-directory: zero-hull-temperature
       - run: poetry run ruff check zero_hull_temperature tests
         working-directory: zero-hull-temperature
