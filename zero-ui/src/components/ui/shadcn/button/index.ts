@@ -3,25 +3,16 @@ import { cva, type VariantProps } from "class-variance-authority";
 export { default as Button } from "./Button.vue";
 
 export const buttonVariants = cva(
-  "inline-flex items-center justify-center gap-2 cursor-pointer whitespace-nowrap rounded-md text-sm font-medium transition-all disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg:not([class*='size-'])]:size-4 shrink-0 [&_svg]:shrink-0 outline-none focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px] aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive",
+  "inline-flex items-center justify-center gap-2 cursor-pointer whitespace-nowrap rounded-md text-sm font-medium transition-all disabled:pointer-events-none [&_svg]:pointer-events-none [&_svg:not([class*='size-'])]:size-4 shrink-0 [&_svg]:shrink-0 outline-none focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px] aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive",
   {
     variants: {
       variant: {
         default:
-          "bg-inverse text-inverse-foreground text-primary-foreground shadow-xs hover:bg-primary/90",
-        destructive:
-          "bg-destructive text-white shadow-xs hover:bg-destructive/90 focus-visible:ring-destructive/20 dark:focus-visible:ring-destructive/40 dark:bg-destructive/60",
-        constructive:
-          "bg-constructive text-inverse-foreground shadow-xs hover:bg-constructive/90 focus-visible:ring-constructive/20 dark:focus-visible:ring-constructive/40",
-        warning:
-          "bg-warning text-inverse-foreground shadow-xs hover:bg-warning/90 focus-visible:ring-warning/20 dark:focus-visible:ring-warning/40 ",
-        brand:
-          "bg-brand text-inverse-foreground shadow-xs hover:bg-brand/90 focus-visible:ring-brand/20 dark:focus-visible:ring-brand/40",
-        outline:
-          "border bg-background shadow-xs hover:bg-accent hover:text-accent-foreground dark:bg-input/30 dark:border-input dark:hover:bg-input/50",
-        secondary: "bg-background-subtle text-foreground-subtle shadow-xs hover:bg-secondary/80",
-        ghost: "hover:bg-accent hover:text-accent-foreground dark:hover:bg-accent/50",
-        link: "text-primary underline-offset-4 hover:underline",
+          "bg-inverse text-inverse-foreground text-primary-foreground shadow-xs hover:bg-inverse-muted active:bg-brand disabled:bg-disabled disabled:text-disabled-foreground",
+        secondary:
+          "bg-muted border-border-subtle border text-muted-foreground shadow-xs hover:bg-border-subtle hover:text-foreground active:bg-background active:text-muted-foreground disabled:bg-disabled disabled:text-disabled-foreground",
+        ghost:
+          "text-muted-foreground hover:bg-border-subtle hover:text-foreground active:bg-background active:text-muted-foreground disabled:text-disabled-foreground",
       },
       size: {
         default: "h-9 px-4 py-2 has-[>svg]:px-3",

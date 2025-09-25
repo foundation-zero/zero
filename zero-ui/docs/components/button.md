@@ -24,63 +24,15 @@ The Button component is a fundamental UI element for triggering actions and navi
 
 ## Examples
 
-### Destructive Button
+### Default Button
 
 <div class="my-4 p-4 bg-muted">
-  <Button variant="destructive">Delete Item</Button>
+  <Button>Default Button</Button>
 </div>
 
 ```vue
 <template>
-  <Button variant="destructive">Delete Item</Button>
-</template>
-```
-
-### Constructive Button
-
-<div class="my-4 p-4 bg-muted">
-  <Button variant="constructive">Save Changes</Button>
-</div>
-
-```vue
-<template>
-  <Button variant="constructive">Save Changes</Button>
-</template>
-```
-
-### Warning Button
-
-<div class="my-4 p-4 bg-muted">
-  <Button variant="warning">Warning Action</Button>
-</div>
-
-```vue
-<template>
-  <Button variant="warning">Warning Action</Button>
-</template>
-```
-
-### Brand Button
-
-<div class="my-4 p-4 bg-muted">
-  <Button variant="brand">Brand Action</Button>
-</div>
-
-```vue
-<template>
-  <Button variant="brand">Brand Action</Button>
-</template>
-```
-
-### Outline Button
-
-<div class="my-4 p-4 bg-muted">
-  <Button variant="outline">Outline Button</Button>
-</div>
-
-```vue
-<template>
-  <Button variant="outline">Outline Button</Button>
+  <Button>Default Button</Button>
 </template>
 ```
 
@@ -105,18 +57,6 @@ The Button component is a fundamental UI element for triggering actions and navi
 ```vue
 <template>
   <Button variant="ghost">Ghost Button</Button>
-</template>
-```
-
-### Link Button
-
-<div class="my-4 p-4 bg-muted">
-  <Button variant="link">Link Button</Button>
-</div>
-
-```vue
-<template>
-  <Button variant="link">Link Button</Button>
 </template>
 ```
 
@@ -161,7 +101,7 @@ The Button component is a fundamental UI element for triggering actions and navi
 ### Icon Button
 
 <div class="my-4 p-4 bg-muted">
-  <Button size="icon" variant="outline">
+  <Button size="icon" variant="secondary">
     <svg class="size-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"/>
     </svg>
@@ -170,7 +110,7 @@ The Button component is a fundamental UI element for triggering actions and navi
 
 ```vue
 <template>
-  <Button size="icon" variant="outline">
+  <Button size="icon" variant="secondary">
     <PlusIcon class="size-4" />
   </Button>
 </template>
@@ -182,10 +122,8 @@ The Button component is a fundamental UI element for triggering actions and navi
 
 <div class="my-4 p-4 bg-muted space-x-2 flex flex-wrap gap-2">
   <Button disabled>Disabled Default</Button>
-  <Button variant="destructive" disabled>Disabled Destructive</Button>
-  <Button variant="constructive" disabled>Disabled Constructive</Button>
-  <Button variant="warning" disabled>Disabled Warning</Button>
-  <Button variant="outline" disabled>Disabled Outline</Button>
+  <Button variant="secondary" disabled>Disabled Secondary</Button>
+  <Button variant="ghost" disabled>Disabled Ghost</Button>
 </div>
 
 ```vue
@@ -198,7 +136,7 @@ The Button component is a fundamental UI element for triggering actions and navi
 
 <div class="my-4 p-4 bg-muted space-x-2">
   <Button>Primary Action</Button>
-  <Button variant="outline">Secondary</Button>
+  <Button variant="secondary">Secondary</Button>
   <Button variant="ghost">Cancel</Button>
 </div>
 
@@ -206,7 +144,7 @@ The Button component is a fundamental UI element for triggering actions and navi
 <template>
   <div class="space-x-2">
     <Button>Primary Action</Button>
-    <Button variant="outline">Secondary</Button>
+    <Button variant="secondary">Secondary</Button>
     <Button variant="ghost">Cancel</Button>
   </div>
 </template>
@@ -216,28 +154,16 @@ The Button component is a fundamental UI element for triggering actions and navi
 
 <div class="my-4 p-4 bg-muted space-x-2 flex flex-wrap gap-2">
   <Button variant="default">Default</Button>
-  <Button variant="destructive">Destructive</Button>
-  <Button variant="constructive">Constructive</Button>
-  <Button variant="warning">Warning</Button>
-  <Button variant="brand">Brand</Button>
-  <Button variant="outline">Outline</Button>
   <Button variant="secondary">Secondary</Button>
   <Button variant="ghost">Ghost</Button>
-  <Button variant="link">Link</Button>
 </div>
 
 ```vue
 <template>
   <div class="space-x-2 flex flex-wrap gap-2">
     <Button variant="default">Default</Button>
-    <Button variant="destructive">Destructive</Button>
-    <Button variant="constructive">Constructive</Button>
-    <Button variant="warning">Warning</Button>
-    <Button variant="brand">Brand</Button>
-    <Button variant="outline">Outline</Button>
     <Button variant="secondary">Secondary</Button>
     <Button variant="ghost">Ghost</Button>
-    <Button variant="link">Link</Button>
   </div>
 </template>
 ```
@@ -246,7 +172,7 @@ The Button component is a fundamental UI element for triggering actions and navi
 
 | Prop | Type | Default | Description |
 |------|------|---------|-------------|
-| variant | 'default' \| 'destructive' \| 'constructive' \| 'warning' \| 'brand' \| 'outline' \| 'secondary' \| 'ghost' \| 'link' | 'default' | The visual style variant |
+| variant | 'default' \| 'secondary' \| 'ghost' | 'default' | The visual style variant |
 | size | 'default' \| 'sm' \| 'lg' \| 'icon' | 'default' | The button size |
 | as | string \| Component | 'button' | The element or component to render as |
 | asChild | boolean | false | Whether to render as a child element |
@@ -277,12 +203,9 @@ import { Button } from '@/components/ui/shadcn/button'
 ## Best Practices
 
 - **Choose appropriate variants based on action hierarchy:**
-  - **Default**: Primary actions and main calls-to-action
-  - **Destructive**: Delete, remove, or dangerous actions
-  - **Outline**: Secondary actions or alternative options
-  - **Secondary**: Less prominent actions
-  - **Ghost**: Subtle actions, often used in toolbars
-  - **Link**: Navigation or actions that behave like links
+  - **Default**: Primary actions and main calls-to-action with strong visual prominence
+  - **Secondary**: Less prominent actions with subtle styling and clear borders
+  - **Ghost**: Subtle actions without backgrounds, often used in toolbars or as tertiary actions
 
 - **Use consistent sizing:**
   - **Small**: Compact interfaces, tables, or secondary actions
@@ -290,7 +213,9 @@ import { Button } from '@/components/ui/shadcn/button'
   - **Large**: Prominent calls-to-action or hero sections
   - **Icon**: Icon-only actions, toolbars, or compact interfaces
 
-- **Action hierarchy**: Use no more than one primary button per section
+- **Action hierarchy**: Use no more than one primary (default) button per section
 - **Loading states**: Consider adding loading indicators for async actions
 - **Responsive design**: Test button sizes across different screen sizes
 - **Clear labeling**: Use action-oriented, specific button text
+- **Focus management**: Ensure proper focus states and keyboard navigation
+- **Semantic variants**: If you need destructive or warning actions, consider using semantic colors with the existing variants
