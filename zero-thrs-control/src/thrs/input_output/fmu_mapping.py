@@ -24,10 +24,10 @@ def included_in_fmu(field: FieldInfo) -> bool:
     return (
         meta.included_in_fmu
         if meta
-        else field.json_schema_extra.get("included_in_fmu", True)
+        else field.json_schema_extra.get("included_in_fmu", True)  # type: ignore
         if field.json_schema_extra
         else True
-    )  # type: ignore
+    )
 
 
 def build_inputs_for_fmu(
