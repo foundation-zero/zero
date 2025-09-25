@@ -78,10 +78,10 @@ async def test_av_send(mqtt_client, mqtt_client2):
 
     stub_task = create_task(await stub.run())
 
-    await av.set_amplifier("owners-cockpit/amplifier", True)
+    await av.set_amplifier("owners-cockpit", True)
     assert await expect_result(lambda: stub.read_port(AFT_PDU, 1), True, 0.1)
 
-    await av.set_amplifier("office/amplifier", True)
+    await av.set_amplifier("office", True)
     assert await expect_result(lambda: stub.read_port(FWD_PDU, 1), True, 0.1)
 
     stub_task.cancel()
@@ -103,7 +103,7 @@ async def test_av_control_receive(mqtt_client, mqtt_client2, mqtt_client3):
             message.payload, str | bytes
         ):
             msg = json.loads(message.payload)
-            if msg["id"] == "owners-cockpit/amplifier":
+            if msg["id"] == "owners-cockpit":
                 assert msg["is_on"]
                 break
 
@@ -118,7 +118,7 @@ async def test_av_through_gq(mqtt_client):
     response = client.post(
         "/graphql",
         json={
-            "query": """mutation { setAmplifiers(ids: "owners-cabin/amplifier", on: true) { code success message } }"""
+            "query": """mutation { setAmplifiers(ids: "owners-cabin", on: true) { code success message } }"""
         },
     )
     await asyncio.sleep(0.05)
@@ -129,6 +129,6 @@ async def test_av_through_gq(mqtt_client):
             message.payload, str | bytes
         ):
             msg = json.loads(message.payload)
-            if msg["id"] == "owners-cabin/amplifier":
+            if msg["id"] == "owners-cabin":
                 assert msg["is_on"]
                 break
