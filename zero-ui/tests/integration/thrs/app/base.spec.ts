@@ -14,7 +14,7 @@ const test = testBase.extend<{ thrsPage: THRSPage }>({
 
 test.describe("THRS App", () => {
   test.beforeEach(async ({ page }) => {
-    await page.goto("/thrs/overview");
+    await page.goto("/thrs");
   });
 
   test("has correct title", async ({ page }) => {
