@@ -13,6 +13,7 @@ class Controller[ValueUnit: float, SetpointUnit: float]:
         initial: ValueUnit,
         setpoint: SetpointUnit,
         tuning: tuple[float, float, float],
+        time: datetime,
         output_limits: tuple[float, float] = (0, 1),
     ):
         kp, ki, kd = tuning or self.TUNING
@@ -24,6 +25,7 @@ class Controller[ValueUnit: float, SetpointUnit: float]:
             sample_time=None,
             output_limits=output_limits,
             auto_mode=False,
+            time_fn= lambda: time.timestamp()
         )
         self._initial = initial
 

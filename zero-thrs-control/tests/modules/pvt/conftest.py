@@ -68,7 +68,7 @@ def io_mapping():
 
 @fixture
 def control():
-    return PvtControl(PvtParameters())
+    return PvtControl(PvtParameters(), datetime.now())
 
 
 @fixture

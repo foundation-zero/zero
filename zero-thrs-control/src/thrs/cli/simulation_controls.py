@@ -49,7 +49,7 @@ INPUTS = {
 
 CONTROL_PARAMS = {"THRUSTERS": ThrustersParameters()}
 
-CONTROLS = {"THRUSTERS": ThrustersControl(CONTROL_PARAMS["THRUSTERS"])}
+CONTROLS = {"THRUSTERS": ThrustersControl(CONTROL_PARAMS["THRUSTERS"], datetime.now())} #TODO: should retreive time from somewhere else?
 
 MODES = {
     "THRUSTERS": SimulatorModel(

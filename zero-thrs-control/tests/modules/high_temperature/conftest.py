@@ -68,7 +68,7 @@ def simulation_inputs():
 
 @fixture
 def control():
-    return HighTemperatureControl(HighTemperatureParameters())
+    return HighTemperatureControl(HighTemperatureParameters(), datetime.now())
 
 
 @fixture

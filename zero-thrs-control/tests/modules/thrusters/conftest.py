@@ -61,7 +61,7 @@ def io_mapping():
 
 @fixture
 def control():
-    return ThrustersControl(ThrustersParameters())
+    return ThrustersControl(ThrustersParameters(), datetime.now())
 
 
 @fixture

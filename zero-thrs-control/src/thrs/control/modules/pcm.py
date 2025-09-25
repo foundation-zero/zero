@@ -52,8 +52,9 @@ _INITIAL_CONTROL_VALUES = PcmControlValues(
 
 
 class PcmControl(Control[PcmSensorValues, PcmControlValues, PcmParameters]):
-    def __init__(self, parameters: PcmParameters) -> None:
+    def __init__(self, parameters: PcmParameters, time: datetime) -> None:
         self._parameters = parameters
+        self._time = time
 
         self._states = [
             State(
@@ -86,7 +87,10 @@ class PcmControl(Control[PcmSensorValues, PcmControlValues, PcmParameters]):
         )
 
         self._pump_flow_controller = Controller[Ratio, LMin](
-            _INITIAL_CONTROL_VALUES.pcm_pump.dutypoint.value, 0, parameters.pump_tuning
+            _INITIAL_CONTROL_VALUES.pcm_pump.dutypoint.value,
+            0,
+            parameters.pump_tuning,
+            self._time,
         )
 
         self._current_values = _INITIAL_CONTROL_VALUES.model_copy(deep=True)

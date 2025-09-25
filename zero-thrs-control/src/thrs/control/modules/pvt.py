@@ -88,7 +88,7 @@ _INITIAL_CONTROL_VALUES = PvtControlValues(
 
 
 class PvtControl(Control):
-    def __init__(self, parameters: PvtParameters):
+    def __init__(self, parameters: PvtParameters, time: datetime) -> None:
         self._parameters = parameters
         self._states = [
             State(
@@ -103,41 +103,49 @@ class PvtControl(Control):
             ),
             State(name="pump_failure", on_enter=[self._set_recovery_mixes_to_a]),
         ]
+        self._time = time
 
         self._heat_dump_controller = Controller[Ratio, Celsius](
             _INITIAL_CONTROL_VALUES.pvt_mix_exchanger.setpoint.value,
             parameters.heat_dump_setpoint,
             parameters.heat_dump_tuning,
+            self._time,
         )
         self._main_fwd_heat_supply_controller = Controller[Ratio, Celsius](
             _INITIAL_CONTROL_VALUES.pvt_mix_main_fwd.setpoint.value,
             parameters.mix_temperature_setpoint,
             parameters.main_fwd_pump_tuning,
+            self._time,
         )
         self._main_aft_heat_supply_controller = Controller[Ratio, Celsius](
             _INITIAL_CONTROL_VALUES.pvt_mix_main_aft.setpoint.value,
             parameters.mix_temperature_setpoint,
             parameters.main_aft_heat_supply_tuning,
+            self._time,
         )
         self._owners_heat_supply_controller = Controller[Ratio, Celsius](
             _INITIAL_CONTROL_VALUES.pvt_mix_owners.setpoint.value,
             parameters.mix_temperature_setpoint,
             parameters.owners_heat_supply_tuning,
+            self._time,
         )
         self._main_fwd_pump_flow_controller = Controller[Ratio, LMin](
             _INITIAL_CONTROL_VALUES.pvt_pump_main_fwd.dutypoint.value,
             0,
             parameters.main_fwd_pump_tuning,
+            self._time,
         )
         self._main_aft_pump_flow_controller = Controller[Ratio, LMin](
             _INITIAL_CONTROL_VALUES.pvt_pump_main_aft.dutypoint.value,
             0,
             parameters.main_aft_pump_tuning,
+            self._time,
         )
         self._owners_pump_flow_controller = Controller[Ratio, LMin](
             _INITIAL_CONTROL_VALUES.pvt_pump_owners.dutypoint.value,
             0,
             parameters.owners_pump_tuning,
+            self._time,
         )
         self.pvt_state_machine = Machine(
             model=self, states=self._states, initial="idle"

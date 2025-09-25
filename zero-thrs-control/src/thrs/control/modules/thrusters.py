@@ -22,8 +22,10 @@ class ThrustersParameters(BaseModel):#TODO: Annotations
     )
     cooling_temperature: Celsius = 38
     cooling_flow: LMin = 25
-    recovery_temperature: Celsius = 63
-    warmup_temperature: Celsius = 60
+    recovery_temperature: Celsius = 70
+    warmup_temperature: Celsius = 55
+    thrusters_minimum_flow: LMin = 5
+    thrusters_maximum_flow: LMin = 30
     pump_tuning: Tuning = (0.01, 0.001, 0)
     warmup_mix_tuning: Tuning = (-0.05, -0.001, 0)
     heat_dump_tuning: Tuning = (0.05, 0.01, 0)
@@ -87,9 +89,9 @@ _INITIAL_CONTROL_VALUES = ThrustersControlValues(
 
 
 class ThrustersControl(Control):
-    def __init__(self, parameters: ThrustersParameters):
+    def __init__(self, parameters: ThrustersParameters, start_time: datetime) -> None:
         self._parameters = parameters
-        self._time = datetime.now()
+        self._time = start_time
         self._current_values = _INITIAL_CONTROL_VALUES.model_copy(deep=True)
 
         self._states = [
@@ -182,35 +184,41 @@ class ThrustersControl(Control):
             _INITIAL_CONTROL_VALUES.thrusters_mix_exchanger.setpoint.value,
             parameters.cooling_temperature,
             parameters.heat_dump_tuning,
+            self._time
         )
         self._warmup_mix_controller = Controller[Ratio, Celsius](
             _INITIAL_CONTROL_VALUES.thrusters_mix_recovery.setpoint.value,
             parameters.warmup_temperature,
             parameters.warmup_mix_tuning,
+            self._time
         )
         self._pump_flow_controller = Controller[Ratio, LMin](
             _INITIAL_CONTROL_VALUES.thrusters_pump_1.dutypoint.value,
             0,
             parameters.pump_tuning,
+            self._time
         )
 
         self._aft_recovery_temperature_controller = Controller[LMin, Celsius](
-            22,
+            parameters.thrusters_minimum_flow,
             parameters.recovery_temperature,
             parameters.aft_temperature_tuning,
+            self._time,
             (
-                22,
-                30,
+                parameters.thrusters_minimum_flow,
+                parameters.thrusters_maximum_flow,
             ),
+
         )
 
         self._fwd_recovery_temperature_controller = Controller[LMin, Celsius](
-            22,
+            parameters.thrusters_minimum_flow,
             parameters.recovery_temperature,
             parameters.fwd_temperature_tuning,
+            self._time,
             (
-                22,
-                30,
+                parameters.thrusters_minimum_flow,
+                parameters.thrusters_maximum_flow,
             ),
         )
 
@@ -218,18 +226,20 @@ class ThrustersControl(Control):
             _INITIAL_CONTROL_VALUES.thrusters_flowcontrol_aft.setpoint.value,
             0,
             parameters.aft_flow_balance_tuning,
+            self._time
         )
 
         self._fwd_flow_controller = Controller[Ratio, LMin](
             _INITIAL_CONTROL_VALUES.thrusters_flowcontrol_fwd.setpoint.value,
             0,
             parameters.fwd_flow_balance_tuning,
+            self._time
         )
 
         self._most_recently_active_pump: None | Literal["pump1", "pump2"] = None
         self._active_pump: None | Pump = None
 
-        self._flow_balance_controller = FlowBalanceController(#TODO: might need to only enable the temperature control when the mixing valve is fully open.
+        self._flow_balance_controller = FlowBalanceController(
             [
                 self._current_values.thrusters_flowcontrol_aft,
                 self._current_values.thrusters_flowcontrol_fwd,
@@ -346,7 +356,7 @@ class ThrustersControl(Control):
         self._current_values.thrusters_mix_recovery.setpoint = Stamped(
             value=(
                 self._warmup_mix_controller(
-                    sensor_values.thrusters_temperature_supply.temperature.value,
+                    sensor_values.thrusters_temperature_recovery_mix.temperature.value,
                     self._time,
                 )
             ),
@@ -365,6 +375,13 @@ class ThrustersControl(Control):
         )
 
     def _set_recovery_flow_setpoints(self, sensor_values: ThrustersSensorValues):
+        #TODO: enabling controllers only when the thruster is active (or keep them on as they have a minimum)
+        #TODO: possibly set timer to not constantly adjust setpoint and give flow control time to realize flow
+        #TODO: might need to only enable the temperature control only when the mixing valve is open (or >.9 to get some deadband..)
+        #TODO: we might not make the temperatures if 22l/min is mimimum flow...
+        #TODO: check integral term - the flow setpt PID should not be enabled when in idle..?
+
+
         flow_setpoints = [
             self._aft_recovery_temperature_controller(
                 sensor_values.thrusters_temperature_aft_return.temperature.value,

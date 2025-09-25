@@ -55,26 +55,30 @@ _INITIAL_CONTROL_VALUES = ConsumersControlValues(
 class ConsumersControl(
     Control[ConsumersSensorValues, ConsumersControlValues, ConsumersParameters]
 ):
-    def __init__(self, parameters: ConsumersParameters) -> None:
+    def __init__(self, parameters: ConsumersParameters, time: datetime) -> None:
         self._parameters = parameters
         self._current_values = _INITIAL_CONTROL_VALUES.model_copy(deep=True)
+        self._time = time
 
         self._boosting_flow_controller = Controller[Ratio, LMin](
             _INITIAL_CONTROL_VALUES.consumers_flowcontrol_boosting.setpoint.value,
             0.0,
             parameters.boosting_flow_balance_tuning,
+            self._time,
         )
 
         self._bypass_flow_controller = Controller[Ratio, LMin](
             _INITIAL_CONTROL_VALUES.consumers_flowcontrol_bypass.setpoint.value,
             0.0,
             parameters.bypass_flow_balance_tuning,
+            self._time,
         )
 
         self._fahrenheit_flow_controller = Controller[Ratio, LMin](
             _INITIAL_CONTROL_VALUES.consumers_flowcontrol_fahrenheit.setpoint.value,
             0.0,
             parameters.fahrenheit_flow_balance_tuning,
+            self._time
         )
 
         self._flow_distribution_controller = FlowDistributionController(

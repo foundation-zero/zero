@@ -40,13 +40,13 @@ class HighTemperatureControl(
         HighTemperatureParameters,
     ]
 ):
-    def __init__(self, parameters: HighTemperatureParameters) -> None:
+    def __init__(self, parameters: HighTemperatureParameters, time: datetime) -> None:
         self._parameters = parameters
         self._current_values = _INITIAL_CONTROL_VALUES.model_copy(deep=True)
-        self._thrusters_control = ThrustersControl(parameters)
-        self._pvt_control = PvtControl(parameters)
-        self._pcm_control = PcmControl(parameters)
-        self._consumers_control = ConsumersControl(parameters)
+        self._thrusters_control = ThrustersControl(parameters, time)
+        self._pvt_control = PvtControl(parameters, time)
+        self._pcm_control = PcmControl(parameters, time)
+        self._consumers_control = ConsumersControl(parameters, time)
 
     def initial(self, time: datetime) -> ControlResult[HighTemperatureControlValues]:
         return ControlResult(time, self._current_values)
