@@ -1,23 +1,9 @@
-from pytest import fixture
-from control.config import Settings
-from control.stub.can_frame import (
+from backend.control.stub.can_frame import (
     CAN_Frame,
     CAN_CRC_Frame,
     CAN_FD_Frame,
     CAN_FD_CRC_Frame,
 )
-
-
-@fixture
-def settings():
-    return Settings(
-        mqtt_host="localhost",
-        mqtt_port=1883,
-        canbus_ip="127.0.0.1",
-        canbus_port=56000,
-        canbus_buffer_size=1024,
-        jwt_secret="test",
-    )
 
 
 def test_can_unextended_id_message_parsing(settings):

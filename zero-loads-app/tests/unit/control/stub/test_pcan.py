@@ -1,21 +1,7 @@
 import pytest
-from pytest import fixture
-from control.config import Settings
-from control.stub import PCanStub
+from backend.control.stub import PCanStub
 import socket
-from control.stub.can_frame import CAN_Frame
-
-
-@fixture
-def settings():
-    return Settings(
-        mqtt_host="localhost",
-        mqtt_port=1883,
-        canbus_ip="127.0.0.1",
-        canbus_port=56000,
-        canbus_buffer_size=1024,
-        jwt_secret="test",
-    )
+from backend.control.stub.can_frame import CAN_Frame
 
 
 @pytest.mark.timeout(1)

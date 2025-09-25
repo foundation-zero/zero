@@ -40,6 +40,14 @@ jobs:
       - name: Unit Test
         run: poetry run pytest .
         working-directory: zero-loads-app
+      - name: Run services
+        run: docker compose up -d --quiet-pull postgres
+        working-directory: data
+      - run: poetry run python -m setup_postgres
+        working-directory: data
+      - name: Integration Test
+        run: poetry run pytest --run=integration -vv
+        working-directory: zero-loads-app
       - name: Determine image tag
         id: image_tag
         run: |

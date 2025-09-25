@@ -2,21 +2,7 @@ import pytest
 import socket
 import asyncio
 from unittest.mock import AsyncMock
-from control.adapter import PCanAdapter
-from pytest import fixture
-from control.config import Settings
-
-
-@fixture
-def settings():
-    return Settings(
-        mqtt_host="localhost",
-        mqtt_port=1883,
-        canbus_ip="127.0.0.1",
-        canbus_port=56001,
-        canbus_buffer_size=1024,
-        jwt_secret="test",
-    )
+from backend.control import PCanAdapter
 
 
 @pytest.mark.timeout(2)
