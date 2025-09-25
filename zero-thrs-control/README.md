@@ -42,3 +42,4 @@ poetry run strawberry export-schema thrs.graphql.strawberry --output ../zero-ui/
 I am a useless change
 I am another change
 I am yet another change
+I am yet yet another change
