@@ -5,9 +5,11 @@ on:
     branches:
       - main
     paths:
-      - "zero-domestic-control/charts/zero-domestic-control/**"
+      - .github/workflows/helm_domestic_control.yaml
+      - zero-domestic-control/charts/zero-domestic-control/**
+  release:
+    types: [released]
 
-# Authenticate with GAR and push helm chart to the /charts registry
 jobs:
   helm-push:
     runs-on: ubuntu-latest
