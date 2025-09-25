@@ -4,10 +4,6 @@ on:
     paths:
       - zero-domestic-control/**
       - .github/workflows/ci_domestic_control.yaml
-  push:
-    paths:
-      - zero-domestic-control/**
-      - .github/workflows/ci_domestic_control.yaml
   release:
     types: [released]
 

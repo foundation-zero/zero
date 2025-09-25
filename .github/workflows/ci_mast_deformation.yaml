@@ -5,10 +5,6 @@ on:
     paths:
       - zero-mast-deformation/**
       - .github/workflows/ci_mast_deformation.yaml
-  push:
-    paths:
-      - zero-mast-deformation/**
-      - .github/workflows/ci_mast_deformation.yaml
   release:
     types: [released]
 

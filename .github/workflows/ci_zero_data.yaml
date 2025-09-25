@@ -4,10 +4,6 @@ on:
     paths:
       - zero-data/**
       - .github/workflows/ci_zero_data.yaml
-  push:
-    paths:
-      - zero-data/**
-      - .github/workflows/ci_zero_data.yaml
   release:
     types: [released]
 
