@@ -4,10 +4,6 @@ on:
     paths:
       - .github/workflows/ci_data.yaml
       - data/**
-  pull_request:
-    paths:
-      - .github/workflows/ci_data.yaml
-      - data/**
   release:
     types: [released]
 

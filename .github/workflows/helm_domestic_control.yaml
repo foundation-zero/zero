@@ -10,7 +10,6 @@ on:
   release:
     types: [released]
 
-# Authenticate with GAR and push helm chart to the /charts registry
 jobs:
   helm-push:
     runs-on: ubuntu-latest

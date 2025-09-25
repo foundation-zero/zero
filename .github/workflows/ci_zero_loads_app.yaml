@@ -4,10 +4,6 @@ on:
     paths:
       - zero-loads-app/**
       - .github/workflows/ci_zero_loads_app.yaml
-  pull_request:
-    paths:
-      - zero-loads-app/**
-      - .github/workflows/ci_zero_loads_app.yaml
   release:
     types: [released]
 

@@ -4,10 +4,6 @@ on:
     paths:
       - zero-thrs-control/**
       - .github/workflows/ci_thrs_control.yaml
-  pull_request:
-    paths:
-      - zero-thrs-control/**
-      - .github/workflows/ci_thrs_control.yaml
   release:
     types: [released]
 

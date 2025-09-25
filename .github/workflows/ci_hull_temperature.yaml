@@ -4,10 +4,6 @@ on:
     paths:
       - zero-hull-temperature/**
       - .github/workflows/ci_hull_temperature.yaml
-  pull_request:
-    paths:
-      - zero-hull-temperature/**
-      - .github/workflows/ci_hull_temperature.yaml
   release:
     types: [released]
 
