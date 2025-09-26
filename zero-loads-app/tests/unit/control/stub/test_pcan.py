@@ -2,6 +2,9 @@ import pytest
 from loads.control.stub import PCanStub
 import socket
 from loads.control.stub.can_frame import CAN_Frame
+from loads.config import Settings
+
+settings = Settings()  # type: ignore
 
 
 @pytest.mark.timeout(1)

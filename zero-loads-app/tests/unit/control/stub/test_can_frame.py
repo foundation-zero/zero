@@ -4,9 +4,12 @@ from loads.control.stub.can_frame import (
     CAN_FD_Frame,
     CAN_FD_CRC_Frame,
 )
+from loads.config import Settings
+
+settings = Settings()  # type: ignore
 
 
-def test_can_unextended_id_message_parsing(settings):
+def test_can_unextended_id_message_parsing():
     # Extended id = False
     frame_bytes = (
         b"\x00\x18"  # length = 24
@@ -31,7 +34,7 @@ def test_can_unextended_id_message_parsing(settings):
     assert not frame.can_id.rtr
 
 
-def test_can_extended_id_message_parsing(settings):
+def test_can_extended_id_message_parsing():
     # Extended id = True
     frame_bytes = (
         b"\x00\x18"  # length = 24
@@ -59,7 +62,7 @@ def test_can_extended_id_message_parsing(settings):
     assert not frame.can_id.rtr
 
 
-def test_can_crc_message_parsing(settings):
+def test_can_crc_message_parsing():
     # Extended id = True
     frame_bytes = (
         b"\x00\x18"  # length = 24
@@ -89,7 +92,7 @@ def test_can_crc_message_parsing(settings):
     assert frame.crc32 == 305419896
 
 
-def test_can_fd_message_parsing(settings):
+def test_can_fd_message_parsing():
     # Extended id = True
     frame_bytes = (
         b"\x00\x18"  # length = 24
@@ -120,7 +123,7 @@ def test_can_fd_message_parsing(settings):
     assert not frame.flags.esi
 
 
-def test_can_fd_crc_message_parsing(settings):
+def test_can_fd_crc_message_parsing():
     # Extended id = True
     frame_bytes = (
         b"\x00\x18"  # length = 24

@@ -5,6 +5,8 @@ import asyncio
 from unittest.mock import AsyncMock
 from loads.control import PCanAdapter
 
+settings = Settings()  # type: ignore
+
 
 @pytest.mark.timeout(2)
 async def test_receive_can_message(settings: Settings):
