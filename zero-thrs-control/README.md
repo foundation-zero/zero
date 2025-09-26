@@ -28,7 +28,7 @@ poetry install
 Run the API with
 
 ```bash
-poetry run strawberry server thrs.graphql.strawberry
+poetry run fastapi dev src/thrs/graphql/strawberry.py
 ```
 
 ### Export schema

@@ -455,6 +455,8 @@ class ThrustersAlarms(BaseAlarms):
         self,
         sensor_values: ThrustersSensorValues,
         control_values: ThrustersControlValues,
-        control: ThrustersControl,
     ) -> bool:
-        return control._is_overheating(sensor_values)
+        return self.is_overheating(sensor_values)
+
+    def is_overheating(self, sensor_values: ThrustersSensorValues) -> bool:
+        return sensor_values.thrusters_temperature_supply.temperature.value > 95

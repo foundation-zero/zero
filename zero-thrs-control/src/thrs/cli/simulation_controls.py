@@ -1,11 +1,13 @@
-from asyncio import create_task
+from asyncio import TaskGroup, create_task, sleep
 from contextlib import asynccontextmanager
+from dataclasses import replace
 from datetime import datetime, timedelta
 from typing import Annotated, Any, Awaitable, ClassVar, Literal, overload
 from aiomqtt import Client as MqttClient
 from pydantic import BaseModel, Field, TypeAdapter, ValidationError
 from pydantic_partial import create_partial_model
 
+from thrs.control.manual import ManualControl
 from thrs.control.modules.thrusters import (
     ThrustersAlarms,
     ThrustersControl,
@@ -194,6 +196,7 @@ class SimulationControls:
     ):
         self._sensor_client = sensor_client
         self._control_client = control_client
+        self._controls_client = controls_client
         self._sequencer = MqttSequencer(controls_client)
         self._sensor_topic = sensor_topic
         self._control_topic = control_topic
@@ -355,6 +358,44 @@ class SimulationControls:
 
             except ResetError:
                 pass  # Reset the sequencer and start over
+
+    async def run_blind(self, mode: Modes):
+        await self._controls_client.subscribe("thrs/manual_controls", qos=1)
+        model = MODES[mode]
+        manual_control = ManualControl(model.control.initial(datetime.now()).values)
+        manual_control_model = replace(model, control=manual_control)
+        with manual_control_model.executor() as executor:
+            executor = MqttExecutor(
+                executor,
+                self._control_client,
+                self._sensor_client,
+                self._sensor_topic,
+                ThrustersSensorValues,
+                self._control_topic,
+                ThrustersControlValues,
+            )
+            simulator = Simulator(manual_control_model, executor)
+
+            async def _receive_manual_controls():
+                async for message in self._controls_client.messages:
+                    if message.topic.matches("thrs/manual_controls") and isinstance(
+                        message.payload, str | bytes
+                    ):
+                        manual_control.manual_controls(
+                            ThrustersControlValues.model_validate_json(message.payload)
+                        )
+
+            await executor.start()
+            executor_task = create_task(executor.run())
+            receive_task = create_task(_receive_manual_controls())
+            try:
+                while True:
+                    async with TaskGroup() as tg:
+                        tg.create_task(sleep(1))
+                        tg.create_task(simulator.run(1))
+            finally:
+                executor_task.cancel()
+                receive_task.cancel()
 
 
 def update_in_place(model, values: dict[str, Any]):

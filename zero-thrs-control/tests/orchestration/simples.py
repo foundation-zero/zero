@@ -64,5 +64,5 @@ class SimpleControl(Control[SimpleInOut, SimpleInOut, SimpleParameters]):
         return SimpleParameters()
 
 
-class SimpleAlarms(BaseAlarms[SimpleInOut, SimpleInOut, SimpleControl]):
+class SimpleAlarms(BaseAlarms[SimpleInOut, SimpleInOut]):
     pass
