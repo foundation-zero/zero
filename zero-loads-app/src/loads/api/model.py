@@ -1,21 +1,22 @@
-from .schema import (
-    SailSetCombined,
-    Conditions,
-    ReferenceValues,
-    ValueDefinitions,
-    Masts,
-)
 from sqlalchemy import select, cast
-from sqlalchemy.dialects.postgresql import TEXT, ARRAY, NUMERIC
+from sqlalchemy.dialects.postgresql import ARRAY, NUMERIC, TEXT
+
+from .schema import (
+    Conditions,
+    Masts,
+    ReferenceValues,
+    SailSetCombined,
+    ValueDefinitions,
+)
 from .types import (
+    AlertType,
+    CaseInput,
+    MastType,
     ReferenceValueType,
-    ValueType,
     TargetType,
     Unit,
-    MastType,
-    AlertType,
+    ValueType,
 )
-from .types import CaseInput
 
 
 async def get_reference_values(values, case, session):

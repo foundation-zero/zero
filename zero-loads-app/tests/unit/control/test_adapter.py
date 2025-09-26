@@ -1,8 +1,10 @@
-from loads.config import Settings
-import pytest
-import socket
 import asyncio
+import socket
 from unittest.mock import AsyncMock
+
+import pytest
+
+from loads.config import Settings
 from loads.control import PCanAdapter
 
 

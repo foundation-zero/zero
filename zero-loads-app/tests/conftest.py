@@ -1,5 +1,7 @@
 import pathlib
+
 import pytest
+
 from loads.config import Settings
 
 

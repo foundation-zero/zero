@@ -1,7 +1,9 @@
-from loads.config import Settings
-import pytest
-from loads.control.stub import PCanStub
 import socket
+
+import pytest
+
+from loads.config import Settings
+from loads.control.stub import PCanStub
 from loads.control.stub.can_frame import CAN_Frame
 
 

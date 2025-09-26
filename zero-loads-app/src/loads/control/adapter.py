@@ -1,3 +1,5 @@
+import asyncio
+import logging
 import socket
 from contextlib import asynccontextmanager
 
@@ -5,9 +7,7 @@ from aiomqtt import Client as MqttClient
 from construct import Container
 
 from loads.config import Settings
-from .stub.can_frame import CAN_Frame, CAN_CRC_Frame, CAN_FD_Frame, CAN_FD_CRC_Frame
-import asyncio
-import logging
+from .stub.can_frame import CAN_CRC_Frame, CAN_FD_CRC_Frame, CAN_FD_Frame, CAN_Frame
 
 logger = logging.getLogger("adapter")
 

@@ -1,8 +1,9 @@
 import pytest
-from sqlalchemy import inspect
-from loads.api.schema import Base
+
 from loads.api.db import SessionManager
+from loads.api.schema import Base
 from loads.config import Settings
+from sqlalchemy import inspect
 
 
 @pytest.mark.asyncio

@@ -1,7 +1,8 @@
-from sqlalchemy.orm import declarative_base
-from sqlalchemy import Column, Integer, Float, String
-from sqlalchemy.dialects.postgresql import NUMRANGE, ARRAY
+from sqlalchemy import Column, Float, Integer, String
+from sqlalchemy.dialects.postgresql import ARRAY, NUMRANGE
 from sqlalchemy import Enum as SAEnum
+from sqlalchemy.orm import declarative_base
+
 from .types import SeaState, ThrusterMode
 
 Base = declarative_base()

@@ -1,20 +1,16 @@
-import strawberry
-from .model import get_reference_values
-from fastapi import FastAPI
-from strawberry.fastapi import GraphQLRouter
-from .types import (
-    CaseInput,
-    ReferenceValueType,
-)
 import logging
-from .db import get_db_session, sessionmanager
 from contextlib import asynccontextmanager
+from dataclasses import dataclass
 from typing import Annotated
 
-from fastapi import Depends
+import strawberry
+from fastapi import Depends, FastAPI
 from sqlalchemy.ext.asyncio import AsyncSession
-from strawberry.fastapi import BaseContext
-from dataclasses import dataclass
+from strawberry.fastapi import BaseContext, GraphQLRouter
+
+from .db import get_db_session, sessionmanager
+from .model import get_reference_values
+from .types import CaseInput, ReferenceValueType
 
 logger = logging.getLogger("api")
 
