@@ -4,9 +4,6 @@ from loads.control.stub.can_frame import (
     CAN_FD_Frame,
     CAN_FD_CRC_Frame,
 )
-from loads.config import Settings
-
-settings = Settings()  # type: ignore
 
 
 def test_can_unextended_id_message_parsing():

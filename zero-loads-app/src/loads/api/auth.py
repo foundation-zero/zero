@@ -1,8 +1,7 @@
 import jwt
 
-from loads.config import Settings
+from loads.config import settings
 
-settings = Settings()  # type: ignore
 
 SUPPORTED_ROLES = {"captain", "engineer", "first_officer", "crew", "guest"}
 

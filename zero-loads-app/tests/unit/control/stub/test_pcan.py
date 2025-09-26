@@ -1,14 +1,12 @@
+from loads.config import Settings
 import pytest
 from loads.control.stub import PCanStub
 import socket
 from loads.control.stub.can_frame import CAN_Frame
-from loads.config import Settings
-
-settings = Settings()  # type: ignore
 
 
 @pytest.mark.timeout(1)
-async def test_receive_message(settings):
+async def test_receive_message(settings: Settings):
     UDPServerSocket = socket.socket(family=socket.AF_INET, type=socket.SOCK_DGRAM)
 
     UDPServerSocket.bind((settings.canbus_ip, settings.canbus_port))

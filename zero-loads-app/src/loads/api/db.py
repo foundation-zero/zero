@@ -1,74 +1,68 @@
-from sqlalchemy.ext.asyncio import create_async_engine, async_sessionmaker
-from sqlalchemy.orm import declarative_base
-from loads.config import Settings
-from sqlalchemy import Column, Integer, Float, String
-from sqlalchemy.dialects.postgresql import NUMRANGE, ARRAY
-from sqlalchemy import Enum as SAEnum
-from .types import SeaState, ThrusterMode
+from sqlalchemy.ext.asyncio import (
+    AsyncSession,
+    async_sessionmaker,
+    create_async_engine,
+    AsyncEngine,
+)
+from typing import Any
+from loads.config import settings
+import contextlib
+from typing import AsyncIterator
+
+from sqlalchemy.ext.asyncio import (
+    AsyncConnection,
+)
 
 
-settings = Settings()  # type: ignore
+class SessionManager:
+    """Manages asynchronous DB sessions with connection pooling."""
 
-engine = create_async_engine(settings.pg_url, echo=True)
-AsyncSessionLocal = async_sessionmaker(engine)
+    def __init__(self, host: str, engine_kwargs: dict[str, Any] = {}):
+        self._engine: AsyncEngine | None = create_async_engine(host, **engine_kwargs)
+        self._sessionmaker: async_sessionmaker[AsyncSession] | None = (
+            async_sessionmaker(autocommit=False, bind=self._engine)
+        )
 
-Base = declarative_base()
+    async def close(self):
+        if self._engine is None:
+            raise Exception("SessionManager is not initialized")
+        engine = self._engine
+        self._engine = None
+        self._sessionmaker = None
+        await engine.dispose()
 
+    @contextlib.asynccontextmanager
+    async def connect(self) -> AsyncIterator[AsyncConnection]:
+        if self._engine is None:
+            raise Exception("SessionManager is not initialized")
 
-class SailSetCombined(Base):  # type: ignore
-    __tablename__ = "sail_sets_combined"
+        async with self._engine.begin() as connection:
+            try:
+                yield connection
+            except Exception:
+                await connection.rollback()
+                raise
 
-    id = Column(String, primary_key=True)
-    name = Column(String)
-    sails = Column(ARRAY(String))  # type: ignore
+    @contextlib.asynccontextmanager
+    async def session(self) -> AsyncIterator[AsyncSession]:
+        if self._sessionmaker is None:
+            raise Exception("SessionManager is not initialized")
 
-
-class Conditions(Base):  # type: ignore
-    __tablename__ = "conditions"
-
-    id = Column(String, primary_key=True)
-    name = Column(String, nullable=False)
-    sea_state = Column(
-        SAEnum(SeaState, name="sea_state", create_constraint=False), nullable=False
-    )  # type: ignore
-    awa = Column(NUMRANGE, nullable=False)
-    aws = Column(NUMRANGE, nullable=False)
-    pcs_mode_aft = Column(
-        ARRAY(SAEnum(ThrusterMode, name="pcs_mode", create_constraint=False)),
-        nullable=False,
-    )  # type: ignore
-    pcs_mode_fwd = Column(
-        ARRAY(SAEnum(ThrusterMode, name="pcs_mode", create_constraint=False)),
-        nullable=False,
-    )  # type: ignore
-
-
-class ValueDefinitions(Base):  # type: ignore
-    __tablename__ = "value_definitions"
-
-    id = Column(String, primary_key=True)
-    name = Column(String, nullable=False)
-    unit = Column(String, nullable=False)
-    scope = Column(String, nullable=False)
-
-
-class ReferenceValues(Base):  # type: ignore
-    __tablename__ = "reference_values"
-
-    id = Column(Integer, primary_key=True, index=True)
-    sail_set_id = Column(String)
-    condition_id = Column(String)
-    mast_id = Column(String, nullable=True)
-    value_definition_id = Column(String)
-    value = Column(Float)
-    error_too_low = Column(Float, nullable=True)
-    error_too_high = Column(Float, nullable=True)
-    warning_too_low = Column(Float, nullable=True)
-    warning_too_high = Column(Float, nullable=True)
+        session = self._sessionmaker()
+        try:
+            yield session
+        except Exception:
+            await session.rollback()
+            raise
+        finally:
+            await session.close()
 
 
-class Masts(Base):  # type: ignore
-    __tablename__ = "masts"
+sessionmanager = SessionManager(settings.pg_url, engine_kwargs={"echo": False})
 
-    id = Column(String, primary_key=True)
-    name = Column(String, nullable=False)
+
+async def get_db_session():
+    if sessionmanager is None:
+        raise RuntimeError("SessionManager not initialized")
+    async with sessionmanager.session() as session:
+        yield session

@@ -1,5 +1,4 @@
-from .db import (
-    AsyncSessionLocal,
+from .schema import (
     SailSetCombined,
     Conditions,
     ReferenceValues,
@@ -19,49 +18,48 @@ from .types import (
 from .types import CaseInput
 
 
-async def get_reference_values(values, case):
+async def get_reference_values(values, case, session):
     """Retrieve reference values based on sail set and conditions."""
-    async with AsyncSessionLocal() as session:
-        if case:
-            sail_set = retrieve_sail_set_subq(case)
-            condition = retrieve_conditions_subq(case)
-        else:
-            # TODO: ZERO-709: Get these values from the control process
-            sail_set = "upwind-blade"  # type: ignore
-            condition = "light-wind-close-hauled"  # type: ignore
+    if case:
+        sail_set = retrieve_sail_set_subq(case)
+        condition = retrieve_conditions_subq(case)
+    else:
+        # TODO: ZERO-709: Get these values from the control process
+        sail_set = "upwind-blade"  # type: ignore
+        condition = "light-wind-close-hauled"  # type: ignore
 
-        query = (
-            select(ReferenceValues, ValueDefinitions, Masts)
-            .join(
-                ValueDefinitions,
-                ReferenceValues.value_definition_id == ValueDefinitions.id,
-            )
-            .join(Masts, ReferenceValues.mast_id == Masts.id)
-            .where(ReferenceValues.value_definition_id.in_(values))
-            .where(ReferenceValues.sail_set_id == sail_set)
-            .where(ReferenceValues.condition_id == condition)
+    query = (
+        select(ReferenceValues, ValueDefinitions, Masts)
+        .join(
+            ValueDefinitions,
+            ReferenceValues.value_definition_id == ValueDefinitions.id,
         )
+        .join(Masts, ReferenceValues.mast_id == Masts.id)
+        .where(ReferenceValues.value_definition_id.in_(values))
+        .where(ReferenceValues.sail_set_id == sail_set)
+        .where(ReferenceValues.condition_id == condition)
+    )
 
-        result = await session.execute(query)
-        rows = result.fetchall()
+    result = await session.execute(query)
+    rows = result.fetchall()
 
-        return [
-            ReferenceValueType(
-                value=ValueType(
-                    id=definition.id,
-                    name=definition.name,
-                ),
-                masts=MastType(id=mast.id, name=mast.name),
-                target=TargetType(target=reference.value, unit=Unit(definition.unit)),
-                ranges=AlertType(
-                    error_too_low=reference.error_too_low,
-                    warning_too_low=reference.warning_too_low,
-                    warning_too_high=reference.warning_too_high,
-                    error_too_high=reference.error_too_high,
-                ),
-            )
-            for reference, definition, mast in rows
-        ]
+    return [
+        ReferenceValueType(
+            value=ValueType(
+                id=definition.id,
+                name=definition.name,
+            ),
+            masts=MastType(id=mast.id, name=mast.name),
+            target=TargetType(target=reference.value, unit=Unit(definition.unit)),
+            ranges=AlertType(
+                error_too_low=reference.error_too_low,
+                warning_too_low=reference.warning_too_low,
+                warning_too_high=reference.warning_too_high,
+                error_too_high=reference.error_too_high,
+            ),
+        )
+        for reference, definition, mast in rows
+    ]
 
 
 def retrieve_sail_set_subq(case: CaseInput):

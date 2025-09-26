@@ -39,7 +39,7 @@ jobs:
           echo "${{ secrets.ENV_LOADS_APP }}" > .env
         working-directory: zero-loads-app
       - name: Unit Test
-        run: poetry run pytest .
+        run: poetry run pytest . --run=unit -vv
         working-directory: zero-loads-app
       - run: poetry install
         working-directory: data

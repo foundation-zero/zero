@@ -9,5 +9,5 @@ CREATE SINK {{ this }} AS (
   FROM
     {{ ref('rooms_controls') }}
 )
-{{ sink_upsert_pg('rooms_controls', 'id', 'domestic_control') }}
+{{ sink_upsert_pg('rooms_controls', 'id', 'zero') }}
 
