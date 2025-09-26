@@ -1,6 +1,5 @@
 from sqlalchemy import select, cast
 from sqlalchemy.dialects.postgresql import ARRAY, NUMERIC, TEXT
-
 from .schema import (
     Conditions,
     Masts,
@@ -67,11 +66,16 @@ def retrieve_sail_set_subq(case: CaseInput):
     """Retrieve sail set based on current sails."""
     sail_set_subq = (
         select(SailSetCombined.id)
-        .where(SailSetCombined.sails == cast(sorted(case.sails), ARRAY(TEXT)))
+        .where(sails_exact(SailSetCombined, case.sails))
         .scalar_subquery()
     )
 
     return sail_set_subq
+
+
+def sails_exact(sailset, sails: list[str]):
+    """Check if the sail set matches the sails"""
+    return sailset.sails == cast(sorted(sails), ARRAY(TEXT))
 
 
 def retrieve_conditions_subq(case: CaseInput):
