@@ -4,8 +4,8 @@ SELECT
     hour,
     energy_wh
 FROM ( (
-    -- Calculate energy (Wh) of completed hours (not running hour) proportionally by calculating average values per minute to determine which minutes have data.
-    -- The energy is then proportional to the amount of minutes with data related to the total amount of minutes in the hour.
+    -- Calculate energy (Wh) of completed hours (not current hour) proportionally by calculating average values per minute to determine which minutes have data.
+    -- The energy value is then extrapolated to the total amount of minutes in the hour.
     WITH per_minute AS (
         SELECT
             electrical_consumption.topic AS topic,
@@ -14,9 +14,9 @@ FROM ( (
         FROM
         TUMBLE (
             {{ ref('electrical_consumption') }},
-            electrical_consumption.active_power_timestamp,
-            INTERVAL '1' MINUTE
-        )
+            active_power_timestamp,
+            INTERVAL '1 MINUTE'
+        ) AS electrical_consumption
         GROUP BY
           topic,
           window_start
@@ -34,8 +34,8 @@ FROM ( (
 
     UNION ALL (
       
-    -- Calculate energy (Wh) of running hours proportionally by calculating average values per minute to determine which minutes have data.
-    -- The energy is then proportional to the amount of minutes with data compared to the total amount of minutes passed in the running hour.
+    -- Calculate energy (Wh) of current hour proportionally by calculating average values per minute to determine which minutes have data.
+    -- The energy is then extrapolated to the total amount of minutes passed in the current hour.
     WITH per_minute AS (
         SELECT
             electrical_consumption.topic AS topic,
@@ -44,9 +44,9 @@ FROM ( (
         FROM
         TUMBLE (
             {{ ref('electrical_consumption') }},
-            electrical_consumption.active_power_timestamp,
-            INTERVAL '1' MINUTE
-        )
+            active_power_timestamp,
+            INTERVAL '1 MINUTE'
+        ) AS electrical_consumption
         GROUP BY
             topic,
             window_start
