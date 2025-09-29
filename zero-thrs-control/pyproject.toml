@@ -33,7 +33,7 @@ dependencies = [
     "seaborn (>=0.13.2,<1.0.0)",
     "simple-pid (>=2.0.1,<3.0.0)",
     "strawberry-graphql[debug-server,asgi,fastapi] @ git+https://github.com/foundation-zero/strawberry.git@feature/improved-pydantics",
-    "fastapi (>=0.117.1,<0.118.0)"
+    "fastapi[standard] (>=0.117.1,<0.118.0)"
 ]
 
 [tool.poetry.group.dev]
