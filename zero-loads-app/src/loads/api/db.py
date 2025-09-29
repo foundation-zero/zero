@@ -13,11 +13,15 @@ from sqlalchemy.ext.asyncio import (
 class SessionManager:
     """Manages asynchronous DB sessions."""
 
-    def __init__(self, host: str, engine_kwargs: dict[str, Any] = {}):
-        self._engine: AsyncEngine | None = create_async_engine(host, **engine_kwargs)
-        self._sessionmaker: async_sessionmaker[AsyncSession] | None = (
-            async_sessionmaker(autocommit=False, bind=self._engine)
-        )
+    def __init__(self):
+        self._engine: AsyncEngine | None = None
+        self._sessionmaker: async_sessionmaker[AsyncSession] | None = None
+
+    def initialize(self, host: str, engine_kwargs: dict[str, Any] = {}):
+        if self._engine is not None:
+            raise Exception("SessionManager already initialized")
+        self._engine = create_async_engine(host, **engine_kwargs)
+        self._sessionmaker = async_sessionmaker(autocommit=False, bind=self._engine)
 
     async def close(self):
         if self._engine is None:

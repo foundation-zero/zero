@@ -2,6 +2,14 @@ import pytest
 from sqlalchemy import inspect
 from loads.api.schema import Base
 from loads.config import Settings
+from loads.api.db import SessionManager
+
+
+@pytest.fixture
+def sessionmanager(settings: Settings):
+    sessionmanager = SessionManager()
+    sessionmanager.initialize(settings.pg_url)
+    return sessionmanager
 
 
 @pytest.mark.asyncio

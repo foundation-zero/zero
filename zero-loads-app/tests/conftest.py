@@ -3,7 +3,6 @@ import pathlib
 import pytest
 
 from loads.config import Settings
-from loads.api.db import SessionManager
 
 
 def pytest_addoption(parser):
@@ -25,11 +24,6 @@ def pytest_runtest_setup(item):
         "all",
     }:
         pytest.skip(f"skipping {item} because --run=unit was not specified")
-
-
-@pytest.fixture(scope="session")
-def sessionmanager(settings: Settings):
-    return SessionManager(settings.pg_url)
 
 
 @pytest.fixture(scope="session")
