@@ -11,20 +11,20 @@
 
 Run Adapter
 ```bash
-poetry run python -m loads adapter
+poetry run loads adapter
 ```
 
 Run stub
 ```bash
-poetry run python -m loads stub
+poetry run loads stub
 ```
 
 Run API
 ```bash
-poetry run python -m loads api
+poetry run loads api
 ```
 
 Generate JWT token for a role
 ```bash
-poetry run python -m loads generate-jwt --roles captain
+poetry run loads generate-jwt --roles captain
 ```
