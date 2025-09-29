@@ -28,7 +28,7 @@ jobs:
         uses: mikefarah/yq@master
         id: chart_version
         with:
-          cmd: yq '.version' '.zero-data/charts/data_gen/Chart.yaml'
+          cmd: yq '.version' './zero-data/charts/data_gen/Chart.yaml'
       - id: auth
         name: Authenticate with Google Cloud
         uses: google-github-actions/auth@v2
