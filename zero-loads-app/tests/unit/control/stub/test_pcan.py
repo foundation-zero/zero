@@ -1,5 +1,4 @@
 import socket
-
 import pytest
 
 from loads.config import Settings

@@ -15,20 +15,19 @@ from loads.config import settings
 
 logger = logging.getLogger("api")
 
+sessionmanager = SessionManager(settings.pg_url)
+
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     """Function that handles startup and shutdown events (https://fastapi.tiangolo.com/advanced/events/)"""
-    app.state.sessionmanager = SessionManager(
-        settings.pg_url, engine_kwargs={"echo": False}
-    )
     yield
-    if app.state.sessionmanager._engine is not None:
-        await app.state.sessionmanager.close()
+    if sessionmanager._engine is not None:
+        await sessionmanager.close()
 
 
 async def get_db_session():
-    async with app.state.sessionmanager.session() as session:
+    async with sessionmanager.session() as session:
         yield session
 
 
