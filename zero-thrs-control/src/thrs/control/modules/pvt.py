@@ -241,9 +241,9 @@ class PvtControl(Control):
             value=(
                 self._heat_dump_controller(
                     max(
-                        sensor_values.pvt_temperature_main_aft_return.temperature.value,  # type: ignore
-                        sensor_values.pvt_temperature_main_fwd_return.temperature.value,  # type: ignore
-                        sensor_values.pvt_temperature_owners_return.temperature.value,  # type: ignore #TODO: will be irrelevant in future setup
+                        sensor_values.pvt_temperature_main_aft_return.temperature.value,
+                        sensor_values.pvt_temperature_main_fwd_return.temperature.value,
+                        sensor_values.pvt_temperature_owners_return.temperature.value,  # TODO: remove once new FDS is processed
                     ),
                 )
             ),

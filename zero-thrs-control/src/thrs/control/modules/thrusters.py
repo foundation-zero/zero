@@ -170,8 +170,6 @@ class ThrustersControl(Control):
                 "dest": "idle",
                 "conditions": self._pcs_off,
             },
-            # TODO: alarms
-            # TODO: manual
         ]
         self.thrusters_state_machine = Machine(
             model=self,
@@ -284,9 +282,8 @@ class ThrustersControl(Control):
 
     def _is_overheating(self, sensor_values: ThrustersSensorValues):
         return (
-            sensor_values.thrusters_temperature_supply.temperature.value > 90
-            if sensor_values.thrusters_temperature_supply.temperature.value is not None
-            else False  # TODO: hardcoded? perhaps implement as alarm and let alarm be the trigger
+            sensor_values.thrusters_temperature_supply.temperature.value is not None
+            and sensor_values.thrusters_temperature_supply.temperature.value > 90
         )
 
     def _set_valves_to_cooling(self, sensor_values: ThrustersSensorValues):

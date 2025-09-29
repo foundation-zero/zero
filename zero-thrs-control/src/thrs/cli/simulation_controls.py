@@ -284,9 +284,7 @@ class SimulationControls:
                         control_params=model.control_parameters.model_json_schema(),
                         control_modes=TypeAdapter(
                             Annotated[
-                                Literal[
-                                    model.control_cls.modes()
-                                ],  # TODO: Need the executor for this..?
+                                Literal[model.control_cls.modes()],
                                 Field(default=model.control_cls.initial_mode()),
                             ]
                         ).json_schema(),
