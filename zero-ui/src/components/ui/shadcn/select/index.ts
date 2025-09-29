@@ -1,3 +1,5 @@
+export { default as MultiSelectTrigger } from "./MultiSelectTrigger.vue";
+export { default as MultiSelectValue } from "./MultiSelectValue.vue";
 export { default as Select } from "./Select.vue";
 export { default as SelectContent } from "./SelectContent.vue";
 export { default as SelectGroup } from "./SelectGroup.vue";

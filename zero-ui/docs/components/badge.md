@@ -12,7 +12,7 @@ The Badge component is used to display labels, statuses, or short pieces of meta
 
 ### Default Badge
 
-<div class="my-4 p-4 bg-background-muted">
+<div class="my-4 p-4 bg-muted">
   <Badge>Default</Badge>
 </div>
 
@@ -26,7 +26,7 @@ The Badge component is used to display labels, statuses, or short pieces of meta
 
 ### Secondary Badge
 
-<div class="my-4 p-4 bg-background-muted">
+<div class="my-4 p-4 bg-muted">
   <Badge variant="secondary">Secondary</Badge>
 </div>
 
@@ -38,7 +38,7 @@ The Badge component is used to display labels, statuses, or short pieces of meta
 
 ### Brand Badge
 
-<div class="my-4 p-4 bg-background-muted">
+<div class="my-4 p-4 bg-muted">
   <Badge variant="brand">Brand</Badge>
 </div>
 
@@ -50,7 +50,7 @@ The Badge component is used to display labels, statuses, or short pieces of meta
 
 ### Constructive Badge
 
-<div class="my-4 p-4 bg-background-muted">
+<div class="my-4 p-4 bg-muted">
   <Badge variant="constructive">Constructive</Badge>
 </div>
 
@@ -62,7 +62,7 @@ The Badge component is used to display labels, statuses, or short pieces of meta
 
 ### Warning Badge
 
-<div class="my-4 p-4 bg-background-muted">
+<div class="my-4 p-4 bg-muted">
   <Badge variant="warning">Warning</Badge>
 </div>
 
@@ -74,7 +74,7 @@ The Badge component is used to display labels, statuses, or short pieces of meta
 
 ### Destructive Badge
 
-<div class="my-4 p-4 bg-background-muted">
+<div class="my-4 p-4 bg-muted">
   <Badge variant="destructive">Destructive</Badge>
 </div>
 
@@ -86,7 +86,7 @@ The Badge component is used to display labels, statuses, or short pieces of meta
 
 ### Outline Badge
 
-<div class="my-4 p-4 bg-background-muted">
+<div class="my-4 p-4 bg-muted">
   <Badge variant="outline">Outline</Badge>
 </div>
 
@@ -98,7 +98,7 @@ The Badge component is used to display labels, statuses, or short pieces of meta
 
 ### Multiple Badges
 
-<div class="my-4 p-4 bg-background-muted space-x-2">
+<div class="my-4 p-4 bg-muted space-x-2">
   <Badge>Default</Badge>
   <Badge variant="secondary">Secondary</Badge>
   <Badge variant="brand">Brand</Badge>
