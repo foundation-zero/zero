@@ -1,16 +1,13 @@
 import pytest
-
-from loads.api.db import SessionManager
+from sqlalchemy import inspect
 from loads.api.schema import Base
 from loads.config import Settings
-from sqlalchemy import inspect
+from loads.api.db import sessionmanager
 
 
 @pytest.mark.asyncio
 async def test_declarative_base_matches_db(settings: Settings):
-    session_manager = SessionManager(settings.pg_url, engine_kwargs={"echo": False})
-
-    async with session_manager._engine.begin() as conn:
+    async with sessionmanager.connect() as conn:
 
         def get_db_tables_and_columns(sync_conn):
             inspector = inspect(sync_conn)

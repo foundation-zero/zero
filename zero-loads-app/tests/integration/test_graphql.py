@@ -6,7 +6,6 @@ from loads.api import app
 
 @pytest.mark.asyncio
 async def test_graphql():
-    # https://fastapi.tiangolo.com/advanced/async-tests/#example
     async with AsyncClient(
         transport=ASGITransport(app=app), base_url="http://test"
     ) as client:
@@ -16,33 +15,34 @@ async def test_graphql():
                 "query": """
                 query {
                     referenceValues(
-                    values: "headstay-load"
-                    case: {
-                        sails: ["full-mizzen-sail", "full-main-sail", "main-blade", "mizzen-jib"]
-                        pcsMode: {aft: REGENERATION, fwd: PROPULSION}
-                        awa: 0
-                        aws: 25
-                        seaState: WET
-                    }
-                    ) {
-                    ranges {
-                        errorTooHigh
-                        errorTooLow
-                        warningTooHigh
-                        warningTooLow
-                    }
-                    target {
-                        target
-                        unit
-                    }
-                    value {
-                        id
-                        name
-                    }
-                    masts {
-                        id
-                        name
-                    }
+                        values: "headstay-load"
+                        case: {
+                            sails: ["full-mizzen-sail", "full-main-sail", "main-blade", "mizzen-jib"]
+                            pcsMode: {aft: REGENERATION, fwd: PROPULSION}
+                            awa: 0
+                            aws: 25
+                            seaState: WET
+                        }
+                    )
+                    {
+                        ranges {
+                            errorTooHigh
+                            errorTooLow
+                            warningTooHigh
+                            warningTooLow
+                        }
+                        target {
+                            target
+                            unit
+                        }
+                        value {
+                            id
+                            name
+                        }
+                        masts {
+                            id
+                            name
+                        }
                     }
                 }
                 """
