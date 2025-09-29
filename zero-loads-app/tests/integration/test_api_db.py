@@ -2,11 +2,10 @@ import pytest
 from sqlalchemy import inspect
 from loads.api.schema import Base
 from loads.config import Settings
-from loads.api.db import sessionmanager
 
 
 @pytest.mark.asyncio
-async def test_declarative_base_matches_db(settings: Settings):
+async def test_declarative_base_matches_db(settings: Settings, sessionmanager):
     async with sessionmanager.connect() as conn:
 
         def get_db_tables_and_columns(sync_conn):

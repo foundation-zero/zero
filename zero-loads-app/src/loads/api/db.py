@@ -12,7 +12,7 @@ from sqlalchemy.ext.asyncio import (
 
 
 class SessionManager:
-    """Manages asynchronous DB sessions with connection pooling."""
+    """Manages asynchronous DB sessions."""
 
     def __init__(self, host: str, engine_kwargs: dict[str, Any] = {}):
         self._engine: AsyncEngine | None = create_async_engine(host, **engine_kwargs)
@@ -59,7 +59,5 @@ sessionmanager = SessionManager(settings.pg_url, engine_kwargs={"echo": False})
 
 
 async def get_db_session():
-    if sessionmanager is None:
-        raise RuntimeError("SessionManager not initialized")
     async with sessionmanager.session() as session:
         yield session
