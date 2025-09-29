@@ -4,8 +4,8 @@ SELECT
     hour,
     energy_wh
 FROM ( (
-    -- Calculate energy (Wh) of completed hours (not running hour) proportionally by calculating average values per minute to determine which minutes have data.
-    -- The energy is then proportional to the amount of minutes with data related to the total amount of minutes in the hour.
+    -- Calculate energy (Wh) of completed hours (not current hour) proportionally by calculating average values per minute to determine which minutes have data.
+    -- The energy value is then summed up and divided by 60 to go from Watt minutes to Watt hours.
     WITH per_minute AS (
         SELECT
             electrical_consumption.topic AS topic,
@@ -14,9 +14,9 @@ FROM ( (
         FROM
         TUMBLE (
             {{ ref('electrical_consumption') }},
-            electrical_consumption.active_power_timestamp,
-            INTERVAL '1' MINUTE
-        )
+            active_power_timestamp,
+            INTERVAL '1 MINUTE'
+        ) AS electrical_consumption
         GROUP BY
           topic,
           window_start
@@ -34,8 +34,10 @@ FROM ( (
 
     UNION ALL (
       
-    -- Calculate energy (Wh) of running hours proportionally by calculating average values per minute to determine which minutes have data.
-    -- The energy is then proportional to the amount of minutes with data compared to the total amount of minutes passed in the running hour.
+    -- Calculate energy (Wh) of current hour proportionally by calculating average values per minute to determine which minutes have data.
+    -- The average energy values are then extrapolated to the expected amount of minutes that will contain data when the hour has passed.
+    -- For instance, if there are 10 minutes of data after 30 minutes have passed, we expect to have 40 minutes of data when the hour 
+    -- is completely passed. The average value per minute is then extrapolated to 40 minutes and divided by 60.
     WITH per_minute AS (
         SELECT
             electrical_consumption.topic AS topic,
@@ -44,9 +46,9 @@ FROM ( (
         FROM
         TUMBLE (
             {{ ref('electrical_consumption') }},
-            electrical_consumption.active_power_timestamp,
-            INTERVAL '1' MINUTE
-        )
+            active_power_timestamp,
+            INTERVAL '1 MINUTE'
+        ) AS electrical_consumption
         GROUP BY
             topic,
             window_start

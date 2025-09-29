@@ -4,13 +4,14 @@ import { reactiveOmit } from "@vueuse/core";
 import type { PrimitiveProps } from "reka-ui";
 import { Primitive } from "reka-ui";
 import type { HTMLAttributes } from "vue";
-import type { BadgeVariants } from ".";
-import { badgeVariants } from ".";
+import type { BadgeTypes, BadgeVariants } from ".";
+import { badgeTypes, badgeVariants } from ".";
 
 const props = defineProps<
   PrimitiveProps & {
     variant?: BadgeVariants["variant"];
     class?: HTMLAttributes["class"];
+    type?: BadgeTypes["variant"];
   }
 >();
 
@@ -20,7 +21,7 @@ const delegatedProps = reactiveOmit(props, "class");
 <template>
   <Primitive
     data-slot="badge"
-    :class="cn(badgeVariants({ variant }), props.class)"
+    :class="cn(badgeVariants({ variant }), badgeTypes({ variant: type }), props.class)"
     v-bind="delegatedProps"
   >
     <slot />
