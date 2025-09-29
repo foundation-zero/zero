@@ -1,5 +1,10 @@
-from sqlalchemy import select, cast
+import strawberry
+from sqlalchemy import select, cast, Column
+from sqlalchemy.sql.selectable import ScalarSelect
+from sqlalchemy.sql.expression import ColumnElement
 from sqlalchemy.dialects.postgresql import ARRAY, NUMERIC, TEXT
+from sqlalchemy.ext.asyncio import AsyncSession
+from typing import Sequence
 from .schema import (
     Conditions,
     Masts,
@@ -18,15 +23,17 @@ from .types import (
 )
 
 
-async def get_reference_values(values, case, session):
-    """Retrieve reference values based on sail set and conditions."""
+async def get_reference_values(
+    values: list[strawberry.ID], case: CaseInput | None, session: AsyncSession
+):
+    """Return all reference values that matches the currents sail and conditions."""
     if case:
-        sail_set = retrieve_sail_set_subq(case)
-        condition = retrieve_conditions_subq(case)
+        sail_set: ScalarSelect[str] | str = retrieve_sail_set_subq(case)
+        condition: ScalarSelect[str] | str = retrieve_conditions_subq(case)
     else:
         # TODO: ZERO-709: Get these values from the control process
-        sail_set = "upwind-blade"  # type: ignore
-        condition = "light-wind-close-hauled"  # type: ignore
+        sail_set = "upwind-blade"
+        condition = "light-wind-close-hauled"
 
     query = (
         select(ReferenceValues, ValueDefinitions, Masts)
@@ -62,24 +69,26 @@ async def get_reference_values(values, case, session):
     ]
 
 
-def retrieve_sail_set_subq(case: CaseInput):
-    """Retrieve sail set based on current sails."""
+def retrieve_sail_set_subq(case: CaseInput) -> ScalarSelect[str]:
+    """Retrieve subquery that returns the sail set that exactly matches the current sails."""
     sail_set_subq = (
         select(SailSetCombined.id)
-        .where(sails_exact(SailSetCombined, case.sails))
+        .where(sails_exact(SailSetCombined.sails, case.sails))
         .scalar_subquery()
     )
 
     return sail_set_subq
 
 
-def sails_exact(sailset, sails: list[str]):
-    """Check if the sail set matches the sails"""
-    return sailset.sails == cast(sorted(sails), ARRAY(TEXT))
+def sails_exact(
+    sails_column: Column[Sequence[str]], sails: list[str]
+) -> ColumnElement[bool]:
+    """Check if the sail set exactly matches the sails provided"""
+    return sails_column == cast(sorted(sails), ARRAY(TEXT))
 
 
-def retrieve_conditions_subq(case: CaseInput):
-    """Retrieve conditions based on case input."""
+def retrieve_conditions_subq(case: CaseInput) -> ScalarSelect[str]:
+    """Retrieve subquery that returns the conditions matching the case input."""
     condition_subq = (
         select(Conditions.id)
         .where(Conditions.sea_state == case.sea_state.value)
