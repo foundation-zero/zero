@@ -1,15 +1,13 @@
 import pytest
-from httpx import ASGITransport, AsyncClient
+from fastapi.testclient import TestClient
 
 from loads.api import app
 
 
 @pytest.mark.asyncio
 async def test_graphql():
-    async with AsyncClient(
-        transport=ASGITransport(app=app), base_url="http://test"
-    ) as client:
-        response = await client.post(
+    with TestClient(app) as client:
+        response = client.post(
             "/graphql",
             json={
                 "query": """
@@ -48,32 +46,33 @@ async def test_graphql():
                 """
             },
         )
-        assert response.status_code == 200
-        assert response.json() == {
-            "data": {
-                "referenceValues": [
-                    {
-                        "ranges": {
-                            "errorTooHigh": None,
-                            "errorTooLow": None,
-                            "warningTooHigh": None,
-                            "warningTooLow": None,
-                        },
-                        "target": {"target": "5.0", "unit": "TONNE"},
-                        "value": {"id": "headstay-load", "name": "Headstay load"},
-                        "masts": {"id": "main", "name": "Main mast"},
+
+    assert response.status_code == 200
+    assert response.json() == {
+        "data": {
+            "referenceValues": [
+                {
+                    "ranges": {
+                        "errorTooHigh": None,
+                        "errorTooLow": None,
+                        "warningTooHigh": None,
+                        "warningTooLow": None,
                     },
-                    {
-                        "ranges": {
-                            "errorTooHigh": None,
-                            "errorTooLow": None,
-                            "warningTooHigh": None,
-                            "warningTooLow": None,
-                        },
-                        "target": {"target": "2.5", "unit": "TONNE"},
-                        "value": {"id": "headstay-load", "name": "Headstay load"},
-                        "masts": {"id": "mizzen", "name": "Mizzen mast"},
+                    "target": {"target": "5.0", "unit": "TONNE"},
+                    "value": {"id": "headstay-load", "name": "Headstay load"},
+                    "masts": {"id": "main", "name": "Main mast"},
+                },
+                {
+                    "ranges": {
+                        "errorTooHigh": None,
+                        "errorTooLow": None,
+                        "warningTooHigh": None,
+                        "warningTooLow": None,
                     },
-                ]
-            }
+                    "target": {"target": "2.5", "unit": "TONNE"},
+                    "value": {"id": "headstay-load", "name": "Headstay load"},
+                    "masts": {"id": "mizzen", "name": "Mizzen mast"},
+                },
+            ]
         }
+    }

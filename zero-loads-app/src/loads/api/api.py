@@ -8,9 +8,10 @@ from fastapi import Depends, FastAPI
 from sqlalchemy.ext.asyncio import AsyncSession
 from strawberry.fastapi import BaseContext, GraphQLRouter
 
-from .db import get_db_session, sessionmanager
+from .db import SessionManager
 from .model import get_reference_values
 from .types import CaseInput, ReferenceValueType
+from loads.config import settings
 
 logger = logging.getLogger("api")
 
@@ -18,9 +19,17 @@ logger = logging.getLogger("api")
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     """Function that handles startup and shutdown events (https://fastapi.tiangolo.com/advanced/events/)"""
+    app.state.sessionmanager = SessionManager(
+        settings.pg_url, engine_kwargs={"echo": False}
+    )
     yield
-    if sessionmanager._engine is not None:
-        await sessionmanager.close()
+    if app.state.sessionmanager._engine is not None:
+        await app.state.sessionmanager.close()
+
+
+async def get_db_session():
+    async with app.state.sessionmanager.session() as session:
+        yield session
 
 
 @dataclass

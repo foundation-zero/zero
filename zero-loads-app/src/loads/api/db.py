@@ -1,7 +1,6 @@
 import contextlib
 from typing import Any, AsyncIterator
 
-from loads.config import settings
 from sqlalchemy.ext.asyncio import (
     AsyncConnection,
     AsyncEngine,
@@ -53,11 +52,3 @@ class SessionManager:
             raise
         finally:
             await session.close()
-
-
-sessionmanager = SessionManager(settings.pg_url, engine_kwargs={"echo": False})
-
-
-async def get_db_session():
-    async with sessionmanager.session() as session:
-        yield session
