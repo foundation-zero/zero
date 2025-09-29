@@ -70,14 +70,12 @@ async def get_reference_values(
 
 
 def retrieve_sail_set_subq(case: CaseInput) -> ScalarSelect[str]:
-    """Retrieve subquery that returns the sail set that exactly matches the current sails."""
-    sail_set_subq = (
+    """Create subquery that returns the sail set that exactly matches the current sails."""
+    return (
         select(SailSetCombined.id)
         .where(sails_exact(SailSetCombined.sails, case.sails))
         .scalar_subquery()
     )
-
-    return sail_set_subq
 
 
 def sails_exact(
@@ -88,8 +86,8 @@ def sails_exact(
 
 
 def retrieve_conditions_subq(case: CaseInput) -> ScalarSelect[str]:
-    """Retrieve subquery that returns the conditions matching the case input."""
-    condition_subq = (
+    """Create subquery that returns the conditions matching the case input."""
+    return (
         select(Conditions.id)
         .where(Conditions.sea_state == case.sea_state.value)
         .where(Conditions.awa.contains(cast(case.awa, NUMERIC)))
@@ -98,5 +96,3 @@ def retrieve_conditions_subq(case: CaseInput) -> ScalarSelect[str]:
         .where(Conditions.pcs_mode_aft.any(case.pcs_mode.aft.value))
         .scalar_subquery()
     )
-
-    return condition_subq

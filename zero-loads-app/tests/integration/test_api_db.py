@@ -24,6 +24,8 @@ async def test_declarative_base_matches_db(settings: Settings, sessionmanager):
             }
             return db_tables, db_columns
 
+        # The inspector is not avaible for async, so we use run_sync to get a synchronous connection.
+        # https://getdocs.org/Sqlalchemy/docs/latest/orm/extensions/asyncio#Using_the_Inspector_to_inspect_schema_objects
         db_tables, db_columns = await conn.run_sync(get_db_tables_and_columns)
         model_tables = set(Base.metadata.tables.keys()) - {"sail_sets_combined"}
         assert model_tables <= db_tables, f"Missing tables: {model_tables - db_tables}"
