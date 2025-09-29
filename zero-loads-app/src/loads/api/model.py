@@ -28,8 +28,8 @@ async def get_reference_values(
 ):
     """Return all reference values that matches the currents sail and conditions."""
     if case:
-        sail_set: ScalarSelect[str] | str = retrieve_sail_set_subq(case)
-        condition: ScalarSelect[str] | str = retrieve_conditions_subq(case)
+        sail_set = retrieve_sail_set_subq(case)
+        condition = retrieve_conditions_subq(case)
     else:
         # TODO: ZERO-709: Get these values from the control process
         sail_set = "upwind-blade"

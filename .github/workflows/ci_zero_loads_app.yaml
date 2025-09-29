@@ -32,6 +32,8 @@ jobs:
           src: "./zero-loads-app"
       - run: poetry install --with dev,test
         working-directory: zero-loads-app
+      - run: poetry run mypy --version
+        working-directory: zero-loads-app
       - run: poetry run mypy src
         working-directory: zero-loads-app
       - name: Create .env file from secret for zero-loads-app
