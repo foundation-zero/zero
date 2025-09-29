@@ -23,7 +23,7 @@ jobs:
         uses: mikefarah/yq@master
         id: chart_name
         with:
-          cmd: yq '.name' '.zero-data/charts/data_gen/Chart.yaml'
+          cmd: yq '.name' './zero-data/charts/data_gen/Chart.yaml'
       - name: Get Chart name
         uses: mikefarah/yq@master
         id: chart_version
