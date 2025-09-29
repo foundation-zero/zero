@@ -12,7 +12,7 @@ LEFT JOIN {{ ref('controls') }} controls ON controls.id = logs.id
 UNION ALL
 SELECT
     row_number() OVER (PARTITION BY logs.id ORDER BY logs.time DESC) AS row_num,
-    logs.id,
+    amplifiers.id,
     amplifiers.room_id,
     amplifiers.name,
     'amplifier' as "type",
@@ -20,11 +20,11 @@ SELECT
     logs.time
 FROM
     {{ ref('amplifiers_update') }} as logs
-LEFT JOIN {{ ref('amplifiers') }} amplifiers ON amplifiers.id = logs.id
+LEFT JOIN {{ ref('amplifiers') }} amplifiers ON amplifiers.room_id = logs.id
 UNION ALL
 SELECT
     row_number() OVER (PARTITION BY logs.id ORDER BY logs.time DESC) AS row_num,
-    logs.id,
+    blinds.id,
     blinds.room_id,
     blinds.name,
     'blinds' as "type",

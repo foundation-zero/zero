@@ -1,15 +1,11 @@
 name: "Data: Test"
 on:
-  push:
-    branches:
-      - main
-    paths:
-      - data/risingwave/**
-      - .github/workflows/ci_data_risingwave.yaml
   pull_request:
     paths:
-      - data/risingwave/**
-      - .github/workflows/ci_data_risingwave.yaml
+      - .github/workflows/ci_data.yaml
+      - data/**
+  release:
+    types: [released]
 
 jobs:
   test:
@@ -29,7 +25,7 @@ jobs:
         run: |
           echo "${{ secrets.ENV_DATA }}" > .env
         working-directory: data
-      - run: poetry install --no-root
+      - run: poetry install
         working-directory: data
       - name: Run services
         run: docker compose up -d --quiet-pull postgres risingwave vernemq

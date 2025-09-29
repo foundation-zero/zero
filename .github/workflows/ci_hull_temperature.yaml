@@ -1,13 +1,11 @@
 name: "Hull temperature: Test"
 on:
-  push:
+  pull_request:
     paths:
-      - 'zero-hull-temperature/**'
-      - '.github/workflows/ci_hull_temperature.yaml'
+      - zero-hull-temperature/**
+      - .github/workflows/ci_hull_temperature.yaml
   release:
     types: [released]
-    paths:
-      - 'zero-hull-temperature/**'
 
 env:
   IMAGE: "europe-west1-docker.pkg.dev/common-449414/common/zero-hull-temperature"
@@ -25,11 +23,11 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: 3.13
-      - run: pipx install poetry==2.0.1
+      - run: pipx install poetry==2.1.4
         working-directory: zero-hull-temperature
       - run: poetry check
         working-directory: zero-hull-temperature
-      - run: poetry install
+      - run: poetry install --with dev,test
         working-directory: zero-hull-temperature
       - run: poetry run ruff check zero_hull_temperature tests
         working-directory: zero-hull-temperature
