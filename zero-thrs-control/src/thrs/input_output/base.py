@@ -13,7 +13,11 @@ from pydantic import (
     field_validator,
 )
 from pydantic.fields import FieldInfo
-from thrs.input_output.definitions.units import unit_for_annotation, zero_for_unit
+from thrs.input_output.definitions.units import (
+    PcsMode,
+    unit_for_annotation,
+    zero_for_unit,
+)
 from thrs.utils.string import hyphenize
 
 
@@ -66,7 +70,13 @@ class StampedDf[T](ThrsModel):
         if isinstance(value, pl.DataFrame):
             expected_schema = [
                 {"time": pl.Datetime(time_unit="us", time_zone=None), "value": type}
-                for type in [pl.Float64, pl.Int64, pl.Boolean, pl.String]
+                for type in [
+                    pl.Float64,
+                    pl.Int64,
+                    pl.Boolean,
+                    pl.String,
+                    pl.Enum(PcsMode),
+                ]
             ]
             if value.schema not in expected_schema:
                 raise ValueError(

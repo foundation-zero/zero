@@ -301,4 +301,48 @@ async def test_flow_cooling_single_thruster(
         )
 
 
-# TODO: test cooldown
+async def test_cooldown(control: ThrustersControl, executor: SimulationExecutor):
+    result = await executor.tick(control.initial().values)
+
+    # set valves and stabilize
+    for i in range(300):
+        control_values = control.control(result.sensor_values).values
+        result = await executor.tick(control_values)
+
+    assert control.mode == "recovery"
+    assert control_values.thrusters_mix_recovery.setpoint.value > 0.0
+
+    executor._simulation_inputs.thrusters_aft.active = Stamped.stamp(False)
+    executor._simulation_inputs.thrusters_aft.heat_flow = Stamped.stamp(0)
+    executor._simulation_inputs.thrusters_fwd.active = Stamped.stamp(False)
+    executor._simulation_inputs.thrusters_fwd.heat_flow = Stamped.stamp(0)
+    executor._simulation_inputs.thrusters_pcs.mode = Stamped.stamp(PcsMode.OFF)
+
+    result = await executor.tick(control_values)
+    control_values = control.control(result.sensor_values).values
+
+    assert control.mode == "cooldown"
+    while control.mode == "cooldown":
+        control_values = control.control(result.sensor_values).values
+        result = await executor.tick(control_values)
+
+        assert (
+            control_values.thrusters_mix_recovery.setpoint.value == Valve.MIXING_B_TO_AB
+        )
+        assert control._flow_balance_controller.get_setpoints() == [
+            control.parameters.cooling_flow,
+            control.parameters.cooling_flow,
+        ]
+
+    assert control.mode == "idle"
+
+    assert (
+        result.sensor_values.thrusters_temperature_aft_return.temperature.value
+        < control.parameters.cooling_temperature
+    )
+    assert (
+        result.sensor_values.thrusters_temperature_fwd_return.temperature.value
+        < control.parameters.cooling_temperature
+    )
+
+    assert control_values.thrusters_pump_1.dutypoint.value == 0.0
