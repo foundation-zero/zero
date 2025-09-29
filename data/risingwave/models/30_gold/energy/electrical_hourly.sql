@@ -35,7 +35,9 @@ FROM ( (
     UNION ALL (
       
     -- Calculate energy (Wh) of current hour proportionally by calculating average values per minute to determine which minutes have data.
-    -- The energy is then extrapolated to the total amount of minutes passed in the current hour.
+    -- The average energy values are then extrapolated to the expected amount of minutes that will contain data when the hour has passed.
+    -- For instance, if there are 10 minutes of data after 30 minutes have passed, we expect to have 40 minutes of data when the hour 
+    -- is completely passed. The average value per minute is then extrapolated to 40 minutes and divided by 60.
     WITH per_minute AS (
         SELECT
             electrical_consumption.topic AS topic,
