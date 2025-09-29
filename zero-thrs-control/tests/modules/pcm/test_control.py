@@ -19,11 +19,11 @@ type PcmExecutor = SimulationExecutor[
 
 async def test_idle(control: PcmControl, executor: PcmExecutor):
     result = await executor.tick(
-        control.control(PcmSensorValues.zero(), executor.time()).values,
+        control.control(PcmSensorValues.zero()).values,
     )
 
     for i in range(100):
-        control_values = control.control(result.sensor_values, executor.time()).values
+        control_values = control.control(result.sensor_values).values
         result = await executor.tick(control_values)
 
     pcm_flow = (
@@ -48,11 +48,11 @@ async def test_charging(control: PcmControl, executor: PcmExecutor):
     )  # close consumers switch to force flow past PCM
 
     result = await executor.tick(
-        control.control(PcmSensorValues.zero(), executor.time()).values,
+        control.control(PcmSensorValues.zero()).values,
     )
 
     for i in range(100):
-        control_values = control.control(result.sensor_values, executor.time()).values
+        control_values = control.control(result.sensor_values).values
         result = await executor.tick(control_values)
 
     pcm_flow = (
@@ -83,11 +83,11 @@ async def test_charging(control: PcmControl, executor: PcmExecutor):
 async def test_supplying(control: PcmControl, executor: PcmExecutor):
     control.to_supplying()  # type: ignore
     result = await executor.tick(
-        control.control(PcmSensorValues.zero(), executor.time()).values,
+        control.control(PcmSensorValues.zero()).values,
     )
 
     for i in range(100):
-        control_values = control.control(result.sensor_values, executor.time()).values
+        control_values = control.control(result.sensor_values).values
         result = await executor.tick(control_values)
 
     pcm_flow = (
@@ -120,11 +120,11 @@ async def test_boosting(control: PcmControl, executor: PcmExecutor):
     control.to_boosting()  # type: ignore
 
     result = await executor.tick(
-        control.control(PcmSensorValues.zero(), executor.time()).values,
+        control.control(PcmSensorValues.zero()).values,
     )
 
     for i in range(100):
-        control_values = control.control(result.sensor_values, executor.time()).values
+        control_values = control.control(result.sensor_values).values
         result = await executor.tick(control_values)
 
     pcm_flow = (

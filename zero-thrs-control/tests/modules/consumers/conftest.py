@@ -28,9 +28,8 @@ def parameters():
 
 
 @fixture
-def control(parameters):
-
-    return ConsumersControl(parameters, datetime.now())
+def control(parameters, executor):
+    return ConsumersControl(parameters, executor.time)
 
 
 @fixture

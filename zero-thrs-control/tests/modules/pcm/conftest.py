@@ -16,8 +16,8 @@ from thrs.simulation.models.fmu_paths import pcm_path
 
 
 @fixture
-def control():
-    return PcmControl(PcmParameters(), datetime.now())
+def control(executor):
+    return PcmControl(PcmParameters(), executor.time)
 
 
 @fixture

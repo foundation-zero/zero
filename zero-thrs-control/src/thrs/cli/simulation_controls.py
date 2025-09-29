@@ -49,7 +49,7 @@ INPUTS = {
 
 CONTROL_PARAMS = {"THRUSTERS": ThrustersParameters()}
 
-CONTROLS = {"THRUSTERS": ThrustersControl(CONTROL_PARAMS["THRUSTERS"], datetime.now())} #TODO: should retreive time from somewhere else?
+CONTROLS = {"THRUSTERS": ThrustersControl}
 
 MODES = {
     "THRUSTERS": SimulatorModel(
@@ -58,7 +58,8 @@ MODES = {
         control_values_cls=ThrustersControlValues,
         simulation_outputs_cls=ThrustersSimulationOutputs,
         simulation_inputs=INPUTS["THRUSTERS"],
-        control=CONTROLS["THRUSTERS"],
+        control_cls=CONTROLS["THRUSTERS"],
+        control_parameters=CONTROL_PARAMS["THRUSTERS"],
         alarms=ThrustersAlarms(),
         tick_duration=timedelta(seconds=1),
         start_time=datetime.now(),
@@ -150,10 +151,10 @@ def schemas_for_mode(mode: Modes) -> SchemaMessage:
         controls=MODES[mode].control_values_cls.model_json_schema(),
         simulation_inputs=INPUTS[mode].model_json_schema(),
         simulation_inputs_values=INPUTS[mode],
-        control_params=MODES[mode].control.parameters.model_json_schema(),
+        control_params=MODES[mode].control_parameters.model_json_schema(),
         control_modes=TypeAdapter(
             Annotated[
-                Literal[*CONTROLS[mode].modes],
+                Literal[CONTROLS[mode].modes()],
                 Field(default=CONTROLS[mode].mode),
             ]
         ).json_schema(),
@@ -221,7 +222,7 @@ class SimulationControls:
             )
         if values.control_params:
             update_in_place(
-                model.control.parameters,
+                model.control_parameters,
                 values.control_params.model_dump(exclude_none=True),
             )
         if values.control_mode:
@@ -257,7 +258,7 @@ class SimulationControls:
                 class SetValuesMessageWithModel(
                     SetValuesMessage[
                         create_partial_model(model.simulation_inputs.__class__),
-                        create_partial_model(model.control.parameters.__class__),
+                        create_partial_model(model.control_parameters.__class__),
                     ]
                 ):
                     pass
@@ -280,11 +281,13 @@ class SimulationControls:
                         controls=model.control_values_cls.model_json_schema(),
                         simulation_inputs=model.simulation_inputs.model_json_schema(),
                         simulation_inputs_values=model.simulation_inputs,
-                        control_params=model.control.parameters.model_json_schema(),
+                        control_params=model.control_parameters.model_json_schema(),
                         control_modes=TypeAdapter(
                             Annotated[
-                                Literal[*model.control.modes],
-                                Field(default=model.control.mode),
+                                Literal[
+                                    model.control_cls.modes()
+                                ],  # TODO: Need the executor for this..?
+                                Field(default=model.control_cls.initial_mode()),
                             ]
                         ).json_schema(),
                     ),

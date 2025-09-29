@@ -65,10 +65,10 @@ class ThrustersSensorValues(ThrsModel):
         sensor.PressureSensor, component_meta(yard_tag="50001097-02")
     ]
     thrusters_aft: Annotated[
-        sensor.Thruster, component_meta(yard_tag="150001001", included_in_fmu=False)
+        sensor.Thruster, component_meta(yard_tag="15001001", included_in_fmu=False)
     ]
     thrusters_fwd: Annotated[
-        sensor.Thruster, component_meta(yard_tag="150001002", included_in_fmu=False)
+        sensor.Thruster, component_meta(yard_tag="15001002", included_in_fmu=False)
     ]
     thrusters_pcs: Annotated[
         sensor.Pcs, component_meta(yard_tag="1500", included_in_fmu=False)
@@ -78,19 +78,35 @@ class ThrustersSensorValues(ThrsModel):
     @property
     def thrusters_temperature_recovery(
         self,
-    ) -> Annotated[
-        sensor.TemperatureSensor, component_meta(included_in_fmu=False)
-    ]:
-        total_flow = self.thrusters_flow_aft.flow.value + self.thrusters_flow_fwd.flow.value
-        if total_flow > 0.0:
+    ) -> Annotated[sensor.CalculatedTemperature, component_meta(included_in_fmu=False)]:
+        total_flow = (
+            self.thrusters_flow_aft.flow.value + self.thrusters_flow_fwd.flow.value
+        )
+        if (
+            total_flow > 0.0
+            and self.thrusters_temperature_aft_return.temperature.value is not None
+            and self.thrusters_temperature_fwd_return.temperature.value is not None
+        ):
             averaged_return_temperature = (
-                self.thrusters_temperature_aft_return.temperature.value * self.thrusters_flow_aft.flow.value
-                + self.thrusters_temperature_fwd_return.temperature.value * self.thrusters_flow_fwd.flow.value
+                self.thrusters_temperature_aft_return.temperature.value
+                * self.thrusters_flow_aft.flow.value
+                + self.thrusters_temperature_fwd_return.temperature.value
+                * self.thrusters_flow_fwd.flow.value
             ) / total_flow
         else:
-            averaged_return_temperature = 0.0  # TODO: 0 ok?
+            averaged_return_temperature = None  # No flow, no temperature
 
-        return sensor.TemperatureSensor(temperature=Stamped.stamp(averaged_return_temperature))
+        return sensor.CalculatedTemperature(
+            temperature=Stamped(
+                value=averaged_return_temperature,
+                timestamp=min(
+                    self.thrusters_temperature_aft_return.temperature.timestamp,
+                    self.thrusters_temperature_fwd_return.temperature.timestamp,
+                    self.thrusters_flow_aft.flow.timestamp,
+                    self.thrusters_flow_fwd.flow.timestamp,
+                ),
+            )
+        )
 
 
 class ThrustersControlValues(ThrsModel):

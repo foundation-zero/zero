@@ -10,7 +10,7 @@ async def test_valve_movement(io_mapping, control, simulation_inputs):
         io_mapping, simulation_inputs, datetime.now(), timedelta(seconds=45)
     )
 
-    control_values = control.initial(executor.time()).values
+    control_values = control.initial().values
 
     result = await executor.tick(control_values)
 

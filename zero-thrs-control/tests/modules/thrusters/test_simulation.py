@@ -2,6 +2,7 @@ from datetime import datetime, timedelta
 
 from pytest import fixture
 import pytest
+from thrs.control.modules.thrusters import ThrustersControl, ThrustersParameters
 from thrs.input_output.definitions.control import Valve
 from thrs.input_output.modules.thrusters import (
     ThrustersControlValues,
@@ -10,20 +11,12 @@ from thrs.input_output.modules.thrusters import (
     ThrustersSimulationOutputs,
 )
 from thrs.orchestration.collector import PolarsCollector
-from thrs.orchestration.executor import SimulationExecutor
 from thrs.orchestration.cycler import Cycler
 from thrs.orchestration.simulator import Simulator, SimulatorModel
 from thrs.simulation.fmu import Fmu
 from thrs.simulation.io_mapping import IoMapping
 from thrs.simulation.models.fmu_paths import thrusters_path
 from tests.modules.helpers.simulation_inputs import simulator_input_field_setters
-
-
-@fixture
-def executor(io_mapping, simulation_inputs):
-    return SimulationExecutor(
-        io_mapping, simulation_inputs, datetime.now(), timedelta(seconds=1)
-    )
 
 
 async def test_interfacer(executor, io_mapping, simulation_inputs, control, alarms):
@@ -47,9 +40,10 @@ async def test_simulation(simulation_inputs, control, alarms):
         fmu_path=thrusters_path,
         sensor_values_cls=ThrustersSensorValues,
         control_values_cls=ThrustersControlValues,
+        control_cls=ThrustersControl,
+        control_parameters=ThrustersParameters(),
         simulation_outputs_cls=ThrustersSimulationOutputs,
         simulation_inputs=simulation_inputs,
-        control=control,
         alarms=alarms,
     )
 
@@ -77,7 +71,7 @@ async def test_thrusters_simulation_inputs(incorrect_simulation_inputs, control)
             ThrustersSimulationOutputs,
         )
 
-        control_values = control.initial(datetime.now()).values
+        control_values = control.initial().values
 
         control_values.thrusters_pump_1.dutypoint.value = 1
         control_values.thrusters_mix_recovery.setpoint.value = Valve.MIXING_A_TO_AB

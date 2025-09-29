@@ -1,5 +1,5 @@
 from datetime import datetime
-from typing import Annotated, Literal
+from typing import Annotated, Callable, Literal
 from pydantic import BaseModel, Field
 from transitions import Machine, State
 
@@ -88,7 +88,9 @@ _INITIAL_CONTROL_VALUES = PvtControlValues(
 
 
 class PvtControl(Control):
-    def __init__(self, parameters: PvtParameters, time: datetime) -> None:
+    def __init__(
+        self, parameters: PvtParameters, time_fn: Callable[[], datetime]
+    ) -> None:
         self._parameters = parameters
         self._states = [
             State(
@@ -103,7 +105,7 @@ class PvtControl(Control):
             ),
             State(name="pump_failure", on_enter=[self._set_recovery_mixes_to_a]),
         ]
-        self._time = time
+        self._time = time_fn
 
         self._heat_dump_controller = Controller[Ratio, Celsius](
             _INITIAL_CONTROL_VALUES.pvt_mix_exchanger.setpoint.value,
@@ -151,22 +153,25 @@ class PvtControl(Control):
             model=self, states=self._states, initial="idle"
         )
         self._current_values = _INITIAL_CONTROL_VALUES.model_copy(deep=True)
-        self._time = datetime.now()
 
     @property
     def parameters(self) -> PvtParameters:
         return self._parameters
 
     @property
-    def modes(self) -> list[str]:
-        return list(self.pvt_state_machine.states.keys())
-
-    @property
     def mode(self) -> Literal["idle", "recovery", "pump_failure"]:
         return self.state  # type: ignore
 
-    def initial(self, time: datetime) -> ControlResult[PvtControlValues]:
-        return ControlResult(time, self._current_values)
+    @staticmethod
+    def modes() -> list[str]:
+        return ["idle", "recovery", "pump_failure"]
+
+    @staticmethod
+    def initial_mode() -> str:
+        return "idle"
+
+    def initial(self) -> ControlResult[PvtControlValues]:
+        return ControlResult(self._time(), self._current_values)
 
     def _enable_recovery_mixes(self):
         self._main_fwd_heat_supply_controller.enable()
@@ -187,15 +192,15 @@ class PvtControl(Control):
     def _set_recovery_mixes_to_a(self):
         self._current_values.pvt_mix_main_fwd.setpoint = Stamped(
             value=Valve.MIXING_A_TO_AB,
-            timestamp=self._time,
+            timestamp=self._time(),
         )
         self._current_values.pvt_mix_main_aft.setpoint = Stamped(
             value=Valve.MIXING_A_TO_AB,
-            timestamp=self._time,
+            timestamp=self._time(),
         )
         self._current_values.pvt_mix_owners.setpoint = Stamped(
             value=Valve.MIXING_A_TO_AB,
-            timestamp=self._time,
+            timestamp=self._time(),
         )
 
     def _control_recovery_mixes(self, sensor_values: PvtSensorValues):
@@ -203,28 +208,25 @@ class PvtControl(Control):
             value=(
                 self._main_fwd_heat_supply_controller(
                     sensor_values.pvt_temperature_main_fwd_return.temperature.value,
-                    self._time,
                 )
             ),
-            timestamp=self._time,
+            timestamp=self._time(),
         )
         self._current_values.pvt_mix_main_aft.setpoint = Stamped(
             value=(
                 self._main_aft_heat_supply_controller(
                     sensor_values.pvt_temperature_main_aft_return.temperature.value,
-                    self._time,
                 )
             ),
-            timestamp=self._time,
+            timestamp=self._time(),
         )
         self._current_values.pvt_mix_owners.setpoint = Stamped(
             value=(
                 self._owners_heat_supply_controller(
                     sensor_values.pvt_temperature_owners_return.temperature.value,
-                    self._time,
                 )
             ),
-            timestamp=self._time,
+            timestamp=self._time(),
         )
 
     def _control_heat_dump_mix(self, sensor_values: PvtSensorValues):
@@ -239,27 +241,24 @@ class PvtControl(Control):
             value=(
                 self._heat_dump_controller(
                     max(
-                        sensor_values.pvt_temperature_main_aft_return.temperature.value,
-                        sensor_values.pvt_temperature_main_fwd_return.temperature.value,
-                        sensor_values.pvt_temperature_owners_return.temperature.value,
+                        sensor_values.pvt_temperature_main_aft_return.temperature.value,  # type: ignore
+                        sensor_values.pvt_temperature_main_fwd_return.temperature.value,  # type: ignore
+                        sensor_values.pvt_temperature_owners_return.temperature.value,  # type: ignore #TODO: will be irrelevant in future setup
                     ),
-                    self._time,
                 )
             ),
-            timestamp=self._time,
+            timestamp=self._time(),
         )
 
     def control(
-        self, sensor_values: PvtSensorValues, time: datetime
+        self, sensor_values: PvtSensorValues
     ) -> ControlResult[PvtControlValues]:
-        self._time = time
-
         self._control_recovery_mixes(sensor_values)
         self._control_heat_dump_mix(sensor_values)
 
         self._control_pumps(sensor_values)
 
-        return ControlResult(time, self._current_values)
+        return ControlResult(self._time(), self._current_values)
 
     def _control_pumps(self, sensor_values: PvtSensorValues):
         strings_main_fwd_flow = (
@@ -297,34 +296,31 @@ class PvtControl(Control):
         self._current_values.pvt_pump_main_fwd.dutypoint = Stamped(
             value=self._main_fwd_pump_flow_controller(
                 strings_main_fwd_flow,
-                self._time,
             ),
-            timestamp=self._time,
+            timestamp=self._time(),
         )
         self._current_values.pvt_pump_main_aft.dutypoint = Stamped(
             value=self._main_aft_pump_flow_controller(
                 strings_main_aft_flow,
-                self._time,
             ),
-            timestamp=self._time,
+            timestamp=self._time(),
         )
         self._current_values.pvt_pump_owners.dutypoint = Stamped(
             value=self._owners_pump_flow_controller(
                 strings_owners_flow,
-                self._time,
             ),
-            timestamp=self._time,
+            timestamp=self._time(),
         )
 
     def _activate_pumps(self):
         self._current_values.pvt_pump_main_fwd.on = Stamped(
-            value=True, timestamp=self._time
+            value=True, timestamp=self._time()
         )
         self._current_values.pvt_pump_main_aft.on = Stamped(
-            value=True, timestamp=self._time
+            value=True, timestamp=self._time()
         )
         self._current_values.pvt_pump_owners.on = Stamped(
-            value=True, timestamp=self._time
+            value=True, timestamp=self._time()
         )
 
         self._main_fwd_pump_flow_controller.setpoint = (
@@ -343,13 +339,13 @@ class PvtControl(Control):
 
     def _deactivate_pumps(self):
         self._current_values.pvt_pump_main_fwd.on = Stamped(
-            value=False, timestamp=self._time
+            value=False, timestamp=self._time()
         )
         self._current_values.pvt_pump_main_aft.on = Stamped(
-            value=False, timestamp=self._time
+            value=False, timestamp=self._time()
         )
         self._current_values.pvt_pump_owners.on = Stamped(
-            value=False, timestamp=self._time
+            value=False, timestamp=self._time()
         )
         self._main_fwd_pump_flow_controller.disable()
         self._main_aft_pump_flow_controller.disable()

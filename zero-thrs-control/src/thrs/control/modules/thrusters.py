@@ -1,5 +1,5 @@
 from datetime import datetime
-from typing import Literal
+from typing import Callable, Literal
 from pydantic import BaseModel, model_validator
 
 from transitions import Machine, State
@@ -87,9 +87,11 @@ _INITIAL_CONTROL_VALUES = ThrustersControlValues(
 
 
 class ThrustersControl(Control):
-    def __init__(self, parameters: ThrustersParameters, start_time: datetime) -> None:
+    def __init__(
+        self, parameters: ThrustersParameters, time_fn: Callable[[], datetime]
+    ) -> None:
         self._parameters = parameters
-        self._time = start_time
+        self._time = time_fn
         self._current_values = _INITIAL_CONTROL_VALUES.model_copy(deep=True)
 
         self._states = [
@@ -244,28 +246,31 @@ class ThrustersControl(Control):
             [self._aft_flow_controller, self._fwd_flow_controller],
             self._active_pump,
             self._pump_controller,
+            self._time,
         )
 
     @property
     def parameters(self) -> ThrustersParameters:
         return self._parameters
 
-    @property
-    def modes(self) -> list[str]:
-        return list(self.thrusters_state_machine.states.keys())
+    @staticmethod
+    def modes() -> list[str]:
+        return ["idle", "cooling", "recovery", "cooldown"]
+
+    @staticmethod
+    def initial_mode() -> str:
+        return "idle"
 
     @property
     def mode(self) -> Literal["idle", "cooling", "recovery", "cooldown"]:
         return self.state  # type: ignore
 
-    def initial(self, time: datetime) -> ControlResult[ThrustersControlValues]:
-        return ControlResult(time, self._current_values)
+    def initial(self) -> ControlResult[ThrustersControlValues]:
+        return ControlResult(self._time(), self._current_values)
 
     def control(
-        self, sensor_values: ThrustersSensorValues, time: datetime
+        self, sensor_values: ThrustersSensorValues
     ) -> ControlResult[ThrustersControlValues]:
-        self._time = time
-
         self._check_pcs_mode(sensor_values)  # type: ignore
         self._control_warmup_mix(sensor_values)
         self._control_heat_dump(sensor_values)
@@ -275,41 +280,44 @@ class ThrustersControl(Control):
 
         self._control_flow_balance(sensor_values)
 
-        return ControlResult(time, self._current_values)
+        return ControlResult(self._time(), self._current_values)
 
     def _is_overheating(self, sensor_values: ThrustersSensorValues):
         return (
-            sensor_values.thrusters_temperature_supply.temperature.value
-            > 90  # TODO: hardcoded? perhaps implement as alarm and let alarm be the trigger
+            sensor_values.thrusters_temperature_supply.temperature.value > 90
+            if sensor_values.thrusters_temperature_supply.temperature.value is not None
+            else False  # TODO: hardcoded? perhaps implement as alarm and let alarm be the trigger
         )
 
     def _set_valves_to_cooling(self, sensor_values: ThrustersSensorValues):
         self._current_values.thrusters_switch_aft.setpoint = Stamped(
-            value=Valve.SWITCH_STRAIGHT, timestamp=self._time
+            value=Valve.SWITCH_STRAIGHT, timestamp=self._time()
         )
         self._current_values.thrusters_switch_fwd.setpoint = Stamped(
-            value=Valve.SWITCH_STRAIGHT, timestamp=self._time
+            value=Valve.SWITCH_STRAIGHT, timestamp=self._time()
         )
         self._current_values.thrusters_shutoff_recovery.setpoint = Stamped(
-            value=Valve.CLOSED, timestamp=self._time
+            value=Valve.CLOSED, timestamp=self._time()
         )
 
     def _set_valves_to_recovery(self, sensor_values: ThrustersSensorValues):
         self._current_values.thrusters_switch_aft.setpoint = Stamped(
-            value=Valve.SWITCH_BRANCH, timestamp=self._time
+            value=Valve.SWITCH_BRANCH, timestamp=self._time()
         )
         self._current_values.thrusters_switch_fwd.setpoint = Stamped(
-            value=Valve.SWITCH_BRANCH, timestamp=self._time
+            value=Valve.SWITCH_BRANCH, timestamp=self._time()
         )
         self._current_values.thrusters_shutoff_recovery.setpoint = Stamped(
-            value=Valve.OPEN, timestamp=self._time
+            value=Valve.OPEN, timestamp=self._time()
         )
 
     def _enable_flow_balancing(self, sensor_values: ThrustersSensorValues):
-        self._flow_balance_controller.enable([
-            sensor_values.thrusters_aft.active.value,
-            sensor_values.thrusters_fwd.active.value,
-        ])
+        self._flow_balance_controller.enable(
+            [
+                sensor_values.thrusters_aft.active.value,
+                sensor_values.thrusters_fwd.active.value,
+            ]
+        )
 
     def _disable_flow_balancing(self, sensor_values: ThrustersSensorValues):
         self._flow_balance_controller.disable()
@@ -359,10 +367,9 @@ class ThrustersControl(Control):
             value=(
                 self._warmup_mix_controller(
                     sensor_values.thrusters_temperature_recovery.temperature.value,
-                    self._time,
                 )
             ),
-            timestamp=self._time,
+            timestamp=self._time(),
         )
 
     def _control_heat_dump(self, sensor_values: ThrustersSensorValues):
@@ -370,23 +377,20 @@ class ThrustersControl(Control):
             value=(
                 self._heat_dump_controller(
                     sensor_values.thrusters_temperature_supply.temperature.value,
-                    self._time,
                 )
             ),
-            timestamp=self._time,
+            timestamp=self._time(),
         )
 
     def _set_recovery_flow_setpoints(self, sensor_values: ThrustersSensorValues):
         flow_setpoints = [
             self._aft_recovery_temperature_controller(
                 sensor_values.thrusters_temperature_aft_return.temperature.value,
-                self._time,
             )
             if sensor_values.thrusters_aft.active.value
             else 0,
             self._fwd_recovery_temperature_controller(
                 sensor_values.thrusters_temperature_fwd_return.temperature.value,
-                self._time,
             )
             if sensor_values.thrusters_fwd.active.value
             else 0,
@@ -400,17 +404,18 @@ class ThrustersControl(Control):
     def _control_flow_balance(self, sensor_values: ThrustersSensorValues):
         self._flow_balance_controller.set_pump(self._active_pump)
 
-        self._flow_balance_controller.set_active_valves([
-            sensor_values.thrusters_aft.active.value,
-            sensor_values.thrusters_fwd.active.value,
-        ])
+        self._flow_balance_controller.set_active_valves(
+            [
+                sensor_values.thrusters_aft.active.value,
+                sensor_values.thrusters_fwd.active.value,
+            ]
+        )
 
         self._flow_balance_controller(
             [
                 sensor_values.thrusters_flow_aft.flow.value,
                 sensor_values.thrusters_flow_fwd.flow.value,
-            ],
-            self._time,
+            ]
         )
 
     def _pcs_off(self, sensor_values: ThrustersSensorValues):
@@ -437,13 +442,13 @@ class ThrustersControl(Control):
                 self._most_recently_active_pump = "pump1"
                 self._active_pump = self._current_values.thrusters_pump_1
 
-        self._active_pump.on = Stamped(value=True, timestamp=self._time)
+        self._active_pump.on = Stamped(value=True, timestamp=self._time())
 
     def _deactivate_pump(self, sensor_values: ThrustersSensorValues):
         if not self._active_pump:
             raise Warning("No pump active when deactivating")
 
-        self._active_pump.on = Stamped(value=False, timestamp=self._time)
+        self._active_pump.on = Stamped(value=False, timestamp=self._time())
         self._active_pump = None
 
 

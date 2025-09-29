@@ -1,5 +1,5 @@
 from datetime import datetime
-from typing import cast
+from typing import Callable, cast
 from simple_pid import PID
 
 from thrs.input_output.base import Stamped
@@ -7,13 +7,13 @@ from thrs.input_output.definitions.control import Pump, Valve
 from thrs.input_output.definitions.units import LMin, Ratio
 
 
-class Controller[ValueUnit: float, SetpointUnit: float]:
+class Controller[ActuatorUnit: float, MeasurementUnit: float]:
     def __init__(
         self,
-        initial: ValueUnit,
-        setpoint: SetpointUnit,
+        initial: ActuatorUnit,
+        setpoint: MeasurementUnit,
         tuning: tuple[float, float, float],
-        time: datetime,
+        time_fn: Callable[[], datetime],
         output_limits: tuple[float, float] = (0, 1),
     ):
         kp, ki, kd = tuning or self.TUNING
@@ -25,10 +25,10 @@ class Controller[ValueUnit: float, SetpointUnit: float]:
             sample_time=None,
             output_limits=output_limits,
             auto_mode=False,
-            time_fn= lambda: time.timestamp()
+            time_fn=lambda: time_fn().timestamp(),
         )
         self._initial = initial
-        self._reset_time = False
+
     def enabled(self) -> bool:
         return self._pid.auto_mode
 
@@ -36,7 +36,6 @@ class Controller[ValueUnit: float, SetpointUnit: float]:
         if self._pid.auto_mode:
             raise Exception("PID is already enabled")
         self._pid.auto_mode = True
-        self._reset_time = True
 
     def disable(self):
         if not self._pid.auto_mode:
@@ -44,21 +43,19 @@ class Controller[ValueUnit: float, SetpointUnit: float]:
         self._pid.auto_mode = False
 
     @property
-    def setpoint(self) -> SetpointUnit:
-        return cast(SetpointUnit, self._pid.setpoint)
+    def setpoint(self) -> MeasurementUnit:
+        return cast(MeasurementUnit, self._pid.setpoint)
 
     @setpoint.setter
-    def setpoint(self, value: SetpointUnit):
+    def setpoint(self, value: MeasurementUnit):
         self._pid.setpoint = value
 
-    def __call__(self, measurement: SetpointUnit, time: datetime) -> ValueUnit:
-        if self._reset_time: #TODO: deal with dt is simulation versus reality. In simulation, passing dt = tick_duration works. In real time, having actual time would be nice..
-            self._reset_time = False
-        self._pid.time_fn = lambda: time.timestamp()
-        pid_result = cast(ValueUnit | None, self._pid(measurement))
-        return (
-            pid_result if pid_result is not None else self._initial
-        )  # do we want initial back or None?
+    def __call__(self, measurement: MeasurementUnit | None) -> ActuatorUnit:
+        if measurement is None:
+            pid_result = None
+        else:
+            pid_result = cast(ActuatorUnit | None, self._pid(measurement))
+        return pid_result if pid_result is not None else self._initial
 
 
 class FlowBalanceController:
@@ -68,11 +65,13 @@ class FlowBalanceController:
         valve_controllers: list[Controller[Ratio, LMin]],
         pump: Pump | None = None,
         pump_controller: Controller[Ratio, LMin] | None = None,
+        time_fn: Callable[[], datetime] = datetime.now,
     ):
         self._valve_controllers = valve_controllers
         self._pump_controller = pump_controller
         self._valves = valves
         self._pump = pump
+        self._time = time_fn
 
     def disable(self):
         for controller in self._valve_controllers:
@@ -123,12 +122,12 @@ class FlowBalanceController:
     def get_setpoints(self) -> list[LMin]:
         return [controller.setpoint for controller in self._valve_controllers]
 
-    def __call__(self, measurements: list[LMin], time: datetime):
+    def __call__(self, measurements: list[LMin]):
         if len(measurements) != len(self._valve_controllers):
             raise ValueError("Measurements length must match valves length")
 
         controller_values = [
-            controller(measurement, time)
+            controller(measurement)
             for controller, measurement in zip(self._valve_controllers, measurements)
         ]
         offset = 1 - max(*controller_values)
@@ -136,18 +135,20 @@ class FlowBalanceController:
             controller_values, self._valve_controllers, self._valves
         ):
             if controller.enabled():
-                valve.setpoint = Stamped(value=value + offset, timestamp=time)
+                valve.setpoint = Stamped(value=value + offset, timestamp=self._time())
             else:
-                valve.setpoint = Stamped(value=Valve.CLOSED, timestamp=time)
+                valve.setpoint = Stamped(value=Valve.CLOSED, timestamp=self._time())
         if self._pump is not None and self._pump_controller is not None:
-            self._pump_controller.setpoint = sum([
-                setpoint * active
-                for setpoint, active in zip(
-                    self.get_setpoints(), self.get_active_valves()
-                )
-            ])
+            self._pump_controller.setpoint = sum(
+                [
+                    setpoint * active
+                    for setpoint, active in zip(
+                        self.get_setpoints(), self.get_active_valves()
+                    )
+                ]
+            )
             self._pump.dutypoint = Stamped(
-                value=self._pump_controller(sum(measurements), time), timestamp=time
+                value=self._pump_controller(sum(measurements)), timestamp=self._time()
             )
 
 
@@ -170,7 +171,7 @@ class FlowDistributionController:
 
         self._ratios = ratios
 
-    def __call__(self, measurements: list[LMin], time: datetime):
+    def __call__(self, measurements: list[LMin]):
         if len(measurements) != len(self._flow_balance_controller._valve_controllers):
             raise ValueError("Measurements length must match valves length")
         if any(
@@ -197,4 +198,4 @@ class FlowDistributionController:
             )
         ]
         self._flow_balance_controller.set_setpoints(setpoints)
-        self._flow_balance_controller(measurements, time)
+        self._flow_balance_controller(measurements)

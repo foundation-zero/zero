@@ -11,15 +11,13 @@ class Cycler:
         self._executor = executor
         self._alarms = alarms
 
-    async def run(self, times: int, collector: Collector):
-        control_values = self._control.initial(self._executor.start_time).values
-        for _ in range(times):
+    async def run(self, ticks: int, collector: Collector):
+        control_values = self._control.initial().values
+        for _ in range(ticks):
             result = await self._executor.tick(control_values)
             if isinstance(result, SimulationExecutionResult):
                 collector.collect(result.raw, self._control.mode, result.timestamp)
-            control_values = self._control.control(
-                result.sensor_values, result.timestamp
-            ).values
+            control_values = self._control.control(result.sensor_values).values
             alarms = self._alarms.check(
                 result.sensor_values, control_values, self._control
             )

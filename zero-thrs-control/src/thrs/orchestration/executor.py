@@ -78,6 +78,9 @@ class MqttExecutor[S: ThrsModel, C: ThrsModel](Executor[S, C]):
     def start_time(self) -> datetime:
         return self._inner.start_time
 
+    def time(self) -> datetime:
+        return self._inner.time()
+
 
 @dataclass
 class SimulationExecutionResult[S: ThrsModel, I: SimulationInputs, O: ThrsModel](

@@ -37,7 +37,7 @@ def test_thrusters_fmu_names():
 
 
 async def test_set_module_temperature(control, executor):
-    control_values = control.initial(executor.time()).values
+    control_values = control.initial().values
 
     executor._simulation_inputs.thrusters_aft.heat_flow.value = 0
     executor._simulation_inputs.thrusters_fwd.heat_flow.value = 0

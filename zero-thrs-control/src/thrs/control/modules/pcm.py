@@ -52,9 +52,11 @@ _INITIAL_CONTROL_VALUES = PcmControlValues(
 
 
 class PcmControl(Control[PcmSensorValues, PcmControlValues, PcmParameters]):
-    def __init__(self, parameters: PcmParameters, time: datetime) -> None:
+    def __init__(
+        self, parameters: PcmParameters, time_fn: Callable[[], datetime]
+    ) -> None:
         self._parameters = parameters
-        self._time = time
+        self._time = time_fn
 
         self._states = [
             State(
@@ -94,104 +96,104 @@ class PcmControl(Control[PcmSensorValues, PcmControlValues, PcmParameters]):
         )
 
         self._current_values = _INITIAL_CONTROL_VALUES.model_copy(deep=True)
-        self._time = datetime.now()
+
+    @staticmethod
+    def modes() -> list[str]:
+        return ["supplying", "charging", "boosting", "idle"]
+
+    @staticmethod
+    def initial_mode() -> str:
+        return "idle"
 
     @property
     def mode(self) -> Literal["supplying", "charging", "boosting", "idle"]:
         return self.state  # type: ignore
 
-    def initial(self, time: datetime) -> ControlResult[PcmControlValues]:
-        return ControlResult(time, self._current_values)
+    def initial(self) -> ControlResult[PcmControlValues]:
+        return ControlResult(self._time(), self._current_values)
 
     def _set_valves_to_idle(self):
         self._current_values.pcm_switch_charging_return.setpoint = Stamped(
-            value=Valve.CLOSED, timestamp=self._time
+            value=Valve.CLOSED, timestamp=self._time()
         )
         self._current_values.pcm_switch_discharging.setpoint = Stamped(
-            value=Valve.CLOSED, timestamp=self._time
+            value=Valve.CLOSED, timestamp=self._time()
         )
         self._current_values.pcm_switch_charging_supply.setpoint = Stamped(
-            value=Valve.CLOSED, timestamp=self._time
+            value=Valve.CLOSED, timestamp=self._time()
         )
         self._current_values.pcm_switch_consumers.setpoint = Stamped(
-            value=Valve.OPEN, timestamp=self._time
+            value=Valve.OPEN, timestamp=self._time()
         )
 
     def _set_valves_to_supplying(self):
         self._current_values.pcm_switch_charging_return.setpoint = Stamped(
-            value=Valve.CLOSED, timestamp=self._time
+            value=Valve.CLOSED, timestamp=self._time()
         )
         self._current_values.pcm_switch_discharging.setpoint = Stamped(
-            value=Valve.OPEN, timestamp=self._time
+            value=Valve.OPEN, timestamp=self._time()
         )
         self._current_values.pcm_switch_charging_supply.setpoint = Stamped(
-            value=Valve.CLOSED, timestamp=self._time
+            value=Valve.CLOSED, timestamp=self._time()
         )
         self._current_values.pcm_switch_consumers.setpoint = Stamped(
-            value=Valve.OPEN, timestamp=self._time
+            value=Valve.OPEN, timestamp=self._time()
         )
 
     def _set_valves_to_charging(self):
         self._current_values.pcm_switch_charging_return.setpoint = Stamped(
-            value=Valve.OPEN, timestamp=self._time
+            value=Valve.OPEN, timestamp=self._time()
         )
         self._current_values.pcm_switch_discharging.setpoint = Stamped(
-            value=Valve.CLOSED, timestamp=self._time
+            value=Valve.CLOSED, timestamp=self._time()
         )
         self._current_values.pcm_switch_charging_supply.setpoint = Stamped(
-            value=Valve.OPEN, timestamp=self._time
+            value=Valve.OPEN, timestamp=self._time()
         )
         self._current_values.pcm_switch_consumers.setpoint = Stamped(
-            value=Valve.OPEN, timestamp=self._time
+            value=Valve.OPEN, timestamp=self._time()
         )
 
     def _set_valves_to_boosting(self):
         self._current_values.pcm_switch_charging_return.setpoint = Stamped(
-            value=Valve.CLOSED, timestamp=self._time
+            value=Valve.CLOSED, timestamp=self._time()
         )
         self._current_values.pcm_switch_discharging.setpoint = Stamped(
-            value=Valve.OPEN, timestamp=self._time
+            value=Valve.OPEN, timestamp=self._time()
         )
         self._current_values.pcm_switch_charging_supply.setpoint = Stamped(
-            value=Valve.OPEN, timestamp=self._time
+            value=Valve.OPEN, timestamp=self._time()
         )
         self._current_values.pcm_switch_consumers.setpoint = Stamped(
-            value=Valve.CLOSED, timestamp=self._time
+            value=Valve.CLOSED, timestamp=self._time()
         )
 
     def _disable_pump(self):
         if self._current_values.pcm_pump.on.value:
             self._current_values.pcm_pump.on = Stamped(
-                value=False, timestamp=self._time
+                value=False, timestamp=self._time()
             )
             self._pump_flow_controller.disable()
 
     def _enable_pump(self, setpoint: Callable[[], LMin]):
         if not self._current_values.pcm_pump.on.value:
-            self._current_values.pcm_pump.on = Stamped(value=True, timestamp=self._time)
+            self._current_values.pcm_pump.on = Stamped(
+                value=True, timestamp=self._time()
+            )
             self._pump_flow_controller.enable()
         self._pump_flow_controller.setpoint = setpoint()
 
     def _control_pump(self, sensor_values: PcmSensorValues):
         self._current_values.pcm_pump.dutypoint = Stamped(
-            value=self._pump_flow_controller(
-                sensor_values.pcm_pump.flow.value,
-                self._time,
-            ),
-            timestamp=self._time,
+            value=self._pump_flow_controller(sensor_values.pcm_pump.flow.value),
+            timestamp=self._time(),
         )
 
-    def control(self, sensor_values: PcmSensorValues, time: datetime) -> ControlResult:
-        self._time = time
-
+    def control(self, sensor_values: PcmSensorValues) -> ControlResult:
         self._control_pump(sensor_values)
 
-        return ControlResult(time, self._current_values)
+        return ControlResult(self._time(), self._current_values)
 
     @property
     def parameters(self) -> PcmParameters:
         return PcmParameters()
-
-    @property
-    def modes(self) -> list[str]:
-        return [""]
