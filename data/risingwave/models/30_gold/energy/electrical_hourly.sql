@@ -5,7 +5,7 @@ SELECT
     energy_wh
 FROM ( (
     -- Calculate energy (Wh) of completed hours (not current hour) proportionally by calculating average values per minute to determine which minutes have data.
-    -- The energy value is then summed up and divided by 60.
+    -- The energy value is then summed up and divided by 60 to go from Watt minutes to Watt hours.
     WITH per_minute AS (
         SELECT
             electrical_consumption.topic AS topic,
