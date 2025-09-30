@@ -76,6 +76,7 @@ services:
       HASURA_GRAPHQL_ENABLE_REMOTE_SCHEMA_PERMISSIONS: "true"
       HASURA_GRAPHQL_JWT_SECRET: '{ "type": "HS256", "key": "${JWT_SECRET}" }'
       HASURA_GRAPHQL_EXPERIMENTAL_FEATURES: "naming_convention"
+      HASURA_GRAPHQL_DEFAULT_NAMING_CONVENTION: "graphql-default"
       HASURA_GRAPHQL_STREAMING_QUERIES_MULTIPLEXED_REFETCH_INTERVAL: 200
     depends_on:
       data-connector-agent:
