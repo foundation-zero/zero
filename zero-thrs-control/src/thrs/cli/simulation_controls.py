@@ -362,9 +362,9 @@ class SimulationControls:
     async def run_blind(self, mode: Modes):
         await self._controls_client.subscribe("thrs/manual_controls", qos=1)
         model = MODES[mode]
-        manual_control = ManualControl(model.control.initial(datetime.now()).values)
-        manual_control_model = replace(model, control=manual_control)
+        manual_control_model = replace(model, control_cls=ManualControl)
         with manual_control_model.executor() as executor:
+            manual_control = ManualControl(ThrustersControlValues.zero(), executor.time)
             executor = MqttExecutor(
                 executor,
                 self._control_client,
@@ -374,7 +374,7 @@ class SimulationControls:
                 self._control_topic,
                 ThrustersControlValues,
             )
-            simulator = Simulator(manual_control_model, executor)
+            simulator = Simulator(manual_control_model, executor, manual_control)
 
             async def _receive_manual_controls():
                 async for message in self._controls_client.messages:

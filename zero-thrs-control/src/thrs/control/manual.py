@@ -1,4 +1,5 @@
 from datetime import datetime
+from typing import Callable
 from thrs.classes.control import Control, ControlResult
 from thrs.input_output.base import ThrsModel
 
@@ -10,16 +11,21 @@ class EmptyParameters(ThrsModel):
 class ManualControl[SensorValues: ThrsModel, ControlValues: ThrsModel](
     Control[SensorValues, ControlValues, EmptyParameters]
 ):
-    def __init__(self, control_values: ControlValues):
+    def __init__(self, control_values: ControlValues, time_fn: Callable[[], datetime]):
         self._control_values = control_values
+        self._time_fn = time_fn
 
     @property
     def parameters(self) -> EmptyParameters:
         return EmptyParameters()
 
-    @property
-    def modes(self) -> list[str]:
+    @staticmethod
+    def modes() -> list[str]:
         return ["manual"]
+
+    @staticmethod
+    def initial_mode() -> str:
+        return "manual"
 
     @property
     def mode(self) -> str:
@@ -28,10 +34,8 @@ class ManualControl[SensorValues: ThrsModel, ControlValues: ThrsModel](
     def manual_controls(self, control_values: ControlValues):
         self._control_values = control_values
 
-    def initial(self, time: datetime) -> ControlResult[ControlValues]:
-        return ControlResult(time, self._control_values)
+    def initial(self) -> ControlResult[ControlValues]:
+        return ControlResult(self._time_fn(), self._control_values)
 
-    def control(
-        self, sensor_values: SensorValues, time: datetime
-    ) -> ControlResult[ControlValues]:
-        return ControlResult(time, self._control_values)
+    def control(self, sensor_values: SensorValues) -> ControlResult[ControlValues]:
+        return ControlResult(self._time_fn(), self._control_values)

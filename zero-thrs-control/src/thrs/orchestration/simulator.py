@@ -47,11 +47,11 @@ class SimulatorModel:
 
 
 class Simulator:
-    def __init__(self, model: SimulatorModel, executor: Executor):
+    def __init__(self, model: SimulatorModel, executor: Executor, control: Control | None = None):
         self._model = model
         self._executor = executor
         self._cycler = Cycler(
-            model.control_cls(model.control_parameters, self._executor.time),
+            control or model.control_cls(model.control_parameters, self._executor.time),
             self._executor,
             model.alarms,
         )
