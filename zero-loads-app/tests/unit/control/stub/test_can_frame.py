@@ -1,6 +1,4 @@
-from pytest import fixture
-from control.config import Settings
-from control.stub.can_frame import (
+from loads.control.stub.can_frame import (
     CAN_Frame,
     CAN_CRC_Frame,
     CAN_FD_Frame,
@@ -8,18 +6,7 @@ from control.stub.can_frame import (
 )
 
 
-@fixture
-def settings():
-    return Settings(
-        mqtt_host="localhost",
-        mqtt_port=1883,
-        canbus_ip="127.0.0.1",
-        canbus_port=56000,
-        canbus_buffer_size=1024,
-    )
-
-
-def test_can_unextended_id_message_parsing(settings):
+def test_can_unextended_id_message_parsing():
     # Extended id = False
     frame_bytes = (
         b"\x00\x18"  # length = 24
@@ -44,7 +31,7 @@ def test_can_unextended_id_message_parsing(settings):
     assert not frame.can_id.rtr
 
 
-def test_can_extended_id_message_parsing(settings):
+def test_can_extended_id_message_parsing():
     # Extended id = True
     frame_bytes = (
         b"\x00\x18"  # length = 24
@@ -72,7 +59,7 @@ def test_can_extended_id_message_parsing(settings):
     assert not frame.can_id.rtr
 
 
-def test_can_crc_message_parsing(settings):
+def test_can_crc_message_parsing():
     # Extended id = True
     frame_bytes = (
         b"\x00\x18"  # length = 24
@@ -102,7 +89,7 @@ def test_can_crc_message_parsing(settings):
     assert frame.crc32 == 305419896
 
 
-def test_can_fd_message_parsing(settings):
+def test_can_fd_message_parsing():
     # Extended id = True
     frame_bytes = (
         b"\x00\x18"  # length = 24
@@ -133,7 +120,7 @@ def test_can_fd_message_parsing(settings):
     assert not frame.flags.esi
 
 
-def test_can_fd_crc_message_parsing(settings):
+def test_can_fd_crc_message_parsing():
     # Extended id = True
     frame_bytes = (
         b"\x00\x18"  # length = 24

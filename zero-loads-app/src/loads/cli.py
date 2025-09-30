@@ -1,19 +1,33 @@
-from .adapter import PCanAdapter
-from .config import Settings
-from .stub import PCanStub
+import logging
 
+import uvicorn
+from loads.config import Settings
 from pydantic_settings import (
     BaseSettings,
     CliApp,
     CliSubCommand,
     SettingsConfigDict,
 )
-from .logging import setup_logging
-import logging
+
+from loads.api.auth import generate_jwt
+from loads.control import PCanAdapter, PCanStub
+from loads.logging import setup_logging
 
 setup_logging()
 
 logger = logging.getLogger("cli")
+
+
+class ApiCli(Settings):
+    async def cli_cmd(self) -> None:
+        uvicorn.run("loads.api.api:app", reload=True)
+
+
+class GenerateJWT(Settings):
+    roles: str
+
+    async def cli_cmd(self) -> None:
+        await generate_jwt(self)
 
 
 class AdapterCmd(Settings):
@@ -30,7 +44,7 @@ class StubCmd(Settings):
             await adapter.run()
 
 
-class ZeroLoadsBackend(BaseSettings, cli_kebab_case=True):
+class ZeroLoads(BaseSettings, cli_kebab_case=True):
     model_config = SettingsConfigDict(
         env_file=".env",
         env_file_encoding="utf-8",
@@ -38,6 +52,8 @@ class ZeroLoadsBackend(BaseSettings, cli_kebab_case=True):
         extra="allow",
     )
 
+    api: CliSubCommand[ApiCli]
+    generate_jwt: CliSubCommand[GenerateJWT]
     adapter: CliSubCommand[AdapterCmd]
     stub: CliSubCommand[StubCmd]
 

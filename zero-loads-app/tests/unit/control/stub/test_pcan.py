@@ -1,24 +1,13 @@
-import pytest
-from pytest import fixture
-from control.config import Settings
-from control.stub import PCanStub
 import socket
-from control.stub.can_frame import CAN_Frame
+import pytest
 
-
-@fixture
-def settings():
-    return Settings(
-        mqtt_host="localhost",
-        mqtt_port=1883,
-        canbus_ip="127.0.0.1",
-        canbus_port=56000,
-        canbus_buffer_size=1024,
-    )
+from loads.config import Settings
+from loads.control.stub import PCanStub
+from loads.control.stub.can_frame import CAN_Frame
 
 
 @pytest.mark.timeout(1)
-async def test_receive_message(settings):
+async def test_receive_message(settings: Settings):
     UDPServerSocket = socket.socket(family=socket.AF_INET, type=socket.SOCK_DGRAM)
 
     UDPServerSocket.bind((settings.canbus_ip, settings.canbus_port))

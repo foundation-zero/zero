@@ -1,25 +1,15 @@
-import pytest
-import socket
 import asyncio
+import socket
 from unittest.mock import AsyncMock
-from control.adapter import PCanAdapter
-from pytest import fixture
-from control.config import Settings
 
+import pytest
 
-@fixture
-def settings():
-    return Settings(
-        mqtt_host="localhost",
-        mqtt_port=1883,
-        canbus_ip="127.0.0.1",
-        canbus_port=56001,
-        canbus_buffer_size=1024,
-    )
+from loads.config import Settings
+from loads.control import PCanAdapter
 
 
 @pytest.mark.timeout(2)
-async def test_receive_can_message(settings):
+async def test_receive_can_message(settings: Settings):
     # Prepare a valid CAN_Frame message (0x80)
     frame_bytes = (
         b"\x00\x18"  # length = 24
