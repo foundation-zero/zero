@@ -1,14 +1,29 @@
 table:
   name: controls
   schema: public
+object_relationships:
+  - name: room
+    using:
+      foreign_key_constraint_on: room_id
+array_relationships:
+  - name: roomsControlsLogs
+    using:
+      foreign_key_constraint_on:
+        column: id
+        table:
+          name: rooms_controls_log
+          schema: public
+  - name: roomsSensorsLogs
+    using:
+      foreign_key_constraint_on:
+        column: id
+        table:
+          name: rooms_sensors_log
+          schema: public
 select_permissions:
   - role: user
     permission:
-      columns:
-        - id
-        - room_id
-        - type
-        - name
+      columns: "*"
       filter:
         room_id: { _eq: X-Hasura-Cabin }
       allow_aggregations: false
