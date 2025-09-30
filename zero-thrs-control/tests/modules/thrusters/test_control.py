@@ -303,11 +303,12 @@ async def test_flow_cooling_single_thruster(
 
 async def test_cooldown(control: ThrustersControl, executor: SimulationExecutor):
     result = await executor.tick(control.initial().values)
+    control_values = control.control(result.sensor_values).values
 
     # set valves and stabilize
     for i in range(300):
-        control_values = control.control(result.sensor_values).values
         result = await executor.tick(control_values)
+        control_values = control.control(result.sensor_values).values
 
     assert control.mode == "recovery"
     assert control_values.thrusters_mix_recovery.setpoint.value > 0.0

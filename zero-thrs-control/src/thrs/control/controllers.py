@@ -87,10 +87,8 @@ class FlowBalanceController:
 
     @property
     def enabled(self) -> bool:
-        return (
-            any(controller.enabled() for controller in self._valve_controllers)
-            and self._pump_controller is not None
-            and self._pump_controller.enabled()
+        return any(controller.enabled() for controller in self._valve_controllers) and (
+            self._pump_controller is None or self._pump_controller.enabled()
         )
 
     def set_active_valves(self, actives: list[bool]):
@@ -123,33 +121,38 @@ class FlowBalanceController:
         return [controller.setpoint for controller in self._valve_controllers]
 
     def __call__(self, measurements: list[LMin]):
-        if len(measurements) != len(self._valve_controllers):
-            raise ValueError("Measurements length must match valves length")
-
-        controller_values = [
-            controller(measurement)
-            for controller, measurement in zip(self._valve_controllers, measurements)
-        ]
-        offset = 1 - max(*controller_values)
-        for value, controller, valve in zip(
-            controller_values, self._valve_controllers, self._valves
-        ):
-            if controller.enabled():
-                valve.setpoint = Stamped(value=value + offset, timestamp=self._time())
-            else:
-                valve.setpoint = Stamped(value=Valve.CLOSED, timestamp=self._time())
-        if self._pump is not None and self._pump_controller is not None:
-            self._pump_controller.setpoint = sum(
-                [
-                    setpoint * active
-                    for setpoint, active in zip(
-                        self.get_setpoints(), self.get_active_valves()
+        if self.enabled:
+            if len(measurements) != len(self._valve_controllers):
+                raise ValueError("Measurements length must match valves length")
+            controller_values = [
+                controller(measurement)
+                for controller, measurement in zip(
+                    self._valve_controllers, measurements
+                )
+            ]
+            offset = 1 - max(*controller_values)
+            for value, controller, valve in zip(
+                controller_values, self._valve_controllers, self._valves
+            ):
+                if controller.enabled():
+                    valve.setpoint = Stamped(
+                        value=value + offset, timestamp=self._time()
                     )
-                ]
-            )
-            self._pump.dutypoint = Stamped(
-                value=self._pump_controller(sum(measurements)), timestamp=self._time()
-            )
+                else:
+                    valve.setpoint = Stamped(value=Valve.CLOSED, timestamp=self._time())
+            if self._pump is not None and self._pump_controller is not None:
+                self._pump_controller.setpoint = sum(
+                    [
+                        setpoint * active
+                        for setpoint, active in zip(
+                            self.get_setpoints(), self.get_active_valves()
+                        )
+                    ]
+                )
+                self._pump.dutypoint = Stamped(
+                    value=self._pump_controller(sum(measurements)),
+                    timestamp=self._time(),
+                )
 
 
 class FlowDistributionController:

@@ -102,6 +102,7 @@ class ThrustersControl(Control):
                     self._disable_flow_balancing,
                     self._set_valves_to_recovery,
                     self._disable_heat_dump,
+                    self._open_flowcontrol_valves,
                 ],
                 on_exit=[
                     self._activate_pump,
@@ -120,6 +121,7 @@ class ThrustersControl(Control):
                 on_exit=[
                     self._disable_warmup_mix,
                     self._disable_recovery_temperature_controllers,
+                    self._close_recovery_mix,
                 ],
             ),
             State(
@@ -174,7 +176,7 @@ class ThrustersControl(Control):
                 "trigger": "_check_pcs_mode",
                 "source": ["cooldown"],
                 "dest": "idle",
-                "conditions": self._cooled_down,
+                "conditions": [self._cooled_down, self._pcs_off],
             },
         ]
         self.thrusters_state_machine = Machine(
@@ -327,16 +329,24 @@ class ThrustersControl(Control):
             value=Valve.OPEN, timestamp=self._time()
         )
 
-    # def _enable_flow_balancing(self, sensor_values: ThrustersSensorValues):
-    #     self._flow_balance_controller.enable(
-    #         [
-    #             sensor_values.thrusters_aft.active.value,
-    #             sensor_values.thrusters_fwd.active.value,
-    #         ]
-    #     )
+    def _enable_flow_balancing(self, sensor_values: ThrustersSensorValues):
+        self._flow_balance_controller.enable(
+            [
+                sensor_values.thrusters_aft.active.value,
+                sensor_values.thrusters_fwd.active.value,
+            ]
+        )
 
-    # def _disable_flow_balancing(self, sensor_values: ThrustersSensorValues):
-    #     self._flow_balance_controller.disable()
+    def _open_flowcontrol_valves(self, sensor_values: ThrustersSensorValues):
+        self._current_values.thrusters_flowcontrol_aft.setpoint = Stamped.stamp(
+            Valve.OPEN
+        )
+        self._current_values.thrusters_flowcontrol_fwd.setpoint = Stamped.stamp(
+            Valve.OPEN
+        )
+
+    def _disable_flow_balancing(self, sensor_values: ThrustersSensorValues):
+        self._flow_balance_controller.disable()
 
     def _enable_recovery_temperature_controllers(
         self, sensor_values: ThrustersSensorValues
@@ -355,6 +365,8 @@ class ThrustersControl(Control):
 
     def _disable_warmup_mix(self, sensor_values: ThrustersSensorValues):
         self._warmup_mix_controller.disable()
+
+    def _close_recovery_mix(self, sensor_values: ThrustersSensorValues):
         self._current_values.thrusters_mix_recovery.setpoint = Stamped(
             value=Valve.MIXING_B_TO_AB, timestamp=self._time()
         )
@@ -440,14 +452,13 @@ class ThrustersControl(Control):
         self._flow_balance_controller.set_setpoint(25.0)
 
     def _control_flow_balance(self, sensor_values: ThrustersSensorValues):
-        if self._flow_balance_controller.enabled:
-            self._flow_balance_controller.set_pump(self._active_pump)
-            self._flow_balance_controller(
-                [
-                    sensor_values.thrusters_flow_aft.flow.value,
-                    sensor_values.thrusters_flow_fwd.flow.value,
-                ]
-            )
+        self._flow_balance_controller.set_pump(self._active_pump)
+        self._flow_balance_controller(
+            [
+                sensor_values.thrusters_flow_aft.flow.value,
+                sensor_values.thrusters_flow_fwd.flow.value,
+            ]
+        )
 
     def _pcs_off(self, sensor_values: ThrustersSensorValues):
         return sensor_values.thrusters_pcs.mode.value == PcsMode.OFF
@@ -480,6 +491,7 @@ class ThrustersControl(Control):
             raise Warning("No pump active when deactivating")
 
         self._active_pump.on = Stamped(value=False, timestamp=self._time())
+        self._active_pump.dutypoint = Stamped(value=0, timestamp=self._time())
         self._active_pump = None
 
 
