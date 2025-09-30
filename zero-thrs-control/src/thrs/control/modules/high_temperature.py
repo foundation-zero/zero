@@ -1,4 +1,5 @@
 from datetime import datetime
+from typing import Callable
 from thrs.classes.control import Control, ControlResult
 from thrs.control.modules.consumers import ConsumersControl, ConsumersParameters
 from thrs.control.modules.pcm import PcmControl, PcmParameters
@@ -40,29 +41,30 @@ class HighTemperatureControl(
         HighTemperatureParameters,
     ]
 ):
-    def __init__(self, parameters: HighTemperatureParameters) -> None:
+    def __init__(
+        self, parameters: HighTemperatureParameters, time_fn: Callable[[], datetime]
+    ) -> None:
         self._parameters = parameters
+        self._time = time_fn
         self._current_values = _INITIAL_CONTROL_VALUES.model_copy(deep=True)
-        self._thrusters_control = ThrustersControl(parameters)
-        self._pvt_control = PvtControl(parameters)
-        self._pcm_control = PcmControl(parameters)
-        self._consumers_control = ConsumersControl(parameters)
+        self._thrusters_control = ThrustersControl(parameters, self._time)
+        self._pvt_control = PvtControl(parameters, self._time)
+        self._pcm_control = PcmControl(parameters, self._time)
+        self._consumers_control = ConsumersControl(parameters, self._time)
 
-    def initial(self, time: datetime) -> ControlResult[HighTemperatureControlValues]:
-        return ControlResult(time, self._current_values)
+    def initial(self) -> ControlResult[HighTemperatureControlValues]:
+        return ControlResult(self._time(), self._current_values)
 
     def control(
-        self, sensor_values: HighTemperatureSensorValues, time: datetime
+        self, sensor_values: HighTemperatureSensorValues
     ) -> ControlResult[HighTemperatureControlValues]:
-        self._time = time
-
-        self._thrusters_control.control(sensor_values, time)
-        self._pvt_control.control(sensor_values, time)
-        self._consumers_control.control(sensor_values, time)
-        self._pcm_control.control(sensor_values, time)
+        self._thrusters_control.control(sensor_values)
+        self._pvt_control.control(sensor_values)
+        self._consumers_control.control(sensor_values)
+        self._pcm_control.control(sensor_values)
 
         return ControlResult(
-            time,
+            self._time(),
             HighTemperatureControlValues(
                 **{
                     **self._thrusters_control._current_values.model_dump(),
@@ -77,9 +79,13 @@ class HighTemperatureControl(
     def mode(self) -> str | None:
         return None
 
-    @property
-    def modes(self) -> list[str]:
-        return []
+    @staticmethod
+    def modes() -> list[str]:
+        return [""]
+
+    @staticmethod
+    def initial_mode() -> str:
+        return ""
 
     @property
     def parameters(self) -> HighTemperatureParameters:

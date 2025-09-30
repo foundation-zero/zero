@@ -84,7 +84,7 @@ class StampedDf[T](ThrsModel):
 
 
 class ComponentMeta(BaseModel):
-    yard_tag: str
+    yard_tag: str = ""
     included_in_fmu: bool = True
     component_type: str | None = None
     valve_type: Literal["shutoff", "switch", "mix", "flowcontrol"] | None = None

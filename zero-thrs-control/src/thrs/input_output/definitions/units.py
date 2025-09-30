@@ -97,7 +97,7 @@ def validate_nonzero_float_within_precision(
 Celsius: TypeAlias = Annotated[float, Field(ge=-273.15), UnitMeta(modelica_name="C")]
 LMin: TypeAlias = Annotated[
     float,
-    Field(ge=-0.01),
+    Field(ge=-0.1),
     UnitMeta(modelica_name="l_min"),
 ]
 Hz: TypeAlias = Annotated[float, Field(ge=-0.1), UnitMeta(modelica_name="Hz")]

@@ -45,11 +45,18 @@ def plot_frames(frames: list[pd.DataFrame], path: str):
 
 
 def plot_result_by_variables(
-    result: pl.DataFrame, variable_names: dict[str, str], name_styles: dict[str,tuple], control_mode_styles: dict[str,tuple], selected_keys: list[tuple[str, str]], path: str, figure_width: float = 10
+    result: pl.DataFrame,
+    variable_names: dict[str, str],
+    name_styles: dict[str, tuple],
+    control_mode_styles: dict[str, tuple],
+    selected_keys: list[tuple[str, str]],
+    path: str,
+    figure_width: float = 10,
 ):
-
     result_frames = [
-        result.select([col for col in result.columns if (col in keys[0]) or col == "time"])
+        result.select(
+            [col for col in result.columns if (col in keys[0]) or col == "time"]
+        )
         .to_pandas()
         .set_index("time")
         for keys in selected_keys
@@ -68,7 +75,16 @@ def plot_result_by_variables(
         df = df.rename(columns={col: variable_names[col] for col in df.columns})
         ax = axes[i]
         for col in df.columns:
-            sns.lineplot(x = df.index, y = df[col], alpha = .6, linewidth=2.5, ax=ax, color=name_styles[col][0], ls = name_styles[col][1], label=col)
+            sns.lineplot(
+                x=df.index,
+                y=df[col],
+                alpha=0.6,
+                linewidth=2.5,
+                ax=ax,
+                color=name_styles[col][0],
+                ls=name_styles[col][1],
+                label=col,
+            )
         ax.legend(
             loc="center left",
             bbox_to_anchor=(1.01, 0.5),
@@ -90,7 +106,7 @@ def plot_result_by_variables(
         start = control_modes.index[0]  # type: ignore
         for end, mode in last_modes.items():  # type: ignore
             for ax in axes.flatten():
-                ax.axvspan(start, end, color=control_mode_styles[mode], alpha=0.1) # type: ignore
+                ax.axvspan(start, end, color=control_mode_styles[mode], alpha=0.1)  # type: ignore
 
             for ax in axes:
                 ax.annotate(
@@ -117,8 +133,14 @@ def plot_result_by_variables(
 
     return fig, axes
 
+
 def plot_result_no_signal(
-    result: pl.DataFrame, variable_names: dict[str, str], name_styles: dict[str,tuple], control_mode_styles: dict[str,tuple],  path: str, figure_width: float = 10
+    result: pl.DataFrame,
+    variable_names: dict[str, str],
+    name_styles: dict[str, tuple],
+    control_mode_styles: dict[str, tuple],
+    path: str,
+    figure_width: float = 10,
 ):
     valve_keys = [col for col in variable_names if "__position_rel__" in col]
     flow_keys = [col for col in variable_names if "__flow__" in col]
@@ -146,7 +168,16 @@ def plot_result_no_signal(
         df = df.rename(columns={col: variable_names[col] for col in df.columns})
         ax = axes[i]
         for col in df.columns:
-            sns.lineplot(x = df.index, y = df[col], alpha = .6, linewidth=2.5, ax=ax, color=name_styles[col][0], ls = name_styles[col][1], label=col)
+            sns.lineplot(
+                x=df.index,
+                y=df[col],
+                alpha=0.6,
+                linewidth=2.5,
+                ax=ax,
+                color=name_styles[col][0],
+                ls=name_styles[col][1],
+                label=col,
+            )
         ax.legend(
             loc="center left",
             bbox_to_anchor=(1.01, 0.5),
@@ -168,7 +199,7 @@ def plot_result_no_signal(
         start = control_modes.index[0]  # type: ignore
         for end, mode in last_modes.items():  # type: ignore
             for ax in axes.flatten():
-                ax.axvspan(start, end, color=control_mode_styles[mode], alpha=0.1) # type: ignore
+                ax.axvspan(start, end, color=control_mode_styles[mode], alpha=0.1)  # type: ignore
 
             for ax in axes:
                 ax.annotate(
@@ -200,11 +231,21 @@ def plot_result_no_signal(
 
     return fig, axes
 
+
 def plot_signal_vs_actuator(
-    result: pl.DataFrame, variable_names: dict[str, str], name_styles: dict[str,tuple], control_mode_styles: dict[str,tuple],  path: str, figure_width: float = 10
+    result: pl.DataFrame,
+    variable_names: dict[str, str],
+    name_styles: dict[str, tuple],
+    control_mode_styles: dict[str, tuple],
+    path: str,
+    figure_width: float = 10,
 ):
     valve_keys = [col for col in variable_names if "__position_rel__" in col]
-    control_keys = [col for col in variable_names if ("__dutypoint__" in col or "__setpoint__" in col)]
+    control_keys = [
+        col
+        for col in variable_names
+        if ("__dutypoint__" in col or "__setpoint__" in col)
+    ]
 
     selected_keys = [control_keys, valve_keys]
 
@@ -228,7 +269,16 @@ def plot_signal_vs_actuator(
         df = df.rename(columns={col: variable_names[col] for col in df.columns})
         ax = axes[i]
         for col in df.columns:
-            sns.lineplot(x = df.index, y = df[col], alpha = .6, linewidth=2.5, ax=ax, color=name_styles[col][0], ls = name_styles[col][1], label=col)
+            sns.lineplot(
+                x=df.index,
+                y=df[col],
+                alpha=0.6,
+                linewidth=2.5,
+                ax=ax,
+                color=name_styles[col][0],
+                ls=name_styles[col][1],
+                label=col,
+            )
         ax.legend(
             loc="center left",
             bbox_to_anchor=(1.01, 0.5),
@@ -250,7 +300,7 @@ def plot_signal_vs_actuator(
         start = control_modes.index[0]  # type: ignore
         for end, mode in last_modes.items():  # type: ignore
             for ax in axes.flatten():
-                ax.axvspan(start, end, color=control_mode_styles[mode], alpha=0.1) # type: ignore
+                ax.axvspan(start, end, color=control_mode_styles[mode], alpha=0.1)  # type: ignore
 
             for ax in axes:
                 ax.annotate(
@@ -281,6 +331,7 @@ def plot_signal_vs_actuator(
 
     return fig, axes
 
+
 def plot_result(result: pl.DataFrame, path: str):
     valve_keys = [col for col in result.columns if "__position_rel__" in col]
     flow_keys = [
@@ -295,20 +346,24 @@ def plot_result(result: pl.DataFrame, path: str):
 
     selected_keys = [dutypoint_keys, valve_keys, temperature_keys, flow_keys]
     modules = list(
-        set([
-            col.split("_")[0]
-            for col in result.columns
-            if col not in ["time", "control_mode"]
-        ])
+        set(
+            [
+                col.split("_")[0]
+                for col in result.columns
+                if col not in ["time", "control_mode"]
+            ]
+        )
     )
 
     result_frames = {
         module: [
-            result.select([
-                col
-                for col in result.columns
-                if (col in keys and module in col) or col == "time"
-            ])
+            result.select(
+                [
+                    col
+                    for col in result.columns
+                    if (col in keys and module in col) or col == "time"
+                ]
+            )
             .to_pandas()
             .set_index("time")
             for keys in selected_keys

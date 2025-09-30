@@ -1,6 +1,8 @@
 from contextlib import contextmanager
 from dataclasses import dataclass
 from datetime import datetime, timedelta
+
+from pydantic import BaseModel
 from thrs.classes.control import Control
 from thrs.classes.executor import Executor
 from thrs.input_output.alarms import BaseAlarms
@@ -18,7 +20,8 @@ class SimulatorModel:
     sensor_values_cls: type[ThrsModel]
     control_values_cls: type[ThrsModel]
     simulation_outputs_cls: type[ThrsModel]
-    control: Control
+    control_cls: type[Control]
+    control_parameters: BaseModel
     alarms: BaseAlarms
     simulation_inputs: SimulationInputs
     start_time: datetime = datetime.now()
@@ -39,12 +42,19 @@ class SimulatorModel:
                 self.tick_duration,
             )
 
+    def control(self, executor: Executor):
+        return self.control_cls(self.control_parameters, executor.time)
+
 
 class Simulator:
     def __init__(self, model: SimulatorModel, executor: Executor):
         self._model = model
         self._executor = executor
-        self._cycler = Cycler(model.control, self._executor, model.alarms)
+        self._cycler = Cycler(
+            model.control_cls(model.control_parameters, self._executor.time),
+            self._executor,
+            model.alarms,
+        )
 
     async def run(self, n_ticks: int):
         collector = PolarsCollector()

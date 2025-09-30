@@ -67,8 +67,8 @@ def simulation_inputs():
 
 
 @fixture
-def control():
-    return HighTemperatureControl(HighTemperatureParameters())
+def control(executor):
+    return HighTemperatureControl(HighTemperatureParameters(), executor.time)
 
 
 @fixture

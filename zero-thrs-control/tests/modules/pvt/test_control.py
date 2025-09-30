@@ -21,11 +21,11 @@ type PvtExecutor = SimulationExecutor[
 async def test_idle(control, executor: PvtExecutor):
     control.to_idle()
     result = await executor.tick(
-        control.control(PvtSensorValues.zero(), executor.time()).values,
+        control.control(PvtSensorValues.zero()).values,
     )
 
     for i in range(30):
-        control_values = control.control(result.sensor_values, executor.time()).values
+        control_values = control.control(result.sensor_values).values
         result = await executor.tick(control_values)
 
     assert result.simulation_outputs.pvt_module_return.flow.value == approx(0, abs=0.1)  # type: ignore
@@ -34,11 +34,11 @@ async def test_idle(control, executor: PvtExecutor):
 async def test_recovery(control, executor):
     control.to_recovery()
     result = await executor.tick(
-        control.control(PvtSensorValues.zero(), executor.time()).values,
+        control.control(PvtSensorValues.zero()).values,
     )
 
     for i in range(30):
-        control_values = control.control(result.sensor_values, executor.time()).values
+        control_values = control.control(result.sensor_values).values
         result = await executor.tick(control_values)
 
     assert result.simulation_outputs.pvt_module_return.flow.value > 0
@@ -72,7 +72,7 @@ async def test_recovery_heat_dump(
     control_values.pvt_mix_exchanger.setpoint.value = Valve.MIXING_A_TO_AB
 
     result = await executor.tick(
-        control.control(PvtSensorValues.zero(), executor.time()).values,
+        control.control(PvtSensorValues.zero()).values,
     )
 
     # Pre-heat PVT with hot supply water to skip time needed to warm up
@@ -80,7 +80,7 @@ async def test_recovery_heat_dump(
         result.simulation_outputs.pvt_module_return.temperature.value
         <= executor._simulation_inputs.pvt_module_supply.temperature.value
     ):  # type: ignore
-        control_values = control.control(result.sensor_values, executor.time()).values
+        control_values = control.control(result.sensor_values).values
         control_values.pvt_mix_main_fwd.setpoint.value = Valve.MIXING_A_TO_AB
         control_values.pvt_mix_main_aft.setpoint.value = Valve.MIXING_A_TO_AB
         control_values.pvt_mix_owners.setpoint.value = Valve.MIXING_A_TO_AB
@@ -88,7 +88,7 @@ async def test_recovery_heat_dump(
         result = await executor.tick(control_values)
 
     for i in range(300):
-        control_values = control.control(result.sensor_values, executor.time()).values
+        control_values = control.control(result.sensor_values).values
         result = await executor.tick(control_values)
         assert (
             result.sensor_values.pvt_temperature_exchanger.temperature.value
@@ -107,7 +107,7 @@ async def test_pump_flow_recovery(control, executor):  # TODO: tune pump control
     control_values.pvt_mix_exchanger.setpoint.value = Valve.MIXING_A_TO_AB
 
     result = await executor.tick(
-        control.control(PvtSensorValues.zero(), executor.time()).values,
+        control.control(PvtSensorValues.zero()).values,
     )
 
     # Pre-heat PVT with hot supply water to skip time needed to warm up
@@ -115,7 +115,7 @@ async def test_pump_flow_recovery(control, executor):  # TODO: tune pump control
         result.simulation_outputs.pvt_module_return.temperature.value
         <= executor._simulation_inputs.pvt_module_supply.temperature.value
     ):  # type: ignore
-        control_values = control.control(result.sensor_values, executor.time()).values
+        control_values = control.control(result.sensor_values).values
         control_values.pvt_mix_main_fwd.setpoint.value = Valve.MIXING_A_TO_AB
         control_values.pvt_mix_main_aft.setpoint.value = Valve.MIXING_A_TO_AB
         control_values.pvt_mix_owners.setpoint.value = Valve.MIXING_A_TO_AB
@@ -123,7 +123,7 @@ async def test_pump_flow_recovery(control, executor):  # TODO: tune pump control
         result = await executor.tick(control_values)
 
     for i in range(60):
-        control_values = control.control(result.sensor_values, executor.time()).values
+        control_values = control.control(result.sensor_values).values
         result = await executor.tick(control_values)
 
         assert result.sensor_values.pvt_flow_main_fwd.flow.value == approx(

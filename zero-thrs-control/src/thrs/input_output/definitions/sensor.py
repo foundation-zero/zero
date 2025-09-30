@@ -26,6 +26,10 @@ class TemperatureSensor(ThrsModel):
     temperature: Stamped[Celsius]
 
 
+class CalculatedTemperature(ThrsModel):
+    temperature: Stamped[Celsius | None]
+
+
 class Valve(ThrsModel):
     position_rel: Stamped[Ratio]
 

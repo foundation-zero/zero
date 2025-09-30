@@ -18,11 +18,11 @@ type ConsumersExecutor = SimulationExecutor[
 
 async def test_basic(control: ConsumersControl, executor: ConsumersExecutor):
     result = await executor.tick(
-        control.control(ConsumersSensorValues.zero(), executor.time()).values,
+        control.control(ConsumersSensorValues.zero()).values,
     )
 
     for i in range(300):
-        control_values = control.control(result.sensor_values, executor.time()).values
+        control_values = control.control(result.sensor_values).values
         result = await executor.tick(control_values)
 
     total_flow = (
@@ -44,11 +44,11 @@ async def test_boosting_disabled(
     control._parameters.boosting_enabled = False
     control._parameters.fahrenheit_flow_ratio_setpoint = 0.5
     result = await executor.tick(
-        control.control(ConsumersSensorValues.zero(), executor.time()).values,
+        control.control(ConsumersSensorValues.zero()).values,
     )
 
     for i in range(180):
-        control_values = control.control(result.sensor_values, executor.time()).values
+        control_values = control.control(result.sensor_values).values
         result = await executor.tick(control_values)
 
     assert result.sensor_values.consumers_flow_boosting.flow.value == approx(0, abs=0.1)
@@ -63,11 +63,11 @@ async def test_fahrenheit_disabled(
     control._parameters.fahrenheit_enabled = False
     control._parameters.boosting_flow_ratio_setpoint = 0.5
     result = await executor.tick(
-        control.control(ConsumersSensorValues.zero(), executor.time()).values,
+        control.control(ConsumersSensorValues.zero()).values,
     )
 
     for i in range(180):
-        control_values = control.control(result.sensor_values, executor.time()).values
+        control_values = control.control(result.sensor_values).values
         result = await executor.tick(control_values)
 
     assert result.sensor_values.consumers_flow_boosting.flow.value == approx(
@@ -82,11 +82,11 @@ async def test_only_bypass(control: ConsumersControl, executor: ConsumersExecuto
     control._parameters.boosting_enabled = False
     control._parameters.fahrenheit_enabled = False
     result = await executor.tick(
-        control.control(ConsumersSensorValues.zero(), executor.time()).values,
+        control.control(ConsumersSensorValues.zero()).values,
     )
 
     for i in range(180):
-        control_values = control.control(result.sensor_values, executor.time()).values
+        control_values = control.control(result.sensor_values).values
         result = await executor.tick(control_values)
 
     assert result.sensor_values.consumers_flow_boosting.flow.value == approx(0, abs=0.2)

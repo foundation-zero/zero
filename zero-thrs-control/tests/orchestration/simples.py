@@ -1,4 +1,5 @@
 from datetime import datetime
+from typing import Callable
 from thrs.classes.control import ControlResult
 from thrs.input_output.alarms import BaseAlarms
 from thrs.input_output.base import ThrsModel
@@ -27,23 +28,32 @@ class SimpleExecutor(Executor):
     def start_time(self):
         return self._start_time
 
+    def time(self):
+        return datetime.now()
+
 
 class SimpleParameters(ThrsModel):
     pass
 
 
 class SimpleControl(Control[SimpleInOut, SimpleInOut, SimpleParameters]):
-    def initial(self, time: datetime) -> ControlResult[SimpleInOut]:
-        return ControlResult(time, SimpleInOut.zero())
+    def __init__(self, parameters: SimpleParameters, time_fn: Callable[[], datetime]):
+        self._parameters = parameters
+        self._time = time_fn
 
-    def control(
-        self, sensor_values: SimpleInOut, time: datetime
-    ) -> ControlResult[SimpleInOut]:
-        return ControlResult(time, sensor_values)
+    def initial(self) -> ControlResult[SimpleInOut]:
+        return ControlResult(self._time(), SimpleInOut.zero())
 
-    @property
-    def modes(self) -> list[str]:
+    def control(self, sensor_values: SimpleInOut) -> ControlResult[SimpleInOut]:
+        return ControlResult(self._time(), sensor_values)
+
+    @staticmethod
+    def modes() -> list[str]:
         return []
+
+    @staticmethod
+    def initial_mode() -> str:
+        return ""
 
     @property
     def mode(self) -> str | None:

@@ -60,8 +60,8 @@ def io_mapping():
 
 
 @fixture
-def control():
-    return ThrustersControl(ThrustersParameters())
+def control(executor):
+    return ThrustersControl(ThrustersParameters(), executor.time)
 
 
 @fixture
