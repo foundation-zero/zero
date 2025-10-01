@@ -8,7 +8,7 @@ Run the simulator with:
 poetry run python -m cli run thrusters
 ```
 
-The UI is in [zero-ui](https://github.com/foundation-zero/zero-ui) under [http://localhost:5173/thrs].
+The UI is in [zero-ui](https://github.com/foundation-zero/zero-ui) under [http://localhost:5173/thrs/hmi].
 
 ## Installation
 
@@ -28,7 +28,7 @@ poetry install
 Run the API with
 
 ```bash
-poetry run strawberry server thrs.graphql.strawberry
+poetry run fastapi dev src/thrs/graphql/strawberry.py
 ```
 
 ### Export schema

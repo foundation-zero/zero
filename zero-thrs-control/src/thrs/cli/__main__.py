@@ -1,6 +1,10 @@
-from argparse import ArgumentParser
+from argparse import ArgumentParser, BooleanOptionalAction
 
-from thrs.cli.simulation_controls import MODES, SimulationControls, schemas_for_mode
+from thrs.cli.simulation_controls import (
+    MODES,
+    SimulationControls,
+    schemas_for_mode,
+)
 from thrs.orchestration.config import Config
 
 
@@ -18,6 +22,9 @@ async def main():
         choices=MODES.keys(),
         type=lambda val: val.upper(),
         help="Type of simulation to run",
+    )
+    run_cmd.add_argument(
+        "--blind", action=BooleanOptionalAction, help="Run without controls"
     )
     run_cmd.set_defaults(func=run)
 
@@ -39,7 +46,10 @@ async def main():
 
 async def run(args):
     async with SimulationControls.from_settings(settings) as controls:
-        await controls.run()
+        if args.blind:
+            await controls.run_blind(args.type)
+        else:
+            await controls.run()
 
 
 async def schemas(args):

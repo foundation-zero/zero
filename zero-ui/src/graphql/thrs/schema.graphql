@@ -29,8 +29,7 @@ type Modules {
 type Mutation {
   setThrustersPump1(component: PumpInputType!): ThrustersControlValuesType!
   setThrustersPump2(component: PumpInputType!): ThrustersControlValuesType!
-  setThrustersMixAft(component: ValveInputType!): ThrustersControlValuesType!
-  setThrustersMixFwd(component: ValveInputType!): ThrustersControlValuesType!
+  setThrustersMixRecovery(component: ValveInputType!): ThrustersControlValuesType!
   setThrustersMixExchanger(component: ValveInputType!): ThrustersControlValuesType!
   setThrustersFlowcontrolAft(component: ValveInputType!): ThrustersControlValuesType!
   setThrustersFlowcontrolFwd(component: ValveInputType!): ThrustersControlValuesType!
@@ -93,40 +92,36 @@ type TemperatureSensorType {
 }
 
 type ThrustersControlValuesType {
-  thrustersPump1: ControlPumpType! @jsonSchemaDirective(yardTag: "5001015", componentType: "pump", valveType: null)
-  thrustersPump2: ControlPumpType! @jsonSchemaDirective(yardTag: "5001016", componentType: "pump", valveType: null)
-  thrustersMixAft: ControlValveType! @jsonSchemaDirective(yardTag: "5001042-01", componentType: "valve", valveType: "mix")
-  thrustersMixFwd: ControlValveType! @jsonSchemaDirective(yardTag: "5001042-02", componentType: "valve", valveType: "mix")
-  thrustersMixExchanger: ControlValveType! @jsonSchemaDirective(yardTag: "5001045-02", componentType: "valve", valveType: "mix")
-  thrustersFlowcontrolAft: ControlValveType! @jsonSchemaDirective(yardTag: "5001064-01", componentType: "valve", valveType: "flowcontrol")
-  thrustersFlowcontrolFwd: ControlValveType! @jsonSchemaDirective(yardTag: "5001064-02", componentType: "valve", valveType: "flowcontrol")
-  thrustersShutoffRecovery: ControlValveType! @jsonSchemaDirective(yardTag: "5001069-10", componentType: "valve", valveType: "shutoff")
-  thrustersSwitchAft: ControlValveType! @jsonSchemaDirective(yardTag: "5001091-01", componentType: "valve", valveType: "switch")
-  thrustersSwitchFwd: ControlValveType! @jsonSchemaDirective(yardTag: "5001091-02", componentType: "valve", valveType: "switch")
+  thrustersPump1: ControlPumpType! @jsonSchemaDirective(yardTag: "50001194", componentType: "pump", valveType: null)
+  thrustersPump2: ControlPumpType! @jsonSchemaDirective(yardTag: "50001195", componentType: "pump", valveType: null)
+  thrustersMixRecovery: ControlValveType! @jsonSchemaDirective(yardTag: "50001074", componentType: "valve", valveType: "mix")
+  thrustersMixExchanger: ControlValveType! @jsonSchemaDirective(yardTag: "50001214-01", componentType: "valve", valveType: "mix")
+  thrustersFlowcontrolAft: ControlValveType! @jsonSchemaDirective(yardTag: "50001215", componentType: "valve", valveType: "flowcontrol")
+  thrustersFlowcontrolFwd: ControlValveType! @jsonSchemaDirective(yardTag: "50001064-02", componentType: "valve", valveType: "flowcontrol")
+  thrustersShutoffRecovery: ControlValveType! @jsonSchemaDirective(yardTag: "50001066-03", componentType: "valve", valveType: "shutoff")
+  thrustersSwitchAft: ControlValveType! @jsonSchemaDirective(yardTag: "50001091-01", componentType: "valve", valveType: "switch")
+  thrustersSwitchFwd: ControlValveType! @jsonSchemaDirective(yardTag: "50001091-02", componentType: "valve", valveType: "switch")
 }
 
 type ThrustersSensorValuesType {
-  thrustersPump1: SensorPumpType! @jsonSchemaDirective(yardTag: "5001015", componentType: null, valveType: null)
-  thrustersPump2: SensorPumpType! @jsonSchemaDirective(yardTag: "5001016", componentType: null, valveType: null)
-  thrustersTemperatureAftReturn: TemperatureSensorType! @jsonSchemaDirective(yardTag: "5001038-01", componentType: null, valveType: null)
-  thrustersTemperatureFwdReturn: TemperatureSensorType! @jsonSchemaDirective(yardTag: "5001038-02", componentType: null, valveType: null)
-  thrustersTemperatureSupply: TemperatureSensorType! @jsonSchemaDirective(yardTag: "5001038-28", componentType: null, valveType: null)
-  thrustersTemperatureFwdMix: TemperatureSensorType! @jsonSchemaDirective(yardTag: "5001038-29", componentType: null, valveType: null)
-  thrustersTemperatureAftMix: TemperatureSensorType! @jsonSchemaDirective(yardTag: "5001038-30", componentType: null, valveType: null)
-  thrustersMixAft: SensorValveType! @jsonSchemaDirective(yardTag: "5001042-01", componentType: null, valveType: "mix")
-  thrustersMixFwd: SensorValveType! @jsonSchemaDirective(yardTag: "5001042-02", componentType: null, valveType: "mix")
-  thrustersMixExchanger: SensorValveType! @jsonSchemaDirective(yardTag: "5001045-02", componentType: null, valveType: "mix")
+  thrustersPump1: SensorPumpType! @jsonSchemaDirective(yardTag: "50001194", componentType: null, valveType: null)
+  thrustersPump2: SensorPumpType! @jsonSchemaDirective(yardTag: "50001195", componentType: null, valveType: null)
+  thrustersTemperatureAftReturn: TemperatureSensorType! @jsonSchemaDirective(yardTag: "50001038-01", componentType: null, valveType: null)
+  thrustersTemperatureFwdReturn: TemperatureSensorType! @jsonSchemaDirective(yardTag: "50001038-02", componentType: null, valveType: null)
+  thrustersTemperatureSupply: TemperatureSensorType! @jsonSchemaDirective(yardTag: "50001038-28", componentType: null, valveType: null)
+  thrustersTemperatureRecoveryMix: TemperatureSensorType! @jsonSchemaDirective(yardTag: "50001038-30", componentType: null, valveType: null)
+  thrustersMixRecovery: SensorValveType! @jsonSchemaDirective(yardTag: "50001074", componentType: null, valveType: "mix")
+  thrustersMixExchanger: SensorValveType! @jsonSchemaDirective(yardTag: "50001214-01", componentType: null, valveType: "mix")
   thrustersFlowFwd: SensorFlowType! @jsonSchemaDirective(yardTag: "50001057-22", componentType: null, valveType: null)
   thrustersFlowAft: SensorFlowType! @jsonSchemaDirective(yardTag: "50001057-23", componentType: null, valveType: null)
-  thrustersFlowcontrolAft: SensorValveType! @jsonSchemaDirective(yardTag: "5001064-01", componentType: null, valveType: "flowcontrol")
-  thrustersFlowcontrolFwd: SensorValveType! @jsonSchemaDirective(yardTag: "5001064-02", componentType: null, valveType: "flowcontrol")
-  thrustersShutoffRecovery: SensorValveType! @jsonSchemaDirective(yardTag: "5001069-10", componentType: null, valveType: "shutoff")
+  thrustersFlowcontrolAft: SensorValveType! @jsonSchemaDirective(yardTag: "50001215", componentType: null, valveType: "flowcontrol")
+  thrustersFlowcontrolFwd: SensorValveType! @jsonSchemaDirective(yardTag: "50001064-02", componentType: null, valveType: "flowcontrol")
+  thrustersShutoffRecovery: SensorValveType! @jsonSchemaDirective(yardTag: "50001066-03", componentType: null, valveType: "shutoff")
   thrustersSwitchAft: SensorValveType! @jsonSchemaDirective(yardTag: "50001091-01", componentType: null, valveType: "switch")
   thrustersSwitchFwd: SensorValveType! @jsonSchemaDirective(yardTag: "50001091-02", componentType: null, valveType: "switch")
-  thrustersFlowRecoveryAft: SensorFlowType! @jsonSchemaDirective(yardTag: "5001093-01", componentType: null, valveType: null)
-  thrustersFlowRecoveryFwd: SensorFlowType! @jsonSchemaDirective(yardTag: "5001093-02", componentType: null, valveType: null)
-  thrustersPressureRecovery: SensorPressureType! @jsonSchemaDirective(yardTag: "50001097-01", componentType: null, valveType: null)
-  thrustersPressureCooling: SensorPressureType! @jsonSchemaDirective(yardTag: "50001097-02", componentType: null, valveType: null)
+  thrustersFlowRecovery: SensorFlowType! @jsonSchemaDirective(yardTag: "50001093-01", componentType: null, valveType: null)
+  thrustersPressurePump: SensorPressureType! @jsonSchemaDirective(yardTag: "50001097-01", componentType: null, valveType: null)
+  thrustersPressureRelief: SensorPressureType! @jsonSchemaDirective(yardTag: "50001097-02", componentType: null, valveType: null)
   thrustersAft: SensorThrusterType! @jsonSchemaDirective(yardTag: "15001001", componentType: null, valveType: null)
   thrustersFwd: SensorThrusterType! @jsonSchemaDirective(yardTag: "15001002", componentType: null, valveType: null)
   thrustersPcs: SensorPcsType! @jsonSchemaDirective(yardTag: "1500", componentType: null, valveType: null)
