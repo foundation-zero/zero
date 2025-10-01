@@ -15,10 +15,14 @@
           }
 
           type Mutation {
-            setAmplifiers(ids: ID!, on: Boolean!): MutationResponse
-            setBlinds(ids: ID!, level: Float!): MutationResponse
-            setLightingGroups(ids: ID!, level: Float!): MutationResponse
-            setRoomTemperatureSetpoints(ids: ID!, temperature: Float!): MutationResponse
-            setRoomHumiditySetpoints(ids: ID!, humidity: Float!): MutationResponse
-            setRoomCo2Setpoints(ids: ID!, co2: Float!): MutationResponse
-          }          type Query {            version: String!          }
+            setAmplifiers(ids: [ID!]!, on: Boolean!): MutationResponse!
+            setBlinds(ids: [ID!]!, level: Float!): MutationResponse!
+            setLightingGroups(ids: [ID!], level: Float!): MutationResponse!
+            setRoomTemperatureSetpoints(ids: [ID!]!, temperature: Float!): MutationResponse!
+            setRoomHumiditySetpoints(ids: [ID!]!, humidity: Float!): MutationResponse!
+            setRoomCo2Setpoints(ids: [ID!]!, co2: Float!): MutationResponse!
+          }
+
+          type Query {
+            version: String!
+          }

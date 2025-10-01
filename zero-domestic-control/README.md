@@ -7,7 +7,7 @@ https://miro.com/app/board/uXjVI85VEAc=/?share_link_id=164545697008
 ### Development (Docker)
 
  - Install Hasura CLI: https://hasura.io/docs/2.0/hasura-cli/install-hasura-cli/
- - Create `.env` based on `.env-example`
+ - Create `.env` based on `.env-example` in both `data` and `zero-domestic-control` folders. Make sure to set the `GCS_CREDENTIAL` to valid key.
 
 
 Start databases and MQTT brokerpoet
@@ -18,6 +18,7 @@ docker compose up postgres risingwave vernemq -d
 Run postgres and risingwave setup
 ```bash
 cd ../data
+poetry install
 poetry run python -m setup_postgres
 poetry run python -m setup_risingwave
 ```
