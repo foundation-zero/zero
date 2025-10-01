@@ -116,6 +116,6 @@ Tuning: TypeAlias = tuple[float, float, float]
 
 class PcsMode(Enum):
     OFF = "off"
-    MANEUVRING = "maneuvering"
+    MANEUVERING = "maneuvering"
     PROPULSION = "propulsion"
     REGENERATION = "regeneration"

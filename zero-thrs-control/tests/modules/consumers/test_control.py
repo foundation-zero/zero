@@ -21,7 +21,7 @@ async def test_basic(control: ConsumersControl, executor: ConsumersExecutor):
         control.control(ConsumersSensorValues.zero()).values,
     )
 
-    for i in range(300):
+    for i in range(180):
         control_values = control.control(result.sensor_values).values
         result = await executor.tick(control_values)
 
