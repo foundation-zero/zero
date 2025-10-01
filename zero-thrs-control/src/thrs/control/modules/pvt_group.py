@@ -15,17 +15,23 @@ from thrs.input_output.modules.pvt_group import (
 
 
 class PvtGroupParameters(ThrsModel):
-    warmup_temperature: Annotated[Celsius, Field(ge=40)] = 55
-    recovery_temperature: Celsius = 70
-    warmup_mix_tuning: Tuning = (0.01, 0.001, 0.0)
-    pump_tuning: Tuning = (0.011, 0.01, 0.0)
-    minimum_pump_dutypoint: Ratio = 0.01  # minimum dutpypoint to ensure flow past temperature sensor in recovery mode
+    warmup_temperature: Annotated[Celsius, Field(ge=40)]
+    recovery_temperature: Celsius
+    warmup_mix_tuning: Tuning
+    pump_tuning: Tuning
+    minimum_pump_dutypoint: Ratio
+    recovery_activation_string_temperature: Celsius
+    minimum_return_temperature: Celsius
 
     @model_validator(mode="after")
     def check_temperature_setpoints(self):
         if self.recovery_temperature < self.warmup_temperature:
             raise ValueError(
                 "Recovery temperature must be greater than warmup temperature"
+            )
+        if self.warmup_temperature < self.minimum_return_temperature:
+            raise ValueError(
+                "Warmup temperature must be greater than minimum return temperature"
             )
         return self
 
@@ -78,6 +84,7 @@ class PvtGroupControl(
                 "trigger": "_check_return_temperature",
                 "source": "recovery",
                 "dest": "idle",
+                "conditions": "_low_return_temperature",
             },
         ]
 
@@ -125,6 +132,19 @@ class PvtGroupControl(
 
     def initial(self) -> ControlResult[PvtGroupControlValues]:
         return ControlResult(self._time(), self._current_values)
+
+    def _string_warm(self, sensor_values: PvtGroupSensorValues):
+        return (
+            sensor_values.max_temperature_strings.temperature.value is not None
+            and sensor_values.max_temperature_strings.temperature.value
+            > self._parameters.recovery_activation_string_temperature
+        )
+
+    def _low_return_temperature(self, sensor_values: PvtGroupSensorValues):
+        return (
+            sensor_values.temperature_return.temperature.value
+            < self._parameters.minimum_return_temperature
+        )
 
     def _set_mix_to_a(self):
         self._current_values.mix.setpoint = Stamped(

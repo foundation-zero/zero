@@ -5,7 +5,7 @@ from pydantic import Field, model_validator
 from thrs.classes.control import Control, ControlResult
 from thrs.control.controllers import Controller
 from thrs.control.modules.pvt_group import PvtGroupControl, PvtGroupParameters
-from thrs.input_output.base import ParameterMeta, Stamped, ThrsModel
+from thrs.input_output.base import Stamped, ThrsModel
 from thrs.input_output.definitions.control import Pump, Valve
 from thrs.input_output.definitions.units import Celsius, Ratio, Tuning
 from thrs.input_output.modules.pvt import PvtControlValues, PvtSensorValues
@@ -15,9 +15,9 @@ from thrs.input_output.modules.pvt_group import PvtGroupSensorValues
 class PvtParameters(ThrsModel):
     maximum_supply_temperature: Annotated[Celsius, Field(le=90)] = 80
     recovery_temperature: Celsius = 70
-    warmup_temperature: Annotated[
-        Celsius, Field(ge=40, le=90), ParameterMeta("50-S019")
-    ] = 65
+    warmup_temperature: Celsius = 65
+    recovery_activation_string_temperature: Celsius = 40
+    minimum_return_temperature: Celsius = 40
     main_fwd_minimum_pump_dutypoint: Ratio = 0.01  # minimum dutpypoint to ensure flow past temperature sensor in recovery mode
     main_aft_minimum_pump_dutypoint: Ratio = 0.01  # minimum dutpypoint to ensure flow past temperature sensor in recovery mode
     owners_minimum_pump_dutypoint: Ratio = 0.01  # minimum dutpypoint to ensure flow past temperature sensor in recovery mode
@@ -46,6 +46,10 @@ class PvtParameters(ThrsModel):
         if self.recovery_temperature < self.warmup_temperature:
             raise ValueError(
                 "Recovery temperature must be greater than warmup temperature"
+            )
+        if self.warmup_temperature < self.minimum_return_temperature:
+            raise ValueError(
+                "Warmup temperature must be greater than minimum return temperature"
             )
         return self
 
@@ -115,6 +119,8 @@ class PvtControl(Control[PvtSensorValues, PvtControlValues, PvtParameters]):
                 warmup_mix_tuning=parameters.main_fwd_mix_tuning,
                 pump_tuning=parameters.main_fwd_pump_tuning,
                 minimum_pump_dutypoint=parameters.main_fwd_minimum_pump_dutypoint,
+                recovery_activation_string_temperature=parameters.recovery_activation_string_temperature,
+                minimum_return_temperature=parameters.minimum_return_temperature,
             ),
             time_fn,
         )
@@ -125,6 +131,8 @@ class PvtControl(Control[PvtSensorValues, PvtControlValues, PvtParameters]):
                 warmup_mix_tuning=parameters.main_aft_mix_tuning,
                 pump_tuning=parameters.main_aft_pump_tuning,
                 minimum_pump_dutypoint=parameters.main_aft_minimum_pump_dutypoint,
+                recovery_activation_string_temperature=parameters.recovery_activation_string_temperature,
+                minimum_return_temperature=parameters.minimum_return_temperature,
             ),
             time_fn,
         )
@@ -135,6 +143,8 @@ class PvtControl(Control[PvtSensorValues, PvtControlValues, PvtParameters]):
                 warmup_mix_tuning=parameters.owners_mix_tuning,
                 pump_tuning=parameters.owners_pump_tuning,
                 minimum_pump_dutypoint=parameters.owners_minimum_pump_dutypoint,
+                recovery_activation_string_temperature=parameters.recovery_activation_string_temperature,
+                minimum_return_temperature=parameters.minimum_return_temperature,
             ),
             time_fn,
         )
@@ -179,7 +189,7 @@ class PvtControl(Control[PvtSensorValues, PvtControlValues, PvtParameters]):
             temperature_return=sensor_values.pvt_temperature_main_fwd_return,
             pressure=sensor_values.pvt_pressure_main_fwd,
             mix=sensor_values.pvt_mix_main_fwd,
-            max_string_temperature=sensor_values.pvt_temperature_main_fwd_string_max,
+            max_temperature_strings=sensor_values.pvt_max_temperature_main_fwd_strings,
         )
         main_aft_sensor_values = PvtGroupSensorValues(
             pump=sensor_values.pvt_pump_main_aft,
@@ -187,7 +197,7 @@ class PvtControl(Control[PvtSensorValues, PvtControlValues, PvtParameters]):
             temperature_return=sensor_values.pvt_temperature_main_aft_return,
             pressure=sensor_values.pvt_pressure_main_aft,
             mix=sensor_values.pvt_mix_main_aft,
-            max_string_temperature=sensor_values.pvt_temperature_main_aft_string_max,
+            max_temperature_strings=sensor_values.pvt_max_temperature_main_aft_strings,
         )
         owners_sensor_values = PvtGroupSensorValues(
             pump=sensor_values.pvt_pump_owners,
@@ -195,7 +205,7 @@ class PvtControl(Control[PvtSensorValues, PvtControlValues, PvtParameters]):
             temperature_return=sensor_values.pvt_temperature_owners_return,
             pressure=sensor_values.pvt_pressure_owners,
             mix=sensor_values.pvt_mix_owners,
-            max_string_temperature=sensor_values.pvt_temperature_owners_string_max,
+            max_temperature_strings=sensor_values.pvt_max_temperature_owners_strings,
         )
 
         self._main_fwd_control.control(main_fwd_sensor_values)

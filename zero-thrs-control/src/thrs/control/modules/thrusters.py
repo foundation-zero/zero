@@ -1,6 +1,6 @@
 from datetime import datetime
 from typing import Callable, Literal
-from pydantic import BaseModel, model_validator
+from pydantic import model_validator
 
 from transitions import Machine, State
 
