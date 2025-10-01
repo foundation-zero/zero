@@ -1,13 +1,22 @@
 from unittest.mock import Mock
+from httpx import ASGITransport, AsyncClient
+import pytest
 from thrs.graphql.messaging import Messaging
 from thrs.graphql.strawberry import app, messaging
-from fastapi.testclient import TestClient
 
 from thrs.input_output.modules.thrusters import (
     ThrustersControlValues,
     ThrustersSensorValues,
 )
 
+
+@pytest.fixture
+async def async_client():
+    async with AsyncClient(
+        base_url="http://test",
+        transport=ASGITransport(app)
+    ) as client:
+        yield client
 
 async def override_messaging():
     mock = Mock(Messaging)
@@ -16,10 +25,9 @@ async def override_messaging():
     return mock
 
 
-def test_query_sensor_values():
+async def test_query_sensor_values(async_client):
     app.dependency_overrides[messaging] = override_messaging
-    client = TestClient(app)
-    response = client.post(
+    response = await async_client.post(
         "/graphql",
         json={
             "query": """{
@@ -49,10 +57,9 @@ def test_query_sensor_values():
     }
 
 
-def test_query_control_values():
+async def test_query_control_values(async_client):
     app.dependency_overrides[messaging] = override_messaging
-    client = TestClient(app)
-    response = client.post(
+    response = await async_client.post(
         "/graphql",
         json={
             "query": """{
@@ -82,12 +89,11 @@ def test_query_control_values():
     }
 
 
-async def test_mutation_control_value():
+async def test_mutation_control_value(async_client):
     messaging_mock = await override_messaging()
     app.dependency_overrides[messaging] = lambda: messaging_mock
 
-    client = TestClient(app)
-    response = client.post(
+    response = await async_client.post(
         "/graphql",
         json={
             "query": """mutation {
