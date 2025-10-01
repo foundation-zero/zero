@@ -1,17 +1,17 @@
 from datetime import datetime
 from typing import Annotated, Callable, Literal
-from pydantic import BaseModel, Field
+from pydantic import Field
 from transitions import Machine, State
 
 from thrs.classes.control import Control, ControlResult
 from thrs.control.controllers import Controller
-from thrs.input_output.base import ParameterMeta, Stamped
+from thrs.input_output.base import ParameterMeta, Stamped, ThrsModel
 from thrs.input_output.definitions.control import Pump, Valve
 from thrs.input_output.definitions.units import Celsius, LMin, Ratio, Tuning
 from thrs.input_output.modules.pvt import PvtControlValues, PvtSensorValues
 
 
-class PvtParameters(BaseModel):
+class PvtParameters(ThrsModel):
     heat_dump_setpoint: Annotated[Celsius, Field(le=90)] = 80
     mix_temperature_setpoint: Annotated[
         Celsius, Field(ge=40, le=90), ParameterMeta("50-S019")
@@ -87,7 +87,7 @@ _INITIAL_CONTROL_VALUES = PvtControlValues(
 )
 
 
-class PvtControl(Control):
+class PvtControl(Control[PvtSensorValues, PvtControlValues, PvtParameters]):
     def __init__(
         self, parameters: PvtParameters, time_fn: Callable[[], datetime]
     ) -> None:

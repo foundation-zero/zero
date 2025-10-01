@@ -1,0 +1,167 @@
+from datetime import datetime
+from typing import Annotated, Callable, Literal
+
+from pydantic import Field, model_validator
+from transitions import Machine, State
+from thrs.classes.control import Control, ControlResult
+from thrs.control.controllers import Controller
+from thrs.input_output.base import Stamped, ThrsModel
+from thrs.input_output.definitions.control import Pump, Valve
+from thrs.input_output.definitions.units import Celsius, Ratio, Tuning
+from thrs.input_output.modules.pvt_group import (
+    PvtGroupControlValues,
+    PvtGroupSensorValues,
+)
+
+
+class PvtGroupParameters(ThrsModel):
+    warmup_temperature: Annotated[Celsius, Field(ge=40)] = 55
+    recovery_temperature: Celsius = 70
+    warmup_mix_tuning: Tuning = (0.01, 0.001, 0.0)
+    pump_tuning: Tuning = (0.011, 0.01, 0.0)
+    minimum_pump_dutypoint: Ratio = 0.01  # minimum dutpypoint to ensure flow past temperature sensor in recovery mode
+
+    @model_validator(mode="after")
+    def check_temperature_setpoints(self):
+        if self.recovery_temperature < self.warmup_temperature:
+            raise ValueError(
+                "Recovery temperature must be greater than warmup temperature"
+            )
+        return self
+
+
+_ZERO_TIME = datetime.fromtimestamp(0)
+
+_INITIAL_CONTROL_VALUES = PvtGroupControlValues(
+    pump=Pump(
+        dutypoint=Stamped(value=0.0, timestamp=_ZERO_TIME),
+        on=Stamped(value=False, timestamp=_ZERO_TIME),
+    ),
+    mix=Valve(setpoint=Stamped(value=Valve.MIXING_B_TO_AB, timestamp=_ZERO_TIME)),
+)
+
+
+class PvtGroupControl(
+    Control[PvtGroupSensorValues, PvtGroupControlValues, PvtGroupParameters]
+):
+    def __init__(
+        self, parameters: PvtGroupParameters, time_fn: Callable[[], datetime]
+    ) -> None:
+        self._parameters = parameters
+        self._time = time_fn
+        self._current_values = _INITIAL_CONTROL_VALUES.model_copy(deep=True)
+        self._states = [
+            State(
+                name="idle",
+            ),
+            State(
+                name="recovery",
+                on_enter=[
+                    self._enable_warmup_mix,
+                    self._enable_pump_control,
+                    self._activate_pump,
+                ],
+                on_exit=[
+                    self._disable_warmup_mix,
+                    self._disable_pump_control,
+                    self._deactivate_pump,
+                ],
+            ),
+        ]
+
+        self._transitions = [
+            {
+                "trigger": "_check_string_temperatures",
+                "source": "idle",
+                "dest": "recovery",
+                "conditions": "_string_warm",
+            },
+            {
+                "trigger": "_check_return_temperature",
+                "source": "recovery",
+                "dest": "idle",
+            },
+        ]
+
+        self._pvt_group_state_machine = Machine(
+            model=self,
+            states=self._states,
+            transitions=self._transitions,
+            initial="idle",
+        )
+
+        self._warmup_mix_controller = Controller[Ratio, Celsius](
+            _INITIAL_CONTROL_VALUES.mix.setpoint.value,
+            parameters.warmup_temperature,
+            parameters.warmup_mix_tuning,
+            self._time,
+        )
+
+        self._pump_controller = Controller[Ratio, Celsius](
+            _INITIAL_CONTROL_VALUES.pump.dutypoint.value,
+            parameters.recovery_temperature,
+            parameters.pump_tuning,
+            self._time,
+            (parameters.minimum_pump_dutypoint, 1),
+        )
+
+    @property
+    def parameters(self) -> PvtGroupParameters:
+        return self._parameters
+
+    @staticmethod
+    def modes() -> list[str]:
+        return ["idle", "recovery"]
+
+    @staticmethod
+    def initial_mode() -> str:
+        return "idle"
+
+    @property
+    def mode(self) -> Literal["idle", "recovery"]:
+        return self.state  # type: ignore
+
+    def initial(self) -> ControlResult[PvtGroupControlValues]:
+        return ControlResult(self._time(), self._current_values)
+
+    def _enable_warmup_mix(self):
+        self._warmup_mix_controller.enable()
+
+    def _disable_warmup_mix(self):
+        self._warmup_mix_controller.disable()
+
+    def _enable_pump_control(self):
+        self._pump_controller.enable()
+
+    def _disable_pump_control(self):
+        self._pump_controller.disable()
+
+    def _activate_pump(self):
+        self._current_values.pump.on = Stamped(value=True, timestamp=self._time())
+
+    def _deactivate_pump(self):
+        self._current_values.pump.on = Stamped(value=False, timestamp=self._time())
+
+    def control(
+        self, sensor_values: PvtGroupSensorValues
+    ) -> ControlResult[PvtGroupControlValues]:
+        self._control_warmup_mix(sensor_values)
+        self._control_pump(sensor_values)
+
+        return ControlResult(self._time(), self._current_values)
+
+    def _control_warmup_mix(self, sensor_values: PvtGroupSensorValues):
+        self._current_values.mix.setpoint = Stamped(
+            value=self._pump_controller(
+                sensor_values.temperature_return.temperature.value
+            ),
+            timestamp=self._time(),
+        )
+
+    def _control_pump(self, sensor_values: PvtGroupSensorValues):
+        self._current_values.pump.dutypoint = Stamped(
+            value=self._pump_controller(
+                sensor_values.temperature_return.temperature.value
+            ),
+            timestamp=self._time(),
+        )
