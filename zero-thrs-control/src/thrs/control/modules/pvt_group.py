@@ -51,9 +51,7 @@ class PvtGroupControl(
         self._time = time_fn
         self._current_values = _INITIAL_CONTROL_VALUES.model_copy(deep=True)
         self._states = [
-            State(
-                name="idle",
-            ),
+            State(name="idle", on_enter=self._set_mix_to_a),
             State(
                 name="recovery",
                 on_enter=[
@@ -109,6 +107,10 @@ class PvtGroupControl(
     def parameters(self) -> PvtGroupParameters:
         return self._parameters
 
+    @property
+    def current_values(self) -> PvtGroupControlValues:
+        return self._current_values
+
     @staticmethod
     def modes() -> list[str]:
         return ["idle", "recovery"]
@@ -123,6 +125,11 @@ class PvtGroupControl(
 
     def initial(self) -> ControlResult[PvtGroupControlValues]:
         return ControlResult(self._time(), self._current_values)
+
+    def _set_mix_to_a(self):
+        self._current_values.mix.setpoint = Stamped(
+            value=Valve.MIXING_B_TO_AB, timestamp=self._time()
+        )
 
     def _enable_warmup_mix(self):
         self._warmup_mix_controller.enable()

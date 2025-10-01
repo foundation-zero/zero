@@ -8,6 +8,7 @@ class PvtGroupSensorValues(ThrsModel):
     temperature_return: sensor.TemperatureSensor
     pressure: sensor.PressureSensor
     mix: sensor.Valve
+    max_string_temperature: sensor.CalculatedTemperature
 
 
 class PvtGroupControlValues(ThrsModel):

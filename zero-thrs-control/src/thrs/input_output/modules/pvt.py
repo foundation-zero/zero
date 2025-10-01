@@ -1,5 +1,7 @@
 from typing import Annotated
-from thrs.input_output.base import component_meta, SimulationInputs, ThrsModel
+
+from pydantic import computed_field
+from thrs.input_output.base import Stamped, component_meta, SimulationInputs, ThrsModel
 from thrs.input_output.definitions import control, sensor, simulation
 
 
@@ -57,7 +59,10 @@ class PvtSensorValues(ThrsModel):
     ]
     pvt_mix_exchanger: Annotated[sensor.Valve, component_meta(yard_tag="50001047-02")]
     pvt_temperature_exchanger: Annotated[
-        sensor.TemperatureSensor, component_meta(yard_tag="50001038-24")
+        sensor.TemperatureSensor,
+        component_meta(
+            yard_tag="50001038-24"
+        ),  # TODO: change to pvt_temperature_supply?
     ]
     pvt_temperature_main_string_1_1_return: Annotated[
         sensor.TemperatureSensor, component_meta(yard_tag="50009005-01")
@@ -272,6 +277,155 @@ class PvtSensorValues(ThrsModel):
     pvt_temperature_owners_string_6_supply: Annotated[
         sensor.TemperatureSensor, component_meta(yard_tag="50009005-45")
     ]
+
+    @computed_field
+    @property
+    def pvt_temperature_main_fwd_string_max(
+        self,
+    ) -> Annotated[sensor.CalculatedTemperature, component_meta(included_in_fmu=False)]:
+        max_temperature = max(
+            [
+                self.pvt_temperature_main_string_1_1_return.temperature.value,
+                self.pvt_temperature_main_string_1_2_return.temperature.value,
+                self.pvt_temperature_main_string_2_1_return.temperature.value,
+                self.pvt_temperature_main_string_2_2_return.temperature.value,
+                self.pvt_temperature_main_string_3_return.temperature.value,
+                self.pvt_temperature_main_string_4_return.temperature.value,
+                self.pvt_temperature_main_string_5_1_return.temperature.value,
+                self.pvt_temperature_main_string_5_2_return.temperature.value,
+                self.pvt_temperature_main_string_6_1_return.temperature.value,
+                self.pvt_temperature_main_string_6_2_return.temperature.value,
+                self.pvt_temperature_main_string_1_supply.temperature.value,
+                self.pvt_temperature_main_string_2_supply.temperature.value,
+                self.pvt_temperature_main_string_3_supply.temperature.value,
+                self.pvt_temperature_main_string_4_supply.temperature.value,
+                self.pvt_temperature_main_string_5_supply.temperature.value,
+                self.pvt_temperature_main_string_6_supply.temperature.value,
+            ]
+        )
+        return sensor.CalculatedTemperature(
+            temperature=Stamped(
+                value=max_temperature,
+                timestamp=min(
+                    [
+                        self.pvt_temperature_main_string_1_1_return.temperature.timestamp,
+                        self.pvt_temperature_main_string_1_2_return.temperature.timestamp,
+                        self.pvt_temperature_main_string_2_1_return.temperature.timestamp,
+                        self.pvt_temperature_main_string_2_2_return.temperature.timestamp,
+                        self.pvt_temperature_main_string_3_return.temperature.timestamp,
+                        self.pvt_temperature_main_string_4_return.temperature.timestamp,
+                        self.pvt_temperature_main_string_5_1_return.temperature.timestamp,
+                        self.pvt_temperature_main_string_5_2_return.temperature.timestamp,
+                        self.pvt_temperature_main_string_6_1_return.temperature.timestamp,
+                        self.pvt_temperature_main_string_6_2_return.temperature.timestamp,
+                        self.pvt_temperature_main_string_1_supply.temperature.timestamp,
+                        self.pvt_temperature_main_string_2_supply.temperature.timestamp,
+                        self.pvt_temperature_main_string_3_supply.temperature.timestamp,
+                        self.pvt_temperature_main_string_4_supply.temperature.timestamp,
+                        self.pvt_temperature_main_string_5_supply.temperature.timestamp,
+                        self.pvt_temperature_main_string_6_supply.temperature.timestamp,
+                    ]
+                ),
+            )
+        )
+
+    @computed_field
+    @property
+    def pvt_temperature_main_aft_string_max(
+        self,
+    ) -> Annotated[sensor.CalculatedTemperature, component_meta(included_in_fmu=False)]:
+        max_temperature = max(
+            [
+                self.pvt_temperature_main_string_7_1_return.temperature.value,
+                self.pvt_temperature_main_string_7_2_return.temperature.value,
+                self.pvt_temperature_main_string_8_1_return.temperature.value,
+                self.pvt_temperature_main_string_8_2_return.temperature.value,
+                self.pvt_temperature_main_string_9_return.temperature.value,
+                self.pvt_temperature_main_string_10_return.temperature.value,
+                self.pvt_temperature_main_string_11_1_return.temperature.value,
+                self.pvt_temperature_main_string_11_2_return.temperature.value,
+                self.pvt_temperature_main_string_12_return.temperature.value,
+                self.pvt_temperature_main_string_13_return.temperature.value,
+                self.pvt_temperature_main_string_7_supply.temperature.value,
+                self.pvt_temperature_main_string_8_supply.temperature.value,
+                self.pvt_temperature_main_string_9_supply.temperature.value,
+                self.pvt_temperature_main_string_10_supply.temperature.value,
+                self.pvt_temperature_main_string_11_supply.temperature.value,
+                self.pvt_temperature_main_string_12_supply.temperature.value,
+                self.pvt_temperature_main_string_13_supply.temperature.value,
+            ]
+        )
+
+        return sensor.CalculatedTemperature(
+            temperature=Stamped(
+                value=max_temperature,
+                timestamp=min(
+                    [
+                        self.pvt_temperature_main_string_7_1_return.temperature.timestamp,
+                        self.pvt_temperature_main_string_7_2_return.temperature.timestamp,
+                        self.pvt_temperature_main_string_8_1_return.temperature.timestamp,
+                        self.pvt_temperature_main_string_8_2_return.temperature.timestamp,
+                        self.pvt_temperature_main_string_9_return.temperature.timestamp,
+                        self.pvt_temperature_main_string_10_return.temperature.timestamp,
+                        self.pvt_temperature_main_string_11_1_return.temperature.timestamp,
+                        self.pvt_temperature_main_string_11_2_return.temperature.timestamp,
+                        self.pvt_temperature_main_string_12_return.temperature.timestamp,
+                        self.pvt_temperature_main_string_13_return.temperature.timestamp,
+                        self.pvt_temperature_main_string_7_supply.temperature.timestamp,
+                        self.pvt_temperature_main_string_8_supply.temperature.timestamp,
+                        self.pvt_temperature_main_string_9_supply.temperature.timestamp,
+                        self.pvt_temperature_main_string_10_supply.temperature.timestamp,
+                        self.pvt_temperature_main_string_11_supply.temperature.timestamp,
+                        self.pvt_temperature_main_string_12_supply.temperature.timestamp,
+                        self.pvt_temperature_main_string_13_supply.temperature.timestamp,
+                    ]
+                ),
+            )
+        )
+
+    @computed_field
+    @property
+    def pvt_temperature_owners_string_max(
+        self,
+    ) -> Annotated[sensor.CalculatedTemperature, component_meta(included_in_fmu=False)]:
+        max_temperature = max(
+            [
+                self.pvt_temperature_owners_string_1_return.temperature.value,
+                self.pvt_temperature_owners_string_2_return.temperature.value,
+                self.pvt_temperature_owners_string_3_return.temperature.value,
+                self.pvt_temperature_owners_string_4_return.temperature.value,
+                self.pvt_temperature_owners_string_5_return.temperature.value,
+                self.pvt_temperature_owners_string_6_return.temperature.value,
+                self.pvt_temperature_owners_string_1_supply.temperature.value,
+                self.pvt_temperature_owners_string_2_supply.temperature.value,
+                self.pvt_temperature_owners_string_3_supply.temperature.value,
+                self.pvt_temperature_owners_string_4_supply.temperature.value,
+                self.pvt_temperature_owners_string_5_supply.temperature.value,
+                self.pvt_temperature_owners_string_6_supply.temperature.value,
+            ]
+        )
+
+        return sensor.CalculatedTemperature(
+            temperature=Stamped(
+                value=max_temperature,
+                timestamp=min(
+                    [
+                        self.pvt_temperature_owners_string_1_return.temperature.timestamp,
+                        self.pvt_temperature_owners_string_2_return.temperature.timestamp,
+                        self.pvt_temperature_owners_string_3_return.temperature.timestamp,
+                        self.pvt_temperature_owners_string_4_return.temperature.timestamp,
+                        self.pvt_temperature_owners_string_5_return.temperature.timestamp,
+                        self.pvt_temperature_owners_string_6_return.temperature.timestamp,
+                        self.pvt_temperature_owners_string_1_supply.temperature.timestamp,
+                        self.pvt_temperature_owners_string_2_supply.temperature.timestamp,
+                        self.pvt_temperature_owners_string_3_supply.temperature.timestamp,
+                        self.pvt_temperature_owners_string_4_supply.temperature.timestamp,
+                        self.pvt_temperature_owners_string_5_supply.temperature.timestamp,
+                        self.pvt_temperature_owners_string_6_supply.temperature.timestamp,
+                    ]
+                ),
+            )
+        )
 
 
 class PvtControlValues(ThrsModel):
