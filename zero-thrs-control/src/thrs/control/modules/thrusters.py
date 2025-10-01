@@ -338,11 +338,11 @@ class ThrustersControl(Control):
         )
 
     def _open_flowcontrol_valves(self, sensor_values: ThrustersSensorValues):
-        self._current_values.thrusters_flowcontrol_aft.setpoint = Stamped.stamp(
-            Valve.OPEN
+        self._current_values.thrusters_flowcontrol_aft.setpoint = Stamped(
+            value=Valve.OPEN, timestamp=self._time()
         )
-        self._current_values.thrusters_flowcontrol_fwd.setpoint = Stamped.stamp(
-            Valve.OPEN
+        self._current_values.thrusters_flowcontrol_fwd.setpoint = Stamped(
+            value=Valve.OPEN, timestamp=self._time()
         )
 
     def _disable_flow_balancing(self, sensor_values: ThrustersSensorValues):
@@ -392,7 +392,6 @@ class ThrustersControl(Control):
 
     def _disable_heat_dump(self, sensor_values: ThrustersSensorValues):
         self._heat_dump_controller.disable()
-        # TODO: want to open mixing valve?
 
     def _control_warmup_mix(self, sensor_values: ThrustersSensorValues):
         self._current_values.thrusters_mix_recovery.setpoint = Stamped(
