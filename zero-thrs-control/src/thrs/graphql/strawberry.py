@@ -124,7 +124,6 @@ for cls in [DedataframedSimulationInputs, DedataframedSimulationOutputs]:
     all_fields=True,
     json_schema_directive=JsonSchemaDirective,
 )
-# @strawberry.type
 class ThrustersSimulationInputsType:
     pass
 
@@ -205,13 +204,13 @@ class Query:
                 ),
                 parameters=ThrustersParametersType.from_pydantic(
                     ThrustersParameters()
-                ),  # TODO: ZERO-878
+                ),  # TODO: ZERO-878 implement parameter setting and passage to simulation
                 simulation=ModuleSimulation(
                     inputs=ThrustersSimulationInputsType.from_pydantic(
-                        DedataframedSimulationInputs.zero(),  # TODO: ZERO-825
+                        DedataframedSimulationInputs.zero(),  # TODO: ZERO-825 implement simulation input setting and passage to simulation
                     ),
                     outputs=ThrustersSimulationOutputsType.from_pydantic(
-                        DedataframedSimulationOutputs.zero()  # TODO: ZERO-825
+                        DedataframedSimulationOutputs.zero()  # TODO: ZERO-825 implement simulation output setting and passage to simulation
                     ),
                 ),
             ),
@@ -219,7 +218,7 @@ class Query:
 
     @strawberry.field
     def simulation(self) -> SimulationState:
-        # TODO: ZERO-877
+        # TODO: ZERO-877 implement simulation control
         return SimulationState(time=datetime.now(), playing=False)
 
     @strawberry.field()
@@ -323,7 +322,7 @@ class DynamicInputFields:
                     component: component_type,  # type: ignore
                     info: strawberry.Info[ThrsContext],
                 ) -> ThrustersParametersType:
-                    # TODO: ZERO-878
+                    # TODO: ZERO-878 implement parameter setting and passage to simulation
                     return ThrustersParametersType.from_pydantic(ThrustersParameters())
 
                 return _mutation
@@ -347,7 +346,7 @@ class DynamicInputFields:
                     component: component_type,  # type: ignore
                     info: strawberry.Info[ThrsContext],
                 ) -> ThrustersSimulationInputsType:
-                    # TODO: ZERO-825
+                    # TODO: ZERO-825 implement simulation input setting and passage to simulation
                     return ThrustersSimulationInputsType.from_pydantic(
                         DedataframedSimulationInputs.zero()
                     )
@@ -372,19 +371,19 @@ class Mutation(DynamicInputFields):
     async def simulation_play(
         self, info: strawberry.Info[ThrsContext], playbackRate: float = 1.0
     ) -> None:
-        # TODO: ZERO-877
+        # TODO: ZERO-877 implement simulation control
         pass
 
     @strawberry.mutation
     async def simulation_pause(self, info: strawberry.Info[ThrsContext]) -> None:
-        # TODO: ZERO-877
+        # TODO: ZERO-877 implement simulation control
         pass
 
     @strawberry.mutation
     async def simulation_step(
         self, info: strawberry.Info[ThrsContext], seconds: float
     ) -> None:
-        # TODO: ZERO-877
+        # TODO: ZERO-877 implement simulation control
         pass
 
 
