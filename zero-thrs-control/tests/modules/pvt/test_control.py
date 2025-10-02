@@ -19,7 +19,10 @@ type PvtExecutor = SimulationExecutor[
 
 
 async def test_idle(control, executor: PvtExecutor):
-    control.to_idle()
+    executor._simulation_inputs.pvt_main_fwd.heat_flow = Stamped.stamp(0)
+    executor._simulation_inputs.pvt_main_aft.heat_flow = Stamped.stamp(0)
+    executor._simulation_inputs.pvt_owners.heat_flow = Stamped.stamp(0)
+
     result = await executor.tick(
         control.control(PvtSensorValues.zero()).values,
     )
@@ -32,7 +35,6 @@ async def test_idle(control, executor: PvtExecutor):
 
 
 async def test_recovery(control, executor):
-    control.to_recovery()
     result = await executor.tick(
         control.control(PvtSensorValues.zero()).values,
     )

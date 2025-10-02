@@ -1,7 +1,7 @@
 from typing import Annotated
 
 from pydantic import computed_field
-from thrs.input_output.base import Stamped, component_meta, SimulationInputs, ThrsModel
+from thrs.input_output.base import component_meta, SimulationInputs, ThrsModel
 from thrs.input_output.definitions import control, sensor, simulation
 
 
@@ -31,13 +31,22 @@ class PvtSensorValues(ThrsModel):
     pvt_mix_main_aft: Annotated[sensor.Valve, component_meta(yard_tag="50001044-02")]
     pvt_mix_owners: Annotated[sensor.Valve, component_meta(yard_tag="50001043-01")]
     pvt_flow_main_fwd: Annotated[
-        sensor.FlowSensor, component_meta(yard_tag="50001058-12")
+        sensor.FlowSensor,
+        component_meta(
+            yard_tag="50001058-12"
+        ),  # TODO: rename to pvt_flow_main_fwd_recovery?
     ]
     pvt_flow_main_aft: Annotated[
-        sensor.FlowSensor, component_meta(yard_tag="50001058-13")
+        sensor.FlowSensor,
+        component_meta(
+            yard_tag="50001058-13"
+        ),  # TODO: rename to pvt_flow_main_aft_recovery?
     ]
     pvt_flow_owners: Annotated[
-        sensor.FlowSensor, component_meta(yard_tag="50001057-03")
+        sensor.FlowSensor,
+        component_meta(
+            yard_tag="50001057-03"
+        ),  # TODO: rename to pvt_flow_owners_recovery?
     ]
     pvt_pressure_main_fwd: Annotated[
         sensor.PressureSensor, component_meta(yard_tag="50001097-03")
@@ -49,20 +58,23 @@ class PvtSensorValues(ThrsModel):
         sensor.PressureSensor, component_meta(yard_tag="50001097-05")
     ]
     pvt_flowcontrol_main_fwd: Annotated[
-        sensor.Valve, component_meta(yard_tag="50001067-01")
+        sensor.Valve,
+        component_meta(yard_tag="50001067-01"),  # TODO: rename to pvt_switch_main_fwd?
     ]
     pvt_flowcontrol_main_aft: Annotated[
-        sensor.Valve, component_meta(yard_tag="50001067-02")
+        sensor.Valve,
+        component_meta(yard_tag="50001067-02"),  # TODO: rename to pvt_switch_main_aft?
     ]
     pvt_flowcontrol_owners: Annotated[
-        sensor.Valve, component_meta(yard_tag="50001069-01")
+        sensor.Valve,
+        component_meta(yard_tag="50001069-01"),  # TODO: rename to pvt_switch_owners?
     ]
     pvt_mix_exchanger: Annotated[sensor.Valve, component_meta(yard_tag="50001047-02")]
     pvt_temperature_exchanger: Annotated[
         sensor.TemperatureSensor,
         component_meta(
             yard_tag="50001038-24"
-        ),  # TODO: change to pvt_temperature_supply?
+        ),  # TODO: rename to pvt_temperature_supply?
     ]
     pvt_temperature_main_string_1_1_return: Annotated[
         sensor.TemperatureSensor, component_meta(yard_tag="50009005-01")

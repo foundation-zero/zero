@@ -1,7 +1,7 @@
 from datetime import datetime
-from typing import Annotated, Callable, Literal
+from typing import Callable, Literal
 
-from pydantic import Field, model_validator
+from pydantic import model_validator
 from transitions import Machine, State
 from thrs.classes.control import Control, ControlResult
 from thrs.control.controllers import Controller
@@ -15,7 +15,7 @@ from thrs.input_output.modules.pvt_group import (
 
 
 class PvtGroupParameters(ThrsModel):
-    warmup_temperature: Annotated[Celsius, Field(ge=40)]
+    warmup_temperature: Celsius
     recovery_temperature: Celsius
     warmup_mix_tuning: Tuning
     pump_tuning: Tuning
@@ -75,13 +75,13 @@ class PvtGroupControl(
 
         self._transitions = [
             {
-                "trigger": "_check_string_temperatures",
+                "trigger": "_check_temperatures",
                 "source": "idle",
                 "dest": "recovery",
                 "conditions": "_string_warm",
             },
             {
-                "trigger": "_check_return_temperature",
+                "trigger": "_check_temperatures",
                 "source": "recovery",
                 "dest": "idle",
                 "conditions": "_low_return_temperature",
@@ -146,32 +146,33 @@ class PvtGroupControl(
             < self._parameters.minimum_return_temperature
         )
 
-    def _set_mix_to_a(self):
+    def _set_mix_to_a(self, sensor_values: PvtGroupSensorValues):
         self._current_values.mix.setpoint = Stamped(
             value=Valve.MIXING_B_TO_AB, timestamp=self._time()
         )
 
-    def _enable_warmup_mix(self):
+    def _enable_warmup_mix(self, sensor_values: PvtGroupSensorValues):
         self._warmup_mix_controller.enable()
 
-    def _disable_warmup_mix(self):
+    def _disable_warmup_mix(self, sensor_values: PvtGroupSensorValues):
         self._warmup_mix_controller.disable()
 
-    def _enable_pump_control(self):
+    def _enable_pump_control(self, sensor_values: PvtGroupSensorValues):
         self._pump_controller.enable()
 
-    def _disable_pump_control(self):
+    def _disable_pump_control(self, sensor_values: PvtGroupSensorValues):
         self._pump_controller.disable()
 
-    def _activate_pump(self):
+    def _activate_pump(self, sensor_values: PvtGroupSensorValues):
         self._current_values.pump.on = Stamped(value=True, timestamp=self._time())
 
-    def _deactivate_pump(self):
+    def _deactivate_pump(self, sensor_values: PvtGroupSensorValues):
         self._current_values.pump.on = Stamped(value=False, timestamp=self._time())
 
     def control(
         self, sensor_values: PvtGroupSensorValues
     ) -> ControlResult[PvtGroupControlValues]:
+        self._check_temperatures(sensor_values)  # type: ignore
         self._control_warmup_mix(sensor_values)
         self._control_pump(sensor_values)
 
@@ -179,7 +180,7 @@ class PvtGroupControl(
 
     def _control_warmup_mix(self, sensor_values: PvtGroupSensorValues):
         self._current_values.mix.setpoint = Stamped(
-            value=self._pump_controller(
+            value=self._warmup_mix_controller(
                 sensor_values.temperature_return.temperature.value
             ),
             timestamp=self._time(),

@@ -146,7 +146,7 @@ class ThrustersControl(
         self._transitions = [
             {
                 "trigger": "_check_overheat",
-                "source": "recovery",
+                "source": ["idle", "recovery", "cooldown"],
                 "dest": "cooling",
                 "conditions": self._is_overheating,
             },
@@ -280,6 +280,7 @@ class ThrustersControl(
         self, sensor_values: ThrustersSensorValues
     ) -> ControlResult[ThrustersControlValues]:
         self._check_pcs_mode(sensor_values)  # type: ignore
+        self._check_overheat(sensor_values)  # type: ignore
         self._control_heat_dump(sensor_values)
 
         if self.mode == "recovery":
