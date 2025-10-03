@@ -33,6 +33,7 @@ class MqttExecutor[S: ThrsModel, C: ThrsModel](Executor[S, C]):
         self._sensor_cls = sensor_cls
         self._last_controls = None
         self._control_cls = control_cls
+        self._running = False
 
     async def _listen_to_sensors(self):
         async for message in self._controller_client.messages:
@@ -64,11 +65,19 @@ class MqttExecutor[S: ThrsModel, C: ThrsModel](Executor[S, C]):
         await self._environment_client.subscribe(self._control_topic, qos=1)
 
     async def run(self):
-        async with TaskGroup() as tg:
-            tg.create_task(self._listen_to_sensors())
-            tg.create_task(self._pass_controls_to_inner())
+        self._running = True
+        try:
+            async with TaskGroup() as tg:
+                tg.create_task(self._listen_to_sensors())
+                tg.create_task(self._pass_controls_to_inner())
+        finally:
+            self._running = False
 
     async def tick(self, control_values: ThrsModel) -> ExecutionResult[S]:
+        if not self._running:
+            raise Exception(
+                "MqttExecutor not running, run() should be called in a create_task()"
+            )
         await self._environment_client.publish(
             self._control_topic, control_values.model_dump_json(), qos=1
         )

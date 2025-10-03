@@ -18,9 +18,7 @@ class Cycler:
             if isinstance(result, SimulationExecutionResult):
                 collector.collect(result.raw, self._control.mode, result.timestamp)
             control_values = self._control.control(result.sensor_values).values
-            alarms = self._alarms.check(
-                result.sensor_values, control_values, self._control
-            )
+            alarms = self._alarms.check(result.sensor_values, control_values)
             if alarms:
                 warnings.warn(
                     f"Alarms detected: {alarms}"

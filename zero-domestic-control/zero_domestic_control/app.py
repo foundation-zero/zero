@@ -166,7 +166,7 @@ class Mutation:
 
     @strawberry.mutation
     @raise_taskgroup_exception
-    async def set_room_co2_setpoint(
+    async def set_room_co2_setpoints(
         self,
         info: strawberry.Info[MyContext],
         ids: list[strawberry.ID],

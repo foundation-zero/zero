@@ -1,7 +1,22 @@
-from typing import Annotated, Callable, Generic, TypeVar, get_args
+from asyncio import create_task
+import asyncio
+from contextlib import asynccontextmanager
+from dataclasses import dataclass
+from typing import (
+    Annotated,
+    Callable,
+    Coroutine,
+    Generic,
+    TypeVar,
+    get_args,
+)
+from fastapi import Depends, FastAPI
 from pydantic import Field, create_model
 from strawberry.schema_directive import Location
 import strawberry
+from strawberry.fastapi import GraphQLRouter, BaseContext
+
+from thrs.graphql.messaging import Messaging
 from thrs.input_output.modules.thrusters import (
     ThrustersControlValues,
     ThrustersSensorValues,
@@ -10,6 +25,9 @@ import thrs.input_output.definitions.sensor as sensor
 import thrs.input_output.definitions.control as control
 from thrs.input_output.base import Stamped, ThrsModel
 from pydantic.fields import FieldInfo
+from aiomqtt import Client as MqttClient
+
+from thrs.orchestration.config import Config
 
 
 @strawberry.schema_directive(locations=[Location.FIELD_DEFINITION])
@@ -129,19 +147,30 @@ class Modules:
 thrusters_control_values = ThrustersControlValues.zero()
 
 
+@dataclass
+class ThrsContext(BaseContext):
+    messaging: Messaging[ThrustersSensorValues, ThrustersControlValues]
+
+
 @strawberry.type
 class Query:
     @strawberry.field()
-    def modules(
-        self,
-    ) -> Modules:
+    def modules(self, info: strawberry.Info[ThrsContext]) -> Modules:
+        if (
+            not info.context.messaging.sensor_values
+            or not info.context.messaging.control_values
+        ):
+            raise Exception(
+                "No sensor or control values received yet. Is the AMCS or simulation running?"
+            )
+
         return Modules(
             thrusters=Module(
                 sensor_values=ThrustersSensorValuesType.from_pydantic(
-                    ThrustersSensorValues.zero()
+                    info.context.messaging.sensor_values
                 ),
                 control_values=ThrustersControlValuesType.from_pydantic(
-                    thrusters_control_values
+                    info.context.messaging.control_values
                 ),
             ),
         )
@@ -193,12 +222,17 @@ def ensure_input_type(annotation):
 
 def generate_mutation_for_field(
     name: str, field: FieldInfo
-) -> "Callable[[Mutation, object], ThrustersControlValuesType]":
+) -> "Callable[[Mutation, object, strawberry.Info[ThrsContext]], Coroutine[None, None, ThrustersControlValuesType]]":
     input_type = ensure_input_type(field.annotation)
 
-    def _mutation(self, component: input_type) -> ThrustersControlValuesType:  # type: ignore
+    async def _mutation(
+        self,
+        component: input_type,  # type: ignore
+        info: strawberry.Info[ThrsContext],
+    ) -> ThrustersControlValuesType:
         pydantic_value = component.to_pydantic().to_stamped()
         setattr(thrusters_control_values, name, pydantic_value)
+        await info.context.messaging.send_manual_controls(thrusters_control_values)
         return ThrustersControlValuesType.from_pydantic(thrusters_control_values)
 
     _mutation.__name__ = f"set_{name}"
@@ -218,4 +252,43 @@ class Mutation(DynamicInputFields):
     pass
 
 
+type ThrustersMessaging = Messaging[ThrustersSensorValues, ThrustersControlValues]
+
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    settings = Config()  # type: ignore
+    async with MqttClient(settings.mqtt_host, settings.mqtt_port) as mqtt:
+        messaging = Messaging(mqtt, ThrustersSensorValues, ThrustersControlValues)
+        run_task = create_task(await messaging.run())
+        try:
+            async with asyncio.timeout(10):
+                await messaging.wait_for_values()
+        except TimeoutError as e:
+            raise Exception("No sensor or control values received in 10 seconds. Is the AMCS or simulation running?") from e
+        app.state.messaging = messaging
+        yield
+        run_task.cancel()
+
+
+app = FastAPI(lifespan=lifespan)
+
+
+def messaging() -> ThrustersMessaging:
+    return app.state.messaging
+
+
+async def get_context(
+    messaging: "Annotated[Messaging[ThrustersSensorValues, ThrustersControlValues], Depends(messaging)]",
+):
+    return ThrsContext(messaging=messaging)
+
+
 schema = strawberry.Schema(query=Query, mutation=Mutation)
+
+graphql_app = GraphQLRouter(
+    schema,
+    context_getter=get_context,
+)
+
+app.include_router(graphql_app, prefix="/graphql")
