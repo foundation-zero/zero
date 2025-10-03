@@ -12,16 +12,16 @@ SHEET_ID = "1aPp87gaevQulzXpWf-wpg5ScPD3WNuJPkMSB4weMQd8"
 logger = logging.getLogger(__name__)
 
 
-class PowerTagMetadataGenerator:
+class MetadataGenerator:
     def __init__(self, dbt_path: Path):
         self.seed_path = dbt_path / "seeds/"
 
     def generate(self):
         # Write the metadata to a Google Sheet
-        metadata_path = (self.seed_path / "power_tag_metadata.csv").resolve()
+        metadata_path = (self.seed_path / "electrical_energy_metadata.csv").resolve()
         gc = gspread.service_account(filename=SERVICE_ACCOUNT_KEY_FILE)
         sh = gc.open_by_key(SHEET_ID)
-        worksheet = sh.worksheet("Powertags")
+        worksheet = sh.worksheet("Electrical")
         data = worksheet.get_all_records()
         df = pl.DataFrame(data)
         df = df.rename(lambda col_name: col_name.lower().replace(" ", "_"))

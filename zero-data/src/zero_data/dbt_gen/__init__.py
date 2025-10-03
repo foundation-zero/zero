@@ -2,7 +2,7 @@ from pathlib import Path
 
 from .marpower_raw import MarpowerRawGenerator
 from .io_metadata import IOMetadataWriter
-from .powertag_metadata import PowerTagMetadataGenerator
+from .electrical_energy_metadata import MetadataGenerator
 from zero_data.config import io_lists
 from zero_data.io_list import read_io_list
 import logging
@@ -25,5 +25,5 @@ def generate_dbt():
         writer.write_io_metadata_csv(io_result.io_list, source)
         dbt_generator.generate(io_result.topics)
 
-    powertag_metadata_generator = PowerTagMetadataGenerator(dbt_path)
-    powertag_metadata_generator.generate()
+    electrical_energy_metadata = MetadataGenerator(dbt_path)
+    electrical_energy_metadata.generate()
