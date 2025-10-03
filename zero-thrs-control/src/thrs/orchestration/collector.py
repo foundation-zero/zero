@@ -5,13 +5,21 @@ import polars as pl
 
 class Collector(Protocol):
     def collect(
-        self, values: dict[str, float], control_mode: str | None, time: datetime
+        self,
+        values: dict[str, float],
+        control_mode: str | None,
+        time: datetime,
+        computed_values: dict[str, Any] | None = None,
     ): ...
 
 
 class NullCollector(Collector):
     def collect(
-        self, values: dict[str, float], control_mode: str | None, time: datetime
+        self,
+        values: dict[str, float],
+        control_mode: str | None,
+        time: datetime,
+        computed_values: dict[str, Any] | None = None,
     ):
         pass
 
@@ -20,10 +28,22 @@ class PolarsCollector(Collector):
     def __init__(self):
         self._data = None
 
-    def collect(self, values: dict[str, Any], control_mode: str | None, time: datetime):
+    def collect(
+        self,
+        values: dict[str, Any],
+        control_mode: str | None,
+        time: datetime,
+        computed_values: dict[str, Any] | None = None,
+    ):
+        computed_values = computed_values or {}
         if self._data is None:
             self._data = pl.DataFrame(
-                {**values, "time": time, "control_mode": control_mode}
+                {
+                    **values,
+                    "time": time,
+                    "control_mode": control_mode,
+                    **computed_values,
+                }
             )
             self._data = self._data.with_columns(
                 pl.col("time").cast(pl.Datetime),
@@ -33,7 +53,12 @@ class PolarsCollector(Collector):
         else:
             self._data.vstack(
                 pl.DataFrame(
-                    {**values, "time": time, "control_mode": control_mode},
+                    {
+                        **values,
+                        "time": time,
+                        "control_mode": control_mode,
+                        **computed_values,
+                    },
                     schema_overrides=self._schema,
                     strict=False,
                 ),

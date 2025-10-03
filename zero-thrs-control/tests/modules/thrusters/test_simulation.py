@@ -4,6 +4,7 @@ from pytest import fixture
 import pytest
 from thrs.control.modules.thrusters import ThrustersControl, ThrustersParameters
 from thrs.input_output.definitions.control import Valve
+from thrs.input_output.fmu_mapping import build_inputs_for_fmu
 from thrs.input_output.modules.thrusters import (
     ThrustersControlValues,
     ThrustersSensorValues,
@@ -30,9 +31,23 @@ async def test_interfacer(executor, io_mapping, simulation_inputs, control, alar
         datetime.now(),
         timedelta(seconds=1),
     )[2]
+    computed_fields = set(build_inputs_for_fmu(
+        ThrustersSensorValues.zero(), "computed_fields"
+    ).keys())
     assert frame is not None
-    assert set(frame.columns) == set(mock_fmu_outputs.keys()) | {"time", "control_mode"}
+    assert set(frame.columns) == set(mock_fmu_outputs.keys()) | {"time", "control_mode"} | computed_fields
     assert frame["time"][-1] - frame["time"][0] == timedelta(seconds=19)
+
+
+async def test_computed_collection(
+    executor, io_mapping, simulation_inputs, control, alarms
+):
+    collector = PolarsCollector()
+    interfacer = Cycler(control, executor, alarms)
+    await interfacer.run(20, collector)
+    frame = collector.result()
+    assert frame is not None
+    assert "thrusters_temperature_recovery__temperature" in frame.columns
 
 
 async def test_simulation(simulation_inputs, control, alarms):

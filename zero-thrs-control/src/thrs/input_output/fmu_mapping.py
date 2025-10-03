@@ -1,9 +1,9 @@
 import operator
 from datetime import datetime
 from functools import reduce
-from typing import Any, overload
+from typing import Any, Literal, overload
 
-from pydantic.fields import FieldInfo
+from pydantic.fields import FieldInfo, ComputedFieldInfo
 
 from thrs.input_output.base import Stamped, ThrsModel
 from thrs.input_output.definitions.units import unit_for_annotation, unit_meta
@@ -16,10 +16,14 @@ def groupby(iterable, key):
     return _groupby(data, key)
 
 
-def included_in_fmu(field: FieldInfo) -> bool:
+def included_in_fmu(field: FieldInfo | ComputedFieldInfo) -> bool:
     """Check if the field should be included in the FMU."""
-    meta = next(
-        (meta for meta in field.metadata if hasattr(meta, "included_in_fmu")), None
+    meta = (
+        next(
+            (meta for meta in field.metadata if hasattr(meta, "included_in_fmu")), None
+        )
+        if isinstance(field, FieldInfo)
+        else None
     )
     return (
         meta.included_in_fmu
@@ -32,6 +36,7 @@ def included_in_fmu(field: FieldInfo) -> bool:
 
 def build_inputs_for_fmu(
     model: ThrsModel,
+    mode: Literal["fields", "computed_fields"] = "fields",
 ) -> dict[str, float]:
     def _values_for_component(component_name, component):
         def _name_for_field(field_name, field: FieldInfo):
@@ -47,9 +52,14 @@ def build_inputs_for_fmu(
             if included_in_fmu(field)
         }
 
+    fields = (
+        type(model).model_fields
+        if mode == "fields"
+        else type(model).model_computed_fields
+    )
     vals = [
         _values_for_component(component_name, getattr(model, component_name))
-        for component_name, field in model.model_fields.items()
+        for component_name, field in fields.items()
         if included_in_fmu(field)
     ]
     return reduce(operator.ior, vals, {})
