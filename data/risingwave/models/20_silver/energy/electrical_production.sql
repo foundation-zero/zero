@@ -6,7 +6,7 @@ SELECT
   power_updates.power_factor_timestamp AS power_factor_timestamp,
   power_updates.topic AS topic,
   meta_data.electrical_system AS electrical_system,
-  meta_data.group AS consumer_group
+  meta_data.group AS producer_group
 FROM (
 
   SELECT 
