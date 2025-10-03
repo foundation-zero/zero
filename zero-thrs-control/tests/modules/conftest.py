@@ -112,7 +112,9 @@ def compare_yard_tags(
         .agg(pl.col("Tag").unique())
         .filter(pl.col("Tag").list.len() > 1)
     )
-    assert len(duplicated_tags) == 0, f"Duplicated tags found in sheet: {duplicated_tags}"
+    assert len(duplicated_tags) == 0, (
+        f"Duplicated tags found in sheet: {duplicated_tags}"
+    )
     sheet_tags = sheet_tags_df.rows_by_key("technical name", named=True, unique=True)
 
     for model in [sensor_values_cls, control_values_cls]:

@@ -4,7 +4,11 @@ from thrs.input_output.modules.pcm import (
     PcmSimulationInputs,
     PcmSimulationOutputs,
 )
-from tests.modules.conftest import compare_fmu_to_class, compare_modelica_names, compare_yard_tags
+from tests.modules.conftest import (
+    compare_fmu_to_class,
+    compare_modelica_names,
+    compare_yard_tags,
+)
 from thrs.simulation.models.fmu_paths import pcm_path
 
 
@@ -32,6 +36,7 @@ def test_pcm_fmu_names():
 
     assert not missing_in_py, f"Missing in Python: {missing_in_py}"
     assert not missing_in_fmu, f"Missing in FMU: {missing_in_fmu}"
+
 
 def test_yard_tags():
     compare_yard_tags(PcmSensorValues, PcmControlValues)

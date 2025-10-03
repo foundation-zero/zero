@@ -13,10 +13,10 @@ from thrs.input_output.modules.thrusters import (
 @pytest.fixture
 async def async_client():
     async with AsyncClient(
-        base_url="http://test",
-        transport=ASGITransport(app)
+        base_url="http://test", transport=ASGITransport(app)
     ) as client:
         yield client
+
 
 async def override_messaging():
     mock = Mock(Messaging)
