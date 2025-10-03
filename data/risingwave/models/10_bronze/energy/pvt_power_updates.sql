@@ -11,3 +11,4 @@ ASOF JOIN {{ ref('pvt') }} as previous
     AND previous.time < pvt.time
 WHERE (pvt."Total_Active_Power").TimeStamp != (previous."Total_Active_Power").TimeStamp
   OR (pvt."Total_Power_Factor").TimeStamp != (previous."Total_Power_Factor").TimeStamp
+  

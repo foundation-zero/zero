@@ -11,3 +11,4 @@ ASOF JOIN {{ ref('hydrogeneration') }} as previous
     AND previous.time < hydrogeneration.time
 WHERE (hydrogeneration."Total_Active_Power").TimeStamp != (previous."Total_Active_Power").TimeStamp
   OR (hydrogeneration."Total_Power_Factor").TimeStamp != (previous."Total_Power_Factor").TimeStamp
+  

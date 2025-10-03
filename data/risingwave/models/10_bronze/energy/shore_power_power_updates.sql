@@ -11,3 +11,4 @@ ASOF JOIN {{ ref('shore_power') }} as previous
     AND previous.time < shore_power.time
 WHERE (shore_power."Total_Active_Power").TimeStamp != (previous."Total_Active_Power").TimeStamp
   OR (shore_power."Total_Power_Factor").TimeStamp != (previous."Total_Power_Factor").TimeStamp
+  
