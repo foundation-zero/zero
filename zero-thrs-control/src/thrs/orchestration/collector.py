@@ -25,6 +25,7 @@ class NullCollector(Collector):
 class PolarsCollector(Collector):
     def __init__(self):
         self._data = None
+        self._schema_overrides = None
 
     def collect(
         self,
@@ -33,18 +34,27 @@ class PolarsCollector(Collector):
         time: datetime,
     ):
         if self._data is None:
+            # Define schema overrides for known numeric columns
+            self._schema_overrides = {
+                "time": pl.Datetime(time_unit="us"),
+                "control_mode": pl.String,
+            }
+
+            # Add Float64 for any column that looks numeric
+            for key, value in values.items():
+                if key.endswith("__bool"):
+                    self._schema_overrides[key] = pl.Boolean
+                else:
+                    self._schema_overrides[key] = pl.Float64
             self._data = pl.DataFrame(
                 {
                     **values,
                     "time": time,
                     "control_mode": control_mode,
-                }
+                },
+                schema_overrides=self._schema_overrides,
+                strict=False,
             )
-            self._data = self._data.with_columns(
-                pl.col("time").cast(pl.Datetime),
-                pl.col("control_mode").cast(pl.Categorical),
-            )
-            self._schema = self._data.schema
         else:
             self._data.vstack(
                 pl.DataFrame(
@@ -53,7 +63,7 @@ class PolarsCollector(Collector):
                         "time": time,
                         "control_mode": control_mode,
                     },
-                    schema_overrides=self._schema,
+                    schema_overrides=self._schema_overrides,
                     strict=False,
                 ),
                 in_place=True,

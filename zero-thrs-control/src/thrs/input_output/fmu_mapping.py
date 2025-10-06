@@ -20,7 +20,7 @@ def included_in_fmu(field: FieldInfo | ComputedFieldInfo) -> bool:
         field.json_schema_extra.get("included_in_fmu", True)
         if field.json_schema_extra and isinstance(field.json_schema_extra, dict)
         else True
-    ) # type: ignore
+    )  # type: ignore
 
 
 def extract_non_fmu_values(
