@@ -54,6 +54,9 @@ jobs:
       - run: poetry run ruff check src tests
         working-directory: zero-thrs-control
 
+      - run: poetry run ruff format --check src tests
+        working-directory: zero-thrs-control
+
       - run: docker compose up -d
         working-directory: zero-thrs-control
 

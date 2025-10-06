@@ -265,7 +265,9 @@ async def lifespan(app: FastAPI):
             async with asyncio.timeout(10):
                 await messaging.wait_for_values()
         except TimeoutError as e:
-            raise Exception("No sensor or control values received in 10 seconds. Is the AMCS or simulation running?") from e
+            raise Exception(
+                "No sensor or control values received in 10 seconds. Is the AMCS or simulation running?"
+            ) from e
         app.state.messaging = messaging
         yield
         run_task.cancel()
