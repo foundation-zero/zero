@@ -1,1 +1,0 @@
-{{ sink_append_gcs('raw', '220000_novec', '220000_novec_sink') }}

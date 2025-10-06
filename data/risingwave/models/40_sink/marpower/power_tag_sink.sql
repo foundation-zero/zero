@@ -1,1 +1,0 @@
-{{ sink_append_gcs('raw', 'power_tag', 'power_tag_sink') }}
