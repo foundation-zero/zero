@@ -22,7 +22,10 @@ class UnitMeta:
 
 
 def _unit_for_single_annotation(annotation: Any) -> Any | None:
-    return next(iter(annotation.__pydantic_generic_metadata__["args"]), None)  # type: ignore
+    if hasattr(annotation, "__pydantic_generic_metadata__"):
+        return next(iter(annotation.__pydantic_generic_metadata__["args"]), None)
+    else:
+        return annotation
 
 
 def unit_for_annotation(annotation: Any) -> Any | None:

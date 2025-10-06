@@ -6,6 +6,7 @@ import thrs.input_output.definitions.control as control
 import thrs.input_output.definitions.sensor as sensor
 from thrs.input_output.definitions import simulation
 from thrs.input_output.base import (
+    SimulationValues,
     Stamped,
     component_meta,
     SimulationInputs,
@@ -166,7 +167,7 @@ class ThrustersSimulationInputs(SimulationInputs):
     thrusters_pcs: simulation.Pcs
 
 
-class ThrustersSimulationOutputs(ThrsModel):
+class ThrustersSimulationOutputs(SimulationValues):
     thrusters_seawater_return: simulation.TemperatureBoundary
     thrusters_module_supply: simulation.FlowBoundary
     thrusters_module_return: simulation.Boundary

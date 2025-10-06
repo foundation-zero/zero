@@ -59,3 +59,15 @@ def test_zero_for_unit_float_alias():
 
 def test_zero_for_enum():
     assert zero_for_unit(PcsMode) == PcsMode.OFF
+
+
+def test_zero_for_unnested():
+    class Data(ThrsModel):
+        a: float
+        b: Ratio
+        c: PcsMode
+
+    zero = Data.zero()
+    assert zero.a == 0.0
+    assert zero.b == 0.0
+    assert zero.c == PcsMode.OFF

@@ -70,7 +70,7 @@ export const controlValuesForm = <
     const input = Object.fromEntries(
       Object.entries(refs).map(([key, { value }]) => [key, value.value]),
     );
-    const mutation = `set${capitalizeFirst(componentName)}`;
+    const mutation = `setThrustersControl${capitalizeFirst(componentName)}`;
     const query = `mutation ($input: ${INPUT_TYPES[type]}) {
       ${mutation}(component: $input) {
         ${controlValuesQuery}
