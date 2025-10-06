@@ -81,3 +81,44 @@ def compare_fmu_to_class(
     missing_in_fmu = py_keys - fmu_keys
 
     return missing_in_py, missing_in_fmu
+
+
+def compare_yard_tags(
+    sensor_values_cls: type[ThrsModel],
+    control_values_cls: type[ThrsModel],
+    exclude: set[str] | None = None,
+):
+    exclude = exclude or set()
+    sheet = pl.read_csv(
+        SHEET_URL, skip_lines=1, schema_overrides={"Pos": pl.String, "Sub": pl.String}
+    )
+
+    sheet_tags_df = (
+        sheet.filter(
+            pl.col("Included in simulation").is_in(["yes", "optional"]),
+        )
+        .with_columns(
+            pl.when(pl.col("Sub") != "")
+            .then(pl.concat_str(pl.col("Pos"), pl.col("Sub"), separator="-"))
+            .otherwise(pl.col("Pos"))
+            .alias("Tag"),
+            pl.col("technical name").str.replace_all("-", "_").alias("technical name"),
+        )
+        .select(["technical name", "Tag"])
+    )
+
+    duplicated_tags = (
+        sheet_tags_df.group_by("technical name")
+        .agg(pl.col("Tag").unique())
+        .filter(pl.col("Tag").list.len() > 1)
+    )
+    assert len(duplicated_tags) == 0, f"Duplicated tags found in sheet: {duplicated_tags}"
+    sheet_tags = sheet_tags_df.rows_by_key("technical name", named=True, unique=True)
+
+    for model in [sensor_values_cls, control_values_cls]:
+        for field_name, field in model.model_fields.items():
+            if field_name not in exclude and isinstance(field.json_schema_extra, dict):
+                yard_tag = field.json_schema_extra.get("yard_tag")
+                assert sheet_tags[field_name]["Tag"] == yard_tag, (
+                    f"Incorrect yard tag for {field_name}. Got {yard_tag}, expected {sheet_tags[field_name]['Tag']}"
+                )

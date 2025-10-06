@@ -19,9 +19,6 @@ class PvtSensorValues(ThrsModel):
     pvt_temperature_main_aft_supply: Annotated[
         sensor.TemperatureSensor, component_meta(yard_tag="50001038-22")
     ]
-    pvt_temperature_main_aft_return: Annotated[
-        sensor.TemperatureSensor, component_meta(yard_tag="50001038-04")
-    ]
     pvt_temperature_owners_supply: Annotated[
         sensor.TemperatureSensor, component_meta(yard_tag="50001038-21")
     ]
