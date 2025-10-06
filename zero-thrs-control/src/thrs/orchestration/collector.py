@@ -9,7 +9,6 @@ class Collector(Protocol):
         values: dict[str, float],
         control_mode: str | None,
         time: datetime,
-        computed_values: dict[str, Any] | None = None,
     ): ...
 
 
@@ -19,7 +18,6 @@ class NullCollector(Collector):
         values: dict[str, float],
         control_mode: str | None,
         time: datetime,
-        computed_values: dict[str, Any] | None = None,
     ):
         pass
 
@@ -33,16 +31,13 @@ class PolarsCollector(Collector):
         values: dict[str, Any],
         control_mode: str | None,
         time: datetime,
-        computed_values: dict[str, Any] | None = None,
     ):
-        computed_values = computed_values or {}
         if self._data is None:
             self._data = pl.DataFrame(
                 {
                     **values,
                     "time": time,
                     "control_mode": control_mode,
-                    **computed_values,
                 }
             )
             self._data = self._data.with_columns(
@@ -57,7 +52,6 @@ class PolarsCollector(Collector):
                         **values,
                         "time": time,
                         "control_mode": control_mode,
-                        **computed_values,
                     },
                     schema_overrides=self._schema,
                     strict=False,

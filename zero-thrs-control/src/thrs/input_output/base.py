@@ -113,13 +113,14 @@ class ParameterMeta:
     fds_tag: str
 
 
-@dataclass
-class FieldMeta:
+class FieldMeta(BaseModel):
     included_in_fmu: bool = True
 
 
-_dedataframed_dataclasses = {}
+def field_meta(*args, **kwargs):
+    return Field(json_schema_extra=FieldMeta(*args, **kwargs).model_dump())
 
+_dedataframed_dataclasses = {}
 
 class SimulationValues(ThrsModel):
     @classmethod
@@ -129,11 +130,11 @@ class SimulationValues(ThrsModel):
                 return stored
 
             def _field_type(field):
-                if field.metadata:
+                if field.json_schema_extra:
                     info = FieldInfo.from_annotation(
                         Annotated[
                             Stamped[unit_for_annotation(field.annotation)],
-                            *field.metadata,
+                            Field(json_schema_extra=field.json_schema_extra),
                         ]  # type: ignore
                     )
                     return Annotated[

@@ -4,7 +4,7 @@ from pytest import fixture
 import pytest
 from thrs.control.modules.thrusters import ThrustersControl, ThrustersParameters
 from thrs.input_output.definitions.control import Valve
-from thrs.input_output.fmu_mapping import build_inputs_for_fmu
+
 from thrs.input_output.modules.thrusters import (
     ThrustersControlValues,
     ThrustersSensorValues,
@@ -15,7 +15,7 @@ from thrs.orchestration.collector import PolarsCollector
 from thrs.orchestration.cycler import Cycler
 from thrs.orchestration.simulator import Simulator, SimulatorModel
 from thrs.simulation.fmu import Fmu
-from thrs.simulation.io_mapping import IoMapping
+from thrs.simulation.io_mapping import IoMapping, flatten_model_values
 from thrs.simulation.models.fmu_paths import thrusters_path
 from tests.modules.helpers.simulation_inputs import simulator_input_field_setters
 
@@ -31,12 +31,26 @@ async def test_interfacer(executor, io_mapping, simulation_inputs, control, alar
         datetime.now(),
         timedelta(seconds=1),
     )[2]
-    computed_fields = set(build_inputs_for_fmu(
-        ThrustersSensorValues.zero(), "computed_fields"
-    ).keys())
+
     assert frame is not None
-    assert set(frame.columns) == set(mock_fmu_outputs.keys()) | {"time", "control_mode"} | computed_fields
     assert frame["time"][-1] - frame["time"][0] == timedelta(seconds=19)
+
+    not_in_fmu = set(
+        {
+            **flatten_model_values(ThrustersSensorValues.zero(), False),
+            **flatten_model_values(simulation_inputs, False),
+        }
+    ) - set(
+        {
+            **flatten_model_values(ThrustersSensorValues.zero(), True),
+            **flatten_model_values(simulation_inputs, True),
+        }
+    )
+
+    assert (
+        set(frame.columns)
+        == set(mock_fmu_outputs.keys()) | {"time", "control_mode"} | not_in_fmu
+    )
 
 
 async def test_computed_collection(

@@ -75,7 +75,9 @@ class ThrustersSensorValues(ThrsModel):
         sensor.Pcs, component_meta(yard_tag="1500", included_in_fmu=False)
     ]
 
-    @computed_field
+    @computed_field(
+        json_schema_extra=component_meta(included_in_fmu=False).json_schema_extra
+    )
     @property
     def thrusters_temperature_recovery(
         self,
