@@ -48,7 +48,7 @@ def test_fmu_simple_inputs():
                 flow=Stamped.stamp(12.12), temperature=Stamped.stamp(17.12)
             )
         ),
-        True,
+        fmu_only=True,
     )
     assert {
         "second_flow_sensor__flow__l_min": 2,
@@ -59,7 +59,7 @@ def test_fmu_simple_inputs():
                 flow=Stamped.stamp(2), temperature=Stamped.stamp(3)
             )
         ),
-        True,
+        fmu_only=True,
     )
 
 
@@ -68,7 +68,7 @@ def test_fmu_input_ignore_extras():
         ExcludedInputModel(
             excluded_component=ExcludedInputComponent(excluded_field=Stamped.stamp(1.0))
         ),
-        True,
+        fmu_only=True,
     )
 
 
@@ -95,6 +95,6 @@ def test_fmu_roundtrip():
         )
     )
 
-    values = flatten_model_values(values, True)
+    values = flatten_model_values(values, fmu_only=True)
 
     assert values, values == build_outputs_from_fmu((MiniModel,), values, time)

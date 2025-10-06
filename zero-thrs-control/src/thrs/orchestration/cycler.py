@@ -19,10 +19,14 @@ class Cycler:
             if isinstance(result, SimulationExecutionResult):
                 collector.collect(
                     {
-                        **flatten_model_values(result.sensor_values, False),
-                        **flatten_model_values(result.control_values, False),
-                        **flatten_model_values(result.simulation_outputs, False),
-                        **flatten_model_values(result.simulation_inputs, False),
+                        **flatten_model_values(result.sensor_values, fmu_only=False),
+                        **flatten_model_values(result.control_values, fmu_only=False),
+                        **flatten_model_values(
+                            result.simulation_outputs, fmu_only=False
+                        ),
+                        **flatten_model_values(
+                            result.simulation_inputs, fmu_only=False
+                        ),
                     },
                     self._control.mode,
                     result.timestamp,

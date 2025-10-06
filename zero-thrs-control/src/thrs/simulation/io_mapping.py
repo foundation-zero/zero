@@ -63,8 +63,8 @@ class IoMapping[S: ThrsModel, C: ThrsModel, I: SimulationInputs, O: ThrsModel]:
         tick_duration: timedelta,
     ) -> tuple[S, O, dict[str, Any]]:
         fmu_inputs = {
-            **flatten_model_values(control_values, True),
-            **flatten_model_values(simulation_inputs, True),
+            **flatten_model_values(control_values, fmu_only=True),
+            **flatten_model_values(simulation_inputs, fmu_only=True),
         }
 
         fmu_outputs = self._fmu.tick(

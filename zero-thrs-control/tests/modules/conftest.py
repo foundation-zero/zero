@@ -17,10 +17,10 @@ def modelica_names_from_class(
 ) -> set[str]:
     return set(
         {
-            **flatten_model_values(control_values, True),
-            **flatten_model_values(simulation_inputs, True),
-            **flatten_model_values(sensor_values, True),
-            **flatten_model_values(simulation_outputs, True),
+            **flatten_model_values(control_values, fmu_only=True),
+            **flatten_model_values(simulation_inputs, fmu_only=True),
+            **flatten_model_values(sensor_values, fmu_only=True),
+            **flatten_model_values(simulation_outputs, fmu_only=True),
         }.keys()
     )
 

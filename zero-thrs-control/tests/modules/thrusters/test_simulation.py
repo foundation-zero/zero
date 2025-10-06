@@ -37,13 +37,13 @@ async def test_interfacer(executor, io_mapping, simulation_inputs, control, alar
 
     not_in_fmu = set(
         {
-            **flatten_model_values(ThrustersSensorValues.zero(), False),
-            **flatten_model_values(simulation_inputs, False),
+            **flatten_model_values(ThrustersSensorValues.zero(), fmu_only=False),
+            **flatten_model_values(simulation_inputs, fmu_only=False),
         }
     ) - set(
         {
-            **flatten_model_values(ThrustersSensorValues.zero(), True),
-            **flatten_model_values(simulation_inputs, True),
+            **flatten_model_values(ThrustersSensorValues.zero(), fmu_only=True),
+            **flatten_model_values(simulation_inputs, fmu_only=True),
         }
     )
 
