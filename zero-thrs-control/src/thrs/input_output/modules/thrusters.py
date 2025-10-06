@@ -86,7 +86,7 @@ class ThrustersSensorValues(ThrsModel):
             self.thrusters_flow_aft.flow.value + self.thrusters_flow_fwd.flow.value
         )
         if (
-            total_flow > 0.0
+            total_flow != 0.0
             and self.thrusters_temperature_aft_return.temperature.value is not None
             and self.thrusters_temperature_fwd_return.temperature.value is not None
         ):

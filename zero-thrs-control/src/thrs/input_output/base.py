@@ -120,7 +120,9 @@ class FieldMeta(BaseModel):
 def field_meta(*args, **kwargs):
     return Field(json_schema_extra=FieldMeta(*args, **kwargs).model_dump())
 
+
 _dedataframed_dataclasses = {}
+
 
 class SimulationValues(ThrsModel):
     @classmethod

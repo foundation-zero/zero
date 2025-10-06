@@ -61,7 +61,7 @@ async def test_computed_collection(
     await interfacer.run(20, collector)
     frame = collector.result()
     assert frame is not None
-    assert "thrusters_temperature_recovery__temperature" in frame.columns
+    assert "thrusters_temperature_recovery__temperature__C" in frame.columns
 
 
 async def test_simulation(simulation_inputs, control, alarms):
