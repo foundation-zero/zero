@@ -4,6 +4,7 @@ from pytest import fixture
 import pytest
 from thrs.control.modules.thrusters import ThrustersControl, ThrustersParameters
 from thrs.input_output.definitions.control import Valve
+
 from thrs.input_output.modules.thrusters import (
     ThrustersControlValues,
     ThrustersSensorValues,
@@ -14,7 +15,7 @@ from thrs.orchestration.collector import PolarsCollector
 from thrs.orchestration.cycler import Cycler
 from thrs.orchestration.simulator import Simulator, SimulatorModel
 from thrs.simulation.fmu import Fmu
-from thrs.simulation.io_mapping import IoMapping
+from thrs.simulation.io_mapping import IoMapping, flatten_model_values
 from thrs.simulation.models.fmu_paths import thrusters_path
 from tests.modules.helpers.simulation_inputs import simulator_input_field_setters
 
@@ -30,9 +31,37 @@ async def test_interfacer(executor, io_mapping, simulation_inputs, control, alar
         datetime.now(),
         timedelta(seconds=1),
     )[2]
+
     assert frame is not None
-    assert set(frame.columns) == set(mock_fmu_outputs.keys()) | {"time", "control_mode"}
     assert frame["time"][-1] - frame["time"][0] == timedelta(seconds=19)
+
+    not_in_fmu = set(
+        {
+            **flatten_model_values(ThrustersSensorValues.zero(), fmu_only=False),
+            **flatten_model_values(simulation_inputs, fmu_only=False),
+        }
+    ) - set(
+        {
+            **flatten_model_values(ThrustersSensorValues.zero(), fmu_only=True),
+            **flatten_model_values(simulation_inputs, fmu_only=True),
+        }
+    )
+
+    assert (
+        set(frame.columns)
+        == set(mock_fmu_outputs.keys()) | {"time", "control_mode"} | not_in_fmu
+    )
+
+
+async def test_computed_collection(
+    executor, io_mapping, simulation_inputs, control, alarms
+):
+    collector = PolarsCollector()
+    interfacer = Cycler(control, executor, alarms)
+    await interfacer.run(20, collector)
+    frame = collector.result()
+    assert frame is not None
+    assert "thrusters_temperature_recovery__temperature__C" in frame.columns
 
 
 async def test_simulation(simulation_inputs, control, alarms):

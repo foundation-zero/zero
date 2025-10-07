@@ -12,9 +12,13 @@ class ExecutionResult[S: ThrsModel]:
 
 
 @dataclass
-class SimulationExecutionResult[S: ThrsModel, I: SimulationInputs, O: ThrsModel](
-    ExecutionResult[S]
-):
+class SimulationExecutionResult[
+    S: ThrsModel,
+    C: ThrsModel,
+    I: SimulationInputs,
+    O: ThrsModel,
+](ExecutionResult[S]):
+    control_values: C
     simulation_outputs: O
     simulation_inputs: I
     raw: dict[str, Any]

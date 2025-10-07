@@ -5,6 +5,7 @@ from thrs.input_output.definitions.units import (
     Charged,
     Hz,
     LMin,
+    OptionalCelsius,
     PcsMode,
     Ratio,
     seconds,
@@ -27,7 +28,7 @@ class TemperatureSensor(ThrsModel):
 
 
 class CalculatedTemperature(ThrsModel):
-    temperature: Stamped[Celsius | None]
+    temperature: Stamped[OptionalCelsius]
 
 
 class Valve(ThrsModel):

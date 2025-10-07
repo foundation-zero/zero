@@ -1,8 +1,10 @@
 import fmpy
 from thrs.input_output.base import ThrsModel
-from thrs.input_output.fmu_mapping import build_inputs_for_fmu
 
 import polars as pl
+
+from thrs.simulation.io_mapping import flatten_model_values
+
 
 SHEET_URL = "https://docs.google.com/spreadsheets/d/1YyfkKmqL8MZuJfStljTjhgFxawcco2cp2qCmBGFrR04/export?gid=0&format=csv"
 
@@ -15,10 +17,10 @@ def modelica_names_from_class(
 ) -> set[str]:
     return set(
         {
-            **build_inputs_for_fmu(control_values),
-            **build_inputs_for_fmu(simulation_inputs),
-            **build_inputs_for_fmu(sensor_values),
-            **build_inputs_for_fmu(simulation_outputs),
+            **flatten_model_values(control_values, fmu_only=True),
+            **flatten_model_values(simulation_inputs, fmu_only=True),
+            **flatten_model_values(sensor_values, fmu_only=True),
+            **flatten_model_values(simulation_outputs, fmu_only=True),
         }.keys()
     )
 
