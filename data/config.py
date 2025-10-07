@@ -1,4 +1,5 @@
 from pydantic_settings import BaseSettings, SettingsConfigDict
+from pydantic import computed_field
 
 
 class Settings(BaseSettings):
@@ -14,6 +15,6 @@ class Settings(BaseSettings):
 
     risingwave_url: str
 
-    @property
+    @computed_field
     def pg_url(self) -> str:
         return f"postgresql://{self.pg_user}:{self.pg_password}@{self.pg_host}:{self.pg_port}/{self.pg_db}"
