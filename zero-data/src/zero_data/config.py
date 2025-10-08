@@ -18,7 +18,7 @@ class MQTTConfig(BaseSettings):
         int, Field(description="Port number of the MQTT Broker", default=1883)
     ]
 
-    @computed_field # type: ignore
+    @computed_field # type: ignore[misc]
     @property
     def uri(self) -> str:
         return f"{self.host}:{self.port}"
