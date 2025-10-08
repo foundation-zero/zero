@@ -3,11 +3,9 @@ services:
   data_gen:
     build:
       context: .
-      secrets:
-        - gsheet_sa_key
     command: python -m zero_data generate-data
     env_file:
-      .env
+      .env.docker-compose
     depends_on:
       vernemq:
         condition: service_healthy
@@ -30,12 +28,8 @@ services:
       retries: 5
 
   risingwave:
-    image: risingwavelabs/risingwave:nightly-20250811
+    image: risingwavelabs/risingwave:nightly-20250928
     command: single_node
     ports:
       - 4566:4566
       - 5691:5691
-
-secrets:
-  gsheet_sa_key:
-    file: .gsheet-sa-key.json

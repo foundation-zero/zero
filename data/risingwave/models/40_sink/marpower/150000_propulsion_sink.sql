@@ -1,1 +1,0 @@
-{{ sink_append_gcs('raw', '150000_propulsion', '150000_propulsion_sink') }}

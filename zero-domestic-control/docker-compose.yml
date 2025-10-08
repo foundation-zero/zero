@@ -17,7 +17,7 @@ services:
       retries: 5
 
   risingwave:
-    image: risingwavelabs/risingwave:nightly-20250811
+    image: risingwavelabs/risingwave:nightly-20250928
     command: single_node
     ports:
       - 4566:4566

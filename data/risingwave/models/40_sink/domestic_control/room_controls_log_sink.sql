@@ -10,4 +10,3 @@ CREATE SINK {{ this }} AS (
     {{ ref('rooms_controls_log') }}
 )
 {{ sink_append_pg('rooms_controls_log', 'zero') }}
-
