@@ -27,7 +27,7 @@ class Settings(BaseSettings):
     termodinamica_host: str
     termodinamica_port: int
 
-    @computed_field
+    @computed_field # type: ignore
     @property
     def pg_url(self) -> str:
         return f"postgresql://{self.pg_user}:{self.pg_password}@{self.pg_host}:{self.pg_port}/{self.pg_db}"
