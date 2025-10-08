@@ -7,5 +7,5 @@ SELECT
   power_updates.topic AS topic,
   meta_data.electrical_system AS electrical_system,
   meta_data.group AS consumer_group
-FROM {{ ref('power_tag_power_updates') }} AS power_updates
+FROM {{ ref('power_updates') }} AS power_updates
 JOIN {{ ref('electrical_energy_metadata') }} AS meta_data ON power_updates.topic = meta_data.preferred_mqtt_topic

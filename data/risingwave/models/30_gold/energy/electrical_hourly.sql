@@ -8,15 +8,15 @@ FROM ( (
     -- The energy value is then summed up and divided by 60 to go from Watt minutes to Watt hours.
     WITH per_minute AS (
         SELECT
-            electrical_consumption.topic AS topic,
+            electrical_power_data.topic AS topic,
             window_start AS min_start,
-            AVG(electrical_consumption.active_power) AS avg_w
+            AVG(electrical_power_data.active_power) AS avg_w
         FROM
         TUMBLE (
-            {{ ref('electrical_consumption') }},
+            {{ ref('electrical_power_data') }},
             active_power_timestamp,
             INTERVAL '1 MINUTE'
-        ) AS electrical_consumption
+        ) AS electrical_power_data
         GROUP BY
           topic,
           window_start
@@ -40,15 +40,15 @@ FROM ( (
     -- is completely passed. The average value per minute is then extrapolated to 40 minutes and divided by 60.
     WITH per_minute AS (
         SELECT
-            electrical_consumption.topic AS topic,
+            electrical_power_data.topic AS topic,
             window_start AS min_start,
-            AVG(electrical_consumption.active_power) AS avg_w
+            AVG(electrical_power_data.active_power) AS avg_w
         FROM
         TUMBLE (
-            {{ ref('electrical_consumption') }},
+            {{ ref('electrical_power_data') }},
             active_power_timestamp,
             INTERVAL '1 MINUTE'
-        ) AS electrical_consumption
+        ) AS electrical_power_data
         GROUP BY
             topic,
             window_start

@@ -7,13 +7,13 @@ SELECT
 FROM
 (
 	SELECT
-		MAX(electrical_consumption.active_power_timestamp) AS timestamp,
-		electrical_consumption.consumer_group AS group_name,
-		AVG(electrical_consumption.active_power) AS avg_power
-	FROM {{ ref('electrical_consumption') }} AS electrical_consumption
+		MAX(electrical_power_data.active_power_timestamp) AS timestamp,
+		electrical_power_data.consumer_group AS group_name,
+		AVG(electrical_power_data.active_power) AS avg_power
+	FROM {{ ref('electrical_power_data') }} AS electrical_power_data
 	WHERE
-		electrical_consumption.consumer_group IS NOT NULL
-		AND electrical_consumption.active_power_timestamp > NOW() - INTERVAL '5 minutes'
+		electrical_power_data.consumer_group IS NOT NULL
+		AND electrical_power_data.active_power_timestamp > NOW() - INTERVAL '5 minutes'
 	GROUP BY topic, group_name
 )
 GROUP BY group_name
