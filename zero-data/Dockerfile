@@ -34,5 +34,4 @@ COPY --from=builder ${VIRTUAL_ENV} ${VIRTUAL_ENV}
 WORKDIR /app
 
 COPY ./io_lists ./io_lists
-RUN mkdir -p /output/seeds
 COPY src/ ./
