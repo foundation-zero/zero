@@ -54,6 +54,7 @@ check_untyped_defs = true
 testpaths = ["tests"]
 asyncio_default_fixture_loop_scope = "function"
 asyncio_mode = "auto"
+pythonpath = ["src"]
 
 [tool.ruff]
 # Needs to be included for Ruff to read required-version

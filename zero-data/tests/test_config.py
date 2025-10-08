@@ -9,4 +9,4 @@ from zero_data.config import MQTTConfig
 )
 def test_mqtt_config_not_default():
     config = MQTTConfig()  # pyright: ignore
-    assert config.model_dump() == {"host": "example.com", "port": 1884}
+    assert config.model_dump() == {"host": "example.com", "port": 1884, "uri": "example.com:1884"}
