@@ -343,8 +343,15 @@ def plot_result(result: pl.DataFrame, path: str):
         if "__temperature__" in col and "string" not in col and "flow" not in col
     ]
     dutypoint_keys = [col for col in result.columns if "__dutypoint__" in col]
+    pressure_keys = [col for col in result.columns if "__pressure__" in col]
 
-    selected_keys = [dutypoint_keys, valve_keys, temperature_keys, flow_keys]
+    selected_keys = [
+        dutypoint_keys,
+        valve_keys,
+        temperature_keys,
+        flow_keys,
+        pressure_keys,
+    ]
     modules = list(
         set(
             [

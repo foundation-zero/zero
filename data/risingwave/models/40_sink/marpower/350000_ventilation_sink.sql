@@ -1,1 +1,0 @@
-{{ sink_append_gcs('raw', '350000_ventilation', '350000_ventilation_sink') }}

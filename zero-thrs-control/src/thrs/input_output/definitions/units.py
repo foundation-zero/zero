@@ -22,7 +22,10 @@ class UnitMeta:
 
 
 def _unit_for_single_annotation(annotation: Any) -> Any | None:
-    return next(iter(annotation.__pydantic_generic_metadata__["args"]), None)  # type: ignore
+    if hasattr(annotation, "__pydantic_generic_metadata__"):
+        return next(iter(annotation.__pydantic_generic_metadata__["args"]), None)
+    else:
+        return annotation
 
 
 def unit_for_annotation(annotation: Any) -> Any | None:
@@ -94,6 +97,9 @@ def validate_nonzero_float_within_precision(
     return value
 
 
+OptionalCelsius: TypeAlias = Annotated[
+    float | None, Field(ge=-273.15), UnitMeta(modelica_name="C")
+]
 Celsius: TypeAlias = Annotated[float, Field(ge=-273.15), UnitMeta(modelica_name="C")]
 LMin: TypeAlias = Annotated[
     float,

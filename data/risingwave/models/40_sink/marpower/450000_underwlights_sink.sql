@@ -1,1 +1,0 @@
-{{ sink_append_gcs('raw', '450000_underwlights', '450000_underwlights_sink') }}

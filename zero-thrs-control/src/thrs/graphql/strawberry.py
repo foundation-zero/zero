@@ -2,12 +2,12 @@ from asyncio import create_task
 import asyncio
 from contextlib import asynccontextmanager
 from dataclasses import dataclass
+from datetime import datetime
+from inspect import isclass
 from typing import (
     Annotated,
     Callable,
     Coroutine,
-    Generic,
-    TypeVar,
     get_args,
 )
 from fastapi import Depends, FastAPI
@@ -16,10 +16,14 @@ from strawberry.schema_directive import Location
 import strawberry
 from strawberry.fastapi import GraphQLRouter, BaseContext
 
+from thrs.control.modules.thrusters import ThrustersParameters
 from thrs.graphql.messaging import Messaging
+from thrs.input_output.definitions.units import unit_for_annotation
 from thrs.input_output.modules.thrusters import (
     ThrustersControlValues,
     ThrustersSensorValues,
+    ThrustersSimulationInputs,
+    ThrustersSimulationOutputs,
 )
 import thrs.input_output.definitions.sensor as sensor
 import thrs.input_output.definitions.control as control
@@ -44,71 +48,25 @@ class StampedType[T]:
     pass
 
 
-@strawberry.experimental.pydantic.type(
-    model=sensor.TemperatureSensor,
-    all_fields=True,
-    json_schema_directive=JsonSchemaDirective,
-)
-class TemperatureSensorType:
-    pass
+def get_members(module):
+    if hasattr(module, "__all__"):
+        names = module.__all__
+    else:
+        names = dir(module)
+    return {name: getattr(module, name) for name in names}
 
 
-@strawberry.experimental.pydantic.type(
-    model=sensor.Valve, all_fields=True, json_schema_directive=JsonSchemaDirective
-)
-class SensorValveType:
-    pass
+def convert_module(module, class_name_prefix: str):
+    for name, cls in get_members(module).items():
+        if isclass(cls) and issubclass(cls, ThrsModel):
+            gql_cls = type(f"{class_name_prefix}{name}Type", (object,), {})
+            strawberry.experimental.pydantic.type(
+                model=cls, all_fields=True, json_schema_directive=JsonSchemaDirective
+            )(gql_cls)
 
 
-@strawberry.experimental.pydantic.type(
-    model=sensor.FlowSensor, all_fields=True, json_schema_directive=JsonSchemaDirective
-)
-class SensorFlowType:
-    pass
-
-
-@strawberry.experimental.pydantic.type(
-    model=sensor.PressureSensor,
-    all_fields=True,
-    json_schema_directive=JsonSchemaDirective,
-)
-class SensorPressureType:
-    pass
-
-
-@strawberry.experimental.pydantic.type(
-    model=sensor.Thruster, all_fields=True, json_schema_directive=JsonSchemaDirective
-)
-class SensorThrusterType:
-    pass
-
-
-@strawberry.experimental.pydantic.type(
-    model=sensor.Pcs, all_fields=True, json_schema_directive=JsonSchemaDirective
-)
-class SensorPcsType:
-    pass
-
-
-@strawberry.experimental.pydantic.type(
-    model=sensor.Pump, all_fields=True, json_schema_directive=JsonSchemaDirective
-)
-class SensorPumpType:
-    pass
-
-
-@strawberry.experimental.pydantic.type(
-    model=control.Pump, all_fields=True, json_schema_directive=JsonSchemaDirective
-)
-class ControlPumpType:
-    pass
-
-
-@strawberry.experimental.pydantic.type(
-    model=control.Valve, all_fields=True, json_schema_directive=JsonSchemaDirective
-)
-class ControlValveType:
-    pass
+convert_module(sensor, "Sensor")
+convert_module(control, "Control")
 
 
 @strawberry.experimental.pydantic.type(
@@ -129,22 +87,94 @@ class ThrustersControlValuesType:
     pass
 
 
-SensorValues = TypeVar("SensorValues")
-ControlValues = TypeVar("ControlValues")
+@strawberry.experimental.pydantic.type(
+    model=ThrustersParameters,
+    all_fields=True,
+    json_schema_directive=JsonSchemaDirective,
+)
+class ThrustersParametersType:
+    pass
+
+
+DedataframedSimulationInputs = ThrustersSimulationInputs.dedataframe()
+DedataframedSimulationOutputs = ThrustersSimulationOutputs.dedataframe()
+
+_dedataframed_strawberries = {}
+
+
+def ensure_dedataframe(annotation):
+    if existing := _dedataframed_strawberries.get(annotation, None):
+        return existing
+    else:
+        gql_cls = type(f"{annotation.__name__}SimulationType", (object,), {})
+        strawberry.experimental.pydantic.type(
+            model=annotation, all_fields=True, json_schema_directive=JsonSchemaDirective
+        )(gql_cls)
+        _dedataframed_strawberries[annotation] = gql_cls
+        return gql_cls
+
+
+for cls in [DedataframedSimulationInputs, DedataframedSimulationOutputs]:
+    for name, field in cls.model_fields.items():
+        ensure_dedataframe(field.annotation)
+
+
+@strawberry.experimental.pydantic.type(
+    model=DedataframedSimulationInputs,
+    all_fields=True,
+    json_schema_directive=JsonSchemaDirective,
+)
+class ThrustersSimulationInputsType:
+    pass
+
+
+@strawberry.experimental.pydantic.type(
+    model=DedataframedSimulationOutputs,
+    all_fields=True,
+    json_schema_directive=JsonSchemaDirective,
+)
+class ThrustersSimulationOutputsType:
+    pass
 
 
 @strawberry.type
-class Module(Generic[SensorValues, ControlValues]):
+class ModuleSimulation[SimulationInput, SimulationOutput]:
+    inputs: SimulationInput
+    outputs: SimulationOutput
+
+
+@strawberry.type
+class Module[
+    SensorValues,
+    ControlValues,
+    Parameters,
+    SimulationInput,
+    SimulationOutput,
+]:
     sensor_values: SensorValues
     control_values: ControlValues
+    parameters: Parameters
+    simulation: ModuleSimulation[SimulationInput, SimulationOutput] | None = None
 
 
 @strawberry.type
 class Modules:
-    thrusters: Module[ThrustersSensorValuesType, ThrustersControlValuesType]
+    thrusters: Module[
+        ThrustersSensorValuesType,
+        ThrustersControlValuesType,
+        ThrustersParametersType,
+        ThrustersSimulationInputsType,
+        ThrustersSimulationOutputsType,
+    ]
 
 
 thrusters_control_values = ThrustersControlValues.zero()
+
+
+@strawberry.type
+class SimulationState:
+    time: datetime
+    playing: bool
 
 
 @dataclass
@@ -172,8 +202,24 @@ class Query:
                 control_values=ThrustersControlValuesType.from_pydantic(
                     info.context.messaging.control_values
                 ),
+                parameters=ThrustersParametersType.from_pydantic(
+                    ThrustersParameters()
+                ),  # TODO: ZERO-878 implement parameter setting and passage to simulation
+                simulation=ModuleSimulation(
+                    inputs=ThrustersSimulationInputsType.from_pydantic(
+                        DedataframedSimulationInputs.zero(),  # TODO: ZERO-825 implement simulation input setting and passage to simulation
+                    ),
+                    outputs=ThrustersSimulationOutputsType.from_pydantic(
+                        DedataframedSimulationOutputs.zero()  # TODO: ZERO-825 implement simulation output setting and passage to simulation
+                    ),
+                ),
             ),
         )
+
+    @strawberry.field
+    def simulation(self) -> SimulationState:
+        # TODO: ZERO-877 implement simulation control
+        return SimulationState(time=datetime.now(), playing=False)
 
     @strawberry.field()
     def thrusters_sensor_values(self) -> ThrustersSensorValuesType:
@@ -188,12 +234,11 @@ class UnstampedInput(ThrsModel):
     def generate_for_model(name: str, model: type[ThrsModel]):
         fields = {
             key: Annotated[
-                get_args(field.annotation.__pydantic_generic_metadata__["args"][0])[0],  # type: ignore
+                get_args(unit)[0] if get_args(unit) else unit,
                 Field(),
             ]
             for key, field in model.model_fields.items()
-            if field.annotation.__pydantic_generic_metadata__["origin"]  # type: ignore
-            is Stamped
+            if (unit := unit_for_annotation(field.annotation))
         }
         unstamped_model = create_model(name, **fields, __base__=UnstampedInput)  # type: ignore
         unstamped_model._MODEL = model
@@ -206,10 +251,10 @@ class UnstampedInput(ThrsModel):
         return self._MODEL(**values)  # type: ignore
 
 
-def ensure_input_type(annotation):
+def ensure_input_type(annotation, *args, unstamp: bool) -> type:
     if existing := _input_types.get(annotation.__name__, None):
         return existing
-    else:
+    elif unstamp:
         input_model = UnstampedInput.generate_for_model(
             f"{annotation.__name__}InputType", annotation
         )
@@ -218,39 +263,134 @@ def ensure_input_type(annotation):
         )(type(f"{annotation.__name__}InputType", (object,), {}))
         _input_types[annotation.__name__] = input_type
         return input_type
+    else:
+        return annotation
 
 
-def generate_mutation_for_field(
-    name: str, field: FieldInfo
-) -> "Callable[[Mutation, object, strawberry.Info[ThrsContext]], Coroutine[None, None, ThrustersControlValuesType]]":
-    input_type = ensure_input_type(field.annotation)
-
-    async def _mutation(
-        self,
-        component: input_type,  # type: ignore
-        info: strawberry.Info[ThrsContext],
-    ) -> ThrustersControlValuesType:
-        pydantic_value = component.to_pydantic().to_stamped()
-        setattr(thrusters_control_values, name, pydantic_value)
-        await info.context.messaging.send_manual_controls(thrusters_control_values)
-        return ThrustersControlValuesType.from_pydantic(thrusters_control_values)
-
-    _mutation.__name__ = f"set_{name}"
-    return _mutation
+def generate_mutation_for_field[T](
+    cls: type[T],
+    name: str,
+    field_name: str,
+    field: FieldInfo,
+    make_fn: "Callable[[str, type], FieldMutation[T]]",
+    *args,
+    unstamp: bool,
+) -> "FieldMutation[T]":
+    input_type = ensure_input_type(field.annotation, unstamp=unstamp)
+    mutation = make_fn(field_name, input_type)
+    mutation.__name__ = f"set_{name}"
+    return mutation
 
 
 class DynamicInputFields:
     def __init_subclass__(cls):
         for name, field in ThrustersControlValues.model_fields.items():
-            fn = generate_mutation_for_field(name, field)
+
+            def _make_control_mutation(name: str, component_type: type):
+                async def _mutation(
+                    self,
+                    component: component_type,  # type: ignore
+                    info: strawberry.Info[ThrsContext],
+                ) -> ThrustersControlValuesType:
+                    pydantic_value = component.to_pydantic().to_stamped()
+                    setattr(thrusters_control_values, name, pydantic_value)
+                    await info.context.messaging.send_manual_controls(
+                        thrusters_control_values
+                    )
+                    return ThrustersControlValuesType.from_pydantic(
+                        thrusters_control_values
+                    )
+
+                return _mutation
+
+            fn = generate_mutation_for_field(
+                ThrustersControlValuesType,
+                f"thrusters_control_{name}",
+                name,
+                field,
+                _make_control_mutation,
+                unstamp=True,
+            )
+            method = strawberry.mutation(fn)
+            setattr(cls, fn.__name__, method)
+
+        for name, field in ThrustersParameters.model_fields.items():
+
+            def _make_parameter_mutation(name: str, component_type: type):
+                async def _mutation(
+                    self,
+                    component: component_type,  # type: ignore
+                    info: strawberry.Info[ThrsContext],
+                ) -> ThrustersParametersType:
+                    # TODO: ZERO-878 implement parameter setting and passage to simulation
+                    return ThrustersParametersType.from_pydantic(ThrustersParameters())
+
+                return _mutation
+
+            fn = generate_mutation_for_field(
+                ThrustersParametersType,
+                f"thrusters_parameter_{name}",
+                name,
+                field,
+                _make_parameter_mutation,
+                unstamp=False,
+            )
+            method = strawberry.mutation(fn)
+            setattr(cls, fn.__name__, method)
+
+        for name, field in ThrustersSimulationInputs.model_fields.items():
+
+            def _make_simulation_input_mutation(name: str, component_type: type):
+                async def _mutation(
+                    self,
+                    component: component_type,  # type: ignore
+                    info: strawberry.Info[ThrsContext],
+                ) -> ThrustersSimulationInputsType:
+                    # TODO: ZERO-825 implement simulation input setting and passage to simulation
+                    return ThrustersSimulationInputsType.from_pydantic(
+                        DedataframedSimulationInputs.zero()
+                    )
+
+                return _mutation
+
+            fn = generate_mutation_for_field(
+                ThrustersControlValuesType,
+                f"thrusters_simulation_{name}",
+                name,
+                field,
+                _make_simulation_input_mutation,
+                unstamp=True,
+            )
             method = strawberry.mutation(fn)
             setattr(cls, fn.__name__, method)
 
 
 @strawberry.type
 class Mutation(DynamicInputFields):
-    pass
+    @strawberry.mutation
+    async def simulation_play(
+        self, info: strawberry.Info[ThrsContext], playbackRate: float = 1.0
+    ) -> None:
+        # TODO: ZERO-877 implement simulation control
+        pass
 
+    @strawberry.mutation
+    async def simulation_pause(self, info: strawberry.Info[ThrsContext]) -> None:
+        # TODO: ZERO-877 implement simulation control
+        pass
+
+    @strawberry.mutation
+    async def simulation_step(
+        self, info: strawberry.Info[ThrsContext], seconds: float
+    ) -> None:
+        # TODO: ZERO-877 implement simulation control
+        pass
+
+
+type FieldMutation[T] = """Callable[
+    [Mutation, object, strawberry.Info[ThrsContext]],
+    Coroutine[None, None, T],
+]"""
 
 type ThrustersMessaging = Messaging[ThrustersSensorValues, ThrustersControlValues]
 
@@ -265,7 +405,9 @@ async def lifespan(app: FastAPI):
             async with asyncio.timeout(10):
                 await messaging.wait_for_values()
         except TimeoutError as e:
-            raise Exception("No sensor or control values received in 10 seconds. Is the AMCS or simulation running?") from e
+            raise Exception(
+                "No sensor or control values received in 10 seconds. Is the AMCS or simulation running?"
+            ) from e
         app.state.messaging = messaging
         yield
         run_task.cancel()
@@ -279,7 +421,7 @@ def messaging() -> ThrustersMessaging:
 
 
 async def get_context(
-    messaging: "Annotated[Messaging[ThrustersSensorValues, ThrustersControlValues], Depends(messaging)]",
+    messaging: "Annotated[ThrustersMessaging, Depends(messaging)]",
 ):
     return ThrsContext(messaging=messaging)
 

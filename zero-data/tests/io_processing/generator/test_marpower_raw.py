@@ -20,6 +20,3 @@ def test_marpower_raw():
         open_mock.assert_any_call(
             PosixPath("/not-used/models/00_source/marpower/test_topic.sql"), "w"
         )
-        open_mock.assert_any_call(
-            PosixPath("/not-used/models/40_sinks/marpower/test_topic_sink.sql"), "w"
-        )

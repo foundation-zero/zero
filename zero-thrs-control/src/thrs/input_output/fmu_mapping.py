@@ -1,12 +1,10 @@
 import operator
 from datetime import datetime
-from functools import reduce
 from typing import Any, overload
 
-from pydantic.fields import FieldInfo
+from pydantic.fields import FieldInfo, ComputedFieldInfo
 
 from thrs.input_output.base import Stamped, ThrsModel
-from thrs.input_output.definitions.units import unit_for_annotation, unit_meta
 
 
 def groupby(iterable, key):
@@ -16,43 +14,13 @@ def groupby(iterable, key):
     return _groupby(data, key)
 
 
-def included_in_fmu(field: FieldInfo) -> bool:
+def included_in_fmu(field: FieldInfo | ComputedFieldInfo) -> bool:
     """Check if the field should be included in the FMU."""
-    meta = next(
-        (meta for meta in field.metadata if hasattr(meta, "included_in_fmu")), None
-    )
     return (
-        meta.included_in_fmu
-        if meta
-        else field.json_schema_extra.get("included_in_fmu", True)  # type: ignore
-        if field.json_schema_extra
+        field.json_schema_extra.get("included_in_fmu", True)
+        if field.json_schema_extra and isinstance(field.json_schema_extra, dict)
         else True
-    )
-
-
-def build_inputs_for_fmu(
-    model: ThrsModel,
-) -> dict[str, float]:
-    def _values_for_component(component_name, component):
-        def _name_for_field(field_name, field: FieldInfo):
-            meta = unit_meta(unit_for_annotation(field.annotation))  # type: ignore
-            if meta:
-                return f"{component_name}__{field_name}__{meta.modelica_name}"
-            else:
-                return f"{component_name}__{field_name}"
-
-        return {
-            _name_for_field(field_name, field): getattr(component, field_name).value
-            for field_name, field in component.model_fields.items()
-            if included_in_fmu(field)
-        }
-
-    vals = [
-        _values_for_component(component_name, getattr(model, component_name))
-        for component_name, field in model.model_fields.items()
-        if included_in_fmu(field)
-    ]
-    return reduce(operator.ior, vals, {})
+    )  # type: ignore
 
 
 def extract_non_fmu_values(

@@ -3,6 +3,7 @@ from thrs.input_output.alarms import BaseAlarms
 from thrs.orchestration.collector import Collector
 from thrs.orchestration.executor import Executor, SimulationExecutionResult
 from thrs.classes.control import Control
+from thrs.simulation.io_mapping import flatten_model_values
 
 
 class Cycler:
@@ -16,7 +17,20 @@ class Cycler:
         for _ in range(ticks):
             result = await self._executor.tick(control_values)
             if isinstance(result, SimulationExecutionResult):
-                collector.collect(result.raw, self._control.mode, result.timestamp)
+                collector.collect(
+                    {
+                        **flatten_model_values(result.sensor_values, fmu_only=False),
+                        **flatten_model_values(result.control_values, fmu_only=False),
+                        **flatten_model_values(
+                            result.simulation_outputs, fmu_only=False
+                        ),
+                        **flatten_model_values(
+                            result.simulation_inputs, fmu_only=False
+                        ),
+                    },
+                    self._control.mode,
+                    result.timestamp,
+                )
             control_values = self._control.control(result.sensor_values).values
             alarms = self._alarms.check(result.sensor_values, control_values)
             if alarms:

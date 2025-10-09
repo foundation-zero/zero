@@ -2,14 +2,14 @@ from datetime import datetime
 from typing import Annotated
 
 
-from thrs.input_output.base import FieldMeta, Stamped, ThrsModel, component_meta
+from thrs.input_output.base import Stamped, ThrsModel, component_meta, field_meta
 from thrs.input_output.definitions.units import Ratio
 from thrs.input_output.fmu_mapping import (
-    build_inputs_for_fmu,
     build_outputs_from_fmu,
     extract_non_fmu_values,
 )
 from thrs.input_output.definitions.sensor import FlowSensor
+from thrs.simulation.io_mapping import flatten_model_values
 
 
 class MiniModel(ThrsModel):
@@ -21,7 +21,7 @@ class SecondMiniModel(ThrsModel):
 
 
 class ExcludedInputComponent(ThrsModel):
-    excluded_field: Annotated[Stamped[Ratio], FieldMeta(included_in_fmu=False)]
+    excluded_field: Annotated[Stamped[Ratio], field_meta(included_in_fmu=False)]
 
 
 class ExcludedInputModel(ThrsModel):
@@ -42,30 +42,33 @@ def test_fmu_simple_inputs():
     assert {
         "flow_sensor__flow__l_min": 12.12,
         "flow_sensor__temperature__C": 17.12,
-    } == build_inputs_for_fmu(
+    } == flatten_model_values(
         MiniModel(
             flow_sensor=FlowSensor(
                 flow=Stamped.stamp(12.12), temperature=Stamped.stamp(17.12)
             )
         ),
+        fmu_only=True,
     )
     assert {
         "second_flow_sensor__flow__l_min": 2,
         "second_flow_sensor__temperature__C": 3,
-    } == build_inputs_for_fmu(
+    } == flatten_model_values(
         SecondMiniModel(
             second_flow_sensor=FlowSensor(
                 flow=Stamped.stamp(2), temperature=Stamped.stamp(3)
             )
-        )
+        ),
+        fmu_only=True,
     )
 
 
 def test_fmu_input_ignore_extras():
-    assert {} == build_inputs_for_fmu(
+    assert {} == flatten_model_values(
         ExcludedInputModel(
             excluded_component=ExcludedInputComponent(excluded_field=Stamped.stamp(1.0))
-        )
+        ),
+        fmu_only=True,
     )
 
 
@@ -92,6 +95,6 @@ def test_fmu_roundtrip():
         )
     )
 
-    values = build_inputs_for_fmu(values)
+    values = flatten_model_values(values, fmu_only=True)
 
     assert values, values == build_outputs_from_fmu((MiniModel,), values, time)

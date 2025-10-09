@@ -1,5 +1,5 @@
 from pydantic_settings import BaseSettings, SettingsConfigDict
-from pydantic import Field
+from pydantic import Field, computed_field
 from typing import Annotated
 
 from zero_data.io_list.types import Source
@@ -18,6 +18,7 @@ class MQTTConfig(BaseSettings):
         int, Field(description="Port number of the MQTT Broker", default=1883)
     ]
 
+    @computed_field # type: ignore[misc]
     @property
     def uri(self) -> str:
         return f"{self.host}:{self.port}"

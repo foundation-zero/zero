@@ -92,9 +92,13 @@ class MqttExecutor[S: ThrsModel, C: ThrsModel](Executor[S, C]):
 
 
 @dataclass
-class SimulationExecutionResult[S: ThrsModel, I: SimulationInputs, O: ThrsModel](
-    ExecutionResult[S]
-):
+class SimulationExecutionResult[
+    S: ThrsModel,
+    C: ThrsModel,
+    I: SimulationInputs,
+    O: ThrsModel,
+](ExecutionResult[S]):
+    control_values: C
     simulation_outputs: O
     simulation_inputs: I
     raw: dict[str, Any]
@@ -159,7 +163,7 @@ class SimulationExecutor[S: ThrsModel, C: ThrsModel, I: SimulationInputs, O: Thr
     def time(self):
         return self._start_time + self._ticks * self._tick_duration
 
-    async def tick(self, control_values: C) -> SimulationExecutionResult[S, I, O]:
+    async def tick(self, control_values: C) -> SimulationExecutionResult[S, C, I, O]:
         time = self.time()
         simulation_inputs = self._simulation_inputs.get_values_at_time(time)
         sensor_values, simulation_outputs, raw = self._io_mapping.tick(
@@ -169,6 +173,7 @@ class SimulationExecutor[S: ThrsModel, C: ThrsModel, I: SimulationInputs, O: Thr
         return SimulationExecutionResult(
             timestamp=time,
             sensor_values=sensor_values,
+            control_values=control_values,
             simulation_outputs=simulation_outputs,
             simulation_inputs=simulation_inputs,
             raw=raw,

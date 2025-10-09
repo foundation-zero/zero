@@ -1,5 +1,5 @@
 from typing import Annotated
-from thrs.input_output.base import FieldMeta, Stamped, StampedDf, ThrsModel
+from thrs.input_output.base import Stamped, StampedDf, ThrsModel, field_meta
 from thrs.input_output.definitions.units import Celsius, LMin, PcsMode, Ratio, Watt
 from pydantic.json_schema import SkipJsonSchema
 
@@ -28,11 +28,22 @@ class ValvePosition(ThrsModel):
 
 
 class Thruster(HeatSource):
-    active: Annotated[Stamp[bool], FieldMeta(included_in_fmu=False)]
+    active: Annotated[Stamp[bool], field_meta(included_in_fmu=False)]
 
 
 class Pcs(ThrsModel):
     mode: Annotated[
         Stamp[PcsMode],
-        FieldMeta(included_in_fmu=False),
+        field_meta(included_in_fmu=False),
     ]
+
+
+__all__ = [
+    "HeatSource",
+    "Boundary",
+    "TemperatureBoundary",
+    "FlowBoundary",
+    "ValvePosition",
+    "Thruster",
+    "Pcs",
+]

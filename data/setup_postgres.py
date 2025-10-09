@@ -11,7 +11,7 @@ load_dotenv(dotenv_path=".env")
 
 settings = Settings()
 
-print("Postgres: Initializing tables")
+print(f"Postgres: Initializing tables to Postgres: {settings.pg_host}:{settings.pg_port}/{settings.pg_db}")
 
 
 async def setup():

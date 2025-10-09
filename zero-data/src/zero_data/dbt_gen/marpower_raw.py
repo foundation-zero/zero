@@ -21,9 +21,6 @@ class MarpowerRawGenerator:
             table = self._generate_topic(topic)
             self._write_file(self.table_path, file_name, table)
 
-            sink = self._generate_gcs_sink(topic)
-            self._write_file(self.sink_path, f"{file_name}_sink", sink)
-
     def detect_same_format(self, topics: List[IOTopic]):
         """Detect topics with the same format and group them into a wildcard."""
         nested_topics = [topic for topic in topics if len(topic.topic.split("/")) >= 3]
@@ -99,7 +96,7 @@ class MarpowerRawGenerator:
     @staticmethod
     def _generate_field(io_value: IOValue):
         """Generate the SQL for a given field."""
-        return f'\t"{io_value.name.replace(" ", "")}"\t{{{{ marpower_struct("{io_value.data_type}") }}}},\n'
+        return f'\t{io_value.name.replace(" ", "")}\t{{{{ marpower_struct("{io_value.data_type}") }}}},\n'
 
     @staticmethod
     def _include_topic():

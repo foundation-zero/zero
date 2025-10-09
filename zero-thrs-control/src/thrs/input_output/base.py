@@ -37,12 +37,16 @@ class ThrsModel(BaseModel):
                 unit = unit_for_annotation(field.annotation)
                 return zero_for_unit(unit) if unit else 0.0
 
-            return component(
-                **{
-                    field_name: Stamped.stamp(_zero_value(field))
-                    for field_name, field in component.model_fields.items()
-                }
-            )
+            if issubclass(component, ThrsModel):
+                return component(
+                    **{
+                        field_name: Stamped.stamp(_zero_value(field))
+                        for field_name, field in component.model_fields.items()
+                    }
+                )
+            else:
+                unit = unit_for_annotation(component)
+                return zero_for_unit(unit) if unit else 0.0
 
         vals = {
             component_name: _zero_component(component.annotation)
@@ -109,24 +113,30 @@ class ParameterMeta:
     fds_tag: str
 
 
-@dataclass
-class FieldMeta:
+class FieldMeta(BaseModel):
     included_in_fmu: bool = True
 
 
-class SimulationInputs(ThrsModel):
-    model_config = ConfigDict(extra="forbid", arbitrary_types_allowed=True)
+def field_meta(*args, **kwargs):
+    return Field(json_schema_extra=FieldMeta(*args, **kwargs).model_dump())
 
-    def get_values_at_time(self, time: datetime) -> Self:
+
+_dedataframed_dataclasses = {}
+
+
+class SimulationValues(ThrsModel):
+    @classmethod
+    def dedataframe(cls) -> type:
         def _component(component_name, component):
-            component_value = getattr(self, component_name)
+            if stored := _dedataframed_dataclasses.get(component.annotation, None):
+                return stored
 
             def _field_type(field):
-                if field.metadata:
+                if field.json_schema_extra:
                     info = FieldInfo.from_annotation(
                         Annotated[
                             Stamped[unit_for_annotation(field.annotation)],
-                            *field.metadata,
+                            Field(json_schema_extra=field.json_schema_extra),
                         ]  # type: ignore
                     )
                     return Annotated[
@@ -135,6 +145,41 @@ class SimulationInputs(ThrsModel):
 
                 else:
                     return (Stamped[unit_for_annotation(field.annotation)], ...)
+
+            fields = {
+                field_name: _field_type(field)
+                for field_name, field in component.annotation.model_fields.items()
+            }
+            model = create_model(
+                str(component.annotation.__name__),
+                __base__=component.annotation,
+                **fields,  # type: ignore
+            )  # type: ignore
+            _dedataframed_dataclasses[component.annotation] = (model, ...)
+            return (model, ...)
+
+        components = {
+            component_name: _component(component_name, component)
+            for component_name, component in cls.model_fields.items()
+        }
+
+        SelectedInputsModel = create_model(
+            cls.__name__,
+            __base__=SimulationValues,
+            **components,  # type: ignore
+        )  # type: ignore
+
+        return SelectedInputsModel
+
+
+class SimulationInputs(SimulationValues):
+    model_config = ConfigDict(extra="forbid", arbitrary_types_allowed=True)
+
+    def get_values_at_time(self, time: datetime) -> Self:
+        SelectedInputsModel = self.dedataframe()
+
+        def _component(component_name, component):
+            component_value = getattr(self, component_name)
 
             def _field_value(field_name):
                 value = getattr(component_value, field_name).value
@@ -177,38 +222,15 @@ class SimulationInputs(ThrsModel):
                 else:
                     return Stamped(value=value, timestamp=time)
 
-            fields = {
-                field_name: _field_type(field)
-                for field_name, field in component_value.model_fields.items()
-            }
-            model = create_model(
-                str(component.annotation),
-                __base__=component.annotation,
-                **fields,  # type: ignore
-            )  # type: ignore
             values = {
                 field_name: _field_value(field_name)
                 for field_name in component_value.model_fields.keys()
             }
-            return (model, ...), model(**values)
+            return SelectedInputsModel.model_fields[component_name].annotation(**values)
 
-        components_with_values = {
+        values = {
             component_name: _component(component_name, component)
             for component_name, component in self.model_fields.items()
         }
-        components = {
-            component_name: component
-            for component_name, (component, _) in components_with_values.items()
-        }
-        values = {
-            component_name: value
-            for component_name, (_, value) in components_with_values.items()
-        }
-
-        SelectedInputsModel = create_model(
-            "SimulationInputs",
-            __base__=SimulationInputs,
-            **components,  # type: ignore
-        )  # type: ignore
 
         return SelectedInputsModel(**values)

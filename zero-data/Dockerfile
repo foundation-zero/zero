@@ -34,9 +34,4 @@ COPY --from=builder ${VIRTUAL_ENV} ${VIRTUAL_ENV}
 WORKDIR /app
 
 COPY ./io_lists ./io_lists
-RUN mkdir -p /output/seeds
 COPY src/ ./
-
-RUN --mount=type=secret,id=gsheet_sa_key,required=true \
-  GSHEET_SA_KEY_FILE=/run/secrets/gsheet_sa_key \
-  python -m zero_data generate-dbt
