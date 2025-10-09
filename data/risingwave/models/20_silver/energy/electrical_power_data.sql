@@ -5,7 +5,7 @@ SELECT
   power_updates.power_factor AS power_factor,
   power_updates.power_factor_timestamp AS power_factor_timestamp,
   power_updates.topic AS topic,
-  consumers.electrical_system AS electrical_system,
-  consumers.group AS consumer_group
-FROM {{ ref('power_tag_power_updates') }} AS power_updates
-JOIN {{ ref('power_tag_metadata') }} AS consumers ON power_updates.topic = consumers.preferred_mqtt_topic
+  metadata.electrical_system AS electrical_system,
+  metadata.group AS consumer_group
+FROM {{ ref('power_updates') }} AS power_updates
+JOIN {{ ref('electrical_energy_metadata') }} AS metadata ON power_updates.topic = metadata.preferred_mqtt_topic
