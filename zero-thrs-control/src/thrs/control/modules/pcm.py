@@ -15,10 +15,10 @@ class PcmParameters(ThrsModel):
     pcm_charge_flow: LMin = 5
     minimum_charging_dt: Celsius = 2
     pump_tuning: Tuning = (0.01, 0.001, 0)
-    module_1_flow_balance_tuning: Tuning = (0.01, 0.001, 0)
-    module_2_flow_balance_tuning: Tuning = (0.01, 0.001, 0)
-    module_3_flow_balance_tuning: Tuning = (0.01, 0.001, 0)
-    module_4_flow_balance_tuning: Tuning = (0.01, 0.001, 0)
+    module_1_flow_balance_tuning: Tuning = (0.05, 0.01, 0)
+    module_2_flow_balance_tuning: Tuning = (0.05, 0.01, 0)
+    module_3_flow_balance_tuning: Tuning = (0.05, 0.01, 0)
+    module_4_flow_balance_tuning: Tuning = (0.05, 0.01, 0)
 
 
 _ZERO_TIME = datetime.fromtimestamp(0)
@@ -68,14 +68,14 @@ class PcmControl(Control[PcmSensorValues, PcmControlValues, PcmParameters]):
                 name="supplying",
                 on_enter=[
                     self._set_valves_to_supplying,
-                    self._set_flow_balancing_to_supplying,
+                    self._activate_pump,
                 ],
+                on_exit=[self._deactivate_pump],
             ),
             State(
                 name="charging",
                 on_enter=[
                     self._set_valves_to_charging,
-                    self._set_flow_balancing_to_charging,
                 ],
             ),
             State(
@@ -87,6 +87,7 @@ class PcmControl(Control[PcmSensorValues, PcmControlValues, PcmParameters]):
             State(
                 name="idle",
                 on_enter=[self._set_valves_to_idle, self._disable_flow_balancing],
+                on_exit=self._enable_flow_balancing,
             ),
         ]
 
@@ -167,23 +168,17 @@ class PcmControl(Control[PcmSensorValues, PcmControlValues, PcmParameters]):
         return ControlResult(self._time(), self._current_values)
 
     def control(self, sensor_values: PcmSensorValues) -> ControlResult:
+        if self.mode == "charging":
+            self._set_charging_flow_setpoints(sensor_values)
+        elif self.mode == "supplying":
+            self._set_supplying_flow_setpoints(sensor_values)
+
         self._control_flow_balance(sensor_values)
 
         return ControlResult(self._time(), self._current_values)
 
-    def _set_flow_balancing_to_supplying(self, sensor_values: PcmSensorValues):
-        self._flow_balance_controller.set_pump(self._current_values.pcm_pump)
-        self._flow_balance_controller.enable(
-            [
-                sensor_values.pcm_module_1.charged.value,
-                sensor_values.pcm_module_2.charged.value,
-                sensor_values.pcm_module_3.charged.value,
-                sensor_values.pcm_module_4.charged.value,
-            ]
-        )
-        self._flow_balance_controller.set_setpoint(self.parameters.pcm_discharge_flow)
-
     def _set_supplying_flow_setpoints(self, sensor_values: PcmSensorValues):
+        self._flow_balance_controller.set_pump(self._current_values.pcm_pump)
         charged_modules = [
             sensor_values.pcm_module_1.charged.value,
             sensor_values.pcm_module_2.charged.value,
@@ -199,18 +194,13 @@ class PcmControl(Control[PcmSensorValues, PcmControlValues, PcmParameters]):
             ]
         )
 
-    def _set_flow_balancing_to_charging(self):
-        self._flow_balance_controller.set_pump(None)
-        self._flow_balance_controller.enable([True, True, True, True])
-        self._flow_balance_controller.set_setpoint(self.parameters.pcm_charge_flow)
-
-    # TODO: need timer here?
-
     def _set_charging_flow_setpoints(self, sensor_values: PcmSensorValues):
+        self._flow_balance_controller.set_pump(None)
+
         charging_modules = [
             (
-                temp_out
-                - sensor_values.pcm_temperature_producers_supply.temperature.value
+                sensor_values.pcm_temperature_producers_return.temperature.value
+                - temp_out
             )
             > self.parameters.minimum_charging_dt
             for temp_out in [
@@ -229,8 +219,11 @@ class PcmControl(Control[PcmSensorValues, PcmControlValues, PcmParameters]):
             ]
         )
 
-    def _disable_flow_balancing(self):
+    def _disable_flow_balancing(self, sensor_values: PcmSensorValues):
         self._flow_balance_controller.disable()
+
+    def _enable_flow_balancing(self, sensor_values: PcmSensorValues):
+        self._flow_balance_controller.enable([True, True, True, True])
 
     def _control_flow_balance(self, sensor_values: PcmSensorValues):
         self._flow_balance_controller(
@@ -242,7 +235,7 @@ class PcmControl(Control[PcmSensorValues, PcmControlValues, PcmParameters]):
             ]
         )
 
-    def _set_valves_to_idle(self):
+    def _set_valves_to_idle(self, sensor_values: PcmSensorValues):
         self._current_values.pcm_switch_charging_return.setpoint = Stamped(
             value=Valve.CLOSED, timestamp=self._time()
         )
@@ -256,7 +249,7 @@ class PcmControl(Control[PcmSensorValues, PcmControlValues, PcmParameters]):
             value=Valve.OPEN, timestamp=self._time()
         )
 
-    def _set_valves_to_supplying(self):
+    def _set_valves_to_supplying(self, sensor_values: PcmSensorValues):
         self._current_values.pcm_switch_charging_return.setpoint = Stamped(
             value=Valve.CLOSED, timestamp=self._time()
         )
@@ -270,7 +263,7 @@ class PcmControl(Control[PcmSensorValues, PcmControlValues, PcmParameters]):
             value=Valve.OPEN, timestamp=self._time()
         )
 
-    def _set_valves_to_charging(self):
+    def _set_valves_to_charging(self, sensor_values: PcmSensorValues):
         self._current_values.pcm_switch_charging_return.setpoint = Stamped(
             value=Valve.OPEN, timestamp=self._time()
         )
@@ -285,7 +278,7 @@ class PcmControl(Control[PcmSensorValues, PcmControlValues, PcmParameters]):
             timestamp=self._time(),  # Needs to not exceed max flow into pcm's
         )
 
-    def _set_valves_to_boosting(self):
+    def _set_valves_to_boosting(self, sensor_values: PcmSensorValues):
         self._current_values.pcm_switch_charging_return.setpoint = Stamped(
             value=Valve.CLOSED, timestamp=self._time()
         )
@@ -298,3 +291,9 @@ class PcmControl(Control[PcmSensorValues, PcmControlValues, PcmParameters]):
         self._current_values.pcm_switch_consumers.setpoint = Stamped(
             value=Valve.CLOSED, timestamp=self._time()
         )
+
+    def _activate_pump(self, sensor_values: PcmSensorValues):
+        self._current_values.pcm_pump.on = Stamped(value=True, timestamp=self._time())
+
+    def _deactivate_pump(self, sensor_values: PcmSensorValues):
+        self._current_values.pcm_pump.on = Stamped(value=False, timestamp=self._time())
