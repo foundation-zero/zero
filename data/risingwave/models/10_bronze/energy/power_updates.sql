@@ -14,15 +14,15 @@ WITH combined_power_data AS (
 )
 
 SELECT 
-	source_data.topic,
-	source_data.time,
-	(source_data.total_active_power).value AS active_power,
-	(source_data.total_active_power).TimeStamp AS active_power_timestamp,
-	(source_data.total_active_power).value AS power_factor,
-	(source_data.total_active_power).TimeStamp AS power_factor_timestamp
-FROM combined_power_data AS source_data
+	power_data.topic,
+	power_data.time,
+	(power_data.total_active_power).value AS active_power,
+	(power_data.total_active_power).TimeStamp AS active_power_timestamp,
+	(power_data.total_active_power).value AS power_factor,
+	(power_data.total_active_power).TimeStamp AS power_factor_timestamp
+FROM combined_power_data AS power_data
 ASOF JOIN combined_power_data AS previous
-    ON previous.topic = source_data.topic
-    AND previous.time < source_data.time
-WHERE (source_data.total_active_power).TimeStamp != (previous.total_active_power).TimeStamp
-OR (source_data.total_power_factor).TimeStamp != (previous.total_power_factor).TimeStamp
+    ON previous.topic = power_data.topic
+    AND previous.time < power_data.time
+WHERE (power_data.total_active_power).TimeStamp != (previous.total_active_power).TimeStamp
+OR (power_data.total_power_factor).TimeStamp != (previous.total_power_factor).TimeStamp
