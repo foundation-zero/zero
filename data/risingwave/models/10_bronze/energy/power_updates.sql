@@ -18,9 +18,9 @@ WITH cte AS (
 SELECT 
 	source_data.topic,
 	source_data.time,
-	(source_data.total_active_power)."Value" AS active_power,
+	(source_data.total_active_power).value AS active_power,
 	(source_data.total_active_power).TimeStamp AS active_power_timestamp,
-	(source_data.total_active_power)."Value" AS power_factor,
+	(source_data.total_active_power).value AS power_factor,
 	(source_data.total_active_power).TimeStamp AS power_factor_timestamp
 FROM cte AS source_data
 ASOF JOIN cte AS previous
