@@ -1,6 +1,8 @@
+from datetime import datetime
 from unittest.mock import Mock
 from httpx import ASGITransport, AsyncClient
 import pytest
+from thrs.cli.simulation_controls import StatusMessage
 from thrs.control.modules.thrusters import ThrustersParameters
 from thrs.graphql.messaging import Messaging
 from thrs.graphql.strawberry import app, messaging
@@ -24,6 +26,9 @@ async def override_messaging():
     mock.sensor_values = ThrustersSensorValues.zero()
     mock.control_values = ThrustersControlValues.zero()
     mock.parameters = ThrustersParameters()
+    mock.simulation_status = StatusMessage(
+        status="available", simulation_time=datetime.fromtimestamp(0)
+    )
     return mock
 
 
@@ -196,14 +201,68 @@ async def test_query_simulation_state(async_client):
         json={
             "query": """query {
             simulation {
-                playing
+                status
             }
         }"""
         },
     )
 
     assert response.status_code == 200
-    assert response.json() == {"data": {"simulation": {"playing": False}}}
+    assert response.json() == {"data": {"simulation": {"status": "available"}}}
+
+
+async def test_mutation_simulation_play(async_client):
+    messaging_mock = await override_messaging()
+    app.dependency_overrides[messaging] = lambda: messaging_mock
+
+    response = await async_client.post(
+        "/graphql",
+        json={
+            "query": """mutation {
+                simulationPlay(playbackRate: 1.0)
+            }"""
+        },
+    )
+    assert response.status_code == 200
+    assert response.json() == {"data": {"simulationPlay": None}}
+    messaging_mock.play_simulation.assert_awaited_once_with(1.0)
+
+
+async def test_mutation_simulation_pause(async_client):
+    messaging_mock = await override_messaging()
+    messaging_mock.simulation_status = StatusMessage(
+        status="running", simulation_time=datetime.fromtimestamp(0)
+    )
+    app.dependency_overrides[messaging] = lambda: messaging_mock
+
+    response = await async_client.post(
+        "/graphql",
+        json={
+            "query": """mutation {
+                simulationPause
+            }"""
+        },
+    )
+    assert response.status_code == 200
+    assert response.json() == {"data": {"simulationPause": None}}
+    messaging_mock.pause_simulation.assert_awaited_once()
+
+
+async def test_mutation_simulation_step(async_client):
+    messaging_mock = await override_messaging()
+    app.dependency_overrides[messaging] = lambda: messaging_mock
+
+    response = await async_client.post(
+        "/graphql",
+        json={
+            "query": """mutation {
+                simulationStep(seconds: 2.0)
+            }"""
+        },
+    )
+    assert response.status_code == 200
+    assert response.json() == {"data": {"simulationStep": None}}
+    messaging_mock.step_simulation.assert_awaited_once_with(2.0)
 
 
 async def test_mutation_control_value(async_client):

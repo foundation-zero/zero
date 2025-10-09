@@ -1,5 +1,4 @@
 from asyncio import create_task
-import asyncio
 from contextlib import asynccontextmanager
 from dataclasses import dataclass
 from datetime import datetime
@@ -151,8 +150,8 @@ class Module[
     SimulationInput,
     SimulationOutput,
 ]:
-    sensor_values: SensorValues
-    control_values: ControlValues
+    sensor_values: SensorValues | None
+    control_values: ControlValues | None
     parameters: Parameters
     simulation: ModuleSimulation[SimulationInput, SimulationOutput] | None = None
 
@@ -174,7 +173,7 @@ thrusters_control_values = ThrustersControlValues.zero()
 @strawberry.type
 class SimulationState:
     time: datetime
-    playing: bool
+    status: str
 
 
 @dataclass
@@ -186,22 +185,18 @@ class ThrsContext(BaseContext):
 class Query:
     @strawberry.field()
     def modules(self, info: strawberry.Info[ThrsContext]) -> Modules:
-        if (
-            not info.context.messaging.sensor_values
-            or not info.context.messaging.control_values
-        ):
-            raise Exception(
-                "No sensor or control values received yet. Is the AMCS or simulation running?"
-            )
-
         return Modules(
             thrusters=Module(
                 sensor_values=ThrustersSensorValuesType.from_pydantic(
                     info.context.messaging.sensor_values
-                ),
+                )
+                if info.context.messaging.sensor_values
+                else None,
                 control_values=ThrustersControlValuesType.from_pydantic(
                     info.context.messaging.control_values
-                ),
+                )
+                if info.context.messaging.control_values
+                else None,
                 parameters=ThrustersParametersType.from_pydantic(
                     ThrustersParameters()
                 ),  # TODO: ZERO-878 implement parameter setting and passage to simulation
@@ -217,9 +212,16 @@ class Query:
         )
 
     @strawberry.field
-    def simulation(self) -> SimulationState:
-        # TODO: ZERO-877 implement simulation control
-        return SimulationState(time=datetime.now(), playing=False)
+    def simulation(self, info: strawberry.Info[ThrsContext]) -> SimulationState | None:
+        if (
+            info.context.messaging.simulation_status is None
+            or info.context.messaging.simulation_status.simulation_time is None
+        ):
+            return None
+        return SimulationState(
+            time=info.context.messaging.simulation_status.simulation_time,
+            status=info.context.messaging.simulation_status.status,
+        )
 
     @strawberry.field()
     def thrusters_sensor_values(self) -> ThrustersSensorValuesType:
@@ -369,22 +371,37 @@ class DynamicInputFields:
 class Mutation(DynamicInputFields):
     @strawberry.mutation
     async def simulation_play(
-        self, info: strawberry.Info[ThrsContext], playbackRate: float = 1.0
+        self, info: strawberry.Info[ThrsContext], playback_rate: float = 1.0
     ) -> None:
-        # TODO: ZERO-877 implement simulation control
-        pass
+        if info.context.messaging.simulation_status is None:
+            raise Exception("No simulation status available, cannot play")
+        if info.context.messaging.simulation_status.status != "available":
+            raise Exception("Can only play an available simulation")
+        expect_status = info.context.messaging.wait_for_status("running", 2.0)
+        await info.context.messaging.play_simulation(playback_rate)
+        await expect_status
 
     @strawberry.mutation
     async def simulation_pause(self, info: strawberry.Info[ThrsContext]) -> None:
-        # TODO: ZERO-877 implement simulation control
-        pass
+        if info.context.messaging.simulation_status is None:
+            raise Exception("No simulation status available, cannot pause")
+        if info.context.messaging.simulation_status.status != "running":
+            raise Exception("Can only pause a running simulation")
+        expect_status = info.context.messaging.wait_for_status("available", 2.0)
+        await info.context.messaging.pause_simulation()
+        await expect_status
 
     @strawberry.mutation
     async def simulation_step(
         self, info: strawberry.Info[ThrsContext], seconds: float
     ) -> None:
-        # TODO: ZERO-877 implement simulation control
-        pass
+        if info.context.messaging.simulation_status is None:
+            raise Exception("No simulation status available, cannot step")
+        if info.context.messaging.simulation_status.status != "available":
+            raise Exception("Can only step an available simulation")
+        expect_status = info.context.messaging.wait_for_status("stepping", 2.0)
+        await info.context.messaging.step_simulation(seconds)
+        await expect_status
 
 
 type FieldMutation[T] = """Callable[
@@ -401,13 +418,6 @@ async def lifespan(app: FastAPI):
     async with MqttClient(settings.mqtt_host, settings.mqtt_port) as mqtt:
         messaging = Messaging(mqtt, ThrustersSensorValues, ThrustersControlValues)
         run_task = create_task(await messaging.run())
-        try:
-            async with asyncio.timeout(10):
-                await messaging.wait_for_values()
-        except TimeoutError as e:
-            raise Exception(
-                "No sensor or control values received in 10 seconds. Is the AMCS or simulation running?"
-            ) from e
         app.state.messaging = messaging
         yield
         run_task.cancel()

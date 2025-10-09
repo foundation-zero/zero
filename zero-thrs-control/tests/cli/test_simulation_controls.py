@@ -1,4 +1,4 @@
-from asyncio import Queue, create_task
+from asyncio import Queue, create_task, sleep
 import asyncio
 from typing import AsyncIterator
 
@@ -118,7 +118,9 @@ class FakeClient:
     async def unsubscribe(self, topic: str):
         self.subscriptions.discard(topic)
 
-    async def publish(self, topic: str, payload: str):
+    async def publish(
+        self, topic: str, payload: str, qos: int = 0, retain: bool = False
+    ):
         if topic in self.subscriptions:
             await self.queue.put(
                 Message(topic, payload, qos=0, retain=False, mid=5, properties=None)
@@ -173,6 +175,7 @@ mqtt_client = pytest.fixture(_mqtt_client)
 mqtt_client2 = pytest.fixture(_mqtt_client)
 mqtt_client3 = pytest.fixture(_mqtt_client)
 mqtt_client4 = pytest.fixture(_mqtt_client)
+mqtt_client5 = pytest.fixture(_mqtt_client)
 
 
 @pytest.mark.timeout(10)
@@ -188,6 +191,9 @@ async def test_simulation_controls(
         "controls",
     )
 
+    await test_client.publish(
+        "thrs/simulation/status", b"", qos=1, retain=True
+    )  # Clear previous status
     sequencer = MqttSequencer(test_client)
 
     await_available = await sequencer.expect(StatusMessage.TOPIC, StatusMessage)
@@ -230,3 +236,190 @@ async def test_simulation_controls(
         assert ran.status == "ran"
 
     run.cancel()
+
+
+@pytest.mark.timeout(30)
+async def test_simulation_run_blind_start_stop(
+    mqtt_client: Client,
+    mqtt_client2: Client,
+    mqtt_client3: Client,
+    mqtt_client4: Client,
+    mqtt_client5: Client,
+):
+    controls_client = mqtt_client
+    control_client = mqtt_client2
+    sensors_client = mqtt_client3
+    test_client = mqtt_client4
+    status_client = mqtt_client5
+    controls = SimulationControls(
+        controls_client,
+        control_client,
+        sensors_client,
+        "thrs/sensors",
+        "thrs/controls",
+    )
+
+    await test_client.subscribe("thrs/sensors")
+    await test_client.subscribe("thrs/controls")
+    await status_client.publish(
+        "thrs/simulation/status", b"", qos=1, retain=True
+    )  # Clear previous status
+    await status_client.subscribe("thrs/simulation/status")
+
+    run_task = create_task(controls.run_blind("THRUSTERS"))
+    try:
+        available = await anext(status_client.messages)
+        assert available.topic.value == "thrs/simulation/status"
+        assert isinstance(available.payload, str | bytes)
+        assert (
+            StatusMessage.model_validate_json(available.payload).status == "available"
+        )
+        assert len(test_client.messages) == 0
+
+        await controls_client.publish("thrs/simulation/play", "{}", qos=1)
+        running = await anext(status_client.messages)
+        assert isinstance(running.payload, str | bytes)
+        assert StatusMessage.model_validate_json(running.payload).status == "running"
+        await sleep(5.1)
+        assert len(test_client.messages) > 0
+        amount_before_pause = len(test_client.messages)
+        await controls_client.publish("thrs/simulation/pause", "", qos=1)
+        available = await anext(status_client.messages)
+        assert isinstance(available.payload, str | bytes)
+        assert (
+            StatusMessage.model_validate_json(available.payload).status == "available"
+        )
+        amount_after_pause = len(test_client.messages)
+        assert (
+            amount_after_pause == amount_before_pause
+        )  # simulation could still have been running and need to finish the step or just sent the controls, but hasn't yet received the sensors back
+
+    finally:
+        run_task.cancel()
+
+
+@pytest.mark.timeout(30)
+async def test_simulation_run_blind_playback_rate(
+    mqtt_client: Client,
+    mqtt_client2: Client,
+    mqtt_client3: Client,
+    mqtt_client4: Client,
+):
+    controls_client = mqtt_client
+    control_client = mqtt_client2
+    sensors_client = mqtt_client3
+    test_client = mqtt_client4
+    controls = SimulationControls(
+        controls_client,
+        control_client,
+        sensors_client,
+        "thrs/sensors",
+        "thrs/controls",
+    )
+
+    await test_client.subscribe("thrs/sensors")
+    await test_client.subscribe("thrs/controls")
+
+    run_task = create_task(controls.run_blind("THRUSTERS"))
+    try:
+        await sleep(0.1)  # Wait for controls to listen for play
+        await controls_client.publish(
+            "thrs/simulation/play", '{ "playback_rate": 1 }', qos=1
+        )
+        await anext(test_client.messages)
+        await anext(test_client.messages)  # Wait for first messages
+
+        await sleep(5.1)
+        await controls_client.publish("thrs/simulation/pause", "{}", qos=1)
+        assert len(test_client.messages) == 10
+        while len(test_client.messages) != 0:
+            await anext(test_client.messages)  # Drain the messages
+
+        await controls_client.publish(
+            "thrs/simulation/play", '{ "playback_rate": 2 }', qos=1
+        )
+        await anext(test_client.messages)
+        await anext(test_client.messages)  # Wait for first messages
+        await sleep(5.1)
+        await controls_client.publish("thrs/simulation/pause", "{}", qos=1)
+        assert len(test_client.messages) == 20
+    finally:
+        run_task.cancel()
+
+
+@pytest.mark.timeout(5)
+async def test_simulation_run_blind_step(
+    mqtt_client: Client,
+    mqtt_client2: Client,
+    mqtt_client3: Client,
+    mqtt_client4: Client,
+    mqtt_client5: Client,
+):
+    controls_client = mqtt_client
+    control_client = mqtt_client2
+    sensors_client = mqtt_client3
+    test_client = mqtt_client4
+    status_client = mqtt_client5
+    controls = SimulationControls(
+        controls_client,
+        control_client,
+        sensors_client,
+        "thrs/sensors",
+        "thrs/controls",
+    )
+
+    await test_client.subscribe("thrs/sensors")
+    await test_client.subscribe("thrs/controls")
+    await status_client.publish(
+        "thrs/simulation/status", b"", qos=1, retain=True
+    )  # Clear previous status
+    await status_client.subscribe("thrs/simulation/status")
+
+    run_task = create_task(controls.run_blind("THRUSTERS"))
+    try:
+        available = await anext(status_client.messages)
+        assert available.topic.value == "thrs/simulation/status"
+        assert isinstance(available.payload, str | bytes)
+        assert (
+            StatusMessage.model_validate_json(available.payload).status == "available"
+        )
+        await sleep(0.1)  # Wait for controls to listen for step
+
+        await controls_client.publish("thrs/simulation/step", '{"seconds": 1}', qos=1)
+
+        stepping = await anext(status_client.messages)
+        assert stepping.topic.value == "thrs/simulation/status"
+        assert isinstance(stepping.payload, str | bytes)
+        assert StatusMessage.model_validate_json(stepping.payload).status == "stepping"
+
+        msg1 = await anext(test_client.messages)
+        msg2 = await anext(test_client.messages)
+
+        available = await anext(status_client.messages)
+        assert available.topic.value == "thrs/simulation/status"
+        assert isinstance(available.payload, str | bytes)
+        assert (
+            StatusMessage.model_validate_json(available.payload).status == "available"
+        )
+
+        assert msg1.topic.value == "thrs/controls"
+        assert msg2.topic.value == "thrs/sensors"
+
+        await controls_client.publish("thrs/simulation/step", '{"seconds": 2}', qos=1)
+
+        stepping = await anext(status_client.messages)
+        assert stepping.topic.value == "thrs/simulation/status"
+        assert isinstance(stepping.payload, str | bytes)
+        assert StatusMessage.model_validate_json(stepping.payload).status == "stepping"
+
+        available = await anext(status_client.messages)
+        assert available.topic.value == "thrs/simulation/status"
+        assert isinstance(available.payload, str | bytes)
+        assert (
+            StatusMessage.model_validate_json(available.payload).status == "available"
+        )
+
+        assert len(test_client.messages) == 4
+
+    finally:
+        run_task.cancel()
