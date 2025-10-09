@@ -1,8 +1,7 @@
 {{ config(materialized='materialized_view') }}
 {%- set tables = ['power_tag', 'pvt', 'shore_power', 'hydrogeneration'] -%}
 
--- Create CTE with combined data of all power data tabels
-WITH cte AS (
+WITH combined_power_data AS (
 {%- for t in tables -%}
   		SELECT
     	{{ t }}.topic,
@@ -14,7 +13,6 @@ WITH cte AS (
 	{%- endfor -%}
 )
 
--- Get power data updates from CTE.
 SELECT 
 	source_data.topic,
 	source_data.time,
@@ -22,8 +20,8 @@ SELECT
 	(source_data.total_active_power).TimeStamp AS active_power_timestamp,
 	(source_data.total_active_power).value AS power_factor,
 	(source_data.total_active_power).TimeStamp AS power_factor_timestamp
-FROM cte AS source_data
-ASOF JOIN cte AS previous
+FROM combined_power_data AS source_data
+ASOF JOIN combined_power_data AS previous
     ON previous.topic = source_data.topic
     AND previous.time < source_data.time
 WHERE (source_data.total_active_power).TimeStamp != (previous.total_active_power).TimeStamp
