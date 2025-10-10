@@ -48,8 +48,8 @@ jobs:
           echo "${{ secrets.ENV_DATA }}" > .env
         working-directory: data
       - name: Run services
-        run: docker compose up -d --quiet-pull postgres
-        working-directory: data
+        run: docker compose up -d --quiet-pull
+        working-directory: zero-loads-app
       - run: poetry run python -m setup_postgres
         working-directory: data
       - name: Integration Test

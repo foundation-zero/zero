@@ -28,16 +28,4 @@ def pytest_runtest_setup(item):
 
 @pytest.fixture(scope="session")
 def settings():
-    return Settings(
-        mqtt_host="localhost",
-        mqtt_port=1883,
-        canbus_ip="127.0.0.1",
-        canbus_port=56000,
-        canbus_buffer_size=1024,
-        pg_host="localhost",
-        pg_port="5432",
-        pg_user="postgres",
-        pg_password="postgrespassword",
-        pg_db="zero",
-        jwt_secret="test",
-    )
+    return Settings()

@@ -13,6 +13,7 @@ from .schema import (
     ReferenceValues,
     SailSetCombined,
     ValueDefinitions,
+    LoadCaseHistorical,
 )
 from .types import (
     AlertType,
@@ -22,20 +23,26 @@ from .types import (
     TargetType,
     Unit,
     ValueType,
+    PCSModeInput,
+    SeaState,
+    ThrusterMode,
 )
+import logging
+
+logger = logging.getLogger("api")
 
 
 async def get_reference_values(
     values: list[strawberry.ID], case: CaseInput | None, session: AsyncSession
-):
+) -> list[ReferenceValueType]:
     """Return all reference values that matches the currents sail and conditions."""
-    if case:
-        sail_set: ScalarSelect[str] | str = retrieve_sail_set_subq(case)
-        condition: ScalarSelect[str] | str = retrieve_conditions_subq(case)
-    else:
-        # TODO: ZERO-709: Get these values from the control process
-        sail_set = "upwind-blade"
-        condition = "light-wind-close-hauled"
+
+    if not case:
+        case = await retrieve_current_load_case(session)
+        logger.info(f"Retrieved case: {case}")
+
+    sail_set = retrieve_sail_set_subq(case)
+    condition = retrieve_conditions_subq(case)
 
     query = (
         select(ReferenceValues, ValueDefinitions, Masts)
@@ -52,23 +59,26 @@ async def get_reference_values(
     result = await session.execute(query)
     rows = result.fetchall()
 
-    return [
-        ReferenceValueType(
-            value=ValueType(
-                id=definition.id,
-                name=definition.name,
-            ),
-            masts=MastType(id=mast.id, name=mast.name),
-            target=TargetType(target=reference.value, unit=Unit(definition.unit)),
-            ranges=AlertType(
-                error_too_low=reference.error_too_low,
-                warning_too_low=reference.warning_too_low,
-                warning_too_high=reference.warning_too_high,
-                error_too_high=reference.error_too_high,
-            ),
-        )
-        for reference, definition, mast in rows
-    ]
+    if rows:
+        return [
+            ReferenceValueType(
+                value=ValueType(
+                    id=definition.id,
+                    name=definition.name,
+                ),
+                masts=MastType(id=mast.id, name=mast.name),
+                target=TargetType(target=reference.value, unit=Unit(definition.unit)),
+                ranges=AlertType(
+                    error_too_low=reference.error_too_low,
+                    warning_too_low=reference.warning_too_low,
+                    warning_too_high=reference.warning_too_high,
+                    error_too_high=reference.error_too_high,
+                ),
+            )
+            for reference, definition, mast in rows
+        ]
+    else:
+        raise ValueError(f"No reference values found for case {case}")
 
 
 def retrieve_sail_set_subq(case: CaseInput) -> ScalarSelect[str]:
@@ -91,10 +101,32 @@ def retrieve_conditions_subq(case: CaseInput) -> ScalarSelect[str]:
     """Create subquery that returns the conditions matching the case input."""
     return (
         select(Conditions.id)
-        .where(Conditions.sea_state == case.sea_state.value)
+        .where(Conditions.sea_state == case.sea_state)
         .where(Conditions.awa.contains(cast(case.awa, NUMERIC)))
         .where(Conditions.aws.contains(cast(case.aws, NUMERIC)))
-        .where(Conditions.pcs_mode_fwd.any(case.pcs_mode.fwd.value))
-        .where(Conditions.pcs_mode_aft.any(case.pcs_mode.aft.value))
+        .where(Conditions.pcs_mode_fwd.any(case.pcs_mode.fwd))
+        .where(Conditions.pcs_mode_aft.any(case.pcs_mode.aft))
         .scalar_subquery()
     )
+
+
+async def retrieve_current_load_case(session: AsyncSession) -> CaseInput:
+    load_case_current = (
+        select(LoadCaseHistorical).order_by(LoadCaseHistorical.time.desc()).limit(1)
+    )
+    result = await session.execute(load_case_current)
+    row = result.scalar_one_or_none()
+    if row:
+        logger.info(f"Using load case: {row}")
+        return CaseInput(
+            sails=list(row.sails),  # type: ignore
+            sea_state=SeaState(row.sea_state),
+            pcs_mode=PCSModeInput(
+                fwd=ThrusterMode(row.pcs_mode_fwd),
+                aft=ThrusterMode(row.pcs_mode_aft),
+            ),
+            awa=float(row.awa),  # type: ignore
+            aws=float(row.aws),  # type: ignore
+        )
+    else:
+        raise ValueError("No load case found")

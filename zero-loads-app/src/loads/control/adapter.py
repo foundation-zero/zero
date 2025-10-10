@@ -52,7 +52,8 @@ class PCanAdapter:
             try:
                 message = await self._read_message()
                 logger.debug("Received message. Forwarding message to MQTT")
-                await self._send_mqtt_message(message)
+                if message:
+                    await self._send_mqtt_message(message)
             except Exception as e:
                 logger.error(e)
                 break

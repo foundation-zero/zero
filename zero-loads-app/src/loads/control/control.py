@@ -26,7 +26,7 @@ class LoadsControl:
     ):
         self._mqtt_client = mqtt_client
         self._conditions: Conditions | None = None
-        self._first_message = Future()
+        self._first_message: Future = Future()
         self._stub = stub
         self._polling_interval = polling_interval
 
@@ -39,9 +39,6 @@ class LoadsControl:
             yield LoadsControl(mqtt_client=mqtt_client)
 
     async def run(self):
-        if self._stub:
-            asyncio.create_task(self.run_stub())
-
         # Listen for incoming sensor values
         asyncio.create_task(self._listen())
 
@@ -54,16 +51,6 @@ class LoadsControl:
             except Exception as e:
                 logger.error(e)
                 break
-
-    async def run_stub(self):
-        """Stub to publish conditions to MQTT for development purposes"""
-        logger.info("Starting stub to publish conditions")
-        while True:
-            await self._mqtt_client.publish(
-                "loads/risingwave/conditions",
-                '{"awa": 45.0, "aws": 12.0, "pcs_mode": {"fwd": "propulsion", "aft": "idle"}, "sails": ["full-main-sail", "main-blade", "full-mizzen-sail"]}',
-            )
-            await asyncio.sleep(1)
 
     async def determine_load_case(self) -> Case:
         """Determine the load case by combining  the latest conditions with the computed sea state"""
@@ -86,7 +73,7 @@ class LoadsControl:
 
         async for message in self._mqtt_client.messages:
             logging.info(
-                f"Received message on topic {message.topic}: {message.payload}"
+                f"Received message on topic {message.topic}: {message.payload!r}"
             )
             if message.topic.matches("loads/risingwave/conditions"):
                 self._conditions = self._parse_message(message, Conditions)

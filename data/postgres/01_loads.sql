@@ -74,6 +74,17 @@ CREATE TABLE load_cases (
   PRIMARY KEY (condition_id, sail_set_id)
 );
 
+DROP TABLE IF EXISTS load_cases_historical CASCADE;
+CREATE TABLE load_cases_historical  (
+  sea_state TEXT NOT NULL,
+  awa FLOAT NOT NULL,
+  aws FLOAT NOT NULL,
+  pcs_mode_aft TEXT NOT NULL,
+  pcs_mode_fwd TEXT NOT NULL,
+  sails TEXT[] NOT NULL,
+  time TIMESTAMPTZ NOT NULL
+);
+
 DROP TABLE IF EXISTS reference_values;
 CREATE TABLE reference_values (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
@@ -147,6 +158,10 @@ INSERT INTO load_cases (name, condition_id, sail_set_id) VALUES
   (NULL, 'strong-wind-close-hauled', 'reach-blade-mzj'),
   (NULL, 'strong-wind-beam-reach', 'reach-blade-mzj'),
   (NULL, 'strong-wind-broad-reach', 'reach-blade-mzj');
+
+INSERT INTO load_cases_historical (sea_state, awa, aws, pcs_mode_aft, pcs_mode_fwd, sails, time) VALUES
+('wet', 0.0, 0.0, 'idle', 'idle', ARRAY['full-main-sail'], NOW());
+
 
 INSERT INTO reference_values (condition_id, sail_set_id, mast_id, value_definition_id, value) VALUES
   ('light-wind-close-hauled', 'upwind-blade', 'main', 'headstay-load', 2.0),

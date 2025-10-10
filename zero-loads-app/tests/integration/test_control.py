@@ -17,12 +17,14 @@ mqtt_client_receive = fixture(_mqtt_client)
 mqtt_client_send = fixture(_mqtt_client)
 
 
-@pytest.mark.timeout(20)
-async def test(mqtt_client_receive, mqtt_client_send):
-    process = LoadsControl(mqtt_client=mqtt_client_receive, stub=False)
+@pytest.mark.asyncio
+async def test_control(mqtt_client_receive, mqtt_client_send):
+    """Test the LoadsControl process end-to-end with MQTT messages"""
+    process = LoadsControl(mqtt_client=mqtt_client_receive)
     control = create_task(process.run())
 
     await asyncio.sleep(1)
+    # We send two messages. Control should take only the last one into account
     await mqtt_client_send.publish(
         "loads/risingwave/conditions",
         '{"awa": 0, "aws": 0, "pcs_mode": {"fwd": "idle", "aft": "idle"}, "sails": ["full-main-sail"]}',

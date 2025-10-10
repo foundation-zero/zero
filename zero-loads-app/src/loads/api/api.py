@@ -55,8 +55,12 @@ class Query:
         info: strawberry.Info[MyContext],
         values: list[strawberry.ID],
         case: CaseInput | None = None,
-    ) -> list[ReferenceValueType]:
-        return await get_reference_values(values, case, info.context.session)
+    ) -> list[ReferenceValueType] | None:
+        try:
+            return await get_reference_values(values, case, info.context.session)
+        except Exception as e:
+            logger.error(f"Error retrieving reference values: {e}")
+            return None
 
 
 schema = strawberry.Schema(query=Query)
