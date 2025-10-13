@@ -4,7 +4,7 @@
 WITH combined_power_data AS (
 {%- for t in tables -%}
   		SELECT
-    	{{ t }}.topic,
+    		{{ t }}.topic,
 			{{ t }}.time,
 			{{ t }}."Total_Active_Power" AS total_active_power,
 			{{ t }}."Total_Power_Factor" AS total_power_factor
