@@ -18,28 +18,28 @@ class PvtParameters(ThrsModel):
     warmup_temperature: Celsius = 55
     recovery_activation_string_temperature: Celsius = 40
     minimum_return_temperature: Celsius = 40
-    main_fwd_minimum_pump_dutypoint: Ratio = 0.2  # minimum dutpypoint to ensure flow past temperature sensor in recovery mode
-    main_aft_minimum_pump_dutypoint: Ratio = 0.2  # minimum dutpypoint to ensure flow past temperature sensor in recovery mode
-    owners_minimum_pump_dutypoint: Ratio = 0.2  # minimum dutpypoint to ensure flow past temperature sensor in recovery mode
+    main_fwd_minimum_pump_dutypoint: Ratio = 0.3  # minimum dutpypoint to ensure flow past temperature sensor in recovery mode
+    main_aft_minimum_pump_dutypoint: Ratio = 0.3  # minimum dutpypoint to ensure flow past temperature sensor in recovery mode
+    owners_minimum_pump_dutypoint: Ratio = 0.4  # minimum dutpypoint to ensure flow past temperature sensor in recovery mode
     heat_dump_tuning: Tuning = (0.05, 0.001, 0.0)
     main_fwd_mix_tuning: Tuning = (-0.005, -0.001, 0.0)
     main_aft_mix_tuning: Tuning = (-0.005, -0.001, 0.0)
     owners_mix_tuning: Tuning = (-0.005, -0.001, 0.0)
     main_fwd_pump_tuning: Tuning = (
-        -0.001,
-        -0.0005,
+        -0.0001,
+        -0.00005,
         0.0,
-    )  # 0.022 approximate ultimate gain (max Kp with sustained oscillations)
+    )
     main_aft_pump_tuning: Tuning = (
-        -0.001,
-        -0.0005,
+        -0.0001,
+        -0.00005,
         -0.0,
-    )  # 0.22 approximate ultimate gain (max Kp with sustained oscillations)
+    )
     owners_pump_tuning: Tuning = (
-        -0.001,
-        -0.0005,
+        -0.0001,
+        -0.00005,
         -0.0,
-    )  # 0.042 approximate ultimate gain (max Kp with sustained oscillations)
+    )
 
     @model_validator(mode="after")
     def check_temperature_setpoints(self):
