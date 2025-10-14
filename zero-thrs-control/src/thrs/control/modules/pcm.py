@@ -91,8 +91,19 @@ class PcmControl(Control[PcmSensorValues, PcmControlValues, PcmParameters]):
             ),
         ]
 
+        self._transitions = [
+            {
+                "trigger": "_check_charge",
+                "source": "supplying",
+                "dest": "idle",
+                "conditions": self._all_discharged,
+            }
+        ]
         self.pcm_state_machine = Machine(
-            model=self, states=self._states, initial="idle"
+            model=self,
+            states=self._states,
+            transitions=self._transitions,
+            initial="idle",
         )
 
         self._pump_flow_controller = Controller[Ratio, LMin](
@@ -171,11 +182,22 @@ class PcmControl(Control[PcmSensorValues, PcmControlValues, PcmParameters]):
         if self.mode == "charging":
             self._set_charging_flow_setpoints(sensor_values)
         elif self.mode == "supplying":
+            self._check_charge(sensor_values)  # type: ignore
             self._set_supplying_flow_setpoints(sensor_values)
 
         self._control_flow_balance(sensor_values)
 
         return ControlResult(self._time(), self._current_values)
+
+    def _all_discharged(self, sensor_values: PcmSensorValues) -> bool:
+        return not any(
+            (
+                sensor_values.pcm_module_1.charged.value,
+                sensor_values.pcm_module_2.charged.value,
+                sensor_values.pcm_module_3.charged.value,
+                sensor_values.pcm_module_4.charged.value,
+            )
+        )
 
     def _set_supplying_flow_setpoints(self, sensor_values: PcmSensorValues):
         self._flow_balance_controller.set_pump(self._current_values.pcm_pump)

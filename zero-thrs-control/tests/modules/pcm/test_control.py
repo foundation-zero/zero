@@ -147,7 +147,30 @@ async def test_supplying(control: PcmControl, executor: PcmExecutor):
         + result.sensor_values.pcm_flow_module_4.flow.value
     )
 
+    assert result.sensor_values.pcm_flow_module_1.flow.value == approx(0, abs=0.01)
+    assert result.sensor_values.pcm_flow_module_2.flow.value == approx(0, abs=0.01)
     assert pcm_flow == approx(2 * control.parameters.pcm_charge_flow, abs=0.5)
+
+    for i in range(100):
+        result.sensor_values.pcm_module_1.charged.value = False
+        result.sensor_values.pcm_module_2.charged.value = False
+        result.sensor_values.pcm_module_3.charged.value = False
+        result.sensor_values.pcm_module_4.charged.value = False
+        control_values = control.control(result.sensor_values).values
+        result = await executor.tick(control_values)
+
+    pcm_flow = (
+        result.sensor_values.pcm_flow_module_1.flow.value
+        + result.sensor_values.pcm_flow_module_2.flow.value
+        + result.sensor_values.pcm_flow_module_3.flow.value
+        + result.sensor_values.pcm_flow_module_4.flow.value
+    )
+
+    assert result.sensor_values.pcm_flow_module_1.flow.value == approx(0, abs=0.01)
+    assert result.sensor_values.pcm_flow_module_2.flow.value == approx(0, abs=0.01)
+    assert result.sensor_values.pcm_flow_module_3.flow.value == approx(0, abs=0.01)
+    assert result.sensor_values.pcm_flow_module_4.flow.value == approx(0, abs=0.01)
+    assert pcm_flow == approx(0, abs=0.01)
 
 
 @pytest.mark.skip("Boosting not implemented for now")
