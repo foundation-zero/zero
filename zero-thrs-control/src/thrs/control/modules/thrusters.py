@@ -146,7 +146,7 @@ class ThrustersControl(
         self._transitions = [
             {
                 "trigger": "_check_overheat",
-                "source": ["idle", "recovery", "cooldown"],
+                "source": ["idle", "recovery", "cooldown", "cooling"],
                 "dest": "cooling",
                 "conditions": self._is_overheating,
             },
