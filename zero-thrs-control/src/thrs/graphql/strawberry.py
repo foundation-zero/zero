@@ -403,6 +403,13 @@ class Mutation(DynamicInputFields):
         await info.context.messaging.step_simulation(seconds)
         await expect_status
 
+    @strawberry.mutation
+    async def control_set_automation_mode(
+        self, info: strawberry.Info[ThrsContext], automatic: bool
+    ) -> None:
+        mode = "automatic" if automatic else "manual"
+        await info.context.messaging.switch_automation_mode(mode)
+
 
 type FieldMutation[T] = """Callable[
     [Mutation, object, strawberry.Info[ThrsContext]],
