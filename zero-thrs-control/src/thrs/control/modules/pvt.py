@@ -77,15 +77,9 @@ _INITIAL_CONTROL_VALUES = PvtControlValues(
     pvt_mix_owners=Valve(
         setpoint=Stamped(value=Valve.MIXING_B_TO_AB, timestamp=_ZERO_TIME)
     ),
-    pvt_flowcontrol_main_fwd=Valve(
-        setpoint=Stamped(value=Valve.OPEN, timestamp=_ZERO_TIME)
-    ),
-    pvt_flowcontrol_main_aft=Valve(
-        setpoint=Stamped(value=Valve.OPEN, timestamp=_ZERO_TIME)
-    ),
-    pvt_flowcontrol_owners=Valve(
-        setpoint=Stamped(value=Valve.OPEN, timestamp=_ZERO_TIME)
-    ),
+    pvt_switch_main_fwd=Valve(setpoint=Stamped(value=Valve.OPEN, timestamp=_ZERO_TIME)),
+    pvt_switch_main_aft=Valve(setpoint=Stamped(value=Valve.OPEN, timestamp=_ZERO_TIME)),
+    pvt_switch_owners=Valve(setpoint=Stamped(value=Valve.OPEN, timestamp=_ZERO_TIME)),
     pvt_mix_exchanger=Valve(
         setpoint=Stamped(
             value=Valve.MIXING_A_TO_AB,
@@ -177,7 +171,7 @@ class PvtControl(Control[PvtSensorValues, PvtControlValues, PvtParameters]):
     def _control_heat_dump_mix(self, sensor_values: PvtSensorValues):
         self._current_values.pvt_mix_exchanger.setpoint = Stamped(
             value=self._heat_dump_controller(
-                sensor_values.pvt_temperature_exchanger.temperature.value
+                sensor_values.pvt_temperature_supply.temperature.value
             ),
             timestamp=self._time(),
         )

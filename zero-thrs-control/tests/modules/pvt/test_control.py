@@ -45,9 +45,9 @@ async def test_recovery(control, executor):
 
     assert result.simulation_outputs.pvt_module_return.flow.value > 0
     assert (
-        result.sensor_values.pvt_flow_main_fwd.flow.value
-        + result.sensor_values.pvt_flow_main_aft.flow.value
-        + result.sensor_values.pvt_flow_owners.flow.value
+        result.sensor_values.pvt_flow_main_fwd_recovery.flow.value
+        + result.sensor_values.pvt_flow_main_aft_recovery.flow.value
+        + result.sensor_values.pvt_flow_owners_recovery.flow.value
         == approx(result.simulation_outputs.pvt_module_return.flow.value, abs=1e-5)
     )
     assert result.simulation_outputs.pvt_module_supply.flow.value == approx(
@@ -92,9 +92,8 @@ async def test_recovery_heat_dump(
     for i in range(300):
         control_values = control.control(result.sensor_values).values
         result = await executor.tick(control_values)
-        assert (
-            result.sensor_values.pvt_temperature_exchanger.temperature.value
-            == approx(control._parameters.heat_dump_setpoint, abs=1)
+        assert result.sensor_values.pvt_temperature_supply.temperature.value == approx(
+            control._parameters.heat_dump_setpoint, abs=1
         )  # type: ignore
 
 
