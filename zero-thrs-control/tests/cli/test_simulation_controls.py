@@ -23,6 +23,7 @@ from thrs.cli.simulation_controls import (
 
 from pydantic_partial import create_partial_model
 
+from thrs.input_output.modules.thrusters import ThrustersControlValues
 from thrs.orchestration.config import Config
 
 
@@ -283,7 +284,7 @@ async def test_simulation_run_blind_start_stop(
         await sleep(5.1)
         assert len(test_client.messages) > 0
         amount_before_pause = len(test_client.messages)
-        await controls_client.publish("thrs/simulation/pause", "", qos=1)
+        await controls_client.publish("thrs/simulation/pause", "{}", qos=1)
         available = await anext(status_client.messages)
         assert isinstance(available.payload, str | bytes)
         assert (
@@ -420,6 +421,60 @@ async def test_simulation_run_blind_step(
         )
 
         assert len(test_client.messages) == 4
+
+    finally:
+        run_task.cancel()
+
+
+async def test_simulation_controls_blind_automated_control(
+    mqtt_client, mqtt_client2, mqtt_client3, mqtt_client4, mqtt_client5
+):
+    controls_client = mqtt_client
+    control_client = mqtt_client2
+    sensors_client = mqtt_client3
+    test_client = mqtt_client4
+    status_client = mqtt_client5
+    controls = SimulationControls(
+        controls_client,
+        control_client,
+        sensors_client,
+        "thrs/sensors",
+        "thrs/controls",
+    )
+
+    await test_client.subscribe("thrs/sensors")
+    await test_client.subscribe("thrs/controls")
+    await status_client.publish(
+        "thrs/simulation/status", b"", qos=1, retain=True
+    )  # Clear previous status
+    await status_client.subscribe("thrs/simulation/status")
+
+    run_task = create_task(controls.run_blind("THRUSTERS"))
+    try:
+        available = await anext(status_client.messages)
+        assert available.topic.value == "thrs/simulation/status"
+        assert isinstance(available.payload, str | bytes)
+        assert (
+            StatusMessage.model_validate_json(available.payload).status == "available"
+        )
+        assert len(test_client.messages) == 0
+        await controls_client.publish(
+            "thrs/controls/switch_automation_mode", '{"mode": "automatic"}', qos=1
+        )
+
+        await controls_client.publish("thrs/simulation/play", "{}", qos=1)
+        _running = await anext(status_client.messages)
+        await sleep(5.1)
+
+        assert len(test_client.messages) > 0
+        control_values = None
+        while len(test_client.messages) != 0:
+            msg = await anext(test_client.messages)
+            if msg.topic.matches("thrs/controls"):
+                control_values = ThrustersControlValues.model_validate_json(msg.payload)
+
+        assert control_values is not None
+        assert control_values.thrusters_shutoff_recovery.setpoint.value > 0
 
     finally:
         run_task.cancel()

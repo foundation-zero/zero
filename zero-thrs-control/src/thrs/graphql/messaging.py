@@ -3,7 +3,14 @@ import asyncio
 from typing import Coroutine, Literal
 from aiomqtt import Client as MqttClient, Message
 
-from thrs.cli.simulation_controls import PlayMessage, StatusMessage, StepMessage
+from thrs.cli.simulation_controls import (
+    ManualControlMessage,
+    PauseMessage,
+    PlayMessage,
+    StatusMessage,
+    StepMessage,
+    SwitchAutomationModeMessage,
+)
 from thrs.input_output.base import ThrsModel
 from thrs.input_output.modules.thrusters import ThrustersControlValues
 
@@ -51,23 +58,34 @@ class Messaging[SensorValues: ThrsModel, ControlValues: ThrsModel]:
 
     async def send_manual_controls(self, control_values: ThrustersControlValues):
         await self._mqtt_client.publish(
-            "thrs/manual_controls", control_values.model_dump_json(), qos=1
+            ManualControlMessage.topic(),
+            ManualControlMessage(control_values=control_values).model_dump_json(),
+            qos=1,
         )
 
     async def play_simulation(self, playback_rate: float):
         await self._mqtt_client.publish(
-            "thrs/simulation/play",
+            PlayMessage.topic(),
             PlayMessage(playback_rate=playback_rate).model_dump_json(),
             qos=1,
         )
 
     async def pause_simulation(self):
-        await self._mqtt_client.publish("thrs/simulation/pause", "", qos=1)
+        await self._mqtt_client.publish(
+            PauseMessage.topic(), PauseMessage().model_dump_json(), qos=1
+        )
 
     async def step_simulation(self, seconds: float):
         await self._mqtt_client.publish(
-            "thrs/simulation/step",
+            StepMessage.topic(),
             StepMessage(seconds=seconds).model_dump_json(),
+            qos=1,
+        )
+
+    async def switch_automation_mode(self, mode: Literal["manual", "automatic"]):
+        await self._mqtt_client.publish(
+            SwitchAutomationModeMessage.topic(),
+            SwitchAutomationModeMessage(mode=mode).model_dump_json(),
             qos=1,
         )
 

@@ -321,3 +321,20 @@ async def test_mutation_simulation_input(async_client):
             }
         }
     }
+
+
+async def test_mutation_control_set_automation_mode(async_client):
+    messaging_mock = await override_messaging()
+    app.dependency_overrides[messaging] = lambda: messaging_mock
+
+    response = await async_client.post(
+        "/graphql",
+        json={
+            "query": """mutation {
+                controlSetAutomationMode(automatic: true)
+            }"""
+        },
+    )
+    assert response.status_code == 200
+    assert response.json() == {"data": {"controlSetAutomationMode": None}}
+    messaging_mock.switch_automation_mode.assert_awaited_once_with("automatic")
