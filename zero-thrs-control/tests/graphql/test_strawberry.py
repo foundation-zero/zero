@@ -2,7 +2,7 @@ from datetime import datetime
 from unittest.mock import Mock
 from httpx import ASGITransport, AsyncClient
 import pytest
-from thrs.cli.simulation_controls import StatusMessage
+from thrs.cli.simulation_controls import ControlStatusMessage, SimulationStatusMessage
 from thrs.control.modules.thrusters import ThrustersParameters
 from thrs.graphql.messaging import Messaging
 from thrs.graphql.strawberry import app, messaging
@@ -26,9 +26,10 @@ async def override_messaging():
     mock.sensor_values = ThrustersSensorValues.zero()
     mock.control_values = ThrustersControlValues.zero()
     mock.parameters = ThrustersParameters()
-    mock.simulation_status = StatusMessage(
+    mock.simulation_status = SimulationStatusMessage(
         status="available", simulation_time=datetime.fromtimestamp(0)
     )
+    mock.control_status = ControlStatusMessage(automatic=False)
     return mock
 
 
@@ -211,6 +212,23 @@ async def test_query_simulation_state(async_client):
     assert response.json() == {"data": {"simulation": {"status": "available"}}}
 
 
+async def test_query_control_automation_mode(async_client):
+    app.dependency_overrides[messaging] = override_messaging
+    response = await async_client.post(
+        "/graphql",
+        json={
+            "query": """query {
+            control {
+                automatic
+            }
+        }"""
+        },
+    )
+
+    assert response.status_code == 200
+    assert response.json() == {"data": {"control": {"automatic": False}}}
+
+
 async def test_mutation_simulation_play(async_client):
     messaging_mock = await override_messaging()
     app.dependency_overrides[messaging] = lambda: messaging_mock
@@ -230,7 +248,7 @@ async def test_mutation_simulation_play(async_client):
 
 async def test_mutation_simulation_pause(async_client):
     messaging_mock = await override_messaging()
-    messaging_mock.simulation_status = StatusMessage(
+    messaging_mock.simulation_status = SimulationStatusMessage(
         status="running", simulation_time=datetime.fromtimestamp(0)
     )
     app.dependency_overrides[messaging] = lambda: messaging_mock
@@ -337,4 +355,4 @@ async def test_mutation_control_set_automation_mode(async_client):
     )
     assert response.status_code == 200
     assert response.json() == {"data": {"controlSetAutomationMode": None}}
-    messaging_mock.switch_automation_mode.assert_awaited_once_with("automatic")
+    messaging_mock.set_automation.assert_awaited_once_with(True)

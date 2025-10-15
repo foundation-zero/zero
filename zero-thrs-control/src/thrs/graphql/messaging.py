@@ -1,18 +1,52 @@
 from asyncio import Queue
 import asyncio
-from typing import Coroutine, Literal
+from typing import Callable, Coroutine, Literal
 from aiomqtt import Client as MqttClient, Message
 
 from thrs.cli.simulation_controls import (
+    ControlStatusMessage,
     ManualControlMessage,
+    OutgoingMessage,
     PauseMessage,
     PlayMessage,
-    StatusMessage,
+    SimulationStatusMessage,
     StepMessage,
-    SwitchAutomationModeMessage,
+    SetAutomationMessage,
 )
 from thrs.input_output.base import ThrsModel
 from thrs.input_output.modules.thrusters import ThrustersControlValues
+
+
+class Status[T: OutgoingMessage]:
+    def __init__(self, cls: type[T]):
+        self._cls = cls
+        self._status: T | None = None
+        self._waiting = False
+        self._msgs = Queue[T]()
+
+    @property
+    def status(self) -> T | None:
+        return self._status
+
+    async def wait_for(self, condition: Callable[[T], bool], timeout: float) -> T:
+        async with asyncio.timeout(timeout):
+            self._waiting = True
+            try:
+                while True:
+                    msg = await self._msgs.get()
+                    if condition(msg):
+                        return msg
+            finally:
+                self._waiting = False
+
+    async def handle(self, msg: T):
+        self._status = msg
+        if self._waiting:
+            await self._msgs.put(msg)
+
+    @property
+    def cls(self):
+        return self._cls
 
 
 class Messaging[SensorValues: ThrsModel, ControlValues: ThrsModel]:
@@ -27,14 +61,18 @@ class Messaging[SensorValues: ThrsModel, ControlValues: ThrsModel]:
         self._control_values_cls = control_values_cls
         self._sensor_values = None
         self._control_values = None
-        self._simulation_status = None
-        self._waiting_for_status = False
-        self._status_msgs = Queue[StatusMessage]()
+        self._simulation_status = Status(SimulationStatusMessage)
+        self._control_status = Status(ControlStatusMessage)
+
+    @property
+    def _statuses(self):
+        return [self._simulation_status, self._control_status]
 
     async def run(self) -> Coroutine[None, None, None]:
         await self._mqtt_client.subscribe("thrs/sensor_values", qos=1)
         await self._mqtt_client.subscribe("thrs/control_values", qos=1)
-        await self._mqtt_client.subscribe("thrs/simulation/status", qos=1)
+        for status in self._statuses:
+            await self._mqtt_client.subscribe(status.cls.topic(), qos=1)
 
         async def _run(self):
             async for message in self._mqtt_client.messages:
@@ -47,14 +85,16 @@ class Messaging[SensorValues: ThrsModel, ControlValues: ThrsModel]:
                     self._control_values = self._parse_message(
                         message, self._control_values_cls
                     )
-                elif message.topic.matches("thrs/simulation/status"):
-                    self._simulation_status = self._parse_message(
-                        message, StatusMessage
-                    )
-                    if self._waiting_for_status:
-                        await self._status_msgs.put(self._simulation_status)
+                elif status := self.find_status(message):
+                    await status.handle(self._parse_message(message, status.cls))
 
         return _run(self)
+
+    def find_status(self, message: Message) -> Status | None:
+        for status in self._statuses:
+            if message.topic.matches(status.cls.topic()):
+                return status
+        return None
 
     async def send_manual_controls(self, control_values: ThrustersControlValues):
         await self._mqtt_client.publish(
@@ -82,25 +122,26 @@ class Messaging[SensorValues: ThrsModel, ControlValues: ThrsModel]:
             qos=1,
         )
 
-    async def switch_automation_mode(self, mode: Literal["manual", "automatic"]):
+    async def set_automation(self, enabled: bool):
         await self._mqtt_client.publish(
-            SwitchAutomationModeMessage.topic(),
-            SwitchAutomationModeMessage(mode=mode).model_dump_json(),
+            SetAutomationMessage.topic(),
+            SetAutomationMessage(enabled=enabled).model_dump_json(),
             qos=1,
         )
 
-    async def wait_for_status(
+    async def wait_for_simulation_status(
         self, status: Literal["stepping", "running", "available"], timeout: float
-    ) -> StatusMessage:
-        async with asyncio.timeout(timeout):
-            self._waiting_for_status = True
-            try:
-                while True:
-                    msg = await self._status_msgs.get()
-                    if msg.status == status:
-                        return msg
-            finally:
-                self._waiting_for_status = False
+    ) -> SimulationStatusMessage:
+        return await self._simulation_status.wait_for(
+            lambda s: s.status == status, timeout
+        )
+
+    async def wait_for_control_status(
+        self, automatic: bool, timeout: float
+    ) -> ControlStatusMessage:
+        return await self._control_status.wait_for(
+            lambda s: s.automatic == automatic, timeout
+        )
 
     def _parse_message[T: ThrsModel](self, message: Message, model: type[T]) -> T:
         if not isinstance(message.payload, str | bytes):
@@ -116,5 +157,9 @@ class Messaging[SensorValues: ThrsModel, ControlValues: ThrsModel]:
         return self._control_values
 
     @property
-    def simulation_status(self) -> StatusMessage | None:
-        return self._simulation_status
+    def simulation_status(self) -> SimulationStatusMessage | None:
+        return self._simulation_status.status
+
+    @property
+    def control_status(self) -> ControlStatusMessage | None:
+        return self._control_status.status

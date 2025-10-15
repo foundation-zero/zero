@@ -43,3 +43,7 @@ class SwitchingControl[SensorValues: ThrsModel, ControlValues: ThrsModel, P: Thr
     @property
     def mode(self) -> str | None:
         return self._mode
+
+    @property
+    def automatic(self) -> bool:
+        return self._mode == "automatic"

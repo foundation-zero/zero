@@ -12,15 +12,6 @@ const thrsChildRoutes: RouteRecordRaw[] = [
     component: () => import("@/views/thrs/Hmi.vue"),
   },
   {
-    path: "simulation-controls",
-    name: "thrs/simulation-controls",
-    meta: {
-      layout: defineAsyncComponent(() => import("@/layouts/PlainLayout.vue")),
-      requiresAuth: false,
-    },
-    component: () => import("@/views/thrs/SimulationControls.vue"),
-  },
-  {
     path: "",
     name: "thrs",
     meta: {
