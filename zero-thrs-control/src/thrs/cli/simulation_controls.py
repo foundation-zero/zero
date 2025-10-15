@@ -119,7 +119,7 @@ class ControlStatusMessage(OutgoingMessage):
         return "thrs/controls/status"
 
     async def send(self, client: MqttClient):
-        return client.publish(
+        return await client.publish(
             self.topic(),
             self.model_dump_json(),
             qos=1,

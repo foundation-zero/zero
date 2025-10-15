@@ -6,7 +6,6 @@ from aiomqtt import Client as MqttClient, Message
 from thrs.cli.simulation_controls import (
     ControlStatusMessage,
     ManualControlMessage,
-    OutgoingMessage,
     PauseMessage,
     PlayMessage,
     SimulationStatusMessage,
@@ -17,16 +16,17 @@ from thrs.input_output.base import ThrsModel
 from thrs.input_output.modules.thrusters import ThrustersControlValues
 
 
-class Status[T: OutgoingMessage]:
-    def __init__(self, cls: type[T]):
+class MessageReceiver[T: ThrsModel]:
+    def __init__(self, cls: type[T], topic: str):
         self._cls = cls
-        self._status: T | None = None
+        self._last: T | None = None
         self._waiting = False
         self._msgs = Queue[T]()
+        self._topic = topic
 
     @property
-    def status(self) -> T | None:
-        return self._status
+    def last(self) -> T | None:
+        return self._last
 
     async def wait_for(self, condition: Callable[[T], bool], timeout: float) -> T:
         async with asyncio.timeout(timeout):
@@ -40,13 +40,17 @@ class Status[T: OutgoingMessage]:
                 self._waiting = False
 
     async def handle(self, msg: T):
-        self._status = msg
+        self._last = msg
         if self._waiting:
             await self._msgs.put(msg)
 
     @property
     def cls(self):
         return self._cls
+
+    @property
+    def topic(self):
+        return self._topic
 
 
 class Messaging[SensorValues: ThrsModel, ControlValues: ThrsModel]:
@@ -59,40 +63,40 @@ class Messaging[SensorValues: ThrsModel, ControlValues: ThrsModel]:
         self._mqtt_client = mqtt_client
         self._sensor_values_cls = sensor_values_cls
         self._control_values_cls = control_values_cls
-        self._sensor_values = None
-        self._control_values = None
-        self._simulation_status = Status(SimulationStatusMessage)
-        self._control_status = Status(ControlStatusMessage)
+        self._sensor_values = MessageReceiver(sensor_values_cls, "thrs/sensor_values")
+        self._control_values = MessageReceiver(
+            control_values_cls, "thrs/control_values"
+        )
+        self._simulation_status = MessageReceiver(
+            SimulationStatusMessage, SimulationStatusMessage.topic()
+        )
+        self._control_status = MessageReceiver(
+            ControlStatusMessage, ControlStatusMessage.topic()
+        )
 
     @property
     def _statuses(self):
-        return [self._simulation_status, self._control_status]
+        return [
+            self._sensor_values,
+            self._control_values,
+            self._simulation_status,
+            self._control_status,
+        ]
 
     async def run(self) -> Coroutine[None, None, None]:
-        await self._mqtt_client.subscribe("thrs/sensor_values", qos=1)
-        await self._mqtt_client.subscribe("thrs/control_values", qos=1)
         for status in self._statuses:
-            await self._mqtt_client.subscribe(status.cls.topic(), qos=1)
+            await self._mqtt_client.subscribe(status.topic, qos=1)
 
         async def _run(self):
             async for message in self._mqtt_client.messages:
-                if message.topic.matches("thrs/sensor_values"):
-                    self._sensor_values = self._parse_message(
-                        message, self._sensor_values_cls
-                    )
-
-                elif message.topic.matches("thrs/control_values"):
-                    self._control_values = self._parse_message(
-                        message, self._control_values_cls
-                    )
-                elif status := self.find_status(message):
+                if status := self.match_receiver(message):
                     await status.handle(self._parse_message(message, status.cls))
 
         return _run(self)
 
-    def find_status(self, message: Message) -> Status | None:
+    def match_receiver(self, message: Message) -> MessageReceiver | None:
         for status in self._statuses:
-            if message.topic.matches(status.cls.topic()):
+            if message.topic.matches(status.topic):
                 return status
         return None
 
@@ -143,6 +147,11 @@ class Messaging[SensorValues: ThrsModel, ControlValues: ThrsModel]:
             lambda s: s.automatic == automatic, timeout
         )
 
+    async def wait_for_control_values(
+        self, condition: Callable[[ControlValues], bool], timeout: float
+    ) -> ControlValues:
+        return await self._control_values.wait_for(condition, timeout)
+
     def _parse_message[T: ThrsModel](self, message: Message, model: type[T]) -> T:
         if not isinstance(message.payload, str | bytes):
             raise ValueError(f"Expected string or bytes, got {type(message.payload)}")
@@ -150,16 +159,16 @@ class Messaging[SensorValues: ThrsModel, ControlValues: ThrsModel]:
 
     @property
     def sensor_values(self) -> SensorValues | None:
-        return self._sensor_values
+        return self._sensor_values.last
 
     @property
     def control_values(self) -> ControlValues | None:
-        return self._control_values
+        return self._control_values.last
 
     @property
     def simulation_status(self) -> SimulationStatusMessage | None:
-        return self._simulation_status.status
+        return self._simulation_status.last
 
     @property
     def control_status(self) -> ControlStatusMessage | None:
-        return self._control_status.status
+        return self._control_status.last

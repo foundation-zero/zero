@@ -5,7 +5,7 @@
 Run the simulator with:
 
 ```bash
-poetry run python -m cli run thrusters
+poetry run python -m thrs.cli run thrusters
 ```
 
 The UI is in [zero-ui](https://github.com/foundation-zero/zero-ui) under [http://localhost:5173/thrs/hmi].

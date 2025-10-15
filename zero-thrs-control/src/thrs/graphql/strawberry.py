@@ -307,9 +307,13 @@ class DynamicInputFields:
                 ) -> ThrustersControlValuesType:
                     pydantic_value = component.to_pydantic().to_stamped()
                     setattr(thrusters_control_values, name, pydantic_value)
+                    expect = info.context.messaging.wait_for_control_values(
+                        lambda v: getattr(v, name) == pydantic_value, 2.0
+                    )
                     await info.context.messaging.send_manual_controls(
                         thrusters_control_values
                     )
+                    await expect
                     return ThrustersControlValuesType.from_pydantic(
                         thrusters_control_values
                     )
