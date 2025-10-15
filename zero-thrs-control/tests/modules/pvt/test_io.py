@@ -24,6 +24,7 @@ def test_pvt_sheet_names():
     assert not missing_in_py, f"Missing in Python: {missing_in_py}"
     assert not missing_in_sheet, f"Missing in sheet: {missing_in_sheet}"
 
+
 def test_pvt_fmu_names():
     missing_in_py, missing_in_fmu = compare_fmu_to_class(
         pvt_path,
@@ -35,6 +36,7 @@ def test_pvt_fmu_names():
 
     assert not missing_in_py, f"Missing in Python: {missing_in_py}"
     assert not missing_in_fmu, f"Missing in FMU: {missing_in_fmu}"
+
 
 @pytest.mark.skip("Skip until PVT FMU is updated")
 def test_yard_tags():

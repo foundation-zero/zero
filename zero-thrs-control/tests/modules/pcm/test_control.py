@@ -1,6 +1,6 @@
 from pytest import approx
-import pytest
 from thrs.control.modules.pcm import PcmControl
+from thrs.input_output.base import Stamped
 from thrs.input_output.modules.pcm import (
     PcmControlValues,
     PcmSensorValues,
@@ -18,6 +18,9 @@ type PcmExecutor = SimulationExecutor[
 
 
 async def test_idle(control: PcmControl, executor: PcmExecutor):
+    control._parameters.charging_enabled = False
+    control._parameters.supplying_enabled = False
+
     result = await executor.tick(
         control.control(PcmSensorValues.zero()).values,
     )
@@ -103,6 +106,7 @@ async def test_supplying(control: PcmControl, executor: PcmExecutor):
         control.control(PcmSensorValues.zero()).values,
     )
 
+    control._parameters.charging_enabled = False
     control.to_supplying(result.sensor_values)  # type: ignore
 
     for i in range(100):
@@ -173,33 +177,58 @@ async def test_supplying(control: PcmControl, executor: PcmExecutor):
     assert pcm_flow == approx(0, abs=0.01)
 
 
-@pytest.mark.skip("Boosting not implemented for now")
-async def test_boosting(control: PcmControl, executor: PcmExecutor):
-    control.to_boosting()  # type: ignore
-
+async def test_mode_switches(control: PcmControl, executor: PcmExecutor):
+    executor._simulation_inputs.pcm_producers_supply.temperature = Stamped.stamp(30)
     result = await executor.tick(
         control.control(PcmSensorValues.zero()).values,
     )
 
-    for i in range(100):
+    assert control.mode == "idle"
+
+    for i in range(30):
         control_values = control.control(result.sensor_values).values
         result = await executor.tick(control_values)
 
-    pcm_flow = (
-        result.sensor_values.pcm_flow_module_1.flow.value
-        + result.sensor_values.pcm_flow_module_2.flow.value
-        + result.sensor_values.pcm_flow_module_3.flow.value
-        + result.sensor_values.pcm_flow_module_4.flow.value
-    )
+    assert control.mode == "supplying"
 
-    assert (
-        result.simulation_inputs.pcm_producers_supply.flow.value
-        + result.sensor_values.pcm_pump.flow.value
-        == approx(pcm_flow, abs=1)
-    )  # type: ignore
-    assert pcm_flow == approx(
-        result.simulation_outputs.pcm_consumers_return.flow.value, abs=0.1
-    )
-    assert result.simulation_inputs.pcm_producers_supply.flow.value == approx(
-        result.simulation_outputs.pcm_producers_return.flow.value, abs=0.1
-    )  # type: ignore
+    for i in range(3):
+        result.sensor_values.pcm_module_1.charged.value = False
+        result.sensor_values.pcm_module_2.charged.value = False
+        result.sensor_values.pcm_module_3.charged.value = False
+        result.sensor_values.pcm_module_4.charged.value = True
+        control_values = control.control(result.sensor_values).values
+        result = await executor.tick(control_values)
+
+    assert control.mode == "supplying"
+
+    for i in range(3):
+        result.sensor_values.pcm_module_1.charged.value = False
+        result.sensor_values.pcm_module_2.charged.value = False
+        result.sensor_values.pcm_module_3.charged.value = False
+        result.sensor_values.pcm_module_4.charged.value = False
+        control_values = control.control(result.sensor_values).values
+        result = await executor.tick(control_values)
+
+    assert control.mode == "idle"
+
+    executor._simulation_inputs.pcm_producers_supply.temperature = Stamped.stamp(80)
+    for i in range(10):
+        result.sensor_values.pcm_module_1.charged.value = False
+        result.sensor_values.pcm_module_2.charged.value = False
+        result.sensor_values.pcm_module_3.charged.value = False
+        result.sensor_values.pcm_module_4.charged.value = False
+        control_values = control.control(result.sensor_values).values
+        result = await executor.tick(control_values)
+
+    assert control.mode == "charging"
+
+    executor._simulation_inputs.pcm_producers_supply.temperature = Stamped.stamp(30)
+    for i in range(30):
+        result.sensor_values.pcm_module_1.charged.value = False
+        result.sensor_values.pcm_module_2.charged.value = False
+        result.sensor_values.pcm_module_3.charged.value = False
+        result.sensor_values.pcm_module_4.charged.value = False
+        control_values = control.control(result.sensor_values).values
+        result = await executor.tick(control_values)
+
+    assert control.mode == "idle"

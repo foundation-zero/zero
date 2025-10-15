@@ -14,7 +14,10 @@ class PcmParameters(ThrsModel):
     pcm_discharge_flow: LMin = 5
     pcm_charge_flow: LMin = 5
     minimum_charging_dt: Celsius = 2
+    minimum_charging_temperature: Celsius = 60
     pump_tuning: Tuning = (0.01, 0.001, 0)
+    supplying_enabled: bool = True
+    charging_enabled: bool = True
     module_1_flow_balance_tuning: Tuning = (0.05, 0.01, 0)
     module_2_flow_balance_tuning: Tuning = (0.05, 0.01, 0)
     module_3_flow_balance_tuning: Tuning = (0.05, 0.01, 0)
@@ -93,12 +96,39 @@ class PcmControl(Control[PcmSensorValues, PcmControlValues, PcmParameters]):
 
         self._transitions = [
             {
-                "trigger": "_check_charge",
+                "trigger": "_try_supplying",
+                "source": "idle",
+                "dest": "supplying",
+                "conditions": [
+                    lambda sensor_values: self._parameters.supplying_enabled,
+                    lambda sensor_values: not self._all_discharged(sensor_values),
+                ],
+            },
+            {
+                "trigger": "_check_supplying_conditions",
                 "source": "supplying",
                 "dest": "idle",
-                "conditions": self._all_discharged,
-            }
+                "conditions": lambda sensor_values: not self._parameters.supplying_enabled
+                or self._all_discharged(sensor_values),
+            },
+            {
+                "trigger": "_try_charging",
+                "source": "idle",
+                "dest": "charging",
+                "conditions": [
+                    lambda sensor_values: self._parameters.charging_enabled,
+                    self._heat_available,
+                ],
+            },
+            {
+                "trigger": "_check_charging_conditions",
+                "source": "charging",
+                "dest": "idle",
+                "conditions": lambda sensor_values: not self._parameters.charging_enabled
+                or not self._sufficient_dt(sensor_values),
+            },
         ]
+
         self.pcm_state_machine = Machine(
             model=self,
             states=self._states,
@@ -179,11 +209,15 @@ class PcmControl(Control[PcmSensorValues, PcmControlValues, PcmParameters]):
         return ControlResult(self._time(), self._current_values)
 
     def control(self, sensor_values: PcmSensorValues) -> ControlResult:
+        self._try_supplying(sensor_values) if self.mode == "idle" else None  # type: ignore
+        self._try_charging(sensor_values) if self.mode == "idle" else None  # type: ignore
+
         if self.mode == "charging":
             self._set_charging_flow_setpoints(sensor_values)
+            self._check_charging_conditions(sensor_values)  # type: ignore
         elif self.mode == "supplying":
-            self._check_charge(sensor_values)  # type: ignore
             self._set_supplying_flow_setpoints(sensor_values)
+            self._check_supplying_conditions(sensor_values)  # type: ignore
 
         self._control_flow_balance(sensor_values)
 
@@ -196,6 +230,38 @@ class PcmControl(Control[PcmSensorValues, PcmControlValues, PcmParameters]):
                 sensor_values.pcm_module_2.charged.value,
                 sensor_values.pcm_module_3.charged.value,
                 sensor_values.pcm_module_4.charged.value,
+            )
+        )
+
+    def _heat_available(self, sensor_values: PcmSensorValues) -> bool:
+        return (
+            sensor_values.pcm_temperature_producers_return.temperature.value
+            > self._parameters.minimum_charging_temperature
+        )  # TODO: need to check if flow is available, but the flow meter is in the consumers module
+
+    def _sufficient_dt(self, sensor_values: PcmSensorValues) -> bool:
+        return any(
+            (
+                (
+                    sensor_values.pcm_temperature_producers_return.temperature.value
+                    - sensor_values.pcm_temperature_module_1_out.temperature.value
+                )
+                > self._parameters.minimum_charging_dt,
+                (
+                    sensor_values.pcm_temperature_producers_return.temperature.value
+                    - sensor_values.pcm_temperature_module_2_out.temperature.value
+                )
+                > self._parameters.minimum_charging_dt,
+                (
+                    sensor_values.pcm_temperature_producers_return.temperature.value
+                    - sensor_values.pcm_temperature_module_3_out.temperature.value
+                )
+                > self._parameters.minimum_charging_dt,
+                (
+                    sensor_values.pcm_temperature_producers_return.temperature.value
+                    - sensor_values.pcm_temperature_module_4_out.temperature.value
+                )
+                > self._parameters.minimum_charging_dt,
             )
         )
 
