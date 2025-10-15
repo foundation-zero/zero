@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import ComponentTable from "@/components/modules/hmi/ComponentTable.vue";
 import { Button } from "@/components/ui/shadcn/button";
 import { Label } from "@/components/ui/shadcn/label";
 import {
@@ -19,7 +20,6 @@ import {
 } from "@/stores/thrs-simulation";
 import { JSONSchemaObject } from "@apidevtools/json-schema-ref-parser/dist/lib/types";
 import FieldEdit from "@modules/thrs/FieldEdit.vue";
-import ValueTable from "@modules/thrs/ValueTable.vue";
 import { computedAsync } from "@vueuse/core";
 import { useObservable } from "@vueuse/rxjs";
 import { computed, shallowRef, watch } from "vue";
@@ -87,7 +87,7 @@ const controlParameters = computedAsync<UndeterminedField[]>(async () => {
 const controlModes = computedAsync<UndeterminedField | null>(async () => {
   if (!schemas.value) return null;
 
-  return await extractField("control_mode", schemas.value.control_modes as JSONSchemaObject);
+  return extractField("control_mode", schemas.value.control_modes as JSONSchemaObject);
 });
 
 const controlModeValue = shallowRef<{ control_mode?: string }>({});
@@ -155,13 +155,13 @@ const format = formatNumber(2);
         </div>
       </template>
       <h2 class="mb-2 text-xl font-semibold">{{ t("views.thrs.hmi.sensorValues") }}</h2>
-      <ValueTable
+      <ComponentTable
         v-if="sensorValues"
         :values="sensorValues"
         :format="format"
       />
       <h2 class="mb-2 text-xl font-semibold">{{ t("views.thrs.hmi.controlValues") }}</h2>
-      <ValueTable
+      <ComponentTable
         v-if="controlValues"
         :values="controlValues"
         :format="format"

@@ -17,7 +17,7 @@ import {
 import { ArgumentsType, useIntervalFn } from "@vueuse/core";
 import { type ClassValue, clsx } from "clsx";
 import { twMerge } from "tailwind-merge";
-import { computed, ComputedRef, ref, Ref, watch } from "vue";
+import { computed, ComputedRef, ref, Ref, watch, WritableComputedRef } from "vue";
 import { CO2_THRESHOLDS, DEMO_MODE, HUMIDITY_THRESHOLDS, TEMPERATURE_THRESHOLDS } from "./consts";
 
 export function cn(...inputs: ClassValue[]) {
@@ -239,6 +239,20 @@ export const getRoomState = (room: Room): RoomState => {
   };
 };
 
+export const toElementRefs = <Items extends unknown[]>(items: Ref<Items>) =>
+  items.value.map((_, index) =>
+    computed({
+      get() {
+        return items.value[index];
+      },
+      set(next: Items[typeof index]) {
+        const copy = items.value.slice();
+        copy[index] = next;
+        items.value = copy as Items;
+      },
+    }),
+  ) as { [K in keyof Items]: WritableComputedRef<Items[K]> };
+
 export const isSensorType =
   <T extends SensorType>(type: T) =>
   (sensor: RoomSensor): sensor is SensorTypeMap[T] =>
@@ -284,3 +298,5 @@ export const extractTemperatureSetpoint = extractActualControlValue(ControlType.
 export const extractAmplifierStatus = extractActualControlValue(ControlType.AMPLIFIER);
 export const extractHumiditySetpoint = extractActualControlValue(ControlType.HUMIDITY);
 export const extractCO2Setpoint = extractActualControlValue(ControlType.CO2);
+
+export const toUpperCamelCase = (str: string) => str.replace(/([A-Z])/g, " $1").trim();

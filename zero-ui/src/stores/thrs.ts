@@ -1,79 +1,119 @@
-import { Stamped } from "@/@types/thrs";
+import { PID, Stamped } from "@/@types/thrs";
+import { THRSModules } from "@/lib/consts";
 import { useClientHandle } from "@urql/vue";
 import { defineStore } from "pinia";
-import { computed, ref, Ref, WritableComputedRef } from "vue";
+import { computed, ref, Ref, toRef, WritableComputedRef } from "vue";
 
 type FormValue<T> = {
   value: WritableComputedRef<T>;
   isDirty: Ref<boolean>;
 };
-type Unstamp<T> = T extends Stamped<infer U> ? U : never;
-
-const INPUT_TYPES = {
-  pump: "PumpInputType!",
-  valve: "ValveInputType!",
-};
+type Unstamp<T> = T extends Stamped<infer U> ? U : T;
 
 const capitalizeFirst = (a: string) => {
   const f = a.substring(0, 1).toUpperCase();
   return `${f}${a.substring(1)}`;
 };
 
-export const controlValuesForm = <
-  A extends Record<string, Stamped<boolean | number>>,
-  K extends keyof A,
->(
-  componentName: string,
-  type: "pump" | "valve",
-  fields: K[],
-  controlValuesQuery: string,
-  props: { controlValues: A },
-  emit: (event: "update:controlValues", value: A) => void,
-): { submit: () => Promise<void>; isSubmitting: Ref<boolean>; error: Ref<null | string> } & {
-  [key in K]: FormValue<Unstamp<A[key]>>;
-} => {
-  const refs = Object.fromEntries(
-    fields.map((field: K) => {
-      const dirtyValue = ref<A[K] | null>(null);
-      return [
-        field,
-        {
-          value: computed<A[K]>({
-            get() {
-              return dirtyValue.value !== null
-                ? dirtyValue.value
-                : props.controlValues[field].value;
-            },
-            set(value) {
-              dirtyValue.value = value;
-            },
-          }),
-          isDirty: computed({
-            get() {
-              return dirtyValue.value !== null;
-            },
-            set(v: boolean) {
-              if (!v) {
-                dirtyValue.value = null;
-              }
-            },
-          }),
-        } as FormValue<A[K]>,
-      ];
+const valueWithDirty = <T>(value: Ref<T>): FormValue<Unstamp<T>> => {
+  const dirtyValue = ref<Unstamp<T> | null>(null);
+  return {
+    value: computed<Unstamp<T>>({
+      get() {
+        return dirtyValue.value !== null ? dirtyValue.value : unstamp(value.value);
+      },
+      set(value) {
+        dirtyValue.value = value;
+      },
     }),
+    isDirty: computed({
+      get() {
+        return dirtyValue.value !== null;
+      },
+      set(v: boolean) {
+        if (!v) {
+          dirtyValue.value = null;
+        }
+      },
+    }),
+  } as FormValue<Unstamp<T>>;
+};
+
+export const enum MutationType {
+  Control = "control",
+  Parameter = "parameter",
+  Simulation = "simulation",
+}
+
+export type InputType = {
+  [MutationType.Control]: ["PumpInputType!", "ValveInputType!"];
+  [MutationType.Parameter]: ["Float!", "[Float!]!"];
+  [MutationType.Simulation]: [];
+};
+
+const isStamped = <T>(input: T | Stamped<T>): input is Stamped<T> =>
+  typeof input === "object" && input !== null && "value" in input && "timestamp" in input;
+
+const unstamp = <T>(input: T | Stamped<T>): T => (isStamped(input) ? input.value : input);
+
+export type FieldObject = Record<string, unknown>;
+export type FieldType = boolean | string | number | PID;
+
+export type ExtractRefKeys<A extends Ref<FieldObject | FieldType>> =
+  A extends Ref<FieldObject> ? keyof A["value"] : "value";
+
+export type FormValues<
+  A extends Ref<FieldObject | FieldType>,
+  K extends ExtractRefKeys<A> = ExtractRefKeys<A>,
+> = {
+  [key in K]: FormValue<key extends keyof A["value"] ? Unstamp<A["value"][key]> : A["value"]>;
+};
+
+export const controlValuesForm = <
+  Module extends keyof THRSModules,
+  Mutation extends MutationType,
+  Input extends InputType[Mutation],
+  A extends Ref<FieldObject | FieldType>,
+  K extends ExtractRefKeys<A>,
+  Form extends FormValues<A>,
+>(
+  module: Module,
+  mutationType: Mutation,
+  inputType: Input[number],
+  componentName: string,
+  values: A,
+  fields: K[],
+  returnValuesQuery: string,
+  emit: (event: "update:controlValues", value: A["value"]) => void,
+): {
+  submit: () => Promise<void>;
+  isSubmitting: Ref<boolean>;
+  error: Ref<null | string>;
+} & Form => {
+  const refs = Object.fromEntries(
+    fields.map((field: K) => [
+      field,
+      valueWithDirty(
+        typeof values.value === "object" && !Array.isArray(values.value)
+          ? toRef(values.value, field)
+          : values,
+      ),
+    ]),
   );
   const isSubmitting = ref(false);
   const error = ref<null | string>(null);
   const { client } = useClientHandle();
 
   const submit = async () => {
-    const input = Object.fromEntries(
-      Object.entries(refs).map(([key, { value }]) => [key, value.value]),
-    );
-    const mutation = `setThrustersControl${capitalizeFirst(componentName)}`;
-    const query = `mutation ($input: ${INPUT_TYPES[type]}) {
+    const input =
+      typeof values.value === "object" && !Array.isArray(values.value)
+        ? Object.fromEntries(Object.entries(refs).map(([key, { value }]) => [key, value.value]))
+        : refs["value"].value.value;
+
+    const mutation = `set${capitalizeFirst(module)}${capitalizeFirst(mutationType)}${capitalizeFirst(componentName)}`;
+    const query = `mutation ($input: ${inputType}) {
       ${mutation}(component: $input) {
-        ${controlValuesQuery}
+        ${returnValuesQuery}
       }
     }`;
     try {
@@ -97,9 +137,7 @@ export const controlValuesForm = <
     submit: () => Promise<void>;
     isSubmitting: Ref<boolean>;
     error: Ref<null | string>;
-  } & {
-    [key in K]: FormValue<Unstamp<A[key]>>;
-  };
+  } & Form;
 };
 
 defineStore("thrs", () => {});

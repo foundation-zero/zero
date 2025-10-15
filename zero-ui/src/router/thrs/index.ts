@@ -6,7 +6,7 @@ const thrsChildRoutes: RouteRecordRaw[] = [
     path: "hmi",
     name: "thrs/hmi",
     meta: {
-      layout: defineAsyncComponent(() => import("@/layouts/PlainLayout.vue")),
+      layout: defineAsyncComponent(() => import("@/layouts/HMILayout.vue")),
       requiresAuth: false,
     },
     component: () => import("@/views/thrs/Hmi.vue"),
