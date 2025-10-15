@@ -35,7 +35,7 @@ def simulation_inputs():
         pvt_pump_failure_switch_owners=ValvePosition(
             position_rel=Stamped.stamp(Valve.CLOSED)
         ),
-        pvt_module_supply=TemperatureBoundary(temperature=Stamped.stamp(65)),
+        pvt_module_supply=TemperatureBoundary(temperature=Stamped.stamp(50)),
         pvt_seawater_supply=Boundary(
             temperature=Stamped.stamp(32), flow=Stamped.stamp(64)
         ),

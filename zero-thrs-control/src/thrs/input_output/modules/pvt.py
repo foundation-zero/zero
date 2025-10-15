@@ -282,7 +282,9 @@ class PvtSensorValues(ThrsModel):
         sensor.TemperatureSensor, component_meta(yard_tag="50009005-45")
     ]
 
-    @computed_field
+    @computed_field(
+        json_schema_extra=component_meta(included_in_fmu=False).json_schema_extra
+    )
     @property
     def pvt_max_temperature_main_fwd_strings(
         self,
@@ -311,7 +313,9 @@ class PvtSensorValues(ThrsModel):
 
         return sensor.CalculatedTemperature(**max_sensor.model_dump())
 
-    @computed_field
+    @computed_field(
+        json_schema_extra=component_meta(included_in_fmu=False).json_schema_extra
+    )
     @property
     def pvt_max_temperature_main_aft_strings(
         self,
@@ -341,7 +345,9 @@ class PvtSensorValues(ThrsModel):
 
         return sensor.CalculatedTemperature(**max_sensor.model_dump())
 
-    @computed_field
+    @computed_field(
+        json_schema_extra=component_meta(included_in_fmu=False).json_schema_extra
+    )
     @property
     def pvt_max_temperature_owners_strings(
         self,

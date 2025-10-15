@@ -18,27 +18,27 @@ class PvtParameters(ThrsModel):
     warmup_temperature: Celsius = 55
     recovery_activation_string_temperature: Celsius = 40
     minimum_return_temperature: Celsius = 40
-    main_fwd_minimum_pump_dutypoint: Ratio = 0.3  # minimum dutpypoint to ensure flow past temperature sensor in recovery mode
-    main_aft_minimum_pump_dutypoint: Ratio = 0.3  # minimum dutpypoint to ensure flow past temperature sensor in recovery mode
-    owners_minimum_pump_dutypoint: Ratio = 0.4  # minimum dutpypoint to ensure flow past temperature sensor in recovery mode
+    main_fwd_minimum_pump_dutypoint: Ratio = 0.3  # minimum dutpypoint to ensure flow past temperature sensor in recovery mode (~10l/min)
+    main_aft_minimum_pump_dutypoint: Ratio = 0.3  # minimum dutpypoint to ensure flow past temperature sensor in recovery mode (~10l/min)
+    owners_minimum_pump_dutypoint: Ratio = 0.4  # minimum dutpypoint to ensure flow past temperature sensor in recovery mode (~10l/min)
     heat_dump_tuning: Tuning = (0.05, 0.001, 0.0)
     main_fwd_mix_tuning: Tuning = (-0.005, -0.001, 0.0)
     main_aft_mix_tuning: Tuning = (-0.005, -0.001, 0.0)
     owners_mix_tuning: Tuning = (-0.005, -0.001, 0.0)
     main_fwd_pump_tuning: Tuning = (
+        -0.0005,
         -0.0001,
-        -0.00005,
-        0.0,
+        -0.00001,
     )
     main_aft_pump_tuning: Tuning = (
+        -0.0005,
         -0.0001,
-        -0.00005,
-        -0.0,
+        -0.00001,
     )
     owners_pump_tuning: Tuning = (
+        -0.0005,
         -0.0001,
-        -0.00005,
-        -0.0,
+        -0.00001,
     )
 
     @model_validator(mode="after")
@@ -161,12 +161,6 @@ class PvtControl(Control[PvtSensorValues, PvtControlValues, PvtParameters]):
 
     def initial(self) -> ControlResult[PvtControlValues]:
         return ControlResult(self._time(), self._current_values)
-
-    def _enable_heat_dump_mix(self):
-        self._heat_dump_controller.enable()
-
-    def _disable_heat_dump_mix(self):
-        self._heat_dump_controller.disable()
 
     def _control_heat_dump_mix(self, sensor_values: PvtSensorValues):
         self._current_values.pvt_mix_exchanger.setpoint = Stamped(
