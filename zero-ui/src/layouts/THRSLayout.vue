@@ -14,13 +14,13 @@ const { t } = useI18n();
   </main>
   <nav class="fixed top-0 right-0 left-0">
     <Toolbar class="py-1 pr-2 pl-3">
-      <template #left>
+      <template #left-content>
         <h4 class="text-2xl font-semibold uppercase">{{ t("labels.thrs") }}</h4>
       </template>
       <template #center>
         <NavPills />
       </template>
-      <template #right>
+      <template #right-content>
         <ToolbarActions />
       </template>
     </Toolbar>

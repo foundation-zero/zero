@@ -9,6 +9,7 @@
     "environment": "Environment",
     "eco": "ECO Setpoint",
     "zero": "ZERO",
+    "hmi": "HMI",
     "rooms": "Rooms",
     "water": "Water",
     "heating": "Heating",
@@ -38,6 +39,7 @@
     "save": "Save",
     "off": "Off",
     "overview": "Overview",
+    "submit": "Submit",
     "status": "Status",
     "roomGroup": {
       "aftship": "Aftship",
@@ -78,6 +80,9 @@
         "connect": "Connect",
         "sensorValues": "Sensor values",
         "controlValues": "Control values",
+        "controls": "Controls",
+        "parameters": "Parameters",
+        "sensors": "Sensors",
         "controlParameters": "Control parameters",
         "controlMode": "Control mode",
         "simulationInputs": "Simulation inputs",
@@ -89,6 +94,21 @@
     }
   },
   "components": {
+    "inputs": {
+      "pid": {
+        "p": "P",
+        "i": "I",
+        "d": "D"
+      },
+      "flow": {
+        "label": "Flow",
+        "unit": "L/min"
+      },
+      "temperature": {
+        "label": "Temperature",
+        "unit": "°C"
+      }
+    },
     "thrs": {
       "valueTable": {
         "component": "Component",

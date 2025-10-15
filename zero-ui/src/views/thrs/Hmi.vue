@@ -1,33 +1,44 @@
 <script setup lang="ts">
-import ControlModule from "@/components/modules/thrs/ControlModule.vue";
-import thrsSchema from "@/graphql/thrs/schema.graphql?raw";
+import ModuleControls from "@/components/modules/hmi/ModuleControls.vue";
+import ModuleParameters from "@/components/modules/hmi/ModuleParameters.vue";
+import ModuleSensors from "@/components/modules/hmi/ModuleSensors.vue";
+import { DEFINITIONS, QUERIES } from "@/lib/consts";
 import { Client, fetchExchange, provideClient } from "@urql/vue";
-import { buildASTSchema, GraphQLField, GraphQLNonNull, GraphQLObjectType, parse } from "graphql";
-
-const ast = parse(thrsSchema);
-const schema = buildASTSchema(ast);
-const query = schema.getQueryType();
-const moduleNode = query?.getFields()?.modules;
+import { computed, ref } from "vue";
 
 const client = new Client({
   url: "/api/thrs/graphql",
   exchanges: [fetchExchange],
 });
+
 provideClient(client);
 
-const modules =
-  (
-    (moduleNode as GraphQLField<unknown, unknown, unknown> | undefined)?.type as
-      | GraphQLNonNull<GraphQLObjectType>
-      | undefined
-  )?.ofType?.getFields() ?? {};
+const currentDefinition = ref<keyof typeof DEFINITIONS>("thrusters");
+const definition = computed(() => DEFINITIONS[currentDefinition.value]);
 </script>
 <template>
-  <ControlModule
-    v-for="(module, key) in modules"
-    :key="key"
-    :module="key as string"
-    :schema="module"
-    :client="client"
-  />
+  <main class="pb-8">
+    <article class="grid gap-8 px-4">
+      <ModuleControls
+        :module="currentDefinition"
+        :controls="definition.controlValues"
+        :query="QUERIES[currentDefinition].controlValues"
+        :client="client"
+      />
+
+      <ModuleParameters
+        :module="currentDefinition"
+        :parameters="definition.parameters"
+        :query="QUERIES[currentDefinition].parameters"
+        :client="client"
+      />
+
+      <ModuleSensors
+        :module="currentDefinition"
+        :sensors="definition.sensorValues"
+        :query="QUERIES[currentDefinition].sensorValues"
+        :client="client"
+      />
+    </article>
+  </main>
 </template>
