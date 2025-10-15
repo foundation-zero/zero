@@ -2,7 +2,7 @@
 {%- set tables = ['power_tag', 'pvt', 'shore_power', 'hydrogeneration'] -%}
 
 WITH combined_power_data AS (
-{%- for t in tables -%}
+	{%- for t in tables -%}
   		SELECT
     		{{ t }}.topic,
 			{{ t }}.time,
