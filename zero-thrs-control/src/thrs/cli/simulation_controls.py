@@ -1,7 +1,8 @@
-from asyncio import TaskGroup, create_task, sleep
+from asyncio import Queue, TaskGroup, create_task, sleep
 from contextlib import asynccontextmanager
 from dataclasses import replace
 from datetime import datetime, timedelta
+import logging
 from typing import Annotated, Any, Awaitable, ClassVar, Literal, overload
 from aiomqtt import Client as MqttClient
 from pydantic import BaseModel, Field, TypeAdapter, ValidationError
@@ -32,6 +33,7 @@ from thrs.orchestration.executor import MqttExecutor
 from thrs.simulation.models.fmu_paths import thrusters_path
 from thrs.orchestration.simulator import Simulator, SimulatorModel
 
+logger = logging.getLogger(__name__)
 
 INPUTS = {
     "THRUSTERS": ThrustersSimulationInputs(
@@ -85,7 +87,9 @@ class StatusMessage(ThrsModel):
         "ready_to_run",
         "running",
         "ran",
+        "stepping",
     ]
+    simulation_time: datetime | None = None
 
 
 class ConnectMessage(ThrsModel):
@@ -161,6 +165,18 @@ def schemas_for_mode(mode: Modes) -> SchemaMessage:
             ]
         ).json_schema(),
     )
+
+
+class PlayMessage(ThrsModel):
+    playback_rate: Annotated[float, Field(ge=0.25, le=10)] = 1.0
+
+
+class StepMessage(ThrsModel):
+    seconds: Annotated[float, Field(ge=0)]
+
+
+class PauseMessage(ThrsModel):
+    pass
 
 
 class SimulationControls:
@@ -359,8 +375,37 @@ class SimulationControls:
             except ResetError:
                 pass  # Reset the sequencer and start over
 
+    async def _receive_manual_controls(self, cmds, manual_control: ManualControl):
+        async for message in self._controls_client.messages:
+            if message.topic.matches("thrs/manual_controls") and isinstance(
+                message.payload, str | bytes
+            ):
+                manual_control.manual_controls(
+                    ThrustersControlValues.model_validate_json(message.payload)
+                )
+            elif message.topic.matches("thrs/simulation/play"):
+                if not isinstance(message.payload, str | bytes):
+                    raise ValueError(
+                        f"Expected string or bytes, got {type(message.payload)}"
+                    )
+                step_msg = PlayMessage.model_validate_json(message.payload)
+                await cmds.put(step_msg)
+            elif message.topic.matches("thrs/simulation/pause"):
+                logger.debug("Received pause command, pausing simulation")
+                await cmds.put(PauseMessage())
+            elif message.topic.matches("thrs/simulation/step"):
+                if not isinstance(message.payload, str | bytes):
+                    raise ValueError(
+                        f"Expected string or bytes, got {type(message.payload)}"
+                    )
+                step_msg = StepMessage.model_validate_json(message.payload)
+                await cmds.put(step_msg)
+
     async def run_blind(self, mode: Modes):
         await self._controls_client.subscribe("thrs/manual_controls", qos=1)
+        await self._controls_client.subscribe("thrs/simulation/play", qos=1)
+        await self._controls_client.subscribe("thrs/simulation/step", qos=1)
+        await self._controls_client.subscribe("thrs/simulation/pause", qos=1)
         model = MODES[mode]
         manual_control_model = replace(model, control_cls=ManualControl)
         with manual_control_model.executor() as executor:
@@ -375,24 +420,58 @@ class SimulationControls:
                 ThrustersControlValues,
             )
             simulator = Simulator(manual_control_model, executor, manual_control)
-
-            async def _receive_manual_controls():
-                async for message in self._controls_client.messages:
-                    if message.topic.matches("thrs/manual_controls") and isinstance(
-                        message.payload, str | bytes
-                    ):
-                        manual_control.manual_controls(
-                            ThrustersControlValues.model_validate_json(message.payload)
-                        )
+            cmds: Queue[PlayMessage | PauseMessage | StepMessage] = Queue()
 
             await executor.start()
             executor_task = create_task(executor.run())
-            receive_task = create_task(_receive_manual_controls())
+            receive_task = create_task(
+                self._receive_manual_controls(cmds, manual_control)
+            )
             try:
                 while True:
-                    async with TaskGroup() as tg:
-                        tg.create_task(sleep(1))
-                        tg.create_task(simulator.run(1))
+                    await self._controls_client.publish(
+                        "thrs/simulation/status",
+                        StatusMessage(
+                            status="available", simulation_time=executor.time()
+                        ).model_dump_json(),
+                        qos=1,
+                        retain=True,
+                    )
+                    cmd = await cmds.get()
+                    if isinstance(cmd, PlayMessage):
+                        sleep_duration = (
+                            model.tick_duration.total_seconds() / cmd.playback_rate
+                        )
+                        await self._controls_client.publish(
+                            "thrs/simulation/status",
+                            StatusMessage(
+                                status="running", simulation_time=executor.time()
+                            ).model_dump_json(),
+                            qos=1,
+                            retain=True,
+                        )
+                        logging.debug(
+                            f"Starting simulation with tick interval of {sleep_duration} seconds"
+                        )
+                        while cmds.empty():
+                            async with TaskGroup() as tg:
+                                tg.create_task(sleep(sleep_duration))
+                                tg.create_task(simulator.run(1))
+                        logger.debug("Simulation paused")
+                    elif isinstance(cmd, StepMessage):
+                        await self._controls_client.publish(
+                            "thrs/simulation/status",
+                            StatusMessage(
+                                status="stepping", simulation_time=executor.time()
+                            ).model_dump_json(),
+                            qos=1,
+                            retain=True,
+                        )
+                        ticks = max(
+                            1, int(cmd.seconds / model.tick_duration.total_seconds())
+                        )
+                        logging.debug(f"Stepping simulation by {ticks} tick")
+                        await simulator.run(ticks)
             finally:
                 executor_task.cancel()
                 receive_task.cancel()

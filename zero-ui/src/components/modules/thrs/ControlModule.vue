@@ -58,20 +58,16 @@ const queryPacked = (query: Ref<string>, fieldName: string) => {
 const sensorValuesQuery = queryFor(
   computed(
     () =>
-      (
-        (props.schema.type as GraphQLNonNull<GraphQLObjectType>).ofType.getFields().sensorValues
-          .type as GraphQLNonNull<GraphQLObjectType>
-      ).ofType,
+      (props.schema.type as GraphQLNonNull<GraphQLObjectType>).ofType.getFields().sensorValues
+        .type as GraphQLObjectType,
   ),
   "sensorValues",
 );
 const sensorValues = queryPacked(sensorValuesQuery, "sensorValues");
 const controlValueSchema = computed(
   () =>
-    (
-      (props.schema.type as GraphQLNonNull<GraphQLObjectType>).ofType.getFields().controlValues
-        .type as GraphQLNonNull<GraphQLObjectType>
-    ).ofType,
+    (props.schema.type as GraphQLNonNull<GraphQLObjectType>).ofType.getFields().controlValues
+      .type as GraphQLObjectType,
 );
 const controlValuesQuery = queryFor(controlValueSchema, "controlValues");
 const controlValuesComponentsQuery = computed(() => componentsQuery(controlValueSchema.value));

@@ -2,6 +2,7 @@ from asyncio import TaskGroup
 import asyncio
 from dataclasses import dataclass
 from datetime import datetime, timedelta
+import logging
 from typing import Any, Literal
 
 from aiomqtt import Client
@@ -11,6 +12,8 @@ from thrs.simulation.fmu import Fmu
 from thrs.simulation.io_mapping import IoMapping
 
 from thrs.classes.executor import ExecutionResult, Executor
+
+logger = logging.getLogger(__name__)
 
 
 class MqttExecutor[S: ThrsModel, C: ThrsModel](Executor[S, C]):
@@ -53,7 +56,9 @@ class MqttExecutor[S: ThrsModel, C: ThrsModel](Executor[S, C]):
                     f"Expected string or bytes, got {type(message.payload)}"
                 )
             self._last_controls = self._control_cls.model_validate_json(message.payload)
+            logging.debug("Received new control values, passing to inner executor")
             execution_result = await self._inner.tick(self._last_controls)
+            logging.debug("Publishing sensor values")
             await self._environment_client.publish(
                 self._sensor_topic,
                 execution_result.sensor_values.model_dump_json(),
@@ -164,6 +169,7 @@ class SimulationExecutor[S: ThrsModel, C: ThrsModel, I: SimulationInputs, O: Thr
         return self._start_time + self._ticks * self._tick_duration
 
     async def tick(self, control_values: C) -> SimulationExecutionResult[S, C, I, O]:
+        logging.debug("Running simulation tick")
         time = self.time()
         simulation_inputs = self._simulation_inputs.get_values_at_time(time)
         sensor_values, simulation_outputs, raw = self._io_mapping.tick(

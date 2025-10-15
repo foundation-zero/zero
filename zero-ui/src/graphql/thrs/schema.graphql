@@ -101,7 +101,7 @@ input PumpInputType {
 
 type Query {
   modules: Modules!
-  simulation: SimulationState!
+  simulation: SimulationState
   thrustersSensorValues: ThrustersSensorValuesType!
 }
 
@@ -138,7 +138,7 @@ type SensorValveType {
 
 type SimulationState {
   time: DateTime!
-  playing: Boolean!
+  status: String!
 }
 
 input TemperatureBoundaryInputType {
@@ -213,8 +213,8 @@ type ThrustersSensorValuesType {
 }
 
 type ThrustersSensorValuesTypeThrustersControlValuesTypeThrustersParametersTypeThrustersSimulationInputsTypeThrustersSimulationOutputsTypeModule {
-  sensorValues: ThrustersSensorValuesType!
-  controlValues: ThrustersControlValuesType!
+  sensorValues: ThrustersSensorValuesType
+  controlValues: ThrustersControlValuesType
   parameters: ThrustersParametersType!
   simulation: ThrustersSensorValuesTypeThrustersControlValuesTypeThrustersParametersTypeThrustersSimulationInputsTypeThrustersSimulationOutputsTypeModuleSimulation
 }
