@@ -19,7 +19,7 @@ const { t } = useI18n();
 
 const props = defineProps<{
   componentName: string;
-  parameterValuesQuery: string;
+  query: string;
   module: K;
   componentType: ParametersType;
 }>();
@@ -44,7 +44,7 @@ const {
   props.componentName,
   modelValue,
   ["value"],
-  props.parameterValuesQuery,
+  props.query,
   emit,
 );
 

@@ -1,4 +1,4 @@
-import { ModuleDefinition, THRSModule } from "@/@types/thrs";
+import { ModuleDefinition, SchemaDefinition, SchemaDefinitions, THRSModule } from "@/@types/thrs";
 import { DEFINITIONS } from "./consts";
 
 export type THRSDefinitions<T extends Record<string, ModuleDefinition> = typeof DEFINITIONS> = T;
@@ -13,7 +13,14 @@ export type THRSQueries<
   TDefinitions extends Record<string, ModuleDefinition> = typeof DEFINITIONS,
 > = {
   [Module in keyof TDefinitions]: {
-    [QueryGroup in keyof TDefinitions[Module]]: string;
+    [QueryGroup in keyof TDefinitions[Module]]: TDefinitions[Module][QueryGroup] extends Record<
+      string,
+      SchemaDefinitions<SchemaDefinition<unknown>>
+    >
+      ? {
+          [DefinitionPart in keyof TDefinitions[Module][QueryGroup]]: string;
+        }
+      : string;
   };
 };
 

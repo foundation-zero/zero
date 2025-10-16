@@ -34,10 +34,16 @@ if (!CONST_NAME || !TYPE_NAME) {
 const isControlDefinition = TYPE_NAME.toLowerCase().includes("control");
 const isSensorDefinition = TYPE_NAME.toLowerCase().includes("sensor");
 const isParameterDefinition = TYPE_NAME.toLowerCase().includes("parameter");
+const isSimulationDefinition = TYPE_NAME.toLowerCase().includes("simulation");
 
-if (!isControlDefinition && !isSensorDefinition && !isParameterDefinition) {
+if (
+  !isControlDefinition &&
+  !isSensorDefinition &&
+  !isParameterDefinition &&
+  !isSimulationDefinition
+) {
   console.error(`❌ Cannot infer definition type from TYPE_NAME: ${TYPE_NAME}`);
-  console.error("   TYPE_NAME should contain 'Control', 'Sensor', or 'Parameter'");
+  console.error("   TYPE_NAME should contain 'Control', 'Sensor', 'Parameter', or 'Simulation'");
   process.exit(1);
 }
 
@@ -53,13 +59,6 @@ function inferSensorComponentType(fieldType) {
     SensorValveType: "Valve",
     SensorThrusterType: "Thruster",
     SensorPcsType: "Pcs",
-    SensorLevelSensorType: "Level",
-    SensorTankType: "Tank",
-    SensorRpmSensorType: "Rpm",
-    SensorVibrationSensorType: "Vibration",
-    SensorCurrentSensorType: "Current",
-    SensorVoltageSensorType: "Voltage",
-    SensorHoursType: "Hours",
   };
 
   return typeMapping[fieldType] || null;
@@ -88,6 +87,19 @@ function inferParameterType(fieldName, fieldType) {
   }
 
   return null;
+}
+
+function inferSimulationComponentType(fieldName, fieldType) {
+  // Map GraphQL types to simulation component types
+  const typeMapping = {
+    ThrusterSimulationType: "Thruster",
+    BoundarySimulationType: "Boundary",
+    TemperatureBoundarySimulationType: "Temperature",
+    FlowBoundarySimulationType: "Flow",
+    PcsSimulationType: "Pcs",
+  };
+
+  return typeMapping[fieldType] || null;
 }
 
 function parseSchema(schemaPath) {
@@ -133,6 +145,24 @@ function parseSchema(schemaPath) {
         if (parameterType) {
           extractedValues[fieldName] = {
             componentType: parameterType,
+          };
+        }
+        continue;
+      }
+
+      // For simulation values, parse fields directly (no @jsonSchemaDirective)
+      if (isSimulationDefinition) {
+        const fieldMatch = line.match(/(\w+):\s*(\w+)!/);
+        if (!fieldMatch) continue;
+
+        const fieldName = fieldMatch[1];
+        const fieldType = fieldMatch[2];
+
+        // Infer simulation component type from field type
+        const simulationComponentType = inferSimulationComponentType(fieldName, fieldType);
+        if (simulationComponentType) {
+          extractedValues[fieldName] = {
+            componentType: simulationComponentType,
           };
         }
         continue;
@@ -192,9 +222,11 @@ function generateObjectString(values) {
     .map(([key, value]) => {
       const props = [];
 
-      // For parameters, we don't have yardTag, just componentType
+      // For parameters and simulation, we don't have yardTag, just componentType
       if (isParameterDefinition) {
         props.push(`componentType: ParametersType.${value.componentType}`);
+      } else if (isSimulationDefinition) {
+        props.push(`componentType: SimulationComponentType.${value.componentType}`);
       } else {
         // For controls and sensors, include yardTag
         props.push(`yardTag: "${value.yardTag}"`);
@@ -246,7 +278,9 @@ function generateObjectString(values) {
     ? "toControlDefinition"
     : isSensorDefinition
       ? "toSensorDefinition"
-      : "toParameterDefinition";
+      : isParameterDefinition
+        ? "toParameterDefinition"
+        : "toSimulationDefinition";
   return `export const ${CONST_NAME} = ${wrapperFunction}({\n${entries},\n});`;
 }
 
@@ -259,7 +293,9 @@ function updateConstsFile(constsContent, newObjectString) {
     ? "toControlDefinition"
     : isSensorDefinition
       ? "toSensorDefinition"
-      : "toParameterDefinition";
+      : isParameterDefinition
+        ? "toParameterDefinition"
+        : "toSimulationDefinition";
 
   const pattern = new RegExp(
     `export const ${CONST_NAME} = ${wrapperFunction}\\([\\s\\S]*?\\}\\);`,
@@ -284,7 +320,9 @@ function main() {
       ? "control"
       : isSensorDefinition
         ? "sensor"
-        : "parameter";
+        : isParameterDefinition
+          ? "parameter"
+          : "simulation";
     console.log(`🔄 Extracting ${definitionType} values from GraphQL schema...`);
     console.log(`📋 Target: ${CONST_NAME} from ${TYPE_NAME}`);
 

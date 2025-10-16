@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { Stamped } from "@/@types/thrs";
-import { SENSOR_FIELDS, THRSModules } from "@/lib/consts";
+import { SIMULATION_FIELDS, THRSModules } from "@/lib/consts";
 import { Client } from "@urql/vue";
 import { useIntervalFn } from "@vueuse/core";
 import { computed } from "vue";
@@ -16,19 +16,19 @@ const props = defineProps<{
   client: Client;
 }>();
 
-const FIELDS = Array.from(new Set(Object.values(SENSOR_FIELDS).flat()));
+const FIELDS = Array.from(new Set(Object.values(SIMULATION_FIELDS).flat()));
 
 export type FieldName = (typeof FIELDS)[number];
 export type FieldEntry = [componentName: string, value: Stamped<string | number | boolean>];
 export type FieldValuesTuple = [fieldName: FieldName, entries: FieldEntry[]];
 
-const sensorValuesQuery = queryFor(props.module, "sensorValues", props.query);
-const sensorValues = queryPacked(props.module, "sensorValues", sensorValuesQuery);
+const simulationValuesQuery = queryFor(props.module, "simulation", `outputs { ${props.query} }`);
+const simulationValues = queryPacked(props.module, "simulation", simulationValuesQuery);
 
 const extractEntriesByField = <T extends FieldName>(field: T): FieldValuesTuple => {
-  if (!sensorValues.value.data) return [field, []];
+  if (!simulationValues.value.data?.outputs) return [field, []];
 
-  const componentsWithField: FieldEntry[] = Object.entries(sensorValues.value.data)
+  const componentsWithField: FieldEntry[] = Object.entries(simulationValues.value.data.outputs)
     .filter(([, component]) => field in component)
     .map(([name, component]) => [name, component[field as keyof typeof component]]);
 
@@ -36,20 +36,22 @@ const extractEntriesByField = <T extends FieldName>(field: T): FieldValuesTuple 
 };
 
 const entriesGroupedByField = computed(() =>
-  FIELDS.map(extractEntriesByField).toSorted(([, rowsA], [, rowsB]) => rowsA.length - rowsB.length),
+  FIELDS.map(extractEntriesByField)
+    .filter(([, rows]) => rows.length > 0)
+    .toSorted(([, rowsA], [, rowsB]) => rowsA.length - rowsB.length),
 );
 
 useIntervalFn(
   async () => {
-    await sensorValues.value.executeQuery();
+    await simulationValues.value.executeQuery();
   },
   5000,
   { immediateCallback: true },
 );
 </script>
 <template>
-  <div v-if="sensorValues.data">
-    <header class="mb-2 text-2xl capitalize">{{ t("views.thrs.hmi.sensors") }}</header>
+  <div v-if="simulationValues.data">
+    <header class="mb-2 text-2xl capitalize">{{ t("views.thrs.hmi.simulation:outputs") }}</header>
     <section class="grid gap-4 md:grid-cols-2 2xl:grid-cols-4">
       <hgroup
         v-for="[field, entries] in entriesGroupedByField"
@@ -61,7 +63,6 @@ useIntervalFn(
         </header>
         <p>
           <ValueTable
-            v-if="entries"
             :values="entries"
             :format="(value: number) => value.toFixed(2)"
           />

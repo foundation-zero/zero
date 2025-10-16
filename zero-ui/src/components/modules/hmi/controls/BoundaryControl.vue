@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { PumpControl } from "@/@types/thrs";
+import { BoundarySimulation } from "@/@types/thrs";
 import { Button } from "@/components/ui/shadcn/button";
 import {
   NumberField,
@@ -8,17 +8,18 @@ import {
   NumberFieldIncrement,
   NumberFieldInput,
 } from "@/components/ui/shadcn/number-field";
-import { Switch } from "@/components/ui/shadcn/switch";
 import { THRSModules } from "@/lib/consts";
 import { toUpperCamelCase } from "@/lib/utils";
 import { controlValuesForm, MutationType } from "@/stores/thrs";
 import { Loader2Icon, SendIcon } from "lucide-vue-next";
 import { toRef } from "vue";
+import { useI18n } from "vue-i18n";
+
+const { t } = useI18n();
 
 const props = defineProps<{
-  values: PumpControl;
+  values: BoundarySimulation;
   componentName: string;
-  yardTag: string;
   query: string;
   module: keyof THRSModules;
 }>();
@@ -28,13 +29,13 @@ const emit = defineEmits<{
 
 const controlValues = toRef(props, "values");
 
-const { submit, isSubmitting, error, dutypoint, on } = controlValuesForm(
+const { submit, isSubmitting, error, flow, temperature } = controlValuesForm(
   props.module,
-  MutationType.Control,
-  "PumpInputType!",
+  MutationType.Simulation,
+  "BoundaryInputType!",
   props.componentName,
   controlValues,
-  ["dutypoint", "on"],
+  ["flow", "temperature"],
   props.query,
   emit,
 );
@@ -47,18 +48,15 @@ const { submit, isSubmitting, error, dutypoint, on } = controlValuesForm(
         class="overflow-hidden text-ellipsis whitespace-nowrap"
         >{{ toUpperCamelCase(componentName) }}</label
       >
-      <Switch
-        :id="`${componentName}-on`"
-        v-model:model-value="on.value.value"
-      />
     </h3>
-    <p class="text-muted-foreground text-xs">{{ yardTag }}</p>
 
-    <div class="mt-6 grid gap-1.5">
-      <header class="text-2xs tracking-wide uppercase">Speed</header>
-      <div class="flex items-center gap-2">
+    <div class="mt-6 grid grid-cols-2 gap-x-2">
+      <div class="grid gap-1.5">
+        <header class="text-2xs tracking-wide uppercase">
+          {{ t(`components.inputs.flow.label`) }}
+        </header>
         <NumberField
-          v-model="dutypoint.value.value"
+          v-model="flow.value.value"
           class="grow"
           :step="0.1"
           :min="0"
@@ -70,19 +68,38 @@ const { submit, isSubmitting, error, dutypoint, on } = controlValuesForm(
             <NumberFieldIncrement />
           </NumberFieldContent>
         </NumberField>
-
-        <Button
-          :disabled="isSubmitting || (!dutypoint.isDirty.value && !on.isDirty.value)"
-          @click="submit"
+      </div>
+      <div class="grid gap-1.5">
+        <header class="text-2xs tracking-wide uppercase">
+          {{ t(`components.inputs.temperature.label`) }}
+        </header>
+        <NumberField
+          v-model="temperature.value.value"
+          class="grow"
+          :step="0.1"
+          :min="0"
+          :max="1"
         >
-          <Loader2Icon
-            v-if="isSubmitting"
-            class="animate-spin"
-          />
-          <SendIcon v-else />
-        </Button>
+          <NumberFieldContent>
+            <NumberFieldDecrement />
+            <NumberFieldInput />
+            <NumberFieldIncrement />
+          </NumberFieldContent>
+        </NumberField>
       </div>
     </div>
+
+    <Button
+      :disabled="isSubmitting || (!flow.isDirty.value && !temperature.isDirty.value)"
+      class="mt-6"
+      @click="submit"
+    >
+      <Loader2Icon
+        v-if="isSubmitting"
+        class="animate-spin"
+      />
+      <SendIcon v-else />
+    </Button>
 
     <div
       v-if="error"

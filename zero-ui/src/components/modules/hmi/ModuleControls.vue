@@ -66,10 +66,10 @@ const setControlValues = (newValues: THRSModules[K]["controlValues"]) => {
         <component
           :is="control.component"
           v-if="control.component && controlValuesFromQuery.data?.[control.key]"
-          :control-values="controlValues[control.key]"
+          :values="controlValues[control.key]"
           :component-name="control.key"
           :component-type="control.componentType"
-          :control-values-query="query"
+          :query="query"
           :yard-tag="control.yardTag"
           :valve-type="control.valveType"
           :module="module"

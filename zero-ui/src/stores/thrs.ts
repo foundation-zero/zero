@@ -48,7 +48,12 @@ export const enum MutationType {
 export type InputType = {
   [MutationType.Control]: ["PumpInputType!", "ValveInputType!"];
   [MutationType.Parameter]: ["Float!", "[Float!]!"];
-  [MutationType.Simulation]: [];
+  [MutationType.Simulation]: [
+    "ThrusterInputType!",
+    "BoundaryInputType!",
+    "PcsInputType!",
+    "TemperatureBoundaryInputType!",
+  ];
 };
 
 const isStamped = <T>(input: T | Stamped<T>): input is Stamped<T> =>

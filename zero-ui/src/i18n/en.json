@@ -76,6 +76,8 @@
       "hmi": {
         "title": "THRS HMI",
         "simulation": "Simulation",
+        "simulation:inputs": "Simulation (inputs)",
+        "simulation:outputs": "Simulation (outputs)",
         "reset": "Reset",
         "connect": "Connect",
         "sensorValues": "Sensor values",
@@ -107,6 +109,12 @@
       "temperature": {
         "label": "Temperature",
         "unit": "°C"
+      },
+      "thruster": {
+        "label": "Heat flow"
+      },
+      "mode": {
+        "label": "Mode"
       }
     },
     "thrs": {

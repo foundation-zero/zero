@@ -1,5 +1,5 @@
-<script setup lang="ts">
-import { ValveControl } from "@/@types/thrs";
+<script setup lang="ts" generic="K extends keyof THRSModules">
+import { SimulationComponentType, TemperatureSimulation } from "@/@types/thrs";
 import { Button } from "@/components/ui/shadcn/button";
 import {
   NumberField,
@@ -13,47 +13,53 @@ import { toUpperCamelCase } from "@/lib/utils";
 import { controlValuesForm, MutationType } from "@/stores/thrs";
 import { Loader2Icon, SendIcon } from "lucide-vue-next";
 import { toRef } from "vue";
+import { useI18n } from "vue-i18n";
+
+const { t } = useI18n();
 
 const props = defineProps<{
-  values: ValveControl;
-  query: string;
+  values: TemperatureSimulation;
   componentName: string;
-  yardTag: string;
-  valveType: string;
+  query: string;
   module: keyof THRSModules;
+  componentType: SimulationComponentType;
 }>();
+
+const values = toRef(props, "values");
+
 const emit = defineEmits<{
   (e: "update:controlValues", value: unknown): void;
 }>();
 
-const controlValues = toRef(props, "values");
-
-const { submit, isSubmitting, error, setpoint } = controlValuesForm(
+const { submit, isSubmitting, error, temperature } = controlValuesForm(
   props.module,
-  MutationType.Control,
-  "ValveInputType!",
+  MutationType.Simulation,
+  "TemperatureBoundaryInputType!",
   props.componentName,
-  controlValues,
-  ["setpoint"],
+  values,
+  ["temperature"],
   props.query,
   emit,
 );
 </script>
+
 <template>
   <div class="bg-background flex flex-col rounded-md border p-4 shadow-md">
     <h3 class="overflow-hidden font-semibold text-ellipsis whitespace-nowrap capitalize">
       {{ toUpperCamelCase(componentName) }}
     </h3>
-    <p class="text-muted-foreground text-xs">{{ yardTag }} / {{ valveType }}</p>
+
     <div class="mt-6 grid gap-1.5">
-      <header class="text-2xs tracking-wide uppercase">Setpoint</header>
-      <div class="flex items-center gap-2">
+      <header class="text-2xs tracking-wide uppercase">
+        {{ t(`components.inputs.temperature.label`) }}
+      </header>
+      <div class="grid gap-6">
         <NumberField
-          v-model="setpoint.value.value"
+          v-model="temperature.value.value"
           class="grow"
-          :step="0.1"
+          :step="1"
           :min="0"
-          :max="1"
+          :max="100"
         >
           <NumberFieldContent>
             <NumberFieldDecrement />
@@ -63,7 +69,7 @@ const { submit, isSubmitting, error, setpoint } = controlValuesForm(
         </NumberField>
 
         <Button
-          :disabled="isSubmitting || !setpoint.isDirty.value"
+          :disabled="isSubmitting || !temperature.isDirty.value"
           @click="submit"
         >
           <Loader2Icon
@@ -74,6 +80,7 @@ const { submit, isSubmitting, error, setpoint } = controlValuesForm(
         </Button>
       </div>
     </div>
+
     <div
       v-if="error"
       class="mt-3 text-red-500"

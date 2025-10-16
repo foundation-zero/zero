@@ -5,12 +5,15 @@ import {
   ParametersType,
   SensorComponentType,
   SensorDefinitions,
+  SimulationComponentType,
+  SimulationDefinitions,
   ValveType,
 } from "@/@types/thrs";
 
 export const toControlDefinition = <T extends ControlDefinitions>(input: T): T => input;
 export const toSensorDefinition = <T extends SensorDefinitions>(input: T): T => input;
 export const toParameterDefinition = <T extends ParameterDefinitions>(input: T): T => input;
+export const toSimulationDefinition = <T extends SimulationDefinitions>(input: T): T => input;
 
 export const THRUSTERS_CONTROL_DEFINITION = toControlDefinition({
   thrustersPump1: {
@@ -194,5 +197,35 @@ export const THRUSTERS_PARAMETER_DEFINITION = toParameterDefinition({
   },
   fwdTemperatureTuning: {
     componentType: ParametersType.Tuning,
+  },
+});
+
+export const THRUSTERS_SIMULATION_INPUTS = toSimulationDefinition({
+  thrustersAft: {
+    componentType: SimulationComponentType.Thruster,
+  },
+  thrustersFwd: {
+    componentType: SimulationComponentType.Thruster,
+  },
+  thrustersSeawaterSupply: {
+    componentType: SimulationComponentType.Boundary,
+  },
+  thrustersModuleSupply: {
+    componentType: SimulationComponentType.Temperature,
+  },
+  thrustersPcs: {
+    componentType: SimulationComponentType.Pcs,
+  },
+});
+
+export const THRUSTERS_SIMULATION_OUTPUTS = toSimulationDefinition({
+  thrustersSeawaterReturn: {
+    componentType: SimulationComponentType.Temperature,
+  },
+  thrustersModuleSupply: {
+    componentType: SimulationComponentType.Flow,
+  },
+  thrustersModuleReturn: {
+    componentType: SimulationComponentType.Boundary,
   },
 });
