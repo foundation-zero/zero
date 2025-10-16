@@ -1,12 +1,12 @@
 from datetime import datetime
 from typing import Callable, Literal
-from pydantic import BaseModel, model_validator
+from pydantic import model_validator
 
 from transitions import Machine, State
 
 from thrs.control.controllers import Controller, FlowBalanceController
 from thrs.input_output.alarms import BaseAlarms, Severity, alarm
-from thrs.input_output.base import Stamped
+from thrs.input_output.base import Stamped, ThrsModel
 from thrs.input_output.definitions.control import Pump, Valve
 from thrs.input_output.modules.thrusters import (
     ThrustersControlValues,
@@ -16,7 +16,7 @@ from thrs.input_output.definitions.units import Celsius, LMin, PcsMode, Ratio, T
 from thrs.classes.control import Control, ControlResult
 
 
-class ThrustersParameters(BaseModel):
+class ThrustersParameters(ThrsModel):
     maximum_supply_temperature: Celsius = 75
     cooling_temperature: Celsius = 38
     cooling_flow: LMin = 25
@@ -86,7 +86,9 @@ _INITIAL_CONTROL_VALUES = ThrustersControlValues(
 )
 
 
-class ThrustersControl(Control):
+class ThrustersControl(
+    Control[ThrustersSensorValues, ThrustersControlValues, ThrustersParameters]
+):
     def __init__(
         self, parameters: ThrustersParameters, time_fn: Callable[[], datetime]
     ) -> None:
@@ -144,7 +146,7 @@ class ThrustersControl(Control):
         self._transitions = [
             {
                 "trigger": "_check_overheat",
-                "source": "recovery",
+                "source": ["idle", "recovery", "cooldown", "cooling"],
                 "dest": "cooling",
                 "conditions": self._is_overheating,
             },
@@ -278,6 +280,7 @@ class ThrustersControl(Control):
         self, sensor_values: ThrustersSensorValues
     ) -> ControlResult[ThrustersControlValues]:
         self._check_pcs_mode(sensor_values)  # type: ignore
+        self._check_overheat(sensor_values)  # type: ignore
         self._control_heat_dump(sensor_values)
 
         if self.mode == "recovery":

@@ -42,6 +42,7 @@ optional = true
 [tool.poetry.group.dev.dependencies]
 ruff = "^0.11.0"
 pygraphviz = "^1.14"
+ipympl = "^0.9.7"
 
 [tool.poetry.group.test]
 optional = true

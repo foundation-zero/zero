@@ -1,4 +1,6 @@
 from typing import Annotated
+
+from pydantic import computed_field
 from thrs.input_output.base import component_meta, SimulationInputs, ThrsModel
 from thrs.input_output.definitions import control, sensor, simulation
 
@@ -28,14 +30,17 @@ class PvtSensorValues(ThrsModel):
     pvt_mix_main_fwd: Annotated[sensor.Valve, component_meta(yard_tag="50001044-01")]
     pvt_mix_main_aft: Annotated[sensor.Valve, component_meta(yard_tag="50001044-02")]
     pvt_mix_owners: Annotated[sensor.Valve, component_meta(yard_tag="50001043-01")]
-    pvt_flow_main_fwd: Annotated[
-        sensor.FlowSensor, component_meta(yard_tag="50001058-12")
+    pvt_flow_main_fwd_recovery: Annotated[
+        sensor.FlowSensor,
+        component_meta(yard_tag="50001058-12"),
     ]
-    pvt_flow_main_aft: Annotated[
-        sensor.FlowSensor, component_meta(yard_tag="50001058-13")
+    pvt_flow_main_aft_recovery: Annotated[
+        sensor.FlowSensor,
+        component_meta(yard_tag="50001058-13"),
     ]
-    pvt_flow_owners: Annotated[
-        sensor.FlowSensor, component_meta(yard_tag="50001057-03")
+    pvt_flow_owners_recovery: Annotated[
+        sensor.FlowSensor,
+        component_meta(yard_tag="50001057-03"),
     ]
     pvt_pressure_main_fwd: Annotated[
         sensor.PressureSensor, component_meta(yard_tag="50001097-03")
@@ -46,18 +51,22 @@ class PvtSensorValues(ThrsModel):
     pvt_pressure_owners: Annotated[
         sensor.PressureSensor, component_meta(yard_tag="50001097-05")
     ]
-    pvt_flowcontrol_main_fwd: Annotated[
-        sensor.Valve, component_meta(yard_tag="50001067-01")
+    pvt_switch_main_fwd: Annotated[
+        sensor.Valve,
+        component_meta(yard_tag="50001067-01"),
     ]
-    pvt_flowcontrol_main_aft: Annotated[
-        sensor.Valve, component_meta(yard_tag="50001067-02")
+    pvt_switch_main_aft: Annotated[
+        sensor.Valve,
+        component_meta(yard_tag="50001067-02"),
     ]
-    pvt_flowcontrol_owners: Annotated[
-        sensor.Valve, component_meta(yard_tag="50001069-01")
+    pvt_switch_owners: Annotated[
+        sensor.Valve,
+        component_meta(yard_tag="50001069-01"),
     ]
     pvt_mix_exchanger: Annotated[sensor.Valve, component_meta(yard_tag="50001047-02")]
-    pvt_temperature_exchanger: Annotated[
-        sensor.TemperatureSensor, component_meta(yard_tag="50001038-24")
+    pvt_temperature_supply: Annotated[
+        sensor.TemperatureSensor,
+        component_meta(yard_tag="50001038-24"),
     ]
     pvt_temperature_main_string_1_1_return: Annotated[
         sensor.TemperatureSensor, component_meta(yard_tag="50009005-01")
@@ -273,6 +282,87 @@ class PvtSensorValues(ThrsModel):
         sensor.TemperatureSensor, component_meta(yard_tag="50009005-45")
     ]
 
+    @computed_field(
+        json_schema_extra=component_meta(included_in_fmu=False).json_schema_extra
+    )
+    @property
+    def pvt_max_temperature_main_fwd_strings(
+        self,
+    ) -> Annotated[sensor.CalculatedTemperature, component_meta(included_in_fmu=False)]:
+        return sensor.CalculatedTemperature.from_max_temperature(
+            [
+                self.pvt_temperature_main_string_1_1_return,
+                self.pvt_temperature_main_string_1_2_return,
+                self.pvt_temperature_main_string_2_1_return,
+                self.pvt_temperature_main_string_2_2_return,
+                self.pvt_temperature_main_string_3_return,
+                self.pvt_temperature_main_string_4_return,
+                self.pvt_temperature_main_string_5_1_return,
+                self.pvt_temperature_main_string_5_2_return,
+                self.pvt_temperature_main_string_6_1_return,
+                self.pvt_temperature_main_string_6_2_return,
+                self.pvt_temperature_main_string_1_supply,
+                self.pvt_temperature_main_string_2_supply,
+                self.pvt_temperature_main_string_3_supply,
+                self.pvt_temperature_main_string_4_supply,
+                self.pvt_temperature_main_string_5_supply,
+                self.pvt_temperature_main_string_6_supply,
+            ]
+        )
+
+    @computed_field(
+        json_schema_extra=component_meta(included_in_fmu=False).json_schema_extra
+    )
+    @property
+    def pvt_max_temperature_main_aft_strings(
+        self,
+    ) -> Annotated[sensor.CalculatedTemperature, component_meta(included_in_fmu=False)]:
+        return sensor.CalculatedTemperature.from_max_temperature(
+            [
+                self.pvt_temperature_main_string_7_1_return,
+                self.pvt_temperature_main_string_7_2_return,
+                self.pvt_temperature_main_string_8_1_return,
+                self.pvt_temperature_main_string_8_2_return,
+                self.pvt_temperature_main_string_9_return,
+                self.pvt_temperature_main_string_10_return,
+                self.pvt_temperature_main_string_11_1_return,
+                self.pvt_temperature_main_string_11_2_return,
+                self.pvt_temperature_main_string_12_return,
+                self.pvt_temperature_main_string_13_return,
+                self.pvt_temperature_main_string_7_supply,
+                self.pvt_temperature_main_string_8_supply,
+                self.pvt_temperature_main_string_9_supply,
+                self.pvt_temperature_main_string_10_supply,
+                self.pvt_temperature_main_string_11_supply,
+                self.pvt_temperature_main_string_12_supply,
+                self.pvt_temperature_main_string_13_supply,
+            ]
+        )
+
+    @computed_field(
+        json_schema_extra=component_meta(included_in_fmu=False).json_schema_extra
+    )
+    @property
+    def pvt_max_temperature_owners_strings(
+        self,
+    ) -> Annotated[sensor.CalculatedTemperature, component_meta(included_in_fmu=False)]:
+        return sensor.CalculatedTemperature.from_max_temperature(
+            [
+                self.pvt_temperature_owners_string_1_return,
+                self.pvt_temperature_owners_string_2_return,
+                self.pvt_temperature_owners_string_3_return,
+                self.pvt_temperature_owners_string_4_return,
+                self.pvt_temperature_owners_string_5_return,
+                self.pvt_temperature_owners_string_6_return,
+                self.pvt_temperature_owners_string_1_supply,
+                self.pvt_temperature_owners_string_2_supply,
+                self.pvt_temperature_owners_string_3_supply,
+                self.pvt_temperature_owners_string_4_supply,
+                self.pvt_temperature_owners_string_5_supply,
+                self.pvt_temperature_owners_string_6_supply,
+            ]
+        )
+
 
 class PvtControlValues(ThrsModel):
     pvt_pump_main_fwd: Annotated[control.Pump, component_meta(yard_tag="50001018")]
@@ -281,15 +371,13 @@ class PvtControlValues(ThrsModel):
     pvt_mix_main_fwd: Annotated[control.Valve, component_meta(yard_tag="50001044-01")]
     pvt_mix_main_aft: Annotated[control.Valve, component_meta(yard_tag="50001044-02")]
     pvt_mix_owners: Annotated[control.Valve, component_meta(yard_tag="50001043-01")]
-    pvt_flowcontrol_main_fwd: Annotated[
+    pvt_switch_main_fwd: Annotated[
         control.Valve, component_meta(yard_tag="50001067-01")
     ]
-    pvt_flowcontrol_main_aft: Annotated[
+    pvt_switch_main_aft: Annotated[
         control.Valve, component_meta(yard_tag="50001067-02")
     ]
-    pvt_flowcontrol_owners: Annotated[
-        control.Valve, component_meta(yard_tag="50001069-01")
-    ]
+    pvt_switch_owners: Annotated[control.Valve, component_meta(yard_tag="50001069-01")]
     pvt_mix_exchanger: Annotated[control.Valve, component_meta(yard_tag="50001047-02")]
 
 
