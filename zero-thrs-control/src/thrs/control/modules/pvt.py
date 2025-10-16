@@ -4,12 +4,15 @@ from pydantic import Field, model_validator
 
 from thrs.classes.control import Control, ControlResult
 from thrs.control.controllers import Controller
-from thrs.control.modules.pvt_group import PvtGroupControl, PvtGroupParameters
+from thrs.control.modules.pvt_group import (
+    PvtGroupControl,
+    PvtGroupParameters,
+    PvtGroupSensorValues,
+)
 from thrs.input_output.base import Stamped, ThrsModel
 from thrs.input_output.definitions.control import Pump, Valve
 from thrs.input_output.definitions.units import Celsius, Ratio, Tuning
 from thrs.input_output.modules.pvt import PvtControlValues, PvtSensorValues
-from thrs.input_output.modules.pvt_group import PvtGroupSensorValues
 
 
 class PvtParameters(ThrsModel):
@@ -171,34 +174,36 @@ class PvtControl(Control[PvtSensorValues, PvtControlValues, PvtParameters]):
         )
 
     def _control_groups(self, sensor_values: PvtSensorValues):
-        main_fwd_sensor_values = PvtGroupSensorValues(
-            pump=sensor_values.pvt_pump_main_fwd,
-            temperature_supply=sensor_values.pvt_temperature_main_fwd_supply,
-            temperature_return=sensor_values.pvt_temperature_main_fwd_return,
-            pressure=sensor_values.pvt_pressure_main_fwd,
-            mix=sensor_values.pvt_mix_main_fwd,
-            max_temperature_strings=sensor_values.pvt_max_temperature_main_fwd_strings,
+        self._main_fwd_control.control(
+            PvtGroupSensorValues(
+                pump=sensor_values.pvt_pump_main_fwd,
+                temperature_supply=sensor_values.pvt_temperature_main_fwd_supply,
+                temperature_return=sensor_values.pvt_temperature_main_fwd_return,
+                pressure=sensor_values.pvt_pressure_main_fwd,
+                mix=sensor_values.pvt_mix_main_fwd,
+                max_temperature_strings=sensor_values.pvt_max_temperature_main_fwd_strings,
+            )
         )
-        main_aft_sensor_values = PvtGroupSensorValues(
-            pump=sensor_values.pvt_pump_main_aft,
-            temperature_supply=sensor_values.pvt_temperature_main_aft_supply,
-            temperature_return=sensor_values.pvt_temperature_main_aft_return,
-            pressure=sensor_values.pvt_pressure_main_aft,
-            mix=sensor_values.pvt_mix_main_aft,
-            max_temperature_strings=sensor_values.pvt_max_temperature_main_aft_strings,
+        self._main_aft_control.control(
+            PvtGroupSensorValues(
+                pump=sensor_values.pvt_pump_main_aft,
+                temperature_supply=sensor_values.pvt_temperature_main_aft_supply,
+                temperature_return=sensor_values.pvt_temperature_main_aft_return,
+                pressure=sensor_values.pvt_pressure_main_aft,
+                mix=sensor_values.pvt_mix_main_aft,
+                max_temperature_strings=sensor_values.pvt_max_temperature_main_aft_strings,
+            )
         )
-        owners_sensor_values = PvtGroupSensorValues(
-            pump=sensor_values.pvt_pump_owners,
-            temperature_supply=sensor_values.pvt_temperature_owners_supply,
-            temperature_return=sensor_values.pvt_temperature_owners_return,
-            pressure=sensor_values.pvt_pressure_owners,
-            mix=sensor_values.pvt_mix_owners,
-            max_temperature_strings=sensor_values.pvt_max_temperature_owners_strings,
+        self._owners_control.control(
+            PvtGroupSensorValues(
+                pump=sensor_values.pvt_pump_owners,
+                temperature_supply=sensor_values.pvt_temperature_owners_supply,
+                temperature_return=sensor_values.pvt_temperature_owners_return,
+                pressure=sensor_values.pvt_pressure_owners,
+                mix=sensor_values.pvt_mix_owners,
+                max_temperature_strings=sensor_values.pvt_max_temperature_owners_strings,
+            )
         )
-
-        self._main_fwd_control.control(main_fwd_sensor_values)
-        self._main_aft_control.control(main_aft_sensor_values)
-        self._owners_control.control(owners_sensor_values)
 
     def control(
         self, sensor_values: PvtSensorValues

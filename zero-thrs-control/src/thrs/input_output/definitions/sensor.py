@@ -30,6 +30,17 @@ class TemperatureSensor(ThrsModel):
 class CalculatedTemperature(ThrsModel):
     temperature: Stamped[OptionalCelsius]
 
+    @classmethod
+    def from_max_temperature(cls, sensors: list[TemperatureSensor]):
+        max_sensor = max(sensors, key=lambda sensor: sensor.temperature.value)
+
+        return CalculatedTemperature(
+            temperature=Stamped(
+                value=max_sensor.temperature.value,
+                timestamp=max_sensor.temperature.timestamp,
+            )
+        )
+
 
 class Valve(ThrsModel):
     position_rel: Stamped[Ratio]

@@ -289,7 +289,7 @@ class PvtSensorValues(ThrsModel):
     def pvt_max_temperature_main_fwd_strings(
         self,
     ) -> Annotated[sensor.CalculatedTemperature, component_meta(included_in_fmu=False)]:
-        max_sensor = max(
+        return sensor.CalculatedTemperature.from_max_temperature(
             [
                 self.pvt_temperature_main_string_1_1_return,
                 self.pvt_temperature_main_string_1_2_return,
@@ -307,11 +307,8 @@ class PvtSensorValues(ThrsModel):
                 self.pvt_temperature_main_string_4_supply,
                 self.pvt_temperature_main_string_5_supply,
                 self.pvt_temperature_main_string_6_supply,
-            ],
-            key=lambda sensor: sensor.temperature.value,
+            ]
         )
-
-        return sensor.CalculatedTemperature(**max_sensor.model_dump())
 
     @computed_field(
         json_schema_extra=component_meta(included_in_fmu=False).json_schema_extra
@@ -320,7 +317,7 @@ class PvtSensorValues(ThrsModel):
     def pvt_max_temperature_main_aft_strings(
         self,
     ) -> Annotated[sensor.CalculatedTemperature, component_meta(included_in_fmu=False)]:
-        max_sensor = max(
+        return sensor.CalculatedTemperature.from_max_temperature(
             [
                 self.pvt_temperature_main_string_7_1_return,
                 self.pvt_temperature_main_string_7_2_return,
@@ -339,11 +336,8 @@ class PvtSensorValues(ThrsModel):
                 self.pvt_temperature_main_string_11_supply,
                 self.pvt_temperature_main_string_12_supply,
                 self.pvt_temperature_main_string_13_supply,
-            ],
-            key=lambda sensor: sensor.temperature.value,
+            ]
         )
-
-        return sensor.CalculatedTemperature(**max_sensor.model_dump())
 
     @computed_field(
         json_schema_extra=component_meta(included_in_fmu=False).json_schema_extra
@@ -352,7 +346,7 @@ class PvtSensorValues(ThrsModel):
     def pvt_max_temperature_owners_strings(
         self,
     ) -> Annotated[sensor.CalculatedTemperature, component_meta(included_in_fmu=False)]:
-        max_sensor = max(
+        return sensor.CalculatedTemperature.from_max_temperature(
             [
                 self.pvt_temperature_owners_string_1_return,
                 self.pvt_temperature_owners_string_2_return,
@@ -366,11 +360,8 @@ class PvtSensorValues(ThrsModel):
                 self.pvt_temperature_owners_string_4_supply,
                 self.pvt_temperature_owners_string_5_supply,
                 self.pvt_temperature_owners_string_6_supply,
-            ],
-            key=lambda sensor: sensor.temperature.value,
+            ]
         )
-
-        return sensor.CalculatedTemperature(**max_sensor.model_dump())
 
 
 class PvtControlValues(ThrsModel):

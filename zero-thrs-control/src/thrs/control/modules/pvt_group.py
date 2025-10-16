@@ -6,12 +6,24 @@ from transitions import Machine, State
 from thrs.classes.control import Control, ControlResult
 from thrs.control.controllers import Controller
 from thrs.input_output.base import Stamped, ThrsModel
+from thrs.input_output.definitions import sensor
+from thrs.input_output.definitions import control
 from thrs.input_output.definitions.control import Pump, Valve
 from thrs.input_output.definitions.units import Celsius, Ratio, Tuning
-from thrs.input_output.modules.pvt_group import (
-    PvtGroupControlValues,
-    PvtGroupSensorValues,
-)
+
+
+class PvtGroupSensorValues(ThrsModel):
+    pump: sensor.Pump
+    temperature_supply: sensor.TemperatureSensor
+    temperature_return: sensor.TemperatureSensor
+    pressure: sensor.PressureSensor
+    mix: sensor.Valve
+    max_temperature_strings: sensor.CalculatedTemperature
+
+
+class PvtGroupControlValues(ThrsModel):
+    pump: control.Pump
+    mix: control.Valve
 
 
 class PvtGroupParameters(ThrsModel):
