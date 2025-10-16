@@ -1,5 +1,5 @@
 from .adapter import PCanAdapter
-from .stub import PCanStub, SensorStub
 from .control import LoadsControl
+from .stub import PCanStub, SensorStub
 
 __all__ = ["PCanAdapter", "PCanStub", "SensorStub", "LoadsControl"]

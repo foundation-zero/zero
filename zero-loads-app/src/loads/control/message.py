@@ -1,6 +1,6 @@
 from enum import Enum
-
 from typing import ClassVar
+
 from pydantic import BaseModel
 
 
@@ -9,9 +9,9 @@ class Message(BaseModel):
 
 
 class ThrusterMode(Enum):
-    PROPULSION = "propulsion"
-    REGENERATION = "regeneration"
-    IDLE = "idle"
+    propulsion = "propulsion"
+    regeneration = "regeneration"
+    idle = "idle"
 
 
 class PCSModeInput(BaseModel):
@@ -19,16 +19,16 @@ class PCSModeInput(BaseModel):
     aft: ThrusterMode
 
 
-class Conditions(Message):
-    TOPIC: ClassVar[str] = "loads/risingwave/conditions"
+class SensorInput(Message):
+    TOPIC: ClassVar[str] = "loads/sensor_input"
     awa: float
     aws: float
     pcs_mode: PCSModeInput
     sails: list[str]
 
 
-class Case(Message):
-    TOPIC: ClassVar[str] = "loads/control/case"
+class Conditions(Message):
+    TOPIC: ClassVar[str] = "loads/conditions"
     sea_state: str
     awa: float
     aws: float

@@ -10,4 +10,4 @@ CREATE TABLE {{ this }} (
     sails TEXT[],
     "time" TIMESTAMPTZ as proctime ()
 )
-{{ mqtt_with('loads/control/case') }}
+{{ mqtt_with('loads/conditions') }}

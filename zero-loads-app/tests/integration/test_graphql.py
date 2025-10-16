@@ -1,6 +1,6 @@
 import pytest
 from asgi_lifespan import LifespanManager
-from httpx import AsyncClient, ASGITransport
+from httpx import ASGITransport, AsyncClient
 
 from loads.api import app
 

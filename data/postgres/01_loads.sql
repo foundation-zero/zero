@@ -55,8 +55,8 @@ CREATE TABLE value_definitions (
   scope value_definition_scope NOT NULL
 );
 
-DROP TABLE IF EXISTS conditions CASCADE;
-CREATE TABLE conditions (
+DROP TABLE IF EXISTS conditions_profiles CASCADE;
+CREATE TABLE conditions_profiles (
   id TEXT PRIMARY KEY,
   name TEXT NOT NULL,
   sea_state sea_state NOT NULL,
@@ -69,27 +69,27 @@ CREATE TABLE conditions (
 DROP TABLE IF EXISTS load_cases CASCADE;
 CREATE TABLE load_cases (
   name TEXT,
-  condition_id TEXT NOT NULL REFERENCES conditions(id) ON DELETE RESTRICT,
+  condition_profile_id TEXT NOT NULL REFERENCES conditions_profiles(id) ON DELETE RESTRICT,
   sail_set_id TEXT NOT NULL REFERENCES sail_sets(id) ON DELETE RESTRICT,
-  PRIMARY KEY (condition_id, sail_set_id)
+  PRIMARY KEY (condition_profile_id, sail_set_id)
 );
 
-DROP TABLE IF EXISTS load_cases_historical CASCADE;
-CREATE TABLE load_cases_historical  (
+DROP TABLE IF EXISTS conditions CASCADE;
+CREATE TABLE conditions  (
+  time TIMESTAMPTZ NOT NULL,
   sea_state TEXT NOT NULL,
   awa FLOAT NOT NULL,
   aws FLOAT NOT NULL,
   pcs_mode_aft TEXT NOT NULL,
   pcs_mode_fwd TEXT NOT NULL,
-  sails TEXT[] NOT NULL,
-  time TIMESTAMPTZ NOT NULL
+  sails TEXT[] NOT NULL
 );
 
 DROP TABLE IF EXISTS reference_values;
 CREATE TABLE reference_values (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   sail_set_id TEXT NOT NULL,
-  condition_id TEXT NOT NULL,
+  condition_profile_id TEXT NOT NULL,
   mast_id TEXT REFERENCES masts(id) ON DELETE RESTRICT,
   value_definition_id TEXT NOT NULL REFERENCES value_definitions(id) ON DELETE RESTRICT,
   value NUMERIC NOT NULL,
@@ -97,7 +97,7 @@ CREATE TABLE reference_values (
   warning_too_low NUMERIC,
   warning_too_high NUMERIC,
   error_too_high NUMERIC,
-  FOREIGN KEY (sail_set_id, condition_id) REFERENCES load_cases (sail_set_id, condition_id)
+  FOREIGN KEY (sail_set_id, condition_profile_id) REFERENCES load_cases (sail_set_id, condition_profile_id)
 );
 
 -- Seed
@@ -136,7 +136,7 @@ INSERT INTO value_definitions (id, name, unit, scope) VALUES
   ('headstay-load', 'Headstay load', 'tonne', 'mast_specific'),
   ('boatspeed', 'Boat Speed', 'knot', 'general');
 
-INSERT INTO conditions (id, name, sea_state, awa, aws, pcs_mode_aft, pcs_mode_fwd) VALUES
+INSERT INTO conditions_profiles (id, name, sea_state, awa, aws, pcs_mode_aft, pcs_mode_fwd) VALUES
   ('light-wind-close-hauled', 'Light wind close-hauled', 'wet', '[0,45)', '[0,10)', ARRAY['propulsion', 'regeneration', 'idle']::pcs_mode[], ARRAY['propulsion', 'regeneration', 'idle']::pcs_mode[]),
   ('light-wind-beam-reach', 'Light wind beam reach', 'wet', '[45,135)', '[0,10)', ARRAY['propulsion', 'regeneration', 'idle']::pcs_mode[], ARRAY['propulsion', 'regeneration', 'idle']::pcs_mode[]),
   ('light-wind-broad-reach', 'Light wind broad reach', 'wet', '[135,180]', '[0,10)', ARRAY['propulsion', 'regeneration', 'idle']::pcs_mode[], ARRAY['propulsion', 'regeneration', 'idle']::pcs_mode[]),
@@ -147,7 +147,7 @@ INSERT INTO conditions (id, name, sea_state, awa, aws, pcs_mode_aft, pcs_mode_fw
   ('strong-wind-beam-reach', 'Strong wind beam reach', 'wet', '[45,135)', '[20,30)', ARRAY['propulsion', 'regeneration', 'idle']::pcs_mode[], ARRAY['propulsion', 'regeneration', 'idle']::pcs_mode[]),
   ('strong-wind-broad-reach', 'Strong wind broad reach', 'wet', '[135,180]', '[20,30)', ARRAY['propulsion', 'regeneration', 'idle']::pcs_mode[], ARRAY['propulsion', 'regeneration', 'idle']::pcs_mode[]);
 
-INSERT INTO load_cases (name, condition_id, sail_set_id) VALUES
+INSERT INTO load_cases (name, condition_profile_id, sail_set_id) VALUES
   (NULL, 'light-wind-close-hauled', 'upwind-blade'),
   (NULL, 'light-wind-beam-reach', 'upwind-blade'),
   (NULL, 'light-wind-broad-reach', 'upwind-blade'),
@@ -159,11 +159,11 @@ INSERT INTO load_cases (name, condition_id, sail_set_id) VALUES
   (NULL, 'strong-wind-beam-reach', 'reach-blade-mzj'),
   (NULL, 'strong-wind-broad-reach', 'reach-blade-mzj');
 
-INSERT INTO load_cases_historical (sea_state, awa, aws, pcs_mode_aft, pcs_mode_fwd, sails, time) VALUES
-('wet', 0.0, 0.0, 'idle', 'idle', ARRAY['full-main-sail'], NOW());
+INSERT INTO conditions (time, sea_state, awa, aws, pcs_mode_aft, pcs_mode_fwd, sails) VALUES
+  (NOW(), 'wet', 0.0, 0.0, 'idle', 'idle', ARRAY['full-main-sail', 'full-mizzen-sail', 'main-blade']);
 
 
-INSERT INTO reference_values (condition_id, sail_set_id, mast_id, value_definition_id, value) VALUES
+INSERT INTO reference_values (condition_profile_id, sail_set_id, mast_id, value_definition_id, value) VALUES
   ('light-wind-close-hauled', 'upwind-blade', 'main', 'headstay-load', 2.0),
   ('light-wind-close-hauled', 'upwind-blade', 'mizzen', 'headstay-load', 1.0),
   ('light-wind-close-hauled', 'upwind-blade', NULL, 'boatspeed', 5.0),

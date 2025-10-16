@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Float, Integer, String, Enum
+from sqlalchemy import Column, Enum, Float, Integer, String
 from sqlalchemy.dialects.postgresql import ARRAY, NUMRANGE, TIMESTAMP
 from sqlalchemy.orm import declarative_base
 
@@ -15,8 +15,8 @@ class SailSetCombined(Base):  # type: ignore
     sails = Column(ARRAY(String))  # type: ignore
 
 
-class Conditions(Base):  # type: ignore
-    __tablename__ = "conditions"
+class ConditionsProfiles(Base):  # type: ignore
+    __tablename__ = "conditions_profiles"
 
     id = Column(String, primary_key=True)
     name = Column(String, nullable=False)
@@ -35,8 +35,8 @@ class Conditions(Base):  # type: ignore
     )  # type: ignore
 
 
-class LoadCaseHistorical(Base):  # type: ignore
-    __tablename__ = "load_cases_historical"
+class Conditions(Base):  # type: ignore
+    __tablename__ = "conditions"
 
     time = Column("time", TIMESTAMP, nullable=False, primary_key=True)
     sea_state = Column(
@@ -69,7 +69,7 @@ class ReferenceValues(Base):  # type: ignore
 
     id = Column(Integer, primary_key=True, index=True)
     sail_set_id = Column(String)
-    condition_id = Column(String)
+    condition_profile_id = Column(String)
     mast_id = Column(String, nullable=True)
     value_definition_id = Column(String)
     value = Column(Float)

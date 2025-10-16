@@ -1,6 +1,18 @@
-# Setup
+# Zero Loads App
 
-1. Create a `.env` file using `.env-example` as a template.
+This repository contains the main components of the zero-loads-app:
+
+- The `adapter` ingests sensor data from CANBus and forwards it to MQTT.
+- The `pcan-stub` simulates CANBus messages over UDP for testing.
+- The `control` module processes sensor data, determines sea state, and publishes results to MQTT.
+- The `sensor-stub` generates mock sensor data and sends it over MQTT.
+- The `api` exposes load reference values via a GraphQL interface.
+- The `generate-jwt` function generates a JWT token for given roles.
+
+
+## Development Setup
+
+1. Create a `.env` file using `.env.example` as a template.
 2. Install dependencies:
     ```bash
     poetry install --with dev,test
@@ -12,16 +24,10 @@
 4. Apply Hasura metadata:
     ```bash
     cd hasura
-    hasura metadata apply --admin-secret adminsecretkey
+    hasura metadata apply --admin-secret myadminsecretkey
     ```
 
-## Loads
-
-- Sensor equipment (e.g., A+T) transmits sensor data via PCan UDP.
-- The adapter module receives these messages, interprets them, and forwards the data to MQTT.
-- RisingWave ingests relevant sensor data, constructs load conditions, and publishes them to MQTT.
-- The control process consumes load conditions from MQTT, determines the load case by computing the sea state, and publishes the results to MQTT, where RisingWave sinks them into Postgres.
-- When reference values are requested via the API, the current load case is retrieved from Postgres and the corresponding reference values are returned.
+## Usage
 
 ### Adapter
 
@@ -32,31 +38,31 @@ poetry run loads adapter
 
 The PCan stub simulates PCan messages over UDP for the adapter to ingest.
 ```bash
-poetry run loads pcan_stub
+poetry run loads pcan-stub
 ```
 
 ### Control
 
-The control module processes load conditions from MQTT, calculates load cases, and publishes results to MQTT.
+The control module processes load conditions from MQTT, calculates sea state, and publishes results to MQTT.
 ```bash
 poetry run loads control
 ```
 
 The sensor stub simulates load conditions over MQTT for the control module.
 ```bash
-poetry run loads sensor_stub
+poetry run loads sensor-stub
 ```
 
 ### API
 
-Start the API service. This exposes a graphql API to return the reference values
+Start the API service to expose a GraphQL API that returns reference values for a specified or current load case.
 ```bash
 poetry run loads api
 ```
 
 ### Generate JWT Token
 
-Generate a JWT token for a specific role (in this case `captain`)
+Generate a JWT token for a specific role (e.g., `captain`):
 ```bash
 poetry run loads generate-jwt --roles captain
 ```

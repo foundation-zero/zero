@@ -28,4 +28,4 @@ def pytest_runtest_setup(item):
 
 @pytest.fixture(scope="session")
 def settings():
-    return Settings()
+    return Settings()  # type: ignore

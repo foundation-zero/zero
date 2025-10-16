@@ -1,6 +1,6 @@
-import strawberry
-
 from enum import Enum
+
+import strawberry
 
 
 @strawberry.enum

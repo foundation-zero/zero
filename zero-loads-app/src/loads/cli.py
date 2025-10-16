@@ -1,7 +1,6 @@
 import logging
 
 import uvicorn
-from loads.config import Settings
 from pydantic_settings import (
     BaseSettings,
     CliApp,
@@ -10,8 +9,10 @@ from pydantic_settings import (
 )
 
 from loads.api.auth import generate_jwt
+from loads.config import Settings
 from loads.control import PCanAdapter, PCanStub, SensorStub
 from loads.logging import setup_logging
+
 from .control import LoadsControl
 
 setup_logging()
@@ -57,7 +58,8 @@ class ControlCli(Settings):
     async def cli_cmd(self):
         logger.info("Running control...")
         async with LoadsControl.init_from_settings(self) as control:
-            await control.run()
+            run_task = await control.run()
+            await run_task
 
 
 class ZeroLoads(BaseSettings, cli_kebab_case=True):

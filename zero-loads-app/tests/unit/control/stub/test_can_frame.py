@@ -1,8 +1,8 @@
 from loads.control.stub.can_frame import (
-    CAN_Frame,
     CAN_CRC_Frame,
-    CAN_FD_Frame,
     CAN_FD_CRC_Frame,
+    CAN_FD_Frame,
+    CAN_Frame,
 )
 
 

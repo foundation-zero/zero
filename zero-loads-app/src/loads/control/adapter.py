@@ -1,7 +1,6 @@
 import asyncio
 import logging
 import socket
-
 from contextlib import asynccontextmanager
 
 from aiomqtt import Client as MqttClient

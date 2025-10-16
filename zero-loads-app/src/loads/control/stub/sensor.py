@@ -1,13 +1,13 @@
 import asyncio
 import logging
-
 from contextlib import asynccontextmanager
-from aiomqtt import Client, Client as MqttClient
+
+from aiomqtt import Client
+from aiomqtt import Client as MqttClient
 
 from loads.config import Settings
 
-
-logger = logging.getLogger("control")
+logger = logging.getLogger("sensor_stub")
 
 
 INTERVAL = 5
@@ -17,7 +17,7 @@ class SensorStub:
     def __init__(
         self,
         mqtt_client: Client,
-        topic: str = "loads/risingwave/conditions",
+        topic: str = "loads/sensor_input",
         interval: int = INTERVAL,
     ):
         self._mqtt_client = mqtt_client
@@ -37,7 +37,7 @@ class SensorStub:
         logger.info("Starting stub to publish conditions")
         while True:
             await self._mqtt_client.publish(
-                f"{self._topic}",
+                self._topic,
                 '{"awa": 45.0, "aws": 12.0, "pcs_mode": {"fwd": "propulsion", "aft": "idle"}, "sails": ["full-main-sail", "main-blade", "full-mizzen-sail"]}',
             )
             await asyncio.sleep(self._interval)

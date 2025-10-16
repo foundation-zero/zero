@@ -1,6 +1,6 @@
 table:
   schema: public
-  name: load_cases
+  name: loads_cases
 select_permissions:
   - role: reader
     permission:

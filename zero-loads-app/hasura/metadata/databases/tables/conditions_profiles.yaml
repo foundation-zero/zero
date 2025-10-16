@@ -1,6 +1,6 @@
 table:
   schema: public
-  name: conditions
+  name: conditions_profiles
 select_permissions:
   - role: reader
     permission:
