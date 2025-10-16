@@ -38,6 +38,5 @@ def test_pvt_fmu_names():
     assert not missing_in_fmu, f"Missing in FMU: {missing_in_fmu}"
 
 
-@pytest.mark.skip("Skip until PVT FMU is updated")
 def test_yard_tags():
     compare_yard_tags(PvtSensorValues, PvtControlValues)
