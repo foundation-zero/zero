@@ -2,7 +2,7 @@ import { PID, Stamped } from "@/@types/thrs";
 import { THRSModules } from "@/lib/consts";
 import { useClientHandle } from "@urql/vue";
 import { defineStore } from "pinia";
-import { computed, ref, Ref, toRef, WritableComputedRef } from "vue";
+import { computed, ref, Ref, WritableComputedRef } from "vue";
 
 type FormValue<T> = {
   value: WritableComputedRef<T>;
@@ -20,6 +20,7 @@ const valueWithDirty = <T>(value: Ref<T>): FormValue<Unstamp<T>> => {
   return {
     value: computed<Unstamp<T>>({
       get() {
+        console.log("get", { dirtyValue: dirtyValue.value, value: value.value });
         return dirtyValue.value !== null ? dirtyValue.value : unstamp(value.value);
       },
       set(value) {
@@ -94,9 +95,11 @@ export const controlValuesForm = <
     fields.map((field: K) => [
       field,
       valueWithDirty(
-        typeof values.value === "object" && !Array.isArray(values.value)
-          ? toRef(values.value, field)
-          : values,
+        computed(() =>
+          typeof values.value === "object" && !Array.isArray(values.value)
+            ? values.value[field]
+            : values.value,
+        ),
       ),
     ]),
   );

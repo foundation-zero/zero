@@ -8,9 +8,6 @@ importers:
 
   .:
     dependencies:
-      '@apidevtools/json-schema-ref-parser':
-        specifier: ^14.1.1
-        version: 14.1.1
       '@foundation-zero/graphql-subscriptions-mock':
         specifier: ^1.0.1
         version: 1.0.1(playwright@1.54.1)

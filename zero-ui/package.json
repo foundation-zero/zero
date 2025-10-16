@@ -18,7 +18,6 @@
     "docs:preview": "vitepress preview docs"
   },
   "dependencies": {
-    "@apidevtools/json-schema-ref-parser": "^14.1.1",
     "@foundation-zero/graphql-subscriptions-mock": "^1.0.1",
     "@radix-icons/vue": "^1.0.0",
     "@readme/openapi-parser": "^5.0.1",

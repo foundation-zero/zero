@@ -24,6 +24,10 @@ type ControlPumpType {
   on: BoolStampedType!
 }
 
+type ControlState {
+  automatic: Boolean!
+}
+
 type ControlValveType {
   setpoint: FloatStampedType!
 }
@@ -50,6 +54,7 @@ type Mutation {
   simulationPlay(playbackRate: Float! = 1): Void
   simulationPause: Void
   simulationStep(seconds: Float!): Void
+  controlSetAutomationMode(automatic: Boolean!): Void
   setThrustersControlThrustersPump1(component: PumpInputType!): ThrustersControlValuesType!
   setThrustersControlThrustersPump2(component: PumpInputType!): ThrustersControlValuesType!
   setThrustersControlThrustersMixRecovery(component: ValveInputType!): ThrustersControlValuesType!
@@ -118,6 +123,7 @@ input PumpInputType {
 type Query {
   modules: Modules!
   simulation: SimulationState
+  control: ControlState
   thrustersSensorValues: ThrustersSensorValuesType!
 }
 

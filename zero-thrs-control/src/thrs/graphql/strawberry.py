@@ -176,6 +176,11 @@ class SimulationState:
     status: str
 
 
+@strawberry.type
+class ControlState:
+    automatic: bool
+
+
 @dataclass
 class ThrsContext(BaseContext):
     messaging: Messaging[ThrustersSensorValues, ThrustersControlValues]
@@ -222,6 +227,12 @@ class Query:
             time=info.context.messaging.simulation_status.simulation_time,
             status=info.context.messaging.simulation_status.status,
         )
+
+    @strawberry.field
+    def control(self, info: strawberry.Info[ThrsContext]) -> ControlState | None:
+        if info.context.messaging.control_status is None:
+            return None
+        return ControlState(automatic=info.context.messaging.control_status.automatic)
 
     @strawberry.field()
     def thrusters_sensor_values(self) -> ThrustersSensorValuesType:
@@ -296,9 +307,13 @@ class DynamicInputFields:
                 ) -> ThrustersControlValuesType:
                     pydantic_value = component.to_pydantic().to_stamped()
                     setattr(thrusters_control_values, name, pydantic_value)
+                    expect = info.context.messaging.wait_for_control_values(
+                        lambda v: getattr(v, name) == pydantic_value, 2.0
+                    )
                     await info.context.messaging.send_manual_controls(
                         thrusters_control_values
                     )
+                    await expect
                     return ThrustersControlValuesType.from_pydantic(
                         thrusters_control_values
                     )
@@ -377,7 +392,9 @@ class Mutation(DynamicInputFields):
             raise Exception("No simulation status available, cannot play")
         if info.context.messaging.simulation_status.status != "available":
             raise Exception("Can only play an available simulation")
-        expect_status = info.context.messaging.wait_for_status("running", 2.0)
+        expect_status = info.context.messaging.wait_for_simulation_status(
+            "running", 2.0
+        )
         await info.context.messaging.play_simulation(playback_rate)
         await expect_status
 
@@ -387,7 +404,9 @@ class Mutation(DynamicInputFields):
             raise Exception("No simulation status available, cannot pause")
         if info.context.messaging.simulation_status.status != "running":
             raise Exception("Can only pause a running simulation")
-        expect_status = info.context.messaging.wait_for_status("available", 2.0)
+        expect_status = info.context.messaging.wait_for_simulation_status(
+            "available", 2.0
+        )
         await info.context.messaging.pause_simulation()
         await expect_status
 
@@ -399,7 +418,9 @@ class Mutation(DynamicInputFields):
             raise Exception("No simulation status available, cannot step")
         if info.context.messaging.simulation_status.status != "available":
             raise Exception("Can only step an available simulation")
-        expect_status = info.context.messaging.wait_for_status("stepping", 2.0)
+        expect_status = info.context.messaging.wait_for_simulation_status(
+            "stepping", 2.0
+        )
         await info.context.messaging.step_simulation(seconds)
         await expect_status
 
@@ -407,8 +428,7 @@ class Mutation(DynamicInputFields):
     async def control_set_automation_mode(
         self, info: strawberry.Info[ThrsContext], automatic: bool
     ) -> None:
-        mode = "automatic" if automatic else "manual"
-        await info.context.messaging.switch_automation_mode(mode)
+        await info.context.messaging.set_automation(automatic)
 
 
 type FieldMutation[T] = """Callable[
