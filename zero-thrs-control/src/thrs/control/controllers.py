@@ -87,8 +87,8 @@ class FlowBalanceController:
 
     @property
     def enabled(self) -> bool:
-        return any(controller.enabled() for controller in self._valve_controllers) and (
-            self._pump_controller is None or self._pump_controller.enabled()
+        return any(controller.enabled() for controller in self._valve_controllers) or (
+            self._pump_controller is not None and self._pump_controller.enabled()
         )
 
     def set_active_valves(self, actives: list[bool]):

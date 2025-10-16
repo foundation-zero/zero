@@ -284,6 +284,7 @@ class ThrustersControl(
         self._control_heat_dump(sensor_values)
 
         if self.mode == "recovery":
+            self._check_overheat(sensor_values)  # type: ignore
             self._set_recovery_flow_setpoints(sensor_values)
             self._control_warmup_mix(sensor_values)
 
