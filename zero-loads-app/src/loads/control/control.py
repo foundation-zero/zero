@@ -14,7 +14,7 @@ from .message import Conditions, Message, SensorInput
 logger = logging.getLogger("control")
 
 
-class LoadsControl:
+class Control:
     """Control process ingesting sensor data via MQTT and outputting the conditions to MQTT"""
 
     def __init__(self, mqtt_client: Client):
@@ -28,7 +28,7 @@ class LoadsControl:
         async with MqttClient(
             settings.mqtt_host, settings.mqtt_port, identifier="loads_control"
         ) as mqtt_client:
-            yield LoadsControl(mqtt_client=mqtt_client)
+            yield Control(mqtt_client=mqtt_client)
 
     async def run(self) -> Coroutine:
         await self._mqtt_client.subscribe("loads/sensor_input", qos=1)
@@ -40,12 +40,12 @@ class LoadsControl:
                     if not self._first_message.done():
                         self._first_message.set_result(self._sensor_input)
 
-                    conditions = await self.determine_conditions()
+                    conditions = await self._determine_conditions()
                     await self._send_mqtt_message(conditions)
 
         return _run(self)
 
-    async def determine_conditions(self) -> Conditions:
+    async def _determine_conditions(self) -> Conditions:
         """Determine the conditions by combining the sensor data with the computed sea state"""
         sea_state = await self._determine_sea_state()
 
@@ -60,6 +60,10 @@ class LoadsControl:
         else:
             raise ValueError("self._sensor_input is None. Cannot determine conditions.")
 
+    async def wait_for_values(self):
+        """Wait until the first message has been received"""
+        return await self._first_message
+
     async def _determine_sea_state(self) -> str:
         """Placeholder: Determine sea state based on conditions"""
         return "wet"
@@ -71,10 +75,6 @@ class LoadsControl:
         if not isinstance(message.payload, (str, bytes)):
             raise ValueError(f"Expected string or bytes, got {type(message.payload)}")
         return model.model_validate_json(message.payload)
-
-    async def wait_for_values(self):
-        """Wait until the first message has been received"""
-        return await self._first_message
 
     async def _send_mqtt_message(self, message: Message):
         logging.info(f"Publishing messages to topic {message.TOPIC}")

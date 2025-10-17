@@ -13,7 +13,7 @@ from loads.config import Settings
 from loads.control import PCanAdapter, PCanStub, SensorStub
 from loads.logging import setup_logging
 
-from .control import LoadsControl
+from .control import Control
 
 setup_logging()
 
@@ -57,7 +57,7 @@ class SensorStubCmd(Settings):
 class ControlCli(Settings):
     async def cli_cmd(self):
         logger.info("Running control...")
-        async with LoadsControl.init_from_settings(self) as control:
+        async with Control.init_from_settings(self) as control:
             run_task = await control.run()
             await run_task
 

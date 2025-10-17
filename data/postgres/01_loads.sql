@@ -55,8 +55,8 @@ CREATE TABLE value_definitions (
   scope value_definition_scope NOT NULL
 );
 
-DROP TABLE IF EXISTS conditions_profiles CASCADE;
-CREATE TABLE conditions_profiles (
+DROP TABLE IF EXISTS condition_profiles CASCADE;
+CREATE TABLE condition_profiles (
   id TEXT PRIMARY KEY,
   name TEXT NOT NULL,
   sea_state sea_state NOT NULL,
@@ -69,7 +69,7 @@ CREATE TABLE conditions_profiles (
 DROP TABLE IF EXISTS load_cases CASCADE;
 CREATE TABLE load_cases (
   name TEXT,
-  condition_profile_id TEXT NOT NULL REFERENCES conditions_profiles(id) ON DELETE RESTRICT,
+  condition_profile_id TEXT NOT NULL REFERENCES condition_profiles(id) ON DELETE RESTRICT,
   sail_set_id TEXT NOT NULL REFERENCES sail_sets(id) ON DELETE RESTRICT,
   PRIMARY KEY (condition_profile_id, sail_set_id)
 );
@@ -136,7 +136,7 @@ INSERT INTO value_definitions (id, name, unit, scope) VALUES
   ('headstay-load', 'Headstay load', 'tonne', 'mast_specific'),
   ('boatspeed', 'Boat Speed', 'knot', 'general');
 
-INSERT INTO conditions_profiles (id, name, sea_state, awa, aws, pcs_mode_aft, pcs_mode_fwd) VALUES
+INSERT INTO condition_profiles (id, name, sea_state, awa, aws, pcs_mode_aft, pcs_mode_fwd) VALUES
   ('light-wind-close-hauled', 'Light wind close-hauled', 'wet', '[0,45)', '[0,10)', ARRAY['propulsion', 'regeneration', 'idle']::pcs_mode[], ARRAY['propulsion', 'regeneration', 'idle']::pcs_mode[]),
   ('light-wind-beam-reach', 'Light wind beam reach', 'wet', '[45,135)', '[0,10)', ARRAY['propulsion', 'regeneration', 'idle']::pcs_mode[], ARRAY['propulsion', 'regeneration', 'idle']::pcs_mode[]),
   ('light-wind-broad-reach', 'Light wind broad reach', 'wet', '[135,180]', '[0,10)', ARRAY['propulsion', 'regeneration', 'idle']::pcs_mode[], ARRAY['propulsion', 'regeneration', 'idle']::pcs_mode[]),

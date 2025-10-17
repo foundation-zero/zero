@@ -41,8 +41,8 @@ async def get_loads_reference_values(
         case = await retrieve_current_load_case(session)
         logger.info(f"Retrieved case: {case}")
 
-    sail_set = retrieve_sail_set_subq(case)
-    condition = retrieve_conditions_profiles_subq(case)
+    sail_set = create_sail_set_subq(case)
+    condition = create_condition_profiles_subq(case)
 
     query = (
         select(ReferenceValues, ValueDefinitions, Masts)
@@ -81,7 +81,7 @@ async def get_loads_reference_values(
         raise ValueError(f"No reference values found for case {case}.")
 
 
-def retrieve_sail_set_subq(case: CaseInput) -> ScalarSelect[str]:
+def create_sail_set_subq(case: CaseInput) -> ScalarSelect[str]:
     """Create subquery that returns the sail set that exactly matches the current sails."""
     return (
         select(SailSetCombined.id)
@@ -97,7 +97,7 @@ def sails_exact(
     return sails_column == cast(sorted(sails), ARRAY(TEXT))
 
 
-def retrieve_conditions_profiles_subq(case: CaseInput) -> ScalarSelect[str]:
+def create_condition_profiles_subq(case: CaseInput) -> ScalarSelect[str]:
     """Create subquery that returns the condition profile matching the input conditions."""
     return (
         select(ConditionsProfiles.id)
