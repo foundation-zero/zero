@@ -159,10 +159,6 @@ INSERT INTO load_cases (name, condition_profile_id, sail_set_id) VALUES
   (NULL, 'strong-wind-beam-reach', 'reach-blade-mzj'),
   (NULL, 'strong-wind-broad-reach', 'reach-blade-mzj');
 
-INSERT INTO conditions (time, sea_state, awa, aws, pcs_mode_aft, pcs_mode_fwd, sails) VALUES
-  (NOW(), 'wet', 0.0, 0.0, 'idle', 'idle', ARRAY['full-main-sail', 'full-mizzen-sail', 'main-blade']);
-
-
 INSERT INTO reference_values (condition_profile_id, sail_set_id, mast_id, value_definition_id, value) VALUES
   ('light-wind-close-hauled', 'upwind-blade', 'main', 'headstay-load', 2.0),
   ('light-wind-close-hauled', 'upwind-blade', 'mizzen', 'headstay-load', 1.0),
@@ -199,3 +195,7 @@ INSERT INTO reference_values (condition_profile_id, sail_set_id, mast_id, value_
   ('strong-wind-broad-reach', 'reach-blade-mzj', 'main', 'headstay-load', 5.5),
   ('strong-wind-broad-reach', 'reach-blade-mzj', 'mizzen', 'headstay-load', 2.5),
   ('strong-wind-broad-reach', 'reach-blade-mzj', NULL, 'boatspeed', 9.5);
+
+-- Seeding to avoid starting up risingwave for testing. Should be removed later.
+INSERT INTO conditions (time, sea_state, awa, aws, pcs_mode_aft, pcs_mode_fwd, sails) VALUES
+  (NOW(), 'wet', 0.0, 0.0, 'idle', 'idle', ARRAY['full-main-sail', 'full-mizzen-sail', 'main-blade']);

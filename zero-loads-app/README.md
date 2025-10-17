@@ -2,12 +2,11 @@
 
 This repository contains the main components of the zero-loads-app:
 
-- The `adapter` ingests sensor data from CANBus and forwards it to MQTT.
-- The `pcan-stub` simulates CANBus messages over UDP for testing.
-- The `control` module processes sensor data, determines sea state, and publishes results to MQTT.
-- The `sensor-stub` generates mock sensor data and sends it over MQTT.
-- The `api` exposes load reference values via a GraphQL interface.
-- The `generate-jwt` function generates a JWT token for given roles.
+- The adapter ingests sensor data from CANBus and forwards it to MQTT.
+- The PCanStub simulates CANBus messages over UDP for testing.
+- The Control module processes sensor data, determines sea state, and publishes results to MQTT.
+- The SensorStub generates mock sensor data and sends it over MQTT.
+- The API exposes load reference values via a GraphQL interface.
 
 
 ## Development Setup

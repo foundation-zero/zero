@@ -56,7 +56,7 @@ class Query:
         info: strawberry.Info[MyContext],
         values: list[strawberry.ID],
         case: CaseInput | None = None,
-    ) -> list[ReferenceValueType]:
+    ) -> list[ReferenceValueType] | None:
         return await get_loads_reference_values(values, case, info.context.session)
 
 

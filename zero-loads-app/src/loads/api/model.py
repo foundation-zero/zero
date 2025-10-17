@@ -34,12 +34,18 @@ logger = logging.getLogger("api")
 
 async def get_loads_reference_values(
     values: list[strawberry.ID], case: CaseInput | None, session: AsyncSession
-) -> list[ReferenceValueType]:
+) -> list[ReferenceValueType] | None:
     """Return all reference values that matches the currents sail and conditions."""
 
     if not case:
-        case = await retrieve_current_load_case(session)
-        logger.info(f"Retrieved case: {case}")
+        current_case = await retrieve_current_load_case(session)
+
+        if not current_case:
+            logger.info("No case found")
+            return None
+        else:
+            logger.info(f"Retrieved case: {current_case}")
+            case = current_case
 
     sail_set = create_sail_set_subq(case)
     condition = create_condition_profiles_subq(case)
@@ -78,7 +84,8 @@ async def get_loads_reference_values(
             for reference, definition, mast in rows
         ]
     else:
-        raise ValueError(f"No reference values found for case {case}.")
+        logger.info(f"No reference values found for case: {case}")
+        return []
 
 
 def create_sail_set_subq(case: CaseInput) -> ScalarSelect[str]:
@@ -110,7 +117,7 @@ def create_condition_profiles_subq(case: CaseInput) -> ScalarSelect[str]:
     )
 
 
-async def retrieve_current_load_case(session: AsyncSession) -> CaseInput:
+async def retrieve_current_load_case(session: AsyncSession) -> CaseInput | None:
     """Retrieve the most recent load case from the database."""
     load_case_current = select(Conditions).order_by(Conditions.time.desc()).limit(1)
     result = await session.execute(load_case_current)
@@ -127,4 +134,4 @@ async def retrieve_current_load_case(session: AsyncSession) -> CaseInput:
             aws=float(row.aws),  # type: ignore
         )
     else:
-        raise ValueError("No load case found.")
+        return None
