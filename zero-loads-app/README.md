@@ -1,12 +1,11 @@
 # Zero Loads App
 
-This repository contains the main components of the zero-loads-app:
-
-- The adapter ingests sensor data from CANBus and forwards it to MQTT.
-- The PCanStub simulates CANBus messages over UDP for testing.
-- The Control module processes sensor data, determines sea state, and publishes results to MQTT.
-- The SensorStub generates mock sensor data and sends it over MQTT.
-- The API exposes load reference values via a GraphQL interface.
+The Loads app does the processing as follows:
+- Sensor equipment transmits sensor data via PCan UDP.
+- The `adapter` module receives these messages, interprets them, and forwards the data to MQTT.
+- RisingWave ingests relevant sensor data, constructs load conditions, and publishes them to MQTT.
+- The `control` process consumes load conditions from MQTT, determines the load case by computing the sea state, and publishes the results to MQTT, where RisingWave sinks them into Postgres.
+- When reference values are requested via the API, the current load case is retrieved from Postgres and the corresponding reference values are returned.
 
 
 ## Development Setup

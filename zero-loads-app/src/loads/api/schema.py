@@ -15,7 +15,7 @@ class SailSetCombined(Base):  # type: ignore
     sails = Column(ARRAY(String))  # type: ignore
 
 
-class ConditionsProfiles(Base):  # type: ignore
+class ConditionProfiles(Base):  # type: ignore
     __tablename__ = "condition_profiles"
 
     id = Column(String, primary_key=True)

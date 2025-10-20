@@ -26,7 +26,6 @@ async def test_control_determine_conditions(mqtt_client_receive, mqtt_client_sen
 
     try:
         await asyncio.sleep(1)
-        # We send two messages. Control should take only the last one into account
         await mqtt_client_send.publish(
             "loads/sensor_input",
             '{"awa": 45.0, "aws": 12.0, "pcs_mode": {"fwd": "propulsion", "aft": "propulsion"}, "sails": ["full-main-sail", "main-blade", "full-mizzen-sail"]}',

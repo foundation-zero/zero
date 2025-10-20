@@ -9,8 +9,8 @@ from sqlalchemy.sql.expression import ColumnElement
 from sqlalchemy.sql.selectable import ScalarSelect
 
 from .schema import (
+    ConditionProfiles,
     Conditions,
-    ConditionsProfiles,
     Masts,
     ReferenceValues,
     SailSetCombined,
@@ -107,12 +107,12 @@ def sails_exact(
 def create_condition_profiles_subq(case: CaseInput) -> ScalarSelect[str]:
     """Create subquery that returns the condition profile matching the input conditions."""
     return (
-        select(ConditionsProfiles.id)
-        .where(ConditionsProfiles.sea_state == case.sea_state)
-        .where(ConditionsProfiles.awa.contains(cast(case.awa, NUMERIC)))
-        .where(ConditionsProfiles.aws.contains(cast(case.aws, NUMERIC)))
-        .where(ConditionsProfiles.pcs_mode_fwd.any(case.pcs_mode.fwd))
-        .where(ConditionsProfiles.pcs_mode_aft.any(case.pcs_mode.aft))
+        select(ConditionProfiles.id)
+        .where(ConditionProfiles.sea_state == case.sea_state)
+        .where(ConditionProfiles.awa.contains(cast(case.awa, NUMERIC)))
+        .where(ConditionProfiles.aws.contains(cast(case.aws, NUMERIC)))
+        .where(ConditionProfiles.pcs_mode_fwd.any(case.pcs_mode.fwd))
+        .where(ConditionProfiles.pcs_mode_aft.any(case.pcs_mode.aft))
         .scalar_subquery()
     )
 
