@@ -1,2 +1,5 @@
+-- depends_on: {{ ref('bms_master_power_updates') }}
+
 {{ config(materialized='materialized_view') }}
-{{ get_power_data_and_groups('bms_master_power_updates') }}
+
+{{ join_electrical_metadata('bms_master_power_updates') }}

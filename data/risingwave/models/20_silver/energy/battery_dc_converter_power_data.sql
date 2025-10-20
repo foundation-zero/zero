@@ -1,2 +1,5 @@
+-- depends_on: {{ ref('battery_dc_converter_power_updates') }}
+
 {{ config(materialized='materialized_view') }}
-{{ get_power_data_and_groups('battery_dc_converter_power_updates') }}
+
+{{ join_electrical_metadata('battery_dc_converter_power_updates') }}
