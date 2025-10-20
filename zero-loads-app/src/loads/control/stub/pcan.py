@@ -1,12 +1,13 @@
+import asyncio
+import logging
 import random
 import socket
-import asyncio
 from contextlib import asynccontextmanager
 from datetime import datetime
 
-from .can_frame import CAN_CRC_Frame, CAN_FD_CRC_Frame, CAN_FD_Frame, CAN_Frame
 from loads.config import Settings
-import logging
+
+from .can_frame import CAN_CRC_Frame, CAN_FD_CRC_Frame, CAN_FD_Frame, CAN_Frame
 
 logger = logging.getLogger("stub")
 

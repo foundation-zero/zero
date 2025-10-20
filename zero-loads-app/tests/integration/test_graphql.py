@@ -1,6 +1,6 @@
 import pytest
 from asgi_lifespan import LifespanManager
-from httpx import AsyncClient, ASGITransport
+from httpx import ASGITransport, AsyncClient
 
 from loads.api import app
 
@@ -20,10 +20,10 @@ async def test_graphql():
                             values: "headstay-load"
                             case: {
                                 sails: ["full-mizzen-sail", "full-main-sail", "main-blade", "mizzen-jib"]
-                                pcsMode: {aft: REGENERATION, fwd: PROPULSION}
+                                pcsMode: {aft: regeneration, fwd: propulsion}
                                 awa: 0
                                 aws: 25
-                                seaState: WET
+                                seaState: wet
                             }
                         )
                         {
@@ -63,7 +63,7 @@ async def test_graphql():
                                 "warningTooHigh": None,
                                 "warningTooLow": None,
                             },
-                            "target": {"target": "5.0", "unit": "TONNE"},
+                            "target": {"target": "5.0", "unit": "tonne"},
                             "value": {"id": "headstay-load", "name": "Headstay load"},
                             "masts": {"id": "main", "name": "Main mast"},
                         },
@@ -74,7 +74,7 @@ async def test_graphql():
                                 "warningTooHigh": None,
                                 "warningTooLow": None,
                             },
-                            "target": {"target": "2.5", "unit": "TONNE"},
+                            "target": {"target": "2.5", "unit": "tonne"},
                             "value": {"id": "headstay-load", "name": "Headstay load"},
                             "masts": {"id": "mizzen", "name": "Mizzen mast"},
                         },

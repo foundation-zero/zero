@@ -7,6 +7,7 @@ from aiomqtt import Client as MqttClient
 from construct import Container
 
 from loads.config import Settings
+
 from .stub.can_frame import CAN_CRC_Frame, CAN_FD_CRC_Frame, CAN_FD_Frame, CAN_Frame
 
 logger = logging.getLogger("adapter")
@@ -50,7 +51,8 @@ class PCanAdapter:
             try:
                 message = await self._read_message()
                 logger.debug("Received message. Forwarding message to MQTT")
-                await self._send_mqtt_message(message)
+                if message:
+                    await self._send_mqtt_message(message)
             except Exception as e:
                 logger.error(e)
                 break

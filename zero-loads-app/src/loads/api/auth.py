@@ -2,7 +2,6 @@ import jwt
 
 from loads.config import settings
 
-
 SUPPORTED_ROLES = {"captain", "engineer", "first_officer", "crew", "guest"}
 
 

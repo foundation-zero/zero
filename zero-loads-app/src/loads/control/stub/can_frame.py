@@ -1,16 +1,16 @@
 from construct import (
-    Struct,
-    BitStruct,
     BitsInteger,
+    BitStruct,
+    Bytes,
+    Computed,
+    Const,
     Flag,
     FlagsEnum,
     Int8ub,
     Int16ub,
     Int32ub,
     Int32ul,
-    Bytes,
-    Computed,
-    Const,
+    Struct,
     this,
 )
 

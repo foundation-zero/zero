@@ -1,26 +1,27 @@
-import strawberry
 from enum import Enum
+
+import strawberry
 
 
 @strawberry.enum
 class Unit(Enum):
-    TONNE = "tonne"
-    PERCENTAGE = "percentage"
-    METERS = "meters"
-    KNOT = "knot"
+    tonne = "tonne"
+    percentage = "percentage"
+    meters = "meters"
+    knot = "knot"
 
 
 @strawberry.enum
 class SeaState(Enum):
-    WET = "wet"
-    DRY = "dry"
+    wet = "wet"
+    dry = "dry"
 
 
 @strawberry.enum
 class ThrusterMode(Enum):
-    PROPULSION = "propulsion"
-    REGENERATION = "regeneration"
-    IDLE = "idle"
+    propulsion = "propulsion"
+    regeneration = "regeneration"
+    idle = "idle"
 
 
 @strawberry.input

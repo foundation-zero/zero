@@ -8,10 +8,11 @@ from fastapi import Depends, FastAPI
 from sqlalchemy.ext.asyncio import AsyncSession
 from strawberry.fastapi import BaseContext, GraphQLRouter
 
-from .db import SessionManager
-from .model import get_reference_values
-from .types import CaseInput, ReferenceValueType
 from loads.config import settings
+
+from .db import SessionManager
+from .model import get_loads_reference_values
+from .types import CaseInput, ReferenceValueType
 
 logger = logging.getLogger("api")
 
@@ -55,8 +56,8 @@ class Query:
         info: strawberry.Info[MyContext],
         values: list[strawberry.ID],
         case: CaseInput | None = None,
-    ) -> list[ReferenceValueType]:
-        return await get_reference_values(values, case, info.context.session)
+    ) -> list[ReferenceValueType] | None:
+        return await get_loads_reference_values(values, case, info.context.session)
 
 
 schema = strawberry.Schema(query=Query)
