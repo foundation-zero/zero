@@ -8,7 +8,7 @@ risingwave:
       password: ''
       port: 4566
       dbname: dev
-      schema: public
+      schema: zero
       threads: 1
 
     docker:
@@ -18,7 +18,7 @@ risingwave:
       password: ''
       port: 4566
       dbname: dev
-      schema: public
+      schema: zero
       threads: 1
 
     singel:
@@ -28,5 +28,5 @@ risingwave:
       password: ''
       port: 4567
       dbname: dev
-      schema: public
+      schema: zero
       threads: 1

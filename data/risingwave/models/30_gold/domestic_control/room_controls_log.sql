@@ -1,14 +1,14 @@
 SELECT
     row_number() OVER (PARTITION BY logs.id ORDER BY logs.time DESC) AS row_num,
     logs.id,
-    controls.room_id,
-    controls.name,
+    conditions.room_id,
+    conditions.name,
     logs.type,
     logs.value,
     logs.time
 FROM
     {{ ref('ac_controls_pivot')}} as logs
-LEFT JOIN {{ ref('controls') }} controls ON controls.id = logs.id
+LEFT JOIN {{ ref('conditions') }} conditions ON conditions.id = logs.id
 UNION ALL
 SELECT
     row_number() OVER (PARTITION BY logs.id ORDER BY logs.time DESC) AS row_num,

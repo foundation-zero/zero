@@ -11,7 +11,9 @@ load_dotenv(dotenv_path=".env")
 
 settings = Settings()
 
-print(f"Postgres: Initializing tables to Postgres: {settings.pg_host}:{settings.pg_port}/{settings.pg_db}")
+print(
+    f"Postgres: Initializing tables to Postgres: {settings.pg_host}:{settings.pg_port}/{settings.pg_db}"
+)
 
 
 async def setup():
@@ -19,9 +21,7 @@ async def setup():
         async with conn.cursor() as cur:
             files = sorted(glob("./postgres/*.sql"))
             for file in files:
-                with codecs.open(
-                    file, encoding="utf-8"
-                ) as query:
+                with codecs.open(file, encoding="utf-8") as query:
                     await cur.execute(bytes(query.read(), "utf-8"))
 
 

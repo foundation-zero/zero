@@ -1,4 +1,4 @@
-INSERT INTO ac_update ("id", actual_temperature, temperature_setpoint, actual_humidity, humidity_setpoint, actual_co2, co2_setpoint) VALUES
+INSERT INTO zero_domestic.ac_update ("id", actual_temperature, temperature_setpoint, actual_humidity, humidity_setpoint, actual_co2, co2_setpoint) VALUES
 ('owners-cabin', 22.5, 21.0, 60.0, 50.0, 500, 600),
 ('dutch-cabin', 22.5, 21.0, 60.0, 50.0, 500, 600),
 ('french-cabin', 22.5, 21.0, 60.0, 50.0, 500, 600),
@@ -22,7 +22,7 @@ INSERT INTO ac_update ("id", actual_temperature, temperature_setpoint, actual_hu
 ('guest-corridor', 22.5, 21.0, 60.0, 50.0, 500, 600),
 ('polynesian-corridor', 22.5, 21.0, 60.0, 50.0, 500, 600);
 
-INSERT INTO blinds_update ("id", "level") VALUES
+INSERT INTO zero_domestic.blinds_update ("id", "level") VALUES
 ('owners-cabin/main/shear', 0),
 ('owners-cabin/main/blind', 0),
 ('owners-cabin/port/shear', 0),
@@ -58,7 +58,7 @@ INSERT INTO blinds_update ("id", "level") VALUES
 ('owners-stairway/blind', 0),
 ('guest-corridor/blind', 0);
 
-INSERT INTO lighting_groups_update ("id", "level") VALUES
+INSERT INTO zero_domestic.lighting_groups_update ("id", "level") VALUES
 ('owners-cabin/ambient', 0),
 ('owners-cabin/mood', 0),
 ('dutch-cabin/ambient', 0),

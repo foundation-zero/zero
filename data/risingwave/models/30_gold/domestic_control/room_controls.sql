@@ -5,5 +5,5 @@ SELECT
     "type",
     "value",
     "time"
-FROM  {{ ref('rooms_controls_log') }}
+FROM  {{ ref('room_controls_log') }}
 WHERE row_num = 1;
