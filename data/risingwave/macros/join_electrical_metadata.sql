@@ -1,8 +1,10 @@
-{% macro join_electrical_metadata(table_name) -%}
+{% macro join_electrical_metadata(table_alias) -%}
+
 SELECT 
-    updates.*,
+    {{ table_alias }}.*,
     metadata.electrical_system AS electrical_system,
     metadata.group AS group_name
-FROM {{ ref(table_name) }} AS updates
-JOIN {{ ref('electrical_energy_metadata') }} AS metadata ON updates.topic = metadata.preferred_mqtt_topic
+FROM {{ table_alias }}
+JOIN {{ ref('electrical_energy_metadata') }} AS metadata ON {{ table_alias }}.topic = metadata.preferred_mqtt_topic
+
 {%- endmacro %}

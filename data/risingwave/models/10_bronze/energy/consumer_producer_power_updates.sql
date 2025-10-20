@@ -14,7 +14,7 @@ WITH combined_power_data AS (
 	{%- endfor -%}
 )
 
-{{ distinct_timestamp(
+{{ filter_marpower_topic_changes(
     'combined_power_data', {
         'Total_Active_Power' : ('active_power', 'active_power_timestamp'),
         'Total_Power_Factor' : ('power_factor', 'power_factor_timestamp')

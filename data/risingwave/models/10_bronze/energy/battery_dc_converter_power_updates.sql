@@ -4,7 +4,7 @@ WITH battery_dc_converter AS (
     SELECT * FROM {{ ref('battery_dc_converter') }}
 )
 
-{{ distinct_timestamp(
+{{ filter_marpower_topic_changes(
     'battery_dc_converter', {
         'Voltage_A' : ('voltage_a', 'voltage_a_timestamp'),
         'Voltage_B' : ('voltage_b', 'voltage_b_timestamp'),
