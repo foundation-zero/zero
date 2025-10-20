@@ -34,7 +34,7 @@ models:
       domestic_control:
         +schema: domestic
     20_silver:
-      +materialized: materialized_view
+      +materialized: view
       domestic_control:
         +schema: domestic
     30_gold:

@@ -104,6 +104,8 @@ INSERT INTO domestic.rooms ("id", "name", "group") VALUES
 ('crew-sb-fwd-cabin', 'Crew SB FWD cabin', 'FORE'),
 ('crew-ps-mid-cabin', 'Crew PS MID cabin', 'FORE'),
 ('crew-ps-fwd-cabin', 'Crew PS FWD cabin', 'FORE'),
+('office', 'Office', 'FORE'),
+('lounge', 'Lounge', 'FORE'),
 ('owners-deckhouse', 'Owners deckhouse', 'UPPERDECK'),
 ('owners-cockpit', 'Owners cockpit', 'AFT'),
 ('main-deckhouse', 'Main deckhouse', 'UPPERDECK'),
@@ -192,7 +194,7 @@ INSERT INTO domestic.amplifiers ("id", "room_id", "name") VALUES
 ('polynesian-cabin/amplifier', 'polynesian-cabin', 'Polynesian cabin'),
 ('main-deckhouse/amplifier', 'main-deckhouse', 'Main deckhouse'),
 ('office/amplifier', 'office', 'Office'),
-('lounge/amplifier', 'californian-lounge', 'lounge');
+('lounge/amplifier', 'lounge', 'lounge');
 
 INSERT INTO domestic.blinds ("id", "room_id", "name", "opacity", "group") VALUES
 ('owners-cabin/main/shear', 'owners-cabin', 'Main', 'shear', 'MAIN'),
