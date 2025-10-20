@@ -14,8 +14,6 @@ class IOMetadataWriter:
             "tag",
             "yard_tag",
             "target_type",
-            "module",
-            "module_type",
             "terminal",
             "cabinet",
             "system",

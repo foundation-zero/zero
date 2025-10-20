@@ -67,4 +67,3 @@ volumes:
 secrets:
   gsheet_sa_key:
     file: .gsheet-sa-key.json
-

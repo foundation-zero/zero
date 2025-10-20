@@ -11,6 +11,7 @@ _DATA_TYPES = {
     "Float": "REAL",
     "Bool": "BOOLEAN",
     "Uint32": "BIGINT",
+    "Uint16": "INTEGER",
     "Int32": "INTEGER",
     "Int16": "INTEGER",
     "String": "STRING",
@@ -51,17 +52,30 @@ class MarpowerReader(ReaderBase):
             filter_df.with_columns(
                 pl.col("target_type").replace_strict(_DATA_TYPES).alias("data_type")
             )
-            .with_columns(yard_tag=pl.col("yard_tag").str.replace_all(r"_|\.", "-"))
             .with_columns(tag=pl.col("tag").str.replace_all(r"-|\.", "_"))
         )
-        return typed_df
+        subset_df = typed_df.select([
+            "device",
+            "tag",
+            "yard_tag",
+            "target_type",
+            "terminal",
+            "cabinet",
+            "system",
+            "description",
+            "unit",
+            "precision",
+            "data_type",
+            "mqtt_topic",
+            "mqtt_json_path",
+        ])
+        return subset_df
 
     def _get_io_topics(self, df: pl.DataFrame) -> List[IOTopic]:
         """Get the IO topics from the DataFrame"""
         result = []
         for row in (
             df
-            .sort("tag")
             .group_by("mqtt_topic")
             .agg(pl.col("mqtt_json_path"), pl.col("data_type"))
             .iter_rows(named=True)
@@ -83,7 +97,7 @@ class MarpowerReader(ReaderBase):
         """Read a column from the Excel sheet, returning only the values with borders"""
         last_val = None
         for cell in next(ws.iter_cols(col, col, 3)):
-            if cell.border.top.style is not None:
+            if cell.border.top is not None and cell.border.top.style is not None:
                 last_val = cls.convert_value(cell.value)
             yield last_val
 
@@ -98,11 +112,17 @@ class MarpowerReader(ReaderBase):
         }
         return pl.DataFrame(data).filter(~pl.all_horizontal(pl.all().is_null()))
 
-    def read_io_list(self, path: Path) -> IOResult:
+    def read_io_list(self, paths: List[Path]) -> IOResult:
         """Read the IO list from the given path and return an IOResult"""
-        df = self._read_amcs_excel(path)
+        io_list = None
+        for path in paths:
+            _df = self._read_amcs_excel(path)
+            _io_list = self._normalize_amcs_io_list(_df)
+            if io_list is None:
+                io_list = _io_list
+            else:
+                pl.concat([io_list, _io_list])
 
-        io_list = self._normalize_amcs_io_list(df)
         topics = self._get_io_topics(io_list)
 
         return IOResult(io_list, topics)

@@ -1,15 +1,15 @@
 from pathlib import Path
 from .types import IOResult, Source
+from typing import List
 
 
-def read_io_list(path: Path, type: Source) -> IOResult:
+def read_io_list(paths: List[Path], type: Source) -> IOResult:
     if type == "marpower":
         from .readers.marpower import MarpowerReader
-
-        return MarpowerReader().read_io_list(path)
+        return MarpowerReader().read_io_list(paths)
     elif type == "vitters":
         from .readers.vitters import VittersReader
 
-        return VittersReader().read_io_list(path)
+        return VittersReader().read_io_list(paths[0])
     else:
         raise ValueError(f"Unsupported IOSource type: {type}")

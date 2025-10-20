@@ -1,12 +1,15 @@
 from pydantic_settings import BaseSettings, SettingsConfigDict
 from pydantic import Field, computed_field
-from typing import Annotated
+from typing import Annotated, List, Tuple
 
 from zero_data.io_list.types import Source
 
 
-io_lists: list[tuple[Source, str]] = [
-    ("marpower", "52422003_3210_AMCS IO-List R2.9 - Zero.xlsx")
+io_lists: List[Tuple[Source, List[str]]] = [
+    ("marpower", [
+        "52422003_3210_AMCS IO-List R2.14.xlsx",
+        "52422003_3211_PMS IO-List R2.6.xlsx"
+    ])
 ]
 
 

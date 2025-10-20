@@ -1,80 +1,36 @@
-def test_marpower_io_excel(marpower_io_result):
-    assert marpower_io_result.io_list.shape == (4187, 75)
-    assert marpower_io_result.io_list.columns == [
-        "rev.",
-        "deleted",
-        "target_type",
+from pathlib import Path
+
+from zero_data.io_list import read_io_list
+
+expected_io_columns = [
         "device",
-        "module",
-        "module_type",
-        "terminal",
-        "is_subscribe",
-        "prefix_device",
         "tag",
-        "cabinet",
-        "opc_ua_node_id",
-        "opc_ua_publish_interval",
-        "system",
         "yard_tag",
+        "target_type",
+        "terminal",
+        "cabinet",
+        "system",
         "description",
-        "parent",
-        "redundant_tag",
-        "p&id",
-        "cable_id",
-        "cable_type",
-        "cable_core_no.",
-        "mqtt_device",
-        "mqtt_typical",
-        "mqtt_topic",
-        "mqtt_json_path",
-        "modbus_slave_address",
-        "modbus_data_type",
-        "modbus_address",
-        "modbus_source_type",
-        "modbus_byte_size",
-        "modbus_swap_words",
-        "modbus_lower",
-        "modbus_upper",
-        "range_lower",
-        "range_upper",
         "unit",
         "precision",
-        "alert_code",
-        "alert_hh",
-        "alert_h",
-        "alert_l",
-        "alert_ll",
-        "alert_f",
-        "delay_on",
-        "acknowledge_location",
-        "sounding_locations",
-        "alert_priority",
-        "intended_operator_response",
-        "category_a",
-        "group_alarm",
-        "call_gea_on_alert_",
-        "disallow_inhibit",
-        "vdr_id",
-        "general_lock_tag",
-        "general_lock_operator",
-        "general_lock_level",
-        "hh_lock_tag",
-        "hh_lock_operator",
-        "hh_lock_level",
-        "h_lock_tag",
-        "h_lock_operator",
-        "h_lock_level",
-        "l_lock_tag",
-        "l_lock_operator",
-        "l_lock_level",
-        "ll_lock_tag",
-        "ll_lock_operator",
-        "ll_lock_level",
-        "do_not_log",
-        "log_to_daily_report",
-        "log_to_cdp",
-        "workstation",
-        "timestamp",
         "data_type",
+        "mqtt_topic",
+        "mqtt_json_path",
     ]
+
+def test_marpower_amcs_io_excel(marpower_io_result):
+    marpower_io_result = read_io_list(
+        [(Path(__file__).parent / "../../io_lists/52422003_3210_AMCS IO-List R2.14.xlsx")], "marpower"
+    )
+    assert marpower_io_result.io_list.shape == (4187, 13)
+    assert marpower_io_result.io_list.columns == expected_io_columns
     assert len(marpower_io_result.topics) == 258
+
+
+def test_marpower_pms_io_excel():
+    marpower_io_result = read_io_list(
+        [(Path(__file__).parent / "../../io_lists/52422003_3211_PMS IO-List R2.6.xlsx")], "marpower"
+    )
+    assert marpower_io_result.io_list.shape == (10527, 13)
+    assert marpower_io_result.io_list.columns == expected_io_columns
+    assert len(marpower_io_result.topics) == 12
