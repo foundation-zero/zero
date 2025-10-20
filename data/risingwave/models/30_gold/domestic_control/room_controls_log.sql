@@ -13,7 +13,7 @@ UNION ALL
 SELECT
     row_number() OVER (PARTITION BY logs.id ORDER BY logs.time DESC) AS row_num,
     amplifiers.id,
-    amplifiers.room_id,
+    logs.id as "room_id",
     amplifiers.name,
     'amplifier' as "type",
     CAST(logs.is_on AS INT) as "value",
@@ -24,7 +24,7 @@ LEFT JOIN {{ ref('amplifiers') }} amplifiers ON amplifiers.room_id = logs.id
 UNION ALL
 SELECT
     row_number() OVER (PARTITION BY logs.id ORDER BY logs.time DESC) AS row_num,
-    blinds.id,
+    logs.id,
     blinds.room_id,
     blinds.name,
     'blinds' as "type",

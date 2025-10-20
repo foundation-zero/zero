@@ -181,18 +181,18 @@ INSERT INTO domestic.conditions ("id", "room_id", "type", "name") VALUES
 ('polynesian-corridor/control/co2', 'polynesian-corridor', 'co2', '');
 
 INSERT INTO domestic.amplifiers ("id", "room_id", "name") VALUES
-('owners-cabin/amplifier', 'owners-cabin', 'Owners cabin'),
-('dutch-cabin/amplifier', 'dutch-cabin', 'Dutch cabin'),
-('french-cabin/amplifier', 'french-cabin', 'French cabin'),
-('italian-cabin/amplifier', 'italian-cabin', 'Italian cabin'),
-('polynesian-cabin/amplifier', 'polynesian-cabin', 'Polynesian cabin'),
-('galley/amplifier', 'galley', 'Galley'),
-('lounge/amplifier', 'californian-lounge', 'lounge'),
-('office/amplifier', 'engineers-office', 'Engineers office'),
-('owners-deckhouse/amplifier', 'owners-deckhouse', 'Owners deckhouse'),
 ('owners-cockpit/amplifier', 'owners-cockpit', 'Owners cockpit'),
+('owners-deckhouse/amplifier', 'owners-deckhouse', 'Owners deckhouse'),
+('owners-cabin/amplifier', 'owners-cabin', 'Owners cabin'),
+('main-cockpit/amplifier', 'main-cockpit', 'Main cockpit'),
+('italian-cabin/amplifier', 'italian-cabin', 'Italian cabin'),
+('galley/amplifier', 'galley', 'Galley'),
+('french-cabin/amplifier', 'french-cabin', 'French cabin'),
+('dutch-cabin/amplifier', 'dutch-cabin', 'Dutch cabin'),
+('polynesian-cabin/amplifier', 'polynesian-cabin', 'Polynesian cabin'),
 ('main-deckhouse/amplifier', 'main-deckhouse', 'Main deckhouse'),
-('main-cockpit/amplifier', 'main-cockpit', 'Main cockpit');
+('office/amplifier', 'office', 'Office'),
+('lounge/amplifier', 'californian-lounge', 'lounge');
 
 INSERT INTO domestic.blinds ("id", "room_id", "name", "opacity", "group") VALUES
 ('owners-cabin/main/shear', 'owners-cabin', 'Main', 'shear', 'MAIN'),

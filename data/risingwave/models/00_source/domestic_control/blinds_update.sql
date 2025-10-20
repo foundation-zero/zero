@@ -1,4 +1,4 @@
-{{ config(materialized='table_with_connector') }}
+{{ config(materialized='source') }}
 CREATE TABLE {{ this }} (
     "id" TEXT,
     "time" TIMESTAMPTZ as proctime (),
