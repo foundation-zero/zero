@@ -30,6 +30,14 @@ async def override_messaging():
         status="available", simulation_time=datetime.fromtimestamp(0)
     )
     mock.control_status = ControlStatusMessage(automatic=False)
+
+    async def wait(condition, *_args, timeout):
+        return None
+
+    mock.wait_for_simulation_status.side_effect = wait
+    mock.wait_for_control_status.side_effect = wait
+    mock.wait_for_control_values.side_effect = wait
+    mock.wait_for_parameters.side_effect = wait
     return mock
 
 
@@ -372,7 +380,6 @@ async def test_mutation_control_values_hanging_around(async_client):
                             value
                         }
                     }
-                }
             }"""
         },
     )
@@ -405,3 +412,26 @@ async def test_mutation_control_values_hanging_around(async_client):
             }
         }
     }
+
+
+async def test_mutation_parameter(async_client):
+    messaging_mock = await override_messaging()
+    app.dependency_overrides[messaging] = lambda: messaging_mock
+
+    response = await async_client.post(
+        "/graphql",
+        json={
+            "query": """mutation {
+                setThrustersParameterCoolingFlow(value: 99.0) {
+                    coolingFlow
+                }
+            }"""
+        },
+    )
+    assert response.status_code == 200
+    assert response.json() == {
+        "data": {"setThrustersParameterCoolingFlow": {"coolingFlow": 99.0}}
+    }
+    messaging_mock.set_parameters.assert_awaited_once()
+    parameters = messaging_mock.set_parameters.call_args[0][0]
+    assert parameters.cooling_flow == 99.0

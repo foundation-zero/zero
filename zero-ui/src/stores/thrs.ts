@@ -20,7 +20,6 @@ const valueWithDirty = <T>(value: Ref<T>): FormValue<Unstamp<T>> => {
   return {
     value: computed<Unstamp<T>>({
       get() {
-        console.log("get", { dirtyValue: dirtyValue.value, value: value.value });
         return dirtyValue.value !== null ? dirtyValue.value : unstamp(value.value);
       },
       set(value) {
@@ -120,7 +119,7 @@ export const controlValuesForm = <
 
     const mutation = `set${capitalizeFirst(module)}${capitalizeFirst(mutationType)}${capitalizeFirst(componentName)}`;
     const query = `mutation ($input: ${inputType}) {
-      ${mutation}(component: $input) {
+      ${mutation}(${mutationType == MutationType.Parameter ? "value" : "component"}: $input) {
         ${returnValuesQuery}
       }
     }`;

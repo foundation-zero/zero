@@ -1,4 +1,7 @@
 from argparse import ArgumentParser
+import logging
+import os
+import sys
 
 from thrs.cli.simulation_controls import (
     MODES,
@@ -7,10 +10,19 @@ from thrs.cli.simulation_controls import (
 from thrs.orchestration.config import Config
 
 
+def setup_logging():
+    logging.basicConfig(
+        level=os.getenv("LOG_LEVEL", logging.INFO),
+        format="%(asctime)s | %(levelname)-8s | %(message)s",
+        stream=sys.stdout,
+    )
+
+
 settings = Config()  # type: ignore
 
 
 async def main():
+    setup_logging()
     parser = ArgumentParser("THRS")
 
     subparser = parser.add_subparsers()
@@ -33,6 +45,7 @@ async def main():
 
 async def run(args):
     async with SimulationControls.from_settings(settings) as controls:
+        await controls.clear_previous()
         await controls.run(args.type)
 
 

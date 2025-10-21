@@ -82,8 +82,11 @@ Modes = Literal["THRUSTERS"]
 @dataclass
 class MessageContext:
     cmds: "Queue[SimulationCtrlMessage]"
-    switching_control: SwitchingControl
-    manual_control: ManualControl
+    switching_control: SwitchingControl[
+        ThrustersSensorValues, ThrustersControlValues, ThrustersParameters
+    ]
+    manual_control: ManualControl[ThrustersSensorValues, ThrustersControlValues]
+    automatic_control: ThrustersControl
     client: MqttClient
 
 
@@ -110,6 +113,14 @@ class SimulationStatusMessage(OutgoingMessage):
     def topic() -> str:
         return "thrs/simulation/status"
 
+    async def send(self, client: MqttClient):
+        return await client.publish(
+            self.topic(),
+            self.model_dump_json(),
+            qos=1,
+            retain=True,
+        )
+
 
 class ControlStatusMessage(OutgoingMessage):
     automatic: bool
@@ -117,6 +128,22 @@ class ControlStatusMessage(OutgoingMessage):
     @staticmethod
     def topic() -> str:
         return "thrs/controls/status"
+
+    async def send(self, client: MqttClient):
+        return await client.publish(
+            self.topic(),
+            self.model_dump_json(),
+            qos=1,
+            retain=True,
+        )
+
+
+class ParametersMessage(OutgoingMessage):
+    parameters: ThrustersParameters
+
+    @staticmethod
+    def topic() -> str:
+        return "thrs/parameters"
 
     async def send(self, client: MqttClient):
         return await client.publish(
@@ -177,12 +204,27 @@ class SetAutomationMessage(ThrsModel):
         await ControlStatusMessage(automatic=self.enabled).send(context.client)
 
 
+class SetParametersMessage(ThrsModel):
+    parameters: ThrustersParameters
+
+    @staticmethod
+    def topic() -> str:
+        return "thrs/controls/set_parameters"
+
+    async def handle(self, context: MessageContext):
+        context.automatic_control.update_parameters(self.parameters)
+        await ParametersMessage(parameters=context.automatic_control.parameters).send(
+            context.client
+        )
+
+
 HANDLERS = [
     PlayMessage,
     StepMessage,
     PauseMessage,
     ManualControlMessage,
     SetAutomationMessage,
+    SetParametersMessage,
 ]
 
 
@@ -218,10 +260,18 @@ class SimulationControls:
             )
 
     async def _receive_controls(
-        self, cmds, switching_control: SwitchingControl, manual_control: ManualControl
+        self,
+        cmds,
+        switching_control: SwitchingControl,
+        automatic_control: ThrustersControl,
+        manual_control: ManualControl,
     ):
         context = MessageContext(
-            cmds, switching_control, manual_control, self._controls_client
+            cmds,
+            switching_control,
+            manual_control,
+            automatic_control,
+            self._controls_client,
         )
         async for message in self._controls_client.messages:
             for handler in HANDLERS:
@@ -233,6 +283,14 @@ class SimulationControls:
                     )
                     await handler.model_validate_json(message.payload).handle(context)
                     break
+
+    async def clear_previous(self):
+        await self._controls_client.publish(
+            "thrs/simulation/status", b"", qos=1, retain=True
+        )  # Clear previous status
+        await self._controls_client.publish(
+            "thrs/parameters", b"", qos=1, retain=True
+        )  # Clear previous parameters
 
     async def run(self, mode: Modes):
         for handler in HANDLERS:
@@ -263,9 +321,17 @@ class SimulationControls:
             await executor.start()
             executor_task = create_task(executor.run())
             receive_task = create_task(
-                self._receive_controls(cmds, switching_control, manual_control)
+                self._receive_controls(
+                    cmds,
+                    switching_control,
+                    automated_control,
+                    manual_control,
+                )
             )
             try:
+                await ParametersMessage(parameters=automated_control.parameters).send(
+                    self._controls_client
+                )
                 await self._run_simulation(model, executor, simulator, cmds)
             finally:
                 executor_task.cancel()
@@ -278,22 +344,19 @@ class SimulationControls:
         simulator: Simulator,
         cmds: Queue[SimulationCtrlMessage],
     ):
+        logging.debug("Simulation control loop started")
         while True:
-            await self._send_simulation_status(
-                SimulationStatusMessage(
-                    status="available",
-                    simulation_time=executor.time(),
-                )
-            )
+            await SimulationStatusMessage(
+                status="available",
+                simulation_time=executor.time(),
+            ).send(self._controls_client)
             cmd = await cmds.get()
             if isinstance(cmd, PlayMessage):
                 sleep_duration = model.tick_duration.total_seconds() / cmd.playback_rate
-                await self._send_simulation_status(
-                    SimulationStatusMessage(
-                        status="running",
-                        simulation_time=executor.time(),
-                    )
-                )
+                await SimulationStatusMessage(
+                    status="running",
+                    simulation_time=executor.time(),
+                ).send(self._controls_client)
                 logging.debug(
                     f"Starting simulation with tick interval of {sleep_duration} seconds"
                 )
@@ -303,24 +366,14 @@ class SimulationControls:
                         tg.create_task(simulator.run(1))
                 logger.debug("Simulation paused")
             elif isinstance(cmd, StepMessage):
-                await self._send_simulation_status(
-                    SimulationStatusMessage(
-                        status="stepping",
-                        simulation_time=executor.time(),
-                    )
-                )
+                await SimulationStatusMessage(
+                    status="stepping",
+                    simulation_time=executor.time(),
+                ).send(self._controls_client)
 
                 ticks = max(1, int(cmd.seconds / model.tick_duration.total_seconds()))
                 logging.debug(f"Stepping simulation by {ticks} ticks")
                 await simulator.run(ticks)
-
-    async def _send_simulation_status(self, msg: SimulationStatusMessage):
-        await self._controls_client.publish(
-            "thrs/simulation/status",
-            msg.model_dump_json(),
-            qos=1,
-            retain=True,
-        )
 
 
 def update_in_place(model, values: dict[str, Any]):

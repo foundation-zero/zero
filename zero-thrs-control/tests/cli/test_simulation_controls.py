@@ -5,6 +5,7 @@ from pydantic import BaseModel
 import pytest
 
 from thrs.cli.simulation_controls import (
+    ParametersMessage,
     SimulationStatusMessage,
     SimulationControls,
     update_in_place,
@@ -13,6 +14,7 @@ from thrs.cli.simulation_controls import (
 
 from pydantic_partial import create_partial_model
 
+from thrs.control.modules.thrusters import ThrustersParameters
 from thrs.input_output.modules.thrusters import ThrustersControlValues
 from thrs.orchestration.config import Config
 
@@ -115,11 +117,10 @@ async def test_simulation_run_start_stop(
         "thrs/controls",
     )
 
+    await controls.clear_previous()
+
     await test_client.subscribe("thrs/sensors")
     await test_client.subscribe("thrs/controls")
-    await status_client.publish(
-        "thrs/simulation/status", b"", qos=1, retain=True
-    )  # Clear previous status
     await status_client.subscribe("thrs/simulation/status")
 
     run_task = create_task(controls.run("THRUSTERS"))
@@ -229,11 +230,10 @@ async def test_simulation_run_step(
         "thrs/controls",
     )
 
+    await controls.clear_previous()
+
     await test_client.subscribe("thrs/sensors")
     await test_client.subscribe("thrs/controls")
-    await status_client.publish(
-        "thrs/simulation/status", b"", qos=1, retain=True
-    )  # Clear previous status
     await status_client.subscribe("thrs/simulation/status")
 
     run_task = create_task(controls.run("THRUSTERS"))
@@ -295,7 +295,7 @@ async def test_simulation_run_step(
         run_task.cancel()
 
 
-async def test_simulation_controls_blind_automated_control(
+async def test_simulation_controls_automated_control(
     mqtt_client, mqtt_client2, mqtt_client3, mqtt_client4, mqtt_client5
 ):
     controls_client = mqtt_client
@@ -311,14 +311,14 @@ async def test_simulation_controls_blind_automated_control(
         "thrs/controls",
     )
 
+    await controls.clear_previous()
+
     await test_client.subscribe("thrs/sensors")
     await test_client.subscribe("thrs/controls")
-    await status_client.publish(
-        "thrs/simulation/status", b"", qos=1, retain=True
-    )  # Clear previous status
     await status_client.subscribe("thrs/simulation/status")
 
     run_task = create_task(controls.run("THRUSTERS"))
+
     try:
         available = await anext(status_client.messages)
         assert available.topic.value == "thrs/simulation/status"
@@ -346,5 +346,58 @@ async def test_simulation_controls_blind_automated_control(
         assert control_values is not None
         assert control_values.thrusters_shutoff_recovery.setpoint.value > 0
 
+    finally:
+        run_task.cancel()
+
+
+@pytest.mark.timeout(5)
+async def test_simulation_controls_set_parameters(
+    mqtt_client, mqtt_client2, mqtt_client3, mqtt_client4, mqtt_client5
+):
+    controls_client = mqtt_client
+    control_client = mqtt_client2
+    sensors_client = mqtt_client3
+    test_client = mqtt_client4
+    status_client = mqtt_client5
+    controls = SimulationControls(
+        controls_client,
+        control_client,
+        sensors_client,
+        "thrs/sensors",
+        "thrs/controls",
+    )
+
+    await controls.clear_previous()
+
+    await test_client.subscribe("thrs/parameters")
+    await status_client.subscribe("thrs/simulation/status")
+
+    run_task = create_task(controls.run("THRUSTERS"))
+    try:
+        available = await anext(status_client.messages)
+        assert available.topic.value == "thrs/simulation/status"
+        assert isinstance(available.payload, str | bytes)
+        assert (
+            SimulationStatusMessage.model_validate_json(available.payload).status
+            == "available"
+        )
+        parameters = await anext(test_client.messages)
+        assert parameters.topic.value == "thrs/parameters"
+        assert isinstance(parameters.payload, str | bytes)
+        params_model = ParametersMessage.model_validate_json(parameters.payload)
+        assert params_model == ParametersMessage(parameters=ThrustersParameters())
+
+        new_parameters = ThrustersParameters(cooling_flow=999)
+        await controls_client.publish(
+            "thrs/controls/set_parameters",
+            ParametersMessage(parameters=new_parameters).model_dump_json(),
+            qos=1,
+        )
+
+        parameters = await anext(test_client.messages)
+        assert parameters.topic.value == "thrs/parameters"
+        assert isinstance(parameters.payload, str | bytes)
+        params_model = ParametersMessage.model_validate_json(parameters.payload)
+        assert params_model.parameters == new_parameters
     finally:
         run_task.cancel()

@@ -230,7 +230,7 @@ class SimulationInputs(SimulationValues):
 
         values = {
             component_name: _component(component_name, component)
-            for component_name, component in self.model_fields.items()
+            for component_name, component in type(self).model_fields.items()
         }
 
         return SelectedInputsModel(**values)

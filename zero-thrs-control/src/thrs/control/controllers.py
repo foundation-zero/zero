@@ -57,6 +57,9 @@ class Controller[ActuatorUnit: float, MeasurementUnit: float]:
             pid_result = cast(ActuatorUnit | None, self._pid(measurement))
         return pid_result if pid_result is not None else self._initial
 
+    def update_tuning(self, tuning: tuple[float, float, float]):
+        self._pid.tunings = tuning
+
 
 class FlowBalanceController:
     def __init__(
