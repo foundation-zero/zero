@@ -134,21 +134,24 @@ class Messaging[SensorValues: ThrsModel, ControlValues: ThrsModel]:
         )
 
     async def wait_for_simulation_status(
-        self, status: Literal["stepping", "running", "available"], timeout: float
+        self,
+        status: Literal["stepping", "running", "available"],
+        *_args,
+        timeout: float,
     ) -> SimulationStatusMessage:
         return await self._simulation_status.wait_for(
             lambda s: s.status == status, timeout
         )
 
     async def wait_for_control_status(
-        self, automatic: bool, timeout: float
+        self, automatic: bool, *_args, timeout: float
     ) -> ControlStatusMessage:
         return await self._control_status.wait_for(
             lambda s: s.automatic == automatic, timeout
         )
 
     async def wait_for_control_values(
-        self, condition: Callable[[ControlValues], bool], timeout: float
+        self, condition: Callable[[ControlValues], bool], *_args, timeout: float
     ) -> ControlValues:
         return await self._control_values.wait_for(condition, timeout)
 
