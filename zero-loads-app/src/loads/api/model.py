@@ -22,6 +22,7 @@ from .types import (
     MastType,
     PCSModeInput,
     ReferenceValueType,
+    SailsInput,
     SeaState,
     TargetType,
     ThrusterMode,
@@ -33,9 +34,12 @@ logger = logging.getLogger("api")
 
 
 async def get_loads_reference_values(
-    values: list[strawberry.ID], case: CaseInput | None, session: AsyncSession
+    values: list[strawberry.ID],
+    sails: SailsInput,
+    case: CaseInput | None,
+    session: AsyncSession,
 ) -> list[ReferenceValueType] | None:
-    """Return all reference values that matches the currents sail and conditions."""
+    """Return all reference values that matches the currents sails and conditions."""
 
     if not case:
         current_case = await retrieve_current_load_case(session)
@@ -47,7 +51,7 @@ async def get_loads_reference_values(
             logger.info(f"Retrieved case: {current_case}")
             case = current_case
 
-    sail_set = create_sail_set_subq(case)
+    sail_set = create_sail_set_subq(sails)
     condition = create_condition_profiles_subq(case)
 
     query = (
@@ -88,11 +92,11 @@ async def get_loads_reference_values(
         return []
 
 
-def create_sail_set_subq(case: CaseInput) -> ScalarSelect[str]:
+def create_sail_set_subq(sails: SailsInput) -> ScalarSelect[str]:
     """Create subquery that returns the sail set that exactly matches the current sails."""
     return (
         select(SailSetCombined.id)
-        .where(sails_exact(SailSetCombined.sails, case.sails))
+        .where(sails_exact(SailSetCombined.sails, sails.sails))
         .scalar_subquery()
     )
 

@@ -30,9 +30,13 @@ class PCSModeInput:
     aft: ThrusterMode
 
 
+@strawberry.type
+class SailsInput:
+    sails: list[str]
+
+
 @strawberry.input
 class CaseInput:
-    sails: list[str]
     sea_state: SeaState
     pcs_mode: PCSModeInput
     awa: float
