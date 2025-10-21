@@ -167,9 +167,6 @@ class Modules:
     ]
 
 
-thrusters_control_values = ThrustersControlValues.zero()
-
-
 @strawberry.type
 class SimulationState:
     time: datetime
@@ -259,7 +256,8 @@ class UnstampedInput(ThrsModel):
 
     def to_stamped(self):
         values = {
-            key: Stamped.stamp(getattr(self, key)) for key in self.model_fields.keys()
+            key: Stamped.stamp(getattr(self, key))
+            for key in type(self).model_fields.keys()
         }
         return self._MODEL(**values)  # type: ignore
 
@@ -305,18 +303,17 @@ class DynamicInputFields:
                     component: component_type,  # type: ignore
                     info: strawberry.Info[ThrsContext],
                 ) -> ThrustersControlValuesType:
+                    control_values = info.context.messaging.control_values
+                    if control_values is None:
+                        raise Exception("No control values available to modify")
                     pydantic_value = component.to_pydantic().to_stamped()
-                    setattr(thrusters_control_values, name, pydantic_value)
+                    setattr(control_values, name, pydantic_value)
                     expect = info.context.messaging.wait_for_control_values(
                         lambda v: getattr(v, name) == pydantic_value, 2.0
                     )
-                    await info.context.messaging.send_manual_controls(
-                        thrusters_control_values
-                    )
+                    await info.context.messaging.send_manual_controls(control_values)
                     await expect
-                    return ThrustersControlValuesType.from_pydantic(
-                        thrusters_control_values
-                    )
+                    return ThrustersControlValuesType.from_pydantic(control_values)
 
                 return _mutation
 
