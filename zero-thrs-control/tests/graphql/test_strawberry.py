@@ -356,3 +356,52 @@ async def test_mutation_control_set_automation_mode(async_client):
     assert response.status_code == 200
     assert response.json() == {"data": {"controlSetAutomationMode": None}}
     messaging_mock.set_automation.assert_awaited_once_with(True)
+
+
+async def test_mutation_control_values_hanging_around(async_client):
+    messaging_mock = await override_messaging()
+    app.dependency_overrides[messaging] = lambda: messaging_mock
+
+    await async_client.post(
+        "/graphql",
+        json={
+            "query": """mutation {
+                setThrustersControlThrustersPump1(component: {dutypoint: 0.5, on:true}) {
+                    thrustersPump1 {
+                        dutypoint {
+                            value
+                        }
+                    }
+                }
+            }"""
+        },
+    )
+    messaging_mock.control_values = ThrustersControlValues.zero()
+    response2 = await async_client.post(
+        "/graphql",
+        json={
+            "query": """mutation {
+                setThrustersControlThrustersPump2(component: {dutypoint: 0.4, on:true}) {
+                    thrustersPump1 {
+                        dutypoint {
+                            value
+                        }
+                    }
+                    thrustersPump2 {
+                        dutypoint {
+                            value
+                        }
+                    }
+                }
+            }"""
+        },
+    )
+
+    assert response2.json() == {
+        "data": {
+            "setThrustersControlThrustersPump2": {
+                "thrustersPump1": {"dutypoint": {"value": 0}},
+                "thrustersPump2": {"dutypoint": {"value": 0.4}},
+            }
+        }
+    }
