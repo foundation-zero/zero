@@ -2,8 +2,7 @@
 SELECT
     MAX(timestamp) AS timestamp,
     group_name,
-    SUM(avg_power) AS avg_group_power,
-    NULL as power_stored                    /* Used for battery data only */
+    SUM(avg_power) AS avg_group_power
 FROM
 (
 	SELECT
