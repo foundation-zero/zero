@@ -1,5 +1,6 @@
 CREATE SCHEMA IF NOT EXISTS domestic;
 
+-- Master table for rooms
 DROP TABLE IF EXISTS domestic.rooms CASCADE;
 CREATE TABLE domestic.rooms (
   "id" TEXT PRIMARY KEY,
@@ -7,6 +8,7 @@ CREATE TABLE domestic.rooms (
   "group" TEXT
 );
 
+-- Master table for conditions (temperature, humidity, co2, etc) per room
 DROP TABLE IF EXISTS domestic.conditions CASCADE;
 CREATE TABLE domestic.conditions (
   "id" TEXT PRIMARY KEY,
@@ -15,6 +17,7 @@ CREATE TABLE domestic.conditions (
   "name" TEXT
 );
 
+-- Master table for blinds per room
 DROP TABLE IF EXISTS domestic.blinds CASCADE;
 CREATE TABLE domestic.blinds (
   "id" TEXT PRIMARY KEY,
@@ -24,6 +27,7 @@ CREATE TABLE domestic.blinds (
   "group" TEXT
 );
 
+-- Master table for lighting groups per room
 DROP TABLE IF EXISTS domestic.lighting_groups CASCADE;
 CREATE TABLE domestic.lighting_groups (
   "id" VARCHAR PRIMARY KEY,
@@ -31,6 +35,7 @@ CREATE TABLE domestic.lighting_groups (
   "name" TEXT
 );
 
+-- Master table for amplifiers per room
 DROP TABLE IF EXISTS domestic.amplifiers CASCADE;
 CREATE TABLE domestic.amplifiers (
   "id" VARCHAR PRIMARY KEY,
@@ -38,6 +43,7 @@ CREATE TABLE domestic.amplifiers (
   "name" TEXT
 );
 
+-- Current state of room controls (conditions + amplifiers + blinds + lighting)
 DROP TABLE IF EXISTS domestic.room_controls CASCADE;
 CREATE TABLE domestic.room_controls (
   "id" TEXT PRIMARY KEY,
@@ -48,6 +54,7 @@ CREATE TABLE domestic.room_controls (
   "time" TIMESTAMPTZ
 );
 
+-- Every change to room controls over time (id + time is the effective primary key)
 DROP TABLE IF EXISTS domestic.room_controls_log CASCADE;
 CREATE TABLE domestic.room_controls_log (
   "id" VARCHAR,
@@ -56,8 +63,10 @@ CREATE TABLE domestic.room_controls_log (
   "type" TEXT,
   "value" REAL,
   "time" TIMESTAMPTZ
+
 );
 
+-- Master table for sensors per room
 DROP TABLE IF EXISTS domestic.sensors CASCADE;
 CREATE TABLE domestic.sensors (
   "id" TEXT PRIMARY KEY,
@@ -66,6 +75,7 @@ CREATE TABLE domestic.sensors (
   "name" TEXT
 );
 
+-- Current state of room sensors
 DROP TABLE IF EXISTS domestic.room_sensors CASCADE;
 CREATE TABLE domestic.room_sensors (
   "id" TEXT PRIMARY KEY,
@@ -76,6 +86,7 @@ CREATE TABLE domestic.room_sensors (
   "time" TIMESTAMPTZ
 );
 
+-- Every change to room sensors over time (id + time is the effective primary key)
 DROP TABLE IF EXISTS domestic.room_sensors_log CASCADE;
 CREATE TABLE domestic.room_sensors_log (
   "id" VARCHAR REFERENCES domestic.sensors("id"),

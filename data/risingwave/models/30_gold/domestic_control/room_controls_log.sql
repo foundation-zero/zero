@@ -7,7 +7,7 @@ SELECT
     logs.time
 FROM
     {{ ref('ac_controls_pivot')}} as logs
-LEFT JOIN {{ ref('conditions') }} conditions ON conditions.id = logs.id
+LEFT JOIN {{ ref('conditions') }} conditions ON logs.id = conditions.id
 UNION ALL
 SELECT
     amplifiers.id,
@@ -18,7 +18,7 @@ SELECT
     logs.time
 FROM
     {{ ref('amplifiers_update') }} as logs
-LEFT JOIN {{ ref('amplifiers') }} amplifiers ON amplifiers.room_id = logs.id
+LEFT JOIN {{ ref('amplifiers') }} amplifiers ON logs.id = amplifiers.room_id
 UNION ALL
 SELECT
     logs.id,
@@ -29,7 +29,7 @@ SELECT
     logs.time
 FROM
     {{ ref('blinds_update') }} as logs
-LEFT JOIN {{ ref('blinds') }} blinds ON blinds.id = logs.id
+LEFT JOIN {{ ref('blinds') }} blinds ON logs.id = blinds.id
 UNION ALL
 SELECT
     logs.id,
@@ -40,4 +40,4 @@ SELECT
     logs.time
 FROM
     {{ ref('lighting_groups_update') }} as logs
-LEFT JOIN {{ ref('lighting_groups') }} lighting_groups ON lighting_groups.id = logs.id
+LEFT JOIN {{ ref('lighting_groups') }} lighting_groups ON logs.id = lighting_groups.id

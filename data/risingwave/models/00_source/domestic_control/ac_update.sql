@@ -10,4 +10,3 @@ CREATE TABLE {{ this }} (
     co2_setpoint REAL,
 )
 {{ mqtt_with('domestic/ac') }}
-

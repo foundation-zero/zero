@@ -10,21 +10,15 @@ from glob import glob
 
 load_dotenv(dotenv_path=".env")
 
-settings = Settings()
+settings = Settings()  # type:ignore
+
+parser = argparse.ArgumentParser(description="Setup Risingwave tables", add_help=True)
+parser.add_argument("args", nargs=argparse.REMAINDER, help="Arguments to pass to dbt")
+parsed_args = parser.parse_args()
+
+subprocess.run(["poetry", "run", "dbt", "build"] + parsed_args.args, cwd="./risingwave")
 
 print("Risingwave: Initializing tables")
-
-parser = argparse.ArgumentParser(description="Setup Risingwave tables")
-parser.add_argument("--upgrade", action="store_true", help="Upgrade tables if set")
-args = parser.parse_args()
-
-if args.upgrade:
-    print("Risingwave: Upgrade option enabled")
-    subprocess.run(["poetry", "run", "dbt", "build"], cwd="./risingwave")
-else:
-    subprocess.run(
-        ["poetry", "run", "dbt", "build", "--full-refresh"], cwd="./risingwave"
-    )
 
 
 async def setup_domestic_control():
