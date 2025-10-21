@@ -22,9 +22,9 @@ def test_marpower_amcs_io_excel(marpower_io_result):
     marpower_io_result = read_io_list(
         [(Path(__file__).parent / "../../io_lists/52422003_3210_AMCS IO-List R2.14.xlsx")], "marpower"
     )
-    assert marpower_io_result.io_list.shape == (4187, 13)
+    assert marpower_io_result.io_list.shape == (4879, 13)
     assert marpower_io_result.io_list.columns == expected_io_columns
-    assert len(marpower_io_result.topics) == 258
+    assert len(marpower_io_result.topics) == 622
 
 
 def test_marpower_pms_io_excel():

@@ -12,6 +12,8 @@ _DATA_TYPES = {
     "Bool": "BOOLEAN",
     "Uint32": "BIGINT",
     "Uint16": "INTEGER",
+    # Typo in AMCS IO list R2.14
+    "Unit16": "INTEGER",
     "Int32": "INTEGER",
     "Int16": "INTEGER",
     "String": "STRING",
@@ -50,7 +52,7 @@ class MarpowerReader(ReaderBase):
         )
         typed_df = (
             filter_df.with_columns(
-                pl.col("target_type").replace_strict(_DATA_TYPES).alias("data_type")
+                pl.col("target_type").replace_strict(_DATA_TYPES, default="lala").alias("data_type")
             )
             .with_columns(tag=pl.col("tag").str.replace_all(r"-|\.", "_"))
         )
@@ -76,6 +78,7 @@ class MarpowerReader(ReaderBase):
         result = []
         for row in (
             df
+            .drop_nulls("mqtt_topic")
             .group_by("mqtt_topic")
             .agg(pl.col("mqtt_json_path"), pl.col("data_type"))
             .iter_rows(named=True)
@@ -121,7 +124,7 @@ class MarpowerReader(ReaderBase):
             if io_list is None:
                 io_list = _io_list
             else:
-                pl.concat([io_list, _io_list])
+                io_list = pl.concat([io_list, _io_list])
 
         topics = self._get_io_topics(io_list)
 
