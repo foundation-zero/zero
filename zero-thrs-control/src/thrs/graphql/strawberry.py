@@ -167,9 +167,6 @@ class Modules:
     ]
 
 
-thrusters_control_values = ThrustersControlValues.zero()
-
-
 @strawberry.type
 class SimulationState:
     time: datetime
@@ -259,7 +256,8 @@ class UnstampedInput(ThrsModel):
 
     def to_stamped(self):
         values = {
-            key: Stamped.stamp(getattr(self, key)) for key in self.model_fields.keys()
+            key: Stamped.stamp(getattr(self, key))
+            for key in type(self).model_fields.keys()
         }
         return self._MODEL(**values)  # type: ignore
 
@@ -297,29 +295,27 @@ def generate_mutation_for_field[T](
 
 class DynamicInputFields:
     def __init_subclass__(cls):
+        def _make_control_mutation(name: str, component_type: type):
+            async def _mutation(
+                self,
+                component: component_type,  # type: ignore
+                info: strawberry.Info[ThrsContext],
+            ) -> ThrustersControlValuesType:
+                control_values = info.context.messaging.control_values
+                if control_values is None:
+                    raise Exception("No control values available to modify")
+                pydantic_value = component.to_pydantic().to_stamped()
+                setattr(control_values, name, pydantic_value)
+                expect = info.context.messaging.wait_for_control_values(
+                    lambda v: getattr(v, name) == pydantic_value, timeout=2.0
+                )
+                await info.context.messaging.send_manual_controls(control_values)
+                await expect
+                return ThrustersControlValuesType.from_pydantic(control_values)
+
+            return _mutation
+
         for name, field in ThrustersControlValues.model_fields.items():
-
-            def _make_control_mutation(name: str, component_type: type):
-                async def _mutation(
-                    self,
-                    component: component_type,  # type: ignore
-                    info: strawberry.Info[ThrsContext],
-                ) -> ThrustersControlValuesType:
-                    pydantic_value = component.to_pydantic().to_stamped()
-                    setattr(thrusters_control_values, name, pydantic_value)
-                    expect = info.context.messaging.wait_for_control_values(
-                        lambda v: getattr(v, name) == pydantic_value, 2.0
-                    )
-                    await info.context.messaging.send_manual_controls(
-                        thrusters_control_values
-                    )
-                    await expect
-                    return ThrustersControlValuesType.from_pydantic(
-                        thrusters_control_values
-                    )
-
-                return _mutation
-
             fn = generate_mutation_for_field(
                 ThrustersControlValuesType,
                 f"thrusters_control_{name}",
@@ -331,19 +327,18 @@ class DynamicInputFields:
             method = strawberry.mutation(fn)
             setattr(cls, fn.__name__, method)
 
+        def _make_parameter_mutation(name: str, component_type: type):
+            async def _mutation(
+                self,
+                component: component_type,  # type: ignore
+                info: strawberry.Info[ThrsContext],
+            ) -> ThrustersParametersType:
+                # TODO: ZERO-878 implement parameter setting and passage to simulation
+                return ThrustersParametersType.from_pydantic(ThrustersParameters())
+
+            return _mutation
+
         for name, field in ThrustersParameters.model_fields.items():
-
-            def _make_parameter_mutation(name: str, component_type: type):
-                async def _mutation(
-                    self,
-                    component: component_type,  # type: ignore
-                    info: strawberry.Info[ThrsContext],
-                ) -> ThrustersParametersType:
-                    # TODO: ZERO-878 implement parameter setting and passage to simulation
-                    return ThrustersParametersType.from_pydantic(ThrustersParameters())
-
-                return _mutation
-
             fn = generate_mutation_for_field(
                 ThrustersParametersType,
                 f"thrusters_parameter_{name}",
@@ -355,21 +350,20 @@ class DynamicInputFields:
             method = strawberry.mutation(fn)
             setattr(cls, fn.__name__, method)
 
+        def _make_simulation_input_mutation(name: str, component_type: type):
+            async def _mutation(
+                self,
+                component: component_type,  # type: ignore
+                info: strawberry.Info[ThrsContext],
+            ) -> ThrustersSimulationInputsType:
+                # TODO: ZERO-825 implement simulation input setting and passage to simulation
+                return ThrustersSimulationInputsType.from_pydantic(
+                    DedataframedSimulationInputs.zero()
+                )
+
+            return _mutation
+
         for name, field in ThrustersSimulationInputs.model_fields.items():
-
-            def _make_simulation_input_mutation(name: str, component_type: type):
-                async def _mutation(
-                    self,
-                    component: component_type,  # type: ignore
-                    info: strawberry.Info[ThrsContext],
-                ) -> ThrustersSimulationInputsType:
-                    # TODO: ZERO-825 implement simulation input setting and passage to simulation
-                    return ThrustersSimulationInputsType.from_pydantic(
-                        DedataframedSimulationInputs.zero()
-                    )
-
-                return _mutation
-
             fn = generate_mutation_for_field(
                 ThrustersControlValuesType,
                 f"thrusters_simulation_{name}",
@@ -393,7 +387,7 @@ class Mutation(DynamicInputFields):
         if info.context.messaging.simulation_status.status != "available":
             raise Exception("Can only play an available simulation")
         expect_status = info.context.messaging.wait_for_simulation_status(
-            "running", 2.0
+            "running", timeout=2.0
         )
         await info.context.messaging.play_simulation(playback_rate)
         await expect_status
@@ -405,7 +399,7 @@ class Mutation(DynamicInputFields):
         if info.context.messaging.simulation_status.status != "running":
             raise Exception("Can only pause a running simulation")
         expect_status = info.context.messaging.wait_for_simulation_status(
-            "available", 2.0
+            "available", timeout=2.0
         )
         await info.context.messaging.pause_simulation()
         await expect_status
@@ -419,7 +413,7 @@ class Mutation(DynamicInputFields):
         if info.context.messaging.simulation_status.status != "available":
             raise Exception("Can only step an available simulation")
         expect_status = info.context.messaging.wait_for_simulation_status(
-            "stepping", 2.0
+            "stepping", timeout=2.0
         )
         await info.context.messaging.step_simulation(seconds)
         await expect_status
