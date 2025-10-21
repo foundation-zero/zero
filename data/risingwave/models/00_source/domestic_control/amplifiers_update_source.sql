@@ -1,5 +1,5 @@
 {{ config(materialized='source') }}
-CREATE TABLE {{ this }} (
+CREATE SOURCE {{ this }} (
     "id" TEXT,
     "time" TIMESTAMPTZ as proctime (),
     "is_on" BOOLEAN

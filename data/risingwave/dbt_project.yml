@@ -29,20 +29,40 @@ models:
       +materialized: source
       domestic_control:
         +schema: domestic
+      loads:
+        +schema: loads
+      marpower:
+        +schema: marpower
     10_bronze:
       +materialized: table
       domestic_control:
         +schema: domestic
+      loads:
+        +schema: loads
+      marpower:
+        +schema: marpower
     20_silver:
       +materialized: view
       domestic_control:
         +schema: domestic
+      loads:
+        +schema: loads
+      marpower:
+        +schema: marpower
     30_gold:
       +materialized: materialized_view
       domestic_control:
         +schema: domestic
+      loads:
+        +schema: loads
+      marpower:
+        +schema: marpower
     40_sink:
       +materialized: sink
       domestic_control:
         +schema: domestic
+      loads:
+        +schema: loads
+      marpower:
+        +schema: marpower
 

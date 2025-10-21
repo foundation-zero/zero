@@ -1,4 +1,4 @@
-{{ config(materialized='source') }}
+{{ config(materialized='table_with_connector') }}
 CREATE TABLE {{ this }} (
     "id" TEXT,
     "time" TIMESTAMPTZ as proctime (),
@@ -10,3 +10,4 @@ CREATE TABLE {{ this }} (
     co2_setpoint REAL,
 )
 {{ mqtt_with('domestic/ac') }}
+
