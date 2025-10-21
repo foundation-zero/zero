@@ -11,6 +11,6 @@ FROM (
 		group_name,
 		stored_energy,
 		ROW_NUMBER() OVER (PARTITION BY topic ORDER BY stored_energy_timestamp DESC) AS row_nr
-	FROM bms_master_power_data
+	FROM {{ ref('bms_master_power_data') }}
 ) AS electrical_energy_stored
 WHERE row_nr = 1
