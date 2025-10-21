@@ -13,7 +13,7 @@ FROM ( (
             AVG(electrical_power_data.active_power) AS avg_w
         FROM
         TUMBLE (
-            {{ ref('electrical_power_data') }},
+            {{ ref('consumer_producer_power_data') }},
             active_power_timestamp,
             INTERVAL '1 MINUTE'
         ) AS electrical_power_data
@@ -45,7 +45,7 @@ FROM ( (
             AVG(electrical_power_data.active_power) AS avg_w
         FROM
         TUMBLE (
-            {{ ref('electrical_power_data') }},
+            {{ ref('consumer_producer_power_data') }},
             active_power_timestamp,
             INTERVAL '1 MINUTE'
         ) AS electrical_power_data
