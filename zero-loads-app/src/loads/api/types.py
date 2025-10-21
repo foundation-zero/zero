@@ -24,23 +24,18 @@ class ThrusterMode(Enum):
     idle = "idle"
 
 
-@strawberry.input
-class PCSModeInput:
-    fwd: ThrusterMode
-    aft: ThrusterMode
-
-
-@strawberry.type
-class SailsInput:
-    sails: list[str]
-
-
-@strawberry.input
-class CaseInput:
-    sea_state: SeaState
-    pcs_mode: PCSModeInput
-    awa: float
-    aws: float
+@strawberry.enum
+class Sails(Enum):
+    full_main_sail = "full-main-sail"
+    main_sail_reef1 = "main-sail-reef1"
+    main_sail_reef2 = "main-sail-reef2"
+    main_blade = "main-blade"
+    main_staysail = "main-staysail"
+    full_mizzen_sail = "full-mizzen-sail"
+    mizzen_sail_reef1 = "mizzen-sail-reef1"
+    mizzen_sail_reef2 = "mizzen-sail-reef2"
+    mizzen_jib = "mizzen-jib"
+    mizzen_staysail = "mizzen-staysail"
 
 
 @strawberry.type
@@ -75,3 +70,17 @@ class ReferenceValueType:
     masts: MastType | None
     target: TargetType
     ranges: AlertType
+
+
+@strawberry.input
+class PCSModeInput:
+    fwd: ThrusterMode
+    aft: ThrusterMode
+
+
+@strawberry.input
+class CaseInput:
+    sea_state: SeaState
+    pcs_mode: PCSModeInput
+    awa: float
+    aws: float

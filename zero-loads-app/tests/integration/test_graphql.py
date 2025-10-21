@@ -18,13 +18,8 @@ async def test_graphql():
                     query {
                         referenceValues(
                             values: "headstay-load"
-                            case: {
-                                sails: ["full-mizzen-sail", "full-main-sail", "main-blade", "mizzen-jib"]
-                                pcsMode: {aft: regeneration, fwd: propulsion}
-                                awa: 0
-                                aws: 25
-                                seaState: wet
-                            }
+                            case: {pcsMode: {aft: propulsion, fwd: propulsion}, aws: 25, awa: 0, seaState: wet}
+                            sails: [full_mizzen_sail, full_main_sail, main_blade, mizzen_jib]
                         )
                         {
                             ranges {

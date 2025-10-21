@@ -22,7 +22,7 @@ from .types import (
     MastType,
     PCSModeInput,
     ReferenceValueType,
-    SailsInput,
+    Sails,
     SeaState,
     TargetType,
     ThrusterMode,
@@ -35,7 +35,7 @@ logger = logging.getLogger("api")
 
 async def get_loads_reference_values(
     values: list[strawberry.ID],
-    sails: SailsInput,
+    sails: list[Sails],
     case: CaseInput | None,
     session: AsyncSession,
 ) -> list[ReferenceValueType] | None:
@@ -88,24 +88,24 @@ async def get_loads_reference_values(
             for reference, definition, mast in rows
         ]
     else:
-        logger.info(f"No reference values found for case: {case}")
+        logger.info(f"No reference values found for case: {case} and sails: {sails}")
         return []
 
 
-def create_sail_set_subq(sails: SailsInput) -> ScalarSelect[str]:
+def create_sail_set_subq(sails: list[Sails]) -> ScalarSelect[str]:
     """Create subquery that returns the sail set that exactly matches the current sails."""
     return (
         select(SailSetCombined.id)
-        .where(sails_exact(SailSetCombined.sails, sails.sails))
+        .where(sails_exact(SailSetCombined.sails, sails))
         .scalar_subquery()
     )
 
 
 def sails_exact(
-    sails_column: Column[Sequence[str]], sails: list[str]
+    sails_column: Column[Sequence[str]], sails: list[Sails]
 ) -> ColumnElement[bool]:
     """Check if the sail set exactly matches the sails provided"""
-    return sails_column == cast(sorted(sails), ARRAY(TEXT))
+    return sails_column == cast(sorted([sail.value for sail in sails]), ARRAY(TEXT))
 
 
 def create_condition_profiles_subq(case: CaseInput) -> ScalarSelect[str]:
