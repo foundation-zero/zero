@@ -36,6 +36,6 @@ test.describe("Airconditioning", () => {
     const temperatureSetpoint = 25.3;
     aircoPage.setTemperatureSetpoint(dutchCabin, temperatureSetpoint);
 
-    await expect(aircoPage.temperatureSetpoint).toHaveText(`253 ° `);
+    await expect(aircoPage.temperatureSetpoint).toHaveText("253 ° ");
   });
 });

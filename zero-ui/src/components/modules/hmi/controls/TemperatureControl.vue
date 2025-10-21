@@ -51,7 +51,7 @@ const { submit, isSubmitting, error, temperature } = controlValuesForm(
 
     <div class="mt-6 grid gap-1.5">
       <header class="text-2xs tracking-wide uppercase">
-        {{ t(`components.inputs.temperature.label`) }}
+        {{ t("components.inputs.temperature.label") }}
       </header>
       <div class="grid gap-6">
         <NumberField

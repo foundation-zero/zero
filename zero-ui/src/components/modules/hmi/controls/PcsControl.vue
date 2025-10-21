@@ -55,7 +55,7 @@ const { submit, isSubmitting, error, mode } = controlValuesForm(
 
     <div class="mt-6 grid gap-1.5">
       <header class="text-2xs tracking-wide uppercase">
-        {{ t(`components.inputs.mode.label`) }}
+        {{ t("components.inputs.mode.label") }}
       </header>
       <div class="grid gap-6">
         <Select v-model="mode.value.value">

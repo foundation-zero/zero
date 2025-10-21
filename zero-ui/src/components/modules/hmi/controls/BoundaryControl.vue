@@ -53,7 +53,7 @@ const { submit, isSubmitting, error, flow, temperature } = controlValuesForm(
     <div class="mt-6 grid grid-cols-2 gap-x-2">
       <div class="grid gap-1.5">
         <header class="text-2xs tracking-wide uppercase">
-          {{ t(`components.inputs.flow.label`) }}
+          {{ t("components.inputs.flow.label") }}
         </header>
         <NumberField
           v-model="flow.value.value"
@@ -71,7 +71,7 @@ const { submit, isSubmitting, error, flow, temperature } = controlValuesForm(
       </div>
       <div class="grid gap-1.5">
         <header class="text-2xs tracking-wide uppercase">
-          {{ t(`components.inputs.temperature.label`) }}
+          {{ t("components.inputs.temperature.label") }}
         </header>
         <NumberField
           v-model="temperature.value.value"
