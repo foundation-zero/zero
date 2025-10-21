@@ -4,17 +4,23 @@ import {
   ModuleDefinition,
   SensorComponentType,
   SensorFields,
+  SimulationComponentType,
+  SimulationFields,
 } from "@/@types/thrs";
 import {
   THRUSTERS_CONTROL_DEFINITION,
   THRUSTERS_PARAMETER_DEFINITION,
   THRUSTERS_SENSOR_DEFINITION,
+  THRUSTERS_SIMULATION_INPUTS,
+  THRUSTERS_SIMULATION_OUTPUTS,
 } from "./consts.generated";
 import { THRSQueries } from "./consts.types";
 import {
   THRUSTERS_CONTROL_QUERY,
   THRUSTERS_PARAMETERS_QUERY,
   THRUSTERS_SENSOR_QUERY,
+  THRUSTERS_SIMULATION_INPUTS_QUERY,
+  THRUSTERS_SIMULATION_OUTPUTS_QUERY,
 } from "./queries.generated";
 
 export * from "./consts.types";
@@ -40,6 +46,10 @@ export const DEFINITIONS = toDefinitions({
     sensorValues: THRUSTERS_SENSOR_DEFINITION,
     controlValues: THRUSTERS_CONTROL_DEFINITION,
     parameters: THRUSTERS_PARAMETER_DEFINITION,
+    simulation: {
+      inputs: THRUSTERS_SIMULATION_INPUTS,
+      outputs: THRUSTERS_SIMULATION_OUTPUTS,
+    },
   },
 });
 
@@ -58,6 +68,13 @@ export const SENSOR_FIELDS: SensorFields = {
   [SensorComponentType.Flow]: ["flow", "temperature"],
 };
 
+export const SIMULATION_FIELDS: SimulationFields = {
+  [SimulationComponentType.Pcs]: ["mode"],
+  [SimulationComponentType.Temperature]: ["temperature"],
+  [SimulationComponentType.Thruster]: ["active", "heatFlow"],
+  [SimulationComponentType.Boundary]: ["temperature", "flow"],
+};
+
 export const toQueries = <
   TDefinitions extends Record<string, ModuleDefinition> = typeof DEFINITIONS,
   Queries extends THRSQueries<TDefinitions> = THRSQueries<TDefinitions>,
@@ -70,5 +87,9 @@ export const QUERIES = toQueries({
     controlValues: THRUSTERS_CONTROL_QUERY,
     parameters: THRUSTERS_PARAMETERS_QUERY,
     sensorValues: THRUSTERS_SENSOR_QUERY,
+    simulation: {
+      inputs: THRUSTERS_SIMULATION_INPUTS_QUERY,
+      outputs: THRUSTERS_SIMULATION_OUTPUTS_QUERY,
+    },
   },
 });

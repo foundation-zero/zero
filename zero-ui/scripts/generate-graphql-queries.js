@@ -8,232 +8,142 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 // Paths
-const SCHEMA_PATH = path.join(__dirname, "../src/graphql/thrs/schema.graphql");
 const CONSTS_PATH = path.join(__dirname, "../src/lib/consts.generated.ts");
 const OUTPUT_PATH = path.join(__dirname, "../src/lib/queries.generated.ts");
 
 // Get command line arguments
 const args = process.argv.slice(2);
-const CONST_NAME = args[0];
-const TYPE_NAME = args[1];
+const INPUT_CONST_NAME = args[0];
+const OUTPUT_QUERY_NAME = args[1];
 
 // Validate arguments
-if (!CONST_NAME || !TYPE_NAME) {
-  console.error("❌ Usage: node generate-graphql-queries.js <CONST_NAME> <TYPE_NAME>");
+if (!INPUT_CONST_NAME || !OUTPUT_QUERY_NAME) {
+  console.error("❌ Usage: pnpm generate-graphql-queries <INPUT_CONST_NAME> <OUTPUT_QUERY_NAME>");
   console.error(
-    "   Example: node generate-graphql-queries.js THRUSTERS_CONTROL_QUERY ThrustersControlValuesType",
+    "   Example: pnpm generate-graphql-queries THRUSTERS_CONTROL_DEFINITION THRUSTERS_CONTROL_QUERY",
   );
-  process.exit(1);
-}
-
-// Infer query type from TYPE_NAME
-const isControlQuery = TYPE_NAME.toLowerCase().includes("control");
-const isSensorQuery = TYPE_NAME.toLowerCase().includes("sensor");
-const isParameterQuery = TYPE_NAME.toLowerCase().includes("parameter");
-
-if (!isControlQuery && !isSensorQuery && !isParameterQuery) {
-  console.error(`❌ Cannot infer query type from TYPE_NAME: ${TYPE_NAME}`);
-  console.error("   TYPE_NAME should contain 'Control', 'Sensor', or 'Parameter'");
+  console.error(
+    "   Example: pnpm generate-graphql-queries THRUSTERS_SENSOR_DEFINITION THRUSTERS_SENSOR_QUERY",
+  );
+  console.error(
+    "   Example: pnpm generate-graphql-queries THRUSTERS_PARAMETER_DEFINITION THRUSTERS_PARAMETER_QUERY",
+  );
+  console.error(
+    "   Example: pnpm generate-graphql-queries THRUSTERS_SIMULATION_INPUTS THRUSTERS_SIMULATION_INPUTS_QUERY",
+  );
   process.exit(1);
 }
 
 /**
- * Get field mappings from CONTROL_FIELDS or SENSOR_FIELDS
+ * Component type field mappings - defines which fields each component type should have
  */
-function getFieldMappings() {
-  try {
-    // Read both files to get definitions and field mappings
-    const constsGeneratedContent = fs.readFileSync(CONSTS_PATH, "utf8");
-    const constsMainContent = fs.readFileSync(path.join(__dirname, "../src/lib/consts.ts"), "utf8");
-
-    let definitionName, fieldMappingName;
-    if (isControlQuery) {
-      definitionName = "THRUSTERS_CONTROL_DEFINITION";
-      fieldMappingName = "CONTROL_FIELDS";
-    } else if (isSensorQuery) {
-      definitionName = "THRUSTERS_SENSOR_DEFINITION";
-      fieldMappingName = "SENSOR_FIELDS";
-    } else {
-      // For parameters, return all fields since it's a flat structure
-      return getParameterFields(constsGeneratedContent);
-    }
-
-    // Get component definitions
-    const componentDefinitions = getComponentDefinitions(constsGeneratedContent, definitionName);
-
-    // Get field mappings
-    const fieldMappings = getFieldMappings_FromConsts(constsMainContent, fieldMappingName);
-
-    return generateFieldsFromMappings(componentDefinitions, fieldMappings);
-  } catch (error) {
-    console.error(`Error reading field mappings: ${error.message}`);
-    return [];
-  }
+function getComponentTypeFieldMappings() {
+  return {
+    // Control component type mappings
+    ControlComponentType: {
+      Pump: ["dutypoint", "on"],
+      Valve: ["setpoint"],
+    },
+    // Sensor component type mappings
+    SensorComponentType: {
+      Temperature: ["temperature"],
+      Pressure: ["pressure"],
+      Flow: ["flow", "temperature"],
+      Pump: ["flow", "speed", "opTime"],
+      Valve: ["positionRel"],
+      Thruster: ["active"],
+      Pcs: ["mode"],
+    },
+    // Simulation component type mappings
+    SimulationComponentType: {
+      Thruster: ["heatFlow", "active"],
+      Boundary: ["temperature", "flow"],
+      Temperature: ["temperature"],
+      Flow: ["flow"],
+      Pcs: ["mode"],
+    },
+    // Parameter component type mappings (parameters are flat, no nested fields)
+    ParametersType: {
+      Temperature: [],
+      Flow: [],
+      Tuning: [],
+    },
+  };
 }
 
-function getParameterFields(constsContent) {
-  const definitionMatch = constsContent.match(
-    /THRUSTERS_PARAMETER_DEFINITION = toParameterDefinition\(\{([\\s\\S]*?)\}\);/,
+/**
+ * Extract definitions from the input constant
+ */
+function getDefinitionsFromConst(constsContent, constName) {
+  // Match the constant definition with any wrapper function
+  const constMatch = constsContent.match(
+    new RegExp(`${constName} = to\\w+Definition\\(\\{([\\s\\S]*?)\\}\\);`),
   );
 
-  if (!definitionMatch) {
-    throw new Error("Could not find THRUSTERS_PARAMETER_DEFINITION");
+  if (!constMatch) {
+    throw new Error(`Could not find constant: ${constName}`);
   }
 
-  const definitionContent = definitionMatch[1];
-  const fieldMatches = definitionContent.match(/(\w+):\s*\{/g);
+  const definitionContent = constMatch[1];
+  const definitions = {};
+
+  // Parse field definitions
+  const fieldMatches = definitionContent.match(/(\w+):\s*\{([^}]*)\}/g);
 
   if (!fieldMatches) {
-    throw new Error("No fields found in parameter definition");
+    throw new Error(`No field definitions found in ${constName}`);
   }
 
-  return fieldMatches.map((match) => match.replace(/:\s*\{/, ""));
-}
+  fieldMatches.forEach((fieldMatch) => {
+    const [, fieldName, fieldContent] = fieldMatch.match(/(\w+):\s*\{([^}]*)\}/);
 
-function getComponentDefinitions(constsContent, definitionName) {
-  const definitionMatch = constsContent.match(
-    new RegExp(`${definitionName} = to\\w+Definition\\(\\{([\\s\\S]*?)\\}\\);`),
-  );
-
-  if (!definitionMatch) {
-    throw new Error(`Could not find ${definitionName}`);
-  }
-
-  const definitionContent = definitionMatch[1];
-  const componentDefinitions = {};
-
-  // Extract each field with its componentType
-  const fieldRegex = /(\w+):\s*\{[^}]*componentType:\s*(\w+)\.(\w+)[^}]*\}/g;
-  let match;
-
-  while ((match = fieldRegex.exec(definitionContent)) !== null) {
-    const fieldName = match[1];
-    const componentType = match[3]; // Get the enum value (Pump, Valve, etc.)
-    componentDefinitions[fieldName] = componentType;
-  }
-
-  return componentDefinitions;
-}
-
-function getFieldMappings_FromConsts(constsContent, fieldMappingName) {
-  // Extract the field mapping object
-  const mappingRegex = new RegExp(`${fieldMappingName}:[^{]*\\{([\\s\\S]*?)\\};`, "g");
-  const mappingMatch = mappingRegex.exec(constsContent);
-
-  if (!mappingMatch) {
-    throw new Error(`Could not find ${fieldMappingName}`);
-  }
-
-  const mappingContent = mappingMatch[1];
-  const fieldMappings = {};
-
-  // Extract each component type mapping
-  const componentRegex = /\[(\w+)\.(\w+)\]:\s*\[(.*?)\]/g;
-  let match;
-
-  while ((match = componentRegex.exec(mappingContent)) !== null) {
-    const componentType = match[2]; // Get the enum value (Pump, Valve, etc.)
-    const fieldsStr = match[3];
-    const fields = fieldsStr.split(",").map((f) => f.trim().replace(/['"]/g, ""));
-    fieldMappings[componentType] = fields;
-  }
-
-  return fieldMappings;
-}
-
-function generateFieldsFromMappings(componentDefinitions, fieldMappings) {
-  const result = {};
-
-  for (const [fieldName, componentType] of Object.entries(componentDefinitions)) {
-    const fieldsForComponent = fieldMappings[componentType];
-    if (fieldsForComponent) {
-      result[fieldName] = {
-        componentType: componentType,
-        fields: fieldsForComponent,
-      };
+    // Parse componentType
+    const componentTypeMatch = fieldContent.match(/componentType:\s*(\w+)\.(\w+)/);
+    if (!componentTypeMatch) {
+      throw new Error(`No componentType found for field: ${fieldName}`);
     }
-  }
 
-  return result;
+    const [, componentTypeEnum, componentTypeValue] = componentTypeMatch;
+
+    // Parse optional valveType for valve components
+    const valveTypeMatch = fieldContent.match(/valveType:\s*\w+\.(\w+)/);
+    const valveType = valveTypeMatch ? valveTypeMatch[1] : null;
+
+    definitions[fieldName] = {
+      componentType: componentTypeValue,
+      componentTypeEnum,
+      valveType,
+    };
+  });
+
+  return definitions;
 }
 
 /**
- * Parse GraphQL schema to get field type information
+ * Generate GraphQL query for the given definitions
  */
-function parseSchemaType(typeName) {
-  try {
-    const schema = fs.readFileSync(SCHEMA_PATH, "utf8");
-    const lines = schema.split("\n");
-
-    const typeFields = {};
-    let inTargetType = false;
-    let braceCount = 0;
-
-    for (let i = 0; i < lines.length; i++) {
-      const line = lines[i].trim();
-
-      // Check if we're entering the target type
-      if (line.startsWith(`type ${typeName}`)) {
-        inTargetType = true;
-        braceCount = 0;
-        continue;
-      }
-
-      if (!inTargetType) continue;
-
-      // Count braces to know when we exit the type
-      braceCount += (line.match(/{/g) || []).length;
-      braceCount -= (line.match(/}/g) || []).length;
-
-      // If we've closed all braces, we're done with this type
-      if (braceCount < 0) {
-        break;
-      }
-
-      // Parse field definition
-      const fieldMatch = line.match(/(\w+):\s*(\w+)!/);
-      if (fieldMatch) {
-        const fieldName = fieldMatch[1];
-        const fieldType = fieldMatch[2];
-        typeFields[fieldName] = fieldType;
-      }
-    }
-
-    return typeFields;
-  } catch (error) {
-    console.error(`Error parsing schema: ${error.message}`);
-    return {};
-  }
-}
-
-/**
- * Generate GraphQL query string
- */
-function generateQuery(fieldMappings, schemaFields) {
-  if (isParameterQuery) {
-    // For parameters, just list field names (flat structure)
-    return fieldMappings.map((field) => `  ${field}`).join("\n");
-  }
-
-  // For controls and sensors, use field mappings
+function generateQuery(definitions) {
+  const fieldMappings = getComponentTypeFieldMappings();
   const queryParts = [];
 
-  for (const [fieldName, fieldInfo] of Object.entries(fieldMappings)) {
-    const fieldType = schemaFields[fieldName];
-    if (!fieldType) {
-      console.warn(`⚠️  Field ${fieldName} not found in schema`);
-      continue;
+  for (const [fieldName, fieldInfo] of Object.entries(definitions)) {
+    const { componentType, componentTypeEnum } = fieldInfo;
+
+    // Get field mappings for this component type
+    const componentFields = fieldMappings[componentTypeEnum]?.[componentType] || [];
+
+    if (componentFields.length === 0) {
+      // For parameters or components with no nested fields
+      if (componentTypeEnum === "ParametersType") {
+        queryParts.push(`  ${fieldName}`);
+      } else {
+        queryParts.push(`  ${fieldName} { value timestamp }`);
+      }
+    } else {
+      // Generate nested field structure
+      const fieldLines = componentFields.map((field) => `    ${field} { value timestamp }`);
+      queryParts.push([`  ${fieldName} {`, ...fieldLines, "  }"].join("\n"));
     }
-
-    // Generate field block using the specific fields from CONTROL_FIELDS/SENSOR_FIELDS
-    const fieldsToInclude = fieldInfo.fields;
-    const fieldBlock = [
-      `  ${fieldName} {`,
-      ...fieldsToInclude.map((field) => `      ${field} { value timestamp }`),
-      "      }",
-    ];
-
-    queryParts.push(fieldBlock.join("\n"));
   }
 
   return queryParts.join("\n");
@@ -250,17 +160,19 @@ function updateQueriesFile(queryString) {
     queriesContent = fs.readFileSync(OUTPUT_PATH, "utf8");
   }
 
-  const newQueryExport = `export const ${CONST_NAME} = \`\n${queryString}\n\`;\n`;
+  const newQueryExport = `export const ${OUTPUT_QUERY_NAME} = \`
+${queryString}
+\`;`;
 
-  // Pattern to match existing query
-  const pattern = new RegExp(`export const ${CONST_NAME} = \`[\\s\\S]*?\`;\n?`, "g");
+  // Create pattern to match existing query
+  const pattern = new RegExp(`export const ${OUTPUT_QUERY_NAME} = \`[\\s\\S]*?\`;`, "g");
 
   if (pattern.test(queriesContent)) {
     // Replace existing query
     queriesContent = queriesContent.replace(pattern, newQueryExport);
   } else {
     // Add new query at the end
-    queriesContent += "\n" + newQueryExport;
+    queriesContent += "\n" + newQueryExport + "\n";
   }
 
   fs.writeFileSync(OUTPUT_PATH, queriesContent);
@@ -271,30 +183,25 @@ function updateQueriesFile(queryString) {
  */
 function main() {
   try {
-    const queryType = isControlQuery ? "control" : isSensorQuery ? "sensor" : "parameter";
+    console.log(`🔄 Generating GraphQL query...`);
+    console.log(`📋 Input: ${INPUT_CONST_NAME}`);
+    console.log(`📋 Output: ${OUTPUT_QUERY_NAME}`);
 
-    console.log(`🔄 Generating ${queryType} GraphQL query...`);
-    console.log(`📋 Target: ${CONST_NAME} from ${TYPE_NAME}`);
+    // Read constants file
+    const constsContent = fs.readFileSync(CONSTS_PATH, "utf8");
 
-    // Get field mappings
-    const fieldMappings = getFieldMappings();
+    // Extract definitions from the input constant
+    const definitions = getDefinitionsFromConst(constsContent, INPUT_CONST_NAME);
 
-    const fieldCount = isParameterQuery ? fieldMappings.length : Object.keys(fieldMappings).length;
-
+    const fieldCount = Object.keys(definitions).length;
     if (fieldCount === 0) {
-      throw new Error(`No fields found for ${queryType} definition`);
+      throw new Error(`No definitions found in ${INPUT_CONST_NAME}`);
     }
 
-    console.log(
-      `✓ Found ${fieldCount} fields:`,
-      isParameterQuery ? fieldMappings : Object.keys(fieldMappings),
-    );
-
-    // Parse schema for field types
-    const schemaFields = parseSchemaType(TYPE_NAME);
+    console.log(`✓ Found ${fieldCount} fields:`, Object.keys(definitions));
 
     // Generate query string
-    const queryString = generateQuery(fieldMappings, schemaFields);
+    const queryString = generateQuery(definitions);
 
     if (!queryString.trim()) {
       throw new Error("Generated query is empty");

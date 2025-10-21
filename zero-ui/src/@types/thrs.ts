@@ -3,6 +3,12 @@ import { Ref, WritableComputedRef } from "vue";
 export type Stamped<T> = { value: T; timestamp: Date };
 export type Unstamp<T> = T extends Stamped<infer U> ? U : never;
 
+export type SchemaDefinition<T> = {
+  componentType: T;
+};
+
+export type SchemaDefinitions<T extends SchemaDefinition<unknown>> = Record<string, T>;
+
 export type PumpControl = {
   dutypoint: Stamped<number>;
   on: Stamped<boolean>;
@@ -25,6 +31,13 @@ export type SensorFields = {
   [SensorComponentType.Valve]: (keyof Valve)[];
   [SensorComponentType.Thruster]: (keyof ThrusterSensor)[];
   [SensorComponentType.Pcs]: (keyof PcsSensor)[];
+};
+
+export type SimulationFields = {
+  [SimulationComponentType.Temperature]: (keyof TemperatureBoundarySimulation)[];
+  [SimulationComponentType.Thruster]: (keyof ThrusterSimulation)[];
+  [SimulationComponentType.Pcs]: (keyof PcsSimulation)[];
+  [SimulationComponentType.Boundary]: (keyof BoundarySimulation)[];
 };
 
 export type PumpSensor = {
@@ -76,7 +89,7 @@ export type Sensors = Record<string, SensorType>;
 export type Controls = Record<string, ControlType>;
 
 export const enum ThrusterMode {
-  OFF = "OFF",
+  Off = "OFF",
   Propulsion = "PROPULSION",
   Maneuvering = "MANEUVERING",
   Regeneration = "REGENERATION",
@@ -107,17 +120,17 @@ export const enum ValveType {
   Switch = "switch",
 }
 
-export type ControlDefinition<T extends ControlComponentType = ControlComponentType> = {
-  yardTag: string;
-  componentType: T;
-};
+export type ControlDefinition<T extends ControlComponentType = ControlComponentType> =
+  SchemaDefinition<T> & {
+    yardTag: string;
+  };
 
 export type PumpControlDefinition = ControlDefinition<ControlComponentType.Pump>;
 export type ValveControlDefinition = ControlDefinition<ControlComponentType.Valve> & {
   valveType: ValveType;
 };
 
-export type ControlDefinitions = Record<string, PumpControlDefinition | ValveControlDefinition>;
+export type ControlDefinitions = SchemaDefinitions<PumpControlDefinition | ValveControlDefinition>;
 
 export type ExtractControlValues<T extends ControlDefinitions> = PickMap<
   T,
@@ -140,22 +153,32 @@ export type THRSModule<TDefinition extends ModuleDefinition> = {
   sensorValues: ExtractSensorValues<TDefinition["sensorValues"]>;
   controlValues: ExtractControlValues<TDefinition["controlValues"]>;
   parameters: ExtractParameterValues<TDefinition["parameters"]>;
+  simulation: {
+    inputs: ExtractSimulationValues<TDefinition["simulation"]["inputs"]>;
+    outputs: ExtractSimulationValues<TDefinition["simulation"]["outputs"]>;
+  };
 };
 
 export type ModuleDefinition<
   TSensors extends SensorDefinitions = SensorDefinitions,
   TControls extends ControlDefinitions = ControlDefinitions,
   TParameters extends ParameterDefinitions = ParameterDefinitions,
+  TSimulationInputs extends SimulationDefinitions = SimulationDefinitions,
+  TSimulationOutputs extends SimulationDefinitions = SimulationDefinitions,
 > = {
   sensorValues: TSensors;
   controlValues: TControls;
   parameters: TParameters;
+  simulation: {
+    inputs: TSimulationInputs;
+    outputs: TSimulationOutputs;
+  };
 };
 
-export type SensorDefinition<T extends SensorComponentType = SensorComponentType> = {
-  yardTag: string;
-  componentType: T;
-};
+export type SensorDefinition<T extends SensorComponentType = SensorComponentType> =
+  SchemaDefinition<T> & {
+    yardTag: string;
+  };
 
 export type TemperatureSensorDefinition = SensorDefinition<SensorComponentType.Temperature>;
 export type PressureSensorDefinition = SensorDefinition<SensorComponentType.Pressure>;
@@ -167,7 +190,7 @@ export type ValveSensorDefinition = SensorDefinition<SensorComponentType.Valve> 
 export type ThrusterSensorDefinition = SensorDefinition<SensorComponentType.Thruster>;
 export type PcsSensorDefinition = SensorDefinition<SensorComponentType.Pcs>;
 
-export type SensorDefinitions = Record<string, SensorDefinition>;
+export type SensorDefinitions = SchemaDefinitions<SensorDefinition>;
 
 export type ExtractSensorValues<T extends SensorDefinitions> = PickMap<
   T,
@@ -197,11 +220,9 @@ export const enum ParametersType {
   Tuning = "tuning",
 }
 
-export type ParameterDefinition<T extends ParametersType = ParametersType> = {
-  componentType: T;
-};
+export type ParameterDefinition<T extends ParametersType = ParametersType> = SchemaDefinition<T>;
 
-export type ParameterDefinitions = Record<string, ParameterDefinition>;
+export type ParameterDefinitions = SchemaDefinitions<ParameterDefinition>;
 export type TemperatureParameterDefinition = ParameterDefinition<ParametersType.Temperature>;
 export type FlowParameterDefinition = ParameterDefinition<ParametersType.Flow>;
 export type TuningParameterDefinition = ParameterDefinition<ParametersType.Tuning>;
@@ -214,6 +235,59 @@ export type ExtractParameterValues<T extends ParameterDefinitions> = PickMap<
 > &
   PickMap<T, FlowParameterDefinition, number> &
   PickMap<T, TuningParameterDefinition, PID>;
+
+export type ThrusterSimulation = {
+  heatFlow: Stamped<number>;
+  active: Stamped<boolean>;
+};
+
+export type BoundarySimulation = {
+  temperature: Stamped<number>;
+  flow: Stamped<number>;
+};
+
+export type TemperatureSimulation = {
+  temperature: Stamped<number>;
+};
+
+export type TemperatureBoundarySimulation = {
+  temperature: Stamped<number>;
+};
+
+export type FlowSimulation = {
+  flow: Stamped<number>;
+};
+
+export type PcsSimulation = ModeSelector<ThrusterMode>;
+
+export const enum SimulationComponentType {
+  Thruster = "thruster",
+  Boundary = "boundary",
+  Temperature = "temperature",
+  Flow = "flow",
+  Pcs = "pcs",
+}
+
+export type SimulationDefinition<T extends SimulationComponentType = SimulationComponentType> =
+  SchemaDefinition<T>;
+
+export type SimulationDefinitions = SchemaDefinitions<SimulationDefinition>;
+export type ThrusterSimulationDefinition = SimulationDefinition<SimulationComponentType.Thruster>;
+export type BoundarySimulationDefinition = SimulationDefinition<SimulationComponentType.Boundary>;
+export type TemperatureSimulationDefinition =
+  SimulationDefinition<SimulationComponentType.Temperature>;
+export type FlowSimulationDefinition = SimulationDefinition<SimulationComponentType.Flow>;
+export type PcsSimulationDefinition = SimulationDefinition<SimulationComponentType.Pcs>;
+
+export type ExtractSimulationValues<T extends SimulationDefinitions> = PickMap<
+  T,
+  ThrusterSimulationDefinition,
+  ThrusterSimulation
+> &
+  PickMap<T, BoundarySimulationDefinition, BoundarySimulation> &
+  PickMap<T, TemperatureSimulationDefinition, TemperatureSimulation> &
+  PickMap<T, FlowSimulationDefinition, FlowSimulation> &
+  PickMap<T, PcsSimulationDefinition, PcsSimulation>;
 
 export type Field<T> = Record<string, Stamped<T>>;
 export type Component = Record<string, Field<number>>;

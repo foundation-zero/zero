@@ -18,7 +18,7 @@ const { t } = useI18n();
 
 const props = defineProps<{
   componentName: string;
-  parameterValuesQuery: string;
+  query: string;
   module: K;
   componentType: ParametersType;
 }>();
@@ -43,7 +43,7 @@ const {
   props.componentName,
   modelValue,
   ["value"],
-  props.parameterValuesQuery,
+  props.query,
   emit,
 );
 </script>
@@ -61,7 +61,7 @@ const {
           t(`components.inputs.${componentType}.unit`)
         }}</span>
       </header>
-      <div class="flex items-center gap-3">
+      <div class="flex items-center gap-2">
         <NumberField
           v-model="value"
           class="grow"

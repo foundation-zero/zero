@@ -1,5 +1,5 @@
-<script setup lang="ts">
-import { ValveControl } from "@/@types/thrs";
+<script setup lang="ts" generic="K extends keyof THRSModules">
+import { ThrusterSimulation } from "@/@types/thrs";
 import { Button } from "@/components/ui/shadcn/button";
 import {
   NumberField,
@@ -8,18 +8,20 @@ import {
   NumberFieldIncrement,
   NumberFieldInput,
 } from "@/components/ui/shadcn/number-field";
+import { Switch } from "@/components/ui/shadcn/switch";
 import { THRSModules } from "@/lib/consts";
 import { toUpperCamelCase } from "@/lib/utils";
 import { controlValuesForm, MutationType } from "@/stores/thrs";
 import { Loader2Icon, SendIcon } from "lucide-vue-next";
 import { toRef } from "vue";
+import { useI18n } from "vue-i18n";
+
+const { t } = useI18n();
 
 const props = defineProps<{
-  values: ValveControl;
-  query: string;
+  values: ThrusterSimulation;
   componentName: string;
-  yardTag: string;
-  valveType: string;
+  query: string;
   module: keyof THRSModules;
 }>();
 const emit = defineEmits<{
@@ -28,28 +30,38 @@ const emit = defineEmits<{
 
 const controlValues = toRef(props, "values");
 
-const { submit, isSubmitting, error, setpoint } = controlValuesForm(
+const { submit, isSubmitting, error, active, heatFlow } = controlValuesForm(
   props.module,
-  MutationType.Control,
-  "ValveInputType!",
+  MutationType.Simulation,
+  "ThrusterInputType!",
   props.componentName,
   controlValues,
-  ["setpoint"],
+  ["active", "heatFlow"],
   props.query,
   emit,
 );
 </script>
 <template>
   <div class="bg-background flex flex-col rounded-md border p-4 shadow-md">
-    <h3 class="overflow-hidden font-semibold text-ellipsis whitespace-nowrap capitalize">
-      {{ toUpperCamelCase(componentName) }}
+    <h3 class="flex items-center justify-between font-semibold capitalize">
+      <label
+        :for="`${componentName}-on`"
+        class="overflow-hidden text-ellipsis whitespace-nowrap"
+        >{{ toUpperCamelCase(componentName) }}</label
+      >
+      <Switch
+        :id="`${componentName}-on`"
+        v-model:model-value="active.value.value"
+      />
     </h3>
-    <p class="text-muted-foreground text-xs">{{ yardTag }} / {{ valveType }}</p>
+
     <div class="mt-6 grid gap-1.5">
-      <header class="text-2xs tracking-wide uppercase">Setpoint</header>
-      <div class="flex items-center gap-2">
+      <header class="text-2xs tracking-wide uppercase">
+        {{ t("components.inputs.thruster.label") }}
+      </header>
+      <div class="grid gap-6">
         <NumberField
-          v-model="setpoint.value.value"
+          v-model="heatFlow.value.value"
           class="grow"
           :step="0.1"
           :min="0"
@@ -63,7 +75,7 @@ const { submit, isSubmitting, error, setpoint } = controlValuesForm(
         </NumberField>
 
         <Button
-          :disabled="isSubmitting || !setpoint.isDirty.value"
+          :disabled="isSubmitting || (!heatFlow.isDirty.value && !active.isDirty.value)"
           @click="submit"
         >
           <Loader2Icon
@@ -74,6 +86,7 @@ const { submit, isSubmitting, error, setpoint } = controlValuesForm(
         </Button>
       </div>
     </div>
+
     <div
       v-if="error"
       class="mt-3 text-red-500"

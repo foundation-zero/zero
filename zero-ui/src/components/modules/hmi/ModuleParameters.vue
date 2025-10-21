@@ -66,7 +66,7 @@ const parameterComponents = computed(() => {
         :model-value="params[component.key]"
         :component-name="String(component.key)"
         :component-type="component.componentType"
-        :parameter-values-query="query"
+        :query="query"
         :module="module"
         @update:control-values="setControlValues"
       />

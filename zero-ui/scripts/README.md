@@ -19,6 +19,12 @@ pnpm run extract-schema-values THRUSTERS_SENSOR_DEFINITION ThrustersSensorValues
 # Extract parameter definitions
 pnpm run extract-schema-values THRUSTERS_PARAMETER_DEFINITION ThrustersParameterValuesType
 
+# Extract simulation input definitions
+pnpm run extract-schema-values THRUSTERS_SIMULATION_INPUTS ThrustersSimulationInputsType
+
+# Extract simulation output definitions
+pnpm run extract-schema-values THRUSTERS_SIMULATION_OUTPUTS ThrustersSimulationOutputsType
+
 # Custom extraction
 pnpm run extract-schema-values <CONST_NAME> <TYPE_NAME>
 ```
@@ -26,36 +32,35 @@ pnpm run extract-schema-values <CONST_NAME> <TYPE_NAME>
 **What it does:**
 1. Parses the GraphQL schema file at `src/graphql/thrs/schema.graphql`
 2. Finds the specified GraphQL type definition
-3. Extracts field metadata from `@jsonSchemaDirective` annotations
-4. Infers component types (control/sensor/parameter) from field metadata
+3. Extracts field metadata from `@jsonSchemaDirective` annotations (for controls/sensors) or infers types directly (for parameters/simulation)
+4. Infers component types (control/sensor/parameter/simulation) from field metadata and GraphQL types
 5. Generates appropriate TypeScript definition objects with proper typing
 6. Updates or creates the specified constant in `src/lib/consts.generated.ts`
 
 ### `generate-graphql-queries.js`
 
-Generates GraphQL query fragments based on component type field mappings defined in `CONTROL_FIELDS` and `SENSOR_FIELDS`.
+Generates GraphQL query fragments based on component type field mappings. 
 
 **Usage:**
 ```bash
 # Generate control query
-pnpm run generate-query THRUSTERS_CONTROL_QUERY ThrustersControlValuesType
+pnpm generate-graphql-queries THRUSTERS_CONTROL_DEFINITION THRUSTERS_CONTROL_QUERY
 
 # Generate sensor query  
-pnpm run generate-query THRUSTERS_SENSOR_QUERY ThrustersSensorValuesType
+pnpm generate-graphql-queries THRUSTERS_SENSOR_DEFINITION THRUSTERS_SENSOR_QUERY
 
 # Generate parameter query
-pnpm run generate-query THRUSTERS_PARAMETERS_QUERY ThrustersParameterValuesType
+pnpm generate-graphql-queries THRUSTERS_PARAMETER_DEFINITION THRUSTERS_PARAMETERS_QUERY
 
-# Custom query generation
-pnpm run generate-query <QUERY_NAME> <TYPE_NAME>
+# Generate simulation inputs query
+pnpm generate-graphql-queries THRUSTERS_SIMULATION_INPUTS THRUSTERS_SIMULATION_INPUTS_QUERY
+
+# Generate simulation outputs query  
+pnpm generate-graphql-queries THRUSTERS_SIMULATION_OUTPUTS THRUSTERS_SIMULATION_OUTPUTS_QUERY
+
+# Generic usage for any module
+pnpm generate-graphql-queries <INPUT_CONST_NAME> <OUTPUT_QUERY_NAME>
 ```
-
-**What it does:**
-1. Reads component definitions from `src/lib/consts.generated.ts`
-2. Reads field mappings from `src/lib/consts.ts` (`CONTROL_FIELDS`, `SENSOR_FIELDS`)
-3. Maps each component to its appropriate fields based on component type
-4. Generates GraphQL query fragments with `{ value timestamp }` structure
-5. Updates or creates the specified query constant in `src/lib/queries.generated.ts`
 
 ## Generated Output
 
@@ -125,6 +130,35 @@ export const THRUSTERS_PARAMETER_DEFINITION = toParameterDefinition({
 - `componentType`: One of `ParametersType` enum values (Temperature, Flow, Tuning)
 - No `yardTag` required - parameters are configuration values, not physical components
 
+### Simulation Definitions
+
+```typescript
+export const THRUSTERS_SIMULATION_INPUTS = toSimulationDefinition({
+  thrustersAft: {
+    componentType: SimulationComponentType.Thruster,
+  },
+  thrustersSeawaterSupply: {
+    componentType: SimulationComponentType.Boundary,
+  },
+  // ... more entries
+});
+
+export const THRUSTERS_SIMULATION_OUTPUTS = toSimulationDefinition({
+  thrustersSeawaterReturn: {
+    componentType: SimulationComponentType.Temperature,
+  },
+  thrustersModuleSupply: {
+    componentType: SimulationComponentType.Flow,
+  },
+  // ... more entries
+});
+```
+
+**Simulation components** are identified by:
+- `componentType`: One of `SimulationComponentType` enum values (Thruster, Boundary, Temperature, Flow, Pcs)
+- No `yardTag` required - simulation components are virtual system boundaries and inputs/outputs
+- Automatically inferred from GraphQL field types (`ThrusterSimulationType`, `BoundarySimulationType`, etc.)
+
 ### Generated GraphQL Queries
 
 ```typescript
@@ -148,6 +182,40 @@ export const THRUSTERS_SENSOR_QUERY = `
       temperature { value timestamp }
       }
 `;
+
+export const THRUSTERS_SIMULATION_INPUTS_QUERY = `
+    thrustersAft {
+    heatFlow { value timestamp }
+    active { value timestamp }
+    }
+    thrustersFwd {
+    heatFlow { value timestamp }
+    active { value timestamp }
+    }
+    thrustersSeawaterSupply {
+    temperature { value timestamp }
+    flow { value timestamp }
+    }
+    thrustersModuleSupply {
+    temperature { value timestamp }
+    }
+    thrustersPcs {
+    mode { value timestamp }
+    }
+`;
+
+export const THRUSTERS_SIMULATION_OUTPUTS_QUERY = `
+    thrustersSeawaterReturn {
+    temperature { value timestamp }
+    }
+    thrustersModuleSupply {
+    flow { value timestamp }
+    }
+    thrustersModuleReturn {
+    temperature { value timestamp }
+    flow { value timestamp }
+    }
+`;
 ```
 
 ## Type System Integration
@@ -159,6 +227,7 @@ The generated definitions integrate with the TypeScript type system defined in `
 - **Controls**: `PumpControl`, `ValveControl` with fields like `dutypoint`, `on`, `setpoint`
 - **Sensors**: `PumpSensor`, `TemperatureSensor`, `FlowSensor`, etc. with fields like `flow`, `speed`, `temperature`
 - **Parameters**: Simple `number` or `PID` (tuple of 3 numbers) values for configuration
+- **Simulation**: `ThrusterSimulation`, `BoundarySimulation`, `TemperatureSimulation`, etc. with fields like `heatFlow`, `active`, `temperature`, `flow`
 
 ### Field Mappings
 
@@ -180,10 +249,27 @@ export const SENSOR_FIELDS: SensorFields = {
 
 ## Integration with Development Workflow
 
-### npm Scripts
+### pnpm scripts
 The following scripts are available in `package.json`:
-- `extract-schema-values`: Runs the schema extraction script
-- `generate-query`: Runs the GraphQL query generation script
+- `extract-schema-values`: Runs the schema extraction script with arguments
+- `generate-graphql-queries`: Runs the query generation script with arguments
+
+**Examples:**
+```bash
+# Extract all definition types
+pnpm extract-schema-values THRUSTERS_CONTROL_DEFINITION ThrustersControlValuesType
+pnpm extract-schema-values THRUSTERS_SENSOR_DEFINITION ThrustersSensorValuesType
+pnpm extract-schema-values THRUSTERS_PARAMETER_DEFINITION ThrustersParameterValuesType
+pnpm extract-schema-values THRUSTERS_SIMULATION_INPUTS ThrustersSimulationInputsType
+pnpm extract-schema-values THRUSTERS_SIMULATION_OUTPUTS ThrustersSimulationOutputsType
+
+# Generate queries
+pnpm generate-graphql-queries THRUSTERS_CONTROL_DEFINITION THRUSTERS_CONTROL_QUERY
+pnpm generate-graphql-queries THRUSTERS_SENSOR_DEFINITION THRUSTERS_SENSOR_QUERY
+pnpm generate-graphql-queries THRUSTERS_PARAMETER_DEFINITION THRUSTERS_PARAMETERS_QUERY
+pnpm generate-graphql-queries THRUSTERS_SIMULATION_INPUTS THRUSTERS_SIMULATION_INPUTS_QUERY
+pnpm generate-graphql-queries THRUSTERS_SIMULATION_OUTPUTS THRUSTERS_SIMULATION_OUTPUTS_QUERY
+```
 
 ## Error Handling
 

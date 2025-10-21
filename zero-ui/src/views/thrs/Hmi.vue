@@ -2,6 +2,8 @@
 import ModuleControls from "@/components/modules/hmi/ModuleControls.vue";
 import ModuleParameters from "@/components/modules/hmi/ModuleParameters.vue";
 import ModuleSensors from "@/components/modules/hmi/ModuleSensors.vue";
+import ModuleSimulation from "@/components/modules/hmi/ModuleSimulation.vue";
+import ModuleSimulationOutputs from "@/components/modules/hmi/ModuleSimulationOutputs.vue";
 import { DEFINITIONS, QUERIES } from "@/lib/consts";
 import { Client, fetchExchange, provideClient } from "@urql/vue";
 import { computed, ref } from "vue";
@@ -23,6 +25,20 @@ const definition = computed(() => DEFINITIONS[currentDefinition.value]);
         :module="currentDefinition"
         :controls="definition.controlValues"
         :query="QUERIES[currentDefinition].controlValues"
+        :client="client"
+      />
+
+      <ModuleSimulation
+        :module="currentDefinition"
+        :simulation-controls="definition.simulation"
+        :query="QUERIES[currentDefinition].simulation.inputs"
+        :client="client"
+      />
+
+      <ModuleSimulationOutputs
+        :module="currentDefinition"
+        :simulation-controls="definition.simulation"
+        :query="QUERIES[currentDefinition].simulation.outputs"
         :client="client"
       />
 
