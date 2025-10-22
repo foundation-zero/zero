@@ -1,12 +1,12 @@
 {{ config(materialized='materialized_view') }}
 SELECT
-	timestamp,
+	time,
 	topic,
 	group_name,
 	stored_energy
 FROM (
 	SELECT
-		stored_energy_timestamp AS  timestamp,
+		stored_energy_timestamp AS time,
 		topic,
 		group_name,
 		stored_energy,
