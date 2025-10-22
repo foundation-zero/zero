@@ -10,6 +10,6 @@ def read_io_list(paths: List[Path], type: Source) -> IOResult:
     elif type == "vitters":
         from .readers.vitters import VittersReader
 
-        return VittersReader().read_io_list(paths[0])
+        return VittersReader().read_io_list(paths)
     else:
         raise ValueError(f"Unsupported IOSource type: {type}")

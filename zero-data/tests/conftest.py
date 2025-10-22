@@ -1,7 +1,4 @@
-from typing import List
-
 import pytest
-from zero_data.io_list.types import IOTopic
 from zero_data.io_list import read_io_list, IOResult
 from polars import DataFrame
 from pathlib import Path

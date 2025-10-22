@@ -52,11 +52,11 @@ class MarpowerReader(ReaderBase):
         )
         typed_df = (
             filter_df.with_columns(
-                pl.col("target_type").replace_strict(_DATA_TYPES, default="lala").alias("data_type")
+                pl.col("target_type").replace_strict(_DATA_TYPES).alias("data_type")
             )
             .with_columns(tag=pl.col("tag").str.replace_all(r"-|\.", "_"))
         )
-        subset_df = typed_df.select([
+        return typed_df.select([
             "device",
             "tag",
             "yard_tag",
@@ -71,7 +71,6 @@ class MarpowerReader(ReaderBase):
             "mqtt_topic",
             "mqtt_json_path",
         ])
-        return subset_df
 
     def _get_io_topics(self, df: pl.DataFrame) -> List[IOTopic]:
         """Get the IO topics from the DataFrame"""
@@ -105,7 +104,7 @@ class MarpowerReader(ReaderBase):
             yield last_val
 
     @classmethod
-    def _read_amcs_excel(cls, path: Path) -> pl.DataFrame:
+    def _read_marpower_excel(cls, path: Path) -> pl.DataFrame:
         """Read the AMCS Excel file and return a DataFrame"""
         workbook = load_workbook(path, data_only=True)
         headers = cls._read_headers(workbook["IO-List"])
@@ -116,15 +115,11 @@ class MarpowerReader(ReaderBase):
         return pl.DataFrame(data).filter(~pl.all_horizontal(pl.all().is_null()))
 
     def read_io_list(self, paths: List[Path]) -> IOResult:
-        """Read the IO list from the given path and return an IOResult"""
-        io_list = None
-        for path in paths:
-            _df = self._read_amcs_excel(path)
-            _io_list = self._normalize_amcs_io_list(_df)
-            if io_list is None:
-                io_list = _io_list
-            else:
-                io_list = pl.concat([io_list, _io_list])
+        """Read the IO list from the given paths and return an IOResult"""
+        io_lists = [
+            self._normalize_amcs_io_list(self._read_marpower_excel(path)) for path in paths
+        ]
+        io_list = pl.concat(io_lists)
 
         topics = self._get_io_topics(io_list)
 
