@@ -286,10 +286,10 @@ class SimulationControls:
 
     async def clear_previous(self):
         await self._controls_client.publish(
-            "thrs/simulation/status", b"", qos=1, retain=True
+            "thrs/simulation/status", None, qos=1, retain=True
         )  # Clear previous status
         await self._controls_client.publish(
-            "thrs/parameters", b"", qos=1, retain=True
+            "thrs/parameters", None, qos=1, retain=True
         )  # Clear previous parameters
 
     async def run(self, mode: Modes):
