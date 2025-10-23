@@ -1,6 +1,6 @@
 {{ config(materialized='materialized_view') }}
 SELECT
-	LAST_VALUE(time ORDER BY time) time,
+	LAST_VALUE(time ORDER BY time) AS time,
 	topic,
 	group_name,
 	LAST_VALUE(stored_energy ORDER BY time) stored_energy
