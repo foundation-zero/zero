@@ -42,7 +42,7 @@ class MarpowerReader(ReaderBase):
             yield " ".join(headers)
 
     @staticmethod
-    def _normalize_amcs_io_list(df: pl.DataFrame):
+    def _normalize_marpower_io_list(df: pl.DataFrame):
         """Normalize the IO list by renaming columns and filtering out unnecessary rows"""
         renamed_df = df.rename(lambda c: c.replace(" ", "_").lower())
         filter_df = (
@@ -117,7 +117,7 @@ class MarpowerReader(ReaderBase):
     def read_io_list(self, paths: List[Path]) -> IOResult:
         """Read the IO list from the given paths and return an IOResult"""
         io_lists = [
-            self._normalize_amcs_io_list(self._read_marpower_excel(path)) for path in paths
+            self._normalize_marpower_io_list(self._read_marpower_excel(path)) for path in paths
         ]
         io_list = pl.concat(io_lists)
 
