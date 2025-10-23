@@ -1,16 +1,8 @@
 {{ config(materialized='materialized_view') }}
 SELECT
-	time,
+	LAST_VALUE(time ORDER BY time) time,
 	topic,
 	group_name,
-	stored_energy
-FROM (
-	SELECT
-		stored_energy_timestamp AS time,
-		topic,
-		group_name,
-		stored_energy,
-		ROW_NUMBER() OVER (PARTITION BY topic ORDER BY stored_energy_timestamp DESC) AS row_nr
-	FROM {{ ref('bms_master_power_data') }}
-) AS electrical_energy_stored
-WHERE row_nr = 1
+	LAST_VALUE(stored_energy ORDER BY time) stored_energy
+FROM {{ ref('bms_master_power_data') }}
+GROUP BY topic, group_name
