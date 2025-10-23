@@ -330,11 +330,19 @@ class DynamicInputFields:
         def _make_parameter_mutation(name: str, component_type: type):
             async def _mutation(
                 self,
-                component: component_type,  # type: ignore
+                value: component_type,  # type: ignore
                 info: strawberry.Info[ThrsContext],
             ) -> ThrustersParametersType:
-                # TODO: ZERO-878 implement parameter setting and passage to simulation
-                return ThrustersParametersType.from_pydantic(ThrustersParameters())
+                parameters = info.context.messaging.parameters
+                if parameters is None:
+                    raise Exception("No parameters available to update")
+                setattr(parameters, name, value)
+                expect = info.context.messaging.wait_for_parameters(
+                    lambda parameters: getattr(parameters, name) == value, timeout=2
+                )
+                await info.context.messaging.set_parameters(parameters)
+                await expect
+                return ThrustersParametersType.from_pydantic(parameters)
 
             return _mutation
 
