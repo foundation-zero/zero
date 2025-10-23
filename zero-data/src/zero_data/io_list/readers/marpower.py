@@ -11,6 +11,9 @@ _DATA_TYPES = {
     "Float": "REAL",
     "Bool": "BOOLEAN",
     "Uint32": "BIGINT",
+    "Uint16": "INTEGER",
+    # Typo in AMCS IO list R2.14
+    "Unit16": "INTEGER",
     "Int32": "INTEGER",
     "Int16": "INTEGER",
     "String": "STRING",
@@ -39,7 +42,7 @@ class MarpowerReader(ReaderBase):
             yield " ".join(headers)
 
     @staticmethod
-    def _normalize_amcs_io_list(df: pl.DataFrame):
+    def _normalize_marpower_io_list(df: pl.DataFrame):
         """Normalize the IO list by renaming columns and filtering out unnecessary rows"""
         renamed_df = df.rename(lambda c: c.replace(" ", "_").lower())
         filter_df = (
@@ -51,17 +54,30 @@ class MarpowerReader(ReaderBase):
             filter_df.with_columns(
                 pl.col("target_type").replace_strict(_DATA_TYPES).alias("data_type")
             )
-            .with_columns(yard_tag=pl.col("yard_tag").str.replace_all(r"_|\.", "-"))
             .with_columns(tag=pl.col("tag").str.replace_all(r"-|\.", "_"))
         )
-        return typed_df
+        return typed_df.select([
+            "device",
+            "tag",
+            "yard_tag",
+            "target_type",
+            "terminal",
+            "cabinet",
+            "system",
+            "description",
+            "unit",
+            "precision",
+            "data_type",
+            "mqtt_topic",
+            "mqtt_json_path",
+        ])
 
     def _get_io_topics(self, df: pl.DataFrame) -> List[IOTopic]:
         """Get the IO topics from the DataFrame"""
         result = []
         for row in (
             df
-            .sort("tag")
+            .drop_nulls("mqtt_topic")
             .group_by("mqtt_topic")
             .agg(pl.col("mqtt_json_path"), pl.col("data_type"))
             .iter_rows(named=True)
@@ -83,12 +99,12 @@ class MarpowerReader(ReaderBase):
         """Read a column from the Excel sheet, returning only the values with borders"""
         last_val = None
         for cell in next(ws.iter_cols(col, col, 3)):
-            if cell.border.top.style is not None:
+            if cell.border.top is not None and cell.border.top.style is not None:
                 last_val = cls.convert_value(cell.value)
             yield last_val
 
     @classmethod
-    def _read_amcs_excel(cls, path: Path) -> pl.DataFrame:
+    def _read_marpower_excel(cls, path: Path) -> pl.DataFrame:
         """Read the AMCS Excel file and return a DataFrame"""
         workbook = load_workbook(path, data_only=True)
         headers = cls._read_headers(workbook["IO-List"])
@@ -98,11 +114,13 @@ class MarpowerReader(ReaderBase):
         }
         return pl.DataFrame(data).filter(~pl.all_horizontal(pl.all().is_null()))
 
-    def read_io_list(self, path: Path) -> IOResult:
-        """Read the IO list from the given path and return an IOResult"""
-        df = self._read_amcs_excel(path)
+    def read_io_list(self, paths: List[Path]) -> IOResult:
+        """Read the IO list from the given paths and return an IOResult"""
+        io_lists = [
+            self._normalize_marpower_io_list(self._read_marpower_excel(path)) for path in paths
+        ]
+        io_list = pl.concat(io_lists)
 
-        io_list = self._normalize_amcs_io_list(df)
         topics = self._get_io_topics(io_list)
 
         return IOResult(io_list, topics)

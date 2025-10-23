@@ -1,11 +1,13 @@
 from abc import ABC, abstractmethod
 from pathlib import Path
+from typing import List
+
 from .types import IOResult
 
 
 class ReaderBase(ABC):
     @abstractmethod
-    def read_io_list(self, path: Path) -> IOResult: ...
+    def read_io_list(self, path: List[Path]) -> IOResult: ...
 
     @staticmethod
     def convert_value(val):

@@ -18,9 +18,10 @@ def generate_dbt():
     writer = IOMetadataWriter(dbt_path)
     dbt_generator = MarpowerRawGenerator(dbt_path)
 
-    for source, file_name in io_lists:
-        logger.debug(f"Processing {source} {file_name}")
-        io_result = read_io_list(Path(f"io_lists/{file_name}"), source)
+    for source, file_names in io_lists:
+        logger.debug(f"Processing {source} {file_names}")
+        paths = [Path(f"io_lists/{file_name}") for file_name in file_names]
+        io_result = read_io_list(paths, source)
 
         writer.write_io_metadata_csv(io_result.io_list, source)
         dbt_generator.generate(io_result.topics)
