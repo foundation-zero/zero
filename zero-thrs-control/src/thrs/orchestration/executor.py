@@ -185,3 +185,6 @@ class SimulationExecutor[S: ThrsModel, C: ThrsModel, I: SimulationInputs, O: Thr
             raw=raw,
             fmu=self._io_mapping._fmu,
         )
+
+    def update_simulation_inputs(self, simulation_inputs: I):
+        self._simulation_inputs = simulation_inputs

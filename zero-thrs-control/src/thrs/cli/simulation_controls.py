@@ -6,7 +6,6 @@ from datetime import datetime, timedelta
 import logging
 from typing import (
     Annotated,
-    Any,
     Literal,
     cast,
 )
@@ -35,7 +34,7 @@ from thrs.input_output.modules.thrusters import (
     ThrustersSimulationOutputs,
 )
 from thrs.orchestration.config import Config
-from thrs.orchestration.executor import MqttExecutor
+from thrs.orchestration.executor import MqttExecutor, SimulationExecutor
 from thrs.simulation.models.fmu_paths import thrusters_path
 from thrs.orchestration.simulator import Simulator, SimulatorModel
 
@@ -88,6 +87,12 @@ class MessageContext:
     manual_control: ManualControl[ThrustersSensorValues, ThrustersControlValues]
     automatic_control: ThrustersControl
     client: MqttClient
+    executor: SimulationExecutor[
+        ThrustersSensorValues,
+        ThrustersControlValues,
+        ThrustersSimulationInputs,
+        ThrustersSimulationOutputs,
+    ]
 
 
 class IncomingMessage(ThrsModel):
@@ -104,6 +109,18 @@ class OutgoingMessage(ThrsModel):
     @abstractmethod
     def topic() -> str: ...
 
+    @staticmethod
+    @abstractmethod
+    def retained() -> bool: ...
+
+    async def send(self, client: MqttClient):
+        return await client.publish(
+            self.topic(),
+            self.model_dump_json(),
+            qos=1,
+            retain=self.retained(),
+        )
+
 
 class SimulationStatusMessage(OutgoingMessage):
     status: Literal["available", "running", "stepping"]
@@ -113,13 +130,9 @@ class SimulationStatusMessage(OutgoingMessage):
     def topic() -> str:
         return "thrs/simulation/status"
 
-    async def send(self, client: MqttClient):
-        return await client.publish(
-            self.topic(),
-            self.model_dump_json(),
-            qos=1,
-            retain=True,
-        )
+    @staticmethod
+    def retained() -> bool:
+        return True
 
 
 class ControlStatusMessage(OutgoingMessage):
@@ -129,13 +142,9 @@ class ControlStatusMessage(OutgoingMessage):
     def topic() -> str:
         return "thrs/controls/status"
 
-    async def send(self, client: MqttClient):
-        return await client.publish(
-            self.topic(),
-            self.model_dump_json(),
-            qos=1,
-            retain=True,
-        )
+    @staticmethod
+    def retained() -> bool:
+        return True
 
 
 class ParametersMessage(OutgoingMessage):
@@ -145,13 +154,21 @@ class ParametersMessage(OutgoingMessage):
     def topic() -> str:
         return "thrs/parameters"
 
-    async def send(self, client: MqttClient):
-        return await client.publish(
-            self.topic(),
-            self.model_dump_json(),
-            qos=1,
-            retain=True,
-        )
+    @staticmethod
+    def retained() -> bool:
+        return True
+
+
+class SimulationInputMessage(OutgoingMessage):
+    inputs: ThrustersSimulationInputs
+
+    @staticmethod
+    def topic() -> str:
+        return "thrs/simulation/inputs"
+
+    @staticmethod
+    def retained() -> bool:
+        return True
 
 
 class SimulationCtrlMessage(IncomingMessage):
@@ -218,6 +235,18 @@ class SetParametersMessage(ThrsModel):
         )
 
 
+class SetSimulationInputsMessage(ThrsModel):
+    inputs: ThrustersSimulationInputs
+
+    @staticmethod
+    def topic() -> str:
+        return "thrs/simulation/set_inputs"
+
+    async def handle(self, context: MessageContext):
+        context.executor.update_simulation_inputs(self.inputs)
+        await SimulationInputMessage(inputs=self.inputs).send(context.client)
+
+
 HANDLERS = [
     PlayMessage,
     StepMessage,
@@ -225,6 +254,7 @@ HANDLERS = [
     ManualControlMessage,
     SetAutomationMessage,
     SetParametersMessage,
+    SetSimulationInputsMessage,
 ]
 
 
@@ -261,10 +291,11 @@ class SimulationControls:
 
     async def _receive_controls(
         self,
-        cmds,
+        cmds: Queue[SimulationCtrlMessage],
         switching_control: SwitchingControl,
         automatic_control: ThrustersControl,
         manual_control: ManualControl,
+        executor: SimulationExecutor,
     ):
         context = MessageContext(
             cmds,
@@ -272,6 +303,7 @@ class SimulationControls:
             manual_control,
             automatic_control,
             self._controls_client,
+            executor,
         )
         async for message in self._controls_client.messages:
             for handler in HANDLERS:
@@ -285,12 +317,16 @@ class SimulationControls:
                     break
 
     async def clear_previous(self):
-        await self._controls_client.publish(
-            "thrs/simulation/status", None, qos=1, retain=True
-        )  # Clear previous status
-        await self._controls_client.publish(
-            "thrs/parameters", None, qos=1, retain=True
-        )  # Clear previous parameters
+        for msg in [
+            SimulationStatusMessage,
+            ControlStatusMessage,
+            ParametersMessage,
+            SimulationInputMessage,
+        ]:
+            if msg.retained():
+                await self._controls_client.publish(
+                    msg.topic(), None, qos=1, retain=True
+                )  # Clear previous messages
 
     async def run(self, mode: Modes):
         for handler in HANDLERS:
@@ -298,16 +334,18 @@ class SimulationControls:
 
         model = MODES[mode]
         switching_control_model = replace(model, control_cls=SwitchingControl)
-        with switching_control_model.executor() as executor:
-            manual_control = ManualControl(ThrustersControlValues.zero(), executor.time)
+        with switching_control_model.executor() as inner_executor:
+            manual_control = ManualControl(
+                ThrustersControlValues.zero(), inner_executor.time
+            )
             automated_control = ThrustersControl(
-                cast(ThrustersParameters, model.control_parameters), executor.time
+                cast(ThrustersParameters, model.control_parameters), inner_executor.time
             )
             automated_control.to_idle(ThrustersSensorValues.zero())  # type: ignore
             await ControlStatusMessage(automatic=False).send(self._controls_client)
             switching_control = SwitchingControl(manual_control, automated_control)
             executor = MqttExecutor(
-                executor,
+                inner_executor,
                 self._control_client,
                 self._sensor_client,
                 self._sensor_topic,
@@ -326,12 +364,16 @@ class SimulationControls:
                     switching_control,
                     automated_control,
                     manual_control,
+                    inner_executor,
                 )
             )
             try:
                 await ParametersMessage(parameters=automated_control.parameters).send(
                     self._controls_client
                 )
+                await SimulationInputMessage(
+                    inputs=cast(ThrustersSimulationInputs, model.simulation_inputs)
+                ).send(self._controls_client)
                 await self._run_simulation(model, executor, simulator, cmds)
             finally:
                 executor_task.cancel()
@@ -374,14 +416,3 @@ class SimulationControls:
                 ticks = max(1, int(cmd.seconds / model.tick_duration.total_seconds()))
                 logging.debug(f"Stepping simulation by {ticks} ticks")
                 await simulator.run(ticks)
-
-
-def update_in_place(model, values: dict[str, Any]):
-    """Update a model in place with values from a dictionary."""
-    for key, value in values.items():
-        if hasattr(model, key) and isinstance(getattr(model, key), type(value)):
-            setattr(model, key, value)
-        elif hasattr(model, key) and isinstance(value, dict):
-            setattr(model, key, getattr(model, key).model_validate(value))
-        else:
-            raise ValueError(f"Key {key} not found in model {model.__class__.__name__}")

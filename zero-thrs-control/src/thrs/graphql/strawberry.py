@@ -1,8 +1,10 @@
-from asyncio import create_task
+from asyncio import Task, create_task
 from contextlib import asynccontextmanager
 from dataclasses import dataclass
 from datetime import datetime
 from inspect import isclass
+import logging
+import sys
 from typing import (
     Annotated,
     Callable,
@@ -31,6 +33,9 @@ from pydantic.fields import FieldInfo
 from aiomqtt import Client as MqttClient
 
 from thrs.orchestration.config import Config
+
+
+logger = logging.getLogger(__name__)
 
 
 @strawberry.schema_directive(locations=[Location.FIELD_DEFINITION])
@@ -364,10 +369,19 @@ class DynamicInputFields:
                 component: component_type,  # type: ignore
                 info: strawberry.Info[ThrsContext],
             ) -> ThrustersSimulationInputsType:
-                # TODO: ZERO-825 implement simulation input setting and passage to simulation
-                return ThrustersSimulationInputsType.from_pydantic(
-                    DedataframedSimulationInputs.zero()
+                inputs = info.context.messaging.simulation_inputs
+                if inputs is None:
+                    raise Exception("No simulation inputs available to modify")
+                pydantic_value = component.to_pydantic().to_stamped()
+                setattr(inputs, name, pydantic_value)
+
+                expect = info.context.messaging.wait_for_simulation_inputs(
+                    lambda inputs: getattr(inputs, name) == pydantic_value,
+                    timeout=2,
                 )
+                await info.context.messaging.set_simulation_inputs(inputs)
+                await expect
+                return ThrustersSimulationInputsType.from_pydantic(inputs)
 
             return _mutation
 
@@ -447,6 +461,13 @@ async def lifespan(app: FastAPI):
     async with MqttClient(settings.mqtt_host, settings.mqtt_port) as mqtt:
         messaging = Messaging(mqtt, ThrustersSensorValues, ThrustersControlValues)
         run_task = create_task(await messaging.run())
+
+        def _finish(task: Task):
+            if err := task.exception():
+                logger.critical("Messaging failed", exc_info=err)
+                sys.exit(1)
+
+        run_task.add_done_callback(_finish)
         app.state.messaging = messaging
         yield
         run_task.cancel()

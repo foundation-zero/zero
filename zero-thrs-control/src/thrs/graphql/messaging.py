@@ -9,13 +9,19 @@ from thrs.cli.simulation_controls import (
     ParametersMessage,
     PauseMessage,
     PlayMessage,
+    SetParametersMessage,
+    SetSimulationInputsMessage,
+    SimulationInputMessage,
     SimulationStatusMessage,
     StepMessage,
     SetAutomationMessage,
 )
 from thrs.control.modules.thrusters import ThrustersParameters
 from thrs.input_output.base import ThrsModel
-from thrs.input_output.modules.thrusters import ThrustersControlValues
+from thrs.input_output.modules.thrusters import (
+    ThrustersControlValues,
+    ThrustersSimulationInputs,
+)
 
 
 class MessageReceiver[T: ThrsModel]:
@@ -85,6 +91,9 @@ class Messaging[SensorValues: ThrsModel, ControlValues: ThrsModel]:
             ControlStatusMessage, ControlStatusMessage.topic()
         )
         self._parameters = MessageReceiver(ParametersMessage, ParametersMessage.topic())
+        self._simulation_inputs = MessageReceiver(
+            SimulationInputMessage, SimulationInputMessage.topic()
+        )
 
     @property
     def _receivers(self):
@@ -94,16 +103,20 @@ class Messaging[SensorValues: ThrsModel, ControlValues: ThrsModel]:
             self._simulation_status,
             self._control_status,
             self._parameters,
+            self._simulation_inputs,
         ]
 
     async def run(self) -> Coroutine[None, None, None]:
-        for status in self._receivers:
-            await self._mqtt_client.subscribe(status.topic, qos=1)
+        for receiver in self._receivers:
+            await self._mqtt_client.subscribe(receiver.topic, qos=1)
 
         async def _run(self):
             async for message in self._mqtt_client.messages:
-                if status := self.match_receiver(message):
-                    await status.handle(self._parse_message(message, status.cls))
+                if message.payload == b"":
+                    continue
+
+                if receiver := self.match_receiver(message):
+                    await receiver.handle(self._parse_message(message, receiver.cls))
 
         return _run(self)
 
@@ -148,8 +161,15 @@ class Messaging[SensorValues: ThrsModel, ControlValues: ThrsModel]:
 
     async def set_parameters(self, parameters: ThrustersParameters):
         await self._mqtt_client.publish(
-            ParametersMessage.topic(),
-            ParametersMessage(parameters=parameters).model_dump_json(),
+            SetParametersMessage.topic(),
+            SetParametersMessage(parameters=parameters).model_dump_json(),
+            qos=1,
+        )
+
+    async def set_simulation_inputs(self, inputs: ThrustersSimulationInputs):
+        await self._mqtt_client.publish(
+            SetSimulationInputsMessage.topic(),
+            SetSimulationInputsMessage(inputs=inputs).model_dump_json(),
             qos=1,
         )
 
@@ -183,6 +203,19 @@ class Messaging[SensorValues: ThrsModel, ControlValues: ThrsModel]:
             self._parameters.wait_for(lambda msg: condition(msg.parameters), timeout)
         )
 
+    def wait_for_simulation_inputs(
+        self,
+        condition: Callable[[ThrustersSimulationInputs], bool],
+        *_args,
+        timeout: float,
+    ) -> Coroutine[None, None, ThrustersSimulationInputs]:
+        async def _afterwards(wait):
+            return (await wait).inputs
+
+        return _afterwards(
+            self._simulation_inputs.wait_for(lambda msg: condition(msg.inputs), timeout)
+        )
+
     def _parse_message[T: ThrsModel](self, message: Message, model: type[T]) -> T:
         if not isinstance(message.payload, str | bytes):
             raise ValueError(f"Expected string or bytes, got {type(message.payload)}")
@@ -207,3 +240,11 @@ class Messaging[SensorValues: ThrsModel, ControlValues: ThrsModel]:
     @property
     def parameters(self) -> ThrustersParameters | None:
         return self._parameters.last.parameters if self._parameters.last else None
+
+    @property
+    def simulation_inputs(self) -> ThrustersSimulationInputs | None:
+        return (
+            self._simulation_inputs.last.inputs
+            if self._simulation_inputs.last
+            else None
+        )
