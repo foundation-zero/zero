@@ -1,99 +1,103 @@
-DROP TABLE IF EXISTS rooms CASCADE;
-CREATE TABLE rooms (
+CREATE SCHEMA IF NOT EXISTS domestic;
+
+-- Master table for rooms
+DROP TABLE IF EXISTS domestic.rooms CASCADE;
+CREATE TABLE domestic.rooms (
   "id" TEXT PRIMARY KEY,
   "name" TEXT,
   "group" TEXT
 );
 
--- DROP TYPE IF EXISTS control_type CASCADE;
--- CREATE TYPE control_type AS ENUM ('light', 'blind', 'amplifier', 'temperature', 'humidity', 'co2');
-
-DROP TABLE IF EXISTS controls CASCADE;
-CREATE TABLE controls (
+-- Master table for conditions (temperature, humidity, co2, etc) per room
+DROP TABLE IF EXISTS domestic.conditions CASCADE;
+CREATE TABLE domestic.conditions (
   "id" TEXT PRIMARY KEY,
-  "room_id" VARCHAR REFERENCES rooms("id"),
+  "room_id" VARCHAR REFERENCES domestic.rooms("id"),
   "type" TEXT,
   "name" TEXT
 );
 
--- DROP TYPE IF EXISTS sensor_type CASCADE;
--- CREATE TYPE sensor_type AS ENUM ('temperature', 'humidity', 'co2');
-
-DROP TABLE IF EXISTS sensors CASCADE;
-CREATE TABLE sensors (
+-- Master table for blinds per room
+DROP TABLE IF EXISTS domestic.blinds CASCADE;
+CREATE TABLE domestic.blinds (
   "id" TEXT PRIMARY KEY,
-  "room_id" VARCHAR REFERENCES rooms("id"),
-  "type" TEXT,
-  "name" TEXT
-);
-
--- DROP TYPE IF EXISTS blinds_opacity CASCADE;
--- CREATE TYPE blinds_opacity AS ENUM ('shear', 'blind');
-
-DROP TABLE IF EXISTS blinds CASCADE;
-CREATE TABLE blinds (
-  "id" TEXT PRIMARY KEY,
-  "room_id" VARCHAR REFERENCES rooms("id"),
+  "room_id" VARCHAR REFERENCES domestic.rooms("id"),
   "name" TEXT,
   "opacity" TEXT,
   "group" TEXT
 );
 
-DROP TABLE IF EXISTS lighting_groups CASCADE;
-CREATE TABLE lighting_groups (
+-- Master table for lighting groups per room
+DROP TABLE IF EXISTS domestic.lighting_groups CASCADE;
+CREATE TABLE domestic.lighting_groups (
   "id" VARCHAR PRIMARY KEY,
-  "room_id" VARCHAR REFERENCES rooms("id"),
+  "room_id" VARCHAR REFERENCES domestic.rooms("id"),
   "name" TEXT
 );
 
-DROP TABLE IF EXISTS amplifiers CASCADE;
-CREATE TABLE amplifiers (
+-- Master table for amplifiers per room
+DROP TABLE IF EXISTS domestic.amplifiers CASCADE;
+CREATE TABLE domestic.amplifiers (
   "id" VARCHAR PRIMARY KEY,
-  "room_id" VARCHAR REFERENCES rooms("id"),
+  "room_id" VARCHAR REFERENCES domestic.rooms("id"),
   "name" TEXT
 );
 
-DROP TABLE IF EXISTS rooms_controls_log CASCADE;
-CREATE TABLE rooms_controls_log (
-  "id" VARCHAR REFERENCES controls("id"),
-  "room_id" VARCHAR REFERENCES rooms("id"),
-  "name" TEXT,
-  "type" TEXT,
-  "value" REAL,
-  "time" TIMESTAMPTZ
-);
-
-DROP TABLE IF EXISTS rooms_sensors_log CASCADE;
-CREATE TABLE rooms_sensors_log (
-  "id" VARCHAR REFERENCES controls("id"),
-  "room_id" VARCHAR REFERENCES rooms("id"),
-  "name" TEXT,
-  "type" TEXT,
-  "value" REAL,
-  "time" TIMESTAMPTZ
-);
-
-DROP TABLE IF EXISTS rooms_controls CASCADE;
-CREATE TABLE rooms_controls (
+-- Current state of room controls (conditions + amplifiers + blinds + lighting)
+DROP TABLE IF EXISTS domestic.room_controls CASCADE;
+CREATE TABLE domestic.room_controls (
   "id" TEXT PRIMARY KEY,
-  "room_id" VARCHAR REFERENCES rooms("id"),
+  "room_id" VARCHAR REFERENCES domestic.rooms("id"),
   "name" TEXT,
   "type" TEXT,
   "value" TEXT,
   "time" TIMESTAMPTZ
 );
 
-DROP TABLE IF EXISTS rooms_sensors CASCADE;
-CREATE TABLE rooms_sensors (
+-- Every change to room controls over time (id + time is the effective primary key)
+DROP TABLE IF EXISTS domestic.room_controls_log CASCADE;
+CREATE TABLE domestic.room_controls_log (
+  "id" VARCHAR,
+  "room_id" VARCHAR REFERENCES domestic.rooms("id"),
+  "name" TEXT,
+  "type" TEXT,
+  "value" REAL,
+  "time" TIMESTAMPTZ
+
+);
+
+-- Master table for sensors per room
+DROP TABLE IF EXISTS domestic.sensors CASCADE;
+CREATE TABLE domestic.sensors (
   "id" TEXT PRIMARY KEY,
-  "room_id" VARCHAR REFERENCES rooms("id"),
+  "room_id" VARCHAR REFERENCES domestic.rooms("id"),
+  "type" TEXT,
+  "name" TEXT
+);
+
+-- Current state of room sensors
+DROP TABLE IF EXISTS domestic.room_sensors CASCADE;
+CREATE TABLE domestic.room_sensors (
+  "id" TEXT PRIMARY KEY,
+  "room_id" VARCHAR REFERENCES domestic.rooms("id"),
   "name" TEXT,
   "type" TEXT,
   "value" TEXT,
   "time" TIMESTAMPTZ
 );
 
-INSERT INTO rooms ("id", "name", "group") VALUES
+-- Every change to room sensors over time (id + time is the effective primary key)
+DROP TABLE IF EXISTS domestic.room_sensors_log CASCADE;
+CREATE TABLE domestic.room_sensors_log (
+  "id" VARCHAR REFERENCES domestic.sensors("id"),
+  "room_id" VARCHAR REFERENCES domestic.rooms("id"),
+  "name" TEXT,
+  "type" TEXT,
+  "value" REAL,
+  "time" TIMESTAMPTZ
+);
+
+INSERT INTO domestic.rooms ("id", "name", "group") VALUES
 ('owners-cabin', 'Owners cabin', 'AFT'),
 ('dutch-cabin', 'Dutch cabin', 'AFT'),
 ('french-cabin', 'French cabin', 'AFT'),
@@ -111,6 +115,8 @@ INSERT INTO rooms ("id", "name", "group") VALUES
 ('crew-sb-fwd-cabin', 'Crew SB FWD cabin', 'FORE'),
 ('crew-ps-mid-cabin', 'Crew PS MID cabin', 'FORE'),
 ('crew-ps-fwd-cabin', 'Crew PS FWD cabin', 'FORE'),
+('office', 'Office', 'FORE'),
+('lounge', 'Lounge', 'FORE'),
 ('owners-deckhouse', 'Owners deckhouse', 'UPPERDECK'),
 ('owners-cockpit', 'Owners cockpit', 'AFT'),
 ('main-deckhouse', 'Main deckhouse', 'UPPERDECK'),
@@ -119,7 +125,7 @@ INSERT INTO rooms ("id", "name", "group") VALUES
 ('guest-corridor', 'Guest corridor', 'HALLWAYS'),
 ('polynesian-corridor', 'Polynesian corridor', 'HALLWAYS');
 
-INSERT INTO controls ("id", "room_id", "type", "name") VALUES
+INSERT INTO domestic.conditions ("id", "room_id", "type", "name") VALUES
 ('owners-cabin/control/temperature', 'owners-cabin', 'temperature', ''),
 ('owners-cabin/control/humidity', 'owners-cabin', 'humidity', ''),
 ('owners-cabin/control/co2', 'owners-cabin', 'co2', ''),
@@ -187,8 +193,100 @@ INSERT INTO controls ("id", "room_id", "type", "name") VALUES
 ('polynesian-corridor/control/humidity', 'polynesian-corridor', 'humidity', ''),
 ('polynesian-corridor/control/co2', 'polynesian-corridor', 'co2', '');
 
+INSERT INTO domestic.amplifiers ("id", "room_id", "name") VALUES
+('owners-cockpit/amplifier', 'owners-cockpit', 'Owners cockpit'),
+('owners-deckhouse/amplifier', 'owners-deckhouse', 'Owners deckhouse'),
+('owners-cabin/amplifier', 'owners-cabin', 'Owners cabin'),
+('main-cockpit/amplifier', 'main-cockpit', 'Main cockpit'),
+('italian-cabin/amplifier', 'italian-cabin', 'Italian cabin'),
+('galley/amplifier', 'galley', 'Galley'),
+('french-cabin/amplifier', 'french-cabin', 'French cabin'),
+('dutch-cabin/amplifier', 'dutch-cabin', 'Dutch cabin'),
+('polynesian-cabin/amplifier', 'polynesian-cabin', 'Polynesian cabin'),
+('main-deckhouse/amplifier', 'main-deckhouse', 'Main deckhouse'),
+('office/amplifier', 'office', 'Office'),
+('lounge/amplifier', 'lounge', 'lounge');
 
-INSERT INTO sensors ("id", "room_id", "type", "name") VALUES
+INSERT INTO domestic.blinds ("id", "room_id", "name", "opacity", "group") VALUES
+('owners-cabin/main/shear', 'owners-cabin', 'Main', 'shear', 'MAIN'),
+('owners-cabin/main/blind', 'owners-cabin', 'Main', 'blind', 'MAIN'),
+('owners-cabin/port/shear', 'owners-cabin', 'Port', 'shear', 'PORT'),
+('owners-cabin/port/blind', 'owners-cabin', 'Port', 'blind', 'PORT'),
+('owners-cabin/starboard/shear', 'owners-cabin', 'Starboard', 'shear', 'STARBOARD'),
+('owners-cabin/starboard/blind', 'owners-cabin', 'Starboard', 'blind', 'STARBOARD'),
+('owners-cabin/skyline_main/shear', 'owners-cabin', 'Skyline (main)', 'shear', 'SKYLINE_MAIN'),
+('owners-cabin/skyline_main/blind', 'owners-cabin', 'Skyline (main)', 'blind', 'SKYLINE_MAIN'),
+('owners-cabin/skyline_port/shear', 'owners-cabin', 'Skyline (port)', 'shear', 'SKYLINE_PORT'),
+('owners-cabin/skyline_port/blind', 'owners-cabin', 'Skyline (port)', 'blind', 'SKYLINE_PORT'),
+('owners-cabin/skyline_starboard/shear', 'owners-cabin', 'Skyline (starboard)', 'shear', 'SKYLINE_STARBOARD'),
+('owners-cabin/skyline_starboard/blind', 'owners-cabin', 'Skyline (starboard)', 'blind', 'SKYLINE_STARBOARD'),
+('dutch-cabin/blind', 'dutch-cabin', 'Main', 'blind', 'none'),
+('french-cabin/blind', 'french-cabin', 'Main', 'blind', 'none'),
+('italian-cabin/blind', 'italian-cabin', 'Main', 'blind', 'none'),
+('californian-lounge/blind', 'californian-lounge', 'Main', 'blind', 'none'),
+('polynesian-cabin/blind', 'polynesian-cabin', 'Main', 'blind', 'none'),
+('galley/blind', 'galley', 'Main', 'blind', 'none'),
+('crew-mess/blind', 'crew-mess', 'Main', 'blind', 'none'),
+('mission-room/blind', 'mission-room', 'Main', 'blind', 'none'),
+('laundry/blind', 'laundry', 'Main', 'blind', 'none'),
+('engineers-office/blind', 'engineers-office', 'Main', 'blind', 'none'),
+('captains-cabin/blind', 'captains-cabin', 'Main', 'blind', 'none'),
+('crew-sb-aft-cabin/blind', 'crew-sb-aft-cabin', 'Main', 'blind', 'none'),
+('crew-sb-mid-cabin/blind', 'crew-sb-mid-cabin', 'Main', 'blind', 'none'),
+('crew-sb-fwd-cabin/blind', 'crew-sb-fwd-cabin', 'Main', 'blind', 'none'),
+('crew-ps-mid-cabin/blind', 'crew-ps-mid-cabin', 'Main', 'blind', 'none'),
+('crew-ps-fwd-cabin/blind', 'crew-ps-fwd-cabin', 'Main', 'blind', 'none'),
+('owners-deckhouse/blind', 'owners-deckhouse', 'Blinds', 'blind', 'none'),
+('owners-deckhouse/shear', 'owners-deckhouse', 'Shears', 'shear', 'none'),
+('main-deckhouse/blind', 'main-deckhouse', 'Blinds', 'blind', 'none'),
+('main-deckhouse/shear', 'main-deckhouse', 'Shears', 'shear', 'none'),
+('owners-stairway/blind', 'owners-stairway', 'Main', 'blind', 'none'),
+('guest-corridor/blind', 'owners-stairway', 'Main', 'blind', 'none');
+
+INSERT INTO domestic.lighting_groups ("id", "room_id", "name") VALUES
+('owners-cabin/ambient', 'owners-cabin', 'Ambient'),
+('owners-cabin/mood', 'owners-cabin', 'Mood'),
+('dutch-cabin/ambient', 'dutch-cabin', 'Ambient'),
+('dutch-cabin/mood', 'dutch-cabin', 'Mood'),
+('french-cabin/ambient', 'french-cabin', 'Ambient'),
+('french-cabin/mood', 'french-cabin', 'Mood'),
+('italian-cabin/ambient', 'italian-cabin', 'Ambient'),
+('italian-cabin/mood', 'italian-cabin', 'Mood'),
+('californian-lounge/ambient', 'californian-lounge', 'Ambient'),
+('californian-lounge/mood', 'californian-lounge', 'Mood'),
+('polynesian-cabin/ambient', 'polynesian-cabin', 'Ambient'),
+('polynesian-cabin/mood', 'polynesian-cabin', 'Mood'),
+('galley/ambient', 'galley', 'Ambient'),
+('galley/mood', 'galley', 'Mood'),
+('crew-mess/ambient', 'crew-mess', 'Ambient'),
+('crew-mess/mood', 'crew-mess', 'Mood'),
+('mission-room/ambient', 'mission-room', 'Ambient'),
+('mission-room/mood', 'mission-room', 'Mood'),
+('laundry/ambient', 'laundry', 'Ambient'),
+('laundry/mood', 'laundry', 'Mood'),
+('engineers-office/ambient', 'engineers-office', 'Ambient'),
+('engineers-office/mood', 'engineers-office', 'Mood'),
+('captains-cabin/ambient', 'captains-cabin', 'Ambient'),
+('captains-cabin/mood', 'captains-cabin', 'Mood'),
+('crew-sb-aft-cabin/ambient', 'crew-sb-aft-cabin', 'Ambient'),
+('crew-sb-aft-cabin/mood', 'crew-sb-aft-cabin', 'Mood'),
+('crew-sb-mid-cabin/ambient', 'crew-sb-mid-cabin', 'Ambient'),
+('crew-sb-mid-cabin/mood', 'crew-sb-mid-cabin', 'Mood'),
+('crew-sb-fwd-cabin/ambient', 'crew-sb-fwd-cabin', 'Ambient'),
+('crew-sb-fwd-cabin/mood', 'crew-sb-fwd-cabin', 'Mood'),
+('crew-ps-mid-cabin/ambient', 'crew-ps-mid-cabin', 'Ambient'),
+('crew-ps-mid-cabin/mood', 'crew-ps-mid-cabin', 'Mood'),
+('crew-ps-fwd-cabin/ambient', 'crew-ps-fwd-cabin', 'Ambient'),
+('crew-ps-fwd-cabin/mood', 'crew-ps-fwd-cabin', 'Mood'),
+('owners-deckhouse/ambient', 'owners-deckhouse', 'Ambient'),
+('owners-deckhouse/mood', 'owners-deckhouse', 'Mood'),
+('main-deckhouse/ambient', 'main-deckhouse', 'Ambient'),
+('main-deckhouse/mood', 'main-deckhouse', 'Mood'),
+('owners-stairway/main', 'owners-stairway', 'Main'),
+('guest-corridor/main', 'guest-corridor', 'Main'),
+('polynesian-corridor/main', 'polynesian-corridor', 'Main');
+
+INSERT INTO domestic.sensors ("id", "room_id", "type", "name") VALUES
 ('owners-cabin/sensor/temperature', 'owners-cabin', 'temperature', ''),
 ('owners-cabin/sensor/humidity', 'owners-cabin', 'humidity', ''),
 ('owners-cabin/sensor/co2', 'owners-cabin', 'co2', ''),
@@ -255,96 +353,3 @@ INSERT INTO sensors ("id", "room_id", "type", "name") VALUES
 ('polynesian-corridor/sensor/temperature', 'polynesian-corridor', 'temperature', ''),
 ('polynesian-corridor/sensor/humidity', 'polynesian-corridor', 'humidity', ''),
 ('polynesian-corridor/sensor/co2', 'polynesian-corridor', 'co2', '');
-
-INSERT INTO amplifiers ("id", "room_id", "name") VALUES
-('owners-cabin/amplifier', 'owners-cabin', 'Owners cabin'),
-('dutch-cabin/amplifier', 'dutch-cabin', 'Dutch cabin'),
-('french-cabin/amplifier', 'french-cabin', 'French cabin'),
-('italian-cabin/amplifier', 'italian-cabin', 'Italian cabin'),
-('polynesian-cabin/amplifier', 'polynesian-cabin', 'Polynesian cabin'),
-('galley/amplifier', 'galley', 'Galley'),
-('lounge/amplifier', 'californian-lounge', 'lounge'),
-('office/amplifier', 'engineers-office', 'Engineers office'),
-('owners-deckhouse/amplifier', 'owners-deckhouse', 'Owners deckhouse'),
-('owners-cockpit/amplifier', 'owners-cockpit', 'Owners cockpit'),
-('main-deckhouse/amplifier', 'main-deckhouse', 'Main deckhouse'),
-('main-cockpit/amplifier', 'main-cockpit', 'Main cockpit');
-
-INSERT INTO blinds ("id", "room_id", "name", "opacity", "group") VALUES
-('owners-cabin/main/shear', 'owners-cabin', 'Main', 'shear', 'MAIN'),
-('owners-cabin/main/blind', 'owners-cabin', 'Main', 'blind', 'MAIN'),
-('owners-cabin/port/shear', 'owners-cabin', 'Port', 'shear', 'PORT'),
-('owners-cabin/port/blind', 'owners-cabin', 'Port', 'blind', 'PORT'),
-('owners-cabin/starboard/shear', 'owners-cabin', 'Starboard', 'shear', 'STARBOARD'),
-('owners-cabin/starboard/blind', 'owners-cabin', 'Starboard', 'blind', 'STARBOARD'),
-('owners-cabin/skyline_main/shear', 'owners-cabin', 'Skyline (main)', 'shear', 'SKYLINE_MAIN'),
-('owners-cabin/skyline_main/blind', 'owners-cabin', 'Skyline (main)', 'blind', 'SKYLINE_MAIN'),
-('owners-cabin/skyline_port/shear', 'owners-cabin', 'Skyline (port)', 'shear', 'SKYLINE_PORT'),
-('owners-cabin/skyline_port/blind', 'owners-cabin', 'Skyline (port)', 'blind', 'SKYLINE_PORT'),
-('owners-cabin/skyline_starboard/shear', 'owners-cabin', 'Skyline (starboard)', 'shear', 'SKYLINE_STARBOARD'),
-('owners-cabin/skyline_starboard/blind', 'owners-cabin', 'Skyline (starboard)', 'blind', 'SKYLINE_STARBOARD'),
-('dutch-cabin/blind', 'dutch-cabin', 'Main', 'blind', 'none'),
-('french-cabin/blind', 'french-cabin', 'Main', 'blind', 'none'),
-('italian-cabin/blind', 'italian-cabin', 'Main', 'blind', 'none'),
-('californian-lounge/blind', 'californian-lounge', 'Main', 'blind', 'none'),
-('polynesian-cabin/blind', 'polynesian-cabin', 'Main', 'blind', 'none'),
-('galley/blind', 'galley', 'Main', 'blind', 'none'),
-('crew-mess/blind', 'crew-mess', 'Main', 'blind', 'none'),
-('mission-room/blind', 'mission-room', 'Main', 'blind', 'none'),
-('laundry/blind', 'laundry', 'Main', 'blind', 'none'),
-('engineers-office/blind', 'engineers-office', 'Main', 'blind', 'none'),
-('captains-cabin/blind', 'captains-cabin', 'Main', 'blind', 'none'),
-('crew-sb-aft-cabin/blind', 'crew-sb-aft-cabin', 'Main', 'blind', 'none'),
-('crew-sb-mid-cabin/blind', 'crew-sb-mid-cabin', 'Main', 'blind', 'none'),
-('crew-sb-fwd-cabin/blind', 'crew-sb-fwd-cabin', 'Main', 'blind', 'none'),
-('crew-ps-mid-cabin/blind', 'crew-ps-mid-cabin', 'Main', 'blind', 'none'),
-('crew-ps-fwd-cabin/blind', 'crew-ps-fwd-cabin', 'Main', 'blind', 'none'),
-('owners-deckhouse/blind', 'owners-deckhouse', 'Blinds', 'blind', 'none'),
-('owners-deckhouse/shear', 'owners-deckhouse', 'Shears', 'shear', 'none'),
-('main-deckhouse/blind', 'main-deckhouse', 'Blinds', 'blind', 'none'),
-('main-deckhouse/shear', 'main-deckhouse', 'Shears', 'shear', 'none'),
-('owners-stairway/blind', 'owners-stairway', 'Main', 'blind', 'none'),
-('guest-corridor/blind', 'owners-stairway', 'Main', 'blind', 'none');
-
-INSERT INTO lighting_groups ("id", "room_id", "name") VALUES
-('owners-cabin/ambient', 'owners-cabin', 'Ambient'),
-('owners-cabin/mood', 'owners-cabin', 'Mood'),
-('dutch-cabin/ambient', 'dutch-cabin', 'Ambient'),
-('dutch-cabin/mood', 'dutch-cabin', 'Mood'),
-('french-cabin/ambient', 'french-cabin', 'Ambient'),
-('french-cabin/mood', 'french-cabin', 'Mood'),
-('italian-cabin/ambient', 'italian-cabin', 'Ambient'),
-('italian-cabin/mood', 'italian-cabin', 'Mood'),
-('californian-lounge/ambient', 'californian-lounge', 'Ambient'),
-('californian-lounge/mood', 'californian-lounge', 'Mood'),
-('polynesian-cabin/ambient', 'polynesian-cabin', 'Ambient'),
-('polynesian-cabin/mood', 'polynesian-cabin', 'Mood'),
-('galley/ambient', 'galley', 'Ambient'),
-('galley/mood', 'galley', 'Mood'),
-('crew-mess/ambient', 'crew-mess', 'Ambient'),
-('crew-mess/mood', 'crew-mess', 'Mood'),
-('mission-room/ambient', 'mission-room', 'Ambient'),
-('mission-room/mood', 'mission-room', 'Mood'),
-('laundry/ambient', 'laundry', 'Ambient'),
-('laundry/mood', 'laundry', 'Mood'),
-('engineers-office/ambient', 'engineers-office', 'Ambient'),
-('engineers-office/mood', 'engineers-office', 'Mood'),
-('captains-cabin/ambient', 'captains-cabin', 'Ambient'),
-('captains-cabin/mood', 'captains-cabin', 'Mood'),
-('crew-sb-aft-cabin/ambient', 'crew-sb-aft-cabin', 'Ambient'),
-('crew-sb-aft-cabin/mood', 'crew-sb-aft-cabin', 'Mood'),
-('crew-sb-mid-cabin/ambient', 'crew-sb-mid-cabin', 'Ambient'),
-('crew-sb-mid-cabin/mood', 'crew-sb-mid-cabin', 'Mood'),
-('crew-sb-fwd-cabin/ambient', 'crew-sb-fwd-cabin', 'Ambient'),
-('crew-sb-fwd-cabin/mood', 'crew-sb-fwd-cabin', 'Mood'),
-('crew-ps-mid-cabin/ambient', 'crew-ps-mid-cabin', 'Ambient'),
-('crew-ps-mid-cabin/mood', 'crew-ps-mid-cabin', 'Mood'),
-('crew-ps-fwd-cabin/ambient', 'crew-ps-fwd-cabin', 'Ambient'),
-('crew-ps-fwd-cabin/mood', 'crew-ps-fwd-cabin', 'Mood'),
-('owners-deckhouse/ambient', 'owners-deckhouse', 'Ambient'),
-('owners-deckhouse/mood', 'owners-deckhouse', 'Mood'),
-('main-deckhouse/ambient', 'main-deckhouse', 'Ambient'),
-('main-deckhouse/mood', 'main-deckhouse', 'Mood'),
-('owners-stairway/main', 'owners-stairway', 'Main'),
-('guest-corridor/main', 'guest-corridor', 'Main'),
-('polynesian-corridor/main', 'polynesian-corridor', 'Main');

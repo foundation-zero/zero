@@ -1,5 +1,4 @@
 SELECT
-    row_number() OVER (PARTITION BY logs.id ORDER BY logs.time DESC) AS row_num,
     logs.id,
     sensors.room_id,
     logs.type,
