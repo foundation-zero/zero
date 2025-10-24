@@ -1,84 +1,21 @@
 from asyncio import create_task, sleep
 
 from aiomqtt import Client
-from pydantic import BaseModel
 import pytest
 
 from thrs.cli.simulation_controls import (
     ParametersMessage,
+    SimulationInputMessage,
     SimulationStatusMessage,
     SimulationControls,
-    update_in_place,
 )
 
-
-from pydantic_partial import create_partial_model
-
 from thrs.control.modules.thrusters import ThrustersParameters
-from thrs.input_output.modules.thrusters import ThrustersControlValues
+from thrs.input_output.modules.thrusters import (
+    ThrustersControlValues,
+    ThrustersSimulationInputs,
+)
 from thrs.orchestration.config import Config
-
-
-class NestedModel(BaseModel):
-    b: int
-    c: str
-
-
-class Model[A](BaseModel):
-    a: int
-    nested: A
-
-
-class AppliedNestingModel(Model[create_partial_model(NestedModel)]):
-    pass
-
-
-PartialModel = create_partial_model(AppliedNestingModel)
-
-
-def test_update_in_place_unnested():
-    actual_model = AppliedNestingModel(
-        a=1,
-        nested=NestedModel(b=2, c="test").model_dump(),
-    )
-    update_in_place(actual_model, PartialModel(a=2).model_dump(exclude_none=True))
-    assert actual_model.a == 2
-
-
-def test_update_in_place_nested():
-    actual_model = AppliedNestingModel(
-        a=1,
-        nested=NestedModel(b=2, c="test").model_dump(),
-    )
-    update_in_place(
-        actual_model, PartialModel(nested={"b": 3}).model_dump(exclude_none=True)
-    )
-    assert actual_model.nested.b == 3
-    assert (
-        actual_model.nested.c is None
-    )  # We don't need update_in_place to allow partial nesting, model_copy doesn't handle nested update= params correctly, so this is the best behavior
-
-
-def test_update_in_place_nested_stamped():
-    class B(BaseModel):
-        b: int
-
-    class Nesting(BaseModel):
-        a: B
-
-    class Nested(BaseModel):
-        nesting: Nesting
-
-    actual_model = Nested(
-        nesting=Nesting(
-            a=B(b=1),
-        )
-    )
-    update_in_place(
-        actual_model,
-        Nested(nesting=Nesting(a=B(b=2))).model_dump(exclude_none=True),
-    )
-    assert actual_model.nesting.a.b == 2
 
 
 settings = Config()  # type: ignore
@@ -399,5 +336,62 @@ async def test_simulation_controls_set_parameters(
         assert isinstance(parameters.payload, str | bytes)
         params_model = ParametersMessage.model_validate_json(parameters.payload)
         assert params_model.parameters == new_parameters
+    finally:
+        run_task.cancel()
+
+
+@pytest.mark.timeout(5)
+async def test_simulation_controls_set_simulation_inputs(
+    mqtt_client, mqtt_client2, mqtt_client3, mqtt_client4, mqtt_client5
+):
+    controls_client = mqtt_client
+    control_client = mqtt_client2
+    sensors_client = mqtt_client3
+    test_client = mqtt_client4
+    status_client = mqtt_client5
+    controls = SimulationControls(
+        controls_client,
+        control_client,
+        sensors_client,
+        "thrs/sensors",
+        "thrs/controls",
+    )
+
+    await controls.clear_previous()
+
+    await test_client.subscribe("thrs/simulation/inputs")
+    await status_client.subscribe("thrs/simulation/status")
+
+    run_task = create_task(controls.run("THRUSTERS"))
+    try:
+        available = await anext(status_client.messages)
+        assert available.topic.value == "thrs/simulation/status"
+        assert isinstance(available.payload, str | bytes)
+        assert (
+            SimulationStatusMessage.model_validate_json(available.payload).status
+            == "available"
+        )
+        simulation_inputs = await anext(test_client.messages)
+        assert simulation_inputs.topic.value == "thrs/simulation/inputs"
+        assert isinstance(simulation_inputs.payload, str | bytes)
+        inputs_model = SimulationInputMessage.model_validate_json(
+            simulation_inputs.payload
+        )
+        assert inputs_model.inputs.thrusters_aft.heat_flow.value != 0.0  # type: ignore
+
+        new_inputs = ThrustersSimulationInputs.zero()
+        await controls_client.publish(
+            "thrs/simulation/set_inputs",
+            SimulationInputMessage(inputs=new_inputs).model_dump_json(),
+            qos=1,
+        )
+
+        simulation_inputs = await anext(test_client.messages)
+        assert simulation_inputs.topic.value == "thrs/simulation/inputs"
+        assert isinstance(simulation_inputs.payload, str | bytes)
+        inputs_model = SimulationInputMessage.model_validate_json(
+            simulation_inputs.payload
+        )
+        assert inputs_model.inputs.thrusters_aft.heat_flow.value == 0.0  # type: ignore
     finally:
         run_task.cancel()

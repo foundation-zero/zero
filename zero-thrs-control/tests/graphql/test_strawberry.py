@@ -10,6 +10,7 @@ from thrs.graphql.strawberry import app, messaging
 from thrs.input_output.modules.thrusters import (
     ThrustersControlValues,
     ThrustersSensorValues,
+    ThrustersSimulationInputs,
 )
 
 
@@ -30,6 +31,7 @@ async def override_messaging():
         status="available", simulation_time=datetime.fromtimestamp(0)
     )
     mock.control_status = ControlStatusMessage(automatic=False)
+    mock.simulation_inputs = ThrustersSimulationInputs.zero()
 
     async def wait(condition, *_args, timeout):
         return None
@@ -38,6 +40,7 @@ async def override_messaging():
     mock.wait_for_control_status.side_effect = wait
     mock.wait_for_control_values.side_effect = wait
     mock.wait_for_parameters.side_effect = wait
+    mock.wait_for_simulation_inputs.side_effect = wait
     return mock
 
 
@@ -435,3 +438,34 @@ async def test_mutation_parameter(async_client):
     messaging_mock.set_parameters.assert_awaited_once()
     parameters = messaging_mock.set_parameters.call_args[0][0]
     assert parameters.cooling_flow == 99.0
+
+
+async def test_mutation_set_simulation_inputs(async_client):
+    messaging_mock = await override_messaging()
+    app.dependency_overrides[messaging] = lambda: messaging_mock
+
+    response = await async_client.post(
+        "/graphql",
+        json={
+            "query": """mutation {
+                setThrustersSimulationThrustersAft(component: { heatFlow: 99.0, active: false }) {
+                    thrustersAft {
+                        heatFlow {
+                            value
+                        }
+                    }
+                }
+            }"""
+        },
+    )
+    assert response.status_code == 200
+    assert response.json() == {
+        "data": {
+            "setThrustersSimulationThrustersAft": {
+                "thrustersAft": {"heatFlow": {"value": 99.0}}
+            }
+        }
+    }
+    messaging_mock.set_simulation_inputs.assert_awaited_once()
+    inputs = messaging_mock.set_simulation_inputs.call_args[0][0]
+    assert inputs.thrusters_aft.heat_flow.value == 99.0
