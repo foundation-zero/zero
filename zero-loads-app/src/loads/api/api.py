@@ -59,7 +59,7 @@ class Query:
         case: CaseInput | None = None,
     ) -> list[ReferenceValueType] | None:
         return await get_loads_reference_values(
-            values, sails, case, info.context.session
+            values=values, sails=sails, case=case, session=info.context.session
         )
 
 

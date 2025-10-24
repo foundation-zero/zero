@@ -39,17 +39,17 @@ async def get_loads_reference_values(
     case: CaseInput | None,
     session: AsyncSession,
 ) -> list[ReferenceValueType] | None:
-    """Return all reference values that matches the currents sails and conditions."""
+    """Return all reference values that match the current sails and conditions."""
 
     if not case:
         current_case = await retrieve_current_load_case(session)
 
-        if not current_case:
-            logger.info("No case found")
-            return None
-        else:
+        if current_case:
             logger.info(f"Retrieved case: {current_case}")
             case = current_case
+        else:
+            logger.info("No case found")
+            return None
 
     sail_set = create_sail_set_subq(sails)
     condition = create_condition_profiles_subq(case)
@@ -128,7 +128,6 @@ async def retrieve_current_load_case(session: AsyncSession) -> CaseInput | None:
     row = result.scalar_one_or_none()
     if row:
         return CaseInput(
-            sails=list(row.sails),  # type: ignore
             sea_state=SeaState(row.sea_state),
             pcs_mode=PCSModeInput(
                 fwd=ThrusterMode(row.pcs_mode_fwd),
