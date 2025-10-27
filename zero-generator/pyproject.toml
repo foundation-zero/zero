@@ -1,0 +1,49 @@
+[project]
+name = "generator"
+version = "0.1"
+description = ""
+readme = "README.md"
+authors = [
+    { name = "Dustin van Weersel", email = "dustin.vanweersel@foundationzero.org>" }
+]
+packages = [
+    { include = "generator", from = "src" },
+]
+requires-python = ">= 3.13.1,<4.0"
+dependencies = [
+    "aiomqtt (>=2.4.0,<3.0.0)",
+    "pydantic-settings (>=2.11.0,<3.0.0)",
+]
+
+[project.optional-dependencies]
+dev = [
+    "mypy>=1.14.1,<2.0.0",
+    "ruff>=0.9.5,<1.0.0",
+]
+test = [
+    "pytest>=8.3.4,<9.0.0",
+    "pytest-asyncio>=0.25.1,<1.0.0",
+    "pytest-mock>=3.14.0,<4.0.0",
+]
+
+[tool.mypy]
+ignore_missing_imports = true
+check_untyped_defs = true
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+asyncio_default_fixture_loop_scope = "function"
+asyncio_mode = "auto"
+
+[tool.ruff]
+fix = true
+
+[tool.ruff.lint]
+select = ["E4", "E7", "E9", "F", "W", "I"]
+
+[tool.ruff.lint.pydocstyle]
+convention = "google"
+
+[build-system]
+requires = ["poetry-core>=2.0.0,<3.0.0"]
+build-backend = "poetry.core.masonry.api"
