@@ -183,3 +183,5 @@ export const enum ChartPeriod {
   MONTH = "month",
   YEAR = "year",
 }
+
+export type PromiseFn<T = unknown> = () => Promise<T> | T;

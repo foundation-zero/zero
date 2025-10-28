@@ -41,6 +41,7 @@ const next = async () => step(playbackRate.value);
       <PopoverTrigger>
         <Button
           variant="ghost"
+          size="icon"
           :disabled="isRunning"
         >
           <Settings />
@@ -70,8 +71,9 @@ const next = async () => step(playbackRate.value);
     </Popover>
 
     <Button
-      variant="secondary"
+      :variant="isRunning ? 'default' : 'secondary'"
       :disabled="isProcessing || isStepping"
+      size="icon"
       @click="toggle()"
     >
       <PauseIcon v-if="isRunning" />
@@ -79,7 +81,8 @@ const next = async () => step(playbackRate.value);
     </Button>
 
     <Button
-      variant="secondary"
+      variant="ghost"
+      size="icon"
       :disabled="isProcessing || isRunning"
       @click="next()"
     >
