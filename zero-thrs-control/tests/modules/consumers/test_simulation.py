@@ -10,7 +10,7 @@ from thrs.input_output.modules.consumers import (
 from thrs.simulation.fmu import Fmu
 from thrs.simulation.io_mapping import IoMapping
 from thrs.simulation.models.fmu_paths import consumers_path
-from tests.modules.helpers.simulation_inputs import simulator_input_field_setters
+from tests.helpers.simulation_inputs import simulator_input_field_setters
 
 
 @fixture(

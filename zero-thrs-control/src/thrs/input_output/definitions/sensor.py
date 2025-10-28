@@ -5,6 +5,7 @@ from thrs.input_output.definitions.units import (
     Charged,
     Hz,
     LMin,
+    OnOff,
     OptionalCelsius,
     PcsMode,
     Ratio,
@@ -62,6 +63,10 @@ class Pcm(ThrsModel):
     charged: Stamped[Charged]
 
 
+class Fahrenheit(ThrsModel):
+    operating: Stamped[OnOff]
+
+
 __all__ = [
     "FlowSensor",
     "Pump",
@@ -72,4 +77,5 @@ __all__ = [
     "Thruster",
     "Pcs",
     "Pcm",
+    "Fahrenheit",
 ]

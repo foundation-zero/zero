@@ -9,7 +9,7 @@ from thrs.input_output.modules.high_temperature import (
 )
 from thrs.simulation.fmu import Fmu
 from thrs.simulation.io_mapping import IoMapping
-from tests.modules.helpers.simulation_inputs import simulator_input_field_setters
+from tests.helpers.simulation_inputs import simulator_input_field_setters
 from thrs.simulation.models.fmu_paths import high_temperature_path
 
 
