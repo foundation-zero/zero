@@ -221,13 +221,13 @@ type ThrustersSensorValuesType {
 type ThrustersSensorValuesTypeThrustersControlValuesTypeThrustersParametersTypeThrustersSimulationInputsTypeThrustersSimulationOutputsTypeModule {
   sensorValues: ThrustersSensorValuesType
   controlValues: ThrustersControlValuesType
-  parameters: ThrustersParametersType!
+  parameters: ThrustersParametersType
   simulation: ThrustersSensorValuesTypeThrustersControlValuesTypeThrustersParametersTypeThrustersSimulationInputsTypeThrustersSimulationOutputsTypeModuleSimulation
 }
 
 type ThrustersSensorValuesTypeThrustersControlValuesTypeThrustersParametersTypeThrustersSimulationInputsTypeThrustersSimulationOutputsTypeModuleSimulation {
-  inputs: ThrustersSimulationInputsType!
-  outputs: ThrustersSimulationOutputsType!
+  inputs: ThrustersSimulationInputsType
+  outputs: ThrustersSimulationOutputsType
 }
 
 type ThrustersSimulationInputsType {

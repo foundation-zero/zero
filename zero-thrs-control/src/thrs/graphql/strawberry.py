@@ -143,8 +143,8 @@ class ThrustersSimulationOutputsType:
 
 @strawberry.type
 class ModuleSimulation[SimulationInput, SimulationOutput]:
-    inputs: SimulationInput
-    outputs: SimulationOutput
+    inputs: SimulationInput | None
+    outputs: SimulationOutput | None
 
 
 @strawberry.type
@@ -157,7 +157,7 @@ class Module[
 ]:
     sensor_values: SensorValues | None
     control_values: ControlValues | None
-    parameters: Parameters
+    parameters: Parameters | None
     simulation: ModuleSimulation[SimulationInput, SimulationOutput] | None = None
 
 
@@ -205,14 +205,18 @@ class Query:
                 if info.context.messaging.control_values
                 else None,
                 parameters=ThrustersParametersType.from_pydantic(
-                    ThrustersParameters()
-                ),  # TODO: ZERO-878 implement parameter setting and passage to simulation
+                    info.context.messaging.parameters
+                )
+                if info.context.messaging.parameters
+                else None,
                 simulation=ModuleSimulation(
                     inputs=ThrustersSimulationInputsType.from_pydantic(
-                        DedataframedSimulationInputs.zero(),  # TODO: ZERO-825 implement simulation input setting and passage to simulation
-                    ),
+                        info.context.messaging.simulation_inputs
+                    )
+                    if info.context.messaging.simulation_inputs
+                    else None,
                     outputs=ThrustersSimulationOutputsType.from_pydantic(
-                        DedataframedSimulationOutputs.zero()  # TODO: ZERO-825 implement simulation output setting and passage to simulation
+                        DedataframedSimulationOutputs.zero()  # TODO: ZERO-927 implement simulation output setting and passage to simulation
                     ),
                 ),
             ),
