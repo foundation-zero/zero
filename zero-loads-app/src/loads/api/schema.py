@@ -1,10 +1,12 @@
-from sqlalchemy import Column, Enum, Float, Integer, String
+from sqlalchemy import Column, Enum, Float, Integer, MetaData, String
 from sqlalchemy.dialects.postgresql import ARRAY, NUMRANGE, TIMESTAMP
 from sqlalchemy.orm import declarative_base
 
 from .types import SeaState, ThrusterMode
 
-Base = declarative_base()
+metadata_obj = MetaData(schema="loads")
+
+Base = declarative_base(metadata=metadata_obj)
 
 
 class SailSetCombined(Base):  # type: ignore

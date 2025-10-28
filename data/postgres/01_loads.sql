@@ -1,3 +1,6 @@
+CREATE SCHEMA IF NOT EXISTS loads;
+
+
 -- The various sea states (to be expanded)
 DROP TYPE IF EXISTS sea_state CASCADE;
 CREATE TYPE sea_state AS ENUM ('wet');
@@ -8,55 +11,56 @@ CREATE TYPE unit AS ENUM ('tonne', 'meter', 'knot', 'percentage');
 DROP TYPE IF EXISTS pcs_mode CASCADE;
 CREATE TYPE pcs_mode AS ENUM ('idle', 'regeneration', 'propulsion');
 
-DROP TABLE IF EXISTS masts CASCADE;
-CREATE TABLE masts (
+DROP TABLE IF EXISTS loads.masts CASCADE;
+CREATE TABLE loads.masts (
   id TEXT PRIMARY KEY,
   name TEXT
 );
 
 -- sails also includes different reefs of the main and mizzen sails. i.e. full-main-sail, main-sail-reef1, main-sail-reef2 are all rows in this table
-DROP TABLE IF EXISTS sails CASCADE;
-CREATE TABLE sails (
+DROP TABLE IF EXISTS loads.sails CASCADE;
+CREATE TABLE loads.sails (
   id TEXT PRIMARY KEY,
-  mast_id TEXT NOT NULL REFERENCES masts(id) ON DELETE RESTRICT,
+  mast_id TEXT NOT NULL REFERENCES loads.masts(id) ON DELETE RESTRICT,
   name TEXT
 );
 
-DROP TABLE IF EXISTS sail_sets CASCADE;
-CREATE TABLE sail_sets (
+DROP TABLE IF EXISTS loads.sail_sets CASCADE;
+CREATE TABLE loads.sail_sets (
   id TEXT PRIMARY KEY,
   name TEXT NOT NULL
 );
 
-DROP TABLE IF EXISTS sail_sets_sails CASCADE;
-CREATE TABLE sail_sets_sails (
+DROP TABLE IF EXISTS loads.sail_sets_sails CASCADE;
+CREATE TABLE loads.sail_sets_sails (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-  sail_id TEXT NOT NULL REFERENCES sails(id) ON DELETE RESTRICT,
-  sail_set_id TEXT NOT NULL REFERENCES sail_sets(id) ON DELETE RESTRICT
+  sail_id TEXT NOT NULL REFERENCES loads.sails(id) ON DELETE RESTRICT,
+  sail_set_id TEXT NOT NULL REFERENCES loads.sail_sets(id) ON DELETE RESTRICT
 );
 
-DROP VIEW IF EXISTS sail_sets_combined CASCADE;
+DROP VIEW IF EXISTS loads.sail_sets_combined CASCADE;
 -- This view makes looking up the sail case easier by aggregating the sails into an array
 -- Lookup can be done by matching the (ordered) array of sails
-CREATE VIEW sail_sets_combined AS
+CREATE VIEW loads.sail_sets_combined AS
 SELECT sail_sets.*, ARRAY_AGG(sail_sets_sails.sail_id ORDER BY sail_sets_sails.sail_id) AS sails
-FROM sail_sets
-JOIN sail_sets_sails ON sail_sets_sails.sail_set_id = sail_sets.id
+FROM loads.sail_sets AS sail_sets
+JOIN loads.sail_sets_sails AS sail_sets_sails
+    ON sail_sets_sails.sail_set_id = sail_sets.id
 GROUP BY sail_sets.id;
 
 DROP TYPE IF EXISTS value_definition_scope CASCADE;
 CREATE TYPE value_definition_scope AS ENUM ('mast_specific', 'general');
 
-DROP TABLE IF EXISTS value_definitions CASCADE;
-CREATE TABLE value_definitions (
+DROP TABLE IF EXISTS loads.value_definitions CASCADE;
+CREATE TABLE loads.value_definitions (
   id TEXT PRIMARY KEY,
   name TEXT NOT NULL,
   unit unit NOT NULL,
   scope value_definition_scope NOT NULL
 );
 
-DROP TABLE IF EXISTS condition_profiles CASCADE;
-CREATE TABLE condition_profiles (
+DROP TABLE IF EXISTS loads.condition_profiles CASCADE;
+CREATE TABLE loads.condition_profiles (
   id TEXT PRIMARY KEY,
   name TEXT NOT NULL,
   sea_state sea_state NOT NULL,
@@ -66,16 +70,16 @@ CREATE TABLE condition_profiles (
   pcs_mode_fwd pcs_mode[] NOT NULL
 );
 
-DROP TABLE IF EXISTS load_cases CASCADE;
-CREATE TABLE load_cases (
+DROP TABLE IF EXISTS loads.load_cases CASCADE;
+CREATE TABLE loads.load_cases (
   name TEXT,
-  condition_profile_id TEXT NOT NULL REFERENCES condition_profiles(id) ON DELETE RESTRICT,
-  sail_set_id TEXT NOT NULL REFERENCES sail_sets(id) ON DELETE RESTRICT,
+  condition_profile_id TEXT NOT NULL REFERENCES loads.condition_profiles(id) ON DELETE RESTRICT,
+  sail_set_id TEXT NOT NULL REFERENCES loads.sail_sets(id) ON DELETE RESTRICT,
   PRIMARY KEY (condition_profile_id, sail_set_id)
 );
 
-DROP TABLE IF EXISTS conditions CASCADE;
-CREATE TABLE conditions  (
+DROP TABLE IF EXISTS loads.conditions CASCADE;
+CREATE TABLE loads.conditions  (
   time TIMESTAMPTZ NOT NULL,
   sea_state TEXT NOT NULL,
   awa FLOAT NOT NULL,
@@ -85,28 +89,28 @@ CREATE TABLE conditions  (
   sails TEXT[] NOT NULL
 );
 
-DROP TABLE IF EXISTS reference_values;
-CREATE TABLE reference_values (
+DROP TABLE IF EXISTS loads.reference_values;
+CREATE TABLE loads.reference_values (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   sail_set_id TEXT NOT NULL,
   condition_profile_id TEXT NOT NULL,
-  mast_id TEXT REFERENCES masts(id) ON DELETE RESTRICT,
-  value_definition_id TEXT NOT NULL REFERENCES value_definitions(id) ON DELETE RESTRICT,
+  mast_id TEXT REFERENCES loads.masts(id) ON DELETE RESTRICT,
+  value_definition_id TEXT NOT NULL REFERENCES loads.value_definitions(id) ON DELETE RESTRICT,
   value NUMERIC NOT NULL,
   error_too_low NUMERIC,
   warning_too_low NUMERIC,
   warning_too_high NUMERIC,
   error_too_high NUMERIC,
-  FOREIGN KEY (sail_set_id, condition_profile_id) REFERENCES load_cases (sail_set_id, condition_profile_id)
+  FOREIGN KEY (sail_set_id, condition_profile_id) REFERENCES loads.load_cases (sail_set_id, condition_profile_id)
 );
 
 -- Seed
 -- Incomplete for now, just to get started
-INSERT INTO masts (id, name) VALUES
+INSERT INTO loads.masts (id, name) VALUES
   ('main', 'Main mast'),
   ('mizzen', 'Mizzen mast');
 
-INSERT INTO sails (id, mast_id, name) VALUES
+INSERT INTO loads.sails (id, mast_id, name) VALUES
   ('full-main-sail', 'main', 'Full Main Sail'),
   ('main-sail-reef1', 'main', 'Main Sail Reef 1'),
   ('main-sail-reef2', 'main', 'Main Sail Reef 2'),
@@ -118,11 +122,11 @@ INSERT INTO sails (id, mast_id, name) VALUES
   ('mizzen-jib', 'mizzen', 'Mizzen Jib'),
   ('mizzen-staysail', 'mizzen', 'Mizzen Staysail');
 
-INSERT INTO sail_sets (id, name) VALUES
+INSERT INTO loads.sail_sets (id, name) VALUES
   ('upwind-blade', 'Upwind Blade'),
   ('reach-blade-mzj', 'Reach Blade with Mizzen Jib');
 
-INSERT INTO sail_sets_sails (sail_set_id, sail_id) VALUES
+INSERT INTO loads.sail_sets_sails (sail_set_id, sail_id) VALUES
   ('upwind-blade', 'full-main-sail'),
   ('upwind-blade', 'main-blade'),
   ('upwind-blade', 'full-mizzen-sail'),
@@ -132,11 +136,11 @@ INSERT INTO sail_sets_sails (sail_set_id, sail_id) VALUES
   ('reach-blade-mzj', 'mizzen-jib'),
   ('reach-blade-mzj', 'full-mizzen-sail');
 
-INSERT INTO value_definitions (id, name, unit, scope) VALUES
+INSERT INTO loads.value_definitions (id, name, unit, scope) VALUES
   ('headstay-load', 'Headstay load', 'tonne', 'mast_specific'),
   ('boatspeed', 'Boat Speed', 'knot', 'general');
 
-INSERT INTO condition_profiles (id, name, sea_state, awa, aws, pcs_mode_aft, pcs_mode_fwd) VALUES
+INSERT INTO loads.condition_profiles (id, name, sea_state, awa, aws, pcs_mode_aft, pcs_mode_fwd) VALUES
   ('light-wind-close-hauled', 'Light wind close-hauled', 'wet', '[0,45)', '[0,10)', ARRAY['propulsion', 'regeneration', 'idle']::pcs_mode[], ARRAY['propulsion', 'regeneration', 'idle']::pcs_mode[]),
   ('light-wind-beam-reach', 'Light wind beam reach', 'wet', '[45,135)', '[0,10)', ARRAY['propulsion', 'regeneration', 'idle']::pcs_mode[], ARRAY['propulsion', 'regeneration', 'idle']::pcs_mode[]),
   ('light-wind-broad-reach', 'Light wind broad reach', 'wet', '[135,180]', '[0,10)', ARRAY['propulsion', 'regeneration', 'idle']::pcs_mode[], ARRAY['propulsion', 'regeneration', 'idle']::pcs_mode[]),
@@ -147,7 +151,7 @@ INSERT INTO condition_profiles (id, name, sea_state, awa, aws, pcs_mode_aft, pcs
   ('strong-wind-beam-reach', 'Strong wind beam reach', 'wet', '[45,135)', '[20,30)', ARRAY['propulsion', 'regeneration', 'idle']::pcs_mode[], ARRAY['propulsion', 'regeneration', 'idle']::pcs_mode[]),
   ('strong-wind-broad-reach', 'Strong wind broad reach', 'wet', '[135,180]', '[20,30)', ARRAY['propulsion', 'regeneration', 'idle']::pcs_mode[], ARRAY['propulsion', 'regeneration', 'idle']::pcs_mode[]);
 
-INSERT INTO load_cases (name, condition_profile_id, sail_set_id) VALUES
+INSERT INTO loads.load_cases (name, condition_profile_id, sail_set_id) VALUES
   (NULL, 'light-wind-close-hauled', 'upwind-blade'),
   (NULL, 'light-wind-beam-reach', 'upwind-blade'),
   (NULL, 'light-wind-broad-reach', 'upwind-blade'),
@@ -159,7 +163,7 @@ INSERT INTO load_cases (name, condition_profile_id, sail_set_id) VALUES
   (NULL, 'strong-wind-beam-reach', 'reach-blade-mzj'),
   (NULL, 'strong-wind-broad-reach', 'reach-blade-mzj');
 
-INSERT INTO reference_values (condition_profile_id, sail_set_id, mast_id, value_definition_id, value) VALUES
+INSERT INTO loads.reference_values (condition_profile_id, sail_set_id, mast_id, value_definition_id, value) VALUES
   ('light-wind-close-hauled', 'upwind-blade', 'main', 'headstay-load', 2.0),
   ('light-wind-close-hauled', 'upwind-blade', 'mizzen', 'headstay-load', 1.0),
   ('light-wind-close-hauled', 'upwind-blade', NULL, 'boatspeed', 5.0),
@@ -197,5 +201,5 @@ INSERT INTO reference_values (condition_profile_id, sail_set_id, mast_id, value_
   ('strong-wind-broad-reach', 'reach-blade-mzj', NULL, 'boatspeed', 9.5);
 
 -- Seeding to avoid starting up risingwave for testing. Should be removed later.
-INSERT INTO conditions (time, sea_state, awa, aws, pcs_mode_aft, pcs_mode_fwd, sails) VALUES
+INSERT INTO loads.conditions (time, sea_state, awa, aws, pcs_mode_aft, pcs_mode_fwd, sails) VALUES
   (NOW(), 'wet', 0.0, 0.0, 'idle', 'idle', ARRAY['full-main-sail', 'full-mizzen-sail', 'main-blade']);

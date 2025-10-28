@@ -13,10 +13,9 @@ load_dotenv(dotenv_path=".env")
 settings = Settings()  # type:ignore
 
 parser = argparse.ArgumentParser(description="Setup Risingwave tables", add_help=True)
-parser.add_argument("args", nargs=argparse.REMAINDER, help="Arguments to pass to dbt")
-parsed_args = parser.parse_args()
+parsed_args, dbt_args = parser.parse_known_args()
 
-subprocess.run(["poetry", "run", "dbt", "build"] + parsed_args.args, cwd="./risingwave")
+subprocess.run(["poetry", "run", "dbt", "build"] + dbt_args, cwd="./risingwave")
 
 print("Risingwave: Initializing tables")
 
