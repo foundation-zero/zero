@@ -34,7 +34,7 @@ jobs:
       - run: poetry run pyright
         working-directory: zero-hull-temperature
       - name: Run services
-        run: docker compose up -d --quiet-pull
+        run: docker compose up -d --quiet-pull --wait
         working-directory: zero-hull-temperature
       - name: Unit Test
         run: poetry run pytest

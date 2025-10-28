@@ -41,7 +41,7 @@ jobs:
         run: poetry run pytest --run=unit
         working-directory: zero-domestic-control
       - name: Run services
-        run: docker compose up -d --quiet-pull graphql-engine hass
+        run: docker compose up -d --quiet-pull graphql-engine hass --wait
         working-directory: zero-domestic-control
       - name: Integration Test
         run: poetry run pytest --run=integration -vv
