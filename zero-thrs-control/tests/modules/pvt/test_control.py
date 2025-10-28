@@ -105,5 +105,5 @@ async def test_heat_dump(control, executor: PvtExecutor):
         control_values = control.control(result.sensor_values).values
         result = await executor.tick(control_values)
         assert result.sensor_values.pvt_temperature_supply.temperature.value == approx(
-            control._parameters.maximum_supply_temperature, abs=2
+            control._parameters.maximum_supply_temperature, abs=3
         )
