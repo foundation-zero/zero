@@ -18,6 +18,7 @@ import { ArgumentsType, useIntervalFn } from "@vueuse/core";
 import { type ClassValue, clsx } from "clsx";
 import { twMerge } from "tailwind-merge";
 import { computed, ComputedRef, ref, Ref, watch, WritableComputedRef } from "vue";
+import { useI18n } from "vue-i18n";
 import { CO2_THRESHOLDS, DEMO_MODE, HUMIDITY_THRESHOLDS, TEMPERATURE_THRESHOLDS } from "./consts";
 
 export function cn(...inputs: ClassValue[]) {
@@ -300,3 +301,5 @@ export const extractHumiditySetpoint = extractActualControlValue(ControlType.HUM
 export const extractCO2Setpoint = extractActualControlValue(ControlType.CO2);
 
 export const toUpperCamelCase = (str: string) => str.replace(/([A-Z])/g, " $1").trim();
+
+export const tScoped = (scope: string) => (key: string) => useI18n().t(`${scope}.${key}`);

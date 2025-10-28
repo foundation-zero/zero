@@ -91,7 +91,10 @@
         "setValues": "Set values",
         "start": "Start",
         "run": "Run",
-        "seconds": "Seconds"
+        "seconds": "Seconds",
+        "mode": "Mode",
+        "playbackRate": "Playback rate",
+        "stepInSeconds": "Step (seconds)"
       }
     }
   },
