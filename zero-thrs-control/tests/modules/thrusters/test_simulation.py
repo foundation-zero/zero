@@ -17,7 +17,7 @@ from thrs.orchestration.simulator import Simulator, SimulatorModel
 from thrs.simulation.fmu import Fmu
 from thrs.simulation.io_mapping import IoMapping, flatten_model_values
 from thrs.simulation.models.fmu_paths import thrusters_path
-from tests.modules.helpers.simulation_inputs import simulator_input_field_setters
+from tests.helpers.simulation_inputs import simulator_input_field_setters
 
 
 async def test_interfacer(executor, io_mapping, simulation_inputs, control, alarms):

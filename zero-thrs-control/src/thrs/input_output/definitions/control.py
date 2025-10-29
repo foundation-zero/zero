@@ -1,6 +1,6 @@
 from typing import ClassVar
 from thrs.input_output.base import Stamped, ThrsModel
-from thrs.input_output.definitions.units import OnOff, Ratio
+from thrs.input_output.definitions.units import Celsius, OnOff, Ratio
 
 
 class Pump(ThrsModel):
@@ -39,4 +39,10 @@ class Pcm(ThrsModel):
     on: Stamped[OnOff]
 
 
-__all__ = ["Pump", "Valve", "Pcm"]
+class Fahrenheit(ThrsModel):
+    free_cooling: Stamped[OnOff]
+    temperature_setpoint: Stamped[Celsius]
+    release: Stamped[OnOff]
+
+
+__all__ = ["Pump", "Valve", "Pcm", "Fahrenheit"]
