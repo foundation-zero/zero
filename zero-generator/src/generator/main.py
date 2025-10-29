@@ -40,11 +40,11 @@ class DataGenerator:
                 {
                     "topic": "topic/test",
                     "interval": 10,
-                    "values": (
-                        ("justanint", "int"),
-                        ("aws", ["float", 0, 180]),
-                        ("pcs_mode", ["enum", ["propulsion", "idle", "regeneration"]]),
-                    ),
+                    "values": {
+                        "justanint": "int",
+                        "aws": ["float", 0, 180],
+                        "pcs_mode": ["enum", ["propulsion", "idle", "regeneration"]],
+                    },
                 },
             ]
         """
@@ -72,7 +72,7 @@ class DataGenerator:
 
             self.running = True
 
-            await asyncio.gather(*self.tasks, return_exceptions=True)
+            await asyncio.gather(*self.tasks)
 
     async def stop(self):
         """Stops the data generation by cancelling all running tasks."""
@@ -81,33 +81,31 @@ class DataGenerator:
         self.tasks = []
         self.running = False
 
-    async def _generate_single_topic(
-        self, topic: str, interval: float, values: list[tuple]
-    ):
+    async def _generate_single_topic(self, topic: str, interval: float, values: dict):
         while True:
             logger.info(f"sending message on topic: {topic} with interval {interval}")
             send_task = self._mqtt_client.publish(topic, self._determine_values(values))
             sleep_task = asyncio.sleep(interval)
             await asyncio.gather(send_task, sleep_task)
 
-    def _determine_values(self, values: list[tuple]) -> str:
+    def _determine_values(self, values: dict) -> str:
         determined_values = {}
-        for field, value in values:
-            if isinstance(value, str):
-                determined_values[field] = self._default_value(value)
-            elif isinstance(value, list):
-                if value[0] == "enum":
-                    data_type, choices = value
+        for field, value_definition in values.items():
+            if isinstance(value_definition, str):
+                determined_values[field] = self._default_value(value_definition)
+            elif isinstance(value_definition, list):
+                if value_definition[0] == "enum":
+                    data_type, choices = value_definition
                     determined_values[field] = random.choice(choices)
                 else:
-                    data_type, lower_bound, upper_bound = value
+                    data_type, lower_bound, upper_bound = value_definition
                     determined_values[field] = self._default_value(
                         data_type, int(lower_bound), int(upper_bound)
                     )
-            elif callable(value):
-                determined_values[field] = value()
+            elif callable(value_definition):
+                determined_values[field] = value_definition()
             else:
-                raise ValueError(f"Unsupported value type: {value}")
+                raise ValueError(f"Unsupported value type: {value_definition}")
 
         return str(determined_values)
 

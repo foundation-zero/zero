@@ -32,12 +32,12 @@ async def test_generator(mqtt_client_send, mqtt_client_receive):
         {
             "topic": "test",
             "interval": 0.1,
-            "values": (
-                ("justanint", "int"),
-                ("awa", ["int", 0, 90]),
-                ("aws", ["float", 0, 30]),
-                ("pcs_mode", ["enum", ["propulsion", "idle", "docked"]]),
-            ),
+            "values": {
+                "justanint": "int",
+                "awa": ["int", 0, 90],
+                "aws": ["float", 0, 30],
+                "pcs_mode": ["enum", ["propulsion", "idle", "docked"]],
+            },
         }
     ]
 
