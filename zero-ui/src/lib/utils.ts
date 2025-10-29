@@ -303,3 +303,11 @@ export const extractCO2Setpoint = extractActualControlValue(ControlType.CO2);
 export const toUpperCamelCase = (str: string) => str.replace(/([A-Z])/g, " $1").trim();
 
 export const tScoped = (scope: string) => (key: string) => useI18n().t(`${scope}.${key}`);
+
+export const objectFilter = <T extends Record<string, unknown>, K extends keyof T>(
+  obj: T,
+  predicate: (entry: [key: K, value: T[K]]) => boolean,
+): Partial<T> =>
+  Object.fromEntries(
+    Object.entries(obj).filter((entry) => predicate(entry as [K, T[K]])),
+  ) as Partial<T>;

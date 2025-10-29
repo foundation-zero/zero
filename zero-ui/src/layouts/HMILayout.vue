@@ -8,6 +8,7 @@ import thrsSchema from "@/graphql/thrs/schema.graphql?raw";
 import { buildASTSchema, GraphQLField, GraphQLNonNull, GraphQLObjectType, parse } from "graphql";
 
 import ControlActions from "@/components/modules/hmi/ControlActions.vue";
+import SideNav from "@/components/modules/hmi/SideNav.vue";
 import { client } from "@/graphql/thrs/client";
 import { provideClient } from "@urql/vue";
 import { computed, provide, ref } from "vue";
@@ -35,19 +36,20 @@ provide("currentModule", currentModule);
 </script>
 
 <template>
-  <main class="h-svh pt-[96px]">
+  <main class="h-svh pt-[128px] pb-8 pl-[266px]">
+    <SideNav class="fixed left-4 w-[250px] shrink-0" />
     <Suspense>
       <slot />
     </Suspense>
   </main>
   <nav class="fixed top-0 right-0 left-0 backdrop-blur-md">
-    <Toolbar class="items-center px-4 py-1">
+    <Toolbar class="border-border-subtle items-center border-b px-4">
       <template #left>
-        <div class="flex items-end">
-          <h4 class="text-4xl font-semibold uppercase">{{ t("labels.hmi") }}</h4>
+        <div class="flex items-center">
+          <h4 class="pl-4 text-4xl font-semibold uppercase">{{ t("labels.hmi") }}</h4>
           <NavPills
             v-model:active-module="currentModuleKey"
-            class="ml-12"
+            class="ml-12 h-full"
             :modules="modules"
           />
         </div>

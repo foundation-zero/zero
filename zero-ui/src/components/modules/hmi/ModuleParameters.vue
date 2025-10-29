@@ -4,12 +4,9 @@ import { THRSDefinitions, THRSModules } from "@/lib/consts";
 import { Client } from "@urql/vue";
 import { useIntervalFn } from "@vueuse/core";
 import { type Component, computed, ref } from "vue";
-import { useI18n } from "vue-i18n";
 import { queryFor, queryPacked } from ".";
 import NumberParameter from "./controls/NumberParameter.vue";
 import PIDParameter from "./controls/PIDParameter.vue";
-
-const { t } = useI18n();
 
 const props = defineProps<{
   module: K;
@@ -56,20 +53,20 @@ const parameterComponents = computed(() => {
 });
 </script>
 <template>
-  <div v-if="params">
-    <header class="mb-2 text-2xl">{{ t("views.thrs.hmi.parameters") }}</header>
-    <section class="grid gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 2xl:grid-cols-6">
-      <component
-        :is="component.component"
-        v-for="component in parameterComponents"
-        :key="component.key"
-        :model-value="params[component.key]"
-        :component-name="String(component.key)"
-        :component-type="component.componentType"
-        :query="query"
-        :module="module"
-        @update:control-values="setControlValues"
-      />
-    </section>
-  </div>
+  <section
+    v-if="params"
+    class="grid gap-6 md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4"
+  >
+    <component
+      :is="component.component"
+      v-for="component in parameterComponents"
+      :key="component.key"
+      :model-value="params[component.key]"
+      :component-name="String(component.key)"
+      :component-type="component.componentType"
+      :query="query"
+      :module="module"
+      @update:control-values="setControlValues"
+    />
+  </section>
 </template>

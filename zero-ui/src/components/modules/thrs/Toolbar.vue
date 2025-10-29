@@ -5,7 +5,7 @@ import { cn } from "@/lib/utils";
 <template>
   <div :class="cn('flex items-center', String($attrs.class))">
     <slot name="left">
-      <span class="w-1/4 items-center">
+      <span class="flex w-1/4 items-center">
         <slot name="left-content" />
       </span>
     </slot>
@@ -14,7 +14,7 @@ import { cn } from "@/lib/utils";
     <span class="grow" />
     <slot name="right">
       <span
-        class="items-center justify-end"
+        class="flex items-center justify-end"
         :class="{ 'w-1/4': $slots.center }"
       >
         <slot name="right-content" />

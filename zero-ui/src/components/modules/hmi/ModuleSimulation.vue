@@ -4,14 +4,11 @@ import { THRSDefinitions, THRSModules } from "@/lib/consts";
 import { Client } from "@urql/vue";
 import { useIntervalFn } from "@vueuse/core";
 import { type Component, computed, ref } from "vue";
-import { useI18n } from "vue-i18n";
 import { queryFor, queryPacked } from ".";
 import BoundaryControl from "./controls/BoundaryControl.vue";
 import PcsControl from "./controls/PcsControl.vue";
 import TemperatureControl from "./controls/TemperatureControl.vue";
 import ThrustersControl from "./controls/ThrustersControl.vue";
-
-const { t } = useI18n();
 
 const props = defineProps<{
   module: K;
@@ -62,20 +59,20 @@ const setsimulationValues = (newValues: THRSModules[K]["simulation"]["inputs"]) 
 };
 </script>
 <template>
-  <div v-if="simulationValues && simulationValuesFromQuery.data?.inputs">
-    <header class="mb-2 text-2xl">{{ t("views.thrs.hmi.simulation:inputs") }}</header>
-    <section class="mb-4 grid gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 2xl:grid-cols-6">
-      <component
-        :is="control.component"
-        v-for="control in simulationComponents"
-        :key="control.key"
-        :values="simulationValues[control.key]"
-        :component-name="control.key"
-        :component-type="control.componentType"
-        :query="query"
-        :module="module"
-        @update:control-values="setsimulationValues"
-      />
-    </section>
-  </div>
+  <section
+    v-if="simulationValues && simulationValuesFromQuery.data?.inputs"
+    class="mb-4 grid gap-6 md:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4"
+  >
+    <component
+      :is="control.component"
+      v-for="control in simulationComponents"
+      :key="control.key"
+      :values="simulationValues[control.key]"
+      :component-name="control.key"
+      :component-type="control.componentType"
+      :query="query"
+      :module="module"
+      @update:control-values="setsimulationValues"
+    />
+  </section>
 </template>

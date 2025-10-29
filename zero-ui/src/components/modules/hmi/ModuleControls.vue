@@ -5,12 +5,9 @@ import { useSimulationStore } from "@/stores/simulation";
 import { Client } from "@urql/vue";
 import { useIntervalFn } from "@vueuse/core";
 import { type Component, computed, ref, toRefs } from "vue";
-import { useI18n } from "vue-i18n";
 import { queryFor, queryPacked } from ".";
 import PumpControl from "./controls/PumpControl.vue";
 import ValveControl from "./controls/ValveControl.vue";
-
-const { t } = useI18n();
 
 const props = defineProps<{
   module: K;
@@ -61,29 +58,27 @@ const setControlValues = (newValues: THRSModules[K]["controlValues"]) => {
 };
 </script>
 <template>
-  <div v-if="controlValues">
-    <header class="mb-2 text-2xl">{{ t("views.thrs.hmi.controls") }}</header>
-    <section
-      class="mb-4 grid gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 2xl:grid-cols-6"
-      :class="{ 'pointer-events-none cursor-not-allowed opacity-50': controlsDisabled }"
+  <section
+    v-if="controlValues"
+    class="mb-4 grid gap-6 sm:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4"
+    :class="{ 'pointer-events-none cursor-not-allowed opacity-50': controlsDisabled }"
+  >
+    <template
+      v-for="control in controlComponents"
+      :key="control.key"
     >
-      <div
-        v-for="control in controlComponents"
-        :key="control.key"
-      >
-        <component
-          :is="control.component"
-          v-if="control.component && controlValuesFromQuery.data?.[control.key]"
-          :values="controlValues[control.key]"
-          :component-name="control.key"
-          :component-type="control.componentType"
-          :query="query"
-          :yard-tag="control.yardTag"
-          :valve-type="control.valveType"
-          :module="module"
-          @update:control-values="setControlValues"
-        />
-      </div>
-    </section>
-  </div>
+      <component
+        :is="control.component"
+        v-if="control.component && controlValuesFromQuery.data?.[control.key]"
+        :values="controlValues[control.key]"
+        :component-name="control.key"
+        :component-type="control.componentType"
+        :query="query"
+        :yard-tag="control.yardTag"
+        :valve-type="control.valveType"
+        :module="module"
+        @update:control-values="setControlValues"
+      />
+    </template>
+  </section>
 </template>
