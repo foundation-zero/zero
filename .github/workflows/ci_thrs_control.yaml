@@ -32,7 +32,7 @@ jobs:
 
       - run: poetry run fmpy compile src/thrs/simulation/models/XRGTestModel/FMUInterfaceTester_MECS_regular.fmu
         working-directory: zero-thrs-control
-      
+
       - run: poetry run fmpy compile src/thrs/simulation/models/thruster_moduleV18.fmu
         working-directory: zero-thrs-control
 
@@ -57,7 +57,7 @@ jobs:
       - run: poetry run ruff format --check src tests
         working-directory: zero-thrs-control
 
-      - run: docker compose up -d
+      - run: docker compose up -d --wait
         working-directory: zero-thrs-control
 
       - run: poetry run pytest -v
