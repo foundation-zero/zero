@@ -4,12 +4,14 @@ from thrs.input_output.definitions.units import (
     Celsius,
     Charged,
     Hz,
+    Kelvin,
     LMin,
     OnOff,
     OptionalCelsius,
     PcsMode,
     Ratio,
     seconds,
+    Watt,
 )
 
 
@@ -67,6 +69,14 @@ class Fahrenheit(ThrsModel):
     operating: Stamped[OnOff]
 
 
+class EnergySensor(ThrsModel):
+    flow: Stamped[LMin]
+    power: Stamped[Watt]
+    delta_t: Stamped[Kelvin]
+    temperature_warm: Stamped[Celsius]
+    temperature_cold: Stamped[Celsius]
+
+
 __all__ = [
     "FlowSensor",
     "Pump",
@@ -78,4 +88,5 @@ __all__ = [
     "Pcs",
     "Pcm",
     "Fahrenheit",
+    "EnergySensor",
 ]
