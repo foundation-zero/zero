@@ -1,3 +1,4 @@
+import { PromiseFn } from "@/@types";
 import { mutationWithoutValue, mutationWithValue } from "@/graphql/thrs";
 import { context } from "@/graphql/thrs/client";
 
@@ -16,11 +17,25 @@ type SimulationStatus = {
   };
 };
 
+type ControlStatus = {
+  control: {
+    automatic: boolean;
+  };
+};
+
 const STATUS_QUERY = gql`
   query SimulationStatus {
     simulation {
       status
       time
+    }
+  }
+`;
+
+const CONTROL_QUERY = gql`
+  query SimulationStatus {
+    control {
+      automatic
     }
   }
 `;
@@ -32,6 +47,11 @@ export const useSimulationStore = defineStore("simulation", () => {
   const pause = mutationWithoutValue("simulationPause");
   const play = mutationWithValue("simulationPlay", "playbackRate", "Float");
   const step = mutationWithValue("simulationStep", "seconds", "Float!");
+  const setAutomatedControl = mutationWithValue(
+    "controlSetAutomationMode",
+    "automatic",
+    "Boolean!",
+  );
   const isProcessing = ref(false);
 
   const statusQuery = useQuery<SimulationStatus>({
@@ -39,10 +59,20 @@ export const useSimulationStore = defineStore("simulation", () => {
     context,
   });
 
+  const controlQuery = useQuery<ControlStatus>({
+    query: CONTROL_QUERY,
+    context,
+  });
+
   // Use network-only policy to always get the latest status
   const updateStatus = () => statusQuery.executeQuery({ requestPolicy: "network-only" });
+  const updateControl = () => controlQuery.executeQuery({ requestPolicy: "network-only" });
 
   useIntervalFn(updateStatus, 1000, {
+    immediate: true,
+  });
+
+  useIntervalFn(updateControl, 5000, {
     immediate: true,
   });
 
@@ -51,9 +81,11 @@ export const useSimulationStore = defineStore("simulation", () => {
   const isRunning = computed(() => status.value === "running");
   const isStepping = computed(() => status.value === "stepping");
 
-  function mutationFn(query: TypedDocumentNode): () => Promise<Maybe<OperationResult>>;
-  function mutationFn<T>(query: TypedDocumentNode): (value: T) => Promise<Maybe<OperationResult>>;
-  function mutationFn<T>(query: TypedDocumentNode) {
+  type MutationFnParams = [query: TypedDocumentNode, onSuccess: PromiseFn];
+
+  function mutationFn(...args: MutationFnParams): () => Promise<Maybe<OperationResult>>;
+  function mutationFn<T>(...args: MutationFnParams): (value: T) => Promise<Maybe<OperationResult>>;
+  function mutationFn<T>(...[query, onSuccess]: MutationFnParams) {
     return async (value?: T) => {
       if (isProcessing.value) return;
 
@@ -62,7 +94,7 @@ export const useSimulationStore = defineStore("simulation", () => {
 
       try {
         result = await client.mutation(query, value === undefined ? {} : { value }, context);
-        await updateStatus();
+        await onSuccess();
       } catch (error) {
         console.error("Error executing mutation:", error);
       } finally {
@@ -74,10 +106,12 @@ export const useSimulationStore = defineStore("simulation", () => {
   }
 
   return {
-    pause: mutationFn(pause),
-    play: mutationFn<number>(play),
-    step: mutationFn<number>(step),
+    pause: mutationFn(pause, updateStatus),
+    play: mutationFn<number>(play, updateStatus),
+    step: mutationFn<number>(step, updateStatus),
+    setAutomatedControl: mutationFn<boolean>(setAutomatedControl, updateControl),
     status: statusQuery.data,
+    control: controlQuery.data,
     isAvailable,
     isRunning,
     isProcessing,

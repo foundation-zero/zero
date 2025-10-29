@@ -7,6 +7,7 @@ export type ValueType =
   | "Int"
   | "[Int!]!"
   | "Boolean"
+  | "Boolean!"
   | "[Boolean!]!"
   | "String"
   | "[String!]!";

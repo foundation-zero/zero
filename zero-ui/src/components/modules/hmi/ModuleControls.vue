@@ -1,9 +1,10 @@
 <script setup lang="ts" generic="K extends keyof THRSModules">
 import { ControlComponentType } from "@/@types/thrs";
 import { THRSDefinitions, THRSModules } from "@/lib/consts";
+import { useSimulationStore } from "@/stores/simulation";
 import { Client } from "@urql/vue";
 import { useIntervalFn } from "@vueuse/core";
-import { type Component, computed, ref } from "vue";
+import { type Component, computed, ref, toRefs } from "vue";
 import { useI18n } from "vue-i18n";
 import { queryFor, queryPacked } from ".";
 import PumpControl from "./controls/PumpControl.vue";
@@ -22,6 +23,10 @@ const COMPONENTS: Record<ControlComponentType, Component> = {
   [ControlComponentType.Pump]: PumpControl,
   [ControlComponentType.Valve]: ValveControl,
 };
+
+const { control: controlData } = toRefs(useSimulationStore());
+
+const controlsDisabled = computed(() => controlData.value?.control.automatic === true);
 
 const controlValuesQuery = queryFor(props.module, "controlValues", props.query);
 const controlValuesFromQuery = queryPacked(props.module, "controlValues", controlValuesQuery);
@@ -58,7 +63,10 @@ const setControlValues = (newValues: THRSModules[K]["controlValues"]) => {
 <template>
   <div v-if="controlValues">
     <header class="mb-2 text-2xl">{{ t("views.thrs.hmi.controls") }}</header>
-    <section class="mb-4 grid gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 2xl:grid-cols-6">
+    <section
+      class="mb-4 grid gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 2xl:grid-cols-6"
+      :class="{ 'pointer-events-none cursor-not-allowed opacity-50': controlsDisabled }"
+    >
       <div
         v-for="control in controlComponents"
         :key="control.key"

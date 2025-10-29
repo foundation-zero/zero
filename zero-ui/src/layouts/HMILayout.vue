@@ -7,6 +7,7 @@ import SimulationActions from "@/components/modules/hmi/SimulationActions.vue";
 import thrsSchema from "@/graphql/thrs/schema.graphql?raw";
 import { buildASTSchema, GraphQLField, GraphQLNonNull, GraphQLObjectType, parse } from "graphql";
 
+import ControlActions from "@/components/modules/hmi/ControlActions.vue";
 import { client } from "@/graphql/thrs/client";
 import { provideClient } from "@urql/vue";
 import { computed, provide, ref } from "vue";
@@ -53,6 +54,7 @@ provide("currentModule", currentModule);
       </template>
 
       <template #right>
+        <ControlActions class="mr-3" />
         <SimulationActions />
       </template>
     </Toolbar>
