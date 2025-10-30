@@ -23,6 +23,20 @@ _DATA_TYPES = {
 class MarpowerReader(ReaderBase):
     def __init__(self):
         self.topic_prefix = "marpower/"
+        self.io_list_schema = {
+            "device": pl.String,
+            "tag": pl.String,
+            "yard_tag": pl.String,
+            "target_type": pl.String,
+            "terminal": pl.String,
+            "cabinet": pl.String,
+            "system": pl.String,
+            "description": pl.String,
+            "unit": pl.String,
+            "precision": pl.String,
+            "data_type": pl.String,
+            "mqtt_topic": pl.String, "mqtt_json_path": pl.String
+        }
 
     @staticmethod
     def _read_headers(workbook):
@@ -41,8 +55,7 @@ class MarpowerReader(ReaderBase):
             ]
             yield " ".join(headers)
 
-    @staticmethod
-    def _normalize_marpower_io_list(df: pl.DataFrame):
+    def _normalize_marpower_io_list(self, df: pl.DataFrame):
         """Normalize the IO list by renaming columns and filtering out unnecessary rows"""
         renamed_df = df.rename(lambda c: c.replace(" ", "_").lower())
         filter_df = (
@@ -70,7 +83,7 @@ class MarpowerReader(ReaderBase):
             "data_type",
             "mqtt_topic",
             "mqtt_json_path",
-        ])
+        ]).cast(self.io_list_schema)
 
     def _get_io_topics(self, df: pl.DataFrame) -> List[IOTopic]:
         """Get the IO topics from the DataFrame"""
@@ -112,7 +125,8 @@ class MarpowerReader(ReaderBase):
             header: cls._read_bordered_column(workbook["IO-List"], index + 1)
             for index, header in enumerate(headers)
         }
-        return pl.DataFrame(data).filter(~pl.all_horizontal(pl.all().is_null()))
+        df = pl.DataFrame(data)
+        return df.filter(~pl.all_horizontal(pl.all().is_null()))
 
     def read_io_list(self, paths: List[Path]) -> IOResult:
         """Read the IO list from the given paths and return an IOResult"""
