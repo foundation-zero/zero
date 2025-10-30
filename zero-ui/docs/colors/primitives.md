@@ -127,6 +127,121 @@ Primitive colors are the foundation of our color system. Each scale provides a r
   </div>
 </div>
 
+## Neutral Grey
+
+<div class="mb-8">
+  <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+    <div class="flex items-center gap-3 p-3 border rounded-lg">
+      <div class="w-12 h-12 rounded-md border bg-neutral-grey-0"></div>
+      <div>
+        <div class="font-mono text-sm font-medium">neutral-grey-0</div>
+        <div class="font-mono text-xs text-muted-foreground">
+          {{ getColorValue('neutral-grey-0') }}
+        </div>
+      </div>
+    </div>
+    <div class="flex items-center gap-3 p-3 border rounded-lg">
+      <div class="w-12 h-12 rounded-md border bg-neutral-grey-50"></div>
+      <div>
+        <div class="font-mono text-sm font-medium">neutral-grey-50</div>
+        <div class="font-mono text-xs text-muted-foreground">
+          {{ getColorValue('neutral-grey-50') }}
+        </div>
+      </div>
+    </div>
+    <div class="flex items-center gap-3 p-3 border rounded-lg">
+      <div class="w-12 h-12 rounded-md border bg-neutral-grey-100"></div>
+      <div>
+        <div class="font-mono text-sm font-medium">neutral-grey-100</div>
+        <div class="font-mono text-xs text-muted-foreground">
+          {{ getColorValue('neutral-grey-100') }}
+        </div>
+      </div>
+    </div>
+    <div class="flex items-center gap-3 p-3 border rounded-lg">
+      <div class="w-12 h-12 rounded-md border bg-neutral-grey-200"></div>
+      <div>
+        <div class="font-mono text-sm font-medium">neutral-grey-200</div>
+        <div class="font-mono text-xs text-muted-foreground">
+          {{ getColorValue('neutral-grey-200') }}
+        </div>
+      </div>
+    </div>
+    <div class="flex items-center gap-3 p-3 border rounded-lg">
+      <div class="w-12 h-12 rounded-md border bg-neutral-grey-300"></div>
+      <div>
+        <div class="font-mono text-sm font-medium">neutral-grey-300</div>
+        <div class="font-mono text-xs text-muted-foreground">
+          {{ getColorValue('neutral-grey-300') }}
+        </div>
+      </div>
+    </div>
+    <div class="flex items-center gap-3 p-3 border rounded-lg">
+      <div class="w-12 h-12 rounded-md border bg-neutral-grey-400"></div>
+      <div>
+        <div class="font-mono text-sm font-medium">neutral-grey-400</div>
+        <div class="font-mono text-xs text-muted-foreground">
+          {{ getColorValue('neutral-grey-400') }}
+        </div>
+      </div>
+    </div>
+    <div class="flex items-center gap-3 p-3 border rounded-lg">
+      <div class="w-12 h-12 rounded-md border bg-neutral-grey-500"></div>
+      <div>
+        <div class="font-mono text-sm font-medium">neutral-grey-500</div>
+        <div class="font-mono text-xs text-muted-foreground">
+          {{ getColorValue('neutral-grey-500') }}
+        </div>
+      </div>
+    </div>
+    <div class="flex items-center gap-3 p-3 border rounded-lg">
+      <div class="w-12 h-12 rounded-md border bg-neutral-grey-600"></div>
+      <div>
+        <div class="font-mono text-sm font-medium">neutral-grey-600</div>
+        <div class="font-mono text-xs text-muted-foreground">
+          {{ getColorValue('neutral-grey-600') }}
+        </div>
+      </div>
+    </div>
+    <div class="flex items-center gap-3 p-3 border rounded-lg">
+      <div class="w-12 h-12 rounded-md border bg-neutral-grey-700"></div>
+      <div>
+        <div class="font-mono text-sm font-medium">neutral-grey-700</div>
+        <div class="font-mono text-xs text-muted-foreground">
+          {{ getColorValue('neutral-grey-700') }}
+        </div>
+      </div>
+    </div>
+    <div class="flex items-center gap-3 p-3 border rounded-lg">
+      <div class="w-12 h-12 rounded-md border bg-neutral-grey-800"></div>
+      <div>
+        <div class="font-mono text-sm font-medium">neutral-grey-800</div>
+        <div class="font-mono text-xs text-muted-foreground">
+          {{ getColorValue('neutral-grey-800') }}
+        </div>
+      </div>
+    </div>
+    <div class="flex items-center gap-3 p-3 border rounded-lg">
+      <div class="w-12 h-12 rounded-md border bg-neutral-grey-900"></div>
+      <div>
+        <div class="font-mono text-sm font-medium">neutral-grey-900</div>
+        <div class="font-mono text-xs text-muted-foreground">
+          {{ getColorValue('neutral-grey-900') }}
+        </div>
+      </div>
+    </div>
+    <div class="flex items-center gap-3 p-3 border rounded-lg">
+      <div class="w-12 h-12 rounded-md border bg-neutral-grey-1000"></div>
+      <div>
+        <div class="font-mono text-sm font-medium">neutral-grey-1000</div>
+        <div class="font-mono text-xs text-muted-foreground">
+          {{ getColorValue('neutral-grey-1000') }}
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
 ## Brand
 
 <div class="mb-8">
