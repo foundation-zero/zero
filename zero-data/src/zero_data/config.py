@@ -8,7 +8,8 @@ from zero_data.io_list.types import Source
 io_lists: List[Tuple[Source, List[str]]] = [
     ("marpower", [
         "52422003_3210_AMCS IO-List R2.14.xlsx",
-        "52422003_3211_PMS IO-List R2.6.xlsx"
+        "52422003_3211_PMS IO-List R2.6.xlsx",
+        "ZERO mocked IO-List.xlsx"
     ])
 ]
 
