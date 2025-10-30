@@ -68,7 +68,7 @@ export const useSimulationStore = defineStore("simulation", () => {
   const updateStatus = () => statusQuery.executeQuery({ requestPolicy: "network-only" });
   const updateControl = () => controlQuery.executeQuery({ requestPolicy: "network-only" });
 
-  useIntervalFn(updateStatus, 1000, {
+  useIntervalFn(updateStatus, 5000, {
     immediate: true,
   });
 

@@ -12,7 +12,7 @@ const isAutomated = computed(() => control.value?.control.automatic ?? false);
 
 <template>
   <Button
-    :variant="isAutomated ? 'default' : 'ghost'"
+    :variant="isAutomated ? 'default' : 'secondary'"
     size="icon"
     :disabled="isProcessing"
     @click="setAutomatedControl(!isAutomated)"

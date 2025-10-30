@@ -4,11 +4,8 @@ import { SENSOR_FIELDS, THRSModules } from "@/lib/consts";
 import { Client } from "@urql/vue";
 import { useIntervalFn } from "@vueuse/core";
 import { computed } from "vue";
-import { useI18n } from "vue-i18n";
 import { queryFor, queryPacked } from ".";
 import ValueTable from "./ValueTable.vue";
-
-const { t } = useI18n();
 
 const props = defineProps<{
   module: keyof THRSModules;
@@ -48,25 +45,25 @@ useIntervalFn(
 );
 </script>
 <template>
-  <div v-if="sensorValues.data">
-    <header class="mb-2 text-2xl capitalize">{{ t("views.thrs.hmi.sensors") }}</header>
-    <section class="grid gap-4 md:grid-cols-2 2xl:grid-cols-4">
-      <hgroup
-        v-for="[field, entries] in entriesGroupedByField"
-        :key="field"
-        class="bg-background border-border rounded-md border"
-      >
-        <header class="p-3 font-semibold capitalize">
-          {{ field }}
-        </header>
-        <p>
-          <ValueTable
-            v-if="entries"
-            :values="entries"
-            :format="(value: number) => value.toFixed(2)"
-          />
-        </p>
-      </hgroup>
-    </section>
-  </div>
+  <section
+    v-if="sensorValues.data"
+    class="grid gap-6 lg:grid-cols-2 2xl:grid-cols-3"
+  >
+    <hgroup
+      v-for="[field, entries] in entriesGroupedByField"
+      :key="field"
+      class="bg-background border-border rounded-md border"
+    >
+      <header class="p-3 font-semibold capitalize">
+        {{ field }}
+      </header>
+      <p>
+        <ValueTable
+          v-if="entries"
+          :values="entries"
+          :format="(value: number) => value.toFixed(2)"
+        />
+      </p>
+    </hgroup>
+  </section>
 </template>

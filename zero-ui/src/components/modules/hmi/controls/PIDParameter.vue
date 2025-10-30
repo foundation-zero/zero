@@ -8,6 +8,7 @@ import {
   NumberFieldIncrement,
   NumberFieldInput,
 } from "@/components/ui/shadcn/number-field";
+import NumberFieldPrefix from "@/components/ui/shadcn/number-field/NumberFieldPrefix.vue";
 import { THRSModules } from "@/lib/consts";
 import { toElementRefs, toUpperCamelCase } from "@/lib/utils";
 import { controlValuesForm, MutationType } from "@/stores/thrs";
@@ -59,63 +60,54 @@ const [p, i, d] = toElementRefs(value);
 
     <div class="mt-6 grid gap-1.5">
       <header class="text-2xs tracking-wide uppercase">{{ componentType }}</header>
-      <div class="flex items-center gap-3">
-        <NumberField
-          v-model="p"
-          class="grow"
-          :step="0.001"
-          :min="0"
-          :max="1"
-        >
-          <NumberFieldContent>
-            <NumberFieldDecrement />
-            <NumberFieldInput />
-            <NumberFieldIncrement />
-          </NumberFieldContent>
-        </NumberField>
-        <span class="font-mono">{{ t("components.inputs.pid.p") }}</span>
-      </div>
 
-      <div class="flex items-center gap-3">
-        <NumberField
-          v-model="i"
-          class="grow"
-          :step="0.01"
-          :min="-1"
-          :max="1"
-        >
-          <NumberFieldContent>
-            <NumberFieldDecrement />
-            <NumberFieldInput />
-            <NumberFieldIncrement />
-          </NumberFieldContent>
-        </NumberField>
-        <span class="font-mono">{{ t("components.inputs.pid.i") }}</span>
-      </div>
+      <NumberField
+        v-model="p"
+        :step="0.001"
+        :min="0"
+        :max="1"
+      >
+        <NumberFieldContent>
+          <NumberFieldPrefix>{{ t("components.inputs.pid.p") }}</NumberFieldPrefix>
+          <NumberFieldDecrement class="left-8.5" />
+          <NumberFieldInput />
+          <NumberFieldIncrement />
+        </NumberFieldContent>
+      </NumberField>
 
-      <div class="flex items-center gap-3">
-        <NumberField
-          v-model="d"
-          class="grow"
-          :step="0.001"
-          :min="0"
-          :max="1"
-        >
-          <NumberFieldContent>
-            <NumberFieldDecrement />
-            <NumberFieldInput />
-            <NumberFieldIncrement />
-          </NumberFieldContent>
-        </NumberField>
-        <span class="font-mono">{{ t("components.inputs.pid.d") }}</span>
-      </div>
+      <NumberField
+        v-model="i"
+        :step="0.01"
+        :min="-1"
+        :max="1"
+      >
+        <NumberFieldContent>
+          <NumberFieldPrefix>{{ t("components.inputs.pid.i") }}</NumberFieldPrefix>
+          <NumberFieldDecrement class="left-8.5" />
+          <NumberFieldInput />
+          <NumberFieldIncrement />
+        </NumberFieldContent>
+      </NumberField>
+
+      <NumberField
+        v-model="d"
+        :step="0.001"
+        :min="0"
+        :max="1"
+      >
+        <NumberFieldContent>
+          <NumberFieldPrefix>{{ t("components.inputs.pid.d") }}</NumberFieldPrefix>
+          <NumberFieldDecrement class="left-8.5" />
+          <NumberFieldInput />
+          <NumberFieldIncrement />
+        </NumberFieldContent>
+      </NumberField>
 
       <Button
         :disabled="isSubmitting || !isDirty"
         class="mt-3"
         @click="submit"
       >
-        {{ t("labels.submit") }}
         <Loader2Icon
           v-if="isSubmitting"
           class="animate-spin"

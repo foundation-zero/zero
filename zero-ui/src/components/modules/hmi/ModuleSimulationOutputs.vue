@@ -4,11 +4,8 @@ import { SIMULATION_FIELDS, THRSModules } from "@/lib/consts";
 import { Client } from "@urql/vue";
 import { useIntervalFn } from "@vueuse/core";
 import { computed } from "vue";
-import { useI18n } from "vue-i18n";
 import { queryFor, queryPacked } from ".";
 import ValueTable from "./ValueTable.vue";
-
-const { t } = useI18n();
 
 const props = defineProps<{
   module: keyof THRSModules;
@@ -50,24 +47,24 @@ useIntervalFn(
 );
 </script>
 <template>
-  <div v-if="simulationValues.data">
-    <header class="mb-2 text-2xl capitalize">{{ t("views.thrs.hmi.simulation:outputs") }}</header>
-    <section class="grid gap-4 md:grid-cols-2 2xl:grid-cols-4">
-      <hgroup
-        v-for="[field, entries] in entriesGroupedByField"
-        :key="field"
-        class="bg-background border-border rounded-md border"
-      >
-        <header class="p-3 font-semibold capitalize">
-          {{ field }}
-        </header>
-        <p>
-          <ValueTable
-            :values="entries"
-            :format="(value: number) => value.toFixed(2)"
-          />
-        </p>
-      </hgroup>
-    </section>
-  </div>
+  <section
+    v-if="simulationValues.data"
+    class="grid gap-6 lg:grid-cols-2"
+  >
+    <hgroup
+      v-for="[field, entries] in entriesGroupedByField"
+      :key="field"
+      class="bg-background border-border rounded-md border"
+    >
+      <header class="p-3 font-semibold capitalize">
+        {{ field }}
+      </header>
+      <p>
+        <ValueTable
+          :values="entries"
+          :format="(value: number) => value.toFixed(2)"
+        />
+      </p>
+    </hgroup>
+  </section>
 </template>

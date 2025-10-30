@@ -8,14 +8,15 @@ const props = defineProps<{
 </script>
 
 <template>
-  <div
+  <span
+    data-slot="prefix"
     :class="
       cn(
-        'relative [&>[data-slot=input]]:has-[[data-slot=decrement]]:pl-5 [&>[data-slot=input]]:has-[[data-slot=increment]]:pr-5 [&>[data-slot=input]]:has-[[data-slot=prefix]]:pl-12',
+        'bg-muted border-border-subtle text-muted-foreground absolute top-0.5 bottom-0.5 left-0.5 flex transform items-center rounded-l-sm border-r px-3 font-mono',
         props.class,
       )
     "
   >
     <slot />
-  </div>
+  </span>
 </template>
