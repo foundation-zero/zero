@@ -15,6 +15,7 @@ Our color system is organized into several layers:
 The foundational color scales that serve as the building blocks for our entire system:
 
 - **Neutral** - Grayscale colors from white to black
+- **Neutral Grey** - Alternative grayscale palette
 - **Brand** - Primary brand colors in a full scale
 - **Accent A** - Red/pink accent colors for destructive states
 - **Accent B** - Yellow/amber accent colors for warning states  
