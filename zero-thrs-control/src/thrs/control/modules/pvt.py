@@ -9,6 +9,7 @@ from thrs.control.modules.pvt_group import (
     PvtGroupParameters,
     PvtGroupSensorValues,
 )
+from thrs.input_output.alarms import BaseAlarms
 from thrs.input_output.base import Stamped, ThrsModel
 from thrs.input_output.definitions.control import Pump, Valve
 from thrs.input_output.definitions.units import Celsius, Ratio, Tuning
@@ -165,6 +166,9 @@ class PvtControl(Control[PvtSensorValues, PvtControlValues, PvtParameters]):
     def initial(self) -> ControlResult[PvtControlValues]:
         return ControlResult(self._time(), self._current_values)
 
+    def update_parameters(self, parameters: PvtParameters):
+        pass
+
     def _control_heat_dump_mix(self, sensor_values: PvtSensorValues):
         self._current_values.pvt_mix_exchanger.setpoint = Stamped(
             value=self._heat_dump_controller(
@@ -228,3 +232,7 @@ class PvtControl(Control[PvtSensorValues, PvtControlValues, PvtParameters]):
         self._current_values.pvt_mix_owners = self._owners_control.current_values.mix
 
         return ControlResult(self._time(), self._current_values)
+
+
+class PvtAlarms(BaseAlarms):
+    pass

@@ -168,3 +168,6 @@ class ConsumersControl(
     @property
     def parameters(self) -> ConsumersParameters:
         return self._parameters
+
+    def update_parameters(self, parameters: ConsumersParameters):
+        pass

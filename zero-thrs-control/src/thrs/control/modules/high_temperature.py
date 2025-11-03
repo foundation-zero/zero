@@ -91,6 +91,9 @@ class HighTemperatureControl(
     def parameters(self) -> HighTemperatureParameters:
         return self._parameters
 
+    def update_parameters(self, parameters: HighTemperatureParameters):
+        pass
+
 
 class HighTemperatureAlarms(BaseAlarms):
     pass

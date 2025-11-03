@@ -142,6 +142,9 @@ class PvtGroupControl(
     def mode(self) -> Literal["idle", "recovery"]:
         return self.state  # type: ignore
 
+    def update_parameters(self, parameters: PvtGroupParameters):
+        pass
+
     def initial(self) -> ControlResult[PvtGroupControlValues]:
         return ControlResult(self._time(), self._current_values)
 
