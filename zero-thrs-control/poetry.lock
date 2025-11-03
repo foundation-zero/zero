@@ -456,6 +456,35 @@ files = [
 colorama = {version = "*", markers = "platform_system == \"Windows\""}
 
 [[package]]
+name = "cmake"
+version = "4.1.2"
+description = "CMake is an open-source, cross-platform family of tools designed to build, test and package software"
+optional = false
+python-versions = ">=3.8"
+groups = ["main"]
+files = [
+    {file = "cmake-4.1.2-py3-none-macosx_10_10_universal2.whl", hash = "sha256:415396a7320856c64bd27ca00950b2bbb161604bff60ae5ebf256e2ca08b81ab"},
+    {file = "cmake-4.1.2-py3-none-manylinux2014_aarch64.manylinux_2_17_aarch64.whl", hash = "sha256:b608042882f79ad2b92ce44bc1f1266882b7784f8feab313ae0b6c735379bd4c"},
+    {file = "cmake-4.1.2-py3-none-manylinux2014_i686.manylinux_2_17_i686.whl", hash = "sha256:96f5b0b2685137a3fd37f73cce04dcfc1cc05208be5890460fcd9f2033364df8"},
+    {file = "cmake-4.1.2-py3-none-manylinux2014_ppc64le.manylinux_2_17_ppc64le.whl", hash = "sha256:4bdf265e908ae18a318e5e1b7f796ba4b80ec0e5d53b3bf82f503786cab3a8ce"},
+    {file = "cmake-4.1.2-py3-none-manylinux2014_s390x.manylinux_2_17_s390x.whl", hash = "sha256:3e9dcc042d4b41bab6a5b5d3c3144a73009cffd6f390b4ea7b3971967caa2f7d"},
+    {file = "cmake-4.1.2-py3-none-manylinux2014_x86_64.manylinux_2_17_x86_64.whl", hash = "sha256:7587a2b2ce48df1fd68a68657b6c5a711b467c346812e46dfb9cd996cd6e2352"},
+    {file = "cmake-4.1.2-py3-none-manylinux_2_31_armv7l.whl", hash = "sha256:fe6a4f95d90deeb4c63818d6a3a601d038b06d535ebd13515f41814ae9c7a9ae"},
+    {file = "cmake-4.1.2-py3-none-manylinux_2_35_riscv64.whl", hash = "sha256:6d5e09cf9b5aded14c1e271b09b0d0749b4db38002d5715ab626695b1baaf0cb"},
+    {file = "cmake-4.1.2-py3-none-musllinux_1_2_aarch64.whl", hash = "sha256:ec978480e11a2c2591d54ed4e92a911913a85d805bd3d6311eb51dbcd22b8697"},
+    {file = "cmake-4.1.2-py3-none-musllinux_1_2_armv7l.whl", hash = "sha256:1034d0670581149981138609fe993dd791b92992e8a57c1b92ab9b3d818b6069"},
+    {file = "cmake-4.1.2-py3-none-musllinux_1_2_i686.whl", hash = "sha256:d24040de733cfd8adc005dfdf5a532b01e991fde94eda6bed289538fd0b31fe1"},
+    {file = "cmake-4.1.2-py3-none-musllinux_1_2_ppc64le.whl", hash = "sha256:c19f2d56a1cf50bfb7d3b736707419cf1fab14b5d22d5452f8cf7b8c1208df01"},
+    {file = "cmake-4.1.2-py3-none-musllinux_1_2_riscv64.whl", hash = "sha256:f0676a6357957a1e3391815385d6494438b1ad2df97928727ce9e5080a1d38f1"},
+    {file = "cmake-4.1.2-py3-none-musllinux_1_2_s390x.whl", hash = "sha256:56d1afbb5f7d8e588b7f384c323eff93aff7846666d7db18b7851b870ac1f8ea"},
+    {file = "cmake-4.1.2-py3-none-musllinux_1_2_x86_64.whl", hash = "sha256:679cc0e1cc7227ead59f7126b27a9df44f3273c2952ab720f94e5dc5a3e26bd0"},
+    {file = "cmake-4.1.2-py3-none-win32.whl", hash = "sha256:d7ecea15c2cae907966adf64e16ede1dae3adf67ce176d70279a968b01b6cba4"},
+    {file = "cmake-4.1.2-py3-none-win_amd64.whl", hash = "sha256:0a5edb762341220649794580b3b9608ea782b5ba6a3f7fe4e21eb4a4f705ec39"},
+    {file = "cmake-4.1.2-py3-none-win_arm64.whl", hash = "sha256:a1d4ab14b8274c85ba28de739bbf212efc267286d8908e8224e0dfff667a3a5e"},
+    {file = "cmake-4.1.2.tar.gz", hash = "sha256:bee98458447b3a3b937b72849489e6e37ba0076d46df2fbb3af26739e1a3ed10"},
+]
+
+[[package]]
 name = "colorama"
 version = "0.4.6"
 description = "Cross-platform colored terminal text."
@@ -794,31 +823,31 @@ devel = ["colorama", "json-spec", "jsonschema", "pylint", "pytest", "pytest-benc
 
 [[package]]
 name = "fmpy"
-version = "0.3.22"
+version = "0.3.26"
 description = "Simulate Functional Mock-up Units (FMUs) in Python"
 optional = false
 python-versions = ">=3.10"
 groups = ["main"]
 files = [
-    {file = "FMPy-0.3.22-py3-none-any.whl", hash = "sha256:d280f63852cfc571341648c73653f2e4aec28d33f98189515cc34bf696feb88c"},
+    {file = "fmpy-0.3.26-py3-none-any.whl", hash = "sha256:5a0077d0157bc8137022c6d0cc96f422086871ff26f0c1b04a7a1b85d81540b9"},
 ]
 
 [package.dependencies]
-attrs = "*"
-Jinja2 = "*"
-lark = "*"
-lxml = "*"
-msgpack = "*"
-numpy = "*"
-pywin32 = {version = "*", markers = "platform_system == \"Windows\""}
+attrs = ">=24.2.0"
+cmake = ">=4.0.3"
+jinja2 = ">=3.1.4"
+lark = ">=1.2.2"
+lxml = ">=5.3.0"
+msgpack = ">=1.1.0"
+nbformat = ">=5.10.4"
+numpy = ">=2.1.3"
 
 [package.extras]
-complete = ["PySide6", "dash-bootstrap-components (>=1.0.0)", "dask[bag]", "kaleido", "matplotlib", "notebook", "plotly", "pyqtgraph", "requests", "scipy"]
-examples = ["dask[bag]", "requests"]
-gui = ["PySide6", "pyqtgraph"]
-notebook = ["kaleido", "notebook", "plotly"]
-plot = ["matplotlib", "scipy"]
-webapp = ["dash-bootstrap-components (>=1.0.0)"]
+complete = ["dash-bootstrap-components (>=2.0.1)", "dask[bag] (>=2024.11.2)", "plotly (>=5.24.1)", "pyqtgraph (>=0.13.7)", "pyside6 (>=6.8.0.2)", "pywin32 (>=308) ; sys_platform == \"win32\"", "requests (>=2.32.3)", "scipy (>=1.14.1)"]
+examples = ["dask[bag] (>=2024.11.2)", "requests (>=2.32.3)"]
+gui = ["pyqtgraph (>=0.13.7)", "pyside6 (>=6.8.0.2)", "pywin32 (>=308) ; sys_platform == \"win32\""]
+plot = ["plotly (>=5.24.1)", "scipy (>=1.14.1)"]
+webapp = ["dash-bootstrap-components (>=2.0.1)"]
 
 [[package]]
 name = "fonttools"
@@ -3381,7 +3410,7 @@ description = "Python for Window Extensions"
 optional = false
 python-versions = "*"
 groups = ["main"]
-markers = "sys_platform == \"win32\" and platform_python_implementation != \"PyPy\" or platform_system == \"Windows\""
+markers = "sys_platform == \"win32\" and platform_python_implementation != \"PyPy\""
 files = [
     {file = "pywin32-310-cp310-cp310-win32.whl", hash = "sha256:6dd97011efc8bf51d6793a82292419eba2c71cf8e7250cfac03bba284454abc1"},
     {file = "pywin32-310-cp310-cp310-win_amd64.whl", hash = "sha256:c3e78706e4229b915a0821941a84e7ef420bf2b77e08c9dae3c76fd03fd2ae3d"},

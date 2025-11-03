@@ -104,20 +104,20 @@ def compare_yard_tags(
             .then(pl.concat_str(pl.col("Pos"), pl.col("Sub"), separator="-"))
             .otherwise(pl.col("Pos"))
             .alias("Tag"),
-            pl.col("technical name").str.replace_all("-", "_").alias("technical name"),
+            pl.col("Technical name").str.replace_all("-", "_").alias("Technical name"),
         )
-        .select(["technical name", "Tag"])
+        .select(["Technical name", "Tag"])
     )
 
     duplicated_tags = (
-        sheet_tags_df.group_by("technical name")
+        sheet_tags_df.group_by("Technical name")
         .agg(pl.col("Tag").unique())
         .filter(pl.col("Tag").list.len() > 1)
     )
     assert len(duplicated_tags) == 0, (
         f"Duplicated tags found in sheet: {duplicated_tags}"
     )
-    sheet_tags = sheet_tags_df.rows_by_key("technical name", named=True, unique=True)
+    sheet_tags = sheet_tags_df.rows_by_key("Technical name", named=True, unique=True)
 
     for model in [sensor_values_cls, control_values_cls]:
         for field_name, field in model.model_fields.items():
