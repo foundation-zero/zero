@@ -35,7 +35,8 @@ class MarpowerReader(ReaderBase):
             "unit": pl.String,
             "precision": pl.String,
             "data_type": pl.String,
-            "mqtt_topic": pl.String, "mqtt_json_path": pl.String
+            "mqtt_topic": pl.String,
+            "mqtt_json_path": pl.String
         }
 
     @staticmethod
