@@ -26,9 +26,6 @@ test = [
     "pytest-mock>=3.14.0,<4.0.0",
 ]
 
-[project.scripts]
-loads = "generator.test:main"
-
 [tool.mypy]
 ignore_missing_imports = true
 check_untyped_defs = true
