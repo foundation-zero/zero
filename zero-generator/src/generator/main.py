@@ -16,14 +16,11 @@ class DataGenerator:
         self._mqtt_client: MqttClient = mqtt_client
         self.running: bool = False
         self.config: list[dict] = []
-        self.tasks: list[asyncio.Task] = []
 
     @asynccontextmanager
     @staticmethod
     async def init_from_settings(settings: Settings):
-        async with MqttClient(
-            settings.mqtt_host, settings.mqtt_port, identifier="generator"
-        ) as mqtt_client:
+        async with MqttClient(settings.mqtt_host, settings.mqtt_port, identifier="generator") as mqtt_client:
             yield DataGenerator(mqtt_client=mqtt_client)
 
     async def generate(self, config: list[dict]):
@@ -53,33 +50,26 @@ class DataGenerator:
         else:
             logger.info("Starting data generator...")
             self.config = config
-            for topic_config in config:
-                topic = topic_config.get("topic")
-                interval = topic_config.get("interval")
-                values = topic_config.get("values")
+            try:
+                async with asyncio.TaskGroup() as group:
+                    for topic_config in config:
+                        topic = topic_config.get("topic")
+                        interval = topic_config.get("interval")
+                        values = topic_config.get("values")
 
-                if not topic or not interval or not values:
-                    raise ValueError(
-                        f"topic, interval, and values must be defined: {topic}, {interval}, {values}"
-                    )
-                else:
-                    logger.debug(f"Creating task for topic: {topic}")
-                    self.tasks.append(
-                        asyncio.create_task(
-                            self._generate_single_topic(topic, interval, values)
-                        )
-                    )
+                        if not topic or not interval or not values:
+                            raise ValueError(
+                                f"topic, interval, and values must be defined: {topic}, {interval}, {values}"
+                            )
+                        else:
+                            logger.debug(f"Creating task for topic: {topic}")
+                            group.create_task(self._generate_single_topic(topic, interval, values))
 
-            self.running = True
-
-            await asyncio.gather(*self.tasks)
-
-    async def stop(self):
-        """Stops the data generation by cancelling all running tasks."""
-        for t in self.tasks:
-            t.cancel()
-        self.tasks = []
-        self.running = False
+                    self.running = True
+            except Exception:
+                self.running = False
+                logger.info("Data generator stopped due to an exception.")
+                raise
 
     async def _generate_single_topic(self, topic: str, interval: float, values: dict):
         while True:
@@ -99,9 +89,7 @@ class DataGenerator:
                     determined_values[field] = random.choice(choices)
                 else:
                     data_type, lower_bound, upper_bound = value_definition
-                    determined_values[field] = self._default_value(
-                        data_type, int(lower_bound), int(upper_bound)
-                    )
+                    determined_values[field] = self._default_value(data_type, int(lower_bound), int(upper_bound))
             elif callable(value_definition):
                 determined_values[field] = value_definition()
             else:
@@ -109,9 +97,7 @@ class DataGenerator:
 
         return str(determined_values)
 
-    def _default_value(
-        self, data_type: str, lower_bound: int = 0, upper_bound: int = 100
-    ):
+    def _default_value(self, data_type: str, lower_bound: int = 0, upper_bound: int = 100):
         match data_type:
             case "int":
                 return random.randint(lower_bound, upper_bound)
