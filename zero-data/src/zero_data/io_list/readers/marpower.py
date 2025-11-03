@@ -25,22 +25,6 @@ _DATA_TYPES = {
 class MarpowerReader(ReaderBase):
     def __init__(self):
         self.topic_prefix = "marpower/"
-        self.io_list_schema = {
-            "device": pl.String,
-            "tag": pl.String,
-            "yard_tag": pl.String,
-            "target_type": pl.String,
-            "terminal": pl.String,
-            "cabinet": pl.String,
-            "system": pl.String,
-            "description": pl.String,
-            "unit": pl.String,
-            "precision": pl.String,
-            "data_type": pl.String,
-            "mqtt_topic": pl.String,
-            "mqtt_json_path": pl.String
-        }
-
     @staticmethod
     def _read_headers(workbook):
         """Determine the header starting from the first non-empty row of the Excel sheet"""
@@ -86,7 +70,21 @@ class MarpowerReader(ReaderBase):
             "data_type",
             "mqtt_topic",
             "mqtt_json_path",
-        ]).cast(self.io_list_schema) # type: ignore
+        ]).cast({
+            "device": pl.String,
+            "tag": pl.String,
+            "yard_tag": pl.String,
+            "target_type": pl.String,
+            "terminal": pl.String,
+            "cabinet": pl.String,
+            "system": pl.String,
+            "description": pl.String,
+            "unit": pl.String,
+            "precision": pl.String,
+            "data_type": pl.String,
+            "mqtt_topic": pl.String,
+            "mqtt_json_path": pl.String
+        })
 
     def _get_io_topics(self, df: pl.DataFrame) -> List[IOTopic]:
         """Get the IO topics from the DataFrame"""
