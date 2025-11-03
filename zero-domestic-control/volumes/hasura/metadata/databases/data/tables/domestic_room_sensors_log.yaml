@@ -1,0 +1,18 @@
+table:
+  name: room_sensors_log
+  schema: domestic
+object_relationships:
+  - name: room
+    using:
+      foreign_key_constraint_on: room_id
+  - name: sensor
+    using:
+      foreign_key_constraint_on: id
+select_permissions:
+  - role: user
+    permission:
+      columns: "*"
+      filter:
+        room_id: { _eq: X-Hasura-Cabin }
+      allow_aggregations: false
+    comment: ""

@@ -1,5 +1,5 @@
 table:
-  name: rooms_controls
+  name: room_controls_log
   schema: domestic
 object_relationships:
   - name: room

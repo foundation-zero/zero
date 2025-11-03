@@ -1,6 +1,6 @@
 - name: domestic_control
   definition:
-    url: "{{DOMESTIC_CONTROL_URL}}"
+    url: '{{DOMESTIC_CONTROL_URL}}'
     timeout_seconds: 60
     customization: {}
   comment: ""
@@ -8,21 +8,19 @@
     - role: user
       definition:
         schema: |
+          type Mutation {
+            setAmplifiers(ids: [ID!]!, on: Boolean!): MutationResponse!
+            setBlinds(ids: [ID!]!, level: Float!): MutationResponse!
+            setLightingGroups(ids: [ID!], level: Float!): MutationResponse!
+            setRoomCo2Setpoints(ids: [ID!]!, co2: Float!): MutationResponse!
+            setRoomHumiditySetpoints(ids: [ID!]!, humidity: Float!): MutationResponse!
+            setRoomTemperatureSetpoints(ids: [ID!]!, temperature: Float!): MutationResponse!
+          }
           type MutationResponse {
             code: Int!
             message: String!
             success: Boolean!
           }
-
-          type Mutation {
-            setAmplifiers(ids: [ID!]!, on: Boolean!): MutationResponse!
-            setBlinds(ids: [ID!]!, level: Float!): MutationResponse!
-            setLightingGroups(ids: [ID!], level: Float!): MutationResponse!
-            setRoomTemperatureSetpoints(ids: [ID!]!, temperature: Float!): MutationResponse!
-            setRoomHumiditySetpoints(ids: [ID!]!, humidity: Float!): MutationResponse!
-            setRoomCo2Setpoints(ids: [ID!]!, co2: Float!): MutationResponse!
-          }
-
           type Query {
             version: String!
           }

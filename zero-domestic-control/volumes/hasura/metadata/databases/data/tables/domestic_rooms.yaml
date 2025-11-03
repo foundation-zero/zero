@@ -8,60 +8,60 @@ array_relationships:
         column: room_id
         table:
           name: amplifiers
-          schema: public
+          schema: domestic
   - name: blinds
     using:
       foreign_key_constraint_on:
         column: room_id
         table:
           name: blinds
-          schema: public
-  - name: controls
+          schema: domestic
+  - name: conditions
     using:
       foreign_key_constraint_on:
         column: room_id
         table:
-          name: controls
-          schema: public
+          name: conditions
+          schema: domestic
   - name: lightingGroups
     using:
       foreign_key_constraint_on:
         column: room_id
         table:
           name: lighting_groups
-          schema: public
-  - name: roomsControls
+          schema: domestic
+  - name: roomControls
     using:
       foreign_key_constraint_on:
         column: room_id
         table:
-          name: rooms_controls
-          schema: public
-  - name: roomsControlsLogs
+          name: room_controls
+          schema: domestic
+  - name: roomControlsLogs
     using:
       foreign_key_constraint_on:
         column: room_id
         table:
-          name: rooms_controls_log
-          schema: public
-  - name: roomsSensors
+          name: room_controls_log
+          schema: domestic
+  - name: roomSensors
     using:
       foreign_key_constraint_on:
         column: room_id
         table:
-          name: rooms_sensors
-          schema: public
-  - name: roomsSensorsLogs
+          name: room_sensors
+          schema: domestic
+  - name: roomSensorsLogs
     using:
       foreign_key_constraint_on:
         column: room_id
         table:
-          name: rooms_sensors_log
-          schema: public
+          name: room_sensors_log
+          schema: domestic
   - name: sensors
     using:
       foreign_key_constraint_on:
         column: room_id
         table:
           name: sensors
-          schema: public
+          schema: domestic

@@ -1,5 +1,5 @@
 table:
-  name: rooms_sensors
+  name: conditions
   schema: domestic
 object_relationships:
   - name: room
