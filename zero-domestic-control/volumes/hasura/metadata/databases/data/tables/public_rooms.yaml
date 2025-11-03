@@ -1,6 +1,6 @@
 table:
   name: rooms
-  schema: public
+  schema: domestic
 array_relationships:
   - name: amplifiers
     using:

@@ -1,6 +1,6 @@
 table:
   name: sensors
-  schema: public
+  schema: domestic
 object_relationships:
   - name: room
     using:

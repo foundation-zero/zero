@@ -1,6 +1,6 @@
 table:
   name: rooms_sensors_log
-  schema: public
+  schema: domestic
 object_relationships:
   - name: control
     using:

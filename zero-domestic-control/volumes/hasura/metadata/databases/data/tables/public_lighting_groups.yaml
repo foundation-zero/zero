@@ -1,6 +1,6 @@
 table:
   name: lighting_groups
-  schema: public
+  schema: domestic
 object_relationships:
   - name: room
     using:

@@ -1,6 +1,6 @@
 table:
   name: controls
-  schema: public
+  schema: domestic
 object_relationships:
   - name: room
     using:

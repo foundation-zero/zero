@@ -1,6 +1,6 @@
 table:
   name: blinds
-  schema: public
+  schema: domestic
 object_relationships:
   - name: room
     using:
