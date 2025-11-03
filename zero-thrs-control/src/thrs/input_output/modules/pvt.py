@@ -1,7 +1,12 @@
 from typing import Annotated
 
 from pydantic import computed_field
-from thrs.input_output.base import component_meta, SimulationInputs, ThrsModel
+from thrs.input_output.base import (
+    SimulationValues,
+    component_meta,
+    SimulationInputs,
+    ThrsModel,
+)
 from thrs.input_output.definitions import control, sensor, simulation
 
 
@@ -389,7 +394,7 @@ class PvtSimulationInputs(SimulationInputs):
     pvt_seawater_supply: simulation.Boundary
 
 
-class PvtSimulationOutputs(ThrsModel):
+class PvtSimulationOutputs(SimulationValues):
     pvt_module_return: simulation.Boundary
     pvt_module_supply: simulation.FlowBoundary
     pvt_seawater_return: simulation.TemperatureBoundary

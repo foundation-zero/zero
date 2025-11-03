@@ -32,6 +32,9 @@ class SwitchingControl[SensorValues: ThrsModel, ControlValues: ThrsModel, P: Thr
     def parameters(self) -> P:
         return self._automatic.parameters
 
+    def update_parameters(self, parameters: P):
+        self._automatic.update_parameters(parameters)
+
     @staticmethod
     def modes() -> list[str]:
         return ["manual", "automatic"]

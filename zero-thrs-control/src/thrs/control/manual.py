@@ -39,3 +39,6 @@ class ManualControl[SensorValues: ThrsModel, ControlValues: ThrsModel](
 
     def control(self, sensor_values: SensorValues) -> ControlResult[ControlValues]:
         return ControlResult(self._time_fn(), self._control_values)
+
+    def update_parameters(self, parameters: EmptyParameters):
+        pass

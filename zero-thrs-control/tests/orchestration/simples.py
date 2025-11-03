@@ -63,6 +63,9 @@ class SimpleControl(Control[SimpleInOut, SimpleInOut, SimpleParameters]):
     def parameters(self) -> SimpleParameters:
         return SimpleParameters()
 
+    def update_parameters(self, parameters: SimpleParameters):
+        pass
+
 
 class SimpleAlarms(BaseAlarms[SimpleInOut, SimpleInOut]):
     pass

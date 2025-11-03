@@ -208,6 +208,9 @@ class PcmControl(Control[PcmSensorValues, PcmControlValues, PcmParameters]):
     def initial(self) -> ControlResult[PcmControlValues]:
         return ControlResult(self._time(), self._current_values)
 
+    def update_parameters(self, parameters: PcmParameters):
+        pass
+
     def control(self, sensor_values: PcmSensorValues) -> ControlResult:
         self._try_supplying(sensor_values) if self.mode == "idle" else None  # type: ignore
         self._try_charging(sensor_values) if self.mode == "idle" else None  # type: ignore
