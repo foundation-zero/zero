@@ -1,8 +1,10 @@
 from pathlib import Path
-from typing import List
+from typing import List, Mapping, Union
+
 
 from openpyxl import load_workbook
 import polars as pl
+from polars import DataType, String
 
 from ..types import IOValue, IOTopic, IOResult
 from ..base import ReaderBase
@@ -84,7 +86,7 @@ class MarpowerReader(ReaderBase):
             "data_type",
             "mqtt_topic",
             "mqtt_json_path",
-        ]).cast(self.io_list_schema)
+        ]).cast(self.io_list_schema) # type: ignore
 
     def _get_io_topics(self, df: pl.DataFrame) -> List[IOTopic]:
         """Get the IO topics from the DataFrame"""
