@@ -28,9 +28,6 @@ class ConsumersParameters(ThrsModel):
 
 _ZERO_TIME = datetime.fromtimestamp(0)
 _INITIAL_CONTROL_VALUES = ConsumersControlValues(
-    consumers_switch_fahrenheit_direct_supply=Valve(
-        setpoint=Stamped(value=Valve.SWITCH_STRAIGHT, timestamp=_ZERO_TIME)
-    ),
     consumers_flowcontrol_bypass=Valve(
         setpoint=Stamped(value=Valve.OPEN, timestamp=_ZERO_TIME)
     ),
@@ -42,9 +39,6 @@ _INITIAL_CONTROL_VALUES = ConsumersControlValues(
     ),
     consumers_switch_fahrenheit_exchanger=Valve(
         setpoint=Stamped(value=Valve.OPEN, timestamp=_ZERO_TIME)
-    ),
-    consumers_switch_fahrenheit_direct_return=Valve(
-        setpoint=Stamped(value=Valve.CLOSED, timestamp=_ZERO_TIME)
     ),
     consumers_switch_boosting=Valve(
         setpoint=Stamped(value=Valve.OPEN, timestamp=_ZERO_TIME)
