@@ -1,10 +1,9 @@
 from pathlib import Path
-from typing import List, Mapping, Union
+from typing import List
 
 
 from openpyxl import load_workbook
 import polars as pl
-from polars import DataType, String
 
 from ..types import IOValue, IOTopic, IOResult
 from ..base import ReaderBase
