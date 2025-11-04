@@ -8,9 +8,7 @@ from loads.api import app
 @pytest.mark.asyncio
 async def test_graphql():
     async with LifespanManager(app) as manager:
-        async with AsyncClient(
-            transport=ASGITransport(app=manager.app), base_url="http://test"
-        ) as client:
+        async with AsyncClient(transport=ASGITransport(app=manager.app), base_url="http://test") as client:
             response = client.post(
                 "/graphql",
                 json={
