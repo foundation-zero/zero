@@ -62,9 +62,6 @@ The timestamp determined by ZERO.
 {% enddocs %}
 
 <!-- Misc. -->
-{% docs marpower_json %}
-The value is contained in a Marpower JSON string.
-{% enddocs %}
 {% docs dc_converter_sides_explained %}
 The values are measured on both sides of the converter (side A and B). The battery will be connected to side A.
 {% enddocs %}
