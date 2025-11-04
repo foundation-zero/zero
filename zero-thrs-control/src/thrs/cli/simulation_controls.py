@@ -15,6 +15,8 @@ from pydantic import Field
 
 from thrs.classes.control import Control
 from thrs.control.manual import ManualControl
+from thrs.control.modules.consumers import ConsumersControl, ConsumersParameters
+from thrs.control.modules.pcm import PcmAlarms, PcmControl, PcmParameters
 from thrs.control.modules.pvt import PvtAlarms, PvtControl, PvtParameters
 from thrs.control.modules.thrusters import (
     ThrustersAlarms,
@@ -36,6 +38,13 @@ from thrs.input_output.definitions.simulation import (
     Thruster,
 )
 from thrs.input_output.definitions.units import PcsMode
+from thrs.input_output.modules.consumers import ConsumersSimulationInputs
+from thrs.input_output.modules.pcm import (
+    PcmControlValues,
+    PcmSensorValues,
+    PcmSimulationInputs,
+    PcmSimulationOutputs,
+)
 from thrs.input_output.modules.pvt import (
     PvtControlValues,
     PvtSensorValues,
@@ -50,7 +59,11 @@ from thrs.input_output.modules.thrusters import (
 )
 from thrs.orchestration.config import Config
 from thrs.orchestration.executor import MqttExecutor, SimulationExecutor
-from thrs.simulation.models.fmu_paths import thrusters_path, pvt_path
+from thrs.simulation.models.fmu_paths import (
+    thrusters_path,
+    pvt_path,
+    pcm_path,
+)
 from thrs.orchestration.simulator import Simulator, SimulatorModel
 
 logger = logging.getLogger(__name__)
@@ -78,11 +91,41 @@ INPUTS = {
             temperature=Stamped.stamp(32), flow=Stamped.stamp(50)
         ),
     ),
+    "pcm": PcmSimulationInputs(
+        pcm_producers_supply=Boundary(
+            temperature=Stamped.stamp(70), flow=Stamped.stamp(80)
+        ),
+        pcm_consumers_supply=TemperatureBoundary(temperature=Stamped.stamp(30)),
+        pcm_freshwater_supply=Boundary(
+            temperature=Stamped.stamp(40), flow=Stamped.stamp(0)
+        ),
+    ),
+    "consumers": ConsumersSimulationInputs(
+        consumers_boosting_supply=Boundary(
+            temperature=Stamped.stamp(30.0), flow=Stamped.stamp(10.0)
+        ),
+        consumers_fahrenheit_supply=Boundary(
+            temperature=Stamped.stamp(30.0), flow=Stamped.stamp(10.0)
+        ),
+        consumers_module_supply=Boundary(
+            temperature=Stamped.stamp(60.0), flow=Stamped.stamp(10.0)
+        ),
+    ),
 }
 
-CONTROL_PARAMS = {"thrusters": ThrustersParameters(), "pvt": PvtParameters()}
+CONTROL_PARAMS = {
+    "thrusters": ThrustersParameters(),
+    "pvt": PvtParameters(),
+    "pcm": PcmParameters(),
+    "consumers": ConsumersParameters(),
+}
 
-CONTROLS = {"thrusters": ThrustersControl, "pvt": PvtControl}
+CONTROLS = {
+    "thrusters": ThrustersControl,
+    "pvt": PvtControl,
+    "pcm": PcmControl,
+    "consumers": ConsumersControl,
+}
 
 MODES = {
     "thrusters": SimulatorModel(
@@ -109,9 +152,21 @@ MODES = {
         tick_duration=timedelta(seconds=1),
         start_time=datetime.now(),
     ),
+    "pcm": SimulatorModel(
+        fmu_path=pcm_path,
+        sensor_values_cls=PcmSensorValues,
+        control_values_cls=PcmControlValues,
+        simulation_outputs_cls=PcmSimulationOutputs,
+        simulation_inputs=INPUTS["pcm"],
+        control_cls=CONTROLS["pcm"],
+        control_parameters=CONTROL_PARAMS["pcm"],
+        alarms=PcmAlarms(),
+        tick_duration=timedelta(seconds=1),
+        start_time=datetime.now(),
+    ),
 }
 
-Modes = Literal["thrusters", "pvt"]
+Modes = Literal["thrusters", "pvt", "pcm", "consumers"]
 
 
 @dataclass
