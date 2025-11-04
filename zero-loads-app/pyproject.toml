@@ -31,6 +31,7 @@ generator = { path = "../zero-generator", develop = true }
 
 [project.scripts]
 loads = "loads.__main__:run"
+test = "loads.stub.sensor.main:run"
 
 [tool.poetry.group.dev]
 optional = true
