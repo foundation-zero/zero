@@ -1,7 +1,7 @@
 version: 2
 models:
   - name: battery_dc_converter_power_data
-    description: Voltage and current values of the battery DC converters extended with metadata.
+    description: Voltage and current values of the battery DC converters extended with metadata. {{ doc("dc_converter_sides_explained") }}
     columns:
       - name: topic
         description: '{{ doc("topic") }}'
@@ -14,19 +14,19 @@ models:
       - name: voltage_a
         description: '{{ doc("voltage_at_side") }} A.'
       - name: voltage_a_timestamp
-        description: '{{ doc("timestamp") }}'
+        description: '{{ doc("timestamp_voltage_at_side") }} A.'
       - name: voltage_b
         description: '{{ doc("voltage_at_side") }} B.'
       - name: voltage_b_timestamp
-        description: '{{ doc("timestamp") }}'
+        description: '{{ doc("timestamp_voltage_at_side") }} B.'
       - name: current_a
         description: '{{ doc("current_at_side") }} A.'
       - name: current_a_timestamp
-        description: '{{ doc("timestamp") }}'
+        description: '{{ doc("timestamp_current_at_side") }} A.'
       - name: current_b
         description: '{{ doc("current_at_side") }} B.'
       - name: current_b_timestamp
-        description: '{{ doc("timestamp") }}'
+        description: '{{ doc("timestamp_current_at_side") }} B.'
       - name: electrical_system
         description: '{{ doc("electrical_system") }}'
       - name: group_name
@@ -43,9 +43,9 @@ models:
         data_tests:
             - not_null
       - name: stored_energy
-        description: The electrical energy (Wh) stored in the battery.
+        description: '{{ doc("stored_energy") }}'
       - name: stored_energy_timestamp
-        description: '{{ doc("timestamp") }}'
+        description: Timestamp at which the stored energy value was reported.
       - name: electrical_system
         description: '{{ doc("electrical_system") }}'
       - name: group_name
@@ -64,11 +64,11 @@ models:
       - name: active_power
         description: '{{ doc("active_power") }}'
       - name: active_power_timestamp
-        description: '{{ doc("timestamp") }}'
+        description: Timestamp at which the active power value was reported.
       - name: power_factor
         description: '{{ doc("power_factor") }}'
       - name: power_factor_timestamp
-        description: '{{ doc("timestamp") }}'
+        description: Timestamp at which the power factor value was reported.
       - name: electrical_system
         description: '{{ doc("electrical_system") }}'
       - name: group_name

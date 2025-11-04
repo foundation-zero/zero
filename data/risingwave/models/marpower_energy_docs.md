@@ -29,8 +29,14 @@ The measured voltage (V) at side
 {% docs current_at_side %}
 The measured current (A) at side
 {% enddocs %}
+{% docs timestamp_voltage_at_side %}
+Timestamp at which the voltage value was measured at side
+{% enddocs %}
+{% docs timestamp_current_at_side %}
+Timestamp at which the current value was measured at side
+{% enddocs %}
 {% docs stored_energy %}
-The electrical energy (Wh) stored in the battery.
+The electrical energy (kWh) stored in the battery.
 {% enddocs %}
 
 <!-- Metadata fields -->
@@ -59,6 +65,6 @@ The timestamp determined by ZERO.
 {% docs marpower_json %}
 The value is contained in a Marpower JSON string.
 {% enddocs %}
-{% docs marpower_json_explained %}
-Each value is contained in a Marpower JSON string and complemented with a timestamp.
+{% docs dc_converter_sides_explained %}
+The values are measured on both sides of the converter (side A and B). The battery will be connected to side A.
 {% enddocs %}
