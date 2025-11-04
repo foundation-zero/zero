@@ -1,7 +1,6 @@
 from pathlib import Path
 from typing import List
 
-
 from openpyxl import load_workbook
 import polars as pl
 
@@ -24,6 +23,7 @@ _DATA_TYPES = {
 class MarpowerReader(ReaderBase):
     def __init__(self):
         self.topic_prefix = "marpower/"
+    
     @staticmethod
     def _read_headers(workbook):
         """Determine the header starting from the first non-empty row of the Excel sheet"""
@@ -41,7 +41,8 @@ class MarpowerReader(ReaderBase):
             ]
             yield " ".join(headers)
 
-    def _normalize_marpower_io_list(self, df: pl.DataFrame):
+    @staticmethod
+    def _normalize_marpower_io_list(df: pl.DataFrame):
         """Normalize the IO list by renaming columns and filtering out unnecessary rows"""
         renamed_df = df.rename(lambda c: c.replace(" ", "_").lower())
         filter_df = (
@@ -125,8 +126,7 @@ class MarpowerReader(ReaderBase):
             header: cls._read_bordered_column(workbook["IO-List"], index + 1)
             for index, header in enumerate(headers)
         }
-        df = pl.DataFrame(data)
-        return df.filter(~pl.all_horizontal(pl.all().is_null()))
+        return pl.DataFrame(data).filter(~pl.all_horizontal(pl.all().is_null()))
 
     def read_io_list(self, paths: List[Path]) -> IOResult:
         """Read the IO list from the given paths and return an IOResult"""
