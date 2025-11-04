@@ -65,3 +65,6 @@ The timestamp determined by ZERO.
 {% docs dc_converter_sides_explained %}
 The values are measured on both sides of the converter (side A and B). The battery will be connected to side A.
 {% enddocs %}
+{% docs marpower_struct_explained %}
+Values are delivered over MQTT in a structure created by Marpower. The structure is a JSON format containing a value and a timestamp.
+{% enddocs %}
