@@ -13,21 +13,37 @@ from pydantic import Field, create_model
 import strawberry
 from strawberry.fastapi import GraphQLRouter
 
+from thrs.control.modules.consumers import ConsumersParameters
+from thrs.control.modules.pcm import PcmParameters
 from thrs.control.modules.pvt import PvtParameters
 from thrs.control.modules.thrusters import ThrustersParameters
 from thrs.graphql.base import (
+    ConsumersMessaging,
     FieldMutation,
+    PcmMessaging,
     PvtMessaging,
     ThrsContext,
     ThrustersMessaging,
 )
 from thrs.graphql.messaging import Messaging, MessagingModule
 from thrs.graphql.pvt import PvtModule, PvtMutations
-from thrs.graphql.thrusters import (
-    ThrustersModule,
-    ThrustersMutations,
-)
+from thrs.graphql.thrusters import ThrustersModule, ThrustersMutations
+from thrs.graphql.pcm import PcmModule
+from thrs.graphql.consumers import ConsumersModule
+
 from thrs.input_output.definitions.units import unit_for_annotation
+from thrs.input_output.modules.consumers import (
+    ConsumersControlValues,
+    ConsumersSensorValues,
+    ConsumersSimulationInputs,
+    ConsumersSimulationOutputs,
+)
+from thrs.input_output.modules.pcm import (
+    PcmControlValues,
+    PcmSensorValues,
+    PcmSimulationInputs,
+    PcmSimulationOutputs,
+)
 from thrs.input_output.modules.pvt import (
     PvtControlValues,
     PvtSensorValues,
@@ -42,6 +58,8 @@ from thrs.input_output.modules.thrusters import (
 )
 import thrs.graphql.thrusters as thrusters
 import thrs.graphql.pvt as pvt
+import thrs.graphql.pcm as pcm
+import thrs.graphql.consumers as consumers
 from thrs.input_output.base import Stamped, ThrsModel
 from pydantic.fields import FieldInfo
 from aiomqtt import Client as MqttClient
@@ -61,6 +79,14 @@ class Modules:
     @strawberry.field
     def pvt(self, info: strawberry.Info[ThrsContext]) -> PvtModule:
         return pvt.resolve_module(info.context.pvt_messaging)
+
+    @strawberry.field
+    def pcm(self, info: strawberry.Info[ThrsContext]) -> PcmModule:
+        return pcm.resolve_module(info.context.pcm_messaging)
+
+    @strawberry.field
+    def consumers(self, info: strawberry.Info[ThrsContext]) -> ConsumersModule:
+        return consumers.resolve_module(info.context.consumers_messaging)
 
 
 @strawberry.type
@@ -227,7 +253,28 @@ async def lifespan(app: FastAPI):
             PvtSimulationOutputs,
             mqtt,
         )
-        messaging = Messaging(mqtt, [thrusters_messaging, pvt_messaging])
+        pcm_messaging: PcmMessaging = MessagingModule(
+            "pcm",
+            PcmSensorValues,
+            PcmControlValues,
+            PcmParameters,
+            PcmSimulationInputs,
+            PcmSimulationOutputs,
+            mqtt,
+        )
+        consumers_messaging: ConsumersMessaging = MessagingModule(
+            "consumers",
+            ConsumersSensorValues,
+            ConsumersControlValues,
+            ConsumersParameters,
+            ConsumersSimulationInputs,
+            ConsumersSimulationOutputs,
+            mqtt,
+        )
+        messaging = Messaging(
+            mqtt,
+            [thrusters_messaging, pvt_messaging, pcm_messaging, consumers_messaging],
+        )
         run_task = create_task(await messaging.run())
 
         def _finish(task: Task):
@@ -239,6 +286,8 @@ async def lifespan(app: FastAPI):
         app.state.messaging = messaging
         app.state.thrusters_messaging = thrusters_messaging
         app.state.pvt_messaging = pvt_messaging
+        app.state.pcm_messaging = pcm_messaging
+        app.state.consumers_messaging = consumers_messaging
         yield
         run_task.cancel()
 
@@ -258,15 +307,27 @@ def pvt_messaging() -> PvtMessaging:
     return app.state.pvt_messaging
 
 
+def pcm_messaging() -> PcmMessaging:
+    return app.state.pcm_messaging
+
+
+def consumers_messaging() -> ConsumersMessaging:
+    return app.state.consumers_messaging
+
+
 async def get_context(
     messaging: "Annotated[Messaging, Depends(messaging)]",
     thrusters_messaging: "Annotated[ThrustersMessaging, Depends(thrusters_messaging)]",
     pvt_messaging: "Annotated[PvtMessaging, Depends(pvt_messaging)]",
+    pcm_messaging: "Annotated[PcmMessaging, Depends(pcm_messaging)]",
+    consumers_messaging: "Annotated[ConsumersMessaging, Depends(consumers_messaging)]",
 ):
     return ThrsContext(
         messaging=messaging,
         thrusters_messaging=thrusters_messaging,
         pvt_messaging=pvt_messaging,
+        pcm_messaging=pcm_messaging,
+        consumers_messaging=consumers_messaging,
     )
 
 

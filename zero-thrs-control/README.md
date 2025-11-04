@@ -19,12 +19,9 @@ export CFLAGS="-include unistd.h" poetry run fmpy compile <path-to-fmu-file>
 Run the simulator with:
 
 ```bash
-poetry run python -m thrs.cli run thrusters
+poetry run python -m thrs.cli run <module>
 ```
-Or 
-```bash
-poetry run python -m thrs.cli run pvt
-```
+where module can be thrusters, pvt, pcm or consumers. 
 
 The UI is in [zero-ui](../zero-ui) under [http://localhost:5173/thrs/hmi].
 

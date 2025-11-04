@@ -1,5 +1,10 @@
 from typing import Annotated
-from thrs.input_output.base import SimulationInputs, ThrsModel, component_meta
+from thrs.input_output.base import (
+    SimulationInputs,
+    SimulationValues,
+    ThrsModel,
+    component_meta,
+)
 from thrs.input_output.definitions import control, sensor, simulation
 
 
@@ -100,7 +105,7 @@ class PcmSimulationInputs(SimulationInputs):
     pcm_freshwater_supply: simulation.Boundary
 
 
-class PcmSimulationOutputs(ThrsModel):
+class PcmSimulationOutputs(SimulationValues):
     pcm_consumers_return: simulation.Boundary
     pcm_producers_return: simulation.Boundary
     pcm_freshwater_return: simulation.Boundary

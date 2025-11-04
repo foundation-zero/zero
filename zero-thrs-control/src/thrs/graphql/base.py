@@ -3,6 +3,8 @@ from inspect import isclass
 from typing import Annotated, Callable, Coroutine, get_args
 from pydantic import Field, create_model
 import strawberry
+from thrs.control.modules.consumers import ConsumersParameters
+from thrs.control.modules.pcm import PcmParameters
 from thrs.control.modules.pvt import PvtParameters
 from thrs.control.modules.thrusters import ThrustersParameters
 from thrs.graphql.messaging import Messaging, MessagingModule
@@ -14,6 +16,18 @@ from strawberry.fastapi import BaseContext
 from pydantic.fields import FieldInfo
 
 from thrs.input_output.definitions.units import unit_for_annotation
+from thrs.input_output.modules.consumers import (
+    ConsumersControlValues,
+    ConsumersSensorValues,
+    ConsumersSimulationInputs,
+    ConsumersSimulationOutputs,
+)
+from thrs.input_output.modules.pcm import (
+    PcmControlValues,
+    PcmSensorValues,
+    PcmSimulationInputs,
+    PcmSimulationOutputs,
+)
 from thrs.input_output.modules.pvt import (
     PvtControlValues,
     PvtSensorValues,
@@ -40,6 +54,22 @@ type PvtMessaging = MessagingModule[
     PvtParameters,
     PvtSimulationInputs,
     PvtSimulationOutputs,
+]
+
+type PcmMessaging = MessagingModule[
+    PcmSensorValues,
+    PcmControlValues,
+    PcmParameters,
+    PcmSimulationInputs,
+    PcmSimulationOutputs,
+]
+
+type ConsumersMessaging = MessagingModule[
+    ConsumersSensorValues,
+    ConsumersControlValues,
+    ConsumersParameters,
+    ConsumersSimulationInputs,
+    ConsumersSimulationOutputs,
 ]
 
 
@@ -122,6 +152,8 @@ class ThrsContext(BaseContext):
     messaging: Messaging
     thrusters_messaging: "ThrustersMessaging"
     pvt_messaging: "PvtMessaging"
+    pcm_messaging: "PcmMessaging"
+    consumers_messaging: "ConsumersMessaging"
 
 
 type FieldMutation[T] = """Callable[

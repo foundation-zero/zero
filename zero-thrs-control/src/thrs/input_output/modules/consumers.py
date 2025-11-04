@@ -1,5 +1,10 @@
 from typing import Annotated
-from thrs.input_output.base import ParameterMeta, SimulationInputs, ThrsModel
+from thrs.input_output.base import (
+    ParameterMeta,
+    SimulationInputs,
+    SimulationValues,
+    ThrsModel,
+)
 from thrs.input_output.definitions import control, sensor, simulation
 
 
@@ -52,7 +57,7 @@ class ConsumersSimulationInputs(SimulationInputs):
     consumers_boosting_supply: simulation.Boundary
 
 
-class ConsumersSimulationOutputs(ThrsModel):
+class ConsumersSimulationOutputs(SimulationValues):
     consumers_fahrenheit_return: simulation.Boundary
     consumers_boosting_return: simulation.Boundary
     consumers_module_return: simulation.Boundary
