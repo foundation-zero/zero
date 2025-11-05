@@ -4,8 +4,7 @@ export const THRUSTERS_CONTROL_QUERY = `
     on { value timestamp }
   }
   thrustersPump2 {
-    dutypoint { value timestamp }
-    on { value timestamp }
+    setpoint { value timestamp }
   }
   thrustersMixRecovery {
     setpoint { value timestamp }
@@ -23,9 +22,6 @@ export const THRUSTERS_CONTROL_QUERY = `
     setpoint { value timestamp }
   }
   thrustersSwitchAft {
-    setpoint { value timestamp }
-  }
-  thrustersSwitchFwd {
     setpoint { value timestamp }
   }
 `;
@@ -98,9 +94,6 @@ export const THRUSTERS_SENSOR_QUERY = `
   thrustersFwd {
     active { value timestamp }
   }
-  thrustersPcs {
-    mode { value timestamp }
-  }
 `;
 
 export const THRUSTERS_SIMULATION_OUTPUTS_QUERY = `
@@ -164,8 +157,7 @@ export const PVT_CONTROL_QUERY = `
     on { value timestamp }
   }
   pvtPumpOwners {
-    dutypoint { value timestamp }
-    on { value timestamp }
+    setpoint { value timestamp }
   }
   pvtMixMainFwd {
     setpoint { value timestamp }
@@ -183,9 +175,6 @@ export const PVT_CONTROL_QUERY = `
     setpoint { value timestamp }
   }
   pvtSwitchOwners {
-    setpoint { value timestamp }
-  }
-  pvtMixExchanger {
     setpoint { value timestamp }
   }
 `;
@@ -498,9 +487,6 @@ export const PVT_SENSOR_QUERY = `
   pvtTemperatureOwnersString5Supply {
     temperature { value timestamp }
   }
-  pvtTemperatureOwnersString6Supply {
-    temperature { value timestamp }
-  }
 `;
 
 export const PVT_PARAMETERS_QUERY = `
@@ -555,8 +541,7 @@ export const PVT_SIMULATION_OUTPUTS_QUERY = `
 
 export const PCM_CONTROL_QUERY = `
   pcmPump {
-    dutypoint { value timestamp }
-    on { value timestamp }
+    setpoint { value timestamp }
   }
   pcmSwitchChargingReturn {
     setpoint { value timestamp }
@@ -580,9 +565,6 @@ export const PCM_CONTROL_QUERY = `
     setpoint { value timestamp }
   }
   pcmSwitchConsumers {
-    setpoint { value timestamp }
-  }
-  pcmModule1 {
     on { value timestamp }
   }
 `;
@@ -647,9 +629,6 @@ export const CONSUMERS_CONTROL_QUERY = `
   consumersSwitchFahrenheitDirectReturn {
     setpoint { value timestamp }
   }
-  consumersSwitchBoosting {
-    setpoint { value timestamp }
-  }
 `;
 
 export const CONSUMERS_SENSOR_QUERY = `
@@ -693,9 +672,6 @@ export const CONSUMERS_SENSOR_QUERY = `
     positionRel { value timestamp }
   }
   consumersSwitchFahrenheitDirectReturn {
-    positionRel { value timestamp }
-  }
-  consumersSwitchBoosting {
     positionRel { value timestamp }
   }
 `;
@@ -809,9 +785,6 @@ export const PCM_SENSOR_QUERY = `
     positionRel { value timestamp }
   }
   pcmSwitchChargingSupply {
-    positionRel { value timestamp }
-  }
-  pcmSwitchConsumers {
     positionRel { value timestamp }
   }
 `;

@@ -17,44 +17,40 @@ export const toSimulationDefinition = <T extends SimulationDefinitions>(input: T
 
 export const THRUSTERS_CONTROL_DEFINITION = toControlDefinition({
   thrustersPump1: {
-    yardTag: "50001194",
-    componentType: ControlComponentType.Pump,
-  },
-  thrustersPump2: {
     yardTag: "50001195",
     componentType: ControlComponentType.Pump,
   },
-  thrustersMixRecovery: {
+  thrustersPump2: {
     yardTag: "50001074",
     componentType: ControlComponentType.Valve,
     valveType: ValveType.Mix,
   },
-  thrustersMixExchanger: {
+  thrustersMixRecovery: {
     yardTag: "50001214-01",
     componentType: ControlComponentType.Valve,
     valveType: ValveType.Mix,
   },
-  thrustersFlowcontrolAft: {
+  thrustersMixExchanger: {
     yardTag: "50001215",
     componentType: ControlComponentType.Valve,
     valveType: ValveType.FlowControl,
   },
-  thrustersFlowcontrolFwd: {
+  thrustersFlowcontrolAft: {
     yardTag: "50001064-02",
     componentType: ControlComponentType.Valve,
     valveType: ValveType.FlowControl,
   },
-  thrustersShutoffRecovery: {
+  thrustersFlowcontrolFwd: {
     yardTag: "50001066-03",
     componentType: ControlComponentType.Valve,
     valveType: ValveType.Shutoff,
   },
-  thrustersSwitchAft: {
+  thrustersShutoffRecovery: {
     yardTag: "50001091-01",
     componentType: ControlComponentType.Valve,
     valveType: ValveType.Switch,
   },
-  thrustersSwitchFwd: {
+  thrustersSwitchAft: {
     yardTag: "50001091-02",
     componentType: ControlComponentType.Valve,
     valveType: ValveType.Switch,
@@ -63,88 +59,84 @@ export const THRUSTERS_CONTROL_DEFINITION = toControlDefinition({
 
 export const THRUSTERS_SENSOR_DEFINITION = toSensorDefinition({
   thrustersPump1: {
-    yardTag: "50001194",
-    componentType: SensorComponentType.Pump,
-  },
-  thrustersPump2: {
     yardTag: "50001195",
     componentType: SensorComponentType.Pump,
   },
-  thrustersTemperatureAftReturn: {
+  thrustersPump2: {
     yardTag: "50001038-01",
-    componentType: SensorComponentType.Temperature,
+    componentType: SensorComponentType.Pump,
   },
-  thrustersTemperatureFwdReturn: {
+  thrustersTemperatureAftReturn: {
     yardTag: "50001038-02",
     componentType: SensorComponentType.Temperature,
   },
-  thrustersTemperatureSupply: {
+  thrustersTemperatureFwdReturn: {
     yardTag: "50001038-28",
     componentType: SensorComponentType.Temperature,
   },
-  thrustersTemperatureRecoveryMix: {
+  thrustersTemperatureSupply: {
     yardTag: "50001038-30",
     componentType: SensorComponentType.Temperature,
   },
-  thrustersMixRecovery: {
+  thrustersTemperatureRecoveryMix: {
     yardTag: "50001074",
-    componentType: SensorComponentType.Valve,
+    componentType: SensorComponentType.Temperature,
   },
-  thrustersMixExchanger: {
+  thrustersMixRecovery: {
     yardTag: "50001214-01",
     componentType: SensorComponentType.Valve,
   },
-  thrustersFlowFwd: {
+  thrustersMixExchanger: {
     yardTag: "50001057-22",
-    componentType: SensorComponentType.Flow,
+    componentType: SensorComponentType.Valve,
   },
-  thrustersFlowAft: {
+  thrustersFlowFwd: {
     yardTag: "50001057-23",
     componentType: SensorComponentType.Flow,
   },
-  thrustersFlowcontrolAft: {
+  thrustersFlowAft: {
     yardTag: "50001215",
-    componentType: SensorComponentType.Valve,
+    componentType: SensorComponentType.Flow,
   },
-  thrustersFlowcontrolFwd: {
+  thrustersFlowcontrolAft: {
     yardTag: "50001064-02",
     componentType: SensorComponentType.Valve,
   },
-  thrustersShutoffRecovery: {
+  thrustersFlowcontrolFwd: {
     yardTag: "50001066-03",
     componentType: SensorComponentType.Valve,
   },
-  thrustersSwitchAft: {
+  thrustersShutoffRecovery: {
     yardTag: "50001091-01",
     componentType: SensorComponentType.Valve,
   },
-  thrustersSwitchFwd: {
+  thrustersSwitchAft: {
     yardTag: "50001091-02",
     componentType: SensorComponentType.Valve,
   },
-  thrustersFlowRecovery: {
+  thrustersSwitchFwd: {
     yardTag: "50001093-01",
+    componentType: SensorComponentType.Valve,
+  },
+  thrustersFlowRecovery: {
+    yardTag: "50001097-01",
     componentType: SensorComponentType.Flow,
   },
   thrustersPressurePump: {
-    yardTag: "50001097-01",
-    componentType: SensorComponentType.Pressure,
-  },
-  thrustersPressureRelief: {
     yardTag: "50001097-02",
     componentType: SensorComponentType.Pressure,
   },
-  thrustersAft: {
+  thrustersPressureRelief: {
     yardTag: "15001001",
-    componentType: SensorComponentType.Thruster,
+    componentType: SensorComponentType.Pressure,
   },
-  thrustersFwd: {
+  thrustersAft: {
     yardTag: "15001002",
     componentType: SensorComponentType.Thruster,
   },
-  thrustersPcs: {
+  thrustersFwd: {
     yardTag: "1500",
-    componentType: SensorComponentType.Pcs,
+    componentType: SensorComponentType.Thruster,
   },
 });
 
@@ -225,50 +217,46 @@ export const THRUSTERS_SIMULATION_OUTPUTS = toSimulationDefinition({
 
 export const PCM_CONTROL_DEFINITION = toControlDefinition({
   pcmPump: {
-    yardTag: "50001017",
-    componentType: ControlComponentType.Pump,
-  },
-  pcmSwitchChargingReturn: {
     yardTag: "50001062-02",
     componentType: ControlComponentType.Valve,
     valveType: ValveType.Switch,
   },
-  pcmFlowcontrolModule1: {
+  pcmSwitchChargingReturn: {
     yardTag: "50001064-04",
     componentType: ControlComponentType.Valve,
     valveType: ValveType.FlowControl,
   },
-  pcmFlowcontrolModule2: {
+  pcmFlowcontrolModule1: {
     yardTag: "50001064-05",
     componentType: ControlComponentType.Valve,
     valveType: ValveType.FlowControl,
   },
-  pcmFlowcontrolModule3: {
+  pcmFlowcontrolModule2: {
     yardTag: "50001064-06",
     componentType: ControlComponentType.Valve,
     valveType: ValveType.FlowControl,
   },
-  pcmFlowcontrolModule4: {
+  pcmFlowcontrolModule3: {
     yardTag: "50001064-07",
     componentType: ControlComponentType.Valve,
     valveType: ValveType.FlowControl,
   },
-  pcmSwitchDischarging: {
+  pcmFlowcontrolModule4: {
     yardTag: "50001066-01",
     componentType: ControlComponentType.Valve,
     valveType: ValveType.Switch,
   },
-  pcmSwitchChargingSupply: {
+  pcmSwitchDischarging: {
     yardTag: "50001090-01",
     componentType: ControlComponentType.Valve,
     valveType: ValveType.Switch,
   },
-  pcmSwitchConsumers: {
+  pcmSwitchChargingSupply: {
     yardTag: "50001071-02",
     componentType: ControlComponentType.Valve,
     valveType: ValveType.Switch,
   },
-  pcmModule1: {
+  pcmSwitchConsumers: {
     yardTag: "50001049",
     componentType: ControlComponentType.Pcm,
   },
@@ -276,48 +264,44 @@ export const PCM_CONTROL_DEFINITION = toControlDefinition({
 
 export const PVT_CONTROL_DEFINITION = toControlDefinition({
   pvtPumpMainFwd: {
-    yardTag: "50001018",
-    componentType: ControlComponentType.Pump,
-  },
-  pvtPumpMainAft: {
     yardTag: "50001019",
     componentType: ControlComponentType.Pump,
   },
-  pvtPumpOwners: {
+  pvtPumpMainAft: {
     yardTag: "50001021",
     componentType: ControlComponentType.Pump,
   },
-  pvtMixMainFwd: {
+  pvtPumpOwners: {
     yardTag: "50001044-01",
     componentType: ControlComponentType.Valve,
     valveType: ValveType.Mix,
   },
-  pvtMixMainAft: {
+  pvtMixMainFwd: {
     yardTag: "50001044-02",
     componentType: ControlComponentType.Valve,
     valveType: ValveType.Mix,
   },
-  pvtMixOwners: {
+  pvtMixMainAft: {
     yardTag: "50001043-01",
     componentType: ControlComponentType.Valve,
     valveType: ValveType.Mix,
   },
-  pvtSwitchMainFwd: {
+  pvtMixOwners: {
     yardTag: "50001067-01",
     componentType: ControlComponentType.Valve,
     valveType: ValveType.Switch,
   },
-  pvtSwitchMainAft: {
+  pvtSwitchMainFwd: {
     yardTag: "50001067-02",
     componentType: ControlComponentType.Valve,
     valveType: ValveType.Switch,
   },
-  pvtSwitchOwners: {
+  pvtSwitchMainAft: {
     yardTag: "50001069-01",
     componentType: ControlComponentType.Valve,
     valveType: ValveType.Switch,
   },
-  pvtMixExchanger: {
+  pvtSwitchOwners: {
     yardTag: "50001047-02",
     componentType: ControlComponentType.Valve,
     valveType: ValveType.Mix,
@@ -326,370 +310,366 @@ export const PVT_CONTROL_DEFINITION = toControlDefinition({
 
 export const PVT_SENSOR_DEFINITION = toSensorDefinition({
   pvtPumpMainFwd: {
-    yardTag: "50001018",
-    componentType: SensorComponentType.Pump,
-  },
-  pvtPumpMainAft: {
     yardTag: "50001019",
     componentType: SensorComponentType.Pump,
   },
-  pvtPumpOwners: {
+  pvtPumpMainAft: {
     yardTag: "50001021",
     componentType: SensorComponentType.Pump,
   },
-  pvtTemperatureMainFwdReturn: {
+  pvtPumpOwners: {
     yardTag: "50001038-03",
-    componentType: SensorComponentType.Temperature,
+    componentType: SensorComponentType.Pump,
   },
-  pvtTemperatureMainFwdSupply: {
+  pvtTemperatureMainFwdReturn: {
     yardTag: "50001038-23",
     componentType: SensorComponentType.Temperature,
   },
-  pvtTemperatureMainAftReturn: {
+  pvtTemperatureMainFwdSupply: {
     yardTag: "50001038-73",
     componentType: SensorComponentType.Temperature,
   },
-  pvtTemperatureMainAftSupply: {
+  pvtTemperatureMainAftReturn: {
     yardTag: "50001038-22",
     componentType: SensorComponentType.Temperature,
   },
-  pvtTemperatureOwnersSupply: {
+  pvtTemperatureMainAftSupply: {
     yardTag: "50001038-21",
     componentType: SensorComponentType.Temperature,
   },
-  pvtTemperatureOwnersReturn: {
+  pvtTemperatureOwnersSupply: {
     yardTag: "50001038-04",
     componentType: SensorComponentType.Temperature,
   },
-  pvtMixMainFwd: {
+  pvtTemperatureOwnersReturn: {
     yardTag: "50001044-01",
-    componentType: SensorComponentType.Valve,
+    componentType: SensorComponentType.Temperature,
   },
-  pvtMixMainAft: {
+  pvtMixMainFwd: {
     yardTag: "50001044-02",
     componentType: SensorComponentType.Valve,
   },
-  pvtMixOwners: {
+  pvtMixMainAft: {
     yardTag: "50001043-01",
     componentType: SensorComponentType.Valve,
   },
-  pvtFlowMainFwdRecovery: {
+  pvtMixOwners: {
     yardTag: "50001058-12",
-    componentType: SensorComponentType.Flow,
+    componentType: SensorComponentType.Valve,
   },
-  pvtFlowMainAftRecovery: {
+  pvtFlowMainFwdRecovery: {
     yardTag: "50001058-13",
     componentType: SensorComponentType.Flow,
   },
-  pvtFlowOwnersRecovery: {
+  pvtFlowMainAftRecovery: {
     yardTag: "50001057-03",
     componentType: SensorComponentType.Flow,
   },
-  pvtPressureMainFwd: {
+  pvtFlowOwnersRecovery: {
     yardTag: "50001097-03",
-    componentType: SensorComponentType.Pressure,
+    componentType: SensorComponentType.Flow,
   },
-  pvtPressureMainAft: {
+  pvtPressureMainFwd: {
     yardTag: "50001097-04",
     componentType: SensorComponentType.Pressure,
   },
-  pvtPressureOwners: {
+  pvtPressureMainAft: {
     yardTag: "50001097-05",
     componentType: SensorComponentType.Pressure,
   },
-  pvtSwitchMainFwd: {
+  pvtPressureOwners: {
     yardTag: "50001067-01",
-    componentType: SensorComponentType.Valve,
+    componentType: SensorComponentType.Pressure,
   },
-  pvtSwitchMainAft: {
+  pvtSwitchMainFwd: {
     yardTag: "50001067-02",
     componentType: SensorComponentType.Valve,
   },
-  pvtSwitchOwners: {
+  pvtSwitchMainAft: {
     yardTag: "50001069-01",
     componentType: SensorComponentType.Valve,
   },
-  pvtMixExchanger: {
+  pvtSwitchOwners: {
     yardTag: "50001047-02",
     componentType: SensorComponentType.Valve,
   },
-  pvtTemperatureSupply: {
+  pvtMixExchanger: {
     yardTag: "50001038-24",
-    componentType: SensorComponentType.Temperature,
+    componentType: SensorComponentType.Valve,
   },
-  pvtTemperatureMainString11Return: {
+  pvtTemperatureSupply: {
     yardTag: "50009005-01",
     componentType: SensorComponentType.Temperature,
   },
-  pvtTemperatureMainString12Return: {
+  pvtTemperatureMainString11Return: {
     yardTag: "50009005-19",
     componentType: SensorComponentType.Temperature,
   },
-  pvtTemperatureMainString21Return: {
+  pvtTemperatureMainString12Return: {
     yardTag: "50009005-03",
     componentType: SensorComponentType.Temperature,
   },
-  pvtTemperatureMainString22Return: {
+  pvtTemperatureMainString21Return: {
     yardTag: "50009005-04",
     componentType: SensorComponentType.Temperature,
   },
-  pvtTemperatureMainString3Return: {
+  pvtTemperatureMainString22Return: {
     yardTag: "50009005-05",
     componentType: SensorComponentType.Temperature,
   },
-  pvtTemperatureMainString4Return: {
+  pvtTemperatureMainString3Return: {
     yardTag: "50009005-06",
     componentType: SensorComponentType.Temperature,
   },
-  pvtTemperatureMainString51Return: {
+  pvtTemperatureMainString4Return: {
     yardTag: "50009005-07",
     componentType: SensorComponentType.Temperature,
   },
-  pvtTemperatureMainString52Return: {
+  pvtTemperatureMainString51Return: {
     yardTag: "50009005-08",
     componentType: SensorComponentType.Temperature,
   },
-  pvtTemperatureMainString61Return: {
+  pvtTemperatureMainString52Return: {
     yardTag: "50009005-09",
     componentType: SensorComponentType.Temperature,
   },
-  pvtTemperatureMainString62Return: {
+  pvtTemperatureMainString61Return: {
     yardTag: "50009005-10",
     componentType: SensorComponentType.Temperature,
   },
-  pvtFlowMainString11: {
+  pvtTemperatureMainString62Return: {
     yardTag: "50009006-01",
-    componentType: SensorComponentType.Flow,
+    componentType: SensorComponentType.Temperature,
   },
-  pvtFlowMainString12: {
+  pvtFlowMainString11: {
     yardTag: "50009009-05",
     componentType: SensorComponentType.Flow,
   },
-  pvtFlowMainString21: {
+  pvtFlowMainString12: {
     yardTag: "50009006-03",
     componentType: SensorComponentType.Flow,
   },
-  pvtFlowMainString22: {
+  pvtFlowMainString21: {
     yardTag: "50009006-04",
     componentType: SensorComponentType.Flow,
   },
-  pvtFlowMainString3: {
+  pvtFlowMainString22: {
     yardTag: "50009009-01",
     componentType: SensorComponentType.Flow,
   },
-  pvtFlowMainString4: {
+  pvtFlowMainString3: {
     yardTag: "50009009-02",
     componentType: SensorComponentType.Flow,
   },
-  pvtFlowMainString51: {
+  pvtFlowMainString4: {
     yardTag: "50009006-05",
     componentType: SensorComponentType.Flow,
   },
-  pvtFlowMainString52: {
+  pvtFlowMainString51: {
     yardTag: "50009006-06",
     componentType: SensorComponentType.Flow,
   },
-  pvtFlowMainString61: {
+  pvtFlowMainString52: {
     yardTag: "50009006-07",
     componentType: SensorComponentType.Flow,
   },
-  pvtFlowMainString62: {
+  pvtFlowMainString61: {
     yardTag: "50009006-08",
     componentType: SensorComponentType.Flow,
   },
-  pvtTemperatureMainString1Supply: {
+  pvtFlowMainString62: {
     yardTag: "50009005-26",
-    componentType: SensorComponentType.Temperature,
+    componentType: SensorComponentType.Flow,
   },
-  pvtTemperatureMainString2Supply: {
+  pvtTemperatureMainString1Supply: {
     yardTag: "50009005-25",
     componentType: SensorComponentType.Temperature,
   },
-  pvtTemperatureMainString3Supply: {
+  pvtTemperatureMainString2Supply: {
     yardTag: "50009005-24",
     componentType: SensorComponentType.Temperature,
   },
-  pvtTemperatureMainString4Supply: {
+  pvtTemperatureMainString3Supply: {
     yardTag: "50009005-23",
     componentType: SensorComponentType.Temperature,
   },
-  pvtTemperatureMainString5Supply: {
+  pvtTemperatureMainString4Supply: {
     yardTag: "50009005-22",
     componentType: SensorComponentType.Temperature,
   },
-  pvtTemperatureMainString6Supply: {
+  pvtTemperatureMainString5Supply: {
     yardTag: "50009005-21",
     componentType: SensorComponentType.Temperature,
   },
-  pvtTemperatureMainString71Return: {
+  pvtTemperatureMainString6Supply: {
     yardTag: "50009005-11",
     componentType: SensorComponentType.Temperature,
   },
-  pvtTemperatureMainString72Return: {
+  pvtTemperatureMainString71Return: {
     yardTag: "50009005-12",
     componentType: SensorComponentType.Temperature,
   },
-  pvtTemperatureMainString81Return: {
+  pvtTemperatureMainString72Return: {
     yardTag: "50009005-13",
     componentType: SensorComponentType.Temperature,
   },
-  pvtTemperatureMainString82Return: {
+  pvtTemperatureMainString81Return: {
     yardTag: "50009005-14",
     componentType: SensorComponentType.Temperature,
   },
-  pvtTemperatureMainString9Return: {
+  pvtTemperatureMainString82Return: {
     yardTag: "50009005-15",
     componentType: SensorComponentType.Temperature,
   },
-  pvtTemperatureMainString10Return: {
+  pvtTemperatureMainString9Return: {
     yardTag: "50009005-16",
     componentType: SensorComponentType.Temperature,
   },
-  pvtTemperatureMainString111Return: {
+  pvtTemperatureMainString10Return: {
     yardTag: "50009005-17",
     componentType: SensorComponentType.Temperature,
   },
-  pvtTemperatureMainString112Return: {
+  pvtTemperatureMainString111Return: {
     yardTag: "50009005-18",
     componentType: SensorComponentType.Temperature,
   },
-  pvtTemperatureMainString13Return: {
+  pvtTemperatureMainString112Return: {
     yardTag: "50009005-20",
     componentType: SensorComponentType.Temperature,
   },
-  pvtFlowMainString71: {
+  pvtTemperatureMainString13Return: {
     yardTag: "50009006-09",
-    componentType: SensorComponentType.Flow,
+    componentType: SensorComponentType.Temperature,
   },
-  pvtFlowMainString72: {
+  pvtFlowMainString71: {
     yardTag: "50009006-10",
     componentType: SensorComponentType.Flow,
   },
-  pvtFlowMainString81: {
+  pvtFlowMainString72: {
     yardTag: "50009006-11",
     componentType: SensorComponentType.Flow,
   },
-  pvtFlowMainString82: {
+  pvtFlowMainString81: {
     yardTag: "50009006-12",
     componentType: SensorComponentType.Flow,
   },
-  pvtFlowMainString9: {
+  pvtFlowMainString82: {
     yardTag: "50009009-03",
     componentType: SensorComponentType.Flow,
   },
-  pvtFlowMainString10: {
+  pvtFlowMainString9: {
     yardTag: "50009009-04",
     componentType: SensorComponentType.Flow,
   },
-  pvtFlowMainString111: {
+  pvtFlowMainString10: {
     yardTag: "50009006-13",
     componentType: SensorComponentType.Flow,
   },
-  pvtFlowMainString112: {
+  pvtFlowMainString111: {
     yardTag: "50009006-14",
     componentType: SensorComponentType.Flow,
   },
-  pvtFlowMainString13: {
+  pvtFlowMainString112: {
     yardTag: "50009009-06",
     componentType: SensorComponentType.Flow,
   },
-  pvtTemperatureMainString7Supply: {
+  pvtFlowMainString13: {
     yardTag: "50009005-27",
-    componentType: SensorComponentType.Temperature,
+    componentType: SensorComponentType.Flow,
   },
-  pvtTemperatureMainString8Supply: {
+  pvtTemperatureMainString7Supply: {
     yardTag: "50009005-28",
     componentType: SensorComponentType.Temperature,
   },
-  pvtTemperatureMainString9Supply: {
+  pvtTemperatureMainString8Supply: {
     yardTag: "50009005-29",
     componentType: SensorComponentType.Temperature,
   },
-  pvtTemperatureMainString10Supply: {
+  pvtTemperatureMainString9Supply: {
     yardTag: "50009005-30",
     componentType: SensorComponentType.Temperature,
   },
-  pvtTemperatureMainString11Supply: {
+  pvtTemperatureMainString10Supply: {
     yardTag: "50009005-31",
     componentType: SensorComponentType.Temperature,
   },
-  pvtTemperatureMainString12Supply: {
+  pvtTemperatureMainString11Supply: {
     yardTag: "50009005-32",
     componentType: SensorComponentType.Temperature,
   },
-  pvtTemperatureMainString13Supply: {
+  pvtTemperatureMainString12Supply: {
     yardTag: "50009005-33",
     componentType: SensorComponentType.Temperature,
   },
-  pvtTemperatureOwnersString1Return: {
+  pvtTemperatureMainString13Supply: {
     yardTag: "50009005-34",
     componentType: SensorComponentType.Temperature,
   },
-  pvtTemperatureOwnersString2Return: {
+  pvtTemperatureOwnersString1Return: {
     yardTag: "50009005-35",
     componentType: SensorComponentType.Temperature,
   },
-  pvtTemperatureOwnersString3Return: {
+  pvtTemperatureOwnersString2Return: {
     yardTag: "50009005-36",
     componentType: SensorComponentType.Temperature,
   },
-  pvtTemperatureOwnersString4Return: {
+  pvtTemperatureOwnersString3Return: {
     yardTag: "50009005-37",
     componentType: SensorComponentType.Temperature,
   },
-  pvtTemperatureOwnersString5Return: {
+  pvtTemperatureOwnersString4Return: {
     yardTag: "50009005-38",
     componentType: SensorComponentType.Temperature,
   },
-  pvtTemperatureOwnersString6Return: {
+  pvtTemperatureOwnersString5Return: {
     yardTag: "50009005-39",
     componentType: SensorComponentType.Temperature,
   },
-  pvtFlowOwnersString1: {
+  pvtTemperatureOwnersString6Return: {
     yardTag: "50009009-07",
-    componentType: SensorComponentType.Flow,
+    componentType: SensorComponentType.Temperature,
   },
-  pvtFlowOwnersString2: {
+  pvtFlowOwnersString1: {
     yardTag: "50009009-08",
     componentType: SensorComponentType.Flow,
   },
-  pvtFlowOwnersString3: {
+  pvtFlowOwnersString2: {
     yardTag: "50009009-09",
     componentType: SensorComponentType.Flow,
   },
-  pvtFlowOwnersString4: {
+  pvtFlowOwnersString3: {
     yardTag: "50009009-10",
     componentType: SensorComponentType.Flow,
   },
-  pvtFlowOwnersString5: {
+  pvtFlowOwnersString4: {
     yardTag: "50009009-11",
     componentType: SensorComponentType.Flow,
   },
-  pvtFlowOwnersString6: {
+  pvtFlowOwnersString5: {
     yardTag: "50009009-12",
     componentType: SensorComponentType.Flow,
   },
-  pvtTemperatureOwnersString1Supply: {
+  pvtFlowOwnersString6: {
     yardTag: "50009005-40",
-    componentType: SensorComponentType.Temperature,
+    componentType: SensorComponentType.Flow,
   },
-  pvtTemperatureOwnersString2Supply: {
+  pvtTemperatureOwnersString1Supply: {
     yardTag: "50009005-41",
     componentType: SensorComponentType.Temperature,
   },
-  pvtTemperatureOwnersString3Supply: {
+  pvtTemperatureOwnersString2Supply: {
     yardTag: "50009005-42",
     componentType: SensorComponentType.Temperature,
   },
-  pvtTemperatureOwnersString4Supply: {
+  pvtTemperatureOwnersString3Supply: {
     yardTag: "50009005-43",
     componentType: SensorComponentType.Temperature,
   },
-  pvtTemperatureOwnersString5Supply: {
+  pvtTemperatureOwnersString4Supply: {
     yardTag: "50009005-44",
     componentType: SensorComponentType.Temperature,
   },
-  pvtTemperatureOwnersString6Supply: {
+  pvtTemperatureOwnersString5Supply: {
     yardTag: "50009005-45",
     componentType: SensorComponentType.Temperature,
   },
@@ -775,94 +755,90 @@ export const PVT_SIMULATION_OUTPUTS = toSimulationDefinition({
 
 export const PCM_SENSOR_DEFINITION = toSensorDefinition({
   pcmPump: {
-    yardTag: "50001017",
+    yardTag: "50001038-31",
     componentType: SensorComponentType.Pump,
   },
   pcmTemperatureProducersReturn: {
-    yardTag: "50001038-31",
-    componentType: SensorComponentType.Temperature,
-  },
-  pcmTemperatureProducersSupply: {
     yardTag: "50001038-55",
     componentType: SensorComponentType.Temperature,
   },
-  pcmTemperatureModule1Out: {
+  pcmTemperatureProducersSupply: {
     yardTag: "50001038-32",
     componentType: SensorComponentType.Temperature,
   },
-  pcmTemperatureModule2Out: {
+  pcmTemperatureModule1Out: {
     yardTag: "50001038-33",
     componentType: SensorComponentType.Temperature,
   },
-  pcmTemperatureModule3Out: {
+  pcmTemperatureModule2Out: {
     yardTag: "50001038-34",
     componentType: SensorComponentType.Temperature,
   },
-  pcmTemperatureModule4Out: {
+  pcmTemperatureModule3Out: {
     yardTag: "50001038-35",
     componentType: SensorComponentType.Temperature,
   },
-  pcmModule1: {
+  pcmTemperatureModule4Out: {
     yardTag: "50001049",
-    componentType: SensorComponentType.Pcm,
+    componentType: SensorComponentType.Temperature,
   },
-  pcmModule2: {
+  pcmModule1: {
     yardTag: "50001050",
     componentType: SensorComponentType.Pcm,
   },
-  pcmModule3: {
+  pcmModule2: {
     yardTag: "50001051",
     componentType: SensorComponentType.Pcm,
   },
-  pcmModule4: {
+  pcmModule3: {
     yardTag: "50001052",
     componentType: SensorComponentType.Pcm,
   },
-  pcmFlowModule1: {
+  pcmModule4: {
     yardTag: "50001057-18",
-    componentType: SensorComponentType.Flow,
+    componentType: SensorComponentType.Pcm,
   },
-  pcmFlowModule2: {
+  pcmFlowModule1: {
     yardTag: "50001057-19",
     componentType: SensorComponentType.Flow,
   },
-  pcmFlowModule3: {
+  pcmFlowModule2: {
     yardTag: "50001057-20",
     componentType: SensorComponentType.Flow,
   },
-  pcmFlowModule4: {
+  pcmFlowModule3: {
     yardTag: "50001057-21",
     componentType: SensorComponentType.Flow,
   },
-  pcmSwitchChargingReturn: {
+  pcmFlowModule4: {
     yardTag: "50001062-02",
-    componentType: SensorComponentType.Valve,
+    componentType: SensorComponentType.Flow,
   },
-  pcmFlowcontrolModule1: {
+  pcmSwitchChargingReturn: {
     yardTag: "50001064-04",
     componentType: SensorComponentType.Valve,
   },
-  pcmFlowcontrolModule2: {
+  pcmFlowcontrolModule1: {
     yardTag: "50001064-05",
     componentType: SensorComponentType.Valve,
   },
-  pcmFlowcontrolModule3: {
+  pcmFlowcontrolModule2: {
     yardTag: "50001064-06",
     componentType: SensorComponentType.Valve,
   },
-  pcmFlowcontrolModule4: {
+  pcmFlowcontrolModule3: {
     yardTag: "50001064-07",
     componentType: SensorComponentType.Valve,
   },
-  pcmSwitchDischarging: {
+  pcmFlowcontrolModule4: {
     yardTag: "50001066-01",
     componentType: SensorComponentType.Valve,
   },
-  pcmSwitchChargingSupply: {
+  pcmSwitchDischarging: {
     yardTag: "50001090-01",
     componentType: SensorComponentType.Valve,
   },
-  pcmSwitchConsumers: {
+  pcmSwitchChargingSupply: {
     yardTag: "50001071-02",
     componentType: SensorComponentType.Valve,
   },
@@ -924,36 +900,31 @@ export const PCM_SIMULATION_OUTPUTS = toSimulationDefinition({
 
 export const CONSUMERS_CONTROL_DEFINITION = toControlDefinition({
   consumersSwitchFahrenheitDirectSupply: {
-    yardTag: "50001074",
-    componentType: ControlComponentType.Valve,
-    valveType: ValveType.Switch,
-  },
-  consumersFlowcontrolFahrenheit: {
     yardTag: "50001061",
     componentType: ControlComponentType.Valve,
     valveType: ValveType.FlowControl,
   },
-  consumersFlowcontrolBypass: {
+  consumersFlowcontrolFahrenheit: {
     yardTag: "50001062-01",
     componentType: ControlComponentType.Valve,
     valveType: ValveType.FlowControl,
   },
-  consumersFlowcontrolBoosting: {
+  consumersFlowcontrolBypass: {
     yardTag: "50001065-01",
     componentType: ControlComponentType.Valve,
     valveType: ValveType.FlowControl,
   },
-  consumersSwitchFahrenheitExchanger: {
+  consumersFlowcontrolBoosting: {
     yardTag: "50001066-02",
     componentType: ControlComponentType.Valve,
     valveType: ValveType.Switch,
   },
-  consumersSwitchFahrenheitDirectReturn: {
+  consumersSwitchFahrenheitExchanger: {
     yardTag: "50001066-03",
     componentType: ControlComponentType.Valve,
     valveType: ValveType.Switch,
   },
-  consumersSwitchBoosting: {
+  consumersSwitchFahrenheitDirectReturn: {
     yardTag: "50001067-15",
     componentType: ControlComponentType.Valve,
     valveType: ValveType.Switch,
@@ -962,58 +933,54 @@ export const CONSUMERS_CONTROL_DEFINITION = toControlDefinition({
 
 export const CONSUMERS_SENSOR_DEFINITION = toSensorDefinition({
   consumersSwitchFahrenheitDirectSupply: {
-    yardTag: "50001074",
+    yardTag: "50001038-48",
     componentType: SensorComponentType.Valve,
   },
   consumersTemperatureBoostingReturn: {
-    yardTag: "50001038-48",
-    componentType: SensorComponentType.Temperature,
-  },
-  consumersTemperatureFahrenheitReturn: {
     yardTag: "50001038-49",
     componentType: SensorComponentType.Temperature,
   },
-  consumersTemperatureBoostingSupply: {
+  consumersTemperatureFahrenheitReturn: {
     yardTag: "50001038-53",
     componentType: SensorComponentType.Temperature,
   },
-  consumersTemperatureFahrenheitSupply: {
+  consumersTemperatureBoostingSupply: {
     yardTag: "50001038-54",
     componentType: SensorComponentType.Temperature,
   },
-  consumersFlowBoosting: {
+  consumersTemperatureFahrenheitSupply: {
     yardTag: "50001058-07",
-    componentType: SensorComponentType.Flow,
+    componentType: SensorComponentType.Temperature,
   },
-  consumersFlowFahrenheit: {
+  consumersFlowBoosting: {
     yardTag: "50001058-08",
     componentType: SensorComponentType.Flow,
   },
-  consumersFlowBypass: {
+  consumersFlowFahrenheit: {
     yardTag: "50001060-01",
     componentType: SensorComponentType.Flow,
   },
-  consumersFlowcontrolFahrenheit: {
+  consumersFlowBypass: {
     yardTag: "50001061",
-    componentType: SensorComponentType.Valve,
+    componentType: SensorComponentType.Flow,
   },
-  consumersFlowcontrolBypass: {
+  consumersFlowcontrolFahrenheit: {
     yardTag: "50001062-01",
     componentType: SensorComponentType.Valve,
   },
-  consumersFlowcontrolBoosting: {
+  consumersFlowcontrolBypass: {
     yardTag: "50001065-01",
     componentType: SensorComponentType.Valve,
   },
-  consumersSwitchFahrenheitExchanger: {
+  consumersFlowcontrolBoosting: {
     yardTag: "50001066-02",
     componentType: SensorComponentType.Valve,
   },
-  consumersSwitchFahrenheitDirectReturn: {
+  consumersSwitchFahrenheitExchanger: {
     yardTag: "50001066-03",
     componentType: SensorComponentType.Valve,
   },
-  consumersSwitchBoosting: {
+  consumersSwitchFahrenheitDirectReturn: {
     yardTag: "50001067-15",
     componentType: SensorComponentType.Valve,
   },
