@@ -18,9 +18,6 @@ from thrs.cli.simulation_controls import (
     SetAutomationMessage,
 )
 from thrs.input_output.base import SimulationInputs, SimulationValues, ThrsModel
-from thrs.input_output.modules.thrusters import (
-    ThrustersControlValues,
-)
 
 
 @dataclass
@@ -133,6 +130,15 @@ class MessagingModule[
     def active(self, value: bool):
         self._active = value
 
+    async def send_manual_controls(self, control_values: ControlValues):
+        if not self._active:
+            raise Exception("Cannot send manual controls to inactive module")
+        await self._mqtt_client.publish(
+            ManualControlMessage.topic(),
+            ManualControlMessage(control_values=control_values).model_dump_json(),
+            qos=1,
+        )
+
     def wait_for_control_values(
         self, condition: Callable[[ControlValues], bool], *_args, timeout: float
     ) -> Coroutine[None, None, ControlValues]:
@@ -234,8 +240,11 @@ class Messaging:
 
     async def run(self) -> Coroutine[None, None, None]:
         topics = set(receiver.topic for receiver in self._all_receivers)
+        await self._mqtt_client.subscribe(SimulationStatusMessage.topic())
+        await asyncio.sleep(0.2)  # Give status time to arrive first
         for topic in topics:
-            await self._mqtt_client.subscribe(topic, qos=1)
+            if topic != SimulationStatusMessage.topic():
+                await self._mqtt_client.subscribe(topic, qos=1)
 
         async def _run(self):
             context = Context(modules=self._modules)
@@ -255,13 +264,6 @@ class Messaging:
             if message.topic.matches(status.topic):
                 return status
         return None
-
-    async def send_manual_controls(self, control_values: ThrustersControlValues):
-        await self._mqtt_client.publish(
-            ManualControlMessage.topic(),
-            ManualControlMessage(control_values=control_values).model_dump_json(),
-            qos=1,
-        )
 
     async def play_simulation(self, playback_rate: float):
         await self._mqtt_client.publish(

@@ -40,6 +40,10 @@ type FlowBoundarySimulationType {
   flow: FloatStampedType!
 }
 
+input HeatSourceInputType {
+  heatFlow: Float!
+}
+
 type HeatSourceSimulationType {
   heatFlow: FloatStampedType!
 }
@@ -50,34 +54,64 @@ type Modules {
 }
 
 type Mutation {
-  setThrustersSimulationThrustersAft(component: ThrusterInputType!): ThrustersSimulationInputsType!
-  setThrustersSimulationThrustersFwd(component: ThrusterInputType!): ThrustersSimulationInputsType!
-  setThrustersSimulationThrustersSeawaterSupply(component: BoundaryInputType!): ThrustersSimulationInputsType!
-  setThrustersSimulationThrustersModuleSupply(component: TemperatureBoundaryInputType!): ThrustersSimulationInputsType!
-  setThrustersSimulationThrustersPcs(component: PcsInputType!): ThrustersSimulationInputsType!
-  setThrustersParameterMaximumSupplyTemperature(value: Float!): ThrustersParametersType!
-  setThrustersParameterCoolingTemperature(value: Float!): ThrustersParametersType!
-  setThrustersParameterCoolingFlow(value: Float!): ThrustersParametersType!
-  setThrustersParameterRecoveryTemperature(value: Float!): ThrustersParametersType!
-  setThrustersParameterWarmupTemperature(value: Float!): ThrustersParametersType!
-  setThrustersParameterThrustersMinimumFlow(value: Float!): ThrustersParametersType!
-  setThrustersParameterThrustersMaximumFlow(value: Float!): ThrustersParametersType!
-  setThrustersParameterPumpTuning(value: [Float!]!): ThrustersParametersType!
-  setThrustersParameterWarmupMixTuning(value: [Float!]!): ThrustersParametersType!
-  setThrustersParameterHeatDumpTuning(value: [Float!]!): ThrustersParametersType!
-  setThrustersParameterAftFlowBalanceTuning(value: [Float!]!): ThrustersParametersType!
-  setThrustersParameterFwdFlowBalanceTuning(value: [Float!]!): ThrustersParametersType!
-  setThrustersParameterAftTemperatureTuning(value: [Float!]!): ThrustersParametersType!
-  setThrustersParameterFwdTemperatureTuning(value: [Float!]!): ThrustersParametersType!
-  setThrustersControlThrustersPump1(component: PumpInputType!): ThrustersControlValuesType!
-  setThrustersControlThrustersPump2(component: PumpInputType!): ThrustersControlValuesType!
-  setThrustersControlThrustersMixRecovery(component: ValveInputType!): ThrustersControlValuesType!
-  setThrustersControlThrustersMixExchanger(component: ValveInputType!): ThrustersControlValuesType!
-  setThrustersControlThrustersFlowcontrolAft(component: ValveInputType!): ThrustersControlValuesType!
-  setThrustersControlThrustersFlowcontrolFwd(component: ValveInputType!): ThrustersControlValuesType!
-  setThrustersControlThrustersShutoffRecovery(component: ValveInputType!): ThrustersControlValuesType!
-  setThrustersControlThrustersSwitchAft(component: ValveInputType!): ThrustersControlValuesType!
-  setThrustersControlThrustersSwitchFwd(component: ValveInputType!): ThrustersControlValuesType!
+  thrustersSimulationSetThrustersAft(component: ThrusterInputType!): ThrustersSimulationInputsType!
+  thrustersSimulationSetThrustersFwd(component: ThrusterInputType!): ThrustersSimulationInputsType!
+  thrustersSimulationSetThrustersSeawaterSupply(component: BoundaryInputType!): ThrustersSimulationInputsType!
+  thrustersSimulationSetThrustersModuleSupply(component: TemperatureBoundaryInputType!): ThrustersSimulationInputsType!
+  thrustersSimulationSetThrustersPcs(component: PcsInputType!): ThrustersSimulationInputsType!
+  thrustersParameterSetMaximumSupplyTemperature(value: Float!): ThrustersParametersType!
+  thrustersParameterSetCoolingTemperature(value: Float!): ThrustersParametersType!
+  thrustersParameterSetCoolingFlow(value: Float!): ThrustersParametersType!
+  thrustersParameterSetRecoveryTemperature(value: Float!): ThrustersParametersType!
+  thrustersParameterSetWarmupTemperature(value: Float!): ThrustersParametersType!
+  thrustersParameterSetThrustersMinimumFlow(value: Float!): ThrustersParametersType!
+  thrustersParameterSetThrustersMaximumFlow(value: Float!): ThrustersParametersType!
+  thrustersParameterSetPumpTuning(value: [Float!]!): ThrustersParametersType!
+  thrustersParameterSetWarmupMixTuning(value: [Float!]!): ThrustersParametersType!
+  thrustersParameterSetHeatDumpTuning(value: [Float!]!): ThrustersParametersType!
+  thrustersParameterSetAftFlowBalanceTuning(value: [Float!]!): ThrustersParametersType!
+  thrustersParameterSetFwdFlowBalanceTuning(value: [Float!]!): ThrustersParametersType!
+  thrustersParameterSetAftTemperatureTuning(value: [Float!]!): ThrustersParametersType!
+  thrustersParameterSetFwdTemperatureTuning(value: [Float!]!): ThrustersParametersType!
+  thrustersControlSetThrustersPump1(component: PumpInputType!): ThrustersControlValuesType!
+  thrustersControlSetThrustersPump2(component: PumpInputType!): ThrustersControlValuesType!
+  thrustersControlSetThrustersMixRecovery(component: ValveInputType!): ThrustersControlValuesType!
+  thrustersControlSetThrustersMixExchanger(component: ValveInputType!): ThrustersControlValuesType!
+  thrustersControlSetThrustersFlowcontrolAft(component: ValveInputType!): ThrustersControlValuesType!
+  thrustersControlSetThrustersFlowcontrolFwd(component: ValveInputType!): ThrustersControlValuesType!
+  thrustersControlSetThrustersShutoffRecovery(component: ValveInputType!): ThrustersControlValuesType!
+  thrustersControlSetThrustersSwitchAft(component: ValveInputType!): ThrustersControlValuesType!
+  thrustersControlSetThrustersSwitchFwd(component: ValveInputType!): ThrustersControlValuesType!
+  pvtSimulationSetPvtMainFwd(component: HeatSourceInputType!): PvtSimulationInputsType!
+  pvtSimulationSetPvtMainAft(component: HeatSourceInputType!): PvtSimulationInputsType!
+  pvtSimulationSetPvtOwners(component: HeatSourceInputType!): PvtSimulationInputsType!
+  pvtSimulationSetPvtModuleSupply(component: TemperatureBoundaryInputType!): PvtSimulationInputsType!
+  pvtSimulationSetPvtSeawaterSupply(component: BoundaryInputType!): PvtSimulationInputsType!
+  pvtParameterSetMaximumSupplyTemperature(value: Float!): PvtParametersType!
+  pvtParameterSetRecoveryTemperature(value: Float!): PvtParametersType!
+  pvtParameterSetWarmupTemperature(value: Float!): PvtParametersType!
+  pvtParameterSetRecoveryActivationStringTemperature(value: Float!): PvtParametersType!
+  pvtParameterSetMinimumReturnTemperature(value: Float!): PvtParametersType!
+  pvtParameterSetMainFwdMinimumPumpDutypoint(value: Float!): PvtParametersType!
+  pvtParameterSetMainAftMinimumPumpDutypoint(value: Float!): PvtParametersType!
+  pvtParameterSetOwnersMinimumPumpDutypoint(value: Float!): PvtParametersType!
+  pvtParameterSetHeatDumpTuning(value: [Float!]!): PvtParametersType!
+  pvtParameterSetMainFwdMixTuning(value: [Float!]!): PvtParametersType!
+  pvtParameterSetMainAftMixTuning(value: [Float!]!): PvtParametersType!
+  pvtParameterSetOwnersMixTuning(value: [Float!]!): PvtParametersType!
+  pvtParameterSetMainFwdPumpTuning(value: [Float!]!): PvtParametersType!
+  pvtParameterSetMainAftPumpTuning(value: [Float!]!): PvtParametersType!
+  pvtParameterSetOwnersPumpTuning(value: [Float!]!): PvtParametersType!
+  pvtControlSetPvtPumpMainFwd(component: PumpInputType!): PvtControlValuesType!
+  pvtControlSetPvtPumpMainAft(component: PumpInputType!): PvtControlValuesType!
+  pvtControlSetPvtPumpOwners(component: PumpInputType!): PvtControlValuesType!
+  pvtControlSetPvtMixMainFwd(component: ValveInputType!): PvtControlValuesType!
+  pvtControlSetPvtMixMainAft(component: ValveInputType!): PvtControlValuesType!
+  pvtControlSetPvtMixOwners(component: ValveInputType!): PvtControlValuesType!
+  pvtControlSetPvtSwitchMainFwd(component: ValveInputType!): PvtControlValuesType!
+  pvtControlSetPvtSwitchMainAft(component: ValveInputType!): PvtControlValuesType!
+  pvtControlSetPvtSwitchOwners(component: ValveInputType!): PvtControlValuesType!
+  pvtControlSetPvtMixExchanger(component: ValveInputType!): PvtControlValuesType!
   simulationPlay(playbackRate: Float! = 1): Void
   simulationPause: Void
   simulationStep(seconds: Float!): Void

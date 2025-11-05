@@ -17,44 +17,40 @@ export const toSimulationDefinition = <T extends SimulationDefinitions>(input: T
 
 export const THRUSTERS_CONTROL_DEFINITION = toControlDefinition({
   thrustersPump1: {
-    yardTag: "50001194",
-    componentType: ControlComponentType.Pump,
-  },
-  thrustersPump2: {
     yardTag: "50001195",
     componentType: ControlComponentType.Pump,
   },
-  thrustersMixRecovery: {
+  thrustersPump2: {
     yardTag: "50001074",
     componentType: ControlComponentType.Valve,
     valveType: ValveType.Mix,
   },
-  thrustersMixExchanger: {
+  thrustersMixRecovery: {
     yardTag: "50001214-01",
     componentType: ControlComponentType.Valve,
     valveType: ValveType.Mix,
   },
-  thrustersFlowcontrolAft: {
+  thrustersMixExchanger: {
     yardTag: "50001215",
     componentType: ControlComponentType.Valve,
     valveType: ValveType.FlowControl,
   },
-  thrustersFlowcontrolFwd: {
+  thrustersFlowcontrolAft: {
     yardTag: "50001064-02",
     componentType: ControlComponentType.Valve,
     valveType: ValveType.FlowControl,
   },
-  thrustersShutoffRecovery: {
+  thrustersFlowcontrolFwd: {
     yardTag: "50001066-03",
     componentType: ControlComponentType.Valve,
     valveType: ValveType.Shutoff,
   },
-  thrustersSwitchAft: {
+  thrustersShutoffRecovery: {
     yardTag: "50001091-01",
     componentType: ControlComponentType.Valve,
     valveType: ValveType.Switch,
   },
-  thrustersSwitchFwd: {
+  thrustersSwitchAft: {
     yardTag: "50001091-02",
     componentType: ControlComponentType.Valve,
     valveType: ValveType.Switch,
@@ -63,95 +59,91 @@ export const THRUSTERS_CONTROL_DEFINITION = toControlDefinition({
 
 export const THRUSTERS_SENSOR_DEFINITION = toSensorDefinition({
   thrustersPump1: {
-    yardTag: "50001194",
-    componentType: SensorComponentType.Pump,
-  },
-  thrustersPump2: {
     yardTag: "50001195",
     componentType: SensorComponentType.Pump,
   },
-  thrustersTemperatureAftReturn: {
+  thrustersPump2: {
     yardTag: "50001038-01",
-    componentType: SensorComponentType.Temperature,
+    componentType: SensorComponentType.Pump,
   },
-  thrustersTemperatureFwdReturn: {
+  thrustersTemperatureAftReturn: {
     yardTag: "50001038-02",
     componentType: SensorComponentType.Temperature,
   },
-  thrustersTemperatureSupply: {
+  thrustersTemperatureFwdReturn: {
     yardTag: "50001038-28",
     componentType: SensorComponentType.Temperature,
   },
-  thrustersTemperatureRecoveryMix: {
+  thrustersTemperatureSupply: {
     yardTag: "50001038-30",
     componentType: SensorComponentType.Temperature,
   },
-  thrustersMixRecovery: {
+  thrustersTemperatureRecoveryMix: {
     yardTag: "50001074",
-    componentType: SensorComponentType.Valve,
+    componentType: SensorComponentType.Temperature,
     valveType: ValveType.Mix,
   },
-  thrustersMixExchanger: {
+  thrustersMixRecovery: {
     yardTag: "50001214-01",
     componentType: SensorComponentType.Valve,
     valveType: ValveType.Mix,
   },
-  thrustersFlowFwd: {
+  thrustersMixExchanger: {
     yardTag: "50001057-22",
-    componentType: SensorComponentType.Flow,
+    componentType: SensorComponentType.Valve,
   },
-  thrustersFlowAft: {
+  thrustersFlowFwd: {
     yardTag: "50001057-23",
     componentType: SensorComponentType.Flow,
   },
-  thrustersFlowcontrolAft: {
+  thrustersFlowAft: {
     yardTag: "50001215",
-    componentType: SensorComponentType.Valve,
+    componentType: SensorComponentType.Flow,
     valveType: ValveType.FlowControl,
   },
-  thrustersFlowcontrolFwd: {
+  thrustersFlowcontrolAft: {
     yardTag: "50001064-02",
     componentType: SensorComponentType.Valve,
     valveType: ValveType.FlowControl,
   },
-  thrustersShutoffRecovery: {
+  thrustersFlowcontrolFwd: {
     yardTag: "50001066-03",
     componentType: SensorComponentType.Valve,
     valveType: ValveType.Shutoff,
   },
-  thrustersSwitchAft: {
+  thrustersShutoffRecovery: {
     yardTag: "50001091-01",
     componentType: SensorComponentType.Valve,
     valveType: ValveType.Switch,
   },
-  thrustersSwitchFwd: {
+  thrustersSwitchAft: {
     yardTag: "50001091-02",
     componentType: SensorComponentType.Valve,
     valveType: ValveType.Switch,
   },
-  thrustersFlowRecovery: {
+  thrustersSwitchFwd: {
     yardTag: "50001093-01",
+    componentType: SensorComponentType.Valve,
+  },
+  thrustersFlowRecovery: {
+    yardTag: "50001097-01",
     componentType: SensorComponentType.Flow,
   },
   thrustersPressurePump: {
-    yardTag: "50001097-01",
-    componentType: SensorComponentType.Pressure,
-  },
-  thrustersPressureRelief: {
     yardTag: "50001097-02",
     componentType: SensorComponentType.Pressure,
   },
-  thrustersAft: {
+  thrustersPressureRelief: {
     yardTag: "15001001",
-    componentType: SensorComponentType.Thruster,
+    componentType: SensorComponentType.Pressure,
   },
-  thrustersFwd: {
+  thrustersAft: {
     yardTag: "15001002",
     componentType: SensorComponentType.Thruster,
   },
-  thrustersPcs: {
+  thrustersFwd: {
     yardTag: "1500",
-    componentType: SensorComponentType.Pcs,
+    componentType: SensorComponentType.Thruster,
   },
 });
 
