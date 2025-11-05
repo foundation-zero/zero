@@ -31,36 +31,55 @@ class ConsumersSensorValues(ThrsModel):
         sensor.FlowSensor, component_meta(yard_tag="50001060-01")
     ]
     consumers_flowcontrol_fahrenheit: Annotated[
-        sensor.Valve, component_meta(yard_tag="50001061")
+        sensor.Valve, component_meta(yard_tag="50001061", valve_type="flowcontrol")
     ]
     consumers_flowcontrol_bypass: Annotated[
-        sensor.Valve, component_meta(yard_tag="50001062-01")
+        sensor.Valve, component_meta(yard_tag="50001062-01", valve_type="flowcontrol")
     ]
     consumers_flowcontrol_boosting: Annotated[
-        sensor.Valve, component_meta(yard_tag="50001065-01")
+        sensor.Valve, component_meta(yard_tag="50001065-01", valve_type="flowcontrol")
     ]
     consumers_switch_fahrenheit_exchanger: Annotated[
-        sensor.Valve, component_meta(yard_tag="50001066-02")
+        sensor.Valve, component_meta(yard_tag="50001066-02", valve_type="switch")
     ]
 
-    consumers_switch_boosting: Annotated[sensor.Valve, ParameterMeta("50001067-15")]
+    consumers_switch_boosting: Annotated[
+        sensor.Valve, component_meta(yard_tag="50001067-15", valve_type="switch")
+    ]
 
 
 class ConsumersControlValues(ThrsModel):
     consumers_flowcontrol_fahrenheit: Annotated[
-        control.Valve, component_meta(yard_tag="50001061")
+        control.Valve,
+        component_meta(
+            yard_tag="50001061", component_type="valve", valve_type="flowcontrol"
+        ),
     ]
     consumers_flowcontrol_bypass: Annotated[
-        control.Valve, component_meta(yard_tag="50001062-01")
+        control.Valve,
+        component_meta(
+            yard_tag="50001062-01", component_type="valve", valve_type="flowcontrol"
+        ),
     ]
     consumers_flowcontrol_boosting: Annotated[
-        control.Valve, component_meta(yard_tag="50001065-01")
+        control.Valve,
+        component_meta(
+            yard_tag="50001065-01", component_type="valve", valve_type="flowcontrol"
+        ),
     ]
     consumers_switch_fahrenheit_exchanger: Annotated[
-        control.Valve, component_meta(yard_tag="50001066-02")
+        control.Valve,
+        component_meta(
+            yard_tag="50001066-02", component_type="valve", valve_type="switch"
+        ),
     ]
 
-    consumers_switch_boosting: Annotated[control.Valve, ParameterMeta("50001067-15")]
+    consumers_switch_boosting: Annotated[
+        control.Valve,
+        component_meta(
+            yard_tag="50001067-15", component_type="valve", valve_type="switch"
+        ),
+    ]
 
 
 class ConsumersSimulationInputs(SimulationInputs):
