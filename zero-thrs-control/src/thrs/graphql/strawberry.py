@@ -28,8 +28,8 @@ from thrs.graphql.base import (
 from thrs.graphql.messaging import Messaging, MessagingModule
 from thrs.graphql.pvt import PvtModule, PvtMutations
 from thrs.graphql.thrusters import ThrustersModule, ThrustersMutations
-from thrs.graphql.pcm import PcmModule
-from thrs.graphql.consumers import ConsumersModule
+from thrs.graphql.pcm import PcmModule, PcmMutations
+from thrs.graphql.consumers import ConsumersModule, ConsumersMutations
 
 from thrs.input_output.definitions.units import unit_for_annotation
 from thrs.input_output.modules.consumers import (
@@ -183,7 +183,7 @@ def generate_mutation_for_field[T](
 
 
 @strawberry.type
-class Mutation(ThrustersMutations, PvtMutations):
+class Mutation(ThrustersMutations, PvtMutations, PcmMutations, ConsumersMutations):
     @strawberry.mutation
     async def simulation_play(
         self, info: strawberry.Info[ThrsContext], playback_rate: float = 1.0
