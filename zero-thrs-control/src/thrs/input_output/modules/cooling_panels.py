@@ -146,8 +146,8 @@ class CoolingPanelsSensorValues(ThrsModel):
         sensor.Pump, component_meta(yard_tag="41006001-1")
     ]
     cooling_pump_ps_aft: Annotated[sensor.Pump, component_meta(yard_tag="41006001-2")]
-    cooling_pump_sb_aft: Annotated[sensor.Pump, component_meta(yard_tag="41006001-3")]
     cooling_pump_ps_fwd: Annotated[sensor.Pump, component_meta(yard_tag="41006001-4")]
+    cooling_pump_sb_aft: Annotated[sensor.Pump, component_meta(yard_tag="41006001-3")]
     cooling_pump_sb_fwd: Annotated[sensor.Pump, component_meta(yard_tag="41006001-5")]
 
 
@@ -218,8 +218,8 @@ class CoolingPanelsControlValues(ThrsModel):
         control.Pump, component_meta(yard_tag="41006001-1")
     ]
     cooling_pump_ps_aft: Annotated[control.Pump, component_meta(yard_tag="41006001-2")]
-    cooling_pump_sb_aft: Annotated[control.Pump, component_meta(yard_tag="41006001-3")]
     cooling_pump_ps_fwd: Annotated[control.Pump, component_meta(yard_tag="41006001-4")]
+    cooling_pump_sb_aft: Annotated[control.Pump, component_meta(yard_tag="41006001-3")]
     cooling_pump_sb_fwd: Annotated[control.Pump, component_meta(yard_tag="41006001-5")]
 
 
