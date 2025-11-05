@@ -37,16 +37,22 @@ models:
       +materialized: table
       domestic_control:
         +schema: domestic
+      energy:
+        +schema: energy
     20_silver:
       +materialized: view
       domestic_control:
         +schema: domestic
+      energy:
+        +schema: energy
     30_gold:
       +materialized: materialized_view
       domestic_control:
         +schema: domestic
       loads:
         +schema: loads
+      energy:
+        +schema: energy
     40_sink:
       +materialized: sink
       domestic_control:
@@ -54,3 +60,9 @@ models:
       loads:
         +schema: loads
 
+
+# Configuring seeds
+# Full documentation: https://docs.getdbt.com/reference/seed-configs
+seeds:
+  risingwave:
+    +schema: marpower
