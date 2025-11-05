@@ -5,4 +5,5 @@ SELECT
 	group_name,
 	LAST_VALUE(stored_energy ORDER BY time) AS stored_energy
 FROM {{ ref('bms_master_power_data') }}
+WHERE stored_energy IS NOT NULL
 GROUP BY topic, group_name

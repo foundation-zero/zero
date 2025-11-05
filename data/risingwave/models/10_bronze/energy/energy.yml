@@ -1,0 +1,63 @@
+version: 2
+models:
+  - name: battery_dc_converter_power_updates
+    description: Voltage and current value updates of the battery DC converters. {{ doc("dc_converter_sides_explained") }}
+    columns:
+      - name: topic
+        description: '{{ doc("topic") }}'
+        data_tests:
+            - not_null
+      - name: time
+        description: '{{ doc("zero_timestamp") }}'
+        data_tests:
+            - not_null
+      - name: voltage_a
+        description: '{{ doc("voltage_at_side") }} A.'
+      - name: voltage_a_timestamp
+        description: '{{ doc("timestamp_voltage_at_side") }} A.'
+      - name: voltage_b
+        description: '{{ doc("voltage_at_side") }} B.'
+      - name: voltage_b_timestamp
+        description: '{{ doc("timestamp_voltage_at_side") }} B.'
+      - name: current_a
+        description: '{{ doc("current_at_side") }} A.'
+      - name: current_a_timestamp
+        description: '{{ doc("timestamp_current_at_side") }} A.'
+      - name: current_b
+        description: '{{ doc("current_at_side") }} B.'
+      - name: current_b_timestamp
+        description: '{{ doc("timestamp_current_at_side") }} B.'
+  - name: bms_master_power_updates
+    description: The stored energy value updates of the batteries. 
+    columns:
+      - name: topic
+        description: '{{ doc("topic") }}'
+        data_tests:
+            - not_null
+      - name: time
+        description: '{{ doc("zero_timestamp") }}'
+        data_tests:
+            - not_null
+      - name: stored_energy
+        description: '{{ doc("stored_energy") }}'
+      - name: stored_energy_timestamp
+        description: Timestamp at which the stored energy value was reported.
+  - name: consumer_producer_power_updates
+    description: The electrical energy value updates of consumers and producers. 
+    columns:
+      - name: topic
+        description: '{{ doc("topic") }}'
+        data_tests:
+            - not_null
+      - name: time
+        description: '{{ doc("zero_timestamp") }}'
+        data_tests:
+            - not_null
+      - name: active_power
+        description: '{{ doc("active_power") }}'
+      - name: active_power_timestamp
+        description: Timestamp at which the active power value was reported.
+      - name: power_factor
+        description: '{{ doc("power_factor") }}'
+      - name: power_factor_timestamp
+        description: Timestamp at which the power factor value was reported.

@@ -1,0 +1,52 @@
+version: 2
+models:
+  - name: electrical_flow
+    description: Electrical energy consumption or production per group. The energy values are an average value over the past 5 minutes and summed up per group.
+    columns:
+      - name: time
+        description: '{{ doc("time") }}'
+        data_tests:
+            - not_null
+      - name: group_name
+        description: '{{ doc("group_name") }}'
+        data_tests:
+            - unique
+            - not_null
+      - name: group_power
+        description: The sum of the average electrical energy values (W) of all measurements within a group.
+        data_tests:
+            - not_null
+  - name: electrical_hourly
+    description: Electrical energy consumed or produced per hour.
+    columns:
+      - name: topic
+        description: '{{ doc("topic") }}'
+        data_tests:
+            - not_null
+      - name: hour
+        description: The starttime of the hour time window.  
+        data_tests:
+            - not_null
+      - name: energy_wh
+        description: Electrical energy (Wh) value within the hour time window.
+        data_tests:
+            - not_null
+  - name: electrical_soc
+    description: Electrical energy stored in a battery.
+    columns:
+      - name: time
+        description: '{{ doc("time") }}'
+        data_tests:
+            - not_null
+      - name: topic
+        description: '{{ doc("topic") }}'
+        data_tests:
+            - not_null
+      - name: group_name
+        description: '{{ doc("group_name") }}'
+        data_tests:
+            - not_null
+      - name: stored_energy
+        description: The most recent value of the electrical energy stored (Wh).
+        data_tests:
+            - not_null

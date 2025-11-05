@@ -31,4 +31,11 @@ async def setup_domestic_control():
 
 
 asyncio.run(setup_domestic_control())
+
+
+print("Risingwave: Generate model documentation")
+
+subprocess.run(["poetry", "run", "dbt", "docs", "generate"], cwd="./risingwave")
+
+
 print("Risingwave: Done")
