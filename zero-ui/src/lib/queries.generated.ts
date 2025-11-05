@@ -4,7 +4,8 @@ export const THRUSTERS_CONTROL_QUERY = `
     on { value timestamp }
   }
   thrustersPump2 {
-    setpoint { value timestamp }
+    dutypoint { value timestamp }
+    on { value timestamp }
   }
   thrustersMixRecovery {
     setpoint { value timestamp }
@@ -22,6 +23,9 @@ export const THRUSTERS_CONTROL_QUERY = `
     setpoint { value timestamp }
   }
   thrustersSwitchAft {
+    setpoint { value timestamp }
+  }
+  thrustersSwitchFwd {
     setpoint { value timestamp }
   }
 `;
@@ -94,6 +98,9 @@ export const THRUSTERS_SENSOR_QUERY = `
   thrustersFwd {
     active { value timestamp }
   }
+  thrustersPcs {
+    mode { value timestamp }
+  }
 `;
 
 export const THRUSTERS_SIMULATION_OUTPUTS_QUERY = `
@@ -149,13 +156,16 @@ export const THRUSTERS_PARAMETERS_QUERY = `
 
 export const PVT_CONTROL_QUERY = `
   pvtPumpMainFwd {
-    setpoint { value timestamp }
+    dutypoint { value timestamp }
+    on { value timestamp }
   }
   pvtPumpMainAft {
-    setpoint { value timestamp }
+    dutypoint { value timestamp }
+    on { value timestamp }
   }
   pvtPumpOwners {
-    setpoint { value timestamp }
+    dutypoint { value timestamp }
+    on { value timestamp }
   }
   pvtMixMainFwd {
     setpoint { value timestamp }
@@ -173,6 +183,9 @@ export const PVT_CONTROL_QUERY = `
     setpoint { value timestamp }
   }
   pvtSwitchOwners {
+    setpoint { value timestamp }
+  }
+  pvtMixExchanger {
     setpoint { value timestamp }
   }
 `;
@@ -485,6 +498,9 @@ export const PVT_SENSOR_QUERY = `
   pvtTemperatureOwnersString5Supply {
     temperature { value timestamp }
   }
+  pvtTemperatureOwnersString6Supply {
+    temperature { value timestamp }
+  }
 `;
 
 export const PVT_PARAMETERS_QUERY = `
@@ -506,6 +522,15 @@ export const PVT_PARAMETERS_QUERY = `
 `;
 
 export const PVT_SIMULATION_INPUTS_QUERY = `
+  pvtMainFwd {
+    heatFlow { value timestamp }
+  }
+  pvtMainAft {
+    heatFlow { value timestamp }
+  }
+  pvtOwners {
+    heatFlow { value timestamp }
+  }
   pvtModuleSupply {
     temperature { value timestamp }
   }
@@ -530,7 +555,8 @@ export const PVT_SIMULATION_OUTPUTS_QUERY = `
 
 export const PCM_CONTROL_QUERY = `
   pcmPump {
-    setpoint { value timestamp }
+    dutypoint { value timestamp }
+    on { value timestamp }
   }
   pcmSwitchChargingReturn {
     setpoint { value timestamp }
@@ -555,6 +581,9 @@ export const PCM_CONTROL_QUERY = `
   }
   pcmSwitchConsumers {
     setpoint { value timestamp }
+  }
+  pcmModule1 {
+    on { value timestamp }
   }
 `;
 
@@ -618,6 +647,9 @@ export const CONSUMERS_CONTROL_QUERY = `
   consumersSwitchFahrenheitDirectReturn {
     setpoint { value timestamp }
   }
+  consumersSwitchBoosting {
+    setpoint { value timestamp }
+  }
 `;
 
 export const CONSUMERS_SENSOR_QUERY = `
@@ -663,6 +695,9 @@ export const CONSUMERS_SENSOR_QUERY = `
   consumersSwitchFahrenheitDirectReturn {
     positionRel { value timestamp }
   }
+  consumersSwitchBoosting {
+    positionRel { value timestamp }
+  }
 `;
 
 export const CONSUMERS_PARAMETERS_QUERY = `
@@ -700,5 +735,83 @@ export const CONSUMERS_SIMULATION_OUTPUTS_QUERY = `
   consumersModuleReturn {
     temperature { value timestamp }
     flow { value timestamp }
+  }
+`;
+
+export const PCM_SENSOR_QUERY = `
+  pcmPump {
+    flow { value timestamp }
+    speed { value timestamp }
+    opTime { value timestamp }
+  }
+  pcmTemperatureProducersReturn {
+    temperature { value timestamp }
+  }
+  pcmTemperatureProducersSupply {
+    temperature { value timestamp }
+  }
+  pcmTemperatureModule1Out {
+    temperature { value timestamp }
+  }
+  pcmTemperatureModule2Out {
+    temperature { value timestamp }
+  }
+  pcmTemperatureModule3Out {
+    temperature { value timestamp }
+  }
+  pcmTemperatureModule4Out {
+    temperature { value timestamp }
+  }
+  pcmModule1 {
+    charged { value timestamp }
+  }
+  pcmModule2 {
+    charged { value timestamp }
+  }
+  pcmModule3 {
+    charged { value timestamp }
+  }
+  pcmModule4 {
+    charged { value timestamp }
+  }
+  pcmFlowModule1 {
+    flow { value timestamp }
+    temperature { value timestamp }
+  }
+  pcmFlowModule2 {
+    flow { value timestamp }
+    temperature { value timestamp }
+  }
+  pcmFlowModule3 {
+    flow { value timestamp }
+    temperature { value timestamp }
+  }
+  pcmFlowModule4 {
+    flow { value timestamp }
+    temperature { value timestamp }
+  }
+  pcmSwitchChargingReturn {
+    positionRel { value timestamp }
+  }
+  pcmFlowcontrolModule1 {
+    positionRel { value timestamp }
+  }
+  pcmFlowcontrolModule2 {
+    positionRel { value timestamp }
+  }
+  pcmFlowcontrolModule3 {
+    positionRel { value timestamp }
+  }
+  pcmFlowcontrolModule4 {
+    positionRel { value timestamp }
+  }
+  pcmSwitchDischarging {
+    positionRel { value timestamp }
+  }
+  pcmSwitchChargingSupply {
+    positionRel { value timestamp }
+  }
+  pcmSwitchConsumers {
+    positionRel { value timestamp }
   }
 `;

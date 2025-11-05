@@ -1,5 +1,13 @@
-<script setup lang="ts" generic="K extends keyof THRSModules">
-import { ParametersType } from "@/@types/thrs";
+<script
+  setup
+  lang="ts"
+  generic="
+    K extends keyof THRSModules,
+    Definitions extends ParameterDefinitions = THRSDefinitions[K]['parameters'],
+    Values extends ExtractParameterValues<Definitions> = ExtractParameterValues<Definitions>
+  "
+>
+import { ExtractParameterValues, ParameterDefinitions, ParametersType } from "@/@types/thrs";
 import { THRSDefinitions, THRSModules } from "@/lib/consts";
 import { Client } from "@urql/vue";
 import { useIntervalFn } from "@vueuse/core";
@@ -10,7 +18,7 @@ import PIDParameter from "./controls/PIDParameter.vue";
 
 const props = defineProps<{
   module: K;
-  parameters: THRSDefinitions[K]["parameters"];
+  parameters: Definitions;
   query: string;
   client: Client;
 }>();
@@ -22,13 +30,14 @@ const COMPONENTS: Record<ParametersType, Component | null> = {
 };
 
 const parametersValuesQuery = queryFor(props.module, "parameters", props.query);
-const parametersFromQuery = queryPacked(props.module, "parameters", parametersValuesQuery);
-const parametersFromMutation = ref<THRSModules[K]["parameters"] | null>(null);
+const parametersFromQuery = queryPacked(
+  parametersValuesQuery,
+  (data) => data?.modules?.[props.module]?.parameters as Values | undefined,
+);
+
+const parametersFromMutation = ref<Values | null>(null);
 const params = computed(
-  () =>
-    <THRSModules[K]["parameters"] | undefined>(
-      (parametersFromMutation.value ?? parametersFromQuery.value.data)
-    ),
+  () => (parametersFromMutation.value as Values) ?? parametersFromQuery.value.data,
 );
 
 useIntervalFn(
@@ -40,14 +49,14 @@ useIntervalFn(
   { immediateCallback: true },
 );
 
-const setControlValues = (newValues: unknown) => {
+const setControlValues = (newValues: Values) => {
   parametersFromMutation.value = newValues;
 };
 
 const parameterComponents = computed(() => {
   return Object.entries(props.parameters).map(([key, value]) => ({
     ...value,
-    key: key as keyof THRSModules[K]["parameters"],
+    key: key as keyof Values,
     component: COMPONENTS[value.componentType],
   }));
 });

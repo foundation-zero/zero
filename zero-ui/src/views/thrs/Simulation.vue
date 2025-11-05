@@ -20,7 +20,7 @@ const definition = computed(() => DEFINITIONS[currentDefinition.value]);
 
   <ModuleSimulation
     :module="currentDefinition"
-    :simulation-controls="definition.simulation"
+    :simulation-inputs="definition.simulation.inputs"
     :query="QUERIES[currentDefinition].simulation.inputs"
     :client="client"
   />
@@ -31,7 +31,7 @@ const definition = computed(() => DEFINITIONS[currentDefinition.value]);
 
   <ModuleSimulationOutputs
     :module="currentDefinition"
-    :simulation-controls="definition.simulation"
+    :simulation-outputs="definition.simulation.outputs"
     :query="QUERIES[currentDefinition].simulation.outputs"
     :client="client"
   />
