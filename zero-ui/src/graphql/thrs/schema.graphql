@@ -5,6 +5,11 @@ type BoolStampedType {
   timestamp: DateTime!
 }
 
+input BoundaryInputType {
+  temperature: Float!
+  flow: Float!
+}
+
 type BoundarySimulationType {
   temperature: FloatStampedType!
   flow: FloatStampedType!
@@ -116,6 +121,100 @@ type Modules {
 }
 
 type Mutation {
+  setSimulationThrustersAft(component: ThrusterInputType!): ThrustersSimulationInputsType!
+  setSimulationThrustersFwd(component: ThrusterInputType!): ThrustersSimulationInputsType!
+  setSimulationThrustersSeawaterSupply(component: BoundaryInputType!): ThrustersSimulationInputsType!
+  setSimulationThrustersModuleSupply(component: TemperatureBoundaryInputType!): ThrustersSimulationInputsType!
+  setSimulationThrustersPcs(component: PcsInputType!): ThrustersSimulationInputsType!
+  setParameterMaximumSupplyTemperature(value: Float!): ThrustersParametersType!
+  setParameterCoolingTemperature(value: Float!): ThrustersParametersType!
+  setParameterCoolingFlow(value: Float!): ThrustersParametersType!
+  setParameterRecoveryTemperature(value: Float!): ThrustersParametersType!
+  setParameterWarmupTemperature(value: Float!): ThrustersParametersType!
+  setParameterThrustersMinimumFlow(value: Float!): ThrustersParametersType!
+  setParameterThrustersMaximumFlow(value: Float!): ThrustersParametersType!
+  setParameterPumpTuning(value: [Float!]!): ThrustersParametersType!
+  setParameterWarmupMixTuning(value: [Float!]!): ThrustersParametersType!
+  setParameterHeatDumpTuning(value: [Float!]!): ThrustersParametersType!
+  setParameterAftFlowBalanceTuning(value: [Float!]!): ThrustersParametersType!
+  setParameterFwdFlowBalanceTuning(value: [Float!]!): ThrustersParametersType!
+  setParameterAftTemperatureTuning(value: [Float!]!): ThrustersParametersType!
+  setParameterFwdTemperatureTuning(value: [Float!]!): ThrustersParametersType!
+  setControlThrustersPump1(component: PumpInputType!): ThrustersControlValuesType!
+  setControlThrustersPump2(component: PumpInputType!): ThrustersControlValuesType!
+  setControlThrustersMixRecovery(component: ValveInputType!): ThrustersControlValuesType!
+  setControlThrustersMixExchanger(component: ValveInputType!): ThrustersControlValuesType!
+  setControlThrustersFlowcontrolAft(component: ValveInputType!): ThrustersControlValuesType!
+  setControlThrustersFlowcontrolFwd(component: ValveInputType!): ThrustersControlValuesType!
+  setControlThrustersShutoffRecovery(component: ValveInputType!): ThrustersControlValuesType!
+  setControlThrustersSwitchAft(component: ValveInputType!): ThrustersControlValuesType!
+  setControlThrustersSwitchFwd(component: ValveInputType!): ThrustersControlValuesType!
+  setSimulationPvtMainFwd(component: HeatSourceInputType!): PvtSimulationInputsType!
+  setSimulationPvtMainAft(component: HeatSourceInputType!): PvtSimulationInputsType!
+  setSimulationPvtOwners(component: HeatSourceInputType!): PvtSimulationInputsType!
+  setSimulationPvtModuleSupply(component: TemperatureBoundaryInputType!): PvtSimulationInputsType!
+  setSimulationPvtSeawaterSupply(component: BoundaryInputType!): PvtSimulationInputsType!
+  setParameterRecoveryActivationStringTemperature(value: Float!): PvtParametersType!
+  setParameterMinimumReturnTemperature(value: Float!): PvtParametersType!
+  setParameterMainFwdMinimumPumpDutypoint(value: Float!): PvtParametersType!
+  setParameterMainAftMinimumPumpDutypoint(value: Float!): PvtParametersType!
+  setParameterOwnersMinimumPumpDutypoint(value: Float!): PvtParametersType!
+  setParameterMainFwdMixTuning(value: [Float!]!): PvtParametersType!
+  setParameterMainAftMixTuning(value: [Float!]!): PvtParametersType!
+  setParameterOwnersMixTuning(value: [Float!]!): PvtParametersType!
+  setParameterMainFwdPumpTuning(value: [Float!]!): PvtParametersType!
+  setParameterMainAftPumpTuning(value: [Float!]!): PvtParametersType!
+  setParameterOwnersPumpTuning(value: [Float!]!): PvtParametersType!
+  setControlPvtPumpMainFwd(component: PumpInputType!): PvtControlValuesType!
+  setControlPvtPumpMainAft(component: PumpInputType!): PvtControlValuesType!
+  setControlPvtPumpOwners(component: PumpInputType!): PvtControlValuesType!
+  setControlPvtMixMainFwd(component: ValveInputType!): PvtControlValuesType!
+  setControlPvtMixMainAft(component: ValveInputType!): PvtControlValuesType!
+  setControlPvtMixOwners(component: ValveInputType!): PvtControlValuesType!
+  setControlPvtSwitchMainFwd(component: ValveInputType!): PvtControlValuesType!
+  setControlPvtSwitchMainAft(component: ValveInputType!): PvtControlValuesType!
+  setControlPvtSwitchOwners(component: ValveInputType!): PvtControlValuesType!
+  setControlPvtMixExchanger(component: ValveInputType!): PvtControlValuesType!
+  setSimulationPcmProducersSupply(component: BoundaryInputType!): PcmSimulationInputsType!
+  setSimulationPcmConsumersSupply(component: TemperatureBoundaryInputType!): PcmSimulationInputsType!
+  setSimulationPcmFreshwaterSupply(component: BoundaryInputType!): PcmSimulationInputsType!
+  setParameterPcmDischargeFlow(value: Float!): PcmParametersType!
+  setParameterPcmChargeFlow(value: Float!): PcmParametersType!
+  setParameterMinimumChargingDt(value: Float!): PcmParametersType!
+  setParameterMinimumChargingTemperature(value: Float!): PcmParametersType!
+  setParameterSupplyingEnabled(value: Boolean!): PcmParametersType!
+  setParameterChargingEnabled(value: Boolean!): PcmParametersType!
+  setParameterModule1FlowBalanceTuning(value: [Float!]!): PcmParametersType!
+  setParameterModule2FlowBalanceTuning(value: [Float!]!): PcmParametersType!
+  setParameterModule3FlowBalanceTuning(value: [Float!]!): PcmParametersType!
+  setParameterModule4FlowBalanceTuning(value: [Float!]!): PcmParametersType!
+  setControlPcmPump(component: PumpInputType!): PcmControlValuesType!
+  setControlPcmSwitchChargingReturn(component: ValveInputType!): PcmControlValuesType!
+  setControlPcmFlowcontrolModule1(component: ValveInputType!): PcmControlValuesType!
+  setControlPcmFlowcontrolModule2(component: ValveInputType!): PcmControlValuesType!
+  setControlPcmFlowcontrolModule3(component: ValveInputType!): PcmControlValuesType!
+  setControlPcmFlowcontrolModule4(component: ValveInputType!): PcmControlValuesType!
+  setControlPcmSwitchDischarging(component: ValveInputType!): PcmControlValuesType!
+  setControlPcmSwitchChargingSupply(component: ValveInputType!): PcmControlValuesType!
+  setControlPcmSwitchConsumers(component: ValveInputType!): PcmControlValuesType!
+  setControlPcmModule1(component: PcmInputType!): PcmControlValuesType!
+  setSimulationConsumersFahrenheitSupply(component: BoundaryInputType!): ConsumersSimulationInputsType!
+  setSimulationConsumersModuleSupply(component: BoundaryInputType!): ConsumersSimulationInputsType!
+  setSimulationConsumersBoostingSupply(component: BoundaryInputType!): ConsumersSimulationInputsType!
+  setParameterBoostingEnabled(value: Boolean!): ConsumersParametersType!
+  setParameterBoostingFlowRatioSetpoint(value: Float!): ConsumersParametersType!
+  setParameterFahrenheitEnabled(value: Boolean!): ConsumersParametersType!
+  setParameterFahrenheitFlowRatioSetpoint(value: Float!): ConsumersParametersType!
+  setParameterBoostingFlowBalanceTuning(value: [Float!]!): ConsumersParametersType!
+  setParameterBypassFlowBalanceTuning(value: [Float!]!): ConsumersParametersType!
+  setParameterFahrenheitFlowBalanceTuning(value: [Float!]!): ConsumersParametersType!
+  setControlConsumersSwitchFahrenheitDirectSupply(component: ValveInputType!): ConsumersControlValuesType!
+  setControlConsumersFlowcontrolFahrenheit(component: ValveInputType!): ConsumersControlValuesType!
+  setControlConsumersFlowcontrolBypass(component: ValveInputType!): ConsumersControlValuesType!
+  setControlConsumersFlowcontrolBoosting(component: ValveInputType!): ConsumersControlValuesType!
+  setControlConsumersSwitchFahrenheitExchanger(component: ValveInputType!): ConsumersControlValuesType!
+  setControlConsumersSwitchFahrenheitDirectReturn(component: ValveInputType!): ConsumersControlValuesType!
+  setControlConsumersSwitchBoosting(component: ValveInputType!): ConsumersControlValuesType!
   simulationPlay(playbackRate: Float! = 1): Void
   simulationPause: Void
   simulationStep(seconds: Float!): Void
@@ -133,6 +232,10 @@ type PcmControlValuesType {
   pcmSwitchChargingSupply: ControlValveType! @jsonSchemaDirective(yardTag: "50001090-01", componentType: null, valveType: null)
   pcmSwitchConsumers: ControlValveType! @jsonSchemaDirective(yardTag: "50001071-02", componentType: null, valveType: null)
   pcmModule1: ControlPcmType! @jsonSchemaDirective(yardTag: "50001049", componentType: null, valveType: null)
+}
+
+input PcmInputType {
+  on: Boolean!
 }
 
 type PcmParametersType {
@@ -199,6 +302,10 @@ type PcmSimulationOutputsType {
   pcmFreshwaterReturn: BoundarySimulationType!
 }
 
+input PcsInputType {
+  mode: PcsMode!
+}
+
 enum PcsMode {
   OFF
   MANEUVERING
@@ -215,156 +322,9 @@ type PcsSimulationType {
   mode: PcsModeStampedType!
 }
 
-type PvtControlValuesType {
-  pvtPumpMainFwd: ControlPumpType! @jsonSchemaDirective(yardTag: "50001018", componentType: null, valveType: null)
-  pvtPumpMainAft: ControlPumpType! @jsonSchemaDirective(yardTag: "50001019", componentType: null, valveType: null)
-  pvtPumpOwners: ControlPumpType! @jsonSchemaDirective(yardTag: "50001021", componentType: null, valveType: null)
-  pvtMixMainFwd: ControlValveType! @jsonSchemaDirective(yardTag: "50001044-01", componentType: null, valveType: null)
-  pvtMixMainAft: ControlValveType! @jsonSchemaDirective(yardTag: "50001044-02", componentType: null, valveType: null)
-  pvtMixOwners: ControlValveType! @jsonSchemaDirective(yardTag: "50001043-01", componentType: null, valveType: null)
-  pvtSwitchMainFwd: ControlValveType! @jsonSchemaDirective(yardTag: "50001067-01", componentType: null, valveType: null)
-  pvtSwitchMainAft: ControlValveType! @jsonSchemaDirective(yardTag: "50001067-02", componentType: null, valveType: null)
-  pvtSwitchOwners: ControlValveType! @jsonSchemaDirective(yardTag: "50001069-01", componentType: null, valveType: null)
-  pvtMixExchanger: ControlValveType! @jsonSchemaDirective(yardTag: "50001047-02", componentType: null, valveType: null)
-}
-
-type PvtParametersType {
-  maximumSupplyTemperature: Float!
-  recoveryTemperature: Float!
-  warmupTemperature: Float!
-  recoveryActivationStringTemperature: Float!
-  minimumReturnTemperature: Float!
-  mainFwdMinimumPumpDutypoint: Float!
-  mainAftMinimumPumpDutypoint: Float!
-  ownersMinimumPumpDutypoint: Float!
-  heatDumpTuning: [Float!]!
-  mainFwdMixTuning: [Float!]!
-  mainAftMixTuning: [Float!]!
-  ownersMixTuning: [Float!]!
-  mainFwdPumpTuning: [Float!]!
-  mainAftPumpTuning: [Float!]!
-  ownersPumpTuning: [Float!]!
-}
-
-type PvtSensorValuesType {
-  pvtPumpMainFwd: SensorPumpType! @jsonSchemaDirective(yardTag: "50001018", componentType: null, valveType: null)
-  pvtPumpMainAft: SensorPumpType! @jsonSchemaDirective(yardTag: "50001019", componentType: null, valveType: null)
-  pvtPumpOwners: SensorPumpType! @jsonSchemaDirective(yardTag: "50001021", componentType: null, valveType: null)
-  pvtTemperatureMainFwdReturn: SensorTemperatureSensorType! @jsonSchemaDirective(yardTag: "50001038-03", componentType: null, valveType: null)
-  pvtTemperatureMainFwdSupply: SensorTemperatureSensorType! @jsonSchemaDirective(yardTag: "50001038-23", componentType: null, valveType: null)
-  pvtTemperatureMainAftReturn: SensorTemperatureSensorType! @jsonSchemaDirective(yardTag: "50001038-73", componentType: null, valveType: null)
-  pvtTemperatureMainAftSupply: SensorTemperatureSensorType! @jsonSchemaDirective(yardTag: "50001038-22", componentType: null, valveType: null)
-  pvtTemperatureOwnersSupply: SensorTemperatureSensorType! @jsonSchemaDirective(yardTag: "50001038-21", componentType: null, valveType: null)
-  pvtTemperatureOwnersReturn: SensorTemperatureSensorType! @jsonSchemaDirective(yardTag: "50001038-04", componentType: null, valveType: null)
-  pvtMixMainFwd: SensorValveType! @jsonSchemaDirective(yardTag: "50001044-01", componentType: null, valveType: null)
-  pvtMixMainAft: SensorValveType! @jsonSchemaDirective(yardTag: "50001044-02", componentType: null, valveType: null)
-  pvtMixOwners: SensorValveType! @jsonSchemaDirective(yardTag: "50001043-01", componentType: null, valveType: null)
-  pvtFlowMainFwdRecovery: SensorFlowSensorType! @jsonSchemaDirective(yardTag: "50001058-12", componentType: null, valveType: null)
-  pvtFlowMainAftRecovery: SensorFlowSensorType! @jsonSchemaDirective(yardTag: "50001058-13", componentType: null, valveType: null)
-  pvtFlowOwnersRecovery: SensorFlowSensorType! @jsonSchemaDirective(yardTag: "50001057-03", componentType: null, valveType: null)
-  pvtPressureMainFwd: SensorPressureSensorType! @jsonSchemaDirective(yardTag: "50001097-03", componentType: null, valveType: null)
-  pvtPressureMainAft: SensorPressureSensorType! @jsonSchemaDirective(yardTag: "50001097-04", componentType: null, valveType: null)
-  pvtPressureOwners: SensorPressureSensorType! @jsonSchemaDirective(yardTag: "50001097-05", componentType: null, valveType: null)
-  pvtSwitchMainFwd: SensorValveType! @jsonSchemaDirective(yardTag: "50001067-01", componentType: null, valveType: null)
-  pvtSwitchMainAft: SensorValveType! @jsonSchemaDirective(yardTag: "50001067-02", componentType: null, valveType: null)
-  pvtSwitchOwners: SensorValveType! @jsonSchemaDirective(yardTag: "50001069-01", componentType: null, valveType: null)
-  pvtMixExchanger: SensorValveType! @jsonSchemaDirective(yardTag: "50001047-02", componentType: null, valveType: null)
-  pvtTemperatureSupply: SensorTemperatureSensorType! @jsonSchemaDirective(yardTag: "50001038-24", componentType: null, valveType: null)
-  pvtTemperatureMainString11Return: SensorTemperatureSensorType! @jsonSchemaDirective(yardTag: "50009005-01", componentType: null, valveType: null)
-  pvtTemperatureMainString12Return: SensorTemperatureSensorType! @jsonSchemaDirective(yardTag: "50009005-19", componentType: null, valveType: null)
-  pvtTemperatureMainString21Return: SensorTemperatureSensorType! @jsonSchemaDirective(yardTag: "50009005-03", componentType: null, valveType: null)
-  pvtTemperatureMainString22Return: SensorTemperatureSensorType! @jsonSchemaDirective(yardTag: "50009005-04", componentType: null, valveType: null)
-  pvtTemperatureMainString3Return: SensorTemperatureSensorType! @jsonSchemaDirective(yardTag: "50009005-05", componentType: null, valveType: null)
-  pvtTemperatureMainString4Return: SensorTemperatureSensorType! @jsonSchemaDirective(yardTag: "50009005-06", componentType: null, valveType: null)
-  pvtTemperatureMainString51Return: SensorTemperatureSensorType! @jsonSchemaDirective(yardTag: "50009005-07", componentType: null, valveType: null)
-  pvtTemperatureMainString52Return: SensorTemperatureSensorType! @jsonSchemaDirective(yardTag: "50009005-08", componentType: null, valveType: null)
-  pvtTemperatureMainString61Return: SensorTemperatureSensorType! @jsonSchemaDirective(yardTag: "50009005-09", componentType: null, valveType: null)
-  pvtTemperatureMainString62Return: SensorTemperatureSensorType! @jsonSchemaDirective(yardTag: "50009005-10", componentType: null, valveType: null)
-  pvtFlowMainString11: SensorFlowSensorType! @jsonSchemaDirective(yardTag: "50009006-01", componentType: null, valveType: null)
-  pvtFlowMainString12: SensorFlowSensorType! @jsonSchemaDirective(yardTag: "50009009-05", componentType: null, valveType: null)
-  pvtFlowMainString21: SensorFlowSensorType! @jsonSchemaDirective(yardTag: "50009006-03", componentType: null, valveType: null)
-  pvtFlowMainString22: SensorFlowSensorType! @jsonSchemaDirective(yardTag: "50009006-04", componentType: null, valveType: null)
-  pvtFlowMainString3: SensorFlowSensorType! @jsonSchemaDirective(yardTag: "50009009-01", componentType: null, valveType: null)
-  pvtFlowMainString4: SensorFlowSensorType! @jsonSchemaDirective(yardTag: "50009009-02", componentType: null, valveType: null)
-  pvtFlowMainString51: SensorFlowSensorType! @jsonSchemaDirective(yardTag: "50009006-05", componentType: null, valveType: null)
-  pvtFlowMainString52: SensorFlowSensorType! @jsonSchemaDirective(yardTag: "50009006-06", componentType: null, valveType: null)
-  pvtFlowMainString61: SensorFlowSensorType! @jsonSchemaDirective(yardTag: "50009006-07", componentType: null, valveType: null)
-  pvtFlowMainString62: SensorFlowSensorType! @jsonSchemaDirective(yardTag: "50009006-08", componentType: null, valveType: null)
-  pvtTemperatureMainString1Supply: SensorTemperatureSensorType! @jsonSchemaDirective(yardTag: "50009005-26", componentType: null, valveType: null)
-  pvtTemperatureMainString2Supply: SensorTemperatureSensorType! @jsonSchemaDirective(yardTag: "50009005-25", componentType: null, valveType: null)
-  pvtTemperatureMainString3Supply: SensorTemperatureSensorType! @jsonSchemaDirective(yardTag: "50009005-24", componentType: null, valveType: null)
-  pvtTemperatureMainString4Supply: SensorTemperatureSensorType! @jsonSchemaDirective(yardTag: "50009005-23", componentType: null, valveType: null)
-  pvtTemperatureMainString5Supply: SensorTemperatureSensorType! @jsonSchemaDirective(yardTag: "50009005-22", componentType: null, valveType: null)
-  pvtTemperatureMainString6Supply: SensorTemperatureSensorType! @jsonSchemaDirective(yardTag: "50009005-21", componentType: null, valveType: null)
-  pvtTemperatureMainString71Return: SensorTemperatureSensorType! @jsonSchemaDirective(yardTag: "50009005-11", componentType: null, valveType: null)
-  pvtTemperatureMainString72Return: SensorTemperatureSensorType! @jsonSchemaDirective(yardTag: "50009005-12", componentType: null, valveType: null)
-  pvtTemperatureMainString81Return: SensorTemperatureSensorType! @jsonSchemaDirective(yardTag: "50009005-13", componentType: null, valveType: null)
-  pvtTemperatureMainString82Return: SensorTemperatureSensorType! @jsonSchemaDirective(yardTag: "50009005-14", componentType: null, valveType: null)
-  pvtTemperatureMainString9Return: SensorTemperatureSensorType! @jsonSchemaDirective(yardTag: "50009005-15", componentType: null, valveType: null)
-  pvtTemperatureMainString10Return: SensorTemperatureSensorType! @jsonSchemaDirective(yardTag: "50009005-16", componentType: null, valveType: null)
-  pvtTemperatureMainString111Return: SensorTemperatureSensorType! @jsonSchemaDirective(yardTag: "50009005-17", componentType: null, valveType: null)
-  pvtTemperatureMainString112Return: SensorTemperatureSensorType! @jsonSchemaDirective(yardTag: "50009005-18", componentType: null, valveType: null)
-  pvtTemperatureMainString13Return: SensorTemperatureSensorType! @jsonSchemaDirective(yardTag: "50009005-20", componentType: null, valveType: null)
-  pvtFlowMainString71: SensorFlowSensorType! @jsonSchemaDirective(yardTag: "50009006-09", componentType: null, valveType: null)
-  pvtFlowMainString72: SensorFlowSensorType! @jsonSchemaDirective(yardTag: "50009006-10", componentType: null, valveType: null)
-  pvtFlowMainString81: SensorFlowSensorType! @jsonSchemaDirective(yardTag: "50009006-11", componentType: null, valveType: null)
-  pvtFlowMainString82: SensorFlowSensorType! @jsonSchemaDirective(yardTag: "50009006-12", componentType: null, valveType: null)
-  pvtFlowMainString9: SensorFlowSensorType! @jsonSchemaDirective(yardTag: "50009009-03", componentType: null, valveType: null)
-  pvtFlowMainString10: SensorFlowSensorType! @jsonSchemaDirective(yardTag: "50009009-04", componentType: null, valveType: null)
-  pvtFlowMainString111: SensorFlowSensorType! @jsonSchemaDirective(yardTag: "50009006-13", componentType: null, valveType: null)
-  pvtFlowMainString112: SensorFlowSensorType! @jsonSchemaDirective(yardTag: "50009006-14", componentType: null, valveType: null)
-  pvtFlowMainString13: SensorFlowSensorType! @jsonSchemaDirective(yardTag: "50009009-06", componentType: null, valveType: null)
-  pvtTemperatureMainString7Supply: SensorTemperatureSensorType! @jsonSchemaDirective(yardTag: "50009005-27", componentType: null, valveType: null)
-  pvtTemperatureMainString8Supply: SensorTemperatureSensorType! @jsonSchemaDirective(yardTag: "50009005-28", componentType: null, valveType: null)
-  pvtTemperatureMainString9Supply: SensorTemperatureSensorType! @jsonSchemaDirective(yardTag: "50009005-29", componentType: null, valveType: null)
-  pvtTemperatureMainString10Supply: SensorTemperatureSensorType! @jsonSchemaDirective(yardTag: "50009005-30", componentType: null, valveType: null)
-  pvtTemperatureMainString11Supply: SensorTemperatureSensorType! @jsonSchemaDirective(yardTag: "50009005-31", componentType: null, valveType: null)
-  pvtTemperatureMainString12Supply: SensorTemperatureSensorType! @jsonSchemaDirective(yardTag: "50009005-32", componentType: null, valveType: null)
-  pvtTemperatureMainString13Supply: SensorTemperatureSensorType! @jsonSchemaDirective(yardTag: "50009005-33", componentType: null, valveType: null)
-  pvtTemperatureOwnersString1Return: SensorTemperatureSensorType! @jsonSchemaDirective(yardTag: "50009005-34", componentType: null, valveType: null)
-  pvtTemperatureOwnersString2Return: SensorTemperatureSensorType! @jsonSchemaDirective(yardTag: "50009005-35", componentType: null, valveType: null)
-  pvtTemperatureOwnersString3Return: SensorTemperatureSensorType! @jsonSchemaDirective(yardTag: "50009005-36", componentType: null, valveType: null)
-  pvtTemperatureOwnersString4Return: SensorTemperatureSensorType! @jsonSchemaDirective(yardTag: "50009005-37", componentType: null, valveType: null)
-  pvtTemperatureOwnersString5Return: SensorTemperatureSensorType! @jsonSchemaDirective(yardTag: "50009005-38", componentType: null, valveType: null)
-  pvtTemperatureOwnersString6Return: SensorTemperatureSensorType! @jsonSchemaDirective(yardTag: "50009005-39", componentType: null, valveType: null)
-  pvtFlowOwnersString1: SensorFlowSensorType! @jsonSchemaDirective(yardTag: "50009009-07", componentType: null, valveType: null)
-  pvtFlowOwnersString2: SensorFlowSensorType! @jsonSchemaDirective(yardTag: "50009009-08", componentType: null, valveType: null)
-  pvtFlowOwnersString3: SensorFlowSensorType! @jsonSchemaDirective(yardTag: "50009009-09", componentType: null, valveType: null)
-  pvtFlowOwnersString4: SensorFlowSensorType! @jsonSchemaDirective(yardTag: "50009009-10", componentType: null, valveType: null)
-  pvtFlowOwnersString5: SensorFlowSensorType! @jsonSchemaDirective(yardTag: "50009009-11", componentType: null, valveType: null)
-  pvtFlowOwnersString6: SensorFlowSensorType! @jsonSchemaDirective(yardTag: "50009009-12", componentType: null, valveType: null)
-  pvtTemperatureOwnersString1Supply: SensorTemperatureSensorType! @jsonSchemaDirective(yardTag: "50009005-40", componentType: null, valveType: null)
-  pvtTemperatureOwnersString2Supply: SensorTemperatureSensorType! @jsonSchemaDirective(yardTag: "50009005-41", componentType: null, valveType: null)
-  pvtTemperatureOwnersString3Supply: SensorTemperatureSensorType! @jsonSchemaDirective(yardTag: "50009005-42", componentType: null, valveType: null)
-  pvtTemperatureOwnersString4Supply: SensorTemperatureSensorType! @jsonSchemaDirective(yardTag: "50009005-43", componentType: null, valveType: null)
-  pvtTemperatureOwnersString5Supply: SensorTemperatureSensorType! @jsonSchemaDirective(yardTag: "50009005-44", componentType: null, valveType: null)
-  pvtTemperatureOwnersString6Supply: SensorTemperatureSensorType! @jsonSchemaDirective(yardTag: "50009005-45", componentType: null, valveType: null)
-}
-
-type PvtSensorValuesTypePvtControlValuesTypePvtParametersTypePvtSimulationInputsTypePvtSimulationOutputsTypeModule {
-  sensorValues: PvtSensorValuesType
-  controlValues: PvtControlValuesType
-  parameters: PvtParametersType
-  simulation: PvtSensorValuesTypePvtControlValuesTypePvtParametersTypePvtSimulationInputsTypePvtSimulationOutputsTypeModuleSimulation
-}
-
-type PvtSensorValuesTypePvtControlValuesTypePvtParametersTypePvtSimulationInputsTypePvtSimulationOutputsTypeModuleSimulation {
-  inputs: PvtSimulationInputsType
-  outputs: PvtSimulationOutputsType
-}
-
-type PvtSimulationInputsType {
-  pvtMainFwd: HeatSourceSimulationType!
-  pvtMainAft: HeatSourceSimulationType!
-  pvtOwners: HeatSourceSimulationType!
-  pvtModuleSupply: TemperatureBoundarySimulationType!
-  pvtSeawaterSupply: BoundarySimulationType!
-}
-
-type PvtSimulationOutputsType {
-  pvtModuleReturn: BoundarySimulationType!
-  pvtModuleSupply: FlowBoundarySimulationType!
-  pvtSeawaterReturn: TemperatureBoundarySimulationType!
+input PumpInputType {
+  dutypoint: Float!
+  on: Boolean!
 }
 
 type PvtControlValuesType {
@@ -565,8 +525,17 @@ type SimulationState {
   status: String!
 }
 
+input TemperatureBoundaryInputType {
+  temperature: Float!
+}
+
 type TemperatureBoundarySimulationType {
   temperature: FloatStampedType!
+}
+
+input ThrusterInputType {
+  heatFlow: Float!
+  active: Boolean!
 }
 
 type ThrusterSimulationType {
@@ -651,6 +620,10 @@ type ThrustersSimulationOutputsType {
   thrustersSeawaterReturn: TemperatureBoundarySimulationType!
   thrustersModuleSupply: FlowBoundarySimulationType!
   thrustersModuleReturn: BoundarySimulationType!
+}
+
+input ValveInputType {
+  setpoint: Float!
 }
 
 """Represents NULL values"""
