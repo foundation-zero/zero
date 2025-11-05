@@ -36,7 +36,9 @@ class Fmu:
         fmu = FMU2Slave(
             guid=self._model_description.guid,
             unzipDirectory=self._temp_unzip_dir,
-            modelIdentifier=self._model_description.coSimulation.modelIdentifier,
+            modelIdentifier=self._model_description.coSimulation.modelIdentifier
+            if self._model_description.coSimulation
+            else None,
         )
         fmu.instantiate()
         fmu.setupExperiment(tolerance=1e-6, startTime=0.0)

@@ -4,9 +4,6 @@ from thrs.input_output.definitions import control, sensor, simulation
 
 
 class ConsumersSensorValues(ThrsModel):
-    consumers_switch_fahrenheit_direct_supply: Annotated[
-        sensor.Valve, ParameterMeta("50001074")
-    ]
     consumers_temperature_boosting_return: Annotated[
         sensor.TemperatureSensor, ParameterMeta("50001038-48")
     ]
@@ -32,16 +29,10 @@ class ConsumersSensorValues(ThrsModel):
     consumers_switch_fahrenheit_exchanger: Annotated[
         sensor.Valve, ParameterMeta("50001066-02")
     ]
-    consumers_switch_fahrenheit_direct_return: Annotated[
-        sensor.Valve, ParameterMeta("50001066-03")
-    ]
     consumers_switch_boosting: Annotated[sensor.Valve, ParameterMeta("50001067-15")]
 
 
 class ConsumersControlValues(ThrsModel):
-    consumers_switch_fahrenheit_direct_supply: Annotated[
-        control.Valve, ParameterMeta("50001074")
-    ]
     consumers_flowcontrol_fahrenheit: Annotated[
         control.Valve, ParameterMeta("50001061")
     ]
@@ -51,9 +42,6 @@ class ConsumersControlValues(ThrsModel):
     ]
     consumers_switch_fahrenheit_exchanger: Annotated[
         control.Valve, ParameterMeta("50001066-02")
-    ]
-    consumers_switch_fahrenheit_direct_return: Annotated[
-        control.Valve, ParameterMeta("50001066-03")
     ]
     consumers_switch_boosting: Annotated[control.Valve, ParameterMeta("50001067-15")]
 
