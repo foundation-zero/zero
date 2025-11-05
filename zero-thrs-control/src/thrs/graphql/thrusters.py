@@ -118,13 +118,19 @@ def get_thrusters_messaging(context):
 
 @strawberry.type
 @add_control_mutations(
-    ThrustersControlValues, ThrustersControlValuesType, get_thrusters_messaging
+    "thrusters",
+    ThrustersControlValues,
+    ThrustersControlValuesType,
+    get_thrusters_messaging,
 )
 @add_parameter_mutations(
-    ThrustersParameters, ThrustersParametersType, get_thrusters_messaging
+    "thrusters", ThrustersParameters, ThrustersParametersType, get_thrusters_messaging
 )
 @add_simulation_input_mutations(
-    ThrustersSimulationInputs, ThrustersSimulationInputsType, get_thrusters_messaging
+    "thrusters",
+    ThrustersSimulationInputs,
+    ThrustersSimulationInputsType,
+    get_thrusters_messaging,
 )
 class ThrustersMutations:
     pass

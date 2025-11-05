@@ -17,7 +17,7 @@ pnpm run extract-schema-values THRUSTERS_CONTROL_DEFINITION ThrustersControlValu
 pnpm run extract-schema-values THRUSTERS_SENSOR_DEFINITION ThrustersSensorValuesType
 
 # Extract parameter definitions
-pnpm run extract-schema-values THRUSTERS_PARAMETER_DEFINITION ThrustersParameterValuesType
+pnpm run extract-schema-values THRUSTERS_PARAMETER_DEFINITION ThrustersParametersType
 
 # Extract simulation input definitions
 pnpm run extract-schema-values THRUSTERS_SIMULATION_INPUTS ThrustersSimulationInputsType

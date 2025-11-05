@@ -22,7 +22,7 @@ from thrs.graphql.base import (
     ThrustersMessaging,
 )
 from thrs.graphql.messaging import Messaging, MessagingModule
-from thrs.graphql.pvt import PvtModule
+from thrs.graphql.pvt import PvtModule, PvtMutations
 from thrs.graphql.thrusters import (
     ThrustersModule,
     ThrustersMutations,
@@ -157,7 +157,7 @@ def generate_mutation_for_field[T](
 
 
 @strawberry.type
-class Mutation(ThrustersMutations):
+class Mutation(ThrustersMutations, PvtMutations):
     @strawberry.mutation
     async def simulation_play(
         self, info: strawberry.Info[ThrsContext], playback_rate: float = 1.0

@@ -182,11 +182,12 @@ def generate_mutation_for_field[T](
 ) -> "FieldMutation[T]":
     input_type = ensure_input_type(field.annotation, unstamp=unstamp)
     mutation = make_fn(field_name, input_type)
-    mutation.__name__ = f"set_{name}"
+    mutation.__name__ = name
     return mutation
 
 
 def add_control_mutations(
+    module: str,
     control_values_cls: type[ThrsModel],
     strawberry_cls: type,
     messaging: Callable[[ThrsContext], MessagingModule],
@@ -207,7 +208,7 @@ def add_control_mutations(
                 expect = mod.wait_for_control_values(
                     lambda v: getattr(v, name) == pydantic_value, timeout=2.0
                 )
-                await info.context.messaging.send_manual_controls(control_values)
+                await mod.send_manual_controls(control_values)
                 await expect
                 return strawberry_cls.from_pydantic(control_values)
 
@@ -216,7 +217,7 @@ def add_control_mutations(
         for name, field in control_values_cls.model_fields.items():
             fn = generate_mutation_for_field(
                 strawberry_cls,
-                f"thrusters_control_{name}",
+                f"{module}_control_set_{name}",
                 name,
                 field,
                 _make_control_mutation,
@@ -231,6 +232,7 @@ def add_control_mutations(
 
 
 def add_parameter_mutations(
+    module: str,
     parameters_cls: type[ThrsModel],
     strawberry_cls: type,
     messaging: Callable[[ThrsContext], MessagingModule],
@@ -259,7 +261,7 @@ def add_parameter_mutations(
         for name, field in parameters_cls.model_fields.items():
             fn = generate_mutation_for_field(
                 strawberry_cls,
-                f"thrusters_parameter_{name}",
+                f"{module}_parameter_set_{name}",
                 name,
                 field,
                 _make_parameter_mutation,
@@ -274,6 +276,7 @@ def add_parameter_mutations(
 
 
 def add_simulation_input_mutations(
+    module: str,
     inputs_cls: type[ThrsModel],
     strawberry_cls: type,
     messaging: Callable[[ThrsContext], MessagingModule],
@@ -305,7 +308,7 @@ def add_simulation_input_mutations(
         for name, field in inputs_cls.model_fields.items():
             fn = generate_mutation_for_field(
                 strawberry_cls,
-                f"thrusters_simulation_{name}",
+                f"{module}_simulation_set_{name}",
                 name,
                 field,
                 _make_simulation_input_mutation,

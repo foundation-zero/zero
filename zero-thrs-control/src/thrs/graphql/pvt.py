@@ -117,10 +117,10 @@ def get_pvt_messaging(context):
 
 
 @strawberry.type
-@add_control_mutations(PvtControlValues, PvtControlValuesType, get_pvt_messaging)
-@add_parameter_mutations(PvtParameters, PvtParametersType, get_pvt_messaging)
+@add_control_mutations("pvt", PvtControlValues, PvtControlValuesType, get_pvt_messaging)
+@add_parameter_mutations("pvt", PvtParameters, PvtParametersType, get_pvt_messaging)
 @add_simulation_input_mutations(
-    PvtSimulationInputs, PvtSimulationInputsType, get_pvt_messaging
+    "pvt", PvtSimulationInputs, PvtSimulationInputsType, get_pvt_messaging
 )
 class PvtMutations:
     pass
