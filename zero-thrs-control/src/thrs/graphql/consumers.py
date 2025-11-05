@@ -118,13 +118,19 @@ def get_consumers_messaging(context):
 
 @strawberry.type
 @add_control_mutations(
-    ConsumersControlValues, ConsumersControlValuesType, get_consumers_messaging
+    "consumers",
+    ConsumersControlValues,
+    ConsumersControlValuesType,
+    get_consumers_messaging,
 )
 @add_parameter_mutations(
-    ConsumersParameters, ConsumersParametersType, get_consumers_messaging
+    "consumers", ConsumersParameters, ConsumersParametersType, get_consumers_messaging
 )
 @add_simulation_input_mutations(
-    ConsumersSimulationInputs, ConsumersSimulationInputsType, get_consumers_messaging
+    "consumers",
+    ConsumersSimulationInputs,
+    ConsumersSimulationInputsType,
+    get_consumers_messaging,
 )
 class ConsumersMutations:
     pass

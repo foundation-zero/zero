@@ -117,10 +117,10 @@ def get_pcm_messaging(context):
 
 
 @strawberry.type
-@add_control_mutations(PcmControlValues, PcmControlValuesType, get_pcm_messaging)
-@add_parameter_mutations(PcmParameters, PcmParametersType, get_pcm_messaging)
+@add_control_mutations("pcm", PcmControlValues, PcmControlValuesType, get_pcm_messaging)
+@add_parameter_mutations("pcm", PcmParameters, PcmParametersType, get_pcm_messaging)
 @add_simulation_input_mutations(
-    PcmSimulationInputs, PcmSimulationInputsType, get_pcm_messaging
+    "pcm", PcmSimulationInputs, PcmSimulationInputsType, get_pcm_messaging
 )
 class PcmMutations:
     pass
