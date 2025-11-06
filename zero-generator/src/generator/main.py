@@ -14,7 +14,6 @@ logger = logging.getLogger("generator")
 class DataGenerator:
     def __init__(self, mqtt_client: MqttClient):
         self._mqtt_client: MqttClient = mqtt_client
-        self.running: bool = False
         self.config: list[dict] = []
 
     @asynccontextmanager
@@ -45,31 +44,25 @@ class DataGenerator:
                 },
             ]
         """
-        if self.running:
-            raise Exception("Data generator is already running.")
-        else:
-            logger.info("Starting data generator...")
-            self.config = config
-            try:
-                async with asyncio.TaskGroup() as group:
-                    for topic_config in config:
-                        topic = topic_config.get("topic")
-                        interval = topic_config.get("interval")
-                        values = topic_config.get("values")
+        logger.info("Starting data generator...")
+        self.config = config
+        try:
+            async with asyncio.TaskGroup() as group:
+                for topic_config in config:
+                    topic = topic_config.get("topic")
+                    interval = topic_config.get("interval")
+                    values = topic_config.get("values")
 
-                        if not topic or not interval or not values:
-                            raise ValueError(
-                                f"topic, interval, and values must be defined: {topic}, {interval}, {values}"
-                            )
-                        else:
-                            logger.debug(f"Creating task for topic: {topic}")
-                            group.create_task(self._generate_single_topic(topic, interval, values))
+                    if not topic or not interval or not values:
+                        raise ValueError(f"topic, interval, and values must be defined: {topic}, {interval}, {values}")
+                    else:
+                        logger.debug(f"Creating task for topic: {topic}")
+                        group.create_task(self._generate_single_topic(topic, interval, values))
 
-                    self.running = True
-            except Exception:
-                self.running = False
-                logger.info("Data generator stopped due to an exception.")
-                raise
+        except Exception:
+            self.running = False
+            logger.info("Data generator stopped due to an exception.")
+            raise
 
     async def _generate_single_topic(self, topic: str, interval: float, values: dict):
         while True:
