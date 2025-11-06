@@ -217,46 +217,50 @@ export const THRUSTERS_SIMULATION_OUTPUTS = toSimulationDefinition({
 
 export const PCM_CONTROL_DEFINITION = toControlDefinition({
   pcmPump: {
+    yardTag: "50001017",
+    componentType: ControlComponentType.Pump,
+  },
+  pcmSwitchChargingReturn: {
     yardTag: "50001062-02",
     componentType: ControlComponentType.Valve,
     valveType: ValveType.Switch,
   },
-  pcmSwitchChargingReturn: {
+  pcmFlowcontrolModule1: {
     yardTag: "50001064-04",
     componentType: ControlComponentType.Valve,
     valveType: ValveType.FlowControl,
   },
-  pcmFlowcontrolModule1: {
+  pcmFlowcontrolModule2: {
     yardTag: "50001064-05",
     componentType: ControlComponentType.Valve,
     valveType: ValveType.FlowControl,
   },
-  pcmFlowcontrolModule2: {
+  pcmFlowcontrolModule3: {
     yardTag: "50001064-06",
     componentType: ControlComponentType.Valve,
     valveType: ValveType.FlowControl,
   },
-  pcmFlowcontrolModule3: {
+  pcmFlowcontrolModule4: {
     yardTag: "50001064-07",
     componentType: ControlComponentType.Valve,
     valveType: ValveType.FlowControl,
   },
-  pcmFlowcontrolModule4: {
+  pcmSwitchDischarging: {
     yardTag: "50001066-01",
     componentType: ControlComponentType.Valve,
     valveType: ValveType.Switch,
   },
-  pcmSwitchDischarging: {
+  pcmSwitchChargingSupply: {
     yardTag: "50001090-01",
     componentType: ControlComponentType.Valve,
     valveType: ValveType.Switch,
   },
-  pcmSwitchChargingSupply: {
+  pcmSwitchConsumers: {
     yardTag: "50001071-02",
     componentType: ControlComponentType.Valve,
     valveType: ValveType.Switch,
   },
-  pcmSwitchConsumers: {
+  pcmModule1: {
     yardTag: "50001049",
     componentType: ControlComponentType.Pcm,
   },
