@@ -21,9 +21,9 @@ async def main():
         data_gen = DataGenerator(mqtt_client=client)
 
         config = SailSystems.gen_config()
-        # print(config)
+        print(f"config: {config}")
 
-        await data_gen.generate(config=[config])
+        await data_gen.generate(config=config)
 
 
 def run():

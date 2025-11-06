@@ -7,7 +7,6 @@ from pydantic import (
     ConfigDict,
     Field,
 )
-from pydantic.fields import FieldInfo
 
 from .util import hyphenize
 
@@ -32,31 +31,6 @@ def component_meta(*args, **kwargs):
     return Field(json_schema_extra=ComponentMeta(*args, **kwargs).model_dump())
 
 
-def _unwrap_annotated(tp: Any) -> tuple[type | Any, list[Any]]:
-    if get_origin(tp) is Annotated:
-        args = get_args(tp)
-        return args[0], list(args[1:])
-    return tp, []
-
-
-def _type_name(tp: Any) -> str:
-    try:
-        return tp.__name__
-    except AttributeError:
-        return str(tp)
-
-
-def _extract_constraints(meta: list[Any]) -> Dict[str, Any]:
-    constraints: Dict[str, Any] = {}
-    for m in meta:
-        if isinstance(m, FieldInfo):
-            for name in ("gt", "ge", "lt", "le"):
-                val = getattr(m, name, None)
-                if val is not None:
-                    constraints[name] = val
-    return constraints
-
-
 class LoadsModel(BaseModel):
     model_config = ConfigDict(
         alias_generator=AliasGenerator(
@@ -65,19 +39,69 @@ class LoadsModel(BaseModel):
     )
 
     @classmethod
-    def gen_config(cls, interval: int = 1) -> dict:
+    def gen_config(cls, interval: int = 1) -> list[dict]:
         """Generate configuration for data generation."""
         hints = get_type_hints(cls, include_extras=True)
-        values: Dict[str, list] = {}
+        config = []
 
-        print(hints)
         for component, value_definition in hints.items():
-            base_type, meta = _unwrap_annotated(value_definition)
-            print(base_type, meta)
-            constraints = _extract_constraints(meta)
-            lower = constraints.get("ge", constraints.get("gt", 0))
-            upper = constraints.get("le", constraints.get("lt", 100))
-            values[component] = [_type_name(base_type), lower, upper]
+            base_type, meta = cls._unwrap_annotated(value_definition)
 
-        # print(values)
-        return {"topic": component, "interval": interval, "values": values}
+            if isinstance(base_type, type) and issubclass(base_type, LoadsModel):
+                values = {}
+                for field_name, field_info in base_type.model_fields.items():
+                    values[field_name] = cls.gen_single_value(field_info.annotation, field_info.metadata)
+
+                config.append(
+                    {
+                        "topic": component,
+                        "interval": interval,
+                        "values": values,
+                    }
+                )
+            else:
+                config.append(
+                    {
+                        "topic": component,
+                        "interval": interval,
+                        "values": {component: cls.gen_single_value(base_type, meta)},
+                    }
+                )
+
+        return config
+
+    @classmethod
+    def gen_single_value(cls, base_type, meta):
+        constraints = cls._extract_constraints(meta)
+
+        lower = constraints.get("ge", constraints.get("gt", 0))
+        upper = constraints.get("le", constraints.get("lt", 100))
+        if lower >= upper:
+            return [cls._type_name(base_type), lower, upper]
+        else:
+            return cls._type_name(base_type)
+
+    @staticmethod
+    def _extract_constraints(meta: list[Any]) -> Dict[str, Any]:
+        constraints: Dict[str, Any] = {}
+        for m in meta:
+            for attr in ("gt", "ge", "lt", "le"):
+                if hasattr(m, attr):
+                    constraints[attr] = getattr(m, attr)
+
+        print(constraints)
+        return constraints
+
+    @staticmethod
+    def _unwrap_annotated(tp: Any) -> tuple[type | Any, list[Any]]:
+        if get_origin(tp) is Annotated:
+            args = get_args(tp)
+            return args[0], list(args[1:])
+        return tp, []
+
+    @staticmethod
+    def _type_name(tp: Any) -> str:
+        try:
+            return tp.__name__
+        except AttributeError:
+            return str(tp)

@@ -48,6 +48,7 @@ class DataGenerator:
         self.config = config
         try:
             async with asyncio.TaskGroup() as group:
+                print(config)
                 for topic_config in config:
                     topic = topic_config.get("topic")
                     interval = topic_config.get("interval")
