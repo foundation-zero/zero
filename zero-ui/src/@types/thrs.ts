@@ -167,7 +167,7 @@ export const enum SensorComponentType {
   Pcm = "pcm",
 }
 
-export type THRSModule<TDefinition extends ModuleDefinition> = {
+export type THRSModule<TDefinition extends ModuleDefinition = ModuleDefinition> = {
   sensorValues: ExtractSensorValues<TDefinition["sensorValues"]>;
   controlValues: ExtractControlValues<TDefinition["controlValues"]>;
   parameters: ExtractParameterValues<TDefinition["parameters"]>;

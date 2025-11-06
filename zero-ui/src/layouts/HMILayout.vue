@@ -11,7 +11,7 @@ import ControlActions from "@/components/modules/hmi/ControlActions.vue";
 import SideNav from "@/components/modules/hmi/SideNav.vue";
 import { client } from "@/graphql/thrs/client";
 import { provideClient } from "@urql/vue";
-import { computed, provide, ref } from "vue";
+import { provide, ref, watch } from "vue";
 
 // Provide the URL client to inner scope. Pinia stores have their own scope, so they need to manually provide the correct context.
 provideClient(client);
@@ -30,16 +30,24 @@ const modules =
   )?.ofType?.getFields() ?? {};
 
 const currentModuleKey = ref(Object.keys(modules)[0]);
-const currentModule = computed(() => modules[currentModuleKey.value]);
 
-provide("currentModule", currentModule);
+// Temporary hack to force re-mounting of the module view when switching modules
+const reset = ref(false);
+watch(currentModuleKey, () => {
+  reset.value = true;
+  setTimeout(() => {
+    reset.value = false;
+  }, 0);
+});
+
+provide("currentModule", currentModuleKey);
 </script>
 
 <template>
   <main class="h-svh pt-[128px] pb-8 pl-[266px]">
     <SideNav class="fixed left-4 w-[250px] shrink-0" />
     <Suspense>
-      <slot />
+      <slot v-if="!reset" />
     </Suspense>
   </main>
   <nav class="fixed top-0 right-0 left-0 backdrop-blur-md">

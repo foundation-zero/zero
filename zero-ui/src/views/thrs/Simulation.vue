@@ -1,17 +1,18 @@
 <script setup lang="ts">
+import { ModuleDefinition } from "@/@types/thrs";
 import ModuleSimulation from "@/components/modules/hmi/ModuleSimulation.vue";
 import ModuleSimulationOutputs from "@/components/modules/hmi/ModuleSimulationOutputs.vue";
 
 import { DEFINITIONS, QUERIES } from "@/lib/consts";
 import { useClientHandle } from "@urql/vue";
-import { computed, ref } from "vue";
+import { computed, inject, Ref } from "vue";
 import { useI18n } from "vue-i18n";
 
 const { t } = useI18n();
 
 const { client } = useClientHandle();
-const currentDefinition = ref<keyof typeof DEFINITIONS>("thrusters");
-const definition = computed(() => DEFINITIONS[currentDefinition.value]);
+const currentDefinition = inject<Ref<keyof typeof DEFINITIONS>>("currentModule")!;
+const definition = computed<ModuleDefinition>(() => DEFINITIONS[currentDefinition.value]);
 </script>
 <template>
   <header class="mb-4 text-3xl capitalize">
