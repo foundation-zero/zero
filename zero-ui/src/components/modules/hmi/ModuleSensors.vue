@@ -63,21 +63,25 @@ useIntervalFn(
     v-if="sensorValues.data"
     class="grid gap-6 lg:grid-cols-2 2xl:grid-cols-3"
   >
-    <hgroup
+    <template
       v-for="[field, entries] in entriesGroupedByField"
       :key="field"
-      class="bg-background border-border rounded-md border"
     >
-      <header class="p-3 font-semibold capitalize">
-        {{ field }}
-      </header>
-      <p>
-        <ValueTable
-          v-if="entries"
-          :values="entries"
-          :format="(value: number) => value.toFixed(2)"
-        />
-      </p>
-    </hgroup>
+      <hgroup
+        v-if="entries.length"
+        class="bg-background border-border rounded-md border"
+      >
+        <header class="p-3 font-semibold capitalize">
+          {{ field }}
+        </header>
+        <p>
+          <ValueTable
+            v-if="entries"
+            :values="entries"
+            :format="(value: number) => value.toFixed(2)"
+          />
+        </p>
+      </hgroup>
+    </template>
   </section>
 </template>
