@@ -10,6 +10,8 @@ from pydantic import (
 
 from .util import hyphenize
 
+TOPIC_PREFIX: str = "sail-systems/"
+
 
 # Unit definition
 @dataclass(frozen=True)
@@ -18,13 +20,17 @@ class Unit:
 
 
 # Unit definition
+Position: TypeAlias = Annotated[float, Field(ge=0, lt=1), Unit(unit="mm")]
 RelativePosition: TypeAlias = Annotated[float, Field(ge=0, lt=1), Unit(unit="%")]
 Load: TypeAlias = Annotated[float, Field(ge=0), Unit(unit="ton")]
+Torque: TypeAlias = Annotated[float, Field(ge=0), Unit(unit="Nm")]
+RotationalSpeed: TypeAlias = Annotated[float, Field(ge=0), Unit(unit="rpm")]
+Temperature: TypeAlias = Annotated[float, Field(ge=0), Unit(unit="°C")]
 
 
 # Component metadata
 class ComponentMeta(BaseModel):
-    name: str
+    topic: str
 
 
 def component_meta(*args, **kwargs):
@@ -39,13 +45,15 @@ class LoadsModel(BaseModel):
     )
 
     @classmethod
-    def gen_config(cls, interval: int = 1) -> list[dict]:
+    def gen_config(cls, interval: int = 10) -> list[dict]:
         """Generate configuration for data generation."""
         hints = get_type_hints(cls, include_extras=True)
         config = []
 
         for component, value_definition in hints.items():
             base_type, meta = cls._unwrap_annotated(value_definition)
+
+            topic = TOPIC_PREFIX + cls._extract_topic(meta, component)
 
             if isinstance(base_type, type) and issubclass(base_type, LoadsModel):
                 values = {}
@@ -54,7 +62,7 @@ class LoadsModel(BaseModel):
 
                 config.append(
                     {
-                        "topic": component,
+                        "topic": topic,
                         "interval": interval,
                         "values": values,
                     }
@@ -62,13 +70,24 @@ class LoadsModel(BaseModel):
             else:
                 config.append(
                     {
-                        "topic": component,
+                        "topic": topic,
                         "interval": interval,
                         "values": {component: cls.gen_single_value(base_type, meta)},
                     }
                 )
 
         return config
+
+    @classmethod
+    def _extract_topic(cls, meta: list, component: str) -> str:
+        for m in meta:
+            if hasattr(m, "json_schema_extra"):
+                extra = getattr(m, "json_schema_extra", {})
+                if isinstance(extra, dict) and "topic" in extra:
+                    topic = extra["topic"]
+                    return topic
+
+        return component
 
     @classmethod
     def gen_single_value(cls, base_type, meta):
@@ -89,7 +108,6 @@ class LoadsModel(BaseModel):
                 if hasattr(m, attr):
                     constraints[attr] = getattr(m, attr)
 
-        print(constraints)
         return constraints
 
     @staticmethod
