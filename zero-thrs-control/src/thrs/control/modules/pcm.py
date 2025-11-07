@@ -4,6 +4,7 @@ from typing import Callable, Literal
 from transitions import Machine, State
 from thrs.classes.control import Control, ControlResult
 from thrs.control.controllers import Controller, FlowBalanceController
+from thrs.input_output.alarms import BaseAlarms
 from thrs.input_output.base import Stamped, ThrsModel
 from thrs.input_output.definitions.control import Pcm, Pump, Valve
 from thrs.input_output.definitions.units import Celsius, LMin, Ratio, Tuning
@@ -208,6 +209,9 @@ class PcmControl(Control[PcmSensorValues, PcmControlValues, PcmParameters]):
     def initial(self) -> ControlResult[PcmControlValues]:
         return ControlResult(self._time(), self._current_values)
 
+    def update_parameters(self, parameters: PcmParameters):
+        pass
+
     def control(self, sensor_values: PcmSensorValues) -> ControlResult:
         self._try_supplying(sensor_values) if self.mode == "idle" else None  # type: ignore
         self._try_charging(sensor_values) if self.mode == "idle" else None  # type: ignore
@@ -385,3 +389,7 @@ class PcmControl(Control[PcmSensorValues, PcmControlValues, PcmParameters]):
 
     def _deactivate_pump(self, sensor_values: PcmSensorValues):
         self._current_values.pcm_pump.on = Stamped(value=False, timestamp=self._time())
+
+
+class PcmAlarms(BaseAlarms):
+    pass

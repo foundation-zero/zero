@@ -6,27 +6,51 @@ from datetime import datetime, timedelta
 import logging
 from typing import (
     Annotated,
+    Any,
     Literal,
     cast,
 )
 from aiomqtt import Client as MqttClient
 from pydantic import Field
 
+from thrs.classes.control import Control
 from thrs.control.manual import ManualControl
+from thrs.control.modules.consumers import ConsumersControl, ConsumersParameters
+from thrs.control.modules.pcm import PcmAlarms, PcmControl, PcmParameters
+from thrs.control.modules.pvt import PvtAlarms, PvtControl, PvtParameters
 from thrs.control.modules.thrusters import (
     ThrustersAlarms,
     ThrustersControl,
     ThrustersParameters,
 )
 from thrs.control.switching import SwitchingControl
-from thrs.input_output.base import Stamped, ThrsModel
+from thrs.input_output.base import (
+    SimulationInputs,
+    SimulationValues,
+    Stamped,
+    ThrsModel,
+)
 from thrs.input_output.definitions.simulation import (
     Boundary,
+    HeatSource,
     Pcs,
     TemperatureBoundary,
     Thruster,
 )
 from thrs.input_output.definitions.units import PcsMode
+from thrs.input_output.modules.consumers import ConsumersSimulationInputs
+from thrs.input_output.modules.pcm import (
+    PcmControlValues,
+    PcmSensorValues,
+    PcmSimulationInputs,
+    PcmSimulationOutputs,
+)
+from thrs.input_output.modules.pvt import (
+    PvtControlValues,
+    PvtSensorValues,
+    PvtSimulationInputs,
+    PvtSimulationOutputs,
+)
 from thrs.input_output.modules.thrusters import (
     ThrustersControlValues,
     ThrustersSensorValues,
@@ -35,13 +59,17 @@ from thrs.input_output.modules.thrusters import (
 )
 from thrs.orchestration.config import Config
 from thrs.orchestration.executor import MqttExecutor, SimulationExecutor
-from thrs.simulation.models.fmu_paths import thrusters_path
+from thrs.simulation.models.fmu_paths import (
+    thrusters_path,
+    pvt_path,
+    pcm_path,
+)
 from thrs.orchestration.simulator import Simulator, SimulatorModel
 
 logger = logging.getLogger(__name__)
 
 INPUTS = {
-    "THRUSTERS": ThrustersSimulationInputs(
+    "thrusters": ThrustersSimulationInputs(
         thrusters_aft=Thruster(
             heat_flow=Stamped.stamp(9000.0), active=Stamped.stamp(True)
         ),
@@ -53,49 +81,132 @@ INPUTS = {
         ),
         thrusters_module_supply=TemperatureBoundary(temperature=Stamped.stamp(40.0)),
         thrusters_pcs=Pcs(mode=Stamped.stamp(PcsMode.PROPULSION)),
-    )
+    ),
+    "pvt": PvtSimulationInputs(
+        pvt_main_fwd=HeatSource(heat_flow=Stamped.stamp(0)),
+        pvt_main_aft=HeatSource(heat_flow=Stamped.stamp(0)),
+        pvt_owners=HeatSource(heat_flow=Stamped.stamp(0)),
+        pvt_module_supply=TemperatureBoundary(temperature=Stamped.stamp(50)),
+        pvt_seawater_supply=Boundary(
+            temperature=Stamped.stamp(32), flow=Stamped.stamp(50)
+        ),
+    ),
+    "pcm": PcmSimulationInputs(
+        pcm_producers_supply=Boundary(
+            temperature=Stamped.stamp(70), flow=Stamped.stamp(80)
+        ),
+        pcm_consumers_supply=TemperatureBoundary(temperature=Stamped.stamp(30)),
+        pcm_freshwater_supply=Boundary(
+            temperature=Stamped.stamp(40), flow=Stamped.stamp(0)
+        ),
+    ),
+    "consumers": ConsumersSimulationInputs(
+        consumers_boosting_supply=Boundary(
+            temperature=Stamped.stamp(30.0), flow=Stamped.stamp(10.0)
+        ),
+        consumers_fahrenheit_supply=Boundary(
+            temperature=Stamped.stamp(30.0), flow=Stamped.stamp(10.0)
+        ),
+        consumers_module_supply=Boundary(
+            temperature=Stamped.stamp(60.0), flow=Stamped.stamp(10.0)
+        ),
+    ),
 }
 
-CONTROL_PARAMS = {"THRUSTERS": ThrustersParameters()}
+CONTROL_PARAMS = {
+    "thrusters": ThrustersParameters(),
+    "pvt": PvtParameters(),
+    "pcm": PcmParameters(),
+    "consumers": ConsumersParameters(),
+}
 
-CONTROLS = {"THRUSTERS": ThrustersControl}
+CONTROLS = {
+    "thrusters": ThrustersControl,
+    "pvt": PvtControl,
+    "pcm": PcmControl,
+    "consumers": ConsumersControl,
+}
 
 MODES = {
-    "THRUSTERS": SimulatorModel(
+    "thrusters": SimulatorModel(
         fmu_path=thrusters_path,
         sensor_values_cls=ThrustersSensorValues,
         control_values_cls=ThrustersControlValues,
         simulation_outputs_cls=ThrustersSimulationOutputs,
-        simulation_inputs=INPUTS["THRUSTERS"],
-        control_cls=CONTROLS["THRUSTERS"],
-        control_parameters=CONTROL_PARAMS["THRUSTERS"],
+        simulation_inputs=INPUTS["thrusters"],
+        control_cls=CONTROLS["thrusters"],
+        control_parameters=CONTROL_PARAMS["thrusters"],
         alarms=ThrustersAlarms(),
         tick_duration=timedelta(seconds=1),
         start_time=datetime.now(),
-    )
+    ),
+    "pvt": SimulatorModel(
+        fmu_path=pvt_path,
+        sensor_values_cls=PvtSensorValues,
+        control_values_cls=PvtControlValues,
+        simulation_outputs_cls=PvtSimulationOutputs,
+        simulation_inputs=INPUTS["pvt"],
+        control_cls=CONTROLS["pvt"],
+        control_parameters=CONTROL_PARAMS["pvt"],
+        alarms=PvtAlarms(),
+        tick_duration=timedelta(seconds=1),
+        start_time=datetime.now(),
+    ),
+    "pcm": SimulatorModel(
+        fmu_path=pcm_path,
+        sensor_values_cls=PcmSensorValues,
+        control_values_cls=PcmControlValues,
+        simulation_outputs_cls=PcmSimulationOutputs,
+        simulation_inputs=INPUTS["pcm"],
+        control_cls=CONTROLS["pcm"],
+        control_parameters=CONTROL_PARAMS["pcm"],
+        alarms=PcmAlarms(),
+        tick_duration=timedelta(seconds=1),
+        start_time=datetime.now(),
+    ),
 }
 
-Modes = Literal["THRUSTERS"]
+Modes = Literal["thrusters", "pvt", "pcm", "consumers"]
 
 
 @dataclass
-class MessageContext:
+class MessageContext[
+    SensorValues: ThrsModel,
+    ControlValues: ThrsModel,
+    Parameters: ThrsModel,
+    Inputs: SimulationInputs,
+    Outputs: SimulationValues,
+]:
     cmds: "Queue[SimulationCtrlMessage]"
-    switching_control: SwitchingControl[
-        ThrustersSensorValues, ThrustersControlValues, ThrustersParameters
-    ]
-    manual_control: ManualControl[ThrustersSensorValues, ThrustersControlValues]
-    automatic_control: ThrustersControl
+    switching_control: SwitchingControl[SensorValues, ControlValues, Parameters]
+    manual_control: ManualControl[SensorValues, ControlValues]
+    automatic_control: Control[SensorValues, ControlValues, Parameters]
     client: MqttClient
     executor: SimulationExecutor[
-        ThrustersSensorValues,
-        ThrustersControlValues,
-        ThrustersSimulationInputs,
-        ThrustersSimulationOutputs,
+        SensorValues,
+        ControlValues,
+        Inputs,
+        Outputs,
     ]
 
 
 class IncomingMessage(ThrsModel):
+    @staticmethod
+    @abstractmethod
+    def resolve[
+        SensorValues: ThrsModel,
+        ControlValues: ThrsModel,
+        Parameters: ThrsModel,
+        Inputs: SimulationInputs,
+        Outputs: SimulationValues,
+    ](
+        sensor_values: type[SensorValues],
+        control_values: type[ControlValues],
+        parameters: type[Parameters],
+        simulation_inputs: type[Inputs],
+        simulation_outputs: type[Outputs],
+    ) -> "type[IncomingMessage]": ...
+
     @staticmethod
     @abstractmethod
     def topic() -> str: ...
@@ -124,6 +235,7 @@ class OutgoingMessage(ThrsModel):
 
 class SimulationStatusMessage(OutgoingMessage):
     status: Literal["available", "running", "stepping"]
+    module: Modes
     simulation_time: datetime
 
     @staticmethod
@@ -147,8 +259,8 @@ class ControlStatusMessage(OutgoingMessage):
         return True
 
 
-class ParametersMessage(OutgoingMessage):
-    parameters: ThrustersParameters
+class ParametersMessage[Parameters: ThrsModel](OutgoingMessage):
+    parameters: Parameters
 
     @staticmethod
     def topic() -> str:
@@ -159,8 +271,8 @@ class ParametersMessage(OutgoingMessage):
         return True
 
 
-class SimulationInputMessage(OutgoingMessage):
-    inputs: ThrustersSimulationInputs
+class SimulationInputMessage[Inputs: ThrsModel](OutgoingMessage):
+    inputs: Inputs
 
     @staticmethod
     def topic() -> str:
@@ -180,6 +292,22 @@ class PlayMessage(SimulationCtrlMessage):
     playback_rate: Annotated[float, Field(ge=0.25, le=10)] = 1.0
 
     @staticmethod
+    def resolve[
+        SensorValues: ThrsModel,
+        ControlValues: ThrsModel,
+        Parameters: ThrsModel,
+        Inputs: SimulationInputs,
+        Outputs: SimulationValues,
+    ](
+        sensor_values: type[SensorValues],
+        control_values: type[ControlValues],
+        parameters: type[Parameters],
+        simulation_inputs: type[Inputs],
+        simulation_outputs: type[Outputs],
+    ) -> "type[IncomingMessage]":
+        return PlayMessage
+
+    @staticmethod
     def topic() -> str:
         return "thrs/simulation/play"
 
@@ -188,29 +316,98 @@ class StepMessage(SimulationCtrlMessage):
     seconds: Annotated[float, Field(ge=0)]
 
     @staticmethod
+    def resolve[
+        SensorValues: ThrsModel,
+        ControlValues: ThrsModel,
+        Parameters: ThrsModel,
+        Inputs: SimulationInputs,
+        Outputs: SimulationValues,
+    ](
+        sensor_values: type[SensorValues],
+        control_values: type[ControlValues],
+        parameters: type[Parameters],
+        simulation_inputs: type[Inputs],
+        simulation_outputs: type[Outputs],
+    ) -> "type[IncomingMessage]":
+        return StepMessage
+
+    @staticmethod
     def topic() -> str:
         return "thrs/simulation/step"
 
 
 class PauseMessage(SimulationCtrlMessage):
     @staticmethod
+    def resolve[
+        SensorValues: ThrsModel,
+        ControlValues: ThrsModel,
+        Parameters: ThrsModel,
+        Inputs: SimulationInputs,
+        Outputs: SimulationValues,
+    ](
+        sensor_values: type[SensorValues],
+        control_values: type[ControlValues],
+        parameters: type[Parameters],
+        simulation_inputs: type[Inputs],
+        simulation_outputs: type[Outputs],
+    ) -> "type[IncomingMessage]":
+        return PauseMessage
+
+    @staticmethod
     def topic() -> str:
         return "thrs/simulation/pause"
 
 
-class ManualControlMessage(ThrsModel):
-    control_values: ThrustersControlValues
+class ManualControlMessage[ControlValues: ThrsModel](IncomingMessage):
+    control_values: ControlValues
+
+    @staticmethod
+    def resolve[
+        SensorValues: ThrsModel,
+        LControlValues: ThrsModel,
+        Parameters: ThrsModel,
+        Inputs: SimulationInputs,
+        Outputs: SimulationValues,
+    ](
+        sensor_values: type[SensorValues],
+        control_values: type[LControlValues],
+        parameters: type[Parameters],
+        simulation_inputs: type[Inputs],
+        simulation_outputs: type[Outputs],
+    ) -> "type[IncomingMessage]":
+        return ManualControlMessage[control_values]
 
     @staticmethod
     def topic() -> str:
         return "thrs/controls/manual"
 
-    async def handle(self, context: MessageContext):
+    async def handle(
+        self,
+        context: MessageContext[
+            ThrsModel, ControlValues, ThrsModel, SimulationInputs, SimulationValues
+        ],
+    ):
         context.manual_control.manual_controls(self.control_values)
 
 
-class SetAutomationMessage(ThrsModel):
+class SetAutomationMessage(IncomingMessage):
     enabled: bool
+
+    @staticmethod
+    def resolve[
+        SensorValues: ThrsModel,
+        ControlValues: ThrsModel,
+        Parameters: ThrsModel,
+        Inputs: SimulationInputs,
+        Outputs: SimulationValues,
+    ](
+        sensor_values: type[SensorValues],
+        control_values: type[ControlValues],
+        parameters: type[Parameters],
+        simulation_inputs: type[Inputs],
+        simulation_outputs: type[Outputs],
+    ) -> "type[IncomingMessage]":
+        return SetAutomationMessage
 
     @staticmethod
     def topic() -> str:
@@ -221,22 +418,54 @@ class SetAutomationMessage(ThrsModel):
         await ControlStatusMessage(automatic=self.enabled).send(context.client)
 
 
-class SetParametersMessage(ThrsModel):
-    parameters: ThrustersParameters
+class SetParametersMessage[Parameters: ThrsModel](IncomingMessage):
+    parameters: Parameters
+
+    @staticmethod
+    def resolve[
+        SensorValues: ThrsModel,
+        ControlValues: ThrsModel,
+        LParameters: ThrsModel,
+        Inputs: SimulationInputs,
+        Outputs: SimulationValues,
+    ](
+        sensor_values: type[SensorValues],
+        control_values: type[ControlValues],
+        parameters: type[LParameters],
+        simulation_inputs: type[Inputs],
+        simulation_outputs: type[Outputs],
+    ) -> "type[IncomingMessage]":
+        return SetParametersMessage[parameters]
 
     @staticmethod
     def topic() -> str:
         return "thrs/controls/set_parameters"
 
-    async def handle(self, context: MessageContext):
+    async def handle(self, context: MessageContext[Any, Any, Parameters, Any, Any]):
         context.automatic_control.update_parameters(self.parameters)
-        await ParametersMessage(parameters=context.automatic_control.parameters).send(
-            context.client
-        )
+        await ParametersMessage[Parameters](
+            parameters=context.automatic_control.parameters
+        ).send(context.client)
 
 
-class SetSimulationInputsMessage(ThrsModel):
-    inputs: ThrustersSimulationInputs
+class SetSimulationInputsMessage[Inputs: SimulationInputs](IncomingMessage):
+    inputs: Inputs
+
+    @staticmethod
+    def resolve[
+        SensorValues: ThrsModel,
+        ControlValues: ThrsModel,
+        Parameters: ThrsModel,
+        LInputs: SimulationInputs,
+        Outputs: SimulationValues,
+    ](
+        sensor_values: type[SensorValues],
+        control_values: type[ControlValues],
+        parameters: type[Parameters],
+        simulation_inputs: type[LInputs],
+        simulation_outputs: type[Outputs],
+    ) -> "type[IncomingMessage]":
+        return SetSimulationInputsMessage[simulation_inputs]
 
     @staticmethod
     def topic() -> str:
@@ -291,9 +520,10 @@ class SimulationControls:
 
     async def _receive_controls(
         self,
+        handlers: list[IncomingMessage],
         cmds: Queue[SimulationCtrlMessage],
         switching_control: SwitchingControl,
-        automatic_control: ThrustersControl,
+        automatic_control: Control,
         manual_control: ManualControl,
         executor: SimulationExecutor,
     ):
@@ -306,7 +536,7 @@ class SimulationControls:
             executor,
         )
         async for message in self._controls_client.messages:
-            for handler in HANDLERS:
+            for handler in handlers:
                 if message.topic.matches(handler.topic()) and isinstance(
                     message.payload, str | bytes
                 ):
@@ -333,15 +563,26 @@ class SimulationControls:
             await self._controls_client.subscribe(handler.topic(), qos=1)
 
         model = MODES[mode]
+
+        resolved_handlers = [
+            handler.resolve(
+                model.sensor_values_cls,
+                model.control_values_cls,
+                type(model.control_parameters),
+                type(model.simulation_inputs),
+                model.simulation_outputs_cls,
+            )
+            for handler in HANDLERS
+        ]
+
         switching_control_model = replace(model, control_cls=SwitchingControl)
         with switching_control_model.executor() as inner_executor:
             manual_control = ManualControl(
-                ThrustersControlValues.zero(), inner_executor.time
+                model.control_values_cls.zero(), inner_executor.time
             )
-            automated_control = ThrustersControl(
-                cast(ThrustersParameters, model.control_parameters), inner_executor.time
+            automated_control = model.control_cls(
+                model.control_parameters, inner_executor.time
             )
-            automated_control.to_idle(ThrustersSensorValues.zero())  # type: ignore
             await ControlStatusMessage(automatic=False).send(self._controls_client)
             switching_control = SwitchingControl(manual_control, automated_control)
             executor = MqttExecutor(
@@ -349,9 +590,9 @@ class SimulationControls:
                 self._control_client,
                 self._sensor_client,
                 self._sensor_topic,
-                ThrustersSensorValues,
+                model.sensor_values_cls,
                 self._control_topic,
-                ThrustersControlValues,
+                model.control_values_cls,
             )
             simulator = Simulator(switching_control_model, executor, switching_control)
             cmds: Queue[SimulationCtrlMessage] = Queue()
@@ -360,6 +601,7 @@ class SimulationControls:
             executor_task = create_task(executor.run())
             receive_task = create_task(
                 self._receive_controls(
+                    resolved_handlers,
                     cmds,
                     switching_control,
                     automated_control,
@@ -374,15 +616,16 @@ class SimulationControls:
                 await SimulationInputMessage(
                     inputs=cast(ThrustersSimulationInputs, model.simulation_inputs)
                 ).send(self._controls_client)
-                await self._run_simulation(model, executor, simulator, cmds)
+                await self._run_simulation(mode, model, executor, simulator, cmds)
             finally:
                 executor_task.cancel()
                 receive_task.cancel()
 
     async def _run_simulation(
         self,
+        module: Modes,
         model: SimulatorModel,
-        executor: MqttExecutor[ThrustersSensorValues, ThrustersControlValues],
+        executor: MqttExecutor,
         simulator: Simulator,
         cmds: Queue[SimulationCtrlMessage],
     ):
@@ -391,6 +634,7 @@ class SimulationControls:
             await SimulationStatusMessage(
                 status="available",
                 simulation_time=executor.time(),
+                module=module,
             ).send(self._controls_client)
             cmd = await cmds.get()
             if isinstance(cmd, PlayMessage):
@@ -398,6 +642,7 @@ class SimulationControls:
                 await SimulationStatusMessage(
                     status="running",
                     simulation_time=executor.time(),
+                    module=module,
                 ).send(self._controls_client)
                 logging.debug(
                     f"Starting simulation with tick interval of {sleep_duration} seconds"
@@ -411,6 +656,7 @@ class SimulationControls:
                 await SimulationStatusMessage(
                     status="stepping",
                     simulation_time=executor.time(),
+                    module=module,
                 ).send(self._controls_client)
 
                 ticks = max(1, int(cmd.seconds / model.tick_duration.total_seconds()))

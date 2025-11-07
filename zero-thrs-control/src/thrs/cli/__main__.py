@@ -31,7 +31,6 @@ async def main():
     run_cmd.add_argument(
         "type",
         choices=MODES.keys(),
-        type=lambda val: val.upper(),
         help="Type of simulation to run",
     )
     run_cmd.set_defaults(func=run)

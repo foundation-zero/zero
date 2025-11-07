@@ -1,7 +1,12 @@
 from typing import Annotated
 
 from pydantic import computed_field
-from thrs.input_output.base import component_meta, SimulationInputs, ThrsModel
+from thrs.input_output.base import (
+    SimulationValues,
+    component_meta,
+    SimulationInputs,
+    ThrsModel,
+)
 from thrs.input_output.definitions import control, sensor, simulation
 
 
@@ -27,9 +32,15 @@ class PvtSensorValues(ThrsModel):
     pvt_temperature_owners_return: Annotated[
         sensor.TemperatureSensor, component_meta(yard_tag="50001038-04")
     ]
-    pvt_mix_main_fwd: Annotated[sensor.Valve, component_meta(yard_tag="50001044-01")]
-    pvt_mix_main_aft: Annotated[sensor.Valve, component_meta(yard_tag="50001044-02")]
-    pvt_mix_owners: Annotated[sensor.Valve, component_meta(yard_tag="50001043-01")]
+    pvt_mix_main_fwd: Annotated[
+        sensor.Valve, component_meta(yard_tag="50001044-01", valve_type="mix")
+    ]
+    pvt_mix_main_aft: Annotated[
+        sensor.Valve, component_meta(yard_tag="50001044-02", valve_type="mix")
+    ]
+    pvt_mix_owners: Annotated[
+        sensor.Valve, component_meta(yard_tag="50001043-01", valve_type="mix")
+    ]
     pvt_flow_main_fwd_recovery: Annotated[
         sensor.FlowSensor,
         component_meta(yard_tag="50001058-12"),
@@ -53,17 +64,19 @@ class PvtSensorValues(ThrsModel):
     ]
     pvt_switch_main_fwd: Annotated[
         sensor.Valve,
-        component_meta(yard_tag="50001067-01"),
+        component_meta(yard_tag="50001067-01", valve_type="switch"),
     ]
     pvt_switch_main_aft: Annotated[
         sensor.Valve,
-        component_meta(yard_tag="50001067-02"),
+        component_meta(yard_tag="50001067-02", valve_type="switch"),
     ]
     pvt_switch_owners: Annotated[
         sensor.Valve,
-        component_meta(yard_tag="50001069-01"),
+        component_meta(yard_tag="50001069-01", valve_type="switch"),
     ]
-    pvt_mix_exchanger: Annotated[sensor.Valve, component_meta(yard_tag="50001047-02")]
+    pvt_mix_exchanger: Annotated[
+        sensor.Valve, component_meta(yard_tag="50001047-02", valve_type="mix")
+    ]
     pvt_temperature_supply: Annotated[
         sensor.TemperatureSensor,
         component_meta(yard_tag="50001038-24"),
@@ -365,20 +378,57 @@ class PvtSensorValues(ThrsModel):
 
 
 class PvtControlValues(ThrsModel):
-    pvt_pump_main_fwd: Annotated[control.Pump, component_meta(yard_tag="50001018")]
-    pvt_pump_main_aft: Annotated[control.Pump, component_meta(yard_tag="50001019")]
-    pvt_pump_owners: Annotated[control.Pump, component_meta(yard_tag="50001021")]
-    pvt_mix_main_fwd: Annotated[control.Valve, component_meta(yard_tag="50001044-01")]
-    pvt_mix_main_aft: Annotated[control.Valve, component_meta(yard_tag="50001044-02")]
-    pvt_mix_owners: Annotated[control.Valve, component_meta(yard_tag="50001043-01")]
+    pvt_pump_main_fwd: Annotated[
+        control.Pump, component_meta(yard_tag="50001018", component_type="pump")
+    ]
+    pvt_pump_main_aft: Annotated[
+        control.Pump, component_meta(yard_tag="50001019", component_type="pump")
+    ]
+    pvt_pump_owners: Annotated[
+        control.Pump, component_meta(yard_tag="50001021", component_type="pump")
+    ]
+    pvt_mix_main_fwd: Annotated[
+        control.Valve,
+        component_meta(
+            yard_tag="50001044-01", component_type="valve", valve_type="mix"
+        ),
+    ]
+    pvt_mix_main_aft: Annotated[
+        control.Valve,
+        component_meta(
+            yard_tag="50001044-02", component_type="valve", valve_type="mix"
+        ),
+    ]
+    pvt_mix_owners: Annotated[
+        control.Valve,
+        component_meta(
+            yard_tag="50001043-01", component_type="valve", valve_type="mix"
+        ),
+    ]
     pvt_switch_main_fwd: Annotated[
-        control.Valve, component_meta(yard_tag="50001067-01")
+        control.Valve,
+        component_meta(
+            yard_tag="50001067-01", component_type="valve", valve_type="switch"
+        ),
     ]
     pvt_switch_main_aft: Annotated[
-        control.Valve, component_meta(yard_tag="50001067-02")
+        control.Valve,
+        component_meta(
+            yard_tag="50001067-02", component_type="valve", valve_type="switch"
+        ),
     ]
-    pvt_switch_owners: Annotated[control.Valve, component_meta(yard_tag="50001069-01")]
-    pvt_mix_exchanger: Annotated[control.Valve, component_meta(yard_tag="50001047-02")]
+    pvt_switch_owners: Annotated[
+        control.Valve,
+        component_meta(
+            yard_tag="50001069-01", component_type="valve", valve_type="switch"
+        ),
+    ]
+    pvt_mix_exchanger: Annotated[
+        control.Valve,
+        component_meta(
+            yard_tag="50001047-02", component_type="valve", valve_type="mix"
+        ),
+    ]
 
 
 class PvtSimulationInputs(SimulationInputs):
@@ -389,7 +439,7 @@ class PvtSimulationInputs(SimulationInputs):
     pvt_seawater_supply: simulation.Boundary
 
 
-class PvtSimulationOutputs(ThrsModel):
+class PvtSimulationOutputs(SimulationValues):
     pvt_module_return: simulation.Boundary
     pvt_module_supply: simulation.FlowBoundary
     pvt_seawater_return: simulation.TemperatureBoundary

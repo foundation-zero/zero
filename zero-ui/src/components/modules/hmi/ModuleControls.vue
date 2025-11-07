@@ -1,5 +1,13 @@
-<script setup lang="ts" generic="K extends keyof THRSModules">
-import { ControlComponentType } from "@/@types/thrs";
+<script
+  setup
+  lang="ts"
+  generic="
+    K extends keyof THRSModules,
+    Definitions extends ControlDefinitions = THRSDefinitions[K]['controlValues'],
+    Values extends ExtractControlValues<Definitions> = ExtractControlValues<Definitions>
+  "
+>
+import { ControlComponentType, ControlDefinitions, ExtractControlValues } from "@/@types/thrs";
 import { THRSDefinitions, THRSModules } from "@/lib/consts";
 import { useSimulationStore } from "@/stores/simulation";
 import { Client } from "@urql/vue";
@@ -11,7 +19,7 @@ import ValveControl from "./controls/ValveControl.vue";
 
 const props = defineProps<{
   module: K;
-  controls: THRSDefinitions[K]["controlValues"];
+  controls: Definitions;
   query: string;
   client: Client;
 }>();
@@ -19,6 +27,7 @@ const props = defineProps<{
 const COMPONENTS: Record<ControlComponentType, Component> = {
   [ControlComponentType.Pump]: PumpControl,
   [ControlComponentType.Valve]: ValveControl,
+  [ControlComponentType.Pcm]: ValveControl,
 };
 
 const { control: controlData } = toRefs(useSimulationStore());
@@ -26,13 +35,13 @@ const { control: controlData } = toRefs(useSimulationStore());
 const controlsDisabled = computed(() => controlData.value?.control.automatic === true);
 
 const controlValuesQuery = queryFor(props.module, "controlValues", props.query);
-const controlValuesFromQuery = queryPacked(props.module, "controlValues", controlValuesQuery);
-const controlValuesFromMutation = ref<THRSModules[K]["controlValues"] | null>(null);
+const controlValuesFromQuery = queryPacked<Values>(
+  controlValuesQuery,
+  (data) => data?.modules[props.module].controlValues as Values | undefined,
+);
+const controlValuesFromMutation = ref<Values | null>(null);
 const controlValues = computed(
-  () =>
-    <THRSModules[K]["controlValues"] | undefined>(
-      (controlValuesFromMutation.value ?? controlValuesFromQuery.value.data)
-    ),
+  () => (controlValuesFromMutation.value as Values) ?? controlValuesFromQuery.value.data,
 );
 
 useIntervalFn(
@@ -47,13 +56,13 @@ useIntervalFn(
 const controlComponents = computed(() => {
   return Object.entries(props.controls).map(([key, value]) => ({
     ...value,
-    key: key as keyof THRSModules[K]["controlValues"],
+    key: key as keyof Values,
     component: COMPONENTS[value.componentType],
     valveType: value.componentType === ControlComponentType.Valve ? value.valveType : undefined,
   }));
 });
 
-const setControlValues = (newValues: THRSModules[K]["controlValues"]) => {
+const setControlValues = (newValues: Values) => {
   controlValuesFromMutation.value = newValues;
 };
 </script>

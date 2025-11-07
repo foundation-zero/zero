@@ -261,19 +261,19 @@ class ThrustersControl(
     def parameters(self) -> ThrustersParameters:
         return self._parameters
 
-    def update_parameters(self, new_params: ThrustersParameters):
-        self._parameters = new_params
-        self._heat_dump_controller.update_tuning(new_params.heat_dump_tuning)
-        self._warmup_mix_controller.update_tuning(new_params.warmup_mix_tuning)
-        self._pump_controller.update_tuning(new_params.pump_tuning)
+    def update_parameters(self, parameters: ThrustersParameters):
+        self._parameters = parameters
+        self._heat_dump_controller.update_tuning(parameters.heat_dump_tuning)
+        self._warmup_mix_controller.update_tuning(parameters.warmup_mix_tuning)
+        self._pump_controller.update_tuning(parameters.pump_tuning)
         self._aft_recovery_temperature_controller.update_tuning(
-            new_params.aft_temperature_tuning
+            parameters.aft_temperature_tuning
         )
         self._fwd_recovery_temperature_controller.update_tuning(
-            new_params.fwd_temperature_tuning
+            parameters.fwd_temperature_tuning
         )
-        self._aft_flow_controller.update_tuning(new_params.aft_flow_balance_tuning)
-        self._fwd_flow_controller.update_tuning(new_params.fwd_flow_balance_tuning)
+        self._aft_flow_controller.update_tuning(parameters.aft_flow_balance_tuning)
+        self._fwd_flow_controller.update_tuning(parameters.fwd_flow_balance_tuning)
 
     @staticmethod
     def modes() -> list[str]:

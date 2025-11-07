@@ -26,15 +26,11 @@ export const queryFor = <
   }`;
   });
 
-export const queryPacked = <
-  Module extends keyof THRSModules,
-  Values extends keyof THRSModules[Module],
->(
-  module: Module,
-  fieldName: Values,
+export const queryPacked = <TReturn>(
   query: Ref<string>,
+  selector: (data: THRS | undefined) => TReturn | undefined,
 ) => {
   const { data, ...rest } = useQuery<THRS>({ query });
 
-  return computed(() => ({ data: data.value?.modules[module][fieldName], ...rest }));
+  return computed(() => ({ data: selector(data.value), ...rest }));
 };

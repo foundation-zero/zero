@@ -7,6 +7,7 @@ from thrs.control.controllers import (
     Controller,
     FlowDistributionController,
 )
+from thrs.input_output.alarms import BaseAlarms
 from thrs.input_output.base import Stamped, ThrsModel
 from thrs.input_output.definitions.control import Valve
 from thrs.input_output.definitions.units import LMin, Ratio, Tuning
@@ -168,3 +169,10 @@ class ConsumersControl(
     @property
     def parameters(self) -> ConsumersParameters:
         return self._parameters
+
+    def update_parameters(self, parameters: ConsumersParameters):
+        pass
+
+
+class ConsumersAlarms(BaseAlarms):
+    pass

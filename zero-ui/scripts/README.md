@@ -9,6 +9,7 @@ This directory contains Node.js scripts for automatically extracting GraphQL sch
 Extracts fields from GraphQL schema types and generates TypeScript definition objects. Supports control, sensor, and parameter definitions with automatic type inference.
 
 **Usage:**
+
 ```bash
 # Extract control definitions
 pnpm run extract-schema-values THRUSTERS_CONTROL_DEFINITION ThrustersControlValuesType
@@ -17,7 +18,7 @@ pnpm run extract-schema-values THRUSTERS_CONTROL_DEFINITION ThrustersControlValu
 pnpm run extract-schema-values THRUSTERS_SENSOR_DEFINITION ThrustersSensorValuesType
 
 # Extract parameter definitions
-pnpm run extract-schema-values THRUSTERS_PARAMETER_DEFINITION ThrustersParameterValuesType
+pnpm run extract-schema-values THRUSTERS_PARAMETER_DEFINITION ThrustersParametersType
 
 # Extract simulation input definitions
 pnpm run extract-schema-values THRUSTERS_SIMULATION_INPUTS ThrustersSimulationInputsType
@@ -30,6 +31,7 @@ pnpm run extract-schema-values <CONST_NAME> <TYPE_NAME>
 ```
 
 **What it does:**
+
 1. Parses the GraphQL schema file at `src/graphql/thrs/schema.graphql`
 2. Finds the specified GraphQL type definition
 3. Extracts field metadata from `@jsonSchemaDirective` annotations (for controls/sensors) or infers types directly (for parameters/simulation)
@@ -39,14 +41,15 @@ pnpm run extract-schema-values <CONST_NAME> <TYPE_NAME>
 
 ### `generate-graphql-queries.js`
 
-Generates GraphQL query fragments based on component type field mappings. 
+Generates GraphQL query fragments based on component type field mappings.
 
 **Usage:**
+
 ```bash
 # Generate control query
 pnpm generate-graphql-queries THRUSTERS_CONTROL_DEFINITION THRUSTERS_CONTROL_QUERY
 
-# Generate sensor query  
+# Generate sensor query
 pnpm generate-graphql-queries THRUSTERS_SENSOR_DEFINITION THRUSTERS_SENSOR_QUERY
 
 # Generate parameter query
@@ -55,12 +58,42 @@ pnpm generate-graphql-queries THRUSTERS_PARAMETER_DEFINITION THRUSTERS_PARAMETER
 # Generate simulation inputs query
 pnpm generate-graphql-queries THRUSTERS_SIMULATION_INPUTS THRUSTERS_SIMULATION_INPUTS_QUERY
 
-# Generate simulation outputs query  
+# Generate simulation outputs query
 pnpm generate-graphql-queries THRUSTERS_SIMULATION_OUTPUTS THRUSTERS_SIMULATION_OUTPUTS_QUERY
 
 # Generic usage for any module
 pnpm generate-graphql-queries <INPUT_CONST_NAME> <OUTPUT_QUERY_NAME>
 ```
+
+### `extract-all-schemas.sh`
+
+Batch script that extracts all schema values and generates GraphQL queries for all modules (THRUSTERS, PVT, PCM, CONSUMERS) and their definition types (control, sensor, parameter, simulation inputs/outputs) in a single command.
+
+**Usage:**
+
+```bash
+# Run all schema extractions and query generations at once
+./scripts/extract-all-schemas.sh
+```
+
+**What it does:**
+
+1. Executes all 20 `extract-schema-values` commands for all modules and definition types
+2. Executes all 20 `generate-graphql-queries` commands for all modules and definition types
+3. Processes all modules: THRUSTERS, PVT, PCM, CONSUMERS
+4. Extracts all definition types: control, sensor, parameter, simulation inputs, simulation outputs
+5. Updates `src/lib/consts.generated.ts` with all extracted definitions
+6. Updates `src/lib/queries.generated.ts` with all generated GraphQL queries
+
+**Total operations:** 40 commands (20 extractions + 20 query generations)
+
+**Useful when:**
+
+- GraphQL schema has been updated
+- Need to regenerate all definitions and queries after schema changes
+- Setting up the project from scratch
+- Ensuring all modules are up to date
+- Want to regenerate both TypeScript definitions and GraphQL queries in one go
 
 ## Generated Output
 
@@ -75,7 +108,7 @@ export const THRUSTERS_CONTROL_DEFINITION = toControlDefinition({
     componentType: ControlComponentType.Pump,
   },
   thrustersMixRecovery: {
-    yardTag: "50001074", 
+    yardTag: "50001074",
     componentType: ControlComponentType.Valve,
     valveType: ValveType.Mix,
   },
@@ -84,6 +117,7 @@ export const THRUSTERS_CONTROL_DEFINITION = toControlDefinition({
 ```
 
 **Control components** are identified by:
+
 - `componentType`: `ControlComponentType.Pump` or `ControlComponentType.Valve`
 - `valveType`: Additional valve classification for valve components
 - `yardTag`: Physical system identifier
@@ -105,6 +139,7 @@ export const THRUSTERS_SENSOR_DEFINITION = toSensorDefinition({
 ```
 
 **Sensor components** are identified by:
+
 - `componentType`: One of `SensorComponentType` enum values (Temperature, Pressure, Flow, Pump, Valve, Thruster, Pcs)
 - `valveType`: Additional valve classification for valve sensors
 - `yardTag`: Physical system identifier
@@ -127,6 +162,7 @@ export const THRUSTERS_PARAMETER_DEFINITION = toParameterDefinition({
 ```
 
 **Parameter components** are identified by:
+
 - `componentType`: One of `ParametersType` enum values (Temperature, Flow, Tuning)
 - No `yardTag` required - parameters are configuration values, not physical components
 
@@ -155,6 +191,7 @@ export const THRUSTERS_SIMULATION_OUTPUTS = toSimulationDefinition({
 ```
 
 **Simulation components** are identified by:
+
 - `componentType`: One of `SimulationComponentType` enum values (Thruster, Boundary, Temperature, Flow, Pcs)
 - No `yardTag` required - simulation components are virtual system boundaries and inputs/outputs
 - Automatically inferred from GraphQL field types (`ThrusterSimulationType`, `BoundarySimulationType`, etc.)
@@ -250,11 +287,14 @@ export const SENSOR_FIELDS: SensorFields = {
 ## Integration with Development Workflow
 
 ### pnpm scripts
+
 The following scripts are available in `package.json`:
+
 - `extract-schema-values`: Runs the schema extraction script with arguments
 - `generate-graphql-queries`: Runs the query generation script with arguments
 
 **Examples:**
+
 ```bash
 # Extract all definition types
 pnpm extract-schema-values THRUSTERS_CONTROL_DEFINITION ThrustersControlValuesType
@@ -274,6 +314,7 @@ pnpm generate-graphql-queries THRUSTERS_SIMULATION_OUTPUTS THRUSTERS_SIMULATION_
 ## Error Handling
 
 The scripts include comprehensive error handling:
+
 - Validates that schema and constants files exist
 - Checks that the target GraphQL type is found
 - Provides clear error messages for debugging

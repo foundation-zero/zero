@@ -43,6 +43,7 @@ function getComponentTypeFieldMappings() {
     ControlComponentType: {
       Pump: ["dutypoint", "on"],
       Valve: ["setpoint"],
+      Pcm: ["on"],
     },
     // Sensor component type mappings
     SensorComponentType: {
@@ -53,6 +54,7 @@ function getComponentTypeFieldMappings() {
       Valve: ["positionRel"],
       Thruster: ["active"],
       Pcs: ["mode"],
+      Pcm: ["charged"],
     },
     // Simulation component type mappings
     SimulationComponentType: {
@@ -61,6 +63,7 @@ function getComponentTypeFieldMappings() {
       Temperature: ["temperature"],
       Flow: ["flow"],
       Pcs: ["mode"],
+      HeatSource: ["heatFlow"],
     },
     // Parameter component type mappings (parameters are flat, no nested fields)
     ParametersType: {

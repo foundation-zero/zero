@@ -117,7 +117,7 @@ export const controlValuesForm = <
         ? Object.fromEntries(Object.entries(refs).map(([key, { value }]) => [key, value.value]))
         : refs["value"].value.value;
 
-    const mutation = `set${capitalizeFirst(module)}${capitalizeFirst(mutationType)}${capitalizeFirst(componentName)}`;
+    const mutation = `${module}${capitalizeFirst(mutationType)}Set${capitalizeFirst(componentName)}`;
     const query = `mutation ($input: ${inputType}) {
       ${mutation}(${mutationType == MutationType.Parameter ? "value" : "component"}: $input) {
         ${returnValuesQuery}

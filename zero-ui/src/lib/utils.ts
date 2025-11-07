@@ -311,3 +311,13 @@ export const objectFilter = <T extends Record<string, unknown>, K extends keyof 
   Object.fromEntries(
     Object.entries(obj).filter((entry) => predicate(entry as [K, T[K]])),
   ) as Partial<T>;
+
+export function tuple<Key, Value>(key: Key, value: Value): [Key, Value];
+export function tuple<Values extends unknown[]>(
+  ...values: Values
+): { [K in keyof Values]: Values[K] };
+export function tuple<Values extends unknown[]>(
+  ...values: Values
+): { [K in keyof Values]: Values[K] } {
+  return values;
+}

@@ -1,17 +1,19 @@
 <script setup lang="ts">
+import { ModuleDefinition, ParametersType } from "@/@types/thrs";
 import ModuleParameters from "@/components/modules/hmi/ModuleParameters.vue";
 
 import { DEFINITIONS, QUERIES } from "@/lib/consts";
 import { objectFilter } from "@/lib/utils";
 import { useClientHandle } from "@urql/vue";
-import { computed, ref } from "vue";
+import { computed, inject, Ref } from "vue";
 import { useI18n } from "vue-i18n";
 
 const { t } = useI18n();
 
 const { client } = useClientHandle();
-const currentDefinition = ref<keyof typeof DEFINITIONS>("thrusters");
-const definition = computed(() => DEFINITIONS[currentDefinition.value]);
+
+const currentDefinition = inject<Ref<keyof typeof DEFINITIONS>>("currentModule")!;
+const definition = computed<ModuleDefinition>(() => DEFINITIONS[currentDefinition.value]);
 
 type Parameters = typeof definition.value.parameters;
 
@@ -19,7 +21,7 @@ const regularParams = computed(
   () =>
     objectFilter(
       definition.value.parameters,
-      ([, { componentType }]) => componentType !== "tuning",
+      ([, { componentType }]) => componentType !== ParametersType.Tuning,
     ) as Parameters,
 );
 
@@ -27,7 +29,7 @@ const tuningParams = computed(
   () =>
     objectFilter(
       definition.value.parameters,
-      ([, { componentType }]) => componentType === "tuning",
+      ([, { componentType }]) => componentType === ParametersType.Tuning,
     ) as Parameters,
 );
 </script>

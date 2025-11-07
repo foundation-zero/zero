@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { Stamped } from "@/@types/thrs";
 import {
   Table,
   TableBody,
@@ -9,7 +10,8 @@ import {
 } from "@/components/ui/shadcn/table";
 import { formatDistanceToNow, isValid } from "date-fns";
 import { useI18n } from "vue-i18n";
-import { FieldEntry } from "./ModuleSensors.vue";
+
+type FieldEntry = [componentName: string, value: Stamped<string | number | boolean>];
 
 const { t } = useI18n();
 

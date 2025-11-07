@@ -59,6 +59,7 @@ function inferSensorComponentType(fieldType) {
     SensorValveType: "Valve",
     SensorThrusterType: "Thruster",
     SensorPcsType: "Pcs",
+    SensorPcmType: "Pcm",
   };
 
   return typeMapping[fieldType] || null;
@@ -97,6 +98,7 @@ function inferSimulationComponentType(fieldName, fieldType) {
     TemperatureBoundarySimulationType: "Temperature",
     FlowBoundarySimulationType: "Flow",
     PcsSimulationType: "Pcs",
+    HeatSourceSimulationType: "HeatSource",
   };
 
   return typeMapping[fieldType] || null;
@@ -198,8 +200,8 @@ function parseSchema(schemaPath) {
           }
 
           // Add valveType if it exists and is not null
-          if (valveTypeMatch) {
-            entry.valveType = valveTypeMatch[1];
+          if (entry.componentType === "valve") {
+            entry.valveType = valveTypeMatch?.[1] ?? "null";
           }
 
           extractedValues[fieldName] = entry;
@@ -213,6 +215,12 @@ function parseSchema(schemaPath) {
     return {};
   }
 }
+
+const controlTypeMap = {
+  pcm: "Pcm",
+  pump: "Pump",
+  valve: "Valve",
+};
 
 /**
  * Generate TypeScript object string
@@ -234,9 +242,7 @@ function generateObjectString(values) {
 
       if (isControlDefinition) {
         // For control definitions, include componentType and valveType
-        props.push(
-          `componentType: ControlComponentType.${value.componentType === "pump" ? "Pump" : "Valve"}`,
-        );
+        props.push(`componentType: ControlComponentType.${controlTypeMap[value.componentType]}`);
 
         if (value.valveType) {
           // Convert valve type to enum format
@@ -245,6 +251,7 @@ function generateObjectString(values) {
             flowcontrol: "FlowControl",
             shutoff: "Shutoff",
             switch: "Switch",
+            null: "Unknown",
           };
 
           const valveTypeEnum = valveTypeMap[value.valveType] || value.valveType;

@@ -18,9 +18,14 @@ export type ValveControl = {
   setpoint: Stamped<number>;
 };
 
+export type PcmControl = {
+  on: Stamped<boolean>;
+};
+
 export type ControlFields = {
   [ControlComponentType.Pump]: (keyof PumpControl)[];
   [ControlComponentType.Valve]: (keyof ValveControl)[];
+  [ControlComponentType.Pcm]: (keyof PcmControl)[];
 };
 
 export type SensorFields = {
@@ -31,6 +36,7 @@ export type SensorFields = {
   [SensorComponentType.Valve]: (keyof Valve)[];
   [SensorComponentType.Thruster]: (keyof ThrusterSensor)[];
   [SensorComponentType.Pcs]: (keyof PcsSensor)[];
+  [SensorComponentType.Pcm]: (keyof PcmSensor)[];
 };
 
 export type SimulationFields = {
@@ -69,6 +75,10 @@ export type Toggle = {
 
 export type ModeSelector<T> = {
   mode: Stamped<T>;
+};
+
+export type PcmSensor = {
+  charged: Stamped<boolean>;
 };
 
 export type ThrusterSensor = Toggle;
@@ -111,6 +121,7 @@ export type ControlForm<Type extends Record<string, Stamped<unknown>>> = {
 export const enum ControlComponentType {
   Pump = "pump",
   Valve = "valve",
+  Pcm = "pcm",
 }
 
 export const enum ValveType {
@@ -118,6 +129,7 @@ export const enum ValveType {
   FlowControl = "flowcontrol",
   Shutoff = "shutoff",
   Switch = "switch",
+  Unknown = "null",
 }
 
 export type ControlDefinition<T extends ControlComponentType = ControlComponentType> =
@@ -130,14 +142,19 @@ export type ValveControlDefinition = ControlDefinition<ControlComponentType.Valv
   valveType: ValveType;
 };
 
-export type ControlDefinitions = SchemaDefinitions<PumpControlDefinition | ValveControlDefinition>;
+export type PcmControlDefinition = ControlDefinition<ControlComponentType.Pcm>;
+
+export type ControlDefinitions = SchemaDefinitions<
+  PumpControlDefinition | ValveControlDefinition | PcmControlDefinition
+>;
 
 export type ExtractControlValues<T extends ControlDefinitions> = PickMap<
   T,
   PumpControlDefinition,
   PumpControl
 > &
-  PickMap<T, ValveControlDefinition, ValveControl>;
+  PickMap<T, ValveControlDefinition, ValveControl> &
+  PickMap<T, PcmControlDefinition, PcmControl>;
 
 export const enum SensorComponentType {
   Temperature = "temperature",
@@ -147,9 +164,10 @@ export const enum SensorComponentType {
   Valve = "valve",
   Thruster = "thruster",
   Pcs = "pcs",
+  Pcm = "pcm",
 }
 
-export type THRSModule<TDefinition extends ModuleDefinition> = {
+export type THRSModule<TDefinition extends ModuleDefinition = ModuleDefinition> = {
   sensorValues: ExtractSensorValues<TDefinition["sensorValues"]>;
   controlValues: ExtractControlValues<TDefinition["controlValues"]>;
   parameters: ExtractParameterValues<TDefinition["parameters"]>;
@@ -187,6 +205,7 @@ export type PumpSensorDefinition = SensorDefinition<SensorComponentType.Pump>;
 export type ValveSensorDefinition = SensorDefinition<SensorComponentType.Valve> & {
   valveType: ValveType;
 };
+export type PcmSensorDefinition = SensorDefinition<SensorComponentType.Pcm>;
 export type ThrusterSensorDefinition = SensorDefinition<SensorComponentType.Thruster>;
 export type PcsSensorDefinition = SensorDefinition<SensorComponentType.Pcs>;
 
@@ -202,7 +221,8 @@ export type ExtractSensorValues<T extends SensorDefinitions> = PickMap<
   PickMap<T, PumpSensorDefinition, PumpSensor> &
   PickMap<T, ValveSensorDefinition, Valve> &
   PickMap<T, ThrusterSensorDefinition, ThrusterSensor> &
-  PickMap<T, PcsSensorDefinition, PcsSensor>;
+  PickMap<T, PcsSensorDefinition, PcsSensor> &
+  PickMap<T, PcmSensorDefinition, PcmSensor>;
 
 export type StringKeys<T extends Record<string, unknown>> = {
   [K in keyof T as K extends string ? K : never]: T[K];
@@ -266,6 +286,7 @@ export const enum SimulationComponentType {
   Temperature = "temperature",
   Flow = "flow",
   Pcs = "pcs",
+  HeatSource = "heatSource",
 }
 
 export type SimulationDefinition<T extends SimulationComponentType = SimulationComponentType> =

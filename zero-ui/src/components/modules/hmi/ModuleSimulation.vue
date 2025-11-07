@@ -1,5 +1,17 @@
-<script setup lang="ts" generic="K extends keyof THRSModules">
-import { SimulationComponentType } from "@/@types/thrs";
+<script
+  setup
+  lang="ts"
+  generic="
+    K extends keyof THRSModules,
+    Definitions extends SimulationDefinitions = THRSDefinitions[K]['simulation']['inputs'],
+    Values extends ExtractSimulationValues<Definitions> = ExtractSimulationValues<Definitions>
+  "
+>
+import {
+  ExtractSimulationValues,
+  SimulationComponentType,
+  SimulationDefinitions,
+} from "@/@types/thrs";
 import { THRSDefinitions, THRSModules } from "@/lib/consts";
 import { Client } from "@urql/vue";
 import { useIntervalFn } from "@vueuse/core";
@@ -12,7 +24,7 @@ import ThrustersControl from "./controls/ThrustersControl.vue";
 
 const props = defineProps<{
   module: K;
-  simulationControls: THRSDefinitions[K]["simulation"];
+  simulationInputs: Definitions;
   query: string;
   client: Client;
 }>();
@@ -23,16 +35,17 @@ const COMPONENTS: Record<SimulationComponentType, Component | null> = {
   [SimulationComponentType.Flow]: null,
   [SimulationComponentType.Temperature]: TemperatureControl,
   [SimulationComponentType.Pcs]: PcsControl,
+  [SimulationComponentType.HeatSource]: null,
 };
 
 const simulationValuesQuery = queryFor(props.module, "simulation", `inputs { ${props.query} }`);
-const simulationValuesFromQuery = queryPacked(props.module, "simulation", simulationValuesQuery);
-const simulationValuesFromMutation = ref<THRSModules[K]["simulation"]["inputs"] | null>(null);
+const simulationValuesFromQuery = queryPacked(
+  simulationValuesQuery,
+  (data) => data?.modules?.[props.module]?.simulation.inputs,
+);
+const simulationValuesFromMutation = ref<Values | null>(null);
 const simulationValues = computed(
-  () =>
-    <THRSModules[K]["simulation"]["inputs"] | undefined>(
-      (simulationValuesFromMutation.value ?? simulationValuesFromQuery.value.data?.inputs)
-    ),
+  () => (simulationValuesFromMutation.value as Values) ?? simulationValuesFromQuery.value.data,
 );
 
 useIntervalFn(
@@ -45,34 +58,38 @@ useIntervalFn(
 );
 
 const simulationComponents = computed(() => {
-  return Object.entries(props.simulationControls.inputs)
+  return Object.entries(props.simulationInputs)
     .map(([key, value]) => ({
       ...value,
-      key: key as keyof THRSModules[K]["simulation"]["inputs"],
+      key: key as keyof Values,
       component: COMPONENTS[value.componentType],
     }))
     .filter((control) => control.component !== null);
 });
 
-const setsimulationValues = (newValues: THRSModules[K]["simulation"]["inputs"]) => {
+const setSimulationValues = (newValues: Values) => {
   simulationValuesFromMutation.value = newValues;
 };
 </script>
 <template>
   <section
-    v-if="simulationValues && simulationValuesFromQuery.data?.inputs"
+    v-if="simulationValues && simulationValuesFromQuery.data"
     class="mb-4 grid gap-6 md:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4"
   >
-    <component
-      :is="control.component"
+    <template
       v-for="control in simulationComponents"
       :key="control.key"
-      :values="simulationValues[control.key]"
-      :component-name="control.key"
-      :component-type="control.componentType"
-      :query="query"
-      :module="module"
-      @update:control-values="setsimulationValues"
-    />
+    >
+      <component
+        :is="control.component"
+        v-if="control.component"
+        :values="simulationValues[control.key]"
+        :component-name="control.key"
+        :component-type="control.componentType"
+        :query="query"
+        :module="module"
+        @update:control-values="setSimulationValues"
+      />
+    </template>
   </section>
 </template>
