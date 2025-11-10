@@ -30,7 +30,8 @@ jobs:
       - uses: astral-sh/ruff-action@v3
         with:
           src: "./zero-loads-app"
-      - run: poetry install --directory zero-loads-app  --with dev,test
+      - run: poetry install --with dev,test
+        working-directory: zero-loads-app
       - run: poetry run mypy src
         working-directory: zero-loads-app
       - name: Create .env file from secret for zero-loads-app
@@ -93,7 +94,8 @@ jobs:
       - name: Build and push
         uses: docker/build-push-action@v6
         with:
-          context: zero-loads-app
+          context: .
+          file: zero-loads-app/Dockerfile
           push: true
           platforms: linux/amd64,linux/arm64
           tags: ${{ env.IMAGE }}:${{ needs.test.outputs.image_tag }}

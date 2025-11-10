@@ -9,7 +9,7 @@ class Generator(ABC):
     def gen(self) -> Any: ...
 
 
-class RandomGenerator(Generator):
+class RandomNumberGenerator(Generator):
     def __init__(self, type: str, lt: float | None = None, gt: float | None = None):
         self._type: str = type
 
@@ -24,7 +24,17 @@ class RandomGenerator(Generator):
             case "int":
                 return random.randint(int(self._lt), int(self._gt))
             case "float":
-                return random.uniform(self._lt, self._gt)
+                return round(random.uniform(self._lt, self._gt), 2)
+            case _:
+                raise ValueError(f"Unsupported data type: {self._type}")
+
+
+class RandomGenerator(Generator):
+    def __init__(self, type: str):
+        self._type: str = type
+
+    def gen(self):
+        match self._type:
             case "boolean":
                 return random.choice([True, False])
             case "string":
@@ -51,7 +61,9 @@ class GeneratorFactory:
     @staticmethod
     def create(type: str, *args, **kwargs) -> Generator:
         match type:
-            case "int" | "float" | "boolean" | "string" | "timestamp":
+            case "int" | "float":
+                return RandomNumberGenerator(type, *args, **kwargs)
+            case "boolean" | "string" | "timestamp":
                 return RandomGenerator(type, *args, **kwargs)
             case "enum":
                 return RandomChoiceGenerator(type, *args, **kwargs)
