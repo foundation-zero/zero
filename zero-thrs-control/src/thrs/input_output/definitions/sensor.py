@@ -69,7 +69,7 @@ class Fahrenheit(ThrsModel):
     operating: Stamped[OnOff]
 
 
-class EnergySensor(ThrsModel):
+class PowerSensor(ThrsModel):
     flow: Stamped[LMin]
     power: Stamped[Watt]
     delta_t: Stamped[Kelvin]
@@ -88,5 +88,5 @@ __all__ = [
     "Pcs",
     "Pcm",
     "Fahrenheit",
-    "EnergySensor",
+    "PowerSensor",
 ]

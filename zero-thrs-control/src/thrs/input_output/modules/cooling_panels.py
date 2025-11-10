@@ -29,59 +29,59 @@ class CoolingPanelsSensorValues(ThrsModel):
     cooling_flow_hydronic: Annotated[
         sensor.FlowSensor, component_meta(yard_tag="50001058-01")
     ]
-    cooling_energy_owners_deckhouse: Annotated[
-        sensor.EnergySensor, component_meta(yard_tag="41006058-1")
+    cooling_power_owners_deckhouse: Annotated[
+        sensor.PowerSensor, component_meta(yard_tag="41006058-1")
     ]
-    cooling_energy_owners_ps: Annotated[
-        sensor.EnergySensor, component_meta(yard_tag="41006058-2")
+    cooling_power_owners_ps: Annotated[
+        sensor.PowerSensor, component_meta(yard_tag="41006058-2")
     ]
-    cooling_energy_french: Annotated[
-        sensor.EnergySensor, component_meta(yard_tag="41006058-3")
+    cooling_power_french: Annotated[
+        sensor.PowerSensor, component_meta(yard_tag="41006058-3")
     ]
-    cooling_energy_italian: Annotated[
-        sensor.EnergySensor, component_meta(yard_tag="41006058-4")
+    cooling_power_italian: Annotated[
+        sensor.PowerSensor, component_meta(yard_tag="41006058-4")
     ]
-    cooling_energy_owners_sb: Annotated[
-        sensor.EnergySensor, component_meta(yard_tag="41006058-5")
+    cooling_power_owners_sb: Annotated[
+        sensor.PowerSensor, component_meta(yard_tag="41006058-5")
     ]
-    cooling_energy_dutch: Annotated[
-        sensor.EnergySensor, component_meta(yard_tag="41006058-6")
+    cooling_power_dutch: Annotated[
+        sensor.PowerSensor, component_meta(yard_tag="41006058-6")
     ]
-    cooling_energy_california: Annotated[
-        sensor.EnergySensor, component_meta(yard_tag="41006058-7")
+    cooling_power_california: Annotated[
+        sensor.PowerSensor, component_meta(yard_tag="41006058-7")
     ]
-    cooling_energy_main_deckhouse: Annotated[
-        sensor.EnergySensor, component_meta(yard_tag="41006058-8")
+    cooling_power_main_deckhouse: Annotated[
+        sensor.PowerSensor, component_meta(yard_tag="41006058-8")
     ]
-    cooling_energy_polynesian: Annotated[
-        sensor.EnergySensor, component_meta(yard_tag="41006058-11")
+    cooling_power_polynesian: Annotated[
+        sensor.PowerSensor, component_meta(yard_tag="41006058-11")
     ]
-    cooling_energy_mission_room: Annotated[
-        sensor.EnergySensor, component_meta(yard_tag="41006058-12")
+    cooling_power_mission_room: Annotated[
+        sensor.PowerSensor, component_meta(yard_tag="41006058-12")
     ]
-    cooling_energy_laundry: Annotated[
-        sensor.EnergySensor, component_meta(yard_tag="41006058-13")
+    cooling_power_laundry: Annotated[
+        sensor.PowerSensor, component_meta(yard_tag="41006058-13")
     ]
-    cooling_energy_crew_mess: Annotated[
-        sensor.EnergySensor, component_meta(yard_tag="41006058-15")
+    cooling_power_crew_mess: Annotated[
+        sensor.PowerSensor, component_meta(yard_tag="41006058-15")
     ]
-    cooling_energy_crew_5: Annotated[
-        sensor.EnergySensor, component_meta(yard_tag="41006058-16")
+    cooling_power_crew_5: Annotated[
+        sensor.PowerSensor, component_meta(yard_tag="41006058-16")
     ]
-    cooling_energy_crew_3: Annotated[
-        sensor.EnergySensor, component_meta(yard_tag="41006058-17")
+    cooling_power_crew_3: Annotated[
+        sensor.PowerSensor, component_meta(yard_tag="41006058-17")
     ]
-    cooling_energy_crew_1: Annotated[
-        sensor.EnergySensor, component_meta(yard_tag="41006058-18")
+    cooling_power_crew_1: Annotated[
+        sensor.PowerSensor, component_meta(yard_tag="41006058-18")
     ]
-    cooling_energy_crew_6: Annotated[
-        sensor.EnergySensor, component_meta(yard_tag="41006058-19")
+    cooling_power_crew_6: Annotated[
+        sensor.PowerSensor, component_meta(yard_tag="41006058-19")
     ]
-    cooling_energy_crew_4: Annotated[
-        sensor.EnergySensor, component_meta(yard_tag="41006058-20")
+    cooling_power_crew_4: Annotated[
+        sensor.PowerSensor, component_meta(yard_tag="41006058-20")
     ]
-    cooling_energy_crew_2: Annotated[
-        sensor.EnergySensor, component_meta(yard_tag="41006058-21")
+    cooling_power_crew_2: Annotated[
+        sensor.PowerSensor, component_meta(yard_tag="41006058-21")
     ]
     cooling_mix_main_deckhouse: Annotated[
         sensor.Valve, component_meta(yard_tag="41006031-1")
