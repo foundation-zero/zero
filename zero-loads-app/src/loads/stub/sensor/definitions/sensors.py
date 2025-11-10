@@ -1,36 +1,52 @@
+# Based on FunctionList_Rev2
+# https://docs.google.com/spreadsheets/d/1JdrFDqoArWxqEzr_02T6L84FTCKX7gj7/edit?usp=drive_link&ouid=103106168386399564004&rtpof=true&sd=true
 from typing import Annotated
 
-from .units import Load, LoadsModel, Position, RelativePosition, RotationalSpeed, Temperature, Torque, component_meta
+from .units import (
+    Load,
+    LoadsModel,
+    Position,
+    RelativePosition,
+    RotationalSpeed,
+    Temperature,
+    Torque,
+    component_meta,
+)
 
 
 class TensionCylinder(LoadsModel):
-    # sTensionCylinder
+    """sTensionCylinder"""
+
     position: Position
     position_rel: RelativePosition
     load: Load
 
 
 class FurlerElectric(LoadsModel):
-    # sFurlerElectric
+    """sFurlerElectric"""
+
     torque: Torque
     speed: RotationalSpeed
 
 
 class CaptiveWinch(LoadsModel):
-    # sCaptiveWinch
+    """sCaptiveWinch"""
+
     torque: Torque
     speed: RotationalSpeed
     temperature: Temperature
 
 
 class TravelerWinch(LoadsModel):
-    # sTravellerCaptive: Unsure what fields this contains
-    position_relative: RelativePosition
+    """sTravellerCaptive"""
+
+    position_rel: RelativePosition
     load: Load
 
 
 class BoomVang(LoadsModel):
-    # sBoomVang
+    """sBoomVang"""
+
     load_bottom: Load
     load_rod: Load
     position: Position

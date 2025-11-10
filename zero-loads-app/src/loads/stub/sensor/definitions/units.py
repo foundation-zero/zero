@@ -1,6 +1,7 @@
 from dataclasses import dataclass
 from typing import Annotated, Any, Dict, TypeAlias, get_args, get_origin, get_type_hints
 
+from generator import Generator, GeneratorFactory
 from pydantic import (
     AliasGenerator,
     BaseModel,
@@ -13,14 +14,12 @@ from .util import hyphenize
 TOPIC_PREFIX: str = "sail-systems/"
 
 
-# Unit definition
 @dataclass(frozen=True)
 class Unit:
     unit: str
 
 
-# Unit definition
-Position: TypeAlias = Annotated[float, Field(ge=0, lt=1), Unit(unit="mm")]
+Position: TypeAlias = Annotated[float, Field(ge=0), Unit(unit="mm")]
 RelativePosition: TypeAlias = Annotated[float, Field(ge=0, lt=1), Unit(unit="%")]
 Load: TypeAlias = Annotated[float, Field(ge=0), Unit(unit="ton")]
 Torque: TypeAlias = Annotated[float, Field(ge=0), Unit(unit="Nm")]
@@ -28,7 +27,6 @@ RotationalSpeed: TypeAlias = Annotated[float, Field(ge=0), Unit(unit="rpm")]
 Temperature: TypeAlias = Annotated[float, Field(ge=0), Unit(unit="°C")]
 
 
-# Component metadata
 class ComponentMeta(BaseModel):
     topic: str
 
@@ -58,7 +56,7 @@ class LoadsModel(BaseModel):
             if isinstance(base_type, type) and issubclass(base_type, LoadsModel):
                 values = {}
                 for field_name, field_info in base_type.model_fields.items():
-                    values[field_name] = cls.gen_single_value(field_info.annotation, field_info.metadata)
+                    values[field_name] = cls._create_generator(field_info.annotation, field_info.metadata)
 
                 config.append(
                     {
@@ -72,7 +70,7 @@ class LoadsModel(BaseModel):
                     {
                         "topic": topic,
                         "interval": interval,
-                        "values": {component: cls.gen_single_value(base_type, meta)},
+                        "values": {component: cls._create_generator(base_type, meta)},
                     }
                 )
 
@@ -80,6 +78,7 @@ class LoadsModel(BaseModel):
 
     @classmethod
     def _extract_topic(cls, meta: list, component: str) -> str:
+        """Extract the topic from the metadata or use the component name as default."""
         for m in meta:
             if hasattr(m, "json_schema_extra"):
                 extra = getattr(m, "json_schema_extra", {})
@@ -90,18 +89,23 @@ class LoadsModel(BaseModel):
         return component
 
     @classmethod
-    def gen_single_value(cls, base_type, meta):
+    def _create_generator(cls, base_type, meta) -> Generator:
+        """Create a data generator based on the type and constraints."""
         constraints = cls._extract_constraints(meta)
 
         lower = constraints.get("ge", constraints.get("gt", 0))
         upper = constraints.get("le", constraints.get("lt", 100))
+
         if lower >= upper:
-            return [cls._type_name(base_type), lower, upper]
-        else:
-            return cls._type_name(base_type)
+            raise ValueError(
+                f"Invalid constraints for {cls._type_name(base_type)}: lower bound {lower} is not less than upper bound {upper}"
+            )
+
+        return GeneratorFactory.create(cls._type_name(base_type), lt=lower, gt=upper)
 
     @staticmethod
     def _extract_constraints(meta: list[Any]) -> Dict[str, Any]:
+        """Extract constraints from metadata."""
         constraints: Dict[str, Any] = {}
         for m in meta:
             for attr in ("gt", "ge", "lt", "le"):

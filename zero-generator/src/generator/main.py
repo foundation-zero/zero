@@ -1,11 +1,10 @@
 import asyncio
 import logging
-import random
 from contextlib import asynccontextmanager
-from datetime import UTC, datetime
 
 from aiomqtt import Client as MqttClient
 
+from .base import Generator
 from .config import Settings
 
 logger = logging.getLogger("generator")
@@ -37,9 +36,9 @@ class DataGenerator:
                     "topic": "topic/test",
                     "interval": 10,
                     "values": {
-                        "justanint": "int",
-                        "aws": ["float", 0, 180],
-                        "pcs_mode": ["enum", ["propulsion", "idle", "regeneration"]],
+                        "justanint": RandomGenerator("int"),
+                        "aws": RandomGenerator("float", 0, 180),
+                        "pcs_mode": RandomChoiceGenerator("enum", ["propulsion", "idle", "regeneration"]),
                     },
                 },
             ]
@@ -60,47 +59,15 @@ class DataGenerator:
                         group.create_task(self._generate_single_topic(topic, interval, values))
 
         except Exception:
-            self.running = False
             logger.info("Data generator stopped due to an exception.")
             raise
 
-    async def _generate_single_topic(self, topic: str, interval: float, values: dict):
+    async def _generate_single_topic(self, topic: str, interval: float, values: dict[str, Generator]):
         while True:
             logger.info(f"sending message on topic: {topic} with interval {interval}")
             send_task = self._mqtt_client.publish(topic, self._determine_values(values))
             sleep_task = asyncio.sleep(interval)
             await asyncio.gather(send_task, sleep_task)
 
-    def _determine_values(self, values: dict) -> str:
-        determined_values = {}
-        for field, value_definition in values.items():
-            if isinstance(value_definition, str):
-                determined_values[field] = self._default_value(value_definition)
-            elif isinstance(value_definition, list):
-                if value_definition[0] == "enum":
-                    data_type, choices = value_definition
-                    determined_values[field] = random.choice(choices)
-                else:
-                    data_type, lower_bound, upper_bound = value_definition
-                    determined_values[field] = self._default_value(data_type, int(lower_bound), int(upper_bound))
-            elif callable(value_definition):
-                determined_values[field] = value_definition()
-            else:
-                raise ValueError(f"Unsupported value type: {value_definition}")
-
-        return str(determined_values)
-
-    def _default_value(self, data_type: str, lower_bound: int = 0, upper_bound: int = 100):
-        match data_type:
-            case "int":
-                return random.randint(lower_bound, upper_bound)
-            case "float":
-                return random.uniform(lower_bound, upper_bound)
-            case "boolean":
-                return random.choice([True, False])
-            case "string":
-                return "".join(random.choices("abcdefghijklmnopqrstuvwxyz", k=10))
-            case "timestamp":
-                return datetime.now(tz=UTC)
-            case _:
-                raise ValueError(f"Unsupported data type: {data_type}")
+    def _determine_values(self, values: dict[str, Generator]) -> str:
+        return str({field: generator.gen() for field, generator in values.items()})
