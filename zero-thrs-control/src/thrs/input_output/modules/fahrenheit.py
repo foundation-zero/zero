@@ -11,9 +11,6 @@ class FahrenheitSensorValues(ThrsModel):
     fahrenheit_mix_waste: Annotated[
         sensor.Valve, component_meta(yard_tag="50001047-01")
     ]
-    fahrenheit_shutoff_boiler: Annotated[
-        sensor.Valve, component_meta(yard_tag="50001067-18")
-    ]
     fahrenheit_chiller: Annotated[
         sensor.Fahrenheit, component_meta(yard_tag="50001034")
     ]
@@ -68,9 +65,6 @@ class FahrenheitControlValues(ThrsModel):
     fahrenheit_mix_hot: Annotated[control.Valve, component_meta(yard_tag="50001046-02")]
     fahrenheit_mix_waste: Annotated[
         control.Valve, component_meta(yard_tag="50001047-01")
-    ]
-    fahrenheit_shutoff_boiler: Annotated[
-        control.Valve, component_meta(yard_tag="50001067-18")
     ]
     fahrenheit_chiller: Annotated[
         control.Fahrenheit, component_meta(yard_tag="50001034")
