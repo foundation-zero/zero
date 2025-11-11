@@ -34,3 +34,12 @@ def test_marpower_pms_io_excel():
     assert marpower_io_result.io_list.shape == (10527, 13)
     assert marpower_io_result.io_list.columns == expected_io_columns
     assert len(marpower_io_result.topics) == 12
+
+
+def test_mocked_io_excel():
+    marpower_io_result = read_io_list(
+        [(Path(__file__).parent / "../../io_lists/ZERO mocked IO-List.xlsx")], "marpower"
+    )
+    assert marpower_io_result.io_list.shape == (22, 13)
+    assert marpower_io_result.io_list.columns == expected_io_columns
+    assert len(marpower_io_result.topics) == 10
