@@ -11,6 +11,7 @@ import ControlActions from "@/components/modules/hmi/ControlActions.vue";
 import SideNav from "@/components/modules/hmi/SideNav.vue";
 import { client } from "@/graphql/thrs/client";
 import { provideClient } from "@urql/vue";
+import { useLocalStorage } from "@vueuse/core";
 import { provide, ref, watch } from "vue";
 
 // Provide the URL client to inner scope. Pinia stores have their own scope, so they need to manually provide the correct context.
@@ -29,7 +30,7 @@ const modules =
       | undefined
   )?.ofType?.getFields() ?? {};
 
-const currentModuleKey = ref(Object.keys(modules)[0]);
+const currentModuleKey = useLocalStorage("hmi:currentModule", Object.keys(modules)[0] || "");
 
 // Temporary hack to force re-mounting of the module view when switching modules
 const reset = ref(false);

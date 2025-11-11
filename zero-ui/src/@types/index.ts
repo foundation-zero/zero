@@ -1,3 +1,5 @@
+import { Stamped } from "./thrs";
+
 export const enum ControlType {
   LIGHT = "lights",
   BLIND = "blinds",
@@ -185,3 +187,19 @@ export const enum ChartPeriod {
 }
 
 export type PromiseFn<T = unknown> = () => Promise<T> | T;
+
+export type ChartDataType = number | boolean | string;
+export type TimeSeriesData<T> = [time: Date, value: T];
+export type SeriesData = { value: number };
+
+export interface TimeBasedChart<Type extends ChartDataType = ChartDataType> {
+  name: string;
+  data: TimeSeriesData<Type>[] | Stamped<Type>[];
+}
+
+export type Entries<T> =
+  T extends Map<infer K, infer V>
+    ? V extends Map<unknown, unknown>
+      ? [key: K, value: Entries<V>[]]
+      : [key: K, value: V]
+    : never;

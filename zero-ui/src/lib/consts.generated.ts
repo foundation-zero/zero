@@ -22,8 +22,7 @@ export const THRUSTERS_CONTROL_DEFINITION = toControlDefinition({
   },
   thrustersPump2: {
     yardTag: "50001074",
-    componentType: ControlComponentType.Valve,
-    valveType: ValveType.Mix,
+    componentType: ControlComponentType.Pump,
   },
   thrustersMixRecovery: {
     yardTag: "50001214-01",
@@ -277,8 +276,7 @@ export const PVT_CONTROL_DEFINITION = toControlDefinition({
   },
   pvtPumpOwners: {
     yardTag: "50001044-01",
-    componentType: ControlComponentType.Valve,
-    valveType: ValveType.Mix,
+    componentType: ControlComponentType.Pump,
   },
   pvtMixMainFwd: {
     yardTag: "50001044-02",

@@ -13,7 +13,7 @@ import { useSimulationStore } from "@/stores/simulation";
 import { Client } from "@urql/vue";
 import { useIntervalFn } from "@vueuse/core";
 import { type Component, computed, ref, toRefs } from "vue";
-import { queryFor, queryPacked } from ".";
+import { queryDeep, queryFor } from ".";
 import PumpControl from "./controls/PumpControl.vue";
 import ValveControl from "./controls/ValveControl.vue";
 
@@ -35,18 +35,18 @@ const { control: controlData } = toRefs(useSimulationStore());
 const controlsDisabled = computed(() => controlData.value?.control.automatic === true);
 
 const controlValuesQuery = queryFor(props.module, "controlValues", props.query);
-const controlValuesFromQuery = queryPacked<Values>(
+const controlValuesFromQuery = queryDeep(
   controlValuesQuery,
-  (data) => data?.modules[props.module].controlValues as Values | undefined,
+  (data) => data?.modules?.[props.module]?.controlValues as Values | undefined,
 );
 const controlValuesFromMutation = ref<Values | null>(null);
 const controlValues = computed(
-  () => (controlValuesFromMutation.value as Values) ?? controlValuesFromQuery.value.data,
+  () => (controlValuesFromMutation.value ?? controlValuesFromQuery.data.value) as Values,
 );
 
 useIntervalFn(
   async () => {
-    await controlValuesFromQuery.value.executeQuery();
+    await controlValuesFromQuery.update();
     controlValuesFromMutation.value = null;
   },
   5000,
@@ -78,7 +78,7 @@ const setControlValues = (newValues: Values) => {
     >
       <component
         :is="control.component"
-        v-if="control.component && controlValuesFromQuery.data?.[control.key]"
+        v-if="control.component && controlValuesFromQuery.data.value?.[control.key]"
         :values="controlValues[control.key]"
         :component-name="control.key"
         :component-type="control.componentType"

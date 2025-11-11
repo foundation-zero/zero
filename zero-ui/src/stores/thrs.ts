@@ -1,5 +1,6 @@
 import { PID, Stamped } from "@/@types/thrs";
 import { THRSModules } from "@/lib/consts";
+import { unstamp } from "@/lib/utils";
 import { useClientHandle } from "@urql/vue";
 import { defineStore } from "pinia";
 import { computed, ref, Ref, WritableComputedRef } from "vue";
@@ -55,11 +56,6 @@ export type InputType = {
     "TemperatureBoundaryInputType!",
   ];
 };
-
-const isStamped = <T>(input: T | Stamped<T>): input is Stamped<T> =>
-  typeof input === "object" && input !== null && "value" in input && "timestamp" in input;
-
-const unstamp = <T>(input: T | Stamped<T>): T => (isStamped(input) ? input.value : input);
 
 export type FieldObject = Record<string, unknown>;
 export type FieldType = boolean | string | number | PID;

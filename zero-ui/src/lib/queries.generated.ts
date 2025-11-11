@@ -4,7 +4,8 @@ export const THRUSTERS_CONTROL_QUERY = `
     on { value timestamp }
   }
   thrustersPump2 {
-    setpoint { value timestamp }
+    dutypoint { value timestamp }
+    on { value timestamp }
   }
   thrustersMixRecovery {
     setpoint { value timestamp }
@@ -157,7 +158,8 @@ export const PVT_CONTROL_QUERY = `
     on { value timestamp }
   }
   pvtPumpOwners {
-    setpoint { value timestamp }
+    dutypoint { value timestamp }
+    on { value timestamp }
   }
   pvtMixMainFwd {
     setpoint { value timestamp }
