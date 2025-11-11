@@ -189,7 +189,7 @@ export const enum ChartPeriod {
 export type PromiseFn<T = unknown> = () => Promise<T> | T;
 
 export type ChartDataType = number | boolean | string;
-export type TimeSeriesData<T> = [time: Date, value: T];
+export type TimeSeriesData<T extends ChartDataType = ChartDataType> = [time: Date, value: T];
 export type SeriesData = { value: number };
 
 export interface TimeBasedChart<Type extends ChartDataType = ChartDataType> {

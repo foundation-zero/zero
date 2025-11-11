@@ -317,10 +317,10 @@ export const objectFilter = <T extends Record<string, unknown>, K extends keyof 
     Object.entries(obj).filter((entry) => predicate(entry as [K, T[K]])),
   ) as Partial<T>;
 
-export const toTimeSeriesData = <T>({ timestamp, value }: Stamped<T>): TimeSeriesData<T> => [
-  new Date(timestamp),
+export const toTimeSeriesData = <T extends ChartDataType>({
+  timestamp,
   value,
-];
+}: Stamped<T>): TimeSeriesData<T> => [new Date(timestamp), value];
 
 export function isStamped<T>(input: unknown[] | Stamped<T>[]): input is Stamped<T>[];
 export function isStamped<T>(input: unknown | Stamped<T>): input is Stamped<T>;
@@ -353,7 +353,7 @@ export function tuple(...args: unknown[]) {
 }
 
 export const toMap = <K, V, T>(entries: [K, V][], mapFn: (key: K, value: V) => T): Map<K, T> =>
-  new Map(entries.map((entry) => [entry[0], mapFn(...entry)]));
+  new Map(entries.map(([k, v]) => [k, mapFn(k, v)]));
 
 export const toEntries = <K, V>(map: Map<K, V>): Entries<Map<K, V>>[] => {
   const entries = Array.from(map.entries());

@@ -43,9 +43,6 @@ const option = ref<ECBasicOption>({
       show: true,
     },
   },
-  legend: {
-    // show: false,
-  },
   xAxis: {
     type: "time",
   },

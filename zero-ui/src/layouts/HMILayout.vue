@@ -4,12 +4,11 @@ import Toolbar from "@/components/modules/thrs/Toolbar.vue";
 import { useI18n } from "vue-i18n";
 
 import SimulationActions from "@/components/modules/hmi/SimulationActions.vue";
-import thrsSchema from "@/graphql/thrs/schema.graphql?raw";
-import { buildASTSchema, GraphQLField, GraphQLNonNull, GraphQLObjectType, parse } from "graphql";
 
 import ControlActions from "@/components/modules/hmi/ControlActions.vue";
 import SideNav from "@/components/modules/hmi/SideNav.vue";
 import { client } from "@/graphql/thrs/client";
+import { THRSModules } from "@/lib/consts.types";
 import { provideClient } from "@urql/vue";
 import { useLocalStorage } from "@vueuse/core";
 import { provide, ref, watch } from "vue";
@@ -18,19 +17,9 @@ import { provide, ref, watch } from "vue";
 provideClient(client);
 
 const { t } = useI18n();
-const ast = parse(thrsSchema);
-const schema = buildASTSchema(ast);
-const query = schema.getQueryType();
-const moduleNode = query?.getFields()?.modules;
 
-const modules =
-  (
-    (moduleNode as GraphQLField<unknown, unknown, unknown> | undefined)?.type as
-      | GraphQLNonNull<GraphQLObjectType>
-      | undefined
-  )?.ofType?.getFields() ?? {};
-
-const currentModuleKey = useLocalStorage("hmi:currentModule", Object.keys(modules)[0] || "");
+const modules: Array<keyof THRSModules> = ["thrusters", "pvt", "pcm", "consumers"];
+const currentModuleKey = useLocalStorage("hmi:currentModule", modules[0]);
 
 // Temporary hack to force re-mounting of the module view when switching modules
 const reset = ref(false);

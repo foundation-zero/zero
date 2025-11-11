@@ -5,7 +5,7 @@ import { isStampedNumber, mapFromObject, toEntries, toMap } from "@/lib/utils";
 import { useQuery } from "@urql/vue";
 import { Serializer, useLocalStorage } from "@vueuse/core";
 import { useObservable } from "@vueuse/rxjs";
-import { scan, switchMap, timer } from "rxjs";
+import { scan, switchMap, tap, timer } from "rxjs";
 import { computed, Ref } from "vue";
 
 export type ComponentWithType<T extends string> = {
@@ -33,7 +33,7 @@ export const queryFor = <
   });
 
 type DeepQuery<T> = {
-  update: () => Promise<void>;
+  update: () => Promise<T>;
   data: Ref<T | undefined>;
 };
 
@@ -42,12 +42,14 @@ export const queryDeep = <TSelect>(
   select: (data?: THRS) => TSelect,
 ): DeepQuery<TSelect> => {
   const q = useQuery<THRS>({ query });
+  const data = computed<TSelect>(() => select(q.data.value));
 
   return {
     update: async () => {
       await q.executeQuery();
+      return data.value;
     },
-    data: computed<TSelect>(() => select(q.data.value)),
+    data,
   };
 };
 
@@ -92,10 +94,13 @@ export const useHistory = <
         const fieldHistory: FieldHistory = existingHistory.get(componentName) ?? new Map();
         const entries = fieldHistory.get(fieldName) ?? [];
 
-        return entries
-          .toSorted((a, b) => new Date(a.timestamp).getTime() - new Date(b.timestamp).getTime())
-          .concat(value)
-          .slice(-AMOUNT_OF_ENTRIES_TO_CACHE);
+        const lastEntry = entries[entries.length - 1];
+
+        if (lastEntry?.timestamp === value.timestamp) {
+          return entries;
+        }
+
+        return entries.concat(value).slice(-AMOUNT_OF_ENTRIES_TO_CACHE);
       }),
     );
   };
@@ -105,13 +110,15 @@ export const useHistory = <
     timer(0, 1000).pipe(
       switchMap(async () => {
         await query.update();
-        return query.data.value as T | undefined;
+        return query.data.value;
       }),
       scan(
-        (acc, newData) =>
-          (cachedData.value = newData === undefined ? acc : extractUniqueEntries(newData, acc)),
+        (acc, newData) => (newData === undefined ? acc : extractUniqueEntries(newData, acc)),
         cachedData.value,
       ),
+      tap((data) => {
+        cachedData.value = data;
+      }),
     ),
   );
 
