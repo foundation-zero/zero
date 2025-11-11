@@ -23,19 +23,19 @@ class ThrustersSensorValues(ThrsModel):
     ]
     thrusters_temperature_aft_return: Annotated[
         sensor.TemperatureSensor,
-        component_meta(yard_tag="50001038-01", component_type="temperature sensor"),
+        component_meta(yard_tag="50001038-01", component_type="temperature_sensor"),
     ]
     thrusters_temperature_fwd_return: Annotated[
         sensor.TemperatureSensor,
-        component_meta(yard_tag="50001038-02", component_type="temperature sensor"),
+        component_meta(yard_tag="50001038-02", component_type="temperature_sensor"),
     ]
     thrusters_temperature_supply: Annotated[
         sensor.TemperatureSensor,
-        component_meta(yard_tag="50001038-28", component_type="temperature sensor"),
+        component_meta(yard_tag="50001038-28", component_type="temperature_sensor"),
     ]
     thrusters_temperature_recovery_mix: Annotated[
         sensor.TemperatureSensor,
-        component_meta(yard_tag="50001038-30", component_type="temperature sensor"),
+        component_meta(yard_tag="50001038-30", component_type="temperature_sensor"),
     ]
     thrusters_mix_recovery: Annotated[
         sensor.Valve,
@@ -49,11 +49,11 @@ class ThrustersSensorValues(ThrsModel):
     ]
     thrusters_flow_fwd: Annotated[
         sensor.FlowSensor,
-        component_meta(yard_tag="50001057-22", component_type="flow sensor"),
+        component_meta(yard_tag="50001057-22", component_type="flow_sensor"),
     ]
     thrusters_flow_aft: Annotated[
         sensor.FlowSensor,
-        component_meta(yard_tag="50001057-23", component_type="flow sensor"),
+        component_meta(yard_tag="50001057-23", component_type="flow_sensor"),
     ]
     thrusters_flowcontrol_aft: Annotated[
         sensor.Valve,
@@ -87,15 +87,15 @@ class ThrustersSensorValues(ThrsModel):
     ]
     thrusters_flow_recovery: Annotated[
         sensor.FlowSensor,
-        component_meta(yard_tag="50001093-01", component_type="flow sensor"),
+        component_meta(yard_tag="50001093-01", component_type="flow_sensor"),
     ]
     thrusters_pressure_pump: Annotated[
         sensor.PressureSensor,
-        component_meta(yard_tag="50001097-01", component_type="pressure sensor"),
+        component_meta(yard_tag="50001097-01", component_type="pressure_sensor"),
     ]
     thrusters_pressure_relief: Annotated[
         sensor.PressureSensor,
-        component_meta(yard_tag="50001097-02", component_type="pressure sensor"),
+        component_meta(yard_tag="50001097-02", component_type="pressure_sensor"),
     ]
     thrusters_aft: Annotated[
         sensor.Thruster,
@@ -116,7 +116,7 @@ class ThrustersSensorValues(ThrsModel):
 
     @computed_field(
         json_schema_extra=component_meta(
-            component_type="calculated temperature", included_in_fmu=False
+            component_type="calculated_temperature", included_in_fmu=False
         ).json_schema_extra
     )
     @property

@@ -14,27 +14,27 @@ class PcmSensorValues(ThrsModel):
     ]
     pcm_temperature_producers_return: Annotated[
         sensor.TemperatureSensor,
-        component_meta(yard_tag="50001038-31", component_type="temperature sensor"),
+        component_meta(yard_tag="50001038-31", component_type="temperature_sensor"),
     ]
     pcm_temperature_producers_supply: Annotated[
         sensor.TemperatureSensor,
-        component_meta(yard_tag="50001038-55", component_type="temperature sensor"),
+        component_meta(yard_tag="50001038-55", component_type="temperature_sensor"),
     ]
     pcm_temperature_module_1_out: Annotated[
         sensor.TemperatureSensor,
-        component_meta(yard_tag="50001038-32", component_type="temperature sensor"),
+        component_meta(yard_tag="50001038-32", component_type="temperature_sensor"),
     ]
     pcm_temperature_module_2_out: Annotated[
         sensor.TemperatureSensor,
-        component_meta(yard_tag="50001038-33", component_type="temperature sensor"),
+        component_meta(yard_tag="50001038-33", component_type="temperature_sensor"),
     ]
     pcm_temperature_module_3_out: Annotated[
         sensor.TemperatureSensor,
-        component_meta(yard_tag="50001038-34", component_type="temperature sensor"),
+        component_meta(yard_tag="50001038-34", component_type="temperature_sensor"),
     ]
     pcm_temperature_module_4_out: Annotated[
         sensor.TemperatureSensor,
-        component_meta(yard_tag="50001038-35", component_type="temperature sensor"),
+        component_meta(yard_tag="50001038-35", component_type="temperature_sensor"),
     ]
     pcm_module_1: Annotated[
         sensor.Pcm, component_meta(yard_tag="50001049", component_type="pcm")
@@ -50,19 +50,19 @@ class PcmSensorValues(ThrsModel):
     ]
     pcm_flow_module_1: Annotated[
         sensor.FlowSensor,
-        component_meta(yard_tag="50001057-18", component_type="flow sensor"),
+        component_meta(yard_tag="50001057-18", component_type="flow_sensor"),
     ]
     pcm_flow_module_2: Annotated[
         sensor.FlowSensor,
-        component_meta(yard_tag="50001057-19", component_type="flow sensor"),
+        component_meta(yard_tag="50001057-19", component_type="flow_sensor"),
     ]
     pcm_flow_module_3: Annotated[
         sensor.FlowSensor,
-        component_meta(yard_tag="50001057-20", component_type="flow sensor"),
+        component_meta(yard_tag="50001057-20", component_type="flow_sensor"),
     ]
     pcm_flow_module_4: Annotated[
         sensor.FlowSensor,
-        component_meta(yard_tag="50001057-21", component_type="flow sensor"),
+        component_meta(yard_tag="50001057-21", component_type="flow_sensor"),
     ]
     pcm_switch_charging_return: Annotated[
         sensor.Valve,

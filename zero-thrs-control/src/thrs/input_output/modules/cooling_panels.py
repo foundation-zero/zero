@@ -9,107 +9,107 @@ class CoolingPanelsSensorValues(ThrsModel):
     ]
     cooling_temperature_hydronic_return: Annotated[
         sensor.TemperatureSensor,
-        component_meta(yard_tag="50001038-67", component_type="temperature sensor"),
+        component_meta(yard_tag="50001038-67", component_type="temperature_sensor"),
     ]
     cooling_temperature_hydronic_supply: Annotated[
         sensor.TemperatureSensor,
-        component_meta(yard_tag="50001038-68", component_type="temperature sensor"),
+        component_meta(yard_tag="50001038-68", component_type="temperature_sensor"),
     ]
     cooling_temperature_main_deckhouse: Annotated[
         sensor.TemperatureSensor,
-        component_meta(yard_tag="41006032-1", component_type="temperature sensor"),
+        component_meta(yard_tag="41006032-1", component_type="temperature_sensor"),
     ]
     cooling_temperature_ps_aft: Annotated[
         sensor.TemperatureSensor,
-        component_meta(yard_tag="41006032-2", component_type="temperature sensor"),
+        component_meta(yard_tag="41006032-2", component_type="temperature_sensor"),
     ]
     cooling_temperature_sb_aft: Annotated[
         sensor.TemperatureSensor,
-        component_meta(yard_tag="41006032-3", component_type="temperature sensor"),
+        component_meta(yard_tag="41006032-3", component_type="temperature_sensor"),
     ]
     cooling_temperature_ps_fwd: Annotated[
         sensor.TemperatureSensor,
-        component_meta(yard_tag="41006032-4", component_type="temperature sensor"),
+        component_meta(yard_tag="41006032-4", component_type="temperature_sensor"),
     ]
     cooling_temperature_sb_fwd: Annotated[
         sensor.TemperatureSensor,
-        component_meta(yard_tag="41006032-5", component_type="temperature sensor"),
+        component_meta(yard_tag="41006032-5", component_type="temperature_sensor"),
     ]
     cooling_flow_hydronic: Annotated[
         sensor.FlowSensor,
-        component_meta(yard_tag="50001058-01", component_type="flow sensor"),
+        component_meta(yard_tag="50001058-01", component_type="flow_sensor"),
     ]
     cooling_power_owners_deckhouse: Annotated[
         sensor.PowerSensor,
-        component_meta(yard_tag="41006058-1", component_type="power sensor"),
+        component_meta(yard_tag="41006058-1", component_type="power_sensor"),
     ]
     cooling_power_owners_ps: Annotated[
         sensor.PowerSensor,
-        component_meta(yard_tag="41006058-2", component_type="power sensor"),
+        component_meta(yard_tag="41006058-2", component_type="power_sensor"),
     ]
     cooling_power_french: Annotated[
         sensor.PowerSensor,
-        component_meta(yard_tag="41006058-3", component_type="power sensor"),
+        component_meta(yard_tag="41006058-3", component_type="power_sensor"),
     ]
     cooling_power_italian: Annotated[
         sensor.PowerSensor,
-        component_meta(yard_tag="41006058-4", component_type="power sensor"),
+        component_meta(yard_tag="41006058-4", component_type="power_sensor"),
     ]
     cooling_power_owners_sb: Annotated[
         sensor.PowerSensor,
-        component_meta(yard_tag="41006058-5", component_type="power sensor"),
+        component_meta(yard_tag="41006058-5", component_type="power_sensor"),
     ]
     cooling_power_dutch: Annotated[
         sensor.PowerSensor,
-        component_meta(yard_tag="41006058-6", component_type="power sensor"),
+        component_meta(yard_tag="41006058-6", component_type="power_sensor"),
     ]
     cooling_power_california: Annotated[
         sensor.PowerSensor,
-        component_meta(yard_tag="41006058-7", component_type="power sensor"),
+        component_meta(yard_tag="41006058-7", component_type="power_sensor"),
     ]
     cooling_power_main_deckhouse: Annotated[
         sensor.PowerSensor,
-        component_meta(yard_tag="41006058-8", component_type="power sensor"),
+        component_meta(yard_tag="41006058-8", component_type="power_sensor"),
     ]
     cooling_power_polynesian: Annotated[
         sensor.PowerSensor,
-        component_meta(yard_tag="41006058-11", component_type="power sensor"),
+        component_meta(yard_tag="41006058-11", component_type="power_sensor"),
     ]
     cooling_power_mission_room: Annotated[
         sensor.PowerSensor,
-        component_meta(yard_tag="41006058-12", component_type="power sensor"),
+        component_meta(yard_tag="41006058-12", component_type="power_sensor"),
     ]
     cooling_power_laundry: Annotated[
         sensor.PowerSensor,
-        component_meta(yard_tag="41006058-13", component_type="power sensor"),
+        component_meta(yard_tag="41006058-13", component_type="power_sensor"),
     ]
     cooling_power_crew_mess: Annotated[
         sensor.PowerSensor,
-        component_meta(yard_tag="41006058-15", component_type="power sensor"),
+        component_meta(yard_tag="41006058-15", component_type="power_sensor"),
     ]
     cooling_power_crew_5: Annotated[
         sensor.PowerSensor,
-        component_meta(yard_tag="41006058-16", component_type="power sensor"),
+        component_meta(yard_tag="41006058-16", component_type="power_sensor"),
     ]
     cooling_power_crew_3: Annotated[
         sensor.PowerSensor,
-        component_meta(yard_tag="41006058-17", component_type="power sensor"),
+        component_meta(yard_tag="41006058-17", component_type="power_sensor"),
     ]
     cooling_power_crew_1: Annotated[
         sensor.PowerSensor,
-        component_meta(yard_tag="41006058-18", component_type="power sensor"),
+        component_meta(yard_tag="41006058-18", component_type="power_sensor"),
     ]
     cooling_power_crew_6: Annotated[
         sensor.PowerSensor,
-        component_meta(yard_tag="41006058-19", component_type="power sensor"),
+        component_meta(yard_tag="41006058-19", component_type="power_sensor"),
     ]
     cooling_power_crew_4: Annotated[
         sensor.PowerSensor,
-        component_meta(yard_tag="41006058-20", component_type="power sensor"),
+        component_meta(yard_tag="41006058-20", component_type="power_sensor"),
     ]
     cooling_power_crew_2: Annotated[
         sensor.PowerSensor,
-        component_meta(yard_tag="41006058-21", component_type="power sensor"),
+        component_meta(yard_tag="41006058-21", component_type="power_sensor"),
     ]
     cooling_mix_main_deckhouse: Annotated[
         sensor.Valve,
