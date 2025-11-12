@@ -7,11 +7,14 @@ models:
         description: '{{ doc("time") }}'
         data_tests:
             - not_null
+      - name: electrical_system
+        description: '{{ doc("electrical_system") }}'
+        data_tests:
+            - not_null
       - name: group_name
         description: '{{ doc("group_name") }}'
-        data_tests:
-            - unique
-            - not_null
+      - name: sub_group_name
+        description: '{{ doc("sub_group_name") }}'
       - name: group_power
         description: The sum of the average electrical energy values (W) of all measurements within a group.
         data_tests:
@@ -19,6 +22,14 @@ models:
   - name: electrical_hourly
     description: Electrical energy consumed or produced per hour.
     columns:
+      - name: electrical_system
+        description: '{{ doc("electrical_system") }}'
+        data_tests:
+            - not_null
+      - name: group_name
+        description: '{{ doc("group_name") }}'
+      - name: sub_group_name
+        description: '{{ doc("sub_group_name") }}'
       - name: topic
         description: '{{ doc("topic") }}'
         data_tests:
@@ -38,14 +49,16 @@ models:
         description: '{{ doc("time") }}'
         data_tests:
             - not_null
+      - name: electrical_system
+        description: '{{ doc("electrical_system") }}'
+        data_tests:
+            - not_null
       - name: topic
         description: '{{ doc("topic") }}'
         data_tests:
             - not_null
       - name: group_name
         description: '{{ doc("group_name") }}'
-        data_tests:
-            - not_null
       - name: stored_energy
         description: The most recent value of the electrical energy stored (Wh).
         data_tests:

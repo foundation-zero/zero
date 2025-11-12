@@ -1,5 +1,8 @@
 {{ config(materialized='materialized_view') }}
 SELECT
+    electrical_system,
+    group_name,
+    sub_group_name,
     topic,
     hour,
     energy_wh
@@ -8,6 +11,9 @@ FROM ( (
     -- The energy value is then summed up and divided by 60 to go from Watt minutes to Watt hours.
     WITH per_minute AS (
         SELECT
+            electrical_power_data.electrical_system AS electrical_system,
+            electrical_power_data.group_name AS group_name,
+            electrical_power_data.sub_group_name AS sub_group_name,
             electrical_power_data.topic AS topic,
             window_start AS min_start,
             AVG(electrical_power_data.active_power) AS avg_w
@@ -18,16 +24,25 @@ FROM ( (
             INTERVAL '1 MINUTE'
         ) AS electrical_power_data
         GROUP BY
-          topic,
-          window_start
+            electrical_system,
+            group_name,
+            sub_group_name,
+            topic,
+            window_start
     )
     SELECT
-        topic,  
+        electrical_system,
+        group_name,
+        sub_group_name,
+        topic,
         date_trunc('hour', min_start) AS hour,
         SUM(avg_w) / 60.0 AS energy_wh
     FROM per_minute
     WHERE min_start < date_trunc('hour', NOW())
     GROUP BY
+        electrical_system,
+        group_name,
+        sub_group_name,
         topic,
         date_trunc('hour', min_start)
     )
@@ -40,6 +55,9 @@ FROM ( (
     -- is completely passed. The average value per minute is then extrapolated to 40 minutes and divided by 60.
     WITH per_minute AS (
         SELECT
+            electrical_power_data.electrical_system AS electrical_system,
+            electrical_power_data.group_name AS group_name,
+            electrical_power_data.sub_group_name AS sub_group_name,
             electrical_power_data.topic AS topic,
             window_start AS min_start,
             AVG(electrical_power_data.active_power) AS avg_w
@@ -50,16 +68,25 @@ FROM ( (
             INTERVAL '1 MINUTE'
         ) AS electrical_power_data
         GROUP BY
+            electrical_system,
+            group_name,
+            sub_group_name,
             topic,
             window_start
     )
     SELECT
+        electrical_system,
+        group_name,
+        sub_group_name,
         topic,
         date_trunc('hour', min_start) AS hour,
         AVG(avg_w) * (60 + count() - extract(MINUTE from MAX(min_start)) - 1) / 60 AS energy_wh
     FROM per_minute
     WHERE min_start >= date_trunc('hour', NOW())
     GROUP BY
+        electrical_system,
+        group_name,
+        sub_group_name,
         topic,
         date_trunc('hour', min_start)
     )

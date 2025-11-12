@@ -29,8 +29,14 @@ models:
         description: '{{ doc("timestamp_current_at_side") }} B.'
       - name: electrical_system
         description: '{{ doc("electrical_system") }}'
+      - name: electrical_system
+        description: '{{ doc("electrical_system") }}'
+        data_tests:
+            - not_null
       - name: group_name
         description: '{{ doc("group_name") }}'
+      - name: sub_group_name
+        description: '{{ doc("sub_group_name") }}'
   - name: bms_master_power_data
     description: The stored energy of the batteries extended with metadata. 
     columns:
@@ -48,8 +54,14 @@ models:
         description: Timestamp at which the stored energy value was reported.
       - name: electrical_system
         description: '{{ doc("electrical_system") }}'
+      - name: electrical_system
+        description: '{{ doc("electrical_system") }}'
+        data_tests:
+            - not_null
       - name: group_name
         description: '{{ doc("group_name") }}'
+      - name: sub_group_name
+        description: '{{ doc("sub_group_name") }}'
   - name: consumer_producer_power_data
     description: The electrical energy of consumers and producers extended with metadata. 
     columns:
@@ -71,5 +83,9 @@ models:
         description: Timestamp at which the power factor value was reported.
       - name: electrical_system
         description: '{{ doc("electrical_system") }}'
+        data_tests:
+            - not_null
       - name: group_name
         description: '{{ doc("group_name") }}'
+      - name: sub_group_name
+        description: '{{ doc("sub_group_name") }}'

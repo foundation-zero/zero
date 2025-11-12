@@ -40,11 +40,14 @@ The electrical energy (kWh) stored in the battery.
 {% enddocs %}
 
 <!-- Metadata fields -->
+{% docs electrical_system %}
+The electrical system a data point belongs to.
+{% enddocs %}
 {% docs group_name %}
 The name of the group. This can be an electrical energy consumer group or an electrical energy producer group.
 {% enddocs %}
-{% docs electrical_system %}
-The electrical system a data point belongs to.
+{% docs sub_group_name %}
+The name of the sub-group within a specific group. 
 {% enddocs %}
 {% docs topic %}
 The MQTT topic used to identify a data source.
