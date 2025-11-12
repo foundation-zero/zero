@@ -83,6 +83,10 @@ class PvtSensorValues(ThrsModel):
         sensor.PressureSensor,
         component_meta(yard_tag="50001097-05", component_type="pressure_sensor"),
     ]
+    # pvt_pressure_supply: Annotated[
+    #    sensor.PressureSensor,
+    #    component_meta(yard_tag="50001097-06", component_type="pressure_sensor"),
+    # ]
     pvt_switch_main_fwd: Annotated[
         sensor.Valve,
         component_meta(

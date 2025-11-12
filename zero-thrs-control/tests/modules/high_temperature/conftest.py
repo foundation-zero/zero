@@ -6,13 +6,11 @@ from thrs.control.modules.high_temperature import (
     HighTemperatureParameters,
 )
 from thrs.input_output.base import Stamped
-from thrs.input_output.definitions.control import Valve
 from thrs.input_output.definitions.simulation import (
     Boundary,
     HeatSource,
     Pcs,
     Thruster,
-    ValvePosition,
 )
 from thrs.input_output.definitions.units import PcsMode
 from thrs.input_output.modules.high_temperature import (
@@ -42,15 +40,6 @@ def simulation_inputs():
         pvt_main_fwd=HeatSource(heat_flow=Stamped.stamp(16000)),
         pvt_main_aft=HeatSource(heat_flow=Stamped.stamp(16000)),
         pvt_owners=HeatSource(heat_flow=Stamped.stamp(8000)),
-        pvt_pump_failure_switch_main_fwd=ValvePosition(
-            position_rel=Stamped.stamp(Valve.CLOSED)
-        ),
-        pvt_pump_failure_switch_main_aft=ValvePosition(
-            position_rel=Stamped.stamp(Valve.CLOSED)
-        ),
-        pvt_pump_failure_switch_owners=ValvePosition(
-            position_rel=Stamped.stamp(Valve.CLOSED)
-        ),
         pvt_seawater_supply=Boundary(
             temperature=Stamped.stamp(32), flow=Stamped.stamp(64)
         ),
