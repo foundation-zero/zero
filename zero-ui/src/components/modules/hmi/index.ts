@@ -1,7 +1,7 @@
-import { Entries, TimeBasedChart } from "@/@types";
+import { ChartDataType, Entries, StampedChart } from "@/@types";
 import { Stamped } from "@/@types/thrs";
 import { THRS, THRSModules } from "@/lib/consts";
-import { isStampedNumber, mapFromObject, toEntries, toMap } from "@/lib/utils";
+import { isStamped, mapFromObject, toEntries, toMap } from "@/lib/utils";
 import { useQuery } from "@urql/vue";
 import { Serializer, useLocalStorage } from "@vueuse/core";
 import { useObservable } from "@vueuse/rxjs";
@@ -64,9 +64,9 @@ export const useHistory = <
   fieldNames: FieldName[],
   storageKey: string,
 ) => {
-  type ComponentHistory = Map<string, FieldHistory>;
   type FieldHistory = Map<FieldName, Stamped<string | number | boolean>[]>;
-  type FieldSeries = [FieldName, TimeBasedChart[]];
+  type ComponentHistory = Map<string, FieldHistory>;
+  type FieldSeries<Type extends ChartDataType = ChartDataType> = [FieldName, StampedChart<Type>[]];
 
   const historySerializer: Serializer<ComponentHistory> = {
     read: (v) => {
@@ -123,15 +123,17 @@ export const useHistory = <
   );
 
   const series = computed<FieldSeries[]>(() =>
-    fieldNames.map<FieldSeries>((fieldName) => [
-      fieldName,
-      Array.from(history.value?.entries() ?? [])
-        .filter(([, component]) => component.has(fieldName))
-        .map(([componentName, component]) => ({
-          name: componentName,
-          data: component.get(fieldName)!.filter(isStampedNumber),
-        })),
-    ]),
+    fieldNames
+      .map<FieldSeries>((fieldName) => [
+        fieldName,
+        Array.from(history.value?.entries() ?? [])
+          .filter(([, component]) => component.has(fieldName))
+          .map(([componentName, component]) => ({
+            name: componentName,
+            data: component.get(fieldName)!.filter(isStamped),
+          })),
+      ])
+      .filter(([, entries]) => entries.length > 0),
   );
 
   return { history, series, query };

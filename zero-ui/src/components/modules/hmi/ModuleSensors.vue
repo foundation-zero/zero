@@ -11,9 +11,11 @@ import { ExtractSensorValues, SensorDefinitions } from "@/@types/thrs";
 import { SENSOR_FIELDS, THRSModules } from "@/lib/consts";
 import { Client } from "@urql/vue";
 
+import TimeBasedCategoryChart from "@/components/ui/shared/time-based-chart/TimeBasedCategoryChart.vue";
 import TimeBasedValueChart from "@/components/ui/shared/time-based-chart/TimeBasedValueChart.vue";
-import { isNumberChart } from "@/lib/utils";
+import { isBooleanChart, isNumberChart } from "@/lib/utils";
 import { queryDeep, queryFor, useHistory } from ".";
+import ChartCard from "./ChartCard.vue";
 
 const props = defineProps<{
   module: K;
@@ -41,20 +43,25 @@ const { series } = useHistory(sensorValues, FIELDS, `${props.module}:sensors`);
       v-for="[field, entries] in series"
       :key="field"
     >
-      <hgroup
-        v-if="entries.length"
-        class="bg-background border-border grid rounded-md border"
+      <ChartCard
+        v-if="isNumberChart(entries)"
+        :title="field"
       >
-        <header class="p-3 font-semibold capitalize">
-          {{ field }}
-        </header>
-        <p class="h-[400px] grow p-3">
-          <TimeBasedValueChart
-            v-if="isNumberChart(entries)"
-            :series="entries"
+        <TimeBasedValueChart :series="entries" />
+      </ChartCard>
+      <template v-else-if="isBooleanChart(entries)">
+        <ChartCard
+          v-for="entry in entries"
+          :key="entry.name"
+          :title="`${field} : ${entry.name}`"
+        >
+          <TimeBasedCategoryChart
+            :series="entry"
+            :format="(val) => (val ? 'Active' : 'Inactive')"
+            :categories="['Inactive', 'Active']"
           />
-        </p>
-      </hgroup>
+        </ChartCard>
+      </template>
     </template>
   </section>
 </template>

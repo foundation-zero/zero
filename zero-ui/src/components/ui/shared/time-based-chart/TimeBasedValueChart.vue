@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { TimeBasedChart } from "@/@types";
+import { StampedChart } from "@/@types";
 import { isStamped, toTimeSeriesData } from "@/lib/utils";
 import { useColorMode } from "@vueuse/core";
 import { LineChart } from "echarts/charts";
@@ -13,7 +13,7 @@ import VChart from "vue-echarts";
 const props = defineProps<{
   max?: number;
   min?: number;
-  series: TimeBasedChart<number>[];
+  series: StampedChart<number>[];
 }>();
 const { max, series, min } = toRefs(props);
 
@@ -32,7 +32,7 @@ const seriesOptions = computed<SeriesOption[]>(() =>
 );
 
 const option = ref<ECBasicOption>({
-  animation: false,
+  animation: true,
   backgroundColor: "transparent",
   grid: {
     left: 0,
