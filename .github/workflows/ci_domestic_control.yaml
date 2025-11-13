@@ -32,7 +32,7 @@ jobs:
         working-directory: zero-domestic-control
       - uses: astral-sh/ruff-action@v3
         with:
-          src: "./zero-domestic-control"
+          src: "./zero-domestic-control/zero_domestic_control"
       - run: poetry install --with dev,test
         working-directory: zero-domestic-control
       - run: poetry run mypy zero_domestic_control

@@ -1,7 +1,0 @@
-table:
-  name: sensors
-  schema: public
-object_relationships:
-  - name: room
-    using:
-      foreign_key_constraint_on: room_id
