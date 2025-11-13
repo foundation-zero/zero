@@ -4,6 +4,7 @@ on:
     paths:
       - zero-loads-app/**
       - data/**
+      - zero-generator/**
       - .github/workflows/ci_zero_loads_app.yaml
   release:
     types: [released]

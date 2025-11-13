@@ -1,6 +1,8 @@
 import logging
 
 import uvicorn
+from generator import DataGenerator
+from generator.config import Settings as GeneratorSettings
 from pydantic_settings import (
     BaseSettings,
     CliApp,
@@ -10,10 +12,9 @@ from pydantic_settings import (
 
 from loads.api.auth import generate_jwt
 from loads.config import Settings
-from loads.control import PCanAdapter, PCanStub, SensorStub
+from loads.control import ConditionsStub, Control, PCanAdapter, PCanStub
 from loads.logging import setup_logging
-
-from .control import Control
+from loads.stub.sensor import SailSystems
 
 setup_logging()
 
@@ -47,19 +48,27 @@ class PCanStubCmd(Settings):
             await stub.run()
 
 
-class SensorStubCmd(Settings):
+class ConditionsStubCmd(Settings):
     async def cli_cmd(self) -> None:
-        logger.info("Running sensor stub...")
-        async with SensorStub.init_from_settings(self) as stub:
+        logger.info("Running conditions stub...")
+        async with ConditionsStub.init_from_settings(self) as stub:
             await stub.run()
 
 
 class ControlCli(Settings):
-    async def cli_cmd(self):
+    async def cli_cmd(self) -> None:
         logger.info("Running control...")
         async with Control.init_from_settings(self) as control:
             run_task = await control.run()
             await run_task
+
+
+class SensorStubCmd(GeneratorSettings):
+    async def cli_cmd(self) -> None:
+        logger.info("Running sensor stub...")
+        async with DataGenerator.init_from_settings(self) as data_gen:
+            config = SailSystems.gen_config()
+            await data_gen.generate(config=config)
 
 
 class ZeroLoads(BaseSettings, cli_kebab_case=True):
@@ -74,8 +83,9 @@ class ZeroLoads(BaseSettings, cli_kebab_case=True):
     generate_jwt: CliSubCommand[GenerateJWT]
     adapter: CliSubCommand[AdapterCmd]
     pcan_stub: CliSubCommand[PCanStubCmd]
-    sensor_stub: CliSubCommand[SensorStubCmd]
+    conditions_stub: CliSubCommand[ConditionsStubCmd]
     control: CliSubCommand[ControlCli]
+    sensor_stub: CliSubCommand[SensorStubCmd]
 
     def cli_cmd(self) -> None:
         CliApp.run_subcommand(self)

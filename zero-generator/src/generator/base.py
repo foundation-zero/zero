@@ -1,7 +1,10 @@
 import random
 from abc import ABC, abstractmethod
+from dataclasses import dataclass
 from datetime import UTC, datetime
-from typing import Any
+from typing import Any, Literal, TypeVar
+
+T = TypeVar("T")
 
 
 class Generator(ABC):
@@ -9,8 +12,15 @@ class Generator(ABC):
     def gen(self) -> Any: ...
 
 
+@dataclass
+class GeneratorConfig:
+    topic: str
+    interval: int
+    values: dict[str, Generator]
+
+
 class RandomNumberGenerator(Generator):
-    def __init__(self, type: str, lt: float | None = None, gt: float | None = None):
+    def __init__(self, type: Literal["int", "float"], lt: float | None = None, gt: float | None = None):
         self._type: str = type
 
         self._lt = lt if lt is not None else 0
@@ -29,43 +39,52 @@ class RandomNumberGenerator(Generator):
                 raise ValueError(f"Unsupported data type: {self._type}")
 
 
-class RandomGenerator(Generator):
-    def __init__(self, type: str):
+class RandomBoolGenerator(Generator):
+    def __init__(self, type: Literal["bool"]):
         self._type: str = type
 
     def gen(self):
-        match self._type:
-            case "boolean":
-                return random.choice([True, False])
-            case "string":
-                return "".join(random.choices("abcdefghijklmnopqrstuvwxyz", k=10))
-            case "timestamp":
-                return datetime.now(tz=UTC)
-            case _:
-                raise ValueError(f"Unsupported data type: {self._type}")
+        return random.choice([True, False])
 
 
-class RandomChoiceGenerator(Generator):
-    def __init__(self, type: str, options: list):
+class RandomStringGenerator(Generator):
+    def __init__(self, type: Literal["str"]):
         self._type: str = type
-        self._options: list = options
 
+    def gen(self):
+        return "".join(random.choices("abcdefghijklmnopqrstuvwxyz", k=10))
+
+
+class DateGenerator(Generator):
+    def __init__(self, type: Literal["timestamp"]):
+        self._type: str = type
+
+    def gen(self) -> datetime:
+        return datetime.now(tz=UTC)
+
+
+class RandomChoiceGenerator[T](Generator):
+    def __init__(self, type: Literal["enum"], options: list[T]):
+        self._type: str = type
         if not options:
             raise ValueError("Options list cannot be empty.")
+        self._options: list[T] = options
 
-    def gen(self):
+    def gen(self) -> T:
         return random.choice(self._options)
 
 
-class GeneratorFactory:
-    @staticmethod
-    def create(type: str, *args, **kwargs) -> Generator:
-        match type:
-            case "int" | "float":
-                return RandomNumberGenerator(type, *args, **kwargs)
-            case "boolean" | "string" | "timestamp":
-                return RandomGenerator(type, *args, **kwargs)
-            case "enum":
-                return RandomChoiceGenerator(type, *args, **kwargs)
-            case _:
-                raise ValueError(f"Unknown generator type: {type}")
+def create_generator(type: str, *args, **kwargs) -> Generator:
+    match type:
+        case "int" | "float":
+            return RandomNumberGenerator(type, *args, **kwargs)
+        case "str":
+            return RandomStringGenerator(type, *args, **kwargs)
+        case "bool":
+            return RandomBoolGenerator(type, *args, **kwargs)
+        case "timestamp":
+            return DateGenerator(type)
+        case "enum":
+            return RandomChoiceGenerator(type, *args, **kwargs)
+        case _:
+            raise ValueError(f"Unknown generator type: {type}")

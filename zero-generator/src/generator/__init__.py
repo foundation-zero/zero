@@ -1,4 +1,4 @@
-from .base import Generator, GeneratorFactory
+from .base import Generator, create_generator
 from .main import DataGenerator
 
-__all__ = ["DataGenerator", "GeneratorFactory", "Generator"]
+__all__ = ["DataGenerator", "Generator", "create_generator"]

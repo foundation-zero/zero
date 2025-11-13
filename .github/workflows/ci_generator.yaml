@@ -3,8 +3,8 @@ on:
   pull_request:
     paths:
       - zero-generator/**
-      - data/**
-      - .github/workflows/ci_zero_loads_app.yaml
+      - zero-loads-app/**
+      - .github/workflows/ci_generator.yaml
   release:
     types: [released]
 

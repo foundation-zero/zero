@@ -5,8 +5,15 @@ import pytest
 from aiomqtt import Client as MqttClient
 from pytest import fixture
 
-from generator.base import RandomChoiceGenerator, RandomNumberGenerator
-from generator.main import DataGenerator
+from generator.base import (
+    DateGenerator,
+    RandomBoolGenerator,
+    RandomChoiceGenerator,
+    RandomNumberGenerator,
+    RandomStringGenerator,
+    create_generator,
+)
+from generator.main import DataGenerator, GeneratorConfig
 
 
 async def _mqtt_client(settings):
@@ -30,16 +37,16 @@ async def test_generator(mqtt_client_send, mqtt_client_receive):
     receive = asyncio.create_task(_receive())
 
     config = [
-        {
-            "topic": "test",
-            "interval": 0.1,
-            "values": {
+        GeneratorConfig(
+            topic="test",
+            interval=1,
+            values={
                 "justanint": RandomNumberGenerator("int"),
                 "awa": RandomNumberGenerator("int", 0, 90),
                 "aws": RandomNumberGenerator("float", 0, 30),
                 "pcs_mode": RandomChoiceGenerator("enum", ["propulsion", "idle", "docked"]),
             },
-        }
+        )
     ]
 
     data_gen = DataGenerator(mqtt_client=mqtt_client_send)
@@ -56,3 +63,20 @@ async def test_generator(mqtt_client_send, mqtt_client_receive):
     finally:
         send.cancel()
         receive.cancel()
+
+
+def test_generator_factory():
+    test = {
+        "int": RandomNumberGenerator,
+        "float": RandomNumberGenerator,
+        "str": RandomStringGenerator,
+        "bool": RandomBoolGenerator,
+        "timestamp": DateGenerator,
+        "enum": RandomChoiceGenerator,
+    }
+
+    for type, generator in test.items():
+        if type == "enum":
+            assert create_generator(type, options=["a", "b"]).__class__ == generator
+        else:
+            assert create_generator(type).__class__ == generator
