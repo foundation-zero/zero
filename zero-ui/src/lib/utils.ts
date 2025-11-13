@@ -10,8 +10,8 @@ import {
   SafeRangeThresholds,
   SensorType,
   SensorTypeMap,
+  StampedChart,
   Thresholds,
-  TimeBasedChart,
   TimeSeriesData,
   TimeValueObject,
   TimeValueTuple,
@@ -364,9 +364,9 @@ export const toEntries = <K, V>(map: Map<K, V>): Entries<Map<K, V>>[] => {
 };
 
 function isChartType<T extends ChartDataType>(type: string) {
-  function isChart(chart: TimeBasedChart): chart is TimeBasedChart<T>;
-  function isChart(chart: TimeBasedChart[]): chart is TimeBasedChart<T>[];
-  function isChart(chart: TimeBasedChart | TimeBasedChart[]): boolean {
+  function isChart(chart: StampedChart): chart is StampedChart<T>;
+  function isChart(chart: StampedChart[]): chart is StampedChart<T>[];
+  function isChart(chart: StampedChart | StampedChart[]): boolean {
     return Array.isArray(chart)
       ? chart.every(isChart)
       : chart.data.length > 0 &&
@@ -379,3 +379,5 @@ function isChartType<T extends ChartDataType>(type: string) {
 export const isNumberChart = isChartType<number>("number");
 export const isStringChart = isChartType<string>("string");
 export const isBooleanChart = isChartType<boolean>("boolean");
+
+export const cast = <T>(input: unknown): T => input as T;

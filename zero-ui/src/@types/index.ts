@@ -192,10 +192,19 @@ export type ChartDataType = number | boolean | string;
 export type TimeSeriesData<T extends ChartDataType = ChartDataType> = [time: Date, value: T];
 export type SeriesData = { value: number };
 
-export interface TimeBasedChart<Type extends ChartDataType = ChartDataType> {
+export interface Chart<
+  Type extends ChartDataType,
+  Value extends Stamped<Type> | TimeSeriesData<Type>,
+> {
   name: string;
-  data: TimeSeriesData<Type>[] | Stamped<Type>[];
+  data: Value[];
 }
+
+export type StampedChart<Type extends ChartDataType = ChartDataType> = Chart<Type, Stamped<Type>>;
+export type SeriesChart<Type extends ChartDataType = ChartDataType> = Chart<
+  Type,
+  TimeSeriesData<Type>
+>;
 
 export type Entries<T> =
   T extends Map<infer K, infer V>
