@@ -32,6 +32,7 @@ from thrs.input_output.base import (
 )
 from thrs.input_output.definitions.simulation import (
     Boundary,
+    FmuBoundary,
     HeatSource,
     Pcs,
     TemperatureBoundary,
@@ -101,11 +102,15 @@ INPUTS = {
         ),
     ),
     "consumers": ConsumersSimulationInputs(
-        consumers_boosting_supply=Boundary(
-            temperature=Stamped.stamp(30.0), flow=Stamped.stamp(10.0)
+        consumers_boosting_supply=FmuBoundary(
+            temperature=Stamped.stamp(30.0),
+            flow=Stamped.stamp(10.0),
+            over_pressure=Stamped.stamp(0.2),
         ),
-        consumers_fahrenheit_supply=Boundary(
-            temperature=Stamped.stamp(30.0), flow=Stamped.stamp(10.0)
+        consumers_fahrenheit_supply=FmuBoundary(
+            temperature=Stamped.stamp(30.0),
+            flow=Stamped.stamp(10.0),
+            over_pressure=Stamped.stamp(0.2),
         ),
         consumers_module_supply=Boundary(
             temperature=Stamped.stamp(60.0), flow=Stamped.stamp(10.0)

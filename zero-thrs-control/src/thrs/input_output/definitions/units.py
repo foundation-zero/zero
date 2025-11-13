@@ -119,6 +119,7 @@ seconds: TypeAlias = Annotated[float, UnitMeta(modelica_name="s")]
 OnOff: TypeAlias = Annotated[bool, UnitMeta(modelica_name="bool")]
 Charged: TypeAlias = Annotated[bool, UnitMeta(modelica_name="bool")]
 Tuning: TypeAlias = tuple[float, float, float]
+Overpressure: TypeAlias = Annotated[float, UnitMeta(modelica_name="Bar")]
 
 
 class PcsMode(Enum):
