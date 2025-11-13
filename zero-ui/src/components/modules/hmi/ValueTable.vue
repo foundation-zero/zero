@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { ChartDataType } from "@/@types";
 import { Stamped } from "@/@types/thrs";
 import {
   Table,
@@ -11,7 +12,7 @@ import {
 import { formatDistanceToNow, isValid } from "date-fns";
 import { useI18n } from "vue-i18n";
 
-type FieldEntry = [componentName: string, value: Stamped<string | number | boolean>];
+type FieldEntry = [componentName: string, value: Stamped<ChartDataType>];
 
 const { t } = useI18n();
 

@@ -1,6 +1,8 @@
 import {
+  ChartDataType,
   ControlType,
   ControlTypeMap,
+  Entries,
   Room,
   RoomControl,
   RoomSensor,
@@ -9,11 +11,14 @@ import {
   SensorType,
   SensorTypeMap,
   Thresholds,
+  TimeBasedChart,
+  TimeSeriesData,
   TimeValueObject,
   TimeValueTuple,
   ValidationStatus,
   ValueObject,
 } from "@/@types";
+import { Stamped } from "@/@types/thrs";
 import { ArgumentsType, useIntervalFn } from "@vueuse/core";
 import { type ClassValue, clsx } from "clsx";
 import { twMerge } from "tailwind-merge";
@@ -312,12 +317,65 @@ export const objectFilter = <T extends Record<string, unknown>, K extends keyof 
     Object.entries(obj).filter((entry) => predicate(entry as [K, T[K]])),
   ) as Partial<T>;
 
-export function tuple<Key, Value>(key: Key, value: Value): [Key, Value];
-export function tuple<Values extends unknown[]>(
-  ...values: Values
-): { [K in keyof Values]: Values[K] };
-export function tuple<Values extends unknown[]>(
-  ...values: Values
-): { [K in keyof Values]: Values[K] } {
-  return values;
+export const toTimeSeriesData = <T extends ChartDataType>({
+  timestamp,
+  value,
+}: Stamped<T>): TimeSeriesData<T> => [new Date(timestamp), value];
+
+export function isStamped<T>(input: unknown[] | Stamped<T>[]): input is Stamped<T>[];
+export function isStamped<T>(input: unknown | Stamped<T>): input is Stamped<T>;
+export function isStamped(input: unknown): input is Stamped<number>;
+export function isStamped(input: unknown): boolean {
+  if (Array.isArray(input)) return isStamped(input[0]);
+
+  return typeof input === "object" && input !== null && "value" in input && "timestamp" in input;
 }
+
+export const unstamp = <T>(input: T | Stamped<T>): T => (isStamped(input) ? input.value : input);
+
+export const mapFromObject = <K extends string | number | symbol, V, T>(
+  record: Record<K, V> | Partial<Record<K, V>>,
+  mapFn: (key: K, value: V) => T,
+): Map<K, T> =>
+  new Map<K, T>(
+    Object.entries(record ?? {}).map(([key, value]) => [key as K, mapFn(key as K, value as V)]),
+  );
+
+export const isStampedNumber = (item: unknown): item is Stamped<number> =>
+  isStamped(item) && typeof item.value === "number";
+
+export function tuple<K, V>(key: K, value: V): [K, V];
+export function tuple<Entries extends unknown[]>(
+  ...entries: Entries
+): { [K in keyof Entries]: Entries[K] };
+export function tuple(...args: unknown[]) {
+  return args;
+}
+
+export const toMap = <K, V, T>(entries: [K, V][], mapFn: (key: K, value: V) => T): Map<K, T> =>
+  new Map(entries.map(([k, v]) => [k, mapFn(k, v)]));
+
+export const toEntries = <K, V>(map: Map<K, V>): Entries<Map<K, V>>[] => {
+  const entries = Array.from(map.entries());
+
+  return entries.map(([key, value]) =>
+    tuple(key, value instanceof Map ? toEntries(value) : value),
+  ) as Entries<Map<K, V>>[];
+};
+
+function isChartType<T extends ChartDataType>(type: string) {
+  function isChart(chart: TimeBasedChart): chart is TimeBasedChart<T>;
+  function isChart(chart: TimeBasedChart[]): chart is TimeBasedChart<T>[];
+  function isChart(chart: TimeBasedChart | TimeBasedChart[]): boolean {
+    return Array.isArray(chart)
+      ? chart.every(isChart)
+      : chart.data.length > 0 &&
+          isStamped(chart.data[0]) &&
+          typeof (chart.data[0] as Stamped<unknown>).value === type;
+  }
+
+  return isChart;
+}
+export const isNumberChart = isChartType<number>("number");
+export const isStringChart = isChartType<string>("string");
+export const isBooleanChart = isChartType<boolean>("boolean");

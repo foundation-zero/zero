@@ -12,7 +12,7 @@ import { THRSDefinitions, THRSModules } from "@/lib/consts";
 import { Client } from "@urql/vue";
 import { useIntervalFn } from "@vueuse/core";
 import { type Component, computed, ref } from "vue";
-import { queryFor, queryPacked } from ".";
+import { queryDeep, queryFor } from ".";
 import NumberParameter from "./controls/NumberParameter.vue";
 import PIDParameter from "./controls/PIDParameter.vue";
 
@@ -30,19 +30,18 @@ const COMPONENTS: Record<ParametersType, Component | null> = {
 };
 
 const parametersValuesQuery = queryFor(props.module, "parameters", props.query);
-const parametersFromQuery = queryPacked(
+const parametersFromQuery = queryDeep(
   parametersValuesQuery,
   (data) => data?.modules?.[props.module]?.parameters as Values | undefined,
 );
-
 const parametersFromMutation = ref<Values | null>(null);
 const params = computed(
-  () => (parametersFromMutation.value as Values) ?? parametersFromQuery.value.data,
+  () => (parametersFromMutation.value ?? parametersFromQuery.data.value) as Values,
 );
 
 useIntervalFn(
   async () => {
-    await parametersFromQuery.value.executeQuery();
+    await parametersFromQuery.update();
     parametersFromMutation.value = null;
   },
   5000,

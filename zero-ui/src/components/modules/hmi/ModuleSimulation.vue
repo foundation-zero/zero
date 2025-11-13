@@ -16,7 +16,7 @@ import { THRSDefinitions, THRSModules } from "@/lib/consts";
 import { Client } from "@urql/vue";
 import { useIntervalFn } from "@vueuse/core";
 import { type Component, computed, ref } from "vue";
-import { queryFor, queryPacked } from ".";
+import { queryDeep, queryFor } from ".";
 import BoundaryControl from "./controls/BoundaryControl.vue";
 import PcsControl from "./controls/PcsControl.vue";
 import TemperatureControl from "./controls/TemperatureControl.vue";
@@ -39,18 +39,18 @@ const COMPONENTS: Record<SimulationComponentType, Component | null> = {
 };
 
 const simulationValuesQuery = queryFor(props.module, "simulation", `inputs { ${props.query} }`);
-const simulationValuesFromQuery = queryPacked(
+const simulationValuesFromQuery = queryDeep(
   simulationValuesQuery,
-  (data) => data?.modules?.[props.module]?.simulation.inputs,
+  (data) => data?.modules?.[props.module]?.simulation.inputs as Values | undefined,
 );
 const simulationValuesFromMutation = ref<Values | null>(null);
 const simulationValues = computed(
-  () => (simulationValuesFromMutation.value as Values) ?? simulationValuesFromQuery.value.data,
+  () => (simulationValuesFromMutation.value ?? simulationValuesFromQuery.data.value) as Values,
 );
 
 useIntervalFn(
   async () => {
-    await simulationValuesFromQuery.value.executeQuery();
+    await simulationValuesFromQuery.update();
     simulationValuesFromMutation.value = null;
   },
   5000,
@@ -73,7 +73,7 @@ const setSimulationValues = (newValues: Values) => {
 </script>
 <template>
   <section
-    v-if="simulationValues && simulationValuesFromQuery.data"
+    v-if="simulationValues && simulationValuesFromQuery.data.value"
     class="mb-4 grid gap-6 md:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4"
   >
     <template
