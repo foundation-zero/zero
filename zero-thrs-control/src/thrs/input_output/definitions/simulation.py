@@ -25,7 +25,7 @@ class Boundary(ThrsModel):
 class FmuBoundary(ThrsModel):
     temperature: Stamp[Celsius]
     flow: Stamp[LMin]
-    over_pressure: Stamp[Overpressure]
+    overpressure: Stamp[Overpressure]
 
 
 class TemperatureBoundary(ThrsModel):

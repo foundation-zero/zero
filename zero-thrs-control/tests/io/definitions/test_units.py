@@ -70,4 +70,4 @@ def test_zero_for_unnested():
     zero = Data.zero()
     assert zero.a == 0.0
     assert zero.b == 0.0
-    assert zero.c == PcsMode.OFF
+    assert zero.c == PcsMode.OFF.value

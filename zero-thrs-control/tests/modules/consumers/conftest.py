@@ -38,7 +38,7 @@ def simulation_inputs():
         consumers_fahrenheit_supply=FmuBoundary(
             temperature=Stamped.stamp(60),
             flow=Stamped.stamp(42),
-            over_pressure=Stamped.stamp(0.2),
+            overpressure=Stamped.stamp(0.2),
         ),
         consumers_module_supply=Boundary(
             temperature=Stamped.stamp(60), flow=Stamped.stamp(94)
@@ -46,7 +46,7 @@ def simulation_inputs():
         consumers_boosting_supply=FmuBoundary(
             temperature=Stamped.stamp(40),
             flow=Stamped.stamp(29),
-            over_pressure=Stamped.stamp(0.2),
+            overpressure=Stamped.stamp(0.2),
         ),
     )
 
