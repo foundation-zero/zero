@@ -5,15 +5,8 @@ import pytest
 from aiomqtt import Client as MqttClient
 from pytest import fixture
 
-from generator.base import (
-    DateGenerator,
-    RandomBoolGenerator,
-    RandomChoiceGenerator,
-    RandomNumberGenerator,
-    RandomStringGenerator,
-    create_generator,
-)
-from generator.main import DataGenerator, GeneratorConfig
+import generator.gen as gen
+from generator import DataGenerator, GeneratorConfig, create_generator
 
 
 async def _mqtt_client(settings):
@@ -41,10 +34,10 @@ async def test_generator(mqtt_client_send, mqtt_client_receive):
             topic="test",
             interval=1,
             values={
-                "justanint": RandomNumberGenerator("int"),
-                "awa": RandomNumberGenerator("int", 0, 90),
-                "aws": RandomNumberGenerator("float", 0, 30),
-                "pcs_mode": RandomChoiceGenerator("enum", ["propulsion", "idle", "docked"]),
+                "justanint": gen.int_(),
+                "awa": gen.int_(0, 90),
+                "aws": gen.float_(0, 30),
+                "pcs_mode": gen.choice(["propulsion", "idle", "docked"]),
             },
         )
     ]
@@ -66,17 +59,17 @@ async def test_generator(mqtt_client_send, mqtt_client_receive):
 
 
 def test_generator_factory():
-    test = {
-        "int": RandomNumberGenerator,
-        "float": RandomNumberGenerator,
-        "str": RandomStringGenerator,
-        "bool": RandomBoolGenerator,
-        "timestamp": DateGenerator,
-        "enum": RandomChoiceGenerator,
+    test: dict[gen.GeneratorType, gen.Generator] = {
+        "int": gen.int_(),
+        "float": gen.float_(),
+        "str": gen.str_(),
+        "bool": gen.bool_(),
+        "timestamp": gen.timestamp(),
+        "choice": gen.choice(options=["a", "b"]),
     }
 
     for type, generator in test.items():
-        if type == "enum":
-            assert create_generator(type, options=["a", "b"]).__class__ == generator
+        if type == "choice":
+            assert isinstance(create_generator(type, options=["a", "b"]), generator.__class__)
         else:
-            assert create_generator(type).__class__ == generator
+            assert create_generator(type).__class__ == generator.__class__

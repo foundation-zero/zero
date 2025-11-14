@@ -33,14 +33,16 @@ class DataGenerator:
             - values (dict[str, Generator]): Value definitions for the topic.
 
         Example:
+            import generator.gen as gen
+
             config = [
                 GeneratorConfig(
                     topic="topic/test",
                     interval=10,
                     values={
-                        "justanint": RandomGenerator("int"),
-                        "aws": RandomGenerator("float", 0, 180),
-                        "pcs_mode": RandomChoiceGenerator("enum", ["propulsion", "idle", "regeneration"]),
+                        "justanint": gen.create_generator("int),
+                        "aws": gen.create_generator("float", 0, 180),
+                        "pcs_mode": gen.create_generator("choice", ["propulsion", "idle", "regeneration"]),
                     }
                 )
             ]

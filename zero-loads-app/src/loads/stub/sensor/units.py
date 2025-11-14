@@ -1,7 +1,8 @@
 from dataclasses import dataclass
 from typing import Annotated, Any, Dict, TypeAlias, get_args, get_origin, get_type_hints
 
-from generator.base import Generator, GeneratorConfig, create_generator
+import generator.gen as gen
+from generator import Generator, GeneratorConfig, create_generator
 from pydantic import (
     AliasGenerator,
     BaseModel,
@@ -46,7 +47,7 @@ class LoadsModel(BaseModel):
     )
 
     @classmethod
-    def gen_config(cls, interval: int = 10) -> list[dict]:
+    def gen_config(cls, interval: int = 10) -> list[GeneratorConfig]:
         """Generate configuration for data generation."""
         hints = get_type_hints(cls, include_extras=True)
         config = []
@@ -91,7 +92,8 @@ class LoadsModel(BaseModel):
         lower = constraints.get("ge", constraints.get("gt", 0))
         upper = constraints.get("le", constraints.get("lt", 100))
 
-        return create_generator(cls._type_name(base_type), lt=lower, gt=upper)
+        type = gen.validate_type(cls._type_name(base_type))
+        return create_generator(type, lt=lower, gt=upper)
 
     @staticmethod
     def _extract_constraints(meta: list[Any]) -> Dict[str, Any]:
