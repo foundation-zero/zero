@@ -1,0 +1,9 @@
+services:
+  jupyter:
+    build:
+      context: .
+    ports:
+      - "18888:8888"
+    volumes:
+      - ./io_lists:/app/io_lists
+      - ./notebooks:/app/notebooks
