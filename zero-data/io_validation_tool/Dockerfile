@@ -43,4 +43,6 @@ USER nonroot
 # Use `/app` as the working directory
 WORKDIR /app
 
-CMD ["jupyter", "notebook", "--ip=0.0.0.0", "--port=8888", "--no-browser"]
+COPY jupyter-config.json /home/nonroot/.jupyter/jupyter_notebook_config.json
+
+CMD ["jupyter", "lab", "--ip=0.0.0.0", "--port=8888", "--no-browser"]

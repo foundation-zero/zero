@@ -5,5 +5,8 @@ description = "Add your description here"
 readme = "README.md"
 requires-python = ">=3.13"
 dependencies = [
+    "jupyterlab>=4.4.10",
     "notebook>=7.4.7",
+    "openpyxl>=3.1.5",
+    "polars>=1.35.2",
 ]
