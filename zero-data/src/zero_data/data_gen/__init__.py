@@ -18,6 +18,8 @@ def generate_data():
         file_paths = [Path(f"io_lists/{file_name}") for file_name in file_names]
         logger.debug(f"Processing {source} {file_paths}")
         io_result = read_io_list(file_paths, source)
-        logger.info(f"Starting generator for IO list {file_paths} with Topics:\n{[t.topic for t in io_result.topics]}")
+        logger.info(
+            f"Starting generator for IO list {file_paths} with Topics:\n{[t.topic for t in io_result.topics]}"
+        )
         data_generator = Generator(10, mqtt_config, io_result.topics)
         asyncio.run(data_generator.run())

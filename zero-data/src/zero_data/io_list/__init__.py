@@ -6,6 +6,7 @@ from typing import List
 def read_io_list(paths: List[Path], type: Source) -> IOResult:
     if type == "marpower":
         from .readers.marpower import MarpowerReader
+
         return MarpowerReader().read_io_list(paths)
     elif type == "vitters":
         from .readers.vitters import VittersReader
