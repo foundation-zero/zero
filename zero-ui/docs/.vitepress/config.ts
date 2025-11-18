@@ -37,6 +37,7 @@ export default defineConfig({
           { text: "Button", link: "/components/button" },
           { text: "Input", link: "/components/input" },
           { text: "Labeled Input", link: "/components/labeled-input" },
+          { text: "Popover", link: "/components/popover" },
           { text: "Select", link: "/components/select" },
         ],
       },

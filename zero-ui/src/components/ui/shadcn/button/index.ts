@@ -14,6 +14,7 @@ export const buttonVariants = cva(
         ghost:
           "text-muted-foreground hover:bg-border-subtle hover:text-foreground active:bg-background active:text-muted-foreground disabled:text-disabled-foreground",
         link: "text-brand-dull !px-0 disabled:text-brand-muted underline underline-offset-4 hover:text-brand active:text-brand-dull/80",
+        outline: "border-border-subtle border",
       },
       size: {
         default: "h-9 px-4 py-2 has-[>svg]:px-3",
