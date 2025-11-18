@@ -12,6 +12,7 @@ import {
   SelectLabel,
   SelectSeparator,
   SelectTrigger,
+  SelectTriggerLabel,
   SelectValue
 } from '@/components/ui/shadcn/select'
 </script>
@@ -28,6 +29,7 @@ The Select component provides a clean, accessible way to choose from a list of o
   <Select>
     <SelectTrigger class="w-[280px]">
       <SelectValue placeholder="Select a fruit" />
+      <SelectTriggerLabel>Fruit</SelectTriggerLabel>
     </SelectTrigger>
     <SelectContent>
       <SelectItem value="apple">Apple</SelectItem>

@@ -36,6 +36,7 @@ export default defineConfig({
           { text: "Badge", link: "/components/badge" },
           { text: "Button", link: "/components/button" },
           { text: "Input", link: "/components/input" },
+          { text: "Labeled Input", link: "/components/labeled-input" },
           { text: "Select", link: "/components/select" },
         ],
       },

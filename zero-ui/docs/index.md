@@ -42,6 +42,7 @@ Our design system includes comprehensive documentation for:
 - **[Badge](/components/badge)** - Display status and categorization information with multiple variants
 - **[Button](/components/button)** - Interactive button component with multiple variants and sizes
 - **[Input](/components/input)** - Text input field for capturing user input with validation support
+- **[Labeled Input](/components/labeled-input)** - Input field with an associated label for better accessibility and UX
 - **[Select](/components/select)** - Dropdown selection component with search and customization options
 
 Each component comes with:
