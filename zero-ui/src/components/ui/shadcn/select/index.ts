@@ -10,4 +10,5 @@ export { default as SelectScrollDownButton } from "./SelectScrollDownButton.vue"
 export { default as SelectScrollUpButton } from "./SelectScrollUpButton.vue";
 export { default as SelectSeparator } from "./SelectSeparator.vue";
 export { default as SelectTrigger } from "./SelectTrigger.vue";
+export { default as SelectTriggerLabel } from "./SelectTriggerLabel.vue";
 export { default as SelectValue } from "./SelectValue.vue";
