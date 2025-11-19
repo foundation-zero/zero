@@ -63,9 +63,6 @@ pythonpath = ["src"]
 [tool.dotenv]
 location = ".env"
 
-[tool.uv.workspace]
-members = ["validate-io-list-tool2"]
-
 [build-system]
 requires = ["poetry-core>=2.0.0,<3.0.0"]
 build-backend = "poetry.core.masonry.api"
