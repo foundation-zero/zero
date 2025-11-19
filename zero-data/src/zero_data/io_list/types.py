@@ -9,7 +9,7 @@ type Source = Literal["marpower", "vitters"]
 class IOValue:
     name: str
     data_type: str
-    
+
     @staticmethod
     def from_json_path(json_path: str, data_type: str) -> "IOValue":
         return IOValue(

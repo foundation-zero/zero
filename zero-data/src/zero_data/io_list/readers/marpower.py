@@ -23,7 +23,7 @@ _DATA_TYPES = {
 class MarpowerReader(ReaderBase):
     def __init__(self):
         self.topic_prefix = "marpower/"
-    
+
     @staticmethod
     def _read_headers(workbook):
         """Determine the header starting from the first non-empty row of the Excel sheet"""
@@ -50,48 +50,48 @@ class MarpowerReader(ReaderBase):
             .filter(pl.col("system") != "SPARE")
             .filter(pl.col("tag") != "SPARE")
         )
-        typed_df = (
-            filter_df.with_columns(
-                pl.col("target_type").replace_strict(_DATA_TYPES).alias("data_type")
-            )
-            .with_columns(tag=pl.col("tag").str.replace_all(r"-|\.", "_"))
+        typed_df = filter_df.with_columns(
+            pl.col("target_type").replace_strict(_DATA_TYPES).alias("data_type")
+        ).with_columns(tag=pl.col("tag").str.replace_all(r"-|\.", "_"))
+        return typed_df.select(
+            [
+                "device",
+                "tag",
+                "yard_tag",
+                "target_type",
+                "terminal",
+                "cabinet",
+                "system",
+                "description",
+                "unit",
+                "precision",
+                "data_type",
+                "mqtt_topic",
+                "mqtt_json_path",
+            ]
+        ).cast(
+            {
+                "device": pl.String,
+                "tag": pl.String,
+                "yard_tag": pl.String,
+                "target_type": pl.String,
+                "terminal": pl.String,
+                "cabinet": pl.String,
+                "system": pl.String,
+                "description": pl.String,
+                "unit": pl.String,
+                "precision": pl.String,
+                "data_type": pl.String,
+                "mqtt_topic": pl.String,
+                "mqtt_json_path": pl.String,
+            }
         )
-        return typed_df.select([
-            "device",
-            "tag",
-            "yard_tag",
-            "target_type",
-            "terminal",
-            "cabinet",
-            "system",
-            "description",
-            "unit",
-            "precision",
-            "data_type",
-            "mqtt_topic",
-            "mqtt_json_path",
-        ]).cast({
-            "device": pl.String,
-            "tag": pl.String,
-            "yard_tag": pl.String,
-            "target_type": pl.String,
-            "terminal": pl.String,
-            "cabinet": pl.String,
-            "system": pl.String,
-            "description": pl.String,
-            "unit": pl.String,
-            "precision": pl.String,
-            "data_type": pl.String,
-            "mqtt_topic": pl.String,
-            "mqtt_json_path": pl.String
-        })
 
     def _get_io_topics(self, df: pl.DataFrame) -> List[IOTopic]:
         """Get the IO topics from the DataFrame"""
         result = []
         for row in (
-            df
-            .drop_nulls("mqtt_topic")
+            df.drop_nulls("mqtt_topic")
             .group_by("mqtt_topic")
             .agg(pl.col("mqtt_json_path"), pl.col("data_type"))
             .iter_rows(named=True)
@@ -106,7 +106,10 @@ class MarpowerReader(ReaderBase):
 
     def determine_topic(self, row: dict) -> str:
         """Create the topic out of a fixed prefix and a name that is a function of the IO list"""
-        return self.topic_prefix + row["mqtt_topic"].replace(" ", "-").replace("+", "").lower()
+        return (
+            self.topic_prefix
+            + row["mqtt_topic"].replace(" ", "-").replace("+", "").lower()
+        )
 
     @classmethod
     def _read_bordered_column(cls, ws, col: int):
@@ -131,7 +134,8 @@ class MarpowerReader(ReaderBase):
     def read_io_list(self, paths: List[Path]) -> IOResult:
         """Read the IO list from the given paths and return an IOResult"""
         io_lists = [
-            self._normalize_marpower_io_list(self._read_marpower_excel(path)) for path in paths
+            self._normalize_marpower_io_list(self._read_marpower_excel(path))
+            for path in paths
         ]
         io_list = pl.concat(io_lists)
 

@@ -6,11 +6,14 @@ from zero_data.io_list.types import Source
 
 
 io_lists: List[Tuple[Source, List[str]]] = [
-    ("marpower", [
-        "ZERO mocked IO-List.xlsx",
-        "52422003_3210_AMCS IO-List R2.14.xlsx",
-        "52422003_3211_PMS IO-List R2.6.xlsx"
-    ])
+    (
+        "marpower",
+        [
+            "ZERO mocked IO-List.xlsx",
+            "52422003_3210_AMCS IO-List R2.14.xlsx",
+            "52422003_3211_PMS IO-List R2.6.xlsx",
+        ],
+    )
 ]
 
 
@@ -22,7 +25,7 @@ class MQTTConfig(BaseSettings):
         int, Field(description="Port number of the MQTT Broker", default=1883)
     ]
 
-    @computed_field # type: ignore[misc]
+    @computed_field  # type: ignore[misc]
     @property
     def uri(self) -> str:
         return f"{self.host}:{self.port}"

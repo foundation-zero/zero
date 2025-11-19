@@ -15,11 +15,9 @@ from datetime import UTC, datetime
 
 logger = logging.getLogger(__name__)
 
+
 class MarpowerMessage[T](BaseModel):
-    model_config = ConfigDict(
-        populate_by_name=True,
-        alias_generator=to_pascal
-    )
+    model_config = ConfigDict(populate_by_name=True, alias_generator=to_pascal)
     value: T
     timestamp: Annotated[datetime, Field(alias="TimeStamp")]
     is_valid: bool = True
@@ -45,7 +43,9 @@ class Generator:
         for topic in self.topics:
             next_value = self._message(topic)
             # Using pydantic to ensure dates are ISO format
-            payload = TypeAdapter(dict[str, dict[str, Any]]).dump_json(next_value, by_alias=True)
+            payload = TypeAdapter(dict[str, dict[str, Any]]).dump_json(
+                next_value, by_alias=True
+            )
             await client.publish(topic.topic, payload)
 
     async def run(self):
@@ -78,28 +78,21 @@ class Generator:
                     random.normalvariate(mu=10, sigma=1.0)
                 )
             case "BIGINT":
-                return Generator._generate_marpower_message(
-                    random.randint(0, 100)
-                )
+                return Generator._generate_marpower_message(random.randint(0, 100))
             case "INTEGER":
                 return Generator._generate_marpower_message(
                     random.binomialvariate(n=10, p=0.5)
                 )
             case "TIMESTAMP":
-                return Generator._generate_marpower_message(
-                    datetime.now(tz=UTC)
-                )
+                return Generator._generate_marpower_message(datetime.now(tz=UTC))
             case "STRING":
                 return Generator._generate_marpower_message(
                     "".join(random.choices("abcdefghijklmnopqrstuvwxyz", k=10))
                 )
         raise KeyError(f"Unknown type: {data_type}")
-    
+
     @staticmethod
     def _generate_marpower_message[T](value: T) -> MarpowerMessage[T]:
         return MarpowerMessage[T](
-            value=value,
-            timestamp=datetime.now(tz=UTC),
-            is_valid=True,
-            has_value=True
+            value=value, timestamp=datetime.now(tz=UTC), is_valid=True, has_value=True
         )
