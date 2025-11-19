@@ -1,3 +1,4 @@
+import { loadsRoutes } from "@/modules/loads/router";
 import { createRouter, createWebHistory } from "vue-router";
 import { authRoutes } from "./auth";
 import { domesticRoutes } from "./domestic";
@@ -5,7 +6,7 @@ import { thrsRoutes } from "./thrs";
 
 const router = createRouter({
   history: createWebHistory(),
-  routes: [thrsRoutes, domesticRoutes, authRoutes],
+  routes: [thrsRoutes, domesticRoutes, authRoutes, loadsRoutes],
 });
 
 export default router;

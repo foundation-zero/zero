@@ -27,7 +27,7 @@ const definition = computed<ModuleDefinition>(() => DEFINITIONS[currentDefinitio
   />
 
   <header class="mt-8 mb-4 text-3xl capitalize">
-    {{ t("views.thrs.hmi.simulation:outputs") }}
+    {{ t("views.thrs.hmi.simulationOutputs") }}
   </header>
 
   <ModuleSimulationOutputs
