@@ -3,6 +3,7 @@ from thrs.input_output.definitions.units import (
     Bar,
     Celsius,
     Charged,
+    FullEmpty,
     Hz,
     Kelvin,
     LMin,
@@ -28,6 +29,14 @@ class Pump(ThrsModel):
 
 class TemperatureSensor(ThrsModel):
     temperature: Stamped[Celsius]
+
+
+class LevelSensor(ThrsModel):
+    full: Stamped[FullEmpty]
+
+
+class HeatPump(ThrsModel):
+    pass  # TODO: Define heat pump model
 
 
 class CalculatedTemperature(ThrsModel):
@@ -89,4 +98,5 @@ __all__ = [
     "Pcm",
     "Fahrenheit",
     "PowerSensor",
+    "HeatPump",
 ]

@@ -45,4 +45,8 @@ class Fahrenheit(ThrsModel):
     release: Stamped[OnOff]
 
 
-__all__ = ["Pump", "Valve", "Pcm", "Fahrenheit"]
+class HeatPump(ThrsModel):
+    pass  # TODO: Define heat pump model
+
+
+__all__ = ["Pump", "Valve", "Pcm", "Fahrenheit", "HeatPump"]
