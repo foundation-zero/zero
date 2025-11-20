@@ -63,19 +63,19 @@ models:
         description: The most recent value of the electrical energy stored (Wh).
         data_tests:
             - not_null
-  - name: electrical_soc_daily
+  - name: electrical_soc_hourly
     description: Electrical energy stored in a battery per day. 
     columns:
       - name: topic
         description: '{{ doc("topic") }}'
         data_tests:
             - not_null
-      - name: day
-        description: The day on which the value is measured.
+      - name: hour
+        description: The hour the value is measured in.
         data_tests:
             - not_null
       - name: soc
-        description: The state of charge (kWh) as an average for a day.
+        description: The state of charge (kWh) as an average for the hour.
         data_tests:
             - not_null
   - name: energy_metrics
