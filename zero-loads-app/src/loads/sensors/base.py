@@ -1,5 +1,4 @@
-from dataclasses import dataclass
-from typing import Annotated, Any, Dict, TypeAlias, get_args, get_origin
+from typing import Annotated, Any, ClassVar, Dict, get_args, get_origin
 
 import generator.gen as gen
 from generator import Generator, GeneratorConfig, create_generator
@@ -7,45 +6,20 @@ from pydantic import (
     AliasGenerator,
     BaseModel,
     ConfigDict,
-    Field,
 )
-from pydantic.fields import FieldInfo
 
 from .util import hyphenize
-
-TOPIC_PREFIX: str = "sail-systems"
-
-
-# Unit definition
-@dataclass(frozen=True)
-class Unit:
-    unit: str
-
-
-# Unit definition
-Position: TypeAlias = Annotated[float, Field(ge=0), Unit(unit="mm")]
-RelativePosition: TypeAlias = Annotated[float, Field(ge=0, lt=1), Unit(unit="")]
-Load: TypeAlias = Annotated[float, Field(ge=0), Unit(unit="tonne")]
-Torque: TypeAlias = Annotated[float, Field(ge=0), Unit(unit="Nm")]
-RotationalSpeed: TypeAlias = Annotated[float, Field(ge=0), Unit(unit="rpm")]
-Temperature: TypeAlias = Annotated[float, Field(ge=0), Unit(unit="°C")]
-
-
-# Component metadata
-class ComponentMeta(BaseModel):
-    topic: str
-
-
-def component_meta(*args, **kwargs):
-    return Field(json_schema_extra=ComponentMeta(*args, **kwargs).model_dump())
 
 
 class LoadsModel(BaseModel):
     model_config = ConfigDict(
         alias_generator=AliasGenerator(
             serialization_alias=hyphenize,
-        )
+        ),
+        extra="ignore",
     )
+
+    TOPIC: ClassVar[str]
 
     @classmethod
     def gen_config(cls, interval: int = 10) -> list[GeneratorConfig]:
@@ -54,7 +28,7 @@ class LoadsModel(BaseModel):
 
         for component, field_info in cls.model_fields.items():
             base_type = field_info.annotation
-            topic = f"{TOPIC_PREFIX}/{cls._extract_topic(field_info) or component}"
+            # topic = f"{cls._extract_topic(field_info) or component}"
 
             if isinstance(base_type, type) and issubclass(base_type, LoadsModel):
                 values = {
@@ -62,11 +36,11 @@ class LoadsModel(BaseModel):
                     for sub_field_name, sub_field_info in base_type.model_fields.items()
                 }
 
-                config.append(GeneratorConfig(topic=topic, interval=interval, values=values))
+                config.append(GeneratorConfig(topic=cls.TOPIC, interval=interval, values=values))
             else:
                 config.append(
                     GeneratorConfig(
-                        topic=topic,
+                        topic=cls.TOPIC,
                         interval=interval,
                         values={component: cls._create_generator(base_type, field_info.metadata)},
                     )
@@ -74,15 +48,15 @@ class LoadsModel(BaseModel):
 
         return config
 
-    @classmethod
-    def _extract_topic(cls, field_info: FieldInfo) -> str | None:
-        """Extract the topic from the metadata."""
-        if hasattr(field_info, "json_schema_extra"):
-            extra = getattr(field_info, "json_schema_extra", {})
-            if isinstance(extra, dict) and "topic" in extra:
-                return extra["topic"]
+    # @classmethod
+    # def _extract_topic(cls, field_info: FieldInfo) -> str | None:
+    #     """Extract the topic from the metadata."""
+    #     if hasattr(field_info, "json_schema_extra"):
+    #         extra = getattr(field_info, "json_schema_extra", {})
+    #         if isinstance(extra, dict) and "topic" in extra:
+    #             return extra["topic"]
 
-        return None
+    #     return None
 
     @classmethod
     def _create_generator(cls, base_type: Any, meta: list[Any]) -> Generator:
