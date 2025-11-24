@@ -11,11 +11,7 @@ type GeneratorType = Literal["bool", "int", "float", "str", "timestamp", "choice
 
 
 def validate_type(type: str) -> GeneratorType:
-    try:
-        type = cast(GeneratorType, type)
-        return type
-    except Exception:
-        raise ValueError(f"Invalid generator type: {type}")
+    return cast(GeneratorType, type)
 
 
 class FnGenerator[T](Generator[T]):

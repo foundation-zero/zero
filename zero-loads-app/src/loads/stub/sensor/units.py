@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from typing import Annotated, Any, Dict, TypeAlias, get_args, get_origin, get_type_hints
+from typing import Annotated, Any, Dict, TypeAlias, get_args, get_origin
 
 import generator.gen as gen
 from generator import Generator, GeneratorConfig, create_generator
@@ -9,6 +9,7 @@ from pydantic import (
     ConfigDict,
     Field,
 )
+from pydantic.fields import FieldInfo
 
 from .util import hyphenize
 
@@ -49,43 +50,41 @@ class LoadsModel(BaseModel):
     @classmethod
     def gen_config(cls, interval: int = 10) -> list[GeneratorConfig]:
         """Generate configuration for data generation."""
-        hints = get_type_hints(cls, include_extras=True)
         config = []
 
-        for component, value_definition in hints.items():
-            base_type, meta = cls._unwrap_annotated(value_definition)
-
-            topic = f"{TOPIC_PREFIX}/{cls._extract_topic(meta) or component}"
+        for component, field_info in cls.model_fields.items():
+            base_type = field_info.annotation
+            topic = f"{TOPIC_PREFIX}/{cls._extract_topic(field_info) or component}"
 
             if isinstance(base_type, type) and issubclass(base_type, LoadsModel):
                 values = {}
-                for field_name, field_info in base_type.model_fields.items():
-                    values[field_name] = cls._create_generator(field_info.annotation, field_info.metadata)
+                for sub_field_name, sub_field_info in base_type.model_fields.items():
+                    values[sub_field_name] = cls._create_generator(sub_field_info.annotation, sub_field_info.metadata)
 
                 config.append(GeneratorConfig(topic=topic, interval=interval, values=values))
             else:
                 config.append(
                     GeneratorConfig(
-                        topic=topic, interval=interval, values={component: cls._create_generator(base_type, meta)}
+                        topic=topic,
+                        interval=interval,
+                        values={component: cls._create_generator(base_type, field_info.metadata)},
                     )
                 )
 
         return config
 
     @classmethod
-    def _extract_topic(cls, meta: list) -> str | None:
+    def _extract_topic(cls, field_info: FieldInfo) -> str | None:
         """Extract the topic from the metadata."""
-        for m in meta:
-            if hasattr(m, "json_schema_extra"):
-                extra = getattr(m, "json_schema_extra", {})
-                if isinstance(extra, dict) and "topic" in extra:
-                    topic = extra["topic"]
-                    return topic
+        if hasattr(field_info, "json_schema_extra"):
+            extra = getattr(field_info, "json_schema_extra", {})
+            if isinstance(extra, dict) and "topic" in extra:
+                return extra["topic"]
 
         return None
 
     @classmethod
-    def _create_generator(cls, base_type, meta) -> Generator:
+    def _create_generator(cls, base_type: Any, meta: list[Any]) -> Generator:
         """Create a data generator based on the type and constraints."""
         constraints = cls._extract_constraints(meta)
 

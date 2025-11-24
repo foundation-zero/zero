@@ -58,7 +58,7 @@ async def test_generator(mqtt_client_send, mqtt_client_receive):
         receive.cancel()
 
 
-def test_generator_factory():
+def test_create_generator():
     test: dict[gen.GeneratorType, gen.Generator] = {
         "int": gen.int_(),
         "float": gen.float_(),
