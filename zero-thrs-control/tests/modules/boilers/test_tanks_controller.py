@@ -18,7 +18,7 @@ def test_selection_all_full_all_hot(
 
     tanks_controller(sensor_values, parameters)
 
-    assert tanks_controller._tank_in_use is tanks_controller._tank1
+    assert tanks_controller._tank_in_use is tanks_controller._tanks[0]
     assert tanks_controller._filling_tank is None
     assert tanks_controller._boosting_tank is None
 
@@ -38,9 +38,9 @@ def test_selection_all_full_one_hot(
 
     tanks_controller(sensor_values, parameters)
 
-    assert tanks_controller._tank_in_use is tanks_controller._tank1
+    assert tanks_controller._tank_in_use is tanks_controller._tanks[0]
     assert tanks_controller._filling_tank is None
-    assert tanks_controller._boosting_tank is tanks_controller._tank3
+    assert tanks_controller._boosting_tank is tanks_controller._tanks[2]
 
 
 def test_selection_all_full_none_hot(
@@ -60,7 +60,7 @@ def test_selection_all_full_none_hot(
 
     assert tanks_controller._tank_in_use is None
     assert tanks_controller._filling_tank is None
-    assert tanks_controller._boosting_tank is tanks_controller._tank1
+    assert tanks_controller._boosting_tank is tanks_controller._tanks[0]
 
 
 def test_selection_none_full(
@@ -79,7 +79,7 @@ def test_selection_none_full(
     tanks_controller(sensor_values, parameters)
 
     assert tanks_controller._tank_in_use is None
-    assert tanks_controller._filling_tank is tanks_controller._tank1
+    assert tanks_controller._filling_tank is tanks_controller._tanks[0]
     assert tanks_controller._boosting_tank is None
 
 
@@ -98,8 +98,8 @@ def test_selection_one_full_one_hot(
 
     tanks_controller(sensor_values, parameters)
 
-    assert tanks_controller._tank_in_use is tanks_controller._tank3
-    assert tanks_controller._filling_tank is tanks_controller._tank1
+    assert tanks_controller._tank_in_use is tanks_controller._tanks[2]
+    assert tanks_controller._filling_tank is tanks_controller._tanks[0]
     assert tanks_controller._boosting_tank is None
 
 
@@ -118,9 +118,9 @@ def test_selection_two_full_one_hot(
 
     tanks_controller(sensor_values, parameters)
 
-    assert tanks_controller._tank_in_use is tanks_controller._tank2
-    assert tanks_controller._filling_tank is tanks_controller._tank1
-    assert tanks_controller._boosting_tank is tanks_controller._tank3
+    assert tanks_controller._tank_in_use is tanks_controller._tanks[1]
+    assert tanks_controller._filling_tank is tanks_controller._tanks[0]
+    assert tanks_controller._boosting_tank is tanks_controller._tanks[2]
 
 
 @pytest.mark.skip(reason="Need criterium for when tank is empty")
@@ -139,7 +139,7 @@ def test_selection_becomes_empty(
 
     tanks_controller(sensor_values, parameters)
 
-    assert tanks_controller._tank_in_use is tanks_controller._tank1
+    assert tanks_controller._tank_in_use is tanks_controller._tanks[0]
     assert tanks_controller._filling_tank is None
     assert tanks_controller._boosting_tank is None
 
@@ -152,8 +152,8 @@ def test_selection_becomes_empty(
 
     tanks_controller(sensor_values, parameters)
 
-    assert tanks_controller._tank_in_use is tanks_controller._tank2
-    assert tanks_controller._filling_tank is tanks_controller._tank1
+    assert tanks_controller._tank_in_use is tanks_controller._tanks[1]
+    assert tanks_controller._filling_tank is tanks_controller._tanks[0]
     assert tanks_controller._boosting_tank is None
 
 
@@ -172,7 +172,7 @@ def test_selection_becomes_cold(
 
     tanks_controller(sensor_values, parameters)
 
-    assert tanks_controller._tank_in_use is tanks_controller._tank1
+    assert tanks_controller._tank_in_use is tanks_controller._tanks[0]
     assert tanks_controller._filling_tank is None
     assert tanks_controller._boosting_tank is None
 
@@ -185,6 +185,6 @@ def test_selection_becomes_cold(
 
     tanks_controller(sensor_values, parameters)
 
-    assert tanks_controller._tank_in_use is tanks_controller._tank1
+    assert tanks_controller._tank_in_use is tanks_controller._tanks[0]
     assert tanks_controller._filling_tank is None
-    assert tanks_controller._boosting_tank is tanks_controller._tank2
+    assert tanks_controller._boosting_tank is tanks_controller._tanks[1]

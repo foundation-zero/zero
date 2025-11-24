@@ -101,9 +101,9 @@ class Tank:
         self._boosting_supply_valve = boosting_supply_valve
         self._boosting_return_valve = boosting_return_valve
         self._disabled = disabled
-        self._boosting = False
-        self._filling = False
-        self._in_use = False
+        # self._boosting = False #make enum #remove these 'states'
+        # self._filling = False
+        # self._in_use = False
         self._full = None
         self._temperature = None
 
@@ -138,9 +138,9 @@ class Tank:
             return False
         return (
             not self._disabled
-            and not self._in_use
-            and not self._boosting
-            and not self._filling
+            # and not self._in_use
+            # and not self._boosting
+            # and not self._filling
             and self._full
             and not self.below_tank_setpoint(parameters)
         )
@@ -156,26 +156,26 @@ class Tank:
     def enable(self):
         self._disabled = False
 
-    @property
-    def boosting(self) -> bool:
-        return self._boosting
+    # @property
+    # def boosting(self) -> bool:
+    #    return self._boosting
 
     def boost(self, time: Callable[[], datetime]):
-        self._boosting = True
+        # self._boosting = True
         self._boosting_supply_valve.setpoint = Stamped(value=1.0, timestamp=time())
         self._boosting_return_valve.setpoint = Stamped(value=1.0, timestamp=time())
 
     def stop_boosting(self, time: Callable[[], datetime]):
-        self._boosting = False
+        # self._boosting = False
         self._boosting_supply_valve.setpoint = Stamped(value=0.0, timestamp=time())
         self._boosting_return_valve.setpoint = Stamped(value=0.0, timestamp=time())
 
     def boostable(self, parameters: BoilersParameters) -> bool:
-        if self._in_use or self._full is None:
+        if self._full is None:
             return False
         return (
             not self._disabled
-            and not self._in_use
+            # and not self._in_use
             and self._full
             and self.below_tank_setpoint(parameters)
         )
@@ -193,7 +193,7 @@ class Tank:
         self._fill_valve.setpoint = Stamped(value=0.0, timestamp=time())
 
     def fillable(self) -> bool:
-        return not self._disabled and not self._in_use and not self._full
+        return not self._disabled and not self._full
 
     @property
     def in_use(self) -> bool:
@@ -213,10 +213,7 @@ class TanksController:
         self, tank1: Tank, tank2: Tank, tank3: Tank, time_fn: Callable[[], datetime]
     ):
         self._time = time_fn
-        self._tank1 = tank1
-        self._tank2 = tank2
-        self._tank3 = tank3
-        self._tanks = [self._tank1, self._tank2, self._tank3]
+        self._tanks = [tank1, tank2, tank3]
         self._filling_tank: Tank | None = None
         self._boosting_tank: Tank | None = None
         self._tank_in_use: Tank | None = None
@@ -230,30 +227,52 @@ class TanksController:
         # case 1: full -> possibly boost
         # case 2: not full -> fill it
 
+    @property
+    def available_tanks(self):
+        return [
+            tank
+            for tank in self._tanks
+            if tank is not self._tank_in_use
+            and tank is not self._filling_tank
+            and tank is not self._boosting_tank
+            and not tank.disabled
+        ]
+
     def _update_tank_states(
         self, sensor_values: BoilersSensorValues, parameters: BoilersParameters
     ):
-        self._tank1.full = sensor_values.boilers_level_tank1.full.value
-        self._tank1.temperature = (
-            sensor_values.boilers_temperature_tank1.temperature.value
-        )
-        self._tank1.disabled = parameters.tank1_disabled
-        self._tank2.full = sensor_values.boilers_level_tank2.full.value
-        self._tank2.temperature = (
-            sensor_values.boilers_temperature_tank2.temperature.value
-        )
-        self._tank2.disabled = parameters.tank2_disabled
-        self._tank3.full = sensor_values.boilers_level_tank3.full.value
-        self._tank3.temperature = (
-            sensor_values.boilers_temperature_tank3.temperature.value
-        )
-        self._tank3.disabled = parameters.tank3_disabled
+        # zip with boilers levels and temperatures
+        temperatures = [
+            sensor_values.boilers_temperature_tank1.temperature.value,
+            sensor_values.boilers_temperature_tank2.temperature.value,
+            sensor_values.boilers_temperature_tank3.temperature.value,
+        ]
+
+        levels = [
+            sensor_values.boilers_level_tank1.full.value,
+            sensor_values.boilers_level_tank2.full.value,
+            sensor_values.boilers_level_tank3.full.value,
+        ]
+
+        disableds = [
+            parameters.tank1_disabled,
+            parameters.tank2_disabled,
+            parameters.tank3_disabled,
+        ]
+
+        for tank, level, temperature, disabled in zip(
+            self._tanks, levels, temperatures, disableds
+        ):
+            tank.full = level
+            tank.temperature = temperature
+            tank.disabled = disabled
 
     def _select_tank_in_use(self, parameters: BoilersParameters):
         # TODO: when to switch to other tank? how do we know when it's empty
         if self._tank_in_use is None:
             self._tank_in_use = next(
-                (tank for tank in self._tanks if tank.standby(parameters)), None
+                (tank for tank in self.available_tanks if tank.standby(parameters)),
+                None,
             )
             if self._tank_in_use is not None:
                 self._tank_in_use.use(self._time)
@@ -267,7 +286,7 @@ class TanksController:
         # choose new tank to fill
         if self._filling_tank is None:
             self._filling_tank = next(
-                (tank for tank in self._tanks if tank.fillable()),
+                (tank for tank in self.available_tanks if tank.fillable()),
                 None,
             )
             if self._filling_tank is not None:
@@ -289,7 +308,7 @@ class TanksController:
         if self._boosting_tank is None:
             boostable_tanks = [
                 tank
-                for tank in self._tanks
+                for tank in self.available_tanks
                 if tank.boostable(
                     parameters
                 )  # start boosting if below tank temperature setpoint, stop boosting if above boosting temperature setpoint
