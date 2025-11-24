@@ -253,9 +253,10 @@ class TanksController:
         # TODO: when to switch to other tank? how do we know when it's empty
         if self._tank_in_use is None:
             self._tank_in_use = next(
-                (tank for tank in self._tanks if tank.standby(parameters))
+                (tank for tank in self._tanks if tank.standby(parameters)), None
             )
-            self._tank_in_use.use(self._time)
+            if self._tank_in_use is not None:
+                self._tank_in_use.use(self._time)
 
     def _select_filling_tank(self):
         # stop filling when full
@@ -289,7 +290,9 @@ class TanksController:
             boostable_tanks = [
                 tank
                 for tank in self._tanks
-                if tank.boostable  # start boosting if below tank temperature setpoint, stop boosting if above boosting temperature setpoint
+                if tank.boostable(
+                    parameters
+                )  # start boosting if below tank temperature setpoint, stop boosting if above boosting temperature setpoint
             ]  # TODO: this depends on available supply temperature vs current tank temperature
             if boostable_tanks:
                 self._boosting_tank = max(
