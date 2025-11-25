@@ -9,7 +9,7 @@ SELECT
     window_start AS hour,
     AVG(soc_data.stored_energy) AS soc
 FROM
-TUMBLE (
+TUMBLE(
     {{ ref('bms_master_power_data') }},
     stored_energy_timestamp,
     INTERVAL '1 HOUR'

@@ -35,7 +35,7 @@ models:
         data_tests:
             - not_null
       - name: hour
-        description: The starttime of the hour time window.
+        description: '{{ doc("hour") }}'
         data_tests:
             - not_null
       - name: energy_wh
@@ -79,7 +79,7 @@ models:
         data_tests:
             - not_null
       - name: hour
-        description: The starttime of the hour time window.
+        description: '{{ doc("hour") }}'
         data_tests:
             - not_null
       - name: soc

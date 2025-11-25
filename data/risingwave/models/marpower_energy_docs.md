@@ -60,6 +60,9 @@ The most recent time value the data is based on.
 {% docs timestamp %}
 The timestamp of the related value.
 {% enddocs %}
+{% docs hour %}
+The start time of the hour time window.
+{% enddocs %}
 {% docs zero_timestamp %}
 The timestamp determined by ZERO.
 {% enddocs %}
