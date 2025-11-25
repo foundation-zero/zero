@@ -35,7 +35,7 @@ models:
         data_tests:
             - not_null
       - name: hour
-        description: The starttime of the hour time window.  
+        description: '{{ doc("hour") }}'
         data_tests:
             - not_null
       - name: energy_wh
@@ -66,16 +66,24 @@ models:
   - name: electrical_soc_hourly
     description: Electrical energy stored in a battery per day. 
     columns:
+      - name: electrical_system
+        description: '{{ doc("electrical_system") }}'
+        data_tests:
+            - not_null
+      - name: group_name
+        description: '{{ doc("group_name") }}'
+      - name: sub_group_name
+        description: '{{ doc("sub_group_name") }}'
       - name: topic
         description: '{{ doc("topic") }}'
         data_tests:
             - not_null
       - name: hour
-        description: The hour the value is measured in.
+        description: '{{ doc("hour") }}'
         data_tests:
             - not_null
       - name: soc
-        description: The state of charge (kWh) as an average for the hour.
+        description: The state of charge (kWh) within the hour time window.
         data_tests:
             - not_null
   - name: energy_metrics
