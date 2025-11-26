@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import { useDark, usePreferredDark } from "@vueuse/core";
 import { onMounted } from "vue";
-import Layout from "./layouts/Base.vue";
 
 const isDark = useDark();
 
@@ -13,7 +12,7 @@ onMounted(() => {
 </script>
 
 <template>
-  <Layout>
+  <component :is="$route.meta.layout">
     <RouterView />
-  </Layout>
+  </component>
 </template>

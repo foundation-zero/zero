@@ -3,8 +3,8 @@
 A floating panel that displays rich content in a portal, triggered by user interaction.
 
 <script setup>
-import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/shadcn/popover'
-import { Button } from '@/components/ui/shadcn/button'
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
+import { Button } from '@/components/ui/button'
 </script>
 
 ## Overview

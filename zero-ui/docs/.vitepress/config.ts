@@ -50,6 +50,7 @@ export default defineConfig({
     resolve: {
       alias: {
         "@": new URL("../../src", import.meta.url).pathname,
+        "@common": new URL("../../src/modules/common", import.meta.url).pathname,
       },
     },
   },

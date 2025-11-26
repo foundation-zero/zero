@@ -3,7 +3,7 @@
 A basic input field component for capturing user input.
 
 <script setup>
-import { LabeledInput } from '@/components/ui/shared/labeled-input'
+import { LabeledInput } from '@common/components/labeled-input'
 </script>
 
 ## Overview

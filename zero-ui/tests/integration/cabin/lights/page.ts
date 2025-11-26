@@ -1,7 +1,7 @@
 import { Locator, Page } from "@playwright/test";
 
 import { SubscriptionInterceptor } from "@foundation-zero/graphql-subscriptions-mock";
-import { Room } from "../../../../src/@types";
+import { Room } from "../../../../src/modules/domestic/types";
 import allRooms from "../../../data/all-rooms";
 import { isLightControl } from "../../../lib/helpers";
 import { ZeroSubscriptions } from "../../../mocks/playwright";

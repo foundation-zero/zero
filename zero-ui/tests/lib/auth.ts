@@ -1,4 +1,4 @@
-import { Roles } from "../../src/@types";
+import { Roles } from "../../src/modules/domestic/types";
 
 export const tokens: Record<Roles, string> = {
   [Roles.Admin]:

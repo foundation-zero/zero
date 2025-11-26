@@ -7,8 +7,9 @@ import {
   RoomSensor,
   SensorType,
   SensorTypeMap,
-} from "../../src/@types";
-import { boolToInt } from "../../src/lib/mappers";
+} from "../../src/modules/domestic/types";
+
+export const boolToInt = (value: boolean): number => (value ? 1 : 0);
 
 export const toBlindsControl = (value: number): BlindsControl => ({
   id: "",

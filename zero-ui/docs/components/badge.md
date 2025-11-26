@@ -3,7 +3,7 @@
 A versatile component for displaying short pieces of information.
 
 <script setup>
-import { Badge } from '@/components/ui/shadcn/badge'
+import { Badge } from '@/components/ui/badge'
 </script>
 
 ## Overview

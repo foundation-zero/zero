@@ -3,7 +3,7 @@
 A versatile button component with multiple variants and sizes for different use cases.
 
 <script setup>
-import { Button } from '@/components/ui/shadcn/button'
+import { Button } from '@/components/ui/button'
 </script>
 
 ## Overview
