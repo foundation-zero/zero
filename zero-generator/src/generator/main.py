@@ -33,7 +33,7 @@ class DataGenerator:
             - values (dict[str, Generator]): Value definitions for the topic.
 
         Example:
-            import generator.gen as gen
+            import generator as gen
 
             config = [
                 GeneratorConfig(

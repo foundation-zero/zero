@@ -23,9 +23,9 @@ class Unit:
 
 
 # Unit definition
-Position: TypeAlias = Annotated[float, Field(ge=0, lt=1), Unit(unit="mm")]
-RelativePosition: TypeAlias = Annotated[float, Field(ge=0, lt=1), Unit(unit="%")]
-Load: TypeAlias = Annotated[float, Field(ge=0), Unit(unit="ton")]
+Position: TypeAlias = Annotated[float, Field(ge=0), Unit(unit="mm")]
+RelativePosition: TypeAlias = Annotated[float, Field(ge=0, lt=1), Unit(unit="")]
+Load: TypeAlias = Annotated[float, Field(ge=0), Unit(unit="tonne")]
 Torque: TypeAlias = Annotated[float, Field(ge=0), Unit(unit="Nm")]
 RotationalSpeed: TypeAlias = Annotated[float, Field(ge=0), Unit(unit="rpm")]
 Temperature: TypeAlias = Annotated[float, Field(ge=0), Unit(unit="°C")]
@@ -57,9 +57,10 @@ class LoadsModel(BaseModel):
             topic = f"{TOPIC_PREFIX}/{cls._extract_topic(field_info) or component}"
 
             if isinstance(base_type, type) and issubclass(base_type, LoadsModel):
-                values = {}
-                for sub_field_name, sub_field_info in base_type.model_fields.items():
-                    values[sub_field_name] = cls._create_generator(sub_field_info.annotation, sub_field_info.metadata)
+                values = {
+                    sub_field_name: cls._create_generator(sub_field_info.annotation, sub_field_info.metadata)
+                    for sub_field_name, sub_field_info in base_type.model_fields.items()
+                }
 
                 config.append(GeneratorConfig(topic=topic, interval=interval, values=values))
             else:
