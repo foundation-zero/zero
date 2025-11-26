@@ -3,7 +3,7 @@
 A basic input field component for capturing user input.
 
 <script setup>
-import { Input } from '@/components/ui/shadcn/input'
+import { Input } from '@/components/ui/input'
 </script>
 
 ## Overview

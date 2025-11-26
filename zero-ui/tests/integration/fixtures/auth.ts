@@ -1,5 +1,5 @@
 import { PlaywrightTestArgs, TestFixture } from "@playwright/test";
-import { Roles } from "../../../src/@types";
+import { Roles } from "../../../src/modules/domestic/types";
 
 export interface AuthFixture {
   asAdmin(): Promise<void>;
@@ -21,7 +21,7 @@ export const createAuthFixture = (): [
 ] => [
   async ({ page }, use) => {
     const asRole = (role: Roles) => async () => {
-      await page.goto(`/auth?token=${tokens[role]}`);
+      await page.goto(`/domestic/auth?token=${tokens[role]}`);
       await page.waitForTimeout(2000);
     };
 

@@ -3,10 +3,10 @@
 Welcome to the Zero UI component library. Below you'll find all available components with live examples and usage instructions.
 
 <script setup>
-import { Badge } from '@/components/ui/shadcn/badge'
-import { Button } from '@/components/ui/shadcn/button'
-import { Input } from '@/components/ui/shadcn/input'
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/shadcn/select'
+import { Badge } from '@/components/ui/badge'
+import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 </script>
 
 ## Available Components

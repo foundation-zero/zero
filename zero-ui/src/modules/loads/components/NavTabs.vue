@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { Tabs, TabsList, TabsTrigger } from "@/components/ui/shared/tab-links";
+import { Tabs, TabsList, TabsTrigger } from "@common/components/tab-links";
 import { ref } from "vue";
 
 type NavItem = {

@@ -24,9 +24,10 @@
     "baseUrl": ".",
     "paths": {
       "@/*": ["./src/*"],
+      "@common/*": ["./src/modules/common/*"],
       "@tests/*": ["./tests/*"],
       "@components/*": ["./src/components/ui/*"],
-      "@modules/*": ["./src/components/modules/*"]
+      "@modules/*": ["./src/modules/*"]
     }
   },
   "include": ["src/**/*.ts", "src/**/*.tsx", "src/**/*.vue"]

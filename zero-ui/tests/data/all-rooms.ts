@@ -1,11 +1,17 @@
-import { Blinds, LightingGroups, Rooms } from "@/gql/graphql";
+import { Blinds, LightingGroups, Rooms } from "@/modules/domestic/graphql/types.generated";
 import {
   toAmplifierStatus,
   toHumiditySensor,
   toTemperatureControl,
   toTemperatureSensor,
 } from "@tests/lib/helpers";
-import { BlindsControl, ControlType, LightingControl, Room, RoomGroup } from "../../src/@types";
+import {
+  BlindsControl,
+  ControlType,
+  LightingControl,
+  Room,
+  RoomGroup,
+} from "../../src/modules/domestic/types";
 import allRooms from "./all-rooms.json" with { type: "json" };
 
 const toBlindsControl = (blinds: Blinds): BlindsControl => ({

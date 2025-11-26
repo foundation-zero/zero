@@ -1,0 +1,67 @@
+<script setup lang="ts">
+import SideNav from "@/modules/domestic/admin/components/side-nav/SideNav.vue";
+import BottomNavigation from "@/modules/domestic/cabin/components/BottomNavigation.vue";
+import NavPills from "@/modules/domestic/cabin/components/NavPills.vue";
+import ToggleAV from "@/modules/domestic/cabin/components/ToggleAV.vue";
+import TopNavigation from "@common/components/TopNavigation.vue";
+import { ProgressBar } from "@common/components/progress-bar";
+import AsAdmin from "@common/components/with-role/AsAdmin.vue";
+import { Sidebar } from "lucide-vue-next";
+import { provide, toRefs } from "vue";
+import { useUIStore } from "../../../common/stores/ui";
+import { useRoomStore } from "../../stores/rooms";
+
+const { showSideNav, breakpoints, toggleNav } = toRefs(useUIStore());
+const { hasPendingRequests, currentRoom } = toRefs(useRoomStore());
+
+provide("disabled", hasPendingRequests);
+</script>
+
+<template>
+  <main class="flex h-svh flex-row md:flex-nowrap">
+    <AsAdmin>
+      <SideNav :show="showSideNav" />
+    </AsAdmin>
+    <article
+      class="flex w-full flex-col items-center pt-[64px] sm:pt-[96px]"
+      :class="{
+        'border-r border-l px-0 xl:px-6 2xl:container': !breakpoints.touch,
+        'pending opacity-50': hasPendingRequests,
+      }"
+    >
+      <slot />
+    </article>
+  </main>
+  <TopNavigation :class="{ 'md:left-[250px]! lg:left-[300px]!': showSideNav }">
+    <ProgressBar
+      :pending="hasPendingRequests"
+      class="absolute right-0 left-0"
+    />
+    <template #left>
+      <div
+        class="flex items-center text-base font-bold xl:text-lg"
+        data-testid="room-name"
+      >
+        <AsAdmin>
+          <button
+            class="mr-2 flex cursor-pointer items-center"
+            @click="toggleNav()"
+          >
+            <Sidebar
+              v-if="breakpoints.touch"
+              stroke-width="1.5"
+            />
+          </button>
+        </AsAdmin>
+        <span>{{ currentRoom.name }}</span>
+      </div>
+    </template>
+    <template #center>
+      <NavPills class="absolute left-[50%] translate-x-[-50%] transition-all max-md:hidden" />
+    </template>
+    <template #right>
+      <ToggleAV />
+    </template>
+  </TopNavigation>
+  <BottomNavigation class="md:hidden" />
+</template>

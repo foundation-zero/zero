@@ -51,9 +51,10 @@ export default defineConfig(({ mode }) => {
     resolve: {
       alias: {
         "@": fileURLToPath(new URL("./src", import.meta.url)),
+        "@common": fileURLToPath(new URL("./src/modules/common", import.meta.url)),
         "@tests": fileURLToPath(new URL("./tests", import.meta.url)),
         "@components": fileURLToPath(new URL("./src/components/ui", import.meta.url)),
-        "@modules": fileURLToPath(new URL("./src/components/modules", import.meta.url)),
+        "@modules": fileURLToPath(new URL("./src/modules", import.meta.url)),
       },
     },
   };

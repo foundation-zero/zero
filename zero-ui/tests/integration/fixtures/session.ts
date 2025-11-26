@@ -1,5 +1,5 @@
 import { PlaywrightTestArgs, TestFixture } from "@playwright/test";
-import { Rooms } from "../../../src/gql/graphql";
+import { Rooms } from "../../../src/modules/domestic/graphql/types.generated";
 
 export interface SessionFixture {
   setRoom(room: Rooms): Promise<void>;

@@ -3,10 +3,10 @@ import { createPinia } from "pinia";
 import { createApp } from "vue";
 import App from "./App.vue";
 import "./assets/index.css";
-import client from "./graphql/client";
 import i18n from "./i18n";
+import client from "./modules/domestic/graphql/client";
+import { withGuards } from "./modules/domestic/router/guards";
 import router from "./router";
-import { withGuards } from "./router/guards";
 
 const store = createPinia();
 

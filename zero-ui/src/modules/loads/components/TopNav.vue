@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { Button } from "@/components/ui/shadcn/button";
+import { Button } from "@/components/ui/button";
 import Toolbar from "@/modules/loads/components/Toolbar.vue";
 
 import { useScroll } from "@vueuse/core";

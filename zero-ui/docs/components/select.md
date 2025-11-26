@@ -14,7 +14,7 @@ import {
   SelectTrigger,
   SelectTriggerLabel,
   SelectValue
-} from '@/components/ui/shadcn/select'
+} from '@/components/ui/select'
 </script>
 
 ## Overview
