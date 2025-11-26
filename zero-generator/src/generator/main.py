@@ -40,9 +40,9 @@ class DataGenerator:
                     topic="topic/test",
                     interval=10,
                     values={
-                        "justanint": gen.create_generator("int),
-                        "aws": gen.create_generator("float", 0, 180),
-                        "pcs_mode": gen.create_generator("choice", ["propulsion", "idle", "regeneration"]),
+                        "justanint": gen.int_(),
+                        "aws": gen.float_(0, 180),
+                        "pcs_mode": gen.choice(["propulsion", "idle", "regeneration"]),
                     }
                 )
             ]
