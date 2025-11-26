@@ -3,10 +3,11 @@ from thrs.input_output.definitions.units import (
     Bar,
     Celsius,
     Charged,
-    Full,
+    Empty,
     Hz,
     Kelvin,
     LMin,
+    Liter,
     OnOff,
     OptionalCelsius,
     PcsMode,
@@ -32,7 +33,11 @@ class TemperatureSensor(ThrsModel):
 
 
 class LevelSensor(ThrsModel):
-    full: Stamped[Full]
+    level: Stamped[Liter]
+
+
+class LevelSwitch(ThrsModel):
+    empty: Stamped[Empty]
 
 
 class HeatPump(ThrsModel):

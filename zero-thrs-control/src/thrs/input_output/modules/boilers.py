@@ -56,16 +56,16 @@ class BoilersSensorValues(ThrsModel):
         sensor.TemperatureSensor,
         component_meta(yard_tag="50001038-66", component_type="temperature_sensor"),
     ]
-    boilers_pressure_tank1: Annotated[
-        sensor.PressureSensor,
+    boilers_level_tank1: Annotated[
+        sensor.LevelSensor,
         component_meta(yard_tag="50001056-01", component_type="pressure_sensor"),
     ]
-    boilers_pressure_tank2: Annotated[
-        sensor.PressureSensor,
+    boilers_level_tank2: Annotated[
+        sensor.LevelSensor,
         component_meta(yard_tag="50001056-02", component_type="pressure_sensor"),
     ]
-    boilers_pressure_tank3: Annotated[
-        sensor.PressureSensor,
+    boilers_level_tank3: Annotated[
+        sensor.LevelSensor,
         component_meta(yard_tag="50001056-03", component_type="pressure_sensor"),
     ]
     boilers_flow_converters: Annotated[
@@ -182,16 +182,16 @@ class BoilersSensorValues(ThrsModel):
             yard_tag="50001067-18", component_type="valve", valve_type="switch"
         ),
     ]
-    boilers_level_tank1: Annotated[
-        sensor.LevelSensor,
+    boilers_level_switch_tank1: Annotated[
+        sensor.LevelSwitch,
         component_meta(yard_tag="50001098-01", component_type="level_sensor"),
     ]
-    boilers_level_tank2: Annotated[
-        sensor.LevelSensor,
+    boilers_level_switch_tank2: Annotated[
+        sensor.LevelSwitch,
         component_meta(yard_tag="50001098-02", component_type="level_sensor"),
     ]
-    boilers_level_tank3: Annotated[
-        sensor.LevelSensor,
+    boilers_level_switch_tank3: Annotated[
+        sensor.LevelSwitch,
         component_meta(yard_tag="50001098-03", component_type="level_sensor"),
     ]
 

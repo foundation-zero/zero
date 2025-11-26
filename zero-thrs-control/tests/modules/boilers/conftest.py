@@ -17,13 +17,7 @@ class TestTime:
 
 @fixture
 def parameters() -> BoilersParameters:
-    return BoilersParameters(
-        tank1_disabled=False,
-        tank2_disabled=False,
-        tank3_disabled=False,
-        tank_temperature_setpoint=50.0,
-        boosting_temperature_setpoint=55.0,
-    )
+    return BoilersParameters()
 
 
 @fixture
