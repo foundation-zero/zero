@@ -1,4 +1,7 @@
 {
+  "app": {
+    "title": "ZERO"
+  },
   "labels": {
     "airconditioning": {
       "short": "A/C",
@@ -72,12 +75,17 @@
       "title": "Unauthorised",
       "description": "You are not authorised to access this page. Please contact the administrator."
     },
+    "loads": {
+      "main": {
+        "editSailset": "Edit sailset"
+      }
+    },
     "thrs": {
       "hmi": {
         "title": "THRS HMI",
         "simulation": "Simulation",
-        "simulation:inputs": "Simulation (inputs)",
-        "simulation:outputs": "Outputs",
+        "simulationInputs": "Simulation (inputs)",
+        "simulationOutputs": "Outputs",
         "reset": "Reset",
         "connect": "Connect",
         "sensorValues": "Sensor values",
@@ -87,7 +95,6 @@
         "sensors": "Sensors",
         "controlParameters": "Control parameters",
         "controlMode": "Control mode",
-        "simulationInputs": "Simulation inputs",
         "setValues": "Set values",
         "start": "Start",
         "run": "Run",
