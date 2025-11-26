@@ -3,7 +3,7 @@ from typing import Callable
 
 from transitions import Machine, State
 from thrs.classes.control import Control, ControlResult
-from thrs.control.controllers import Controller, FlowDistributionController
+from thrs.control.controllers import Controller
 from thrs.input_output.base import Stamped, ThrsModel
 from thrs.input_output.definitions.units import Celsius, LMin, Liter, Ratio, Tuning
 from thrs.input_output.modules.boilers import BoilersControlValues, BoilersSensorValues
@@ -15,8 +15,9 @@ class BoilersParameters(ThrsModel):
     heatpump_flow_setpoint: LMin = 25
     boosting_temperature_setpoint: Celsius = 55
     tank_temperature_setpoint: Celsius = 50
-    propdrive_shore_flow_ratio_setpoint: Ratio = 0.5
-    converters_flow_ratio_setpoint: Ratio = 0.5
+    propdrive_shore_flowcontrol_minimum_setpoint: Ratio = 0.1  # need flow to have temp measurement available, and need these minima are needed to control the minimum filling flow
+    converters_flowcontrol_minimum_setpoint: Ratio = 0.1
+    filling_temperature_setpoint: Celsius = 40
     minimum_tank_level: Liter = 30
     maximum_tank_level: Liter = 260
     tank1_disabled: bool = False
@@ -408,30 +409,25 @@ class BoilersControl(
             self._time,
         )
 
-        self._propdrive_shore_flow_controller = Controller[Ratio, LMin](
+        self._propdrive_shore_flow_controller = Controller[Ratio, Celsius](
             _INITIAL_CONTROL_VALUES.boilers_flowcontrol_propdrive_shore.setpoint.value,
-            0,
+            parameters.filling_temperature_setpoint,
             parameters.propdrive_shore_flow_tuning,
             self._time,
+            (parameters.propdrive_shore_flowcontrol_minimum_setpoint, 1.0),
         )
 
-        self._converters_flow_controller = Controller[Ratio, LMin](
+        self._propdrive_shore_flow_controller.enable()
+
+        self._converters_flow_controller = Controller[Ratio, Celsius](
             _INITIAL_CONTROL_VALUES.boilers_flowcontrol_converters.setpoint.value,
-            0,
+            parameters.filling_temperature_setpoint,
             parameters.converters_flow_tuning,
             self._time,
+            (parameters.converters_flowcontrol_minimum_setpoint, 1.0),
         )
-        self._flow_distribution_controller = FlowDistributionController(
-            [
-                self._current_values.boilers_flowcontrol_propdrive_shore,
-                self._current_values.boilers_flowcontrol_converters,
-            ],
-            [
-                self._propdrive_shore_flow_controller,
-                self._converters_flow_controller,
-            ],
-        )
-        self._flow_distribution_controller.set_active_valves([True, True])
+
+        self._converters_flow_controller.enable()
 
         self._tanks_controller = TanksController(
             tank1=Tank(
@@ -466,22 +462,16 @@ class BoilersControl(
     ) -> ControlResult[BoilersControlValues]:
         self._tanks_controller(sensor_values, self._parameters)
         self._try_boosting(sensor_values)  # type: ignore
-        self._control_flow_distribution(sensor_values)
+        self._control_filling_flow(sensor_values)
 
         return ControlResult(self._time(), self._current_values)
 
-    def _control_flow_distribution(self, sensor_values: BoilersSensorValues):
-        self._flow_distribution_controller.set_ratios(
-            [
-                self._parameters.propdrive_shore_flow_ratio_setpoint,
-                self._parameters.converters_flow_ratio_setpoint,
-            ]
+    def _control_filling_flow(self, sensor_values: BoilersSensorValues):
+        self._propdrive_shore_flow_controller(
+            sensor_values.boilers_temperature_propdrive_shore_return.temperature.value
         )
-        self._flow_distribution_controller(
-            [
-                sensor_values.boilers_flow_propdrive_shore.flow.value,
-                sensor_values.boilers_flow_converters.flow.value,
-            ]
+        self._converters_flow_controller(
+            sensor_values.boilers_temperature_converters_return.temperature.value
         )
 
     def _set_valves_to_boosting_low_temperature(self):
