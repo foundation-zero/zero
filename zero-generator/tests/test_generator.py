@@ -5,7 +5,8 @@ import pytest
 from aiomqtt import Client as MqttClient
 from pytest import fixture
 
-from generator.main import DataGenerator
+import generator.gen as gen
+from generator import DataGenerator, GeneratorConfig, create_generator
 
 
 async def _mqtt_client(settings):
@@ -29,16 +30,16 @@ async def test_generator(mqtt_client_send, mqtt_client_receive):
     receive = asyncio.create_task(_receive())
 
     config = [
-        {
-            "topic": "test",
-            "interval": 0.1,
-            "values": {
-                "justanint": "int",
-                "awa": ["int", 0, 90],
-                "aws": ["float", 0, 30],
-                "pcs_mode": ["enum", ["propulsion", "idle", "docked"]],
+        GeneratorConfig(
+            topic="test",
+            interval=1,
+            values={
+                "justanint": gen.int_(),
+                "awa": gen.int_(0, 90),
+                "aws": gen.float_(0, 30),
+                "pcs_mode": gen.choice(["propulsion", "idle", "docked"]),
             },
-        }
+        )
     ]
 
     data_gen = DataGenerator(mqtt_client=mqtt_client_send)
@@ -55,3 +56,20 @@ async def test_generator(mqtt_client_send, mqtt_client_receive):
     finally:
         send.cancel()
         receive.cancel()
+
+
+def test_create_generator():
+    test: dict[gen.GeneratorType, gen.Generator] = {
+        "int": gen.int_(),
+        "float": gen.float_(),
+        "str": gen.str_(),
+        "bool": gen.bool_(),
+        "timestamp": gen.timestamp(),
+        "choice": gen.choice(options=["a", "b"]),
+    }
+
+    for type, generator in test.items():
+        if type == "choice":
+            assert isinstance(create_generator(type, options=["a", "b"]), generator.__class__)
+        else:
+            assert create_generator(type).__class__ == generator.__class__

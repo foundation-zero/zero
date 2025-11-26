@@ -4,6 +4,7 @@ on:
     paths:
       - zero-loads-app/**
       - data/**
+      - zero-generator/**
       - .github/workflows/ci_zero_loads_app.yaml
   release:
     types: [released]
@@ -94,7 +95,8 @@ jobs:
       - name: Build and push
         uses: docker/build-push-action@v6
         with:
-          context: zero-loads-app
+          context: .
+          file: zero-loads-app/Dockerfile
           push: true
           platforms: linux/amd64,linux/arm64
           tags: ${{ env.IMAGE }}:${{ needs.test.outputs.image_tag }}

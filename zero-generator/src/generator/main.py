@@ -1,11 +1,11 @@
 import asyncio
+import json
 import logging
-import random
 from contextlib import asynccontextmanager
-from datetime import UTC, datetime
 
 from aiomqtt import Client as MqttClient
 
+from .base import Generator, GeneratorConfig
 from .config import Settings
 
 logger = logging.getLogger("generator")
@@ -14,7 +14,7 @@ logger = logging.getLogger("generator")
 class DataGenerator:
     def __init__(self, mqtt_client: MqttClient):
         self._mqtt_client: MqttClient = mqtt_client
-        self.config: list[dict] = []
+        self.config: list[GeneratorConfig] = []
 
     @asynccontextmanager
     @staticmethod
@@ -22,85 +22,49 @@ class DataGenerator:
         async with MqttClient(settings.mqtt_host, settings.mqtt_port, identifier="generator") as mqtt_client:
             yield DataGenerator(mqtt_client=mqtt_client)
 
-    async def generate(self, config: list[dict]):
+    async def generate(self, config: list[GeneratorConfig]):
         """
         Asynchronously generates data for multiple topics based on the provided configuration.
+
         Args:
-            config (list): A list of dictionaries, each containing:
-                - topic (str): The name of the topic.
-                - interval (int): The interval in seconds between data generations.
-                - values (tuple): A tuple of value definitions for the topic.
+            config (list[GeneratorConfig]): List of GeneratorConfig objects, each containing:
+            - topic (str): The topic name.
+            - interval (int): Interval in seconds between data generations.
+            - values (dict[str, Generator]): Value definitions for the topic.
 
         Example:
+            import generator as gen
+
             config = [
-                {
-                    "topic": "topic/test",
-                    "interval": 10,
-                    "values": {
-                        "justanint": "int",
-                        "aws": ["float", 0, 180],
-                        "pcs_mode": ["enum", ["propulsion", "idle", "regeneration"]],
-                    },
-                },
+                GeneratorConfig(
+                    topic="topic/test",
+                    interval=10,
+                    values={
+                        "justanint": gen.int_(),
+                        "aws": gen.float_(0, 180),
+                        "pcs_mode": gen.choice(["propulsion", "idle", "regeneration"]),
+                    }
+                )
             ]
         """
         logger.info("Starting data generator...")
-        self.config = config
+
         try:
             async with asyncio.TaskGroup() as group:
                 for topic_config in config:
-                    topic = topic_config.get("topic")
-                    interval = topic_config.get("interval")
-                    values = topic_config.get("values")
-
-                    if not topic or not interval or not values:
-                        raise ValueError(f"topic, interval, and values must be defined: {topic}, {interval}, {values}")
-                    else:
-                        logger.debug(f"Creating task for topic: {topic}")
-                        group.create_task(self._generate_single_topic(topic, interval, values))
+                    logger.debug(f"Creating task for topic: {topic_config.topic}")
+                    group.create_task(self._generate_single_topic(topic_config))
 
         except Exception:
-            self.running = False
             logger.info("Data generator stopped due to an exception.")
             raise
 
-    async def _generate_single_topic(self, topic: str, interval: float, values: dict):
+    async def _generate_single_topic(self, config: GeneratorConfig):
         while True:
-            logger.info(f"sending message on topic: {topic} with interval {interval}")
-            send_task = self._mqtt_client.publish(topic, self._determine_values(values))
-            sleep_task = asyncio.sleep(interval)
+            logger.info(f"sending message on topic: {config.topic} with interval {config.interval}")
+            send_task = self._mqtt_client.publish(config.topic, self._determine_values(config.values))
+            sleep_task = asyncio.sleep(config.interval)
             await asyncio.gather(send_task, sleep_task)
 
-    def _determine_values(self, values: dict) -> str:
-        determined_values = {}
-        for field, value_definition in values.items():
-            if isinstance(value_definition, str):
-                determined_values[field] = self._default_value(value_definition)
-            elif isinstance(value_definition, list):
-                if value_definition[0] == "enum":
-                    data_type, choices = value_definition
-                    determined_values[field] = random.choice(choices)
-                else:
-                    data_type, lower_bound, upper_bound = value_definition
-                    determined_values[field] = self._default_value(data_type, int(lower_bound), int(upper_bound))
-            elif callable(value_definition):
-                determined_values[field] = value_definition()
-            else:
-                raise ValueError(f"Unsupported value type: {value_definition}")
-
-        return str(determined_values)
-
-    def _default_value(self, data_type: str, lower_bound: int = 0, upper_bound: int = 100):
-        match data_type:
-            case "int":
-                return random.randint(lower_bound, upper_bound)
-            case "float":
-                return random.uniform(lower_bound, upper_bound)
-            case "boolean":
-                return random.choice([True, False])
-            case "string":
-                return "".join(random.choices("abcdefghijklmnopqrstuvwxyz", k=10))
-            case "timestamp":
-                return datetime.now(tz=UTC)
-            case _:
-                raise ValueError(f"Unsupported data type: {data_type}")
+    def _determine_values(self, values: dict[str, Generator]) -> str:
+        return json.dumps({field: generator.gen() for field, generator in values.items()})

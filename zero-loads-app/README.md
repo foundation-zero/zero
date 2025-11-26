@@ -48,7 +48,7 @@ poetry run loads control
 
 The sensor stub simulates load conditions over MQTT for the control module.
 ```bash
-poetry run loads sensor-stub
+poetry run loads conditions-stub
 ```
 
 ### API
@@ -56,6 +56,11 @@ poetry run loads sensor-stub
 Start the API service to expose a GraphQL API that returns reference values for a specified or current load case.
 ```bash
 poetry run loads api
+```
+
+The sensor stub simulates load sesnors over MQTT.
+```bash
+poetry run loads sensor-stub
 ```
 
 ### Generate JWT Token

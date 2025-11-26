@@ -3,8 +3,7 @@ import socket
 import pytest
 
 from loads.config import Settings
-from loads.control.stub import PCanStub
-from loads.control.stub.can_frame import CAN_Frame
+from loads.control.stub import CAN_Frame, PCanStub
 
 
 @pytest.mark.timeout(1)
@@ -14,9 +13,7 @@ async def test_receive_message(settings: Settings):
     UDPServerSocket.bind((settings.canbus_ip, settings.canbus_port))
 
     async with PCanStub.init_from_settings(settings) as stub:
-        can_msg = await stub.create_can_msg(
-            id=12341234, data=b"\x01\x02\x03\x04\x00\x00\x00\x00"
-        )
+        can_msg = await stub.create_can_msg(id=12341234, data=b"\x01\x02\x03\x04\x00\x00\x00\x00")
 
         await stub.send_message(can_msg)
 

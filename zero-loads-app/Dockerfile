@@ -15,7 +15,10 @@ RUN pip install "poetry==${POETRY_VERSION}"
 
 WORKDIR /app
 
-COPY pyproject.toml poetry.lock ./
+COPY zero-loads-app/pyproject.toml zero-loads-app/poetry.lock ./zero-loads-app/
+COPY zero-generator/ zero-generator/
+
+WORKDIR /app/zero-loads-app/
 RUN poetry install --no-root --only main
 
 FROM python:3.13-slim-bookworm AS runtime
@@ -23,13 +26,12 @@ FROM python:3.13-slim-bookworm AS runtime
 ENV PYTHONDONTWRITEBYTECODE=1 \
     PYTHONUNBUFFERED=1
 
-ENV VIRTUAL_ENV=/app/.venv
-ENV PATH="/app/.venv/bin:$PATH"
+ENV VIRTUAL_ENV=/app/zero-loads-app/.venv
+ENV PATH="/app/zero-loads-app/.venv/bin:$PATH"
 
 COPY --from=builder ${VIRTUAL_ENV} ${VIRTUAL_ENV}
 
 WORKDIR /app
 
-COPY src/ ./
+COPY zero-loads-app/src/ ./zero-loads-app/
 
-ENTRYPOINT ["python", "-m", "control"]
