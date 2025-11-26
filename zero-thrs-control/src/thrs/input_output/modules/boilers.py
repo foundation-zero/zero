@@ -184,15 +184,15 @@ class BoilersSensorValues(ThrsModel):
     ]
     boilers_level_switch_tank1: Annotated[
         sensor.LevelSwitch,
-        component_meta(yard_tag="50001098-01", component_type="level_sensor"),
+        component_meta(yard_tag="50001098-01", component_type="level_switch", included_in_fmu=False),
     ]
     boilers_level_switch_tank2: Annotated[
         sensor.LevelSwitch,
-        component_meta(yard_tag="50001098-02", component_type="level_sensor"),
+        component_meta(yard_tag="50001098-02", component_type="level_switch", included_in_fmu=False),
     ]
     boilers_level_switch_tank3: Annotated[
         sensor.LevelSwitch,
-        component_meta(yard_tag="50001098-03", component_type="level_sensor"),
+        component_meta(yard_tag="50001098-03", component_type="level_switch", included_in_fmu=False),
     ]
 
 

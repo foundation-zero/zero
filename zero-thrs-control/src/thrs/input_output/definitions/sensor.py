@@ -104,4 +104,6 @@ __all__ = [
     "Fahrenheit",
     "PowerSensor",
     "HeatPump",
+    "LevelSensor",
+    "LevelSwitch",
 ]
