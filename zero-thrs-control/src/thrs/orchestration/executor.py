@@ -7,7 +7,7 @@ from typing import Any, Literal
 
 from aiomqtt import Client
 
-from thrs.input_output.base import SimulationInputs, ThrsModel
+from thrs.input_output.base import SimulationInputs, SimulationValues, ThrsModel
 from thrs.simulation.fmu import Fmu
 from thrs.simulation.io_mapping import IoMapping
 
@@ -16,7 +16,7 @@ from thrs.classes.executor import ExecutionResult, Executor
 logger = logging.getLogger(__name__)
 
 
-class MqttExecutor[S: ThrsModel, C: ThrsModel](Executor[S, C]):
+class MqttExecutor[S: ThrsModel, C: ThrsModel, O: SimulationValues](Executor[S, C]):
     def __init__(
         self,
         inner: Executor,
@@ -26,6 +26,7 @@ class MqttExecutor[S: ThrsModel, C: ThrsModel](Executor[S, C]):
         sensor_cls: type[S],
         control_topic: str,
         control_cls: type[C],
+        simulation_output: tuple[str, type[O]] | None = None,
     ):
         self._inner = inner
         self._controller_client = controller_client
@@ -36,6 +37,10 @@ class MqttExecutor[S: ThrsModel, C: ThrsModel](Executor[S, C]):
         self._sensor_cls = sensor_cls
         self._last_controls = None
         self._control_cls = control_cls
+        self._simulation_output_topic, self._simulation_output_cls = (
+            simulation_output if simulation_output else (None, None)
+        )
+
         self._running = False
 
     async def _listen_to_sensors(self):
@@ -64,6 +69,17 @@ class MqttExecutor[S: ThrsModel, C: ThrsModel](Executor[S, C]):
                 execution_result.sensor_values.model_dump_json(),
                 qos=1,
             )
+            if (
+                isinstance(execution_result, SimulationExecutionResult)
+                and self._simulation_output_topic
+                and self._simulation_output_cls
+            ):
+                logging.debug("Publishing simulation output values")
+                await self._environment_client.publish(
+                    self._simulation_output_topic,
+                    execution_result.simulation_outputs.model_dump_json(),
+                    qos=1,
+                )
 
     async def start(self):
         await self._controller_client.subscribe(self._sensor_topic, qos=1)
@@ -101,7 +117,7 @@ class SimulationExecutionResult[
     S: ThrsModel,
     C: ThrsModel,
     I: SimulationInputs,
-    O: ThrsModel,
+    O: SimulationValues,
 ](ExecutionResult[S]):
     control_values: C
     simulation_outputs: O
@@ -142,9 +158,12 @@ class SimulationExecutionResult[
         }
 
 
-class SimulationExecutor[S: ThrsModel, C: ThrsModel, I: SimulationInputs, O: ThrsModel](
-    Executor[S, C]
-):
+class SimulationExecutor[
+    S: ThrsModel,
+    C: ThrsModel,
+    I: SimulationInputs,
+    O: SimulationValues,
+](Executor[S, C]):
     def __init__(
         self,
         io_mapping: IoMapping[S, C, I, O],

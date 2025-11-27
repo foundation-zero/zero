@@ -106,7 +106,7 @@ def resolve_module(
                 else None
             ),
             outputs=ThrustersSimulationOutputsType.from_pydantic(
-                DedataframedSimulationOutputs.zero()  # TODO: ZERO-927 implement simulation output setting and passage to simulation
+                module.simulation_outputs
             ),
         ),
     )

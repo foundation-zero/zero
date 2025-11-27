@@ -276,10 +276,14 @@ async def test_query_simulation_inputs(async_client):
 
 async def test_query_simulation_outputs(async_client):
     app.dependency_overrides[messaging] = override_messaging
-    app.dependency_overrides[thrusters_messaging] = override_thrusters_messaging
+    thrusters = await override_thrusters_messaging()
+    app.dependency_overrides[thrusters_messaging] = lambda: thrusters
     app.dependency_overrides[pvt_messaging] = override_pvt_messaging
     app.dependency_overrides[pcm_messaging] = override_pcm_messaging
     app.dependency_overrides[consumers_messaging] = override_consumers_messaging
+
+    thrusters.simulation_outputs.thrusters_module_return.flow.value = 10.0  # type: ignore
+
     response = await async_client.post(
         "/graphql",
         json={
@@ -306,7 +310,7 @@ async def test_query_simulation_outputs(async_client):
             "modules": {
                 "thrusters": {
                     "simulation": {
-                        "outputs": {"thrustersModuleReturn": {"flow": {"value": 0.0}}}
+                        "outputs": {"thrustersModuleReturn": {"flow": {"value": 10.0}}}
                     }
                 }
             }

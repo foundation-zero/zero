@@ -105,9 +105,7 @@ def resolve_module(
                 if module.simulation_inputs
                 else None
             ),
-            outputs=PvtSimulationOutputsType.from_pydantic(
-                DedataframedSimulationOutputs.zero()  # TODO: ZERO-927 implement simulation output setting and passage to simulation
-            ),
+            outputs=PvtSimulationOutputsType.from_pydantic(module.simulation_outputs),
         ),
     )
 

@@ -14,6 +14,7 @@ from thrs.control.modules.thrusters import ThrustersParameters
 from thrs.input_output.modules.thrusters import (
     ThrustersControlValues,
     ThrustersSimulationInputs,
+    ThrustersSimulationOutputs,
 )
 from thrs.orchestration.config import Config
 
@@ -397,5 +398,55 @@ async def test_simulation_controls_set_simulation_inputs(
             ThrustersSimulationInputs
         ].model_validate_json(simulation_inputs.payload)
         assert inputs_model.inputs.thrusters_aft.heat_flow.value == 0.0  # type: ignore
+    finally:
+        run_task.cancel()
+
+
+@pytest.mark.timeout(10)
+async def test_simulation_controls_simulation_output(
+    mqtt_client, mqtt_client2, mqtt_client3, mqtt_client4, mqtt_client5
+):
+    controls_client = mqtt_client
+    control_client = mqtt_client2
+    sensors_client = mqtt_client3
+    test_client = mqtt_client4
+    status_client = mqtt_client5
+    controls = SimulationControls(
+        controls_client,
+        control_client,
+        sensors_client,
+        "thrs/sensors",
+        "thrs/controls",
+    )
+
+    await controls.clear_previous()
+
+    await test_client.subscribe("thrs/simulation/outputs")
+    await status_client.subscribe("thrs/simulation/status")
+
+    run_task = create_task(controls.run("thrusters"))
+
+    try:
+        available = await anext(status_client.messages)
+        assert available.topic.value == "thrs/simulation/status"
+        assert isinstance(available.payload, str | bytes)
+        assert (
+            SimulationStatusMessage.model_validate_json(available.payload).status
+            == "available"
+        )
+
+        await controls_client.publish("thrs/simulation/play", "{}", qos=1)
+        _running = await anext(status_client.messages)
+        await sleep(5.1)
+
+        simulation_output = await anext(test_client.messages)
+        assert simulation_output.topic.value == "thrs/simulation/outputs"
+        assert isinstance(simulation_output.payload, str | bytes)
+        module_return_temperature = ThrustersSimulationOutputs.model_validate_json(
+            simulation_output.payload
+        ).thrusters_module_return.temperature.value
+        assert isinstance(module_return_temperature, float)
+        assert module_return_temperature > 0
+
     finally:
         run_task.cancel()

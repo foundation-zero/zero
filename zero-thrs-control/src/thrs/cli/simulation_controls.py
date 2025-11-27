@@ -288,6 +288,14 @@ class SimulationInputMessage[Inputs: ThrsModel](OutgoingMessage):
         return True
 
 
+OUTGOING_MESSAGES = [
+    SimulationStatusMessage,
+    ControlStatusMessage,
+    ParametersMessage,
+    SimulationInputMessage,
+]
+
+
 class SimulationCtrlMessage(IncomingMessage):
     async def handle(self, context: MessageContext):
         await context.cmds.put(self)
@@ -552,15 +560,10 @@ class SimulationControls:
                     break
 
     async def clear_previous(self):
-        for msg in [
-            SimulationStatusMessage,
-            ControlStatusMessage,
-            ParametersMessage,
-            SimulationInputMessage,
-        ]:
-            if msg.retained():
+        for msg_cls in OUTGOING_MESSAGES:
+            if msg_cls.retained():
                 await self._controls_client.publish(
-                    msg.topic(), None, qos=1, retain=True
+                    msg_cls.topic(), None, qos=1, retain=True
                 )  # Clear previous messages
 
     async def run(self, mode: Modes):
@@ -598,6 +601,7 @@ class SimulationControls:
                 model.sensor_values_cls,
                 self._control_topic,
                 model.control_values_cls,
+                ("thrs/simulation/outputs", model.simulation_outputs_cls),
             )
             simulator = Simulator(switching_control_model, executor, switching_control)
             cmds: Queue[SimulationCtrlMessage] = Queue()

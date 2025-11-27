@@ -111,6 +111,10 @@ class MessagingModule[
             SimulationInputMessage[simulation_inputs_cls],
             SimulationInputMessage.topic(),
         )
+        self._simulation_outputs = MessageReceiver(
+            simulation_outputs_cls,
+            "thrs/simulation/outputs",
+        )
         self._mqtt_client = mqtt_client
 
     @property
@@ -186,6 +190,10 @@ class MessagingModule[
             if self._simulation_inputs.last
             else None
         )
+
+    @property
+    def simulation_outputs(self) -> Outputs | None:
+        return self._simulation_outputs.last
 
     async def set_parameters(self, parameters: Parameters):
         await self._mqtt_client.publish(
