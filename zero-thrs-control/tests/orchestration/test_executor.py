@@ -28,9 +28,9 @@ async def test_mqtt_executor(mqtt_client, mqtt_client2):
         simple_executor,
         mqtt_client,
         mqtt_client2,
-        settings.mqtt_sensor_topic,
+        f"{settings.mqtt_topic_prefix}/simple",
         SimpleInOut,
-        settings.mqtt_control_topic,
+        settings.mqtt_control_topic_suffix,
         SimpleInOut,
     )
     await executor.start()
@@ -38,14 +38,24 @@ async def test_mqtt_executor(mqtt_client, mqtt_client2):
     await sleep(0)
 
     try:
-        result = await executor.tick(
+        first_result = await executor.tick(
             SimpleInOut(
                 go_with_the=FlowSensor(
                     flow=Stamped.stamp(1), temperature=Stamped.stamp(2)
                 )
             )
         )
-        assert result.sensor_values.go_with_the.flow.value == 1
-        assert result.sensor_values.go_with_the.temperature.value == 2
+        assert first_result.sensor_values.go_with_the.flow.value == 0
+        assert first_result.sensor_values.go_with_the.temperature.value == 0
+        await sleep(0.1)
+        second_result = await executor.tick(
+            SimpleInOut(
+                go_with_the=FlowSensor(
+                    flow=Stamped.stamp(1), temperature=Stamped.stamp(2)
+                )
+            )
+        )
+        assert second_result.sensor_values.go_with_the.flow.value == 1
+        assert second_result.sensor_values.go_with_the.temperature.value == 2
     finally:
         running.cancel()

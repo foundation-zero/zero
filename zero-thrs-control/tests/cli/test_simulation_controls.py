@@ -11,12 +11,14 @@ from thrs.cli.simulation_controls import (
 )
 
 from thrs.control.modules.thrusters import ThrustersParameters
+from thrs.input_output.model_builder import ModelBuilder
 from thrs.input_output.modules.thrusters import (
     ThrustersControlValues,
     ThrustersSimulationInputs,
     ThrustersSimulationOutputs,
 )
 from thrs.orchestration.config import Config
+from thrs.utils.string import dash_to_snake
 
 
 settings = Config()  # type: ignore
@@ -51,14 +53,13 @@ async def test_simulation_run_start_stop(
         controls_client,
         control_client,
         sensors_client,
-        "thrs/sensors",
-        "thrs/controls",
+        "thrs",
+        "command",
     )
 
     await controls.clear_previous()
 
-    await test_client.subscribe("thrs/sensors")
-    await test_client.subscribe("thrs/controls")
+    await test_client.subscribe("thrs/thrusters/#")
     await status_client.subscribe("thrs/simulation/status")
 
     run_task = create_task(controls.run("thrusters"))
@@ -113,12 +114,11 @@ async def test_simulation_run_playback_rate(
         controls_client,
         control_client,
         sensors_client,
-        "thrs/sensors",
-        "thrs/controls",
+        "thrs",
+        "command",
     )
 
-    await test_client.subscribe("thrs/sensors")
-    await test_client.subscribe("thrs/controls")
+    await test_client.subscribe("thrs/thrusters/thrusters-temperature-aft-return")
 
     run_task = create_task(controls.run("thrusters"))
     try:
@@ -131,7 +131,7 @@ async def test_simulation_run_playback_rate(
 
         await sleep(5.1)
         await controls_client.publish("thrs/simulation/pause", "{}", qos=1)
-        assert len(test_client.messages) == 10
+        assert len(test_client.messages) == 5
         while len(test_client.messages) != 0:
             await anext(test_client.messages)  # Drain the messages
 
@@ -142,7 +142,7 @@ async def test_simulation_run_playback_rate(
         await anext(test_client.messages)  # Wait for first messages
         await sleep(5.1)
         await controls_client.publish("thrs/simulation/pause", "{}", qos=1)
-        assert len(test_client.messages) == 20
+        assert len(test_client.messages) == 10
     finally:
         run_task.cancel()
 
@@ -164,14 +164,14 @@ async def test_simulation_run_step(
         controls_client,
         control_client,
         sensors_client,
-        "thrs/sensors",
-        "thrs/controls",
+        "thrs",
+        "command",
     )
 
     await controls.clear_previous()
 
-    await test_client.subscribe("thrs/sensors")
-    await test_client.subscribe("thrs/controls")
+    await test_client.subscribe("thrs/thrusters/thrusters-pump-1")
+    await test_client.subscribe("thrs/thrusters/thrusters-pump-1/command")
     await status_client.subscribe("thrs/simulation/status")
 
     run_task = create_task(controls.run("thrusters"))
@@ -206,8 +206,8 @@ async def test_simulation_run_step(
             == "available"
         )
 
-        assert msg1.topic.value == "thrs/controls"
-        assert msg2.topic.value == "thrs/sensors"
+        assert msg1.topic.value == "thrs/thrusters/thrusters-pump-1/command"
+        assert msg2.topic.value == "thrs/thrusters/thrusters-pump-1"
 
         await controls_client.publish("thrs/simulation/step", '{"seconds": 2}', qos=1)
 
@@ -227,6 +227,7 @@ async def test_simulation_run_step(
             == "available"
         )
 
+        await sleep(0.5)
         assert len(test_client.messages) == 4
 
     finally:
@@ -245,14 +246,13 @@ async def test_simulation_controls_automated_control(
         controls_client,
         control_client,
         sensors_client,
-        "thrs/sensors",
-        "thrs/controls",
+        "thrs",
+        "command",
     )
 
     await controls.clear_previous()
 
-    await test_client.subscribe("thrs/sensors")
-    await test_client.subscribe("thrs/controls")
+    await test_client.subscribe("thrs/thrusters/#")
     await status_client.subscribe("thrs/simulation/status")
 
     run_task = create_task(controls.run("thrusters"))
@@ -275,11 +275,14 @@ async def test_simulation_controls_automated_control(
         await sleep(5.1)
 
         assert len(test_client.messages) > 0
-        control_values = None
+        control_builder = ModelBuilder(ThrustersControlValues)
         while len(test_client.messages) != 0:
             msg = await anext(test_client.messages)
-            if msg.topic.matches("thrs/controls"):
-                control_values = ThrustersControlValues.model_validate_json(msg.payload)
+            if msg.topic.value.endswith("command"):
+                control_builder.input(
+                    dash_to_snake(msg.topic.value.split("/")[-2]), msg.payload
+                )
+        control_values = control_builder.result()
 
         assert control_values is not None
         assert control_values.thrusters_shutoff_recovery.setpoint.value > 0
@@ -301,8 +304,8 @@ async def test_simulation_controls_set_parameters(
         controls_client,
         control_client,
         sensors_client,
-        "thrs/sensors",
-        "thrs/controls",
+        "thrs",
+        "command",
     )
 
     await controls.clear_previous()
@@ -358,8 +361,8 @@ async def test_simulation_controls_set_simulation_inputs(
         controls_client,
         control_client,
         sensors_client,
-        "thrs/sensors",
-        "thrs/controls",
+        "thrs",
+        "command",
     )
 
     await controls.clear_previous()

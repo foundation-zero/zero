@@ -81,7 +81,10 @@ class JsonSchemaDirective:
 
 
 @strawberry.experimental.pydantic.type(
-    model=Stamped, all_fields=True, json_schema_directive=JsonSchemaDirective
+    model=Stamped,
+    all_fields=True,
+    json_schema_directive=JsonSchemaDirective,
+    use_pydantic_alias=False,
 )
 class StampedType[T]:
     pass
@@ -100,7 +103,10 @@ def convert_module(module, class_name_prefix: str):
         if isclass(cls) and issubclass(cls, ThrsModel):
             gql_cls = type(f"{class_name_prefix}{name}Type", (object,), {})
             strawberry.experimental.pydantic.type(
-                model=cls, all_fields=True, json_schema_directive=JsonSchemaDirective
+                model=cls,
+                all_fields=True,
+                json_schema_directive=JsonSchemaDirective,
+                use_pydantic_alias=False,
             )(gql_cls)
 
 
@@ -116,7 +122,10 @@ def ensure_dedataframe(annotation):
     else:
         gql_cls = type(f"{annotation.__name__}SimulationType", (object,), {})
         strawberry.experimental.pydantic.type(
-            model=annotation, all_fields=True, json_schema_directive=JsonSchemaDirective
+            model=annotation,
+            all_fields=True,
+            json_schema_directive=JsonSchemaDirective,
+            use_pydantic_alias=False,
         )(gql_cls)
         _dedataframed_strawberries[annotation] = gql_cls
         return gql_cls
@@ -195,7 +204,7 @@ def ensure_input_type(annotation, *args, unstamp: bool) -> type:
             f"{annotation.__name__}InputType", annotation
         )
         input_type = strawberry.experimental.pydantic.input(
-            model=input_model, all_fields=True
+            model=input_model, all_fields=True, use_pydantic_alias=False
         )(type(f"{annotation.__name__}InputType", (object,), {}))
         _input_types[annotation.__name__] = input_type
         return input_type

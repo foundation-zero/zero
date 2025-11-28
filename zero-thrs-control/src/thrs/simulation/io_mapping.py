@@ -27,8 +27,8 @@ def flatten_model_values(model: ThrsModel, fmu_only: bool) -> dict[str, float]:
         return {
             _name_for_field(field_name, field): getattr(component, field_name).value
             for field_name, field in {
-                **component.model_fields,
-                **component.model_computed_fields,
+                **type(component).model_fields,
+                **type(component).model_computed_fields,
             }.items()
             if (included_in_fmu(field) if fmu_only else True)
         }

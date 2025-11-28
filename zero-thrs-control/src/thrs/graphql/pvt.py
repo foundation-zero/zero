@@ -23,6 +23,7 @@ from thrs.input_output.modules.pvt import (
     model=PvtSensorValues,
     all_fields=True,
     json_schema_directive=JsonSchemaDirective,
+    use_pydantic_alias=False,
 )
 class PvtSensorValuesType:
     pass
@@ -32,6 +33,7 @@ class PvtSensorValuesType:
     model=PvtControlValues,
     all_fields=True,
     json_schema_directive=JsonSchemaDirective,
+    use_pydantic_alias=False,
 )
 class PvtControlValuesType:
     pass
@@ -41,6 +43,7 @@ class PvtControlValuesType:
     model=PvtParameters,
     all_fields=True,
     json_schema_directive=JsonSchemaDirective,
+    use_pydantic_alias=False,
 )
 class PvtParametersType:
     pass
@@ -57,6 +60,7 @@ ensure_dedataframes(DedataframedSimulationOutputs)
     model=DedataframedSimulationInputs,
     all_fields=True,
     json_schema_directive=JsonSchemaDirective,
+    use_pydantic_alias=False,
 )
 class PvtSimulationInputsType:
     pass
@@ -66,6 +70,7 @@ class PvtSimulationInputsType:
     model=DedataframedSimulationOutputs,
     all_fields=True,
     json_schema_directive=JsonSchemaDirective,
+    use_pydantic_alias=False,
 )
 class PvtSimulationOutputsType:
     pass

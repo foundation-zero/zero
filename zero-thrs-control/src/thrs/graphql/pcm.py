@@ -23,6 +23,7 @@ from thrs.input_output.modules.pcm import (
     model=PcmSensorValues,
     all_fields=True,
     json_schema_directive=JsonSchemaDirective,
+    use_pydantic_alias=False,
 )
 class PcmSensorValuesType:
     pass
@@ -32,6 +33,7 @@ class PcmSensorValuesType:
     model=PcmControlValues,
     all_fields=True,
     json_schema_directive=JsonSchemaDirective,
+    use_pydantic_alias=False,
 )
 class PcmControlValuesType:
     pass
@@ -41,6 +43,7 @@ class PcmControlValuesType:
     model=PcmParameters,
     all_fields=True,
     json_schema_directive=JsonSchemaDirective,
+    use_pydantic_alias=False,
 )
 class PcmParametersType:
     pass
@@ -57,6 +60,7 @@ ensure_dedataframes(DedataframedSimulationOutputs)
     model=DedataframedSimulationInputs,
     all_fields=True,
     json_schema_directive=JsonSchemaDirective,
+    use_pydantic_alias=False,
 )
 class PcmSimulationInputsType:
     pass
@@ -66,6 +70,7 @@ class PcmSimulationInputsType:
     model=DedataframedSimulationOutputs,
     all_fields=True,
     json_schema_directive=JsonSchemaDirective,
+    use_pydantic_alias=False,
 )
 class PcmSimulationOutputsType:
     pass
