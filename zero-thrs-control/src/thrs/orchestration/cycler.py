@@ -1,4 +1,5 @@
 import warnings
+from thrs.classes.executor import ExecutionResult
 from thrs.input_output.alarms import BaseAlarms
 from thrs.orchestration.collector import Collector
 from thrs.orchestration.executor import Executor, SimulationExecutionResult
@@ -13,7 +14,8 @@ class Cycler:
         self._alarms = alarms
         self._control_values = self._control.initial().values
 
-    async def run(self, ticks: int, collector: Collector):
+    async def run(self, ticks: int, collector: Collector) -> ExecutionResult | None:
+        result = None
         for _ in range(ticks):
             result = await self._executor.tick(self._control_values)
             if isinstance(result, SimulationExecutionResult):
@@ -37,3 +39,4 @@ class Cycler:
                 warnings.warn(
                     f"Alarms detected: {alarms}"
                 )  # TODO: properly handle alarms
+        return result
