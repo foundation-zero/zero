@@ -15,7 +15,15 @@ import {
   ValueObject,
 } from "@/modules/domestic/types";
 
-import { ChartDataType, Entries, Stamped, StampedChart, TimeSeriesData } from "@common/types";
+import {
+  ChartDataType,
+  Entries,
+  History,
+  SeriesChart,
+  Stamped,
+  StampedChart,
+  TimeSeriesData,
+} from "@common/types";
 import { ArgumentsType, useIntervalFn } from "@vueuse/core";
 import { type ClassValue, clsx } from "clsx";
 import { twMerge } from "tailwind-merge";
@@ -308,6 +316,8 @@ export const extractHumiditySetpoint = extractActualControlValue(ControlType.HUM
 export const extractCO2Setpoint = extractActualControlValue(ControlType.CO2);
 
 export const toUpperCamelCase = (str: string) => str.replace(/([A-Z])/g, " $1").trim();
+export const toCapitalized = (str: string) =>
+  str.charAt(0).toUpperCase() + str.slice(1).toLocaleLowerCase();
 
 export const tScoped = (scope: string) => (key: string) => useI18n().t(`${scope}.${key}`);
 
@@ -367,6 +377,12 @@ export const toEntries = <K, V>(map: Map<K, V>): Entries<Map<K, V>>[] => {
   ) as Entries<Map<K, V>>[];
 };
 
+export function keysOf<T extends Record<string, unknown>>(obj: T): (keyof T)[];
+export function keysOf<T extends Record<string, unknown>>(obj?: T): (keyof T)[] | undefined;
+export function keysOf<T extends Record<string, unknown>>(obj?: T) {
+  return obj ? (Object.keys(obj) as (keyof T)[]) : undefined;
+}
+
 export const fromKeys = <K extends string | number | symbol, T>(
   keys: K[] | ReadonlyArray<K>,
   mapFn: (key: K) => T,
@@ -374,13 +390,18 @@ export const fromKeys = <K extends string | number | symbol, T>(
 
 function isChartType<T extends ChartDataType>(type: string) {
   function isChart(chart: StampedChart): chart is StampedChart<T>;
+  function isChart(chart: SeriesChart): chart is SeriesChart<T>;
   function isChart(chart: StampedChart[]): chart is StampedChart<T>[];
-  function isChart(chart: StampedChart | StampedChart[]): boolean {
-    return Array.isArray(chart)
-      ? chart.every(isChart)
+  function isChart(chart: SeriesChart[]): chart is SeriesChart<T>[];
+  function isChart(chart: StampedChart | StampedChart[] | SeriesChart | SeriesChart[]): boolean;
+  function isChart(chart: StampedChart | StampedChart[] | SeriesChart | SeriesChart[]): boolean {
+    return !!chart && Array.isArray(chart)
+      ? chart.length > 0 && chart.every(isChart)
       : chart.data.length > 0 &&
-          isStamped(chart.data[0]) &&
-          typeof (chart.data[0] as Stamped<unknown>).value === type;
+          ((isStamped(chart.data[0]) &&
+            typeof (chart.data[0] as Stamped<unknown>).value === type) ||
+            (chart.data[0] instanceof Array &&
+              typeof (chart.data[0] as TimeSeriesData)[1] === type));
   }
 
   return isChart;
@@ -388,5 +409,28 @@ function isChartType<T extends ChartDataType>(type: string) {
 export const isNumberChart = isChartType<number>("number");
 export const isStringChart = isChartType<string>("string");
 export const isBooleanChart = isChartType<boolean>("boolean");
+
+export const isRecord = <T extends Record<string, unknown>>(input: unknown): input is T =>
+  typeof input === "object" && input !== null && !Array.isArray(input);
+
+export const isHistoryOf = <T extends Record<string, unknown>>(
+  source: T,
+  target: unknown,
+): target is History<T> => {
+  if (!isRecord(source) || !isRecord(target)) return false;
+
+  return Object.keys(source).some((key) => {
+    const sourceValue = source[key as keyof T];
+    const targetValue = (target as History<T>)[key as keyof History<T>];
+
+    if (isStamped<ChartDataType>(sourceValue)) {
+      return Array.isArray(targetValue) && targetValue.every(isStamped<ChartDataType>);
+    } else if (isRecord(sourceValue)) {
+      return isHistoryOf(sourceValue as T, targetValue);
+    } else {
+      return true;
+    }
+  });
+};
 
 export const cast = <T>(input: unknown): T => input as T;

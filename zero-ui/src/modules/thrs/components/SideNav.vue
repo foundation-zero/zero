@@ -7,20 +7,16 @@ const { t } = useI18n();
 // Menu items.
 const menuItems = [
   {
-    title: t("views.thrs.hmi.controls"),
+    title: t("thrs.views.monitoring.title"),
+    to: "thrs/hmi/monitoring",
+  },
+  {
+    title: t("thrs.views.controls.title"),
     to: "thrs/hmi/controls",
   },
   {
-    title: t("views.thrs.hmi.parameters"),
+    title: t("thrs.views.parameters.title"),
     to: "thrs/hmi/parameters",
-  },
-  {
-    title: t("views.thrs.hmi.simulation"),
-    to: "thrs/hmi/simulation",
-  },
-  {
-    title: t("views.thrs.hmi.sensors"),
-    to: "thrs/hmi/sensors",
   },
 ];
 

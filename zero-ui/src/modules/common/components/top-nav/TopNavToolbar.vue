@@ -1,11 +1,17 @@
 <script setup lang="ts">
 import { cn } from "@common/lib/utils";
+import type { HTMLAttributes } from "vue";
+
+const props = defineProps<{ class?: HTMLAttributes["class"] }>();
 </script>
 
 <template>
-  <div :class="cn('flex items-center', String($attrs.class))">
+  <div :class="cn('border-border-subtle flex items-center border-b px-4', props.class)">
     <slot name="left">
-      <span class="flex w-1/4 items-center">
+      <span
+        class="flex items-center"
+        :class="{ 'w-1/4': $slots.center }"
+      >
         <slot name="left-content" />
       </span>
     </slot>

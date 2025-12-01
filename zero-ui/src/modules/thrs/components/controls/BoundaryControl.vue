@@ -58,9 +58,9 @@ const { submit, isSubmitting, error, flow, temperature } = controlValuesForm(
         <NumberField
           v-model="flow.value.value"
           class="grow"
-          :step="0.1"
+          :step="1"
           :min="0"
-          :max="1"
+          :max="100"
         >
           <NumberFieldContent>
             <NumberFieldDecrement />
@@ -76,9 +76,9 @@ const { submit, isSubmitting, error, flow, temperature } = controlValuesForm(
         <NumberField
           v-model="temperature.value.value"
           class="grow"
-          :step="0.1"
+          :step="1"
           :min="0"
-          :max="1"
+          :max="100"
         >
           <NumberFieldContent>
             <NumberFieldDecrement />

@@ -79,31 +79,6 @@
       "main": {
         "editSailset": "Edit sailset"
       }
-    },
-    "thrs": {
-      "hmi": {
-        "title": "THRS HMI",
-        "simulation": "Simulation",
-        "simulationInputs": "Simulation (inputs)",
-        "simulationOutputs": "Outputs",
-        "reset": "Reset",
-        "connect": "Connect",
-        "sensorValues": "Sensor values",
-        "controlValues": "Control values",
-        "controls": "Controls",
-        "parameters": "Parameters",
-        "sensors": "Sensors",
-        "controlParameters": "Control parameters",
-        "controlMode": "Control mode",
-        "setValues": "Set values",
-        "start": "Start",
-        "run": "Run",
-        "tuning": "Tuning",
-        "seconds": "Seconds",
-        "mode": "Mode",
-        "playbackRate": "Playback rate",
-        "stepInSeconds": "Step (seconds)"
-      }
     }
   },
   "components": {
@@ -126,14 +101,6 @@
       },
       "mode": {
         "label": "Mode"
-      }
-    },
-    "thrs": {
-      "valueTable": {
-        "component": "Component",
-        "property": "Property",
-        "value": "Value",
-        "lastChange": "Last change"
       }
     }
   }

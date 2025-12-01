@@ -6,7 +6,9 @@ import {
   SensorFields,
   SimulationComponentType,
   SimulationFields,
+  ThrusterMode,
 } from "@/modules/thrs/types";
+import { gql } from "@urql/vue";
 import {
   CONSUMERS_CONTROL_DEFINITION,
   CONSUMERS_PARAMETER_DEFINITION,
@@ -54,6 +56,13 @@ import {
 } from "./queries.generated";
 
 export * from "./consts.types";
+
+export const THRUSTER_MODES: ThrusterMode[] = [
+  ThrusterMode.Maneuvering,
+  ThrusterMode.Off,
+  ThrusterMode.Propulsion,
+  ThrusterMode.Regeneration,
+];
 
 export const toDefinitions = <T extends Record<string, ModuleDefinition>>(input: T): T => input;
 
@@ -165,3 +174,68 @@ export const QUERIES = toQueries({
     },
   },
 });
+
+export const QUERY_ALL = gql`
+  query QueryAll {
+    modules {
+      thrusters {
+        sensorValues {
+          ${THRUSTERS_SENSOR_QUERY}
+        }
+        controlValues {
+          ${THRUSTERS_CONTROL_QUERY}
+        }
+        parameters {
+          ${THRUSTERS_PARAMETERS_QUERY}
+        }
+        simulation {
+          inputs {
+            ${THRUSTERS_SIMULATION_INPUTS_QUERY}
+          }
+          outputs {
+            ${THRUSTERS_SIMULATION_OUTPUTS_QUERY}
+          }
+        }
+      }
+      pcm {
+        sensorValues {
+          ${PCM_SENSOR_QUERY}
+        }
+        controlValues {
+          ${PCM_CONTROL_QUERY}
+        }
+        parameters {
+          ${PCM_PARAMETERS_QUERY}
+        }
+        simulation {
+          inputs {
+            ${PCM_SIMULATION_INPUTS_QUERY}
+          }
+          outputs {
+            ${PCM_SIMULATION_OUTPUTS_QUERY}
+          }
+        }
+      }
+      pvt {
+        sensorValues {
+          ${PVT_SENSOR_QUERY}
+        }
+        controlValues {
+          ${PVT_CONTROL_QUERY}
+        }
+        parameters {
+          ${PVT_PARAMETERS_QUERY}
+        }
+        simulation {
+          inputs {
+            ${PVT_SIMULATION_INPUTS_QUERY}
+          }
+          outputs {
+            ${PVT_SIMULATION_OUTPUTS_QUERY}
+          }
+        }
+      }
+      
+    }
+  }
+`;

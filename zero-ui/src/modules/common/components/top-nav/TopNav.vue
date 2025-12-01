@@ -1,30 +1,19 @@
 <script setup lang="ts">
-import { Button } from "@/components/ui/button";
-import Toolbar from "@/modules/loads/components/Toolbar.vue";
-
-import { useScroll } from "@vueuse/core";
 import { useI18n } from "vue-i18n";
-import NavTabs from "./NavTabs.vue";
+import { useScrollOffset } from ".";
 
 const { t } = useI18n();
 
-const { y } = useScroll(window);
+const scrollOffset = useScrollOffset();
 </script>
 
 <template>
   <nav
     class="fixed right-0 left-0 flex h-[8rem] flex-col justify-between overflow-hidden backdrop-blur-md"
-    :style="{ top: `-${Math.min(y, 64)}px` }"
+    :style="{ top: scrollOffset }"
   >
     <h1 class="py-3 text-center text-xl font-bold tracking-widest">{{ t("app.title") }}</h1>
-    <Toolbar class="border-border-subtle items-center border-b px-4">
-      <template #left>
-        <Button>{{ t("views.loads.main.editSailset") }}</Button>
-        <NavTabs class="ml-4" />
-      </template>
-
-      <template #right> </template>
-    </Toolbar>
+    <slot />
   </nav>
 </template>
 

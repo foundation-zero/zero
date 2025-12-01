@@ -1,16 +1,14 @@
 <script setup lang="ts">
-import ModuleParameters from "@/modules/thrs/components/ModuleParameters.vue";
 import { ModuleDefinition, ParametersType } from "@/modules/thrs/types";
 
-import { DEFINITIONS, QUERIES } from "@/modules/thrs/lib/consts";
+import ParametersControls from "@/modules/thrs/components/ParametersControls.vue";
+import { DEFINITIONS } from "@/modules/thrs/lib/consts";
 import { objectFilter } from "@common/lib/utils";
-import { useClientHandle } from "@urql/vue";
 import { computed, inject, Ref } from "vue";
 import { useI18n } from "vue-i18n";
+import SimulationControls from "../components/SimulationControls.vue";
 
 const { t } = useI18n();
-
-const { client } = useClientHandle();
 
 const currentDefinition = inject<Ref<keyof typeof DEFINITIONS>>("currentModule")!;
 const definition = computed<ModuleDefinition>(() => DEFINITIONS[currentDefinition.value]);
@@ -34,25 +32,30 @@ const tuningParams = computed(
 );
 </script>
 <template>
-  <header class="mb-4 text-3xl capitalize">
-    {{ t("views.thrs.hmi.parameters") }}
+  <header class="mt-8 mb-4 text-3xl capitalize">
+    {{ t("thrs.views.simulation.title") }}
   </header>
 
-  <ModuleParameters
+  <SimulationControls
     :module="currentDefinition"
-    :parameters="regularParams"
-    :query="QUERIES[currentDefinition].parameters"
-    :client="client"
+    :definition="definition.simulation.inputs"
   />
 
   <header class="mt-8 mb-4 text-3xl capitalize">
-    {{ t("views.thrs.hmi.tuning") }}
+    {{ t("thrs.views.parameters.title") }}
   </header>
 
-  <ModuleParameters
+  <ParametersControls
     :module="currentDefinition"
-    :parameters="tuningParams"
-    :query="QUERIES[currentDefinition].parameters"
-    :client="client"
+    :definition="regularParams"
+  />
+
+  <header class="mt-8 mb-4 text-3xl capitalize">
+    {{ t("thrs.views.parameters.tuning") }}
+  </header>
+
+  <ParametersControls
+    :module="currentDefinition"
+    :definition="tuningParams"
   />
 </template>

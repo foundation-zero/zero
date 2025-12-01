@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { isStamped, toTimeSeriesData } from "@common/lib/utils";
-import { StampedChart } from "@common/types";
+import { SeriesChart, StampedChart } from "@common/types";
 import { useColorMode } from "@vueuse/core";
 import { LineChart } from "echarts/charts";
 import { GridComponent, LegendComponent } from "echarts/components";
@@ -13,7 +13,7 @@ import VChart from "vue-echarts";
 const props = defineProps<{
   max?: number;
   min?: number;
-  series: StampedChart<number>[];
+  series: StampedChart<number>[] | SeriesChart<number>[];
 }>();
 const { max, series, min } = toRefs(props);
 
@@ -42,6 +42,9 @@ const option = ref<ECBasicOption>({
     tooltip: {
       show: true,
     },
+  },
+  legend: {
+    show: true,
   },
   xAxis: {
     type: "time",
