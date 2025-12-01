@@ -8,39 +8,32 @@ from loads.api import app
 @pytest.mark.asyncio
 async def test_graphql():
     async with LifespanManager(app) as manager:
-        async with AsyncClient(transport=ASGITransport(app=manager.app), base_url="http://test") as client:
+        async with AsyncClient(
+            transport=ASGITransport(app=manager.app), base_url="http://test"
+        ) as client:
             response = client.post(
                 "/graphql",
                 json={
                     "query": """
                     query {
                         referenceValues(
-                            values: "headstay-load"
-                            case: {pcsMode: {aft: propulsion, fwd: propulsion}, aws: 25, awa: 0, seaState: wet}
-                            sails: [full_mizzen_sail, full_main_sail, main_blade, mizzen_jib]
+                            case: {twa: 45, tws: 16, sailset: [full_main, full_mizzen, blade]}
+                            variables: "headstay-load"
                         )
                         {
-                            ranges {
-                                errorTooHigh
-                                errorTooLow
-                                warningTooHigh
-                                warningTooLow
-                            }
-                            target {
-                                target
-                                unit
-                            }
-                            value {
-                                id
-                                name
-                            }
-                            masts {
-                                id
-                                name
-                            }
+                    reference {
+                        alarmLow
+                        warningLow
+                        target
+                        warningHigh
+                        alarmHigh
+                        }
+                    variable {
+                        id
                         }
                     }
-                    """
+                }
+                """
                 },
             )
 
@@ -50,27 +43,15 @@ async def test_graphql():
                 "data": {
                     "referenceValues": [
                         {
-                            "ranges": {
-                                "errorTooHigh": None,
-                                "errorTooLow": None,
-                                "warningTooHigh": None,
-                                "warningTooLow": None,
+                            "reference": {
+                                "alarmLow": None,
+                                "warningLow": None,
+                                "target": 10,
+                                "warningHigh": None,
+                                "alarmHigh": None,
                             },
-                            "target": {"target": "5.0", "unit": "tonne"},
-                            "value": {"id": "headstay-load", "name": "Headstay load"},
-                            "masts": {"id": "main", "name": "Main mast"},
-                        },
-                        {
-                            "ranges": {
-                                "errorTooHigh": None,
-                                "errorTooLow": None,
-                                "warningTooHigh": None,
-                                "warningTooLow": None,
-                            },
-                            "target": {"target": "2.5", "unit": "tonne"},
-                            "value": {"id": "headstay-load", "name": "Headstay load"},
-                            "masts": {"id": "mizzen", "name": "Mizzen mast"},
-                        },
+                            "variable": {"id": "headstay-load"},
+                        }
                     ]
                 }
             }

@@ -1,12 +1,12 @@
 CREATE SCHEMA IF NOT EXISTS loads;
 
 DROP TYPE IF EXISTS unit CASCADE;
-CREATE TYPE unit AS ENUM ('tonne', 'percent');
+CREATE TYPE unit AS ENUM ('tonne');
 
 DROP TABLE IF EXISTS loads.sails CASCADE;
 CREATE TABLE loads.sails (
     id TEXT PRIMARY KEY,             
-    abbreviation TEXT,               
+    abbreviation TEXT NOT NULL,               
     position_id TEXT NOT NULL,       
     name TEXT NOT NULL              
 );
@@ -92,8 +92,8 @@ INSERT INTO loads.sails (id, abbreviation, position_id, name) VALUES
   ('gennaker', 'A2', 'fore-outer', 'Gennaker'),
   ('storm-jib', 'J5', 'fore-inner', 'Storm Jib'),
   ('staysail', 'J4', 'fore-inner', 'Staysail'),
-  ('mizzen-jib', 'MJ', 'mizzen-fore', 'Mizzen Jib'),
-  ('mizzen-genoa', 'MG', 'mizzen-fore', 'Mizzen Genoa');
+  ('mizzen-jib', 'MZJ', 'mizzen-fore', 'Mizzen Jib'),
+  ('mizzen-genoa', 'MZG', 'mizzen-fore', 'Mizzen Genoa');
 
 -- Generate all possible sail sets based on position (including those with NULLs for missing sails)
 WITH main_sails AS (
@@ -155,7 +155,32 @@ INSERT INTO loads.tws_ranges (tws) VALUES
   ('[40,50)'),
   ('[50,)');
 
+INSERT INTO loads.load_cases (twa_range_id, tws_range_id, sail_set_id)
+SELECT 
+    twa_range.id AS twa_range_id,
+    tws_range.id AS tws_range_id,
+    sail_set.id AS sail_set_id
+FROM loads.twa_ranges AS twa_range
+CROSS JOIN loads.tws_ranges AS tws_range
+CROSS JOIN loads.sail_sets AS sail_set;
+
 -- Define variables
--- Possibly extend with relevant sail or sail set in the future
 INSERT INTO loads.variables (id, name, unit) VALUES
   ('headstay-load', 'Headstay Load', 'tonne');
+
+-- Example reference value for a specific load case
+INSERT INTO loads.reference_values (variable_id, load_case_id, alarm_low, warning_low, target, warning_high, alarm_high)
+SELECT 
+    'headstay-load',
+    load_cases.id,
+    NULL,
+    NULL,
+    10.0,
+    NULL,
+    NULL
+FROM loads.load_cases
+JOIN loads.twa_ranges AS twa_range ON load_cases.twa_range_id = twa_range.id
+JOIN loads.tws_ranges AS tws_range ON load_cases.tws_range_id = tws_range.id
+JOIN loads.sail_sets AS sail_set ON load_cases.sail_set_id = sail_set.id
+WHERE twa_range.twa = '[40,50)'::numrange AND tws_range.tws = '[15,20)'::numrange
+AND sail_set.sail_set = ARRAY['full-main', 'full-mizzen', 'blade'];

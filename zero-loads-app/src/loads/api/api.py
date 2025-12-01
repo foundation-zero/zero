@@ -12,7 +12,7 @@ from loads.config import settings
 
 from .db import SessionManager
 from .model import get_loads_reference_values
-from .types import CaseInput, ReferenceValueType, Sails
+from .types import CaseInput, ReferenceValueType
 
 logger = logging.getLogger("api")
 
@@ -54,12 +54,11 @@ class Query:
     async def reference_values(
         self,
         info: strawberry.Info[MyContext],
-        values: list[strawberry.ID],
-        sails: list[Sails],
-        case: CaseInput | None = None,
+        variables: list[strawberry.ID],
+        case: CaseInput,
     ) -> list[ReferenceValueType] | None:
         return await get_loads_reference_values(
-            values=values, sails=sails, case=case, session=info.context.session
+            variables=variables, case=case, session=info.context.session
         )
 
 
