@@ -86,7 +86,7 @@ class PvtSensorValues(ThrsModel):
     # pvt_pressure_supply: Annotated[
     #    sensor.PressureSensor,
     #    component_meta(yard_tag="50001097-06", component_type="pressure_sensor"),
-    # ]
+    # ] #TODO: add to FMU
     pvt_switch_main_fwd: Annotated[
         sensor.Valve,
         component_meta(
