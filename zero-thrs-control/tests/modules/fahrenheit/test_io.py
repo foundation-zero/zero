@@ -3,6 +3,7 @@ from thrs.input_output.modules.fahrenheit import (
     FahrenheitControlValues,
     FahrenheitSensorValues,
     FahrenheitSimulationInputs,
+    FahrenheitSimulationOutputs,
 )
 
 
@@ -12,7 +13,7 @@ def test_fahrenheit_sheet_names():
         FahrenheitSensorValues.zero(),
         FahrenheitControlValues.zero(),
         FahrenheitSimulationInputs.zero(),
-        FahrenheitSimulationInputs.zero(),
+        FahrenheitSimulationOutputs.zero(),
     )
 
     assert not missing_in_py, f"Missing in Python: {missing_in_py}"

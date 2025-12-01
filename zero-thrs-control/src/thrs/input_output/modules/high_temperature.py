@@ -42,13 +42,10 @@ class HighTemperatureSimulationInputs(SimulationInputs):
     pvt_main_fwd: simulation.HeatSource
     pvt_main_aft: simulation.HeatSource
     pvt_owners: simulation.HeatSource
-    pvt_pump_failure_switch_main_fwd: simulation.ValvePosition
-    pvt_pump_failure_switch_main_aft: simulation.ValvePosition
-    pvt_pump_failure_switch_owners: simulation.ValvePosition
     pvt_seawater_supply: simulation.Boundary
     pcm_freshwater_supply: simulation.Boundary
-    consumers_fahrenheit_supply: simulation.Boundary
-    consumers_boosting_supply: simulation.Boundary
+    consumers_fahrenheit_supply: simulation.FmuBoundary
+    consumers_boosting_supply: simulation.FmuBoundary
 
 
 class HighTemperatureSimulationOutputs(

@@ -478,15 +478,15 @@ class ThrustersControl(
         )
 
     def _pcs_off(self, sensor_values: ThrustersSensorValues):
-        return sensor_values.thrusters_pcs.mode.value == PcsMode.OFF
+        return sensor_values.thrusters_pcs.mode.value == PcsMode.OFF.value
 
     def _pcs_maneuvering(self, sensor_values: ThrustersSensorValues):
-        return sensor_values.thrusters_pcs.mode.value == PcsMode.MANEUVERING
+        return sensor_values.thrusters_pcs.mode.value == PcsMode.MANEUVERING.value
 
     def _pcs_propulsion_hydrogeneration(self, sensor_values: ThrustersSensorValues):
         return sensor_values.thrusters_pcs.mode.value in {
-            PcsMode.PROPULSION,
-            PcsMode.REGENERATION,
+            PcsMode.PROPULSION.value,
+            PcsMode.REGENERATION.value,
         }
 
     def _activate_pump(self, sensor_values: ThrustersSensorValues):

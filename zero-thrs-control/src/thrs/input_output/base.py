@@ -27,7 +27,8 @@ class ThrsModel(BaseModel):
     model_config = ConfigDict(
         alias_generator=AliasGenerator(
             serialization_alias=hyphenize,
-        )
+        ),
+        use_enum_values=True,
     )
 
     @classmethod

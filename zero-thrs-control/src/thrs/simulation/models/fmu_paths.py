@@ -1,7 +1,7 @@
 from pathlib import Path
 
 thrusters_path = str(Path(__file__).resolve().parent / "thruster_moduleV18.fmu")
-pvt_path = str(Path(__file__).resolve().parent / "pvt_moduleV13_1.fmu")
-consumers_path = str(Path(__file__).resolve().parent / "consumers_moduleV6_3.fmu")
+pvt_path = str(Path(__file__).resolve().parent / "pvt_moduleV15.fmu")
+consumers_path = str(Path(__file__).resolve().parent / "consumers_moduleV7_1.fmu")
 pcm_path = str(Path(__file__).resolve().parent / "pcm_moduleV7.fmu")
-high_temperature_path = str(Path(__file__).resolve().parent / "HT_System_moduleV8.fmu")
+high_temperature_path = str(Path(__file__).resolve().parent / "HT_systemV12.fmu")

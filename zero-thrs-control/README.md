@@ -11,7 +11,8 @@ poetry run fmpy compile <path-to-fmu-file>
 Note: Setting CFLAGS prior is required to resolve mkdtemp function declaration conflicts in Dymola 2026 generated code when compiling on macOS.
 
 ```bash
-export CFLAGS="-include unistd.h" poetry run fmpy compile <path-to-fmu-file>
+export CFLAGS="-include unistd.h" 
+poetry run fmpy compile <path-to-fmu-file>
 ```
 
 ## Simulator

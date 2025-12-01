@@ -105,12 +105,12 @@ class ConsumersControlValues(ThrsModel):
 
 
 class ConsumersSimulationInputs(SimulationInputs):
-    consumers_fahrenheit_supply: simulation.Boundary
+    consumers_fahrenheit_supply: simulation.FmuBoundary
+    consumers_boosting_supply: simulation.FmuBoundary
     consumers_module_supply: simulation.Boundary
-    consumers_boosting_supply: simulation.Boundary
 
 
 class ConsumersSimulationOutputs(SimulationValues):
-    consumers_fahrenheit_return: simulation.Boundary
-    consumers_boosting_return: simulation.Boundary
+    consumers_fahrenheit_return: simulation.FmuBoundary
+    consumers_boosting_return: simulation.FmuBoundary
     consumers_module_return: simulation.Boundary

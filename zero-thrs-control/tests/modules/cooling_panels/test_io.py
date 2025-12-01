@@ -3,6 +3,7 @@ from thrs.input_output.modules.cooling_panels import (
     CoolingPanelsControlValues,
     CoolingPanelsSensorValues,
     CoolingPanelsSimulationInputs,
+    CoolingPanelsSimulationOutputs,
 )
 
 
@@ -12,7 +13,7 @@ def test_cooling_panels_sheet_names():
         CoolingPanelsSensorValues.zero(),
         CoolingPanelsControlValues.zero(),
         CoolingPanelsSimulationInputs.zero(),
-        CoolingPanelsSimulationInputs.zero(),
+        CoolingPanelsSimulationOutputs.zero(),
     )
 
     assert not missing_in_py, f"Missing in Python: {missing_in_py}"
