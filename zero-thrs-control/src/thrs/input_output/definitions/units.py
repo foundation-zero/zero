@@ -120,6 +120,7 @@ OnOff: TypeAlias = Annotated[bool, UnitMeta(modelica_name="bool")]
 Charged: TypeAlias = Annotated[bool, UnitMeta(modelica_name="bool")]
 Tuning: TypeAlias = tuple[float, float, float]
 Overpressure: TypeAlias = Annotated[float, UnitMeta(modelica_name="Bar")]
+Liter: TypeAlias = Annotated[float, Field(ge=0), UnitMeta(modelica_name="Liter")]
 
 
 class PcsMode(Enum):

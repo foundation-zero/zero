@@ -1,24 +1,61 @@
 from datetime import datetime, timedelta
 from pytest import fixture
 
+from tests.modules.thrusters.conftest import ThrustersSimulationExecutor
 from thrs.control.modules.thrusters import ThrustersControl, ThrustersParameters
-
-
-class TestTime:
-    def __init__(self, duration: timedelta = timedelta(seconds=1)):
-        self._time = datetime.now()
-        self._duration = duration
-
-    def time(self) -> datetime:
-        self._time += self._duration
-        return self._time
+from thrs.input_output.base import Stamped
+from thrs.input_output.definitions.simulation import (
+    Boundary,
+    Pcs,
+    TemperatureBoundary,
+    Thruster,
+)
+from thrs.input_output.definitions.units import PcsMode
+from thrs.input_output.modules.thrusters import (
+    ThrustersSensorValues,
+    ThrustersSimulationInputs,
+    ThrustersSimulationOutputs,
+)
+from thrs.orchestration.executor import SimulationExecutor
+from thrs.simulation.fmu import Fmu
+from thrs.simulation.io_mapping import IoMapping
+from thrs.simulation.models.fmu_paths import thrusters_path
 
 
 @fixture
-def thrusters_control(test_time) -> ThrustersControl:
-    return ThrustersControl(ThrustersParameters(), test_time.time)
+def simulation_inputs():
+    return ThrustersSimulationInputs(
+        thrusters_aft=Thruster(
+            heat_flow=Stamped.stamp(9000), active=Stamped.stamp(True)
+        ),
+        thrusters_fwd=Thruster(
+            heat_flow=Stamped.stamp(4300), active=Stamped.stamp(True)
+        ),
+        thrusters_seawater_supply=Boundary(
+            temperature=Stamped.stamp(32), flow=Stamped.stamp(64)
+        ),
+        thrusters_module_supply=TemperatureBoundary(temperature=Stamped.stamp(50)),
+        thrusters_pcs=Pcs(mode=Stamped.stamp(PcsMode.PROPULSION)),
+    )
 
 
-@fixture()
-def test_time() -> TestTime:
-    return TestTime()
+@fixture
+def io_mapping():
+    with Fmu(thrusters_path) as fmu:
+        yield IoMapping(
+            fmu,
+            ThrustersSensorValues,
+            ThrustersSimulationOutputs,
+        )
+
+
+@fixture
+def executor(io_mapping, simulation_inputs) -> ThrustersSimulationExecutor:
+    return SimulationExecutor(
+        io_mapping, simulation_inputs, datetime.now(), timedelta(seconds=1)
+    )
+
+
+@fixture
+def thrusters_control(executor) -> ThrustersControl:
+    return ThrustersControl(ThrustersParameters(), executor.time)
