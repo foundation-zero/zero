@@ -13,9 +13,6 @@ class BoilersSensorValues(ThrsModel):
     boilers_pump: Annotated[
         sensor.Pump, component_meta(yard_tag="50001022", component_type="pump")
     ]
-    boilers_heatpump: Annotated[
-        sensor.HeatPump, component_meta(yard_tag="50001035", component_type="heatpump")
-    ]
     boilers_temperature_chiller_return: Annotated[
         sensor.TemperatureSensor,
         component_meta(yard_tag="50001038-25", component_type="temperature_sensor"),
@@ -182,18 +179,6 @@ class BoilersSensorValues(ThrsModel):
             yard_tag="50001067-18", component_type="valve", valve_type="switch"
         ),
     ]
-    boilers_level_switch_tank1: Annotated[
-        sensor.LevelSwitch,
-        component_meta(yard_tag="50001098-01", component_type="level_switch", included_in_fmu=False),
-    ]
-    boilers_level_switch_tank2: Annotated[
-        sensor.LevelSwitch,
-        component_meta(yard_tag="50001098-02", component_type="level_switch", included_in_fmu=False),
-    ]
-    boilers_level_switch_tank3: Annotated[
-        sensor.LevelSwitch,
-        component_meta(yard_tag="50001098-03", component_type="level_switch", included_in_fmu=False),
-    ]
 
 
 class BoilersControlValues(ThrsModel):
@@ -313,6 +298,7 @@ class BoilersSimulationInputs(SimulationInputs):
     boilers_converters_supply: simulation.FmuBoundary
     boilers_high_temperature_supply: simulation.FmuBoundary
     boilers_freshwater_supply: simulation.FmuBoundary
+    boilers_freshwater_pressure: simulation.PressureBoundary
 
 
 class BoilersSimulationOutputs(SimulationValues):

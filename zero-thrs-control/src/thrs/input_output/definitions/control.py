@@ -46,7 +46,8 @@ class Fahrenheit(ThrsModel):
 
 
 class HeatPump(ThrsModel):
-    pass  # TODO: Define heat pump model
+    on: Stamped[OnOff]
+    temperature_setpoint: Stamped[Celsius]
 
 
 __all__ = ["Pump", "Valve", "Pcm", "Fahrenheit", "HeatPump"]

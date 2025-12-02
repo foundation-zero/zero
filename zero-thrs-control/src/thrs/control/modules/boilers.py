@@ -35,7 +35,10 @@ _INITIAL_CONTROL_VALUES = BoilersControlValues(
         dutypoint=Stamped(value=0.0, timestamp=_ZERO_TIME),
         on=Stamped(value=False, timestamp=_ZERO_TIME),
     ),
-    boilers_heatpump=control.HeatPump(),
+    boilers_heatpump=control.HeatPump(
+        on=Stamped(value=False, timestamp=_ZERO_TIME),
+        temperature_setpoint=Stamped(value=50.0, timestamp=_ZERO_TIME),
+    ),
     boilers_flowcontrol_converters=control.Valve(
         setpoint=Stamped(value=0.5, timestamp=_ZERO_TIME)
     ),
@@ -242,7 +245,6 @@ class TanksController:
             tank.disabled = disabled
 
     def _select_tank_in_use(self, parameters: BoilersParameters):
-        # stop using when empty
         if self._tank_in_use is not None and self._tank_in_use.empty(parameters):
             self._tank_in_use.stop_use(self._time)
             self._tank_in_use = None
@@ -256,12 +258,10 @@ class TanksController:
                 self._tank_in_use.use(self._time)
 
     def _select_filling_tank(self, parameters: BoilersParameters):
-        # stop filling when full
         if self._filling_tank is not None and self._filling_tank.full(parameters):
             self._filling_tank.stop_filling(self._time)
             self._filling_tank = None
 
-        # choose new tank to fill
         if self._filling_tank is None:
             self._filling_tank = next(
                 (tank for tank in self.available_tanks if tank.fillable(parameters)),
@@ -271,7 +271,6 @@ class TanksController:
                 self._filling_tank.fill(self._time)
 
     def _select_boosting_tank(self, parameters: BoilersParameters):
-        # stop boosting when temp reached
         if (
             self._boosting_tank is not None
             and self._boosting_tank.above_boosting_setpoint(parameters)
@@ -279,24 +278,16 @@ class TanksController:
             self._boosting_tank.stop_boosting(self._time)
             self._boosting_tank = None
 
-        # choose new tank to boost
-        # TODO: add logic for stopping boost based on deltaT? how to deal with temperature supply..switch to another tank to boost with lower temperature? depends on the boosting temp available in each loop..for now, we assume to be able to get to 55 for all..
-        # TODO: should we be choosing the highest temperature tank that is below setpoint? this depends on available temperature...
-        # TODO: boosting depends on state machine...should we open the valves when boosting is inactive? Maybe only open boost valves of the boosting tank when mode is engaged?
         if self._boosting_tank is None:
             boostable_tanks = [
-                tank
-                for tank in self.available_tanks
-                if tank.boostable(
-                    parameters
-                )  # start boosting if below tank temperature setpoint, stop boosting if above boosting temperature setpoint
-            ]  # TODO: this depends on available supply temperature vs current tank temperature
+                tank for tank in self.available_tanks if tank.boostable(parameters)
+            ]
             if boostable_tanks:
                 self._boosting_tank = max(
                     boostable_tanks,
                     key=lambda tank: tank.temperature
                     if tank.temperature is not None
-                    else 0,  # select hottest tank or coldest tank?
+                    else 0,
                 )
                 self._boosting_tank.boost(self._time)
 
@@ -322,7 +313,7 @@ class BoilersControl(
         self.states = [
             State(
                 name="idle",
-                on_enter=[self._deactivate_pump],
+                on_enter=[self._deactivate_pump, self._disable_pump_flow_control],
                 on_exit=[self._activate_pump],
             ),
             State(
@@ -343,8 +334,10 @@ class BoilersControl(
                 name="boosting_heatpump",
                 on_enter=[
                     self._set_valves_to_boosting_heatpump,
+                    self._activate_heatpump,
                     self._enable_pump_flow_control,
                 ],
+                on_exit=[self._deactivate_heatpump],
             ),
         ]
         # TODO: we want to prioritize low temp boosting, then high temp boosting, then heatpump boosting
@@ -514,6 +507,19 @@ class BoilersControl(
 
     def _deactivate_pump(self):
         self._current_values.boilers_pump.on = Stamped(
+            value=False, timestamp=self._time()
+        )
+
+    def _activate_heatpump(self):
+        self._current_values.boilers_heatpump.on = Stamped(
+            value=True, timestamp=self._time()
+        )
+        self._current_values.boilers_heatpump.temperature_setpoint = Stamped(
+            value=self._parameters.boosting_temperature_setpoint, timestamp=self._time()
+        )
+
+    def _deactivate_heatpump(self):
+        self._current_values.boilers_heatpump.on = Stamped(
             value=False, timestamp=self._time()
         )
 

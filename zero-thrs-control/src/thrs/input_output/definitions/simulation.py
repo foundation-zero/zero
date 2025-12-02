@@ -1,6 +1,7 @@
 from typing import Annotated
 from thrs.input_output.base import Stamped, StampedDf, ThrsModel, field_meta
 from thrs.input_output.definitions.units import (
+    Bar,
     Celsius,
     LMin,
     Overpressure,
@@ -30,6 +31,10 @@ class FmuBoundary(ThrsModel):
 
 class TemperatureBoundary(ThrsModel):
     temperature: Stamp[Celsius]
+
+
+class PressureBoundary(ThrsModel):
+    pressure: Stamp[Bar]
 
 
 class FlowBoundary(ThrsModel):
