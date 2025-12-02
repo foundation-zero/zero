@@ -11,14 +11,14 @@ async def test_graphql():
         async with AsyncClient(
             transport=ASGITransport(app=manager.app), base_url="http://test"
         ) as client:
-            response = client.post(
+            response = await client.post(
                 "/graphql",
                 json={
                     "query": """
                     query {
                         referenceValues(
-                            case: {twa: 45, tws: 16, sailset: [full_main, full_mizzen, blade]}
-                            variables: "headstay-load"
+                            case: {twa: 27, tws: 16, sailset: [full_main, full_mizzen, blade]}
+                            variables: "main-sheet-load"
                         )
                         {
                     reference {
@@ -37,7 +37,6 @@ async def test_graphql():
                 },
             )
 
-            response = await response
             assert response.status_code == 200
             assert response.json() == {
                 "data": {
@@ -46,11 +45,11 @@ async def test_graphql():
                             "reference": {
                                 "alarmLow": None,
                                 "warningLow": None,
-                                "target": 10,
+                                "target": None,
                                 "warningHigh": None,
-                                "alarmHigh": None,
+                                "alarmHigh": 15.0,
                             },
-                            "variable": {"id": "headstay-load"},
+                            "variable": {"id": "main-sheet-load"},
                         }
                     ]
                 }

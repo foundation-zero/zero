@@ -58,17 +58,25 @@ class LoadsModel(BaseModel):
 
             if isinstance(base_type, type) and issubclass(base_type, LoadsModel):
                 values = {
-                    sub_field_name: cls._create_generator(sub_field_info.annotation, sub_field_info.metadata)
+                    sub_field_name: cls._create_generator(
+                        sub_field_info.annotation, sub_field_info.metadata
+                    )
                     for sub_field_name, sub_field_info in base_type.model_fields.items()
                 }
 
-                config.append(GeneratorConfig(topic=topic, interval=interval, values=values))
+                config.append(
+                    GeneratorConfig(topic=topic, interval=interval, values=values)
+                )
             else:
                 config.append(
                     GeneratorConfig(
                         topic=topic,
                         interval=interval,
-                        values={component: cls._create_generator(base_type, field_info.metadata)},
+                        values={
+                            component: cls._create_generator(
+                                base_type, field_info.metadata
+                            )
+                        },
                     )
                 )
 
@@ -97,7 +105,12 @@ class LoadsModel(BaseModel):
 
     @staticmethod
     def _extract_constraints(meta: list[Any]) -> Dict[str, Any]:
-        return {attr: getattr(m, attr) for m in meta for attr in ("gt", "ge", "lt", "le") if hasattr(m, attr)}
+        return {
+            attr: getattr(m, attr)
+            for m in meta
+            for attr in ("gt", "ge", "lt", "le")
+            if hasattr(m, attr)
+        }
 
     @staticmethod
     def _unwrap_annotated(tp: Any) -> tuple[type | Any, list[Any]]:

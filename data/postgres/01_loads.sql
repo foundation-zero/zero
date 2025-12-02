@@ -43,13 +43,13 @@ CREATE TABLE loads.aws_ranges (
 DROP TABLE IF EXISTS loads.load_cases CASCADE;
 CREATE TABLE loads.load_cases (
   id SERIAL PRIMARY KEY,
-  twa_range_id INTEGER NOT NULL REFERENCES loads.twa_ranges(id) ON DELETE RESTRICT,
-  tws_range_id INTEGER NOT NULL REFERENCES loads.tws_ranges(id) ON DELETE RESTRICT,
+  awa_range_id INTEGER NOT NULL REFERENCES loads.awa_ranges(id) ON DELETE RESTRICT,
+  aws_range_id INTEGER NOT NULL REFERENCES loads.aws_ranges(id) ON DELETE RESTRICT,
   sail_set_id INTEGER NOT NULL REFERENCES loads.sail_sets(id) ON DELETE RESTRICT,
   -- Future extensions:
   -- sea_state_id INTEGER REFERENCES loads.sea_states(id),
   -- propulsion_mode_id INTEGER REFERENCES loads.propulsion_modes(id),
-  UNIQUE(twa_range_id, tws_range_id, sail_set_id)
+  UNIQUE(awa_range_id, aws_range_id, sail_set_id)
 );
 
 DROP TABLE IF EXISTS loads.variables CASCADE;
@@ -247,13 +247,13 @@ INSERT INTO loads.variables (id, name, unit) VALUES
 -- Example reference value for a specific load case
 INSERT INTO loads.reference_values (variable_id, load_case_id, alarm_low, warning_low, target, warning_high, alarm_high)
 SELECT 
-    'headstay-load',
+    'main-sheet-load',
     load_cases.id,
     NULL,
     NULL,
     NULL,
     NULL,
-    22.0
+    15.0
 FROM loads.load_cases
 JOIN loads.awa_ranges AS awa_range ON load_cases.awa_range_id = awa_range.id
 JOIN loads.aws_ranges AS aws_range ON load_cases.aws_range_id = aws_range.id

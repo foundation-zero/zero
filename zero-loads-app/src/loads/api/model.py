@@ -7,11 +7,11 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import selectinload
 
 from .schema import (
+    AwaRanges,
+    AwsRanges,
     LoadCases,
     ReferenceValues,
     SailSets,
-    TwaRanges,
-    TwsRanges,
 )
 from .types import (
     CaseInput,
@@ -38,11 +38,11 @@ async def get_loads_reference_values(
         .where(
             ReferenceValues.load_case.has(
                 and_(
-                    LoadCases.twa_range.has(
-                        TwaRanges.twa.contains(cast(case.twa, NUMERIC))
+                    LoadCases.awa_range.has(
+                        AwaRanges.awa.contains(cast(case.twa, NUMERIC))
                     ),
-                    LoadCases.tws_range.has(
-                        TwsRanges.tws.contains(cast(case.tws, NUMERIC))
+                    LoadCases.aws_range.has(
+                        AwsRanges.aws.contains(cast(case.tws, NUMERIC))
                     ),
                     LoadCases.sail_set.has(
                         and_(

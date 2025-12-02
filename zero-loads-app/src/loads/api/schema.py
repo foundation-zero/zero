@@ -7,15 +7,15 @@ metadata_obj = MetaData(schema="loads")
 Base = declarative_base(metadata=metadata_obj)
 
 
-class Sails(Base):
+class Sails(Base):  # type:ignore
     __tablename__ = "sails"
     id = Column(String, primary_key=True)
     abbreviation = Column(String, nullable=False)
-    position_id = Column(String, nullable=False)
+    position = Column(String, nullable=False)
     name = Column(String, nullable=False)
 
 
-class SailSets(Base):
+class SailSets(Base):  # type:ignore
     __tablename__ = "sail_sets"
 
     id = Column(Integer, primary_key=True)
@@ -30,7 +30,7 @@ class SailSets(Base):
     mizzen_fore_sail_id = Column(
         String, ForeignKey("sails.id"), nullable=True, index=True
     )
-    sail_set = Column(ARRAY(String))
+    sail_set = Column(ARRAY(String))  # type: ignore
 
     main_sail = relationship("Sails", foreign_keys=[main_sail_id])
     mizzen_sail = relationship("Sails", foreign_keys=[mizzen_sail_id])
@@ -39,48 +39,51 @@ class SailSets(Base):
     mizzen_fore_sail = relationship("Sails", foreign_keys=[mizzen_fore_sail_id])
 
 
-class TwaRanges(Base):
-    __tablename__ = "twa_ranges"
+class AwaRanges(Base):  # type:ignore
+    __tablename__ = "awa_ranges"
 
     id = Column(Integer, primary_key=True)
-    twa = Column(NUMRANGE, nullable=False)
+    awa = Column(NUMRANGE, nullable=False)
 
 
-class TwsRanges(Base):
-    __tablename__ = "tws_ranges"
+class AwsRanges(Base):  # type:ignore
+    __tablename__ = "aws_ranges"
 
     id = Column(Integer, primary_key=True)
-    tws = Column(NUMRANGE, nullable=False)
+    aws = Column(NUMRANGE, nullable=False)
 
 
-class LoadCases(Base):
+class LoadCases(Base):  # type:ignore
     __tablename__ = "load_cases"
 
     id = Column(Integer, primary_key=True)
-    twa_range_id = Column(
-        Integer, ForeignKey("twa_ranges.id"), nullable=False, index=True
+    awa_range_id = Column(
+        Integer, ForeignKey("awa_ranges.id"), nullable=False, index=True
     )
-    tws_range_id = Column(
-        Integer, ForeignKey("tws_ranges.id"), nullable=False, index=True
+    aws_range_id = Column(
+        Integer, ForeignKey("aws_ranges.id"), nullable=False, index=True
     )
     sail_set_id = Column(
         Integer, ForeignKey("sail_sets.id"), nullable=False, index=True
     )
 
-    twa_range = relationship("TwaRanges")
-    tws_range = relationship("TwsRanges")
+    awa_range = relationship("AwaRanges")
+    aws_range = relationship("AwsRanges")
     sail_set = relationship("SailSets")
 
 
-class Variables(Base):
+class Variables(Base):  # type: ignore
     __tablename__ = "variables"
 
     id = Column(String, primary_key=True)
     name = Column(String, nullable=False)
     unit = Column(String, nullable=False)
+    minimum_value = Column(Float, nullable=True)
+    maximum_value = Column(Float, nullable=True)
+    tag = Column(String, nullable=True)
 
 
-class ReferenceValues(Base):
+class ReferenceValues(Base):  # type:ignore
     __tablename__ = "reference_values"
 
     id = Column(
