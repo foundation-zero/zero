@@ -1,4 +1,4 @@
 from .base import LoadsModel
-from .messaging import sail_systems
+from .messaging import MessagingModule, sail_systems
 
-__all__ = ["LoadsModel", "sail_systems"]
+__all__ = ["LoadsModel", "MessagingModule", "sail_systems"]

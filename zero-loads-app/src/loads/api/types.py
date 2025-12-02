@@ -51,6 +51,12 @@ class ValueType:
 
 
 @strawberry.type
+class ActualType:
+    id: str
+    value: float | None
+
+
+@strawberry.type
 class TargetType:
     target: str
     unit: Unit

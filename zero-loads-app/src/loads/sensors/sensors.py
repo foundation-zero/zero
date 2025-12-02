@@ -1,5 +1,3 @@
-# Based on Sail-Hydraulic PLC IO List
-
 from .base import LoadsModel
 from .units import (
     Load,
@@ -20,12 +18,40 @@ class TensionCylinder(LoadsModel):
     ow_ActPos2_pm: RelativePosition
     ow_ActLoad_10kg: Load
 
+    @property
+    def position(self) -> Position:
+        return self.ow_ActPos_mm
+
+    @property
+    def relative_position(self) -> RelativePosition:
+        return self.ow_ActPos_pm
+
+    @property
+    def position_2(self) -> Position:
+        return self.ow_ActPos2_mm
+
+    @property
+    def relative_position_2(self) -> RelativePosition:
+        return self.ow_ActPos2_pm
+
+    @property
+    def load(self) -> Load:
+        return self.ow_ActLoad_10kg
+
 
 class FurlerElectric(LoadsModel):
     """sFurlerElectric"""
 
     ii_ActTrq: Torque
     ii_ActSpd: RotationalSpeed
+
+    @property
+    def torque(self) -> Torque:
+        return self.ii_ActTrq
+
+    @property
+    def rotational_speed(self) -> RotationalSpeed:
+        return self.ii_ActSpd
 
 
 class CaptiveWinch(LoadsModel):
@@ -34,6 +60,18 @@ class CaptiveWinch(LoadsModel):
     ii_ActTrq: Torque
     ii_ActSpd: RotationalSpeed
     ii_IgbtTemp: Temperature
+
+    @property
+    def torque(self) -> Torque:
+        return self.ii_ActTrq
+
+    @property
+    def rotational_speed(self) -> RotationalSpeed:
+        return self.ii_ActSpd
+
+    @property
+    def temperature(self) -> Temperature:
+        return self.ii_IgbtTemp
 
 
 class BoomVang(LoadsModel):
@@ -44,162 +82,146 @@ class BoomVang(LoadsModel):
     ow_ActPos_mm: Position
     ow_ActPos_pm: RelativePosition
 
+    @property
+    def load(self) -> Load:
+        return self.ow_ActLoad_10kg
 
-class BladeCunningham(LoadsModel):
+    @property
+    def load_2(self) -> Load:
+        return self.ow_ActLoad2_10kg
+
+    @property
+    def position(self) -> Position:
+        return self.ow_ActPos_mm
+
+    @property
+    def relative_position(self) -> RelativePosition:
+        return self.ow_ActPos_pm
+
+
+class BladeCunningham(TensionCylinder):
     TOPIC = "sail-systems/f0101_bldcnnnghm"
-    blade_cunningham: TensionCylinder
 
 
-class CodeSailTack(LoadsModel):
+class CodeSailTack(TensionCylinder):
     TOPIC = "sail-systems/f0102_cdtckcyl"
-    code_sail_tack: TensionCylinder
 
 
-class BladeAdjuster(LoadsModel):
+class BladeAdjuster(TensionCylinder):
     TOPIC = "sail-systems/f0103_bldadjstr"
-    blade_adjuster: TensionCylinder
 
 
-class StaysailStayAdjuster(LoadsModel):
+class StaysailStayAdjuster(TensionCylinder):
     TOPIC = "sail-systems/f0104_stysladjstr"
-    staysail_stay_adjuster: TensionCylinder
 
 
-class MainOuthaul(LoadsModel):
+class MainOuthaul(TensionCylinder):
     TOPIC = "sail-systems/f0201_mnothl"
-    main_outhaul: TensionCylinder
 
 
-class MainCheckstayDeflector(LoadsModel):
+class MainCheckstayDeflector(TensionCylinder):
     TOPIC = "sail-systems/f0203_mnchckstydflctr"
-    main_checkstay_deflector: TensionCylinder
 
 
-class MainBoomPreventer(LoadsModel):
+class MainBoomPreventer(TensionCylinder):
     TOPIC = "sail-systems/f0204_mnbmprvntr"
-    main_boom_preventer: TensionCylinder
 
 
-class MainCunningham(LoadsModel):
+class MainCunningham(TensionCylinder):
     TOPIC = "sail-systems/f0205_mncnnnghm"
-    main_cunningham: TensionCylinder
 
 
-class BladeTweakerPS(LoadsModel):
+class BladeTweakerPS(TensionCylinder):
     TOPIC = "sail-systems/f0206_bldtwkrps"
-    blade_tweaker_ps: TensionCylinder
 
 
-class BladeTweakerSB(LoadsModel):
+class BladeTweakerSB(TensionCylinder):
     TOPIC = "sail-systems/f0207_bldtwkrsb"
-    blade_tweaker_sb: TensionCylinder
 
 
-class MizzenHeadsailTackAdjuster(LoadsModel):
+class MizzenHeadsailTackAdjuster(TensionCylinder):
     TOPIC = "sail-systems/f0402_mzznhdsladjstr"
-    mizzen_headsail_tack_adjuster: TensionCylinder
 
 
-class MizzenOuthaul(LoadsModel):
+class MizzenOuthaul(TensionCylinder):
     TOPIC = "sail-systems/f0501_mzznothl"
-    mizzen_outhaul: TensionCylinder
 
 
-class MizzenCheckstayAdjuster(LoadsModel):
+class MizzenCheckstayAdjuster(TensionCylinder):
     TOPIC = "sail-systems/f0503_mzznchckstydflctr"
-    mizzen_checkstay_adjuster: TensionCylinder
 
 
-class MizzenCunningham(LoadsModel):
+class MizzenCunningham(TensionCylinder):
     TOPIC = "sail-systems/f0504_mzzncnnnghm"
-    mizzen_cunningham: TensionCylinder
 
 
-class MizzenBoomPreventer(LoadsModel):
+class MizzenBoomPreventer(TensionCylinder):
     TOPIC = "sail-systems/f0506_mzznbmprvntr"
-    mizzen_boom_preventer: TensionCylinder
 
 
-class BladeFurler(LoadsModel):
+class BladeFurler(FurlerElectric):
     TOPIC = "sail-systems/fe102_bldfrlr"
-    blade_furler: FurlerElectric
 
 
-class StaysailFurler(LoadsModel):
+class StaysailFurler(FurlerElectric):
     TOPIC = "sail-systems/fe103_styslfrlr"
-    staysail_furler: FurlerElectric
 
 
-class CodeFurler(LoadsModel):
+class CodeFurler(FurlerElectric):
     TOPIC = "sail-systems/fe101_cdzrfrlr"
-    code_furler: FurlerElectric
 
 
-class BladeSheetCaptiveWinchPS(LoadsModel):
+class BladeSheetCaptiveWinchPS(CaptiveWinch):
     TOPIC = "sail-systems/fe201_bldshtps"
-    blade_sheet_captive_winch_ps: CaptiveWinch
 
 
-class StaysailSheetCaptiveWinchPS(LoadsModel):
+class StaysailSheetCaptiveWinchPS(CaptiveWinch):
     TOPIC = "sail-systems/fe203_styslshtps"
-    staysail_sheet_captive_winch_ps: CaptiveWinch
 
 
-class MainSheetCaptiveWinch(LoadsModel):
+class MainSheetCaptiveWinch(CaptiveWinch):
     TOPIC = "sail-systems/fe205_mnsht"
-    main_sheet_captive_winch: CaptiveWinch
 
 
-class MainHalyardCaptiveWinch(LoadsModel):
+class MainHalyardCaptiveWinch(CaptiveWinch):
     TOPIC = "sail-systems/fe207_mnhlyrd"
-    main_halyard_captive_winch: CaptiveWinch
 
 
-class BladeSheetCaptiveWinchSB(LoadsModel):
+class BladeSheetCaptiveWinchSB(CaptiveWinch):
     TOPIC = "sail-systems/fe301_bldshtsb"
-    blade_sheet_captive_winch_sb: CaptiveWinch
 
 
-class StaysailSheetCaptiveWinchSB(LoadsModel):
+class StaysailSheetCaptiveWinchSB(CaptiveWinch):
     TOPIC = "sail-systems/fe303_styslshtsb"
-    staysail_sheet_captive_winch_sb: CaptiveWinch
 
 
-class MainRunnerCaptiveWinchPS(LoadsModel):
+class MainRunnerCaptiveWinchPS(CaptiveWinch):
     TOPIC = "sail-systems/fe401_mnrnnrps"
-    main_runner_captive_winch_ps: CaptiveWinch
 
 
-class MizzenRunnerCaptiveWinchPS(LoadsModel):
+class MizzenRunnerCaptiveWinchPS(CaptiveWinch):
     TOPIC = "sail-systems/fe402_mzznrnnrps"
-    mizzen_runner_captive_winch_ps: CaptiveWinch
 
 
-class MizzenHalyardCaptiveWinch(LoadsModel):
+class MizzenHalyardCaptiveWinch(CaptiveWinch):
     TOPIC = "sail-systems/fe404_mzznhlyrd"
-    mizzen_halyard_captive_winch: CaptiveWinch
 
 
-class MainRunnerCaptiveWinchSB(LoadsModel):
+class MainRunnerCaptiveWinchSB(CaptiveWinch):
     TOPIC = "sail-systems/fe501_mnrnnrsb"
-    main_runner_captive_winch_sb: CaptiveWinch
 
 
-class MizzenRunnerCaptiveWinchSB(LoadsModel):
+class MizzenRunnerCaptiveWinchSB(CaptiveWinch):
     TOPIC = "sail-systems/fe502_mzznrnnrsb"
-    mizzen_runner_captive_winch_sb: CaptiveWinch
 
 
-class MizzenSheetCaptiveWinch(LoadsModel):
+class MizzenSheetCaptiveWinch(CaptiveWinch):
     TOPIC = "sail-systems/fe504_mzznsht"
-    mizzen_sheet_captive_winch: CaptiveWinch
 
 
-class MainVang(LoadsModel):
+class MainVang(BoomVang):
     TOPIC = "sail-systems/f0202_mnbmvng"
-    main_vang: BoomVang
 
 
-class MizzenVang(LoadsModel):
+class MizzenVang(BoomVang):
     TOPIC = "sail-systems/f0502_mzznbmvng"
-    mizzen_vang: BoomVang

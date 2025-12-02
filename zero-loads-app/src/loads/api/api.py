@@ -15,9 +15,10 @@ from loads.config import settings
 from loads.sensors import sail_systems
 
 from .db import SessionManager
+from .loads import loads_variables
 from .messaging import Messaging
 from .model import get_loads_reference_values
-from .types import CaseInput, ReferenceValueType, Sails
+from .types import ActualType, CaseInput, ReferenceValueType, Sails
 
 logger = logging.getLogger("api")
 
@@ -29,10 +30,7 @@ async def lifespan(app: FastAPI):
     """Function that handles startup and shutdown events (https://fastapi.tiangolo.com/advanced/events/)"""
     sessionmanager.initialize(settings.pg_url)
     async with MqttClient(settings.mqtt_host, settings.mqtt_port) as mqtt:
-        messaging = Messaging(
-            mqtt_client=mqtt,
-            modules=[sail_systems],
-        )
+        messaging = Messaging(mqtt_client=mqtt, modules=[sail_systems], variable_definition=loads_variables)
         run_task = create_task(await messaging.run())
 
         def _finish(task: Task):
@@ -74,18 +72,24 @@ async def get_context(
 @strawberry.type
 class Query:
     @strawberry.field
-    def version(self) -> str:
-        return "1.0.0"
-
-    @strawberry.field
-    async def reference_values(
+    async def actual(
         self,
         info: strawberry.Info[LoadsContext],
-        values: list[strawberry.ID],
+        variables: list[strawberry.ID],
+    ) -> list[ActualType] | None:
+        return info.context.messaging.get_value_for(variables)
+
+    @strawberry.field
+    async def reference(
+        self,
+        info: strawberry.Info[LoadsContext],
+        variables: list[strawberry.ID],
         sails: list[Sails],
         case: CaseInput | None = None,
     ) -> list[ReferenceValueType] | None:
-        return await get_loads_reference_values(values=values, sails=sails, case=case, session=info.context.session)
+        return await get_loads_reference_values(
+            variables=variables, sails=sails, case=case, session=info.context.session
+        )
 
 
 schema = strawberry.Schema(query=Query)

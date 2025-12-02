@@ -34,7 +34,7 @@ logger = logging.getLogger("api")
 
 
 async def get_loads_reference_values(
-    values: list[strawberry.ID],
+    variables: list[strawberry.ID],
     sails: list[Sails],
     case: CaseInput | None,
     session: AsyncSession,
@@ -61,7 +61,7 @@ async def get_loads_reference_values(
             ReferenceValues.value_definition_id == ValueDefinitions.id,
         )
         .join(Masts, ReferenceValues.mast_id == Masts.id)
-        .where(ReferenceValues.value_definition_id.in_(values))
+        .where(ReferenceValues.value_definition_id.in_(variables))
         .where(ReferenceValues.sail_set_id == sail_set)
         .where(ReferenceValues.condition_profile_id == condition)
     )
@@ -94,16 +94,10 @@ async def get_loads_reference_values(
 
 def create_sail_set_subq(sails: list[Sails]) -> ScalarSelect[str]:
     """Create subquery that returns the sail set that exactly matches the current sails."""
-    return (
-        select(SailSetCombined.id)
-        .where(sails_exact(SailSetCombined.sails, sails))
-        .scalar_subquery()
-    )
+    return select(SailSetCombined.id).where(sails_exact(SailSetCombined.sails, sails)).scalar_subquery()
 
 
-def sails_exact(
-    sails_column: Column[Sequence[str]], sails: list[Sails]
-) -> ColumnElement[bool]:
+def sails_exact(sails_column: Column[Sequence[str]], sails: list[Sails]) -> ColumnElement[bool]:
     """Check if the sail set exactly matches the sails provided"""
     return sails_column == cast(sorted([sail.value for sail in sails]), ARRAY(TEXT))
 

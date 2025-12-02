@@ -1,12 +1,8 @@
-from typing import Annotated, Any, ClassVar, Dict, get_args, get_origin
+from typing import Any, ClassVar, Dict
 
 import generator.gen as gen
 from generator import Generator, GeneratorConfig, create_generator
-from pydantic import (
-    AliasGenerator,
-    BaseModel,
-    ConfigDict,
-)
+from pydantic import AliasGenerator, BaseModel, ConfigDict
 
 from .util import hyphenize
 
@@ -22,41 +18,17 @@ class LoadsModel(BaseModel):
     TOPIC: ClassVar[str]
 
     @classmethod
-    def gen_config(cls, interval: int = 10) -> list[GeneratorConfig]:
+    def gen_config(cls, interval: int = 10) -> GeneratorConfig:
         """Generate configuration for data generation."""
-        config = []
 
-        for component, field_info in cls.model_fields.items():
-            base_type = field_info.annotation
-            # topic = f"{cls._extract_topic(field_info) or component}"
-
-            if isinstance(base_type, type) and issubclass(base_type, LoadsModel):
-                values = {
-                    sub_field_name: cls._create_generator(sub_field_info.annotation, sub_field_info.metadata)
-                    for sub_field_name, sub_field_info in base_type.model_fields.items()
-                }
-
-                config.append(GeneratorConfig(topic=cls.TOPIC, interval=interval, values=values))
-            else:
-                config.append(
-                    GeneratorConfig(
-                        topic=cls.TOPIC,
-                        interval=interval,
-                        values={component: cls._create_generator(base_type, field_info.metadata)},
-                    )
-                )
-
-        return config
-
-    # @classmethod
-    # def _extract_topic(cls, field_info: FieldInfo) -> str | None:
-    #     """Extract the topic from the metadata."""
-    #     if hasattr(field_info, "json_schema_extra"):
-    #         extra = getattr(field_info, "json_schema_extra", {})
-    #         if isinstance(extra, dict) and "topic" in extra:
-    #             return extra["topic"]
-
-    #     return None
+        return GeneratorConfig(
+            topic=cls.TOPIC,
+            interval=interval,
+            values={
+                component: cls._create_generator(field_info.annotation, field_info.metadata)
+                for component, field_info in cls.model_fields.items()
+            },
+        )
 
     @classmethod
     def _create_generator(cls, base_type: Any, meta: list[Any]) -> Generator:
@@ -72,13 +44,6 @@ class LoadsModel(BaseModel):
     @staticmethod
     def _extract_constraints(meta: list[Any]) -> Dict[str, Any]:
         return {attr: getattr(m, attr) for m in meta for attr in ("gt", "ge", "lt", "le") if hasattr(m, attr)}
-
-    @staticmethod
-    def _unwrap_annotated(tp: Any) -> tuple[type | Any, list[Any]]:
-        if get_origin(tp) is Annotated:
-            args = get_args(tp)
-            return args[0], list(args[1:])
-        return tp, []
 
     @staticmethod
     def _type_name(tp: Any) -> str:
