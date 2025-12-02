@@ -1,5 +1,5 @@
 from datetime import datetime
-from typing import Callable
+from typing import Callable, Literal
 
 from transitions import Machine, State
 from thrs.classes.control import Control, ControlResult
@@ -446,6 +446,47 @@ class BoilersControl(
             ),
             time_fn=self._time,
         )
+
+    @property
+    def parameters(self) -> BoilersParameters:
+        return self._parameters
+
+    def update_parameters(self, parameters: BoilersParameters):
+        self._parameters = parameters
+        self._pump_temperature_controller.update_tuning(
+            parameters.pump_temperature_tuning
+        )
+        self._pump_flow_controller.update_tuning(parameters.pump_flow_tuning)
+        self._propdrive_shore_flow_controller.update_tuning(
+            parameters.propdrive_shore_flow_tuning
+        )
+        self._converters_flow_controller.update_tuning(
+            parameters.converters_flow_tuning
+        )
+
+    @staticmethod
+    def modes() -> list[str]:
+        return [
+            "idle",
+            "boosting_low_temperature",
+            "boosting_high_temperature",
+            "boosting_heatpump",
+        ]
+
+    @staticmethod
+    def initial_mode() -> str:
+        return "idle"
+
+    @property
+    def mode(
+        self,
+    ) -> Literal[
+        "idle",
+        "boosting_low_temperature",
+        "boosting_high_temperature",
+        "boosting_heatpump",
+    ]:
+        return self.state  # type: ignore
 
     def initial(self) -> ControlResult[BoilersControlValues]:
         return ControlResult(self._time(), self._current_values)

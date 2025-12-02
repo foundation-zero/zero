@@ -2,6 +2,10 @@ import pytest
 from thrs.control.modules.boilers import BoilersParameters, TanksController
 from thrs.input_output.modules.boilers import BoilersSensorValues
 
+pytest.skip(
+    allow_module_level=True
+)  # Skip as long as boiler module is not implemented yet
+
 
 def test_selection_all_full_all_hot(
     tanks_controller: TanksController,

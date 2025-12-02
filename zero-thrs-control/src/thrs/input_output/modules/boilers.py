@@ -297,7 +297,7 @@ class BoilersSimulationInputs(SimulationInputs):
     boilers_fahrenheit_supply: simulation.FmuBoundary
     boilers_converters_supply: simulation.FmuBoundary
     boilers_high_temperature_supply: simulation.FmuBoundary
-    boilers_freshwater_supply: simulation.FmuBoundary
+    boilers_freshwater_supply: simulation.TemperatureBoundary
     boilers_freshwater_pressure: simulation.PressureBoundary
 
 

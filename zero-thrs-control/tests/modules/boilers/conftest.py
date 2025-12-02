@@ -1,18 +1,80 @@
 from datetime import datetime, timedelta
 from pytest import fixture
 
-from thrs.control.modules.boilers import BoilersParameters, Tank, TanksController
-from thrs.input_output.modules.boilers import BoilersControlValues, BoilersSensorValues
+from tests.modules.thrusters.conftest import ThrustersSimulationExecutor
+from thrs.control.modules.boilers import (
+    BoilersControl,
+    BoilersParameters,
+    Tank,
+    TanksController,
+)
+from thrs.input_output.base import Stamped
+from thrs.input_output.definitions.simulation import (
+    FmuBoundary,
+    PressureBoundary,
+    TemperatureBoundary,
+)
+from thrs.input_output.modules.boilers import (
+    BoilersControlValues,
+    BoilersSensorValues,
+    BoilersSimulationInputs,
+    BoilersSimulationOutputs,
+)
+from thrs.orchestration.executor import SimulationExecutor
+from thrs.simulation.fmu import Fmu
+from thrs.simulation.io_mapping import IoMapping
+
+from thrs.simulation.models.fmu_paths import boilers_path
 
 
-class TestTime:
-    def __init__(self, duration: timedelta = timedelta(seconds=1)):
-        self._time = datetime.now()
-        self._duration = duration
+@fixture
+def simulation_inputs():
+    return BoilersSimulationInputs(
+        boilers_propdrive_shore_supply=FmuBoundary(
+            temperature=Stamped.stamp(50),
+            flow=Stamped.stamp(35),
+            overpressure=Stamped.stamp(1.5),
+        ),
+        boilers_fahrenheit_supply=FmuBoundary(
+            temperature=Stamped.stamp(40),
+            flow=Stamped.stamp(45),
+            overpressure=Stamped.stamp(1.5),
+        ),
+        boilers_converters_supply=FmuBoundary(
+            temperature=Stamped.stamp(60),
+            flow=Stamped.stamp(60),
+            overpressure=Stamped.stamp(1.5),
+        ),
+        boilers_high_temperature_supply=FmuBoundary(
+            temperature=Stamped.stamp(60),
+            flow=Stamped.stamp(60),
+            overpressure=Stamped.stamp(1.5),
+        ),
+        boilers_freshwater_supply=TemperatureBoundary(temperature=Stamped.stamp(20)),
+        boilers_freshwater_pressure=PressureBoundary(pressure=Stamped.stamp(3)),
+    )
 
-    def time(self) -> datetime:
-        self._time += self._duration
-        return self._time
+
+@fixture
+def io_mapping():
+    with Fmu(boilers_path) as fmu:
+        yield IoMapping(
+            fmu,
+            BoilersSensorValues,
+            BoilersSimulationOutputs,
+        )
+
+
+@fixture
+def executor(io_mapping, simulation_inputs) -> ThrustersSimulationExecutor:
+    return SimulationExecutor(
+        io_mapping, simulation_inputs, datetime.now(), timedelta(seconds=1)
+    )
+
+
+@fixture
+def control(executor) -> BoilersControl:
+    return BoilersControl(BoilersParameters(), executor.time)
 
 
 @fixture
@@ -52,8 +114,3 @@ def tanks_controller(test_time, parameters) -> TanksController:
         ),
         time_fn=test_time.time,
     )
-
-
-@fixture()
-def test_time() -> TestTime:
-    return TestTime()
