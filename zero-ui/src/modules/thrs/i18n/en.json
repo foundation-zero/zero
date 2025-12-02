@@ -1,0 +1,73 @@
+{
+  "thrs": {
+    "title": "HMI",
+    "views": {
+      "monitoring": {
+        "title": "Monitoring",
+        "description": "Monitor the sensor and control values in real-time."
+      },
+      "simulation": {
+        "title": "Simulation",
+        "inputs": "Inputs",
+        "outputs": "Outputs",
+        "inputsOutputs": "Inputs & Outputs",
+        "description": "Run simulations of the THRS system with different parameters and control modes."
+      },
+      "controls": {
+        "title": "Controls",
+        "description": "Adjust control values and modes for the THRS system."
+      },
+      "parameters": {
+        "title": "Parameters",
+        "tuning": "Tuning",
+        "description": "View and modify the parameters of the THRS system."
+      },
+      "sensors": {
+        "title": "Sensors",
+        "description": "View real-time data from the THRS sensors."
+      }
+    },
+    "components": {
+      "simulationActions": {
+        "title": "Simulation",
+        "playbackRate": "Playback rate",
+        "start": "Start",
+        "run": "Run",
+        "pause": "Pause",
+        "step": "Step",
+        "tuning": "Tuning",
+        "description": "Control the simulation playback and speed."
+      },
+      "valueTable": {
+        "component": "Component",
+        "property": "Property",
+        "value": "Value",
+        "lastChange": "Last change"
+      },
+      "fieldsValues": {
+        "empty": {
+          "title": "No fields selected",
+          "description": "Please select fields to display their values."
+        }
+      }
+    },
+    "labels": {
+      "reset": "Reset",
+      "connect": "Connect",
+      "sensorValues": "Sensor values",
+      "controlValues": "Control values",
+      "controls": "Controls",
+      "parameters": "Parameters",
+      "sensors": "Sensors",
+      "controlParameters": "Control parameters",
+      "controlMode": "Control mode",
+      "setValues": "Set values",
+      "start": "Start",
+      "run": "Run",
+      "tuning": "Tuning",
+      "seconds": "Seconds",
+      "mode": "Mode",
+      "stepInSeconds": "Step (seconds)"
+    }
+  }
+}

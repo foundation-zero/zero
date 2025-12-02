@@ -1,5 +1,5 @@
 <script setup lang="ts" generic="T extends ChartDataType, V extends string">
-import { cast } from "@common/lib/utils";
+import { cast, isStamped, toCapitalized } from "@common/lib/utils";
 import { ChartDataType, SeriesChart, StampedChart, TimeSeriesData } from "@common/types";
 import { useColorMode } from "@vueuse/core";
 import { CustomSeriesRenderItem, EChartsOption } from "echarts";
@@ -16,6 +16,7 @@ import { use } from "echarts/core";
 import { SVGRenderer } from "echarts/renderers";
 import { computed } from "vue";
 import VChart from "vue-echarts";
+import { ResizeRemount } from "../resize-remount";
 
 use([
   SVGRenderer,
@@ -27,8 +28,6 @@ use([
   TitleComponent,
   DataZoomComponent,
 ]);
-
-const colorMode = useColorMode();
 
 type CategoryDefinition = {
   value: [categoryIndex: number, start: number, end: number, duration: number];
@@ -56,17 +55,28 @@ const props = defineProps<
         series: StampedChart<T>;
         format: (data: T) => V;
       }
+    | {
+        series: SeriesChart<T>;
+        format: (data: T) => V;
+      }
+    | {
+        series: SeriesChart<T>;
+        format: never;
+      }
   )
 >();
 
 const categoryColours = ["#7b9ce1", "#bd6d6c", "#75d874", "#e0bc78", "#dc77dc", "#72b362"];
 
-const series = computed<SeriesChart<number>>(() => {
-  const dataPoints: TimeSeriesData<number>[] = props.series.data.map(({ timestamp, value }) => {
-    const category = typeof value === "string" ? (value as V) : props.format!(value);
+const toCategoryEntry = (timestamp: Date, value: T | V): [Date, number] => {
+  const category = typeof value === "string" ? (value as V) : props.format!(value);
+  return [new Date(timestamp), props.categories.indexOf(category)];
+};
 
-    return [new Date(timestamp), props.categories.indexOf(category)];
-  });
+const series = computed<SeriesChart<number>>(() => {
+  const dataPoints: TimeSeriesData<number>[] = props.series.data.map((entry) =>
+    isStamped(entry) ? toCategoryEntry(entry.timestamp, entry.value) : toCategoryEntry(...entry),
+  );
 
   return {
     name: props.series.name,
@@ -154,6 +164,8 @@ const renderItem: CustomSeriesRenderItem = (params, api) => {
   );
 };
 
+const colorMode = useColorMode();
+
 const option = computed<EChartsOption>(() => ({
   backgroundColor: "transparent",
   grid: {
@@ -174,7 +186,7 @@ const option = computed<EChartsOption>(() => ({
     type: "time",
   },
   yAxis: {
-    data: props.categories,
+    data: props.categories.map(toCapitalized),
   },
   series: [
     {
@@ -191,10 +203,11 @@ const option = computed<EChartsOption>(() => ({
 </script>
 
 <template>
-  <v-chart
-    class="chart"
-    :option="option"
-    :theme="colorMode"
-    autoresize
-  />
+  <ResizeRemount>
+    <VChart
+      :option="option"
+      autoresize
+      :theme="colorMode"
+    />
+  </ResizeRemount>
 </template>
