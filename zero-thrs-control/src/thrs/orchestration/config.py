@@ -7,5 +7,5 @@ class Config(BaseSettings):
     )
     mqtt_host: str
     mqtt_port: int
-    mqtt_sensor_topic: str
-    mqtt_control_topic: str
+    mqtt_topic_prefix: str
+    mqtt_control_topic_suffix: str

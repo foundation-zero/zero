@@ -5,30 +5,28 @@ from warnings import warn
 
 import polars as pl
 from pydantic import (
-    AliasGenerator,
     BaseModel,
     ConfigDict,
     Field,
     create_model,
     field_validator,
 )
+from pydantic.alias_generators import to_pascal
 from pydantic.fields import FieldInfo
 from thrs.input_output.definitions.units import (
     PcsMode,
     unit_for_annotation,
     zero_for_unit,
 )
-from thrs.utils.string import hyphenize
 
 
 class ThrsModel(BaseModel):
-    """ThrsModel provides the conversion between the dashes in MQTT to Python underscores"""
+    """ThrsModel provides the conversion between the camel case in MQTT messages to Python underscores"""
 
     model_config = ConfigDict(
-        alias_generator=AliasGenerator(
-            serialization_alias=hyphenize,
-        ),
+        alias_generator=to_pascal,
         use_enum_values=True,
+        validate_by_name=True,
     )
 
     @classmethod
@@ -58,7 +56,7 @@ class ThrsModel(BaseModel):
 
 class Stamped[T](ThrsModel):
     value: T
-    timestamp: datetime
+    timestamp: Annotated[datetime, Field(alias="TimeStamp")]
 
     @staticmethod
     def stamp[V](value: V) -> "Stamped[V]":
@@ -225,7 +223,7 @@ class SimulationInputs(SimulationValues):
 
             values = {
                 field_name: _field_value(field_name)
-                for field_name in component_value.model_fields.keys()
+                for field_name in type(component_value).model_fields.keys()
             }
             return SelectedInputsModel.model_fields[component_name].annotation(**values)
 

@@ -159,7 +159,7 @@ def ensure_input_type(annotation, *args, unstamp: bool) -> type:
             f"{annotation.__name__}InputType", annotation
         )
         input_type = strawberry.experimental.pydantic.input(
-            model=input_model, all_fields=True
+            model=input_model, all_fields=True, use_pydantic_alias=False
         )(type(f"{annotation.__name__}InputType", (object,), {}))
         _input_types[annotation.__name__] = input_type
         return input_type

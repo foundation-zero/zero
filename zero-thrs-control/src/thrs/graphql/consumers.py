@@ -23,6 +23,7 @@ from thrs.input_output.modules.consumers import (
     model=ConsumersSensorValues,
     all_fields=True,
     json_schema_directive=JsonSchemaDirective,
+    use_pydantic_alias=False,
 )
 class ConsumersSensorValuesType:
     pass
@@ -32,6 +33,7 @@ class ConsumersSensorValuesType:
     model=ConsumersControlValues,
     all_fields=True,
     json_schema_directive=JsonSchemaDirective,
+    use_pydantic_alias=False,
 )
 class ConsumersControlValuesType:
     pass
@@ -41,6 +43,7 @@ class ConsumersControlValuesType:
     model=ConsumersParameters,
     all_fields=True,
     json_schema_directive=JsonSchemaDirective,
+    use_pydantic_alias=False,
 )
 class ConsumersParametersType:
     pass
@@ -57,6 +60,7 @@ ensure_dedataframes(DedataframedSimulationOutputs)
     model=DedataframedSimulationInputs,
     all_fields=True,
     json_schema_directive=JsonSchemaDirective,
+    use_pydantic_alias=False,
 )
 class ConsumersSimulationInputsType:
     pass
@@ -66,6 +70,7 @@ class ConsumersSimulationInputsType:
     model=DedataframedSimulationOutputs,
     all_fields=True,
     json_schema_directive=JsonSchemaDirective,
+    use_pydantic_alias=False,
 )
 class ConsumersSimulationOutputsType:
     pass

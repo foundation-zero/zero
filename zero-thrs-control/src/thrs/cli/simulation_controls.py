@@ -506,14 +506,14 @@ class SimulationControls:
         controls_client: MqttClient,
         control_client: MqttClient,
         sensor_client: MqttClient,
-        sensor_topic: str,
-        control_topic: str,
+        topic_prefix: str,
+        control_topic_suffix: str,
     ):
         self._sensor_client = sensor_client
         self._control_client = control_client
         self._controls_client = controls_client
-        self._sensor_topic = sensor_topic
-        self._control_topic = control_topic
+        self._topic_prefix = topic_prefix
+        self._control_topic_suffix = control_topic_suffix
 
     @staticmethod
     @asynccontextmanager
@@ -527,8 +527,8 @@ class SimulationControls:
                 controls_client=controls_client,
                 control_client=control_client,
                 sensor_client=sensor_client,
-                sensor_topic=settings.mqtt_sensor_topic,
-                control_topic=settings.mqtt_control_topic,
+                topic_prefix=settings.mqtt_topic_prefix,
+                control_topic_suffix=settings.mqtt_control_topic_suffix,
             )
 
     async def _receive_controls(
@@ -597,9 +597,9 @@ class SimulationControls:
                 inner_executor,
                 self._control_client,
                 self._sensor_client,
-                self._sensor_topic,
+                f"{self._topic_prefix}/{mode}",
                 model.sensor_values_cls,
-                self._control_topic,
+                self._control_topic_suffix,
                 model.control_values_cls,
                 ("thrs/simulation/outputs", model.simulation_outputs_cls),
             )

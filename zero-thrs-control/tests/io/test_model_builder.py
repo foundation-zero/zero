@@ -12,31 +12,31 @@ class SimpleSensors(ThrsModel):
 
 def test_builder():
     flow_message = """{
-        "flow": {
-            "value": 12.12,
-            "has-value": true,
-            "is-valid": true,
-            "timestamp": "2025-01-21T08:49:03.6735253Z"
+        "Flow": {
+            "Value": 12.12,
+            "HasValue": true,
+            "IsValid": true,
+            "TimeStamp": "2025-01-21T08:49:03.6735253Z"
         },
-        "temperature": {
-            "value": 17.12,
-            "has-value": true,
-            "is-valid": true,
-            "timestamp": "2025-01-21T08:49:03.6735253Z"
+        "Temperature": {
+            "Value": 17.12,
+            "HasValue": true,
+            "IsValid": true,
+            "TimeStamp": "2025-01-21T08:49:03.6735253Z"
         }
     }"""
     flow_message_different = """{
-        "flow": {
-            "value": 14.12,
-            "has-value": true,
-            "is-valid": true,
-            "timestamp": "2025-01-21T08:49:03.6735253Z"
+        "Flow": {
+            "Value": 14.12,
+            "HasValue": true,
+            "IsValid": true,
+            "TimeStamp": "2025-01-21T08:49:03.6735253Z"
         },
-        "temperature": {
-            "value": 17.12,
-            "has-value": true,
-            "is-valid": true,
-            "timestamp": "2025-01-21T08:49:03.6735253Z"
+        "Temperature": {
+            "Value": 17.12,
+            "HasValue": true,
+            "IsValid": true,
+            "TimeStamp": "2025-01-21T08:49:03.6735253Z"
         }
     }"""
 
