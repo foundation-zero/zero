@@ -18,13 +18,12 @@ const delegatedProps = reactiveOmit(props, "class");
 <template>
   <div
     data-slot="indicator-light"
-    class="bg-muted size-7 rounded-full p-1"
+    :class="cn('bg-muted size-7 rounded-full p-1', props.class)"
     v-bind="delegatedProps"
   >
     <div
       data-slot="glass"
-      :class="cn(indicatorLightVariants({ variant }), props.class)"
-      class="size-full rounded-full"
+      :class="cn('size-full rounded-full', indicatorLightVariants({ variant }))"
     ></div>
   </div>
 </template>
@@ -33,6 +32,7 @@ const delegatedProps = reactiveOmit(props, "class");
 [data-slot="glass"] {
   --color-highlight: var(--color-muted);
 
+  // Gradient exported from Figma
   background:
     radial-gradient(
       26.76% 16.85% at 37.5% 28.57%,
@@ -41,7 +41,7 @@ const delegatedProps = reactiveOmit(props, "class");
     ),
     var(--color-highlight);
 
-  &.default {
+  &.neutral {
     box-shadow: 0 0 8px 0 rgba(0, 0, 0, 0.5) inset;
   }
 

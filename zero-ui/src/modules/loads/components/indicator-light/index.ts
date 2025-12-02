@@ -6,13 +6,13 @@ import { cva } from "class-variance-authority";
 export const indicatorLightVariants = cva("size-full rounded-full", {
   variants: {
     variant: {
-      default: "default",
+      neutral: "neutral",
       constructive: "constructive",
       destructive: "destructive",
     },
   },
   defaultVariants: {
-    variant: "default",
+    variant: "neutral",
   },
 });
 

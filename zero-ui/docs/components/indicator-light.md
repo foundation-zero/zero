@@ -10,7 +10,7 @@ import { IndicatorLight } from '@/modules/loads/components/indicator-light'
 
 The IndicatorLight component provides a realistic LED indicator with glass-like appearance and glow effects. It's ideal for displaying system status, active states, or alert conditions in a visually distinctive way.
 
-### Default Light
+### Neutral Light
 
 <div class="my-4 p-8 bg-background flex justify-center">
   <IndicatorLight />
@@ -24,17 +24,17 @@ The IndicatorLight component provides a realistic LED indicator with glass-like 
 
 ## Examples
 
-### Default Variant
+### Neutral Variant
 
-The default variant displays a subtle, inactive indicator with a dark appearance.
+The neutral variant displays a subtle, inactive indicator with a dark appearance.
 
 <div class="my-4 p-8 bg-background flex justify-center">
-  <IndicatorLight variant="default" />
+  <IndicatorLight variant="neutral" />
 </div>
 
 ```vue
 <template>
-  <IndicatorLight variant="default" />
+  <IndicatorLight variant="neutral" />
 </template>
 ```
 

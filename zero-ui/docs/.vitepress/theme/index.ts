@@ -23,6 +23,8 @@ import {
 } from "../../../src/components/ui/select";
 import Layout from "./Layout.vue";
 
+import i18n from "../../../src/i18n";
+
 // Import VitePress styles wrapped in CSS layers
 import "./styles/vitepress-layered.css";
 
@@ -48,6 +50,7 @@ const theme: Theme = {
     app.component("SelectValue", SelectValue);
     app.component("MultiSelectTrigger", MultiSelectTrigger);
     app.component("MultiSelectValue", MultiSelectValue);
+    app.use(i18n);
   },
 };
 
