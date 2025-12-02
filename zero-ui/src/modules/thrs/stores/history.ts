@@ -66,6 +66,8 @@ export const extractHistory = (source: THRS, currentHistory: ModuleHistory): Mod
 };
 
 export const useThrsHistory = defineStore("thrsHistory", () => {
+  const lastUpdate = useLocalStorage<number | null>("thrs-history-last-update", null);
+
   const cachedData = useLocalStorage<ModuleHistory>(
     "thrs-history",
     {},
@@ -87,6 +89,7 @@ export const useThrsHistory = defineStore("thrsHistory", () => {
     timer(0, 5000).pipe(
       switchMap(async () => {
         await update();
+
         return data.value;
       }),
       scan(
@@ -95,6 +98,7 @@ export const useThrsHistory = defineStore("thrsHistory", () => {
       ),
       tap((data) => {
         cachedData.value = data;
+        lastUpdate.value = Date.now();
       }),
     ),
   );
@@ -122,6 +126,7 @@ export const useThrsHistory = defineStore("thrsHistory", () => {
   return {
     data,
     history,
+    lastUpdate,
     useHistory,
   };
 });

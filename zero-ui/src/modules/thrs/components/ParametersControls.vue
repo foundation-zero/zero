@@ -23,7 +23,7 @@ const props = defineProps<{
 const { data } = toRefs(useThrsHistory());
 
 const parametersData = computed(
-  () => data.value?.modules[props.module].parameters as Values | undefined,
+  () => data.value?.modules[props.module]?.parameters as Values | undefined,
 );
 
 const COMPONENTS: Record<ParametersType, Component | null> = {

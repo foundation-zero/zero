@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useI18n } from "vue-i18n";
 import { useRoute } from "vue-router";
 
@@ -24,18 +25,23 @@ const route = useRoute();
 </script>
 
 <template>
-  <ul class="grid gap-1 text-lg font-light">
-    <RouterLink
-      v-for="item in menuItems"
-      :key="item.title"
-      :to="{ name: item.to }"
+  <Tabs :model-value="String(route.name)">
+    <TabsList
+      class="backdrop-blur-md"
+      as="nav"
     >
-      <li
-        class="hover:bg-accent hover:text-accent-foreground flex cursor-pointer items-center gap-2 rounded-md px-4 py-2 transition-all"
-        :class="{ 'text-accent-foreground font-medium': route.name === item.to }"
+      <RouterLink
+        v-for="item in menuItems"
+        :key="item.to"
+        :to="{ name: item.to }"
       >
-        {{ item.title }}
-      </li>
-    </RouterLink>
-  </ul>
+        <TabsTrigger
+          :value="item.to"
+          class="text-sm md:text-base"
+        >
+          {{ item.title }}
+        </TabsTrigger>
+      </RouterLink>
+    </TabsList>
+  </Tabs>
 </template>

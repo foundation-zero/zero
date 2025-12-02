@@ -4,57 +4,57 @@ import { useI18n } from "vue-i18n";
 
 import SimulationActions from "@/modules/thrs/components/SimulationActions.vue";
 
-import { useScrollOffset } from "@/modules/common/components/top-nav";
 import TopNav from "@/modules/common/components/top-nav/TopNav.vue";
 import TopNavToolbar from "@/modules/common/components/top-nav/TopNavToolbar.vue";
 import ControlActions from "@/modules/thrs/components/ControlActions.vue";
-import SideNav from "@/modules/thrs/components/SideNav.vue";
 import { client } from "@/modules/thrs/graphql/client";
 import { THRSModules } from "@/modules/thrs/lib/consts.types";
 import { provideClient } from "@urql/vue";
-import { useLocalStorage } from "@vueuse/core";
-import { provide } from "vue";
+import { computed, provide } from "vue";
+import { useRoute } from "vue-router";
+import SubNavTabs from "../components/SubNavTabs.vue";
 
 // Provide the URL client to inner scope. Pinia stores have their own scope, so they need to manually provide the correct context.
 provideClient(client);
 
 const { t } = useI18n();
-const scrollOffset = useScrollOffset();
 
+const currentRoute = useRoute();
 const modules: Array<keyof THRSModules> = ["thrusters", "pvt", "pcm", "consumers"];
-const currentModuleKey = useLocalStorage("hmi:currentModule", modules[0]);
-
-// Temporary hack to force re-mounting of the module view when switching modules
+const currentModuleKey = computed(() => (currentRoute.params.module as string) || modules[0]);
 
 provide("currentModule", currentModuleKey);
 </script>
 
 <template>
-  <main class="h-svh pt-[10em] pb-8 pl-[266px]">
-    <SideNav
-      class="fixed left-4 w-[250px] shrink-0"
-      :style="{ marginTop: scrollOffset }"
-    />
+  <main class="h-svh pt-[12em] pb-8 md:pt-[14em]">
     <Suspense>
-      <article class="px-6 pb-8">
+      <article class="px-4 pb-8 md:px-6">
         <slot />
       </article>
     </Suspense>
   </main>
-  <TopNav>
+  <TopNav class="z-100 min-h-[8rem]">
     <TopNavToolbar>
       <template #left>
-        <h4 class="pl-4 text-4xl font-semibold uppercase">{{ t("thrs.title") }}</h4>
+        <h4 class="pl-4 font-semibold uppercase max-md:hidden md:text-4xl">
+          {{ t("thrs.title") }}
+        </h4>
         <NavTabs
           v-model:active-module="currentModuleKey"
-          class="ml-12"
+          class="md:ml-12"
           :modules="modules"
         />
       </template>
 
       <template #right>
-        <ControlActions class="mr-3" />
-        <SimulationActions />
+        <ControlActions class="mr-3 max-md:hidden" />
+        <SimulationActions class="max-md:hidden" />
+      </template>
+    </TopNavToolbar>
+    <TopNavToolbar class="py-2 transition-all duration-300">
+      <template #left>
+        <SubNavTabs />
       </template>
     </TopNavToolbar>
   </TopNav>

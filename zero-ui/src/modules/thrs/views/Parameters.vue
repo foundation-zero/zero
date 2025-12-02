@@ -32,7 +32,7 @@ const tuningParams = computed(
 );
 </script>
 <template>
-  <header class="mt-8 mb-4 text-3xl capitalize">
+  <header class="mb-4 text-3xl capitalize">
     {{ t("thrs.views.simulation.title") }}
   </header>
 

@@ -16,6 +16,7 @@ import { use } from "echarts/core";
 import { SVGRenderer } from "echarts/renderers";
 import { computed } from "vue";
 import VChart from "vue-echarts";
+import { ResizeRemount } from "../resize-remount";
 
 use([
   SVGRenderer,
@@ -27,8 +28,6 @@ use([
   TitleComponent,
   DataZoomComponent,
 ]);
-
-const colorMode = useColorMode();
 
 type CategoryDefinition = {
   value: [categoryIndex: number, start: number, end: number, duration: number];
@@ -165,6 +164,8 @@ const renderItem: CustomSeriesRenderItem = (params, api) => {
   );
 };
 
+const colorMode = useColorMode();
+
 const option = computed<EChartsOption>(() => ({
   backgroundColor: "transparent",
   grid: {
@@ -202,10 +203,11 @@ const option = computed<EChartsOption>(() => ({
 </script>
 
 <template>
-  <v-chart
-    class="chart"
-    :option="option"
-    :theme="colorMode"
-    autoresize
-  />
+  <ResizeRemount>
+    <VChart
+      :option="option"
+      autoresize
+      :theme="colorMode"
+    />
+  </ResizeRemount>
 </template>

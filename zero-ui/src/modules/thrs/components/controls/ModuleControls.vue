@@ -9,7 +9,8 @@
 import { ExtractAllValues, SchemaDefinition, SchemaDefinitions } from "@/modules/thrs/types";
 
 import { objectEntries } from "@vueuse/core";
-import { computed, ref, watch } from "vue";
+import { computed, ref, toRefs, watch } from "vue";
+import { useThrsHistory } from "../../stores/history";
 
 const props = defineProps<{
   controls: Definitions;
@@ -19,9 +20,10 @@ const props = defineProps<{
 
 const controlValuesFromMutation = ref<Values | null>(null);
 const controlValues = computed(() => (controlValuesFromMutation.value ?? props.data) as Values);
+const { lastUpdate } = toRefs(useThrsHistory());
 
-watch(props, (next, prev) => {
-  if (next.data !== prev.data) {
+watch(lastUpdate, (next, prev) => {
+  if (next !== prev) {
     controlValuesFromMutation.value = null;
   }
 });
@@ -33,7 +35,7 @@ const setControlValues = (newValues: Values) => {
 <template>
   <section
     v-if="controlValues"
-    class="mb-4 grid gap-6 sm:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4"
+    class="mb-4 grid gap-6 sm:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4"
     :class="{ 'pointer-events-none cursor-not-allowed opacity-50': disabled }"
   >
     <slot

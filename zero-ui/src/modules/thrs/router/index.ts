@@ -9,23 +9,28 @@ const thrsChildRoutes: RouteRecordRaw[] = [
       layout: defineAsyncComponent(() => import("@/modules/thrs/layouts/DefaultLayout.vue")),
       requiresAuth: false,
     },
-    redirect: () => ({ name: "thrs/hmi/controls", query: {} }),
+    redirect: () => ({ path: "/thrs/hmi/thrusters/monitoring", query: {} }),
     children: [
       {
-        path: "controls",
-        name: "thrs/hmi/controls",
-        component: () => import("@/modules/thrs/views/Controls.vue"),
-      },
-      {
-        path: "monitoring",
-        name: "thrs/hmi/monitoring",
-        component: () => import("@/modules/thrs/views/Monitoring.vue"),
-      },
+        path: ":module",
+        children: [
+          {
+            path: "controls",
+            name: "thrs/hmi/controls",
+            component: () => import("@/modules/thrs/views/Controls.vue"),
+          },
+          {
+            path: "monitoring",
+            name: "thrs/hmi/monitoring",
+            component: () => import("@/modules/thrs/views/Monitoring.vue"),
+          },
 
-      {
-        path: "parameters",
-        name: "thrs/hmi/parameters",
-        component: () => import("@/modules/thrs/views/Parameters.vue"),
+          {
+            path: "parameters",
+            name: "thrs/hmi/parameters",
+            component: () => import("@/modules/thrs/views/Parameters.vue"),
+          },
+        ],
       },
     ],
   },

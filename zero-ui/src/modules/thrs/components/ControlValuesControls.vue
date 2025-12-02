@@ -24,7 +24,7 @@ const props = defineProps<{
 const { data } = toRefs(useThrsHistory());
 
 const controlsData = computed(
-  () => data.value?.modules[props.module].controlValues as Values | undefined,
+  () => data.value?.modules[props.module]?.controlValues as Values | undefined,
 );
 
 const COMPONENTS: Record<ControlComponentType, Component> = {

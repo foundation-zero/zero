@@ -11,7 +11,7 @@ import { tScoped } from "@/modules/common/lib/utils";
 import { ChartDataType, SeriesChart } from "@common/types";
 import { formatDistanceToNow, isValid } from "date-fns";
 import { computed, inject, Ref } from "vue";
-import { ChartCard, ChartCardContent, ChartCardTitle } from "../chart-card";
+import { ChartCard, ChartCardContent } from "../chart-card";
 
 const t = tScoped("thrs.components.valueTable");
 
@@ -22,7 +22,6 @@ const props = defineProps<{
 }>();
 
 const series = inject<Ref<SeriesChart<ChartDataType>[]>>("fieldSeries")!;
-const field = inject<Ref<string>>("field")!;
 
 const lastEntries = computed<FieldEntry[]>(() =>
   series.value
@@ -45,7 +44,6 @@ const lastEntries = computed<FieldEntry[]>(() =>
     v-if="lastEntries.length"
     class="px-0"
   >
-    <ChartCardTitle class="px-3">{{ field }}</ChartCardTitle>
     <ChartCardContent>
       <Table>
         <TableHeader>

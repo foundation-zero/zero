@@ -317,7 +317,7 @@ export const extractCO2Setpoint = extractActualControlValue(ControlType.CO2);
 
 export const toUpperCamelCase = (str: string) => str.replace(/([A-Z])/g, " $1").trim();
 export const toCapitalized = (str: string) =>
-  str.charAt(0).toUpperCase() + str.slice(1).toLocaleLowerCase();
+  `${str.charAt(0).toLocaleUpperCase()}${str.slice(1).toLocaleLowerCase()}`;
 
 export const tScoped = (scope: string) => (key: string) => useI18n().t(`${scope}.${key}`);
 
@@ -395,13 +395,24 @@ function isChartType<T extends ChartDataType>(type: string) {
   function isChart(chart: SeriesChart[]): chart is SeriesChart<T>[];
   function isChart(chart: StampedChart | StampedChart[] | SeriesChart | SeriesChart[]): boolean;
   function isChart(chart: StampedChart | StampedChart[] | SeriesChart | SeriesChart[]): boolean {
-    return !!chart && Array.isArray(chart)
-      ? chart.length > 0 && chart.every(isChart)
-      : chart.data.length > 0 &&
-          ((isStamped(chart.data[0]) &&
-            typeof (chart.data[0] as Stamped<unknown>).value === type) ||
-            (chart.data[0] instanceof Array &&
-              typeof (chart.data[0] as TimeSeriesData)[1] === type));
+    if (!chart) return false;
+
+    if (Array.isArray(chart)) {
+      return chart.length > 0 && chart.every(isChart);
+    }
+
+    const [firstDataPoint] = chart.data;
+
+    if (isStamped(firstDataPoint)) {
+      return typeof firstDataPoint.value === type;
+    }
+
+    if (Array.isArray(firstDataPoint)) {
+      const [, value] = firstDataPoint;
+      return typeof value === type;
+    }
+
+    return false;
   }
 
   return isChart;

@@ -43,17 +43,17 @@ provideContext({
 });
 </script>
 <template>
-  <ul class="grid gap-6 xl:grid-cols-2 2xl:grid-cols-3">
+  <ul class="grid gap-4 lg:gap-6">
     <slot />
     <FieldValues
-      v-for="[field, serie] in activeSeries"
+      v-for="[field, fieldSeries] in activeSeries"
       :key="field"
-      :series="serie"
+      :series="fieldSeries"
       :field="field"
     >
       <slot
         name="field"
-        v-bind="{ field, series: serie }"
+        v-bind="{ field, series: fieldSeries }"
       />
     </FieldValues>
   </ul>

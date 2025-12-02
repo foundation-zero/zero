@@ -11,6 +11,7 @@ import {
 import { computed, inject, Ref } from "vue";
 import { useI18n } from "vue-i18n";
 import { FieldCurrent, FieldHistory, FieldsValues } from "../components/fields-values";
+import FieldHeader from "../components/fields-values/FieldHeader.vue";
 import FieldsFilter from "../components/fields-values/FieldsFilter.vue";
 import FieldsValuesEmpty from "../components/fields-values/FieldsValuesEmpty.vue";
 
@@ -43,6 +44,7 @@ const definition = computed<ModuleDefinition>(() => DEFINITIONS[currentDefinitio
     <FieldsValuesEmpty />
 
     <template #field>
+      <FieldHeader />
       <FieldCurrent :format="formatInt" />
       <FieldHistory />
     </template>

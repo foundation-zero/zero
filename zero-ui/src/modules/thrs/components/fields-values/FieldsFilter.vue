@@ -11,7 +11,7 @@ const { series, selected } = getContext();
     v-model:model-value="selected"
     variant="outline"
     type="multiple"
-    class="col-span-full"
+    class="col-span-full flex-wrap"
   >
     <template
       v-for="[field, serie] in series"
@@ -20,12 +20,12 @@ const { series, selected } = getContext();
       <ToggleGroupItem
         v-if="serie.length"
         :value="field"
-        class="h-auto w-auto min-w-auto px-4 py-3 text-base capitalize"
+        class="h-auto w-auto min-w-auto px-3 py-2 capitalize lg:px-4"
         :aria-label="`Toggle ${field}`"
       >
-        {{ field }}
+        <span class="text-sm lg:text-base!">{{ field }}</span>
         <Badge
-          class="py-0"
+          class="text-2xs py-0 max-lg:hidden lg:text-base"
           variant="secondary"
         >
           {{ serie.length }}
