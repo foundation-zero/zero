@@ -35,6 +35,7 @@ export default defineConfig({
         items: [
           { text: "Badge", link: "/components/badge" },
           { text: "Button", link: "/components/button" },
+          { text: "Indicator Light", link: "/components/indicator-light" },
           { text: "Input", link: "/components/input" },
           { text: "Labeled Input", link: "/components/labeled-input" },
           { text: "Popover", link: "/components/popover" },
