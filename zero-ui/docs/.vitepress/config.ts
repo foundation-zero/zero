@@ -55,5 +55,11 @@ export default defineConfig({
         "@common": new URL("../../src/modules/common", import.meta.url).pathname,
       },
     },
+    define: {
+      __VUE_PROD_DEVTOOLS__: "false",
+    },
+    ssr: {
+      noExternal: ["vue-i18n"],
+    },
   },
 });

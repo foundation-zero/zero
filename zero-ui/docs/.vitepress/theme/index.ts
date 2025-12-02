@@ -23,14 +23,17 @@ import {
 } from "../../../src/components/ui/select";
 import Layout from "./Layout.vue";
 
-import i18n from "../../../src/i18n";
-
 // Import VitePress styles wrapped in CSS layers
 import "./styles/vitepress-layered.css";
+
+import i18n from "../../../src/i18n";
 
 const theme: Theme = {
   Layout,
   enhanceApp({ app }: { app: App }) {
+    // Install i18n
+    app.use(i18n);
+
     // Register our UI components globally
     app.component("Badge", Badge);
     app.component("Button", Button);
@@ -50,7 +53,6 @@ const theme: Theme = {
     app.component("SelectValue", SelectValue);
     app.component("MultiSelectTrigger", MultiSelectTrigger);
     app.component("MultiSelectValue", MultiSelectValue);
-    app.use(i18n);
   },
 };
 
