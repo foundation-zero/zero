@@ -11,7 +11,7 @@ from thrs.orchestration.collector import PolarsCollector
 from thrs.orchestration.executor import SimulationExecutor
 from thrs.orchestration.cycler import Cycler
 from thrs.simulation.fmu import Fmu
-from thrs.simulation.io_mapping import IoMapping
+from thrs.simulation.io_mapping import ThrsModelIoMapping
 
 
 @dataclass
@@ -32,11 +32,11 @@ class SimulatorModel:
     def executor(self):
         with Fmu(self.fmu_path) as fmu:
             yield SimulationExecutor(
-                IoMapping(
-                    fmu,
+                ThrsModelIoMapping(
                     self.sensor_values_cls,
                     self.simulation_outputs_cls,
                 ),
+                fmu,
                 self.simulation_inputs,
                 self.start_time,
                 self.tick_duration,
@@ -47,14 +47,19 @@ class SimulatorModel:
 
 
 class Simulator:
-    def __init__(
-        self, model: SimulatorModel, executor: Executor, control: Control | None = None
-    ):
-        self._model = model
+    def __init__(self, executor: Executor, control: Control, alarms: BaseAlarms):
         self._executor = executor
         self._cycler = Cycler(
-            control or model.control_cls(model.control_parameters, self._executor.time),
+            control,
             self._executor,
+            alarms,
+        )
+
+    @staticmethod
+    def from_model(model: SimulatorModel, executor: Executor) -> "Simulator":
+        return Simulator(
+            executor,
+            model.control_cls(model.control_parameters, executor.time),
             model.alarms,
         )
 

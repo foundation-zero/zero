@@ -13,23 +13,33 @@ from thrs.input_output.modules.thrusters import (
 )
 from thrs.orchestration.collector import PolarsCollector
 from thrs.orchestration.cycler import Cycler
+from thrs.orchestration.executor import SimulationExecutor
 from thrs.orchestration.simulator import Simulator, SimulatorModel
 from thrs.simulation.fmu import Fmu
-from thrs.simulation.io_mapping import IoMapping, flatten_model_values
+from thrs.simulation.io_mapping import (
+    ThrsModelIoMapping,
+    flatten_model_values,
+)
 from thrs.simulation.models.fmu_paths import thrusters_path
 from tests.helpers.simulation_inputs import simulator_input_field_setters
 
 
-async def test_interfacer(executor, io_mapping, simulation_inputs, control, alarms):
+async def test_interfacer(
+    executor, fmu, io_mapping, simulation_inputs, control, alarms
+):
     collector = PolarsCollector()
     interfacer = Cycler(control, executor, alarms)
     await interfacer.run(20, collector)
     frame = collector.result()
-    mock_fmu_outputs = io_mapping.tick(
-        ThrustersControlValues.zero(),
-        simulation_inputs,
-        datetime.now(),
+    inputs = io_mapping.generate_inputs(
+        ThrustersControlValues.zero(), simulation_inputs
+    )
+    outputs = fmu.tick(
+        inputs,
         timedelta(seconds=1),
+    )
+    mock_fmu_outputs = io_mapping.construct_outputs(
+        inputs, outputs, simulation_inputs, datetime.now()
     )[2]
 
     assert frame is not None
@@ -77,7 +87,7 @@ async def test_simulation(simulation_inputs, control, alarms):
     )
 
     with thrusters_model.executor() as executor:
-        simulation = Simulator(thrusters_model, executor)
+        simulation = Simulator.from_model(thrusters_model, executor)
 
         result = await simulation.run(20)
 
@@ -94,10 +104,16 @@ def incorrect_simulation_inputs(simulation_inputs, request):
 
 async def test_thrusters_simulation_inputs(incorrect_simulation_inputs, control):
     with Fmu(thrusters_path) as fmu:
-        mapping = IoMapping(
-            fmu,
+        mapping = ThrsModelIoMapping(
             ThrustersSensorValues,
             ThrustersSimulationOutputs,
+        )
+        executor = SimulationExecutor(
+            mapping,
+            fmu,
+            incorrect_simulation_inputs,
+            datetime.now(),
+            timedelta(seconds=5),
         )
 
         control_values = control.initial().values
@@ -110,9 +126,6 @@ async def test_thrusters_simulation_inputs(incorrect_simulation_inputs, control)
 
         with pytest.raises(Exception):
             for i in range(100):
-                mapping.tick(
+                await executor.tick(
                     control._current_values,
-                    incorrect_simulation_inputs,
-                    datetime.now(),
-                    timedelta(seconds=5),
                 )

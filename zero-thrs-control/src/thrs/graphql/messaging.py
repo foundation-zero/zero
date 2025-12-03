@@ -18,7 +18,7 @@ from thrs.cli.simulation_controls import (
     SetAutomationMessage,
 )
 from thrs.input_output.base import SimulationInputs, SimulationValues, ThrsModel
-from thrs.input_output.model_builder import ModelBuilder
+from thrs.input_output.model_builder import PartialModelBuilder
 from thrs.utils.string import dash_to_snake
 from thrs.orchestration.config import Config
 
@@ -34,7 +34,7 @@ class MessageReceiver[T: ThrsModel]:
         self._last: T | None = None
         self._waiting = False
         self._msgs = Queue[T]()
-        self._topic = topic
+        self._topic = f"{settings.mqtt_topic_prefix}/{topic}"
 
     @property
     def last(self) -> T | None:
@@ -88,7 +88,7 @@ class PartialMessageReceiver[T: ThrsModel](MessageReceiver[T]):
         self, cls: type[T], topic_prefix: str, topic_suffix: str | None = None
     ):
         super().__init__(cls, topic_prefix)
-        self._model_builder = ModelBuilder(cls)
+        self._model_builder = PartialModelBuilder(cls)
         self._topic_prefix = topic_prefix
         self._topic_suffix = topic_suffix
 
@@ -115,7 +115,7 @@ class SimulationStatusMessageReceiver(MessageReceiver[SimulationStatusMessage]):
         parsed = self._parse_message(msg)
         if parsed is not None:
             for module in context.modules:
-                module.active = module.name == parsed.module
+                module.active = module.name in parsed.modules
 
         await super().handle(msg, context)
 
@@ -152,15 +152,18 @@ class MessagingModule[
         )
 
         self._parameters = MessageReceiver(
-            ParametersMessage[parameters_cls], ParametersMessage.topic()
+            ParametersMessage[parameters_cls], ParametersMessage.subscribe_topic()
         )
         self._simulation_inputs = MessageReceiver(
             SimulationInputMessage[simulation_inputs_cls],
-            SimulationInputMessage.topic(),
+            SimulationInputMessage.subscribe_topic(),
         )
         self._simulation_outputs = MessageReceiver(
             simulation_outputs_cls,
-            "thrs/simulation/outputs",
+            "simulation/outputs",
+        )
+        self._control_status = MessageReceiver(
+            ControlStatusMessage, ControlStatusMessage.subscribe_topic()
         )
         self._mqtt_client = mqtt_client
 
@@ -171,6 +174,8 @@ class MessagingModule[
             self._control_values,
             self._parameters,
             self._simulation_inputs,
+            self._simulation_outputs,
+            self._control_status,
         ]
 
     @property
@@ -184,9 +189,10 @@ class MessagingModule[
     async def send_manual_controls(self, control_values: ControlValues):
         if not self._active:
             raise Exception("Cannot send manual controls to inactive module")
+        message = ManualControlMessage(module=self.name, control_values=control_values)
         await self._mqtt_client.publish(
-            ManualControlMessage.topic(),
-            ManualControlMessage(control_values=control_values).model_dump_json(),
+            f"{settings.mqtt_topic_prefix}/{message.topic()}",
+            message.model_dump_json(),
             qos=1,
         )
 
@@ -243,18 +249,41 @@ class MessagingModule[
         return self._simulation_outputs.last
 
     async def set_parameters(self, parameters: Parameters):
+        message = SetParametersMessage[Parameters](
+            module=self.name, parameters=parameters
+        )
         await self._mqtt_client.publish(
-            SetParametersMessage[Parameters].topic(),
-            SetParametersMessage[Parameters](parameters=parameters).model_dump_json(),
+            f"{settings.mqtt_topic_prefix}/{message.topic()}",
+            message.model_dump_json(),
             qos=1,
         )
 
     async def set_simulation_inputs(self, inputs: Inputs):
+        message = SetSimulationInputsMessage[Inputs](inputs=inputs)
         await self._mqtt_client.publish(
-            SetSimulationInputsMessage[Inputs].topic(),
-            SetSimulationInputsMessage[Inputs](inputs=inputs).model_dump_json(),
+            f"{settings.mqtt_topic_prefix}/{message.topic()}",
+            message.model_dump_json(),
             qos=1,
         )
+
+    async def set_automation_mode(self, enabled: bool):
+        message = SetAutomationMessage(module=self.name, enabled=enabled)
+        await self._mqtt_client.publish(
+            f"{settings.mqtt_topic_prefix}/{message.topic()}",
+            message.model_dump_json(),
+            qos=1,
+        )
+
+    def wait_for_control_status(
+        self, automatic: bool, *_args, timeout: float
+    ) -> Coroutine[None, None, ControlStatusMessage]:
+        return self._control_status.wait_for(
+            lambda s: s.automatic == automatic, timeout
+        )
+
+    @property
+    def control_status(self) -> ControlStatusMessage | None:
+        return self._control_status.last
 
 
 class Messaging:
@@ -266,17 +295,13 @@ class Messaging:
         self._mqtt_client = mqtt_client
         self._modules = modules
         self._simulation_status = SimulationStatusMessageReceiver(
-            SimulationStatusMessage, SimulationStatusMessage.topic()
-        )
-        self._control_status = MessageReceiver(
-            ControlStatusMessage, ControlStatusMessage.topic()
+            SimulationStatusMessage, SimulationStatusMessage.subscribe_topic()
         )
 
     @property
     def _all_receivers(self):
         return [
             self._simulation_status,
-            self._control_status,
             *[receiver for module in self._modules for receiver in module.receivers],
         ]
 
@@ -284,7 +309,6 @@ class Messaging:
     def _active_receivers(self):
         return [
             self._simulation_status,
-            self._control_status,
             *[
                 receiver
                 for module in self._modules
@@ -295,10 +319,10 @@ class Messaging:
 
     async def run(self) -> Coroutine[None, None, None]:
         topics = set(receiver.subscribe_topic for receiver in self._all_receivers)
-        await self._mqtt_client.subscribe(SimulationStatusMessage.topic())
+        await self._mqtt_client.subscribe(SimulationStatusMessage.subscribe_topic())
         await asyncio.sleep(0.2)  # Give status time to arrive first
         for topic in topics:
-            if topic != SimulationStatusMessage.topic():
+            if topic != SimulationStatusMessage.subscribe_topic():
                 await self._mqtt_client.subscribe(topic, qos=1)
 
         async def _run(self):
@@ -319,28 +343,26 @@ class Messaging:
         return None
 
     async def play_simulation(self, playback_rate: float):
+        message = PlayMessage(playback_rate=playback_rate)
         await self._mqtt_client.publish(
-            PlayMessage.topic(),
-            PlayMessage(playback_rate=playback_rate).model_dump_json(),
+            f"{settings.mqtt_topic_prefix}/{message.topic()}",
+            message.model_dump_json(),
             qos=1,
         )
 
     async def pause_simulation(self):
+        message = PauseMessage()
         await self._mqtt_client.publish(
-            PauseMessage.topic(), PauseMessage().model_dump_json(), qos=1
-        )
-
-    async def step_simulation(self, seconds: float):
-        await self._mqtt_client.publish(
-            StepMessage.topic(),
-            StepMessage(seconds=seconds).model_dump_json(),
+            f"{settings.mqtt_topic_prefix}/{message.topic()}",
+            message.model_dump_json(),
             qos=1,
         )
 
-    async def set_automation(self, enabled: bool):
+    async def step_simulation(self, seconds: float):
+        message = StepMessage(seconds=seconds)
         await self._mqtt_client.publish(
-            SetAutomationMessage.topic(),
-            SetAutomationMessage(enabled=enabled).model_dump_json(),
+            f"{settings.mqtt_topic_prefix}/{message.topic()}",
+            message.model_dump_json(),
             qos=1,
         )
 
@@ -352,17 +374,6 @@ class Messaging:
     ) -> Coroutine[None, None, SimulationStatusMessage]:
         return self._simulation_status.wait_for(lambda s: s.status == status, timeout)
 
-    def wait_for_control_status(
-        self, automatic: bool, *_args, timeout: float
-    ) -> Coroutine[None, None, ControlStatusMessage]:
-        return self._control_status.wait_for(
-            lambda s: s.automatic == automatic, timeout
-        )
-
     @property
     def simulation_status(self) -> SimulationStatusMessage | None:
         return self._simulation_status.last
-
-    @property
-    def control_status(self) -> ControlStatusMessage | None:
-        return self._control_status.last

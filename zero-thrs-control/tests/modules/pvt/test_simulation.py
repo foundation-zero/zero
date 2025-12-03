@@ -7,8 +7,9 @@ from thrs.input_output.modules.pvt import (
     PvtSimulationInputs,
     PvtSimulationOutputs,
 )
+from thrs.orchestration.executor import SimulationExecutor
 from thrs.simulation.fmu import Fmu
-from thrs.simulation.io_mapping import IoMapping
+from thrs.simulation.io_mapping import ThrsModelIoMapping
 from tests.helpers.simulation_inputs import simulator_input_field_setters
 from thrs.simulation.models.fmu_paths import pvt_path
 
@@ -34,17 +35,20 @@ def incorrect_simulation_inputs(simulation_inputs, request):
 
 async def test_thrusters_simulation_inputs(incorrect_simulation_inputs, control):
     with Fmu(pvt_path) as fmu:
-        mapping = IoMapping(
-            fmu,
+        mapping = ThrsModelIoMapping(
             PvtSensorValues,
             PvtSimulationOutputs,
+        )
+        executor = SimulationExecutor(
+            mapping,
+            fmu,
+            incorrect_simulation_inputs,
+            datetime.now(),
+            timedelta(seconds=1),
         )
 
         with pytest.raises(Exception):
             for i in range(100):
-                mapping.tick(
+                await executor.tick(
                     control.initial(datetime.now()).values,
-                    incorrect_simulation_inputs,
-                    datetime.now(),
-                    timedelta(seconds=1),
                 )

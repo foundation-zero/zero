@@ -1,4 +1,5 @@
 from datetime import datetime, timedelta
+from typing import Generator
 from pytest import fixture
 
 from tests.modules.thrusters.conftest import ThrustersSimulationExecutor
@@ -18,7 +19,7 @@ from thrs.input_output.modules.thrusters import (
 )
 from thrs.orchestration.executor import SimulationExecutor
 from thrs.simulation.fmu import Fmu
-from thrs.simulation.io_mapping import IoMapping
+from thrs.simulation.io_mapping import ThrsModelIoMapping
 from thrs.simulation.models.fmu_paths import thrusters_path
 
 
@@ -41,19 +42,20 @@ def simulation_inputs():
 
 @fixture
 def io_mapping():
-    with Fmu(thrusters_path) as fmu:
-        yield IoMapping(
-            fmu,
-            ThrustersSensorValues,
-            ThrustersSimulationOutputs,
-        )
+    return ThrsModelIoMapping(
+        ThrustersSensorValues,
+        ThrustersSimulationOutputs,
+    )
 
 
 @fixture
-def executor(io_mapping, simulation_inputs) -> ThrustersSimulationExecutor:
-    return SimulationExecutor(
-        io_mapping, simulation_inputs, datetime.now(), timedelta(seconds=1)
-    )
+def executor(
+    io_mapping, simulation_inputs
+) -> Generator[ThrustersSimulationExecutor, None, None]:
+    with Fmu(thrusters_path) as fmu:
+        yield SimulationExecutor(
+            io_mapping, fmu, simulation_inputs, datetime.now(), timedelta(seconds=1)
+        )
 
 
 @fixture

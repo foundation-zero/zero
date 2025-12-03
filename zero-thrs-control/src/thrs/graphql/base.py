@@ -154,6 +154,7 @@ class Module[
     control_values: ControlValues | None
     parameters: Parameters | None
     simulation: ModuleSimulation[SimulationInput, SimulationOutput] | None = None
+    automatic: bool | None = None
 
 
 @dataclass
@@ -358,6 +359,28 @@ def add_simulation_input_mutations(
             method = strawberry.mutation(fn)
             setattr(cls, fn.__name__, method)
 
+        return cls
+
+    return _do
+
+
+def add_automation_mode_mutation(
+    module: str,
+    messaging: Callable[[ThrsContext], MessagingModule],
+):
+    def _do(cls):
+        async def set_automation_mode(
+            self,
+            automatic: bool,
+            info: strawberry.Info[ThrsContext],
+        ) -> bool:
+            mod = messaging(info.context)
+            await mod.set_automation_mode(automatic)
+            await mod.wait_for_control_status(automatic, timeout=2)
+            return True
+
+        mutation = strawberry.mutation(set_automation_mode)
+        setattr(cls, f"{module}_set_automation_mode", mutation)
         return cls
 
     return _do

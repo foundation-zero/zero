@@ -6,7 +6,7 @@ from thrs.input_output.base import SimulationInputs, ThrsModel
 
 
 @dataclass
-class ExecutionResult[S: ThrsModel]:
+class ExecutionResult[S]:
     timestamp: datetime
     sensor_values: S
 
@@ -24,7 +24,7 @@ class SimulationExecutionResult[
     raw: dict[str, Any]
 
 
-class Executor[S: ThrsModel, C: ThrsModel](Protocol):
+class Executor[S, C](Protocol):
     async def start(self): ...
     async def tick(self, control_values: C) -> ExecutionResult[S]: ...
 

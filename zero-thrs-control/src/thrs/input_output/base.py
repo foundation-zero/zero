@@ -233,3 +233,8 @@ class SimulationInputs(SimulationValues):
         }
 
         return SelectedInputsModel(**values)
+
+
+@dataclass
+class NestedValues:
+    values: dict[str, ThrsModel]

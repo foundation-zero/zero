@@ -7,18 +7,23 @@ from typing import Any, Literal
 
 from aiomqtt import Client, Topic
 
-from thrs.input_output.base import SimulationInputs, SimulationValues, ThrsModel
-from thrs.input_output.model_builder import ModelBuilder
+from thrs.orchestration.module import ModuleNesting, MqttMapping
+from thrs.input_output.base import (
+    SimulationInputs,
+    SimulationValues,
+    ThrsModel,
+    NestedValues,
+)
 from thrs.simulation.fmu import Fmu
 from thrs.simulation.io_mapping import IoMapping
 
 from thrs.classes.executor import ExecutionResult, Executor
-from thrs.utils.string import dash_to_snake, hyphenize
+from thrs.utils.string import hyphenize
 
 logger = logging.getLogger(__name__)
 
 
-class MqttExecutor[S: ThrsModel, C: ThrsModel, O: SimulationValues](Executor[S, C]):
+class MqttExecutor[O: SimulationValues](Executor[NestedValues, NestedValues]):
     # Controller client listens to sensor values and publishes control values (our control logic)
     # Environment client listens to control values and publishes sensor values (mimicking the PLC)
     def __init__(
@@ -27,76 +32,76 @@ class MqttExecutor[S: ThrsModel, C: ThrsModel, O: SimulationValues](Executor[S, 
         controller_client: Client,
         environment_client: Client,
         topic_prefix: str,
-        sensor_cls: type[S],
-        control_topic_suffix: str,
-        control_cls: type[C],
-        simulation_output: tuple[str, type[O]] | None = None,
+        module_nesting: ModuleNesting,
     ):
         self._inner = inner
         self._controller_client = controller_client
         self._environment_client = environment_client
         self._topic_prefix = topic_prefix
-        self._control_topic_suffix = control_topic_suffix
-        self._sensor_cls = sensor_cls
+        self._module_nesting = module_nesting
 
         self._running = False
-        self._sensors_builder = ModelBuilder(sensor_cls)
-        self._controls_builder = ModelBuilder(control_cls)
+        self._sensors_builder = module_nesting.sensor_values_mqtt_mapping.builder()
+        self._controls_builder = module_nesting.control_values_mqtt_mapping.builder()
         self._triggers: asyncio.Queue[None] = asyncio.Queue()
-
-        self._simulation_output_topic, self._simulation_output_cls = (
-            simulation_output if simulation_output else (None, None)
-        )
 
     async def _listen_to_sensors(self):
         async for message in self._controller_client.messages:
-            if message.topic.value.endswith(f"/{self._control_topic_suffix}"):
+            topic = self._clean_topic(message.topic)
+            if not self._module_nesting.sensor_values_mqtt_mapping.has(topic):
                 continue
             if not isinstance(message.payload, str | bytes):
                 raise ValueError(
                     f"Expected string or bytes, got {type(message.payload)}"
                 )
-            key = self._extract_key_from_topic(message.topic)
-            self._sensors_builder.input(key, message.payload)
+            self._sensors_builder.input(topic, message.payload)
 
     async def _listen_to_controls(self):
         async for message in self._environment_client.messages:
-            if not message.topic.value.endswith(f"/{self._control_topic_suffix}"):
+            topic = self._clean_topic(message.topic)
+            if not self._module_nesting.control_values_mqtt_mapping.has(topic):
                 continue
             if not isinstance(message.payload, str | bytes):
                 raise ValueError(
                     f"Expected string or bytes, got {type(message.payload)}"
                 )
-            key = self._extract_key_from_topic(message.topic)
-            self._controls_builder.input(key, message.payload)
+            self._controls_builder.input(topic, message.payload)
 
     async def _pass_controls_to_inner(self):
         while True:
-            logging.debug("Received trigger, passing to inner executor")
             await self._triggers.get()
+            logging.debug("Received trigger, passing to inner executor")
+
             control_values = self._controls_builder.result()
             if control_values is None:
                 control_values = await self._controls_builder.wait_for_result()
 
             execution_result = await self._inner.tick(control_values)
             await self._send_sensor_values(execution_result)
-            if (
-                isinstance(execution_result, SimulationExecutionResult)
-                and self._simulation_output_topic
-                and self._simulation_output_cls
-            ):
+
+            if isinstance(execution_result, SimulationExecutionResult):
                 logging.debug("Publishing simulation output values")
-                await self._environment_client.publish(
-                    self._simulation_output_topic,
-                    execution_result.simulation_outputs.model_dump_json(),
-                    qos=1,
+
+                await self._publish_by_mapping(
+                    self._environment_client,
+                    self._module_nesting.simulation_output_mqtt_mapping,
+                    execution_result.simulation_outputs,
                 )
 
-    def _extract_key_from_topic(self, topic: Topic) -> str:
-        key, *_rest = topic.value.removeprefix(f"{self._topic_prefix}/").split("/")
-        return dash_to_snake(
-            key
-        )  # TODO: figure out if we want the fields in the module to be aliased and then look those up
+    async def _publish_by_mapping[T](
+        self, client: Client, mapping: MqttMapping[T], value: T
+    ):
+        payloads = mapping.split_to_topics(value)
+        for topic_suffix, payload in payloads.items():
+            topic = f"{self._topic_prefix}/{topic_suffix}"
+            await client.publish(
+                topic,
+                payload,
+                qos=1,
+            )
+
+    def _clean_topic(self, topic: Topic) -> str:
+        return topic.value.removeprefix(f"{self._topic_prefix}/")
 
     async def _send_model(
         self, client: Client, model: ThrsModel, topic_suffix: str | None = None
@@ -115,19 +120,34 @@ class MqttExecutor[S: ThrsModel, C: ThrsModel, O: SimulationValues](Executor[S, 
                 qos=1,
             )
 
-    async def _send_sensor_values(self, execution_result: ExecutionResult[S]):
+    async def _send_sensor_values(
+        self, execution_result: ExecutionResult[NestedValues]
+    ):
         logging.debug("Publishing sensor values")
-        await self._send_model(self._environment_client, execution_result.sensor_values)
+        await self._publish_by_mapping(
+            self._environment_client,
+            self._module_nesting.sensor_values_mqtt_mapping,
+            execution_result.sensor_values,
+        )
 
-    async def _send_control_values(self, control_values: C):
+    async def _send_control_values(self, control_values: NestedValues):
         logging.debug("Publishing control values")
-        await self._send_model(
-            self._controller_client, control_values, self._control_topic_suffix
+        await self._publish_by_mapping(
+            self._controller_client,
+            self._module_nesting.control_values_mqtt_mapping,
+            control_values,
         )
 
     async def start(self):
-        await self._controller_client.subscribe(f"{self._topic_prefix}/#", qos=1)
-        await self._environment_client.subscribe(f"{self._topic_prefix}/#", qos=1)
+        await self._controller_client.subscribe(
+            f"{self._topic_prefix}/{self._module_nesting.sensor_values_mqtt_mapping.subscribe_topic()}",
+            qos=1,
+        )
+
+        await self._environment_client.subscribe(
+            f"{self._topic_prefix}/{self._module_nesting.control_values_mqtt_mapping.subscribe_topic()}",
+            qos=1,
+        )
 
     async def run(self):
         self._running = True
@@ -141,7 +161,7 @@ class MqttExecutor[S: ThrsModel, C: ThrsModel, O: SimulationValues](Executor[S, 
         finally:
             self._running = False
 
-    async def tick(self, control_values: C) -> ExecutionResult[S]:
+    async def tick(self, control_values: NestedValues) -> ExecutionResult[NestedValues]:
         if not self._running:
             raise Exception(
                 "MqttExecutor not running, run() should be called in a create_task()"
@@ -153,7 +173,7 @@ class MqttExecutor[S: ThrsModel, C: ThrsModel, O: SimulationValues](Executor[S, 
 
         return ExecutionResult(
             timestamp=datetime.now(),
-            sensor_values=sensors if sensors else self._sensor_cls.zero(),
+            sensor_values=sensors if sensors else NestedValues(values={}),
         )
 
     @property
@@ -166,8 +186,8 @@ class MqttExecutor[S: ThrsModel, C: ThrsModel, O: SimulationValues](Executor[S, 
 
 @dataclass
 class SimulationExecutionResult[
-    S: ThrsModel,
-    C: ThrsModel,
+    S,
+    C,
     I: SimulationInputs,
     O: SimulationValues,
 ](ExecutionResult[S]):
@@ -211,14 +231,15 @@ class SimulationExecutionResult[
 
 
 class SimulationExecutor[
-    S: ThrsModel,
-    C: ThrsModel,
+    S,
+    C,
     I: SimulationInputs,
     O: SimulationValues,
 ](Executor[S, C]):
     def __init__(
         self,
         io_mapping: IoMapping[S, C, I, O],
+        fmu: Fmu,
         simulation_inputs: I,
         start_time: datetime,
         tick_duration: timedelta,
@@ -227,6 +248,7 @@ class SimulationExecutor[
         self._ticks = 0
         self._tick_duration = tick_duration
         self._simulation_inputs = simulation_inputs
+        self._fmu = fmu
         self._io_mapping = io_mapping
 
     async def start(self):
@@ -236,16 +258,24 @@ class SimulationExecutor[
     def start_time(self) -> datetime:
         return self._start_time
 
+    @property
+    def tick_duration(self) -> timedelta:
+        return self._tick_duration
+
     def time(self):
         return self._start_time + self._ticks * self._tick_duration
 
     async def tick(self, control_values: C) -> SimulationExecutionResult[S, C, I, O]:
         logging.debug("Running simulation tick")
         time = self.time()
+
         simulation_inputs = self._simulation_inputs.get_values_at_time(time)
-        sensor_values, simulation_outputs, raw = self._io_mapping.tick(
-            control_values, simulation_inputs, time, self._tick_duration
+        fmu_inputs = self._io_mapping.generate_inputs(control_values, simulation_inputs)
+        fmu_outputs = self._fmu.tick(fmu_inputs, self._tick_duration)
+        sensor_values, simulation_outputs, raw = self._io_mapping.construct_outputs(
+            fmu_inputs, fmu_outputs, simulation_inputs, time + self._tick_duration
         )
+
         self._ticks += 1
         return SimulationExecutionResult(
             timestamp=time,
@@ -254,7 +284,7 @@ class SimulationExecutor[
             simulation_outputs=simulation_outputs,
             simulation_inputs=simulation_inputs,
             raw=raw,
-            fmu=self._io_mapping._fmu,
+            fmu=self._fmu,
         )
 
     def update_simulation_inputs(self, simulation_inputs: I):

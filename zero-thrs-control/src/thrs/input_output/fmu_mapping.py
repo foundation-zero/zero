@@ -59,6 +59,15 @@ def build_outputs_from_fmu[T: ThrsModel, T2: ThrsModel](
 ) -> tuple[T, T2]: ...
 
 
+@overload
+def build_outputs_from_fmu[T: ThrsModel](
+    clss: tuple[type[T], ...],
+    values: dict[str, float],
+    timestamp: datetime,
+    extra_values: dict[str, dict[str, Stamped[Any]]] = {},
+) -> tuple[T, ...]: ...
+
+
 def build_outputs_from_fmu(
     clss: tuple[type[ThrsModel], ...],
     values: dict[str, float],

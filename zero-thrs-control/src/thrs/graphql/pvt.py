@@ -6,6 +6,7 @@ from thrs.graphql.base import (
     Module,
     ModuleSimulation,
     PvtMessaging,
+    add_automation_mode_mutation,
     add_control_mutations,
     add_parameter_mutations,
     add_simulation_input_mutations,
@@ -110,8 +111,11 @@ def resolve_module(
                 if module.simulation_inputs
                 else None
             ),
-            outputs=PvtSimulationOutputsType.from_pydantic(module.simulation_outputs),
+            outputs=PvtSimulationOutputsType.from_pydantic(module.simulation_outputs)
+            if module.simulation_outputs
+            else None,
         ),
+        automatic=module.control_status.automatic if module.control_status else None,
     )
 
 
@@ -125,5 +129,6 @@ def get_pvt_messaging(context):
 @add_simulation_input_mutations(
     "pvt", PvtSimulationInputs, PvtSimulationInputsType, get_pvt_messaging
 )
+@add_automation_mode_mutation("pvt", get_pvt_messaging)
 class PvtMutations:
     pass
