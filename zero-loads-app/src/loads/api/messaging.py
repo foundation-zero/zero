@@ -29,7 +29,7 @@ class MessageReceiver[T: LoadsModel]:
         return self._last
 
     def wait_for(self, condition: Callable[[T], bool], timeout: float) -> Coroutine[None, None, T]:
-        # Waiting is done a bit awkward to ensure self._waiting is True directly after the call
+        # Waiting is done a bit awkwardly to ensure self._waiting is True directly after the call
         # Otherwise we might miss message if those arrive right after calling this function
         # and before asyncio ran `self._waiting = True`
         self._waiting = True

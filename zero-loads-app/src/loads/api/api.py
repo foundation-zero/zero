@@ -52,7 +52,7 @@ async def get_db_session():
         yield session
 
 
-def messaging() -> Messaging:
+def get_messaging() -> Messaging:
     return app.state.messaging
 
 
@@ -63,7 +63,7 @@ class LoadsContext(BaseContext):
 
 
 async def get_context(
-    messaging: Annotated[Messaging, Depends(messaging)],
+    messaging: Annotated[Messaging, Depends(get_messaging)],
     session: Annotated[AsyncSession, Depends(get_db_session)],
 ) -> LoadsContext:
     return LoadsContext(messaging=messaging, session=session)

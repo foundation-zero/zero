@@ -1,3 +1,5 @@
+from abc import ABC
+
 from .base import LoadsModel
 from .units import (
     Load,
@@ -9,8 +11,8 @@ from .units import (
 )
 
 
-class TensionCylinder(LoadsModel):
-    """sTensionCylinder"""
+class TensionCylinder(LoadsModel, ABC):
+    """sTensionCylinder (abstract base class for field specification)"""
 
     ow_ActPos_mm: Position
     ow_ActPos2_mm: Position
@@ -39,8 +41,8 @@ class TensionCylinder(LoadsModel):
         return self.ow_ActLoad_10kg
 
 
-class FurlerElectric(LoadsModel):
-    """sFurlerElectric"""
+class FurlerElectric(LoadsModel, ABC):
+    """sFurlerElectric (abstract base class for field specification)"""
 
     ii_ActTrq: Torque
     ii_ActSpd: RotationalSpeed
@@ -54,8 +56,8 @@ class FurlerElectric(LoadsModel):
         return self.ii_ActSpd
 
 
-class CaptiveWinch(LoadsModel):
-    """sCaptiveWinch"""
+class CaptiveWinch(LoadsModel, ABC):
+    """sCaptiveWinch (abstract base class for field specification)"""
 
     ii_ActTrq: Torque
     ii_ActSpd: RotationalSpeed
@@ -74,8 +76,8 @@ class CaptiveWinch(LoadsModel):
         return self.ii_IgbtTemp
 
 
-class BoomVang(LoadsModel):
-    """sBoomVang"""
+class BoomVang(LoadsModel, ABC):
+    """sBoomVang (abstract base class for field specification)"""
 
     ow_ActLoad_10kg: Load
     ow_ActLoad2_10kg: Load
