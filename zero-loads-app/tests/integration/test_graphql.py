@@ -17,7 +17,7 @@ async def test_graphql():
                     "query": """
                     query {
                         referenceValues(
-                            case: {twa: 27, tws: 16, sailset: [full_main, full_mizzen, blade]}
+                            case: {awa: 27, aws: 16, sailset: [full_main, full_mizzen, blade]}
                             variables: "main-sheet-load"
                         )
                         {

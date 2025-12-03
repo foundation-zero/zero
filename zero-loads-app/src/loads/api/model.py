@@ -1,7 +1,7 @@
 import logging
 
 import strawberry
-from sqlalchemy import and_, cast, select
+from sqlalchemy import cast, select
 from sqlalchemy.dialects.postgresql import ARRAY, NUMERIC, TEXT
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import selectinload
@@ -37,23 +37,29 @@ async def get_loads_reference_values(
         .where(ReferenceValues.variable_id.in_(variables))
         .where(
             ReferenceValues.load_case.has(
-                and_(
-                    LoadCases.awa_range.has(
-                        AwaRanges.awa.contains(cast(case.twa, NUMERIC))
-                    ),
-                    LoadCases.aws_range.has(
-                        AwsRanges.aws.contains(cast(case.tws, NUMERIC))
-                    ),
-                    LoadCases.sail_set.has(
-                        and_(
-                            SailSets.sail_set.op("@>")(
-                                cast([sail.value for sail in case.sailset], ARRAY(TEXT))
-                            ),
-                            SailSets.sail_set.op("<@")(
-                                cast([sail.value for sail in case.sailset], ARRAY(TEXT))
-                            ),
-                        )
-                    ),
+                LoadCases.awa_range.has(AwaRanges.awa.contains(cast(case.awa, NUMERIC)))
+            )
+        )
+        .where(
+            ReferenceValues.load_case.has(
+                LoadCases.aws_range.has(AwsRanges.aws.contains(cast(case.aws, NUMERIC)))
+            )
+        )
+        .where(
+            ReferenceValues.load_case.has(
+                LoadCases.sail_set.has(
+                    SailSets.sail_set.contains(
+                        cast([sail.value for sail in case.sailset], ARRAY(TEXT))
+                    )
+                )
+            )
+        )
+        .where(
+            ReferenceValues.load_case.has(
+                LoadCases.sail_set.has(
+                    SailSets.sail_set.contained_by(
+                        cast([sail.value for sail in case.sailset], ARRAY(TEXT))
+                    )
                 )
             )
         )
@@ -61,8 +67,7 @@ async def get_loads_reference_values(
 
     result = await session.execute(query)
     reference_values = result.scalars().all()
-    for ref_value in reference_values:
-        logger.info(ref_value.variable)
+
     if reference_values:
         return [
             ReferenceValueType(

@@ -52,6 +52,6 @@ class ReferenceValueType:
 
 @strawberry.input
 class CaseInput:
-    twa: float
-    tws: float
+    awa: float
+    aws: float
     sailset: list[Sails]
