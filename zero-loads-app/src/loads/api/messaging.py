@@ -1,6 +1,6 @@
 import asyncio
 import logging
-from typing import Callable, Coroutine
+from typing import Any, Callable, Coroutine
 
 import strawberry
 from aiomqtt import Client as MqttClient
@@ -71,18 +71,17 @@ class Messaging:
     ):
         self._mqtt_client: MqttClient = mqtt_client
         self._modules: list[MessagingModule] = modules
-        self._value_definitions: dict[str, LoadsField] = variable_definition
+        self._variable_definition: dict[str, LoadsField] = variable_definition
         self._receivers: dict[str, MessageReceiver] = {
             topic: MessageReceiver(cls=receiver, topic=topic)
             for module in self._modules
             for topic, receiver in module._mapping.items()
         }
 
-    async def run(self) -> Coroutine:
+    async def run(self) -> Coroutine[Any, Any, None]:
         for module in self._modules:
             topics = set(module.topics)
             for topic in topics:
-                logging.debug(f"Subscribing to topic: {topic}")
                 await self._mqtt_client.subscribe(topic, qos=1)
 
         async def _run(self):
@@ -95,7 +94,7 @@ class Messaging:
 
         return _run(self)
 
-    def match_receiver(self, message: Message) -> MessageReceiver | None:
+    def _match_receiver(self, message: Message) -> MessageReceiver | None:
         return self._receivers.get(message.topic.value, None)
 
     def _parse_message[T: LoadsModel](self, message: Message, model: type[T]) -> T:
@@ -103,16 +102,10 @@ class Messaging:
             raise ValueError(f"Expected string or bytes, got {type(message.payload)}")
         return model.model_validate_json(message.payload)
 
-    def retrieve(self, topic: str) -> LoadsModel | None:
-        if receiver := self._receivers.get(topic):
-            return receiver.last
-        else:
-            return None
-
     def get_value_for(self, variables: list[strawberry.ID]) -> list[ActualType] | None:
         results: list[ActualType] = []
         for variable in variables:
-            if field := self._value_definitions.get(variable):
+            if field := self._variable_definition.get(variable):
                 topic = field.model.TOPIC
 
                 if receiver := self._receivers.get(topic):
@@ -122,5 +115,5 @@ class Messaging:
 
         return results if results else None
 
-    def get_value_definition(self, variable: str) -> LoadsField | None:
-        return self._value_definitions.get(variable)
+    def get_variable_definition(self, variable: str) -> LoadsField | None:
+        return self._variable_definition.get(variable)

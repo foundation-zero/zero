@@ -12,8 +12,6 @@ from .units import (
 
 
 class TensionCylinder(LoadsModel, ABC):
-    """sTensionCylinder (abstract base class for field specification)"""
-
     ow_ActPos_mm: Position
     ow_ActPos2_mm: Position
     ow_ActPos_pm: RelativePosition
@@ -42,8 +40,6 @@ class TensionCylinder(LoadsModel, ABC):
 
 
 class FurlerElectric(LoadsModel, ABC):
-    """sFurlerElectric (abstract base class for field specification)"""
-
     ii_ActTrq: Torque
     ii_ActSpd: RotationalSpeed
 
@@ -57,8 +53,6 @@ class FurlerElectric(LoadsModel, ABC):
 
 
 class CaptiveWinch(LoadsModel, ABC):
-    """sCaptiveWinch (abstract base class for field specification)"""
-
     ii_ActTrq: Torque
     ii_ActSpd: RotationalSpeed
     ii_IgbtTemp: Temperature
@@ -77,8 +71,6 @@ class CaptiveWinch(LoadsModel, ABC):
 
 
 class BoomVang(LoadsModel, ABC):
-    """sBoomVang (abstract base class for field specification)"""
-
     ow_ActLoad_10kg: Load
     ow_ActLoad2_10kg: Load
     ow_ActPos_mm: Position

@@ -9,10 +9,10 @@ from loads.api.api import get_messaging
 from loads.api.types import ActualType
 
 
-async def override_messaging():
+def override_messaging():
     mock = Mock()
     mock.get_value_for = Mock(return_value=[ActualType(id="test-load", value=42.0)])
-    yield mock
+    return mock
 
 
 @pytest.fixture
