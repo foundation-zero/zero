@@ -4,40 +4,56 @@ This directory contains Node.js scripts for automatically extracting GraphQL sch
 
 ## Scripts
 
-### `extract-schema-values.js`
+### `extract-schema-values.ts`
 
-Extracts fields from GraphQL schema types and generates TypeScript definition objects. Supports control, sensor, and parameter definitions with automatic type inference.
+Extracts fields from GraphQL schema types and generates TypeScript definition objects. Supports control, sensor, parameter, and simulation definitions with automatic type inference.
 
 **Usage:**
 
 ```bash
 # Extract control definitions
-pnpm run extract-schema-values THRUSTERS_CONTROL_DEFINITION ThrustersControlValuesType
+pnpm extract-schema-values THRUSTERS_CONTROL_DEFINITION ThrustersControlValuesType
 
 # Extract sensor definitions
-pnpm run extract-schema-values THRUSTERS_SENSOR_DEFINITION ThrustersSensorValuesType
+pnpm extract-schema-values THRUSTERS_SENSOR_DEFINITION ThrustersSensorValuesType
 
 # Extract parameter definitions
-pnpm run extract-schema-values THRUSTERS_PARAMETER_DEFINITION ThrustersParametersType
+pnpm extract-schema-values THRUSTERS_PARAMETER_DEFINITION ThrustersParametersType
 
 # Extract simulation input definitions
-pnpm run extract-schema-values THRUSTERS_SIMULATION_INPUTS ThrustersSimulationInputsType
+pnpm extract-schema-values THRUSTERS_SIMULATION_INPUTS ThrustersSimulationInputsType
 
 # Extract simulation output definitions
-pnpm run extract-schema-values THRUSTERS_SIMULATION_OUTPUTS ThrustersSimulationOutputsType
+pnpm extract-schema-values THRUSTERS_SIMULATION_OUTPUTS ThrustersSimulationOutputsType
 
 # Custom extraction
-pnpm run extract-schema-values <CONST_NAME> <TYPE_NAME>
+pnpm extract-schema-values <CONST_NAME> <TYPE_NAME>
 ```
 
 **What it does:**
 
-1. Parses the GraphQL schema file at `src/graphql/thrs/schema.graphql`
-2. Finds the specified GraphQL type definition
+1. Parses the GraphQL schema file at `src/modules/thrs/graphql/schema.graphql` using the official GraphQL parser
+2. Finds the specified GraphQL type definition using AST visitor pattern
 3. Extracts field metadata from `@jsonSchemaDirective` annotations (for controls/sensors) or infers types directly (for parameters/simulation)
 4. Infers component types (control/sensor/parameter/simulation) from field metadata and GraphQL types
 5. Generates appropriate TypeScript definition objects with proper typing
-6. Updates or creates the specified constant in `src/lib/consts.generated.ts`
+6. Updates or creates the specified constant in `src/modules/thrs/lib/consts.generated.ts`
+
+**Architecture:**
+
+The script is refactored in TypeScript with clear separation of concerns:
+- **Type-safe** - Full TypeScript types for all data structures
+- **Modular** - Functions organized by responsibility (parsing, inference, generation, I/O)
+- **Robust parsing** - Uses official GraphQL parser (handles both formatted and unformatted schemas)
+- **Maintainable** - Centralized type mappings and clear function signatures
+- **Well-documented** - Inline comments explain each section's purpose
+
+**Key improvements over JavaScript version:**
+- TypeScript provides compile-time type checking and better IDE support
+- Uses GraphQL AST visitor pattern instead of regex parsing for robustness
+- Handles all valid GraphQL syntax (formatted or unformatted)
+- Clearer error messages and better error handling
+- Exported functions for testability
 
 ### `generate-graphql-queries.js`
 

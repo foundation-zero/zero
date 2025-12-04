@@ -1,0 +1,459 @@
+#!/usr/bin/env node
+
+/**
+ * Script to extract GraphQL schema types and update definition constants in consts.generated.ts
+ *
+ * This script parses a GraphQL schema file and extracts type definitions to generate
+ * TypeScript constants. It supports four definition types:
+ * - Control definitions (for control systems)
+ * - Sensor definitions (for sensor data)
+ * - Parameter definitions (for configuration parameters)
+ * - Simulation definitions (for simulation components)
+ *
+ * Usage:
+ *   pnpm tsx scripts/extract-schema-values.ts <CONST_NAME> <TYPE_NAME>
+ *
+ * Example:
+ *   pnpm tsx scripts/extract-schema-values.ts THRUSTERS_CONTROL_DEFINITION ThrustersControlValuesType
+ */
+
+import { FieldDefinitionNode, ObjectTypeDefinitionNode, parse, TypeNode, visit } from "graphql";
+import fs from "node:fs";
+import path from "node:path";
+import { fileURLToPath } from "node:url";
+
+// ============================================================================
+// Configuration
+// ============================================================================
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+const SCHEMA_PATH = path.join(__dirname, "../src/modules/thrs/graphql/schema.graphql");
+const CONSTS_PATH = path.join(__dirname, "../src/modules/thrs/lib/consts.generated.ts");
+
+// ============================================================================
+// Types
+// ============================================================================
+
+type DefinitionType = "control" | "sensor" | "parameter" | "simulation";
+
+interface DirectiveArgs {
+  yardTag?: string;
+  componentType?: string;
+  valveType?: string;
+}
+
+interface ExtractedValue {
+  yardTag?: string;
+  fieldType?: string;
+  componentType?: string;
+  valveType?: string;
+}
+
+interface ExtractedValues {
+  [fieldName: string]: ExtractedValue;
+}
+
+interface Config {
+  constName: string;
+  typeName: string;
+  definitionType: DefinitionType;
+}
+
+// ============================================================================
+// Type Mappings
+// ============================================================================
+
+const SENSOR_TYPE_MAP: Record<string, string> = {
+  SensorTemperatureSensorType: "Temperature",
+  SensorPressureSensorType: "Pressure",
+  SensorFlowSensorType: "Flow",
+  SensorPumpType: "Pump",
+  SensorValveType: "Valve",
+  SensorThrusterType: "Thruster",
+  SensorPcsType: "Pcs",
+  SensorPcmType: "Pcm",
+};
+
+const SIMULATION_TYPE_MAP: Record<string, string> = {
+  ThrusterSimulationType: "Thruster",
+  BoundarySimulationType: "Boundary",
+  TemperatureBoundarySimulationType: "Temperature",
+  FlowBoundarySimulationType: "Flow",
+  PcsSimulationType: "Pcs",
+  HeatSourceSimulationType: "HeatSource",
+};
+
+const CONTROL_TYPE_MAP: Record<string, string> = {
+  pcm: "Pcm",
+  pump: "Pump",
+  valve: "Valve",
+};
+
+const VALVE_TYPE_MAP: Record<string, string> = {
+  mix: "Mix",
+  flowcontrol: "FlowControl",
+  shutoff: "Shutoff",
+  switch: "Switch",
+  null: "Unknown",
+};
+
+// ============================================================================
+// Argument Parsing
+// ============================================================================
+
+function parseArguments(): Config {
+  const args = process.argv.slice(2);
+  const [constName, typeName] = args;
+
+  if (!constName || !typeName) {
+    console.error("❌ Usage: pnpm tsx scripts/extract-schema-values.ts <CONST_NAME> <TYPE_NAME>");
+    console.error(
+      "   Example: pnpm tsx scripts/extract-schema-values.ts THRUSTERS_CONTROL_DEFINITION ThrustersControlValuesType",
+    );
+    process.exit(1);
+  }
+
+  const definitionType = inferDefinitionType(typeName);
+
+  return { constName, typeName, definitionType };
+}
+
+function inferDefinitionType(typeName: string): DefinitionType {
+  const lowerTypeName = typeName.toLowerCase();
+
+  if (lowerTypeName.includes("control")) return "control";
+  if (lowerTypeName.includes("sensor")) return "sensor";
+  if (lowerTypeName.includes("parameter")) return "parameter";
+  if (lowerTypeName.includes("simulation")) return "simulation";
+
+  console.error(`❌ Cannot infer definition type from TYPE_NAME: ${typeName}`);
+  console.error("   TYPE_NAME should contain 'Control', 'Sensor', 'Parameter', or 'Simulation'");
+  return process.exit(1) as never;
+}
+
+// ============================================================================
+// GraphQL Type Utilities
+// ============================================================================
+
+/**
+ * Extract the base type name from a GraphQL type, unwrapping NonNull and List modifiers
+ */
+function getTypeName(type: TypeNode): string {
+  if (type.kind === "NonNullType" || type.kind === "ListType") {
+    return getTypeName(type.type);
+  }
+  return type.name.value;
+}
+
+/**
+ * Reconstruct the full type string including NonNull (!) and List ([]) modifiers
+ */
+function getTypeString(type: TypeNode): string {
+  if (type.kind === "NonNullType") {
+    return `${getTypeString(type.type)}!`;
+  }
+  if (type.kind === "ListType") {
+    return `[${getTypeString(type.type)}]`;
+  }
+  return type.name.value;
+}
+
+// ============================================================================
+// Component Type Inference
+// ============================================================================
+
+function inferSensorComponentType(fieldType: string): string | null {
+  return SENSOR_TYPE_MAP[fieldType] || null;
+}
+
+function inferParameterType(fieldName: string, fieldType: string): string | null {
+  // Infer from field name patterns
+  const lowerFieldName = fieldName.toLowerCase();
+  if (lowerFieldName.endsWith("temperature")) return "Temperature";
+  if (lowerFieldName.endsWith("flow")) return "Flow";
+  if (lowerFieldName.endsWith("tuning")) return "Tuning";
+
+  // Fallback based on GraphQL type
+  if (fieldType === "Float") return "Temperature";
+  if (fieldType === "[Float!]") return "Tuning";
+
+  return null;
+}
+
+function inferSimulationComponentType(fieldType: string): string | null {
+  return SIMULATION_TYPE_MAP[fieldType] || null;
+}
+
+// ============================================================================
+// Field Processing
+// ============================================================================
+
+function extractDirectiveArgs(field: FieldDefinitionNode): DirectiveArgs {
+  const directive = field.directives?.find((d) => d.name.value === "jsonSchemaDirective");
+  if (!directive) return {};
+
+  const args: DirectiveArgs = {};
+  for (const arg of directive.arguments || []) {
+    const argName = arg.name.value as keyof DirectiveArgs;
+    if (arg.value.kind === "StringValue") {
+      args[argName] = arg.value.value;
+    }
+  }
+
+  return args;
+}
+
+function processParameterField(fieldName: string, fieldTypeString: string): ExtractedValue | null {
+  const parameterType = inferParameterType(fieldName, fieldTypeString);
+  if (!parameterType) return null;
+
+  return { componentType: parameterType };
+}
+
+function processSimulationField(fieldType: string): ExtractedValue | null {
+  const simulationComponentType = inferSimulationComponentType(fieldType);
+  if (!simulationComponentType) return null;
+
+  return { componentType: simulationComponentType };
+}
+
+function processControlField(
+  fieldType: string,
+  directiveArgs: DirectiveArgs,
+): ExtractedValue | null {
+  if (!directiveArgs.yardTag) return null;
+
+  const entry: ExtractedValue = {
+    yardTag: directiveArgs.yardTag,
+    fieldType: fieldType,
+  };
+
+  if (directiveArgs.componentType) {
+    entry.componentType = directiveArgs.componentType;
+  }
+
+  if (entry.componentType === "valve" && directiveArgs.valveType) {
+    entry.valveType = directiveArgs.valveType;
+  }
+
+  return entry;
+}
+
+function processSensorField(
+  fieldType: string,
+  directiveArgs: DirectiveArgs,
+): ExtractedValue | null {
+  if (!directiveArgs.yardTag) return null;
+
+  const entry: ExtractedValue = {
+    yardTag: directiveArgs.yardTag,
+    fieldType: fieldType,
+  };
+
+  const componentType = inferSensorComponentType(fieldType);
+  if (componentType) {
+    entry.componentType = componentType;
+  }
+
+  if (entry.componentType === "Valve" && directiveArgs.valveType) {
+    entry.valveType = directiveArgs.valveType;
+  }
+
+  return entry;
+}
+
+function processField(
+  field: FieldDefinitionNode,
+  definitionType: DefinitionType,
+): ExtractedValue | null {
+  const fieldName = field.name.value;
+  const fieldType = getTypeName(field.type);
+  const fieldTypeString = getTypeString(field.type);
+
+  switch (definitionType) {
+    case "parameter":
+      return processParameterField(fieldName, fieldTypeString);
+
+    case "simulation":
+      return processSimulationField(fieldType);
+
+    case "control": {
+      const directiveArgs = extractDirectiveArgs(field);
+      return processControlField(fieldType, directiveArgs);
+    }
+
+    case "sensor": {
+      const directiveArgs = extractDirectiveArgs(field);
+      return processSensorField(fieldType, directiveArgs);
+    }
+  }
+}
+
+// ============================================================================
+// Schema Parsing
+// ============================================================================
+
+function parseSchema(schemaPath: string, config: Config): ExtractedValues {
+  try {
+    const schemaContent = fs.readFileSync(schemaPath, "utf8");
+    const ast = parse(schemaContent);
+
+    const extractedValues: ExtractedValues = {};
+
+    visit(ast, {
+      ObjectTypeDefinition(node: ObjectTypeDefinitionNode) {
+        if (node.name.value !== config.typeName) return;
+
+        for (const field of node.fields || []) {
+          const extractedValue = processField(field, config.definitionType);
+          if (extractedValue) {
+            extractedValues[field.name.value] = extractedValue;
+          }
+        }
+      },
+    });
+
+    return extractedValues;
+  } catch (error) {
+    const errorMessage = error instanceof Error ? error.message : String(error);
+    console.error(`Error parsing schema: ${errorMessage}`);
+    return {};
+  }
+}
+
+// ============================================================================
+// Code Generation
+// ============================================================================
+
+function getWrapperFunction(definitionType: DefinitionType): string {
+  const wrapperMap: Record<DefinitionType, string> = {
+    control: "toControlDefinition",
+    sensor: "toSensorDefinition",
+    parameter: "toParameterDefinition",
+    simulation: "toSimulationDefinition",
+  };
+  return wrapperMap[definitionType];
+}
+
+function generatePropertyLines(value: ExtractedValue, definitionType: DefinitionType): string[] {
+  const props: string[] = [];
+
+  // Add yardTag for control and sensor definitions
+  if ((definitionType === "control" || definitionType === "sensor") && value.yardTag) {
+    props.push(`yardTag: "${value.yardTag}"`);
+  }
+
+  // Add componentType based on definition type
+  if (definitionType === "parameter" && value.componentType) {
+    props.push(`componentType: ParametersType.${value.componentType}`);
+  } else if (definitionType === "simulation" && value.componentType) {
+    props.push(`componentType: SimulationComponentType.${value.componentType}`);
+  } else if (definitionType === "control" && value.componentType) {
+    const mappedType = CONTROL_TYPE_MAP[value.componentType] || value.componentType;
+    props.push(`componentType: ControlComponentType.${mappedType}`);
+  } else if (definitionType === "sensor" && value.componentType) {
+    props.push(`componentType: SensorComponentType.${value.componentType}`);
+  }
+
+  // Add valveType if applicable
+  if (value.valveType) {
+    const mappedValveType = VALVE_TYPE_MAP[value.valveType] || value.valveType;
+    props.push(`valveType: ValveType.${mappedValveType}`);
+  }
+
+  return props;
+}
+
+function generateObjectString(values: ExtractedValues, config: Config): string {
+  const entries = Object.entries(values)
+    .map(([key, value]) => {
+      const props = generatePropertyLines(value, config.definitionType);
+      return `  ${key}: {\n    ${props.join(",\n    ")},\n  }`;
+    })
+    .join(",\n");
+
+  const wrapperFunction = getWrapperFunction(config.definitionType);
+  return `export const ${config.constName} = ${wrapperFunction}({\n${entries},\n});`;
+}
+
+function updateConstsFile(constsContent: string, newObjectString: string, config: Config): string {
+  const wrapperFunction = getWrapperFunction(config.definitionType);
+  const pattern = new RegExp(
+    `export const ${config.constName} = ${wrapperFunction}\\([\\s\\S]*?\\}\\);`,
+    "g",
+  );
+
+  if (pattern.test(constsContent)) {
+    // Replace existing constant
+    return constsContent.replace(pattern, newObjectString);
+  } else {
+    // Add new constant at the end
+    return `${constsContent}\n${newObjectString}\n`;
+  }
+}
+
+// ============================================================================
+// File Operations
+// ============================================================================
+
+function writeUpdatedConstants(extractedValues: ExtractedValues, config: Config): void {
+  if (Object.keys(extractedValues).length === 0) {
+    throw new Error(`No fields found in ${config.typeName}`);
+  }
+
+  console.log(
+    `✓ Found ${Object.keys(extractedValues).length} ${config.definitionType} values:`,
+    Object.keys(extractedValues),
+  );
+
+  const newObjectString = generateObjectString(extractedValues, config);
+
+  if (!fs.existsSync(CONSTS_PATH)) {
+    throw new Error(`Constants file not found: ${CONSTS_PATH}`);
+  }
+
+  const constsContent = fs.readFileSync(CONSTS_PATH, "utf8");
+  const updatedContent = updateConstsFile(constsContent, newObjectString, config);
+
+  fs.writeFileSync(CONSTS_PATH, updatedContent);
+
+  console.log(`✅ Successfully updated ${CONSTS_PATH}`);
+  console.log(`📊 Generated object with ${Object.keys(extractedValues).length} entries`);
+}
+
+// ============================================================================
+// Main Execution
+// ============================================================================
+
+function main(): void {
+  try {
+    const config = parseArguments();
+
+    console.log(`🔄 Extracting ${config.definitionType} values from GraphQL schema...`);
+    console.log(`📋 Target: ${config.constName} from ${config.typeName}`);
+
+    if (!fs.existsSync(SCHEMA_PATH)) {
+      throw new Error(`Schema file not found: ${SCHEMA_PATH}`);
+    }
+
+    const extractedValues = parseSchema(SCHEMA_PATH, config);
+    writeUpdatedConstants(extractedValues, config);
+  } catch (error) {
+    const errorMessage = error instanceof Error ? error.message : String(error);
+    console.error("❌ Error:", errorMessage);
+    process.exit(1);
+  }
+}
+
+// Run if called directly
+if (import.meta.url === `file://${process.argv[1]}`) {
+  main();
+}
+
+// ============================================================================
+// Exports (for testing)
+// ============================================================================
+
+export { generateObjectString, parseSchema, updateConstsFile };
