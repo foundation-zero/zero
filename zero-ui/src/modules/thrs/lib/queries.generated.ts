@@ -1,157 +1,233 @@
-export const THRUSTERS_CONTROL_QUERY = `
-  thrustersPump1 {
+export const CONSUMERS_CONTROL_QUERY = `
+  consumersFlowcontrolFahrenheit {
+    setpoint { value timestamp }
+  }
+  consumersFlowcontrolBypass {
+    setpoint { value timestamp }
+  }
+  consumersFlowcontrolBoosting {
+    setpoint { value timestamp }
+  }
+  consumersSwitchFahrenheitExchanger {
+    setpoint { value timestamp }
+  }
+  consumersSwitchBoosting {
+    setpoint { value timestamp }
+  }
+`;
+
+export const CONSUMERS_PARAMETERS_QUERY = `
+  boostingFlowBalanceTuning
+  bypassFlowBalanceTuning
+  fahrenheitFlowBalanceTuning
+`;
+
+export const CONSUMERS_SENSOR_QUERY = `
+  consumersTemperatureBoostingReturn {
+    temperature { value timestamp }
+  }
+  consumersTemperatureFahrenheitReturn {
+    temperature { value timestamp }
+  }
+  consumersTemperatureBoostingSupply {
+    temperature { value timestamp }
+  }
+  consumersTemperatureFahrenheitSupply {
+    temperature { value timestamp }
+  }
+  consumersFlowBoosting {
+    flow { value timestamp }
+    temperature { value timestamp }
+  }
+  consumersFlowFahrenheit {
+    flow { value timestamp }
+    temperature { value timestamp }
+  }
+  consumersFlowBypass {
+    flow { value timestamp }
+    temperature { value timestamp }
+  }
+  consumersFlowcontrolFahrenheit {
+    positionRel { value timestamp }
+  }
+  consumersFlowcontrolBypass {
+    positionRel { value timestamp }
+  }
+  consumersFlowcontrolBoosting {
+    positionRel { value timestamp }
+  }
+  consumersSwitchFahrenheitExchanger {
+    positionRel { value timestamp }
+  }
+  consumersSwitchBoosting {
+    positionRel { value timestamp }
+  }
+`;
+
+export const CONSUMERS_SIMULATION_INPUTS_QUERY = `
+  consumersModuleSupply {
+    temperature { value timestamp }
+    flow { value timestamp }
+  }
+`;
+
+export const CONSUMERS_SIMULATION_OUTPUTS_QUERY = `
+  consumersModuleReturn {
+    temperature { value timestamp }
+    flow { value timestamp }
+  }
+`;
+
+export const PCM_CONTROL_QUERY = `
+  pcmPump {
     dutypoint { value timestamp }
     on { value timestamp }
   }
-  thrustersPump2 {
-    dutypoint { value timestamp }
+  pcmSwitchChargingReturn {
+    setpoint { value timestamp }
+  }
+  pcmFlowcontrolModule1 {
+    setpoint { value timestamp }
+  }
+  pcmFlowcontrolModule2 {
+    setpoint { value timestamp }
+  }
+  pcmFlowcontrolModule3 {
+    setpoint { value timestamp }
+  }
+  pcmFlowcontrolModule4 {
+    setpoint { value timestamp }
+  }
+  pcmSwitchDischarging {
+    setpoint { value timestamp }
+  }
+  pcmSwitchChargingSupply {
+    setpoint { value timestamp }
+  }
+  pcmSwitchConsumers {
+    setpoint { value timestamp }
+  }
+  pcmModule1 {
     on { value timestamp }
   }
-  thrustersMixRecovery {
-    setpoint { value timestamp }
-  }
-  thrustersMixExchanger {
-    setpoint { value timestamp }
-  }
-  thrustersFlowcontrolAft {
-    setpoint { value timestamp }
-  }
-  thrustersFlowcontrolFwd {
-    setpoint { value timestamp }
-  }
-  thrustersShutoffRecovery {
-    setpoint { value timestamp }
-  }
-  thrustersSwitchAft {
-    setpoint { value timestamp }
-  }
-  thrustersSwitchFwd {
-    setpoint { value timestamp }
-  }
 `;
 
-export const THRUSTERS_SENSOR_QUERY = `
-  thrustersPump1 {
-    flow { value timestamp }
-    speed { value timestamp }
-    opTime { value timestamp }
-  }
-  thrustersPump2 {
-    flow { value timestamp }
-    speed { value timestamp }
-    opTime { value timestamp }
-  }
-  thrustersTemperatureAftReturn {
-    temperature { value timestamp }
-  }
-  thrustersTemperatureFwdReturn {
-    temperature { value timestamp }
-  }
-  thrustersTemperatureSupply {
-    temperature { value timestamp }
-  }
-  thrustersTemperatureRecoveryMix {
-    temperature { value timestamp }
-  }
-  thrustersMixRecovery {
-    positionRel { value timestamp }
-  }
-  thrustersMixExchanger {
-    positionRel { value timestamp }
-  }
-  thrustersFlowFwd {
-    flow { value timestamp }
-    temperature { value timestamp }
-  }
-  thrustersFlowAft {
-    flow { value timestamp }
-    temperature { value timestamp }
-  }
-  thrustersFlowcontrolAft {
-    positionRel { value timestamp }
-  }
-  thrustersFlowcontrolFwd {
-    positionRel { value timestamp }
-  }
-  thrustersShutoffRecovery {
-    positionRel { value timestamp }
-  }
-  thrustersSwitchAft {
-    positionRel { value timestamp }
-  }
-  thrustersSwitchFwd {
-    positionRel { value timestamp }
-  }
-  thrustersFlowRecovery {
-    flow { value timestamp }
-    temperature { value timestamp }
-  }
-  thrustersPressurePump {
-    pressure { value timestamp }
-  }
-  thrustersPressureRelief {
-    pressure { value timestamp }
-  }
-  thrustersAft {
-    active { value timestamp }
-  }
-  thrustersFwd {
-    active { value timestamp }
-  }
-  thrustersPcs {
-    mode { value timestamp }
-  }
-`;
-
-export const THRUSTERS_SIMULATION_OUTPUTS_QUERY = `
-  thrustersSeawaterReturn {
-    temperature { value timestamp }
-  }
-  thrustersModuleSupply {
-    flow { value timestamp }
-  }
-  thrustersModuleReturn {
-    temperature { value timestamp }
-    flow { value timestamp }
-  }
-`;
-
-export const THRUSTERS_SIMULATION_INPUTS_QUERY = `
-  thrustersAft {
-    heatFlow { value timestamp }
-    active { value timestamp }
-  }
-  thrustersFwd {
-    heatFlow { value timestamp }
-    active { value timestamp }
-  }
-  thrustersSeawaterSupply {
-    temperature { value timestamp }
-    flow { value timestamp }
-  }
-  thrustersModuleSupply {
-    temperature { value timestamp }
-  }
-  thrustersPcs {
-    mode { value timestamp }
-  }
-`;
-
-export const THRUSTERS_PARAMETERS_QUERY = `
-  maximumSupplyTemperature
-  coolingTemperature
-  coolingFlow
-  recoveryTemperature
-  warmupTemperature
-  thrustersMinimumFlow
-  thrustersMaximumFlow
+export const PCM_PARAMETERS_QUERY = `
+  pcmDischargeFlow
+  pcmChargeFlow
+  minimumChargingTemperature
   pumpTuning
-  warmupMixTuning
-  heatDumpTuning
-  aftFlowBalanceTuning
-  fwdFlowBalanceTuning
-  aftTemperatureTuning
-  fwdTemperatureTuning
+  module1FlowBalanceTuning
+  module2FlowBalanceTuning
+  module3FlowBalanceTuning
+  module4FlowBalanceTuning
+`;
+
+export const PCM_SENSOR_QUERY = `
+  pcmPump {
+    flow { value timestamp }
+    speed { value timestamp }
+    opTime { value timestamp }
+  }
+  pcmTemperatureProducersReturn {
+    temperature { value timestamp }
+  }
+  pcmTemperatureProducersSupply {
+    temperature { value timestamp }
+  }
+  pcmTemperatureModule1Out {
+    temperature { value timestamp }
+  }
+  pcmTemperatureModule2Out {
+    temperature { value timestamp }
+  }
+  pcmTemperatureModule3Out {
+    temperature { value timestamp }
+  }
+  pcmTemperatureModule4Out {
+    temperature { value timestamp }
+  }
+  pcmModule1 {
+    charged { value timestamp }
+  }
+  pcmModule2 {
+    charged { value timestamp }
+  }
+  pcmModule3 {
+    charged { value timestamp }
+  }
+  pcmModule4 {
+    charged { value timestamp }
+  }
+  pcmFlowModule1 {
+    flow { value timestamp }
+    temperature { value timestamp }
+  }
+  pcmFlowModule2 {
+    flow { value timestamp }
+    temperature { value timestamp }
+  }
+  pcmFlowModule3 {
+    flow { value timestamp }
+    temperature { value timestamp }
+  }
+  pcmFlowModule4 {
+    flow { value timestamp }
+    temperature { value timestamp }
+  }
+  pcmSwitchChargingReturn {
+    positionRel { value timestamp }
+  }
+  pcmFlowcontrolModule1 {
+    positionRel { value timestamp }
+  }
+  pcmFlowcontrolModule2 {
+    positionRel { value timestamp }
+  }
+  pcmFlowcontrolModule3 {
+    positionRel { value timestamp }
+  }
+  pcmFlowcontrolModule4 {
+    positionRel { value timestamp }
+  }
+  pcmSwitchDischarging {
+    positionRel { value timestamp }
+  }
+  pcmSwitchChargingSupply {
+    positionRel { value timestamp }
+  }
+  pcmSwitchConsumers {
+    positionRel { value timestamp }
+  }
+`;
+
+export const PCM_SIMULATION_INPUTS_QUERY = `
+  pcmProducersSupply {
+    temperature { value timestamp }
+    flow { value timestamp }
+  }
+  pcmConsumersSupply {
+    temperature { value timestamp }
+  }
+  pcmFreshwaterSupply {
+    temperature { value timestamp }
+    flow { value timestamp }
+  }
+`;
+
+export const PCM_SIMULATION_OUTPUTS_QUERY = `
+  pcmConsumersReturn {
+    temperature { value timestamp }
+    flow { value timestamp }
+  }
+  pcmProducersReturn {
+    temperature { value timestamp }
+    flow { value timestamp }
+  }
+  pcmFreshwaterReturn {
+    temperature { value timestamp }
+    flow { value timestamp }
+  }
 `;
 
 export const PVT_CONTROL_QUERY = `
@@ -188,6 +264,21 @@ export const PVT_CONTROL_QUERY = `
   pvtMixExchanger {
     setpoint { value timestamp }
   }
+`;
+
+export const PVT_PARAMETERS_QUERY = `
+  maximumSupplyTemperature
+  recoveryTemperature
+  warmupTemperature
+  recoveryActivationStringTemperature
+  minimumReturnTemperature
+  heatDumpTuning
+  mainFwdMixTuning
+  mainAftMixTuning
+  ownersMixTuning
+  mainFwdPumpTuning
+  mainAftPumpTuning
+  ownersPumpTuning
 `;
 
 export const PVT_SENSOR_QUERY = `
@@ -503,24 +594,6 @@ export const PVT_SENSOR_QUERY = `
   }
 `;
 
-export const PVT_PARAMETERS_QUERY = `
-  maximumSupplyTemperature
-  recoveryTemperature
-  warmupTemperature
-  recoveryActivationStringTemperature
-  minimumReturnTemperature
-  mainFwdMinimumPumpDutypoint
-  mainAftMinimumPumpDutypoint
-  ownersMinimumPumpDutypoint
-  heatDumpTuning
-  mainFwdMixTuning
-  mainAftMixTuning
-  ownersMixTuning
-  mainFwdPumpTuning
-  mainAftPumpTuning
-  ownersPumpTuning
-`;
-
 export const PVT_SIMULATION_INPUTS_QUERY = `
   pvtMainFwd {
     heatFlow { value timestamp }
@@ -553,237 +626,158 @@ export const PVT_SIMULATION_OUTPUTS_QUERY = `
   }
 `;
 
-export const PCM_CONTROL_QUERY = `
-  pcmPump {
+export const THRUSTERS_CONTROL_QUERY = `
+  thrustersPump1 {
     dutypoint { value timestamp }
     on { value timestamp }
   }
-  pcmSwitchChargingReturn {
-    setpoint { value timestamp }
-  }
-  pcmFlowcontrolModule1 {
-    setpoint { value timestamp }
-  }
-  pcmFlowcontrolModule2 {
-    setpoint { value timestamp }
-  }
-  pcmFlowcontrolModule3 {
-    setpoint { value timestamp }
-  }
-  pcmFlowcontrolModule4 {
-    setpoint { value timestamp }
-  }
-  pcmSwitchDischarging {
-    setpoint { value timestamp }
-  }
-  pcmSwitchChargingSupply {
-    setpoint { value timestamp }
-  }
-  pcmSwitchConsumers {
-    setpoint { value timestamp }
-  }
-  pcmModule1 {
+  thrustersPump2 {
+    dutypoint { value timestamp }
     on { value timestamp }
   }
+  thrustersMixRecovery {
+    setpoint { value timestamp }
+  }
+  thrustersMixExchanger {
+    setpoint { value timestamp }
+  }
+  thrustersFlowcontrolAft {
+    setpoint { value timestamp }
+  }
+  thrustersFlowcontrolFwd {
+    setpoint { value timestamp }
+  }
+  thrustersShutoffRecovery {
+    setpoint { value timestamp }
+  }
+  thrustersSwitchAft {
+    setpoint { value timestamp }
+  }
+  thrustersSwitchFwd {
+    setpoint { value timestamp }
+  }
 `;
 
-export const PCM_PARAMETERS_QUERY = `
-  pcmDischargeFlow
-  pcmChargeFlow
-  minimumChargingDt
-  minimumChargingTemperature
+export const THRUSTERS_PARAMETERS_QUERY = `
+  maximumSupplyTemperature
+  coolingTemperature
+  coolingFlow
+  recoveryTemperature
+  warmupTemperature
+  thrustersMinimumFlow
+  thrustersMaximumFlow
   pumpTuning
-  module1FlowBalanceTuning
-  module2FlowBalanceTuning
-  module3FlowBalanceTuning
-  module4FlowBalanceTuning
+  warmupMixTuning
+  heatDumpTuning
+  aftFlowBalanceTuning
+  fwdFlowBalanceTuning
+  aftTemperatureTuning
+  fwdTemperatureTuning
 `;
 
-export const PCM_SIMULATION_INPUTS_QUERY = `
-  pcmProducersSupply {
-    temperature { value timestamp }
-    flow { value timestamp }
-  }
-  pcmConsumersSupply {
-    temperature { value timestamp }
-  }
-  pcmFreshwaterSupply {
-    temperature { value timestamp }
-    flow { value timestamp }
-  }
-`;
-
-export const PCM_SIMULATION_OUTPUTS_QUERY = `
-  pcmConsumersReturn {
-    temperature { value timestamp }
-    flow { value timestamp }
-  }
-  pcmProducersReturn {
-    temperature { value timestamp }
-    flow { value timestamp }
-  }
-  pcmFreshwaterReturn {
-    temperature { value timestamp }
-    flow { value timestamp }
-  }
-`;
-
-export const CONSUMERS_CONTROL_QUERY = `
-  consumersFlowcontrolFahrenheit {
-    setpoint { value timestamp }
-  }
-  consumersFlowcontrolBypass {
-    setpoint { value timestamp }
-  }
-  consumersFlowcontrolBoosting {
-    setpoint { value timestamp }
-  }
-  consumersSwitchFahrenheitExchanger {
-    setpoint { value timestamp }
-  }
-  consumersSwitchBoosting {
-    setpoint { value timestamp }
-  }
-`;
-
-export const CONSUMERS_SENSOR_QUERY = `
-  consumersTemperatureBoostingReturn {
-    temperature { value timestamp }
-  }
-  consumersTemperatureFahrenheitReturn {
-    temperature { value timestamp }
-  }
-  consumersTemperatureBoostingSupply {
-    temperature { value timestamp }
-  }
-  consumersTemperatureFahrenheitSupply {
-    temperature { value timestamp }
-  }
-  consumersFlowBoosting {
-    flow { value timestamp }
-    temperature { value timestamp }
-  }
-  consumersFlowFahrenheit {
-    flow { value timestamp }
-    temperature { value timestamp }
-  }
-  consumersFlowBypass {
-    flow { value timestamp }
-    temperature { value timestamp }
-  }
-  consumersFlowcontrolFahrenheit {
-    positionRel { value timestamp }
-  }
-  consumersFlowcontrolBypass {
-    positionRel { value timestamp }
-  }
-  consumersFlowcontrolBoosting {
-    positionRel { value timestamp }
-  }
-  consumersSwitchFahrenheitExchanger {
-    positionRel { value timestamp }
-  }
-  consumersSwitchBoosting {
-    positionRel { value timestamp }
-  }
-`;
-
-export const CONSUMERS_PARAMETERS_QUERY = `
-  boostingFlowRatioSetpoint
-  fahrenheitFlowRatioSetpoint
-  boostingFlowBalanceTuning
-  bypassFlowBalanceTuning
-  fahrenheitFlowBalanceTuning
-`;
-
-export const CONSUMERS_SIMULATION_INPUTS_QUERY = `
-  consumersModuleSupply {
-    temperature { value timestamp }
-    flow { value timestamp }
-  }
-`;
-
-export const CONSUMERS_SIMULATION_OUTPUTS_QUERY = `
-  consumersModuleReturn {
-    temperature { value timestamp }
-    flow { value timestamp }
-  }
-`;
-
-export const PCM_SENSOR_QUERY = `
-  pcmPump {
+export const THRUSTERS_SENSOR_QUERY = `
+  thrustersPump1 {
     flow { value timestamp }
     speed { value timestamp }
     opTime { value timestamp }
   }
-  pcmTemperatureProducersReturn {
+  thrustersPump2 {
+    flow { value timestamp }
+    speed { value timestamp }
+    opTime { value timestamp }
+  }
+  thrustersTemperatureAftReturn {
     temperature { value timestamp }
   }
-  pcmTemperatureProducersSupply {
+  thrustersTemperatureFwdReturn {
     temperature { value timestamp }
   }
-  pcmTemperatureModule1Out {
+  thrustersTemperatureSupply {
     temperature { value timestamp }
   }
-  pcmTemperatureModule2Out {
+  thrustersTemperatureRecoveryMix {
     temperature { value timestamp }
   }
-  pcmTemperatureModule3Out {
-    temperature { value timestamp }
+  thrustersMixRecovery {
+    positionRel { value timestamp }
   }
-  pcmTemperatureModule4Out {
-    temperature { value timestamp }
+  thrustersMixExchanger {
+    positionRel { value timestamp }
   }
-  pcmModule1 {
-    charged { value timestamp }
-  }
-  pcmModule2 {
-    charged { value timestamp }
-  }
-  pcmModule3 {
-    charged { value timestamp }
-  }
-  pcmModule4 {
-    charged { value timestamp }
-  }
-  pcmFlowModule1 {
+  thrustersFlowFwd {
     flow { value timestamp }
     temperature { value timestamp }
   }
-  pcmFlowModule2 {
+  thrustersFlowAft {
     flow { value timestamp }
     temperature { value timestamp }
   }
-  pcmFlowModule3 {
+  thrustersFlowcontrolAft {
+    positionRel { value timestamp }
+  }
+  thrustersFlowcontrolFwd {
+    positionRel { value timestamp }
+  }
+  thrustersShutoffRecovery {
+    positionRel { value timestamp }
+  }
+  thrustersSwitchAft {
+    positionRel { value timestamp }
+  }
+  thrustersSwitchFwd {
+    positionRel { value timestamp }
+  }
+  thrustersFlowRecovery {
     flow { value timestamp }
     temperature { value timestamp }
   }
-  pcmFlowModule4 {
+  thrustersPressurePump {
+    pressure { value timestamp }
+  }
+  thrustersPressureRelief {
+    pressure { value timestamp }
+  }
+  thrustersAft {
+    active { value timestamp }
+  }
+  thrustersFwd {
+    active { value timestamp }
+  }
+  thrustersPcs {
+    mode { value timestamp }
+  }
+`;
+
+export const THRUSTERS_SIMULATION_INPUTS_QUERY = `
+  thrustersAft {
+    heatFlow { value timestamp }
+    active { value timestamp }
+  }
+  thrustersFwd {
+    heatFlow { value timestamp }
+    active { value timestamp }
+  }
+  thrustersSeawaterSupply {
+    temperature { value timestamp }
     flow { value timestamp }
+  }
+  thrustersModuleSupply {
     temperature { value timestamp }
   }
-  pcmSwitchChargingReturn {
-    positionRel { value timestamp }
+  thrustersPcs {
+    mode { value timestamp }
   }
-  pcmFlowcontrolModule1 {
-    positionRel { value timestamp }
+`;
+
+export const THRUSTERS_SIMULATION_OUTPUTS_QUERY = `
+  thrustersSeawaterReturn {
+    temperature { value timestamp }
   }
-  pcmFlowcontrolModule2 {
-    positionRel { value timestamp }
+  thrustersModuleSupply {
+    flow { value timestamp }
   }
-  pcmFlowcontrolModule3 {
-    positionRel { value timestamp }
-  }
-  pcmFlowcontrolModule4 {
-    positionRel { value timestamp }
-  }
-  pcmSwitchDischarging {
-    positionRel { value timestamp }
-  }
-  pcmSwitchChargingSupply {
-    positionRel { value timestamp }
-  }
-  pcmSwitchConsumers {
-    positionRel { value timestamp }
+  thrustersModuleReturn {
+    temperature { value timestamp }
+    flow { value timestamp }
   }
 `;

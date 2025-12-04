@@ -15,210 +15,110 @@ export const toSensorDefinition = <T extends SensorDefinitions>(input: T): T => 
 export const toParameterDefinition = <T extends ParameterDefinitions>(input: T): T => input;
 export const toSimulationDefinition = <T extends SimulationDefinitions>(input: T): T => input;
 
-export const THRUSTERS_CONTROL_DEFINITION = toControlDefinition({
-  thrustersPump1: {
-    yardTag: "50001194",
-    componentType: ControlComponentType.Pump,
-  },
-  thrustersPump2: {
-    yardTag: "50001195",
-    componentType: ControlComponentType.Pump,
-  },
-  thrustersMixRecovery: {
-    yardTag: "50001074",
-    componentType: ControlComponentType.Valve,
-    valveType: ValveType.Mix,
-  },
-  thrustersMixExchanger: {
-    yardTag: "50001214-01",
-    componentType: ControlComponentType.Valve,
-    valveType: ValveType.Mix,
-  },
-  thrustersFlowcontrolAft: {
-    yardTag: "50001215",
+export const CONSUMERS_CONTROL_DEFINITION = toControlDefinition({
+  consumersFlowcontrolFahrenheit: {
+    yardTag: "50001061",
     componentType: ControlComponentType.Valve,
     valveType: ValveType.FlowControl,
   },
-  thrustersFlowcontrolFwd: {
-    yardTag: "50001064-02",
+  consumersFlowcontrolBypass: {
+    yardTag: "50001062-01",
     componentType: ControlComponentType.Valve,
     valveType: ValveType.FlowControl,
   },
-  thrustersShutoffRecovery: {
-    yardTag: "50001066-03",
+  consumersFlowcontrolBoosting: {
+    yardTag: "50001065-01",
     componentType: ControlComponentType.Valve,
-    valveType: ValveType.Shutoff,
+    valveType: ValveType.FlowControl,
   },
-  thrustersSwitchAft: {
-    yardTag: "50001091-01",
+  consumersSwitchFahrenheitExchanger: {
+    yardTag: "50001066-02",
     componentType: ControlComponentType.Valve,
     valveType: ValveType.Switch,
   },
-  thrustersSwitchFwd: {
-    yardTag: "50001091-02",
+  consumersSwitchBoosting: {
+    yardTag: "50001067-15",
     componentType: ControlComponentType.Valve,
     valveType: ValveType.Switch,
   },
 });
 
-export const THRUSTERS_SENSOR_DEFINITION = toSensorDefinition({
-  thrustersPump1: {
-    yardTag: "50001194",
-    componentType: SensorComponentType.Pump,
-  },
-  thrustersPump2: {
-    yardTag: "50001195",
-    componentType: SensorComponentType.Pump,
-  },
-  thrustersTemperatureAftReturn: {
-    yardTag: "50001038-01",
-    componentType: SensorComponentType.Temperature,
-  },
-  thrustersTemperatureFwdReturn: {
-    yardTag: "50001038-02",
-    componentType: SensorComponentType.Temperature,
-  },
-  thrustersTemperatureSupply: {
-    yardTag: "50001038-28",
-    componentType: SensorComponentType.Temperature,
-  },
-  thrustersTemperatureRecoveryMix: {
-    yardTag: "50001038-30",
-    componentType: SensorComponentType.Temperature,
-  },
-  thrustersMixRecovery: {
-    yardTag: "50001074",
-    componentType: SensorComponentType.Valve,
-  },
-  thrustersMixExchanger: {
-    yardTag: "50001214-01",
-    componentType: SensorComponentType.Valve,
-  },
-  thrustersFlowFwd: {
-    yardTag: "50001057-22",
-    componentType: SensorComponentType.Flow,
-  },
-  thrustersFlowAft: {
-    yardTag: "50001057-23",
-    componentType: SensorComponentType.Flow,
-  },
-  thrustersFlowcontrolAft: {
-    yardTag: "50001215",
-    componentType: SensorComponentType.Valve,
-  },
-  thrustersFlowcontrolFwd: {
-    yardTag: "50001064-02",
-    componentType: SensorComponentType.Valve,
-  },
-  thrustersShutoffRecovery: {
-    yardTag: "50001066-03",
-    componentType: SensorComponentType.Valve,
-  },
-  thrustersSwitchAft: {
-    yardTag: "50001091-01",
-    componentType: SensorComponentType.Valve,
-  },
-  thrustersSwitchFwd: {
-    yardTag: "50001091-02",
-    componentType: SensorComponentType.Valve,
-  },
-  thrustersFlowRecovery: {
-    yardTag: "50001093-01",
-    componentType: SensorComponentType.Flow,
-  },
-  thrustersPressurePump: {
-    yardTag: "50001097-01",
-    componentType: SensorComponentType.Pressure,
-  },
-  thrustersPressureRelief: {
-    yardTag: "50001097-02",
-    componentType: SensorComponentType.Pressure,
-  },
-  thrustersAft: {
-    yardTag: "15001001",
-    componentType: SensorComponentType.Thruster,
-  },
-  thrustersFwd: {
-    yardTag: "15001002",
-    componentType: SensorComponentType.Thruster,
-  },
-  thrustersPcs: {
-    yardTag: "1500",
-    componentType: SensorComponentType.Pcs,
-  },
-});
-
-export const THRUSTERS_PARAMETER_DEFINITION = toParameterDefinition({
-  maximumSupplyTemperature: {
-    componentType: ParametersType.Temperature,
-  },
-  coolingTemperature: {
-    componentType: ParametersType.Temperature,
-  },
-  coolingFlow: {
-    componentType: ParametersType.Flow,
-  },
-  recoveryTemperature: {
-    componentType: ParametersType.Temperature,
-  },
-  warmupTemperature: {
-    componentType: ParametersType.Temperature,
-  },
-  thrustersMinimumFlow: {
-    componentType: ParametersType.Flow,
-  },
-  thrustersMaximumFlow: {
-    componentType: ParametersType.Flow,
-  },
-  pumpTuning: {
+export const CONSUMERS_PARAMETER_DEFINITION = toParameterDefinition({
+  boostingFlowBalanceTuning: {
     componentType: ParametersType.Tuning,
   },
-  warmupMixTuning: {
+  bypassFlowBalanceTuning: {
     componentType: ParametersType.Tuning,
   },
-  heatDumpTuning: {
-    componentType: ParametersType.Tuning,
-  },
-  aftFlowBalanceTuning: {
-    componentType: ParametersType.Tuning,
-  },
-  fwdFlowBalanceTuning: {
-    componentType: ParametersType.Tuning,
-  },
-  aftTemperatureTuning: {
-    componentType: ParametersType.Tuning,
-  },
-  fwdTemperatureTuning: {
+  fahrenheitFlowBalanceTuning: {
     componentType: ParametersType.Tuning,
   },
 });
 
-export const THRUSTERS_SIMULATION_INPUTS = toSimulationDefinition({
-  thrustersAft: {
-    componentType: SimulationComponentType.Thruster,
+export const CONSUMERS_SENSOR_DEFINITION = toSensorDefinition({
+  consumersTemperatureBoostingReturn: {
+    yardTag: "50001038-48",
+    componentType: SensorComponentType.Temperature,
   },
-  thrustersFwd: {
-    componentType: SimulationComponentType.Thruster,
+  consumersTemperatureFahrenheitReturn: {
+    yardTag: "50001038-49",
+    componentType: SensorComponentType.Temperature,
   },
-  thrustersSeawaterSupply: {
+  consumersTemperatureBoostingSupply: {
+    yardTag: "50001038-53",
+    componentType: SensorComponentType.Temperature,
+  },
+  consumersTemperatureFahrenheitSupply: {
+    yardTag: "50001038-54",
+    componentType: SensorComponentType.Temperature,
+  },
+  consumersFlowBoosting: {
+    yardTag: "50001058-07",
+    componentType: SensorComponentType.Flow,
+  },
+  consumersFlowFahrenheit: {
+    yardTag: "50001058-08",
+    componentType: SensorComponentType.Flow,
+  },
+  consumersFlowBypass: {
+    yardTag: "50001060-01",
+    componentType: SensorComponentType.Flow,
+  },
+  consumersFlowcontrolFahrenheit: {
+    yardTag: "50001061",
+    componentType: SensorComponentType.Valve,
+    valveType: ValveType.FlowControl,
+  },
+  consumersFlowcontrolBypass: {
+    yardTag: "50001062-01",
+    componentType: SensorComponentType.Valve,
+    valveType: ValveType.FlowControl,
+  },
+  consumersFlowcontrolBoosting: {
+    yardTag: "50001065-01",
+    componentType: SensorComponentType.Valve,
+    valveType: ValveType.FlowControl,
+  },
+  consumersSwitchFahrenheitExchanger: {
+    yardTag: "50001066-02",
+    componentType: SensorComponentType.Valve,
+    valveType: ValveType.Switch,
+  },
+  consumersSwitchBoosting: {
+    yardTag: "50001067-15",
+    componentType: SensorComponentType.Valve,
+    valveType: ValveType.Switch,
+  },
+});
+
+export const CONSUMERS_SIMULATION_INPUTS = toSimulationDefinition({
+  consumersModuleSupply: {
     componentType: SimulationComponentType.Boundary,
   },
-  thrustersModuleSupply: {
-    componentType: SimulationComponentType.Temperature,
-  },
-  thrustersPcs: {
-    componentType: SimulationComponentType.Pcs,
-  },
 });
 
-export const THRUSTERS_SIMULATION_OUTPUTS = toSimulationDefinition({
-  thrustersSeawaterReturn: {
-    componentType: SimulationComponentType.Temperature,
-  },
-  thrustersModuleSupply: {
-    componentType: SimulationComponentType.Flow,
-  },
-  thrustersModuleReturn: {
+export const CONSUMERS_SIMULATION_OUTPUTS = toSimulationDefinition({
+  consumersModuleReturn: {
     componentType: SimulationComponentType.Boundary,
   },
 });
@@ -274,6 +174,160 @@ export const PCM_CONTROL_DEFINITION = toControlDefinition({
   },
 });
 
+export const PCM_PARAMETER_DEFINITION = toParameterDefinition({
+  pcmDischargeFlow: {
+    componentType: ParametersType.Flow,
+  },
+  pcmChargeFlow: {
+    componentType: ParametersType.Flow,
+  },
+  minimumChargingTemperature: {
+    componentType: ParametersType.Temperature,
+  },
+  pumpTuning: {
+    componentType: ParametersType.Tuning,
+  },
+  module1FlowBalanceTuning: {
+    componentType: ParametersType.Tuning,
+  },
+  module2FlowBalanceTuning: {
+    componentType: ParametersType.Tuning,
+  },
+  module3FlowBalanceTuning: {
+    componentType: ParametersType.Tuning,
+  },
+  module4FlowBalanceTuning: {
+    componentType: ParametersType.Tuning,
+  },
+});
+
+export const PCM_SENSOR_DEFINITION = toSensorDefinition({
+  pcmPump: {
+    yardTag: "50001017",
+    componentType: SensorComponentType.Pump,
+  },
+  pcmTemperatureProducersReturn: {
+    yardTag: "50001038-31",
+    componentType: SensorComponentType.Temperature,
+  },
+  pcmTemperatureProducersSupply: {
+    yardTag: "50001038-55",
+    componentType: SensorComponentType.Temperature,
+  },
+  pcmTemperatureModule1Out: {
+    yardTag: "50001038-32",
+    componentType: SensorComponentType.Temperature,
+  },
+  pcmTemperatureModule2Out: {
+    yardTag: "50001038-33",
+    componentType: SensorComponentType.Temperature,
+  },
+  pcmTemperatureModule3Out: {
+    yardTag: "50001038-34",
+    componentType: SensorComponentType.Temperature,
+  },
+  pcmTemperatureModule4Out: {
+    yardTag: "50001038-35",
+    componentType: SensorComponentType.Temperature,
+  },
+  pcmModule1: {
+    yardTag: "50001049",
+    componentType: SensorComponentType.Pcm,
+  },
+  pcmModule2: {
+    yardTag: "50001050",
+    componentType: SensorComponentType.Pcm,
+  },
+  pcmModule3: {
+    yardTag: "50001051",
+    componentType: SensorComponentType.Pcm,
+  },
+  pcmModule4: {
+    yardTag: "50001052",
+    componentType: SensorComponentType.Pcm,
+  },
+  pcmFlowModule1: {
+    yardTag: "50001057-18",
+    componentType: SensorComponentType.Flow,
+  },
+  pcmFlowModule2: {
+    yardTag: "50001057-19",
+    componentType: SensorComponentType.Flow,
+  },
+  pcmFlowModule3: {
+    yardTag: "50001057-20",
+    componentType: SensorComponentType.Flow,
+  },
+  pcmFlowModule4: {
+    yardTag: "50001057-21",
+    componentType: SensorComponentType.Flow,
+  },
+  pcmSwitchChargingReturn: {
+    yardTag: "50001062-02",
+    componentType: SensorComponentType.Valve,
+    valveType: ValveType.Switch,
+  },
+  pcmFlowcontrolModule1: {
+    yardTag: "50001064-04",
+    componentType: SensorComponentType.Valve,
+    valveType: ValveType.FlowControl,
+  },
+  pcmFlowcontrolModule2: {
+    yardTag: "50001064-05",
+    componentType: SensorComponentType.Valve,
+    valveType: ValveType.FlowControl,
+  },
+  pcmFlowcontrolModule3: {
+    yardTag: "50001064-06",
+    componentType: SensorComponentType.Valve,
+    valveType: ValveType.FlowControl,
+  },
+  pcmFlowcontrolModule4: {
+    yardTag: "50001064-07",
+    componentType: SensorComponentType.Valve,
+    valveType: ValveType.FlowControl,
+  },
+  pcmSwitchDischarging: {
+    yardTag: "50001066-01",
+    componentType: SensorComponentType.Valve,
+    valveType: ValveType.Switch,
+  },
+  pcmSwitchChargingSupply: {
+    yardTag: "50001090-01",
+    componentType: SensorComponentType.Valve,
+    valveType: ValveType.Switch,
+  },
+  pcmSwitchConsumers: {
+    yardTag: "50001071-02",
+    componentType: SensorComponentType.Valve,
+    valveType: ValveType.Switch,
+  },
+});
+
+export const PCM_SIMULATION_INPUTS = toSimulationDefinition({
+  pcmProducersSupply: {
+    componentType: SimulationComponentType.Boundary,
+  },
+  pcmConsumersSupply: {
+    componentType: SimulationComponentType.Temperature,
+  },
+  pcmFreshwaterSupply: {
+    componentType: SimulationComponentType.Boundary,
+  },
+});
+
+export const PCM_SIMULATION_OUTPUTS = toSimulationDefinition({
+  pcmConsumersReturn: {
+    componentType: SimulationComponentType.Boundary,
+  },
+  pcmProducersReturn: {
+    componentType: SimulationComponentType.Boundary,
+  },
+  pcmFreshwaterReturn: {
+    componentType: SimulationComponentType.Boundary,
+  },
+});
+
 export const PVT_CONTROL_DEFINITION = toControlDefinition({
   pvtPumpMainFwd: {
     yardTag: "50001018",
@@ -324,6 +378,45 @@ export const PVT_CONTROL_DEFINITION = toControlDefinition({
   },
 });
 
+export const PVT_PARAMETER_DEFINITION = toParameterDefinition({
+  maximumSupplyTemperature: {
+    componentType: ParametersType.Temperature,
+  },
+  recoveryTemperature: {
+    componentType: ParametersType.Temperature,
+  },
+  warmupTemperature: {
+    componentType: ParametersType.Temperature,
+  },
+  recoveryActivationStringTemperature: {
+    componentType: ParametersType.Temperature,
+  },
+  minimumReturnTemperature: {
+    componentType: ParametersType.Temperature,
+  },
+  heatDumpTuning: {
+    componentType: ParametersType.Tuning,
+  },
+  mainFwdMixTuning: {
+    componentType: ParametersType.Tuning,
+  },
+  mainAftMixTuning: {
+    componentType: ParametersType.Tuning,
+  },
+  ownersMixTuning: {
+    componentType: ParametersType.Tuning,
+  },
+  mainFwdPumpTuning: {
+    componentType: ParametersType.Tuning,
+  },
+  mainAftPumpTuning: {
+    componentType: ParametersType.Tuning,
+  },
+  ownersPumpTuning: {
+    componentType: ParametersType.Tuning,
+  },
+});
+
 export const PVT_SENSOR_DEFINITION = toSensorDefinition({
   pvtPumpMainFwd: {
     yardTag: "50001018",
@@ -364,14 +457,17 @@ export const PVT_SENSOR_DEFINITION = toSensorDefinition({
   pvtMixMainFwd: {
     yardTag: "50001044-01",
     componentType: SensorComponentType.Valve,
+    valveType: ValveType.Mix,
   },
   pvtMixMainAft: {
     yardTag: "50001044-02",
     componentType: SensorComponentType.Valve,
+    valveType: ValveType.Mix,
   },
   pvtMixOwners: {
     yardTag: "50001043-01",
     componentType: SensorComponentType.Valve,
+    valveType: ValveType.Mix,
   },
   pvtFlowMainFwdRecovery: {
     yardTag: "50001058-12",
@@ -400,18 +496,22 @@ export const PVT_SENSOR_DEFINITION = toSensorDefinition({
   pvtSwitchMainFwd: {
     yardTag: "50001067-01",
     componentType: SensorComponentType.Valve,
+    valveType: ValveType.Switch,
   },
   pvtSwitchMainAft: {
     yardTag: "50001067-02",
     componentType: SensorComponentType.Valve,
+    valveType: ValveType.Switch,
   },
   pvtSwitchOwners: {
     yardTag: "50001069-01",
     componentType: SensorComponentType.Valve,
+    valveType: ValveType.Switch,
   },
   pvtMixExchanger: {
     yardTag: "50001047-02",
     componentType: SensorComponentType.Valve,
+    valveType: ValveType.Mix,
   },
   pvtTemperatureSupply: {
     yardTag: "50001038-24",
@@ -695,54 +795,6 @@ export const PVT_SENSOR_DEFINITION = toSensorDefinition({
   },
 });
 
-export const PVT_PARAMETER_DEFINITION = toParameterDefinition({
-  maximumSupplyTemperature: {
-    componentType: ParametersType.Temperature,
-  },
-  recoveryTemperature: {
-    componentType: ParametersType.Temperature,
-  },
-  warmupTemperature: {
-    componentType: ParametersType.Temperature,
-  },
-  recoveryActivationStringTemperature: {
-    componentType: ParametersType.Temperature,
-  },
-  minimumReturnTemperature: {
-    componentType: ParametersType.Temperature,
-  },
-  mainFwdMinimumPumpDutypoint: {
-    componentType: ParametersType.Temperature,
-  },
-  mainAftMinimumPumpDutypoint: {
-    componentType: ParametersType.Temperature,
-  },
-  ownersMinimumPumpDutypoint: {
-    componentType: ParametersType.Temperature,
-  },
-  heatDumpTuning: {
-    componentType: ParametersType.Tuning,
-  },
-  mainFwdMixTuning: {
-    componentType: ParametersType.Tuning,
-  },
-  mainAftMixTuning: {
-    componentType: ParametersType.Tuning,
-  },
-  ownersMixTuning: {
-    componentType: ParametersType.Tuning,
-  },
-  mainFwdPumpTuning: {
-    componentType: ParametersType.Tuning,
-  },
-  mainAftPumpTuning: {
-    componentType: ParametersType.Tuning,
-  },
-  ownersPumpTuning: {
-    componentType: ParametersType.Tuning,
-  },
-});
-
 export const PVT_SIMULATION_INPUTS = toSimulationDefinition({
   pvtMainFwd: {
     componentType: SimulationComponentType.HeatSource,
@@ -773,260 +825,217 @@ export const PVT_SIMULATION_OUTPUTS = toSimulationDefinition({
   },
 });
 
-export const PCM_SENSOR_DEFINITION = toSensorDefinition({
-  pcmPump: {
-    yardTag: "50001017",
-    componentType: SensorComponentType.Pump,
+export const THRUSTERS_CONTROL_DEFINITION = toControlDefinition({
+  thrustersPump1: {
+    yardTag: "50001194",
+    componentType: ControlComponentType.Pump,
   },
-  pcmTemperatureProducersReturn: {
-    yardTag: "50001038-31",
-    componentType: SensorComponentType.Temperature,
+  thrustersPump2: {
+    yardTag: "50001195",
+    componentType: ControlComponentType.Pump,
   },
-  pcmTemperatureProducersSupply: {
-    yardTag: "50001038-55",
-    componentType: SensorComponentType.Temperature,
+  thrustersMixRecovery: {
+    yardTag: "50001074",
+    componentType: ControlComponentType.Valve,
+    valveType: ValveType.Mix,
   },
-  pcmTemperatureModule1Out: {
-    yardTag: "50001038-32",
-    componentType: SensorComponentType.Temperature,
+  thrustersMixExchanger: {
+    yardTag: "50001214-01",
+    componentType: ControlComponentType.Valve,
+    valveType: ValveType.Mix,
   },
-  pcmTemperatureModule2Out: {
-    yardTag: "50001038-33",
-    componentType: SensorComponentType.Temperature,
+  thrustersFlowcontrolAft: {
+    yardTag: "50001215",
+    componentType: ControlComponentType.Valve,
+    valveType: ValveType.FlowControl,
   },
-  pcmTemperatureModule3Out: {
-    yardTag: "50001038-34",
-    componentType: SensorComponentType.Temperature,
+  thrustersFlowcontrolFwd: {
+    yardTag: "50001064-02",
+    componentType: ControlComponentType.Valve,
+    valveType: ValveType.FlowControl,
   },
-  pcmTemperatureModule4Out: {
-    yardTag: "50001038-35",
-    componentType: SensorComponentType.Temperature,
+  thrustersShutoffRecovery: {
+    yardTag: "50001066-03",
+    componentType: ControlComponentType.Valve,
+    valveType: ValveType.Shutoff,
   },
-  pcmModule1: {
-    yardTag: "50001049",
-    componentType: SensorComponentType.Pcm,
+  thrustersSwitchAft: {
+    yardTag: "50001091-01",
+    componentType: ControlComponentType.Valve,
+    valveType: ValveType.Switch,
   },
-  pcmModule2: {
-    yardTag: "50001050",
-    componentType: SensorComponentType.Pcm,
-  },
-  pcmModule3: {
-    yardTag: "50001051",
-    componentType: SensorComponentType.Pcm,
-  },
-  pcmModule4: {
-    yardTag: "50001052",
-    componentType: SensorComponentType.Pcm,
-  },
-  pcmFlowModule1: {
-    yardTag: "50001057-18",
-    componentType: SensorComponentType.Flow,
-  },
-  pcmFlowModule2: {
-    yardTag: "50001057-19",
-    componentType: SensorComponentType.Flow,
-  },
-  pcmFlowModule3: {
-    yardTag: "50001057-20",
-    componentType: SensorComponentType.Flow,
-  },
-  pcmFlowModule4: {
-    yardTag: "50001057-21",
-    componentType: SensorComponentType.Flow,
-  },
-  pcmSwitchChargingReturn: {
-    yardTag: "50001062-02",
-    componentType: SensorComponentType.Valve,
-  },
-  pcmFlowcontrolModule1: {
-    yardTag: "50001064-04",
-    componentType: SensorComponentType.Valve,
-  },
-  pcmFlowcontrolModule2: {
-    yardTag: "50001064-05",
-    componentType: SensorComponentType.Valve,
-  },
-  pcmFlowcontrolModule3: {
-    yardTag: "50001064-06",
-    componentType: SensorComponentType.Valve,
-  },
-  pcmFlowcontrolModule4: {
-    yardTag: "50001064-07",
-    componentType: SensorComponentType.Valve,
-  },
-  pcmSwitchDischarging: {
-    yardTag: "50001066-01",
-    componentType: SensorComponentType.Valve,
-  },
-  pcmSwitchChargingSupply: {
-    yardTag: "50001090-01",
-    componentType: SensorComponentType.Valve,
-  },
-  pcmSwitchConsumers: {
-    yardTag: "50001071-02",
-    componentType: SensorComponentType.Valve,
+  thrustersSwitchFwd: {
+    yardTag: "50001091-02",
+    componentType: ControlComponentType.Valve,
+    valveType: ValveType.Switch,
   },
 });
 
-export const PCM_PARAMETER_DEFINITION = toParameterDefinition({
-  pcmDischargeFlow: {
-    componentType: ParametersType.Flow,
-  },
-  pcmChargeFlow: {
-    componentType: ParametersType.Flow,
-  },
-  minimumChargingDt: {
+export const THRUSTERS_PARAMETER_DEFINITION = toParameterDefinition({
+  maximumSupplyTemperature: {
     componentType: ParametersType.Temperature,
   },
-  minimumChargingTemperature: {
+  coolingTemperature: {
     componentType: ParametersType.Temperature,
+  },
+  coolingFlow: {
+    componentType: ParametersType.Flow,
+  },
+  recoveryTemperature: {
+    componentType: ParametersType.Temperature,
+  },
+  warmupTemperature: {
+    componentType: ParametersType.Temperature,
+  },
+  thrustersMinimumFlow: {
+    componentType: ParametersType.Flow,
+  },
+  thrustersMaximumFlow: {
+    componentType: ParametersType.Flow,
   },
   pumpTuning: {
     componentType: ParametersType.Tuning,
   },
-  module1FlowBalanceTuning: {
+  warmupMixTuning: {
     componentType: ParametersType.Tuning,
   },
-  module2FlowBalanceTuning: {
+  heatDumpTuning: {
     componentType: ParametersType.Tuning,
   },
-  module3FlowBalanceTuning: {
+  aftFlowBalanceTuning: {
     componentType: ParametersType.Tuning,
   },
-  module4FlowBalanceTuning: {
+  fwdFlowBalanceTuning: {
+    componentType: ParametersType.Tuning,
+  },
+  aftTemperatureTuning: {
+    componentType: ParametersType.Tuning,
+  },
+  fwdTemperatureTuning: {
     componentType: ParametersType.Tuning,
   },
 });
 
-export const PCM_SIMULATION_INPUTS = toSimulationDefinition({
-  pcmProducersSupply: {
+export const THRUSTERS_SENSOR_DEFINITION = toSensorDefinition({
+  thrustersPump1: {
+    yardTag: "50001194",
+    componentType: SensorComponentType.Pump,
+  },
+  thrustersPump2: {
+    yardTag: "50001195",
+    componentType: SensorComponentType.Pump,
+  },
+  thrustersTemperatureAftReturn: {
+    yardTag: "50001038-01",
+    componentType: SensorComponentType.Temperature,
+  },
+  thrustersTemperatureFwdReturn: {
+    yardTag: "50001038-02",
+    componentType: SensorComponentType.Temperature,
+  },
+  thrustersTemperatureSupply: {
+    yardTag: "50001038-28",
+    componentType: SensorComponentType.Temperature,
+  },
+  thrustersTemperatureRecoveryMix: {
+    yardTag: "50001038-30",
+    componentType: SensorComponentType.Temperature,
+  },
+  thrustersMixRecovery: {
+    yardTag: "50001074",
+    componentType: SensorComponentType.Valve,
+    valveType: ValveType.Mix,
+  },
+  thrustersMixExchanger: {
+    yardTag: "50001214-01",
+    componentType: SensorComponentType.Valve,
+    valveType: ValveType.Mix,
+  },
+  thrustersFlowFwd: {
+    yardTag: "50001057-22",
+    componentType: SensorComponentType.Flow,
+  },
+  thrustersFlowAft: {
+    yardTag: "50001057-23",
+    componentType: SensorComponentType.Flow,
+  },
+  thrustersFlowcontrolAft: {
+    yardTag: "50001215",
+    componentType: SensorComponentType.Valve,
+    valveType: ValveType.FlowControl,
+  },
+  thrustersFlowcontrolFwd: {
+    yardTag: "50001064-02",
+    componentType: SensorComponentType.Valve,
+    valveType: ValveType.FlowControl,
+  },
+  thrustersShutoffRecovery: {
+    yardTag: "50001066-03",
+    componentType: SensorComponentType.Valve,
+    valveType: ValveType.Shutoff,
+  },
+  thrustersSwitchAft: {
+    yardTag: "50001091-01",
+    componentType: SensorComponentType.Valve,
+    valveType: ValveType.Switch,
+  },
+  thrustersSwitchFwd: {
+    yardTag: "50001091-02",
+    componentType: SensorComponentType.Valve,
+    valveType: ValveType.Switch,
+  },
+  thrustersFlowRecovery: {
+    yardTag: "50001093-01",
+    componentType: SensorComponentType.Flow,
+  },
+  thrustersPressurePump: {
+    yardTag: "50001097-01",
+    componentType: SensorComponentType.Pressure,
+  },
+  thrustersPressureRelief: {
+    yardTag: "50001097-02",
+    componentType: SensorComponentType.Pressure,
+  },
+  thrustersAft: {
+    yardTag: "15001001",
+    componentType: SensorComponentType.Thruster,
+  },
+  thrustersFwd: {
+    yardTag: "15001002",
+    componentType: SensorComponentType.Thruster,
+  },
+  thrustersPcs: {
+    yardTag: "1500",
+    componentType: SensorComponentType.Pcs,
+  },
+});
+
+export const THRUSTERS_SIMULATION_INPUTS = toSimulationDefinition({
+  thrustersAft: {
+    componentType: SimulationComponentType.Thruster,
+  },
+  thrustersFwd: {
+    componentType: SimulationComponentType.Thruster,
+  },
+  thrustersSeawaterSupply: {
     componentType: SimulationComponentType.Boundary,
   },
-  pcmConsumersSupply: {
+  thrustersModuleSupply: {
     componentType: SimulationComponentType.Temperature,
   },
-  pcmFreshwaterSupply: {
-    componentType: SimulationComponentType.Boundary,
+  thrustersPcs: {
+    componentType: SimulationComponentType.Pcs,
   },
 });
 
-export const PCM_SIMULATION_OUTPUTS = toSimulationDefinition({
-  pcmConsumersReturn: {
-    componentType: SimulationComponentType.Boundary,
+export const THRUSTERS_SIMULATION_OUTPUTS = toSimulationDefinition({
+  thrustersSeawaterReturn: {
+    componentType: SimulationComponentType.Temperature,
   },
-  pcmProducersReturn: {
-    componentType: SimulationComponentType.Boundary,
+  thrustersModuleSupply: {
+    componentType: SimulationComponentType.Flow,
   },
-  pcmFreshwaterReturn: {
-    componentType: SimulationComponentType.Boundary,
-  },
-});
-
-export const CONSUMERS_CONTROL_DEFINITION = toControlDefinition({
-  consumersFlowcontrolFahrenheit: {
-    yardTag: "50001061",
-    componentType: ControlComponentType.Valve,
-    valveType: ValveType.FlowControl,
-  },
-  consumersFlowcontrolBypass: {
-    yardTag: "50001062-01",
-    componentType: ControlComponentType.Valve,
-    valveType: ValveType.FlowControl,
-  },
-  consumersFlowcontrolBoosting: {
-    yardTag: "50001065-01",
-    componentType: ControlComponentType.Valve,
-    valveType: ValveType.FlowControl,
-  },
-  consumersSwitchFahrenheitExchanger: {
-    yardTag: "50001066-02",
-    componentType: ControlComponentType.Valve,
-    valveType: ValveType.Switch,
-  },
-  consumersSwitchBoosting: {
-    yardTag: "50001067-15",
-    componentType: ControlComponentType.Valve,
-    valveType: ValveType.Switch,
-  },
-});
-
-export const CONSUMERS_SENSOR_DEFINITION = toSensorDefinition({
-  consumersTemperatureBoostingReturn: {
-    yardTag: "50001038-48",
-    componentType: SensorComponentType.Temperature,
-  },
-  consumersTemperatureFahrenheitReturn: {
-    yardTag: "50001038-49",
-    componentType: SensorComponentType.Temperature,
-  },
-  consumersTemperatureBoostingSupply: {
-    yardTag: "50001038-53",
-    componentType: SensorComponentType.Temperature,
-  },
-  consumersTemperatureFahrenheitSupply: {
-    yardTag: "50001038-54",
-    componentType: SensorComponentType.Temperature,
-  },
-  consumersFlowBoosting: {
-    yardTag: "50001058-07",
-    componentType: SensorComponentType.Flow,
-  },
-  consumersFlowFahrenheit: {
-    yardTag: "50001058-08",
-    componentType: SensorComponentType.Flow,
-  },
-  consumersFlowBypass: {
-    yardTag: "50001060-01",
-    componentType: SensorComponentType.Flow,
-  },
-  consumersFlowcontrolFahrenheit: {
-    yardTag: "50001061",
-    componentType: SensorComponentType.Valve,
-  },
-  consumersFlowcontrolBypass: {
-    yardTag: "50001062-01",
-    componentType: SensorComponentType.Valve,
-  },
-  consumersFlowcontrolBoosting: {
-    yardTag: "50001065-01",
-    componentType: SensorComponentType.Valve,
-  },
-  consumersSwitchFahrenheitExchanger: {
-    yardTag: "50001066-02",
-    componentType: SensorComponentType.Valve,
-  },
-  consumersSwitchBoosting: {
-    yardTag: "50001067-15",
-    componentType: SensorComponentType.Valve,
-  },
-});
-
-export const CONSUMERS_PARAMETER_DEFINITION = toParameterDefinition({
-  boostingFlowRatioSetpoint: {
-    componentType: ParametersType.Temperature,
-  },
-  fahrenheitFlowRatioSetpoint: {
-    componentType: ParametersType.Temperature,
-  },
-  boostingFlowBalanceTuning: {
-    componentType: ParametersType.Tuning,
-  },
-  bypassFlowBalanceTuning: {
-    componentType: ParametersType.Tuning,
-  },
-  fahrenheitFlowBalanceTuning: {
-    componentType: ParametersType.Tuning,
-  },
-});
-
-export const CONSUMERS_SIMULATION_INPUTS = toSimulationDefinition({
-  consumersModuleSupply: {
-    componentType: SimulationComponentType.Boundary,
-  },
-});
-
-export const CONSUMERS_SIMULATION_OUTPUTS = toSimulationDefinition({
-  consumersModuleReturn: {
+  thrustersModuleReturn: {
     componentType: SimulationComponentType.Boundary,
   },
 });

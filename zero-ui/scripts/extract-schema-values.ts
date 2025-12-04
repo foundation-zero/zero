@@ -379,19 +379,34 @@ function generateObjectString(values: ExtractedValues, config: Config): string {
 }
 
 function updateConstsFile(constsContent: string, newObjectString: string, config: Config): string {
-  const wrapperFunction = getWrapperFunction(config.definitionType);
-  const pattern = new RegExp(
-    `export const ${config.constName} = ${wrapperFunction}\\([\\s\\S]*?\\}\\);`,
-    "g",
-  );
+  // Extract all export const declarations with their wrapper functions
+  const constPattern = /export const ([A-Z_]+) = (to\w+Definition)\([\s\S]*?\}\);/g;
+  const constants = new Map<string, string>();
 
-  if (pattern.test(constsContent)) {
-    // Replace existing constant
-    return constsContent.replace(pattern, newObjectString);
-  } else {
-    // Add new constant at the end
-    return `${constsContent}\n${newObjectString}\n`;
+  let match;
+  while ((match = constPattern.exec(constsContent)) !== null) {
+    const [fullMatch, constName] = match;
+    if (constName !== config.constName) {
+      constants.set(constName, fullMatch);
+    }
   }
+
+  // Add or update the target constant
+  constants.set(config.constName, newObjectString);
+
+  // Sort constants alphabetically by name
+  const sortedEntries = Array.from(constants.entries()).sort(([a], [b]) => a.localeCompare(b));
+
+  // Extract any content before the first export const
+  const firstConstMatch = constsContent.match(/export const [A-Z_]+ = to\w+Definition\(/);
+  const headerContent = firstConstMatch
+    ? constsContent.substring(0, firstConstMatch.index).trimEnd()
+    : constsContent;
+
+  // Reconstruct the file with sorted constants
+  const sortedConstants = sortedEntries.map(([, constString]) => constString).join("\n\n");
+
+  return headerContent ? `${headerContent}\n\n${sortedConstants}\n` : `${sortedConstants}\n`;
 }
 
 // ============================================================================

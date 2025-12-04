@@ -12,7 +12,7 @@
     "lint:fix": "eslint --fix",
     "codegen": "graphql-codegen --require dotenv/config --config codegen.ts dotenv_config_path=.env.local",
     "extract-schema-values": "tsx scripts/extract-schema-values.ts",
-    "generate-graphql-queries": "node scripts/generate-graphql-queries.js",
+    "generate-graphql-queries": "tsx scripts/generate-graphql-queries.ts",
     "docs:dev": "vitepress dev docs",
     "docs:build": "vitepress build docs",
     "docs:preview": "vitepress preview docs"
