@@ -923,11 +923,6 @@ export const PCM_SIMULATION_OUTPUTS = toSimulationDefinition({
 });
 
 export const CONSUMERS_CONTROL_DEFINITION = toControlDefinition({
-  consumersSwitchFahrenheitDirectSupply: {
-    yardTag: "50001074",
-    componentType: ControlComponentType.Valve,
-    valveType: ValveType.Switch,
-  },
   consumersFlowcontrolFahrenheit: {
     yardTag: "50001061",
     componentType: ControlComponentType.Valve,
@@ -948,11 +943,6 @@ export const CONSUMERS_CONTROL_DEFINITION = toControlDefinition({
     componentType: ControlComponentType.Valve,
     valveType: ValveType.Switch,
   },
-  consumersSwitchFahrenheitDirectReturn: {
-    yardTag: "50001066-03",
-    componentType: ControlComponentType.Valve,
-    valveType: ValveType.Switch,
-  },
   consumersSwitchBoosting: {
     yardTag: "50001067-15",
     componentType: ControlComponentType.Valve,
@@ -961,10 +951,6 @@ export const CONSUMERS_CONTROL_DEFINITION = toControlDefinition({
 });
 
 export const CONSUMERS_SENSOR_DEFINITION = toSensorDefinition({
-  consumersSwitchFahrenheitDirectSupply: {
-    yardTag: "50001074",
-    componentType: SensorComponentType.Valve,
-  },
   consumersTemperatureBoostingReturn: {
     yardTag: "50001038-48",
     componentType: SensorComponentType.Temperature,
@@ -1009,10 +995,6 @@ export const CONSUMERS_SENSOR_DEFINITION = toSensorDefinition({
     yardTag: "50001066-02",
     componentType: SensorComponentType.Valve,
   },
-  consumersSwitchFahrenheitDirectReturn: {
-    yardTag: "50001066-03",
-    componentType: SensorComponentType.Valve,
-  },
   consumersSwitchBoosting: {
     yardTag: "50001067-15",
     componentType: SensorComponentType.Valve,
@@ -1038,24 +1020,12 @@ export const CONSUMERS_PARAMETER_DEFINITION = toParameterDefinition({
 });
 
 export const CONSUMERS_SIMULATION_INPUTS = toSimulationDefinition({
-  consumersFahrenheitSupply: {
-    componentType: SimulationComponentType.Boundary,
-  },
   consumersModuleSupply: {
-    componentType: SimulationComponentType.Boundary,
-  },
-  consumersBoostingSupply: {
     componentType: SimulationComponentType.Boundary,
   },
 });
 
 export const CONSUMERS_SIMULATION_OUTPUTS = toSimulationDefinition({
-  consumersFahrenheitReturn: {
-    componentType: SimulationComponentType.Boundary,
-  },
-  consumersBoostingReturn: {
-    componentType: SimulationComponentType.Boundary,
-  },
   consumersModuleReturn: {
     componentType: SimulationComponentType.Boundary,
   },

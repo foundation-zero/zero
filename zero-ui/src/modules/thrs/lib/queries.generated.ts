@@ -629,9 +629,6 @@ export const PCM_SIMULATION_OUTPUTS_QUERY = `
 `;
 
 export const CONSUMERS_CONTROL_QUERY = `
-  consumersSwitchFahrenheitDirectSupply {
-    setpoint { value timestamp }
-  }
   consumersFlowcontrolFahrenheit {
     setpoint { value timestamp }
   }
@@ -644,18 +641,12 @@ export const CONSUMERS_CONTROL_QUERY = `
   consumersSwitchFahrenheitExchanger {
     setpoint { value timestamp }
   }
-  consumersSwitchFahrenheitDirectReturn {
-    setpoint { value timestamp }
-  }
   consumersSwitchBoosting {
     setpoint { value timestamp }
   }
 `;
 
 export const CONSUMERS_SENSOR_QUERY = `
-  consumersSwitchFahrenheitDirectSupply {
-    positionRel { value timestamp }
-  }
   consumersTemperatureBoostingReturn {
     temperature { value timestamp }
   }
@@ -692,9 +683,6 @@ export const CONSUMERS_SENSOR_QUERY = `
   consumersSwitchFahrenheitExchanger {
     positionRel { value timestamp }
   }
-  consumersSwitchFahrenheitDirectReturn {
-    positionRel { value timestamp }
-  }
   consumersSwitchBoosting {
     positionRel { value timestamp }
   }
@@ -709,29 +697,13 @@ export const CONSUMERS_PARAMETERS_QUERY = `
 `;
 
 export const CONSUMERS_SIMULATION_INPUTS_QUERY = `
-  consumersFahrenheitSupply {
-    temperature { value timestamp }
-    flow { value timestamp }
-  }
   consumersModuleSupply {
-    temperature { value timestamp }
-    flow { value timestamp }
-  }
-  consumersBoostingSupply {
     temperature { value timestamp }
     flow { value timestamp }
   }
 `;
 
 export const CONSUMERS_SIMULATION_OUTPUTS_QUERY = `
-  consumersFahrenheitReturn {
-    temperature { value timestamp }
-    flow { value timestamp }
-  }
-  consumersBoostingReturn {
-    temperature { value timestamp }
-    flow { value timestamp }
-  }
   consumersModuleReturn {
     temperature { value timestamp }
     flow { value timestamp }

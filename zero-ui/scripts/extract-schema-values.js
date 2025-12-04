@@ -13,8 +13,8 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 // Paths
-const SCHEMA_PATH = path.join(__dirname, "../src/graphql/thrs/schema.graphql");
-const CONSTS_PATH = path.join(__dirname, "../src/lib/consts.generated.ts");
+const SCHEMA_PATH = path.join(__dirname, "../src/modules/thrs/graphql/schema.graphql");
+const CONSTS_PATH = path.join(__dirname, "../src/modules/thrs/lib/consts.generated.ts");
 
 // Parse command line arguments
 const args = process.argv.slice(2);
@@ -171,12 +171,27 @@ function parseSchema(schemaPath) {
       }
 
       // Parse field with @jsonSchemaDirective (for controls and sensors)
+      // Handle both formatted (multi-line) and unformatted (single-line) schemas
       if (line.includes("@jsonSchemaDirective")) {
-        const fieldMatch = lines[i - 1]?.match(/(\w+):\s*(\w+)!/);
-        if (!fieldMatch) continue;
+        let fieldMatch = null;
+        let fieldName = null;
+        let fieldType = null;
 
-        const fieldName = fieldMatch[1];
-        const fieldType = fieldMatch[2];
+        // Try to match field on the same line (unformatted)
+        fieldMatch = line.match(/(\w+):\s*(\w+)!\s*@jsonSchemaDirective/);
+        if (fieldMatch) {
+          fieldName = fieldMatch[1];
+          fieldType = fieldMatch[2];
+        } else {
+          // Try to match field on the previous line (formatted)
+          fieldMatch = lines[i - 1]?.match(/(\w+):\s*(\w+)!/);
+          if (fieldMatch) {
+            fieldName = fieldMatch[1];
+            fieldType = fieldMatch[2];
+          }
+        }
+
+        if (!fieldMatch || !fieldName || !fieldType) continue;
 
         // Extract directive parameters
         const yardTagMatch = line.match(/yardTag:\s*"([^"]+)"/);

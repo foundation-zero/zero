@@ -8,8 +8,8 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 // Paths
-const CONSTS_PATH = path.join(__dirname, "../src/lib/consts.generated.ts");
-const OUTPUT_PATH = path.join(__dirname, "../src/lib/queries.generated.ts");
+const CONSTS_PATH = path.join(__dirname, "../src/modules/thrs/lib/consts.generated.ts");
+const OUTPUT_PATH = path.join(__dirname, "../src/modules/thrs/lib/queries.generated.ts");
 
 // Get command line arguments
 const args = process.argv.slice(2);
