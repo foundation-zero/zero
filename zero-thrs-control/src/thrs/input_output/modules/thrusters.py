@@ -53,7 +53,7 @@ class ThrustersSensorValues(ThrsModel):
     ]
     thrusters_flow_aft: Annotated[
         sensor.FlowSensor,
-        component_meta(yard_tag="50001057-23", component_type="flow_sensor"),
+        component_meta(yard_tag="50001218-02", component_type="flow_sensor"),
     ]
     thrusters_flowcontrol_aft: Annotated[
         sensor.Valve,
@@ -87,7 +87,7 @@ class ThrustersSensorValues(ThrsModel):
     ]
     thrusters_flow_recovery: Annotated[
         sensor.FlowSensor,
-        component_meta(yard_tag="50001093-01", component_type="flow_sensor"),
+        component_meta(yard_tag="50001218-01", component_type="flow_sensor"),
     ]
     thrusters_pressure_pump: Annotated[
         sensor.PressureSensor,
