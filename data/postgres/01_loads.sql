@@ -1,3 +1,5 @@
+CREATE EXTENSION IF NOT EXISTS btree_gist;
+
 CREATE SCHEMA IF NOT EXISTS loads;
 
 DROP TYPE IF EXISTS unit CASCADE;
@@ -24,20 +26,21 @@ CREATE TABLE loads.sail_sets (
     mizzen_fore_sail_id TEXT REFERENCES loads.sails(id),
     sail_set TEXT[] GENERATED ALWAYS AS (
         ARRAY_REMOVE(ARRAY[main_sail_id, mizzen_sail_id, fore_inner_sail_id, fore_outer_sail_id, mizzen_fore_sail_id], NULL)
-    ) STORED,
-    UNIQUE(main_sail_id, mizzen_sail_id, fore_inner_sail_id, fore_outer_sail_id, mizzen_fore_sail_id)
+    ) STORED
 );
 
 DROP TABLE IF EXISTS loads.awa_ranges CASCADE;
 CREATE TABLE loads.awa_ranges (
   id SERIAL PRIMARY KEY,
-  awa numrange NOT NULL CHECK (lower(awa) >= 0 AND upper(awa) <= 180)
+  awa numrange NOT NULL CHECK (lower(awa) >= 0 AND upper(awa) <= 180),
+  EXCLUDE USING gist (awa WITH &&)
 );
 
 DROP TABLE IF EXISTS loads.aws_ranges CASCADE;
 CREATE TABLE loads.aws_ranges (
   id SERIAL PRIMARY KEY,
-  aws numrange NOT NULL CHECK (lower(aws) >= 0)
+  aws numrange NOT NULL CHECK (lower(aws) >= 0),
+  EXCLUDE USING gist (aws WITH &&)
 );
 
 DROP TABLE IF EXISTS loads.load_cases CASCADE;
