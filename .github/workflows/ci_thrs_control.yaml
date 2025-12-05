@@ -36,13 +36,13 @@ jobs:
       - run: poetry run fmpy compile src/thrs/simulation/models/thruster_moduleV18.fmu
         working-directory: zero-thrs-control
 
-      - run: poetry run fmpy compile src/thrs/simulation/models/pvt_moduleV15.fmu
+      - run: poetry run fmpy compile src/thrs/simulation/models/pvt_moduleV15_1.fmu
         working-directory: zero-thrs-control
 
       - run: poetry run fmpy compile src/thrs/simulation/models/consumers_moduleV7_1.fmu
         working-directory: zero-thrs-control
 
-      - run: poetry run fmpy compile src/thrs/simulation/models/HT_systemV12.fmu
+      - run: poetry run fmpy compile src/thrs/simulation/models/HT_systemV12_1.fmu
         working-directory: zero-thrs-control
 
       - run: poetry run fmpy compile src/thrs/simulation/models/pcm_moduleV7.fmu
