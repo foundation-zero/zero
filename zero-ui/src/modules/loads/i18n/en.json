@@ -1,0 +1,10 @@
+{
+  "loads": {
+    "components": {
+      "mastLock": {
+        "locked": "Locked",
+        "overhoist": "Overhoist"
+      }
+    }
+  }
+}
