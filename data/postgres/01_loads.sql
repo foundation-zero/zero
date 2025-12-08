@@ -18,16 +18,20 @@ CREATE TABLE loads.sails (
 
 DROP TABLE IF EXISTS loads.sail_sets CASCADE;
 CREATE TABLE loads.sail_sets (
-    id SERIAL PRIMARY KEY,
-    main_sail_id TEXT REFERENCES loads.sails(id),
-    mizzen_sail_id TEXT REFERENCES loads.sails(id), 
-    fore_inner_sail_id TEXT REFERENCES loads.sails(id),
-    fore_outer_sail_id TEXT REFERENCES loads.sails(id),
-    mizzen_fore_sail_id TEXT REFERENCES loads.sails(id),
-    sail_set TEXT[] GENERATED ALWAYS AS (
-        ARRAY_REMOVE(ARRAY[main_sail_id, mizzen_sail_id, fore_inner_sail_id, fore_outer_sail_id, mizzen_fore_sail_id], NULL)
-    ) STORED
+    sail_set_id INTEGER NOT NULL,
+    position sail_position,
+    sail TEXT
 );
+
+DROP VIEW IF EXISTS loads.sail_sets_combined CASCADE;
+CREATE VIEW loads.sail_sets_combined AS
+-- This view makes looking up the sail case easier by aggregating the sails into an array
+-- Lookup can be done by matching the (ordered) array of sails
+SELECT
+    sail_set_id as id,
+    ARRAY_AGG(sail ORDER BY position) AS sails
+FROM loads.sail_sets
+GROUP BY sail_set_id;
 
 DROP TABLE IF EXISTS loads.awa_ranges CASCADE;
 CREATE TABLE loads.awa_ranges (
@@ -45,10 +49,10 @@ CREATE TABLE loads.aws_ranges (
 
 DROP TABLE IF EXISTS loads.load_cases CASCADE;
 CREATE TABLE loads.load_cases (
-  id SERIAL PRIMARY KEY,
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   awa_range_id INTEGER NOT NULL REFERENCES loads.awa_ranges(id) ON DELETE RESTRICT,
   aws_range_id INTEGER NOT NULL REFERENCES loads.aws_ranges(id) ON DELETE RESTRICT,
-  sail_set_id INTEGER NOT NULL REFERENCES loads.sail_sets(id) ON DELETE RESTRICT,
+  sail_set_id INTEGER,
   -- Future extensions:
   -- sea_state_id INTEGER REFERENCES loads.sea_states(id),
   -- propulsion_mode_id INTEGER REFERENCES loads.propulsion_modes(id),
@@ -68,7 +72,7 @@ CREATE TABLE loads.variables (
 DROP TABLE IF EXISTS loads.reference_values CASCADE;
 CREATE TABLE loads.reference_values (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-  load_case_id INTEGER NOT NULL REFERENCES loads.load_cases(id) ON DELETE RESTRICT,
+  load_case_id UUID NOT NULL REFERENCES loads.load_cases(id) ON DELETE RESTRICT,
   variable_id TEXT NOT NULL REFERENCES loads.variables(id) ON DELETE RESTRICT,
   alarm_low NUMERIC,
   warning_low NUMERIC,
@@ -83,7 +87,6 @@ CREATE TABLE loads.reference_values (
     (warning_high IS NULL OR alarm_high IS NULL OR warning_high <= alarm_high)
   )
 );
-
 
 -- Define sails
 INSERT INTO loads.sails (id, abbreviation, position, name) VALUES
@@ -105,43 +108,73 @@ INSERT INTO loads.sails (id, abbreviation, position, name) VALUES
   ('mizzen-genoa', 'MZG', 'mizzen-fore', 'Mizzen Genoa');
 
 -- Generate all possible sail sets based on position (including those with NULLs for missing sails)
-WITH main_sails AS (
-    SELECT id FROM loads.sails WHERE position = 'main'
-    UNION ALL
-    SELECT NULL
+WITH RECURSIVE position_list AS (
+    SELECT DISTINCT
+        position
+    FROM loads.sails
+    ORDER BY position
 ),
-mizzen_sails AS (
-    SELECT id FROM loads.sails WHERE position = 'mizzen'
-    UNION ALL
-    SELECT NULL
+indexed_positions AS (
+    SELECT
+        position,
+        ROW_NUMBER() OVER (ORDER BY position) AS position_index
+    FROM position_list
 ),
-mizzen_fore_sails AS (
-    SELECT id FROM loads.sails WHERE position = 'mizzen-fore'
+options AS (
+    SELECT
+        position,
+        id as sail
+    FROM loads.sails
+
     UNION ALL
-    SELECT NULL
+
+    SELECT
+        position,
+        NULL::TEXT as sail
+    FROM position_list
 ),
-fore_inner_sails AS (
-    SELECT id FROM loads.sails WHERE position = 'fore-inner'
+combinations AS (
+    SELECT
+        indexed_positions.position_index,
+        ARRAY[options.sail]::TEXT[] AS sail_set
+    FROM indexed_positions
+    JOIN options
+        ON options.position = indexed_positions.position
+    WHERE indexed_positions.position_index = 1
+  
     UNION ALL
-    SELECT NULL
+
+    SELECT
+        next_position.position_index,
+        combinations.sail_set || options.sail
+    FROM combinations
+    JOIN indexed_positions AS next_position
+        ON next_position.position_index = combinations.position_index + 1
+    JOIN options
+        ON options.position = next_position.position
 ),
-fore_outer_sails AS (
-    SELECT id FROM loads.sails WHERE position = 'fore-outer'
-    UNION ALL
-    SELECT NULL
+complete_combinations AS (
+    SELECT
+        ROW_NUMBER() OVER (ORDER BY sail_set) - 1 id,
+        sail_set
+    FROM combinations
+    WHERE position_index = (SELECT MAX(position_index) FROM indexed_positions)
+),
+flat_sail_sets AS (
+    SELECT
+        complete_combinations.id,
+        indexed_positions.position,
+        complete_combinations.sail_set[indexed_positions.position_index] AS sail
+    FROM complete_combinations
+    CROSS JOIN indexed_positions
 )
-INSERT INTO loads.sail_sets (main_sail_id, mizzen_sail_id, fore_inner_sail_id, fore_outer_sail_id, mizzen_fore_sail_id)
-SELECT 
-    main_sail.id,
-    mizzen_sail.id,
-    fore_inner_sail.id,
-    fore_outer_sail.id,
-    mizzen_fore_sail.id
-FROM main_sails AS main_sail
-CROSS JOIN mizzen_sails AS mizzen_sail
-CROSS JOIN fore_inner_sails AS fore_inner_sail
-CROSS JOIN fore_outer_sails AS fore_outer_sail
-CROSS JOIN mizzen_fore_sails AS mizzen_fore_sail;
+INSERT INTO loads.sail_sets (sail_set_id, position, sail)
+SELECT
+    id,
+    position,
+    sail
+FROM flat_sail_sets
+ORDER BY id, position;
 
 -- Define AWA ranges
 INSERT INTO loads.awa_ranges (awa) VALUES
@@ -164,14 +197,15 @@ INSERT INTO loads.aws_ranges (aws) VALUES
   ('[30,40)'),
   ('[40,)');
 
+-- Define load cases
 INSERT INTO loads.load_cases (awa_range_id, aws_range_id, sail_set_id)
 SELECT 
     awa_range.id AS awa_range_id,
     aws_range.id AS aws_range_id,
-    sail_set.id AS sail_set_id
-FROM loads.awa_ranges AS awa_range
-CROSS JOIN loads.aws_ranges AS aws_range
-CROSS JOIN loads.sail_sets AS sail_set;
+    sail_set_ids.sail_set_id AS sail_set_id
+FROM (SELECT DISTINCT sail_set_id from loads.sail_sets) as sail_set_ids
+CROSS JOIN loads.awa_ranges AS awa_range
+CROSS JOIN loads.aws_ranges AS aws_range;
 
 -- Define variables
 INSERT INTO loads.variables (id, name, unit) VALUES
@@ -260,6 +294,6 @@ SELECT
 FROM loads.load_cases
 JOIN loads.awa_ranges AS awa_range ON load_cases.awa_range_id = awa_range.id
 JOIN loads.aws_ranges AS aws_range ON load_cases.aws_range_id = aws_range.id
-JOIN loads.sail_sets AS sail_set ON load_cases.sail_set_id = sail_set.id
+JOIN loads.sail_sets_combined AS sail_set ON load_cases.sail_set_id = sail_set.id
 WHERE awa_range.awa = '[25,30)'::numrange AND aws_range.aws = '[15,20)'::numrange
-AND sail_set.sail_set = ARRAY['full-main', 'full-mizzen', 'blade'];
+AND sail_set.sails = ARRAY['full-main', NULL, NULL, NULL, NULL];
