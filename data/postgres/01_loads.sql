@@ -19,7 +19,7 @@ CREATE TABLE loads.sails (
 DROP TABLE IF EXISTS loads.sail_sets CASCADE;
 CREATE TABLE loads.sail_sets (
     sail_set_id INTEGER NOT NULL,
-    position sail_position,
+    position sail_position NOT NULL,
     sail TEXT
 );
 
@@ -29,7 +29,7 @@ CREATE VIEW loads.sail_sets_combined AS
 -- Lookup can be done by matching the (ordered) array of sails
 SELECT
     sail_set_id as id,
-    ARRAY_AGG(sail ORDER BY position) AS sails
+    ARRAY_AGG(sail ORDER BY sail) FILTER (WHERE sail IS NOT NULL) AS sails
 FROM loads.sail_sets
 GROUP BY sail_set_id;
 
@@ -296,4 +296,4 @@ JOIN loads.awa_ranges AS awa_range ON load_cases.awa_range_id = awa_range.id
 JOIN loads.aws_ranges AS aws_range ON load_cases.aws_range_id = aws_range.id
 JOIN loads.sail_sets_combined AS sail_set ON load_cases.sail_set_id = sail_set.id
 WHERE awa_range.awa = '[25,30)'::numrange AND aws_range.aws = '[15,20)'::numrange
-AND sail_set.sails = ARRAY['full-main', NULL, NULL, NULL, NULL];
+AND sail_set.sails = ARRAY['blade', 'full-main', 'full-mizzen'];

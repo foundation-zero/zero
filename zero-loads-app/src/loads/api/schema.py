@@ -1,3 +1,5 @@
+from typing import Sequence
+
 from sqlalchemy import Column, Float, ForeignKey, Integer, MetaData, String
 from sqlalchemy.dialects.postgresql import ARRAY, NUMRANGE, UUID
 from sqlalchemy.orm import declarative_base, relationship
@@ -18,25 +20,16 @@ class Sails(Base):  # type:ignore
 class SailSets(Base):  # type:ignore
     __tablename__ = "sail_sets"
 
-    id = Column(Integer, primary_key=True)
-    main_sail_id = Column(String, ForeignKey("sails.id"), nullable=True, index=True)
-    mizzen_sail_id = Column(String, ForeignKey("sails.id"), nullable=True, index=True)
-    fore_inner_sail_id = Column(
-        String, ForeignKey("sails.id"), nullable=True, index=True
-    )
-    fore_outer_sail_id = Column(
-        String, ForeignKey("sails.id"), nullable=True, index=True
-    )
-    mizzen_fore_sail_id = Column(
-        String, ForeignKey("sails.id"), nullable=True, index=True
-    )
-    sail_set = Column(ARRAY(String))  # type: ignore
+    sail_set_id = Column(Integer, primary_key=True)
+    position = Column(String, primary_key=True)
+    sail = Column(String, nullable=True)
 
-    main_sail = relationship("Sails", foreign_keys=[main_sail_id])
-    mizzen_sail = relationship("Sails", foreign_keys=[mizzen_sail_id])
-    fore_inner_sail = relationship("Sails", foreign_keys=[fore_inner_sail_id])
-    fore_outer_sail = relationship("Sails", foreign_keys=[fore_outer_sail_id])
-    mizzen_fore_sail = relationship("Sails", foreign_keys=[mizzen_fore_sail_id])
+
+class SailSetsCombined(Base):  # type:ignore
+    __tablename__ = "sail_sets_combined"
+
+    id = Column(Integer, primary_key=True)
+    sails: Column[Sequence[str]] = Column(ARRAY(String), nullable=False)
 
 
 class AwaRanges(Base):  # type:ignore
@@ -56,20 +49,17 @@ class AwsRanges(Base):  # type:ignore
 class LoadCases(Base):  # type:ignore
     __tablename__ = "load_cases"
 
-    id = Column(Integer, primary_key=True)
+    id = Column(UUID(as_uuid=True), primary_key=True)
     awa_range_id = Column(
         Integer, ForeignKey("awa_ranges.id"), nullable=False, index=True
     )
     aws_range_id = Column(
         Integer, ForeignKey("aws_ranges.id"), nullable=False, index=True
     )
-    sail_set_id = Column(
-        Integer, ForeignKey("sail_sets.id"), nullable=False, index=True
-    )
+    sail_set_id = Column(Integer, nullable=False, index=True)
 
     awa_range = relationship("AwaRanges")
     aws_range = relationship("AwsRanges")
-    sail_set = relationship("SailSets")
 
 
 class Variables(Base):  # type: ignore

@@ -1,22 +1,26 @@
 import logging
+from typing import Sequence
 
 import strawberry
-from sqlalchemy import cast, select
+from sqlalchemy import Column, cast, select
 from sqlalchemy.dialects.postgresql import ARRAY, NUMERIC, TEXT
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import selectinload
+from sqlalchemy.sql.expression import ColumnElement
+from sqlalchemy.sql.selectable import ScalarSelect
 
 from .schema import (
     AwaRanges,
     AwsRanges,
     LoadCases,
     ReferenceValues,
-    SailSets,
+    SailSetsCombined,
 )
 from .types import (
     CaseInput,
     ReferenceValue,
     ReferenceValueType,
+    Sails,
     Unit,
     VariableType,
 )
@@ -47,20 +51,7 @@ async def get_loads_reference_values(
         )
         .where(
             ReferenceValues.load_case.has(
-                LoadCases.sail_set.has(
-                    SailSets.sail_set.contains(
-                        cast([sail.value for sail in case.sailset], ARRAY(TEXT))
-                    )
-                )
-            )
-        )
-        .where(
-            ReferenceValues.load_case.has(
-                LoadCases.sail_set.has(
-                    SailSets.sail_set.contained_by(
-                        cast([sail.value for sail in case.sailset], ARRAY(TEXT))
-                    )
-                )
+                LoadCases.sail_set_id == create_sail_set_subq(case.sailset)
             )
         )
     )
@@ -89,3 +80,19 @@ async def get_loads_reference_values(
     else:
         logger.info(f"No reference values found for case: {case}")
         return []
+
+
+def create_sail_set_subq(sailset: list[Sails]) -> ScalarSelect[str]:
+    """Create subquery that returns the sail set that exactly matches the current sails."""
+    return (
+        select(SailSetsCombined.id)
+        .where(sails_exact(SailSetsCombined.sails, sailset))
+        .scalar_subquery()
+    )
+
+
+def sails_exact(
+    sails_column: Column[Sequence[str]], sails: list[Sails]
+) -> ColumnElement[bool]:
+    """Check if the sail set exactly matches the sails provided"""
+    return sails_column == cast(sorted([sail.value for sail in sails]), ARRAY(TEXT))
