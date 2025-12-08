@@ -72,14 +72,17 @@ async def get_actuals(variables: Sequence[str], context: LoadsContext) -> list[A
 async def get_reference_values(
     keys: list[tuple[str, list, CaseInput | None]], context: LoadsContext
 ) -> list[ReferenceValueType | None]:
-    return [ref[0] if ref else None
-      for variable, sails, case in keys
-      if (ref := await get_loads_reference_values(
-          variables=[variable],
-          sails=sails,
-          case=case,
-          session=context.session,
-      ))]
+    results = []
+    for variable, sails, case in keys:
+        ref = await get_loads_reference_values(
+            variables=[variable],
+            sails=sails,
+            case=case,
+            session=context.session,
+        )
+        results.append(ref[0] if ref else None)
+
+    return results
 
 
 async def get_context(

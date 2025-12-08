@@ -14,85 +14,29 @@ from .units import (
 
 
 class TensionCylinder(LoadsModel, ABC):
-    ow_actpos_mm: Position = Field(validation_alias="ow_ActPos_mm")
-    ow_actpos2_mm: Position = Field(validation_alias="ow_ActPos2_mm")
-    ow_actpos_pm: RelativePosition = Field(validation_alias="ow_ActPos_pm")
-    ow_actpos2_pm: RelativePosition = Field(validation_alias="ow_ActPos2_pm")
-    ow_actload_10kg: Load = Field(validation_alias="ow_ActLoad_10kg")
-
-    @property
-    def load(self) -> Load:
-        return self.ow_actload_10kg
-
-    @property
-    def position(self) -> Position:
-        return self.ow_actpos_mm
-
-    @property
-    def position_2(self) -> Position:
-        return self.ow_actpos2_mm
-
-    @property
-    def relative_position(self) -> RelativePosition:
-        return self.ow_actpos_pm
-
-    @property
-    def relative_position_2(self) -> RelativePosition:
-        return self.ow_actpos2_pm
+    position: Position = Field(validation_alias="ow_ActPos_mm")
+    position_2: Position = Field(validation_alias="ow_ActPos2_mm")
+    relative_position: RelativePosition = Field(validation_alias="ow_ActPos_pm")
+    relative_position_2: RelativePosition = Field(validation_alias="ow_ActPos2_pm")
+    load: Load = Field(validation_alias="ow_ActLoad_10kg")
 
 
 class FurlerElectric(LoadsModel, ABC):
-    ii_acttrq: Torque = Field(alias="ii_ActTrq")
-    ii_actspd: RotationalSpeed = Field(alias="ii_ActSpd")
-
-    @property
-    def torque(self) -> Torque:
-        return self.ii_acttrq
-
-    @property
-    def rotational_speed(self) -> RotationalSpeed:
-        return self.ii_actspd
+    torque: Torque = Field(alias="ii_ActTrq")
+    rotational_speed: RotationalSpeed = Field(alias="ii_ActSpd")
 
 
 class CaptiveWinch(LoadsModel, ABC):
-    ii_acttrq: Torque = Field(validation_alias="ii_ActTrq")
-    ii_actspd: RotationalSpeed = Field(validation_alias="ii_ActSpd")
-    ii_igbttemp: Temperature = Field(validation_alias="ii_IgbtTemp")
-
-    @property
-    def torque(self) -> Torque:
-        return self.ii_acttrq
-
-    @property
-    def rotational_speed(self) -> RotationalSpeed:
-        return self.ii_actspd
-
-    @property
-    def temperature(self) -> Temperature:
-        return self.ii_igbttemp
+    torque: Torque = Field(validation_alias="ii_ActTrq")
+    rotational_speed: RotationalSpeed = Field(validation_alias="ii_ActSpd")
+    temperature: Temperature = Field(validation_alias="ii_IgbtTemp")
 
 
 class BoomVang(LoadsModel, ABC):
-    ow_actload_10kg: Load = Field(validation_alias="ow_ActLoad_10kg")
-    ow_actload2_10kg: Load = Field(validation_alias="ow_ActLoad2_10kg")
-    ow_actpos_mm: Position = Field(validation_alias="ow_ActPos_mm")
-    ow_actpos_pm: RelativePosition = Field(validation_alias="ow_ActPos_pm")
-
-    @property
-    def load(self) -> Load:
-        return self.ow_actload_10kg
-
-    @property
-    def load_2(self) -> Load:
-        return self.ow_actload2_10kg
-
-    @property
-    def position(self) -> Position:
-        return self.ow_actpos_mm
-
-    @property
-    def relative_position(self) -> RelativePosition:
-        return self.ow_actpos_pm
+    load: Load = Field(validation_alias="ow_ActLoad_10kg")
+    load_2: Load = Field(validation_alias="ow_ActLoad2_10kg")
+    position: Position = Field(validation_alias="ow_ActPos_mm")
+    position_2: RelativePosition = Field(validation_alias="ow_ActPos_pm")
 
 
 class BladeCunningham(TensionCylinder):
