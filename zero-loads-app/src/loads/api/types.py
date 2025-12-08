@@ -38,6 +38,20 @@ class Sails(Enum):
     mizzen_staysail = "mizzen-staysail"
 
 
+@strawberry.input
+class PCSModeInput:
+    fwd: ThrusterMode
+    aft: ThrusterMode
+
+
+@strawberry.input
+class CaseInput:
+    sea_state: SeaState
+    pcs_mode: PCSModeInput
+    awa: float
+    aws: float
+
+
 @strawberry.type
 class MastType:
     id: str
@@ -76,17 +90,3 @@ class ReferenceValueType:
     masts: MastType | None
     target: TargetType
     ranges: AlertType
-
-
-@strawberry.input
-class PCSModeInput:
-    fwd: ThrusterMode
-    aft: ThrusterMode
-
-
-@strawberry.input
-class CaseInput:
-    sea_state: SeaState
-    pcs_mode: PCSModeInput
-    awa: float
-    aws: float

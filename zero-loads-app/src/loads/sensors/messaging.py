@@ -3,7 +3,7 @@ from loads.sensors import LoadsModel
 
 
 class MessagingModule:
-    """Module handling multiple validators for different topics."""
+    """Module handling multiple validators."""
 
     def __init__(self, validators: list[type[LoadsModel]]) -> None:
         self._validators = validators

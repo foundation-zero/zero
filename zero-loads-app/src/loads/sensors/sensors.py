@@ -1,5 +1,7 @@
 from abc import ABC
 
+from pydantic import Field
+
 from .base import LoadsModel
 from .units import (
     Load,
@@ -11,37 +13,37 @@ from .units import (
 )
 
 
-class TensionCylinder(LoadsModel, ABC):
-    ow_ActPos_mm: Position
-    ow_ActPos2_mm: Position
-    ow_ActPos_pm: RelativePosition
-    ow_ActPos2_pm: RelativePosition
-    ow_ActLoad_10kg: Load
+class TensionCylinder(LoadsModel):
+    ow_ActPos_mm: Position = Field(serialization_alias="ow_actpos_mm")
+    ow_ActPos2_mm: Position = Field(serialization_alias="ow_actpos2_mm")
+    ow_ActPos_pm: RelativePosition = Field(serialization_alias="ow_actpos_pm")
+    ow_ActPos2_pm: RelativePosition = Field(serialization_alias="ow_actpos2_pm")
+    ow_ActLoad_10kg: Load = Field(serialization_alias="ow_actload_10kg")
+
+    @property
+    def load(self) -> Load:
+        return self.ow_ActLoad_10kg
 
     @property
     def position(self) -> Position:
         return self.ow_ActPos_mm
 
     @property
-    def relative_position(self) -> RelativePosition:
-        return self.ow_ActPos_pm
-
-    @property
     def position_2(self) -> Position:
         return self.ow_ActPos2_mm
+
+    @property
+    def relative_position(self) -> RelativePosition:
+        return self.ow_ActPos_pm
 
     @property
     def relative_position_2(self) -> RelativePosition:
         return self.ow_ActPos2_pm
 
-    @property
-    def load(self) -> Load:
-        return self.ow_ActLoad_10kg
-
 
 class FurlerElectric(LoadsModel, ABC):
-    ii_ActTrq: Torque
-    ii_ActSpd: RotationalSpeed
+    ii_ActTrq: Torque = Field(serialization_alias="ii_acttrq")
+    ii_ActSpd: RotationalSpeed = Field(serialization_alias="ii_actspd")
 
     @property
     def torque(self) -> Torque:
@@ -53,9 +55,9 @@ class FurlerElectric(LoadsModel, ABC):
 
 
 class CaptiveWinch(LoadsModel, ABC):
-    ii_ActTrq: Torque
-    ii_ActSpd: RotationalSpeed
-    ii_IgbtTemp: Temperature
+    ii_ActTrq: Torque = Field(serialization_alias="ii_acttrq")
+    ii_ActSpd: RotationalSpeed = Field(serialization_alias="ii_actspd")
+    ii_IgbtTemp: Temperature = Field(serialization_alias="ii_igbttemp")
 
     @property
     def torque(self) -> Torque:
@@ -71,10 +73,10 @@ class CaptiveWinch(LoadsModel, ABC):
 
 
 class BoomVang(LoadsModel, ABC):
-    ow_ActLoad_10kg: Load
-    ow_ActLoad2_10kg: Load
-    ow_ActPos_mm: Position
-    ow_ActPos_pm: RelativePosition
+    ow_ActLoad_10kg: Load = Field(serialization_alias="ow_actload_10kg")
+    ow_ActLoad2_10kg: Load = Field(serialization_alias="ow_actload2_10kg")
+    ow_ActPos_mm: Position = Field(serialization_alias="ow_actpos_mm")
+    ow_ActPos_pm: RelativePosition = Field(serialization_alias="ow_actpos_pm")
 
     @property
     def load(self) -> Load:

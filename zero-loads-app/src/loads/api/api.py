@@ -3,12 +3,13 @@ import sys
 from asyncio import Task, create_task
 from contextlib import asynccontextmanager
 from dataclasses import dataclass
-from typing import Annotated
+from typing import Annotated, Sequence
 
 import strawberry
 from aiomqtt import Client as MqttClient
 from fastapi import Depends, FastAPI
 from sqlalchemy.ext.asyncio import AsyncSession
+from strawberry.dataloader import DataLoader
 from strawberry.fastapi import BaseContext, GraphQLRouter
 
 from loads.config import settings
@@ -60,36 +61,69 @@ def get_messaging() -> Messaging:
 class LoadsContext(BaseContext):
     messaging: Messaging
     session: AsyncSession
+    actuals_loader: DataLoader
+    references_loader: DataLoader
+
+
+async def get_actuals(variables: Sequence[str], context: LoadsContext) -> list[ActualType]:
+    return context.messaging.get_values_for(list(variables))
+
+
+async def get_reference_values(
+    keys: list[tuple[str, list[Sails], CaseInput | None]], context: LoadsContext
+) -> list[ReferenceValueType | None]:
+    results = []
+    for variable, sails, case in keys:
+        ref = await get_loads_reference_values(
+            variables=[variable],
+            sails=sails,
+            case=case,
+            session=context.session,
+        )
+        results.append(ref[0] if ref else None)
+    return results
 
 
 async def get_context(
     messaging: Annotated[Messaging, Depends(get_messaging)],
     session: Annotated[AsyncSession, Depends(get_db_session)],
 ) -> LoadsContext:
-    return LoadsContext(messaging=messaging, session=session)
+    context = LoadsContext(
+        messaging=messaging,
+        session=session,
+        actuals_loader=DataLoader(load_fn=lambda keys: get_actuals(keys, context), cache=False),
+        references_loader=DataLoader(load_fn=lambda keys: get_reference_values(keys, context), cache=False),
+    )
+    return context
 
 
 @strawberry.type
-class Query:
+class Variable:
+    id: strawberry.ID
+
     @strawberry.field
-    async def actual(
-        self,
-        info: strawberry.Info[LoadsContext],
-        variables: list[strawberry.ID],
-    ) -> list[ActualType] | None:
-        return info.context.messaging.get_value_for(variables)
+    async def actual(self, info: strawberry.Info[LoadsContext]) -> ActualType | None:
+        return await info.context.actuals_loader.load(self.id)
 
     @strawberry.field
     async def reference(
         self,
         info: strawberry.Info[LoadsContext],
-        variables: list[strawberry.ID],
         sails: list[Sails],
         case: CaseInput | None = None,
-    ) -> list[ReferenceValueType] | None:
-        return await get_loads_reference_values(
-            variables=variables, sails=sails, case=case, session=info.context.session
-        )
+    ) -> ReferenceValueType | None:
+        return await info.context.references_loader.load((self.id, sails, case))
+
+
+@strawberry.type
+class Query:
+    @strawberry.field
+    async def variables(
+        self,
+        info: strawberry.Info[LoadsContext],
+        variables: list[strawberry.ID],
+    ) -> list[Variable]:
+        return [Variable(id=var_id) for var_id in variables]
 
 
 schema = strawberry.Schema(query=Query)

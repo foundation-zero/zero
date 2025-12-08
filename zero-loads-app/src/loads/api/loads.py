@@ -1,7 +1,18 @@
-from typing import Any, Callable, Protocol
+from typing import Any, Callable, Literal, Protocol
 
 import loads.sensors.sensors as sensors
 from loads.sensors import LoadsModel
+
+Fields = Literal[
+    "torque",
+    "load",
+    "load_2",
+    "position",
+    "position_2",
+    "relative_position",
+    "relative_position_2",
+    "rotational_speed",
+]
 
 
 class LoadsField[T: LoadsModel](Protocol):
@@ -11,15 +22,12 @@ class LoadsField[T: LoadsModel](Protocol):
 
 
 class LoadField[T: LoadsModel]:
-    def __init__(self, model: type[T], field: str) -> None:
+    def __init__(self, model: type[T], field: Fields) -> None:
         self.model = model
         self._field = field
 
     def give(self, data: T | None) -> float | None:
-        if data:
-            return getattr(data, self._field)
-        else:
-            return None
+        return getattr(data, self._field) if data else None
 
 
 class FnField[T: LoadsModel]:
@@ -35,6 +43,7 @@ class FnField[T: LoadsModel]:
 
 
 loads_variables: dict[str, LoadsField] = {
+    "headstay-load": LoadField(sensors.MainSheetCaptiveWinch, "torque"),
     "main-sheet-load": LoadField(sensors.MainSheetCaptiveWinch, "torque"),
     "main-vang-load": LoadField(sensors.MainVang, "load"),
     "main-vang-load-fn": FnField(sensors.MainVang, lambda x: x.load + x.load_2),

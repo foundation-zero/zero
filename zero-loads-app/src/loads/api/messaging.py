@@ -1,8 +1,9 @@
+# Adapted from THRS messaging (zero-thrs-control/src/thrs/graphql/messaging.py)
+
 import asyncio
 import logging
 from typing import Any, Callable, Coroutine
 
-import strawberry
 from aiomqtt import Client as MqttClient
 from aiomqtt import Message
 
@@ -89,7 +90,7 @@ class Messaging:
                 if message.payload == b"":
                     continue
 
-                if receiver := self.match_receiver(message):
+                if receiver := self._match_receiver(message):
                     await receiver.handle(self._parse_message(message, receiver.cls))
 
         return _run(self)
@@ -102,7 +103,7 @@ class Messaging:
             raise ValueError(f"Expected string or bytes, got {type(message.payload)}")
         return model.model_validate_json(message.payload)
 
-    def get_value_for(self, variables: list[strawberry.ID]) -> list[ActualType] | None:
+    def get_values_for(self, variables: list[str]) -> list[ActualType]:
         results: list[ActualType] = []
         for variable in variables:
             if field := self._variable_definition.get(variable):
@@ -113,7 +114,7 @@ class Messaging:
             else:
                 raise ValueError(f"{variable} is not defined.")
 
-        return results if results else None
+        return results
 
     def get_variable_definition(self, variable: str) -> LoadsField | None:
         return self._variable_definition.get(variable)

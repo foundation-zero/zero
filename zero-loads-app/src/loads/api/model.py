@@ -1,7 +1,6 @@
 import logging
 from typing import Sequence
 
-import strawberry
 from sqlalchemy import Column, cast, select
 from sqlalchemy.dialects.postgresql import ARRAY, NUMERIC, TEXT
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -34,7 +33,7 @@ logger = logging.getLogger("api")
 
 
 async def get_loads_reference_values(
-    variables: list[strawberry.ID],
+    variables: list[str],
     sails: list[Sails],
     case: CaseInput | None,
     session: AsyncSession,
