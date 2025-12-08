@@ -1,7 +1,8 @@
 services:
   jupyter:
-    build:
-      context: .
+#    build:
+#      context: .
+    image: ghcr.io/foundation-zero/zero/io_validation_tool:0.9.3
     ports:
       - "8888:8888"
     volumes:
