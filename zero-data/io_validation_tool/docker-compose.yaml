@@ -1,10 +1,19 @@
 services:
   jupyter:
-#    build:
-#      context: .
-    image: ghcr.io/foundation-zero/zero/io_validation_tool:0.9.3
+    build:
+      context: ../
+#    image: ghcr.io/foundation-zero/zero/io_validation_tool:0.9.3
     ports:
-      - "8888:8888"
+      - "8889:8888"
     volumes:
       - ./io_lists:/app/io_lists
       - ./notebooks:/app/notebooks
+      - ./jupyter-config.json:/app/jupyter_notebook_config.json
+    command:
+      - jupyter
+      - lab
+      - --config=/app/jupyter_notebook_config.json
+      - --ip=0.0.0.0
+      - --port=8888
+      - --no-browser
+      - --allow-root
