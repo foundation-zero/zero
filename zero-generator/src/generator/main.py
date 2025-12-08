@@ -48,7 +48,6 @@ class DataGenerator:
             ]
         """
         logger.info("Starting data generator...")
-
         try:
             async with asyncio.TaskGroup() as group:
                 for topic_config in config:

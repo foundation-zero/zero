@@ -1,76 +1,83 @@
+from unittest.mock import Mock
+
 import pytest
 from asgi_lifespan import LifespanManager
 from httpx import ASGITransport, AsyncClient
 
 from loads.api import app
+from loads.api.api import get_messaging
+from loads.api.types import ActualType
+
+
+def override_messaging():
+    mock = Mock()
+
+    mock.get_values_for = Mock(
+        return_value=[
+            ActualType(id="headstay-load", value=1.0),
+            ActualType(id="main-sheet-load", value=2.0),
+        ]
+    )
+    return mock
+
+
+@pytest.fixture
+async def async_client():
+    async with LifespanManager(app) as manager:
+        async with AsyncClient(transport=ASGITransport(app=manager.app), base_url="http://test") as client:
+            yield client
 
 
 @pytest.mark.asyncio
-async def test_graphql():
-    async with LifespanManager(app) as manager:
-        async with AsyncClient(transport=ASGITransport(app=manager.app), base_url="http://test") as client:
-            response = client.post(
-                "/graphql",
-                json={
-                    "query": """
-                    query {
-                        referenceValues(
-                            values: "headstay-load"
-                            case: {pcsMode: {aft: propulsion, fwd: propulsion}, aws: 25, awa: 0, seaState: wet}
-                            sails: [full_mizzen_sail, full_main_sail, main_blade, mizzen_jib]
-                        )
-                        {
-                            ranges {
-                                errorTooHigh
-                                errorTooLow
-                                warningTooHigh
-                                warningTooLow
-                            }
-                            target {
-                                target
-                                unit
-                            }
-                            value {
-                                id
-                                name
-                            }
-                            masts {
-                                id
-                                name
-                            }
+async def test_graphql_reference(async_client: AsyncClient):
+    app.dependency_overrides[get_messaging] = override_messaging
+
+    response = await async_client.post(
+        "/graphql",
+        json={
+            "query": """
+            query {
+                variables(variables: ["headstay-load", "main-sheet-load"]) {
+                    actual {
+                        value
+                        id
+                    }
+                    reference(
+                        sails: [full_main_sail, main_blade, full_mizzen_sail]
+                        case: {seaState: wet, pcsMode: {fwd: propulsion, aft: propulsion}, awa: 1.5, aws: 1.5}
+                    ) {
+                        masts {
+                            id
+                            name
+                        }
+                        target {
+                            unit
+                            target
+                        }
+                        value {
+                            name
+                            id
                         }
                     }
-                    """
-                },
-            )
-
-            response = await response
-            assert response.status_code == 200
-            assert response.json() == {
-                "data": {
-                    "referenceValues": [
-                        {
-                            "ranges": {
-                                "errorTooHigh": None,
-                                "errorTooLow": None,
-                                "warningTooHigh": None,
-                                "warningTooLow": None,
-                            },
-                            "target": {"target": "5.0", "unit": "tonne"},
-                            "value": {"id": "headstay-load", "name": "Headstay load"},
-                            "masts": {"id": "main", "name": "Main mast"},
-                        },
-                        {
-                            "ranges": {
-                                "errorTooHigh": None,
-                                "errorTooLow": None,
-                                "warningTooHigh": None,
-                                "warningTooLow": None,
-                            },
-                            "target": {"target": "2.5", "unit": "tonne"},
-                            "value": {"id": "headstay-load", "name": "Headstay load"},
-                            "masts": {"id": "mizzen", "name": "Mizzen mast"},
-                        },
-                    ]
                 }
             }
+            """
+        },
+    )
+
+    assert response.status_code == 200
+    assert response.json() == {
+        "data": {
+            "variables": [
+                {
+                    "actual": {"value": 1.0, "id": "headstay-load"},
+                    "reference": {
+                        "masts": {"id": "main", "name": "Main mast"},
+                        "target": {"unit": "tonne", "target": "2.0"},
+                        "value": {"name": "Headstay load", "id": "headstay-load"},
+                    },
+                },
+                {"actual": {"value": 2.0, "id": "main-sheet-load"}, "reference": None},
+            ]
+        }
+    }
