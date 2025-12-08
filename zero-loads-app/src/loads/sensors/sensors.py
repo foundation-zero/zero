@@ -14,85 +14,85 @@ from .units import (
 
 
 class TensionCylinder(LoadsModel, ABC):
-    ow_ActPos_mm: Position = Field(serialization_alias="ow_actpos_mm")
-    ow_ActPos2_mm: Position = Field(serialization_alias="ow_actpos2_mm")
-    ow_ActPos_pm: RelativePosition = Field(serialization_alias="ow_actpos_pm")
-    ow_ActPos2_pm: RelativePosition = Field(serialization_alias="ow_actpos2_pm")
-    ow_ActLoad_10kg: Load = Field(serialization_alias="ow_actload_10kg")
+    ow_actpos_mm: Position = Field(validation_alias="ow_ActPos_mm")
+    ow_actpos2_mm: Position = Field(validation_alias="ow_ActPos2_mm")
+    ow_actpos_pm: RelativePosition = Field(validation_alias="ow_ActPos_pm")
+    ow_actpos2_pm: RelativePosition = Field(validation_alias="ow_ActPos2_pm")
+    ow_actload_10kg: Load = Field(validation_alias="ow_ActLoad_10kg")
 
     @property
     def load(self) -> Load:
-        return self.ow_ActLoad_10kg
+        return self.ow_actload_10kg
 
     @property
     def position(self) -> Position:
-        return self.ow_ActPos_mm
+        return self.ow_actpos_mm
 
     @property
     def position_2(self) -> Position:
-        return self.ow_ActPos2_mm
+        return self.ow_actpos2_mm
 
     @property
     def relative_position(self) -> RelativePosition:
-        return self.ow_ActPos_pm
+        return self.ow_actpos_pm
 
     @property
     def relative_position_2(self) -> RelativePosition:
-        return self.ow_ActPos2_pm
+        return self.ow_actpos2_pm
 
 
 class FurlerElectric(LoadsModel, ABC):
-    ii_ActTrq: Torque = Field(serialization_alias="ii_acttrq")
-    ii_ActSpd: RotationalSpeed = Field(serialization_alias="ii_actspd")
+    ii_acttrq: Torque = Field(alias="ii_ActTrq")
+    ii_actspd: RotationalSpeed = Field(alias="ii_ActSpd")
 
     @property
     def torque(self) -> Torque:
-        return self.ii_ActTrq
+        return self.ii_acttrq
 
     @property
     def rotational_speed(self) -> RotationalSpeed:
-        return self.ii_ActSpd
+        return self.ii_actspd
 
 
 class CaptiveWinch(LoadsModel, ABC):
-    ii_ActTrq: Torque = Field(serialization_alias="ii_acttrq")
-    ii_ActSpd: RotationalSpeed = Field(serialization_alias="ii_actspd")
-    ii_IgbtTemp: Temperature = Field(serialization_alias="ii_igbttemp")
+    ii_acttrq: Torque = Field(validation_alias="ii_ActTrq")
+    ii_actspd: RotationalSpeed = Field(validation_alias="ii_ActSpd")
+    ii_igbttemp: Temperature = Field(validation_alias="ii_IgbtTemp")
 
     @property
     def torque(self) -> Torque:
-        return self.ii_ActTrq
+        return self.ii_acttrq
 
     @property
     def rotational_speed(self) -> RotationalSpeed:
-        return self.ii_ActSpd
+        return self.ii_actspd
 
     @property
     def temperature(self) -> Temperature:
-        return self.ii_IgbtTemp
+        return self.ii_igbttemp
 
 
 class BoomVang(LoadsModel, ABC):
-    ow_ActLoad_10kg: Load = Field(serialization_alias="ow_actload_10kg")
-    ow_ActLoad2_10kg: Load = Field(serialization_alias="ow_actload2_10kg")
-    ow_ActPos_mm: Position = Field(serialization_alias="ow_actpos_mm")
-    ow_ActPos_pm: RelativePosition = Field(serialization_alias="ow_actpos_pm")
+    ow_actload_10kg: Load = Field(validation_alias="ow_ActLoad_10kg")
+    ow_actload2_10kg: Load = Field(validation_alias="ow_ActLoad2_10kg")
+    ow_actpos_mm: Position = Field(validation_alias="ow_ActPos_mm")
+    ow_actpos_pm: RelativePosition = Field(validation_alias="ow_ActPos_pm")
 
     @property
     def load(self) -> Load:
-        return self.ow_ActLoad_10kg
+        return self.ow_actload_10kg
 
     @property
     def load_2(self) -> Load:
-        return self.ow_ActLoad2_10kg
+        return self.ow_actload2_10kg
 
     @property
     def position(self) -> Position:
-        return self.ow_ActPos_mm
+        return self.ow_actpos_mm
 
     @property
     def relative_position(self) -> RelativePosition:
-        return self.ow_ActPos_pm
+        return self.ow_actpos_pm
 
 
 class BladeCunningham(TensionCylinder):

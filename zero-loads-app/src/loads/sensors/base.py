@@ -21,12 +21,15 @@ class LoadsModel(BaseModel):
     def gen_config(cls, interval: int = 10) -> GeneratorConfig:
         """Generate configuration for data generation."""
 
+        print(cls.model_fields)
         return GeneratorConfig(
             topic=cls.TOPIC,
             interval=interval,
             values={
-                component: cls._create_generator(field_info.annotation, field_info.metadata)
-                for component, field_info in cls.model_fields.items()
+                str(field_info.validation_alias if field_info.validation_alias else field): cls._create_generator(
+                    field_info.annotation, field_info.metadata
+                )
+                for field, field_info in cls.model_fields.items()
             },
         )
 
