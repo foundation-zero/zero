@@ -22,7 +22,10 @@ jobs:
           fetch-depth: '0'
       - name: Create .env file from secret
         run: |
-          echo "${{ secrets.ENV_ZERO_DOMESTIC_CONTROL }}" > .env
+          echo "${{ secrets.ENV }}" > .env
+      - name: Create .env file from secret
+        run: |
+          echo "${{ secrets.ENV }}" > .env
         working-directory: zero-domestic-control
       - uses: actions/setup-python@v5
         with:
@@ -41,8 +44,7 @@ jobs:
         run: poetry run pytest --run=unit
         working-directory: zero-domestic-control
       - name: Run services
-        run: docker compose up -d --quiet-pull graphql-engine hass --wait
-        working-directory: zero-domestic-control
+        run: docker compose --profile zero up -d --quiet-pull --wait
       - name: Integration Test
         run: poetry run pytest --run=integration -vv
         working-directory: zero-domestic-control

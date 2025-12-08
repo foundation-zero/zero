@@ -1,6 +1,0 @@
-- "!include condition_profiles.yaml"
-- "!include conditions.yaml"
-- "!include reference_values.yaml"
-- "!include loads_cases.yaml"
-- "!include sail_set_sails.yaml"
-- "!include sails.yaml"

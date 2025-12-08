@@ -31,9 +31,11 @@ jobs:
         working-directory: zero-generator
       - run: poetry run mypy src
         working-directory: zero-generator
+      - name: Create .env file from secret
+        run: |
+          echo "${{ secrets.ENV }}" > .env
       - name: Run services
-        run: docker compose up -d --quiet-pull --wait
-        working-directory: zero-generator
+        run: docker compose --profile zero up -d --quiet-pull --wait
       - name: Unit Test
         run: poetry run pytest . -vv
         working-directory: zero-generator

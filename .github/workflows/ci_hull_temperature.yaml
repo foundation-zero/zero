@@ -33,9 +33,11 @@ jobs:
         working-directory: zero-hull-temperature
       - run: poetry run pyright
         working-directory: zero-hull-temperature
+      - name: Create .env file from secret
+        run: |
+          echo "${{ secrets.ENV }}" > .env
       - name: Run services
-        run: docker compose up -d --quiet-pull --wait
-        working-directory: zero-hull-temperature
+        run: docker compose --profile zero up -d --quiet-pull --wait
       - name: Unit Test
         run: poetry run pytest
         working-directory: zero-hull-temperature

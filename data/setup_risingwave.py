@@ -7,10 +7,13 @@ import psycopg
 import subprocess
 import argparse
 from glob import glob
+import logging
 
 load_dotenv(dotenv_path=".env")
 
 settings = Settings()  # type:ignore
+
+logging.info(settings)
 
 parser = argparse.ArgumentParser(description="Setup Risingwave tables", add_help=True)
 parsed_args, dbt_args = parser.parse_known_args()

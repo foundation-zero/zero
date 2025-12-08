@@ -13,9 +13,7 @@ async def test_receive_message(settings: Settings):
     UDPServerSocket.bind((settings.canbus_ip, settings.canbus_port))
 
     async with PCanStub.init_from_settings(settings) as stub:
-        can_msg = await stub.create_can_msg(
-            id=12341234, data=b"\x01\x02\x03\x04\x00\x00\x00\x00"
-        )
+        can_msg = await stub.create_can_msg(id=12341234, data=b"\x01\x02\x03\x04\x00\x00\x00\x00")
 
         await stub.send_message(can_msg)
 

@@ -10,20 +10,26 @@ The Loads app does the processing as follows:
 
 ## Development Setup
 
-1. Create a `.env` file using `.env.example` as a template.
-2. Install dependencies:
-    ```bash
-    poetry install --with dev,test
-    ```
-3. Start the application:
-    ```bash
-    docker compose up
-    ```
-4. Apply Hasura metadata:
-    ```bash
-    cd hasura
-    hasura metadata apply --admin-secret myadminsecretkey
-    ```
+This will setup everything needed to start any module within `zero-loads-app`.
+
+ - Create a `.env` file using `.env.example` as a template
+
+Install dependencies:
+```bash
+poetry install --with dev
+```
+
+Start the services in the root folder
+```bash
+cd ..
+docker compose --profile zero up -d
+```
+
+Apply Hasura metadata:
+```bash
+cd hasura
+hasura metadata apply --admin-secret myadminsecretkey
+```
 
 ## Usage
 
@@ -68,4 +74,12 @@ poetry run loads sensor-stub
 Generate a JWT token for a specific role (e.g., `captain`):
 ```bash
 poetry run loads generate-jwt --roles captain
+```
+
+## Test Setup
+
+Create a `.env` file using `.env.example` as a template in the root folder
+
+```bash
+docker compose --profile loads up -d
 ```

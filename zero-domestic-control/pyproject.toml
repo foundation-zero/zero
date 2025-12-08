@@ -22,6 +22,9 @@ dependencies = [
     "strawberry-graphql[debug-server,fastapi] (>=0.256.1,<1.0.0)"
 ]
 
+[project.scripts]
+app = "zero_domestic_control.__main__:run"
+
 [tool.poetry.group.dev]
 optional = true
 

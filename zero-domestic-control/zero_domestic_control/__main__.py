@@ -6,6 +6,7 @@ import jwt
 from zero_domestic_control.config import Settings
 import logging
 from .logging import setup_logging
+import uvicorn
 
 setup_logging()
 
@@ -17,12 +18,8 @@ async def run():
     sub_parser = parser.add_subparsers()
 
     generate_jwt_cmd = sub_parser.add_parser("generate-jwt")
-    generate_jwt_cmd.add_argument(
-        "roles", type=str, nargs="*", help="any additional roles to generate jwt for"
-    )
-    generate_jwt_cmd.add_argument(
-        "--cabin", type=str, help="specify the cabin for the JWT"
-    )
+    generate_jwt_cmd.add_argument("roles", type=str, nargs="*", help="any additional roles to generate jwt for")
+    generate_jwt_cmd.add_argument("--cabin", type=str, help="specify the cabin for the JWT")
 
     generate_jwt_cmd.set_defaults(func=generate_jwt)
 
@@ -63,6 +60,10 @@ async def generate_jwt(args):
         algorithm="HS256",
     )
     print(f"JWT for roles ({', '.join(roles)}): {token}")
+
+
+def run_app():
+    uvicorn.run("zero_domestic_control.app:app", port=4002, reload=True)
 
 
 async def control(_args):

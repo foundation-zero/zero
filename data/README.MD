@@ -12,9 +12,10 @@ Install dependencies
 poetry install
 ```
 
-Start Postgres, Risingwave, VerneMQ and the data generator
+Start Postgres, Risingwave, VerneMQ and the data generator (in the root folder)
+
 ```bash
-docker compose up
+docker compose --profile zero up
 ```
 
 Run the scripts for Postgres and Risingwave

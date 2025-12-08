@@ -3,10 +3,6 @@ This repository contains the Zero data platform and the scripts to process the I
 
 # Release management
 
-# zero-data
-
-Tag a new release on Github. This will automatically deploy the tagged version to GAR.
-
 # charts
 
 The charts are deployed by their respective pipelines. Their versions are controlled by the `version` field in Chart.yaml.
@@ -21,8 +17,9 @@ The version of `zero-data` they deploy is based on the `appVersion`.
 
 # Local testing (docker)
 
+Start the `data` profile defined in the root docker compose:
 ```bash
-docker compose up
+docker compose --profile data up -d
 ```
 
 This will setup

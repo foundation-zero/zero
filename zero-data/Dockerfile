@@ -16,7 +16,6 @@ RUN pip install "poetry==${POETRY_VERSION}"
 
 WORKDIR /app
 COPY pyproject.toml poetry.lock README.md ./
-
 RUN poetry install --no-root
 
 FROM python:3.13-slim-bookworm AS runtime
@@ -25,7 +24,6 @@ FROM python:3.13-slim-bookworm AS runtime
 ENV PYTHONDONTWRITEBYTECODE=1 \
     PYTHONUNBUFFERED=1
 
-
 ENV VIRTUAL_ENV=/app/.venv
 ENV PATH="/app/.venv/bin:$PATH"
 
@@ -33,5 +31,6 @@ COPY --from=builder ${VIRTUAL_ENV} ${VIRTUAL_ENV}
 
 WORKDIR /app
 
+COPY .gsheet-sa-key.json .gsheet-sa-key.json
 COPY ./io_lists ./io_lists
 COPY src/ ./

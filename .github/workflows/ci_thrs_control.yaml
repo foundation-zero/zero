@@ -24,6 +24,15 @@ jobs:
       - run: pipx install poetry==2.1.4
         working-directory: zero-thrs-control
 
+      - name: Create .env file from secret for services
+        run: |
+          echo "${{ secrets.ENV }}" > .env
+
+      - name: Create .env file from secret for THRS
+        run: |
+          echo "${{ secrets.ENV_THRS }}" > .env
+        working-directory: zero-thrs-control
+
       - name: Setup Graphviz
         uses: ts-graphviz/setup-graphviz@v2
 
@@ -57,8 +66,7 @@ jobs:
       - run: poetry run ruff format --check src tests
         working-directory: zero-thrs-control
 
-      - run: docker compose up -d --wait
-        working-directory: zero-thrs-control
+      - run: docker compose --profile zero up -d --quiet-pull --wait
 
       - run: poetry run pytest -v
         working-directory: zero-thrs-control
