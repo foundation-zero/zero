@@ -70,7 +70,7 @@ async def get_actuals(variables: Sequence[str], context: LoadsContext) -> list[A
 
 
 async def get_reference_values(
-    keys: list[tuple[str, list[Sails], CaseInput | None]], context: LoadsContext
+    keys: list[tuple[str, list, CaseInput | None]], context: LoadsContext
 ) -> list[ReferenceValueType | None]:
     results = []
     for variable, sails, case in keys:
@@ -91,9 +91,10 @@ async def get_context(
     context = LoadsContext(
         messaging=messaging,
         session=session,
-        actuals_loader=DataLoader(load_fn=lambda keys: get_actuals(keys, context), cache=False),
-        references_loader=DataLoader(load_fn=lambda keys: get_reference_values(keys, context), cache=False),
+        actuals_loader=DataLoader(load_fn=lambda keys: get_actuals(keys, context), cache=False),  # type: ignore
+        references_loader=DataLoader(load_fn=lambda keys: get_reference_values(keys, context), cache=False),  # type: ignore
     )
+
     return context
 
 

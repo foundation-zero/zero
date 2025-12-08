@@ -11,7 +11,13 @@ from loads.api.types import ActualType
 
 def override_messaging():
     mock = Mock()
-    mock.get_value_for = Mock(return_value=[ActualType(id="test-load", value=42.0)])
+
+    mock.get_values_for = Mock(
+        return_value=[
+            ActualType(id="headstay-load", value=1.0),
+            ActualType(id="main-sheet-load", value=2.0),
+        ]
+    )
     return mock
 
 
@@ -31,29 +37,27 @@ async def test_graphql_reference(async_client: AsyncClient):
         json={
             "query": """
             query {
-                reference(
-                    variables: "headstay-load"
-                    case: {pcsMode: {aft: propulsion, fwd: propulsion}, aws: 25, awa: 0, seaState: wet}
-                    sails: [full_mizzen_sail, full_main_sail, main_blade, mizzen_jib]
-                )
-                {
-                    ranges {
-                        errorTooHigh
-                        errorTooLow
-                        warningTooHigh
-                        warningTooLow
-                    }
-                    target {
-                        target
-                        unit
-                    }
-                    value {
+                variables(variables: ["headstay-load", "main-sheet-load"]) {
+                    actual {
+                        value
                         id
-                        name
                     }
-                    masts {
-                        id
-                        name
+                    reference(
+                        sails: [full_main_sail, main_blade, full_mizzen_sail]
+                        case: {seaState: wet, pcsMode: {fwd: propulsion, aft: propulsion}, awa: 1.5, aws: 1.5}
+                    ) {
+                        masts {
+                            id
+                            name
+                        }
+                        target {
+                            unit
+                            target
+                        }
+                        value {
+                            name
+                            id
+                        }
                     }
                 }
             }
@@ -64,51 +68,16 @@ async def test_graphql_reference(async_client: AsyncClient):
     assert response.status_code == 200
     assert response.json() == {
         "data": {
-            "reference": [
+            "variables": [
                 {
-                    "ranges": {
-                        "errorTooHigh": None,
-                        "errorTooLow": None,
-                        "warningTooHigh": None,
-                        "warningTooLow": None,
+                    "actual": {"value": 1.0, "id": "headstay-load"},
+                    "reference": {
+                        "masts": {"id": "main", "name": "Main mast"},
+                        "target": {"unit": "tonne", "target": "2.0"},
+                        "value": {"name": "Headstay load", "id": "headstay-load"},
                     },
-                    "target": {"target": "5.0", "unit": "tonne"},
-                    "value": {"id": "headstay-load", "name": "Headstay load"},
-                    "masts": {"id": "main", "name": "Main mast"},
                 },
-                {
-                    "ranges": {
-                        "errorTooHigh": None,
-                        "errorTooLow": None,
-                        "warningTooHigh": None,
-                        "warningTooLow": None,
-                    },
-                    "target": {"target": "2.5", "unit": "tonne"},
-                    "value": {"id": "headstay-load", "name": "Headstay load"},
-                    "masts": {"id": "mizzen", "name": "Mizzen mast"},
-                },
+                {"actual": {"value": 2.0, "id": "main-sheet-load"}, "reference": None},
             ]
         }
     }
-
-
-@pytest.mark.asyncio
-async def test_graphql_actuals(async_client: AsyncClient):
-    app.dependency_overrides[get_messaging] = override_messaging
-
-    response = await async_client.post(
-        "/graphql",
-        json={
-            "query": """
-            query {
-                actual(variables: "test-load") {
-                    id
-                    value
-                }
-            }
-            """
-        },
-    )
-
-    assert response.status_code == 200
-    assert response.json() == {"data": {"actual": [{"id": "test-load", "value": 42.0}]}}

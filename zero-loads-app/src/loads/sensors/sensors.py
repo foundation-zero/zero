@@ -13,7 +13,7 @@ from .units import (
 )
 
 
-class TensionCylinder(LoadsModel):
+class TensionCylinder(LoadsModel, ABC):
     ow_ActPos_mm: Position = Field(serialization_alias="ow_actpos_mm")
     ow_ActPos2_mm: Position = Field(serialization_alias="ow_actpos2_mm")
     ow_ActPos_pm: RelativePosition = Field(serialization_alias="ow_actpos_pm")
