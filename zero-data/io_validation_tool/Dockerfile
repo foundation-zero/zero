@@ -10,7 +10,7 @@ RUN --mount=type=cache,target=/root/.cache/uv \
     uv sync --locked --no-install-project --no-dev --no-sources
 COPY . /app
 RUN --mount=type=cache,target=/root/.cache/uv \
-    uv sync --locked --no-dev --find-links dist/
+    uv sync --locked --no-dev
 
 RUN uv pip install /app/dist/zero_data.tar.gz
 
