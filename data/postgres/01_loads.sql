@@ -5,22 +5,26 @@ CREATE SCHEMA IF NOT EXISTS loads;
 DROP TYPE IF EXISTS unit CASCADE;
 CREATE TYPE unit AS ENUM ('tonne', 'percent', 'on-off');
 
-DROP TYPE IF EXISTS sail_position CASCADE;
-CREATE TYPE sail_position AS ENUM ('main', 'mizzen', 'fore-inner', 'fore-outer', 'mizzen-fore');
+
+DROP TABLE IF EXISTS loads.sail_positions CASCADE;
+CREATE TABLE loads.sail_positions (
+    id SERIAL PRIMARY KEY,
+    position TEXT UNIQUE NOT NULL
+);
 
 DROP TABLE IF EXISTS loads.sails CASCADE;
 CREATE TABLE loads.sails (
-    id TEXT PRIMARY KEY,             
+    sail TEXT PRIMARY KEY,              
     abbreviation TEXT NOT NULL,               
-    position sail_position NOT NULL,       
+    position TEXT NOT NULL REFERENCES loads.sail_positions(position),       
     name TEXT NOT NULL              
 );
 
 DROP TABLE IF EXISTS loads.sail_sets CASCADE;
 CREATE TABLE loads.sail_sets (
     sail_set_id INTEGER NOT NULL,
-    position sail_position NOT NULL,
-    sail TEXT
+    position TEXT NOT NULL REFERENCES loads.sail_positions(position),
+    sail TEXT REFERENCES loads.sails(sail)
 );
 
 DROP VIEW IF EXISTS loads.sail_sets_combined CASCADE;
@@ -88,8 +92,16 @@ CREATE TABLE loads.reference_values (
   )
 );
 
+-- Define sail positions
+INSERT INTO loads.sail_positions (position) VALUES
+  ('main'),
+  ('mizzen'),
+  ('fore-inner'),
+  ('fore-outer'),
+  ('mizzen-fore');
+
 -- Define sails
-INSERT INTO loads.sails (id, abbreviation, position, name) VALUES
+INSERT INTO loads.sails (sail, abbreviation, position, name) VALUES
   ('full-main', 'FM', 'main', 'Full Main'),
   ('main-reef1', 'M1R', 'main', 'Main 1 Reef'),
   ('main-reef2', 'M2R', 'main', 'Main 2 Reef'),
@@ -108,22 +120,10 @@ INSERT INTO loads.sails (id, abbreviation, position, name) VALUES
   ('mizzen-genoa', 'MZG', 'mizzen-fore', 'Mizzen Genoa');
 
 -- Generate all possible sail sets based on position (including those with NULLs for missing sails)
-WITH RECURSIVE position_list AS (
-    SELECT DISTINCT
-        position
-    FROM loads.sails
-    ORDER BY position
-),
-indexed_positions AS (
+WITH RECURSIVE options AS (
     SELECT
         position,
-        ROW_NUMBER() OVER (ORDER BY position) AS position_index
-    FROM position_list
-),
-options AS (
-    SELECT
-        position,
-        id as sail
+        sail
     FROM loads.sails
 
     UNION ALL
@@ -131,25 +131,25 @@ options AS (
     SELECT
         position,
         NULL::TEXT as sail
-    FROM position_list
+    FROM loads.sail_positions
 ),
 combinations AS (
     SELECT
-        indexed_positions.position_index,
+        sail_positions.id,
         ARRAY[options.sail]::TEXT[] AS sail_set
-    FROM indexed_positions
+    FROM loads.sail_positions
     JOIN options
-        ON options.position = indexed_positions.position
-    WHERE indexed_positions.position_index = 1
+        ON options.position = loads.sail_positions.position
+    WHERE loads.sail_positions.id = 1
   
     UNION ALL
 
     SELECT
-        next_position.position_index,
+        next_position.id,
         combinations.sail_set || options.sail
     FROM combinations
-    JOIN indexed_positions AS next_position
-        ON next_position.position_index = combinations.position_index + 1
+    JOIN loads.sail_positions AS next_position
+        ON next_position.id = combinations.id + 1
     JOIN options
         ON options.position = next_position.position
 ),
@@ -158,15 +158,15 @@ complete_combinations AS (
         ROW_NUMBER() OVER (ORDER BY sail_set) - 1 id,
         sail_set
     FROM combinations
-    WHERE position_index = (SELECT MAX(position_index) FROM indexed_positions)
+    WHERE id = (SELECT MAX(id) FROM loads.sail_positions)
 ),
 flat_sail_sets AS (
     SELECT
         complete_combinations.id,
-        indexed_positions.position,
-        complete_combinations.sail_set[indexed_positions.position_index] AS sail
+        sail_positions.position,
+        complete_combinations.sail_set[sail_positions.id] AS sail
     FROM complete_combinations
-    CROSS JOIN indexed_positions
+    CROSS JOIN loads.sail_positions
 )
 INSERT INTO loads.sail_sets (sail_set_id, position, sail)
 SELECT
