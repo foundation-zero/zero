@@ -5,12 +5,12 @@ from thrs.input_output.base import (
     SimulationValues,
     component_meta,
     SimulationInputs,
-    ThrsModel,
+    ThrsValues,
 )
 from thrs.input_output.definitions import control, sensor, simulation
 
 
-class PvtSensorValues(ThrsModel):
+class PvtSensorValues(ThrsValues):
     pvt_pump_main_fwd: Annotated[
         sensor.Pump, component_meta(yard_tag="50001018", component_type="pump")
     ]
@@ -490,7 +490,7 @@ class PvtSensorValues(ThrsModel):
         )
 
 
-class PvtControlValues(ThrsModel):
+class PvtControlValues(ThrsValues):
     pvt_pump_main_fwd: Annotated[
         control.Pump, component_meta(yard_tag="50001018", component_type="pump")
     ]

@@ -7,8 +7,8 @@ from typing import Any, cast
 from thrs.input_output.base import (
     SimulationInputs,
     SimulationValues,
-    ThrsModel,
-    NestedValues,
+    ThrsValues,
+    CombinedValues,
 )
 from thrs.input_output.fmu_mapping import (
     build_outputs_from_fmu,
@@ -20,7 +20,7 @@ from thrs.input_output.definitions.units import unit_for_annotation, unit_meta
 from thrs.input_output.fmu_mapping import included_in_fmu
 
 
-def flatten_model_values(model: ThrsModel, fmu_only: bool) -> dict[str, float]:
+def flatten_model_values(model: ThrsValues, fmu_only: bool) -> dict[str, float]:
     def _values_for_component(component_name, component):
         def _name_for_field(field_name, field: FieldInfo):
             meta = unit_meta(unit_for_annotation(field.annotation))  # type: ignore
@@ -65,12 +65,12 @@ class IoMapping[S, C, I, O](ABC):
     ) -> tuple[S, O, dict[str, Any]]: ...
 
 
-class NestedIoMapping[I: SimulationInputs, O: SimulationValues](
-    IoMapping[NestedValues, NestedValues, I, O]
+class CombinedIoMapping[I: SimulationInputs, O: SimulationValues](
+    IoMapping[CombinedValues, CombinedValues, I, O]
 ):
     def __init__(
         self,
-        sensor_values_clss: dict[str, type[ThrsModel]],
+        sensor_values_clss: dict[str, type[ThrsValues]],
         simulation_outputs_cls: type[O],
     ):
         self._sensor_values_clss = sensor_values_clss
@@ -78,7 +78,7 @@ class NestedIoMapping[I: SimulationInputs, O: SimulationValues](
 
     def generate_inputs(
         self,
-        control_values: NestedValues,
+        control_values: CombinedValues,
         simulation_inputs: I,
     ) -> dict[str, Any]:
         return {
@@ -96,7 +96,7 @@ class NestedIoMapping[I: SimulationInputs, O: SimulationValues](
         fmu_outputs: dict[str, Any],
         simulation_inputs: I,
         time: datetime,
-    ) -> tuple[NestedValues, O, dict[str, Any]]:
+    ) -> tuple[CombinedValues, O, dict[str, Any]]:
         sensor_extra_values = {
             key: value
             for sensor_values_cls in self._sensor_values_clss.values()
@@ -114,15 +114,15 @@ class NestedIoMapping[I: SimulationInputs, O: SimulationValues](
             sensor_extra_values,
         )
         return (
-            NestedValues(dict(zip(self._sensor_values_clss.keys(), sensor_values))),
+            CombinedValues(dict(zip(self._sensor_values_clss.keys(), sensor_values))),
             cast(O, simulation_outputs),
             {**fmu_outputs, **fmu_inputs},
         )
 
 
 class ThrsModelIoMapping[
-    S: ThrsModel,
-    C: ThrsModel,
+    S: ThrsValues,
+    C: ThrsValues,
     I: SimulationInputs,
     O: SimulationValues,
 ](IoMapping[S, C, I, O]):
@@ -131,13 +131,13 @@ class ThrsModelIoMapping[
         sensor_values_cls: type[S],
         simulation_outputs_cls: type[O],
     ):
-        self._sub = NestedIoMapping({"": sensor_values_cls}, simulation_outputs_cls)
+        self._sub = CombinedIoMapping({"": sensor_values_cls}, simulation_outputs_cls)
 
     def generate_inputs(
         self, control_values: C, simulation_inputs: I
     ) -> dict[str, Any]:
         return self._sub.generate_inputs(
-            NestedValues({"": control_values}), simulation_inputs
+            CombinedValues({"": control_values}), simulation_inputs
         )
 
     def construct_outputs(

@@ -8,7 +8,7 @@ from thrs.control.controllers import (
     FlowDistributionController,
 )
 from thrs.input_output.alarms import BaseAlarms
-from thrs.input_output.base import Stamped, ThrsModel
+from thrs.input_output.base import Stamped, ThrsValues
 from thrs.input_output.definitions.control import Valve
 from thrs.input_output.definitions.units import LMin, Ratio, Tuning
 from thrs.input_output.modules.consumers import (
@@ -17,7 +17,7 @@ from thrs.input_output.modules.consumers import (
 )
 
 
-class ConsumersParameters(ThrsModel):
+class ConsumersParameters(ThrsValues):
     boosting_enabled: bool = True
     boosting_flow_ratio_setpoint: Annotated[Ratio, Field(ge=0.0, le=1.0)] = 0.3
     fahrenheit_enabled: bool = True

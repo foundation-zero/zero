@@ -1,9 +1,9 @@
 from typing import Annotated
-from thrs.input_output.base import SimulationInputs, ThrsModel, component_meta
+from thrs.input_output.base import SimulationInputs, ThrsValues, component_meta
 from thrs.input_output.definitions import control, sensor
 
 
-class CoolingPanelsSensorValues(ThrsModel):
+class CoolingPanelsSensorValues(ThrsValues):
     cooling_pump_hydronic: Annotated[
         sensor.Pump, component_meta(yard_tag="50001037", component_type="pump")
     ]
@@ -253,7 +253,7 @@ class CoolingPanelsSensorValues(ThrsModel):
     ]
 
 
-class CoolingPanelsControlValues(ThrsModel):
+class CoolingPanelsControlValues(ThrsValues):
     cooling_pump_hydronic: Annotated[
         control.Pump, component_meta(yard_tag="50001037", component_type="pump")
     ]
@@ -406,5 +406,5 @@ class CoolingPanelsSimulationInputs(SimulationInputs):
     pass
 
 
-class CoolingPanelsSimulationOutputs(ThrsModel):
+class CoolingPanelsSimulationOutputs(ThrsValues):
     pass

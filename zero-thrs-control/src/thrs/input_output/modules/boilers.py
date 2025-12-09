@@ -3,13 +3,13 @@ from typing import Annotated
 from thrs.input_output.base import (
     SimulationInputs,
     SimulationValues,
-    ThrsModel,
+    ThrsValues,
     component_meta,
 )
 from thrs.input_output.definitions import control, sensor, simulation
 
 
-class BoilersSensorValues(ThrsModel):
+class BoilersSensorValues(ThrsValues):
     boilers_pump: Annotated[
         sensor.Pump, component_meta(yard_tag="50001022", component_type="pump")
     ]
@@ -181,7 +181,7 @@ class BoilersSensorValues(ThrsModel):
     ]
 
 
-class BoilersControlValues(ThrsModel):
+class BoilersControlValues(ThrsValues):
     boilers_pump: Annotated[
         control.Pump, component_meta(yard_tag="50001022", component_type="pump")
     ]

@@ -8,7 +8,7 @@ from tests.orchestration.simples import (
     SimpleSimulationInputs,
     SimpleSimulationOutputs,
 )
-from thrs.input_output.base import Stamped, ThrsModel, NestedValues
+from thrs.input_output.base import Stamped, ThrsValues, CombinedValues
 from thrs.input_output.alarms import Alarm, BaseAlarms, Severity
 from thrs.classes.control import Control, ControlResult
 
@@ -17,23 +17,23 @@ from thrs.orchestration.module import (
     ModuleDescription,
     PartialMqttMapping,
     DirectMqttMapping,
-    NestedMqttMapping,
-    NestedControl,
-    NestedAlarms,
-    ModuleNesting,
+    ModuleMqttMapping,
+    CombinedControl,
+    CombinedAlarms,
+    CombinedModule,
 )
 
 
-class MockParametersModel(ThrsModel):
+class MockParametersModel(ThrsValues):
     setpoint: float = 25.0
     gain: float = 1.0
 
 
-class MockSimulationInputs(ThrsModel):
+class MockSimulationInputs(ThrsValues):
     input_value: float = 10.0
 
 
-class MockSimulationOutputs(ThrsModel):
+class MockSimulationOutputs(ThrsValues):
     output_value: float = 20.0
 
 
@@ -124,18 +124,18 @@ class TestDirectMqttMapping:
             mapping.builder()
 
 
-class TestNestedMqttMapping:
+class TestCombinedMqttMapping:
     def test_split_to_topics(self):
         clss = {"module1": SimpleInOut}
-        mapping = NestedMqttMapping(clss)
+        mapping = ModuleMqttMapping(clss)
         flow_sensor = FlowSensor(
             flow=Stamped.stamp(25.0), temperature=Stamped.stamp(1.2)
         )
-        nested_values = NestedValues(
+        combined_values = CombinedValues(
             values={"module1": SimpleInOut(go_with_the=flow_sensor)}
         )
 
-        topics = mapping.split_to_topics(nested_values)
+        topics = mapping.split_to_topics(combined_values)
 
         assert "module1/go-with-the" in topics
         assert topics["module1/go-with-the"] == flow_sensor.model_dump_json(
@@ -144,22 +144,22 @@ class TestNestedMqttMapping:
 
     def test_has(self):
         clss = {"module1": SimpleInOut}
-        mapping = NestedMqttMapping(clss)
+        mapping = ModuleMqttMapping(clss)
 
         assert mapping.has("module1/go-with-the")
         assert not mapping.has("module2/go-with-the")
 
     def test_subscribe_topic(self):
         clss = {"module1": SimpleInOut}
-        mapping_no_suffix = NestedMqttMapping(clss)
-        mapping_with_suffix = NestedMqttMapping(clss, "sensors")
+        mapping_no_suffix = ModuleMqttMapping(clss)
+        mapping_with_suffix = ModuleMqttMapping(clss, "sensors")
 
         assert mapping_no_suffix.subscribe_topic() == "+/+"
         assert mapping_with_suffix.subscribe_topic() == "+/+/sensors"
 
     def test_builder(self):
         clss = {"module1": SimpleInOut}
-        mapping = NestedMqttMapping(clss)
+        mapping = ModuleMqttMapping(clss)
         builder = mapping.builder()
 
         flow_sensor = FlowSensor(
@@ -167,18 +167,20 @@ class TestNestedMqttMapping:
         )
         builder.input("module1/go-with-the", flow_sensor.model_dump_json(by_alias=True))
         result = builder.result()
-        assert result == NestedValues({"module1": SimpleInOut(go_with_the=flow_sensor)})
+        assert result == CombinedValues(
+            {"module1": SimpleInOut(go_with_the=flow_sensor)}
+        )
 
 
-class TestNestedControl:
+class TestCombinedControl:
     def test_initial(self):
         time_fn = Mock(return_value=datetime.now())
         modules = {"module1": SimpleControl(SimpleParameters(), time_fn)}
 
-        nested_control = NestedControl(modules, time_fn)
-        result = nested_control.initial()
+        combined_control = CombinedControl(modules, time_fn)
+        result = combined_control.initial()
 
-        assert isinstance(result.values, NestedValues)
+        assert isinstance(result.values, CombinedValues)
         assert "module1" in result.values.values
 
     def test_control(self):
@@ -195,10 +197,10 @@ class TestNestedControl:
 
         modules = {"module1": mock_control}
 
-        nested_control = NestedControl(modules, time_fn)
-        nested_control.set_automation_mode("module1", True)
+        combined_control = CombinedControl(modules, time_fn)
+        combined_control.set_automation_mode("module1", True)
 
-        sensor_values = NestedValues(
+        sensor_values = CombinedValues(
             values={
                 "module1": SimpleInOut(
                     go_with_the=FlowSensor(
@@ -208,9 +210,9 @@ class TestNestedControl:
             }
         )
 
-        result = nested_control.control(sensor_values)
+        result = combined_control.control(sensor_values)
 
-        assert isinstance(result.values, NestedValues)
+        assert isinstance(result.values, CombinedValues)
         assert "module1" in result.values.values
         mock_control.control.assert_called_once_with(sensor_values.values["module1"])
 
@@ -220,26 +222,25 @@ class TestNestedControl:
         modules = {"module1": mock_control}
         time_fn = Mock(return_value=datetime.now())
 
-        nested_control = NestedControl(modules, time_fn)
+        combined_control = CombinedControl(modules, time_fn)
 
-        parameters = NestedValues(values={"module1": SimpleParameters()})
+        parameters = CombinedValues(values={"module1": SimpleParameters()})
 
-        nested_control.update_parameters(parameters)
-
+        combined_control.update_parameters(parameters)
         mock_control.update_parameters.assert_called_once()
 
 
-class TestNestedAlarms:
+class TestCombinedAlarms:
     def test_check_empty_values(self):
         mock_alarms = Mock(spec=BaseAlarms)
         subs = {"module1": mock_alarms}
 
-        nested_alarms = NestedAlarms(subs)
+        combined_alarms = CombinedAlarms(subs)
 
-        sensor_values = NestedValues(values={})
-        control_values = NestedValues(values={})
+        sensor_values = CombinedValues(values={})
+        control_values = CombinedValues(values={})
 
-        result = nested_alarms.check(sensor_values, control_values)
+        result = combined_alarms.check(sensor_values, control_values)
 
         assert result == []
 
@@ -249,9 +250,9 @@ class TestNestedAlarms:
         mock_alarms.check.return_value = [mock_alarm]
 
         subs = {"module1": mock_alarms}
-        nested_alarms = NestedAlarms(subs)
+        combined_alarms = CombinedAlarms(subs)
 
-        values = NestedValues(
+        values = CombinedValues(
             values={
                 "module1": SimpleInOut(
                     go_with_the=FlowSensor(
@@ -261,7 +262,7 @@ class TestNestedAlarms:
             }
         )
 
-        result = nested_alarms.check(values, values)
+        result = combined_alarms.check(values, values)
 
         assert len(result) == 1
         assert result[0] == mock_alarm
@@ -282,15 +283,15 @@ class TestModuleNesting:
 
         modules = {"module1": module_desc}
 
-        nesting = ModuleNesting(
+        combined_module = CombinedModule(
             modules, SimpleSimulationInputs, SimpleSimulationOutputs
         )
 
-        assert nesting.modules == ["module1"]
-        assert nesting.simulation_inputs_cls == SimpleSimulationInputs
-        assert nesting.simulation_outputs_cls == SimpleSimulationOutputs
-        assert nesting.control_values_for_module("module1") == SimpleInOut
-        assert nesting.parameters_for_module("module1") == SimpleParameters
+        assert combined_module.modules == ["module1"]
+        assert combined_module.simulation_inputs_cls == SimpleSimulationInputs
+        assert combined_module.simulation_outputs_cls == SimpleSimulationOutputs
+        assert combined_module.control_values_for_module("module1") == SimpleInOut
+        assert combined_module.parameters_for_module("module1") == SimpleParameters
 
     def test_io_mapping(self):
         control_fn = Mock()
@@ -306,7 +307,7 @@ class TestModuleNesting:
 
         modules = {"module1": module_desc}
 
-        nesting = ModuleNesting(
+        nesting = CombinedModule(
             modules, SimpleSimulationInputs, SimpleSimulationOutputs
         )
 
@@ -328,17 +329,17 @@ class TestModuleNesting:
 
         modules = {"module1": module_desc}
 
-        nesting = ModuleNesting(
+        nesting = CombinedModule(
             modules, SimpleSimulationInputs, SimpleSimulationOutputs
         )
 
-        parameters = NestedValues(values={"module1": SimpleParameters()})
+        parameters = CombinedValues(values={"module1": SimpleParameters()})
 
         time_fn = Mock(return_value=datetime.now())
 
         control = nesting.control(parameters, time_fn)
 
-        assert isinstance(control, NestedControl)
+        assert isinstance(control, CombinedControl)
         control_fn.assert_called_once()
 
     def test_alarms(self):
@@ -356,11 +357,11 @@ class TestModuleNesting:
 
         modules = {"module1": module_desc}
 
-        nesting = ModuleNesting(
+        nesting = CombinedModule(
             modules, SimpleSimulationInputs, SimpleSimulationOutputs
         )
 
         alarms = nesting.alarms()
 
-        assert isinstance(alarms, NestedAlarms)
+        assert isinstance(alarms, CombinedAlarms)
         alarms_fn.assert_called_once()

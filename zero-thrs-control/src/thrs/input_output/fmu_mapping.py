@@ -4,7 +4,7 @@ from typing import Any, overload
 
 from pydantic.fields import FieldInfo, ComputedFieldInfo
 
-from thrs.input_output.base import Stamped, ThrsModel
+from thrs.input_output.base import Stamped, ThrsValues
 
 
 def groupby(iterable, key):
@@ -24,11 +24,11 @@ def included_in_fmu(field: FieldInfo | ComputedFieldInfo) -> bool:
 
 
 def extract_non_fmu_values(
-    simulation_input: ThrsModel, sensor_cls: type[ThrsModel]
+    simulation_input: ThrsValues, sensor_cls: type[ThrsValues]
 ) -> dict[str, dict[str, Stamped[Any]]]:
     """Extract values that are not included in the FMU."""
 
-    def _lookup_values(simulation_value: ThrsModel, sensor_component_field: FieldInfo):
+    def _lookup_values(simulation_value: ThrsValues, sensor_component_field: FieldInfo):
         return {
             name: getattr(simulation_value, name)
             for name in sensor_component_field.annotation.model_fields.keys()  # type: ignore
@@ -42,7 +42,7 @@ def extract_non_fmu_values(
 
 
 @overload
-def build_outputs_from_fmu[T: ThrsModel](
+def build_outputs_from_fmu[T: ThrsValues](
     clss: tuple[type[T]],
     values: dict[str, float],
     timestamp: datetime,
@@ -51,7 +51,7 @@ def build_outputs_from_fmu[T: ThrsModel](
 
 
 @overload
-def build_outputs_from_fmu[T: ThrsModel, T2: ThrsModel](
+def build_outputs_from_fmu[T: ThrsValues, T2: ThrsValues](
     clss: tuple[type[T], type[T2]],
     values: dict[str, float],
     timestamp: datetime,
@@ -60,7 +60,7 @@ def build_outputs_from_fmu[T: ThrsModel, T2: ThrsModel](
 
 
 @overload
-def build_outputs_from_fmu[T: ThrsModel](
+def build_outputs_from_fmu[T: ThrsValues](
     clss: tuple[type[T], ...],
     values: dict[str, float],
     timestamp: datetime,
@@ -69,11 +69,11 @@ def build_outputs_from_fmu[T: ThrsModel](
 
 
 def build_outputs_from_fmu(
-    clss: tuple[type[ThrsModel], ...],
+    clss: tuple[type[ThrsValues], ...],
     values: dict[str, float],
     timestamp: datetime,
     extra_values: dict[str, dict[str, Stamped[Any]]] = {},
-) -> tuple[ThrsModel, ...]:
+) -> tuple[ThrsValues, ...]:
     # first part is the component name, second part is the field name, third (if any) is the unit
     # ignore third, build dict of dict of first part and second part
     def _split_component_field(key: str):
@@ -84,7 +84,7 @@ def build_outputs_from_fmu(
         (*_split_component_field(key), value) for key, value in values.items()
     ]
     grouped_by_component = groupby(split_values, key=operator.itemgetter(0))
-    nested_values = {
+    combined_values = {
         component: extra_values.get(component, {})
         | {
             field: Stamped(value=value, timestamp=timestamp)
@@ -95,8 +95,8 @@ def build_outputs_from_fmu(
     unused_extra_values = {
         component_name: component
         for component_name, component in extra_values.items()
-        if component_name not in nested_values
+        if component_name not in combined_values
     }
-    with_extras = nested_values | unused_extra_values
+    with_extras = combined_values | unused_extra_values
 
     return tuple([cls(**with_extras) for cls in clss])

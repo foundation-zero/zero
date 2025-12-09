@@ -10,11 +10,11 @@ from thrs.input_output.base import (
     Stamped,
     component_meta,
     SimulationInputs,
-    ThrsModel,
+    ThrsValues,
 )
 
 
-class ThrustersSensorValues(ThrsModel):
+class ThrustersSensorValues(ThrsValues):
     thrusters_pump_1: Annotated[
         sensor.Pump, component_meta(yard_tag="50001194", component_type="pump")
     ]
@@ -153,7 +153,7 @@ class ThrustersSensorValues(ThrsModel):
         )
 
 
-class ThrustersControlValues(ThrsModel):
+class ThrustersControlValues(ThrsValues):
     thrusters_pump_1: Annotated[
         control.Pump, component_meta(yard_tag="50001194", component_type="pump")
     ]

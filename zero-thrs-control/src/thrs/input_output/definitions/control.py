@@ -1,14 +1,14 @@
 from typing import ClassVar
-from thrs.input_output.base import Stamped, ThrsModel
+from thrs.input_output.base import Stamped, ThrsValues
 from thrs.input_output.definitions.units import Celsius, OnOff, Ratio
 
 
-class Pump(ThrsModel):
+class Pump(ThrsValues):
     dutypoint: Stamped[Ratio]
     on: Stamped[OnOff]
 
 
-class Valve(ThrsModel):
+class Valve(ThrsValues):
     CLOSED: ClassVar = 0.0
     OPEN: ClassVar = 1.0
 
@@ -35,17 +35,17 @@ class Valve(ThrsModel):
     """
 
 
-class Pcm(ThrsModel):
+class Pcm(ThrsValues):
     on: Stamped[OnOff]
 
 
-class Fahrenheit(ThrsModel):
+class Fahrenheit(ThrsValues):
     free_cooling: Stamped[OnOff]
     temperature_setpoint: Stamped[Celsius]
     release: Stamped[OnOff]
 
 
-class HeatPump(ThrsModel):
+class HeatPump(ThrsValues):
     on: Stamped[OnOff]
     temperature_setpoint: Stamped[Celsius]
 

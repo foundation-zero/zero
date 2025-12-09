@@ -4,7 +4,7 @@ import polars as pl
 import pytest
 from pydantic import ValidationError
 
-from thrs.input_output.base import SimulationInputs, Stamped, StampedDf, ThrsModel
+from thrs.input_output.base import SimulationInputs, Stamped, StampedDf, ThrsValues
 from thrs.input_output.definitions.simulation import HeatSource
 
 
@@ -50,7 +50,7 @@ def test_json_dump():
         b=HeatSource(heat_flow=Stamped.stamp(2.0)),
     )
 
-    class Test(ThrsModel):
+    class Test(ThrsValues):
         inputs: SimpleInputs
 
     model = Test(inputs=inputs)

@@ -1,12 +1,12 @@
 from typing import Annotated
 
 from tests.orchestration.simples import SimpleInOut
-from thrs.input_output.base import component_meta, ThrsModel
-from thrs.input_output.model_builder import NestedModelBuilder, PartialModelBuilder
+from thrs.input_output.base import component_meta, ThrsValues
+from thrs.input_output.model_builder import CombinedModelBuilder, PartialModelBuilder
 from thrs.input_output.definitions.sensor import FlowSensor
 
 
-class SimpleSensors(ThrsModel):
+class SimpleSensors(ThrsValues):
     thrusters_flow_fwd: Annotated[FlowSensor, component_meta(yard_tag="50001057-22")]
     thrusters_flow_aft: Annotated[FlowSensor, component_meta(yard_tag="50001057-23")]
 
@@ -55,7 +55,7 @@ def test_partial_model_builder():
     assert result.thrusters_flow_aft.flow.value == 12.12
 
 
-def test_nested_model_builder():
+def test_combined_model_builder():
     flow_message = """{
         "Flow": {
             "Value": 12.12,
@@ -71,7 +71,7 @@ def test_nested_model_builder():
         }
     }"""
 
-    builder = NestedModelBuilder({"module1": SimpleInOut})
+    builder = CombinedModelBuilder({"module1": SimpleInOut})
     builder.input("module1/go-with-the", flow_message)
     result = builder.result()
     assert result is not None

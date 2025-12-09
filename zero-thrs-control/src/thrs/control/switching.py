@@ -1,12 +1,14 @@
 from typing import Literal
 from thrs.classes.control import Control, ControlResult
 from thrs.control.manual import ManualControl
-from thrs.input_output.base import ThrsModel
+from thrs.input_output.base import ThrsValues
 
 
-class SwitchingControl[SensorValues: ThrsModel, ControlValues: ThrsModel, P: ThrsModel](
-    Control[SensorValues, ControlValues, P]
-):
+class SwitchingControl[
+    SensorValues: ThrsValues,
+    ControlValues: ThrsValues,
+    P: ThrsValues,
+](Control[SensorValues, ControlValues, P]):
     def __init__(
         self,
         manual: ManualControl[SensorValues, ControlValues],

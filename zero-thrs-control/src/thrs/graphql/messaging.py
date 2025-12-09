@@ -17,7 +17,7 @@ from thrs.cli.simulation_controls import (
     StepMessage,
     SetAutomationMessage,
 )
-from thrs.input_output.base import SimulationInputs, SimulationValues, ThrsModel
+from thrs.input_output.base import SimulationInputs, SimulationValues, ThrsValues
 from thrs.input_output.model_builder import PartialModelBuilder
 from thrs.utils.string import dash_to_snake
 from thrs.orchestration.config import Config
@@ -28,7 +28,7 @@ class Context:
     modules: "list[MessagingModule]"
 
 
-class MessageReceiver[T: ThrsModel]:
+class MessageReceiver[T: ThrsValues]:
     def __init__(self, cls: type[T], topic: str):
         self._cls = cls
         self._last: T | None = None
@@ -83,7 +83,7 @@ class MessageReceiver[T: ThrsModel]:
         return self._topic
 
 
-class PartialMessageReceiver[T: ThrsModel](MessageReceiver[T]):
+class PartialMessageReceiver[T: ThrsValues](MessageReceiver[T]):
     def __init__(
         self, cls: type[T], topic_prefix: str, topic_suffix: str | None = None
     ):
@@ -124,9 +124,9 @@ settings = Config()  # type: ignore
 
 
 class MessagingModule[
-    SensorValues: ThrsModel,
-    ControlValues: ThrsModel,
-    Parameters: ThrsModel,
+    SensorValues: ThrsValues,
+    ControlValues: ThrsValues,
+    Parameters: ThrsValues,
     Inputs: SimulationInputs,
     Outputs: SimulationValues,
 ]:

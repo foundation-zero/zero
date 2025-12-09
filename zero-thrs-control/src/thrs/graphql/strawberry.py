@@ -60,7 +60,7 @@ import thrs.graphql.thrusters as thrusters
 import thrs.graphql.pvt as pvt
 import thrs.graphql.pcm as pcm
 import thrs.graphql.consumers as consumers
-from thrs.input_output.base import Stamped, ThrsModel
+from thrs.input_output.base import Stamped, ThrsValues
 from pydantic.fields import FieldInfo
 from aiomqtt import Client as MqttClient
 
@@ -122,9 +122,9 @@ class Query:
 _input_types = {}
 
 
-class UnstampedInput(ThrsModel):
+class UnstampedInput(ThrsValues):
     @staticmethod
-    def generate_for_model(name: str, model: type[ThrsModel]):
+    def generate_for_model(name: str, model: type[ThrsValues]):
         fields = {
             key: Annotated[
                 get_args(unit)[0] if get_args(unit) else unit,

@@ -5,13 +5,13 @@ from transitions import Machine, State
 from thrs.classes.control import Control, ControlResult
 from thrs.control.controllers import Controller, FlowBalanceController
 from thrs.input_output.alarms import BaseAlarms
-from thrs.input_output.base import Stamped, ThrsModel
+from thrs.input_output.base import Stamped, ThrsValues
 from thrs.input_output.definitions.control import Pcm, Pump, Valve
 from thrs.input_output.definitions.units import Celsius, LMin, Ratio, Tuning
 from thrs.input_output.modules.pcm import PcmControlValues, PcmSensorValues
 
 
-class PcmParameters(ThrsModel):
+class PcmParameters(ThrsValues):
     pcm_discharge_flow: LMin = 5
     pcm_charge_flow: LMin = 5
     minimum_charging_dt: Celsius = 2

@@ -3,7 +3,7 @@ from asyncio import Future, gather
 from typing import Any
 
 from pydantic import TypeAdapter
-from thrs.input_output.base import ThrsModel, NestedValues
+from thrs.input_output.base import ThrsValues, CombinedValues
 from thrs.utils.string import dash_to_snake
 
 
@@ -18,7 +18,7 @@ class ModelBuilder[T](ABC):
     async def wait_for_result(self) -> T: ...
 
 
-class PartialModelBuilder[T: ThrsModel](ModelBuilder[T]):
+class PartialModelBuilder[T: ThrsValues](ModelBuilder[T]):
     def __init__(self, cls: type[T]):
         self._cls = cls
         self._value: T | None = None
@@ -47,9 +47,9 @@ class PartialModelBuilder[T: ThrsModel](ModelBuilder[T]):
         return await self._complete_model
 
 
-class NestedModelBuilder(ModelBuilder[NestedValues]):
-    def __init__(self, clss: dict[str, type[ThrsModel]]):
-        self._model_builders: dict[str, ModelBuilder[ThrsModel]] = {
+class CombinedModelBuilder(ModelBuilder[CombinedValues]):
+    def __init__(self, clss: dict[str, type[ThrsValues]]):
+        self._model_builders: dict[str, ModelBuilder[ThrsValues]] = {
             name: PartialModelBuilder(cls) for name, cls in clss.items()
         }
 
@@ -57,19 +57,19 @@ class NestedModelBuilder(ModelBuilder[NestedValues]):
         module_name, field, *rest = topic.split("/")
         self._model_builders[module_name].input(field, json)
 
-    def result(self) -> NestedValues | None:
-        values: dict[str, ThrsModel] = {
+    def result(self) -> CombinedValues | None:
+        values: dict[str, ThrsValues] = {
             name: res
             for name, builder in self._model_builders.items()
             if (res := builder.result())
         }
         if set(values.keys()) == set(self._model_builders.keys()):
-            return NestedValues(values=values)
+            return CombinedValues(values=values)
         else:
             return None
 
-    async def wait_for_result(self) -> NestedValues:
+    async def wait_for_result(self) -> CombinedValues:
         results = await gather(
             *(builder.wait_for_result() for builder in self._model_builders.values())
         )
-        return NestedValues(dict(zip(self._model_builders.keys(), results)))
+        return CombinedValues(dict(zip(self._model_builders.keys(), results)))

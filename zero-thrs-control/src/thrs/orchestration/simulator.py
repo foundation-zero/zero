@@ -6,7 +6,7 @@ from pydantic import BaseModel
 from thrs.classes.control import Control
 from thrs.classes.executor import Executor
 from thrs.input_output.alarms import BaseAlarms
-from thrs.input_output.base import SimulationInputs, SimulationValues, ThrsModel
+from thrs.input_output.base import SimulationInputs, SimulationValues, ThrsValues
 from thrs.orchestration.collector import PolarsCollector
 from thrs.orchestration.executor import SimulationExecutor
 from thrs.orchestration.cycler import Cycler
@@ -17,8 +17,8 @@ from thrs.simulation.io_mapping import ThrsModelIoMapping
 @dataclass
 class SimulatorModel:
     fmu_path: str
-    sensor_values_cls: type[ThrsModel]
-    control_values_cls: type[ThrsModel]
+    sensor_values_cls: type[ThrsValues]
+    control_values_cls: type[ThrsValues]
     simulation_outputs_cls: type[SimulationValues]
     control_cls: type[Control]
     control_parameters: BaseModel

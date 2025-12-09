@@ -18,7 +18,7 @@ from pydantic import (
     model_validator,
 )
 
-from thrs.orchestration.module import ModuleDescription, ModuleNesting, NestedControl
+from thrs.orchestration.module import ModuleDescription, CombinedModule, CombinedControl
 from thrs.control.modules.consumers import (
     ConsumersAlarms,
     ConsumersControl,
@@ -32,11 +32,11 @@ from thrs.control.modules.thrusters import (
     ThrustersParameters,
 )
 from thrs.input_output.base import (
-    NestedValues,
+    CombinedValues,
     SimulationInputs,
     SimulationValues,
     Stamped,
-    ThrsModel,
+    ThrsValues,
 )
 from thrs.input_output.definitions.simulation import (
     Boundary,
@@ -180,10 +180,10 @@ CONSUMERS_MODULE_DESCRIPTION = ModuleDescription(
     ConsumersAlarms,
 )
 
-MODES: dict[str, tuple[str, ModuleNesting]] = {
+MODES: dict[str, tuple[str, CombinedModule]] = {
     "thrusters": (
         thrusters_path,
-        ModuleNesting(
+        CombinedModule(
             {
                 "thrusters": THRUSTERS_MODULE_DESCRIPTION,
             },
@@ -194,7 +194,7 @@ MODES: dict[str, tuple[str, ModuleNesting]] = {
     ),
     "pvt": (
         pvt_path,
-        ModuleNesting(
+        CombinedModule(
             {"pvt": PVT_MODULE_DESCRIPTION},
             PvtSimulationInputs,
             PvtSimulationOutputs,
@@ -203,7 +203,7 @@ MODES: dict[str, tuple[str, ModuleNesting]] = {
     ),
     "pcm": (
         pcm_path,
-        ModuleNesting(
+        CombinedModule(
             {"pcm": PCM_MODULE_DESCRIPTION},
             PcmSimulationInputs,
             PcmSimulationOutputs,
@@ -212,7 +212,7 @@ MODES: dict[str, tuple[str, ModuleNesting]] = {
     ),
     "consumers": (
         consumers_path,
-        ModuleNesting(
+        CombinedModule(
             {"consumers": CONSUMERS_MODULE_DESCRIPTION},
             ConsumersSimulationInputs,
             ConsumersSimulationOutputs,
@@ -235,14 +235,14 @@ class MqttContext:
 
 @dataclass
 class MessageContext[
-    SensorValues: ThrsModel,
-    ControlValues: ThrsModel,
-    Parameters: ThrsModel,
+    SensorValues: ThrsValues,
+    ControlValues: ThrsValues,
+    Parameters: ThrsValues,
     Inputs: SimulationInputs,
     Outputs: SimulationValues,
 ]:
     cmds: "Queue[SimulationCtrlMessage]"
-    control: NestedControl
+    control: CombinedControl
     client: MqttClient
     executor: SimulationExecutor[
         SensorValues,
@@ -261,12 +261,12 @@ class MessageContext[
         )
 
 
-class IncomingMessage(ThrsModel):
+class IncomingMessage(ThrsValues):
     @staticmethod
     @abstractmethod
     def resolve[
-        ControlValues: ThrsModel,
-        Parameters: ThrsModel,
+        ControlValues: ThrsValues,
+        Parameters: ThrsValues,
         Inputs: SimulationInputs,
         Outputs: SimulationValues,
     ](
@@ -298,7 +298,7 @@ class IncomingModuleMessage(IncomingMessage):
         return data
 
 
-class OutgoingMessage(ThrsModel):
+class OutgoingMessage(ThrsValues):
     @staticmethod
     @abstractmethod
     def subscribe_topic() -> str: ...
@@ -349,7 +349,7 @@ class ControlStatusMessage(OutgoingMessage):
         return True
 
 
-class ParametersMessage[Parameters: ThrsModel](OutgoingMessage):
+class ParametersMessage[Parameters: ThrsValues](OutgoingMessage):
     parameters: Parameters
     module: str
 
@@ -369,7 +369,7 @@ class ParametersMessage[Parameters: ThrsModel](OutgoingMessage):
         return True
 
 
-class SimulationInputMessage[Inputs: ThrsModel](OutgoingMessage):
+class SimulationInputMessage[Inputs: ThrsValues](OutgoingMessage):
     inputs: Inputs
 
     @staticmethod
@@ -399,8 +399,8 @@ class PlayMessage(SimulationCtrlMessage):
 
     @staticmethod
     def resolve[
-        ControlValues: ThrsModel,
-        Parameters: ThrsModel,
+        ControlValues: ThrsValues,
+        Parameters: ThrsValues,
         Inputs: SimulationInputs,
         Outputs: SimulationValues,
     ](
@@ -421,8 +421,8 @@ class StepMessage(SimulationCtrlMessage):
 
     @staticmethod
     def resolve[
-        ControlValues: ThrsModel,
-        Parameters: ThrsModel,
+        ControlValues: ThrsValues,
+        Parameters: ThrsValues,
         Inputs: SimulationInputs,
         Outputs: SimulationValues,
     ](
@@ -441,8 +441,8 @@ class StepMessage(SimulationCtrlMessage):
 class PauseMessage(SimulationCtrlMessage):
     @staticmethod
     def resolve[
-        ControlValues: ThrsModel,
-        Parameters: ThrsModel,
+        ControlValues: ThrsValues,
+        Parameters: ThrsValues,
         Inputs: SimulationInputs,
         Outputs: SimulationValues,
     ](
@@ -458,13 +458,13 @@ class PauseMessage(SimulationCtrlMessage):
         return "simulation/pause"
 
 
-class ManualControlMessage[ControlValues: ThrsModel](IncomingModuleMessage):
+class ManualControlMessage[ControlValues: ThrsValues](IncomingModuleMessage):
     control_values: ControlValues
 
     @staticmethod
     def resolve[
-        LControlValues: ThrsModel,
-        Parameters: ThrsModel,
+        LControlValues: ThrsValues,
+        Parameters: ThrsValues,
         Inputs: SimulationInputs,
         Outputs: SimulationValues,
     ](
@@ -485,7 +485,7 @@ class ManualControlMessage[ControlValues: ThrsModel](IncomingModuleMessage):
     async def handle(
         self,
         context: MessageContext[
-            ThrsModel, ControlValues, ThrsModel, SimulationInputs, SimulationValues
+            ThrsValues, ControlValues, ThrsValues, SimulationInputs, SimulationValues
         ],
     ):
         context.control.manual_controls(self.module, self.control_values)
@@ -496,8 +496,8 @@ class SetAutomationMessage(IncomingModuleMessage):
 
     @staticmethod
     def resolve[
-        ControlValues: ThrsModel,
-        Parameters: ThrsModel,
+        ControlValues: ThrsValues,
+        Parameters: ThrsValues,
         Inputs: SimulationInputs,
         Outputs: SimulationValues,
     ](
@@ -522,13 +522,13 @@ class SetAutomationMessage(IncomingModuleMessage):
         )
 
 
-class SetParametersMessage[Parameters: ThrsModel](IncomingModuleMessage):
+class SetParametersMessage[Parameters: ThrsValues](IncomingModuleMessage):
     parameters: Parameters
 
     @staticmethod
     def resolve[
-        ControlValues: ThrsModel,
-        LParameters: ThrsModel,
+        ControlValues: ThrsValues,
+        LParameters: ThrsValues,
         Inputs: SimulationInputs,
         Outputs: SimulationValues,
     ](
@@ -561,8 +561,8 @@ class SetSimulationInputsMessage[Inputs: SimulationInputs](IncomingMessage):
 
     @staticmethod
     def resolve[
-        ControlValues: ThrsModel,
-        Parameters: ThrsModel,
+        ControlValues: ThrsValues,
+        Parameters: ThrsValues,
         LInputs: SimulationInputs,
         Outputs: SimulationValues,
     ](
@@ -625,7 +625,7 @@ class SimulationControls:
         self,
         handlers: list[IncomingMessage],
         context: MessageContext,
-        modules: ModuleNesting,
+        modules: CombinedModule,
     ):
         async for message in self._controls_client.messages:
             for handler in handlers:
@@ -649,8 +649,8 @@ class SimulationControls:
                         )
                         if mqtt_context.module in modules.modules
                         else handler.resolve(
-                            ThrsModel,
-                            ThrsModel,
+                            ThrsValues,
+                            ThrsValues,
                             modules.simulation_inputs_cls,
                             modules.simulation_outputs_cls,
                         )
@@ -683,7 +683,7 @@ class SimulationControls:
 
     @contextmanager
     def _executor(
-        self, fmu_path: str, modules: ModuleNesting, inputs: SimulationInputs
+        self, fmu_path: str, modules: CombinedModule, inputs: SimulationInputs
     ) -> Generator[SimulationExecutor, None, None]:
         with Fmu(fmu_path) as fmu:
             yield SimulationExecutor(
@@ -701,7 +701,7 @@ class SimulationControls:
 
         with self._executor(fmu_path, modules, simulation_inputs) as inner_executor:
             parameters = {module: CONTROL_PARAMS[module] for module in modules.modules}
-            control = modules.control(NestedValues(parameters), inner_executor.time)
+            control = modules.control(CombinedValues(parameters), inner_executor.time)
 
             cmds: Queue[SimulationCtrlMessage] = Queue()
             context = MessageContext(
@@ -744,7 +744,7 @@ class SimulationControls:
 
     async def _run_simulation(
         self,
-        modules: ModuleNesting,
+        modules: CombinedModule,
         context: MessageContext,
         executor: MqttExecutor,
         simulator: Simulator,

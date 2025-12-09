@@ -1,14 +1,14 @@
 from datetime import datetime
 from typing import Callable
 from thrs.classes.control import Control, ControlResult
-from thrs.input_output.base import ThrsModel
+from thrs.input_output.base import ThrsValues
 
 
-class EmptyParameters(ThrsModel):
+class EmptyParameters(ThrsValues):
     pass
 
 
-class ManualControl[SensorValues: ThrsModel, ControlValues: ThrsModel](
+class ManualControl[SensorValues: ThrsValues, ControlValues: ThrsValues](
     Control[SensorValues, ControlValues, EmptyParameters]
 ):
     def __init__(self, control_values: ControlValues, time_fn: Callable[[], datetime]):

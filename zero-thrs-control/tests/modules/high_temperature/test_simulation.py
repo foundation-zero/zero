@@ -41,7 +41,6 @@ def incorrect_simulation_inputs(simulation_inputs, request):
 
 async def test_high_temperature_simulation_inputs(incorrect_simulation_inputs, control):
     with Fmu(high_temperature_path) as fmu:
-        # TODO: use executor with nested model
         mapping = ThrsModelIoMapping(
             HighTemperatureSensorValues,
             HighTemperatureSimulationOutputs,

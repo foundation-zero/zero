@@ -7,12 +7,12 @@ from typing import Any, Literal
 
 from aiomqtt import Client, Topic
 
-from thrs.orchestration.module import ModuleNesting, MqttMapping
+from thrs.orchestration.module import CombinedModule, MqttMapping
 from thrs.input_output.base import (
     SimulationInputs,
     SimulationValues,
-    ThrsModel,
-    NestedValues,
+    ThrsValues,
+    CombinedValues,
 )
 from thrs.simulation.fmu import Fmu
 from thrs.simulation.io_mapping import IoMapping
@@ -23,7 +23,7 @@ from thrs.utils.string import hyphenize
 logger = logging.getLogger(__name__)
 
 
-class MqttExecutor[O: SimulationValues](Executor[NestedValues, NestedValues]):
+class MqttExecutor[O: SimulationValues](Executor[CombinedValues, CombinedValues]):
     # Controller client listens to sensor values and publishes control values (our control logic)
     # Environment client listens to control values and publishes sensor values (mimicking the PLC)
     def __init__(
@@ -32,7 +32,7 @@ class MqttExecutor[O: SimulationValues](Executor[NestedValues, NestedValues]):
         controller_client: Client,
         environment_client: Client,
         topic_prefix: str,
-        module_nesting: ModuleNesting,
+        module_nesting: CombinedModule,
     ):
         self._inner = inner
         self._controller_client = controller_client
@@ -104,7 +104,7 @@ class MqttExecutor[O: SimulationValues](Executor[NestedValues, NestedValues]):
         return topic.value.removeprefix(f"{self._topic_prefix}/")
 
     async def _send_model(
-        self, client: Client, model: ThrsModel, topic_suffix: str | None = None
+        self, client: Client, model: ThrsValues, topic_suffix: str | None = None
     ):
         for key in type(model).model_fields.keys():
             value = getattr(model, key)
@@ -121,7 +121,7 @@ class MqttExecutor[O: SimulationValues](Executor[NestedValues, NestedValues]):
             )
 
     async def _send_sensor_values(
-        self, execution_result: ExecutionResult[NestedValues]
+        self, execution_result: ExecutionResult[CombinedValues]
     ):
         logging.debug("Publishing sensor values")
         await self._publish_by_mapping(
@@ -130,7 +130,7 @@ class MqttExecutor[O: SimulationValues](Executor[NestedValues, NestedValues]):
             execution_result.sensor_values,
         )
 
-    async def _send_control_values(self, control_values: NestedValues):
+    async def _send_control_values(self, control_values: CombinedValues):
         logging.debug("Publishing control values")
         await self._publish_by_mapping(
             self._controller_client,
@@ -161,7 +161,9 @@ class MqttExecutor[O: SimulationValues](Executor[NestedValues, NestedValues]):
         finally:
             self._running = False
 
-    async def tick(self, control_values: NestedValues) -> ExecutionResult[NestedValues]:
+    async def tick(
+        self, control_values: CombinedValues
+    ) -> ExecutionResult[CombinedValues]:
         if not self._running:
             raise Exception(
                 "MqttExecutor not running, run() should be called in a create_task()"
@@ -173,7 +175,7 @@ class MqttExecutor[O: SimulationValues](Executor[NestedValues, NestedValues]):
 
         return ExecutionResult(
             timestamp=datetime.now(),
-            sensor_values=sensors if sensors else NestedValues(values={}),
+            sensor_values=sensors if sensors else CombinedValues(values={}),
         )
 
     @property

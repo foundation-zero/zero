@@ -4,9 +4,9 @@ from typing import cast
 
 from aiomqtt import Client
 import pytest
-from thrs.orchestration.module import ModuleDescription, ModuleNesting
+from thrs.orchestration.module import ModuleDescription, CombinedModule
 from thrs.input_output.base import (
-    NestedValues,
+    CombinedValues,
     SimulationInputs,
     SimulationValues,
     Stamped,
@@ -42,7 +42,7 @@ async def test_mqtt_executor(mqtt_client, mqtt_client2):
         mqtt_client,
         mqtt_client2,
         f"{settings.mqtt_topic_prefix}/simple",
-        ModuleNesting(
+        CombinedModule(
             {
                 "simple": ModuleDescription(
                     SimpleInOut,
@@ -62,7 +62,7 @@ async def test_mqtt_executor(mqtt_client, mqtt_client2):
 
     try:
         empty_result = await executor.tick(
-            NestedValues(
+            CombinedValues(
                 values={
                     "simple": SimpleInOut(
                         go_with_the=FlowSensor(
@@ -74,7 +74,7 @@ async def test_mqtt_executor(mqtt_client, mqtt_client2):
         )
         assert not empty_result.sensor_values.values
         first_result = await executor.tick(
-            NestedValues(
+            CombinedValues(
                 values={
                     "simple": SimpleInOut(
                         go_with_the=FlowSensor(
@@ -92,7 +92,7 @@ async def test_mqtt_executor(mqtt_client, mqtt_client2):
         )
         await sleep(0.1)
         second_result = await executor.tick(
-            NestedValues(
+            CombinedValues(
                 {
                     "simple": SimpleInOut(
                         go_with_the=FlowSensor(

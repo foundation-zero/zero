@@ -5,24 +5,24 @@ from thrs.control.manual import ManualControl
 from thrs.control.switching import SwitchingControl
 from thrs.input_output.alarms import Alarm, BaseAlarms
 from thrs.input_output.base import (
-    NestedValues,
+    CombinedValues,
     SimulationInputs,
     SimulationValues,
-    ThrsModel,
+    ThrsValues,
 )
 from thrs.input_output.model_builder import (
     ModelBuilder,
-    NestedModelBuilder,
+    CombinedModelBuilder,
     PartialModelBuilder,
 )
-from thrs.simulation.io_mapping import IoMapping, NestedIoMapping
+from thrs.simulation.io_mapping import IoMapping, CombinedIoMapping
 from thrs.utils.string import hyphenize
 
 
 class ModuleDescription[
-    S: ThrsModel,
-    C: ThrsModel,
-    P: ThrsModel,
+    S: ThrsValues,
+    C: ThrsValues,
+    P: ThrsValues,
 ]:
     """Description of a module with sensor, control, and parameter models and the control & alarm logic"""
 
@@ -53,7 +53,7 @@ class MqttMapping[M](Protocol):
     def subscribe_topic(self) -> str: ...
 
 
-class PartialMqttMapping[M: ThrsModel](MqttMapping[M]):
+class PartialMqttMapping[M: ThrsValues](MqttMapping[M]):
     """MQTT mapping that maps each component in the model to a separate topic"""
 
     def __init__(self, cls: type[M], topic_suffix: str | None = None):
@@ -84,7 +84,7 @@ class PartialMqttMapping[M: ThrsModel](MqttMapping[M]):
         return PartialModelBuilder(self._cls)
 
 
-class DirectMqttMapping[M: ThrsModel](MqttMapping[M]):
+class DirectMqttMapping[M: ThrsValues](MqttMapping[M]):
     """MQTT mapping that maps the entire model to a single topic
 
     Currently doesn't support builder"""
@@ -106,13 +106,13 @@ class DirectMqttMapping[M: ThrsModel](MqttMapping[M]):
         raise NotImplementedError()
 
 
-class NestedMqttMapping(MqttMapping[NestedValues]):
-    """MQTT mapping for nested models
+class ModuleMqttMapping(MqttMapping[CombinedValues]):
+    """MQTT mapping for modules
 
     Delegates to PartialMqttMapping for each sub-model."""
 
     def __init__(
-        self, clss: Mapping[str, type[ThrsModel]], topic_suffix: str | None = None
+        self, clss: Mapping[str, type[ThrsValues]], topic_suffix: str | None = None
     ):
         self._clss = dict(clss)
         self._plain_mappings: dict[str, PartialMqttMapping] = {
@@ -121,7 +121,7 @@ class NestedMqttMapping(MqttMapping[NestedValues]):
         }
         self._topic_suffix = topic_suffix
 
-    def split_to_topics(self, model: NestedValues) -> dict[str, str]:
+    def split_to_topics(self, model: CombinedValues) -> dict[str, str]:
         return {
             f"{hyphenize(module)}/{key}": value
             for module, model in model.values.items()
@@ -130,8 +130,8 @@ class NestedMqttMapping(MqttMapping[NestedValues]):
             .items()
         }
 
-    def builder(self) -> ModelBuilder[NestedValues]:
-        return NestedModelBuilder(self._clss)
+    def builder(self) -> ModelBuilder[CombinedValues]:
+        return CombinedModelBuilder(self._clss)
 
     def has(self, topic: str) -> bool:
         module_name, key, *rest = topic.split("/")
@@ -144,8 +144,8 @@ class NestedMqttMapping(MqttMapping[NestedValues]):
         return f"+/+/{self._topic_suffix}" if self._topic_suffix else "+/+"
 
 
-class NestedControl(Control[NestedValues, NestedValues, NestedValues]):
-    """Combination of sub controls for nested modules"""
+class CombinedControl(Control[CombinedValues, CombinedValues, CombinedValues]):
+    """Combination of sub controls for combined modules"""
 
     def __init__(
         self,
@@ -160,9 +160,9 @@ class NestedControl(Control[NestedValues, NestedValues, NestedValues]):
         }
         self._time_fn = time_fn
 
-    def initial(self) -> ControlResult[NestedValues]:
+    def initial(self) -> ControlResult[CombinedValues]:
         return ControlResult(
-            values=NestedValues(
+            values=CombinedValues(
                 values={
                     name: module.initial().values
                     for name, module in self._modules.items()
@@ -171,7 +171,7 @@ class NestedControl(Control[NestedValues, NestedValues, NestedValues]):
             timestamp=self._time_fn(),
         )
 
-    def control(self, sensor_values: NestedValues) -> ControlResult[NestedValues]:
+    def control(self, sensor_values: CombinedValues) -> ControlResult[CombinedValues]:
         results = {
             name: module.control(sensors)
             for name, module in self._modules.items()
@@ -179,14 +179,14 @@ class NestedControl(Control[NestedValues, NestedValues, NestedValues]):
         }
         return ControlResult(
             timestamp=self._time_fn(),
-            values=NestedValues(
+            values=CombinedValues(
                 values={name: result.values for name, result in results.items()}
             ),
         )
 
     @property
-    def parameters(self) -> NestedValues:
-        return NestedValues(
+    def parameters(self) -> CombinedValues:
+        return CombinedValues(
             values={name: module.parameters for name, module in self._modules.items()}
         )
 
@@ -202,44 +202,44 @@ class NestedControl(Control[NestedValues, NestedValues, NestedValues]):
     def mode(self) -> str | None:
         return None
 
-    def update_parameters(self, parameters: NestedValues):
+    def update_parameters(self, parameters: CombinedValues):
         for name, params in parameters.values.items():
             self._modules[name].update_parameters(params)
 
-    def update_parameters_for(self, module: str, parameters: ThrsModel):
+    def update_parameters_for(self, module: str, parameters: ThrsValues):
         self._modules[module].update_parameters(parameters)
 
-    def manual_controls(self, module: str, control_values: ThrsModel):
+    def manual_controls(self, module: str, control_values: ThrsValues):
         self._modules[module].manual_controls(control_values)
 
     def set_automation_mode(self, module: str, automation: bool):
         self._modules[module].switch_mode("automatic" if automation else "manual")
 
 
-class NestedAlarms(BaseAlarms[NestedValues, NestedValues]):
-    """Combination of sub alarms for nested modules"""
+class CombinedAlarms(BaseAlarms[CombinedValues, CombinedValues]):
+    """Combination of sub alarms for combined modules"""
 
-    def __init__(self, subs: Mapping[str, BaseAlarms[ThrsModel, ThrsModel]]):
-        self._subs = dict(subs)
+    def __init__(self, modules: Mapping[str, BaseAlarms[ThrsValues, ThrsValues]]):
+        self._modules = dict(modules)
 
     def check(
-        self, sensor_values: NestedValues, control_values: NestedValues
+        self, sensor_values: CombinedValues, control_values: CombinedValues
     ) -> list[Alarm]:
         if not sensor_values.values:
             return []
         return [
             alarm
-            for name, sub in self._subs.items()
-            for alarm in sub.check(
+            for name, module in self._modules.items()
+            for alarm in module.check(
                 sensor_values.values[name], control_values.values[name]
             )
         ]
 
 
-class ModuleNesting[I: SimulationInputs, O: SimulationValues]:
+class CombinedModule[I: SimulationInputs, O: SimulationValues]:
     """Combination of multiple modules into a single control/simulation unit
 
-    Also contains the MQTT mapping for the nested modules.
+    Also contains the MQTT mapping for the combined modules.
     """
 
     def __init__(
@@ -250,10 +250,10 @@ class ModuleNesting[I: SimulationInputs, O: SimulationValues]:
         control_topic_suffix: str | None = None,
     ):
         self._modules = modules
-        self._sensor_mqtt_mapping = NestedMqttMapping(
+        self._sensor_mqtt_mapping = ModuleMqttMapping(
             {module: desc.sensor_values_cls for module, desc in modules.items()}
         )
-        self._control_mqtt_mapping = NestedMqttMapping(
+        self._control_mqtt_mapping = ModuleMqttMapping(
             {module: desc.control_values_cls for module, desc in modules.items()},
             topic_suffix=control_topic_suffix,
         )
@@ -264,7 +264,7 @@ class ModuleNesting[I: SimulationInputs, O: SimulationValues]:
         )
 
     def io_mapping(self) -> IoMapping:
-        return NestedIoMapping(
+        return CombinedIoMapping(
             {name: module.sensor_values_cls for name, module in self._modules.items()},
             self._simulation_outputs_cls,
         )
@@ -274,11 +274,11 @@ class ModuleNesting[I: SimulationInputs, O: SimulationValues]:
         return list(self._modules.keys())
 
     @property
-    def sensor_values_mqtt_mapping(self) -> MqttMapping[NestedValues]:
+    def sensor_values_mqtt_mapping(self) -> MqttMapping[CombinedValues]:
         return self._sensor_mqtt_mapping
 
     @property
-    def control_values_mqtt_mapping(self) -> MqttMapping[NestedValues]:
+    def control_values_mqtt_mapping(self) -> MqttMapping[CombinedValues]:
         return self._control_mqtt_mapping
 
     @property
@@ -293,23 +293,23 @@ class ModuleNesting[I: SimulationInputs, O: SimulationValues]:
     def simulation_outputs_cls(self) -> type[O]:
         return self._simulation_outputs_cls
 
-    def control_values_for_module(self, module: str) -> type[ThrsModel]:
+    def control_values_for_module(self, module: str) -> type[ThrsValues]:
         return self._modules[module].control_values_cls
 
-    def parameters_for_module(self, module: str) -> type[ThrsModel]:
+    def parameters_for_module(self, module: str) -> type[ThrsValues]:
         return self._modules[module].parameters_cls
 
     def control(
-        self, parameters: NestedValues, time_fn: Callable[[], datetime]
-    ) -> NestedControl:
+        self, parameters: CombinedValues, time_fn: Callable[[], datetime]
+    ) -> CombinedControl:
         subs = {
             name: module.control(parameters.values[name], time_fn)
             for name, module in self._modules.items()
             if name in parameters.values
         }
-        return NestedControl(subs, time_fn)
+        return CombinedControl(subs, time_fn)
 
-    def alarms(self) -> NestedAlarms:
-        return NestedAlarms(
+    def alarms(self) -> CombinedAlarms:
+        return CombinedAlarms(
             {name: module.alarms() for name, module in self._modules.items()}
         )
