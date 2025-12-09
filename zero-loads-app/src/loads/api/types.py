@@ -72,7 +72,7 @@ class ActualType:
 
 @strawberry.type
 class TargetType:
-    target: str
+    target: float | None
     unit: Unit
 
 
