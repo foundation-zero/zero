@@ -17,7 +17,7 @@ import { toRefs } from "vue";
 const { pause, play, step } = useSimulationStore();
 const { isRunning, isAvailable, isProcessing, isStepping } = toRefs(useSimulationStore());
 
-const $t = tScoped("views.thrs.hmi");
+const $t = tScoped("thrs.components.simulationActions");
 
 const playbackRate = useLocalStorage("simulation:playbackRate", 1.0);
 
@@ -29,7 +29,7 @@ const toggle = async () => {
   }
 };
 
-const next = async () => step(playbackRate.value);
+const next = () => step(playbackRate.value);
 </script>
 
 <template>
@@ -47,8 +47,8 @@ const next = async () => step(playbackRate.value);
           <Settings />
         </Button>
       </PopoverTrigger>
-      <PopoverContent>
-        <header class="mb-3 text-lg font-semibold">{{ $t("simulation") }}</header>
+      <PopoverContent class="z-10">
+        <header class="mb-3 text-lg font-semibold">{{ $t("title") }}</header>
         <hgroup>
           <header class="mb-1 text-sm">
             {{ $t("playbackRate") }}

@@ -11,8 +11,8 @@
     "lint": "eslint",
     "lint:fix": "eslint --fix",
     "codegen": "graphql-codegen --require dotenv/config --config codegen.ts dotenv_config_path=.env.local",
-    "extract-schema-values": "node scripts/extract-schema-values.js",
-    "generate-graphql-queries": "node scripts/generate-graphql-queries.js",
+    "extract-schema-values": "tsx scripts/extract-schema-values.ts",
+    "generate-graphql-queries": "tsx scripts/generate-graphql-queries.ts",
     "docs:dev": "vitepress dev docs",
     "docs:build": "vitepress build docs",
     "docs:preview": "vitepress preview docs"
@@ -81,6 +81,7 @@
     "prettier-plugin-organize-imports": "^4.2.0",
     "prettier-plugin-tailwindcss": "^0.6.14",
     "sass": "^1.89.2",
+    "tsx": "^4.21.0",
     "typescript": "^5.8.3",
     "typescript-eslint": "^8.38.0",
     "vite": "^7.0.6",

@@ -45,4 +45,9 @@ class Fahrenheit(ThrsModel):
     release: Stamped[OnOff]
 
 
-__all__ = ["Pump", "Valve", "Pcm", "Fahrenheit"]
+class HeatPump(ThrsModel):
+    on: Stamped[OnOff]
+    temperature_setpoint: Stamped[Celsius]
+
+
+__all__ = ["Pump", "Valve", "Pcm", "Fahrenheit", "HeatPump"]

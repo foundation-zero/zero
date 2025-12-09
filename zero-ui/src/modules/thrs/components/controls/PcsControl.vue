@@ -5,9 +5,9 @@ import SelectContent from "@/components/ui/select/SelectContent.vue";
 import SelectItem from "@/components/ui/select/SelectItem.vue";
 import SelectTrigger from "@/components/ui/select/SelectTrigger.vue";
 import SelectValue from "@/components/ui/select/SelectValue.vue";
-import { THRSModules } from "@/modules/thrs/lib/consts";
+import { THRSModules, THRUSTER_MODES } from "@/modules/thrs/lib/consts";
 import { controlValuesForm, MutationType } from "@/modules/thrs/stores/thrs";
-import { PcsSimulation, SimulationComponentType, ThrusterMode } from "@/modules/thrs/types";
+import { PcsSimulation, SimulationComponentType } from "@/modules/thrs/types";
 import { toUpperCamelCase } from "@common/lib/utils";
 import { Loader2Icon, SendIcon } from "lucide-vue-next";
 import { toRef } from "vue";
@@ -24,12 +24,6 @@ const props = defineProps<{
 }>();
 
 const values = toRef(props, "values");
-const modes: ThrusterMode[] = [
-  ThrusterMode.Off,
-  ThrusterMode.Maneuvering,
-  ThrusterMode.Propulsion,
-  ThrusterMode.Regeneration,
-];
 
 const emit = defineEmits<{
   (e: "update:controlValues", value: unknown): void;
@@ -69,7 +63,7 @@ const { submit, isSubmitting, error, mode } = controlValuesForm(
           </SelectTrigger>
           <SelectContent class="capitalize">
             <SelectItem
-              v-for="propMode in modes"
+              v-for="propMode in THRUSTER_MODES"
               :key="propMode"
               :value="propMode"
               >{{ propMode.toLocaleLowerCase() }}</SelectItem

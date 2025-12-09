@@ -28,6 +28,13 @@ class Sails(Enum):
     mizzen_genoa = "mizzen-genoa"
 
 
+@strawberry.input
+class CaseInput:
+    awa: float
+    aws: float
+    sailset: list[Sails]
+
+
 @strawberry.type
 class VariableType:
     id: strawberry.ID
@@ -50,8 +57,7 @@ class ReferenceValueType:
     reference: ReferenceValue
 
 
-@strawberry.input
-class CaseInput:
-    awa: float
-    aws: float
-    sailset: list[Sails]
+@strawberry.type
+class ActualType:
+    id: str
+    value: float | None

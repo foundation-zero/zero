@@ -1,26 +1,33 @@
-from typing import cast
+from asyncio import Future
+from typing import Any
 
+from pydantic import TypeAdapter
 from thrs.input_output.base import ThrsModel
 
 
 class ModelBuilder[T: ThrsModel]:
     def __init__(self, cls: type[T]):
         self._cls = cls
-        self._init_data = {}
-        self._model: T | None = None
+        self._value: T | None = None
+        self._values: dict[str, Any] = {}
+        self._fields: dict[str, TypeAdapter] = {
+            field_name: TypeAdapter(field.annotation)
+            for field_name, field in cls.model_fields.items()
+        }
+        self._complete_model = Future()
 
-    def input(self, key: str, message: str):
-        parsed_message = cast(
-            ThrsModel, self._cls.model_fields[key].annotation
-        ).model_validate_json(message)
-        if self._model is None:
-            self._init_data[key] = parsed_message
-            if (
-                self._cls.model_fields.keys() == self._init_data.keys()
-            ):  # all keys present
-                self._model = self._cls.model_construct(**self._init_data)  # type: ignore
+    def input(self, field: str, json: str | bytes):
+        value = self._fields[field].validate_json(json)
+        if self._value is not None:
+            setattr(self._value, field, value)
         else:
-            setattr(self._model, key, parsed_message)
+            self._values[field] = value
+            if set(self._values.keys()) == set(self._cls.model_fields.keys()):
+                self._value = self._cls(**self._values)
+                self._complete_model.set_result(self._value)
 
     def result(self) -> T | None:
-        return self._model
+        return self._value
+
+    async def wait_for_result(self) -> T:
+        return await self._complete_model

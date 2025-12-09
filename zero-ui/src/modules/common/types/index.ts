@@ -1,5 +1,11 @@
 export type Stamped<T> = { value: T; timestamp: Date };
 export type Unstamp<T> = T extends Stamped<infer U> ? U : never;
+export type History<T> =
+  T extends Stamped<infer U extends ChartDataType>
+    ? TimeSeriesData<U>[]
+    : T extends Record<string, unknown>
+      ? { [K in keyof T as History<T[K]> extends never ? never : K]: History<T[K]> }
+      : T;
 
 export type Field<T> = Record<string, Stamped<T>>;
 export type Component = Record<string, Field<number>>;

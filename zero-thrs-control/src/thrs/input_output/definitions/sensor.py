@@ -6,6 +6,7 @@ from thrs.input_output.definitions.units import (
     Hz,
     Kelvin,
     LMin,
+    Liter,
     OnOff,
     OptionalCelsius,
     PcsMode,
@@ -28,6 +29,10 @@ class Pump(ThrsModel):
 
 class TemperatureSensor(ThrsModel):
     temperature: Stamped[Celsius]
+
+
+class LevelSensor(ThrsModel):
+    level: Stamped[Liter]
 
 
 class CalculatedTemperature(ThrsModel):
@@ -89,4 +94,5 @@ __all__ = [
     "Pcm",
     "Fahrenheit",
     "PowerSensor",
+    "LevelSensor",
 ]

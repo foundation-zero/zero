@@ -23,6 +23,7 @@ from thrs.input_output.modules.thrusters import (
     model=ThrustersSensorValues,
     all_fields=True,
     json_schema_directive=JsonSchemaDirective,
+    use_pydantic_alias=False,
 )
 class ThrustersSensorValuesType:
     pass
@@ -32,6 +33,7 @@ class ThrustersSensorValuesType:
     model=ThrustersControlValues,
     all_fields=True,
     json_schema_directive=JsonSchemaDirective,
+    use_pydantic_alias=False,
 )
 class ThrustersControlValuesType:
     pass
@@ -41,6 +43,7 @@ class ThrustersControlValuesType:
     model=ThrustersParameters,
     all_fields=True,
     json_schema_directive=JsonSchemaDirective,
+    use_pydantic_alias=False,
 )
 class ThrustersParametersType:
     pass
@@ -57,6 +60,7 @@ ensure_dedataframes(DedataframedSimulationOutputs)
     model=DedataframedSimulationInputs,
     all_fields=True,
     json_schema_directive=JsonSchemaDirective,
+    use_pydantic_alias=False,
 )
 class ThrustersSimulationInputsType:
     pass
@@ -66,6 +70,7 @@ class ThrustersSimulationInputsType:
     model=DedataframedSimulationOutputs,
     all_fields=True,
     json_schema_directive=JsonSchemaDirective,
+    use_pydantic_alias=False,
 )
 class ThrustersSimulationOutputsType:
     pass
@@ -106,7 +111,7 @@ def resolve_module(
                 else None
             ),
             outputs=ThrustersSimulationOutputsType.from_pydantic(
-                DedataframedSimulationOutputs.zero()  # TODO: ZERO-927 implement simulation output setting and passage to simulation
+                module.simulation_outputs
             ),
         ),
     )

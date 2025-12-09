@@ -1,5 +1,10 @@
 from typing import Annotated
-from thrs.input_output.base import SimulationInputs, ThrsModel, component_meta
+from thrs.input_output.base import (
+    SimulationInputs,
+    SimulationValues,
+    ThrsModel,
+    component_meta,
+)
 from thrs.input_output.definitions import control, sensor, simulation
 
 
@@ -92,6 +97,11 @@ class FahrenheitControlValues(ThrsModel):
 
 
 class FahrenheitSimulationInputs(SimulationInputs):
-    fahrenheit_hot_supply: simulation.Boundary
-    fahrenheit_waste_supply: simulation.TemperatureBoundary
+    fahrenheit_hot_supply: simulation.FmuBoundary
+    fahrenheit_waste_supply: simulation.FmuBoundary
     fahrenheit_cold_supply: simulation.TemperatureBoundary
+
+
+class FahrenheitSimulationOutputs(SimulationValues):
+    fahrenheit_hot_return: simulation.FmuBoundary
+    fahrenheit_waste_return: simulation.FmuBoundary

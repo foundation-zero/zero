@@ -32,6 +32,7 @@ from thrs.input_output.base import (
 )
 from thrs.input_output.definitions.simulation import (
     Boundary,
+    FmuBoundary,
     HeatSource,
     Pcs,
     TemperatureBoundary,
@@ -101,11 +102,15 @@ INPUTS = {
         ),
     ),
     "consumers": ConsumersSimulationInputs(
-        consumers_boosting_supply=Boundary(
-            temperature=Stamped.stamp(30.0), flow=Stamped.stamp(10.0)
+        consumers_boosting_supply=FmuBoundary(
+            temperature=Stamped.stamp(30.0),
+            flow=Stamped.stamp(10.0),
+            overpressure=Stamped.stamp(0.2),
         ),
-        consumers_fahrenheit_supply=Boundary(
-            temperature=Stamped.stamp(30.0), flow=Stamped.stamp(10.0)
+        consumers_fahrenheit_supply=FmuBoundary(
+            temperature=Stamped.stamp(30.0),
+            flow=Stamped.stamp(10.0),
+            overpressure=Stamped.stamp(0.2),
         ),
         consumers_module_supply=Boundary(
             temperature=Stamped.stamp(60.0), flow=Stamped.stamp(10.0)
@@ -281,6 +286,14 @@ class SimulationInputMessage[Inputs: ThrsModel](OutgoingMessage):
     @staticmethod
     def retained() -> bool:
         return True
+
+
+OUTGOING_MESSAGES = [
+    SimulationStatusMessage,
+    ControlStatusMessage,
+    ParametersMessage,
+    SimulationInputMessage,
+]
 
 
 class SimulationCtrlMessage(IncomingMessage):
@@ -493,14 +506,14 @@ class SimulationControls:
         controls_client: MqttClient,
         control_client: MqttClient,
         sensor_client: MqttClient,
-        sensor_topic: str,
-        control_topic: str,
+        topic_prefix: str,
+        control_topic_suffix: str,
     ):
         self._sensor_client = sensor_client
         self._control_client = control_client
         self._controls_client = controls_client
-        self._sensor_topic = sensor_topic
-        self._control_topic = control_topic
+        self._topic_prefix = topic_prefix
+        self._control_topic_suffix = control_topic_suffix
 
     @staticmethod
     @asynccontextmanager
@@ -514,8 +527,8 @@ class SimulationControls:
                 controls_client=controls_client,
                 control_client=control_client,
                 sensor_client=sensor_client,
-                sensor_topic=settings.mqtt_sensor_topic,
-                control_topic=settings.mqtt_control_topic,
+                topic_prefix=settings.mqtt_topic_prefix,
+                control_topic_suffix=settings.mqtt_control_topic_suffix,
             )
 
     async def _receive_controls(
@@ -547,15 +560,10 @@ class SimulationControls:
                     break
 
     async def clear_previous(self):
-        for msg in [
-            SimulationStatusMessage,
-            ControlStatusMessage,
-            ParametersMessage,
-            SimulationInputMessage,
-        ]:
-            if msg.retained():
+        for msg_cls in OUTGOING_MESSAGES:
+            if msg_cls.retained():
                 await self._controls_client.publish(
-                    msg.topic(), None, qos=1, retain=True
+                    msg_cls.topic(), None, qos=1, retain=True
                 )  # Clear previous messages
 
     async def run(self, mode: Modes):
@@ -589,10 +597,11 @@ class SimulationControls:
                 inner_executor,
                 self._control_client,
                 self._sensor_client,
-                self._sensor_topic,
+                f"{self._topic_prefix}/{mode}",
                 model.sensor_values_cls,
-                self._control_topic,
+                self._control_topic_suffix,
                 model.control_values_cls,
+                ("thrs/simulation/outputs", model.simulation_outputs_cls),
             )
             simulator = Simulator(switching_control_model, executor, switching_control)
             cmds: Queue[SimulationCtrlMessage] = Queue()

@@ -307,3 +307,14 @@ export type ExtractSimulationValues<T extends SimulationDefinitions> = PickMap<
   PickMap<T, TemperatureSimulationDefinition, TemperatureSimulation> &
   PickMap<T, FlowSimulationDefinition, FlowSimulation> &
   PickMap<T, PcsSimulationDefinition, PcsSimulation>;
+
+export type ExtractAllValues<T extends SchemaDefinitions<SchemaDefinition<string>>> =
+  T extends SensorDefinitions
+    ? ExtractSensorValues<T>
+    : T extends ControlDefinitions
+      ? ExtractControlValues<T>
+      : T extends ParameterDefinitions
+        ? ExtractParameterValues<T>
+        : T extends SimulationDefinitions
+          ? ExtractSimulationValues<T>
+          : never;

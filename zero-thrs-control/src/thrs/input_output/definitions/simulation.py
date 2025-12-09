@@ -1,6 +1,14 @@
 from typing import Annotated
 from thrs.input_output.base import Stamped, StampedDf, ThrsModel, field_meta
-from thrs.input_output.definitions.units import Celsius, LMin, PcsMode, Ratio, Watt
+from thrs.input_output.definitions.units import (
+    Bar,
+    Celsius,
+    LMin,
+    Overpressure,
+    PcsMode,
+    Ratio,
+    Watt,
+)
 from pydantic.json_schema import SkipJsonSchema
 
 type Stamp[T] = Stamped[T] | SkipJsonSchema[StampedDf[T]]
@@ -15,8 +23,18 @@ class Boundary(ThrsModel):
     flow: Stamp[LMin]
 
 
+class FmuBoundary(ThrsModel):
+    temperature: Stamp[Celsius]
+    flow: Stamp[LMin]
+    overpressure: Stamp[Overpressure]
+
+
 class TemperatureBoundary(ThrsModel):
     temperature: Stamp[Celsius]
+
+
+class PressureBoundary(ThrsModel):
+    pressure: Stamp[Bar]
 
 
 class FlowBoundary(ThrsModel):

@@ -5,88 +5,156 @@ from datetime import datetime, timedelta
 import logging
 from typing import Any, Literal
 
-from aiomqtt import Client
+from aiomqtt import Client, Topic
 
-from thrs.input_output.base import SimulationInputs, ThrsModel
+from thrs.input_output.base import SimulationInputs, SimulationValues, ThrsModel
+from thrs.input_output.model_builder import ModelBuilder
 from thrs.simulation.fmu import Fmu
 from thrs.simulation.io_mapping import IoMapping
 
 from thrs.classes.executor import ExecutionResult, Executor
+from thrs.utils.string import dash_to_snake, hyphenize
 
 logger = logging.getLogger(__name__)
 
 
-class MqttExecutor[S: ThrsModel, C: ThrsModel](Executor[S, C]):
+class MqttExecutor[S: ThrsModel, C: ThrsModel, O: SimulationValues](Executor[S, C]):
+    # Controller client listens to sensor values and publishes control values (our control logic)
+    # Environment client listens to control values and publishes sensor values (mimicking the PLC)
     def __init__(
         self,
         inner: Executor,
         controller_client: Client,
         environment_client: Client,
-        sensor_topic: str,
+        topic_prefix: str,
         sensor_cls: type[S],
-        control_topic: str,
+        control_topic_suffix: str,
         control_cls: type[C],
+        simulation_output: tuple[str, type[O]] | None = None,
     ):
         self._inner = inner
         self._controller_client = controller_client
         self._environment_client = environment_client
-        self._sensor_topic = sensor_topic
-        self._control_topic = control_topic
-        self._sensors: asyncio.Queue[ExecutionResult[S]] = asyncio.Queue()
+        self._topic_prefix = topic_prefix
+        self._control_topic_suffix = control_topic_suffix
         self._sensor_cls = sensor_cls
-        self._last_controls = None
-        self._control_cls = control_cls
+
         self._running = False
+        self._sensors_builder = ModelBuilder(sensor_cls)
+        self._controls_builder = ModelBuilder(control_cls)
+        self._triggers: asyncio.Queue[None] = asyncio.Queue()
+
+        self._simulation_output_topic, self._simulation_output_cls = (
+            simulation_output if simulation_output else (None, None)
+        )
 
     async def _listen_to_sensors(self):
         async for message in self._controller_client.messages:
+            if message.topic.value.endswith(f"/{self._control_topic_suffix}"):
+                continue
             if not isinstance(message.payload, str | bytes):
                 raise ValueError(
                     f"Expected string or bytes, got {type(message.payload)}"
                 )
-            sensors = self._sensor_cls.model_validate_json(message.payload)
-            await self._sensors.put(
-                ExecutionResult(timestamp=datetime.now(), sensor_values=sensors)
-            )
+            key = self._extract_key_from_topic(message.topic)
+            self._sensors_builder.input(key, message.payload)
+
+    async def _listen_to_controls(self):
+        async for message in self._environment_client.messages:
+            if not message.topic.value.endswith(f"/{self._control_topic_suffix}"):
+                continue
+            if not isinstance(message.payload, str | bytes):
+                raise ValueError(
+                    f"Expected string or bytes, got {type(message.payload)}"
+                )
+            key = self._extract_key_from_topic(message.topic)
+            self._controls_builder.input(key, message.payload)
 
     async def _pass_controls_to_inner(self):
-        async for message in self._environment_client.messages:
-            if not isinstance(message.payload, str | bytes):
-                raise ValueError(
-                    f"Expected string or bytes, got {type(message.payload)}"
+        while True:
+            logging.debug("Received trigger, passing to inner executor")
+            await self._triggers.get()
+            control_values = self._controls_builder.result()
+            if control_values is None:
+                control_values = await self._controls_builder.wait_for_result()
+
+            execution_result = await self._inner.tick(control_values)
+            await self._send_sensor_values(execution_result)
+            if (
+                isinstance(execution_result, SimulationExecutionResult)
+                and self._simulation_output_topic
+                and self._simulation_output_cls
+            ):
+                logging.debug("Publishing simulation output values")
+                await self._environment_client.publish(
+                    self._simulation_output_topic,
+                    execution_result.simulation_outputs.model_dump_json(),
+                    qos=1,
                 )
-            self._last_controls = self._control_cls.model_validate_json(message.payload)
-            logging.debug("Received new control values, passing to inner executor")
-            execution_result = await self._inner.tick(self._last_controls)
-            logging.debug("Publishing sensor values")
-            await self._environment_client.publish(
-                self._sensor_topic,
-                execution_result.sensor_values.model_dump_json(),
+
+    def _extract_key_from_topic(self, topic: Topic) -> str:
+        key, *_rest = topic.value.removeprefix(f"{self._topic_prefix}/").split("/")
+        return dash_to_snake(
+            key
+        )  # TODO: figure out if we want the fields in the module to be aliased and then look those up
+
+    async def _send_model(
+        self, client: Client, model: ThrsModel, topic_suffix: str | None = None
+    ):
+        for key in type(model).model_fields.keys():
+            value = getattr(model, key)
+            topic = (
+                f"{self._topic_prefix}/{hyphenize(key)}"
+                if topic_suffix is None
+                else f"{self._topic_prefix}/{hyphenize(key)}/{topic_suffix}"
+            )
+
+            await client.publish(
+                topic,
+                value.model_dump_json(),
                 qos=1,
             )
 
+    async def _send_sensor_values(self, execution_result: ExecutionResult[S]):
+        logging.debug("Publishing sensor values")
+        await self._send_model(self._environment_client, execution_result.sensor_values)
+
+    async def _send_control_values(self, control_values: C):
+        logging.debug("Publishing control values")
+        await self._send_model(
+            self._controller_client, control_values, self._control_topic_suffix
+        )
+
     async def start(self):
-        await self._controller_client.subscribe(self._sensor_topic, qos=1)
-        await self._environment_client.subscribe(self._control_topic, qos=1)
+        await self._controller_client.subscribe(f"{self._topic_prefix}/#", qos=1)
+        await self._environment_client.subscribe(f"{self._topic_prefix}/#", qos=1)
 
     async def run(self):
         self._running = True
         try:
             async with TaskGroup() as tg:
                 tg.create_task(self._listen_to_sensors())
+                tg.create_task(self._listen_to_controls())
                 tg.create_task(self._pass_controls_to_inner())
+        except Exception as e:
+            logger.error(f"MqttExecutor run encountered an error: {e}")
         finally:
             self._running = False
 
-    async def tick(self, control_values: ThrsModel) -> ExecutionResult[S]:
+    async def tick(self, control_values: C) -> ExecutionResult[S]:
         if not self._running:
             raise Exception(
                 "MqttExecutor not running, run() should be called in a create_task()"
             )
-        await self._environment_client.publish(
-            self._control_topic, control_values.model_dump_json(), qos=1
+        sensors = self._sensors_builder.result()
+        await self._send_control_values(control_values)
+
+        self._triggers.put_nowait(None)
+
+        return ExecutionResult(
+            timestamp=datetime.now(),
+            sensor_values=sensors if sensors else self._sensor_cls.zero(),
         )
-        return await self._sensors.get()
 
     @property
     def start_time(self) -> datetime:
@@ -101,7 +169,7 @@ class SimulationExecutionResult[
     S: ThrsModel,
     C: ThrsModel,
     I: SimulationInputs,
-    O: ThrsModel,
+    O: SimulationValues,
 ](ExecutionResult[S]):
     control_values: C
     simulation_outputs: O
@@ -142,9 +210,12 @@ class SimulationExecutionResult[
         }
 
 
-class SimulationExecutor[S: ThrsModel, C: ThrsModel, I: SimulationInputs, O: ThrsModel](
-    Executor[S, C]
-):
+class SimulationExecutor[
+    S: ThrsModel,
+    C: ThrsModel,
+    I: SimulationInputs,
+    O: SimulationValues,
+](Executor[S, C]):
     def __init__(
         self,
         io_mapping: IoMapping[S, C, I, O],

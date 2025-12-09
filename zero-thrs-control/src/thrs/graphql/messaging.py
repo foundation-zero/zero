@@ -1,7 +1,7 @@
 from asyncio import Queue
 import asyncio
 from typing import Callable, Coroutine, Literal
-from aiomqtt import Client as MqttClient, Message
+from aiomqtt import Client as MqttClient, Message, Topic
 from dataclasses import dataclass
 
 from thrs.cli.simulation_controls import (
@@ -18,6 +18,9 @@ from thrs.cli.simulation_controls import (
     SetAutomationMessage,
 )
 from thrs.input_output.base import SimulationInputs, SimulationValues, ThrsModel
+from thrs.input_output.model_builder import ModelBuilder
+from thrs.utils.string import dash_to_snake
+from thrs.orchestration.config import Config
 
 
 @dataclass
@@ -57,26 +60,67 @@ class MessageReceiver[T: ThrsModel]:
 
         return _wait()
 
-    async def handle(self, msg: T, context: Context):
-        self._last = msg
-        if self._waiting:
-            await self._msgs.put(msg)
+    async def handle(self, msg: Message, context: Context):
+        parsed = self._parse_message(msg)
+        self._last = parsed
+        if self._waiting and parsed is not None:
+            await self._msgs.put(parsed)
+
+    def _parse_message(self, message: Message) -> T | None:
+        if not isinstance(message.payload, str | bytes):
+            raise ValueError(f"Expected string or bytes, got {type(message.payload)}")
+        return self._cls.model_validate_json(message.payload)
 
     @property
     def cls(self):
         return self._cls
 
+    def matches(self, topic: Topic) -> bool:
+        return topic.matches(self.subscribe_topic)
+
     @property
-    def topic(self):
+    def subscribe_topic(self):
         return self._topic
 
 
+class PartialMessageReceiver[T: ThrsModel](MessageReceiver[T]):
+    def __init__(
+        self, cls: type[T], topic_prefix: str, topic_suffix: str | None = None
+    ):
+        super().__init__(cls, topic_prefix)
+        self._model_builder = ModelBuilder(cls)
+        self._topic_prefix = topic_prefix
+        self._topic_suffix = topic_suffix
+
+    def _parse_message(self, message: Message) -> T | None:
+        if not isinstance(message.payload, str | bytes):
+            raise ValueError(f"Expected string or bytes, got {type(message.payload)}")
+        key = message.topic.value.removeprefix(f"{self._topic_prefix}/")
+        if self._topic_suffix:
+            key = key.removesuffix(f"/{self._topic_suffix}")
+        self._model_builder.input(dash_to_snake(key), message.payload)
+        return self._model_builder.result()
+
+    @property
+    def subscribe_topic(self):
+        return (
+            f"{self._topic_prefix}/+/{self._topic_suffix}"
+            if self._topic_suffix
+            else f"{self._topic_prefix}/+"
+        )
+
+
 class SimulationStatusMessageReceiver(MessageReceiver[SimulationStatusMessage]):
-    async def handle(self, msg: SimulationStatusMessage, context: Context):
-        for module in context.modules:
-            module.active = module.name == msg.module
+    async def handle(self, msg: Message, context: Context):
+        parsed = self._parse_message(msg)
+        if parsed is not None:
+            for module in context.modules:
+                module.active = module.name == parsed.module
 
         await super().handle(msg, context)
+
+
+settings = Config()  # type: ignore
 
 
 class MessagingModule[
@@ -100,16 +144,23 @@ class MessagingModule[
         self._active = False
         self.sensor_values_cls = sensor_values_cls
         self.control_values_cls = control_values_cls
-        self._sensor_values = MessageReceiver(sensor_values_cls, "thrs/sensor_values")
-        self._control_values = MessageReceiver(
-            control_values_cls, "thrs/control_values"
+
+        topic_prefix = f"{settings.mqtt_topic_prefix}/{name}"
+        self._sensor_values = PartialMessageReceiver(sensor_values_cls, topic_prefix)
+        self._control_values = PartialMessageReceiver(
+            control_values_cls, topic_prefix, settings.mqtt_control_topic_suffix
         )
+
         self._parameters = MessageReceiver(
             ParametersMessage[parameters_cls], ParametersMessage.topic()
         )
         self._simulation_inputs = MessageReceiver(
             SimulationInputMessage[simulation_inputs_cls],
             SimulationInputMessage.topic(),
+        )
+        self._simulation_outputs = MessageReceiver(
+            simulation_outputs_cls,
+            "thrs/simulation/outputs",
         )
         self._mqtt_client = mqtt_client
 
@@ -187,6 +238,10 @@ class MessagingModule[
             else None
         )
 
+    @property
+    def simulation_outputs(self) -> Outputs | None:
+        return self._simulation_outputs.last
+
     async def set_parameters(self, parameters: Parameters):
         await self._mqtt_client.publish(
             SetParametersMessage[Parameters].topic(),
@@ -239,7 +294,7 @@ class Messaging:
         ]
 
     async def run(self) -> Coroutine[None, None, None]:
-        topics = set(receiver.topic for receiver in self._all_receivers)
+        topics = set(receiver.subscribe_topic for receiver in self._all_receivers)
         await self._mqtt_client.subscribe(SimulationStatusMessage.topic())
         await asyncio.sleep(0.2)  # Give status time to arrive first
         for topic in topics:
@@ -253,16 +308,14 @@ class Messaging:
                     continue
 
                 if receiver := self.match_receiver(message):
-                    await receiver.handle(
-                        self._parse_message(message, receiver.cls), context
-                    )
+                    await receiver.handle(message, context)
 
         return _run(self)
 
     def match_receiver(self, message: Message) -> MessageReceiver | None:
-        for status in self._active_receivers:
-            if message.topic.matches(status.topic):
-                return status
+        for receiver in self._active_receivers:
+            if receiver.matches(message.topic):
+                return receiver
         return None
 
     async def play_simulation(self, playback_rate: float):
@@ -305,11 +358,6 @@ class Messaging:
         return self._control_status.wait_for(
             lambda s: s.automatic == automatic, timeout
         )
-
-    def _parse_message[T: ThrsModel](self, message: Message, model: type[T]) -> T:
-        if not isinstance(message.payload, str | bytes):
-            raise ValueError(f"Expected string or bytes, got {type(message.payload)}")
-        return model.model_validate_json(message.payload)
 
     @property
     def simulation_status(self) -> SimulationStatusMessage | None:

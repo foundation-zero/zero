@@ -35,8 +35,11 @@ export default defineConfig({
         items: [
           { text: "Badge", link: "/components/badge" },
           { text: "Button", link: "/components/button" },
+          { text: "Indicator Light", link: "/components/indicator-light" },
           { text: "Input", link: "/components/input" },
           { text: "Labeled Input", link: "/components/labeled-input" },
+          { text: "Variable Card (Numerical)", link: "/components/variable-card-numerical" },
+          { text: "Mast Lock", link: "/components/mast-lock" },
           { text: "Popover", link: "/components/popover" },
           { text: "Select", link: "/components/select" },
         ],
@@ -52,6 +55,12 @@ export default defineConfig({
         "@": new URL("../../src", import.meta.url).pathname,
         "@common": new URL("../../src/modules/common", import.meta.url).pathname,
       },
+    },
+    define: {
+      __VUE_PROD_DEVTOOLS__: "false",
+    },
+    ssr: {
+      noExternal: ["vue-i18n"],
     },
   },
 });
