@@ -34,7 +34,7 @@ provide("currentModule", currentModuleKey);
       </article>
     </Suspense>
   </main>
-  <TopNav class="z-100 min-h-[8rem]">
+  <TopNav class="z-1 min-h-[8rem]">
     <TopNavToolbar>
       <template #left>
         <h4 class="pl-4 font-semibold uppercase max-md:hidden md:text-4xl">

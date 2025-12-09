@@ -133,6 +133,8 @@ export const formatNumber =
   };
 
 export const formatInt = formatNumber(0);
+export const formatFixed = (digits: number, value: number, locale: string = "en-US") =>
+  formatNumber(digits)(value, locale);
 
 export const generateRandomValues = (amount: number, min: number = 0, max: number = 1000) =>
   new Array(amount).fill(0).map(() => Math.random() * (max - min + 1) + min);
