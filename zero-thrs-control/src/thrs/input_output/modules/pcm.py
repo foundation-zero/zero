@@ -2,13 +2,13 @@ from typing import Annotated
 from thrs.input_output.base import (
     SimulationInputs,
     SimulationValues,
-    ThrsModel,
+    ThrsValues,
     component_meta,
 )
 from thrs.input_output.definitions import control, sensor, simulation
 
 
-class PcmSensorValues(ThrsModel):
+class PcmSensorValues(ThrsValues):
     pcm_pump: Annotated[
         sensor.Pump, component_meta(yard_tag="50001017", component_type="pump")
     ]
@@ -114,7 +114,7 @@ class PcmSensorValues(ThrsModel):
     ]
 
 
-class PcmControlValues(ThrsModel):
+class PcmControlValues(ThrsValues):
     pcm_pump: Annotated[
         control.Pump, component_meta(yard_tag="50001017", component_type="pump")
     ]

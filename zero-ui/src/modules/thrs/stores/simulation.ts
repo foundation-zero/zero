@@ -18,9 +18,12 @@ type SimulationStatus = {
 };
 
 type ControlStatus = {
-  control: {
-    automatic: boolean;
-  };
+  modules: Record<
+    string,
+    {
+      automatic: boolean;
+    }
+  >;
 };
 
 const STATUS_QUERY = gql`
@@ -33,9 +36,20 @@ const STATUS_QUERY = gql`
 `;
 
 const CONTROL_QUERY = gql`
-  query SimulationStatus {
-    control {
-      automatic
+  query ControlStatus {
+    modules {
+      thrusters {
+        automatic
+      }
+      pvt {
+        automatic
+      }
+      pcm {
+        automatic
+      }
+      consumers {
+        automatic
+      }
     }
   }
 `;
@@ -47,11 +61,9 @@ export const useSimulationStore = defineStore("simulation", () => {
   const pause = mutationWithoutValue("simulationPause");
   const play = mutationWithValue("simulationPlay", "playbackRate", "Float");
   const step = mutationWithValue("simulationStep", "seconds", "Float!");
-  const setAutomatedControl = mutationWithValue(
-    "controlSetAutomationMode",
-    "automatic",
-    "Boolean!",
-  );
+  // TODO: make set automated control module dependent
+  const setAutomatedControl = (module: string) =>
+    mutationWithValue(`${module}SetAutomationMode`, "automatic", "Boolean!");
   const isProcessing = ref(false);
 
   const statusQuery = useQuery<SimulationStatus>({
@@ -109,7 +121,8 @@ export const useSimulationStore = defineStore("simulation", () => {
     pause: mutationFn(pause, updateStatus),
     play: mutationFn<number>(play, updateStatus),
     step: mutationFn<number>(step, updateStatus),
-    setAutomatedControl: mutationFn<boolean>(setAutomatedControl, updateControl),
+    setAutomatedControl: (module: string) =>
+      mutationFn<boolean>(setAutomatedControl(module), updateControl),
     status: statusQuery.data,
     control: controlQuery.data,
     isAvailable,

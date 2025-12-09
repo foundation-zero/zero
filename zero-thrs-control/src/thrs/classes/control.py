@@ -2,16 +2,14 @@ from dataclasses import dataclass
 from datetime import datetime
 from typing import Callable, Protocol
 
-from thrs.input_output.base import ThrsModel
-
 
 @dataclass
-class ControlResult[C: ThrsModel]:
+class ControlResult[C]:
     timestamp: datetime
     values: C
 
 
-class Control[S: ThrsModel, C: ThrsModel, P: ThrsModel](Protocol):
+class Control[S, C, P](Protocol):
     def __init__(self, parameters: P, time_fn: Callable[[], datetime]): ...
 
     def initial(self) -> ControlResult[C]: ...

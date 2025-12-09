@@ -1,11 +1,24 @@
-from asyncio import Future
+from abc import ABC, abstractmethod
+from asyncio import Future, gather
 from typing import Any
 
 from pydantic import TypeAdapter
-from thrs.input_output.base import ThrsModel
+from thrs.input_output.base import ThrsValues, CombinedValues
+from thrs.utils.string import dash_to_snake
 
 
-class ModelBuilder[T: ThrsModel]:
+class ModelBuilder[T](ABC):
+    @abstractmethod
+    def input(self, topic: str, json: str | bytes): ...
+
+    @abstractmethod
+    def result(self) -> T | None: ...
+
+    @abstractmethod
+    async def wait_for_result(self) -> T: ...
+
+
+class PartialModelBuilder[T: ThrsValues](ModelBuilder[T]):
     def __init__(self, cls: type[T]):
         self._cls = cls
         self._value: T | None = None
@@ -16,7 +29,8 @@ class ModelBuilder[T: ThrsModel]:
         }
         self._complete_model = Future()
 
-    def input(self, field: str, json: str | bytes):
+    def input(self, topic: str, json: str | bytes):
+        field = dash_to_snake(topic)
         value = self._fields[field].validate_json(json)
         if self._value is not None:
             setattr(self._value, field, value)
@@ -31,3 +45,31 @@ class ModelBuilder[T: ThrsModel]:
 
     async def wait_for_result(self) -> T:
         return await self._complete_model
+
+
+class CombinedModelBuilder(ModelBuilder[CombinedValues]):
+    def __init__(self, clss: dict[str, type[ThrsValues]]):
+        self._model_builders: dict[str, ModelBuilder[ThrsValues]] = {
+            name: PartialModelBuilder(cls) for name, cls in clss.items()
+        }
+
+    def input(self, topic: str, json: str | bytes):
+        module_name, field, *rest = topic.split("/")
+        self._model_builders[module_name].input(field, json)
+
+    def result(self) -> CombinedValues | None:
+        values: dict[str, ThrsValues] = {
+            name: res
+            for name, builder in self._model_builders.items()
+            if (res := builder.result())
+        }
+        if set(values.keys()) == set(self._model_builders.keys()):
+            return CombinedValues(values=values)
+        else:
+            return None
+
+    async def wait_for_result(self) -> CombinedValues:
+        results = await gather(
+            *(builder.wait_for_result() for builder in self._model_builders.values())
+        )
+        return CombinedValues(dict(zip(self._model_builders.keys(), results)))

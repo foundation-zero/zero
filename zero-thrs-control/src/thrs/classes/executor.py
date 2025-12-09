@@ -2,21 +2,21 @@ from dataclasses import dataclass
 from datetime import datetime
 from typing import Any, Protocol
 
-from thrs.input_output.base import SimulationInputs, ThrsModel
+from thrs.input_output.base import SimulationInputs, ThrsValues
 
 
 @dataclass
-class ExecutionResult[S: ThrsModel]:
+class ExecutionResult[S]:
     timestamp: datetime
     sensor_values: S
 
 
 @dataclass
 class SimulationExecutionResult[
-    S: ThrsModel,
-    C: ThrsModel,
+    S: ThrsValues,
+    C: ThrsValues,
     I: SimulationInputs,
-    O: ThrsModel,
+    O: ThrsValues,
 ](ExecutionResult[S]):
     control_values: C
     simulation_outputs: O
@@ -24,7 +24,7 @@ class SimulationExecutionResult[
     raw: dict[str, Any]
 
 
-class Executor[S: ThrsModel, C: ThrsModel](Protocol):
+class Executor[S, C](Protocol):
     async def start(self): ...
     async def tick(self, control_values: C) -> ExecutionResult[S]: ...
 

@@ -10,13 +10,13 @@ from thrs.control.modules.pvt_group import (
     PvtGroupSensorValues,
 )
 from thrs.input_output.alarms import BaseAlarms
-from thrs.input_output.base import Stamped, ThrsModel
+from thrs.input_output.base import Stamped, ThrsValues
 from thrs.input_output.definitions.control import Pump, Valve
 from thrs.input_output.definitions.units import Celsius, Ratio, Tuning
 from thrs.input_output.modules.pvt import PvtControlValues, PvtSensorValues
 
 
-class PvtParameters(ThrsModel):
+class PvtParameters(ThrsValues):
     maximum_supply_temperature: Annotated[Celsius, Field(le=90)] = 80
     recovery_temperature: Celsius = 70
     warmup_temperature: Celsius = 55

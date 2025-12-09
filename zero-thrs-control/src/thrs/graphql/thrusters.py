@@ -6,6 +6,7 @@ from thrs.graphql.base import (
     Module,
     ModuleSimulation,
     ThrustersMessaging,
+    add_automation_mode_mutation,
     add_control_mutations,
     add_parameter_mutations,
     add_simulation_input_mutations,
@@ -112,8 +113,11 @@ def resolve_module(
             ),
             outputs=ThrustersSimulationOutputsType.from_pydantic(
                 module.simulation_outputs
-            ),
+            )
+            if module.simulation_outputs
+            else None,
         ),
+        automatic=module.control_status.automatic if module.control_status else None,
     )
 
 
@@ -137,5 +141,6 @@ def get_thrusters_messaging(context):
     ThrustersSimulationInputsType,
     get_thrusters_messaging,
 )
+@add_automation_mode_mutation("thrusters", get_thrusters_messaging)
 class ThrustersMutations:
     pass

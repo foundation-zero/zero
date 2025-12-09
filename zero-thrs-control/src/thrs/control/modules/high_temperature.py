@@ -58,20 +58,18 @@ class HighTemperatureControl(
     def control(
         self, sensor_values: HighTemperatureSensorValues
     ) -> ControlResult[HighTemperatureControlValues]:
-        self._thrusters_control.control(sensor_values)
-        self._pvt_control.control(sensor_values)
-        self._consumers_control.control(sensor_values)
-        self._pcm_control.control(sensor_values)
+        thrusters_control_result = self._thrusters_control.control(sensor_values)
+        pvt_control_result = self._pvt_control.control(sensor_values)
+        consumers_control_result = self._consumers_control.control(sensor_values)
+        pcm_control_result = self._pcm_control.control(sensor_values)
 
         return ControlResult(
             self._time(),
             HighTemperatureControlValues(
-                **{
-                    **self._thrusters_control._current_values.model_dump(),
-                    **self._pvt_control._current_values.model_dump(),
-                    **self._pcm_control._current_values.model_dump(),
-                    **self._consumers_control._current_values.model_dump(),
-                }
+                **thrusters_control_result.values.model_dump(),
+                **pvt_control_result.values.model_dump(),
+                **pcm_control_result.values.model_dump(),
+                **consumers_control_result.values.model_dump(),
             ),
         )
 

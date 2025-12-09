@@ -5,9 +5,9 @@ from pytest import approx
 from thrs.orchestration.executor import SimulationExecutor
 
 
-async def test_valve_movement(io_mapping, control, simulation_inputs):
+async def test_valve_movement(io_mapping, fmu, control, simulation_inputs):
     executor = SimulationExecutor(
-        io_mapping, simulation_inputs, datetime.now(), timedelta(seconds=45)
+        io_mapping, fmu, simulation_inputs, datetime.now(), timedelta(seconds=45)
     )
 
     control_values = control.initial().values
