@@ -47,7 +47,7 @@ const next = () => step(playbackRate.value);
           <Settings />
         </Button>
       </PopoverTrigger>
-      <PopoverContent>
+      <PopoverContent class="z-10">
         <header class="mb-3 text-lg font-semibold">{{ $t("title") }}</header>
         <hgroup>
           <header class="mb-1 text-sm">

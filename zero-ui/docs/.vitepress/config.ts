@@ -38,6 +38,7 @@ export default defineConfig({
           { text: "Indicator Light", link: "/components/indicator-light" },
           { text: "Input", link: "/components/input" },
           { text: "Labeled Input", link: "/components/labeled-input" },
+          { text: "Variable Card (Numerical)", link: "/components/variable-card-numerical" },
           { text: "Mast Lock", link: "/components/mast-lock" },
           { text: "Popover", link: "/components/popover" },
           { text: "Select", link: "/components/select" },
