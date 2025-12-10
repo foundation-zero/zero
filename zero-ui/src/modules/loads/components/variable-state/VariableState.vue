@@ -26,7 +26,7 @@ provide("load-type", type);
 <template>
   <span
     data-slot="load-state"
-    :class="cn('relative', variableStateVariants({ size, state }), props.class)"
+    :class="cn(variableStateVariants({ size, state }), props.class)"
     v-bind="delegatedProps"
   >
     <span data-slot="load-value">

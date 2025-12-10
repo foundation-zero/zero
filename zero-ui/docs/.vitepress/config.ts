@@ -41,6 +41,7 @@ export default defineConfig({
           { text: "Variable Card (Numerical)", link: "/components/variable-card-numerical" },
           { text: "Mast Lock", link: "/components/mast-lock" },
           { text: "Popover", link: "/components/popover" },
+          { text: "Position Card", link: "/components/position-card" },
           { text: "Select", link: "/components/select" },
         ],
       },
