@@ -11,15 +11,14 @@ Base = declarative_base(metadata=metadata_obj)
 
 class SailPositions(Base):  # type:ignore
     __tablename__ = "sail_positions"
-    id = Column(Integer, primary_key=True)
-    position = Column(String, unique=True, nullable=False)
+    id = Column(String, primary_key=True)
 
 
 class Sails(Base):  # type:ignore
     __tablename__ = "sails"
-    sail = Column(String, primary_key=True)
+    id = Column(String, primary_key=True)
     abbreviation = Column(String, nullable=False)
-    position = Column(String, ForeignKey("sail_positions.position"), nullable=False)
+    position_id = Column(String, ForeignKey("sail_positions.id"), nullable=False)
     name = Column(String, nullable=False)
 
 
@@ -27,8 +26,8 @@ class SailSets(Base):  # type:ignore
     __tablename__ = "sail_sets"
 
     sail_set_id = Column(Integer, primary_key=True)
-    position = Column(String, ForeignKey("sail_positions.position"), primary_key=True)
-    sail = Column(String, ForeignKey("sails.id"), nullable=True)
+    position_id = Column(String, ForeignKey("sail_positions.id"), primary_key=True)
+    sail_id = Column(String, ForeignKey("sails.id"), nullable=True)
 
 
 class SailSetsCombined(Base):  # type:ignore

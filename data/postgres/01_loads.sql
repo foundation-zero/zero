@@ -8,23 +8,22 @@ CREATE TYPE unit AS ENUM ('tonne', 'percent', 'on-off');
 
 DROP TABLE IF EXISTS loads.sail_positions CASCADE;
 CREATE TABLE loads.sail_positions (
-    id SERIAL PRIMARY KEY,
-    position TEXT UNIQUE NOT NULL
+    id TEXT PRIMARY KEY
 );
 
 DROP TABLE IF EXISTS loads.sails CASCADE;
 CREATE TABLE loads.sails (
-    sail TEXT PRIMARY KEY,              
+    id TEXT PRIMARY KEY,              
     abbreviation TEXT NOT NULL,               
-    position TEXT NOT NULL REFERENCES loads.sail_positions(position),       
+    position_id TEXT NOT NULL REFERENCES loads.sail_positions(id),       
     name TEXT NOT NULL              
 );
 
 DROP TABLE IF EXISTS loads.sail_sets CASCADE;
 CREATE TABLE loads.sail_sets (
     sail_set_id INTEGER NOT NULL,
-    position TEXT NOT NULL REFERENCES loads.sail_positions(position),
-    sail TEXT REFERENCES loads.sails(sail)
+    position_id TEXT NOT NULL REFERENCES loads.sail_positions(id),
+    sail_id TEXT REFERENCES loads.sails(id)
 );
 
 DROP VIEW IF EXISTS loads.sail_sets_combined CASCADE;
@@ -33,7 +32,7 @@ CREATE VIEW loads.sail_sets_combined AS
 -- Lookup can be done by matching the (ordered) array of sails
 SELECT
     sail_set_id as id,
-    ARRAY_AGG(sail ORDER BY sail) FILTER (WHERE sail IS NOT NULL) AS sails
+    ARRAY_AGG(sail_id ORDER BY sail_id) FILTER (WHERE sail_id IS NOT NULL) AS sails
 FROM loads.sail_sets
 GROUP BY sail_set_id;
 
@@ -93,7 +92,7 @@ CREATE TABLE loads.reference_values (
 );
 
 -- Define sail positions
-INSERT INTO loads.sail_positions (position) VALUES
+INSERT INTO loads.sail_positions (id) VALUES
   ('main'),
   ('mizzen'),
   ('fore-inner'),
@@ -101,7 +100,7 @@ INSERT INTO loads.sail_positions (position) VALUES
   ('mizzen-fore');
 
 -- Define sails
-INSERT INTO loads.sails (sail, abbreviation, position, name) VALUES
+INSERT INTO loads.sails (id, abbreviation, position_id, name) VALUES
   ('full-main', 'FM', 'main', 'Full Main'),
   ('main-reef1', 'M1R', 'main', 'Main 1 Reef'),
   ('main-reef2', 'M2R', 'main', 'Main 2 Reef'),
@@ -120,36 +119,44 @@ INSERT INTO loads.sails (sail, abbreviation, position, name) VALUES
   ('mizzen-genoa', 'MZG', 'mizzen-fore', 'Mizzen Genoa');
 
 -- Generate all possible sail sets based on position (including those with NULLs for missing sails)
-WITH RECURSIVE options AS (
+WITH RECURSIVE indexed_positions AS (
+    SELECT
+        ROW_NUMBER() OVER (ORDER BY id) AS position_index,
+        id as position
+    FROM loads.sail_positions
+),
+options AS (
     SELECT
         position,
-        sail
+        id as sail
     FROM loads.sails
+    JOIN indexed_positions
+        ON loads.sails.position_id = indexed_positions.position
 
     UNION ALL
 
     SELECT
-        position,
+        id as position,
         NULL::TEXT as sail
     FROM loads.sail_positions
 ),
 combinations AS (
     SELECT
-        sail_positions.id,
+        indexed_positions.position_index,
         ARRAY[options.sail]::TEXT[] AS sail_set
-    FROM loads.sail_positions
+    FROM indexed_positions
     JOIN options
-        ON options.position = loads.sail_positions.position
-    WHERE loads.sail_positions.id = 1
+        ON options.position = indexed_positions.position
+    WHERE indexed_positions.position_index = 1
   
     UNION ALL
 
     SELECT
-        next_position.id,
+        next_position.position_index,
         combinations.sail_set || options.sail
     FROM combinations
-    JOIN loads.sail_positions AS next_position
-        ON next_position.id = combinations.id + 1
+    JOIN indexed_positions AS next_position
+        ON next_position.position_index = combinations.position_index + 1
     JOIN options
         ON options.position = next_position.position
 ),
@@ -158,17 +165,17 @@ complete_combinations AS (
         ROW_NUMBER() OVER (ORDER BY sail_set) - 1 id,
         sail_set
     FROM combinations
-    WHERE id = (SELECT MAX(id) FROM loads.sail_positions)
+    WHERE position_index = (SELECT MAX(position_index) FROM indexed_positions)
 ),
 flat_sail_sets AS (
     SELECT
         complete_combinations.id,
-        sail_positions.position,
-        complete_combinations.sail_set[sail_positions.id] AS sail
+        indexed_positions.position,
+        complete_combinations.sail_set[indexed_positions.position_index] AS sail
     FROM complete_combinations
-    CROSS JOIN loads.sail_positions
+    CROSS JOIN indexed_positions
 )
-INSERT INTO loads.sail_sets (sail_set_id, position, sail)
+INSERT INTO loads.sail_sets (sail_set_id, position_id, sail_id)
 SELECT
     id,
     position,

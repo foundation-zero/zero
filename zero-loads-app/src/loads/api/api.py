@@ -31,7 +31,11 @@ async def lifespan(app: FastAPI):
     """Function that handles startup and shutdown events (https://fastapi.tiangolo.com/advanced/events/)"""
     sessionmanager.initialize(settings.pg_url)
     async with MqttClient(settings.mqtt_host, settings.mqtt_port) as mqtt:
-        messaging = Messaging(mqtt_client=mqtt, modules=[sail_systems], variable_definition=loads_variables)
+        messaging = Messaging(
+            mqtt_client=mqtt,
+            modules=[sail_systems],
+            variable_definition=loads_variables,
+        )
         run_task = create_task(await messaging.run())
 
         def _finish(task: Task):
@@ -65,7 +69,9 @@ class LoadsContext(BaseContext):
     references_loader: DataLoader
 
 
-async def get_actuals(variables: Sequence[str], context: LoadsContext) -> list[ActualType]:
+async def get_actuals(
+    variables: Sequence[str], context: LoadsContext
+) -> list[ActualType]:
     return context.messaging.get_values_for(list(variables))
 
 
@@ -91,8 +97,12 @@ async def get_context(
     context = LoadsContext(
         messaging=messaging,
         session=session,
-        actuals_loader=DataLoader(load_fn=lambda keys: get_actuals(keys, context), cache=False),  # type: ignore
-        references_loader=DataLoader(load_fn=lambda keys: get_reference_values(keys, context), cache=False),  # type: ignore
+        actuals_loader=DataLoader(
+            load_fn=lambda keys: get_actuals(keys, context), cache=False # type: ignore
+        ),
+        references_loader=DataLoader(
+            load_fn=lambda keys: get_reference_values(keys, context), cache=False # type: ignore
+        ),
     )
 
     return context

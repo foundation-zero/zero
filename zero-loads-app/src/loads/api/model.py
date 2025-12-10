@@ -38,9 +38,21 @@ async def get_loads_reference_values(
         select(ReferenceValues)
         .options(selectinload(ReferenceValues.variable))
         .where(ReferenceValues.variable_id.in_(variables))
-        .where(ReferenceValues.load_case.has(LoadCases.awa_range.has(AwaRanges.awa.contains(cast(case.awa, NUMERIC)))))
-        .where(ReferenceValues.load_case.has(LoadCases.aws_range.has(AwsRanges.aws.contains(cast(case.aws, NUMERIC)))))
-        .where(ReferenceValues.load_case.has(LoadCases.sail_set_id == create_sail_set_subq(case.sailset)))
+        .where(
+            ReferenceValues.load_case.has(
+                LoadCases.awa_range.has(AwaRanges.awa.contains(cast(case.awa, NUMERIC)))
+            )
+        )
+        .where(
+            ReferenceValues.load_case.has(
+                LoadCases.aws_range.has(AwsRanges.aws.contains(cast(case.aws, NUMERIC)))
+            )
+        )
+        .where(
+            ReferenceValues.load_case.has(
+                LoadCases.sail_set_id == create_sail_set_subq(case.sailset)
+            )
+        )
     )
 
     result = await session.execute(query)
@@ -71,9 +83,15 @@ async def get_loads_reference_values(
 
 def create_sail_set_subq(sailset: list[Sails]) -> ScalarSelect[str]:
     """Create subquery that returns the sail set that exactly matches the current sails."""
-    return select(SailSetsCombined.id).where(sails_exact(SailSetsCombined.sails, sailset)).scalar_subquery()
+    return (
+        select(SailSetsCombined.id)
+        .where(sails_exact(SailSetsCombined.sails, sailset))
+        .scalar_subquery()
+    )
 
 
-def sails_exact(sails_column: Column[Sequence[str]], sails: list[Sails]) -> ColumnElement[bool]:
+def sails_exact(
+    sails_column: Column[Sequence[str]], sails: list[Sails]
+) -> ColumnElement[bool]:
     """Check if the sail set exactly matches the sails provided"""
     return sails_column == cast(sorted([sail.value for sail in sails]), ARRAY(TEXT))
