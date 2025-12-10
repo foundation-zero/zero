@@ -9,9 +9,8 @@ from thrs.control.modules.boilers import (
 )
 from thrs.input_output.base import Stamped
 from thrs.input_output.definitions.simulation import (
-    FmuBoundary,
-    PressureBoundary,
-    TemperatureBoundary,
+    ExchangerBoundary,
+    OverpressureTemperatureBoundary,
 )
 from thrs.input_output.modules.boilers import (
     BoilersControlValues,
@@ -29,28 +28,29 @@ from thrs.simulation.models.fmu_paths import boilers_path
 @fixture
 def simulation_inputs():
     return BoilersSimulationInputs(
-        boilers_propdrive_shore_supply=FmuBoundary(
+        boilers_lt1_supply=ExchangerBoundary(
             temperature=Stamped.stamp(50),
             flow=Stamped.stamp(35),
             overpressure=Stamped.stamp(1.5),
         ),
-        boilers_fahrenheit_supply=FmuBoundary(
+        boilers_lt2_supply=ExchangerBoundary(
+            temperature=Stamped.stamp(60),
+            flow=Stamped.stamp(60),
+            overpressure=Stamped.stamp(1.5),
+        ),
+        boilers_fahrenheit_supply=ExchangerBoundary(
             temperature=Stamped.stamp(40),
             flow=Stamped.stamp(45),
             overpressure=Stamped.stamp(1.5),
         ),
-        boilers_converters_supply=FmuBoundary(
+        boilers_high_temperature_supply=ExchangerBoundary(
             temperature=Stamped.stamp(60),
             flow=Stamped.stamp(60),
             overpressure=Stamped.stamp(1.5),
         ),
-        boilers_high_temperature_supply=FmuBoundary(
-            temperature=Stamped.stamp(60),
-            flow=Stamped.stamp(60),
-            overpressure=Stamped.stamp(1.5),
+        boilers_freshwater_supply=OverpressureTemperatureBoundary(
+            temperature=Stamped.stamp(20), overpressure=Stamped.stamp(3)
         ),
-        boilers_freshwater_supply=TemperatureBoundary(temperature=Stamped.stamp(20)),
-        boilers_freshwater_pressure=PressureBoundary(pressure=Stamped.stamp(3)),
     )
 
 

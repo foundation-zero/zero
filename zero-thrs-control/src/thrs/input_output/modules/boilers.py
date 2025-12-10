@@ -293,17 +293,16 @@ class BoilersControlValues(ThrsValues):
 
 
 class BoilersSimulationInputs(SimulationInputs):
-    boilers_lt1_supply: simulation.FmuBoundary
-    boilers_fahrenheit_supply: simulation.FmuBoundary
-    boilers_lt2_supply: simulation.FmuBoundary
-    boilers_high_temperature_supply: simulation.FmuBoundary
-    boilers_freshwater_supply: simulation.TemperatureBoundary
-    boilers_freshwater_pressure: simulation.PressureBoundary
+    boilers_lt1_supply: simulation.ExchangerBoundary
+    boilers_lt2_supply: simulation.ExchangerBoundary
+    boilers_fahrenheit_supply: simulation.ExchangerBoundary
+    boilers_high_temperature_supply: simulation.ExchangerBoundary
+    boilers_freshwater_supply: simulation.OverpressureTemperatureBoundary
 
 
 class BoilersSimulationOutputs(SimulationValues):
-    boilers_lt1_return: simulation.FmuBoundary
-    boilers_fahrenheit_return: simulation.FmuBoundary
-    boilers_lt2_return: simulation.FmuBoundary
-    boilers_high_temperature_return: simulation.FmuBoundary
-    boilers_freshwater_return: simulation.FmuBoundary
+    boilers_lt1_return: simulation.ExchangerBoundary
+    boilers_lt2_return: simulation.ExchangerBoundary
+    boilers_fahrenheit_return: simulation.ExchangerBoundary
+    boilers_high_temperature_return: simulation.ExchangerBoundary
+    boilers_freshwater_return: simulation.FlowBoundary
