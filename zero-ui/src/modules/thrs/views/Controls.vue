@@ -13,10 +13,12 @@ const currentDefinition = inject<Ref<keyof typeof DEFINITIONS>>("currentModule")
 const definition = computed<ModuleDefinition>(() => DEFINITIONS[currentDefinition.value]);
 </script>
 <template>
-  <header class="mb-4 text-3xl capitalize">
+  <header class="mb-4 flex items-center gap-4 text-3xl capitalize">
     {{ t("thrs.views.controls.title") }}
+
+    <ControlActions :module="currentDefinition" />
   </header>
-  <ControlActions :module="currentDefinition" />
+
   <ControlValuesControls
     :module="currentDefinition"
     :definition="definition.controlValues"

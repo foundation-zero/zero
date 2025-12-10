@@ -8,9 +8,11 @@ import TopNav from "@/modules/common/components/top-nav/TopNav.vue";
 import TopNavToolbar from "@/modules/common/components/top-nav/TopNavToolbar.vue";
 import { client } from "@/modules/thrs/graphql/client";
 import { THRSModules } from "@/modules/thrs/lib/consts.types";
+import { DividerVerticalIcon } from "@radix-icons/vue";
 import { provideClient } from "@urql/vue";
 import { computed, provide } from "vue";
 import { useRoute } from "vue-router";
+import ClearChartHistory from "../components/ClearChartHistory.vue";
 import SubNavTabs from "../components/SubNavTabs.vue";
 
 // Provide the URL client to inner scope. Pinia stores have their own scope, so they need to manually provide the correct context.
@@ -47,6 +49,8 @@ provide("currentModule", currentModuleKey);
       </template>
 
       <template #right>
+        <ClearChartHistory />
+        <DividerVerticalIcon class="text-disabled-foreground" />
         <SimulationActions class="max-md:hidden" />
       </template>
     </TopNavToolbar>
