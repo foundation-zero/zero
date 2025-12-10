@@ -49,6 +49,12 @@
           "title": "No fields selected",
           "description": "Please select fields to display their values."
         }
+      },
+      "clearChartHistory": {
+        "title": "Clear Chart History",
+        "description": "Are you sure you want to clear the chart history? This action cannot be undone.",
+        "confirmButton": "Clear Cache",
+        "cancelButton": "Cancel"
       }
     },
     "labels": {

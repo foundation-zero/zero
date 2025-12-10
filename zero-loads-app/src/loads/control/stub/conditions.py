@@ -27,7 +27,9 @@ class ConditionsStub:
     @asynccontextmanager
     @staticmethod
     async def init_from_settings(settings: Settings):
-        async with MqttClient(settings.mqtt_host, settings.mqtt_port, identifier="loads_sensor_stub") as mqtt_client:
+        async with MqttClient(
+            settings.mqtt_host, settings.mqtt_port, identifier="loads_sensor_stub"
+        ) as mqtt_client:
             yield ConditionsStub(mqtt_client=mqtt_client)
 
     async def run(self):

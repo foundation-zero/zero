@@ -2,14 +2,22 @@ from datetime import datetime
 from typing import Callable
 from thrs.classes.control import ControlResult
 from thrs.input_output.alarms import BaseAlarms
-from thrs.input_output.base import ThrsModel
+from thrs.input_output.base import SimulationInputs, SimulationValues, ThrsValues
 from thrs.input_output.definitions.sensor import FlowSensor
 from thrs.orchestration.executor import ExecutionResult, Executor
 from thrs.orchestration.cycler import Control
 
 
-class SimpleInOut(ThrsModel):
+class SimpleInOut(ThrsValues):
     go_with_the: FlowSensor
+
+
+class SimpleSimulationInputs(SimulationInputs):
+    pass
+
+
+class SimpleSimulationOutputs(SimulationValues):
+    pass
 
 
 class SimpleExecutor(Executor):
@@ -32,7 +40,7 @@ class SimpleExecutor(Executor):
         return datetime.now()
 
 
-class SimpleParameters(ThrsModel):
+class SimpleParameters(ThrsValues):
     pass
 
 

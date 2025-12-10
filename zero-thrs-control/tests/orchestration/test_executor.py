@@ -1,13 +1,26 @@
 from asyncio import create_task, sleep
 from datetime import datetime
+from typing import cast
 
 from aiomqtt import Client
 import pytest
-from thrs.input_output.base import Stamped
+from thrs.orchestration.module import ModuleDescription, CombinedModule
+from thrs.input_output.base import (
+    CombinedValues,
+    SimulationInputs,
+    SimulationValues,
+    Stamped,
+)
 from thrs.input_output.definitions.sensor import FlowSensor
 from thrs.orchestration.config import Config
 from thrs.orchestration.executor import MqttExecutor
-from tests.orchestration.simples import SimpleExecutor, SimpleInOut
+from tests.orchestration.simples import (
+    SimpleAlarms,
+    SimpleControl,
+    SimpleExecutor,
+    SimpleInOut,
+    SimpleParameters,
+)
 
 
 settings = Config()  # type: ignore
@@ -29,33 +42,71 @@ async def test_mqtt_executor(mqtt_client, mqtt_client2):
         mqtt_client,
         mqtt_client2,
         f"{settings.mqtt_topic_prefix}/simple",
-        SimpleInOut,
-        settings.mqtt_control_topic_suffix,
-        SimpleInOut,
+        CombinedModule(
+            {
+                "simple": ModuleDescription(
+                    SimpleInOut,
+                    SimpleInOut,
+                    SimpleParameters,
+                    SimpleControl,
+                    SimpleAlarms,
+                )
+            },
+            cast(type[SimulationInputs], SimpleInOut),
+            cast(type[SimulationValues], SimpleInOut),
+        ),
     )
     await executor.start()
     running = create_task(executor.run())
     await sleep(0)
 
     try:
-        first_result = await executor.tick(
-            SimpleInOut(
-                go_with_the=FlowSensor(
-                    flow=Stamped.stamp(1), temperature=Stamped.stamp(2)
-                )
+        empty_result = await executor.tick(
+            CombinedValues(
+                values={
+                    "simple": SimpleInOut(
+                        go_with_the=FlowSensor(
+                            flow=Stamped.stamp(1), temperature=Stamped.stamp(2)
+                        )
+                    )
+                }
             )
         )
-        assert first_result.sensor_values.go_with_the.flow.value == 0
-        assert first_result.sensor_values.go_with_the.temperature.value == 0
+        assert not empty_result.sensor_values.values
+        first_result = await executor.tick(
+            CombinedValues(
+                values={
+                    "simple": SimpleInOut(
+                        go_with_the=FlowSensor(
+                            flow=Stamped.stamp(1), temperature=Stamped.stamp(2)
+                        )
+                    )
+                }
+            )
+        )
+        assert isinstance(first_result.sensor_values.values["simple"], SimpleInOut)
+        assert first_result.sensor_values.values["simple"].go_with_the.flow.value == 1
+        assert (
+            first_result.sensor_values.values["simple"].go_with_the.temperature.value
+            == 2
+        )
         await sleep(0.1)
         second_result = await executor.tick(
-            SimpleInOut(
-                go_with_the=FlowSensor(
-                    flow=Stamped.stamp(1), temperature=Stamped.stamp(2)
-                )
+            CombinedValues(
+                {
+                    "simple": SimpleInOut(
+                        go_with_the=FlowSensor(
+                            flow=Stamped.stamp(1), temperature=Stamped.stamp(2)
+                        )
+                    )
+                }
             )
         )
-        assert second_result.sensor_values.go_with_the.flow.value == 1
-        assert second_result.sensor_values.go_with_the.temperature.value == 2
+        assert isinstance(second_result.sensor_values.values["simple"], SimpleInOut)
+        assert second_result.sensor_values.values["simple"].go_with_the.flow.value == 1
+        assert (
+            second_result.sensor_values.values["simple"].go_with_the.temperature.value
+            == 2
+        )
     finally:
         running.cancel()

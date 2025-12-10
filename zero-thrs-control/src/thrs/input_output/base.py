@@ -20,8 +20,8 @@ from thrs.input_output.definitions.units import (
 )
 
 
-class ThrsModel(BaseModel):
-    """ThrsModel provides the conversion between the camel case in MQTT messages to Python underscores"""
+class ThrsValues(BaseModel):
+    """ThrsValues provides the conversion between the camel case in MQTT messages to Python underscores"""
 
     model_config = ConfigDict(
         alias_generator=to_pascal,
@@ -36,7 +36,7 @@ class ThrsModel(BaseModel):
                 unit = unit_for_annotation(field.annotation)
                 return zero_for_unit(unit) if unit else 0.0
 
-            if issubclass(component, ThrsModel):
+            if issubclass(component, ThrsValues):
                 return component(
                     **{
                         field_name: Stamped.stamp(_zero_value(field))
@@ -54,7 +54,7 @@ class ThrsModel(BaseModel):
         return cls(**vals)
 
 
-class Stamped[T](ThrsModel):
+class Stamped[T](ThrsValues):
     value: T
     timestamp: Annotated[datetime, Field(alias="TimeStamp")]
 
@@ -63,7 +63,7 @@ class Stamped[T](ThrsModel):
         return Stamped(value=value, timestamp=datetime.now())
 
 
-class StampedDf[T](ThrsModel):
+class StampedDf[T](ThrsValues):
     model_config = ConfigDict(arbitrary_types_allowed=True)
 
     value: pl.DataFrame
@@ -123,7 +123,7 @@ def field_meta(*args, **kwargs):
 _dedataframed_dataclasses = {}
 
 
-class SimulationValues(ThrsModel):
+class SimulationValues(ThrsValues):
     @classmethod
     def dedataframe(cls) -> type:
         def _component(component_name, component):
@@ -233,3 +233,8 @@ class SimulationInputs(SimulationValues):
         }
 
         return SelectedInputsModel(**values)
+
+
+@dataclass
+class CombinedValues:
+    values: dict[str, ThrsValues]

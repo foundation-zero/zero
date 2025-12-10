@@ -1,7 +1,6 @@
 from datetime import datetime, timedelta
 from pytest import fixture
 
-from tests.modules.thrusters.conftest import ThrustersSimulationExecutor
 from thrs.control.modules.boilers import (
     BoilersControl,
     BoilersParameters,
@@ -22,7 +21,7 @@ from thrs.input_output.modules.boilers import (
 )
 from thrs.orchestration.executor import SimulationExecutor
 from thrs.simulation.fmu import Fmu
-from thrs.simulation.io_mapping import IoMapping
+from thrs.simulation.io_mapping import ThrsModelIoMapping
 
 from thrs.simulation.models.fmu_paths import boilers_path
 
@@ -57,19 +56,18 @@ def simulation_inputs():
 
 @fixture
 def io_mapping():
-    with Fmu(boilers_path) as fmu:
-        yield IoMapping(
-            fmu,
-            BoilersSensorValues,
-            BoilersSimulationOutputs,
-        )
+    return ThrsModelIoMapping(
+        BoilersSensorValues,
+        BoilersSimulationOutputs,
+    )
 
 
 @fixture
-def executor(io_mapping, simulation_inputs) -> ThrustersSimulationExecutor:
-    return SimulationExecutor(
-        io_mapping, simulation_inputs, datetime.now(), timedelta(seconds=1)
-    )
+def executor(io_mapping, simulation_inputs):
+    with Fmu(boilers_path) as fmu:
+        yield SimulationExecutor(
+            io_mapping, fmu, simulation_inputs, datetime.now(), timedelta(seconds=1)
+        )
 
 
 @fixture

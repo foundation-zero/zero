@@ -4,29 +4,24 @@ from typing import Sequence
 from sqlalchemy import Column, cast, select
 from sqlalchemy.dialects.postgresql import ARRAY, NUMERIC, TEXT
 from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy.orm import selectinload
 from sqlalchemy.sql.expression import ColumnElement
 from sqlalchemy.sql.selectable import ScalarSelect
 
 from .schema import (
-    ConditionProfiles,
-    Conditions,
-    Masts,
+    AwaRanges,
+    AwsRanges,
+    LoadCases,
     ReferenceValues,
-    SailSetCombined,
-    ValueDefinitions,
+    SailSetsCombined,
 )
 from .types import (
-    AlertType,
     CaseInput,
-    MastType,
-    PCSModeInput,
+    ReferenceValue,
     ReferenceValueType,
     Sails,
-    SeaState,
-    TargetType,
-    ThrusterMode,
     Unit,
-    ValueType,
+    VariableType,
 )
 
 logger = logging.getLogger("api")
@@ -34,100 +29,69 @@ logger = logging.getLogger("api")
 
 async def get_loads_reference_values(
     variables: list[str],
-    sails: list[Sails],
-    case: CaseInput | None,
+    case: CaseInput,
     session: AsyncSession,
 ) -> list[ReferenceValueType] | None:
     """Return all reference values that match the current sails and conditions."""
 
-    if not case:
-        current_case = await retrieve_current_load_case(session)
-
-        if current_case:
-            logger.info(f"Retrieved case: {current_case}")
-            case = current_case
-        else:
-            logger.info("No case found")
-            return None
-
-    sail_set = create_sail_set_subq(sails)
-    condition = create_condition_profiles_subq(case)
-
     query = (
-        select(ReferenceValues, ValueDefinitions, Masts)
-        .join(
-            ValueDefinitions,
-            ReferenceValues.value_definition_id == ValueDefinitions.id,
+        select(ReferenceValues)
+        .options(selectinload(ReferenceValues.variable))
+        .where(ReferenceValues.variable_id.in_(variables))
+        .where(
+            ReferenceValues.load_case.has(
+                LoadCases.awa_range.has(AwaRanges.awa.contains(cast(case.awa, NUMERIC)))
+            )
         )
-        .join(Masts, ReferenceValues.mast_id == Masts.id)
-        .where(ReferenceValues.value_definition_id.in_(variables))
-        .where(ReferenceValues.sail_set_id == sail_set)
-        .where(ReferenceValues.condition_profile_id == condition)
+        .where(
+            ReferenceValues.load_case.has(
+                LoadCases.aws_range.has(AwsRanges.aws.contains(cast(case.aws, NUMERIC)))
+            )
+        )
+        .where(
+            ReferenceValues.load_case.has(
+                LoadCases.sail_set_id == create_sail_set_subq(case.sailset)
+            )
+        )
     )
 
     result = await session.execute(query)
-    rows = result.fetchall()
+    reference_values = result.scalars().all()
 
-    if rows:
+    if reference_values:
         return [
             ReferenceValueType(
-                value=ValueType(
-                    id=definition.id,
-                    name=definition.name,
+                variable=VariableType(
+                    id=ref_value.variable.id,
+                    name=ref_value.variable.name,
+                    unit=Unit(ref_value.variable.unit),
                 ),
-                masts=MastType(id=mast.id, name=mast.name),
-                target=TargetType(target=reference.value, unit=Unit(definition.unit)),
-                ranges=AlertType(
-                    error_too_low=reference.error_too_low,
-                    warning_too_low=reference.warning_too_low,
-                    warning_too_high=reference.warning_too_high,
-                    error_too_high=reference.error_too_high,
+                reference=ReferenceValue(
+                    alarm_low=ref_value.alarm_low,  # type: ignore
+                    warning_low=ref_value.warning_low,  # type: ignore
+                    target=ref_value.target,  # type: ignore
+                    warning_high=ref_value.warning_high,  # type: ignore
+                    alarm_high=ref_value.alarm_high,  # type: ignore
                 ),
             )
-            for reference, definition, mast in rows
+            for ref_value in reference_values
         ]
     else:
-        logger.info(f"No reference values found for case: {case} and sails: {sails}")
+        logger.info(f"No reference values found for case: {case}")
         return []
 
 
-def create_sail_set_subq(sails: list[Sails]) -> ScalarSelect[str]:
+def create_sail_set_subq(sailset: list[Sails]) -> ScalarSelect[str]:
     """Create subquery that returns the sail set that exactly matches the current sails."""
-    return select(SailSetCombined.id).where(sails_exact(SailSetCombined.sails, sails)).scalar_subquery()
-
-
-def sails_exact(sails_column: Column[Sequence[str]], sails: list[Sails]) -> ColumnElement[bool]:
-    """Check if the sail set exactly matches the sails provided"""
-    return sails_column == cast(sorted([sail.value for sail in sails]), ARRAY(TEXT))
-
-
-def create_condition_profiles_subq(case: CaseInput) -> ScalarSelect[str]:
-    """Create subquery that returns the condition profile matching the input conditions."""
     return (
-        select(ConditionProfiles.id)
-        .where(ConditionProfiles.sea_state == case.sea_state)
-        .where(ConditionProfiles.awa.contains(cast(case.awa, NUMERIC)))
-        .where(ConditionProfiles.aws.contains(cast(case.aws, NUMERIC)))
-        .where(ConditionProfiles.pcs_mode_fwd.any(case.pcs_mode.fwd))
-        .where(ConditionProfiles.pcs_mode_aft.any(case.pcs_mode.aft))
+        select(SailSetsCombined.id)
+        .where(sails_exact(SailSetsCombined.sails, sailset))
         .scalar_subquery()
     )
 
 
-async def retrieve_current_load_case(session: AsyncSession) -> CaseInput | None:
-    """Retrieve the most recent load case from the database."""
-    load_case_current = select(Conditions).order_by(Conditions.time.desc()).limit(1)
-    result = await session.execute(load_case_current)
-    row = result.scalar_one_or_none()
-    if row:
-        return CaseInput(
-            sea_state=SeaState(row.sea_state),
-            pcs_mode=PCSModeInput(
-                fwd=ThrusterMode(row.pcs_mode_fwd),
-                aft=ThrusterMode(row.pcs_mode_aft),
-            ),
-            awa=float(row.awa),  # type: ignore
-            aws=float(row.aws),  # type: ignore
-        )
-    else:
-        return None
+def sails_exact(
+    sails_column: Column[Sequence[str]], sails: list[Sails]
+) -> ColumnElement[bool]:
+    """Check if the sail set exactly matches the sails provided"""
+    return sails_column == cast(sorted([sail.value for sail in sails]), ARRAY(TEXT))

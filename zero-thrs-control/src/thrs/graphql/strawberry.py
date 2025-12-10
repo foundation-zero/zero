@@ -60,7 +60,7 @@ import thrs.graphql.thrusters as thrusters
 import thrs.graphql.pvt as pvt
 import thrs.graphql.pcm as pcm
 import thrs.graphql.consumers as consumers
-from thrs.input_output.base import Stamped, ThrsModel
+from thrs.input_output.base import Stamped, ThrsValues
 from pydantic.fields import FieldInfo
 from aiomqtt import Client as MqttClient
 
@@ -118,19 +118,13 @@ class Query:
             status=info.context.messaging.simulation_status.status,
         )
 
-    @strawberry.field
-    def control(self, info: strawberry.Info[ThrsContext]) -> ControlState | None:
-        if info.context.messaging.control_status is None:
-            return None
-        return ControlState(automatic=info.context.messaging.control_status.automatic)
-
 
 _input_types = {}
 
 
-class UnstampedInput(ThrsModel):
+class UnstampedInput(ThrsValues):
     @staticmethod
-    def generate_for_model(name: str, model: type[ThrsModel]):
+    def generate_for_model(name: str, model: type[ThrsValues]):
         fields = {
             key: Annotated[
                 get_args(unit)[0] if get_args(unit) else unit,
@@ -223,12 +217,6 @@ class Mutation(ThrustersMutations, PvtMutations, PcmMutations, ConsumersMutation
         )
         await info.context.messaging.step_simulation(seconds)
         await expect_status
-
-    @strawberry.mutation
-    async def control_set_automation_mode(
-        self, info: strawberry.Info[ThrsContext], automatic: bool
-    ) -> None:
-        await info.context.messaging.set_automation(automatic)
 
 
 @asynccontextmanager

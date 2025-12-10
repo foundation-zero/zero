@@ -1,88 +1,98 @@
-from sqlalchemy import Column, Enum, Float, Integer, MetaData, String
-from sqlalchemy.dialects.postgresql import ARRAY, NUMRANGE, TIMESTAMP
-from sqlalchemy.orm import declarative_base
+from typing import Sequence
 
-from .types import SeaState, ThrusterMode
+from sqlalchemy import Column, Float, ForeignKey, Integer, MetaData, String
+from sqlalchemy.dialects.postgresql import ARRAY, NUMRANGE, UUID
+from sqlalchemy.orm import declarative_base, relationship
 
 metadata_obj = MetaData(schema="loads")
 
 Base = declarative_base(metadata=metadata_obj)
 
 
-class SailSetCombined(Base):  # type: ignore
+class SailPositions(Base):  # type:ignore
+    __tablename__ = "sail_positions"
+    id = Column(String, primary_key=True)
+
+
+class Sails(Base):  # type:ignore
+    __tablename__ = "sails"
+    id = Column(String, primary_key=True)
+    abbreviation = Column(String, nullable=False)
+    position_id = Column(String, ForeignKey("sail_positions.id"), nullable=False)
+    name = Column(String, nullable=False)
+
+
+class SailSets(Base):  # type:ignore
+    __tablename__ = "sail_sets"
+
+    sail_set_id = Column(Integer, primary_key=True)
+    position_id = Column(String, ForeignKey("sail_positions.id"), primary_key=True)
+    sail_id = Column(String, ForeignKey("sails.id"), nullable=True)
+
+
+class SailSetsCombined(Base):  # type:ignore
     __tablename__ = "sail_sets_combined"
 
-    id = Column(String, primary_key=True)
-    name = Column(String)
-    sails = Column(ARRAY(String))  # type: ignore
+    id = Column(Integer, primary_key=True)
+    sails: Column[Sequence[str]] = Column(ARRAY(String), nullable=False)
 
 
-class ConditionProfiles(Base):  # type: ignore
-    __tablename__ = "condition_profiles"
+class AwaRanges(Base):  # type:ignore
+    __tablename__ = "awa_ranges"
 
-    id = Column(String, primary_key=True)
-    name = Column(String, nullable=False)
-    sea_state = Column(
-        Enum(SeaState, name="sea_state", create_constraint=False), nullable=False
-    )  # type: ignore
+    id = Column(Integer, primary_key=True)
     awa = Column(NUMRANGE, nullable=False)
+
+
+class AwsRanges(Base):  # type:ignore
+    __tablename__ = "aws_ranges"
+
+    id = Column(Integer, primary_key=True)
     aws = Column(NUMRANGE, nullable=False)
-    pcs_mode_aft = Column(
-        ARRAY(Enum(ThrusterMode, name="pcs_mode", create_constraint=False)),
-        nullable=False,
-    )  # type: ignore
-    pcs_mode_fwd = Column(
-        ARRAY(Enum(ThrusterMode, name="pcs_mode", create_constraint=False)),
-        nullable=False,
-    )  # type: ignore
 
 
-class Conditions(Base):  # type: ignore
-    __tablename__ = "conditions"
+class LoadCases(Base):  # type:ignore
+    __tablename__ = "load_cases"
 
-    time = Column("time", TIMESTAMP, nullable=False, primary_key=True)
-    sea_state = Column(
-        Enum(SeaState, name="sea_state", create_constraint=False), nullable=False
-    )  # type: ignore
-    awa = Column(Float, nullable=False)
-    aws = Column(Float, nullable=False)
-    pcs_mode_aft = Column(
-        Enum(ThrusterMode, name="pcs_mode", create_constraint=False),
-        nullable=False,
-    )  # type: ignore
-    pcs_mode_fwd = Column(
-        Enum(ThrusterMode, name="pcs_mode", create_constraint=False),
-        nullable=False,
-    )  # type: ignore
-    sails = Column(ARRAY(String), nullable=False)  # type: ignore
+    id = Column(UUID(as_uuid=True), primary_key=True)
+    awa_range_id = Column(
+        Integer, ForeignKey("awa_ranges.id"), nullable=False, index=True
+    )
+    aws_range_id = Column(
+        Integer, ForeignKey("aws_ranges.id"), nullable=False, index=True
+    )
+    sail_set_id = Column(Integer, nullable=False, index=True)
+
+    awa_range = relationship("AwaRanges")
+    aws_range = relationship("AwsRanges")
 
 
-class ValueDefinitions(Base):  # type: ignore
-    __tablename__ = "value_definitions"
+class Variables(Base):  # type: ignore
+    __tablename__ = "variables"
 
     id = Column(String, primary_key=True)
     name = Column(String, nullable=False)
     unit = Column(String, nullable=False)
-    scope = Column(String, nullable=False)
+    minimum_value = Column(Float, nullable=True)
+    maximum_value = Column(Float, nullable=True)
+    tag = Column(String, nullable=True)
 
 
-class ReferenceValues(Base):  # type: ignore
+class ReferenceValues(Base):  # type:ignore
     __tablename__ = "reference_values"
 
-    id = Column(Integer, primary_key=True, index=True)
-    sail_set_id = Column(String)
-    condition_profile_id = Column(String)
-    mast_id = Column(String, nullable=True)
-    value_definition_id = Column(String)
-    value = Column(Float)
-    error_too_low = Column(Float, nullable=True)
-    error_too_high = Column(Float, nullable=True)
-    warning_too_low = Column(Float, nullable=True)
-    warning_too_high = Column(Float, nullable=True)
+    id = Column(
+        UUID(as_uuid=True), primary_key=True, server_default="gen_random_uuid()"
+    )
+    load_case_id = Column(
+        Integer, ForeignKey("load_cases.id"), nullable=False, index=True
+    )
+    variable_id = Column(String, ForeignKey("variables.id"), nullable=False, index=True)
+    alarm_low = Column(Float, nullable=True)
+    warning_low = Column(Float, nullable=True)
+    target = Column(Float, nullable=True)
+    warning_high = Column(Float, nullable=True)
+    alarm_high = Column(Float, nullable=True)
 
-
-class Masts(Base):  # type: ignore
-    __tablename__ = "masts"
-
-    id = Column(String, primary_key=True)
-    name = Column(String, nullable=False)
+    load_case = relationship("LoadCases")
+    variable = relationship("Variables")

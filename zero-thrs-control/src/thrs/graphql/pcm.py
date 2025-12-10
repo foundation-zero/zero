@@ -6,6 +6,7 @@ from thrs.graphql.base import (
     Module,
     ModuleSimulation,
     PcmMessaging,
+    add_automation_mode_mutation,
     add_control_mutations,
     add_parameter_mutations,
     add_simulation_input_mutations,
@@ -110,8 +111,11 @@ def resolve_module(
                 if module.simulation_inputs
                 else None
             ),
-            outputs=PcmSimulationOutputsType.from_pydantic(module.simulation_outputs),
+            outputs=PcmSimulationOutputsType.from_pydantic(module.simulation_outputs)
+            if module.simulation_outputs
+            else None,
         ),
+        automatic=module.control_status.automatic if module.control_status else None,
     )
 
 
@@ -125,5 +129,6 @@ def get_pcm_messaging(context):
 @add_simulation_input_mutations(
     "pcm", PcmSimulationInputs, PcmSimulationInputsType, get_pcm_messaging
 )
+@add_automation_mode_mutation("pcm", get_pcm_messaging)
 class PcmMutations:
     pass

@@ -21,7 +21,7 @@ from thrs.input_output.modules.thrusters import (
 )
 from thrs.orchestration.executor import SimulationExecutor
 from thrs.simulation.fmu import Fmu
-from thrs.simulation.io_mapping import IoMapping
+from thrs.simulation.io_mapping import ThrsModelIoMapping
 from thrs.simulation.models.fmu_paths import thrusters_path
 
 type ThrustersSimulationExecutor = SimulationExecutor[
@@ -51,12 +51,10 @@ def simulation_inputs():
 
 @fixture
 def io_mapping():
-    with Fmu(thrusters_path) as fmu:
-        yield IoMapping(
-            fmu,
-            ThrustersSensorValues,
-            ThrustersSimulationOutputs,
-        )
+    return ThrsModelIoMapping(
+        ThrustersSensorValues,
+        ThrustersSimulationOutputs,
+    )
 
 
 @fixture
@@ -65,10 +63,16 @@ def control(executor):
 
 
 @fixture
-def executor(io_mapping, simulation_inputs) -> ThrustersSimulationExecutor:
+def executor(fmu, io_mapping, simulation_inputs) -> ThrustersSimulationExecutor:
     return SimulationExecutor(
-        io_mapping, simulation_inputs, datetime.now(), timedelta(seconds=1)
+        io_mapping, fmu, simulation_inputs, datetime.now(), timedelta(seconds=1)
     )
+
+
+@fixture
+def fmu():
+    with Fmu(thrusters_path) as fmu:
+        yield fmu
 
 
 @fixture

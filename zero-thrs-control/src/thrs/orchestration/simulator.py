@@ -6,19 +6,19 @@ from pydantic import BaseModel
 from thrs.classes.control import Control
 from thrs.classes.executor import Executor
 from thrs.input_output.alarms import BaseAlarms
-from thrs.input_output.base import SimulationInputs, SimulationValues, ThrsModel
+from thrs.input_output.base import SimulationInputs, SimulationValues, ThrsValues
 from thrs.orchestration.collector import PolarsCollector
 from thrs.orchestration.executor import SimulationExecutor
 from thrs.orchestration.cycler import Cycler
 from thrs.simulation.fmu import Fmu
-from thrs.simulation.io_mapping import IoMapping
+from thrs.simulation.io_mapping import ThrsModelIoMapping
 
 
 @dataclass
 class SimulatorModel:
     fmu_path: str
-    sensor_values_cls: type[ThrsModel]
-    control_values_cls: type[ThrsModel]
+    sensor_values_cls: type[ThrsValues]
+    control_values_cls: type[ThrsValues]
     simulation_outputs_cls: type[SimulationValues]
     control_cls: type[Control]
     control_parameters: BaseModel
@@ -32,11 +32,11 @@ class SimulatorModel:
     def executor(self):
         with Fmu(self.fmu_path) as fmu:
             yield SimulationExecutor(
-                IoMapping(
-                    fmu,
+                ThrsModelIoMapping(
                     self.sensor_values_cls,
                     self.simulation_outputs_cls,
                 ),
+                fmu,
                 self.simulation_inputs,
                 self.start_time,
                 self.tick_duration,
@@ -47,14 +47,19 @@ class SimulatorModel:
 
 
 class Simulator:
-    def __init__(
-        self, model: SimulatorModel, executor: Executor, control: Control | None = None
-    ):
-        self._model = model
+    def __init__(self, executor: Executor, control: Control, alarms: BaseAlarms):
         self._executor = executor
         self._cycler = Cycler(
-            control or model.control_cls(model.control_parameters, self._executor.time),
+            control,
             self._executor,
+            alarms,
+        )
+
+    @staticmethod
+    def from_model(model: SimulatorModel, executor: Executor) -> "Simulator":
+        return Simulator(
+            executor,
+            model.control_cls(model.control_parameters, executor.time),
             model.alarms,
         )
 

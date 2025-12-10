@@ -4,14 +4,14 @@ from typing import Callable, Literal
 from transitions import Machine, State
 from thrs.classes.control import Control, ControlResult
 from thrs.control.controllers import Controller
-from thrs.input_output.base import Stamped, ThrsModel
+from thrs.input_output.base import Stamped, ThrsValues
 from thrs.input_output.definitions.units import Celsius, LMin, Liter, Ratio, Tuning
 from thrs.input_output.modules.boilers import BoilersControlValues, BoilersSensorValues
 
 from thrs.input_output.definitions import control
 
 
-class BoilersParameters(ThrsModel):
+class BoilersParameters(ThrsValues):
     heatpump_flow_setpoint: LMin = 25
     boosting_temperature_setpoint: Celsius = 55
     tank_temperature_setpoint: Celsius = 50

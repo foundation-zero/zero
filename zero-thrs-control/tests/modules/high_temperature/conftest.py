@@ -21,7 +21,7 @@ from thrs.input_output.modules.high_temperature import (
 )
 from thrs.orchestration.executor import SimulationExecutor
 from thrs.simulation.fmu import Fmu
-from thrs.simulation.io_mapping import IoMapping
+from thrs.simulation.io_mapping import ThrsModelIoMapping
 from thrs.simulation.models.fmu_paths import high_temperature_path
 
 
@@ -67,16 +67,15 @@ def control(executor):
 
 @fixture
 def io_mapping():
-    with Fmu(high_temperature_path) as fmu:
-        yield IoMapping(
-            fmu,
-            HighTemperatureSensorValues,
-            HighTemperatureSimulationOutputs,
-        )
+    return ThrsModelIoMapping(
+        HighTemperatureSensorValues,
+        HighTemperatureSimulationOutputs,
+    )
 
 
 @fixture
 def executor(io_mapping, simulation_inputs):
-    return SimulationExecutor(
-        io_mapping, simulation_inputs, datetime.now(), timedelta(seconds=1)
-    )
+    with Fmu(high_temperature_path) as fmu:
+        yield SimulationExecutor(
+            io_mapping, fmu, simulation_inputs, datetime.now(), timedelta(seconds=1)
+        )

@@ -11,7 +11,7 @@ from thrs.graphql.messaging import Messaging, MessagingModule
 import thrs.input_output.definitions.sensor as sensor
 import thrs.input_output.definitions.control as control
 from strawberry.schema_directive import Location
-from thrs.input_output.base import Stamped, ThrsModel
+from thrs.input_output.base import Stamped, ThrsValues
 from strawberry.fastapi import BaseContext
 from pydantic.fields import FieldInfo
 
@@ -100,7 +100,7 @@ def get_members(module):
 
 def convert_module(module, class_name_prefix: str):
     for name, cls in get_members(module).items():
-        if isclass(cls) and issubclass(cls, ThrsModel):
+        if isclass(cls) and issubclass(cls, ThrsValues):
             gql_cls = type(f"{class_name_prefix}{name}Type", (object,), {})
             strawberry.experimental.pydantic.type(
                 model=cls,
@@ -154,6 +154,7 @@ class Module[
     control_values: ControlValues | None
     parameters: Parameters | None
     simulation: ModuleSimulation[SimulationInput, SimulationOutput] | None = None
+    automatic: bool | None = None
 
 
 @dataclass
@@ -173,9 +174,9 @@ type FieldMutation[T] = """Callable[
 _input_types = {}
 
 
-class UnstampedInput(ThrsModel):
+class UnstampedInput(ThrsValues):
     @staticmethod
-    def generate_for_model(name: str, model: type[ThrsModel]):
+    def generate_for_model(name: str, model: type[ThrsValues]):
         fields = {
             key: Annotated[
                 get_args(unit)[0] if get_args(unit) else unit,
@@ -229,7 +230,7 @@ def generate_mutation_for_field[T](
 
 def add_control_mutations(
     module: str,
-    control_values_cls: type[ThrsModel],
+    control_values_cls: type[ThrsValues],
     strawberry_cls: type,
     messaging: Callable[[ThrsContext], MessagingModule],
 ):
@@ -274,7 +275,7 @@ def add_control_mutations(
 
 def add_parameter_mutations(
     module: str,
-    parameters_cls: type[ThrsModel],
+    parameters_cls: type[ThrsValues],
     strawberry_cls: type,
     messaging: Callable[[ThrsContext], MessagingModule],
 ):
@@ -318,7 +319,7 @@ def add_parameter_mutations(
 
 def add_simulation_input_mutations(
     module: str,
-    inputs_cls: type[ThrsModel],
+    inputs_cls: type[ThrsValues],
     strawberry_cls: type,
     messaging: Callable[[ThrsContext], MessagingModule],
 ):
@@ -358,6 +359,28 @@ def add_simulation_input_mutations(
             method = strawberry.mutation(fn)
             setattr(cls, fn.__name__, method)
 
+        return cls
+
+    return _do
+
+
+def add_automation_mode_mutation(
+    module: str,
+    messaging: Callable[[ThrsContext], MessagingModule],
+):
+    def _do(cls):
+        async def set_automation_mode(
+            self,
+            automatic: bool,
+            info: strawberry.Info[ThrsContext],
+        ) -> bool:
+            mod = messaging(info.context)
+            await mod.set_automation_mode(automatic)
+            await mod.wait_for_control_status(automatic, timeout=2)
+            return True
+
+        mutation = strawberry.mutation(set_automation_mode)
+        setattr(cls, f"{module}_set_automation_mode", mutation)
         return cls
 
     return _do

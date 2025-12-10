@@ -79,6 +79,11 @@ export const useThrsHistory = defineStore("thrsHistory", () => {
     },
   );
 
+  const clear = () => {
+    cachedData.value = {};
+    lastUpdate.value = null;
+  };
+
   const { data, executeQuery: update } = useQuery<THRS>({
     query: QUERY_ALL,
     context,
@@ -93,7 +98,8 @@ export const useThrsHistory = defineStore("thrsHistory", () => {
         return data.value;
       }),
       scan(
-        (acc, newData) => (newData === undefined ? acc : extractHistory(newData, acc)),
+        (acc, newData) =>
+          newData === undefined ? acc : extractHistory(newData, lastUpdate.value ? acc : {}),
         cachedData.value,
       ),
       tap((data) => {
@@ -109,17 +115,17 @@ export const useThrsHistory = defineStore("thrsHistory", () => {
     definition: SchemaDefinitions<SchemaDefinition<unknown>>,
   ) =>
     computed<SeriesChart<Type>[]>(() => {
-      if (!history.value) return [];
+      if (!cachedData.value) return [];
 
       const historyKeys = keysOf(definition)
         .map((componentName) =>
           tuple(componentName, `${module}/${field}/${componentName}` as HistoryKey),
         )
-        .filter(([, key]) => key in history.value);
+        .filter(([, key]) => key in cachedData.value);
 
       return historyKeys.map(([componentName, key]) => ({
         name: componentName,
-        data: history.value[key] as TimeSeriesData<Type>[],
+        data: cachedData.value[key] as TimeSeriesData<Type>[],
       }));
     });
 
@@ -128,5 +134,6 @@ export const useThrsHistory = defineStore("thrsHistory", () => {
     history,
     lastUpdate,
     useHistory,
+    clear,
   };
 });

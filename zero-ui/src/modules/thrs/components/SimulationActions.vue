@@ -34,7 +34,7 @@ const next = () => step(playbackRate.value);
 
 <template>
   <div
-    class="flex items-center gap-2"
+    class="flex items-center gap-0.5"
     data-testid="thrs-actions"
   >
     <Popover>
@@ -71,9 +71,10 @@ const next = () => step(playbackRate.value);
     </Popover>
 
     <Button
-      :variant="isRunning ? 'default' : 'secondary'"
+      variant="ghost"
       :disabled="isProcessing || isStepping"
       size="icon"
+      :class="{ 'text-brand': isRunning }"
       @click="toggle()"
     >
       <PauseIcon v-if="isRunning" />

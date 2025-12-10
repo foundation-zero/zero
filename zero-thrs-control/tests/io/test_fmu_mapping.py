@@ -2,7 +2,7 @@ from datetime import datetime
 from typing import Annotated
 
 
-from thrs.input_output.base import Stamped, ThrsModel, component_meta, field_meta
+from thrs.input_output.base import Stamped, ThrsValues, component_meta, field_meta
 from thrs.input_output.definitions.units import Ratio
 from thrs.input_output.fmu_mapping import (
     build_outputs_from_fmu,
@@ -12,27 +12,27 @@ from thrs.input_output.definitions.sensor import FlowSensor
 from thrs.simulation.io_mapping import flatten_model_values
 
 
-class MiniModel(ThrsModel):
+class MiniModel(ThrsValues):
     flow_sensor: FlowSensor
 
 
-class SecondMiniModel(ThrsModel):
+class SecondMiniModel(ThrsValues):
     second_flow_sensor: FlowSensor
 
 
-class ExcludedInputComponent(ThrsModel):
+class ExcludedInputComponent(ThrsValues):
     excluded_field: Annotated[Stamped[Ratio], field_meta(included_in_fmu=False)]
 
 
-class ExcludedInputModel(ThrsModel):
+class ExcludedInputModel(ThrsValues):
     excluded_component: ExcludedInputComponent
 
 
-class ExcludedSensor(ThrsModel):
+class ExcludedSensor(ThrsValues):
     excluded_field: Stamped[Ratio]
 
 
-class ExcludedSensorValues(ThrsModel):
+class ExcludedSensorValues(ThrsValues):
     excluded_component: Annotated[
         ExcludedSensor, component_meta(yard_tag="", included_in_fmu=False)
     ]

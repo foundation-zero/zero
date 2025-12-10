@@ -19,7 +19,7 @@ from .db import SessionManager
 from .loads import loads_variables
 from .messaging import Messaging
 from .model import get_loads_reference_values
-from .types import ActualType, CaseInput, ReferenceValueType, Sails
+from .types import ActualType, CaseInput, ReferenceValueType
 
 logger = logging.getLogger("api")
 
@@ -31,7 +31,11 @@ async def lifespan(app: FastAPI):
     """Function that handles startup and shutdown events (https://fastapi.tiangolo.com/advanced/events/)"""
     sessionmanager.initialize(settings.pg_url)
     async with MqttClient(settings.mqtt_host, settings.mqtt_port) as mqtt:
-        messaging = Messaging(mqtt_client=mqtt, modules=[sail_systems], variable_definition=loads_variables)
+        messaging = Messaging(
+            mqtt_client=mqtt,
+            modules=[sail_systems],
+            variable_definition=loads_variables,
+        )
         run_task = create_task(await messaging.run())
 
         def _finish(task: Task):
@@ -65,18 +69,19 @@ class LoadsContext(BaseContext):
     references_loader: DataLoader
 
 
-async def get_actuals(variables: Sequence[str], context: LoadsContext) -> list[ActualType]:
+async def get_actuals(
+    variables: Sequence[str], context: LoadsContext
+) -> list[ActualType]:
     return context.messaging.get_values_for(list(variables))
 
 
 async def get_reference_values(
-    keys: list[tuple[str, list, CaseInput | None]], context: LoadsContext
+    keys: list[tuple[str, CaseInput]], context: LoadsContext
 ) -> list[ReferenceValueType | None]:
     results = []
-    for variable, sails, case in keys:
+    for variable, case in keys:
         ref = await get_loads_reference_values(
             variables=[variable],
-            sails=sails,
             case=case,
             session=context.session,
         )
@@ -92,8 +97,12 @@ async def get_context(
     context = LoadsContext(
         messaging=messaging,
         session=session,
-        actuals_loader=DataLoader(load_fn=lambda keys: get_actuals(keys, context), cache=False),  # type: ignore
-        references_loader=DataLoader(load_fn=lambda keys: get_reference_values(keys, context), cache=False),  # type: ignore
+        actuals_loader=DataLoader(
+            load_fn=lambda keys: get_actuals(keys, context), cache=False # type: ignore
+        ),
+        references_loader=DataLoader(
+            load_fn=lambda keys: get_reference_values(keys, context), cache=False # type: ignore
+        ),
     )
 
     return context
@@ -111,10 +120,9 @@ class Variable:
     async def reference(
         self,
         info: strawberry.Info[LoadsContext],
-        sails: list[Sails],
-        case: CaseInput | None = None,
+        case: CaseInput,
     ) -> ReferenceValueType | None:
-        return await info.context.references_loader.load((self.id, sails, case))
+        return await info.context.references_loader.load((self.id, case))
 
 
 @strawberry.type

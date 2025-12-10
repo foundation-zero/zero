@@ -52,12 +52,14 @@ async def override_thrusters_messaging():
     mock.sensor_values = ThrustersSensorValues.zero()
     mock.control_values = ThrustersControlValues.zero()
     mock.parameters = ThrustersParameters()
+    mock.control_status = ControlStatusMessage(module="thrusters", automatic=False)
 
     mock.simulation_inputs = ThrustersSimulationInputs.zero()
 
     async def wait(condition, *_args, timeout):
         return None
 
+    mock.wait_for_control_status.side_effect = wait
     mock.wait_for_control_values.side_effect = wait
     mock.wait_for_parameters.side_effect = wait
     mock.wait_for_simulation_inputs.side_effect = wait
@@ -69,12 +71,14 @@ async def override_pvt_messaging():
     mock.sensor_values = PvtSensorValues.zero()
     mock.control_values = PvtControlValues.zero()
     mock.parameters = PvtParameters()
+    mock.control_status = ControlStatusMessage(module="pvt", automatic=False)
 
     mock.simulation_inputs = PvtSimulationInputs.zero()
 
     async def wait(condition, *_args, timeout):
         return None
 
+    mock.wait_for_control_status.side_effect = wait
     mock.wait_for_control_values.side_effect = wait
     mock.wait_for_parameters.side_effect = wait
     mock.wait_for_simulation_inputs.side_effect = wait
@@ -86,12 +90,14 @@ async def override_pcm_messaging():
     mock.sensor_values = PcmSensorValues.zero()
     mock.control_values = PcmControlValues.zero()
     mock.parameters = PcmParameters()
+    mock.control_status = ControlStatusMessage(module="pcm", automatic=False)
 
     mock.simulation_inputs = PcmSimulationInputs.zero()
 
     async def wait(condition, *_args, timeout):
         return None
 
+    mock.wait_for_control_status.side_effect = wait
     mock.wait_for_control_values.side_effect = wait
     mock.wait_for_parameters.side_effect = wait
     mock.wait_for_simulation_inputs.side_effect = wait
@@ -103,12 +109,14 @@ async def override_consumers_messaging():
     mock.sensor_values = ConsumersSensorValues.zero()
     mock.control_values = ConsumersControlValues.zero()
     mock.parameters = ConsumersParameters()
+    mock.control_status = ControlStatusMessage(module="consumers", automatic=False)
 
     mock.simulation_inputs = ConsumersSimulationInputs.zero()
 
     async def wait(condition, *_args, timeout):
         return None
 
+    mock.wait_for_control_status.side_effect = wait
     mock.wait_for_control_values.side_effect = wait
     mock.wait_for_parameters.side_effect = wait
     mock.wait_for_simulation_inputs.side_effect = wait
@@ -120,14 +128,12 @@ async def override_messaging():
     mock.simulation_status = SimulationStatusMessage(
         status="available",
         simulation_time=datetime.fromtimestamp(0),
-        module="thrusters",
+        modules=["thrusters"],
     )
-    mock.control_status = ControlStatusMessage(automatic=False)
 
     async def wait(condition, *_args, timeout):
         return None
 
-    mock.wait_for_control_status.side_effect = wait
     mock.wait_for_simulation_status.side_effect = wait
     return mock
 
@@ -340,6 +346,7 @@ async def test_query_simulation_state(async_client):
 
 
 async def test_query_control_automation_mode(async_client):
+    app.dependency_overrides[messaging] = override_messaging
     app.dependency_overrides[thrusters_messaging] = override_thrusters_messaging
     app.dependency_overrides[pvt_messaging] = override_pvt_messaging
     app.dependency_overrides[pcm_messaging] = override_pcm_messaging
@@ -348,15 +355,17 @@ async def test_query_control_automation_mode(async_client):
         "/graphql",
         json={
             "query": """query {
-            control {
-                automatic
+            modules {
+                thrusters {
+                    automatic
+                }
             }
         }"""
         },
     )
 
     assert response.status_code == 200
-    assert response.json() == {"data": {"control": {"automatic": False}}}
+    assert response.json() == {"data": {"modules": {"thrusters": {"automatic": False}}}}
 
 
 async def test_mutation_simulation_play(async_client):
@@ -383,7 +392,9 @@ async def test_mutation_simulation_play(async_client):
 async def test_mutation_simulation_pause(async_client):
     messaging_mock = await override_messaging()
     messaging_mock.simulation_status = SimulationStatusMessage(
-        status="running", simulation_time=datetime.fromtimestamp(0), module="thrusters"
+        status="running",
+        simulation_time=datetime.fromtimestamp(0),
+        modules=["thrusters"],
     )
     app.dependency_overrides[messaging] = lambda: messaging_mock
     app.dependency_overrides[thrusters_messaging] = override_thrusters_messaging
@@ -492,9 +503,9 @@ async def test_mutation_simulation_input(async_client):
 
 
 async def test_mutation_control_set_automation_mode(async_client):
-    messaging_mock = await override_messaging()
-    app.dependency_overrides[messaging] = lambda: messaging_mock
-    app.dependency_overrides[thrusters_messaging] = override_thrusters_messaging
+    app.dependency_overrides[messaging] = override_messaging
+    messaging_mock = await override_thrusters_messaging()
+    app.dependency_overrides[thrusters_messaging] = lambda: messaging_mock
     app.dependency_overrides[pvt_messaging] = override_pvt_messaging
     app.dependency_overrides[pcm_messaging] = override_pcm_messaging
     app.dependency_overrides[consumers_messaging] = override_consumers_messaging
@@ -503,13 +514,13 @@ async def test_mutation_control_set_automation_mode(async_client):
         "/graphql",
         json={
             "query": """mutation {
-                controlSetAutomationMode(automatic: true)
+                thrustersSetAutomationMode(automatic: true)
             }"""
         },
     )
     assert response.status_code == 200
-    assert response.json() == {"data": {"controlSetAutomationMode": None}}
-    messaging_mock.set_automation.assert_awaited_once_with(True)
+    assert response.json() == {"data": {"thrustersSetAutomationMode": True}}
+    messaging_mock.set_automation_mode.assert_awaited_once_with(True)
 
 
 async def test_mutation_control_values_hanging_around(async_client):

@@ -1,9 +1,15 @@
-from datetime import datetime, timedelta
+from abc import ABC, abstractmethod
+from datetime import datetime
 from functools import reduce
 import operator
-from typing import Any
+from typing import Any, cast
 
-from thrs.input_output.base import SimulationInputs, ThrsModel
+from thrs.input_output.base import (
+    SimulationInputs,
+    SimulationValues,
+    ThrsValues,
+    CombinedValues,
+)
 from thrs.input_output.fmu_mapping import (
     build_outputs_from_fmu,
     extract_non_fmu_values,
@@ -12,10 +18,9 @@ from thrs.input_output.fmu_mapping import (
 from pydantic.fields import FieldInfo
 from thrs.input_output.definitions.units import unit_for_annotation, unit_meta
 from thrs.input_output.fmu_mapping import included_in_fmu
-from thrs.simulation.fmu import Fmu
 
 
-def flatten_model_values(model: ThrsModel, fmu_only: bool) -> dict[str, float]:
+def flatten_model_values(model: ThrsValues, fmu_only: bool) -> dict[str, float]:
     def _values_for_component(component_name, component):
         def _name_for_field(field_name, field: FieldInfo):
             meta = unit_meta(unit_for_annotation(field.annotation))  # type: ignore
@@ -44,45 +49,105 @@ def flatten_model_values(model: ThrsModel, fmu_only: bool) -> dict[str, float]:
     return reduce(operator.ior, vals, {})
 
 
-class IoMapping[S: ThrsModel, C: ThrsModel, I: SimulationInputs, O: ThrsModel]:
-    def __init__(
-        self,
-        fmu: Fmu,
-        sensor_values_cls: type[S],
-        simulation_outputs_cls: type[O],
-    ):
-        self._fmu = fmu
-        self._sensor_values_cls = sensor_values_cls
-        self._simulation_outputs_cls = simulation_outputs_cls
+class IoMapping[S, C, I, O](ABC):
+    @abstractmethod
+    def generate_inputs(
+        self, control_values: C, simulation_inputs: I
+    ) -> dict[str, Any]: ...
 
-    def tick(
+    @abstractmethod
+    def construct_outputs(
         self,
-        control_values: C,
+        fmu_inputs: dict[str, Any],
+        fmu_outputs: dict[str, Any],
         simulation_inputs: I,
         time: datetime,
-        tick_duration: timedelta,
-    ) -> tuple[S, O, dict[str, Any]]:
-        fmu_inputs = {
-            **flatten_model_values(control_values, fmu_only=True),
+    ) -> tuple[S, O, dict[str, Any]]: ...
+
+
+class CombinedIoMapping[I: SimulationInputs, O: SimulationValues](
+    IoMapping[CombinedValues, CombinedValues, I, O]
+):
+    def __init__(
+        self,
+        sensor_values_clss: dict[str, type[ThrsValues]],
+        simulation_outputs_cls: type[O],
+    ):
+        self._sensor_values_clss = sensor_values_clss
+        self._simulation_outputs_cls = simulation_outputs_cls
+
+    def generate_inputs(
+        self,
+        control_values: CombinedValues,
+        simulation_inputs: I,
+    ) -> dict[str, Any]:
+        return {
+            **{
+                key: value
+                for model in control_values.values.values()
+                for key, value in flatten_model_values(model, fmu_only=True).items()
+            },
             **flatten_model_values(simulation_inputs, fmu_only=True),
         }
 
-        fmu_outputs = self._fmu.tick(
-            fmu_inputs,
-            tick_duration,
-        )
-        sensor_extra_values = extract_non_fmu_values(
-            simulation_inputs, self._sensor_values_cls
-        )
-
-        sensor_values, simulation_outputs = build_outputs_from_fmu(
-            (self._sensor_values_cls, self._simulation_outputs_cls),
+    def construct_outputs(
+        self,
+        fmu_inputs: dict[str, Any],
+        fmu_outputs: dict[str, Any],
+        simulation_inputs: I,
+        time: datetime,
+    ) -> tuple[CombinedValues, O, dict[str, Any]]:
+        sensor_extra_values = {
+            key: value
+            for sensor_values_cls in self._sensor_values_clss.values()
+            for key, value in extract_non_fmu_values(
+                simulation_inputs, sensor_values_cls
+            ).items()
+        }
+        simulation_outputs, *sensor_values = build_outputs_from_fmu(
+            (
+                self._simulation_outputs_cls,
+                *self._sensor_values_clss.values(),
+            ),
             fmu_outputs,
-            time + tick_duration,
+            time,
             sensor_extra_values,
         )
         return (
-            sensor_values,
-            simulation_outputs,
+            CombinedValues(dict(zip(self._sensor_values_clss.keys(), sensor_values))),
+            cast(O, simulation_outputs),
             {**fmu_outputs, **fmu_inputs},
         )
+
+
+class ThrsModelIoMapping[
+    S: ThrsValues,
+    C: ThrsValues,
+    I: SimulationInputs,
+    O: SimulationValues,
+](IoMapping[S, C, I, O]):
+    def __init__(
+        self,
+        sensor_values_cls: type[S],
+        simulation_outputs_cls: type[O],
+    ):
+        self._sub = CombinedIoMapping({"": sensor_values_cls}, simulation_outputs_cls)
+
+    def generate_inputs(
+        self, control_values: C, simulation_inputs: I
+    ) -> dict[str, Any]:
+        return self._sub.generate_inputs(
+            CombinedValues({"": control_values}), simulation_inputs
+        )
+
+    def construct_outputs(
+        self,
+        fmu_inputs: dict[str, Any],
+        fmu_outputs: dict[str, Any],
+        simulation_inputs: I,
+        time: datetime,
+    ) -> tuple[S, O, dict[str, Any]]:
+        sensor_values, outputs, rest = self._sub.construct_outputs(
+            fmu_inputs, fmu_outputs, simulation_inputs, time
+        )
+        return cast(S, sensor_values.values[""]), outputs, rest

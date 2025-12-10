@@ -2,13 +2,13 @@ from typing import Annotated
 from thrs.input_output.base import (
     SimulationInputs,
     SimulationValues,
-    ThrsModel,
+    ThrsValues,
     component_meta,
 )
 from thrs.input_output.definitions import control, sensor, simulation
 
 
-class ConsumersSensorValues(ThrsModel):
+class ConsumersSensorValues(ThrsValues):
     consumers_temperature_boosting_return: Annotated[
         sensor.TemperatureSensor,
         component_meta(yard_tag="50001038-48", component_type="temperature_sensor"),
@@ -70,7 +70,7 @@ class ConsumersSensorValues(ThrsModel):
     ]
 
 
-class ConsumersControlValues(ThrsModel):
+class ConsumersControlValues(ThrsValues):
     consumers_flowcontrol_fahrenheit: Annotated[
         control.Valve,
         component_meta(

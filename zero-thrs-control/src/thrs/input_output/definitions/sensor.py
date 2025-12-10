@@ -1,4 +1,4 @@
-from thrs.input_output.base import Stamped, ThrsModel
+from thrs.input_output.base import Stamped, ThrsValues
 from thrs.input_output.definitions.units import (
     Bar,
     Celsius,
@@ -16,26 +16,26 @@ from thrs.input_output.definitions.units import (
 )
 
 
-class FlowSensor(ThrsModel):
+class FlowSensor(ThrsValues):
     flow: Stamped[LMin]
     temperature: Stamped[Celsius]
 
 
-class Pump(ThrsModel):
+class Pump(ThrsValues):
     speed: Stamped[Hz]
     op_time: Stamped[seconds]
     flow: Stamped[LMin]
 
 
-class TemperatureSensor(ThrsModel):
+class TemperatureSensor(ThrsValues):
     temperature: Stamped[Celsius]
 
 
-class LevelSensor(ThrsModel):
+class LevelSensor(ThrsValues):
     level: Stamped[Liter]
 
 
-class CalculatedTemperature(ThrsModel):
+class CalculatedTemperature(ThrsValues):
     temperature: Stamped[OptionalCelsius]
 
     @classmethod
@@ -50,31 +50,31 @@ class CalculatedTemperature(ThrsModel):
         )
 
 
-class Valve(ThrsModel):
+class Valve(ThrsValues):
     position_rel: Stamped[Ratio]
 
 
-class PressureSensor(ThrsModel):
+class PressureSensor(ThrsValues):
     pressure: Stamped[Bar]
 
 
-class Thruster(ThrsModel):
+class Thruster(ThrsValues):
     active: Stamped[bool]
 
 
-class Pcs(ThrsModel):
+class Pcs(ThrsValues):
     mode: Stamped[PcsMode]
 
 
-class Pcm(ThrsModel):
+class Pcm(ThrsValues):
     charged: Stamped[Charged]
 
 
-class Fahrenheit(ThrsModel):
+class Fahrenheit(ThrsValues):
     operating: Stamped[OnOff]
 
 
-class PowerSensor(ThrsModel):
+class PowerSensor(ThrsValues):
     flow: Stamped[LMin]
     power: Stamped[Watt]
     delta_t: Stamped[Kelvin]

@@ -6,7 +6,7 @@ from transitions import Machine, State
 
 from thrs.control.controllers import Controller, FlowBalanceController
 from thrs.input_output.alarms import BaseAlarms, Severity, alarm
-from thrs.input_output.base import Stamped, ThrsModel
+from thrs.input_output.base import Stamped, ThrsValues
 from thrs.input_output.definitions.control import Pump, Valve
 from thrs.input_output.modules.thrusters import (
     ThrustersControlValues,
@@ -16,7 +16,7 @@ from thrs.input_output.definitions.units import Celsius, LMin, PcsMode, Ratio, T
 from thrs.classes.control import Control, ControlResult
 
 
-class ThrustersParameters(ThrsModel):
+class ThrustersParameters(ThrsValues):
     maximum_supply_temperature: Celsius = 75
     cooling_temperature: Celsius = 38
     cooling_flow: LMin = 25

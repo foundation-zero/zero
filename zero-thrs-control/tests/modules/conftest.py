@@ -1,5 +1,5 @@
 import fmpy
-from thrs.input_output.base import ThrsModel
+from thrs.input_output.base import ThrsValues
 
 import polars as pl
 
@@ -10,10 +10,10 @@ SHEET_URL = "https://docs.google.com/spreadsheets/d/1YyfkKmqL8MZuJfStljTjhgFxawc
 
 
 def modelica_names_from_class(
-    sensor_values: ThrsModel,
-    control_values: ThrsModel,
-    simulation_inputs: ThrsModel,
-    simulation_outputs: ThrsModel,
+    sensor_values: ThrsValues,
+    control_values: ThrsValues,
+    simulation_inputs: ThrsValues,
+    simulation_outputs: ThrsValues,
 ) -> set[str]:
     return set(
         {
@@ -27,10 +27,10 @@ def modelica_names_from_class(
 
 def compare_modelica_names(
     module_name: str | list[str],
-    sensor_values: ThrsModel,
-    control_values: ThrsModel,
-    simulation_inputs: ThrsModel,
-    simulation_outputs: ThrsModel,
+    sensor_values: ThrsValues,
+    control_values: ThrsValues,
+    simulation_inputs: ThrsValues,
+    simulation_outputs: ThrsValues,
 ):
     """
     Compare the Modelica names in the Python code with the Modelica names in the Google Sheet.
@@ -86,8 +86,8 @@ def compare_fmu_to_class(
 
 
 def compare_yard_tags(
-    sensor_values_cls: type[ThrsModel],
-    control_values_cls: type[ThrsModel],
+    sensor_values_cls: type[ThrsValues],
+    control_values_cls: type[ThrsValues],
     exclude: set[str] | None = None,
 ):
     exclude = exclude or set()

@@ -16,7 +16,7 @@ from thrs.input_output.modules.pvt import (
 )
 from thrs.orchestration.executor import SimulationExecutor
 from thrs.simulation.fmu import Fmu
-from thrs.simulation.io_mapping import IoMapping
+from thrs.simulation.io_mapping import ThrsModelIoMapping
 from thrs.simulation.models.fmu_paths import pvt_path
 
 
@@ -49,12 +49,10 @@ def pump_failure_simulation_inputs(simulation_inputs):
 
 @fixture
 def io_mapping():
-    with Fmu(pvt_path) as fmu:
-        yield IoMapping(
-            fmu,
-            PvtSensorValues,
-            PvtSimulationOutputs,
-        )
+    return ThrsModelIoMapping(
+        PvtSensorValues,
+        PvtSimulationOutputs,
+    )
 
 
 @fixture
@@ -64,13 +62,19 @@ def control(executor):
 
 @fixture
 def executor(io_mapping, simulation_inputs):
-    return SimulationExecutor(
-        io_mapping, simulation_inputs, datetime.now(), timedelta(seconds=1)
-    )
+    with Fmu(pvt_path) as fmu:
+        yield SimulationExecutor(
+            io_mapping, fmu, simulation_inputs, datetime.now(), timedelta(seconds=1)
+        )
 
 
 @fixture
 def pump_failure_executor(io_mapping, pump_failure_simulation_inputs):
-    return SimulationExecutor(
-        io_mapping, pump_failure_simulation_inputs, datetime.now(), timedelta(seconds=1)
-    )
+    with Fmu(pvt_path) as fmu:
+        yield SimulationExecutor(
+            io_mapping,
+            fmu,
+            pump_failure_simulation_inputs,
+            datetime.now(),
+            timedelta(seconds=1),
+        )

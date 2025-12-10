@@ -5,14 +5,14 @@ from pydantic import model_validator
 from transitions import Machine, State
 from thrs.classes.control import Control, ControlResult
 from thrs.control.controllers import Controller
-from thrs.input_output.base import Stamped, ThrsModel
+from thrs.input_output.base import Stamped, ThrsValues
 from thrs.input_output.definitions import sensor
 from thrs.input_output.definitions import control
 from thrs.input_output.definitions.control import Pump, Valve
 from thrs.input_output.definitions.units import Celsius, Ratio, Tuning
 
 
-class PvtGroupSensorValues(ThrsModel):
+class PvtGroupSensorValues(ThrsValues):
     pump: sensor.Pump
     temperature_supply: sensor.TemperatureSensor
     temperature_return: sensor.TemperatureSensor
@@ -21,12 +21,12 @@ class PvtGroupSensorValues(ThrsModel):
     max_temperature_strings: sensor.CalculatedTemperature
 
 
-class PvtGroupControlValues(ThrsModel):
+class PvtGroupControlValues(ThrsValues):
     pump: control.Pump
     mix: control.Valve
 
 
-class PvtGroupParameters(ThrsModel):
+class PvtGroupParameters(ThrsValues):
     warmup_temperature: Celsius
     recovery_temperature: Celsius
     warmup_mix_tuning: Tuning
