@@ -35,7 +35,9 @@ class PCanAdapter:
     @asynccontextmanager
     @staticmethod
     async def init_from_settings(settings: Settings):
-        async with MqttClient(settings.mqtt_host, settings.mqtt_port, identifier="loads") as mqtt_client:
+        async with MqttClient(
+            settings.mqtt_host, settings.mqtt_port, identifier="loads"
+        ) as mqtt_client:
             yield PCanAdapter(
                 mqtt_client,
                 settings.canbus_ip,
@@ -58,7 +60,9 @@ class PCanAdapter:
     async def _read_message(self):
         """Read a message from the UDP socket and decode it"""
         loop = asyncio.get_running_loop()
-        message, address = await loop.run_in_executor(None, self.socket.recvfrom, self.buffer_size)
+        message, address = await loop.run_in_executor(
+            None, self.socket.recvfrom, self.buffer_size
+        )
         return await self._decode_can_frame(message)
 
     async def _send_mqtt_message(self, message: Container):

@@ -26,9 +26,11 @@ class LoadsModel(BaseModel):
             topic=cls.TOPIC,
             interval=interval,
             values={
-                str(field_info.validation_alias if field_info.validation_alias else field): cls._create_generator(
-                    field_info.annotation, field_info.metadata
-                )
+                str(
+                    field_info.validation_alias
+                    if field_info.validation_alias
+                    else field
+                ): cls._create_generator(field_info.annotation, field_info.metadata)
                 for field, field_info in cls.model_fields.items()
             },
         )
@@ -46,7 +48,12 @@ class LoadsModel(BaseModel):
 
     @staticmethod
     def _extract_constraints(meta: list[Any]) -> Dict[str, Any]:
-        return {attr: getattr(m, attr) for m in meta for attr in ("gt", "ge", "lt", "le") if hasattr(m, attr)}
+        return {
+            attr: getattr(m, attr)
+            for m in meta
+            for attr in ("gt", "ge", "lt", "le")
+            if hasattr(m, attr)
+        }
 
     @staticmethod
     def _type_name(tp: Any) -> str:

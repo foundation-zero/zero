@@ -14,8 +14,7 @@ def override_messaging():
 
     mock.get_values_for = Mock(
         return_value=[
-            ActualType(id="headstay-load", value=1.0),
-            ActualType(id="main-sheet-load", value=2.0),
+            ActualType(id="main-sheet-load", value=42.0),
         ]
     )
     return mock
@@ -24,7 +23,9 @@ def override_messaging():
 @pytest.fixture
 async def async_client():
     async with LifespanManager(app) as manager:
-        async with AsyncClient(transport=ASGITransport(app=manager.app), base_url="http://test") as client:
+        async with AsyncClient(
+            transport=ASGITransport(app=manager.app), base_url="http://test"
+        ) as client:
             yield client
 
 
@@ -37,27 +38,25 @@ async def test_graphql_reference(async_client: AsyncClient):
         json={
             "query": """
             query {
-                variables(variables: ["headstay-load", "main-sheet-load"]) {
-                    actual {
-                        value
-                        id
+                variables(variables: ["main-sheet-load"]) {
+                    id
+                    reference(case: {awa: 27, aws: 16, sailset: [full_main, full_mizzen, blade]}) {
+                    reference {
+                        alarmLow
+                        alarmHigh
+                        target
+                        warningHigh
+                        warningLow
                     }
-                    reference(
-                        sails: [full_main_sail, main_blade, full_mizzen_sail]
-                        case: {seaState: wet, pcsMode: {fwd: propulsion, aft: propulsion}, awa: 1.5, aws: 1.5}
-                    ) {
-                        masts {
-                            id
-                            name
-                        }
-                        target {
-                            unit
-                            target
-                        }
-                        value {
-                            name
-                            id
-                        }
+                    variable {
+                        id
+                        name
+                        unit
+                    }
+                    }
+                    actual {
+                    id
+                    value
                     }
                 }
             }
@@ -70,14 +69,23 @@ async def test_graphql_reference(async_client: AsyncClient):
         "data": {
             "variables": [
                 {
-                    "actual": {"value": 1.0, "id": "headstay-load"},
+                    "id": "main-sheet-load",
                     "reference": {
-                        "masts": {"id": "main", "name": "Main mast"},
-                        "target": {"unit": "tonne", "target": "2.0"},
-                        "value": {"name": "Headstay load", "id": "headstay-load"},
+                        "reference": {
+                            "alarmLow": None,
+                            "alarmHigh": 15.0,
+                            "target": None,
+                            "warningHigh": None,
+                            "warningLow": None,
+                        },
+                        "variable": {
+                            "id": "main-sheet-load",
+                            "name": "Main Sheet Load",
+                            "unit": "tonne",
+                        },
                     },
-                },
-                {"actual": {"value": 2.0, "id": "main-sheet-load"}, "reference": None},
+                    "actual": {"id": "main-sheet-load", "value": 42.0},
+                }
             ]
         }
     }
