@@ -16,7 +16,7 @@ const isAutomated = computed(() => control.value?.modules?.[props.module].automa
 
 <template>
   <Button
-    :variant="isAutomated ? 'default' : 'secondary'"
+    variant="ghost"
     size="icon"
     :disabled="isProcessing"
     @click="setAutomatedControl(props.module)(!isAutomated)"
