@@ -17,7 +17,7 @@ class BoilersSensorValues(ThrsValues):
         sensor.TemperatureSensor,
         component_meta(yard_tag="50001038-25", component_type="temperature_sensor"),
     ]
-    boilers_temperature_converters_return: Annotated[
+    boilers_temperature_lt2_return: Annotated[
         sensor.TemperatureSensor,
         component_meta(yard_tag="50001038-26", component_type="temperature_sensor"),
     ]
@@ -33,7 +33,7 @@ class BoilersSensorValues(ThrsValues):
         sensor.TemperatureSensor,
         component_meta(yard_tag="50001038-45", component_type="temperature_sensor"),
     ]
-    boilers_temperature_propdrive_shore_return: Annotated[
+    boilers_temperature_lt1_return: Annotated[
         sensor.TemperatureSensor,
         component_meta(yard_tag="50001038-46", component_type="temperature_sensor"),
     ]
@@ -65,11 +65,11 @@ class BoilersSensorValues(ThrsValues):
         sensor.LevelSensor,
         component_meta(yard_tag="50001056-03", component_type="pressure_sensor"),
     ]
-    boilers_flow_converters: Annotated[
+    boilers_flow_lt2: Annotated[
         sensor.FlowSensor,
         component_meta(yard_tag="50001057-17", component_type="flow_sensor"),
     ]
-    boilers_flow_propdrive_shore: Annotated[
+    boilers_flow_lt1: Annotated[
         sensor.FlowSensor,
         component_meta(yard_tag="50001057-24", component_type="flow_sensor"),
     ]
@@ -77,13 +77,13 @@ class BoilersSensorValues(ThrsValues):
         sensor.FlowSensor,
         component_meta(yard_tag="50001058-11", component_type="flow_sensor"),
     ]
-    boilers_flowcontrol_converters: Annotated[
+    boilers_flowcontrol_lt2: Annotated[
         sensor.Valve,
         component_meta(
             yard_tag="50001064-03", component_type="valve", valve_type="flowcontrol"
         ),
     ]
-    boilers_flowcontrol_propdrive_shore: Annotated[
+    boilers_flowcontrol_lt1: Annotated[
         sensor.Valve,
         component_meta(
             yard_tag="50001064-08", component_type="valve", valve_type="flowcontrol"
@@ -188,13 +188,13 @@ class BoilersControlValues(ThrsValues):
     boilers_heatpump: Annotated[
         control.HeatPump, component_meta(yard_tag="50001035", component_type="heatpump")
     ]
-    boilers_flowcontrol_converters: Annotated[
+    boilers_flowcontrol_lt2: Annotated[
         control.Valve,
         component_meta(
             yard_tag="50001064-03", component_type="valve", valve_type="flowcontrol"
         ),
     ]
-    boilers_flowcontrol_propdrive_shore: Annotated[
+    boilers_flowcontrol_lt1: Annotated[
         control.Valve,
         component_meta(
             yard_tag="50001064-08", component_type="valve", valve_type="flowcontrol"
@@ -293,17 +293,17 @@ class BoilersControlValues(ThrsValues):
 
 
 class BoilersSimulationInputs(SimulationInputs):
-    boilers_propdrive_shore_supply: simulation.FmuBoundary
+    boilers_lt1_supply: simulation.FmuBoundary
     boilers_fahrenheit_supply: simulation.FmuBoundary
-    boilers_converters_supply: simulation.FmuBoundary
+    boilers_lt2_supply: simulation.FmuBoundary
     boilers_high_temperature_supply: simulation.FmuBoundary
     boilers_freshwater_supply: simulation.TemperatureBoundary
     boilers_freshwater_pressure: simulation.PressureBoundary
 
 
 class BoilersSimulationOutputs(SimulationValues):
-    boilers_propdrive_shore_return: simulation.FmuBoundary
+    boilers_lt1_return: simulation.FmuBoundary
     boilers_fahrenheit_return: simulation.FmuBoundary
-    boilers_converters_return: simulation.FmuBoundary
+    boilers_lt2_return: simulation.FmuBoundary
     boilers_high_temperature_return: simulation.FmuBoundary
     boilers_freshwater_return: simulation.FmuBoundary
