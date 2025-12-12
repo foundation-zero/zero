@@ -311,6 +311,8 @@ h6 {
   --text-5xs--line-height: 0.375rem;
   --text-6xs: 0.175rem;
   --text-6xs--line-height: 0.25rem;
+  --text-6xl: 3.5rem;
+  --text-6xl--line-height: 4rem;
   --text-r6xs: 0.175em;
   --text-r6xs--line-height: 0.25em;
   --text-r5xs: 0.25em;

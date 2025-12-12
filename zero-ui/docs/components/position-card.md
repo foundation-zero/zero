@@ -1,51 +1,70 @@
 # Position Card
 
-A specialized card component for displaying position values with visual threshold indicators using an interactive slider representation.
+A composable card component for displaying position values with visual threshold indicators using and slider representation.
 
 <script setup>
-import { PositionCard } from '@/modules/loads/components/position-card'
+import { 
+  PositionCard,
+  PositionCardReferenceTarget,
+  PositionCardSlider,
+  PositionCardValue,
+  PositionCardTitle
+} from '@/modules/loads/components/position-card'
 </script>
 
 ## Overview
 
-The PositionCard component displays a position value with visual indicators for target, warning, and alarm thresholds. It features an interactive slider that visually represents the current value position relative to defined thresholds, using color coding to convey the state.
+The PositionCard is a composable component system that displays position values with visual indicators for target, warning, and alarm thresholds. Following the shadcn philosophy, the component is composed of separate sub-components that you can arrange and customize as needed.
 
-The component supports two slider types:
+The slider supports two types:
 - **Symmetric**: Displays a centered slider with values ranging from negative to positive
 - **Asymmetric**: Displays a left-aligned slider with values ranging from zero to positive
+
+### Composition
+
+The PositionCard system consists of:
+- `PositionCard` - The main container that provides context
+- `PositionCardReferenceTarget` - Displays the target reference value
+- `PositionCardSlider` - The slider visualization
+- `PositionCardValue` - The numerical value display
+- `PositionCardTitle` - The title/label text
 
 ### Basic Example
 
 <div class="my-4 p-8 bg-background flex justify-center">
   <PositionCard
-    :value="42"
-    :type="'symmetric'"
+    :value="0.42"
     :thresholds="{
-      target: 40,
-      warningLow: 35,
-      warningHigh: 45,
-      alarmLow: 20,
-      alarmHigh: 50
+      target: 0.40,
+      warningLow: 0.35,
+      warningHigh: 0.45,
+      alarmLow: 0.20,
+      alarmHigh: 0.50
     }"
   >
-    Info if needed
+    <PositionCardReferenceTarget />
+    <PositionCardSlider type="symmetric" />
+    <PositionCardValue />
+    <PositionCardTitle>Info if needed</PositionCardTitle>
   </PositionCard>
 </div>
 
 ```vue
 <template>
   <PositionCard
-    :value="42"
-    :type="'symmetric'"
+    :value="0.42"
     :thresholds="{
-      target: 40,
-      warningLow: 35,
-      warningHigh: 45,
-      alarmLow: 20,
-      alarmHigh: 50
+      target: 0.40,
+      warningLow: 0.35,
+      warningHigh: 0.45,
+      alarmLow: 0.20,
+      alarmHigh: 0.50
     }"
   >
-    Info if needed
+    <PositionCardReferenceTarget />
+    <PositionCardSlider type="symmetric" />
+    <PositionCardValue />
+    <PositionCardTitle>Info if needed</PositionCardTitle>
   </PositionCard>
 </template>
 ```
@@ -60,34 +79,38 @@ The symmetric slider displays values centered around zero, useful for bidirectio
 
 <div class="my-4 p-8 bg-background flex justify-center">
   <PositionCard
-    :value="42"
-    :type="'symmetric'"
+    :value="0.42"
     :thresholds="{
-      target: 40,
-      warningLow: 35,
-      warningHigh: 45,
-      alarmLow: 20,
-      alarmHigh: 50
+      target: 0.40,
+      warningLow: 0.35,
+      warningHigh: 0.45,
+      alarmLow: 0.20,
+      alarmHigh: 0.50
     }"
   >
-    Info if needed
+    <PositionCardReferenceTarget />
+    <PositionCardSlider type="symmetric" />
+    <PositionCardValue />
+    <PositionCardTitle>Info if needed</PositionCardTitle>
   </PositionCard>
 </div>
 
 ```vue
 <template>
   <PositionCard
-    :value="42"
-    :type="'symmetric'"
+    :value="0.42"
     :thresholds="{
-      target: 40,
-      warningLow: 35,
-      warningHigh: 45,
-      alarmLow: 20,
-      alarmHigh: 50
+      target: 0.40,
+      warningLow: 0.35,
+      warningHigh: 0.45,
+      alarmLow: 0.20,
+      alarmHigh: 0.50
     }"
   >
-    Info if needed
+    <PositionCardReferenceTarget />
+    <PositionCardSlider type="symmetric" />
+    <PositionCardValue />
+    <PositionCardTitle>Info if needed</PositionCardTitle>
   </PositionCard>
 </template>
 ```
@@ -96,34 +119,38 @@ The symmetric slider displays values centered around zero, useful for bidirectio
 
 <div class="my-4 p-8 bg-background flex justify-center">
   <PositionCard
-    :value="47"
-    :type="'symmetric'"
+    :value="0.47"
     :thresholds="{
-      target: 40,
-      warningLow: 35,
-      warningHigh: 45,
-      alarmLow: 20,
-      alarmHigh: 50
+      target: 0.40,
+      warningLow: 0.35,
+      warningHigh: 0.45,
+      alarmLow: 0.20,
+      alarmHigh: 0.50
     }"
   >
-    Info if needed
+    <PositionCardReferenceTarget />
+    <PositionCardSlider type="symmetric" />
+    <PositionCardValue />
+    <PositionCardTitle>Info if needed</PositionCardTitle>
   </PositionCard>
 </div>
 
 ```vue
 <template>
   <PositionCard
-    :value="47"
-    :type="'symmetric'"
+    :value="0.47"
     :thresholds="{
-      target: 40,
-      warningLow: 35,
-      warningHigh: 45,
-      alarmLow: 20,
-      alarmHigh: 50
+      target: 0.40,
+      warningLow: 0.35,
+      warningHigh: 0.45,
+      alarmLow: 0.20,
+      alarmHigh: 0.50
     }"
   >
-    Info if needed
+    <PositionCardReferenceTarget />
+    <PositionCardSlider type="symmetric" />
+    <PositionCardValue />
+    <PositionCardTitle>Info if needed</PositionCardTitle>
   </PositionCard>
 </template>
 ```
@@ -132,34 +159,38 @@ The symmetric slider displays values centered around zero, useful for bidirectio
 
 <div class="my-4 p-8 bg-background flex justify-center">
   <PositionCard
-    :value="-58"
-    :type="'symmetric'"
+    :value="-0.58"
     :thresholds="{
-      target: 40,
-      warningLow: 35,
-      warningHigh: 45,
-      alarmLow: 20,
-      alarmHigh: 50
+      target: 0.40,
+      warningLow: 0.35,
+      warningHigh: 0.45,
+      alarmLow: 0.20,
+      alarmHigh: 0.50
     }"
   >
-    Info if needed
+    <PositionCardReferenceTarget />
+    <PositionCardSlider type="symmetric" />
+    <PositionCardValue />
+    <PositionCardTitle>Info if needed</PositionCardTitle>
   </PositionCard>
 </div>
 
 ```vue
 <template>
   <PositionCard
-    :value="-58"
-    :type="'symmetric'"
+    :value="-0.58"
     :thresholds="{
-      target: 40,
-      warningLow: 35,
-      warningHigh: 45,
-      alarmLow: 20,
-      alarmHigh: 50
+      target: 0.40,
+      warningLow: 0.35,
+      warningHigh: 0.45,
+      alarmLow: 0.20,
+      alarmHigh: 0.50
     }"
   >
-    Info if needed
+    <PositionCardReferenceTarget />
+    <PositionCardSlider type="symmetric" />
+    <PositionCardValue />
+    <PositionCardTitle>Info if needed</PositionCardTitle>
   </PositionCard>
 </template>
 ```
@@ -172,34 +203,38 @@ The asymmetric slider displays values from zero upward, suitable for unidirectio
 
 <div class="my-4 p-8 bg-background flex justify-center">
   <PositionCard
-    :value="71"
-    :type="'asymmetric'"
+    :value="0.71"
     :thresholds="{
-      target: 70,
-      warningLow: 65,
-      warningHigh: 75,
-      alarmLow: 50,
-      alarmHigh: 90
+      target: 0.70,
+      warningLow: 0.65,
+      warningHigh: 0.75,
+      alarmLow: 0.50,
+      alarmHigh: 0.90
     }"
   >
-    Info if needed
+    <PositionCardReferenceTarget />
+    <PositionCardSlider type="asymmetric" />
+    <PositionCardValue />
+    <PositionCardTitle>Info if needed</PositionCardTitle>
   </PositionCard>
 </div>
 
 ```vue
 <template>
   <PositionCard
-    :value="71"
-    :type="'asymmetric'"
+    :value="0.71"
     :thresholds="{
-      target: 70,
-      warningLow: 65,
-      warningHigh: 75,
-      alarmLow: 50,
-      alarmHigh: 90
+      target: 0.70,
+      warningLow: 0.65,
+      warningHigh: 0.75,
+      alarmLow: 0.50,
+      alarmHigh: 0.90
     }"
   >
-    Info if needed
+    <PositionCardReferenceTarget />
+    <PositionCardSlider type="asymmetric" />
+    <PositionCardValue />
+    <PositionCardTitle>Info if needed</PositionCardTitle>
   </PositionCard>
 </template>
 ```
@@ -208,34 +243,38 @@ The asymmetric slider displays values from zero upward, suitable for unidirectio
 
 <div class="my-4 p-8 bg-background flex justify-center">
   <PositionCard
-    :value="80"
-    :type="'asymmetric'"
+    :value="0.80"
     :thresholds="{
-      target: 70,
-      warningLow: 65,
-      warningHigh: 75,
-      alarmLow: 50,
-      alarmHigh: 90
+      target: 0.70,
+      warningLow: 0.65,
+      warningHigh: 0.75,
+      alarmLow: 0.50,
+      alarmHigh: 0.90
     }"
   >
-    Info if needed
+    <PositionCardReferenceTarget />
+    <PositionCardSlider type="asymmetric" />
+    <PositionCardValue />
+    <PositionCardTitle>Info if needed</PositionCardTitle>
   </PositionCard>
 </div>
 
 ```vue
 <template>
   <PositionCard
-    :value="80"
-    :type="'asymmetric'"
+    :value="0.80"
     :thresholds="{
-      target: 70,
-      warningLow: 65,
-      warningHigh: 75,
-      alarmLow: 50,
-      alarmHigh: 90
+      target: 0.70,
+      warningLow: 0.65,
+      warningHigh: 0.75,
+      alarmLow: 0.50,
+      alarmHigh: 0.90
     }"
   >
-    Info if needed
+    <PositionCardReferenceTarget />
+    <PositionCardSlider type="asymmetric" />
+    <PositionCardValue />
+    <PositionCardTitle>Info if needed</PositionCardTitle>
   </PositionCard>
 </template>
 ```
@@ -244,34 +283,38 @@ The asymmetric slider displays values from zero upward, suitable for unidirectio
 
 <div class="my-4 p-8 bg-background flex justify-center">
   <PositionCard
-    :value="20"
-    :type="'asymmetric'"
+    :value="0.20"
     :thresholds="{
-      target: 70,
-      warningLow: 65,
-      warningHigh: 75,
-      alarmLow: 50,
-      alarmHigh: 90
+      target: 0.70,
+      warningLow: 0.65,
+      warningHigh: 0.75,
+      alarmLow: 0.50,
+      alarmHigh: 0.90
     }"
   >
-    Info if needed
+    <PositionCardReferenceTarget />
+    <PositionCardSlider type="asymmetric" />
+    <PositionCardValue />
+    <PositionCardTitle>Info if needed</PositionCardTitle>
   </PositionCard>
 </div>
 
 ```vue
 <template>
   <PositionCard
-    :value="20"
-    :type="'asymmetric'"
+    :value="0.20"
     :thresholds="{
-      target: 70,
-      warningLow: 65,
-      warningHigh: 75,
-      alarmLow: 50,
-      alarmHigh: 90
+      target: 0.70,
+      warningLow: 0.65,
+      warningHigh: 0.75,
+      alarmLow: 0.50,
+      alarmHigh: 0.90
     }"
   >
-    Info if needed
+    <PositionCardReferenceTarget />
+    <PositionCardSlider type="asymmetric" />
+    <PositionCardValue />
+    <PositionCardTitle>Info if needed</PositionCardTitle>
   </PositionCard>
 </template>
 ```
@@ -281,82 +324,94 @@ The asymmetric slider displays values from zero upward, suitable for unidirectio
 <div class="my-4">
   <div class="grid grid-cols-2 gap-4">
     <PositionCard
-      :value="42"
-      :type="'symmetric'"
+      :value="0.42"
       :thresholds="{
-        target: 40,
-        warningLow: 35,
-        warningHigh: 45,
-        alarmLow: 20,
-        alarmHigh: 50
+        target: 0.40,
+        warningLow: 0.35,
+        warningHigh: 0.45,
+        alarmLow: 0.20,
+        alarmHigh: 0.50
       }"
     >
-      Info if needed
+      <PositionCardReferenceTarget />
+      <PositionCardSlider type="symmetric" />
+      <PositionCardValue />
+      <PositionCardTitle>Info if needed</PositionCardTitle>
     </PositionCard>
     <PositionCard
-      :value="47"
-      :type="'symmetric'"
+      :value="0.47"
       :thresholds="{
-        target: 40,
-        warningLow: 35,
-        warningHigh: 45,
-        alarmLow: 20,
-        alarmHigh: 50
+        target: 0.40,
+        warningLow: 0.35,
+        warningHigh: 0.45,
+        alarmLow: 0.20,
+        alarmHigh: 0.50
       }"
     >
-      Info if needed
+      <PositionCardReferenceTarget />
+      <PositionCardSlider type="symmetric" />
+      <PositionCardValue />
+      <PositionCardTitle>Info if needed</PositionCardTitle>
     </PositionCard>
     <PositionCard
-      :value="-58"
-      :type="'symmetric'"
+      :value="-0.58"
       :thresholds="{
-        target: 40,
-        warningLow: 35,
-        warningHigh: 45,
-        alarmLow: 20,
-        alarmHigh: 50
+        target: 0.40,
+        warningLow: 0.35,
+        warningHigh: 0.45,
+        alarmLow: 0.20,
+        alarmHigh: 0.50
       }"
     >
-      Info if needed
+      <PositionCardReferenceTarget />
+      <PositionCardSlider type="symmetric" />
+      <PositionCardValue />
+      <PositionCardTitle>Info if needed</PositionCardTitle>
     </PositionCard>
     <PositionCard
-      :value="71"
-      :type="'asymmetric'"
+      :value="0.71"
       :thresholds="{
-        target: 70,
-        warningLow: 65,
-        warningHigh: 75,
-        alarmLow: 50,
-        alarmHigh: 90
+        target: 0.70,
+        warningLow: 0.65,
+        warningHigh: 0.75,
+        alarmLow: 0.50,
+        alarmHigh: 0.90
       }"
     >
-      Info if needed
+      <PositionCardReferenceTarget />
+      <PositionCardSlider type="asymmetric" />
+      <PositionCardValue />
+      <PositionCardTitle>Info if needed</PositionCardTitle>
     </PositionCard>
     <PositionCard
-      :value="80"
-      :type="'asymmetric'"
+      :value="0.80"
       :thresholds="{
-        target: 70,
-        warningLow: 65,
-        warningHigh: 75,
-        alarmLow: 50,
-        alarmHigh: 90
+        target: 0.70,
+        warningLow: 0.65,
+        warningHigh: 0.75,
+        alarmLow: 0.50,
+        alarmHigh: 0.90
       }"
     >
-      Info if needed
+      <PositionCardReferenceTarget />
+      <PositionCardSlider type="asymmetric" />
+      <PositionCardValue />
+      <PositionCardTitle>Info if needed</PositionCardTitle>
     </PositionCard>
     <PositionCard
-      :value="20"
-      :type="'asymmetric'"
+      :value="0.20"
       :thresholds="{
-        target: 70,
-        warningLow: 65,
-        warningHigh: 75,
-        alarmLow: 50,
-        alarmHigh: 90
+        target: 0.70,
+        warningLow: 0.65,
+        warningHigh: 0.75,
+        alarmLow: 0.50,
+        alarmHigh: 0.90
       }"
     >
-      Info if needed
+      <PositionCardReferenceTarget />
+      <PositionCardSlider type="asymmetric" />
+      <PositionCardValue />
+      <PositionCardTitle>Info if needed</PositionCardTitle>
     </PositionCard>
   </div>
 </div>
@@ -365,82 +420,94 @@ The asymmetric slider displays values from zero upward, suitable for unidirectio
 <template>
   <div class="grid grid-cols-3 gap-4">
     <PositionCard
-      :value="42"
-      :type="'symmetric'"
+      :value="0.42"
       :thresholds="{
-        target: 40,
-        warningLow: 35,
-        warningHigh: 45,
-        alarmLow: 20,
-        alarmHigh: 50
+        target: 0.40,
+        warningLow: 0.35,
+        warningHigh: 0.45,
+        alarmLow: 0.20,
+        alarmHigh: 0.50
       }"
     >
-      Info if needed
+      <PositionCardReferenceTarget />
+      <PositionCardSlider type="symmetric" />
+      <PositionCardValue />
+      <PositionCardTitle>Info if needed</PositionCardTitle>
     </PositionCard>
     <PositionCard
-      :value="47"
-      :type="'symmetric'"
+      :value="0.47"
       :thresholds="{
-        target: 40,
-        warningLow: 35,
-        warningHigh: 45,
-        alarmLow: 20,
-        alarmHigh: 50
+        target: 0.40,
+        warningLow: 0.35,
+        warningHigh: 0.45,
+        alarmLow: 0.20,
+        alarmHigh: 0.50
       }"
     >
-      Info if needed
+      <PositionCardReferenceTarget />
+      <PositionCardSlider type="symmetric" />
+      <PositionCardValue />
+      <PositionCardTitle>Info if needed</PositionCardTitle>
     </PositionCard>
     <PositionCard
-      :value="-58"
-      :type="'symmetric'"
+      :value="-0.58"
       :thresholds="{
-        target: 40,
-        warningLow: 35,
-        warningHigh: 45,
-        alarmLow: 20,
-        alarmHigh: 50
+        target: 0.40,
+        warningLow: 0.35,
+        warningHigh: 0.45,
+        alarmLow: 0.20,
+        alarmHigh: 0.50
       }"
     >
-      Info if needed
+      <PositionCardReferenceTarget />
+      <PositionCardSlider type="symmetric" />
+      <PositionCardValue />
+      <PositionCardTitle>Info if needed</PositionCardTitle>
     </PositionCard>
     <PositionCard
-      :value="71"
-      :type="'asymmetric'"
+      :value="0.71"
       :thresholds="{
-        target: 70,
-        warningLow: 65,
-        warningHigh: 75,
-        alarmLow: 50,
-        alarmHigh: 90
+        target: 0.70,
+        warningLow: 0.65,
+        warningHigh: 0.75,
+        alarmLow: 0.50,
+        alarmHigh: 0.90
       }"
     >
-      Info if needed
+      <PositionCardReferenceTarget />
+      <PositionCardSlider type="asymmetric" />
+      <PositionCardValue />
+      <PositionCardTitle>Info if needed</PositionCardTitle>
     </PositionCard>
     <PositionCard
-      :value="80"
-      :type="'asymmetric'"
+      :value="0.80"
       :thresholds="{
-        target: 70,
-        warningLow: 65,
-        warningHigh: 75,
-        alarmLow: 50,
-        alarmHigh: 90
+        target: 0.70,
+        warningLow: 0.65,
+        warningHigh: 0.75,
+        alarmLow: 0.50,
+        alarmHigh: 0.90
       }"
     >
-      Info if needed
+      <PositionCardReferenceTarget />
+      <PositionCardSlider type="asymmetric" />
+      <PositionCardValue />
+      <PositionCardTitle>Info if needed</PositionCardTitle>
     </PositionCard>
     <PositionCard
-      :value="20"
-      :type="'asymmetric'"
+      :value="0.20"
       :thresholds="{
-        target: 70,
-        warningLow: 65,
-        warningHigh: 75,
-        alarmLow: 50,
-        alarmHigh: 90
+        target: 0.70,
+        warningLow: 0.65,
+        warningHigh: 0.75,
+        alarmLow: 0.50,
+        alarmHigh: 0.90
       }"
     >
-      Info if needed
+      <PositionCardReferenceTarget />
+      <PositionCardSlider type="asymmetric" />
+      <PositionCardValue />
+      <PositionCardTitle>Info if needed</PositionCardTitle>
     </PositionCard>
   </div>
 </template>
@@ -526,7 +593,7 @@ The visual state affects the color of the slider position indicator and the main
 ## Layout Features
 
 - **Reference Box**: Shows the target value with a visual indicator when a target threshold is defined
-- **Interactive Slider**: Visual representation of current position with threshold zones
+- **Slider**: Visual representation of current position with threshold zones
 - **Main Value**: Large, prominent display of the current value with state-based coloring
 - **Unit Label**: Automatically displays percentage symbol (%)
 - **Title**: Displays the provided title/label below the main value

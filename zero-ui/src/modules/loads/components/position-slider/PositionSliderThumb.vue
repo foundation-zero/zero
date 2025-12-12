@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { cn } from "@/modules/common/lib/utils";
+import { cn, ratioAsPercentage } from "@/modules/common/lib/utils";
 import { computed, type HTMLAttributes } from "vue";
 import { getTrackContext } from ".";
 import { VariableState } from "../../types";
@@ -16,17 +16,19 @@ const position = computed(() => {
   if (props.value === undefined) {
     return 0;
   } else if (type.value === "symmetric") {
-    return (props.value + 100) / 2;
+    return (props.value + 1) / 2;
   } else {
     return props.value;
   }
 });
+
+const positionAsPercentage = ratioAsPercentage(position);
 </script>
 
 <template>
   <div
     data-slot="position-slider-thumb"
-    :style="{ left: `${position}%` }"
+    :style="{ left: `${positionAsPercentage}%` }"
     :class="
       cn('bg-primary absolute -my-1 h-full border-l transition-all duration-200', props.class, {
         'border-warning': state === VariableState.Warning,

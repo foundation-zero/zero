@@ -13,7 +13,7 @@ export const variableStateVariants = cva("relative flex justify-center", {
       warning: "text-warning",
     },
     size: {
-      xl: "font-semibold text-6xl [&>[data-slot='load-value']]:font-headers",
+      xl: "font-semibold text-6xl [&>[data-slot='load-value']]:font-headers leading-[4rem]",
       lg: "font-medium text-xl",
     },
   },

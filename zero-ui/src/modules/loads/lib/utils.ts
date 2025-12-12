@@ -5,7 +5,8 @@ export const formatLoad = (value: number | undefined, type: VariableType): strin
   if (value === undefined) return "-";
 
   if (type === VariableType.Percentage) {
-    return formatInt(value);
+    // Values from backend are ratios
+    return formatInt(value * 100);
   }
 
   return formatFixed(1, value);

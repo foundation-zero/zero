@@ -7,7 +7,7 @@ const props = defineProps<{ class?: HTMLAttributes["class"] }>();
 <template>
   <div
     data-slot="position-slider"
-    :class="cn('bg-muted mb-4 h-8 w-full rounded-xs px-2', props.class)"
+    :class="cn('bg-muted mb-4 min-h-8! w-full rounded-xs px-2', props.class)"
   >
     <slot />
   </div>
