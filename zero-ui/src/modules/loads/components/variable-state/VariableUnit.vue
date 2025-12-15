@@ -14,11 +14,11 @@ const type = inject<VariableType>("load-type", VariableType.Percentage);
     class="text-disabled-foreground"
     :class="
       cn(
-        'text-r4xs absolute top-[0.50em] translate-x-full font-normal text-shadow-2xs',
+        'absolute top-[0.50em] translate-x-full text-[0.357em] leading-[1] font-normal text-shadow-2xs',
         props.class,
         {
           '-right-[0.25em]': type === VariableType.Tonnes,
-          'right-0': type === VariableType.Percentage,
+          '-right-[0.10em]': type === VariableType.Percentage,
         },
       )
     "
