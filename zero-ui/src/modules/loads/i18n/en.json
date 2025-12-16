@@ -4,6 +4,13 @@
       "mastLock": {
         "locked": "Locked",
         "overhoist": "Overhoist"
+      },
+      "twaSelector": {
+        "label": "Select TWA"
+      },
+      "twsSelector": {
+        "label": "Select TWS",
+        "unit": "kts"
       }
     }
   }
