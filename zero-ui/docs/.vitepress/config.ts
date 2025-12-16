@@ -36,6 +36,7 @@ export default defineConfig({
           { text: "Badge", link: "/components/badge" },
           { text: "Button", link: "/components/button" },
           { text: "Indicator Light", link: "/components/indicator-light" },
+          { text: "Info Tooltip", link: "/components/info-tooltip" },
           { text: "Input", link: "/components/input" },
           { text: "Labeled Input", link: "/components/labeled-input" },
           { text: "Variable Card", link: "/components/variable-card" },
