@@ -1,7 +1,7 @@
 from pyModbusTCP.client import ModbusClient
 
-from zero_domestic_control.config import Settings
-from zero_domestic_control.mqtt import (
+from domestic_control.config import Settings
+from domestic_control.mqtt import (
     ControlSend,
 )
 from .constants import (
@@ -72,9 +72,7 @@ class TermodinamicaAc:
 
     @staticmethod
     def init_from_settings(settings: Settings):
-        client = ModbusClient(
-            host=settings.termodinamica_host, port=settings.termodinamica_port
-        )
+        client = ModbusClient(host=settings.termodinamica_host, port=settings.termodinamica_port)
         return TermodinamicaAc(client)
 
 

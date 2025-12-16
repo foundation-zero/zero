@@ -33,7 +33,7 @@ jobs:
         working-directory: zero-hull-temperature
       - run: poetry run pyright
         working-directory: zero-hull-temperature
-      - name: Create .env file from secret
+      - name: Create .env file from secret in root for services
         run: |
           echo "${{ secrets.ENV }}" > .env
       - name: Run services

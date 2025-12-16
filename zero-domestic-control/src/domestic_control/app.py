@@ -8,15 +8,15 @@ from asyncio import TaskGroup
 
 from strawberry.fastapi import GraphQLRouter, BaseContext
 from fastapi import Request
-from zero_domestic_control.services.ac import Ac
-from zero_domestic_control.services.av import Av, Gude
-from zero_domestic_control.config import Settings
-from zero_domestic_control.services.hass import Hass
-from zero_domestic_control.mqtt import (
+from domestic_control.services.ac import Ac
+from domestic_control.services.av import Av, Gude
+from domestic_control.config import Settings
+from domestic_control.services.hass import Hass
+from domestic_control.mqtt import (
     ControlSend,
     DataCollection,
 )
-from zero_domestic_control.messages import (
+from domestic_control.messages import (
     Blind,
     LightingGroup,
 )

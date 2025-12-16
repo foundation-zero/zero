@@ -3,14 +3,14 @@ import asyncio
 
 import jwt
 
-from zero_domestic_control.config import Settings
+from domestic_control.config import Settings
 import logging
 from .logging import setup_logging
 import uvicorn
 
 setup_logging()
 
-settings = Settings()
+settings = Settings()  # type: ignore
 
 
 async def run():
@@ -29,9 +29,15 @@ async def run():
     stub_cmd = sub_parser.add_parser("stub")
     stub_cmd.set_defaults(func=stub)
 
+    api_cmd = sub_parser.add_parser("api")
+    api_cmd.set_defaults(func=run_app)
+
     args = parser.parse_args()
 
-    await args.func(args)
+    if not hasattr(args, "func"):
+        parser.print_help()
+    else:
+        await args.func(args)
 
 
 SUPPORTED_ROLES = {"user", "admin"}
@@ -62,25 +68,30 @@ async def generate_jwt(args):
     print(f"JWT for roles ({', '.join(roles)}): {token}")
 
 
-def run_app():
-    uvicorn.run("zero_domestic_control.app:app", port=4002, reload=True)
+def run_app(_args):
+    logging.info("Running API...")
+    uvicorn.run("domestic_control.app:app", host="0.0.0.0", port=4001, reload=True)
 
 
 async def control(_args):
-    from zero_domestic_control.control import Control
+    from domestic_control.control import Control
 
     async with Control.init_from_settings(settings) as control:
-        logging.info("Running control")
+        logging.info("Running control...")
         await control.run()
 
 
 async def stub(_args):
-    from zero_domestic_control.services.stubs import Stub
+    from domestic_control.services.stubs import Stub
 
     async with Stub.from_settings(settings) as stub:
-        logging.info("Running stub")
+        logging.info("Running stub...")
         await stub.run()
 
 
-if __name__ == "__main__":
+def main():
     asyncio.run(run())
+
+
+if __name__ == "__main__":
+    main()

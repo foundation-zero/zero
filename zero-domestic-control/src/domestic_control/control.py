@@ -2,12 +2,12 @@ from asyncio import TaskGroup
 from contextlib import asynccontextmanager
 from homeassistant_api import WebsocketClient as HassClient
 from aiomqtt import Client as MqttClient
-from zero_domestic_control.services.ac import AcControl, TermodinamicaAc
-from zero_domestic_control.services.ac.thrs import Thrs
-from zero_domestic_control.services.av import AvControl, Gude
-from zero_domestic_control.services.hass import HassControl
-from zero_domestic_control.mqtt import ControlReceive, DataCollection
-from zero_domestic_control.config import Settings
+from domestic_control.services.ac import AcControl, TermodinamicaAc
+from domestic_control.services.ac.thrs import Thrs
+from domestic_control.services.av import AvControl, Gude
+from domestic_control.services.hass import HassControl
+from domestic_control.mqtt import ControlReceive, DataCollection
+from domestic_control.config import Settings
 from pyModbusTCP.client import ModbusClient
 
 
@@ -44,19 +44,11 @@ class Control:
     @asynccontextmanager
     @staticmethod
     async def init_from_settings(settings: Settings):
-        with HassClient(
-            settings.home_assistant_ws_url, settings.home_assistant_token
-        ) as hass:
+        with HassClient(settings.home_assistant_ws_url, settings.home_assistant_token) as hass:
             async with (
-                MqttClient(
-                    settings.mqtt_host, settings.mqtt_port, identifier="domestic_ac"
-                ) as ac_client,
-                MqttClient(
-                    settings.mqtt_host, settings.mqtt_port, identifier="domestic_av"
-                ) as av_client,
-                MqttClient(
-                    settings.mqtt_host, settings.mqtt_port, identifier="data"
-                ) as data_client,
+                MqttClient(settings.mqtt_host, settings.mqtt_port, identifier="domestic_ac") as ac_client,
+                MqttClient(settings.mqtt_host, settings.mqtt_port, identifier="domestic_av") as av_client,
+                MqttClient(settings.mqtt_host, settings.mqtt_port, identifier="data") as data_client,
             ):
                 modbus_client = ModbusClient(
                     host=settings.termodinamica_host,

@@ -21,7 +21,10 @@ from thrs.orchestration.config import Config
 from thrs.utils.string import dash_to_snake
 
 
-async def _mqtt_client(settings: Config):
+settings = Config()  # type: ignore
+
+
+async def _mqtt_client():
     async with Client(settings.mqtt_host, settings.mqtt_port) as client:
         yield client
 
@@ -149,7 +152,6 @@ async def test_simulation_run_step(
     mqtt_client3: Client,
     mqtt_client4: Client,
     mqtt_client5: Client,
-    settings: Config,
 ):
     controls_client = mqtt_client
     control_client = mqtt_client2
@@ -236,12 +238,7 @@ async def test_simulation_run_step(
 
 @pytest.mark.timeout(10)
 async def test_simulation_controls_automated_control(
-    mqtt_client,
-    mqtt_client2,
-    mqtt_client3,
-    mqtt_client4,
-    mqtt_client5,
-    settings: Config,
+    mqtt_client, mqtt_client2, mqtt_client3, mqtt_client4, mqtt_client5
 ):
     controls_client = mqtt_client
     control_client = mqtt_client2

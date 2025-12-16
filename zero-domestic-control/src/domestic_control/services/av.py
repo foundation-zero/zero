@@ -4,10 +4,10 @@ from aiomqtt import Client as MqttClient, Message
 from pydantic import AliasChoices, BaseModel, Field
 from typing import Annotated, AsyncIterable, Coroutine, List, Literal
 
-from zero_domestic_control.config import Settings
-from zero_domestic_control.messages import Amplifier
-from zero_domestic_control.mqtt import DataCollection
-from zero_domestic_control.util import invert_dict
+from domestic_control.config import Settings
+from domestic_control.messages import Amplifier
+from domestic_control.mqtt import DataCollection
+from domestic_control.util import invert_dict
 
 FWD_PDU = "00:00:00:00:00:00"
 AFT_PDU = "00:00:00:00:00:01"
@@ -89,9 +89,7 @@ class Gude:
         self._mqtt_client = mqtt_client
 
     async def switch(self, pdu: str, port: int, state: bool):
-        await self._mqtt_client.publish(
-            f"de/gudesystems/epc/{pdu}/cmdres/port/{port}", str(int(state)), qos=1
-        )
+        await self._mqtt_client.publish(f"de/gudesystems/epc/{pdu}/cmdres/port/{port}", str(int(state)), qos=1)
 
     def extract_telemetry(self, message: Message) -> tuple[str, Telemetry] | None:
         if isinstance(message.payload, bytes | str):
@@ -102,9 +100,7 @@ class Gude:
         return None
 
     async def listen_to_all_telemetry(self):
-        await self._mqtt_client.subscribe(
-            "de/gudesystems/epc/+/device/telemetry", qos=1
-        )
+        await self._mqtt_client.subscribe("de/gudesystems/epc/+/device/telemetry", qos=1)
 
     @property
     async def telemetries(self) -> AsyncIterable[tuple[str, Telemetry]]:

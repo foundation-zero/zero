@@ -1,7 +1,7 @@
 from abc import ABC, abstractmethod
 from dataclasses import dataclass
 
-from zero_domestic_control.messages import (
+from domestic_control.messages import (
     Room,
 )
 

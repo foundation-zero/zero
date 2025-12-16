@@ -1,7 +1,7 @@
 from typing import AsyncIterable
 from aiomqtt import Client, Message as MqttMessage
 
-from zero_domestic_control.messages import (
+from domestic_control.messages import (
     Blind,
     Amplifier,
     LightingGroup,
@@ -47,9 +47,7 @@ class ControlSend:
         self._mqtt = mqtt
 
     async def send_room_temperature_setpoint(self, room: str, temperature: float):
-        await send_message(
-            self._mqtt, RoomTemperatureSetpoint(id=room, temperature=temperature)
-        )
+        await send_message(self._mqtt, RoomTemperatureSetpoint(id=room, temperature=temperature))
 
     async def send_room_humidity_setpoint(self, room: str, humidity: float):
         await send_message(self._mqtt, RoomHumiditySetpoint(id=room, humidity=humidity))

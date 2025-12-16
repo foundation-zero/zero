@@ -23,7 +23,10 @@ from tests.orchestration.simples import (
 )
 
 
-async def _mqtt_client(settings: Config):
+settings = Config()  # type: ignore
+
+
+async def _mqtt_client():
     async with Client(settings.mqtt_host, settings.mqtt_port) as client:
         yield client
 
@@ -32,7 +35,7 @@ mqtt_client = pytest.fixture(_mqtt_client)
 mqtt_client2 = pytest.fixture(_mqtt_client)
 
 
-async def test_mqtt_executor(mqtt_client, mqtt_client2, settings: Config):
+async def test_mqtt_executor(mqtt_client, mqtt_client2):
     simple_executor = SimpleExecutor(datetime.now())
     executor = MqttExecutor(
         simple_executor,

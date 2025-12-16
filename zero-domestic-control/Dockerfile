@@ -16,7 +16,7 @@ RUN pip install "poetry==${POETRY_VERSION}"
 WORKDIR /app
 
 COPY pyproject.toml poetry.lock ./
-RUN poetry install --no-root --only main
+RUN poetry install --no-root
 
 FROM python:3.13-slim-bookworm AS runtime
 
@@ -29,6 +29,8 @@ ENV PATH="/app/.venv/bin:$PATH"
 COPY --from=builder ${VIRTUAL_ENV} ${VIRTUAL_ENV}
 
 WORKDIR /app
-COPY zero_domestic_control /app/zero_domestic_control
 
-ENTRYPOINT ["python", "-m"]
+COPY src/domestic_control/ domestic_control/
+
+# CMD ["tail", "-f", "/dev/null"]
+ENTRYPOINT ["python", "-m", "domestic_control"]

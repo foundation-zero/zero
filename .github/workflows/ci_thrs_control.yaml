@@ -24,11 +24,11 @@ jobs:
       - run: pipx install poetry==2.1.4
         working-directory: zero-thrs-control
 
-      - name: Create .env file from secret for services
+      - name: Create .env file from secret in root for services
         run: |
           echo "${{ secrets.ENV }}" > .env
 
-      - name: Create .env file from secret for THRS
+      - name: Create .env file from secret in project
         run: |
           echo "${{ secrets.ENV_THRS }}" > .env
         working-directory: zero-thrs-control

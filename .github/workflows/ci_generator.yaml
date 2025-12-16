@@ -31,7 +31,7 @@ jobs:
         working-directory: zero-generator
       - run: poetry run mypy src
         working-directory: zero-generator
-      - name: Create .env file from secret
+      - name: Create .env file from secret in root
         run: |
           echo "${{ secrets.ENV }}" > .env
       - name: Run services

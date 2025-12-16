@@ -5,7 +5,7 @@ from asyncio import (
 )
 from pyModbusTCP.server import DataBank, ModbusServer
 
-from zero_domestic_control.services.ac.constants import (
+from domestic_control.services.ac.constants import (
     HUMIDITY_SETPOINT_START_ADDRESS,
     TEMPERATURE_SETPOINT_START_ADDRESS,
     CO2_SETPOINT_START_ADDRESS,
@@ -14,9 +14,7 @@ import logging
 
 
 class TermodinamicaDataBank(DataBank):
-    def on_holding_registers_change(
-        self, address, from_value, to_value, srv_info
-    ) -> None:
+    def on_holding_registers_change(self, address, from_value, to_value, srv_info) -> None:
         logging.debug(f"Stub: adress: {address}, from: {from_value}, to: {to_value}")
         if address >= TEMPERATURE_SETPOINT_START_ADDRESS.start and address < (
             TEMPERATURE_SETPOINT_START_ADDRESS.start + 100
@@ -26,22 +24,16 @@ class TermodinamicaDataBank(DataBank):
             HUMIDITY_SETPOINT_START_ADDRESS.start + 100
         ):
             self.set_holding_registers(address - 100, [to_value])
-        elif address >= CO2_SETPOINT_START_ADDRESS.start and address < (
-            CO2_SETPOINT_START_ADDRESS.start + 100
-        ):
+        elif address >= CO2_SETPOINT_START_ADDRESS.start and address < (CO2_SETPOINT_START_ADDRESS.start + 100):
             self.set_holding_registers(address - 100, [to_value])
-        return super().on_holding_registers_change(
-            address, from_value, to_value, srv_info
-        )
+        return super().on_holding_registers_change(address, from_value, to_value, srv_info)
 
 
 class TermodinamicaStub:
     """Stub for a Termodinamica AC Modbus TCP control system"""
 
     def __init__(self, host, port):
-        self._server = ModbusServer(
-            host=host, port=port, data_bank=TermodinamicaDataBank()
-        )
+        self._server = ModbusServer(host=host, port=port, data_bank=TermodinamicaDataBank())
         logging.info(f"Starting Termodinamica stub on {host}:{port}")
 
     def _start_server(self) -> Task[None]:

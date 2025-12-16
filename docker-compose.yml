@@ -50,6 +50,8 @@ services:
     command: setup_postgres --target docker
     profiles:
      - zero
+     - domestic
+     - loads
     environment: &setup
       PG_HOST: ${PG_HOST}
       PG_HOST_DOCKER: postgres
@@ -74,10 +76,9 @@ services:
       - 4566:4566
       - 5691:5691
     profiles:
-      - zero
-      - data
-      - domestic
-      - loads
+     - zero
+     - domestic
+     - loads
     healthcheck:
       test:
         - CMD-SHELL
@@ -95,7 +96,9 @@ services:
       context: ./data
     command: setup_risingwave --target docker
     profiles:
-      - zero
+     - zero
+     - domestic
+     - loads
     environment:
       <<: *setup
     depends_on:
@@ -108,11 +111,11 @@ services:
       - 8080:8080
     restart: always
     profiles:
-      - domestic
-      - loads
+     - zero
+     - domestic
+     - loads
     environment:
       HASURA_GRAPHQL_METADATA_DATABASE_URL: postgres://${PG_USER}:${PG_PASSWORD}@postgres:5432/postgres
-      PG_DATABASE_URL: postgres://${PG_USER}:${PG_PASSWORD}@postgres:5432/${PG_DB}
       HASURA_GRAPHQL_ENABLE_CONSOLE: true
       HASURA_GRAPHQL_DEV_MODE: true
       HASURA_GRAPHQL_ENABLED_LOG_TYPES: startup, http-log, webhook-log, websocket-log, query-log
@@ -123,8 +126,9 @@ services:
       HASURA_GRAPHQL_EXPERIMENTAL_FEATURES: naming_convention
       HASURA_GRAPHQL_DEFAULT_NAMING_CONVENTION: graphql-default
       HASURA_GRAPHQL_STREAMING_QUERIES_MULTIPLEXED_REFETCH_INTERVAL: 200
-      REMOTE_SCHEMA_LOADS: http://loads-api:8000/graphql
-      REMOTE_SCHEMA_DOMESTIC: http://domestic-control-api:8000/graphql
+      PG_DATABASE_URL: postgres://${PG_USER}:${PG_PASSWORD}@postgres:5432/${PG_DB}
+      REMOTE_SCHEMA_LOADS: http://loads-api:4001/graphql
+      REMOTE_SCHEMA_DOMESTIC: http://domestic-control-api:4002/graphql
     volumes:
       - ./hasura/metadata:/hasura-metadata
     depends_on:
@@ -136,8 +140,8 @@ services:
   hass:
     image: ghcr.io/home-assistant/home-assistant:stable
     profiles:
-      - zero
-      - domestic
+     - zero
+     - domestic
     volumes:
       - ./hass:/config
       - /etc/localtime:/etc/localtime:ro
@@ -152,7 +156,7 @@ services:
       retries: 5
 
 # ---- data ----
-  data_gen:
+  data-gen:
     build:
       context: ./zero-data
     command: python -m zero_data generate-data
@@ -162,7 +166,7 @@ services:
       vernemq:
         condition: service_healthy
 
-  dbt_gen:
+  dbt-gen:
     build:
       context: ./zero-data
     command: python -m zero_data generate-dbt
@@ -176,7 +180,7 @@ services:
 
 # ---- domestic-control ----
   domestic-control-api:
-    command: ["fastapi", "run", "./zero_domestic_control/app.py"]
+    command: api
     build:
       context: ./zero-domestic-control
     ports:
@@ -207,7 +211,7 @@ services:
       CANBUS_BUFFER_SIZE: ${CANBUS_BUFFER_SIZE}
 
   domestic-control-control:
-    command: ["zero_domestic_control", "control"]
+    command: control
     build:
       context: ./zero-domestic-control
     profiles:
@@ -223,7 +227,7 @@ services:
       <<: *app_env
 
   domestic-control-stub:
-    command: ["zero_domestic_control", "stub"]
+    command: stub
     build:
       context: ./zero-domestic-control
     profiles:

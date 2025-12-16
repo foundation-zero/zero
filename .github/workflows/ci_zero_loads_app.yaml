@@ -35,10 +35,10 @@ jobs:
         working-directory: zero-loads-app
       - run: poetry run mypy src
         working-directory: zero-loads-app
-      - name: Create .env file from secret
+      - name: Create .env file from secret in root for services
         run: |
           echo "${{ secrets.ENV }}" > .env
-      - name: Create .env file from secret
+      - name: Create .env file from secret in project
         run: |
           echo "${{ secrets.ENV_LOADS_APP }}" > .env
         working-directory: zero-loads-app

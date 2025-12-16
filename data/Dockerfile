@@ -29,5 +29,4 @@ COPY ./setup_postgres.py ./setup_postgres.py
 COPY ./risingwave ./risingwave
 COPY ./setup_risingwave.py ./setup_risingwave.py
 
-# CMD ["tail", "-f", "/dev/null"]
 ENTRYPOINT ["python", "-m"]

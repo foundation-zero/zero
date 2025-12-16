@@ -4,7 +4,7 @@ import time
 from typing import Coroutine, Literal, cast
 from aiomqtt import Client as MqttClient, Message
 
-from zero_domestic_control.services.av import AFT_PDU, FWD_PDU, PortState, Telemetry
+from domestic_control.services.av import AFT_PDU, FWD_PDU, PortState, Telemetry
 import logging
 
 MQTT_CMD_REGEX = re.compile(r"de/gudesystems/epc/([^/]+)/cmdres/port/(\d+)")
@@ -37,10 +37,7 @@ class AvPduStub:
     def _create_telemetry(self, ports: dict[int, bool]) -> Telemetry:
         return Telemetry(
             timestamp=int(time.time()),
-            port_states=[
-                PortState(port=port, state=cast(Literal[0, 1], int(state)))
-                for port, state in ports.items()
-            ],
+            port_states=[PortState(port=port, state=cast(Literal[0, 1], int(state))) for port, state in ports.items()],
         )
 
     def match_message(self, message: Message):
