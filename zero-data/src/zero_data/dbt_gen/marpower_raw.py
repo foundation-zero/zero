@@ -96,7 +96,7 @@ class MarpowerRawGenerator:
     @staticmethod
     def _generate_field(io_value: IOValue):
         """Generate the SQL for a given field."""
-        return f'\t{io_value.name.replace(" ", "")}\t{{{{ marpower_struct("{io_value.data_type}") }}}},\n'
+        return f'\t"{io_value.name.replace(" ", "")}"\t{{{{ marpower_struct("{io_value.data_type}") }}}},\n'
 
     @staticmethod
     def _include_topic():
