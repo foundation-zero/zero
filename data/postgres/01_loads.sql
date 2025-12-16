@@ -191,8 +191,8 @@ INSERT INTO loads.awa_ranges (awa) VALUES
   ('[30,40)'),
   ('[40,60)'),
   ('[60,80)'),
-  ('[80,120]'),
-  ('(120,180)');
+  ('[80,120)'),
+  ('[120,180)');
 
 -- Define AWS ranges
 INSERT INTO loads.aws_ranges (aws) VALUES
