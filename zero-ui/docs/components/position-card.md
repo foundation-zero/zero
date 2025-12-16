@@ -10,6 +10,7 @@ import {
   PositionCardValue,
   PositionCardTitle
 } from '@/modules/loads/components/position-card'
+import { InfoTooltip } from '@/modules/common/components/info-tooltip'
 </script>
 
 ## Overview
@@ -315,6 +316,63 @@ The asymmetric slider displays values from zero upward, suitable for unidirectio
     <PositionCardSlider type="asymmetric" />
     <PositionCardValue />
     <PositionCardTitle>Info if needed</PositionCardTitle>
+  </PositionCard>
+</template>
+```
+
+### With Info Tooltip
+
+You can add contextual help using the InfoTooltip component inside the PositionCardTitle.
+
+<div class="my-4 p-8 bg-background flex justify-center">
+  <PositionCard
+    :value="0.80"
+    :thresholds="{
+      target: 0.70,
+      warningLow: 0.65,
+      warningHigh: 0.75,
+      alarmLow: 0.50,
+      alarmHigh: 0.90
+    }"
+  >
+    <PositionCardReferenceTarget />
+    <PositionCardSlider type="asymmetric" />
+    <PositionCardValue />
+    <PositionCardTitle>
+      Mast Position
+      <InfoTooltip>
+        This shows the current mast position as a percentage. Target position is 70%, with warning thresholds at 65%-75%.
+      </InfoTooltip>
+    </PositionCardTitle>
+  </PositionCard>
+</div>
+
+```vue
+<script setup>
+import { InfoTooltip } from '@/modules/common/components/info-tooltip'
+</script>
+
+<template>
+  <PositionCard
+    :value="0.80"
+    :thresholds="{
+      target: 0.70,
+      warningLow: 0.65,
+      warningHigh: 0.75,
+      alarmLow: 0.50,
+      alarmHigh: 0.90
+    }"
+  >
+    <PositionCardReferenceTarget />
+    <PositionCardSlider type="asymmetric" />
+    <PositionCardValue />
+    <PositionCardTitle>
+      Mast Position
+      <InfoTooltip>
+        This shows the current mast position as a ratio (0-1). 
+        Target position is 0.70, with warning thresholds at 0.65-0.75.
+      </InfoTooltip>
+    </PositionCardTitle>
   </PositionCard>
 </template>
 ```
