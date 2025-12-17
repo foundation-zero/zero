@@ -44,6 +44,8 @@ export default defineConfig({
           { text: "Popover", link: "/components/popover" },
           { text: "Position Card", link: "/components/position-card" },
           { text: "Select", link: "/components/select" },
+          { text: "TWA Selector", link: "/components/twa-selector" },
+          { text: "TWS Selector", link: "/components/tws-selector" },
         ],
       },
     ],

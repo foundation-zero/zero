@@ -17,3 +17,11 @@ export const enum VariableState {
   Alarm = "alarm",
   Unknown = "unknown",
 }
+
+export type NumRangeId = `[${number},${number | ""})`;
+
+export type Range = {
+  id: NumRangeId;
+  from: number;
+  to: number;
+};
