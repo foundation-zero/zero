@@ -22,7 +22,7 @@ class FahrenheitSensorValues(ThrsValues):
         sensor.Fahrenheit,
         component_meta(yard_tag="50001034", component_type="fahrenheit"),
     ]
-    fahrenheit_flow_hot_exchanger: Annotated[
+    fahrenheit_flow_ht: Annotated[
         sensor.FlowSensor,
         component_meta(yard_tag="50001058-09", component_type="flow_sensor"),
     ]
@@ -38,15 +38,15 @@ class FahrenheitSensorValues(ThrsValues):
         sensor.FlowSensor,
         component_meta(yard_tag="50001058-05", component_type="flow_sensor"),
     ]
-    fahrenheit_flow_boiler: Annotated[
+    fahrenheit_flow_boilers: Annotated[
         sensor.FlowSensor,
         component_meta(yard_tag="50001058-10", component_type="flow_sensor"),
     ]
-    fahrenheit_temperature_hot_exchanger_return: Annotated[
+    fahrenheit_temperature_ht_return: Annotated[
         sensor.TemperatureSensor,
         component_meta(yard_tag="50001038-41", component_type="temperature_sensor"),
     ]
-    fahrenheit_temperature_hot_exchanger_supply: Annotated[
+    fahrenheit_temperature_ht_supply: Annotated[
         sensor.TemperatureSensor,
         component_meta(yard_tag="50001038-50", component_type="temperature_sensor"),
     ]
@@ -74,7 +74,7 @@ class FahrenheitSensorValues(ThrsValues):
         sensor.TemperatureSensor,
         component_meta(yard_tag="50001038-43", component_type="temperature_sensor"),
     ]
-    fahrenheit_temperature_boiler_return: Annotated[
+    fahrenheit_temperature_boilers_return: Annotated[
         sensor.TemperatureSensor,
         component_meta(yard_tag="50001038-56", component_type="temperature_sensor"),
     ]
