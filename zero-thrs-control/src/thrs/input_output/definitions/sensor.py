@@ -9,7 +9,6 @@ from thrs.input_output.definitions.units import (
     Kelvin,
     LMin,
     Liter,
-    OnOff,
     OptionalCelsius,
     PcsMode,
     Ratio,
@@ -74,9 +73,9 @@ class Pcm(ThrsValues):
 
 
 class Fahrenheit(ThrsValues):
-    operating: Stamped[OnOff]
+    operating: Stamped[bool]
     fault: Annotated[Stamped[Error], field_meta(included_in_fmu=False)]
-    free_cooling: Annotated[Stamped[OnOff], field_meta(included_in_fmu=False)]
+    free_cooling: Annotated[Stamped[bool], field_meta(included_in_fmu=False)]
     cooler_ventilator_speed: Annotated[
         Stamped[Ratio], field_meta(included_in_fmu=False)
     ]

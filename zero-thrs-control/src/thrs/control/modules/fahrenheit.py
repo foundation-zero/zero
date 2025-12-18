@@ -24,12 +24,13 @@ from thrs.input_output.modules.fahrenheit import (
 class FahrenheitParameters(ThrsValues):
     waste_cooling_temperature: Celsius = 30
     waste_recovery_temperature: Celsius = 40
+    fahrenheit_cooling_setpoint: Celsius = 17
     fahrenheit_hot_minimum: Celsius = 60
     fahrenheit_hot_trigger: Celsius = 65
     fahrenheit_cold_minimum: Celsius = 15
     fahrenheit_cold_trigger: Celsius = 17
     hot_mix_tuning: Tuning = (0.05, 0.001, 0)
-    waste_recovery_tuning: Tuning = (0.05, 0.001, 0)
+    recovery_tuning: Tuning = (0.05, 0.001, 0)
     waste_cooling_tuning: Tuning = (0.05, 0.01, 0)
     free_cooling_enabled: bool = True
 
@@ -75,21 +76,45 @@ class FahrenheitControl(
         self._states = [
             State(
                 name="idle",
-                on_enter=[
-                    self._disable_fahrenheit,
-                    self._disable_temperature_controllers,
-                ],
+                on_enter=[self._disable_temperature_controllers],
             ),
             State(
-                name="enabled",
+                name="cooling",
+                on_enter=[self._enable_temperature_controllers],
+            ),
+            State(
+                name="free_cooling",
                 on_enter=[
-                    self._enable_fahrenheit,
-                    self._enable_temperature_controllers,
+                    self._open_recovery_mix,
+                    self._disable_recovery_mix,
+                    self._set_free_cooling_setpoint,
+                    self._disable_hot_mix,
                 ],
             ),
         ]
-
-        self._transitions = []
+        # Here the idea is that the Fahrenheit unit triggers the state machine, and mode switches thus depend on the input parameters for fahrenheit, and whether it's enabled.
+        self._transitions = [
+            {
+                "trigger": "_check_fahrenheit_status",
+                "source": ["idle", "free_cooling"],
+                "dest": "cooling",
+                "conditions": lambda sensor_values: sensor_values.fahrenheit_chiller.operating.value
+                and not sensor_values.fahrenheit_chiller.free_cooling.value,  # TODO: check if we need to add error condition
+            },
+            {
+                "trigger": "_check_fahrenheit_status",
+                "source": ["cooling", "free_cooling"],
+                "dest": "idle",
+                "conditions": lambda sensor_values: not sensor_values.fahrenheit_chiller.operating.value,
+            },
+            {
+                "trigger": "_check_free_cooling",
+                "source": ["idle", "cooling"],
+                "dest": "free_cooling",
+                "conditions": lambda sensor_values: sensor_values.fahrenheit_chiller.operating.value
+                and sensor_values.fahrenheit_chiller.free_cooling.value,
+            },
+        ]
 
         self.fahrenheit_state_machine = Machine(
             model=self,
@@ -105,10 +130,10 @@ class FahrenheitControl(
             self._time,
         )
 
-        self._waste_recovery_controller = Controller[Ratio, Celsius](
+        self._recovery_controller = Controller[Ratio, Celsius](
             _INITIAL_CONTROL_VALUES.fahrenheit_mix_waste.setpoint.value,
             0,
-            parameters.waste_recovery_tuning,
+            parameters.recovery_tuning,
             self._time,
         )
 
@@ -126,7 +151,7 @@ class FahrenheitControl(
     def update_parameters(self, parameters: FahrenheitParameters) -> None:
         self._parameters = parameters
         self._hot_mix_controller.update_tuning(parameters.hot_mix_tuning)
-        self._waste_recovery_controller.update_tuning(parameters.waste_recovery_tuning)
+        self._recovery_controller.update_tuning(parameters.recovery_tuning)
         self._waste_cooling_controller.update_tuning(parameters.waste_cooling_tuning)
 
     @staticmethod
@@ -172,22 +197,39 @@ class FahrenheitControl(
         )
         self._current_values.fahrenheit_flowcontrol_waste.setpoint = Stamped(
             value=(
-                self._waste_recovery_controller(
+                self._recovery_controller(
                     sensor_values.fahrenheit_temperature_waste_supply.temperature.value
                 )
             ),
             timestamp=self._time(),
         )
 
+    def _disable_hot_mix(self):
+        self._hot_mix_controller.disable()
+
+    def _disable_recovery_mix(self):
+        self._recovery_controller.disable()
+
     def _disable_temperature_controllers(self, sensor_values: FahrenheitSensorValues):
         self._hot_mix_controller.disable()
-        self._waste_recovery_controller.disable()
+        self._recovery_controller.disable()
         self._waste_cooling_controller.disable()
 
     def _enable_temperature_controllers(self, sensor_values: FahrenheitSensorValues):
         self._hot_mix_controller.enable()
-        self._waste_recovery_controller.enable()
+        self._recovery_controller.enable()
         self._waste_cooling_controller.enable()
+
+    def _set_free_cooling_setpoint(self):
+        self._current_values.fahrenheit_chiller.cooling_setpoint = Stamped(
+            value=self._parameters.fahrenheit_cooling_setpoint,  # TODO: should we set seatwater temp = cooling setpoint?
+            timestamp=self._time(),
+        )
+
+    def _open_recovery_mix(self):
+        self._current_values.fahrenheit_flowcontrol_waste.setpoint = Stamped(
+            value=Valve.OPEN, timestamp=self._time()
+        )
 
     def _disable_fahrenheit(self, sensor_values: FahrenheitSensorValues):
         self._current_values.fahrenheit_chiller.enable = Stamped(
