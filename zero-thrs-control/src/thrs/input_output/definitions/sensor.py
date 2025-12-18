@@ -76,7 +76,7 @@ class Pcm(ThrsValues):
 class Fahrenheit(ThrsValues):
     operating: Stamped[OnOff]
     fault: Annotated[Stamped[Error], field_meta(included_in_fmu=False)]
-    free_cooling: Stamped[OnOff]
+    free_cooling: Annotated[Stamped[OnOff], field_meta(included_in_fmu=False)]
     cooler_ventilator_speed: Annotated[
         Stamped[Ratio], field_meta(included_in_fmu=False)
     ]
@@ -87,7 +87,7 @@ class Fahrenheit(ThrsValues):
     temperature_waste_out: Stamped[Celsius]
     temperature_cold_in: Stamped[Celsius]
     temperature_cold_out: Stamped[Celsius]
-    temperature_seawater: Stamped[Celsius]
+    temperature_seawater: Annotated[Stamped[Celsius], field_meta(included_in_fmu=False)]
     temperature_hot: Stamped[Celsius]
     temperature_cold: Stamped[Celsius]
     temperature_waste: Stamped[Celsius]

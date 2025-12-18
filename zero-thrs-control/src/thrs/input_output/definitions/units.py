@@ -67,6 +67,8 @@ def zero_for_unit(unit: Any) -> Any:
         unit = get_args(unit)[0]
     if unit is float:
         return 0.0
+    elif unit == float | None:
+        return None
     elif get_origin(unit) is Literal:
         return get_args(unit)[0]
     elif issubclass(unit, Enum):

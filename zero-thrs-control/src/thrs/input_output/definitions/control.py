@@ -51,12 +51,16 @@ class Fahrenheit(ThrsValues):
     enable: Stamped[OnOff]
     mode: Stamped[FahrenheitMode]
     cooling_setpoint: Stamped[Celsius]
-    free_cooling_mode: Stamped[FreeCoolingMode]
-    temperature_seawater: Stamped[Celsius]
-    temperature_hot: Stamped[Celsius]
-    temperature_cold: Stamped[Celsius]
-    cold_threshold: Stamped[Celsius]
-    hot_threshold: Stamped[Celsius]
+    free_cooling_mode: Annotated[
+        Stamped[FreeCoolingMode], field_meta(included_in_fmu=False)
+    ]
+    available_seawater_temperature: Annotated[
+        Stamped[Celsius], field_meta(included_in_fmu=False)
+    ]
+    available_hot_temperature: Stamped[Celsius]
+    available_cold_temperature: Stamped[Celsius]
+    cold_minimum: Stamped[Celsius]
+    hot_minimum: Stamped[Celsius]
     cold_hysteresis: Stamped[Kelvin]
     hot_hysteresis: Stamped[Kelvin]
     tank_control_mode: Annotated[
