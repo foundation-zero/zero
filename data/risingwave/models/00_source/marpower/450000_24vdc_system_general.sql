@@ -1,6 +1,8 @@
 {{ config(materialized='table_with_connector') }}
 CREATE TABLE {{ this }} (
 	time TIMESTAMPTZ AS proctime(),
+	"GEN_SERVICE_14E1_VOLTAGE"	{{ marpower_struct("REAL") }},
+	"GEN_SERVICE_14E1_CURRENT"	{{ marpower_struct("REAL") }},
 	"GEN_SERVICE_14E1_01V01_FAULT"	{{ marpower_struct("BOOLEAN") }},
 	"GEN_SERVICE_14E1_01V02_FAULT"	{{ marpower_struct("BOOLEAN") }},
 	"GEN_SERVICE_14E1_02V01_FAULT"	{{ marpower_struct("BOOLEAN") }},

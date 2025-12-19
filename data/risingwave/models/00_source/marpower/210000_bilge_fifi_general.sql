@@ -51,4 +51,4 @@ CREATE TABLE {{ this }} (
 	"PRESS_SENSOR_FWD_SB_BATTERY"	{{ marpower_struct("REAL") }},
 )
 INCLUDE partition AS topic
-{{ mqtt_with('marpower/210000-bilge-fifi_general') }}
+{{ mqtt_with('marpower/210000-bilge-fifi-general') }}
