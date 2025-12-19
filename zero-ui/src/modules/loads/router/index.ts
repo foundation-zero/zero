@@ -13,7 +13,7 @@ export const loadsRoutes: RouteRecordRaw = {
   path: "/loads",
   redirect: () => ({ name: "loads/dashboard", query: {} }),
   meta: {
-    layout: defineAsyncComponent(() => import("@/modules/loads/layouts/Default.vue")),
+    layout: defineAsyncComponent(() => import("@/modules/loads/layouts/DefaultLayout.vue")),
     requiresAuth: false,
   },
   children: loadsChildRoutes,

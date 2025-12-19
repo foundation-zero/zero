@@ -7,26 +7,28 @@ import {
   SelectTriggerLabel,
   SelectValue,
 } from "@/components/ui/select";
-import { tScoped } from "@/modules/common/lib/utils";
-import { TWS_VALUES } from "../../lib/consts";
+import { cn, tScoped } from "@/modules/common/lib/utils";
+import { HTMLAttributes } from "vue";
+import { AWS_VALUES } from "../../lib/consts";
+import { NumRangeId } from "../../types";
 
-const t = tScoped("loads.components.twsSelector");
+const props = defineProps<{ class?: HTMLAttributes["class"] }>();
+const t = tScoped("loads.components.awsSelector");
 
-const modelValue = defineModel<number>({
-  type: [Number],
+const modelValue = defineModel<NumRangeId>({
   required: true,
 });
 </script>
 
 <template>
   <Select v-model:model-value="modelValue">
-    <SelectTrigger class="w-[16.375rem]">
+    <SelectTrigger :class="cn('h-10', props.class)">
       <SelectTriggerLabel>{{ t("label") }}</SelectTriggerLabel>
       <SelectValue />
     </SelectTrigger>
     <SelectContent>
       <SelectItem
-        v-for="item in TWS_VALUES"
+        v-for="item in AWS_VALUES"
         :key="item.from"
         :value="item.id"
       >

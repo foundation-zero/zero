@@ -1,34 +1,34 @@
-# TWA Selector
+# AWA Selector
 
-A select component for choosing True Wind Angle (TWA) ranges in degrees.
+A select component for choosing Apparent Wind Angle (AWA) ranges in degrees.
 
 <script setup>
-import TWASelector from '@/modules/loads/components/twa-selector/TWASelector.vue'
+import AWASelector from '@/modules/loads/components/awa-selector/AWASelector.vue'
 import { ref } from 'vue'
 
-const selectedTWA = ref(0)
+const selectedAWA = ref(0)
 </script>
 
 ## Overview
 
-The TWASelector component provides a dropdown interface for selecting predefined True Wind Angle ranges. It uses the Select component from shadcn-vue and displays angle ranges in degrees.
+The AWASelector component provides a dropdown interface for selecting predefined True Wind Angle ranges. It uses the Select component from shadcn-vue and displays angle ranges in degrees.
 
 ### Basic Example
 
 <div class="my-4 p-8 bg-muted flex justify-center">
-  <TWASelector v-model="selectedTWA" />
+  <AWASelector v-model="selectedAWA" />
 </div>
 
 ```vue
 <script setup>
-import TWASelector from '@/modules/loads/components/twa-selector/TWASelector.vue'
+import AWASelector from '@/modules/loads/components/awa-selector/AWASelector.vue'
 import { ref } from 'vue'
 
-const selectedTWA = ref(0)
+const selectedAWA = ref(0)
 </script>
 
 <template>
-  <TWASelector v-model="selectedTWA" />
+  <AWASelector v-model="selectedAWA" />
 </template>
 ```
 
@@ -39,7 +39,7 @@ const selectedTWA = ref(0)
 <div class="my-4 p-8 bg-muted">
   <div class="space-y-2">
     <label class="text-sm font-medium">Select Wind Angle</label>
-    <TWASelector v-model="selectedTWA" />
+    <AWASelector v-model="selectedAWA" />
   </div>
 </div>
 
@@ -47,7 +47,7 @@ const selectedTWA = ref(0)
 <template>
   <div class="space-y-2">
     <label class="text-sm font-medium">Select Wind Angle</label>
-    <TWASelector v-model="selectedTWA" />
+    <AWASelector v-model="selectedAWA" />
   </div>
 </template>
 ```
@@ -56,9 +56,9 @@ const selectedTWA = ref(0)
 
 <div class="my-4 p-8 bg-muted">
   <div class="space-y-4">
-    <TWASelector v-model="selectedTWA" />
+    <AWASelector v-model="selectedAWA" />
     <div class="text-sm text-muted-foreground">
-      Selected range index: {{ selectedTWA }}
+      Selected range index: {{ selectedAWA }}
     </div>
   </div>
 </div>
@@ -66,9 +66,9 @@ const selectedTWA = ref(0)
 ```vue
 <template>
   <div class="space-y-4">
-    <TWASelector v-model="selectedTWA" />
+    <AWASelector v-model="selectedAWA" />
     <div class="text-sm text-muted-foreground">
-      Selected range index: {{ selectedTWA }}
+      Selected range index: {{ selectedAWA }}
     </div>
   </div>
 </template>
@@ -134,5 +134,5 @@ The component uses `v-model` for two-way binding:
 
 ## Related Components
 
-- [TWS Selector](/components/tws-selector) - For selecting True Wind Speed ranges
+- [AWS Selector](/components/aws-selector) - For selecting True Wind Speed ranges
 - [Select](/components/select) - Base select component

@@ -6,13 +6,13 @@ export { default as VariableCardValue } from "./VariableCardValue.vue";
 
 import { createContext } from "reka-ui";
 import { ComputedRef, Ref } from "vue";
-import { ReferenceThresholds, VariableState, VariableType } from "../../types";
+import { ReferenceThresholds, VariableState, VariableUnit } from "../../types";
 
 export type PositionCardContext = {
   state: ComputedRef<VariableState>;
   value: Ref<number | undefined>;
-  thresholds?: Ref<ReferenceThresholds | undefined>;
-  type: Ref<VariableType>;
+  thresholds?: Ref<Partial<ReferenceThresholds> | undefined>;
+  type: Ref<VariableUnit>;
 };
 
 export const [getContext, provideContext] =

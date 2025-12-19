@@ -2,11 +2,11 @@
 import { cn } from "@/modules/common/lib/utils";
 import { computed, HTMLAttributes } from "vue";
 import { formatLoad } from "../../lib/utils";
-import { VariableType } from "../../types";
+import { VariableUnit } from "../../types";
 
 const props = defineProps<{
   class?: HTMLAttributes["class"];
-  type: VariableType;
+  type: VariableUnit;
   value: number | undefined;
 }>();
 

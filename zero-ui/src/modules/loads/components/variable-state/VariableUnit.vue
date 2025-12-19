@@ -2,10 +2,10 @@
 import { cn } from "@/modules/common/lib/utils";
 import { HTMLAttributes, inject } from "vue";
 import { LOAD_UNIT } from "../../lib/consts";
-import { VariableType } from "../../types";
+import { VariableUnit } from "../../types";
 
 const props = defineProps<{ class?: HTMLAttributes["class"] }>();
-const type = inject<VariableType>("load-type", VariableType.Percentage);
+const type = inject<VariableUnit>("load-type", VariableUnit.Percentage);
 </script>
 
 <template>
@@ -17,8 +17,8 @@ const type = inject<VariableType>("load-type", VariableType.Percentage);
         'absolute top-[0.50em] translate-x-full text-[0.357em] leading-[1] font-normal text-shadow-2xs',
         props.class,
         {
-          '-right-[0.25em]': type === VariableType.Tonnes,
-          '-right-[0.10em]': type === VariableType.Percentage,
+          '-right-[0.25em]': type === VariableUnit.Tonne,
+          '-right-[0.10em]': type === VariableUnit.Percentage,
         },
       )
     "

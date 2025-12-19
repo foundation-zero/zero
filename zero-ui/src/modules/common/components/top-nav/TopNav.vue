@@ -16,7 +16,7 @@ const scrollOffset = useScrollOffset(title);
   >
     <h1
       ref="title"
-      class="py-3 text-center text-xl font-bold tracking-widest"
+      class="tracking-ultrawide py-3 text-center text-xl font-bold uppercase"
     >
       {{ t("app.title") }}
     </h1>
