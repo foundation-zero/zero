@@ -13,8 +13,17 @@ FROM
 		electrical_power_data.electrical_system AS electrical_system,
 		electrical_power_data.group_name AS group_name,
 		electrical_power_data.sub_group_name AS sub_group_name,
-		AVG(electrical_power_data.active_power) AS avg_power
-	FROM {{ ref('consumer_producer_power_data') }} AS electrical_power_data
+		AVG(electrical_power_data.power) AS avg_power
+	--FROM {{ ref('consumer_producer_power_data') }} AS electrical_power_data
+	FROM (
+		SELECT 
+			topic, time, electrical_system, group_name, sub_group_name, active_power AS power
+		FROM {{ ref('consumer_producer_power_data') }}
+		UNION ALL
+		SELECT
+			topic, time, electrical_system, group_name, sub_group_name, power
+		FROM {{ ref('24v_power_data') }}
+	) AS electrical_power_data
 	WHERE
 		electrical_power_data.group_name IS NOT NULL
 		AND electrical_power_data.time > NOW() - INTERVAL '5 minutes'
