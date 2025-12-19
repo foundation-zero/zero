@@ -29,6 +29,28 @@ FROM ( (
             sub_group_name,
             topic,
             window_start
+
+        UNION ALL
+
+        SELECT
+            electrical_power_data.electrical_system AS electrical_system,
+            electrical_power_data.group_name AS group_name,
+            electrical_power_data.sub_group_name AS sub_group_name,
+            electrical_power_data.topic AS topic,
+            window_start AS min_start,
+            AVG(electrical_power_data.power) AS avg_w
+        FROM
+        TUMBLE (
+            {{ ref('24v_power_data') }},
+            power_timestamp,
+            INTERVAL '1 MINUTE'
+        ) AS electrical_power_data
+        GROUP BY
+            electrical_system,
+            group_name,
+            sub_group_name,
+            topic,
+            window_start
     )
     SELECT
         electrical_system,
@@ -65,6 +87,28 @@ FROM ( (
         TUMBLE (
             {{ ref('consumer_producer_power_data') }},
             active_power_timestamp,
+            INTERVAL '1 MINUTE'
+        ) AS electrical_power_data
+        GROUP BY
+            electrical_system,
+            group_name,
+            sub_group_name,
+            topic,
+            window_start
+        
+        UNION ALL
+
+        SELECT
+            electrical_power_data.electrical_system AS electrical_system,
+            electrical_power_data.group_name AS group_name,
+            electrical_power_data.sub_group_name AS sub_group_name,
+            electrical_power_data.topic AS topic,
+            window_start AS min_start,
+            AVG(electrical_power_data.power) AS avg_w
+        FROM
+        TUMBLE (
+            {{ ref('24v_power_data') }},
+            power_timestamp,
             INTERVAL '1 MINUTE'
         ) AS electrical_power_data
         GROUP BY
