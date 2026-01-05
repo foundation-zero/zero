@@ -11,7 +11,7 @@ const props = defineProps<{
   <div
     :class="
       cn(
-        'text-disabled-foreground -mt-2 flex items-center gap-1 pb-2 text-base leading-[1rem]! font-medium text-ellipsis',
+        'text-disabled-foreground -mt-2 flex items-center gap-2.5 pb-2 text-base leading-[1rem]! font-medium text-ellipsis',
         props.class,
       )
     "

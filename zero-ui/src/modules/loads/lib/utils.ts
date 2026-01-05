@@ -1,5 +1,5 @@
 import { formatFixed, formatInt } from "@/modules/common/lib/utils";
-import { ReferenceThresholds, VariableState, VariableType } from "../types";
+import { NumRangeId, Range, ReferenceThresholds, VariableState, VariableType } from "../types";
 
 export const formatLoad = (value: number | undefined, type: VariableType): string => {
   if (value === undefined) return "-";
@@ -38,3 +38,16 @@ export const getLoadState = (
 
   return VariableState.Neutral;
 };
+
+export const toNumRangeId = (from: number, to: number): NumRangeId =>
+  `[${from},${to === Infinity ? "" : to})`;
+
+export const toRange = (...values: number[]): Range[] =>
+  values
+    .toSorted((a, b) => a - b)
+    .slice(0, -1)
+    .map((from, i) => ({
+      from,
+      to: values[i + 1],
+      id: toNumRangeId(from, values[i + 1]),
+    }));

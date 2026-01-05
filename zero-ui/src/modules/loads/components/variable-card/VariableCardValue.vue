@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { cn } from "@/modules/common/lib/utils";
 import { HTMLAttributes } from "vue";
 import { getContext } from ".";
 import { VariableState as VariableStateDisplay, VariableUnit } from "../variable-state";
@@ -16,7 +17,7 @@ const { value, state, type } = getContext();
     size="xl"
     :value="value"
     :state="state"
-    :class="props.class"
+    :class="cn('-mt-1', props.class)"
   >
     <VariableUnit />
   </VariableStateDisplay>

@@ -12,6 +12,7 @@ import {
 } from '@/modules/loads/components/variable-card'
 import { VariableType } from '@/modules/loads/types'
 import { ReferenceBoxLine } from '@/modules/loads/components/reference-box'
+import { InfoTooltip } from '@/modules/common/components/info-tooltip'
 </script>
 
 ## Overview
@@ -324,6 +325,65 @@ The following examples demonstrate the load card displaying percentage values wi
     </VariableCardReferenceTarget>
     <VariableCardValue />
     <VariableCardTitle>Push</VariableCardTitle>
+    <VariableCardReferenceThresholds />
+  </VariableCard>
+</template>
+```
+
+### With Info Tooltip
+
+You can add contextual help using the InfoTooltip component inside the VariableCardTitle.
+
+<div class="my-4 p-8 bg-muted flex justify-center">
+  <VariableCard
+    :value="2.5"
+    :type="VariableType.Tonnes"
+    :thresholds="{
+      target: 1,
+      warningHigh: 2.0,
+      alarmHigh: 2.8
+    }"
+  >
+    <VariableCardReferenceTarget>
+      <ReferenceBoxLine />
+    </VariableCardReferenceTarget>
+    <VariableCardValue />
+    <VariableCardTitle>
+      Push
+      <InfoTooltip>
+        This value represents the pushing force measured in tonnes. Warning threshold is 2.0t, alarm threshold is 2.8t.
+      </InfoTooltip>
+    </VariableCardTitle>
+    <VariableCardReferenceThresholds />
+  </VariableCard>
+</div>
+
+```vue
+<script setup>
+import { InfoTooltip } from '@/modules/common/components/info-tooltip'
+</script>
+
+<template>
+  <VariableCard
+    :value="2.5"
+    :type="VariableType.Tonnes"
+    :thresholds="{
+      target: 1,
+      warningHigh: 2.0,
+      alarmHigh: 2.8
+    }"
+  >
+    <VariableCardReferenceTarget>
+      <ReferenceBoxLine />
+    </VariableCardReferenceTarget>
+    <VariableCardValue />
+    <VariableCardTitle>
+      Push
+      <InfoTooltip>
+        This value represents the pushing force measured in tonnes. 
+        Warning threshold is 2.0t, alarm threshold is 2.8t.
+      </InfoTooltip>
+    </VariableCardTitle>
     <VariableCardReferenceThresholds />
   </VariableCard>
 </template>
