@@ -20,7 +20,7 @@ const { t } = useI18n();
 const { breakpoints } = useUIStore();
 
 const hasTemperatureControl = computed(() =>
-  currentRoom.value.roomsControls.some(isTemperatureControl),
+  currentRoom.value.roomControls.some(isTemperatureControl),
 );
 const temperature = ref(extractTemperatureSetpoint(currentRoom.value) ?? 0);
 

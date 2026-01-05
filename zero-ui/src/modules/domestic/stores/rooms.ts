@@ -41,8 +41,8 @@ export const useRoomStore = defineStore("rooms", () => {
   const emptyRoom: Room = {
     name: t("labels.emptyRoom"),
     group: RoomGroup.AFT,
-    roomsControls: [],
-    roomsSensors: [],
+    roomControls: [],
+    roomSensors: [],
     id: "empty",
   };
 
@@ -73,7 +73,7 @@ export const useRoomStore = defineStore("rooms", () => {
       isAdmin.value ? setTemperatureSetpointForRoomMutation : setTemperatureSetpointMutation,
     ),
     (temperature: number) => ({
-      ids: isAdmin.value ? currentRoomId.value : undefined,
+      id: currentRoomId.value,
       temperature,
     }),
   );
@@ -83,7 +83,7 @@ export const useRoomStore = defineStore("rooms", () => {
       isAdmin.value ? setAmplifierForRoomMutation : setAmplifierMutation,
     ),
     (amplifierOn: boolean, roomId: string) => ({
-      ids: isAdmin.value ? [roomId] : undefined,
+      ids: isAdmin.value ? [roomId] : [currentRoomId.value],
       on: amplifierOn,
     }),
     0,
@@ -141,8 +141,8 @@ export const useRoomStore = defineStore("rooms", () => {
     createArea(RoomGroup.HALLWAYS, t("labels.roomGroup.hallways"), rooms.value),
   ]);
 
-  const allControls = computed(() => rooms.value.flatMap((room) => room.roomsControls));
-  const allSensors = computed(() => rooms.value.flatMap((room) => room.roomsSensors));
+  const allControls = computed(() => rooms.value.flatMap((room) => room.roomControls));
+  const allSensors = computed(() => rooms.value.flatMap((room) => room.roomSensors));
 
   watch(rooms, (rooms) => {
     if (currentRoomId.value === emptyRoom.id && rooms.length > 0) {

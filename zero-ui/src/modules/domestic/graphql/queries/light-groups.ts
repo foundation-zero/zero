@@ -12,7 +12,7 @@ export const LightGroupFragment = gql`
 
 export const byRoomId = gql`
   subscription GetLightGroupsByRoom($roomId: String!) {
-    lightingGroups(where: { roomId: { _eq: $roomId } }) {
+    lightingGroups: domesticLightingGroups(where: { roomId: { _eq: $roomId } }) {
       ...LightGroupItem
     }
   }
@@ -22,7 +22,7 @@ export const byRoomId = gql`
 
 export const setLightLevelMutation = gql`
   mutation SetLightLevel($id: ID!, $level: Float!) {
-    setLightingGroup(id: $id, level: $level) {
+    setLightingGroup: domesticSetLightingGroups(id: $id, level: $level) {
       ...MutationResponse
     }
   }
@@ -32,7 +32,7 @@ export const setLightLevelMutation = gql`
 
 export const setLightingGroupsLevelMutation = gql`
   mutation SetGroupLightLevel($ids: [ID!]!, $level: Float!) {
-    setLightingGroups(ids: $ids, level: $level) {
+    setLightingGroups: domesticSetLightingGroups(ids: $ids, level: $level) {
       ...MutationResponse
     }
   }

@@ -11,8 +11,8 @@ const { t } = useI18n();
 
 const { currentRoom } = toRefs(useRoomStore());
 const { showSideNav, breakpoints } = toRefs(useUIStore());
-const lights = computed(() => currentRoom.value.roomsControls.filter(isLightControl));
-const blinds = computed(() => currentRoom.value.roomsControls.filter(isBlindsControl));
+const lights = computed(() => currentRoom.value.roomControls.filter(isLightControl));
+const blinds = computed(() => currentRoom.value.roomControls.filter(isBlindsControl));
 </script>
 
 <template>

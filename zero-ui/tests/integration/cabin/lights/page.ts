@@ -25,16 +25,16 @@ export default class LightsPage {
   public setLightLevels(
     lightLevels: number[],
     room: Room = allRooms.rooms.find(
-      (room) => room.roomsControls.filter(isLightControl).length === lightLevels.length,
+      (room) => room.roomControls.filter(isLightControl).length === lightLevels.length,
     )!,
   ): void {
-    const lights = room.roomsControls.filter(isLightControl);
+    const lights = room.roomControls.filter(isLightControl);
 
     this.subscribeToRoom.dispatch({
       rooms: [
         {
           ...room,
-          roomsControls: lights.map((light, index) => ({
+          roomControls: lights.map((light, index) => ({
             ...light,
             value: lightLevels[index] !== undefined ? lightLevels[index] : light.value,
             time: Date.now(),

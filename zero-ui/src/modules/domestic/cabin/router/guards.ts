@@ -14,8 +14,8 @@ export const waitForRoom: BeforeResolveGuard = (to) => {
         (next) => {
           const invalidRoute =
             (to.name === "cabin:blinds" &&
-              next.roomsControls.filter(isBlindsControl).length === 0) ||
-            (to.name === "cabin:lights" && next.roomsControls.filter(isLightControl).length === 0);
+              next.roomControls.filter(isBlindsControl).length === 0) ||
+            (to.name === "cabin:lights" && next.roomControls.filter(isLightControl).length === 0);
 
           resolve({
             name: invalidRoute ? "cabin:airconditioning" : to.name,

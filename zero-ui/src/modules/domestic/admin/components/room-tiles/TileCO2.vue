@@ -18,19 +18,19 @@ import { computed } from "vue";
 
 const props = defineProps<{ room: Room }>();
 
-const hasCO2Sensor = computed(() => props.room.roomsSensors.some(isCO2Sensor));
+const hasCO2Sensor = computed(() => props.room.roomSensors.some(isCO2Sensor));
 const actualCO2 = computed(() => extractActualCO2(props.room) ?? 0);
 
 const { useSensorHistory, useControlHistory } = useHistoryStore();
 
 const history = useDemoSensorValues(
-  () => useSensorHistory(props.room.roomsSensors.find(isCO2Sensor)?.id),
+  () => useSensorHistory(props.room.roomSensors.find(isCO2Sensor)?.id),
   24,
   { min: CO2_RANGE[0], max: CO2_RANGE[1] },
 );
 
 const setpointHistory = useDemoControlValues(
-  () => useControlHistory(props.room.roomsControls.find(isCO2Control)?.id),
+  () => useControlHistory(props.room.roomControls.find(isCO2Control)?.id),
   24,
   { min: CO2_SETPOINT_RANGE[0], max: CO2_SETPOINT_RANGE[1] },
 );

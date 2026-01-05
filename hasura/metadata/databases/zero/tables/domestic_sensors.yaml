@@ -13,3 +13,15 @@ array_relationships:
         table:
           name: room_sensors_log
           schema: domestic
+select_permissions:
+  - role: user
+    permission:
+      columns:
+        - id
+        - room_id
+        - type
+        - name
+      filter:
+        room_id:
+          _eq: X-Hasura-Cabin
+    comment: ""

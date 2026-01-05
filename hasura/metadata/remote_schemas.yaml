@@ -2,16 +2,34 @@
   definition:
     url: '{{REMOTE_SCHEMA_DOMESTIC}}'
     timeout_seconds: 60
-    customization: {}
+    customization:
+      field_names:
+        - mapping:
+            setAmplifiers: domesticSetAmplifiers
+            setBlinds: domesticSetBlinds
+            setLightingGroups: domesticSetLightingGroups
+            setRoomCo2Setpoints: domesticSetRoomCo2Setpoints
+            setRoomHumiditySetpoints: domesticSetRoomHumiditySetpoints
+            setRoomTemperatureSetpoints: domesticSetRoomTemperatureSetpoints
+          parent_type: Mutation
+        - mapping:
+            version: domesticVersion
+          parent_type: Query
+      type_names:
+        mapping: {}
   comment: ""
   permissions:
     - role: user
       definition:
         schema: |
+          schema {
+            query: Query
+            mutation: Mutation
+          }
           type Mutation {
             setAmplifiers(ids: [ID!]!, on: Boolean!): MutationResponse!
             setBlinds(ids: [ID!]!, level: Float!): MutationResponse!
-            setLightingGroups(ids: [ID!], level: Float!): MutationResponse!
+            setLightingGroups(level: Float!, ids: [ID!]): MutationResponse!
             setRoomCo2Setpoints(ids: [ID!]!, co2: Float!): MutationResponse!
             setRoomHumiditySetpoints(ids: [ID!]!, humidity: Float!): MutationResponse!
             setRoomTemperatureSetpoints(ids: [ID!]!, temperature: Float!): MutationResponse!

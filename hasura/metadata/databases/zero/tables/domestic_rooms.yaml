@@ -65,3 +65,23 @@ array_relationships:
         table:
           name: sensors
           schema: domestic
+select_permissions:
+  - role: user
+    permission:
+      columns:
+        - id
+        - name
+        - group
+      filter:
+        id:
+          _eq: X-Hasura-Cabin
+    comment: ""
+update_permissions:
+  - role: user
+    permission:
+      columns: []
+      filter:
+        id:
+          _eq: X-Hasura-Cabin
+      check: null
+    comment: ""
