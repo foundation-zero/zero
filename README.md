@@ -1,10 +1,15 @@
 # Foundation Zero Docker Environment
 
-This directory contains the Docker Compose configuration for the Foundation Zero platform. The setup is modularized using Docker Compose profiles to allow running specific subsystems independently.
+This directory contains the Docker Compose configuration for the Foundation Zero platform. The setup is modularized using Docker Compose profiles to allow running specific applications independently.
+
+## Setup
+
+ - Create a `.env` based on `.env.example`.
+ - `GCS_CREDENTIAL`can be found in Bitwarden (gcs-auth)
 
 ## Profiles
 
-You can start specific subsystems using the `--profile` flag.
+You can start specific applications using the `--profile` flag.
 
 Usage:
 ```bash
@@ -17,7 +22,7 @@ docker compose --profile <profile_name> up
 |---------|-------------|-------------------|
 | `zero` | Core infrastructure services required for the platform foundation. | MQTT, Postgres, RisingWave, Hasura, Home Assistant |
 | `data` | Tools for data generation and DBT model generation. | Core Infra + Data Generators, DBT |
-| `domestic` | The Domestic Control subsystem for home automation logic. | Core Infra, Domestic Control API, Control and Stub |
+| `domestic` | The Domestic Control application for home automation logic. | Core Infra, Domestic Control API, Control and Stub |
 | `loads` | The Loads subsystem for managing electrical loads. | Core Infra, Loads API, Control and Stubs |
 
 ## Services Overview
@@ -33,7 +38,6 @@ docker compose --profile <profile_name> up
 ### Data Tools
 *   **data-gen**: Python tool to generate synthetic data for testing.
 *   **dbt-gen**: Generates DBT models for data transformation.
-cd
 ### Domestic Control
 *   **domestic-control-api**: GraphQL API service for the domestic control application.
 *   **domestic-control-control**: Background worker handling control logic and state management.
