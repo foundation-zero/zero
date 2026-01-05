@@ -5,7 +5,7 @@ WITH power_updates AS (
         topic,
         time,
         current * voltage / 1000 AS power,
-        greatest("curr_timestamp", volt_timestamp) as power_timestamp
+        greatest(curr_timestamp, volt_timestamp) as power_timestamp
     FROM {{ ref('24v_power_updates') }}
 )
 

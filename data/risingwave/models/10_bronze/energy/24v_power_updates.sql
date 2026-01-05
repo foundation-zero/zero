@@ -18,9 +18,9 @@ WITH consumers AS (
             ON sys_voltage.system_code = regexp_match(topic, '/24(e.*)_')[1]
             AND sys_voltage.time BETWEEN consumer.time - INTERVAL '1 minute' AND consumer.time + INTERVAL '1 second'
         ORDER BY consumer.topic, consumer.time, sys_voltage.time
-        )
-    WHERE rn = 1
     )
+    WHERE rn = 1
+)
 
 {{ filter_marpower_topic_changes(
     'consumers', {

@@ -1,5 +1,28 @@
 version: 2
 models:
+  - name: 24v_power_data
+    description: The electrical energy consumed by the 24V DC devices.
+    columns:
+      - name: topic
+        description: '{{ doc("topic") }}'
+        data_tests:
+            - not_null
+      - name: time
+        description: '{{ doc("zero_timestamp") }}'
+        data_tests:
+            - not_null
+      - name: power
+        description: The measured elecrical energy of the device.
+      - name: power_timestamp
+        description: The timestamp the electrical energy was measured.
+      - name: electrical_system
+        description: '{{ doc("electrical_system") }}'
+        data_tests:
+            - not_null
+      - name: group_name
+        description: '{{ doc("group_name") }}'
+      - name: sub_group_name
+        description: '{{ doc("sub_group_name") }}'
   - name: battery_dc_converter_power_data
     description: Voltage and current values of the battery DC converters extended with metadata. {{ doc("dc_converter_sides_explained") }}
     columns:
@@ -27,8 +50,6 @@ models:
         description: '{{ doc("current_at_side") }} B.'
       - name: current_b_timestamp
         description: '{{ doc("timestamp_current_at_side") }} B.'
-      - name: electrical_system
-        description: '{{ doc("electrical_system") }}'
       - name: electrical_system
         description: '{{ doc("electrical_system") }}'
         data_tests:

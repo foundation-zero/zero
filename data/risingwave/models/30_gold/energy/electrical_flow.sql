@@ -14,7 +14,6 @@ FROM
 		electrical_power_data.group_name AS group_name,
 		electrical_power_data.sub_group_name AS sub_group_name,
 		AVG(electrical_power_data.power) AS avg_power
-	--FROM {{ ref('consumer_producer_power_data') }} AS electrical_power_data
 	FROM (
 		SELECT 
 			topic, time, electrical_system, group_name, sub_group_name, active_power AS power
