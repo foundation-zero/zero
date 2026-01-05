@@ -1,29 +1,37 @@
 # Zero Loads App
 
-The Loads app does the processing as follows:
+The Loads app processes data as follows:
 - Sensor equipment transmits sensor data via PCan UDP.
 - The `adapter` module receives these messages, interprets them, and forwards the data to MQTT.
 - RisingWave ingests relevant sensor data, constructs load conditions, and publishes them to MQTT.
 - The `control` process consumes load conditions from MQTT, determines the load case by computing the sea state, and publishes the results to MQTT, where RisingWave sinks them into Postgres.
-- When reference values are requested via the API, the current load case is retrieved from Postgres and the corresponding reference values are returned.
+- When reference values are requested via the API, the current load case is retrieved from Postgres, and the corresponding reference values are returned.
 
+
+## Usage
+
+1. Create a `.env` file based on `.env-example` in the root folder.
+
+2. Start the services. Run in the root folder:
+   ```bash
+   docker compose --profile loads up -d
+   ```
 
 ## Development Setup
 
-This will setup everything needed to start any module within `zero-loads-app`.
+Set up the development environment:
 
- - Create a `.env` file using `.env.example` as a template
+1. Install dependencies:
+   ```bash
+   poetry install --with dev
+   ```
 
-Install dependencies:
-```bash
-poetry install --with dev
-```
+2. Create a `.env` file in the root folder based on `.env-example`.
 
-Start the services in the root folder
-```bash
-cd ..
-docker compose --profile zero up -d
-```
+3. Start the required services. Run in the root folder:
+    ```bash
+    docker compose --profile zero up -d
+    ```
 
 Apply Hasura metadata:
 ```bash
@@ -31,55 +39,69 @@ cd hasura
 hasura metadata apply --admin-secret myadminsecretkey
 ```
 
-## Usage
+### Running Components
 
-### Adapter
+#### Adapter
 
-The adapter receives PCan messages, interprets them, and forwards the data to MQTT.
+Run the adapter to receive PCan messages, interpret them, and forward the data to MQTT:
 ```bash
 poetry run loads adapter
 ```
 
-The PCan stub simulates PCan messages over UDP for the adapter to ingest.
+Run the PCan stub to simulate PCan messages over UDP:
 ```bash
 poetry run loads pcan-stub
 ```
 
-### Control
+#### Control
 
-The control module processes load conditions from MQTT, calculates sea state, and publishes results to MQTT.
+Run the control module to process load conditions from MQTT, calculate sea state, and publish results:
 ```bash
 poetry run loads control
 ```
 
-The sensor stub simulates load conditions over MQTT for the control module.
+Run the sensor stub to simulate load conditions over MQTT:
 ```bash
 poetry run loads conditions-stub
 ```
 
-### API
+#### API
 
-Start the API service to expose a GraphQL API that returns reference values for a specified or current load case.
+Start the API service to expose a GraphQL API for retrieving reference values:
 ```bash
 poetry run loads api
 ```
 
-The sensor stub simulates load sesnors over MQTT.
+Run the sensor stub to simulate sensor data over MQTT:
 ```bash
 poetry run loads sensor-stub
 ```
 
-### Generate JWT Token
+#### Generate JWT Token
 
 Generate a JWT token for a specific role (e.g., `captain`):
 ```bash
 poetry run loads generate-jwt --roles captain
 ```
 
-## Test Setup
+## Testing
 
-Create a `.env` file using `.env.example` as a template in the root folder
-
+1. Make sure the dependencies for testing are installed
 ```bash
-docker compose --profile loads up -d
+poetry install --with dev,test
+```
+2. Run unit tests
+```bash
+poetry run pytest . --run=unit
+```
+3. Run integration tests:
+
+Start the required services. Run in the root folder:
+```bash
+docker compose --profile zero up -d
+```
+
+Run the integration tests:
+```bash
+poetry run pytest . --run=integration
 ```

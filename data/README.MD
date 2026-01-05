@@ -1,24 +1,27 @@
-# Intro
+# Data
 
-This repo sets up the postgres and risingwave databases using pure SQL and `dbt`
+This repository sets up the PostgreSQL and RisingWave databases using SQL and `dbt`.
 
-# Setup
+## Setup Instructions
 
- - Create `.env` based on `.env.example`
- - Set up gsheet service account key file from Bitwarden
+ - Create a `.env` file based on `.env.example`.
+ - Set up the Google Sheets service account key file (`.gsheet-sa-key`) from Bitwarden.
 
-Install dependencies
+Install dependencies:
 ```bash
 poetry install
 ```
 
-Start Postgres, Risingwave, VerneMQ and the data generator (in the root folder)
-
+Start services (from the root folder):
 ```bash
 docker compose --profile zero up
 ```
 
-Run the scripts for Postgres and Risingwave
+This will set up the following relevant services:
+ - VerneMQ: MQTT client
+ - RisingWave: Streaming database
+
+Run the scripts for PostgreSQL and RisingWave:
 ```bash
 poetry run python -m setup_postgres
 poetry run python -m setup_risingwave

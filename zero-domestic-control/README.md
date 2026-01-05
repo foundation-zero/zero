@@ -2,80 +2,89 @@
 
 ## Architecture
 
-https://miro.com/app/board/uXjVI85VEAc=/?share_link_id=164545697008
+Refer to the architecture diagram: [Miro Board](https://miro.com/app/board/uXjVI85VEAc=/?share_link_id=164545697008)
 
-### Development (Docker)
+## Usage
 
- - Install Hasura CLI: https://hasura.io/docs/2.0/hasura-cli/install-hasura-cli/
- - Create `.env` based on `.env-example` in the root folder. Make sure to set the `GCS_CREDENTIAL` to valid key.
+1. Install the Hasura CLI: [Hasura CLI Installation Guide](https://hasura.io/docs/2.0/hasura-cli/install-hasura-cli/)
 
-Start services
-```bash
-docker compose --profile domestic up -d
+2. Create a `.env` file based on `.env-example` in the root folder.
+
+3. Start the services. Run in the root folder:
+    ```bash
+    docker compose --profile domestic up -d
+    ```
+
+### To manually apply Hasura metadata:
+
 ```
-
-Hasura metadata is applied at startup. To apply hasura metadata manually run:
-```bash
-cd ./volumes/hasura
-hasura metadata apply --admin-secret myadminsecretkey
-```
-
-## Development
-
- - Install Hasura CLI: https://hasura.io/docs/2.0/hasura-cli/install-hasura-cli/
- - Create `.env` based on `.env-example` in the root folder. Make sure to set the `GCS_CREDENTIAL` to valid key.
-
-Create environment
-```bash
-poetry install --with dev
-```
-
-Start services
-```bash
-docker compose --profile zero up -d
-```
-
-Run backend
-```bash
-poetry run python -m domestic_control api
-```
-
-Run stubs
-```bash
-poetry run python -m domestic_control stub
-```
-
-Run control
-```bash
-poetry run python -m domestic_control control
-```
-
-Apply hasura metadata
-```bash
 cd hasura
 hasura metadata apply --admin-secret myadminsecretkey
 ```
 
+## Development Setup
+
+1. Install dependencies:
+    ```bash
+    poetry install --with dev
+    ```
+
+2. Create a `.env` file in the root folder based on `.env-example`.
+
+3. Start the required services. Run in the root folder:
+    ```bash
+    docker compose --profile zero up -d
+    ```
+
+4. Create a `.env` file in this folder based on `.env-example`.
+
+### Running Components
+
+Run the backend:
+```bash
+poetry run domestic_control api
+```
+
+Run the stubs:
+```bash
+poetry run domestic_control stub
+```
+
+Run the control process:
+```bash
+poetry run domestic_control control
+```
+
 ### Generate JWT
 
-Generate JWT
+Generate a JWT token:
 ```bash
-# With default 'user' role
+# Default 'user' role
 poetry run python -m zero_domestic_control generate-jwt
-# With additional role(s)
+# Additional roles
 poetry run python -m zero_domestic_control generate-jwt admin
-# With cabin (for guests)
+# Cabin-specific token
 poetry run python -m zero_domestic_control generate-jwt --cabin dutch-cabin
 ```
 
-## Home Assistant
+## Testing
 
-You can log into home assistant by running:
-
+1. Make sure the dependencies for testing are installed
 ```bash
-docker compose up hass
+poetry install --with dev,test
+```
+2. Run unit tests
+```bash
+poetry run pytest . --run=unit
+```
+3. Run integration tests:
+
+Start the required services. Run in the root folder:
+```bash
+docker compose --profile zero up -d
 ```
 
-Go to http://localhost:8123 and log in with the following credentials:
-Username: root
-Password: zerozerozero
+Run the integration tests:
+```bash
+poetry run pytest . --run=integration
+```
