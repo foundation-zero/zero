@@ -27,7 +27,7 @@ services:
     volumes:
       - db_data:/var/lib/postgresql/data
     ports:
-      - ${PG_PORT}:5432
+      - 5432:5432
     profiles:
       - zero
       - data
@@ -53,18 +53,15 @@ services:
      - domestic
      - loads
     environment: &setup
-      PG_HOST: ${PG_HOST}
+      PG_HOST: postgres
       PG_HOST_DOCKER: postgres
-      PG_PORT: ${PG_PORT}
+      PG_PORT: 5432
       PG_USER: ${PG_USER}
       PG_PASSWORD: ${PG_PASSWORD}
       PG_DB: ${PG_DB}
-      MQTT_PROTOCOL: ${MQTT_PROTOCOL}
-      MQTT_HOST: ${MQTT_HOST}
-      MQTT_PORT: ${MQTT_PORT}
+      MQTT_HOST: vernemq
+      MQTT_PORT: 1883
       RISINGWAVE_URL: postgres://root@risingwave:4566/dev
-      GCS_BUCKET_NAME: ${GCS_BUCKET_NAME}
-      GCS_CREDENTIAL: ${GCS_CREDENTIAL}
     depends_on:
       postgres:
         condition: service_healthy
@@ -191,13 +188,12 @@ services:
       - vernemq
     environment: &app_env
       PG_HOST: postgres
-      PG_PORT: ${PG_PORT}
+      PG_PORT: 5432
       PG_USER: ${PG_USER}
       PG_PASSWORD: ${PG_PASSWORD}
       PG_DB: ${PG_DB}
       RISINGWAVE_URL: postgres://root@risingwave:4566/dev
       JWT_SECRET: ${JWT_SECRET}
-      MQTT_PROTOCOL: ${MQTT_PROTOCOL}
       MQTT_HOST: vernemq
       MQTT_PORT: 1883
       HOME_ASSISTANT_URL: http://hass:8123/api
@@ -205,9 +201,9 @@ services:
       HOME_ASSISTANT_TOKEN: ${HOME_ASSISTANT_TOKEN}
       TERMODINAMICA_HOST: domestic-control-stub
       TERMODINAMICA_PORT: 502
-      CANBUS_IP: ${CANBUS_IP}
-      CANBUS_PORT: ${CANBUS_PORT}
-      CANBUS_BUFFER_SIZE: ${CANBUS_BUFFER_SIZE}
+      CANBUS_IP: 127.0.0.1
+      CANBUS_PORT: 55001
+      CANBUS_BUFFER_SIZE: 1024
 
   domestic-control-control:
     command: control
