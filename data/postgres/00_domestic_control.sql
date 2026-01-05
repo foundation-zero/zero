@@ -50,7 +50,7 @@ CREATE TABLE domestic.room_controls (
   "room_id" VARCHAR REFERENCES domestic.rooms("id"),
   "name" TEXT,
   "type" TEXT,
-  "value" TEXT,
+  "value" REAL,
   "time" TIMESTAMPTZ
 );
 
@@ -82,7 +82,7 @@ CREATE TABLE domestic.room_sensors (
   "room_id" VARCHAR REFERENCES domestic.rooms("id"),
   "name" TEXT,
   "type" TEXT,
-  "value" TEXT,
+  "value" REAL,
   "time" TIMESTAMPTZ
 );
 

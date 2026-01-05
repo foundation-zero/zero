@@ -17,12 +17,12 @@ const { controls, someLightsAreOn, toggle } = useToggleableLights(computed(() =>
     :title="room.name"
     :class="{ on: someLightsAreOn }"
     selectable
-    :state="ValidationStatus.UNKNOWN"
+    :state="ValidationStatus.OK"
     @click="toggle"
   >
     <template #center>
       <Switch
-        :checked="someLightsAreOn"
+        :model-value="someLightsAreOn"
         class="mb-1 scale-125 md:scale-200"
       />
     </template>

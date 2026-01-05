@@ -73,7 +73,7 @@ export const useRoomStore = defineStore("rooms", () => {
       isAdmin.value ? setTemperatureSetpointForRoomMutation : setTemperatureSetpointMutation,
     ),
     (temperature: number) => ({
-      id: currentRoomId.value,
+      ids: [currentRoomId.value],
       temperature,
     }),
   );

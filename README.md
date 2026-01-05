@@ -25,6 +25,8 @@ docker compose --profile <profile_name> up
 | `domestic` | The Domestic Control application for home automation logic. | Core Infra, Domestic Control API, Control and Stub |
 | `loads` | The Loads subsystem for managing electrical loads. | Core Infra, Loads API, Control and Stubs |
 
+*Note: domestic-control-api is a remote schema in Hasura. If Hasura boots before domestic-control-api, it'll not load the remote schema, because it can't verify it through introspection. Use `hasura metadata reload --admin-secret myadminsecretkey` to fix this.*
+
 ## Services Overview
 
 ### Core Infrastructure
@@ -38,6 +40,7 @@ docker compose --profile <profile_name> up
 ### Data Tools
 *   **data-gen**: Python tool to generate synthetic data for testing.
 *   **dbt-gen**: Generates DBT models for data transformation.
+
 ### Domestic Control
 *   **domestic-control-api**: GraphQL API service for the domestic control application.
 *   **domestic-control-control**: Background worker handling control logic and state management.

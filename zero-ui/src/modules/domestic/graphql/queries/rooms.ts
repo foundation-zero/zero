@@ -81,9 +81,9 @@ export const getRoomById = gql`
 `;
 
 export const setTemperatureSetpointMutation = gql`
-  mutation SetTemperatureSetpointForRoom($id: ID!, $temperature: Float!) {
+  mutation SetTemperatureSetpointForRoom($ids: [ID!]!, $temperature: Float!) {
     setRoomTemperatureSetpoints: domesticSetRoomTemperatureSetpoints(
-      ids: [$id]
+      ids: $ids
       temperature: $temperature
     ) {
       ...MutationResponse

@@ -59,6 +59,7 @@ services:
       PG_USER: ${PG_USER}
       PG_PASSWORD: ${PG_PASSWORD}
       PG_DB: ${PG_DB}
+      MQTT_PROTOCOL: mqtt
       MQTT_HOST: vernemq
       MQTT_PORT: 1883
       RISINGWAVE_URL: postgres://root@risingwave:4566/dev
@@ -158,6 +159,9 @@ services:
     command: python -m zero_data generate-data
     profiles:
       - data
+    environment:
+      MQTT_HOST: vernemq
+      MQTT_PORT: 1883
     depends_on:
       vernemq:
         condition: service_healthy
@@ -184,8 +188,10 @@ services:
     profiles:
       - domestic
     depends_on:
-      - hass
-      - vernemq
+      hass:
+        condition: service_healthy
+      vernemq:
+        condition: service_healthy
     environment: &app_env
       PG_HOST: postgres
       PG_PORT: 5432
