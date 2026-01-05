@@ -75,7 +75,7 @@ poetry install --with dev,test
 ```
 2. Run unit tests
 ```bash
-poetry run pytest . --run=unit
+poetry run pytest --run=unit
 ```
 3. Run integration tests:
 
@@ -86,5 +86,5 @@ docker compose --profile zero up -d
 
 Run the integration tests:
 ```bash
-poetry run pytest . --run=integration
+poetry run pytest --run=integration
 ```

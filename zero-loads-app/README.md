@@ -92,7 +92,7 @@ poetry install --with dev,test
 ```
 2. Run unit tests
 ```bash
-poetry run pytest . --run=unit
+poetry run pytest --run=unit
 ```
 3. Run integration tests:
 

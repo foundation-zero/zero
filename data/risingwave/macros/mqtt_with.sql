@@ -1,6 +1,6 @@
 {% macro mqtt_with(topic) %}WITH (
   connector = 'mqtt',
-  url       = 'mqtt://{{ env_var('MQTT_HOST') }}:{{ env_var('MQTT_PORT') }}',
+  url       = '{{ env_var('MQTT_PROTOCOL') }}://{{ env_var('MQTT_HOST') }}:{{ env_var('MQTT_PORT') }}',
   topic     = '{{ topic }}',
   qos       = 'exactly_once',
   max_packet_size = 2000000,
