@@ -187,7 +187,7 @@ describe("Rooms Store", () => {
 
         expect(useMutation).toHaveBeenCalledWith(setTemperatureSetpointForRoomMutation);
         expect(executeMutation).toHaveBeenCalledWith({
-          ids: room.id,
+          ids: [room.id],
           temperature: nextTemperature,
         });
       });
@@ -217,7 +217,7 @@ describe("Rooms Store", () => {
 
         expect(useMutation).toHaveBeenCalledWith(setTemperatureSetpointMutation);
         expect(executeMutation).toHaveBeenCalledWith({
-          id: undefined,
+          ids: [""],
           temperature: nextTemperature,
         });
       });
@@ -229,7 +229,7 @@ describe("Rooms Store", () => {
 
         expect(useMutation).toHaveBeenCalledWith(setAmplifierMutation);
         expect(executeMutation).toHaveBeenCalledWith({
-          id: undefined,
+          ids: [""],
           on: nextState,
         });
       });
