@@ -7,6 +7,12 @@ on:
       - .github/workflows/ci_mast_deformation.yaml
   release:
     types: [released]
+  push:
+    branches:
+      - main
+    paths:
+      - zero-mast-deformation/**
+      - .github/workflows/ci_mast_deformation.yaml
 
 jobs:
   test:

@@ -6,6 +6,12 @@ on:
       - zero-ui/**
   release:
     types: [released]
+  push:
+    branches:
+      - main
+    paths:
+      - .github/workflows/ci_apps.yaml
+      - zero-ui/**
 
 env:
   IMAGE: "europe-west1-docker.pkg.dev/common-449414/common/zero-ui"

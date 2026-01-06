@@ -8,6 +8,14 @@ on:
       - .github/workflows/ci_zero_loads_app.yaml
   release:
     types: [released]
+  push:
+    branches:
+      - main
+    paths:
+      - zero-loads-app/**
+      - data/**
+      - zero-generator/**
+      - .github/workflows/ci_zero_loads_app.yaml
 
 env:
   IMAGE: "europe-west1-docker.pkg.dev/common-449414/common/zero-loads-app"

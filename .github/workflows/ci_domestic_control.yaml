@@ -6,6 +6,12 @@ on:
       - .github/workflows/ci_domestic_control.yaml
   release:
     types: [released]
+  push:
+    branches:
+      - main
+    paths:
+      - zero-domestic-control/**
+      - .github/workflows/ci_domestic_control.yaml
 
 env:
   IMAGE: "europe-west1-docker.pkg.dev/common-449414/common/zero-domestic-control"

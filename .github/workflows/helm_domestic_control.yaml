@@ -1,14 +1,11 @@
 name: "Domestic Control: Deploy zero-domestic-control chart"
 on:
-  pull_request:
-    types: [closed]
+  push:
     branches:
       - main
     paths:
       - .github/workflows/helm_domestic_control.yaml
       - zero-domestic-control/charts/zero-domestic-control/**
-  release:
-    types: [released]
 
 jobs:
   helm-push:

@@ -6,6 +6,12 @@ on:
       - data/**
   release:
     types: [released]
+  push:
+    branches:
+      - main
+    paths:
+      - .github/workflows/ci_data.yaml
+      - data/**
 
 jobs:
   test:

@@ -7,6 +7,13 @@ on:
       - .github/workflows/ci_generator.yaml
   release:
     types: [released]
+  push:
+    branches:
+      - main
+    paths:
+      - zero-generator/**
+      - zero-loads-app/**
+      - .github/workflows/ci_generator.yaml
 
 jobs:
   test:

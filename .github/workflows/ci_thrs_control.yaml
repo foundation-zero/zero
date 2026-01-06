@@ -6,6 +6,12 @@ on:
       - .github/workflows/ci_thrs_control.yaml
   release:
     types: [released]
+  push:
+    branches:
+      - main
+    paths:
+      - zero-thrs-control/**
+      - .github/workflows/ci_thrs_control.yaml
 
 jobs:
   test:
