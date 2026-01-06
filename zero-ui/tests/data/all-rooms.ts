@@ -35,16 +35,13 @@ const toRoom = (room: Rooms): Room => ({
   id: room.id,
   name: room.name,
   group: room.group as RoomGroup,
-  roomsControls: [
+  roomControls: [
     ...room.blinds.map(toBlindsControl),
     ...room.lightingGroups.map(toLightingControl),
     toAmplifierStatus(room.amplifierOn),
     toTemperatureControl(room.temperatureSetpoint),
   ],
-  roomsSensors: [
-    toTemperatureSensor(room.actualTemperature),
-    toHumiditySensor(room.actualHumidity),
-  ],
+  roomSensors: [toTemperatureSensor(room.actualTemperature), toHumiditySensor(room.actualHumidity)],
 });
 
 export const rooms: Room[] = (allRooms.rooms as Rooms[]).map(toRoom);

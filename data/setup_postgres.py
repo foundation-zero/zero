@@ -7,13 +7,12 @@ from dotenv import load_dotenv
 
 from config import Settings
 
+
 load_dotenv(dotenv_path=".env")
 
-settings = Settings()
+settings = Settings()  # type: ignore
 
-print(
-    f"Postgres: Initializing tables to Postgres: {settings.pg_host}:{settings.pg_port}/{settings.pg_db}"
-)
+print(f"Postgres: Initializing tables to Postgres: {settings.pg_host}:{settings.pg_port}/{settings.pg_db}")
 
 
 async def setup():

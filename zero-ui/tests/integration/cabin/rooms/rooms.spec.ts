@@ -37,11 +37,11 @@ test.describe("Rooms", () => {
     });
 
     test("shows the correct state of the audio system", async ({ roomsPage, page }) => {
-      roomsPage.updateRoom(dutchCabin, { roomsControls: [toAmplifierStatus(false)] });
+      roomsPage.updateRoom(dutchCabin, { roomControls: [toAmplifierStatus(false)] });
 
       await expect(roomsPage.audioSystemToggle).toHaveAttribute("data-state", "unchecked");
 
-      roomsPage.updateRoom(dutchCabin, { roomsControls: [toAmplifierStatus(true)] });
+      roomsPage.updateRoom(dutchCabin, { roomControls: [toAmplifierStatus(true)] });
 
       await page.waitForTimeout(1000);
 

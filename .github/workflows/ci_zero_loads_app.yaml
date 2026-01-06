@@ -8,6 +8,14 @@ on:
       - .github/workflows/ci_zero_loads_app.yaml
   release:
     types: [released]
+  push:
+    branches:
+      - main
+    paths:
+      - zero-loads-app/**
+      - data/**
+      - zero-generator/**
+      - .github/workflows/ci_zero_loads_app.yaml
 
 env:
   IMAGE: "europe-west1-docker.pkg.dev/common-449414/common/zero-loads-app"
@@ -35,24 +43,20 @@ jobs:
         working-directory: zero-loads-app
       - run: poetry run mypy src
         working-directory: zero-loads-app
-      - name: Create .env file from secret for zero-loads-app
+      - name: Create .env file from secret in root for services
+        run: |
+          echo "${{ secrets.ENV }}" > .env
+      - name: Create .env file from secret in project
         run: |
           echo "${{ secrets.ENV_LOADS_APP }}" > .env
         working-directory: zero-loads-app
       - name: Unit Test
-        run: poetry run pytest . --run=unit -vv
+        run: poetry run pytest --run=unit -vv
         working-directory: zero-loads-app
       - run: poetry install
         working-directory: data
-      - name: Create .env file from secret for /data
-        run: |
-          echo "${{ secrets.ENV_DATA }}" > .env
-        working-directory: data
       - name: Run services
-        run: docker compose up -d --quiet-pull --wait
-        working-directory: zero-loads-app
-      - run: poetry run python -m setup_postgres
-        working-directory: data
+        run: docker compose --profile zero up -d --quiet-pull --wait
       - name: Integration Test
         run: poetry run pytest --run=integration -vv
         working-directory: zero-loads-app

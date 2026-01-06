@@ -21,7 +21,7 @@ export default class AirconditioningPage {
       rooms: [
         {
           ...room,
-          roomsControls: [toTemperatureControl(temperatureSetpoint)],
+          roomControls: [toTemperatureControl(temperatureSetpoint)],
         },
       ],
     });
@@ -32,7 +32,7 @@ export default class AirconditioningPage {
       rooms: [
         {
           ...room,
-          roomsSensors: [toTemperatureSensor(temperature)],
+          roomSensors: [toTemperatureSensor(temperature)],
         },
       ],
     });

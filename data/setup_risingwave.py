@@ -11,7 +11,7 @@ from glob import glob
 load_dotenv(dotenv_path=".env")
 
 settings = Settings()  # type:ignore
-
+print(settings)
 parser = argparse.ArgumentParser(description="Setup Risingwave tables", add_help=True)
 parsed_args, dbt_args = parser.parse_known_args()
 
@@ -34,7 +34,7 @@ asyncio.run(setup_domestic_control())
 
 print("Risingwave: Generate model documentation")
 
-subprocess.run(["poetry", "run", "dbt", "docs", "generate"], cwd="./risingwave")
+subprocess.run(["poetry", "run", "dbt", "docs", "generate"] + dbt_args, cwd="./risingwave")
 
 
 print("Risingwave: Done")

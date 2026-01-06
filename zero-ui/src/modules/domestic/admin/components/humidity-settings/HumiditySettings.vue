@@ -24,7 +24,7 @@ const store = useRoomStore();
 const { allControls, rooms } = toRefs(store);
 
 const roomsWithHumidityControl = computed(() =>
-  rooms.value.filter((room) => room.roomsControls.some(isHumidityControl)),
+  rooms.value.filter((room) => room.roomControls.some(isHumidityControl)),
 );
 
 const controls = computed(() => allControls.value.filter(isHumidityControl));

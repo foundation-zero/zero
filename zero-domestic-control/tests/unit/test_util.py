@@ -1,4 +1,4 @@
-from zero_domestic_control.util import invert_dict
+from domestic_control.util import invert_dict
 
 
 def test_invert_dict_empty():

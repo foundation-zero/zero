@@ -7,6 +7,13 @@ on:
       - .github/workflows/ci_generator.yaml
   release:
     types: [released]
+  push:
+    branches:
+      - main
+    paths:
+      - zero-generator/**
+      - zero-loads-app/**
+      - .github/workflows/ci_generator.yaml
 
 jobs:
   test:
@@ -31,9 +38,11 @@ jobs:
         working-directory: zero-generator
       - run: poetry run mypy src
         working-directory: zero-generator
+      - name: Create .env file from secret in root
+        run: |
+          echo "${{ secrets.ENV }}" > .env
       - name: Run services
-        run: docker compose up -d --quiet-pull --wait
-        working-directory: zero-generator
+        run: docker compose --profile zero up -d --quiet-pull --wait
       - name: Unit Test
         run: poetry run pytest . -vv
         working-directory: zero-generator

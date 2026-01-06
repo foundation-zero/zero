@@ -88,8 +88,8 @@ export interface Room {
   id: string;
   name: string;
   group: RoomGroup;
-  roomsControls: RoomControl[];
-  roomsSensors: RoomSensor[];
+  roomControls: RoomControl[];
+  roomSensors: RoomSensor[];
 }
 
 export interface ShipArea {

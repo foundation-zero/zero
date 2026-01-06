@@ -24,16 +24,16 @@ export default class BlindsPage {
   public setBlindLevels(
     blindLevels: number[],
     room: Room = allRooms.rooms.find(
-      (room) => room.roomsControls.filter(isBlindsControl).length === blindLevels.length,
+      (room) => room.roomControls.filter(isBlindsControl).length === blindLevels.length,
     )!,
   ): void {
-    const blinds = room.roomsControls.filter(isBlindsControl);
+    const blinds = room.roomControls.filter(isBlindsControl);
 
     this.subscribeToRoom.dispatch({
       rooms: [
         {
           ...room,
-          roomsControls: blinds.map<BlindsControl>((blind, index) => ({
+          roomControls: blinds.map<BlindsControl>((blind, index) => ({
             ...blind,
             time: Date.now(),
             value: blindLevels[index] !== undefined ? blindLevels[index] : blind.value,

@@ -81,12 +81,12 @@ export const isCO2Sensor = isSensorType(SensorType.CO2);
 export const extractActualSensorValue =
   <T extends SensorType>(type: T) =>
   (room: Room) =>
-    room.roomsSensors.find(isSensorType(type))?.value;
+    room.roomSensors.find(isSensorType(type))?.value;
 
 export const extractActualControlValue =
   <T extends ControlType>(type: T) =>
   (room: Room) =>
-    room.roomsControls.find(isControlType(type))?.value;
+    room.roomControls.find(isControlType(type))?.value;
 
 export const extractActualHumidity = extractActualSensorValue(SensorType.HUMIDITY);
 export const extractActualTemperature = extractActualSensorValue(SensorType.TEMPERATURE);

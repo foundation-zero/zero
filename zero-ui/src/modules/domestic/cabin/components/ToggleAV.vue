@@ -16,7 +16,7 @@ const amplifierStatus = computed(() => extractAmplifierStatus(currentRoom.value)
 const isOn = computed({
   get: () => amplifierStatus.value === 1,
   set: (val) => {
-    const amp = currentRoom.value.roomsControls.find(isAmplifierControl);
+    const amp = currentRoom.value.roomControls.find(isAmplifierControl);
 
     if (!amp) return;
 

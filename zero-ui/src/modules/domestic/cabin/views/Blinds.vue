@@ -17,23 +17,31 @@ import { computed, ref, toRefs, watch } from "vue";
 
 const { currentRoom } = toRefs(useRoomStore());
 const { breakpoints } = toRefs(useUIStore());
-const selected = ref<BlindsGroup>();
+const selectedGroup = ref<string | undefined>();
 
 const blinds = computed(() =>
-  groupBlindsByGroup(currentRoom.value.roomsControls.filter(isBlindsControl)),
+  groupBlindsByGroup(currentRoom.value.roomControls.filter(isBlindsControl)),
 );
 
 watch(currentRoom, (next, prev) => {
   if (next.id !== prev.id) {
-    selected.value = undefined;
+    selectedGroup.value = undefined;
   }
 });
 
 const setGroup = (group: BlindsGroup) => {
-  if (selected.value !== group) {
-    selected.value = group;
+  if (selectedGroup.value !== group.name) {
+    selectedGroup.value = group.name;
   }
 };
+
+const selected = computed(() => {
+  if (selectedGroup.value) {
+    return blinds.value.find((group) => group.name === selectedGroup.value);
+  } else {
+    return undefined;
+  }
+});
 </script>
 
 <template>
@@ -85,6 +93,6 @@ const setGroup = (group: BlindsGroup) => {
         </ListItem>
       </List>
     </ListRoot>
-    <BlindsControlPopup v-model:group="selected" />
+    <BlindsControlPopup :group="selected" />
   </section>
 </template>

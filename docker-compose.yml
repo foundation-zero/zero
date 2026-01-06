@@ -1,0 +1,306 @@
+services:
+  vernemq:
+    image: vernemq/vernemq:2.0.0-alpine
+    container_name: vernemq
+    restart: always
+    ports:
+      - 1883:1883
+      - 9001:9001
+    profiles:
+      - zero
+      - data
+      - domestic
+      - loads
+    environment:
+      DOCKER_VERNEMQ_ACCEPT_EULA: yes
+      DOCKER_VERNEMQ_ALLOW_ANONYMOUS: on
+      DOCKER_VERNEMQ_LISTENER__WS__DEFAULT: 0.0.0.0:9001
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8888/health"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  postgres:
+    image: postgres:15
+    restart: always
+    volumes:
+      - db_data:/var/lib/postgresql/data
+    ports:
+      - 5432:5432
+    profiles:
+      - zero
+      - data
+      - domestic
+      - loads
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready", "-d", "db_prod", "-U", "postgres"]
+      interval: 30s
+      timeout: 60s
+      retries: 5
+      start_period: 80s
+    environment:
+      POSTGRES_USER: ${PG_USER}
+      POSTGRES_PASSWORD: ${PG_PASSWORD}
+      POSTGRES_DB: ${PG_DB}
+
+  setup-postgres:
+    build:
+      context: ./data
+    command: setup_postgres --target docker
+    profiles:
+     - zero
+     - domestic
+     - loads
+    environment: &setup
+      PG_HOST: postgres
+      PG_HOST_DOCKER: postgres
+      PG_PORT: 5432
+      PG_USER: ${PG_USER}
+      PG_PASSWORD: ${PG_PASSWORD}
+      PG_DB: ${PG_DB}
+      MQTT_PROTOCOL: mqtt
+      MQTT_HOST: vernemq
+      MQTT_PORT: 1883
+      RISINGWAVE_URL: postgres://root@risingwave:4566/dev
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+  risingwave:
+    image: risingwavelabs/risingwave:nightly-20250928
+    command: single_node
+    ports:
+      - 4566:4566
+      - 5691:5691
+    profiles:
+     - zero
+     - domestic
+     - loads
+    healthcheck:
+      test:
+        - CMD-SHELL
+        - bash -c 'printf "GET / HTTP/1.1\n\n" > /dev/tcp/127.0.0.1/6660; exit $?;'
+        - bash -c 'printf "GET / HTTP/1.1\n\n" > /dev/tcp/127.0.0.1/5688; exit $?;'
+        - bash -c 'printf "GET / HTTP/1.1\n\n" > /dev/tcp/127.0.0.1/4566; exit $?;'
+        - bash -c 'printf "GET / HTTP/1.1\n\n" > /dev/tcp/127.0.0.1/5690; exit $?;'
+      interval: 1s
+      timeout: 5s
+    depends_on:
+      - vernemq
+
+  setup-risingwave:
+    build:
+      context: ./data
+    command: setup_risingwave --target docker
+    profiles:
+     - zero
+     - domestic
+     - loads
+    environment:
+      <<: *setup
+    depends_on:
+      risingwave:
+        condition: service_healthy
+
+  hasura:
+    image: hasura/graphql-engine:v2.42.0.cli-migrations-v3
+    ports:
+      - 8080:8080
+    restart: always
+    profiles:
+     - zero
+     - domestic
+     - loads
+    environment:
+      HASURA_GRAPHQL_METADATA_DATABASE_URL: postgres://${PG_USER}:${PG_PASSWORD}@postgres:5432/postgres
+      HASURA_GRAPHQL_ENABLE_CONSOLE: true
+      HASURA_GRAPHQL_DEV_MODE: true
+      HASURA_GRAPHQL_ENABLED_LOG_TYPES: startup, http-log, webhook-log, websocket-log, query-log
+      HASURA_GRAPHQL_CONSOLE_ASSETS_DIR: /srv/console-assets
+      HASURA_GRAPHQL_ADMIN_SECRET: myadminsecretkey
+      HASURA_GRAPHQL_ENABLE_REMOTE_SCHEMA_PERMISSIONS: true
+      HASURA_GRAPHQL_JWT_SECRET: '{ "type": "HS256", "key": "${JWT_SECRET}" }'
+      HASURA_GRAPHQL_EXPERIMENTAL_FEATURES: naming_convention
+      HASURA_GRAPHQL_DEFAULT_NAMING_CONVENTION: graphql-default
+      HASURA_GRAPHQL_STREAMING_QUERIES_MULTIPLEXED_REFETCH_INTERVAL: 200
+      PG_DATABASE_URL: postgres://${PG_USER}:${PG_PASSWORD}@postgres:5432/${PG_DB}
+      REMOTE_SCHEMA_DOMESTIC: http://domestic-control-api:4001/graphql
+    volumes:
+      - ./hasura/metadata:/hasura-metadata
+    depends_on:
+      risingwave:
+        condition: service_healthy
+      postgres:
+        condition: service_healthy
+
+  hass:
+    image: ghcr.io/home-assistant/home-assistant:stable
+    profiles:
+     - zero
+     - domestic
+    volumes:
+      - ./hass:/config
+      - /etc/localtime:/etc/localtime:ro
+      - /run/dbus:/run/dbus:ro
+    restart: unless-stopped
+    ports:
+      - 8123:8123
+    healthcheck:
+      test: ["CMD-SHELL", "curl --silent --fail http://localhost:8123/"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+# ---- data ----
+  data-gen:
+    build:
+      context: ./zero-data
+    command: python -m zero_data generate-data
+    profiles:
+      - data
+    environment:
+      MQTT_HOST: vernemq
+      MQTT_PORT: 1883
+    depends_on:
+      vernemq:
+        condition: service_healthy
+
+  dbt-gen:
+    build:
+      context: ./zero-data
+    command: python -m zero_data generate-dbt
+    profiles:
+      - data
+    depends_on:
+      vernemq:
+        condition: service_healthy
+      postgres:
+        condition: service_healthy
+
+# ---- domestic-control ----
+  domestic-control-api:
+    command: api
+    build:
+      context: ./zero-domestic-control
+    ports:
+      - 4001:4001
+    profiles:
+      - domestic
+    depends_on:
+      hass:
+        condition: service_healthy
+      vernemq:
+        condition: service_healthy
+    environment: &app_env
+      PG_HOST: postgres
+      PG_PORT: 5432
+      PG_USER: ${PG_USER}
+      PG_PASSWORD: ${PG_PASSWORD}
+      PG_DB: ${PG_DB}
+      RISINGWAVE_URL: postgres://root@risingwave:4566/dev
+      JWT_SECRET: ${JWT_SECRET}
+      MQTT_HOST: vernemq
+      MQTT_PORT: 1883
+      HOME_ASSISTANT_URL: http://hass:8123/api
+      HOME_ASSISTANT_WS_URL: ws://hass:8123/api/websocket
+      HOME_ASSISTANT_TOKEN: ${HOME_ASSISTANT_TOKEN}
+      TERMODINAMICA_HOST: domestic-control-stub
+      TERMODINAMICA_PORT: 502
+      CANBUS_IP: 127.0.0.1
+      CANBUS_PORT: 55001
+      CANBUS_BUFFER_SIZE: 1024
+
+  domestic-control-control:
+    command: control
+    build:
+      context: ./zero-domestic-control
+    profiles:
+      - domestic
+    depends_on:
+      hass:
+        condition: service_healthy
+      vernemq:
+        condition: service_healthy
+      domestic-control-stub:
+        condition: service_started
+    environment:
+      <<: *app_env
+
+  domestic-control-stub:
+    command: stub
+    build:
+      context: ./zero-domestic-control
+    profiles:
+      - domestic
+    depends_on:
+      vernemq:
+        condition: service_healthy
+    environment:
+      <<: *app_env
+      TERMODINAMICA_HOST: 0.0.0.0
+
+# ---- loads ----
+  loads-api:
+    command: api
+    build:
+      context: .
+      dockerfile: ./zero-loads-app/Dockerfile
+    ports:
+      - 4002:4002
+    profiles:
+      - loads
+    environment:
+      <<: *app_env
+
+  loads-pcan-stub:
+    command: pcan-stub
+    build:
+      context: .
+      dockerfile: ./zero-loads-app/Dockerfile
+    profiles:
+      - loads
+    environment:
+      <<: *app_env
+
+  loads-control:
+    command: control
+    build:
+      context: .
+      dockerfile: ./zero-loads-app/Dockerfile
+    profiles:
+      - loads
+    environment:
+      <<: *app_env
+    depends_on:
+      vernemq:
+        condition: service_healthy
+
+  loads-conditions-stub:
+    command: conditions-stub
+    build:
+      context: .
+      dockerfile: ./zero-loads-app/Dockerfile
+    profiles:
+      - loads
+    environment:
+      <<: *app_env
+    depends_on:
+      vernemq:
+        condition: service_healthy
+
+  loads-sensor-stub:
+    command: sensor-stub
+    build:
+      context: .
+      dockerfile: ./zero-loads-app/Dockerfile
+    profiles:
+      - loads
+    environment:
+      <<: *app_env
+    depends_on:
+      vernemq:
+        condition: service_healthy
+
+volumes:
+  db_data:

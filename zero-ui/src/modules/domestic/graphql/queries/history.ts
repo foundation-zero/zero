@@ -3,7 +3,7 @@ import { ControlsLogItem, SensorsLogItem } from ".";
 
 export const getControlLogs = gql`
   query GetControlLogs($type: String) {
-    controlsLog(where: { control: { type: { _eq: $type } } }) {
+    controlsLog: domesticControlsLog(where: { control: { type: { _eq: $type } } }) {
       ...ControlsLogItem
     }
   }
@@ -13,7 +13,7 @@ export const getControlLogs = gql`
 
 export const getSensorLogs = gql`
   query GetSensorLogs($type: String) {
-    sensorsLog(where: { sensor: { type: { _eq: $type } } }) {
+    sensorsLog: domesticSensorsLog(where: { sensor: { type: { _eq: $type } } }) {
       ...SensorsLogItem
     }
   }

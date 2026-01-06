@@ -69,9 +69,7 @@ class LoadsContext(BaseContext):
     references_loader: DataLoader
 
 
-async def get_actuals(
-    variables: Sequence[str], context: LoadsContext
-) -> list[ActualType]:
+async def get_actuals(variables: Sequence[str], context: LoadsContext) -> list[ActualType]:
     return context.messaging.get_values_for(list(variables))
 
 
@@ -98,10 +96,12 @@ async def get_context(
         messaging=messaging,
         session=session,
         actuals_loader=DataLoader(
-            load_fn=lambda keys: get_actuals(keys, context), cache=False # type: ignore
+            load_fn=lambda keys: get_actuals(keys, context),  # type: ignore
+            cache=False,
         ),
         references_loader=DataLoader(
-            load_fn=lambda keys: get_reference_values(keys, context), cache=False # type: ignore
+            load_fn=lambda keys: get_reference_values(keys, context),  # type: ignore
+            cache=False,
         ),
     )
 

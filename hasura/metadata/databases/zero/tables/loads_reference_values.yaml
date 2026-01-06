@@ -1,0 +1,10 @@
+table:
+  name: reference_values
+  schema: loads
+object_relationships:
+  - name: loadCase
+    using:
+      foreign_key_constraint_on: load_case_id
+  - name: variable
+    using:
+      foreign_key_constraint_on: variable_id

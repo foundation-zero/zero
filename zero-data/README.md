@@ -1,42 +1,59 @@
 # Zero Data
-This repository contains the Zero data platform and the scripts to process the IO lists supplied by various parties into the SQL needed to process the values published by those parties.
 
-# Release management
+This repository contains the Zero data platform and scripts to process IO lists supplied by various parties into the SQL needed to process the values published by those parties.
 
-# zero-data
+## Usage
 
-Tag a new release on Github. This will automatically deploy the tagged version to GAR.
+1. Create a `.env` file based on `.env-example` in the root folder.
 
-# charts
-
-The charts are deployed by their respective pipelines. Their versions are controlled by the `version` field in Chart.yaml.
-The version of `zero-data` they deploy is based on the `appVersion`.
-
-## Local Development
-
- - Install dependencies: `poetry install`
- - Create `.env` based on `.env.example`
-    - Retrieve the `GCS_CREDENTIALS` from Bitwardem
-    - Alternatively [Follow these instructions](https://docs.risingwave.com/integrations/destinations/google-cloud-storage) to create a service account key in Google Cloud and create the base64 encoded key
-
-# Local testing (docker)
-
+3. Start the services. Run in the root folder:
 ```bash
-docker compose up
+docker compose --profile data up -d
 ```
 
-This will setup
- - VerneMQ: MQTT Client
- - RisingWave: Streaming database
- - dbt_gen: DBT Model based on IO List
- - data_gen: MQTT signals based on IO list
+## Development Setup
 
-# Local testing
+1. Install dependencies:
+   ```bash
+   poetry install --with dev
+   ```
 
- - Install dependencies: `poetry install --with dev`
- - Create `.env` based on `.env.example`
-    - Retrieve `GCS_CREDENTIALS` from `gcs-auth` secrets oin Bitwarde or
-    - [Follow these instructions](https://docs.risingwave.com/integrations/destinations/google-cloud-storage) to generate a new one.
- - Set up gsheet service account key file from Bitwarden
- - Generate DBT sql files: `poetry run zero-data generate-dbt`
- - Start data mocker: `poetry run zero-data generate-data`
+2. Create a `.env` file in the root folder based on `.env.example`.
+
+3. Set up the GSheet service account key file from Bitwarden.
+
+4. Start the required services. Run in the root folder:
+   ```bash
+   docker compose --profile zero up -d
+   ```
+
+5. Create a `.env` file in this folder based on `.env.example`.
+
+### Running Components
+
+Generate DBT SQL files:
+```bash
+poetry run zero-data generate-dbt
+```
+
+Start the data mocker:
+```bash
+poetry run zero-data generate-data
+```
+
+## Testing
+
+1. Make sure the dependencies for testing are installed
+   ```bash
+   poetry install --with dev,test
+   ```
+1. Run the tests
+   ```bash
+   poetry run pytest .
+   ```
+
+## Release Management
+
+### Charts
+
+The charts are deployed by their respective pipelines. Their versions are controlled by the `version` field in `Chart.yaml`. The version of `zero-data` they deploy is based on the `appVersion`.

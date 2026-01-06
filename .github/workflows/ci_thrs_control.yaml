@@ -6,6 +6,12 @@ on:
       - .github/workflows/ci_thrs_control.yaml
   release:
     types: [released]
+  push:
+    branches:
+      - main
+    paths:
+      - zero-thrs-control/**
+      - .github/workflows/ci_thrs_control.yaml
 
 jobs:
   test:
@@ -22,6 +28,15 @@ jobs:
           python-version: 3.13
 
       - run: pipx install poetry==2.1.4
+        working-directory: zero-thrs-control
+
+      - name: Create .env file from secret in root for services
+        run: |
+          echo "${{ secrets.ENV }}" > .env
+
+      - name: Create .env file from secret in project
+        run: |
+          echo "${{ secrets.ENV_THRS }}" > .env
         working-directory: zero-thrs-control
 
       - name: Setup Graphviz
@@ -57,8 +72,7 @@ jobs:
       - run: poetry run ruff format --check src tests
         working-directory: zero-thrs-control
 
-      - run: docker compose up -d --wait
-        working-directory: zero-thrs-control
+      - run: docker compose --profile zero up -d --quiet-pull --wait
 
       - run: poetry run pytest -v
         working-directory: zero-thrs-control
