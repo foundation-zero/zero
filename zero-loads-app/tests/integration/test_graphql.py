@@ -17,15 +17,14 @@ def override_messaging():
             ActualType(id="main-sheet-load", value=42.0),
         ]
     )
+
     return mock
 
 
 @pytest.fixture
 async def async_client():
     async with LifespanManager(app) as manager:
-        async with AsyncClient(
-            transport=ASGITransport(app=manager.app), base_url="http://test"
-        ) as client:
+        async with AsyncClient(transport=ASGITransport(app=manager.app), base_url="http://test") as client:
             yield client
 
 
@@ -72,11 +71,11 @@ async def test_graphql_reference(async_client: AsyncClient):
                     "id": "main-sheet-load",
                     "reference": {
                         "reference": {
-                            "alarmLow": None,
+                            "alarmLow": 5.0,
+                            "warningLow": 6.0,
+                            "target": 10.0,
+                            "warningHigh": 14.0,
                             "alarmHigh": 15.0,
-                            "target": None,
-                            "warningHigh": None,
-                            "warningLow": None,
                         },
                         "variable": {
                             "id": "main-sheet-load",

@@ -31,7 +31,7 @@ asgi-lifespan = ">=2.1.0,<3.0.0"
 generator = { path = "../zero-generator", develop=true}
 
 [project.scripts]
-loads = "loads.__main__:run"
+loads = "loads.__main__:run_app"
 
 [tool.poetry.group.dev]
 optional = true

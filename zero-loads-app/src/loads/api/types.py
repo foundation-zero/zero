@@ -6,6 +6,8 @@ import strawberry
 @strawberry.enum
 class Unit(Enum):
     tonne = "tonne"
+    percent = "percent"
+    on_off = "on-off"
 
 
 @strawberry.enum

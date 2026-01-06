@@ -45,5 +45,5 @@ class FnField[T: LoadsModel]:
 loads_variables: dict[str, LoadsField] = {
     "main-sheet-load": LoadField(sensors.BladeCunningham, "load"),
     "main-vang-load": LoadField(sensors.MainVang, "load"),
-    "main-vang-load-fn": FnField(sensors.MainVang, lambda x: x.load + x.load_2),
+    "main-sheet-position": LoadField(sensors.BladeCunningham, "relative_position"),
 }

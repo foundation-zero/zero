@@ -19,8 +19,6 @@ The Loads app processes data as follows:
 
 ## Development Setup
 
-Set up the development environment:
-
 1. Install dependencies:
    ```bash
    poetry install --with dev
@@ -33,7 +31,7 @@ Set up the development environment:
     docker compose --profile zero up -d
     ```
 
-Apply Hasura metadata:
+Apply Hasura metadata manually:
 ```bash
 cd hasura
 hasura metadata apply --admin-secret myadminsecretkey
