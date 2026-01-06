@@ -6,38 +6,38 @@ SELECT
     logs.value,
     logs.time
 FROM
-    {{ ref('ac_controls_pivot')}} as logs
+    {{ ref('ac_controls_pivot')}} AS logs
 LEFT JOIN {{ ref('conditions') }} conditions ON logs.id = conditions.id
 UNION ALL
 SELECT
     amplifiers.id,
-    logs.id as "room_id",
+    logs.id AS "room_id",
     amplifiers.name,
-    'amplifier' as "type",
-    CAST(logs.is_on AS INT) as "value",
+    'amplifier' AS "type",
+    CAST(logs.is_on AS INT) AS "value",
     logs.time
 FROM
-    {{ ref('amplifiers_update') }} as logs
+    {{ ref('amplifiers_update') }} AS logs
 LEFT JOIN {{ ref('amplifiers') }} amplifiers ON logs.id = amplifiers.room_id
 UNION ALL
 SELECT
     logs.id,
     blinds.room_id,
     blinds.name,
-    'blinds' as "type",
-    logs.level as "value",
+    'blinds' AS "type",
+    logs.level AS "value",
     logs.time
 FROM
-    {{ ref('blinds_update') }} as logs
+    {{ ref('blinds_update') }} AS logs
 LEFT JOIN {{ ref('blinds') }} blinds ON logs.id = blinds.id
 UNION ALL
 SELECT
     logs.id,
     lighting_groups.room_id,
     lighting_groups.name,
-    'lights' as "type",
-    logs.level as "value",
+    'lights' AS "type",
+    logs.level AS "value",
     logs.time
 FROM
-    {{ ref('lighting_groups_update') }} as logs
+    {{ ref('lighting_groups_update') }} AS logs
 LEFT JOIN {{ ref('lighting_groups') }} lighting_groups ON logs.id = lighting_groups.id
