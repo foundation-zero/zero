@@ -1,97 +1,95 @@
-from argparse import ArgumentParser
-import asyncio
+import logging
 
 import jwt
-
-from domestic_control.config import Settings
-import logging
-from .logging import setup_logging
 import uvicorn
+from pydantic_settings import (
+    CliApp,
+    CliSubCommand,
+    SettingsConfigDict,
+)
+
+from domestic_control.config import settings, Settings
+from domestic_control.logging import setup_logging
 
 setup_logging()
 
-settings = Settings()  # type: ignore
+logger = logging.getLogger("cli")
 
 
-async def run():
-    parser = ArgumentParser("zero_domestic_control")
-    sub_parser = parser.add_subparsers()
-
-    generate_jwt_cmd = sub_parser.add_parser("generate-jwt")
-    generate_jwt_cmd.add_argument("roles", type=str, nargs="*", help="any additional roles to generate jwt for")
-    generate_jwt_cmd.add_argument("--cabin", type=str, help="specify the cabin for the JWT")
-
-    generate_jwt_cmd.set_defaults(func=generate_jwt)
-
-    control_cmd = sub_parser.add_parser("control")
-    control_cmd.set_defaults(func=control)
-
-    stub_cmd = sub_parser.add_parser("stub")
-    stub_cmd.set_defaults(func=stub)
-
-    api_cmd = sub_parser.add_parser("api")
-    api_cmd.set_defaults(func=run_app)
-
-    args = parser.parse_args()
-
-    if not hasattr(args, "func"):
-        parser.print_help()
-    else:
-        await args.func(args)
+class ApiCli(Settings):
+    async def cli_cmd(self) -> None:
+        logger.info("Running API...")
+        uvicorn.run("domestic_control.app:app", reload=True)
 
 
-SUPPORTED_ROLES = {"user", "admin"}
+class GenerateJWT(Settings):
+    roles: list[str] = []
+    cabin: str | None = None
 
+    async def cli_cmd(self) -> None:
+        SUPPORTED_ROLES = {"user", "admin"}
+        unique_roles = set(["user"] + self.roles)
+        roles = list(unique_roles)
 
-async def generate_jwt(args):
-    unique_roles = set(["user"] + args.roles)
-    roles = list(unique_roles)
+        if unsupported_roles := (unique_roles - SUPPORTED_ROLES):
+            raise ValueError(
+                f"Roles {unsupported_roles} are not supported. Supported roles are: {', '.join(SUPPORTED_ROLES)}"
+            )
 
-    if unsupported_roles := (unique_roles - SUPPORTED_ROLES):
-        raise ValueError(
-            f"Roles {unsupported_roles} are not supported. Supported roles are: {', '.join(SUPPORTED_ROLES)}"
+        claims = {
+            "x-hasura-default-role": "user",
+            "x-hasura-allowed-roles": roles,
+        }
+
+        if self.cabin:
+            claims["x-hasura-cabin"] = self.cabin
+
+        token = jwt.encode(
+            {"https://hasura.io/jwt/claims": claims},
+            settings.jwt_secret,
+            algorithm="HS256",
         )
+        print(f"JWT for roles ({', '.join(roles)}): {token}")
 
-    claims = {
-        "x-hasura-default-role": "user",
-        "x-hasura-allowed-roles": roles,
-    }
 
-    if args.cabin:
-        claims["x-hasura-cabin"] = args.cabin
+class ControlCli(Settings):
+    async def cli_cmd(self) -> None:
+        from domestic_control.control import Control
 
-    token = jwt.encode(
-        {"https://hasura.io/jwt/claims": claims},
-        settings.jwt_secret,
-        algorithm="HS256",
+        logger.info("Running control...")
+        async with Control.init_from_settings(settings) as control:
+            await control.run()
+
+
+class StubCli(Settings):
+    async def cli_cmd(self) -> None:
+        from domestic_control.services.stubs import Stub
+
+        logger.info("Running stub...")
+        async with Stub.from_settings(settings) as stub:
+            await stub.run()
+
+
+class DomesticControl(Settings, cli_kebab_case=True):
+    model_config = SettingsConfigDict(
+        env_file=".env",
+        env_file_encoding="utf-8",
+        env_nested_delimiter="__",
+        extra="allow",
     )
-    print(f"JWT for roles ({', '.join(roles)}): {token}")
+
+    api: CliSubCommand[ApiCli]
+    generate_jwt: CliSubCommand[GenerateJWT]
+    control: CliSubCommand[ControlCli]
+    stub: CliSubCommand[StubCli]
+
+    def cli_cmd(self) -> None:
+        CliApp.run_subcommand(self)
 
 
-def run_app(_args):
-    logging.info("Running API...")
-    uvicorn.run("domestic_control.app:app", host="0.0.0.0", port=4001, reload=True)
-
-
-async def control(_args):
-    from domestic_control.control import Control
-
-    async with Control.init_from_settings(settings) as control:
-        logging.info("Running control...")
-        await control.run()
-
-
-async def stub(_args):
-    from domestic_control.services.stubs import Stub
-
-    async with Stub.from_settings(settings) as stub:
-        logging.info("Running stub...")
-        await stub.run()
-
-
-def main():
-    asyncio.run(run())
+def run():
+    CliApp.run(DomesticControl)
 
 
 if __name__ == "__main__":
-    main()
+    run()
