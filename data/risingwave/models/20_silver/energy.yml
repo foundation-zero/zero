@@ -23,6 +23,17 @@ models:
         description: '{{ doc("group_name") }}'
       - name: sub_group_name
         description: '{{ doc("sub_group_name") }}'
+  - name: 24v_system_voltage_data
+    description: Measured voltage of the individual 24V DC sub systems.
+    columns:
+      - name: system_code
+        description: System code of the 24V DC sub system.
+      - name: time
+        description: '{{ doc("zero_timestamp") }}'
+      - name: voltage
+        description: The actual voltage of the sub system.
+      - name: voltage_timestamp
+        description: The timestamp the system voltage was measured.
   - name: battery_dc_converter_power_data
     description: Voltage and current values of the battery DC converters extended with metadata. {{ doc("dc_converter_sides_explained") }}
     columns:
