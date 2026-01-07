@@ -14,7 +14,7 @@ from loads.api.auth import generate_jwt
 from loads.config import Settings
 from loads.control import ConditionsStub, Control, PCanAdapter, PCanStub
 from loads.logging_config import setup_logging
-from loads.sensors import sail_systems
+from loads.sensors import at_systems, sail_systems
 
 setup_logging()
 
@@ -71,6 +71,14 @@ class SensorStubCmd(GeneratorSettings):
             await data_gen.generate(config=config)
 
 
+class ATStubCmd(GeneratorSettings):
+    async def cli_cmd(self) -> None:
+        logger.info("Running AT stub...")
+        async with DataGenerator.init_from_settings(self) as data_gen:
+            config = at_systems.gen_config()
+            await data_gen.generate(config=config)
+
+
 class ZeroLoads(BaseSettings, cli_kebab_case=True):
     model_config = SettingsConfigDict(
         env_file=".env",
@@ -86,6 +94,7 @@ class ZeroLoads(BaseSettings, cli_kebab_case=True):
     conditions_stub: CliSubCommand[ConditionsStubCmd]
     control: CliSubCommand[ControlCli]
     sensor_stub: CliSubCommand[SensorStubCmd]
+    at_stub: CliSubCommand[ATStubCmd]
 
     def cli_cmd(self) -> None:
         CliApp.run_subcommand(self)

@@ -1,7 +1,7 @@
 from typing import Any, Callable, Literal, Protocol
 
 import loads.sensors.sensors as sensors
-from loads.sensors import LoadsModel
+from loads.sensors import LoadsModel, at
 
 Fields = Literal[
     "torque",
@@ -261,4 +261,7 @@ loads_variables: dict[str, LoadsField] = {
     ),
     "storm-jib-lock": LoadField(sensors.HeadsailLocks, "lock_stormjib"),
     "storm-jib-overhoist": LoadField(sensors.HeadsailLocks, "overhoist_stormjib"),
+    "test-at-latitude": LoadField(at.SystemLatitude, "load"),
+    "test-at-longitude": LoadField(at.SystemLongitude, "load"),
+    "test-at-utcdate": LoadField(at.UTCDate, "load"),
 }

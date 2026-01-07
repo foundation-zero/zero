@@ -13,7 +13,7 @@ from strawberry.dataloader import DataLoader
 from strawberry.fastapi import BaseContext, GraphQLRouter
 
 from loads.config import settings
-from loads.sensors import sail_systems
+from loads.sensors import at_systems, sail_systems
 
 from .db import SessionManager
 from .loads import loads_variables
@@ -33,7 +33,7 @@ async def lifespan(app: FastAPI):
     async with MqttClient(settings.mqtt_host, settings.mqtt_port) as mqtt:
         messaging = Messaging(
             mqtt_client=mqtt,
-            modules=[sail_systems],
+            modules=[sail_systems, at_systems],
             variable_definition=loads_variables,
         )
         run_task = create_task(await messaging.run())

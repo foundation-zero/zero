@@ -1,5 +1,5 @@
 import loads.sensors.sensors as sensors
-from loads.sensors import LoadsModel
+from loads.sensors import LoadsModel, at
 
 
 class MessagingModule:
@@ -55,4 +55,14 @@ sail_systems = MessagingModule(
         sensors.StaysailSheetFeederSb,
         sensors.StaysailStayAdjuster,
     ]
+)
+
+
+at_systems = MessagingModule(
+    validators=[
+        at.SystemLatitude,
+        at.SystemLongitude,
+        at.SystemBoatSpeedKts,
+        at.UTCDate,
+    ],
 )
