@@ -1,11 +1,10 @@
 import asyncio
-import json
 import logging
 from contextlib import asynccontextmanager
 
 from aiomqtt import Client as MqttClient
 
-from .base import Generator, GeneratorConfig
+from .base import GeneratorConfig
 from .config import Settings
 
 logger = logging.getLogger("generator")
@@ -60,10 +59,11 @@ class DataGenerator:
 
     async def _generate_single_topic(self, config: GeneratorConfig):
         while True:
-            logger.info(f"sending message on topic: {config.topic} with interval {config.interval}")
-            send_task = self._mqtt_client.publish(config.topic, self._determine_values(config.values))
+            logger.info(
+                f"sending message on topic: {config.topic} with interval {config.interval}"
+            )
+            send_task = self._mqtt_client.publish(
+                config.topic, config.determine_values()
+            )
             sleep_task = asyncio.sleep(config.interval)
             await asyncio.gather(send_task, sleep_task)
-
-    def _determine_values(self, values: dict[str, Generator]) -> str:
-        return json.dumps({field: generator.gen() for field, generator in values.items()})
