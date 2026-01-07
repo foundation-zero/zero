@@ -11,11 +11,15 @@ const props = defineProps<{
   <div
     :class="
       cn(
-        'text-disabled-foreground -mt-2 flex items-center gap-2.5 pb-2 text-base leading-[1rem]! font-medium text-ellipsis',
+        'text-disabled-foreground -mt-2 flex max-w-full items-center gap-2.5 pb-1 font-medium',
         props.class,
       )
     "
   >
-    <slot />
+    <span
+      class="min-h-5 overflow-hidden text-base leading-[1rem]! overflow-ellipsis whitespace-nowrap"
+    >
+      <slot />
+    </span>
   </div>
 </template>

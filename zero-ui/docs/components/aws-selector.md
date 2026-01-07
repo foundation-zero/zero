@@ -1,34 +1,34 @@
-# TWS Selector
+# AWS Selector
 
-A select component for choosing True Wind Speed (TWS) ranges in knots.
+A select component for choosing Apparent Wind Speed (AWS) ranges in knots.
 
 <script setup>
-import TWSSelector from '@/modules/loads/components/tws-selector/TWSSelector.vue'
+import AWSSelector from '@/modules/loads/components/aws-selector/AWSSelector.vue'
 import { ref } from 'vue'
 
-const selectedTWS = ref(0)
+const selectedAWS = ref(0)
 </script>
 
 ## Overview
 
-The TWSSelector component provides a dropdown interface for selecting predefined True Wind Speed ranges. It uses the Select component from shadcn-vue and displays speed ranges in knots (kts).
+The AWSSelector component provides a dropdown interface for selecting predefined True Wind Speed ranges. It uses the Select component from shadcn-vue and displays speed ranges in knots (kts).
 
 ### Basic Example
 
 <div class="my-4 p-8 bg-muted flex justify-center">
-  <TWSSelector v-model="selectedTWS" />
+  <AWSSelector v-model="selectedAWS" />
 </div>
 
 ```vue
 <script setup>
-import TWSSelector from '@/modules/loads/components/tws-selector/TWSSelector.vue'
+import AWSSelector from '@/modules/loads/components/aws-selector/AWSSelector.vue'
 import { ref } from 'vue'
 
-const selectedTWS = ref(0)
+const selectedAWS = ref(0)
 </script>
 
 <template>
-  <TWSSelector v-model="selectedTWS" />
+  <AWSSelector v-model="selectedAWS" />
 </template>
 ```
 
@@ -39,7 +39,7 @@ const selectedTWS = ref(0)
 <div class="my-4 p-8 bg-muted">
   <div class="space-y-2">
     <label class="text-sm font-medium">Select Wind Speed</label>
-    <TWSSelector v-model="selectedTWS" />
+    <TWSSelector v-model="selectedAWS" />
   </div>
 </div>
 
@@ -47,7 +47,7 @@ const selectedTWS = ref(0)
 <template>
   <div class="space-y-2">
     <label class="text-sm font-medium">Select Wind Speed</label>
-    <TWSSelector v-model="selectedTWS" />
+    <AWSSelector v-model="selectedAWS" />
   </div>
 </template>
 ```
@@ -56,9 +56,9 @@ const selectedTWS = ref(0)
 
 <div class="my-4 p-8 bg-muted">
   <div class="space-y-4">
-    <TWSSelector v-model="selectedTWS" />
+    <AWSSelector v-model="selectedAWS" />
     <div class="text-sm text-muted-foreground">
-      Selected range index: {{ selectedTWS }}
+      Selected range index: {{ selectedAWS }}
     </div>
   </div>
 </div>
@@ -66,9 +66,9 @@ const selectedTWS = ref(0)
 ```vue
 <template>
   <div class="space-y-4">
-    <TWSSelector v-model="selectedTWS" />
+    <AWSSelector v-model="selectedAWS" />
     <div class="text-sm text-muted-foreground">
-      Selected range index: {{ selectedTWS }}
+      Selected range index: {{ selectedAWS }}
     </div>
   </div>
 </template>
@@ -88,7 +88,7 @@ The TWS selector provides the following predefined speed ranges:
 - 40 - 50 kts
 - 50+ kts
 
-These ranges are defined in the `TWS_VALUES` constant and represent common wind speed classifications used in sailing and marine operations.
+These ranges are defined in the `AWS_VALUES` constant and represent common wind speed classifications used in sailing and marine operations.
 
 ## API Reference
 
@@ -140,5 +140,5 @@ The component uses `v-model` for two-way binding:
 
 ## Related Components
 
-- [TWA Selector](/components/twa-selector) - For selecting True Wind Angle ranges
+- [AWA Selector](/components/awa-selector) - For selecting True Wind Angle ranges
 - [Select](/components/select) - Base select component

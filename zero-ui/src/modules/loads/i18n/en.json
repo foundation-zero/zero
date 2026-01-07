@@ -5,11 +5,11 @@
         "locked": "Locked",
         "overhoist": "Overhoist"
       },
-      "twaSelector": {
-        "label": "Select TWA"
+      "awaSelector": {
+        "label": "Select AWA"
       },
-      "twsSelector": {
-        "label": "Select TWS",
+      "awsSelector": {
+        "label": "Select AWS",
         "unit": "kts"
       }
     }

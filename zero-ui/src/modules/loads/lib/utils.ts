@@ -1,10 +1,10 @@
 import { formatFixed, formatInt } from "@/modules/common/lib/utils";
-import { NumRangeId, Range, ReferenceThresholds, VariableState, VariableType } from "../types";
+import { NumRangeId, Range, ReferenceThresholds, VariableState, VariableUnit } from "../types";
 
-export const formatLoad = (value: number | undefined, type: VariableType): string => {
+export const formatLoad = (value: number | undefined, type: VariableUnit): string => {
   if (value === undefined) return "-";
 
-  if (type === VariableType.Percentage) {
+  if (type === VariableUnit.Percentage) {
     // Values from backend are ratios
     return formatInt(value * 100);
   }

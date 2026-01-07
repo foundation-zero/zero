@@ -3,14 +3,15 @@ import { cn, tScoped } from "@/modules/common/lib/utils";
 import { reactiveOmit } from "@vueuse/core";
 import type { PrimitiveProps } from "reka-ui";
 import type { HTMLAttributes } from "vue";
-import { type IndicatorLightVariants } from "../indicator-light";
+import { MastLockState } from "../../types";
+import { Card } from "../card";
 import MastLockLabel from "./MastLockLabel.vue";
 import MastLockPosition from "./MastLockPosition.vue";
 
 const props = defineProps<
   PrimitiveProps & {
-    locked?: IndicatorLightVariants["variant"];
-    overhoist?: IndicatorLightVariants["variant"];
+    locked?: MastLockState;
+    overhoist?: MastLockState;
     class?: HTMLAttributes["class"];
   }
 >();
@@ -21,24 +22,25 @@ const delegatedProps = reactiveOmit(props, "class");
 </script>
 
 <template>
-  <div
+  <Card
     data-slot="mast-lock"
     v-bind="delegatedProps"
-    :class="
-      cn(
-        'bg-background border-border-subtle flex h-60 w-24 flex-col items-center justify-center rounded-xs border px-2 py-5',
-        props.class,
-      )
-    "
+    :class="cn('h-[13.375rem] justify-between px-2 py-5', props.class)"
   >
-    <MastLockPosition :status="locked">
+    <MastLockPosition
+      class="w-full"
+      :state="locked"
+    >
       {{ $t("locked") }}
     </MastLockPosition>
-    <MastLockPosition :status="overhoist">
+    <MastLockPosition
+      class="mt-1.5"
+      :state="overhoist"
+    >
       {{ $t("overhoist") }}
     </MastLockPosition>
     <MastLockLabel>
       <slot />
     </MastLockLabel>
-  </div>
+  </Card>
 </template>

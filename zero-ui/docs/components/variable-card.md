@@ -10,7 +10,7 @@ import {
   VariableCardValue,
   VariableCardTitle
 } from '@/modules/loads/components/variable-card'
-import { VariableType } from '@/modules/loads/types'
+import { VariableUnit } from '@/modules/loads/types'
 import { ReferenceBoxLine } from '@/modules/loads/components/reference-box'
 import { InfoTooltip } from '@/modules/common/components/info-tooltip'
 </script>
@@ -33,7 +33,7 @@ The VariableCard system consists of:
 <div class="my-4 p-8 bg-muted flex justify-center">
   <VariableCard
     :value="0.8"
-    :type="VariableType.Tonnes"
+    :type="VariableUnit.Tonnes"
     :thresholds="{
       target: 1,
       alarmHigh: 2.8
@@ -52,7 +52,7 @@ The VariableCard system consists of:
 <template>
   <VariableCard
     :value="0.8"
-    :type="VariableType.Tonnes"
+    :type="VariableUnit.Tonnes"
     :thresholds="{
       target: 1,
       alarmHigh: 2.8
@@ -79,7 +79,7 @@ The following examples demonstrate the load card displaying values in tonnes wit
 <div class="my-4 p-8 bg-muted flex justify-center">
   <VariableCard
     :value="0.8"
-    :type="VariableType.Tonnes"
+    :type="VariableUnit.Tonnes"
     :thresholds="{
       target: 1,
       warningHigh: 2.0,
@@ -99,7 +99,7 @@ The following examples demonstrate the load card displaying values in tonnes wit
 <template>
   <VariableCard
     :value="0.8"
-    :type="VariableType.Tonnes"
+    :type="VariableUnit.Tonnes"
     :thresholds="{
       target: 1,
       warningHigh: 2.0,
@@ -121,7 +121,7 @@ The following examples demonstrate the load card displaying values in tonnes wit
 <div class="my-4 p-8 bg-muted flex justify-center">
   <VariableCard
     :value="2.5"
-    :type="VariableType.Tonnes"
+    :type="VariableUnit.Tonnes"
     :thresholds="{
       target: 1,
       warningHigh: 2.0,
@@ -141,7 +141,7 @@ The following examples demonstrate the load card displaying values in tonnes wit
 <template>
   <VariableCard
     :value="2.5"
-    :type="VariableType.Tonnes"
+    :type="VariableUnit.Tonnes"
     :thresholds="{
       target: 1,
       warningHigh: 2.0,
@@ -163,7 +163,7 @@ The following examples demonstrate the load card displaying values in tonnes wit
 <div class="my-4 p-8 bg-muted flex justify-center">
   <VariableCard
     :value="3.1"
-    :type="VariableType.Tonnes"
+    :type="VariableUnit.Tonnes"
     :thresholds="{
       target: 1,
       warningHigh: 2.0,
@@ -183,7 +183,7 @@ The following examples demonstrate the load card displaying values in tonnes wit
 <template>
   <VariableCard
     :value="3.1"
-    :type="VariableType.Tonnes"
+    :type="VariableUnit.Tonnes"
     :thresholds="{
       target: 1,
       warningHigh: 2.0,
@@ -209,7 +209,7 @@ The following examples demonstrate the load card displaying percentage values wi
 <div class="my-4 p-8 bg-muted flex justify-center">
   <VariableCard
     :value="0.1"
-    :type="VariableType.Percentage"
+    :type="VariableUnit.Percentage"
     :thresholds="{
       target: 0.1,
       warningHigh: 0.15,
@@ -229,7 +229,7 @@ The following examples demonstrate the load card displaying percentage values wi
 <template>
   <VariableCard
     :value="0.1"
-    :type="VariableType.Percentage"
+    :type="VariableUnit.Percentage"
     :thresholds="{
       target: 0.1,
       warningHigh: 0.15,
@@ -251,7 +251,7 @@ The following examples demonstrate the load card displaying percentage values wi
 <div class="my-4 p-8 bg-muted flex justify-center">
   <VariableCard
     :value="0.2"
-    :type="VariableType.Percentage"
+    :type="VariableUnit.Percentage"
     :thresholds="{
       target: 0.1,
       warningHigh: 0.15,
@@ -271,7 +271,7 @@ The following examples demonstrate the load card displaying percentage values wi
 <template>
   <VariableCard
     :value="0.2"
-    :type="VariableType.Percentage"
+    :type="VariableUnit.Percentage"
     :thresholds="{
       target: 0.1,
       warningHigh: 0.15,
@@ -293,7 +293,7 @@ The following examples demonstrate the load card displaying percentage values wi
 <div class="my-4 p-8 bg-muted flex justify-center">
   <VariableCard
     :value="0.3"
-    :type="VariableType.Percentage"
+    :type="VariableUnit.Percentage"
     :thresholds="{
       target: 0.1,
       warningHigh: 0.15,
@@ -313,7 +313,7 @@ The following examples demonstrate the load card displaying percentage values wi
 <template>
   <VariableCard
     :value="0.3"
-    :type="VariableType.Percentage"
+    :type="VariableUnit.Percentage"
     :thresholds="{
       target: 0.1,
       warningHigh: 0.15,
@@ -337,7 +337,7 @@ You can add contextual help using the InfoTooltip component inside the VariableC
 <div class="my-4 p-8 bg-muted flex justify-center">
   <VariableCard
     :value="2.5"
-    :type="VariableType.Tonnes"
+    :type="VariableUnit.Tonnes"
     :thresholds="{
       target: 1,
       warningHigh: 2.0,
@@ -366,7 +366,7 @@ import { InfoTooltip } from '@/modules/common/components/info-tooltip'
 <template>
   <VariableCard
     :value="2.5"
-    :type="VariableType.Tonnes"
+    :type="VariableUnit.Tonnes"
     :thresholds="{
       target: 1,
       warningHigh: 2.0,
@@ -395,7 +395,7 @@ import { InfoTooltip } from '@/modules/common/components/info-tooltip'
   <div class="grid grid-cols-3 gap-4">
     <VariableCard
       :value="0.8"
-      :type="VariableType.Tonnes"
+      :type="VariableUnit.Tonnes"
       :thresholds="{
         target: 1,
         warningHigh: 2.0,
@@ -411,7 +411,7 @@ import { InfoTooltip } from '@/modules/common/components/info-tooltip'
     </VariableCard>
     <VariableCard
       :value="2.5"
-      :type="VariableType.Tonnes"
+      :type="VariableUnit.Tonnes"
       :thresholds="{
         target: 1,
         warningHigh: 2.0,
@@ -427,7 +427,7 @@ import { InfoTooltip } from '@/modules/common/components/info-tooltip'
     </VariableCard>
     <VariableCard
       :value="3.1"
-      :type="VariableType.Tonnes"
+      :type="VariableUnit.Tonnes"
       :thresholds="{
         target: 1,
         warningHigh: 2.0,
@@ -443,7 +443,7 @@ import { InfoTooltip } from '@/modules/common/components/info-tooltip'
     </VariableCard>
     <VariableCard
       :value="0.1"
-      :type="VariableType.Percentage"
+      :type="VariableUnit.Percentage"
       :thresholds="{
         target: 0.1,
         warningHigh: 0.15,
@@ -459,7 +459,7 @@ import { InfoTooltip } from '@/modules/common/components/info-tooltip'
     </VariableCard>
     <VariableCard
       :value="0.2"
-      :type="VariableType.Percentage"
+      :type="VariableUnit.Percentage"
       :thresholds="{
         target: 0.1,
         warningHigh: 0.15,
@@ -475,7 +475,7 @@ import { InfoTooltip } from '@/modules/common/components/info-tooltip'
     </VariableCard>
     <VariableCard
       :value="0.3"
-      :type="VariableType.Percentage"
+      :type="VariableUnit.Percentage"
       :thresholds="{
         target: 0.1,
         warningHigh: 0.15,
@@ -497,7 +497,7 @@ import { InfoTooltip } from '@/modules/common/components/info-tooltip'
   <div class="grid grid-cols-3 gap-4">
     <VariableCard
       :value="0.8"
-      :type="VariableType.Tonnes"
+      :type="VariableUnit.Tonnes"
       :thresholds="{
         target: 1,
         warningHigh: 2.0,
@@ -513,7 +513,7 @@ import { InfoTooltip } from '@/modules/common/components/info-tooltip'
     </VariableCard>
     <VariableCard
       :value="2.5"
-      :type="VariableType.Tonnes"
+      :type="VariableUnit.Tonnes"
       :thresholds="{
         target: 1,
         warningHigh: 2.0,
@@ -529,7 +529,7 @@ import { InfoTooltip } from '@/modules/common/components/info-tooltip'
     </VariableCard>
     <VariableCard
       :value="3.1"
-      :type="VariableType.Tonnes"
+      :type="VariableUnit.Tonnes"
       :thresholds="{
         target: 1,
         warningHigh: 2.0,
@@ -545,7 +545,7 @@ import { InfoTooltip } from '@/modules/common/components/info-tooltip'
     </VariableCard>
     <VariableCard
       :value="0.1"
-      :type="VariableType.Percentage"
+      :type="VariableUnit.Percentage"
       :thresholds="{
         target: 0.1,
         warningHigh: 0.15,
@@ -561,7 +561,7 @@ import { InfoTooltip } from '@/modules/common/components/info-tooltip'
     </VariableCard>
     <VariableCard
       :value="0.2"
-      :type="VariableType.Percentage"
+      :type="VariableUnit.Percentage"
       :thresholds="{
         target: 0.1,
         warningHigh: 0.15,
@@ -577,7 +577,7 @@ import { InfoTooltip } from '@/modules/common/components/info-tooltip'
     </VariableCard>
     <VariableCard
       :value="0.3"
-      :type="VariableType.Percentage"
+      :type="VariableUnit.Percentage"
       :thresholds="{
         target: 0.1,
         warningHigh: 0.15,
@@ -606,7 +606,7 @@ Container component that provides context for all child components.
 | Prop | Type | Required | Description |
 |------|------|----------|-------------|
 | `value` | `number` | Yes | The current variable value to display |
-| `type` | `VariableType` | Yes | The type of variable - either `VariableType.Tonnes` or `VariableType.Percentage` |
+| `type` | `VariableUnit` | Yes | The type of variable - either `VariableUnit.Tonnes` or `VariableUnit.Percentage` |
 | `thresholds` | `ReferenceThresholds` | No | Optional threshold values for target, warning, and alarm states |
 | `class` | `string` | No | Additional CSS classes to apply to the container |
 
@@ -674,10 +674,10 @@ type ReferenceThresholds = {
 }
 ```
 
-### VariableType Enum
+### VariableUnit Enum
 
 ```typescript
-enum VariableType {
+enum VariableUnit {
   Percentage = "percentage",  // Display as percentage
   Tonnes = "tonnes"          // Display as tonnes with 1 decimal place
 }

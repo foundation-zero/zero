@@ -5,13 +5,13 @@ import { PrimitiveProps } from "reka-ui";
 import { computed, HTMLAttributes, provide, toRef } from "vue";
 import { VariableStateVariants, variableStateVariants } from ".";
 import { formatLoad } from "../../lib/utils";
-import { VariableState, VariableType } from "../../types";
+import { VariableState, VariableUnit } from "../../types";
 
 type VariableStateProps = PrimitiveProps & {
   value: number | undefined;
   state: VariableState;
   size?: VariableStateVariants["size"];
-  type: VariableType;
+  type: VariableUnit;
   class?: HTMLAttributes["class"];
 };
 
