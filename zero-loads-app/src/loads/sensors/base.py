@@ -78,6 +78,10 @@ class LoadsModel(BaseModel):
         except AttributeError:
             return str(tp)
 
+    @classmethod
+    def parse_message_payload(cls, payload: str | bytes):
+        return cls.model_validate_json(payload)
+
 
 class LoadsModelBytes(LoadsModel):
     """
@@ -94,3 +98,13 @@ class LoadsModelBytes(LoadsModel):
                 for _, field_info in cls.model_fields.items()
             )
         )
+
+    @classmethod
+    def parse_message_payload(cls, payload: str | bytes):
+        cast = cls.model_fields["load"].annotation
+        if isinstance(payload, bytes):
+            payload = payload.decode("utf-8")
+        # Note it might break for some types e.g. `datetime.date`
+        # Fixing it requires more work
+        data = dict(load=cast(payload))
+        return cls.model_validate(data)
