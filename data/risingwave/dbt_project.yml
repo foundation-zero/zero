@@ -35,6 +35,8 @@ models:
         +schema: marpower
     10_bronze:
       +materialized: table
+      commissioning:
+        +schema: commissioning
       domestic_control:
         +schema: domestic
       energy:
