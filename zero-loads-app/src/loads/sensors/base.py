@@ -106,5 +106,8 @@ class LoadsModelBytes(LoadsModel):
             payload = payload.decode("utf-8")
         # Note it might break for some types e.g. `datetime.date`
         # Fixing it requires more work
-        data = dict(load=cast(payload))
+        if cast is not None:
+            data = dict(load=cast(payload))
+        else:
+            data = dict(load=payload)
         return cls.model_validate(data)
