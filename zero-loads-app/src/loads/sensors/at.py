@@ -5,7 +5,7 @@ from .base import LoadsModelBytes
 
 class SystemLatitude(LoadsModelBytes):
     TOPIC = "atpx/4352/3840"
-    load: float = Field()
+    load: float
 
 
 class SystemLongitude(LoadsModelBytes):

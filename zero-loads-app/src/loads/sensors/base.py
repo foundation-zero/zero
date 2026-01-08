@@ -91,23 +91,13 @@ class LoadsModelBytes(LoadsModel):
 
     @classmethod
     def make_generator(cls):
-        # Take the first and only element
-        return next(
-            (
-                cls._create_generator(field_info.annotation, field_info.metadata)
-                for _, field_info in cls.model_fields.items()
-            )
-        )
+        field_info = next(cls.model_fields)  # Only one field is expected
+        return cls._create_generator(field_info.annotation, field_info.metadata)
 
     @classmethod
     def parse_message_payload(cls, payload: str | bytes):
         cast = cls.model_fields["load"].annotation
         if isinstance(payload, bytes):
             payload = payload.decode("utf-8")
-        # Note it might break for some types e.g. `datetime.date`
-        # Fixing it requires more work
-        if cast is not None:
-            data = dict(load=cast(payload))
-        else:
-            data = dict(load=payload)
-        return cls.model_validate(data)
+        # This is not expected to work with all types e.g. `datetime.date` will break
+        return cls.model_validate({ "load": cast(payload) if cast is not None else payload })
