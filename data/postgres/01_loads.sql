@@ -3,7 +3,7 @@ CREATE EXTENSION IF NOT EXISTS btree_gist;
 CREATE SCHEMA IF NOT EXISTS loads;
 
 DROP TYPE IF EXISTS unit CASCADE;
-CREATE TYPE unit AS ENUM ('tonne', 'percent', 'on-off');
+CREATE TYPE unit AS ENUM ('tonne', 'promille', 'on-off');
 
 
 DROP TABLE IF EXISTS loads.sail_positions CASCADE;
@@ -13,10 +13,10 @@ CREATE TABLE loads.sail_positions (
 
 DROP TABLE IF EXISTS loads.sails CASCADE;
 CREATE TABLE loads.sails (
-    id TEXT PRIMARY KEY,              
-    abbreviation TEXT NOT NULL,               
-    position_id TEXT NOT NULL REFERENCES loads.sail_positions(id),       
-    name TEXT NOT NULL              
+    id TEXT PRIMARY KEY,
+    abbreviation TEXT NOT NULL,
+    position_id TEXT NOT NULL REFERENCES loads.sail_positions(id),
+    name TEXT NOT NULL
 );
 
 DROP TABLE IF EXISTS loads.sail_sets CASCADE;
@@ -148,7 +148,7 @@ combinations AS (
     JOIN options
         ON options.position = indexed_positions.position
     WHERE indexed_positions.position_index = 1
-  
+
     UNION ALL
 
     SELECT
@@ -185,28 +185,28 @@ ORDER BY id, position;
 
 -- Define AWA ranges
 INSERT INTO loads.awa_ranges (awa) VALUES
-  ('[0,20)'),
-  ('[20,25)'),
-  ('[25,30)'),
-  ('[30,40)'),
-  ('[40,60)'),
-  ('[60,80)'),
-  ('[80,120)'),
-  ('[120,180)');
+    ('[0,20)'),
+    ('[20,25)'),
+    ('[25,30)'),
+    ('[30,40)'),
+    ('[40,60)'),
+    ('[60,80)'),
+    ('[80,120)'),
+    ('[120,180)');
 
 -- Define AWS ranges
 INSERT INTO loads.aws_ranges (aws) VALUES
-  ('[0,10)'),
-  ('[10,15)'),
-  ('[15,20)'),
-  ('[20,25)'),
-  ('[25,30)'),
-  ('[30,40)'),
-  ('[40,)');
+    ('[0,10)'),
+    ('[10,15)'),
+    ('[15,20)'),
+    ('[20,25)'),
+    ('[25,30)'),
+    ('[30,40)'),
+    ('[40,)');
 
 -- Define load cases
 INSERT INTO loads.load_cases (awa_range_id, aws_range_id, sail_set_id)
-SELECT 
+SELECT
     awa_range.id AS awa_range_id,
     aws_range.id AS aws_range_id,
     sail_set_ids.sail_set_id AS sail_set_id
@@ -215,89 +215,121 @@ CROSS JOIN loads.awa_ranges AS awa_range
 CROSS JOIN loads.aws_ranges AS aws_range;
 
 -- Define variables
-INSERT INTO loads.variables (id, name, unit) VALUES
-  ('main-sheet-load', 'Main Sheet Load', 'tonne'),
-  ('main-sheet-position', 'Main Sheet Position', 'percent'),
-  ('main-traveler-position', 'Main Traveler Position', 'percent'),
-  ('main-preventer-load', 'Main Preventer Load', 'tonne'),
-  ('main-preventer-position', 'Main Preventer Position', 'percent'),
-  ('main-vang-load', 'Main Vang Load', 'tonne'),
-  ('main-vang-position', 'Main Vang Position', 'percent'),
-  ('main-outhaul-load', 'Main Outhaul Load', 'tonne'),
-  ('main-outhaul-position', 'Main Outhaul Position', 'percent'),
-  ('main-halyard-load', 'Main Halyard Load', 'tonne'),
-  ('main-halyard-position', 'Main Halyard Position', 'percent'),
-  ('main-cunningham-load', 'Main Cunningham Load', 'tonne'),
-  ('main-cunningham-position', 'Main Cunningham Position', 'percent'),
-  ('main-runner-load-ps', 'Main Runner Load Port Side', 'tonne'),
-  ('main-runner-position-ps', 'Main Runner Position Port Side', 'percent'),
-  ('main-runner-load-sb', 'Main Runner Load Starboard Side', 'tonne'),
-  ('main-runner-position-sb', 'Main Runner Position Starboard Side', 'percent'),
-  ('main-checkstay-load-ps', 'Main Checkstay Load Port Side', 'tonne'),
-  ('main-checkstay-load-sb', 'Main Checkstay Load Starboard Side', 'tonne'),
-  ('main-checkstay-position-sb', 'Main Checkstay Position Starboard Side', 'percent'),
-  ('main-checkstay-deflector-load-ps', 'Main Checkstay Deflector Load Port Side', 'tonne'),
-  ('main-checkstay-deflector-position-ps', 'Main Checkstay Deflector Position Port Side', 'percent'),
-  ('main-checkstay-deflector-load-sb', 'Main Checkstay Deflector Load Starboard Side', 'tonne'),
-  ('main-checkstay-deflector-position-sb', 'Main Checkstay Deflector Position Starboard Side', 'percent'),
-  ('main-headboard-lock', 'Main Headboard Lock', 'on-off'),
-  ('main-headboard-overhoist', 'Main Headboard Overhoist', 'on-off'),
-  ('main-reef-1-lock', 'Main Reef 1 Lock', 'on-off'),
-  ('main-reef-1-overhoist', 'Main Reef 1 Overhoist', 'on-off'),
-  ('main-reef-2-lock', 'Main Reef 2 Lock', 'on-off'),
-  ('main-reef-2-overhoist', 'Main Reef 2 Overhoist', 'on-off'),
-  ('main-reef-3-lock', 'Main Reef 3 Lock', 'on-off'),
-  ('main-reef-3-overhoist', 'Main Reef 3 Overhoist', 'on-off'),
-  ('main-boom-reef-1-lock', 'Main Boom Reef 1 Lock', 'on-off'),
-  ('main-boom-reef-1-overhoist', 'Main Boom Reef 1 Overhoist', 'on-off'),
-  ('main-boom-reef-2-lock', 'Main Boom Reef 2 Lock', 'on-off'),
-  ('main-boom-reef-2-overhoist', 'Main Boom Reef 2 Overhoist', 'on-off'),
-  ('main-boom-reef-3-lock', 'Main Boom Reef 3 Lock', 'on-off'),
-  ('main-boom-reef-3-overhoist', 'Main Boom Reef 3 Overhoist', 'on-off'),
-  ('mizzen-sheet-load', 'Mizzen Sheet Load', 'tonne'),
-  ('mizzen-sheet-position', 'Mizzen Sheet Position', 'percent'),
-  ('mizzen-preventer-load', 'Mizzen Preventer Load', 'tonne'),
-  ('mizzen-vang-load', 'Mizzen Vang Load', 'tonne'),
-  ('mizzen-vang-position', 'Mizzen Vang Position', 'percent'),
-  ('mizzen-outhaul-load', 'Mizzen Outhaul Load', 'tonne'),
-  ('mizzen-outhaul-position', 'Mizzen Outhaul Position', 'percent'),
-  ('mizzen-halyard-load', 'Mizzen Halyard Load', 'tonne'),
-  ('mizzen-halyard-position', 'Mizzen Halyard Position', 'percent'),
-  ('mizzen-cunningham-load', 'Mizzen Cunningham Load', 'tonne'),
-  ('mizzen-cunningham-position', 'Mizzen Cunningham Position', 'percent'),
-  ('mizzen-runner-load-ps', 'Mizzen Runner Load Port Side', 'tonne'),
-  ('mizzen-runner-position-ps', 'Mizzen Runner Position Port Side', 'percent'),
-  ('mizzen-runner-load-sb', 'Mizzen Runner Load Starboard Side', 'tonne'),
-  ('mizzen-runner-position-sb', 'Mizzen Runner Position Starboard Side', 'percent'),
-  ('mizzen-checkstay-load-ps', 'Mizzen Checkstay Load Port Side', 'tonne'),
-  ('mizzen-checkstay-position-ps', 'Mizzen Checkstay Position Port Side', 'percent'),
-  ('mizzen-checkstay-load-sb', 'Mizzen Checkstay Load Starboard Side', 'tonne'),
-  ('mizzen-checkstay-position-sb', 'Mizzen Checkstay Position Starboard Side', 'percent'),
-  ('mizzen-checkstay-deflector-load-ps', 'Mizzen Checkstay Deflector Load Port Side', 'tonne'),
-  ('mizzen-checkstay-deflector-position-ps', 'Mizzen Checkstay Deflector Position Port Side', 'percent'),
-  ('mizzen-checkstay-deflector-load-sb', 'Mizzen Checkstay Deflector Load Starboard Side', 'tonne'),
-  ('mizzen-checkstay-deflector-position-sb', 'Mizzen Checkstay Deflector Position Starboard Side', 'percent'),
-  ('mizzen-headboard-lock', 'Mizzen Headboard Lock', 'on-off'),
-  ('mizzen-headboard-overhoist', 'Mizzen Headboard Overhoist', 'on-off'),
-  ('mizzen-reef-1-lock', 'Mizzen Reef 1 Lock', 'on-off'),
-  ('mizzen-reef-1-overhoist', 'Mizzen Reef 1 Overhoist', 'on-off'),
-  ('mizzen-reef-2-lock', 'Mizzen Reef 2 Lock', 'on-off'),
-  ('mizzen-reef-2-overhoist', 'Mizzen Reef 2 Overhoist', 'on-off'),
-  ('mizzen-boom-reef-1-lock', 'Mizzen Boom Reef 1 Lock', 'on-off'),
-  ('mizzen-boom-reef-1-overhoist', 'Mizzen Boom Reef 1 Overhoist', 'on-off'),
-  ('mizzen-boom-reef-2-lock', 'Mizzen Boom Reef 2 Lock', 'on-off'),
-  ('mizzen-boom-reef-2-overhoist', 'Mizzen Boom Reef 2 Overhoist', 'on-off');
+INSERT INTO loads.variables (id, name, unit, minimum_value, maximum_value) VALUES
+    ('main-sheet-load', 'Main Sheet Load', 'tonne', 0, NULL),
+    ('main-sheet-position', 'Main Sheet Position', 'promille', 0, 1000),
+    ('main-traveler-position', 'Main Traveler Position', 'promille', 0, 1000),
+    ('main-preventer-load', 'Main Preventer Load', 'tonne', 0, NULL),
+    ('main-preventer-position', 'Main Preventer Position', 'promille', 0, 1000),
+    ('main-vang-load', 'Main Vang Load', 'tonne', 0, NULL),
+    ('main-vang-position', 'Main Vang Position', 'promille', 0, 1000),
+    ('main-outhaul-load', 'Main Outhaul Load', 'tonne', 0, NULL),
+    ('main-outhaul-position', 'Main Outhaul Position', 'promille', 0, 1000),
+    ('main-halyard-load', 'Main Halyard Load', 'tonne', 0, NULL),
+    ('main-halyard-position', 'Main Halyard Position', 'promille', 0, 1000),
+    ('main-cunningham-load', 'Main Cunningham Load', 'tonne', 0, NULL),
+    ('main-cunningham-position', 'Main Cunningham Position', 'promille', 0, 1000),
+    ('main-runner-load-ps', 'Main Runner Load Port Side', 'tonne', 0, NULL),
+    ('main-runner-position-ps', 'Main Runner Position Port Side', 'promille', 0, 1000),
+    ('main-runner-load-sb', 'Main Runner Load Starboard Side', 'tonne', 0, NULL),
+    ('main-runner-position-sb', 'Main Runner Position Starboard Side', 'promille', 0, 1000),
+    ('main-checkstay-load-ps', 'Main Checkstay Load Port Side', 'tonne', 0, NULL),
+    ('main-checkstay-load-sb', 'Main Checkstay Load Starboard Side', 'tonne', 0, NULL),
+    ('main-checkstay-position-sb', 'Main Checkstay Position Starboard Side', 'promille', 0, 1000),
+    ('main-checkstay-deflector-load-ps', 'Main Checkstay Deflector Load Port Side', 'tonne', 0, NULL),
+    ('main-checkstay-deflector-position-ps', 'Main Checkstay Deflector Position Port Side', 'promille', 0, 1000),
+    ('main-checkstay-deflector-load-sb', 'Main Checkstay Deflector Load Starboard Side', 'tonne', 0, NULL),
+    ('main-checkstay-deflector-position-sb', 'Main Checkstay Deflector Position Starboard Side', 'promille', 0, 1000),
+    ('main-headboard-lock', 'Main Headboard Lock', 'on-off', 0, 1),
+    ('main-headboard-overhoist', 'Main Headboard Overhoist', 'on-off', 0, 1),
+    ('main-reef-1-lock', 'Main Reef 1 Lock', 'on-off', 0, 1),
+    ('main-reef-1-overhoist', 'Main Reef 1 Overhoist', 'on-off', 0, 1),
+    ('main-reef-2-lock', 'Main Reef 2 Lock', 'on-off', 0, 1),
+    ('main-reef-2-overhoist', 'Main Reef 2 Overhoist', 'on-off', 0, 1),
+    ('main-reef-3-lock', 'Main Reef 3 Lock', 'on-off', 0, 1),
+    ('main-reef-3-overhoist', 'Main Reef 3 Overhoist', 'on-off', 0, 1),
+    ('main-boom-reef-1-lock', 'Main Boom Reef 1 Lock', 'on-off', 0, 1),
+    ('main-boom-reef-1-overhoist', 'Main Boom Reef 1 Overhoist', 'on-off', 0, 1),
+    ('main-boom-reef-2-lock', 'Main Boom Reef 2 Lock', 'on-off', 0, 1),
+    ('main-boom-reef-2-overhoist', 'Main Boom Reef 2 Overhoist', 'on-off', 0, 1),
+    ('main-boom-reef-3-lock', 'Main Boom Reef 3 Lock', 'on-off', 0, 1),
+    ('main-boom-reef-3-overhoist', 'Main Boom Reef 3 Overhoist', 'on-off', 0, 1),
+    ('mizzen-sheet-load', 'Mizzen Sheet Load', 'tonne', 0, NULL),
+    ('mizzen-sheet-position', 'Mizzen Sheet Position', 'promille', 0, 1000),
+    ('mizzen-preventer-load', 'Mizzen Preventer Load', 'tonne', 0, NULL),
+    ('mizzen-vang-load', 'Mizzen Vang Load', 'tonne', 0, NULL),
+    ('mizzen-vang-position', 'Mizzen Vang Position', 'promille', 0, 1000),
+    ('mizzen-outhaul-load', 'Mizzen Outhaul Load', 'tonne', 0, NULL),
+    ('mizzen-outhaul-position', 'Mizzen Outhaul Position', 'promille', 0, 1000),
+    ('mizzen-halyard-load', 'Mizzen Halyard Load', 'tonne', 0, NULL),
+    ('mizzen-halyard-position', 'Mizzen Halyard Position', 'promille', 0, 1000),
+    ('mizzen-cunningham-load', 'Mizzen Cunningham Load', 'tonne', 0, NULL),
+    ('mizzen-cunningham-position', 'Mizzen Cunningham Position', 'promille', 0, 1000),
+    ('mizzen-runner-load-ps', 'Mizzen Runner Load Port Side', 'tonne', 0, NULL),
+    ('mizzen-runner-position-ps', 'Mizzen Runner Position Port Side', 'promille', 0, 1000),
+    ('mizzen-runner-load-sb', 'Mizzen Runner Load Starboard Side', 'tonne', 0, NULL),
+    ('mizzen-runner-position-sb', 'Mizzen Runner Position Starboard Side', 'promille', 0, 1000),
+    ('mizzen-checkstay-load-ps', 'Mizzen Checkstay Load Port Side', 'tonne', 0, NULL),
+    ('mizzen-checkstay-position-ps', 'Mizzen Checkstay Position Port Side', 'promille', 0, 1000),
+    ('mizzen-checkstay-load-sb', 'Mizzen Checkstay Load Starboard Side', 'tonne', 0, NULL),
+    ('mizzen-checkstay-position-sb', 'Mizzen Checkstay Position Starboard Side', 'promille', 0, 1000),
+    ('mizzen-checkstay-deflector-load-ps', 'Mizzen Checkstay Deflector Load Port Side', 'tonne', 0, NULL),
+    ('mizzen-checkstay-deflector-position-ps', 'Mizzen Checkstay Deflector Position Port Side', 'promille', 0, 1000),
+    ('mizzen-checkstay-deflector-load-sb', 'Mizzen Checkstay Deflector Load Starboard Side', 'tonne', 0, NULL),
+    ('mizzen-checkstay-deflector-position-sb', 'Mizzen Checkstay Deflector Position Starboard Side', 'promille', 0, 1000),
+    ('mizzen-headboard-lock', 'Mizzen Headboard Lock', 'on-off', 0, 1),
+    ('mizzen-headboard-overhoist', 'Mizzen Headboard Overhoist', 'on-off', 0, 1),
+    ('mizzen-reef-1-lock', 'Mizzen Reef 1 Lock', 'on-off', 0, 1),
+    ('mizzen-reef-1-overhoist', 'Mizzen Reef 1 Overhoist', 'on-off', 0, 1),
+    ('mizzen-reef-2-lock', 'Mizzen Reef 2 Lock', 'on-off', 0, 1),
+    ('mizzen-reef-2-overhoist', 'Mizzen Reef 2 Overhoist', 'on-off', 0, 1),
+    ('mizzen-boom-reef-1-lock', 'Mizzen Boom Reef 1 Lock', 'on-off', 0, 1),
+    ('mizzen-boom-reef-1-overhoist', 'Mizzen Boom Reef 1 Overhoist', 'on-off', 0, 1),
+    ('mizzen-boom-reef-2-lock', 'Mizzen Boom Reef 2 Lock', 'on-off', 0, 1),
+    ('mizzen-boom-reef-2-overhoist', 'Mizzen Boom Reef 2 Overhoist', 'on-off', 0, 1);
 
 -- Example reference value for a specific load case
 INSERT INTO loads.reference_values (variable_id, load_case_id, alarm_low, warning_low, target, warning_high, alarm_high)
-SELECT 
+SELECT
     'main-sheet-load',
+    load_cases.id,
+    5.0,
+    6.0,
+    10.0,
+    14.0,
+    15.0
+FROM loads.load_cases
+JOIN loads.awa_ranges AS awa_range ON load_cases.awa_range_id = awa_range.id
+JOIN loads.aws_ranges AS aws_range ON load_cases.aws_range_id = aws_range.id
+JOIN loads.sail_sets_combined AS sail_set ON load_cases.sail_set_id = sail_set.id
+WHERE awa_range.awa = '[25,30)'::numrange AND aws_range.aws = '[15,20)'::numrange
+AND sail_set.sails = ARRAY['blade', 'full-main', 'full-mizzen'];
+
+INSERT INTO loads.reference_values (variable_id, load_case_id, alarm_low, warning_low, target, warning_high, alarm_high)
+SELECT
+    'main-vang-load',
     load_cases.id,
     NULL,
     NULL,
     NULL,
     NULL,
     15.0
+FROM loads.load_cases
+JOIN loads.awa_ranges AS awa_range ON load_cases.awa_range_id = awa_range.id
+JOIN loads.aws_ranges AS aws_range ON load_cases.aws_range_id = aws_range.id
+JOIN loads.sail_sets_combined AS sail_set ON load_cases.sail_set_id = sail_set.id
+WHERE awa_range.awa = '[25,30)'::numrange AND aws_range.aws = '[15,20)'::numrange
+AND sail_set.sails = ARRAY['blade', 'full-main', 'full-mizzen'];
+
+INSERT INTO loads.reference_values (variable_id, load_case_id, alarm_low, warning_low, target, warning_high, alarm_high)
+SELECT
+    'main-sheet-position',
+    load_cases.id,
+    NULL,
+    NULL,
+    500.0,
+    NULL,
+    800.0
 FROM loads.load_cases
 JOIN loads.awa_ranges AS awa_range ON load_cases.awa_range_id = awa_range.id
 JOIN loads.aws_ranges AS aws_range ON load_cases.aws_range_id = aws_range.id

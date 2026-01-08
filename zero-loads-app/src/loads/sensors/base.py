@@ -21,7 +21,6 @@ class LoadsModel(BaseModel):
     def gen_config(cls, interval: int = 10) -> GeneratorConfig:
         """Generate configuration for data generation."""
 
-        print(cls.model_fields)
         return GeneratorConfig(
             topic=cls.TOPIC,
             interval=interval,
