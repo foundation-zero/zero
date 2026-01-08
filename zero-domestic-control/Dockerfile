@@ -32,5 +32,4 @@ WORKDIR /app
 
 COPY src/domestic_control/ domestic_control/
 
-# CMD ["tail", "-f", "/dev/null"]
 ENTRYPOINT ["python", "-m", "domestic_control"]

@@ -23,7 +23,7 @@ dependencies = [
 ]
 
 [project.scripts]
-domestic_control = "domestic_control.__main__:main"
+domestic_control = "domestic_control.__main__:run"
 
 [tool.poetry.group.dev]
 optional = true
