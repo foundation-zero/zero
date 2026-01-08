@@ -5,7 +5,7 @@ This directory contains the Docker Compose configuration for the Foundation Zero
 ## Setup
 
  - Create a `.env` based on `.env.example`.
- - `GCS_CREDENTIAL`can be found in Bitwarden (gcs-auth)
+ - Secrets can be found in Bitwarden
 
 ## Profiles
 
