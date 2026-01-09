@@ -39,7 +39,7 @@ async def test_graphql_reference(async_client: AsyncClient):
             query {
                 variables(variables: ["main-sheet-load"]) {
                     id
-                    reference(case: {awa: 27, aws: 16, sailset: [full_main, full_mizzen, blade]}) {
+                    reference(case: {awaRange: upwind, awsRange: aws_15_20, sailset: [full_main, full_mizzen, blade]}) {
                     reference {
                         alarmLow
                         alarmHigh

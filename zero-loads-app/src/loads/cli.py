@@ -13,7 +13,7 @@ from pydantic_settings import (
 from loads.api.auth import generate_jwt
 from loads.config import Settings
 from loads.control import ConditionsStub, Control, PCanAdapter, PCanStub
-from loads.logging import setup_logging
+from loads.logging_config import setup_logging
 from loads.sensors import sail_systems
 
 setup_logging()
@@ -24,7 +24,7 @@ logger = logging.getLogger("cli")
 class ApiCli(Settings):
     async def cli_cmd(self) -> None:
         logger.info("Running API...")
-        uvicorn.run("loads.api.api:app", host="0.0.0.0", port=5101, reload=True)
+        uvicorn.run("loads.api.api:app", host="0.0.0.0", port=5102, reload=True)
 
 
 class GenerateJWT(Settings):
