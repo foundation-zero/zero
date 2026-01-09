@@ -3,6 +3,7 @@ from typing import Any, Callable, Literal, Protocol
 from loads.sensors import LoadsModel, at, sails
 
 Fields = Literal[
+    "value",
     "torque",
     "load",
     "load_ps",
@@ -260,7 +261,7 @@ loads_variables: dict[str, LoadsField] = {
     ),
     "storm-jib-lock": LoadField(sails.HeadsailLocks, "lock_stormjib"),
     "storm-jib-overhoist": LoadField(sails.HeadsailLocks, "overhoist_stormjib"),
-    "test-at-latitude": LoadField(at.SystemLatitude, "load"),
-    "test-at-longitude": LoadField(at.SystemLongitude, "load"),
-    "test-at-utcdate": LoadField(at.UTCDate, "load"),
+    "test-at-latitude": LoadField(at.SystemLatitude, "value"),
+    "test-at-longitude": LoadField(at.SystemLongitude, "value"),
+    "test-at-utcdate": LoadField(at.UTCDate, "value"),
 }

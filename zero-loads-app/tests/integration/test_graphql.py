@@ -15,6 +15,7 @@ def override_messaging():
     mock.get_values_for = Mock(
         return_value=[
             ActualType(id="main-checkstay-deflector-ps-load", value=42.0),
+            ActualType(id="test-at-latitude", value=7.0),
         ]
     )
 
@@ -86,6 +87,40 @@ async def test_graphql_reference(async_client: AsyncClient):
                         },
                     },
                     "actual": {"id": "main-checkstay-deflector-ps-load", "value": 42.0},
+                }
+            ]
+        }
+    }
+
+
+@pytest.mark.asyncio
+async def test_at_sensors(async_client: AsyncClient):
+    app.dependency_overrides[get_messaging] = override_messaging
+
+    response = await async_client.post(
+        "/graphql",
+        json={
+            "query": """
+            query {
+                variables(variables: ["test-at-latitude"]) {
+                    id
+                    actual {
+                    id
+                    value
+                    }
+                }
+            }
+            """
+        },
+    )
+
+    assert response.status_code == 200
+    assert response.json() == {
+        "data": {
+            "variables": [
+                {
+                    "id": "test-at-latitude",
+                    "actual": {"id": "test-at-latitude", "value": 7.0},
                 }
             ]
         }
