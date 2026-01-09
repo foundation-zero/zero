@@ -109,14 +109,15 @@ INSERT INTO loads.sails (id, abbreviation, position_id, name) VALUES
   ('full-mizzen', 'FMZ', 'mizzen', 'Full Mizzen'),
   ('mizzen-reef1', 'MZ1R', 'mizzen', 'Mizzen 1 Reef'),
   ('mizzen-reef2', 'MZ2R', 'mizzen', 'Mizzen 2 Reef'),
-  ('blade', 'J3', 'fore-outer', 'Blade'),
+  ('utility-main', 'UM', 'main', 'Utility Main'),
+  ('blade', 'B', 'fore-outer', 'Blade'),
   ('code-zero', 'C0', 'fore-outer', 'Code Zero'),
-  ('genoa', 'A3', 'fore-outer', 'Furling Genoa'),
-  ('gennaker', 'A2', 'fore-outer', 'Gennaker'),
-  ('storm-jib', 'J5', 'fore-inner', 'Storm Jib'),
-  ('staysail', 'J4', 'fore-inner', 'Staysail'),
+  ('A3', 'A3', 'fore-outer', 'A3 Furling'),
+  ('A2', 'A2', 'fore-outer', 'Gennaker'),
+  ('storm-jib', 'SJ', 'fore-inner', 'Storm Jib'),
+  ('staysail', 'SS', 'fore-inner', 'Staysail'),
   ('mizzen-jib', 'MZJ', 'mizzen-fore', 'Mizzen Jib'),
-  ('mizzen-genoa', 'MZG', 'mizzen-fore', 'Mizzen Genoa');
+  ('mizzen-staysail', 'MZSS', 'mizzen-fore', 'Mizzen Staysail');
 
 -- Generate all possible sail sets based on position (including those with NULLs for missing sails)
 WITH RECURSIVE indexed_positions AS (
