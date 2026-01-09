@@ -11,7 +11,7 @@ from .util import hyphenize
 class LoadsModel(BaseModel):
     """
     Pydantic model that supports generation of mock data
-    and customisation of the undelaying transport format.
+    and customization of the underlaying transport format of that mocked data.
 
     Suggestion: move both capabilities to zero-generator for better SOLID adherence.
     """
