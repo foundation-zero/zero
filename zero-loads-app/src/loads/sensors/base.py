@@ -83,21 +83,23 @@ class LoadsModel(BaseModel):
         return cls.model_validate_json(payload)
 
 
-class LoadsModelBytes(LoadsModel):
+class LoadsBytesModel(LoadsModel):
     """
     Subclass that expects single value encoded as string in the transport format.
-    The value will be exposed as `load` attribute of the instance.
+    The value will be exposed as `value` attribute of the instance.
     """
 
     @classmethod
     def make_generator(cls):
-        field_info = next(cls.model_fields)  # Only one field is expected
+        field_info = cls.model_fields["value"]  # Only one field is expected
         return cls._create_generator(field_info.annotation, field_info.metadata)
 
     @classmethod
     def parse_message_payload(cls, payload: str | bytes):
-        cast = cls.model_fields["load"].annotation
+        cast = cls.model_fields["value"].annotation
         if isinstance(payload, bytes):
             payload = payload.decode("utf-8")
         # This is not expected to work with all types e.g. `datetime.date` will break
-        return cls.model_validate({ "load": cast(payload) if cast is not None else payload })
+        return cls.model_validate(
+            {"value": cast(payload) if cast is not None else payload}
+        )
