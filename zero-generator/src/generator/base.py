@@ -9,14 +9,14 @@ class Generator[T](Protocol):
     def gen(self) -> T: ...
 
 
-@dataclass
 class JSONGenerator(Generator):
     """
     Wrapper around other Generator instances that expose Generator interface itself.
     Produces JSON values
     """
 
-    values: dict[str, Generator]
+    def __init__(self, values: dict[str, Generator]):
+        self.values = values
 
     def gen(self):
         return json.dumps(
