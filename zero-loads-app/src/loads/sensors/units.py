@@ -12,5 +12,5 @@ class Unit:
 
 
 Millimeter: TypeAlias = Annotated[float, Field(ge=0), Unit(unit="mm")]
-DeciKilogram: TypeAlias = Annotated[float, Field(ge=0), Unit(unit="10Kg")]
+DecaKilogram: TypeAlias = Annotated[float, Field(ge=0), Unit(unit="10Kg")]
 Promille: TypeAlias = Annotated[float, Field(ge=0, lt=1000), Unit(unit="‰")]

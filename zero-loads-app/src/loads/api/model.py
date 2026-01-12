@@ -45,7 +45,9 @@ async def get_loads_reference_values(
         )
         .where(
             ReferenceValues.load_case.has(
-                LoadCases.aws_range.has(AwsRanges.aws_range == text(f"'{case.aws_range.value}'::numrange"))
+                LoadCases.aws_range.has(
+                    AwsRanges.aws_range == text(f"'{case.aws_range.value}'::numrange")
+                )
             )
         )
         .where(

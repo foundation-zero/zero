@@ -4,22 +4,22 @@ from pydantic import Field
 
 from .base import LoadsModel
 from .units import (
-    DeciKilogram,
+    DecaKilogram,
     Millimeter,
     Promille,
 )
 
 
 class CaptiveWinch(LoadsModel, ABC):
-    load: DeciKilogram = Field(validation_alias="ow_ActLoad_10kg")
+    load: DecaKilogram = Field(validation_alias="ow_ActLoad_10kg")
     position: Millimeter = Field(validation_alias="ow_ActPos_mm")
     relative_position: Promille = Field(validation_alias="ow_ActPos_pm")
-    relief_load: DeciKilogram = Field(validation_alias="ow_RelfLoad_10kg")
+    relief_load: DecaKilogram = Field(validation_alias="ow_RelfLoad_10kg")
 
 
 class PrimaryWinch(LoadsModel, ABC):
-    load: DeciKilogram = Field(validation_alias="ow_ActLoad_10kg")
-    relief_load: DeciKilogram = Field(validation_alias="ow_RelfLoad_10kg")
+    load: DecaKilogram = Field(validation_alias="ow_ActLoad_10kg")
+    relief_load: DecaKilogram = Field(validation_alias="ow_RelfLoad_10kg")
 
 
 class Winch(LoadsModel, ABC):
@@ -31,36 +31,36 @@ class LoadWinch(LoadsModel, ABC):
 
 
 class Cylinder(LoadsModel, ABC):
-    load: DeciKilogram = Field(validation_alias="ow_ActLoad_10kg")
+    load: DecaKilogram = Field(validation_alias="ow_ActLoad_10kg")
     position: Millimeter = Field(validation_alias="ow_ActPos_mm")
-    relief_load: DeciKilogram = Field(validation_alias="ow_RelfLoad_10kg")
+    relief_load: DecaKilogram = Field(validation_alias="ow_RelfLoad_10kg")
 
 
 class CylinderTwoPositions(LoadsModel, ABC):
-    load: DeciKilogram = Field(validation_alias="ow_ActLoad_10kg")
+    load: DecaKilogram = Field(validation_alias="ow_ActLoad_10kg")
     position_1: Millimeter = Field(validation_alias="ow_ActPos_mm")
     position_2: Millimeter = Field(validation_alias="ow_ActPos2_mm")
-    relief_load: DeciKilogram = Field(validation_alias="ow_RelfLoad_10kg")
+    relief_load: DecaKilogram = Field(validation_alias="ow_RelfLoad_10kg")
 
 
 class Deflector(LoadsModel, ABC):
     position: Millimeter = Field(validation_alias="ow_ActPos_mm")
-    load_deflector: DeciKilogram = Field(validation_alias="i_ActualLoad_10kg")
-    load_ps: DeciKilogram = Field(validation_alias="i_ActualLoadPs")
-    load_sb: DeciKilogram = Field(validation_alias="i_ActualLoadSb")
-    relief_load: DeciKilogram = Field(validation_alias="i_RelfLoad_10kg")
+    load_deflector: DecaKilogram = Field(validation_alias="i_ActualLoad_10kg")
+    load_ps: DecaKilogram = Field(validation_alias="i_ActualLoadPs")
+    load_sb: DecaKilogram = Field(validation_alias="i_ActualLoadSb")
+    relief_load: DecaKilogram = Field(validation_alias="i_RelfLoad_10kg")
 
 
 class LoadCell(LoadsModel, ABC):
-    load: DeciKilogram = Field(validation_alias="ow_ActLoad_10kg")
-    relief_load: DeciKilogram = Field(validation_alias="ow_RelfLoad_10kg")
+    load: DecaKilogram = Field(validation_alias="ow_ActLoad_10kg")
+    relief_load: DecaKilogram = Field(validation_alias="ow_RelfLoad_10kg")
 
 
 class Vang(LoadsModel, ABC):
-    load_bottom: DeciKilogram = Field(validation_alias="ow_ActLoad_10kg")
-    load_rod: DeciKilogram = Field(validation_alias="ow_ActLoad2_10kg")
+    load_bottom: DecaKilogram = Field(validation_alias="ow_ActLoad_10kg")
+    load_rod: DecaKilogram = Field(validation_alias="ow_ActLoad2_10kg")
     position: Millimeter = Field(validation_alias="ow_ActPos_mm")
-    relief_load: DeciKilogram = Field(validation_alias="ow_RelfLoad_10kg")
+    relief_load: DecaKilogram = Field(validation_alias="ow_RelfLoad_10kg")
 
 
 class PrimaryWinchPs(PrimaryWinch):
@@ -140,15 +140,15 @@ class CodeSailTack(CylinderTwoPositions):
 
 
 class HeadsailLocks(LoadsModel, ABC):
-    TOPIC = "sail-systems/MnMst"
-    A2_lock: bool = Field(validation_alias="ox_IndctA2Lck_Ext")
-    A2_overhoist: bool = Field(validation_alias="ox_IndctA2LckOvrhst_Ext")
-    A3C0_lock: bool = Field(validation_alias="ox_IndctA3C0Lck_Ext")
-    A3C0_overhoist: bool = Field(validation_alias="ox_IndctA3C0LckOverhst_Ext")
-    staysail_lock: bool = Field(validation_alias="ox_IndctStyslLck_Ext")
-    staysail_overhoist: bool = Field(validation_alias="ox_IndctStyslLckOverhst_Ext")
-    stormjib_lock: bool = Field(validation_alias="ox_IndctStmjbLck_Ext")
-    stormjib_overhoist: bool = Field(validation_alias="ox_IndctStmjbLckOvrhst_Ext")
+    TOPIC = "sail-systems/mnmst"
+    lock_A2: bool = Field(validation_alias="ox_IndctA2Lck_Ext")
+    overhoist_A2: bool = Field(validation_alias="ox_IndctA2LckOvrhst_Ext")
+    lock_A3C0: bool = Field(validation_alias="ox_IndctA3C0Lck_Ext")
+    overhoist_A3C0: bool = Field(validation_alias="ox_IndctA3C0LckOverhst_Ext")
+    lock_staysail: bool = Field(validation_alias="ox_IndctStyslLck_Ext")
+    overhoist_staysail: bool = Field(validation_alias="ox_IndctStyslLckOverhst_Ext")
+    lock_stormjib: bool = Field(validation_alias="ox_IndctStmjbLck_Ext")
+    overhoist_stormjib: bool = Field(validation_alias="ox_IndctStmjbLckOvrhst_Ext")
 
 
 class MainCheckstayDeflector(Deflector):
