@@ -1,6 +1,5 @@
 [project]
 name = "zero-hull-temperature"
-version = "0.1.1"
 description = ""
 readme = "README.md"
 authors = [
@@ -16,6 +15,10 @@ dependencies = [
     "pymodbustcp (>=0.3.0,<0.4.0)",
     "tenacity (>=9.1.2,<10.0.0)"
 ]
+dynamic = ["version"]
+
+[tool.poetry]
+version = "0.0.0"
 
 [tool.poetry.group.dev]
 optional = true
@@ -41,6 +44,12 @@ testpaths = ["tests"]
 log_level = "DEBUG"
 log_format = "%(asctime)s.%(msecs)03d | %(levelname)-8s | %(message)s"
 
+[tool.poetry.requires-plugins]
+poetry-dynamic-versioning = { version = ">=1.0.0,<2.0.0", extras = ["plugin"] }
+
+
+[tool.poetry-dynamic-versioning]
+enable = true
 [build-system]
-requires = ["poetry-core>=2.0.0,<3.0.0"]
-build-backend = "poetry.core.masonry.api"
+requires = ["poetry-core>=1.0.0", "poetry-dynamic-versioning>=1.0.0,<2.0.0"]
+build-backend = "poetry_dynamic_versioning.backend"
