@@ -1,4 +1,5 @@
 from asyncio import create_task, sleep
+import asyncio
 from datetime import datetime
 from typing import cast
 
@@ -73,6 +74,7 @@ async def test_mqtt_executor(mqtt_client, mqtt_client2):
             )
         )
         assert not empty_result.sensor_values.values
+        await sleep(0.005)
         first_result = await executor.tick(
             CombinedValues(
                 values={
