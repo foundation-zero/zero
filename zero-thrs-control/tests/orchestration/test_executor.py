@@ -1,11 +1,17 @@
 from asyncio import create_task, sleep
-import asyncio
 from datetime import datetime
 from typing import cast
 
-from aiomqtt import Client
 import pytest
-from thrs.orchestration.module import ModuleDescription, CombinedModule
+from aiomqtt import Client
+
+from tests.orchestration.simples import (
+    SimpleAlarms,
+    SimpleControl,
+    SimpleExecutor,
+    SimpleInOut,
+    SimpleParameters,
+)
 from thrs.input_output.base import (
     CombinedValues,
     SimulationInputs,
@@ -15,14 +21,7 @@ from thrs.input_output.base import (
 from thrs.input_output.definitions.sensor import FlowSensor
 from thrs.orchestration.config import Config
 from thrs.orchestration.executor import MqttExecutor
-from tests.orchestration.simples import (
-    SimpleAlarms,
-    SimpleControl,
-    SimpleExecutor,
-    SimpleInOut,
-    SimpleParameters,
-)
-
+from thrs.orchestration.module import CombinedModule, ModuleDescription
 
 settings = Config()  # type: ignore
 

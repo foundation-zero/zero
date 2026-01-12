@@ -11,6 +11,7 @@ services:
       - data
       - domestic
       - loads
+      - thrs
     environment:
       DOCKER_VERNEMQ_ACCEPT_EULA: "yes"
       DOCKER_VERNEMQ_ALLOW_ANONYMOUS: "on"
@@ -49,9 +50,9 @@ services:
       context: ./data
     command: setup_postgres --target docker
     profiles:
-     - zero
-     - domestic
-     - loads
+      - zero
+      - domestic
+      - loads
     environment: &setup
       PG_HOST: postgres
       PG_HOST_DOCKER: postgres
@@ -74,9 +75,9 @@ services:
       - 4566:4566
       - 5691:5691
     profiles:
-     - zero
-     - domestic
-     - loads
+      - zero
+      - domestic
+      - loads
     healthcheck:
       test:
         - CMD-SHELL
@@ -94,9 +95,9 @@ services:
       context: ./data
     command: setup_risingwave --target docker
     profiles:
-     - zero
-     - domestic
-     - loads
+      - zero
+      - domestic
+      - loads
     environment:
       <<: *setup
     depends_on:
@@ -109,9 +110,9 @@ services:
       - 8080:8080
     restart: always
     profiles:
-     - zero
-     - domestic
-     - loads
+      - zero
+      - domestic
+      - loads
     environment:
       HASURA_GRAPHQL_METADATA_DATABASE_URL: postgres://${PG_USER}:${PG_PASSWORD}@postgres:5432/postgres
       HASURA_GRAPHQL_ENABLE_CONSOLE: true
@@ -137,8 +138,8 @@ services:
   hass:
     image: ghcr.io/home-assistant/home-assistant:stable
     profiles:
-     - zero
-     - domestic
+      - zero
+      - domestic
     volumes:
       - ./hass:/config
       - /etc/localtime:/etc/localtime:ro
@@ -152,7 +153,7 @@ services:
       timeout: 5s
       retries: 5
 
-# ---- data ----
+  # ---- data ----
   data-gen:
     build:
       context: ./zero-data
@@ -178,7 +179,7 @@ services:
       postgres:
         condition: service_healthy
 
-# ---- domestic-control ----
+  # ---- domestic-control ----
   domestic-control-api:
     command: api
     build:
@@ -240,7 +241,7 @@ services:
       <<: *app_env
       TERMODINAMICA_HOST: 0.0.0.0
 
-# ---- loads ----
+  # ---- loads ----
   loads-api:
     command: api
     build:
@@ -298,6 +299,39 @@ services:
       - loads
     environment:
       <<: *app_env
+    depends_on:
+      vernemq:
+        condition: service_healthy
+
+  # ---- THRS ----
+  thrs-control:
+    build:
+      context: ./zero-thrs-control
+      dockerfile: Dockerfile
+      target: control
+    profiles:
+      - thrs
+    ports:
+      - "5102:5102"
+    environment: &thrs_env
+      MQTT_HOST: vernemq
+      MQTT_PORT: 1883
+      MQTT_TOPIC_PREFIX: thrs
+      MQTT_CONTROL_TOPIC_SUFFIX: Command
+    depends_on:
+      vernemq:
+        condition: service_healthy
+
+  thrs-thruster-simulation:
+    command: python -m  thrs.cli run thrusters
+    build:
+      context: ./zero-thrs-control
+      dockerfile: Dockerfile
+      target: simulation
+    profiles:
+      - thrs
+    environment:
+      <<: *thrs_env
     depends_on:
       vernemq:
         condition: service_healthy
