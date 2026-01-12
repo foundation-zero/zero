@@ -58,6 +58,7 @@ class MqttExecutor[O: SimulationValues](Executor[CombinedValues, CombinedValues]
 
     async def _listen_to_controls(self):
         async for message in self._environment_client.messages:
+            logging.debug(f"Received control message on topic {message.topic}")
             topic = self._clean_topic(message.topic)
             if not self._module_nesting.control_values_mqtt_mapping.has(topic):
                 continue
@@ -73,10 +74,13 @@ class MqttExecutor[O: SimulationValues](Executor[CombinedValues, CombinedValues]
             logging.debug("Received trigger, passing to inner executor")
 
             control_values = self._controls_builder.result()
+            logging.debug(f"Control values {control_values} received from MQTT")
             if control_values is None:
                 control_values = await self._controls_builder.wait_for_result()
 
+            logging.debug("Executing inner executor")
             execution_result = await self._inner.tick(control_values)
+            logging.debug("Inner executor tick completed")
             await self._send_sensor_values(execution_result)
 
             if isinstance(execution_result, SimulationExecutionResult):
