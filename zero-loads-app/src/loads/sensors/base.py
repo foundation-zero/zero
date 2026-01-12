@@ -43,7 +43,10 @@ class LoadsModel(BaseModel):
         upper = constraints.get("le", constraints.get("lt", 100))
 
         type = gen.validate_type(cls._type_name(base_type))
-        return create_generator(type, lt=lower, gt=upper)
+        if type in ("int", "float"):
+            return create_generator(type, lt=lower, gt=upper)
+        else:
+            return create_generator(type)
 
     @staticmethod
     def _extract_constraints(meta: list[Any]) -> Dict[str, Any]:

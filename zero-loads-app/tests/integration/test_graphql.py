@@ -24,7 +24,9 @@ def override_messaging():
 @pytest.fixture
 async def async_client():
     async with LifespanManager(app) as manager:
-        async with AsyncClient(transport=ASGITransport(app=manager.app), base_url="http://test") as client:
+        async with AsyncClient(
+            transport=ASGITransport(app=manager.app), base_url="http://test"
+        ) as client:
             yield client
 
 
