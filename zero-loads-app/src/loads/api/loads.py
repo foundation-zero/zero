@@ -32,6 +32,8 @@ class LoadsField[T: LoadsModel](Protocol):
 class LoadField[T: LoadsModel]:
     def __init__(self, model: type[T], field: Fields) -> None:
         self.model = model
+        if field not in self.model.model_fields:
+            raise Exception(f"Field {field} not in sensor model {model}")
         self._field = field
 
     def give(self, data: T | None) -> float | None:
@@ -96,16 +98,16 @@ loads_variables: dict[str, LoadsField] = {
     "main-outhaul-position": LoadField(sensors.MainOuthaul, "position"),
     "main-preventer-load": LoadField(sensors.MainPreventer, "load"),
     "main-preventer-position": LoadField(sensors.MainPreventer, "position"),
-    "main-runner-ps-rel-position": LoadField(
+    "main-runner-captive-ps-rel-position": LoadField(
         sensors.MainRunnerCaptivePS, "relative_position"
     ),
     #'main-runner-ps-load': #where's the loadpin?
-    "main-runner-sb-rel-position": LoadField(
+    "main-runner-captive-sb-rel-position": LoadField(
         sensors.MainRunnerCaptiveSB, "relative_position"
     ),
     #'main-runner-sb-load': #where's the loadpin?
     #'main-sheet-load':#where's the loadpin?
-    #'main-traveler-position': #where's the traveler?
+    "main-traveler-rel-position": LoadField(sensors.MainTraveler, "relative_position"),
     "main-vang-position": LoadField(sensors.MainVang, "position"),
     #'main-vang-load': LoadField(sensors.MainVang, "load"),#bottom or rod?
     "mizzen-boom-reef-1-lock": LoadField(sensors.MizzenHalyard, "lock_1"),
@@ -140,33 +142,35 @@ loads_variables: dict[str, LoadsField] = {
     "mizzen-reef-1-overhoist": LoadField(sensors.MizzenHalyard, "overhoist_1"),
     "mizzen-reef-2-lock": LoadField(sensors.MizzenHalyard, "lock_2"),
     "mizzen-reef-2-overhoist": LoadField(sensors.MizzenHalyard, "overhoist_2"),
-    "mizzen-runner-ps-rel-position": LoadField(
+    "mizzen-runner-captive-ps-rel-position": LoadField(
         sensors.MizzenRunnerCaptivePS, "relative_position"
     ),
     #'mizzen-runner-ps-load': #where's the loadpin?
-    "mizzen-runner-sb-rel-position": LoadField(
+    "mizzen-runner-captive-sb-rel-position": LoadField(
         sensors.MizzenRunnerCaptiveSB, "relative_position"
     ),
     #'mizzen-runner-sb-load': #where's the loadpin?
-    "mizzen-sheet-load": LoadField(sensors.MizzenSheetCaptive, "load"),
-    "mizzen-sheet-rel-position": LoadField(
+    "mizzen-sheet-captive-load": LoadField(sensors.MizzenSheetCaptive, "load"),
+    "mizzen-sheet-captive-rel-position": LoadField(
         sensors.MizzenSheetCaptive, "relative_position"
     ),
     "mizzen-vang-position": LoadField(sensors.MizzenVang, "position"),
     # "mizzen-vang-load": LoadField(sensors.MizzenVang, "load"), #bottom or rod?
     "staysail-sheet-feeder-ps-load": LoadField(sensors.StaysailSheetFeederPs, "load"),
     "staysail-sheet-feeder-sb-load": LoadField(sensors.StaysailSheetFeederSb, "load"),
-    "staysail-sheet-ps-load": LoadField(sensors.StaysailSheetCaptivePS, "load"),
-    "staysail-sheet-ps-rel-position": LoadField(
+    "staysail-sheet-captive-ps-load": LoadField(sensors.StaysailSheetCaptivePS, "load"),
+    "staysail-sheet-captive-ps-rel-position": LoadField(
         sensors.StaysailSheetCaptivePS, "relative_position"
     ),
-    "staysail-sheet-sb-load": LoadField(sensors.StaysailSheetCaptiveSB, "load"),
-    "staysail-sheet-sb-rel-position": LoadField(
+    "staysail-sheet-captive-sb-load": LoadField(sensors.StaysailSheetCaptiveSB, "load"),
+    "staysail-sheet-captive-sb-rel-position": LoadField(
         sensors.StaysailSheetCaptiveSB, "relative_position"
     ),
-    "staysail-stay-adjuster-load": LoadField(sensors.StaysailStayAdjuster, "load"),
-    "staysail-stay-adjuster-position": LoadField(
+    "staysail-stay-adjuster-load": LoadField(
+        sensors.StaysailStayAdjuster, "load"
+    ),  # staysail stay?
+    "staysail-stay-adjuster-position": LoadField(  # staysail stay?
         sensors.StaysailStayAdjuster, "position"
     ),
-    # TODO: add non-captive winches
+    # forestays?
 }

@@ -69,7 +69,9 @@ class LoadsContext(BaseContext):
     references_loader: DataLoader
 
 
-async def get_actuals(variables: Sequence[str], context: LoadsContext) -> list[ActualType]:
+async def get_actuals(
+    variables: Sequence[str], context: LoadsContext
+) -> list[ActualType]:
     return context.messaging.get_values_for(list(variables))
 
 

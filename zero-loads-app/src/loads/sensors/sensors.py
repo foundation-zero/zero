@@ -17,6 +17,19 @@ class CaptiveWinch(LoadsModel, ABC):
     relief_load: DeciKilogram = Field(validation_alias="ow_RelfLoad_10kg")
 
 
+class PrimaryWinch(LoadsModel, ABC):
+    load: DeciKilogram = Field(validation_alias="ow_ActLoad_10kg")
+    relief_load: DeciKilogram = Field(validation_alias="ow_RelfLoad_10kg")
+
+
+class Winch(LoadsModel, ABC):
+    pass
+
+
+class LoadWinch(LoadsModel, ABC):
+    pass
+
+
 class Cylinder(LoadsModel, ABC):
     load: DeciKilogram = Field(validation_alias="ow_ActLoad_10kg")
     position: Millimeter = Field(validation_alias="ow_ActPos_mm")
@@ -33,7 +46,7 @@ class CylinderTwoPositions(LoadsModel, ABC):
 class Deflector(LoadsModel, ABC):
     position: Millimeter = Field(validation_alias="ow_ActPos_mm")
     load: DeciKilogram = Field(validation_alias="i_ActualLoad_10kg")
-    load_ps: DeciKilogram = Field(validation_alias="i_ActualLoadPs")  # correct here?
+    load_ps: DeciKilogram = Field(validation_alias="i_ActualLoadPs")
     load_sb: DeciKilogram = Field(validation_alias="i_ActualLoadSb")
     relief_load: DeciKilogram = Field(validation_alias="i_RelfLoad_10kg")
 
@@ -48,6 +61,46 @@ class Vang(LoadsModel, ABC):
     load_rod: DeciKilogram = Field(validation_alias="ow_ActLoad2_10kg")
     position: Millimeter = Field(validation_alias="ow_ActPos_mm")
     relief_load: DeciKilogram = Field(validation_alias="ow_RelfLoad_10kg")
+
+
+class PrimaryWinchPs(PrimaryWinch):
+    TOPIC = "sail-systems/fe212_prmrywnchps"
+
+
+class PrimaryWinchSb(PrimaryWinch):
+    TOPIC = "sail-systems/fe308_prmrywnchsb"
+
+
+class MainWinchPsFwd(Winch):
+    TOPIC = "sail-systems/fe209_mnwnchfwdps"
+
+
+class MainWinchSbFwd(Winch):
+    TOPIC = "sail-systems/fe305_mnwnchfwdsb"
+
+
+class MainWinchPsAft(Winch):
+    TOPIC = "sail-systems/fe210_mnwnchaftps"
+
+
+class MainWinchSbAft(Winch):
+    TOPIC = "sail-systems/fe306_mnwnchaftsb"
+
+
+class MizzenWinchSb(Winch):
+    TOPIC = "sail-systems/fe507_mzznwnchsb"
+
+
+class MizzenWinchPs(Winch):
+    TOPIC = "sail-systems/fe407_mzznwnchps"
+
+
+class AftWinchPs(LoadWinch):
+    TOPIC = "sail-systems/fe408_aftwnchps"
+
+
+class AftWinchSb(LoadWinch):
+    TOPIC = "sail-systems/fe508_aftwnchsb"
 
 
 class BladeAdjuster(Cylinder):
@@ -143,6 +196,12 @@ class MainSheetCaptive(CaptiveWinch):
 
 class MainVang(Vang):
     TOPIC = "sail-systems/f0202_mnbmvng"
+
+
+class MainTraveler(LoadsModel, ABC):
+    TOPIC = "sail-systems/fe405_mntrvllr"
+    position: Millimeter = Field(validation_alias="ow_ActPos_mm")
+    relative_position: Promille = Field(validation_alias="ow_ActPos_pm")
 
 
 class MizzenCheckstayDeflector(Deflector):
