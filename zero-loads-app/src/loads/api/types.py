@@ -6,7 +6,7 @@ import strawberry
 @strawberry.enum
 class Unit(Enum):
     tonne = "tonne"
-    permille = "permille"
+    per_mille = "per-mille"
     on_off = "on-off"
 
 
