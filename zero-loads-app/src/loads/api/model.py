@@ -1,8 +1,8 @@
 import logging
 from typing import Sequence
 
-from sqlalchemy import Column, cast, select
-from sqlalchemy.dialects.postgresql import ARRAY, NUMERIC, TEXT
+from sqlalchemy import Column, cast, select, text
+from sqlalchemy.dialects.postgresql import ARRAY, TEXT
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import selectinload
 from sqlalchemy.sql.expression import ColumnElement
@@ -40,12 +40,12 @@ async def get_loads_reference_values(
         .where(ReferenceValues.variable_id.in_(variables))
         .where(
             ReferenceValues.load_case.has(
-                LoadCases.awa_range.has(AwaRanges.awa.contains(cast(case.awa, NUMERIC)))
+                LoadCases.awa_range.has(AwaRanges.id == case.awa_range.value)
             )
         )
         .where(
             ReferenceValues.load_case.has(
-                LoadCases.aws_range.has(AwsRanges.aws.contains(cast(case.aws, NUMERIC)))
+                LoadCases.aws_range.has(AwsRanges.aws_range == text(f"'{case.aws_range.value}'::numrange"))
             )
         )
         .where(
@@ -81,7 +81,7 @@ async def get_loads_reference_values(
         return []
 
 
-def create_sail_set_subq(sailset: list[Sails]) -> ScalarSelect[str]:
+def create_sail_set_subq(sailset: list[Sails]) -> ScalarSelect[int]:
     """Create subquery that returns the sail set that exactly matches the current sails."""
     return (
         select(SailSetsCombined.id)

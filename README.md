@@ -23,7 +23,7 @@ docker compose --profile <profile_name> up
 | `zero` | Core infrastructure services required for the platform foundation. | MQTT, Postgres, RisingWave, Hasura, Home Assistant |
 | `data` | Tools for data generation and DBT model generation. | Core Infra + Data Generators, DBT |
 | `domestic` | The Domestic Control application for home automation logic. | Core Infra, Domestic Control API, Control and Stub |
-| `loads` | The Loads subsystem for managing electrical loads. | Core Infra, Loads API, Control and Stubs |
+| `loads` | The Loads subsystem for capturing and exposing rigging loads (and other relevated values). | Core Infra, Loads API, Control and Stubs |
 
 *Note: domestic-control-api is a remote schema in Hasura. If Hasura boots before domestic-control-api, it'll not load the remote schema, because it can't verify it through introspection. Use `hasura metadata reload --admin-secret myadminsecretkey` to fix this.*
 
