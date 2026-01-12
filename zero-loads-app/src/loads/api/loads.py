@@ -20,6 +20,9 @@ Fields = Literal[
     "overhoist_1",
     "overhoist_2",
     "overhoist_3",
+    "load_bottom",
+    "position_1",
+    "position_2",
 ]
 
 
@@ -56,8 +59,12 @@ loads_variables: dict[str, LoadsField] = {
     "blade-adjuster-load": LoadField(sensors.BladeAdjuster, "load"),
     "blade-adjuster-position": LoadField(sensors.BladeAdjuster, "position"),
     "blade-cunningham-load": LoadField(sensors.BladeCunningham, "load"),
-    #'blade-cunningham-position-1': LoadField(sensors.BladeCunningham, "position_1"),#what are pos 1 and 2?
-    #'blade-cunningham-position-2': LoadField(sensors.BladeCunningham, "position_2"),
+    "blade-cunningham-position-1": LoadField(
+        sensors.BladeCunningham, "position_1"
+    ),  # what's position 1 and 2?
+    "blade-cunningham-position-2": LoadField(
+        sensors.BladeCunningham, "position_2"
+    ),  # what's position 1 and 2?
     "blade-sheet-feeder-ps-load": LoadField(sensors.BladeSheetFeederPs, "load"),
     "blade-sheet-feeder-sb-load": LoadField(sensors.BladeSheetFeederSb, "load"),
     "blade-tweaker-ps-load": LoadField(sensors.BladeTweakerPS, "load"),
@@ -67,8 +74,12 @@ loads_variables: dict[str, LoadsField] = {
     "code-zero-lock": LoadField(sensors.HeadsailLocks, "lock"),
     "code-zero-overhoist": LoadField(sensors.HeadsailLocks, "overhoist"),
     "code-zero-tack-load": LoadField(sensors.CodeSailTack, "load"),
-    #'code-zero-tack-position-1': LoadField(sensors.CodeSailTack, "position_1"),#what's position 1 and 2?
-    #'code-zero-tack-position-2': LoadField(sensors.CodeSailTack, "position_2"),
+    "code-zero-tack-position-1": LoadField(
+        sensors.CodeSailTack, "position_1"
+    ),  # what's position 1 and 2?
+    "code-zero-tack-position-2": LoadField(
+        sensors.CodeSailTack, "position_2"
+    ),  # what's position 1 and 2?
     "main-boom-reef-1-lock": LoadField(sensors.MainHalyard, "lock_1"),
     "main-boom-reef-2-lock": LoadField(sensors.MainHalyard, "lock_2"),
     "main-boom-reef-3-lock": LoadField(sensors.MainHalyard, "lock_3"),
@@ -78,10 +89,14 @@ loads_variables: dict[str, LoadsField] = {
     "main-checkstay-deflector-sb-load": LoadField(
         sensors.MainCheckstayDeflector, "load_sb"
     ),
-    #'main-checkstay-deflector-ps-position': LoadsField(sensors.MainCheckStayDeflector, "position_ps")#no differentiation between ps an sb position
-    #'main-checkstay-deflector-sb-position': LoadsField(sensors.MainCheckStayDeflector, "position_sb")#no differentiation between ps an sb position
-    #'main-checkstay-ps-load': #where's the loadpin?
-    #'main-checkstay-sb-load': #where's the loadpin?
+    "main-checkstay-deflector-ps-position": LoadField(
+        sensors.MainCheckstayDeflector, "position"
+    ),  # no differentiation between ps an sb position
+    "main-checkstay-deflector-sb-position": LoadField(
+        sensors.MainCheckstayDeflector, "position"
+    ),  # no differentiation between ps an sb position
+    "main-checkstay-ps-load": LoadField(sensors.MainCheckstayDeflector, "load_ps"),
+    "main-checkstay-sb-load": LoadField(sensors.MainCheckstayDeflector, "load_sb"),
     "main-cunningham-load": LoadField(sensors.MainCunningham, "load"),
     "main-cunningham-position": LoadField(sensors.MainCunningham, "position"),
     "main-halyard-load": LoadField(sensors.MainHalyard, "load"),
@@ -101,27 +116,31 @@ loads_variables: dict[str, LoadsField] = {
     "main-runner-captive-ps-rel-position": LoadField(
         sensors.MainRunnerCaptivePS, "relative_position"
     ),
-    #'main-runner-ps-load': #where's the loadpin?
+    "main-runner-ps-load": LoadField(sensors.MainRunnerLoadPs, "load"),
     "main-runner-captive-sb-rel-position": LoadField(
         sensors.MainRunnerCaptiveSB, "relative_position"
     ),
-    #'main-runner-sb-load': #where's the loadpin?
+    "main-runner-sb-load": LoadField(sensors.MainRunnerLoadSb, "load"),
     #'main-sheet-load':#where's the loadpin?
     "main-traveler-rel-position": LoadField(sensors.MainTraveler, "relative_position"),
     "main-vang-position": LoadField(sensors.MainVang, "position"),
-    #'main-vang-load': LoadField(sensors.MainVang, "load"),#bottom or rod?
+    "main-vang-load": LoadField(sensors.MainVang, "load_bottom"),  # bottom or rod?
     "mizzen-boom-reef-1-lock": LoadField(sensors.MizzenHalyard, "lock_1"),
     "mizzen-boom-reef-2-lock": LoadField(sensors.MizzenHalyard, "lock_2"),
     "mizzen-checkstay-deflector-ps-load": LoadField(
         sensors.MizzenCheckstayDeflector, "load_ps"
     ),
-    #'mizzen-checkstay-deflector-ps-position: LoadField(sensors.MizzenCheckstayDeflector, "position_ps"), # no differentiation between ps an sb position
+    "mizzen-checkstay-deflector-ps-position": LoadField(
+        sensors.MizzenCheckstayDeflector, "position"
+    ),  # no differentiation between ps an sb position
     "mizzen-checkstay-deflector-sb-load": LoadField(
         sensors.MizzenCheckstayDeflector, "load_sb"
     ),
-    #'mizzen-checkstay-deflector-sb-position: LoadField(sensors.MizzenCheckstayDeflector, "position_sb"), # no differentiation between ps an sb position
-    #'mizzen-checkstay-ps-load': #where's the loadpin?
-    #'mizzen-checkstay-sb-load': #where's the loadpin?
+    "mizzen-checkstay-deflector-sb-position": LoadField(
+        sensors.MizzenCheckstayDeflector, "position"
+    ),  # no differentiation between ps an sb position
+    "mizzen-checkstay-ps-load": LoadField(sensors.MizzenCheckstayDeflector, "load_ps"),
+    "mizzen-checkstay-sb-load": LoadField(sensors.MizzenCheckstayDeflector, "load_sb"),
     "mizzen-cunningham-load": LoadField(sensors.MizzenCunningham, "load"),
     "mizzen-cunningham-position": LoadField(sensors.MizzenCunningham, "position"),
     "mizzen-halyard-load": LoadField(sensors.MizzenHalyard, "load"),
@@ -145,17 +164,17 @@ loads_variables: dict[str, LoadsField] = {
     "mizzen-runner-captive-ps-rel-position": LoadField(
         sensors.MizzenRunnerCaptivePS, "relative_position"
     ),
-    #'mizzen-runner-ps-load': #where's the loadpin?
+    "mizzen-runner-ps-load": LoadField(sensors.MizzenRunnerLoadPs, "load"),
     "mizzen-runner-captive-sb-rel-position": LoadField(
         sensors.MizzenRunnerCaptiveSB, "relative_position"
     ),
-    #'mizzen-runner-sb-load': #where's the loadpin?
+    "mizzen-runner-sb-load": LoadField(sensors.MizzenRunnerLoadSb, "load"),
     "mizzen-sheet-captive-load": LoadField(sensors.MizzenSheetCaptive, "load"),
     "mizzen-sheet-captive-rel-position": LoadField(
         sensors.MizzenSheetCaptive, "relative_position"
     ),
     "mizzen-vang-position": LoadField(sensors.MizzenVang, "position"),
-    # "mizzen-vang-load": LoadField(sensors.MizzenVang, "load"), #bottom or rod?
+    "mizzen-vang-load": LoadField(sensors.MizzenVang, "load_bottom"),  # bottom or rod?
     "staysail-sheet-feeder-ps-load": LoadField(sensors.StaysailSheetFeederPs, "load"),
     "staysail-sheet-feeder-sb-load": LoadField(sensors.StaysailSheetFeederSb, "load"),
     "staysail-sheet-captive-ps-load": LoadField(sensors.StaysailSheetCaptivePS, "load"),
@@ -166,11 +185,8 @@ loads_variables: dict[str, LoadsField] = {
     "staysail-sheet-captive-sb-rel-position": LoadField(
         sensors.StaysailSheetCaptiveSB, "relative_position"
     ),
-    "staysail-stay-adjuster-load": LoadField(
-        sensors.StaysailStayAdjuster, "load"
-    ),  # staysail stay?
-    "staysail-stay-adjuster-position": LoadField(  # staysail stay?
+    "staysail-stay-adjuster-load": LoadField(sensors.StaysailStayAdjuster, "load"),
+    "staysail-stay-adjuster-position": LoadField(
         sensors.StaysailStayAdjuster, "position"
     ),
-    # forestays?
 }

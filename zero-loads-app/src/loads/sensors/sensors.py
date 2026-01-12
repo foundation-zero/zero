@@ -45,7 +45,7 @@ class CylinderTwoPositions(LoadsModel, ABC):
 
 class Deflector(LoadsModel, ABC):
     position: Millimeter = Field(validation_alias="ow_ActPos_mm")
-    load: DeciKilogram = Field(validation_alias="i_ActualLoad_10kg")
+    load_deflector: DeciKilogram = Field(validation_alias="i_ActualLoad_10kg")
     load_ps: DeciKilogram = Field(validation_alias="i_ActualLoadPs")
     load_sb: DeciKilogram = Field(validation_alias="i_ActualLoadSb")
     relief_load: DeciKilogram = Field(validation_alias="i_RelfLoad_10kg")
@@ -190,6 +190,14 @@ class MainRunnerCaptiveSB(CaptiveWinch):
     TOPIC = "sail-systems/fe501_mnrnnrsb"
 
 
+class MainRunnerLoadPs(LoadCell):
+    TOPIC = "sail-systems/tbd"  # still missing in IO list
+
+
+class MainRunnerLoadSb(LoadCell):
+    TOPIC = "sail-systems/tbd"  # still missing in IO list
+
+
 class MainSheetCaptive(CaptiveWinch):
     TOPIC = "sail-systems/fe205_mnsht"
 
@@ -251,6 +259,14 @@ class MizzenRunnerCaptivePS(CaptiveWinch):
 
 class MizzenRunnerCaptiveSB(CaptiveWinch):
     TOPIC = "sail-systems/fe502_mzznrnnrsb"
+
+
+class MizzenRunnerLoadPs(LoadCell):
+    TOPIC = "sail-systems/tbd"  # still missing in IO list
+
+
+class MizzenRunnerLoadSb(LoadCell):
+    TOPIC = "sail-systems/tbd"  # still missing in IO list
 
 
 class MizzenSheetCaptive(CaptiveWinch):
