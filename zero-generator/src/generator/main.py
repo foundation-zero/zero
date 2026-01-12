@@ -62,8 +62,6 @@ class DataGenerator:
             logger.info(
                 f"sending message on topic: {config.topic} with interval {config.interval}"
             )
-            send_task = self._mqtt_client.publish(
-                config.topic, config.determine_values()
-            )
+            send_task = self._mqtt_client.publish(config.topic, config.generator.gen())
             sleep_task = asyncio.sleep(config.interval)
             await asyncio.gather(send_task, sleep_task)

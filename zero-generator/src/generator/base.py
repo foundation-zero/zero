@@ -29,6 +29,3 @@ class GeneratorConfig:
     topic: str
     interval: int
     generator: Generator
-
-    def determine_values(self):
-        return str(self.generator.gen())
