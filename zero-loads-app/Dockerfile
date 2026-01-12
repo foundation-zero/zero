@@ -1,6 +1,6 @@
 FROM python:3.13-slim-bookworm AS builder
 
-ENV POETRY_VERSION=2.0.1 \
+ENV POETRY_VERSION=2.2.1 \
     POETRY_HOME=/opt/poetry \
     POETRY_CACHE_DIR=/opt/.cache \
     POETRY_NO_INTERACTION=1 \
