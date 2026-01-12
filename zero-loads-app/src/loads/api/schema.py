@@ -40,15 +40,15 @@ class SailSetsCombined(Base):  # type:ignore
 class AwaRanges(Base):  # type:ignore
     __tablename__ = "awa_ranges"
 
-    id = Column(Integer, primary_key=True)
-    awa = Column(NUMRANGE, nullable=False)
+    id = Column(String, primary_key=True)
+    awa_range = Column(NUMRANGE, nullable=False)
 
 
 class AwsRanges(Base):  # type:ignore
     __tablename__ = "aws_ranges"
 
     id = Column(Integer, primary_key=True)
-    aws = Column(NUMRANGE, nullable=False)
+    aws_range = Column(NUMRANGE, nullable=False)
 
 
 class LoadCases(Base):  # type:ignore

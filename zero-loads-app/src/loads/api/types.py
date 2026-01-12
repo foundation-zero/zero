@@ -6,8 +6,26 @@ import strawberry
 @strawberry.enum
 class Unit(Enum):
     tonne = "tonne"
-    promille = "promille"
+    per_mille = "per-mille"
     on_off = "on-off"
+
+
+@strawberry.enum
+class AwaRange(Enum):
+    upwind = "upwind"
+    reaching = "reaching"
+    downwind = "downwind"
+
+
+@strawberry.enum
+class AwsRange(Enum):
+    aws_0_10 = "[0,10)"
+    aws_10_15 = "[10,15)"
+    aws_15_20 = "[15,20)"
+    aws_20_25 = "[20,25)"
+    aws_25_30 = "[25,30)"
+    aws_30_40 = "[30,40)"
+    aws_40_plus = "[40,)"
 
 
 @strawberry.enum
@@ -32,8 +50,8 @@ class Sails(Enum):
 
 @strawberry.input
 class CaseInput:
-    awa: float
-    aws: float
+    awa_range: AwaRange
+    aws_range: AwsRange
     sailset: list[Sails]
 
 
