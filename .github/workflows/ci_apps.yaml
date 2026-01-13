@@ -115,6 +115,7 @@ jobs:
             ${{ env.IMAGE }}
           tags: |
             type=sha
+            type=semver,pattern={{version}}
       - name: Build and push
         uses: docker/build-push-action@v6
         with:

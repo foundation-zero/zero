@@ -26,7 +26,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
-          fetch-depth: '0'
+          fetch-depth: "0"
       - uses: actions/setup-python@v5
         with:
           python-version: 3.13
@@ -47,12 +47,6 @@ jobs:
         id: image_tag
         run: |
           VERSION=$(poetry version -s | sed -r 's/\+/_/g')
-
-          if [[ "${{ github.event_name }}" == "pull_request" ]]; then
-            SHORT_SHA=$(echo "${{ github.sha }}" | cut -c1-7)
-            VERSION="${VERSION}-dev-${SHORT_SHA}"
-          fi
-
           echo "Using image tag: $VERSION"
           echo "image_tag=$VERSION" >> $GITHUB_OUTPUT
         working-directory: zero-data
@@ -62,9 +56,9 @@ jobs:
     runs-on: ubuntu-latest
     needs: test
     permissions:
-      contents: 'read'
-      id-token: 'write'
-      packages: 'write'
+      contents: "read"
+      id-token: "write"
+      packages: "write"
     steps:
       - uses: actions/checkout@v4
       # Set up in https://github.com/foundation-zero/gcp-common

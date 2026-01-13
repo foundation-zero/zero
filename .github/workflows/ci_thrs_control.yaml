@@ -27,7 +27,7 @@ jobs:
         with:
           python-version: 3.13
 
-      - run: pipx install poetry==2.1.4
+      - run: pipx install poetry==2.2.1
         working-directory: zero-thrs-control
 
       - name: Create .env file from secret in root for services
