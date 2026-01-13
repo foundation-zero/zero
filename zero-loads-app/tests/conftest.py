@@ -1,7 +1,10 @@
+import contextlib
 import os
 import pathlib
 
 import pytest
+
+from loads.api import app
 
 
 def pytest_addoption(parser):
@@ -33,3 +36,16 @@ def settings():
     os.environ["MQTT_HOST"] = "localhost"
 
     return Settings()  # type: ignore
+
+
+@pytest.fixture()
+def override_dependency():
+    @contextlib.contextmanager
+    def _override_dependency(dependency, fake_dependency):
+        app.dependency_overrides[dependency] = fake_dependency
+        try:
+            yield
+        finally:
+            del app.dependency_overrides[dependency]
+
+    return _override_dependency
