@@ -42,7 +42,6 @@ async def test_graphql_reference(async_client: AsyncClient, override_dependency)
                     variables(variables: ["main-checkstay-deflector-ps-load"]) {
                         id
                         reference(case: {awaRange: upwind, awsRange: aws_15_20, sailset: [full_main, full_mizzen, blade]}) {
-                        reference {
                             alarmLow
                             alarmHigh
                             target
@@ -56,10 +55,9 @@ async def test_graphql_reference(async_client: AsyncClient, override_dependency)
                             minimum
                             maximum
                         }
-                        }
                         actual {
-                        id
-                        value
+                            id
+                            value
                         }
                     }
                 }
@@ -74,29 +72,54 @@ async def test_graphql_reference(async_client: AsyncClient, override_dependency)
                     {
                         "id": "main-checkstay-deflector-ps-load",
                         "reference": {
-                            "reference": {
-                                "alarmLow": 5.0,
-                                "warningLow": 6.0,
-                                "target": 10.0,
-                                "warningHigh": 14.0,
-                                "alarmHigh": 15.0,
-                            },
-                            "variable": {
-                                "id": "main-checkstay-deflector-ps-load",
-                                "name": "Main Checkstay Deflector Ps Load",
-                                "unit": "tonne",
-                                "minimum": 0.0,
-                                "maximum": None,
-                            },
+                            "alarmLow": 5.0,
+                            "warningLow": 6.0,
+                            "target": 10.0,
+                            "warningHigh": 14.0,
+                            "alarmHigh": 15.0,
                         },
                         "actual": {
                             "id": "main-checkstay-deflector-ps-load",
                             "value": 42.0,
                         },
+                        "variable": {
+                            "id": "main-checkstay-deflector-ps-load",
+                            "name": "Main Checkstay Deflector Ps Load",
+                            "unit": "tonne",
+                            "minimum": 0.0,
+                            "maximum": None,
+                        },
                     },
                 ]
             }
         }
+
+
+@pytest.mark.asyncio
+async def test_graphql_all_variables(async_client: AsyncClient, override_dependency):
+    with override_dependency(get_messaging, override_messaging):
+        response = await async_client.post(
+            "/graphql",
+            json={
+                "query": """
+                query {
+                    variables {
+                        id
+                        variable {
+                            id
+                            name
+                            unit
+                            minimum
+                            maximum
+                        }
+                    }
+                }
+                """
+            },
+        )
+
+        assert response.status_code == 200
+        assert response.json()["data"]["variables"]
 
 
 @pytest.mark.asyncio
@@ -112,8 +135,8 @@ async def test_at_sensors(async_client: AsyncClient, mqtt_client_send):
                 variables(variables: ["%s"]) {
                     id
                     actual {
-                    id
-                    value
+                        id
+                        value
                     }
                 }
             }

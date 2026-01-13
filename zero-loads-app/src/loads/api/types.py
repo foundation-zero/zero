@@ -66,6 +66,7 @@ class VariableType:
 
 @strawberry.type
 class ReferenceValue:
+    id: strawberry.ID
     alarm_low: float | None
     warning_low: float | None
     target: float | None

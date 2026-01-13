@@ -136,14 +136,10 @@ loads_variables: dict[str, LoadsField] = {
     "main-halyard-reef-2-overhoist": LoadField(sails.MainHalyard, "overhoist_2"),
     "main-halyard-reef-3-lock": LoadField(sails.MainHalyard, "lock_3"),
     "main-halyard-reef-3-overhoist": LoadField(sails.MainHalyard, "overhoist_3"),
-    "main-halyard-relative-position": LoadField(
-        sails.MainHalyard, "relative_position"
-    ),
+    "main-halyard-relative-position": LoadField(sails.MainHalyard, "relative_position"),
     "main-outhaul-load": LoadField(sails.MainOuthaul, "load"),
     "main-outhaul-position": LoadField(sails.MainOuthaul, "position"),
-    "main-outhaul-relative-position": LoadField(
-        sails.MainOuthaul, "relative_position"
-    ),
+    "main-outhaul-relative-position": LoadField(sails.MainOuthaul, "relative_position"),
     "main-preventer-load": LoadField(sails.MainPreventer, "load"),
     "main-preventer-position": LoadField(sails.MainPreventer, "position"),
     "main-preventer-relative-position": LoadField(
