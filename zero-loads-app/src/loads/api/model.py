@@ -67,6 +67,8 @@ async def get_loads_reference_values(
                     id=ref_value.variable.id,
                     name=ref_value.variable.name,
                     unit=Unit(ref_value.variable.unit),
+                    minimum=ref_value.variable.minimum_value,
+                    maximum=ref_value.variable.maximum_value,
                 ),
                 reference=ReferenceValue(
                     alarm_low=ref_value.alarm_low,  # type: ignore

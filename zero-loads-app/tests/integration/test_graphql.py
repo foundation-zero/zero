@@ -53,6 +53,8 @@ async def test_graphql_reference(async_client: AsyncClient, override_dependency)
                             id
                             name
                             unit
+                            minimum
+                            maximum
                         }
                         }
                         actual {
@@ -83,11 +85,13 @@ async def test_graphql_reference(async_client: AsyncClient, override_dependency)
                                 "id": "main-checkstay-deflector-ps-load",
                                 "name": "Main Checkstay Deflector Ps Load",
                                 "unit": "tonne",
+                                "minimum": 0.0,
+                                "maximum": None,
                             },
                         },
                         "actual": {
                             "id": "main-checkstay-deflector-ps-load",
-                            "value": 42.0
+                            "value": 42.0,
                         },
                     },
                 ]

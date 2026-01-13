@@ -60,6 +60,8 @@ class VariableType:
     id: strawberry.ID
     name: str
     unit: Unit
+    minimum: float | None
+    maximum: float | None
 
 
 @strawberry.type
