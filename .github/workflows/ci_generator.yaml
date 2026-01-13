@@ -42,7 +42,7 @@ jobs:
         run: |
           echo "${{ secrets.ENV }}" > .env
       - name: Run services
-        run: docker compose --profile zero up -d --quiet-pull --wait
+        run: docker compose --profile zero up -d --quiet-pull --wait vernemq
       - name: Unit Test
         run: poetry run pytest . -vv
         working-directory: zero-generator

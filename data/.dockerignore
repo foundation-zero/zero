@@ -1,7 +1,9 @@
 *
 !poetry.lock
 !pyproject.toml
-!src
+!postgres
+!risingwave
+!*.py
 
 # Python
 __pycache__/
