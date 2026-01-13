@@ -19,6 +19,8 @@ COPY zero-generator/ zero-generator/
 
 WORKDIR /app/zero-loads-app/
 
+ENV POETRY_DYNAMIC_VERSIONING_COMMANDS=""
+
 RUN poetry install --no-root
 
 FROM python:3.13-slim-bookworm AS runtime
