@@ -132,15 +132,15 @@ async def get_context(
         messaging=messaging,
         session=session,
         actuals_loader=DataLoader(
-            load_fn=lambda keys: get_actuals(keys, context),
+            load_fn=lambda keys: get_actuals(keys, context),  # type: ignore
             cache=False,
         ),
         references_loader=DataLoader(
-            load_fn=lambda keys: get_reference_values(keys, context),
+            load_fn=lambda keys: get_reference_values(keys, context),  # type: ignore
             cache=False,
         ),
         variables_loader=DataLoader(
-            load_fn=lambda keys: get_variables(keys, context),
+            load_fn=lambda keys: get_variables(keys, context),  # type: ignore
             cache=False,
         ),
     )
