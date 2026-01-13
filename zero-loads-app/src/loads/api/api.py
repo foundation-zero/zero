@@ -85,8 +85,13 @@ class LoadsContext(BaseContext):
 
 async def get_actuals(
     variables: Sequence[str], context: LoadsContext
-) -> list[ActualType]:
-    return context.messaging.get_values_for(list(variables))
+) -> list[ActualType | None]:
+    values = context.messaging.get_values_for(list(variables))
+    result: list[ActualType | None] = [None] * len(variables)
+    for value in values:
+        index = variables.index(value.id)
+        result[index] = value
+    return result
 
 
 async def get_reference_values(
