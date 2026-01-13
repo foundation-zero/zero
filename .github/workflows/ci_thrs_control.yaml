@@ -90,39 +90,10 @@ jobs:
           echo "image_tag=$VERSION" >> $GITHUB_OUTPUT
         working-directory: zero-thrs-control
 
-  test-quick:
-    timeout-minutes: 15
-    runs-on: ubuntu-latest
-    outputs:
-      image_tag: ${{ steps.image_tag.outputs.image_tag }}
-    steps:
-      - uses: actions/checkout@v4
-        with:
-          fetch-depth: "0"
-
-      - uses: actions/setup-python@v5
-        with:
-          python-version: 3.13
-
-      - run: pipx install poetry==2.2.1
-        working-directory: zero-thrs-control
-
-      - run: poetry install
-        working-directory: zero-thrs-control
-
-      - name: Determine image tag
-        id: image_tag
-        run: |
-          VERSION=$(poetry version -s | sed -r 's/\+/_/g')
-
-          echo "Using image tag: $VERSION"
-          echo "image_tag=$VERSION" >> $GITHUB_OUTPUT
-        working-directory: zero-thrs-control
-
   docker-push-control:
     timeout-minutes: 15
     runs-on: ubuntu-latest
-    needs: test-quick
+    needs: test
     strategy:
       matrix:
         target: [control, simulation]
@@ -156,4 +127,4 @@ jobs:
           push: true
           platforms: linux/amd64,linux/arm64
           target: ${{matrix.target}}
-          tags: ${{ env.IMAGE_PREFIX }}${{matrix.target}}:${{ needs.test-quick.outputs.image_tag }}
+          tags: ${{ env.IMAGE_PREFIX }}${{matrix.target}}:${{ needs.test.outputs.image_tag }}
