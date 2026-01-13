@@ -59,9 +59,7 @@ sail_systems = MessagingModule(
 
 at_systems = MessagingModule(
     validators=[
-        at.SystemLatitude,
-        at.SystemLongitude,
-        at.SystemBoatSpeedKts,
-        at.UTCDate,
+        at.ApparentWindSpeed,
+        at.ApparentWindAngle,
     ],
 )
