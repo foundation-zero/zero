@@ -6,7 +6,6 @@ ENV POETRY_VERSION=2.2.1 \
     POETRY_NO_INTERACTION=1 \
     POETRY_VIRTUALENVS_IN_PROJECT=1 \
     POETRY_VIRTUALENVS_CREATE=1 \
-    # Nice to have optimizations
     PYTHONDONTWRITEBYTECODE=1 \
     PYTHONUNBUFFERED=1 \
     PIP_DISABLE_PIP_VERSION_CHECK=on
@@ -19,6 +18,7 @@ COPY zero-loads-app/pyproject.toml zero-loads-app/poetry.lock ./zero-loads-app/
 COPY zero-generator/ zero-generator/
 
 WORKDIR /app/zero-loads-app/
+
 RUN poetry install --no-root
 
 FROM python:3.13-slim-bookworm AS runtime
