@@ -299,10 +299,9 @@ class FahrenheitControl(
             self._current_values.fahrenheit_chiller.cold_minimum = Stamped(
                 value=self._parameters.fahrenheit_cold_minimum, timestamp=self._time()
             )
-        if (
-            self._current_values.fahrenheit_chiller.cold_hysteresis.value
-            != (self._parameters.fahrenheit_cold_trigger
-            - self._parameters.fahrenheit_cold_minimum)
+        if self._current_values.fahrenheit_chiller.cold_hysteresis.value != (
+            self._parameters.fahrenheit_cold_trigger
+            - self._parameters.fahrenheit_cold_minimum
         ):
             self._current_values.fahrenheit_chiller.cold_hysteresis = Stamped(
                 value=self._parameters.fahrenheit_cold_trigger
@@ -316,10 +315,9 @@ class FahrenheitControl(
             self._current_values.fahrenheit_chiller.hot_minimum = Stamped(
                 value=self._parameters.fahrenheit_hot_minimum, timestamp=self._time()
             )
-        if (
-            self._current_values.fahrenheit_chiller.hot_hysteresis.value
-            != (self._parameters.fahrenheit_hot_trigger
-            - self._parameters.fahrenheit_hot_minimum)
+        if self._current_values.fahrenheit_chiller.hot_hysteresis.value != (
+            self._parameters.fahrenheit_hot_trigger
+            - self._parameters.fahrenheit_hot_minimum
         ):
             self._current_values.fahrenheit_chiller.hot_hysteresis = Stamped(
                 value=self._parameters.fahrenheit_hot_trigger
