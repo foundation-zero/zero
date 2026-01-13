@@ -73,7 +73,7 @@ class SensorStubCmd(GeneratorSettings):
 
 class ATStubCmd(GeneratorSettings):
     async def cli_cmd(self) -> None:
-        logger.info("Running AT stub...")
+        logger.info("Running A+T stub...")
         async with DataGenerator.init_from_settings(self) as data_gen:
             config = at_systems.gen_config()
             await data_gen.generate(config=config)
