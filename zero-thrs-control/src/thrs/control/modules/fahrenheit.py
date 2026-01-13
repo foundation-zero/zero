@@ -173,7 +173,7 @@ class FahrenheitControl(
         self, sensor_values: FahrenheitSensorValues
     ) -> ControlResult[FahrenheitControlValues]:
         self._update_fahrenheit_settings(sensor_values)
-        # TODO: add triggers
+        # TODO: add triggers to transition between states
         self._control_temperature_controllers(sensor_values)
 
         return ControlResult(self._time(), self._current_values)
@@ -222,7 +222,7 @@ class FahrenheitControl(
 
     def _set_free_cooling_setpoint(self):
         self._current_values.fahrenheit_chiller.cooling_setpoint = Stamped(
-            value=self._parameters.fahrenheit_cooling_setpoint,  # TODO: should we set seatwater temp = cooling setpoint?
+            value=self._parameters.fahrenheit_cooling_setpoint,  # TODO: should we set seawater temp = cooling setpoint?
             timestamp=self._time(),
         )
 
@@ -301,8 +301,8 @@ class FahrenheitControl(
             )
         if (
             self._current_values.fahrenheit_chiller.cold_hysteresis.value
-            != self._parameters.fahrenheit_cold_trigger
-            - self._parameters.fahrenheit_cold_minimum
+            != (self._parameters.fahrenheit_cold_trigger
+            - self._parameters.fahrenheit_cold_minimum)
         ):
             self._current_values.fahrenheit_chiller.cold_hysteresis = Stamped(
                 value=self._parameters.fahrenheit_cold_trigger
@@ -318,8 +318,8 @@ class FahrenheitControl(
             )
         if (
             self._current_values.fahrenheit_chiller.hot_hysteresis.value
-            != self._parameters.fahrenheit_hot_trigger
-            - self._parameters.fahrenheit_hot_minimum
+            != (self._parameters.fahrenheit_hot_trigger
+            - self._parameters.fahrenheit_hot_minimum)
         ):
             self._current_values.fahrenheit_chiller.hot_hysteresis = Stamped(
                 value=self._parameters.fahrenheit_hot_trigger
