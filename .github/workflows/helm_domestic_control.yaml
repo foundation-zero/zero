@@ -6,26 +6,27 @@ on:
     paths:
       - .github/workflows/helm_domestic_control.yaml
       - zero-domestic-control/charts/zero-domestic-control/**
+  release:
+    types: [released]
 
 jobs:
   helm-push:
     runs-on: ubuntu-latest
     permissions:
-      contents: 'read'
-      id-token: 'write'
+      contents: "read"
+      id-token: "write"
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
-      - name: Get Chart name
-        uses: mikefarah/yq@master
-        id: chart_name
-        with:
-          cmd: yq '.name' '.zero-domestic-control/charts/zero-domestic-control/Chart.yaml'
-      - name: Get Chart name
-        uses: mikefarah/yq@master
-        id: chart_version
-        with:
-          cmd: yq '.version' '.zero-domestic-control/charts/zero-domestic-control/Chart.yaml'
+      - name: Update Chart Versions
+        id: chart_info
+        run: |
+          VERSION=${ github.ref_name#v}
+          yq e -i '.version = "$VERSION"' zero-domestic-control/charts/data_gen/Chart.yaml
+          yq e -i '.appVersion = "$VERSION"' zero-domestic-control/charts/data_gen/Chart.yaml
+
+          echo "chart_name=$(yq '.name' 'zero-domestic-control/charts/data_gen/Chart.yaml')" >> $GITHUB_OUTPUT
+          echo "chart_version=$VERSION" >> $GITHUB_OUTPUT
       - id: auth
         name: Authenticate with Google Cloud
         uses: google-github-actions/auth@v2
@@ -46,5 +47,5 @@ jobs:
       - name: Publish Helm chart
         run: |
           helm package ./charts/zero-domestic-control
-          helm push ${{ steps.chart_name.outputs.result }}-${{ steps.chart_version.outputs.result }}.tgz oci://europe-west1-docker.pkg.dev/common-449414/common
+          helm push ${{ steps.chart_info.outputs.chart_name }}-${{ steps.chart_info.outputs.chart_version }}.tgz oci://europe-west1-docker.pkg.dev/common-449414/common
         working-directory: zero-domestic-control
