@@ -14,7 +14,7 @@ def override_messaging():
 
     mock.get_values_for = Mock(
         return_value=[
-            ActualType(id="main-sheet-load", value=42.0),
+            ActualType(id="main-checkstay-deflector-ps-load", value=42.0),
         ]
     )
 
@@ -39,7 +39,7 @@ async def test_graphql_reference(async_client: AsyncClient):
         json={
             "query": """
             query {
-                variables(variables: ["main-sheet-load"]) {
+                variables(variables: ["main-checkstay-deflector-ps-load"]) {
                     id
                     reference(case: {awaRange: upwind, awsRange: aws_15_20, sailset: [full_main, full_mizzen, blade]}) {
                     reference {
@@ -70,7 +70,7 @@ async def test_graphql_reference(async_client: AsyncClient):
         "data": {
             "variables": [
                 {
-                    "id": "main-sheet-load",
+                    "id": "main-checkstay-deflector-ps-load",
                     "reference": {
                         "reference": {
                             "alarmLow": 5.0,
@@ -80,12 +80,12 @@ async def test_graphql_reference(async_client: AsyncClient):
                             "alarmHigh": 15.0,
                         },
                         "variable": {
-                            "id": "main-sheet-load",
-                            "name": "Main Sheet Load",
+                            "id": "main-checkstay-deflector-ps-load",
+                            "name": "Main Checkstay Deflector Ps Load",
                             "unit": "tonne",
                         },
                     },
-                    "actual": {"id": "main-sheet-load", "value": 42.0},
+                    "actual": {"id": "main-checkstay-deflector-ps-load", "value": 42.0},
                 }
             ]
         }
