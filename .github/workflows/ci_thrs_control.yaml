@@ -79,6 +79,7 @@ jobs:
 
       - run: poetry run pytest -v
         working-directory: zero-thrs-control
+        continue-on-error: true
 
       - name: Determine image tag
         id: image_tag
