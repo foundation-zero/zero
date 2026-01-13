@@ -1,16 +1,20 @@
-from thrs.input_output.base import Stamped, ThrsValues
+from typing import Annotated
+from thrs.input_output.base import Stamped, ThrsValues, field_meta
 from thrs.input_output.definitions.units import (
     Bar,
     Celsius,
     Charged,
     Hz,
+    Joule,
     Kelvin,
     LMin,
     Liter,
-    OnOff,
+    NoError,
+    Operating,
     OptionalCelsius,
     PcsMode,
     Ratio,
+    Error,
     seconds,
     Watt,
 )
@@ -71,7 +75,41 @@ class Pcm(ThrsValues):
 
 
 class Fahrenheit(ThrsValues):
-    operating: Stamped[OnOff]
+    operating: Stamped[Operating]
+    no_error: Stamped[NoError]
+    free_cooling: Annotated[Stamped[bool], field_meta(included_in_fmu=False)]
+    cooler_ventilator_speed: Annotated[
+        Stamped[Ratio], field_meta(included_in_fmu=False)
+    ]
+    fault_cooler: Annotated[Stamped[Error], field_meta(included_in_fmu=False)]
+    temperature_hot_in: Stamped[Celsius]
+    temperature_hot_out: Stamped[Celsius]
+    temperature_waste_in: Stamped[Celsius]
+    temperature_waste_out: Stamped[Celsius]
+    temperature_cold_in: Stamped[Celsius]
+    temperature_cold_out: Stamped[Celsius]
+    temperature_seawater: Annotated[Stamped[Celsius], field_meta(included_in_fmu=False)]
+    temperature_hot: Stamped[Celsius]
+    temperature_cold: Stamped[Celsius]
+    temperature_waste: Stamped[Celsius]
+    operating_hours_adsorption: Annotated[
+        Stamped[seconds], field_meta(included_in_fmu=False)
+    ]
+    operating_hours_free_cooling: Annotated[
+        Stamped[seconds], field_meta(included_in_fmu=False)
+    ]
+    cooling_energy: Annotated[Stamped[Joule], field_meta(included_in_fmu=False)]
+    pump_speed_hot: Stamped[Ratio]
+    pump_speed_cold: Stamped[Ratio]
+    pump_speed_waste: Stamped[Ratio]
+    no_cold_flow: Annotated[Stamped[Error], field_meta(included_in_fmu=False)]
+    freeze_protection: Annotated[Stamped[Error], field_meta(included_in_fmu=False)]
+    low_cooling_capacity: Annotated[Stamped[Error], field_meta(included_in_fmu=False)]
+    collective_fault_temperature_sensors: Annotated[
+        Stamped[Error], field_meta(included_in_fmu=False)
+    ]
+    collective_fault_pumps: Annotated[Stamped[Error], field_meta(included_in_fmu=False)]
+    power_last_half_cycle: Annotated[Stamped[Watt], field_meta(included_in_fmu=False)]
 
 
 class PowerSensor(ThrsValues):
