@@ -14,10 +14,13 @@ FROM
 		electrical_power_data.group_name AS group_name,
 		electrical_power_data.sub_group_name AS sub_group_name,
 		AVG(electrical_power_data.active_power) AS avg_power
-	FROM {{ ref('consumer_producer_power_data') }} AS electrical_power_data
-	WHERE
-		electrical_power_data.group_name IS NOT NULL
-		AND electrical_power_data.time > NOW() - INTERVAL '5 minutes'
+	FROM HOP (
+		{{ ref('consumer_producer_power_data') }} ,
+		time,
+		INTERVAL '5 seconds',
+		INTERVAL '5 minutes'
+	) AS electrical_power_data
+	WHERE electrical_power_data.group_name IS NOT NULL
 	GROUP BY electrical_system, group_name, sub_group_name, topic
 	
 	UNION ALL
@@ -29,10 +32,13 @@ FROM
 		electrical_charging_data.group_name AS group_name,
 		electrical_charging_data.sub_group_name AS sub_group_name,
 		AVG(electrical_charging_data.voltage_a) * AVG(electrical_charging_data.current_a) AS avg_power
-	FROM {{ ref('battery_dc_converter_power_data') }} AS electrical_charging_data
-	WHERE
-		electrical_charging_data.group_name IS NOT NULL
-		AND electrical_charging_data.time > NOW() - INTERVAL '5 minutes'
+	FROM HOP (
+		{{ ref('battery_dc_converter_power_data') }} ,
+		time,
+		INTERVAL '5 seconds',
+		INTERVAL '5 minutes'
+	) AS electrical_charging_data
+	WHERE electrical_charging_data.group_name IS NOT NULL
 	GROUP BY electrical_system, group_name, sub_group_name, topic
 )
 GROUP BY electrical_system, group_name, sub_group_name
