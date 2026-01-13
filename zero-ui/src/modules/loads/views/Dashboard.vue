@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { onMounted, onUnmounted } from "vue";
 import {
   VariableGrid,
   VariableGridGroup,
@@ -6,14 +7,20 @@ import {
   VariableGridItem,
 } from "../components/variable-grid";
 
-import { OVERVIEW } from "../lib/consts.dashboards";
+import { useVariablesStore } from "../stores/variables";
+
+const { startPolling, stopPolling } = useVariablesStore();
+const { selectedDashboard } = useVariablesStore();
+
+onMounted(startPolling);
+onUnmounted(stopPolling);
 </script>
 
 <template>
   <article class="pb-4">
     <VariableGrid type="graphical">
       <VariableGridGroup
-        v-for="group in OVERVIEW.groups"
+        v-for="group in selectedDashboard.groups"
         :key="group.name"
         :items="group.variables"
       >

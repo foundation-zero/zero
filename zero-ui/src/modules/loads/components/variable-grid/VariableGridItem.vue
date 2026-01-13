@@ -30,11 +30,11 @@ const variable = computed(() => getVariableById(props.id).value);
 const isNumerical = computed(
   () =>
     type.value === "numerical" ||
-    variable.value?.reference?.reference?.target === undefined ||
-    variable.value?.reference?.variable?.unit === VariableUnit.Tonne,
+    variable.value?.reference?.target === undefined ||
+    variable.value?.variable?.unit === VariableUnit.Tonne,
 );
 
-const isMastLock = computed(() => variable.value?.reference?.variable?.unit === VariableUnit.OnOff);
+const isMastLock = computed(() => variable.value?.variable?.unit === VariableUnit.Bool);
 const overhoist = computed(() => {
   if (isMastLock.value) {
     return getVariableById<boolean>(props.id.replace("lock", "overhoist")).value;
@@ -52,13 +52,13 @@ const overhoist = computed(() => {
       :locked="!!variable.actual?.value"
       :overhoist="!!overhoist?.actual?.value"
     >
-      {{ variable.reference?.variable?.name }}
+      {{ variable?.variable?.name }}
     </MastLock>
     <VariableCard
       v-else-if="isNumerical"
-      :thresholds="variable.reference?.reference"
+      :thresholds="variable?.reference"
       :value="<number>variable.actual?.value"
-      :type="variable.reference?.variable?.unit"
+      :type="variable?.variable?.unit"
       class="col-span-1 w-full max-w-full"
     >
       <VariableCardReferenceTarget>
@@ -66,19 +66,19 @@ const overhoist = computed(() => {
       </VariableCardReferenceTarget>
 
       <VariableCardValue />
-      <VariableCardTitle>{{ variable.reference?.variable?.name }}</VariableCardTitle>
+      <VariableCardTitle>{{ variable?.variable?.name }}</VariableCardTitle>
       <VariableCardReferenceThresholds />
     </VariableCard>
     <PositionCard
       v-else
       class="col-span-2 w-full"
-      :thresholds="variable.reference?.reference"
+      :thresholds="variable?.reference"
       :value="<number>variable.actual?.value"
     >
       <PositionCardReferenceTarget />
       <PositionCardSlider type="asymmetric" />
       <PositionCardValue />
-      <PositionCardTitle>{{ variable.reference?.variable?.name }}</PositionCardTitle>
+      <PositionCardTitle>{{ variable?.variable?.name }}</PositionCardTitle>
     </PositionCard>
   </template>
 </template>

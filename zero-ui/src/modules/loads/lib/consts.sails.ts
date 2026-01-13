@@ -1,31 +1,68 @@
-import { Sail, SailPosition } from "../types";
+import { PositionId, Sail, SailPositionGroup } from "../types";
 
-const position = (name: string, ...sails: Sail[][]): SailPosition => ({
+const position = (name: string, ...positions: PositionId[]): SailPositionGroup => ({
   name,
-  groups: sails.map((sailGroup) => ({ sails: sailGroup })),
+  positions: positions.map((positionId) => ({
+    sails: POSITIONS_WITH_SAILS[positionId],
+    positionId,
+  })),
 });
 
-export const sail = (name: string, id: string): Sail => ({
+export const sail = (name: string, id: SailId): Sail<SailId> => ({
   name,
   id,
 });
 
-export const SAIL_POSITIONS: SailPosition[] = [
-  position("Main", [
-    sail("Full", "main-full"),
-    sail("R1", "main-r1"),
-    sail("R2", "main-r2"),
-    sail("R3", "main-r3"),
-    sail("Tri", "main-tri"),
-  ]),
-  position(
-    "Foresails",
-    [sail("Blade", "blade"), sail("Code-0", "code-0"), sail("A3", "A3"), sail("A2", "A2")],
-    [sail("Staysail", "staysail"), sail("Stormjib", "stormjib")],
-  ),
-  position(
-    "Mizzen",
-    [sail("Full", "mizzen-full"), sail("R1", "mizzen-r1")],
-    [sail("Ms Staysail", "mizzen-staysail"), sail("Ms Jib", "mizzen-jib")],
-  ),
+export const enum SailId {
+  None = "none",
+  FullMain = "full-main",
+  MainReef1 = "main-reef1",
+  MainReef2 = "main-reef2",
+  MainReef3 = "main-reef3",
+  Trisail = "trisail",
+  Blade = "blade",
+  CodeZero = "code-zero",
+  Genoa = "genoa",
+  Gennaker = "gennaker",
+  Staysail = "staysail",
+  StormJib = "storm-jib",
+  FullMizzen = "full-mizzen",
+  MizzenReef1 = "mizzen-reef1",
+  MizzenReef2 = "mizzen-reef2",
+  MizzenGenoa = "mizzen-genoa",
+  MizzenJib = "mizzen-jib",
+}
+
+const POSITIONS_WITH_SAILS: Record<PositionId, Sail<SailId>[]> = {
+  [PositionId.Main]: [
+    sail("Full", SailId.FullMain),
+    sail("R1", SailId.MainReef1),
+    sail("R2", SailId.MainReef2),
+    sail("R3", SailId.MainReef3),
+    sail("Tri", SailId.Trisail),
+  ],
+  [PositionId.ForeInner]: [
+    sail("Blade", SailId.Blade),
+    sail("Code-0", SailId.CodeZero),
+    sail("Furling Genoa", SailId.Genoa),
+    sail("Gennaker", SailId.Gennaker),
+  ],
+  [PositionId.ForeOuter]: [sail("Staysail", SailId.Staysail), sail("Storm Jib", SailId.StormJib)],
+  [PositionId.Mizzen]: [
+    sail("Full", SailId.FullMizzen),
+    sail("R1", SailId.MizzenReef1),
+    sail("R2", SailId.MizzenReef2),
+  ],
+  [PositionId.MizzenFore]: [
+    sail("Mizzen Genoa", SailId.MizzenGenoa),
+    sail("Mizzen Jib", SailId.MizzenJib),
+  ],
+};
+
+export const SAILS = Object.values(POSITIONS_WITH_SAILS).flat();
+
+export const POSITION_GROUPS: SailPositionGroup[] = [
+  position("Main", PositionId.Main),
+  position("Foresails", PositionId.ForeInner, PositionId.ForeOuter),
+  position("Mizzen", PositionId.Mizzen, PositionId.MizzenFore),
 ];
