@@ -14,13 +14,14 @@ on:
       - .github/workflows/ci_thrs_control.yaml
 
 env:
-  IMAGE_REGISTRY: "europe-west1-docker.pkg.dev/common-449414/common/"
+  IMAGE_PREFIX: "europe-west1-docker.pkg.dev/common-449414/common/zero-thrs-"
 
 jobs:
   test:
     timeout-minutes: 15
     runs-on: ubuntu-latest
-
+    outputs:
+      image_tag: ${{ steps.image_tag.outputs.image_tag }}
     steps:
       - uses: actions/checkout@v4
         with:
@@ -79,7 +80,35 @@ jobs:
 
       - run: poetry run pytest -v
         working-directory: zero-thrs-control
-        continue-on-error: true
+
+      - name: Determine image tag
+        id: image_tag
+        run: |
+          VERSION=$(poetry version -s | sed -r 's/\+/_/g')
+
+          echo "Using image tag: $VERSION"
+          echo "image_tag=$VERSION" >> $GITHUB_OUTPUT
+        working-directory: zero-thrs-control
+
+  test-quick:
+    timeout-minutes: 15
+    runs-on: ubuntu-latest
+    outputs:
+      image_tag: ${{ steps.image_tag.outputs.image_tag }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: "0"
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: 3.13
+
+      - run: pipx install poetry==2.2.1
+        working-directory: zero-thrs-control
+
+      - run: poetry install
+        working-directory: zero-thrs-control
 
       - name: Determine image tag
         id: image_tag
@@ -91,13 +120,12 @@ jobs:
         working-directory: zero-thrs-control
 
   docker-push-control:
-    timeout-minutes: 10
+    timeout-minutes: 15
     runs-on: ubuntu-latest
-    needs: test
+    needs: test-quick
     strategy:
       matrix:
         target: [control, simulation]
-        image: [zero-thrs-control, zero-thrs-simulation]
     permissions:
       contents: "read"
       id-token: "write"
@@ -128,4 +156,4 @@ jobs:
           push: true
           platforms: linux/amd64,linux/arm64
           target: ${{matrix.target}}
-          tags: ${{ env.IMAGE_REGISTRY }}${{matrix.image}}:${{ needs.test.outputs.image_tag }}
+          tags: ${{ env.IMAGE_PREFIX }}${{matrix.target}}:${{ needs.test-quick.outputs.image_tag }}
