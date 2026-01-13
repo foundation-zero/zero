@@ -63,17 +63,17 @@ class ControlCli(Settings):
             await run_task
 
 
-class SensorStubCmd(GeneratorSettings):
+class SailSensorsStubCmd(GeneratorSettings):
     async def cli_cmd(self) -> None:
-        logger.info("Running sensor stub...")
+        logger.info("Running sail sensors stub...")
         async with DataGenerator.init_from_settings(self) as data_gen:
             config = sail_systems.gen_config()
             await data_gen.generate(config=config)
 
 
-class ATStubCmd(GeneratorSettings):
+class ATSensorsStubCmd(GeneratorSettings):
     async def cli_cmd(self) -> None:
-        logger.info("Running A+T stub...")
+        logger.info("Running A+T sensors stub...")
         async with DataGenerator.init_from_settings(self) as data_gen:
             config = at_systems.gen_config()
             await data_gen.generate(config=config)
@@ -93,8 +93,8 @@ class ZeroLoads(BaseSettings, cli_kebab_case=True):
     pcan_stub: CliSubCommand[PCanStubCmd]
     conditions_stub: CliSubCommand[ConditionsStubCmd]
     control: CliSubCommand[ControlCli]
-    sensor_stub: CliSubCommand[SensorStubCmd]
-    at_stub: CliSubCommand[ATStubCmd]
+    sails_stub: CliSubCommand[SailSensorsStubCmd]
+    at_stub: CliSubCommand[ATSensorsStubCmd]
 
     def cli_cmd(self) -> None:
         CliApp.run_subcommand(self)

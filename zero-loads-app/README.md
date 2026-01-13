@@ -70,9 +70,14 @@ Start the API service to expose a GraphQL API for retrieving reference values:
 poetry run loads api
 ```
 
-Run the sensor stub to simulate sensor data over MQTT:
+Run the sails sensor stub to simulate sensor data over MQTT:
 ```bash
-poetry run loads sensor-stub
+poetry run loads sails-stub
+```
+
+Run the A+T sensor stub to simulate sensor data over MQTT:
+```bash
+poetry run loads at-stub
 ```
 
 #### Generate JWT Token
