@@ -7,7 +7,7 @@ from httpx import ASGITransport, AsyncClient
 from loads.api import app
 from loads.api.api import get_messaging
 from loads.api.types import ActualType
-from loads.sensors.at import SystemLatitude
+from loads.sensors.at import ApparentWindSpeed
 
 
 def override_messaging():
@@ -97,9 +97,9 @@ async def test_graphql_reference(async_client: AsyncClient, override_dependency)
 
 @pytest.mark.asyncio
 async def test_at_sensors(async_client: AsyncClient, mqtt_client_send):
-    variable_name = "test-at-latitude"
+    variable_name = "aws"
     raw_value = "16.7"
-    await mqtt_client_send.publish(SystemLatitude.TOPIC, raw_value)
+    await mqtt_client_send.publish(ApparentWindSpeed.TOPIC, raw_value)
     response = await async_client.post(
         "/graphql",
         json={

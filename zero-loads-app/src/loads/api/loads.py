@@ -261,7 +261,6 @@ loads_variables: dict[str, LoadsField] = {
     ),
     "storm-jib-lock": LoadField(sails.HeadsailLocks, "lock_stormjib"),
     "storm-jib-overhoist": LoadField(sails.HeadsailLocks, "overhoist_stormjib"),
-    "test-at-latitude": LoadField(at.SystemLatitude, "value"),
-    "test-at-longitude": LoadField(at.SystemLongitude, "value"),
-    "test-at-utcdate": LoadField(at.UTCDate, "value"),
+    "aws": LoadField(at.ApparentWindSpeed, "value"),
+    "awa": LoadField(at.ApparentWindAngle, "value"),
 }
