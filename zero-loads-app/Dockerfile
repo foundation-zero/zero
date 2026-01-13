@@ -15,7 +15,11 @@ RUN pip install "poetry==${POETRY_VERSION}"
 WORKDIR /app
 
 COPY zero-loads-app/pyproject.toml zero-loads-app/poetry.lock ./zero-loads-app/
-COPY zero-generator/ zero-generator/
+COPY zero-generator/pyproject.toml \
+    zero-generator/poetry.lock \
+    zero-generator/README.md \
+    zero-generator/src \
+    zero-generator/
 
 WORKDIR /app/zero-loads-app/
 
@@ -36,7 +40,6 @@ COPY --from=builder ${VIRTUAL_ENV} ${VIRTUAL_ENV}
 
 WORKDIR /app
 
-COPY zero-generator/ zero-generator/
 COPY zero-loads-app/src/ ./zero-loads-app
 
 WORKDIR /app/zero-loads-app
