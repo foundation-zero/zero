@@ -67,6 +67,8 @@ def zero_for_unit(unit: Any) -> Any:
         unit = get_args(unit)[0]
     if unit is float:
         return 0.0
+    elif unit == float | None:
+        return None
     elif get_origin(unit) is Literal:
         return get_args(unit)[0]
     elif issubclass(unit, Enum):
@@ -116,7 +118,11 @@ Ratio: TypeAlias = Annotated[
 Bar: TypeAlias = Annotated[float, Field(ge=-1e-2), UnitMeta(modelica_name="Bar")]
 Watt: TypeAlias = Annotated[float, UnitMeta(modelica_name="Watt")]
 seconds: TypeAlias = Annotated[float, UnitMeta(modelica_name="s")]
+Joule: TypeAlias = Annotated[float, UnitMeta(modelica_name="Joule")]
 OnOff: TypeAlias = Annotated[bool, UnitMeta(modelica_name="bool")]
+NoError: TypeAlias = Annotated[bool, UnitMeta(modelica_name="bool")]
+Error: TypeAlias = Annotated[bool, UnitMeta(modelica_name="bool")]
+Operating: TypeAlias = Annotated[bool, UnitMeta(modelica_name="bool")]
 Charged: TypeAlias = Annotated[bool, UnitMeta(modelica_name="bool")]
 Tuning: TypeAlias = tuple[float, float, float]
 Overpressure: TypeAlias = Annotated[float, UnitMeta(modelica_name="Bar")]
@@ -128,3 +134,23 @@ class PcsMode(Enum):
     MANEUVERING = "maneuvering"
     PROPULSION = "propulsion"
     REGENERATION = "regeneration"
+
+
+class TankControlMode(Enum):
+    NONE = 0
+    BOTH = 1
+    COLD = 2
+    HOT = 3
+
+
+class FahrenheitMode(Enum):
+    OFF = 0
+    ON = 1
+    VALVE_RUN = 2
+    ACTIVATION = 3
+
+
+class FreeCoolingMode(Enum):
+    OFF = 0
+    ON = 1
+    AUTO = 2

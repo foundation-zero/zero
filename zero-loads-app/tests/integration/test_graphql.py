@@ -7,6 +7,7 @@ from httpx import ASGITransport, AsyncClient
 from loads.api import app
 from loads.api.api import get_messaging
 from loads.api.types import ActualType
+from loads.sensors.at import SystemLatitude
 
 
 def override_messaging():
@@ -31,30 +32,81 @@ async def async_client():
 
 
 @pytest.mark.asyncio
-async def test_graphql_reference(async_client: AsyncClient):
-    app.dependency_overrides[get_messaging] = override_messaging
+async def test_graphql_reference(async_client: AsyncClient, override_dependency):
+    with override_dependency(get_messaging, override_messaging):
+        response = await async_client.post(
+            "/graphql",
+            json={
+                "query": """
+                query {
+                    variables(variables: ["main-checkstay-deflector-ps-load"]) {
+                        id
+                        reference(case: {awaRange: upwind, awsRange: aws_15_20, sailset: [full_main, full_mizzen, blade]}) {
+                        reference {
+                            alarmLow
+                            alarmHigh
+                            target
+                            warningHigh
+                            warningLow
+                        }
+                        variable {
+                            id
+                            name
+                            unit
+                        }
+                        }
+                        actual {
+                        id
+                        value
+                        }
+                    }
+                }
+                """
+            },
+        )
 
+        assert response.status_code == 200
+        assert response.json() == {
+            "data": {
+                "variables": [
+                    {
+                        "id": "main-checkstay-deflector-ps-load",
+                        "reference": {
+                            "reference": {
+                                "alarmLow": 5.0,
+                                "warningLow": 6.0,
+                                "target": 10.0,
+                                "warningHigh": 14.0,
+                                "alarmHigh": 15.0,
+                            },
+                            "variable": {
+                                "id": "main-checkstay-deflector-ps-load",
+                                "name": "Main Checkstay Deflector Ps Load",
+                                "unit": "tonne",
+                            },
+                        },
+                        "actual": {
+                            "id": "main-checkstay-deflector-ps-load",
+                            "value": 42.0
+                        },
+                    },
+                ]
+            }
+        }
+
+
+@pytest.mark.asyncio
+async def test_at_sensors(async_client: AsyncClient, mqtt_client_send):
+    variable_name = "test-at-latitude"
+    raw_value = "16.7"
+    await mqtt_client_send.publish(SystemLatitude.TOPIC, raw_value)
     response = await async_client.post(
         "/graphql",
         json={
             "query": """
             query {
-                variables(variables: ["main-checkstay-deflector-ps-load"]) {
+                variables(variables: ["%s"]) {
                     id
-                    reference(case: {awaRange: upwind, awsRange: aws_15_20, sailset: [full_main, full_mizzen, blade]}) {
-                    reference {
-                        alarmLow
-                        alarmHigh
-                        target
-                        warningHigh
-                        warningLow
-                    }
-                    variable {
-                        id
-                        name
-                        unit
-                    }
-                    }
                     actual {
                     id
                     value
@@ -62,6 +114,7 @@ async def test_graphql_reference(async_client: AsyncClient):
                 }
             }
             """
+            % variable_name
         },
     )
 
@@ -70,22 +123,8 @@ async def test_graphql_reference(async_client: AsyncClient):
         "data": {
             "variables": [
                 {
-                    "id": "main-checkstay-deflector-ps-load",
-                    "reference": {
-                        "reference": {
-                            "alarmLow": 5.0,
-                            "warningLow": 6.0,
-                            "target": 10.0,
-                            "warningHigh": 14.0,
-                            "alarmHigh": 15.0,
-                        },
-                        "variable": {
-                            "id": "main-checkstay-deflector-ps-load",
-                            "name": "Main Checkstay Deflector Ps Load",
-                            "unit": "tonne",
-                        },
-                    },
-                    "actual": {"id": "main-checkstay-deflector-ps-load", "value": 42.0},
+                    "id": variable_name,
+                    "actual": {"id": variable_name, "value": float(raw_value)},
                 }
             ]
         }

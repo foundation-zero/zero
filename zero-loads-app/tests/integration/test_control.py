@@ -2,20 +2,8 @@ import asyncio
 import json
 
 import pytest
-from aiomqtt import Client as MqttClient
-from pytest import fixture
 
 from loads.control import Control
-
-
-async def _mqtt_client(settings):
-    async with MqttClient(settings.mqtt_host, settings.mqtt_port) as client:
-        yield client
-
-
-mqtt_client_receive = fixture(_mqtt_client)
-mqtt_client_send = fixture(_mqtt_client)
-mqtt_client_external = fixture(_mqtt_client)
 
 
 @pytest.mark.asyncio

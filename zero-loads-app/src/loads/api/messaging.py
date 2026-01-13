@@ -103,7 +103,7 @@ class Messaging:
     def _parse_message[T: LoadsModel](self, message: Message, model: type[T]) -> T:
         if not isinstance(message.payload, str | bytes):
             raise ValueError(f"Expected string or bytes, got {type(message.payload)}")
-        return model.model_validate_json(message.payload)
+        return model.parse_message_payload(message.payload)
 
     def get_values_for(self, variables: list[str]) -> list[ActualType]:
         results: list[ActualType] = []
