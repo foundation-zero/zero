@@ -17,7 +17,7 @@ ASOF JOIN {{ table_ref }} AS previous
 
 WHERE
     {%- for field_name in fields_with_values %}
-	(marpower_data.{{ '"' ~ field_name ~ '"' }}).TimeStamp != (previous.{{ '"' ~ field_name ~ '"' }}).TimeStamp
+	(marpower_data.{{ '"' ~ field_name ~ '"' }}).TimeStamp > (previous.{{ '"' ~ field_name ~ '"' }}).TimeStamp
     {%- if not loop.last %} OR {% endif %}
     {%- endfor -%}
 

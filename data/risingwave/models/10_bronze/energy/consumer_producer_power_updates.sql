@@ -27,5 +27,5 @@ SELECT
 	power_factor,
 	power_factor_timestamp
 FROM {{ t }}_updates
-{% if not loop.last %}UNION ALL{% endif -%}
-{%- endfor -%}
+{% if not loop.last %}UNION ALL{% endif %}
+{% endfor -%}
