@@ -15,8 +15,10 @@ WITH power_updates AS (
             system_voltages.voltage,
             system_voltages.voltage_timestamp
         FROM {{ ref('24v_current_updates')}} consumers
+        JOIN {{ ref('24v_system_codes')}} consumer_codes 
+            ON consumers.topic = consumer_codes.topic
         ASOF JOIN {{ ref('24v_system_voltage_data')}} system_voltages
-            ON system_voltages.system_code = regexp_match(consumers.topic, '/24(e\w+)_')[1]
+            ON system_voltages.system_code = consumer_codes.system_code
             AND system_voltages.time <= consumers.time
     )
 )

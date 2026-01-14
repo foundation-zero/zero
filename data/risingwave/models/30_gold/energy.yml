@@ -97,3 +97,12 @@ models:
         description: The average daily consumption that is calculated at the specified timestamp.
         data_tests:
             - not_null
+  - name: 24v_system_codes
+    description: Specifies the 24V DC system code that is related to the topic of a 24V DC device (consumer).
+    columns:
+      - name: topic
+        description: '{{ doc("topic") }}'
+        data_tests:
+            - not_null
+      - name: system_code
+        description: System code of the 24V DC sub system.
