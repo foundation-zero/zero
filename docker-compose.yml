@@ -292,8 +292,21 @@ services:
       vernemq:
         condition: service_healthy
 
-  loads-sensor-stub:
-    command: sensor-stub
+  loads-at-sensors-stub:
+    command: at-sensors-stub
+    build:
+      context: .
+      dockerfile: ./zero-loads-app/Dockerfile
+    profiles:
+      - loads
+    environment:
+      <<: *app_env
+    depends_on:
+      vernemq:
+        condition: service_healthy
+
+  loads-sail-sensors-stub:
+    command: sail-sensors-stub
     build:
       context: .
       dockerfile: ./zero-loads-app/Dockerfile
