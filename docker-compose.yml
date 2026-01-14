@@ -112,7 +112,6 @@ services:
     profiles:
       - zero
       - domestic
-      - loads
     environment:
       HASURA_GRAPHQL_METADATA_DATABASE_URL: postgres://${PG_USER}:${PG_PASSWORD}@postgres:5432/postgres
       HASURA_GRAPHQL_ENABLE_CONSOLE: true
