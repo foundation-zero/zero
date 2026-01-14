@@ -1,0 +1,63 @@
+{{- if .Values.simulation.enabled }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "zero-thrs-control.simulation" . }}
+  namespace: {{ .Release.Namespace }}
+  labels:
+    {{- include "zero-thrs-control.labels" . | nindent 4 }}
+    app.kubernetes.io/part-of: thrs-control
+    app.kubernetes.io/component: simulation
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      {{- include "zero-thrs-control.selectorLabels" . | nindent 6 }}
+      app.kubernetes.io/part-of: thrs-control
+      app.kubernetes.io/component: simulation
+  template:
+    metadata:
+      labels:
+        {{- include "zero-thrs-control.labels" . | nindent 8 }}
+        app.kubernetes.io/part-of: thrs-control
+        app.kubernetes.io/component: simulation
+    spec:
+      {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      securityContext:
+        fsGroupChangePolicy: Always
+        sysctls: []
+        supplementalGroups: []
+        fsGroup: 1001
+      containers:
+        - name: thrs-control
+          securityContext:
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop:
+              - ALL
+            privileged: false
+            readOnlyRootFilesystem: true
+            runAsGroup: 1001
+            runAsNonRoot: true
+            runAsUser: 1001
+            seLinuxOptions: {}
+            seccompProfile:
+              type: RuntimeDefault
+          image: "{{ .Values.simulation.image.repository }}:{{ .Values.simulation.image.tag | default .Chart.AppVersion }}"
+          imagePullPolicy: {{ .Values.simulation.image.pullPolicy }}
+          command: ["python", "-m", "thrs.cli", "run", "thrusters"]
+          resources:
+            {{- toYaml .Values.simulation.resources | nindent 12 }}
+          envFrom:
+            - configMapRef:
+                name: {{ include "zero-thrs-control.envvars" . }}
+          volumeMounts:
+            - mountPath: /tmp
+              name: tmp-volume
+      volumes:
+      - name: tmp-volume
+        emptyDir: {}
+{{- end }}
