@@ -209,7 +209,7 @@ The following examples demonstrate the load card displaying percentage values wi
 <div class="my-4 p-8 bg-muted flex justify-center">
   <VariableCard
     :value="0.1"
-    :type="VariableUnit.Percentage"
+    :type="VariableUnit.Ratio"
     :thresholds="{
       target: 0.1,
       warningHigh: 0.15,
@@ -229,7 +229,7 @@ The following examples demonstrate the load card displaying percentage values wi
 <template>
   <VariableCard
     :value="0.1"
-    :type="VariableUnit.Percentage"
+    :type="VariableUnit.Ratio"
     :thresholds="{
       target: 0.1,
       warningHigh: 0.15,
@@ -251,7 +251,7 @@ The following examples demonstrate the load card displaying percentage values wi
 <div class="my-4 p-8 bg-muted flex justify-center">
   <VariableCard
     :value="0.2"
-    :type="VariableUnit.Percentage"
+    :type="VariableUnit.Ratio"
     :thresholds="{
       target: 0.1,
       warningHigh: 0.15,
@@ -271,7 +271,7 @@ The following examples demonstrate the load card displaying percentage values wi
 <template>
   <VariableCard
     :value="0.2"
-    :type="VariableUnit.Percentage"
+    :type="VariableUnit.Ratio"
     :thresholds="{
       target: 0.1,
       warningHigh: 0.15,
@@ -293,7 +293,7 @@ The following examples demonstrate the load card displaying percentage values wi
 <div class="my-4 p-8 bg-muted flex justify-center">
   <VariableCard
     :value="0.3"
-    :type="VariableUnit.Percentage"
+    :type="VariableUnit.Ratio"
     :thresholds="{
       target: 0.1,
       warningHigh: 0.15,
@@ -313,7 +313,7 @@ The following examples demonstrate the load card displaying percentage values wi
 <template>
   <VariableCard
     :value="0.3"
-    :type="VariableUnit.Percentage"
+    :type="VariableUnit.Ratio"
     :thresholds="{
       target: 0.1,
       warningHigh: 0.15,
@@ -443,7 +443,7 @@ import { InfoTooltip } from '@/modules/common/components/info-tooltip'
     </VariableCard>
     <VariableCard
       :value="0.1"
-      :type="VariableUnit.Percentage"
+      :type="VariableUnit.Ratio"
       :thresholds="{
         target: 0.1,
         warningHigh: 0.15,
@@ -459,7 +459,7 @@ import { InfoTooltip } from '@/modules/common/components/info-tooltip'
     </VariableCard>
     <VariableCard
       :value="0.2"
-      :type="VariableUnit.Percentage"
+      :type="VariableUnit.Ratio"
       :thresholds="{
         target: 0.1,
         warningHigh: 0.15,
@@ -475,7 +475,7 @@ import { InfoTooltip } from '@/modules/common/components/info-tooltip'
     </VariableCard>
     <VariableCard
       :value="0.3"
-      :type="VariableUnit.Percentage"
+      :type="VariableUnit.Ratio"
       :thresholds="{
         target: 0.1,
         warningHigh: 0.15,
@@ -545,7 +545,7 @@ import { InfoTooltip } from '@/modules/common/components/info-tooltip'
     </VariableCard>
     <VariableCard
       :value="0.1"
-      :type="VariableUnit.Percentage"
+      :type="VariableUnit.Ratio"
       :thresholds="{
         target: 0.1,
         warningHigh: 0.15,
@@ -561,7 +561,7 @@ import { InfoTooltip } from '@/modules/common/components/info-tooltip'
     </VariableCard>
     <VariableCard
       :value="0.2"
-      :type="VariableUnit.Percentage"
+      :type="VariableUnit.Ratio"
       :thresholds="{
         target: 0.1,
         warningHigh: 0.15,
@@ -577,7 +577,7 @@ import { InfoTooltip } from '@/modules/common/components/info-tooltip'
     </VariableCard>
     <VariableCard
       :value="0.3"
-      :type="VariableUnit.Percentage"
+      :type="VariableUnit.Ratio"
       :thresholds="{
         target: 0.1,
         warningHigh: 0.15,
@@ -606,7 +606,7 @@ Container component that provides context for all child components.
 | Prop | Type | Required | Description |
 |------|------|----------|-------------|
 | `value` | `number` | Yes | The current variable value to display |
-| `type` | `VariableUnit` | Yes | The type of variable - either `VariableUnit.Tonnes` or `VariableUnit.Percentage` |
+| `type` | `VariableUnit` | Yes | The type of variable - either `VariableUnit.Tonnes` or `VariableUnit.Ratio` |
 | `thresholds` | `ReferenceThresholds` | No | Optional threshold values for target, warning, and alarm states |
 | `class` | `string` | No | Additional CSS classes to apply to the container |
 

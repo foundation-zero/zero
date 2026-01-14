@@ -5,7 +5,7 @@ import { LOAD_UNIT } from "../../lib/consts";
 import { VariableUnit } from "../../types";
 
 const props = defineProps<{ class?: HTMLAttributes["class"] }>();
-const type = inject<VariableUnit>("load-type", VariableUnit.Percentage);
+const type = inject<VariableUnit>("load-type", VariableUnit.Ratio);
 </script>
 
 <template>
@@ -18,7 +18,7 @@ const type = inject<VariableUnit>("load-type", VariableUnit.Percentage);
         props.class,
         {
           '-right-[0.25em]': type === VariableUnit.Tonne,
-          '-right-[0.10em]': type === VariableUnit.Percentage,
+          '-right-[0.10em]': type === VariableUnit.Ratio,
         },
       )
     "

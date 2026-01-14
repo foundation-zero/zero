@@ -2,9 +2,9 @@ import { formatFixed, formatInt } from "@/modules/common/lib/utils";
 import { NumRangeId, Range, ReferenceThresholds, VariableState, VariableUnit } from "../types";
 
 export const formatLoad = (value: number | undefined, type: VariableUnit): string => {
-  if (value === undefined) return "-";
+  if (value == undefined) return "-";
 
-  if (type === VariableUnit.Percentage) {
+  if (type === VariableUnit.Ratio) {
     // Values from backend are ratios
     return formatInt(value * 100);
   }
@@ -39,15 +39,20 @@ export const getLoadState = (
   return VariableState.Neutral;
 };
 
-export const toNumRangeId = (from: number, to: number): NumRangeId =>
-  `[${from},${to === Infinity ? "" : to})`;
+export const toNumRangeId =
+  (prefix: string) =>
+  (from: number, to: number): NumRangeId =>
+    `${prefix}_${from}_${to === Infinity ? "" : to}`;
 
-export const toRange = (...values: number[]): Range[] =>
+export const toRange = <T extends string = NumRangeId>(
+  idFn: (from: number, to: number, index: number) => T,
+  ...values: number[]
+): Range<T>[] =>
   values
     .toSorted((a, b) => a - b)
     .slice(0, -1)
     .map((from, i) => ({
       from,
       to: values[i + 1],
-      id: toNumRangeId(from, values[i + 1]),
+      id: idFn(from, values[i + 1], i),
     }));

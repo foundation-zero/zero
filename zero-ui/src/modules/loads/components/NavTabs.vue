@@ -1,37 +1,33 @@
 <script setup lang="ts">
 import { Tabs, TabsList, TabsTrigger } from "@common/components/tab-links";
-import { ref } from "vue";
+import { toRefs } from "vue";
+import { useI18n } from "vue-i18n";
+import { SailId } from "../lib/consts.sails";
+import { useVariablesStore } from "../stores/variables";
 
-type NavItem = {
-  value: string;
-  label: string;
-};
-
-const items: NavItem[] = [
-  { value: "overview", label: "Overview" },
-  { value: "mizzen", label: "Mizzen (R1)" },
-  { value: "main", label: "Main" },
-  { value: "code0", label: "Code-0" },
-  { value: "blade", label: "Blade" },
-];
-
-const [firstItem] = items;
-const selectedItem = ref<string>(firstItem.value);
+const { availableDashboards, selectedDashboard } = toRefs(useVariablesStore());
+const { t } = useI18n();
 </script>
 
 <template>
-  <Tabs v-model="selectedItem">
+  <Tabs :model-value="selectedDashboard.sail">
     <TabsList
       as="nav"
       class="py-0"
     >
       <TabsTrigger
-        v-for="item in items"
-        :key="item.label"
-        :value="item.label"
+        :value="SailId.None"
         class="h-16 text-base font-medium"
       >
-        {{ item.label }}
+        {{ t("loads.dashboards.overview") }}
+      </TabsTrigger>
+      <TabsTrigger
+        v-for="item in availableDashboards"
+        :key="item.id"
+        :value="item.id"
+        class="h-16 text-base font-medium"
+      >
+        {{ item.name }}
       </TabsTrigger>
     </TabsList>
   </Tabs>
