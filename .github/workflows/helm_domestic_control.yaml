@@ -1,51 +1,14 @@
 name: "Domestic Control: Deploy zero-domestic-control chart"
 on:
-  push:
-    branches:
-      - main
-    paths:
-      - .github/workflows/helm_domestic_control.yaml
-      - zero-domestic-control/charts/zero-domestic-control/**
   release:
     types: [released]
 
 jobs:
   helm-push:
-    runs-on: ubuntu-latest
+    uses: "./.github/workflows/job_helm_push.yaml"
     permissions:
       contents: "read"
       id-token: "write"
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
-      - name: Update Chart Versions
-        id: chart_info
-        run: |
-          VERSION=${ github.ref_name#v}
-          yq e -i '.version = "$VERSION"' zero-domestic-control/charts/data_gen/Chart.yaml
-          yq e -i '.appVersion = "$VERSION"' zero-domestic-control/charts/data_gen/Chart.yaml
-
-          echo "chart_name=$(yq '.name' 'zero-domestic-control/charts/data_gen/Chart.yaml')" >> $GITHUB_OUTPUT
-          echo "chart_version=$VERSION" >> $GITHUB_OUTPUT
-      - id: auth
-        name: Authenticate with Google Cloud
-        uses: google-github-actions/auth@v2
-        with:
-          token_format: access_token
-          project_id: ${{ secrets.GCP_COMMON_PROJECT_ID }}
-          workload_identity_provider: ${{ secrets.GCP_COMMON_WORKLOAD_IDENTITY_PROVIDER }}
-          service_account: ${{ secrets.GCP_COMMON_SERVICE_ACCOUNT }}
-          access_token_lifetime: 300s
-      - name: Login to Artifact Registry
-        uses: docker/login-action@v1
-        with:
-          registry: europe-west1-docker.pkg.dev
-          username: oauth2accesstoken
-          password: ${{ steps.auth.outputs.access_token }}
-      - name: Set up Helm
-        uses: azure/setup-helm@v4
-      - name: Publish Helm chart
-        run: |
-          helm package ./charts/zero-domestic-control
-          helm push ${{ steps.chart_info.outputs.chart_name }}-${{ steps.chart_info.outputs.chart_version }}.tgz oci://europe-west1-docker.pkg.dev/common-449414/common
-        working-directory: zero-domestic-control
+    secrets: inherit
+    with:
+      helm_chart: "zero-domestic-control/charts/zero-domestic-control"

@@ -11,4 +11,4 @@ jobs:
       id-token: "write"
     secrets: inherit
     with:
-      helm_chart: "zero-data/charts/data-gen"
+      helm_chart: "zero-thrs-control/charts/zero-thrs-control"
