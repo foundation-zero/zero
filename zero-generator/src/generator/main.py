@@ -17,8 +17,8 @@ class DataGenerator:
 
     @asynccontextmanager
     @staticmethod
-    async def init_from_settings(settings: Settings):
-        async with MqttClient(settings.mqtt_host, settings.mqtt_port, identifier="generator") as mqtt_client:
+    async def init_from_settings(settings: Settings, identifier: str = "generator"):
+        async with MqttClient(settings.mqtt_host, settings.mqtt_port, identifier=identifier) as mqtt_client:
             yield DataGenerator(mqtt_client=mqtt_client)
 
     async def generate(self, config: list[GeneratorConfig]):

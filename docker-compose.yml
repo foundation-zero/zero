@@ -77,7 +77,6 @@ services:
     profiles:
       - zero
       - domestic
-      - loads
     healthcheck:
       test:
         - CMD-SHELL
@@ -97,7 +96,6 @@ services:
     profiles:
       - zero
       - domestic
-      - loads
     environment:
       <<: *setup
     depends_on:
@@ -114,7 +112,6 @@ services:
     profiles:
       - zero
       - domestic
-      - loads
     environment:
       HASURA_GRAPHQL_METADATA_DATABASE_URL: postgres://${PG_USER}:${PG_PASSWORD}@postgres:5432/postgres
       HASURA_GRAPHQL_ENABLE_CONSOLE: true
@@ -262,7 +259,7 @@ services:
       context: .
       dockerfile: ./zero-loads-app/Dockerfile
     profiles:
-      - loads
+      - loads-dev
     environment:
       <<: *app_env
 
@@ -272,7 +269,7 @@ services:
       context: .
       dockerfile: ./zero-loads-app/Dockerfile
     profiles:
-      - loads
+      - loads-dev
     environment:
       <<: *app_env
     depends_on:
@@ -285,6 +282,19 @@ services:
       context: .
       dockerfile: ./zero-loads-app/Dockerfile
     profiles:
+      - loads-dev
+    environment:
+      <<: *app_env
+    depends_on:
+      vernemq:
+        condition: service_healthy
+
+  loads-at-sensors-stub:
+    command: at-sensors-stub
+    build:
+      context: .
+      dockerfile: ./zero-loads-app/Dockerfile
+    profiles:
       - loads
     environment:
       <<: *app_env
@@ -292,8 +302,8 @@ services:
       vernemq:
         condition: service_healthy
 
-  loads-sensor-stub:
-    command: sensor-stub
+  loads-sail-sensors-stub:
+    command: sail-sensors-stub
     build:
       context: .
       dockerfile: ./zero-loads-app/Dockerfile
