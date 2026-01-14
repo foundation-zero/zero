@@ -77,7 +77,6 @@ services:
     profiles:
       - zero
       - domestic
-      - loads
     healthcheck:
       test:
         - CMD-SHELL
@@ -97,7 +96,6 @@ services:
     profiles:
       - zero
       - domestic
-      - loads
     environment:
       <<: *setup
     depends_on:
@@ -262,7 +260,7 @@ services:
       context: .
       dockerfile: ./zero-loads-app/Dockerfile
     profiles:
-      - loads
+      - loads-dev
     environment:
       <<: *app_env
 
@@ -272,7 +270,7 @@ services:
       context: .
       dockerfile: ./zero-loads-app/Dockerfile
     profiles:
-      - loads
+      - loads-dev
     environment:
       <<: *app_env
     depends_on:
@@ -285,7 +283,7 @@ services:
       context: .
       dockerfile: ./zero-loads-app/Dockerfile
     profiles:
-      - loads
+      - loads-dev
     environment:
       <<: *app_env
     depends_on:
