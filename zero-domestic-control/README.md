@@ -59,12 +59,10 @@ poetry run domestic_control control
 
 Generate a JWT token:
 ```bash
-# Default 'user' role
-poetry run python -m zero_domestic_control generate-jwt
-# Additional roles
-poetry run python -m zero_domestic_control generate-jwt admin
+# Admin role
+poetry run domestic_control generate-jwt --roles admin
 # Cabin-specific token
-poetry run python -m zero_domestic_control generate-jwt --cabin dutch-cabin
+poetry run domestic_control generate-jwt --cabin dutch-cabin
 ```
 
 ## Testing

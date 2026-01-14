@@ -103,6 +103,8 @@ services:
     depends_on:
       risingwave:
         condition: service_healthy
+      setup-postgres:
+        condition: service_completed_successfully
 
   hasura:
     image: hasura/graphql-engine:v2.42.0.cli-migrations-v3
