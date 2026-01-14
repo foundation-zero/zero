@@ -1,4 +1,3 @@
-name: "Deploy and push a helm chart to the gcp-common project"
 on:
   workflow_call:
     inputs:

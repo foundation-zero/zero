@@ -1,4 +1,4 @@
-name: "Zero Data: Deploy zero-data-gen chart"
+name: "THRS Control: Helm chart"
 on:
   release:
     types: [released]
