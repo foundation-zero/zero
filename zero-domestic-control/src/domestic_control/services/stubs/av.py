@@ -93,9 +93,11 @@ class AvStub:
         The returned awaitable finishes when the control is actually running.
         Then the coroutine contained within can be run in an event loop.
         """
+        
         await self._mqtt_client.subscribe("de/gudesystems/epc/+/cmdres/port/+", qos=1)
 
         async def _run():
+            logging.info("Starting Av stub")
             async with TaskGroup() as tg:
                 for pdu in self._pdus:
                     tg.create_task(pdu.run_telemetry())
