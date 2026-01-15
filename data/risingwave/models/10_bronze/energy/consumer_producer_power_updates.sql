@@ -2,7 +2,7 @@
 
 {%- set tables = ['power_tag', 'pvt', 'shore_power', 'hydrogeneration'] -%}
 
--- First iterate over the array of table names to create the CTE's with the update records from the macro
+-- First iterate over the array of table names to create the CTEs with the update records from the macro
 WITH
 
 {% for t in tables -%}
