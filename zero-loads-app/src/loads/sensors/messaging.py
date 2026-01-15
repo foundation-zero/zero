@@ -1,5 +1,4 @@
-import loads.sensors.sensors as sensors
-from loads.sensors import LoadsModel
+from loads.sensors import LoadsModel, at, sails
 
 
 class MessagingModule:
@@ -19,37 +18,48 @@ class MessagingModule:
 
 sail_systems = MessagingModule(
     validators=[
-        sensors.BladeCunningham,
-        sensors.CodeSailTack,
-        sensors.BladeAdjuster,
-        sensors.StaysailStayAdjuster,
-        sensors.MainOuthaul,
-        sensors.MainCheckstayDeflector,
-        sensors.MainBoomPreventer,
-        sensors.MainCunningham,
-        sensors.BladeTweakerPS,
-        sensors.BladeTweakerSB,
-        sensors.MizzenHeadsailTackAdjuster,
-        sensors.MizzenOuthaul,
-        sensors.MizzenCheckstayAdjuster,
-        sensors.MizzenCunningham,
-        sensors.MizzenBoomPreventer,
-        sensors.BladeFurler,
-        sensors.StaysailFurler,
-        sensors.CodeFurler,
-        sensors.BladeSheetCaptiveWinchPS,
-        sensors.StaysailSheetCaptiveWinchPS,
-        sensors.MainSheetCaptiveWinch,
-        sensors.MainHalyardCaptiveWinch,
-        sensors.BladeSheetCaptiveWinchSB,
-        sensors.StaysailSheetCaptiveWinchSB,
-        sensors.MainRunnerCaptiveWinchPS,
-        sensors.MizzenRunnerCaptiveWinchPS,
-        sensors.MizzenHalyardCaptiveWinch,
-        sensors.MainRunnerCaptiveWinchSB,
-        sensors.MizzenRunnerCaptiveWinchSB,
-        sensors.MizzenSheetCaptiveWinch,
-        sensors.MainVang,
-        sensors.MizzenVang,
+        sails.BladeAdjuster,
+        sails.BladeCunningham,
+        sails.BladeSheetCaptivePS,
+        sails.BladeSheetCaptiveSB,
+        sails.BladeSheetFeederPs,
+        sails.BladeSheetFeederSb,
+        sails.BladeTweakerPS,
+        sails.BladeTweakerSB,
+        sails.CodeSailTack,
+        sails.HeadsailLocks,
+        sails.MainCheckstayDeflector,
+        sails.MainCunningham,
+        sails.MainHalyard,
+        sails.MainOuthaul,
+        sails.MainPreventer,
+        sails.MainRunnerCaptivePS,
+        sails.MainRunnerCaptiveSB,
+        sails.MainSheetCaptive,
+        sails.MainVang,
+        sails.MizzenCheckstayDeflector,
+        sails.MizzenCunningham,
+        sails.MizzenHalyard,
+        sails.MizzenHeadsailLocks,
+        sails.MizzenHeadsailTackAdjuster,
+        sails.MizzenOuthaul,
+        sails.MizzenPreventer,
+        sails.MizzenRunnerCaptivePS,
+        sails.MizzenRunnerCaptiveSB,
+        sails.MizzenSheetCaptive,
+        sails.MizzenVang,
+        sails.StaysailSheetCaptivePS,
+        sails.StaysailSheetCaptiveSB,
+        sails.StaysailSheetFeederPs,
+        sails.StaysailSheetFeederSb,
+        sails.StaysailStayAdjuster,
     ]
+)
+
+
+at_systems = MessagingModule(
+    validators=[
+        at.ApparentWindSpeed,
+        at.ApparentWindAngle,
+    ],
 )

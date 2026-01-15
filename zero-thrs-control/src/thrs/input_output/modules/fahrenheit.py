@@ -22,7 +22,7 @@ class FahrenheitSensorValues(ThrsValues):
         sensor.Fahrenheit,
         component_meta(yard_tag="50001034", component_type="fahrenheit"),
     ]
-    fahrenheit_flow_hot_exchanger: Annotated[
+    fahrenheit_flow_ht: Annotated[
         sensor.FlowSensor,
         component_meta(yard_tag="50001058-09", component_type="flow_sensor"),
     ]
@@ -34,19 +34,15 @@ class FahrenheitSensorValues(ThrsValues):
         sensor.FlowSensor,
         component_meta(yard_tag="50001059", component_type="flow_sensor"),
     ]
-    fahrenheit_flow_cold: Annotated[
-        sensor.FlowSensor,
-        component_meta(yard_tag="50001058-05", component_type="flow_sensor"),
-    ]
-    fahrenheit_flow_boiler: Annotated[
+    fahrenheit_flow_boilers: Annotated[
         sensor.FlowSensor,
         component_meta(yard_tag="50001058-10", component_type="flow_sensor"),
     ]
-    fahrenheit_temperature_hot_exchanger_return: Annotated[
+    fahrenheit_temperature_ht_return: Annotated[
         sensor.TemperatureSensor,
         component_meta(yard_tag="50001038-41", component_type="temperature_sensor"),
     ]
-    fahrenheit_temperature_hot_exchanger_supply: Annotated[
+    fahrenheit_temperature_ht_supply: Annotated[
         sensor.TemperatureSensor,
         component_meta(yard_tag="50001038-50", component_type="temperature_sensor"),
     ]
@@ -66,17 +62,21 @@ class FahrenheitSensorValues(ThrsValues):
         sensor.TemperatureSensor,
         component_meta(yard_tag="50001038-39", component_type="temperature_sensor"),
     ]
-    fahrenheit_temperature_cold_return: Annotated[
-        sensor.TemperatureSensor,
-        component_meta(yard_tag="50001038-42", component_type="temperature_sensor"),
-    ]
-    fahrenheit_temperature_cold_supply: Annotated[
-        sensor.TemperatureSensor,
-        component_meta(yard_tag="50001038-43", component_type="temperature_sensor"),
-    ]
-    fahrenheit_temperature_boiler_return: Annotated[
+    fahrenheit_temperature_boilers_return: Annotated[
         sensor.TemperatureSensor,
         component_meta(yard_tag="50001038-56", component_type="temperature_sensor"),
+    ]
+    fahrenheit_available_hot_temperature: Annotated[
+        sensor.CalculatedTemperature,
+        component_meta(component_type="calculated_temperature", included_in_fmu=False),
+    ]
+    fahrenheit_available_cold_temperature: Annotated[
+        sensor.CalculatedTemperature,
+        component_meta(component_type="calculated_temperature", included_in_fmu=False),
+    ]
+    fahrenheit_available_seawater_temperature: Annotated[
+        sensor.CalculatedTemperature,
+        component_meta(component_type="calculated_temperature", included_in_fmu=False),
     ]
 
 
@@ -100,8 +100,13 @@ class FahrenheitSimulationInputs(SimulationInputs):
     fahrenheit_hot_supply: simulation.ExchangerBoundary
     fahrenheit_waste_supply: simulation.ExchangerBoundary
     fahrenheit_cold_supply: simulation.TemperatureBoundary
+    fahrenheit_available_hot_temperature: simulation.TemperatureBoundary
+    fahrenheit_available_cold_temperature: simulation.TemperatureBoundary
+    fahrenheit_seawater_supply: simulation.Boundary
 
 
 class FahrenheitSimulationOutputs(SimulationValues):
     fahrenheit_hot_return: simulation.ExchangerBoundary
     fahrenheit_waste_return: simulation.ExchangerBoundary
+    fahrenheit_cold_return: simulation.Boundary
+    fahrenheit_seawater_return: simulation.TemperatureBoundary

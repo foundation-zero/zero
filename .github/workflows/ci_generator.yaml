@@ -24,11 +24,11 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
-          fetch-depth: '0'
+          fetch-depth: "0"
       - uses: actions/setup-python@v5
         with:
           python-version: 3.13
-      - run: pipx install poetry==2.1.4
+      - run: pipx install poetry==2.2.1
       - run: poetry check
         working-directory: zero-generator
       - uses: astral-sh/ruff-action@v3
@@ -42,7 +42,7 @@ jobs:
         run: |
           echo "${{ secrets.ENV }}" > .env
       - name: Run services
-        run: docker compose --profile zero up -d --quiet-pull --wait
+        run: docker compose --profile zero up -d --quiet-pull --wait vernemq
       - name: Unit Test
         run: poetry run pytest . -vv
         working-directory: zero-generator

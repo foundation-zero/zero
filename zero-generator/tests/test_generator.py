@@ -7,6 +7,7 @@ from pytest import fixture
 
 import generator.gen as gen
 from generator import DataGenerator, GeneratorConfig, create_generator
+from generator.base import JSONGenerator
 
 
 async def _mqtt_client(settings):
@@ -29,16 +30,19 @@ async def test_generator(mqtt_client_send, mqtt_client_receive):
 
     receive = asyncio.create_task(_receive())
 
+    g = JSONGenerator(
+        values={
+            "justanint": gen.int_(),
+            "awa": gen.int_(0, 90),
+            "aws": gen.float_(0, 30),
+            "pcs_mode": gen.choice(["propulsion", "idle", "docked"]),
+        },
+    )
     config = [
         GeneratorConfig(
             topic="test",
             interval=1,
-            values={
-                "justanint": gen.int_(),
-                "awa": gen.int_(0, 90),
-                "aws": gen.float_(0, 30),
-                "pcs_mode": gen.choice(["propulsion", "idle", "docked"]),
-            },
+            generator=g,
         )
     ]
 

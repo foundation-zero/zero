@@ -11,10 +11,11 @@ services:
       - data
       - domestic
       - loads
+      - thrs
     environment:
-      DOCKER_VERNEMQ_ACCEPT_EULA: yes
-      DOCKER_VERNEMQ_ALLOW_ANONYMOUS: on
-      DOCKER_VERNEMQ_LISTENER__WS__DEFAULT: 0.0.0.0:9001
+      DOCKER_VERNEMQ_ACCEPT_EULA: "yes"
+      DOCKER_VERNEMQ_ALLOW_ANONYMOUS: "on"
+      DOCKER_VERNEMQ_LISTENER__WS__DEFAULT: "0.0.0.0:9001"
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:8888/health"]
       interval: 5s
@@ -49,9 +50,9 @@ services:
       context: ./data
     command: setup_postgres --target docker
     profiles:
-     - zero
-     - domestic
-     - loads
+      - zero
+      - domestic
+      - loads
     environment: &setup
       PG_HOST: postgres
       PG_HOST_DOCKER: postgres
@@ -74,9 +75,8 @@ services:
       - 4566:4566
       - 5691:5691
     profiles:
-     - zero
-     - domestic
-     - loads
+      - zero
+      - domestic
     healthcheck:
       test:
         - CMD-SHELL
@@ -94,14 +94,15 @@ services:
       context: ./data
     command: setup_risingwave --target docker
     profiles:
-     - zero
-     - domestic
-     - loads
+      - zero
+      - domestic
     environment:
       <<: *setup
     depends_on:
       risingwave:
         condition: service_healthy
+      setup-postgres:
+        condition: service_completed_successfully
 
   hasura:
     image: hasura/graphql-engine:v2.42.0.cli-migrations-v3
@@ -109,9 +110,8 @@ services:
       - 8080:8080
     restart: always
     profiles:
-     - zero
-     - domestic
-     - loads
+      - zero
+      - domestic
     environment:
       HASURA_GRAPHQL_METADATA_DATABASE_URL: postgres://${PG_USER}:${PG_PASSWORD}@postgres:5432/postgres
       HASURA_GRAPHQL_ENABLE_CONSOLE: true
@@ -137,8 +137,8 @@ services:
   hass:
     image: ghcr.io/home-assistant/home-assistant:stable
     profiles:
-     - zero
-     - domestic
+      - zero
+      - domestic
     volumes:
       - ./hass:/config
       - /etc/localtime:/etc/localtime:ro
@@ -152,7 +152,7 @@ services:
       timeout: 5s
       retries: 5
 
-# ---- data ----
+  # ---- data ----
   data-gen:
     build:
       context: ./zero-data
@@ -178,7 +178,7 @@ services:
       postgres:
         condition: service_healthy
 
-# ---- domestic-control ----
+  # ---- domestic-control ----
   domestic-control-api:
     command: api
     build:
@@ -240,7 +240,7 @@ services:
       <<: *app_env
       TERMODINAMICA_HOST: 0.0.0.0
 
-# ---- loads ----
+  # ---- loads ----
   loads-api:
     command: api
     build:
@@ -259,7 +259,7 @@ services:
       context: .
       dockerfile: ./zero-loads-app/Dockerfile
     profiles:
-      - loads
+      - loads-dev
     environment:
       <<: *app_env
 
@@ -269,7 +269,7 @@ services:
       context: .
       dockerfile: ./zero-loads-app/Dockerfile
     profiles:
-      - loads
+      - loads-dev
     environment:
       <<: *app_env
     depends_on:
@@ -282,15 +282,15 @@ services:
       context: .
       dockerfile: ./zero-loads-app/Dockerfile
     profiles:
-      - loads
+      - loads-dev
     environment:
       <<: *app_env
     depends_on:
       vernemq:
         condition: service_healthy
 
-  loads-sensor-stub:
-    command: sensor-stub
+  loads-at-sensors-stub:
+    command: at-sensors-stub
     build:
       context: .
       dockerfile: ./zero-loads-app/Dockerfile
@@ -298,6 +298,52 @@ services:
       - loads
     environment:
       <<: *app_env
+    depends_on:
+      vernemq:
+        condition: service_healthy
+
+  loads-sail-sensors-stub:
+    command: sail-sensors-stub
+    build:
+      context: .
+      dockerfile: ./zero-loads-app/Dockerfile
+    profiles:
+      - loads
+    environment:
+      <<: *app_env
+    depends_on:
+      vernemq:
+        condition: service_healthy
+
+  # ---- THRS ----
+  thrs-control:
+    build:
+      context: ./zero-thrs-control
+      dockerfile: Dockerfile
+      target: control
+    profiles:
+      - thrs
+    ports:
+      - "5102:5102"
+    environment: &thrs_env
+      MQTT_HOST: vernemq
+      MQTT_PORT: 1883
+      MQTT_TOPIC_PREFIX: thrs
+      MQTT_CONTROL_TOPIC_SUFFIX: Command
+    depends_on:
+      vernemq:
+        condition: service_healthy
+
+  thrs-thruster-simulation:
+    command: python -m  thrs.cli run thrusters
+    build:
+      context: ./zero-thrs-control
+      dockerfile: Dockerfile
+      target: simulation
+    profiles:
+      - thrs
+    environment:
+      <<: *thrs_env
     depends_on:
       vernemq:
         condition: service_healthy

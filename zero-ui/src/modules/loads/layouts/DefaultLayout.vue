@@ -1,19 +1,18 @@
 <script setup lang="ts">
 import Button from "@/components/ui/button/Button.vue";
 import TopNavToolbar from "@/modules/common/components/top-nav/TopNavToolbar.vue";
-import { ref } from "vue";
+import { toRefs } from "vue";
 import { useI18n } from "vue-i18n";
 import TopNav from "../../common/components/top-nav/TopNav.vue";
 import { AWASelector } from "../components/awa-selector";
 import { AWSSelector } from "../components/aws-selector";
 import NavTabs from "../components/NavTabs.vue";
-import { AWA_VALUES, AWS_VALUES } from "../lib/consts";
-import { NumRangeId } from "../types";
+import { useVariablesStore } from "../stores/variables";
 
 const { t } = useI18n();
 
-const twa = ref<NumRangeId>(AWA_VALUES[0].id);
-const tws = ref<NumRangeId>(AWS_VALUES[0].id);
+const { selectedAWA, selectedAWS } = toRefs(useVariablesStore());
+const { setAWA, setAWS } = useVariablesStore();
 </script>
 
 <template>
@@ -30,12 +29,14 @@ const tws = ref<NumRangeId>(AWS_VALUES[0].id);
       </template>
       <template #right-content>
         <AWASelector
-          v-model:model-value="twa"
+          :model-value="selectedAWA"
           class="w-36"
+          @update:model-value="setAWA"
         />
         <AWSSelector
-          v-model:model-value="tws"
+          :model-value="selectedAWS"
           class="w-36"
+          @update:model-value="setAWS"
         />
       </template>
     </TopNavToolbar>

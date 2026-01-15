@@ -2,12 +2,20 @@ from typing import Any, ClassVar, Dict
 
 import generator.gen as gen
 from generator import Generator, GeneratorConfig, create_generator
+from generator.base import JSONGenerator
 from pydantic import AliasGenerator, BaseModel, ConfigDict
 
 from .util import hyphenize
 
 
 class LoadsModel(BaseModel):
+    """
+    Pydantic model that supports generation of mock data
+    and customization of the underlaying transport format of that mocked data.
+
+    Suggestion: move both capabilities to zero-generator for better SOLID adherence.
+    """
+
     model_config = ConfigDict(
         alias_generator=AliasGenerator(
             serialization_alias=hyphenize,
@@ -18,13 +26,9 @@ class LoadsModel(BaseModel):
     TOPIC: ClassVar[str]
 
     @classmethod
-    def gen_config(cls, interval: int = 10) -> GeneratorConfig:
-        """Generate configuration for data generation."""
-
-        return GeneratorConfig(
-            topic=cls.TOPIC,
-            interval=interval,
-            values={
+    def make_generator(cls):
+        return JSONGenerator(
+            {
                 str(
                     field_info.validation_alias
                     if field_info.validation_alias
@@ -35,15 +39,28 @@ class LoadsModel(BaseModel):
         )
 
     @classmethod
+    def gen_config(cls, interval: int = 10) -> GeneratorConfig:
+        """Generate configuration for data generation."""
+        return GeneratorConfig(
+            topic=cls.TOPIC,
+            interval=interval,
+            generator=cls.make_generator(),
+        )
+
+    @classmethod
     def _create_generator(cls, base_type: Any, meta: list[Any]) -> Generator:
         """Create a data generator based on the type and constraints."""
+        # FIXME: make this work for not just floats and int (any other type will break)
         constraints = cls._extract_constraints(meta)
 
         lower = constraints.get("ge", constraints.get("gt", 0))
         upper = constraints.get("le", constraints.get("lt", 100))
 
         type = gen.validate_type(cls._type_name(base_type))
-        return create_generator(type, lt=lower, gt=upper)
+        if type in ("int", "float"):
+            return create_generator(type, lt=lower, gt=upper)
+        else:
+            return create_generator(type)
 
     @staticmethod
     def _extract_constraints(meta: list[Any]) -> Dict[str, Any]:
@@ -60,3 +77,29 @@ class LoadsModel(BaseModel):
             return tp.__name__
         except AttributeError:
             return str(tp)
+
+    @classmethod
+    def parse_message_payload(cls, payload: str | bytes):
+        return cls.model_validate_json(payload)
+
+
+class LoadsBytesModel(LoadsModel):
+    """
+    Subclass that expects single value encoded as string in the transport format.
+    The value will be exposed as `value` attribute of the instance.
+    """
+
+    @classmethod
+    def make_generator(cls):
+        field_info = cls.model_fields["value"]  # Only one field is expected
+        return cls._create_generator(field_info.annotation, field_info.metadata)
+
+    @classmethod
+    def parse_message_payload(cls, payload: str | bytes):
+        cast = cls.model_fields["value"].annotation
+        if isinstance(payload, bytes):
+            payload = payload.decode("utf-8")
+        # This is not expected to work with all types e.g. `datetime.date` will break
+        return cls.model_validate(
+            {"value": cast(payload) if cast is not None else payload}
+        )

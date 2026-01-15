@@ -34,7 +34,9 @@ class TermodinamicaStub:
 
     def __init__(self, host, port):
         self._server = ModbusServer(host=host, port=port, data_bank=TermodinamicaDataBank())
-        logging.info(f"Starting Termodinamica stub on {host}:{port}")
+        self._host = host
+        self._port = port
+        
 
     def _start_server(self) -> Task[None]:
         async def _start():
@@ -45,4 +47,5 @@ class TermodinamicaStub:
         return server_run
 
     async def run(self):
+        logging.info(f"Starting Termodinamica stub on {self._host}:{self._port}")
         await self._start_server()

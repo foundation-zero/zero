@@ -19,7 +19,7 @@ logger = logging.getLogger("cli")
 class ApiCli(Settings):
     async def cli_cmd(self) -> None:
         logger.info("Running API...")
-        uvicorn.run("domestic_control.app:app", host="0.0.0.0", port=4001, reload=True)
+        uvicorn.run("domestic_control.app:app", host="0.0.0.0", port=5100, reload=True)
 
 
 class GenerateJWT(Settings):

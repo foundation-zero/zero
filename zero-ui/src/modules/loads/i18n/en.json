@@ -1,12 +1,18 @@
 {
   "loads": {
+    "dashboards": {
+      "overview": "Overview"
+    },
     "components": {
       "mastLock": {
         "locked": "Locked",
         "overhoist": "Overhoist"
       },
       "awaSelector": {
-        "label": "Select AWA"
+        "label": "Select AWA",
+        "upwind": "Upwind",
+        "reaching": "Reaching",
+        "downwind": "Downwind"
       },
       "awsSelector": {
         "label": "Select AWS",

@@ -25,11 +25,11 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
-          fetch-depth: '0'
+          fetch-depth: "0"
       - uses: actions/setup-python@v5
         with:
           python-version: 3.13
-      - run: pipx install poetry==2.1.4
+      - run: pipx install poetry==2.2.1
         working-directory: zero-hull-temperature
       - run: poetry check
         working-directory: zero-hull-temperature

@@ -1,10 +1,9 @@
 *
 !poetry.lock
 !pyproject.toml
-!src
-!README.md
-!io_lists
-!.gsheet-sa-key.json
+!postgres
+!risingwave
+!*.py
 
 # Python
 __pycache__/
