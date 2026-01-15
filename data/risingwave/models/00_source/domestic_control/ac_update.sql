@@ -1,7 +1,7 @@
 {{ config(materialized='table_with_connector') }}
 CREATE TABLE {{ this }} (
     "id" TEXT,
-    "time" TIMESTAMPTZ as proctime (),
+    "time" TIMESTAMPTZ AS proctime (),
     actual_temperature REAL,
     temperature_setpoint REAL,
     actual_humidity REAL,

@@ -427,6 +427,8 @@
 "Powertags5","PT111F01_Total_Power_Factor",,"Float",,"+CB.2","AC DISTR 10P3","Discharge Pump Captain/Laundry Total Power Factor","-",,"REAL"
 "Powertags5","PT59Q01_Total_Active_Power",,"Float",,"+CB.2","AC DISTR 10P3","AHU2000T Crew Messroom Total Active Power ","W",,"REAL"
 "Powertags5","PT59Q01_Total_Power_Factor",,"Float",,"+CB.2","AC DISTR 10P3","AHU2000T Crew Messroom Total Power Factor","-",,"REAL"
+"KEB1","DB_GEN_SERVICE_14E1_VOLTAGE",,"Float",,"+CB.1","450000 24VDC SYSTEM","24 Vdc DB General Serivce 14E1 Voltage Measurement","V",,"REAL"
+"KEB1","DB_GEN_SERVICE_14E1_CURRENT",,"Float",,"+CB.1","450000 24VDC SYSTEM","24 Vdc DB General Service 14E1 Current Measurement","A",,"REAL"
 "KEB1","GFDEnabled",,"Bool","0","DSK_SWR","450000 AMCS","MTS AMCS KEB1 Ground Fault Diagnostics Enabled",,,"BOOLEAN"
 "KEB1","FieldVoltageAvailable",,"Bool","2","DSK_SWR","450000 AMCS","MTS AMCS KEB1 Voltage Available",,,"BOOLEAN"
 "KEB1","PA24V",,"Bool","4","DSK_SWR","450000 AMCS","MTS AMCS KEB1 Power Distribution Insulation Pre-Alarm 24V",,,"BOOLEAN"

@@ -8,6 +8,6 @@ CREATE TABLE {{ this }} (
         aft VARCHAR
     >,
     sails TEXT[],
-    "time" TIMESTAMPTZ as proctime ()
+    "time" TIMESTAMPTZ AS proctime ()
 )
 {{ mqtt_with('loads/conditions') }}

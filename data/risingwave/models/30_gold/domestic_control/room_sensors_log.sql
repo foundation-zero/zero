@@ -6,5 +6,5 @@ SELECT
     logs.value,
     sensors.name
 FROM
-    {{ ref('ac_sensors_pivot')}} as logs
+    {{ ref('ac_sensors_pivot')}} AS logs
 LEFT JOIN {{ ref('sensors') }} sensors ON sensors.id = logs.id
