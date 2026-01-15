@@ -1,4 +1,4 @@
-from loads.sensors import LoadsModel, at, sails
+from loads.sensors import LoadsModel, at, plc
 
 
 class MessagingModule:
@@ -16,48 +16,48 @@ class MessagingModule:
         return [validator.gen_config() for validator in self._validators]
 
 
-sail_systems = MessagingModule(
+plc_sensors = MessagingModule(
     validators=[
-        sails.BladeAdjuster,
-        sails.BladeCunningham,
-        sails.BladeSheetCaptivePS,
-        sails.BladeSheetCaptiveSB,
-        sails.BladeSheetFeederPs,
-        sails.BladeSheetFeederSb,
-        sails.BladeTweakerPS,
-        sails.BladeTweakerSB,
-        sails.CodeSailTack,
-        sails.HeadsailLocks,
-        sails.MainCheckstayDeflector,
-        sails.MainCunningham,
-        sails.MainHalyard,
-        sails.MainOuthaul,
-        sails.MainPreventer,
-        sails.MainRunnerCaptivePS,
-        sails.MainRunnerCaptiveSB,
-        sails.MainSheetCaptive,
-        sails.MainVang,
-        sails.MizzenCheckstayDeflector,
-        sails.MizzenCunningham,
-        sails.MizzenHalyard,
-        sails.MizzenHeadsailLocks,
-        sails.MizzenHeadsailTackAdjuster,
-        sails.MizzenOuthaul,
-        sails.MizzenPreventer,
-        sails.MizzenRunnerCaptivePS,
-        sails.MizzenRunnerCaptiveSB,
-        sails.MizzenSheetCaptive,
-        sails.MizzenVang,
-        sails.StaysailSheetCaptivePS,
-        sails.StaysailSheetCaptiveSB,
-        sails.StaysailSheetFeederPs,
-        sails.StaysailSheetFeederSb,
-        sails.StaysailStayAdjuster,
+        plc.BladeAdjuster,
+        plc.BladeCunningham,
+        plc.BladeSheetCaptivePS,
+        plc.BladeSheetCaptiveSB,
+        plc.BladeSheetFeederPs,
+        plc.BladeSheetFeederSb,
+        plc.BladeTweakerPS,
+        plc.BladeTweakerSB,
+        plc.CodeSailTack,
+        plc.HeadsailLocks,
+        plc.MainCheckstayDeflector,
+        plc.MainCunningham,
+        plc.MainHalyard,
+        plc.MainOuthaul,
+        plc.MainPreventer,
+        plc.MainRunnerCaptivePS,
+        plc.MainRunnerCaptiveSB,
+        plc.MainSheetCaptive,
+        plc.MainVang,
+        plc.MizzenCheckstayDeflector,
+        plc.MizzenCunningham,
+        plc.MizzenHalyard,
+        plc.MizzenHeadsailLocks,
+        plc.MizzenHeadsailTackAdjuster,
+        plc.MizzenOuthaul,
+        plc.MizzenPreventer,
+        plc.MizzenRunnerCaptivePS,
+        plc.MizzenRunnerCaptiveSB,
+        plc.MizzenSheetCaptive,
+        plc.MizzenVang,
+        plc.StaysailSheetCaptivePS,
+        plc.StaysailSheetCaptiveSB,
+        plc.StaysailSheetFeederPs,
+        plc.StaysailSheetFeederSb,
+        plc.StaysailStayAdjuster,
     ]
 )
 
 
-at_systems = MessagingModule(
+at_sensors = MessagingModule(
     validators=[
         at.ApparentWindSpeed,
         at.ApparentWindAngle,

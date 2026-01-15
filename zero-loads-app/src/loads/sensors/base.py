@@ -1,9 +1,11 @@
-from typing import Any, ClassVar, Dict
+from typing import Any, Callable, ClassVar, Dict, get_type_hints
 
 import generator.gen as gen
 from generator import Generator, GeneratorConfig, create_generator
 from generator.base import JSONGenerator
 from pydantic import AliasGenerator, BaseModel, ConfigDict
+
+from loads.sensors.units import InverseConversion
 
 from .util import hyphenize
 
@@ -50,15 +52,25 @@ class LoadsModel(BaseModel):
     @classmethod
     def _create_generator(cls, base_type: Any, meta: list[Any]) -> Generator:
         """Create a data generator based on the type and constraints."""
-        # FIXME: make this work for not just floats and int (any other type will break)
+
         constraints = cls._extract_constraints(meta)
 
-        lower = constraints.get("ge", constraints.get("gt", 0))
-        upper = constraints.get("le", constraints.get("lt", 100))
+        upper = constraints.get("le", constraints.get("lt"))
+        lower = constraints.get("ge", constraints.get("gt"))
 
-        type = gen.validate_type(cls._type_name(base_type))
+        if inverse_conversion := cls._extract_inverse_conversion(meta):
+            type = gen.validate_type(
+                cls._type_name(get_type_hints(inverse_conversion).get("return"))
+            )
+            lt = inverse_conversion(lower) if lower else 0
+            gt = inverse_conversion(upper) if upper else 100
+        else:
+            type = gen.validate_type(cls._type_name(base_type))
+            lt = lower if lower else 0
+            gt = upper if upper else 100
+
         if type in ("int", "float"):
-            return create_generator(type, lt=lower, gt=upper)
+            return create_generator(type, lt=lt, gt=gt)
         else:
             return create_generator(type)
 
@@ -70,6 +82,13 @@ class LoadsModel(BaseModel):
             for attr in ("gt", "ge", "lt", "le")
             if hasattr(m, attr)
         }
+
+    @staticmethod
+    def _extract_inverse_conversion(meta: list[Any]) -> Any:
+        for m in meta:
+            if isinstance(m, InverseConversion):
+                return m.conversion
+        return None
 
     @staticmethod
     def _type_name(tp: Any) -> str:
