@@ -1,0 +1,57 @@
+{{- if .Values.control.enabled }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "zero-thrs-control.control" . }}
+  namespace: {{ .Release.Namespace }}
+  labels:
+    {{- include "zero-thrs-control.labels" . | nindent 4 }}
+    app.kubernetes.io/component: control
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      {{- include "zero-thrs-control.selectorLabels" . | nindent 6 }}
+      app.kubernetes.io/component: control
+  template:
+    metadata:
+      labels:
+        {{- include "zero-thrs-control.labels" . | nindent 8 }}
+        app.kubernetes.io/component: control
+    spec:
+      {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      securityContext:
+        fsGroupChangePolicy: Always
+        sysctls: []
+        supplementalGroups: []
+        fsGroup: 1001
+      containers:
+        - name: thrs-control
+          securityContext:
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop:
+              - ALL
+            privileged: false
+            readOnlyRootFilesystem: true
+            runAsGroup: 1001
+            runAsNonRoot: true
+            runAsUser: 1001
+            seLinuxOptions: {}
+            seccompProfile:
+              type: RuntimeDefault
+          image: "{{ .Values.control.image.repository }}:{{ .Values.control.image.tag | default .Chart.AppVersion }}"
+          imagePullPolicy: {{ .Values.control.image.pullPolicy }}
+          ports:
+            - name: http
+              containerPort: 5102
+              protocol: TCP
+          resources:
+            {{- toYaml .Values.control.resources | nindent 12 }}
+          envFrom:
+            - configMapRef:
+                name: {{ include "zero-thrs-control.envvars" . }}
+{{- end }}

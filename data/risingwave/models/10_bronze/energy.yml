@@ -1,5 +1,35 @@
 version: 2
 models:
+  - name: 24v_current_updates
+    description: Current value updates of 24V DC devices.
+    columns:
+      - name: topic
+        description: '{{ doc("topic") }}'
+      - name: time
+        description: '{{ doc("zero_timestamp") }}'
+      - name: current
+        description: The measured current of the device.
+      - name: curr_timestamp
+        description: The timestamp the current was measured.
+  - name: 24v_system_voltage_updates
+    description: Voltage value updates of 24V DC sub systems.
+    columns:
+      - name: topic
+        description: '{{ doc("topic") }}'
+      - name: time
+        description: '{{ doc("zero_timestamp") }}'
+      - name: e1_voltage
+        description: The measured voltage of the E1 sub system.
+      - name: e1_voltage_timestamp
+        description: The timestamp the E1 voltage was measured.
+      - name: e2_voltage
+        description: The measured voltage of the E2 sub system.
+      - name: e2_voltage_timestamp
+        description: The timestamp the E2 voltage was measured.
+      - name: e3_voltage
+        description: The measured voltage of the E3 sub system.
+      - name: e3_voltage_timestamp
+        description: The timestamp the E3 voltage was measured.
   - name: battery_dc_converter_power_updates
     description: Voltage and current value updates of the battery DC converters. {{ doc("dc_converter_sides_explained") }}
     columns:
