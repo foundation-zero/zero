@@ -1,11 +1,7 @@
 {{ config(materialized='materialized_view') }}
 
-WITH bilge_fifi_data AS (
-    SELECT * FROM {{ ref('210000_bilge_fifi') }}
-)
-
 {{ filter_marpower_topic_changes(
-    'bilge_fifi_data', {
+    ref('210000_bilge_fifi'), {
         'Opened' : ('opened', 'opened_timestamp'),
         'Closed' : ('closed', 'closed_timestamp'),
         'HmiCmdOpen' : ('hmi_cmd_open', 'hmi_cmd_open_timestamp'),
