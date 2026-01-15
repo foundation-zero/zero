@@ -113,7 +113,7 @@ class CoolingPanelsSensorValues(ThrsValues):
     ]
     cooling_mix_main_deckhouse: Annotated[
         sensor.Valve,
-        component_meta(yard_tag="41006031-1", component_type="valve", valve_type="mix"),
+        component_meta(yard_tag="41006031", component_type="valve", valve_type="mix"),
     ]
     cooling_mix_ps_aft: Annotated[
         sensor.Valve,
@@ -259,7 +259,7 @@ class CoolingPanelsControlValues(ThrsValues):
     ]
     cooling_mix_main_deckhouse: Annotated[
         control.Valve,
-        component_meta(yard_tag="41006031-1", component_type="valve", valve_type="mix"),
+        component_meta(yard_tag="41006031", component_type="valve", valve_type="mix"),
     ]
     cooling_mix_ps_aft: Annotated[
         control.Valve,
