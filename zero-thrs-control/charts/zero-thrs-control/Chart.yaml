@@ -1,0 +1,6 @@
+apiVersion: v2
+name: zero-thrs-control-chart
+description: This repository contains the Zero THRS (Thermal Harvesting & Recovery System) platform.
+type: application
+version: 0.0.0
+appVersion: 0.0.0
