@@ -33,18 +33,22 @@ class LoadWinch(LoadsModel, ABC):
 class Cylinder(LoadsModel, ABC):
     load: DecaKilogram = Field(validation_alias="ow_ActLoad_10kg")
     position: Millimeter = Field(validation_alias="ow_ActPos_mm")
+    relative_position: Promille = Field(validation_alias="relative_position_dummy")
     relief_load: DecaKilogram = Field(validation_alias="ow_RelfLoad_10kg")
 
 
 class CylinderTwoPositions(LoadsModel, ABC):
     load: DecaKilogram = Field(validation_alias="ow_ActLoad_10kg")
     position_1: Millimeter = Field(validation_alias="ow_ActPos_mm")
+    relative_position_1: Promille = Field(validation_alias="relative_position_dummy")
     position_2: Millimeter = Field(validation_alias="ow_ActPos2_mm")
+    relative_position_2: Promille = Field(validation_alias="relative_position_dummy")
     relief_load: DecaKilogram = Field(validation_alias="ow_RelfLoad_10kg")
 
 
 class Deflector(LoadsModel, ABC):
     position: Millimeter = Field(validation_alias="ow_ActPos_mm")
+    relative_position: Promille = Field(validation_alias="relative_position_dummy")
     load_deflector: DecaKilogram = Field(validation_alias="i_ActualLoad_10kg")
     load_ps: DecaKilogram = Field(validation_alias="i_ActualLoadPs")
     load_sb: DecaKilogram = Field(validation_alias="i_ActualLoadSb")
@@ -60,6 +64,7 @@ class Vang(LoadsModel, ABC):
     load_bottom: DecaKilogram = Field(validation_alias="ow_ActLoad_10kg")
     load_rod: DecaKilogram = Field(validation_alias="ow_ActLoad2_10kg")
     position: Millimeter = Field(validation_alias="ow_ActPos_mm")
+    relative_position: Promille = Field(validation_alias="relative_position_dummy")
     relief_load: DecaKilogram = Field(validation_alias="ow_RelfLoad_10kg")
 
 

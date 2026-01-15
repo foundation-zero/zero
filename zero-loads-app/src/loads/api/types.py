@@ -6,8 +6,8 @@ import strawberry
 @strawberry.enum
 class Unit(Enum):
     tonne = "tonne"
-    per_mille = "per-mille"
-    on_off = "on-off"
+    ratio = "ratio"
+    bool = "bool"
 
 
 @strawberry.enum
@@ -60,10 +60,13 @@ class VariableType:
     id: strawberry.ID
     name: str
     unit: Unit
+    minimum: float | None
+    maximum: float | None
 
 
 @strawberry.type
 class ReferenceValue:
+    id: strawberry.ID
     alarm_low: float | None
     warning_low: float | None
     target: float | None

@@ -7,9 +7,21 @@ export type ReferenceThresholds = {
 };
 
 export const enum VariableUnit {
-  Percentage = "percentage",
+  Ratio = "ratio",
   Tonne = "tonne",
-  OnOff = "on-off",
+  Bool = "bool",
+}
+
+export type VariableUnitMap = {
+  [VariableUnit.Tonne]: number;
+  [VariableUnit.Ratio]: number;
+  [VariableUnit.Bool]: boolean;
+};
+
+export const enum AWA {
+  Upwind = "upwind",
+  Reaching = "reaching",
+  Downwind = "downwind",
 }
 
 export const enum VariableState {
@@ -19,18 +31,21 @@ export const enum VariableState {
   Unknown = "unknown",
 }
 
-export type NumRangeId = `[${number},${number | ""})`;
+export type NumRangeId = `${string}_${number}_${number | ""}`;
 
-export type Range = {
-  id: NumRangeId;
+export type Range<Id extends string = NumRangeId> = {
+  id: Id;
+  name?: string;
   from: number;
   to: number;
 };
 
-export type VariableDef = {
+export type VariableDefinition = {
   id: string;
   name: string;
   unit: VariableUnit;
+  minimumValue: number;
+  maximumValue: number | null;
 };
 
 export type VariableActual<T extends number | boolean = number> = {
@@ -38,10 +53,7 @@ export type VariableActual<T extends number | boolean = number> = {
   value: T;
 };
 
-export type VariableReference = {
-  reference?: Partial<ReferenceThresholds>;
-  variable: VariableDef;
-};
+export type VariableReference = Partial<ReferenceThresholds>;
 
 export type PickChild<T, K1 extends keyof T, K2 extends keyof T[K1]> = {
   [P in K2]: T[K1][P];
@@ -50,29 +62,36 @@ export type PickChild<T, K1 extends keyof T, K2 extends keyof T[K1]> = {
 export type Variable<T extends number | boolean = number> = {
   id: string;
   reference: VariableReference;
+  variable: VariableDefinition;
   actual: VariableActual<T>;
 };
 
-export type QueryVariableActual = Pick<Variable, "id" | "actual">;
-export type QueryVariableDefinition = Pick<Variable, "id"> &
-  PickChild<Variable, "reference", "variable">;
-export type QueryVariableReference = Pick<Variable, "id"> &
-  PickChild<Variable, "reference", "reference">;
+export type MaybeVariable<T extends number | boolean = number | boolean> = Partial<Variable<T>> &
+  Pick<Variable<T>, "id">;
 
 export type CardType = "numerical" | "graphical";
 
+export const enum PositionId {
+  Main = "main",
+  ForeInner = "fore-inner",
+  ForeOuter = "fore-outer",
+  Mizzen = "mizzen",
+  MizzenFore = "mizzen-fore",
+}
+
+export type SailPositionGroup = {
+  name: string;
+  positions: SailPosition[];
+};
+
 export type SailPosition = {
-  name: string;
-  groups: SailGroup[];
-};
-
-export type SailGroup = {
   sails: Sail[];
+  positionId?: PositionId;
 };
 
-export type Sail = {
+export type Sail<SailId extends string = string> = {
   name: string;
-  id: string;
+  id: SailId;
 };
 
 export type MastLock = {

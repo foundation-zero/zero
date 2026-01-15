@@ -4,7 +4,6 @@ from typing import Sequence
 from sqlalchemy import Column, cast, select, text
 from sqlalchemy.dialects.postgresql import ARRAY, TEXT
 from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy.orm import selectinload
 from sqlalchemy.sql.expression import ColumnElement
 from sqlalchemy.sql.selectable import ScalarSelect
 
@@ -14,11 +13,11 @@ from .schema import (
     LoadCases,
     ReferenceValues,
     SailSetsCombined,
+    Variables,
 )
 from .types import (
     CaseInput,
     ReferenceValue,
-    ReferenceValueType,
     Sails,
     Unit,
     VariableType,
@@ -31,12 +30,11 @@ async def get_loads_reference_values(
     variables: list[str],
     case: CaseInput,
     session: AsyncSession,
-) -> list[ReferenceValueType] | None:
+) -> list[ReferenceValue] | None:
     """Return all reference values that match the current sails and conditions."""
 
     query = (
         select(ReferenceValues)
-        .options(selectinload(ReferenceValues.variable))
         .where(ReferenceValues.variable_id.in_(variables))
         .where(
             ReferenceValues.load_case.has(
@@ -62,24 +60,42 @@ async def get_loads_reference_values(
 
     if reference_values:
         return [
-            ReferenceValueType(
-                variable=VariableType(
-                    id=ref_value.variable.id,
-                    name=ref_value.variable.name,
-                    unit=Unit(ref_value.variable.unit),
-                ),
-                reference=ReferenceValue(
-                    alarm_low=ref_value.alarm_low,  # type: ignore
-                    warning_low=ref_value.warning_low,  # type: ignore
-                    target=ref_value.target,  # type: ignore
-                    warning_high=ref_value.warning_high,  # type: ignore
-                    alarm_high=ref_value.alarm_high,  # type: ignore
-                ),
+            ReferenceValue(
+                id=ref_value.variable_id,  # type: ignore
+                alarm_low=ref_value.alarm_low,  # type: ignore
+                warning_low=ref_value.warning_low,  # type: ignore
+                target=ref_value.target,  # type: ignore
+                warning_high=ref_value.warning_high,  # type: ignore
+                alarm_high=ref_value.alarm_high,  # type: ignore
             )
             for ref_value in reference_values
         ]
     else:
         logger.info(f"No reference values found for case: {case}")
+        return []
+
+
+async def get_variables(
+    ids: Sequence[str], session: AsyncSession
+) -> list[VariableType]:
+    query = select(Variables).where(Variables.id.in_(ids))
+
+    result = await session.execute(query)
+    variables = result.scalars().all()
+
+    if variables:
+        return [
+            VariableType(
+                id=var.id,  # type: ignore
+                name=var.name,  # type: ignore
+                unit=Unit(var.unit),  # type: ignore
+                minimum=var.minimum_value,  # type: ignore
+                maximum=var.maximum_value,  # type: ignore
+            )
+            for var in variables
+        ]
+    else:
+        logger.info(f"No variables found for ids: {ids}")
         return []
 
 

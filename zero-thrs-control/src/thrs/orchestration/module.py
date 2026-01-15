@@ -174,8 +174,9 @@ class CombinedControl(Control[CombinedValues, CombinedValues, CombinedValues]):
     def control(self, sensor_values: CombinedValues) -> ControlResult[CombinedValues]:
         results = {
             name: module.control(sensors)
-            for name, module in self._modules.items()
             if (sensors := sensor_values.values.get(name, None))
+            else module.initial()
+            for name, module in self._modules.items()
         }
         return ControlResult(
             timestamp=self._time_fn(),

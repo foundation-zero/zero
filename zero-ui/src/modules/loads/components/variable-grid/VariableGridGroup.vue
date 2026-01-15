@@ -14,9 +14,7 @@ const variables = computed<Variable[]>(() =>
 );
 
 const onOffs = computed(
-  () =>
-    variables.value.filter((variable) => variable.reference.variable.unit === VariableUnit.OnOff)
-      .length,
+  () => variables.value.filter(({ variable }) => variable.unit === VariableUnit.Bool).length,
 );
 
 const size = computed(() => {
@@ -31,10 +29,7 @@ const size = computed(() => {
 
   // In case of graphical view: variables with targets take double size
   return variables.value.reduce((size, variable) => {
-    if (
-      variable.reference.reference?.target !== undefined &&
-      variable.reference.variable.unit === VariableUnit.Percentage
-    ) {
+    if (variable.reference?.target !== undefined && variable.variable.unit === VariableUnit.Ratio) {
       return size + 2;
     }
 
@@ -45,9 +40,10 @@ const size = computed(() => {
 
 <template>
   <div
-    class="grid gap-3"
+    v-if="size > 0"
     :class="
       cn(
+        'grid gap-3 lg:gap-4',
         {
           'col-span-1': size === 1,
           [`col-span-2 sm:col-span-${Math.min(size, 3)} md:col-span-${Math.min(size, 4)} lg:col-span-${Math.min(size, 5)} xl:col-span-${Math.min(size, 6)}`]:

@@ -230,7 +230,7 @@ async def test_simulation_run_step(
         )
 
         await sleep(0.5)
-        assert len(test_client.messages) == 2
+        assert len(test_client.messages) == 4
 
     finally:
         run_task.cancel()

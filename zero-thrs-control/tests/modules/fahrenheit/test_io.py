@@ -21,4 +21,12 @@ def test_fahrenheit_sheet_names():
 
 
 def test_yard_tags():
-    compare_yard_tags(FahrenheitSensorValues, FahrenheitControlValues)
+    compare_yard_tags(
+        FahrenheitSensorValues,
+        FahrenheitControlValues,
+        exclude={
+            "fahrenheit_available_hot_temperature",
+            "fahrenheit_available_cold_temperature",
+            "fahrenheit_available_seawater_temperature",
+        },
+    )

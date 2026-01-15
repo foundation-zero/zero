@@ -1,6 +1,5 @@
 [project]
 name = "data"
-version = "0.2.0"
 description = ""
 readme = "README.md"
 authors = [
@@ -15,11 +14,18 @@ dependencies = [
     "pydantic-settings (>=2.7.1)",
     "python-dotenv (>=1.1.0)"
 ]
+dynamic = ["version"]
 
 [tool.poetry]
 package-mode = false
+version = "0.0.0"
+
+[tool.poetry.requires-plugins]
+poetry-dynamic-versioning = { version = ">=1.0.0,<2.0.0", extras = ["plugin"] }
+
+[tool.poetry-dynamic-versioning]
+enable = true
 
 [build-system]
-requires = ["poetry-core>=2.0.0,<3.0.0"]
-build-backend = "poetry.core.masonry.api"
-
+requires = ["poetry-core>=1.0.0", "poetry-dynamic-versioning>=1.0.0,<2.0.0"]
+build-backend = "poetry_dynamic_versioning.backend"

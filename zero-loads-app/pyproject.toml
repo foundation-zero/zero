@@ -1,6 +1,5 @@
 [project]
 name = "loads"
-version = "0.1.2"
 description = ""
 readme = "README.md"
 authors = [
@@ -11,6 +10,10 @@ packages = [
     { include = "loads", from = "src" },
 ]
 requires-python = ">= 3.13.1,<4.0"
+dynamic = ["version"]
+
+[tool.poetry]
+version = "0.0.0"
 
 [tool.poetry.dependencies]
 aiomqtt = ">=2.4.0,<3.0.0"
@@ -29,6 +32,10 @@ greenlet = ">=3.2.4,<4.0.0"
 uvicorn = ">=0.35.0,<0.36.0"
 asgi-lifespan = ">=2.1.0,<3.0.0"
 generator = { path = "../zero-generator", develop=true}
+
+
+[tool.poetry-dynamic-versioning]
+enable = true
 
 [project.scripts]
 loads = "loads.__main__:run_app"
@@ -73,6 +80,9 @@ select = ["E4", "E7", "E9", "F", "W", "I"]
 [tool.ruff.lint.pydocstyle]
 convention = "google"
 
+[tool.poetry.requires-plugins]
+poetry-dynamic-versioning = { version = ">=1.0.0,<2.0.0", extras = ["plugin"] }
+
 [build-system]
-requires = ["poetry-core>=2.0.0,<3.0.0"]
-build-backend = "poetry.core.masonry.api"
+requires = ["poetry-core>=2.0.0,<3.0.0", "poetry-dynamic-versioning>=1.0.0,<2.0.0"]
+build-backend = "poetry_dynamic_versioning.backend"
