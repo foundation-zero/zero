@@ -17,12 +17,12 @@ FROM
 	FROM HOP (
 		{{ ref('consumer_producer_power_data') }} ,
 		time,
-		INTERVAL '5 seconds',
+		INTERVAL '15 seconds',
 		INTERVAL '5 minutes'
 	) AS electrical_power_data
 	WHERE electrical_power_data.group_name IS NOT NULL
 	GROUP BY electrical_system, group_name, sub_group_name, topic
-	
+
 	UNION ALL
 	
 	-- Charging / discharging power data
@@ -35,7 +35,7 @@ FROM
 	FROM HOP (
 		{{ ref('battery_dc_converter_power_data') }} ,
 		time,
-		INTERVAL '5 seconds',
+		INTERVAL '15 seconds',
 		INTERVAL '5 minutes'
 	) AS electrical_charging_data
 	WHERE electrical_charging_data.group_name IS NOT NULL
