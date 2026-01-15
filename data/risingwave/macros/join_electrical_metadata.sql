@@ -1,7 +1,7 @@
-{% macro join_electrical_metadata(table_alias) -%}
+{% macro join_electrical_metadata(table_ref) -%}
 
 SELECT 
-    {{ table_alias }}.*,
+    power_data.*,
     metadata.electrical_system AS electrical_system,
     metadata.group AS group_name,
     CASE
@@ -11,7 +11,7 @@ SELECT
 	    WHEN metadata.group = 'Propulsion' THEN 'Propulsion'
 	    ELSE NULL
 	END AS sub_group_name
-FROM {{ table_alias }}
-JOIN {{ ref('electrical_energy_metadata') }} AS metadata ON {{ table_alias }}.topic = metadata.preferred_mqtt_topic
+FROM {{ table_ref }} AS power_data
+JOIN {{ ref('electrical_energy_metadata') }} AS metadata ON power_data.topic = metadata.preferred_mqtt_topic
 
 {%- endmacro %}
