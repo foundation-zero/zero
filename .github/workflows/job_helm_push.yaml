@@ -18,8 +18,10 @@ jobs:
       - name: Update Chart Versions
         id: chart_info
         run: |
+          # v1.2.3
           export GIT_REF=${{github.ref_name}}
-          export VERSION=${GIT_REF#fix/}
+          # 1.2.3
+          export VERSION=${GIT_REF#v}
           yq e -i '.version = strenv(VERSION)' ${{ inputs.helm_chart }}/Chart.yaml
           yq e -i '.appVersion = strenv(VERSION)'  ${{ inputs.helm_chart }}/Chart.yaml
 
