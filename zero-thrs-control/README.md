@@ -1,17 +1,17 @@
-# Zero THRS control
+# Zero THRS Control
 
 ## FMU
 
-Compile an FMU with FMPy by running:
+To compile an FMU with FMPy, run:
 
 ```bash
 poetry run fmpy compile <path-to-fmu-file>
 ```
 
-Note: Setting CFLAGS prior is required to resolve mkdtemp function declaration conflicts in Dymola 2026 generated code when compiling on macOS.
+**Note:** On macOS, set `CFLAGS` beforehand to resolve `mkdtemp` function declaration conflicts in Dymola 2026-generated code:
 
 ```bash
-export CFLAGS="-include unistd.h" 
+export CFLAGS="-include unistd.h"
 poetry run fmpy compile <path-to-fmu-file>
 ```
 
@@ -22,13 +22,14 @@ Run the simulator with:
 ```bash
 poetry run python -m thrs.cli run <module>
 ```
-where module can be thrusters, pvt, pcm or consumers. 
 
-The UI is in [zero-ui](../zero-ui) under [http://localhost:5173/thrs/hmi].
+Where `<module>` can be one of: `thrusters`, `pvt`, `pcm`, or `consumers`.
+
+The UI is located in [zero-ui](../zero-ui) at [http://localhost:5173/thrs/hmi](http://localhost:5173/thrs/hmi).
 
 ## Installation
 
-Install the dependencies as (on MacOS):
+Install dependencies on macOS:
 
 ```bash
 brew install graphviz
@@ -39,17 +40,17 @@ poetry install
 
 ## GraphQL
 
-### Running API
+### Running the API
 
-Run the API with
+Start the API with:
 
 ```bash
 poetry run fastapi dev src/thrs/graphql/strawberry.py
 ```
 
-### Export schema
+### Exporting the Schema
 
-Export the graphql schema to zero-ui with
+Export the GraphQL schema to `zero-ui`:
 
 ```bash
 poetry run strawberry export-schema thrs.graphql.strawberry --output ../zero-ui/src/graphql/thrs/schema.graphql

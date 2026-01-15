@@ -12,7 +12,7 @@ const roomStore = useRoomStore();
 const { currentRoom, hasPendingRequests } = toRefs(roomStore);
 const { breakpoints } = toRefs(useUIStore());
 
-const lights = computed(() => groupLights(currentRoom.value.roomsControls.filter(isLightControl)));
+const lights = computed(() => groupLights(currentRoom.value.roomControls.filter(isLightControl)));
 
 const commit = async (control: LightingControl, brightness: Ref<number>) => {
   if (hasPendingRequests.value) return;

@@ -1,6 +1,14 @@
-from typing import ClassVar
-from thrs.input_output.base import Stamped, ThrsValues
-from thrs.input_output.definitions.units import Celsius, OnOff, Ratio
+from typing import Annotated, ClassVar
+from thrs.input_output.base import Stamped, ThrsValues, field_meta
+from thrs.input_output.definitions.units import (
+    Celsius,
+    FahrenheitMode,
+    FreeCoolingMode,
+    Kelvin,
+    OnOff,
+    Ratio,
+    TankControlMode,
+)
 
 
 class Pump(ThrsValues):
@@ -40,9 +48,24 @@ class Pcm(ThrsValues):
 
 
 class Fahrenheit(ThrsValues):
-    free_cooling: Stamped[OnOff]
-    temperature_setpoint: Stamped[Celsius]
-    release: Stamped[OnOff]
+    enable: Stamped[OnOff]
+    mode: Stamped[FahrenheitMode]
+    cooling_setpoint: Stamped[Celsius]
+    free_cooling_mode: Annotated[
+        Stamped[FreeCoolingMode], field_meta(included_in_fmu=False)
+    ]
+    available_seawater_temperature: Annotated[
+        Stamped[Celsius], field_meta(included_in_fmu=False)
+    ]
+    available_hot_temperature: Stamped[Celsius]
+    available_cold_temperature: Stamped[Celsius]
+    cold_minimum: Stamped[Celsius]
+    hot_minimum: Stamped[Celsius]
+    cold_hysteresis: Stamped[Kelvin]
+    hot_hysteresis: Stamped[Kelvin]
+    tank_control_mode: Annotated[
+        Stamped[TankControlMode], field_meta(included_in_fmu=False)
+    ]
 
 
 class HeatPump(ThrsValues):

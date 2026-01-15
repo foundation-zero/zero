@@ -8,6 +8,14 @@ on:
       - .github/workflows/ci_zero_loads_app.yaml
   release:
     types: [released]
+  push:
+    branches:
+      - main
+    paths:
+      - zero-loads-app/**
+      - data/**
+      - zero-generator/**
+      - .github/workflows/ci_zero_loads_app.yaml
 
 env:
   IMAGE: "europe-west1-docker.pkg.dev/common-449414/common/zero-loads-app"
@@ -21,11 +29,11 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
-          fetch-depth: '0'
+          fetch-depth: "0"
       - uses: actions/setup-python@v5
         with:
           python-version: 3.13
-      - run: pipx install poetry==2.1.4
+      - run: pipx install poetry==2.2.1
       - run: poetry check
         working-directory: zero-loads-app
       - uses: astral-sh/ruff-action@v3
@@ -35,24 +43,20 @@ jobs:
         working-directory: zero-loads-app
       - run: poetry run mypy src
         working-directory: zero-loads-app
-      - name: Create .env file from secret for zero-loads-app
+      - name: Create .env file from secret in root for services
+        run: |
+          echo "${{ secrets.ENV }}" > .env
+      - name: Create .env file from secret in project
         run: |
           echo "${{ secrets.ENV_LOADS_APP }}" > .env
         working-directory: zero-loads-app
       - name: Unit Test
-        run: poetry run pytest . --run=unit -vv
+        run: poetry run pytest --run=unit -vv
         working-directory: zero-loads-app
       - run: poetry install
         working-directory: data
-      - name: Create .env file from secret for /data
-        run: |
-          echo "${{ secrets.ENV_DATA }}" > .env
-        working-directory: data
       - name: Run services
-        run: docker compose up -d --quiet-pull --wait
-        working-directory: zero-loads-app
-      - run: poetry run python -m setup_postgres
-        working-directory: data
+        run: docker compose --profile zero up -d --quiet-pull --wait
       - name: Integration Test
         run: poetry run pytest --run=integration -vv
         working-directory: zero-loads-app
@@ -60,11 +64,6 @@ jobs:
         id: image_tag
         run: |
           VERSION=$(poetry version -s | sed -r 's/\+/_/g')
-
-          if [[ "${{ github.event_name }}" == "pull_request" ]]; then
-            SHORT_SHA=$(echo "${{ github.sha }}" | cut -c1-7)
-            VERSION="${VERSION}-dev-${SHORT_SHA}"
-          fi
 
           echo "Using image tag: $VERSION"
           echo "image_tag=$VERSION" >> $GITHUB_OUTPUT
@@ -75,8 +74,8 @@ jobs:
     runs-on: ubuntu-latest
     needs: test
     permissions:
-      contents: 'read'
-      id-token: 'write'
+      contents: "read"
+      id-token: "write"
     steps:
       - uses: actions/checkout@v4
       # Set up in https://github.com/foundation-zero/gcp-common

@@ -21,19 +21,19 @@ import { computed } from "vue";
 
 const props = defineProps<{ room: Room }>();
 
-const hasHumiditySensor = computed(() => props.room.roomsSensors.some(isHumiditySensor));
+const hasHumiditySensor = computed(() => props.room.roomSensors.some(isHumiditySensor));
 const actualHumidity = computed(() => extractActualHumidity(props.room) ?? 0);
 
 const { useSensorHistory, useControlHistory } = useHistoryStore();
 
 const history = useDemoSensorValues(
-  () => useSensorHistory(props.room.roomsSensors.find(isHumiditySensor)?.id),
+  () => useSensorHistory(props.room.roomSensors.find(isHumiditySensor)?.id),
   24,
   { min: HUMIDITY_RANGE[0], max: HUMIDITY_RANGE[1] },
 );
 
 const setpointHistory = useDemoControlValues(
-  () => useControlHistory(props.room.roomsControls.find(isHumidityControl)?.id),
+  () => useControlHistory(props.room.roomControls.find(isHumidityControl)?.id),
   24,
   { min: HUMIDITY_SETPOINT_RANGE[0], max: HUMIDITY_SETPOINT_RANGE[1] },
 );

@@ -1,8 +1,10 @@
+import contextlib
+import os
 import pathlib
 
 import pytest
 
-from loads.config import Settings
+from loads.api import app
 
 
 def pytest_addoption(parser):
@@ -26,6 +28,24 @@ def pytest_runtest_setup(item):
         pytest.skip(f"skipping {item} because --run=unit was not specified")
 
 
-@pytest.fixture(scope="session")
+@pytest.fixture()
 def settings():
+    from loads.config import Settings
+
+    os.environ["PG_HOST"] = "localhost"
+    os.environ["MQTT_HOST"] = "localhost"
+
     return Settings()  # type: ignore
+
+
+@pytest.fixture()
+def override_dependency():
+    @contextlib.contextmanager
+    def _override_dependency(dependency, fake_dependency):
+        app.dependency_overrides[dependency] = fake_dependency
+        try:
+            yield
+        finally:
+            del app.dependency_overrides[dependency]
+
+    return _override_dependency

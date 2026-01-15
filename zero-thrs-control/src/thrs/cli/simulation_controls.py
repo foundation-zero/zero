@@ -738,6 +738,8 @@ class SimulationControls:
                     )
                 )
                 await self._run_simulation(modules, context, executor, simulator, cmds)
+            except Exception as e:
+                logger.error(f"SimulationControls run encountered an error: {e}")
             finally:
                 executor_task.cancel()
                 receive_task.cancel()

@@ -31,7 +31,7 @@ const test = testBase.extend<{ blindsPage: BlindsPage }>({
 
 test.describe("Blinds", () => {
   const roomWithTwoBlinds = rooms.find(
-    (room) => room.roomsControls.filter(isBlindsControl).length === 2,
+    (room) => room.roomControls.filter(isBlindsControl).length === 2,
   )!;
 
   test.describe("with 2 blinds", () => {
@@ -40,7 +40,7 @@ test.describe("Blinds", () => {
     test.beforeEach(async ({ page, blindsPage }) => {
       blindsPage.setBlindLevels(targetLevels, {
         ...dutchCabin,
-        roomsControls: roomWithTwoBlinds.roomsControls,
+        roomControls: roomWithTwoBlinds.roomControls,
       });
 
       await page.waitForTimeout(500);
@@ -61,19 +61,19 @@ test.describe("Blinds", () => {
 
   test.describe("with > 2 blinds", () => {
     const roomWithMoreThanTwoBlinds = rooms.find(
-      (room) => room.roomsControls.filter(isBlindsControl).length > 2,
+      (room) => room.roomControls.filter(isBlindsControl).length > 2,
     )!;
 
     test.beforeEach(async ({ blindsPage }) => {
       blindsPage.setBlindLevels([], {
         ...dutchCabin,
-        roomsControls: roomWithMoreThanTwoBlinds.roomsControls,
+        roomControls: roomWithMoreThanTwoBlinds.roomControls,
       });
     });
 
     test("shows the correct amount of controls", async ({ blindsPage }) => {
       await expect(blindsPage.listItems).toHaveCount(
-        roomWithMoreThanTwoBlinds.roomsControls.filter(isBlindsControl).length,
+        roomWithMoreThanTwoBlinds.roomControls.filter(isBlindsControl).length,
       );
     });
 

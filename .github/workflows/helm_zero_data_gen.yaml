@@ -1,14 +1,11 @@
 name: "Zero Data: Deploy zero-data-gen chart"
 on:
-  pull_request:
-    types: [closed]
+  push:
     branches:
       - main
     paths:
       - .github/workflows/helm_zero_data_gen.yaml
       - zero-data/charts/data_gen/**
-  release:
-    types: [released]
 
 jobs:
   helm-push:

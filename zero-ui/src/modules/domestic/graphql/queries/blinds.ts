@@ -14,7 +14,7 @@ export const BlindsFragment = gql`
 
 export const setBlindsLevelMutation = gql`
   mutation SetBlindsLevel($ids: [ID!]!, $level: Float!) {
-    setBlinds(ids: $ids, level: $level) {
+    setBlinds: domesticSetBlinds(ids: $ids, level: $level) {
       ...MutationResponse
     }
   }

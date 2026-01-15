@@ -6,7 +6,9 @@ from httpx import ASGITransport, AsyncClient
 
 from loads.api import app
 from loads.api.api import get_messaging
+from loads.api.loads import loads_variables
 from loads.api.types import ActualType
+from loads.sensors.at import ApparentWindSpeed
 
 
 def override_messaging():
@@ -14,9 +16,10 @@ def override_messaging():
 
     mock.get_values_for = Mock(
         return_value=[
-            ActualType(id="main-sheet-load", value=42.0),
+            ActualType(id="main-checkstay-deflector-ps-load", value=42.0),
         ]
     )
+
     return mock
 
 
@@ -30,37 +33,116 @@ async def async_client():
 
 
 @pytest.mark.asyncio
-async def test_graphql_reference(async_client: AsyncClient):
-    app.dependency_overrides[get_messaging] = override_messaging
+async def test_graphql_reference(async_client: AsyncClient, override_dependency):
+    with override_dependency(get_messaging, override_messaging):
+        response = await async_client.post(
+            "/graphql",
+            json={
+                "query": """
+                query {
+                    variables(variables: ["main-checkstay-deflector-ps-load"]) {
+                        id
+                        reference(case: {awaRange: upwind, awsRange: aws_15_20, sailset: [full_main, full_mizzen, blade]}) {
+                            alarmLow
+                            alarmHigh
+                            target
+                            warningHigh
+                            warningLow
+                        }
+                        variable {
+                            id
+                            name
+                            unit
+                            minimum
+                            maximum
+                        }
+                        actual {
+                            id
+                            value
+                        }
+                    }
+                }
+                """
+            },
+        )
 
+        assert response.status_code == 200
+        assert response.json() == {
+            "data": {
+                "variables": [
+                    {
+                        "id": "main-checkstay-deflector-ps-load",
+                        "reference": {
+                            "alarmLow": 5.0,
+                            "warningLow": 6.0,
+                            "target": 10.0,
+                            "warningHigh": 14.0,
+                            "alarmHigh": 15.0,
+                        },
+                        "actual": {
+                            "id": "main-checkstay-deflector-ps-load",
+                            "value": 42.0,
+                        },
+                        "variable": {
+                            "id": "main-checkstay-deflector-ps-load",
+                            "name": "Main Checkstay Deflector Ps Load",
+                            "unit": "tonne",
+                            "minimum": 0.0,
+                            "maximum": None,
+                        },
+                    },
+                ]
+            }
+        }
+
+
+@pytest.mark.asyncio
+async def test_graphql_all_variables(async_client: AsyncClient, override_dependency):
+    with override_dependency(get_messaging, override_messaging):
+        response = await async_client.post(
+            "/graphql",
+            json={
+                "query": """
+                query {
+                    variables {
+                        id
+                        variable {
+                            id
+                            name
+                            unit
+                            minimum
+                            maximum
+                        }
+                    }
+                }
+                """
+            },
+        )
+
+        assert response.status_code == 200
+        assert len(response.json()["data"]["variables"]) == len(loads_variables.keys())
+
+
+@pytest.mark.asyncio
+async def test_at_sensors(async_client: AsyncClient, mqtt_client_send):
+    variable_name = "aws"
+    raw_value = "16.7"
+    await mqtt_client_send.publish(ApparentWindSpeed.TOPIC, raw_value)
     response = await async_client.post(
         "/graphql",
         json={
             "query": """
             query {
-                variables(variables: ["main-sheet-load"]) {
+                variables(variables: ["%s"]) {
                     id
-                    reference(case: {awa: 27, aws: 16, sailset: [full_main, full_mizzen, blade]}) {
-                    reference {
-                        alarmLow
-                        alarmHigh
-                        target
-                        warningHigh
-                        warningLow
-                    }
-                    variable {
-                        id
-                        name
-                        unit
-                    }
-                    }
                     actual {
-                    id
-                    value
+                        id
+                        value
                     }
                 }
             }
             """
+            % variable_name
         },
     )
 
@@ -69,22 +151,8 @@ async def test_graphql_reference(async_client: AsyncClient):
         "data": {
             "variables": [
                 {
-                    "id": "main-sheet-load",
-                    "reference": {
-                        "reference": {
-                            "alarmLow": None,
-                            "alarmHigh": 15.0,
-                            "target": None,
-                            "warningHigh": None,
-                            "warningLow": None,
-                        },
-                        "variable": {
-                            "id": "main-sheet-load",
-                            "name": "Main Sheet Load",
-                            "unit": "tonne",
-                        },
-                    },
-                    "actual": {"id": "main-sheet-load", "value": 42.0},
+                    "id": variable_name,
+                    "actual": {"id": variable_name, "value": float(raw_value)},
                 }
             ]
         }

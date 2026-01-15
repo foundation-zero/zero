@@ -296,14 +296,14 @@ export const isCO2Sensor = isSensorType(SensorType.CO2);
 export const extractActualSensorValue =
   <T extends SensorType>(type: T) =>
   (room: Room) => {
-    const value = room.roomsSensors.find(isSensorType(type))?.value;
+    const value = room.roomSensors.find(isSensorType(type))?.value;
     if (value !== undefined) return Number(value);
   };
 
 export const extractActualControlValue =
   <T extends ControlType>(type: T) =>
   (room: Room) => {
-    const value = room.roomsControls.find(isControlType(type))?.value;
+    const value = room.roomControls.find(isControlType(type))?.value;
     if (value !== undefined) return Number(value);
   };
 

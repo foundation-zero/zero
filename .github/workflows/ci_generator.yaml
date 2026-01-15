@@ -7,6 +7,13 @@ on:
       - .github/workflows/ci_generator.yaml
   release:
     types: [released]
+  push:
+    branches:
+      - main
+    paths:
+      - zero-generator/**
+      - zero-loads-app/**
+      - .github/workflows/ci_generator.yaml
 
 jobs:
   test:
@@ -17,11 +24,11 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
-          fetch-depth: '0'
+          fetch-depth: "0"
       - uses: actions/setup-python@v5
         with:
           python-version: 3.13
-      - run: pipx install poetry==2.1.4
+      - run: pipx install poetry==2.2.1
       - run: poetry check
         working-directory: zero-generator
       - uses: astral-sh/ruff-action@v3
@@ -31,9 +38,11 @@ jobs:
         working-directory: zero-generator
       - run: poetry run mypy src
         working-directory: zero-generator
+      - name: Create .env file from secret in root
+        run: |
+          echo "${{ secrets.ENV }}" > .env
       - name: Run services
-        run: docker compose up -d --quiet-pull --wait
-        working-directory: zero-generator
+        run: docker compose --profile zero up -d --quiet-pull --wait vernemq
       - name: Unit Test
         run: poetry run pytest . -vv
         working-directory: zero-generator

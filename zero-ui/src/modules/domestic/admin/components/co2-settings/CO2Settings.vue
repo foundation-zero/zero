@@ -20,7 +20,7 @@ const store = useRoomStore();
 const { allControls, rooms } = toRefs(store);
 
 const roomsWithCO2Control = computed(() =>
-  rooms.value.filter((room) => room.roomsControls.some(isCO2Control)),
+  rooms.value.filter((room) => room.roomControls.some(isCO2Control)),
 );
 
 const controls = computed(() => allControls.value.filter(isCO2Control));

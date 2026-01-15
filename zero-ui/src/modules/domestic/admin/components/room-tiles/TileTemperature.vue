@@ -28,18 +28,18 @@ const props = defineProps<{ room: Room }>();
 const { useSensorHistory, useControlHistory } = useHistoryStore();
 
 const history = useDemoSensorValues(
-  () => useSensorHistory(props.room.roomsSensors.find(isTemperatureSensor)?.id),
+  () => useSensorHistory(props.room.roomSensors.find(isTemperatureSensor)?.id),
   24,
   { min: TEMPERATURE_RANGE[0], max: TEMPERATURE_RANGE[1] },
 );
 
 const setpointHistory = useDemoControlValues(
-  () => useControlHistory(props.room.roomsControls.find(isTemperatureControl)?.id),
+  () => useControlHistory(props.room.roomControls.find(isTemperatureControl)?.id),
   24,
   { min: TEMPERATURE_SETPOINT_RANGE[0], max: TEMPERATURE_SETPOINT_RANGE[1] },
 );
 
-const hasTemperatureSensor = computed(() => props.room.roomsSensors.some(isTemperatureSensor));
+const hasTemperatureSensor = computed(() => props.room.roomSensors.some(isTemperatureSensor));
 const actualTemperature = computed(() => extractActualTemperature(props.room) ?? 0);
 const actualHumidity = computed(() => extractActualHumidity(props.room) ?? 0);
 const temperatureSetpoint = computed(() => extractTemperatureSetpoint(props.room) ?? 0);

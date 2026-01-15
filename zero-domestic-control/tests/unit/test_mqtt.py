@@ -1,5 +1,5 @@
-from zero_domestic_control.messages import Message
-from zero_domestic_control.mqtt import send_message
+from domestic_control.messages import Message
+from domestic_control.mqtt import send_message
 
 
 class MessageWithIdInTopic(Message):

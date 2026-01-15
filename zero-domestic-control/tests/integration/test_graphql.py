@@ -1,5 +1,5 @@
 from fastapi.testclient import TestClient
-from zero_domestic_control.app import app
+from domestic_control.app import app
 
 
 def test_version():

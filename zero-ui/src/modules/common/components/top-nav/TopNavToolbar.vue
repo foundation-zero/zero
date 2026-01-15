@@ -20,7 +20,7 @@ const props = defineProps<{ class?: HTMLAttributes["class"] }>();
     <span class="grow" />
     <slot name="right">
       <span
-        class="flex items-center justify-end"
+        class="flex items-center justify-end gap-2"
         :class="{ 'w-1/4': $slots.center }"
       >
         <slot name="right-content" />

@@ -6,6 +6,12 @@ on:
       - data/**
   release:
     types: [released]
+  push:
+    branches:
+      - main
+    paths:
+      - .github/workflows/ci_data.yaml
+      - data/**
 
 jobs:
   test:
@@ -14,23 +20,15 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
-          fetch-depth: '0'
+          fetch-depth: "0"
       - uses: actions/setup-python@v5
         with:
           python-version: 3.13
-      - run: pipx install poetry==2.1.4
+      - run: pipx install poetry==2.2.1
       - run: poetry check
         working-directory: data
-      - name: Create .env file from secret
+      - name: Create .env file from secret in root for services
         run: |
-          echo "${{ secrets.ENV_DATA }}" > .env
-        working-directory: data
-      - run: poetry install
-        working-directory: data
+          echo "${{ secrets.ENV }}" > .env
       - name: Run services
-        run: docker compose up -d --quiet-pull postgres risingwave vernemq --wait
-        working-directory: data
-      - run: poetry run python -m setup_postgres
-        working-directory: data
-      - run: poetry run python -m setup_risingwave
-        working-directory: data
+        run: docker compose --profile zero up -d --quiet-pull --wait

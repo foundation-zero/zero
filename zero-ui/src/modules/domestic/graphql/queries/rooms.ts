@@ -3,18 +3,18 @@ import { mutationResponse } from ".";
 import { LightGroupFragment } from "./light-groups";
 
 export const RoomFragment = gql`
-  fragment RoomItem on Rooms {
+  fragment RoomItem on DomesticRooms {
     id
     name
     group
-    roomsControls {
+    roomControls(orderBy: { id: ASC }) {
       id
       type
       value
       time
       name
     }
-    roomsSensors {
+    roomSensors(orderBy: { id: ASC }) {
       id
       type
       value
@@ -26,18 +26,18 @@ export const RoomFragment = gql`
 
 export const getAll = gql`
   query GetAllRooms {
-    rooms {
+    rooms: domesticRooms {
       id
       name
       group
-      roomsControls {
+      roomControls(orderBy: { id: ASC }) {
         id
         type
         value
         time
         name
       }
-      roomsSensors {
+      roomSensors(orderBy: { id: ASC }) {
         id
         type
         value
@@ -52,7 +52,7 @@ export const getAll = gql`
 
 export const subscribeToRoom = gql`
   subscription SubscribeToRoom($roomId: String!) {
-    rooms(where: { id: { _eq: $roomId } }) {
+    domesticRooms(where: { id: { _eq: $roomId } }) {
       ...RoomItem
     }
   }
@@ -62,7 +62,7 @@ export const subscribeToRoom = gql`
 
 export const subscribeToRooms = gql`
   subscription SubscribeToRoom {
-    rooms {
+    rooms: domesticRooms {
       ...RoomItem
     }
   }
@@ -72,7 +72,7 @@ export const subscribeToRooms = gql`
 
 export const getRoomById = gql`
   query GetRoomById($roomId: String!) {
-    rooms(where: { id: { _eq: $roomId } }) {
+    rooms: domesticRooms(where: { id: { _eq: $roomId } }) {
       ...RoomItem
     }
   }
@@ -81,8 +81,11 @@ export const getRoomById = gql`
 `;
 
 export const setTemperatureSetpointMutation = gql`
-  mutation SetTemperatureSetpointForRoom($temperature: Float!) {
-    setRoomTemperatureSetpoints(temperature: $temperature) {
+  mutation SetTemperatureSetpointForRoom($ids: [ID!]!, $temperature: Float!) {
+    setRoomTemperatureSetpoints: domesticSetRoomTemperatureSetpoints(
+      ids: $ids
+      temperature: $temperature
+    ) {
       ...MutationResponse
     }
   }
@@ -92,7 +95,10 @@ export const setTemperatureSetpointMutation = gql`
 
 export const setTemperatureSetpointForRoomMutation = gql`
   mutation SetTemperatureSetpointForRoom($ids: [ID!]!, $temperature: Float!) {
-    setRoomTemperatureSetpoints(ids: $ids, temperature: $temperature) {
+    setRoomTemperatureSetpoints: domesticSetRoomTemperatureSetpoints(
+      ids: $ids
+      temperature: $temperature
+    ) {
       ...MutationResponse
     }
   }
@@ -101,8 +107,8 @@ export const setTemperatureSetpointForRoomMutation = gql`
 `;
 
 export const setAmplifierMutation = gql`
-  mutation SetAmplifier($on: Boolean!) {
-    setAmplifiers(on: $on) {
+  mutation SetAmplifier($ids: [ID!]!, $on: Boolean!) {
+    setAmplifiers: domesticSetAmplifiers(ids: $ids, on: $on) {
       ...MutationResponse
     }
   }
@@ -112,7 +118,7 @@ export const setAmplifierMutation = gql`
 
 export const setAmplifierForRoomMutation = gql`
   mutation SetAmplifier($ids: [ID!]!, $on: Boolean!) {
-    setAmplifiers(ids: $ids, on: $on) {
+    setAmplifiers: domesticSetAmplifiers(ids: $ids, on: $on) {
       ...MutationResponse
     }
   }
@@ -122,7 +128,7 @@ export const setAmplifierForRoomMutation = gql`
 
 export const setHumiditySetpointMutation = gql`
   mutation SetRoomHumiditySetpoints($ids: [ID!]!, $humidity: Float!) {
-    setRoomHumiditySetpoints(ids: $ids, humidity: $humidity) {
+    setRoomHumiditySetpoints: domesticSetRoomHumiditySetpoints(ids: $ids, humidity: $humidity) {
       ...MutationResponse
     }
   }
@@ -132,7 +138,7 @@ export const setHumiditySetpointMutation = gql`
 
 export const setCO2SetpointMutation = gql`
   mutation SetRoomCo2Setpoint($ids: [ID!]!, $co2: Float!) {
-    setRoomCo2Setpoint(ids: $ids, co2: $co2) {
+    setRoomCo2Setpoint: domesticSetRoomCo2Setpoint(ids: $ids, co2: $co2) {
       ...MutationResponse
     }
   }

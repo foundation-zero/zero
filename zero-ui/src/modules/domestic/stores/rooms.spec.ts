@@ -127,7 +127,7 @@ describe("Rooms Store", () => {
     });
 
     test("it updates the control data", async () => {
-      const controls: Room["roomsControls"] = [
+      const controls: Room["roomControls"] = [
         toAmplifierStatus(false),
         toTemperatureControl(99),
         toBlindsControl(0.5),
@@ -138,19 +138,19 @@ describe("Rooms Store", () => {
         rooms: [
           {
             ...room,
-            roomsControls: controls,
-            roomsSensors: [],
+            roomControls: controls,
+            roomSensors: [],
           },
         ],
       });
 
-      expect(store.currentRoom.roomsControls).toMatchObject(controls);
+      expect(store.currentRoom.roomControls).toMatchObject(controls);
       expect(extractTemperatureSetpoint(store.currentRoom)).toBe(99);
       expect(extractAmplifierStatus(store.currentRoom)).toBe(0);
     });
 
     test("it updates the sensor data", async () => {
-      const sensors: Room["roomsSensors"] = [
+      const sensors: Room["roomSensors"] = [
         toTemperatureSensor(25),
         toHumiditySensor(50),
         toCO2Sensor(400),
@@ -160,13 +160,13 @@ describe("Rooms Store", () => {
         rooms: [
           {
             ...room,
-            roomsControls: [],
-            roomsSensors: sensors,
+            roomControls: [],
+            roomSensors: sensors,
           },
         ],
       });
 
-      expect(store.currentRoom.roomsSensors).toMatchObject(sensors);
+      expect(store.currentRoom.roomSensors).toMatchObject(sensors);
       expect(extractActualHumidity(store.currentRoom)).toBe(50);
       expect(extractActualTemperature(store.currentRoom)).toBe(25);
       expect(extractActualCO2(store.currentRoom)).toBe(400);
@@ -187,7 +187,7 @@ describe("Rooms Store", () => {
 
         expect(useMutation).toHaveBeenCalledWith(setTemperatureSetpointForRoomMutation);
         expect(executeMutation).toHaveBeenCalledWith({
-          ids: room.id,
+          ids: [room.id],
           temperature: nextTemperature,
         });
       });
@@ -217,7 +217,7 @@ describe("Rooms Store", () => {
 
         expect(useMutation).toHaveBeenCalledWith(setTemperatureSetpointMutation);
         expect(executeMutation).toHaveBeenCalledWith({
-          id: undefined,
+          ids: [""],
           temperature: nextTemperature,
         });
       });
@@ -229,7 +229,7 @@ describe("Rooms Store", () => {
 
         expect(useMutation).toHaveBeenCalledWith(setAmplifierMutation);
         expect(executeMutation).toHaveBeenCalledWith({
-          id: undefined,
+          ids: [""],
           on: nextState,
         });
       });

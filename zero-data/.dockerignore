@@ -1,3 +1,11 @@
+*
+!poetry.lock
+!pyproject.toml
+!src
+!README.md
+!io_lists
+!.gsheet-sa-key.json
+
 # Python
 __pycache__/
 *.py[cod]
@@ -60,8 +68,3 @@ temp/
 *.bak
 *.tmp
 *.old
-
-# dbt
-.user.yml
-dbt/target/*
-.env

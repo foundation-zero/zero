@@ -1,12 +1,10 @@
 from pydantic_settings import SettingsConfigDict
 
-from zero_domestic_control.config import Settings
+from domestic_control.config import Settings
 
 
 class ConfigTestSettings(Settings):
-    model_config = SettingsConfigDict(
-        env_file=None, env_prefix="REQUIRE_TEST_TO_CONTAIN_ALL_VALUES"
-    )
+    model_config = SettingsConfigDict(env_file=None, env_prefix="REQUIRE_TEST_TO_CONTAIN_ALL_VALUES")
 
 
 def test_config():
@@ -34,9 +32,7 @@ def test_config():
     assert config.pg_user == "test_user"
     assert config.pg_password == "test_password"
     assert config.pg_db == "test_db"
-    assert (
-        config.pg_url == "postgresql://test_user:test_password@localhost:5432/test_db"
-    )
+    assert config.pg_url == "postgresql://test_user:test_password@localhost:5432/test_db"
     assert config.risingwave_url == "localhost:4566"
     assert config.mqtt_host == "localhost"
     assert config.home_assistant_url == "http://localhost:8123/api"

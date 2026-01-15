@@ -36,6 +36,13 @@ export default defineConfig(({ mode }) => {
             return path.replace(/^\/api\/thrs/, "");
           },
         },
+        "/api/loads": {
+          target: env.VITE_LOADS_API_SERVER,
+          changeOrigin: true,
+          rewrite(path) {
+            return path.replace(/^\/api\/loads/, "");
+          },
+        },
       },
     },
     plugins: [

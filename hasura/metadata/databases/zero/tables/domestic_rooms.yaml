@@ -1,0 +1,87 @@
+table:
+  name: rooms
+  schema: domestic
+array_relationships:
+  - name: amplifiers
+    using:
+      foreign_key_constraint_on:
+        column: room_id
+        table:
+          name: amplifiers
+          schema: domestic
+  - name: blinds
+    using:
+      foreign_key_constraint_on:
+        column: room_id
+        table:
+          name: blinds
+          schema: domestic
+  - name: conditions
+    using:
+      foreign_key_constraint_on:
+        column: room_id
+        table:
+          name: conditions
+          schema: domestic
+  - name: lightingGroups
+    using:
+      foreign_key_constraint_on:
+        column: room_id
+        table:
+          name: lighting_groups
+          schema: domestic
+  - name: roomControls
+    using:
+      foreign_key_constraint_on:
+        column: room_id
+        table:
+          name: room_controls
+          schema: domestic
+  - name: roomControlsLogs
+    using:
+      foreign_key_constraint_on:
+        column: room_id
+        table:
+          name: room_controls_log
+          schema: domestic
+  - name: roomSensors
+    using:
+      foreign_key_constraint_on:
+        column: room_id
+        table:
+          name: room_sensors
+          schema: domestic
+  - name: roomSensorsLogs
+    using:
+      foreign_key_constraint_on:
+        column: room_id
+        table:
+          name: room_sensors_log
+          schema: domestic
+  - name: sensors
+    using:
+      foreign_key_constraint_on:
+        column: room_id
+        table:
+          name: sensors
+          schema: domestic
+select_permissions:
+  - role: user
+    permission:
+      columns:
+        - id
+        - name
+        - group
+      filter:
+        id:
+          _eq: X-Hasura-Cabin
+    comment: ""
+update_permissions:
+  - role: user
+    permission:
+      columns: []
+      filter:
+        id:
+          _eq: X-Hasura-Cabin
+      check: null
+    comment: ""
