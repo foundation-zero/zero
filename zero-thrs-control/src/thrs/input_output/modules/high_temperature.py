@@ -1,37 +1,17 @@
 from thrs.input_output.base import SimulationInputs
 from thrs.input_output.definitions import simulation
 from thrs.input_output.modules.consumers import (
-    ConsumersSensorValues,
-    ConsumersControlValues,
     ConsumersSimulationOutputs,
 )
 from thrs.input_output.modules.pcm import (
-    PcmControlValues,
-    PcmSensorValues,
     PcmSimulationOutputs,
 )
 from thrs.input_output.modules.pvt import (
-    PvtControlValues,
-    PvtSensorValues,
     PvtSimulationOutputs,
 )
 from thrs.input_output.modules.thrusters import (
-    ThrustersControlValues,
-    ThrustersSensorValues,
     ThrustersSimulationOutputs,
 )
-
-
-class HighTemperatureSensorValues(
-    PcmSensorValues, ConsumersSensorValues, PvtSensorValues, ThrustersSensorValues
-):
-    pass
-
-
-class HighTemperatureControlValues(
-    PcmControlValues, ConsumersControlValues, PvtControlValues, ThrustersControlValues
-):
-    pass
 
 
 class HighTemperatureSimulationInputs(SimulationInputs):

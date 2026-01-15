@@ -3,13 +3,10 @@ from pytest import fixture
 import pytest
 
 from thrs.input_output.modules.high_temperature import (
-    HighTemperatureSensorValues,
     HighTemperatureSimulationInputs,
-    HighTemperatureSimulationOutputs,
 )
 from thrs.orchestration.executor import SimulationExecutor
 from thrs.simulation.fmu import Fmu
-from thrs.simulation.io_mapping import ThrsModelIoMapping
 from tests.helpers.simulation_inputs import simulator_input_field_setters
 from thrs.simulation.models.fmu_paths import high_temperature_path
 
@@ -39,12 +36,11 @@ def incorrect_simulation_inputs(simulation_inputs, request):
     return inputs
 
 
-async def test_high_temperature_simulation_inputs(incorrect_simulation_inputs, control):
+async def test_high_temperature_simulation_inputs(
+    incorrect_simulation_inputs, control, io_mapping
+):
     with Fmu(high_temperature_path) as fmu:
-        mapping = ThrsModelIoMapping(
-            HighTemperatureSensorValues,
-            HighTemperatureSimulationOutputs,
-        )
+        mapping = io_mapping
         executor = SimulationExecutor(
             mapping,
             fmu,
