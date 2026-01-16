@@ -1,4 +1,4 @@
-from typing import Any, Callable, ClassVar, Dict, get_type_hints
+from typing import Any, ClassVar, Dict, get_type_hints
 
 import generator.gen as gen
 from generator import Generator, GeneratorConfig, create_generator

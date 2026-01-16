@@ -129,23 +129,17 @@ loads_variables: dict[str, LoadsField] = {
     ),
     "main-halyard-load": LoadField(plc.MainHalyard, "load"),
     "main-halyard-lock-full": LoadField(plc.MainHalyard, "lock_full"),
-    "main-halyard-overhoist-full": LoadField(
-        plc.MainHalyard, "overhoist_full"
-    ),
+    "main-halyard-overhoist-full": LoadField(plc.MainHalyard, "overhoist_full"),
     "main-halyard-reef-1-lock": LoadField(plc.MainHalyard, "lock_1"),
     "main-halyard-reef-1-overhoist": LoadField(plc.MainHalyard, "overhoist_1"),
     "main-halyard-reef-2-lock": LoadField(plc.MainHalyard, "lock_2"),
     "main-halyard-reef-2-overhoist": LoadField(plc.MainHalyard, "overhoist_2"),
     "main-halyard-reef-3-lock": LoadField(plc.MainHalyard, "lock_3"),
     "main-halyard-reef-3-overhoist": LoadField(plc.MainHalyard, "overhoist_3"),
-    "main-halyard-relative-position": LoadField(
-        plc.MainHalyard, "relative_position"
-    ),
+    "main-halyard-relative-position": LoadField(plc.MainHalyard, "relative_position"),
     "main-outhaul-load": LoadField(plc.MainOuthaul, "load"),
     "main-outhaul-position": LoadField(plc.MainOuthaul, "position"),
-    "main-outhaul-relative-position": LoadField(
-        plc.MainOuthaul, "relative_position"
-    ),
+    "main-outhaul-relative-position": LoadField(plc.MainOuthaul, "relative_position"),
     "main-preventer-load": LoadField(plc.MainPreventer, "load"),
     "main-preventer-position": LoadField(plc.MainPreventer, "position"),
     "main-preventer-relative-position": LoadField(
@@ -160,16 +154,12 @@ loads_variables: dict[str, LoadsField] = {
     "main-runner-ps-load": LoadField(plc.MainRunnerLoadPs, "load"),
     "main-runner-sb-load": LoadField(plc.MainRunnerLoadSb, "load"),
     #'main-sheet-load': #TODO: Find the loadpin
-    "main-traveler-relative-position": LoadField(
-        plc.MainTraveler, "relative_position"
-    ),
+    "main-traveler-relative-position": LoadField(plc.MainTraveler, "relative_position"),
     "main-vang-load": LoadField(
         plc.MainVang, "load_bottom"
     ),  # TODO: use bottom or rod?
     "main-vang-position": LoadField(plc.MainVang, "position"),
-    "main-vang-relative-position": LoadField(
-        plc.MainVang, "relative_position"
-    ),
+    "main-vang-relative-position": LoadField(plc.MainVang, "relative_position"),
     "mizzen-boom-reef-1-lock": LoadField(plc.MizzenHalyard, "lock_1"),
     "mizzen-boom-reef-2-lock": LoadField(plc.MizzenHalyard, "lock_2"),
     "mizzen-checkstay-deflector-ps-load": LoadField(
@@ -190,12 +180,8 @@ loads_variables: dict[str, LoadsField] = {
     "mizzen-checkstay-deflector-sb-relative-position": LoadField(
         plc.MizzenCheckstayDeflector, "relative_position"
     ),
-    "mizzen-checkstay-ps-load": LoadField(
-        plc.MizzenCheckstayDeflector, "load_ps"
-    ),
-    "mizzen-checkstay-sb-load": LoadField(
-        plc.MizzenCheckstayDeflector, "load_sb"
-    ),
+    "mizzen-checkstay-ps-load": LoadField(plc.MizzenCheckstayDeflector, "load_ps"),
+    "mizzen-checkstay-sb-load": LoadField(plc.MizzenCheckstayDeflector, "load_sb"),
     "mizzen-cunningham-load": LoadField(plc.MizzenCunningham, "load"),
     "mizzen-cunningham-position": LoadField(plc.MizzenCunningham, "position"),
     "mizzen-cunningham-relative-position": LoadField(
@@ -207,9 +193,7 @@ loads_variables: dict[str, LoadsField] = {
         plc.MizzenHalyard, "relative_position"
     ),
     "mizzen-headsail-lock": LoadField(plc.MizzenHeadsailLocks, "lock"),
-    "mizzen-headsail-overhoist": LoadField(
-        plc.MizzenHeadsailLocks, "overhoist"
-    ),
+    "mizzen-headsail-overhoist": LoadField(plc.MizzenHeadsailLocks, "overhoist"),
     "mizzen-headsail-tack-adjuster-load": LoadField(
         plc.MizzenHeadsailTackAdjuster, "load"
     ),
@@ -249,33 +233,21 @@ loads_variables: dict[str, LoadsField] = {
         plc.MizzenVang, "load_bottom"
     ),  # TODO: use bottom or rod?
     "mizzen-vang-position": LoadField(plc.MizzenVang, "position"),
-    "mizzen-vang-relative-position": LoadField(
-        plc.MizzenVang, "relative_position"
-    ),
+    "mizzen-vang-relative-position": LoadField(plc.MizzenVang, "relative_position"),
     "staysail-lock": LoadField(plc.HeadsailLocks, "lock_staysail"),
     "staysail-overhoist": LoadField(plc.HeadsailLocks, "overhoist_staysail"),
-    "staysail-sheet-captive-ps-load": LoadField(
-        plc.StaysailSheetCaptivePS, "load"
-    ),
+    "staysail-sheet-captive-ps-load": LoadField(plc.StaysailSheetCaptivePS, "load"),
     "staysail-sheet-captive-ps-relative-position": LoadField(
         plc.StaysailSheetCaptivePS, "relative_position"
     ),
-    "staysail-sheet-captive-sb-load": LoadField(
-        plc.StaysailSheetCaptiveSB, "load"
-    ),
+    "staysail-sheet-captive-sb-load": LoadField(plc.StaysailSheetCaptiveSB, "load"),
     "staysail-sheet-captive-sb-relative-position": LoadField(
         plc.StaysailSheetCaptiveSB, "relative_position"
     ),
-    "staysail-sheet-feeder-ps-load": LoadField(
-        plc.StaysailSheetFeederPs, "load"
-    ),
-    "staysail-sheet-feeder-sb-load": LoadField(
-        plc.StaysailSheetFeederSb, "load"
-    ),
+    "staysail-sheet-feeder-ps-load": LoadField(plc.StaysailSheetFeederPs, "load"),
+    "staysail-sheet-feeder-sb-load": LoadField(plc.StaysailSheetFeederSb, "load"),
     "staysail-stay-adjuster-load": LoadField(plc.StaysailStayAdjuster, "load"),
-    "staysail-stay-adjuster-position": LoadField(
-        plc.StaysailStayAdjuster, "position"
-    ),
+    "staysail-stay-adjuster-position": LoadField(plc.StaysailStayAdjuster, "position"),
     "staysail-stay-adjuster-relative-position": LoadField(
         plc.StaysailStayAdjuster, "relative_position"
     ),
