@@ -3,31 +3,12 @@ from abc import ABC
 from pydantic import Field
 
 from .base import LoadsModel
-from .units import (
-    Millimeter,
-    RatioFromPerMille,
-    TonneFromDecaKilogram,
-)
+from .units import Alarm, Millimeter, RatioFromPerMille, TonneFromDecaKilogram
 
 
 class CaptiveWinch(LoadsModel, ABC):
-    load: TonneFromDecaKilogram = Field(validation_alias="ow_ActLoad_10kg")
     position: Millimeter = Field(validation_alias="ow_ActPos_mm")
     relative_position: RatioFromPerMille = Field(validation_alias="ow_ActPos_pm")
-    relief_load: TonneFromDecaKilogram = Field(validation_alias="ow_RelfLoad_10kg")
-
-
-class PrimaryWinch(LoadsModel, ABC):
-    load: TonneFromDecaKilogram = Field(validation_alias="ow_ActLoad_10kg")
-    relief_load: TonneFromDecaKilogram = Field(validation_alias="ow_RelfLoad_10kg")
-
-
-class Winch(LoadsModel, ABC):
-    pass
-
-
-class LoadWinch(LoadsModel, ABC):
-    pass
 
 
 class Cylinder(LoadsModel, ABC):
@@ -37,6 +18,7 @@ class Cylinder(LoadsModel, ABC):
         validation_alias="relative_position_dummy"
     )
     relief_load: TonneFromDecaKilogram = Field(validation_alias="ow_RelfLoad_10kg")
+    alarm: Alarm = Field(validation_alias="ox_LoadAlarm")
 
 
 class CylinderTwoPositions(LoadsModel, ABC):
@@ -50,6 +32,7 @@ class CylinderTwoPositions(LoadsModel, ABC):
         validation_alias="relative_position_dummy"
     )
     relief_load: TonneFromDecaKilogram = Field(validation_alias="ow_RelfLoad_10kg")
+    alarm: Alarm = Field(validation_alias="ox_LoadAlarm")
 
 
 class Deflector(LoadsModel, ABC):
@@ -61,28 +44,33 @@ class Deflector(LoadsModel, ABC):
     load_ps: TonneFromDecaKilogram = Field(validation_alias="i_ActualLoadPs")
     load_sb: TonneFromDecaKilogram = Field(validation_alias="i_ActualLoadSb")
     relief_load: TonneFromDecaKilogram = Field(validation_alias="i_RelfLoad_10kg")
+    alarm: Alarm = Field(validation_alias="ox_LoadAlarm")
 
 
-class LoadCell(LoadsModel, ABC):
+class Load(LoadsModel, ABC):
     load: TonneFromDecaKilogram = Field(validation_alias="ow_ActLoad_10kg")
     relief_load: TonneFromDecaKilogram = Field(validation_alias="ow_RelfLoad_10kg")
+    alarm: Alarm = Field(validation_alias="ox_LoadAlarm")
 
 
 class Vang(LoadsModel, ABC):
-    load_bottom: TonneFromDecaKilogram = Field(validation_alias="ow_ActLoad_10kg")
-    load_rod: TonneFromDecaKilogram = Field(validation_alias="ow_ActLoad2_10kg")
+    load_bottom: TonneFromDecaKilogram = Field(validation_alias="i_ActualLoadBottom")
+    load_rod: TonneFromDecaKilogram = Field(validation_alias="i_ActualLoadRod")
     position: Millimeter = Field(validation_alias="ow_ActPos_mm")
     relative_position: RatioFromPerMille = Field(
         validation_alias="relative_position_dummy"
     )
-    relief_load: TonneFromDecaKilogram = Field(validation_alias="ow_RelfLoad_10kg")
 
 
-class PrimaryWinchPs(PrimaryWinch):
+class Winch(LoadsModel, ABC):
+    pass
+
+
+class PrimaryWinchPs(Load):
     TOPIC = "sail-systems/fe212_prmrywnchps"
 
 
-class PrimaryWinchSb(PrimaryWinch):
+class PrimaryWinchSb(Load):
     TOPIC = "sail-systems/fe308_prmrywnchsb"
 
 
@@ -110,11 +98,11 @@ class MizzenWinchPs(Winch):
     TOPIC = "sail-systems/fe407_mzznwnchps"
 
 
-class AftWinchPs(LoadWinch):
+class AftWinchPs(Load):
     TOPIC = "sail-systems/fe408_aftwnchps"
 
 
-class AftWinchSb(LoadWinch):
+class AftWinchSb(Load):
     TOPIC = "sail-systems/fe508_aftwnchsb"
 
 
@@ -134,11 +122,11 @@ class BladeSheetCaptiveSB(CaptiveWinch):
     TOPIC = "sail-systems/fe301_bldshtsb"
 
 
-class BladeSheetFeederPs(LoadCell):
+class BladeSheetFeederPs(Load):
     TOPIC = "sail-systems/fe202_bldshtfdrps"
 
 
-class BladeSheetFeederSb(LoadCell):
+class BladeSheetFeederSb(Load):
     TOPIC = "sail-systems/fe302_bldshtfdrsb"
 
 
@@ -174,7 +162,7 @@ class MainCunningham(Cylinder):
     TOPIC = "sail-systems/f0205_mncnnnghm"
 
 
-class MainHalyard(CaptiveWinch):
+class MainHalyard(CaptiveWinch, Load):
     TOPIC = "sail-systems/fe207_mnhlyrd"
     lock_full: bool = Field(validation_alias="ox_IndctHlyrdLckFh_Ext")
     lock_1: bool = Field(validation_alias="ox_IndctHlyrdLck1_Ext")
@@ -197,27 +185,19 @@ class MainPreventer(Cylinder):
     TOPIC = "sail-systems/f0204_mnbmprvntr"
 
 
-class MainRunnerCaptivePS(CaptiveWinch):
+class MainRunnerPs(CaptiveWinch, Load):
     TOPIC = "sail-systems/fe401_mnrnnrps"
 
 
-class MainRunnerCaptiveSB(CaptiveWinch):
+class MainRunnerSb(CaptiveWinch, Load):
     TOPIC = "sail-systems/fe501_mnrnnrsb"
 
 
-class MainRunnerLoadPs(LoadCell):
-    TOPIC = "sail-systems/tbd"  # still missing in IO list
-
-
-class MainRunnerLoadSb(LoadCell):
-    TOPIC = "sail-systems/tbd"  # still missing in IO list
-
-
-class MainSheetCaptive(CaptiveWinch):
+class MainSheet(CaptiveWinch, Load):
     TOPIC = "sail-systems/fe205_mnsht"
 
 
-class MainVang(Vang):
+class MainVang(Vang, Load):
     TOPIC = "sail-systems/f0202_mnbmvng"
 
 
@@ -235,7 +215,7 @@ class MizzenCunningham(Cylinder):
     TOPIC = "sail-systems/f0504_mzzncnnnghm"
 
 
-class MizzenHalyard(CaptiveWinch):
+class MizzenHalyard(CaptiveWinch, Load):
     TOPIC = "sail-systems/fe404_mzznhlyrd"
     lock_full: bool = Field(validation_alias="ox_IndctMzznHlyrdLckFh_Ext")
     lock_1: bool = Field(validation_alias="ox_IndctMzznHlyrdLck1_Ext")
@@ -261,50 +241,41 @@ class MizzenHeadsailTackAdjuster(Cylinder):
 
 class MizzenOuthaul(Cylinder):
     TOPIC = "sail-systems/f0501_mzznothl"
-    # loadBm?
 
 
 class MizzenPreventer(Cylinder):
     TOPIC = "sail-systems/f0506_mzznbmprvntr"
 
 
-class MizzenRunnerCaptivePS(CaptiveWinch):
+class MizzenRunnerPs(CaptiveWinch, Load):
     TOPIC = "sail-systems/fe402_mzznrnnrps"
 
 
-class MizzenRunnerCaptiveSB(CaptiveWinch):
+class MizzenRunnerSb(CaptiveWinch, Load):
     TOPIC = "sail-systems/fe502_mzznrnnrsb"
 
 
-class MizzenRunnerLoadPs(LoadCell):
-    TOPIC = "sail-systems/tbd"  # still missing in IO list
-
-
-class MizzenRunnerLoadSb(LoadCell):
-    TOPIC = "sail-systems/tbd"  # still missing in IO list
-
-
-class MizzenSheetCaptive(CaptiveWinch):
+class MizzenSheet(CaptiveWinch, Load):
     TOPIC = "sail-systems/fe504_mzznsht"
 
 
-class MizzenVang(Vang):
+class MizzenVang(Vang, Load):
     TOPIC = "sail-systems/f0502_mzznbmvng"
 
 
-class StaysailSheetCaptivePS(CaptiveWinch):
+class StaysailSheetPs(CaptiveWinch):
     TOPIC = "sail-systems/fe203_styslshtps"
 
 
-class StaysailSheetCaptiveSB(CaptiveWinch):
+class StaysailSheetSb(CaptiveWinch):
     TOPIC = "sail-systems/fe303_styslshtsb"
 
 
-class StaysailSheetFeederPs(LoadCell):
+class StaysailSheetFeederPs(Load):
     TOPIC = "sail-systems/fe204_styslshtfdrps"
 
 
-class StaysailSheetFeederSb(LoadCell):
+class StaysailSheetFeederSb(Load):
     TOPIC = "sail-systems/fe304_styslshtfdrsb"
 
 

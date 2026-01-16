@@ -34,6 +34,7 @@ Fields = Literal[
     "position_2",
     "relative_position_1",
     "relative_position_2",
+    "load_deflector",
 ]
 
 
@@ -75,10 +76,11 @@ loads_variables: dict[str, LoadsField] = {
     "blade-cunningham-load": LoadField(sail_system.BladeCunningham, "load"),
     "blade-cunningham-position": LoadField(
         sail_system.BladeCunningham, "position_1"
-    ),  # TODO: figure out what position 1 and 2 are
+    ),  # TODO: position 1 and position 2 should be more or less equal. TBD how to deal with this.
     "blade-cunningham-relative-position": LoadField(
-        sail_system.BladeCunningham, "relative_position_1"
-    ),
+        sail_system.BladeCunningham,
+        "relative_position_1",
+    ),  # TODO: position 1 and position 2 should be more or less equal. TBD how to deal with this.
     "blade-sheet-feeder-ps-load": LoadField(sail_system.BladeSheetFeederPs, "load"),
     "blade-sheet-feeder-sb-load": LoadField(sail_system.BladeSheetFeederSb, "load"),
     "blade-tweaker-ps-load": LoadField(sail_system.BladeTweakerPS, "load"),
@@ -96,29 +98,18 @@ loads_variables: dict[str, LoadsField] = {
     "code-zero-tack-load": LoadField(sail_system.CodeSailTack, "load"),
     "code-zero-tack-position": LoadField(
         sail_system.CodeSailTack, "position_1"
-    ),  # TODO: figure out what position 1 and 2 are
+    ),  # TODO: position 1 and position 2 should be more or less equal. TBD how to deal with this.
     "code-zero-tack-relative-position": LoadField(
-        sail_system.CodeSailTack, "relative_position_1"
+        sail_system.CodeSailTack,
+        "relative_position_1",  # TODO: position 1 and position 2 should be more or less equal. TBD how to deal with this.
     ),
     "main-boom-reef-1-lock": LoadField(sail_system.MainHalyard, "lock_1"),
     "main-boom-reef-2-lock": LoadField(sail_system.MainHalyard, "lock_2"),
     "main-boom-reef-3-lock": LoadField(sail_system.MainHalyard, "lock_3"),
-    "main-checkstay-deflector-ps-load": LoadField(
-        sail_system.MainCheckstayDeflector, "load_ps"
+    "main-checkstay-deflector-load": LoadField(
+        sail_system.MainCheckstayDeflector, "load_deflector"
     ),
-    "main-checkstay-deflector-ps-position": LoadField(
-        sail_system.MainCheckstayDeflector, "position"
-    ),  # TODO: Differentiate between ps an sb position
-    "main-checkstay-deflector-ps-relative-position": LoadField(
-        sail_system.MainCheckstayDeflector, "relative_position"
-    ),
-    "main-checkstay-deflector-sb-load": LoadField(
-        sail_system.MainCheckstayDeflector, "load_sb"
-    ),
-    "main-checkstay-deflector-sb-position": LoadField(
-        sail_system.MainCheckstayDeflector, "position"
-    ),  # TODO: Differentiate between ps an sb position
-    "main-checkstay-deflector-sb-relative-position": LoadField(
+    "main-checkstay-deflector-relative-position": LoadField(
         sail_system.MainCheckstayDeflector, "relative_position"
     ),
     "main-checkstay-ps-load": LoadField(sail_system.MainCheckstayDeflector, "load_ps"),
@@ -150,41 +141,34 @@ loads_variables: dict[str, LoadsField] = {
     "main-preventer-relative-position": LoadField(
         sail_system.MainPreventer, "relative_position"
     ),
-    "main-runner-captive-ps-relative-position": LoadField(
-        sail_system.MainRunnerCaptivePS, "relative_position"
+    "main-runner-ps-relative-position": LoadField(
+        sail_system.MainRunnerPs, "relative_position"
     ),
-    "main-runner-captive-sb-relative-position": LoadField(
-        sail_system.MainRunnerCaptiveSB, "relative_position"
+    "main-runner-sb-relative-position": LoadField(
+        sail_system.MainRunnerSb, "relative_position"
     ),
-    "main-runner-ps-load": LoadField(sail_system.MainRunnerLoadPs, "load"),
-    "main-runner-sb-load": LoadField(sail_system.MainRunnerLoadSb, "load"),
-    #'main-sheet-load': #TODO: Find the loadpin
+    "main-runner-ps-load": LoadField(sail_system.MainRunnerPs, "load"),
+    "main-runner-sb-load": LoadField(sail_system.MainRunnerSb, "load"),
+    "main-sheet-load": LoadField(sail_system.MainSheet, "load"),
+    "main-sheet-position": LoadField(sail_system.MainSheet, "position"),
+    "main-sheet-relative-position": LoadField(
+        sail_system.MainSheet, "relative_position"
+    ),
     "main-traveler-relative-position": LoadField(
         sail_system.MainTraveler, "relative_position"
     ),
-    "main-vang-load": LoadField(
-        sail_system.MainVang, "load_bottom"
-    ),  # TODO: use bottom or rod?
+    "main-vang-load": LoadField(sail_system.MainVang, "load"),
     "main-vang-position": LoadField(sail_system.MainVang, "position"),
     "main-vang-relative-position": LoadField(sail_system.MainVang, "relative_position"),
     "mizzen-boom-reef-1-lock": LoadField(sail_system.MizzenHalyard, "lock_1"),
     "mizzen-boom-reef-2-lock": LoadField(sail_system.MizzenHalyard, "lock_2"),
-    "mizzen-checkstay-deflector-ps-load": LoadField(
-        sail_system.MizzenCheckstayDeflector, "load_ps"
+    "mizzen-checkstay-deflector-load": LoadField(
+        sail_system.MizzenCheckstayDeflector, "load_deflector"
     ),
-    "mizzen-checkstay-deflector-ps-position": LoadField(
+    "mizzen-checkstay-deflector-position": LoadField(
         sail_system.MizzenCheckstayDeflector, "position"
-    ),  # TODO: Differentiate between ps an sb position
-    "mizzen-checkstay-deflector-ps-relative-position": LoadField(
-        sail_system.MizzenCheckstayDeflector, "relative_position"
     ),
-    "mizzen-checkstay-deflector-sb-load": LoadField(
-        sail_system.MizzenCheckstayDeflector, "load_sb"
-    ),
-    "mizzen-checkstay-deflector-sb-position": LoadField(
-        sail_system.MizzenCheckstayDeflector, "position"
-    ),  # TODO: Differentiate between ps an sb position
-    "mizzen-checkstay-deflector-sb-relative-position": LoadField(
+    "mizzen-checkstay-deflector-relative-position": LoadField(
         sail_system.MizzenCheckstayDeflector, "relative_position"
     ),
     "mizzen-checkstay-ps-load": LoadField(
@@ -203,17 +187,15 @@ loads_variables: dict[str, LoadsField] = {
     "mizzen-halyard-relative-position": LoadField(
         sail_system.MizzenHalyard, "relative_position"
     ),
-    "mizzen-headsail-lock": LoadField(sail_system.MizzenHeadsailLocks, "lock"),
-    "mizzen-headsail-overhoist": LoadField(
-        sail_system.MizzenHeadsailLocks, "overhoist"
-    ),
-    "mizzen-headsail-tack-adjuster-load": LoadField(
+    "mizzen-jib-lock": LoadField(sail_system.MizzenHeadsailLocks, "lock"),
+    "mizzen-jib-overhoist": LoadField(sail_system.MizzenHeadsailLocks, "overhoist"),
+    "mizzen-jib-tack-adjuster-load": LoadField(
         sail_system.MizzenHeadsailTackAdjuster, "load"
     ),
-    "mizzen-headsail-tack-adjuster-position": LoadField(
+    "mizzen-jib-tack-adjuster-position": LoadField(
         sail_system.MizzenHeadsailTackAdjuster, "position"
     ),
-    "mizzen-headsail-tack-adjuster-relative-position": LoadField(
+    "mizzen-jib-tack-adjuster-relative-position": LoadField(
         sail_system.MizzenHeadsailTackAdjuster, "relative_position"
     ),
     "mizzen-outhaul-load": LoadField(sail_system.MizzenOuthaul, "load"),
@@ -230,38 +212,39 @@ loads_variables: dict[str, LoadsField] = {
     "mizzen-reef-1-overhoist": LoadField(sail_system.MizzenHalyard, "overhoist_1"),
     "mizzen-reef-2-lock": LoadField(sail_system.MizzenHalyard, "lock_2"),
     "mizzen-reef-2-overhoist": LoadField(sail_system.MizzenHalyard, "overhoist_2"),
-    "mizzen-runner-captive-ps-relative-position": LoadField(
-        sail_system.MizzenRunnerCaptivePS, "relative_position"
+    "mizzen-runner-ps-relative-position": LoadField(
+        sail_system.MizzenRunnerPs, "relative_position"
     ),
-    "mizzen-runner-captive-sb-relative-position": LoadField(
-        sail_system.MizzenRunnerCaptiveSB, "relative_position"
+    "mizzen-runner-sb-relative-position": LoadField(
+        sail_system.MizzenRunnerSb, "relative_position"
     ),
-    "mizzen-runner-ps-load": LoadField(sail_system.MizzenRunnerLoadPs, "load"),
-    "mizzen-runner-sb-load": LoadField(sail_system.MizzenRunnerLoadSb, "load"),
-    "mizzen-sheet-captive-load": LoadField(sail_system.MizzenSheetCaptive, "load"),
-    "mizzen-sheet-captive-relative-position": LoadField(
-        sail_system.MizzenSheetCaptive, "relative_position"
+    "mizzen-runner-ps-load": LoadField(sail_system.MizzenRunnerPs, "load"),
+    "mizzen-runner-sb-load": LoadField(sail_system.MizzenRunnerSb, "load"),
+    "mizzen-sheet-load": LoadField(sail_system.MizzenSheet, "load"),
+    "mizzen-sheet-relative-position": LoadField(
+        sail_system.MizzenSheet, "relative_position"
     ),
-    "mizzen-vang-load": LoadField(
-        sail_system.MizzenVang, "load_bottom"
-    ),  # TODO: use bottom or rod?
+    "mizzen-vang-load": LoadField(sail_system.MizzenVang, "load"),
     "mizzen-vang-position": LoadField(sail_system.MizzenVang, "position"),
+    "mizzen-vang-relative-position": LoadField(
+        sail_system.MizzenVang, "relative_position"
+    ),
     "mizzen-vang-relative-position": LoadField(
         sail_system.MizzenVang, "relative_position"
     ),
     "staysail-lock": LoadField(sail_system.HeadsailLocks, "lock_staysail"),
     "staysail-overhoist": LoadField(sail_system.HeadsailLocks, "overhoist_staysail"),
-    "staysail-sheet-captive-ps-load": LoadField(
-        sail_system.StaysailSheetCaptivePS, "load"
+    "staysail-sheet-ps-relative-position": LoadField(
+        sail_system.StaysailSheetPs, "relative_position"
     ),
-    "staysail-sheet-captive-ps-relative-position": LoadField(
-        sail_system.StaysailSheetCaptivePS, "relative_position"
+    "staysail-sheet-sb-relative-position": LoadField(
+        sail_system.StaysailSheetSb, "relative_position"
     ),
-    "staysail-sheet-captive-sb-load": LoadField(
-        sail_system.StaysailSheetCaptiveSB, "load"
+    "staysail-sheet-feeder-ps-load": LoadField(
+        sail_system.StaysailSheetFeederPs, "load"
     ),
-    "staysail-sheet-captive-sb-relative-position": LoadField(
-        sail_system.StaysailSheetCaptiveSB, "relative_position"
+    "staysail-sheet-feeder-sb-load": LoadField(
+        sail_system.StaysailSheetFeederSb, "load"
     ),
     "staysail-sheet-feeder-ps-load": LoadField(
         sail_system.StaysailSheetFeederPs, "load"
