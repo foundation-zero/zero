@@ -302,8 +302,8 @@ services:
       vernemq:
         condition: service_healthy
 
-  loads-plc-sensors-stub:
-    command: plc-sensors-stub
+  loads-sail-system-sensors-stub:
+    command: sail-system-sensors-stub
     build:
       context: .
       dockerfile: ./zero-loads-app/Dockerfile
