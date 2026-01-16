@@ -1,6 +1,7 @@
 from typing import Any, Callable, Literal, Protocol
 
 from loads.sensors import LoadsModel, at, sail_system
+from loads.sensors import LoadsModel, at, sail_system
 
 Fields = Literal[
     "value",
