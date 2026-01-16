@@ -1,11 +1,14 @@
 from datetime import datetime, timedelta
 from pytest import fixture
 
+from thrs.control.modules.thrusters import ThrustersParameters
+from thrs.control.modules.pcm import PcmParameters
+from thrs.control.modules.consumers import ConsumersParameters
 from thrs.control.modules.high_temperature import (
-    HighTemperatureControl,
-    HighTemperatureParameters,
+    HighTemperatureModule,
 )
-from thrs.input_output.base import Stamped
+from thrs.control.modules.pvt import PvtParameters
+from thrs.input_output.base import Stamped, CombinedValues
 from thrs.input_output.definitions.simulation import (
     Boundary,
     ExchangerBoundary,
@@ -15,13 +18,10 @@ from thrs.input_output.definitions.simulation import (
 )
 from thrs.input_output.definitions.units import PcsMode
 from thrs.input_output.modules.high_temperature import (
-    HighTemperatureSensorValues,
     HighTemperatureSimulationInputs,
-    HighTemperatureSimulationOutputs,
 )
 from thrs.orchestration.executor import SimulationExecutor
 from thrs.simulation.fmu import Fmu
-from thrs.simulation.io_mapping import ThrsModelIoMapping
 from thrs.simulation.models.fmu_paths import high_temperature_path
 
 
@@ -61,16 +61,28 @@ def simulation_inputs():
 
 
 @fixture
-def control(executor):
-    return HighTemperatureControl(HighTemperatureParameters(), executor.time)
+def module():
+    return HighTemperatureModule()
 
 
 @fixture
-def io_mapping():
-    return ThrsModelIoMapping(
-        HighTemperatureSensorValues,
-        HighTemperatureSimulationOutputs,
+def control(module, executor):
+    return module.control(
+        CombinedValues(
+            {
+                "thrusters": ThrustersParameters(),
+                "pvt": PvtParameters(),
+                "pcm": PcmParameters(),
+                "consumers": ConsumersParameters(),
+            }
+        ),
+        executor.time,
     )
+
+
+@fixture
+def io_mapping(module):
+    return module.io_mapping()
 
 
 @fixture

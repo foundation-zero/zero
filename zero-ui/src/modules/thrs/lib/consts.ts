@@ -235,7 +235,25 @@ export const QUERY_ALL = gql`
           }
         }
       }
-      
+      consumers {
+        sensorValues {
+          ${CONSUMERS_SENSOR_QUERY}
+        }
+        controlValues {
+          ${CONSUMERS_CONTROL_QUERY}
+        }
+        parameters {
+          ${CONSUMERS_PARAMETERS_QUERY}
+        }
+        simulation {
+          inputs {
+            ${CONSUMERS_SIMULATION_INPUTS_QUERY}
+          }
+          outputs {
+            ${CONSUMERS_SIMULATION_OUTPUTS_QUERY}
+          }
+        }
+      }
     }
   }
 `;

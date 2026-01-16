@@ -18,6 +18,8 @@ from pydantic import (
     model_validator,
 )
 
+from thrs.control.modules.high_temperature import HighTemperatureModule
+from thrs.input_output.modules.high_temperature import HighTemperatureSimulationInputs
 from thrs.orchestration.module import ModuleDescription, CombinedModule, CombinedControl
 from thrs.control.modules.consumers import (
     ConsumersAlarms,
@@ -79,6 +81,7 @@ from thrs.simulation.models.fmu_paths import (
     pvt_path,
     pcm_path,
     consumers_path,
+    high_temperature_path,
 )
 from thrs.orchestration.simulator import Simulator
 
@@ -131,6 +134,39 @@ INPUTS = {
         ),
         consumers_module_supply=Boundary(
             temperature=Stamped.stamp(60.0), flow=Stamped.stamp(10.0)
+        ),
+    ),
+    "high_temperature": HighTemperatureSimulationInputs(
+        thrusters_aft=Thruster(
+            heat_flow=Stamped.stamp(9000.0), active=Stamped.stamp(True)
+        ),
+        thrusters_fwd=Thruster(
+            heat_flow=Stamped.stamp(0.0), active=Stamped.stamp(True)
+        ),
+        thrusters_seawater_supply=Boundary(
+            temperature=Stamped.stamp(32.0),
+            flow=Stamped.stamp(64.0),
+        ),
+        thrusters_pcs=Pcs(mode=Stamped.stamp(PcsMode.PROPULSION)),
+        pvt_main_fwd=HeatSource(heat_flow=Stamped.stamp(0)),
+        pvt_main_aft=HeatSource(heat_flow=Stamped.stamp(0)),
+        pvt_owners=HeatSource(heat_flow=Stamped.stamp(0)),
+        pvt_seawater_supply=Boundary(
+            temperature=Stamped.stamp(32), flow=Stamped.stamp(50)
+        ),
+        pcm_freshwater_supply=Boundary(
+            temperature=Stamped.stamp(40.0),
+            flow=Stamped.stamp(0.0),
+        ),
+        consumers_fahrenheit_supply=ExchangerBoundary(
+            temperature=Stamped.stamp(30.0),
+            flow=Stamped.stamp(0.0),
+            overpressure=Stamped.stamp(0.2),
+        ),
+        consumers_boosting_supply=ExchangerBoundary(
+            temperature=Stamped.stamp(30.0),
+            flow=Stamped.stamp(0.0),
+            overpressure=Stamped.stamp(0.2),
         ),
     ),
 }
@@ -219,9 +255,13 @@ MODES: dict[str, tuple[str, CombinedModule]] = {
             control_topic_suffix=settings.mqtt_control_topic_suffix,
         ),
     ),
+    "high_temperature": (
+        high_temperature_path,
+        HighTemperatureModule(control_topic_suffix=settings.mqtt_control_topic_suffix),
+    ),
 }
 
-Modes = Literal["thrusters", "pvt", "pcm", "consumers"]
+Modes = Literal["thrusters", "pvt", "pcm", "consumers", "high_temperature"]
 
 
 @dataclass
