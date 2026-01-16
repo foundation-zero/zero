@@ -1,4 +1,4 @@
 from .base import LoadsModel
-from .messaging import MessagingModule, at_systems, sail_systems
+from .messaging import MessagingModule, at_sensors, sail_system_sensors
 
-__all__ = ["LoadsModel", "MessagingModule", "sail_systems", "at_systems"]
+__all__ = ["LoadsModel", "MessagingModule", "sail_system_sensors", "at_sensors"]
