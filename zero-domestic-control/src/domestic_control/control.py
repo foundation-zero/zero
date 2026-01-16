@@ -44,11 +44,19 @@ class Control:
     @asynccontextmanager
     @staticmethod
     async def init_from_settings(settings: Settings):
-        with HassClient(settings.home_assistant_ws_url, settings.home_assistant_token) as hass:
+        with HassClient(
+            settings.home_assistant_ws_url, settings.home_assistant_token
+        ) as hass:
             async with (
-                MqttClient(settings.mqtt_host, settings.mqtt_port, identifier="domestic_ac") as ac_client,
-                MqttClient(settings.mqtt_host, settings.mqtt_port, identifier="domestic_av") as av_client,
-                MqttClient(settings.mqtt_host, settings.mqtt_port, identifier="data") as data_client,
+                MqttClient(
+                    settings.mqtt_host, settings.mqtt_port, identifier="domestic_ac"
+                ) as ac_client,
+                MqttClient(
+                    settings.mqtt_host, settings.mqtt_port, identifier="domestic_av"
+                ) as av_client,
+                MqttClient(
+                    settings.mqtt_host, settings.mqtt_port, identifier="data"
+                ) as data_client,
             ):
                 modbus_client = ModbusClient(
                     host=settings.termodinamica_host,

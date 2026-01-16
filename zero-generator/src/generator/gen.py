@@ -38,7 +38,9 @@ def float_(lt=0.0, gt=100.0) -> Generator[float]:
 
 
 def str_(length=10) -> Generator[str]:
-    return FnGenerator(lambda: "".join(random.choices("abcdefghijklmnopqrstuvwxyz", k=length)))
+    return FnGenerator(
+        lambda: "".join(random.choices("abcdefghijklmnopqrstuvwxyz", k=length))
+    )
 
 
 def bool_() -> Generator:

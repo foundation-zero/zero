@@ -17,6 +17,9 @@ dependencies = [
 [tool.poetry]
 version = "0.0.0"
 
+[tool.poetry.group.dev.dependencies]
+ruff = "^0.14.13"
+
 [project.optional-dependencies]
 dev = [
     "mypy>=1.14.1,<2.0.0",

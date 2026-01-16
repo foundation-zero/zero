@@ -47,7 +47,9 @@ class ControlSend:
         self._mqtt = mqtt
 
     async def send_room_temperature_setpoint(self, room: str, temperature: float):
-        await send_message(self._mqtt, RoomTemperatureSetpoint(id=room, temperature=temperature))
+        await send_message(
+            self._mqtt, RoomTemperatureSetpoint(id=room, temperature=temperature)
+        )
 
     async def send_room_humidity_setpoint(self, room: str, humidity: float):
         await send_message(self._mqtt, RoomHumiditySetpoint(id=room, humidity=humidity))

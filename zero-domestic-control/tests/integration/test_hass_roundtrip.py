@@ -17,13 +17,17 @@ def settings():
 
 @fixture
 async def hass(settings):
-    async with HassClient(settings.home_assistant_url, settings.home_assistant_token, use_async=True) as client:
+    async with HassClient(
+        settings.home_assistant_url, settings.home_assistant_token, use_async=True
+    ) as client:
         yield client
 
 
 @fixture
 def hass_ws(settings):
-    with HassWsClient(settings.home_assistant_ws_url, settings.home_assistant_token) as client:
+    with HassWsClient(
+        settings.home_assistant_ws_url, settings.home_assistant_token
+    ) as client:
         yield client
 
 
@@ -59,7 +63,9 @@ async def test_lighting_group_to_hass(hass):
     assert light.state.state == "50.0"
 
 
-async def test_hass_lighting_group_to_control_to_mqtt(mqtt: MqttClient, mqtt_two: MqttClient, hass_ws, hass):
+async def test_hass_lighting_group_to_control_to_mqtt(
+    mqtt: MqttClient, mqtt_two: MqttClient, hass_ws, hass
+):
     mqtt_wrapper = DataCollection(mqtt)
     control = HassControl(hass_ws, mqtt_wrapper)
 
@@ -104,7 +110,9 @@ async def test_blind_to_hass(hass):
     assert blind.state.attributes["current_position"] == 50.0
 
 
-async def test_hass_blind_to_control_to_mqtt(mqtt: MqttClient, mqtt_two: MqttClient, hass_ws, hass):
+async def test_hass_blind_to_control_to_mqtt(
+    mqtt: MqttClient, mqtt_two: MqttClient, hass_ws, hass
+):
     mqtt_wrapper = DataCollection(mqtt)
     control = HassControl(hass_ws, mqtt_wrapper)
 

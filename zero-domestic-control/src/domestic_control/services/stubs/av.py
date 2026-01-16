@@ -37,7 +37,10 @@ class AvPduStub:
     def _create_telemetry(self, ports: dict[int, bool]) -> Telemetry:
         return Telemetry(
             timestamp=int(time.time()),
-            port_states=[PortState(port=port, state=cast(Literal[0, 1], int(state))) for port, state in ports.items()],
+            port_states=[
+                PortState(port=port, state=cast(Literal[0, 1], int(state)))
+                for port, state in ports.items()
+            ],
         )
 
     def match_message(self, message: Message):
@@ -93,7 +96,7 @@ class AvStub:
         The returned awaitable finishes when the control is actually running.
         Then the coroutine contained within can be run in an event loop.
         """
-        
+
         await self._mqtt_client.subscribe("de/gudesystems/epc/+/cmdres/port/+", qos=1)
 
         async def _run():
