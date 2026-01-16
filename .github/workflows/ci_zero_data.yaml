@@ -33,10 +33,11 @@ jobs:
       - run: pipx install poetry==2.1.4
       - run: poetry check
         working-directory: zero-data
-      - uses: astral-sh/ruff-action@v3
-        with:
-          src: "./zero-data"
       - run: poetry install --with dev,test
+        working-directory: zero-data
+      - run: poetry run ruff check src tests
+        working-directory: zero-data
+      - run: poetry run ruff format --check src tests
         working-directory: zero-data
       - run: poetry run mypy src
         working-directory: zero-data
