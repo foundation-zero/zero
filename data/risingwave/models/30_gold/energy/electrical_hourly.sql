@@ -1,137 +1,18 @@
 {{ config(materialized='materialized_view') }}
+
+-- Calculate electrical energy (Wh) of completed hours by dividing the sum of the average electrical energy per minute by the amount of minutes in the hour.
+-- Any gaps in an hour result in a lower energy value, but for hours that started later or are not finished yet (current hour) the energy value is extrapolated.
 SELECT
     electrical_system,
     group_name,
     sub_group_name,
     topic,
-    hour,
-    energy_wh
-FROM ( (
-    -- Calculate energy (Wh) of completed hours (not current hour) proportionally by calculating average values per minute to determine which minutes have data.
-    -- The energy value is then summed up and divided by 60 to go from Watt minutes to Watt hours.
-    WITH per_minute AS (
-        SELECT
-            electrical_power_data.electrical_system AS electrical_system,
-            electrical_power_data.group_name AS group_name,
-            electrical_power_data.sub_group_name AS sub_group_name,
-            electrical_power_data.topic AS topic,
-            window_start AS min_start,
-            AVG(electrical_power_data.active_power) AS avg_w
-        FROM
-        TUMBLE (
-            {{ ref('consumer_producer_power_data') }},
-            active_power_timestamp,
-            INTERVAL '1 MINUTE'
-        ) AS electrical_power_data
-        GROUP BY
-            electrical_system,
-            group_name,
-            sub_group_name,
-            topic,
-            window_start
-
-        UNION ALL
-
-        SELECT
-            electrical_power_data.electrical_system AS electrical_system,
-            electrical_power_data.group_name AS group_name,
-            electrical_power_data.sub_group_name AS sub_group_name,
-            electrical_power_data.topic AS topic,
-            window_start AS min_start,
-            AVG(electrical_power_data.power) AS avg_w
-        FROM
-        TUMBLE (
-            {{ ref('24v_power_data') }},
-            power_timestamp,
-            INTERVAL '1 MINUTE'
-        ) AS electrical_power_data
-        GROUP BY
-            electrical_system,
-            group_name,
-            sub_group_name,
-            topic,
-            window_start
-    )
-    SELECT
-        electrical_system,
-        group_name,
-        sub_group_name,
-        topic,
-        date_trunc('hour', min_start) AS hour,
-        SUM(avg_w) / 60.0 AS energy_wh
-    FROM per_minute
-    WHERE min_start < date_trunc('hour', NOW())
-    GROUP BY
-        electrical_system,
-        group_name,
-        sub_group_name,
-        topic,
-        date_trunc('hour', min_start)
-    )
-
-    UNION ALL (
-      
-    -- Calculate energy (Wh) of current hour proportionally by calculating average values per minute to determine which minutes have data.
-    -- The average energy values are then extrapolated to the expected amount of minutes that will contain data when the hour has passed.
-    -- For instance, if there are 10 minutes of data after 30 minutes have passed, we expect to have 40 minutes of data when the hour 
-    -- is completely passed. The average value per minute is then extrapolated to 40 minutes and divided by 60.
-    WITH per_minute AS (
-        SELECT
-            electrical_power_data.electrical_system AS electrical_system,
-            electrical_power_data.group_name AS group_name,
-            electrical_power_data.sub_group_name AS sub_group_name,
-            electrical_power_data.topic AS topic,
-            window_start AS min_start,
-            AVG(electrical_power_data.active_power) AS avg_w
-        FROM
-        TUMBLE (
-            {{ ref('consumer_producer_power_data') }},
-            active_power_timestamp,
-            INTERVAL '1 MINUTE'
-        ) AS electrical_power_data
-        GROUP BY
-            electrical_system,
-            group_name,
-            sub_group_name,
-            topic,
-            window_start
-        
-        UNION ALL
-
-        SELECT
-            electrical_power_data.electrical_system AS electrical_system,
-            electrical_power_data.group_name AS group_name,
-            electrical_power_data.sub_group_name AS sub_group_name,
-            electrical_power_data.topic AS topic,
-            window_start AS min_start,
-            AVG(electrical_power_data.power) AS avg_w
-        FROM
-        TUMBLE (
-            {{ ref('24v_power_data') }},
-            power_timestamp,
-            INTERVAL '1 MINUTE'
-        ) AS electrical_power_data
-        GROUP BY
-            electrical_system,
-            group_name,
-            sub_group_name,
-            topic,
-            window_start
-    )
-    SELECT
-        electrical_system,
-        group_name,
-        sub_group_name,
-        topic,
-        date_trunc('hour', min_start) AS hour,
-        AVG(avg_w) * (60 + count() - extract(MINUTE from MAX(min_start)) - 1) / 60 AS energy_wh
-    FROM per_minute
-    WHERE min_start >= date_trunc('hour', NOW())
-    GROUP BY
-        electrical_system,
-        group_name,
-        sub_group_name,
-        topic,
-        date_trunc('hour', min_start)
-    )
-)
+    date_trunc('hour', "minute") AS "hour",
+    SUM(avg_w) / (MAX(date_part('minute', "minute")) - MIN(date_part('minute', "minute")) + 1) AS energy_wh
+FROM energy.electrical_per_minute
+GROUP BY
+    electrical_system,
+    group_name,
+    sub_group_name,
+    topic,
+    date_trunc('hour', "minute")
