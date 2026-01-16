@@ -18,7 +18,7 @@ from pydantic import (
     model_validator,
 )
 
-from thrs.control.modules.high_temperature import HighTemperature
+from thrs.control.modules.high_temperature import HighTemperatureModule
 from thrs.input_output.modules.high_temperature import HighTemperatureSimulationInputs
 from thrs.orchestration.module import ModuleDescription, CombinedModule, CombinedControl
 from thrs.control.modules.consumers import (
@@ -257,11 +257,11 @@ MODES: dict[str, tuple[str, CombinedModule]] = {
     ),
     "high_temperature": (
         high_temperature_path,
-        HighTemperature(control_topic_suffix=settings.mqtt_control_topic_suffix),
+        HighTemperatureModule(control_topic_suffix=settings.mqtt_control_topic_suffix),
     ),
 }
 
-Modes = Literal["thrusters", "pvt", "pcm", "consumers"]
+Modes = Literal["thrusters", "pvt", "pcm", "consumers", "high_temperature"]
 
 
 @dataclass

@@ -27,7 +27,7 @@ from thrs.input_output.modules.thrusters import (
 from thrs.orchestration.module import CombinedModule, ModuleDescription
 
 
-class HighTemperature(
+class HighTemperatureModule(
     CombinedModule[HighTemperatureSimulationInputs, HighTemperatureSimulationOutputs]
 ):
     def __init__(self, control_topic_suffix: str | None = None):

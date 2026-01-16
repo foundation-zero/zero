@@ -5,7 +5,7 @@ from thrs.control.modules.thrusters import ThrustersParameters
 from thrs.control.modules.pcm import PcmParameters
 from thrs.control.modules.consumers import ConsumersParameters
 from thrs.control.modules.high_temperature import (
-    HighTemperature,
+    HighTemperatureModule,
 )
 from thrs.control.modules.pvt import PvtParameters
 from thrs.input_output.base import Stamped, CombinedValues
@@ -62,7 +62,7 @@ def simulation_inputs():
 
 @fixture
 def module():
-    return HighTemperature()
+    return HighTemperatureModule()
 
 
 @fixture
