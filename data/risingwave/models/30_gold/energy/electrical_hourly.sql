@@ -9,7 +9,7 @@ SELECT
     topic,
     date_trunc('hour', "minute") AS "hour",
     SUM(avg_w) / (MAX(date_part('minute', "minute")) - MIN(date_part('minute', "minute")) + 1) AS energy_wh
-FROM energy.electrical_per_minute
+FROM {{ ref('electrical_per_minute') }}
 GROUP BY
     electrical_system,
     group_name,
