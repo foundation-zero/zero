@@ -2,7 +2,7 @@ from datetime import datetime
 from typing import Callable, Literal, Mapping, Protocol
 from thrs.classes.control import Control, ControlResult
 from thrs.control.manual import ManualControl
-from thrs.control.switching import SwitchingControl
+from thrs.control.switching import SwitchingControl, SwitchingControlMode
 from thrs.input_output.alarms import Alarm, BaseAlarms
 from thrs.input_output.base import (
     CombinedValues,
@@ -23,6 +23,7 @@ class ModuleDescription[
     S: ThrsValues,
     C: ThrsValues,
     P: ThrsValues,
+    M: ThrsValues,
 ]:
     """Description of a module with sensor, control, and parameter models and the control & alarm logic"""
 
@@ -31,7 +32,8 @@ class ModuleDescription[
         sensor_values_cls: type[S],
         control_values_cls: type[C],
         parameters_cls: type[P],
-        control: Callable[[P, Callable[[], datetime]], Control[S, C, P]],
+        control: Callable[[P, Callable[[], datetime]], Control[S, C, P, M]],
+        control_mode_cls: type[M],
         alarms: Callable[[], BaseAlarms[S, C]],
     ):
         self.sensor_values_cls = sensor_values_cls
@@ -144,7 +146,9 @@ class ModuleMqttMapping(MqttMapping[CombinedValues]):
         return f"+/+/{self._topic_suffix}" if self._topic_suffix else "+/+"
 
 
-class CombinedControl(Control[CombinedValues, CombinedValues, CombinedValues]):
+class CombinedControl(
+    Control[CombinedValues, CombinedValues, CombinedValues, CombinedValues]
+):
     """Combination of sub controls for combined modules"""
 
     def __init__(
@@ -192,16 +196,17 @@ class CombinedControl(Control[CombinedValues, CombinedValues, CombinedValues]):
         )
 
     @staticmethod
-    def modes():
-        return []
-
-    @staticmethod
     def initial_mode():
         return ""
 
     @property
-    def mode(self) -> str | None:
-        return None
+    def mode(self) -> CombinedValues | None:
+        return CombinedValues(
+            values={name: module.mode for name, module in self._modules.items()}
+        )
+
+    def mode_for(self, module: str) -> SwitchingControlMode[ThrsValues]:
+        return self._modules[module].mode
 
     def update_parameters(self, parameters: CombinedValues):
         for name, params in parameters.values.items():

@@ -13,10 +13,10 @@ from pydantic import Field, create_model
 import strawberry
 from strawberry.fastapi import GraphQLRouter
 
-from thrs.control.modules.consumers import ConsumersParameters
-from thrs.control.modules.pcm import PcmParameters
-from thrs.control.modules.pvt import PvtParameters
-from thrs.control.modules.thrusters import ThrustersParameters
+from thrs.control.modules.consumers import ConsumersControlMode, ConsumersParameters
+from thrs.control.modules.pcm import PcmControlMode, PcmParameters
+from thrs.control.modules.pvt import PvtControlMode, PvtParameters
+from thrs.control.modules.thrusters import ThrustersControlMode, ThrustersParameters
 from thrs.graphql.base import (
     ConsumersMessaging,
     FieldMutation,
@@ -230,6 +230,7 @@ async def lifespan(app: FastAPI):
             ThrustersParameters,
             ThrustersSimulationInputs,
             ThrustersSimulationOutputs,
+            ThrustersControlMode,
             mqtt,
         )
         pvt_messaging: PvtMessaging = MessagingModule(
@@ -239,6 +240,7 @@ async def lifespan(app: FastAPI):
             PvtParameters,
             PvtSimulationInputs,
             PvtSimulationOutputs,
+            PvtControlMode,
             mqtt,
         )
         pcm_messaging: PcmMessaging = MessagingModule(
@@ -248,6 +250,7 @@ async def lifespan(app: FastAPI):
             PcmParameters,
             PcmSimulationInputs,
             PcmSimulationOutputs,
+            PcmControlMode,
             mqtt,
         )
         consumers_messaging: ConsumersMessaging = MessagingModule(
@@ -257,6 +260,7 @@ async def lifespan(app: FastAPI):
             ConsumersParameters,
             ConsumersSimulationInputs,
             ConsumersSimulationOutputs,
+            ConsumersControlMode,
             mqtt,
         )
         messaging = Messaging(

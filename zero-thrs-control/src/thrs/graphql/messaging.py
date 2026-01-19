@@ -129,6 +129,7 @@ class MessagingModule[
     Parameters: ThrsValues,
     Inputs: SimulationInputs,
     Outputs: SimulationValues,
+    Mode,
 ]:
     def __init__(
         self,
@@ -138,6 +139,7 @@ class MessagingModule[
         parameters_cls: type[Parameters],
         simulation_inputs_cls: type[Inputs],
         simulation_outputs_cls: type[Outputs],
+        mode_cls: type[Mode],
         mqtt_client: MqttClient,
     ):
         self.name = name
@@ -163,7 +165,7 @@ class MessagingModule[
             "simulation/outputs",
         )
         self._control_status = MessageReceiver(
-            ControlStatusMessage, ControlStatusMessage.subscribe_topic()
+            ControlStatusMessage[mode_cls], ControlStatusMessage.subscribe_topic()
         )
         self._mqtt_client = mqtt_client
 

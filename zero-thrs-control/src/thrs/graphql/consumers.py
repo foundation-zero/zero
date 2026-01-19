@@ -6,6 +6,7 @@ from thrs.graphql.base import (
     Module,
     ModuleSimulation,
     ConsumersMessaging,
+    SwitchingControlModeType,
     add_automation_mode_mutation,
     add_control_mutations,
     add_parameter_mutations,
@@ -77,12 +78,18 @@ class ConsumersSimulationOutputsType:
     pass
 
 
+@strawberry.type()
+class ConsumersControlModeType:
+    _empty: None = None
+
+
 ConsumersModule = Module[
     ConsumersSensorValuesType,
     ConsumersControlValuesType,
     ConsumersParametersType,
     ConsumersSimulationInputsType,
     ConsumersSimulationOutputsType,
+    ConsumersControlModeType,
 ]
 
 
@@ -117,7 +124,13 @@ def resolve_module(
             if module.simulation_outputs
             else None,
         ),
-        automatic=module.control_status.automatic if module.control_status else None,
+        control_mode=(
+            SwitchingControlModeType.from_pydantic(
+                ConsumersControlModeType, module.control_status.mode
+            )
+            if module.control_status
+            else None
+        ),
     )
 
 

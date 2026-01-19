@@ -16,6 +16,14 @@ from thrs.input_output.definitions.units import Celsius, LMin, PcsMode, Ratio, T
 from thrs.classes.control import Control, ControlResult
 
 
+class ThrustersControlMode(ThrsValues):
+    mode: str  # FIXME: make strawberry work with literal types
+
+    @property
+    def is_idle(self) -> bool:
+        return self.mode == "idle"
+
+
 class ThrustersParameters(ThrsValues):
     maximum_supply_temperature: Celsius = 75
     cooling_temperature: Celsius = 38
@@ -87,7 +95,12 @@ _INITIAL_CONTROL_VALUES = ThrustersControlValues(
 
 
 class ThrustersControl(
-    Control[ThrustersSensorValues, ThrustersControlValues, ThrustersParameters]
+    Control[
+        ThrustersSensorValues,
+        ThrustersControlValues,
+        ThrustersParameters,
+        ThrustersControlMode,
+    ]
 ):
     def __init__(
         self, parameters: ThrustersParameters, time_fn: Callable[[], datetime]
@@ -284,8 +297,9 @@ class ThrustersControl(
         return "idle"
 
     @property
-    def mode(self) -> Literal["idle", "cooling", "recovery", "cooldown"]:
-        return self.state  # type: ignore
+    def mode(self) -> ThrustersControlMode:
+        mode: Literal["idle", "cooling", "recovery", "cooldown"] = self.state  # type: ignore
+        return ThrustersControlMode(mode=mode)
 
     def initial(self) -> ControlResult[ThrustersControlValues]:
         return ControlResult(self._time(), self._current_values)
@@ -297,7 +311,7 @@ class ThrustersControl(
         self._check_overheat(sensor_values)  # type: ignore
         self._control_heat_dump(sensor_values)
 
-        if self.mode == "recovery":
+        if self.mode.mode == "recovery":
             self._check_overheat(sensor_values)  # type: ignore
             self._set_recovery_flow_setpoints(sensor_values)
             self._control_warmup_mix(sensor_values)

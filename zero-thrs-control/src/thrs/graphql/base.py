@@ -3,10 +3,11 @@ from inspect import isclass
 from typing import Annotated, Callable, Coroutine, get_args
 from pydantic import Field, create_model
 import strawberry
-from thrs.control.modules.consumers import ConsumersParameters
-from thrs.control.modules.pcm import PcmParameters
-from thrs.control.modules.pvt import PvtParameters
-from thrs.control.modules.thrusters import ThrustersParameters
+from thrs.control.modules.consumers import ConsumersControlMode, ConsumersParameters
+from thrs.control.modules.pcm import PcmControlMode, PcmParameters
+from thrs.control.modules.pvt import PvtControlMode, PvtParameters
+from thrs.control.modules.thrusters import ThrustersControlMode, ThrustersParameters
+from thrs.control.switching import SwitchingControlMode
 from thrs.graphql.messaging import Messaging, MessagingModule
 import thrs.input_output.definitions.sensor as sensor
 import thrs.input_output.definitions.control as control
@@ -47,6 +48,7 @@ type ThrustersMessaging = MessagingModule[
     ThrustersParameters,
     ThrustersSimulationInputs,
     ThrustersSimulationOutputs,
+    ThrustersControlMode,
 ]
 type PvtMessaging = MessagingModule[
     PvtSensorValues,
@@ -54,6 +56,7 @@ type PvtMessaging = MessagingModule[
     PvtParameters,
     PvtSimulationInputs,
     PvtSimulationOutputs,
+    PvtControlMode,
 ]
 
 type PcmMessaging = MessagingModule[
@@ -62,6 +65,7 @@ type PcmMessaging = MessagingModule[
     PcmParameters,
     PcmSimulationInputs,
     PcmSimulationOutputs,
+    PcmControlMode,
 ]
 
 type ConsumersMessaging = MessagingModule[
@@ -70,6 +74,7 @@ type ConsumersMessaging = MessagingModule[
     ConsumersParameters,
     ConsumersSimulationInputs,
     ConsumersSimulationOutputs,
+    ConsumersControlMode,
 ]
 
 
@@ -142,6 +147,22 @@ class ModuleSimulation[SimulationInput, SimulationOutput]:
     outputs: SimulationOutput | None
 
 
+# TODO: check if this can't just be based on the pydantic model directly
+@strawberry.type
+class SwitchingControlModeType[Mode]:
+    automatic_mode: Mode | None
+
+    @classmethod
+    def from_pydantic(
+        cls, type, mode: SwitchingControlMode[Mode]
+    ) -> "SwitchingControlModeType[Mode]":
+        return cls(automatic_mode=type.from_pydantic(mode.automatic_mode))
+
+    @strawberry.field
+    def automatic(self) -> bool:
+        return self.automatic_mode is not None
+
+
 @strawberry.type
 class Module[
     SensorValues,
@@ -149,12 +170,14 @@ class Module[
     Parameters,
     SimulationInput,
     SimulationOutput,
+    Mode,
 ]:
     sensor_values: SensorValues | None
     control_values: ControlValues | None
     parameters: Parameters | None
     simulation: ModuleSimulation[SimulationInput, SimulationOutput] | None = None
     automatic: bool | None = None
+    control_mode: SwitchingControlModeType[Mode] | None = None  # type: ignore
 
 
 @dataclass

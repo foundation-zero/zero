@@ -1,5 +1,5 @@
 from datetime import datetime
-from typing import Callable, Literal
+from typing import Callable
 
 from transitions import Machine, State
 from thrs.classes.control import Control, ControlResult
@@ -300,8 +300,14 @@ class TanksController:
         self._select_boosting_tank(parameters)
 
 
+class BoilersControlMode(ThrsValues):
+    mode: str
+
+
 class BoilersControl(
-    Control[BoilersSensorValues, BoilersControlValues, BoilersParameters]
+    Control[
+        BoilersSensorValues, BoilersControlValues, BoilersParameters, BoilersControlMode
+    ]
 ):
     def __init__(
         self, parameters: BoilersParameters, time_fn: Callable[[], datetime]
@@ -476,13 +482,8 @@ class BoilersControl(
     @property
     def mode(
         self,
-    ) -> Literal[
-        "idle",
-        "boosting_low_temperature",
-        "boosting_high_temperature",
-        "boosting_heatpump",
-    ]:
-        return self.state  # type: ignore
+    ) -> BoilersControlMode:
+        return BoilersControlMode(mode=self.state)  # type: ignore
 
     def initial(self) -> ControlResult[BoilersControlValues]:
         return ControlResult(self._time(), self._current_values)

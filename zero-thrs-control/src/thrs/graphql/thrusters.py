@@ -1,10 +1,11 @@
 import strawberry
 
-from thrs.control.modules.thrusters import ThrustersParameters
+from thrs.control.modules.thrusters import ThrustersControlMode, ThrustersParameters
 from thrs.graphql.base import (
     JsonSchemaDirective,
     Module,
     ModuleSimulation,
+    SwitchingControlModeType,
     ThrustersMessaging,
     add_automation_mode_mutation,
     add_control_mutations,
@@ -77,12 +78,23 @@ class ThrustersSimulationOutputsType:
     pass
 
 
+@strawberry.experimental.pydantic.type(
+    model=ThrustersControlMode,
+    all_fields=True,
+    json_schema_directive=JsonSchemaDirective,
+    use_pydantic_alias=False,
+)
+class ThrustersControlModeType:
+    pass
+
+
 ThrustersModule = Module[
     ThrustersSensorValuesType,
     ThrustersControlValuesType,
     ThrustersParametersType,
     ThrustersSimulationInputsType,
     ThrustersSimulationOutputsType,
+    ThrustersControlModeType,
 ]
 
 
@@ -117,7 +129,11 @@ def resolve_module(
             if module.simulation_outputs
             else None,
         ),
-        automatic=module.control_status.automatic if module.control_status else None,
+        control_mode=SwitchingControlModeType.from_pydantic(
+            ThrustersControlModeType, module.control_status.mode
+        )
+        if module.control_status
+        else None,
     )
 
 

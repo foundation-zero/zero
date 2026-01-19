@@ -19,18 +19,31 @@ from pydantic import (
 )
 
 from thrs.control.modules.high_temperature import HighTemperatureModule
+from thrs.control.switching import SwitchingControlMode
 from thrs.input_output.modules.high_temperature import HighTemperatureSimulationInputs
 from thrs.orchestration.module import ModuleDescription, CombinedModule, CombinedControl
 from thrs.control.modules.consumers import (
     ConsumersAlarms,
     ConsumersControl,
+    ConsumersControlMode,
     ConsumersParameters,
 )
-from thrs.control.modules.pcm import PcmAlarms, PcmControl, PcmParameters
-from thrs.control.modules.pvt import PvtAlarms, PvtControl, PvtParameters
+from thrs.control.modules.pcm import (
+    PcmAlarms,
+    PcmControl,
+    PcmControlMode,
+    PcmParameters,
+)
+from thrs.control.modules.pvt import (
+    PvtAlarms,
+    PvtControl,
+    PvtControlMode,
+    PvtParameters,
+)
 from thrs.control.modules.thrusters import (
     ThrustersAlarms,
     ThrustersControl,
+    ThrustersControlMode,
     ThrustersParameters,
 )
 from thrs.input_output.base import (
@@ -190,6 +203,7 @@ THRUSTERS_MODULE_DESCRIPTION = ModuleDescription(
     ThrustersControlValues,
     ThrustersParameters,
     ThrustersControl,
+    ThrustersControlMode,
     ThrustersAlarms,
 )
 
@@ -198,6 +212,7 @@ PVT_MODULE_DESCRIPTION = ModuleDescription(
     PvtControlValues,
     PvtParameters,
     PvtControl,
+    PvtControlMode,
     PvtAlarms,
 )
 
@@ -206,6 +221,7 @@ PCM_MODULE_DESCRIPTION = ModuleDescription(
     PcmControlValues,
     PcmParameters,
     PcmControl,
+    PcmControlMode,
     PcmAlarms,
 )
 CONSUMERS_MODULE_DESCRIPTION = ModuleDescription(
@@ -213,6 +229,7 @@ CONSUMERS_MODULE_DESCRIPTION = ModuleDescription(
     ConsumersControlValues,
     ConsumersParameters,
     ConsumersControl,
+    ConsumersControlMode,
     ConsumersAlarms,
 )
 
@@ -369,9 +386,9 @@ class SimulationStatusMessage(OutgoingMessage):
         return True
 
 
-class ControlStatusMessage(OutgoingMessage):
+class ControlStatusMessage[Mode](OutgoingMessage):
     module: str
-    automatic: bool
+    mode: SwitchingControlMode[Mode]
 
     @staticmethod
     def subscribe_topic() -> str:
@@ -558,7 +575,10 @@ class SetAutomationMessage(IncomingModuleMessage):
     async def handle(self, context: MessageContext):
         context.control.set_automation_mode(self.module, self.enabled)
         await context.send(
-            ControlStatusMessage(module=self.module, automatic=self.enabled)
+            ControlStatusMessage(
+                module=self.module,
+                mode=context.control.mode_for(self.module),
+            )
         )
 
 
@@ -748,7 +768,9 @@ class SimulationControls:
                 cmds, control, self._controls_client, inner_executor, self._topic_prefix
             )
             for module in modules.modules:
-                await context.send(ControlStatusMessage(module=module, automatic=False))
+                await context.send(
+                    ControlStatusMessage(module=module, mode=control.mode_for(module))
+                )
 
             executor = MqttExecutor(
                 inner_executor,

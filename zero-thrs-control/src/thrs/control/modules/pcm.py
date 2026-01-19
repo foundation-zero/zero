@@ -1,5 +1,5 @@
 from datetime import datetime
-from typing import Callable, Literal
+from typing import Callable
 
 from transitions import Machine, State
 from thrs.classes.control import Control, ControlResult
@@ -59,7 +59,29 @@ _INITIAL_CONTROL_VALUES = PcmControlValues(
 )
 
 
-class PcmControl(Control[PcmSensorValues, PcmControlValues, PcmParameters]):
+class PcmControlMode(ThrsValues):
+    mode: str
+
+    @property
+    def is_idle(self) -> bool:
+        return self.mode == "idle"
+
+    @property
+    def is_supplying(self) -> bool:
+        return self.mode == "supplying"
+
+    @property
+    def is_charging(self) -> bool:
+        return self.mode == "charging"
+
+    @property
+    def is_boosting(self) -> bool:
+        return self.mode == "boosting"
+
+
+class PcmControl(
+    Control[PcmSensorValues, PcmControlValues, PcmParameters, PcmControlMode]
+):
     def __init__(
         self, parameters: PcmParameters, time_fn: Callable[[], datetime]
     ) -> None:
@@ -195,16 +217,12 @@ class PcmControl(Control[PcmSensorValues, PcmControlValues, PcmParameters]):
         return self._parameters
 
     @staticmethod
-    def modes() -> list[str]:
-        return ["supplying", "charging", "boosting", "idle"]
-
-    @staticmethod
     def initial_mode() -> str:
         return "idle"
 
     @property
-    def mode(self) -> Literal["supplying", "charging", "boosting", "idle"]:
-        return self.state  # type: ignore
+    def mode(self) -> PcmControlMode:
+        return PcmControlMode(mode=self.state)  # type: ignore
 
     def initial(self) -> ControlResult[PcmControlValues]:
         return ControlResult(self._time(), self._current_values)
@@ -213,13 +231,13 @@ class PcmControl(Control[PcmSensorValues, PcmControlValues, PcmParameters]):
         pass
 
     def control(self, sensor_values: PcmSensorValues) -> ControlResult:
-        self._try_supplying(sensor_values) if self.mode == "idle" else None  # type: ignore
-        self._try_charging(sensor_values) if self.mode == "idle" else None  # type: ignore
+        self._try_supplying(sensor_values) if self.mode.is_idle else None  # type: ignore
+        self._try_charging(sensor_values) if self.mode.is_idle else None  # type: ignore
 
-        if self.mode == "charging":
+        if self.mode.is_charging:
             self._set_charging_flow_setpoints(sensor_values)
             self._check_charging_conditions(sensor_values)  # type: ignore
-        elif self.mode == "supplying":
+        elif self.mode.is_supplying:
             self._set_supplying_flow_setpoints(sensor_values)
             self._check_supplying_conditions(sensor_values)  # type: ignore
 

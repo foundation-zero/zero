@@ -1,11 +1,12 @@
 import strawberry
 
-from thrs.control.modules.pvt import PvtParameters
+from thrs.control.modules.pvt import PvtControlMode, PvtGroupControlMode, PvtParameters
 from thrs.graphql.base import (
     JsonSchemaDirective,
     Module,
     ModuleSimulation,
     PvtMessaging,
+    SwitchingControlModeType,
     add_automation_mode_mutation,
     add_control_mutations,
     add_parameter_mutations,
@@ -77,12 +78,33 @@ class PvtSimulationOutputsType:
     pass
 
 
+@strawberry.experimental.pydantic.type(
+    model=PvtGroupControlMode,
+    all_fields=True,
+    json_schema_directive=JsonSchemaDirective,
+    use_pydantic_alias=False,
+)
+class PvtGroupControlModeType:
+    pass
+
+
+@strawberry.experimental.pydantic.type(
+    model=PvtControlMode,
+    all_fields=True,
+    json_schema_directive=JsonSchemaDirective,
+    use_pydantic_alias=False,
+)
+class PvtControlModeType:
+    pass
+
+
 PvtModule = Module[
     PvtSensorValuesType,
     PvtControlValuesType,
     PvtParametersType,
     PvtSimulationInputsType,
     PvtSimulationOutputsType,
+    PvtControlModeType,
 ]
 
 
@@ -115,7 +137,11 @@ def resolve_module(
             if module.simulation_outputs
             else None,
         ),
-        automatic=module.control_status.automatic if module.control_status else None,
+        control_mode=SwitchingControlModeType.from_pydantic(
+            PvtControlModeType, module.control_status.mode
+        )
+        if module.control_status
+        else None,
     )
 
 

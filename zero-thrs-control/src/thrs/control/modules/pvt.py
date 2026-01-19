@@ -6,6 +6,7 @@ from thrs.classes.control import Control, ControlResult
 from thrs.control.controllers import Controller
 from thrs.control.modules.pvt_group import (
     PvtGroupControl,
+    PvtGroupControlMode,
     PvtGroupParameters,
     PvtGroupSensorValues,
 )
@@ -14,6 +15,12 @@ from thrs.input_output.base import Stamped, ThrsValues
 from thrs.input_output.definitions.control import Pump, Valve
 from thrs.input_output.definitions.units import Celsius, Ratio, Tuning
 from thrs.input_output.modules.pvt import PvtControlValues, PvtSensorValues
+
+
+class PvtControlMode(ThrsValues):
+    aft: PvtGroupControlMode
+    fwd: PvtGroupControlMode
+    owners: PvtGroupControlMode
 
 
 class PvtParameters(ThrsValues):
@@ -93,7 +100,9 @@ _INITIAL_CONTROL_VALUES = PvtControlValues(
 )
 
 
-class PvtControl(Control[PvtSensorValues, PvtControlValues, PvtParameters]):
+class PvtControl(
+    Control[PvtSensorValues, PvtControlValues, PvtParameters, PvtControlMode]
+):
     def __init__(
         self, parameters: PvtParameters, time_fn: Callable[[], datetime]
     ) -> None:

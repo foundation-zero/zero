@@ -4,15 +4,24 @@ from thrs.control.manual import ManualControl
 from thrs.input_output.base import ThrsValues
 
 
+class SwitchingControlMode[T](ThrsValues):
+    automatic_mode: T | None
+
+    @property
+    def automatic(self) -> bool:
+        return self.automatic_mode is not None
+
+
 class SwitchingControl[
     SensorValues: ThrsValues,
     ControlValues: ThrsValues,
     P: ThrsValues,
-](Control[SensorValues, ControlValues, P]):
+    Mode,
+](Control[SensorValues, ControlValues, P, Mode]):
     def __init__(
         self,
         manual: ManualControl[SensorValues, ControlValues],
-        automatic: Control[SensorValues, ControlValues, P],
+        automatic: Control[SensorValues, ControlValues, P, Mode],
     ):
         self._manual = manual
         self._automatic = automatic
@@ -46,8 +55,12 @@ class SwitchingControl[
         return "manual"
 
     @property
-    def mode(self) -> str | None:
-        return self._mode
+    def mode(self) -> SwitchingControlMode[Mode]:
+        return (
+            SwitchingControlMode(automatic_mode=None)
+            if self._mode == "manual"
+            else SwitchingControlMode(automatic_mode=self._automatic.mode)
+        )
 
     @property
     def automatic(self) -> bool:

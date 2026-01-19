@@ -59,8 +59,17 @@ _INITIAL_CONTROL_VALUES = PvtGroupControlValues(
 )
 
 
+class PvtGroupControlMode(ThrsValues):
+    mode: str
+
+
 class PvtGroupControl(
-    Control[PvtGroupSensorValues, PvtGroupControlValues, PvtGroupParameters]
+    Control[
+        PvtGroupSensorValues,
+        PvtGroupControlValues,
+        PvtGroupParameters,
+        PvtGroupControlMode,
+    ]
 ):
     def __init__(
         self, parameters: PvtGroupParameters, time_fn: Callable[[], datetime]
@@ -140,7 +149,7 @@ class PvtGroupControl(
 
     @property
     def mode(self) -> Literal["idle", "recovery"]:
-        return self.state  # type: ignore
+        return PvtGroupControlMode(mode=self.state)  # type: ignore
 
     def update_parameters(self, parameters: PvtGroupParameters):
         pass

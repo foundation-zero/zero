@@ -1,11 +1,12 @@
 import strawberry
 
-from thrs.control.modules.pcm import PcmParameters
+from thrs.control.modules.pcm import PcmControlMode, PcmParameters
 from thrs.graphql.base import (
     JsonSchemaDirective,
     Module,
     ModuleSimulation,
     PcmMessaging,
+    SwitchingControlModeType,
     add_automation_mode_mutation,
     add_control_mutations,
     add_parameter_mutations,
@@ -77,12 +78,23 @@ class PcmSimulationOutputsType:
     pass
 
 
+@strawberry.experimental.pydantic.type(
+    model=PcmControlMode,
+    all_fields=True,
+    json_schema_directive=JsonSchemaDirective,
+    use_pydantic_alias=False,
+)
+class PcmControlModeType:
+    pass
+
+
 PcmModule = Module[
     PcmSensorValuesType,
     PcmControlValuesType,
     PcmParametersType,
     PcmSimulationInputsType,
     PcmSimulationOutputsType,
+    PcmControlModeType,
 ]
 
 
@@ -115,7 +127,13 @@ def resolve_module(
             if module.simulation_outputs
             else None,
         ),
-        automatic=module.control_status.automatic if module.control_status else None,
+        control_mode=(
+            SwitchingControlModeType.from_pydantic(
+                PcmControlModeType, module.control_status.mode
+            )
+            if module.control_status
+            else None
+        ),
     )
 
 
