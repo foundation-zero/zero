@@ -72,7 +72,9 @@ class TermodinamicaAc:
 
     @staticmethod
     def init_from_settings(settings: Settings):
-        client = ModbusClient(host=settings.termodinamica_host, port=settings.termodinamica_port)
+        client = ModbusClient(
+            host=settings.termodinamica_host, port=settings.termodinamica_port
+        )
         return TermodinamicaAc(client)
 
 

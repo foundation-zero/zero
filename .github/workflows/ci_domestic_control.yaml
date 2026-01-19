@@ -39,10 +39,11 @@ jobs:
       - run: pipx install poetry==2.2.1
       - run: poetry check
         working-directory: zero-domestic-control
-      - uses: astral-sh/ruff-action@v3
-        with:
-          src: "./zero-domestic-control"
       - run: poetry install --with dev,test
+        working-directory: zero-domestic-control
+      - run: poetry run ruff check src tests
+        working-directory: zero-domestic-control
+      - run: poetry run ruff format --check src tests
         working-directory: zero-domestic-control
       - run: poetry run mypy src
         working-directory: zero-domestic-control

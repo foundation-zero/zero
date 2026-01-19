@@ -74,6 +74,8 @@ def test_create_generator():
 
     for type, generator in test.items():
         if type == "choice":
-            assert isinstance(create_generator(type, options=["a", "b"]), generator.__class__)
+            assert isinstance(
+                create_generator(type, options=["a", "b"]), generator.__class__
+            )
         else:
             assert create_generator(type).__class__ == generator.__class__

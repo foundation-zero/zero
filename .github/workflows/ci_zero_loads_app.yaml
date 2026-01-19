@@ -36,10 +36,11 @@ jobs:
       - run: pipx install poetry==2.2.1
       - run: poetry check
         working-directory: zero-loads-app
-      - uses: astral-sh/ruff-action@v3
-        with:
-          src: "./zero-loads-app"
       - run: poetry install --with dev,test
+        working-directory: zero-loads-app
+      - run: poetry run ruff check src tests
+        working-directory: zero-loads-app
+      - run: poetry run ruff format --check src tests
         working-directory: zero-loads-app
       - run: poetry run mypy src
         working-directory: zero-loads-app
