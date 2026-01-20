@@ -2,7 +2,6 @@ import strawberry
 
 from thrs.control.modules.pcm import PcmParameters
 from thrs.graphql.base import (
-    JsonSchemaDirective,
     Module,
     ModuleSimulation,
     PcmMessaging,
@@ -10,7 +9,11 @@ from thrs.graphql.base import (
     add_control_mutations,
     add_parameter_mutations,
     add_simulation_input_mutations,
-    ensure_dedataframes,
+)
+from thrs.graphql.helpers import (
+    pydantic_to_strawberry_type,
+    create_simulation_type,
+    optional_convert,
 )
 from thrs.input_output.modules.pcm import (
     PcmControlValues,
@@ -20,61 +23,12 @@ from thrs.input_output.modules.pcm import (
 )
 
 
-@strawberry.experimental.pydantic.type(
-    model=PcmSensorValues,
-    all_fields=True,
-    json_schema_directive=JsonSchemaDirective,
-    use_pydantic_alias=False,
-)
-class PcmSensorValuesType:
-    pass
+PcmSensorValuesType = pydantic_to_strawberry_type(PcmSensorValues)
+PcmControlValuesType = pydantic_to_strawberry_type(PcmControlValues)
+PcmParametersType = pydantic_to_strawberry_type(PcmParameters)
 
-
-@strawberry.experimental.pydantic.type(
-    model=PcmControlValues,
-    all_fields=True,
-    json_schema_directive=JsonSchemaDirective,
-    use_pydantic_alias=False,
-)
-class PcmControlValuesType:
-    pass
-
-
-@strawberry.experimental.pydantic.type(
-    model=PcmParameters,
-    all_fields=True,
-    json_schema_directive=JsonSchemaDirective,
-    use_pydantic_alias=False,
-)
-class PcmParametersType:
-    pass
-
-
-DedataframedSimulationInputs = PcmSimulationInputs.dedataframe()
-DedataframedSimulationOutputs = PcmSimulationOutputs.dedataframe()
-
-ensure_dedataframes(DedataframedSimulationInputs)
-ensure_dedataframes(DedataframedSimulationOutputs)
-
-
-@strawberry.experimental.pydantic.type(
-    model=DedataframedSimulationInputs,
-    all_fields=True,
-    json_schema_directive=JsonSchemaDirective,
-    use_pydantic_alias=False,
-)
-class PcmSimulationInputsType:
-    pass
-
-
-@strawberry.experimental.pydantic.type(
-    model=DedataframedSimulationOutputs,
-    all_fields=True,
-    json_schema_directive=JsonSchemaDirective,
-    use_pydantic_alias=False,
-)
-class PcmSimulationOutputsType:
-    pass
+PcmSimulationInputsType = create_simulation_type(PcmSimulationInputs)
+PcmSimulationOutputsType = create_simulation_type(PcmSimulationOutputs)
 
 
 PcmModule = Module[
@@ -90,30 +44,14 @@ def resolve_module(
     module: PcmMessaging,
 ) -> PcmModule:
     return Module(
-        sensor_values=(
-            PcmSensorValuesType.from_pydantic(module.sensor_values)
-            if module.sensor_values
-            else None
-        ),
-        control_values=(
-            PcmControlValuesType.from_pydantic(module.control_values)
-            if module.control_values
-            else None
-        ),
-        parameters=(
-            PcmParametersType.from_pydantic(module.parameters)
-            if module.parameters
-            else None
-        ),
+        sensor_values=optional_convert(PcmSensorValuesType, module.sensor_values),
+        control_values=optional_convert(PcmControlValuesType, module.control_values),
+        parameters=optional_convert(PcmParametersType, module.parameters),
         simulation=ModuleSimulation(
-            inputs=(
-                PcmSimulationInputsType.from_pydantic(module.simulation_inputs)
-                if module.simulation_inputs
-                else None
+            inputs=optional_convert(PcmSimulationInputsType, module.simulation_inputs),
+            outputs=optional_convert(
+                PcmSimulationOutputsType, module.simulation_outputs
             ),
-            outputs=PcmSimulationOutputsType.from_pydantic(module.simulation_outputs)
-            if module.simulation_outputs
-            else None,
         ),
         automatic=module.control_status.automatic if module.control_status else None,
     )

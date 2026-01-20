@@ -1,7 +1,6 @@
 from dataclasses import dataclass
 from inspect import isclass
-from typing import Annotated, Callable, Coroutine, get_args
-from pydantic import Field, create_model
+from typing import Callable, Coroutine
 import strawberry
 from thrs.control.modules.consumers import ConsumersParameters
 from thrs.control.modules.pcm import PcmParameters
@@ -10,12 +9,14 @@ from thrs.control.modules.thrusters import ThrustersParameters
 from thrs.graphql.messaging import Messaging, MessagingModule
 import thrs.input_output.definitions.sensor as sensor
 import thrs.input_output.definitions.control as control
-from strawberry.schema_directive import Location
 from thrs.input_output.base import Stamped, ThrsValues
 from strawberry.fastapi import BaseContext
 from pydantic.fields import FieldInfo
 
-from thrs.input_output.definitions.units import unit_for_annotation
+from thrs.graphql.helpers import (
+    JsonSchemaDirective,
+    ensure_input_type,
+)
 from thrs.input_output.modules.consumers import (
     ConsumersControlValues,
     ConsumersSensorValues,
@@ -73,13 +74,6 @@ type ConsumersMessaging = MessagingModule[
 ]
 
 
-@strawberry.schema_directive(locations=[Location.FIELD_DEFINITION])
-class JsonSchemaDirective:
-    yard_tag: str | None = None
-    component_type: str | None = None
-    valve_type: str | None = None
-
-
 @strawberry.experimental.pydantic.type(
     model=Stamped,
     all_fields=True,
@@ -112,28 +106,6 @@ def convert_module(module, class_name_prefix: str):
 
 convert_module(sensor, "Sensor")
 convert_module(control, "Control")
-
-_dedataframed_strawberries = {}
-
-
-def ensure_dedataframe(annotation):
-    if existing := _dedataframed_strawberries.get(annotation, None):
-        return existing
-    else:
-        gql_cls = type(f"{annotation.__name__}SimulationType", (object,), {})
-        strawberry.experimental.pydantic.type(
-            model=annotation,
-            all_fields=True,
-            json_schema_directive=JsonSchemaDirective,
-            use_pydantic_alias=False,
-        )(gql_cls)
-        _dedataframed_strawberries[annotation] = gql_cls
-        return gql_cls
-
-
-def ensure_dedataframes(cls):
-    for name, field in cls.model_fields.items():
-        ensure_dedataframe(field.annotation)
 
 
 @strawberry.type
@@ -170,47 +142,6 @@ type FieldMutation[T] = """Callable[
     [object, object, strawberry.Info[ThrsContext]],
     Coroutine[None, None, T],
 ]"""
-
-_input_types = {}
-
-
-class UnstampedInput(ThrsValues):
-    @staticmethod
-    def generate_for_model(name: str, model: type[ThrsValues]):
-        fields = {
-            key: Annotated[
-                get_args(unit)[0] if get_args(unit) else unit,
-                Field(),
-            ]
-            for key, field in model.model_fields.items()
-            if (unit := unit_for_annotation(field.annotation))
-        }
-        unstamped_model = create_model(name, **fields, __base__=UnstampedInput)  # type: ignore
-        unstamped_model._MODEL = model
-        return unstamped_model
-
-    def to_stamped(self):
-        values = {
-            key: Stamped.stamp(getattr(self, key))
-            for key in type(self).model_fields.keys()
-        }
-        return self._MODEL(**values)  # type: ignore
-
-
-def ensure_input_type(annotation, *args, unstamp: bool) -> type:
-    if existing := _input_types.get(annotation.__name__, None):
-        return existing
-    elif unstamp:
-        input_model = UnstampedInput.generate_for_model(
-            f"{annotation.__name__}InputType", annotation
-        )
-        input_type = strawberry.experimental.pydantic.input(
-            model=input_model, all_fields=True, use_pydantic_alias=False
-        )(type(f"{annotation.__name__}InputType", (object,), {}))
-        _input_types[annotation.__name__] = input_type
-        return input_type
-    else:
-        return annotation
 
 
 def generate_mutation_for_field[T](

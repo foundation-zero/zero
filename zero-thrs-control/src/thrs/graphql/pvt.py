@@ -2,7 +2,6 @@ import strawberry
 
 from thrs.control.modules.pvt import PvtParameters
 from thrs.graphql.base import (
-    JsonSchemaDirective,
     Module,
     ModuleSimulation,
     PvtMessaging,
@@ -10,7 +9,11 @@ from thrs.graphql.base import (
     add_control_mutations,
     add_parameter_mutations,
     add_simulation_input_mutations,
-    ensure_dedataframes,
+)
+from thrs.graphql.helpers import (
+    pydantic_to_strawberry_type,
+    create_simulation_type,
+    optional_convert,
 )
 from thrs.input_output.modules.pvt import (
     PvtControlValues,
@@ -20,61 +23,12 @@ from thrs.input_output.modules.pvt import (
 )
 
 
-@strawberry.experimental.pydantic.type(
-    model=PvtSensorValues,
-    all_fields=True,
-    json_schema_directive=JsonSchemaDirective,
-    use_pydantic_alias=False,
-)
-class PvtSensorValuesType:
-    pass
+PvtSensorValuesType = pydantic_to_strawberry_type(PvtSensorValues)
+PvtControlValuesType = pydantic_to_strawberry_type(PvtControlValues)
+PvtParametersType = pydantic_to_strawberry_type(PvtParameters)
 
-
-@strawberry.experimental.pydantic.type(
-    model=PvtControlValues,
-    all_fields=True,
-    json_schema_directive=JsonSchemaDirective,
-    use_pydantic_alias=False,
-)
-class PvtControlValuesType:
-    pass
-
-
-@strawberry.experimental.pydantic.type(
-    model=PvtParameters,
-    all_fields=True,
-    json_schema_directive=JsonSchemaDirective,
-    use_pydantic_alias=False,
-)
-class PvtParametersType:
-    pass
-
-
-DedataframedSimulationInputs = PvtSimulationInputs.dedataframe()
-DedataframedSimulationOutputs = PvtSimulationOutputs.dedataframe()
-
-ensure_dedataframes(DedataframedSimulationInputs)
-ensure_dedataframes(DedataframedSimulationOutputs)
-
-
-@strawberry.experimental.pydantic.type(
-    model=DedataframedSimulationInputs,
-    all_fields=True,
-    json_schema_directive=JsonSchemaDirective,
-    use_pydantic_alias=False,
-)
-class PvtSimulationInputsType:
-    pass
-
-
-@strawberry.experimental.pydantic.type(
-    model=DedataframedSimulationOutputs,
-    all_fields=True,
-    json_schema_directive=JsonSchemaDirective,
-    use_pydantic_alias=False,
-)
-class PvtSimulationOutputsType:
-    pass
+PvtSimulationInputsType = create_simulation_type(PvtSimulationInputs)
+PvtSimulationOutputsType = create_simulation_type(PvtSimulationOutputs)
 
 
 PvtModule = Module[
@@ -90,30 +44,14 @@ def resolve_module(
     module: PvtMessaging,
 ) -> PvtModule:
     return Module(
-        sensor_values=(
-            PvtSensorValuesType.from_pydantic(module.sensor_values)
-            if module.sensor_values
-            else None
-        ),
-        control_values=(
-            PvtControlValuesType.from_pydantic(module.control_values)
-            if module.control_values
-            else None
-        ),
-        parameters=(
-            PvtParametersType.from_pydantic(module.parameters)
-            if module.parameters
-            else None
-        ),
+        sensor_values=optional_convert(PvtSensorValuesType, module.sensor_values),
+        control_values=optional_convert(PvtControlValuesType, module.control_values),
+        parameters=optional_convert(PvtParametersType, module.parameters),
         simulation=ModuleSimulation(
-            inputs=(
-                PvtSimulationInputsType.from_pydantic(module.simulation_inputs)
-                if module.simulation_inputs
-                else None
+            inputs=optional_convert(PvtSimulationInputsType, module.simulation_inputs),
+            outputs=optional_convert(
+                PvtSimulationOutputsType, module.simulation_outputs
             ),
-            outputs=PvtSimulationOutputsType.from_pydantic(module.simulation_outputs)
-            if module.simulation_outputs
-            else None,
         ),
         automatic=module.control_status.automatic if module.control_status else None,
     )
