@@ -23,12 +23,32 @@ from thrs.graphql.base import (
     ThrsContext,
     ThrustersMessaging,
 )
-from thrs.graphql.helpers import ensure_input_type
+from thrs.graphql.helpers import ensure_input_type, optional_pydantic_to_graphql
 from thrs.graphql.messaging import Messaging, MessagingModule
-from thrs.graphql.pvt import PvtModule, PvtMutations
-from thrs.graphql.thrusters import ThrustersModule, ThrustersMutations
-from thrs.graphql.pcm import PcmModule, PcmMutations
-from thrs.graphql.consumers import ConsumersModule, ConsumersMutations
+from thrs.graphql.pvt import (
+    PvtModule,
+    PvtMutations,
+    PvtSimulationInputsType,
+    PvtSimulationOutputsType,
+)
+from thrs.graphql.thrusters import (
+    ThrustersModule,
+    ThrustersMutations,
+    ThrustersSimulationInputsType,
+    ThrustersSimulationOutputsType,
+)
+from thrs.graphql.pcm import (
+    PcmModule,
+    PcmMutations,
+    PcmSimulationInputsType,
+    PcmSimulationOutputsType,
+)
+from thrs.graphql.consumers import (
+    ConsumersModule,
+    ConsumersMutations,
+    ConsumersSimulationInputsType,
+    ConsumersSimulationOutputsType,
+)
 
 from thrs.input_output.modules.consumers import (
     ConsumersControlValues,
@@ -87,9 +107,27 @@ class Modules:
 
 
 @strawberry.type
+class SimulationInputs:
+    thrusters: ThrustersSimulationInputsType | None
+    pvt: PvtSimulationInputsType | None
+    pcm: PcmSimulationInputsType | None
+    consumers: ConsumersSimulationInputsType | None
+
+
+@strawberry.type
+class SimulationOutputs:
+    thrusters: ThrustersSimulationOutputsType | None
+    pvt: PvtSimulationOutputsType | None
+    pcm: PcmSimulationOutputsType | None
+    consumers: ConsumersSimulationOutputsType | None
+
+
+@strawberry.type
 class SimulationState:
     time: datetime
     status: str
+    inputs: SimulationInputs | None
+    outputs: SimulationOutputs | None
 
 
 @strawberry.type
@@ -113,6 +151,42 @@ class Query:
         return SimulationState(
             time=info.context.messaging.simulation_status.simulation_time,
             status=info.context.messaging.simulation_status.status,
+            inputs=SimulationInputs(
+                thrusters=optional_pydantic_to_graphql(
+                    ThrustersSimulationInputsType,
+                    info.context.thrusters_messaging.simulation_inputs,
+                ),
+                pvt=optional_pydantic_to_graphql(
+                    PvtSimulationInputsType,
+                    info.context.pvt_messaging.simulation_inputs,
+                ),
+                pcm=optional_pydantic_to_graphql(
+                    PcmSimulationInputsType,
+                    info.context.pcm_messaging.simulation_inputs,
+                ),
+                consumers=optional_pydantic_to_graphql(
+                    ConsumersSimulationInputsType,
+                    info.context.consumers_messaging.simulation_inputs,
+                ),
+            ),
+            outputs=SimulationOutputs(
+                thrusters=optional_pydantic_to_graphql(
+                    ThrustersSimulationOutputsType,
+                    info.context.thrusters_messaging.simulation_outputs,
+                ),
+                pvt=optional_pydantic_to_graphql(
+                    PvtSimulationOutputsType,
+                    info.context.pvt_messaging.simulation_outputs,
+                ),
+                pcm=optional_pydantic_to_graphql(
+                    PcmSimulationOutputsType,
+                    info.context.pcm_messaging.simulation_outputs,
+                ),
+                consumers=optional_pydantic_to_graphql(
+                    ConsumersSimulationOutputsType,
+                    info.context.consumers_messaging.simulation_outputs,
+                ),
+            ),
         )
 
 

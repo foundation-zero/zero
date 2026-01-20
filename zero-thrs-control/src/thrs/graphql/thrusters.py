@@ -3,7 +3,6 @@ import strawberry
 from thrs.control.modules.thrusters import ThrustersParameters
 from thrs.graphql.base import (
     Module,
-    ModuleSimulation,
     ThrustersMessaging,
     add_automation_mode_mutation,
     add_control_mutations,
@@ -39,8 +38,6 @@ ThrustersModule = Module[
     ThrustersSensorValuesType,
     ThrustersControlValuesType,
     ThrustersParametersType,
-    ThrustersSimulationInputsType,
-    ThrustersSimulationOutputsType,
 ]
 
 
@@ -56,14 +53,6 @@ def resolve_module(
         ),
         parameters=optional_pydantic_to_graphql(
             ThrustersParametersType, module.parameters
-        ),
-        simulation=ModuleSimulation(
-            inputs=optional_pydantic_to_graphql(
-                ThrustersSimulationInputsType, module.simulation_inputs
-            ),
-            outputs=optional_pydantic_to_graphql(
-                ThrustersSimulationOutputsType, module.simulation_outputs
-            ),
         ),
         automatic=module.control_status.automatic if module.control_status else None,
     )
