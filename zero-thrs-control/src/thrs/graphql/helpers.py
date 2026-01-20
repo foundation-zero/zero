@@ -2,7 +2,7 @@ from typing import Annotated, get_args
 from pydantic import Field, create_model, BaseModel
 import strawberry
 from strawberry.schema_directive import Location
-from thrs.input_output.base import ThrsValues, Stamped
+from thrs.input_output.base import ThrsValues, Stamped, SimulationValues
 from thrs.input_output.definitions.units import unit_for_annotation
 
 
@@ -112,7 +112,7 @@ def optional_convert(graphql_type: type, pydantic_value):
     return graphql_type.from_pydantic(pydantic_value)
 
 
-def create_simulation_type(cls: type[ThrsValues]) -> type:
+def create_simulation_type(cls: type[SimulationValues]) -> type:
     """
     Create a Strawberry GraphQL type for a simulation values class.
 
