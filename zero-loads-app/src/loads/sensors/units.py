@@ -41,3 +41,4 @@ TonneFromDecaKilogram: TypeAlias = Annotated[
     BeforeValidator(decakilogram_to_tonne),
     InverseConversion(tonne_to_decakilogram),
 ]
+Alarm: TypeAlias = bool
