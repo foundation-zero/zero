@@ -1,7 +1,6 @@
 from typing import Any, Callable, Literal, Protocol
 
 from loads.sensors import LoadsModel, at, sail_system
-from loads.sensors import LoadsModel, at, sail_system
 
 Fields = Literal[
     "value",
@@ -122,7 +121,9 @@ loads_variables: dict[str, LoadsField] = {
     ),
     "main-checkstay-ps-load": LoadField(sail_system.MainCheckstayDeflector, "load_ps"),
     "main-checkstay-sb-load": LoadField(sail_system.MainCheckstayDeflector, "load_sb"),
-    "main-checkstay-deflector-alarm": LoadField(sail_system.MainCheckstayDeflector, "alarm"),
+    "main-checkstay-deflector-alarm": LoadField(
+        sail_system.MainCheckstayDeflector, "alarm"
+    ),
     "main-cunningham-load": LoadField(sail_system.MainCunningham, "load"),
     "main-cunningham-position": LoadField(sail_system.MainCunningham, "position"),
     "main-cunningham-relative-position": LoadField(
@@ -194,7 +195,9 @@ loads_variables: dict[str, LoadsField] = {
     "mizzen-checkstay-sb-load": LoadField(
         sail_system.MizzenCheckstayDeflector, "load_sb"
     ),
-    "mizzen-checkstay-deflector-alarm": LoadField(sail_system.MizzenCheckstayDeflector, "alarm"),
+    "mizzen-checkstay-deflector-alarm": LoadField(
+        sail_system.MizzenCheckstayDeflector, "alarm"
+    ),
     "mizzen-cunningham-load": LoadField(sail_system.MizzenCunningham, "load"),
     "mizzen-cunningham-position": LoadField(sail_system.MizzenCunningham, "position"),
     "mizzen-cunningham-relative-position": LoadField(
@@ -218,7 +221,9 @@ loads_variables: dict[str, LoadsField] = {
     "mizzen-jib-tack-adjuster-relative-position": LoadField(
         sail_system.MizzenHeadsailTackAdjuster, "relative_position"
     ),
-    "mizzen-jib-tack-adjuster-alarm": LoadField(sail_system.MizzenHeadsailTackAdjuster, "alarm"),
+    "mizzen-jib-tack-adjuster-alarm": LoadField(
+        sail_system.MizzenHeadsailTackAdjuster, "alarm"
+    ),
     "mizzen-outhaul-load": LoadField(sail_system.MizzenOuthaul, "load"),
     "mizzen-outhaul-position": LoadField(sail_system.MizzenOuthaul, "position"),
     "mizzen-outhaul-relative-position": LoadField(
@@ -283,7 +288,9 @@ loads_variables: dict[str, LoadsField] = {
     "staysail-stay-adjuster-relative-position": LoadField(
         sail_system.StaysailStayAdjuster, "relative_position"
     ),
-    "staysail-stay-adjuster-alarm": LoadField(sail_system.StaysailStayAdjuster, "alarm"),
+    "staysail-stay-adjuster-alarm": LoadField(
+        sail_system.StaysailStayAdjuster, "alarm"
+    ),
     "storm-jib-lock": LoadField(sail_system.HeadsailLocks, "lock_stormjib"),
     "storm-jib-overhoist": LoadField(sail_system.HeadsailLocks, "overhoist_stormjib"),
     "aws": LoadField(at.ApparentWindSpeed, "value"),
