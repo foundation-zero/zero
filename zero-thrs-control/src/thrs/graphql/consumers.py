@@ -2,7 +2,6 @@ import strawberry
 
 from thrs.control.modules.consumers import ConsumersParameters
 from thrs.graphql.base import (
-    JsonSchemaDirective,
     Module,
     ModuleSimulation,
     ConsumersMessaging,
@@ -10,7 +9,11 @@ from thrs.graphql.base import (
     add_control_mutations,
     add_parameter_mutations,
     add_simulation_input_mutations,
-    ensure_dedataframes,
+)
+from thrs.graphql.helpers import (
+    pydantic_to_strawberry_type,
+    dedataframed_pydantic_to_strawberry_type,
+    optional_pydantic_to_graphql,
 )
 from thrs.input_output.modules.consumers import (
     ConsumersControlValues,
@@ -20,61 +23,16 @@ from thrs.input_output.modules.consumers import (
 )
 
 
-@strawberry.experimental.pydantic.type(
-    model=ConsumersSensorValues,
-    all_fields=True,
-    json_schema_directive=JsonSchemaDirective,
-    use_pydantic_alias=False,
+ConsumersSensorValuesType = pydantic_to_strawberry_type(ConsumersSensorValues)
+ConsumersControlValuesType = pydantic_to_strawberry_type(ConsumersControlValues)
+ConsumersParametersType = pydantic_to_strawberry_type(ConsumersParameters)
+
+ConsumersSimulationInputsType = dedataframed_pydantic_to_strawberry_type(
+    ConsumersSimulationInputs
 )
-class ConsumersSensorValuesType:
-    pass
-
-
-@strawberry.experimental.pydantic.type(
-    model=ConsumersControlValues,
-    all_fields=True,
-    json_schema_directive=JsonSchemaDirective,
-    use_pydantic_alias=False,
+ConsumersSimulationOutputsType = dedataframed_pydantic_to_strawberry_type(
+    ConsumersSimulationOutputs
 )
-class ConsumersControlValuesType:
-    pass
-
-
-@strawberry.experimental.pydantic.type(
-    model=ConsumersParameters,
-    all_fields=True,
-    json_schema_directive=JsonSchemaDirective,
-    use_pydantic_alias=False,
-)
-class ConsumersParametersType:
-    pass
-
-
-DedataframedSimulationInputs = ConsumersSimulationInputs.dedataframe()
-DedataframedSimulationOutputs = ConsumersSimulationOutputs.dedataframe()
-
-ensure_dedataframes(DedataframedSimulationInputs)
-ensure_dedataframes(DedataframedSimulationOutputs)
-
-
-@strawberry.experimental.pydantic.type(
-    model=DedataframedSimulationInputs,
-    all_fields=True,
-    json_schema_directive=JsonSchemaDirective,
-    use_pydantic_alias=False,
-)
-class ConsumersSimulationInputsType:
-    pass
-
-
-@strawberry.experimental.pydantic.type(
-    model=DedataframedSimulationOutputs,
-    all_fields=True,
-    json_schema_directive=JsonSchemaDirective,
-    use_pydantic_alias=False,
-)
-class ConsumersSimulationOutputsType:
-    pass
 
 
 ConsumersModule = Module[
@@ -90,32 +48,22 @@ def resolve_module(
     module: ConsumersMessaging,
 ) -> ConsumersModule:
     return Module(
-        sensor_values=(
-            ConsumersSensorValuesType.from_pydantic(module.sensor_values)
-            if module.sensor_values
-            else None
+        sensor_values=optional_pydantic_to_graphql(
+            ConsumersSensorValuesType, module.sensor_values
         ),
-        control_values=(
-            ConsumersControlValuesType.from_pydantic(module.control_values)
-            if module.control_values
-            else None
+        control_values=optional_pydantic_to_graphql(
+            ConsumersControlValuesType, module.control_values
         ),
-        parameters=(
-            ConsumersParametersType.from_pydantic(module.parameters)
-            if module.parameters
-            else None
+        parameters=optional_pydantic_to_graphql(
+            ConsumersParametersType, module.parameters
         ),
         simulation=ModuleSimulation(
-            inputs=(
-                ConsumersSimulationInputsType.from_pydantic(module.simulation_inputs)
-                if module.simulation_inputs
-                else None
+            inputs=optional_pydantic_to_graphql(
+                ConsumersSimulationInputsType, module.simulation_inputs
             ),
-            outputs=ConsumersSimulationOutputsType.from_pydantic(
-                module.simulation_outputs
-            )
-            if module.simulation_outputs
-            else None,
+            outputs=optional_pydantic_to_graphql(
+                ConsumersSimulationOutputsType, module.simulation_outputs
+            ),
         ),
         automatic=module.control_status.automatic if module.control_status else None,
     )

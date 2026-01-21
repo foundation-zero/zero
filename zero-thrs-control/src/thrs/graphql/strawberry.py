@@ -6,10 +6,8 @@ import sys
 from typing import (
     Annotated,
     Callable,
-    get_args,
 )
 from fastapi import Depends, FastAPI
-from pydantic import Field, create_model
 import strawberry
 from strawberry.fastapi import GraphQLRouter
 
@@ -25,13 +23,13 @@ from thrs.graphql.base import (
     ThrsContext,
     ThrustersMessaging,
 )
+from thrs.graphql.helpers import ensure_input_type
 from thrs.graphql.messaging import Messaging, MessagingModule
 from thrs.graphql.pvt import PvtModule, PvtMutations
 from thrs.graphql.thrusters import ThrustersModule, ThrustersMutations
 from thrs.graphql.pcm import PcmModule, PcmMutations
 from thrs.graphql.consumers import ConsumersModule, ConsumersMutations
 
-from thrs.input_output.definitions.units import unit_for_annotation
 from thrs.input_output.modules.consumers import (
     ConsumersControlValues,
     ConsumersSensorValues,
@@ -60,7 +58,6 @@ import thrs.graphql.thrusters as thrusters
 import thrs.graphql.pvt as pvt
 import thrs.graphql.pcm as pcm
 import thrs.graphql.consumers as consumers
-from thrs.input_output.base import Stamped, ThrsValues
 from pydantic.fields import FieldInfo
 from aiomqtt import Client as MqttClient
 
@@ -117,48 +114,6 @@ class Query:
             time=info.context.messaging.simulation_status.simulation_time,
             status=info.context.messaging.simulation_status.status,
         )
-
-
-_input_types = {}
-
-
-class UnstampedInput(ThrsValues):
-    @staticmethod
-    def generate_for_model(name: str, model: type[ThrsValues]):
-        fields = {
-            key: Annotated[
-                get_args(unit)[0] if get_args(unit) else unit,
-                Field(),
-            ]
-            for key, field in model.model_fields.items()
-            if (unit := unit_for_annotation(field.annotation))
-        }
-        unstamped_model = create_model(name, **fields, __base__=UnstampedInput)  # type: ignore
-        unstamped_model._MODEL = model
-        return unstamped_model
-
-    def to_stamped(self):
-        values = {
-            key: Stamped.stamp(getattr(self, key))
-            for key in type(self).model_fields.keys()
-        }
-        return self._MODEL(**values)  # type: ignore
-
-
-def ensure_input_type(annotation, *args, unstamp: bool) -> type:
-    if existing := _input_types.get(annotation.__name__, None):
-        return existing
-    elif unstamp:
-        input_model = UnstampedInput.generate_for_model(
-            f"{annotation.__name__}InputType", annotation
-        )
-        input_type = strawberry.experimental.pydantic.input(
-            model=input_model, all_fields=True, use_pydantic_alias=False
-        )(type(f"{annotation.__name__}InputType", (object,), {}))
-        _input_types[annotation.__name__] = input_type
-        return input_type
-    else:
-        return annotation
 
 
 def generate_mutation_for_field[T](
