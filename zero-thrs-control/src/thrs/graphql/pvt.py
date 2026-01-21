@@ -12,8 +12,8 @@ from thrs.graphql.base import (
 )
 from thrs.graphql.helpers import (
     pydantic_to_strawberry_type,
-    create_simulation_type,
-    optional_convert,
+    dedataframed_pydantic_to_strawberry_type,
+    optional_pydantic_to_graphql,
 )
 from thrs.input_output.modules.pvt import (
     PvtControlValues,
@@ -27,8 +27,10 @@ PvtSensorValuesType = pydantic_to_strawberry_type(PvtSensorValues)
 PvtControlValuesType = pydantic_to_strawberry_type(PvtControlValues)
 PvtParametersType = pydantic_to_strawberry_type(PvtParameters)
 
-PvtSimulationInputsType = create_simulation_type(PvtSimulationInputs)
-PvtSimulationOutputsType = create_simulation_type(PvtSimulationOutputs)
+PvtSimulationInputsType = dedataframed_pydantic_to_strawberry_type(PvtSimulationInputs)
+PvtSimulationOutputsType = dedataframed_pydantic_to_strawberry_type(
+    PvtSimulationOutputs
+)
 
 
 PvtModule = Module[
@@ -44,12 +46,18 @@ def resolve_module(
     module: PvtMessaging,
 ) -> PvtModule:
     return Module(
-        sensor_values=optional_convert(PvtSensorValuesType, module.sensor_values),
-        control_values=optional_convert(PvtControlValuesType, module.control_values),
-        parameters=optional_convert(PvtParametersType, module.parameters),
+        sensor_values=optional_pydantic_to_graphql(
+            PvtSensorValuesType, module.sensor_values
+        ),
+        control_values=optional_pydantic_to_graphql(
+            PvtControlValuesType, module.control_values
+        ),
+        parameters=optional_pydantic_to_graphql(PvtParametersType, module.parameters),
         simulation=ModuleSimulation(
-            inputs=optional_convert(PvtSimulationInputsType, module.simulation_inputs),
-            outputs=optional_convert(
+            inputs=optional_pydantic_to_graphql(
+                PvtSimulationInputsType, module.simulation_inputs
+            ),
+            outputs=optional_pydantic_to_graphql(
                 PvtSimulationOutputsType, module.simulation_outputs
             ),
         ),

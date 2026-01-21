@@ -12,8 +12,8 @@ from thrs.graphql.base import (
 )
 from thrs.graphql.helpers import (
     pydantic_to_strawberry_type,
-    create_simulation_type,
-    optional_convert,
+    dedataframed_pydantic_to_strawberry_type,
+    optional_pydantic_to_graphql,
 )
 from thrs.input_output.modules.thrusters import (
     ThrustersControlValues,
@@ -27,8 +27,12 @@ ThrustersSensorValuesType = pydantic_to_strawberry_type(ThrustersSensorValues)
 ThrustersControlValuesType = pydantic_to_strawberry_type(ThrustersControlValues)
 ThrustersParametersType = pydantic_to_strawberry_type(ThrustersParameters)
 
-ThrustersSimulationInputsType = create_simulation_type(ThrustersSimulationInputs)
-ThrustersSimulationOutputsType = create_simulation_type(ThrustersSimulationOutputs)
+ThrustersSimulationInputsType = dedataframed_pydantic_to_strawberry_type(
+    ThrustersSimulationInputs
+)
+ThrustersSimulationOutputsType = dedataframed_pydantic_to_strawberry_type(
+    ThrustersSimulationOutputs
+)
 
 
 ThrustersModule = Module[
@@ -44,16 +48,20 @@ def resolve_module(
     module: ThrustersMessaging,
 ) -> ThrustersModule:
     return Module(
-        sensor_values=optional_convert(ThrustersSensorValuesType, module.sensor_values),
-        control_values=optional_convert(
+        sensor_values=optional_pydantic_to_graphql(
+            ThrustersSensorValuesType, module.sensor_values
+        ),
+        control_values=optional_pydantic_to_graphql(
             ThrustersControlValuesType, module.control_values
         ),
-        parameters=optional_convert(ThrustersParametersType, module.parameters),
+        parameters=optional_pydantic_to_graphql(
+            ThrustersParametersType, module.parameters
+        ),
         simulation=ModuleSimulation(
-            inputs=optional_convert(
+            inputs=optional_pydantic_to_graphql(
                 ThrustersSimulationInputsType, module.simulation_inputs
             ),
-            outputs=optional_convert(
+            outputs=optional_pydantic_to_graphql(
                 ThrustersSimulationOutputsType, module.simulation_outputs
             ),
         ),

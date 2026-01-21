@@ -12,8 +12,8 @@ from thrs.graphql.base import (
 )
 from thrs.graphql.helpers import (
     pydantic_to_strawberry_type,
-    create_simulation_type,
-    optional_convert,
+    dedataframed_pydantic_to_strawberry_type,
+    optional_pydantic_to_graphql,
 )
 from thrs.input_output.modules.pcm import (
     PcmControlValues,
@@ -27,8 +27,10 @@ PcmSensorValuesType = pydantic_to_strawberry_type(PcmSensorValues)
 PcmControlValuesType = pydantic_to_strawberry_type(PcmControlValues)
 PcmParametersType = pydantic_to_strawberry_type(PcmParameters)
 
-PcmSimulationInputsType = create_simulation_type(PcmSimulationInputs)
-PcmSimulationOutputsType = create_simulation_type(PcmSimulationOutputs)
+PcmSimulationInputsType = dedataframed_pydantic_to_strawberry_type(PcmSimulationInputs)
+PcmSimulationOutputsType = dedataframed_pydantic_to_strawberry_type(
+    PcmSimulationOutputs
+)
 
 
 PcmModule = Module[
@@ -44,12 +46,18 @@ def resolve_module(
     module: PcmMessaging,
 ) -> PcmModule:
     return Module(
-        sensor_values=optional_convert(PcmSensorValuesType, module.sensor_values),
-        control_values=optional_convert(PcmControlValuesType, module.control_values),
-        parameters=optional_convert(PcmParametersType, module.parameters),
+        sensor_values=optional_pydantic_to_graphql(
+            PcmSensorValuesType, module.sensor_values
+        ),
+        control_values=optional_pydantic_to_graphql(
+            PcmControlValuesType, module.control_values
+        ),
+        parameters=optional_pydantic_to_graphql(PcmParametersType, module.parameters),
         simulation=ModuleSimulation(
-            inputs=optional_convert(PcmSimulationInputsType, module.simulation_inputs),
-            outputs=optional_convert(
+            inputs=optional_pydantic_to_graphql(
+                PcmSimulationInputsType, module.simulation_inputs
+            ),
+            outputs=optional_pydantic_to_graphql(
                 PcmSimulationOutputsType, module.simulation_outputs
             ),
         ),
