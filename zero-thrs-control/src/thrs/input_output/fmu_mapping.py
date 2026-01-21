@@ -4,7 +4,7 @@ from typing import Any, overload
 
 from pydantic.fields import FieldInfo, ComputedFieldInfo
 
-from thrs.input_output.base import Stamped, ThrsValues
+from thrs.input_output.base import SimulationInputs, Stamped, ThrsValues
 
 
 def groupby(iterable, key):
@@ -24,20 +24,30 @@ def included_in_fmu(field: FieldInfo | ComputedFieldInfo) -> bool:
 
 
 def extract_non_fmu_values(
-    simulation_input: ThrsValues, sensor_cls: type[ThrsValues]
+    simulation_inputs: SimulationInputs, sensor_cls: type[ThrsValues]
 ) -> dict[str, dict[str, Stamped[Any]]]:
-    """Extract values that are not included in the FMU."""
+    """Extract values from simulation inputs that are not included in the FMU."""
 
-    def _lookup_values(simulation_value: ThrsValues, sensor_component_field: FieldInfo):
+    def _lookup_values(simulation_inputs: SimulationInputs, sensor_component_field: FieldInfo):
+        component_type = sensor_component_field.annotation
+        # If the whole component is excluded, return all fields
+        if not included_in_fmu(sensor_component_field):
+            return {
+                name: getattr(simulation_inputs, name)
+                for name in component_type.model_fields.keys()  # type: ignore
+            }
+        # Otherwise, only return fields that are excluded
         return {
-            name: getattr(simulation_value, name)
-            for name in sensor_component_field.annotation.model_fields.keys()  # type: ignore
-        }
+                name: getattr(simulation_inputs, name)
+                for name, field in component_type.model_fields.items() # type: ignore
+                if not included_in_fmu(field)
+            }
 
     return {
-        component_name: _lookup_values(getattr(simulation_input, component_name), field)
+        component_name: values
         for component_name, field in sensor_cls.model_fields.items()
-        if not included_in_fmu(field)
+        if hasattr(simulation_inputs, component_name)
+        and (values := _lookup_values(getattr(simulation_inputs, component_name), field))
     }
 
 

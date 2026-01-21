@@ -1,9 +1,12 @@
-
 from pytest import fixture
 import pytest
 
 from tests.helpers.simulation_inputs import simulator_input_field_setters
-from thrs.input_output.modules.fahrenheit import FahrenheitSensorValues, FahrenheitSimulationInputs, FahrenheitSimulationOutputs
+from thrs.input_output.modules.fahrenheit import (
+    FahrenheitSensorValues,
+    FahrenheitSimulationInputs,
+    FahrenheitSimulationOutputs,
+)
 from thrs.orchestration.executor import SimulationExecutor
 from thrs.simulation.fmu import Fmu
 from thrs.simulation.io_mapping import ThrsModelIoMapping
@@ -12,12 +15,7 @@ from datetime import datetime, timedelta
 
 
 @fixture(
-    params=list(
-        simulator_input_field_setters(
-            FahrenheitSimulationInputs,
-            ignore=[ ]
-        )
-    )
+    params=list(simulator_input_field_setters(FahrenheitSimulationInputs, ignore=[]))
 )
 def incorrect_simulation_inputs(simulation_inputs, request):
     inputs = simulation_inputs.get_values_at_time(datetime.now())

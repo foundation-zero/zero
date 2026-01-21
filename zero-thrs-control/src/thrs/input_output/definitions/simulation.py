@@ -4,9 +4,9 @@ from thrs.input_output.definitions.units import (
     Bar,
     Celsius,
     LMin,
+    OnOff,
     Overpressure,
     PcsMode,
-    Ratio,
     Watt,
 )
 from pydantic.json_schema import SkipJsonSchema
@@ -46,10 +46,6 @@ class FlowBoundary(ThrsValues):
     flow: Stamp[LMin]
 
 
-class ValvePosition(ThrsValues):
-    position_rel: Stamp[Ratio]
-
-
 class Thruster(HeatSource):
     active: Annotated[Stamp[bool], field_meta(included_in_fmu=False)]
 
@@ -60,13 +56,14 @@ class Pcs(ThrsValues):
         field_meta(included_in_fmu=False),
     ]
 
+class Fahrenheit(ThrsValues):
+    free_cooling: Annotated[Stamped[OnOff], field_meta(included_in_fmu=False)]
 
 __all__ = [
     "HeatSource",
     "Boundary",
     "TemperatureBoundary",
     "FlowBoundary",
-    "ValvePosition",
     "Thruster",
     "Pcs",
 ]
