@@ -53,5 +53,5 @@ poetry run fastapi dev src/thrs/graphql/strawberry.py
 Export the GraphQL schema to `zero-ui`:
 
 ```bash
-poetry run strawberry export-schema thrs.graphql.strawberry --output ../zero-ui/src/graphql/thrs/schema.graphql
+poetry run strawberry export-schema thrs.graphql.strawberry --output ../zero-ui/src/modules/thrs/graphql/schema.graphql
 ```
