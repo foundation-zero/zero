@@ -36,6 +36,7 @@ sail_system_sensors = MessagingModule(
         sail_system.MainRunnerSb,
         sail_system.MainRunnerPs,
         sail_system.MainSheet,
+        sail_system.MainTraveler,
         sail_system.MainVang,
         sail_system.MizzenCheckstayDeflector,
         sail_system.MizzenCunningham,
