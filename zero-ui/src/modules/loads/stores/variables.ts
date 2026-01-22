@@ -11,7 +11,8 @@ import {
 import { AWA_VALUES, AWS_VALUES } from "../lib/consts";
 import { Dashboard, DASHBOARDS, OVERVIEW } from "../lib/consts.dashboards";
 import { SailId, SAILS } from "../lib/consts.sails";
-import { AWA, MaybeVariable, NumRangeId, Sail, Variable } from "../types";
+import { unique } from "../lib/utils";
+import { AWA, MaybeVariable, NumRangeId, PositionId, SailSelection, Variable } from "../types";
 import {
   QueryVariableActual,
   QueryVariableDefinition,
@@ -36,23 +37,29 @@ export const useVariablesStore = defineStore("loads-variables", () => {
       selectedDashboardId.value = dashboard.sail;
     },
   });
+
   const availableDashboards = computed(() =>
-    selectedSails.value.filter((sail) => DASHBOARDS.some((d) => d.sail === sail.id)),
+    SAILS.filter(
+      (sail) =>
+        selectedSailIds.value.includes(sail.id) && DASHBOARDS.some((d) => d.sail === sail.id),
+    ),
   );
 
   const currentVariables = computed(() =>
     selectedDashboard.value.groups.flatMap((g) => g.variables),
   );
 
-  const selectedSailIds = useLocalStorage<SailId[]>("loads-variable-selected-sails", []);
-  const selectedSails = computed<Sail<SailId>[]>({
-    get() {
-      return SAILS.filter((sail) => selectedSailIds.value.includes(sail.id));
-    },
-    set(sails: Sail<SailId>[]) {
-      selectedSailIds.value = sails.map((sail) => sail.id);
-    },
+  const selectedSails = useLocalStorage<SailSelection>("loads-variables-selected-sails", {
+    [PositionId.Main]: null,
+    [PositionId.ForeInner]: null,
+    [PositionId.ForeOuter]: null,
+    [PositionId.Mizzen]: null,
+    [PositionId.MizzenFore]: null,
   });
+
+  const selectedSailIds = computed(() =>
+    unique(selectedSails.value).filter((id) => SAILS.some((s) => s.id === id)),
+  );
 
   const getVariableById = <T extends number | boolean>(id: string) =>
     computed(() => variables.value.find((variable) => variable.id === id) as Variable<T>);
@@ -65,17 +72,17 @@ export const useVariablesStore = defineStore("loads-variables", () => {
     selectedAWS.value = id;
   };
 
-  const setSelectedSails = (sails: Sail<SailId>[]) => {
+  const setSelectedSails = (sails: SailSelection) => {
     selectedSails.value = sails;
 
-    // If the currently selected dashboard is not valid for the new sails, reset to OVERVIEW
-    if (!sails.some((sail) => sail.id === selectedDashboardId.value)) {
-      setDashboard(OVERVIEW);
+    // If the currently selected dashboard is not valid for the new sailset, reset to OVERVIEW
+    if (!selectedSailIds.value.includes(selectedDashboardId.value)) {
+      setDashboard(OVERVIEW.sail);
     }
   };
 
-  const setDashboard = (dashboard: Dashboard) => {
-    selectedDashboard.value = dashboard;
+  const setDashboard = (sail: SailId) => {
+    selectedDashboardId.value = sail;
   };
 
   const { data: definitions } = useQuery<QueryVariableDefinition>({
@@ -105,7 +112,7 @@ export const useVariablesStore = defineStore("loads-variables", () => {
   });
 
   const variables = computed<MaybeVariable[]>(() => {
-    if (!definitions.value || !actuals.value || !referenceValues.value) {
+    if (!definitions.value) {
       return [];
     }
 

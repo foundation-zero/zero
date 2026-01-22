@@ -6,11 +6,15 @@ import { SailId } from "../lib/consts.sails";
 import { useVariablesStore } from "../stores/variables";
 
 const { availableDashboards, selectedDashboard } = toRefs(useVariablesStore());
+const { setDashboard } = useVariablesStore();
 const { t } = useI18n();
 </script>
 
 <template>
-  <Tabs :model-value="selectedDashboard.sail">
+  <Tabs
+    :model-value="selectedDashboard.sail"
+    @update:model-value="setDashboard"
+  >
     <TabsList
       as="nav"
       class="py-0"

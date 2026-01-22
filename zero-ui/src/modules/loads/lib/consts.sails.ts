@@ -4,7 +4,7 @@ const position = (name: string, ...positions: PositionId[]): SailPositionGroup =
   name,
   positions: positions.map((positionId) => ({
     sails: POSITIONS_WITH_SAILS[positionId],
-    positionId,
+    position: positionId,
   })),
 });
 
@@ -15,22 +15,22 @@ export const sail = (name: string, id: SailId): Sail<SailId> => ({
 
 export const enum SailId {
   None = "none",
-  FullMain = "full-main",
-  MainReef1 = "main-reef1",
-  MainReef2 = "main-reef2",
-  MainReef3 = "main-reef3",
+  FullMain = "full_main",
+  MainReef1 = "main_reef1",
+  MainReef2 = "main_reef2",
+  MainReef3 = "main_reef3",
   Trisail = "trisail",
   Blade = "blade",
-  CodeZero = "code-zero",
+  CodeZero = "code_zero",
   Genoa = "genoa",
   Gennaker = "gennaker",
   Staysail = "staysail",
-  StormJib = "storm-jib",
-  FullMizzen = "full-mizzen",
-  MizzenReef1 = "mizzen-reef1",
-  MizzenReef2 = "mizzen-reef2",
-  MizzenGenoa = "mizzen-genoa",
-  MizzenJib = "mizzen-jib",
+  StormJib = "storm_jib",
+  FullMizzen = "full_mizzen",
+  MizzenReef1 = "mizzen_reef1",
+  MizzenReef2 = "mizzen_reef2",
+  MizzenGenoa = "mizzen_genoa",
+  MizzenJib = "mizzen_jib",
 }
 
 const POSITIONS_WITH_SAILS: Record<PositionId, Sail<SailId>[]> = {

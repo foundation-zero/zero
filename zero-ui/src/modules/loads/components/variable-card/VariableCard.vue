@@ -7,7 +7,7 @@ import { ReferenceThresholds, VariableUnit } from "../../types";
 import { Card } from "../card";
 
 const props = defineProps<{
-  value: number;
+  value?: number | null;
   thresholds?: Partial<ReferenceThresholds>;
   type: VariableUnit;
   class?: HTMLAttributes["class"];
