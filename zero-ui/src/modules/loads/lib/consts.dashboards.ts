@@ -158,7 +158,7 @@ export const MIZZEN_REEF_1 = dashboard(
   SailId.MizzenReef1,
   group("Mizzen sail", "mizzen-sheet-load", "mizzen-preventer-load", "mizzen-vang-load"),
   group(
-    "Halyard & trim",
+    "Halyard and trim",
     "mizzen-halyard-load",
     "mizzen-reef-1-lock",
     "mizzen-boom-reef-1-lock",
@@ -171,7 +171,7 @@ export const MIZZEN_REEF_2 = dashboard(
   SailId.MizzenReef2,
   group("Mizzen sail", "mizzen-sheet-load", "mizzen-preventer-load", "mizzen-vang-load"),
   group(
-    "Halyard & trim",
+    "Halyard and trim",
     "mizzen-halyard-load",
     "mizzen-reef-2-lock",
     "mizzen-boom-reef-2-lock",
@@ -189,17 +189,17 @@ export const BLADE = dashboard(
 
 export const CODE_ZERO = dashboard(
   SailId.CodeZero,
-  group("Tack & halyard", "code-zero-tack-load", "code-zero-lock", "code-zero-overhoist"),
+  group("Tack and halyard", "code-zero-tack-load", "code-zero-lock", "code-zero-overhoist"),
 );
 
 export const A3 = dashboard(
   SailId.A3,
-  group("Tack & halyard", "code-zero-tack-load", "code-zero-lock", "code-zero-overhoist"),
+  group("Tack and halyard", "code-zero-tack-load", "code-zero-lock", "code-zero-overhoist"),
 );
 
 export const A2 = dashboard(
   SailId.A2,
-  group("Tack & halyard", "code-zero-tack-load", "code-zero-lock", "code-zero-overhoist"),
+  group("Tack and halyard", "code-zero-tack-load", "code-zero-lock", "code-zero-overhoist"),
 );
 
 export const STAYSAIL = dashboard(
@@ -216,7 +216,7 @@ export const STORM_JIB = dashboard(
 export const MIZZEN_JIB = dashboard(
   SailId.MizzenJib,
   group(
-    "Tack & halyard",
+    "Tack and halyard",
     "mizzen-jib-tack-adjuster-load",
     "mizzen-jib-lock",
     "mizzen-jib-overhoist",
@@ -226,7 +226,7 @@ export const MIZZEN_JIB = dashboard(
 export const MIZZEN_STAYSAIL = dashboard(
   SailId.MizzenStaysail,
   group(
-    "Tack & halyard",
+    "Tack and halyard",
     "mizzen-jib-tack-adjuster-load",
     "mizzen-jib-lock",
     "mizzen-jib-overhoist",
