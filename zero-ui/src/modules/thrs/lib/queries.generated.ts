@@ -345,6 +345,9 @@ export const PVT_SENSOR_QUERY = `
   pvtPressureOwners {
     pressure { value timestamp }
   }
+  pvtPressureSupply {
+    pressure { value timestamp }
+  }
   pvtSwitchMainFwd {
     positionRel { value timestamp }
   }

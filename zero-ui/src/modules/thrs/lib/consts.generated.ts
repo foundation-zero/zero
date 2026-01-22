@@ -493,6 +493,10 @@ export const PVT_SENSOR_DEFINITION = toSensorDefinition({
     yardTag: "50001097-05",
     componentType: SensorComponentType.Pressure,
   },
+  pvtPressureSupply: {
+    yardTag: "50001097-06",
+    componentType: SensorComponentType.Pressure,
+  },
   pvtSwitchMainFwd: {
     yardTag: "50001067-01",
     componentType: SensorComponentType.Valve,
@@ -956,7 +960,7 @@ export const THRUSTERS_SENSOR_DEFINITION = toSensorDefinition({
     componentType: SensorComponentType.Flow,
   },
   thrustersFlowAft: {
-    yardTag: "50001057-23",
+    yardTag: "50001218-02",
     componentType: SensorComponentType.Flow,
   },
   thrustersFlowcontrolAft: {
@@ -985,7 +989,7 @@ export const THRUSTERS_SENSOR_DEFINITION = toSensorDefinition({
     valveType: ValveType.Switch,
   },
   thrustersFlowRecovery: {
-    yardTag: "50001093-01",
+    yardTag: "50001218-01",
     componentType: SensorComponentType.Flow,
   },
   thrustersPressurePump: {
