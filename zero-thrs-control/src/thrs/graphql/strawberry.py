@@ -108,18 +108,18 @@ class Modules:
 
 @strawberry.type
 class SimulationInputs:
-    thrusters: ThrustersSimulationInputsType | None
-    pvt: PvtSimulationInputsType | None
-    pcm: PcmSimulationInputsType | None
-    consumers: ConsumersSimulationInputsType | None
+    thrusters: ThrustersSimulationInputsType | None  # pyright: ignore[reportInvalidTypeForm]
+    pvt: PvtSimulationInputsType | None  # pyright: ignore[reportInvalidTypeForm]
+    pcm: PcmSimulationInputsType | None  # pyright: ignore[reportInvalidTypeForm]
+    consumers: ConsumersSimulationInputsType | None  # pyright: ignore[reportInvalidTypeForm]
 
 
 @strawberry.type
 class SimulationOutputs:
-    thrusters: ThrustersSimulationOutputsType | None
-    pvt: PvtSimulationOutputsType | None
-    pcm: PcmSimulationOutputsType | None
-    consumers: ConsumersSimulationOutputsType | None
+    thrusters: ThrustersSimulationOutputsType | None  # pyright: ignore[reportInvalidTypeForm]
+    pvt: PvtSimulationOutputsType | None  # pyright: ignore[reportInvalidTypeForm]
+    pcm: PcmSimulationOutputsType | None  # pyright: ignore[reportInvalidTypeForm]
+    consumers: ConsumersSimulationOutputsType | None  # pyright: ignore[reportInvalidTypeForm]
 
 
 @strawberry.type
