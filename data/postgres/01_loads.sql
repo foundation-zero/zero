@@ -229,6 +229,7 @@ INSERT INTO loads.variables (id, name, unit, minimum_value, maximum_value) VALUE
     ('main-boom-reef-1-lock', 'Main Boom Reef 1 Lock', 'bool', 0, 1),
     ('main-boom-reef-2-lock', 'Main Boom Reef 2 Lock', 'bool', 0, 1),
     ('main-boom-reef-3-lock', 'Main Boom Reef 3 Lock', 'bool', 0, 1),
+    ('main-sheet-load', 'Main Sheet Load', 'tonne', 0, NULL),
     ('main-checkstay-deflector-ps-load', 'Main Checkstay Deflector Ps Load', 'tonne', 0, NULL),
     ('main-checkstay-deflector-ps-relative-position', 'Main Checkstay Deflector Ps Position', 'ratio', 0, 1),
     ('main-checkstay-deflector-sb-load', 'Main Checkstay Deflector Sb Load', 'tonne', 0, NULL),
@@ -305,6 +306,34 @@ INSERT INTO loads.variables (id, name, unit, minimum_value, maximum_value) VALUE
 
 -- Example reference value for a specific load case
 INSERT INTO loads.reference_values (variable_id, load_case_id, alarm_low, warning_low, target, warning_high, alarm_high)
+SELECT
+    'main-sheet-load',
+    load_cases.id,
+    0.0,
+    3.0,
+    10.0,
+    15.0,
+    30.0
+FROM loads.load_cases
+JOIN loads.awa_ranges AS awa_range ON load_cases.awa_range_id = awa_range.id
+JOIN loads.aws_ranges AS aws_range ON load_cases.aws_range_id = aws_range.id
+JOIN loads.sail_sets_combined AS sail_set ON load_cases.sail_set_id = sail_set.id
+WHERE awa_range.id = 'upwind';
+
+SELECT
+    'main-sheet-load',
+    load_cases.id,
+    0.0,
+    1.0,
+    2.0,
+    3.0,
+    4.0
+FROM loads.load_cases
+JOIN loads.awa_ranges AS awa_range ON load_cases.awa_range_id = awa_range.id
+JOIN loads.aws_ranges AS aws_range ON load_cases.aws_range_id = aws_range.id
+JOIN loads.sail_sets_combined AS sail_set ON load_cases.sail_set_id = sail_set.id
+WHERE awa_range.id = 'downwind';
+
 SELECT
     'main-checkstay-deflector-ps-load',
     load_cases.id,

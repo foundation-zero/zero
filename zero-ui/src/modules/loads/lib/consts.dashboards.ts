@@ -23,15 +23,28 @@ const dashboard = (sail: SailId, ...groups: VariableGroup[]): Dashboard => ({
 
 export const OVERVIEW = dashboard(
   SailId.None,
-  group("Mizzen", "mizzen-preventer-load", "mizzen-vang-load"),
-  group("Mizzen foresails"),
-  group("Main", "main-traveler-relative-position", "main-preventer-load", "main-vang-load"),
+  group(
+    "Main",
+    "main-sheet-load",
+    "main-traveler-relative-position",
+    "main-preventer-load",
+    "main-vang-load",
+  ),
   group(
     "Main foresails",
     "blade-sheet-feeder-ps-load",
     "blade-sheet-feeder-sb-load",
     "staysail-sheet-feeder-ps-load",
     "staysail-sheet-feeder-sb-load",
+  ),
+  group("Mizzen", "mizzen-sheet-load", "mizzen-preventer-load", "mizzen-vang-load"),
+  group("Mizzen foresails"),
+  group(
+    "Main Rig",
+    "main-runner-ps-load",
+    "main-runner-sb-load",
+    "main-checkstay-ps-load",
+    "main-checkstay-sb-load",
   ),
   group(
     "Mizzen Rig",
@@ -48,9 +61,195 @@ export const OVERVIEW = dashboard(
   ),
 );
 
-export const MIZZEN_JIb = dashboard(
-  SailId.MizzenJib,
-  group("Sail", "mizzen-runner-ps-load", "mizzen-runner-sb-load"),
+export const MAIN = dashboard(
+  SailId.FullMain,
+  group(
+    "Main sail",
+    "main-sheet-load",
+    "main-traveler-relative-position",
+    "main-preventer-load",
+    "main-vang-load",
+  ),
+  group("Halyard & trim", "main-halyard-load", "main-halyard-lock-full", "main-cunningham-load"),
+  group("Runners", "main-runner-ps-load", "main-runner-sb-load"),
+  group("Checkstay", "main-checkstay-ps-load", "main-checkstay-sb-load"),
 );
 
-export const DASHBOARDS: Dashboard[] = [OVERVIEW, MIZZEN_JIb];
+export const MAIN_REEF_1 = dashboard(
+  SailId.MainReef1,
+  group(
+    "Main sail",
+    "main-sheet-load",
+    "main-traveler-relative-position",
+    "main-preventer-load",
+    "main-vang-load",
+  ),
+  group(
+    "Halyard & trim",
+    "main-halyard-load",
+    "main-halyard-reef-1-lock",
+    "main-boom-reef-1-lock",
+    "main-cunningham-load",
+  ),
+  group("Runners", "main-runner-ps-load", "main-runner-sb-load"),
+);
+
+export const MAIN_REEF_2 = dashboard(
+  SailId.MainReef2,
+  group(
+    "Main sail",
+    "main-sheet-load",
+    "main-traveler-relative-position",
+    "main-preventer-load",
+    "main-vang-load",
+  ),
+  group(
+    "Halyard & trim",
+    "main-halyard-load",
+    "main-halyard-reef-2-lock",
+    "main-boom-reef-2-lock",
+    "main-cunningham-load",
+  ),
+  group("Runners", "main-runner-ps-load", "main-runner-sb-load"),
+);
+
+export const MAIN_REEF_3 = dashboard(
+  SailId.MainReef3,
+  group(
+    "Main sail",
+    "main-sheet-load",
+    "main-traveler-relative-position",
+    "main-preventer-load",
+    "main-vang-load",
+  ),
+  group(
+    "Halyard & trim",
+    "main-halyard-load",
+    "main-halyard-reef-3-lock",
+    "main-boom-reef-3-lock",
+    "main-cunningham-load",
+  ),
+  group("Runners", "main-runner-ps-load", "main-runner-sb-load"),
+);
+
+export const TRISAIL = dashboard(
+  SailId.Trisail,
+  group("Main sail", "main-sheet-load", "main-traveler-relative-position"),
+  group("Runners", "main-runner-ps-load", "main-runner-sb-load"),
+  group("Checkstay", "main-checkstay-ps-load", "main-checkstay-sb-load"),
+);
+
+export const UTILITY_MAIN = dashboard(
+  SailId.UtilityMain,
+  group("Main sail", "main-sheet-load", "main-traveler-relative-position", "main-preventer-load"),
+  group("Halyard & trim", "main-halyard-load", "main-cunningham-load", "main-outhaul-load"),
+  group("Runners", "main-runner-ps-load", "main-runner-sb-load"),
+);
+
+export const MIZZEN = dashboard(
+  SailId.FullMizzen,
+  group("Mizzen sail", "mizzen-sheet-load", "mizzen-preventer-load", "mizzen-vang-load"),
+  group("Halyard & trim", "mizzen-halyard-load", "mizzen-cunningham-load", "mizzen-outhaul-load"),
+  group("Runners", "mizzen-runner-ps-load", "mizzen-runner-sb-load"),
+  group("Checkstay", "mizzen-checkstay-ps-load", "mizzen-checkstay-sb-load"),
+);
+
+export const MIZZEN_REEF_1 = dashboard(
+  SailId.MizzenReef1,
+  group("Mizzen sail", "mizzen-sheet-load", "mizzen-preventer-load", "mizzen-vang-load"),
+  group(
+    "Halyard & trim",
+    "mizzen-halyard-load",
+    "mizzen-reef-1-lock",
+    "mizzen-boom-reef-1-lock",
+    "mizzen-cunningham-load",
+  ),
+  group("Runners", "mizzen-runner-ps-load", "mizzen-runner-sb-load"),
+);
+
+export const MIZZEN_REEF_2 = dashboard(
+  SailId.MizzenReef2,
+  group("Mizzen sail", "mizzen-sheet-load", "mizzen-preventer-load", "mizzen-vang-load"),
+  group(
+    "Halyard & trim",
+    "mizzen-halyard-load",
+    "mizzen-reef-2-lock",
+    "mizzen-boom-reef-2-lock",
+    "mizzen-cunningham-load",
+  ),
+  group("Runners", "mizzen-runner-ps-load", "mizzen-runner-sb-load"),
+);
+
+export const BLADE = dashboard(
+  SailId.Blade,
+  group("Sheet feeders", "blade-sheet-feeder-ps-load", "blade-sheet-feeder-sb-load"),
+  group("Tweakers", "blade-tweaker-ps-load", "blade-tweaker-sb-load"),
+  group("Trim", "blade-adjuster-load", "blade-cunningham-load"),
+);
+
+export const CODE_ZERO = dashboard(
+  SailId.CodeZero,
+  group("Tack & halyard", "code-zero-tack-load", "code-zero-lock", "code-zero-overhoist"),
+);
+
+export const A3 = dashboard(
+  SailId.A3,
+  group("Tack & halyard", "code-zero-tack-load", "code-zero-lock", "code-zero-overhoist"),
+);
+
+export const A2 = dashboard(
+  SailId.A2,
+  group("Tack & halyard", "code-zero-tack-load", "code-zero-lock", "code-zero-overhoist"),
+);
+
+export const STAYSAIL = dashboard(
+  SailId.Staysail,
+  group("Sheet feeders", "staysail-sheet-feeder-ps-load", "staysail-sheet-feeder-sb-load"),
+  group("Trim", "staysail-stay-adjuster-load", "staysail-lock", "staysail-overhoist"),
+);
+
+export const STORM_JIB = dashboard(
+  SailId.StormJib,
+  group("Halyard", "storm-jib-lock", "storm-jib-overhoist"),
+);
+
+export const MIZZEN_JIB = dashboard(
+  SailId.MizzenJib,
+  group(
+    "Tack & halyard",
+    "mizzen-jib-tack-adjuster-load",
+    "mizzen-jib-lock",
+    "mizzen-jib-overhoist",
+  ),
+);
+
+export const MIZZEN_STAYSAIL = dashboard(
+  SailId.MizzenStaysail,
+  group(
+    "Tack & halyard",
+    "mizzen-jib-tack-adjuster-load",
+    "mizzen-jib-lock",
+    "mizzen-jib-overhoist",
+  ),
+);
+
+export const DASHBOARDS: Dashboard[] = [
+  OVERVIEW,
+  MAIN,
+  MAIN_REEF_1,
+  MAIN_REEF_2,
+  MAIN_REEF_3,
+  TRISAIL,
+  UTILITY_MAIN,
+  MIZZEN,
+  MIZZEN_REEF_1,
+  MIZZEN_REEF_2,
+  BLADE,
+  CODE_ZERO,
+  A3,
+  A2,
+  STAYSAIL,
+  STORM_JIB,
+  MIZZEN_JIB,
+  MIZZEN_STAYSAIL,
+];

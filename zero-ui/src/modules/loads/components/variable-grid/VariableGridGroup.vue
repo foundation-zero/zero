@@ -29,7 +29,10 @@ const size = computed(() => {
 
   // In case of graphical view: variables with targets take double size
   return variables.value.reduce((size, variable) => {
-    if (variable.reference?.target !== undefined && variable.variable.unit === VariableUnit.Ratio) {
+    if (
+      variable.reference?.target !== undefined &&
+      variable.variable?.unit === VariableUnit.Ratio
+    ) {
       return size + 2;
     }
 
