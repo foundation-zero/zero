@@ -38,7 +38,7 @@ const COMPONENTS: Record<SimulationComponentType, Component | null> = {
 const { data } = toRefs(useThrsHistory());
 
 const simulationInputsData = computed(
-  () => data.value?.modules[props.module]?.simulation.inputs as Values | undefined,
+  () => data.value?.simulation.inputs?.[props.module] as Values | undefined,
 );
 </script>
 <template>

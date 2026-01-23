@@ -1,4 +1,5 @@
 import {
+  ExtractSimulationValues,
   ModuleDefinition,
   SchemaDefinition,
   SchemaDefinitions,
@@ -12,6 +13,17 @@ export type THRSModules<
   TDefinitions extends Record<string, ModuleDefinition> = typeof DEFINITIONS,
 > = {
   [K in keyof TDefinitions]: THRSModule<TDefinitions[K]>;
+};
+
+export type THRSSimulation<
+  TDefinitions extends Record<string, ModuleDefinition> = typeof DEFINITIONS,
+> = {
+  inputs: {
+    [K in keyof TDefinitions]: ExtractSimulationValues<TDefinitions[K]["simulation"]["inputs"]>;
+  };
+  outputs: {
+    [K in keyof TDefinitions]: ExtractSimulationValues<TDefinitions[K]["simulation"]["outputs"]>;
+  };
 };
 
 export type THRSQueries<
@@ -31,4 +43,5 @@ export type THRSQueries<
 
 export type THRS = {
   modules: THRSModules;
+  simulation: THRSSimulation;
 };

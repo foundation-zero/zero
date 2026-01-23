@@ -59,7 +59,7 @@ export const extractHistory = (source: THRS, currentHistory: ModuleHistory): Mod
   objectEntries(source.modules).forEach(([moduleName, module]) => {
     extract(moduleName, module.controlValues);
     extract(moduleName, module.sensorValues);
-    extract(moduleName, module.simulation?.outputs);
+    extract(moduleName, source.simulation?.outputs?.[moduleName]);
   });
 
   return newHistory;
