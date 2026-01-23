@@ -380,6 +380,7 @@ h6 {
 
   --color-border: var(--border);
   --color-border-subtle: var(--border-subtle);
+  --color-inverse-border-subtle: var(--inverse-border-subtle);
 
   --color-brand: var(--brand);
   --color-brand-muted: var(--brand-muted);

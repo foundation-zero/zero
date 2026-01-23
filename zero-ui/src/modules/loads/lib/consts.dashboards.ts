@@ -48,4 +48,9 @@ export const OVERVIEW = dashboard(
   ),
 );
 
-export const DASHBOARDS: Dashboard[] = [OVERVIEW];
+export const MIZZEN_JIb = dashboard(
+  SailId.MizzenJib,
+  group("Sail", "mizzen-runner-ps-load", "mizzen-runner-sb-load"),
+);
+
+export const DASHBOARDS: Dashboard[] = [OVERVIEW, MIZZEN_JIb];

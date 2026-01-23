@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { onMounted, onUnmounted } from "vue";
+import { onMounted, onUnmounted, toRefs } from "vue";
 import {
   VariableGrid,
   VariableGridGroup,
@@ -10,7 +10,7 @@ import {
 import { useVariablesStore } from "../stores/variables";
 
 const { startPolling, stopPolling } = useVariablesStore();
-const { selectedDashboard } = useVariablesStore();
+const { selectedDashboard } = toRefs(useVariablesStore());
 
 onMounted(startPolling);
 onUnmounted(stopPolling);
