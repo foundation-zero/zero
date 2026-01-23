@@ -3,7 +3,6 @@ import strawberry
 from thrs.control.modules.pcm import PcmParameters
 from thrs.graphql.base import (
     Module,
-    ModuleSimulation,
     PcmMessaging,
     add_automation_mode_mutation,
     add_control_mutations,
@@ -37,8 +36,6 @@ PcmModule = Module[
     PcmSensorValuesType,
     PcmControlValuesType,
     PcmParametersType,
-    PcmSimulationInputsType,
-    PcmSimulationOutputsType,
 ]
 
 
@@ -53,14 +50,6 @@ def resolve_module(
             PcmControlValuesType, module.control_values
         ),
         parameters=optional_pydantic_to_graphql(PcmParametersType, module.parameters),
-        simulation=ModuleSimulation(
-            inputs=optional_pydantic_to_graphql(
-                PcmSimulationInputsType, module.simulation_inputs
-            ),
-            outputs=optional_pydantic_to_graphql(
-                PcmSimulationOutputsType, module.simulation_outputs
-            ),
-        ),
         automatic=module.control_status.automatic if module.control_status else None,
     )
 

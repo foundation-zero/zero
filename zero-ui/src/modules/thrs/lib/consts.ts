@@ -177,6 +177,36 @@ export const QUERIES = toQueries({
 
 export const QUERY_ALL = gql`
   query QueryAll {
+    simulation {
+      inputs {
+        thrusters {
+          ${THRUSTERS_SIMULATION_INPUTS_QUERY}
+        }
+        pcm {
+          ${PCM_SIMULATION_INPUTS_QUERY}
+        }
+        pvt {
+          ${PVT_SIMULATION_INPUTS_QUERY}
+        }
+        consumers {
+          ${CONSUMERS_SIMULATION_INPUTS_QUERY}
+        }
+      }
+      outputs {
+        thrusters {
+          ${THRUSTERS_SIMULATION_OUTPUTS_QUERY}
+        }
+        pcm {
+          ${PCM_SIMULATION_OUTPUTS_QUERY}
+        }
+        pvt {
+          ${PVT_SIMULATION_OUTPUTS_QUERY}
+        }
+        consumers {
+          ${CONSUMERS_SIMULATION_OUTPUTS_QUERY}
+        }
+      }
+    }
     modules {
       thrusters {
         sensorValues {
@@ -187,14 +217,6 @@ export const QUERY_ALL = gql`
         }
         parameters {
           ${THRUSTERS_PARAMETERS_QUERY}
-        }
-        simulation {
-          inputs {
-            ${THRUSTERS_SIMULATION_INPUTS_QUERY}
-          }
-          outputs {
-            ${THRUSTERS_SIMULATION_OUTPUTS_QUERY}
-          }
         }
       }
       pcm {
@@ -207,14 +229,6 @@ export const QUERY_ALL = gql`
         parameters {
           ${PCM_PARAMETERS_QUERY}
         }
-        simulation {
-          inputs {
-            ${PCM_SIMULATION_INPUTS_QUERY}
-          }
-          outputs {
-            ${PCM_SIMULATION_OUTPUTS_QUERY}
-          }
-        }
       }
       pvt {
         sensorValues {
@@ -226,14 +240,6 @@ export const QUERY_ALL = gql`
         parameters {
           ${PVT_PARAMETERS_QUERY}
         }
-        simulation {
-          inputs {
-            ${PVT_SIMULATION_INPUTS_QUERY}
-          }
-          outputs {
-            ${PVT_SIMULATION_OUTPUTS_QUERY}
-          }
-        }
       }
       consumers {
         sensorValues {
@@ -244,14 +250,6 @@ export const QUERY_ALL = gql`
         }
         parameters {
           ${CONSUMERS_PARAMETERS_QUERY}
-        }
-        simulation {
-          inputs {
-            ${CONSUMERS_SIMULATION_INPUTS_QUERY}
-          }
-          outputs {
-            ${CONSUMERS_SIMULATION_OUTPUTS_QUERY}
-          }
         }
       }
     }

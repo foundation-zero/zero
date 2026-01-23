@@ -48,28 +48,22 @@ type ConsumersSensorValuesType {
   consumersSwitchBoosting: SensorValveType! @jsonSchemaDirective(yardTag: "50001067-15", componentType: "valve", valveType: "switch")
 }
 
-type ConsumersSensorValuesTypeConsumersControlValuesTypeConsumersParametersTypeConsumersSimulationInputsTypeConsumersSimulationOutputsTypeModule {
+type ConsumersSensorValuesTypeConsumersControlValuesTypeConsumersParametersTypeModule {
   sensorValues: ConsumersSensorValuesType
   controlValues: ConsumersControlValuesType
   parameters: ConsumersParametersType
-  simulation: ConsumersSensorValuesTypeConsumersControlValuesTypeConsumersParametersTypeConsumersSimulationInputsTypeConsumersSimulationOutputsTypeModuleSimulation
   automatic: Boolean
 }
 
-type ConsumersSensorValuesTypeConsumersControlValuesTypeConsumersParametersTypeConsumersSimulationInputsTypeConsumersSimulationOutputsTypeModuleSimulation {
-  inputs: ConsumersSimulationInputsType
-  outputs: ConsumersSimulationOutputsType
-}
-
 type ConsumersSimulationInputsType {
-  consumersFahrenheitSupply: FmuBoundarySimulationType!
-  consumersBoostingSupply: FmuBoundarySimulationType!
+  consumersFahrenheitSupply: ExchangerBoundarySimulationType!
+  consumersBoostingSupply: ExchangerBoundarySimulationType!
   consumersModuleSupply: BoundarySimulationType!
 }
 
 type ConsumersSimulationOutputsType {
-  consumersFahrenheitReturn: FmuBoundarySimulationType!
-  consumersBoostingReturn: FmuBoundarySimulationType!
+  consumersFahrenheitReturn: ExchangerBoundarySimulationType!
+  consumersBoostingReturn: ExchangerBoundarySimulationType!
   consumersModuleReturn: BoundarySimulationType!
 }
 
@@ -89,6 +83,18 @@ type ControlValveType {
 """Date with time (isoformat)"""
 scalar DateTime
 
+input ExchangerBoundaryInputType {
+  temperature: Float!
+  flow: Float!
+  overpressure: Float!
+}
+
+type ExchangerBoundarySimulationType {
+  temperature: FloatStampedType!
+  flow: FloatStampedType!
+  overpressure: FloatStampedType!
+}
+
 type FloatStampedType {
   value: Float!
   timestamp: DateTime!
@@ -96,18 +102,6 @@ type FloatStampedType {
 
 type FlowBoundarySimulationType {
   flow: FloatStampedType!
-}
-
-input FmuBoundaryInputType {
-  temperature: Float!
-  flow: Float!
-  overpressure: Float!
-}
-
-type FmuBoundarySimulationType {
-  temperature: FloatStampedType!
-  flow: FloatStampedType!
-  overpressure: FloatStampedType!
 }
 
 input HeatSourceInputType {
@@ -119,10 +113,10 @@ type HeatSourceSimulationType {
 }
 
 type Modules {
-  thrusters: ThrustersSensorValuesTypeThrustersControlValuesTypeThrustersParametersTypeThrustersSimulationInputsTypeThrustersSimulationOutputsTypeModule!
-  pvt: PvtSensorValuesTypePvtControlValuesTypePvtParametersTypePvtSimulationInputsTypePvtSimulationOutputsTypeModule!
-  pcm: PcmSensorValuesTypePcmControlValuesTypePcmParametersTypePcmSimulationInputsTypePcmSimulationOutputsTypeModule!
-  consumers: ConsumersSensorValuesTypeConsumersControlValuesTypeConsumersParametersTypeConsumersSimulationInputsTypeConsumersSimulationOutputsTypeModule!
+  thrusters: ThrustersSensorValuesTypeThrustersControlValuesTypeThrustersParametersTypeModule!
+  pvt: PvtSensorValuesTypePvtControlValuesTypePvtParametersTypeModule!
+  pcm: PcmSensorValuesTypePcmControlValuesTypePcmParametersTypeModule!
+  consumers: ConsumersSensorValuesTypeConsumersControlValuesTypeConsumersParametersTypeModule!
 }
 
 type Mutation {
@@ -212,8 +206,8 @@ type Mutation {
   pcmControlSetPcmSwitchConsumers(component: ValveInputType!): PcmControlValuesType!
   pcmControlSetPcmModule1(component: PcmInputType!): PcmControlValuesType!
   consumersSetAutomationMode(automatic: Boolean!): Boolean!
-  consumersSimulationSetConsumersFahrenheitSupply(component: FmuBoundaryInputType!): ConsumersSimulationInputsType!
-  consumersSimulationSetConsumersBoostingSupply(component: FmuBoundaryInputType!): ConsumersSimulationInputsType!
+  consumersSimulationSetConsumersFahrenheitSupply(component: ExchangerBoundaryInputType!): ConsumersSimulationInputsType!
+  consumersSimulationSetConsumersBoostingSupply(component: ExchangerBoundaryInputType!): ConsumersSimulationInputsType!
   consumersSimulationSetConsumersModuleSupply(component: BoundaryInputType!): ConsumersSimulationInputsType!
   consumersParameterSetBoostingEnabled(value: Boolean!): ConsumersParametersType!
   consumersParameterSetBoostingFlowRatioSetpoint(value: Float!): ConsumersParametersType!
@@ -289,17 +283,11 @@ type PcmSensorValuesType {
   pcmSwitchConsumers: SensorValveType! @jsonSchemaDirective(yardTag: "50001071-02", componentType: "valve", valveType: "switch")
 }
 
-type PcmSensorValuesTypePcmControlValuesTypePcmParametersTypePcmSimulationInputsTypePcmSimulationOutputsTypeModule {
+type PcmSensorValuesTypePcmControlValuesTypePcmParametersTypeModule {
   sensorValues: PcmSensorValuesType
   controlValues: PcmControlValuesType
   parameters: PcmParametersType
-  simulation: PcmSensorValuesTypePcmControlValuesTypePcmParametersTypePcmSimulationInputsTypePcmSimulationOutputsTypeModuleSimulation
   automatic: Boolean
-}
-
-type PcmSensorValuesTypePcmControlValuesTypePcmParametersTypePcmSimulationInputsTypePcmSimulationOutputsTypeModuleSimulation {
-  inputs: PcmSimulationInputsType
-  outputs: PcmSimulationOutputsType
 }
 
 type PcmSimulationInputsType {
@@ -466,17 +454,11 @@ type PvtSensorValuesType {
   pvtTemperatureOwnersString6Supply: SensorTemperatureSensorType! @jsonSchemaDirective(yardTag: "50009005-45", componentType: "temperature_sensor", valveType: null)
 }
 
-type PvtSensorValuesTypePvtControlValuesTypePvtParametersTypePvtSimulationInputsTypePvtSimulationOutputsTypeModule {
+type PvtSensorValuesTypePvtControlValuesTypePvtParametersTypeModule {
   sensorValues: PvtSensorValuesType
   controlValues: PvtControlValuesType
   parameters: PvtParametersType
-  simulation: PvtSensorValuesTypePvtControlValuesTypePvtParametersTypePvtSimulationInputsTypePvtSimulationOutputsTypeModuleSimulation
   automatic: Boolean
-}
-
-type PvtSensorValuesTypePvtControlValuesTypePvtParametersTypePvtSimulationInputsTypePvtSimulationOutputsTypeModuleSimulation {
-  inputs: PvtSimulationInputsType
-  outputs: PvtSimulationOutputsType
 }
 
 type PvtSimulationInputsType {
@@ -533,9 +515,25 @@ type SensorValveType {
   positionRel: FloatStampedType!
 }
 
+type SimulationInputs {
+  thrusters: ThrustersSimulationInputsType
+  pvt: PvtSimulationInputsType
+  pcm: PcmSimulationInputsType
+  consumers: ConsumersSimulationInputsType
+}
+
+type SimulationOutputs {
+  thrusters: ThrustersSimulationOutputsType
+  pvt: PvtSimulationOutputsType
+  pcm: PcmSimulationOutputsType
+  consumers: ConsumersSimulationOutputsType
+}
+
 type SimulationState {
   time: DateTime!
   status: String!
+  inputs: SimulationInputs
+  outputs: SimulationOutputs
 }
 
 input TemperatureBoundaryInputType {
@@ -609,17 +607,11 @@ type ThrustersSensorValuesType {
   thrustersPcs: SensorPcsType! @jsonSchemaDirective(yardTag: "1500", componentType: "pcs", valveType: null)
 }
 
-type ThrustersSensorValuesTypeThrustersControlValuesTypeThrustersParametersTypeThrustersSimulationInputsTypeThrustersSimulationOutputsTypeModule {
+type ThrustersSensorValuesTypeThrustersControlValuesTypeThrustersParametersTypeModule {
   sensorValues: ThrustersSensorValuesType
   controlValues: ThrustersControlValuesType
   parameters: ThrustersParametersType
-  simulation: ThrustersSensorValuesTypeThrustersControlValuesTypeThrustersParametersTypeThrustersSimulationInputsTypeThrustersSimulationOutputsTypeModuleSimulation
   automatic: Boolean
-}
-
-type ThrustersSensorValuesTypeThrustersControlValuesTypeThrustersParametersTypeThrustersSimulationInputsTypeThrustersSimulationOutputsTypeModuleSimulation {
-  inputs: ThrustersSimulationInputsType
-  outputs: ThrustersSimulationOutputsType
 }
 
 type ThrustersSimulationInputsType {

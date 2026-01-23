@@ -3,7 +3,6 @@ import strawberry
 from thrs.control.modules.pvt import PvtParameters
 from thrs.graphql.base import (
     Module,
-    ModuleSimulation,
     PvtMessaging,
     add_automation_mode_mutation,
     add_control_mutations,
@@ -37,8 +36,6 @@ PvtModule = Module[
     PvtSensorValuesType,
     PvtControlValuesType,
     PvtParametersType,
-    PvtSimulationInputsType,
-    PvtSimulationOutputsType,
 ]
 
 
@@ -53,14 +50,6 @@ def resolve_module(
             PvtControlValuesType, module.control_values
         ),
         parameters=optional_pydantic_to_graphql(PvtParametersType, module.parameters),
-        simulation=ModuleSimulation(
-            inputs=optional_pydantic_to_graphql(
-                PvtSimulationInputsType, module.simulation_inputs
-            ),
-            outputs=optional_pydantic_to_graphql(
-                PvtSimulationOutputsType, module.simulation_outputs
-            ),
-        ),
         automatic=module.control_status.automatic if module.control_status else None,
     )
 

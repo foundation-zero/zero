@@ -109,23 +109,14 @@ convert_module(control, "Control")
 
 
 @strawberry.type
-class ModuleSimulation[SimulationInput, SimulationOutput]:
-    inputs: SimulationInput | None
-    outputs: SimulationOutput | None
-
-
-@strawberry.type
 class Module[
     SensorValues,
     ControlValues,
     Parameters,
-    SimulationInput,
-    SimulationOutput,
 ]:
     sensor_values: SensorValues | None
     control_values: ControlValues | None
     parameters: Parameters | None
-    simulation: ModuleSimulation[SimulationInput, SimulationOutput] | None = None
     automatic: bool | None = None
 
 
