@@ -4,15 +4,15 @@ from abc import ABC
 from pydantic import Field
 
 from loads.sensors.base import LoadsModel
-from loads.sensors.units import Millimeter, RatioFromPerMille, TonneFromDecaKilogram
+from loads.sensors.units import Load, Position, RelativePosition
 
 
 class SailSystemSensor(LoadsModel, ABC):
     TOPIC = "test-topic"
 
-    load: TonneFromDecaKilogram = Field(validation_alias="load")
-    position: Millimeter = Field(validation_alias="position")
-    relative_position: RatioFromPerMille = Field(validation_alias="relative_position")
+    load: Load = Field(validation_alias="load")
+    position: Position = Field(validation_alias="position")
+    relative_position: RelativePosition = Field(validation_alias="relative_position")
     lock: bool = Field(validation_alias="lock")
 
 

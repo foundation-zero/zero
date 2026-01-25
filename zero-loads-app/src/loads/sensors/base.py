@@ -1,11 +1,11 @@
-from typing import Any, ClassVar, Dict, get_type_hints
+from typing import Any, Callable, ClassVar, get_type_hints
 
 import generator.gen as gen
 from generator import Generator, GeneratorConfig, create_generator
 from generator.base import JSONGenerator
 from pydantic import AliasGenerator, BaseModel, ConfigDict
 
-from loads.sensors.units import InverseConversion
+from loads.sensors.units import ScalingMeta, VariableMeta
 
 from .util import hyphenize
 
@@ -53,21 +53,19 @@ class LoadsModel(BaseModel):
     def _create_generator(cls, base_type: Any, meta: list[Any]) -> Generator:
         """Create a data generator based on the type and constraints."""
 
-        constraints = cls._extract_constraints(meta)
+        minimum = cls.extract_minimum(meta)
+        maximum = cls.extract_maximum(meta)
 
-        upper = constraints.get("le", constraints.get("lt"))
-        lower = constraints.get("ge", constraints.get("gt"))
-
-        if inverse_conversion := cls._extract_inverse_conversion(meta):
+        if inverse_conversion := cls._extract_inverse_scaling_conversion(meta):
             type = gen.validate_type(
                 cls._type_name(get_type_hints(inverse_conversion).get("return"))
             )
-            lt = inverse_conversion(lower) if lower else 0
-            gt = inverse_conversion(upper) if upper else 100
+            lt = inverse_conversion(minimum) if minimum else 0
+            gt = inverse_conversion(maximum) if maximum else 100
         else:
             type = gen.validate_type(cls._type_name(base_type))
-            lt = lower if lower else 0
-            gt = upper if upper else 100
+            lt = minimum if minimum else 0
+            gt = maximum if maximum else 100
 
         if type in ("int", "float"):
             return create_generator(type, lt=lt, gt=gt)
@@ -75,18 +73,47 @@ class LoadsModel(BaseModel):
             return create_generator(type)
 
     @staticmethod
-    def _extract_constraints(meta: list[Any]) -> Dict[str, Any]:
-        return {
-            attr: getattr(m, attr)
-            for m in meta
-            for attr in ("gt", "ge", "lt", "le")
-            if hasattr(m, attr)
-        }
+    def extract_minimum(meta: list[Any]) -> float | None:
+        return next(
+            (
+                getattr(m, attr)
+                for m in meta
+                for attr in ("ge", "gt")
+                if hasattr(m, attr)
+            ),
+            None,
+        )
 
     @staticmethod
-    def _extract_inverse_conversion(meta: list[Any]) -> Any:
+    def extract_maximum(meta: list[Any]) -> float | None:
+        return next(
+            (
+                getattr(m, attr)
+                for m in meta
+                for attr in ("lt", "le")
+                if hasattr(m, attr)
+            ),
+            None,
+        )
+
+    @staticmethod
+    def _extract_inverse_scaling_conversion(meta: list[Any]) -> Callable | None:
         for m in meta:
-            if isinstance(m, InverseConversion):
+            if isinstance(m, ScalingMeta):
+                return m.inverse_conversion
+        return None
+
+    @staticmethod
+    def extract_variable_meta(meta: list[Any]) -> VariableMeta | None:
+        for m in meta:
+            if isinstance(m, VariableMeta):
+                return m
+        return None
+
+    @staticmethod
+    def extract_scaling_conversion(meta: list[Any]) -> Callable | None:
+        for m in meta:
+            if isinstance(m, ScalingMeta):
                 return m.conversion
         return None
 

@@ -3,61 +3,61 @@ from abc import ABC
 from pydantic import Field
 
 from .base import LoadsModel
-from .units import Alarm, Millimeter, RatioFromPerMille, TonneFromDecaKilogram
+from .units import Alarm, Load, Lock, Position, RelativePosition
 
 
 class CaptiveWinch(LoadsModel, ABC):
-    position: Millimeter = Field(validation_alias="ow_ActPos_mm")
-    relative_position: RatioFromPerMille = Field(validation_alias="ow_ActPos_pm")
+    position: Position = Field(validation_alias="ow_ActPos_mm")
+    relative_position: RelativePosition = Field(validation_alias="ow_ActPos_pm")
 
 
 class Cylinder(LoadsModel, ABC):
-    load: TonneFromDecaKilogram = Field(validation_alias="ow_ActLoad_10kg")
-    position: Millimeter = Field(validation_alias="ow_ActPos_mm")
-    relative_position: RatioFromPerMille = Field(
+    load: Load = Field(validation_alias="ow_ActLoad_10kg")
+    position: Position = Field(validation_alias="ow_ActPos_mm")
+    relative_position: RelativePosition = Field(
         validation_alias="relative_position_dummy"
     )
-    relief_load: TonneFromDecaKilogram = Field(validation_alias="ow_RelfLoad_10kg")
+    relief_load: Load = Field(validation_alias="ow_RelfLoad_10kg")
     alarm: Alarm = Field(validation_alias="ox_LoadAlarm")
 
 
 class CylinderTwoPositions(LoadsModel, ABC):
-    load: TonneFromDecaKilogram = Field(validation_alias="ow_ActLoad_10kg")
-    position_1: Millimeter = Field(validation_alias="ow_ActPos_mm")
-    relative_position_1: RatioFromPerMille = Field(
+    load: Load = Field(validation_alias="ow_ActLoad_10kg")
+    position_1: Position = Field(validation_alias="ow_ActPos_mm")
+    relative_position_1: RelativePosition = Field(
         validation_alias="relative_position_dummy"
     )
-    position_2: Millimeter = Field(validation_alias="ow_ActPos2_mm")
-    relative_position_2: RatioFromPerMille = Field(
+    position_2: Position = Field(validation_alias="ow_ActPos2_mm")
+    relative_position_2: RelativePosition = Field(
         validation_alias="relative_position_dummy"
     )
-    relief_load: TonneFromDecaKilogram = Field(validation_alias="ow_RelfLoad_10kg")
+    relief_load: Load = Field(validation_alias="ow_RelfLoad_10kg")
     alarm: Alarm = Field(validation_alias="ox_LoadAlarm")
 
 
 class Deflector(LoadsModel, ABC):
-    position: Millimeter = Field(validation_alias="ow_ActPos_mm")
-    relative_position: RatioFromPerMille = Field(
+    position: Position = Field(validation_alias="ow_ActPos_mm")
+    relative_position: RelativePosition = Field(
         validation_alias="relative_position_dummy"
     )
-    load_deflector: TonneFromDecaKilogram = Field(validation_alias="i_ActualLoad_10kg")
-    load_ps: TonneFromDecaKilogram = Field(validation_alias="i_ActualLoadPs")
-    load_sb: TonneFromDecaKilogram = Field(validation_alias="i_ActualLoadSb")
-    relief_load: TonneFromDecaKilogram = Field(validation_alias="i_RelfLoad_10kg")
+    load_deflector: Load = Field(validation_alias="i_ActualLoad_10kg")
+    load_ps: Load = Field(validation_alias="i_ActualLoadPs")
+    load_sb: Load = Field(validation_alias="i_ActualLoadSb")
+    relief_load: Load = Field(validation_alias="i_RelfLoad_10kg")
     alarm: Alarm = Field(validation_alias="ox_LoadAlarm")
 
 
-class Load(LoadsModel, ABC):
-    load: TonneFromDecaKilogram = Field(validation_alias="ow_ActLoad_10kg")
-    relief_load: TonneFromDecaKilogram = Field(validation_alias="ow_RelfLoad_10kg")
+class LoadCell(LoadsModel, ABC):
+    load: Load = Field(validation_alias="ow_ActLoad_10kg")
+    relief_load: Load = Field(validation_alias="ow_RelfLoad_10kg")
     alarm: Alarm = Field(validation_alias="ox_LoadAlarm")
 
 
 class Vang(LoadsModel, ABC):
-    load_bottom: TonneFromDecaKilogram = Field(validation_alias="i_ActualLoadBottom")
-    load_rod: TonneFromDecaKilogram = Field(validation_alias="i_ActualLoadRod")
-    position: Millimeter = Field(validation_alias="ow_ActPos_mm")
-    relative_position: RatioFromPerMille = Field(
+    load_bottom: Load = Field(validation_alias="i_ActualLoadBottom")
+    load_rod: Load = Field(validation_alias="i_ActualLoadRod")
+    position: Position = Field(validation_alias="ow_ActPos_mm")
+    relative_position: RelativePosition = Field(
         validation_alias="relative_position_dummy"
     )
 
@@ -66,11 +66,11 @@ class Winch(LoadsModel, ABC):
     pass
 
 
-class PrimaryWinchPs(Load):
+class PrimaryWinchPs(LoadCell):
     TOPIC = "sail-systems/fe212_prmrywnchps"
 
 
-class PrimaryWinchSb(Load):
+class PrimaryWinchSb(LoadCell):
     TOPIC = "sail-systems/fe308_prmrywnchsb"
 
 
@@ -98,11 +98,11 @@ class MizzenWinchPs(Winch):
     TOPIC = "sail-systems/fe407_mzznwnchps"
 
 
-class AftWinchPs(Load):
+class AftWinchPs(LoadCell):
     TOPIC = "sail-systems/fe408_aftwnchps"
 
 
-class AftWinchSb(Load):
+class AftWinchSb(LoadCell):
     TOPIC = "sail-systems/fe508_aftwnchsb"
 
 
@@ -122,11 +122,11 @@ class BladeSheetCaptiveSB(CaptiveWinch):
     TOPIC = "sail-systems/fe301_bldshtsb"
 
 
-class BladeSheetFeederPs(Load):
+class BladeSheetFeederPs(LoadCell):
     TOPIC = "sail-systems/fe202_bldshtfdrps"
 
 
-class BladeSheetFeederSb(Load):
+class BladeSheetFeederSb(LoadCell):
     TOPIC = "sail-systems/fe302_bldshtfdrsb"
 
 
@@ -144,14 +144,14 @@ class CodeSailTack(CylinderTwoPositions):
 
 class HeadsailLocks(LoadsModel, ABC):
     TOPIC = "sail-systems/mnmst"
-    lock_A2: bool = Field(validation_alias="ox_IndctA2Lck_Ext")
-    overhoist_A2: bool = Field(validation_alias="ox_IndctA2LckOvrhst_Ext")
-    lock_A3C0: bool = Field(validation_alias="ox_IndctA3C0Lck_Ext")
-    overhoist_A3C0: bool = Field(validation_alias="ox_IndctA3C0LckOverhst_Ext")
-    lock_staysail: bool = Field(validation_alias="ox_IndctStyslLck_Ext")
-    overhoist_staysail: bool = Field(validation_alias="ox_IndctStyslLckOverhst_Ext")
-    lock_stormjib: bool = Field(validation_alias="ox_IndctStmjbLck_Ext")
-    overhoist_stormjib: bool = Field(validation_alias="ox_IndctStmjbLckOvrhst_Ext")
+    lock_A2: Lock = Field(validation_alias="ox_IndctA2Lck_Ext")
+    overhoist_A2: Lock = Field(validation_alias="ox_IndctA2LckOvrhst_Ext")
+    lock_A3C0: Lock = Field(validation_alias="ox_IndctA3C0Lck_Ext")
+    overhoist_A3C0: Lock = Field(validation_alias="ox_IndctA3C0LckOverhst_Ext")
+    lock_staysail: Lock = Field(validation_alias="ox_IndctStyslLck_Ext")
+    overhoist_staysail: Lock = Field(validation_alias="ox_IndctStyslLckOverhst_Ext")
+    lock_stormjib: Lock = Field(validation_alias="ox_IndctStmjbLck_Ext")
+    overhoist_stormjib: Lock = Field(validation_alias="ox_IndctStmjbLckOvrhst_Ext")
 
 
 class MainCheckstayDeflector(Deflector):
@@ -162,19 +162,19 @@ class MainCunningham(Cylinder):
     TOPIC = "sail-systems/f0205_mncnnnghm"
 
 
-class MainHalyard(CaptiveWinch, Load):
+class MainHalyard(CaptiveWinch, LoadCell):
     TOPIC = "sail-systems/fe207_mnhlyrd"
-    lock_full: bool = Field(validation_alias="ox_IndctHlyrdLckFh_Ext")
-    lock_1: bool = Field(validation_alias="ox_IndctHlyrdLck1_Ext")
-    lock_2: bool = Field(validation_alias="ox_IndctHlyrdLck2_Ext")
-    lock_3: bool = Field(validation_alias="ox_IndctHlyrdLck3_Ext")
-    overhoist_full: bool = Field(validation_alias="ox_IndctHlyrdLckFhOvrhst_Ext")
-    overhoist_1: bool = Field(validation_alias="ox_IndctHlyrdLck1Ovrhst_Ext")
-    overhoist_2: bool = Field(validation_alias="ox_IndctHlyrdLck2Ovrhst_Ext")
-    overhoist_3: bool = Field(validation_alias="ox_IndctHlyrdLck3Ovrhst_Ext")
-    boom_lock_1: bool = Field(validation_alias="ox_IndctBmRfLck1_Ext")
-    boom_lock_2: bool = Field(validation_alias="ox_IndctBmRfLck2_Ext")
-    boom_lock_3: bool = Field(validation_alias="ox_IndctBmRfLck3_Ext")
+    lock_full: Lock = Field(validation_alias="ox_IndctHlyrdLckFh_Ext")
+    lock_1: Lock = Field(validation_alias="ox_IndctHlyrdLck1_Ext")
+    lock_2: Lock = Field(validation_alias="ox_IndctHlyrdLck2_Ext")
+    lock_3: Lock = Field(validation_alias="ox_IndctHlyrdLck3_Ext")
+    overhoist_full: Lock = Field(validation_alias="ox_IndctHlyrdLckFhOvrhst_Ext")
+    overhoist_1: Lock = Field(validation_alias="ox_IndctHlyrdLck1Ovrhst_Ext")
+    overhoist_2: Lock = Field(validation_alias="ox_IndctHlyrdLck2Ovrhst_Ext")
+    overhoist_3: Lock = Field(validation_alias="ox_IndctHlyrdLck3Ovrhst_Ext")
+    boom_lock_1: Lock = Field(validation_alias="ox_IndctBmRfLck1_Ext")
+    boom_lock_2: Lock = Field(validation_alias="ox_IndctBmRfLck2_Ext")
+    boom_lock_3: Lock = Field(validation_alias="ox_IndctBmRfLck3_Ext")
 
 
 class MainOuthaul(Cylinder):
@@ -185,26 +185,26 @@ class MainPreventer(Cylinder):
     TOPIC = "sail-systems/f0204_mnbmprvntr"
 
 
-class MainRunnerPs(CaptiveWinch, Load):
+class MainRunnerPs(CaptiveWinch, LoadCell):
     TOPIC = "sail-systems/fe401_mnrnnrps"
 
 
-class MainRunnerSb(CaptiveWinch, Load):
+class MainRunnerSb(CaptiveWinch, LoadCell):
     TOPIC = "sail-systems/fe501_mnrnnrsb"
 
 
-class MainSheet(CaptiveWinch, Load):
+class MainSheet(CaptiveWinch, LoadCell):
     TOPIC = "sail-systems/fe205_mnsht"
 
 
-class MainVang(Vang, Load):
+class MainVang(Vang, LoadCell):
     TOPIC = "sail-systems/f0202_mnbmvng"
 
 
 class MainTraveler(LoadsModel, ABC):
     TOPIC = "sail-systems/fe405_mntrvllr"
-    position: Millimeter = Field(validation_alias="ow_ActPos_mm")
-    relative_position: RatioFromPerMille = Field(validation_alias="ow_ActPos_pm")
+    position: Position = Field(validation_alias="ow_ActPos_mm")
+    relative_position: RelativePosition = Field(validation_alias="ow_ActPos_pm")
 
 
 class MizzenCheckstayDeflector(Deflector):
@@ -215,22 +215,23 @@ class MizzenCunningham(Cylinder):
     TOPIC = "sail-systems/f0504_mzzncnnnghm"
 
 
-class MizzenHalyard(CaptiveWinch, Load):
+class MizzenHalyard(CaptiveWinch, LoadCell):
     TOPIC = "sail-systems/fe404_mzznhlyrd"
-    lock_full: bool = Field(validation_alias="ox_IndctMzznHlyrdLckFh_Ext")
-    lock_1: bool = Field(validation_alias="ox_IndctMzznHlyrdLck1_Ext")
-    lock_2: bool = Field(validation_alias="ox_IndctMzznHlyrdLck2_Ext")
-    overhoist_full: bool = Field(validation_alias="ox_IndctMzznHlyrdLckFhOvrhst_Ext")
-    overhoist_1: bool = Field(validation_alias="ox_IndctMzznHlyrdLck1Ovrhst_Ext")
-    overhoist_2: bool = Field(validation_alias="ox_IndctMzznHlyrdLck2Ovrhst_Ext")
-    boom_lock_1: bool = Field(validation_alias="ox_IndctMzznBmRfLck1_Ext")
-    boom_lock_2: bool = Field(validation_alias="ox_IndctMzznBmRfLck2_Ext")
+    lock_full: Lock = Field(validation_alias="ox_IndctMzznHlyrdLckFh_Ext")
+    lock_1: Lock = Field(validation_alias="ox_IndctMzznHlyrdLck1_Ext")
+    lock_2: Lock = Field(validation_alias="ox_IndctMzznHlyrdLck2_Ext")
+    lock_3: Lock = Field(validation_alias="ox_IndctMzznHlyrdLck3_Ext")
+    overhoist_full: Lock = Field(validation_alias="ox_IndctMzznHlyrdLckFhOvrhst_Ext")
+    overhoist_1: Lock = Field(validation_alias="ox_IndctMzznHlyrdLck1Ovrhst_Ext")
+    overhoist_2: Lock = Field(validation_alias="ox_IndctMzznHlyrdLck2Ovrhst_Ext")
+    boom_lock_1: Lock = Field(validation_alias="ox_IndctMzznBmRfLck1_Ext")
+    boom_lock_2: Lock = Field(validation_alias="ox_IndctMzznBmRfLck2_Ext")
 
 
 class MizzenHeadsailLocks(LoadsModel, ABC):
     TOPIC = "sail-systems/f0401_mzznhdfrlr"
-    lock: bool = Field(validation_alias="ox_IndctHdslLck_Ext")
-    overhoist: bool = Field(validation_alias="ox_IndctHdslLckOvrhst_Ext")
+    lock: Lock = Field(validation_alias="ox_IndctHdslLck_Ext")
+    overhoist: Lock = Field(validation_alias="ox_IndctHdslLckOvrhst_Ext")
 
 
 class MizzenHeadsailTackAdjuster(Cylinder):
@@ -245,19 +246,19 @@ class MizzenPreventer(Cylinder):
     TOPIC = "sail-systems/f0506_mzznbmprvntr"
 
 
-class MizzenRunnerPs(CaptiveWinch, Load):
+class MizzenRunnerPs(CaptiveWinch, LoadCell):
     TOPIC = "sail-systems/fe402_mzznrnnrps"
 
 
-class MizzenRunnerSb(CaptiveWinch, Load):
+class MizzenRunnerSb(CaptiveWinch, LoadCell):
     TOPIC = "sail-systems/fe502_mzznrnnrsb"
 
 
-class MizzenSheet(CaptiveWinch, Load):
+class MizzenSheet(CaptiveWinch, LoadCell):
     TOPIC = "sail-systems/fe504_mzznsht"
 
 
-class MizzenVang(Vang, Load):
+class MizzenVang(Vang, LoadCell):
     TOPIC = "sail-systems/f0502_mzznbmvng"
 
 
@@ -269,11 +270,11 @@ class StaysailSheetSb(CaptiveWinch):
     TOPIC = "sail-systems/fe303_styslshtsb"
 
 
-class StaysailSheetFeederPs(Load):
+class StaysailSheetFeederPs(LoadCell):
     TOPIC = "sail-systems/fe204_styslshtfdrps"
 
 
-class StaysailSheetFeederSb(Load):
+class StaysailSheetFeederSb(LoadCell):
     TOPIC = "sail-systems/fe304_styslshtfdrsb"
 
 

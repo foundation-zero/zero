@@ -6,7 +6,7 @@ from httpx import ASGITransport, AsyncClient
 
 from loads.api import app
 from loads.api.api import get_messaging
-from loads.api.loads import loads_variables
+from loads.api.loads import VARIABLES
 from loads.api.types import ActualType
 from loads.sensors.at import ApparentWindSpeed
 
@@ -120,7 +120,7 @@ async def test_graphql_all_variables(async_client: AsyncClient, override_depende
         )
 
         assert response.status_code == 200
-        assert len(response.json()["data"]["variables"]) == len(loads_variables.keys())
+        assert len(response.json()["data"]["variables"]) == len(VARIABLES.keys())
 
 
 @pytest.mark.asyncio

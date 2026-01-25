@@ -2,22 +2,22 @@ from loads.sensors import LoadsModel, at, sail_system
 
 
 class MessagingModule:
-    """Module handling multiple validators."""
+    """Module handling one source of MQTT messages"""
 
-    def __init__(self, validators: list[type[LoadsModel]]) -> None:
-        self._validators = validators
-        self._mapping = {validator.TOPIC: validator for validator in validators}
+    def __init__(self, models: list[type[LoadsModel]]) -> None:
+        self._models = models
+        self._mapping = {model.TOPIC: model for model in models}
 
     @property
     def topics(self) -> list[str]:
         return list(self._mapping.keys())
 
     def gen_config(self):
-        return [validator.gen_config() for validator in self._validators]
+        return [model.gen_config() for model in self._models]
 
 
-sail_system_sensors = MessagingModule(
-    validators=[
+sail_system_sensors = MessagingModule(  # TODO: get from registry
+    models=[
         sail_system.BladeAdjuster,
         sail_system.BladeCunningham,
         sail_system.BladeSheetCaptivePS,
@@ -61,7 +61,7 @@ sail_system_sensors = MessagingModule(
 
 
 at_sensors = MessagingModule(
-    validators=[
+    models=[
         at.ApparentWindSpeed,
         at.ApparentWindAngle,
     ],

@@ -7,9 +7,9 @@ from typing import Any, Callable, Coroutine
 from aiomqtt import Client as MqttClient
 from aiomqtt import Message
 
+from loads.api.loads import FunctionDefinition, VariableDefinition
 from loads.sensors import LoadsModel, MessagingModule
 
-from .loads import LoadsField
 from .types import ActualType
 
 logger = logging.getLogger(__name__)
@@ -70,15 +70,17 @@ class Messaging:
         self,
         mqtt_client: MqttClient,
         modules: list[MessagingModule],
-        variable_definition: dict[str, LoadsField],
+        function_definitions: dict[str, FunctionDefinition],
+        variable_definitions: dict[str, VariableDefinition],
     ):
-        self._mqtt_client: MqttClient = mqtt_client
-        self._modules: list[MessagingModule] = modules
-        self._variable_definition: dict[str, LoadsField] = variable_definition
+        self._mqtt_client = mqtt_client
+        self._modules = modules
+        self._function_definitions = function_definitions
+        self._variable_definitions = variable_definitions
         self._receivers: dict[str, MessageReceiver] = {
-            topic: MessageReceiver(cls=receiver, topic=topic)
+            topic: MessageReceiver(cls=model, topic=topic)
             for module in self._modules
-            for topic, receiver in module._mapping.items()
+            for topic, model in module._mapping.items()
         }
 
     async def run(self) -> Coroutine[Any, Any, None]:
@@ -105,20 +107,26 @@ class Messaging:
             raise ValueError(f"Expected string or bytes, got {type(message.payload)}")
         return model.parse_message_payload(message.payload)
 
-    def get_values_for(self, variables: list[str]) -> list[ActualType]:
+    def get_values_for(self, variable_ids: list[str]) -> list[ActualType]:
         results: list[ActualType] = []
-        for variable in variables:
-            if field := self._variable_definition.get(variable):
-                topic = field.model.TOPIC
+        for variable_id in variable_ids:
+            if variable := self._variable_definitions.get(variable_id):
+                function = self._function_definitions[variable.function_id]
+                receiver = self._receivers.get(function.topic)
 
-                if receiver := self._receivers.get(topic):
-                    results.append(
-                        ActualType(id=variable, value=field.give(receiver.last))
+                if not receiver or receiver.last is None:
+                    continue
+
+                results.append(
+                    ActualType(
+                        id=variable_id,
+                        value=getattr(receiver.last, variable.field_name),
                     )
+                )
             else:
-                raise ValueError(f"{variable} is not defined.")
+                raise ValueError(f"{variable_id} is not defined.")
 
         return results
 
-    def get_variable_definition(self, variable: str) -> LoadsField | None:
-        return self._variable_definition.get(variable)
+    def get_variable_definition(self, variable: str) -> VariableDefinition | None:
+        return self._variable_definitions.get(variable)
