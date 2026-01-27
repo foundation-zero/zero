@@ -1,27 +1,31 @@
 <script setup lang="ts">
-import { Button } from "@/components/ui/button";
+import { Switch } from "@/components/ui/switch";
 import { useSimulationStore } from "@/modules/thrs/stores/simulation";
-import { Bot, BotOff } from "lucide-vue-next";
 import { computed, toRefs } from "vue";
+import { useI18n } from "vue-i18n";
 
 const props = defineProps<{
   module: string;
 }>();
 
-const { control, isProcessing } = toRefs(useSimulationStore());
-const { setAutomatedControl } = useSimulationStore();
+const { t } = useI18n();
 
-const isAutomated = computed(() => control.value?.modules?.[props.module].automatic ?? false);
+const { control, isProcessing } = toRefs(useSimulationStore());
+const simulationStore = useSimulationStore();
+const setAutomatedControl = simulationStore.setAutomatedControl(props.module);
+
+const isAutomated = computed(() => !!control.value?.modules?.[props.module].automatic);
 </script>
 
 <template>
-  <Button
-    variant="ghost"
-    size="icon"
-    :disabled="isProcessing"
-    @click="setAutomatedControl(props.module)(!isAutomated)"
+  <div
+    class="flex cursor-pointer items-center gap-4"
+    @click="setAutomatedControl(!isAutomated)"
   >
-    <Bot v-if="isAutomated" />
-    <BotOff v-else />
-  </Button>
+    <Switch
+      :model-value="isAutomated"
+      :disabled="isProcessing"
+    />
+    <span>{{ t("thrs.components.controlActions.automatedControl") }}</span>
+  </div>
 </template>

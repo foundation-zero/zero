@@ -50,6 +50,9 @@
           "description": "Please select fields to display their values."
         }
       },
+      "controlActions": {
+        "automatedControl": "Automated control"
+      },
       "clearChartHistory": {
         "title": "Clear Chart History",
         "description": "Are you sure you want to clear the chart history? This action cannot be undone.",
