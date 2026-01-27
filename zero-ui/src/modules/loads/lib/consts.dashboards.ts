@@ -54,7 +54,7 @@ export const OVERVIEW = dashboard(
     "mizzen-checkstay-sb-load",
   ),
   group(
-    "Mast locks",
+    "Locks",
     "main-halyard-reef-1-lock",
     "main-halyard-reef-2-lock",
     "main-halyard-reef-3-lock",
@@ -70,7 +70,8 @@ export const MAIN = dashboard(
     "main-preventer-load",
     "main-vang-load",
   ),
-  group("Halyard & trim", "main-halyard-load", "main-halyard-lock-full", "main-cunningham-load"),
+  group("Halyard & trim", "main-halyard-load", "main-cunningham-load"),
+  group("Locks", "main-halyard-lock-full"),
   group("Runners", "main-runner-ps-load", "main-runner-sb-load"),
   group("Checkstay", "main-checkstay-ps-load", "main-checkstay-sb-load"),
 );
@@ -84,13 +85,8 @@ export const MAIN_REEF_1 = dashboard(
     "main-preventer-load",
     "main-vang-load",
   ),
-  group(
-    "Halyard & trim",
-    "main-halyard-load",
-    "main-halyard-reef-1-lock",
-    "main-boom-reef-1-lock",
-    "main-cunningham-load",
-  ),
+  group("Halyard & trim", "main-halyard-load", "main-cunningham-load"),
+  group("Locks", "main-halyard-reef-1-lock", "main-boom-reef-1-lock"),
   group("Runners", "main-runner-ps-load", "main-runner-sb-load"),
 );
 
@@ -103,13 +99,8 @@ export const MAIN_REEF_2 = dashboard(
     "main-preventer-load",
     "main-vang-load",
   ),
-  group(
-    "Halyard & trim",
-    "main-halyard-load",
-    "main-halyard-reef-2-lock",
-    "main-boom-reef-2-lock",
-    "main-cunningham-load",
-  ),
+  group("Halyard & trim", "main-halyard-load"),
+  group("Locks", "main-halyard-reef-2-lock", "main-boom-reef-2-lock", "main-cunningham-load"),
   group("Runners", "main-runner-ps-load", "main-runner-sb-load"),
 );
 
@@ -122,13 +113,8 @@ export const MAIN_REEF_3 = dashboard(
     "main-preventer-load",
     "main-vang-load",
   ),
-  group(
-    "Halyard & trim",
-    "main-halyard-load",
-    "main-halyard-reef-3-lock",
-    "main-boom-reef-3-lock",
-    "main-cunningham-load",
-  ),
+  group("Halyard & trim", "main-halyard-load"),
+  group("Locks", "main-halyard-reef-3-lock", "main-boom-reef-3-lock", "main-cunningham-load"),
   group("Runners", "main-runner-ps-load", "main-runner-sb-load"),
 );
 
@@ -157,26 +143,16 @@ export const MIZZEN = dashboard(
 export const MIZZEN_REEF_1 = dashboard(
   SailId.MizzenReef1,
   group("Mizzen sail", "mizzen-sheet-load", "mizzen-preventer-load", "mizzen-vang-load"),
-  group(
-    "Halyard and trim",
-    "mizzen-halyard-load",
-    "mizzen-reef-1-lock",
-    "mizzen-boom-reef-1-lock",
-    "mizzen-cunningham-load",
-  ),
+  group("Halyard and trim", "mizzen-halyard-load"),
+  group("Locks", "mizzen-reef-1-lock", "mizzen-boom-reef-1-lock", "mizzen-cunningham-load"),
   group("Runners", "mizzen-runner-ps-load", "mizzen-runner-sb-load"),
 );
 
 export const MIZZEN_REEF_2 = dashboard(
   SailId.MizzenReef2,
   group("Mizzen sail", "mizzen-sheet-load", "mizzen-preventer-load", "mizzen-vang-load"),
-  group(
-    "Halyard and trim",
-    "mizzen-halyard-load",
-    "mizzen-reef-2-lock",
-    "mizzen-boom-reef-2-lock",
-    "mizzen-cunningham-load",
-  ),
+  group("Halyard and trim", "mizzen-halyard-load"),
+  group("Locks", "mizzen-reef-2-lock", "mizzen-boom-reef-2-lock", "mizzen-cunningham-load"),
   group("Runners", "mizzen-runner-ps-load", "mizzen-runner-sb-load"),
 );
 
@@ -189,48 +165,43 @@ export const BLADE = dashboard(
 
 export const CODE_ZERO = dashboard(
   SailId.CodeZero,
-  group("Tack and halyard", "code-zero-tack-load", "code-zero-lock", "code-zero-overhoist"),
+  group("Tack and halyard", "code-zero-tack-load"),
+  group("Locks", "code-zero-lock", "code-zero-overhoist"),
 );
 
 export const A3 = dashboard(
   SailId.A3,
-  group("Tack and halyard", "code-zero-tack-load", "code-zero-lock", "code-zero-overhoist"),
+  group("Tack and halyard", "code-zero-tack-load"),
+  group("Locks", "code-zero-lock", "code-zero-overhoist"),
 );
 
 export const A2 = dashboard(
   SailId.A2,
-  group("Tack and halyard", "code-zero-tack-load", "code-zero-lock", "code-zero-overhoist"),
+  group("Tack and halyard", "code-zero-tack-load"),
+  group("Locks", "code-zero-lock", "code-zero-overhoist"),
 );
 
 export const STAYSAIL = dashboard(
   SailId.Staysail,
   group("Sheet feeders", "staysail-sheet-feeder-ps-load", "staysail-sheet-feeder-sb-load"),
-  group("Trim", "staysail-stay-adjuster-load", "staysail-lock", "staysail-overhoist"),
+  group("Trim", "staysail-stay-adjuster-load"),
 );
 
 export const STORM_JIB = dashboard(
   SailId.StormJib,
-  group("Halyard", "storm-jib-lock", "storm-jib-overhoist"),
+  group("Locks", "storm-jib-lock", "storm-jib-overhoist"),
 );
 
 export const MIZZEN_JIB = dashboard(
   SailId.MizzenJib,
-  group(
-    "Tack and halyard",
-    "mizzen-jib-tack-adjuster-load",
-    "mizzen-jib-lock",
-    "mizzen-jib-overhoist",
-  ),
+  group("Tack", "mizzen-jib-tack-adjuster-load"),
+  group("Locks", "mizzen-jib-lock", "mizzen-jib-overhoist"),
 );
 
 export const MIZZEN_STAYSAIL = dashboard(
   SailId.MizzenStaysail,
-  group(
-    "Tack and halyard",
-    "mizzen-jib-tack-adjuster-load",
-    "mizzen-jib-lock",
-    "mizzen-jib-overhoist",
-  ),
+  group("Tack and halyard", "mizzen-jib-tack-adjuster-load", "mizzen-jib-overhoist"),
+  group("Locks", "mizzen-jib-lock"),
 );
 
 export const DASHBOARDS: Dashboard[] = [
