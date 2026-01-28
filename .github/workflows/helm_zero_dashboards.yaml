@@ -1,0 +1,18 @@
+name: "Zero Data: Deploy zero-dashboards chart"
+on:
+  push:
+    branches:
+      - main
+      - feature/grafana-dashboards-helm
+    paths:
+      - zero-dashboards/**
+
+jobs:
+  helm-push:
+    uses: "./.github/workflows/job_helm_push.yaml"
+    permissions:
+      contents: "read"
+      id-token: "write"
+    secrets: inherit
+    with:
+      helm_chart: "zero-dashboards/"
