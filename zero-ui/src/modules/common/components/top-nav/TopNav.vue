@@ -36,12 +36,14 @@ nav::before {
   opacity: 0.9;
 
   // This gradient was provided by the design team (@Wadim)
-  background:
-    radial-gradient(
-      43.74% 35.44% at 50.03% 36.53%,
-      var(----general---brand-dull, rgba(86, 133, 169, 0.2)) 0%,
-      rgba(153, 182, 204, 0) 100%
-    ),
-    var(----general---background-muted, #121619);
+  &:is(.dark > *) {
+    background:
+      radial-gradient(
+        43.74% 35.44% at 50.03% 36.53%,
+        var(----general---brand-dull, rgba(86, 133, 169, 0.2)) 0%,
+        rgba(153, 182, 204, 0) 100%
+      ),
+      var(----general---background-muted, #121619);
+  }
 }
 </style>
