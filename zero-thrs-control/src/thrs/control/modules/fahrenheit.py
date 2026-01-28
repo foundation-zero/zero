@@ -1,6 +1,7 @@
 from datetime import datetime
 from typing import Literal, cast
 
+from pydantic import model_validator
 from pyparsing import Callable
 from transitions import Machine, State
 from thrs.classes.control import Control, ControlResult
@@ -23,8 +24,9 @@ from thrs.input_output.modules.fahrenheit import (
 
 class FahrenheitParameters(ThrsValues):
     chiller_enabled: bool = True
-    waste_cooling_temperature: Celsius = 30.0
-    waste_recovery_temperature: Celsius = 40.0
+    waste_cooling_temperature_setpoint: Celsius = 35.0
+    waste_recovery_temperature_setpoint: Celsius = 30.0
+    hot_supply_temperature_setpoint: Celsius = 60.0
     fahrenheit_cooling_setpoint: Celsius = 17.0
     fahrenheit_hot_minimum: Celsius = 50.0
     fahrenheit_hot_trigger: Celsius = 55.0
@@ -34,6 +36,22 @@ class FahrenheitParameters(ThrsValues):
     recovery_tuning: Tuning = (0.05, 0.001, 0)
     waste_cooling_tuning: Tuning = (0.05, 0.01, 0)
     free_cooling_enabled: bool = True
+
+    @model_validator(mode="after")
+    def check_temperature_setpoints(self):
+        if self.fahrenheit_hot_trigger <= self.fahrenheit_hot_minimum:
+            raise ValueError(
+                "Hot trigger temperature must be greater than hot minimum temperature"
+            )
+        if self.fahrenheit_cold_trigger <= self.fahrenheit_cold_minimum:
+            raise ValueError(
+                "Cold trigger temperature must be greater than cold minimum temperature"
+            )
+        if self.waste_recovery_temperature_setpoint < self.waste_cooling_temperature_setpoint:
+            raise ValueError(
+                "Waste recovery temperature setpoint must be less than waste cooling temperature setpoint"
+            )
+        return self
 
 
 _ZERO_TIME = datetime.fromtimestamp(0)
@@ -126,22 +144,22 @@ class FahrenheitControl(
 
         self._hot_mix_controller = Controller[Ratio, Celsius](
             _INITIAL_CONTROL_VALUES.fahrenheit_mix_hot.setpoint.value,
-            100,  # TODO: set setpoint
-            parameters.hot_mix_tuning,
+            self._parameters.hot_supply_temperature_setpoint,
+            self._parameters.hot_mix_tuning,
             self._time,
         )
 
         self._recovery_controller = Controller[Ratio, Celsius](
-            _INITIAL_CONTROL_VALUES.fahrenheit_mix_waste.setpoint.value,
-            100,  # TODO: set setpoint
-            parameters.recovery_tuning,
+            _INITIAL_CONTROL_VALUES.fahrenheit_flowcontrol_waste.setpoint.value,
+            self._parameters.waste_recovery_temperature_setpoint,
+            self._parameters.recovery_tuning,
             self._time,
         )
 
         self._waste_cooling_controller = Controller[Ratio, Celsius](
-            _INITIAL_CONTROL_VALUES.fahrenheit_flowcontrol_waste.setpoint.value,
-            100,  # TODO: set setpoint
-            parameters.waste_cooling_tuning,
+            _INITIAL_CONTROL_VALUES.fahrenheit_mix_waste.setpoint.value,
+            self._parameters.waste_cooling_temperature_setpoint,
+            self._parameters.waste_cooling_tuning,
             self._time,
         )
 
@@ -151,9 +169,6 @@ class FahrenheitControl(
 
     def update_parameters(self, parameters: FahrenheitParameters) -> None:
         self._parameters = parameters
-        self._hot_mix_controller.update_tuning(parameters.hot_mix_tuning)
-        self._recovery_controller.update_tuning(parameters.recovery_tuning)
-        self._waste_cooling_controller.update_tuning(parameters.waste_cooling_tuning)
 
     @staticmethod
     def modes() -> list[str]:
@@ -191,7 +206,7 @@ class FahrenheitControl(
         self._current_values.fahrenheit_mix_waste.setpoint = Stamped(
             value=(
                 self._waste_cooling_controller(
-                    sensor_values.fahrenheit_temperature_waste_supply.temperature.value
+                    sensor_values.fahrenheit_chiller.temperature_waste_in.value
                 )
             ),
             timestamp=self._time(),
@@ -199,7 +214,7 @@ class FahrenheitControl(
         self._current_values.fahrenheit_flowcontrol_waste.setpoint = Stamped(
             value=(
                 self._recovery_controller(
-                    sensor_values.fahrenheit_temperature_waste_supply.temperature.value
+                    sensor_values.fahrenheit_chiller.temperature_waste_out.value
                 )
             ),
             timestamp=self._time(),

@@ -5,6 +5,7 @@ from thrs.input_output.base import Stamped
 from thrs.input_output.definitions.simulation import (
     Boundary,
     ExchangerBoundary,
+    Fahrenheit,
     OverpressureTemperatureBoundary,
     TemperatureBoundary,
 )
@@ -26,15 +27,15 @@ def simulation_inputs():
         fahrenheit_hot_supply=ExchangerBoundary(
             temperature=Stamped.stamp(60.0),
             flow=Stamped.stamp(42.0),
-            overpressure=Stamped.stamp(2.0),
+            overpressure=Stamped.stamp(0.0),
         ),
         fahrenheit_waste_supply=ExchangerBoundary(
-            temperature=Stamped.stamp(30.0),
+            temperature=Stamped.stamp(20.0),
             flow=Stamped.stamp(45.0),
-            overpressure=Stamped.stamp(2.0),
+            overpressure=Stamped.stamp(0.0),
         ),
         fahrenheit_cold_supply=OverpressureTemperatureBoundary(
-            temperature=Stamped.stamp(15.0), overpressure=Stamped.stamp(2.0)
+            temperature=Stamped.stamp(15.0), overpressure=Stamped.stamp(0.0)
         ),
         fahrenheit_seawater_supply=Boundary(
             temperature=Stamped.stamp(32.0), flow=Stamped.stamp(64.0)
@@ -48,6 +49,9 @@ def simulation_inputs():
         fahrenheit_available_seawater_temperature=TemperatureBoundary(
             temperature=Stamped.stamp(32.0)
         ),
+        fahrenheit_chiller=Fahrenheit(
+            free_cooling=Stamped.stamp(False)
+        )
     )
 
 
