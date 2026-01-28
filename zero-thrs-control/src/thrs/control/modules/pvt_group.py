@@ -109,17 +109,17 @@ class PvtGroupControl(
 
         self._warmup_mix_controller = Controller[Ratio, Celsius](
             _INITIAL_CONTROL_VALUES.mix.setpoint.value,
-            parameters.warmup_temperature,
-            parameters.warmup_mix_tuning,
+            self._parameters.warmup_temperature,
+            self._parameters.warmup_mix_tuning,
             self._time,
         )
 
         self._pump_controller = Controller[Ratio, Celsius](
             _INITIAL_CONTROL_VALUES.pump.dutypoint.value,
-            parameters.recovery_temperature,
-            parameters.pump_tuning,
+            self._parameters.recovery_temperature,
+            self._parameters.pump_tuning,
             self._time,
-            (parameters.minimum_pump_dutypoint, 1),
+            (self._parameters.minimum_pump_dutypoint, 1),
         )
 
     @property
@@ -143,7 +143,7 @@ class PvtGroupControl(
         return self.state  # type: ignore
 
     def update_parameters(self, parameters: PvtGroupParameters):
-        pass
+        self._parameters = parameters
 
     def initial(self) -> ControlResult[PvtGroupControlValues]:
         return ControlResult(self._time(), self._current_values)

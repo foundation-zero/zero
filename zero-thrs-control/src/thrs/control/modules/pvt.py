@@ -103,8 +103,8 @@ class PvtControl(Control[PvtSensorValues, PvtControlValues, PvtParameters]):
 
         self._heat_dump_controller = Controller[Ratio, Celsius](
             _INITIAL_CONTROL_VALUES.pvt_mix_exchanger.setpoint.value,
-            parameters.maximum_supply_temperature,
-            parameters.heat_dump_tuning,
+            self._parameters.maximum_supply_temperature,
+            self._parameters.heat_dump_tuning,
             self._time,
         )
 
@@ -112,37 +112,37 @@ class PvtControl(Control[PvtSensorValues, PvtControlValues, PvtParameters]):
 
         self._main_fwd_control = PvtGroupControl(
             PvtGroupParameters(
-                warmup_temperature=parameters.warmup_temperature,
-                recovery_temperature=parameters.recovery_temperature,
-                warmup_mix_tuning=parameters.main_fwd_mix_tuning,
-                pump_tuning=parameters.main_fwd_pump_tuning,
-                minimum_pump_dutypoint=parameters.main_fwd_minimum_pump_dutypoint,
-                recovery_activation_string_temperature=parameters.recovery_activation_string_temperature,
-                minimum_return_temperature=parameters.minimum_return_temperature,
+                warmup_temperature=self._parameters.warmup_temperature,
+                recovery_temperature=self._parameters.recovery_temperature,
+                warmup_mix_tuning=self._parameters.main_fwd_mix_tuning,
+                pump_tuning=self._parameters.main_fwd_pump_tuning,
+                minimum_pump_dutypoint=self._parameters.main_fwd_minimum_pump_dutypoint,
+                recovery_activation_string_temperature=self._parameters.recovery_activation_string_temperature,
+                minimum_return_temperature=self._parameters.minimum_return_temperature,
             ),
             time_fn,
         )
         self._main_aft_control = PvtGroupControl(
             PvtGroupParameters(
-                warmup_temperature=parameters.warmup_temperature,
-                recovery_temperature=parameters.recovery_temperature,
-                warmup_mix_tuning=parameters.main_aft_mix_tuning,
-                pump_tuning=parameters.main_aft_pump_tuning,
-                minimum_pump_dutypoint=parameters.main_aft_minimum_pump_dutypoint,
-                recovery_activation_string_temperature=parameters.recovery_activation_string_temperature,
-                minimum_return_temperature=parameters.minimum_return_temperature,
+                warmup_temperature=self._parameters.warmup_temperature,
+                recovery_temperature=self._parameters.recovery_temperature,
+                warmup_mix_tuning=self._parameters.main_aft_mix_tuning,
+                pump_tuning=self._parameters.main_aft_pump_tuning,
+                minimum_pump_dutypoint=self._parameters.main_aft_minimum_pump_dutypoint,
+                recovery_activation_string_temperature=self._parameters.recovery_activation_string_temperature,
+                minimum_return_temperature=self._parameters.minimum_return_temperature,
             ),
             time_fn,
         )
         self._owners_control = PvtGroupControl(
             PvtGroupParameters(
-                warmup_temperature=parameters.warmup_temperature,
-                recovery_temperature=parameters.recovery_temperature,
-                warmup_mix_tuning=parameters.owners_mix_tuning,
-                pump_tuning=parameters.owners_pump_tuning,
-                minimum_pump_dutypoint=parameters.owners_minimum_pump_dutypoint,
-                recovery_activation_string_temperature=parameters.recovery_activation_string_temperature,
-                minimum_return_temperature=parameters.minimum_return_temperature,
+                warmup_temperature=self._parameters.warmup_temperature,
+                recovery_temperature=self._parameters.recovery_temperature,
+                warmup_mix_tuning=self._parameters.owners_mix_tuning,
+                pump_tuning=self._parameters.owners_pump_tuning,
+                minimum_pump_dutypoint=self._parameters.owners_minimum_pump_dutypoint,
+                recovery_activation_string_temperature=self._parameters.recovery_activation_string_temperature,
+                minimum_return_temperature=self._parameters.minimum_return_temperature,
             ),
             time_fn,
         )
@@ -167,7 +167,7 @@ class PvtControl(Control[PvtSensorValues, PvtControlValues, PvtParameters]):
         return ControlResult(self._time(), self._current_values)
 
     def update_parameters(self, parameters: PvtParameters):
-        pass
+        self._parameters = parameters
 
     def _control_heat_dump_mix(self, sensor_values: PvtSensorValues):
         self._current_values.pvt_mix_exchanger.setpoint = Stamped(

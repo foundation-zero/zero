@@ -391,33 +391,33 @@ class BoilersControl(
         self._pump_temperature_controller = Controller[Ratio, Celsius](
             _INITIAL_CONTROL_VALUES.boilers_pump.dutypoint.value,
             0,
-            parameters.pump_temperature_tuning,
+            self._parameters.pump_temperature_tuning,
             self._time,
         )
 
         self._pump_flow_controller = Controller[Ratio, LMin](
             _INITIAL_CONTROL_VALUES.boilers_pump.dutypoint.value,
             0,
-            parameters.pump_flow_tuning,
+            self._parameters.pump_flow_tuning,
             self._time,
         )
 
         self._lt1_flow_controller = Controller[Ratio, Celsius](
             _INITIAL_CONTROL_VALUES.boilers_flowcontrol_lt1.setpoint.value,
-            parameters.filling_temperature_setpoint,
-            parameters.lt1_flow_tuning,
+            self._parameters.filling_temperature_setpoint,
+            self._parameters.lt1_flow_tuning,
             self._time,
-            (parameters.lt1_flowcontrol_minimum_setpoint, 1.0),
+            (self._parameters.lt1_flowcontrol_minimum_setpoint, 1.0),
         )
 
         self._lt1_flow_controller.enable()
 
         self._lt2_flow_controller = Controller[Ratio, Celsius](
             _INITIAL_CONTROL_VALUES.boilers_flowcontrol_lt2.setpoint.value,
-            parameters.filling_temperature_setpoint,
-            parameters.lt2_flow_tuning,
+            self._parameters.filling_temperature_setpoint,
+            self._parameters.lt2_flow_tuning,
             self._time,
-            (parameters.lt2_flowcontrol_minimum_setpoint, 1.0),
+            (self._parameters.lt2_flowcontrol_minimum_setpoint, 1.0),
         )
 
         self._lt2_flow_controller.enable()
@@ -453,7 +453,7 @@ class BoilersControl(
 
     def update_parameters(self, parameters: BoilersParameters):
         self._parameters = parameters
-        self._pump_temperature_controller.update_tuning(
+        self._pump_temperature_controller.update_tuning( #TODO: needed up manually update tunings?
             parameters.pump_temperature_tuning
         )
         self._pump_flow_controller.update_tuning(parameters.pump_flow_tuning)
