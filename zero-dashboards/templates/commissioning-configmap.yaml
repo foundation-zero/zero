@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ .Release.Name }}-commissioning
+  namespace: {{ .Release.Namespace }}
+  annotations:
+    grafana_dashboard_folder: /tmp/dashboards/Commissioning
+  labels:
+    grafana_dashboard: "1"
+data:
+{{- (.Files.Glob "dashboards/commissioning/**.json").AsConfig | nindent 2 }}
