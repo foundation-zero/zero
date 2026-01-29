@@ -136,21 +136,31 @@ class PcsMode(Enum):
     REGENERATION = "regeneration"
 
 
-class TankControlMode(Enum):
+# FahrenheitMode: OFF=0, ON=1, VALVE_RUN=2, ACTIVATION=3
+FahrenheitMode: TypeAlias = Literal[0, 1, 2, 3]
+
+# FreeCoolingMode: OFF=0, ON=1, AUTO=2
+FreeCoolingMode: TypeAlias = Literal[0, 1, 2]
+
+# TankControlMode: NONE=0, BOTH=1, COLD=2, HOT=3
+TankControlMode: TypeAlias = Literal[0, 1, 2, 3]
+
+
+class TankControlModeEnum(Enum):
     NONE = 0
     BOTH = 1
     COLD = 2
     HOT = 3
 
 
-class FahrenheitMode(Enum):
+class FahrenheitModeEnum(Enum):
     OFF = 0
     ON = 1
     VALVE_RUN = 2
     ACTIVATION = 3
 
 
-class FreeCoolingMode(Enum):
+class FreeCoolingModeEnum(Enum):
     OFF = 0
     ON = 1
     AUTO = 2

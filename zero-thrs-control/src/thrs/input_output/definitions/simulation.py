@@ -56,8 +56,10 @@ class Pcs(ThrsValues):
         field_meta(included_in_fmu=False),
     ]
 
+
 class Fahrenheit(ThrsValues):
     free_cooling: Annotated[Stamped[OnOff], field_meta(included_in_fmu=False)]
+
 
 __all__ = [
     "HeatSource",

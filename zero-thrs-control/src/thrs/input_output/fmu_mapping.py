@@ -28,7 +28,9 @@ def extract_non_fmu_values(
 ) -> dict[str, dict[str, Stamped[Any]]]:
     """Extract values from simulation inputs that are not included in the FMU."""
 
-    def _lookup_values(simulation_inputs: SimulationInputs, sensor_component_field: FieldInfo):
+    def _lookup_values(
+        simulation_inputs: SimulationInputs, sensor_component_field: FieldInfo
+    ):
         component_type = sensor_component_field.annotation
         # If the whole component is excluded, return all fields
         if not included_in_fmu(sensor_component_field):
@@ -38,16 +40,18 @@ def extract_non_fmu_values(
             }
         # Otherwise, only return fields that are excluded
         return {
-                name: getattr(simulation_inputs, name)
-                for name, field in component_type.model_fields.items() # type: ignore
-                if not included_in_fmu(field)
-            }
+            name: getattr(simulation_inputs, name)
+            for name, field in component_type.model_fields.items()  # type: ignore
+            if not included_in_fmu(field)
+        }
 
     return {
         component_name: values
         for component_name, field in sensor_cls.model_fields.items()
         if hasattr(simulation_inputs, component_name)
-        and (values := _lookup_values(getattr(simulation_inputs, component_name), field))
+        and (
+            values := _lookup_values(getattr(simulation_inputs, component_name), field)
+        )
     }
 
 
@@ -56,7 +60,7 @@ def build_outputs_from_fmu[T: ThrsValues](
     clss: tuple[type[T]],
     values: dict[str, float],
     timestamp: datetime,
-    extra_values: dict[str, dict[str, Stamped[Any]]] = {},
+    non_fmu_simulation_inputs: dict[str, dict[str, Stamped[Any]]] = {},
 ) -> tuple[T]: ...
 
 
@@ -65,7 +69,7 @@ def build_outputs_from_fmu[T: ThrsValues, T2: ThrsValues](
     clss: tuple[type[T], type[T2]],
     values: dict[str, float],
     timestamp: datetime,
-    extra_values: dict[str, dict[str, Stamped[Any]]] = {},
+    non_fmu_simulation_inputs: dict[str, dict[str, Stamped[Any]]] = {},
 ) -> tuple[T, T2]: ...
 
 
@@ -74,7 +78,7 @@ def build_outputs_from_fmu[T: ThrsValues](
     clss: tuple[type[T], ...],
     values: dict[str, float],
     timestamp: datetime,
-    extra_values: dict[str, dict[str, Stamped[Any]]] = {},
+    non_fmu_simulation_inputs: dict[str, dict[str, Stamped[Any]]] = {},
 ) -> tuple[T, ...]: ...
 
 
@@ -82,7 +86,7 @@ def build_outputs_from_fmu(
     clss: tuple[type[ThrsValues], ...],
     values: dict[str, float],
     timestamp: datetime,
-    extra_values: dict[str, dict[str, Stamped[Any]]] = {},
+    non_fmu_simulation_inputs: dict[str, dict[str, Stamped[Any]]] = {},
 ) -> tuple[ThrsValues, ...]:
     # first part is the component name, second part is the field name, third (if any) is the unit
     # ignore third, build dict of dict of first part and second part
@@ -95,18 +99,18 @@ def build_outputs_from_fmu(
     ]
     grouped_by_component = groupby(split_values, key=operator.itemgetter(0))
     combined_values = {
-        component: extra_values.get(component, {})
+        component: non_fmu_simulation_inputs.get(component, {})
         | {
             field: Stamped(value=value, timestamp=timestamp)
             for _, field, value in field_values
         }
         for component, field_values in grouped_by_component
     }
-    unused_extra_values = {
+    unused_non_fmu_simulation_inputs = {
         component_name: component
-        for component_name, component in extra_values.items()
+        for component_name, component in non_fmu_simulation_inputs.items()
         if component_name not in combined_values
     }
-    with_extras = combined_values | unused_extra_values
+    with_extras = combined_values | unused_non_fmu_simulation_inputs
 
     return tuple([cls(**with_extras) for cls in clss])

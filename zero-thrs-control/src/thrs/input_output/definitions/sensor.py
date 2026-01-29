@@ -1,5 +1,4 @@
-from typing import Annotated
-from thrs.input_output.base import Stamped, ThrsValues, field_meta
+from thrs.input_output.base import Stamped, ThrsValues
 from thrs.input_output.definitions.units import (
     Bar,
     Celsius,
@@ -87,10 +86,14 @@ class Fahrenheit(ThrsValues):
     temperature_waste_out: Stamped[Celsius]
     temperature_cold_in: Stamped[Celsius]
     temperature_cold_out: Stamped[Celsius]
-    temperature_seawater: Annotated[Stamped[Celsius], field_meta(included_in_fmu=False)]
-    available_temperature_hot: Annotated[Stamped[Celsius], field_meta(included_in_fmu=False)]
-    available_temperature_cold: Annotated[Stamped[Celsius], field_meta(included_in_fmu=False)]
-    #available_temperature_waste: Annotated[Stamped[Celsius], field_meta(included_in_fmu=False)]
+    # temperature_seawater: Annotated[Stamped[Celsius], field_meta(included_in_fmu=False)]
+    # available_temperature_hot: Annotated[
+    #    Stamped[Celsius], field_meta(included_in_fmu=False)
+    # ]
+    # available_temperature_cold: Annotated[
+    #    Stamped[Celsius], field_meta(included_in_fmu=False)
+    # ]
+    # available_temperature_waste: Annotated[Stamped[Celsius], field_meta(included_in_fmu=False)]
     # operating_hours_adsorption: Annotated[
     #    Stamped[seconds], field_meta(included_in_fmu=False)
     # ]

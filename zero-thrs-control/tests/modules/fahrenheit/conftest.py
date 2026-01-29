@@ -35,23 +35,21 @@ def simulation_inputs():
             overpressure=Stamped.stamp(0.0),
         ),
         fahrenheit_cold_supply=OverpressureTemperatureBoundary(
-            temperature=Stamped.stamp(15.0), overpressure=Stamped.stamp(0.0)
+            temperature=Stamped.stamp(20.0), overpressure=Stamped.stamp(0.0)
         ),
         fahrenheit_seawater_supply=Boundary(
-            temperature=Stamped.stamp(32.0), flow=Stamped.stamp(64.0)
+            temperature=Stamped.stamp(10.0), flow=Stamped.stamp(64.0)
         ),
         fahrenheit_available_hot_temperature=TemperatureBoundary(
             temperature=Stamped.stamp(70.0)
         ),
         fahrenheit_available_cold_temperature=TemperatureBoundary(
-            temperature=Stamped.stamp(10.0)
+            temperature=Stamped.stamp(20.0)
         ),
         fahrenheit_available_seawater_temperature=TemperatureBoundary(
             temperature=Stamped.stamp(32.0)
         ),
-        fahrenheit_chiller=Fahrenheit(
-            free_cooling=Stamped.stamp(False)
-        )
+        fahrenheit_chiller=Fahrenheit(free_cooling=Stamped.stamp(False)),
     )
 
 

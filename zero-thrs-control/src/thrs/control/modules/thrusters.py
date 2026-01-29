@@ -263,7 +263,9 @@ class ThrustersControl(
 
     def update_parameters(self, parameters: ThrustersParameters):
         self._parameters = parameters
-        self._heat_dump_controller.update_tuning(parameters.heat_dump_tuning) #TODO: needed to update 'manually'?
+        self._heat_dump_controller.update_tuning(
+            parameters.heat_dump_tuning
+        )  # TODO: needed to update 'manually'?
         self._warmup_mix_controller.update_tuning(parameters.warmup_mix_tuning)
         self._pump_controller.update_tuning(parameters.pump_tuning)
         self._aft_recovery_temperature_controller.update_tuning(

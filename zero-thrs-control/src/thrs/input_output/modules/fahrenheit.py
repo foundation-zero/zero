@@ -97,11 +97,7 @@ class FahrenheitControlValues(ThrsValues):
 
 
 class FahrenheitSimulationInputs(SimulationInputs):
-    fahrenheit_hot_supply: simulation.ExchangerBoundary
-    fahrenheit_waste_supply: simulation.ExchangerBoundary
-    fahrenheit_cold_supply: (
-        simulation.OverpressureTemperatureBoundary
-    )
+    fahrenheit_cold_supply: simulation.TemperatureBoundary
     fahrenheit_seawater_supply: simulation.Boundary
     fahrenheit_available_hot_temperature: Annotated[
         simulation.TemperatureBoundary, component_meta(included_in_fmu=False)
@@ -112,11 +108,15 @@ class FahrenheitSimulationInputs(SimulationInputs):
     fahrenheit_available_seawater_temperature: Annotated[
         simulation.TemperatureBoundary, component_meta(included_in_fmu=False)
     ]
-    fahrenheit_chiller: Annotated[simulation.Fahrenheit, component_meta(included_in_fmu=False)]
+    fahrenheit_chiller: Annotated[
+        simulation.Fahrenheit, component_meta(included_in_fmu=False)
+    ]
+    fahrenheit_ht_supply: simulation.Boundary
+    fahrenheit_boilers_supply: simulation.Boundary
 
 
 class FahrenheitSimulationOutputs(SimulationValues):
-    fahrenheit_hot_return: simulation.ExchangerBoundary
-    fahrenheit_waste_return: simulation.ExchangerBoundary
     fahrenheit_cold_return: simulation.Boundary
     fahrenheit_seawater_return: simulation.TemperatureBoundary
+    fahrenheit_boilers_return: simulation.TemperatureBoundary
+    fahrenheit_ht_return: simulation.TemperatureBoundary

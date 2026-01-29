@@ -10,10 +10,10 @@ from thrs.input_output.base import Stamped, ThrsValues
 from thrs.input_output.definitions.control import Fahrenheit, Valve
 from thrs.input_output.definitions.units import (
     Celsius,
-    FahrenheitMode,
-    FreeCoolingMode,
+    FahrenheitModeEnum,
+    FreeCoolingModeEnum,
     Ratio,
-    TankControlMode,
+    TankControlModeEnum,
     Tuning,
 )
 from thrs.input_output.modules.fahrenheit import (
@@ -25,7 +25,7 @@ from thrs.input_output.modules.fahrenheit import (
 class FahrenheitParameters(ThrsValues):
     chiller_enabled: bool = True
     waste_cooling_temperature_setpoint: Celsius = 35.0
-    waste_recovery_temperature_setpoint: Celsius = 30.0
+    waste_recovery_temperature_setpoint: Celsius = 34.0
     hot_supply_temperature_setpoint: Celsius = 60.0
     fahrenheit_cooling_setpoint: Celsius = 17.0
     fahrenheit_hot_minimum: Celsius = 50.0
@@ -35,7 +35,7 @@ class FahrenheitParameters(ThrsValues):
     hot_mix_tuning: Tuning = (0.05, 0.001, 0)
     recovery_tuning: Tuning = (0.05, 0.001, 0)
     waste_cooling_tuning: Tuning = (0.05, 0.01, 0)
-    free_cooling_enabled: bool = True
+    free_cooling_enabled: bool = False
 
     @model_validator(mode="after")
     def check_temperature_setpoints(self):
@@ -46,10 +46,6 @@ class FahrenheitParameters(ThrsValues):
         if self.fahrenheit_cold_trigger <= self.fahrenheit_cold_minimum:
             raise ValueError(
                 "Cold trigger temperature must be greater than cold minimum temperature"
-            )
-        if self.waste_recovery_temperature_setpoint < self.waste_cooling_temperature_setpoint:
-            raise ValueError(
-                "Waste recovery temperature setpoint must be less than waste cooling temperature setpoint"
             )
         return self
 
@@ -66,18 +62,22 @@ _INITIAL_CONTROL_VALUES = FahrenheitControlValues(
         setpoint=Stamped(value=Valve.MIXING_A_TO_AB, timestamp=_ZERO_TIME)
     ),
     fahrenheit_chiller=Fahrenheit(
-        enable=Stamped(value=False, timestamp=_ZERO_TIME),
-        mode=Stamped(value=FahrenheitMode.OFF, timestamp=_ZERO_TIME),
+        enable=Stamped(value=True, timestamp=_ZERO_TIME),
+        mode=Stamped(value=FahrenheitModeEnum.ON.value, timestamp=_ZERO_TIME),
         cooling_setpoint=Stamped(value=17.0, timestamp=_ZERO_TIME),
-        free_cooling_mode=Stamped(value=FreeCoolingMode.AUTO, timestamp=_ZERO_TIME),
-        available_seawater_temperature=Stamped(value=20.0, timestamp=_ZERO_TIME),
-        available_hot_temperature=Stamped(value=20.0, timestamp=_ZERO_TIME),
+        free_cooling_mode=Stamped(
+            value=FreeCoolingModeEnum.AUTO.value, timestamp=_ZERO_TIME
+        ),
+        available_seawater_temperature=Stamped(value=32.0, timestamp=_ZERO_TIME),
+        available_hot_temperature=Stamped(value=60.0, timestamp=_ZERO_TIME),
         available_cold_temperature=Stamped(value=20.0, timestamp=_ZERO_TIME),
-        cold_minimum=Stamped(value=15.0, timestamp=_ZERO_TIME),
-        hot_minimum=Stamped(value=53.0, timestamp=_ZERO_TIME),
-        cold_hysteresis=Stamped(value=2.0, timestamp=_ZERO_TIME),
-        hot_hysteresis=Stamped(value=2.0, timestamp=_ZERO_TIME),
-        tank_control_mode=Stamped(value=TankControlMode.BOTH, timestamp=_ZERO_TIME),
+        cold_minimum=Stamped(value=10.0, timestamp=_ZERO_TIME),
+        hot_minimum=Stamped(value=55.0, timestamp=_ZERO_TIME),
+        cold_hysteresis=Stamped(value=7.0, timestamp=_ZERO_TIME),
+        hot_hysteresis=Stamped(value=5.0, timestamp=_ZERO_TIME),
+        tank_control_mode=Stamped(
+            value=TankControlModeEnum.BOTH.value, timestamp=_ZERO_TIME
+        ),
     ),
 )
 
@@ -124,7 +124,7 @@ class FahrenheitControl(
                 "trigger": "_check_fahrenheit_status",
                 "source": ["cooling", "free_cooling"],
                 "dest": "idle",
-                "conditions": lambda sensor_values: not sensor_values.fahrenheit_chiller.operating.value,
+                "conditions": lambda sensor_values: not sensor_values.fahrenheit_chiller.operating.value,  # TODO: check if we need to add error condition
             },
             {
                 "trigger": "_check_free_cooling",
@@ -188,7 +188,7 @@ class FahrenheitControl(
     def control(
         self, sensor_values: FahrenheitSensorValues
     ) -> ControlResult[FahrenheitControlValues]:
-        self._update_fahrenheit_settings(sensor_values)
+        self._update_fahrenheit_inputs(sensor_values)
         self._check_fahrenheit_status(sensor_values)  # type: ignore
         self._control_temperature_controllers(sensor_values)
 
@@ -247,107 +247,61 @@ class FahrenheitControl(
             value=Valve.OPEN, timestamp=self._time()
         )
 
-    # def _disable_fahrenheit(self, sensor_values: FahrenheitSensorValues):
-    #     self._current_values.fahrenheit_chiller.enable = Stamped(
-    #         value=False, timestamp=self._time()
-    #     )
-    #     self._current_values.fahrenheit_chiller.mode = Stamped(
-    #         value=FahrenheitMode.OFF, timestamp=self._time()
-    #     )
-
-    # def _enable_fahrenheit(self, sensor_values: FahrenheitSensorValues):
-    #     self._current_values.fahrenheit_chiller.enable = Stamped(
-    #         value=True, timestamp=self._time()
-    #     )
-    #     self._current_values.fahrenheit_chiller.mode = Stamped(
-    #         value=FahrenheitMode.ON, timestamp=self._time()
-    #     )
-
-    def _update_fahrenheit_settings(
+    def _update_fahrenheit_inputs(
         self, sensor_values: FahrenheitSensorValues
     ):  # TODO: make some helper function for this pattern
-        if (
-            self._current_values.fahrenheit_chiller.enable.value
-            != self._parameters.chiller_enabled
-        ):
-            self._current_values.fahrenheit_chiller.enable = Stamped(
-                value=self._parameters.chiller_enabled, timestamp=self._time()
-            )
-        # if self._current_values.fahrenheit_chiller.free_cooling_mode.value != (
-        #     FreeCoolingMode.AUTO
-        #     if self._parameters.free_cooling_enabled
-        #     else FreeCoolingMode.OFF
-        # ):
-        #     self._current_values.fahrenheit_chiller.free_cooling_mode = Stamped(
-        #         value=FreeCoolingMode.AUTO
-        #         if self._parameters.free_cooling_enabled
-        #         else FreeCoolingMode.OFF,
-        #         timestamp=self._time(),
-        #     )
+        self._current_values.fahrenheit_chiller.enable = Stamped(
+            value=self._parameters.chiller_enabled, timestamp=self._time()
+        )
 
-        # if (
-        #     self._current_values.fahrenheit_chiller.available_seawater_temperature.value
-        #     != sensor_values.fahrenheit_available_seawater_temperature.temperature.value
-        # ):
-        #     self._current_values.fahrenheit_chiller.available_seawater_temperature = (
-        #         Stamped(
-        #             value=cast(
-        #                 Celsius, sensor_values.fahrenheit_available_seawater_temperature.temperature.value
-        #             ),
-        #             timestamp=self._time(),
-        #         )
-        #     )
-        if (
-            self._current_values.fahrenheit_chiller.available_hot_temperature.value
-            != sensor_values.fahrenheit_available_hot_temperature.temperature.value
-        ):
-            self._current_values.fahrenheit_chiller.available_hot_temperature = Stamped(
-                value=cast(
-                    Celsius,
-                    sensor_values.fahrenheit_available_hot_temperature.temperature.value,
-                ),
-                timestamp=self._time(),
-            )
-        if (
-            self._current_values.fahrenheit_chiller.available_cold_temperature.value
-            != sensor_values.fahrenheit_available_cold_temperature.temperature.value
-        ):
-            self._current_values.fahrenheit_chiller.available_cold_temperature = Stamped(
-                value=cast(
-                    Celsius,
-                    sensor_values.fahrenheit_available_cold_temperature.temperature.value,
-                ),
-                timestamp=self._time(),
-            )
-        if (
-            self._current_values.fahrenheit_chiller.cold_minimum.value
-            != self._parameters.fahrenheit_cold_minimum
-        ):
-            self._current_values.fahrenheit_chiller.cold_minimum = Stamped(
-                value=self._parameters.fahrenheit_cold_minimum, timestamp=self._time()
-            )
-        if self._current_values.fahrenheit_chiller.cold_hysteresis.value != (
-            self._parameters.fahrenheit_cold_trigger
-            - self._parameters.fahrenheit_cold_minimum
-        ):
-            self._current_values.fahrenheit_chiller.cold_hysteresis = Stamped(
-                value=self._parameters.fahrenheit_cold_trigger
-                - self._parameters.fahrenheit_cold_minimum,
-                timestamp=self._time(),
-            )
-        if (
-            self._current_values.fahrenheit_chiller.hot_minimum.value
-            != self._parameters.fahrenheit_hot_minimum
-        ):
-            self._current_values.fahrenheit_chiller.hot_minimum = Stamped(
-                value=self._parameters.fahrenheit_hot_minimum, timestamp=self._time()
-            )
-        if self._current_values.fahrenheit_chiller.hot_hysteresis.value != (
-            self._parameters.fahrenheit_hot_trigger
-            - self._parameters.fahrenheit_hot_minimum
-        ):
-            self._current_values.fahrenheit_chiller.hot_hysteresis = Stamped(
-                value=self._parameters.fahrenheit_hot_trigger
-                - self._parameters.fahrenheit_hot_minimum,
-                timestamp=self._time(),
-            )
+        self._current_values.fahrenheit_chiller.mode = Stamped(
+            value=FahrenheitModeEnum.ON.value, timestamp=self._time()
+        )
+
+        self._current_values.fahrenheit_chiller.free_cooling_mode = Stamped(
+            value=FreeCoolingModeEnum.AUTO.value
+            if self._parameters.free_cooling_enabled
+            else FreeCoolingModeEnum.OFF.value,
+            timestamp=self._time(),
+        )
+
+        self._current_values.fahrenheit_chiller.available_seawater_temperature = Stamped(
+            value=cast(
+                Celsius,
+                sensor_values.fahrenheit_available_seawater_temperature.temperature.value,
+            ),
+            timestamp=self._time(),
+        )
+
+        self._current_values.fahrenheit_chiller.available_hot_temperature = Stamped(
+            value=cast(
+                Celsius,
+                sensor_values.fahrenheit_available_hot_temperature.temperature.value,
+            ),
+            timestamp=self._time(),
+        )
+
+        self._current_values.fahrenheit_chiller.available_cold_temperature = Stamped(
+            value=cast(
+                Celsius,
+                sensor_values.fahrenheit_available_cold_temperature.temperature.value,
+            ),
+            timestamp=self._time(),
+        )
+        self._current_values.fahrenheit_chiller.cold_minimum = Stamped(
+            value=self._parameters.fahrenheit_cold_minimum, timestamp=self._time()
+        )
+
+        self._current_values.fahrenheit_chiller.cold_hysteresis = Stamped(
+            value=self._parameters.fahrenheit_cold_trigger
+            - self._parameters.fahrenheit_cold_minimum,
+            timestamp=self._time(),
+        )
+        self._current_values.fahrenheit_chiller.hot_minimum = Stamped(
+            value=self._parameters.fahrenheit_hot_minimum, timestamp=self._time()
+        )
+        self._current_values.fahrenheit_chiller.hot_hysteresis = Stamped(
+            value=self._parameters.fahrenheit_hot_trigger
+            - self._parameters.fahrenheit_hot_minimum,
+            timestamp=self._time(),
+        )
