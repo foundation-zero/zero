@@ -49,6 +49,8 @@ sail_system_sensors = MessagingModule(
         sail_system.MizzenRunnerSb,
         sail_system.MizzenSheet,
         sail_system.MizzenVang,
+        sail_system.PrimaryWinchPs,
+        sail_system.PrimaryWinchSb,
         sail_system.StaysailSheetPs,
         sail_system.StaysailSheetSb,
         sail_system.StaysailSheetFeederPs,

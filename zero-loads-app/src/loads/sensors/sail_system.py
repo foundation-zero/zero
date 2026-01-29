@@ -220,11 +220,9 @@ class MizzenHalyard(CaptiveWinch, Load):
     lock_full: bool = Field(validation_alias="ox_IndctMzznHlyrdLckFh_Ext")
     lock_1: bool = Field(validation_alias="ox_IndctMzznHlyrdLck1_Ext")
     lock_2: bool = Field(validation_alias="ox_IndctMzznHlyrdLck2_Ext")
-    lock_3: bool = Field(validation_alias="ox_IndctMzznHlyrdLck3_Ext")
     overhoist_full: bool = Field(validation_alias="ox_IndctMzznHlyrdLckFhOvrhst_Ext")
     overhoist_1: bool = Field(validation_alias="ox_IndctMzznHlyrdLck1Ovrhst_Ext")
     overhoist_2: bool = Field(validation_alias="ox_IndctMzznHlyrdLck2Ovrhst_Ext")
-    overhoist_3: bool = Field(validation_alias="ox_IndctMzznHlyrdLck3Ovrhst_Ext")
     boom_lock_1: bool = Field(validation_alias="ox_IndctMzznBmRfLck1_Ext")
     boom_lock_2: bool = Field(validation_alias="ox_IndctMzznBmRfLck2_Ext")
 
