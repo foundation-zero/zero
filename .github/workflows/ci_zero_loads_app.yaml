@@ -57,7 +57,7 @@ jobs:
       - run: poetry install
         working-directory: data
       - name: Run services
-        run: docker compose --profile zero up -d --quiet-pull --wait
+        run: docker compose --profile loads up -d --quiet-pull --wait
       - name: Integration Test
         run: poetry run pytest --run=integration -vv
         working-directory: zero-loads-app
