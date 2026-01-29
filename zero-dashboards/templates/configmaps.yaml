@@ -1,0 +1,23 @@
+{{- /* Find all subdirectory names */ -}}
+{{- $subdirs := dict -}}
+{{- range $path, $_ := .Files.Glob "dashboards/**.json" -}}
+  {{- $folder := base (dir $path) -}}
+  {{- $_ := set $subdirs $folder $folder -}}
+{{- end -}}
+
+{{- /* Create a ConfigMap for each subdirectory */ -}}
+{{- range $dirName := $subdirs }}
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ printf "%s-%s" $.Release.Name $dirName | lower }}
+  namespace: {{ $.Release.Namespace }}
+  annotations:
+    grafana_dashboard_folder: {{ printf "/tmp/dashboards/%s" $dirName }}
+  labels:
+    grafana_dashboard: "1"
+data:
+  {{- /* Helper to pull all files from this specific subdirectory into the ConfigMap */ -}}
+  {{- ($.Files.Glob (printf "dashboards/%s/*.json" $dirName)).AsConfig | nindent 2 }}
+{{- end }}
