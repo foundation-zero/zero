@@ -55,10 +55,8 @@ jobs:
       - name: Unit Test
         run: poetry run pytest --run=unit -vv
         working-directory: zero-loads-app
-      - run: poetry install
-        working-directory: data
       - name: Run services
-        run: docker compose --profile zero up -d --quiet-pull --wait
+        run: docker compose --profile zero up -d --quiet-pull --wait postgres vernemq setup-postgres
       - name: Integration Test
         run: poetry run pytest --run=integration -vv
         working-directory: zero-loads-app
