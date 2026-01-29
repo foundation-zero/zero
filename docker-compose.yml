@@ -106,8 +106,6 @@ services:
   grafana:
     image: "grafana/grafana:12.3.0"
     command: []
-    expose:
-      - "3000"
     ports:
       - "3000:3000"
     depends_on: []
@@ -116,7 +114,7 @@ services:
       - "./grafana/grafana.ini:/etc/grafana/grafana.ini"
       - "./grafana/datasources.yaml:/etc/grafana/provisioning/datasources/datasources.yaml"
       - "./grafana/dashboards.yaml:/etc/grafana/provisioning/dashboards/dashboards.yaml"
-      - "./grafana/dashboards:/dashboards"
+      - "./zero-dashboards/dashboards:/dashboards"
     profiles:
       - zero
     environment: {}
