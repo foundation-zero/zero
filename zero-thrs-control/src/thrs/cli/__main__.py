@@ -5,6 +5,7 @@ import sys
 import asyncclick as click
 from asyncclick import BadParameter
 
+from thrs.cli.control import run_all
 from thrs.cli.simulation_controls import (
     SimulationControls,
     MODES,
@@ -36,6 +37,7 @@ async def simulate():
 @main.command()
 async def control():
     """Run the control modules"""
+    await run_all()
 
 
 @main.command()
