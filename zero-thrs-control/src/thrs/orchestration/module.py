@@ -25,7 +25,7 @@ class ModuleDescription[
     P: ThrsValues,
     M: ThrsValues,
 ]:
-    """Description of a module with sensor, control, and parameter models and the control & alarm logic"""
+    """Description of a module with sensor values, control values, control parameters and control mode models and the control & alarm logic"""
 
     def __init__(
         self,
@@ -39,6 +39,7 @@ class ModuleDescription[
         self.sensor_values_cls = sensor_values_cls
         self.control_values_cls = control_values_cls
         self.parameters_cls = parameters_cls
+        self.control_mode_cls = control_mode_cls
         self.control = control
         self.alarms = alarms
 

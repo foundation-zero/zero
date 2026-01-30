@@ -386,9 +386,9 @@ class SimulationStatusMessage(OutgoingMessage):
         return True
 
 
-class ControlStatusMessage[Mode](OutgoingMessage):
+class ControlModeMessage[ControlMode](OutgoingMessage):
     module: str
-    mode: SwitchingControlMode[Mode]
+    mode: SwitchingControlMode[ControlMode]
 
     @staticmethod
     def subscribe_topic() -> str:
@@ -440,7 +440,7 @@ class SimulationInputMessage[Inputs: ThrsValues](OutgoingMessage):
 
 OUTGOING_MESSAGES = [
     SimulationStatusMessage,
-    ControlStatusMessage,
+    ControlModeMessage,
     ParametersMessage,
     SimulationInputMessage,
 ]
@@ -575,7 +575,7 @@ class SetAutomationMessage(IncomingModuleMessage):
     async def handle(self, context: MessageContext):
         context.control.set_automation_mode(self.module, self.enabled)
         await context.send(
-            ControlStatusMessage(
+            ControlModeMessage(
                 module=self.module,
                 mode=context.control.mode_for(self.module),
             )
@@ -769,7 +769,7 @@ class SimulationControls:
             )
             for module in modules.modules:
                 await context.send(
-                    ControlStatusMessage(module=module, mode=control.mode_for(module))
+                    ControlModeMessage(module=module, mode=control.mode_for(module))
                 )
 
             executor = MqttExecutor(

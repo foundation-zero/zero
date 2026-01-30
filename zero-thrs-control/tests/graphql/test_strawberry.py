@@ -2,11 +2,13 @@ from datetime import datetime
 from unittest.mock import Mock
 from httpx import ASGITransport, AsyncClient
 import pytest
-from thrs.cli.simulation_controls import ControlStatusMessage, SimulationStatusMessage
+from thrs.cli.simulation_controls import ControlModeMessage, SimulationStatusMessage
 from thrs.control.modules.consumers import ConsumersParameters
 from thrs.control.modules.pcm import PcmParameters
-from thrs.control.modules.pvt import PvtParameters
-from thrs.control.modules.thrusters import ThrustersParameters
+from thrs.control.modules.pvt import PvtControlMode, PvtParameters
+from thrs.control.modules.pvt_group import PvtGroupControlMode
+from thrs.control.modules.thrusters import ThrustersControlMode, ThrustersParameters
+from thrs.control.switching import SwitchingControlMode
 from thrs.graphql.messaging import Messaging, MessagingModule
 from thrs.graphql.strawberry import (
     app,
@@ -52,14 +54,17 @@ async def override_thrusters_messaging():
     mock.sensor_values = ThrustersSensorValues.zero()
     mock.control_values = ThrustersControlValues.zero()
     mock.parameters = ThrustersParameters()
-    mock.control_status = ControlStatusMessage(module="thrusters", automatic=False)
+    mock.control_mode = ControlModeMessage(
+        module="thrusters",
+        mode=SwitchingControlMode(automatic_mode=ThrustersControlMode(mode="idle")),
+    )
 
     mock.simulation_inputs = ThrustersSimulationInputs.zero()
 
     async def wait(condition, *_args, timeout):
         return None
 
-    mock.wait_for_control_status.side_effect = wait
+    mock.wait_for_control_mode.side_effect = wait
     mock.wait_for_control_values.side_effect = wait
     mock.wait_for_parameters.side_effect = wait
     mock.wait_for_simulation_inputs.side_effect = wait
@@ -71,14 +76,23 @@ async def override_pvt_messaging():
     mock.sensor_values = PvtSensorValues.zero()
     mock.control_values = PvtControlValues.zero()
     mock.parameters = PvtParameters()
-    mock.control_status = ControlStatusMessage(module="pvt", automatic=False)
+    mock.control_mode = ControlModeMessage(
+        module="pvt",
+        mode=SwitchingControlMode(
+            automatic_mode=PvtControlMode(
+                aft=PvtGroupControlMode(mode="idle"),
+                fwd=PvtGroupControlMode(mode="idle"),
+                owners=PvtGroupControlMode(mode="idle"),
+            )
+        ),
+    )
 
     mock.simulation_inputs = PvtSimulationInputs.zero()
 
     async def wait(condition, *_args, timeout):
         return None
 
-    mock.wait_for_control_status.side_effect = wait
+    mock.wait_for_control_mode.side_effect = wait
     mock.wait_for_control_values.side_effect = wait
     mock.wait_for_parameters.side_effect = wait
     mock.wait_for_simulation_inputs.side_effect = wait
@@ -90,14 +104,16 @@ async def override_pcm_messaging():
     mock.sensor_values = PcmSensorValues.zero()
     mock.control_values = PcmControlValues.zero()
     mock.parameters = PcmParameters()
-    mock.control_status = ControlStatusMessage(module="pcm", automatic=False)
+    mock.control_mode = ControlModeMessage(
+        module="pcm", mode=SwitchingControlMode(automatic_mode=None)
+    )
 
     mock.simulation_inputs = PcmSimulationInputs.zero()
 
     async def wait(condition, *_args, timeout):
         return None
 
-    mock.wait_for_control_status.side_effect = wait
+    mock.wait_for_control_mode.side_effect = wait
     mock.wait_for_control_values.side_effect = wait
     mock.wait_for_parameters.side_effect = wait
     mock.wait_for_simulation_inputs.side_effect = wait
@@ -109,14 +125,16 @@ async def override_consumers_messaging():
     mock.sensor_values = ConsumersSensorValues.zero()
     mock.control_values = ConsumersControlValues.zero()
     mock.parameters = ConsumersParameters()
-    mock.control_status = ControlStatusMessage(module="consumers", automatic=False)
+    mock.control_mode = ControlModeMessage(
+        module="consumers", mode=SwitchingControlMode(automatic_mode=None)
+    )
 
     mock.simulation_inputs = ConsumersSimulationInputs.zero()
 
     async def wait(condition, *_args, timeout):
         return None
 
-    mock.wait_for_control_status.side_effect = wait
+    mock.wait_for_control_mode.side_effect = wait
     mock.wait_for_control_values.side_effect = wait
     mock.wait_for_parameters.side_effect = wait
     mock.wait_for_simulation_inputs.side_effect = wait
@@ -240,6 +258,83 @@ async def test_query_parameters(async_client):
     }
 
 
+async def test_query_control_mode(async_client):
+    app.dependency_overrides[messaging] = override_messaging
+    app.dependency_overrides[thrusters_messaging] = override_thrusters_messaging
+    app.dependency_overrides[pvt_messaging] = override_pvt_messaging
+    app.dependency_overrides[pcm_messaging] = override_pcm_messaging
+    app.dependency_overrides[consumers_messaging] = override_consumers_messaging
+    response = await async_client.post(
+        "/graphql",
+        json={
+            "query": """{
+                modules {
+                    thrusters {
+                        controlMode {
+                            automatic
+                            automaticMode {
+                                mode
+                            }
+                        }
+                    }
+                    pvt {
+                        controlMode {
+                            automatic
+                            automaticMode {
+                                fwd {
+                                    mode
+                                }
+                                aft {
+                                    mode
+                                }
+                                owners {
+                                    mode
+                                }
+                            }
+                        }
+                    }
+                    pcm {
+                        controlMode {
+                            automatic
+                            automaticMode{
+                                mode}
+                            }
+                    }
+                }
+            }"""
+        },
+    )
+    assert response.status_code == 200
+    assert response.json() == {
+        "data": {
+            "modules": {
+                "thrusters": {
+                    "controlMode": {
+                        "automatic": True,
+                        "automaticMode": {"mode": "idle"},
+                    },
+                },
+                "pvt": {
+                    "controlMode": {
+                        "automatic": True,
+                        "automaticMode": {
+                            "fwd": {"mode": "idle"},
+                            "aft": {"mode": "idle"},
+                            "owners": {"mode": "idle"},
+                        },
+                    },
+                },
+                "pcm": {
+                    "controlMode": {
+                        "automatic": False,
+                        "automaticMode": None,
+                    },
+                },
+            }
+        }
+    }
+
+
 async def test_query_simulation_inputs(async_client):
     app.dependency_overrides[messaging] = override_messaging
     app.dependency_overrides[thrusters_messaging] = override_thrusters_messaging
@@ -357,7 +452,9 @@ async def test_query_control_automation_mode(async_client):
             "query": """query {
             modules {
                 thrusters {
-                    automatic
+                    controlMode {
+                        automatic
+                    }
                 }
             }
         }"""
@@ -365,7 +462,9 @@ async def test_query_control_automation_mode(async_client):
     )
 
     assert response.status_code == 200
-    assert response.json() == {"data": {"modules": {"thrusters": {"automatic": False}}}}
+    assert response.json() == {
+        "data": {"modules": {"thrusters": {"controlMode": {"automatic": True}}}}
+    }
 
 
 async def test_mutation_simulation_play(async_client):

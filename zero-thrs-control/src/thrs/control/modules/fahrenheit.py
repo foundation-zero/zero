@@ -125,7 +125,7 @@ class FahrenheitControl(
             },
         ]
 
-        self.fahrenheit_state_machine = Machine(
+        self._state_machine = Machine(
             model=self,
             states=self._states,
             transitions=self._transitions,
@@ -163,17 +163,18 @@ class FahrenheitControl(
         self._recovery_controller.update_tuning(parameters.recovery_tuning)
         self._waste_cooling_controller.update_tuning(parameters.waste_cooling_tuning)
 
-    @staticmethod
-    def modes() -> list[str]:
-        return ["idle", "cooling", "free_cooling"]
+    def modes(self) -> list[str]:
+        return list(self._state_machine.states.keys())
 
-    @staticmethod
-    def initial_mode() -> str:
-        return "idle"
+    @property
+    def initial_mode(self) -> FahrenheitControlMode:
+        initial_mode: str = self._state_machine.initial  # type: ignore
+        return FahrenheitControlMode(mode=initial_mode)
 
     @property
     def mode(self) -> FahrenheitControlMode:
-        return FahrenheitControlMode(mode=self.state)  # type: ignore
+        mode: str = self.state  # type: ignore
+        return FahrenheitControlMode(mode=mode)
 
     def initial(self) -> ControlResult[FahrenheitControlValues]:
         return ControlResult(self._time(), self._current_values)

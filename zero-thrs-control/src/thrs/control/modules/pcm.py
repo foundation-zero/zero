@@ -152,7 +152,7 @@ class PcmControl(
             },
         ]
 
-        self.pcm_state_machine = Machine(
+        self._state_machine = Machine(
             model=self,
             states=self._states,
             transitions=self._transitions,
@@ -216,13 +216,18 @@ class PcmControl(
     def parameters(self) -> PcmParameters:
         return self._parameters
 
-    @staticmethod
-    def initial_mode() -> str:
-        return "idle"
+    def modes(self) -> list[str]:
+        return list(self._state_machine.states.keys())
+
+    @property
+    def initial_mode(self) -> PcmControlMode:
+        initial_mode: str = self._state_machine.initial  # type: ignore
+        return PcmControlMode(mode=initial_mode)
 
     @property
     def mode(self) -> PcmControlMode:
-        return PcmControlMode(mode=self.state)  # type: ignore
+        mode: str = self.state  # type: ignore
+        return PcmControlMode(mode=mode)
 
     def initial(self) -> ControlResult[PcmControlValues]:
         return ControlResult(self._time(), self._current_values)

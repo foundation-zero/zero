@@ -163,8 +163,14 @@ class ConsumersControl(
 
         return ControlResult(self._time(), self._current_values)
 
+    def modes(self) -> list[str]:
+        return []
+
+    def initial_mode(self) -> ConsumersControlMode:
+        return ConsumersControlMode()
+
     @property
-    def mode(self) -> ConsumersControlMode | None:
+    def mode(self) -> ConsumersControlMode:
         return ConsumersControlMode()
 
     @property

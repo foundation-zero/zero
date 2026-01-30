@@ -15,7 +15,12 @@ class EmptyMode(ThrsValues):
 class ManualControl[SensorValues: ThrsValues, ControlValues: ThrsValues](
     Control[SensorValues, ControlValues, EmptyParameters, EmptyMode]
 ):
-    def __init__(self, control_values: ControlValues, time_fn: Callable[[], datetime]):
+    def __init__(
+        self,
+        control_values: ControlValues,
+        time_fn: Callable[[], datetime],
+        parameters: EmptyParameters = EmptyParameters(),
+    ):
         self._control_values = control_values
         self._time_fn = time_fn
 

@@ -156,7 +156,11 @@ class SwitchingControlModeType[Mode]:
     def from_pydantic(
         cls, type, mode: SwitchingControlMode[Mode]
     ) -> "SwitchingControlModeType[Mode]":
-        return cls(automatic_mode=type.from_pydantic(mode.automatic_mode))
+        return cls(
+            automatic_mode=type.from_pydantic(mode.automatic_mode)
+            if mode.automatic_mode is not None
+            else None
+        )
 
     @strawberry.field
     def automatic(self) -> bool:
@@ -176,7 +180,6 @@ class Module[
     control_values: ControlValues | None
     parameters: Parameters | None
     simulation: ModuleSimulation[SimulationInput, SimulationOutput] | None = None
-    automatic: bool | None = None
     control_mode: SwitchingControlModeType[Mode] | None = None  # type: ignore
 
 
@@ -399,7 +402,7 @@ def add_automation_mode_mutation(
         ) -> bool:
             mod = messaging(info.context)
             await mod.set_automation_mode(automatic)
-            await mod.wait_for_control_status(automatic, timeout=2)
+            await mod.wait_for_control_mode(automatic, timeout=2)
             return True
 
         mutation = strawberry.mutation(set_automation_mode)

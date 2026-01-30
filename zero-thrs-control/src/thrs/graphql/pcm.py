@@ -129,9 +129,9 @@ def resolve_module(
         ),
         control_mode=(
             SwitchingControlModeType.from_pydantic(
-                PcmControlModeType, module.control_status.mode
+                PcmControlModeType, module.control_mode.mode
             )
-            if module.control_status
+            if module.control_mode
             else None
         ),
     )

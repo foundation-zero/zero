@@ -1,4 +1,6 @@
 from pytest import approx
+from thrs.control.modules.pvt import PvtControlMode
+from thrs.control.modules.pvt_group import PvtGroupControlMode
 from thrs.input_output.base import Stamped
 from thrs.input_output.definitions.control import Valve
 from thrs.input_output.modules.pvt import (
@@ -42,9 +44,11 @@ async def test_recovery(control, executor):
         control_values = control.control(result.sensor_values).values
         result = await executor.tick(control_values)
 
-    assert control._main_aft_control.mode == "recovery"
-    assert control._main_fwd_control.mode == "recovery"
-    assert control._owners_control.mode == "recovery"
+    assert control.mode == PvtControlMode(
+        aft=PvtGroupControlMode(mode="recovery"),
+        fwd=PvtGroupControlMode(mode="recovery"),
+        owners=PvtGroupControlMode(mode="recovery"),
+    )
 
     assert (
         result.sensor_values.pvt_temperature_main_aft_return.temperature.value

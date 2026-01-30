@@ -10,6 +10,7 @@ from tests.orchestration.simples import (
     SimpleControl,
     SimpleExecutor,
     SimpleInOut,
+    SimpleMode,
     SimpleParameters,
 )
 from thrs.input_output.base import (
@@ -49,6 +50,7 @@ async def test_mqtt_executor(mqtt_client, mqtt_client2):
                     SimpleInOut,
                     SimpleParameters,
                     SimpleControl,
+                    SimpleMode,
                     SimpleAlarms,
                 )
             },

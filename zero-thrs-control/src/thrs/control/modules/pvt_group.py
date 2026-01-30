@@ -1,5 +1,5 @@
 from datetime import datetime
-from typing import Callable, Literal
+from typing import Callable
 
 from pydantic import model_validator
 from transitions import Machine, State
@@ -109,7 +109,7 @@ class PvtGroupControl(
             },
         ]
 
-        self._pvt_group_state_machine = Machine(
+        self._state_machine = Machine(
             model=self,
             states=self._states,
             transitions=self._transitions,
@@ -139,17 +139,18 @@ class PvtGroupControl(
     def current_values(self) -> PvtGroupControlValues:
         return self._current_values
 
-    @staticmethod
-    def modes() -> list[str]:
-        return ["idle", "recovery"]
-
-    @staticmethod
-    def initial_mode() -> str:
-        return "idle"
+    def modes(self) -> list[str]:
+        return list(self._state_machine.states.keys())
 
     @property
-    def mode(self) -> Literal["idle", "recovery"]:
-        return PvtGroupControlMode(mode=self.state)  # type: ignore
+    def initial_mode(self) -> PvtGroupControlMode:
+        initial_mode: str = self._state_machine.initial  # type: ignore
+        return PvtGroupControlMode(mode=initial_mode)
+
+    @property
+    def mode(self) -> PvtGroupControlMode:
+        mode: str = self.state  # type: ignore
+        return PvtGroupControlMode(mode=mode)
 
     def update_parameters(self, parameters: PvtGroupParameters):
         pass

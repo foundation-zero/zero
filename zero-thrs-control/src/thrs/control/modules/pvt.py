@@ -1,5 +1,5 @@
 from datetime import datetime
-from typing import Annotated, Callable, Literal
+from typing import Annotated, Callable
 from pydantic import Field, model_validator
 
 from thrs.classes.control import Control, ControlResult
@@ -161,16 +161,24 @@ class PvtControl(
         return self._parameters
 
     @property
-    def mode(self) -> Literal[""]:
-        return ""
+    def mode(self) -> PvtControlMode:
+        return PvtControlMode(
+            fwd=PvtGroupControlMode(mode=self._main_fwd_control.mode.mode),
+            aft=PvtGroupControlMode(mode=self._main_aft_control.mode.mode),
+            owners=PvtGroupControlMode(mode=self._owners_control.mode.mode),
+        )
 
     @staticmethod
     def modes() -> list[str]:
         return [""]
 
-    @staticmethod
-    def initial_mode() -> str:
-        return ""
+    @property
+    def initial_mode(self) -> PvtControlMode:
+        return PvtControlMode(
+            fwd=self._main_fwd_control.initial_mode,
+            aft=self._main_aft_control.initial_mode,
+            owners=self._owners_control.initial_mode,
+        )
 
     def initial(self) -> ControlResult[PvtControlValues]:
         return ControlResult(self._time(), self._current_values)
