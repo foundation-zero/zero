@@ -68,21 +68,21 @@ class ConsumersControl(
         self._boosting_flow_controller = Controller[Ratio, LMin](
             _INITIAL_CONTROL_VALUES.consumers_flowcontrol_boosting.setpoint.value,
             0.0,
-            parameters.boosting_flow_balance_tuning,
+            lambda: self._parameters.boosting_flow_balance_tuning,
             self._time,
         )
 
         self._bypass_flow_controller = Controller[Ratio, LMin](
             _INITIAL_CONTROL_VALUES.consumers_flowcontrol_bypass.setpoint.value,
             0.0,
-            parameters.bypass_flow_balance_tuning,
+            lambda: self._parameters.bypass_flow_balance_tuning,
             self._time,
         )
 
         self._fahrenheit_flow_controller = Controller[Ratio, LMin](
             _INITIAL_CONTROL_VALUES.consumers_flowcontrol_fahrenheit.setpoint.value,
             0.0,
-            parameters.fahrenheit_flow_balance_tuning,
+            lambda: self._parameters.fahrenheit_flow_balance_tuning,
             self._time,
         )
 
@@ -177,7 +177,7 @@ class ConsumersControl(
         return self._parameters
 
     def update_parameters(self, parameters: ConsumersParameters):
-        pass
+        self._parameters = parameters
 
 
 class ConsumersAlarms(BaseAlarms):

@@ -161,35 +161,35 @@ class PcmControl(
         self._pump_flow_controller = Controller[Ratio, LMin](
             _INITIAL_CONTROL_VALUES.pcm_pump.dutypoint.value,
             0,
-            parameters.pump_tuning,
+            lambda: self._parameters.pump_tuning,
             self._time,
         )
 
         self.module_1_flow_controller = Controller[Ratio, LMin](
             _INITIAL_CONTROL_VALUES.pcm_flowcontrol_module_1.setpoint.value,
             0,
-            parameters.module_1_flow_balance_tuning,
+            lambda: self._parameters.module_1_flow_balance_tuning,
             self._time,
         )
 
         self.module_2_flow_controller = Controller[Ratio, LMin](
             _INITIAL_CONTROL_VALUES.pcm_flowcontrol_module_2.setpoint.value,
             0,
-            parameters.module_2_flow_balance_tuning,
+            lambda: self._parameters.module_2_flow_balance_tuning,
             self._time,
         )
 
         self.module_3_flow_controller = Controller[Ratio, LMin](
             _INITIAL_CONTROL_VALUES.pcm_flowcontrol_module_3.setpoint.value,
             0,
-            parameters.module_3_flow_balance_tuning,
+            lambda: self._parameters.module_3_flow_balance_tuning,
             self._time,
         )
 
         self.module_4_flow_controller = Controller[Ratio, LMin](
             _INITIAL_CONTROL_VALUES.pcm_flowcontrol_module_4.setpoint.value,
             0,
-            parameters.module_4_flow_balance_tuning,
+            lambda: self._parameters.module_4_flow_balance_tuning,
             self._time,
         )
 
@@ -232,7 +232,7 @@ class PcmControl(
         return ControlResult(self._time(), self._current_values)
 
     def update_parameters(self, parameters: PcmParameters):
-        pass
+        self._parameters = parameters
 
     def control(self, sensor_values: PcmSensorValues) -> ControlResult:
         self._try_supplying(sensor_values) if self.mode.is_idle else None  # type: ignore

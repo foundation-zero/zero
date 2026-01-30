@@ -134,21 +134,21 @@ class FahrenheitControl(
         self._hot_mix_controller = Controller[Ratio, Celsius](
             _INITIAL_CONTROL_VALUES.fahrenheit_mix_hot.setpoint.value,
             0,
-            parameters.hot_mix_tuning,
+            lambda: self._parameters.hot_mix_tuning,
             self._time,
         )
 
         self._recovery_controller = Controller[Ratio, Celsius](
             _INITIAL_CONTROL_VALUES.fahrenheit_mix_waste.setpoint.value,
             0,
-            parameters.recovery_tuning,
+            lambda: self._parameters.recovery_tuning,
             self._time,
         )
 
         self._waste_cooling_controller = Controller[Ratio, Celsius](
             _INITIAL_CONTROL_VALUES.fahrenheit_flowcontrol_waste.setpoint.value,
             0,
-            parameters.waste_cooling_tuning,
+            lambda: self._parameters.waste_cooling_tuning,
             self._time,
         )
 
@@ -158,9 +158,6 @@ class FahrenheitControl(
 
     def update_parameters(self, parameters: FahrenheitParameters) -> None:
         self._parameters = parameters
-        self._hot_mix_controller.update_tuning(parameters.hot_mix_tuning)
-        self._recovery_controller.update_tuning(parameters.recovery_tuning)
-        self._waste_cooling_controller.update_tuning(parameters.waste_cooling_tuning)
 
     def modes(self) -> list[str]:
         return list(self._state_machine.states.keys())
