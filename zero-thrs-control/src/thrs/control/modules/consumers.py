@@ -27,22 +27,21 @@ class ConsumersParameters(ThrsValues):
     fahrenheit_flow_balance_tuning: Tuning = (0.01, 0.001, 0)
 
 
-_ZERO_TIME = datetime.fromtimestamp(0)
 _INITIAL_CONTROL_VALUES = ConsumersControlValues(
     consumers_flowcontrol_bypass=Valve(
-        setpoint=Stamped(value=Valve.OPEN, timestamp=_ZERO_TIME)
+        setpoint=Stamped(value=Valve.OPEN, timestamp=datetime.now())
     ),
     consumers_flowcontrol_boosting=Valve(
-        setpoint=Stamped(value=Valve.OPEN, timestamp=_ZERO_TIME)
+        setpoint=Stamped(value=Valve.OPEN, timestamp=datetime.now())
     ),
     consumers_flowcontrol_fahrenheit=Valve(
-        setpoint=Stamped(value=Valve.OPEN, timestamp=_ZERO_TIME)
+        setpoint=Stamped(value=Valve.OPEN, timestamp=datetime.now())
     ),
     consumers_switch_fahrenheit_exchanger=Valve(
-        setpoint=Stamped(value=Valve.OPEN, timestamp=_ZERO_TIME)
+        setpoint=Stamped(value=Valve.OPEN, timestamp=datetime.now())
     ),
     consumers_switch_boosting=Valve(
-        setpoint=Stamped(value=Valve.OPEN, timestamp=_ZERO_TIME)
+        setpoint=Stamped(value=Valve.OPEN, timestamp=datetime.now())
     ),
 )
 

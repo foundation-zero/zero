@@ -25,37 +25,36 @@ class PcmParameters(ThrsValues):
     module_4_flow_balance_tuning: Tuning = (0.05, 0.01, 0)
 
 
-_ZERO_TIME = datetime.fromtimestamp(0)
 _INITIAL_CONTROL_VALUES = PcmControlValues(
     pcm_pump=Pump(
-        dutypoint=Stamped(value=0, timestamp=_ZERO_TIME),
-        on=Stamped(value=False, timestamp=_ZERO_TIME),
+        dutypoint=Stamped(value=0, timestamp=datetime.now()),
+        on=Stamped(value=False, timestamp=datetime.now()),
     ),
     pcm_switch_charging_return=Valve(
-        setpoint=Stamped(value=Valve.CLOSED, timestamp=_ZERO_TIME)
+        setpoint=Stamped(value=Valve.CLOSED, timestamp=datetime.now())
     ),
     pcm_flowcontrol_module_1=Valve(
-        setpoint=Stamped(value=Valve.OPEN, timestamp=_ZERO_TIME)
+        setpoint=Stamped(value=Valve.OPEN, timestamp=datetime.now())
     ),
     pcm_flowcontrol_module_2=Valve(
-        setpoint=Stamped(value=Valve.OPEN, timestamp=_ZERO_TIME)
+        setpoint=Stamped(value=Valve.OPEN, timestamp=datetime.now())
     ),
     pcm_flowcontrol_module_3=Valve(
-        setpoint=Stamped(value=Valve.OPEN, timestamp=_ZERO_TIME)
+        setpoint=Stamped(value=Valve.OPEN, timestamp=datetime.now())
     ),
     pcm_flowcontrol_module_4=Valve(
-        setpoint=Stamped(value=Valve.OPEN, timestamp=_ZERO_TIME)
+        setpoint=Stamped(value=Valve.OPEN, timestamp=datetime.now())
     ),
     pcm_switch_discharging=Valve(
-        setpoint=Stamped(value=Valve.CLOSED, timestamp=_ZERO_TIME)
+        setpoint=Stamped(value=Valve.CLOSED, timestamp=datetime.now())
     ),
     pcm_switch_charging_supply=Valve(
-        setpoint=Stamped(value=Valve.CLOSED, timestamp=_ZERO_TIME)
+        setpoint=Stamped(value=Valve.CLOSED, timestamp=datetime.now())
     ),
     pcm_switch_consumers=Valve(
-        setpoint=Stamped(value=Valve.OPEN, timestamp=_ZERO_TIME)
+        setpoint=Stamped(value=Valve.OPEN, timestamp=datetime.now())
     ),
-    pcm_module_1=Pcm(on=Stamped(value=False, timestamp=_ZERO_TIME)),
+    pcm_module_1=Pcm(on=Stamped(value=False, timestamp=datetime.now())),
 )
 
 

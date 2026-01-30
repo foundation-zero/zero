@@ -61,39 +61,38 @@ class ThrustersParameters(ThrsValues):
         return self
 
 
-_ZERO_TIME = datetime.fromtimestamp(0)
 _INITIAL_CONTROL_VALUES = ThrustersControlValues(
     thrusters_pump_1=Pump(
-        dutypoint=Stamped(value=0.0, timestamp=_ZERO_TIME),
-        on=Stamped(value=False, timestamp=_ZERO_TIME),
+        dutypoint=Stamped(value=0.0, timestamp=datetime.now()),
+        on=Stamped(value=False, timestamp=datetime.now()),
     ),
     thrusters_pump_2=Pump(
-        dutypoint=Stamped(value=0.0, timestamp=_ZERO_TIME),
-        on=Stamped(value=False, timestamp=_ZERO_TIME),
+        dutypoint=Stamped(value=0.0, timestamp=datetime.now()),
+        on=Stamped(value=False, timestamp=datetime.now()),
     ),
     thrusters_mix_recovery=Valve(
-        setpoint=Stamped(value=Valve.MIXING_B_TO_AB, timestamp=_ZERO_TIME)
+        setpoint=Stamped(value=Valve.MIXING_B_TO_AB, timestamp=datetime.now())
     ),
     thrusters_mix_exchanger=Valve(
         setpoint=Stamped(
             value=Valve.MIXING_A_TO_AB,
-            timestamp=_ZERO_TIME,
+            timestamp=datetime.now(),
         )
     ),
     thrusters_flowcontrol_aft=Valve(
-        setpoint=Stamped(value=Valve.CLOSED, timestamp=_ZERO_TIME)
+        setpoint=Stamped(value=Valve.CLOSED, timestamp=datetime.now())
     ),
     thrusters_flowcontrol_fwd=Valve(
-        setpoint=Stamped(value=Valve.CLOSED, timestamp=_ZERO_TIME)
+        setpoint=Stamped(value=Valve.CLOSED, timestamp=datetime.now())
     ),
     thrusters_shutoff_recovery=Valve(
-        setpoint=Stamped(value=Valve.OPEN, timestamp=_ZERO_TIME)
+        setpoint=Stamped(value=Valve.OPEN, timestamp=datetime.now())
     ),
     thrusters_switch_aft=Valve(
-        setpoint=Stamped(value=Valve.SWITCH_BRANCH, timestamp=_ZERO_TIME)
+        setpoint=Stamped(value=Valve.SWITCH_BRANCH, timestamp=datetime.now())
     ),
     thrusters_switch_fwd=Valve(
-        setpoint=Stamped(value=Valve.SWITCH_BRANCH, timestamp=_ZERO_TIME)
+        setpoint=Stamped(value=Valve.SWITCH_BRANCH, timestamp=datetime.now())
     ),
 )
 

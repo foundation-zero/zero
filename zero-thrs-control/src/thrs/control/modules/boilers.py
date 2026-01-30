@@ -29,66 +29,65 @@ class BoilersParameters(ThrsValues):
     lt1_flow_tuning: Tuning = (0.01, 0.001, 0.0)
 
 
-_ZERO_TIME = datetime.fromtimestamp(0)
 _INITIAL_CONTROL_VALUES = BoilersControlValues(
     boilers_pump=control.Pump(
-        dutypoint=Stamped(value=0.0, timestamp=_ZERO_TIME),
-        on=Stamped(value=False, timestamp=_ZERO_TIME),
+        dutypoint=Stamped(value=0.0, timestamp=datetime.now()),
+        on=Stamped(value=False, timestamp=datetime.now()),
     ),
     boilers_heatpump=control.HeatPump(
-        on=Stamped(value=False, timestamp=_ZERO_TIME),
-        temperature_setpoint=Stamped(value=50.0, timestamp=_ZERO_TIME),
+        on=Stamped(value=False, timestamp=datetime.now()),
+        temperature_setpoint=Stamped(value=50.0, timestamp=datetime.now()),
     ),
     boilers_flowcontrol_lt2=control.Valve(
-        setpoint=Stamped(value=0.5, timestamp=_ZERO_TIME)
+        setpoint=Stamped(value=0.5, timestamp=datetime.now())
     ),
     boilers_flowcontrol_lt1=control.Valve(
-        setpoint=Stamped(value=0.5, timestamp=_ZERO_TIME)
+        setpoint=Stamped(value=0.5, timestamp=datetime.now())
     ),
     boilers_switch_tank3_fill=control.Valve(
-        setpoint=Stamped(value=0.0, timestamp=_ZERO_TIME)
+        setpoint=Stamped(value=0.0, timestamp=datetime.now())
     ),
     boilers_switch_tank3_boosting_return=control.Valve(
-        setpoint=Stamped(value=0.0, timestamp=_ZERO_TIME)
+        setpoint=Stamped(value=0.0, timestamp=datetime.now())
     ),
     boilers_switch_tank3_empty=control.Valve(
-        setpoint=Stamped(value=0.0, timestamp=_ZERO_TIME)
+        setpoint=Stamped(value=0.0, timestamp=datetime.now())
     ),
     boilers_switch_tank3_boosting_supply=control.Valve(
-        setpoint=Stamped(value=0.0, timestamp=_ZERO_TIME)
+        setpoint=Stamped(value=0.0, timestamp=datetime.now())
     ),
     boilers_switch_tank2_fill=control.Valve(
-        setpoint=Stamped(value=0.0, timestamp=_ZERO_TIME)
+        setpoint=Stamped(value=0.0, timestamp=datetime.now())
     ),
     boilers_switch_tank2_boosting_return=control.Valve(
-        setpoint=Stamped(value=0.0, timestamp=_ZERO_TIME)
+        setpoint=Stamped(value=0.0, timestamp=datetime.now())
     ),
     boilers_switch_tank2_empty=control.Valve(
-        setpoint=Stamped(value=0.0, timestamp=_ZERO_TIME)
+        setpoint=Stamped(value=0.0, timestamp=datetime.now())
     ),
     boilers_switch_tank2_boosting_supply=control.Valve(
-        setpoint=Stamped(value=0.0, timestamp=_ZERO_TIME)
+        setpoint=Stamped(value=0.0, timestamp=datetime.now())
     ),
     boilers_switch_tank1_fill=control.Valve(
-        setpoint=Stamped(value=0.0, timestamp=_ZERO_TIME)
+        setpoint=Stamped(value=0.0, timestamp=datetime.now())
     ),
     boilers_switch_tank1_boosting_return=control.Valve(
-        setpoint=Stamped(value=0.0, timestamp=_ZERO_TIME)
+        setpoint=Stamped(value=0.0, timestamp=datetime.now())
     ),
     boilers_switch_tank1_empty=control.Valve(
-        setpoint=Stamped(value=0.0, timestamp=_ZERO_TIME)
+        setpoint=Stamped(value=0.0, timestamp=datetime.now())
     ),
     boilers_switch_tank1_boosting_supply=control.Valve(
-        setpoint=Stamped(value=0.0, timestamp=_ZERO_TIME)
+        setpoint=Stamped(value=0.0, timestamp=datetime.now())
     ),
     boilers_switch_low_temperature=control.Valve(
-        setpoint=Stamped(value=0.0, timestamp=_ZERO_TIME)
+        setpoint=Stamped(value=0.0, timestamp=datetime.now())
     ),
     boilers_switch_heatpump=control.Valve(
-        setpoint=Stamped(value=0.0, timestamp=_ZERO_TIME)
+        setpoint=Stamped(value=0.0, timestamp=datetime.now())
     ),
     boilers_switch_high_temperature=control.Valve(
-        setpoint=Stamped(value=0.0, timestamp=_ZERO_TIME)
+        setpoint=Stamped(value=0.0, timestamp=datetime.now())
     ),
 )
 

@@ -65,36 +65,41 @@ class PvtParameters(ThrsValues):
         return self
 
 
-_ZERO_TIME = datetime.fromtimestamp(0)
 _INITIAL_CONTROL_VALUES = PvtControlValues(
     pvt_pump_main_fwd=Pump(
-        dutypoint=Stamped(value=0.0, timestamp=_ZERO_TIME),
-        on=Stamped(value=False, timestamp=_ZERO_TIME),
+        dutypoint=Stamped(value=0.0, timestamp=datetime.now()),
+        on=Stamped(value=False, timestamp=datetime.now()),
     ),
     pvt_pump_main_aft=Pump(
-        dutypoint=Stamped(value=0.0, timestamp=_ZERO_TIME),
-        on=Stamped(value=False, timestamp=_ZERO_TIME),
+        dutypoint=Stamped(value=0.0, timestamp=datetime.now()),
+        on=Stamped(value=False, timestamp=datetime.now()),
     ),
     pvt_pump_owners=Pump(
-        dutypoint=Stamped(value=0.0, timestamp=_ZERO_TIME),
-        on=Stamped(value=False, timestamp=_ZERO_TIME),
+        dutypoint=Stamped(value=0.0, timestamp=datetime.now()),
+        on=Stamped(value=False, timestamp=datetime.now()),
     ),
     pvt_mix_main_fwd=Valve(
-        setpoint=Stamped(value=Valve.MIXING_B_TO_AB, timestamp=_ZERO_TIME)
+        setpoint=Stamped(value=Valve.MIXING_B_TO_AB, timestamp=datetime.now())
     ),
     pvt_mix_main_aft=Valve(
-        setpoint=Stamped(value=Valve.MIXING_B_TO_AB, timestamp=_ZERO_TIME)
+        setpoint=Stamped(value=Valve.MIXING_B_TO_AB, timestamp=datetime.now())
     ),
     pvt_mix_owners=Valve(
-        setpoint=Stamped(value=Valve.MIXING_B_TO_AB, timestamp=_ZERO_TIME)
+        setpoint=Stamped(value=Valve.MIXING_B_TO_AB, timestamp=datetime.now())
     ),
-    pvt_switch_main_fwd=Valve(setpoint=Stamped(value=Valve.OPEN, timestamp=_ZERO_TIME)),
-    pvt_switch_main_aft=Valve(setpoint=Stamped(value=Valve.OPEN, timestamp=_ZERO_TIME)),
-    pvt_switch_owners=Valve(setpoint=Stamped(value=Valve.OPEN, timestamp=_ZERO_TIME)),
+    pvt_switch_main_fwd=Valve(
+        setpoint=Stamped(value=Valve.OPEN, timestamp=datetime.now())
+    ),
+    pvt_switch_main_aft=Valve(
+        setpoint=Stamped(value=Valve.OPEN, timestamp=datetime.now())
+    ),
+    pvt_switch_owners=Valve(
+        setpoint=Stamped(value=Valve.OPEN, timestamp=datetime.now())
+    ),
     pvt_mix_exchanger=Valve(
         setpoint=Stamped(
             value=Valve.MIXING_A_TO_AB,
-            timestamp=_ZERO_TIME,
+            timestamp=datetime.now(),
         )
     ),
 )

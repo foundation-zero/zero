@@ -35,30 +35,29 @@ class FahrenheitParameters(ThrsValues):
     free_cooling_enabled: bool = True
 
 
-_ZERO_TIME = datetime.fromtimestamp(0)
 _INITIAL_CONTROL_VALUES = FahrenheitControlValues(
     fahrenheit_flowcontrol_waste=Valve(
-        setpoint=Stamped(value=Valve.CLOSED, timestamp=_ZERO_TIME)
+        setpoint=Stamped(value=Valve.CLOSED, timestamp=datetime.now())
     ),
     fahrenheit_mix_hot=Valve(
-        setpoint=Stamped(value=Valve.MIXING_A_TO_AB, timestamp=_ZERO_TIME)
+        setpoint=Stamped(value=Valve.MIXING_A_TO_AB, timestamp=datetime.now())
     ),
     fahrenheit_mix_waste=Valve(
-        setpoint=Stamped(value=Valve.MIXING_A_TO_AB, timestamp=_ZERO_TIME)
+        setpoint=Stamped(value=Valve.MIXING_A_TO_AB, timestamp=datetime.now())
     ),
     fahrenheit_chiller=Fahrenheit(
-        enable=Stamped(value=False, timestamp=_ZERO_TIME),
-        mode=Stamped(value=FahrenheitMode.OFF, timestamp=_ZERO_TIME),
-        cooling_setpoint=Stamped(value=17.0, timestamp=_ZERO_TIME),
-        free_cooling_mode=Stamped(value=FreeCoolingMode.AUTO, timestamp=_ZERO_TIME),
-        available_seawater_temperature=Stamped(value=20.0, timestamp=_ZERO_TIME),
-        available_hot_temperature=Stamped(value=20.0, timestamp=_ZERO_TIME),
-        available_cold_temperature=Stamped(value=20.0, timestamp=_ZERO_TIME),
-        cold_minimum=Stamped(value=15.0, timestamp=_ZERO_TIME),
-        hot_minimum=Stamped(value=53.0, timestamp=_ZERO_TIME),
-        cold_hysteresis=Stamped(value=2.0, timestamp=_ZERO_TIME),
-        hot_hysteresis=Stamped(value=2.0, timestamp=_ZERO_TIME),
-        tank_control_mode=Stamped(value=TankControlMode.BOTH, timestamp=_ZERO_TIME),
+        enable=Stamped(value=False, timestamp=datetime.now()),
+        mode=Stamped(value=FahrenheitMode.OFF, timestamp=datetime.now()),
+        cooling_setpoint=Stamped(value=17.0, timestamp=datetime.now()),
+        free_cooling_mode=Stamped(value=FreeCoolingMode.AUTO, timestamp=datetime.now()),
+        available_seawater_temperature=Stamped(value=20.0, timestamp=datetime.now()),
+        available_hot_temperature=Stamped(value=20.0, timestamp=datetime.now()),
+        available_cold_temperature=Stamped(value=20.0, timestamp=datetime.now()),
+        cold_minimum=Stamped(value=15.0, timestamp=datetime.now()),
+        hot_minimum=Stamped(value=53.0, timestamp=datetime.now()),
+        cold_hysteresis=Stamped(value=2.0, timestamp=datetime.now()),
+        hot_hysteresis=Stamped(value=2.0, timestamp=datetime.now()),
+        tank_control_mode=Stamped(value=TankControlMode.BOTH, timestamp=datetime.now()),
     ),
 )
 

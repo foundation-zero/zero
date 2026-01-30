@@ -48,14 +48,12 @@ class PvtGroupParameters(ThrsValues):
         return self
 
 
-_ZERO_TIME = datetime.fromtimestamp(0)
-
 _INITIAL_CONTROL_VALUES = PvtGroupControlValues(
     pump=Pump(
-        dutypoint=Stamped(value=0.0, timestamp=_ZERO_TIME),
-        on=Stamped(value=False, timestamp=_ZERO_TIME),
+        dutypoint=Stamped(value=0.0, timestamp=datetime.now()),
+        on=Stamped(value=False, timestamp=datetime.now()),
     ),
-    mix=Valve(setpoint=Stamped(value=Valve.MIXING_B_TO_AB, timestamp=_ZERO_TIME)),
+    mix=Valve(setpoint=Stamped(value=Valve.MIXING_B_TO_AB, timestamp=datetime.now())),
 )
 
 
