@@ -1,3 +1,5 @@
+import { SailId } from "../lib/consts.sails";
+
 export type ReferenceThresholds = {
   warningLow: number;
   warningHigh: number;
@@ -85,8 +87,8 @@ export type SailPositionGroup = {
 };
 
 export type SailPosition = {
-  sails: Sail[];
-  positionId?: PositionId;
+  sails: Sail<SailId>[];
+  position: PositionId;
 };
 
 export type Sail<SailId extends string = string> = {
@@ -100,5 +102,7 @@ export type MastLock = {
   locked: MastLockState;
   overhoist: MastLockState;
 };
+
+export type SailSelection = Record<PositionId, SailId | null>;
 
 export type MastLockState = boolean | "error";

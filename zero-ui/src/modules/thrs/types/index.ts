@@ -169,10 +169,6 @@ export type THRSModule<TDefinition extends ModuleDefinition = ModuleDefinition> 
   sensorValues: ExtractSensorValues<TDefinition["sensorValues"]>;
   controlValues: ExtractControlValues<TDefinition["controlValues"]>;
   parameters: ExtractParameterValues<TDefinition["parameters"]>;
-  simulation: {
-    inputs: ExtractSimulationValues<TDefinition["simulation"]["inputs"]>;
-    outputs: ExtractSimulationValues<TDefinition["simulation"]["outputs"]>;
-  };
 };
 
 export type ModuleDefinition<

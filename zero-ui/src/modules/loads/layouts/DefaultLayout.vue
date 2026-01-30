@@ -1,15 +1,12 @@
 <script setup lang="ts">
-import Button from "@/components/ui/button/Button.vue";
 import TopNavToolbar from "@/modules/common/components/top-nav/TopNavToolbar.vue";
 import { toRefs } from "vue";
-import { useI18n } from "vue-i18n";
 import TopNav from "../../common/components/top-nav/TopNav.vue";
 import { AWASelector } from "../components/awa-selector";
 import { AWSSelector } from "../components/aws-selector";
 import NavTabs from "../components/NavTabs.vue";
+import SailSelector from "../components/SailSelector.vue";
 import { useVariablesStore } from "../stores/variables";
-
-const { t } = useI18n();
 
 const { selectedAWA, selectedAWS } = toRefs(useVariablesStore());
 const { setAWA, setAWS } = useVariablesStore();
@@ -24,7 +21,7 @@ const { setAWA, setAWS } = useVariablesStore();
   <TopNav>
     <TopNavToolbar>
       <template #left>
-        <Button>{{ t("views.loads.main.editSailset") }}</Button>
+        <SailSelector />
         <NavTabs class="ml-4" />
       </template>
       <template #right-content>

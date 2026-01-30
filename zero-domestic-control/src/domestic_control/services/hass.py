@@ -137,7 +137,9 @@ class Hass:
         set_value = number.get_service("set_value")
         if set_value is None:
             raise Exception("unable to find set_value service")
-        logger.info(f"sending {lighting_group.level} to input_number.{id_to_hass_id(lighting_group.id)}")
+        logger.info(
+            f"sending {lighting_group.level} to input_number.{id_to_hass_id(lighting_group.id)}"
+        )
         await set_value.async_trigger(
             value=lighting_group.level * 100,  # hass uses 0..100
             entity_id=f"input_number.{id_to_hass_id(lighting_group.id)}",
@@ -146,7 +148,11 @@ class Hass:
     async def set_lighting_group_all(self, level: float):
         async with TaskGroup() as tg:
             for lighting_group_id in _LIGHT_GROUP_IDS.keys():
-                tg.create_task(self.set_lighting_group(LightingGroup(id=lighting_group_id, level=level)))
+                tg.create_task(
+                    self.set_lighting_group(
+                        LightingGroup(id=lighting_group_id, level=level)
+                    )
+                )
 
     async def set_blind(self, blind: Blind):
         self.validate_blind_group_ids([blind.id])
@@ -157,7 +163,9 @@ class Hass:
         if set_cover_position is None:
             raise Exception("unable to find set_cover_position service")
         logger.info(f"sending {blind.level} to cover.{id_to_hass_id(blind.id)}")
-        await set_cover_position.async_trigger(position=blind.level * 100, entity_id=f"cover.{id_to_hass_id(blind.id)}")
+        await set_cover_position.async_trigger(
+            position=blind.level * 100, entity_id=f"cover.{id_to_hass_id(blind.id)}"
+        )
 
     def validate_lighting_group_ids(self, ids: list[str]):
         if invalid := set(ids) - set(_LIGHT_GROUP_IDS):
@@ -170,7 +178,9 @@ class Hass:
     @asynccontextmanager
     @staticmethod
     async def init_from_settings(settings: Settings):
-        client = HassClient(settings.home_assistant_url, settings.home_assistant_token, use_async=True)
+        client = HassClient(
+            settings.home_assistant_url, settings.home_assistant_token, use_async=True
+        )
         async with client:
             yield Hass(client)
 
@@ -227,19 +237,26 @@ class HassControl:
                 if event.data["entity_id"].startswith("input_number."):
                     number_change = InputNumberChanged(**event.data)
                     if (
-                        number_change.id in _LIGHT_GROUP_IDS.keys() and number_change.id is not None
+                        number_change.id in _LIGHT_GROUP_IDS.keys()
+                        and number_change.id is not None
                     ):  # is not None check superfluous, just for type checking
                         lighting_group_msg = LightingGroup(
                             id=number_change.id,
-                            level=number_change.new_state.state / 100,  # hass uses 0..100 values
+                            level=number_change.new_state.state
+                            / 100,  # hass uses 0..100 values
                         )
-                        loop.create_task(self._data.send_lighting_group(lighting_group_msg))
+                        loop.create_task(
+                            self._data.send_lighting_group(lighting_group_msg)
+                        )
                 elif event.data["entity_id"].startswith("cover."):
                     cover_change = CoverChanged(**event.data)
-                    if (cover_change.id in _BLIND_IDS.keys()) and cover_change.id is not None:
+                    if (
+                        cover_change.id in _BLIND_IDS.keys()
+                    ) and cover_change.id is not None:
                         blind_msg = Blind(
                             id=cover_change.id,
-                            level=cover_change.new_state.attributes.current_position / 100,
+                            level=cover_change.new_state.attributes.current_position
+                            / 100,
                         )
                         loop.create_task(self._data.send_blind(blind_msg))
 

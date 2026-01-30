@@ -4,6 +4,7 @@ import { useI18n } from "vue-i18n";
 
 import SimulationActions from "@/modules/thrs/components/SimulationActions.vue";
 
+import { DarkModeToggle } from "@/modules/common/components/dark-mode";
 import TopNav from "@/modules/common/components/top-nav/TopNav.vue";
 import TopNavToolbar from "@/modules/common/components/top-nav/TopNavToolbar.vue";
 import { client } from "@/modules/thrs/graphql/client";
@@ -49,6 +50,8 @@ provide("currentModule", currentModuleKey);
       </template>
 
       <template #right>
+        <DarkModeToggle />
+        <DividerVerticalIcon class="text-disabled-foreground" />
         <ClearChartHistory />
         <DividerVerticalIcon class="text-disabled-foreground" />
         <SimulationActions class="max-md:hidden" />

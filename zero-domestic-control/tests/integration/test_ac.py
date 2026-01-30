@@ -100,7 +100,9 @@ async def test_termodinamica_adjustment_forwarded_to_thrs(
         receive.cancel()
 
 
-async def test_setting_setpoints(settings, modbus_client, mqtt_client, mqtt_client2, mqtt_client3):
+async def test_setting_setpoints(
+    settings, modbus_client, mqtt_client, mqtt_client2, mqtt_client3
+):
     """Test that the setpoint is set correctly in Termodinamica and sent to THRS and domestic/ac topics"""
     stub = TermodinamicaStub(settings.termodinamica_host, settings.termodinamica_port)
     termodinamica = TermodinamicaAc(modbus_client)
@@ -155,7 +157,8 @@ async def test_setting_setpoints(settings, modbus_client, mqtt_client, mqtt_clie
             True
             for m in received_messages
             if m.topic.value == "domestic/ac"
-            and _pick_json(m.payload, ["id", "humidity_setpoint"]) == {"id": "italian-cabin", "humidity_setpoint": 0.5}
+            and _pick_json(m.payload, ["id", "humidity_setpoint"])
+            == {"id": "italian-cabin", "humidity_setpoint": 0.5}
         )
         received_messages = []
         await asyncio.sleep(0.1)
@@ -165,13 +168,15 @@ async def test_setting_setpoints(settings, modbus_client, mqtt_client, mqtt_clie
         assert next(
             True
             for m in received_messages
-            if m.topic.value == "thrs/room-co2-setpoint/californian-lounge" and json.loads(m.payload).get("co2") == 0.4
+            if m.topic.value == "thrs/room-co2-setpoint/californian-lounge"
+            and json.loads(m.payload).get("co2") == 0.4
         )
         assert next(
             True
             for m in received_messages
             if m.topic.value == "domestic/ac"
-            and _pick_json(m.payload, ["id", "co2_setpoint"]) == {"id": "californian-lounge", "co2_setpoint": 0.4}
+            and _pick_json(m.payload, ["id", "co2_setpoint"])
+            == {"id": "californian-lounge", "co2_setpoint": 0.4}
         )
     finally:
         stub_run.cancel()
@@ -186,7 +191,9 @@ def _pick_json(message: str, fields: list[str]) -> dict:
     return picked_data
 
 
-async def test_multiple_mutations(settings: Settings, modbus_client, mqtt_client, mqtt_client2, mqtt_client3):
+async def test_multiple_mutations(
+    settings: Settings, modbus_client, mqtt_client, mqtt_client2, mqtt_client3
+):
     """When multiple mutations are made simultaneously to Termodinamica, test if they are forwarded correctly and not overwritten."""
     stub = TermodinamicaStub(settings.termodinamica_host, settings.termodinamica_port)
     termodinamica = TermodinamicaAc(modbus_client)
@@ -204,7 +211,9 @@ async def test_multiple_mutations(settings: Settings, modbus_client, mqtt_client
         await asyncio.sleep(0.1)
         async with TaskGroup() as tg:
             for room_id in ["dutch-cabin", "californian-lounge"]:
-                tg.create_task(ac.write_room_temperature_setpoint(room=room_id, temperature=19))
+                tg.create_task(
+                    ac.write_room_temperature_setpoint(room=room_id, temperature=19)
+                )
         await asyncio.sleep(1)
 
         assert termodinamica.read_room_temperature_setpoint("dutch-cabin") == 19

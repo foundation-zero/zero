@@ -103,6 +103,30 @@ services:
         condition: service_healthy
       setup-postgres:
         condition: service_completed_successfully
+  grafana:
+    image: "grafana/grafana:12.3.0"
+    command: []
+    ports:
+      - "3000:3000"
+    depends_on: []
+    volumes:
+      - "grafana:/var/lib/grafana"
+      - "./grafana/grafana.ini:/etc/grafana/grafana.ini"
+      - "./grafana/datasources.yaml:/etc/grafana/provisioning/datasources/datasources.yaml"
+      - "./grafana/dashboards.yaml:/etc/grafana/provisioning/dashboards/dashboards.yaml"
+      - "./zero-dashboards/dashboards:/dashboards"
+    profiles:
+      - zero
+    environment: {}
+    container_name: grafana
+    healthcheck:
+      test:
+        - CMD-SHELL
+        - bash -c 'printf \"GET / HTTP/1.1\n\n\" > /dev/tcp/127.0.0.1/3001; exit $$?;'
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    restart: always
 
   hasura:
     image: hasura/graphql-engine:v2.42.0.cli-migrations-v3
@@ -350,3 +374,4 @@ services:
 
 volumes:
   db_data:
+  grafana:

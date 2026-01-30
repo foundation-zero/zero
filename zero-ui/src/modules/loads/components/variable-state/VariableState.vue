@@ -8,7 +8,7 @@ import { formatLoad } from "../../lib/utils";
 import { VariableState, VariableUnit } from "../../types";
 
 type VariableStateProps = PrimitiveProps & {
-  value: number | undefined;
+  value?: number | null;
   state: VariableState;
   size?: VariableStateVariants["size"];
   type: VariableUnit;

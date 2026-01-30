@@ -2,16 +2,18 @@ import strawberry
 
 from thrs.control.modules.thrusters import ThrustersControlMode, ThrustersParameters
 from thrs.graphql.base import (
-    JsonSchemaDirective,
     Module,
-    ModuleSimulation,
     SwitchingControlModeType,
     ThrustersMessaging,
     add_automation_mode_mutation,
     add_control_mutations,
     add_parameter_mutations,
     add_simulation_input_mutations,
-    ensure_dedataframes,
+)
+from thrs.graphql.helpers import (
+    pydantic_to_strawberry_type,
+    dedataframed_pydantic_to_strawberry_type,
+    optional_pydantic_to_graphql,
 )
 from thrs.input_output.modules.thrusters import (
     ThrustersControlValues,
@@ -20,80 +22,23 @@ from thrs.input_output.modules.thrusters import (
     ThrustersSimulationOutputs,
 )
 
+ThrustersSensorValuesType = pydantic_to_strawberry_type(ThrustersSensorValues)
+ThrustersControlValuesType = pydantic_to_strawberry_type(ThrustersControlValues)
+ThrustersParametersType = pydantic_to_strawberry_type(ThrustersParameters)
 
-@strawberry.experimental.pydantic.type(
-    model=ThrustersSensorValues,
-    all_fields=True,
-    json_schema_directive=JsonSchemaDirective,
-    use_pydantic_alias=False,
+ThrustersSimulationInputsType = dedataframed_pydantic_to_strawberry_type(
+    ThrustersSimulationInputs
 )
-class ThrustersSensorValuesType:
-    pass
-
-
-@strawberry.experimental.pydantic.type(
-    model=ThrustersControlValues,
-    all_fields=True,
-    json_schema_directive=JsonSchemaDirective,
-    use_pydantic_alias=False,
+ThrustersSimulationOutputsType = dedataframed_pydantic_to_strawberry_type(
+    ThrustersSimulationOutputs
 )
-class ThrustersControlValuesType:
-    pass
-
-
-@strawberry.experimental.pydantic.type(
-    model=ThrustersParameters,
-    all_fields=True,
-    json_schema_directive=JsonSchemaDirective,
-    use_pydantic_alias=False,
-)
-class ThrustersParametersType:
-    pass
-
-
-DedataframedSimulationInputs = ThrustersSimulationInputs.dedataframe()
-DedataframedSimulationOutputs = ThrustersSimulationOutputs.dedataframe()
-
-ensure_dedataframes(DedataframedSimulationInputs)
-ensure_dedataframes(DedataframedSimulationOutputs)
-
-
-@strawberry.experimental.pydantic.type(
-    model=DedataframedSimulationInputs,
-    all_fields=True,
-    json_schema_directive=JsonSchemaDirective,
-    use_pydantic_alias=False,
-)
-class ThrustersSimulationInputsType:
-    pass
-
-
-@strawberry.experimental.pydantic.type(
-    model=DedataframedSimulationOutputs,
-    all_fields=True,
-    json_schema_directive=JsonSchemaDirective,
-    use_pydantic_alias=False,
-)
-class ThrustersSimulationOutputsType:
-    pass
-
-
-@strawberry.experimental.pydantic.type(
-    model=ThrustersControlMode,
-    all_fields=True,
-    json_schema_directive=JsonSchemaDirective,
-    use_pydantic_alias=False,
-)
-class ThrustersControlModeType:
-    pass
+ThrustersControlModeType = pydantic_to_strawberry_type(ThrustersControlMode)
 
 
 ThrustersModule = Module[
     ThrustersSensorValuesType,
     ThrustersControlValuesType,
     ThrustersParametersType,
-    ThrustersSimulationInputsType,
-    ThrustersSimulationOutputsType,
     ThrustersControlModeType,
 ]
 
@@ -102,32 +47,14 @@ def resolve_module(
     module: ThrustersMessaging,
 ) -> ThrustersModule:
     return Module(
-        sensor_values=(
-            ThrustersSensorValuesType.from_pydantic(module.sensor_values)
-            if module.sensor_values
-            else None
+        sensor_values=optional_pydantic_to_graphql(
+            ThrustersSensorValuesType, module.sensor_values
         ),
-        control_values=(
-            ThrustersControlValuesType.from_pydantic(module.control_values)
-            if module.control_values
-            else None
+        control_values=optional_pydantic_to_graphql(
+            ThrustersControlValuesType, module.control_values
         ),
-        parameters=(
-            ThrustersParametersType.from_pydantic(module.parameters)
-            if module.parameters
-            else None
-        ),
-        simulation=ModuleSimulation(
-            inputs=(
-                ThrustersSimulationInputsType.from_pydantic(module.simulation_inputs)
-                if module.simulation_inputs
-                else None
-            ),
-            outputs=ThrustersSimulationOutputsType.from_pydantic(
-                module.simulation_outputs
-            )
-            if module.simulation_outputs
-            else None,
+        parameters=optional_pydantic_to_graphql(
+            ThrustersParametersType, module.parameters
         ),
         control_mode=SwitchingControlModeType.from_pydantic(
             ThrustersControlModeType, module.control_mode.mode

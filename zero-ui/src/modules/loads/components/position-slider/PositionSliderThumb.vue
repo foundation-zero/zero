@@ -6,14 +6,14 @@ import { VariableState } from "../../types";
 
 const props = defineProps<{
   class?: HTMLAttributes["class"];
-  value?: number;
+  value?: number | null;
   state: VariableState;
 }>();
 
 const { type } = getTrackContext();
 
 const position = computed(() => {
-  if (props.value === undefined) {
+  if (props.value == undefined) {
     return 0;
   } else if (type.value === "symmetric") {
     return (props.value + 1) / 2;

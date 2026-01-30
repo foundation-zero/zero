@@ -7,7 +7,7 @@ from loads.sensors.base import LoadsModel
 from loads.sensors.units import Millimeter, RatioFromPerMille, TonneFromDecaKilogram
 
 
-class PlcSensor(LoadsModel, ABC):
+class SailSystemSensor(LoadsModel, ABC):
     TOPIC = "test-topic"
 
     load: TonneFromDecaKilogram = Field(validation_alias="load")
@@ -23,7 +23,7 @@ def test_validate_message():
         "relative_position": 500,
         "lock": True,
     }
-    sensor = PlcSensor.model_validate(message)
+    sensor = SailSystemSensor.model_validate(message)
     assert sensor.load == 15.0
     assert sensor.position == 2000
     assert sensor.relative_position == 0.5
@@ -31,7 +31,7 @@ def test_validate_message():
 
 
 def test_generate_data():
-    generated_data = json.loads(PlcSensor.make_generator().gen())
+    generated_data = json.loads(SailSystemSensor.make_generator().gen())
 
     assert isinstance(generated_data["load"], int)
     assert isinstance(generated_data["position"], int)

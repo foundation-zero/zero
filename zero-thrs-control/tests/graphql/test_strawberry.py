@@ -345,14 +345,12 @@ async def test_query_simulation_inputs(async_client):
         "/graphql",
         json={
             "query": """{
-                modules {
-                    thrusters {
-                        simulation {
-                            inputs {
-                                thrustersAft {
-                                    active {
-                                        value
-                                    }
+                simulation {
+                    inputs {
+                        thrusters {
+                            thrustersAft {
+                                active {
+                                    value
                                 }
                             }
                         }
@@ -364,12 +362,8 @@ async def test_query_simulation_inputs(async_client):
     assert response.status_code == 200
     assert response.json() == {
         "data": {
-            "modules": {
-                "thrusters": {
-                    "simulation": {
-                        "inputs": {"thrustersAft": {"active": {"value": 0.0}}}
-                    }
-                }
+            "simulation": {
+                "inputs": {"thrusters": {"thrustersAft": {"active": {"value": 0.0}}}}
             }
         }
     }
@@ -389,14 +383,12 @@ async def test_query_simulation_outputs(async_client):
         "/graphql",
         json={
             "query": """{
-                modules {
-                    thrusters {
-                        simulation {
-                            outputs {
-                                thrustersModuleReturn {
-                                    flow {
-                                        value
-                                    }
+                simulation {
+                    outputs {
+                        thrusters {
+                            thrustersModuleReturn {
+                                flow {
+                                    value
                                 }
                             }
                         }
@@ -408,11 +400,9 @@ async def test_query_simulation_outputs(async_client):
     assert response.status_code == 200
     assert response.json() == {
         "data": {
-            "modules": {
-                "thrusters": {
-                    "simulation": {
-                        "outputs": {"thrustersModuleReturn": {"flow": {"value": 10.0}}}
-                    }
+            "simulation": {
+                "outputs": {
+                    "thrusters": {"thrustersModuleReturn": {"flow": {"value": 10.0}}}
                 }
             }
         }

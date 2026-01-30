@@ -1,7 +1,7 @@
 import { formatFixed, formatInt } from "@/modules/common/lib/utils";
 import { NumRangeId, Range, ReferenceThresholds, VariableState, VariableUnit } from "../types";
 
-export const formatLoad = (value: number | undefined, type: VariableUnit): string => {
+export const formatLoad = (value: number | undefined | null, type: VariableUnit): string => {
   if (value == undefined) return "-";
 
   if (type === VariableUnit.Ratio) {
@@ -13,10 +13,10 @@ export const formatLoad = (value: number | undefined, type: VariableUnit): strin
 };
 
 export const getLoadState = (
-  value?: number,
+  value?: number | null,
   thresholds?: Partial<ReferenceThresholds>,
 ): VariableState => {
-  if (value === undefined) return VariableState.Unknown;
+  if (value == undefined) return VariableState.Unknown;
 
   if (!thresholds) return VariableState.Neutral;
 
@@ -56,3 +56,7 @@ export const toRange = <T extends string = NumRangeId>(
       to: values[i + 1],
       id: idFn(from, values[i + 1], i),
     }));
+
+export const unique = <T>(array: T[] | Record<string, T>): T[] => {
+  return Array.from(new Set(Array.isArray(array) ? array : Object.values(array)));
+};

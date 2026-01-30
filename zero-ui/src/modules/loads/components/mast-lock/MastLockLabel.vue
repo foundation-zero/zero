@@ -10,7 +10,12 @@ const props = defineProps<{
 <template>
   <div
     data-slot="mast-lock-label"
-    :class="cn('text-disabled-foreground text-base font-medium', props.class)"
+    :class="
+      cn(
+        'text-disabled-foreground max-w-full overflow-hidden text-base font-medium text-ellipsis whitespace-nowrap',
+        props.class,
+      )
+    "
   >
     <slot />
   </div>

@@ -125,7 +125,11 @@ class Mutation:
 
         async with TaskGroup() as tg:
             for room_id in ids:
-                tg.create_task(info.context.ac.write_room_temperature_setpoint(room=room_id, temperature=temperature))
+                tg.create_task(
+                    info.context.ac.write_room_temperature_setpoint(
+                        room=room_id, temperature=temperature
+                    )
+                )
 
         return MutationResponse(
             code=200,
@@ -141,13 +145,19 @@ class Mutation:
         ids: list[strawberry.ID],
         humidity: Annotated[
             float,
-            strawberry.argument(description="desired humidity in relative humidity percentage"),
+            strawberry.argument(
+                description="desired humidity in relative humidity percentage"
+            ),
         ],
     ) -> MutationResponse:
         info.context.ac.validate_room_ids([str(id) for id in ids])
         async with TaskGroup() as tg:
             for room_id in ids:
-                tg.create_task(info.context.ac.write_room_humidity_setpoint(room=room_id, humidity=humidity))
+                tg.create_task(
+                    info.context.ac.write_room_humidity_setpoint(
+                        room=room_id, humidity=humidity
+                    )
+                )
         return MutationResponse(
             code=200,
             success=True,
@@ -168,7 +178,9 @@ class Mutation:
         info.context.ac.validate_room_ids([str(id) for id in ids])
         async with TaskGroup() as tg:
             for room_id in ids:
-                tg.create_task(info.context.ac.write_room_co2_setpoint(room=room_id, co2=co2))
+                tg.create_task(
+                    info.context.ac.write_room_co2_setpoint(room=room_id, co2=co2)
+                )
         return MutationResponse(
             code=200,
             success=True,
@@ -189,7 +201,9 @@ class Mutation:
         info.context.hass.validate_blind_group_ids([str(id) for id in ids])
         async with TaskGroup() as tg:
             for room_id in ids:
-                tg.create_task(info.context.hass.set_blind(Blind(id=room_id, level=level)))
+                tg.create_task(
+                    info.context.hass.set_blind(Blind(id=room_id, level=level))
+                )
         return MutationResponse(
             code=200,
             success=True,
@@ -212,7 +226,9 @@ class Mutation:
             async with TaskGroup() as tg:
                 for lighting_group_id in ids:
                     tg.create_task(
-                        info.context.hass.set_lighting_group(LightingGroup(id=lighting_group_id, level=level))
+                        info.context.hass.set_lighting_group(
+                            LightingGroup(id=lighting_group_id, level=level)
+                        )
                     )
             return MutationResponse(
                 code=200,
@@ -243,7 +259,9 @@ class Mutation:
         )
 
 
-schema = strawberry.Schema(query=Query, mutation=Mutation, config=StrawberryConfig(auto_camel_case=True))
+schema = strawberry.Schema(
+    query=Query, mutation=Mutation, config=StrawberryConfig(auto_camel_case=True)
+)
 app = FastAPI()
 app.include_router(
     GraphQLRouter(schema=schema, context_getter=get_context),

@@ -9,7 +9,8 @@
 import { THRSModules } from "@/modules/thrs/lib/consts";
 import { SchemaDefinition, SchemaDefinitions } from "@/modules/thrs/types";
 
-import { computed, ref } from "vue";
+import { useLocalStorage } from "@vueuse/core";
+import { computed } from "vue";
 import { FieldSeries, provideContext } from ".";
 import { useThrsHistory } from "../../stores/history";
 import FieldValues from "./FieldValues.vue";
@@ -31,7 +32,11 @@ const series = computed(() =>
   ]),
 );
 
-const selected = ref<string[]>([]);
+const selected = useLocalStorage<string[]>(
+  `thrs-${props.module}-fields-values-selected`,
+  props.fields.slice(),
+);
+
 const activeSeries = computed(() =>
   series.value.filter(([field]) => selected.value.includes(field)),
 );

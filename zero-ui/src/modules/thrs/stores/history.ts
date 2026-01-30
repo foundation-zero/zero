@@ -6,9 +6,10 @@ import { context } from "@/modules/thrs/graphql/client";
 import { useQuery } from "@urql/vue";
 import { objectEntries, useLocalStorage } from "@vueuse/core";
 import { useObservable } from "@vueuse/rxjs";
-import { tap } from "rxjs";
+import { Subject, tap } from "rxjs";
 import { timer } from "rxjs/internal/observable/timer";
 import { scan } from "rxjs/internal/operators/scan";
+import { startWith } from "rxjs/internal/operators/startWith";
 import { switchMap } from "rxjs/internal/operators/switchMap";
 import { computed, Ref } from "vue";
 import { QUERY_ALL, THRS } from "../lib/consts";
@@ -59,7 +60,7 @@ export const extractHistory = (source: THRS, currentHistory: ModuleHistory): Mod
   objectEntries(source.modules).forEach(([moduleName, module]) => {
     extract(moduleName, module.controlValues);
     extract(moduleName, module.sensorValues);
-    extract(moduleName, module.simulation?.outputs);
+    extract(moduleName, source.simulation?.outputs?.[moduleName]);
   });
 
   return newHistory;
@@ -67,21 +68,14 @@ export const extractHistory = (source: THRS, currentHistory: ModuleHistory): Mod
 
 export const useThrsHistory = defineStore("thrsHistory", () => {
   const lastUpdate = useLocalStorage<number | null>("thrs-history-last-update", null);
+  const cachedData = useLocalStorage<ModuleHistory>("thrs-history", {});
 
-  const cachedData = useLocalStorage<ModuleHistory>(
-    "thrs-history",
-    {},
-    {
-      serializer: {
-        read: (v) => (v ? JSON.parse(v) : {}),
-        write: (v) => JSON.stringify(v),
-      },
-    },
-  );
+  const restartTrigger$ = new Subject<void>();
 
   const clear = () => {
     cachedData.value = {};
     lastUpdate.value = null;
+    restartTrigger$.next();
   };
 
   const { data, executeQuery: update } = useQuery<THRS>({
@@ -91,7 +85,9 @@ export const useThrsHistory = defineStore("thrsHistory", () => {
   });
 
   const history: Ref<ModuleHistory> = useObservable(
-    timer(0, 5000).pipe(
+    restartTrigger$.pipe(
+      startWith(null),
+      switchMap(() => timer(0, 5000)),
       switchMap(async () => {
         await update();
 

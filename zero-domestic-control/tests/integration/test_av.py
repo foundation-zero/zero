@@ -99,7 +99,9 @@ async def test_av_control_receive(mqtt_client, mqtt_client2, mqtt_client3):
     stub.set_port(AFT_PDU, 1, True)
 
     async for message in mqtt_client3.messages:
-        if message.topic.value == "domestic/amplifiers" and isinstance(message.payload, str | bytes):
+        if message.topic.value == "domestic/amplifiers" and isinstance(
+            message.payload, str | bytes
+        ):
             msg = json.loads(message.payload)
             if msg["id"] == "owners-cockpit":
                 assert msg["is_on"]
@@ -115,13 +117,17 @@ async def test_av_through_gq(mqtt_client):
     client = TestClient(app)
     response = client.post(
         "/graphql",
-        json={"query": """mutation { setAmplifiers(ids: "owners-cabin", on: true) { code success message } }"""},
+        json={
+            "query": """mutation { setAmplifiers(ids: "owners-cabin", on: true) { code success message } }"""
+        },
     )
     await asyncio.sleep(0.05)
     assert response.status_code == 200
 
     async for message in mqtt_client.messages:
-        if message.topic.value == "domestic/amplifiers" and isinstance(message.payload, str | bytes):
+        if message.topic.value == "domestic/amplifiers" and isinstance(
+            message.payload, str | bytes
+        ):
             msg = json.loads(message.payload)
             if msg["id"] == "owners-cabin":
                 assert msg["is_on"]
