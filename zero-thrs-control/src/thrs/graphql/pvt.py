@@ -2,24 +2,23 @@ import strawberry
 
 from thrs.control.modules.pvt import PvtControlMode, PvtGroupControlMode, PvtParameters
 from thrs.graphql.base import (
-    Module,
     PvtMessaging,
     SwitchingControlModeType,
+    ThrsContext,
+)
+from thrs.graphql.base import (
+    ControlModule,
     add_automation_mode_mutation,
     add_control_mutations,
     add_parameter_mutations,
-    add_simulation_input_mutations,
 )
 from thrs.graphql.helpers import (
     pydantic_to_strawberry_type,
-    dedataframed_pydantic_to_strawberry_type,
     optional_pydantic_to_graphql,
 )
 from thrs.input_output.modules.pvt import (
     PvtControlValues,
     PvtSensorValues,
-    PvtSimulationInputs,
-    PvtSimulationOutputs,
 )
 
 
@@ -29,13 +28,8 @@ PvtParametersType = pydantic_to_strawberry_type(PvtParameters)
 PvtGroupControlModeType = pydantic_to_strawberry_type(PvtGroupControlMode)
 PvtControlModeType = pydantic_to_strawberry_type(PvtControlMode)
 
-PvtSimulationInputsType = dedataframed_pydantic_to_strawberry_type(PvtSimulationInputs)
-PvtSimulationOutputsType = dedataframed_pydantic_to_strawberry_type(
-    PvtSimulationOutputs
-)
 
-
-PvtModule = Module[
+PvtModule = ControlModule[
     PvtSensorValuesType,
     PvtControlValuesType,
     PvtParametersType,
@@ -46,7 +40,7 @@ PvtModule = Module[
 def resolve_module(
     module: PvtMessaging,
 ) -> PvtModule:
-    return Module(
+    return ControlModule(
         sensor_values=optional_pydantic_to_graphql(
             PvtSensorValuesType, module.sensor_values
         ),
@@ -66,16 +60,13 @@ def resolve_module(
     )
 
 
-def get_pvt_messaging(context):
+def get_pvt_messaging(context: ThrsContext):
     return context.pvt_messaging
 
 
 @strawberry.type
 @add_control_mutations("pvt", PvtControlValues, PvtControlValuesType, get_pvt_messaging)
 @add_parameter_mutations("pvt", PvtParameters, PvtParametersType, get_pvt_messaging)
-@add_simulation_input_mutations(
-    "pvt", PvtSimulationInputs, PvtSimulationInputsType, get_pvt_messaging
-)
 @add_automation_mode_mutation("pvt", get_pvt_messaging)
 class PvtMutations:
     pass

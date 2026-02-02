@@ -2,24 +2,22 @@ import strawberry
 
 from thrs.control.modules.consumers import ConsumersParameters
 from thrs.graphql.base import (
-    Module,
     ConsumersMessaging,
     SwitchingControlModeType,
+)
+from thrs.graphql.base import (
+    ControlModule,
     add_automation_mode_mutation,
     add_control_mutations,
     add_parameter_mutations,
-    add_simulation_input_mutations,
 )
 from thrs.graphql.helpers import (
     pydantic_to_strawberry_type,
-    dedataframed_pydantic_to_strawberry_type,
     optional_pydantic_to_graphql,
 )
 from thrs.input_output.modules.consumers import (
     ConsumersControlValues,
     ConsumersSensorValues,
-    ConsumersSimulationInputs,
-    ConsumersSimulationOutputs,
 )
 
 
@@ -33,15 +31,7 @@ class ConsumersControlModeType:
     _empty: None = None
 
 
-ConsumersSimulationInputsType = dedataframed_pydantic_to_strawberry_type(
-    ConsumersSimulationInputs
-)
-ConsumersSimulationOutputsType = dedataframed_pydantic_to_strawberry_type(
-    ConsumersSimulationOutputs
-)
-
-
-ConsumersModule = Module[
+ConsumersModule = ControlModule[
     ConsumersSensorValuesType,
     ConsumersControlValuesType,
     ConsumersParametersType,
@@ -52,7 +42,7 @@ ConsumersModule = Module[
 def resolve_module(
     module: ConsumersMessaging,
 ) -> ConsumersModule:
-    return Module(
+    return ControlModule(
         sensor_values=optional_pydantic_to_graphql(
             ConsumersSensorValuesType, module.sensor_values
         ),
@@ -83,12 +73,6 @@ def get_consumers_messaging(context):
 )
 @add_parameter_mutations(
     "consumers", ConsumersParameters, ConsumersParametersType, get_consumers_messaging
-)
-@add_simulation_input_mutations(
-    "consumers",
-    ConsumersSimulationInputs,
-    ConsumersSimulationInputsType,
-    get_consumers_messaging,
 )
 @add_automation_mode_mutation("consumers", get_consumers_messaging)
 class ConsumersMutations:

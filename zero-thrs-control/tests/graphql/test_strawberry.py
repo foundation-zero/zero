@@ -9,35 +9,33 @@ from thrs.control.modules.pvt import PvtControlMode, PvtParameters
 from thrs.control.modules.pvt_group import PvtGroupControlMode
 from thrs.control.modules.thrusters import ThrustersControlMode, ThrustersParameters
 from thrs.control.switching import SwitchingControlMode
-from thrs.graphql.messaging import Messaging, MessagingModule
+from thrs.graphql.messaging import ControlMessaging, Messaging, SimulationMessaging
 from thrs.graphql.strawberry import (
     app,
     consumers_messaging,
     messaging,
     pcm_messaging,
     pvt_messaging,
+    simulation_messaging,
     thrusters_messaging,
+    simulation_values_mapping,
 )
 
 from thrs.input_output.modules.consumers import (
     ConsumersControlValues,
     ConsumersSensorValues,
-    ConsumersSimulationInputs,
 )
 from thrs.input_output.modules.pcm import (
     PcmControlValues,
     PcmSensorValues,
-    PcmSimulationInputs,
 )
 from thrs.input_output.modules.pvt import (
     PvtControlValues,
     PvtSensorValues,
-    PvtSimulationInputs,
 )
 from thrs.input_output.modules.thrusters import (
     ThrustersControlValues,
     ThrustersSensorValues,
-    ThrustersSimulationInputs,
 )
 
 
@@ -50,7 +48,7 @@ async def async_client():
 
 
 async def override_thrusters_messaging():
-    mock = Mock(MessagingModule)
+    mock = Mock(ControlMessaging)
     mock.sensor_values = ThrustersSensorValues.zero()
     mock.control_values = ThrustersControlValues.zero()
     mock.parameters = ThrustersParameters()
@@ -59,20 +57,17 @@ async def override_thrusters_messaging():
         mode=SwitchingControlMode(automatic_mode=ThrustersControlMode(mode="idle")),
     )
 
-    mock.simulation_inputs = ThrustersSimulationInputs.zero()
-
     async def wait(condition, *_args, timeout):
         return None
 
     mock.wait_for_control_mode.side_effect = wait
     mock.wait_for_control_values.side_effect = wait
     mock.wait_for_parameters.side_effect = wait
-    mock.wait_for_simulation_inputs.side_effect = wait
     return mock
 
 
 async def override_pvt_messaging():
-    mock = Mock(MessagingModule)
+    mock = Mock(ControlMessaging)
     mock.sensor_values = PvtSensorValues.zero()
     mock.control_values = PvtControlValues.zero()
     mock.parameters = PvtParameters()
@@ -87,20 +82,17 @@ async def override_pvt_messaging():
         ),
     )
 
-    mock.simulation_inputs = PvtSimulationInputs.zero()
-
     async def wait(condition, *_args, timeout):
         return None
 
     mock.wait_for_control_mode.side_effect = wait
     mock.wait_for_control_values.side_effect = wait
     mock.wait_for_parameters.side_effect = wait
-    mock.wait_for_simulation_inputs.side_effect = wait
     return mock
 
 
 async def override_pcm_messaging():
-    mock = Mock(MessagingModule)
+    mock = Mock(ControlMessaging)
     mock.sensor_values = PcmSensorValues.zero()
     mock.control_values = PcmControlValues.zero()
     mock.parameters = PcmParameters()
@@ -108,20 +100,17 @@ async def override_pcm_messaging():
         module="pcm", mode=SwitchingControlMode(automatic_mode=None)
     )
 
-    mock.simulation_inputs = PcmSimulationInputs.zero()
-
     async def wait(condition, *_args, timeout):
         return None
 
     mock.wait_for_control_mode.side_effect = wait
     mock.wait_for_control_values.side_effect = wait
     mock.wait_for_parameters.side_effect = wait
-    mock.wait_for_simulation_inputs.side_effect = wait
     return mock
 
 
 async def override_consumers_messaging():
-    mock = Mock(MessagingModule)
+    mock = Mock(ControlMessaging)
     mock.sensor_values = ConsumersSensorValues.zero()
     mock.control_values = ConsumersControlValues.zero()
     mock.parameters = ConsumersParameters()
@@ -129,24 +118,22 @@ async def override_consumers_messaging():
         module="consumers", mode=SwitchingControlMode(automatic_mode=None)
     )
 
-    mock.simulation_inputs = ConsumersSimulationInputs.zero()
-
     async def wait(condition, *_args, timeout):
         return None
 
     mock.wait_for_control_mode.side_effect = wait
     mock.wait_for_control_values.side_effect = wait
     mock.wait_for_parameters.side_effect = wait
-    mock.wait_for_simulation_inputs.side_effect = wait
     return mock
 
 
 async def override_messaging():
     mock = Mock(Messaging)
     mock.simulation_status = SimulationStatusMessage(
+        mode="thrusters",
         status="available",
         simulation_time=datetime.fromtimestamp(0),
-        modules=["thrusters"],
+        control_modules=["thrusters"],
     )
 
     async def wait(condition, *_args, timeout):
@@ -156,12 +143,24 @@ async def override_messaging():
     return mock
 
 
+async def override_simulation_messaging():
+    mock = Mock(SimulationMessaging)
+    mock.mapping = simulation_values_mapping
+    mock.mode = "thrusters"
+
+    async def wait(condition, *_args, timeout):
+        return None
+
+    mock.wait_for_simulation_inputs = wait
+
+
 async def test_query_sensor_values(async_client):
     app.dependency_overrides[messaging] = override_messaging
     app.dependency_overrides[thrusters_messaging] = override_thrusters_messaging
     app.dependency_overrides[pvt_messaging] = override_pvt_messaging
     app.dependency_overrides[pcm_messaging] = override_pcm_messaging
     app.dependency_overrides[consumers_messaging] = override_consumers_messaging
+    app.dependency_overrides[simulation_messaging] = override_simulation_messaging
     response = await async_client.post(
         "/graphql",
         json={
@@ -376,6 +375,7 @@ async def test_query_simulation_outputs(async_client):
     app.dependency_overrides[pvt_messaging] = override_pvt_messaging
     app.dependency_overrides[pcm_messaging] = override_pcm_messaging
     app.dependency_overrides[consumers_messaging] = override_consumers_messaging
+    app.dependency_overrides[simulation_messaging] = override_simulation_messaging
 
     thrusters.simulation_outputs.thrusters_module_return.flow.value = 10.0  # type: ignore
 
@@ -481,9 +481,10 @@ async def test_mutation_simulation_play(async_client):
 async def test_mutation_simulation_pause(async_client):
     messaging_mock = await override_messaging()
     messaging_mock.simulation_status = SimulationStatusMessage(
+        mode="thrusters",
         status="running",
         simulation_time=datetime.fromtimestamp(0),
-        modules=["thrusters"],
+        control_modules=["thrusters"],
     )
     app.dependency_overrides[messaging] = lambda: messaging_mock
     app.dependency_overrides[thrusters_messaging] = override_thrusters_messaging

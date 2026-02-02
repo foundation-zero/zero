@@ -373,8 +373,9 @@ class OutgoingMessage(ThrsValues):
 
 
 class SimulationStatusMessage(OutgoingMessage):
+    mode: str
     status: Literal["available", "running", "stepping"]
-    modules: list[str]
+    control_modules: list[str]
     simulation_time: datetime
 
     @staticmethod
@@ -398,8 +399,8 @@ class ControlModeMessage[ControlMode](OutgoingMessage):
         return f"{self.module}/controls/status"
 
     @classmethod
-    def clear_topics(cls, modules: list[str]) -> list[str]:
-        return [f"{module}/controls/status" for module in modules]
+    def clear_topics(cls, control_modules: list[str]) -> list[str]:
+        return [f"{module}/controls/status" for module in control_modules]
 
     @staticmethod
     def retained() -> bool:
@@ -799,7 +800,9 @@ class SimulationControls:
                         inputs=cast(ThrustersSimulationInputs, simulation_inputs)
                     )
                 )
-                await self._run_simulation(modules, context, executor, simulator, cmds)
+                await self._run_simulation(
+                    mode, modules, context, executor, simulator, cmds
+                )
             except Exception as e:
                 logger.error(f"SimulationControls run encountered an error: {e}")
             finally:
@@ -808,6 +811,7 @@ class SimulationControls:
 
     async def _run_simulation(
         self,
+        mode: Modes,
         modules: CombinedModule,
         context: MessageContext,
         executor: MqttExecutor,
@@ -819,9 +823,10 @@ class SimulationControls:
         while True:
             await context.send(
                 SimulationStatusMessage(
+                    mode=mode,
                     status="available",
                     simulation_time=executor.time(),
-                    modules=active_modules,
+                    control_modules=active_modules,
                 )
             )
             cmd = await cmds.get()
@@ -831,9 +836,10 @@ class SimulationControls:
                 )
                 await context.send(
                     SimulationStatusMessage(
+                        mode=mode,
                         status="running",
                         simulation_time=executor.time(),
-                        modules=active_modules,
+                        control_modules=active_modules,
                     )
                 )
                 logging.debug(
@@ -847,9 +853,10 @@ class SimulationControls:
             elif isinstance(cmd, StepMessage):
                 await context.send(
                     SimulationStatusMessage(
+                        mode=mode,
                         status="stepping",
                         simulation_time=executor.time(),
-                        modules=active_modules,
+                        control_modules=active_modules,
                     )
                 )
 

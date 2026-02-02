@@ -23,31 +23,36 @@ from thrs.graphql.base import (
     ThrsContext,
     ThrustersMessaging,
 )
-from thrs.graphql.helpers import ensure_input_type, optional_pydantic_to_graphql
-from thrs.graphql.messaging import Messaging, MessagingModule
+from thrs.graphql.helpers import ensure_input_type
+from thrs.graphql.messaging import ControlMessaging, Messaging, SimulationMessaging
 from thrs.graphql.pvt import (
     PvtModule,
     PvtMutations,
+)
+from thrs.graphql.simulation import (
+    ConsumersSimulationInputsType,
+    ConsumersSimulationOutputsType,
+    HighTemperatureSimulationInputsType,
+    HighTemperatureSimulationOutputsType,
+    PcmSimulationInputsType,
+    PcmSimulationOutputsType,
     PvtSimulationInputsType,
     PvtSimulationOutputsType,
+    SimulationMutations,
+    ThrustersSimulationInputsType,
+    ThrustersSimulationOutputsType,
 )
 from thrs.graphql.thrusters import (
     ThrustersModule,
     ThrustersMutations,
-    ThrustersSimulationInputsType,
-    ThrustersSimulationOutputsType,
 )
 from thrs.graphql.pcm import (
     PcmModule,
     PcmMutations,
-    PcmSimulationInputsType,
-    PcmSimulationOutputsType,
 )
 from thrs.graphql.consumers import (
     ConsumersModule,
     ConsumersMutations,
-    ConsumersSimulationInputsType,
-    ConsumersSimulationOutputsType,
 )
 
 from thrs.input_output.modules.consumers import (
@@ -55,6 +60,10 @@ from thrs.input_output.modules.consumers import (
     ConsumersSensorValues,
     ConsumersSimulationInputs,
     ConsumersSimulationOutputs,
+)
+from thrs.input_output.modules.high_temperature import (
+    HighTemperatureSimulationInputs,
+    HighTemperatureSimulationOutputs,
 )
 from thrs.input_output.modules.pcm import (
     PcmControlValues,
@@ -88,7 +97,7 @@ logger = logging.getLogger(__name__)
 
 
 @strawberry.type
-class Modules:
+class ControlModules:
     @strawberry.field
     def thrusters(self, info: strawberry.Info[ThrsContext]) -> ThrustersModule:
         return thrusters.resolve_module(info.context.thrusters_messaging)
@@ -106,28 +115,40 @@ class Modules:
         return consumers.resolve_module(info.context.consumers_messaging)
 
 
-@strawberry.type
-class SimulationInputs:
-    thrusters: ThrustersSimulationInputsType | None  # pyright: ignore[reportInvalidTypeForm]
-    pvt: PvtSimulationInputsType | None  # pyright: ignore[reportInvalidTypeForm]
-    pcm: PcmSimulationInputsType | None  # pyright: ignore[reportInvalidTypeForm]
-    consumers: ConsumersSimulationInputsType | None  # pyright: ignore[reportInvalidTypeForm]
+SimulationInputsType = (
+    ThrustersSimulationInputsType
+    | PvtSimulationInputsType
+    | PcmSimulationInputsType
+    | ConsumersSimulationInputsType
+    | HighTemperatureSimulationInputsType
+)
+SimulationOutputsType = (
+    ThrustersSimulationOutputsType
+    | PvtSimulationOutputsType
+    | PcmSimulationOutputsType
+    | ConsumersSimulationOutputsType
+    | HighTemperatureSimulationOutputsType
+)
 
 
-@strawberry.type
-class SimulationOutputs:
-    thrusters: ThrustersSimulationOutputsType | None  # pyright: ignore[reportInvalidTypeForm]
-    pvt: PvtSimulationOutputsType | None  # pyright: ignore[reportInvalidTypeForm]
-    pcm: PcmSimulationOutputsType | None  # pyright: ignore[reportInvalidTypeForm]
-    consumers: ConsumersSimulationOutputsType | None  # pyright: ignore[reportInvalidTypeForm]
+simulation_values_mapping = {
+    "thrusters": (ThrustersSimulationInputs, ThrustersSimulationOutputs),
+    "pcm": (PcmSimulationInputs, PcmSimulationOutputs),
+    "pvt": (PvtSimulationInputs, PvtSimulationOutputs),
+    "consumers": (ConsumersSimulationInputs, ConsumersSimulationOutputs),
+    "high_temperature": (
+        HighTemperatureSimulationInputs,
+        HighTemperatureSimulationOutputs,
+    ),
+}
 
 
 @strawberry.type
 class SimulationState:
     time: datetime
     status: str
-    inputs: SimulationInputs | None
-    outputs: SimulationOutputs | None
+    inputs: SimulationInputsType | None  # pyright: ignore[reportInvalidTypeForm]
+    outputs: SimulationOutputsType | None  # pyright: ignore[reportInvalidTypeForm]
 
 
 @strawberry.type
@@ -138,8 +159,8 @@ class ControlState:
 @strawberry.type
 class Query:
     @strawberry.field()
-    def modules(self, info: strawberry.Info[ThrsContext]) -> Modules:
-        return Modules()
+    def modules(self, info: strawberry.Info[ThrsContext]) -> ControlModules:
+        return ControlModules()
 
     @strawberry.field
     def simulation(self, info: strawberry.Info[ThrsContext]) -> SimulationState | None:
@@ -151,42 +172,8 @@ class Query:
         return SimulationState(
             time=info.context.messaging.simulation_status.simulation_time,
             status=info.context.messaging.simulation_status.status,
-            inputs=SimulationInputs(
-                thrusters=optional_pydantic_to_graphql(
-                    ThrustersSimulationInputsType,
-                    info.context.thrusters_messaging.simulation_inputs,
-                ),
-                pvt=optional_pydantic_to_graphql(
-                    PvtSimulationInputsType,
-                    info.context.pvt_messaging.simulation_inputs,
-                ),
-                pcm=optional_pydantic_to_graphql(
-                    PcmSimulationInputsType,
-                    info.context.pcm_messaging.simulation_inputs,
-                ),
-                consumers=optional_pydantic_to_graphql(
-                    ConsumersSimulationInputsType,
-                    info.context.consumers_messaging.simulation_inputs,
-                ),
-            ),
-            outputs=SimulationOutputs(
-                thrusters=optional_pydantic_to_graphql(
-                    ThrustersSimulationOutputsType,
-                    info.context.thrusters_messaging.simulation_outputs,
-                ),
-                pvt=optional_pydantic_to_graphql(
-                    PvtSimulationOutputsType,
-                    info.context.pvt_messaging.simulation_outputs,
-                ),
-                pcm=optional_pydantic_to_graphql(
-                    PcmSimulationOutputsType,
-                    info.context.pcm_messaging.simulation_outputs,
-                ),
-                consumers=optional_pydantic_to_graphql(
-                    ConsumersSimulationOutputsType,
-                    info.context.consumers_messaging.simulation_outputs,
-                ),
-            ),
+            inputs=info.context.simulation_messaging.simulation_inputs,
+            outputs=info.context.simulation_messaging.simulation_outputs,
         )
 
 
@@ -206,7 +193,13 @@ def generate_mutation_for_field[T](
 
 
 @strawberry.type
-class Mutation(ThrustersMutations, PvtMutations, PcmMutations, ConsumersMutations):
+class Mutation(
+    ThrustersMutations,
+    PvtMutations,
+    PcmMutations,
+    ConsumersMutations,
+    SimulationMutations,
+):
     @strawberry.mutation
     async def simulation_play(
         self, info: strawberry.Info[ThrsContext], playback_rate: float = 1.0
@@ -252,49 +245,45 @@ class Mutation(ThrustersMutations, PvtMutations, PcmMutations, ConsumersMutation
 async def lifespan(app: FastAPI):
     settings = Config()  # type: ignore
     async with MqttClient(settings.mqtt_host, settings.mqtt_port) as mqtt:
-        thrusters_messaging: ThrustersMessaging = MessagingModule(
+        thrusters_messaging: ThrustersMessaging = ControlMessaging(
             "thrusters",
             ThrustersSensorValues,
             ThrustersControlValues,
             ThrustersParameters,
-            ThrustersSimulationInputs,
-            ThrustersSimulationOutputs,
             ThrustersControlMode,
             mqtt,
         )
-        pvt_messaging: PvtMessaging = MessagingModule(
+        pvt_messaging: PvtMessaging = ControlMessaging(
             "pvt",
             PvtSensorValues,
             PvtControlValues,
             PvtParameters,
-            PvtSimulationInputs,
-            PvtSimulationOutputs,
             PvtControlMode,
             mqtt,
         )
-        pcm_messaging: PcmMessaging = MessagingModule(
+        pcm_messaging: PcmMessaging = ControlMessaging(
             "pcm",
             PcmSensorValues,
             PcmControlValues,
             PcmParameters,
-            PcmSimulationInputs,
-            PcmSimulationOutputs,
             PcmControlMode,
             mqtt,
         )
-        consumers_messaging: ConsumersMessaging = MessagingModule(
+        consumers_messaging: ConsumersMessaging = ControlMessaging(
             "consumers",
             ConsumersSensorValues,
             ConsumersControlValues,
             ConsumersParameters,
-            ConsumersSimulationInputs,
-            ConsumersSimulationOutputs,
             ConsumersControlMode,
             mqtt,
+        )
+        simulation_messaging: SimulationMessaging = SimulationMessaging(
+            simulation_values_mapping, mqtt
         )
         messaging = Messaging(
             mqtt,
             [thrusters_messaging, pvt_messaging, pcm_messaging, consumers_messaging],
+            simulation_messaging,
         )
         run_task = create_task(await messaging.run())
 
@@ -309,6 +298,7 @@ async def lifespan(app: FastAPI):
         app.state.pvt_messaging = pvt_messaging
         app.state.pcm_messaging = pcm_messaging
         app.state.consumers_messaging = consumers_messaging
+        app.state.simulation_messaging = simulation_messaging
         yield
         run_task.cancel()
 
@@ -336,12 +326,17 @@ def consumers_messaging() -> ConsumersMessaging:
     return app.state.consumers_messaging
 
 
+def simulation_messaging() -> SimulationMessaging:
+    return app.state.simulation_messaging
+
+
 async def get_context(
-    messaging: "Annotated[Messaging, Depends(messaging)]",
-    thrusters_messaging: "Annotated[ThrustersMessaging, Depends(thrusters_messaging)]",
-    pvt_messaging: "Annotated[PvtMessaging, Depends(pvt_messaging)]",
-    pcm_messaging: "Annotated[PcmMessaging, Depends(pcm_messaging)]",
-    consumers_messaging: "Annotated[ConsumersMessaging, Depends(consumers_messaging)]",
+    messaging: Annotated[Messaging, Depends(messaging)],
+    thrusters_messaging: Annotated[ThrustersMessaging, Depends(thrusters_messaging)],
+    pvt_messaging: Annotated[PvtMessaging, Depends(pvt_messaging)],
+    pcm_messaging: Annotated[PcmMessaging, Depends(pcm_messaging)],
+    consumers_messaging: Annotated[ConsumersMessaging, Depends(consumers_messaging)],
+    simulation_messaging: Annotated[SimulationMessaging, Depends(simulation_messaging)],
 ):
     return ThrsContext(
         messaging=messaging,
@@ -349,6 +344,7 @@ async def get_context(
         pvt_messaging=pvt_messaging,
         pcm_messaging=pcm_messaging,
         consumers_messaging=consumers_messaging,
+        simulation_messaging=simulation_messaging,
     )
 
 

@@ -25,7 +25,8 @@ from thrs.orchestration.config import Config
 
 @dataclass
 class Context:
-    modules: "list[MessagingModule]"
+    control_modules: "list[ControlMessaging]"
+    simulation: "SimulationMessaging"
 
 
 class MessageReceiver[T: ThrsValues]:
@@ -114,8 +115,9 @@ class SimulationStatusMessageReceiver(MessageReceiver[SimulationStatusMessage]):
     async def handle(self, msg: Message, context: Context):
         parsed = self._parse_message(msg)
         if parsed is not None:
-            for module in context.modules:
-                module.active = module.name in parsed.modules
+            for module in context.control_modules:
+                module.active = module.name in parsed.control_modules
+            context.simulation.select_simulation(parsed.mode)
 
         await super().handle(msg, context)
 
@@ -123,13 +125,11 @@ class SimulationStatusMessageReceiver(MessageReceiver[SimulationStatusMessage]):
 settings = Config()  # type: ignore
 
 
-class MessagingModule[
+class ControlMessaging[
     SensorValues: ThrsValues,
     ControlValues: ThrsValues,
     Parameters: ThrsValues,
-    Inputs: SimulationInputs,
-    Outputs: SimulationValues,
-    Mode,
+    Mode: ThrsValues,
 ]:
     def __init__(
         self,
@@ -137,8 +137,6 @@ class MessagingModule[
         sensor_values_cls: type[SensorValues],
         control_values_cls: type[ControlValues],
         parameters_cls: type[Parameters],
-        simulation_inputs_cls: type[Inputs],
-        simulation_outputs_cls: type[Outputs],
         mode_cls: type[Mode],
         mqtt_client: MqttClient,
     ):
@@ -156,14 +154,6 @@ class MessagingModule[
         self._parameters = MessageReceiver(
             ParametersMessage[parameters_cls], ParametersMessage.subscribe_topic()
         )
-        self._simulation_inputs = MessageReceiver(
-            SimulationInputMessage[simulation_inputs_cls],
-            SimulationInputMessage.subscribe_topic(),
-        )
-        self._simulation_outputs = MessageReceiver(
-            simulation_outputs_cls,
-            "simulation/outputs",
-        )
         self._control_mode = MessageReceiver(
             ControlModeMessage[mode_cls], ControlModeMessage.subscribe_topic()
         )
@@ -175,8 +165,6 @@ class MessagingModule[
             self._sensor_values,
             self._control_values,
             self._parameters,
-            self._simulation_inputs,
-            self._simulation_outputs,
             self._control_mode,
         ]
 
@@ -213,19 +201,6 @@ class MessagingModule[
             self._parameters.wait_for(lambda msg: condition(msg.parameters), timeout)
         )
 
-    def wait_for_simulation_inputs(
-        self,
-        condition: Callable[[Inputs], bool],
-        *_args,
-        timeout: float,
-    ) -> Coroutine[None, None, Inputs]:
-        async def _afterwards(wait):
-            return (await wait).inputs
-
-        return _afterwards(
-            self._simulation_inputs.wait_for(lambda msg: condition(msg.inputs), timeout)
-        )
-
     @property
     def sensor_values(self) -> SensorValues | None:
         return self._sensor_values.last
@@ -238,30 +213,10 @@ class MessagingModule[
     def parameters(self) -> Parameters | None:
         return self._parameters.last.parameters if self._parameters.last else None
 
-    @property
-    def simulation_inputs(self) -> Inputs | None:
-        return (
-            self._simulation_inputs.last.inputs
-            if self._simulation_inputs.last
-            else None
-        )
-
-    @property
-    def simulation_outputs(self) -> Outputs | None:
-        return self._simulation_outputs.last
-
     async def set_parameters(self, parameters: Parameters):
         message = SetParametersMessage[Parameters](
             module=self.name, parameters=parameters
         )
-        await self._mqtt_client.publish(
-            f"{settings.mqtt_topic_prefix}/{message.topic()}",
-            message.model_dump_json(),
-            qos=1,
-        )
-
-    async def set_simulation_inputs(self, inputs: Inputs):
-        message = SetSimulationInputsMessage[Inputs](inputs=inputs)
         await self._mqtt_client.publish(
             f"{settings.mqtt_topic_prefix}/{message.topic()}",
             message.model_dump_json(),
@@ -286,32 +241,108 @@ class MessagingModule[
         return self._control_mode.last
 
 
+class SimulationMessaging:
+    def __init__(
+        self,
+        mapping: dict[str, tuple[type[SimulationInputs], type[SimulationValues]]],
+        mqtt_client: MqttClient,
+    ):
+        self._mapping = mapping
+        self._mqtt_client = mqtt_client
+
+    @property
+    def receivers(self):
+        return [
+            self._simulation_inputs,
+            self._simulation_outputs,
+        ]
+
+    def select_simulation(self, simulation: str):
+        simulation_inputs_cls, simulation_outputs_cls = self._mapping[simulation]
+
+        self._simulation_inputs = MessageReceiver(
+            SimulationInputMessage[simulation_inputs_cls],
+            SimulationInputMessage.subscribe_topic(),
+        )
+        self._simulation_outputs = MessageReceiver(
+            simulation_outputs_cls,
+            "simulation/outputs",
+        )
+
+    def wait_for_simulation_inputs(
+        self,
+        condition: Callable[[SimulationInputs], bool],
+        *_args,
+        timeout: float,
+    ) -> Coroutine[None, None, SimulationInputs]:
+        async def _afterwards(wait):
+            return (await wait).inputs
+
+        return _afterwards(
+            self._simulation_inputs.wait_for(lambda msg: condition(msg.inputs), timeout)
+        )
+
+    @property
+    def simulation_inputs(self) -> SimulationInputs | None:
+        return (
+            self._simulation_inputs.last.inputs
+            if self._simulation_inputs.last
+            else None
+        )
+
+    @property
+    def simulation_outputs(self) -> SimulationValues | None:
+        return self._simulation_outputs.last
+
+    async def set_simulation_inputs(self, inputs: SimulationInputs):
+        message = SetSimulationInputsMessage[SimulationInputs](inputs=inputs)
+        await self._mqtt_client.publish(
+            f"{settings.mqtt_topic_prefix}/{message.topic()}",
+            message.model_dump_json(),
+            qos=1,
+        )
+
+
 class Messaging:
     def __init__(
         self,
         mqtt_client: MqttClient,
-        modules: list[MessagingModule],
+        control_modules: list[ControlMessaging],
+        simulation: SimulationMessaging,
     ):
         self._mqtt_client = mqtt_client
-        self._modules = modules
+        self._control_modules = control_modules
+        self._simulation = simulation
         self._simulation_status = SimulationStatusMessageReceiver(
             SimulationStatusMessage, SimulationStatusMessage.subscribe_topic()
         )
 
     @property
     def _all_receivers(self):
+        simulation_receivers = (
+            self._simulation.receivers if hasattr(self._simulation, "receivers") else []
+        )
         return [
             self._simulation_status,
-            *[receiver for module in self._modules for receiver in module.receivers],
+            *simulation_receivers,
+            *[
+                receiver
+                for module in self._control_modules
+                for receiver in module.receivers
+            ],
         ]
 
     @property
     def _active_receivers(self):
+        simulation_receivers = (
+            self._simulation.receivers if hasattr(self._simulation, "receivers") else []
+        )
         return [
             self._simulation_status,
+            *simulation_receivers,
             *[
                 receiver
-                for module in self._modules
+                for module in self._control_modules
                 if module.active
                 for receiver in module.receivers
             ],
@@ -326,7 +357,9 @@ class Messaging:
                 await self._mqtt_client.subscribe(topic, qos=1)
 
         async def _run(self):
-            context = Context(modules=self._modules)
+            context = Context(
+                control_modules=self._control_modules, simulation=self._simulation
+            )
             async for message in self._mqtt_client.messages:
                 if message.payload == b"":
                     continue

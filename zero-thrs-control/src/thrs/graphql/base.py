@@ -7,7 +7,7 @@ from thrs.control.modules.pcm import PcmControlMode, PcmParameters
 from thrs.control.modules.pvt import PvtControlMode, PvtParameters
 from thrs.control.modules.thrusters import ThrustersControlMode, ThrustersParameters
 from thrs.control.switching import SwitchingControlMode
-from thrs.graphql.messaging import Messaging, MessagingModule
+from thrs.graphql.messaging import ControlMessaging, Messaging, SimulationMessaging
 import thrs.input_output.definitions.sensor as sensor
 import thrs.input_output.definitions.control as control
 from thrs.input_output.base import Stamped, ThrsValues
@@ -23,60 +23,47 @@ from thrs.graphql.helpers import (
 from thrs.input_output.modules.consumers import (
     ConsumersControlValues,
     ConsumersSensorValues,
-    ConsumersSimulationInputs,
-    ConsumersSimulationOutputs,
 )
 from thrs.input_output.modules.pcm import (
     PcmControlValues,
     PcmSensorValues,
-    PcmSimulationInputs,
-    PcmSimulationOutputs,
 )
 from thrs.input_output.modules.pvt import (
     PvtControlValues,
     PvtSensorValues,
-    PvtSimulationInputs,
-    PvtSimulationOutputs,
 )
 from thrs.input_output.modules.thrusters import (
     ThrustersControlValues,
     ThrustersSensorValues,
-    ThrustersSimulationInputs,
-    ThrustersSimulationOutputs,
 )
 
-type ThrustersMessaging = MessagingModule[
+type ThrustersMessaging = ControlMessaging[
     ThrustersSensorValues,
     ThrustersControlValues,
     ThrustersParameters,
-    ThrustersSimulationInputs,
-    ThrustersSimulationOutputs,
     ThrustersControlMode,
 ]
-type PvtMessaging = MessagingModule[
+
+type PvtMessaging = ControlMessaging[
     PvtSensorValues,
     PvtControlValues,
     PvtParameters,
-    PvtSimulationInputs,
-    PvtSimulationOutputs,
     PvtControlMode,
 ]
 
-type PcmMessaging = MessagingModule[
+
+type PcmMessaging = ControlMessaging[
     PcmSensorValues,
     PcmControlValues,
     PcmParameters,
-    PcmSimulationInputs,
-    PcmSimulationOutputs,
     PcmControlMode,
 ]
 
-type ConsumersMessaging = MessagingModule[
+
+type ConsumersMessaging = ControlMessaging[
     ConsumersSensorValues,
     ConsumersControlValues,
     ConsumersParameters,
-    ConsumersSimulationInputs,
-    ConsumersSimulationOutputs,
     ConsumersControlMode,
 ]
 
@@ -134,7 +121,7 @@ class SwitchingControlModeType[Mode]:
 
 
 @strawberry.type
-class Module[
+class ControlModule[
     SensorValues,
     ControlValues,
     Parameters,
@@ -150,10 +137,11 @@ class Module[
 @dataclass
 class ThrsContext(BaseContext):
     messaging: Messaging
-    thrusters_messaging: "ThrustersMessaging"
-    pvt_messaging: "PvtMessaging"
-    pcm_messaging: "PcmMessaging"
-    consumers_messaging: "ConsumersMessaging"
+    thrusters_messaging: ThrustersMessaging
+    pvt_messaging: PvtMessaging
+    pcm_messaging: PcmMessaging
+    consumers_messaging: ConsumersMessaging
+    simulation_messaging: SimulationMessaging
 
 
 type FieldMutation[T] = """Callable[
@@ -181,7 +169,7 @@ def add_control_mutations(
     module: str,
     control_values_cls: type[ThrsValues],
     strawberry_cls: type,
-    messaging: Callable[[ThrsContext], MessagingModule],
+    messaging: Callable[[ThrsContext], ControlMessaging],
 ):
     def _do(cls):
         def _make_control_mutation(name: str, component_type: type):
@@ -226,7 +214,7 @@ def add_parameter_mutations(
     module: str,
     parameters_cls: type[ThrsValues],
     strawberry_cls: type,
-    messaging: Callable[[ThrsContext], MessagingModule],
+    messaging: Callable[[ThrsContext], ControlMessaging],
 ):
     def _do(cls):
         def _make_parameter_mutation(name: str, component_type: type):
@@ -270,7 +258,7 @@ def add_simulation_input_mutations(
     module: str,
     inputs_cls: type[ThrsValues],
     strawberry_cls: type,
-    messaging: Callable[[ThrsContext], MessagingModule],
+    messaging: Callable[[ThrsContext], SimulationMessaging],
 ):
     def _do(cls):
         def _make_simulation_input_mutation(name: str, component_type: type):
@@ -315,7 +303,7 @@ def add_simulation_input_mutations(
 
 def add_automation_mode_mutation(
     module: str,
-    messaging: Callable[[ThrsContext], MessagingModule],
+    messaging: Callable[[ThrsContext], ControlMessaging],
 ):
     def _do(cls):
         async def set_automation_mode(
