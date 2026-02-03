@@ -7,8 +7,8 @@ from typing import Any, Callable, Coroutine
 from aiomqtt import Client as MqttClient
 from aiomqtt import Message
 
-from loads.api.loads import FunctionDefinition, VariableDefinition
-from loads.sensors import LoadsModel, MessagingModule
+from loads.registry import MessagingModule, VariableDefinition
+from loads.sensors import LoadsModel
 
 from .types import ActualType
 
@@ -70,12 +70,10 @@ class Messaging:
         self,
         mqtt_client: MqttClient,
         modules: list[MessagingModule],
-        function_definitions: dict[str, FunctionDefinition],
         variable_definitions: dict[str, VariableDefinition],
     ):
         self._mqtt_client = mqtt_client
         self._modules = modules
-        self._function_definitions = function_definitions
         self._variable_definitions = variable_definitions
         self._receivers: dict[str, MessageReceiver] = {
             topic: MessageReceiver(cls=model, topic=topic)
@@ -111,16 +109,15 @@ class Messaging:
         results: list[ActualType] = []
         for variable_id in variable_ids:
             if variable := self._variable_definitions.get(variable_id):
-                function = self._function_definitions[variable.function_id]
-                receiver = self._receivers.get(function.topic)
+                receiver = self._receivers[variable.topic]
 
-                if not receiver or receiver.last is None:
+                if receiver.last is None:
                     continue
 
                 results.append(
                     ActualType(
                         id=variable_id,
-                        value=getattr(receiver.last, variable.field_name),
+                        value=variable.get_actual(receiver.last),
                     )
                 )
             else:

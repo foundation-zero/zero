@@ -6,8 +6,9 @@ from pydantic import BeforeValidator, Field
 
 @dataclass
 class VariableMeta:
-    unit: str
-    suffix: str
+    unit: str | None = None
+    name: str | None = None
+    ignore: bool = False
 
 
 @dataclass
@@ -35,7 +36,7 @@ def decakilogram_to_tonne(value: int) -> float:
 RelativePosition: TypeAlias = Annotated[
     float,
     Field(ge=0, le=1),
-    VariableMeta(unit="ratio", suffix="relative-position"),
+    VariableMeta(unit="ratio", name="relative-position"),
     BeforeValidator(per_mille_to_ratio),
     ScalingMeta(
         conversion=per_mille_to_ratio,
@@ -43,12 +44,12 @@ RelativePosition: TypeAlias = Annotated[
     ),
 ]
 Position: TypeAlias = Annotated[
-    int, Field(ge=0), VariableMeta(unit="mm", suffix="position")
+    int, Field(ge=0), VariableMeta(unit="mm", name="position")
 ]
 Load: TypeAlias = Annotated[
     float,
     Field(ge=0, le=20),  # this should go on the model field
-    VariableMeta(unit="tonne", suffix="load"),
+    VariableMeta(unit="tonne", name="load"),
     BeforeValidator(decakilogram_to_tonne),
     ScalingMeta(
         conversion=decakilogram_to_tonne,
@@ -57,3 +58,13 @@ Load: TypeAlias = Annotated[
 ]
 Alarm: TypeAlias = bool
 Lock: TypeAlias = bool
+Speed: TypeAlias = Annotated[
+    float,
+    Field(ge=0),
+    VariableMeta(unit="knots", name="speed"),
+]
+Angle: TypeAlias = Annotated[
+    float,
+    Field(ge=-180, le=180),
+    VariableMeta(unit="degrees", name="angle"),
+]

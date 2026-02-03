@@ -1,0 +1,122 @@
+from dataclasses import dataclass
+from functools import partial
+from typing import Callable, cast
+
+from loads.sensors import at, sail_system
+from loads.sensors.base import LoadsModel
+from loads.util import camel_to_kebab, hyphenize
+
+
+@dataclass
+class VariableDefinition:
+    id: str
+    topic: str
+    get_actual: Callable[[LoadsModel], float | None]
+    unit: str
+    minimum: float | None
+    maximum: float | None
+
+
+def _build_sail_system_variable_definitions(
+    model: type[LoadsModel],
+) -> list[VariableDefinition]:
+    function_id = camel_to_kebab(model.__name__)
+
+    return [
+        VariableDefinition(
+            id=f"{function_id}-{hyphenize(variable_meta.name or '')}",
+            topic=model.TOPIC,
+            get_actual=partial(
+                lambda field, model_instance: getattr(model_instance, field), field
+            ),
+            unit=cast(str, variable_meta.unit),
+            minimum=model.extract_minimum(field_info.metadata),
+            maximum=model.extract_maximum(field_info.metadata),
+        )
+        for field, field_info in model.model_fields.items()
+        if (variable_meta := model.extract_variable_meta(field_info.metadata))
+        and not variable_meta.ignore
+    ]
+
+
+SAIL_SYSTEM_MODELS: list[type[LoadsModel]] = [
+    sail_system.PrimaryWinchPs,
+    sail_system.PrimaryWinchSb,
+    sail_system.MainWinchPsFwd,
+    sail_system.MainWinchSbFwd,
+    sail_system.MainWinchPsAft,
+    sail_system.MainWinchSbAft,
+    sail_system.MizzenWinchSb,
+    sail_system.MizzenWinchPs,
+    sail_system.AftWinchPs,
+    sail_system.AftWinchSb,
+    sail_system.BladeAdjuster,
+    sail_system.BladeCunningham,
+    sail_system.BladeSheetCaptivePs,
+    sail_system.BladeSheetCaptiveSb,
+    sail_system.BladeSheetFeederPs,
+    sail_system.BladeSheetFeederSb,
+    sail_system.BladeTweakerPs,
+    sail_system.BladeTweakerSb,
+    sail_system.CodeSailTack,
+    sail_system.HeadsailLocks,
+    sail_system.MainCheckstayDeflector,
+    sail_system.MainCunningham,
+    sail_system.MainHalyard,
+    sail_system.MainOuthaul,
+    sail_system.MainPreventer,
+    sail_system.MainRunnerSb,
+    sail_system.MainRunnerPs,
+    sail_system.MainSheet,
+    sail_system.MainTraveler,
+    sail_system.MainVang,
+    sail_system.MizzenCheckstayDeflector,
+    sail_system.MizzenCunningham,
+    sail_system.MizzenHalyard,
+    sail_system.MizzenHeadsailLocks,
+    sail_system.MizzenHeadsailTackAdjuster,
+    sail_system.MizzenOuthaul,
+    sail_system.MizzenPreventer,
+    sail_system.MizzenRunnerPs,
+    sail_system.MizzenRunnerSb,
+    sail_system.MizzenSheet,
+    sail_system.MizzenVang,
+    sail_system.StaysailSheetPs,
+    sail_system.StaysailSheetSb,
+    sail_system.StaysailSheetFeederPs,
+    sail_system.StaysailSheetFeederSb,
+    sail_system.StaysailStayAdjuster,
+]
+AT_MODELS = [at.ApparentWindSpeed, at.ApparentWindAngle]
+
+_SAIL_SYSTEM_VARIABLES: dict[str, VariableDefinition] = {
+    variable.id: variable
+    for model in SAIL_SYSTEM_MODELS
+    for variable in _build_sail_system_variable_definitions(model)
+}
+
+
+def _build_at_variable_definitions(model: type[LoadsModel]) -> VariableDefinition:
+    field_info = model.model_fields["value"]
+    variable_meta = model.extract_variable_meta(field_info.metadata)
+
+    if not variable_meta or not variable_meta.name or not variable_meta.unit:
+        raise ValueError(f"No valid VariableMeta found for A+T model {model.__name__}")
+
+    return VariableDefinition(
+        id=variable_meta.name,
+        topic=model.TOPIC,
+        get_actual=lambda model_instance: model_instance.value,  # type: ignore[attr-defined]
+        unit=variable_meta.unit,
+        minimum=model.extract_minimum(field_info.metadata),
+        maximum=model.extract_maximum(field_info.metadata),
+    )
+
+
+_AT_VARIABLES: dict[str, VariableDefinition] = {
+    variable.id: variable
+    for model in AT_MODELS
+    for variable in [_build_at_variable_definitions(model)]
+}
+
+VARIABLES = {**_SAIL_SYSTEM_VARIABLES, **_AT_VARIABLES}

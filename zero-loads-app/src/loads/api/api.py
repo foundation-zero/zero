@@ -13,9 +13,8 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from strawberry.dataloader import DataLoader
 from strawberry.fastapi import BaseContext, GraphQLRouter
 
-from loads.api.loads import FUNCTIONS, VARIABLES
 from loads.config import settings
-from loads.sensors import at_sensors, sail_system_sensors
+from loads.registry import VARIABLES, at_sensors, sail_system_sensors
 
 from .db import SessionManager
 from .messaging import Messaging
@@ -45,7 +44,6 @@ async def lifespan(app: FastAPI):
         messaging = Messaging(
             mqtt_client=mqtt,
             modules=[sail_system_sensors, at_sensors],
-            function_definitions=FUNCTIONS,
             variable_definitions=VARIABLES,
         )
         run_task = create_task(await messaging.run())

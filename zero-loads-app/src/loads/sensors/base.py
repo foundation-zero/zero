@@ -1,3 +1,4 @@
+from functools import reduce
 from typing import Any, Callable, ClassVar, get_type_hints
 
 import generator.gen as gen
@@ -7,7 +8,7 @@ from pydantic import AliasGenerator, BaseModel, ConfigDict
 
 from loads.sensors.units import ScalingMeta, VariableMeta
 
-from .util import hyphenize
+from ..util import hyphenize
 
 
 class LoadsModel(BaseModel):
@@ -105,10 +106,18 @@ class LoadsModel(BaseModel):
 
     @staticmethod
     def extract_variable_meta(meta: list[Any]) -> VariableMeta | None:
-        for m in meta:
-            if isinstance(m, VariableMeta):
-                return m
-        return None
+        variable_metas = [m for m in meta if isinstance(m, VariableMeta)]
+        if variable_metas:
+            return reduce(
+                lambda a, b: VariableMeta(
+                    unit=b.unit or a.unit,
+                    name=b.name or a.name,
+                    ignore=b.ignore or a.ignore,
+                ),
+                variable_metas,
+            )
+        else:
+            return None
 
     @staticmethod
     def extract_scaling_conversion(meta: list[Any]) -> Callable | None:
