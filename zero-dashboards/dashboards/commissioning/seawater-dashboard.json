@@ -801,7 +801,7 @@
                 "size": 16,
                 "text": {
                   "field": "sea_water_cool_pmp2_startstop",
-                  "fixed": "Cool. pump 2 - Start/Stop",
+                  "fixed": "Cool. pump 2 - Start",
                   "mode": "fixed"
                 },
                 "valign": "middle"
@@ -840,7 +840,7 @@
                 "size": 16,
                 "text": {
                   "field": "sea_water_cool_pmp1_startstop",
-                  "fixed": "Cool. pump 1 - Start/Stop",
+                  "fixed": "Cool. pump 1 - Start",
                   "mode": "fixed"
                 },
                 "valign": "middle"
@@ -1246,13 +1246,6 @@
                   "cooling_pump2_onoff": "Cooling pump 2 - On/Off",
                   "cooling_pump2_remavail": "Cooling pump 2 - Remote avail.",
                   "cooling_pump2_running": "Cooling pump 2 - Running",
-                  "fresh_water_chlorine_unit_alarm": "Chlorine unit - Alarm",
-                  "fresh_water_circ_pump_onoff": "Circulation pump - On/Off",
-                  "fresh_water_circ_pump_running": "Circulation pump - Running",
-                  "fresh_water_mak1_alarm": "Water maker 1 - Alarm",
-                  "fresh_water_mak2_alarm": "Water maker 2 - Alarm",
-                  "st_fresh_water_circ_pump_running": "Circulation pump - Running",
-                  "time": "",
                   "vacuum_alarm": "Vacuum - Alarm"
                 }
               }
@@ -1288,7 +1281,7 @@
                   "tooltip": false,
                   "viz": false
                 },
-                "insertNulls": false,
+                "insertNulls": 300000,
                 "lineInterpolation": "linear",
                 "lineWidth": 2,
                 "pointSize": 5,
@@ -1297,7 +1290,7 @@
                 },
                 "showPoints": "auto",
                 "showValues": false,
-                "spanNulls": false,
+                "spanNulls": 60000,
                 "stacking": {
                   "group": "A",
                   "mode": "none"
@@ -1585,6 +1578,18 @@
                 "value": "left"
               }
             ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Name"
+            },
+            "properties": [
+              {
+                "id": "custom.width",
+                "value": 318
+              }
+            ]
           }
         ]
       },
@@ -1645,15 +1650,6 @@
             "includeByName": {},
             "indexByName": {},
             "renameByName": {
-              "Alarm": "Alarm",
-              "Close": "Close",
-              "Closed": "Closed",
-              "HmiCmdClose": "HmiCmdClose",
-              "HmiCmdOpen": "HmiCmdOpen",
-              "HmiControlAvailable": "HmiControlAvailable",
-              "Open": "Open",
-              "Opened": "Opened",
-              "ShouldBeOpen": "ShouldBeOpen",
               "alarm": "Alarm",
               "close": "Close",
               "closed": "Closed",
@@ -1699,5 +1695,5 @@
   "timezone": "browser",
   "title": "Seawater",
   "uid": "commissioning-seawater",
-  "version": 2
+  "version": 1
 }

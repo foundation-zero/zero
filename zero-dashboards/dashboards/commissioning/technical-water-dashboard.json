@@ -1170,7 +1170,7 @@
             "h": 8,
             "w": 24,
             "x": 0,
-            "y": 10
+            "y": 6
           },
           "id": 12,
           "options": {
@@ -1230,16 +1230,10 @@
                 "indexByName": {},
                 "renameByName": {
                   "fresh_water_chlorine_unit_alarm": "Chlorine unit - Alarm",
-                  "fresh_water_circ_pump_onoff": "Circulation pump - On/Off",
-                  "fresh_water_circ_pump_running": "Circulation pump - Running",
-                  "fresh_water_mak1_alarm": "Water maker 1 - Alarm",
-                  "fresh_water_mak2_alarm": "Water maker 2 - Alarm",
                   "mts_exhaust_flap_released": "MTS exhaust flap - Released",
                   "mts_exhaust_flap_reset": "MTS exhaust flap - Reset",
                   "mts_inlet_flap_released": "MTS inlet flap - Released",
                   "mts_inlet_flap_reset": "MTS inlet flap - Reset",
-                  "st_fresh_water_circ_pump_running": "Circulation pump - Running",
-                  "time": "",
                   "valve_cold_air_cool_water_y03_openclose": "Cooling water valve Y03 - Open",
                   "valve_cold_air_cool_water_y04_openclose": "Cooling water valve Y04 - Open",
                   "valve_cold_air_cool_water_y05_openclose": "Cooling water valve Y05 - Open"
@@ -1293,8 +1287,8 @@
         "overrides": []
       },
       "gridPos": {
-        "h": 8,
-        "w": 8,
+        "h": 6,
+        "w": 12,
         "x": 0,
         "y": 7
       },
@@ -1348,7 +1342,7 @@
               "name": "Adiabatic_cool_b03",
               "placement": {
                 "height": 30,
-                "left": 15,
+                "left": 235,
                 "rotation": 0,
                 "top": 10,
                 "width": 180
@@ -1384,10 +1378,10 @@
               "name": "Adiabatic_cool_b03 label",
               "placement": {
                 "height": 30,
-                "left": 205,
+                "left": 15,
                 "rotation": 0,
                 "top": 10,
-                "width": 350
+                "width": 204
               },
               "type": "text"
             },
@@ -1421,8 +1415,7 @@
               "name": "Adiabatic_cool_b07",
               "placement": {
                 "height": 30,
-                "left": 15,
-                "rotation": 0,
+                "left": 235,
                 "top": 45,
                 "width": 180
               },
@@ -1457,10 +1450,10 @@
               "name": "Adiabatic_cool_b07 label",
               "placement": {
                 "height": 30,
-                "left": 205,
+                "left": 15,
                 "rotation": 0,
                 "top": 45,
-                "width": 350
+                "width": 204
               },
               "type": "text"
             },
@@ -1494,8 +1487,7 @@
               "name": "Adiabatic_cool_b08",
               "placement": {
                 "height": 30,
-                "left": 15,
-                "rotation": 0,
+                "left": 235,
                 "top": 80,
                 "width": 180
               },
@@ -1530,10 +1522,10 @@
               "name": "Adiabatic_cool_b08 label",
               "placement": {
                 "height": 30,
-                "left": 205,
+                "left": 15,
                 "rotation": 0,
                 "top": 80,
-                "width": 350
+                "width": 204
               },
               "type": "text"
             },
@@ -1567,8 +1559,7 @@
               "name": "Adiabatic_cool_b09",
               "placement": {
                 "height": 30,
-                "left": 15,
-                "rotation": 0,
+                "left": 235,
                 "top": 115,
                 "width": 180
               },
@@ -1603,10 +1594,9 @@
               "name": "Adiabatic_cool_b09 label",
               "placement": {
                 "height": 30,
-                "left": 205,
-                "rotation": 0,
+                "left": 15,
                 "top": 115,
-                "width": 350
+                "width": 204
               },
               "type": "text"
             },
@@ -1640,9 +1630,9 @@
               "name": "deckwash_reel_b04",
               "placement": {
                 "height": 30,
-                "left": 15,
+                "left": 710,
                 "rotation": 0,
-                "top": 150,
+                "top": 10,
                 "width": 180
               },
               "type": "metric-value"
@@ -1676,10 +1666,10 @@
               "name": "deckwash_reel_b04 label",
               "placement": {
                 "height": 30,
-                "left": 205,
+                "left": 490,
                 "rotation": 0,
-                "top": 150,
-                "width": 350
+                "top": 10,
+                "width": 204
               },
               "type": "text"
             },
@@ -1713,9 +1703,8 @@
               "name": "deckwash_reel_b05",
               "placement": {
                 "height": 30,
-                "left": 15,
-                "rotation": 0,
-                "top": 185,
+                "left": 710,
+                "top": 45,
                 "width": 180
               },
               "type": "metric-value"
@@ -1749,10 +1738,9 @@
               "name": "deckwash_reel_b05 label",
               "placement": {
                 "height": 30,
-                "left": 205,
-                "rotation": 0,
-                "top": 185,
-                "width": 350
+                "left": 490,
+                "top": 45,
+                "width": 204
               },
               "type": "text"
             },
@@ -1786,9 +1774,8 @@
               "name": "deckwash_reel_b06",
               "placement": {
                 "height": 30,
-                "left": 15,
-                "rotation": 0,
-                "top": 220,
+                "left": 710,
+                "top": 80,
                 "width": 180
               },
               "type": "metric-value"
@@ -1822,10 +1809,9 @@
               "name": "deckwash_reel_b06 label",
               "placement": {
                 "height": 30,
-                "left": 205,
-                "rotation": 0,
-                "top": 220,
-                "width": 350
+                "left": 490,
+                "top": 80,
+                "width": 204
               },
               "type": "text"
             }
@@ -1840,7 +1826,7 @@
           },
           "type": "frame"
         },
-        "showAdvancedTypes": true,
+        "showAdvancedTypes": false,
         "tooltip": {
           "disableForOneClick": false,
           "mode": "none"
@@ -1853,7 +1839,7 @@
           "editorMode": "code",
           "format": "table",
           "rawQuery": true,
-          "rawSql": "SELECT\n  LAST_VALUE(time ORDER BY time) AS time,\n  \n  LAST_VALUE((\"ADIABATIC_COOL_B03_FLOW\").value ORDER BY time)      AS adiabatic_cool_b03,\n  LAST_VALUE((\"ADIABATIC_COOL_B07_FLOW\").value ORDER BY time)      AS adiabatic_cool_b07,\n  LAST_VALUE((\"ADIABATIC_COOL_B08_FLOW\").value ORDER BY time)      AS adiabatic_cool_b08,\n  LAST_VALUE((\"ADIABATIC_COOL_B09_FLOW\").value ORDER BY time)      AS adiabatic_cool_b09,\n  LAST_VALUE((\"REEL_FOR_DECKWASH_B04_FLOW\").value ORDER BY time)   AS deckwash_reel_B04,\n  LAST_VALUE((\"REEL_FOR_DECKWASH_B05_FLOW\").value ORDER BY time)   AS deckwash_reel_B05,\n  LAST_VALUE((\"REEL_FOR_DECKWASH_B06_FLOW\").value ORDER BY time)   AS deckwash_reel_B06\n\nFROM marpower.\"250000_techwater\";\n",
+          "rawSql": "SELECT\n  LAST_VALUE(time ORDER BY time) AS time,\n  \n  LAST_VALUE((\"ADIABATIC_COOL_B03_FLOW\").value ORDER BY time)      AS adiabatic_cool_b03,\n  LAST_VALUE((\"ADIABATIC_COOL_B07_FLOW\").value ORDER BY time)      AS adiabatic_cool_b07,\n  LAST_VALUE((\"ADIABATIC_COOL_B08_FLOW\").value ORDER BY time)      AS adiabatic_cool_b08,\n  LAST_VALUE((\"ADIABATIC_COOL_B09_FLOW\").value ORDER BY time)      AS adiabatic_cool_b09,\n  LAST_VALUE((\"REEL_FOR_DECKWASH_B04_FLOW\").value ORDER BY time)   AS deckwash_reel_B04,\n  LAST_VALUE((\"REEL_FOR_DECKWASH_B05_FLOW\").value ORDER BY time)   AS deckwash_reel_B05,\n  LAST_VALUE((\"REEL_FOR_DECKWASH_B06_FLOW\").value ORDER BY time)   AS deckwash_reel_B06\n\nFROM marpower.\"250000_techwater\"\n",
           "refId": "A",
           "sql": {
             "columns": [
@@ -1952,9 +1938,9 @@
         ]
       },
       "gridPos": {
-        "h": 8,
-        "w": 8,
-        "x": 8,
+        "h": 6,
+        "w": 12,
+        "x": 12,
         "y": 7
       },
       "id": 14,
@@ -2007,7 +1993,7 @@
               "name": "charcoal_filter_flow",
               "placement": {
                 "height": 30,
-                "left": 15,
+                "left": 235,
                 "rotation": 0,
                 "top": 10,
                 "width": 180
@@ -2043,10 +2029,9 @@
               "name": "charcoal_filter_flow label",
               "placement": {
                 "height": 30,
-                "left": 205,
-                "rotation": 0,
+                "left": 15,
                 "top": 10,
-                "width": 350
+                "width": 219
               },
               "type": "text"
             },
@@ -2080,7 +2065,7 @@
               "name": "charcoal_filter_temp",
               "placement": {
                 "height": 30,
-                "left": 15,
+                "left": 235,
                 "rotation": 0,
                 "top": 45,
                 "width": 180
@@ -2105,7 +2090,7 @@
                 },
                 "size": 16,
                 "text": {
-                  "fixed": "Charcoal filter - Temperature"
+                  "fixed": "Charcoal filter - Temp."
                 },
                 "valign": "middle"
               },
@@ -2116,10 +2101,9 @@
               "name": "charcoal_filter_temp label",
               "placement": {
                 "height": 30,
-                "left": 205,
-                "rotation": 0,
+                "left": 15,
                 "top": 45,
-                "width": 350
+                "width": 219
               },
               "type": "text"
             },
@@ -2153,8 +2137,9 @@
               "name": "salinity1",
               "placement": {
                 "height": 30,
-                "left": 15,
-                "top": 98,
+                "left": 235,
+                "rotation": 0,
+                "top": 90,
                 "width": 180
               },
               "type": "metric-value"
@@ -2188,9 +2173,10 @@
               "name": "salinity1 label",
               "placement": {
                 "height": 30,
-                "left": 205,
-                "top": 98,
-                "width": 350
+                "left": 15,
+                "rotation": 0,
+                "top": 90,
+                "width": 134
               },
               "type": "text"
             },
@@ -2224,8 +2210,9 @@
               "name": "salinity2",
               "placement": {
                 "height": 30,
-                "left": 15,
-                "top": 133,
+                "left": 235,
+                "rotation": 0,
+                "top": 125,
                 "width": 180
               },
               "type": "metric-value"
@@ -2260,9 +2247,10 @@
               "name": "salinity2 label",
               "placement": {
                 "height": 30,
-                "left": 205,
-                "top": 133,
-                "width": 350
+                "left": 15,
+                "rotation": 0,
+                "top": 125,
+                "width": 134
               },
               "type": "text"
             },
@@ -2296,9 +2284,9 @@
               "name": "tank1_level",
               "placement": {
                 "height": 30,
-                "left": 15,
+                "left": 650,
                 "rotation": 0,
-                "top": 185,
+                "top": 10,
                 "width": 180
               },
               "type": "metric-value"
@@ -2332,10 +2320,10 @@
               "name": "tank1_level label",
               "placement": {
                 "height": 30,
-                "left": 205,
+                "left": 500,
                 "rotation": 0,
-                "top": 185,
-                "width": 350
+                "top": 10,
+                "width": 134
               },
               "type": "text"
             },
@@ -2370,9 +2358,9 @@
               "name": "tank2_level",
               "placement": {
                 "height": 30,
-                "left": 15,
+                "left": 650,
                 "rotation": 0,
-                "top": 220,
+                "top": 45,
                 "width": 180
               },
               "type": "metric-value"
@@ -2406,10 +2394,10 @@
               "name": "tank2_level label",
               "placement": {
                 "height": 30,
-                "left": 205,
+                "left": 500,
                 "rotation": 0,
-                "top": 220,
-                "width": 350
+                "top": 45,
+                "width": 134
               },
               "type": "text"
             }
@@ -2424,7 +2412,7 @@
           },
           "type": "frame"
         },
-        "showAdvancedTypes": true,
+        "showAdvancedTypes": false,
         "tooltip": {
           "disableForOneClick": false,
           "mode": "none"
@@ -2437,7 +2425,7 @@
           "editorMode": "code",
           "format": "table",
           "rawQuery": true,
-          "rawSql": "SELECT\n  LAST_VALUE(time ORDER BY time) AS time,\n  \n  LAST_VALUE((\"CHARCOAL_FILTER_B01_FLOW\").value ORDER BY time)      AS charcoal_filter_flow,\n  LAST_VALUE((\"CHARCOAL_FILTER_B01_TEMP\").value ORDER BY time)      AS charcoal_filter_temp,\n  LAST_VALUE((\"SALINITY1\").value ORDER BY time)                     AS salinity1,\n  LAST_VALUE((\"SALINITY2\").value ORDER BY time)                     AS salinity2,\n  LAST_VALUE((\"TANK1_LEVEL\").value ORDER BY time)                   AS tank1_level,\n  LAST_VALUE((\"TANK2_LEVEL\").value ORDER BY time)                   AS tank2_level\n\nFROM marpower.\"250000_techwater\";\n",
+          "rawSql": "SELECT\n  LAST_VALUE(time ORDER BY time) AS time,\n  \n  LAST_VALUE((\"CHARCOAL_FILTER_B01_FLOW\").value ORDER BY time)      AS charcoal_filter_flow,\n  LAST_VALUE((\"CHARCOAL_FILTER_B01_TEMP\").value ORDER BY time)      AS charcoal_filter_temp,\n  LAST_VALUE((\"SALINITY1\").value ORDER BY time)                     AS salinity1,\n  LAST_VALUE((\"SALINITY2\").value ORDER BY time)                     AS salinity2,\n  LAST_VALUE((\"TANK1_LEVEL\").value ORDER BY time)                   AS tank1_level,\n  LAST_VALUE((\"TANK2_LEVEL\").value ORDER BY time)                   AS tank2_level\n\nFROM marpower.\"250000_techwater\"\n",
           "refId": "A",
           "sql": {
             "columns": [
@@ -2467,7 +2455,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 15
+        "y": 13
       },
       "id": 13,
       "panels": [
@@ -2498,7 +2486,7 @@
                   "tooltip": false,
                   "viz": false
                 },
-                "insertNulls": false,
+                "insertNulls": 300000,
                 "lineInterpolation": "linear",
                 "lineWidth": 2,
                 "pointSize": 5,
@@ -2507,7 +2495,7 @@
                 },
                 "showPoints": "auto",
                 "showValues": false,
-                "spanNulls": false,
+                "spanNulls": 60000,
                 "stacking": {
                   "group": "A",
                   "mode": "none"
@@ -2546,7 +2534,7 @@
             "h": 8,
             "w": 24,
             "x": 0,
-            "y": 16
+            "y": 24
           },
           "id": 15,
           "options": {
@@ -2637,7 +2625,7 @@
                   "tooltip": false,
                   "viz": false
                 },
-                "insertNulls": false,
+                "insertNulls": 300000,
                 "lineInterpolation": "linear",
                 "lineWidth": 2,
                 "pointSize": 5,
@@ -2646,7 +2634,7 @@
                 },
                 "showPoints": "auto",
                 "showValues": false,
-                "spanNulls": false,
+                "spanNulls": 60000,
                 "stacking": {
                   "group": "A",
                   "mode": "none"
@@ -2685,7 +2673,7 @@
             "h": 8,
             "w": 24,
             "x": 0,
-            "y": 24
+            "y": 32
           },
           "id": 17,
           "options": {
@@ -2775,7 +2763,7 @@
                   "tooltip": false,
                   "viz": false
                 },
-                "insertNulls": false,
+                "insertNulls": 300000,
                 "lineInterpolation": "linear",
                 "lineWidth": 2,
                 "pointSize": 5,
@@ -2784,7 +2772,7 @@
                 },
                 "showPoints": "auto",
                 "showValues": false,
-                "spanNulls": false,
+                "spanNulls": 60000,
                 "stacking": {
                   "group": "A",
                   "mode": "none"
@@ -2835,7 +2823,7 @@
             "h": 8,
             "w": 24,
             "x": 0,
-            "y": 32
+            "y": 40
           },
           "id": 16,
           "options": {
@@ -2924,7 +2912,7 @@
                   "tooltip": false,
                   "viz": false
                 },
-                "insertNulls": false,
+                "insertNulls": 300000,
                 "lineInterpolation": "linear",
                 "lineWidth": 2,
                 "pointSize": 5,
@@ -2933,7 +2921,7 @@
                 },
                 "showPoints": "auto",
                 "showValues": false,
-                "spanNulls": false,
+                "spanNulls": 60000,
                 "stacking": {
                   "group": "A",
                   "mode": "none"
@@ -2972,7 +2960,7 @@
             "h": 8,
             "w": 24,
             "x": 0,
-            "y": 40
+            "y": 48
           },
           "id": 19,
           "options": {
@@ -3061,7 +3049,7 @@
                   "tooltip": false,
                   "viz": false
                 },
-                "insertNulls": false,
+                "insertNulls": 300000,
                 "lineInterpolation": "linear",
                 "lineWidth": 2,
                 "pointSize": 5,
@@ -3070,7 +3058,7 @@
                 },
                 "showPoints": "auto",
                 "showValues": false,
-                "spanNulls": false,
+                "spanNulls": 60000,
                 "stacking": {
                   "group": "A",
                   "mode": "none"
@@ -3109,7 +3097,7 @@
             "h": 8,
             "w": 24,
             "x": 0,
-            "y": 48
+            "y": 56
           },
           "id": 18,
           "options": {

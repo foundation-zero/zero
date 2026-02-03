@@ -679,7 +679,7 @@
                 "size": 16,
                 "text": {
                   "field": "fresh_water_circ_pump_onoff",
-                  "fixed": "Circulation pump - On/Off",
+                  "fixed": "Circulation pump - On",
                   "mode": "fixed"
                 },
                 "valign": "middle"
@@ -837,10 +837,10 @@
             ]
           },
           "gridPos": {
-            "h": 6,
+            "h": 7,
             "w": 24,
             "x": 0,
-            "y": 6
+            "y": 26
           },
           "id": 12,
           "options": {
@@ -869,7 +869,7 @@
               "editorMode": "code",
               "format": "table",
               "rawQuery": true,
-              "rawSql": "SELECT\r\n  time,\r\n\r\n  -- Alarm\r\n  (\"MAK1_ALARM\").value AS fresh_water_mak1_alarm,\r\n  (\"MAK2_ALARM\").value AS fresh_water_mak2_alarm,\r\n  (\"CHLORINE_UNIT_ALARM\").value AS fresh_water_chlorine_unit_alarm,\r\n\r\n  -- Status\r\n  (\"CIRC_PUMP_RUNNING\").value AS st_fresh_water_circ_pump_running,\r\n\r\n  -- Control signals\r\n  (\"CIRC_PUMP_ONOFF\").value AS fresh_water_circ_pump_onoff\r\nFROM marpower.\"250000_fresh_water\"\r\nWHERE $__timeFilter(time)",
+              "rawSql": "SELECT\r\n  time,\r\n\r\n  -- Alarm\r\n  (\"MAK1_ALARM\").value AS fresh_water_mak1_alarm,\r\n  (\"MAK2_ALARM\").value AS fresh_water_mak2_alarm,\r\n  (\"CHLORINE_UNIT_ALARM\").value AS fresh_water_chlorine_unit_alarm,\r\n\r\n  -- Status\r\n  (\"CIRC_PUMP_RUNNING\").value AS fresh_water_circ_pump_running,\r\n\r\n  -- Control signals\r\n  (\"CIRC_PUMP_ONOFF\").value AS fresh_water_circ_pump_onoff\r\nFROM marpower.\"250000_fresh_water\"\r\nWHERE $__timeFilter(time)",
               "refId": "A",
               "sql": {
                 "columns": [
@@ -904,7 +904,6 @@
                   "fresh_water_circ_pump_running": "Circulation pump - Running",
                   "fresh_water_mak1_alarm": "Water maker 1 - Alarm",
                   "fresh_water_mak2_alarm": "Water maker 2 - Alarm",
-                  "st_fresh_water_circ_pump_running": "Circulation pump - Running",
                   "time": ""
                 }
               }
@@ -927,7 +926,7 @@
       },
       "id": 6,
       "panels": [],
-      "title": "Sensor values",
+      "title": "Cold water flow",
       "type": "row"
     },
     {
@@ -956,12 +955,969 @@
         "overrides": []
       },
       "gridPos": {
-        "h": 7,
-        "w": 24,
+        "h": 8,
+        "w": 12,
         "x": 0,
         "y": 7
       },
       "id": 4,
+      "options": {
+        "inlineEditing": false,
+        "panZoom": false,
+        "root": {
+          "background": {
+            "color": {
+              "fixed": "transparent"
+            }
+          },
+          "border": {
+            "color": {
+              "fixed": "dark-green"
+            }
+          },
+          "constraint": {
+            "horizontal": "left",
+            "vertical": "top"
+          },
+          "elements": [
+            {
+              "background": {
+                "color": {
+                  "fixed": "#D9D9D9"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "center",
+                "color": {
+                  "fixed": "#000000"
+                },
+                "size": 18,
+                "text": {
+                  "field": "coldwater_guest_cabin_sb_flow",
+                  "mode": "field"
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "name": "Guest cabin SB",
+              "placement": {
+                "height": 30,
+                "left": 235,
+                "rotation": 0,
+                "top": 10,
+                "width": 180
+              },
+              "type": "metric-value"
+            },
+            {
+              "background": {
+                "color": {
+                  "fixed": "transparent"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "left",
+                "color": {
+                  "fixed": "rgb(204,204,220)"
+                },
+                "size": 16,
+                "text": {
+                  "fixed": "Guest cabin SB"
+                },
+                "valign": "middle"
+              },
+              "connections": [],
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "name": "Element 6",
+              "placement": {
+                "height": 30,
+                "left": 15,
+                "rotation": 0,
+                "top": 10,
+                "width": 350
+              },
+              "type": "text"
+            },
+            {
+              "background": {
+                "color": {
+                  "fixed": "#D9D9D9"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "center",
+                "color": {
+                  "fixed": "#000000"
+                },
+                "size": 18,
+                "text": {
+                  "field": "coldwater_guest_cabin_ps_fwd_flow",
+                  "mode": "field"
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "name": "Guest cabin PS FWD",
+              "placement": {
+                "height": 30,
+                "left": 235,
+                "top": 45,
+                "width": 180
+              },
+              "type": "metric-value"
+            },
+            {
+              "background": {
+                "color": {
+                  "fixed": "transparent"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "left",
+                "color": {
+                  "fixed": "rgb(204,204,220)"
+                },
+                "size": 16,
+                "text": {
+                  "fixed": "Guest cabin PS FWD"
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "name": "Element 8",
+              "placement": {
+                "height": 30,
+                "left": 15,
+                "top": 45,
+                "width": 350
+              },
+              "type": "text"
+            },
+            {
+              "background": {
+                "color": {
+                  "fixed": "#D9D9D9"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "center",
+                "color": {
+                  "fixed": "#000000"
+                },
+                "size": 18,
+                "text": {
+                  "field": "coldwater_guest_cabin_ps_aft_flow",
+                  "mode": "field"
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "name": "Guest cabin PS AFT",
+              "placement": {
+                "height": 30,
+                "left": 235,
+                "top": 80,
+                "width": 180
+              },
+              "type": "metric-value"
+            },
+            {
+              "background": {
+                "color": {
+                  "fixed": "transparent"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "left",
+                "color": {
+                  "fixed": "rgb(204,204,220)"
+                },
+                "size": 16,
+                "text": {
+                  "fixed": "Guest cabin PS AFT"
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "name": "Element 10",
+              "placement": {
+                "height": 30,
+                "left": 15,
+                "top": 80,
+                "width": 350
+              },
+              "type": "text"
+            },
+            {
+              "background": {
+                "color": {
+                  "fixed": "#D9D9D9"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "center",
+                "color": {
+                  "fixed": "#000000"
+                },
+                "size": 18,
+                "text": {
+                  "field": "coldwater_master_cabin_sb_flow",
+                  "mode": "field"
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "name": "Master cabin SB",
+              "placement": {
+                "height": 30,
+                "left": 235,
+                "top": 115,
+                "width": 180
+              },
+              "type": "metric-value"
+            },
+            {
+              "background": {
+                "color": {
+                  "fixed": "transparent"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "left",
+                "color": {
+                  "fixed": "rgb(204,204,220)"
+                },
+                "size": 16,
+                "text": {
+                  "fixed": "Master cabin SB"
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "name": "Element 12",
+              "placement": {
+                "height": 30,
+                "left": 15,
+                "top": 115,
+                "width": 350
+              },
+              "type": "text"
+            },
+            {
+              "background": {
+                "color": {
+                  "fixed": "#D9D9D9"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "center",
+                "color": {
+                  "fixed": "#000000"
+                },
+                "size": 18,
+                "text": {
+                  "field": "coldwater_master_cabin_ps_flow",
+                  "mode": "field"
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "name": "Master cabin PS",
+              "placement": {
+                "height": 30,
+                "left": 235,
+                "top": 150,
+                "width": 180
+              },
+              "type": "metric-value"
+            },
+            {
+              "background": {
+                "color": {
+                  "fixed": "transparent"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "left",
+                "color": {
+                  "fixed": "rgb(204,204,220)"
+                },
+                "size": 16,
+                "text": {
+                  "fixed": "Master cabin PS"
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "name": "Element 14",
+              "placement": {
+                "height": 30,
+                "left": 15,
+                "top": 150,
+                "width": 350
+              },
+              "type": "text"
+            },
+            {
+              "background": {
+                "color": {
+                  "fixed": "#D9D9D9"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "center",
+                "color": {
+                  "fixed": "#000000"
+                },
+                "size": 18,
+                "text": {
+                  "field": "coldwater_captains_cabin_flow",
+                  "mode": "field"
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "name": "Captain's cabin",
+              "placement": {
+                "height": 30,
+                "left": 685,
+                "rotation": 0,
+                "top": 10,
+                "width": 180
+              },
+              "type": "metric-value"
+            },
+            {
+              "background": {
+                "color": {
+                  "fixed": "transparent"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "left",
+                "color": {
+                  "fixed": "rgb(204,204,220)"
+                },
+                "size": 16,
+                "text": {
+                  "fixed": "Captain's cabin"
+                },
+                "valign": "middle"
+              },
+              "connections": [],
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "name": "Element 16",
+              "placement": {
+                "height": 30,
+                "left": 490,
+                "rotation": 0,
+                "top": 10,
+                "width": 152
+              },
+              "type": "text"
+            },
+            {
+              "background": {
+                "color": {
+                  "fixed": "#D9D9D9"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "center",
+                "color": {
+                  "fixed": "#000000"
+                },
+                "size": 18,
+                "text": {
+                  "field": "coldwater_crew_cabin_sb_aft_flow",
+                  "mode": "field"
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "name": "Crew cabin SB AFT",
+              "placement": {
+                "height": 30,
+                "left": 685,
+                "top": 45,
+                "width": 180
+              },
+              "type": "metric-value"
+            },
+            {
+              "background": {
+                "color": {
+                  "fixed": "transparent"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "left",
+                "color": {
+                  "fixed": "rgb(204,204,220)"
+                },
+                "size": 16,
+                "text": {
+                  "fixed": "Crew cabin SB AFT"
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "name": "Element 20",
+              "placement": {
+                "height": 30,
+                "left": 490,
+                "top": 45,
+                "width": 350
+              },
+              "type": "text"
+            },
+            {
+              "background": {
+                "color": {
+                  "fixed": "#D9D9D9"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "center",
+                "color": {
+                  "fixed": "#000000"
+                },
+                "size": 18,
+                "text": {
+                  "field": "coldwater_crew_cabin_sb_mid_flow",
+                  "mode": "field"
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "name": "Crew cabin SB MID",
+              "placement": {
+                "height": 30,
+                "left": 685,
+                "top": 80,
+                "width": 180
+              },
+              "type": "metric-value"
+            },
+            {
+              "background": {
+                "color": {
+                  "fixed": "transparent"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "left",
+                "color": {
+                  "fixed": "rgb(204,204,220)"
+                },
+                "size": 16,
+                "text": {
+                  "fixed": "Crew cabin SB MID"
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "name": "Element 22",
+              "placement": {
+                "height": 30,
+                "left": 490,
+                "top": 80,
+                "width": 350
+              },
+              "type": "text"
+            },
+            {
+              "background": {
+                "color": {
+                  "fixed": "#D9D9D9"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "center",
+                "color": {
+                  "fixed": "#000000"
+                },
+                "size": 18,
+                "text": {
+                  "field": "coldwater_crew_cabin_ps_mid_flow",
+                  "mode": "field"
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "name": "Crew cabin PS MID",
+              "placement": {
+                "height": 30,
+                "left": 685,
+                "top": 115,
+                "width": 180
+              },
+              "type": "metric-value"
+            },
+            {
+              "background": {
+                "color": {
+                  "fixed": "transparent"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "left",
+                "color": {
+                  "fixed": "rgb(204,204,220)"
+                },
+                "size": 16,
+                "text": {
+                  "fixed": "Crew cabin PS MID"
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "name": "Element 24",
+              "placement": {
+                "height": 30,
+                "left": 490,
+                "top": 115,
+                "width": 350
+              },
+              "type": "text"
+            },
+            {
+              "background": {
+                "color": {
+                  "fixed": "#D9D9D9"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "center",
+                "color": {
+                  "fixed": "#000000"
+                },
+                "size": 18,
+                "text": {
+                  "field": "coldwater_crew_cabin_sb_fwd_flow",
+                  "mode": "field"
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "name": "Crew cabin SB FWD",
+              "placement": {
+                "height": 30,
+                "left": 685,
+                "top": 150,
+                "width": 180
+              },
+              "type": "metric-value"
+            },
+            {
+              "background": {
+                "color": {
+                  "fixed": "transparent"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "left",
+                "color": {
+                  "fixed": "rgb(204,204,220)"
+                },
+                "size": 16,
+                "text": {
+                  "fixed": "Crew cabin SB FWD"
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "name": "Element 26",
+              "placement": {
+                "height": 30,
+                "left": 490,
+                "top": 150,
+                "width": 350
+              },
+              "type": "text"
+            },
+            {
+              "background": {
+                "color": {
+                  "fixed": "#D9D9D9"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "center",
+                "color": {
+                  "fixed": "#000000"
+                },
+                "size": 18,
+                "text": {
+                  "field": "coldwater_crew_cabin_ps_fwd_flow",
+                  "mode": "field"
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "name": "Crew cabin PS FWD",
+              "placement": {
+                "height": 30,
+                "left": 685,
+                "top": 185,
+                "width": 180
+              },
+              "type": "metric-value"
+            },
+            {
+              "background": {
+                "color": {
+                  "fixed": "transparent"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "left",
+                "color": {
+                  "fixed": "rgb(204,204,220)"
+                },
+                "size": 16,
+                "text": {
+                  "fixed": "Crew cabin PS FWD"
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "name": "Element 28",
+              "placement": {
+                "height": 30,
+                "left": 490,
+                "top": 185,
+                "width": 350
+              },
+              "type": "text"
+            },
+            {
+              "background": {
+                "color": {
+                  "fixed": "#D9D9D9"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "center",
+                "color": {
+                  "fixed": "#000000"
+                },
+                "size": 18,
+                "text": {
+                  "field": "coldwater_guest_bathroom_flow",
+                  "mode": "field"
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "name": "Element 45",
+              "placement": {
+                "height": 30,
+                "left": 235,
+                "top": 185,
+                "width": 180
+              },
+              "type": "metric-value"
+            },
+            {
+              "background": {
+                "color": {
+                  "fixed": "transparent"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "left",
+                "color": {
+                  "fixed": "rgb(204,204,220)"
+                },
+                "size": 16,
+                "text": {
+                  "fixed": "Guest bathroom PS FWD"
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "name": "Element 46",
+              "placement": {
+                "height": 30,
+                "left": 15,
+                "top": 185,
+                "width": 350
+              },
+              "type": "text"
+            }
+          ],
+          "name": "Element 1768816105883",
+          "placement": {
+            "height": 100,
+            "left": 0,
+            "rotation": 0,
+            "top": 0,
+            "width": 100
+          },
+          "type": "frame"
+        },
+        "showAdvancedTypes": false,
+        "tooltip": {
+          "disableForOneClick": false,
+          "mode": "none"
+        },
+        "zoomToContent": false
+      },
+      "pluginVersion": "12.3.0",
+      "targets": [
+        {
+          "editorMode": "code",
+          "format": "table",
+          "rawQuery": true,
+          "rawSql": "SELECT\n  LAST_VALUE(time ORDER BY time) AS time,  \n  LAST_VALUE((\"COLDWATER_GUEST_CABIN_SB_FLOW\").value ORDER BY time)          AS coldwater_guest_cabin_sb_flow,\n  LAST_VALUE((\"COLDWATER_GUEST_CABIN_PS_FWD_FLOW\").value ORDER BY time)      AS coldwater_guest_cabin_ps_fwd_flow,\n  LAST_VALUE((\"COLDWATER_GUEST_CABIN_PS_AFT_FLOW\").value ORDER BY time)      AS coldwater_guest_cabin_ps_aft_flow,\n  LAST_VALUE((\"COLDWATER_MASTER_CABIN_SB_FLOW\").value ORDER BY time)         AS coldwater_master_cabin_sb_flow,\n  LAST_VALUE((\"COLDWATER_MASTER_CABIN_PS_FLOW\").value ORDER BY time)         AS coldwater_master_cabin_ps_flow,\n  LAST_VALUE((\"COLDWATER_GUEST_BATHR_PS_FWD_FLOW\").value ORDER BY time)      AS coldwater_guest_bathroom_flow,\n  LAST_VALUE((\"COLDWATER_CAPTAINS_CABIN_FLOW\").value ORDER BY time)          AS coldwater_captains_cabin_flow,\n  LAST_VALUE((\"COLDWATER_CREW_CABIN_SB_AFT_FLOW\").value ORDER BY time)       AS coldwater_crew_cabin_sb_aft_flow,\n  LAST_VALUE((\"COLDWATER_CREW_CABIN_SB_MID_FLOW\").value ORDER BY time)       AS coldwater_crew_cabin_sb_mid_flow,\n  LAST_VALUE((\"COLDWATER_CREW_CABIN_PS_MID_FLOW\").value ORDER BY time)       AS coldwater_crew_cabin_ps_mid_flow,\n  LAST_VALUE((\"COLDWATER_CREW_CABIN_SB_FWD_FLOW\").value ORDER BY time)       AS coldwater_crew_cabin_sb_fwd_flow,\n  LAST_VALUE((\"COLDWATER_CREW_CABIN_PS_FWD_FLOW\").value ORDER BY time)       AS coldwater_crew_cabin_ps_fwd_flow\nFROM marpower.\"250000_fresh_water\";\n",
+          "refId": "A",
+          "sql": {
+            "columns": [
+              {
+                "parameters": [],
+                "type": "function"
+              }
+            ],
+            "groupBy": [
+              {
+                "property": {
+                  "type": "string"
+                },
+                "type": "groupBy"
+              }
+            ],
+            "limit": 50
+          }
+        }
+      ],
+      "title": "Accommodations",
+      "type": "canvas"
+    },
+    {
+      "datasource": {
+        "type": "grafana-postgresql-datasource",
+        "uid": "${datasource}"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "decimals": 2,
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": 0
+              }
+            ]
+          },
+          "unit": "flowlpm"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 12,
+        "y": 7
+      },
+      "id": 15,
       "options": {
         "inlineEditing": false,
         "panZoom": false,
@@ -1012,7 +1968,7 @@
               "name": "Lower saloon",
               "placement": {
                 "height": 30,
-                "left": 935,
+                "left": 165,
                 "top": 185,
                 "width": 180
               },
@@ -1048,9 +2004,9 @@
               "name": "Element 2",
               "placement": {
                 "height": 30,
-                "left": 1125,
+                "left": 15,
                 "top": 185,
-                "width": 350
+                "width": 122.94999694824219
               },
               "type": "text"
             },
@@ -1084,7 +2040,7 @@
               "name": "Dayhead",
               "placement": {
                 "height": 30,
-                "left": 935,
+                "left": 165,
                 "top": 80,
                 "width": 180
               },
@@ -1119,7 +2075,579 @@
               "name": "Element 4",
               "placement": {
                 "height": 30,
-                "left": 1125,
+                "left": 15,
+                "top": 80,
+                "width": 122.94999694824219
+              },
+              "type": "text"
+            },
+            {
+              "background": {
+                "color": {
+                  "fixed": "#D9D9D9"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "center",
+                "color": {
+                  "fixed": "#000000"
+                },
+                "size": 18,
+                "text": {
+                  "field": "coldwater_crew_mess_flow",
+                  "mode": "field"
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "name": "Crew mess",
+              "placement": {
+                "height": 30,
+                "left": 165,
+                "rotation": 0,
+                "top": 10,
+                "width": 180
+              },
+              "type": "metric-value"
+            },
+            {
+              "background": {
+                "color": {
+                  "fixed": "transparent"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "left",
+                "color": {
+                  "fixed": "rgb(204,204,220)"
+                },
+                "size": 16,
+                "text": {
+                  "fixed": "Crew mess"
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "name": "Element 18",
+              "placement": {
+                "height": 30,
+                "left": 15,
+                "rotation": 0,
+                "top": 10,
+                "width": 123
+              },
+              "type": "text"
+            },
+            {
+              "background": {
+                "color": {
+                  "fixed": "#D9D9D9"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "center",
+                "color": {
+                  "fixed": "#000000"
+                },
+                "size": 18,
+                "text": {
+                  "field": "coldwater_lazaret_flow",
+                  "mode": "field"
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "name": "Lazaret",
+              "placement": {
+                "height": 30,
+                "left": 165,
+                "top": 115,
+                "width": 180
+              },
+              "type": "metric-value"
+            },
+            {
+              "background": {
+                "color": {
+                  "fixed": "transparent"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "left",
+                "color": {
+                  "fixed": "rgb(204,204,220)"
+                },
+                "size": 16,
+                "text": {
+                  "fixed": "Lazaret"
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "name": "Element 30",
+              "placement": {
+                "height": 30,
+                "left": 15,
+                "top": 115,
+                "width": 122.94999694824219
+              },
+              "type": "text"
+            },
+            {
+              "background": {
+                "color": {
+                  "fixed": "#D9D9D9"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "center",
+                "color": {
+                  "fixed": "#000000"
+                },
+                "size": 18,
+                "text": {
+                  "field": "coldwater_galley_2_flow",
+                  "mode": "field"
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "name": "Galley 2",
+              "placement": {
+                "height": 30,
+                "left": 165,
+                "top": 45,
+                "width": 180
+              },
+              "type": "metric-value"
+            },
+            {
+              "background": {
+                "color": {
+                  "fixed": "transparent"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "left",
+                "color": {
+                  "fixed": "rgb(204,204,220)"
+                },
+                "size": 16,
+                "text": {
+                  "fixed": "Galley 2"
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "name": "Element 32",
+              "placement": {
+                "height": 30,
+                "left": 15,
+                "top": 45,
+                "width": 122.94999694824219
+              },
+              "type": "text"
+            },
+            {
+              "background": {
+                "color": {
+                  "fixed": "#D9D9D9"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "center",
+                "color": {
+                  "fixed": "#000000"
+                },
+                "size": 18,
+                "text": {
+                  "field": "coldwater_laundry_ps_flow",
+                  "mode": "field"
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "name": "Laundry PS",
+              "placement": {
+                "height": 30,
+                "left": 165,
+                "top": 150,
+                "width": 180
+              },
+              "type": "metric-value"
+            },
+            {
+              "background": {
+                "color": {
+                  "fixed": "transparent"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "left",
+                "color": {
+                  "fixed": "rgb(204,204,220)"
+                },
+                "size": 16,
+                "text": {
+                  "fixed": "Laundry PS"
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "name": "Element 34",
+              "placement": {
+                "height": 30,
+                "left": 15,
+                "top": 150,
+                "width": 122.94999694824219
+              },
+              "type": "text"
+            },
+            {
+              "background": {
+                "color": {
+                  "fixed": "#D9D9D9"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "center",
+                "color": {
+                  "fixed": "#000000"
+                },
+                "size": 18,
+                "text": {
+                  "field": "coldwater_deckhouse_flow",
+                  "mode": "field"
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "name": "Deckhouse",
+              "placement": {
+                "height": 30,
+                "left": 695,
+                "rotation": 0,
+                "top": 10,
+                "width": 180
+              },
+              "type": "metric-value"
+            },
+            {
+              "background": {
+                "color": {
+                  "fixed": "transparent"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "left",
+                "color": {
+                  "fixed": "rgb(204,204,220)"
+                },
+                "size": 16,
+                "text": {
+                  "fixed": "Deckhouse"
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "name": "Element 36",
+              "placement": {
+                "height": 30,
+                "left": 435,
+                "rotation": 0,
+                "top": 10,
+                "width": 148
+              },
+              "type": "text"
+            },
+            {
+              "background": {
+                "color": {
+                  "fixed": "#D9D9D9"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "center",
+                "color": {
+                  "fixed": "#000000"
+                },
+                "size": 18,
+                "text": {
+                  "field": "coldwater_deck_fr48_sb_tech_cor_flow",
+                  "mode": "field"
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "name": "Deck FR48 SB tech corridor",
+              "placement": {
+                "height": 30,
+                "left": 695,
+                "top": 45,
+                "width": 180
+              },
+              "type": "metric-value"
+            },
+            {
+              "background": {
+                "color": {
+                  "fixed": "transparent"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "left",
+                "color": {
+                  "fixed": "rgb(204,204,220)"
+                },
+                "size": 16,
+                "text": {
+                  "fixed": "Deck FR48 SB tech corridor"
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "name": "Element 38",
+              "placement": {
+                "height": 30,
+                "left": 435,
+                "top": 45,
+                "width": 350
+              },
+              "type": "text"
+            },
+            {
+              "background": {
+                "color": {
+                  "fixed": "#D9D9D9"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "center",
+                "color": {
+                  "fixed": "#000000"
+                },
+                "size": 18,
+                "text": {
+                  "field": "coldwater_water_softner_flow",
+                  "mode": "field"
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "name": "Water softner",
+              "placement": {
+                "height": 30,
+                "left": 695,
+                "top": 150,
+                "width": 180
+              },
+              "type": "metric-value"
+            },
+            {
+              "background": {
+                "color": {
+                  "fixed": "transparent"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "left",
+                "color": {
+                  "fixed": "rgb(204,204,220)"
+                },
+                "size": 16,
+                "text": {
+                  "fixed": "Water softner"
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "name": "Element 40",
+              "placement": {
+                "height": 30,
+                "left": 435,
+                "top": 150,
+                "width": 350
+              },
+              "type": "text"
+            },
+            {
+              "background": {
+                "color": {
+                  "fixed": "#D9D9D9"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "center",
+                "color": {
+                  "fixed": "#000000"
+                },
+                "size": 18,
+                "text": {
+                  "field": "coldwater_main_tech_space_flow",
+                  "mode": "field"
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "name": "Main tech space",
+              "placement": {
+                "height": 30,
+                "left": 695,
+                "top": 80,
+                "width": 180
+              },
+              "type": "metric-value"
+            },
+            {
+              "background": {
+                "color": {
+                  "fixed": "transparent"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "left",
+                "color": {
+                  "fixed": "rgb(204,204,220)"
+                },
+                "size": 16,
+                "text": {
+                  "fixed": "Main tech space"
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "name": "Element 42",
+              "placement": {
+                "height": 30,
+                "left": 435,
                 "top": 80,
                 "width": 350
               },
@@ -1143,7 +2671,190 @@
                 },
                 "size": 18,
                 "text": {
-                  "field": "coldwater_guest_cabin_sb_flow",
+                  "field": "coldwater_main_tech_space_fr45_flow",
+                  "mode": "field"
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "name": "Main tech space FR45",
+              "placement": {
+                "height": 30,
+                "left": 695,
+                "top": 115,
+                "width": 180
+              },
+              "type": "metric-value"
+            },
+            {
+              "background": {
+                "color": {
+                  "fixed": "transparent"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "left",
+                "color": {
+                  "fixed": "rgb(204,204,220)"
+                },
+                "size": 16,
+                "text": {
+                  "fixed": "Main tech space FR45"
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "name": "Element 44",
+              "placement": {
+                "height": 30,
+                "left": 435,
+                "top": 115,
+                "width": 350
+              },
+              "type": "text"
+            }
+          ],
+          "name": "Element 1768816105883",
+          "placement": {
+            "height": 100,
+            "left": 0,
+            "rotation": 0,
+            "top": 0,
+            "width": 100
+          },
+          "type": "frame"
+        },
+        "showAdvancedTypes": false,
+        "tooltip": {
+          "disableForOneClick": false,
+          "mode": "none"
+        },
+        "zoomToContent": false
+      },
+      "pluginVersion": "12.3.0",
+      "targets": [
+        {
+          "editorMode": "code",
+          "format": "table",
+          "rawQuery": true,
+          "rawSql": "SELECT\n  LAST_VALUE(time ORDER BY time) AS time,\n  LAST_VALUE((\"COLDWATER_CAPTAINS_CABIN_FLOW\").value ORDER BY time)          AS coldwater_captains_cabin_flow,\n  LAST_VALUE((\"COLDWATER_CREW_CABIN_SB_AFT_FLOW\").value ORDER BY time)       AS coldwater_crew_cabin_sb_aft_flow,\n  LAST_VALUE((\"COLDWATER_CREW_CABIN_SB_MID_FLOW\").value ORDER BY time)       AS coldwater_crew_cabin_sb_mid_flow,\n  LAST_VALUE((\"COLDWATER_CREW_CABIN_PS_MID_FLOW\").value ORDER BY time)       AS coldwater_crew_cabin_ps_mid_flow,\n  LAST_VALUE((\"COLDWATER_CREW_CABIN_SB_FWD_FLOW\").value ORDER BY time)       AS coldwater_crew_cabin_sb_fwd_flow,\n  LAST_VALUE((\"COLDWATER_CREW_CABIN_PS_FWD_FLOW\").value ORDER BY time)       AS coldwater_crew_cabin_ps_fwd_flow,\n\n  LAST_VALUE((\"COLDWATER_LOWER_SALOON_FLOW\").value ORDER BY time)            AS coldwater_lower_saloon_flow,\n  LAST_VALUE((\"COLDWATER_CREW_MESS_FLOW\").value ORDER BY time)               AS coldwater_crew_mess_flow,\n  LAST_VALUE((\"COLDWATER_GALLEY_2_FLOW\").value ORDER BY time)               AS coldwater_galley_2_flow,\n  LAST_VALUE((\"COLDWATER_DAYHEAD_FLOW\").value ORDER BY time)                AS coldwater_dayhead_flow,\n  LAST_VALUE((\"COLDWATER_LAZARET_FLOW\").value ORDER BY time)                 AS coldwater_lazaret_flow,\n  LAST_VALUE((\"COLDWATER_LAUNDRY_PS_FLOW\").value ORDER BY time)             AS coldwater_laundry_ps_flow,\n  LAST_VALUE((\"COLDWATER_DECKHOUSE_FLOW\").value ORDER BY time)              AS coldwater_deckhouse_flow,\n  LAST_VALUE((\"COLDWATER_DECK_FR48_SB_TECH_COR_FLOW\").value ORDER BY time)   AS coldwater_deck_fr48_sb_tech_cor_flow,\n  LAST_VALUE((\"COLDWATER_WATER_SOFTNER_FLOW\").value ORDER BY time)          AS coldwater_water_softner_flow,\n  LAST_VALUE((\"COLDWATER_MAIN_TECH_SPACE_FLOW\").value ORDER BY time)        AS coldwater_main_tech_space_flow,\n  LAST_VALUE((\"COLDWATER_MAIN_TECH_SPACE_FR45_FLOW\").value ORDER BY time)   AS coldwater_main_tech_space_fr45_flow\nFROM marpower.\"250000_fresh_water\";\n",
+          "refId": "A",
+          "sql": {
+            "columns": [
+              {
+                "parameters": [],
+                "type": "function"
+              }
+            ],
+            "groupBy": [
+              {
+                "property": {
+                  "type": "string"
+                },
+                "type": "groupBy"
+              }
+            ],
+            "limit": 50
+          }
+        }
+      ],
+      "title": "Other areas",
+      "type": "canvas"
+    },
+    {
+      "collapsed": false,
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 15
+      },
+      "id": 16,
+      "panels": [],
+      "title": "Hot water flow",
+      "type": "row"
+    },
+    {
+      "datasource": {
+        "type": "grafana-postgresql-datasource",
+        "uid": "${datasource}"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "decimals": 2,
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": 0
+              }
+            ]
+          },
+          "unit": "flowlpm"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 0,
+        "y": 16
+      },
+      "id": 7,
+      "options": {
+        "inlineEditing": false,
+        "panZoom": false,
+        "root": {
+          "background": {
+            "color": {
+              "fixed": "transparent"
+            }
+          },
+          "border": {
+            "color": {
+              "fixed": "dark-green"
+            }
+          },
+          "constraint": {
+            "horizontal": "left",
+            "vertical": "top"
+          },
+          "elements": [
+            {
+              "background": {
+                "color": {
+                  "fixed": "#D9D9D9"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "center",
+                "color": {
+                  "fixed": "#000000"
+                },
+                "size": 18,
+                "text": {
+                  "field": "hotwater_guest_cabin_sb_flow",
                   "mode": "field"
                 },
                 "valign": "middle"
@@ -1155,7 +2866,7 @@
               "name": "Guest cabin SB",
               "placement": {
                 "height": 30,
-                "left": 15,
+                "left": 235,
                 "rotation": 0,
                 "top": 10,
                 "width": 180
@@ -1191,9 +2902,10 @@
               "name": "Element 6",
               "placement": {
                 "height": 30,
-                "left": 205,
+                "left": 15,
+                "rotation": 0,
                 "top": 10,
-                "width": 350
+                "width": 190
               },
               "type": "text"
             },
@@ -1215,7 +2927,7 @@
                 },
                 "size": 18,
                 "text": {
-                  "field": "coldwater_guest_cabin_ps_fwd_flow",
+                  "field": "hotwater_guest_cabin_ps_fwd_flow",
                   "mode": "field"
                 },
                 "valign": "middle"
@@ -1227,7 +2939,7 @@
               "name": "Guest cabin PS FWD",
               "placement": {
                 "height": 30,
-                "left": 15,
+                "left": 235,
                 "top": 45,
                 "width": 180
               },
@@ -1262,9 +2974,9 @@
               "name": "Element 8",
               "placement": {
                 "height": 30,
-                "left": 205,
+                "left": 15,
                 "top": 45,
-                "width": 350
+                "width": 226
               },
               "type": "text"
             },
@@ -1286,7 +2998,7 @@
                 },
                 "size": 18,
                 "text": {
-                  "field": "coldwater_guest_cabin_ps_aft_flow",
+                  "field": "hotwater_guest_cabin_ps_aft_flow",
                   "mode": "field"
                 },
                 "valign": "middle"
@@ -1298,8 +3010,7 @@
               "name": "Guest cabin PS AFT",
               "placement": {
                 "height": 30,
-                "left": 15,
-                "rotation": 0,
+                "left": 235,
                 "top": 80,
                 "width": 180
               },
@@ -1334,9 +3045,9 @@
               "name": "Element 10",
               "placement": {
                 "height": 30,
-                "left": 205,
+                "left": 15,
                 "top": 80,
-                "width": 350
+                "width": 226
               },
               "type": "text"
             },
@@ -1358,7 +3069,7 @@
                 },
                 "size": 18,
                 "text": {
-                  "field": "coldwater_master_cabin_sb_flow",
+                  "field": "hotwater_master_cabin_sb_flow",
                   "mode": "field"
                 },
                 "valign": "middle"
@@ -1370,8 +3081,7 @@
               "name": "Master cabin SB",
               "placement": {
                 "height": 30,
-                "left": 15,
-                "rotation": 0,
+                "left": 235,
                 "top": 115,
                 "width": 180
               },
@@ -1406,9 +3116,9 @@
               "name": "Element 12",
               "placement": {
                 "height": 30,
-                "left": 205,
+                "left": 15,
                 "top": 115,
-                "width": 350
+                "width": 226
               },
               "type": "text"
             },
@@ -1430,7 +3140,7 @@
                 },
                 "size": 18,
                 "text": {
-                  "field": "coldwater_master_cabin_ps_flow",
+                  "field": "hotwater_master_cabin_ps_flow",
                   "mode": "field"
                 },
                 "valign": "middle"
@@ -1442,8 +3152,7 @@
               "name": "Master cabin PS",
               "placement": {
                 "height": 30,
-                "left": 15,
-                "rotation": 0,
+                "left": 235,
                 "top": 150,
                 "width": 180
               },
@@ -1478,9 +3187,9 @@
               "name": "Element 14",
               "placement": {
                 "height": 30,
-                "left": 205,
+                "left": 15,
                 "top": 150,
-                "width": 350
+                "width": 226
               },
               "type": "text"
             },
@@ -1502,7 +3211,7 @@
                 },
                 "size": 18,
                 "text": {
-                  "field": "coldwater_captains_cabin_flow",
+                  "field": "hotwater_captains_cabin_flow",
                   "mode": "field"
                 },
                 "valign": "middle"
@@ -1514,7 +3223,7 @@
               "name": "Captain's cabin",
               "placement": {
                 "height": 30,
-                "left": 475,
+                "left": 685,
                 "rotation": 0,
                 "top": 10,
                 "width": 180
@@ -1551,10 +3260,10 @@
               "name": "Element 16",
               "placement": {
                 "height": 30,
-                "left": 665,
+                "left": 490,
                 "rotation": 0,
                 "top": 10,
-                "width": 350
+                "width": 165
               },
               "type": "text"
             },
@@ -1576,79 +3285,7 @@
                 },
                 "size": 18,
                 "text": {
-                  "field": "coldwater_crew_mess_flow",
-                  "mode": "field"
-                },
-                "valign": "middle"
-              },
-              "constraint": {
-                "horizontal": "left",
-                "vertical": "top"
-              },
-              "name": "Crew mess",
-              "placement": {
-                "height": 30,
-                "left": 935,
-                "rotation": 0,
-                "top": 10,
-                "width": 180
-              },
-              "type": "metric-value"
-            },
-            {
-              "background": {
-                "color": {
-                  "fixed": "transparent"
-                }
-              },
-              "border": {
-                "color": {
-                  "fixed": "dark-green"
-                }
-              },
-              "config": {
-                "align": "left",
-                "color": {
-                  "fixed": "rgb(204,204,220)"
-                },
-                "size": 16,
-                "text": {
-                  "fixed": "Crew mess"
-                },
-                "valign": "middle"
-              },
-              "constraint": {
-                "horizontal": "left",
-                "vertical": "top"
-              },
-              "name": "Element 18",
-              "placement": {
-                "height": 30,
-                "left": 1125,
-                "top": 10,
-                "width": 350
-              },
-              "type": "text"
-            },
-            {
-              "background": {
-                "color": {
-                  "fixed": "#D9D9D9"
-                }
-              },
-              "border": {
-                "color": {
-                  "fixed": "dark-green"
-                }
-              },
-              "config": {
-                "align": "center",
-                "color": {
-                  "fixed": "#000000"
-                },
-                "size": 18,
-                "text": {
-                  "field": "coldwater_crew_cabin_sb_aft_flow",
+                  "field": "hotwater_crew_cabin_sb_aft_flow",
                   "mode": "field"
                 },
                 "valign": "middle"
@@ -1660,7 +3297,8 @@
               "name": "Crew cabin SB AFT",
               "placement": {
                 "height": 30,
-                "left": 475,
+                "left": 685,
+                "rotation": 0,
                 "top": 45,
                 "width": 180
               },
@@ -1695,9 +3333,9 @@
               "name": "Element 20",
               "placement": {
                 "height": 30,
-                "left": 665,
-                "top": 45,
-                "width": 350
+                "left": 490,
+                "top": 40,
+                "width": 182
               },
               "type": "text"
             },
@@ -1719,7 +3357,7 @@
                 },
                 "size": 18,
                 "text": {
-                  "field": "coldwater_crew_cabin_sb_mid_flow",
+                  "field": "hotwater_crew_cabin_sb_mid_flow",
                   "mode": "field"
                 },
                 "valign": "middle"
@@ -1731,7 +3369,7 @@
               "name": "Crew cabin SB MID",
               "placement": {
                 "height": 30,
-                "left": 475,
+                "left": 685,
                 "top": 80,
                 "width": 180
               },
@@ -1766,9 +3404,9 @@
               "name": "Element 22",
               "placement": {
                 "height": 30,
-                "left": 665,
-                "top": 80,
-                "width": 350
+                "left": 490,
+                "top": 75,
+                "width": 182
               },
               "type": "text"
             },
@@ -1790,7 +3428,7 @@
                 },
                 "size": 18,
                 "text": {
-                  "field": "coldwater_crew_cabin_ps_mid_flow",
+                  "field": "hotwater_crew_cabin_ps_mid_flow",
                   "mode": "field"
                 },
                 "valign": "middle"
@@ -1802,7 +3440,7 @@
               "name": "Crew cabin PS MID",
               "placement": {
                 "height": 30,
-                "left": 475,
+                "left": 685,
                 "top": 115,
                 "width": 180
               },
@@ -1837,10 +3475,9 @@
               "name": "Element 24",
               "placement": {
                 "height": 30,
-                "left": 665,
-                "rotation": 0,
-                "top": 115,
-                "width": 350
+                "left": 490,
+                "top": 110,
+                "width": 182
               },
               "type": "text"
             },
@@ -1862,7 +3499,7 @@
                 },
                 "size": 18,
                 "text": {
-                  "field": "coldwater_crew_cabin_sb_fwd_flow",
+                  "field": "hotwater_crew_cabin_sb_fwd_flow",
                   "mode": "field"
                 },
                 "valign": "middle"
@@ -1874,7 +3511,7 @@
               "name": "Crew cabin SB FWD",
               "placement": {
                 "height": 30,
-                "left": 475,
+                "left": 685,
                 "top": 150,
                 "width": 180
               },
@@ -1909,10 +3546,9 @@
               "name": "Element 26",
               "placement": {
                 "height": 30,
-                "left": 665,
-                "rotation": 0,
-                "top": 150,
-                "width": 350
+                "left": 490,
+                "top": 145,
+                "width": 182
               },
               "type": "text"
             },
@@ -1934,7 +3570,7 @@
                 },
                 "size": 18,
                 "text": {
-                  "field": "coldwater_crew_cabin_ps_fwd_flow",
+                  "field": "hotwater_crew_cabin_ps_fwd_flow",
                   "mode": "field"
                 },
                 "valign": "middle"
@@ -1946,7 +3582,7 @@
               "name": "Crew cabin PS FWD",
               "placement": {
                 "height": 30,
-                "left": 475,
+                "left": 685,
                 "top": 185,
                 "width": 180
               },
@@ -1981,9 +3617,9 @@
               "name": "Element 28",
               "placement": {
                 "height": 30,
-                "left": 665,
-                "top": 185,
-                "width": 350
+                "left": 490,
+                "top": 180,
+                "width": 182
               },
               "type": "text"
             },
@@ -2005,576 +3641,7 @@
                 },
                 "size": 18,
                 "text": {
-                  "field": "coldwater_lazaret_flow",
-                  "mode": "field"
-                },
-                "valign": "middle"
-              },
-              "constraint": {
-                "horizontal": "left",
-                "vertical": "top"
-              },
-              "name": "Lazaret",
-              "placement": {
-                "height": 30,
-                "left": 935,
-                "top": 115,
-                "width": 180
-              },
-              "type": "metric-value"
-            },
-            {
-              "background": {
-                "color": {
-                  "fixed": "transparent"
-                }
-              },
-              "border": {
-                "color": {
-                  "fixed": "dark-green"
-                }
-              },
-              "config": {
-                "align": "left",
-                "color": {
-                  "fixed": "rgb(204,204,220)"
-                },
-                "size": 16,
-                "text": {
-                  "fixed": "Lazaret"
-                },
-                "valign": "middle"
-              },
-              "constraint": {
-                "horizontal": "left",
-                "vertical": "top"
-              },
-              "name": "Element 30",
-              "placement": {
-                "height": 30,
-                "left": 1125,
-                "top": 115,
-                "width": 350
-              },
-              "type": "text"
-            },
-            {
-              "background": {
-                "color": {
-                  "fixed": "#D9D9D9"
-                }
-              },
-              "border": {
-                "color": {
-                  "fixed": "dark-green"
-                }
-              },
-              "config": {
-                "align": "center",
-                "color": {
-                  "fixed": "#000000"
-                },
-                "size": 18,
-                "text": {
-                  "field": "coldwater_galley_2_flow",
-                  "mode": "field"
-                },
-                "valign": "middle"
-              },
-              "constraint": {
-                "horizontal": "left",
-                "vertical": "top"
-              },
-              "name": "Galley 2",
-              "placement": {
-                "height": 30,
-                "left": 935,
-                "rotation": 0,
-                "top": 45,
-                "width": 180
-              },
-              "type": "metric-value"
-            },
-            {
-              "background": {
-                "color": {
-                  "fixed": "transparent"
-                }
-              },
-              "border": {
-                "color": {
-                  "fixed": "dark-green"
-                }
-              },
-              "config": {
-                "align": "left",
-                "color": {
-                  "fixed": "rgb(204,204,220)"
-                },
-                "size": 16,
-                "text": {
-                  "fixed": "Galley 2"
-                },
-                "valign": "middle"
-              },
-              "constraint": {
-                "horizontal": "left",
-                "vertical": "top"
-              },
-              "name": "Element 32",
-              "placement": {
-                "height": 30,
-                "left": 1125,
-                "top": 45,
-                "width": 350
-              },
-              "type": "text"
-            },
-            {
-              "background": {
-                "color": {
-                  "fixed": "#D9D9D9"
-                }
-              },
-              "border": {
-                "color": {
-                  "fixed": "dark-green"
-                }
-              },
-              "config": {
-                "align": "center",
-                "color": {
-                  "fixed": "#000000"
-                },
-                "size": 18,
-                "text": {
-                  "field": "coldwater_laundry_ps_flow",
-                  "mode": "field"
-                },
-                "valign": "middle"
-              },
-              "constraint": {
-                "horizontal": "left",
-                "vertical": "top"
-              },
-              "name": "Laundry PS",
-              "placement": {
-                "height": 30,
-                "left": 935,
-                "top": 150,
-                "width": 180
-              },
-              "type": "metric-value"
-            },
-            {
-              "background": {
-                "color": {
-                  "fixed": "transparent"
-                }
-              },
-              "border": {
-                "color": {
-                  "fixed": "dark-green"
-                }
-              },
-              "config": {
-                "align": "left",
-                "color": {
-                  "fixed": "rgb(204,204,220)"
-                },
-                "size": 16,
-                "text": {
-                  "fixed": "Laundry PS"
-                },
-                "valign": "middle"
-              },
-              "constraint": {
-                "horizontal": "left",
-                "vertical": "top"
-              },
-              "name": "Element 34",
-              "placement": {
-                "height": 30,
-                "left": 1125,
-                "top": 150,
-                "width": 350
-              },
-              "type": "text"
-            },
-            {
-              "background": {
-                "color": {
-                  "fixed": "#D9D9D9"
-                }
-              },
-              "border": {
-                "color": {
-                  "fixed": "dark-green"
-                }
-              },
-              "config": {
-                "align": "center",
-                "color": {
-                  "fixed": "#000000"
-                },
-                "size": 18,
-                "text": {
-                  "field": "coldwater_deckhouse_flow",
-                  "mode": "field"
-                },
-                "valign": "middle"
-              },
-              "constraint": {
-                "horizontal": "left",
-                "vertical": "top"
-              },
-              "name": "Deckhouse",
-              "placement": {
-                "height": 30,
-                "left": 1335,
-                "top": 10,
-                "width": 180
-              },
-              "type": "metric-value"
-            },
-            {
-              "background": {
-                "color": {
-                  "fixed": "transparent"
-                }
-              },
-              "border": {
-                "color": {
-                  "fixed": "dark-green"
-                }
-              },
-              "config": {
-                "align": "left",
-                "color": {
-                  "fixed": "rgb(204,204,220)"
-                },
-                "size": 16,
-                "text": {
-                  "fixed": "Deckhouse"
-                },
-                "valign": "middle"
-              },
-              "constraint": {
-                "horizontal": "left",
-                "vertical": "top"
-              },
-              "name": "Element 36",
-              "placement": {
-                "height": 30,
-                "left": 1525,
-                "top": 10,
-                "width": 350
-              },
-              "type": "text"
-            },
-            {
-              "background": {
-                "color": {
-                  "fixed": "#D9D9D9"
-                }
-              },
-              "border": {
-                "color": {
-                  "fixed": "dark-green"
-                }
-              },
-              "config": {
-                "align": "center",
-                "color": {
-                  "fixed": "#000000"
-                },
-                "size": 18,
-                "text": {
-                  "field": "coldwater_deck_fr48_sb_tech_cor_flow",
-                  "mode": "field"
-                },
-                "valign": "middle"
-              },
-              "constraint": {
-                "horizontal": "left",
-                "vertical": "top"
-              },
-              "name": "Deck FR48 SB tech corridor",
-              "placement": {
-                "height": 30,
-                "left": 1335,
-                "top": 45,
-                "width": 180
-              },
-              "type": "metric-value"
-            },
-            {
-              "background": {
-                "color": {
-                  "fixed": "transparent"
-                }
-              },
-              "border": {
-                "color": {
-                  "fixed": "dark-green"
-                }
-              },
-              "config": {
-                "align": "left",
-                "color": {
-                  "fixed": "rgb(204,204,220)"
-                },
-                "size": 16,
-                "text": {
-                  "fixed": "Deck FR48 SB tech corridor"
-                },
-                "valign": "middle"
-              },
-              "constraint": {
-                "horizontal": "left",
-                "vertical": "top"
-              },
-              "name": "Element 38",
-              "placement": {
-                "height": 30,
-                "left": 1525,
-                "top": 45,
-                "width": 350
-              },
-              "type": "text"
-            },
-            {
-              "background": {
-                "color": {
-                  "fixed": "#D9D9D9"
-                }
-              },
-              "border": {
-                "color": {
-                  "fixed": "dark-green"
-                }
-              },
-              "config": {
-                "align": "center",
-                "color": {
-                  "fixed": "#000000"
-                },
-                "size": 18,
-                "text": {
-                  "field": "coldwater_water_softner_flow",
-                  "mode": "field"
-                },
-                "valign": "middle"
-              },
-              "constraint": {
-                "horizontal": "left",
-                "vertical": "top"
-              },
-              "name": "Water softner",
-              "placement": {
-                "height": 30,
-                "left": 1335,
-                "top": 150,
-                "width": 180
-              },
-              "type": "metric-value"
-            },
-            {
-              "background": {
-                "color": {
-                  "fixed": "transparent"
-                }
-              },
-              "border": {
-                "color": {
-                  "fixed": "dark-green"
-                }
-              },
-              "config": {
-                "align": "left",
-                "color": {
-                  "fixed": "rgb(204,204,220)"
-                },
-                "size": 16,
-                "text": {
-                  "fixed": "Water softner"
-                },
-                "valign": "middle"
-              },
-              "constraint": {
-                "horizontal": "left",
-                "vertical": "top"
-              },
-              "name": "Element 40",
-              "placement": {
-                "height": 30,
-                "left": 1525,
-                "top": 150,
-                "width": 350
-              },
-              "type": "text"
-            },
-            {
-              "background": {
-                "color": {
-                  "fixed": "#D9D9D9"
-                }
-              },
-              "border": {
-                "color": {
-                  "fixed": "dark-green"
-                }
-              },
-              "config": {
-                "align": "center",
-                "color": {
-                  "fixed": "#000000"
-                },
-                "size": 18,
-                "text": {
-                  "field": "coldwater_main_tech_space_flow",
-                  "mode": "field"
-                },
-                "valign": "middle"
-              },
-              "constraint": {
-                "horizontal": "left",
-                "vertical": "top"
-              },
-              "name": "Main tech space",
-              "placement": {
-                "height": 30,
-                "left": 1335,
-                "top": 80,
-                "width": 180
-              },
-              "type": "metric-value"
-            },
-            {
-              "background": {
-                "color": {
-                  "fixed": "transparent"
-                }
-              },
-              "border": {
-                "color": {
-                  "fixed": "dark-green"
-                }
-              },
-              "config": {
-                "align": "left",
-                "color": {
-                  "fixed": "rgb(204,204,220)"
-                },
-                "size": 16,
-                "text": {
-                  "fixed": "Main tech space"
-                },
-                "valign": "middle"
-              },
-              "constraint": {
-                "horizontal": "left",
-                "vertical": "top"
-              },
-              "name": "Element 42",
-              "placement": {
-                "height": 30,
-                "left": 1525,
-                "top": 80,
-                "width": 350
-              },
-              "type": "text"
-            },
-            {
-              "background": {
-                "color": {
-                  "fixed": "#D9D9D9"
-                }
-              },
-              "border": {
-                "color": {
-                  "fixed": "dark-green"
-                }
-              },
-              "config": {
-                "align": "center",
-                "color": {
-                  "fixed": "#000000"
-                },
-                "size": 18,
-                "text": {
-                  "field": "coldwater_main_tech_space_fr45_flow",
-                  "mode": "field"
-                },
-                "valign": "middle"
-              },
-              "constraint": {
-                "horizontal": "left",
-                "vertical": "top"
-              },
-              "name": "Main tech space FR45",
-              "placement": {
-                "height": 30,
-                "left": 1335,
-                "top": 115,
-                "width": 180
-              },
-              "type": "metric-value"
-            },
-            {
-              "background": {
-                "color": {
-                  "fixed": "transparent"
-                }
-              },
-              "border": {
-                "color": {
-                  "fixed": "dark-green"
-                }
-              },
-              "config": {
-                "align": "left",
-                "color": {
-                  "fixed": "rgb(204,204,220)"
-                },
-                "size": 16,
-                "text": {
-                  "fixed": "Main tech space FR45"
-                },
-                "valign": "middle"
-              },
-              "constraint": {
-                "horizontal": "left",
-                "vertical": "top"
-              },
-              "name": "Element 44",
-              "placement": {
-                "height": 30,
-                "left": 1525,
-                "top": 115,
-                "width": 350
-              },
-              "type": "text"
-            },
-            {
-              "background": {
-                "color": {
-                  "fixed": "#D9D9D9"
-                }
-              },
-              "border": {
-                "color": {
-                  "fixed": "dark-green"
-                }
-              },
-              "config": {
-                "align": "center",
-                "color": {
-                  "fixed": "#000000"
-                },
-                "size": 18,
-                "text": {
-                  "field": "coldwater_guest_bathroom_flow",
+                  "field": "hotwater_guest_bathroom_flow",
                   "mode": "field"
                 },
                 "valign": "middle"
@@ -2586,8 +3653,7 @@
               "name": "Element 45",
               "placement": {
                 "height": 30,
-                "left": 15,
-                "rotation": 0,
+                "left": 235,
                 "top": 185,
                 "width": 180
               },
@@ -2622,9 +3688,9 @@
               "name": "Element 46",
               "placement": {
                 "height": 30,
-                "left": 205,
+                "left": 15,
                 "top": 185,
-                "width": 350
+                "width": 226
               },
               "type": "text"
             }
@@ -2639,7 +3705,7 @@
           },
           "type": "frame"
         },
-        "showAdvancedTypes": true,
+        "showAdvancedTypes": false,
         "tooltip": {
           "disableForOneClick": false,
           "mode": "none"
@@ -2652,7 +3718,7 @@
           "editorMode": "code",
           "format": "table",
           "rawQuery": true,
-          "rawSql": "SELECT\n  LAST_VALUE(time ORDER BY time) AS time,\n  \n  LAST_VALUE((\"COLDWATER_GUEST_CABIN_SB_FLOW\").value ORDER BY time)          AS coldwater_guest_cabin_sb_flow,\n  LAST_VALUE((\"COLDWATER_GUEST_CABIN_PS_FWD_FLOW\").value ORDER BY time)      AS coldwater_guest_cabin_ps_fwd_flow,\n  LAST_VALUE((\"COLDWATER_GUEST_CABIN_PS_AFT_FLOW\").value ORDER BY time)      AS coldwater_guest_cabin_ps_aft_flow,\n  LAST_VALUE((\"COLDWATER_MASTER_CABIN_SB_FLOW\").value ORDER BY time)         AS coldwater_master_cabin_sb_flow,\n  LAST_VALUE((\"COLDWATER_MASTER_CABIN_PS_FLOW\").value ORDER BY time)         AS coldwater_master_cabin_ps_flow,\n  LAST_VALUE((\"COLDWATER_GUEST_BATHR_PS_FWD_FLOW\").value ORDER BY time)      AS coldwater_guest_bathroom_flow,\n\n  LAST_VALUE((\"COLDWATER_CAPTAINS_CABIN_FLOW\").value ORDER BY time)          AS coldwater_captains_cabin_flow,\n  LAST_VALUE((\"COLDWATER_CREW_CABIN_SB_AFT_FLOW\").value ORDER BY time)       AS coldwater_crew_cabin_sb_aft_flow,\n  LAST_VALUE((\"COLDWATER_CREW_CABIN_SB_MID_FLOW\").value ORDER BY time)       AS coldwater_crew_cabin_sb_mid_flow,\n  LAST_VALUE((\"COLDWATER_CREW_CABIN_PS_MID_FLOW\").value ORDER BY time)       AS coldwater_crew_cabin_ps_mid_flow,\n  LAST_VALUE((\"COLDWATER_CREW_CABIN_SB_FWD_FLOW\").value ORDER BY time)       AS coldwater_crew_cabin_sb_fwd_flow,\n  LAST_VALUE((\"COLDWATER_CREW_CABIN_PS_FWD_FLOW\").value ORDER BY time)       AS coldwater_crew_cabin_ps_fwd_flow,\n\n  LAST_VALUE((\"COLDWATER_LOWER_SALOON_FLOW\").value ORDER BY time)            AS coldwater_lower_saloon_flow,\n  LAST_VALUE((\"COLDWATER_CREW_MESS_FLOW\").value ORDER BY time)               AS coldwater_crew_mess_flow,\n  LAST_VALUE((\"COLDWATER_GALLEY_2_FLOW\").value ORDER BY time)               AS coldwater_galley_2_flow,\n  LAST_VALUE((\"COLDWATER_DAYHEAD_FLOW\").value ORDER BY time)                AS coldwater_dayhead_flow,\n  LAST_VALUE((\"COLDWATER_LAZARET_FLOW\").value ORDER BY time)                 AS coldwater_lazaret_flow,\n  LAST_VALUE((\"COLDWATER_LAUNDRY_PS_FLOW\").value ORDER BY time)             AS coldwater_laundry_ps_flow,\n  LAST_VALUE((\"COLDWATER_DECKHOUSE_FLOW\").value ORDER BY time)              AS coldwater_deckhouse_flow,\n  LAST_VALUE((\"COLDWATER_DECK_FR48_SB_TECH_COR_FLOW\").value ORDER BY time)   AS coldwater_deck_fr48_sb_tech_cor_flow,\n  LAST_VALUE((\"COLDWATER_WATER_SOFTNER_FLOW\").value ORDER BY time)          AS coldwater_water_softner_flow,\n  LAST_VALUE((\"COLDWATER_MAIN_TECH_SPACE_FLOW\").value ORDER BY time)        AS coldwater_main_tech_space_flow,\n  LAST_VALUE((\"COLDWATER_MAIN_TECH_SPACE_FR45_FLOW\").value ORDER BY time)   AS coldwater_main_tech_space_fr45_flow\n\nFROM marpower.\"250000_fresh_water\";\n",
+          "rawSql": "SELECT\n  LAST_VALUE(time ORDER BY time) AS time,  \n  LAST_VALUE((\"HOTWATER_GUEST_CABIN_SB_FLOW\").value ORDER BY time)           AS hotwater_guest_cabin_sb_flow,\n  LAST_VALUE((\"HOTWATER_GUEST_CABIN_PS_FWD_FLOW\").value ORDER BY time)       AS hotwater_guest_cabin_ps_fwd_flow,\n  LAST_VALUE((\"HOTWATER_GUEST_CABIN_PS_AFT_FLOW\").value ORDER BY time)       AS hotwater_guest_cabin_ps_aft_flow,\n  LAST_VALUE((\"HOTWATER_MASTER_CABIN_SB_FLOW\").value ORDER BY time)          AS hotwater_master_cabin_sb_flow,\n  LAST_VALUE((\"HOTWATER_MASTER_CABIN_PS_FLOW\").value ORDER BY time)          AS hotwater_master_cabin_ps_flow,\n  LAST_VALUE((\"HOTWATER_GUEST_BATHR_PS_FWD_FLOW\").value ORDER BY time)       AS hotwater_guest_bathroom_flow,\n  LAST_VALUE((\"HOTWATER_CAPTAINS_CABIN_FLOW\").value ORDER BY time)           AS hotwater_captains_cabin_flow,\n  LAST_VALUE((\"HOTWATER_CREW_CABIN_SB_AFT_FLOW\").value ORDER BY time)        AS hotwater_crew_cabin_sb_aft_flow,\n  LAST_VALUE((\"HOTWATER_CREW_CABIN_SB_MID_FLOW\").value ORDER BY time)        AS hotwater_crew_cabin_sb_mid_flow,\n  LAST_VALUE((\"HOTWATER_CREW_CABIN_PS_MID_FLOW\").value ORDER BY time)        AS hotwater_crew_cabin_ps_mid_flow,\n  LAST_VALUE((\"HOTWATER_CREW_CABIN_SB_FWD_FLOW\").value ORDER BY time)        AS hotwater_crew_cabin_sb_fwd_flow,\n  LAST_VALUE((\"HOTWATER_CREW_CABIN_PS_FWD_FLOW\").value ORDER BY time)        AS hotwater_crew_cabin_ps_fwd_flow\nFROM marpower.\"250000_fresh_water\"\n",
           "refId": "A",
           "sql": {
             "columns": [
@@ -2673,7 +3739,7 @@
           }
         }
       ],
-      "title": "Cold water flow",
+      "title": "Accommodations",
       "type": "canvas"
     },
     {
@@ -2702,12 +3768,12 @@
         "overrides": []
       },
       "gridPos": {
-        "h": 7,
-        "w": 24,
-        "x": 0,
-        "y": 14
+        "h": 8,
+        "w": 12,
+        "x": 12,
+        "y": 16
       },
-      "id": 7,
+      "id": 18,
       "options": {
         "inlineEditing": false,
         "panZoom": false,
@@ -2757,8 +3823,7 @@
               "name": "Dayhead",
               "placement": {
                 "height": 30,
-                "left": 935,
-                "rotation": 0,
+                "left": 165,
                 "top": 80,
                 "width": 180
               },
@@ -2793,443 +3858,9 @@
               "name": "Element 4",
               "placement": {
                 "height": 30,
-                "left": 1125,
+                "left": 15,
                 "top": 80,
-                "width": 350
-              },
-              "type": "text"
-            },
-            {
-              "background": {
-                "color": {
-                  "fixed": "#D9D9D9"
-                }
-              },
-              "border": {
-                "color": {
-                  "fixed": "dark-green"
-                }
-              },
-              "config": {
-                "align": "center",
-                "color": {
-                  "fixed": "#000000"
-                },
-                "size": 18,
-                "text": {
-                  "field": "hotwater_guest_cabin_sb_flow",
-                  "mode": "field"
-                },
-                "valign": "middle"
-              },
-              "constraint": {
-                "horizontal": "left",
-                "vertical": "top"
-              },
-              "name": "Guest cabin SB",
-              "placement": {
-                "height": 30,
-                "left": 15,
-                "rotation": 0,
-                "top": 10,
-                "width": 180
-              },
-              "type": "metric-value"
-            },
-            {
-              "background": {
-                "color": {
-                  "fixed": "transparent"
-                }
-              },
-              "border": {
-                "color": {
-                  "fixed": "dark-green"
-                }
-              },
-              "config": {
-                "align": "left",
-                "color": {
-                  "fixed": "rgb(204,204,220)"
-                },
-                "size": 16,
-                "text": {
-                  "fixed": "Guest cabin SB"
-                },
-                "valign": "middle"
-              },
-              "constraint": {
-                "horizontal": "left",
-                "vertical": "top"
-              },
-              "name": "Element 6",
-              "placement": {
-                "height": 30,
-                "left": 205,
-                "top": 10,
-                "width": 350
-              },
-              "type": "text"
-            },
-            {
-              "background": {
-                "color": {
-                  "fixed": "#D9D9D9"
-                }
-              },
-              "border": {
-                "color": {
-                  "fixed": "dark-green"
-                }
-              },
-              "config": {
-                "align": "center",
-                "color": {
-                  "fixed": "#000000"
-                },
-                "size": 18,
-                "text": {
-                  "field": "hotwater_guest_cabin_ps_fwd_flow",
-                  "mode": "field"
-                },
-                "valign": "middle"
-              },
-              "constraint": {
-                "horizontal": "left",
-                "vertical": "top"
-              },
-              "name": "Guest cabin PS FWD",
-              "placement": {
-                "height": 30,
-                "left": 15,
-                "rotation": 0,
-                "top": 45,
-                "width": 180
-              },
-              "type": "metric-value"
-            },
-            {
-              "background": {
-                "color": {
-                  "fixed": "transparent"
-                }
-              },
-              "border": {
-                "color": {
-                  "fixed": "dark-green"
-                }
-              },
-              "config": {
-                "align": "left",
-                "color": {
-                  "fixed": "rgb(204,204,220)"
-                },
-                "size": 16,
-                "text": {
-                  "fixed": "Guest cabin PS FWD"
-                },
-                "valign": "middle"
-              },
-              "constraint": {
-                "horizontal": "left",
-                "vertical": "top"
-              },
-              "name": "Element 8",
-              "placement": {
-                "height": 30,
-                "left": 205,
-                "top": 45,
-                "width": 350
-              },
-              "type": "text"
-            },
-            {
-              "background": {
-                "color": {
-                  "fixed": "#D9D9D9"
-                }
-              },
-              "border": {
-                "color": {
-                  "fixed": "dark-green"
-                }
-              },
-              "config": {
-                "align": "center",
-                "color": {
-                  "fixed": "#000000"
-                },
-                "size": 18,
-                "text": {
-                  "field": "hotwater_guest_cabin_ps_aft_flow",
-                  "mode": "field"
-                },
-                "valign": "middle"
-              },
-              "constraint": {
-                "horizontal": "left",
-                "vertical": "top"
-              },
-              "name": "Guest cabin PS AFT",
-              "placement": {
-                "height": 30,
-                "left": 15,
-                "rotation": 0,
-                "top": 80,
-                "width": 180
-              },
-              "type": "metric-value"
-            },
-            {
-              "background": {
-                "color": {
-                  "fixed": "transparent"
-                }
-              },
-              "border": {
-                "color": {
-                  "fixed": "dark-green"
-                }
-              },
-              "config": {
-                "align": "left",
-                "color": {
-                  "fixed": "rgb(204,204,220)"
-                },
-                "size": 16,
-                "text": {
-                  "fixed": "Guest cabin PS AFT"
-                },
-                "valign": "middle"
-              },
-              "constraint": {
-                "horizontal": "left",
-                "vertical": "top"
-              },
-              "name": "Element 10",
-              "placement": {
-                "height": 30,
-                "left": 205,
-                "top": 80,
-                "width": 350
-              },
-              "type": "text"
-            },
-            {
-              "background": {
-                "color": {
-                  "fixed": "#D9D9D9"
-                }
-              },
-              "border": {
-                "color": {
-                  "fixed": "dark-green"
-                }
-              },
-              "config": {
-                "align": "center",
-                "color": {
-                  "fixed": "#000000"
-                },
-                "size": 18,
-                "text": {
-                  "field": "hotwater_master_cabin_sb_flow",
-                  "mode": "field"
-                },
-                "valign": "middle"
-              },
-              "constraint": {
-                "horizontal": "left",
-                "vertical": "top"
-              },
-              "name": "Master cabin SB",
-              "placement": {
-                "height": 30,
-                "left": 15,
-                "rotation": 0,
-                "top": 115,
-                "width": 180
-              },
-              "type": "metric-value"
-            },
-            {
-              "background": {
-                "color": {
-                  "fixed": "transparent"
-                }
-              },
-              "border": {
-                "color": {
-                  "fixed": "dark-green"
-                }
-              },
-              "config": {
-                "align": "left",
-                "color": {
-                  "fixed": "rgb(204,204,220)"
-                },
-                "size": 16,
-                "text": {
-                  "fixed": "Master cabin SB"
-                },
-                "valign": "middle"
-              },
-              "constraint": {
-                "horizontal": "left",
-                "vertical": "top"
-              },
-              "name": "Element 12",
-              "placement": {
-                "height": 30,
-                "left": 205,
-                "top": 115,
-                "width": 350
-              },
-              "type": "text"
-            },
-            {
-              "background": {
-                "color": {
-                  "fixed": "#D9D9D9"
-                }
-              },
-              "border": {
-                "color": {
-                  "fixed": "dark-green"
-                }
-              },
-              "config": {
-                "align": "center",
-                "color": {
-                  "fixed": "#000000"
-                },
-                "size": 18,
-                "text": {
-                  "field": "hotwater_master_cabin_ps_flow",
-                  "mode": "field"
-                },
-                "valign": "middle"
-              },
-              "constraint": {
-                "horizontal": "left",
-                "vertical": "top"
-              },
-              "name": "Master cabin PS",
-              "placement": {
-                "height": 30,
-                "left": 15,
-                "rotation": 0,
-                "top": 150,
-                "width": 180
-              },
-              "type": "metric-value"
-            },
-            {
-              "background": {
-                "color": {
-                  "fixed": "transparent"
-                }
-              },
-              "border": {
-                "color": {
-                  "fixed": "dark-green"
-                }
-              },
-              "config": {
-                "align": "left",
-                "color": {
-                  "fixed": "rgb(204,204,220)"
-                },
-                "size": 16,
-                "text": {
-                  "fixed": "Master cabin PS"
-                },
-                "valign": "middle"
-              },
-              "constraint": {
-                "horizontal": "left",
-                "vertical": "top"
-              },
-              "name": "Element 14",
-              "placement": {
-                "height": 30,
-                "left": 205,
-                "top": 150,
-                "width": 350
-              },
-              "type": "text"
-            },
-            {
-              "background": {
-                "color": {
-                  "fixed": "#D9D9D9"
-                }
-              },
-              "border": {
-                "color": {
-                  "fixed": "dark-green"
-                }
-              },
-              "config": {
-                "align": "center",
-                "color": {
-                  "fixed": "#000000"
-                },
-                "size": 18,
-                "text": {
-                  "field": "hotwater_captains_cabin_flow",
-                  "mode": "field"
-                },
-                "valign": "middle"
-              },
-              "constraint": {
-                "horizontal": "left",
-                "vertical": "top"
-              },
-              "name": "Captain's cabin",
-              "placement": {
-                "height": 30,
-                "left": 475,
-                "rotation": 0,
-                "top": 10,
-                "width": 180
-              },
-              "type": "metric-value"
-            },
-            {
-              "background": {
-                "color": {
-                  "fixed": "transparent"
-                }
-              },
-              "border": {
-                "color": {
-                  "fixed": "dark-green"
-                }
-              },
-              "config": {
-                "align": "left",
-                "color": {
-                  "fixed": "rgb(204,204,220)"
-                },
-                "size": 16,
-                "text": {
-                  "fixed": "Captain's cabin"
-                },
-                "valign": "middle"
-              },
-              "connections": [],
-              "constraint": {
-                "horizontal": "left",
-                "vertical": "top"
-              },
-              "name": "Element 16",
-              "placement": {
-                "height": 30,
-                "left": 665,
-                "rotation": 0,
-                "top": 10,
-                "width": 350
+                "width": 127.99999999999997
               },
               "type": "text"
             },
@@ -3263,7 +3894,7 @@
               "name": "Crew mess",
               "placement": {
                 "height": 30,
-                "left": 935,
+                "left": 165,
                 "rotation": 0,
                 "top": 10,
                 "width": 180
@@ -3299,371 +3930,9 @@
               "name": "Element 18",
               "placement": {
                 "height": 30,
-                "left": 1125,
+                "left": 15,
                 "top": 10,
-                "width": 350
-              },
-              "type": "text"
-            },
-            {
-              "background": {
-                "color": {
-                  "fixed": "#D9D9D9"
-                }
-              },
-              "border": {
-                "color": {
-                  "fixed": "dark-green"
-                }
-              },
-              "config": {
-                "align": "center",
-                "color": {
-                  "fixed": "#000000"
-                },
-                "size": 18,
-                "text": {
-                  "field": "hotwater_crew_cabin_sb_aft_flow",
-                  "mode": "field"
-                },
-                "valign": "middle"
-              },
-              "constraint": {
-                "horizontal": "left",
-                "vertical": "top"
-              },
-              "name": "Crew cabin SB AFT",
-              "placement": {
-                "height": 30,
-                "left": 475,
-                "rotation": 0,
-                "top": 45,
-                "width": 180
-              },
-              "type": "metric-value"
-            },
-            {
-              "background": {
-                "color": {
-                  "fixed": "transparent"
-                }
-              },
-              "border": {
-                "color": {
-                  "fixed": "dark-green"
-                }
-              },
-              "config": {
-                "align": "left",
-                "color": {
-                  "fixed": "rgb(204,204,220)"
-                },
-                "size": 16,
-                "text": {
-                  "fixed": "Crew cabin SB AFT"
-                },
-                "valign": "middle"
-              },
-              "constraint": {
-                "horizontal": "left",
-                "vertical": "top"
-              },
-              "name": "Element 20",
-              "placement": {
-                "height": 30,
-                "left": 665,
-                "top": 45,
-                "width": 350
-              },
-              "type": "text"
-            },
-            {
-              "background": {
-                "color": {
-                  "fixed": "#D9D9D9"
-                }
-              },
-              "border": {
-                "color": {
-                  "fixed": "dark-green"
-                }
-              },
-              "config": {
-                "align": "center",
-                "color": {
-                  "fixed": "#000000"
-                },
-                "size": 18,
-                "text": {
-                  "field": "hotwater_crew_cabin_sb_mid_flow",
-                  "mode": "field"
-                },
-                "valign": "middle"
-              },
-              "constraint": {
-                "horizontal": "left",
-                "vertical": "top"
-              },
-              "name": "Crew cabin SB MID",
-              "placement": {
-                "height": 30,
-                "left": 475,
-                "rotation": 0,
-                "top": 80,
-                "width": 180
-              },
-              "type": "metric-value"
-            },
-            {
-              "background": {
-                "color": {
-                  "fixed": "transparent"
-                }
-              },
-              "border": {
-                "color": {
-                  "fixed": "dark-green"
-                }
-              },
-              "config": {
-                "align": "left",
-                "color": {
-                  "fixed": "rgb(204,204,220)"
-                },
-                "size": 16,
-                "text": {
-                  "fixed": "Crew cabin SB MID"
-                },
-                "valign": "middle"
-              },
-              "constraint": {
-                "horizontal": "left",
-                "vertical": "top"
-              },
-              "name": "Element 22",
-              "placement": {
-                "height": 30,
-                "left": 665,
-                "top": 80,
-                "width": 350
-              },
-              "type": "text"
-            },
-            {
-              "background": {
-                "color": {
-                  "fixed": "#D9D9D9"
-                }
-              },
-              "border": {
-                "color": {
-                  "fixed": "dark-green"
-                }
-              },
-              "config": {
-                "align": "center",
-                "color": {
-                  "fixed": "#000000"
-                },
-                "size": 18,
-                "text": {
-                  "field": "hotwater_crew_cabin_ps_mid_flow",
-                  "mode": "field"
-                },
-                "valign": "middle"
-              },
-              "constraint": {
-                "horizontal": "left",
-                "vertical": "top"
-              },
-              "name": "Crew cabin PS MID",
-              "placement": {
-                "height": 30,
-                "left": 475,
-                "rotation": 0,
-                "top": 115,
-                "width": 180
-              },
-              "type": "metric-value"
-            },
-            {
-              "background": {
-                "color": {
-                  "fixed": "transparent"
-                }
-              },
-              "border": {
-                "color": {
-                  "fixed": "dark-green"
-                }
-              },
-              "config": {
-                "align": "left",
-                "color": {
-                  "fixed": "rgb(204,204,220)"
-                },
-                "size": 16,
-                "text": {
-                  "fixed": "Crew cabin PS MID"
-                },
-                "valign": "middle"
-              },
-              "constraint": {
-                "horizontal": "left",
-                "vertical": "top"
-              },
-              "name": "Element 24",
-              "placement": {
-                "height": 30,
-                "left": 665,
-                "rotation": 0,
-                "top": 115,
-                "width": 350
-              },
-              "type": "text"
-            },
-            {
-              "background": {
-                "color": {
-                  "fixed": "#D9D9D9"
-                }
-              },
-              "border": {
-                "color": {
-                  "fixed": "dark-green"
-                }
-              },
-              "config": {
-                "align": "center",
-                "color": {
-                  "fixed": "#000000"
-                },
-                "size": 18,
-                "text": {
-                  "field": "hotwater_crew_cabin_sb_fwd_flow",
-                  "mode": "field"
-                },
-                "valign": "middle"
-              },
-              "constraint": {
-                "horizontal": "left",
-                "vertical": "top"
-              },
-              "name": "Crew cabin SB FWD",
-              "placement": {
-                "height": 30,
-                "left": 475,
-                "rotation": 0,
-                "top": 150,
-                "width": 180
-              },
-              "type": "metric-value"
-            },
-            {
-              "background": {
-                "color": {
-                  "fixed": "transparent"
-                }
-              },
-              "border": {
-                "color": {
-                  "fixed": "dark-green"
-                }
-              },
-              "config": {
-                "align": "left",
-                "color": {
-                  "fixed": "rgb(204,204,220)"
-                },
-                "size": 16,
-                "text": {
-                  "fixed": "Crew cabin SB FWD"
-                },
-                "valign": "middle"
-              },
-              "constraint": {
-                "horizontal": "left",
-                "vertical": "top"
-              },
-              "name": "Element 26",
-              "placement": {
-                "height": 30,
-                "left": 665,
-                "rotation": 0,
-                "top": 150,
-                "width": 350
-              },
-              "type": "text"
-            },
-            {
-              "background": {
-                "color": {
-                  "fixed": "#D9D9D9"
-                }
-              },
-              "border": {
-                "color": {
-                  "fixed": "dark-green"
-                }
-              },
-              "config": {
-                "align": "center",
-                "color": {
-                  "fixed": "#000000"
-                },
-                "size": 18,
-                "text": {
-                  "field": "hotwater_crew_cabin_ps_fwd_flow",
-                  "mode": "field"
-                },
-                "valign": "middle"
-              },
-              "constraint": {
-                "horizontal": "left",
-                "vertical": "top"
-              },
-              "name": "Crew cabin PS FWD",
-              "placement": {
-                "height": 30,
-                "left": 475,
-                "rotation": 0,
-                "top": 185,
-                "width": 180
-              },
-              "type": "metric-value"
-            },
-            {
-              "background": {
-                "color": {
-                  "fixed": "transparent"
-                }
-              },
-              "border": {
-                "color": {
-                  "fixed": "dark-green"
-                }
-              },
-              "config": {
-                "align": "left",
-                "color": {
-                  "fixed": "rgb(204,204,220)"
-                },
-                "size": 16,
-                "text": {
-                  "fixed": "Crew cabin PS FWD"
-                },
-                "valign": "middle"
-              },
-              "constraint": {
-                "horizontal": "left",
-                "vertical": "top"
-              },
-              "name": "Element 28",
-              "placement": {
-                "height": 30,
-                "left": 665,
-                "top": 185,
-                "width": 350
+                "width": 127.99999999999997
               },
               "type": "text"
             },
@@ -3697,8 +3966,7 @@
               "name": "Lazaret",
               "placement": {
                 "height": 30,
-                "left": 935,
-                "rotation": 0,
+                "left": 165,
                 "top": 115,
                 "width": 180
               },
@@ -3733,9 +4001,9 @@
               "name": "Element 30",
               "placement": {
                 "height": 30,
-                "left": 1125,
+                "left": 15,
                 "top": 115,
-                "width": 350
+                "width": 127.99999999999997
               },
               "type": "text"
             },
@@ -3769,8 +4037,7 @@
               "name": "Galley 2",
               "placement": {
                 "height": 30,
-                "left": 935,
-                "rotation": 0,
+                "left": 165,
                 "top": 45,
                 "width": 180
               },
@@ -3805,9 +4072,9 @@
               "name": "Element 32",
               "placement": {
                 "height": 30,
-                "left": 1125,
+                "left": 15,
                 "top": 45,
-                "width": 350
+                "width": 127.99999999999997
               },
               "type": "text"
             },
@@ -3841,8 +4108,7 @@
               "name": "Laundry PS",
               "placement": {
                 "height": 30,
-                "left": 935,
-                "rotation": 0,
+                "left": 165,
                 "top": 150,
                 "width": 180
               },
@@ -3877,10 +4143,9 @@
               "name": "Element 34",
               "placement": {
                 "height": 30,
-                "left": 1125,
-                "rotation": 0,
+                "left": 15,
                 "top": 150,
-                "width": 350
+                "width": 127.99999999999997
               },
               "type": "text"
             },
@@ -3914,7 +4179,8 @@
               "name": "Deckhouse",
               "placement": {
                 "height": 30,
-                "left": 1335,
+                "left": 695,
+                "rotation": 0,
                 "top": 10,
                 "width": 180
               },
@@ -3949,9 +4215,9 @@
               "name": "Element 36",
               "placement": {
                 "height": 30,
-                "left": 1525,
+                "left": 435,
                 "top": 10,
-                "width": 350
+                "width": 245
               },
               "type": "text"
             },
@@ -3985,7 +4251,7 @@
               "name": "Deck FR48 SB tech corridor",
               "placement": {
                 "height": 30,
-                "left": 1335,
+                "left": 695,
                 "top": 45,
                 "width": 180
               },
@@ -4020,9 +4286,9 @@
               "name": "Element 38",
               "placement": {
                 "height": 30,
-                "left": 1525,
+                "left": 435,
                 "top": 45,
-                "width": 350
+                "width": 245
               },
               "type": "text"
             },
@@ -4056,7 +4322,7 @@
               "name": "Main tech space",
               "placement": {
                 "height": 30,
-                "left": 1335,
+                "left": 695,
                 "top": 80,
                 "width": 180
               },
@@ -4091,81 +4357,9 @@
               "name": "Element 42",
               "placement": {
                 "height": 30,
-                "left": 1525,
+                "left": 435,
                 "top": 80,
-                "width": 350
-              },
-              "type": "text"
-            },
-            {
-              "background": {
-                "color": {
-                  "fixed": "#D9D9D9"
-                }
-              },
-              "border": {
-                "color": {
-                  "fixed": "dark-green"
-                }
-              },
-              "config": {
-                "align": "center",
-                "color": {
-                  "fixed": "#000000"
-                },
-                "size": 18,
-                "text": {
-                  "field": "hotwater_guest_bathroom_flow",
-                  "mode": "field"
-                },
-                "valign": "middle"
-              },
-              "constraint": {
-                "horizontal": "left",
-                "vertical": "top"
-              },
-              "name": "Element 45",
-              "placement": {
-                "height": 30,
-                "left": 15,
-                "rotation": 0,
-                "top": 185,
-                "width": 180
-              },
-              "type": "metric-value"
-            },
-            {
-              "background": {
-                "color": {
-                  "fixed": "transparent"
-                }
-              },
-              "border": {
-                "color": {
-                  "fixed": "dark-green"
-                }
-              },
-              "config": {
-                "align": "left",
-                "color": {
-                  "fixed": "rgb(204,204,220)"
-                },
-                "size": 16,
-                "text": {
-                  "fixed": "Guest bathroom PS FWD"
-                },
-                "valign": "middle"
-              },
-              "constraint": {
-                "horizontal": "left",
-                "vertical": "top"
-              },
-              "name": "Element 46",
-              "placement": {
-                "height": 30,
-                "left": 205,
-                "top": 185,
-                "width": 350
+                "width": 245
               },
               "type": "text"
             },
@@ -4199,8 +4393,7 @@
               "name": "Element 47",
               "placement": {
                 "height": 30,
-                "left": 935,
-                "rotation": 0,
+                "left": 165,
                 "top": 185,
                 "width": 180
               },
@@ -4235,10 +4428,9 @@
               "name": "Element 48",
               "placement": {
                 "height": 30,
-                "left": 1125,
-                "rotation": 0,
+                "left": 15,
                 "top": 185,
-                "width": 350
+                "width": 127.99999999999997
               },
               "type": "text"
             }
@@ -4253,7 +4445,7 @@
           },
           "type": "frame"
         },
-        "showAdvancedTypes": true,
+        "showAdvancedTypes": false,
         "tooltip": {
           "disableForOneClick": false,
           "mode": "none"
@@ -4266,7 +4458,7 @@
           "editorMode": "code",
           "format": "table",
           "rawQuery": true,
-          "rawSql": "SELECT\n  LAST_VALUE(time ORDER BY time) AS time,\n  \n  LAST_VALUE((\"HOTWATER_GUEST_CABIN_SB_FLOW\").value ORDER BY time)           AS hotwater_guest_cabin_sb_flow,\n  LAST_VALUE((\"HOTWATER_GUEST_CABIN_PS_FWD_FLOW\").value ORDER BY time)       AS hotwater_guest_cabin_ps_fwd_flow,\n  LAST_VALUE((\"HOTWATER_GUEST_CABIN_PS_AFT_FLOW\").value ORDER BY time)       AS hotwater_guest_cabin_ps_aft_flow,\n  LAST_VALUE((\"HOTWATER_MASTER_CABIN_SB_FLOW\").value ORDER BY time)          AS hotwater_master_cabin_sb_flow,\n  LAST_VALUE((\"HOTWATER_MASTER_CABIN_PS_FLOW\").value ORDER BY time)          AS hotwater_master_cabin_ps_flow,\n  LAST_VALUE((\"HOTWATER_GUEST_BATHR_PS_FWD_FLOW\").value ORDER BY time)       AS hotwater_guest_bathroom_flow,\n\n  LAST_VALUE((\"HOTWATER_CAPTAINS_CABIN_FLOW\").value ORDER BY time)           AS hotwater_captains_cabin_flow,\n  LAST_VALUE((\"HOTWATER_CREW_CABIN_SB_AFT_FLOW\").value ORDER BY time)        AS hotwater_crew_cabin_sb_aft_flow,\n  LAST_VALUE((\"HOTWATER_CREW_CABIN_SB_MID_FLOW\").value ORDER BY time)        AS hotwater_crew_cabin_sb_mid_flow,\n  LAST_VALUE((\"HOTWATER_CREW_CABIN_PS_MID_FLOW\").value ORDER BY time)        AS hotwater_crew_cabin_ps_mid_flow,\n  LAST_VALUE((\"HOTWATER_CREW_CABIN_SB_FWD_FLOW\").value ORDER BY time)        AS hotwater_crew_cabin_sb_fwd_flow,\n  LAST_VALUE((\"HOTWATER_CREW_CABIN_PS_FWD_FLOW\").value ORDER BY time)        AS hotwater_crew_cabin_ps_fwd_flow,\n\n  LAST_VALUE((\"HOTWATER_CREW_MESS_FLOW\").value ORDER BY time)                AS hotwater_crew_mess_flow,\n  LAST_VALUE((\"HOTWATER_GALLEY_2_FLOW\").value ORDER BY time)                 AS hotwater_galley_2_flow,\n  LAST_VALUE((\"HOTWATER_DAYHEAD_FLOW\").value ORDER BY time)                  AS hotwater_dayhead_flow,\n  LAST_VALUE((\"HOTWATER_LAZARET_FLOW\").value ORDER BY time)                  AS hotwater_lazaret_flow,\n  LAST_VALUE((\"HOTWATER_LAUNDRY_PS_1_FLOW\").value ORDER BY time)             AS hotwater_laundry_ps_1_flow,\n  LAST_VALUE((\"HOTWATER_LAUNDRY_PS_2_FLOW\").value ORDER BY time)             AS hotwater_laundry_ps_2_flow,\n  LAST_VALUE((\"HOTWATER_DECKHOUSE_FLOW\").value ORDER BY time)                AS hotwater_deckhouse_flow,\n  LAST_VALUE((\"HOTWATER_DECK_FR48_SB_TECH_COR_FLOW\").value ORDER BY time)    AS hotwater_deck_fr48_sb_tech_cor_flow,\n  LAST_VALUE((\"HOTWATER_MAIN_TECH_SPACE_FLOW\").value ORDER BY time)          AS hotwater_main_tech_space_flow\n\nFROM marpower.\"250000_fresh_water\";\n",
+          "rawSql": "SELECT\n  LAST_VALUE(time ORDER BY time) AS time,\n  LAST_VALUE((\"HOTWATER_CREW_MESS_FLOW\").value ORDER BY time)                AS hotwater_crew_mess_flow,\n  LAST_VALUE((\"HOTWATER_GALLEY_2_FLOW\").value ORDER BY time)                 AS hotwater_galley_2_flow,\n  LAST_VALUE((\"HOTWATER_DAYHEAD_FLOW\").value ORDER BY time)                  AS hotwater_dayhead_flow,\n  LAST_VALUE((\"HOTWATER_LAZARET_FLOW\").value ORDER BY time)                  AS hotwater_lazaret_flow,\n  LAST_VALUE((\"HOTWATER_LAUNDRY_PS_1_FLOW\").value ORDER BY time)             AS hotwater_laundry_ps_1_flow,\n  LAST_VALUE((\"HOTWATER_LAUNDRY_PS_2_FLOW\").value ORDER BY time)             AS hotwater_laundry_ps_2_flow,\n  LAST_VALUE((\"HOTWATER_DECKHOUSE_FLOW\").value ORDER BY time)                AS hotwater_deckhouse_flow,\n  LAST_VALUE((\"HOTWATER_DECK_FR48_SB_TECH_COR_FLOW\").value ORDER BY time)    AS hotwater_deck_fr48_sb_tech_cor_flow,\n  LAST_VALUE((\"HOTWATER_MAIN_TECH_SPACE_FLOW\").value ORDER BY time)          AS hotwater_main_tech_space_flow\nFROM marpower.\"250000_fresh_water\"\n",
           "refId": "A",
           "sql": {
             "columns": [
@@ -4289,6 +4481,19 @@
       ],
       "title": "Hot water flow",
       "type": "canvas"
+    },
+    {
+      "collapsed": false,
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 24
+      },
+      "id": 17,
+      "panels": [],
+      "title": "Miscellaneous",
+      "type": "row"
     },
     {
       "datasource": {
@@ -4319,7 +4524,7 @@
         "h": 7,
         "w": 7,
         "x": 0,
-        "y": 21
+        "y": 25
       },
       "id": 8,
       "options": {
@@ -4710,7 +4915,7 @@
         "h": 7,
         "w": 5,
         "x": 7,
-        "y": 21
+        "y": 25
       },
       "id": 9,
       "options": {
@@ -4955,7 +5160,7 @@
         "h": 7,
         "w": 6,
         "x": 12,
-        "y": 21
+        "y": 25
       },
       "id": 10,
       "options": {
@@ -5419,7 +5624,7 @@
         "h": 7,
         "w": 6,
         "x": 18,
-        "y": 21
+        "y": 25
       },
       "id": 11,
       "options": {
@@ -5584,12 +5789,12 @@
     ]
   },
   "time": {
-    "from": "now-15m",
+    "from": "now-5m",
     "to": "now"
   },
   "timepicker": {},
   "timezone": "browser",
   "title": "Fresh water",
   "uid": "commissioning-fresh-water",
-  "version": 6
+  "version": 1
 }

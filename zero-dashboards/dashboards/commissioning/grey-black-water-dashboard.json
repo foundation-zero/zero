@@ -2163,34 +2163,8 @@
                 "includeByName": {},
                 "indexByName": {},
                 "renameByName": {
-                  "cooling_pump1_onoff": "Cooling pump 1 - On/Off",
-                  "cooling_pump1_remavail": "Cooling pump 1 - Remote avail.",
-                  "cooling_pump1_running": "Cooling pump 1 - Running",
-                  "cooling_pump2_onoff": "Cooling pump 2 - On/Off",
-                  "cooling_pump2_remavail": "Cooling pump 2 - Remote avail.",
-                  "cooling_pump2_running": "Cooling pump 2 - Running",
-                  "fresh_water_chlorine_unit_alarm": "Chlorine unit - Alarm",
-                  "fresh_water_circ_pump_onoff": "Circulation pump - On/Off",
-                  "fresh_water_circ_pump_running": "Circulation pump - Running",
-                  "fresh_water_mak1_alarm": "Water maker 1 - Alarm",
-                  "fresh_water_mak2_alarm": "Water maker 2 - Alarm",
-                  "fwd_pump_grey_wat_remavail": "Grey water FWD pump - Remote avail.",
-                  "fwd_pump_grey_wat_running": "Grey water FWD pump - Running",
-                  "fwr_pump_grey_wat_start": "Grey water FWD pump - Start",
-                  "st_fresh_water_circ_pump_running": "Circulation pump - Running",
-                  "time": "",
-                  "trans_pump_black_wat_remavail": "Black water transfer pump - Remote avail.",
-                  "trans_pump_black_wat_running": "Black water transfer pump - Running",
-                  "trans_pump_black_wat_start": "Black water transfer pump - Start",
-                  "trans_pump_grey_wat_remavail": "Grey water transfer pump - Remote avail.",
-                  "trans_pump_grey_wat_running": "Grey water transfer pump - Running",
-                  "trans_pump_grey_wat_start": "Grey water transfer pump - Start",
                   "treat_gen_alarm": "Treatment plant - Alarm",
-                  "treat_gen_warning_alarm": "Treatment plant - Warning alarm",
-                  "treatment_dry_run_protect": "Treatment plant - Dry run protection",
-                  "treatment_on": "Treatment plant - On",
-                  "treatment_release": "Treatment plant - Release",
-                  "vacuum_alarm": "Vacuum - Alarm"
+                  "treat_gen_warning_alarm": "Treatment plant - Warning alarm"
                 }
               }
             }
@@ -2245,7 +2219,7 @@
             ]
           },
           "gridPos": {
-            "h": 9,
+            "h": 10,
             "w": 24,
             "x": 0,
             "y": 18
@@ -2307,34 +2281,16 @@
                 "includeByName": {},
                 "indexByName": {},
                 "renameByName": {
-                  "cooling_pump1_onoff": "Cooling pump 1 - On/Off",
-                  "cooling_pump1_remavail": "Cooling pump 1 - Remote avail.",
-                  "cooling_pump1_running": "Cooling pump 1 - Running",
-                  "cooling_pump2_onoff": "Cooling pump 2 - On/Off",
-                  "cooling_pump2_remavail": "Cooling pump 2 - Remote avail.",
-                  "cooling_pump2_running": "Cooling pump 2 - Running",
-                  "fresh_water_chlorine_unit_alarm": "Chlorine unit - Alarm",
-                  "fresh_water_circ_pump_onoff": "Circulation pump - On/Off",
-                  "fresh_water_circ_pump_running": "Circulation pump - Running",
-                  "fresh_water_mak1_alarm": "Water maker 1 - Alarm",
-                  "fresh_water_mak2_alarm": "Water maker 2 - Alarm",
                   "fwd_pump_grey_wat_remavail": "Grey water FWD pump - Remote avail.",
                   "fwd_pump_grey_wat_running": "Grey water FWD pump - Running",
-                  "fwr_pump_grey_wat_start": "Grey water FWD pump - Start",
                   "st_fresh_water_circ_pump_running": "Circulation pump - Running",
-                  "time": "",
                   "trans_pump_black_wat_remavail": "Black water transfer pump - Remote avail.",
                   "trans_pump_black_wat_running": "Black water transfer pump - Running",
-                  "trans_pump_black_wat_start": "Black water transfer pump - Start",
                   "trans_pump_grey_wat_remavail": "Grey water transfer pump - Remote avail.",
                   "trans_pump_grey_wat_running": "Grey water transfer pump - Running",
-                  "trans_pump_grey_wat_start": "Grey water transfer pump - Start",
-                  "treat_gen_alarm": "Treatment plant - Alarm",
-                  "treat_gen_warning_alarm": "Treatment plant - Warning alarm",
                   "treatment_dry_run_protect": "Treatment plant - Dry run protection",
                   "treatment_on": "Treatment plant - On",
-                  "treatment_release": "Treatment plant - Release",
-                  "vacuum_alarm": "Vacuum - Alarm"
+                  "treatment_release": "Treatment plant - Release"
                 }
               }
             }
@@ -2389,10 +2345,10 @@
             ]
           },
           "gridPos": {
-            "h": 4,
+            "h": 5,
             "w": 24,
             "x": 0,
-            "y": 27
+            "y": 28
           },
           "id": 11,
           "options": {
@@ -2451,34 +2407,9 @@
                 "includeByName": {},
                 "indexByName": {},
                 "renameByName": {
-                  "cooling_pump1_onoff": "Cooling pump 1 - On/Off",
-                  "cooling_pump1_remavail": "Cooling pump 1 - Remote avail.",
-                  "cooling_pump1_running": "Cooling pump 1 - Running",
-                  "cooling_pump2_onoff": "Cooling pump 2 - On/Off",
-                  "cooling_pump2_remavail": "Cooling pump 2 - Remote avail.",
-                  "cooling_pump2_running": "Cooling pump 2 - Running",
-                  "fresh_water_chlorine_unit_alarm": "Chlorine unit - Alarm",
-                  "fresh_water_circ_pump_onoff": "Circulation pump - On/Off",
-                  "fresh_water_circ_pump_running": "Circulation pump - Running",
-                  "fresh_water_mak1_alarm": "Water maker 1 - Alarm",
-                  "fresh_water_mak2_alarm": "Water maker 2 - Alarm",
-                  "fwd_pump_grey_wat_remavail": "Grey water FWD pump - Remote avail.",
-                  "fwd_pump_grey_wat_running": "Grey water FWD pump - Running",
                   "fwr_pump_grey_wat_start": "Grey water FWD pump - Start",
-                  "st_fresh_water_circ_pump_running": "Circulation pump - Running",
-                  "time": "",
-                  "trans_pump_black_wat_remavail": "Black water transfer pump - Remote avail.",
-                  "trans_pump_black_wat_running": "Black water transfer pump - Running",
                   "trans_pump_black_wat_start": "Black water transfer pump - Start",
-                  "trans_pump_grey_wat_remavail": "Grey water transfer pump - Remote avail.",
-                  "trans_pump_grey_wat_running": "Grey water transfer pump - Running",
-                  "trans_pump_grey_wat_start": "Grey water transfer pump - Start",
-                  "treat_gen_alarm": "Treatment plant - Alarm",
-                  "treat_gen_warning_alarm": "Treatment plant - Warning alarm",
-                  "treatment_dry_run_protect": "Treatment plant - Dry run protection",
-                  "treatment_on": "Treatment plant - On",
-                  "treatment_release": "Treatment plant - Release",
-                  "vacuum_alarm": "Vacuum - Alarm"
+                  "trans_pump_grey_wat_start": "Grey water transfer pump - Start"
                 }
               }
             }
@@ -2561,7 +2492,7 @@
             "h": 7,
             "w": 24,
             "x": 0,
-            "y": 31
+            "y": 33
           },
           "id": 10,
           "options": {
@@ -2605,7 +2536,7 @@
               }
             }
           ],
-          "title": "Gery/Black water tank level",
+          "title": "Grey/Black water tank level",
           "transformations": [
             {
               "id": "organize",
@@ -2699,7 +2630,7 @@
             "h": 7,
             "w": 24,
             "x": 0,
-            "y": 38
+            "y": 40
           },
           "id": 14,
           "options": {
@@ -2837,7 +2768,7 @@
             "h": 7,
             "w": 24,
             "x": 0,
-            "y": 45
+            "y": 47
           },
           "id": 13,
           "options": {
