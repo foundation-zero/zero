@@ -17,7 +17,7 @@ class Alarm:
     severity: Severity
 
 
-class BaseAlarms[Sensors, ControlValues]:
+class BaseAlarms[SensorValues, ControlValues]:
     def __init__(self) -> None:
         self._checks = getmembers(
             self, lambda f: hasattr(f, "__alarm_code__") and f.__alarm_code__
@@ -30,7 +30,7 @@ class BaseAlarms[Sensors, ControlValues]:
             )
 
     def check(
-        self, sensor_values: Sensors, control_values: ControlValues
+        self, sensor_values: SensorValues, control_values: ControlValues
     ) -> list[Alarm]:
         def _check():
             for _, f in self._checks:

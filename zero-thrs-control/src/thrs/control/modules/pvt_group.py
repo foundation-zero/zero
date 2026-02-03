@@ -48,15 +48,14 @@ class PvtGroupParameters(ThrsValues):
         return self
 
 
-_ZERO_TIME = datetime.fromtimestamp(0)
-
-_INITIAL_CONTROL_VALUES = PvtGroupControlValues(
-    pump=Pump(
-        dutypoint=Stamped(value=0.0, timestamp=_ZERO_TIME),
-        on=Stamped(value=False, timestamp=_ZERO_TIME),
-    ),
-    mix=Valve(setpoint=Stamped(value=Valve.MIXING_B_TO_AB, timestamp=_ZERO_TIME)),
-)
+def _INITIAL_CONTROL_VALUES(timestamp) -> PvtGroupControlValues:
+    return PvtGroupControlValues(
+        pump=Pump(
+            dutypoint=Stamped(value=0.0, timestamp=timestamp),
+            on=Stamped(value=False, timestamp=timestamp),
+        ),
+        mix=Valve(setpoint=Stamped(value=Valve.MIXING_B_TO_AB, timestamp=timestamp)),
+    )
 
 
 class PvtGroupControlMode(ThrsValues):
@@ -76,7 +75,9 @@ class PvtGroupControl(
     ) -> None:
         self._parameters = parameters
         self._time = time_fn
-        self._current_values = _INITIAL_CONTROL_VALUES.model_copy(deep=True)
+        self._current_values = _INITIAL_CONTROL_VALUES(self._time()).model_copy(
+            deep=True
+        )
         self._states = [
             State(name="idle", on_enter=self._set_mix_to_a),
             State(
@@ -117,18 +118,18 @@ class PvtGroupControl(
         )
 
         self._warmup_mix_controller = Controller[Ratio, Celsius](
-            _INITIAL_CONTROL_VALUES.mix.setpoint.value,
-            parameters.warmup_temperature,
-            parameters.warmup_mix_tuning,
+            self._current_values.mix.setpoint.value,
+            lambda: self._parameters.warmup_temperature,
+            lambda: self._parameters.warmup_mix_tuning,
             self._time,
         )
 
         self._pump_controller = Controller[Ratio, Celsius](
-            _INITIAL_CONTROL_VALUES.pump.dutypoint.value,
-            parameters.recovery_temperature,
-            parameters.pump_tuning,
+            self._current_values.pump.dutypoint.value,
+            lambda: self._parameters.recovery_temperature,
+            lambda: self._parameters.pump_tuning,
             self._time,
-            (parameters.minimum_pump_dutypoint, 1),
+            lambda: (self._parameters.minimum_pump_dutypoint, 1),
         )
 
     @property
@@ -153,10 +154,10 @@ class PvtGroupControl(
         return PvtGroupControlMode(mode=mode)
 
     def update_parameters(self, parameters: PvtGroupParameters):
-        pass
+        self._parameters = parameters
 
     def initial(self) -> ControlResult[PvtGroupControlValues]:
-        return ControlResult(self._time(), self._current_values)
+        return ControlResult(self._time(), _INITIAL_CONTROL_VALUES(self._time()))
 
     def _string_warm(self, sensor_values: PvtGroupSensorValues):
         return (

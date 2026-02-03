@@ -2,7 +2,6 @@ from contextlib import contextmanager
 from dataclasses import dataclass
 from datetime import datetime, timedelta
 
-from pydantic import BaseModel
 from thrs.classes.control import Control
 from thrs.classes.executor import Executor
 from thrs.input_output.alarms import BaseAlarms
@@ -21,7 +20,7 @@ class SimulatorModel:
     control_values_cls: type[ThrsValues]
     simulation_outputs_cls: type[SimulationValues]
     control_cls: type[Control]
-    control_parameters: BaseModel
+    control_parameters: ThrsValues
     alarms: BaseAlarms
     simulation_inputs: SimulationInputs
     start_time: datetime = datetime.now()

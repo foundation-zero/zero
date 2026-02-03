@@ -29,68 +29,68 @@ class BoilersParameters(ThrsValues):
     lt1_flow_tuning: Tuning = (0.01, 0.001, 0.0)
 
 
-_ZERO_TIME = datetime.fromtimestamp(0)
-_INITIAL_CONTROL_VALUES = BoilersControlValues(
-    boilers_pump=control.Pump(
-        dutypoint=Stamped(value=0.0, timestamp=_ZERO_TIME),
-        on=Stamped(value=False, timestamp=_ZERO_TIME),
-    ),
-    boilers_heatpump=control.HeatPump(
-        on=Stamped(value=False, timestamp=_ZERO_TIME),
-        temperature_setpoint=Stamped(value=50.0, timestamp=_ZERO_TIME),
-    ),
-    boilers_flowcontrol_lt2=control.Valve(
-        setpoint=Stamped(value=0.5, timestamp=_ZERO_TIME)
-    ),
-    boilers_flowcontrol_lt1=control.Valve(
-        setpoint=Stamped(value=0.5, timestamp=_ZERO_TIME)
-    ),
-    boilers_switch_tank3_fill=control.Valve(
-        setpoint=Stamped(value=0.0, timestamp=_ZERO_TIME)
-    ),
-    boilers_switch_tank3_boosting_return=control.Valve(
-        setpoint=Stamped(value=0.0, timestamp=_ZERO_TIME)
-    ),
-    boilers_switch_tank3_empty=control.Valve(
-        setpoint=Stamped(value=0.0, timestamp=_ZERO_TIME)
-    ),
-    boilers_switch_tank3_boosting_supply=control.Valve(
-        setpoint=Stamped(value=0.0, timestamp=_ZERO_TIME)
-    ),
-    boilers_switch_tank2_fill=control.Valve(
-        setpoint=Stamped(value=0.0, timestamp=_ZERO_TIME)
-    ),
-    boilers_switch_tank2_boosting_return=control.Valve(
-        setpoint=Stamped(value=0.0, timestamp=_ZERO_TIME)
-    ),
-    boilers_switch_tank2_empty=control.Valve(
-        setpoint=Stamped(value=0.0, timestamp=_ZERO_TIME)
-    ),
-    boilers_switch_tank2_boosting_supply=control.Valve(
-        setpoint=Stamped(value=0.0, timestamp=_ZERO_TIME)
-    ),
-    boilers_switch_tank1_fill=control.Valve(
-        setpoint=Stamped(value=0.0, timestamp=_ZERO_TIME)
-    ),
-    boilers_switch_tank1_boosting_return=control.Valve(
-        setpoint=Stamped(value=0.0, timestamp=_ZERO_TIME)
-    ),
-    boilers_switch_tank1_empty=control.Valve(
-        setpoint=Stamped(value=0.0, timestamp=_ZERO_TIME)
-    ),
-    boilers_switch_tank1_boosting_supply=control.Valve(
-        setpoint=Stamped(value=0.0, timestamp=_ZERO_TIME)
-    ),
-    boilers_switch_low_temperature=control.Valve(
-        setpoint=Stamped(value=0.0, timestamp=_ZERO_TIME)
-    ),
-    boilers_switch_heatpump=control.Valve(
-        setpoint=Stamped(value=0.0, timestamp=_ZERO_TIME)
-    ),
-    boilers_switch_high_temperature=control.Valve(
-        setpoint=Stamped(value=0.0, timestamp=_ZERO_TIME)
-    ),
-)
+def _INITIAL_CONTROL_VALUES(timestamp) -> BoilersControlValues:
+    return BoilersControlValues(
+        boilers_pump=control.Pump(
+            dutypoint=Stamped(value=0.0, timestamp=timestamp),
+            on=Stamped(value=False, timestamp=timestamp),
+        ),
+        boilers_heatpump=control.HeatPump(
+            on=Stamped(value=False, timestamp=timestamp),
+            temperature_setpoint=Stamped(value=50.0, timestamp=timestamp),
+        ),
+        boilers_flowcontrol_lt2=control.Valve(
+            setpoint=Stamped(value=0.5, timestamp=timestamp)
+        ),
+        boilers_flowcontrol_lt1=control.Valve(
+            setpoint=Stamped(value=0.5, timestamp=timestamp)
+        ),
+        boilers_switch_tank3_fill=control.Valve(
+            setpoint=Stamped(value=0.0, timestamp=timestamp)
+        ),
+        boilers_switch_tank3_boosting_return=control.Valve(
+            setpoint=Stamped(value=0.0, timestamp=timestamp)
+        ),
+        boilers_switch_tank3_empty=control.Valve(
+            setpoint=Stamped(value=0.0, timestamp=timestamp)
+        ),
+        boilers_switch_tank3_boosting_supply=control.Valve(
+            setpoint=Stamped(value=0.0, timestamp=timestamp)
+        ),
+        boilers_switch_tank2_fill=control.Valve(
+            setpoint=Stamped(value=0.0, timestamp=timestamp)
+        ),
+        boilers_switch_tank2_boosting_return=control.Valve(
+            setpoint=Stamped(value=0.0, timestamp=timestamp)
+        ),
+        boilers_switch_tank2_empty=control.Valve(
+            setpoint=Stamped(value=0.0, timestamp=timestamp)
+        ),
+        boilers_switch_tank2_boosting_supply=control.Valve(
+            setpoint=Stamped(value=0.0, timestamp=timestamp)
+        ),
+        boilers_switch_tank1_fill=control.Valve(
+            setpoint=Stamped(value=0.0, timestamp=timestamp)
+        ),
+        boilers_switch_tank1_boosting_return=control.Valve(
+            setpoint=Stamped(value=0.0, timestamp=timestamp)
+        ),
+        boilers_switch_tank1_empty=control.Valve(
+            setpoint=Stamped(value=0.0, timestamp=timestamp)
+        ),
+        boilers_switch_tank1_boosting_supply=control.Valve(
+            setpoint=Stamped(value=0.0, timestamp=timestamp)
+        ),
+        boilers_switch_low_temperature=control.Valve(
+            setpoint=Stamped(value=0.0, timestamp=timestamp)
+        ),
+        boilers_switch_heatpump=control.Valve(
+            setpoint=Stamped(value=0.0, timestamp=timestamp)
+        ),
+        boilers_switch_high_temperature=control.Valve(
+            setpoint=Stamped(value=0.0, timestamp=timestamp)
+        ),
+    )
 
 
 class Tank:
@@ -314,9 +314,11 @@ class BoilersControl(
     ) -> None:
         self._parameters = parameters
         self._time = time_fn
-        self._current_values = _INITIAL_CONTROL_VALUES.model_copy(deep=True)
+        self._current_values = _INITIAL_CONTROL_VALUES(self._time()).model_copy(
+            deep=True
+        )
 
-        self.states = [
+        self._states = [
             State(
                 name="idle",
                 on_enter=[self._deactivate_pump, self._disable_pump_flow_control],
@@ -350,7 +352,7 @@ class BoilersControl(
         # TODO: when should heat pump boosting be used? when there is demand and no other heat available? or wait for heat? <- maybe use a heatpump_boosting_enabled parameter. Or let it depend on whether there is a tank standby or not...
         # TODO: should the choosing between boosting sources logic be in the high over control? we need info on the availability of HT and LT heat..
         # We let the 'demand' logic be handled by the tank selection...if a boosting_tank is selected, then the state machine should handle the 'supply'
-        self.transitions = [
+        self._transitions = [
             {
                 "trigger": "_try_boosting",
                 "source": "idle",
@@ -389,41 +391,41 @@ class BoilersControl(
         ]
         self._state_machine = Machine(
             model=self,
-            states=self.states,
-            transitions=self.transitions,
+            states=self._states,
+            transitions=self._transitions,
             initial="idle",
         )
 
         self._pump_temperature_controller = Controller[Ratio, Celsius](
-            _INITIAL_CONTROL_VALUES.boilers_pump.dutypoint.value,
+            self._current_values.boilers_pump.dutypoint.value,
             0,
-            parameters.pump_temperature_tuning,
+            lambda: self._parameters.pump_temperature_tuning,
             self._time,
         )
 
         self._pump_flow_controller = Controller[Ratio, LMin](
-            _INITIAL_CONTROL_VALUES.boilers_pump.dutypoint.value,
+            self._current_values.boilers_pump.dutypoint.value,
             0,
-            parameters.pump_flow_tuning,
+            lambda: self._parameters.pump_flow_tuning,
             self._time,
         )
 
         self._lt1_flow_controller = Controller[Ratio, Celsius](
-            _INITIAL_CONTROL_VALUES.boilers_flowcontrol_lt1.setpoint.value,
-            parameters.filling_temperature_setpoint,
-            parameters.lt1_flow_tuning,
+            self._current_values.boilers_flowcontrol_lt1.setpoint.value,
+            lambda: self._parameters.filling_temperature_setpoint,
+            lambda: self._parameters.lt1_flow_tuning,
             self._time,
-            (parameters.lt1_flowcontrol_minimum_setpoint, 1.0),
+            lambda: (self._parameters.lt1_flowcontrol_minimum_setpoint, 1.0),
         )
 
         self._lt1_flow_controller.enable()
 
         self._lt2_flow_controller = Controller[Ratio, Celsius](
-            _INITIAL_CONTROL_VALUES.boilers_flowcontrol_lt2.setpoint.value,
-            parameters.filling_temperature_setpoint,
-            parameters.lt2_flow_tuning,
+            self._current_values.boilers_flowcontrol_lt2.setpoint.value,
+            lambda: self._parameters.filling_temperature_setpoint,
+            lambda: self._parameters.lt2_flow_tuning,
             self._time,
-            (parameters.lt2_flowcontrol_minimum_setpoint, 1.0),
+            lambda: (self._parameters.lt2_flowcontrol_minimum_setpoint, 1.0),
         )
 
         self._lt2_flow_controller.enable()
@@ -459,12 +461,6 @@ class BoilersControl(
 
     def update_parameters(self, parameters: BoilersParameters):
         self._parameters = parameters
-        self._pump_temperature_controller.update_tuning(
-            parameters.pump_temperature_tuning
-        )
-        self._pump_flow_controller.update_tuning(parameters.pump_flow_tuning)
-        self._lt1_flow_controller.update_tuning(parameters.lt1_flow_tuning)
-        self._lt2_flow_controller.update_tuning(parameters.lt2_flow_tuning)
 
     def modes(self) -> list[str]:
         return list(self._state_machine.states.keys())
@@ -480,7 +476,7 @@ class BoilersControl(
         return BoilersControlMode(mode=mode)
 
     def initial(self) -> ControlResult[BoilersControlValues]:
-        return ControlResult(self._time(), self._current_values)
+        return ControlResult(self._time(), _INITIAL_CONTROL_VALUES(self._time()))
 
     def control(
         self, sensor_values: BoilersSensorValues
