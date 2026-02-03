@@ -30,17 +30,9 @@ from thrs.graphql.pvt import (
     PvtMutations,
 )
 from thrs.graphql.simulation import (
-    ConsumersSimulationInputsType,
-    ConsumersSimulationOutputsType,
-    HighTemperatureSimulationInputsType,
-    HighTemperatureSimulationOutputsType,
-    PcmSimulationInputsType,
-    PcmSimulationOutputsType,
-    PvtSimulationInputsType,
-    PvtSimulationOutputsType,
+    SimulationInputsType,
     SimulationMutations,
-    ThrustersSimulationInputsType,
-    ThrustersSimulationOutputsType,
+    SimulationOutputsType,
 )
 from thrs.graphql.thrusters import (
     ThrustersModule,
@@ -58,35 +50,24 @@ from thrs.graphql.consumers import (
 from thrs.input_output.modules.consumers import (
     ConsumersControlValues,
     ConsumersSensorValues,
-    ConsumersSimulationInputs,
-    ConsumersSimulationOutputs,
-)
-from thrs.input_output.modules.high_temperature import (
-    HighTemperatureSimulationInputs,
-    HighTemperatureSimulationOutputs,
 )
 from thrs.input_output.modules.pcm import (
     PcmControlValues,
     PcmSensorValues,
-    PcmSimulationInputs,
-    PcmSimulationOutputs,
 )
 from thrs.input_output.modules.pvt import (
     PvtControlValues,
     PvtSensorValues,
-    PvtSimulationInputs,
-    PvtSimulationOutputs,
 )
 from thrs.input_output.modules.thrusters import (
     ThrustersControlValues,
     ThrustersSensorValues,
-    ThrustersSimulationInputs,
-    ThrustersSimulationOutputs,
 )
 import thrs.graphql.thrusters as thrusters
 import thrs.graphql.pvt as pvt
 import thrs.graphql.pcm as pcm
 import thrs.graphql.consumers as consumers
+import thrs.graphql.simulation as simulation
 from pydantic.fields import FieldInfo
 from aiomqtt import Client as MqttClient
 
@@ -115,40 +96,20 @@ class ControlModules:
         return consumers.resolve_module(info.context.consumers_messaging)
 
 
-SimulationInputsType = (
-    ThrustersSimulationInputsType
-    | PvtSimulationInputsType
-    | PcmSimulationInputsType
-    | ConsumersSimulationInputsType
-    | HighTemperatureSimulationInputsType
-)
-SimulationOutputsType = (
-    ThrustersSimulationOutputsType
-    | PvtSimulationOutputsType
-    | PcmSimulationOutputsType
-    | ConsumersSimulationOutputsType
-    | HighTemperatureSimulationOutputsType
-)
-
-
-simulation_values_mapping = {
-    "thrusters": (ThrustersSimulationInputs, ThrustersSimulationOutputs),
-    "pcm": (PcmSimulationInputs, PcmSimulationOutputs),
-    "pvt": (PvtSimulationInputs, PvtSimulationOutputs),
-    "consumers": (ConsumersSimulationInputs, ConsumersSimulationOutputs),
-    "high_temperature": (
-        HighTemperatureSimulationInputs,
-        HighTemperatureSimulationOutputs,
-    ),
-}
-
-
 @strawberry.type
 class SimulationState:
     time: datetime
     status: str
-    inputs: SimulationInputsType | None  # pyright: ignore[reportInvalidTypeForm]
-    outputs: SimulationOutputsType | None  # pyright: ignore[reportInvalidTypeForm]
+
+    @strawberry.field
+    def inputs(self, info: strawberry.Info[ThrsContext]) -> SimulationInputsType | None:  # pyright: ignore[reportInvalidTypeForm]
+        return simulation.resolve_inputs(info.context.simulation_messaging)
+
+    @strawberry.field
+    def outputs(
+        self, info: strawberry.Info[ThrsContext]
+    ) -> SimulationOutputsType | None:  # pyright: ignore[reportInvalidTypeForm]
+        return simulation.resolve_outputs(info.context.simulation_messaging)
 
 
 @strawberry.type
@@ -172,8 +133,6 @@ class Query:
         return SimulationState(
             time=info.context.messaging.simulation_status.simulation_time,
             status=info.context.messaging.simulation_status.status,
-            inputs=info.context.simulation_messaging.simulation_inputs,
-            outputs=info.context.simulation_messaging.simulation_outputs,
         )
 
 
@@ -278,7 +237,7 @@ async def lifespan(app: FastAPI):
             mqtt,
         )
         simulation_messaging: SimulationMessaging = SimulationMessaging(
-            simulation_values_mapping, mqtt
+            simulation.io_mapping, mqtt
         )
         messaging = Messaging(
             mqtt,

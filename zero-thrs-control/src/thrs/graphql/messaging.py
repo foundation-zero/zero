@@ -117,7 +117,7 @@ class SimulationStatusMessageReceiver(MessageReceiver[SimulationStatusMessage]):
         if parsed is not None:
             for module in context.control_modules:
                 module.active = module.name in parsed.control_modules
-            context.simulation.select_simulation(parsed.mode)
+            context.simulation.select_mode(parsed.mode)
 
         await super().handle(msg, context)
 
@@ -257,8 +257,9 @@ class SimulationMessaging:
             self._simulation_outputs,
         ]
 
-    def select_simulation(self, simulation: str):
-        simulation_inputs_cls, simulation_outputs_cls = self._mapping[simulation]
+    def select_mode(self, mode: str):
+        self._mode = mode
+        simulation_inputs_cls, simulation_outputs_cls = self._mapping[mode]
 
         self._simulation_inputs = MessageReceiver(
             SimulationInputMessage[simulation_inputs_cls],
@@ -281,6 +282,10 @@ class SimulationMessaging:
         return _afterwards(
             self._simulation_inputs.wait_for(lambda msg: condition(msg.inputs), timeout)
         )
+
+    @property
+    def mode(self) -> str:
+        return self._mode
 
     @property
     def simulation_inputs(self) -> SimulationInputs | None:

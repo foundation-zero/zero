@@ -70,12 +70,6 @@ def get_thrusters_messaging(context: ThrsContext) -> ThrustersMessaging:
 @add_parameter_mutations(
     "thrusters", ThrustersParameters, ThrustersParametersType, get_thrusters_messaging
 )
-# @add_simulation_input_mutations(
-#     "thrusters",
-#     ThrustersSimulationInputs,
-#     ThrustersSimulationInputsType,
-#     get_thrusters_messaging,
-# )
 @add_automation_mode_mutation("thrusters", get_thrusters_messaging)
 class ThrustersMutations:
     pass

@@ -368,7 +368,7 @@ class OutgoingMessage(ThrsValues):
         return self.subscribe_topic()
 
     @classmethod
-    def clear_topics(cls, modules: list[str]) -> list[str]:
+    def clear_topics(cls, control_modules: list[str]) -> list[str]:
         return [cls.subscribe_topic()]
 
 
@@ -419,8 +419,8 @@ class ParametersMessage[Parameters: ThrsValues](OutgoingMessage):
         return f"{self.module}/config/parameters"
 
     @classmethod
-    def clear_topics(cls, modules: list[str]) -> list[str]:
-        return [f"{module}/config/parameters" for module in modules]
+    def clear_topics(cls, control_modules: list[str]) -> list[str]:
+        return [f"{module}/config/parameters" for module in control_modules]
 
     @staticmethod
     def retained() -> bool:

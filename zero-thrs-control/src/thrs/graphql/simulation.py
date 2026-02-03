@@ -1,5 +1,10 @@
+import strawberry
 from thrs.graphql.base import add_simulation_input_mutations
-from thrs.graphql.helpers import dedataframed_pydantic_to_strawberry_type
+from thrs.graphql.helpers import (
+    dedataframed_pydantic_to_strawberry_type,
+    optional_pydantic_to_graphql,
+)
+from thrs.graphql.messaging import SimulationMessaging
 from thrs.input_output.modules.consumers import (
     ConsumersSimulationInputs,
     ConsumersSimulationOutputs,
@@ -15,68 +20,83 @@ from thrs.input_output.modules.thrusters import (
     ThrustersSimulationOutputs,
 )
 
+io_mapping = {
+    "thrusters": (ThrustersSimulationInputs, ThrustersSimulationOutputs),
+    "pcm": (PcmSimulationInputs, PcmSimulationOutputs),
+    "pvt": (PvtSimulationInputs, PvtSimulationOutputs),
+    "consumers": (ConsumersSimulationInputs, ConsumersSimulationOutputs),
+    "high_temperature": (
+        HighTemperatureSimulationInputs,
+        HighTemperatureSimulationOutputs,
+    ),
+}
 
-ThrustersSimulationInputsType = dedataframed_pydantic_to_strawberry_type(
-    ThrustersSimulationInputs
-)
-ThrustersSimulationOutputsType = dedataframed_pydantic_to_strawberry_type(
-    ThrustersSimulationOutputs
+inputs_strawberry_type_mapping = {
+    name: dedataframed_pydantic_to_strawberry_type(inputs)
+    for name, (inputs, _) in io_mapping.items()
+}
+
+outputs_strawberry_type_mapping = {
+    name: dedataframed_pydantic_to_strawberry_type(outputs)
+    for name, (_, outputs) in io_mapping.items()
+}
+
+SimulationInputsType = strawberry.union(
+    "SimulationInputsType", tuple(inputs_strawberry_type_mapping.values())
 )
 
-PvtSimulationInputsType = dedataframed_pydantic_to_strawberry_type(PvtSimulationInputs)
-PvtSimulationOutputsType = dedataframed_pydantic_to_strawberry_type(
-    PvtSimulationOutputs
-)
-
-
-PcmSimulationInputsType = dedataframed_pydantic_to_strawberry_type(PcmSimulationInputs)
-PcmSimulationOutputsType = dedataframed_pydantic_to_strawberry_type(
-    PcmSimulationOutputs
-)
-
-ConsumersSimulationInputsType = dedataframed_pydantic_to_strawberry_type(
-    ConsumersSimulationInputs
-)
-ConsumersSimulationOutputsType = dedataframed_pydantic_to_strawberry_type(
-    ConsumersSimulationOutputs
-)
-
-HighTemperatureSimulationInputsType = dedataframed_pydantic_to_strawberry_type(
-    HighTemperatureSimulationInputs
-)
-HighTemperatureSimulationOutputsType = dedataframed_pydantic_to_strawberry_type(
-    HighTemperatureSimulationOutputs
+SimulationOutputsType = strawberry.union(
+    "SimulationOutputsType", tuple(outputs_strawberry_type_mapping.values())
 )
 
 
+def resolve_inputs(
+    simulation: SimulationMessaging,
+) -> SimulationInputsType | None:  # pyright: ignore[reportInvalidTypeForm]
+    return optional_pydantic_to_graphql(
+        inputs_strawberry_type_mapping[simulation.mode],
+        simulation.simulation_inputs,
+    )
+
+
+def resolve_outputs(
+    simulation: SimulationMessaging,
+) -> SimulationOutputsType | None:  # pyright: ignore[reportInvalidTypeForm]
+    return optional_pydantic_to_graphql(
+        outputs_strawberry_type_mapping[simulation.mode],
+        simulation.simulation_outputs,
+    )
+
+
+@strawberry.type
 @add_simulation_input_mutations(
     "thrusters",
-    ThrustersSimulationInputs,
-    ThrustersSimulationInputsType,
+    io_mapping,
+    inputs_strawberry_type_mapping,
     lambda context: context.simulation_messaging,
 )
 @add_simulation_input_mutations(
     "pvt",
-    PvtSimulationInputs,
-    PvtSimulationInputsType,
+    io_mapping,
+    inputs_strawberry_type_mapping,
     lambda context: context.simulation_messaging,
 )
 @add_simulation_input_mutations(
     "pcm",
-    PcmSimulationInputs,
-    PcmSimulationInputsType,
+    io_mapping,
+    inputs_strawberry_type_mapping,
     lambda context: context.simulation_messaging,
 )
 @add_simulation_input_mutations(
     "consumers",
-    ConsumersSimulationInputs,
-    ConsumersSimulationInputsType,
+    io_mapping,
+    inputs_strawberry_type_mapping,
     lambda context: context.simulation_messaging,
 )
 @add_simulation_input_mutations(
     "high_temperature",
-    HighTemperatureSimulationInputs,
-    HighTemperatureSimulationInputsType,
+    io_mapping,
+    inputs_strawberry_type_mapping,
     lambda context: context.simulation_messaging,
 )
 class SimulationMutations:
