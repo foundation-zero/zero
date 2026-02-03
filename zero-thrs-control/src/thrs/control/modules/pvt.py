@@ -65,44 +65,45 @@ class PvtParameters(ThrsValues):
         return self
 
 
-_INITIAL_CONTROL_VALUES = PvtControlValues(
-    pvt_pump_main_fwd=Pump(
-        dutypoint=Stamped(value=0.0, timestamp=datetime.now()),
-        on=Stamped(value=False, timestamp=datetime.now()),
-    ),
-    pvt_pump_main_aft=Pump(
-        dutypoint=Stamped(value=0.0, timestamp=datetime.now()),
-        on=Stamped(value=False, timestamp=datetime.now()),
-    ),
-    pvt_pump_owners=Pump(
-        dutypoint=Stamped(value=0.0, timestamp=datetime.now()),
-        on=Stamped(value=False, timestamp=datetime.now()),
-    ),
-    pvt_mix_main_fwd=Valve(
-        setpoint=Stamped(value=Valve.MIXING_B_TO_AB, timestamp=datetime.now())
-    ),
-    pvt_mix_main_aft=Valve(
-        setpoint=Stamped(value=Valve.MIXING_B_TO_AB, timestamp=datetime.now())
-    ),
-    pvt_mix_owners=Valve(
-        setpoint=Stamped(value=Valve.MIXING_B_TO_AB, timestamp=datetime.now())
-    ),
-    pvt_switch_main_fwd=Valve(
-        setpoint=Stamped(value=Valve.OPEN, timestamp=datetime.now())
-    ),
-    pvt_switch_main_aft=Valve(
-        setpoint=Stamped(value=Valve.OPEN, timestamp=datetime.now())
-    ),
-    pvt_switch_owners=Valve(
-        setpoint=Stamped(value=Valve.OPEN, timestamp=datetime.now())
-    ),
-    pvt_mix_exchanger=Valve(
-        setpoint=Stamped(
-            value=Valve.MIXING_A_TO_AB,
-            timestamp=datetime.now(),
-        )
-    ),
-)
+def _INITIAL_CONTROL_VALUES(timestamp) -> PvtControlValues:
+    return PvtControlValues(
+        pvt_pump_main_fwd=Pump(
+            dutypoint=Stamped(value=0.0, timestamp=timestamp),
+            on=Stamped(value=False, timestamp=timestamp),
+        ),
+        pvt_pump_main_aft=Pump(
+            dutypoint=Stamped(value=0.0, timestamp=timestamp),
+            on=Stamped(value=False, timestamp=timestamp),
+        ),
+        pvt_pump_owners=Pump(
+            dutypoint=Stamped(value=0.0, timestamp=timestamp),
+            on=Stamped(value=False, timestamp=timestamp),
+        ),
+        pvt_mix_main_fwd=Valve(
+            setpoint=Stamped(value=Valve.MIXING_B_TO_AB, timestamp=timestamp)
+        ),
+        pvt_mix_main_aft=Valve(
+            setpoint=Stamped(value=Valve.MIXING_B_TO_AB, timestamp=timestamp)
+        ),
+        pvt_mix_owners=Valve(
+            setpoint=Stamped(value=Valve.MIXING_B_TO_AB, timestamp=timestamp)
+        ),
+        pvt_switch_main_fwd=Valve(
+            setpoint=Stamped(value=Valve.OPEN, timestamp=timestamp)
+        ),
+        pvt_switch_main_aft=Valve(
+            setpoint=Stamped(value=Valve.OPEN, timestamp=timestamp)
+        ),
+        pvt_switch_owners=Valve(
+            setpoint=Stamped(value=Valve.OPEN, timestamp=timestamp)
+        ),
+        pvt_mix_exchanger=Valve(
+            setpoint=Stamped(
+                value=Valve.MIXING_A_TO_AB,
+                timestamp=timestamp,
+            )
+        ),
+    )
 
 
 def main_pvt_group_parameters(pvt_parameters: PvtParameters) -> PvtGroupParameters:
@@ -149,10 +150,12 @@ class PvtControl(
     ) -> None:
         self._parameters = parameters
         self._time = time_fn
-        self._current_values = _INITIAL_CONTROL_VALUES.model_copy(deep=True)
+        self._current_values = _INITIAL_CONTROL_VALUES(self._time()).model_copy(
+            deep=True
+        )
 
         self._heat_dump_controller = Controller[Ratio, Celsius](
-            _INITIAL_CONTROL_VALUES.pvt_mix_exchanger.setpoint.value,
+            self._current_values.pvt_mix_exchanger.setpoint.value,
             parameters.maximum_supply_temperature,
             parameters.heat_dump_tuning,
             self._time,
@@ -198,7 +201,7 @@ class PvtControl(
         )
 
     def initial(self) -> ControlResult[PvtControlValues]:
-        return ControlResult(self._time(), self._current_values)
+        return ControlResult(self._time(), _INITIAL_CONTROL_VALUES(self._time()))
 
     def update_parameters(self, parameters: PvtParameters):
         self._parameters = parameters

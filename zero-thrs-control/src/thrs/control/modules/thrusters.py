@@ -61,40 +61,41 @@ class ThrustersParameters(ThrsValues):
         return self
 
 
-_INITIAL_CONTROL_VALUES = ThrustersControlValues(
-    thrusters_pump_1=Pump(
-        dutypoint=Stamped(value=0.0, timestamp=datetime.now()),
-        on=Stamped(value=False, timestamp=datetime.now()),
-    ),
-    thrusters_pump_2=Pump(
-        dutypoint=Stamped(value=0.0, timestamp=datetime.now()),
-        on=Stamped(value=False, timestamp=datetime.now()),
-    ),
-    thrusters_mix_recovery=Valve(
-        setpoint=Stamped(value=Valve.MIXING_B_TO_AB, timestamp=datetime.now())
-    ),
-    thrusters_mix_exchanger=Valve(
-        setpoint=Stamped(
-            value=Valve.MIXING_A_TO_AB,
-            timestamp=datetime.now(),
-        )
-    ),
-    thrusters_flowcontrol_aft=Valve(
-        setpoint=Stamped(value=Valve.CLOSED, timestamp=datetime.now())
-    ),
-    thrusters_flowcontrol_fwd=Valve(
-        setpoint=Stamped(value=Valve.CLOSED, timestamp=datetime.now())
-    ),
-    thrusters_shutoff_recovery=Valve(
-        setpoint=Stamped(value=Valve.OPEN, timestamp=datetime.now())
-    ),
-    thrusters_switch_aft=Valve(
-        setpoint=Stamped(value=Valve.SWITCH_BRANCH, timestamp=datetime.now())
-    ),
-    thrusters_switch_fwd=Valve(
-        setpoint=Stamped(value=Valve.SWITCH_BRANCH, timestamp=datetime.now())
-    ),
-)
+def _INITIAL_CONTROL_VALUES(timestamp) -> ThrustersControlValues:
+    return ThrustersControlValues(
+        thrusters_pump_1=Pump(
+            dutypoint=Stamped(value=0.0, timestamp=timestamp),
+            on=Stamped(value=False, timestamp=timestamp),
+        ),
+        thrusters_pump_2=Pump(
+            dutypoint=Stamped(value=0.0, timestamp=timestamp),
+            on=Stamped(value=False, timestamp=timestamp),
+        ),
+        thrusters_mix_recovery=Valve(
+            setpoint=Stamped(value=Valve.MIXING_B_TO_AB, timestamp=timestamp)
+        ),
+        thrusters_mix_exchanger=Valve(
+            setpoint=Stamped(
+                value=Valve.MIXING_A_TO_AB,
+                timestamp=timestamp,
+            )
+        ),
+        thrusters_flowcontrol_aft=Valve(
+            setpoint=Stamped(value=Valve.CLOSED, timestamp=timestamp)
+        ),
+        thrusters_flowcontrol_fwd=Valve(
+            setpoint=Stamped(value=Valve.CLOSED, timestamp=timestamp)
+        ),
+        thrusters_shutoff_recovery=Valve(
+            setpoint=Stamped(value=Valve.OPEN, timestamp=timestamp)
+        ),
+        thrusters_switch_aft=Valve(
+            setpoint=Stamped(value=Valve.SWITCH_BRANCH, timestamp=timestamp)
+        ),
+        thrusters_switch_fwd=Valve(
+            setpoint=Stamped(value=Valve.SWITCH_BRANCH, timestamp=timestamp)
+        ),
+    )
 
 
 class ThrustersControl(
@@ -110,7 +111,9 @@ class ThrustersControl(
     ) -> None:
         self._parameters = parameters
         self._time = time_fn
-        self._current_values = _INITIAL_CONTROL_VALUES.model_copy(deep=True)
+        self._current_values = _INITIAL_CONTROL_VALUES(self._time()).model_copy(
+            deep=True
+        )
 
         self._states = [
             State(
@@ -202,7 +205,7 @@ class ThrustersControl(
         )
 
         self._heat_dump_controller = Controller[Ratio, Celsius](
-            _INITIAL_CONTROL_VALUES.thrusters_mix_exchanger.setpoint.value,
+            self._current_values.thrusters_mix_exchanger.setpoint.value,
             lambda: self._parameters.maximum_supply_temperature
             if self.mode == ThrustersControlMode(mode="recovery")
             else self._parameters.cooling_temperature,
@@ -210,13 +213,13 @@ class ThrustersControl(
             self._time,
         )
         self._warmup_mix_controller = Controller[Ratio, Celsius](
-            _INITIAL_CONTROL_VALUES.thrusters_mix_recovery.setpoint.value,
+            self._current_values.thrusters_mix_recovery.setpoint.value,
             lambda: self._parameters.warmup_temperature,
             lambda: self._parameters.warmup_mix_tuning,
             self._time,
         )
         self._pump_controller = Controller[Ratio, LMin](
-            _INITIAL_CONTROL_VALUES.thrusters_pump_1.dutypoint.value,
+            self._current_values.thrusters_pump_1.dutypoint.value,
             0,  # Gets overriden by flow balance controller
             lambda: self._parameters.pump_tuning,
             self._time,
@@ -245,14 +248,14 @@ class ThrustersControl(
         )
 
         self._aft_flow_controller = Controller[Ratio, LMin](
-            _INITIAL_CONTROL_VALUES.thrusters_flowcontrol_aft.setpoint.value,
+            self._current_values.thrusters_flowcontrol_aft.setpoint.value,
             0,  # Gets overriden by flow balance controller
             lambda: self._parameters.aft_flow_balance_tuning,
             self._time,
         )
 
         self._fwd_flow_controller = Controller[Ratio, LMin](
-            _INITIAL_CONTROL_VALUES.thrusters_flowcontrol_fwd.setpoint.value,
+            self._current_values.thrusters_flowcontrol_fwd.setpoint.value,
             0,  # Gets overriden by flow balance controller
             lambda: self._parameters.fwd_flow_balance_tuning,
             self._time,
@@ -293,7 +296,7 @@ class ThrustersControl(
         return ThrustersControlMode(mode=mode)
 
     def initial(self) -> ControlResult[ThrustersControlValues]:
-        return ControlResult(self._time(), self._current_values)
+        return ControlResult(self._time(), _INITIAL_CONTROL_VALUES(self._time()))
 
     def control(
         self, sensor_values: ThrustersSensorValues

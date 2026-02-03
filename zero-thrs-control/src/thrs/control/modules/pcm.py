@@ -25,37 +25,38 @@ class PcmParameters(ThrsValues):
     module_4_flow_balance_tuning: Tuning = (0.05, 0.01, 0)
 
 
-_INITIAL_CONTROL_VALUES = PcmControlValues(
-    pcm_pump=Pump(
-        dutypoint=Stamped(value=0, timestamp=datetime.now()),
-        on=Stamped(value=False, timestamp=datetime.now()),
-    ),
-    pcm_switch_charging_return=Valve(
-        setpoint=Stamped(value=Valve.CLOSED, timestamp=datetime.now())
-    ),
-    pcm_flowcontrol_module_1=Valve(
-        setpoint=Stamped(value=Valve.OPEN, timestamp=datetime.now())
-    ),
-    pcm_flowcontrol_module_2=Valve(
-        setpoint=Stamped(value=Valve.OPEN, timestamp=datetime.now())
-    ),
-    pcm_flowcontrol_module_3=Valve(
-        setpoint=Stamped(value=Valve.OPEN, timestamp=datetime.now())
-    ),
-    pcm_flowcontrol_module_4=Valve(
-        setpoint=Stamped(value=Valve.OPEN, timestamp=datetime.now())
-    ),
-    pcm_switch_discharging=Valve(
-        setpoint=Stamped(value=Valve.CLOSED, timestamp=datetime.now())
-    ),
-    pcm_switch_charging_supply=Valve(
-        setpoint=Stamped(value=Valve.CLOSED, timestamp=datetime.now())
-    ),
-    pcm_switch_consumers=Valve(
-        setpoint=Stamped(value=Valve.OPEN, timestamp=datetime.now())
-    ),
-    pcm_module_1=Pcm(on=Stamped(value=False, timestamp=datetime.now())),
-)
+def _INITIAL_CONTROL_VALUES(timestamp) -> PcmControlValues:
+    return PcmControlValues(
+        pcm_pump=Pump(
+            dutypoint=Stamped(value=0, timestamp=timestamp),
+            on=Stamped(value=False, timestamp=timestamp),
+        ),
+        pcm_switch_charging_return=Valve(
+            setpoint=Stamped(value=Valve.CLOSED, timestamp=timestamp)
+        ),
+        pcm_flowcontrol_module_1=Valve(
+            setpoint=Stamped(value=Valve.OPEN, timestamp=timestamp)
+        ),
+        pcm_flowcontrol_module_2=Valve(
+            setpoint=Stamped(value=Valve.OPEN, timestamp=timestamp)
+        ),
+        pcm_flowcontrol_module_3=Valve(
+            setpoint=Stamped(value=Valve.OPEN, timestamp=timestamp)
+        ),
+        pcm_flowcontrol_module_4=Valve(
+            setpoint=Stamped(value=Valve.OPEN, timestamp=timestamp)
+        ),
+        pcm_switch_discharging=Valve(
+            setpoint=Stamped(value=Valve.CLOSED, timestamp=timestamp)
+        ),
+        pcm_switch_charging_supply=Valve(
+            setpoint=Stamped(value=Valve.CLOSED, timestamp=timestamp)
+        ),
+        pcm_switch_consumers=Valve(
+            setpoint=Stamped(value=Valve.OPEN, timestamp=timestamp)
+        ),
+        pcm_module_1=Pcm(on=Stamped(value=False, timestamp=timestamp)),
+    )
 
 
 class PcmControlMode(ThrsValues):
@@ -86,7 +87,9 @@ class PcmControl(
     ) -> None:
         self._parameters = parameters
         self._time = time_fn
-        self._current_values = _INITIAL_CONTROL_VALUES.model_copy(deep=True)
+        self._current_values = _INITIAL_CONTROL_VALUES(self._time()).model_copy(
+            deep=True
+        )
 
         self._states = [
             State(
@@ -159,35 +162,35 @@ class PcmControl(
         )
 
         self._pump_flow_controller = Controller[Ratio, LMin](
-            _INITIAL_CONTROL_VALUES.pcm_pump.dutypoint.value,
+            self._current_values.pcm_pump.dutypoint.value,
             0,
             lambda: self._parameters.pump_tuning,
             self._time,
         )
 
         self.module_1_flow_controller = Controller[Ratio, LMin](
-            _INITIAL_CONTROL_VALUES.pcm_flowcontrol_module_1.setpoint.value,
+            self._current_values.pcm_flowcontrol_module_1.setpoint.value,
             0,
             lambda: self._parameters.module_1_flow_balance_tuning,
             self._time,
         )
 
         self.module_2_flow_controller = Controller[Ratio, LMin](
-            _INITIAL_CONTROL_VALUES.pcm_flowcontrol_module_2.setpoint.value,
+            self._current_values.pcm_flowcontrol_module_2.setpoint.value,
             0,
             lambda: self._parameters.module_2_flow_balance_tuning,
             self._time,
         )
 
         self.module_3_flow_controller = Controller[Ratio, LMin](
-            _INITIAL_CONTROL_VALUES.pcm_flowcontrol_module_3.setpoint.value,
+            self._current_values.pcm_flowcontrol_module_3.setpoint.value,
             0,
             lambda: self._parameters.module_3_flow_balance_tuning,
             self._time,
         )
 
         self.module_4_flow_controller = Controller[Ratio, LMin](
-            _INITIAL_CONTROL_VALUES.pcm_flowcontrol_module_4.setpoint.value,
+            self._current_values.pcm_flowcontrol_module_4.setpoint.value,
             0,
             lambda: self._parameters.module_4_flow_balance_tuning,
             self._time,
@@ -229,7 +232,7 @@ class PcmControl(
         return PcmControlMode(mode=mode)
 
     def initial(self) -> ControlResult[PcmControlValues]:
-        return ControlResult(self._time(), self._current_values)
+        return ControlResult(self._time(), _INITIAL_CONTROL_VALUES(self._time()))
 
     def update_parameters(self, parameters: PcmParameters):
         self._parameters = parameters
