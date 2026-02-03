@@ -249,12 +249,15 @@ class SimulationMessaging:
     ):
         self._mapping = mapping
         self._mqtt_client = mqtt_client
+        self._simulation_inputs = None
+        self._simulation_outputs = None
 
     @property
     def receivers(self):
         return [
-            self._simulation_inputs,
-            self._simulation_outputs,
+            receiver
+            for receiver in [self._simulation_inputs, self._simulation_outputs]
+            if receiver is not None
         ]
 
     def select_mode(self, mode: str):
@@ -281,6 +284,8 @@ class SimulationMessaging:
 
         return _afterwards(
             self._simulation_inputs.wait_for(lambda msg: condition(msg.inputs), timeout)
+            if self._simulation_inputs
+            else None
         )
 
     @property
@@ -291,13 +296,13 @@ class SimulationMessaging:
     def simulation_inputs(self) -> SimulationInputs | None:
         return (
             self._simulation_inputs.last.inputs
-            if self._simulation_inputs.last
+            if self._simulation_inputs and self._simulation_inputs.last
             else None
         )
 
     @property
     def simulation_outputs(self) -> SimulationValues | None:
-        return self._simulation_outputs.last
+        return self._simulation_outputs.last if self._simulation_outputs else None
 
     async def set_simulation_inputs(self, inputs: SimulationInputs):
         message = SetSimulationInputsMessage[SimulationInputs](inputs=inputs)
@@ -324,12 +329,9 @@ class Messaging:
 
     @property
     def _all_receivers(self):
-        simulation_receivers = (
-            self._simulation.receivers if hasattr(self._simulation, "receivers") else []
-        )
         return [
             self._simulation_status,
-            *simulation_receivers,
+            *self._simulation.receivers,
             *[
                 receiver
                 for module in self._control_modules
@@ -339,12 +341,9 @@ class Messaging:
 
     @property
     def _active_receivers(self):
-        simulation_receivers = (
-            self._simulation.receivers if hasattr(self._simulation, "receivers") else []
-        )
         return [
             self._simulation_status,
-            *simulation_receivers,
+            *self._simulation.receivers,
             *[
                 receiver
                 for module in self._control_modules

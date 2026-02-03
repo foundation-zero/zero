@@ -255,7 +255,7 @@ def add_parameter_mutations(
 
 def add_simulation_input_mutations(
     mode: str,
-    io_mapping: dict[str, tuple[SimulationInputs, ThrsValues]],
+    io_mapping: dict[str, tuple[type[SimulationInputs], type[ThrsValues]]],
     inputs_strawberry_type_mapping: dict[str, type],
     messaging: Callable[[ThrsContext], SimulationMessaging],
 ):
