@@ -1,11 +1,12 @@
 from datetime import datetime
-from typing import Annotated, Callable, Literal
+from typing import Annotated, Callable
 from pydantic import Field, model_validator
 
 from thrs.classes.control import Control, ControlResult
 from thrs.control.controllers import Controller
 from thrs.control.modules.pvt_group import (
     PvtGroupControl,
+    PvtGroupControlMode,
     PvtGroupParameters,
     PvtGroupSensorValues,
 )
@@ -14,6 +15,12 @@ from thrs.input_output.base import Stamped, ThrsValues
 from thrs.input_output.definitions.control import Pump, Valve
 from thrs.input_output.definitions.units import Celsius, Ratio, Tuning
 from thrs.input_output.modules.pvt import PvtControlValues, PvtSensorValues
+
+
+class PvtControlMode(ThrsValues):
+    aft: PvtGroupControlMode
+    fwd: PvtGroupControlMode
+    owners: PvtGroupControlMode
 
 
 class PvtParameters(ThrsValues):
@@ -93,7 +100,9 @@ _INITIAL_CONTROL_VALUES = PvtControlValues(
 )
 
 
-class PvtControl(Control[PvtSensorValues, PvtControlValues, PvtParameters]):
+class PvtControl(
+    Control[PvtSensorValues, PvtControlValues, PvtParameters, PvtControlMode]
+):
     def __init__(
         self, parameters: PvtParameters, time_fn: Callable[[], datetime]
     ) -> None:
@@ -152,16 +161,24 @@ class PvtControl(Control[PvtSensorValues, PvtControlValues, PvtParameters]):
         return self._parameters
 
     @property
-    def mode(self) -> Literal[""]:
-        return ""
+    def mode(self) -> PvtControlMode:
+        return PvtControlMode(
+            fwd=PvtGroupControlMode(mode=self._main_fwd_control.mode.mode),
+            aft=PvtGroupControlMode(mode=self._main_aft_control.mode.mode),
+            owners=PvtGroupControlMode(mode=self._owners_control.mode.mode),
+        )
 
     @staticmethod
     def modes() -> list[str]:
         return [""]
 
-    @staticmethod
-    def initial_mode() -> str:
-        return ""
+    @property
+    def initial_mode(self) -> PvtControlMode:
+        return PvtControlMode(
+            fwd=self._main_fwd_control.initial_mode,
+            aft=self._main_aft_control.initial_mode,
+            owners=self._owners_control.initial_mode,
+        )
 
     def initial(self) -> ControlResult[PvtControlValues]:
         return ControlResult(self._time(), self._current_values)

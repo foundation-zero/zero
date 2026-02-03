@@ -1,5 +1,5 @@
 from datetime import datetime
-from typing import Callable, Literal
+from typing import Callable
 
 from transitions import Machine, State
 from thrs.classes.control import Control, ControlResult
@@ -300,8 +300,14 @@ class TanksController:
         self._select_boosting_tank(parameters)
 
 
+class BoilersControlMode(ThrsValues):
+    mode: str
+
+
 class BoilersControl(
-    Control[BoilersSensorValues, BoilersControlValues, BoilersParameters]
+    Control[
+        BoilersSensorValues, BoilersControlValues, BoilersParameters, BoilersControlMode
+    ]
 ):
     def __init__(
         self, parameters: BoilersParameters, time_fn: Callable[[], datetime]
@@ -381,7 +387,7 @@ class BoilersControl(
                 is None,
             },
         ]
-        self.state_machine = Machine(
+        self._state_machine = Machine(
             model=self,
             states=self.states,
             transitions=self.transitions,
@@ -460,29 +466,18 @@ class BoilersControl(
         self._lt1_flow_controller.update_tuning(parameters.lt1_flow_tuning)
         self._lt2_flow_controller.update_tuning(parameters.lt2_flow_tuning)
 
-    @staticmethod
-    def modes() -> list[str]:
-        return [
-            "idle",
-            "boosting_low_temperature",
-            "boosting_high_temperature",
-            "boosting_heatpump",
-        ]
-
-    @staticmethod
-    def initial_mode() -> str:
-        return "idle"
+    def modes(self) -> list[str]:
+        return list(self._state_machine.states.keys())
 
     @property
-    def mode(
-        self,
-    ) -> Literal[
-        "idle",
-        "boosting_low_temperature",
-        "boosting_high_temperature",
-        "boosting_heatpump",
-    ]:
-        return self.state  # type: ignore
+    def initial_mode(self) -> BoilersControlMode:
+        initial_mode: str = self._state_machine.initial  # type: ignore
+        return BoilersControlMode(mode=initial_mode)
+
+    @property
+    def mode(self) -> BoilersControlMode:
+        mode: str = self.state  # type: ignore
+        return BoilersControlMode(mode=mode)
 
     def initial(self) -> ControlResult[BoilersControlValues]:
         return ControlResult(self._time(), self._current_values)

@@ -2,10 +2,11 @@ from dataclasses import dataclass
 from inspect import isclass
 from typing import Callable, Coroutine
 import strawberry
-from thrs.control.modules.consumers import ConsumersParameters
-from thrs.control.modules.pcm import PcmParameters
-from thrs.control.modules.pvt import PvtParameters
-from thrs.control.modules.thrusters import ThrustersParameters
+from thrs.control.modules.consumers import ConsumersControlMode, ConsumersParameters
+from thrs.control.modules.pcm import PcmControlMode, PcmParameters
+from thrs.control.modules.pvt import PvtControlMode, PvtParameters
+from thrs.control.modules.thrusters import ThrustersControlMode, ThrustersParameters
+from thrs.control.switching import SwitchingControlMode
 from thrs.graphql.messaging import Messaging, MessagingModule
 import thrs.input_output.definitions.sensor as sensor
 import thrs.input_output.definitions.control as control
@@ -16,7 +17,9 @@ from pydantic.fields import FieldInfo
 from thrs.graphql.helpers import (
     JsonSchemaDirective,
     ensure_input_type,
+    optional_pydantic_to_graphql,
 )
+
 from thrs.input_output.modules.consumers import (
     ConsumersControlValues,
     ConsumersSensorValues,
@@ -48,6 +51,7 @@ type ThrustersMessaging = MessagingModule[
     ThrustersParameters,
     ThrustersSimulationInputs,
     ThrustersSimulationOutputs,
+    ThrustersControlMode,
 ]
 type PvtMessaging = MessagingModule[
     PvtSensorValues,
@@ -55,6 +59,7 @@ type PvtMessaging = MessagingModule[
     PvtParameters,
     PvtSimulationInputs,
     PvtSimulationOutputs,
+    PvtControlMode,
 ]
 
 type PcmMessaging = MessagingModule[
@@ -63,6 +68,7 @@ type PcmMessaging = MessagingModule[
     PcmParameters,
     PcmSimulationInputs,
     PcmSimulationOutputs,
+    PcmControlMode,
 ]
 
 type ConsumersMessaging = MessagingModule[
@@ -71,6 +77,7 @@ type ConsumersMessaging = MessagingModule[
     ConsumersParameters,
     ConsumersSimulationInputs,
     ConsumersSimulationOutputs,
+    ConsumersControlMode,
 ]
 
 
@@ -108,15 +115,35 @@ convert_module(sensor, "Sensor")
 convert_module(control, "Control")
 
 
+# TODO: check if this can't just be based on the pydantic model directly
+@strawberry.type
+class SwitchingControlModeType[Mode]:
+    automatic_mode: Mode | None
+
+    @classmethod
+    def from_pydantic(
+        cls, type, mode: SwitchingControlMode[Mode]
+    ) -> "SwitchingControlModeType[Mode]":
+        return cls(
+            automatic_mode=optional_pydantic_to_graphql(type, mode.automatic_mode)
+        )
+
+    @strawberry.field
+    def automatic(self) -> bool:
+        return self.automatic_mode is not None
+
+
 @strawberry.type
 class Module[
     SensorValues,
     ControlValues,
     Parameters,
+    Mode,
 ]:
     sensor_values: SensorValues | None
     control_values: ControlValues | None
     parameters: Parameters | None
+    control_mode: SwitchingControlModeType[Mode] | None = None  # type: ignore
     automatic: bool | None = None
 
 
@@ -298,7 +325,7 @@ def add_automation_mode_mutation(
         ) -> bool:
             mod = messaging(info.context)
             await mod.set_automation_mode(automatic)
-            await mod.wait_for_control_status(automatic, timeout=2)
+            await mod.wait_for_control_mode(automatic, timeout=2)
             return True
 
         mutation = strawberry.mutation(set_automation_mode)

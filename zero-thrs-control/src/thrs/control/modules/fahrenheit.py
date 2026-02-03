@@ -1,5 +1,5 @@
 from datetime import datetime
-from typing import Literal, cast
+from typing import cast
 
 from pyparsing import Callable
 from transitions import Machine, State
@@ -63,8 +63,17 @@ _INITIAL_CONTROL_VALUES = FahrenheitControlValues(
 )
 
 
+class FahrenheitControlMode(ThrsValues):
+    mode: str
+
+
 class FahrenheitControl(
-    Control[FahrenheitSensorValues, FahrenheitControlValues, FahrenheitParameters]
+    Control[
+        FahrenheitSensorValues,
+        FahrenheitControlValues,
+        FahrenheitParameters,
+        FahrenheitControlMode,
+    ]
 ):
     def __init__(
         self, parameters: FahrenheitParameters, time_fn: Callable[[], datetime]
@@ -116,7 +125,7 @@ class FahrenheitControl(
             },
         ]
 
-        self.fahrenheit_state_machine = Machine(
+        self._state_machine = Machine(
             model=self,
             states=self._states,
             transitions=self._transitions,
@@ -154,17 +163,18 @@ class FahrenheitControl(
         self._recovery_controller.update_tuning(parameters.recovery_tuning)
         self._waste_cooling_controller.update_tuning(parameters.waste_cooling_tuning)
 
-    @staticmethod
-    def modes() -> list[str]:
-        return ["idle", "enabled"]
-
-    @staticmethod
-    def initial_mode() -> str:
-        return "idle"
+    def modes(self) -> list[str]:
+        return list(self._state_machine.states.keys())
 
     @property
-    def mode(self) -> Literal["idle", "enabled"]:
-        return self.state  # type: ignore
+    def initial_mode(self) -> FahrenheitControlMode:
+        initial_mode: str = self._state_machine.initial  # type: ignore
+        return FahrenheitControlMode(mode=initial_mode)
+
+    @property
+    def mode(self) -> FahrenheitControlMode:
+        mode: str = self.state  # type: ignore
+        return FahrenheitControlMode(mode=mode)
 
     def initial(self) -> ControlResult[FahrenheitControlValues]:
         return ControlResult(self._time(), self._current_values)

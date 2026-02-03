@@ -4,6 +4,7 @@ from unittest.mock import Mock
 from tests.orchestration.simples import (
     SimpleControl,
     SimpleInOut,
+    SimpleMode,
     SimpleParameters,
     SimpleSimulationInputs,
     SimpleSimulationOutputs,
@@ -278,6 +279,7 @@ class TestModuleNesting:
             SimpleInOut,
             SimpleParameters,
             control_fn,
+            SimpleMode,
             alarms_fn,
         )
 
@@ -302,6 +304,7 @@ class TestModuleNesting:
             SimpleInOut,
             SimpleParameters,
             control_fn,
+            SimpleMode,
             alarms_fn,
         )
 
@@ -324,6 +327,7 @@ class TestModuleNesting:
             SimpleInOut,
             SimpleParameters,
             control_fn,
+            SimpleMode,
             alarms_fn,
         )
 
@@ -352,6 +356,7 @@ class TestModuleNesting:
             SimpleInOut,
             SimpleParameters,
             control_fn,
+            SimpleMode,
             alarms_fn,
         )
 

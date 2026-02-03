@@ -1,5 +1,5 @@
 from pytest import approx
-from thrs.control.modules.pcm import PcmControl
+from thrs.control.modules.pcm import PcmControl, PcmControlMode
 from thrs.input_output.base import Stamped
 from thrs.input_output.modules.pcm import (
     PcmControlValues,
@@ -35,7 +35,7 @@ async def test_idle(control: PcmControl, executor: PcmExecutor):
         + result.sensor_values.pcm_flow_module_3.flow.value
         + result.sensor_values.pcm_flow_module_4.flow.value
     )
-    assert control.mode == "idle"
+    assert control.mode == PcmControlMode(mode="idle")
     assert pcm_flow == approx(0.0, abs=0.1)
     assert result.simulation_inputs.pcm_producers_supply.flow.value == approx(
         result.simulation_outputs.pcm_consumers_return.flow.value, abs=0.01
@@ -183,13 +183,13 @@ async def test_mode_switches(control: PcmControl, executor: PcmExecutor):
         control.control(PcmSensorValues.zero()).values,
     )
 
-    assert control.mode == "idle"
+    assert control.mode == PcmControlMode(mode="idle")
 
     for i in range(30):
         control_values = control.control(result.sensor_values).values
         result = await executor.tick(control_values)
 
-    assert control.mode == "supplying"
+    assert control.mode == PcmControlMode(mode="supplying")
 
     for i in range(3):
         result.sensor_values.pcm_module_1.charged.value = False
@@ -199,7 +199,7 @@ async def test_mode_switches(control: PcmControl, executor: PcmExecutor):
         control_values = control.control(result.sensor_values).values
         result = await executor.tick(control_values)
 
-    assert control.mode == "supplying"
+    assert control.mode == PcmControlMode(mode="supplying")
 
     for i in range(3):
         result.sensor_values.pcm_module_1.charged.value = False
@@ -209,7 +209,7 @@ async def test_mode_switches(control: PcmControl, executor: PcmExecutor):
         control_values = control.control(result.sensor_values).values
         result = await executor.tick(control_values)
 
-    assert control.mode == "idle"
+    assert control.mode == PcmControlMode(mode="idle")
 
     executor._simulation_inputs.pcm_producers_supply.temperature = Stamped.stamp(80)
     for i in range(10):
@@ -220,7 +220,7 @@ async def test_mode_switches(control: PcmControl, executor: PcmExecutor):
         control_values = control.control(result.sensor_values).values
         result = await executor.tick(control_values)
 
-    assert control.mode == "charging"
+    assert control.mode == PcmControlMode(mode="charging")
 
     executor._simulation_inputs.pcm_producers_supply.temperature = Stamped.stamp(30)
     for i in range(30):
@@ -231,4 +231,4 @@ async def test_mode_switches(control: PcmControl, executor: PcmExecutor):
         control_values = control.control(result.sensor_values).values
         result = await executor.tick(control_values)
 
-    assert control.mode == "idle"
+    assert control.mode == PcmControlMode(mode="idle")

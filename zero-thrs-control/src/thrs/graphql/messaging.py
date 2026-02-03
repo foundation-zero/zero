@@ -5,7 +5,7 @@ from aiomqtt import Client as MqttClient, Message, Topic
 from dataclasses import dataclass
 
 from thrs.cli.simulation_controls import (
-    ControlStatusMessage,
+    ControlModeMessage,
     ManualControlMessage,
     ParametersMessage,
     PauseMessage,
@@ -129,6 +129,7 @@ class MessagingModule[
     Parameters: ThrsValues,
     Inputs: SimulationInputs,
     Outputs: SimulationValues,
+    Mode,
 ]:
     def __init__(
         self,
@@ -138,6 +139,7 @@ class MessagingModule[
         parameters_cls: type[Parameters],
         simulation_inputs_cls: type[Inputs],
         simulation_outputs_cls: type[Outputs],
+        mode_cls: type[Mode],
         mqtt_client: MqttClient,
     ):
         self.name = name
@@ -162,8 +164,8 @@ class MessagingModule[
             simulation_outputs_cls,
             "simulation/outputs",
         )
-        self._control_status = MessageReceiver(
-            ControlStatusMessage, ControlStatusMessage.subscribe_topic()
+        self._control_mode = MessageReceiver(
+            ControlModeMessage[mode_cls], ControlModeMessage.subscribe_topic()
         )
         self._mqtt_client = mqtt_client
 
@@ -175,7 +177,7 @@ class MessagingModule[
             self._parameters,
             self._simulation_inputs,
             self._simulation_outputs,
-            self._control_status,
+            self._control_mode,
         ]
 
     @property
@@ -274,16 +276,14 @@ class MessagingModule[
             qos=1,
         )
 
-    def wait_for_control_status(
+    def wait_for_control_mode(
         self, automatic: bool, *_args, timeout: float
-    ) -> Coroutine[None, None, ControlStatusMessage]:
-        return self._control_status.wait_for(
-            lambda s: s.automatic == automatic, timeout
-        )
+    ) -> Coroutine[None, None, ControlModeMessage]:
+        return self._control_mode.wait_for(lambda m: m.mode == automatic, timeout)
 
     @property
-    def control_status(self) -> ControlStatusMessage | None:
-        return self._control_status.last
+    def control_mode(self) -> ControlModeMessage | None:
+        return self._control_mode.last
 
 
 class Messaging:

@@ -1,6 +1,6 @@
 from pytest import approx
 
-from thrs.control.modules.thrusters import ThrustersControl
+from thrs.control.modules.thrusters import ThrustersControl, ThrustersControlMode
 from thrs.input_output.base import Stamped
 from thrs.input_output.definitions.control import Valve
 from thrs.input_output.definitions.units import PcsMode
@@ -198,7 +198,7 @@ async def test_recovery_temperature(
     for i in range(60):
         control_values = control.control(result.sensor_values).values
         result = await executor.tick(control_values)
-        assert control.mode == "recovery"
+        assert control.mode == ThrustersControlMode(mode="recovery")
         assert (
             result.sensor_values.thrusters_temperature_recovery.temperature.value
             == approx(
@@ -269,7 +269,7 @@ async def test_flow_cooling(control: ThrustersControl, executor: SimulationExecu
     for i in range(60):
         control_values = control.control(result.sensor_values).values
         result = await executor.tick(control_values)
-        assert control.mode == "cooling"
+        assert control.mode == ThrustersControlMode(mode="cooling")
         assert result.sensor_values.thrusters_flow_aft.flow.value == approx(
             control.parameters.cooling_flow, abs=1
         )
@@ -310,7 +310,7 @@ async def test_cooldown(control: ThrustersControl, executor: SimulationExecutor)
         result = await executor.tick(control_values)
         control_values = control.control(result.sensor_values).values
 
-    assert control.mode == "recovery"
+    assert control.mode == ThrustersControlMode(mode="recovery")
     assert control_values.thrusters_mix_recovery.setpoint.value > 0.0
 
     executor._simulation_inputs.thrusters_aft.active = Stamped.stamp(False)
@@ -322,8 +322,8 @@ async def test_cooldown(control: ThrustersControl, executor: SimulationExecutor)
     result = await executor.tick(control_values)
     control_values = control.control(result.sensor_values).values
 
-    assert control.mode == "cooldown"
-    while control.mode == "cooldown":
+    assert control.mode == ThrustersControlMode(mode="cooldown")
+    while control.mode == ThrustersControlMode(mode="cooldown"):
         control_values = control.control(result.sensor_values).values
         result = await executor.tick(control_values)
 
@@ -335,7 +335,7 @@ async def test_cooldown(control: ThrustersControl, executor: SimulationExecutor)
             control.parameters.cooling_flow,
         ]
 
-    assert control.mode == "idle"
+    assert control.mode == ThrustersControlMode(mode="idle")
 
     assert (
         result.sensor_values.thrusters_temperature_aft_return.temperature.value

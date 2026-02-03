@@ -47,8 +47,17 @@ _INITIAL_CONTROL_VALUES = ConsumersControlValues(
 )
 
 
+class ConsumersControlMode(ThrsValues):
+    pass
+
+
 class ConsumersControl(
-    Control[ConsumersSensorValues, ConsumersControlValues, ConsumersParameters]
+    Control[
+        ConsumersSensorValues,
+        ConsumersControlValues,
+        ConsumersParameters,
+        ConsumersControlMode,
+    ]
 ):
     def __init__(
         self, parameters: ConsumersParameters, time_fn: Callable[[], datetime]
@@ -154,17 +163,15 @@ class ConsumersControl(
 
         return ControlResult(self._time(), self._current_values)
 
-    @staticmethod
-    def modes() -> list[str]:
-        return [""]
+    def modes(self) -> list[str]:
+        return []
 
-    @staticmethod
-    def initial_mode() -> str:
-        return ""
+    def initial_mode(self) -> ConsumersControlMode:
+        return ConsumersControlMode()
 
     @property
-    def mode(self) -> str | None:
-        return None
+    def mode(self) -> ConsumersControlMode:
+        return ConsumersControlMode()
 
     @property
     def parameters(self) -> ConsumersParameters:

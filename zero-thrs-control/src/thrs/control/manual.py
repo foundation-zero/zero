@@ -8,10 +8,19 @@ class EmptyParameters(ThrsValues):
     pass
 
 
+class EmptyMode(ThrsValues):
+    pass
+
+
 class ManualControl[SensorValues: ThrsValues, ControlValues: ThrsValues](
-    Control[SensorValues, ControlValues, EmptyParameters]
+    Control[SensorValues, ControlValues, EmptyParameters, EmptyMode]
 ):
-    def __init__(self, control_values: ControlValues, time_fn: Callable[[], datetime]):
+    def __init__(
+        self,
+        control_values: ControlValues,
+        time_fn: Callable[[], datetime],
+        parameters: EmptyParameters = EmptyParameters(),
+    ):
         self._control_values = control_values
         self._time_fn = time_fn
 
@@ -19,17 +28,9 @@ class ManualControl[SensorValues: ThrsValues, ControlValues: ThrsValues](
     def parameters(self) -> EmptyParameters:
         return EmptyParameters()
 
-    @staticmethod
-    def modes() -> list[str]:
-        return ["manual"]
-
-    @staticmethod
-    def initial_mode() -> str:
-        return "manual"
-
     @property
-    def mode(self) -> str:
-        return "manual"
+    def mode(self) -> EmptyMode:
+        return EmptyMode()
 
     def manual_controls(self, control_values: ControlValues):
         self._control_values = control_values
