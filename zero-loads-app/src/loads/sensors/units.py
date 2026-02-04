@@ -37,7 +37,7 @@ RatioFromPerMille: TypeAlias = Annotated[
 Millimeter: TypeAlias = Annotated[int, Field(ge=0)]
 TonneFromDecaKilogram: TypeAlias = Annotated[
     float,
-    Field(ge=0),
+    Field(ge=0, le=20),
     BeforeValidator(decakilogram_to_tonne),
     InverseConversion(tonne_to_decakilogram),
 ]

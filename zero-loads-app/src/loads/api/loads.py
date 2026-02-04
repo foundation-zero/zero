@@ -15,6 +15,14 @@ Fields = Literal[
     "lock_1",
     "lock_2",
     "lock_3",
+    "boom_lock_1",
+    "boom_lock_2",
+    "boom_lock_3",
+    "overhoist",
+    "overhoist_full",
+    "overhoist_1",
+    "overhoist_2",
+    "overhoist_3",
     "lock_A3C0",
     "lock_A2",
     "lock_staysail",
@@ -128,9 +136,9 @@ loads_variables: dict[str, LoadsField] = {
     ),
     "code-zero-tack-alarm": LoadField(sail_system.CodeSailTack, "alarm"),
     "code-zero-tack-relief-load": LoadField(sail_system.CodeSailTack, "relief_load"),
-    "main-boom-reef-1-lock": LoadField(sail_system.MainHalyard, "lock_1"),
-    "main-boom-reef-2-lock": LoadField(sail_system.MainHalyard, "lock_2"),
-    "main-boom-reef-3-lock": LoadField(sail_system.MainHalyard, "lock_3"),
+    "main-boom-reef-1-lock": LoadField(sail_system.MainHalyard, "boom_lock_1"),
+    "main-boom-reef-2-lock": LoadField(sail_system.MainHalyard, "boom_lock_2"),
+    "main-boom-reef-3-lock": LoadField(sail_system.MainHalyard, "boom_lock_3"),
     "main-checkstay-deflector-load": LoadField(
         sail_system.MainCheckstayDeflector, "load_deflector"
     ),
@@ -153,8 +161,8 @@ loads_variables: dict[str, LoadsField] = {
     "main-cunningham-alarm": LoadField(sail_system.MainCunningham, "alarm"),
     "main-cunningham-relief-load": LoadField(sail_system.MainCunningham, "relief_load"),
     "main-halyard-load": LoadField(sail_system.MainHalyard, "load"),
-    "main-halyard-lock-full": LoadField(sail_system.MainHalyard, "lock_full"),
-    "main-halyard-overhoist-full": LoadField(sail_system.MainHalyard, "overhoist_full"),
+    "main-halyard-full-lock": LoadField(sail_system.MainHalyard, "lock_full"),
+    "main-halyard-full-overhoist": LoadField(sail_system.MainHalyard, "overhoist_full"),
     "main-halyard-reef-1-lock": LoadField(sail_system.MainHalyard, "lock_1"),
     "main-halyard-reef-1-overhoist": LoadField(sail_system.MainHalyard, "overhoist_1"),
     "main-halyard-reef-2-lock": LoadField(sail_system.MainHalyard, "lock_2"),
@@ -207,8 +215,8 @@ loads_variables: dict[str, LoadsField] = {
     "main-vang-relative-position": LoadField(sail_system.MainVang, "relative_position"),
     "main-vang-alarm": LoadField(sail_system.MainVang, "alarm"),
     "main-vang-relief-load": LoadField(sail_system.MainVang, "relief_load"),
-    "mizzen-boom-reef-1-lock": LoadField(sail_system.MizzenHalyard, "lock_1"),
-    "mizzen-boom-reef-2-lock": LoadField(sail_system.MizzenHalyard, "lock_2"),
+    "mizzen-boom-reef-1-lock": LoadField(sail_system.MizzenHalyard, "boom_lock_1"),
+    "mizzen-boom-reef-2-lock": LoadField(sail_system.MizzenHalyard, "boom_lock_2"),
     "mizzen-checkstay-deflector-load": LoadField(
         sail_system.MizzenCheckstayDeflector, "load_deflector"
     ),
@@ -246,18 +254,20 @@ loads_variables: dict[str, LoadsField] = {
     ),
     "mizzen-halyard-alarm": LoadField(sail_system.MizzenHalyard, "alarm"),
     "mizzen-halyard-relief-load": LoadField(sail_system.MizzenHalyard, "relief_load"),
-    "mizzen-jib-lock": LoadField(sail_system.MizzenHeadsailLocks, "lock"),
-    "mizzen-jib-overhoist": LoadField(sail_system.MizzenHeadsailLocks, "overhoist"),
-    "mizzen-jib-tack-adjuster-load": LoadField(
+    "mizzen-headsail-lock": LoadField(sail_system.MizzenHeadsailLocks, "lock"),
+    "mizzen-headsail-overhoist": LoadField(
+        sail_system.MizzenHeadsailLocks, "overhoist"
+    ),
+    "mizzen-headsail-tack-adjuster-load": LoadField(
         sail_system.MizzenHeadsailTackAdjuster, "load"
     ),
-    "mizzen-jib-tack-adjuster-position": LoadField(
+    "mizzen-headsail-tack-adjuster-position": LoadField(
         sail_system.MizzenHeadsailTackAdjuster, "position"
     ),
-    "mizzen-jib-tack-adjuster-relative-position": LoadField(
+    "mizzen-headsail-tack-adjuster-relative-position": LoadField(
         sail_system.MizzenHeadsailTackAdjuster, "relative_position"
     ),
-    "mizzen-jib-tack-adjuster-alarm": LoadField(
+    "mizzen-headsail-tack-adjuster-alarm": LoadField(
         sail_system.MizzenHeadsailTackAdjuster, "alarm"
     ),
     "mizzen-jib-tack-adjuster-relief-load": LoadField(
@@ -279,10 +289,18 @@ loads_variables: dict[str, LoadsField] = {
     "mizzen-preventer-relief-load": LoadField(
         sail_system.MizzenPreventer, "relief_load"
     ),
-    "mizzen-reef-1-lock": LoadField(sail_system.MizzenHalyard, "lock_1"),
-    "mizzen-reef-1-overhoist": LoadField(sail_system.MizzenHalyard, "overhoist_1"),
-    "mizzen-reef-2-lock": LoadField(sail_system.MizzenHalyard, "lock_2"),
-    "mizzen-reef-2-overhoist": LoadField(sail_system.MizzenHalyard, "overhoist_2"),
+    "mizzen-halyard-full-lock": LoadField(sail_system.MizzenHalyard, "lock_full"),
+    "mizzen-halyard-full-overhoist": LoadField(
+        sail_system.MizzenHalyard, "overhoist_full"
+    ),
+    "mizzen-halyard-reef-1-lock": LoadField(sail_system.MizzenHalyard, "lock_1"),
+    "mizzen-halyard-reef-1-overhoist": LoadField(
+        sail_system.MizzenHalyard, "overhoist_1"
+    ),
+    "mizzen-halyard-reef-2-lock": LoadField(sail_system.MizzenHalyard, "lock_2"),
+    "mizzen-halyard-reef-2-overhoist": LoadField(
+        sail_system.MizzenHalyard, "overhoist_2"
+    ),
     "mizzen-runner-ps-relative-position": LoadField(
         sail_system.MizzenRunnerPs, "relative_position"
     ),
@@ -353,6 +371,12 @@ loads_variables: dict[str, LoadsField] = {
     ),
     "storm-jib-lock": LoadField(sail_system.HeadsailLocks, "lock_stormjib"),
     "storm-jib-overhoist": LoadField(sail_system.HeadsailLocks, "overhoist_stormjib"),
+    "aft-winch-ps-load": LoadField(sail_system.AftWinchPs, "load"),
+    "aft-winch-sb-load": LoadField(sail_system.AftWinchSb, "load"),
+    "primary-winch-ps-load": LoadField(sail_system.PrimaryWinchPs, "load"),
+    "primary-winch-sb-load": LoadField(sail_system.PrimaryWinchSb, "load"),
+    "a2-lock": LoadField(sail_system.HeadsailLocks, "lock_A2"),
+    "a2-overhoist": LoadField(sail_system.HeadsailLocks, "overhoist_A2"),
     "aws": LoadField(at.ApparentWindSpeed, "value"),
     "awa": LoadField(at.ApparentWindAngle, "value"),
 }

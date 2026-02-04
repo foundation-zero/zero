@@ -16,7 +16,7 @@ def override_messaging():
 
     mock.get_values_for = Mock(
         return_value=[
-            ActualType(id="main-checkstay-deflector-ps-load", value=42.0),
+            ActualType(id="main-checkstay-ps-load", value=42.0),
         ]
     )
 
@@ -40,7 +40,7 @@ async def test_graphql_reference(async_client: AsyncClient, override_dependency)
             json={
                 "query": """
                 query {
-                    variables(variables: ["main-checkstay-deflector-ps-load"]) {
+                    variables(variables: ["main-checkstay-ps-load"]) {
                         id
                         reference(case: {awaRange: upwind, awsRange: aws_15_20, sailset: [full_main, full_mizzen, blade]}) {
                             alarmLow
@@ -71,7 +71,7 @@ async def test_graphql_reference(async_client: AsyncClient, override_dependency)
             "data": {
                 "variables": [
                     {
-                        "id": "main-checkstay-deflector-ps-load",
+                        "id": "main-checkstay-ps-load",
                         "reference": {
                             "alarmLow": 5.0,
                             "warningLow": 6.0,
@@ -80,12 +80,12 @@ async def test_graphql_reference(async_client: AsyncClient, override_dependency)
                             "alarmHigh": 15.0,
                         },
                         "actual": {
-                            "id": "main-checkstay-deflector-ps-load",
+                            "id": "main-checkstay-ps-load",
                             "value": 42.0,
                         },
                         "variable": {
-                            "id": "main-checkstay-deflector-ps-load",
-                            "name": "Main Checkstay Deflector Ps Load",
+                            "id": "main-checkstay-ps-load",
+                            "name": "Main Checkstay Ps Load",
                             "unit": "tonne",
                             "minimum": 0.0,
                             "maximum": None,
