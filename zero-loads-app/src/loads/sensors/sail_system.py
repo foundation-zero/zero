@@ -34,8 +34,12 @@ class CylinderTwoPositions(LoadsModel, ABC):
     relative_position_2: Annotated[
         RelativePosition, Field(validation_alias="relative_position_dummy")
     ]
-    relief_load: Annotated[Load, Field(validation_alias="ow_RelfLoad_10kg")]
-    alarm: Annotated[Alarm, Field(validation_alias="ox_LoadAlarm")]
+    relief_load: Annotated[
+        Load, Field(validation_alias="ow_RelfLoad_10kg"), VariableMeta(ignore=True)
+    ]
+    alarm: Annotated[
+        Alarm, Field(validation_alias="ox_LoadAlarm"), VariableMeta(ignore=True)
+    ]
 
 
 class Deflector(LoadsModel, ABC):
@@ -46,18 +50,20 @@ class Deflector(LoadsModel, ABC):
     load_deflector: Annotated[Load, Field(validation_alias="i_ActualLoad_10kg")]
     load_ps: Annotated[Load, Field(validation_alias="i_ActualLoadPs")]
     load_sb: Annotated[Load, Field(validation_alias="i_ActualLoadSb")]
-    relief_load: Annotated[Load, Field(validation_alias="i_RelfLoad_10kg")]
-    alarm: Annotated[Alarm, Field(validation_alias="ox_LoadAlarm")]
+    relief_load: Annotated[
+        Load, Field(validation_alias="i_RelfLoad_10kg"), VariableMeta(ignore=True)
+    ]
+    alarm: Annotated[
+        Alarm, Field(validation_alias="ox_LoadAlarm"), VariableMeta(ignore=True)
+    ]
 
 
 class LoadCell(LoadsModel, ABC):
-    load: Annotated[
-        Load, Field(validation_alias="ow_ActLoad_10kg"), VariableMeta(name="load")
-    ]
+    load: Annotated[Load, Field(validation_alias="ow_ActLoad_10kg")]
     relief_load: Annotated[
         Load,
         Field(validation_alias="ow_RelfLoad_10kg"),
-        VariableMeta(name="relief_load", ignore=True),
+        VariableMeta(ignore=True),
     ]
     alarm: Annotated[
         Alarm, Field(validation_alias="ox_LoadAlarm"), VariableMeta(ignore=True)
@@ -65,8 +71,14 @@ class LoadCell(LoadsModel, ABC):
 
 
 class Vang(LoadsModel, ABC):
-    load_bottom: Annotated[Load, Field(validation_alias="i_ActualLoadBottom")]
-    load_rod: Annotated[Load, Field(validation_alias="i_ActualLoadRod")]
+    load_bottom: Annotated[
+        Load,
+        Field(validation_alias="i_ActualLoadBottom"),
+        VariableMeta(name="load_bottom"),
+    ]
+    load_rod: Annotated[
+        Load, Field(validation_alias="i_ActualLoadRod"), VariableMeta(name="load_rod")
+    ]
     position: Annotated[Position, Field(validation_alias="ow_ActPos_mm")]
     relative_position: Annotated[
         RelativePosition, Field(validation_alias="relative_position_dummy")
@@ -155,19 +167,43 @@ class CodeSailTack(CylinderTwoPositions):
 
 class HeadsailLocks(LoadsModel, ABC):
     TOPIC = "sail-systems/mnmst"
-    lock_A2: Annotated[Lock, Field(validation_alias="ox_IndctA2Lck_Ext")]
-    overhoist_A2: Annotated[Lock, Field(validation_alias="ox_IndctA2LckOvrhst_Ext")]
-    lock_A3C0: Annotated[Lock, Field(validation_alias="ox_IndctA3C0Lck_Ext")]
+    lock_A2: Annotated[
+        Lock, Field(validation_alias="ox_IndctA2Lck_Ext"), VariableMeta(name="lock_a2")
+    ]
+    overhoist_A2: Annotated[
+        Lock,
+        Field(validation_alias="ox_IndctA2LckOvrhst_Ext"),
+        VariableMeta(name="overhoist_a2"),
+    ]
+    lock_A3C0: Annotated[
+        Lock,
+        Field(validation_alias="ox_IndctA3C0Lck_Ext"),
+        VariableMeta(name="lock_a3c0"),
+    ]
     overhoist_A3C0: Annotated[
-        Lock, Field(validation_alias="ox_IndctA3C0LckOverhst_Ext")
+        Lock,
+        Field(validation_alias="ox_IndctA3C0LckOverhst_Ext"),
+        VariableMeta(name="overhoist_a3c0"),
     ]
-    lock_staysail: Annotated[Lock, Field(validation_alias="ox_IndctStyslLck_Ext")]
+    lock_staysail: Annotated[
+        Lock,
+        Field(validation_alias="ox_IndctStyslLck_Ext"),
+        VariableMeta(name="lock_staysail"),
+    ]
     overhoist_staysail: Annotated[
-        Lock, Field(validation_alias="ox_IndctStyslLckOverhst_Ext")
+        Lock,
+        Field(validation_alias="ox_IndctStyslLckOverhst_Ext"),
+        VariableMeta(name="overhoist_staysail"),
     ]
-    lock_stormjib: Annotated[Lock, Field(validation_alias="ox_IndctStmjbLck_Ext")]
+    lock_stormjib: Annotated[
+        Lock,
+        Field(validation_alias="ox_IndctStmjbLck_Ext"),
+        VariableMeta(name="lock_stormjib"),
+    ]
     overhoist_stormjib: Annotated[
-        Lock, Field(validation_alias="ox_IndctStmjbLckOvrhst_Ext")
+        Lock,
+        Field(validation_alias="ox_IndctStmjbLckOvrhst_Ext"),
+        VariableMeta(name="overhoist_stormjib"),
     ]
 
 
@@ -181,19 +217,61 @@ class MainCunningham(Cylinder):
 
 class MainHalyard(CaptiveWinch, LoadCell):
     TOPIC = "sail-systems/fe207_mnhlyrd"
-    lock_full: Annotated[Lock, Field(validation_alias="ox_IndctHlyrdLckFh_Ext")]
-    lock_1: Annotated[Lock, Field(validation_alias="ox_IndctHlyrdLck1_Ext")]
-    lock_2: Annotated[Lock, Field(validation_alias="ox_IndctHlyrdLck2_Ext")]
-    lock_3: Annotated[Lock, Field(validation_alias="ox_IndctHlyrdLck3_Ext")]
-    overhoist_full: Annotated[
-        Lock, Field(validation_alias="ox_IndctHlyrdLckFhOvrhst_Ext")
+    lock_full: Annotated[
+        Lock,
+        Field(validation_alias="ox_IndctHlyrdLckFh_Ext"),
+        VariableMeta(name="lock_full"),
     ]
-    overhoist_1: Annotated[Lock, Field(validation_alias="ox_IndctHlyrdLck1Ovrhst_Ext")]
-    overhoist_2: Annotated[Lock, Field(validation_alias="ox_IndctHlyrdLck2Ovrhst_Ext")]
-    overhoist_3: Annotated[Lock, Field(validation_alias="ox_IndctHlyrdLck3Ovrhst_Ext")]
-    boom_lock_1: Annotated[Lock, Field(validation_alias="ox_IndctBmRfLck1_Ext")]
-    boom_lock_2: Annotated[Lock, Field(validation_alias="ox_IndctBmRfLck2_Ext")]
-    boom_lock_3: Annotated[Lock, Field(validation_alias="ox_IndctBmRfLck3_Ext")]
+    lock_1: Annotated[
+        Lock,
+        Field(validation_alias="ox_IndctHlyrdLck1_Ext"),
+        VariableMeta(name="lock_1"),
+    ]
+    lock_2: Annotated[
+        Lock,
+        Field(validation_alias="ox_IndctHlyrdLck2_Ext"),
+        VariableMeta(name="lock_2"),
+    ]
+    lock_3: Annotated[
+        Lock,
+        Field(validation_alias="ox_IndctHlyrdLck3_Ext"),
+        VariableMeta(name="lock_3"),
+    ]
+    overhoist_full: Annotated[
+        Lock,
+        Field(validation_alias="ox_IndctHlyrdLckFhOvrhst_Ext"),
+        VariableMeta(name="overhoist_full"),
+    ]
+    overhoist_1: Annotated[
+        Lock,
+        Field(validation_alias="ox_IndctHlyrdLck1Ovrhst_Ext"),
+        VariableMeta(name="overhoist_1"),
+    ]
+    overhoist_2: Annotated[
+        Lock,
+        Field(validation_alias="ox_IndctHlyrdLck2Ovrhst_Ext"),
+        VariableMeta(name="overhoist_2"),
+    ]
+    overhoist_3: Annotated[
+        Lock,
+        Field(validation_alias="ox_IndctHlyrdLck3Ovrhst_Ext"),
+        VariableMeta(name="overhoist_3"),
+    ]
+    boom_lock_1: Annotated[
+        Lock,
+        Field(validation_alias="ox_IndctBmRfLck1_Ext"),
+        VariableMeta(name="boom_lock_1"),
+    ]
+    boom_lock_2: Annotated[
+        Lock,
+        Field(validation_alias="ox_IndctBmRfLck2_Ext"),
+        VariableMeta(name="boom_lock_2"),
+    ]
+    boom_lock_3: Annotated[
+        Lock,
+        Field(validation_alias="ox_IndctBmRfLck3_Ext"),
+        VariableMeta(name="boom_lock_3"),
+    ]
 
 
 class MainOuthaul(Cylinder):
@@ -238,27 +316,63 @@ class MizzenCunningham(Cylinder):
 
 class MizzenHalyard(CaptiveWinch, LoadCell):
     TOPIC = "sail-systems/fe404_mzznhlyrd"
-    lock_full: Annotated[Lock, Field(validation_alias="ox_IndctMzznHlyrdLckFh_Ext")]
-    lock_1: Annotated[Lock, Field(validation_alias="ox_IndctMzznHlyrdLck1_Ext")]
-    lock_2: Annotated[Lock, Field(validation_alias="ox_IndctMzznHlyrdLck2_Ext")]
-    lock_3: Annotated[Lock, Field(validation_alias="ox_IndctMzznHlyrdLck3_Ext")]
+    lock_full: Annotated[
+        Lock,
+        Field(validation_alias="ox_IndctMzznHlyrdLckFh_Ext"),
+        VariableMeta(name="lock_full"),
+    ]
+    lock_1: Annotated[
+        Lock,
+        Field(validation_alias="ox_IndctMzznHlyrdLck1_Ext"),
+        VariableMeta(name="lock_1"),
+    ]
+    lock_2: Annotated[
+        Lock,
+        Field(validation_alias="ox_IndctMzznHlyrdLck2_Ext"),
+        VariableMeta(name="lock_2"),
+    ]
+    lock_3: Annotated[
+        Lock,
+        Field(validation_alias="ox_IndctMzznHlyrdLck3_Ext"),
+        VariableMeta(name="lock_3"),
+    ]
     overhoist_full: Annotated[
-        Lock, Field(validation_alias="ox_IndctMzznHlyrdLckFhOvrhst_Ext")
+        Lock,
+        Field(validation_alias="ox_IndctMzznHlyrdLckFhOvrhst_Ext"),
+        VariableMeta(name="overhoist_full"),
     ]
     overhoist_1: Annotated[
-        Lock, Field(validation_alias="ox_IndctMzznHlyrdLck1Ovrhst_Ext")
+        Lock,
+        Field(validation_alias="ox_IndctMzznHlyrdLck1Ovrhst_Ext"),
+        VariableMeta(name="overhoist_1"),
     ]
     overhoist_2: Annotated[
-        Lock, Field(validation_alias="ox_IndctMzznHlyrdLck2Ovrhst_Ext")
+        Lock,
+        Field(validation_alias="ox_IndctMzznHlyrdLck2Ovrhst_Ext"),
+        VariableMeta(name="overhoist_2"),
     ]
-    boom_lock_1: Annotated[Lock, Field(validation_alias="ox_IndctMzznBmRfLck1_Ext")]
-    boom_lock_2: Annotated[Lock, Field(validation_alias="ox_IndctMzznBmRfLck2_Ext")]
+    boom_lock_1: Annotated[
+        Lock,
+        Field(validation_alias="ox_IndctMzznBmRfLck1_Ext"),
+        VariableMeta(name="boom_lock_1"),
+    ]
+    boom_lock_2: Annotated[
+        Lock,
+        Field(validation_alias="ox_IndctMzznBmRfLck2_Ext"),
+        VariableMeta(name="boom_lock_2"),
+    ]
 
 
 class MizzenHeadsailLocks(LoadsModel, ABC):
     TOPIC = "sail-systems/f0401_mzznhdfrlr"
-    lock: Annotated[Lock, Field(validation_alias="ox_IndctHdslLck_Ext")]
-    overhoist: Annotated[Lock, Field(validation_alias="ox_IndctHdslLckOvrhst_Ext")]
+    lock: Annotated[
+        Lock, Field(validation_alias="ox_IndctHdslLck_Ext"), VariableMeta(name="lock")
+    ]
+    overhoist: Annotated[
+        Lock,
+        Field(validation_alias="ox_IndctHdslLckOvrhst_Ext"),
+        VariableMeta(name="overhoist"),
+    ]
 
 
 class MizzenHeadsailTackAdjuster(Cylinder):
