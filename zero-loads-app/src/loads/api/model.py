@@ -6,6 +6,9 @@ from sqlalchemy.dialects.postgresql import ARRAY, TEXT
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.sql.expression import ColumnElement
 from sqlalchemy.sql.selectable import ScalarSelect
+from strawberry import ID
+
+from loads.registry.registry import VARIABLES, VariableDefinition
 
 from .schema import (
     AwaRanges,
@@ -13,7 +16,6 @@ from .schema import (
     LoadCases,
     ReferenceValues,
     SailSetsCombined,
-    Variables,
 )
 from .types import (
     CaseInput,
@@ -78,19 +80,18 @@ async def get_loads_reference_values(
 async def get_variables(
     ids: Sequence[str], session: AsyncSession
 ) -> list[VariableType]:
-    query = select(Variables).where(Variables.id.in_(ids))
-
-    result = await session.execute(query)
-    variables = result.scalars().all()
+    variables: list[VariableDefinition] = [
+        VARIABLES[id] for id in ids if id in VARIABLES
+    ]
 
     if variables:
         return [
             VariableType(
-                id=var.id,  # type: ignore
-                name=var.name,  # type: ignore
-                unit=Unit(var.unit),  # type: ignore
-                minimum=var.minimum_value,  # type: ignore
-                maximum=var.maximum_value,  # type: ignore
+                id=ID(var.id),
+                name=var.name,
+                unit=Unit(var.unit) if var.unit else None,
+                minimum=var.minimum,
+                maximum=var.maximum,
             )
             for var in variables
         ]

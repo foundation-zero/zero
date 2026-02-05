@@ -17,7 +17,7 @@ def override_messaging():
 
     mock.get_values_for = Mock(
         return_value=[
-            ActualType(id="main-checkstay-ps-load", value=42.0),
+            ActualType(id="main-sheet-load", value=42.0),
         ]
     )
 
@@ -41,9 +41,9 @@ async def test_graphql(async_client: AsyncClient, override_dependency):
             json={
                 "query": """
                 query {
-                    variables(variables: ["main-checkstay-ps-load"]) {
+                    variables(variables: ["main-sheet-load"]) {
                         id
-                        reference(case: {awaRange: upwind, awsRange: aws_15_20, sailset: [full_main, full_mizzen, blade]}) {
+                        reference(case: {awaRange: downwind, awsRange: aws_15_20, sailset: [full_main, full_mizzen, blade]}) {
                             alarmLow
                             alarmHigh
                             target
@@ -72,24 +72,24 @@ async def test_graphql(async_client: AsyncClient, override_dependency):
             "data": {
                 "variables": [
                     {
-                        "id": "main-checkstay-ps-load",
+                        "id": "main-sheet-load",
                         "reference": {
-                            "alarmLow": 5.0,
-                            "warningLow": 6.0,
-                            "target": 10.0,
-                            "warningHigh": 14.0,
-                            "alarmHigh": 15.0,
+                            "alarmLow": 0.0,
+                            "warningLow": 1.0,
+                            "target": 2.0,
+                            "warningHigh": 3.0,
+                            "alarmHigh": 4.0,
                         },
                         "actual": {
-                            "id": "main-checkstay-ps-load",
+                            "id": "main-sheet-load",
                             "value": 42.0,
                         },
                         "variable": {
-                            "id": "main-checkstay-ps-load",
-                            "name": "Main Checkstay Ps Load",
+                            "id": "main-sheet-load",
+                            "name": "Main Sheet Load",
                             "unit": "tonne",
                             "minimum": 0.0,
-                            "maximum": None,
+                            "maximum": 20.0,
                         },
                     },
                 ]

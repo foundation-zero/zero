@@ -8,6 +8,9 @@ class Unit(Enum):
     tonne = "tonne"
     ratio = "ratio"
     bool = "bool"
+    mm = "mm"
+    knots = "knots"
+    degrees = "degrees"
 
 
 @strawberry.enum
@@ -60,7 +63,7 @@ class CaseInput:
 class VariableType:
     id: strawberry.ID
     name: str
-    unit: Unit
+    unit: Unit | None
     minimum: float | None
     maximum: float | None
 

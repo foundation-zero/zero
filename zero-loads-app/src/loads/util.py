@@ -10,3 +10,11 @@ uppercase_regex = re.compile(r"([A-Z])")
 
 def camel_to_kebab(text: str) -> str:
     return uppercase_regex.sub(r"-\1", text).lower().removeprefix("-")
+
+
+def camel_to_title(text: str) -> str:
+    return uppercase_regex.sub(r" \1", text).title().strip()
+
+
+def snake_to_title(text: str) -> str:
+    return text.replace("_", " ").title()

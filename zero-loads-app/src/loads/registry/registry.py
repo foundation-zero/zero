@@ -10,6 +10,7 @@ from loads.util import camel_to_kebab, hyphenize
 @dataclass
 class VariableDefinition:
     id: str
+    name: str
     topic: str
     get_actual: Callable[[LoadsModel], float | None]
     unit: str
@@ -25,6 +26,7 @@ def _build_sail_system_variable_definitions(
     return [
         VariableDefinition(
             id=f"{function_id}-{hyphenize(variable_meta.name or '')}",
+            name=model.field_display_name(field, field_info.metadata),
             topic=model.TOPIC,
             get_actual=partial(
                 lambda field, model_instance: getattr(model_instance, field), field
@@ -105,6 +107,7 @@ def _build_at_variable_definitions(model: type[LoadsModel]) -> VariableDefinitio
 
     return VariableDefinition(
         id=variable_meta.name,
+        name=model.class_display_name(),
         topic=model.TOPIC,
         get_actual=lambda model_instance: model_instance.value,  # type: ignore[attr-defined]
         unit=variable_meta.unit,

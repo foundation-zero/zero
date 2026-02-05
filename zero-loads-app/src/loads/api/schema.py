@@ -67,17 +67,6 @@ class LoadCases(Base):  # type:ignore
     aws_range = relationship("AwsRanges")
 
 
-class Variables(Base):  # type: ignore
-    __tablename__ = "variables"
-
-    id = Column(String, primary_key=True)
-    name = Column(String, nullable=False)
-    unit = Column(String, nullable=False)
-    minimum_value = Column(Float, nullable=True)
-    maximum_value = Column(Float, nullable=True)
-    tag = Column(String, nullable=True)
-
-
 class ReferenceValues(Base):  # type:ignore
     __tablename__ = "reference_values"
 
@@ -87,7 +76,7 @@ class ReferenceValues(Base):  # type:ignore
     load_case_id = Column(
         Integer, ForeignKey("load_cases.id"), nullable=False, index=True
     )
-    variable_id = Column(String, ForeignKey("variables.id"), nullable=False, index=True)
+    variable_id = Column(String, nullable=False)
     alarm_low = Column(Float, nullable=True)
     warning_low = Column(Float, nullable=True)
     target = Column(Float, nullable=True)
@@ -95,4 +84,3 @@ class ReferenceValues(Base):  # type:ignore
     alarm_high = Column(Float, nullable=True)
 
     load_case = relationship("LoadCases")
-    variable = relationship("Variables")
