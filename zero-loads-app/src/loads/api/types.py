@@ -35,17 +35,18 @@ class Sails(Enum):
     main_reef2 = "main-reef2"
     main_reef3 = "main-reef3"
     trisail = "trisail"
+    utility = "utility"
     full_mizzen = "full-mizzen"
     mizzen_reef1 = "mizzen-reef1"
     mizzen_reef2 = "mizzen-reef2"
     blade = "blade"
     code_zero = "code-zero"
-    genoa = "genoa"
-    gennaker = "gennaker"
+    A3 = "A3"
+    A2 = "A2"
     storm_jib = "storm-jib"
     staysail = "staysail"
     mizzen_jib = "mizzen-jib"
-    mizzen_genoa = "mizzen-genoa"
+    mizzen_staysail = "mizzen-staysail"
 
 
 @strawberry.input

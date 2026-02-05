@@ -6,9 +6,10 @@ from httpx import ASGITransport, AsyncClient
 
 from loads.api import app
 from loads.api.api import get_messaging
-from loads.api.loads import loads_variables
 from loads.api.types import ActualType
+from loads.registry.registry import VARIABLES
 from loads.sensors.at import ApparentWindSpeed
+from loads.sensors.sail_system import PrimaryWinchPs
 
 
 def override_messaging():
@@ -33,7 +34,7 @@ async def async_client():
 
 
 @pytest.mark.asyncio
-async def test_graphql_reference(async_client: AsyncClient, override_dependency):
+async def test_graphql(async_client: AsyncClient, override_dependency):
     with override_dependency(get_messaging, override_messaging):
         response = await async_client.post(
             "/graphql",
@@ -120,7 +121,50 @@ async def test_graphql_all_variables(async_client: AsyncClient, override_depende
         )
 
         assert response.status_code == 200
-        assert len(response.json()["data"]["variables"]) == len(loads_variables.keys())
+        assert len(response.json()["data"]["variables"]) == len(VARIABLES.keys())
+
+
+@pytest.mark.asyncio
+async def test_sail_system_actual(async_client: AsyncClient, mqtt_client_send):
+    await mqtt_client_send.publish(
+        PrimaryWinchPs.TOPIC,
+        """{
+            "ow_ActLoad_10kg": 420,
+            "ow_RelfLoad_10kg": 500,
+            "ox_LoadAlarm": false
+        }""",
+    )
+    response = await async_client.post(
+        "/graphql",
+        json={
+            "query": """
+            query {
+                variables(variables: ["primary-winch-ps-load"]) {
+                    id
+                    actual {
+                        id
+                        value
+                    }
+                }
+            }
+            """
+        },
+    )
+
+    assert response.status_code == 200
+    assert response.json() == {
+        "data": {
+            "variables": [
+                {
+                    "id": "primary-winch-ps-load",
+                    "actual": {
+                        "id": "primary-winch-ps-load",
+                        "value": 4.2,
+                    },
+                },
+            ]
+        }
+    }
 
 
 @pytest.mark.asyncio

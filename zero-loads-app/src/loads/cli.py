@@ -14,7 +14,7 @@ from loads.api.auth import generate_jwt
 from loads.config import Settings
 from loads.control import ConditionsStub, Control, PCanAdapter, PCanStub
 from loads.logging_config import setup_logging
-from loads.sensors import at_sensors, sail_system_sensors
+from loads.registry import at_sensors, sail_system_sensors
 
 setup_logging()
 

@@ -14,10 +14,9 @@ from strawberry.dataloader import DataLoader
 from strawberry.fastapi import BaseContext, GraphQLRouter
 
 from loads.config import settings
-from loads.sensors import at_sensors, sail_system_sensors
+from loads.registry import VARIABLES, at_sensors, sail_system_sensors
 
 from .db import SessionManager
-from .loads import loads_variables
 from .messaging import Messaging
 from .model import (
     get_loads_reference_values,
@@ -45,7 +44,7 @@ async def lifespan(app: FastAPI):
         messaging = Messaging(
             mqtt_client=mqtt,
             modules=[sail_system_sensors, at_sensors],
-            variable_definition=loads_variables,
+            variable_definitions=VARIABLES,
         )
         run_task = create_task(await messaging.run())
 
@@ -120,7 +119,9 @@ async def get_variables(
     ids: Sequence[str], context: LoadsContext
 ) -> list[VariableType | None]:
     async with sessionmanager.session() as session:
-        variables = await db_get_variables(ids, session)
+        variables = await db_get_variables(
+            ids, session
+        )  # does this need to from the database?
         result: list[None | VariableType] = [None] * len(ids)
         for var in variables:
             index = ids.index(var.id)
@@ -185,7 +186,7 @@ class Query:
         variables: list[strawberry.ID] | None = None,
     ) -> list[Variable]:
         if variables is None:
-            variables = [strawberry.ID(var_id) for var_id in loads_variables.keys()]
+            variables = [strawberry.ID(var_id) for var_id in VARIABLES.keys()]
         return [Variable(id=var_id) for var_id in variables]
 
 
