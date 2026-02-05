@@ -2119,7 +2119,7 @@
                 "size": 16,
                 "text": {
                   "field": "sub_pump1_alarm",
-                  "fixed": "Backup gen. serv. pump - remote avail",
+                  "fixed": "Backup gen. serv. pump - Remote avail.",
                   "mode": "fixed"
                 },
                 "valign": "middle"
@@ -2135,7 +2135,7 @@
                 "left": 50,
                 "rotation": 0,
                 "top": 190,
-                "width": 300
+                "width": 340
               },
               "type": "text"
             },
@@ -2158,7 +2158,7 @@
                 "size": 16,
                 "text": {
                   "field": "sub_pump1_alarm",
-                  "fixed": "Submersible pump 3 - running",
+                  "fixed": "Submersible pump 3 - Running",
                   "mode": "fixed"
                 },
                 "valign": "middle"
@@ -2197,7 +2197,7 @@
                 "size": 16,
                 "text": {
                   "field": "sub_pump1_alarm",
-                  "fixed": "Submersible pump 3 - remote avail",
+                  "fixed": "Submersible pump 3 - Remote avail.",
                   "mode": "fixed"
                 },
                 "valign": "middle"
@@ -2213,7 +2213,7 @@
                 "left": 50,
                 "rotation": 0,
                 "top": 130,
-                "width": 275
+                "width": 300
               },
               "type": "text"
             },
@@ -2236,7 +2236,7 @@
                 "size": 16,
                 "text": {
                   "field": "sub_pump1_alarm",
-                  "fixed": "Submersible pump 2 - running",
+                  "fixed": "Submersible pump 2 - Running",
                   "mode": "fixed"
                 },
                 "valign": "middle"
@@ -2275,7 +2275,7 @@
                 "size": 16,
                 "text": {
                   "field": "sub_pump1_alarm",
-                  "fixed": "Submersible pump 2 - remote avail",
+                  "fixed": "Submersible pump 2 - Remote avail.",
                   "mode": "fixed"
                 },
                 "valign": "middle"
@@ -2291,7 +2291,7 @@
                 "left": 50,
                 "rotation": 0,
                 "top": 70,
-                "width": 275
+                "width": 313
               },
               "type": "text"
             },
@@ -2314,7 +2314,7 @@
                 "size": 16,
                 "text": {
                   "field": "sub_pump1_alarm",
-                  "fixed": "Submersible pump 1 - running",
+                  "fixed": "Submersible pump 1 - Running",
                   "mode": "fixed"
                 },
                 "valign": "middle"
@@ -2353,7 +2353,7 @@
                 "size": 16,
                 "text": {
                   "field": "sub_pump1_alarm",
-                  "fixed": "Submersible pump 1 - remote avail",
+                  "fixed": "Submersible pump 1 - Remote avail.",
                   "mode": "fixed"
                 },
                 "valign": "middle"
@@ -2369,7 +2369,7 @@
                 "left": 50,
                 "rotation": 0,
                 "top": 10,
-                "width": 275
+                "width": 322
               },
               "type": "text"
             },
@@ -2392,7 +2392,7 @@
                 "size": 16,
                 "text": {
                   "field": "sub_pump1_alarm",
-                  "fixed": "Chain locker pump - running",
+                  "fixed": "Chain locker pump - Running",
                   "mode": "fixed"
                 },
                 "valign": "middle"
@@ -2406,6 +2406,7 @@
               "placement": {
                 "height": 26,
                 "left": 435,
+                "rotation": 0,
                 "top": 220,
                 "width": 275
               },
@@ -2430,7 +2431,7 @@
                 "size": 16,
                 "text": {
                   "field": "sub_pump1_alarm",
-                  "fixed": "Chain locker pump - remote avail",
+                  "fixed": "Chain locker pump - Remote avail.",
                   "mode": "fixed"
                 },
                 "valign": "middle"
@@ -2444,6 +2445,7 @@
               "placement": {
                 "height": 26,
                 "left": 435,
+                "rotation": 0,
                 "top": 190,
                 "width": 275
               },
@@ -2468,7 +2470,7 @@
                 "size": 16,
                 "text": {
                   "field": "sub_pump1_alarm",
-                  "fixed": "Stripping pump - running",
+                  "fixed": "Stripping pump - Running",
                   "mode": "fixed"
                 },
                 "valign": "middle"
@@ -2482,6 +2484,7 @@
               "placement": {
                 "height": 26,
                 "left": 435,
+                "rotation": 0,
                 "top": 160,
                 "width": 275
               },
@@ -2506,7 +2509,7 @@
                 "size": 16,
                 "text": {
                   "field": "sub_pump1_alarm",
-                  "fixed": "Stripping pump - remote avail",
+                  "fixed": "Stripping pump - Remote avail.",
                   "mode": "fixed"
                 },
                 "valign": "middle"
@@ -2520,6 +2523,7 @@
               "placement": {
                 "height": 26,
                 "left": 435,
+                "rotation": 0,
                 "top": 130,
                 "width": 275
               },
@@ -2544,7 +2548,7 @@
                 "size": 16,
                 "text": {
                   "field": "sub_pump1_alarm",
-                  "fixed": "Gen. serv. pump 2 - field stop",
+                  "fixed": "Gen. serv. pump 2 - Field stop",
                   "mode": "fixed"
                 },
                 "valign": "middle"
@@ -2558,6 +2562,7 @@
               "placement": {
                 "height": 26,
                 "left": 435,
+                "rotation": 0,
                 "top": 100,
                 "width": 275
               },
@@ -2582,7 +2587,7 @@
                 "size": 16,
                 "text": {
                   "field": "sub_pump1_alarm",
-                  "fixed": "Gen. serv. pump 2 - field start",
+                  "fixed": "Gen. serv. pump 2 - Field start",
                   "mode": "fixed"
                 },
                 "valign": "middle"
@@ -2596,6 +2601,7 @@
               "placement": {
                 "height": 26,
                 "left": 435,
+                "rotation": 0,
                 "top": 70,
                 "width": 275
               },
@@ -2620,7 +2626,7 @@
                 "size": 16,
                 "text": {
                   "field": "sub_pump1_alarm",
-                  "fixed": "Gen. serv. pump 2 - remote avail",
+                  "fixed": "Gen. serv. pump 2 - Remote avail.",
                   "mode": "fixed"
                 },
                 "valign": "middle"
@@ -2635,6 +2641,7 @@
               "placement": {
                 "height": 26,
                 "left": 435,
+                "rotation": 0,
                 "top": 40,
                 "width": 275
               },
@@ -2659,7 +2666,7 @@
                 "size": 16,
                 "text": {
                   "field": "sub_pump1_alarm",
-                  "fixed": "Gen. serv. pump 1 - remote avail",
+                  "fixed": "Gen. serv. pump 1 - Remote avail.",
                   "mode": "fixed"
                 },
                 "valign": "middle"
@@ -4542,15 +4549,11 @@
               "alarm": "Alarm",
               "close": "Close",
               "closed": "Closed",
-              "hmi_close": "HMI close",
               "hmi_cmd_close": "HMI close",
               "hmi_cmd_open": "HMI open",
               "hmi_control_available": "HMI cntrl avail.",
-              "hmi_ctrl_avail": "HMI control avail.",
-              "hmi_open": "HMI open",
               "open": "Open",
               "opened": "Opened",
-              "shld_be_open": "Should be open",
               "should_be_open": "Should be open",
               "topic": "Name"
             }
