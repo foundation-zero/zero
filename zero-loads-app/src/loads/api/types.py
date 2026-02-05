@@ -65,6 +65,16 @@ class VariableType:
     maximum: float | None
 
 
+@strawberry.input
+class ReferenceValueInput:
+    id: strawberry.ID
+    alarm_low: float | None = None
+    warning_low: float | None = None
+    target: float | None = None
+    warning_high: float | None = None
+    alarm_high: float | None = None
+
+
 @strawberry.type
 class ReferenceValue:
     id: strawberry.ID

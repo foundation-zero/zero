@@ -85,7 +85,7 @@ class ReferenceValues(Base):  # type:ignore
         UUID(as_uuid=True), primary_key=True, server_default="gen_random_uuid()"
     )
     load_case_id = Column(
-        Integer, ForeignKey("load_cases.id"), nullable=False, index=True
+        UUID(as_uuid=True), ForeignKey("load_cases.id"), nullable=False, index=True
     )
     variable_id = Column(String, ForeignKey("variables.id"), nullable=False, index=True)
     alarm_low = Column(Float, nullable=True)

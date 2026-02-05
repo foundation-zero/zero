@@ -1,8 +1,8 @@
 import logging
 from typing import Sequence
 
-from sqlalchemy import Column, cast, select, text
-from sqlalchemy.dialects.postgresql import ARRAY, TEXT
+from sqlalchemy import Column, Subquery, cast, literal, or_, select, text
+from sqlalchemy.dialects.postgresql import ARRAY, TEXT, insert
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.sql.expression import ColumnElement
 from sqlalchemy.sql.selectable import ScalarSelect
@@ -16,8 +16,11 @@ from .schema import (
     Variables,
 )
 from .types import (
+    AwaRange,
+    AwsRange,
     CaseInput,
     ReferenceValue,
+    ReferenceValueInput,
     Sails,
     Unit,
     VariableType,
@@ -30,7 +33,7 @@ async def get_loads_reference_values(
     variables: list[str],
     case: CaseInput,
     session: AsyncSession,
-) -> list[ReferenceValue] | None:
+) -> list[ReferenceValue]:
     """Return all reference values that match the current sails and conditions."""
 
     query = (
@@ -75,6 +78,55 @@ async def get_loads_reference_values(
         return []
 
 
+async def set_loads_reference_values(
+    reference_value: ReferenceValueInput,
+    sail_set: list[Sails],
+    awa_ranges: list[AwaRange],
+    aws_ranges: list[AwsRange],
+    session: AsyncSession,
+):
+    """Insert or update reference values for a variable across multiple sail sets and conditions."""
+
+    load_case_subquery = create_load_case_subq(awa_ranges, aws_ranges, sail_set)
+
+    insert_statement = insert(ReferenceValues).from_select(
+        [
+            ReferenceValues.load_case_id,
+            ReferenceValues.variable_id,
+            ReferenceValues.alarm_low,
+            ReferenceValues.warning_low,
+            ReferenceValues.target,
+            ReferenceValues.warning_high,
+            ReferenceValues.alarm_high,
+        ],
+        select(
+            load_case_subquery.c.id,
+            literal(reference_value.id),
+            literal(reference_value.alarm_low),
+            literal(reference_value.warning_low),
+            literal(reference_value.target),
+            literal(reference_value.warning_high),
+            literal(reference_value.alarm_high),
+        ),
+    )
+
+    statement = insert_statement.on_conflict_do_update(
+        index_elements=[
+            ReferenceValues.load_case_id,
+            ReferenceValues.variable_id,
+        ],
+        set_={
+            "alarm_low": insert_statement.excluded.alarm_low,
+            "warning_low": insert_statement.excluded.warning_low,
+            "target": insert_statement.excluded.target,
+            "warning_high": insert_statement.excluded.warning_high,
+            "alarm_high": insert_statement.excluded.alarm_high,
+        },
+    )
+
+    await session.execute(statement)
+
+
 async def get_variables(
     ids: Sequence[str], session: AsyncSession
 ) -> list[VariableType]:
@@ -113,3 +165,24 @@ def sails_exact(
 ) -> ColumnElement[bool]:
     """Check if the sail set exactly matches the sails provided"""
     return sails_column == cast(sorted([sail.value for sail in sails]), ARRAY(TEXT))
+
+
+def create_load_case_subq(
+    awa_ranges: list[AwaRange], aws_ranges: list[AwsRange], sailset: list[Sails]
+) -> Subquery:
+    return (
+        select(LoadCases.id)
+        .where(LoadCases.sail_set_id == create_sail_set_subq(sailset))
+        .join(AwaRanges, LoadCases.awa_range_id == AwaRanges.id)
+        .join(AwsRanges, LoadCases.aws_range_id == AwsRanges.id)
+        .where(
+            AwaRanges.id.in_([awa_range.value for awa_range in awa_ranges]),
+            or_(
+                *[
+                    AwsRanges.aws_range == text(f"'{aws_range.value}'::numrange")
+                    for aws_range in aws_ranges
+                ]
+            ),
+        )
+        .subquery()
+    )
