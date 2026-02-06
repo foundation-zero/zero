@@ -20,14 +20,19 @@ from .db import SessionManager
 from .messaging import Messaging
 from .model import (
     get_loads_reference_values,
+    set_loads_reference_values,
 )
 from .model import (
     get_variables as model_get_variables,
 )
 from .types import (
     ActualType,
+    AwaRange,
+    AwsRange,
     CaseInput,
     ReferenceValue,
+    ReferenceValueInput,
+    Sails,
     VariableType,
 )
 
@@ -74,7 +79,7 @@ def get_messaging() -> Messaging:
 @dataclass
 class LoadsContext(BaseContext):
     messaging: Messaging
-    session: AsyncSession
+    sessionmanager: SessionManager
     actuals_loader: DataLoader[str, ActualType]
     references_loader: DataLoader[
         tuple[strawberry.ID, CaseInput], ReferenceValue | None
@@ -96,7 +101,7 @@ async def get_actuals(
 async def get_reference_values(
     keys: list[tuple[strawberry.ID, CaseInput]], context: LoadsContext
 ) -> list[ReferenceValue | None]:
-    async with sessionmanager.session() as session:
+    async with context.sessionmanager.session() as session:
         by_case = groupby(keys, lambda x: x[1])
         by_id_case = {}
         for case, group in by_case:
@@ -131,7 +136,7 @@ async def get_context(
 ) -> LoadsContext:
     context = LoadsContext(
         messaging=messaging,
-        session=session,
+        sessionmanager=sessionmanager,
         actuals_loader=DataLoader(
             load_fn=lambda keys: get_actuals(keys, context),  # type: ignore
             cache=False,
@@ -177,7 +182,6 @@ class Query:
     @strawberry.field
     async def variables(
         self,
-        info: strawberry.Info[LoadsContext],
         variables: list[strawberry.ID] | None = None,
     ) -> list[Variable]:
         if variables is None:
@@ -185,7 +189,24 @@ class Query:
         return [Variable(id=var_id) for var_id in variables]
 
 
-schema = strawberry.Schema(query=Query)
+@strawberry.type
+class Mutation:
+    @strawberry.mutation
+    async def set_reference_values(
+        self,
+        info: strawberry.Info[LoadsContext],
+        reference_value: ReferenceValueInput,
+        sail_set: list[Sails],
+        awa_ranges: list[AwaRange],
+        aws_ranges: list[AwsRange],
+    ) -> None:
+        async with info.context.sessionmanager.session() as session:
+            await set_loads_reference_values(
+                reference_value, sail_set, awa_ranges, aws_ranges, session
+            )
+
+
+schema = strawberry.Schema(query=Query, mutation=Mutation)
 graphql_app = GraphQLRouter(schema, context_getter=get_context)
 
 

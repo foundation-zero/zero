@@ -98,6 +98,61 @@ async def test_graphql(async_client: AsyncClient, override_dependency):
 
 
 @pytest.mark.asyncio
+async def test_graphql_set_reference_values(
+    async_client: AsyncClient, override_dependency
+):
+    insert = await async_client.post(
+        "/graphql",
+        json={
+            "query": """
+            mutation {
+                setReferenceValues(
+                    awaRanges: [upwind, reaching]
+                    awsRanges: [aws_0_10, aws_10_15]
+                    referenceValue: {id: "blade-adjuster-load", target: 100}
+                    sailSet: [full_main, full_mizzen]
+                )
+            }
+            """
+        },
+    )
+
+    assert insert.status_code == 200
+
+    response = await async_client.post(
+        "/graphql",
+        json={
+            "query": """
+            query {
+                variables(variables: ["blade-adjuster-load"]) {
+                    id
+                    reaching: reference(case: {awaRange: reaching, awsRange: aws_0_10, sailset: [full_main, full_mizzen]}) {
+                        target
+                    }
+                    upwind: reference(case: {awaRange: upwind, awsRange: aws_0_10, sailset: [full_main, full_mizzen]}) {
+                        target
+                    }
+                }
+            }
+            """
+        },
+    )
+
+    assert response.status_code == 200
+    assert response.json() == {
+        "data": {
+            "variables": [
+                {
+                    "id": "blade-adjuster-load",
+                    "reaching": {"target": 100.0},
+                    "upwind": {"target": 100.0},
+                }
+            ]
+        }
+    }
+
+
+@pytest.mark.asyncio
 async def test_graphql_all_variables(async_client: AsyncClient, override_dependency):
     with override_dependency(get_messaging, override_messaging):
         response = await async_client.post(
