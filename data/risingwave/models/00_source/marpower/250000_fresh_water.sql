@@ -44,7 +44,6 @@ CREATE TABLE {{ this }} (
 	"COLDWATER_GUEST_BATHR_PS_FWD_FLOW"	{{ marpower_struct("REAL") }},
 	"HOTWATER_LAUNDRY_PS_1_FLOW"	{{ marpower_struct("REAL") }},
 	"COLDWATER_LAUNDRY_PS_FLOW"	{{ marpower_struct("REAL") }},
-	"HOTWATER_LAUNDRY_PS_2_FLOW"	{{ marpower_struct("REAL") }},
 	"HOTWATER_CAPTAINS_CABIN_FLOW"	{{ marpower_struct("REAL") }},
 	"COLDWATER_CAPTAINS_CABIN_FLOW"	{{ marpower_struct("REAL") }},
 	"HOTWATER_CREW_CABIN_SB_AFT_FLOW"	{{ marpower_struct("REAL") }},
