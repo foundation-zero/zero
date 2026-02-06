@@ -8,7 +8,7 @@ from pydantic import AliasGenerator, BaseModel, ConfigDict
 
 from loads.sensors.units import ScalingMeta, VariableMeta
 
-from ..util import hyphenize
+from ..util import camel_to_title, hyphenize, snake_to_title
 
 
 class LoadsModel(BaseModel):
@@ -113,11 +113,25 @@ class LoadsModel(BaseModel):
                     unit=b.unit or a.unit,
                     name=b.name or a.name,
                     ignore=b.ignore or a.ignore,
+                    display_name=b.display_name or a.display_name,
                 ),
                 variable_metas,
             )
         else:
             return None
+
+    @classmethod
+    def class_display_name(cls):
+        return camel_to_title(cls.__name__)
+
+    @classmethod
+    def field_display_name(cls, name: str, meta: list[Any]) -> str:
+        variable_meta = cls.extract_variable_meta(meta)
+        return (
+            variable_meta.display_name
+            if variable_meta and variable_meta.display_name
+            else f"{cls.class_display_name()} {snake_to_title(name)}"
+        )
 
     @staticmethod
     def extract_scaling_conversion(meta: list[Any]) -> Callable | None:

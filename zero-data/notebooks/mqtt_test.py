@@ -1,6 +1,9 @@
 import argparse
 import asyncio
+from collections import Counter
 from datetime import datetime
+from pathlib import Path
+
 import aiomqtt
 
 TEST_TOPIC = "robustness_test_topic"
@@ -64,10 +67,36 @@ async def consumer(host: str, port: int):
             disconnected_time = datetime.now()
             await asyncio.sleep(RECONNECT_INTERVAL)
 
+async def export_topics(host: str, port: int):
+    topics = dict()
+    out_dir = Path("data")
+    client = aiomqtt.Client(
+        host, port=port, clean_session=False, identifier="test_list_topics"
+    )
+    async with client:
+        await client.subscribe("#", qos=0)
+        print("Subscribed")
+    while True:
+        try:
+            async with client:
+                async for message in client.messages:
+                    topic = str(message.topic).split("/")
+                    directory = topic[:-1]
+                    file_name = f"{topic[-1]}.json"
+                    if message.topic not in topics:
+                        topics[message.topic] = 0
+                        (out_dir / Path(*directory)).mkdir(parents=True, exist_ok=True)
+                        with open(out_dir / Path(*directory) / file_name, "wb") as f:
+                            if type(message.payload) is bytes:
+                                f.write(message.payload)
+        except aiomqtt.MqttError as e:
+            print(f"Disconnected ({e})")
+            await asyncio.sleep(RECONNECT_INTERVAL)
+
 
 def parse_args():
     parser = argparse.ArgumentParser()
-    parser.add_argument("mode", type=str, choices=["producer", "consumer"])
+    parser.add_argument("mode", type=str, choices=["producer", "consumer", "list_topics"])
     parser.add_argument("--host", type=str, default="localhost")
     parser.add_argument("--port", type=int, default=1883)
     return parser.parse_args()
@@ -79,6 +108,8 @@ async def main():
         await producer(args.host, args.port)
     elif args.mode == "consumer":
         await consumer(args.host, args.port)
+    elif args.mode == "list_topics":
+        await export_topics(args.host, args.port)
 
 
 if __name__ == "__main__":

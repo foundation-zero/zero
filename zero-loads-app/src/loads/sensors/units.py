@@ -8,6 +8,7 @@ from pydantic import BeforeValidator, Field
 class VariableMeta:
     unit: str | None = None
     name: str | None = None
+    display_name: str | None = None
     ignore: bool = False
 
 

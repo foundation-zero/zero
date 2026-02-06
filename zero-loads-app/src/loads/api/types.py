@@ -8,6 +8,9 @@ class Unit(Enum):
     tonne = "tonne"
     ratio = "ratio"
     bool = "bool"
+    mm = "mm"
+    knots = "knots"
+    degrees = "degrees"
 
 
 @strawberry.enum
@@ -55,12 +58,15 @@ class CaseInput:
     aws_range: AwsRange
     sailset: list[Sails]
 
+    def __hash__(self) -> int:
+        return hash((self.awa_range, self.aws_range, tuple(self.sailset)))
+
 
 @strawberry.type
 class VariableType:
     id: strawberry.ID
     name: str
-    unit: Unit
+    unit: Unit | None
     minimum: float | None
     maximum: float | None
 

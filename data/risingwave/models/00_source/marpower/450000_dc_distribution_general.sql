@@ -34,6 +34,8 @@ CREATE TABLE {{ this }} (
 	"KEB8_BOW_THRUST_MAINBREAKOF1F105OPEN"	{{ marpower_struct("BOOLEAN") }},
 	"KEB8_BOW_THRUST_MAINBREAKOF2F105OPEN"	{{ marpower_struct("BOOLEAN") }},
 	"KEB8_BOW_THRUST_MAINBREAKOF1F105FAULT"	{{ marpower_struct("BOOLEAN") }},
+	"KEB8_DC_SWITCH_0576_HEARTBEAT"	{{ marpower_struct("BOOLEAN") }},
+	"KEB8_DC_SWITCH_0576_UNDERVOLT"	{{ marpower_struct("BOOLEAN") }},
 	"KEB8_FWD_SB02_TEMPP01"	{{ marpower_struct("REAL") }},
 	"KEB8_FWD_SB02_TEMPP02"	{{ marpower_struct("REAL") }},
 	"KEB8_BOW_THRUST_MAINBREAKOF1F105OPENCMD"	{{ marpower_struct("BOOLEAN") }},
