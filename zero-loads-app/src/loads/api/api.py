@@ -79,7 +79,7 @@ def get_messaging() -> Messaging:
 @dataclass
 class LoadsContext(BaseContext):
     messaging: Messaging
-    session: AsyncSession
+    sessionmanager: SessionManager
     actuals_loader: DataLoader[str, ActualType]
     references_loader: DataLoader[
         tuple[strawberry.ID, CaseInput], ReferenceValue | None
@@ -101,20 +101,21 @@ async def get_actuals(
 async def get_reference_values(
     keys: list[tuple[strawberry.ID, CaseInput]], context: LoadsContext
 ) -> list[ReferenceValue | None]:
-    by_case = groupby(keys, lambda x: x[1])
-    results: list[ReferenceValue | None] = [None] * len(keys)
-    for case, group in by_case:
-        variables = [str(var_id) for var_id, _ in group]
-        values = (
-            await get_loads_reference_values(
-                variables=variables,
-                case=case,
-                session=context.session,
+    async with context.sessionmanager.session() as session:
+        by_case = groupby(keys, lambda x: x[1])
+        results: list[ReferenceValue | None] = [None] * len(keys)
+        for case, group in by_case:
+            variables = [str(var_id) for var_id, _ in group]
+            values = (
+                await get_loads_reference_values(
+                    variables=variables,
+                    case=case,
+                    session=session,
+                )
+                or []
             )
-            or []
-        )
-        for value in values:
-            results[keys.index((value.id, case))] = value
+            for value in values:
+                results[keys.index((value.id, case))] = value
 
     return results
 
@@ -122,11 +123,12 @@ async def get_reference_values(
 async def get_variables(
     ids: Sequence[str], context: LoadsContext
 ) -> list[VariableType | None]:
-    variables = await db_get_variables(ids, context.session)
-    result: list[None | VariableType] = [None] * len(ids)
-    for var in variables:
-        index = ids.index(var.id)
-        result[index] = var
+    async with context.sessionmanager.session() as session:
+        variables = await db_get_variables(ids, session)
+        result: list[None | VariableType] = [None] * len(ids)
+        for var in variables:
+            index = ids.index(var.id)
+            result[index] = var
 
     return result
 
@@ -137,7 +139,7 @@ async def get_context(
 ) -> LoadsContext:
     context = LoadsContext(
         messaging=messaging,
-        session=session,
+        sessionmanager=sessionmanager,
         actuals_loader=DataLoader(
             load_fn=lambda keys: get_actuals(keys, context),  # type: ignore
             cache=False,
@@ -201,14 +203,10 @@ class Mutation:
         awa_ranges: list[AwaRange],
         aws_ranges: list[AwsRange],
     ) -> None:
-        await set_loads_reference_values(
-            reference_value,
-            sail_set,
-            awa_ranges,
-            aws_ranges,
-            info.context.session,
-        )
-        await info.context.session.commit()
+        async with info.context.sessionmanager.session() as session:
+            await set_loads_reference_values(
+                reference_value, sail_set, awa_ranges, aws_ranges, session
+            )
 
 
 schema = strawberry.Schema(query=Query, mutation=Mutation)

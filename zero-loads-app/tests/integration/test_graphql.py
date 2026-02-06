@@ -120,7 +120,7 @@ async def test_graphql_set_reference_values(
 
         assert insert.status_code == 200
 
-        response = await async_client.post(
+        response_upwind = await async_client.post(
             "/graphql",
             json={
                 "query": """
@@ -136,8 +136,38 @@ async def test_graphql_set_reference_values(
             },
         )
 
-        assert response.status_code == 200
-        assert response.json() == {
+        assert response_upwind.status_code == 200
+        assert response_upwind.json() == {
+            "data": {
+                "variables": [
+                    {
+                        "id": "blade-adjuster-load",
+                        "reference": {
+                            "target": 100.0,
+                        },
+                    }
+                ]
+            }
+        }
+
+        response_reaching = await async_client.post(
+            "/graphql",
+            json={
+                "query": """
+                query {
+                    variables(variables: ["blade-adjuster-load"]) {
+                        id
+                        reference(case: {awaRange: reaching, awsRange: aws_0_10, sailset: [full_main, full_mizzen]}) {
+                            target
+                        }
+                    }
+                }
+                """
+            },
+        )
+
+        assert response_reaching.status_code == 200
+        assert response_reaching.json() == {
             "data": {
                 "variables": [
                     {
