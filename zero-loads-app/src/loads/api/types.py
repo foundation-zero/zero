@@ -58,6 +58,9 @@ class CaseInput:
     aws_range: AwsRange
     sailset: list[Sails]
 
+    def __hash__(self) -> int:
+        return hash((self.awa_range, self.aws_range, tuple(self.sailset)))
+
 
 @strawberry.type
 class VariableType:

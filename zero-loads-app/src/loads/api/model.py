@@ -77,9 +77,7 @@ async def get_loads_reference_values(
         return []
 
 
-async def get_variables(
-    ids: Sequence[str], session: AsyncSession
-) -> list[VariableType]:
+async def get_variables(ids: Sequence[str]) -> list[VariableType]:
     variables: list[VariableDefinition] = [
         VARIABLES[id] for id in ids if id in VARIABLES
     ]
