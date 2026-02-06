@@ -16,7 +16,8 @@ CREATE TABLE loads.sails (
     id TEXT PRIMARY KEY,
     abbreviation TEXT NOT NULL,
     position_id TEXT NOT NULL REFERENCES loads.sail_positions(id),
-    name TEXT NOT NULL
+    name TEXT NOT NULL,
+    variant_name TEXT NOT NULL
 );
 
 DROP TABLE IF EXISTS loads.sail_sets CASCADE;
@@ -90,24 +91,24 @@ INSERT INTO loads.sail_positions (id) VALUES
   ('mizzen-fore');
 
 -- Define sails
-INSERT INTO loads.sails (id, abbreviation, position_id, name) VALUES
-  ('full-main', 'FM', 'main', 'Full Main'),
-  ('main-reef1', 'M1R', 'main', 'Main 1 Reef'),
-  ('main-reef2', 'M2R', 'main', 'Main 2 Reef'),
-  ('main-reef3', 'M3R', 'main', 'Main 3 Reef'),
-  ('trisail', 'TS', 'main', 'Trisail'),
-  ('full-mizzen', 'FMZ', 'mizzen', 'Full Mizzen'),
-  ('mizzen-reef1', 'MZ1R', 'mizzen', 'Mizzen 1 Reef'),
-  ('mizzen-reef2', 'MZ2R', 'mizzen', 'Mizzen 2 Reef'),
-  ('utility-main', 'UM', 'main', 'Utility Main'),
-  ('blade', 'B', 'fore-outer', 'Blade'),
-  ('code-zero', 'C0', 'fore-outer', 'Code Zero'),
-  ('A3', 'A3', 'fore-outer', 'A3'),
-  ('A2', 'A2', 'fore-outer', 'A2'),
-  ('storm-jib', 'SJ', 'fore-inner', 'Storm Jib'),
-  ('staysail', 'SS', 'fore-inner', 'Staysail'),
-  ('mizzen-jib', 'MZJ', 'mizzen-fore', 'Mizzen Jib'),
-  ('mizzen-staysail', 'MZSS', 'mizzen-fore', 'Mizzen Staysail');
+INSERT INTO loads.sails (id, abbreviation, position_id, name, variant_name) VALUES
+  ('full-main', 'FM', 'main', 'Full Main', 'Full'),
+  ('main-reef1', 'M1R', 'main', 'Main 1 Reef', 'Reef 1'),
+  ('main-reef2', 'M2R', 'main', 'Main 2 Reef', 'Reef 2'),
+  ('main-reef3', 'M3R', 'main', 'Main 3 Reef', 'Reef 3'),
+  ('trisail', 'TS', 'main', 'Trisail', 'Trisail'),
+  ('full-mizzen', 'FMZ', 'mizzen', 'Full Mizzen', 'Full'),
+  ('mizzen-reef1', 'MZ1R', 'mizzen', 'Mizzen 1 Reef', 'Reef 1'),
+  ('mizzen-reef2', 'MZ2R', 'mizzen', 'Mizzen 2 Reef', 'Reef 2'),
+  ('utility-main', 'UM', 'main', 'Utility Main', 'Utility'),
+  ('blade', 'B', 'fore-outer', 'Blade', 'Blade'),
+  ('code-zero', 'C0', 'fore-outer', 'Code Zero', 'Code Zero'),
+  ('A3', 'A3', 'fore-outer', 'A3', 'A3'),
+  ('A2', 'A2', 'fore-outer', 'A2', 'A2'),
+  ('storm-jib', 'SJ', 'fore-inner', 'Storm Jib', 'Storm Jib'),
+  ('staysail', 'SS', 'fore-inner', 'Staysail', 'Staysail'),
+  ('mizzen-jib', 'MZJ', 'mizzen-fore', 'Mizzen Jib', 'Jib'),
+  ('mizzen-staysail', 'MZSS', 'mizzen-fore', 'Staysail', 'Staysail');
 
 -- Generate all possible sail sets based on position (including those with NULLs for missing sails)
 WITH RECURSIVE indexed_positions AS (

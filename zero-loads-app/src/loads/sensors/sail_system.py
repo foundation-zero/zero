@@ -43,11 +43,21 @@ class CylinderTwoPositions(LoadsModel, ABC):
 
 
 class Deflector(LoadsModel, ABC):
-    position: Annotated[Position, Field(validation_alias="ow_ActPos_mm"), VariableMeta(name="deflector-position")]
-    relative_position: Annotated[
-        RelativePosition, Field(validation_alias="relative_position_dummy"), VariableMeta(name="deflector-relative_position")
+    position: Annotated[
+        Position,
+        Field(validation_alias="ow_ActPos_mm"),
+        VariableMeta(name="deflector-position"),
     ]
-    load: Annotated[Load, Field(validation_alias="i_ActualLoad_10kg"), VariableMeta(name="deflector-load")]
+    relative_position: Annotated[
+        RelativePosition,
+        Field(validation_alias="relative_position_dummy"),
+        VariableMeta(name="deflector-relative_position"),
+    ]
+    load: Annotated[
+        Load,
+        Field(validation_alias="i_ActualLoad_10kg"),
+        VariableMeta(name="deflector-load"),
+    ]
     relief_load: Annotated[
         Load, Field(validation_alias="i_RelfLoad_10kg"), VariableMeta(ignore=True)
     ]
@@ -211,7 +221,9 @@ class MainCheckstay(Deflector):
         Load, Field(validation_alias="i_ActualLoadPs"), VariableMeta(name="ps-load")
     ]
     load_sb: Annotated[
-        Load, Field(validation_alias="i_ActualLoadSB"), VariableMeta(name="sb-load")#Note the capital B from sail system IO list
+        Load,
+        Field(validation_alias="i_ActualLoadSB"),
+        VariableMeta(name="sb-load"),  # Note the capital B from sail system IO list
     ]
 
 

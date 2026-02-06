@@ -20,6 +20,7 @@ class Sails(Base):  # type:ignore
     abbreviation = Column(String, nullable=False)
     position_id = Column(String, ForeignKey("sail_positions.id"), nullable=False)
     name = Column(String, nullable=False)
+    variant_name = Column(String, nullable=False)
 
 
 class SailSets(Base):  # type:ignore
