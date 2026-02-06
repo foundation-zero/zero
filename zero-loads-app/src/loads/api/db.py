@@ -47,4 +47,3 @@ class SessionManager:
         session = self._sessionmaker()
         async with session.begin():
             yield session
-        # await session.close()
