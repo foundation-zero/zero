@@ -22,7 +22,7 @@ from .model import (
     get_loads_reference_values,
 )
 from .model import (
-    get_variables as db_get_variables,
+    get_variables as model_get_variables,
 )
 from .types import (
     ActualType,
@@ -98,7 +98,7 @@ async def get_reference_values(
 ) -> list[ReferenceValue | None]:
     async with sessionmanager.session() as session:
         by_case = groupby(keys, lambda x: x[1])
-        results: list[ReferenceValue | None] = [None] * len(keys)
+        by_id_case = {}
         for case, group in by_case:
             variables = [str(var_id) for var_id, _ in group]
             values = (
@@ -110,22 +110,17 @@ async def get_reference_values(
                 or []
             )
             for value in values:
-                results[keys.index((value.id, case))] = value
+                by_id_case[(value.id, case)] = value
 
-    return results
+    return [by_id_case.get((var_id, case)) for var_id, case in keys]
 
 
 async def get_variables(
     ids: Sequence[str], context: LoadsContext
 ) -> list[VariableType | None]:
-    async with sessionmanager.session() as session:
-        variables = await db_get_variables(
-            ids, session
-        )  # does this need to from the database?
-        result: list[None | VariableType] = [None] * len(ids)
-        for var in variables:
-            index = ids.index(var.id)
-            result[index] = var
+    variables = await model_get_variables(ids)
+    vars_by_id = {str(var.id): var for var in variables}
+    result: list[None | VariableType] = [vars_by_id.get(var_id) for var_id in ids]
 
     return result
 

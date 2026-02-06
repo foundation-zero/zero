@@ -125,6 +125,104 @@ async def test_graphql_all_variables(async_client: AsyncClient, override_depende
 
 
 @pytest.mark.asyncio
+async def test_graphql_variable_duplicates(
+    async_client: AsyncClient, override_dependency
+):
+    with override_dependency(get_messaging, override_messaging):
+        response = await async_client.post(
+            "/graphql",
+            json={
+                "query": """
+                query {
+                    a: variables {
+                        id
+                        variable {
+                            id
+                            name
+                            unit
+                            minimum
+                            maximum
+                        }
+                    }
+                    b: variables {
+                        id
+                        variable {
+                            id
+                            name
+                            unit
+                            minimum
+                            maximum
+                        }
+                    }
+                }
+                """
+            },
+        )
+
+        assert response.status_code == 200
+        assert len(response.json()["data"]["a"]) == len(VARIABLES.keys())
+        assert len(response.json()["data"]["b"]) == len(VARIABLES.keys())
+
+
+@pytest.mark.asyncio
+async def test_graphql_reference_duplicates(
+    async_client: AsyncClient, override_dependency
+):
+    with override_dependency(get_messaging, override_messaging):
+        response = await async_client.post(
+            "/graphql",
+            json={
+                "query": """
+                query {
+                    variables(variables: ["main-sheet-load"]) {
+                        id
+                        a: reference(case: {awaRange: downwind, awsRange: aws_15_20, sailset: [full_main, full_mizzen, blade]}) {
+                            alarmLow
+                            alarmHigh
+                            target
+                            warningHigh
+                            warningLow
+                        }
+                        b: reference(case: {awaRange: downwind, awsRange: aws_15_20, sailset: [full_main, full_mizzen, blade]}) {
+                            alarmLow
+                            alarmHigh
+                            target
+                            warningHigh
+                            warningLow
+                        }
+                    }
+                }
+                """
+            },
+        )
+
+        assert response.status_code == 200
+        assert response.json() == {
+            "data": {
+                "variables": [
+                    {
+                        "id": "main-sheet-load",
+                        "a": {
+                            "alarmLow": 0.0,
+                            "warningLow": 1.0,
+                            "target": 2.0,
+                            "warningHigh": 3.0,
+                            "alarmHigh": 4.0,
+                        },
+                        "b": {
+                            "alarmLow": 0.0,
+                            "warningLow": 1.0,
+                            "target": 2.0,
+                            "warningHigh": 3.0,
+                            "alarmHigh": 4.0,
+                        },
+                    },
+                ]
+            }
+        }
+
+
+@pytest.mark.asyncio
 async def test_sail_system_actual(async_client: AsyncClient, mqtt_client_send):
     await mqtt_client_send.publish(
         PrimaryWinchPs.TOPIC,
