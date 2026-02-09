@@ -4,173 +4,132 @@ from typing import Annotated
 from pydantic import Field
 
 from .base import LoadsModel
-from .units import Alarm, Load, Lock, Position, RelativePosition, VariableMeta
+from .units import (
+    Alarm,
+    Load,
+    Lock,
+    RelativePosition,
+    ReliefLoad,
+    VariableMeta,
+)
 
 
-class CaptiveWinch(LoadsModel, ABC):
-    position: Annotated[Position, Field(validation_alias="ow_ActPos_mm")]
+class Adjuster(LoadsModel, ABC):
+    load: Annotated[Load, VariableMeta(display_name="Adjuster Load")]
     relative_position: Annotated[
-        RelativePosition, Field(validation_alias="ow_ActPos_pm")
-    ]
-
-
-class Cylinder(LoadsModel, ABC):
-    load: Annotated[Load, Field(validation_alias="ow_ActLoad_10kg")]
-    position: Annotated[Position, Field(validation_alias="ow_ActPos_mm")]
-    relative_position: Annotated[
-        RelativePosition, Field(validation_alias="relative_position_dummy")
-    ]
-    relief_load: Annotated[Load, Field(validation_alias="ow_RelfLoad_10kg")]
-    alarm: Annotated[Alarm, Field(validation_alias="ox_LoadAlarm")]
-
-
-class CylinderTwoPositions(LoadsModel, ABC):
-    load: Annotated[Load, Field(validation_alias="ow_ActLoad_10kg")]
-    position_1: Annotated[Position, Field(validation_alias="ow_ActPos_mm")]
-    relative_position_1: Annotated[
-        RelativePosition, Field(validation_alias="relative_position_dummy")
-    ]
-    position_2: Annotated[Position, Field(validation_alias="ow_ActPos2_mm")]
-    relative_position_2: Annotated[
-        RelativePosition, Field(validation_alias="relative_position_dummy")
+        RelativePosition, VariableMeta(display_name="Adjuster Position")
     ]
     relief_load: Annotated[
-        Load, Field(validation_alias="ow_RelfLoad_10kg"), VariableMeta(ignore=True)
+        ReliefLoad, VariableMeta(display_name="Adjuster Relief Load")
     ]
-    alarm: Annotated[
-        Alarm, Field(validation_alias="ox_LoadAlarm"), VariableMeta(ignore=True)
+
+
+class Cunningham(LoadsModel, ABC):
+    load: Annotated[Load, VariableMeta(display_name="Cunningham Load")]
+    relative_position: Annotated[
+        RelativePosition, VariableMeta(display_name="Cunningham Position")
     ]
 
 
 class Deflector(LoadsModel, ABC):
-    position: Annotated[
-        Position,
-        Field(validation_alias="ow_ActPos_mm"),
-        VariableMeta(name="deflector-position"),
-    ]
     relative_position: Annotated[
         RelativePosition,
-        Field(validation_alias="relative_position_dummy"),
-        VariableMeta(name="deflector-relative_position"),
+        VariableMeta(
+            name="deflector-relative_position",
+            display_name="Deflector Position",
+        ),
     ]
     load: Annotated[
         Load,
-        Field(validation_alias="i_ActualLoad_10kg"),
-        VariableMeta(name="deflector-load"),
+        VariableMeta(name="deflector-load", display_name="Deflector Load"),
     ]
-    relief_load: Annotated[
-        Load, Field(validation_alias="i_RelfLoad_10kg"), VariableMeta(ignore=True)
-    ]
-    alarm: Annotated[
-        Alarm, Field(validation_alias="ox_LoadAlarm"), VariableMeta(ignore=True)
+    relief_load: ReliefLoad
+    alarm: Alarm
+
+
+class Feeder(LoadsModel, ABC):
+    load: Annotated[Load, VariableMeta(display_name="Sheet Load")]
+
+
+class Outhaul(LoadsModel, ABC):
+    load: Annotated[Load, VariableMeta(display_name="Outhaul Load")]
+    relative_position: Annotated[
+        RelativePosition, VariableMeta(display_name="Outhaul Position")
     ]
 
 
-class LoadCell(LoadsModel, ABC):
-    load: Annotated[Load, Field(validation_alias="ow_ActLoad_10kg")]
-    relief_load: Annotated[
-        Load,
-        Field(validation_alias="ow_RelfLoad_10kg"),
-        VariableMeta(ignore=True),
+class Preventer(LoadsModel, ABC):
+    load: Annotated[Load, VariableMeta(display_name="Preventer Load")]
+    relative_position: Annotated[
+        RelativePosition, VariableMeta(display_name="Preventer Position")
     ]
-    alarm: Annotated[
-        Alarm, Field(validation_alias="ox_LoadAlarm"), VariableMeta(ignore=True)
+
+
+class Tweaker(LoadsModel, ABC):
+    load: Annotated[Load, VariableMeta(display_name="Tweaker Load")]
+    relative_position: Annotated[
+        RelativePosition, VariableMeta(display_name="Tweaker Relative Position")
     ]
+    relief_load: Annotated[ReliefLoad, VariableMeta(display_name="Tweaker Relief Load")]
 
 
 class Vang(LoadsModel, ABC):
-    load_bottom: Annotated[
-        Load,
-        Field(validation_alias="i_ActualLoadBottom"),
-        VariableMeta(name="load_bottom"),
-    ]
-    load_rod: Annotated[
-        Load, Field(validation_alias="i_ActualLoadRod"), VariableMeta(name="load_rod")
-    ]
-    position: Annotated[Position, Field(validation_alias="ow_ActPos_mm")]
+    load: Annotated[Load, VariableMeta(display_name="Vang Load")]
     relative_position: Annotated[
-        RelativePosition, Field(validation_alias="relative_position_dummy")
+        RelativePosition, VariableMeta(display_name="Vang Position")
     ]
 
 
-class Winch(LoadsModel, ABC):
-    pass
-
-
-class PrimaryWinchPs(LoadCell):
+class PrimaryWinchPs(LoadsModel, ABC):
     TOPIC = "sail-systems/fe212_prmrywnchps"
+    load: Load
 
 
-class PrimaryWinchSb(LoadCell):
+class PrimaryWinchSb(LoadsModel, ABC):
     TOPIC = "sail-systems/fe308_prmrywnchsb"
+    load: Load
 
 
-class MainWinchPsFwd(Winch):
-    TOPIC = "sail-systems/fe209_mnwnchfwdps"
-
-
-class MainWinchSbFwd(Winch):
-    TOPIC = "sail-systems/fe305_mnwnchfwdsb"
-
-
-class MainWinchPsAft(Winch):
-    TOPIC = "sail-systems/fe210_mnwnchaftps"
-
-
-class MainWinchSbAft(Winch):
-    TOPIC = "sail-systems/fe306_mnwnchaftsb"
-
-
-class MizzenWinchSb(Winch):
-    TOPIC = "sail-systems/fe507_mzznwnchsb"
-
-
-class MizzenWinchPs(Winch):
-    TOPIC = "sail-systems/fe407_mzznwnchps"
-
-
-class AftWinchPs(LoadCell):
+class AftWinchPs(LoadsModel, ABC):
     TOPIC = "sail-systems/fe408_aftwnchps"
+    load: Load
 
 
-class AftWinchSb(LoadCell):
+class AftWinchSb(LoadsModel, ABC):
     TOPIC = "sail-systems/fe508_aftwnchsb"
+    load: Load
 
 
-class BladeAdjuster(Cylinder):
+class BladeAdjuster(Adjuster):
     TOPIC = "sail-systems/f0103_bldadjstr"
 
 
-class BladeCunningham(CylinderTwoPositions):
+class BladeCunningham(Cunningham):
     TOPIC = "sail-systems/f0101_bldcnnnghm"
 
 
-class BladeSheetCaptivePs(CaptiveWinch):
-    TOPIC = "sail-systems/fe201_bldshtps"
-
-
-class BladeSheetCaptiveSb(CaptiveWinch):
-    TOPIC = "sail-systems/fe301_bldshtsb"
-
-
-class BladeSheetFeederPs(LoadCell):
+class BladeSheetFeederPs(Feeder):
     TOPIC = "sail-systems/fe202_bldshtfdrps"
 
 
-class BladeSheetFeederSb(LoadCell):
+class BladeSheetFeederSb(Feeder):
     TOPIC = "sail-systems/fe302_bldshtfdrsb"
 
 
-class BladeTweakerPs(Cylinder):
+class BladeTweakerPs(Tweaker):
     TOPIC = "sail-systems/f0206_bldtwkrps"
 
 
-class BladeTweakerSb(Cylinder):
+class BladeTweakerSb(Tweaker):
     TOPIC = "sail-systems/f0207_bldtwkrsb"
 
 
-class CodeZeroTack(CylinderTwoPositions):
+class CodeZeroTack(LoadsModel, ABC):
     TOPIC = "sail-systems/f0102_cdtckcyl"
+    load: Annotated[Load, VariableMeta(display_name="Tack Load")]
+    relative_position: Annotated[
+        RelativePosition, VariableMeta(display_name="Tack Position")
+    ]
 
 
 class HeadsailLocks(LoadsModel, ABC):
@@ -218,7 +177,7 @@ class HeadsailLocks(LoadsModel, ABC):
 class MainCheckstay(Deflector):
     TOPIC = "sail-systems/f0203_mnchckstydflctr"
     load_ps: Annotated[
-        Load, Field(validation_alias="i_ActualLoadPs"), VariableMeta(name="ps-load")
+        Load, Field(validation_alias="i_ActualLoadPs"), VariableMeta(name="ps-load", display_name="Checkstay Ps Load")
     ]
     load_sb: Annotated[
         Load,
@@ -227,12 +186,13 @@ class MainCheckstay(Deflector):
     ]
 
 
-class MainCunningham(Cylinder):
+class MainCunningham(Cunningham):
     TOPIC = "sail-systems/f0205_mncnnnghm"
 
 
-class MainHalyard(CaptiveWinch, LoadCell):
+class MainHalyard(LoadsModel, ABC):
     TOPIC = "sail-systems/fe207_mnhlyrd"
+    load: Load
     lock_full: Annotated[
         Lock,
         Field(validation_alias="ox_IndctHlyrdLckFh_Ext"),
@@ -290,54 +250,58 @@ class MainHalyard(CaptiveWinch, LoadCell):
     ]
 
 
-class MainOuthaul(Cylinder):
+class MainOuthaul(Outhaul):
     TOPIC = "sail-systems/f0201_mnothl"
 
 
-class MainPreventer(Cylinder):
+class MainPreventer(Preventer):
     TOPIC = "sail-systems/f0204_mnbmprvntr"
 
 
-class MainRunnerPs(CaptiveWinch, LoadCell):
+class MainRunnerPs(LoadsModel, ABC):
     TOPIC = "sail-systems/fe401_mnrnnrps"
+    load: Annotated[Load, VariableMeta(display_name="Runner Ps Load")]
 
 
-class MainRunnerSb(CaptiveWinch, LoadCell):
+class MainRunnerSb(LoadsModel, ABC):
     TOPIC = "sail-systems/fe501_mnrnnrsb"
+    load: Annotated[Load, VariableMeta(display_name="Runner Sb Load")]
 
 
-class MainSheet(CaptiveWinch, LoadCell):
+class MainSheet(LoadsModel, ABC):
     TOPIC = "sail-systems/fe205_mnsht"
+    load: Annotated[Load, VariableMeta(display_name="Sheet Load")]
 
 
-class MainVang(Vang, LoadCell):
+class MainVang(Vang, ABC):
     TOPIC = "sail-systems/f0202_mnbmvng"
 
 
 class MainTraveler(LoadsModel, ABC):
     TOPIC = "sail-systems/fe405_mntrvllr"
-    position: Annotated[Position, Field(validation_alias="ow_ActPos_mm")]
+    load: Annotated[Load, VariableMeta(display_name="Traveler Load")]
     relative_position: Annotated[
-        RelativePosition, Field(validation_alias="ow_ActPos_pm")
+        RelativePosition, VariableMeta(display_name="Traveler Position")
     ]
 
 
 class MizzenCheckstay(Deflector):
     TOPIC = "sail-systems/f0503_mzznckstydflctr"
-    load_ps: Annotated[
-        Load, Field(validation_alias="i_ActualLoadPs"), VariableMeta(name="ps-load")
-    ]
-    load_sb: Annotated[
-        Load, Field(validation_alias="i_ActualLoadSb"), VariableMeta(name="sb-load")
-    ]
+    load_ps: Annotated[Load, VariableMeta(name="ps-load", display_name="Ps Load")]
+    load_sb: Annotated[Load, VariableMeta(name="sb-load", display_name="Sb Load")]
 
 
-class MizzenCunningham(Cylinder):
+class MizzenCunningham(LoadsModel, ABC):
     TOPIC = "sail-systems/f0504_mzzncnnnghm"
+    load: Annotated[Load, VariableMeta(display_name="Cunningham Load")]
+    relative_position: Annotated[
+        RelativePosition, VariableMeta(display_name="Cunningham Position")
+    ]
 
 
-class MizzenHalyard(CaptiveWinch, LoadCell):
+class MizzenHalyard(LoadsModel, ABC):
     TOPIC = "sail-systems/fe404_mzznhlyrd"
+    load: Load
     lock_full: Annotated[
         Lock,
         Field(validation_alias="ox_IndctMzznHlyrdLckFh_Ext"),
@@ -392,49 +356,44 @@ class MizzenHeadsailLocks(LoadsModel, ABC):
     ]
 
 
-class MizzenHeadsailTackAdjuster(Cylinder):
+class MizzenHeadsailTackAdjuster(Adjuster):
     TOPIC = "sail-systems/f0402_mzznhdsladjstr"
 
 
-class MizzenOuthaul(Cylinder):
+class MizzenOuthaul(Outhaul):
     TOPIC = "sail-systems/f0501_mzznothl"
 
 
-class MizzenPreventer(Cylinder):
+class MizzenPreventer(Preventer):
     TOPIC = "sail-systems/f0506_mzznbmprvntr"
 
 
-class MizzenRunnerPs(CaptiveWinch, LoadCell):
+class MizzenRunnerPs(LoadsModel, ABC):
     TOPIC = "sail-systems/fe402_mzznrnnrps"
+    load: Annotated[Load, VariableMeta(display_name="Runner Ps Load")]
 
 
-class MizzenRunnerSb(CaptiveWinch, LoadCell):
+class MizzenRunnerSb(LoadsModel, ABC):
     TOPIC = "sail-systems/fe502_mzznrnnrsb"
+    load: Annotated[Load, VariableMeta(display_name="Runner Sb Load")]
 
 
-class MizzenSheet(CaptiveWinch, LoadCell):
+class MizzenSheet(LoadsModel, ABC):
     TOPIC = "sail-systems/fe504_mzznsht"
+    load: Annotated[Load, VariableMeta(display_name="Sheet Load")]
 
 
-class MizzenVang(Vang, LoadCell):
+class MizzenVang(Vang):
     TOPIC = "sail-systems/f0502_mzznbmvng"
 
 
-class StaysailSheetPs(CaptiveWinch):
-    TOPIC = "sail-systems/fe203_styslshtps"
-
-
-class StaysailSheetSb(CaptiveWinch):
-    TOPIC = "sail-systems/fe303_styslshtsb"
-
-
-class StaysailSheetFeederPs(LoadCell):
+class StaysailSheetFeederPs(Feeder, ABC):
     TOPIC = "sail-systems/fe204_styslshtfdrps"
 
 
-class StaysailSheetFeederSb(LoadCell):
+class StaysailSheetFeederSb(Feeder, ABC):
     TOPIC = "sail-systems/fe304_styslshtfdrsb"
 
 
-class StaysailStayAdjuster(Cylinder):
+class StaysailStayAdjuster(Adjuster):
     TOPIC = "sail-systems/f0104_stysladjstr"

@@ -36,7 +36,7 @@ def decakilogram_to_tonne(value: int) -> float:
 
 RelativePosition: TypeAlias = Annotated[
     float,
-    Field(ge=0, le=1),
+    Field(ge=0, le=1, validation_alias="relative_position_dummy"),
     VariableMeta(unit="ratio", name="relative-position"),
     BeforeValidator(per_mille_to_ratio),
     ScalingMeta(
@@ -45,11 +45,13 @@ RelativePosition: TypeAlias = Annotated[
     ),
 ]
 Position: TypeAlias = Annotated[
-    int, Field(ge=0), VariableMeta(unit="mm", name="position")
+    int,
+    Field(ge=0, validation_alias="ow_ActPos_mm"),
+    VariableMeta(unit="mm", name="position"),
 ]
 Load: TypeAlias = Annotated[
     float,
-    Field(ge=0, le=20),  # this should go on the model field
+    Field(ge=0, le=20, validation_alias="ow_ActLoad_10kg"),
     VariableMeta(unit="tonne", name="load"),
     BeforeValidator(decakilogram_to_tonne),
     ScalingMeta(
@@ -57,7 +59,21 @@ Load: TypeAlias = Annotated[
         inverse_conversion=tonne_to_decakilogram,
     ),
 ]
-Alarm: TypeAlias = bool
+ReliefLoad: TypeAlias = Annotated[
+    float,
+    Field(ge=0, le=20, validation_alias="ow_RelfLoad_10kg"),
+    VariableMeta(unit="tonne", name="relief_load", ignore=True),
+    BeforeValidator(decakilogram_to_tonne),
+    ScalingMeta(
+        conversion=decakilogram_to_tonne,
+        inverse_conversion=tonne_to_decakilogram,
+    ),
+]
+Alarm: TypeAlias = Annotated[
+    bool,
+    Field(validation_alias="ox_LoadAlarm"),
+    VariableMeta(unit="bool", name="alarm", ignore=True),
+]
 Lock: TypeAlias = Annotated[bool, VariableMeta(unit="bool")]
 Speed: TypeAlias = Annotated[
     float,
