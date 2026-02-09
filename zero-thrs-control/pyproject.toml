@@ -29,7 +29,6 @@ dependencies = [
     "strawberry-graphql[debug-server,asgi,fastapi] @ git+https://github.com/foundation-zero/strawberry.git@feature/improved-pydantics",
     "fastapi[standard] (>=0.117.1,<0.118.0)",
     "uvicorn (>=0.40.0,<0.41.0)",
-    "asyncclick (>=8.3.0.7,<9.0.0.0)"
 ]
 dynamic = ["version"]
 
