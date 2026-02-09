@@ -17,7 +17,7 @@ class MarpowerRawGenerator:
         """Generate dbt models for the given topics."""
         reduced_topics = self.detect_same_format(topics)
         for topic in reduced_topics:
-            file_name = self._table(topic.topic)
+            file_name = self._table(topic.topic.removeprefix('marpower/'))
             table = self._generate_topic(topic)
             self._write_file(self.table_path, file_name, table)
 
@@ -105,4 +105,4 @@ class MarpowerRawGenerator:
     @staticmethod
     def _with_mqtt(topic: str):
         """Generate the SQL for the MQTT connector."""
-        return f"{{{{ mqtt_with('{topic}') }}}}"
+        return f"{{{{ mqtt_with('{topic.removeprefix("marpower/")}') }}}}"
