@@ -58,7 +58,7 @@ Load: TypeAlias = Annotated[
     ),
 ]
 Alarm: TypeAlias = bool
-Lock: TypeAlias = bool
+Lock: TypeAlias = Annotated[bool, VariableMeta(unit="bool")]
 Speed: TypeAlias = Annotated[
     float,
     Field(ge=0),

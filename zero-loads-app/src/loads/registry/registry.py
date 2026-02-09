@@ -60,7 +60,7 @@ SAIL_SYSTEM_MODELS: list[type[LoadsModel]] = [
     sail_system.BladeSheetFeederSb,
     sail_system.BladeTweakerPs,
     sail_system.BladeTweakerSb,
-    sail_system.CodeSailTack,
+    sail_system.CodeZeroTack,
     sail_system.HeadsailLocks,
     sail_system.MainCheckstay,
     sail_system.MainCunningham,

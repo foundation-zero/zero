@@ -3,7 +3,7 @@ import { gql } from "@urql/vue";
 export const VARIABLE_REFERENCE_VALUES = gql`
   query GetVariableReferenceValues(
     $variables: [ID!]!
-    $sailset: [Sails!]!
+    $sailset: [SailIds!]!
     $awaRange: AwaRange!
     $awsRange: AwsRange!
   ) {

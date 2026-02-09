@@ -169,7 +169,7 @@ class BladeTweakerSb(Cylinder):
     TOPIC = "sail-systems/f0207_bldtwkrsb"
 
 
-class CodeSailTack(CylinderTwoPositions):
+class CodeZeroTack(CylinderTwoPositions):
     TOPIC = "sail-systems/f0102_cdtckcyl"
 
 
@@ -352,11 +352,6 @@ class MizzenHalyard(CaptiveWinch, LoadCell):
         Lock,
         Field(validation_alias="ox_IndctMzznHlyrdLck2_Ext"),
         VariableMeta(name="lock_2"),
-    ]
-    lock_3: Annotated[
-        Lock,
-        Field(validation_alias="ox_IndctMzznHlyrdLck3_Ext"),
-        VariableMeta(name="lock_3"),
     ]
     overhoist_full: Annotated[
         Lock,

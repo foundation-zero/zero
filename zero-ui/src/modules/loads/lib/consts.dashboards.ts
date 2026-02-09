@@ -44,13 +44,13 @@ export const MAIN_SAIL_GROUP = group(
 
 export const MAIN_LOCKS_GROUP = group(
   "Locks",
-  "main-halyard-full-lock",
-  "main-halyard-reef-1-lock",
-  "main-halyard-reef-2-lock",
-  "main-halyard-reef-3-lock",
-  "main-boom-reef-1-lock",
-  "main-boom-reef-2-lock",
-  "main-boom-reef-3-lock",
+  "main-halyard-lock-full",
+  "main-halyard-lock-1",
+  "main-halyard-lock-2",
+  "main-halyard-lock-3",
+  "main-halyard-boom-lock-1",
+  "main-halyard-boom-lock-2",
+  "main-halyard-boom-lock-3",
 );
 
 export const MIZZEN_RIG_GROUP = group(
@@ -76,11 +76,11 @@ export const MIZZEN_SAIL_GROUP = group(
 
 export const MIZZEN_LOCKS_GROUP = group(
   "Locks",
-  "mizzen-halyard-full-lock",
-  "mizzen-halyard-reef-1-lock",
-  "mizzen-halyard-reef-2-lock",
-  "mizzen-boom-reef-1-lock",
-  "mizzen-boom-reef-2-lock",
+  "mizzen-halyard-lock-full",
+  "mizzen-halyard-lock-1",
+  "mizzen-halyard-lock-2",
+  "mizzen-halyard-boom-lock-1",
+  "mizzen-halyard-boom-lock-2",
 );
 
 export const MIZZEN_JIB_GROUP = group(
@@ -97,7 +97,7 @@ export const MIZZEN_STAYSAIL_GROUP = group(
   "mizzen-headsail-tack-adjuster-relative-position",
 );
 
-export const MIZZEN_HEADSAIL_LOCKS_GROUP = group("Locks", "mizzen-headsail-lock");
+export const MIZZEN_HEADSAIL_LOCKS_GROUP = group("Locks", "mizzen-headsail-locks-lock");
 
 export const TRISAIL_GROUP = group(
   "Trisail",
@@ -115,9 +115,9 @@ export const TRISAIL_GROUP = group(
 
 export const TRISAIL_LOCKS_GROUP = group(
   "Locks",
-  "main-halyard-full-lock",
-  "main-halyard-reef-3-lock",
-  "main-boom-reef-3-lock",
+  "main-halyard-lock-full",
+  "main-halyard-lock-3",
+  "main-halyard-boom-lock-3",
 );
 
 export const BLADE_SAIL_GROUP = group(
@@ -148,7 +148,7 @@ export const OUTBOARD_LEAD_GROUP = group(
   "primary-winch-sb-load",
 );
 
-export const STAYSAIL_LOCKS_GROUP = group("Locks", "staysail-lock");
+export const STAYSAIL_LOCKS_GROUP = group("Locks", "headsail-locks-lock-staysail");
 
 export const CODE_ZERO_GROUP = group(
   "Code Zero",
@@ -158,14 +158,14 @@ export const CODE_ZERO_GROUP = group(
   "primary-winch-sb-load",
 );
 
-export const CODE_ZERO_LOCKS_GROUP = group("Locks", "code-zero-lock");
+export const CODE_ZERO_LOCKS_GROUP = group("Locks", "headsail-locks-lock-a3c0");
 
 export const A2_GROUP = group("A2", "primary-winch-ps-load", "primary-winch-sb-load");
 
-export const A2_LOCKS_GROUP = group("Locks", "a2-lock");
+export const A2_LOCKS_GROUP = group("Locks", "headsail-locks-lock-a2");
 export const STORM_JIB_GROUP = group("Storm Jib", "primary-winch-ps-load", "primary-winch-sb-load");
 
-export const STORM_JIB_LOCKS_GROUP = group("Locks", "storm-jib-lock");
+export const STORM_JIB_LOCKS_GROUP = group("Locks", "headsail-locks-lock-stormjib");
 
 export const OVERVIEW = dashboard(
   SailId.None,
