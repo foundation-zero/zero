@@ -7,10 +7,8 @@ from typing import Any, Callable, Coroutine
 from aiomqtt import Client as MqttClient
 from aiomqtt import Message
 
-from loads.registry import MessagingModule, VariableDefinition
+from loads.registry import AlarmDefinition, MessagingModule, VariableDefinition
 from loads.sensors import LoadsModel
-
-from .types import ActualType
 
 logger = logging.getLogger(__name__)
 
@@ -21,7 +19,6 @@ class MessageReceiver[T: LoadsModel]:
     def __init__(self, cls: type[T], topic: str):
         self._cls = cls
         self._last: T | None = None
-        self._waiting = False
         self._msgs = asyncio.Queue[T]()
         self._topic = topic
 
@@ -29,30 +26,8 @@ class MessageReceiver[T: LoadsModel]:
     def last(self) -> T | None:
         return self._last
 
-    def wait_for(
-        self, condition: Callable[[T], bool], timeout: float
-    ) -> Coroutine[None, None, T]:
-        # Waiting is done a bit awkwardly to ensure self._waiting is True directly after the call
-        # Otherwise we might miss message if those arrive right after calling this function
-        # and before asyncio ran `self._waiting = True`
-        self._waiting = True
-
-        async def _wait():
-            async with asyncio.timeout(timeout):
-                try:
-                    while True:
-                        msg = await self._msgs.get()
-                        if condition(msg):
-                            return msg
-                finally:
-                    self._waiting = False
-
-        return _wait()
-
     async def handle(self, msg: T):
         self._last = msg
-        if self._waiting:
-            await self._msgs.put(msg)
 
     @property
     def cls(self):
@@ -71,10 +46,12 @@ class Messaging:
         mqtt_client: MqttClient,
         modules: list[MessagingModule],
         variable_definitions: dict[str, VariableDefinition],
+        alarm_definitions: dict[str, AlarmDefinition],
     ):
         self._mqtt_client = mqtt_client
         self._modules = modules
         self._variable_definitions = variable_definitions
+        self._alarm_definitions = alarm_definitions
         self._receivers: dict[str, MessageReceiver] = {
             topic: MessageReceiver(cls=model, topic=topic)
             for module in self._modules
@@ -105,25 +82,40 @@ class Messaging:
             raise ValueError(f"Expected string or bytes, got {type(message.payload)}")
         return model.parse_message_payload(message.payload)
 
-    def get_values_for(self, variable_ids: list[str]) -> list[ActualType]:
-        results: list[ActualType] = []
-        for variable_id in variable_ids:
-            if variable := self._variable_definitions.get(variable_id):
-                receiver = self._receivers[variable.topic]
+    def get_variable_value(self, variable_id: str) -> float | None:
+        if variable := self._variable_definitions.get(variable_id):
+            receiver = self._receivers[variable.topic]
 
-                if receiver.last is None:
-                    continue
+            if receiver.last is None:
+                return None
 
-                results.append(
-                    ActualType(
-                        id=variable_id,
-                        value=variable.get_actual(receiver.last),
-                    )
-                )
-            else:
-                raise ValueError(f"{variable_id} is not defined.")
+            return variable.get_actual(receiver.last)
+        else:
+            raise ValueError(f"Variable {variable_id} is not defined.")
 
-        return results
+    def _get_alarm_value[T](
+        self,
+        alarm_id: str,
+        value: Callable[[AlarmDefinition], Callable[[LoadsModel], T]],
+    ) -> T | None:
+        if alarm := self._alarm_definitions.get(alarm_id):
+            receiver = self._receivers[alarm.topic]
+
+            if receiver.last is None:
+                return None
+
+            return value(alarm)(receiver.last)
+        else:
+            raise ValueError(f"Alarm {alarm_id} is not defined.")
+
+    def get_alarm_active_for(self, alarm_id: str) -> bool | None:
+        return self._get_alarm_value(alarm_id, lambda alarm: alarm.get_active)
+
+    def get_alarm_actual_for(self, alarm_id: str) -> float | None:
+        return self._get_alarm_value(alarm_id, lambda alarm: alarm.get_actual)
+
+    def get_alarm_threshold_for(self, alarm_id: str) -> float | None:
+        return self._get_alarm_value(alarm_id, lambda alarm: alarm.get_threshold)
 
     def get_variable_definition(self, variable: str) -> VariableDefinition | None:
         return self._variable_definitions.get(variable)

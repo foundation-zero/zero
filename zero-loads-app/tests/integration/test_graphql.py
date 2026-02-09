@@ -6,7 +6,6 @@ from httpx import ASGITransport, AsyncClient
 
 from loads.api import app
 from loads.api.api import get_messaging
-from loads.api.types import ActualType
 from loads.registry.registry import VARIABLES
 from loads.sensors.at import ApparentWindSpeed
 from loads.sensors.sail_system import PrimaryWinchPs
@@ -15,11 +14,7 @@ from loads.sensors.sail_system import PrimaryWinchPs
 def override_messaging():
     mock = Mock()
 
-    mock.get_values_for = Mock(
-        return_value=[
-            ActualType(id="main-runner-ps-load", value=42.0),
-        ]
-    )
+    mock.get_variable_value = Mock(return_value=42.0)
 
     return mock
 
@@ -324,6 +319,100 @@ async def test_sail_system_actual(async_client: AsyncClient, mqtt_client_send):
                         "id": "primary-winch-ps-load",
                         "value": 4.2,
                     },
+                },
+            ]
+        }
+    }
+
+
+@pytest.mark.asyncio
+async def test_alarms(async_client: AsyncClient, mqtt_client_send):
+    await mqtt_client_send.publish(
+        PrimaryWinchPs.TOPIC,
+        """{
+            "ow_ActLoad_10kg": 420,
+            "ow_RelfLoad_10kg": 400,
+            "ox_LoadAlarm": true
+        }""",
+    )
+    response = await async_client.post(
+        "/graphql",
+        json={
+            "query": """
+            query {
+                alarms(alarms: ["primary-winch-ps-alarm"]) {
+                    id
+                    thresholdValue
+                    actualValue
+                    active
+                    actual {
+                        id
+                        variable {
+                            unit
+                        }
+                    }
+                }
+            }
+            """
+        },
+    )
+
+    assert response.status_code == 200
+    assert response.json() == {
+        "data": {
+            "alarms": [
+                {
+                    "id": "primary-winch-ps-alarm",
+                    "active": True,
+                    "thresholdValue": 4.0,
+                    "actualValue": 4.2,
+                    "actual": {
+                        "id": "primary-winch-ps-load",
+                        "variable": {
+                            "unit": "tonne",
+                        },
+                    },
+                },
+            ]
+        }
+    }
+
+
+@pytest.mark.asyncio
+async def test_active_alarms(async_client: AsyncClient, mqtt_client_send):
+    await mqtt_client_send.publish(
+        PrimaryWinchPs.TOPIC,
+        """{
+            "ow_ActLoad_10kg": 420,
+            "ow_RelfLoad_10kg": 400,
+            "ox_LoadAlarm": true
+        }""",
+    )
+    response = await async_client.post(
+        "/graphql",
+        json={
+            "query": """
+            query {
+                alarms(active: true) {
+                    id
+                    thresholdValue
+                    actualValue
+                    active
+                }
+            }
+            """
+        },
+    )
+
+    assert response.status_code == 200
+    assert response.json() == {
+        "data": {
+            "alarms": [
+                {
+                    "id": "primary-winch-ps-alarm",
+                    "active": True,
+                    "thresholdValue": 4.0,
+                    "actualValue": 4.2,
                 },
             ]
         }

@@ -59,9 +59,9 @@ export const MIZZEN_MAST_GROUP = group(
   "Mizzen mast",
   "mizzen-runner-ps-load",
   "mizzen-runner-sb-load",
-  "mizzen-checkstay-ps-load",
-  "mizzen-checkstay-sb-load",
-  "mizzen-checkstay-deflector-load",
+  "mizzen-checkstay-deflector-load-ps",
+  "mizzen-checkstay-deflector-load-sb",
+  "mizzen-checkstay-deflector-load-deflector",
   "mizzen-checkstay-deflector-relative-position",
 );
 
@@ -127,7 +127,7 @@ export const BLADE_SAIL_GROUP = group(
   "blade-adjuster-load",
   "blade-adjuster-relative-position",
   "blade-cunningham-load",
-  "blade-cunningham-relative-position",
+  "blade-cunningham-relative-position-1",
   "blade-sheet-feeder-ps-load",
   "blade-tweaker-ps-load",
   "blade-tweaker-ps-relative-position",
@@ -154,8 +154,8 @@ export const STAYSAIL_LOCKS_GROUP = group("Locks", "headsail-locks-lock-staysail
 
 export const CODE_ZERO_GROUP = group(
   "Code Zero",
-  "code-zero-tack-load",
-  "code-zero-tack-relative-position",
+  "code-sail-tack-load",
+  "code-sail-tack-relative-position-1",
   "primary-winch-ps-load",
   "primary-winch-sb-load",
 );

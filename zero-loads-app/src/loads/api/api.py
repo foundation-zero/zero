@@ -2,22 +2,23 @@ import logging
 import sys
 from asyncio import Task, create_task
 from contextlib import asynccontextmanager
-from dataclasses import dataclass
 from itertools import groupby
 from typing import Annotated, Sequence
 
 import strawberry
 from aiomqtt import Client as MqttClient
 from fastapi import Depends, FastAPI
-from sqlalchemy.ext.asyncio import AsyncSession
 from strawberry.dataloader import DataLoader
-from strawberry.fastapi import BaseContext, GraphQLRouter
+from strawberry.fastapi import GraphQLRouter
 
 from loads.config import settings
-from loads.registry import VARIABLES, at_sensors, sail_system_sensors
+from loads.registry import ALARMS, VARIABLES, at_sensors, sail_system_sensors
 
 from .db import SessionManager
 from .messaging import Messaging
+from .model import (
+    get_alarms as model_get_alarms,
+)
 from .model import (
     get_loads_reference_values,
     get_sails,
@@ -27,13 +28,15 @@ from .model import (
     get_variables as model_get_variables,
 )
 from .types import (
-    ActualType,
+    AlarmType,
     AwaRange,
     AwsRange,
     CaseInput,
+    LoadsContext,
     ReferenceValue,
     ReferenceValueInput,
     SailType,
+    Variable,
     VariableType,
 )
 
@@ -51,6 +54,7 @@ async def lifespan(app: FastAPI):
             mqtt_client=mqtt,
             modules=[sail_system_sensors, at_sensors],
             variable_definitions=VARIABLES,
+            alarm_definitions=ALARMS,
         )
         run_task = create_task(await messaging.run())
 
@@ -75,28 +79,6 @@ async def get_db_session():
 
 def get_messaging() -> Messaging:
     return app.state.messaging
-
-
-@dataclass
-class LoadsContext(BaseContext):
-    messaging: Messaging
-    sessionmanager: SessionManager
-    actuals_loader: DataLoader[str, ActualType]
-    references_loader: DataLoader[
-        tuple[strawberry.ID, CaseInput], ReferenceValue | None
-    ]
-    variables_loader: DataLoader[str, VariableType | None]
-
-
-async def get_actuals(
-    variables: Sequence[str], context: LoadsContext
-) -> list[ActualType | None]:
-    values = context.messaging.get_values_for(list(variables))
-    result: list[ActualType | None] = [None] * len(variables)
-    for value in values:
-        index = variables.index(value.id)
-        result[index] = value
-    return result
 
 
 async def get_reference_values(
@@ -133,15 +115,10 @@ async def get_variables(
 
 async def get_context(
     messaging: Annotated[Messaging, Depends(get_messaging)],
-    session: Annotated[AsyncSession, Depends(get_db_session)],
 ) -> LoadsContext:
     context = LoadsContext(
         messaging=messaging,
         sessionmanager=sessionmanager,
-        actuals_loader=DataLoader(
-            load_fn=lambda keys: get_actuals(keys, context),  # type: ignore
-            cache=False,
-        ),
         references_loader=DataLoader(
             load_fn=lambda keys: get_reference_values(keys, context),  # type: ignore
             cache=False,
@@ -153,29 +130,6 @@ async def get_context(
     )
 
     return context
-
-
-@strawberry.type
-class Variable:
-    id: strawberry.ID
-
-    @strawberry.field
-    async def actual(self, info: strawberry.Info[LoadsContext]) -> ActualType | None:
-        return await info.context.actuals_loader.load(self.id)
-
-    @strawberry.field
-    async def variable(
-        self, info: strawberry.Info[LoadsContext]
-    ) -> VariableType | None:
-        return await info.context.variables_loader.load(self.id)
-
-    @strawberry.field
-    async def reference(
-        self,
-        info: strawberry.Info[LoadsContext],
-        case: CaseInput,
-    ) -> ReferenceValue | None:
-        return await info.context.references_loader.load((self.id, case))
 
 
 @strawberry.type
@@ -197,6 +151,22 @@ class Query:
     ) -> list[SailType]:
         async with info.context.sessionmanager.session() as session:
             return await get_sails(sails, session)
+
+    @strawberry.field
+    async def alarms(
+        self,
+        info: strawberry.Info[LoadsContext],
+        alarms: list[strawberry.ID] | None = None,
+        active: Annotated[
+            bool | None, strawberry.argument(description="Filter by active state")
+        ] = None,
+    ) -> list[AlarmType]:
+        if alarms is None:
+            alarms = [strawberry.ID(alarm_id) for alarm_id in ALARMS.keys()]
+        valid_alarms = model_get_alarms([str(alarm_id) for alarm_id in alarms])
+        if active is not None:
+            return [alarm for alarm in valid_alarms if alarm.active(info) == active]  # type: ignore[arg-type]
+        return valid_alarms
 
 
 @strawberry.type

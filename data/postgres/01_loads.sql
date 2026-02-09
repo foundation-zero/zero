@@ -2,9 +2,6 @@ CREATE EXTENSION IF NOT EXISTS btree_gist;
 
 CREATE SCHEMA IF NOT EXISTS loads;
 
-DROP TYPE IF EXISTS unit CASCADE;
-CREATE TYPE unit AS ENUM ('tonne', 'ratio', 'bool');
-
 
 DROP TABLE IF EXISTS loads.sail_positions CASCADE;
 CREATE TABLE loads.sail_positions (

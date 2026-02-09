@@ -20,6 +20,17 @@ class VariableDefinition:
     scale_max_label: str | None
 
 
+@dataclass
+class AlarmDefinition:
+    id: str
+    name: str
+    topic: str
+    get_active: Callable[[LoadsModel], bool | None]
+    get_actual: Callable[[LoadsModel], float | None]
+    get_threshold: Callable[[LoadsModel], float | None]
+    actual_definition: VariableDefinition
+
+
 def _build_sail_system_variable_definitions(
     model: type[LoadsModel],
 ) -> list[VariableDefinition]:
@@ -40,8 +51,44 @@ def _build_sail_system_variable_definitions(
             scale_max_label=variable_meta.scale_max_label,
         )
         for field, field_info in model.model_fields.items()
-        if (variable_meta := model.extract_variable_meta(field_info.metadata))
-        and not variable_meta.ignore
+        if (variable_meta := model.extract_variable_meta(field, field_info.metadata))
+        and variable_meta.type == "actual"
+    ]
+
+
+def _lookup_variable_definition_by_id(
+    variable_definitions: list[VariableDefinition], id: str
+) -> VariableDefinition:
+    try:
+        return next((vd for vd in variable_definitions if vd.id == id))
+    except StopIteration:
+        raise ValueError(f"No variable definition found for id: {id}")
+
+
+def _build_sail_system_alarm_definitions(
+    model: type[LoadsModel],
+    variable_definitions: list[VariableDefinition],
+) -> list[AlarmDefinition]:
+    function_id = camel_to_kebab(model.__name__)
+
+    return [
+        AlarmDefinition(
+            id=f"{function_id}-alarm",
+            name=model.field_display_name(field, field_info.metadata),
+            topic=model.TOPIC,
+            get_active=partial(
+                lambda field, model_instance: getattr(model_instance, field), field
+            ),
+            get_actual=lambda model_instance: model_instance.load,  # type: ignore[attr-defined]
+            get_threshold=lambda model_instance: model_instance.relief_load,  # type: ignore[attr-defined]
+            actual_definition=_lookup_variable_definition_by_id(
+                variable_definitions,
+                f"{function_id}-{variable_meta.alarm_for_field}",
+            ),
+        )
+        for field, field_info in model.model_fields.items()
+        if (variable_meta := model.extract_variable_meta(field, field_info.metadata))
+        and variable_meta.type == "alarm"
     ]
 
 
@@ -97,7 +144,7 @@ _SAIL_SYSTEM_VARIABLES: dict[str, VariableDefinition] = {
 
 def _build_at_variable_definitions(model: type[LoadsModel]) -> VariableDefinition:
     field_info = model.model_fields["value"]
-    variable_meta = model.extract_variable_meta(field_info.metadata)
+    variable_meta = model.extract_variable_meta("value", field_info.metadata)
 
     if not variable_meta or not variable_meta.name or not variable_meta.unit:
         raise ValueError(f"No valid VariableMeta found for A+T model {model.__name__}")
@@ -122,3 +169,11 @@ _AT_VARIABLES: dict[str, VariableDefinition] = {
 }
 
 VARIABLES = {**_SAIL_SYSTEM_VARIABLES, **_AT_VARIABLES}
+ALARMS = {
+    alarm.id: alarm
+    for model in SAIL_SYSTEM_MODELS
+    for alarm in _build_sail_system_alarm_definitions(
+        model,
+        list(VARIABLES.values()),
+    )
+}
