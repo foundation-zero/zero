@@ -38,7 +38,7 @@ class SailIds(Enum):
     main_reef2 = "main-reef2"
     main_reef3 = "main-reef3"
     trisail = "trisail"
-    utility = "utility"
+    utility = "utility-main"
     full_mizzen = "full-mizzen"
     mizzen_reef1 = "mizzen-reef1"
     mizzen_reef2 = "mizzen-reef2"

@@ -6,7 +6,7 @@ from httpx import ASGITransport, AsyncClient
 
 from loads.api import app
 from loads.api.api import get_messaging
-from loads.api.types import ActualType
+from loads.api.types import ActualType, SailIds
 from loads.registry.registry import VARIABLES
 from loads.sensors.at import ApparentWindSpeed
 from loads.sensors.sail_system import PrimaryWinchPs
@@ -354,3 +354,63 @@ async def test_at_sensors(async_client: AsyncClient, mqtt_client_send):
             ]
         }
     }
+
+
+@pytest.mark.asyncio
+async def test_sails(async_client: AsyncClient, override_dependency):
+    with override_dependency(get_messaging, override_messaging):
+        response = await async_client.post(
+            "/graphql",
+            json={
+                "query": """
+                query {
+                    sails {
+                        id
+                        abbreviation
+                        positionId
+                        name
+                        variantName
+                    }
+                }
+                """
+            },
+        )
+
+        assert response.status_code == 200
+        assert len(response.json()["data"]["sails"]) == len(SailIds)
+
+
+@pytest.mark.asyncio
+async def test_sails_single(async_client: AsyncClient, override_dependency):
+    with override_dependency(get_messaging, override_messaging):
+        response = await async_client.post(
+            "/graphql",
+            json={
+                "query": """
+                query {
+                    sails(sails: ["full-main"]) {
+                        id
+                        abbreviation
+                        variantName
+                        name
+                        positionId
+                    }
+                }
+                """
+            },
+        )
+
+        assert response.status_code == 200
+        assert response.json() == {
+            "data": {
+                "sails": [
+                    {
+                        "id": "full-main",
+                        "abbreviation": "FM",
+                        "positionId": "main",
+                        "name": "Full Main",
+                        "variantName": "Full",
+                    }
+                ]
+            }
+        }

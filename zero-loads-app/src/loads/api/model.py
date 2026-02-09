@@ -156,6 +156,7 @@ async def set_loads_reference_values(
 #         logger.info(f"No variables found for ids: {ids}")
 #         return []
 
+
 async def get_variables(ids: Sequence[str]) -> list[VariableType]:
     variables: list[VariableDefinition] = [
         VARIABLES[id] for id in ids if id in VARIABLES
@@ -197,6 +198,7 @@ async def get_sails(ids: Sequence[str], session: AsyncSession) -> list[SailType]
     else:
         logger.info(f"No sails found for ids: {ids}")
         return []
+
 
 def create_sail_set_subq(sailset: list[SailIds]) -> ScalarSelect[int]:
     """Create subquery that returns the sail set that exactly matches the current sails."""
