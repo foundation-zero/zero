@@ -41,7 +41,7 @@ def decakilogram_to_tonne(value: int) -> float:
 RelativePosition: TypeAlias = Annotated[
     float,
     Field(ge=0, le=1, validation_alias="relative_position_dummy"),
-    VariableMeta(unit="ratio", name="relative-position"),
+    VariableMeta(unit="ratio", name="relative-position", scale_min=0, scale_max=1),
     BeforeValidator(per_mille_to_ratio),
     ScalingMeta(
         conversion=per_mille_to_ratio,
@@ -51,12 +51,12 @@ RelativePosition: TypeAlias = Annotated[
 Position: TypeAlias = Annotated[
     int,
     Field(ge=0, validation_alias="ow_ActPos_mm"),
-    VariableMeta(unit="mm", name="position"),
+    VariableMeta(unit="mm", name="position", scale_min=0, scale_max=100),
 ]
 Load: TypeAlias = Annotated[
     float,
     Field(ge=0, le=20, validation_alias="ow_ActLoad_10kg"),
-    VariableMeta(unit="tonne", name="load"),
+    VariableMeta(unit="tonne", name="load", scale_min=0, scale_max=20),
     BeforeValidator(decakilogram_to_tonne),
     ScalingMeta(
         conversion=decakilogram_to_tonne,

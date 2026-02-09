@@ -143,8 +143,10 @@ async def get_variables(ids: Sequence[str]) -> list[VariableType]:
                 id=ID(var.id),
                 name=var.name,
                 unit=Unit(var.unit) if var.unit else None,
-                minimum=var.minimum,
-                maximum=var.maximum,
+                scale_min=var.scale_min,
+                scale_max=var.scale_max,
+                scale_min_label=var.scale_min_label,
+                scale_max_label=var.scale_max_label,
             )
             for var in variables
         ]

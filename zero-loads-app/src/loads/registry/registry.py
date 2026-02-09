@@ -14,8 +14,10 @@ class VariableDefinition:
     topic: str
     get_actual: Callable[[LoadsModel], float | None]
     unit: str
-    minimum: float | None
-    maximum: float | None
+    scale_min: float | None
+    scale_max: float | None
+    scale_min_label: str | None
+    scale_max_label: str | None
 
 
 def _build_sail_system_variable_definitions(
@@ -32,8 +34,10 @@ def _build_sail_system_variable_definitions(
                 lambda field, model_instance: getattr(model_instance, field), field
             ),
             unit=cast(str, variable_meta.unit),
-            minimum=model.extract_minimum(field_info.metadata),
-            maximum=model.extract_maximum(field_info.metadata),
+            scale_min=variable_meta.scale_min,
+            scale_max=variable_meta.scale_max,
+            scale_min_label=variable_meta.scale_min_label,
+            scale_max_label=variable_meta.scale_max_label,
         )
         for field, field_info in model.model_fields.items()
         if (variable_meta := model.extract_variable_meta(field_info.metadata))
@@ -101,8 +105,10 @@ def _build_at_variable_definitions(model: type[LoadsModel]) -> VariableDefinitio
         topic=model.TOPIC,
         get_actual=lambda model_instance: model_instance.value,  # type: ignore[attr-defined]
         unit=variable_meta.unit,
-        minimum=model.extract_minimum(field_info.metadata),
-        maximum=model.extract_maximum(field_info.metadata),
+        scale_min=variable_meta.scale_min,
+        scale_max=variable_meta.scale_max,
+        scale_min_label=variable_meta.scale_min_label,
+        scale_max_label=variable_meta.scale_max_label,
     )
 
 

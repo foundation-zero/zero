@@ -268,4 +268,30 @@ SELECT
     .8
 FROM loads.load_cases
 JOIN loads.awa_ranges AS awa_range ON load_cases.awa_range_id = awa_range.id
-WHERE awa_range.id = 'upwind'
+WHERE awa_range.id = 'upwind';
+
+INSERT INTO loads.reference_values (variable_id, load_case_id, alarm_low, warning_low, target, warning_high, alarm_high)
+SELECT
+    'main-checkstay-deflector-relative-position',
+    load_cases.id,
+    NULL,
+    NULL,
+    .5,
+    NULL,
+    .8
+FROM loads.load_cases
+JOIN loads.awa_ranges AS awa_range ON load_cases.awa_range_id = awa_range.id
+WHERE awa_range.id = 'upwind';
+
+INSERT INTO loads.reference_values (variable_id, load_case_id, alarm_low, warning_low, target, warning_high, alarm_high)
+SELECT
+    'main-checkstay-deflector-relative-position',
+    load_cases.id,
+    NULL,
+    NULL,
+    .2,
+    NULL,
+    .8
+FROM loads.load_cases
+JOIN loads.awa_ranges AS awa_range ON load_cases.awa_range_id = awa_range.id
+WHERE awa_range.id = 'reaching';

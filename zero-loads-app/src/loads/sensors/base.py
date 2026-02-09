@@ -114,6 +114,10 @@ class LoadsModel(BaseModel):
                     name=b.name or a.name,
                     ignore=b.ignore or a.ignore,
                     display_name=b.display_name or a.display_name,
+                    scale_min=b.scale_min or a.scale_min,
+                    scale_max=b.scale_max or a.scale_max,
+                    scale_min_label=b.scale_min_label or a.scale_min_label,
+                    scale_max_label=b.scale_max_label or a.scale_max_label,
                 ),
                 variable_metas,
             )

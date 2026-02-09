@@ -27,8 +27,10 @@ export const VARIABLE_DEFINITIONS = gql`
       variable {
         name
         unit
-        minimum
-        maximum
+        scaleMin
+        scaleMax
+        scaleMinLabel
+        scaleMaxLabel
       }
     }
   }

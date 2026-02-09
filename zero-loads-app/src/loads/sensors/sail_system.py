@@ -87,7 +87,7 @@ class Vang(LoadsModel, ABC):
         Load,
         VariableMeta(
             display_name="vang load",
-            scale_min=10,
+            scale_min=-10,
             scale_max=10,
             scale_min_label="push",
             scale_max_label="pull",
@@ -329,8 +329,8 @@ class MainTraveller(LoadsModel, ABC):
             display_name="traveller position",
             scale_min=-1,
             scale_max=1,
-            scale_min_label="Ps",
-            scale_max_label="Sb",
+            scale_min_label="ps",
+            scale_max_label="sb",
         ),
     ]
 
