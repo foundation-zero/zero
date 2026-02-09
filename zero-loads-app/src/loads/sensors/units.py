@@ -10,6 +10,10 @@ class VariableMeta:
     name: str | None = None
     display_name: str | None = None
     ignore: bool = False
+    scale_min: float | None = None
+    scale_max: float | None = None
+    scale_min_label: str | None = None
+    scale_max_label: str | None = None
 
 
 @dataclass

@@ -28,12 +28,13 @@ export const MAIN_RIG_GROUP = group(
   "main-checkstay-ps-load",
   "main-checkstay-sb-load",
   "main-checkstay-deflector-load",
+  "main-checkstay-deflector-relative-position",
 );
 
 export const MAIN_SAIL_GROUP = group(
   "Main sail",
   "main-sheet-load",
-  "main-traveler-relative-position",
+  "main-traveller-relative-position",
   "main-vang-relative-position",
   "main-vang-load",
   "main-cunningham-load",
@@ -102,7 +103,7 @@ export const MIZZEN_HEADSAIL_LOCKS_GROUP = group("Locks", "mizzen-headsail-locks
 export const TRISAIL_GROUP = group(
   "Trisail",
   "main-sheet-load",
-  "main-traveler-relative-position",
+  "main-traveller-relative-position",
   "main-vang-relative-position",
   "main-vang-load",
   "main-outhaul-load",
@@ -121,7 +122,7 @@ export const TRISAIL_LOCKS_GROUP = group(
 );
 
 export const BLADE_SAIL_GROUP = group(
-  "Blade sail",
+  "Blade",
   "blade-adjuster-load",
   "blade-adjuster-relative-position",
   "blade-cunningham-load",
@@ -233,7 +234,7 @@ export const MIZZEN_JIB = dashboard(
   SailId.MizzenJib,
   MIZZEN_RIG_GROUP,
   MIZZEN_JIB_GROUP,
-  group("Main", "main-traveler-relative-position", "main-preventer-load"),
+  group("Main", "main-traveller-relative-position", "main-preventer-load"),
   MIZZEN_HEADSAIL_LOCKS_GROUP,
 );
 

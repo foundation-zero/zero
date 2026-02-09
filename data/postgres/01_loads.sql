@@ -208,9 +208,9 @@ SELECT
     load_cases.id,
     0.0,
     3.0,
-    10.0,
-    15.0,
-    32.0
+    6.0,
+    8.0,
+    10.0
 FROM loads.load_cases
 JOIN loads.awa_ranges AS awa_range ON load_cases.awa_range_id = awa_range.id
 WHERE awa_range.id = 'upwind';

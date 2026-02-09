@@ -62,7 +62,7 @@ SAIL_SYSTEM_MODELS: list[type[LoadsModel]] = [
     sail_system.MainRunnerSb,
     sail_system.MainRunnerPs,
     sail_system.MainSheet,
-    sail_system.MainTraveler,
+    sail_system.MainTraveller,
     sail_system.MainVang,
     sail_system.MizzenCheckstay,
     sail_system.MizzenCunningham,
