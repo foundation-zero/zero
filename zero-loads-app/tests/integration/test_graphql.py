@@ -342,6 +342,7 @@ async def test_alarms(async_client: AsyncClient, mqtt_client_send):
             query {
                 alarms(alarms: ["primary-winch-ps-alarm"]) {
                     id
+                    name
                     thresholdValue
                     actualValue
                     active
@@ -363,6 +364,7 @@ async def test_alarms(async_client: AsyncClient, mqtt_client_send):
             "alarms": [
                 {
                     "id": "primary-winch-ps-alarm",
+                    "name": "Primary Winch Ps Alarm",
                     "active": True,
                     "thresholdValue": 4.0,
                     "actualValue": 4.2,

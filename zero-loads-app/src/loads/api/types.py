@@ -115,6 +115,7 @@ class SailType:
 @strawberry.type
 class AlarmType:
     id: str
+    name: str
     actual_variable_id: strawberry.Private[strawberry.ID]
 
     @strawberry.field

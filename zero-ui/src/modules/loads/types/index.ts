@@ -106,3 +106,16 @@ export type MastLock = {
 export type SailSelection = Record<PositionId, SailId | null>;
 
 export type MastLockState = boolean | "error";
+
+export type Alarm = {
+  id: string;
+  name: string;
+  active: boolean | null;
+  actualValue: number | null;
+  thresholdValue: number | null;
+  actual: {
+    variable: {
+      unit: VariableUnit;
+    };
+  };
+};
