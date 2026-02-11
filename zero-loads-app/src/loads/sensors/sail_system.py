@@ -43,13 +43,21 @@ class CylinderTwoPositions(LoadsModel, ABC):
 
 
 class Deflector(LoadsModel, ABC):
-    position: Annotated[Position, Field(validation_alias="ow_ActPos_mm")]
-    relative_position: Annotated[
-        RelativePosition, Field(validation_alias="relative_position_dummy")
+    position: Annotated[
+        Position,
+        Field(validation_alias="ow_ActPos_mm"),
+        VariableMeta(name="deflector-position"),
     ]
-    load_deflector: Annotated[Load, Field(validation_alias="i_ActualLoad_10kg")]
-    load_ps: Annotated[Load, Field(validation_alias="i_ActualLoadPs")]
-    load_sb: Annotated[Load, Field(validation_alias="i_ActualLoadSb")]
+    relative_position: Annotated[
+        RelativePosition,
+        Field(validation_alias="relative_position_dummy"),
+        VariableMeta(name="deflector-relative_position"),
+    ]
+    load: Annotated[
+        Load,
+        Field(validation_alias="i_ActualLoad_10kg"),
+        VariableMeta(name="deflector-load"),
+    ]
     relief_load: Annotated[
         Load, Field(validation_alias="i_RelfLoad_10kg"), VariableMeta(ignore=True)
     ]
@@ -207,8 +215,16 @@ class HeadsailLocks(LoadsModel, ABC):
     ]
 
 
-class MainCheckstayDeflector(Deflector):
+class MainCheckstay(Deflector):
     TOPIC = "sail-systems/f0203_mnchckstydflctr"
+    load_ps: Annotated[
+        Load, Field(validation_alias="i_ActualLoadPs"), VariableMeta(name="ps-load")
+    ]
+    load_sb: Annotated[
+        Load,
+        Field(validation_alias="i_ActualLoadSb"),
+        VariableMeta(name="sb-load"),
+    ]
 
 
 class MainCunningham(Cylinder):
@@ -306,8 +322,14 @@ class MainTraveler(LoadsModel, ABC):
     ]
 
 
-class MizzenCheckstayDeflector(Deflector):
+class MizzenCheckstay(Deflector):
     TOPIC = "sail-systems/f0503_mzznckstydflctr"
+    load_ps: Annotated[
+        Load, Field(validation_alias="i_ActualLoadPs"), VariableMeta(name="ps-load")
+    ]
+    load_sb: Annotated[
+        Load, Field(validation_alias="i_ActualLoadSb"), VariableMeta(name="sb-load")
+    ]
 
 
 class MizzenCunningham(Cylinder):

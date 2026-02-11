@@ -17,13 +17,16 @@ from .schema import (
     ReferenceValues,
     SailSetsCombined,
 )
+from .schema import (
+    Sails as SailsTable,
+)
 from .types import (
     AwaRange,
     AwsRange,
     CaseInput,
     ReferenceValue,
     ReferenceValueInput,
-    Sails,
+    SailType,
     Unit,
     VariableType,
 )
@@ -82,7 +85,7 @@ async def get_loads_reference_values(
 
 async def set_loads_reference_values(
     reference_value: ReferenceValueInput,
-    sail_set: list[Sails],
+    sail_set: Sequence[str],
     awa_ranges: list[AwaRange],
     aws_ranges: list[AwsRange],
     session: AsyncSession,
@@ -150,7 +153,31 @@ async def get_variables(ids: Sequence[str]) -> list[VariableType]:
         return []
 
 
-def create_sail_set_subq(sailset: list[Sails]) -> ScalarSelect[int]:
+async def get_sails(ids: Sequence[str] | None, session: AsyncSession) -> list[SailType]:
+    query = (
+        select(SailsTable).where(SailsTable.id.in_(ids)) if ids else select(SailsTable)
+    )
+
+    result = await session.execute(query)
+    sails = result.scalars().all()
+
+    if sails:
+        return [
+            SailType(
+                id=sail.id,  # type: ignore
+                abbreviation=sail.abbreviation,  # type: ignore
+                position_id=sail.position_id,  # type: ignore
+                name=sail.name,  # type: ignore
+                variant_name=sail.variant_name,  # type: ignore
+            )
+            for sail in sails
+        ]
+    else:
+        logger.info(f"No sails found for ids: {ids}")
+        return []
+
+
+def create_sail_set_subq(sailset: Sequence[str]) -> ScalarSelect[int]:
     """Create subquery that returns the sail set that exactly matches the current sails."""
     return (
         select(SailSetsCombined.id)
@@ -160,14 +187,14 @@ def create_sail_set_subq(sailset: list[Sails]) -> ScalarSelect[int]:
 
 
 def sails_exact(
-    sails_column: Column[Sequence[str]], sails: list[Sails]
+    sails_column: Column[Sequence[str]], sails: Sequence[str]
 ) -> ColumnElement[bool]:
     """Check if the sail set exactly matches the sails provided"""
-    return sails_column == cast(sorted([sail.value for sail in sails]), ARRAY(TEXT))
+    return sails_column == cast(sorted(sails), ARRAY(TEXT))
 
 
 def create_load_case_subq(
-    awa_ranges: list[AwaRange], aws_ranges: list[AwsRange], sailset: list[Sails]
+    awa_ranges: list[AwaRange], aws_ranges: list[AwsRange], sailset: Sequence[str]
 ) -> Subquery:
     return (
         select(LoadCases.id)
@@ -176,12 +203,10 @@ def create_load_case_subq(
         .join(AwsRanges, LoadCases.aws_range_id == AwsRanges.id)
         .where(
             AwaRanges.id.in_([awa_range.value for awa_range in awa_ranges]),
-            or_(
-                *[
-                    AwsRanges.aws_range == text(f"'{aws_range.value}'::numrange")
-                    for aws_range in aws_ranges
-                ]
-            ),
+            or_(*[
+                AwsRanges.aws_range == text(f"'{aws_range.value}'::numrange")
+                for aws_range in aws_ranges
+            ]),
         )
         .subquery()
     )

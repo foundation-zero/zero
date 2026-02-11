@@ -20,6 +20,7 @@ from .db import SessionManager
 from .messaging import Messaging
 from .model import (
     get_loads_reference_values,
+    get_sails,
     set_loads_reference_values,
 )
 from .model import (
@@ -32,7 +33,7 @@ from .types import (
     CaseInput,
     ReferenceValue,
     ReferenceValueInput,
-    Sails,
+    SailType,
     VariableType,
 )
 
@@ -188,6 +189,15 @@ class Query:
             variables = [strawberry.ID(var_id) for var_id in VARIABLES.keys()]
         return [Variable(id=var_id) for var_id in variables]
 
+    @strawberry.field
+    async def sails(
+        self,
+        info: strawberry.Info[LoadsContext],
+        sails: list[strawberry.ID] | None = None,
+    ) -> list[SailType]:
+        async with info.context.sessionmanager.session() as session:
+            return await get_sails(sails, session)
+
 
 @strawberry.type
 class Mutation:
@@ -196,7 +206,7 @@ class Mutation:
         self,
         info: strawberry.Info[LoadsContext],
         reference_value: ReferenceValueInput,
-        sail_set: list[Sails],
+        sail_set: list[strawberry.ID],
         awa_ranges: list[AwaRange],
         aws_ranges: list[AwsRange],
     ) -> None:

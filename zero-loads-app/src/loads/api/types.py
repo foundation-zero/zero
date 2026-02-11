@@ -31,32 +31,11 @@ class AwsRange(Enum):
     aws_40_plus = "[40,)"
 
 
-@strawberry.enum
-class Sails(Enum):
-    full_main = "full-main"
-    main_reef1 = "main-reef1"
-    main_reef2 = "main-reef2"
-    main_reef3 = "main-reef3"
-    trisail = "trisail"
-    utility = "utility"
-    full_mizzen = "full-mizzen"
-    mizzen_reef1 = "mizzen-reef1"
-    mizzen_reef2 = "mizzen-reef2"
-    blade = "blade"
-    code_zero = "code-zero"
-    A3 = "A3"
-    A2 = "A2"
-    storm_jib = "storm-jib"
-    staysail = "staysail"
-    mizzen_jib = "mizzen-jib"
-    mizzen_staysail = "mizzen-staysail"
-
-
 @strawberry.input
 class CaseInput:
     awa_range: AwaRange
     aws_range: AwsRange
-    sailset: list[Sails]
+    sailset: list[strawberry.ID]
 
     def __hash__(self) -> int:
         return hash((self.awa_range, self.aws_range, tuple(self.sailset)))
@@ -101,3 +80,12 @@ class ReferenceValueType:
 class ActualType:
     id: str
     value: float | None
+
+
+@strawberry.type
+class SailType:
+    id: strawberry.ID
+    abbreviation: str
+    position_id: str
+    name: str
+    variant_name: str
