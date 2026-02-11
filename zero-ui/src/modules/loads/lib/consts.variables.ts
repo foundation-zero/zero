@@ -1,4 +1,7 @@
 export const VARIABLE_IDS = [
+  "a2-tack-load",
+  "storm-jib-tack-load",
+  "combined-headstay-load",
   "primary-winch-ps-load",
   "primary-winch-sb-load",
   "aft-winch-ps-load",

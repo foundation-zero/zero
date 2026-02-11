@@ -53,9 +53,10 @@ Position: TypeAlias = Annotated[
     Field(ge=0, validation_alias="ow_ActPos_mm"),
     VariableMeta(unit="mm", name="position", scale_min=0, scale_max=100),
 ]
-Load: TypeAlias = Annotated[
+
+LoadBase: TypeAlias = Annotated[  # Needed to be able to override Field constraints where needed (e.g. in Vang)
     float,
-    Field(ge=0, le=20, validation_alias="ow_ActLoad_10kg"),
+    Field(validation_alias="ow_ActLoad_10kg"),
     VariableMeta(unit="tonne", name="load", scale_min=0, scale_max=20),
     BeforeValidator(decakilogram_to_tonne),
     ScalingMeta(
@@ -63,6 +64,9 @@ Load: TypeAlias = Annotated[
         inverse_conversion=tonne_to_decakilogram,
     ),
 ]
+
+Load: TypeAlias = Annotated[LoadBase, Field(ge=0, le=20)]
+
 ReliefLoad: TypeAlias = Annotated[
     float,
     Field(ge=0, le=20, validation_alias="ow_RelfLoad_10kg"),

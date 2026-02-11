@@ -7,6 +7,7 @@ from .base import LoadsModel
 from .units import (
     Alarm,
     Load,
+    LoadBase,
     Lock,
     RelativePosition,
     ReliefLoad,
@@ -15,11 +16,11 @@ from .units import (
 
 
 class Adjuster(LoadsModel, ABC):
-    load: Annotated[Load, VariableMeta(display_name="adjuster load")]
+    load: Annotated[Load, VariableMeta(display_name="adjuster")]
     relative_position: Annotated[
         RelativePosition,
         VariableMeta(
-            display_name="adjuster position",
+            display_name="adjuster",
             scale_min_label="out",
             scale_max_label="in",
         ),
@@ -27,11 +28,11 @@ class Adjuster(LoadsModel, ABC):
 
 
 class Cunningham(LoadsModel, ABC):
-    load: Annotated[Load, VariableMeta(display_name="cunningham load")]
+    load: Annotated[Load, VariableMeta(display_name="cunningham")]
     relative_position: Annotated[
         RelativePosition,
         VariableMeta(
-            display_name="cunningham position",
+            display_name="cunningham",
             scale_min_label="out",
             scale_max_label="in",
         ),
@@ -43,39 +44,39 @@ class Deflector(LoadsModel, ABC):
         RelativePosition,
         VariableMeta(
             name="deflector-relative-position",
-            display_name="deflector position",
+            display_name="deflector",
             scale_min_label="out",
             scale_max_label="in",
         ),
     ]
     load: Annotated[
         Load,
-        VariableMeta(name="deflector-load", display_name="deflector load"),
+        VariableMeta(name="deflector-load", display_name="deflector"),
     ]
     relief_load: ReliefLoad
     alarm: Alarm
 
 
 class Feeder(LoadsModel, ABC):
-    load: Annotated[Load, VariableMeta(display_name="sheet load")]
+    load: Annotated[Load, VariableMeta(display_name="sheet")]
 
 
 class Outhaul(LoadsModel, ABC):
-    load: Annotated[Load, VariableMeta(display_name="outhaul load")]
+    load: Annotated[Load, VariableMeta(display_name="outhaul")]
     relative_position: Annotated[
         RelativePosition,
         VariableMeta(
-            display_name="outhaul position", scale_min_label="out", scale_max_label="in"
+            display_name="outhaul", scale_min_label="out", scale_max_label="in"
         ),
     ]
 
 
 class Preventer(LoadsModel, ABC):
-    load: Annotated[Load, VariableMeta(display_name="preventer load")]
+    load: Annotated[Load, VariableMeta(display_name="preventer")]
     relative_position: Annotated[
         RelativePosition,
         VariableMeta(
-            display_name="preventer position",
+            display_name="preventer",
             scale_min_label="out",
             scale_max_label="in",
         ),
@@ -84,10 +85,10 @@ class Preventer(LoadsModel, ABC):
 
 class Vang(LoadsModel, ABC):
     load: Annotated[
-        Load,
+        LoadBase,
         Field(ge=-10, le=10),
         VariableMeta(
-            display_name="vang load",
+            display_name="vang",
             scale_min=-10,
             scale_max=10,
             scale_min_label="push",
@@ -96,9 +97,7 @@ class Vang(LoadsModel, ABC):
     ]
     relative_position: Annotated[
         RelativePosition,
-        VariableMeta(
-            display_name="vang position", scale_min_label="out", scale_max_label="in"
-        ),
+        VariableMeta(display_name="vang", scale_min_label="out", scale_max_label="in"),
     ]
 
 
@@ -140,11 +139,11 @@ class BladeSheetFeederSb(Feeder):
 
 class BladeTweakerPs(LoadsModel, ABC):
     TOPIC = "sail-systems/f0206_bldtwkrps"
-    load: Annotated[Load, VariableMeta(display_name="tweaker ps load")]
+    load: Annotated[Load, VariableMeta(display_name="tweaker ps")]
     relative_position: Annotated[
         RelativePosition,
         VariableMeta(
-            display_name="tweaker ps position",
+            display_name="tweaker ps",
             scale_min_label="out",
             scale_max_label="in",
         ),
@@ -153,11 +152,11 @@ class BladeTweakerPs(LoadsModel, ABC):
 
 class BladeTweakerSb(LoadsModel, ABC):
     TOPIC = "sail-systems/f0207_bldtwkrsb"
-    load: Annotated[Load, VariableMeta(display_name="tweaker sb load")]
+    load: Annotated[Load, VariableMeta(display_name="tweaker sb")]
     relative_position: Annotated[
         RelativePosition,
         VariableMeta(
-            display_name="tweaker sb position",
+            display_name="tweaker sb",
             scale_min_label="out",
             scale_max_label="in",
         ),
@@ -166,13 +165,26 @@ class BladeTweakerSb(LoadsModel, ABC):
 
 class CodeZeroTack(LoadsModel, ABC):
     TOPIC = "sail-systems/f0102_cdtckcyl"
-    load: Annotated[Load, VariableMeta(display_name="tack load")]
+    load: Annotated[Load, VariableMeta(display_name="tack")]
     relative_position: Annotated[
         RelativePosition,
-        VariableMeta(
-            display_name="tack position", scale_min_label="out", scale_max_label="in"
-        ),
+        VariableMeta(display_name="tack", scale_min_label="out", scale_max_label="in"),
     ]
+
+
+class A2Tack(LoadsModel, ABC):
+    TOPIC = "sail-systems/a2-tack-placeholder"
+    load: Annotated[Load, VariableMeta(display_name="tack")]
+
+
+class StormJibTack(LoadsModel, ABC):
+    TOPIC = "sail-systems/storm-jib-tack-placeholder"
+    load: Annotated[Load, VariableMeta(display_name="tack")]
+
+
+class CombinedHeadstay(LoadsModel, ABC):
+    TOPIC = "sail-systems/combined-headstay-placeholder"
+    load: Annotated[Load, VariableMeta(display_name="combined headstay")]
 
 
 class HeadsailLocks(LoadsModel, ABC):
@@ -222,12 +234,12 @@ class MainCheckstay(Deflector):
     load_ps: Annotated[
         Load,
         Field(validation_alias="i_ActualLoadPs"),
-        VariableMeta(name="ps-load", display_name="checkstay ps load"),
+        VariableMeta(name="ps-load", display_name="checkstay ps"),
     ]
     load_sb: Annotated[
         Load,
         Field(validation_alias="i_ActualLoadSb"),
-        VariableMeta(name="sb-load", display_name="checkstay sb load"),
+        VariableMeta(name="sb-load", display_name="checkstay sb"),
     ]
 
 
@@ -305,17 +317,17 @@ class MainPreventer(Preventer):
 
 class MainRunnerPs(LoadsModel, ABC):
     TOPIC = "sail-systems/fe401_mnrnnrps"
-    load: Annotated[Load, VariableMeta(display_name="runner ps load")]
+    load: Annotated[Load, VariableMeta(display_name="runner ps")]
 
 
 class MainRunnerSb(LoadsModel, ABC):
     TOPIC = "sail-systems/fe501_mnrnnrsb"
-    load: Annotated[Load, VariableMeta(display_name="runner sb load")]
+    load: Annotated[Load, VariableMeta(display_name="runner sb")]
 
 
 class MainSheet(LoadsModel, ABC):
     TOPIC = "sail-systems/fe205_mnsht"
-    load: Annotated[Load, VariableMeta(display_name="sheet load")]
+    load: Annotated[Load, VariableMeta(display_name="sheet")]
 
 
 class MainVang(Vang, ABC):
@@ -327,7 +339,7 @@ class MainTraveller(LoadsModel, ABC):
     relative_position: Annotated[
         RelativePosition,
         VariableMeta(
-            display_name="traveller position",
+            display_name="traveller",
             scale_min=-1,
             scale_max=1,
             scale_min_label="ps",
@@ -338,19 +350,15 @@ class MainTraveller(LoadsModel, ABC):
 
 class MizzenCheckstay(Deflector):
     TOPIC = "sail-systems/f0503_mzznckstydflctr"
-    load_ps: Annotated[
-        Load, VariableMeta(name="ps-load", display_name="checkstay ps load")
-    ]
-    load_sb: Annotated[
-        Load, VariableMeta(name="sb-load", display_name="checkstay sb load")
-    ]
+    load_ps: Annotated[Load, VariableMeta(name="ps-load", display_name="checkstay ps")]
+    load_sb: Annotated[Load, VariableMeta(name="sb-load", display_name="checkstay sb")]
 
 
 class MizzenCunningham(LoadsModel, ABC):
     TOPIC = "sail-systems/f0504_mzzncnnnghm"
-    load: Annotated[Load, VariableMeta(display_name="cunningham load")]
+    load: Annotated[Load, VariableMeta(display_name="cunningham")]
     relative_position: Annotated[
-        RelativePosition, VariableMeta(display_name="cunningham position")
+        RelativePosition, VariableMeta(display_name="cunningham")
     ]
 
 
@@ -425,17 +433,17 @@ class MizzenPreventer(Preventer):
 
 class MizzenRunnerPs(LoadsModel, ABC):
     TOPIC = "sail-systems/fe402_mzznrnnrps"
-    load: Annotated[Load, VariableMeta(display_name="runner ps load")]
+    load: Annotated[Load, VariableMeta(display_name="runner ps")]
 
 
 class MizzenRunnerSb(LoadsModel, ABC):
     TOPIC = "sail-systems/fe502_mzznrnnrsb"
-    load: Annotated[Load, VariableMeta(display_name="runner sb load")]
+    load: Annotated[Load, VariableMeta(display_name="runner sb")]
 
 
 class MizzenSheet(LoadsModel, ABC):
     TOPIC = "sail-systems/fe504_mzznsht"
-    load: Annotated[Load, VariableMeta(display_name="sheet load")]
+    load: Annotated[Load, VariableMeta(display_name="sheet")]
 
 
 class MizzenVang(Vang):

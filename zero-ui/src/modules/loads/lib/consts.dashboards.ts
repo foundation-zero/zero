@@ -21,14 +21,15 @@ const dashboard = (sail: SailId, ...groups: VariableGroup[]): Dashboard => ({
   groups,
 });
 
-export const MAIN_RIG_GROUP = group(
-  "Main",
+export const MAIN_MAST_GROUP = group(
+  "Main mast",
   "main-runner-ps-load",
   "main-runner-sb-load",
   "main-checkstay-ps-load",
   "main-checkstay-sb-load",
   "main-checkstay-deflector-load",
   "main-checkstay-deflector-relative-position",
+  "combined-headstay-load",
 );
 
 export const MAIN_SAIL_GROUP = group(
@@ -54,8 +55,8 @@ export const MAIN_LOCKS_GROUP = group(
   "main-halyard-boom-lock-3",
 );
 
-export const MIZZEN_RIG_GROUP = group(
-  "Mizzen",
+export const MIZZEN_MAST_GROUP = group(
+  "Mizzen mast",
   "mizzen-runner-ps-load",
   "mizzen-runner-sb-load",
   "mizzen-checkstay-ps-load",
@@ -161,18 +162,28 @@ export const CODE_ZERO_GROUP = group(
 
 export const CODE_ZERO_LOCKS_GROUP = group("Locks", "headsail-locks-lock-a3c0");
 
-export const A2_GROUP = group("A2", "primary-winch-ps-load", "primary-winch-sb-load");
+export const A2_GROUP = group(
+  "A2",
+  "a2-tack-load",
+  "primary-winch-ps-load",
+  "primary-winch-sb-load",
+);
 
 export const A2_LOCKS_GROUP = group("Locks", "headsail-locks-lock-a2");
-export const STORM_JIB_GROUP = group("Storm Jib", "primary-winch-ps-load", "primary-winch-sb-load");
+export const STORM_JIB_GROUP = group(
+  "Storm Jib",
+  "storm-jib-tack-load",
+  "primary-winch-ps-load",
+  "primary-winch-sb-load",
+);
 
 export const STORM_JIB_LOCKS_GROUP = group("Locks", "headsail-locks-lock-stormjib");
 
 export const OVERVIEW = dashboard(
   SailId.None,
-  MAIN_RIG_GROUP,
+  MAIN_MAST_GROUP,
   MAIN_SAIL_GROUP,
-  MIZZEN_RIG_GROUP,
+  MIZZEN_MAST_GROUP,
   MIZZEN_SAIL_GROUP,
   BLADE_SAIL_GROUP,
   STAYSAIL_GROUP,
@@ -180,29 +191,29 @@ export const OVERVIEW = dashboard(
   STORM_JIB_GROUP,
 );
 
-export const MAIN = dashboard(SailId.FullMain, MAIN_RIG_GROUP, MAIN_SAIL_GROUP, MAIN_LOCKS_GROUP);
+export const MAIN = dashboard(SailId.FullMain, MAIN_MAST_GROUP, MAIN_SAIL_GROUP, MAIN_LOCKS_GROUP);
 export const MAIN_REEF_1 = dashboard(
   SailId.MainReef1,
-  MAIN_RIG_GROUP,
+  MAIN_MAST_GROUP,
   MAIN_SAIL_GROUP,
   MAIN_LOCKS_GROUP,
 );
 export const MAIN_REEF_2 = dashboard(
   SailId.MainReef2,
-  MAIN_RIG_GROUP,
+  MAIN_MAST_GROUP,
   MAIN_SAIL_GROUP,
   MAIN_LOCKS_GROUP,
 );
 export const MAIN_REEF_3 = dashboard(
   SailId.MainReef3,
-  MAIN_RIG_GROUP,
+  MAIN_MAST_GROUP,
   MAIN_SAIL_GROUP,
   MAIN_LOCKS_GROUP,
 );
 
 export const UTILITY_MAIN = dashboard(
   SailId.UtilityMain,
-  MAIN_RIG_GROUP,
+  MAIN_MAST_GROUP,
   MAIN_SAIL_GROUP,
   MAIN_LOCKS_GROUP,
 );
@@ -211,28 +222,28 @@ export const TRISAIL = dashboard(SailId.Trisail, TRISAIL_GROUP, TRISAIL_LOCKS_GR
 
 export const MIZZEN = dashboard(
   SailId.FullMizzen,
-  MIZZEN_RIG_GROUP,
+  MIZZEN_MAST_GROUP,
   MIZZEN_SAIL_GROUP,
   MIZZEN_LOCKS_GROUP,
 );
 
 export const MIZZEN_REEF_1 = dashboard(
   SailId.MizzenReef1,
-  MIZZEN_RIG_GROUP,
+  MIZZEN_MAST_GROUP,
   MIZZEN_SAIL_GROUP,
   MIZZEN_LOCKS_GROUP,
 );
 
 export const MIZZEN_REEF_2 = dashboard(
   SailId.MizzenReef2,
-  MIZZEN_RIG_GROUP,
+  MIZZEN_MAST_GROUP,
   MIZZEN_SAIL_GROUP,
   MIZZEN_LOCKS_GROUP,
 );
 
 export const MIZZEN_JIB = dashboard(
   SailId.MizzenJib,
-  MIZZEN_RIG_GROUP,
+  MIZZEN_MAST_GROUP,
   MIZZEN_JIB_GROUP,
   group("Main", "main-traveller-relative-position", "main-preventer-load"),
   MIZZEN_HEADSAIL_LOCKS_GROUP,
@@ -240,7 +251,7 @@ export const MIZZEN_JIB = dashboard(
 
 export const MIZZEN_STAYSAIL = dashboard(
   SailId.MizzenStaysail,
-  MIZZEN_RIG_GROUP,
+  MIZZEN_MAST_GROUP,
   MIZZEN_STAYSAIL_GROUP,
   MIZZEN_HEADSAIL_LOCKS_GROUP,
 );
@@ -254,24 +265,29 @@ export const STORM_JIB = dashboard(
 
 export const STAYSAIL = dashboard(
   SailId.Staysail,
-  MAIN_RIG_GROUP,
+  MAIN_MAST_GROUP,
   STAYSAIL_GROUP,
   OUTBOARD_LEAD_GROUP,
   STAYSAIL_LOCKS_GROUP,
 );
 
-export const BLADE = dashboard(SailId.Blade, MAIN_RIG_GROUP, BLADE_SAIL_GROUP, OUTBOARD_LEAD_GROUP);
+export const BLADE = dashboard(
+  SailId.Blade,
+  MAIN_MAST_GROUP,
+  BLADE_SAIL_GROUP,
+  OUTBOARD_LEAD_GROUP,
+);
 
 export const CODE_ZERO = dashboard(
   SailId.CodeZero,
-  MAIN_RIG_GROUP,
+  MAIN_MAST_GROUP,
   CODE_ZERO_GROUP,
   CODE_ZERO_LOCKS_GROUP,
 );
 
-export const A3 = dashboard(SailId.A3, MAIN_RIG_GROUP, CODE_ZERO_GROUP, CODE_ZERO_LOCKS_GROUP);
+export const A3 = dashboard(SailId.A3, MAIN_MAST_GROUP, CODE_ZERO_GROUP, CODE_ZERO_LOCKS_GROUP);
 
-export const A2 = dashboard(SailId.A2, MAIN_RIG_GROUP, A2_GROUP, A2_LOCKS_GROUP);
+export const A2 = dashboard(SailId.A2, MAIN_MAST_GROUP, A2_GROUP, A2_LOCKS_GROUP);
 
 export const DASHBOARDS: Dashboard[] = [
   OVERVIEW,

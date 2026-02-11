@@ -4,7 +4,12 @@ from typing import Annotated
 from pydantic import Field
 
 from loads.sensors.base import LoadsModel
-from loads.sensors.units import Load, Position, RelativePosition
+from loads.sensors.units import (
+    Load,
+    LoadBase,
+    Position,
+    RelativePosition,
+)
 
 
 class SailSystemSensor(LoadsModel, ABC):
@@ -32,30 +37,40 @@ def test_validate_message():
     assert sensor.lock is True
 
 
-class OverrideBoundsSensor(LoadsModel, ABC):
-    TOPIC = "test-topic"
+def test_load_bounds():
+    message = {"load": 1000, "override_load": -500}
 
-    override_load: Annotated[Load, Field(ge=-10, le=10)]
+    class OverrideLoadSensor(LoadsModel, ABC):
+        override_load: Annotated[
+            LoadBase, Field(ge=-10, le=10, validation_alias="override_load")
+        ]
+        load: Annotated[Load, Field(validation_alias="load")]
 
+    sensor = OverrideLoadSensor.model_validate(message)
 
-def test_override_constaints():
     assert (
-        OverrideBoundsSensor.extract_minimum(
-            OverrideBoundsSensor.model_fields["override_load"].metadata
+        OverrideLoadSensor.extract_minimum(
+            OverrideLoadSensor.model_fields["override_load"].metadata
         )
         == -10
     )
     assert (
-        OverrideBoundsSensor.extract_maximum(
-            OverrideBoundsSensor.model_fields["override_load"].metadata
+        OverrideLoadSensor.extract_maximum(
+            OverrideLoadSensor.model_fields["override_load"].metadata
         )
         == 10
     )
-
-
-def test_validate_message_with_override_bounds():
-    message = {
-        "override_load": -500,
-    }
-    sensor = OverrideBoundsSensor.model_validate(message)
+    assert (
+        OverrideLoadSensor.extract_minimum(
+            OverrideLoadSensor.model_fields["load"].metadata
+        )
+        == 0
+    )
+    assert (
+        OverrideLoadSensor.extract_maximum(
+            OverrideLoadSensor.model_fields["load"].metadata
+        )
+        == 20
+    )
     assert sensor.override_load == -5.0
+    assert sensor.load == 10.0
