@@ -203,10 +203,12 @@ def create_load_case_subq(
         .join(AwsRanges, LoadCases.aws_range_id == AwsRanges.id)
         .where(
             AwaRanges.id.in_([awa_range.value for awa_range in awa_ranges]),
-            or_(*[
-                AwsRanges.aws_range == text(f"'{aws_range.value}'::numrange")
-                for aws_range in aws_ranges
-            ]),
+            or_(
+                *[
+                    AwsRanges.aws_range == text(f"'{aws_range.value}'::numrange")
+                    for aws_range in aws_ranges
+                ]
+            ),
         )
         .subquery()
     )
