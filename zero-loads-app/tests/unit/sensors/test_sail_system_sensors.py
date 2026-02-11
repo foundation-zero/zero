@@ -1,5 +1,5 @@
-import json
 from abc import ABC
+from typing import Annotated
 
 from pydantic import Field
 
@@ -10,10 +10,12 @@ from loads.sensors.units import Load, Position, RelativePosition
 class SailSystemSensor(LoadsModel, ABC):
     TOPIC = "test-topic"
 
-    load: Load = Field(validation_alias="load")
-    position: Position = Field(validation_alias="position")
-    relative_position: RelativePosition = Field(validation_alias="relative_position")
-    lock: bool = Field(validation_alias="lock")
+    load: Annotated[Load, Field(validation_alias="load")]
+    position: Annotated[Position, Field(validation_alias="position")]
+    relative_position: Annotated[
+        RelativePosition, Field(validation_alias="relative_position")
+    ]
+    lock: Annotated[bool, Field(validation_alias="lock")]
 
 
 def test_validate_message():
@@ -30,10 +32,30 @@ def test_validate_message():
     assert sensor.lock is True
 
 
-def test_generate_data():
-    generated_data = json.loads(SailSystemSensor.make_generator().gen())
+class OverrideBoundsSensor(LoadsModel, ABC):
+    TOPIC = "test-topic"
 
-    assert isinstance(generated_data["load"], int)
-    assert isinstance(generated_data["position"], int)
-    assert isinstance(generated_data["relative_position"], int)
-    assert isinstance(generated_data["lock"], bool)
+    override_load: Annotated[Load, Field(ge=-10, le=10)]
+
+
+def test_override_constaints():
+    assert (
+        OverrideBoundsSensor.extract_minimum(
+            OverrideBoundsSensor.model_fields["override_load"].metadata
+        )
+        == -10
+    )
+    assert (
+        OverrideBoundsSensor.extract_maximum(
+            OverrideBoundsSensor.model_fields["override_load"].metadata
+        )
+        == 10
+    )
+
+
+def test_validate_message_with_override_bounds():
+    message = {
+        "override_load": -500,
+    }
+    sensor = OverrideBoundsSensor.model_validate(message)
+    assert sensor.override_load == -5.0

@@ -2,6 +2,7 @@ from functools import reduce
 from typing import Any, Callable, ClassVar, get_type_hints
 
 import generator.gen as gen
+from annotated_types import Ge, Le
 from generator import Generator, GeneratorConfig, create_generator
 from generator.base import JSONGenerator
 from pydantic import AliasGenerator, BaseModel, ConfigDict
@@ -76,25 +77,13 @@ class LoadsModel(BaseModel):
     @staticmethod
     def extract_minimum(meta: list[Any]) -> float | None:
         return next(
-            (
-                getattr(m, attr)
-                for m in meta
-                for attr in ("ge", "gt")
-                if hasattr(m, attr)
-            ),
-            None,
+            (getattr(m, "ge") for m in reversed(meta) if isinstance(m, Ge)), None
         )
 
     @staticmethod
     def extract_maximum(meta: list[Any]) -> float | None:
         return next(
-            (
-                getattr(m, attr)
-                for m in meta
-                for attr in ("lt", "le")
-                if hasattr(m, attr)
-            ),
-            None,
+            (getattr(m, "le") for m in reversed(meta) if isinstance(m, Le)), None
         )
 
     @staticmethod

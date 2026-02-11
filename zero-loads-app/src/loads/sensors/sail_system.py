@@ -85,6 +85,7 @@ class Preventer(LoadsModel, ABC):
 class Vang(LoadsModel, ABC):
     load: Annotated[
         Load,
+        Field(ge=-10, le=10),
         VariableMeta(
             display_name="vang load",
             scale_min=-10,
