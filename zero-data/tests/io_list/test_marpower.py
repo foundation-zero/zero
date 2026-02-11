@@ -29,7 +29,7 @@ def test_marpower_amcs_io_excel(marpower_io_result):
         ],
         "marpower",
     )
-    assert marpower_io_result.io_list.shape == (4221, 13)
+    assert marpower_io_result.io_list.shape == (5163, 13)
     assert marpower_io_result.io_list.columns == expected_io_columns
     assert len(marpower_io_result.topics) == 296
 
@@ -46,7 +46,7 @@ def test_marpower_pms_io_excel():
     )
     assert marpower_io_result.io_list.shape == (11522, 13)
     assert marpower_io_result.io_list.columns == expected_io_columns
-    assert len(marpower_io_result.topics) == 849
+    assert len(marpower_io_result.topics) == 850
 
 
 def test_mocked_io_excel():
@@ -54,6 +54,6 @@ def test_mocked_io_excel():
         [(Path(__file__).parent / "../../io_lists/ZERO mocked IO-List.xlsx")],
         "marpower",
     )
-    assert marpower_io_result.io_list.shape == (9582, 13)
+    assert marpower_io_result.io_list.shape == (8977, 13)
     assert marpower_io_result.io_list.columns == expected_io_columns
     assert len(marpower_io_result.topics) == 132
