@@ -79,7 +79,10 @@ def _build_sail_system_alarm_definitions(
             get_active=partial(
                 lambda field, model_instance: getattr(model_instance, field), field
             ),
-            get_actual=lambda model_instance: model_instance.load,  # type: ignore[attr-defined]
+            get_actual=partial(
+                lambda field, model_instance: getattr(model_instance, cast(str, field)),
+                variable_meta.alarm_for_field,
+            ),
             get_threshold=lambda model_instance: model_instance.relief_load,  # type: ignore[attr-defined]
             actual_definition=_lookup_variable_definition_by_id(
                 variable_definitions,
@@ -88,7 +91,7 @@ def _build_sail_system_alarm_definitions(
         )
         for field, field_info in model.model_fields.items()
         if (variable_meta := model.extract_variable_meta(field, field_info.metadata))
-        and variable_meta.type == "alarm"
+        and variable_meta.is_alarm
     ]
 
 
