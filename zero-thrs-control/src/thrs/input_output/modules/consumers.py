@@ -105,12 +105,12 @@ class ConsumersControlValues(ThrsValues):
 
 
 class ConsumersSimulationInputs(SimulationInputs):
-    consumers_fahrenheit_supply: simulation.ExchangerBoundary
-    consumers_boosting_supply: simulation.ExchangerBoundary
+    consumers_fahrenheit_supply: simulation.Boundary
+    consumers_boosting_supply: simulation.Boundary
     consumers_module_supply: simulation.Boundary
 
 
 class ConsumersSimulationOutputs(SimulationValues):
-    consumers_fahrenheit_return: simulation.ExchangerBoundary
-    consumers_boosting_return: simulation.ExchangerBoundary
+    consumers_fahrenheit_return: simulation.TemperatureBoundary
+    consumers_boosting_return: simulation.TemperatureBoundary
     consumers_module_return: simulation.Boundary
