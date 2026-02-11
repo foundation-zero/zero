@@ -299,6 +299,7 @@ class BoilersSimulationInputs(SimulationInputs):
     boilers_ht_supply: simulation.Boundary
     boilers_freshwater_supply: simulation.OverpressureTemperatureBoundary
     boilers_exchanger_gas: simulation.HeatSource
+    boilers_seawater_supply: simulation.TemperatureBoundary
 
 
 class BoilersSimulationOutputs(SimulationValues):
@@ -307,3 +308,5 @@ class BoilersSimulationOutputs(SimulationValues):
     boilers_fahrenheit_return: simulation.TemperatureBoundary
     boilers_ht_return: simulation.TemperatureBoundary
     boilers_freshwater_return: simulation.FlowBoundary
+    boilers_seawater_return: simulation.TemperatureBoundary
+    boilers_seawater_supply: simulation.FlowBoundary
