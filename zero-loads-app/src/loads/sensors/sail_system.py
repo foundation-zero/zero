@@ -222,8 +222,8 @@ class MainCheckstay(Deflector):
     ]
     load_sb: Annotated[
         Load,
-        Field(validation_alias="i_ActualLoadSB"),
-        VariableMeta(name="sb-load"),  # Note the capital B from sail system IO list
+        Field(validation_alias="i_ActualLoadSb"),
+        VariableMeta(name="sb-load"),
     ]
 
 

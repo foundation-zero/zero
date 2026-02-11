@@ -6,7 +6,7 @@ from httpx import ASGITransport, AsyncClient
 
 from loads.api import app
 from loads.api.api import get_messaging
-from loads.api.types import ActualType, SailIds
+from loads.api.types import ActualType
 from loads.registry.registry import VARIABLES
 from loads.sensors.at import ApparentWindSpeed
 from loads.sensors.sail_system import PrimaryWinchPs
@@ -43,7 +43,7 @@ async def test_graphql(async_client: AsyncClient, override_dependency):
                 query {
                     variables(variables: ["main-sheet-load"]) {
                         id
-                        reference(case: {awaRange: downwind, awsRange: aws_15_20, sailset: [full_main, full_mizzen, blade]}) {
+                        reference(case: {awaRange: downwind, awsRange: aws_15_20, sailset: ["full-main", "full-mizzen", "blade"]}) {
                             alarmLow
                             alarmHigh
                             target
@@ -110,7 +110,7 @@ async def test_graphql_set_reference_values(
                     awaRanges: [upwind, reaching]
                     awsRanges: [aws_0_10, aws_10_15]
                     referenceValue: {id: "blade-adjuster-load", target: 100}
-                    sailSet: [full_main, full_mizzen]
+                    sailSet: ["full-main", "full-mizzen"]
                 )
             }
             """
@@ -126,10 +126,10 @@ async def test_graphql_set_reference_values(
             query {
                 variables(variables: ["blade-adjuster-load"]) {
                     id
-                    reaching: reference(case: {awaRange: reaching, awsRange: aws_0_10, sailset: [full_main, full_mizzen]}) {
+                    reaching: reference(case: {awaRange: reaching, awsRange: aws_0_10, sailset: ["full-main", "full-mizzen"]}) {
                         target
                     }
-                    upwind: reference(case: {awaRange: upwind, awsRange: aws_0_10, sailset: [full_main, full_mizzen]}) {
+                    upwind: reference(case: {awaRange: upwind, awsRange: aws_0_10, sailset: ["full-main", "full-mizzen"]}) {
                         target
                     }
                 }
@@ -231,14 +231,14 @@ async def test_graphql_reference_duplicates(
                 query {
                     variables(variables: ["main-sheet-load"]) {
                         id
-                        a: reference(case: {awaRange: downwind, awsRange: aws_15_20, sailset: [full_main, full_mizzen, blade]}) {
+                        a: reference(case: {awaRange: downwind, awsRange: aws_15_20, sailset: ["full-main", "full-mizzen", "blade"]}) {
                             alarmLow
                             alarmHigh
                             target
                             warningHigh
                             warningLow
                         }
-                        b: reference(case: {awaRange: downwind, awsRange: aws_15_20, sailset: [full_main, full_mizzen, blade]}) {
+                        b: reference(case: {awaRange: downwind, awsRange: aws_15_20, sailset: ["full-main", "full-mizzen", "blade"]}) {
                             alarmLow
                             alarmHigh
                             target
@@ -357,60 +357,59 @@ async def test_at_sensors(async_client: AsyncClient, mqtt_client_send):
 
 
 @pytest.mark.asyncio
-async def test_sails(async_client: AsyncClient, override_dependency):
-    with override_dependency(get_messaging, override_messaging):
-        response = await async_client.post(
-            "/graphql",
-            json={
-                "query": """
-                query {
-                    sails {
-                        id
-                        abbreviation
-                        positionId
-                        name
-                        variantName
-                    }
+async def test_sails(async_client: AsyncClient):
+    response = await async_client.post(
+        "/graphql",
+        json={
+            "query": """
+            query {
+                sails {
+                    id
+                    abbreviation
+                    positionId
+                    name
+                    variantName
                 }
-                """
-            },
-        )
+            }
+            """
+        },
+    )
 
-        assert response.status_code == 200
-        assert len(response.json()["data"]["sails"]) == len(SailIds)
+    assert response.status_code == 200
+    sails = response.json()["data"]["sails"]
+    assert len(sails) > 0
 
 
 @pytest.mark.asyncio
-async def test_sails_single(async_client: AsyncClient, override_dependency):
-    with override_dependency(get_messaging, override_messaging):
-        response = await async_client.post(
-            "/graphql",
-            json={
-                "query": """
-                query {
-                    sails(sails: ["full-main"]) {
-                        id
-                        abbreviation
-                        variantName
-                        name
-                        positionId
-                    }
+async def test_sails_single(async_client: AsyncClient):
+    response = await async_client.post(
+        "/graphql",
+        json={
+            "query": """
+            query {
+                sails(sails: ["full-main"]) {
+                    id
+                    abbreviation
+                    variantName
+                    name
+                    positionId
                 }
-                """
-            },
-        )
-
-        assert response.status_code == 200
-        assert response.json() == {
-            "data": {
-                "sails": [
-                    {
-                        "id": "full-main",
-                        "abbreviation": "FM",
-                        "positionId": "main",
-                        "name": "Full Main",
-                        "variantName": "Full",
-                    }
-                ]
             }
+            """
+        },
+    )
+
+    assert response.status_code == 200
+    assert response.json() == {
+        "data": {
+            "sails": [
+                {
+                    "id": "full-main",
+                    "abbreviation": "FM",
+                    "positionId": "main",
+                    "name": "Full Main",
+                    "variantName": "Full",
+                }
+            ]
         }
+    }

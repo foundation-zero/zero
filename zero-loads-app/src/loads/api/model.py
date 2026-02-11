@@ -26,7 +26,6 @@ from .types import (
     CaseInput,
     ReferenceValue,
     ReferenceValueInput,
-    SailIds,
     SailType,
     Unit,
     VariableType,
@@ -86,7 +85,7 @@ async def get_loads_reference_values(
 
 async def set_loads_reference_values(
     reference_value: ReferenceValueInput,
-    sail_set: list[SailIds],
+    sail_set: Sequence[str],
     awa_ranges: list[AwaRange],
     aws_ranges: list[AwsRange],
     session: AsyncSession,
@@ -133,30 +132,6 @@ async def set_loads_reference_values(
     await session.execute(statement)
 
 
-# async def get_variables(
-#     ids: Sequence[str], session: AsyncSession
-# ) -> list[VariableType]:
-#     query = select(Variables).where(Variables.id.in_(ids))
-
-#     result = await session.execute(query)
-#     variables = result.scalars().all()
-
-#     if variables:
-#         return [
-#             VariableType(
-#                 id=var.id,  # type: ignore
-#                 name=var.name,  # type: ignore
-#                 unit=Unit(var.unit),  # type: ignore
-#                 minimum=var.minimum_value,  # type: ignore
-#                 maximum=var.maximum_value,  # type: ignore
-#             )
-#             for var in variables
-#         ]
-#     else:
-#         logger.info(f"No variables found for ids: {ids}")
-#         return []
-
-
 async def get_variables(ids: Sequence[str]) -> list[VariableType]:
     variables: list[VariableDefinition] = [
         VARIABLES[id] for id in ids if id in VARIABLES
@@ -178,8 +153,10 @@ async def get_variables(ids: Sequence[str]) -> list[VariableType]:
         return []
 
 
-async def get_sails(ids: Sequence[str], session: AsyncSession) -> list[SailType]:
-    query = select(SailsTable).where(SailsTable.id.in_(ids))
+async def get_sails(ids: Sequence[str] | None, session: AsyncSession) -> list[SailType]:
+    query = (
+        select(SailsTable).where(SailsTable.id.in_(ids)) if ids else select(SailsTable)
+    )
 
     result = await session.execute(query)
     sails = result.scalars().all()
@@ -200,7 +177,7 @@ async def get_sails(ids: Sequence[str], session: AsyncSession) -> list[SailType]
         return []
 
 
-def create_sail_set_subq(sailset: list[SailIds]) -> ScalarSelect[int]:
+def create_sail_set_subq(sailset: Sequence[str]) -> ScalarSelect[int]:
     """Create subquery that returns the sail set that exactly matches the current sails."""
     return (
         select(SailSetsCombined.id)
@@ -210,14 +187,14 @@ def create_sail_set_subq(sailset: list[SailIds]) -> ScalarSelect[int]:
 
 
 def sails_exact(
-    sails_column: Column[Sequence[str]], sails: list[SailIds]
+    sails_column: Column[Sequence[str]], sails: Sequence[str]
 ) -> ColumnElement[bool]:
     """Check if the sail set exactly matches the sails provided"""
-    return sails_column == cast(sorted([sail.value for sail in sails]), ARRAY(TEXT))
+    return sails_column == cast(sorted(sails), ARRAY(TEXT))
 
 
 def create_load_case_subq(
-    awa_ranges: list[AwaRange], aws_ranges: list[AwsRange], sailset: list[SailIds]
+    awa_ranges: list[AwaRange], aws_ranges: list[AwsRange], sailset: Sequence[str]
 ) -> Subquery:
     return (
         select(LoadCases.id)
@@ -226,12 +203,10 @@ def create_load_case_subq(
         .join(AwsRanges, LoadCases.aws_range_id == AwsRanges.id)
         .where(
             AwaRanges.id.in_([awa_range.value for awa_range in awa_ranges]),
-            or_(
-                *[
-                    AwsRanges.aws_range == text(f"'{aws_range.value}'::numrange")
-                    for aws_range in aws_ranges
-                ]
-            ),
+            or_(*[
+                AwsRanges.aws_range == text(f"'{aws_range.value}'::numrange")
+                for aws_range in aws_ranges
+            ]),
         )
         .subquery()
     )

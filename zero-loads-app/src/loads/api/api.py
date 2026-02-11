@@ -33,7 +33,6 @@ from .types import (
     CaseInput,
     ReferenceValue,
     ReferenceValueInput,
-    SailIds,
     SailType,
     VariableType,
 )
@@ -196,9 +195,6 @@ class Query:
         info: strawberry.Info[LoadsContext],
         sails: list[strawberry.ID] | None = None,
     ) -> list[SailType]:
-        if sails is None:
-            sails = [strawberry.ID(sail_id.value) for sail_id in SailIds]
-
         async with info.context.sessionmanager.session() as session:
             return await get_sails(sails, session)
 
@@ -210,7 +206,7 @@ class Mutation:
         self,
         info: strawberry.Info[LoadsContext],
         reference_value: ReferenceValueInput,
-        sail_set: list[SailIds],
+        sail_set: list[strawberry.ID],
         awa_ranges: list[AwaRange],
         aws_ranges: list[AwsRange],
     ) -> None:
