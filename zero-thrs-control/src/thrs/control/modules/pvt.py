@@ -2,7 +2,7 @@ from datetime import datetime
 from typing import Annotated, Callable
 from pydantic import Field, model_validator
 
-from thrs.classes.control import Control, ControlResult
+from thrs.classes.control import Control, ControlMode, ControlResult
 from thrs.control.controllers import Controller
 from thrs.control.modules.pvt_group import (
     PvtGroupControl,
@@ -17,7 +17,7 @@ from thrs.input_output.definitions.units import Celsius, Ratio, Tuning
 from thrs.input_output.modules.pvt import PvtControlValues, PvtSensorValues
 
 
-class PvtControlMode(ThrsValues):
+class PvtControlMode(ControlMode):
     aft: PvtGroupControlMode
     fwd: PvtGroupControlMode
     owners: PvtGroupControlMode

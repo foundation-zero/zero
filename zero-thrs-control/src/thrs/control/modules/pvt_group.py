@@ -3,7 +3,7 @@ from typing import Callable
 
 from pydantic import model_validator
 from transitions import Machine, State
-from thrs.classes.control import Control, ControlResult
+from thrs.classes.control import Control, ControlMode, ControlResult
 from thrs.control.controllers import Controller
 from thrs.input_output.base import Stamped, ThrsValues
 from thrs.input_output.definitions import sensor
@@ -58,7 +58,7 @@ def _INITIAL_CONTROL_VALUES(timestamp) -> PvtGroupControlValues:
     )
 
 
-class PvtGroupControlMode(ThrsValues):
+class PvtGroupControlMode(ControlMode):
     mode: str
 
 

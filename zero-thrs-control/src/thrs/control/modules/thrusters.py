@@ -13,10 +13,10 @@ from thrs.input_output.modules.thrusters import (
     ThrustersSensorValues,
 )
 from thrs.input_output.definitions.units import Celsius, LMin, PcsMode, Ratio, Tuning
-from thrs.classes.control import Control, ControlResult
+from thrs.classes.control import Control, ControlMode, ControlResult
 
 
-class ThrustersControlMode(ThrsValues):
+class ThrustersControlMode(ControlMode):
     mode: str
 
     @property
