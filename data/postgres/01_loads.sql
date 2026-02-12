@@ -224,6 +224,8 @@ JOIN loads.awa_ranges AS awa_range ON load_cases.awa_range_id = awa_range.id
 JOIN loads.sail_sets_combined AS sail_set ON load_cases.sail_set_id = sail_set.id
 WHERE awa_range.id = 'upwind'
 AND sail_set.sails = ARRAY['blade', 'full-main', 'full-mizzen'];
+
+
 INSERT INTO loads.reference_values (variable_id, load_case_id, alarm_low, warning_low, target, warning_high, alarm_high)
 SELECT
     v.variable_id,
@@ -263,6 +265,7 @@ JOIN loads.aws_ranges AS aws_range ON load_cases.aws_range_id = aws_range.id
 JOIN loads.sail_sets_combined AS sail_set ON load_cases.sail_set_id = sail_set.id
 WHERE awa_range.id = 'downwind' AND aws_range.aws_range = '[15,20)'::numrange
 AND sail_set.sails = ARRAY['blade', 'full-main', 'full-mizzen'];
+
 
 INSERT INTO loads.reference_values (variable_id, load_case_id, alarm_low, warning_low, target, warning_high, alarm_high)
 SELECT

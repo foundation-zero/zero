@@ -54,7 +54,7 @@ Position: TypeAlias = Annotated[
     VariableMeta(unit="mm", name="position", scale_min=0, scale_max=100),
 ]
 
-LoadBase: TypeAlias = Annotated[  # Needed to be able to override Field constraints where needed (e.g. in Vang)
+LoadBase: TypeAlias = Annotated[  # Needed to be able to override Field constraints where needed (e.g. in Vang). Pydantic has no fixed order to resolve nested `Field`s in inside of `Annotated`s
     float,
     Field(validation_alias="ow_ActLoad_10kg"),
     VariableMeta(unit="tonne", name="load", scale_min=0, scale_max=20),
