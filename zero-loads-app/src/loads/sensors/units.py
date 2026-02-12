@@ -33,8 +33,12 @@ class VariableMeta:
             display_name=other.display_name or self.display_name,
             type=other.type or self.type,
             alarm_for=other.alarm_for or self.alarm_for,
-            scale_min=other.scale_min or self.scale_min,
-            scale_max=other.scale_max or self.scale_max,
+            scale_min=other.scale_min
+            if other.scale_min is not None
+            else self.scale_min,
+            scale_max=other.scale_max
+            if other.scale_max is not None
+            else self.scale_max,
             scale_min_label=other.scale_min_label or self.scale_min_label,
             scale_max_label=other.scale_max_label or self.scale_max_label,
         )
@@ -69,7 +73,9 @@ def decakilogram_to_tonne(value: int) -> float:
 RelativePosition: TypeAlias = Annotated[
     float,
     Field(ge=0, le=1, validation_alias="relative_position_dummy"),
-    VariableMeta(unit="ratio", name="relative-position", scale_min=0, scale_max=1),
+    VariableMeta(
+        unit="ratio", name="relative-position", scale_min=0, scale_max=1, type="actual"
+    ),
     BeforeValidator(per_mille_to_ratio),
     ScalingMeta(
         conversion=per_mille_to_ratio,
@@ -79,7 +85,7 @@ RelativePosition: TypeAlias = Annotated[
 Position: TypeAlias = Annotated[
     int,
     Field(ge=0, validation_alias="ow_ActPos_mm"),
-    VariableMeta(unit="mm", name="position", scale_min=0, scale_max=100),
+    VariableMeta(unit="mm", name="position", scale_min=0, scale_max=100, type="actual"),
 ]
 
 LoadBase: TypeAlias = Annotated[  # Needed to be able to override Field constraints where needed (e.g. in Vang). Pydantic has no fixed order to resolve nested `Field`s in inside of `Annotated`s
@@ -93,7 +99,7 @@ LoadBase: TypeAlias = Annotated[  # Needed to be able to override Field constrai
     ),
 ]
 
-Load: TypeAlias = Annotated[LoadBase, Field(ge=0, le=20)]
+Load: TypeAlias = Annotated[LoadBase, Field(ge=0, le=20), VariableMeta(type="actual")]
 
 ReliefLoad: TypeAlias = Annotated[
     float,

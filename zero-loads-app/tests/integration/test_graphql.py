@@ -8,7 +8,7 @@ from loads.api import app
 from loads.api.api import get_messaging
 from loads.registry.registry import VARIABLES
 from loads.sensors.at import ApparentWindSpeed
-from loads.sensors.sail_system import PrimaryWinchPs
+from loads.sensors.sail_system import MainCheckstay, PrimaryWinchPs
 
 
 def override_messaging():
@@ -328,9 +328,12 @@ async def test_sail_system_actual(async_client: AsyncClient, mqtt_client_send):
 @pytest.mark.asyncio
 async def test_alarms(async_client: AsyncClient, mqtt_client_send):
     await mqtt_client_send.publish(
-        PrimaryWinchPs.TOPIC,
+        MainCheckstay.TOPIC,
         """{
-            "ow_ActLoad_10kg": 420,
+            "relative_position_dummy": 500,
+            "i_ActualLoadPs": 420,
+            "i_ActualLoadSb": 400,
+            "ow_ActLoad_10kg": 500,
             "ow_RelfLoad_10kg": 400,
             "ox_LoadAlarm": true
         }""",
@@ -340,7 +343,7 @@ async def test_alarms(async_client: AsyncClient, mqtt_client_send):
         json={
             "query": """
             query {
-                alarms(alarms: ["primary-winch-ps-alarm"]) {
+                alarms(alarms: ["main-checkstay-alarm"]) {
                     id
                     name
                     thresholdValue
@@ -363,13 +366,13 @@ async def test_alarms(async_client: AsyncClient, mqtt_client_send):
         "data": {
             "alarms": [
                 {
-                    "id": "primary-winch-ps-alarm",
-                    "name": "Primary Winch Ps Alarm",
+                    "id": "main-checkstay-alarm",
+                    "name": "Main Checkstay Alarm",
                     "active": True,
                     "thresholdValue": 4.0,
-                    "actualValue": 4.2,
+                    "actualValue": 5.0,
                     "actual": {
-                        "id": "primary-winch-ps-load",
+                        "id": "main-checkstay-deflector-load",
                         "variable": {
                             "unit": "tonne",
                         },
@@ -383,9 +386,12 @@ async def test_alarms(async_client: AsyncClient, mqtt_client_send):
 @pytest.mark.asyncio
 async def test_active_alarms(async_client: AsyncClient, mqtt_client_send):
     await mqtt_client_send.publish(
-        PrimaryWinchPs.TOPIC,
+        MainCheckstay.TOPIC,
         """{
-            "ow_ActLoad_10kg": 420,
+            "relative_position_dummy": 500,
+            "i_ActualLoadPs": 420,
+            "i_ActualLoadSb": 400,
+            "ow_ActLoad_10kg": 500,
             "ow_RelfLoad_10kg": 400,
             "ox_LoadAlarm": true
         }""",
@@ -411,10 +417,10 @@ async def test_active_alarms(async_client: AsyncClient, mqtt_client_send):
         "data": {
             "alarms": [
                 {
-                    "id": "primary-winch-ps-alarm",
+                    "id": "main-checkstay-alarm",
                     "active": True,
                     "thresholdValue": 4.0,
-                    "actualValue": 4.2,
+                    "actualValue": 5.0,
                 },
             ]
         }

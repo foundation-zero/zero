@@ -71,6 +71,14 @@ def _build_sail_system_alarm_definitions(
 ) -> list[AlarmDefinition]:
     function_id = camel_to_kebab(model.__name__)
 
+    def _lookup_variable_definition(alarm: str, id: str) -> VariableDefinition:
+        try:
+            return _lookup_variable_definition_by_id(variable_definitions, id)
+        except ValueError as e:
+            raise ValueError(
+                f"No variable definition found for alarm {alarm} with id: {id}", e
+            )
+
     return [
         AlarmDefinition(
             id=f"{function_id}-alarm",
@@ -79,19 +87,19 @@ def _build_sail_system_alarm_definitions(
             get_active=partial(
                 lambda field, model_instance: getattr(model_instance, field), field
             ),
-            get_actual=partial(
-                lambda field, model_instance: getattr(model_instance, cast(str, field)),
-                variable_meta.alarm_for_field,
-            ),
+            get_actual=actual_definition.get_actual,
             get_threshold=lambda model_instance: model_instance.relief_load,  # type: ignore[attr-defined]
-            actual_definition=_lookup_variable_definition_by_id(
-                variable_definitions,
-                f"{function_id}-{variable_meta.alarm_for_field}",
-            ),
+            actual_definition=actual_definition,
         )
         for field, field_info in model.model_fields.items()
         if (variable_meta := model.extract_variable_meta(field, field_info.metadata))
         and variable_meta.is_alarm
+        and (
+            actual_definition := _lookup_variable_definition(
+                field,
+                f"{function_id}-{variable_meta.alarm_for_field}",
+            )
+        )
     ]
 
 

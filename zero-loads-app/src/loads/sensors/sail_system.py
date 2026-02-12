@@ -16,7 +16,7 @@ from .units import (
 
 
 class Adjuster(LoadsModel, ABC):
-    load: Annotated[Load, VariableMeta(display_name="adjuster")]
+    load: Annotated[Load, VariableMeta(display_name="adjuster", type="actual")]
     relative_position: Annotated[
         RelativePosition,
         VariableMeta(
@@ -37,7 +37,6 @@ class Cunningham(LoadsModel, ABC):
             scale_max_label="in",
         ),
     ]
-    alarm: Annotated[Alarm, Field(validation_alias="ox_LoadAlarm")]
 
 
 class Deflector(LoadsModel, ABC):
@@ -55,7 +54,7 @@ class Deflector(LoadsModel, ABC):
         VariableMeta(name="deflector-load", display_name="deflector"),
     ]
     relief_load: ReliefLoad
-    alarm: Alarm
+    alarm: Annotated[Alarm, VariableMeta(alarm_for="deflector-load")]
 
 
 class Feeder(LoadsModel, ABC):
@@ -82,7 +81,6 @@ class Preventer(LoadsModel, ABC):
             scale_max_label="in",
         ),
     ]
-    alarm: Annotated[Alarm, Field(validation_alias="ox_LoadAlarm")]
 
 
 class Vang(LoadsModel, ABC):
