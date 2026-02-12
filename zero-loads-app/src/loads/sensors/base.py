@@ -76,11 +76,11 @@ class LoadsModel(BaseModel):
 
     @staticmethod
     def extract_minimum(meta: list[Any]) -> float | None:
-        return cast(float, next((m.ge for m in meta if isinstance(m, Ge)), None))
+        return next((cast(float, m.ge) for m in meta if isinstance(m, Ge)), None)
 
     @staticmethod
     def extract_maximum(meta: list[Any]) -> float | None:
-        return cast(float, next((m.le for m in meta if isinstance(m, Le)), None))
+        return next((cast(float, m.le) for m in meta if isinstance(m, Le)), None)
 
     @staticmethod
     def _extract_inverse_scaling_conversion(meta: list[Any]) -> Callable | None:
