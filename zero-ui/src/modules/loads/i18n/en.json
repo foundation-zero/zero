@@ -3,6 +3,12 @@
     "dashboards": {
       "overview": "Overview"
     },
+    "dashboard": {
+      "status": "Loads status",
+      "alarms": "No alarms | One alarm | {count} alarms",
+      "showAlarms": "Show",
+      "alarmActive": "{alarm}: {actualValue} {unit} exceeds threshold {thresholdValue} {unit}"
+    },
     "components": {
       "mastLock": {
         "locked": "Locked",

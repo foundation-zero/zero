@@ -8,7 +8,7 @@ from sqlalchemy.sql.expression import ColumnElement
 from sqlalchemy.sql.selectable import ScalarSelect
 from strawberry import ID
 
-from loads.registry.registry import VARIABLES, VariableDefinition
+from loads.registry import ALARMS, VARIABLES, AlarmDefinition, VariableDefinition
 
 from .schema import (
     AwaRanges,
@@ -21,6 +21,7 @@ from .schema import (
     Sails as SailsTable,
 )
 from .types import (
+    AlarmType,
     AwaRange,
     AwsRange,
     CaseInput,
@@ -176,6 +177,23 @@ async def get_sails(ids: Sequence[str] | None, session: AsyncSession) -> list[Sa
         ]
     else:
         logger.info(f"No sails found for ids: {ids}")
+        return []
+
+
+def get_alarms(ids: Sequence[str]) -> list[AlarmType]:
+    alarms: list[AlarmDefinition] = [ALARMS[id] for id in ids if id in ALARMS]
+
+    if alarms:
+        return [
+            AlarmType(
+                id=alarm.id,
+                name=alarm.name,
+                actual_variable_id=ID(alarm.actual_definition.id),
+            )
+            for alarm in alarms
+        ]
+    else:
+        logger.info(f"No alarms found for ids: {ids}")
         return []
 
 
