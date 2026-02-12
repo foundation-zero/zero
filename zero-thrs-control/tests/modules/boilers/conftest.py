@@ -12,6 +12,7 @@ from thrs.input_output.definitions.simulation import (
     Boundary,
     HeatSource,
     OverpressureTemperatureBoundary,
+    TemperatureBoundary,
 )
 from thrs.input_output.modules.boilers import (
     BoilersControlValues,
@@ -50,6 +51,7 @@ def simulation_inputs():
             overpressure=Stamped.stamp(3),
         ),
         boilers_exchanger_gas=HeatSource(heat_flow=Stamped.stamp(300)),
+        boilers_seawater_supply=TemperatureBoundary(temperature=Stamped.stamp(32)),
     )
 
 

@@ -97,8 +97,8 @@ class FahrenheitControlValues(ThrsValues):
 
 
 class FahrenheitSimulationInputs(SimulationInputs):
-    fahrenheit_hot_supply: simulation.ExchangerBoundary
-    fahrenheit_waste_supply: simulation.ExchangerBoundary
+    fahrenheit_hot_supply: simulation.Boundary
+    fahrenheit_waste_supply: simulation.Boundary
     fahrenheit_cold_supply: simulation.TemperatureBoundary
     fahrenheit_available_hot_temperature: simulation.TemperatureBoundary
     fahrenheit_available_cold_temperature: simulation.TemperatureBoundary
@@ -106,7 +106,7 @@ class FahrenheitSimulationInputs(SimulationInputs):
 
 
 class FahrenheitSimulationOutputs(SimulationValues):
-    fahrenheit_hot_return: simulation.ExchangerBoundary
-    fahrenheit_waste_return: simulation.ExchangerBoundary
-    fahrenheit_cold_return: simulation.Boundary
+    fahrenheit_hot_return: simulation.TemperatureBoundary
+    fahrenheit_waste_return: simulation.TemperatureBoundary
+    fahrenheit_cold_return: simulation.TemperatureBoundary
     fahrenheit_seawater_return: simulation.TemperatureBoundary

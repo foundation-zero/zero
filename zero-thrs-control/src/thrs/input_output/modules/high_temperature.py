@@ -24,8 +24,8 @@ class HighTemperatureSimulationInputs(SimulationInputs):
     pvt_owners: simulation.HeatSource
     pvt_seawater_supply: simulation.Boundary
     pcm_freshwater_supply: simulation.Boundary
-    consumers_fahrenheit_supply: simulation.ExchangerBoundary
-    consumers_boosting_supply: simulation.ExchangerBoundary
+    consumers_fahrenheit_supply: simulation.Boundary
+    consumers_boosting_supply: simulation.Boundary
 
 
 class HighTemperatureSimulationOutputs(
