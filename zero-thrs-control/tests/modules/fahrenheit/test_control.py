@@ -139,7 +139,7 @@ async def test_fahrenheit_cooling(
 
     assert control.mode == "cooling"
 
-    for i in range(60):
+    for i in range(100):
         control_values = control.control(result.sensor_values).values
         result = await executor.tick(control_values)
 
@@ -158,9 +158,9 @@ async def test_fahrenheit_cooling(
 
 
 async def test_waste_recovery(control: FahrenheitControl, executor: SimulationExecutor):
-    executor._simulation_inputs.fahrenheit_waste_supply.temperature.value = 40
+    executor._simulation_inputs.fahrenheit_boilers_supply.temperature.value = 10
     control._parameters.waste_recovery_temperature_setpoint = 30
-    control._parameters.waste_cooling_temperature_setpoint = 40
+    control._parameters.waste_cooling_temperature_setpoint = 60
 
     result = await executor.tick(control.initial().values)
 
@@ -185,7 +185,7 @@ async def test_waste_recovery(control: FahrenheitControl, executor: SimulationEx
 
 
 async def test_waste_cooling(control: FahrenheitControl, executor: SimulationExecutor):
-    executor._simulation_inputs.fahrenheit_waste_supply.temperature.value = 40
+    executor._simulation_inputs.fahrenheit_boilers_supply.temperature.value = 40
     executor._simulation_inputs.fahrenheit_seawater_supply.temperature.value = 10
     control._parameters.waste_recovery_temperature_setpoint = 10
     control._parameters.waste_cooling_temperature_setpoint = 35
