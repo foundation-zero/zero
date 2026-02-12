@@ -12,7 +12,13 @@ from strawberry.dataloader import DataLoader
 from strawberry.fastapi import GraphQLRouter
 
 from loads.config import settings
-from loads.registry import ALARMS, VARIABLES, at_sensors, sail_system_sensors
+from loads.registry import (
+    ALARMS,
+    VARIABLES,
+    at_sensors,
+    fiber_optic_sensors,
+    sail_system_sensors,
+)
 
 from .db import SessionManager
 from .messaging import Messaging
@@ -52,7 +58,7 @@ async def lifespan(app: FastAPI):
     async with MqttClient(settings.mqtt_host, settings.mqtt_port) as mqtt:
         messaging = Messaging(
             mqtt_client=mqtt,
-            modules=[sail_system_sensors, at_sensors],
+            modules=[sail_system_sensors, at_sensors, fiber_optic_sensors],
             variable_definitions=VARIABLES,
             alarm_definitions=ALARMS,
         )

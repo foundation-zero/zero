@@ -1,18 +1,78 @@
 from abc import ABC
-from typing import Annotated
+from typing import Annotated, TypeAlias
 
-from pydantic import Field
+from pydantic import BeforeValidator, Field
 
 from .base import LoadsModel
 from .units import (
-    Alarm,
-    Load,
-    LoadBase,
-    Lock,
-    RelativePosition,
-    ReliefLoad,
-    VariableMeta,
+    Alarm as BaseAlarm,
 )
+from .units import (
+    Load as GenericLoadBase,
+)
+from .units import (
+    Lock,
+    ScalingMeta,
+    VariableMeta,
+    decakilogram_to_tonne,
+    per_mille_to_ratio,
+    ratio_to_per_mille,
+    tonne_to_decakilogram,
+)
+from .units import (
+    Position as BasePosition,
+)
+from .units import (
+    RelativePosition as BaseRelativePosition,
+)
+from .units import (
+    ReliefLoad as BaseReliefLoad,
+)
+
+LoadBase: TypeAlias = Annotated[  # Needed to be able to override Field constraints where needed (e.g. in Vang). Pydantic has no fixed order to resolve nested `Field`s in inside of `Annotated`s
+    GenericLoadBase,
+    BeforeValidator(decakilogram_to_tonne),
+    ScalingMeta(
+        conversion=decakilogram_to_tonne,
+        inverse_conversion=tonne_to_decakilogram,
+    ),
+]
+Load: TypeAlias = Annotated[
+    LoadBase,
+    Field(validation_alias="ow_ActLoad_10kg"),
+    Field(ge=0, le=20),
+    VariableMeta(name="load", scale_min=0, scale_max=20),
+]
+ReliefLoad: TypeAlias = Annotated[
+    BaseReliefLoad,
+    Field(ge=0, le=20, validation_alias="ow_RelfLoad_10kg"),
+    BeforeValidator(decakilogram_to_tonne),
+    ScalingMeta(
+        conversion=decakilogram_to_tonne,
+        inverse_conversion=tonne_to_decakilogram,
+    ),
+]
+RelativePosition: TypeAlias = Annotated[
+    BaseRelativePosition,
+    Field(validation_alias="relative_position_dummy"),
+    VariableMeta(name="relative-position"),
+    BeforeValidator(per_mille_to_ratio),
+    ScalingMeta(
+        conversion=per_mille_to_ratio,
+        inverse_conversion=ratio_to_per_mille,
+    ),
+]
+Position: TypeAlias = Annotated[
+    BasePosition,
+    Field(validation_alias="ow_ActPos_mm"),
+    VariableMeta(scale_min=0, scale_max=100),
+]
+
+Alarm: TypeAlias = Annotated[
+    BaseAlarm,
+    Field(validation_alias="ox_LoadAlarm"),
+    VariableMeta(unit="bool", name="alarm", type="alarm"),
+]
 
 
 class Adjuster(LoadsModel, ABC):

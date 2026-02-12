@@ -4,12 +4,7 @@ from typing import Annotated
 from pydantic import Field
 
 from loads.sensors.base import LoadsModel
-from loads.sensors.units import (
-    Load,
-    LoadBase,
-    Position,
-    RelativePosition,
-)
+from loads.sensors.sail_system import Load, LoadBase, Position, RelativePosition
 
 
 class SailSystemSensor(LoadsModel, ABC):

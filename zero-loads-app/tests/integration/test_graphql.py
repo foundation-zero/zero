@@ -8,6 +8,7 @@ from loads.api import app
 from loads.api.api import get_messaging
 from loads.registry.registry import VARIABLES
 from loads.sensors.at import ApparentWindSpeed
+from loads.sensors.fiber_optic import SideStayMeasurements
 from loads.sensors.sail_system import MainCheckstay, PrimaryWinchPs
 
 
@@ -458,6 +459,52 @@ async def test_at_sensors(async_client: AsyncClient, mqtt_client_send):
                     "id": variable_name,
                     "actual": {"id": variable_name, "value": float(raw_value)},
                 }
+            ]
+        }
+    }
+
+
+@pytest.mark.asyncio
+async def test_fiber_optics_actual(async_client: AsyncClient, mqtt_client_send):
+    await mqtt_client_send.publish(
+        SideStayMeasurements.TOPIC,
+        """{
+            "v1": 20,
+            "d1": 1,
+            "d2": 2,
+            "d3": 3,
+            "d4": 4,
+            "d5": 5
+        }""",
+    )
+    response = await async_client.post(
+        "/graphql",
+        json={
+            "query": """
+            query {
+                variables(variables: ["side-stay-measurements-v1"]) {
+                    id
+                    actual {
+                        id
+                        value
+                    }
+                }
+            }
+            """
+        },
+    )
+
+    assert response.status_code == 200
+    assert response.json() == {
+        "data": {
+            "variables": [
+                {
+                    "id": "side-stay-measurements-v1",
+                    "actual": {
+                        "id": "side-stay-measurements-v1",
+                        "value": 20,
+                    },
+                },
             ]
         }
     }
