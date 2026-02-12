@@ -46,8 +46,10 @@ class VariableType:
     id: strawberry.ID
     name: str
     unit: Unit | None
-    minimum: float | None
-    maximum: float | None
+    scale_min: float | None
+    scale_max: float | None
+    scale_min_label: str | None
+    scale_max_label: str | None
 
 
 @strawberry.input

@@ -14,8 +14,10 @@ class VariableDefinition:
     topic: str
     get_actual: Callable[[LoadsModel], float | None]
     unit: str
-    minimum: float | None
-    maximum: float | None
+    scale_min: float | None
+    scale_max: float | None
+    scale_min_label: str | None
+    scale_max_label: str | None
 
 
 def _build_sail_system_variable_definitions(
@@ -32,8 +34,10 @@ def _build_sail_system_variable_definitions(
                 lambda field, model_instance: getattr(model_instance, field), field
             ),
             unit=cast(str, variable_meta.unit),
-            minimum=model.extract_minimum(field_info.metadata),
-            maximum=model.extract_maximum(field_info.metadata),
+            scale_min=variable_meta.scale_min,
+            scale_max=variable_meta.scale_max,
+            scale_min_label=variable_meta.scale_min_label,
+            scale_max_label=variable_meta.scale_max_label,
         )
         for field, field_info in model.model_fields.items()
         if (variable_meta := model.extract_variable_meta(field_info.metadata))
@@ -44,23 +48,18 @@ def _build_sail_system_variable_definitions(
 SAIL_SYSTEM_MODELS: list[type[LoadsModel]] = [
     sail_system.PrimaryWinchPs,
     sail_system.PrimaryWinchSb,
-    sail_system.MainWinchPsFwd,
-    sail_system.MainWinchSbFwd,
-    sail_system.MainWinchPsAft,
-    sail_system.MainWinchSbAft,
-    sail_system.MizzenWinchSb,
-    sail_system.MizzenWinchPs,
     sail_system.AftWinchPs,
     sail_system.AftWinchSb,
     sail_system.BladeAdjuster,
     sail_system.BladeCunningham,
-    sail_system.BladeSheetCaptivePs,
-    sail_system.BladeSheetCaptiveSb,
     sail_system.BladeSheetFeederPs,
     sail_system.BladeSheetFeederSb,
     sail_system.BladeTweakerPs,
     sail_system.BladeTweakerSb,
-    sail_system.CodeSailTack,
+    sail_system.CodeZeroTack,
+    sail_system.A2Tack,
+    sail_system.StormJibTack,
+    sail_system.CombinedHeadstay,
     sail_system.HeadsailLocks,
     sail_system.MainCheckstay,
     sail_system.MainCunningham,
@@ -70,7 +69,7 @@ SAIL_SYSTEM_MODELS: list[type[LoadsModel]] = [
     sail_system.MainRunnerSb,
     sail_system.MainRunnerPs,
     sail_system.MainSheet,
-    sail_system.MainTraveler,
+    sail_system.MainTraveller,
     sail_system.MainVang,
     sail_system.MizzenCheckstay,
     sail_system.MizzenCunningham,
@@ -83,8 +82,6 @@ SAIL_SYSTEM_MODELS: list[type[LoadsModel]] = [
     sail_system.MizzenRunnerSb,
     sail_system.MizzenSheet,
     sail_system.MizzenVang,
-    sail_system.StaysailSheetPs,
-    sail_system.StaysailSheetSb,
     sail_system.StaysailSheetFeederPs,
     sail_system.StaysailSheetFeederSb,
     sail_system.StaysailStayAdjuster,
@@ -111,8 +108,10 @@ def _build_at_variable_definitions(model: type[LoadsModel]) -> VariableDefinitio
         topic=model.TOPIC,
         get_actual=lambda model_instance: model_instance.value,  # type: ignore[attr-defined]
         unit=variable_meta.unit,
-        minimum=model.extract_minimum(field_info.metadata),
-        maximum=model.extract_maximum(field_info.metadata),
+        scale_min=variable_meta.scale_min,
+        scale_max=variable_meta.scale_max,
+        scale_min_label=variable_meta.scale_min_label,
+        scale_max_label=variable_meta.scale_max_label,
     )
 
 

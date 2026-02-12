@@ -2,6 +2,7 @@ from functools import reduce
 from typing import Any, Callable, ClassVar, get_type_hints
 
 import generator.gen as gen
+from annotated_types import Ge, Le
 from generator import Generator, GeneratorConfig, create_generator
 from generator.base import JSONGenerator
 from pydantic import AliasGenerator, BaseModel, ConfigDict
@@ -75,27 +76,11 @@ class LoadsModel(BaseModel):
 
     @staticmethod
     def extract_minimum(meta: list[Any]) -> float | None:
-        return next(
-            (
-                getattr(m, attr)
-                for m in meta
-                for attr in ("ge", "gt")
-                if hasattr(m, attr)
-            ),
-            None,
-        )
+        return next((getattr(m, "ge") for m in meta if isinstance(m, Ge)), None)
 
     @staticmethod
     def extract_maximum(meta: list[Any]) -> float | None:
-        return next(
-            (
-                getattr(m, attr)
-                for m in meta
-                for attr in ("lt", "le")
-                if hasattr(m, attr)
-            ),
-            None,
-        )
+        return next((getattr(m, "le") for m in meta if isinstance(m, Le)), None)
 
     @staticmethod
     def _extract_inverse_scaling_conversion(meta: list[Any]) -> Callable | None:
@@ -114,6 +99,10 @@ class LoadsModel(BaseModel):
                     name=b.name or a.name,
                     ignore=b.ignore or a.ignore,
                     display_name=b.display_name or a.display_name,
+                    scale_min=b.scale_min or a.scale_min,
+                    scale_max=b.scale_max or a.scale_max,
+                    scale_min_label=b.scale_min_label or a.scale_min_label,
+                    scale_max_label=b.scale_max_label or a.scale_max_label,
                 ),
                 variable_metas,
             )

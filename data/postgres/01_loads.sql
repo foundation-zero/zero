@@ -204,42 +204,51 @@ CROSS JOIN loads.aws_ranges AS aws_range;
 -- Example reference value for a specific load case
 INSERT INTO loads.reference_values (variable_id, load_case_id, alarm_low, warning_low, target, warning_high, alarm_high)
 SELECT
-    'main-sheet-load',
+    v.variable_id,
     load_cases.id,
-    0.0,
-    3.0,
-    10.0,
-    15.0,
-    32.0
-FROM loads.load_cases
+    v.alarm_low,
+    v.warning_low,
+    v.target,
+    v.warning_high,
+    v.alarm_high
+FROM (VALUES
+    ('main-runner-ps-load',      6.0, 9.0, 12.0, 15.0, 18.0),
+    ('main-runner-sb-load',      6.0, 9.0, 12.0, 15.0, 18.0),
+    ('main-checkstay-ps-load', 1.0, 3.0, 5.0, 7.0,  9.0),
+    ('main-checkstay-sb-load', 1.0, 3.0, 5.0, 7.0,  9.0),
+    ('main-checkstay-deflector-load', 1.0, 2.0, 4.0, 6.0,  8.0),
+    ('main-checkstay-deflector-relative-position', NULL, NULL, .5, NULL,  NULL)
+) AS v(variable_id, alarm_low, warning_low, target, warning_high, alarm_high)
+CROSS JOIN loads.load_cases
 JOIN loads.awa_ranges AS awa_range ON load_cases.awa_range_id = awa_range.id
-WHERE awa_range.id = 'upwind';
+JOIN loads.sail_sets_combined AS sail_set ON load_cases.sail_set_id = sail_set.id
+WHERE awa_range.id = 'upwind'
+AND sail_set.sails = ARRAY['blade', 'full-main', 'full-mizzen'];
+
 
 INSERT INTO loads.reference_values (variable_id, load_case_id, alarm_low, warning_low, target, warning_high, alarm_high)
 SELECT
-    'main-sheet-load',
+    v.variable_id,
     load_cases.id,
-    0.0,
-    1.0,
-    5.0,
-    6.0,
-    8.0
-FROM loads.load_cases
+    v.alarm_low,
+    v.warning_low,
+    v.target,
+    v.warning_high,
+    v.alarm_high
+FROM (VALUES
+    ('main-runner-ps-load',      5.0, 9.0, 10.0, 11.0, 20.0),
+    ('main-runner-sb-load',      5.0, 9.0, 10.0, 11.0, 20.0),
+    ('main-checkstay-ps-load', 1.0, 4.0, 7.0, 10.0,  15.0),
+    ('main-checkstay-sb-load', 1.0, 4.0, 7.0, 10.0,  15.0),
+    ('main-checkstay-deflector-load', 1.0, 2.0, 4.0, 6.0,  8.0),
+    ('main-checkstay-deflector-relative-position', NULL, NULL, .8, NULL,  NULL)
+) AS v(variable_id, alarm_low, warning_low, target, warning_high, alarm_high)
+CROSS JOIN loads.load_cases
 JOIN loads.awa_ranges AS awa_range ON load_cases.awa_range_id = awa_range.id
-WHERE awa_range.id = 'reaching';
+JOIN loads.sail_sets_combined AS sail_set ON load_cases.sail_set_id = sail_set.id
+WHERE awa_range.id = 'reaching'
+AND sail_set.sails = ARRAY['blade', 'full-main', 'full-mizzen'];
 
-INSERT INTO loads.reference_values (variable_id, load_case_id, alarm_low, warning_low, target, warning_high, alarm_high)
-SELECT
-    'main-sheet-load',
-    load_cases.id,
-    0.0,
-    1.0,
-    2.0,
-    3.0,
-    4.0
-FROM loads.load_cases
-JOIN loads.awa_ranges AS awa_range ON load_cases.awa_range_id = awa_range.id
-WHERE awa_range.id = 'downwind';
 
 INSERT INTO loads.reference_values (variable_id, load_case_id, alarm_low, warning_low, target, warning_high, alarm_high)
 SELECT
@@ -257,6 +266,7 @@ JOIN loads.sail_sets_combined AS sail_set ON load_cases.sail_set_id = sail_set.i
 WHERE awa_range.id = 'downwind' AND aws_range.aws_range = '[15,20)'::numrange
 AND sail_set.sails = ARRAY['blade', 'full-main', 'full-mizzen'];
 
+
 INSERT INTO loads.reference_values (variable_id, load_case_id, alarm_low, warning_low, target, warning_high, alarm_high)
 SELECT
     'main-traveler-relative-position',
@@ -268,4 +278,4 @@ SELECT
     .8
 FROM loads.load_cases
 JOIN loads.awa_ranges AS awa_range ON load_cases.awa_range_id = awa_range.id
-WHERE awa_range.id = 'upwind'
+WHERE awa_range.id = 'upwind';

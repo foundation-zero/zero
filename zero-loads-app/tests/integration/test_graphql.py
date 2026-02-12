@@ -17,7 +17,7 @@ def override_messaging():
 
     mock.get_values_for = Mock(
         return_value=[
-            ActualType(id="main-sheet-load", value=42.0),
+            ActualType(id="main-runner-ps-load", value=42.0),
         ]
     )
 
@@ -41,9 +41,9 @@ async def test_graphql(async_client: AsyncClient, override_dependency):
             json={
                 "query": """
                 query {
-                    variables(variables: ["main-sheet-load"]) {
+                    variables(variables: ["main-runner-ps-load"]) {
                         id
-                        reference(case: {awaRange: downwind, awsRange: aws_15_20, sailset: ["full-main", "full-mizzen", "blade"]}) {
+                        reference(case: {awaRange: upwind, awsRange: aws_15_20, sailset: ["full-main", "full-mizzen", "blade"]}) {
                             alarmLow
                             alarmHigh
                             target
@@ -54,8 +54,10 @@ async def test_graphql(async_client: AsyncClient, override_dependency):
                             id
                             name
                             unit
-                            minimum
-                            maximum
+                            scaleMin
+                            scaleMax
+                            scaleMinLabel
+                            scaleMaxLabel
                         }
                         actual {
                             id
@@ -72,24 +74,26 @@ async def test_graphql(async_client: AsyncClient, override_dependency):
             "data": {
                 "variables": [
                     {
-                        "id": "main-sheet-load",
+                        "id": "main-runner-ps-load",
                         "reference": {
-                            "alarmLow": 0.0,
-                            "warningLow": 1.0,
-                            "target": 2.0,
-                            "warningHigh": 3.0,
-                            "alarmHigh": 4.0,
+                            "alarmLow": 6.0,
+                            "warningLow": 9.0,
+                            "target": 12.0,
+                            "warningHigh": 15.0,
+                            "alarmHigh": 18.0,
                         },
                         "actual": {
-                            "id": "main-sheet-load",
+                            "id": "main-runner-ps-load",
                             "value": 42.0,
                         },
                         "variable": {
-                            "id": "main-sheet-load",
-                            "name": "Main Sheet Load",
+                            "id": "main-runner-ps-load",
+                            "name": "runner ps",
                             "unit": "tonne",
-                            "minimum": 0.0,
-                            "maximum": 20.0,
+                            "scaleMin": 0.0,
+                            "scaleMax": 20.0,
+                            "scaleMinLabel": None,
+                            "scaleMaxLabel": None,
                         },
                     },
                 ]
@@ -166,8 +170,10 @@ async def test_graphql_all_variables(async_client: AsyncClient, override_depende
                             id
                             name
                             unit
-                            minimum
-                            maximum
+                            scaleMin
+                            scaleMax
+                            scaleMinLabel
+                            scaleMaxLabel
                         }
                     }
                 }
@@ -195,8 +201,10 @@ async def test_graphql_variable_duplicates(
                             id
                             name
                             unit
-                            minimum
-                            maximum
+                            scaleMin
+                            scaleMax
+                            scaleMinLabel
+                            scaleMaxLabel
                         }
                     }
                     b: variables {
@@ -205,8 +213,10 @@ async def test_graphql_variable_duplicates(
                             id
                             name
                             unit
-                            minimum
-                            maximum
+                            scaleMin
+                            scaleMax
+                            scaleMinLabel
+                            scaleMaxLabel
                         }
                     }
                 }
@@ -229,16 +239,16 @@ async def test_graphql_reference_duplicates(
             json={
                 "query": """
                 query {
-                    variables(variables: ["main-sheet-load"]) {
+                    variables(variables: ["main-runner-ps-load"]) {
                         id
-                        a: reference(case: {awaRange: downwind, awsRange: aws_15_20, sailset: ["full-main", "full-mizzen", "blade"]}) {
+                        a: reference(case: {awaRange: upwind, awsRange: aws_15_20, sailset: ["full-main", "full-mizzen", "blade"]}) {
                             alarmLow
                             alarmHigh
                             target
                             warningHigh
                             warningLow
                         }
-                        b: reference(case: {awaRange: downwind, awsRange: aws_15_20, sailset: ["full-main", "full-mizzen", "blade"]}) {
+                        b: reference(case: {awaRange: upwind, awsRange: aws_15_20, sailset: ["full-main", "full-mizzen", "blade"]}) {
                             alarmLow
                             alarmHigh
                             target
@@ -256,20 +266,20 @@ async def test_graphql_reference_duplicates(
             "data": {
                 "variables": [
                     {
-                        "id": "main-sheet-load",
+                        "id": "main-runner-ps-load",
                         "a": {
-                            "alarmLow": 0.0,
-                            "warningLow": 1.0,
-                            "target": 2.0,
-                            "warningHigh": 3.0,
-                            "alarmHigh": 4.0,
+                            "alarmLow": 6.0,
+                            "warningLow": 9.0,
+                            "target": 12.0,
+                            "warningHigh": 15.0,
+                            "alarmHigh": 18.0,
                         },
                         "b": {
-                            "alarmLow": 0.0,
-                            "warningLow": 1.0,
-                            "target": 2.0,
-                            "warningHigh": 3.0,
-                            "alarmHigh": 4.0,
+                            "alarmLow": 6.0,
+                            "warningLow": 9.0,
+                            "target": 12.0,
+                            "warningHigh": 15.0,
+                            "alarmHigh": 18.0,
                         },
                     },
                 ]

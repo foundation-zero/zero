@@ -10,6 +10,10 @@ class VariableMeta:
     name: str | None = None
     display_name: str | None = None
     ignore: bool = False
+    scale_min: float | None = None
+    scale_max: float | None = None
+    scale_min_label: str | None = None
+    scale_max_label: str | None = None
 
 
 @dataclass
@@ -36,8 +40,8 @@ def decakilogram_to_tonne(value: int) -> float:
 
 RelativePosition: TypeAlias = Annotated[
     float,
-    Field(ge=0, le=1),
-    VariableMeta(unit="ratio", name="relative-position"),
+    Field(ge=0, le=1, validation_alias="relative_position_dummy"),
+    VariableMeta(unit="ratio", name="relative-position", scale_min=0, scale_max=1),
     BeforeValidator(per_mille_to_ratio),
     ScalingMeta(
         conversion=per_mille_to_ratio,
@@ -45,20 +49,40 @@ RelativePosition: TypeAlias = Annotated[
     ),
 ]
 Position: TypeAlias = Annotated[
-    int, Field(ge=0), VariableMeta(unit="mm", name="position")
+    int,
+    Field(ge=0, validation_alias="ow_ActPos_mm"),
+    VariableMeta(unit="mm", name="position", scale_min=0, scale_max=100),
 ]
-Load: TypeAlias = Annotated[
+
+LoadBase: TypeAlias = Annotated[  # Needed to be able to override Field constraints where needed (e.g. in Vang). Pydantic has no fixed order to resolve nested `Field`s in inside of `Annotated`s
     float,
-    Field(ge=0, le=20),  # this should go on the model field
-    VariableMeta(unit="tonne", name="load"),
+    Field(validation_alias="ow_ActLoad_10kg"),
+    VariableMeta(unit="tonne", name="load", scale_min=0, scale_max=20),
     BeforeValidator(decakilogram_to_tonne),
     ScalingMeta(
         conversion=decakilogram_to_tonne,
         inverse_conversion=tonne_to_decakilogram,
     ),
 ]
-Alarm: TypeAlias = bool
-Lock: TypeAlias = bool
+
+Load: TypeAlias = Annotated[LoadBase, Field(ge=0, le=20)]
+
+ReliefLoad: TypeAlias = Annotated[
+    float,
+    Field(ge=0, le=20, validation_alias="ow_RelfLoad_10kg"),
+    VariableMeta(unit="tonne", name="relief_load", ignore=True),
+    BeforeValidator(decakilogram_to_tonne),
+    ScalingMeta(
+        conversion=decakilogram_to_tonne,
+        inverse_conversion=tonne_to_decakilogram,
+    ),
+]
+Alarm: TypeAlias = Annotated[
+    bool,
+    Field(validation_alias="ox_LoadAlarm"),
+    VariableMeta(unit="bool", name="alarm", ignore=True),
+]
+Lock: TypeAlias = Annotated[bool, VariableMeta(unit="bool")]
 Speed: TypeAlias = Annotated[
     float,
     Field(ge=0),
