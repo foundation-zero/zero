@@ -33,6 +33,8 @@ models:
         +schema: loads
       marpower:
         +schema: marpower
+      sail_system:
+        +schema: sail_system
     10_bronze:
       +materialized: table
       domestic_control:
