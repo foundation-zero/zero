@@ -53,6 +53,7 @@ services:
       - zero
       - domestic
       - loads
+      - data
     environment: &setup
       PG_HOST: postgres
       PG_HOST_DOCKER: postgres
@@ -77,6 +78,7 @@ services:
     profiles:
       - zero
       - domestic
+      - data
     healthcheck:
       test:
         - CMD-SHELL
@@ -96,6 +98,7 @@ services:
     profiles:
       - zero
       - domestic
+      - data
     environment:
       <<: *setup
     depends_on:
