@@ -112,8 +112,10 @@ def parse_sail_system_xml(path: Path) -> list[IOTopic]:
             )
             continue
         topic_name = f"sail-systems/{name.lower()}"
-        topics.append(IOTopic(topic_name, fields))
-        logger.debug(f"Node {name!r} → {topic_name} ({len(fields)} fields)")
+        topics.append(IOTopic(topic_name, fields, group=plc_type))
+        logger.debug(
+            f"Node {name!r} → {topic_name} ({len(fields)} fields, group={plc_type!r})"
+        )
 
     return topics
 

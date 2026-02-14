@@ -22,6 +22,7 @@ class IOValue:
 class IOTopic:
     topic: str
     fields: List[IOValue]
+    group: str | None = None
 
 
 @dataclass
