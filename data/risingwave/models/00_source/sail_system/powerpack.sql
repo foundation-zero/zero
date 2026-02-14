@@ -1,0 +1,33 @@
+{{ config(materialized='table_with_connector') }}
+CREATE TABLE {{ this }} (
+	time TIMESTAMPTZ AS proctime(),
+	"x_Maintenance"	BOOLEAN,
+	"x_FunctionEnabled"	BOOLEAN,
+	"x_GroupEnabled"	BOOLEAN,
+	"x_LocalControl"	BOOLEAN,
+	"x_RcControl"	BOOLEAN,
+	"x_Running"	BOOLEAN,
+	"ox_GnrlAlrm"	BOOLEAN,
+	"x_OnOff"	BOOLEAN,
+	"x_ExtOnOff"	BOOLEAN,
+	"i_State"	INTEGER,
+	"ui_RunningHours"	INTEGER,
+	"ix_RelayStatus"	BOOLEAN,
+	"ox_PwrEnable"	BOOLEAN,
+	"x_PowerFailure"	BOOLEAN,
+	"ox_FcuEnbl"	BOOLEAN,
+	"x_SetModeOff"	BOOLEAN,
+	"x_SetModeOn"	BOOLEAN,
+	"x_SetModeAuto"	BOOLEAN,
+	"x_ExtSetModeOff"	BOOLEAN,
+	"x_ExtSetModeOn"	BOOLEAN,
+	"x_ExtSetModeAuto"	BOOLEAN,
+	"x_ModeOff"	BOOLEAN,
+	"x_ModeOn"	BOOLEAN,
+	"x_ModeAuto"	BOOLEAN,
+	"or_SpdStp"	REAL,
+	"or_TrqStp"	REAL,
+	"i_Pressure"	INTEGER,
+	"i_Flow"	INTEGER
+)
+{{ mqtt_with('sail-systems/fpp1_powerpack1,sail-systems/fpp2_powerpack2') }}
