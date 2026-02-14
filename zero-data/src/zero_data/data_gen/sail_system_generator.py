@@ -61,4 +61,6 @@ class SailSystemGenerator:
                     return random.randint(0, 1000)
                 # loads are in decakilograms (0-2000 = 0-20 tonnes)
                 return random.randint(0, 2000)
+            case "REAL":
+                return random.normalvariate(mu=10, sigma=1.0)
         raise KeyError(f"Unknown type: {data_type}")
