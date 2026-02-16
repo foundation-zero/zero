@@ -6,7 +6,9 @@ import { nodePolyfills } from "vite-plugin-node-polyfills";
 
 // https://vite.dev/config/
 export default defineConfig(({ mode }) => {
-  const env = { ...process.env, ...loadEnv(mode, process.cwd()) };
+  const baseEnv = { ...process.env, ...loadEnv(mode, process.cwd()) };
+  const testEnv = process.env.PLAYWRIGHT_TEST_BASE_URL ? loadEnv("test", process.cwd()) : {};
+  const env = { ...baseEnv, ...testEnv };
 
   return {
     server: {
@@ -58,6 +60,7 @@ export default defineConfig(({ mode }) => {
     resolve: {
       alias: {
         "@": fileURLToPath(new URL("./src", import.meta.url)),
+        "@env": fileURLToPath(new URL("./settings", import.meta.url)),
         "@common": fileURLToPath(new URL("./src/modules/common", import.meta.url)),
         "@tests": fileURLToPath(new URL("./tests", import.meta.url)),
         "@components": fileURLToPath(new URL("./src/components/ui", import.meta.url)),
