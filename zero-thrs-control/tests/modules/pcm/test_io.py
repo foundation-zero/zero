@@ -5,7 +5,7 @@ from thrs.input_output.modules.pcm import (
     PcmSimulationOutputs,
 )
 from tests.modules.conftest import (
-    compare_fmu_to_class,
+    compare_fmu_to_classes,
     compare_modelica_names,
     compare_yard_tags,
 )
@@ -26,12 +26,14 @@ def test_pcm_sheet_names():
 
 
 def test_pcm_fmu_names():
-    missing_in_py, missing_in_fmu = compare_fmu_to_class(
+    missing_in_py, missing_in_fmu = compare_fmu_to_classes(
         pcm_path,
-        PcmSensorValues.zero(),
-        PcmControlValues.zero(),
-        PcmSimulationInputs.zero(),
-        PcmSimulationOutputs.zero(),
+        [
+            PcmSensorValues.zero(),
+            PcmControlValues.zero(),
+            PcmSimulationInputs.zero(),
+            PcmSimulationOutputs.zero(),
+        ],
     )
 
     assert not missing_in_py, f"Missing in Python: {missing_in_py}"

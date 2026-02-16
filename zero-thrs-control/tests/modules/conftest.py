@@ -9,20 +9,10 @@ from thrs.simulation.io_mapping import flatten_model_values
 SHEET_URL = "https://docs.google.com/spreadsheets/d/1YyfkKmqL8MZuJfStljTjhgFxawcco2cp2qCmBGFrR04/export?gid=0&format=csv"
 
 
-def modelica_names_from_class(
-    sensor_values: ThrsValues,
-    control_values: ThrsValues,
-    simulation_inputs: ThrsValues,
-    simulation_outputs: ThrsValues,
-) -> set[str]:
-    return set(
-        {
-            **flatten_model_values(control_values, fmu_only=True),
-            **flatten_model_values(simulation_inputs, fmu_only=True),
-            **flatten_model_values(sensor_values, fmu_only=True),
-            **flatten_model_values(simulation_outputs, fmu_only=True),
-        }.keys()
-    )
+def modelica_names_from_classes(classes: list[ThrsValues]) -> set[str]:
+    return {
+        k for cls in classes for k in flatten_model_values(cls, fmu_only=True).keys()
+    }
 
 
 def compare_modelica_names(
@@ -53,8 +43,8 @@ def compare_modelica_names(
         .to_list()
     )
 
-    py_keys = modelica_names_from_class(
-        control_values, sensor_values, simulation_inputs, simulation_outputs
+    py_keys = modelica_names_from_classes(
+        [control_values, sensor_values, simulation_inputs, simulation_outputs]
     )
 
     missing_in_py = variables - py_keys
@@ -63,9 +53,7 @@ def compare_modelica_names(
     return missing_in_py, missing_in_sheet
 
 
-def compare_fmu_to_class(
-    filename, sensor_values, control_values, simulation_inputs, simulation_outputs
-):
+def compare_fmu_to_classes(filename, classes: list[ThrsValues]):
     model_description = fmpy.read_model_description(filename)
 
     fmu_keys = set(
@@ -75,9 +63,7 @@ def compare_fmu_to_class(
             if var.causality == "input" or var.causality == "output"
         ]
     )
-    py_keys = modelica_names_from_class(
-        sensor_values, control_values, simulation_inputs, simulation_outputs
-    )
+    py_keys = modelica_names_from_classes(classes)
 
     missing_in_py = fmu_keys - py_keys
     missing_in_fmu = py_keys - fmu_keys

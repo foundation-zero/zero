@@ -11,7 +11,6 @@ from thrs.control.modules.pvt import PvtParameters
 from thrs.input_output.base import Stamped, CombinedValues
 from thrs.input_output.definitions.simulation import (
     Boundary,
-    ExchangerBoundary,
     HeatSource,
     Pcs,
     Thruster,
@@ -47,15 +46,13 @@ def simulation_inputs():
         pcm_freshwater_supply=Boundary(
             temperature=Stamped.stamp(40), flow=Stamped.stamp(0)
         ),
-        consumers_fahrenheit_supply=ExchangerBoundary(
+        consumers_fahrenheit_supply=Boundary(
             temperature=Stamped.stamp(60),
             flow=Stamped.stamp(42),
-            overpressure=Stamped.stamp(0.2),
         ),
-        consumers_boosting_supply=ExchangerBoundary(
+        consumers_boosting_supply=Boundary(
             temperature=Stamped.stamp(40),
             flow=Stamped.stamp(29),
-            overpressure=Stamped.stamp(0.2),
         ),
     )
 
