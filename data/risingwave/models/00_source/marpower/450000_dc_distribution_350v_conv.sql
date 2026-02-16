@@ -11,4 +11,4 @@ CREATE TABLE {{ this }} (
 	"DISABLEISOLATION"	{{ marpower_struct("BOOLEAN") }},
 )
 INCLUDE partition AS topic
-{{ mqtt_with('marpower/450000-dc-distribution/350v_conv/#') }}
+{{ mqtt_with('marpower/450000-dc-distribution/350v-conv/#') }}
