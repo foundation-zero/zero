@@ -326,6 +326,19 @@ services:
       vernemq:
         condition: service_healthy
 
+  loads-fiber-optic-sensors-stub:
+    command: fiber-optic-sensors-stub
+    build:
+      context: .
+      dockerfile: ./zero-loads-app/Dockerfile
+    profiles:
+      - loads
+    environment:
+      <<: *app_env
+    depends_on:
+      vernemq:
+        condition: service_healthy
+
   loads-sail-system-sensors-stub:
     command: sail-system-sensors-stub
     build:

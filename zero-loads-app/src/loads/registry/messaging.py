@@ -1,7 +1,8 @@
 from typing import Sequence
 
-from loads.registry.registry import AT_MODELS, SAIL_SYSTEM_MODELS
 from loads.sensors import LoadsModel
+
+from .registry import AT_MODELS, FIBER_OPTIC_MODELS, SAIL_SYSTEM_MODELS
 
 
 class MessagingModule:
@@ -23,3 +24,5 @@ sail_system_sensors = MessagingModule(models=SAIL_SYSTEM_MODELS)
 
 
 at_sensors = MessagingModule(models=AT_MODELS)
+
+fiber_optic_sensors = MessagingModule(models=FIBER_OPTIC_MODELS)

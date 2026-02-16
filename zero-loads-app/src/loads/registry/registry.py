@@ -2,8 +2,7 @@ from dataclasses import dataclass
 from functools import partial
 from typing import Callable, cast
 
-from loads.sensors import at, sail_system
-from loads.sensors.base import LoadsModel
+from loads.sensors import LoadsModel, at, fiber_optic, sail_system
 from loads.util import camel_to_kebab, hyphenize
 
 
@@ -31,14 +30,14 @@ class AlarmDefinition:
     actual_definition: VariableDefinition
 
 
-def _build_sail_system_variable_definitions(
+def _build_loads_model_variable_definitions(
     model: type[LoadsModel],
 ) -> list[VariableDefinition]:
     function_id = camel_to_kebab(model.__name__)
 
     return [
         VariableDefinition(
-            id=f"{function_id}-{hyphenize(variable_meta.name or '')}",
+            id=f"{function_id}-{hyphenize(variable_meta.name or field)}",
             name=model.field_display_name(field, field_info.metadata),
             topic=model.TOPIC,
             get_actual=partial(
@@ -145,11 +144,17 @@ SAIL_SYSTEM_MODELS: list[type[LoadsModel]] = [
     sail_system.StaysailStayAdjuster,
 ]
 AT_MODELS = [at.ApparentWindSpeed, at.ApparentWindAngle]
+FIBER_OPTIC_MODELS = [fiber_optic.SideStayMeasurements]
 
 _SAIL_SYSTEM_VARIABLES: dict[str, VariableDefinition] = {
     variable.id: variable
     for model in SAIL_SYSTEM_MODELS
-    for variable in _build_sail_system_variable_definitions(model)
+    for variable in _build_loads_model_variable_definitions(model)
+}
+_FIBER_OPTIC_VARIABLES: dict[str, VariableDefinition] = {
+    variable.id: variable
+    for model in FIBER_OPTIC_MODELS
+    for variable in _build_loads_model_variable_definitions(model)
 }
 
 
@@ -179,7 +184,7 @@ _AT_VARIABLES: dict[str, VariableDefinition] = {
     for variable in [_build_at_variable_definitions(model)]
 }
 
-VARIABLES = {**_SAIL_SYSTEM_VARIABLES, **_AT_VARIABLES}
+VARIABLES = {**_SAIL_SYSTEM_VARIABLES, **_AT_VARIABLES, **_FIBER_OPTIC_VARIABLES}
 ALARMS = {
     alarm.id: alarm
     for model in SAIL_SYSTEM_MODELS
