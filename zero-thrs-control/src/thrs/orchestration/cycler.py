@@ -30,7 +30,7 @@ class Cycler:
                             result.simulation_inputs, fmu_only=False
                         ),
                     },
-                    self._control.mode,
+                    str(self._control.mode),
                     result.timestamp,
                 )
             self._control_values = self._control.control(result.sensor_values).values

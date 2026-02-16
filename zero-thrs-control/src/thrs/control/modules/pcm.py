@@ -2,7 +2,7 @@ from datetime import datetime
 from typing import Callable
 
 from transitions import Machine, State
-from thrs.classes.control import Control, ControlResult
+from thrs.classes.control import Control, ControlMode, ControlResult
 from thrs.control.controllers import Controller, FlowBalanceController
 from thrs.input_output.alarms import BaseAlarms
 from thrs.input_output.base import Stamped, ThrsValues
@@ -59,7 +59,7 @@ def _INITIAL_CONTROL_VALUES(timestamp) -> PcmControlValues:
     )
 
 
-class PcmControlMode(ThrsValues):
+class PcmControlMode(ControlMode):
     mode: str
 
     @property

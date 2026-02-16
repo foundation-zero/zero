@@ -2,6 +2,8 @@ from dataclasses import dataclass
 from datetime import datetime
 from typing import Callable, Protocol
 
+from thrs.input_output.base import ThrsValues
+
 
 @dataclass
 class ControlResult[C]:
@@ -23,3 +25,15 @@ class Control[S, C, P, M](Protocol):
     def mode(self) -> M | None: ...
 
     def update_parameters(self, parameters: P): ...
+
+
+class ControlMode(ThrsValues):
+    def __str__(self):
+        values = [
+            getattr(self, field_name)
+            if isinstance(getattr(self, field_name), str)
+            else f"{field_name}: {str(getattr(self, field_name))}"
+            for field_name, field_info in self.model_fields.items()
+        ]
+
+        return ", ".join(values)

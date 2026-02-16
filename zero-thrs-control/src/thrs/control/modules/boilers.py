@@ -2,7 +2,7 @@ from datetime import datetime
 from typing import Callable
 
 from transitions import Machine, State
-from thrs.classes.control import Control, ControlResult
+from thrs.classes.control import Control, ControlMode, ControlResult
 from thrs.control.controllers import Controller
 from thrs.input_output.base import Stamped, ThrsValues
 from thrs.input_output.definitions.units import Celsius, LMin, Liter, Ratio, Tuning
@@ -300,7 +300,7 @@ class TanksController:
         self._select_boosting_tank(parameters)
 
 
-class BoilersControlMode(ThrsValues):
+class BoilersControlMode(ControlMode):
     mode: str
 
 

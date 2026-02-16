@@ -3,7 +3,7 @@ from typing import cast
 
 from pyparsing import Callable
 from transitions import Machine, State
-from thrs.classes.control import Control, ControlResult
+from thrs.classes.control import Control, ControlMode, ControlResult
 from thrs.control.controllers import Controller
 from thrs.input_output.base import Stamped, ThrsValues
 from thrs.input_output.definitions.control import Fahrenheit, Valve
@@ -63,7 +63,7 @@ def _INITIAL_CONTROL_VALUES(timestamp) -> FahrenheitControlValues:
     )
 
 
-class FahrenheitControlMode(ThrsValues):
+class FahrenheitControlMode(ControlMode):
     mode: str
 
 

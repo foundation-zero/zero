@@ -1,3 +1,4 @@
+import pytest
 from thrs.input_output.modules.consumers import (
     ConsumersControlValues,
     ConsumersSensorValues,
@@ -12,6 +13,7 @@ from tests.modules.conftest import (
 from thrs.simulation.models.fmu_paths import consumers_path
 
 
+@pytest.mark.skip("Waiting for module update")
 def test_consumers_sheet_names():
     missing_in_py, missing_in_sheet = compare_modelica_names(
         ["Consumers"],

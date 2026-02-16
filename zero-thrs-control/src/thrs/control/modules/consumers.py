@@ -2,7 +2,7 @@ from datetime import datetime
 from typing import Annotated, Callable
 
 from pydantic import Field
-from thrs.classes.control import Control, ControlResult
+from thrs.classes.control import Control, ControlMode, ControlResult
 from thrs.control.controllers import (
     Controller,
     FlowDistributionController,
@@ -47,7 +47,7 @@ def _INITIAL_CONTROL_VALUES(timestamp) -> ConsumersControlValues:
     )
 
 
-class ConsumersControlMode(ThrsValues):
+class ConsumersControlMode(ControlMode):
     pass
 
 
