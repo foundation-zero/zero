@@ -11,7 +11,7 @@ import {
 import { AWA_VALUES, AWS_VALUES } from "../lib/consts";
 import { Dashboard, DASHBOARDS, OVERVIEW } from "../lib/consts.dashboards";
 import { SailId, SAILS } from "../lib/consts.sails";
-import { unique } from "../lib/utils";
+import { findInRange, unique } from "../lib/utils";
 import { AWA, MaybeVariable, NumRangeId, PositionId, SailSelection, Variable } from "../types";
 import {
   QueryVariableActual,
@@ -46,7 +46,8 @@ export const useVariablesStore = defineStore("loads-variables", () => {
   );
 
   const currentVariables = computed(() =>
-    selectedDashboard.value.groups.flatMap((g) => g.variables),
+    // Always query for AWA and AWS
+    selectedDashboard.value.groups.flatMap((g) => g.variables).concat(["awa", "aws"]),
   );
 
   const selectedSails = useLocalStorage<SailSelection>("loads-variables-selected-sails", {
@@ -137,6 +138,18 @@ export const useVariablesStore = defineStore("loads-variables", () => {
     },
   );
 
+  const currentAWS = computed(
+    () => actuals.value?.variables.find((v) => v.id === "aws")?.actual.value,
+  );
+  const currentAWA = computed(
+    () => actuals.value?.variables.find((v) => v.id === "awa")?.actual.value,
+  );
+
+  const lockWindConditions = () => {
+    selectedAWA.value = findInRange(currentAWA.value ?? 0, AWA_VALUES)?.id ?? selectedAWA.value;
+    selectedAWS.value = findInRange(currentAWS.value ?? 0, AWS_VALUES)?.id ?? selectedAWS.value;
+  };
+
   return {
     variables,
     getVariableById,
@@ -144,6 +157,8 @@ export const useVariablesStore = defineStore("loads-variables", () => {
     selectedAWS,
     setAWA,
     setAWS,
+    currentAWA,
+    currentAWS,
     selectedSails,
     setSelectedSails,
     selectedDashboard,
@@ -152,5 +167,6 @@ export const useVariablesStore = defineStore("loads-variables", () => {
     currentVariables,
     startPolling,
     stopPolling,
+    lockWindConditions,
   };
 });

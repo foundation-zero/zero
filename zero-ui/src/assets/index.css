@@ -784,145 +784,145 @@ body,
 
   /* Semantic colors */
   .bg-background {
-    background-color: var(--color-background);
+    background-color: var(--background);
   }
   .bg-muted {
-    background-color: var(--color-background-muted);
+    background-color: var(--background-muted);
   }
   .bg-background-inverse {
-    background-color: var(--color-background-inverse);
+    background-color: var(--background-inverse);
   }
   .bg-background-subtle {
-    background-color: var(--color-background-subtle);
+    background-color: var(--background-subtle);
   }
   .bg-foreground {
-    background-color: var(--color-foreground);
+    background-color: var(--foreground);
   }
   .bg-foreground-inverse {
-    background-color: var(--color-foreground-inverse);
+    background-color: var(--foreground-inverse);
   }
   .bg-foreground-subtle {
-    background-color: var(--color-foreground-subtle);
+    background-color: var(--foreground-subtle);
   }
   .bg-primary {
-    background-color: var(--color-primary);
+    background-color: var(--primary);
   }
   .bg-primary-foreground {
-    background-color: var(--color-primary-foreground);
+    background-color: var(--primary-foreground);
   }
   .bg-secondary {
-    background-color: var(--color-secondary);
+    background-color: var(--secondary);
   }
   .bg-secondary-foreground {
-    background-color: var(--color-secondary-foreground);
+    background-color: var(--secondary-foreground);
   }
   .bg-muted {
-    background-color: var(--color-muted);
+    background-color: var(--muted);
   }
   .bg-muted-foreground {
-    background-color: var(--color-muted-foreground);
+    background-color: var(--muted-foreground);
   }
   .bg-accent {
-    background-color: var(--color-accent);
+    background-color: var(--accent);
   }
   .bg-accent-foreground {
-    background-color: var(--color-accent-foreground);
+    background-color: var(--accent-foreground);
   }
   .bg-destructive {
-    background-color: var(--color-destructive);
+    background-color: var(--destructive);
   }
   .bg-destructive-foreground {
-    background-color: var(--color-destructive-foreground);
+    background-color: var(--destructive-foreground);
   }
   .bg-constructive {
-    background-color: var(--color-constructive);
+    background-color: var(--constructive);
   }
   .bg-constructive-muted {
-    background-color: var(--color-constructive-muted);
+    background-color: var(--constructive-muted);
   }
   .bg-constructive-dull {
-    background-color: var(--color-constructive-dull);
+    background-color: var(--constructive-dull);
   }
   .bg-warning {
-    background-color: var(--color-warning);
+    background-color: var(--warning);
   }
   .bg-warning-muted {
-    background-color: var(--color-warning-muted);
+    background-color: var(--warning-muted);
   }
   .bg-warning-dull {
-    background-color: var(--color-warning-dull);
+    background-color: var(--warning-dull);
   }
   .bg-brand {
-    background-color: var(--color-brand);
+    background-color: var(--brand);
   }
   .bg-brand-muted {
-    background-color: var(--color-brand-muted);
+    background-color: var(--brand-muted);
   }
   .bg-brand-dull {
-    background-color: var(--color-brand-dull);
+    background-color: var(--brand-dull);
   }
   .bg-border {
-    background-color: var(--color-border);
+    background-color: var(--border);
   }
   .bg-input {
-    background-color: var(--color-input);
+    background-color: var(--input);
   }
   .bg-input-border {
-    background-color: var(--color-input-border);
+    background-color: var(--input-border);
   }
   .bg-ring {
-    background-color: var(--color-ring);
+    background-color: var(--ring);
   }
   .bg-card {
-    background-color: var(--color-card);
+    background-color: var(--card);
   }
   .bg-card-foreground {
-    background-color: var(--color-card-foreground);
+    background-color: var(--card-foreground);
   }
   .bg-popover {
-    background-color: var(--color-popover);
+    background-color: var(--popover);
   }
   .bg-popover-foreground {
-    background-color: var(--color-popover-foreground);
+    background-color: var(--popover-foreground);
   }
   .bg-chart-1 {
-    background-color: var(--color-chart-1);
+    background-color: var(--chart-1);
   }
   .bg-chart-2 {
-    background-color: var(--color-chart-2);
+    background-color: var(--chart-2);
   }
   .bg-chart-3 {
-    background-color: var(--color-chart-3);
+    background-color: var(--chart-3);
   }
   .bg-chart-4 {
-    background-color: var(--color-chart-4);
+    background-color: var(--chart-4);
   }
   .bg-chart-5 {
-    background-color: var(--color-chart-5);
+    background-color: var(--chart-5);
   }
   .bg-sidebar {
-    background-color: var(--color-sidebar);
+    background-color: var(--sidebar);
   }
   .bg-sidebar-foreground {
-    background-color: var(--color-sidebar-foreground);
+    background-color: var(--sidebar-foreground);
   }
   .bg-sidebar-primary {
-    background-color: var(--color-sidebar-primary);
+    background-color: var(--sidebar-primary);
   }
   .bg-sidebar-primary-foreground {
-    background-color: var(--color-sidebar-primary-foreground);
+    background-color: var(--sidebar-primary-foreground);
   }
   .bg-sidebar-accent {
-    background-color: var(--color-sidebar-accent);
+    background-color: var(--sidebar-accent);
   }
   .bg-sidebar-accent-foreground {
-    background-color: var(--color-sidebar-accent-foreground);
+    background-color: var(--sidebar-accent-foreground);
   }
   .bg-sidebar-border {
-    background-color: var(--color-sidebar-border);
+    background-color: var(--sidebar-border);
   }
   .bg-sidebar-ring {
-    background-color: var(--color-sidebar-ring);
+    background-color: var(--sidebar-ring);
   }
 
   /* Typography classes for documentation - force inclusion */

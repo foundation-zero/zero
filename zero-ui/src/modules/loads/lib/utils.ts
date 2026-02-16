@@ -60,3 +60,8 @@ export const toRange = <T extends string = NumRangeId>(
 export const unique = <T>(array: T[] | Record<string, T>): T[] => {
   return Array.from(new Set(Array.isArray(array) ? array : Object.values(array)));
 };
+
+export const findInRange = <T extends string>(
+  value: number,
+  ranges: Range<T>[],
+): Range<T> | undefined => ranges.find(({ from, to }) => value >= from && value < to);
