@@ -1,5 +1,5 @@
 from functools import reduce
-from typing import Any, Callable, ClassVar, get_type_hints
+from typing import Any, Callable, ClassVar, cast, get_type_hints
 
 import generator.gen as gen
 from annotated_types import Ge, Le
@@ -76,11 +76,11 @@ class LoadsModel(BaseModel):
 
     @staticmethod
     def extract_minimum(meta: list[Any]) -> float | None:
-        return next((getattr(m, "ge") for m in meta if isinstance(m, Ge)), None)
+        return next((cast(float, m.ge) for m in meta if isinstance(m, Ge)), None)
 
     @staticmethod
     def extract_maximum(meta: list[Any]) -> float | None:
-        return next((getattr(m, "le") for m in meta if isinstance(m, Le)), None)
+        return next((cast(float, m.le) for m in meta if isinstance(m, Le)), None)
 
     @staticmethod
     def _extract_inverse_scaling_conversion(meta: list[Any]) -> Callable | None:
