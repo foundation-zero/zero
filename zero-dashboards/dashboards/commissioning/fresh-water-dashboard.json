@@ -1051,7 +1051,7 @@
               "name": "Guest cabin SB",
               "placement": {
                 "height": 30,
-                "left": 235,
+                "left": 200,
                 "rotation": 0,
                 "top": 10,
                 "width": 180
@@ -1089,9 +1089,8 @@
               "placement": {
                 "height": 30,
                 "left": 15,
-                "rotation": 0,
                 "top": 10,
-                "width": 350
+                "width": 207
               },
               "type": "text"
             },
@@ -1125,7 +1124,7 @@
               "name": "Guest cabin PS FWD",
               "placement": {
                 "height": 30,
-                "left": 235,
+                "left": 200,
                 "top": 45,
                 "width": 180
               },
@@ -1162,7 +1161,7 @@
                 "height": 30,
                 "left": 15,
                 "top": 45,
-                "width": 350
+                "width": 207
               },
               "type": "text"
             },
@@ -1196,7 +1195,7 @@
               "name": "Guest cabin PS AFT",
               "placement": {
                 "height": 30,
-                "left": 235,
+                "left": 200,
                 "top": 80,
                 "width": 180
               },
@@ -1233,7 +1232,7 @@
                 "height": 30,
                 "left": 15,
                 "top": 80,
-                "width": 350
+                "width": 207
               },
               "type": "text"
             },
@@ -1267,7 +1266,7 @@
               "name": "Master cabin SB",
               "placement": {
                 "height": 30,
-                "left": 235,
+                "left": 200,
                 "top": 115,
                 "width": 180
               },
@@ -1304,7 +1303,7 @@
                 "height": 30,
                 "left": 15,
                 "top": 115,
-                "width": 350
+                "width": 207
               },
               "type": "text"
             },
@@ -1338,7 +1337,7 @@
               "name": "Master cabin PS",
               "placement": {
                 "height": 30,
-                "left": 235,
+                "left": 200,
                 "top": 150,
                 "width": 180
               },
@@ -1375,7 +1374,7 @@
                 "height": 30,
                 "left": 15,
                 "top": 150,
-                "width": 350
+                "width": 207
               },
               "type": "text"
             },
@@ -1409,8 +1408,7 @@
               "name": "Captain's cabin",
               "placement": {
                 "height": 30,
-                "left": 685,
-                "rotation": 0,
+                "left": 590,
                 "top": 10,
                 "width": 180
               },
@@ -1446,10 +1444,9 @@
               "name": "Element 16",
               "placement": {
                 "height": 30,
-                "left": 490,
-                "rotation": 0,
+                "left": 420,
                 "top": 10,
-                "width": 152
+                "width": 158
               },
               "type": "text"
             },
@@ -1483,7 +1480,7 @@
               "name": "Crew cabin SB AFT",
               "placement": {
                 "height": 30,
-                "left": 685,
+                "left": 590,
                 "top": 45,
                 "width": 180
               },
@@ -1518,9 +1515,9 @@
               "name": "Element 20",
               "placement": {
                 "height": 30,
-                "left": 490,
+                "left": 420,
                 "top": 45,
-                "width": 350
+                "width": 179
               },
               "type": "text"
             },
@@ -1554,7 +1551,7 @@
               "name": "Crew cabin SB MID",
               "placement": {
                 "height": 30,
-                "left": 685,
+                "left": 590,
                 "top": 80,
                 "width": 180
               },
@@ -1589,9 +1586,9 @@
               "name": "Element 22",
               "placement": {
                 "height": 30,
-                "left": 490,
+                "left": 420,
                 "top": 80,
-                "width": 350
+                "width": 179
               },
               "type": "text"
             },
@@ -1625,7 +1622,7 @@
               "name": "Crew cabin PS MID",
               "placement": {
                 "height": 30,
-                "left": 685,
+                "left": 590,
                 "top": 115,
                 "width": 180
               },
@@ -1660,9 +1657,9 @@
               "name": "Element 24",
               "placement": {
                 "height": 30,
-                "left": 490,
+                "left": 420,
                 "top": 115,
-                "width": 350
+                "width": 179
               },
               "type": "text"
             },
@@ -1696,7 +1693,7 @@
               "name": "Crew cabin SB FWD",
               "placement": {
                 "height": 30,
-                "left": 685,
+                "left": 590,
                 "top": 150,
                 "width": 180
               },
@@ -1731,9 +1728,9 @@
               "name": "Element 26",
               "placement": {
                 "height": 30,
-                "left": 490,
+                "left": 420,
                 "top": 150,
-                "width": 350
+                "width": 179
               },
               "type": "text"
             },
@@ -1767,7 +1764,7 @@
               "name": "Crew cabin PS FWD",
               "placement": {
                 "height": 30,
-                "left": 685,
+                "left": 590,
                 "top": 185,
                 "width": 180
               },
@@ -1802,9 +1799,9 @@
               "name": "Element 28",
               "placement": {
                 "height": 30,
-                "left": 490,
+                "left": 420,
                 "top": 185,
-                "width": 350
+                "width": 179
               },
               "type": "text"
             },
@@ -1838,7 +1835,7 @@
               "name": "Element 45",
               "placement": {
                 "height": 30,
-                "left": 235,
+                "left": 200,
                 "top": 185,
                 "width": 180
               },
@@ -1862,7 +1859,7 @@
                 },
                 "size": 16,
                 "text": {
-                  "fixed": "Guest bathroom PS FWD"
+                  "fixed": "Guest bathr. PS FWD"
                 },
                 "valign": "middle"
               },
@@ -1874,8 +1871,9 @@
               "placement": {
                 "height": 30,
                 "left": 15,
+                "rotation": 0,
                 "top": 185,
-                "width": 350
+                "width": 207
               },
               "type": "text"
             }
@@ -2009,7 +2007,8 @@
               "name": "Lower saloon",
               "placement": {
                 "height": 30,
-                "left": 165,
+                "left": 140,
+                "rotation": 0,
                 "top": 185,
                 "width": 180
               },
@@ -2081,7 +2080,7 @@
               "name": "Dayhead",
               "placement": {
                 "height": 30,
-                "left": 165,
+                "left": 140,
                 "top": 80,
                 "width": 180
               },
@@ -2152,8 +2151,7 @@
               "name": "Crew mess",
               "placement": {
                 "height": 30,
-                "left": 165,
-                "rotation": 0,
+                "left": 140,
                 "top": 10,
                 "width": 180
               },
@@ -2225,7 +2223,7 @@
               "name": "Lazaret",
               "placement": {
                 "height": 30,
-                "left": 165,
+                "left": 140,
                 "top": 115,
                 "width": 180
               },
@@ -2296,7 +2294,7 @@
               "name": "Galley 2",
               "placement": {
                 "height": 30,
-                "left": 165,
+                "left": 140,
                 "top": 45,
                 "width": 180
               },
@@ -2367,7 +2365,7 @@
               "name": "Laundry PS",
               "placement": {
                 "height": 30,
-                "left": 165,
+                "left": 140,
                 "top": 150,
                 "width": 180
               },
@@ -2438,7 +2436,7 @@
               "name": "Deckhouse",
               "placement": {
                 "height": 30,
-                "left": 695,
+                "left": 575,
                 "rotation": 0,
                 "top": 10,
                 "width": 180
@@ -2474,8 +2472,7 @@
               "name": "Element 36",
               "placement": {
                 "height": 30,
-                "left": 435,
-                "rotation": 0,
+                "left": 360,
                 "top": 10,
                 "width": 148
               },
@@ -2511,7 +2508,7 @@
               "name": "Deck FR48 SB tech corridor",
               "placement": {
                 "height": 30,
-                "left": 695,
+                "left": 575,
                 "top": 45,
                 "width": 180
               },
@@ -2535,7 +2532,7 @@
                 },
                 "size": 16,
                 "text": {
-                  "fixed": "Deck FR48 SB tech corridor"
+                  "fixed": "Deck FR48 SB tech corr."
                 },
                 "valign": "middle"
               },
@@ -2546,7 +2543,8 @@
               "name": "Element 38",
               "placement": {
                 "height": 30,
-                "left": 435,
+                "left": 360,
+                "rotation": 0,
                 "top": 45,
                 "width": 350
               },
@@ -2582,7 +2580,7 @@
               "name": "Water softner",
               "placement": {
                 "height": 30,
-                "left": 695,
+                "left": 575,
                 "top": 150,
                 "width": 180
               },
@@ -2617,7 +2615,7 @@
               "name": "Element 40",
               "placement": {
                 "height": 30,
-                "left": 435,
+                "left": 360,
                 "top": 150,
                 "width": 350
               },
@@ -2653,7 +2651,7 @@
               "name": "Main tech space",
               "placement": {
                 "height": 30,
-                "left": 695,
+                "left": 575,
                 "top": 80,
                 "width": 180
               },
@@ -2688,7 +2686,7 @@
               "name": "Element 42",
               "placement": {
                 "height": 30,
-                "left": 435,
+                "left": 360,
                 "top": 80,
                 "width": 350
               },
@@ -2724,7 +2722,7 @@
               "name": "Main tech space FR45",
               "placement": {
                 "height": 30,
-                "left": 695,
+                "left": 575,
                 "top": 115,
                 "width": 180
               },
@@ -2759,7 +2757,7 @@
               "name": "Element 44",
               "placement": {
                 "height": 30,
-                "left": 435,
+                "left": 360,
                 "top": 115,
                 "width": 350
               },
@@ -2907,7 +2905,7 @@
               "name": "Guest cabin SB",
               "placement": {
                 "height": 30,
-                "left": 235,
+                "left": 200,
                 "rotation": 0,
                 "top": 10,
                 "width": 180
@@ -2980,7 +2978,7 @@
               "name": "Guest cabin PS FWD",
               "placement": {
                 "height": 30,
-                "left": 235,
+                "left": 200,
                 "top": 45,
                 "width": 180
               },
@@ -3051,7 +3049,7 @@
               "name": "Guest cabin PS AFT",
               "placement": {
                 "height": 30,
-                "left": 235,
+                "left": 200,
                 "top": 80,
                 "width": 180
               },
@@ -3122,7 +3120,7 @@
               "name": "Master cabin SB",
               "placement": {
                 "height": 30,
-                "left": 235,
+                "left": 200,
                 "top": 115,
                 "width": 180
               },
@@ -3193,7 +3191,7 @@
               "name": "Master cabin PS",
               "placement": {
                 "height": 30,
-                "left": 235,
+                "left": 200,
                 "top": 150,
                 "width": 180
               },
@@ -3264,7 +3262,7 @@
               "name": "Captain's cabin",
               "placement": {
                 "height": 30,
-                "left": 685,
+                "left": 590,
                 "rotation": 0,
                 "top": 10,
                 "width": 180
@@ -3301,8 +3299,7 @@
               "name": "Element 16",
               "placement": {
                 "height": 30,
-                "left": 490,
-                "rotation": 0,
+                "left": 420,
                 "top": 10,
                 "width": 165
               },
@@ -3338,8 +3335,7 @@
               "name": "Crew cabin SB AFT",
               "placement": {
                 "height": 30,
-                "left": 685,
-                "rotation": 0,
+                "left": 590,
                 "top": 45,
                 "width": 180
               },
@@ -3374,7 +3370,7 @@
               "name": "Element 20",
               "placement": {
                 "height": 30,
-                "left": 490,
+                "left": 420,
                 "top": 40,
                 "width": 182
               },
@@ -3410,7 +3406,7 @@
               "name": "Crew cabin SB MID",
               "placement": {
                 "height": 30,
-                "left": 685,
+                "left": 590,
                 "top": 80,
                 "width": 180
               },
@@ -3445,7 +3441,7 @@
               "name": "Element 22",
               "placement": {
                 "height": 30,
-                "left": 490,
+                "left": 420,
                 "top": 75,
                 "width": 182
               },
@@ -3481,7 +3477,7 @@
               "name": "Crew cabin PS MID",
               "placement": {
                 "height": 30,
-                "left": 685,
+                "left": 590,
                 "top": 115,
                 "width": 180
               },
@@ -3516,7 +3512,7 @@
               "name": "Element 24",
               "placement": {
                 "height": 30,
-                "left": 490,
+                "left": 420,
                 "top": 110,
                 "width": 182
               },
@@ -3552,7 +3548,7 @@
               "name": "Crew cabin SB FWD",
               "placement": {
                 "height": 30,
-                "left": 685,
+                "left": 590,
                 "top": 150,
                 "width": 180
               },
@@ -3587,7 +3583,7 @@
               "name": "Element 26",
               "placement": {
                 "height": 30,
-                "left": 490,
+                "left": 420,
                 "top": 145,
                 "width": 182
               },
@@ -3623,7 +3619,7 @@
               "name": "Crew cabin PS FWD",
               "placement": {
                 "height": 30,
-                "left": 685,
+                "left": 590,
                 "top": 185,
                 "width": 180
               },
@@ -3658,7 +3654,7 @@
               "name": "Element 28",
               "placement": {
                 "height": 30,
-                "left": 490,
+                "left": 420,
                 "top": 180,
                 "width": 182
               },
@@ -3694,7 +3690,7 @@
               "name": "Element 45",
               "placement": {
                 "height": 30,
-                "left": 235,
+                "left": 200,
                 "top": 185,
                 "width": 180
               },
@@ -3718,7 +3714,7 @@
                 },
                 "size": 16,
                 "text": {
-                  "fixed": "Guest bathroom PS FWD"
+                  "fixed": "Guest bathr. PS FWD"
                 },
                 "valign": "middle"
               },
@@ -3730,6 +3726,7 @@
               "placement": {
                 "height": 30,
                 "left": 15,
+                "rotation": 0,
                 "top": 185,
                 "width": 226
               },
@@ -3864,7 +3861,7 @@
               "name": "Dayhead",
               "placement": {
                 "height": 30,
-                "left": 165,
+                "left": 140,
                 "top": 80,
                 "width": 180
               },
@@ -3935,7 +3932,7 @@
               "name": "Crew mess",
               "placement": {
                 "height": 30,
-                "left": 165,
+                "left": 140,
                 "rotation": 0,
                 "top": 10,
                 "width": 180
@@ -4007,7 +4004,7 @@
               "name": "Lazaret",
               "placement": {
                 "height": 30,
-                "left": 165,
+                "left": 140,
                 "top": 115,
                 "width": 180
               },
@@ -4078,7 +4075,7 @@
               "name": "Galley 2",
               "placement": {
                 "height": 30,
-                "left": 165,
+                "left": 140,
                 "top": 45,
                 "width": 180
               },
@@ -4149,7 +4146,7 @@
               "name": "Laundry PS",
               "placement": {
                 "height": 30,
-                "left": 165,
+                "left": 140,
                 "top": 150,
                 "width": 180
               },
@@ -4173,7 +4170,7 @@
                 },
                 "size": 16,
                 "text": {
-                  "fixed": "Laundry PS 1"
+                  "fixed": "Laundry PS"
                 },
                 "valign": "middle"
               },
@@ -4185,6 +4182,7 @@
               "placement": {
                 "height": 30,
                 "left": 15,
+                "rotation": 0,
                 "top": 150,
                 "width": 127.99999999999997
               },
@@ -4220,7 +4218,7 @@
               "name": "Deckhouse",
               "placement": {
                 "height": 30,
-                "left": 695,
+                "left": 575,
                 "rotation": 0,
                 "top": 10,
                 "width": 180
@@ -4256,7 +4254,8 @@
               "name": "Element 36",
               "placement": {
                 "height": 30,
-                "left": 435,
+                "left": 360,
+                "rotation": 0,
                 "top": 10,
                 "width": 245
               },
@@ -4292,7 +4291,7 @@
               "name": "Deck FR48 SB tech corridor",
               "placement": {
                 "height": 30,
-                "left": 695,
+                "left": 575,
                 "top": 45,
                 "width": 180
               },
@@ -4316,7 +4315,7 @@
                 },
                 "size": 16,
                 "text": {
-                  "fixed": "Deck FR48 SB tech corridor"
+                  "fixed": "Deck FR48 SB tech corr."
                 },
                 "valign": "middle"
               },
@@ -4327,7 +4326,8 @@
               "name": "Element 38",
               "placement": {
                 "height": 30,
-                "left": 435,
+                "left": 360,
+                "rotation": 0,
                 "top": 45,
                 "width": 245
               },
@@ -4363,7 +4363,7 @@
               "name": "Main tech space",
               "placement": {
                 "height": 30,
-                "left": 695,
+                "left": 575,
                 "top": 80,
                 "width": 180
               },
@@ -4398,80 +4398,9 @@
               "name": "Element 42",
               "placement": {
                 "height": 30,
-                "left": 435,
+                "left": 360,
                 "top": 80,
                 "width": 245
-              },
-              "type": "text"
-            },
-            {
-              "background": {
-                "color": {
-                  "fixed": "#D9D9D9"
-                }
-              },
-              "border": {
-                "color": {
-                  "fixed": "dark-green"
-                }
-              },
-              "config": {
-                "align": "center",
-                "color": {
-                  "fixed": "#000000"
-                },
-                "size": 18,
-                "text": {
-                  "field": "hotwater_laundry_ps_2_flow",
-                  "mode": "field"
-                },
-                "valign": "middle"
-              },
-              "constraint": {
-                "horizontal": "left",
-                "vertical": "top"
-              },
-              "name": "Element 47",
-              "placement": {
-                "height": 30,
-                "left": 165,
-                "top": 185,
-                "width": 180
-              },
-              "type": "metric-value"
-            },
-            {
-              "background": {
-                "color": {
-                  "fixed": "transparent"
-                }
-              },
-              "border": {
-                "color": {
-                  "fixed": "dark-green"
-                }
-              },
-              "config": {
-                "align": "left",
-                "color": {
-                  "fixed": "rgb(204,204,220)"
-                },
-                "size": 16,
-                "text": {
-                  "fixed": "Laundry PS 2"
-                },
-                "valign": "middle"
-              },
-              "constraint": {
-                "horizontal": "left",
-                "vertical": "top"
-              },
-              "name": "Element 48",
-              "placement": {
-                "height": 30,
-                "left": 15,
-                "top": 185,
-                "width": 127.99999999999997
               },
               "type": "text"
             }
@@ -4499,7 +4428,7 @@
           "editorMode": "code",
           "format": "table",
           "rawQuery": true,
-          "rawSql": "SELECT\n  LAST_VALUE(time ORDER BY time) AS time,\n  LAST_VALUE((\"HOTWATER_CREW_MESS_FLOW\").value ORDER BY time)                AS hotwater_crew_mess_flow,\n  LAST_VALUE((\"HOTWATER_GALLEY_2_FLOW\").value ORDER BY time)                 AS hotwater_galley_2_flow,\n  LAST_VALUE((\"HOTWATER_DAYHEAD_FLOW\").value ORDER BY time)                  AS hotwater_dayhead_flow,\n  LAST_VALUE((\"HOTWATER_LAZARET_FLOW\").value ORDER BY time)                  AS hotwater_lazaret_flow,\n  LAST_VALUE((\"HOTWATER_LAUNDRY_PS_1_FLOW\").value ORDER BY time)             AS hotwater_laundry_ps_1_flow,\n  LAST_VALUE((\"HOTWATER_LAUNDRY_PS_2_FLOW\").value ORDER BY time)             AS hotwater_laundry_ps_2_flow,\n  LAST_VALUE((\"HOTWATER_DECKHOUSE_FLOW\").value ORDER BY time)                AS hotwater_deckhouse_flow,\n  LAST_VALUE((\"HOTWATER_DECK_FR48_SB_TECH_COR_FLOW\").value ORDER BY time)    AS hotwater_deck_fr48_sb_tech_cor_flow,\n  LAST_VALUE((\"HOTWATER_MAIN_TECH_SPACE_FLOW\").value ORDER BY time)          AS hotwater_main_tech_space_flow\nFROM marpower.\"250000_fresh_water\"\n",
+          "rawSql": "SELECT\n  LAST_VALUE(time ORDER BY time) AS time,\n  LAST_VALUE((\"HOTWATER_CREW_MESS_FLOW\").value ORDER BY time)                AS hotwater_crew_mess_flow,\n  LAST_VALUE((\"HOTWATER_GALLEY_2_FLOW\").value ORDER BY time)                 AS hotwater_galley_2_flow,\n  LAST_VALUE((\"HOTWATER_DAYHEAD_FLOW\").value ORDER BY time)                  AS hotwater_dayhead_flow,\n  LAST_VALUE((\"HOTWATER_LAZARET_FLOW\").value ORDER BY time)                  AS hotwater_lazaret_flow,\n  LAST_VALUE((\"HOTWATER_LAUNDRY_PS_1_FLOW\").value ORDER BY time)             AS hotwater_laundry_ps_1_flow,\n  LAST_VALUE((\"HOTWATER_DECKHOUSE_FLOW\").value ORDER BY time)                AS hotwater_deckhouse_flow,\n  LAST_VALUE((\"HOTWATER_DECK_FR48_SB_TECH_COR_FLOW\").value ORDER BY time)    AS hotwater_deck_fr48_sb_tech_cor_flow,\n  LAST_VALUE((\"HOTWATER_MAIN_TECH_SPACE_FLOW\").value ORDER BY time)          AS hotwater_main_tech_space_flow\nFROM marpower.\"250000_fresh_water\"\n",
           "refId": "A",
           "sql": {
             "columns": [
@@ -4563,7 +4492,7 @@
       },
       "gridPos": {
         "h": 7,
-        "w": 7,
+        "w": 8,
         "x": 0,
         "y": 27
       },
@@ -4617,7 +4546,7 @@
               "name": "Tech room energy recovery",
               "placement": {
                 "height": 30,
-                "left": 15,
+                "left": 315,
                 "rotation": 0,
                 "top": 10,
                 "width": 180
@@ -4642,7 +4571,7 @@
                 },
                 "size": 16,
                 "text": {
-                  "fixed": "Technical room energy recovery"
+                  "fixed": "Techical room energy recovery"
                 },
                 "valign": "middle"
               },
@@ -4653,10 +4582,10 @@
               "name": "Tech room energy recovery label",
               "placement": {
                 "height": 30,
-                "left": 205,
+                "left": 15,
                 "rotation": 0,
                 "top": 10,
-                "width": 350
+                "width": 272
               },
               "type": "text"
             },
@@ -4690,8 +4619,7 @@
               "name": "Flow Sensor 25001037c1",
               "placement": {
                 "height": 30,
-                "left": 15,
-                "rotation": 0,
+                "left": 315,
                 "top": 45,
                 "width": 180
               },
@@ -4726,10 +4654,9 @@
               "name": "Flow Sensor 25001037c1 label",
               "placement": {
                 "height": 30,
-                "left": 205,
-                "rotation": 0,
+                "left": 15,
                 "top": 45,
-                "width": 350
+                "width": 272
               },
               "type": "text"
             },
@@ -4763,8 +4690,7 @@
               "name": "Guest cabin PS AFT",
               "placement": {
                 "height": 30,
-                "left": 15,
-                "rotation": 0,
+                "left": 315,
                 "top": 80,
                 "width": 180
               },
@@ -4799,10 +4725,9 @@
               "name": "Flow Sensor 25001037c3 label",
               "placement": {
                 "height": 30,
-                "left": 205,
-                "rotation": 0,
+                "left": 15,
                 "top": 80,
-                "width": 350
+                "width": 272
               },
               "type": "text"
             },
@@ -4836,8 +4761,7 @@
               "name": "Flow Sensor 25001037c4",
               "placement": {
                 "height": 30,
-                "left": 15,
-                "rotation": 0,
+                "left": 315,
                 "top": 115,
                 "width": 180
               },
@@ -4872,10 +4796,9 @@
               "name": "Flow Sensor 25001037c4 label",
               "placement": {
                 "height": 30,
-                "left": 205,
-                "rotation": 0,
+                "left": 15,
                 "top": 115,
-                "width": 350
+                "width": 272
               },
               "type": "text"
             }
@@ -4890,7 +4813,7 @@
           },
           "type": "frame"
         },
-        "showAdvancedTypes": true,
+        "showAdvancedTypes": false,
         "tooltip": {
           "disableForOneClick": false,
           "mode": "none"
@@ -4948,259 +4871,14 @@
               }
             ]
           },
-          "unit": "percent"
-        },
-        "overrides": []
-      },
-      "gridPos": {
-        "h": 7,
-        "w": 5,
-        "x": 7,
-        "y": 27
-      },
-      "id": 9,
-      "options": {
-        "inlineEditing": false,
-        "panZoom": false,
-        "root": {
-          "background": {
-            "color": {
-              "fixed": "transparent"
-            }
-          },
-          "border": {
-            "color": {
-              "fixed": "dark-green"
-            }
-          },
-          "constraint": {
-            "horizontal": "left",
-            "vertical": "top"
-          },
-          "elements": [
-            {
-              "background": {
-                "color": {
-                  "fixed": "#D9D9D9"
-                }
-              },
-              "border": {
-                "color": {
-                  "fixed": "dark-green"
-                }
-              },
-              "config": {
-                "align": "center",
-                "color": {
-                  "fixed": "#000000"
-                },
-                "size": 18,
-                "text": {
-                  "field": "fresh_water_tank_1_level",
-                  "mode": "field"
-                },
-                "valign": "middle"
-              },
-              "constraint": {
-                "horizontal": "left",
-                "vertical": "top"
-              },
-              "name": "Fresh water tank 1",
-              "placement": {
-                "height": 30,
-                "left": 15,
-                "rotation": 0,
-                "top": 10,
-                "width": 180
-              },
-              "type": "metric-value"
-            },
-            {
-              "background": {
-                "color": {
-                  "fixed": "transparent"
-                }
-              },
-              "border": {
-                "color": {
-                  "fixed": "dark-green"
-                }
-              },
-              "config": {
-                "align": "left",
-                "color": {
-                  "fixed": "rgb(204,204,220)"
-                },
-                "size": 16,
-                "text": {
-                  "fixed": "Fresh water tank 1"
-                },
-                "valign": "middle"
-              },
-              "constraint": {
-                "horizontal": "left",
-                "vertical": "top"
-              },
-              "name": "Fresh water tank 1 label",
-              "placement": {
-                "height": 30,
-                "left": 205,
-                "rotation": 0,
-                "top": 10,
-                "width": 350
-              },
-              "type": "text"
-            },
-            {
-              "background": {
-                "color": {
-                  "fixed": "#D9D9D9"
-                }
-              },
-              "border": {
-                "color": {
-                  "fixed": "dark-green"
-                }
-              },
-              "config": {
-                "align": "center",
-                "color": {
-                  "fixed": "#000000"
-                },
-                "size": 18,
-                "text": {
-                  "field": "fresh_water_tank_2_level",
-                  "mode": "field"
-                },
-                "valign": "middle"
-              },
-              "constraint": {
-                "horizontal": "left",
-                "vertical": "top"
-              },
-              "name": "Fresh water tank 2",
-              "placement": {
-                "height": 30,
-                "left": 15,
-                "rotation": 0,
-                "top": 45,
-                "width": 180
-              },
-              "type": "metric-value"
-            },
-            {
-              "background": {
-                "color": {
-                  "fixed": "transparent"
-                }
-              },
-              "border": {
-                "color": {
-                  "fixed": "dark-green"
-                }
-              },
-              "config": {
-                "align": "left",
-                "color": {
-                  "fixed": "rgb(204,204,220)"
-                },
-                "size": 16,
-                "text": {
-                  "fixed": "Fresh water tank 2"
-                },
-                "valign": "middle"
-              },
-              "constraint": {
-                "horizontal": "left",
-                "vertical": "top"
-              },
-              "name": "Fresh water tank 2 label",
-              "placement": {
-                "height": 30,
-                "left": 205,
-                "rotation": 0,
-                "top": 45,
-                "width": 350
-              },
-              "type": "text"
-            }
-          ],
-          "name": "Element 1768816105883",
-          "placement": {
-            "height": 100,
-            "left": 0,
-            "rotation": 0,
-            "top": 0,
-            "width": 100
-          },
-          "type": "frame"
-        },
-        "showAdvancedTypes": true,
-        "tooltip": {
-          "disableForOneClick": false,
-          "mode": "none"
-        },
-        "zoomToContent": false
-      },
-      "pluginVersion": "12.3.0",
-      "targets": [
-        {
-          "editorMode": "code",
-          "format": "table",
-          "rawQuery": true,
-          "rawSql": "SELECT\n  LAST_VALUE(time ORDER BY time) AS time,\n  LAST_VALUE((\"TANK_1_FR_45_PS_LEVEL\").value ORDER BY time)      AS fresh_water_tank_1_level,\n  LAST_VALUE((\"TANK_2_FR_45_SB_LEVEL\").value ORDER BY time)      AS fresh_water_tank_2_level\nFROM marpower.\"250000_fresh_water\";\n",
-          "refId": "A",
-          "sql": {
-            "columns": [
-              {
-                "parameters": [],
-                "type": "function"
-              }
-            ],
-            "groupBy": [
-              {
-                "property": {
-                  "type": "string"
-                },
-                "type": "groupBy"
-              }
-            ],
-            "limit": 50
-          }
-        }
-      ],
-      "title": "Tank level",
-      "type": "canvas"
-    },
-    {
-      "datasource": {
-        "type": "grafana-postgresql-datasource",
-        "uid": "${datasource}"
-      },
-      "fieldConfig": {
-        "defaults": {
-          "color": {
-            "mode": "thresholds"
-          },
-          "decimals": 2,
-          "mappings": [],
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "green",
-                "value": 0
-              }
-            ]
-          },
           "unit": "celsius"
         },
         "overrides": []
       },
       "gridPos": {
         "h": 7,
-        "w": 6,
-        "x": 12,
+        "w": 9,
+        "x": 8,
         "y": 27
       },
       "id": 10,
@@ -5253,8 +4931,7 @@
               "name": "Energy recovery temp 4",
               "placement": {
                 "height": 30,
-                "left": 15,
-                "rotation": 0,
+                "left": 301,
                 "top": 10,
                 "width": 180
               },
@@ -5278,7 +4955,7 @@
                 },
                 "size": 16,
                 "text": {
-                  "fixed": "Sensor S04 Energy recovery"
+                  "fixed": "Energy recovery sensor S04"
                 },
                 "valign": "middle"
               },
@@ -5289,10 +4966,10 @@
               "name": "Energy recovery temp 4 label",
               "placement": {
                 "height": 30,
-                "left": 205,
+                "left": 15,
                 "rotation": 0,
                 "top": 10,
-                "width": 350
+                "width": 234.99999999999997
               },
               "type": "text"
             },
@@ -5326,8 +5003,7 @@
               "name": "Energy recovery temp 5",
               "placement": {
                 "height": 30,
-                "left": 15,
-                "rotation": 0,
+                "left": 301,
                 "top": 45,
                 "width": 180
               },
@@ -5351,7 +5027,7 @@
                 },
                 "size": 16,
                 "text": {
-                  "fixed": "Sensor S05 Energy recovery"
+                  "fixed": "Energy recovery sensor S05"
                 },
                 "valign": "middle"
               },
@@ -5362,10 +5038,10 @@
               "name": "Energy recovery temp 5 label",
               "placement": {
                 "height": 30,
-                "left": 205,
+                "left": 15,
                 "rotation": 0,
                 "top": 45,
-                "width": 350
+                "width": 234.99999999999997
               },
               "type": "text"
             },
@@ -5399,8 +5075,7 @@
               "name": "Energy recovery temp 6",
               "placement": {
                 "height": 30,
-                "left": 15,
-                "rotation": 0,
+                "left": 301,
                 "top": 80,
                 "width": 180
               },
@@ -5424,7 +5099,7 @@
                 },
                 "size": 16,
                 "text": {
-                  "fixed": "Sensor S06 Energy recovery"
+                  "fixed": "Energy recovery sensor S06"
                 },
                 "valign": "middle"
               },
@@ -5435,10 +5110,10 @@
               "name": "Energy recovery temp 6 label",
               "placement": {
                 "height": 30,
-                "left": 205,
+                "left": 15,
                 "rotation": 0,
                 "top": 80,
-                "width": 350
+                "width": 235
               },
               "type": "text"
             },
@@ -5472,8 +5147,7 @@
               "name": "Energy recovery temp 7",
               "placement": {
                 "height": 30,
-                "left": 15,
-                "rotation": 0,
+                "left": 301,
                 "top": 115,
                 "width": 180
               },
@@ -5497,7 +5171,7 @@
                 },
                 "size": 16,
                 "text": {
-                  "fixed": "Sensor S07 Energy recovery"
+                  "fixed": "Energy recovery sensor S07"
                 },
                 "valign": "middle"
               },
@@ -5508,10 +5182,10 @@
               "name": "Energy recovery temp 7 label",
               "placement": {
                 "height": 30,
-                "left": 205,
+                "left": 15,
                 "rotation": 0,
                 "top": 115,
-                "width": 350
+                "width": 234.99999999999997
               },
               "type": "text"
             },
@@ -5545,8 +5219,7 @@
               "name": "Energy recovery temp 8",
               "placement": {
                 "height": 30,
-                "left": 15,
-                "rotation": 0,
+                "left": 301,
                 "top": 150,
                 "width": 180
               },
@@ -5570,7 +5243,7 @@
                 },
                 "size": 16,
                 "text": {
-                  "fixed": "Sensor S08 Energy recovery"
+                  "fixed": "Energy recovery sensor S08"
                 },
                 "valign": "middle"
               },
@@ -5581,10 +5254,10 @@
               "name": "Energy recovery temp 8 label",
               "placement": {
                 "height": 30,
-                "left": 205,
+                "left": 15,
                 "rotation": 0,
                 "top": 150,
-                "width": 350
+                "width": 234.99999999999997
               },
               "type": "text"
             }
@@ -5599,7 +5272,7 @@
           },
           "type": "frame"
         },
-        "showAdvancedTypes": true,
+        "showAdvancedTypes": false,
         "tooltip": {
           "disableForOneClick": false,
           "mode": "none"
@@ -5657,15 +5330,258 @@
               }
             ]
           },
+          "unit": "percent"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 4,
+        "w": 7,
+        "x": 17,
+        "y": 27
+      },
+      "id": 9,
+      "options": {
+        "inlineEditing": false,
+        "panZoom": false,
+        "root": {
+          "background": {
+            "color": {
+              "fixed": "transparent"
+            }
+          },
+          "border": {
+            "color": {
+              "fixed": "dark-green"
+            }
+          },
+          "constraint": {
+            "horizontal": "left",
+            "vertical": "top"
+          },
+          "elements": [
+            {
+              "background": {
+                "color": {
+                  "fixed": "#D9D9D9"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "center",
+                "color": {
+                  "fixed": "#000000"
+                },
+                "size": 18,
+                "text": {
+                  "field": "fresh_water_tank_1_level",
+                  "mode": "field"
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "name": "Fresh water tank 1",
+              "placement": {
+                "height": 30,
+                "left": 220,
+                "rotation": 0,
+                "top": 10,
+                "width": 180
+              },
+              "type": "metric-value"
+            },
+            {
+              "background": {
+                "color": {
+                  "fixed": "transparent"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "left",
+                "color": {
+                  "fixed": "rgb(204,204,220)"
+                },
+                "size": 16,
+                "text": {
+                  "fixed": "Fresh water tank 1"
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "name": "Fresh water tank 1 label",
+              "placement": {
+                "height": 30,
+                "left": 15,
+                "top": 10,
+                "width": 188
+              },
+              "type": "text"
+            },
+            {
+              "background": {
+                "color": {
+                  "fixed": "#D9D9D9"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "center",
+                "color": {
+                  "fixed": "#000000"
+                },
+                "size": 18,
+                "text": {
+                  "field": "fresh_water_tank_2_level",
+                  "mode": "field"
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "name": "Fresh water tank 2",
+              "placement": {
+                "height": 30,
+                "left": 220,
+                "rotation": 0,
+                "top": 45,
+                "width": 180
+              },
+              "type": "metric-value"
+            },
+            {
+              "background": {
+                "color": {
+                  "fixed": "transparent"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "left",
+                "color": {
+                  "fixed": "rgb(204,204,220)"
+                },
+                "size": 16,
+                "text": {
+                  "fixed": "Fresh water tank 2"
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "name": "Fresh water tank 2 label",
+              "placement": {
+                "height": 30,
+                "left": 15,
+                "top": 45,
+                "width": 188
+              },
+              "type": "text"
+            }
+          ],
+          "name": "Element 1768816105883",
+          "placement": {
+            "height": 100,
+            "left": 0,
+            "rotation": 0,
+            "top": 0,
+            "width": 100
+          },
+          "type": "frame"
+        },
+        "showAdvancedTypes": false,
+        "tooltip": {
+          "disableForOneClick": false,
+          "mode": "none"
+        },
+        "zoomToContent": false
+      },
+      "pluginVersion": "12.3.0",
+      "targets": [
+        {
+          "editorMode": "code",
+          "format": "table",
+          "rawQuery": true,
+          "rawSql": "SELECT\n  LAST_VALUE(time ORDER BY time) AS time,\n  LAST_VALUE((\"TANK_1_FR_45_PS_LEVEL\").value ORDER BY time)      AS fresh_water_tank_1_level,\n  LAST_VALUE((\"TANK_2_FR_45_SB_LEVEL\").value ORDER BY time)      AS fresh_water_tank_2_level\nFROM marpower.\"250000_fresh_water\";\n",
+          "refId": "A",
+          "sql": {
+            "columns": [
+              {
+                "parameters": [],
+                "type": "function"
+              }
+            ],
+            "groupBy": [
+              {
+                "property": {
+                  "type": "string"
+                },
+                "type": "groupBy"
+              }
+            ],
+            "limit": 50
+          }
+        }
+      ],
+      "title": "Tank level",
+      "type": "canvas"
+    },
+    {
+      "datasource": {
+        "type": "grafana-postgresql-datasource",
+        "uid": "${datasource}"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "decimals": 2,
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": 0
+              }
+            ]
+          },
           "unit": "pressurebar"
         },
         "overrides": []
       },
       "gridPos": {
-        "h": 7,
-        "w": 6,
-        "x": 18,
-        "y": 27
+        "h": 3,
+        "w": 7,
+        "x": 17,
+        "y": 31
       },
       "id": 11,
       "options": {
@@ -5717,7 +5633,7 @@
               "name": "Pressure Sensor frame 46",
               "placement": {
                 "height": 30,
-                "left": 15,
+                "left": 220,
                 "rotation": 0,
                 "top": 10,
                 "width": 180
@@ -5742,7 +5658,7 @@
                 },
                 "size": 16,
                 "text": {
-                  "fixed": "Pressure Sensor frame 46"
+                  "fixed": "Pressure Sensor FR46"
                 },
                 "valign": "middle"
               },
@@ -5753,10 +5669,10 @@
               "name": "Pressure Sensor frame 46 label",
               "placement": {
                 "height": 30,
-                "left": 205,
+                "left": 15,
                 "rotation": 0,
                 "top": 10,
-                "width": 350
+                "width": 201
               },
               "type": "text"
             }
@@ -5771,7 +5687,7 @@
           },
           "type": "frame"
         },
-        "showAdvancedTypes": true,
+        "showAdvancedTypes": false,
         "tooltip": {
           "disableForOneClick": false,
           "mode": "none"

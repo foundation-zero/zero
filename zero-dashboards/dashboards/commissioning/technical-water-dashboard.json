@@ -1211,7 +1211,7 @@
             "h": 8,
             "w": 24,
             "x": 0,
-            "y": 6
+            "y": 8
           },
           "id": 12,
           "options": {
@@ -1383,7 +1383,7 @@
               "name": "Adiabatic_cool_b03",
               "placement": {
                 "height": 30,
-                "left": 235,
+                "left": 205,
                 "rotation": 0,
                 "top": 10,
                 "width": 180
@@ -1456,7 +1456,7 @@
               "name": "Adiabatic_cool_b07",
               "placement": {
                 "height": 30,
-                "left": 235,
+                "left": 205,
                 "top": 45,
                 "width": 180
               },
@@ -1528,7 +1528,7 @@
               "name": "Adiabatic_cool_b08",
               "placement": {
                 "height": 30,
-                "left": 235,
+                "left": 205,
                 "top": 80,
                 "width": 180
               },
@@ -1600,7 +1600,7 @@
               "name": "Adiabatic_cool_b09",
               "placement": {
                 "height": 30,
-                "left": 235,
+                "left": 205,
                 "top": 115,
                 "width": 180
               },
@@ -1671,7 +1671,7 @@
               "name": "deckwash_reel_b04",
               "placement": {
                 "height": 30,
-                "left": 710,
+                "left": 590,
                 "rotation": 0,
                 "top": 10,
                 "width": 180
@@ -1707,7 +1707,7 @@
               "name": "deckwash_reel_b04 label",
               "placement": {
                 "height": 30,
-                "left": 490,
+                "left": 425,
                 "rotation": 0,
                 "top": 10,
                 "width": 204
@@ -1744,7 +1744,7 @@
               "name": "deckwash_reel_b05",
               "placement": {
                 "height": 30,
-                "left": 710,
+                "left": 590,
                 "top": 45,
                 "width": 180
               },
@@ -1779,7 +1779,7 @@
               "name": "deckwash_reel_b05 label",
               "placement": {
                 "height": 30,
-                "left": 490,
+                "left": 425,
                 "top": 45,
                 "width": 204
               },
@@ -1815,7 +1815,7 @@
               "name": "deckwash_reel_b06",
               "placement": {
                 "height": 30,
-                "left": 710,
+                "left": 590,
                 "top": 80,
                 "width": 180
               },
@@ -1850,7 +1850,7 @@
               "name": "deckwash_reel_b06 label",
               "placement": {
                 "height": 30,
-                "left": 490,
+                "left": 425,
                 "top": 80,
                 "width": 204
               },
@@ -2034,7 +2034,7 @@
               "name": "charcoal_filter_flow",
               "placement": {
                 "height": 30,
-                "left": 235,
+                "left": 205,
                 "rotation": 0,
                 "top": 10,
                 "width": 180
@@ -2106,8 +2106,7 @@
               "name": "charcoal_filter_temp",
               "placement": {
                 "height": 30,
-                "left": 235,
-                "rotation": 0,
+                "left": 205,
                 "top": 45,
                 "width": 180
               },
@@ -2178,8 +2177,7 @@
               "name": "salinity1",
               "placement": {
                 "height": 30,
-                "left": 235,
-                "rotation": 0,
+                "left": 205,
                 "top": 90,
                 "width": 180
               },
@@ -2251,8 +2249,7 @@
               "name": "salinity2",
               "placement": {
                 "height": 30,
-                "left": 235,
-                "rotation": 0,
+                "left": 205,
                 "top": 125,
                 "width": 180
               },
@@ -2325,7 +2322,7 @@
               "name": "tank1_level",
               "placement": {
                 "height": 30,
-                "left": 650,
+                "left": 535,
                 "rotation": 0,
                 "top": 10,
                 "width": 180
@@ -2361,7 +2358,7 @@
               "name": "tank1_level label",
               "placement": {
                 "height": 30,
-                "left": 500,
+                "left": 425,
                 "rotation": 0,
                 "top": 10,
                 "width": 134
@@ -2399,8 +2396,7 @@
               "name": "tank2_level",
               "placement": {
                 "height": 30,
-                "left": 650,
-                "rotation": 0,
+                "left": 535,
                 "top": 45,
                 "width": 180
               },
@@ -2435,8 +2431,7 @@
               "name": "tank2_level label",
               "placement": {
                 "height": 30,
-                "left": 500,
-                "rotation": 0,
+                "left": 425,
                 "top": 45,
                 "width": 134
               },
@@ -2575,7 +2570,7 @@
             "h": 8,
             "w": 24,
             "x": 0,
-            "y": 24
+            "y": 16
           },
           "id": 15,
           "options": {
@@ -2714,7 +2709,7 @@
             "h": 8,
             "w": 24,
             "x": 0,
-            "y": 32
+            "y": 24
           },
           "id": 17,
           "options": {
@@ -2864,7 +2859,7 @@
             "h": 8,
             "w": 24,
             "x": 0,
-            "y": 40
+            "y": 32
           },
           "id": 16,
           "options": {
@@ -3001,7 +2996,7 @@
             "h": 8,
             "w": 24,
             "x": 0,
-            "y": 48
+            "y": 40
           },
           "id": 19,
           "options": {
@@ -3138,7 +3133,7 @@
             "h": 8,
             "w": 24,
             "x": 0,
-            "y": 56
+            "y": 48
           },
           "id": 18,
           "options": {

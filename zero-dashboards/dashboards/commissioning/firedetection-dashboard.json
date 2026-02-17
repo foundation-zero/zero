@@ -18,7 +18,7 @@
   "editable": true,
   "fiscalYearStartMonth": 0,
   "graphTooltip": 0,
-  "id": 0,
+  "id": 15,
   "links": [
     {
       "asDropdown": true,
@@ -953,10 +953,11 @@
               "reducers": []
             },
             "inspect": false,
-            "minWidth": 75,
+            "minWidth": 60,
             "tooltip": {
               "placement": "auto"
-            }
+            },
+            "wrapHeaderText": true
           },
           "mappings": [
             {
@@ -1101,10 +1102,11 @@
               "reducers": []
             },
             "inspect": false,
-            "minWidth": 75,
+            "minWidth": 60,
             "tooltip": {
               "placement": "auto"
-            }
+            },
+            "wrapHeaderText": true
           },
           "mappings": [
             {
@@ -1137,7 +1139,7 @@
           {
             "matcher": {
               "id": "byName",
-              "options": "description"
+              "options": "Device"
             },
             "properties": [
               {
@@ -1249,10 +1251,11 @@
               "reducers": []
             },
             "inspect": false,
-            "minWidth": 75,
+            "minWidth": 60,
             "tooltip": {
               "placement": "auto"
-            }
+            },
+            "wrapHeaderText": true
           },
           "mappings": [
             {
@@ -1307,7 +1310,7 @@
         ]
       },
       "gridPos": {
-        "h": 9,
+        "h": 10,
         "w": 12,
         "x": 12,
         "y": 30
@@ -1397,10 +1400,11 @@
               "reducers": []
             },
             "inspect": false,
-            "minWidth": 75,
+            "minWidth": 60,
             "tooltip": {
               "placement": "auto"
-            }
+            },
+            "wrapHeaderText": true
           },
           "mappings": [
             {
@@ -1455,7 +1459,7 @@
         ]
       },
       "gridPos": {
-        "h": 8,
+        "h": 9,
         "w": 12,
         "x": 0,
         "y": 31
@@ -1529,7 +1533,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 39
+        "y": 40
       },
       "id": 20,
       "panels": [],
@@ -1558,10 +1562,11 @@
               "reducers": []
             },
             "inspect": false,
-            "minWidth": 75,
+            "minWidth": 60,
             "tooltip": {
               "placement": "auto"
-            }
+            },
+            "wrapHeaderText": true
           },
           "mappings": [
             {
@@ -1616,10 +1621,10 @@
         ]
       },
       "gridPos": {
-        "h": 15,
+        "h": 16,
         "w": 12,
         "x": 0,
-        "y": 40
+        "y": 41
       },
       "id": 19,
       "options": {
@@ -1706,10 +1711,11 @@
               "reducers": []
             },
             "inspect": false,
-            "minWidth": 75,
+            "minWidth": 60,
             "tooltip": {
               "placement": "auto"
-            }
+            },
+            "wrapHeaderText": true
           },
           "mappings": [
             {
@@ -1767,7 +1773,7 @@
         "h": 12,
         "w": 12,
         "x": 12,
-        "y": 40
+        "y": 41
       },
       "id": 17,
       "options": {
@@ -1838,7 +1844,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 55
+        "y": 57
       },
       "id": 23,
       "panels": [],
@@ -1867,10 +1873,11 @@
               "reducers": []
             },
             "inspect": false,
-            "minWidth": 75,
+            "minWidth": 60,
             "tooltip": {
               "placement": "auto"
-            }
+            },
+            "wrapHeaderText": true
           },
           "mappings": [
             {
@@ -1925,10 +1932,10 @@
         ]
       },
       "gridPos": {
-        "h": 14,
+        "h": 15,
         "w": 12,
         "x": 0,
-        "y": 56
+        "y": 58
       },
       "id": 13,
       "options": {
@@ -2015,10 +2022,11 @@
               "reducers": []
             },
             "inspect": false,
-            "minWidth": 75,
+            "minWidth": 60,
             "tooltip": {
               "placement": "auto"
-            }
+            },
+            "wrapHeaderText": true
           },
           "mappings": [
             {
@@ -2073,10 +2081,10 @@
         ]
       },
       "gridPos": {
-        "h": 16,
+        "h": 17,
         "w": 12,
         "x": 12,
-        "y": 56
+        "y": 58
       },
       "id": 24,
       "options": {
@@ -2163,10 +2171,11 @@
               "reducers": []
             },
             "inspect": false,
-            "minWidth": 75,
+            "minWidth": 60,
             "tooltip": {
               "placement": "auto"
-            }
+            },
+            "wrapHeaderText": true
           },
           "mappings": [
             {
@@ -2221,10 +2230,10 @@
         ]
       },
       "gridPos": {
-        "h": 9,
+        "h": 10,
         "w": 12,
         "x": 0,
-        "y": 70
+        "y": 73
       },
       "id": 22,
       "options": {
@@ -2295,7 +2304,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 79
+        "y": 83
       },
       "id": 6,
       "panels": [],
@@ -2324,10 +2333,11 @@
               "reducers": []
             },
             "inspect": false,
-            "minWidth": 75,
+            "minWidth": 60,
             "tooltip": {
               "placement": "auto"
-            }
+            },
+            "wrapHeaderText": true
           },
           "mappings": [
             {
@@ -2382,10 +2392,10 @@
         ]
       },
       "gridPos": {
-        "h": 12,
+        "h": 14,
         "w": 12,
         "x": 0,
-        "y": 80
+        "y": 84
       },
       "id": 14,
       "options": {
@@ -2472,10 +2482,11 @@
               "reducers": []
             },
             "inspect": false,
-            "minWidth": 75,
+            "minWidth": 60,
             "tooltip": {
               "placement": "auto"
-            }
+            },
+            "wrapHeaderText": true
           },
           "mappings": [
             {
@@ -2533,7 +2544,7 @@
         "h": 7,
         "w": 12,
         "x": 12,
-        "y": 80
+        "y": 84
       },
       "id": 12,
       "options": {
