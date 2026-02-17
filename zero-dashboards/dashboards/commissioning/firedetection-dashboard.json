@@ -964,12 +964,12 @@
                 "false": {
                   "color": "transparent",
                   "index": 1,
-                  "text": "-"
+                  "text": "❌"
                 },
                 "true": {
-                  "color": "text",
+                  "color": "transparent",
                   "index": 0,
-                  "text": "X"
+                  "text": "✅"
                 }
               },
               "type": "value"
@@ -1112,12 +1112,12 @@
                 "false": {
                   "color": "transparent",
                   "index": 1,
-                  "text": "-"
+                  "text": "❌"
                 },
                 "true": {
-                  "color": "text",
+                  "color": "transparent",
                   "index": 0,
-                  "text": "X"
+                  "text": "✅"
                 }
               },
               "type": "value"
@@ -1260,12 +1260,12 @@
                 "false": {
                   "color": "transparent",
                   "index": 1,
-                  "text": "-"
+                  "text": "❌"
                 },
                 "true": {
-                  "color": "text",
+                  "color": "transparent",
                   "index": 0,
-                  "text": "X"
+                  "text": "✅"
                 }
               },
               "type": "value"
@@ -1408,12 +1408,12 @@
                 "false": {
                   "color": "transparent",
                   "index": 1,
-                  "text": "-"
+                  "text": "❌"
                 },
                 "true": {
-                  "color": "text",
+                  "color": "transparent",
                   "index": 0,
-                  "text": "X"
+                  "text": "✅"
                 }
               },
               "type": "value"
@@ -1569,12 +1569,12 @@
                 "false": {
                   "color": "transparent",
                   "index": 1,
-                  "text": "-"
+                  "text": "❌"
                 },
                 "true": {
-                  "color": "text",
+                  "color": "transparent",
                   "index": 0,
-                  "text": "X"
+                  "text": "✅"
                 }
               },
               "type": "value"
@@ -1717,12 +1717,12 @@
                 "false": {
                   "color": "transparent",
                   "index": 1,
-                  "text": "-"
+                  "text": "❌"
                 },
                 "true": {
-                  "color": "text",
+                  "color": "transparent",
                   "index": 0,
-                  "text": "X"
+                  "text": "✅"
                 }
               },
               "type": "value"
@@ -1878,12 +1878,12 @@
                 "false": {
                   "color": "transparent",
                   "index": 1,
-                  "text": "-"
+                  "text": "❌"
                 },
                 "true": {
-                  "color": "text",
+                  "color": "transparent",
                   "index": 0,
-                  "text": "X"
+                  "text": "✅"
                 }
               },
               "type": "value"
@@ -2026,12 +2026,12 @@
                 "false": {
                   "color": "transparent",
                   "index": 1,
-                  "text": "-"
+                  "text": "❌"
                 },
                 "true": {
-                  "color": "text",
+                  "color": "transparent",
                   "index": 0,
-                  "text": "X"
+                  "text": "✅"
                 }
               },
               "type": "value"
@@ -2174,12 +2174,12 @@
                 "false": {
                   "color": "transparent",
                   "index": 1,
-                  "text": "-"
+                  "text": "❌"
                 },
                 "true": {
-                  "color": "text",
+                  "color": "transparent",
                   "index": 0,
-                  "text": "X"
+                  "text": "✅"
                 }
               },
               "type": "value"
@@ -2335,12 +2335,12 @@
                 "false": {
                   "color": "transparent",
                   "index": 1,
-                  "text": "-"
+                  "text": "❌"
                 },
                 "true": {
-                  "color": "text",
+                  "color": "transparent",
                   "index": 0,
-                  "text": "X"
+                  "text": "✅"
                 }
               },
               "type": "value"
@@ -2483,12 +2483,12 @@
                 "false": {
                   "color": "transparent",
                   "index": 1,
-                  "text": "-"
+                  "text": "❌"
                 },
                 "true": {
-                  "color": "text",
+                  "color": "transparent",
                   "index": 0,
-                  "text": "X"
+                  "text": "✅"
                 }
               },
               "type": "value"
