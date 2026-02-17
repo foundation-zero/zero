@@ -19,15 +19,56 @@
   "fiscalYearStartMonth": 0,
   "graphTooltip": 0,
   "id": 0,
-  "links": [],
+  "links": [
+    {
+      "asDropdown": true,
+      "icon": "external link",
+      "includeVars": false,
+      "keepTime": true,
+      "tags": [
+        "commisssioning"
+      ],
+      "targetBlank": false,
+      "title": "Dashboards",
+      "tooltip": "",
+      "type": "dashboards",
+      "url": ""
+    }
+  ],
   "panels": [
+    {
+      "fieldConfig": {
+        "defaults": {},
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 2,
+        "w": 24,
+        "x": 0,
+        "y": 0
+      },
+      "id": 8,
+      "options": {
+        "code": {
+          "language": "plaintext",
+          "showLineNumbers": false,
+          "showMiniMap": false
+        },
+        "content": "<center>\r\n  <h1>Bilge & Fifi</h1>\r\n</center>\r\n",
+        "mode": "html"
+      },
+      "pluginVersion": "12.3.0",
+      "title": "",
+      "transparent": true,
+      "type": "text"
+    },
     {
       "collapsed": false,
       "gridPos": {
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 0
+        "y": 2
       },
       "id": 5,
       "panels": [],
@@ -65,7 +106,7 @@
         "h": 8,
         "w": 9,
         "x": 0,
-        "y": 1
+        "y": 3
       },
       "id": 1,
       "options": {
@@ -1450,7 +1491,7 @@
         "h": 8,
         "w": 15,
         "x": 9,
-        "y": 1
+        "y": 3
       },
       "id": 2,
       "options": {
@@ -2766,7 +2807,7 @@
         "h": 7,
         "w": 7,
         "x": 0,
-        "y": 9
+        "y": 11
       },
       "id": 3,
       "options": {
@@ -3461,7 +3502,7 @@
         "h": 7,
         "w": 17,
         "x": 7,
-        "y": 9
+        "y": 11
       },
       "id": 4,
       "options": {
@@ -4290,7 +4331,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 16
+        "y": 18
       },
       "id": 6,
       "panels": [],
@@ -4488,7 +4529,7 @@
         "h": 11,
         "w": 24,
         "x": 0,
-        "y": 17
+        "y": 19
       },
       "id": 7,
       "options": {
@@ -4566,7 +4607,9 @@
   "preload": false,
   "refresh": "5s",
   "schemaVersion": 42,
-  "tags": [],
+  "tags": [
+    "commisssioning"
+  ],
   "templating": {
     "list": [
       {
@@ -4584,12 +4627,10 @@
     ]
   },
   "time": {
-    "from": "now-15m",
+    "from": "now-5m",
     "to": "now"
   },
-  "timepicker": {
-    "hidden": true
-  },
+  "timepicker": {},
   "timezone": "browser",
   "title": "Bilge/Fifi",
   "uid": "commisssioning-bilge-fifi",
