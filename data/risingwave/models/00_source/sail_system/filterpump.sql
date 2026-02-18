@@ -22,6 +22,7 @@ CREATE TABLE {{ this }} (
 	"x_ModeOn"	BOOLEAN,
 	"x_ModeAuto"	BOOLEAN,
 	"ix_RelayStatus"	BOOLEAN,
-	"i_OffDelayTime"	INTEGER
+	"i_OffDelayTime"	INTEGER,
+	"st_powerEnable"	STRUCT<x_Maintenance BOOLEAN, x_FunctionEnabled BOOLEAN, x_GroupEnabled BOOLEAN, x_LocalControl BOOLEAN, x_RcControl BOOLEAN, x_Running BOOLEAN, ox_GnrlAlrm BOOLEAN, x_OnOff BOOLEAN, x_ExtOnOff BOOLEAN, i_State INTEGER, ui_RunningHours INTEGER, ix_RelayStatus BOOLEAN, ox_PwrEnable BOOLEAN, x_PowerFailure BOOLEAN>
 )
 {{ mqtt_with('sail-systems/f001_filterpump') }}

@@ -36,7 +36,10 @@ CREATE TABLE {{ this }} (
 	"ox_LoadAlarm"	BOOLEAN,
 	"x_OoC"	BOOLEAN,
 	"ir_setpoint"	REAL,
+	"sSettings"	STRUCT<i_EaseMaxSpeed INTEGER, i_PullMaxSpeed INTEGER, i_MinPosition INTEGER, i_MaxPosition INTEGER, i_LineTensionDelay INTEGER, i_EaseBtnSpeed INTEGER, i_PullBtnSpeed INTEGER>,
+	"sDrive"	STRUCT<x_CanAlive BOOLEAN, x_Ready BOOLEAN, x_Running BOOLEAN, xFault BOOLEAN, iSpeedDemand INTEGER, iActualSpeed INTEGER, rTorqueDemand REAL, rActualTorque REAL, i_HeatsinkTemp INTEGER, rDcLinkVoltage REAL, duiRunningTime INTEGER, ow_Alarmcode INTEGER, WarningEncoder BOOLEAN, WarningHvInput BOOLEAN, WarningIgbt BOOLEAN, WarningMotorTemp BOOLEAN, WarningFcTemp BOOLEAN, WarningControl BOOLEAN, WarningCommunication BOOLEAN, WarningOthers BOOLEAN, ERROREncoder BOOLEAN, ERRORHvInput BOOLEAN, ERRORIgbt BOOLEAN, ERRORMotorTemp BOOLEAN, ERRORFcTemp BOOLEAN, ERRORControl BOOLEAN, ERRORCommunication BOOLEAN, ERROROthers BOOLEAN, wCanState INTEGER>,
 	"ix_BtnPull"	BOOLEAN,
-	"ix_BtnEase"	BOOLEAN
+	"ix_BtnEase"	BOOLEAN,
+	"st_Load"	STRUCT<i_Load INTEGER, i_MaxLoadSetting INTEGER, x_MaxLimitReached BOOLEAN, x_Failure BOOLEAN>
 )
 {{ mqtt_with('sail-systems/fe401_mainrunnercaptivewinchps,sail-systems/fe402_mizzenrunnercaptivewinchps,sail-systems/fe501_mainrunnercaptivewinchsb,sail-systems/fe502_mizzenrunnercaptivewinchsb') }}

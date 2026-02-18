@@ -41,6 +41,11 @@ CREATE TABLE {{ this }} (
 	"x_postionFailure"	BOOLEAN,
 	"i_liftSeq"	INTEGER,
 	"r_keelPosition"	REAL,
-	"i_keelPosition"	INTEGER
+	"i_keelPosition"	INTEGER,
+	"ist_SnsrKeelPos1"	STRUCT<i_Position_mm INTEGER, i_Position_permille INTEGER, x_MinLimitReached BOOLEAN, x_MaxLimitReached BOOLEAN, x_Failure BOOLEAN, i_PositionChangemA INTEGER, i_PositionStart INTEGER, i_MinPosition INTEGER, i_MaxPosition INTEGER>,
+	"ist_SnsrKeelPos2"	STRUCT<i_Position_mm INTEGER, i_Position_permille INTEGER, x_MinLimitReached BOOLEAN, x_MaxLimitReached BOOLEAN, x_Failure BOOLEAN, i_PositionChangemA INTEGER, i_PositionStart INTEGER, i_MinPosition INTEGER, i_MaxPosition INTEGER>,
+	"ist_LoadRod"	STRUCT<i_Load INTEGER, r_RawSensor REAL, i_MaxLoadSetting INTEGER, i_LoadChangePermA INTEGER, i_LoadAt4rmA INTEGER, x_MaxLimitReached BOOLEAN, x_Failure BOOLEAN>,
+	"ist_LoadBottom"	STRUCT<i_Load INTEGER, r_RawSensor REAL, i_MaxLoadSetting INTEGER, i_LoadChangePermA INTEGER, i_LoadAt4rmA INTEGER, x_MaxLimitReached BOOLEAN, x_Failure BOOLEAN>,
+	"st_settings"	STRUCT<i_speedUpSetting INTEGER, i_speedDownSetting INTEGER, i_FeedForwardPressureSetting INTEGER, ist_SnsrKeelPos1 STRUCT<i_PositionChangemA INTEGER, i_PositionStart INTEGER, i_MinPosition INTEGER, i_MaxPosition INTEGER>, ist_SnsrKeelPos2 STRUCT<i_PositionChangemA INTEGER, i_PositionStart INTEGER, i_MinPosition INTEGER, i_MaxPosition INTEGER>, ist_LoadRod STRUCT<i_LoadChangePermA INTEGER, i_LoadAt4rmA INTEGER, i_MaxLoad INTEGER>, ist_LoadBottom STRUCT<i_LoadChangePermA INTEGER, i_LoadAt4rmA INTEGER, i_MaxLoad INTEGER>>
 )
 {{ mqtt_with('sail-systems/f0301_keelliftcylinders,sail-systems/f0302_keellockcylinders,sail-systems/f0303_keelspare') }}

@@ -36,52 +36,67 @@ _TYPECLASS_TO_SQL: dict[str, str] = {
 
 def _build_type_map(root: ET.Element) -> dict[str, ET.Element]:
     """Build {type_name -> element} for all TypeSimple and TypeUserDef entries."""
-    type_map: dict[str, ET.Element] = {}
-    for elem in root.findall(f"{_TAG}TypeList/{_TAG}TypeSimple"):
-        name = elem.get("name")
-        if name:
-            type_map[name] = elem
-    for elem in root.findall(f"{_TAG}TypeList/{_TAG}TypeUserDef"):
-        name = elem.get("name")
-        if name:
-            type_map[name] = elem
-    return type_map
+
+    return {
+        name: elem
+        for tag in (f"{_TAG}TypeSimple", f"{_TAG}TypeUserDef")
+        for elem in root.findall(f"{_TAG}TypeList/{tag}")
+        if (name := elem.get("name"))
+    }
 
 
-def _sql_type(type_name: str, type_map: dict[str, ET.Element]) -> str | None:
+def _sql_type(
+    type_name: str,
+    type_map: dict[str, ET.Element],
+    _visiting: frozenset[str] = frozenset(),
+) -> str | None:
     """
-    Return the SQL type string for a PLC type name, or None if it is a
-    compound struct (which should be skipped as a field).
+    Return the RisingWave SQL type string for a PLC type name.
+
+    Primitive types (TypeSimple) map directly to SQL types.
+    Compound types (TypeUserDef) are rendered as STRUCT<field type, ...>,
+    recursing into nested structs. Returns None if the type is unknown,
+    produces no usable fields, or would form a cycle.
     """
+    if type_name in _visiting:
+        return None  # break cycle
     elem = type_map.get(type_name)
     if elem is None:
         return None
     if elem.tag == f"{_TAG}TypeSimple":
         typeclass = elem.get("typeclass", "")
         return _TYPECLASS_TO_SQL.get(typeclass)
-    # TypeUserDef = compound struct — not a leaf field
+    if elem.tag == f"{_TAG}TypeUserDef":
+        visiting = _visiting | {type_name}
+        struct_fields = [
+            f"{field_elem.get('iecname')} {sql}"
+            for field_elem in elem.findall(f"{_TAG}UserDefElement")
+            if field_elem.get("iecname")
+            and (sql := _sql_type(field_elem.get("type", ""), type_map, visiting))
+            is not None
+        ]
+        return f"STRUCT<{', '.join(struct_fields)}>" if struct_fields else None
     return None
 
 
 def _collect_fields(struct_name: str, type_map: dict[str, ET.Element]) -> list[IOValue]:
     """
-    Collect all primitive leaf fields from a struct type.
+    Collect all fields from a struct type, including inherited ones.
 
-    Iterates UserDefElement children (including inherited fields, which are
-    listed explicitly in the XML with an `inherited_from` attribute). Compound
-    sub-elements (those whose type resolves to another struct) are skipped.
+    Primitive fields map to SQL scalar types; compound sub-elements become
+    STRUCT<...> typed fields (recursively). Each UserDefElement child
+    (with or without `inherited_from`) is included if its type resolves
+    to a non-None SQL type.
     """
     elem = type_map.get(struct_name)
     if elem is None or elem.tag != f"{_TAG}TypeUserDef":
         return []
-    fields: list[IOValue] = []
-    for field_elem in elem.findall(f"{_TAG}UserDefElement"):
-        iecname = field_elem.get("iecname", "")
-        type_name = field_elem.get("type", "")
-        sql = _sql_type(type_name, type_map)
-        if sql is not None and iecname:
-            fields.append(IOValue(iecname, sql))
-    return fields
+    return [
+        IOValue(field_elem.get("iecname"), sql)
+        for field_elem in elem.findall(f"{_TAG}UserDefElement")
+        if field_elem.get("iecname")
+        and (sql := _sql_type(field_elem.get("type", ""), type_map)) is not None
+    ]
 
 
 def parse_sail_system_xml(path: Path) -> list[IOTopic]:
@@ -101,23 +116,15 @@ def parse_sail_system_xml(path: Path) -> list[IOTopic]:
     if hmi_data is None:
         raise ValueError(f"No Application/HmiData node found in {path}")
 
-    topics: list[IOTopic] = []
-    for node in hmi_data.findall(f"{_TAG}Node"):
-        name = node.get("name", "")
-        plc_type = node.get("type", "")
-        fields = _collect_fields(plc_type, type_map)
-        if not fields:
-            logger.debug(
-                f"Skipping node {name!r} (type {plc_type!r}): no primitive fields"
-            )
-            continue
-        topic_name = f"sail-systems/{name.lower()}"
-        topics.append(IOTopic(topic_name, fields, group=plc_type))
-        logger.debug(
-            f"Node {name!r} → {topic_name} ({len(fields)} fields, group={plc_type!r})"
+    return [
+        IOTopic(
+            f"sail-systems/{node.get('name', '').lower()}",
+            fields,
+            group=node.get("type", ""),
         )
-
-    return topics
+        for node in hmi_data.findall(f"{_TAG}Node")
+        if (fields := _collect_fields(node.get("type", ""), type_map))
+    ]
 
 
 # ---------------------------------------------------------------------------

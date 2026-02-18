@@ -29,6 +29,9 @@ CREATE TABLE {{ this }} (
 	"ox_LoadAlarm"	BOOLEAN,
 	"oi_EPrssrRlfAB_Cmd"	INTEGER,
 	"ii_EPrssrRlfAB_Current"	INTEGER,
-	"i_load"	INTEGER
+	"i_load"	INTEGER,
+	"st_loadBottom"	STRUCT<i_Load INTEGER, r_RawSensor REAL, i_MaxLoadSetting INTEGER, i_LoadChangePermA INTEGER, i_LoadAt4rmA INTEGER, x_MaxLimitReached BOOLEAN, x_Failure BOOLEAN>,
+	"st_loadRod"	STRUCT<i_Load INTEGER, r_RawSensor REAL, i_MaxLoadSetting INTEGER, i_LoadChangePermA INTEGER, i_LoadAt4rmA INTEGER, x_MaxLimitReached BOOLEAN, x_Failure BOOLEAN>,
+	"st_position"	STRUCT<i_Position_mm INTEGER, i_CylinderLength INTEGER, i_Speed INTEGER, x_MinLimitReached BOOLEAN, x_MaxLimitReached BOOLEAN, x_Failure BOOLEAN, i_Position_permille INTEGER, i_MinPosition INTEGER, i_MaxPosition INTEGER>
 )
 {{ mqtt_with('sail-systems/f0202_mainvang,sail-systems/f0502_mizzenvang') }}

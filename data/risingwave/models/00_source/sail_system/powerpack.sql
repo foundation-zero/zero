@@ -28,6 +28,7 @@ CREATE TABLE {{ this }} (
 	"or_SpdStp"	REAL,
 	"or_TrqStp"	REAL,
 	"i_Pressure"	INTEGER,
-	"i_Flow"	INTEGER
+	"i_Flow"	INTEGER,
+	"sDrive"	STRUCT<x_CanAlive BOOLEAN, x_Ready BOOLEAN, x_Running BOOLEAN, xFault BOOLEAN, iSpeedDemand INTEGER, iActualSpeed INTEGER, rTorqueDemand REAL, rActualTorque REAL, i_HeatsinkTemp INTEGER, rDcLinkVoltage REAL, duiRunningTime INTEGER, ow_Alarmcode INTEGER, WarningEncoder BOOLEAN, WarningHvInput BOOLEAN, WarningIgbt BOOLEAN, WarningMotorTemp BOOLEAN, WarningFcTemp BOOLEAN, WarningControl BOOLEAN, WarningCommunication BOOLEAN, WarningOthers BOOLEAN, ERROREncoder BOOLEAN, ERRORHvInput BOOLEAN, ERRORIgbt BOOLEAN, ERRORMotorTemp BOOLEAN, ERRORFcTemp BOOLEAN, ERRORControl BOOLEAN, ERRORCommunication BOOLEAN, ERROROthers BOOLEAN, wCanState INTEGER>
 )
 {{ mqtt_with('sail-systems/fpp1_powerpack1,sail-systems/fpp2_powerpack2') }}

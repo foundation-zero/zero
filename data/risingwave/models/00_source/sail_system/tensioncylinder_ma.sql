@@ -23,6 +23,8 @@ CREATE TABLE {{ this }} (
 	"i_LoadcellCalibration"	INTEGER,
 	"r_ActualPressure"	REAL,
 	"i_ActualLoad"	INTEGER,
-	"i_ActualLoad2"	INTEGER
+	"i_ActualLoad2"	INTEGER,
+	"st_load"	STRUCT<i_Load INTEGER, r_RawSensor REAL, i_MaxLoadSetting INTEGER, i_LoadChangePermA INTEGER, i_LoadAt4rmA INTEGER, x_MaxLimitReached BOOLEAN, x_Failure BOOLEAN>,
+	"st_position"	STRUCT<i_Position_mm INTEGER, i_Position_permille INTEGER, x_MinLimitReached BOOLEAN, x_MaxLimitReached BOOLEAN, x_Failure BOOLEAN, i_PositionChangemA INTEGER, i_PositionStart INTEGER, i_MinPosition INTEGER, i_MaxPosition INTEGER>
 )
 {{ mqtt_with('sail-systems/f0103_bladeadjuster,sail-systems/f0104_staysailstayadjuster') }}

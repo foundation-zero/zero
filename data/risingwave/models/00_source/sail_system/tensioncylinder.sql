@@ -19,6 +19,8 @@ CREATE TABLE {{ this }} (
 	"x_SensrIn"	BOOLEAN,
 	"x_SensrOut"	BOOLEAN,
 	"i_FeedForwardPressureSetting"	INTEGER,
-	"ox_LoadAlarm"	BOOLEAN
+	"ox_LoadAlarm"	BOOLEAN,
+	"st_load"	STRUCT<i_Load INTEGER, r_RawSensor REAL, i_MaxLoadSetting INTEGER, i_LoadChangePermA INTEGER, i_LoadAt4rmA INTEGER, x_MaxLimitReached BOOLEAN, x_Failure BOOLEAN>,
+	"st_position"	STRUCT<i_Position_mm INTEGER, i_CylinderLength INTEGER, i_Speed INTEGER, x_MinLimitReached BOOLEAN, x_MaxLimitReached BOOLEAN, x_Failure BOOLEAN, i_Position_permille INTEGER, i_MinPosition INTEGER, i_MaxPosition INTEGER>
 )
 {{ mqtt_with('sail-systems/f0201_mainouthaul,sail-systems/f0206_bladetweakerps,sail-systems/f0207_bladetweakersb,sail-systems/f0402_mizzenheadsailtackadjuster,sail-systems/f0501_mizzenouthaul') }}

@@ -51,15 +51,41 @@ class SailSystemGenerator:
         }
 
     @staticmethod
+    def _parse_struct_fields(struct_type: str) -> list[tuple[str, str]]:
+        """Parse STRUCT<name type, ...> into [(name, type)] pairs, handling nesting."""
+        inner = struct_type[len("STRUCT<") : -1]
+        tokens: list[str] = []
+        depth = 0
+        buf: list[str] = []
+        for ch in inner:
+            if ch == "<":
+                depth += 1
+                buf.append(ch)
+            elif ch == ">":
+                depth -= 1
+                buf.append(ch)
+            elif ch == "," and depth == 0:
+                tokens.append("".join(buf).strip())
+                buf = []
+            else:
+                buf.append(ch)
+        if buf:
+            tokens.append("".join(buf).strip())
+        return [(t.split(" ", 1)[0], t.split(" ", 1)[1]) for t in tokens if " " in t]
+
+    @staticmethod
     def _random_value(name: str, data_type: str) -> Any:
+        if data_type.startswith("STRUCT<"):
+            return {
+                fname: SailSystemGenerator._random_value(fname, ftype)
+                for fname, ftype in SailSystemGenerator._parse_struct_fields(data_type)
+            }
         match data_type:
             case "BOOLEAN":
                 return random.choice([True, False])
             case "INTEGER":
-                # relative_position_dummy is per-mille (0-1000)
                 if "position" in name.lower():
                     return random.randint(0, 1000)
-                # loads are in decakilograms (0-2000 = 0-20 tonnes)
                 return random.randint(0, 2000)
             case "REAL":
                 return random.normalvariate(mu=10, sigma=1.0)

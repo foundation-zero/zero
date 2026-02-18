@@ -28,6 +28,8 @@ CREATE TABLE {{ this }} (
 	"xInnerLimit"	BOOLEAN,
 	"xOuterLimit"	BOOLEAN,
 	"ox_LoadAlarm"	BOOLEAN,
-	"x_SnsrDtiAlarm"	BOOLEAN
+	"x_SnsrDtiAlarm"	BOOLEAN,
+	"sDrive"	STRUCT<x_CanAlive BOOLEAN, xReady BOOLEAN, xRun BOOLEAN, xRunning BOOLEAN, xBrake BOOLEAN, xFault BOOLEAN, ow_Alarmcode INTEGER, wCanState INTEGER, iSpeedDemand INTEGER, iActualSpeed INTEGER, rTorqueDemand REAL, rActualTorque REAL, rHeatsinkTemp REAL, rDcLinkVoltage REAL, duiRunningTime INTEGER>,
+	"st_settings"	STRUCT<i_EaseMaxSpeed INTEGER, i_PullMaxSpeed INTEGER, i_SlowSpeed INTEGER, i_MinPosition INTEGER, i_MaxPosition INTEGER, i_LowerSlowPosition INTEGER, i_UpperSlowPosition INTEGER>
 )
 {{ mqtt_with('sail-systems/fe208_crowsnestcaptive') }}

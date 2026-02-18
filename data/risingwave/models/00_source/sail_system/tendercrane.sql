@@ -24,6 +24,7 @@ CREATE TABLE {{ this }} (
 	"i_FeedForwardPressure"	INTEGER,
 	"x_UseSailSystem"	BOOLEAN,
 	"x_UsePowerPack"	BOOLEAN,
-	"rFlowDemand"	INTEGER
+	"rFlowDemand"	INTEGER,
+	"sDrive"	STRUCT<x_CanAlive BOOLEAN, xReady BOOLEAN, xRun BOOLEAN, xRunning BOOLEAN, xBrake BOOLEAN, xFault BOOLEAN, ow_Alarmcode INTEGER, wCanState INTEGER, iSpeedDemand INTEGER, iActualSpeed INTEGER, rTorqueDemand REAL, rActualTorque REAL, rHeatsinkTemp REAL, rDcLinkVoltage REAL, duiRunningTime INTEGER>
 )
 {{ mqtt_with('sail-systems/f0600_tendercrane') }}

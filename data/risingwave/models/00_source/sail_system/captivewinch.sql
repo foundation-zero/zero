@@ -35,6 +35,8 @@ CREATE TABLE {{ this }} (
 	"xOuterLimit"	BOOLEAN,
 	"ox_LoadAlarm"	BOOLEAN,
 	"x_OoC"	BOOLEAN,
-	"ir_setpoint"	REAL
+	"ir_setpoint"	REAL,
+	"sSettings"	STRUCT<i_EaseMaxSpeed INTEGER, i_PullMaxSpeed INTEGER, i_MinPosition INTEGER, i_MaxPosition INTEGER, i_LineTensionDelay INTEGER, i_EaseBtnSpeed INTEGER, i_PullBtnSpeed INTEGER>,
+	"sDrive"	STRUCT<x_CanAlive BOOLEAN, x_Ready BOOLEAN, x_Running BOOLEAN, xFault BOOLEAN, iSpeedDemand INTEGER, iActualSpeed INTEGER, rTorqueDemand REAL, rActualTorque REAL, i_HeatsinkTemp INTEGER, rDcLinkVoltage REAL, duiRunningTime INTEGER, ow_Alarmcode INTEGER, WarningEncoder BOOLEAN, WarningHvInput BOOLEAN, WarningIgbt BOOLEAN, WarningMotorTemp BOOLEAN, WarningFcTemp BOOLEAN, WarningControl BOOLEAN, WarningCommunication BOOLEAN, WarningOthers BOOLEAN, ERROREncoder BOOLEAN, ERRORHvInput BOOLEAN, ERRORIgbt BOOLEAN, ERRORMotorTemp BOOLEAN, ERRORFcTemp BOOLEAN, ERRORControl BOOLEAN, ERRORCommunication BOOLEAN, ERROROthers BOOLEAN, wCanState INTEGER>
 )
 {{ mqtt_with('sail-systems/fe201_bladesheetcaptivewinchps,sail-systems/fe203_staysailsheetcaptivewinchps,sail-systems/fe301_bladesheetcaptivewinchsb,sail-systems/fe303_staysailsheetcaptivewinchsb') }}

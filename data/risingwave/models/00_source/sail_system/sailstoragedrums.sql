@@ -23,6 +23,7 @@ CREATE TABLE {{ this }} (
 	"ox_Furl"	BOOLEAN,
 	"ox_Unfurl"	BOOLEAN,
 	"or_Spd"	REAL,
+	"sDrive"	STRUCT<x_CanAlive BOOLEAN, xReady BOOLEAN, xRun BOOLEAN, xRunning BOOLEAN, xBrake BOOLEAN, xFault BOOLEAN, ow_Alarmcode INTEGER, wCanState INTEGER, iSpeedDemand INTEGER, iActualSpeed INTEGER, rTorqueDemand REAL, rActualTorque REAL, rHeatsinkTemp REAL, rDcLinkVoltage REAL, duiRunningTime INTEGER>,
 	"i_FurlSpeedSetting"	INTEGER,
 	"i_UnfurlSpeedSetting"	INTEGER
 )

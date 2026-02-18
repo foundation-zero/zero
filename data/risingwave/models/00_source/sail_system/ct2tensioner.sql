@@ -18,6 +18,8 @@ CREATE TABLE {{ this }} (
 	"xRunningCCW"	BOOLEAN,
 	"xSpeedDeviationAlarm"	BOOLEAN,
 	"xDriveNotRunningAlarm"	BOOLEAN,
+	"sDriveA"	STRUCT<x_CanAlive BOOLEAN, xReady BOOLEAN, xRun BOOLEAN, xRunning BOOLEAN, xBrake BOOLEAN, xFault BOOLEAN, wActiveFault INTEGER, iSpeedDemand INTEGER, iActualSpeed INTEGER, rTorqueDemand REAL, rActualTorque REAL, rHeatsinkTemp REAL, rDcLinkVoltage REAL, duiRunningTime INTEGER>,
+	"sDriveB"	STRUCT<x_CanAlive BOOLEAN, xReady BOOLEAN, xRun BOOLEAN, xRunning BOOLEAN, xBrake BOOLEAN, xFault BOOLEAN, wActiveFault INTEGER, iSpeedDemand INTEGER, iActualSpeed INTEGER, rTorqueDemand REAL, rActualTorque REAL, rHeatsinkTemp REAL, rDcLinkVoltage REAL, duiRunningTime INTEGER>,
 	"wActiveFault"	INTEGER,
 	"rPullTorqueSetting"	REAL,
 	"rEaseTorqueSetting"	REAL
