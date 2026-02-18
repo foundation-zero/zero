@@ -475,7 +475,7 @@
                 },
                 "size": 16,
                 "text": {
-                  "fixed": "Tank 11"
+                  "fixed": "Hot water tank 11"
                 },
                 "valign": "middle"
               },
@@ -549,7 +549,7 @@
                 },
                 "size": 16,
                 "text": {
-                  "fixed": "Tank 13"
+                  "fixed": "Hot water tank 13"
                 },
                 "valign": "middle"
               },
@@ -623,7 +623,7 @@
                 },
                 "size": 16,
                 "text": {
-                  "fixed": "Tank 15"
+                  "fixed": "Hot water tank 15"
                 },
                 "valign": "middle"
               },
