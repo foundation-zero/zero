@@ -806,7 +806,7 @@
         {
           "datasource": {
             "type": "grafana-postgresql-datasource",
-            "uid": "ceyj3m7wtn3swb"
+            "uid": "${datasource}"
           },
           "fieldConfig": {
             "defaults": {

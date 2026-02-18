@@ -1136,7 +1136,7 @@
         {
           "datasource": {
             "type": "grafana-postgresql-datasource",
-            "uid": "ceyj3m7wtn3swb"
+            "uid": "${datasource}"
           },
           "fieldConfig": {
             "defaults": {
@@ -2498,7 +2498,7 @@
         {
           "datasource": {
             "type": "grafana-postgresql-datasource",
-            "uid": "ceyj3m7wtn3swb"
+            "uid": "${datasource}"
           },
           "fieldConfig": {
             "defaults": {
@@ -2637,7 +2637,7 @@
         {
           "datasource": {
             "type": "grafana-postgresql-datasource",
-            "uid": "ceyj3m7wtn3swb"
+            "uid": "${datasource}"
           },
           "fieldConfig": {
             "defaults": {
@@ -2775,7 +2775,7 @@
         {
           "datasource": {
             "type": "grafana-postgresql-datasource",
-            "uid": "ceyj3m7wtn3swb"
+            "uid": "${datasource}"
           },
           "fieldConfig": {
             "defaults": {
@@ -2924,7 +2924,7 @@
         {
           "datasource": {
             "type": "grafana-postgresql-datasource",
-            "uid": "ceyj3m7wtn3swb"
+            "uid": "${datasource}"
           },
           "fieldConfig": {
             "defaults": {
@@ -3061,7 +3061,7 @@
         {
           "datasource": {
             "type": "grafana-postgresql-datasource",
-            "uid": "ceyj3m7wtn3swb"
+            "uid": "${datasource}"
           },
           "fieldConfig": {
             "defaults": {
@@ -3211,7 +3211,7 @@
       {
         "current": {
           "text": "RisingWave",
-          "value": "ceyj3m7wtn3swb"
+          "value": "${datasource}"
         },
         "name": "datasource",
         "options": [],
