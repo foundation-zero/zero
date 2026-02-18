@@ -1480,7 +1480,7 @@
             },
             {
               "options": {
-                "pattern": ".*xv38001004_1",
+                "pattern": ".*xv38001004-1",
                 "result": {
                   "index": 2,
                   "text": "Frame 49 SB (XV38001004_1)"
@@ -1490,7 +1490,7 @@
             },
             {
               "options": {
-                "pattern": ".*xv38001004_2",
+                "pattern": ".*xv38001004-2",
                 "result": {
                   "index": 3,
                   "text": "Frame 49 PS (XV38001004_2)"
@@ -1500,7 +1500,7 @@
             },
             {
               "options": {
-                "pattern": ".*xv38001004_3",
+                "pattern": ".*xv38001004-3",
                 "result": {
                   "index": 4,
                   "text": "Frame 52 (XV38001004_3)"
@@ -1530,7 +1530,7 @@
             },
             {
               "options": {
-                "pattern": ".*xv38001154_1",
+                "pattern": ".*xv38001154-1",
                 "result": {
                   "index": 7,
                   "text": "XV38001154_1"
@@ -1540,7 +1540,7 @@
             },
             {
               "options": {
-                "pattern": ".*xv38001154_2",
+                "pattern": ".*xv38001154-2",
                 "result": {
                   "index": 8,
                   "text": "XV38001154_2"
@@ -1550,7 +1550,7 @@
             },
             {
               "options": {
-                "pattern": ".*xv38001154_3",
+                "pattern": ".*xv38001154-3",
                 "result": {
                   "index": 9,
                   "text": "Input valve (XV38001154_3)"
@@ -1560,7 +1560,7 @@
             },
             {
               "options": {
-                "pattern": ".*xv38001154_4",
+                "pattern": ".*xv38001154-4",
                 "result": {
                   "index": 10,
                   "text": "Input valve (XV38001154_4)"
@@ -1570,7 +1570,7 @@
             },
             {
               "options": {
-                "pattern": ".*xv38001154_5",
+                "pattern": ".*xv38001154-5",
                 "result": {
                   "index": 11,
                   "text": "Input valve (XV38001154_5)"
@@ -1661,7 +1661,7 @@
           "editorMode": "code",
           "format": "table",
           "rawQuery": true,
-          "rawSql": "SELECT\r\n  topic,\r\n  ARG_MAX((\"Opened\").Value, (\"Opened\").Timestamp) AS Opened,\r\n  ARG_MAX((\"Closed\").Value, (\"Closed\").Timestamp) AS Closed,\r\n  ARG_MAX((\"HmiCmdOpen\").Value, (\"HmiCmdOpen\").Timestamp) AS HmiCmdOpen,\r\n  ARG_MAX((\"HmiCmdClose\").Value, (\"HmiCmdClose\").Timestamp) AS HmiCmdClose,\r\n  ARG_MAX((\"ShouldBeOpen\").Value, (\"ShouldBeOpen\").Timestamp) AS ShouldBeOpen,\r\n  ARG_MAX((\"HmiControlAvailable\").Value, (\"HmiControlAvailable\").Timestamp) AS HmiControlAvailable,\r\n  ARG_MAX((\"Open\").Value, (\"Open\").Timestamp) AS Open,\r\n  ARG_MAX((\"Close\").Value, (\"Close\").Timestamp) AS Close,\r\n  ARG_MAX((\"Alarm\").Value, (\"Alarm\").Timestamp) AS Alarm\r\nFROM marpower.\"380000_seawater_cooling\"\r\nGROUP BY topic\r\nORDER BY topic",
+          "rawSql": "SELECT\r\n  topic,\r\n  ARG_MAX((\"Opened\").Value, (\"Opened\").Timestamp)                           AS Opened,\r\n  ARG_MAX((\"Closed\").Value, (\"Closed\").Timestamp)                           AS Closed,\r\n  ARG_MAX((\"HmiCmdOpen\").Value, (\"HmiCmdOpen\").Timestamp)                   AS HmiCmdOpen,\r\n  ARG_MAX((\"HmiCmdClose\").Value, (\"HmiCmdClose\").Timestamp)                 AS HmiCmdClose,\r\n  ARG_MAX((\"ShouldBeOpen\").Value, (\"ShouldBeOpen\").Timestamp)               AS ShouldBeOpen,\r\n  ARG_MAX((\"HmiControlAvailable\").Value, (\"HmiControlAvailable\").Timestamp) AS HmiControlAvailable,\r\n  ARG_MAX((\"Open\").Value, (\"Open\").Timestamp)                               AS Open,\r\n  ARG_MAX((\"Close\").Value, (\"Close\").Timestamp)                             AS Close,\r\n  ARG_MAX((\"Alarm\").Value, (\"Alarm\").Timestamp)                             AS Alarm\r\nFROM marpower.\"380000_seawater_cooling\"\r\nGROUP BY topic\r\nORDER BY topic",
           "refId": "A",
           "sql": {
             "columns": [
