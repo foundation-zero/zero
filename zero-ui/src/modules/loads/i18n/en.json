@@ -15,12 +15,14 @@
         "overhoist": "Overhoist"
       },
       "awaSelector": {
+        "short": "AWA",
         "label": "Select AWA",
         "upwind": "Upwind",
         "reaching": "Reaching",
         "downwind": "Downwind"
       },
       "awsSelector": {
+        "short": "AWS",
         "label": "Select AWS",
         "unit": "kts"
       }
