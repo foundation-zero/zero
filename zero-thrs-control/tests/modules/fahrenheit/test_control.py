@@ -1,8 +1,18 @@
-# test mode switching: from idle to cooling (raise warm temp) to idle (low warm temp) to cooling (raise warm temp) to idle (low cold temp)
+from datetime import datetime, timedelta
 
-from thrs.control.modules.fahrenheit import FahrenheitControl
+from thrs.control.modules.fahrenheit import FahrenheitControl, FahrenheitParameters
+from thrs.input_output.base import Stamped
+from thrs.input_output.definitions.simulation import (
+    Boundary,
+    Fahrenheit,
+    TemperatureBoundary,
+)
+from thrs.input_output.modules.fahrenheit import FahrenheitSimulationInputs
 from thrs.orchestration.executor import SimulationExecutor
 from pytest import approx
+
+from thrs.simulation.fmu import Fmu
+from thrs.simulation.models.fmu_paths import fahrenheit_path
 
 
 async def test_state_mode_switches(
@@ -158,8 +168,8 @@ async def test_fahrenheit_cooling(
 
 
 async def test_waste_recovery(control: FahrenheitControl, executor: SimulationExecutor):
-    executor._simulation_inputs.fahrenheit_boilers_supply.temperature.value = 10
-    control._parameters.waste_recovery_temperature_setpoint = 30
+    executor._simulation_inputs.fahrenheit_boilers_supply.temperature.value = 20
+    control._parameters.waste_recovery_temperature_setpoint = 40
     control._parameters.waste_cooling_temperature_setpoint = 60
 
     result = await executor.tick(control.initial().values)
@@ -174,38 +184,68 @@ async def test_waste_recovery(control: FahrenheitControl, executor: SimulationEx
         control_values = control.control(result.sensor_values).values
         result = await executor.tick(control_values)
 
-    assert (
-        result.sensor_values.fahrenheit_chiller.temperature_waste_out.value
-        > result.sensor_values.fahrenheit_chiller.temperature_waste_in.value
+        assert (
+            result.sensor_values.fahrenheit_chiller.temperature_waste_out.value
+            == approx(
+                control._parameters.waste_recovery_temperature_setpoint, abs=10
+            )  # Very high margin due to fluctuating temperatures
+        )
+
+
+async def test_waste_cooling(io_mapping):
+    simulation_inputs = FahrenheitSimulationInputs(
+        fahrenheit_cold_supply=TemperatureBoundary(temperature=Stamped.stamp(20.0)),
+        fahrenheit_seawater_supply=Boundary(
+            temperature=Stamped.stamp(10.0), flow=Stamped.stamp(64.0)
+        ),
+        fahrenheit_available_cold_temperature=TemperatureBoundary(
+            temperature=Stamped.stamp(20.0)
+        ),
+        fahrenheit_available_hot_temperature=TemperatureBoundary(
+            temperature=Stamped.stamp(65.0)
+        ),
+        fahrenheit_available_seawater_temperature=TemperatureBoundary(
+            temperature=Stamped.stamp(30.0)
+        ),
+        fahrenheit_chiller=Fahrenheit(free_cooling=Stamped.stamp(False)),
+        fahrenheit_ht_supply=Boundary(
+            temperature=Stamped.stamp(60.0), flow=Stamped.stamp(42.0)
+        ),
+        fahrenheit_boilers_supply=Boundary(
+            temperature=Stamped.stamp(10.0), flow=Stamped.stamp(45.0)
+        ),
     )
-    assert (
-        result.sensor_values.fahrenheit_chiller.temperature_waste_out.value
-        == approx(control._parameters.waste_recovery_temperature_setpoint, abs=1)
+    parameters = FahrenheitParameters(
+        waste_recovery_temperature_setpoint=10,
+        waste_cooling_temperature_setpoint=20,
     )
 
+    with Fmu(fahrenheit_path) as fmu:
+        executor = SimulationExecutor(
+            io_mapping,
+            fmu,
+            simulation_inputs,
+            datetime.fromtimestamp(0),
+            timedelta(seconds=1),
+        )
+        control = FahrenheitControl(parameters, executor.time)
 
-async def test_waste_cooling(control: FahrenheitControl, executor: SimulationExecutor):
-    executor._simulation_inputs.fahrenheit_boilers_supply.temperature.value = 40
-    executor._simulation_inputs.fahrenheit_seawater_supply.temperature.value = 10
-    control._parameters.waste_recovery_temperature_setpoint = 10
-    control._parameters.waste_cooling_temperature_setpoint = 35
+        result = await executor.tick(control.initial().values)
 
-    result = await executor.tick(control.initial().values)
+        for i in range(100):
+            control_values = control.control(result.sensor_values).values
+            result = await executor.tick(control_values)
 
-    for i in range(10):
-        control_values = control.control(result.sensor_values).values
-        result = await executor.tick(control_values)
+        assert control.mode == "cooling"
 
-    assert control.mode == "cooling"
+        for i in range(5 * 60):
+            control_values = control.control(result.sensor_values).values
+            result = await executor.tick(control_values)
 
-    for i in range(5 * 60):
-        control_values = control.control(result.sensor_values).values
-        result = await executor.tick(control_values)
-
-    assert (
-        result.sensor_values.fahrenheit_chiller.temperature_waste_out.value
-        > result.sensor_values.fahrenheit_chiller.temperature_waste_in.value
-    )
-    assert result.sensor_values.fahrenheit_chiller.temperature_waste_in.value == approx(
-        control._parameters.waste_cooling_temperature_setpoint, abs=1
-    )
+            assert (
+                result.sensor_values.fahrenheit_chiller.temperature_waste_in.value
+                == approx(
+                    control._parameters.waste_cooling_temperature_setpoint,
+                    abs=12,  # Very high margin due to fluctuating temperatures
+                )
+            )

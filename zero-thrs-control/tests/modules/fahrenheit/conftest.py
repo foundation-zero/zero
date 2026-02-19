@@ -22,27 +22,27 @@ from datetime import datetime, timedelta
 @fixture
 def simulation_inputs():
     return FahrenheitSimulationInputs(
-           fahrenheit_cold_supply=TemperatureBoundary(temperature=Stamped.stamp(20.0)),
-    fahrenheit_seawater_supply=Boundary(
-        temperature=Stamped.stamp(32.0), flow=Stamped.stamp(64.0)
-    ),
-    fahrenheit_available_cold_temperature=TemperatureBoundary(
-        temperature=Stamped.stamp(20.0)
-    ),
-    fahrenheit_available_hot_temperature=TemperatureBoundary(
-        temperature=Stamped.stamp(65.0)
-    ),
-    fahrenheit_available_seawater_temperature=TemperatureBoundary(
-        temperature=Stamped.stamp(30.0)
-    ),
-    fahrenheit_chiller=Fahrenheit(free_cooling=Stamped.stamp(False)),
-    fahrenheit_ht_supply=Boundary(
-        temperature=Stamped.stamp(60.0), flow=Stamped.stamp(42.0)
-    ),
-    fahrenheit_boilers_supply=Boundary(
-        temperature=Stamped.stamp(40.0), flow=Stamped.stamp(45.0)
-    ),
-)
+        fahrenheit_cold_supply=TemperatureBoundary(temperature=Stamped.stamp(20.0)),
+        fahrenheit_seawater_supply=Boundary(
+            temperature=Stamped.stamp(32.0), flow=Stamped.stamp(64.0)
+        ),
+        fahrenheit_available_cold_temperature=TemperatureBoundary(
+            temperature=Stamped.stamp(20.0)
+        ),
+        fahrenheit_available_hot_temperature=TemperatureBoundary(
+            temperature=Stamped.stamp(65.0)
+        ),
+        fahrenheit_available_seawater_temperature=TemperatureBoundary(
+            temperature=Stamped.stamp(30.0)
+        ),
+        fahrenheit_chiller=Fahrenheit(free_cooling=Stamped.stamp(False)),
+        fahrenheit_ht_supply=Boundary(
+            temperature=Stamped.stamp(60.0), flow=Stamped.stamp(42.0)
+        ),
+        fahrenheit_boilers_supply=Boundary(
+            temperature=Stamped.stamp(40.0), flow=Stamped.stamp(45.0)
+        ),
+    )
 
 
 @fixture
