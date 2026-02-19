@@ -1,8 +1,7 @@
 from datetime import datetime
-from typing import cast
+from typing import Callable, cast
 
 from pydantic import model_validator
-from pyparsing import Callable
 from transitions import Machine, State
 from thrs.classes.control import Control, ControlMode, ControlResult
 from thrs.control.controllers import Controller
@@ -10,10 +9,7 @@ from thrs.input_output.base import Stamped, ThrsValues
 from thrs.input_output.definitions.control import Fahrenheit, Valve
 from thrs.input_output.definitions.units import (
     Celsius,
-    FahrenheitModeEnum,
-    FreeCoolingModeEnum,
     Ratio,
-    TankControlModeEnum,
     Tuning,
 )
 from thrs.input_output.modules.fahrenheit import (
@@ -63,9 +59,9 @@ def _INITIAL_CONTROL_VALUES(timestamp) -> FahrenheitControlValues:
         ),
         fahrenheit_chiller=Fahrenheit(
             enable=Stamped(value=False, timestamp=timestamp),
-            mode=Stamped(value=FahrenheitMode.OFF, timestamp=timestamp),
+            mode=Stamped(value=0, timestamp=timestamp),
             cooling_setpoint=Stamped(value=17.0, timestamp=timestamp),
-            free_cooling_mode=Stamped(value=FreeCoolingMode.AUTO, timestamp=timestamp),
+            free_cooling_mode=Stamped(value=2, timestamp=timestamp),
             available_seawater_temperature=Stamped(value=20.0, timestamp=timestamp),
             available_hot_temperature=Stamped(value=20.0, timestamp=timestamp),
             available_cold_temperature=Stamped(value=20.0, timestamp=timestamp),
@@ -73,7 +69,7 @@ def _INITIAL_CONTROL_VALUES(timestamp) -> FahrenheitControlValues:
             hot_minimum=Stamped(value=53.0, timestamp=timestamp),
             cold_hysteresis=Stamped(value=2.0, timestamp=timestamp),
             hot_hysteresis=Stamped(value=2.0, timestamp=timestamp),
-            tank_control_mode=Stamped(value=TankControlMode.BOTH, timestamp=timestamp),
+            tank_control_mode=Stamped(value=1, timestamp=timestamp),
         ),
     )
 
@@ -263,13 +259,11 @@ class FahrenheitControl(
         )
 
         self._current_values.fahrenheit_chiller.mode = Stamped(
-            value=FahrenheitModeEnum.ON.value, timestamp=self._time()
+            value=1, timestamp=self._time()
         )
 
         self._current_values.fahrenheit_chiller.free_cooling_mode = Stamped(
-            value=FreeCoolingModeEnum.AUTO.value
-            if self._parameters.free_cooling_enabled
-            else FreeCoolingModeEnum.OFF.value,
+            value=2 if self._parameters.free_cooling_enabled else 0,
             timestamp=self._time(),
         )
 

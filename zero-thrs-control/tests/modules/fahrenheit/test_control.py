@@ -1,6 +1,10 @@
 from datetime import datetime, timedelta
 
-from thrs.control.modules.fahrenheit import FahrenheitControl, FahrenheitParameters
+from thrs.control.modules.fahrenheit import (
+    FahrenheitControl,
+    FahrenheitControlMode,
+    FahrenheitParameters,
+)
 from thrs.input_output.base import Stamped
 from thrs.input_output.definitions.simulation import (
     Boundary,
@@ -29,7 +33,7 @@ async def test_state_mode_switches(
     result = await executor.tick(control.initial().values)
     control_values = control.control(result.sensor_values).values
 
-    assert control.mode == "idle"
+    assert control.mode == FahrenheitControlMode(mode="idle")
     result = await executor.tick(control_values)
 
     # higher but still insufficient heat to trigger cooling
@@ -44,7 +48,7 @@ async def test_state_mode_switches(
         control_values = control.control(result.sensor_values).values
         result = await executor.tick(control_values)
 
-    assert control.mode == "idle"
+    assert control.mode == FahrenheitControlMode(mode="idle")
 
     # sufficient heat
     executor._simulation_inputs.fahrenheit_available_hot_temperature.temperature.value = (
@@ -55,7 +59,7 @@ async def test_state_mode_switches(
         control_values = control.control(result.sensor_values).values
         result = await executor.tick(control_values)
 
-    assert control.mode == "cooling"
+    assert control.mode == FahrenheitControlMode(mode="cooling")
 
     # sufficient but lower heat
     executor._simulation_inputs.fahrenheit_available_hot_temperature.temperature.value = (
@@ -66,7 +70,7 @@ async def test_state_mode_switches(
         control_values = control.control(result.sensor_values).values
         result = await executor.tick(control_values)
 
-    assert control.mode == "cooling"
+    assert control.mode == FahrenheitControlMode(mode="cooling")
 
     # insufficient heat
     executor._simulation_inputs.fahrenheit_available_hot_temperature.temperature.value = (
@@ -77,7 +81,7 @@ async def test_state_mode_switches(
         control_values = control.control(result.sensor_values).values
         result = await executor.tick(control_values)
 
-    assert control.mode == "idle"
+    assert control.mode == FahrenheitControlMode(mode="idle")
 
     # sufficient heat but no cooling demand
     executor._simulation_inputs.fahrenheit_available_hot_temperature.temperature.value = (
@@ -91,7 +95,7 @@ async def test_state_mode_switches(
         control_values = control.control(result.sensor_values).values
         result = await executor.tick(control_values)
 
-    assert control.mode == "idle"
+    assert control.mode == FahrenheitControlMode(mode="idle")
 
     # insufficient cooling demand
     executor._simulation_inputs.fahrenheit_available_cold_temperature.temperature.value = (
@@ -102,7 +106,7 @@ async def test_state_mode_switches(
         control_values = control.control(result.sensor_values).values
         result = await executor.tick(control_values)
 
-    assert control.mode == "idle"
+    assert control.mode == FahrenheitControlMode(mode="idle")
 
     # sufficient cooling demand to trigger cooling
     executor._simulation_inputs.fahrenheit_available_cold_temperature.temperature.value = (
@@ -113,7 +117,7 @@ async def test_state_mode_switches(
         control_values = control.control(result.sensor_values).values
         result = await executor.tick(control_values)
 
-    assert control.mode == "cooling"
+    assert control.mode == FahrenheitControlMode(mode="cooling")
 
     # sufficient cooling demand
     executor._simulation_inputs.fahrenheit_available_cold_temperature.temperature.value = (
@@ -124,7 +128,7 @@ async def test_state_mode_switches(
         control_values = control.control(result.sensor_values).values
         result = await executor.tick(control_values)
 
-    assert control.mode == "cooling"
+    assert control.mode == FahrenheitControlMode(mode="cooling")
 
     # no cooling demand
     executor._simulation_inputs.fahrenheit_available_cold_temperature.temperature.value = (
@@ -135,7 +139,7 @@ async def test_state_mode_switches(
         control_values = control.control(result.sensor_values).values
         result = await executor.tick(control_values)
 
-    assert control.mode == "idle"
+    assert control.mode == FahrenheitControlMode(mode="idle")
 
 
 async def test_fahrenheit_cooling(
@@ -147,7 +151,7 @@ async def test_fahrenheit_cooling(
         control_values = control.control(result.sensor_values).values
         result = await executor.tick(control_values)
 
-    assert control.mode == "cooling"
+    assert control.mode == FahrenheitControlMode(mode="cooling")
 
     for i in range(100):
         control_values = control.control(result.sensor_values).values
@@ -178,7 +182,7 @@ async def test_waste_recovery(control: FahrenheitControl, executor: SimulationEx
         control_values = control.control(result.sensor_values).values
         result = await executor.tick(control_values)
 
-    assert control.mode == "cooling"
+    assert control.mode == FahrenheitControlMode(mode="cooling")
 
     for i in range(5 * 60):
         control_values = control.control(result.sensor_values).values
@@ -236,7 +240,7 @@ async def test_waste_cooling(io_mapping):
             control_values = control.control(result.sensor_values).values
             result = await executor.tick(control_values)
 
-        assert control.mode == "cooling"
+        assert control.mode == FahrenheitControlMode(mode="cooling")
 
         for i in range(5 * 60):
             control_values = control.control(result.sensor_values).values
