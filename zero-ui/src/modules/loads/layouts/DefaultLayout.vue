@@ -6,10 +6,11 @@ import { AWASelector } from "../components/awa-selector";
 import { AWSSelector } from "../components/aws-selector";
 import NavTabs from "../components/NavTabs.vue";
 import SailSelector from "../components/SailSelector.vue";
+import { WindConditions, WindConditionsLockTrigger } from "../components/wind-conditions";
 import { useVariablesStore } from "../stores/variables";
 
-const { selectedAWA, selectedAWS } = toRefs(useVariablesStore());
-const { setAWA, setAWS } = useVariablesStore();
+const { selectedAWA, selectedAWS, currentAWA, currentAWS } = toRefs(useVariablesStore());
+const { setAWA, setAWS, lockWindConditions } = useVariablesStore();
 </script>
 
 <template>
@@ -34,6 +35,11 @@ const { setAWA, setAWS } = useVariablesStore();
           :model-value="selectedAWS"
           class="w-36"
           @update:model-value="setAWS"
+        />
+        <WindConditionsLockTrigger @trigger="lockWindConditions" />
+        <WindConditions
+          :awa="currentAWA"
+          :aws="currentAWS"
         />
       </template>
     </TopNavToolbar>

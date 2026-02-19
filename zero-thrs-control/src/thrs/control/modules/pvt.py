@@ -1,11 +1,12 @@
 from datetime import datetime
-from typing import Annotated, Callable, Literal
+from typing import Annotated, Callable
 from pydantic import Field, model_validator
 
-from thrs.classes.control import Control, ControlResult
+from thrs.classes.control import Control, ControlMode, ControlResult
 from thrs.control.controllers import Controller
 from thrs.control.modules.pvt_group import (
     PvtGroupControl,
+    PvtGroupControlMode,
     PvtGroupParameters,
     PvtGroupSensorValues,
 )
@@ -14,6 +15,12 @@ from thrs.input_output.base import Stamped, ThrsValues
 from thrs.input_output.definitions.control import Pump, Valve
 from thrs.input_output.definitions.units import Celsius, Ratio, Tuning
 from thrs.input_output.modules.pvt import PvtControlValues, PvtSensorValues
+
+
+class PvtControlMode(ControlMode):
+    aft: PvtGroupControlMode
+    fwd: PvtGroupControlMode
+    owners: PvtGroupControlMode
 
 
 class PvtParameters(ThrsValues):
@@ -58,92 +65,114 @@ class PvtParameters(ThrsValues):
         return self
 
 
-_ZERO_TIME = datetime.fromtimestamp(0)
-_INITIAL_CONTROL_VALUES = PvtControlValues(
-    pvt_pump_main_fwd=Pump(
-        dutypoint=Stamped(value=0.0, timestamp=_ZERO_TIME),
-        on=Stamped(value=False, timestamp=_ZERO_TIME),
-    ),
-    pvt_pump_main_aft=Pump(
-        dutypoint=Stamped(value=0.0, timestamp=_ZERO_TIME),
-        on=Stamped(value=False, timestamp=_ZERO_TIME),
-    ),
-    pvt_pump_owners=Pump(
-        dutypoint=Stamped(value=0.0, timestamp=_ZERO_TIME),
-        on=Stamped(value=False, timestamp=_ZERO_TIME),
-    ),
-    pvt_mix_main_fwd=Valve(
-        setpoint=Stamped(value=Valve.MIXING_B_TO_AB, timestamp=_ZERO_TIME)
-    ),
-    pvt_mix_main_aft=Valve(
-        setpoint=Stamped(value=Valve.MIXING_B_TO_AB, timestamp=_ZERO_TIME)
-    ),
-    pvt_mix_owners=Valve(
-        setpoint=Stamped(value=Valve.MIXING_B_TO_AB, timestamp=_ZERO_TIME)
-    ),
-    pvt_switch_main_fwd=Valve(setpoint=Stamped(value=Valve.OPEN, timestamp=_ZERO_TIME)),
-    pvt_switch_main_aft=Valve(setpoint=Stamped(value=Valve.OPEN, timestamp=_ZERO_TIME)),
-    pvt_switch_owners=Valve(setpoint=Stamped(value=Valve.OPEN, timestamp=_ZERO_TIME)),
-    pvt_mix_exchanger=Valve(
-        setpoint=Stamped(
-            value=Valve.MIXING_A_TO_AB,
-            timestamp=_ZERO_TIME,
-        )
-    ),
-)
+def _INITIAL_CONTROL_VALUES(timestamp) -> PvtControlValues:
+    return PvtControlValues(
+        pvt_pump_main_fwd=Pump(
+            dutypoint=Stamped(value=0.0, timestamp=timestamp),
+            on=Stamped(value=False, timestamp=timestamp),
+        ),
+        pvt_pump_main_aft=Pump(
+            dutypoint=Stamped(value=0.0, timestamp=timestamp),
+            on=Stamped(value=False, timestamp=timestamp),
+        ),
+        pvt_pump_owners=Pump(
+            dutypoint=Stamped(value=0.0, timestamp=timestamp),
+            on=Stamped(value=False, timestamp=timestamp),
+        ),
+        pvt_mix_main_fwd=Valve(
+            setpoint=Stamped(value=Valve.MIXING_B_TO_AB, timestamp=timestamp)
+        ),
+        pvt_mix_main_aft=Valve(
+            setpoint=Stamped(value=Valve.MIXING_B_TO_AB, timestamp=timestamp)
+        ),
+        pvt_mix_owners=Valve(
+            setpoint=Stamped(value=Valve.MIXING_B_TO_AB, timestamp=timestamp)
+        ),
+        pvt_switch_main_fwd=Valve(
+            setpoint=Stamped(value=Valve.OPEN, timestamp=timestamp)
+        ),
+        pvt_switch_main_aft=Valve(
+            setpoint=Stamped(value=Valve.OPEN, timestamp=timestamp)
+        ),
+        pvt_switch_owners=Valve(
+            setpoint=Stamped(value=Valve.OPEN, timestamp=timestamp)
+        ),
+        pvt_mix_exchanger=Valve(
+            setpoint=Stamped(
+                value=Valve.MIXING_A_TO_AB,
+                timestamp=timestamp,
+            )
+        ),
+    )
 
 
-class PvtControl(Control[PvtSensorValues, PvtControlValues, PvtParameters]):
+def main_pvt_group_parameters(pvt_parameters: PvtParameters) -> PvtGroupParameters:
+    return PvtGroupParameters(
+        warmup_temperature=pvt_parameters.warmup_temperature,
+        recovery_temperature=pvt_parameters.recovery_temperature,
+        warmup_mix_tuning=pvt_parameters.main_fwd_mix_tuning,
+        pump_tuning=pvt_parameters.main_fwd_pump_tuning,
+        minimum_pump_dutypoint=pvt_parameters.main_fwd_minimum_pump_dutypoint,
+        recovery_activation_string_temperature=pvt_parameters.recovery_activation_string_temperature,
+        minimum_return_temperature=pvt_parameters.minimum_return_temperature,
+    )
+
+
+def aft_pvt_group_parameters(pvt_parameters: PvtParameters) -> PvtGroupParameters:
+    return PvtGroupParameters(
+        warmup_temperature=pvt_parameters.warmup_temperature,
+        recovery_temperature=pvt_parameters.recovery_temperature,
+        warmup_mix_tuning=pvt_parameters.main_aft_mix_tuning,
+        pump_tuning=pvt_parameters.main_aft_pump_tuning,
+        minimum_pump_dutypoint=pvt_parameters.main_aft_minimum_pump_dutypoint,
+        recovery_activation_string_temperature=pvt_parameters.recovery_activation_string_temperature,
+        minimum_return_temperature=pvt_parameters.minimum_return_temperature,
+    )
+
+
+def owners_pvt_group_parameters(pvt_parameters: PvtParameters) -> PvtGroupParameters:
+    return PvtGroupParameters(
+        warmup_temperature=pvt_parameters.warmup_temperature,
+        recovery_temperature=pvt_parameters.recovery_temperature,
+        warmup_mix_tuning=pvt_parameters.owners_mix_tuning,
+        pump_tuning=pvt_parameters.owners_pump_tuning,
+        minimum_pump_dutypoint=pvt_parameters.owners_minimum_pump_dutypoint,
+        recovery_activation_string_temperature=pvt_parameters.recovery_activation_string_temperature,
+        minimum_return_temperature=pvt_parameters.minimum_return_temperature,
+    )
+
+
+class PvtControl(
+    Control[PvtSensorValues, PvtControlValues, PvtParameters, PvtControlMode]
+):
     def __init__(
         self, parameters: PvtParameters, time_fn: Callable[[], datetime]
     ) -> None:
         self._parameters = parameters
         self._time = time_fn
-        self._current_values = _INITIAL_CONTROL_VALUES.model_copy(deep=True)
+        self._current_values = _INITIAL_CONTROL_VALUES(self._time()).model_copy(
+            deep=True
+        )
 
         self._heat_dump_controller = Controller[Ratio, Celsius](
-            _INITIAL_CONTROL_VALUES.pvt_mix_exchanger.setpoint.value,
-            self._parameters.maximum_supply_temperature,
-            self._parameters.heat_dump_tuning,
+            self._current_values.pvt_mix_exchanger.setpoint.value,
+            parameters.maximum_supply_temperature,
+            parameters.heat_dump_tuning,
             self._time,
         )
 
         self._heat_dump_controller.enable()  # always enabled
 
         self._main_fwd_control = PvtGroupControl(
-            PvtGroupParameters(
-                warmup_temperature=self._parameters.warmup_temperature,
-                recovery_temperature=self._parameters.recovery_temperature,
-                warmup_mix_tuning=self._parameters.main_fwd_mix_tuning,
-                pump_tuning=self._parameters.main_fwd_pump_tuning,
-                minimum_pump_dutypoint=self._parameters.main_fwd_minimum_pump_dutypoint,
-                recovery_activation_string_temperature=self._parameters.recovery_activation_string_temperature,
-                minimum_return_temperature=self._parameters.minimum_return_temperature,
-            ),
+            main_pvt_group_parameters(parameters),
             time_fn,
         )
         self._main_aft_control = PvtGroupControl(
-            PvtGroupParameters(
-                warmup_temperature=self._parameters.warmup_temperature,
-                recovery_temperature=self._parameters.recovery_temperature,
-                warmup_mix_tuning=self._parameters.main_aft_mix_tuning,
-                pump_tuning=self._parameters.main_aft_pump_tuning,
-                minimum_pump_dutypoint=self._parameters.main_aft_minimum_pump_dutypoint,
-                recovery_activation_string_temperature=self._parameters.recovery_activation_string_temperature,
-                minimum_return_temperature=self._parameters.minimum_return_temperature,
-            ),
+            aft_pvt_group_parameters(parameters),
             time_fn,
         )
         self._owners_control = PvtGroupControl(
-            PvtGroupParameters(
-                warmup_temperature=self._parameters.warmup_temperature,
-                recovery_temperature=self._parameters.recovery_temperature,
-                warmup_mix_tuning=self._parameters.owners_mix_tuning,
-                pump_tuning=self._parameters.owners_pump_tuning,
-                minimum_pump_dutypoint=self._parameters.owners_minimum_pump_dutypoint,
-                recovery_activation_string_temperature=self._parameters.recovery_activation_string_temperature,
-                minimum_return_temperature=self._parameters.minimum_return_temperature,
-            ),
+            owners_pvt_group_parameters(parameters),
             time_fn,
         )
 
@@ -152,22 +181,33 @@ class PvtControl(Control[PvtSensorValues, PvtControlValues, PvtParameters]):
         return self._parameters
 
     @property
-    def mode(self) -> Literal[""]:
-        return ""
+    def mode(self) -> PvtControlMode:
+        return PvtControlMode(
+            fwd=PvtGroupControlMode(mode=self._main_fwd_control.mode.mode),
+            aft=PvtGroupControlMode(mode=self._main_aft_control.mode.mode),
+            owners=PvtGroupControlMode(mode=self._owners_control.mode.mode),
+        )
 
     @staticmethod
     def modes() -> list[str]:
         return [""]
 
-    @staticmethod
-    def initial_mode() -> str:
-        return ""
+    @property
+    def initial_mode(self) -> PvtControlMode:
+        return PvtControlMode(
+            fwd=self._main_fwd_control.initial_mode,
+            aft=self._main_aft_control.initial_mode,
+            owners=self._owners_control.initial_mode,
+        )
 
     def initial(self) -> ControlResult[PvtControlValues]:
-        return ControlResult(self._time(), self._current_values)
+        return ControlResult(self._time(), _INITIAL_CONTROL_VALUES(self._time()))
 
     def update_parameters(self, parameters: PvtParameters):
         self._parameters = parameters
+        self._main_fwd_control.update_parameters(main_pvt_group_parameters(parameters))
+        self._main_aft_control.update_parameters(aft_pvt_group_parameters(parameters))
+        self._owners_control.update_parameters(owners_pvt_group_parameters(parameters))
 
     def _control_heat_dump_mix(self, sensor_values: PvtSensorValues):
         self._current_values.pvt_mix_exchanger.setpoint = Stamped(

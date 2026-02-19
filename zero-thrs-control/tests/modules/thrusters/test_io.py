@@ -7,7 +7,7 @@ from thrs.input_output.modules.thrusters import (
     ThrustersSimulationOutputs,
 )
 from tests.modules.conftest import (
-    compare_fmu_to_class,
+    compare_fmu_to_classes,
     compare_modelica_names,
     compare_yard_tags,
 )
@@ -28,12 +28,14 @@ def test_thrusters_sheet_names():
 
 
 def test_thrusters_fmu_names():
-    missing_in_py, missing_in_fmu = compare_fmu_to_class(
+    missing_in_py, missing_in_fmu = compare_fmu_to_classes(
         thrusters_path,
-        ThrustersSensorValues.zero(),
-        ThrustersControlValues.zero(),
-        ThrustersSimulationInputs.zero(),
-        ThrustersSimulationOutputs.zero(),
+        [
+            ThrustersSensorValues.zero(),
+            ThrustersControlValues.zero(),
+            ThrustersSimulationInputs.zero(),
+            ThrustersSimulationOutputs.zero(),
+        ],
     )
 
     assert not missing_in_py, f"Missing in Python: {missing_in_py}"

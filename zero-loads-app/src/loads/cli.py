@@ -14,7 +14,12 @@ from loads.api.auth import generate_jwt
 from loads.config import Settings
 from loads.control import ConditionsStub, Control, PCanAdapter, PCanStub
 from loads.logging_config import setup_logging
-from loads.sensors import at_sensors, sail_system_sensors
+from loads.registry import (
+    MessagingModule,
+    at_sensors,
+    fiber_optic_sensors,
+    sail_system_sensors,
+)
 
 setup_logging()
 
@@ -63,24 +68,34 @@ class ControlCli(Settings):
             await run_task
 
 
+async def _run_data_generator(
+    settings: GeneratorSettings, id: str, module: MessagingModule
+):
+    async with DataGenerator.init_from_settings(settings, id) as data_gen:
+        config = module.gen_config()
+        await data_gen.generate(config=config)
+
+
 class SailSystemSensorsStubCmd(GeneratorSettings):
     async def cli_cmd(self) -> None:
         logger.info("Running sail system sensors stub...")
-        async with DataGenerator.init_from_settings(
-            self, "sail_system_sensors_stub_generator"
-        ) as data_gen:
-            config = sail_system_sensors.gen_config()
-            await data_gen.generate(config=config)
+        await _run_data_generator(
+            self, "sail_system_sensors_stub_generator", sail_system_sensors
+        )
 
 
 class ATSensorsStubCmd(GeneratorSettings):
     async def cli_cmd(self) -> None:
         logger.info("Running A+T sensors stub...")
-        async with DataGenerator.init_from_settings(
-            self, "at_sensors_stub_generator"
-        ) as data_gen:
-            config = at_sensors.gen_config()
-            await data_gen.generate(config=config)
+        await _run_data_generator(self, "at_sensors_stub_generator", at_sensors)
+
+
+class FiberOpticSensorsStubCmd(GeneratorSettings):
+    async def cli_cmd(self) -> None:
+        logger.info("Running fiber optic sensors stub...")
+        await _run_data_generator(
+            self, "fiber_optic_sensors_stub_generator", fiber_optic_sensors
+        )
 
 
 class ZeroLoads(BaseSettings, cli_kebab_case=True):
@@ -97,8 +112,9 @@ class ZeroLoads(BaseSettings, cli_kebab_case=True):
     pcan_stub: CliSubCommand[PCanStubCmd]
     conditions_stub: CliSubCommand[ConditionsStubCmd]
     control: CliSubCommand[ControlCli]
-    sail_system_sensors_stub: CliSubCommand[SailSystemSensorsStubCmd]
     at_sensors_stub: CliSubCommand[ATSensorsStubCmd]
+    fiber_optic_sensors_stub: CliSubCommand[FiberOpticSensorsStubCmd]
+    sail_system_sensors_stub: CliSubCommand[SailSystemSensorsStubCmd]
 
     def cli_cmd(self) -> None:
         CliApp.run_subcommand(self)

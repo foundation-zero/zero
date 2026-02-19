@@ -2,23 +2,22 @@ import strawberry
 
 from thrs.control.modules.consumers import ConsumersParameters
 from thrs.graphql.base import (
-    Module,
     ConsumersMessaging,
+    SwitchingControlModeType,
+)
+from thrs.graphql.base import (
+    ControlModule,
     add_automation_mode_mutation,
     add_control_mutations,
     add_parameter_mutations,
-    add_simulation_input_mutations,
 )
 from thrs.graphql.helpers import (
     pydantic_to_strawberry_type,
-    dedataframed_pydantic_to_strawberry_type,
     optional_pydantic_to_graphql,
 )
 from thrs.input_output.modules.consumers import (
     ConsumersControlValues,
     ConsumersSensorValues,
-    ConsumersSimulationInputs,
-    ConsumersSimulationOutputs,
 )
 
 
@@ -26,25 +25,24 @@ ConsumersSensorValuesType = pydantic_to_strawberry_type(ConsumersSensorValues)
 ConsumersControlValuesType = pydantic_to_strawberry_type(ConsumersControlValues)
 ConsumersParametersType = pydantic_to_strawberry_type(ConsumersParameters)
 
-ConsumersSimulationInputsType = dedataframed_pydantic_to_strawberry_type(
-    ConsumersSimulationInputs
-)
-ConsumersSimulationOutputsType = dedataframed_pydantic_to_strawberry_type(
-    ConsumersSimulationOutputs
-)
+
+@strawberry.type()
+class ConsumersControlModeType:
+    _empty: None = None
 
 
-ConsumersModule = Module[
+ConsumersModule = ControlModule[
     ConsumersSensorValuesType,
     ConsumersControlValuesType,
     ConsumersParametersType,
+    ConsumersControlModeType,
 ]
 
 
 def resolve_module(
     module: ConsumersMessaging,
 ) -> ConsumersModule:
-    return Module(
+    return ControlModule(
         sensor_values=optional_pydantic_to_graphql(
             ConsumersSensorValuesType, module.sensor_values
         ),
@@ -54,7 +52,11 @@ def resolve_module(
         parameters=optional_pydantic_to_graphql(
             ConsumersParametersType, module.parameters
         ),
-        automatic=module.control_status.automatic if module.control_status else None,
+        control_mode=SwitchingControlModeType.from_pydantic(
+            ConsumersControlModeType, module.control_mode.mode
+        )
+        if module.control_mode
+        else None,
     )
 
 
@@ -71,12 +73,6 @@ def get_consumers_messaging(context):
 )
 @add_parameter_mutations(
     "consumers", ConsumersParameters, ConsumersParametersType, get_consumers_messaging
-)
-@add_simulation_input_mutations(
-    "consumers",
-    ConsumersSimulationInputs,
-    ConsumersSimulationInputsType,
-    get_consumers_messaging,
 )
 @add_automation_mode_mutation("consumers", get_consumers_messaging)
 class ConsumersMutations:

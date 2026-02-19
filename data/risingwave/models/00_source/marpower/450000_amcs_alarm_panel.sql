@@ -17,4 +17,4 @@ CREATE TABLE {{ this }} (
 	"OperatorAlarmPanelBuzzer"	{{ marpower_struct("BOOLEAN") }},
 )
 INCLUDE partition AS topic
-{{ mqtt_with('marpower/450000-amcs/alarm_panel') }}
+{{ mqtt_with('marpower/450000-amcs/alarm-panel') }}

@@ -17,6 +17,7 @@ jobs:
         uses: actions/checkout@v2
       - name: Update Chart Versions
         id: chart_info
+        if: ${{ github.event_name == 'release' }}
         run: |
           # v1.2.3
           export GIT_REF=${{github.ref_name}}
@@ -24,9 +25,6 @@ jobs:
           export VERSION=${GIT_REF#v}
           yq e -i '.version = strenv(VERSION)' ${{ inputs.helm_chart }}/Chart.yaml
           yq e -i '.appVersion = strenv(VERSION)'  ${{ inputs.helm_chart }}/Chart.yaml
-
-          echo "chart_name=$(yq '.name' '${{ inputs.helm_chart }}/Chart.yaml')" >> $GITHUB_OUTPUT
-          echo "chart_version=$VERSION" >> $GITHUB_OUTPUT
       - id: auth
         name: Authenticate with Google Cloud
         uses: google-github-actions/auth@v2
@@ -46,5 +44,7 @@ jobs:
         uses: azure/setup-helm@v4
       - name: Publish Helm chart
         run: |
+          CHART_NAME=$(yq '.name' '${{ inputs.helm_chart }}/Chart.yaml')
+          CHART_VERSION=$(yq '.version' '${{ inputs.helm_chart }}/Chart.yaml')
           helm package ${{ inputs.helm_chart }}
-          helm push ${{ steps.chart_info.outputs.chart_name }}-${{ steps.chart_info.outputs.chart_version }}.tgz oci://europe-west1-docker.pkg.dev/common-449414/common
+          helm push $CHART_NAME-$CHART_VERSION.tgz oci://europe-west1-docker.pkg.dev/common-449414/common

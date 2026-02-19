@@ -20,6 +20,7 @@ class Sails(Base):  # type:ignore
     abbreviation = Column(String, nullable=False)
     position_id = Column(String, ForeignKey("sail_positions.id"), nullable=False)
     name = Column(String, nullable=False)
+    variant_name = Column(String, nullable=False)
 
 
 class SailSets(Base):  # type:ignore
@@ -67,17 +68,6 @@ class LoadCases(Base):  # type:ignore
     aws_range = relationship("AwsRanges")
 
 
-class Variables(Base):  # type: ignore
-    __tablename__ = "variables"
-
-    id = Column(String, primary_key=True)
-    name = Column(String, nullable=False)
-    unit = Column(String, nullable=False)
-    minimum_value = Column(Float, nullable=True)
-    maximum_value = Column(Float, nullable=True)
-    tag = Column(String, nullable=True)
-
-
 class ReferenceValues(Base):  # type:ignore
     __tablename__ = "reference_values"
 
@@ -85,9 +75,9 @@ class ReferenceValues(Base):  # type:ignore
         UUID(as_uuid=True), primary_key=True, server_default="gen_random_uuid()"
     )
     load_case_id = Column(
-        Integer, ForeignKey("load_cases.id"), nullable=False, index=True
+        UUID(as_uuid=True), ForeignKey("load_cases.id"), nullable=False, index=True
     )
-    variable_id = Column(String, ForeignKey("variables.id"), nullable=False, index=True)
+    variable_id = Column(String, nullable=False)
     alarm_low = Column(Float, nullable=True)
     warning_low = Column(Float, nullable=True)
     target = Column(Float, nullable=True)
@@ -95,4 +85,3 @@ class ReferenceValues(Base):  # type:ignore
     alarm_high = Column(Float, nullable=True)
 
     load_case = relationship("LoadCases")
-    variable = relationship("Variables")

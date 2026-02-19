@@ -1,0 +1,1012 @@
+{
+  "annotations": {
+    "list": [
+      {
+        "builtIn": 1,
+        "datasource": {
+          "type": "grafana",
+          "uid": "-- Grafana --"
+        },
+        "enable": true,
+        "hide": true,
+        "iconColor": "rgba(0, 211, 255, 1)",
+        "name": "Annotations & Alerts",
+        "type": "dashboard"
+      }
+    ]
+  },
+  "editable": true,
+  "fiscalYearStartMonth": 0,
+  "graphTooltip": 0,
+  "id": 59,
+  "links": [],
+  "liveNow": true,
+  "panels": [
+    {
+      "datasource": {
+        "type": "grafana-postgresql-datasource",
+        "uid": "${datasource}"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "decimals": 2,
+          "mappings": [],
+          "noValue": "---",
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "#646464",
+                "value": 0
+              },
+              {
+                "color": "#646464",
+                "value": 0
+              },
+              {
+                "color": "text",
+                "value": 2
+              }
+            ]
+          },
+          "unit": "watt"
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "soc_perc"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "percent"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "soc"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "watth"
+              }
+            ]
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 12,
+        "w": 11,
+        "x": 0,
+        "y": 0
+      },
+      "id": 3,
+      "options": {
+        "infinitePan": false,
+        "inlineEditing": false,
+        "panZoom": false,
+        "root": {
+          "background": {
+            "color": {
+              "fixed": "transparent"
+            },
+            "image": {
+              "field": "",
+              "fixed": "../extra/electrical_flow.png",
+              "mode": "fixed"
+            },
+            "size": "original"
+          },
+          "border": {
+            "color": {
+              "fixed": "dark-green"
+            },
+            "width": 0
+          },
+          "constraint": {
+            "horizontal": "left",
+            "vertical": "top"
+          },
+          "elements": [
+            {
+              "background": {
+                "color": {
+                  "field": "propulsion",
+                  "fixed": "text"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "#313131"
+                },
+                "radius": 0,
+                "width": 2
+              },
+              "config": {
+                "align": "center",
+                "color": {
+                  "fixed": "#000000"
+                },
+                "size": 12,
+                "text": {
+                  "field": "propulsion",
+                  "fixed": "",
+                  "mode": "field"
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "links": [],
+              "name": "Propulsion",
+              "placement": {
+                "height": 30,
+                "left": 547,
+                "top": 318,
+                "width": 80
+              },
+              "type": "metric-value"
+            },
+            {
+              "background": {
+                "color": {
+                  "field": "domestic",
+                  "fixed": "text"
+                },
+                "size": "cover"
+              },
+              "border": {
+                "color": {
+                  "fixed": "#333333"
+                },
+                "width": 2
+              },
+              "config": {
+                "align": "center",
+                "color": {
+                  "fixed": "#000000"
+                },
+                "size": 12,
+                "text": {
+                  "field": "domestic",
+                  "fixed": "",
+                  "mode": "field"
+                },
+                "valign": "middle"
+              },
+              "connections": [],
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "links": [],
+              "name": "Domestic",
+              "placement": {
+                "height": 30,
+                "left": 547,
+                "top": 136,
+                "width": 80
+              },
+              "type": "metric-value"
+            },
+            {
+              "background": {
+                "color": {
+                  "field": "technical",
+                  "fixed": "text"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "#313131"
+                },
+                "width": 2
+              },
+              "config": {
+                "align": "center",
+                "color": {
+                  "fixed": "#000000"
+                },
+                "size": 12,
+                "text": {
+                  "field": "technical",
+                  "fixed": "",
+                  "mode": "field"
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "links": [],
+              "name": "Technical",
+              "placement": {
+                "height": 30,
+                "left": 547,
+                "top": 222,
+                "width": 80
+              },
+              "type": "metric-value"
+            },
+            {
+              "background": {
+                "color": {
+                  "field": "hvac",
+                  "fixed": "text"
+                },
+                "image": {
+                  "fixed": ""
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "#313131"
+                },
+                "width": 2
+              },
+              "config": {
+                "align": "center",
+                "color": {
+                  "fixed": "#000000"
+                },
+                "size": 12,
+                "text": {
+                  "field": "hvac",
+                  "fixed": "",
+                  "mode": "field"
+                },
+                "valign": "middle"
+              },
+              "connections": [],
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "links": [],
+              "name": "HVAC",
+              "placement": {
+                "height": 30,
+                "left": 547,
+                "rotation": 0,
+                "top": 50,
+                "width": 80
+              },
+              "type": "metric-value"
+            },
+            {
+              "background": {
+                "color": {
+                  "field": "hydro",
+                  "fixed": "text"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "#333333"
+                },
+                "width": 2
+              },
+              "config": {
+                "align": "center",
+                "color": {
+                  "fixed": "#000000"
+                },
+                "size": 12,
+                "text": {
+                  "field": "hydro",
+                  "fixed": "",
+                  "mode": "field"
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "links": [],
+              "name": "Hydro",
+              "placement": {
+                "height": 30,
+                "left": 173,
+                "top": 288,
+                "width": 80
+              },
+              "type": "metric-value"
+            },
+            {
+              "background": {
+                "color": {
+                  "field": "shore",
+                  "fixed": "text"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "#313131"
+                },
+                "width": 2
+              },
+              "config": {
+                "align": "center",
+                "color": {
+                  "fixed": "#000000"
+                },
+                "size": 12,
+                "text": {
+                  "field": "shore",
+                  "fixed": "",
+                  "mode": "field"
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "links": [],
+              "name": "Shore",
+              "placement": {
+                "height": 30,
+                "left": 173,
+                "top": 186,
+                "width": 80
+              },
+              "type": "metric-value"
+            },
+            {
+              "background": {
+                "color": {
+                  "field": "solar",
+                  "fixed": "text"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "#313131"
+                },
+                "width": 2
+              },
+              "config": {
+                "align": "center",
+                "color": {
+                  "fixed": "#000000"
+                },
+                "size": 12,
+                "text": {
+                  "field": "solar",
+                  "fixed": "",
+                  "mode": "field"
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "links": [],
+              "name": "Solar",
+              "placement": {
+                "height": 30,
+                "left": 173,
+                "top": 74,
+                "width": 80
+              },
+              "type": "metric-value"
+            },
+            {
+              "background": {
+                "color": {
+                  "field": "discharging",
+                  "fixed": "text"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "#313131"
+                },
+                "width": 2
+              },
+              "config": {
+                "align": "center",
+                "color": {
+                  "fixed": "#000000"
+                },
+                "size": 12,
+                "text": {
+                  "field": "discharging",
+                  "fixed": "",
+                  "mode": "field"
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "links": [],
+              "name": "Discharging",
+              "placement": {
+                "height": 30,
+                "left": 399,
+                "top": 186,
+                "width": 80
+              },
+              "type": "metric-value"
+            },
+            {
+              "background": {
+                "color": {
+                  "field": "charging",
+                  "fixed": "text"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "#313131"
+                },
+                "width": 2
+              },
+              "config": {
+                "align": "center",
+                "color": {
+                  "fixed": "#000000"
+                },
+                "size": 12,
+                "text": {
+                  "field": "charging",
+                  "fixed": "",
+                  "mode": "field"
+                },
+                "valign": "middle"
+              },
+              "connections": [],
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "links": [],
+              "name": "Charging",
+              "placement": {
+                "height": 30,
+                "left": 319,
+                "top": 186,
+                "width": 80
+              },
+              "type": "metric-value"
+            },
+            {
+              "background": {
+                "color": {
+                  "fixed": "#00000000"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "center",
+                "color": {
+                  "fixed": "text"
+                },
+                "size": 24,
+                "text": {
+                  "field": "soc_perc",
+                  "fixed": "bla",
+                  "mode": "field"
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "links": [],
+              "name": "SoC %",
+              "placement": {
+                "height": 40,
+                "left": 322,
+                "rotation": 0,
+                "top": 5,
+                "width": 150
+              },
+              "type": "metric-value"
+            },
+            {
+              "background": {
+                "color": {
+                  "field": "soc",
+                  "fixed": "text"
+                },
+                "image": {
+                  "field": "soc",
+                  "mode": "fixed"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "#313131"
+                },
+                "width": 2
+              },
+              "config": {
+                "align": "center",
+                "color": {
+                  "fixed": "#000000"
+                },
+                "size": 16,
+                "text": {
+                  "field": "soc",
+                  "fixed": "",
+                  "mode": "field"
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "links": [],
+              "name": "SoC",
+              "placement": {
+                "height": 30,
+                "left": 337,
+                "top": 44,
+                "width": 120
+              },
+              "type": "metric-value"
+            }
+          ],
+          "name": "Element 1758614155197",
+          "placement": {
+            "height": 100,
+            "left": 0,
+            "rotation": 0,
+            "top": 0,
+            "width": 100
+          },
+          "type": "frame"
+        },
+        "showAdvancedTypes": false,
+        "tooltip": {
+          "disableForOneClick": false,
+          "mode": "none"
+        },
+        "zoomToContent": false
+      },
+      "pluginVersion": "12.3.0",
+      "targets": [
+        {
+          "dataset": "dev",
+          "datasource": {
+            "type": "grafana-postgresql-datasource",
+            "uid": "${datasource}"
+          },
+          "editorMode": "code",
+          "format": "table",
+          "rawQuery": true,
+          "rawSql": "SELECT\r\n  -- Producers\r\n  MAX(CASE WHEN group_name = 'Solar' THEN power_value END) AS solar,\r\n  MAX(CASE WHEN group_name = 'Shore' THEN power_value END) AS shore,\r\n  MAX(CASE WHEN group_name = 'Hydrogeneration' THEN power_value END) AS hydro,\r\n\r\n  -- Consumers\r\n  MAX(CASE WHEN group_name = 'Domestic' THEN power_value END) AS domestic,\r\n  MAX(CASE WHEN group_name = 'Technical' THEN power_value END) AS technical,\r\n  MAX(CASE WHEN group_name = 'HVAC' THEN power_value END) AS hvac,\r\n  MAX(CASE WHEN group_name = 'Propulsion' THEN power_value END) AS propulsion,\r\n  \r\n  -- Batteries\r\n  MAX(CASE WHEN group_name = 'Charging' AND power_value >= 0 THEN power_value ELSE 0 END) AS charging,\r\n  MAX(CASE WHEN group_name = 'Charging' AND power_value < 0 THEN -power_value ELSE 0 END) AS discharging,\r\n  \t-- For testing the value is artificially increased\r\n  MAX(CASE WHEN group_name = 'State of charge' THEN power_value END) * 100000 + 130000000 AS soc,\r\n  \t-- For testing an artificial soc% is created\r\n  MAX(CASE WHEN group_name = 'State of charge' THEN power_value END) + 55 AS soc_perc\r\nFROM  (\r\n\tSELECT\r\n    time,\r\n    group_name,\r\n    group_power AS power_value\r\n\tFROM energy.electrical_flow\r\n\r\n\tUNION ALL\r\n\r\n\tSELECT\r\n    MAX(time) AS time,\r\n    group_name,\r\n    SUM(stored_energy) AS power_value\r\n\tFROM energy.electrical_soc\r\n\tGROUP BY group_name\r\n)",
+          "refId": "electrical_flow",
+          "sql": {
+            "columns": [
+              {
+                "parameters": [],
+                "type": "function"
+              }
+            ],
+            "groupBy": [
+              {
+                "property": {
+                  "type": "string"
+                },
+                "type": "groupBy"
+              }
+            ],
+            "limit": 50
+          }
+        }
+      ],
+      "title": "Electrical flow",
+      "transformations": [
+        {
+          "id": "organize",
+          "options": {
+            "excludeByName": {},
+            "includeByName": {},
+            "indexByName": {},
+            "renameByName": {
+              "charging": "Charging",
+              "discharging": "Discharging",
+              "domestic": "Domestic",
+              "hvac": "HVAC",
+              "hydro": "Hydrogeneration",
+              "propulsion": "Propulsion",
+              "shore": "Shore",
+              "soc": "State of Charge",
+              "soc_perc": "",
+              "solar": "Solar",
+              "technical": "Technical"
+            }
+          }
+        }
+      ],
+      "type": "canvas"
+    },
+    {
+      "datasource": {
+        "type": "grafana-postgresql-datasource",
+        "uid": "${datasource}"
+      },
+      "description": "Average energy consumption per group and subgroup",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "continuous-YlBl"
+          },
+          "decimals": 1,
+          "fieldMinMax": false,
+          "mappings": [],
+          "noValue": "---",
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": 0
+              }
+            ]
+          },
+          "unit": "watth"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 12,
+        "w": 13,
+        "x": 11,
+        "y": 0
+      },
+      "id": 4,
+      "options": {
+        "colorByField": "group_energy",
+        "groupByField": "group_name",
+        "labelFields": [],
+        "sizeField": "energy",
+        "textField": "sub_group_name",
+        "tiling": "treemapBinary"
+      },
+      "pluginVersion": "2.1.1",
+      "targets": [
+        {
+          "dataset": "dev",
+          "datasource": {
+            "type": "grafana-postgresql-datasource",
+            "uid": "${datasource}"
+          },
+          "editorMode": "code",
+          "format": "table",
+          "rawQuery": true,
+          "rawSql": "SELECT\r\n\tgroup_name,\r\n\tsub_group_name,\r\n\tSUM(avg_energy) AS energy,\r\n  SUM(SUM(avg_energy)) OVER (PARTITION BY group_name) AS group_energy\r\nFROM (\r\n\tSELECT\r\n\t\tgroup_name,\r\n\t\tsub_group_name,\r\n\t\tAVG(energy_wh) AS avg_energy\r\n\tFROM energy.electrical_hourly\r\n\tWHERE group_name IN ('Domestic', 'HVAC', 'Technical', 'Propulsion')\r\n\tAND $__timeFilter(hour)\r\n\tGROUP BY topic, group_name, sub_group_name\r\n)\r\nGROUP BY group_name, sub_group_name\r\n",
+          "refId": "A",
+          "sql": {
+            "columns": [
+              {
+                "parameters": [],
+                "type": "function"
+              }
+            ],
+            "groupBy": [
+              {
+                "property": {
+                  "type": "string"
+                },
+                "type": "groupBy"
+              }
+            ],
+            "limit": 50
+          }
+        }
+      ],
+      "title": "    Average energy consumption",
+      "type": "marcusolsson-treemap-panel"
+    },
+    {
+      "datasource": {
+        "type": "grafana-postgresql-datasource",
+        "uid": "${datasource}"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisBorderShow": false,
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisGridShow": true,
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "barWidthFactor": 0.9,
+            "drawStyle": "bars",
+            "fillOpacity": 100,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "insertNulls": false,
+            "lineInterpolation": "linear",
+            "lineWidth": 3,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "never",
+            "showValues": false,
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "normal"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "decimals": 2,
+          "fieldMinMax": false,
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": 0
+              }
+            ]
+          },
+          "unit": "watth"
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Time"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "time: DD-MM HH:mm"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Hydrogeneration"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "dark-blue",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Solar power"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "dark-yellow",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Shore power"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "dark-green",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Domestic"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "dark-orange",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "HVAC"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "#28b4b4",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Technical"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "dark-purple",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Propulsion"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "dark-red",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 12,
+        "w": 24,
+        "x": 0,
+        "y": 12
+      },
+      "id": 2,
+      "options": {
+        "legend": {
+          "calcs": [
+            "median"
+          ],
+          "displayMode": "table",
+          "placement": "right",
+          "showLegend": true
+        },
+        "tooltip": {
+          "hideZeros": false,
+          "mode": "multi",
+          "sort": "none"
+        }
+      },
+      "pluginVersion": "12.3.0",
+      "targets": [
+        {
+          "datasource": {
+            "type": "grafana-postgresql-datasource",
+            "uid": "${datasource}"
+          },
+          "editorMode": "code",
+          "format": "time_series",
+          "rawQuery": true,
+          "rawSql": "SELECT\r\n  time,\r\n\t-- Producers\r\n  SUM(CASE WHEN group_name = 'Solar' THEN energy_wh ELSE 0 END) AS solar,\r\n  SUM(CASE WHEN group_name = 'Shore' THEN energy_wh ELSE 0 END) AS shore,\r\n  SUM(CASE WHEN group_name = 'Hydrogeneration' THEN energy_wh ELSE 0 END) AS hydrogeneration,\r\n\t-- Consumers\r\n  SUM(CASE WHEN group_name = 'Domestic' THEN energy_wh ELSE 0 END) AS domestic,\r\n  SUM(CASE WHEN group_name = 'Technical' THEN energy_wh ELSE 0 END) AS technical,\r\n  SUM(CASE WHEN group_name = 'HVAC' THEN energy_wh ELSE 0 END) AS hvac,\r\n  SUM(CASE WHEN group_name = 'Propulsion' THEN energy_wh ELSE 0 END) AS propulsion\r\nFROM (\r\n  SELECT group_name,\r\n\t\t\t-- To display producers and consumers side-by-side, I altered the time value.\r\n  \t\tCASE\r\n  \t\t\tWHEN group_name IN ('Solar', 'Shore', 'Hydrogeneration' ) THEN hour - INTERVAL '5 minutes'\r\n  \t\t\tELSE hour + INTERVAL '5 minutes'\r\n  \t\tEND AS time,\r\n\t\t\t-- For testing purposes, I multiplied the values of the producers by 50.\r\n  \t\tCASE\r\n  \t\t\tWHEN group_name IN ('Solar', 'Shore', 'Hydrogeneration' ) THEN energy_wh * 40\r\n  \t\t\tELSE energy_wh\r\n  \t\tEND AS energy_wh\r\n\tFROM energy.electrical_hourly\r\n\tWHERE group_name IS NOT NULL\r\n)\r\nGROUP BY time\r\nORDER BY time",
+          "refId": "Electrical hourly",
+          "sql": {
+            "columns": [
+              {
+                "parameters": [],
+                "type": "function"
+              }
+            ],
+            "groupBy": [
+              {
+                "property": {
+                  "type": "string"
+                },
+                "type": "groupBy"
+              }
+            ],
+            "limit": 50
+          }
+        }
+      ],
+      "title": "Electrical energy consumption per hour",
+      "transformations": [
+        {
+          "id": "organize",
+          "options": {
+            "excludeByName": {},
+            "includeByName": {},
+            "indexByName": {},
+            "orderByMode": "manual",
+            "renameByName": {
+              "Domestic": "",
+              "domestic": "Domestic",
+              "hvac": "HVAC",
+              "hydrogeneration": "Hydrogeneration",
+              "propulsion": "Propulsion",
+              "shore": "Shore",
+              "solar": "Solar",
+              "technical": "Technical",
+              "time": "Time",
+              "time\\group_name": "Time"
+            }
+          }
+        }
+      ],
+      "type": "timeseries"
+    }
+  ],
+  "preload": false,
+  "refresh": "30s",
+  "schemaVersion": 42,
+  "tags": [],
+  "templating": {
+    "list": [
+      {
+        "current": {
+          "text": "Risingwave",
+          "value": "P19810E2E26C24BD9"
+        },
+        "name": "datasource",
+        "options": [],
+        "query": "grafana-postgresql-datasource",
+        "refresh": 1,
+        "regex": "",
+        "type": "datasource"
+      }
+    ]
+  },
+  "time": {
+    "from": "now-24h",
+    "to": "now"
+  },
+  "timepicker": {},
+  "timezone": "browser",
+  "title": "Electrical energy",
+  "uid": "9a91cc40-a5b1-4b0e-a69e-c9530138fdda",
+  "version": 2
+}

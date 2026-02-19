@@ -11,23 +11,48 @@ class Controller[ActuatorUnit: float, MeasurementUnit: float]:
     def __init__(
         self,
         initial: ActuatorUnit,
-        setpoint: MeasurementUnit,
-        tuning: tuple[float, float, float],
+        setpoint: MeasurementUnit | Callable[[], MeasurementUnit],
+        tuning: tuple[float, float, float] | Callable[[], tuple[float, float, float]],
         time_fn: Callable[[], datetime],
-        output_limits: tuple[float, float] = (0, 1),
+        output_limits: tuple[float, float] | Callable[[], tuple[float, float]] = (0, 1),
     ):
-        kp, ki, kd = tuning or self.TUNING
+        self._setpoint_getter = setpoint if callable(setpoint) else None
+        self._tuning_getter = tuning if callable(tuning) else None
+        self._output_limits_getter = output_limits if callable(output_limits) else None
+
+        self._setpoint = setpoint() if callable(setpoint) else setpoint
+        self._tuning = tuning() if callable(tuning) else tuning
+        self._output_limits = (
+            output_limits() if callable(output_limits) else output_limits
+        )
+
+        kp, ki, kd = self._tuning
+
+        initial_setpoint = self._setpoint
         self._pid = PID(
             kp,
             ki,
             kd,
-            setpoint=setpoint,
+            setpoint=initial_setpoint,
             sample_time=None,
-            output_limits=output_limits,
+            output_limits=self._output_limits,
             auto_mode=False,
             time_fn=lambda: time_fn().timestamp(),
         )
         self._initial = initial
+
+    def _sync_parameters(self):
+        if self._tuning_getter:
+            self._tuning = self._tuning_getter()
+            self._pid.tunings = self._tuning
+
+        if self._setpoint_getter:
+            self._setpoint = self._setpoint_getter()
+            self._pid.setpoint = self._setpoint_getter()
+
+        if self._output_limits_getter:
+            self._output_limits = self._output_limits_getter()
+            self._pid.output_limits = self._output_limits
 
     def enabled(self) -> bool:
         return self._pid.auto_mode
@@ -51,14 +76,13 @@ class Controller[ActuatorUnit: float, MeasurementUnit: float]:
         self._pid.setpoint = value
 
     def __call__(self, measurement: MeasurementUnit | None) -> ActuatorUnit:
+        self._sync_parameters()
+
         if measurement is None:
             pid_result = None
         else:
             pid_result = cast(ActuatorUnit | None, self._pid(measurement))
         return pid_result if pid_result is not None else self._initial
-
-    def update_tuning(self, tuning: tuple[float, float, float]):
-        self._pid.tunings = tuning
 
 
 class FlowBalanceController:

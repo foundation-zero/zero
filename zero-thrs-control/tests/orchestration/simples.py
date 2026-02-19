@@ -44,7 +44,11 @@ class SimpleParameters(ThrsValues):
     pass
 
 
-class SimpleControl(Control[SimpleInOut, SimpleInOut, SimpleParameters]):
+class SimpleMode(ThrsValues):
+    pass
+
+
+class SimpleControl(Control[SimpleInOut, SimpleInOut, SimpleParameters, SimpleMode]):
     def __init__(self, parameters: SimpleParameters, time_fn: Callable[[], datetime]):
         self._parameters = parameters
         self._time = time_fn
@@ -64,7 +68,7 @@ class SimpleControl(Control[SimpleInOut, SimpleInOut, SimpleParameters]):
         return ""
 
     @property
-    def mode(self) -> str | None:
+    def mode(self) -> SimpleMode | None:
         return None
 
     @property

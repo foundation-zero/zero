@@ -1,9 +1,9 @@
 from datetime import datetime
-from typing import Callable, Literal
+from typing import Callable
 
 from pydantic import model_validator
 from transitions import Machine, State
-from thrs.classes.control import Control, ControlResult
+from thrs.classes.control import Control, ControlMode, ControlResult
 from thrs.control.controllers import Controller
 from thrs.input_output.base import Stamped, ThrsValues
 from thrs.input_output.definitions import sensor
@@ -48,26 +48,36 @@ class PvtGroupParameters(ThrsValues):
         return self
 
 
-_ZERO_TIME = datetime.fromtimestamp(0)
+def _INITIAL_CONTROL_VALUES(timestamp) -> PvtGroupControlValues:
+    return PvtGroupControlValues(
+        pump=Pump(
+            dutypoint=Stamped(value=0.0, timestamp=timestamp),
+            on=Stamped(value=False, timestamp=timestamp),
+        ),
+        mix=Valve(setpoint=Stamped(value=Valve.MIXING_B_TO_AB, timestamp=timestamp)),
+    )
 
-_INITIAL_CONTROL_VALUES = PvtGroupControlValues(
-    pump=Pump(
-        dutypoint=Stamped(value=0.0, timestamp=_ZERO_TIME),
-        on=Stamped(value=False, timestamp=_ZERO_TIME),
-    ),
-    mix=Valve(setpoint=Stamped(value=Valve.MIXING_B_TO_AB, timestamp=_ZERO_TIME)),
-)
+
+class PvtGroupControlMode(ControlMode):
+    mode: str
 
 
 class PvtGroupControl(
-    Control[PvtGroupSensorValues, PvtGroupControlValues, PvtGroupParameters]
+    Control[
+        PvtGroupSensorValues,
+        PvtGroupControlValues,
+        PvtGroupParameters,
+        PvtGroupControlMode,
+    ]
 ):
     def __init__(
         self, parameters: PvtGroupParameters, time_fn: Callable[[], datetime]
     ) -> None:
         self._parameters = parameters
         self._time = time_fn
-        self._current_values = _INITIAL_CONTROL_VALUES.model_copy(deep=True)
+        self._current_values = _INITIAL_CONTROL_VALUES(self._time()).model_copy(
+            deep=True
+        )
         self._states = [
             State(name="idle", on_enter=self._set_mix_to_a),
             State(
@@ -100,7 +110,7 @@ class PvtGroupControl(
             },
         ]
 
-        self._pvt_group_state_machine = Machine(
+        self._state_machine = Machine(
             model=self,
             states=self._states,
             transitions=self._transitions,
@@ -108,18 +118,18 @@ class PvtGroupControl(
         )
 
         self._warmup_mix_controller = Controller[Ratio, Celsius](
-            _INITIAL_CONTROL_VALUES.mix.setpoint.value,
-            self._parameters.warmup_temperature,
-            self._parameters.warmup_mix_tuning,
+            self._current_values.mix.setpoint.value,
+            lambda: self._parameters.warmup_temperature,
+            lambda: self._parameters.warmup_mix_tuning,
             self._time,
         )
 
         self._pump_controller = Controller[Ratio, Celsius](
-            _INITIAL_CONTROL_VALUES.pump.dutypoint.value,
-            self._parameters.recovery_temperature,
-            self._parameters.pump_tuning,
+            self._current_values.pump.dutypoint.value,
+            lambda: self._parameters.recovery_temperature,
+            lambda: self._parameters.pump_tuning,
             self._time,
-            (self._parameters.minimum_pump_dutypoint, 1),
+            lambda: (self._parameters.minimum_pump_dutypoint, 1),
         )
 
     @property
@@ -130,23 +140,24 @@ class PvtGroupControl(
     def current_values(self) -> PvtGroupControlValues:
         return self._current_values
 
-    @staticmethod
-    def modes() -> list[str]:
-        return ["idle", "recovery"]
-
-    @staticmethod
-    def initial_mode() -> str:
-        return "idle"
+    def modes(self) -> list[str]:
+        return list(self._state_machine.states.keys())
 
     @property
-    def mode(self) -> Literal["idle", "recovery"]:
-        return self.state  # type: ignore
+    def initial_mode(self) -> PvtGroupControlMode:
+        initial_mode: str = self._state_machine.initial  # type: ignore
+        return PvtGroupControlMode(mode=initial_mode)
+
+    @property
+    def mode(self) -> PvtGroupControlMode:
+        mode: str = self.state  # type: ignore
+        return PvtGroupControlMode(mode=mode)
 
     def update_parameters(self, parameters: PvtGroupParameters):
         self._parameters = parameters
 
     def initial(self) -> ControlResult[PvtGroupControlValues]:
-        return ControlResult(self._time(), self._current_values)
+        return ControlResult(self._time(), _INITIAL_CONTROL_VALUES(self._time()))
 
     def _string_warm(self, sensor_values: PvtGroupSensorValues):
         return (

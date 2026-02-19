@@ -24,14 +24,14 @@ def test_marpower_amcs_io_excel(marpower_io_result):
         [
             (
                 Path(__file__).parent
-                / "../../io_lists/52422003_3210_AMCS IO-List R2.18-MQTT-fix.xlsx"
+                / "../../io_lists/52422003_3210_AMCS IO-List R2.25-MQTT-fix.xlsx"
             )
         ],
         "marpower",
     )
-    assert marpower_io_result.io_list.shape == (829, 13)
+    assert marpower_io_result.io_list.shape == (5163, 13)
     assert marpower_io_result.io_list.columns == expected_io_columns
-    assert len(marpower_io_result.topics) == 70
+    assert len(marpower_io_result.topics) == 509
 
 
 def test_marpower_pms_io_excel():
@@ -39,14 +39,14 @@ def test_marpower_pms_io_excel():
         [
             (
                 Path(__file__).parent
-                / "../../io_lists/52422003_3211_PMS IO-List R2.7-MQTT-fix.xlsx"
+                / "../../io_lists/52422003_3211_PMS IO-List R2.11-MQTT-fix.xlsx"
             )
         ],
         "marpower",
     )
-    assert marpower_io_result.io_list.shape == (11460, 13)
+    assert marpower_io_result.io_list.shape == (11522, 13)
     assert marpower_io_result.io_list.columns == expected_io_columns
-    assert len(marpower_io_result.topics) == 837
+    assert len(marpower_io_result.topics) == 850
 
 
 def test_mocked_io_excel():
@@ -54,6 +54,6 @@ def test_mocked_io_excel():
         [(Path(__file__).parent / "../../io_lists/ZERO mocked IO-List.xlsx")],
         "marpower",
     )
-    assert marpower_io_result.io_list.shape == (9988, 13)
+    assert marpower_io_result.io_list.shape == (8977, 13)
     assert marpower_io_result.io_list.columns == expected_io_columns
-    assert len(marpower_io_result.topics) == 335
+    assert len(marpower_io_result.topics) == 11

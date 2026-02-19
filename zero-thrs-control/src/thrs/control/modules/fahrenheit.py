@@ -1,10 +1,10 @@
 from datetime import datetime
-from typing import Literal, cast
+from typing import cast
 
 from pydantic import model_validator
 from pyparsing import Callable
 from transitions import Machine, State
-from thrs.classes.control import Control, ControlResult
+from thrs.classes.control import Control, ControlMode, ControlResult
 from thrs.control.controllers import Controller
 from thrs.input_output.base import Stamped, ThrsValues
 from thrs.input_output.definitions.control import Fahrenheit, Valve
@@ -50,47 +50,54 @@ class FahrenheitParameters(ThrsValues):
         return self
 
 
-_ZERO_TIME = datetime.fromtimestamp(0)
-_INITIAL_CONTROL_VALUES = FahrenheitControlValues(
-    fahrenheit_flowcontrol_waste=Valve(
-        setpoint=Stamped(value=Valve.CLOSED, timestamp=_ZERO_TIME)
-    ),
-    fahrenheit_mix_hot=Valve(
-        setpoint=Stamped(value=Valve.MIXING_A_TO_AB, timestamp=_ZERO_TIME)
-    ),
-    fahrenheit_mix_waste=Valve(
-        setpoint=Stamped(value=Valve.MIXING_A_TO_AB, timestamp=_ZERO_TIME)
-    ),
-    fahrenheit_chiller=Fahrenheit(
-        enable=Stamped(value=True, timestamp=_ZERO_TIME),
-        mode=Stamped(value=FahrenheitModeEnum.ON.value, timestamp=_ZERO_TIME),
-        cooling_setpoint=Stamped(value=17.0, timestamp=_ZERO_TIME),
-        free_cooling_mode=Stamped(
-            value=FreeCoolingModeEnum.AUTO.value, timestamp=_ZERO_TIME
+def _INITIAL_CONTROL_VALUES(timestamp) -> FahrenheitControlValues:
+    return FahrenheitControlValues(
+        fahrenheit_flowcontrol_waste=Valve(
+            setpoint=Stamped(value=Valve.CLOSED, timestamp=timestamp)
         ),
-        available_seawater_temperature=Stamped(value=32.0, timestamp=_ZERO_TIME),
-        available_hot_temperature=Stamped(value=60.0, timestamp=_ZERO_TIME),
-        available_cold_temperature=Stamped(value=20.0, timestamp=_ZERO_TIME),
-        cold_minimum=Stamped(value=10.0, timestamp=_ZERO_TIME),
-        hot_minimum=Stamped(value=55.0, timestamp=_ZERO_TIME),
-        cold_hysteresis=Stamped(value=7.0, timestamp=_ZERO_TIME),
-        hot_hysteresis=Stamped(value=5.0, timestamp=_ZERO_TIME),
-        tank_control_mode=Stamped(
-            value=TankControlModeEnum.BOTH.value, timestamp=_ZERO_TIME
+        fahrenheit_mix_hot=Valve(
+            setpoint=Stamped(value=Valve.MIXING_A_TO_AB, timestamp=timestamp)
         ),
-    ),
-)
+        fahrenheit_mix_waste=Valve(
+            setpoint=Stamped(value=Valve.MIXING_A_TO_AB, timestamp=timestamp)
+        ),
+        fahrenheit_chiller=Fahrenheit(
+            enable=Stamped(value=False, timestamp=timestamp),
+            mode=Stamped(value=FahrenheitMode.OFF, timestamp=timestamp),
+            cooling_setpoint=Stamped(value=17.0, timestamp=timestamp),
+            free_cooling_mode=Stamped(value=FreeCoolingMode.AUTO, timestamp=timestamp),
+            available_seawater_temperature=Stamped(value=20.0, timestamp=timestamp),
+            available_hot_temperature=Stamped(value=20.0, timestamp=timestamp),
+            available_cold_temperature=Stamped(value=20.0, timestamp=timestamp),
+            cold_minimum=Stamped(value=15.0, timestamp=timestamp),
+            hot_minimum=Stamped(value=53.0, timestamp=timestamp),
+            cold_hysteresis=Stamped(value=2.0, timestamp=timestamp),
+            hot_hysteresis=Stamped(value=2.0, timestamp=timestamp),
+            tank_control_mode=Stamped(value=TankControlMode.BOTH, timestamp=timestamp),
+        ),
+    )
+
+
+class FahrenheitControlMode(ControlMode):
+    mode: str
 
 
 class FahrenheitControl(
-    Control[FahrenheitSensorValues, FahrenheitControlValues, FahrenheitParameters]
+    Control[
+        FahrenheitSensorValues,
+        FahrenheitControlValues,
+        FahrenheitParameters,
+        FahrenheitControlMode,
+    ]
 ):
     def __init__(
         self, parameters: FahrenheitParameters, time_fn: Callable[[], datetime]
     ) -> None:
         self._parameters = parameters
         self._time = time_fn
-        self._current_values = _INITIAL_CONTROL_VALUES.model_copy(deep=True)
+        self._current_values = _INITIAL_CONTROL_VALUES(self._time()).model_copy(
+            deep=True
+        )
 
         self._states = [
             State(
@@ -135,7 +142,7 @@ class FahrenheitControl(
             },
         ]
 
-        self.fahrenheit_state_machine = Machine(
+        self._state_machine = Machine(
             model=self,
             states=self._states,
             transitions=self._transitions,
@@ -143,23 +150,23 @@ class FahrenheitControl(
         )
 
         self._hot_mix_controller = Controller[Ratio, Celsius](
-            _INITIAL_CONTROL_VALUES.fahrenheit_mix_hot.setpoint.value,
-            self._parameters.hot_supply_temperature_setpoint,
-            self._parameters.hot_mix_tuning,
+            self._current_values.fahrenheit_mix_hot.setpoint.value,
+            lambda: self._parameters.hot_supply_temperature_setpoint,
+            lambda: self._parameters.hot_mix_tuning,
             self._time,
         )
 
         self._recovery_controller = Controller[Ratio, Celsius](
-            _INITIAL_CONTROL_VALUES.fahrenheit_flowcontrol_waste.setpoint.value,
-            self._parameters.waste_recovery_temperature_setpoint,
-            self._parameters.recovery_tuning,
+            self._current_values.fahrenheit_flowcontrol_waste.setpoint.value,
+            lambda: self._parameters.waste_recovery_temperature_setpoint,
+            lambda: self._parameters.recovery_tuning,
             self._time,
         )
 
         self._waste_cooling_controller = Controller[Ratio, Celsius](
-            _INITIAL_CONTROL_VALUES.fahrenheit_mix_waste.setpoint.value,
-            self._parameters.waste_cooling_temperature_setpoint,
-            self._parameters.waste_cooling_tuning,
+            self._current_values.fahrenheit_mix_waste.setpoint.value,
+            lambda: self._parameters.waste_cooling_temperature_setpoint,
+            lambda: self._parameters.waste_cooling_tuning,
             self._time,
         )
 
@@ -170,20 +177,21 @@ class FahrenheitControl(
     def update_parameters(self, parameters: FahrenheitParameters) -> None:
         self._parameters = parameters
 
-    @staticmethod
-    def modes() -> list[str]:
-        return ["idle", "enabled"]
-
-    @staticmethod
-    def initial_mode() -> str:
-        return "idle"
+    def modes(self) -> list[str]:
+        return list(self._state_machine.states.keys())
 
     @property
-    def mode(self) -> Literal["idle", "enabled"]:
-        return self.state  # type: ignore
+    def initial_mode(self) -> FahrenheitControlMode:
+        initial_mode: str = self._state_machine.initial  # type: ignore
+        return FahrenheitControlMode(mode=initial_mode)
+
+    @property
+    def mode(self) -> FahrenheitControlMode:
+        mode: str = self.state  # type: ignore
+        return FahrenheitControlMode(mode=mode)
 
     def initial(self) -> ControlResult[FahrenheitControlValues]:
-        return ControlResult(self._time(), self._current_values)
+        return ControlResult(self._time(), _INITIAL_CONTROL_VALUES(self._time()))
 
     def control(
         self, sensor_values: FahrenheitSensorValues

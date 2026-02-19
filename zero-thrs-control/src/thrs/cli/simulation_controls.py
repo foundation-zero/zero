@@ -19,18 +19,31 @@ from pydantic import (
 )
 
 from thrs.control.modules.high_temperature import HighTemperatureModule
+from thrs.control.switching import SwitchingControlMode
 from thrs.input_output.modules.high_temperature import HighTemperatureSimulationInputs
 from thrs.orchestration.module import ModuleDescription, CombinedModule, CombinedControl
 from thrs.control.modules.consumers import (
     ConsumersAlarms,
     ConsumersControl,
+    ConsumersControlMode,
     ConsumersParameters,
 )
-from thrs.control.modules.pcm import PcmAlarms, PcmControl, PcmParameters
-from thrs.control.modules.pvt import PvtAlarms, PvtControl, PvtParameters
+from thrs.control.modules.pcm import (
+    PcmAlarms,
+    PcmControl,
+    PcmControlMode,
+    PcmParameters,
+)
+from thrs.control.modules.pvt import (
+    PvtAlarms,
+    PvtControl,
+    PvtControlMode,
+    PvtParameters,
+)
 from thrs.control.modules.thrusters import (
     ThrustersAlarms,
     ThrustersControl,
+    ThrustersControlMode,
     ThrustersParameters,
 )
 from thrs.input_output.base import (
@@ -42,7 +55,6 @@ from thrs.input_output.base import (
 )
 from thrs.input_output.definitions.simulation import (
     Boundary,
-    ExchangerBoundary,
     HeatSource,
     Pcs,
     TemperatureBoundary,
@@ -122,15 +134,13 @@ INPUTS = {
         ),
     ),
     "consumers": ConsumersSimulationInputs(
-        consumers_boosting_supply=ExchangerBoundary(
+        consumers_boosting_supply=Boundary(
             temperature=Stamped.stamp(30.0),
             flow=Stamped.stamp(10.0),
-            overpressure=Stamped.stamp(0.2),
         ),
-        consumers_fahrenheit_supply=ExchangerBoundary(
+        consumers_fahrenheit_supply=Boundary(
             temperature=Stamped.stamp(30.0),
             flow=Stamped.stamp(10.0),
-            overpressure=Stamped.stamp(0.2),
         ),
         consumers_module_supply=Boundary(
             temperature=Stamped.stamp(60.0), flow=Stamped.stamp(10.0)
@@ -158,15 +168,13 @@ INPUTS = {
             temperature=Stamped.stamp(40.0),
             flow=Stamped.stamp(0.0),
         ),
-        consumers_fahrenheit_supply=ExchangerBoundary(
+        consumers_fahrenheit_supply=Boundary(
             temperature=Stamped.stamp(30.0),
             flow=Stamped.stamp(0.0),
-            overpressure=Stamped.stamp(0.2),
         ),
-        consumers_boosting_supply=ExchangerBoundary(
+        consumers_boosting_supply=Boundary(
             temperature=Stamped.stamp(30.0),
             flow=Stamped.stamp(0.0),
-            overpressure=Stamped.stamp(0.2),
         ),
     ),
 }
@@ -190,6 +198,7 @@ THRUSTERS_MODULE_DESCRIPTION = ModuleDescription(
     ThrustersControlValues,
     ThrustersParameters,
     ThrustersControl,
+    ThrustersControlMode,
     ThrustersAlarms,
 )
 
@@ -198,6 +207,7 @@ PVT_MODULE_DESCRIPTION = ModuleDescription(
     PvtControlValues,
     PvtParameters,
     PvtControl,
+    PvtControlMode,
     PvtAlarms,
 )
 
@@ -206,6 +216,7 @@ PCM_MODULE_DESCRIPTION = ModuleDescription(
     PcmControlValues,
     PcmParameters,
     PcmControl,
+    PcmControlMode,
     PcmAlarms,
 )
 CONSUMERS_MODULE_DESCRIPTION = ModuleDescription(
@@ -213,6 +224,7 @@ CONSUMERS_MODULE_DESCRIPTION = ModuleDescription(
     ConsumersControlValues,
     ConsumersParameters,
     ConsumersControl,
+    ConsumersControlMode,
     ConsumersAlarms,
 )
 
@@ -351,13 +363,14 @@ class OutgoingMessage(ThrsValues):
         return self.subscribe_topic()
 
     @classmethod
-    def clear_topics(cls, modules: list[str]) -> list[str]:
+    def clear_topics(cls, control_modules: list[str]) -> list[str]:
         return [cls.subscribe_topic()]
 
 
 class SimulationStatusMessage(OutgoingMessage):
+    mode: str
     status: Literal["available", "running", "stepping"]
-    modules: list[str]
+    control_modules: list[str]
     simulation_time: datetime
 
     @staticmethod
@@ -369,9 +382,9 @@ class SimulationStatusMessage(OutgoingMessage):
         return True
 
 
-class ControlStatusMessage(OutgoingMessage):
+class ControlModeMessage[ControlMode](OutgoingMessage):
     module: str
-    automatic: bool
+    mode: SwitchingControlMode[ControlMode]
 
     @staticmethod
     def subscribe_topic() -> str:
@@ -381,8 +394,8 @@ class ControlStatusMessage(OutgoingMessage):
         return f"{self.module}/controls/status"
 
     @classmethod
-    def clear_topics(cls, modules: list[str]) -> list[str]:
-        return [f"{module}/controls/status" for module in modules]
+    def clear_topics(cls, control_modules: list[str]) -> list[str]:
+        return [f"{module}/controls/status" for module in control_modules]
 
     @staticmethod
     def retained() -> bool:
@@ -401,8 +414,8 @@ class ParametersMessage[Parameters: ThrsValues](OutgoingMessage):
         return f"{self.module}/config/parameters"
 
     @classmethod
-    def clear_topics(cls, modules: list[str]) -> list[str]:
-        return [f"{module}/config/parameters" for module in modules]
+    def clear_topics(cls, control_modules: list[str]) -> list[str]:
+        return [f"{module}/config/parameters" for module in control_modules]
 
     @staticmethod
     def retained() -> bool:
@@ -423,7 +436,7 @@ class SimulationInputMessage[Inputs: ThrsValues](OutgoingMessage):
 
 OUTGOING_MESSAGES = [
     SimulationStatusMessage,
-    ControlStatusMessage,
+    ControlModeMessage,
     ParametersMessage,
     SimulationInputMessage,
 ]
@@ -558,7 +571,10 @@ class SetAutomationMessage(IncomingModuleMessage):
     async def handle(self, context: MessageContext):
         context.control.set_automation_mode(self.module, self.enabled)
         await context.send(
-            ControlStatusMessage(module=self.module, automatic=self.enabled)
+            ControlModeMessage(
+                module=self.module,
+                mode=context.control.mode_for(self.module),
+            )
         )
 
 
@@ -748,7 +764,9 @@ class SimulationControls:
                 cmds, control, self._controls_client, inner_executor, self._topic_prefix
             )
             for module in modules.modules:
-                await context.send(ControlStatusMessage(module=module, automatic=False))
+                await context.send(
+                    ControlModeMessage(module=module, mode=control.mode_for(module))
+                )
 
             executor = MqttExecutor(
                 inner_executor,
@@ -777,7 +795,9 @@ class SimulationControls:
                         inputs=cast(ThrustersSimulationInputs, simulation_inputs)
                     )
                 )
-                await self._run_simulation(modules, context, executor, simulator, cmds)
+                await self._run_simulation(
+                    mode, modules, context, executor, simulator, cmds
+                )
             except Exception as e:
                 logger.error(f"SimulationControls run encountered an error: {e}")
             finally:
@@ -786,6 +806,7 @@ class SimulationControls:
 
     async def _run_simulation(
         self,
+        mode: Modes,
         modules: CombinedModule,
         context: MessageContext,
         executor: MqttExecutor,
@@ -797,9 +818,10 @@ class SimulationControls:
         while True:
             await context.send(
                 SimulationStatusMessage(
+                    mode=mode,
                     status="available",
                     simulation_time=executor.time(),
-                    modules=active_modules,
+                    control_modules=active_modules,
                 )
             )
             cmd = await cmds.get()
@@ -809,9 +831,10 @@ class SimulationControls:
                 )
                 await context.send(
                     SimulationStatusMessage(
+                        mode=mode,
                         status="running",
                         simulation_time=executor.time(),
-                        modules=active_modules,
+                        control_modules=active_modules,
                     )
                 )
                 logging.debug(
@@ -825,9 +848,10 @@ class SimulationControls:
             elif isinstance(cmd, StepMessage):
                 await context.send(
                     SimulationStatusMessage(
+                        mode=mode,
                         status="stepping",
                         simulation_time=executor.time(),
-                        modules=active_modules,
+                        control_modules=active_modules,
                     )
                 )
 

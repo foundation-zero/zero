@@ -10,4 +10,4 @@ CREATE TABLE {{ this }} (
 	"CLOSE"	{{ marpower_struct("BOOLEAN") }},
 )
 INCLUDE partition AS topic
-{{ mqtt_with('marpower/450000-dc-distribution/dc_switch/#') }}
+{{ mqtt_with('marpower/450000-dc-distribution/dc-switch/#') }}

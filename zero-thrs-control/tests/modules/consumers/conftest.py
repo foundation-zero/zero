@@ -2,7 +2,7 @@ from datetime import datetime, timedelta
 from pytest import fixture
 
 from thrs.input_output.base import Stamped
-from thrs.input_output.definitions.simulation import Boundary, ExchangerBoundary
+from thrs.input_output.definitions.simulation import Boundary
 from thrs.input_output.modules.consumers import (
     ConsumersSensorValues,
     ConsumersSimulationInputs,
@@ -35,18 +35,16 @@ def control(parameters, executor):
 @fixture
 def simulation_inputs():
     return ConsumersSimulationInputs(
-        consumers_fahrenheit_supply=ExchangerBoundary(
+        consumers_fahrenheit_supply=Boundary(
             temperature=Stamped.stamp(60),
             flow=Stamped.stamp(42),
-            overpressure=Stamped.stamp(0.2),
         ),
         consumers_module_supply=Boundary(
             temperature=Stamped.stamp(60), flow=Stamped.stamp(94)
         ),
-        consumers_boosting_supply=ExchangerBoundary(
+        consumers_boosting_supply=Boundary(
             temperature=Stamped.stamp(40),
             flow=Stamped.stamp(29),
-            overpressure=Stamped.stamp(0.2),
         ),
     )
 

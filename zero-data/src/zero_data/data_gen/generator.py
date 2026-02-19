@@ -46,7 +46,7 @@ class Generator:
             payload = TypeAdapter(dict[str, dict[str, Any]]).dump_json(
                 next_value, by_alias=True
             )
-            await client.publish(topic.topic, payload)
+            await client.publish(topic.topic.removeprefix("marpower/"), payload)
 
     async def run(self):
         """Run the generator, sending messages at regular intervals."""

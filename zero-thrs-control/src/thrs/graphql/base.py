@@ -2,75 +2,69 @@ from dataclasses import dataclass
 from inspect import isclass
 from typing import Callable, Coroutine
 import strawberry
-from thrs.control.modules.consumers import ConsumersParameters
-from thrs.control.modules.pcm import PcmParameters
-from thrs.control.modules.pvt import PvtParameters
-from thrs.control.modules.thrusters import ThrustersParameters
-from thrs.graphql.messaging import Messaging, MessagingModule
+from thrs.control.modules.consumers import ConsumersControlMode, ConsumersParameters
+from thrs.control.modules.pcm import PcmControlMode, PcmParameters
+from thrs.control.modules.pvt import PvtControlMode, PvtParameters
+from thrs.control.modules.thrusters import ThrustersControlMode, ThrustersParameters
+from thrs.control.switching import SwitchingControlMode
+from thrs.graphql.messaging import ControlMessaging, Messaging, SimulationMessaging
 import thrs.input_output.definitions.sensor as sensor
 import thrs.input_output.definitions.control as control
-from thrs.input_output.base import Stamped, ThrsValues
+from thrs.input_output.base import SimulationInputs, Stamped, ThrsValues
 from strawberry.fastapi import BaseContext
 from pydantic.fields import FieldInfo
 
 from thrs.graphql.helpers import (
     JsonSchemaDirective,
     ensure_input_type,
+    optional_pydantic_to_graphql,
 )
+
 from thrs.input_output.modules.consumers import (
     ConsumersControlValues,
     ConsumersSensorValues,
-    ConsumersSimulationInputs,
-    ConsumersSimulationOutputs,
 )
 from thrs.input_output.modules.pcm import (
     PcmControlValues,
     PcmSensorValues,
-    PcmSimulationInputs,
-    PcmSimulationOutputs,
 )
 from thrs.input_output.modules.pvt import (
     PvtControlValues,
     PvtSensorValues,
-    PvtSimulationInputs,
-    PvtSimulationOutputs,
 )
 from thrs.input_output.modules.thrusters import (
     ThrustersControlValues,
     ThrustersSensorValues,
-    ThrustersSimulationInputs,
-    ThrustersSimulationOutputs,
 )
 
-type ThrustersMessaging = MessagingModule[
+type ThrustersMessaging = ControlMessaging[
     ThrustersSensorValues,
     ThrustersControlValues,
     ThrustersParameters,
-    ThrustersSimulationInputs,
-    ThrustersSimulationOutputs,
+    ThrustersControlMode,
 ]
-type PvtMessaging = MessagingModule[
+
+type PvtMessaging = ControlMessaging[
     PvtSensorValues,
     PvtControlValues,
     PvtParameters,
-    PvtSimulationInputs,
-    PvtSimulationOutputs,
+    PvtControlMode,
 ]
 
-type PcmMessaging = MessagingModule[
+
+type PcmMessaging = ControlMessaging[
     PcmSensorValues,
     PcmControlValues,
     PcmParameters,
-    PcmSimulationInputs,
-    PcmSimulationOutputs,
+    PcmControlMode,
 ]
 
-type ConsumersMessaging = MessagingModule[
+
+type ConsumersMessaging = ControlMessaging[
     ConsumersSensorValues,
     ConsumersControlValues,
     ConsumersParameters,
-    ConsumersSimulationInputs,
-    ConsumersSimulationOutputs,
+    ConsumersControlMode,
 ]
 
 
@@ -108,25 +102,45 @@ convert_module(sensor, "Sensor")
 convert_module(control, "Control")
 
 
+# TODO: check if this can't just be based on the pydantic model directly
 @strawberry.type
-class Module[
-    SensorValues,
-    ControlValues,
-    Parameters,
+class SwitchingControlModeType[Mode]:
+    automatic_mode: Mode | None
+
+    @classmethod
+    def from_pydantic(
+        cls, type, mode: SwitchingControlMode[Mode]
+    ) -> "SwitchingControlModeType[Mode]":
+        return cls(
+            automatic_mode=optional_pydantic_to_graphql(type, mode.automatic_mode)
+        )
+
+    @strawberry.field
+    def automatic(self) -> bool:
+        return self.automatic_mode is not None
+
+
+@strawberry.type
+class ControlModule[
+    SensorValuesType,
+    ControlValuesType,
+    ParametersType,
+    Mode,
 ]:
-    sensor_values: SensorValues | None
-    control_values: ControlValues | None
-    parameters: Parameters | None
-    automatic: bool | None = None
+    sensor_values: SensorValuesType | None
+    control_values: ControlValuesType | None
+    parameters: ParametersType | None
+    control_mode: SwitchingControlModeType[Mode] | None = None  # type: ignore
 
 
 @dataclass
 class ThrsContext(BaseContext):
     messaging: Messaging
-    thrusters_messaging: "ThrustersMessaging"
-    pvt_messaging: "PvtMessaging"
-    pcm_messaging: "PcmMessaging"
-    consumers_messaging: "ConsumersMessaging"
+    thrusters_messaging: ThrustersMessaging
+    pvt_messaging: PvtMessaging
+    pcm_messaging: PcmMessaging
+    consumers_messaging: ConsumersMessaging
+    simulation_messaging: SimulationMessaging
 
 
 type FieldMutation[T] = """Callable[
@@ -154,7 +168,7 @@ def add_control_mutations(
     module: str,
     control_values_cls: type[ThrsValues],
     strawberry_cls: type,
-    messaging: Callable[[ThrsContext], MessagingModule],
+    messaging: Callable[[ThrsContext], ControlMessaging],
 ):
     def _do(cls):
         def _make_control_mutation(name: str, component_type: type):
@@ -199,7 +213,7 @@ def add_parameter_mutations(
     module: str,
     parameters_cls: type[ThrsValues],
     strawberry_cls: type,
-    messaging: Callable[[ThrsContext], MessagingModule],
+    messaging: Callable[[ThrsContext], ControlMessaging],
 ):
     def _do(cls):
         def _make_parameter_mutation(name: str, component_type: type):
@@ -240,11 +254,14 @@ def add_parameter_mutations(
 
 
 def add_simulation_input_mutations(
-    module: str,
-    inputs_cls: type[ThrsValues],
-    strawberry_cls: type,
-    messaging: Callable[[ThrsContext], MessagingModule],
+    mode: str,
+    io_mapping: dict[str, tuple[type[SimulationInputs], type[ThrsValues]]],
+    inputs_strawberry_type_mapping: dict[str, type],
+    messaging: Callable[[ThrsContext], SimulationMessaging],
 ):
+    strawberry_cls = inputs_strawberry_type_mapping[mode]
+    inputs_cls = io_mapping[mode][0]
+
     def _do(cls):
         def _make_simulation_input_mutation(name: str, component_type: type):
             async def _mutation(
@@ -272,7 +289,7 @@ def add_simulation_input_mutations(
         for name, field in inputs_cls.model_fields.items():
             fn = generate_mutation_for_field(
                 strawberry_cls,
-                f"{module}_simulation_set_{name}",
+                f"{mode}_simulation_set_{name}",
                 name,
                 field,
                 _make_simulation_input_mutation,
@@ -288,7 +305,7 @@ def add_simulation_input_mutations(
 
 def add_automation_mode_mutation(
     module: str,
-    messaging: Callable[[ThrsContext], MessagingModule],
+    messaging: Callable[[ThrsContext], ControlMessaging],
 ):
     def _do(cls):
         async def set_automation_mode(
@@ -298,7 +315,7 @@ def add_automation_mode_mutation(
         ) -> bool:
             mod = messaging(info.context)
             await mod.set_automation_mode(automatic)
-            await mod.wait_for_control_status(automatic, timeout=2)
+            await mod.wait_for_control_mode(automatic, timeout=2)
             return True
 
         mutation = strawberry.mutation(set_automation_mode)

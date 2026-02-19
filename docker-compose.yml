@@ -53,6 +53,7 @@ services:
       - zero
       - domestic
       - loads
+      - data
     environment: &setup
       PG_HOST: postgres
       PG_HOST_DOCKER: postgres
@@ -77,6 +78,7 @@ services:
     profiles:
       - zero
       - domestic
+      - data
     healthcheck:
       test:
         - CMD-SHELL
@@ -96,6 +98,7 @@ services:
     profiles:
       - zero
       - domestic
+      - data
     environment:
       <<: *setup
     depends_on:
@@ -106,8 +109,6 @@ services:
   grafana:
     image: "grafana/grafana:12.3.0"
     command: []
-    expose:
-      - "3000"
     ports:
       - "3000:3000"
     depends_on: []
@@ -116,7 +117,7 @@ services:
       - "./grafana/grafana.ini:/etc/grafana/grafana.ini"
       - "./grafana/datasources.yaml:/etc/grafana/provisioning/datasources/datasources.yaml"
       - "./grafana/dashboards.yaml:/etc/grafana/provisioning/dashboards/dashboards.yaml"
-      - "./grafana/dashboards:/dashboards"
+      - "./zero-dashboards/dashboards:/dashboards"
     profiles:
       - zero
     environment: {}
@@ -125,7 +126,7 @@ services:
       test:
         - CMD-SHELL
         - bash -c 'printf \"GET / HTTP/1.1\n\n\" > /dev/tcp/127.0.0.1/3001; exit $$?;'
-      interval: 1s
+      interval: 5s
       timeout: 5s
       retries: 5
     restart: always
@@ -317,6 +318,19 @@ services:
 
   loads-at-sensors-stub:
     command: at-sensors-stub
+    build:
+      context: .
+      dockerfile: ./zero-loads-app/Dockerfile
+    profiles:
+      - loads
+    environment:
+      <<: *app_env
+    depends_on:
+      vernemq:
+        condition: service_healthy
+
+  loads-fiber-optic-sensors-stub:
+    command: fiber-optic-sensors-stub
     build:
       context: .
       dockerfile: ./zero-loads-app/Dockerfile

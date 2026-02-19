@@ -1,8 +1,8 @@
-from pydantic import BaseModel
 from thrs.input_output.alarms import BaseAlarms, Severity, alarm
+from thrs.input_output.base import ThrsValues
 
 
-class MySensorValues(BaseModel):
+class MySensorValues(ThrsValues):
     sensor: float
 
 

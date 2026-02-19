@@ -1,13 +1,25 @@
 from thrs.control.modules.consumers import (
     ConsumersAlarms,
     ConsumersControl,
+    ConsumersControlMode,
     ConsumersParameters,
 )
-from thrs.control.modules.pcm import PcmAlarms, PcmControl, PcmParameters
-from thrs.control.modules.pvt import PvtAlarms, PvtControl, PvtParameters
+from thrs.control.modules.pcm import (
+    PcmAlarms,
+    PcmControl,
+    PcmControlMode,
+    PcmParameters,
+)
+from thrs.control.modules.pvt import (
+    PvtAlarms,
+    PvtControl,
+    PvtControlMode,
+    PvtParameters,
+)
 from thrs.control.modules.thrusters import (
     ThrustersAlarms,
     ThrustersControl,
+    ThrustersControlMode,
     ThrustersParameters,
 )
 from thrs.input_output.modules.consumers import (
@@ -38,6 +50,7 @@ class HighTemperatureModule(
                     ThrustersControlValues,
                     ThrustersParameters,
                     ThrustersControl,
+                    ThrustersControlMode,
                     ThrustersAlarms,
                 ),
                 "pvt": ModuleDescription(
@@ -45,6 +58,7 @@ class HighTemperatureModule(
                     PvtControlValues,
                     PvtParameters,
                     PvtControl,
+                    PvtControlMode,
                     PvtAlarms,
                 ),
                 "pcm": ModuleDescription(
@@ -52,6 +66,7 @@ class HighTemperatureModule(
                     PcmControlValues,
                     PcmParameters,
                     PcmControl,
+                    PcmControlMode,
                     PcmAlarms,
                 ),
                 "consumers": ModuleDescription(
@@ -59,6 +74,7 @@ class HighTemperatureModule(
                     ConsumersControlValues,
                     ConsumersParameters,
                     ConsumersControl,
+                    ConsumersControlMode,
                     ConsumersAlarms,
                 ),
             },

@@ -10,5 +10,6 @@
   "css.customData": [".vscode/tailwind.json"],
   "editor.codeActionsOnSave": {
     "source.fixAll.eslint": "explicit"
-  }
+  },
+  "typescript.tsdk": "node_modules/typescript/lib"
 }

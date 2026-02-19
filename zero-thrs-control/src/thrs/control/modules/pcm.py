@@ -1,8 +1,8 @@
 from datetime import datetime
-from typing import Callable, Literal
+from typing import Callable
 
 from transitions import Machine, State
-from thrs.classes.control import Control, ControlResult
+from thrs.classes.control import Control, ControlMode, ControlResult
 from thrs.control.controllers import Controller, FlowBalanceController
 from thrs.input_output.alarms import BaseAlarms
 from thrs.input_output.base import Stamped, ThrsValues
@@ -25,47 +25,71 @@ class PcmParameters(ThrsValues):
     module_4_flow_balance_tuning: Tuning = (0.05, 0.01, 0)
 
 
-_ZERO_TIME = datetime.fromtimestamp(0)
-_INITIAL_CONTROL_VALUES = PcmControlValues(
-    pcm_pump=Pump(
-        dutypoint=Stamped(value=0, timestamp=_ZERO_TIME),
-        on=Stamped(value=False, timestamp=_ZERO_TIME),
-    ),
-    pcm_switch_charging_return=Valve(
-        setpoint=Stamped(value=Valve.CLOSED, timestamp=_ZERO_TIME)
-    ),
-    pcm_flowcontrol_module_1=Valve(
-        setpoint=Stamped(value=Valve.OPEN, timestamp=_ZERO_TIME)
-    ),
-    pcm_flowcontrol_module_2=Valve(
-        setpoint=Stamped(value=Valve.OPEN, timestamp=_ZERO_TIME)
-    ),
-    pcm_flowcontrol_module_3=Valve(
-        setpoint=Stamped(value=Valve.OPEN, timestamp=_ZERO_TIME)
-    ),
-    pcm_flowcontrol_module_4=Valve(
-        setpoint=Stamped(value=Valve.OPEN, timestamp=_ZERO_TIME)
-    ),
-    pcm_switch_discharging=Valve(
-        setpoint=Stamped(value=Valve.CLOSED, timestamp=_ZERO_TIME)
-    ),
-    pcm_switch_charging_supply=Valve(
-        setpoint=Stamped(value=Valve.CLOSED, timestamp=_ZERO_TIME)
-    ),
-    pcm_switch_consumers=Valve(
-        setpoint=Stamped(value=Valve.OPEN, timestamp=_ZERO_TIME)
-    ),
-    pcm_module_1=Pcm(on=Stamped(value=False, timestamp=_ZERO_TIME)),
-)
+def _INITIAL_CONTROL_VALUES(timestamp) -> PcmControlValues:
+    return PcmControlValues(
+        pcm_pump=Pump(
+            dutypoint=Stamped(value=0, timestamp=timestamp),
+            on=Stamped(value=False, timestamp=timestamp),
+        ),
+        pcm_switch_charging_return=Valve(
+            setpoint=Stamped(value=Valve.CLOSED, timestamp=timestamp)
+        ),
+        pcm_flowcontrol_module_1=Valve(
+            setpoint=Stamped(value=Valve.OPEN, timestamp=timestamp)
+        ),
+        pcm_flowcontrol_module_2=Valve(
+            setpoint=Stamped(value=Valve.OPEN, timestamp=timestamp)
+        ),
+        pcm_flowcontrol_module_3=Valve(
+            setpoint=Stamped(value=Valve.OPEN, timestamp=timestamp)
+        ),
+        pcm_flowcontrol_module_4=Valve(
+            setpoint=Stamped(value=Valve.OPEN, timestamp=timestamp)
+        ),
+        pcm_switch_discharging=Valve(
+            setpoint=Stamped(value=Valve.CLOSED, timestamp=timestamp)
+        ),
+        pcm_switch_charging_supply=Valve(
+            setpoint=Stamped(value=Valve.CLOSED, timestamp=timestamp)
+        ),
+        pcm_switch_consumers=Valve(
+            setpoint=Stamped(value=Valve.OPEN, timestamp=timestamp)
+        ),
+        pcm_module_1=Pcm(on=Stamped(value=False, timestamp=timestamp)),
+    )
 
 
-class PcmControl(Control[PcmSensorValues, PcmControlValues, PcmParameters]):
+class PcmControlMode(ControlMode):
+    mode: str
+
+    @property
+    def is_idle(self) -> bool:
+        return self.mode == "idle"
+
+    @property
+    def is_supplying(self) -> bool:
+        return self.mode == "supplying"
+
+    @property
+    def is_charging(self) -> bool:
+        return self.mode == "charging"
+
+    @property
+    def is_boosting(self) -> bool:
+        return self.mode == "boosting"
+
+
+class PcmControl(
+    Control[PcmSensorValues, PcmControlValues, PcmParameters, PcmControlMode]
+):
     def __init__(
         self, parameters: PcmParameters, time_fn: Callable[[], datetime]
     ) -> None:
         self._parameters = parameters
         self._time = time_fn
-        self._current_values = _INITIAL_CONTROL_VALUES.model_copy(deep=True)
+        self._current_values = _INITIAL_CONTROL_VALUES(self._time()).model_copy(
+            deep=True
+        )
 
         self._states = [
             State(
@@ -130,7 +154,7 @@ class PcmControl(Control[PcmSensorValues, PcmControlValues, PcmParameters]):
             },
         ]
 
-        self.pcm_state_machine = Machine(
+        self._state_machine = Machine(
             model=self,
             states=self._states,
             transitions=self._transitions,
@@ -138,37 +162,37 @@ class PcmControl(Control[PcmSensorValues, PcmControlValues, PcmParameters]):
         )
 
         self._pump_flow_controller = Controller[Ratio, LMin](
-            _INITIAL_CONTROL_VALUES.pcm_pump.dutypoint.value,
+            self._current_values.pcm_pump.dutypoint.value,
             0,
-            self._parameters.pump_tuning,
+            lambda: self._parameters.pump_tuning,
             self._time,
         )
 
         self.module_1_flow_controller = Controller[Ratio, LMin](
-            _INITIAL_CONTROL_VALUES.pcm_flowcontrol_module_1.setpoint.value,
+            self._current_values.pcm_flowcontrol_module_1.setpoint.value,
             0,
-            self._parameters.module_1_flow_balance_tuning,
+            lambda: self._parameters.module_1_flow_balance_tuning,
             self._time,
         )
 
         self.module_2_flow_controller = Controller[Ratio, LMin](
-            _INITIAL_CONTROL_VALUES.pcm_flowcontrol_module_2.setpoint.value,
+            self._current_values.pcm_flowcontrol_module_2.setpoint.value,
             0,
-            self._parameters.module_2_flow_balance_tuning,
+            lambda: self._parameters.module_2_flow_balance_tuning,
             self._time,
         )
 
         self.module_3_flow_controller = Controller[Ratio, LMin](
-            _INITIAL_CONTROL_VALUES.pcm_flowcontrol_module_3.setpoint.value,
+            self._current_values.pcm_flowcontrol_module_3.setpoint.value,
             0,
-            self._parameters.module_3_flow_balance_tuning,
+            lambda: self._parameters.module_3_flow_balance_tuning,
             self._time,
         )
 
         self.module_4_flow_controller = Controller[Ratio, LMin](
-            _INITIAL_CONTROL_VALUES.pcm_flowcontrol_module_4.setpoint.value,
+            self._current_values.pcm_flowcontrol_module_4.setpoint.value,
             0,
-            self._parameters.module_4_flow_balance_tuning,
+            lambda: self._parameters.module_4_flow_balance_tuning,
             self._time,
         )
 
@@ -194,32 +218,33 @@ class PcmControl(Control[PcmSensorValues, PcmControlValues, PcmParameters]):
     def parameters(self) -> PcmParameters:
         return self._parameters
 
-    @staticmethod
-    def modes() -> list[str]:
-        return ["supplying", "charging", "boosting", "idle"]
-
-    @staticmethod
-    def initial_mode() -> str:
-        return "idle"
+    def modes(self) -> list[str]:
+        return list(self._state_machine.states.keys())
 
     @property
-    def mode(self) -> Literal["supplying", "charging", "boosting", "idle"]:
-        return self.state  # type: ignore
+    def initial_mode(self) -> PcmControlMode:
+        initial_mode: str = self._state_machine.initial  # type: ignore
+        return PcmControlMode(mode=initial_mode)
+
+    @property
+    def mode(self) -> PcmControlMode:
+        mode: str = self.state  # type: ignore
+        return PcmControlMode(mode=mode)
 
     def initial(self) -> ControlResult[PcmControlValues]:
-        return ControlResult(self._time(), self._current_values)
+        return ControlResult(self._time(), _INITIAL_CONTROL_VALUES(self._time()))
 
     def update_parameters(self, parameters: PcmParameters):
         self._parameters = parameters
 
     def control(self, sensor_values: PcmSensorValues) -> ControlResult:
-        self._try_supplying(sensor_values) if self.mode == "idle" else None  # type: ignore
-        self._try_charging(sensor_values) if self.mode == "idle" else None  # type: ignore
+        self._try_supplying(sensor_values) if self.mode.is_idle else None  # type: ignore
+        self._try_charging(sensor_values) if self.mode.is_idle else None  # type: ignore
 
-        if self.mode == "charging":
+        if self.mode.is_charging:
             self._set_charging_flow_setpoints(sensor_values)
             self._check_charging_conditions(sensor_values)  # type: ignore
-        elif self.mode == "supplying":
+        elif self.mode.is_supplying:
             self._set_supplying_flow_setpoints(sensor_values)
             self._check_supplying_conditions(sensor_values)  # type: ignore
 

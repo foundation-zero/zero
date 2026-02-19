@@ -2,9 +2,6 @@ CREATE EXTENSION IF NOT EXISTS btree_gist;
 
 CREATE SCHEMA IF NOT EXISTS loads;
 
-DROP TYPE IF EXISTS unit CASCADE;
-CREATE TYPE unit AS ENUM ('tonne', 'ratio', 'bool');
-
 
 DROP TABLE IF EXISTS loads.sail_positions CASCADE;
 CREATE TABLE loads.sail_positions (
@@ -16,7 +13,8 @@ CREATE TABLE loads.sails (
     id TEXT PRIMARY KEY,
     abbreviation TEXT NOT NULL,
     position_id TEXT NOT NULL REFERENCES loads.sail_positions(id),
-    name TEXT NOT NULL
+    name TEXT NOT NULL,
+    variant_name TEXT NOT NULL
 );
 
 DROP TABLE IF EXISTS loads.sail_sets CASCADE;
@@ -62,21 +60,11 @@ CREATE TABLE loads.load_cases (
   UNIQUE(awa_range_id, aws_range_id, sail_set_id)
 );
 
-DROP TABLE IF EXISTS loads.variables CASCADE;
-CREATE TABLE loads.variables (
-  id TEXT PRIMARY KEY,
-  name TEXT NOT NULL,
-  unit unit NOT NULL,
-  tag TEXT,
-  minimum_value NUMERIC,
-  maximum_value NUMERIC
-);
-
 DROP TABLE IF EXISTS loads.reference_values CASCADE;
 CREATE TABLE loads.reference_values (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   load_case_id UUID NOT NULL REFERENCES loads.load_cases(id) ON DELETE RESTRICT,
-  variable_id TEXT NOT NULL REFERENCES loads.variables(id) ON DELETE RESTRICT,
+  variable_id TEXT NOT NULL,
   alarm_low NUMERIC,
   warning_low NUMERIC,
   target NUMERIC,
@@ -100,24 +88,24 @@ INSERT INTO loads.sail_positions (id) VALUES
   ('mizzen-fore');
 
 -- Define sails
-INSERT INTO loads.sails (id, abbreviation, position_id, name) VALUES
-  ('full-main', 'FM', 'main', 'Full Main'),
-  ('main-reef1', 'M1R', 'main', 'Main 1 Reef'),
-  ('main-reef2', 'M2R', 'main', 'Main 2 Reef'),
-  ('main-reef3', 'M3R', 'main', 'Main 3 Reef'),
-  ('trisail', 'TS', 'main', 'Trisail'),
-  ('full-mizzen', 'FMZ', 'mizzen', 'Full Mizzen'),
-  ('mizzen-reef1', 'MZ1R', 'mizzen', 'Mizzen 1 Reef'),
-  ('mizzen-reef2', 'MZ2R', 'mizzen', 'Mizzen 2 Reef'),
-  ('utility-main', 'UM', 'main', 'Utility Main'),
-  ('blade', 'B', 'fore-outer', 'Blade'),
-  ('code-zero', 'C0', 'fore-outer', 'Code Zero'),
-  ('A3', 'A3', 'fore-outer', 'A3'),
-  ('A2', 'A2', 'fore-outer', 'A2'),
-  ('storm-jib', 'SJ', 'fore-inner', 'Storm Jib'),
-  ('staysail', 'SS', 'fore-inner', 'Staysail'),
-  ('mizzen-jib', 'MZJ', 'mizzen-fore', 'Mizzen Jib'),
-  ('mizzen-staysail', 'MZSS', 'mizzen-fore', 'Mizzen Staysail');
+INSERT INTO loads.sails (id, abbreviation, position_id, name, variant_name) VALUES
+  ('full-main', 'FM', 'main', 'Full Main', 'Full'),
+  ('main-reef1', 'M1R', 'main', 'Main 1 Reef', 'Reef 1'),
+  ('main-reef2', 'M2R', 'main', 'Main 2 Reef', 'Reef 2'),
+  ('main-reef3', 'M3R', 'main', 'Main 3 Reef', 'Reef 3'),
+  ('trisail', 'TS', 'main', 'Trisail', 'Trisail'),
+  ('full-mizzen', 'FMZ', 'mizzen', 'Full Mizzen', 'Full'),
+  ('mizzen-reef1', 'MZ1R', 'mizzen', 'Mizzen 1 Reef', 'Reef 1'),
+  ('mizzen-reef2', 'MZ2R', 'mizzen', 'Mizzen 2 Reef', 'Reef 2'),
+  ('utility-main', 'UM', 'main', 'Utility Main', 'Utility'),
+  ('blade', 'B', 'fore-outer', 'Blade', 'Blade'),
+  ('code-zero', 'C0', 'fore-outer', 'Code Zero', 'Code Zero'),
+  ('A3', 'A3', 'fore-outer', 'A3', 'A3'),
+  ('A2', 'A2', 'fore-outer', 'A2', 'A2'),
+  ('storm-jib', 'SJ', 'fore-inner', 'Storm Jib', 'Storm Jib'),
+  ('staysail', 'SS', 'fore-inner', 'Staysail', 'Staysail'),
+  ('mizzen-jib', 'MZJ', 'mizzen-fore', 'Mizzen Jib', 'Jib'),
+  ('mizzen-staysail', 'MZSS', 'mizzen-fore', 'Staysail', 'Staysail');
 
 -- Generate all possible sail sets based on position (including those with NULLs for missing sails)
 WITH RECURSIVE indexed_positions AS (
@@ -210,115 +198,54 @@ FROM (SELECT DISTINCT sail_set_id from loads.sail_sets) as sail_set_ids
 CROSS JOIN loads.awa_ranges AS awa_range
 CROSS JOIN loads.aws_ranges AS aws_range;
 
--- Define variables
-INSERT INTO loads.variables (id, name, unit, minimum_value, maximum_value) VALUES
-    ('blade-adjuster-load', 'Blade Adjuster Load', 'tonne', 0, NULL),
-    ('blade-adjuster-relative-position', 'Blade Adjuster Position', 'ratio', 0, 1),
-    ('blade-cunningham-load', 'Blade Cunningham Load', 'tonne', 0, NULL),
-    ('blade-cunningham-relative-position', 'Blade Cunningham Position', 'ratio', 0, 1),
-    ('blade-sheet-feeder-ps-load', 'Blade Sheet Feeder Ps Load', 'tonne', 0, NULL),
-    ('blade-sheet-feeder-sb-load', 'Blade Sheet Feeder Sb Load', 'tonne', 0, NULL),
-    ('blade-tweaker-ps-load', 'Blade Tweaker Ps Load', 'tonne', 0, NULL),
-    ('blade-tweaker-ps-relative-position', 'Blade Tweaker Ps Position', 'ratio', 0, 1),
-    ('blade-tweaker-sb-load', 'Blade Tweaker Sb Load', 'tonne', 0, NULL),
-    ('blade-tweaker-sb-relative-position', 'Blade Tweaker Sb Position', 'ratio', 0, 1),
-    ('code-zero-lock', 'Code Zero Lock', 'bool', 0, 1),
-    ('code-zero-overhoist', 'Code Zero Overhoist', 'bool', 0, 1),
-    ('code-zero-tack-load', 'Code Zero Tack Load', 'tonne', 0, NULL),
-    ('code-zero-tack-relative-position', 'Code Zero Tack Position', 'ratio', 0, 1),
-    ('main-boom-reef-1-lock', 'Main Boom Reef 1 Lock', 'bool', 0, 1),
-    ('main-boom-reef-2-lock', 'Main Boom Reef 2 Lock', 'bool', 0, 1),
-    ('main-boom-reef-3-lock', 'Main Boom Reef 3 Lock', 'bool', 0, 1),
-    ('main-checkstay-deflector-ps-load', 'Main Checkstay Deflector Ps Load', 'tonne', 0, NULL),
-    ('main-checkstay-deflector-ps-relative-position', 'Main Checkstay Deflector Ps Position', 'ratio', 0, 1),
-    ('main-checkstay-deflector-sb-load', 'Main Checkstay Deflector Sb Load', 'tonne', 0, NULL),
-    ('main-checkstay-deflector-sb-relative-position', 'Main Checkstay Deflector Sb Position', 'ratio', 0, 1),
-    ('main-checkstay-ps-load', 'Main Checkstay Ps Load', 'tonne', 0, NULL),
-    ('main-checkstay-sb-load', 'Main Checkstay Sb Load', 'tonne', 0, NULL),
-    ('main-cunningham-load', 'Main Cunningham Load', 'tonne', 0, NULL),
-    ('main-cunningham-relative-position', 'Main Cunningham Position', 'ratio', 0, 1),
-    ('main-halyard-load', 'Main Halyard Load', 'tonne', 0, NULL),
-    ('main-halyard-lock-full', 'Main Halyard Lock Full', 'bool', 0, 1),
-    ('main-halyard-overhoist-full', 'Main Halyard Overhoist Full', 'bool', 0, 1),
-    ('main-halyard-reef-1-lock', 'Main Halyard Reef 1 Lock', 'bool', 0, 1),
-    ('main-halyard-reef-1-overhoist', 'Main Halyard Reef 1 Overhoist', 'bool', 0, 1),
-    ('main-halyard-reef-2-lock', 'Main Halyard Reef 2 Lock', 'bool', 0, 1),
-    ('main-halyard-reef-2-overhoist', 'Main Halyard Reef 2 Overhoist', 'bool', 0, 1),
-    ('main-halyard-reef-3-lock', 'Main Halyard Reef 3 Lock', 'bool', 0, 1),
-    ('main-halyard-reef-3-overhoist', 'Main Halyard Reef 3 Overhoist', 'bool', 0, 1),
-    ('main-halyard-relative-position', 'Main Halyard Rel Position', 'ratio', 0, 1),
-    ('main-outhaul-load', 'Main Outhaul Load', 'tonne', 0, NULL),
-    ('main-outhaul-relative-position', 'Main Outhaul Position', 'ratio', 0, 1),
-    ('main-preventer-load', 'Main Preventer Load', 'tonne', 0, NULL),
-    ('main-preventer-relative-position', 'Main Preventer Position', 'ratio', 0, 1),
-    ('main-runner-captive-ps-relative-position', 'Main Runner Captive Ps Rel Position', 'ratio', 0, 1),
-    ('main-runner-captive-sb-relative-position', 'Main Runner Captive Sb Rel Position', 'ratio', 0, 1),
-    ('main-runner-ps-load', 'Main Runner Ps Load', 'tonne', 0, NULL),
-    ('main-runner-sb-load', 'Main Runner Sb Load', 'tonne', 0, NULL),
-    ('main-traveler-relative-position', 'Main Traveler Rel Position', 'ratio', 0, 1),
-    ('main-vang-load', 'Main Vang Load', 'tonne', 0, NULL),
-    ('main-vang-relative-position', 'Main Vang Position', 'ratio', 0, 1),
-    ('mizzen-boom-reef-1-lock', 'Mizzen Boom Reef 1 Lock', 'bool', 0, 1),
-    ('mizzen-boom-reef-2-lock', 'Mizzen Boom Reef 2 Lock', 'bool', 0, 1),
-    ('mizzen-checkstay-deflector-ps-load', 'Mizzen Checkstay Deflector Ps Load', 'tonne', 0, NULL),
-    ('mizzen-checkstay-deflector-ps-relative-position', 'Mizzen Checkstay Deflector Ps Position', 'ratio', 0, 1),
-    ('mizzen-checkstay-deflector-sb-load', 'Mizzen Checkstay Deflector Sb Load', 'tonne', 0, NULL),
-    ('mizzen-checkstay-deflector-sb-relative-position', 'Mizzen Checkstay Deflector Sb Position', 'ratio', 0, 1),
-    ('mizzen-checkstay-ps-load', 'Mizzen Checkstay Ps Load', 'tonne', 0, NULL),
-    ('mizzen-checkstay-sb-load', 'Mizzen Checkstay Sb Load', 'tonne', 0, NULL),
-    ('mizzen-cunningham-load', 'Mizzen Cunningham Load', 'tonne', 0, NULL),
-    ('mizzen-cunningham-relative-position', 'Mizzen Cunningham Position', 'ratio', 0, 1),
-    ('mizzen-halyard-load', 'Mizzen Halyard Load', 'tonne', 0, NULL),
-    ('mizzen-halyard-relative-position', 'Mizzen Halyard Position', 'ratio', 0, 1),
-    ('mizzen-headsail-lock', 'Mizzen Headsail Lock', 'bool', 0, 1),
-    ('mizzen-headsail-overhoist', 'Mizzen Headsail Overhoist', 'bool', 0, 1),
-    ('mizzen-headsail-tack-adjuster-load', 'Mizzen Headsail Tack Adjuster Load', 'tonne', 0, NULL),
-    ('mizzen-headsail-tack-adjuster-relative-position', 'Mizzen Headsail Tack Adjuster Position', 'ratio', 0, 1),
-    ('mizzen-outhaul-load', 'Mizzen Outhaul Load', 'tonne', 0, NULL),
-    ('mizzen-outhaul-relative-position', 'Mizzen Outhaul Position', 'ratio', 0, 1),
-    ('mizzen-preventer-load', 'Mizzen Preventer Load', 'tonne', 0, NULL),
-    ('mizzen-preventer-relative-position', 'Mizzen Preventer Position', 'ratio', 0, 1),
-    ('mizzen-reef-1-lock', 'Mizzen Reef 1 Lock', 'bool', 0, 1),
-    ('mizzen-reef-1-overhoist', 'Mizzen Reef 1 Overhoist', 'bool', 0, 1),
-    ('mizzen-reef-2-lock', 'Mizzen Reef 2 Lock', 'bool', 0, 1),
-    ('mizzen-reef-2-overhoist', 'Mizzen Reef 2 Overhoist', 'bool', 0, 1),
-    ('mizzen-runner-captive-ps-relative-position', 'Mizzen Runner Captive Ps Rel Position', 'ratio', 0, 1),
-    ('mizzen-runner-captive-sb-relative-position', 'Mizzen Runner Captive Sb Rel Position', 'ratio', 0, 1),
-    ('mizzen-runner-ps-load', 'Mizzen Runner Ps Load', 'tonne', 0, NULL),
-    ('mizzen-runner-sb-load', 'Mizzen Runner Sb Load', 'tonne', 0, NULL),
-    ('mizzen-sheet-captive-load', 'Mizzen Sheet Captive Load', 'tonne', 0, NULL),
-    ('mizzen-sheet-captive-relative-position', 'Mizzen Sheet Captive Rel Position', 'ratio', 0, 1),
-    ('mizzen-vang-load', 'Mizzen Vang Load', 'tonne', 0, NULL),
-    ('mizzen-vang-relative-position', 'Mizzen Vang Position', 'ratio', 0, 1),
-    ('staysail-lock', 'Staysail Lock', 'bool', 0, 1),
-    ('staysail-overhoist', 'Staysail Overhoist', 'bool', 0, 1),
-    ('staysail-sheet-captive-ps-load', 'Staysail Sheet Captive Ps Load', 'tonne', 0, NULL),
-    ('staysail-sheet-captive-ps-relative-position', 'Staysail Sheet Captive Ps Rel Position', 'ratio', 0, 1),
-    ('staysail-sheet-captive-sb-load', 'Staysail Sheet Captive Sb Load', 'tonne', 0, NULL),
-    ('staysail-sheet-captive-sb-relative-position', 'Staysail Sheet Captive Sb Rel Position', 'ratio', 0, 1),
-    ('staysail-sheet-feeder-ps-load', 'Staysail Sheet Feeder Ps Load', 'tonne', 0, NULL),
-    ('staysail-sheet-feeder-sb-load', 'Staysail Sheet Feeder Sb Load', 'tonne', 0, NULL),
-    ('staysail-stay-adjuster-load', 'Staysail Stay Adjuster Load', 'tonne', 0, NULL),
-    ('staysail-stay-adjuster-relative-position', 'Staysail Stay Adjuster Position', 'ratio', 0, 1),
-    ('storm-jib-lock', 'Storm Jib Lock', 'bool', 0, 1),
-    ('storm-jib-overhoist', 'Storm Jib Overhoist', 'bool', 0, 1);
-
 -- Example reference value for a specific load case
 INSERT INTO loads.reference_values (variable_id, load_case_id, alarm_low, warning_low, target, warning_high, alarm_high)
 SELECT
-    'main-checkstay-deflector-ps-load',
+    v.variable_id,
     load_cases.id,
-    5.0,
-    6.0,
-    10.0,
-    14.0,
-    15.0
-FROM loads.load_cases
+    v.alarm_low,
+    v.warning_low,
+    v.target,
+    v.warning_high,
+    v.alarm_high
+FROM (VALUES
+    ('main-runner-ps-load',      6.0, 9.0, 12.0, 15.0, 18.0),
+    ('main-runner-sb-load',      6.0, 9.0, 12.0, 15.0, 18.0),
+    ('main-checkstay-ps-load', 1.0, 3.0, 5.0, 7.0,  9.0),
+    ('main-checkstay-sb-load', 1.0, 3.0, 5.0, 7.0,  9.0),
+    ('main-checkstay-deflector-load', 1.0, 2.0, 4.0, 6.0,  8.0),
+    ('main-checkstay-deflector-relative-position', NULL, NULL, .5, NULL,  NULL)
+) AS v(variable_id, alarm_low, warning_low, target, warning_high, alarm_high)
+CROSS JOIN loads.load_cases
 JOIN loads.awa_ranges AS awa_range ON load_cases.awa_range_id = awa_range.id
-JOIN loads.aws_ranges AS aws_range ON load_cases.aws_range_id = aws_range.id
 JOIN loads.sail_sets_combined AS sail_set ON load_cases.sail_set_id = sail_set.id
-WHERE awa_range.id = 'upwind' AND aws_range.aws_range = '[15,20)'::numrange
+WHERE awa_range.id = 'upwind'
 AND sail_set.sails = ARRAY['blade', 'full-main', 'full-mizzen'];
+
+
+INSERT INTO loads.reference_values (variable_id, load_case_id, alarm_low, warning_low, target, warning_high, alarm_high)
+SELECT
+    v.variable_id,
+    load_cases.id,
+    v.alarm_low,
+    v.warning_low,
+    v.target,
+    v.warning_high,
+    v.alarm_high
+FROM (VALUES
+    ('main-runner-ps-load',      5.0, 9.0, 10.0, 11.0, 20.0),
+    ('main-runner-sb-load',      5.0, 9.0, 10.0, 11.0, 20.0),
+    ('main-checkstay-ps-load', 1.0, 4.0, 7.0, 10.0,  15.0),
+    ('main-checkstay-sb-load', 1.0, 4.0, 7.0, 10.0,  15.0),
+    ('main-checkstay-deflector-load', 1.0, 2.0, 4.0, 6.0,  8.0),
+    ('main-checkstay-deflector-relative-position', NULL, NULL, .8, NULL,  NULL)
+) AS v(variable_id, alarm_low, warning_low, target, warning_high, alarm_high)
+CROSS JOIN loads.load_cases
+JOIN loads.awa_ranges AS awa_range ON load_cases.awa_range_id = awa_range.id
+JOIN loads.sail_sets_combined AS sail_set ON load_cases.sail_set_id = sail_set.id
+WHERE awa_range.id = 'reaching'
+AND sail_set.sails = ARRAY['blade', 'full-main', 'full-mizzen'];
+
 
 INSERT INTO loads.reference_values (variable_id, load_case_id, alarm_low, warning_low, target, warning_high, alarm_high)
 SELECT
@@ -333,8 +260,9 @@ FROM loads.load_cases
 JOIN loads.awa_ranges AS awa_range ON load_cases.awa_range_id = awa_range.id
 JOIN loads.aws_ranges AS aws_range ON load_cases.aws_range_id = aws_range.id
 JOIN loads.sail_sets_combined AS sail_set ON load_cases.sail_set_id = sail_set.id
-WHERE awa_range.id = 'upwind' AND aws_range.aws_range = '[15,20)'::numrange
+WHERE awa_range.id = 'downwind' AND aws_range.aws_range = '[15,20)'::numrange
 AND sail_set.sails = ARRAY['blade', 'full-main', 'full-mizzen'];
+
 
 INSERT INTO loads.reference_values (variable_id, load_case_id, alarm_low, warning_low, target, warning_high, alarm_high)
 SELECT
@@ -347,7 +275,4 @@ SELECT
     .8
 FROM loads.load_cases
 JOIN loads.awa_ranges AS awa_range ON load_cases.awa_range_id = awa_range.id
-JOIN loads.aws_ranges AS aws_range ON load_cases.aws_range_id = aws_range.id
-JOIN loads.sail_sets_combined AS sail_set ON load_cases.sail_set_id = sail_set.id
-WHERE awa_range.id = 'upwind' AND aws_range.aws_range = '[15,20)'::numrange
-AND sail_set.sails = ARRAY['blade', 'full-main', 'full-mizzen'];
+WHERE awa_range.id = 'upwind';

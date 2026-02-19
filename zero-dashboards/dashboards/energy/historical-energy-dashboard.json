@@ -1,0 +1,1033 @@
+{
+  "annotations": {
+    "list": [
+      {
+        "builtIn": 1,
+        "datasource": {
+          "type": "grafana",
+          "uid": "-- Grafana --"
+        },
+        "enable": true,
+        "hide": true,
+        "iconColor": "rgba(0, 211, 255, 1)",
+        "name": "Annotations & Alerts",
+        "type": "dashboard"
+      }
+    ]
+  },
+  "editable": true,
+  "fiscalYearStartMonth": 0,
+  "graphTooltip": 0,
+  "id": 58,
+  "links": [],
+  "panels": [
+    {
+      "datasource": {
+        "type": "grafana-postgresql-datasource",
+        "uid": "${datasource}"
+      },
+      "description": "Battery state of charge and daily net consumption/production",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "fixedColor": "dark-blue",
+            "mode": "fixed",
+            "seriesBy": "last"
+          },
+          "custom": {
+            "axisBorderShow": true,
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "axisSoftMax": 100,
+            "barAlignment": 0,
+            "barWidthFactor": 0.6,
+            "drawStyle": "line",
+            "fillOpacity": 10,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "insertNulls": false,
+            "lineInterpolation": "linear",
+            "lineStyle": {
+              "fill": "solid"
+            },
+            "lineWidth": 4,
+            "pointSize": 10,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "auto",
+            "showValues": false,
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "decimals": 1,
+          "fieldMinMax": false,
+          "mappings": [],
+          "min": 0,
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "blue",
+                "value": 0
+              }
+            ]
+          },
+          "unit": "percent"
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "soc_prediction"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "light-orange",
+                  "mode": "fixed"
+                }
+              },
+              {
+                "id": "custom.lineStyle",
+                "value": {
+                  "dash": [
+                    10,
+                    15
+                  ],
+                  "fill": "dash"
+                }
+              },
+              {
+                "id": "custom.showPoints",
+                "value": "never"
+              },
+              {
+                "id": "custom.pointSize",
+                "value": 7
+              },
+              {
+                "id": "custom.fillOpacity",
+                "value": 0
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "soc_threshold"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "dark-red",
+                  "mode": "fixed"
+                }
+              },
+              {
+                "id": "custom.showPoints",
+                "value": "never"
+              },
+              {
+                "id": "custom.fillOpacity",
+                "value": 21
+              },
+              {
+                "id": "custom.lineWidth",
+                "value": 2
+              },
+              {
+                "id": "custom.lineStyle",
+                "value": {
+                  "fill": "solid"
+                }
+              },
+              {
+                "id": "custom.hideFrom",
+                "value": {
+                  "legend": true,
+                  "tooltip": true,
+                  "viz": false
+                }
+              },
+              {
+                "id": "custom.pointSize",
+                "value": 1
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "soc_calculated"
+            },
+            "properties": [
+              {
+                "id": "custom.lineStyle",
+                "value": {
+                  "dash": [
+                    10,
+                    15
+                  ],
+                  "fill": "dash"
+                }
+              },
+              {
+                "id": "custom.showPoints",
+                "value": "never"
+              },
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "green",
+                  "mode": "fixed"
+                }
+              },
+              {
+                "id": "custom.fillOpacity",
+                "value": 0
+              },
+              {
+                "id": "custom.pointSize",
+                "value": 7
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Day"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "time: D-MM"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Net daily consumption"
+            },
+            "properties": [
+              {
+                "id": "custom.drawStyle",
+                "value": "bars"
+              },
+              {
+                "id": "custom.fillOpacity",
+                "value": 70
+              },
+              {
+                "id": "custom.barWidthFactor",
+                "value": 0.5
+              },
+              {
+                "id": "custom.lineWidth",
+                "value": 0
+              },
+              {
+                "id": "unit",
+                "value": "watth"
+              },
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "yellow",
+                  "mode": "fixed"
+                }
+              },
+              {
+                "id": "custom.pointSize",
+                "value": 3
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Net daily production"
+            },
+            "properties": [
+              {
+                "id": "custom.drawStyle",
+                "value": "bars"
+              },
+              {
+                "id": "custom.fillOpacity",
+                "value": 70
+              },
+              {
+                "id": "custom.barWidthFactor",
+                "value": 0.5
+              },
+              {
+                "id": "custom.lineWidth",
+                "value": 0
+              },
+              {
+                "id": "unit",
+                "value": "watth"
+              },
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "green",
+                  "mode": "fixed"
+                }
+              },
+              {
+                "id": "custom.pointSize",
+                "value": 3
+              }
+            ]
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 11,
+        "w": 24,
+        "x": 0,
+        "y": 0
+      },
+      "hideTimeOverride": true,
+      "id": 2,
+      "options": {
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "timezone": [
+          "utc"
+        ],
+        "tooltip": {
+          "hideZeros": false,
+          "mode": "single",
+          "sort": "none"
+        }
+      },
+      "pluginVersion": "12.3.0",
+      "targets": [
+        {
+          "dataset": "dev",
+          "datasource": {
+            "type": "grafana-postgresql-datasource",
+            "uid": "${datasource}"
+          },
+          "editorMode": "code",
+          "format": "table",
+          "hide": false,
+          "rawQuery": true,
+          "rawSql": "SELECT\r\n\tDAY,\r\n\tAVG(total_soc) * 100 / $max_soc AS soc\r\nFROM (\r\n\tSELECT\r\n\t\tdate_trunc('day', HOUR AT TIME ZONE 'Etc/Universal') AS day,\r\n\t\tSUM(soc) AS total_soc\r\n\tFROM energy.electrical_soc_hourly\r\n\tGROUP BY hour\r\n)\r\nGROUP BY DAY\r\nORDER BY day",
+          "refId": "SoC",
+          "sql": {
+            "columns": [
+              {
+                "parameters": [],
+                "type": "function"
+              }
+            ],
+            "groupBy": [
+              {
+                "property": {
+                  "type": "string"
+                },
+                "type": "groupBy"
+              }
+            ],
+            "limit": 50
+          }
+        },
+        {
+          "dataset": "dev",
+          "datasource": {
+            "type": "grafana-postgresql-datasource",
+            "uid": "${datasource}"
+          },
+          "editorMode": "code",
+          "format": "table",
+          "hide": false,
+          "rawQuery": true,
+          "rawSql": "SELECT *\r\nFROM (\r\n  WITH\r\n  start_value AS (\r\n    SELECT\r\n      day AS start_day,\r\n      AVG(total_soc) as start_soc\r\n    FROM (\r\n      SELECT\r\n        date_trunc('day', hour) AS day,\r\n        SUM(soc) AS total_soc\r\n      FROM energy.electrical_soc_hourly\r\n      WHERE hour BETWEEN to_date('$start_date', 'DD Mon YYYY') AND to_date('$start_date', 'DD Mon YYYY') + TIME '23:59'\r\n      GROUP BY hour\r\n    )\r\n    GROUP BY day\r\n  ),\r\n  future AS (\r\n    SELECT\r\n      (start_day + n * INTERVAL '1 day')::date AS day,\r\n      start_soc - $daily_consumption * n AS soc\r\n    FROM start_value\r\n    CROSS JOIN generate_series(0, 30) AS n\r\n  )\r\n  SELECT\r\n    day AS time,\r\n    soc * 100 / $max_soc AS soc_prediction\r\n  FROM future\r\n)\r\nORDER BY time",
+          "refId": "SoC prediction",
+          "sql": {
+            "columns": [
+              {
+                "parameters": [],
+                "type": "function"
+              }
+            ],
+            "groupBy": [
+              {
+                "property": {
+                  "type": "string"
+                },
+                "type": "groupBy"
+              }
+            ],
+            "limit": 50
+          }
+        },
+        {
+          "dataset": "dev",
+          "datasource": {
+            "type": "grafana-postgresql-datasource",
+            "uid": "${datasource}"
+          },
+          "editorMode": "code",
+          "format": "table",
+          "hide": false,
+          "rawQuery": true,
+          "rawSql": "WITH\r\n  start_point AS (\r\n    SELECT\r\n      day::date AS start_day,\r\n      AVG(total_soc) as start_soc\r\n    FROM (\r\n      SELECT\r\n        date_trunc('day', hour) AS day,\r\n        SUM(soc) AS total_soc\r\n      FROM energy.electrical_soc_hourly\r\n      WHERE hour BETWEEN to_date('$start_date', 'DD Mon YYYY') AND to_date('$start_date', 'DD Mon YYYY') + TIME '23:59'\r\n      GROUP BY hour\r\n    )\r\n    GROUP BY day\r\n  ),\r\n  end_point AS (\r\n    SELECT\r\n      day::date AS end_day,\r\n      AVG(total_soc) as end_soc\r\n    FROM (\r\n      SELECT\r\n        date_trunc('day', hour) AS day,\r\n        SUM(soc) AS total_soc\r\n      FROM energy.electrical_soc_hourly\r\n      WHERE hour >= (SELECT date_trunc('day', MAX(hour)) FROM energy.electrical_soc_hourly)\r\n      GROUP BY hour\r\n    )\r\n    GROUP BY day\r\n  ),\r\n  consumption_values AS (\r\n    SELECT \r\n      s.start_day AS start_date,\r\n      e.end_day AS end_date,\r\n      s.start_soc AS start_value,\r\n      (e.end_soc - s.start_soc) / GREATEST(1, (e.end_day - s.start_day)) AS daily_consumption\r\n    FROM start_point s\r\n    CROSS JOIN end_point e\r\n  )\r\nSELECT\r\n  (start_date + n * INTERVAL '1 day')::date AS day,\r\n  CASE WHEN start_date = end_date\r\n    THEN NULL\r\n    ELSE (start_value + n * daily_consumption) * 100 / $max_soc\r\n  END AS soc_calculated\r\nFROM consumption_values\r\nCROSS JOIN generate_series(0, 30) AS n\r\n",
+          "refId": "SoC calculated",
+          "sql": {
+            "columns": [
+              {
+                "parameters": [],
+                "type": "function"
+              }
+            ],
+            "groupBy": [
+              {
+                "property": {
+                  "type": "string"
+                },
+                "type": "groupBy"
+              }
+            ],
+            "limit": 50
+          }
+        },
+        {
+          "dataset": "dev",
+          "datasource": {
+            "type": "grafana-postgresql-datasource",
+            "uid": "${datasource}"
+          },
+          "editorMode": "code",
+          "format": "table",
+          "hide": false,
+          "rawQuery": true,
+          "rawSql": "WITH start_date AS (\r\n  SELECT to_timestamp($__from / 1000)::date AS start\r\n)\r\nSELECT\r\n  (start + n * INTERVAL '1 day')::date AS day,\r\n  $min_soc AS soc_threshold\r\nFROM start_date\r\nCROSS JOIN generate_series(0, 100) AS n",
+          "refId": "SoC threshold",
+          "sql": {
+            "columns": [
+              {
+                "parameters": [],
+                "type": "function"
+              }
+            ],
+            "groupBy": [
+              {
+                "property": {
+                  "type": "string"
+                },
+                "type": "groupBy"
+              }
+            ],
+            "limit": 50
+          }
+        },
+        {
+          "dataset": "dev",
+          "datasource": {
+            "type": "grafana-postgresql-datasource",
+            "uid": "${datasource}"
+          },
+          "editorMode": "code",
+          "format": "table",
+          "hide": false,
+          "rawQuery": true,
+          "rawSql": "SELECT\r\n  date_trunc('day',  hour) DAY,\r\n  CASE WHEN SUM(-energy_wh) > 0 THEN SUM(-energy_wh)\r\n  ELSE NULL END AS daily_consumption,\r\n  CASE WHEN SUM(energy_wh) > 0 THEN SUM(energy_wh)\r\n  ELSE NULL END AS daily_production\r\nFROM energy.electrical_hourly\r\nGROUP BY DAY\r\nORDER BY DAY desc",
+          "refId": "Net consumption/production",
+          "sql": {
+            "columns": [
+              {
+                "parameters": [],
+                "type": "function"
+              }
+            ],
+            "groupBy": [
+              {
+                "property": {
+                  "type": "string"
+                },
+                "type": "groupBy"
+              }
+            ],
+            "limit": 50
+          }
+        }
+      ],
+      "timeShift": "0d+7d",
+      "title": "State of charge (SoC)",
+      "transformations": [
+        {
+          "id": "organize",
+          "options": {
+            "excludeByName": {},
+            "includeByName": {},
+            "indexByName": {},
+            "renameByName": {
+              "daily_consumption": "Net daily consumption",
+              "daily_production": "Net daily production",
+              "day": "Day",
+              "soc": "State of charge",
+              "soc_calculated": "State of charge (calculated)",
+              "soc_prediction": "State of charge (estimated)",
+              "soc_threshold": "Minimal state of charge"
+            }
+          }
+        }
+      ],
+      "type": "timeseries"
+    },
+    {
+      "datasource": {
+        "type": "grafana-postgresql-datasource",
+        "uid": "${datasource}"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisBorderShow": true,
+            "axisCenteredZero": true,
+            "axisColorMode": "text",
+            "axisGridShow": true,
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "barWidthFactor": 0.6,
+            "drawStyle": "line",
+            "fillOpacity": 20,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "insertNulls": false,
+            "lineInterpolation": "linear",
+            "lineWidth": 2,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "never",
+            "showValues": false,
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "normal"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "fieldMinMax": false,
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": 0
+              }
+            ]
+          },
+          "unit": "watth"
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "day"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "time: D-MM"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Hydrogeneration"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "dark-blue",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Solar power"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "dark-yellow",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Shore power"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "dark-green",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Domestic"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "dark-orange",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "HVAC"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "#28b4b4",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Technical"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "dark-purple",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Propulsion"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "dark-red",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 13,
+        "w": 12,
+        "x": 0,
+        "y": 11
+      },
+      "id": 3,
+      "options": {
+        "legend": {
+          "calcs": [
+            "mean"
+          ],
+          "displayMode": "table",
+          "placement": "right",
+          "showLegend": true
+        },
+        "tooltip": {
+          "hideZeros": false,
+          "mode": "multi",
+          "sort": "none"
+        }
+      },
+      "pluginVersion": "12.3.0",
+      "targets": [
+        {
+          "dataset": "dev",
+          "datasource": {
+            "type": "grafana-postgresql-datasource",
+            "uid": "${datasource}"
+          },
+          "editorMode": "code",
+          "format": "table",
+          "hide": false,
+          "rawQuery": true,
+          "rawSql": "SELECT\r\n\tdate_trunc('day', hour) AS day,\r\n\t-- Producers\r\n\tSUM(CASE WHEN group_name = 'Hydrogeneration' THEN energy_wh ELSE 0 END) AS hydrogeneration,\r\n\tSUM(CASE WHEN group_name = 'Solar' THEN energy_wh ELSE 0 END) AS solar,\r\n\tSUM(CASE WHEN group_name = 'Shore' THEN energy_wh ELSE 0 END) AS shore,\r\n\t-- Consumers\r\n\tSUM(CASE WHEN group_name = 'Domestic' THEN -energy_wh ELSE 0 END) AS domestic,\r\n\tSUM(CASE WHEN group_name = 'HVAC' THEN -energy_wh ELSE 0 END) AS hvac,\r\n\tSUM(CASE WHEN group_name = 'Technical' THEN -energy_wh ELSE 0 END) AS technical,\r\n\tSUM(CASE WHEN group_name = 'Propulsion' THEN -energy_wh ELSE 0 END) AS propulsion\r\nFROM energy.electrical_hourly\r\nGROUP BY day",
+          "refId": "A",
+          "sql": {
+            "columns": [
+              {
+                "parameters": [],
+                "type": "function"
+              }
+            ],
+            "groupBy": [
+              {
+                "property": {
+                  "type": "string"
+                },
+                "type": "groupBy"
+              }
+            ],
+            "limit": 50
+          }
+        }
+      ],
+      "title": "Total electrical energy consumption and production",
+      "transformations": [
+        {
+          "id": "organize",
+          "options": {
+            "excludeByName": {},
+            "includeByName": {},
+            "indexByName": {},
+            "renameByName": {
+              "domestic": "Domestic",
+              "hvac": "HVAC",
+              "hydrogeneration": "Hydrogeneration",
+              "propulsion": "Propulsion",
+              "shore": "Shore power",
+              "solar": "Solar power",
+              "technical": "Technical"
+            }
+          }
+        }
+      ],
+      "type": "timeseries"
+    },
+    {
+      "datasource": {
+        "type": "grafana-postgresql-datasource",
+        "uid": "${datasource}"
+      },
+      "description": "Total energy consumption per group and sub group",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "fixedColor": "dark-blue",
+            "mode": "continuous-GrYlRd"
+          },
+          "decimals": 1,
+          "fieldMinMax": false,
+          "mappings": [],
+          "noValue": "---",
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": 0
+              }
+            ]
+          },
+          "unit": "watth"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 13,
+        "w": 12,
+        "x": 12,
+        "y": 11
+      },
+      "id": 4,
+      "options": {
+        "colorByField": "group_energy",
+        "groupByField": "group_name",
+        "labelFields": [],
+        "sizeField": "sub_group_energy",
+        "textField": "sub_group_name",
+        "tiling": "treemapSquarify"
+      },
+      "pluginVersion": "2.1.1",
+      "targets": [
+        {
+          "dataset": "dev",
+          "datasource": {
+            "type": "grafana-postgresql-datasource",
+            "uid": "${datasource}"
+          },
+          "editorMode": "code",
+          "format": "table",
+          "rawQuery": true,
+          "rawSql": "SELECT\r\n\tgroup_name,\r\n\tsub_group_name,\r\n  SUM(SUM(energy)) OVER (PARTITION BY group_name) AS group_energy,\r\n\tSUM(energy) AS sub_group_energy\r\nFROM (\r\n\tSELECT\r\n\t\tgroup_name,\r\n\t\tsub_group_name,\r\n\t\tSUM(energy_wh) AS energy\r\n\tFROM energy.electrical_hourly\r\n\tWHERE group_name IN ('Domestic', 'HVAC', 'Technical', 'Propulsion')\r\n\tAND $__timeFilter(hour)\r\n\tGROUP BY topic, group_name, sub_group_name\r\n)\r\nGROUP BY group_name, sub_group_name\r\n",
+          "refId": "A",
+          "sql": {
+            "columns": [
+              {
+                "parameters": [],
+                "type": "function"
+              }
+            ],
+            "groupBy": [
+              {
+                "property": {
+                  "type": "string"
+                },
+                "type": "groupBy"
+              }
+            ],
+            "limit": 50
+          }
+        }
+      ],
+      "title": "Total electrical energy consumption",
+      "type": "marcusolsson-treemap-panel"
+    }
+  ],
+  "preload": false,
+  "refresh": "15m",
+  "schemaVersion": 42,
+  "tags": [],
+  "templating": {
+    "list": [
+      {
+        "current": {
+          "text": "grafana-postgresql-datasource",
+          "value": "bf3zesenwtce8e"
+        },
+        "name": "datasource",
+        "options": [],
+        "query": "grafana-postgresql-datasource",
+        "refresh": 1,
+        "regex": "",
+        "type": "datasource"
+      },
+      {
+        "current": {
+          "text": "15",
+          "value": "15"
+        },
+        "label": "Minimal State of Charge (%)",
+        "name": "min_soc",
+        "options": [
+          {
+            "selected": false,
+            "text": "5",
+            "value": "5"
+          },
+          {
+            "selected": false,
+            "text": "10",
+            "value": "10"
+          },
+          {
+            "selected": true,
+            "text": "15",
+            "value": "15"
+          },
+          {
+            "selected": false,
+            "text": "20",
+            "value": "20"
+          },
+          {
+            "selected": false,
+            "text": "25",
+            "value": "25"
+          },
+          {
+            "selected": false,
+            "text": "30",
+            "value": "30"
+          }
+        ],
+        "query": "5,10,15,20,25,30",
+        "type": "custom"
+      },
+      {
+        "allowCustomValue": false,
+        "current": {
+          "text": "None",
+          "value": "1 Jan 1970"
+        },
+        "datasource": {
+          "type": "grafana-postgresql-datasource",
+          "uid": "${datasource}"
+        },
+        "definition": "SELECT to_char(hour, 'MM_DD Mon YYYY') AS day \nFROM energy.electrical_soc_hourly\nWHERE hour > now() - INTERVAL '15 days'\nGROUP BY day\nORDER BY day DESC",
+        "label": "Start date",
+        "name": "start_date",
+        "options": [],
+        "query": "SELECT to_char(hour, 'MM_DD Mon YYYY') AS day \nFROM energy.electrical_soc_hourly\nWHERE hour > now() - INTERVAL '15 days'\nGROUP BY day\nORDER BY day DESC",
+        "refresh": 2,
+        "regex": "/\\d\\d_(.*)/",
+        "staticOptions": [
+          {
+            "text": "None",
+            "value": "1 Jan 1970"
+          }
+        ],
+        "staticOptionsOrder": "before",
+        "type": "query"
+      },
+      {
+        "allowCustomValue": false,
+        "current": {
+          "text": "32.9",
+          "value": "32.9"
+        },
+        "datasource": {
+          "type": "grafana-postgresql-datasource",
+          "uid": "${datasource}"
+        },
+        "definition": "SELECT\n  ARG_MAX(avg_daily_consumption,\n  avg_daily_consumption_timestamp)\nFROM energy.energy_metrics",
+        "description": "The first element is the calculated daily consumption. Select any other value to evaluate a different scenario.",
+        "label": "Daily consumption (kWh)",
+        "name": "daily_consumption",
+        "options": [],
+        "query": "SELECT\n  ARG_MAX(avg_daily_consumption,\n  avg_daily_consumption_timestamp)\nFROM energy.energy_metrics",
+        "refresh": 2,
+        "regex": "",
+        "staticOptions": [
+          {
+            "text": "20",
+            "value": "20"
+          },
+          {
+            "text": "30",
+            "value": "30"
+          },
+          {
+            "text": "40",
+            "value": "40"
+          },
+          {
+            "text": "50",
+            "value": "50"
+          },
+          {
+            "text": "75",
+            "value": "75"
+          },
+          {
+            "text": "100",
+            "value": "100"
+          }
+        ],
+        "staticOptionsOrder": "after",
+        "type": "query"
+      },
+      {
+        "current": {
+          "text": "300",
+          "value": "300"
+        },
+        "hide": 2,
+        "label": "Max state of charge",
+        "name": "max_soc",
+        "query": "300",
+        "skipUrlSync": true,
+        "type": "constant"
+      }
+    ]
+  },
+  "time": {
+    "from": "now-29d/d",
+    "to": "now/d"
+  },
+  "timepicker": {
+    "quick_ranges": [
+      {
+        "display": "14 days",
+        "from": "now-13d/d",
+        "to": "now/d"
+      },
+      {
+        "display": "21 days",
+        "from": "now-20d/d",
+        "to": "now/d"
+      },
+      {
+        "display": "30 days",
+        "from": "now-29d/d",
+        "to": "now/d"
+      },
+      {
+        "display": "40 days",
+        "from": "now-39d/d",
+        "to": "now/d"
+      },
+      {
+        "display": "50 days",
+        "from": "now-49d/d",
+        "to": "now/d"
+      },
+      {
+        "display": "60 days",
+        "from": "now-59d/d",
+        "to": "now/d"
+      }
+    ],
+    "refresh_intervals": [
+      "15m",
+      "30m",
+      "1h",
+      "2h",
+      "1d"
+    ]
+  },
+  "timezone": "browser",
+  "title": "Historical energy",
+  "uid": "singel-historical-energy",
+  "version": 2
+}

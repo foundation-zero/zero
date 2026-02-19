@@ -1,56 +1,58 @@
 import strawberry
 
-from thrs.control.modules.pcm import PcmParameters
+from thrs.control.modules.pcm import PcmControlMode, PcmParameters
 from thrs.graphql.base import (
-    Module,
+    ControlModule,
     PcmMessaging,
+    SwitchingControlModeType,
     add_automation_mode_mutation,
     add_control_mutations,
     add_parameter_mutations,
-    add_simulation_input_mutations,
 )
 from thrs.graphql.helpers import (
     pydantic_to_strawberry_type,
-    dedataframed_pydantic_to_strawberry_type,
     optional_pydantic_to_graphql,
 )
 from thrs.input_output.modules.pcm import (
     PcmControlValues,
     PcmSensorValues,
-    PcmSimulationInputs,
-    PcmSimulationOutputs,
 )
 
 
 PcmSensorValuesType = pydantic_to_strawberry_type(PcmSensorValues)
 PcmControlValuesType = pydantic_to_strawberry_type(PcmControlValues)
 PcmParametersType = pydantic_to_strawberry_type(PcmParameters)
-
-PcmSimulationInputsType = dedataframed_pydantic_to_strawberry_type(PcmSimulationInputs)
-PcmSimulationOutputsType = dedataframed_pydantic_to_strawberry_type(
-    PcmSimulationOutputs
-)
+PcmControlModeType = pydantic_to_strawberry_type(PcmControlMode)
 
 
-PcmModule = Module[
+PcmModule = ControlModule[
     PcmSensorValuesType,
     PcmControlValuesType,
     PcmParametersType,
+    PcmControlModeType,
 ]
 
 
 def resolve_module(
     module: PcmMessaging,
 ) -> PcmModule:
-    return Module(
+    return ControlModule(
         sensor_values=optional_pydantic_to_graphql(
             PcmSensorValuesType, module.sensor_values
         ),
         control_values=optional_pydantic_to_graphql(
             PcmControlValuesType, module.control_values
         ),
-        parameters=optional_pydantic_to_graphql(PcmParametersType, module.parameters),
-        automatic=module.control_status.automatic if module.control_status else None,
+        parameters=(
+            PcmParametersType.from_pydantic(module.parameters)
+            if module.parameters
+            else None
+        ),
+        control_mode=SwitchingControlModeType.from_pydantic(
+            PcmControlModeType, module.control_mode.mode
+        )
+        if module.control_mode
+        else None,
     )
 
 
@@ -61,9 +63,6 @@ def get_pcm_messaging(context):
 @strawberry.type
 @add_control_mutations("pcm", PcmControlValues, PcmControlValuesType, get_pcm_messaging)
 @add_parameter_mutations("pcm", PcmParameters, PcmParametersType, get_pcm_messaging)
-@add_simulation_input_mutations(
-    "pcm", PcmSimulationInputs, PcmSimulationInputsType, get_pcm_messaging
-)
 @add_automation_mode_mutation("pcm", get_pcm_messaging)
 class PcmMutations:
     pass

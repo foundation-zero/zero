@@ -13,7 +13,19 @@ from thrs.input_output.modules.thrusters import (
     ThrustersSensorValues,
 )
 from thrs.input_output.definitions.units import Celsius, LMin, PcsMode, Ratio, Tuning
-from thrs.classes.control import Control, ControlResult
+from thrs.classes.control import Control, ControlMode, ControlResult
+
+
+class ThrustersControlMode(ControlMode):
+    mode: str
+
+    @property
+    def is_idle(self) -> bool:
+        return self.mode == "idle"
+
+    @property
+    def is_recovery(self) -> bool:
+        return self.mode == "recovery"
 
 
 class ThrustersParameters(ThrsValues):
@@ -49,52 +61,59 @@ class ThrustersParameters(ThrsValues):
         return self
 
 
-_ZERO_TIME = datetime.fromtimestamp(0)
-_INITIAL_CONTROL_VALUES = ThrustersControlValues(
-    thrusters_pump_1=Pump(
-        dutypoint=Stamped(value=0.0, timestamp=_ZERO_TIME),
-        on=Stamped(value=False, timestamp=_ZERO_TIME),
-    ),
-    thrusters_pump_2=Pump(
-        dutypoint=Stamped(value=0.0, timestamp=_ZERO_TIME),
-        on=Stamped(value=False, timestamp=_ZERO_TIME),
-    ),
-    thrusters_mix_recovery=Valve(
-        setpoint=Stamped(value=Valve.MIXING_B_TO_AB, timestamp=_ZERO_TIME)
-    ),
-    thrusters_mix_exchanger=Valve(
-        setpoint=Stamped(
-            value=Valve.MIXING_A_TO_AB,
-            timestamp=_ZERO_TIME,
-        )
-    ),
-    thrusters_flowcontrol_aft=Valve(
-        setpoint=Stamped(value=Valve.CLOSED, timestamp=_ZERO_TIME)
-    ),
-    thrusters_flowcontrol_fwd=Valve(
-        setpoint=Stamped(value=Valve.CLOSED, timestamp=_ZERO_TIME)
-    ),
-    thrusters_shutoff_recovery=Valve(
-        setpoint=Stamped(value=Valve.OPEN, timestamp=_ZERO_TIME)
-    ),
-    thrusters_switch_aft=Valve(
-        setpoint=Stamped(value=Valve.SWITCH_BRANCH, timestamp=_ZERO_TIME)
-    ),
-    thrusters_switch_fwd=Valve(
-        setpoint=Stamped(value=Valve.SWITCH_BRANCH, timestamp=_ZERO_TIME)
-    ),
-)
+def _INITIAL_CONTROL_VALUES(timestamp) -> ThrustersControlValues:
+    return ThrustersControlValues(
+        thrusters_pump_1=Pump(
+            dutypoint=Stamped(value=0.0, timestamp=timestamp),
+            on=Stamped(value=False, timestamp=timestamp),
+        ),
+        thrusters_pump_2=Pump(
+            dutypoint=Stamped(value=0.0, timestamp=timestamp),
+            on=Stamped(value=False, timestamp=timestamp),
+        ),
+        thrusters_mix_recovery=Valve(
+            setpoint=Stamped(value=Valve.MIXING_B_TO_AB, timestamp=timestamp)
+        ),
+        thrusters_mix_exchanger=Valve(
+            setpoint=Stamped(
+                value=Valve.MIXING_A_TO_AB,
+                timestamp=timestamp,
+            )
+        ),
+        thrusters_flowcontrol_aft=Valve(
+            setpoint=Stamped(value=Valve.CLOSED, timestamp=timestamp)
+        ),
+        thrusters_flowcontrol_fwd=Valve(
+            setpoint=Stamped(value=Valve.CLOSED, timestamp=timestamp)
+        ),
+        thrusters_shutoff_recovery=Valve(
+            setpoint=Stamped(value=Valve.OPEN, timestamp=timestamp)
+        ),
+        thrusters_switch_aft=Valve(
+            setpoint=Stamped(value=Valve.SWITCH_BRANCH, timestamp=timestamp)
+        ),
+        thrusters_switch_fwd=Valve(
+            setpoint=Stamped(value=Valve.SWITCH_BRANCH, timestamp=timestamp)
+        ),
+    )
 
 
 class ThrustersControl(
-    Control[ThrustersSensorValues, ThrustersControlValues, ThrustersParameters]
+    Control[
+        ThrustersSensorValues,
+        ThrustersControlValues,
+        ThrustersParameters,
+        ThrustersControlMode,
+    ]
 ):
     def __init__(
         self, parameters: ThrustersParameters, time_fn: Callable[[], datetime]
     ) -> None:
         self._parameters = parameters
         self._time = time_fn
-        self._current_values = _INITIAL_CONTROL_VALUES.model_copy(deep=True)
+        self._current_values = _INITIAL_CONTROL_VALUES(self._time()).model_copy(
+            deep=True
+        )
 
         self._states = [
             State(
@@ -117,7 +136,6 @@ class ThrustersControl(
                 on_enter=[
                     self._set_valves_to_recovery,
                     self._enable_warmup_mix,
-                    self._set_heat_dump_to_recovery,
                     self._enable_recovery_temperature_controllers,
                 ],
                 on_exit=[
@@ -130,14 +148,12 @@ class ThrustersControl(
                 name="cooling",
                 on_enter=[
                     self._set_valves_to_cooling,
-                    self._set_heat_dump_to_cooling,
                     self._set_cooling_flow_setpoints,
                 ],
             ),
             State(
                 name="cooldown",
                 on_enter=[
-                    self._set_heat_dump_to_cooling,
                     self._set_cooldown_flow_setpoints,
                 ],
             ),
@@ -181,7 +197,7 @@ class ThrustersControl(
                 "conditions": [self._cooled_down, self._pcs_off],
             },
         ]
-        self.thrusters_state_machine = Machine(
+        self._state_machine = Machine(
             model=self,
             states=self._states,
             transitions=self._transitions,
@@ -190,56 +206,56 @@ class ThrustersControl(
 
         self._heat_dump_controller = Controller[Ratio, Celsius](
             _INITIAL_CONTROL_VALUES.thrusters_mix_exchanger.setpoint.value,
-            self._parameters.cooling_temperature,
-            self._parameters.heat_dump_tuning,
+            parameters.cooling_temperature,
+            parameters.heat_dump_tuning,
             self._time,
         )
         self._warmup_mix_controller = Controller[Ratio, Celsius](
             _INITIAL_CONTROL_VALUES.thrusters_mix_recovery.setpoint.value,
-            self._parameters.warmup_temperature,
-            self._parameters.warmup_mix_tuning,
+            parameters.warmup_temperature,
+            parameters.warmup_mix_tuning,
             self._time,
         )
         self._pump_controller = Controller[Ratio, LMin](
             _INITIAL_CONTROL_VALUES.thrusters_pump_1.dutypoint.value,
             0,
-            self._parameters.pump_tuning,
+            parameters.pump_tuning,
             self._time,
         )
 
         self._aft_recovery_temperature_controller = Controller[LMin, Celsius](
-            self._parameters.thrusters_minimum_flow,
-            self._parameters.recovery_temperature,
-            self._parameters.aft_temperature_tuning,
+            parameters.thrusters_minimum_flow,
+            parameters.recovery_temperature,
+            parameters.aft_temperature_tuning,
             self._time,
             (
-                self._parameters.thrusters_minimum_flow,
-                self._parameters.thrusters_maximum_flow,
+                parameters.thrusters_minimum_flow,
+                parameters.thrusters_maximum_flow,
             ),
         )
 
         self._fwd_recovery_temperature_controller = Controller[LMin, Celsius](
-            self._parameters.thrusters_minimum_flow,
-            self._parameters.recovery_temperature,
-            self._parameters.fwd_temperature_tuning,
+            parameters.thrusters_minimum_flow,
+            parameters.recovery_temperature,
+            parameters.fwd_temperature_tuning,
             self._time,
             (
-                self._parameters.thrusters_minimum_flow,
-                self._parameters.thrusters_maximum_flow,
+                parameters.thrusters_minimum_flow,
+                parameters.thrusters_maximum_flow,
             ),
         )
 
         self._aft_flow_controller = Controller[Ratio, LMin](
             _INITIAL_CONTROL_VALUES.thrusters_flowcontrol_aft.setpoint.value,
             0,
-            self._parameters.aft_flow_balance_tuning,
+            parameters.aft_flow_balance_tuning,
             self._time,
         )
 
         self._fwd_flow_controller = Controller[Ratio, LMin](
             _INITIAL_CONTROL_VALUES.thrusters_flowcontrol_fwd.setpoint.value,
             0,
-            self._parameters.fwd_flow_balance_tuning,
+            parameters.fwd_flow_balance_tuning,
             self._time,
         )
 
@@ -263,9 +279,7 @@ class ThrustersControl(
 
     def update_parameters(self, parameters: ThrustersParameters):
         self._parameters = parameters
-        self._heat_dump_controller.update_tuning(
-            parameters.heat_dump_tuning
-        )  # TODO: needed to update 'manually'?
+        self._heat_dump_controller.update_tuning(parameters.heat_dump_tuning)
         self._warmup_mix_controller.update_tuning(parameters.warmup_mix_tuning)
         self._pump_controller.update_tuning(parameters.pump_tuning)
         self._aft_recovery_temperature_controller.update_tuning(
@@ -286,11 +300,12 @@ class ThrustersControl(
         return "idle"
 
     @property
-    def mode(self) -> Literal["idle", "cooling", "recovery", "cooldown"]:
-        return self.state  # type: ignore
+    def mode(self) -> ThrustersControlMode:
+        mode: str = self.state  # type: ignore
+        return ThrustersControlMode(mode=mode)
 
     def initial(self) -> ControlResult[ThrustersControlValues]:
-        return ControlResult(self._time(), self._current_values)
+        return ControlResult(self._time(), _INITIAL_CONTROL_VALUES(self._time()))
 
     def control(
         self, sensor_values: ThrustersSensorValues
@@ -299,7 +314,7 @@ class ThrustersControl(
         self._check_overheat(sensor_values)  # type: ignore
         self._control_heat_dump(sensor_values)
 
-        if self.mode == "recovery":
+        if self.mode.is_recovery:
             self._check_overheat(sensor_values)  # type: ignore
             self._set_recovery_flow_setpoints(sensor_values)
             self._control_warmup_mix(sensor_values)
@@ -398,14 +413,6 @@ class ThrustersControl(
 
     def _set_cooling_flow(self, sensor_values: ThrustersSensorValues):
         self._flow_balance_controller.set_setpoint(self._parameters.cooling_flow)
-
-    def _set_heat_dump_to_recovery(self, sensor_values: ThrustersSensorValues):
-        self._heat_dump_controller.setpoint = (
-            self._parameters.maximum_supply_temperature
-        )
-
-    def _set_heat_dump_to_cooling(self, sensor_values: ThrustersSensorValues):
-        self._heat_dump_controller.setpoint = self._parameters.cooling_temperature
 
     def _enable_heat_dump(self, sensor_values: ThrustersSensorValues):
         self._heat_dump_controller.enable()

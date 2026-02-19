@@ -1,19 +1,26 @@
-import json
 from abc import ABC
+from typing import Annotated
 
 from pydantic import Field
 
 from loads.sensors.base import LoadsModel
-from loads.sensors.units import Millimeter, RatioFromPerMille, TonneFromDecaKilogram
+from loads.sensors.sail_system import (
+    ConstrainedLoad,
+    Load,
+    Position,
+    RelativePosition,
+)
 
 
 class SailSystemSensor(LoadsModel, ABC):
     TOPIC = "test-topic"
 
-    load: TonneFromDecaKilogram = Field(validation_alias="load")
-    position: Millimeter = Field(validation_alias="position")
-    relative_position: RatioFromPerMille = Field(validation_alias="relative_position")
-    lock: bool = Field(validation_alias="lock")
+    load: Annotated[ConstrainedLoad, Field(validation_alias="load")]
+    position: Annotated[Position, Field(validation_alias="position")]
+    relative_position: Annotated[
+        RelativePosition, Field(validation_alias="relative_position")
+    ]
+    lock: Annotated[bool, Field(validation_alias="lock")]
 
 
 def test_validate_message():
@@ -30,10 +37,40 @@ def test_validate_message():
     assert sensor.lock is True
 
 
-def test_generate_data():
-    generated_data = json.loads(SailSystemSensor.make_generator().gen())
+def test_load_bounds():
+    message = {"load": 1000, "override_load": -500}
 
-    assert isinstance(generated_data["load"], int)
-    assert isinstance(generated_data["position"], int)
-    assert isinstance(generated_data["relative_position"], int)
-    assert isinstance(generated_data["lock"], bool)
+    class OverrideLoadSensor(LoadsModel, ABC):
+        override_load: Annotated[
+            Load, Field(ge=-10, le=10, validation_alias="override_load")
+        ]
+        load: Annotated[ConstrainedLoad, Field(validation_alias="load")]
+
+    sensor = OverrideLoadSensor.model_validate(message)
+
+    assert (
+        OverrideLoadSensor.extract_minimum(
+            OverrideLoadSensor.model_fields["override_load"].metadata
+        )
+        == -10
+    )
+    assert (
+        OverrideLoadSensor.extract_maximum(
+            OverrideLoadSensor.model_fields["override_load"].metadata
+        )
+        == 10
+    )
+    assert (
+        OverrideLoadSensor.extract_minimum(
+            OverrideLoadSensor.model_fields["load"].metadata
+        )
+        == 0
+    )
+    assert (
+        OverrideLoadSensor.extract_maximum(
+            OverrideLoadSensor.model_fields["load"].metadata
+        )
+        == 20
+    )
+    assert sensor.override_load == -5.0
+    assert sensor.load == 10.0

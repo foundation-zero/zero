@@ -2,7 +2,7 @@ from datetime import datetime
 from typing import Annotated, Callable
 
 from pydantic import Field
-from thrs.classes.control import Control, ControlResult
+from thrs.classes.control import Control, ControlMode, ControlResult
 from thrs.control.controllers import (
     Controller,
     FlowDistributionController,
@@ -27,54 +27,65 @@ class ConsumersParameters(ThrsValues):
     fahrenheit_flow_balance_tuning: Tuning = (0.01, 0.001, 0)
 
 
-_ZERO_TIME = datetime.fromtimestamp(0)
-_INITIAL_CONTROL_VALUES = ConsumersControlValues(
-    consumers_flowcontrol_bypass=Valve(
-        setpoint=Stamped(value=Valve.OPEN, timestamp=_ZERO_TIME)
-    ),
-    consumers_flowcontrol_boosting=Valve(
-        setpoint=Stamped(value=Valve.OPEN, timestamp=_ZERO_TIME)
-    ),
-    consumers_flowcontrol_fahrenheit=Valve(
-        setpoint=Stamped(value=Valve.OPEN, timestamp=_ZERO_TIME)
-    ),
-    consumers_switch_fahrenheit_exchanger=Valve(
-        setpoint=Stamped(value=Valve.OPEN, timestamp=_ZERO_TIME)
-    ),
-    consumers_switch_boosting=Valve(
-        setpoint=Stamped(value=Valve.OPEN, timestamp=_ZERO_TIME)
-    ),
-)
+def _INITIAL_CONTROL_VALUES(timestamp) -> ConsumersControlValues:
+    return ConsumersControlValues(
+        consumers_flowcontrol_bypass=Valve(
+            setpoint=Stamped(value=Valve.OPEN, timestamp=timestamp)
+        ),
+        consumers_flowcontrol_boosting=Valve(
+            setpoint=Stamped(value=Valve.OPEN, timestamp=timestamp)
+        ),
+        consumers_flowcontrol_fahrenheit=Valve(
+            setpoint=Stamped(value=Valve.OPEN, timestamp=timestamp)
+        ),
+        consumers_switch_fahrenheit_exchanger=Valve(
+            setpoint=Stamped(value=Valve.OPEN, timestamp=timestamp)
+        ),
+        consumers_switch_boosting=Valve(
+            setpoint=Stamped(value=Valve.OPEN, timestamp=timestamp)
+        ),
+    )
+
+
+class ConsumersControlMode(ControlMode):
+    pass
 
 
 class ConsumersControl(
-    Control[ConsumersSensorValues, ConsumersControlValues, ConsumersParameters]
+    Control[
+        ConsumersSensorValues,
+        ConsumersControlValues,
+        ConsumersParameters,
+        ConsumersControlMode,
+    ]
 ):
     def __init__(
         self, parameters: ConsumersParameters, time_fn: Callable[[], datetime]
     ) -> None:
         self._parameters = parameters
-        self._current_values = _INITIAL_CONTROL_VALUES.model_copy(deep=True)
         self._time = time_fn
+        self._current_values = _INITIAL_CONTROL_VALUES(self._time()).model_copy(
+            deep=True
+        )
 
         self._boosting_flow_controller = Controller[Ratio, LMin](
-            _INITIAL_CONTROL_VALUES.consumers_flowcontrol_boosting.setpoint.value,
+            self._current_values.consumers_flowcontrol_boosting.setpoint.value,
             0.0,
-            self._parameters.boosting_flow_balance_tuning,
+            lambda: self._parameters.boosting_flow_balance_tuning,
             self._time,
         )
 
         self._bypass_flow_controller = Controller[Ratio, LMin](
-            _INITIAL_CONTROL_VALUES.consumers_flowcontrol_bypass.setpoint.value,
+            self._current_values.consumers_flowcontrol_bypass.setpoint.value,
             0.0,
-            self._parameters.bypass_flow_balance_tuning,
+            lambda: self._parameters.bypass_flow_balance_tuning,
             self._time,
         )
 
         self._fahrenheit_flow_controller = Controller[Ratio, LMin](
-            _INITIAL_CONTROL_VALUES.consumers_flowcontrol_fahrenheit.setpoint.value,
+            self._current_values.consumers_flowcontrol_fahrenheit.setpoint.value,
             0.0,
-            self._parameters.fahrenheit_flow_balance_tuning,
+            lambda: self._parameters.fahrenheit_flow_balance_tuning,
             self._time,
         )
 
@@ -92,7 +103,7 @@ class ConsumersControl(
         )
 
     def initial(self) -> ControlResult[ConsumersControlValues]:
-        return ControlResult(self._time(), self._current_values)
+        return ControlResult(self._time(), _INITIAL_CONTROL_VALUES(self._time()))
 
     def _control_flow_distribution(self, sensor_values: ConsumersSensorValues):
         actives = [
@@ -154,17 +165,15 @@ class ConsumersControl(
 
         return ControlResult(self._time(), self._current_values)
 
-    @staticmethod
-    def modes() -> list[str]:
-        return [""]
+    def modes(self) -> list[str]:
+        return []
 
-    @staticmethod
-    def initial_mode() -> str:
-        return ""
+    def initial_mode(self) -> ConsumersControlMode:
+        return ConsumersControlMode()
 
     @property
-    def mode(self) -> str | None:
-        return None
+    def mode(self) -> ConsumersControlMode:
+        return ConsumersControlMode()
 
     @property
     def parameters(self) -> ConsumersParameters:
