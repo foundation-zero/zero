@@ -19,15 +19,56 @@
   "fiscalYearStartMonth": 0,
   "graphTooltip": 0,
   "id": 15,
-  "links": [],
+  "links": [
+    {
+      "asDropdown": true,
+      "icon": "external link",
+      "includeVars": false,
+      "keepTime": true,
+      "tags": [
+        "commisssioning"
+      ],
+      "targetBlank": false,
+      "title": "Dashboards",
+      "tooltip": "",
+      "type": "dashboards",
+      "url": ""
+    }
+  ],
   "panels": [
+    {
+      "fieldConfig": {
+        "defaults": {},
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 2,
+        "w": 24,
+        "x": 0,
+        "y": 0
+      },
+      "id": 25,
+      "options": {
+        "code": {
+          "language": "plaintext",
+          "showLineNumbers": false,
+          "showMiniMap": false
+        },
+        "content": "<center>\r\n  <h1>Fire detection</h1>\r\n</center>\r\n",
+        "mode": "html"
+      },
+      "pluginVersion": "12.3.0",
+      "title": "",
+      "transparent": true,
+      "type": "text"
+    },
     {
       "collapsed": false,
       "gridPos": {
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 0
+        "y": 2
       },
       "id": 5,
       "panels": [],
@@ -65,7 +106,7 @@
         "h": 4,
         "w": 14,
         "x": 0,
-        "y": 1
+        "y": 3
       },
       "id": 11,
       "options": {
@@ -488,7 +529,7 @@
         "h": 4,
         "w": 10,
         "x": 14,
-        "y": 1
+        "y": 3
       },
       "id": 2,
       "options": {
@@ -733,14 +774,14 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 5
+        "y": 7
       },
       "id": 8,
       "panels": [
         {
           "datasource": {
             "type": "grafana-postgresql-datasource",
-            "uid": "ceyj3m7wtn3swb"
+            "uid": "${datasource}"
           },
           "fieldConfig": {
             "defaults": {
@@ -883,7 +924,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 6
+        "y": 8
       },
       "id": 15,
       "panels": [],
@@ -912,10 +953,11 @@
               "reducers": []
             },
             "inspect": false,
-            "minWidth": 75,
+            "minWidth": 60,
             "tooltip": {
               "placement": "auto"
-            }
+            },
+            "wrapHeaderText": true
           },
           "mappings": [
             {
@@ -923,12 +965,12 @@
                 "false": {
                   "color": "transparent",
                   "index": 1,
-                  "text": "-"
+                  "text": "❌"
                 },
                 "true": {
-                  "color": "text",
+                  "color": "transparent",
                   "index": 0,
-                  "text": "X"
+                  "text": "✅"
                 }
               },
               "type": "value"
@@ -973,7 +1015,7 @@
         "h": 22,
         "w": 12,
         "x": 0,
-        "y": 7
+        "y": 9
       },
       "id": 7,
       "options": {
@@ -1060,10 +1102,11 @@
               "reducers": []
             },
             "inspect": false,
-            "minWidth": 75,
+            "minWidth": 60,
             "tooltip": {
               "placement": "auto"
-            }
+            },
+            "wrapHeaderText": true
           },
           "mappings": [
             {
@@ -1071,12 +1114,12 @@
                 "false": {
                   "color": "transparent",
                   "index": 1,
-                  "text": "-"
+                  "text": "❌"
                 },
                 "true": {
-                  "color": "text",
+                  "color": "transparent",
                   "index": 0,
-                  "text": "X"
+                  "text": "✅"
                 }
               },
               "type": "value"
@@ -1096,7 +1139,7 @@
           {
             "matcher": {
               "id": "byName",
-              "options": "description"
+              "options": "Device"
             },
             "properties": [
               {
@@ -1121,7 +1164,7 @@
         "h": 21,
         "w": 12,
         "x": 12,
-        "y": 7
+        "y": 9
       },
       "id": 16,
       "options": {
@@ -1208,10 +1251,11 @@
               "reducers": []
             },
             "inspect": false,
-            "minWidth": 75,
+            "minWidth": 60,
             "tooltip": {
               "placement": "auto"
-            }
+            },
+            "wrapHeaderText": true
           },
           "mappings": [
             {
@@ -1219,12 +1263,12 @@
                 "false": {
                   "color": "transparent",
                   "index": 1,
-                  "text": "-"
+                  "text": "❌"
                 },
                 "true": {
-                  "color": "text",
+                  "color": "transparent",
                   "index": 0,
-                  "text": "X"
+                  "text": "✅"
                 }
               },
               "type": "value"
@@ -1266,10 +1310,10 @@
         ]
       },
       "gridPos": {
-        "h": 9,
+        "h": 10,
         "w": 12,
         "x": 12,
-        "y": 28
+        "y": 30
       },
       "id": 18,
       "options": {
@@ -1356,10 +1400,11 @@
               "reducers": []
             },
             "inspect": false,
-            "minWidth": 75,
+            "minWidth": 60,
             "tooltip": {
               "placement": "auto"
-            }
+            },
+            "wrapHeaderText": true
           },
           "mappings": [
             {
@@ -1367,12 +1412,12 @@
                 "false": {
                   "color": "transparent",
                   "index": 1,
-                  "text": "-"
+                  "text": "❌"
                 },
                 "true": {
-                  "color": "text",
+                  "color": "transparent",
                   "index": 0,
-                  "text": "X"
+                  "text": "✅"
                 }
               },
               "type": "value"
@@ -1414,10 +1459,10 @@
         ]
       },
       "gridPos": {
-        "h": 8,
+        "h": 9,
         "w": 12,
         "x": 0,
-        "y": 29
+        "y": 31
       },
       "id": 21,
       "options": {
@@ -1488,7 +1533,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 37
+        "y": 40
       },
       "id": 20,
       "panels": [],
@@ -1517,10 +1562,11 @@
               "reducers": []
             },
             "inspect": false,
-            "minWidth": 75,
+            "minWidth": 60,
             "tooltip": {
               "placement": "auto"
-            }
+            },
+            "wrapHeaderText": true
           },
           "mappings": [
             {
@@ -1528,12 +1574,12 @@
                 "false": {
                   "color": "transparent",
                   "index": 1,
-                  "text": "-"
+                  "text": "❌"
                 },
                 "true": {
-                  "color": "text",
+                  "color": "transparent",
                   "index": 0,
-                  "text": "X"
+                  "text": "✅"
                 }
               },
               "type": "value"
@@ -1575,10 +1621,10 @@
         ]
       },
       "gridPos": {
-        "h": 15,
+        "h": 16,
         "w": 12,
         "x": 0,
-        "y": 38
+        "y": 41
       },
       "id": 19,
       "options": {
@@ -1665,10 +1711,11 @@
               "reducers": []
             },
             "inspect": false,
-            "minWidth": 75,
+            "minWidth": 60,
             "tooltip": {
               "placement": "auto"
-            }
+            },
+            "wrapHeaderText": true
           },
           "mappings": [
             {
@@ -1676,12 +1723,12 @@
                 "false": {
                   "color": "transparent",
                   "index": 1,
-                  "text": "-"
+                  "text": "❌"
                 },
                 "true": {
-                  "color": "text",
+                  "color": "transparent",
                   "index": 0,
-                  "text": "X"
+                  "text": "✅"
                 }
               },
               "type": "value"
@@ -1726,7 +1773,7 @@
         "h": 12,
         "w": 12,
         "x": 12,
-        "y": 38
+        "y": 41
       },
       "id": 17,
       "options": {
@@ -1797,7 +1844,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 53
+        "y": 57
       },
       "id": 23,
       "panels": [],
@@ -1826,10 +1873,11 @@
               "reducers": []
             },
             "inspect": false,
-            "minWidth": 75,
+            "minWidth": 60,
             "tooltip": {
               "placement": "auto"
-            }
+            },
+            "wrapHeaderText": true
           },
           "mappings": [
             {
@@ -1837,12 +1885,12 @@
                 "false": {
                   "color": "transparent",
                   "index": 1,
-                  "text": "-"
+                  "text": "❌"
                 },
                 "true": {
-                  "color": "text",
+                  "color": "transparent",
                   "index": 0,
-                  "text": "X"
+                  "text": "✅"
                 }
               },
               "type": "value"
@@ -1884,10 +1932,10 @@
         ]
       },
       "gridPos": {
-        "h": 14,
+        "h": 15,
         "w": 12,
         "x": 0,
-        "y": 54
+        "y": 58
       },
       "id": 13,
       "options": {
@@ -1974,10 +2022,11 @@
               "reducers": []
             },
             "inspect": false,
-            "minWidth": 75,
+            "minWidth": 60,
             "tooltip": {
               "placement": "auto"
-            }
+            },
+            "wrapHeaderText": true
           },
           "mappings": [
             {
@@ -1985,12 +2034,12 @@
                 "false": {
                   "color": "transparent",
                   "index": 1,
-                  "text": "-"
+                  "text": "❌"
                 },
                 "true": {
-                  "color": "text",
+                  "color": "transparent",
                   "index": 0,
-                  "text": "X"
+                  "text": "✅"
                 }
               },
               "type": "value"
@@ -2032,10 +2081,10 @@
         ]
       },
       "gridPos": {
-        "h": 16,
+        "h": 17,
         "w": 12,
         "x": 12,
-        "y": 54
+        "y": 58
       },
       "id": 24,
       "options": {
@@ -2122,10 +2171,11 @@
               "reducers": []
             },
             "inspect": false,
-            "minWidth": 75,
+            "minWidth": 60,
             "tooltip": {
               "placement": "auto"
-            }
+            },
+            "wrapHeaderText": true
           },
           "mappings": [
             {
@@ -2133,12 +2183,12 @@
                 "false": {
                   "color": "transparent",
                   "index": 1,
-                  "text": "-"
+                  "text": "❌"
                 },
                 "true": {
-                  "color": "text",
+                  "color": "transparent",
                   "index": 0,
-                  "text": "X"
+                  "text": "✅"
                 }
               },
               "type": "value"
@@ -2180,10 +2230,10 @@
         ]
       },
       "gridPos": {
-        "h": 9,
+        "h": 10,
         "w": 12,
         "x": 0,
-        "y": 68
+        "y": 73
       },
       "id": 22,
       "options": {
@@ -2254,7 +2304,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 77
+        "y": 83
       },
       "id": 6,
       "panels": [],
@@ -2283,10 +2333,11 @@
               "reducers": []
             },
             "inspect": false,
-            "minWidth": 75,
+            "minWidth": 60,
             "tooltip": {
               "placement": "auto"
-            }
+            },
+            "wrapHeaderText": true
           },
           "mappings": [
             {
@@ -2294,12 +2345,12 @@
                 "false": {
                   "color": "transparent",
                   "index": 1,
-                  "text": "-"
+                  "text": "❌"
                 },
                 "true": {
-                  "color": "text",
+                  "color": "transparent",
                   "index": 0,
-                  "text": "X"
+                  "text": "✅"
                 }
               },
               "type": "value"
@@ -2341,10 +2392,10 @@
         ]
       },
       "gridPos": {
-        "h": 12,
+        "h": 14,
         "w": 12,
         "x": 0,
-        "y": 78
+        "y": 84
       },
       "id": 14,
       "options": {
@@ -2431,10 +2482,11 @@
               "reducers": []
             },
             "inspect": false,
-            "minWidth": 75,
+            "minWidth": 60,
             "tooltip": {
               "placement": "auto"
-            }
+            },
+            "wrapHeaderText": true
           },
           "mappings": [
             {
@@ -2442,12 +2494,12 @@
                 "false": {
                   "color": "transparent",
                   "index": 1,
-                  "text": "-"
+                  "text": "❌"
                 },
                 "true": {
-                  "color": "text",
+                  "color": "transparent",
                   "index": 0,
-                  "text": "X"
+                  "text": "✅"
                 }
               },
               "type": "value"
@@ -2492,7 +2544,7 @@
         "h": 7,
         "w": 12,
         "x": 12,
-        "y": 78
+        "y": 84
       },
       "id": 12,
       "options": {
@@ -2561,7 +2613,9 @@
   "preload": false,
   "refresh": "5s",
   "schemaVersion": 42,
-  "tags": [],
+  "tags": [
+    "commisssioning"
+  ],
   "templating": {
     "list": [
       {

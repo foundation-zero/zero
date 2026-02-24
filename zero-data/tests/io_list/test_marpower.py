@@ -24,7 +24,7 @@ def test_marpower_amcs_io_excel(marpower_io_result):
         [
             (
                 Path(__file__).parent
-                / "../../io_lists/52422003_3210_AMCS IO-List R2.25-MQTT-fix.xlsx"
+                / "../../io_lists/52422003_3210_AMCS IO-List R2.29.xlsx"
             )
         ],
         "marpower",
@@ -39,7 +39,7 @@ def test_marpower_pms_io_excel():
         [
             (
                 Path(__file__).parent
-                / "../../io_lists/52422003_3211_PMS IO-List R2.11-MQTT-fix.xlsx"
+                / "../../io_lists/52422003_3211_PMS IO-List R2.12-fixed.xlsx"
             )
         ],
         "marpower",

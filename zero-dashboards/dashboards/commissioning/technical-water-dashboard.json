@@ -19,15 +19,56 @@
   "fiscalYearStartMonth": 0,
   "graphTooltip": 0,
   "id": 0,
-  "links": [],
+  "links": [
+    {
+      "asDropdown": true,
+      "icon": "external link",
+      "includeVars": false,
+      "keepTime": true,
+      "tags": [
+        "commisssioning"
+      ],
+      "targetBlank": false,
+      "title": "Dashboards",
+      "tooltip": "",
+      "type": "dashboards",
+      "url": ""
+    }
+  ],
   "panels": [
+    {
+      "fieldConfig": {
+        "defaults": {},
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 2,
+        "w": 24,
+        "x": 0,
+        "y": 0
+      },
+      "id": 21,
+      "options": {
+        "code": {
+          "language": "plaintext",
+          "showLineNumbers": false,
+          "showMiniMap": false
+        },
+        "content": "<center>\r\n  <h1>Technical water</h1>\r\n</center>\r\n",
+        "mode": "html"
+      },
+      "pluginVersion": "12.3.0",
+      "title": "",
+      "transparent": true,
+      "type": "text"
+    },
     {
       "collapsed": false,
       "gridPos": {
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 0
+        "y": 2
       },
       "id": 5,
       "panels": [],
@@ -63,9 +104,9 @@
       },
       "gridPos": {
         "h": 4,
-        "w": 4,
+        "w": 3,
         "x": 0,
-        "y": 1
+        "y": 3
       },
       "id": 1,
       "options": {
@@ -247,9 +288,9 @@
       },
       "gridPos": {
         "h": 4,
-        "w": 14,
-        "x": 4,
-        "y": 1
+        "w": 15,
+        "x": 3,
+        "y": 3
       },
       "id": 2,
       "options": {
@@ -761,7 +802,7 @@
         "h": 4,
         "w": 6,
         "x": 18,
-        "y": 1
+        "y": 3
       },
       "id": 3,
       "options": {
@@ -1088,14 +1129,14 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 5
+        "y": 7
       },
       "id": 20,
       "panels": [
         {
           "datasource": {
             "type": "grafana-postgresql-datasource",
-            "uid": "ceyj3m7wtn3swb"
+            "uid": "${datasource}"
           },
           "fieldConfig": {
             "defaults": {
@@ -1170,7 +1211,7 @@
             "h": 8,
             "w": 24,
             "x": 0,
-            "y": 6
+            "y": 8
           },
           "id": 12,
           "options": {
@@ -1254,7 +1295,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 6
+        "y": 8
       },
       "id": 6,
       "panels": [],
@@ -1290,7 +1331,7 @@
         "h": 6,
         "w": 12,
         "x": 0,
-        "y": 7
+        "y": 9
       },
       "id": 4,
       "options": {
@@ -1342,7 +1383,7 @@
               "name": "Adiabatic_cool_b03",
               "placement": {
                 "height": 30,
-                "left": 235,
+                "left": 205,
                 "rotation": 0,
                 "top": 10,
                 "width": 180
@@ -1415,7 +1456,7 @@
               "name": "Adiabatic_cool_b07",
               "placement": {
                 "height": 30,
-                "left": 235,
+                "left": 205,
                 "top": 45,
                 "width": 180
               },
@@ -1487,7 +1528,7 @@
               "name": "Adiabatic_cool_b08",
               "placement": {
                 "height": 30,
-                "left": 235,
+                "left": 205,
                 "top": 80,
                 "width": 180
               },
@@ -1559,7 +1600,7 @@
               "name": "Adiabatic_cool_b09",
               "placement": {
                 "height": 30,
-                "left": 235,
+                "left": 205,
                 "top": 115,
                 "width": 180
               },
@@ -1630,7 +1671,7 @@
               "name": "deckwash_reel_b04",
               "placement": {
                 "height": 30,
-                "left": 710,
+                "left": 590,
                 "rotation": 0,
                 "top": 10,
                 "width": 180
@@ -1666,7 +1707,7 @@
               "name": "deckwash_reel_b04 label",
               "placement": {
                 "height": 30,
-                "left": 490,
+                "left": 425,
                 "rotation": 0,
                 "top": 10,
                 "width": 204
@@ -1703,7 +1744,7 @@
               "name": "deckwash_reel_b05",
               "placement": {
                 "height": 30,
-                "left": 710,
+                "left": 590,
                 "top": 45,
                 "width": 180
               },
@@ -1738,7 +1779,7 @@
               "name": "deckwash_reel_b05 label",
               "placement": {
                 "height": 30,
-                "left": 490,
+                "left": 425,
                 "top": 45,
                 "width": 204
               },
@@ -1774,7 +1815,7 @@
               "name": "deckwash_reel_b06",
               "placement": {
                 "height": 30,
-                "left": 710,
+                "left": 590,
                 "top": 80,
                 "width": 180
               },
@@ -1809,7 +1850,7 @@
               "name": "deckwash_reel_b06 label",
               "placement": {
                 "height": 30,
-                "left": 490,
+                "left": 425,
                 "top": 80,
                 "width": 204
               },
@@ -1941,7 +1982,7 @@
         "h": 6,
         "w": 12,
         "x": 12,
-        "y": 7
+        "y": 9
       },
       "id": 14,
       "options": {
@@ -1993,7 +2034,7 @@
               "name": "charcoal_filter_flow",
               "placement": {
                 "height": 30,
-                "left": 235,
+                "left": 205,
                 "rotation": 0,
                 "top": 10,
                 "width": 180
@@ -2065,8 +2106,7 @@
               "name": "charcoal_filter_temp",
               "placement": {
                 "height": 30,
-                "left": 235,
-                "rotation": 0,
+                "left": 205,
                 "top": 45,
                 "width": 180
               },
@@ -2137,8 +2177,7 @@
               "name": "salinity1",
               "placement": {
                 "height": 30,
-                "left": 235,
-                "rotation": 0,
+                "left": 205,
                 "top": 90,
                 "width": 180
               },
@@ -2210,8 +2249,7 @@
               "name": "salinity2",
               "placement": {
                 "height": 30,
-                "left": 235,
-                "rotation": 0,
+                "left": 205,
                 "top": 125,
                 "width": 180
               },
@@ -2284,7 +2322,7 @@
               "name": "tank1_level",
               "placement": {
                 "height": 30,
-                "left": 650,
+                "left": 535,
                 "rotation": 0,
                 "top": 10,
                 "width": 180
@@ -2320,7 +2358,7 @@
               "name": "tank1_level label",
               "placement": {
                 "height": 30,
-                "left": 500,
+                "left": 425,
                 "rotation": 0,
                 "top": 10,
                 "width": 134
@@ -2358,8 +2396,7 @@
               "name": "tank2_level",
               "placement": {
                 "height": 30,
-                "left": 650,
-                "rotation": 0,
+                "left": 535,
                 "top": 45,
                 "width": 180
               },
@@ -2394,8 +2431,7 @@
               "name": "tank2_level label",
               "placement": {
                 "height": 30,
-                "left": 500,
-                "rotation": 0,
+                "left": 425,
                 "top": 45,
                 "width": 134
               },
@@ -2455,14 +2491,153 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 13
+        "y": 15
       },
       "id": 13,
       "panels": [
         {
           "datasource": {
             "type": "grafana-postgresql-datasource",
-            "uid": "ceyj3m7wtn3swb"
+            "uid": "${datasource}"
+          },
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "fixedColor": "text",
+                "mode": "palette-classic"
+              },
+              "custom": {
+                "axisBorderShow": false,
+                "axisCenteredZero": false,
+                "axisColorMode": "text",
+                "axisLabel": "",
+                "axisPlacement": "auto",
+                "barAlignment": 0,
+                "barWidthFactor": 0.6,
+                "drawStyle": "line",
+                "fillOpacity": 0,
+                "gradientMode": "none",
+                "hideFrom": {
+                  "legend": false,
+                  "tooltip": false,
+                  "viz": false
+                },
+                "insertNulls": 300000,
+                "lineInterpolation": "linear",
+                "lineWidth": 2,
+                "pointSize": 5,
+                "scaleDistribution": {
+                  "type": "linear"
+                },
+                "showPoints": "auto",
+                "showValues": false,
+                "spanNulls": 60000,
+                "stacking": {
+                  "group": "A",
+                  "mode": "none"
+                },
+                "thresholdsStyle": {
+                  "mode": "off"
+                }
+              },
+              "mappings": [],
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green",
+                    "value": 0
+                  }
+                ]
+              },
+              "unit": "flowlpm"
+            },
+            "overrides": [
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "time"
+                },
+                "properties": [
+                  {
+                    "id": "unit"
+                  }
+                ]
+              }
+            ]
+          },
+          "gridPos": {
+            "h": 8,
+            "w": 24,
+            "x": 0,
+            "y": 16
+          },
+          "id": 15,
+          "options": {
+            "legend": {
+              "calcs": [],
+              "displayMode": "list",
+              "placement": "right",
+              "showLegend": true
+            },
+            "tooltip": {
+              "hideZeros": false,
+              "mode": "single",
+              "sort": "none"
+            }
+          },
+          "pluginVersion": "12.3.0",
+          "targets": [
+            {
+              "dataset": "dev",
+              "editorMode": "code",
+              "format": "table",
+              "rawQuery": true,
+              "rawSql": "SELECT\r\n  time,\r\n  (\"ADIABATIC_COOL_B03_FLOW\").value as adiab_cool_b03_flow,\r\n  (\"ADIABATIC_COOL_B07_FLOW\").value as adiab_cool_b07_flow,\r\n  (\"ADIABATIC_COOL_B08_FLOW\").value as adiab_cool_b08_flow,\r\n  (\"ADIABATIC_COOL_B09_FLOW\").value as adiab_cool_b09_flow\r\nFROM marpower.\"250000_techwater\"",
+              "refId": "A",
+              "sql": {
+                "columns": [
+                  {
+                    "parameters": [],
+                    "type": "function"
+                  }
+                ],
+                "groupBy": [
+                  {
+                    "property": {
+                      "type": "string"
+                    },
+                    "type": "groupBy"
+                  }
+                ],
+                "limit": 50
+              }
+            }
+          ],
+          "title": "Adiabatic cooling flow",
+          "transformations": [
+            {
+              "id": "organize",
+              "options": {
+                "excludeByName": {},
+                "includeByName": {},
+                "indexByName": {},
+                "renameByName": {
+                  "adiab_cool_b03_flow": "B03",
+                  "adiab_cool_b07_flow": "B07",
+                  "adiab_cool_b08_flow": "B08",
+                  "adiab_cool_b09_flow": "B09"
+                }
+              }
+            }
+          ],
+          "transparent": true,
+          "type": "timeseries"
+        },
+        {
+          "datasource": {
+            "type": "grafana-postgresql-datasource",
+            "uid": "${datasource}"
           },
           "fieldConfig": {
             "defaults": {
@@ -2536,145 +2711,6 @@
             "x": 0,
             "y": 24
           },
-          "id": 15,
-          "options": {
-            "legend": {
-              "calcs": [],
-              "displayMode": "list",
-              "placement": "right",
-              "showLegend": true
-            },
-            "tooltip": {
-              "hideZeros": false,
-              "mode": "single",
-              "sort": "none"
-            }
-          },
-          "pluginVersion": "12.3.0",
-          "targets": [
-            {
-              "dataset": "dev",
-              "editorMode": "code",
-              "format": "table",
-              "rawQuery": true,
-              "rawSql": "SELECT\r\n  time,\r\n  (\"ADIABATIC_COOL_B03_FLOW\").value as adiab_cool_b03_flow,\r\n  (\"ADIABATIC_COOL_B07_FLOW\").value as adiab_cool_b07_flow,\r\n  (\"ADIABATIC_COOL_B08_FLOW\").value as adiab_cool_b08_flow,\r\n  (\"ADIABATIC_COOL_B09_FLOW\").value as adiab_cool_b09_flow\r\nFROM marpower.\"250000_techwater\"",
-              "refId": "A",
-              "sql": {
-                "columns": [
-                  {
-                    "parameters": [],
-                    "type": "function"
-                  }
-                ],
-                "groupBy": [
-                  {
-                    "property": {
-                      "type": "string"
-                    },
-                    "type": "groupBy"
-                  }
-                ],
-                "limit": 50
-              }
-            }
-          ],
-          "title": "Adiabatic cooling flow",
-          "transformations": [
-            {
-              "id": "organize",
-              "options": {
-                "excludeByName": {},
-                "includeByName": {},
-                "indexByName": {},
-                "renameByName": {
-                  "adiab_cool_b03_flow": "B03",
-                  "adiab_cool_b07_flow": "B07",
-                  "adiab_cool_b08_flow": "B08",
-                  "adiab_cool_b09_flow": "B09"
-                }
-              }
-            }
-          ],
-          "transparent": true,
-          "type": "timeseries"
-        },
-        {
-          "datasource": {
-            "type": "grafana-postgresql-datasource",
-            "uid": "ceyj3m7wtn3swb"
-          },
-          "fieldConfig": {
-            "defaults": {
-              "color": {
-                "fixedColor": "text",
-                "mode": "palette-classic"
-              },
-              "custom": {
-                "axisBorderShow": false,
-                "axisCenteredZero": false,
-                "axisColorMode": "text",
-                "axisLabel": "",
-                "axisPlacement": "auto",
-                "barAlignment": 0,
-                "barWidthFactor": 0.6,
-                "drawStyle": "line",
-                "fillOpacity": 0,
-                "gradientMode": "none",
-                "hideFrom": {
-                  "legend": false,
-                  "tooltip": false,
-                  "viz": false
-                },
-                "insertNulls": 300000,
-                "lineInterpolation": "linear",
-                "lineWidth": 2,
-                "pointSize": 5,
-                "scaleDistribution": {
-                  "type": "linear"
-                },
-                "showPoints": "auto",
-                "showValues": false,
-                "spanNulls": 60000,
-                "stacking": {
-                  "group": "A",
-                  "mode": "none"
-                },
-                "thresholdsStyle": {
-                  "mode": "off"
-                }
-              },
-              "mappings": [],
-              "thresholds": {
-                "mode": "absolute",
-                "steps": [
-                  {
-                    "color": "green",
-                    "value": 0
-                  }
-                ]
-              },
-              "unit": "flowlpm"
-            },
-            "overrides": [
-              {
-                "matcher": {
-                  "id": "byName",
-                  "options": "time"
-                },
-                "properties": [
-                  {
-                    "id": "unit"
-                  }
-                ]
-              }
-            ]
-          },
-          "gridPos": {
-            "h": 8,
-            "w": 24,
-            "x": 0,
-            "y": 32
-          },
           "id": 17,
           "options": {
             "legend": {
@@ -2739,7 +2775,7 @@
         {
           "datasource": {
             "type": "grafana-postgresql-datasource",
-            "uid": "ceyj3m7wtn3swb"
+            "uid": "${datasource}"
           },
           "fieldConfig": {
             "defaults": {
@@ -2823,7 +2859,7 @@
             "h": 8,
             "w": 24,
             "x": 0,
-            "y": 40
+            "y": 32
           },
           "id": 16,
           "options": {
@@ -2888,7 +2924,7 @@
         {
           "datasource": {
             "type": "grafana-postgresql-datasource",
-            "uid": "ceyj3m7wtn3swb"
+            "uid": "${datasource}"
           },
           "fieldConfig": {
             "defaults": {
@@ -2960,7 +2996,7 @@
             "h": 8,
             "w": 24,
             "x": 0,
-            "y": 48
+            "y": 40
           },
           "id": 19,
           "options": {
@@ -3025,7 +3061,7 @@
         {
           "datasource": {
             "type": "grafana-postgresql-datasource",
-            "uid": "ceyj3m7wtn3swb"
+            "uid": "${datasource}"
           },
           "fieldConfig": {
             "defaults": {
@@ -3097,7 +3133,7 @@
             "h": 8,
             "w": 24,
             "x": 0,
-            "y": 56
+            "y": 48
           },
           "id": 18,
           "options": {
@@ -3167,13 +3203,15 @@
   "preload": false,
   "refresh": "5s",
   "schemaVersion": 42,
-  "tags": [],
+  "tags": [
+    "commisssioning"
+  ],
   "templating": {
     "list": [
       {
         "current": {
           "text": "RisingWave",
-          "value": "ceyj3m7wtn3swb"
+          "value": "${datasource}"
         },
         "name": "datasource",
         "options": [],

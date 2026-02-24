@@ -6,4 +6,4 @@ CREATE TABLE {{ this }} (
 	"AbsPos"	{{ marpower_struct("INTEGER") }},
 )
 INCLUDE partition AS topic
-{{ mqtt_with('marpower/000000-heatrecovery/vlv/#') }}
+{{ mqtt_with('marpower/500000-thrs/vlv/#') }}
