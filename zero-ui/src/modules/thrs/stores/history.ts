@@ -19,23 +19,26 @@ export const AMOUNT_OF_ENTRIES_TO_CACHE = 1_000;
 
 type Component = Record<string, Stamped<ChartDataType>>;
 type Components = Record<string, Component>;
-type HistoryKey = `${keyof THRS["modules"]}/${string}/${string}`;
+
+export type HistoryRootKey = keyof THRS["modules"] | "simulation";
+export type HistoryKey = `${HistoryRootKey}/${string}/${string}`;
 type ModuleHistory = Record<HistoryKey, TimeSeriesData[]>;
 
-const EXCLUDED_FIELDS = ["__typename"];
+type TypelessRecord<T extends Record<string, unknown>> = Omit<T, "__typename">;
+
+const toTypelessRecord = <T extends Record<string, unknown>>(record: T): TypelessRecord<T> => {
+  const { __typename, ...rest } = record;
+  return rest;
+};
 
 export const extractHistory = (source: THRS, currentHistory: ModuleHistory): ModuleHistory => {
   const newHistory: ModuleHistory = { ...currentHistory };
 
-  const extract = (moduleName: keyof THRS["modules"], components: Components | null) => {
+  const extract = (moduleName: HistoryRootKey, components: Components | null) => {
     if (!components) return;
 
     objectEntries(components).forEach(([componentKey, component]) => {
-      objectEntries(component).forEach(([fieldKey, stampedValue]) => {
-        if (EXCLUDED_FIELDS.includes(fieldKey) || EXCLUDED_FIELDS.includes(componentKey)) {
-          return;
-        }
-
+      objectEntries(toTypelessRecord(component)).forEach(([fieldKey, stampedValue]) => {
         const history = (newHistory[`${moduleName}/${fieldKey}/${componentKey}`] ??= []);
         const lastItem = history[history.length - 1];
 
@@ -57,11 +60,15 @@ export const extractHistory = (source: THRS, currentHistory: ModuleHistory): Mod
     });
   };
 
+  if (source == null) return newHistory;
+
   objectEntries(source.modules).forEach(([moduleName, module]) => {
     extract(moduleName, module.controlValues);
     extract(moduleName, module.sensorValues);
-    extract(moduleName, source.simulation?.outputs?.[moduleName]);
   });
+
+  extract("simulation", toTypelessRecord(source.simulation.outputs));
+  extract("simulation", toTypelessRecord(source.simulation.inputs));
 
   return newHistory;
 };
@@ -106,7 +113,7 @@ export const useThrsHistory = defineStore("thrsHistory", () => {
   );
 
   const useHistory = <Type extends ChartDataType = ChartDataType>(
-    module: keyof THRS["modules"],
+    module: HistoryRootKey,
     field: string,
     definition: SchemaDefinitions<SchemaDefinition<unknown>>,
   ) =>

@@ -14,6 +14,10 @@ export type ChartDataType = number | boolean | string;
 export type TimeSeriesData<T extends ChartDataType = ChartDataType> = [time: Date, value: T];
 export type SeriesData = { value: number };
 
+export type RecordIndex = string | number | symbol;
+
+export type StringKeyOf<T> = Extract<keyof T, string>;
+
 export interface Chart<
   Type extends ChartDataType,
   Value extends Stamped<Type> | TimeSeriesData<Type>,

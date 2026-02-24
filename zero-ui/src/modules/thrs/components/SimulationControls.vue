@@ -1,18 +1,10 @@
-<script
-  setup
-  lang="ts"
-  generic="
-    K extends keyof THRSModules,
-    Definitions extends SimulationDefinitions,
-    Values extends ExtractAllValues<Definitions>
-  "
->
-import { QUERIES, THRSModules } from "@/modules/thrs/lib/consts";
+<script setup lang="ts" generic="Definitions extends SimulationDefinitions">
 import {
-  ExtractAllValues,
-  SimulationComponentType,
-  SimulationDefinitions,
-} from "@/modules/thrs/types";
+  SIMULATION,
+  SIMULATION_INPUT_QUERIES,
+  THRSSimulationType,
+} from "@/modules/thrs/lib/consts";
+import { SimulationComponentType, SimulationDefinitions } from "@/modules/thrs/types";
 import { type Component, computed, toRefs } from "vue";
 import { useThrsHistory } from "../stores/history";
 import BoundaryControl from "./controls/BoundaryControl.vue";
@@ -20,11 +12,6 @@ import ModuleControls from "./controls/ModuleControls.vue";
 import PcsControl from "./controls/PcsControl.vue";
 import TemperatureControl from "./controls/TemperatureControl.vue";
 import ThrustersControl from "./controls/ThrustersControl.vue";
-
-const props = defineProps<{
-  module: K;
-  definition: Definitions;
-}>();
 
 const COMPONENTS: Record<SimulationComponentType, Component | null> = {
   [SimulationComponentType.Thruster]: ThrustersControl,
@@ -37,12 +24,15 @@ const COMPONENTS: Record<SimulationComponentType, Component | null> = {
 
 const { data } = toRefs(useThrsHistory());
 
-const simulationInputsData = computed(
-  () => data.value?.simulation.inputs?.[props.module] as Values | undefined,
-);
+const props = defineProps<{ type: THRSSimulationType }>();
+
+const definition = computed(() => SIMULATION.inputs[props.type] as SimulationDefinitions);
+
+const simulationInputsData = computed(() => data.value?.simulation.inputs);
 </script>
 <template>
   <ModuleControls
+    v-if="definition && simulationInputsData"
     :controls="definition"
     :data="simulationInputsData"
     :disabled="false"
@@ -51,10 +41,10 @@ const simulationInputsData = computed(
       <component
         :is="COMPONENTS[componentDefinition.componentType]"
         :values="values"
-        :query="QUERIES[module].simulation.inputs"
+        :query="SIMULATION_INPUT_QUERIES[type]"
         :component-name="componentName"
         :component-type="componentDefinition.componentType"
-        :module="module"
+        :simulation="type"
         @update:control-values="setControlValues"
       />
     </template>

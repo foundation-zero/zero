@@ -17,7 +17,14 @@
  *   pnpm tsx scripts/extract-schema-values.ts THRUSTERS_CONTROL_DEFINITION ThrustersControlValuesType
  */
 
-import { FieldDefinitionNode, ObjectTypeDefinitionNode, parse, TypeNode, visit } from "graphql";
+import {
+  FieldDefinitionNode,
+  ObjectTypeDefinitionNode,
+  parse,
+  TypeNode,
+  UnionTypeDefinitionNode,
+  visit,
+} from "graphql";
 import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
@@ -301,19 +308,50 @@ function parseSchema(schemaPath: string, config: Config): ExtractedValues {
     const ast = parse(schemaContent);
 
     const extractedValues: ExtractedValues = {};
+    const objectTypes = new Map<string, ObjectTypeDefinitionNode>();
+    const unionTypes = new Map<string, UnionTypeDefinitionNode>();
 
     visit(ast, {
       ObjectTypeDefinition(node: ObjectTypeDefinitionNode) {
-        if (node.name.value !== config.typeName) return;
-
-        for (const field of node.fields || []) {
-          const extractedValue = processField(field, config.definitionType);
-          if (extractedValue) {
-            extractedValues[field.name.value] = extractedValue;
-          }
-        }
+        objectTypes.set(node.name.value, node);
+      },
+      UnionTypeDefinition(node: UnionTypeDefinitionNode) {
+        unionTypes.set(node.name.value, node);
       },
     });
+
+    const unionNode = unionTypes.get(config.typeName);
+    // If it's a union type, we need to process all member types
+    if (unionNode) {
+      for (const memberType of unionNode.types || []) {
+        const memberNode = objectTypes.get(memberType.name.value);
+        if (!memberNode) {
+          console.warn(`⚠️  Union member type not found: ${memberType.name.value}`);
+          continue;
+        }
+
+        for (const field of memberNode.fields || []) {
+          const extractedValue = processField(field, config.definitionType);
+          if (!extractedValue || extractedValues[field.name.value]) continue;
+          extractedValues[field.name.value] = extractedValue;
+        }
+      }
+
+      return extractedValues;
+    }
+
+    const objectNode = objectTypes.get(config.typeName);
+    if (!objectNode) {
+      console.warn(`⚠️  Type not found in schema: ${config.typeName}`);
+      return extractedValues;
+    }
+
+    for (const field of objectNode.fields || []) {
+      const extractedValue = processField(field, config.definitionType);
+      if (extractedValue) {
+        extractedValues[field.name.value] = extractedValue;
+      }
+    }
 
     return extractedValues;
   } catch (error) {

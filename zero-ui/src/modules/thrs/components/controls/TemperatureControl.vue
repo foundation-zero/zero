@@ -7,7 +7,7 @@ import {
   NumberFieldIncrement,
   NumberFieldInput,
 } from "@/components/ui/number-field";
-import { THRSModules } from "@/modules/thrs/lib/consts";
+import { THRSModules, THRSSimulationType } from "@/modules/thrs/lib/consts";
 import { controlValuesForm, MutationType } from "@/modules/thrs/stores/thrs";
 import { SimulationComponentType, TemperatureSimulation } from "@/modules/thrs/types";
 import { toUpperCamelCase } from "@common/lib/utils";
@@ -21,7 +21,7 @@ const props = defineProps<{
   values: TemperatureSimulation;
   componentName: string;
   query: string;
-  module: keyof THRSModules;
+  simulation: THRSSimulationType;
   componentType: SimulationComponentType;
 }>();
 
@@ -32,7 +32,7 @@ const emit = defineEmits<{
 }>();
 
 const { submit, isSubmitting, error, temperature } = controlValuesForm(
-  props.module,
+  props.simulation,
   MutationType.Simulation,
   "TemperatureBoundaryInputType!",
   props.componentName,

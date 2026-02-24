@@ -8,7 +8,7 @@ import {
   NumberFieldInput,
 } from "@/components/ui/number-field";
 import { Switch } from "@/components/ui/switch";
-import { THRSModules } from "@/modules/thrs/lib/consts";
+import { THRSModules, THRSSimulationType } from "@/modules/thrs/lib/consts";
 import { controlValuesForm, MutationType } from "@/modules/thrs/stores/thrs";
 import { ThrusterSimulation } from "@/modules/thrs/types";
 import { toUpperCamelCase } from "@common/lib/utils";
@@ -22,7 +22,7 @@ const props = defineProps<{
   values: ThrusterSimulation;
   componentName: string;
   query: string;
-  module: keyof THRSModules;
+  simulation: THRSSimulationType;
 }>();
 const emit = defineEmits<{
   (e: "update:controlValues", value: unknown): void;
@@ -31,7 +31,7 @@ const emit = defineEmits<{
 const controlValues = toRef(props, "values");
 
 const { submit, isSubmitting, error, active, heatFlow } = controlValuesForm(
-  props.module,
+  props.simulation,
   MutationType.Simulation,
   "ThrusterInputType!",
   props.componentName,

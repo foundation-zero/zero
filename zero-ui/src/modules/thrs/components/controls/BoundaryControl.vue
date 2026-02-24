@@ -7,13 +7,13 @@ import {
   NumberFieldIncrement,
   NumberFieldInput,
 } from "@/components/ui/number-field";
-import { THRSModules } from "@/modules/thrs/lib/consts";
 import { controlValuesForm, MutationType } from "@/modules/thrs/stores/thrs";
 import { BoundarySimulation } from "@/modules/thrs/types";
 import { toUpperCamelCase } from "@common/lib/utils";
 import { Loader2Icon, SendIcon } from "lucide-vue-next";
 import { toRef } from "vue";
 import { useI18n } from "vue-i18n";
+import { THRSSimulationType } from "../../lib/consts";
 
 const { t } = useI18n();
 
@@ -21,7 +21,7 @@ const props = defineProps<{
   values: BoundarySimulation;
   componentName: string;
   query: string;
-  module: keyof THRSModules;
+  simulation: THRSSimulationType;
 }>();
 const emit = defineEmits<{
   (e: "update:controlValues", value: unknown): void;
@@ -30,7 +30,7 @@ const emit = defineEmits<{
 const controlValues = toRef(props, "values");
 
 const { submit, isSubmitting, error, flow, temperature } = controlValuesForm(
-  props.module,
+  props.simulation,
   MutationType.Simulation,
   "BoundaryInputType!",
   props.componentName,

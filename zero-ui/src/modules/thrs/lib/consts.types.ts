@@ -1,3 +1,4 @@
+import { RecordIndex, StringKeyOf } from "@/modules/common/types";
 import {
   ExtractSimulationValues,
   ModuleDefinition,
@@ -5,7 +6,7 @@ import {
   SchemaDefinitions,
   THRSModule,
 } from "@/modules/thrs/types";
-import { DEFINITIONS } from "./consts";
+import { DEFINITIONS, SIMULATION, SimulationInputsOutputs } from "./consts";
 
 export type THRSDefinitions<T extends Record<string, ModuleDefinition> = typeof DEFINITIONS> = T;
 
@@ -15,15 +16,31 @@ export type THRSModules<
   [K in keyof TDefinitions]: THRSModule<TDefinitions[K]>;
 };
 
-export type THRSSimulation<
-  TDefinitions extends Record<string, ModuleDefinition> = typeof DEFINITIONS,
+export type GraphQLRecord<
+  K extends RecordIndex = RecordIndex,
+  T extends Record<string, unknown> = Record<string, unknown>,
 > = {
+  __typename: K;
+} & T;
+
+export type SimulationInputsType<K extends string> = `${Capitalize<K>}SimulationInputsType`;
+export type SimulationOutputsType<K extends string> = `${Capitalize<K>}SimulationOutputsType`;
+
+// This creates a union type from the values of the inputs/outputs
+// https://www.totaltypescript.com/tips/derive-a-union-type-from-an-object
+export type THRSSimulation<TDefinitions extends SimulationInputsOutputs = typeof SIMULATION> = {
   inputs: {
-    [K in keyof TDefinitions]: ExtractSimulationValues<TDefinitions[K]["simulation"]["inputs"]>;
-  };
+    [K in StringKeyOf<TDefinitions["inputs"]>]: GraphQLRecord<
+      SimulationInputsType<K>,
+      ExtractSimulationValues<TDefinitions["inputs"][K]>
+    >;
+  }[StringKeyOf<TDefinitions["inputs"]>];
   outputs: {
-    [K in keyof TDefinitions]: ExtractSimulationValues<TDefinitions[K]["simulation"]["outputs"]>;
-  };
+    [K in StringKeyOf<TDefinitions["outputs"]>]: GraphQLRecord<
+      SimulationOutputsType<K>,
+      ExtractSimulationValues<TDefinitions["outputs"][K]>
+    >;
+  }[StringKeyOf<TDefinitions["outputs"]>];
 };
 
 export type THRSQueries<
@@ -40,6 +57,15 @@ export type THRSQueries<
       : string;
   };
 };
+
+export const SIMULATION_TYPES = [
+  "highTemperature",
+  "thrusters",
+  "pcm",
+  "pvt",
+  "consumers",
+] as const;
+export type THRSSimulationType = (typeof SIMULATION_TYPES)[number];
 
 export type THRS = {
   modules: THRSModules;

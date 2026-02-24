@@ -1,5 +1,12 @@
 {
   "thrs": {
+    "simulationTypes": {
+      "highTemperature": "High Temperature",
+      "thrusters": "Thrusters",
+      "pcm": "PCM",
+      "pvt": "PVT",
+      "consumers": "Consumers"
+    },
     "title": "HMI",
     "views": {
       "monitoring": {
@@ -8,6 +15,7 @@
       },
       "simulation": {
         "title": "Simulation",
+        "noActive": "No active simulation. Please run a simulation to see the controls.",
         "inputs": "Inputs",
         "outputs": "Outputs",
         "inputsOutputs": "Inputs & Outputs",
