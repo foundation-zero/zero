@@ -29,7 +29,7 @@ def test_marpower_amcs_io_excel(marpower_io_result):
         ],
         "marpower",
     )
-    assert marpower_io_result.io_list.shape == (5163, 13)
+    assert marpower_io_result.io_list.shape == (5706, 13)
     assert marpower_io_result.io_list.columns == expected_io_columns
     assert len(marpower_io_result.topics) == 509
 
