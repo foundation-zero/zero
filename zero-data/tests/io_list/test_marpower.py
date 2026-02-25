@@ -31,7 +31,7 @@ def test_marpower_amcs_io_excel(marpower_io_result):
     )
     assert marpower_io_result.io_list.shape == (5706, 13)
     assert marpower_io_result.io_list.columns == expected_io_columns
-    assert len(marpower_io_result.topics) == 509
+    assert len(marpower_io_result.topics) == 562
 
 
 def test_marpower_pms_io_excel():
