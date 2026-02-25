@@ -1,0 +1,102 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "..fullname" . }}
+  namespace: {{ .Release.Namespace }}
+  labels:
+    {{- include "..labels" . | nindent 4 }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      {{- include "..selectorLabels" . | nindent 6 }}
+      app.kubernetes.io/part-of: loads-app
+      app.kubernetes.io/component: api
+  template:
+    metadata:
+      {{- with .Values.podAnnotations }}
+      annotations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      labels:
+        {{- include "..labels" . | nindent 8 }}
+        {{- with .Values.podLabels }}
+        {{- toYaml . | nindent 8 }}
+        {{- end }}
+        app.kubernetes.io/part-of: loads-app
+        app.kubernetes.io/component: api
+    spec:
+      {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.podSecurityContext }}
+      securityContext:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      containers:
+        - name: {{ .Chart.Name }}
+          {{- with .Values.securityContext }}
+          securityContext:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          command: ["uvicorn", "loads.api.api:app", "--host", "0.0.0.0", "--port", "{{ .Values.api.containerPort }}"]
+          ports:
+            - name: http
+              containerPort: {{ .Values.api.containerPort }}
+              protocol: TCP
+          
+          livenessProbe:
+            httpGet:
+              path: /health/live
+              port: {{ .Values.api.containerPort }}
+          readinessProbe:
+            httpGet:
+              path: /health/ready
+              port: {{ .Values.api.containerPort }}
+          
+          {{- with .Values.api.resources }}
+          resources:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+          env:
+            - name: ENV
+              value: {{ .Values.api.env | quote }}
+            - name: PG_HOST
+              value: {{ .Values.postgresql.host | quote }}
+            - name: PG_PORT
+              value: {{ .Values.postgresql.port | quote }}
+            - name: PG_USER
+              value: {{ .Values.postgresql.user | quote }}
+            - name: PG_PASSWORD
+              valueFrom:
+                secretKeyRef: 
+                  name: {{ .Values.postgresql.existingSecret }}
+                  key: {{ .Values.postgresql.existingSecretPasswordKey }}
+            - name: PG_DB
+              value: {{ .Values.postgresql.db | quote }}
+            - name: MQTT_HOST
+              value: {{ .Values.mqtt.host | quote }}
+            - name: MQTT_PORT
+              value: {{ .Values.mqtt.port | quote }}
+            - name: MQTT_USERNAME
+              value: {{ .Values.mqtt.username | quote }}
+            - name: MQTT_PASSWORD
+              valueFrom:
+                secretKeyRef: 
+                  name: {{ .Values.mqtt.existingSecret }}
+                  key: {{ .Values.mqtt.existingSecretPasswordKey }}
+      {{- with .Values.api.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.api.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.api.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}

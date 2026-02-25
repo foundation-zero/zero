@@ -1,0 +1,80 @@
+{
+  "$schema": "https://json-schema.org/draft-07/schema#",
+  "properties": {
+    "mqtt": {
+      "description": "MQTT configuration",
+      "properties": {
+        "host": {
+          "type": "string"
+        },
+        "port": {
+          "type": "integer"
+        }
+      },
+      "type": "object"
+    },
+    "risingwave": {
+      "description": "RisingWave configuration",
+      "properties": {
+        "url": {
+          "type": "string"
+        }
+      },
+      "type": "object"
+    },
+    "hasura": {
+      "description": "Hasura configuration",
+      "properties": {
+        "secret": {
+          "type": "string"
+        },
+        "existingSecret": {
+          "type": "string"
+        },
+        "existingSecretPasswordKey": {
+          "type": "string"
+        }
+      },
+      "type": "object"
+    },
+    "stub": {
+      "description": "Stub configuration",
+      "properties": {
+        "enabled": {
+          "type": "boolean"
+        },
+        "host": {
+          "type": "string"
+        },
+        "port": {
+          "type": "integer"
+        }
+      },
+      "type": "object"
+    },
+    "homeAssistant": {
+      "description": "Home Assistant configuration",
+      "properties": {
+        "url": {
+          "type": "string"
+        },
+        "websocketUrl": {
+          "type": "string"
+        },
+        "token": {
+          "type": "string"
+        },
+        "existingSecret": {
+          "type": "string"
+        },
+        "existingSecretTokenKey": {
+          "type": "string"
+        }
+      },
+      "type": "object"
+    }
+  },
+  "required": ["mqtt", "postgresql", "hasura", "homeAssistant"],
+  "title": "Values",
+  "type": "object"
+}

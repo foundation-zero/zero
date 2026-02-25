@@ -34,15 +34,22 @@ class PCanAdapter:
 
     @asynccontextmanager
     @staticmethod
-    async def init_from_settings(settings: Settings):
+    async def init_from_settings(
+        settings: Settings,
+        *_args,
+        canbus_ip: str,
+        canbus_port: int,
+        canbus_buffer_size: int,
+        **_kwargs,
+    ):
         async with MqttClient(
             settings.mqtt_host, settings.mqtt_port, identifier="loads"
         ) as mqtt_client:
             yield PCanAdapter(
                 mqtt_client,
-                settings.canbus_ip,
-                settings.canbus_port,
-                settings.canbus_buffer_size,
+                canbus_ip,
+                canbus_port,
+                canbus_buffer_size,
             )
 
     async def run(self) -> None:

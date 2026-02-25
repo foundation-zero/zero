@@ -119,7 +119,7 @@ services:
       - "./grafana/dashboards.yaml:/etc/grafana/provisioning/dashboards/dashboards.yaml"
       - "./zero-dashboards/dashboards:/dashboards"
     profiles:
-      - zero
+      - data
     environment: {}
     container_name: grafana
     healthcheck:

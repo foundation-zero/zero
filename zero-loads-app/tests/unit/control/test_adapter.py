@@ -27,7 +27,7 @@ async def test_receive_can_message(settings: Settings):
     # Send the UDP message in the background
     def send_udp():
         with socket.socket(socket.AF_INET, socket.SOCK_DGRAM) as s:
-            s.sendto(frame_bytes, (settings.canbus_ip, settings.canbus_port))
+            s.sendto(frame_bytes, ("127.0.0.1", 55001))
 
     # Mock MQTT client
     class DummyMQTT(AsyncMock):
@@ -38,9 +38,9 @@ async def test_receive_can_message(settings: Settings):
 
     adapter = PCanAdapter(
         dummy_mqtt,
-        settings.canbus_ip,
-        settings.canbus_port,
-        settings.canbus_buffer_size,
+        "127.0.0.1",
+        55001,
+        1024,
     )
 
     asyncio.create_task(asyncio.to_thread(send_udp))
