@@ -57,7 +57,7 @@ spec:
           command: ["fastapi", "run", "./zero_domestic_control/app.py", "--host", "0.0.0.0", "--port", "{{ .Values.service.backend.containerPort }}"]
           ports:
             - name: http
-              containerPort: {{ .Values.service.backend.containerPort }}
+              containerPort: 5100
               protocol: TCP
           resources:
             {{- toYaml .Values.resources.backend | nindent 12 }}

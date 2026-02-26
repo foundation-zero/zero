@@ -22,7 +22,6 @@ postgresql:
 
 api:
   env: production
-  containerPort: 80
   resources: {}
   nodeSelector: {}
   tolerations: []
