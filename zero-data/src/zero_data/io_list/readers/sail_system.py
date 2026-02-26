@@ -134,7 +134,7 @@ class SailSystemReader(ReaderBase):
         if elem is None or elem.tag != f"{_TAG}TypeUserDef":
             return []
         return [
-            IOValue(field_elem.get("iecname"), sql)
+            IOValue(field_elem.attrib["iecname"], sql)
             for field_elem in elem.findall(f"{_TAG}UserDefElement")
             if field_elem.get("iecname")
             and (
