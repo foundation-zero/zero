@@ -1,4 +1,5 @@
 import { useAuthStore } from "@/modules/domestic/stores/auth";
+import { ENV } from "@env";
 import { authExchange } from "@urql/exchange-auth";
 import { cacheExchange, Client, fetchExchange, subscriptionExchange } from "@urql/vue";
 
@@ -6,7 +7,7 @@ import { createClient as createWSClient } from "graphql-ws";
 
 const getHeaders = () => {
   const authStore = useAuthStore();
-  const token = authStore.token ?? import.meta.env.VITE_GRAPHQL_TOKEN;
+  const token = authStore.token ?? ENV.VITE_GRAPHQL_TOKEN;
 
   return {
     Authorization: `Bearer ${token}`,
@@ -15,7 +16,7 @@ const getHeaders = () => {
 };
 
 const wsClient = createWSClient({
-  url: `${import.meta.env.VITE_GRAPHQL_WS_URL}`,
+  url: ENV.VITE_GRAPHQL_WS_URL,
 
   connectionParams: () => {
     return {
@@ -25,7 +26,7 @@ const wsClient = createWSClient({
 });
 
 const client = new Client({
-  url: `${import.meta.env.VITE_GRAPHQL_URL}`,
+  url: ENV.VITE_GRAPHQL_URL,
   exchanges: [
     cacheExchange,
     authExchange(async (utils) => {
