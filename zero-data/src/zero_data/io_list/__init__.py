@@ -12,5 +12,9 @@ def read_io_list(paths: List[Path], type: Source) -> IOResult:
         from .readers.vitters import VittersReader
 
         return VittersReader().read_io_list(paths)
+    elif type == "sail_system":
+        from .readers.sail_system import SailSystemReader
+
+        return SailSystemReader().read_io_list(paths)
     else:
         raise ValueError(f"Unsupported IOSource type: {type}")

@@ -2,7 +2,7 @@ from dataclasses import dataclass
 from typing import List, Literal
 from polars import DataFrame
 
-type Source = Literal["marpower", "vitters"]
+type Source = Literal["marpower", "vitters", "sail_system"]
 
 
 @dataclass
