@@ -74,6 +74,8 @@ spec:
             - name: config
               mountPath: /usr/share/nginx/html/env.json
               subPath: env.json
+            - mountPath: /tmp
+              name: tmp
       volumes:
         - name: config
           configMap:
@@ -81,6 +83,8 @@ spec:
             items: 
               - key: env.json
                 path: env.json
+        - emptyDir: {}
+          name: tmp
       {{- with .Values.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}
