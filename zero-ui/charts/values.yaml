@@ -1,7 +1,7 @@
 replicaCount: 1
 
 image:
-  repository: europe-west1-docker.pkg.dev/common-449414/common/zero-loads-app
+  repository: europe-west1-docker.pkg.dev/common-449414/common/zero-ui
   pullPolicy: IfNotPresent
   tag: ""
 
@@ -22,10 +22,6 @@ fullnameOverride: ""
 
 podAnnotations: {}
 podLabels: {}
-
-podSecurityContext: {}
-
-securityContext: {}
 
 resources: {}
 

@@ -35,10 +35,6 @@ fullnameOverride: ""
 podAnnotations: {}
 podLabels: {}
 
-podSecurityContext: {}
-
-securityContext: {}
-
 service:
   port: 80
   externalIPs: []
