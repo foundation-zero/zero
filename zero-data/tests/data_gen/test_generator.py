@@ -4,7 +4,7 @@ from unittest.mock import AsyncMock, patch
 
 from pydantic import TypeAdapter
 from zero_data.config import MQTTConfig
-from zero_data.data_gen.generator import MarpowerGenerator, MarpowerMessage
+from zero_data.data_gen.marpower_generator import MarpowerGenerator, MarpowerMessage
 from zero_data.io_list.types import IOTopic, IOValue
 import random
 import datetime

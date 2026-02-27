@@ -2,7 +2,8 @@ import asyncio
 from pathlib import Path
 
 from zero_data.config import MQTTConfig, io_lists
-from zero_data.data_gen.generator import MarpowerGenerator, Generator
+from zero_data.data_gen.generator import Generator
+from zero_data.data_gen.marpower_generator import MarpowerGenerator
 from zero_data.data_gen.sail_system_generator import SailSystemGenerator
 from zero_data.io_list import read_io_list
 from zero_data.io_list.types import Source
