@@ -1,5 +1,5 @@
 apiVersion: v2
-name: zero-ui
+name: zero-ui-chart
 description: Helm Charts for the Zero UI
 type: application
 version: 0.1.0
