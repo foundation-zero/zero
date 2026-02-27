@@ -84,7 +84,7 @@ jobs:
           service_account: ${{ secrets.GCP_COMMON_SERVICE_ACCOUNT }}
           access_token_lifetime: 600s
       - name: Login to Artifact Registry
-        uses: docker/login-action@v1
+        uses: docker/login-action@v3
         with:
           registry: europe-west1-docker.pkg.dev
           username: oauth2accesstoken
