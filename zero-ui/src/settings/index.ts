@@ -1,4 +1,4 @@
-import { EnvKey, ZeroEnv } from "./keys";
+import { ZeroEnv } from "./keys";
 
 const loadEnvFromPublic = async (): Promise<ZeroEnv> => {
   const response = await fetch(`/env.json`, {
@@ -12,11 +12,7 @@ const loadEnvFromPublic = async (): Promise<ZeroEnv> => {
   return (await response.json()) as ZeroEnv;
 };
 
-const ENV =
-  import.meta.env?.MODE === "development" || import.meta.env?.VITEST
+export const ENV =
+  import.meta.env?.MODE === "development" || import.meta.env?.VITEST || import.meta.env?.SSR
     ? import.meta.env
     : await loadEnvFromPublic();
-
-export const env = {
-  get: (name: EnvKey): string => ENV[name],
-};

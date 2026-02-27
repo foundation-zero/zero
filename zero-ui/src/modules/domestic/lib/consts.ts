@@ -1,3 +1,5 @@
+import { ENV } from "@env";
+
 export const CO2_THRESHOLDS: [warning: number, critical: number] = [1000, 2000];
 export const CO2_RANGE = [400, 2500];
 export const CO2_SETPOINT_RANGE = [400, 1000];
@@ -10,4 +12,4 @@ export const TEMPERATURE_THRESHOLDS: [tempWarm: number, tempHot: number] = [25, 
 export const TEMPERATURE_RANGE = [15, 35];
 export const TEMPERATURE_SETPOINT_RANGE = [18, 23];
 
-export const DEMO_MODE = import.meta?.env?.VITE_DEMO_MODE === "1";
+export const DEMO_MODE = ENV?.VITE_DEMO_MODE === "1";

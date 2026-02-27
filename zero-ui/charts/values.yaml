@@ -1,0 +1,36 @@
+replicaCount: 1
+
+image:
+  repository: europe-west1-docker.pkg.dev/common-449414/common/zero-loads-app
+  pullPolicy: IfNotPresent
+  tag: ""
+
+ui:
+  config: {}
+
+service:
+  port: 80
+  externalIPs: []
+
+serviceHeadless:
+  port: 80
+
+imagePullSecrets: []
+
+nameOverride: ""
+fullnameOverride: ""
+
+podAnnotations: {}
+podLabels: {}
+
+podSecurityContext: {}
+
+securityContext: {}
+
+resources: {}
+
+nodeSelector: {}
+
+tolerations: []
+
+affinity: {}
