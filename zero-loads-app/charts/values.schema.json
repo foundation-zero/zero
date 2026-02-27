@@ -1,0 +1,82 @@
+{
+  "$schema": "https://json-schema.org/draft-07/schema#",
+  "properties": {
+    "mqtt": {
+      "description": "MQTT configuration",
+      "properties": {
+        "host": {
+          "type": "string"
+        },
+        "port": {
+          "type": "integer"
+        },
+        "username": {
+          "type": "string"
+        },
+        "existingSecret": {
+          "type": "string"
+        },
+        "existingSecretPasswordKey": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "host",
+        "port",
+        "username",
+        "existingSecret",
+        "existingSecretPasswordKey"
+      ],
+      "type": "object"
+    },
+    "postgresql": {
+      "description": "PostgreSQL configuration",
+      "properties": {
+        "host": {
+          "type": "string"
+        },
+        "port": {
+          "type": "integer"
+        },
+        "user": {
+          "type": "string"
+        },
+        "db": {
+          "type": "string"
+        },
+        "existingSecret": {
+          "type": "string"
+        },
+        "existingSecretPasswordKey": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "host",
+        "port",
+        "user",
+        "db",
+        "existingSecret",
+        "existingSecretPasswordKey"
+      ],
+      "type": "object"
+    },
+    "api": {
+      "description": "API configuration",
+      "properties": {
+        "env": {
+          "type": "string",
+          "enum": ["development", "production"]
+        },
+        "containerPort": {
+          "type": "integer"
+        }
+      },
+      "required": ["env", "containerPort"],
+      "type": "object"
+    }
+  },
+  "required": ["mqtt", "postgresql", "api"],
+  "title": "Values",
+  "type": "object"
+}

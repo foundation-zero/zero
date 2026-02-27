@@ -25,11 +25,18 @@ class PCanStub:
 
     @asynccontextmanager
     @staticmethod
-    async def init_from_settings(settings: Settings):
+    async def init_from_settings(
+        settings: Settings,
+        *_args,
+        canbus_ip: str,
+        canbus_port: int,
+        canbus_buffer_size: int,
+        **_kwargs,
+    ):
         yield PCanStub(
-            settings.canbus_ip,
-            settings.canbus_port,
-            settings.canbus_buffer_size,
+            canbus_ip,
+            canbus_port,
+            canbus_buffer_size,
         )
 
     async def run(self):
