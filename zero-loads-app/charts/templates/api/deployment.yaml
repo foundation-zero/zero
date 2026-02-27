@@ -36,7 +36,7 @@ spec:
         supplementalGroups: []
         fsGroup: 1001
       containers:
-        - name: {{ .Chart.Name }}
+        - name: loads
           securityContext:
             allowPrivilegeEscalation: false
             capabilities:
