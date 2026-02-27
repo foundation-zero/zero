@@ -1,5 +1,6 @@
 from asyncio import Queue
 import asyncio
+from time import monotonic
 from typing import Callable, Coroutine, Literal
 from aiomqtt import Client as MqttClient, Message, Topic
 from dataclasses import dataclass
@@ -117,7 +118,7 @@ class SimulationStatusMessageReceiver(MessageReceiver[SimulationStatusMessage]):
         if parsed is not None:
             for module in context.control_modules:
                 module.active = module.name in parsed.control_modules
-            context.simulation.select_mode(parsed.mode)
+            await context.simulation.select_mode(parsed.mode)
 
         await super().handle(msg, context)
 
@@ -241,37 +242,89 @@ class ControlMessaging[
         return self._control_mode.last
 
 
+class RawMessageReceiver[T: ThrsValues](MessageReceiver[T]):
+    def __init__(self, cls: type[T], topic: str):
+        super().__init__(cls, topic)
+        self._timestamp = None
+        self._message = None
+        self._context = None
+
+    async def handle(self, msg: Message, context: Context):
+        self._message = msg
+        self._context = context
+        self._timestamp = monotonic()
+
+    @property
+    def message(self) -> Message | None:
+        return self._message
+
+    @property
+    def context(self) -> Context | None:
+        return self._context
+
+    def seconds_passed_since_last_message(self) -> float | None:
+        if self._timestamp is None:
+            return None
+        return monotonic() - self._timestamp
+
+
+REPROCESS_SIMULATION_VALUES_TIMEOUT = 5  # seconds
+
+
 class SimulationMessaging:
     def __init__(
         self,
         mapping: dict[str, tuple[type[SimulationInputs], type[SimulationValues]]],
         mqtt_client: MqttClient,
     ):
+        self._mode = None
         self._mapping = mapping
         self._mqtt_client = mqtt_client
-        self._simulation_inputs = None
-        self._simulation_outputs = None
+        self._simulation_inputs = RawMessageReceiver(
+            SimulationInputMessage[SimulationInputs],
+            SimulationInputMessage.subscribe_topic(),
+        )
+        self._simulation_outputs = RawMessageReceiver(
+            SimulationValues, "simulation/outputs"
+        )
 
     @property
     def receivers(self):
         return [
-            receiver
-            for receiver in [self._simulation_inputs, self._simulation_outputs]
-            if receiver is not None
+            self._simulation_inputs,
+            self._simulation_outputs,
         ]
 
-    def select_mode(self, mode: str):
+    async def select_mode(self, mode: str):
+        if mode == self._mode:
+            return
         self._mode = mode
         simulation_inputs_cls, simulation_outputs_cls = self._mapping[mode]
 
-        self._simulation_inputs = MessageReceiver(
+        inputs = MessageReceiver(
             SimulationInputMessage[simulation_inputs_cls],
             SimulationInputMessage.subscribe_topic(),
         )
-        self._simulation_outputs = MessageReceiver(
+        outputs = MessageReceiver(
             simulation_outputs_cls,
             "simulation/outputs",
         )
+        await self._try_reprocess(inputs, self._simulation_inputs)
+        await self._try_reprocess(outputs, self._simulation_outputs)
+        self._simulation_inputs = inputs
+        self._simulation_outputs = outputs
+
+    async def _try_reprocess(self, new, old):
+        if isinstance(old, RawMessageReceiver) and (
+            (passed := old.seconds_passed_since_last_message())
+            and (passed < REPROCESS_SIMULATION_VALUES_TIMEOUT)
+            and old.message is not None
+            and old.context is not None
+        ):
+            await new.handle(
+                old.message,
+                old.context,
+            )
 
     def wait_for_simulation_inputs(
         self,
@@ -289,7 +342,7 @@ class SimulationMessaging:
         )
 
     @property
-    def mode(self) -> str:
+    def mode(self) -> str | None:
         return self._mode
 
     @property
@@ -356,9 +409,8 @@ class Messaging:
         topics = set(receiver.subscribe_topic for receiver in self._all_receivers)
         await self._mqtt_client.subscribe(SimulationStatusMessage.subscribe_topic())
         await asyncio.sleep(0.2)  # Give status time to arrive first
-        for topic in topics:
-            if topic != SimulationStatusMessage.subscribe_topic():
-                await self._mqtt_client.subscribe(topic, qos=1)
+        for topic in topics - {SimulationStatusMessage.subscribe_topic()}:
+            await self._mqtt_client.subscribe(topic, qos=1)
 
         async def _run(self):
             context = Context(

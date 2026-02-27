@@ -53,18 +53,26 @@ SimulationOutputsType = strawberry.union(
 def resolve_inputs(
     simulation: SimulationMessaging,
 ) -> SimulationInputsType | None:  # pyright: ignore[reportInvalidTypeForm]
-    return optional_pydantic_to_graphql(
-        inputs_strawberry_type_mapping[simulation.mode],
-        simulation.simulation_inputs,
+    return (
+        optional_pydantic_to_graphql(
+            inputs_strawberry_type_mapping[simulation.mode],
+            simulation.simulation_inputs,
+        )
+        if simulation.mode
+        else None
     )
 
 
 def resolve_outputs(
     simulation: SimulationMessaging,
 ) -> SimulationOutputsType | None:  # pyright: ignore[reportInvalidTypeForm]
-    return optional_pydantic_to_graphql(
-        outputs_strawberry_type_mapping[simulation.mode],
-        simulation.simulation_outputs,
+    return (
+        optional_pydantic_to_graphql(
+            outputs_strawberry_type_mapping[simulation.mode],
+            simulation.simulation_outputs,
+        )
+        if simulation.mode
+        else None
     )
 
 
