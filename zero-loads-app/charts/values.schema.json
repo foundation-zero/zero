@@ -67,12 +67,9 @@
         "env": {
           "type": "string",
           "enum": ["development", "production"]
-        },
-        "containerPort": {
-          "type": "integer"
         }
       },
-      "required": ["env", "containerPort"],
+      "required": ["env"],
       "type": "object"
     }
   },
