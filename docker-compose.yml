@@ -120,11 +120,9 @@ services:
       - "./grafana/electrical_flow.png:/usr/share/grafana/public/extra/electrical_flow.png"
       - "./zero-dashboards/dashboards:/dashboards"
     profiles:
-      - zero
+      - data
     environment:
       - GF_PLUGINS_PREINSTALL=marcusolsson-treemap-panel
-      - data
-    environment: {}
     container_name: grafana
     healthcheck:
       test:
