@@ -1,5 +1,6 @@
 import logging
 from typing import Annotated
+from fastapi.middleware.cors import CORSMiddleware
 
 import strawberry
 from fastapi import FastAPI
@@ -92,6 +93,13 @@ graphql_app = GraphQLRouter(schema, context_getter=get_context)
 
 app = FastAPI(lifespan=lifespan)
 
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 app.include_router(graphql_app, prefix="/graphql")
 app.include_router(health_router, prefix="/health")
