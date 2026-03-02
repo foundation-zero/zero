@@ -11,7 +11,7 @@ io_lists: List[Tuple[Source, List[str]]] = [
         [
             "ZERO mocked IO-List.xlsx",
             "52422003_3210_AMCS IO-List R2.29.xlsx",
-            "52422003_3211_PMS IO-List R2.12-fixed.xlsx",
+            "52422003_3211_PMS IO-List R2.12-fixed2.xlsx",
         ],
     )
 ]
