@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Symbolconfiguration xmlns="http://www.3s-software.com/schemas/Symbolconfiguration.xsd">
+  <Header>
+    <Version>3.5.14.0</Version>
+    <SymbolConfigObject version="4.5.2.0" runtimeid="3.5.20.60" libversion="4.5.0.0" compiler="3.5.20.60" lmm="3.5.20.60" profile="CODESYS V3.5 SP20 Patch 6+" settings="XmlIncludeComments, XmlIncludeAttributes, XmlIncludeTypeNodeAttributes, SymbolAttributeFilterType.All, SymbolCommentFilterType.PreferDocuComments, LayoutCalculator=OptimizedClientSideLayoutCalculator" />
+    <ProjectInfo name="3094_SailPLC" devicename="PLC_MAIN" appname="Application" />
+  </Header>
+     <NodeList>
+    <Node name="Application">
+    </Node>
+  </NodeList>
+</Symbolconfiguration>
