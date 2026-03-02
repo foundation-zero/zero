@@ -1,5 +1,5 @@
 from datetime import datetime
-from typing import Callable, cast
+from typing import Callable
 
 from pydantic import model_validator
 from transitions import Machine, State
@@ -8,6 +8,10 @@ from thrs.control.controllers import Controller
 from thrs.input_output.base import Stamped, ThrsValues
 from thrs.input_output.definitions.control import Fahrenheit, Valve
 from thrs.input_output.definitions.units import (
+    FAHRENHEIT_MODE_OFF,
+    FAHRENHEIT_MODE_ON,
+    FREE_COOLING_MODE_AUTO,
+    TANK_CONTROL_MODE_BOTH,
     Celsius,
     Ratio,
     Tuning,
@@ -59,9 +63,11 @@ def _INITIAL_CONTROL_VALUES(timestamp) -> FahrenheitControlValues:
         ),
         fahrenheit_chiller=Fahrenheit(
             enable=Stamped(value=False, timestamp=timestamp),
-            mode=Stamped(value=0, timestamp=timestamp),
+            mode=Stamped(value=FAHRENHEIT_MODE_OFF, timestamp=timestamp),
             cooling_setpoint=Stamped(value=17.0, timestamp=timestamp),
-            free_cooling_mode=Stamped(value=2, timestamp=timestamp),
+            free_cooling_mode=Stamped(
+                value=FREE_COOLING_MODE_AUTO, timestamp=timestamp
+            ),
             available_seawater_temperature=Stamped(value=20.0, timestamp=timestamp),
             available_hot_temperature=Stamped(value=20.0, timestamp=timestamp),
             available_cold_temperature=Stamped(value=20.0, timestamp=timestamp),
@@ -69,7 +75,9 @@ def _INITIAL_CONTROL_VALUES(timestamp) -> FahrenheitControlValues:
             hot_minimum=Stamped(value=53.0, timestamp=timestamp),
             cold_hysteresis=Stamped(value=2.0, timestamp=timestamp),
             hot_hysteresis=Stamped(value=2.0, timestamp=timestamp),
-            tank_control_mode=Stamped(value=1, timestamp=timestamp),
+            tank_control_mode=Stamped(
+                value=TANK_CONTROL_MODE_BOTH, timestamp=timestamp
+            ),
         ),
     )
 
@@ -251,43 +259,34 @@ class FahrenheitControl(
             value=Valve.OPEN, timestamp=self._time()
         )
 
-    def _update_fahrenheit_inputs(
-        self, sensor_values: FahrenheitSensorValues
-    ):  # TODO: make some helper function for this pattern
+    def _update_fahrenheit_inputs(self, sensor_values: FahrenheitSensorValues):
         self._current_values.fahrenheit_chiller.enable = Stamped(
             value=self._parameters.chiller_enabled, timestamp=self._time()
         )
 
         self._current_values.fahrenheit_chiller.mode = Stamped(
-            value=1, timestamp=self._time()
+            value=FAHRENHEIT_MODE_ON, timestamp=self._time()
         )
 
         self._current_values.fahrenheit_chiller.free_cooling_mode = Stamped(
-            value=2 if self._parameters.free_cooling_enabled else 0,
+            value=FREE_COOLING_MODE_AUTO
+            if self._parameters.free_cooling_enabled
+            else 0,
             timestamp=self._time(),
         )
 
         self._current_values.fahrenheit_chiller.available_seawater_temperature = Stamped(
-            value=cast(
-                Celsius,
-                sensor_values.fahrenheit_available_seawater_temperature.temperature.value,
-            ),
+            value=sensor_values.fahrenheit_available_seawater_temperature.temperature.value,
             timestamp=self._time(),
         )
 
         self._current_values.fahrenheit_chiller.available_hot_temperature = Stamped(
-            value=cast(
-                Celsius,
-                sensor_values.fahrenheit_available_hot_temperature.temperature.value,
-            ),
+            value=sensor_values.fahrenheit_available_hot_temperature.temperature.value,
             timestamp=self._time(),
         )
 
         self._current_values.fahrenheit_chiller.available_cold_temperature = Stamped(
-            value=cast(
-                Celsius,
-                sensor_values.fahrenheit_available_cold_temperature.temperature.value,
-            ),
+            value=sensor_values.fahrenheit_available_cold_temperature.temperature.value,
             timestamp=self._time(),
         )
         self._current_values.fahrenheit_chiller.cold_minimum = Stamped(
