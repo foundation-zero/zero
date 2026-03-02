@@ -42,4 +42,4 @@ COPY zero-loads-app/src/ ./zero-loads-app
 WORKDIR /app/zero-loads-app
 
 ENTRYPOINT ["python", "-m", "loads"]
-CMD ["uvicorn", "loads.api.api:app", "--host", "0.0.0.0", "--port", "5101"]
+CMD ["api"]
