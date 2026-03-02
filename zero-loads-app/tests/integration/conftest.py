@@ -1,6 +1,9 @@
 from aiomqtt import Client as MqttClient
+from asgi_lifespan import LifespanManager
+from httpx import ASGITransport, AsyncClient
 from pytest import fixture
 
+from loads.api.api import app
 from loads.api.db import SessionManager
 from loads.config import Settings
 
@@ -20,3 +23,12 @@ def sessionmanager(settings: Settings):
     sessionmanager = SessionManager()
     sessionmanager.initialize(settings.pg_url)
     return sessionmanager
+
+
+@fixture
+async def async_client():
+    async with LifespanManager(app) as manager:
+        async with AsyncClient(
+            transport=ASGITransport(app=manager.app), base_url="http://test"
+        ) as client:
+            yield client

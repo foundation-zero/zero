@@ -9,9 +9,6 @@ data:
   PG_HOST: {{ .Values.postgresql.host }}
   PG_PORT: {{ .Values.postgresql.port | quote }}
   PG_USER: {{ .Values.postgresql.user }}
-  {{- if .Values.postgresql.password }}
-  PG_PASSWORD: {{ .Values.postgresql.password }}
-  {{- end }}
   PG_DB: {{ .Values.postgresql.db }}
   RISINGWAVE_URL: {{ .Values.risingwave.url }}
   {{- if .Values.hasura.secret }}

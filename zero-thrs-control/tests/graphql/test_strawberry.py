@@ -1,14 +1,22 @@
+from asyncio import create_task, sleep
 from datetime import datetime
 from unittest.mock import Mock
+from aiomqtt import Client as MqttClient
 from httpx import ASGITransport, AsyncClient
 import pytest
-from thrs.cli.simulation_controls import ControlModeMessage, SimulationStatusMessage
+from thrs.cli.simulation_controls import (
+    ControlModeMessage,
+    SimulationInputMessage,
+    SimulationStatusMessage,
+)
 from thrs.control.modules.consumers import ConsumersParameters
 from thrs.control.modules.pcm import PcmParameters
 from thrs.control.modules.pvt import PvtControlMode, PvtParameters
 from thrs.control.modules.pvt_group import PvtGroupControlMode
 from thrs.control.modules.thrusters import ThrustersControlMode, ThrustersParameters
 from thrs.control.switching import SwitchingControlMode
+from thrs.graphql import simulation
+from thrs.graphql.base import ThrustersMessaging
 from thrs.graphql.messaging import ControlMessaging, Messaging, SimulationMessaging
 from thrs.graphql.strawberry import (
     app,
@@ -369,6 +377,85 @@ async def test_query_simulation_inputs(async_client):
     assert response.json() == {
         "data": {"simulation": {"inputs": {"thrustersAft": {"active": {"value": 0.0}}}}}
     }
+
+
+async def _mqtt_client(settings):
+    async with MqttClient(settings.mqtt_host, settings.mqtt_port) as client:
+        yield client
+
+
+mqtt_client = pytest.fixture(_mqtt_client)
+mqtt_client2 = pytest.fixture(_mqtt_client)
+
+
+async def test_query_simulation_inputs_actual(async_client, mqtt_client, mqtt_client2):
+    thrusters_msg: ThrustersMessaging = ControlMessaging(
+        "thrusters",
+        ThrustersSensorValues,
+        ThrustersControlValues,
+        ThrustersParameters,
+        ThrustersControlMode,
+        mqtt_client,
+    )
+    simulation_msg = SimulationMessaging(simulation.io_mapping, mqtt_client)
+    msg = Messaging(mqtt_client, [thrusters_msg], simulation_msg)
+    app.dependency_overrides[messaging] = lambda: msg
+    app.dependency_overrides[thrusters_messaging] = lambda: thrusters_msg
+    app.dependency_overrides[pvt_messaging] = override_pvt_messaging
+    app.dependency_overrides[pcm_messaging] = override_pcm_messaging
+    app.dependency_overrides[consumers_messaging] = override_consumers_messaging
+    app.dependency_overrides[simulation_messaging] = lambda: simulation_msg
+
+    await mqtt_client2.publish("thrs/simulation/inputs", None, qos=1, retain=True)
+    await mqtt_client2.publish("thrs/simulation/status", None, qos=1, retain=True)
+
+    run_task = create_task(await msg.run())
+    try:
+        # Simulation should be able to handle some time skew between status and inputs
+        await mqtt_client2.publish(
+            "thrs/simulation/inputs",
+            SimulationInputMessage[ThrustersSimulationInputs](
+                inputs=ThrustersSimulationInputs.zero()
+            ).model_dump_json(),
+        )
+        await sleep(0.1)
+        await mqtt_client2.publish(
+            "thrs/simulation/status",
+            SimulationStatusMessage(
+                mode="thrusters",
+                status="available",
+                simulation_time=datetime.fromtimestamp(0),
+                control_modules=["thrusters"],
+            ).model_dump_json(),
+        )
+        await sleep(0.1)
+
+        response = await async_client.post(
+            "/graphql",
+            json={
+                "query": """{
+                    simulation {
+                        inputs {
+                            ... on ThrustersSimulationInputsType {
+                                thrustersAft {
+                                    active {
+                                        value
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }"""
+            },
+        )
+        assert response.status_code == 200
+        assert response.json() == {
+            "data": {
+                "simulation": {"inputs": {"thrustersAft": {"active": {"value": 0.0}}}}
+            }
+        }
+    finally:
+        run_task.cancel()
 
 
 async def test_query_simulation_outputs(async_client):

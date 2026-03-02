@@ -1,11 +1,9 @@
 from unittest.mock import Mock
 
 import pytest
-from asgi_lifespan import LifespanManager
-from httpx import ASGITransport, AsyncClient
+from httpx import AsyncClient
 
-from loads.api import app
-from loads.api.api import get_messaging
+from loads.api.dependencies import get_messaging
 from loads.registry.registry import VARIABLES
 from loads.sensors.at import ApparentWindSpeed
 from loads.sensors.fiber_optic import SideStayMeasurements
@@ -18,15 +16,6 @@ def override_messaging():
     mock.get_variable_value = Mock(return_value=42.0)
 
     return mock
-
-
-@pytest.fixture
-async def async_client():
-    async with LifespanManager(app) as manager:
-        async with AsyncClient(
-            transport=ASGITransport(app=manager.app), base_url="http://test"
-        ) as client:
-            yield client
 
 
 @pytest.mark.asyncio

@@ -123,6 +123,8 @@ services:
       - zero
     environment:
       - GF_PLUGINS_PREINSTALL=marcusolsson-treemap-panel
+      - data
+    environment: {}
     container_name: grafana
     healthcheck:
       test:
