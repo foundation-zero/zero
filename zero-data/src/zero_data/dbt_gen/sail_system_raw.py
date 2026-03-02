@@ -7,7 +7,7 @@ SQL file with a comma-separated topic subscription string, reducing duplication.
 """
 
 from pathlib import Path
-from collections import defaultdict
+from itertools import groupby
 
 from zero_data.io_list.types import IOTopic, IOValue
 import logging
@@ -21,21 +21,28 @@ class SailSystemRawGenerator:
 
     def generate(self, topics: list[IOTopic]):
         """Generate DBT source models, merging topics that share the same group."""
-        # Group topics by their group key; ungrouped topics stay individual.
-        groups: dict[str, list[IOTopic]] = defaultdict(list)
-        for topic in topics:
-            key = topic.group or topic.topic
-            groups[key].append(topic)
 
-        for key, group_topics in groups.items():
-            file_name = self._group_filename(key, group_topics)
-            content = self._generate_group(group_topics)
+        def key_function(topic: IOTopic):
+            return topic.group or topic.topic
+
+        sorted_topics = sorted(topics, key=key_function)
+
+        # Build list of (group_topics, file_name, content) tuples
+        files = [
+            (
+                group_topics := list(group_iter),
+                self._group_filename(key, group_topics),
+                self._generate_group(group_topics),
+            )
+            for key, group_iter in groupby(sorted_topics, key=key_function)
+        ]
+
+        # Side effects: write files and log
+        for group_topics, file_name, content in files:
             self._write_file(self.table_path, file_name, content)
-            topic_names = [t.topic for t in group_topics]
             logger.info(
                 f"Generated sail system source: {file_name}.sql ({len(group_topics)} topics)"
             )
-            logger.debug(f"  topics: {topic_names}")
 
     @classmethod
     def _write_file(cls, path: Path, file_name: str, content: str):
