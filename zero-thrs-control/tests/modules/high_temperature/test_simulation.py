@@ -2,10 +2,17 @@ from datetime import datetime, timedelta
 from pytest import fixture
 import pytest
 
+from thrs.control.modules.consumers import ConsumersParameters
+from thrs.control.modules.high_temperature import HighTemperatureModule
+from thrs.control.modules.pcm import PcmParameters
+from thrs.control.modules.pvt import PvtParameters
+from thrs.control.modules.thrusters import ThrustersParameters
+from thrs.input_output.base import CombinedValues
 from thrs.input_output.modules.high_temperature import (
     HighTemperatureSimulationInputs,
 )
 from thrs.orchestration.executor import SimulationExecutor
+from thrs.orchestration.simulator import ModuleSimulatorModel, Simulator
 from thrs.simulation.fmu import Fmu
 from tests.helpers.simulation_inputs import simulator_input_field_setters
 from thrs.simulation.models.fmu_paths import high_temperature_path
@@ -54,3 +61,26 @@ async def test_high_temperature_simulation_inputs(
                 await executor.tick(
                     control.initial(datetime.now()).values,
                 )
+
+
+async def test_module_simulator_model():
+    module = HighTemperatureModule()
+    params = CombinedValues(
+        values={
+            "thrusters": ThrustersParameters(),
+            "pvt": PvtParameters(),
+            "pcm": PcmParameters(),
+            "consumers": ConsumersParameters(),
+        }
+    )
+    inputs = HighTemperatureSimulationInputs.zero()
+    model = ModuleSimulatorModel(
+        fmu_path=high_temperature_path,
+        module=module,
+        control_parameters=params,
+        simulation_inputs=inputs,
+    )
+    with model.executor() as executor:
+        sim = Simulator.from_model(model, executor)
+
+        await sim.run(100)
