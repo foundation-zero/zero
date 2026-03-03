@@ -8,10 +8,6 @@ def read_io_list(paths: List[Path], type: Source) -> IOResult:
         from .readers.marpower import MarpowerReader
 
         return MarpowerReader().read_io_list(paths)
-    elif type == "vitters":
-        from .readers.vitters import VittersReader
-
-        return VittersReader().read_io_list(paths)
     elif type == "sail_system":
         from .readers.sail_system import SailSystemReader
 
