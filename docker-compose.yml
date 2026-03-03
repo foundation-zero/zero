@@ -117,10 +117,12 @@ services:
       - "./grafana/grafana.ini:/etc/grafana/grafana.ini"
       - "./grafana/datasources.yaml:/etc/grafana/provisioning/datasources/datasources.yaml"
       - "./grafana/dashboards.yaml:/etc/grafana/provisioning/dashboards/dashboards.yaml"
+      - "./grafana/electrical_flow.png:/usr/share/grafana/public/extra/electrical_flow.png"
       - "./zero-dashboards/dashboards:/dashboards"
     profiles:
       - data
-    environment: {}
+    environment:
+      - GF_PLUGINS_PREINSTALL=marcusolsson-treemap-panel
     container_name: grafana
     healthcheck:
       test:
