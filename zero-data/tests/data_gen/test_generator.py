@@ -4,7 +4,7 @@ from unittest.mock import AsyncMock, patch
 
 from pydantic import TypeAdapter
 from zero_data.config import MQTTConfig
-from zero_data.data_gen.marpower_generator import MarpowerGenerator, MarpowerMessage
+from zero_data.data_gen.marpower_generator import MarpowerGenerator, MarpowerStruct
 from zero_data.io_list.types import IOTopic, IOValue
 import random
 import datetime
@@ -45,10 +45,10 @@ async def test_marpower_generator():
                     "a",
                     jsonfyier.dump_json(
                         {
-                            "field1": MarpowerMessage(
+                            "field1": MarpowerStruct(
                                 value=True, timestamp=now, is_valid=True, has_value=True
                             ).model_dump(by_alias=True),
-                            "field2": MarpowerMessage(
+                            "field2": MarpowerStruct(
                                 value=10.60040562252202,
                                 timestamp=now,
                                 is_valid=True,
@@ -61,10 +61,10 @@ async def test_marpower_generator():
                     "b",
                     jsonfyier.dump_json(
                         {
-                            "field1": MarpowerMessage(
+                            "field1": MarpowerStruct(
                                 value=8, timestamp=now, is_valid=True, has_value=True
                             ).model_dump(by_alias=True),
-                            "field2": MarpowerMessage(
+                            "field2": MarpowerStruct(
                                 value=5, timestamp=now, is_valid=True, has_value=True
                             ).model_dump(by_alias=True),
                         }

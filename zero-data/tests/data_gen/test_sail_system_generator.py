@@ -57,7 +57,6 @@ def test_generate_random_value_nested_struct(generator):
     field = IOValue(name="irrelevant", data_type=data_type)
     value = generator.generate_random_value(field)
     print(value)
-
     assert isinstance(value, dict)
     assert list(value) == ["a", "b"]
     assert isinstance(value["a"], bool)

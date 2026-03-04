@@ -9,7 +9,7 @@ from zero_data.data_gen import Generator
 from zero_data.io_list.types import IOTopic, IOValue
 
 
-class MarpowerMessage[T](BaseModel):
+class MarpowerStruct[T](BaseModel):
     model_config = ConfigDict(populate_by_name=True, alias_generator=to_pascal)
     value: T
     timestamp: Annotated[datetime, Field(alias="TimeStamp")]
@@ -27,32 +27,32 @@ class MarpowerGenerator(Generator):
     def generate_random_value(self, field: IOValue):
         return self._random_message(field.data_type).model_dump(by_alias=True)
 
-    def _random_message(self, data_type: str) -> MarpowerMessage:
+    def _random_message(self, data_type: str) -> MarpowerStruct:
         """Generate a random value based on the data type."""
         match data_type:
             case "BOOLEAN":
-                return self._generate_marpower_message(
+                return self._generate_marpower_struct(
                     random.choice([True, False]),
                 )
             case "REAL":
-                return self._generate_marpower_message(
+                return self._generate_marpower_struct(
                     random.normalvariate(mu=10, sigma=1.0)
                 )
             case "BIGINT":
-                return self._generate_marpower_message(random.randint(0, 100))
+                return self._generate_marpower_struct(random.randint(0, 100))
             case "INTEGER":
-                return self._generate_marpower_message(
+                return self._generate_marpower_struct(
                     random.binomialvariate(n=10, p=0.5)
                 )
             case "TIMESTAMP":
-                return self._generate_marpower_message(datetime.now(tz=UTC))
+                return self._generate_marpower_struct(datetime.now(tz=UTC))
             case "STRING":
-                return self._generate_marpower_message(
+                return self._generate_marpower_struct(
                     "".join(random.choices("abcdefghijklmnopqrstuvwxyz", k=10))
                 )
         raise KeyError(f"Unknown type: {data_type}")
 
-    def _generate_marpower_message[T](self, value: T) -> MarpowerMessage[T]:
-        return MarpowerMessage[T](
+    def _generate_marpower_struct[T](self, value: T) -> MarpowerStruct[T]:
+        return MarpowerStruct[T](
             value=value, timestamp=datetime.now(tz=UTC), is_valid=True, has_value=True
         )
