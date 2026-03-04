@@ -102,7 +102,6 @@ class SailSystemReader(ReaderBase):
             and (
                 sql := SailSystemReader._sql_type(field_elem.get("type", ""), type_map)
             )
-            is not None
         ]
 
     @staticmethod
@@ -138,7 +137,6 @@ class SailSystemReader(ReaderBase):
                         field_elem.get("type", ""), type_map, visiting
                     )
                 )
-                is not None
             ]
             return f"STRUCT<{', '.join(struct_fields)}>" if struct_fields else None
         return None
