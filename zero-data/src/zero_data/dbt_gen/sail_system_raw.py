@@ -37,7 +37,6 @@ class SailSystemRawGenerator:
             for key, group_iter in groupby(sorted_topics, key=key_function)
         ]
 
-        # Side effects: write files and log
         for group_topics, file_name, content in files:
             self._write_file(self.table_path, file_name, content)
             logger.info(
