@@ -126,7 +126,7 @@ class SailSystemReader(ReaderBase):
         Collect all fields from a struct type, including inherited ones.
 
         Primitive fields map to SQL scalar types; compound sub-elements become
-        STRUCT<...> typed fields (recursively). Each UserDefElement child
+        STRUCT<...> typed fields (nested). Each UserDefElement child
         (with or without `inherited_from`) is included if its type resolves
         to a non-None SQL type.
         """
