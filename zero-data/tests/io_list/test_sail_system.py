@@ -6,15 +6,11 @@ from zero_data.io_list.readers.sail_system import SailSystemReader
 from zero_data.io_list.types import IOTopic, IOValue
 
 
-@pytest.fixture
-def get_test_file_path():
-    def _do(case_name):
-        return Path(__file__).parent / f"../../io_lists/test/sailsystem_{case_name}.xml"
-
-    return _do
+def get_test_file_path(case_name):
+    return Path(__file__).parent / f"../../io_lists/test/sailsystem_{case_name}.xml"
 
 
-def test_read_io_list(get_test_file_path):
+def test_read_io_list():
     test_path = get_test_file_path("happy")
     coolingpumps_data_type = (
         "STRUCT<x_ExtOnOff BOOLEAN, i_State INTEGER, "
@@ -51,7 +47,7 @@ def test_read_io_list(get_test_file_path):
     assert result.topics == expected_topics
 
 
-def test_no_hmi_node(get_test_file_path):
+def test_no_hmi_node():
     test_path = get_test_file_path("no_hmi_node")
 
     with pytest.raises(
