@@ -3,7 +3,7 @@ DBT model generator for sail system MQTT sources.
 
 Generates flat RisingWave source tables for sail system PLC messages.
 Topics that share the same PLC struct type (group) are merged into a single
-SQL file with a comma-separated topic subscription string, reducing duplication.
+SQL file with a comma-separated topic subscription string, reducing duplication and RisingWave workers.
 """
 
 from pathlib import Path
