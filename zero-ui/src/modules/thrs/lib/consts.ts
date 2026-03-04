@@ -37,8 +37,8 @@ import {
 import {
   SimulationInputsType,
   SimulationOutputsType,
-  THRSQueries,
-  THRSSimulationType,
+  ThrsQueries,
+  ThrsSimulationType,
 } from "./consts.types";
 import {
   CONSUMERS_CONTROL_QUERY,
@@ -87,8 +87,8 @@ type ModuleDefinitions = Record<string, ModuleDefinition>;
 export const toDefinitions = <T extends ModuleDefinitions>(input: T): T => input;
 
 export const toSimulation = <
-  TInput extends Record<THRSSimulationType, SimulationDefinitions>,
-  TOutput extends Record<THRSSimulationType, SimulationDefinitions>,
+  TInput extends Record<ThrsSimulationType, SimulationDefinitions>,
+  TOutput extends Record<ThrsSimulationType, SimulationDefinitions>,
 >(
   input: TInput,
   output: TOutput,
@@ -163,7 +163,7 @@ export const SIMULATION_FIELDS: SimulationFields = {
 
 export const toQueries = <
   TDefinitions extends ModuleDefinitions = typeof DEFINITIONS,
-  Queries extends THRSQueries<TDefinitions> = THRSQueries<TDefinitions>,
+  Queries extends ThrsQueries<TDefinitions> = ThrsQueries<TDefinitions>,
 >(
   input: Queries,
 ): Queries => input;
@@ -191,7 +191,7 @@ export const QUERIES = toQueries({
   },
 });
 
-export const SIMULATION_INPUT_QUERIES: Record<THRSSimulationType, string> = {
+export const SIMULATION_INPUT_QUERIES: Record<ThrsSimulationType, string> = {
   highTemperature: HIGH_TEMPERATURE_SIMULATION_INPUTS_QUERY,
   thrusters: THRUSTERS_SIMULATION_INPUTS_QUERY,
   pcm: PCM_SIMULATION_INPUTS_QUERY,
@@ -199,7 +199,7 @@ export const SIMULATION_INPUT_QUERIES: Record<THRSSimulationType, string> = {
   consumers: CONSUMERS_SIMULATION_INPUTS_QUERY,
 };
 
-export const SIMULATION_OUTPUT_QUERIES: Record<THRSSimulationType, string> = {
+export const SIMULATION_OUTPUT_QUERIES: Record<ThrsSimulationType, string> = {
   highTemperature: HIGH_TEMPERATURE_SIMULATION_OUTPUTS_QUERY,
   thrusters: THRUSTERS_SIMULATION_OUTPUTS_QUERY,
   pcm: PCM_SIMULATION_OUTPUTS_QUERY,

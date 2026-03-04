@@ -1,4 +1,4 @@
-<script setup lang="ts" generic="K extends keyof THRSModules">
+<script setup lang="ts" generic="K extends keyof ThrsModules">
 import { Button } from "@/components/ui/button";
 import {
   NumberField,
@@ -8,7 +8,7 @@ import {
   NumberFieldInput,
 } from "@/components/ui/number-field";
 import { Switch } from "@/components/ui/switch";
-import { THRSModules, THRSSimulationType } from "@/modules/thrs/lib/consts";
+import { ThrsModules, ThrsSimulationType } from "@/modules/thrs/lib/consts";
 import { controlValuesForm, MutationType } from "@/modules/thrs/stores/thrs";
 import { ThrusterSimulation } from "@/modules/thrs/types";
 import { toUpperCamelCase } from "@common/lib/utils";
@@ -22,7 +22,7 @@ const props = defineProps<{
   values: ThrusterSimulation;
   componentName: string;
   query: string;
-  simulation: THRSSimulationType;
+  simulation: ThrsSimulationType;
 }>();
 const emit = defineEmits<{
   (e: "update:controlValues", value: unknown): void;

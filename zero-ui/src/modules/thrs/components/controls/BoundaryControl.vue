@@ -13,7 +13,7 @@ import { toUpperCamelCase } from "@common/lib/utils";
 import { Loader2Icon, SendIcon } from "lucide-vue-next";
 import { toRef } from "vue";
 import { useI18n } from "vue-i18n";
-import { THRSSimulationType } from "../../lib/consts";
+import { ThrsSimulationType } from "../../lib/consts";
 
 const { t } = useI18n();
 
@@ -21,7 +21,7 @@ const props = defineProps<{
   values: BoundarySimulation;
   componentName: string;
   query: string;
-  simulation: THRSSimulationType;
+  simulation: ThrsSimulationType;
 }>();
 const emit = defineEmits<{
   (e: "update:controlValues", value: unknown): void;

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { THRSModules } from "@/modules/thrs/lib/consts.types";
+import { ThrsModules } from "@/modules/thrs/lib/consts.types";
 import { Tabs, TabsList, TabsTrigger } from "@common/components/tab-links";
 import { toRefs } from "vue";
 import { useI18n } from "vue-i18n";
@@ -7,7 +7,7 @@ import { RouterLink, useRoute } from "vue-router";
 import { useThrsHistory } from "../stores/history";
 import RouterLinkWithFallback from "./RouterLinkWithFallback.vue";
 
-defineProps<{ modules: Array<keyof THRSModules> }>();
+defineProps<{ modules: Array<keyof ThrsModules> }>();
 const activeModule = defineModel<string | undefined>("activeModule", { required: true });
 const currentRoute = useRoute();
 

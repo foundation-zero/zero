@@ -1,4 +1,4 @@
-<script setup lang="ts" generic="K extends keyof THRSModules">
+<script setup lang="ts" generic="K extends keyof ThrsModules">
 import { Button } from "@/components/ui/button";
 import {
   NumberField,
@@ -7,7 +7,7 @@ import {
   NumberFieldIncrement,
   NumberFieldInput,
 } from "@/components/ui/number-field";
-import { THRSModules, THRSSimulationType } from "@/modules/thrs/lib/consts";
+import { ThrsModules, ThrsSimulationType } from "@/modules/thrs/lib/consts";
 import { controlValuesForm, MutationType } from "@/modules/thrs/stores/thrs";
 import { SimulationComponentType, TemperatureSimulation } from "@/modules/thrs/types";
 import { toUpperCamelCase } from "@common/lib/utils";
@@ -21,7 +21,7 @@ const props = defineProps<{
   values: TemperatureSimulation;
   componentName: string;
   query: string;
-  simulation: THRSSimulationType;
+  simulation: ThrsSimulationType;
   componentType: SimulationComponentType;
 }>();
 

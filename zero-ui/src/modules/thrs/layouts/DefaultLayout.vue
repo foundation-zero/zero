@@ -8,7 +8,7 @@ import { DarkModeToggle } from "@/modules/common/components/dark-mode";
 import TopNav from "@/modules/common/components/top-nav/TopNav.vue";
 import TopNavToolbar from "@/modules/common/components/top-nav/TopNavToolbar.vue";
 import { client } from "@/modules/thrs/graphql/client";
-import { THRSModules } from "@/modules/thrs/lib/consts.types";
+import { ThrsModules } from "@/modules/thrs/lib/consts.types";
 import { DividerVerticalIcon } from "@radix-icons/vue";
 import { provideClient } from "@urql/vue";
 import { computed, provide } from "vue";
@@ -23,7 +23,7 @@ provideClient(client);
 const { t } = useI18n();
 
 const currentRoute = useRoute();
-const modules: Array<keyof THRSModules> = ["thrusters", "pvt", "pcm", "consumers"];
+const modules: Array<keyof ThrsModules> = ["thrusters", "pvt", "pcm", "consumers"];
 const currentModuleKey = computed(() => (currentRoute.params.module as string) ?? "simulation");
 
 provide("currentModule", currentModuleKey);

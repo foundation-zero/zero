@@ -8,9 +8,9 @@ import {
 } from "@/modules/thrs/types";
 import { DEFINITIONS, SIMULATION, SimulationInputsOutputs } from "./consts";
 
-export type THRSDefinitions<T extends Record<string, ModuleDefinition> = typeof DEFINITIONS> = T;
+export type ThrsDefinitions<T extends Record<string, ModuleDefinition> = typeof DEFINITIONS> = T;
 
-export type THRSModules<
+export type ThrsModules<
   TDefinitions extends Record<string, ModuleDefinition> = typeof DEFINITIONS,
 > = {
   [K in keyof TDefinitions]: THRSModule<TDefinitions[K]>;
@@ -28,7 +28,7 @@ export type SimulationOutputsType<K extends string> = `${Capitalize<K>}Simulatio
 
 // This creates a union type from the values of the inputs/outputs
 // https://www.totaltypescript.com/tips/derive-a-union-type-from-an-object
-export type THRSSimulation<TDefinitions extends SimulationInputsOutputs = typeof SIMULATION> = {
+export type ThrsSimulation<TDefinitions extends SimulationInputsOutputs = typeof SIMULATION> = {
   inputs: {
     [K in StringKeyOf<TDefinitions["inputs"]>]: GraphQLRecord<
       SimulationInputsType<K>,
@@ -43,7 +43,7 @@ export type THRSSimulation<TDefinitions extends SimulationInputsOutputs = typeof
   }[StringKeyOf<TDefinitions["outputs"]>];
 };
 
-export type THRSQueries<
+export type ThrsQueries<
   TDefinitions extends Record<string, ModuleDefinition> = typeof DEFINITIONS,
 > = {
   [Module in keyof TDefinitions]: {
@@ -65,9 +65,9 @@ export const SIMULATION_TYPES = [
   "pvt",
   "consumers",
 ] as const;
-export type THRSSimulationType = (typeof SIMULATION_TYPES)[number];
+export type ThrsSimulationType = (typeof SIMULATION_TYPES)[number];
 
 export type THRS = {
-  modules: THRSModules;
-  simulation: THRSSimulation;
+  modules: ThrsModules;
+  simulation: ThrsSimulation;
 };

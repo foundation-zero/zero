@@ -2,7 +2,7 @@
 import {
   SIMULATION,
   SIMULATION_INPUT_QUERIES,
-  THRSSimulationType,
+  ThrsSimulationType,
 } from "@/modules/thrs/lib/consts";
 import { SimulationComponentType, SimulationDefinitions } from "@/modules/thrs/types";
 import { type Component, computed, toRefs } from "vue";
@@ -24,7 +24,7 @@ const COMPONENTS: Record<SimulationComponentType, Component | null> = {
 
 const { data } = toRefs(useThrsHistory());
 
-const props = defineProps<{ type: THRSSimulationType }>();
+const props = defineProps<{ type: ThrsSimulationType }>();
 
 const definition = computed(() => SIMULATION.inputs[props.type] as SimulationDefinitions);
 

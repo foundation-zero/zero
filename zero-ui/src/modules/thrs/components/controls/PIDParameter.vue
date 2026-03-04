@@ -1,4 +1,4 @@
-<script setup lang="ts" generic="K extends keyof THRSModules">
+<script setup lang="ts" generic="K extends keyof ThrsModules">
 import { Button } from "@/components/ui/button";
 import {
   NumberField,
@@ -8,7 +8,7 @@ import {
   NumberFieldInput,
 } from "@/components/ui/number-field";
 import NumberFieldPrefix from "@/components/ui/number-field/NumberFieldPrefix.vue";
-import { THRSModules } from "@/modules/thrs/lib/consts";
+import { ThrsModules } from "@/modules/thrs/lib/consts";
 import { controlValuesForm, MutationType } from "@/modules/thrs/stores/thrs";
 import { ParametersType, PID } from "@/modules/thrs/types";
 import { toElementRefs, toUpperCamelCase } from "@common/lib/utils";

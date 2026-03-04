@@ -1,4 +1,4 @@
-import { THRSModules, THRSSimulationType } from "@/modules/thrs/lib/consts";
+import { ThrsModules, ThrsSimulationType } from "@/modules/thrs/lib/consts";
 import { PID } from "@/modules/thrs/types";
 import { unstamp } from "@common/lib/utils";
 import { Stamped } from "@common/types";
@@ -72,7 +72,7 @@ export type FormValues<
 };
 
 export const controlValuesForm = <
-  Module extends keyof THRSModules | THRSSimulationType,
+  Module extends keyof ThrsModules | ThrsSimulationType,
   Mutation extends MutationType,
   Input extends InputType[Mutation],
   A extends Ref<FieldObject | FieldType>,
