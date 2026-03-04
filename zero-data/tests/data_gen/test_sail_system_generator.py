@@ -28,7 +28,6 @@ def generator():
 def test_generate_random_value_simple(generator, data_type, check):
     field = IOValue(name="irrelevant", data_type=data_type)
     value = generator.generate_random_value(field)
-    print(value)
     assert check(value)
 
 
@@ -56,7 +55,6 @@ def test_generate_random_value_nested_struct(generator):
     data_type = "STRUCT<a BOOLEAN, b STRUCT<c INTEGER, d REAL>>"
     field = IOValue(name="irrelevant", data_type=data_type)
     value = generator.generate_random_value(field)
-    print(value)
     assert isinstance(value, dict)
     assert list(value) == ["a", "b"]
     assert isinstance(value["a"], bool)

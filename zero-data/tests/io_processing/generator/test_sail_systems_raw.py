@@ -48,7 +48,6 @@ def test_generate_grouped(tmp_path):
     ]
     dbt_dir = tmp_path / "dbt"
     dbt_dir.mkdir()
-    print(dbt_dir)
     SailSystemRawGenerator(dbt_dir).generate(io_topics)
 
     with open(dbt_dir / f"models/00_source/sail_system/{topic_group_name}.sql") as f:
@@ -88,7 +87,6 @@ def test_strip_group_prefix(tmp_path, prefix):
     ]
     dbt_dir = tmp_path / "dbt"
     dbt_dir.mkdir()
-    print(dbt_dir)
     SailSystemRawGenerator(dbt_dir).generate(io_topics)
 
     with open(dbt_dir / f"models/00_source/sail_system/{group_name}.sql") as f:
