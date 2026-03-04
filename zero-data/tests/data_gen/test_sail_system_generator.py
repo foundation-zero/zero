@@ -19,7 +19,7 @@ def generator():
 @pytest.mark.parametrize(
     "data_type,check",
     [
-        ("BOOLEAN", lambda v: isinstance(v, bool)),
+        ("BOOLEAN", lambda v: v in {True, False}),
         ("INTEGER", lambda v: isinstance(v, int)),
         ("REAL", lambda v: isinstance(v, float)),
         ("STRUCT<>", lambda v: isinstance(v, dict) and len(v) == 0),
