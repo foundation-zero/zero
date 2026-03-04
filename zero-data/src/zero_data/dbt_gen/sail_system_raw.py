@@ -71,8 +71,8 @@ class SailSystemRawGenerator:
         # All topics in a group share the same fields — take from the first.
         fields = topics[0].fields
         all_fields = [cls._timestamp()] + [cls._generate_field(f) for f in fields]
-        all_fields[-1] = all_fields[-1].rstrip(",\n") + "\n"
-        fields_sql = "".join(all_fields)
+        all_fields[-1] = all_fields[-1] + "\n"
+        fields_sql = ",\n".join(all_fields)
 
         topic_str = ",".join(t.topic for t in topics)
         return (
@@ -85,11 +85,11 @@ class SailSystemRawGenerator:
 
     @staticmethod
     def _timestamp() -> str:
-        return "\ttime TIMESTAMPTZ AS proctime(),\n"
+        return "\ttime TIMESTAMPTZ AS proctime()"
 
     @staticmethod
     def _generate_field(io_value: IOValue) -> str:
-        return f'\t"{io_value.name}"\t{io_value.data_type},\n'
+        return f'\t"{io_value.name}"\t{io_value.data_type}'
 
     @staticmethod
     def _with_mqtt(topic: str) -> str:
