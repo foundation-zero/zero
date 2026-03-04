@@ -28,9 +28,11 @@ export type SeriesChart<Type extends ChartDataType = ChartDataType> = Chart<
   TimeSeriesData<Type>
 >;
 
-export type Entries<T> =
+export type MapEntries<T> =
   T extends Map<infer K, infer V>
     ? V extends Map<unknown, unknown>
-      ? [key: K, value: Entries<V>[]]
+      ? [key: K, value: MapEntries<V>[]]
       : [key: K, value: V]
     : never;
+
+export type Entries<K, V> = [key: K, value: V][];

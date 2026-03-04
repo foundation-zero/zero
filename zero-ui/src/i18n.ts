@@ -1,5 +1,5 @@
 import { createI18n } from "vue-i18n";
-import { fromKeys } from "./modules/common/lib/utils";
+import { toRecord } from "./modules/common/lib/utils";
 
 const SUPPORTED_LOCALES = ["en"] as const;
 type SupportedLocale = (typeof SUPPORTED_LOCALES)[number];
@@ -16,7 +16,7 @@ const imports: Locales = {
 };
 
 const getLocaleMessages = (): Record<SupportedLocale, LocaleMessages> =>
-  fromKeys(SUPPORTED_LOCALES, (locale) =>
+  toRecord(SUPPORTED_LOCALES, (locale) =>
     Object.values(imports[locale]).reduce((message, current) => ({ ...message, ...current }), {}),
   );
 

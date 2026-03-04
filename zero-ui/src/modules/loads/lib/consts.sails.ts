@@ -34,7 +34,7 @@ export const enum SailId {
   MizzenStaysail = "mizzen_staysail",
 }
 
-const POSITIONS_WITH_SAILS: Record<PositionId, Sail<SailId>[]> = {
+export const POSITIONS_WITH_SAILS: Record<PositionId, Sail<SailId>[]> = {
   [PositionId.Main]: [
     sail("Full Main", SailId.FullMain),
     sail("Main R1", SailId.MainReef1),
