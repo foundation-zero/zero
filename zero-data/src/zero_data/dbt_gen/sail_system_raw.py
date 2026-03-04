@@ -27,17 +27,10 @@ class SailSystemRawGenerator:
 
         sorted_topics = sorted(topics, key=key_function)
 
-        # Build list of (group_topics, file_name, content) tuples
-        files = [
-            (
-                group_topics := list(group_iter),
-                self._group_filename(key, group_topics),
-                self._generate_group(group_topics),
-            )
-            for key, group_iter in groupby(sorted_topics, key=key_function)
-        ]
-
-        for group_topics, file_name, content in files:
+        for key, group_iter in groupby(sorted_topics, key=key_function):
+            group_topics = list(group_iter)
+            file_name = self._group_filename(key)
+            content = self._generate_group(group_topics)
             self._write_file(self.table_path, file_name, content)
             logger.info(
                 f"Generated sail system source: {file_name}.sql ({len(group_topics)} topics)"
@@ -51,7 +44,7 @@ class SailSystemRawGenerator:
             f.write(content)
 
     @staticmethod
-    def _group_filename(key: str, group_topics: list[IOTopic]) -> str:
+    def _group_filename(key: str) -> str:
         """
         Derive a file name from the group key.
 
