@@ -81,6 +81,31 @@ class SailSystemReader(ReaderBase):
         }
 
     @staticmethod
+    def _collect_fields(
+        struct_name: str, type_map: dict[str, ET.Element]
+    ) -> list[IOValue]:
+        """
+        Collect all fields from a struct type, including inherited ones.
+
+        Primitive fields map to SQL scalar types; compound sub-elements become
+        STRUCT<...> typed fields (nested). Each UserDefElement child
+        (with or without `inherited_from`) is included if its type resolves
+        to a non-None SQL type.
+        """
+        elem = type_map.get(struct_name)
+        if elem is None or elem.tag != f"{_TAG}TypeUserDef":
+            return []
+        return [
+            IOValue(field_elem.attrib["iecname"], sql)
+            for field_elem in elem.findall(f"{_TAG}UserDefElement")
+            if field_elem.get("iecname")
+            and (
+                sql := SailSystemReader._sql_type(field_elem.get("type", ""), type_map)
+            )
+            is not None
+        ]
+
+    @staticmethod
     def _sql_type(
         type_name: str,
         type_map: dict[str, ET.Element],
@@ -117,28 +142,3 @@ class SailSystemReader(ReaderBase):
             ]
             return f"STRUCT<{', '.join(struct_fields)}>" if struct_fields else None
         return None
-
-    @staticmethod
-    def _collect_fields(
-        struct_name: str, type_map: dict[str, ET.Element]
-    ) -> list[IOValue]:
-        """
-        Collect all fields from a struct type, including inherited ones.
-
-        Primitive fields map to SQL scalar types; compound sub-elements become
-        STRUCT<...> typed fields (nested). Each UserDefElement child
-        (with or without `inherited_from`) is included if its type resolves
-        to a non-None SQL type.
-        """
-        elem = type_map.get(struct_name)
-        if elem is None or elem.tag != f"{_TAG}TypeUserDef":
-            return []
-        return [
-            IOValue(field_elem.attrib["iecname"], sql)
-            for field_elem in elem.findall(f"{_TAG}UserDefElement")
-            if field_elem.get("iecname")
-            and (
-                sql := SailSystemReader._sql_type(field_elem.get("type", ""), type_map)
-            )
-            is not None
-        ]
