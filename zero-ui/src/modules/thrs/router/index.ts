@@ -12,6 +12,11 @@ const thrsChildRoutes: RouteRecordRaw[] = [
     redirect: () => ({ path: "/thrs/hmi/thrusters/monitoring", query: {} }),
     children: [
       {
+        path: "simulation",
+        name: "thrs/hmi/simulation",
+        component: () => import("@/modules/thrs/views/Simulation.vue"),
+      },
+      {
         path: ":module",
         children: [
           {

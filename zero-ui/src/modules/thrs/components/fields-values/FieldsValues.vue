@@ -2,17 +2,16 @@
   setup
   lang="ts"
   generic="
-    K extends keyof THRSModules,
+    K extends HistoryRootKey,
     Definitions extends SchemaDefinitions<SchemaDefinition<unknown>>
   "
 >
-import { THRSModules } from "@/modules/thrs/lib/consts";
 import { SchemaDefinition, SchemaDefinitions } from "@/modules/thrs/types";
 
 import { useLocalStorage } from "@vueuse/core";
 import { computed } from "vue";
 import { FieldSeries, provideContext } from ".";
-import { useThrsHistory } from "../../stores/history";
+import { HistoryRootKey, useThrsHistory } from "../../stores/history";
 import FieldValues from "./FieldValues.vue";
 
 const props = defineProps<{

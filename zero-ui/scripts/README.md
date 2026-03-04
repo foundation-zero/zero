@@ -38,6 +38,7 @@ pnpm extract-schema-values <CONST_NAME> <TYPE_NAME>
 4. Infers component types (control/sensor/parameter/simulation) from field metadata and GraphQL types
 5. Generates appropriate TypeScript definition objects with proper typing
 6. Updates or creates the specified constant in `src/modules/thrs/lib/consts.generated.ts`
+7. Supports union types by merging fields from each member type (first occurrence wins on conflicts)
 
 **Architecture:**
 

@@ -6,7 +6,6 @@ import { DEFINITIONS } from "@/modules/thrs/lib/consts";
 import { objectFilter } from "@common/lib/utils";
 import { computed, inject, Ref } from "vue";
 import { useI18n } from "vue-i18n";
-import SimulationControls from "../components/SimulationControls.vue";
 
 const { t } = useI18n();
 
@@ -33,15 +32,6 @@ const tuningParams = computed(
 </script>
 <template>
   <header class="mb-4 text-3xl capitalize">
-    {{ t("thrs.views.simulation.title") }}
-  </header>
-
-  <SimulationControls
-    :module="currentDefinition"
-    :definition="definition.simulation.inputs"
-  />
-
-  <header class="mt-8 mb-4 text-3xl capitalize">
     {{ t("thrs.views.parameters.title") }}
   </header>
 

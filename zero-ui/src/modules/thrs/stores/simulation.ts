@@ -8,7 +8,9 @@ import { OperationResult } from "graphql-ws";
 import { Maybe } from "graphql/jsutils/Maybe";
 import { TypedDocumentNode } from "msw/core/graphql";
 import { defineStore } from "pinia";
-import { computed, ref } from "vue";
+import { computed, ref, toRefs } from "vue";
+import { SIMULATION_TYPES } from "../lib/consts.types";
+import { useThrsHistory } from "./history";
 
 type SimulationStatus = {
   simulation: {
@@ -65,6 +67,11 @@ export const useSimulationStore = defineStore("simulation", () => {
   const setAutomatedControl = (module: string) =>
     mutationWithValue(`${module}SetAutomationMode`, "automatic", "Boolean!");
   const isProcessing = ref(false);
+  const { data } = toRefs(useThrsHistory());
+  const activeSimulation = computed(() => data.value?.simulation.inputs?.__typename);
+  const activeSimulationType = computed(() =>
+    SIMULATION_TYPES.find((type) => activeSimulation.value?.toLocaleLowerCase().startsWith(type)),
+  );
 
   const statusQuery = useQuery<SimulationStatus>({
     query: STATUS_QUERY,
@@ -129,5 +136,7 @@ export const useSimulationStore = defineStore("simulation", () => {
     isRunning,
     isProcessing,
     isStepping,
+    activeSimulation,
+    activeSimulationType,
   };
 });

@@ -2,14 +2,14 @@
   setup
   lang="ts"
   generic="
-    K extends keyof THRSModules,
+    K extends keyof ThrsModules,
     Definitions extends ControlDefinitions,
     Values extends ExtractAllValues<Definitions>
   "
 >
 import { ControlComponentType, ControlDefinitions, ExtractAllValues } from "@/modules/thrs/types";
 
-import { QUERIES, THRSModules } from "@/modules/thrs/lib/consts";
+import { QUERIES, ThrsModules } from "@/modules/thrs/lib/consts";
 import { type Component, computed, toRefs } from "vue";
 import ModuleControls from "../components/controls/ModuleControls.vue";
 import PumpControl from "../components/controls/PumpControl.vue";

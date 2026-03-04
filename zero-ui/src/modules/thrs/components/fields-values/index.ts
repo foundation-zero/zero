@@ -4,7 +4,11 @@ import { Ref } from "vue";
 
 export { default as FieldCurrent } from "./FieldCurrent.vue";
 export { default as FieldHistory } from "./FieldHistory.vue";
+export { default as FieldsFilter } from "./FieldsFilter.vue";
+
+export { default as FieldHeader } from "./FieldHeader.vue";
 export { default as FieldsValues } from "./FieldsValues.vue";
+export { default as FieldsValuesEmpty } from "./FieldsValuesEmpty.vue";
 export { default as FieldValues } from "./FieldValues.vue";
 
 export type FieldSeries = [field: string, series: SeriesChart<ChartDataType>[]];

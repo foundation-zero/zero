@@ -2,11 +2,11 @@
   setup
   lang="ts"
   generic="
-    K extends keyof THRSModules,
+    K extends keyof ThrsModules,
     Definitions extends SchemaDefinitions<SchemaDefinition<unknown>>
   "
 >
-import { THRSModules } from "@/modules/thrs/lib/consts";
+import { ThrsModules } from "@/modules/thrs/lib/consts";
 import { SchemaDefinition, SchemaDefinitions } from "@/modules/thrs/types";
 
 import { ChartDataType, SeriesChart } from "@/modules/common/types";
