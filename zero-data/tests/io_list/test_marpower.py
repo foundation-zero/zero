@@ -39,7 +39,7 @@ def test_marpower_pms_io_excel():
         [
             (
                 Path(__file__).parent
-                / "../../io_lists/52422003_3211_PMS IO-List R2.12-fixed2.xlsx"
+                / "../../io_lists/52422003_3211_PMS IO-List R2.13-fixed.xlsx"
             )
         ],
         "marpower",
