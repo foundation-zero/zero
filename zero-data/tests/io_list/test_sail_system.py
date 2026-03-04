@@ -54,6 +54,7 @@ def test_read_io_list(get_test_file_path):
 def test_no_hmi_node(get_test_file_path):
     test_path = get_test_file_path("no_hmi_node")
 
-    with pytest.raises(ValueError) as e:
+    with pytest.raises(
+        ValueError, match=f"No Application/HmiData node found in {test_path}"
+    ):
         SailSystemReader().read_io_list([test_path])
-    assert e.match(f"No Application/HmiData node found in {test_path}")
