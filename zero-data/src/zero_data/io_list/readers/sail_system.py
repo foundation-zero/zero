@@ -95,7 +95,7 @@ class SailSystemReader(ReaderBase):
         produces no usable fields, or would form a cycle.
         """
         if type_name in _visiting:
-            return None  # break cycle
+            raise NotImplementedError("Recursive structs are not supported")
         elem = type_map.get(type_name)
         if elem is None:
             return None
