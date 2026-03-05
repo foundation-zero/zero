@@ -1,2 +1,0 @@
-# Call validateValues to trigger warnings on validations
-{{- include "zero-domestic-control.validateValues" . -}}
