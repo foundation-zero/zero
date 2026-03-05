@@ -8,9 +8,9 @@ def read_io_list(paths: List[Path], type: Source) -> IOResult:
         from .readers.marpower import MarpowerReader
 
         return MarpowerReader().read_io_list(paths)
-    elif type == "vitters":
-        from .readers.vitters import VittersReader
+    elif type == "sail_system":
+        from .readers.sail_system import SailSystemReader
 
-        return VittersReader().read_io_list(paths)
+        return SailSystemReader().read_io_list(paths)
     else:
         raise ValueError(f"Unsupported IOSource type: {type}")
