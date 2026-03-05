@@ -26,13 +26,13 @@
       "description": "Hasura configuration",
       "properties": {
         "secret": {
-          "type": "string"
+          "type": ["string", "null"]
         },
         "existingSecret": {
-          "type": "string"
+          "type": ["string", "null"]
         },
         "existingSecretPasswordKey": {
-          "type": "string"
+          "type": ["string", "null"]
         }
       },
       "type": "object"
@@ -62,13 +62,13 @@
           "type": "string"
         },
         "token": {
-          "type": "string"
+          "type": ["string", "null"]
         },
         "existingSecret": {
-          "type": "string"
+          "type": ["string", "null"]
         },
         "existingSecretTokenKey": {
-          "type": "string"
+          "type": ["string", "null"]
         }
       },
       "type": "object"
