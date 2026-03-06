@@ -1,4 +1,5 @@
-import { Client, fetchExchange, OperationContext, OperationResult } from "@urql/vue";
+import { ENV } from "@/settings";
+import { Client, fetchExchange, OperationResult } from "@urql/vue";
 import { describe, expect, test } from "vitest";
 import { VARIABLE_ACTUALS, VARIABLE_DEFINITIONS } from "../graphql/queries/variables";
 import { AWA_VALUES, AWS_VALUES } from "../lib/consts";
@@ -11,12 +12,8 @@ import {
   QueryVariableReference,
 } from "../types/queries";
 
-export const LOADS_CONTEXT: Pick<OperationContext, "url"> = {
-  url: "http://localhost:5101/graphql",
-};
-
 const client = new Client({
-  url: LOADS_CONTEXT.url,
+  url: ENV.VITE_LOADS_API_SERVER,
   exchanges: [fetchExchange],
   fetchOptions: {},
 });

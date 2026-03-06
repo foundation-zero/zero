@@ -1,23 +1,14 @@
 import { keysOf } from "@/modules/common/lib/utils";
-import {
-  Client,
-  fetchExchange,
-  OperationContext,
-  OperationResult,
-  TypedDocumentNode,
-} from "@urql/vue";
+import { ENV } from "@/settings";
+import { Client, fetchExchange, OperationResult, TypedDocumentNode } from "@urql/vue";
 import { describe, expect, test } from "vitest";
 import { mutationWithoutValue, mutationWithValue } from "../graphql";
 import { DEFINITIONS, QUERY_ALL, THRS } from "../lib/consts";
 import { CONTROL_QUERY, ControlStatus, SimulationStatus, STATUS_QUERY } from "../stores/simulation";
 import { ParameterDefinitions } from "../types";
 
-export const LOADS_CONTEXT: Pick<OperationContext, "url"> = {
-  url: "http://localhost:5102/graphql",
-};
-
 const client = new Client({
-  url: LOADS_CONTEXT.url,
+  url: ENV.VITE_THRS_API_SERVER,
   exchanges: [fetchExchange],
   fetchOptions: {},
 });
