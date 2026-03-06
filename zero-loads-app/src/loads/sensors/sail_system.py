@@ -78,7 +78,7 @@ class PrimaryWinchPs(LoadsModel, ABC):
         Load,
         Field(validation_alias="ow_ActLoad_10kg"),
         Field(ge=0, le=15),
-        VariableMeta(name="load", scale_min=0, scale_max=15),
+        VariableMeta(display_name="primary ps", scale_min=0, scale_max=15),
     ]
 
 
@@ -88,7 +88,7 @@ class PrimaryWinchSb(LoadsModel, ABC):
         Load,
         Field(validation_alias="ow_ActLoad_10kg"),
         Field(ge=0, le=15),
-        VariableMeta(name="load", scale_min=0, scale_max=15),
+        VariableMeta(display_name="primary sb", scale_min=0, scale_max=15),
     ]
 
 
@@ -98,7 +98,7 @@ class AftWinchPs(LoadsModel, ABC):
         Load,
         Field(validation_alias="ow_ActLoad_10kg"),
         Field(ge=0, le=9),
-        VariableMeta(name="load", scale_min=0, scale_max=9),
+        VariableMeta(display_name="aft winch ps", scale_min=0, scale_max=9),
     ]
 
 
@@ -108,7 +108,7 @@ class AftWinchSb(LoadsModel, ABC):
         Load,
         Field(validation_alias="ow_ActLoad_10kg"),
         Field(ge=0, le=9),
-        VariableMeta(name="load", scale_min=0, scale_max=9),
+        VariableMeta(display_name="aft winch sb", scale_min=0, scale_max=9),
     ]
 
 
