@@ -1,9 +1,9 @@
 import logging
 from typing import Annotated
-from fastapi.middleware.cors import CORSMiddleware
 
 import strawberry
 from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
 from strawberry.fastapi import GraphQLRouter
 
 from loads.api.dependencies import get_context, lifespan
