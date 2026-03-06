@@ -25,7 +25,7 @@ export const VARIABLE_IDS = [
   "code-zero-tack-load",
   "code-zero-tack-position",
   "code-zero-tack-relative-position",
-  "combined-headstay-load",
+  "main-headstay-combined-load",
   "headsail-locks-lock-a2",
   "headsail-locks-lock-a3c0",
   "headsail-locks-lock-staysail",

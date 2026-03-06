@@ -39,11 +39,7 @@ Load: TypeAlias = Annotated[  # Needed to be able to override Field constraints 
     ),
     VariableMeta(name="load"),
 ]
-ConstrainedLoad: TypeAlias = Annotated[
-    Load,
-    Field(ge=0, le=20),
-    VariableMeta(scale_min=0, scale_max=20),
-]
+
 ReliefLoad: TypeAlias = Annotated[
     BaseReliefLoad,
     Field(ge=0, le=20, validation_alias="ow_RelfLoad_10kg"),
@@ -119,6 +115,14 @@ class AftWinchSb(LoadsModel, ABC):
 class BladeAdjuster(LoadsModel, ABC):
     TOPIC = "sail-systems/f0103_bldadjstr"
     load: Annotated[Load, VariableMeta(display_name="adjuster")]
+    relative_position: Annotated[
+        RelativePosition,
+        VariableMeta(
+            display_name="adjuster",
+            scale_min_label="out",
+            scale_max_label="in",
+        ),
+    ]
 
 
 class BladeCunningham(LoadsModel, ABC):
@@ -127,6 +131,14 @@ class BladeCunningham(LoadsModel, ABC):
         Load,
         VariableMeta(
             display_name="adjuster",
+            scale_min_label="out",
+            scale_max_label="in",
+        ),
+    ]
+    relative_position: Annotated[
+        RelativePosition,
+        VariableMeta(
+            display_name="cunningham",
             scale_min_label="out",
             scale_max_label="in",
         ),
@@ -153,32 +165,34 @@ class BladeSheetFeederSb(LoadsModel, ABC):
 
 class BladeTweakerPs(LoadsModel, ABC):
     TOPIC = "sail-systems/f0206_bldtwkrps"
-    load: Annotated[ConstrainedLoad, VariableMeta(display_name="tweaker ps")]
+    load: Annotated[
+        Load,
+        Field(ge=0, le=15),
+        VariableMeta(display_name="tweaker ps", scale_min=0, scale_max=15),
+    ]
     relative_position: Annotated[
         RelativePosition,
-        Field(ge=0, le=15),
         VariableMeta(
             display_name="tweaker ps",
             scale_min_label="out",
             scale_max_label="in",
-            scale_min=0,
-            scale_max=15,
         ),
     ]
 
 
 class BladeTweakerSb(LoadsModel, ABC):
     TOPIC = "sail-systems/f0207_bldtwkrsb"
-    load: Annotated[ConstrainedLoad, VariableMeta(display_name="tweaker sb")]
+    load: Annotated[
+        Load,
+        Field(ge=0, le=15),
+        VariableMeta(display_name="tweaker sb", scale_min=0, scale_max=15),
+    ]
     relative_position: Annotated[
         RelativePosition,
-        Field(ge=0, le=15),
         VariableMeta(
             display_name="tweaker sb",
             scale_min_label="out",
             scale_max_label="in",
-            scale_min=0,
-            scale_max=15,
         ),
     ]
 
@@ -198,7 +212,7 @@ class CodeZeroTack(LoadsModel, ABC):
 
 class A2Tack(LoadsModel, ABC):
     TOPIC = "sail-systems/a2-tack-placeholder"
-    load: Annotated[ConstrainedLoad, VariableMeta(display_name="tack")]
+    load: Annotated[Load, VariableMeta(display_name="tack")]
 
 
 class StormJibTack(LoadsModel, ABC):
@@ -318,7 +332,7 @@ class MainCunningham(LoadsModel, ABC):
 
 class MainHalyard(LoadsModel, ABC):
     TOPIC = "sail-systems/fe207_mnhlyrd"
-    load: ConstrainedLoad
+    load: Load
     lock_full: Annotated[
         Lock,
         Field(validation_alias="ox_IndctHlyrdLckFh_Ext"),
@@ -521,7 +535,7 @@ class MizzenCunningham(LoadsModel, ABC):
 
 class MizzenHalyard(LoadsModel, ABC):
     TOPIC = "sail-systems/fe404_mzznhlyrd"
-    load: ConstrainedLoad
+    load: Load
     lock_full: Annotated[
         Lock,
         Field(validation_alias="ox_IndctMzznHlyrdLckFh_Ext"),

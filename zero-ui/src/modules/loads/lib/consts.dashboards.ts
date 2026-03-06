@@ -29,7 +29,7 @@ export const MAIN_MAST_GROUP = group(
   "main-checkstay-sb-load",
   "main-checkstay-deflector-load",
   "main-checkstay-deflector-relative-position",
-  "combined-headstay-load",
+  "main-headstay-combined-load",
 );
 
 export const MAIN_SAIL_GROUP = group(
