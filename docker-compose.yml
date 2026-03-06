@@ -164,7 +164,8 @@ services:
         condition: service_healthy
 
   hass:
-    image: ghcr.io/home-assistant/home-assistant:stable
+    build:
+      context: ./hasura
     profiles:
       - zero
       - domestic
