@@ -133,6 +133,12 @@ AND NOT EXISTS (
     AND sail_sets_2.sail_id = 'code-zero'
 );
 
+
+-- Set warning_high to 90% of alarm_high for all load cases
+UPDATE loads.reference_values
+SET warning_high = alarm_high * 0.9
+WHERE alarm_high IS NOT NULL;
+
 -- Reference values for specific load cases
 
 INSERT INTO loads.reference_values (variable_id, load_case_id, alarm_low, warning_low, target, warning_high, alarm_high)
@@ -274,3 +280,4 @@ ON CONFLICT (load_case_id, variable_id) DO UPDATE
 -- FROM loads.load_cases
 -- JOIN loads.awa_ranges AS awa_range ON load_cases.awa_range_id = awa_range.id
 -- WHERE awa_range.id = 'upwind';
+
