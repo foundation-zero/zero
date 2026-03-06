@@ -15,11 +15,12 @@ FROM (VALUES
     ('main-checkstay-ps-load', NULL, 13.8),
     ('main-checkstay-sb-load', NULL, 13.8),
     ('main-checkstay-deflector-load', NULL, 6.9),
-    -- TODO: comb headstay load, fiber optics
+    ('main-headstay-combined-load', NULL, 60) -- 60 is a placeholder value
+    -- TODO: fiber optics
 
     -- MAIN SAIL
     ('main-sheet-load', NULL, 15.0),
-    ('main-vang-load', NULL, 61.0),
+    ('main-vang-load', -29.0, 61.0),
     ('main-cunningham-load', NULL, 8.6),
     ('main-outhaul-load', NULL, 22.0),
     ('main-preventer-load', NULL, 21.0),
@@ -157,7 +158,8 @@ FROM (VALUES
     ('main-checkstay-ps-load', 1.3),
     ('main-checkstay-sb-load', 1.3),
     ('main-checkstay-deflector-load', 0.2),
-    -- TODO: comb headstay load, fiber optics
+    ('main-headstay-combined-load', 44.2) -- placeholder value
+    -- TODO: fiber optics
 
     -- MAIN SAIL
     ('main-sheet-load', 9.6),
