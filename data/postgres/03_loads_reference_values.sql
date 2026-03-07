@@ -16,7 +16,10 @@ FROM (VALUES
     ('main-checkstay-sb-load', NULL, 13.8),
     ('main-checkstay-deflector-load', NULL, 6.9),
     ('main-headstay-combined-load', NULL, NULL),
-    -- TODO: fiber optics
+    ('fiber-optic-main-v1-ps', NULL, 77.5),
+    ('fiber-optic-main-v1-sb', NULL, 77.5),
+    ('fiber-optic-main-d1-ps', NULL, 38.8),
+    ('fiber-optic-main-d1-sb', NULL, 38.8),
 
     -- MAIN SAIL
     ('main-sheet-load', NULL, 15.0),
@@ -31,7 +34,11 @@ FROM (VALUES
     ('mizzen-checkstay-ps-load', NULL, 2.45),
     ('mizzen-checkstay-sb-load', NULL, 2.45),
     ('mizzen-checkstay-deflector-load', NULL, 0.75),
-    -- TODO: fiber optics, forestay
+    ('fiber-optic-mizzen-v1-ps', NULL, 43.1),
+    ('fiber-optic-mizzen-v1-sb', NULL, 43.1),
+    ('fiber-optic-mizzen-d1-ps', NULL, 22.8),
+    ('fiber-optic-mizzen-d1-sb', NULL, 22.8),
+    ('fiber-optic-mizzen-forestay', NULL, 28.5),
 
     -- MIZZEN SAIL
     ('mizzen-sheet-load', NULL, 8.0),
@@ -159,7 +166,10 @@ FROM (VALUES
     ('main-checkstay-sb-load', 1.3),
     ('main-checkstay-deflector-load', 0.2),
     ('main-headstay-combined-load', 44.2),
-    -- TODO: fiber optics
+    ('fiber-optic-main-v1-ps', 64.6),
+    ('fiber-optic-main-v1-sb', 64.6),
+    ('fiber-optic-main-d1-ps', 27.2),
+    ('fiber-optic-main-d1-sb', 27.2),
 
     -- MAIN SAIL
     ('main-sheet-load', 9.6),
@@ -176,7 +186,11 @@ FROM (VALUES
     ('mizzen-checkstay-ps-load', 0.3),
     ('mizzen-checkstay-sb-load', 0.3),
     ('mizzen-checkstay-deflector-load', 0.1),
-    -- TODO: fiber optics, forestay
+    ('fiber-optic-mizzen-v1-ps', 35.9),
+    ('fiber-optic-mizzen-v1-sb', 35.9),
+    ('fiber-optic-mizzen-d1-ps', 14.8),
+    ('fiber-optic-mizzen-d1-sb', 14.8),
+    ('fiber-optic-mizzen-forestay', 24.5),
 
     -- MIZZEN SAIL
     ('mizzen-sheet-load', 6.8),
