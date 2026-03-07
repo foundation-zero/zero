@@ -15,7 +15,7 @@ FROM (VALUES
     ('main-checkstay-ps-load', NULL, 13.8),
     ('main-checkstay-sb-load', NULL, 13.8),
     ('main-checkstay-deflector-load', NULL, 6.9),
-    ('main-headstay-combined-load', NULL, 60), -- 60 is a placeholder value
+    ('main-headstay-combined-load', NULL, NULL),
     -- TODO: fiber optics
 
     -- MAIN SAIL
@@ -158,7 +158,7 @@ FROM (VALUES
     ('main-checkstay-ps-load', 1.3),
     ('main-checkstay-sb-load', 1.3),
     ('main-checkstay-deflector-load', 0.2),
-    ('main-headstay-combined-load', 44.2), -- placeholder value
+    ('main-headstay-combined-load', 44.2),
     -- TODO: fiber optics
 
     -- MAIN SAIL
@@ -202,4 +202,3 @@ AND aws_range.aws_range = '[20,25)'::numrange
 AND sail_set.sails = ARRAY['blade', 'full-main', 'full-mizzen']
 ON CONFLICT (load_case_id, variable_id) DO UPDATE
     SET target = EXCLUDED.target;
-    

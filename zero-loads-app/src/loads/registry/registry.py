@@ -144,7 +144,7 @@ SAIL_SYSTEM_MODELS: list[type[LoadsModel]] = [
     sail_system.StaysailStayAdjuster,
 ]
 AT_MODELS = [at.ApparentWindSpeed, at.ApparentWindAngle]
-FIBER_OPTIC_MODELS = [fiber_optic.SideStayMeasurements]
+FIBER_OPTIC_MODELS = [fiber_optic.FiberOptic]
 
 _SAIL_SYSTEM_VARIABLES: dict[str, VariableDefinition] = {
     variable.id: variable

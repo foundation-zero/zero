@@ -1,3 +1,4 @@
+import asyncio
 from unittest.mock import Mock
 
 import pytest
@@ -6,7 +7,7 @@ from httpx import AsyncClient
 from loads.api.dependencies import get_messaging
 from loads.registry.registry import VARIABLES
 from loads.sensors.at import ApparentWindSpeed
-from loads.sensors.fiber_optic import SideStayMeasurements
+from loads.sensors.fiber_optic import FiberOptic
 from loads.sensors.sail_system import MainCheckstay, PrimaryWinchPs
 
 
@@ -273,6 +274,7 @@ async def test_sail_system_actual(async_client: AsyncClient, mqtt_client_send):
             "ox_LoadAlarm": false
         }""",
     )
+    await asyncio.sleep(0.1)
     response = await async_client.post(
         "/graphql",
         json={
@@ -319,6 +321,7 @@ async def test_alarms(async_client: AsyncClient, mqtt_client_send):
             "ox_LoadAlarm": true
         }""",
     )
+    await asyncio.sleep(0.1)
     response = await async_client.post(
         "/graphql",
         json={
@@ -377,6 +380,7 @@ async def test_active_alarms(async_client: AsyncClient, mqtt_client_send):
             "ox_LoadAlarm": true
         }""",
     )
+    await asyncio.sleep(0.1)
     response = await async_client.post(
         "/graphql",
         json={
@@ -413,6 +417,7 @@ async def test_at_sensors(async_client: AsyncClient, mqtt_client_send):
     variable_name = "aws"
     raw_value = "16.7"
     await mqtt_client_send.publish(ApparentWindSpeed.TOPIC, raw_value)
+    await asyncio.sleep(0.1)
     response = await async_client.post(
         "/graphql",
         json={
@@ -447,22 +452,26 @@ async def test_at_sensors(async_client: AsyncClient, mqtt_client_send):
 @pytest.mark.asyncio
 async def test_fiber_optics_actual(async_client: AsyncClient, mqtt_client_send):
     await mqtt_client_send.publish(
-        SideStayMeasurements.TOPIC,
+        FiberOptic.TOPIC,
         """{
-            "v1": 20,
-            "d1": 1,
-            "d2": 2,
-            "d3": 3,
-            "d4": 4,
-            "d5": 5
+            "main_v1_ps": 20,
+            "main_v1_sb": 1,
+            "main_d1_ps": 2,
+            "main_d1_sb": 3,
+            "mizzen_v1_ps": 4,
+            "mizzen_v1_sb": 5,
+            "mizzen_d1_ps": 6,
+            "mizzen_d1_sb": 7,
+            "mizzen_forestay": 8
         }""",
     )
+    await asyncio.sleep(0.1)
     response = await async_client.post(
         "/graphql",
         json={
             "query": """
             query {
-                variables(variables: ["side-stay-measurements-v1"]) {
+                variables(variables: ["fiber-optic-main-v1-ps"]) {
                     id
                     actual {
                         id
@@ -479,9 +488,9 @@ async def test_fiber_optics_actual(async_client: AsyncClient, mqtt_client_send):
         "data": {
             "variables": [
                 {
-                    "id": "side-stay-measurements-v1",
+                    "id": "fiber-optic-main-v1-ps",
                     "actual": {
-                        "id": "side-stay-measurements-v1",
+                        "id": "fiber-optic-main-v1-ps",
                         "value": 20,
                     },
                 },
