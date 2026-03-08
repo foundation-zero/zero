@@ -16,10 +16,11 @@ print(f"Postgres: Initializing tables to Postgres: {settings.pg_host}:{settings.
 
 
 async def setup():
-    async with await psycopg.AsyncConnection.connect(settings.pg_url) as conn:
+    async with await psycopg.AsyncConnection.connect(settings.pg_url, autocommit=True) as conn:
         async with conn.cursor() as cur:
             files = sorted(glob("./postgres/*.sql"))
             for file in files:
+                print(f"Postgres: Executing {file}")
                 with codecs.open(file, encoding="utf-8") as query:
                     await cur.execute(bytes(query.read(), "utf-8"))
 

@@ -42,17 +42,11 @@ async def test_declarative_base_matches_db(settings: Settings, sessionmanager):
 
 @pytest.mark.asyncio
 async def test_reference_values_variable_ids_in_registry(sessionmanager):
-    """Test that all variable_ids in reference_values table exist in VARIABLES registry."""
     async with sessionmanager.session() as session:
-        # Query all distinct variable_ids from the reference_values table
         query = select(ReferenceValues.variable_id).distinct()
         result = await session.execute(query)
         db_variable_ids = set(result.scalars().all())
-
-        # Get all variable IDs from the registry
         registry_variable_ids = set(VARIABLES.keys())
-
-        # Check that all variable_ids from the database are in the registry
         missing_variables = db_variable_ids - registry_variable_ids
         assert not missing_variables, (
             f"The following variable_ids from reference_values are not in VARIABLES registry: {missing_variables}"
