@@ -30,13 +30,13 @@ INSERT INTO loads.sails (id, abbreviation, position_id, name, variant_name) VALU
 WITH RECURSIVE indexed_positions AS (
     SELECT
         ROW_NUMBER() OVER (ORDER BY id) AS position_index,
-        id as position
+        id AS position
     FROM loads.sail_positions
 ),
 options AS (
     SELECT
         position,
-        id as sail
+        id AS sail
     FROM loads.sails
     JOIN indexed_positions
         ON loads.sails.position_id = indexed_positions.position
@@ -44,8 +44,8 @@ options AS (
     UNION ALL
 
     SELECT
-        id as position,
-        NULL::TEXT as sail
+        id AS position,
+        NULL::TEXT AS sail
     FROM loads.sail_positions
 ),
 combinations AS (
@@ -60,13 +60,13 @@ combinations AS (
     UNION ALL
 
     SELECT
-        next_position.position_index,
+        next_positions.position_index,
         combinations.sail_set || options.sail
     FROM combinations
-    JOIN indexed_positions AS next_position
-        ON next_position.position_index = combinations.position_index + 1
+    JOIN indexed_positions AS next_positions
+        ON next_positions.position_index = combinations.position_index + 1
     JOIN options
-        ON options.position = next_position.position
+        ON options.position = next_positions.position
 ),
 complete_combinations AS (
     SELECT
@@ -113,6 +113,6 @@ SELECT
     awa_range.id AS awa_range_id,
     aws_range.id AS aws_range_id,
     sail_set_ids.sail_set_id AS sail_set_id
-FROM (SELECT DISTINCT sail_set_id from loads.sail_sets) as sail_set_ids
+FROM (SELECT DISTINCT sail_set_id FROM loads.sail_sets) AS sail_set_ids
 CROSS JOIN loads.awa_ranges AS awa_range
 CROSS JOIN loads.aws_ranges AS aws_range;

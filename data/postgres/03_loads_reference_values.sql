@@ -59,7 +59,7 @@ FROM (VALUES
     ('staysail-sheet-feeder-ps-load', NULL, 15.0),
     ('staysail-sheet-feeder-sb-load', NULL, 15.0),
 
-    -- CODE 0
+    -- CODE ZERO
     ('code-zero-tack-load', NULL, 30.0),
     -- sheets loads on primary winches, defined sail-specific below
 
@@ -67,13 +67,13 @@ FROM (VALUES
     ('mizzen-headsail-tack-adjuster-load', NULL, 20.0),
     -- sheets loads on aft winches, defined sail-specific below
 
-    --STORM JIB
+    -- STORM JIB
     ('storm-jib-tack-load', NULL, 27.0)
     -- sheets loads on primary winches, defined sail-specific below
 ) AS v(variable_id, alarm_low, alarm_high)
 CROSS JOIN loads.load_cases;
 
--- Winch max loads for specific sails 
+-- Winch max loads for specific sails
 
 -- CODE ZERO
 INSERT INTO loads.reference_values (variable_id, load_case_id, alarm_low, warning_low, target, warning_high, alarm_high)
@@ -93,10 +93,9 @@ CROSS JOIN loads.load_cases
 JOIN loads.sail_sets AS sail_set ON load_cases.sail_set_id = sail_set.sail_set_id
 WHERE sail_set.sail_id = 'code-zero'
 -- exclude unrealistic case where code zero and storm jib are both up (they use the same winches)
-AND NOT EXISTS (
-    SELECT 1 FROM loads.sail_sets as sail_sets_2
-    WHERE sail_sets_2.sail_set_id = sail_set.sail_set_id
-    AND sail_sets_2.sail_id = 'storm-jib'
+AND sail_set.sail_set_id NOT IN (
+    SELECT sail_sets_2.sail_set_id FROM loads.sail_sets AS sail_sets_2
+    WHERE sail_sets_2.sail_id = 'storm-jib'
 );
 
 -- MIZZEN HEADSAIL
@@ -135,10 +134,9 @@ CROSS JOIN loads.load_cases
 JOIN loads.sail_sets AS sail_set ON load_cases.sail_set_id = sail_set.sail_set_id
 WHERE sail_set.sail_id = 'storm-jib'
 -- exclude unrealistic case where code zero and storm jib are both up (they use the same winches)
-AND NOT EXISTS (
-    SELECT 1 FROM loads.sail_sets as sail_sets_2
-    WHERE sail_sets_2.sail_set_id = sail_set.sail_set_id
-    AND sail_sets_2.sail_id = 'code-zero'
+AND sail_set.sail_set_id NOT IN (
+    SELECT sail_sets_2.sail_set_id FROM loads.sail_sets AS sail_sets_2
+    WHERE sail_sets_2.sail_id = 'code-zero'
 );
 
 
