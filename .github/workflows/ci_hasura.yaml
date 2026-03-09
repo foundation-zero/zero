@@ -14,7 +14,7 @@ on:
       - .github/workflows/ci_hasura.yaml
 
 env:
-  IMAGE: "europe-west1-docker.pkg.dev/common-449414/common/graphql-engine"
+  IMAGE: "europe-west1-docker.pkg.dev/common-449414/common/hasura-graphql-engine"
 
 jobs:
   docker-push:
