@@ -82,7 +82,7 @@ class SailSystemReader(ReaderBase):
 
     @staticmethod
     def _collect_fields(
-        struct_name: str, type_map: dict[str, ET.Element]
+        node_name: str, type_map: dict[str, ET.Element]
     ) -> list[IOValue]:
         """
         Collect all fields from a struct type, including inherited ones.
@@ -92,17 +92,25 @@ class SailSystemReader(ReaderBase):
         (with or without `inherited_from`) is included if its type resolves
         to a non-None SQL type.
         """
-        elem = type_map.get(struct_name)
+        elem = type_map.get(node_name)
         if elem is None or elem.tag != f"{_TAG}TypeUserDef":
             return []
-        return [
-            IOValue(field_elem.attrib["iecname"], sql)
-            for field_elem in elem.findall(f"{_TAG}UserDefElement")
-            if field_elem.get("iecname")
-            and (
-                sql := SailSystemReader._sql_type(field_elem.get("type", ""), type_map)
-            )
-        ]
+
+        if elem.get("typeclass") == "Userdef":
+            return [
+                IOValue(field_elem.attrib["iecname"], sql)
+                for field_elem in elem.findall(f"{_TAG}UserDefElement")
+                if field_elem.get("iecname")
+                and (
+                    sql := SailSystemReader._sql_type(
+                        field_elem.get("type", ""), type_map
+                    )
+                )
+            ]
+        if elem.get("typeclass") == "Enum":
+            sql_type = SailSystemReader._sql_type(node_name, type_map)
+            return [IOValue(elem.get("name", ""), sql_type)] if sql_type else []
+        return []
 
     @staticmethod
     def _sql_type(
@@ -119,14 +127,16 @@ class SailSystemReader(ReaderBase):
         produces no usable fields, or would form a cycle.
         """
         if type_name in _visiting:
-            raise NotImplementedError("Recursive structs are not supported")
+            raise NotImplementedError(
+                f"Got a recursive type definition on {type_name}, which is not supported"
+            )
         elem = type_map.get(type_name)
         if elem is None:
             return None
         if elem.tag == f"{_TAG}TypeSimple":
             typeclass = elem.get("typeclass", "")
             return _TYPECLASS_TO_SQL.get(typeclass)
-        if elem.tag == f"{_TAG}TypeUserDef":
+        if elem.tag == f"{_TAG}TypeUserDef" and elem.get("typeclass") == "Userdef":
             visiting = _visiting | {type_name}
             struct_fields = [
                 f"{field_elem.get('iecname')} {sql}"
@@ -139,4 +149,12 @@ class SailSystemReader(ReaderBase):
                 )
             ]
             return f"STRUCT<{', '.join(struct_fields)}>" if struct_fields else None
+        if elem.tag == f"{_TAG}TypeUserDef" and elem.get("typeclass") == "Enum":
+            base_type = type_map.get(elem.get("basetype", ""))
+            return (
+                _TYPECLASS_TO_SQL.get(base_type.get("typeclass", ""))
+                if base_type is not None
+                else None
+            )
+
         return None
