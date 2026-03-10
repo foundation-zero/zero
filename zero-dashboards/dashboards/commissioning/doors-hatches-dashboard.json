@@ -2058,8 +2058,8 @@
               "name": "rm35_wtd_seal_infl",
               "placement": {
                 "height": 25,
-                "left": 525,
-                "top": 10,
+                "left": 15,
+                "top": 102,
                 "width": 25
               },
               "type": "ellipse"
@@ -2096,9 +2096,10 @@
               "name": "rm35_wtd_seal_infl label",
               "placement": {
                 "height": 26,
-                "left": 560,
-                "top": 10,
-                "width": 492.25
+                "left": 50,
+                "rotation": 0,
+                "top": 102,
+                "width": 465
               },
               "type": "text"
             },
@@ -2138,8 +2139,8 @@
               "name": "rm35_wtd_door_open",
               "placement": {
                 "height": 25,
-                "left": 525,
-                "top": 40,
+                "left": 15,
+                "top": 132,
                 "width": 25
               },
               "type": "ellipse"
@@ -2176,9 +2177,10 @@
               "name": "rm35_wtd_door_open label",
               "placement": {
                 "height": 26,
-                "left": 560,
-                "top": 40,
-                "width": 537
+                "left": 50,
+                "rotation": 0,
+                "top": 132,
+                "width": 465
               },
               "type": "text"
             },
@@ -2218,8 +2220,8 @@
               "name": "rm35_wtd_pos_prog_switch",
               "placement": {
                 "height": 25,
-                "left": 525,
-                "top": 71,
+                "left": 15,
+                "top": 163,
                 "width": 25
               },
               "type": "ellipse"
@@ -2256,9 +2258,10 @@
               "name": "rm35_wtd_pos_prog_switch label",
               "placement": {
                 "height": 26,
-                "left": 560,
-                "top": 70,
-                "width": 492.25
+                "left": 50,
+                "rotation": 0,
+                "top": 162,
+                "width": 465
               },
               "type": "text"
             },
@@ -2295,7 +2298,7 @@
               "placement": {
                 "height": 25,
                 "left": 525,
-                "top": 102,
+                "top": 10,
                 "width": 25
               },
               "type": "ellipse"
@@ -2333,7 +2336,7 @@
               "placement": {
                 "height": 26,
                 "left": 560,
-                "top": 102,
+                "top": 10,
                 "width": 492.25
               },
               "type": "text"
@@ -2375,7 +2378,7 @@
               "placement": {
                 "height": 25,
                 "left": 525,
-                "top": 132,
+                "top": 40,
                 "width": 25
               },
               "type": "ellipse"
@@ -2414,7 +2417,7 @@
               "placement": {
                 "height": 26,
                 "left": 560,
-                "top": 132,
+                "top": 40,
                 "width": 492.25
               },
               "type": "text"
@@ -2456,7 +2459,7 @@
               "placement": {
                 "height": 25,
                 "left": 525,
-                "top": 162,
+                "top": 70,
                 "width": 25
               },
               "type": "ellipse"
@@ -2494,7 +2497,7 @@
               "placement": {
                 "height": 26,
                 "left": 560,
-                "top": 162,
+                "top": 70,
                 "width": 492.25
               },
               "type": "text"
@@ -2534,8 +2537,9 @@
               "name": "fire_door_galley_open",
               "placement": {
                 "height": 25,
-                "left": 15,
-                "top": 130,
+                "left": 525,
+                "rotation": 0,
+                "top": 133,
                 "width": 25
               },
               "type": "ellipse"
@@ -2572,8 +2576,8 @@
               "name": "fire_door_galley_open label",
               "placement": {
                 "height": 26,
-                "left": 50,
-                "top": 130,
+                "left": 560,
+                "top": 133,
                 "width": 412
               },
               "type": "text"
@@ -2613,8 +2617,8 @@
               "name": "crew_esc_hatch_open",
               "placement": {
                 "height": 25,
-                "left": 15,
-                "top": 160,
+                "left": 525,
+                "top": 163,
                 "width": 25
               },
               "type": "ellipse"
@@ -2651,8 +2655,88 @@
               "name": "crew_esc_hatch_open label",
               "placement": {
                 "height": 26,
-                "left": 50,
-                "top": 160,
+                "left": 560,
+                "top": 163,
+                "width": 412
+              },
+              "type": "text"
+            },
+            {
+              "background": {
+                "color": {
+                  "field": "fire_door_galley_keel_open",
+                  "fixed": "#D9D9D9"
+                },
+                "image": {
+                  "field": "sub_pump1_alarm",
+                  "mode": "fixed"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "center",
+                "color": {
+                  "fixed": "#000000"
+                },
+                "text": {
+                  "field": "sub_pump2_alarm",
+                  "mode": "fixed"
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "links": [],
+              "name": "fire_door_galley_keel_open",
+              "placement": {
+                "height": 25,
+                "left": 525,
+                "rotation": 0,
+                "top": 102,
+                "width": 25
+              },
+              "type": "ellipse"
+            },
+            {
+              "background": {
+                "color": {
+                  "fixed": "transparent"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "left",
+                "color": {
+                  "fixed": "rgb(204, 204, 220)"
+                },
+                "size": 16,
+                "text": {
+                  "field": "sub_pump1_alarm",
+                  "fixed": "Fire Door Galley Keel - Open",
+                  "mode": "fixed"
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "links": [],
+              "name": "fire_door_galley_keel_open label",
+              "placement": {
+                "height": 26,
+                "left": 560,
+                "top": 102,
                 "width": 412
               },
               "type": "text"
@@ -2686,7 +2770,7 @@
           "editorMode": "code",
           "format": "table",
           "rawQuery": true,
-          "rawSql": "SELECT\r\n  LAST_VALUE(time ORDER BY time) AS time,\r\n  LAST_VALUE((\"W_TIGHT_DOOR_RM19_SEALINFLATED\").value ORDER BY time)    AS rm19_wtd_seal_infl,\r\n  LAST_VALUE((\"W_TIGHT_DOOR_RM19_DOOR_OPEN\").value ORDER BY time)       AS rm19_wtd_open,\r\n  LAST_VALUE((\"W_TIGHT_DOOR_RM19_POS_PROG_SWITCH\").value ORDER BY time) AS rm19_wtd_pos_prog_switch,\r\n  LAST_VALUE((\"W_TIGHT_HATCH_RM35_SEALINFLATED\").value ORDER BY time)   AS rm35_wth_seal_infl,\r\n  LAST_VALUE((\"W_TIGHT_HATCH_RM35_DOOROPEN\").value ORDER BY time)       AS rm35_wth_open,\r\n  LAST_VALUE((\"W_TIGHT_HATCH_RM35_POSPROGSWITCH\").value ORDER BY time)  AS rm35_wth_pos_prog_switch,\r\n  LAST_VALUE((\"W_TIGHT_HATCH_RM36_SEALINFLATED\").value ORDER BY time)   AS rm36_wth_seal_infl,\r\n  LAST_VALUE((\"W_TIGHT_HATCH_RM36_DOOROPEN\").value ORDER BY time)       AS rm36_wth_open,\r\n  LAST_VALUE((\"W_TIGHT_HATCH_RM36_POSPROGSWITCH\").value ORDER BY time)  AS rm36_wth_pos_prog_switch,\r\n  LAST_VALUE((\"FIRE_SLIDE_DOOR_GALL_CREW_OPEN\").value ORDER BY time)    AS fire_door_galley_open,\r\n  LAST_VALUE((\"CREW_ESCAPE_HATCH_OPEN\").value ORDER BY time)            AS crew_esc_hatch_open\r\nFROM marpower.\"090000_doors_hatches\"",
+          "rawSql": "SELECT\r\n  LAST_VALUE(time ORDER BY time) AS time,\r\n  LAST_VALUE((\"W_TIGHT_DOOR_RM19_SEALINFLATED\").value ORDER BY time)    AS rm19_wtd_seal_infl,\r\n  LAST_VALUE((\"W_TIGHT_DOOR_RM19_DOOR_OPEN\").value ORDER BY time)       AS rm19_wtd_open,\r\n  LAST_VALUE((\"W_TIGHT_DOOR_RM19_POS_PROG_SWITCH\").value ORDER BY time) AS rm19_wtd_pos_prog_switch,\r\n  LAST_VALUE((\"W_TIGHT_HATCH_RM35_SEALINFLATED\").value ORDER BY time)   AS rm35_wth_seal_infl,\r\n  LAST_VALUE((\"W_TIGHT_HATCH_RM35_DOOROPEN\").value ORDER BY time)       AS rm35_wth_open,\r\n  LAST_VALUE((\"W_TIGHT_HATCH_RM35_POSPROGSWITCH\").value ORDER BY time)  AS rm35_wth_pos_prog_switch,\r\n  LAST_VALUE((\"W_TIGHT_HATCH_RM36_SEALINFLATED\").value ORDER BY time)   AS rm36_wth_seal_infl,\r\n  LAST_VALUE((\"W_TIGHT_HATCH_RM36_DOOROPEN\").value ORDER BY time)       AS rm36_wth_open,\r\n  LAST_VALUE((\"W_TIGHT_HATCH_RM36_POSPROGSWITCH\").value ORDER BY time)  AS rm36_wth_pos_prog_switch,\r\n  LAST_VALUE((\"FIRE_SLIDE_DOOR_GALL_CREW_OPEN\").value ORDER BY time)    AS fire_door_galley_open,\r\n  LAST_VALUE((\"FIRE_DOOR_GALLEY_KEEL_OPEN\").value ORDER BY time)        AS fire_door_galley_keel_open,\r\n  LAST_VALUE((\"CREW_ESCAPE_HATCH_OPEN\").value ORDER BY time)            AS crew_esc_hatch_open\r\nFROM marpower.\"090000_doors_hatches\"",
           "refId": "A",
           "sql": {
             "columns": [
