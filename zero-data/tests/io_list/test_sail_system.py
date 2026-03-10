@@ -54,3 +54,21 @@ def test_no_hmi_node():
         ValueError, match=f"No Application/HmiData node found in {test_path}"
     ):
         SailSystemReader().read_io_list([test_path])
+
+
+def test_sail_system_config():
+    test_path = (
+        Path(__file__).parent / "../../io_lists/3094_SailPLC.PLC_MAIN.Application.xml"
+    )
+    try:
+        result = SailSystemReader().read_io_list([test_path])
+        enum_topic = next(
+            topic
+            for topic in result.topics
+            if topic.topic == "sail-systems/smaintenancefunction"
+        )
+        assert enum_topic.fields == [
+            IOValue(name="T_eMaintenanceFunction", data_type="INTEGER")
+        ]
+    except Exception as e:
+        pytest.fail(f"Reading PLC config should work, but got {e}")
