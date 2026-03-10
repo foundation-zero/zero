@@ -45,6 +45,31 @@ jobs:
         working-directory: zero-ui
         run: pnpm test:unit
 
+      - name: Create .env file from secret in root for services
+        run: |
+          echo "${{ secrets.ENV }}" > .env
+
+      - name: Create .env file from secret in Loads project
+        run: |
+          echo "${{ secrets.ENV_LOADS_APP }}" > .env
+        working-directory: zero-loads-app
+
+      - name: Create .env file from secret in THRS project
+        run: |
+          echo "${{ secrets.ENV_THRS }}" > .env
+        working-directory: zero-thrs-control
+
+      - name: Run services
+        run: docker compose --profile loads --profile thrs up --quiet-pull --wait
+
+      - name: Waiting for services to be ready
+        run: sleep 30s
+        shell: bash
+
+      - name: Run api integration tests
+        working-directory: zero-ui
+        run: pnpm test:api
+
       - name: Build documentation
         working-directory: zero-ui
         run: pnpm docs:build

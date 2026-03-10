@@ -12,23 +12,25 @@ import { computed, ref, toRefs } from "vue";
 import { SIMULATION_TYPES } from "../lib/consts.types";
 import { useThrsHistory } from "./history";
 
-type SimulationStatus = {
+export type SimulationStatus = {
   simulation: {
     status: "running" | "available" | "stepping";
     time: number;
   };
 };
 
-type ControlStatus = {
+export type ControlStatus = {
   modules: Record<
     string,
     {
-      automatic: boolean;
+      controlMode: {
+        automatic: boolean;
+      };
     }
   >;
 };
 
-const STATUS_QUERY = gql`
+export const STATUS_QUERY = gql`
   query SimulationStatus {
     simulation {
       status
@@ -37,20 +39,28 @@ const STATUS_QUERY = gql`
   }
 `;
 
-const CONTROL_QUERY = gql`
+export const CONTROL_QUERY = gql`
   query ControlStatus {
     modules {
       thrusters {
-        automatic
+        controlMode {
+          automatic
+        }
       }
       pvt {
-        automatic
+        controlMode {
+          automatic
+        }
       }
       pcm {
-        automatic
+        controlMode {
+          automatic
+        }
       }
       consumers {
-        automatic
+        controlMode {
+          automatic
+        }
       }
     }
   }
