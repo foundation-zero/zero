@@ -10,10 +10,7 @@ const props = defineProps<{
 <template>
   <div
     :class="
-      cn(
-        'text-disabled-foreground -mt-2 flex max-w-full items-center gap-2.5 pb-1 font-medium',
-        props.class,
-      )
+      cn('text-foreground -mt-2 flex max-w-full items-center gap-2.5 pb-1 font-medium', props.class)
     "
   >
     <span

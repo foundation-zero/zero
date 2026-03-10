@@ -18,6 +18,10 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 - [Input](/components/input) - Text input field for capturing user input
 - [Select](/components/select) - Dropdown selection component with enhanced functionality
 
+### Domain Components
+
+- [Loads Card](/components/loads-card) - Visual gauge for displaying load values with target and threshold indicators
+
 ## Quick Preview
 
 Here's a quick preview of our components:

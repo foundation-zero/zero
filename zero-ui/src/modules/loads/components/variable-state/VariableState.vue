@@ -2,10 +2,11 @@
 import { cn } from "@/modules/common/lib/utils";
 import { reactiveOmit } from "@vueuse/core";
 import { PrimitiveProps } from "reka-ui";
-import { computed, HTMLAttributes, provide, toRef } from "vue";
+import { HTMLAttributes, provide, toRef } from "vue";
 import { VariableStateVariants, variableStateVariants } from ".";
-import { formatLoad } from "../../lib/utils";
+import { formatLoadFn } from "../../lib/utils";
 import { VariableState, VariableUnit } from "../../types";
+import AnimatedNumber from "../animated-number/AnimatedNumber.vue";
 
 type VariableStateProps = PrimitiveProps & {
   value?: number | null;
@@ -17,7 +18,6 @@ type VariableStateProps = PrimitiveProps & {
 
 const props = defineProps<VariableStateProps>();
 const delegatedProps = reactiveOmit(props, "class");
-const formattedLoad = computed(() => formatLoad(props.value, props.type));
 const type = toRef(props, "type");
 
 provide("load-type", type);
@@ -30,7 +30,10 @@ provide("load-type", type);
     v-bind="delegatedProps"
   >
     <span data-slot="load-value">
-      {{ formattedLoad }}
+      <animated-number
+        :to="props.value!"
+        :format="formatLoadFn(props.type)"
+      />
     </span>
     <slot />
   </span>

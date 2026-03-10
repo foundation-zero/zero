@@ -5,7 +5,7 @@ import { ReferenceThresholds, VariableUnit } from "../../types";
 import { VariableCard } from "../variable-card";
 
 const props = defineProps<{
-  value: number;
+  value?: number;
   thresholds?: Partial<ReferenceThresholds>;
   class?: HTMLAttributes["class"];
 }>();

@@ -35,15 +35,14 @@ nav::before {
   z-index: -1;
   opacity: 0.9;
 
+  background:
+    radial-gradient(
+      43.74% 35.44% at 50.03% 36.53%,
+      var(----general---brand-dull, rgba(86, 133, 169, 0.2)) 0%,
+      rgba(153, 182, 204, 0) 100%
+    ),
+    var(----general---background-muted, #121619);
+
   // This gradient was provided by the design team (@Wadim)
-  &:is(.dark > *) {
-    background:
-      radial-gradient(
-        43.74% 35.44% at 50.03% 36.53%,
-        var(----general---brand-dull, rgba(86, 133, 169, 0.2)) 0%,
-        rgba(153, 182, 204, 0) 100%
-      ),
-      var(----general---background-muted, #121619);
-  }
 }
 </style>

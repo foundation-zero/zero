@@ -12,7 +12,7 @@ const props = defineProps<{
     data-slot="mast-lock-label"
     :class="
       cn(
-        'text-disabled-foreground max-w-full overflow-hidden text-base font-medium text-ellipsis whitespace-nowrap',
+        'text-disabled-foreground max-w-full overflow-hidden text-base font-medium text-ellipsis whitespace-nowrap transition-colors duration-250',
         props.class,
       )
     "

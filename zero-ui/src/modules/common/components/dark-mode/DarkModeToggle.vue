@@ -1,13 +1,12 @@
 <script setup lang="ts">
 import { Button } from "@/components/ui/button";
-import { BasicColorSchema, useColorMode, useLocalStorage } from "@vueuse/core";
+import { BasicColorSchema } from "@vueuse/core";
 import { Moon, Sun, SunMoon } from "lucide-vue-next";
-import { FunctionalComponent } from "vue";
+import { FunctionalComponent, toRefs } from "vue";
+import { useUIStore } from "../../stores/ui";
 
-const darkMode = useLocalStorage<BasicColorSchema>("dark-mode", "auto");
-const colorMode = useColorMode({
-  initialValue: darkMode.value,
-});
+const { darkMode } = toRefs(useUIStore());
+const { setColorMode } = useUIStore();
 
 const MODES = ["light", "auto", "dark"] as const;
 
@@ -20,8 +19,7 @@ const ICONS: Record<BasicColorSchema, FunctionalComponent> = {
 const cycleTheme = () => {
   const currentIndex = MODES.indexOf(darkMode.value);
   const nextMode = MODES[(currentIndex + 1) % MODES.length];
-  colorMode.value = nextMode;
-  darkMode.value = nextMode;
+  setColorMode(nextMode);
 };
 </script>
 

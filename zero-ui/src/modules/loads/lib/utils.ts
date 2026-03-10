@@ -12,6 +12,17 @@ export const formatLoad = (value: number | undefined | null, type: VariableUnit)
   return formatFixed(1, value);
 };
 
+export const formatLoadFn = (type: VariableUnit) => (value: number | undefined | null) => {
+  if (value == undefined) return "-";
+
+  if (type === VariableUnit.Ratio) {
+    // Values from backend are ratios
+    return formatInt(value * 100);
+  }
+
+  return formatFixed(1, value);
+};
+
 export const getLoadState = (
   value?: number | null,
   thresholds?: Partial<ReferenceThresholds>,
