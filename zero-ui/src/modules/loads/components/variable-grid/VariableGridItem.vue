@@ -2,7 +2,8 @@
 import { computed } from "vue";
 import { getContext } from ".";
 import { useVariablesStore } from "../../stores/variables";
-import { VariableUnit } from "../../types";
+import { Variable, VariableUnit } from "../../types";
+import LoadsCard from "../loads-card/LoadsCard.vue";
 import MastLock from "../mast-lock/MastLock.vue";
 import {
   PositionCard,
@@ -20,21 +21,20 @@ import {
 } from "../variable-card";
 import VariableCardTitle from "../variable-card/VariableCardTitle.vue";
 
-const props = defineProps<{ id: string }>();
+const props = defineProps<{ id: string; variable: Variable }>();
 
 const { type } = getContext();
 const { getVariableById } = useVariablesStore();
 
-const variable = computed(() => getVariableById(props.id).value);
-
 const isNumerical = computed(
   () =>
     type.value === "numerical" ||
-    variable.value?.reference?.target === undefined ||
-    variable.value?.variable?.unit === VariableUnit.Tonne,
+    props.variable.variable.scaleMin === undefined ||
+    props.variable.variable.scaleMax === undefined,
 );
 
-const isMastLock = computed(() => variable.value?.variable?.unit === VariableUnit.Bool);
+const isMastLock = computed(() => props.variable.variable?.unit === VariableUnit.Bool);
+const isLoad = computed(() => props.variable.variable?.unit === VariableUnit.Tonne);
 const overhoist = computed(() => {
   if (isMastLock.value) {
     return getVariableById<boolean>(props.id.replace("lock", "overhoist")).value;
@@ -45,40 +45,47 @@ const overhoist = computed(() => {
 </script>
 
 <template>
-  <template v-if="variable">
-    <MastLock
-      v-if="isMastLock"
-      class="col-span-1 w-full max-w-full"
-      :locked="!!variable.actual?.value"
-      :overhoist="!!overhoist?.actual?.value"
-    >
-      {{ variable?.variable?.name }}
-    </MastLock>
-    <VariableCard
-      v-else-if="isNumerical"
-      :thresholds="variable?.reference"
-      :value="<number>variable.actual?.value"
-      :type="variable?.variable?.unit"
-      class="col-span-1 w-full max-w-full"
-    >
-      <VariableCardReferenceTarget>
-        <ReferenceBoxLine />
-      </VariableCardReferenceTarget>
+  <MastLock
+    v-if="isMastLock"
+    class="col-span-2 w-full max-w-full"
+    :locked="!!variable.actual?.value"
+    :overhoist="!!overhoist?.actual?.value"
+  >
+    {{ variable?.variable?.name }}
+  </MastLock>
+  <VariableCard
+    v-else-if="isNumerical"
+    :thresholds="variable?.reference"
+    :value="<number>variable.actual?.value"
+    :type="variable?.variable?.unit"
+    class="col-span-1 w-full max-w-full"
+  >
+    <VariableCardReferenceTarget>
+      <ReferenceBoxLine />
+    </VariableCardReferenceTarget>
 
-      <VariableCardValue />
-      <VariableCardTitle>{{ variable?.variable?.name }}</VariableCardTitle>
-      <VariableCardReferenceThresholds />
-    </VariableCard>
-    <PositionCard
-      v-else
-      class="col-span-2 w-full"
-      :thresholds="variable?.reference"
-      :value="<number>variable.actual?.value"
-    >
-      <PositionCardReferenceTarget />
-      <PositionCardSlider type="asymmetric" />
-      <PositionCardValue />
-      <PositionCardTitle>{{ variable?.variable?.name }}</PositionCardTitle>
-    </PositionCard>
-  </template>
+    <VariableCardValue />
+    <VariableCardTitle>{{ variable?.variable?.name }}</VariableCardTitle>
+    <VariableCardReferenceThresholds />
+  </VariableCard>
+  <LoadsCard
+    v-else-if="isLoad"
+    :thresholds="variable?.reference"
+    :value="<number>variable.actual?.value"
+    :scale="[variable.variable.scaleMin, variable.variable.scaleMax]"
+    class="col-span-2 w-full max-w-full"
+  >
+    <VariableCardTitle class="-mt-2">{{ variable?.variable?.name }}</VariableCardTitle>
+  </LoadsCard>
+  <PositionCard
+    v-else
+    class="col-span-2 w-full"
+    :thresholds="variable?.reference"
+    :value="<number>variable.actual?.value"
+  >
+    <PositionCardReferenceTarget />
+    <PositionCardSlider :type="variable.variable.scaleMin < 0 ? 'symmetric' : 'asymmetric'" />
+    <PositionCardValue />
+    <PositionCardTitle>{{ variable?.variable?.name }}</PositionCardTitle>
+  </PositionCard>
 </template>

@@ -14,10 +14,10 @@ import { useI18n } from "vue-i18n";
 import { useAlarmsStore } from "../stores/alarms";
 import { useVariablesStore } from "../stores/variables";
 
+const { selectedDashboard, selectedCardType } = toRefs(useVariablesStore());
 const { startPolling: startPollingVariables, stopPolling: stopPollingVariables } =
   useVariablesStore();
 const { startPolling: startPollingAlarms, stopPolling: stopPollingAlarms } = useAlarmsStore();
-const { selectedDashboard } = toRefs(useVariablesStore());
 const { status: alarmsStatus, activeAlarms } = toRefs(useAlarmsStore());
 const { t } = useI18n();
 
@@ -60,7 +60,7 @@ onUnmounted(stopPollingAlarms);
         </Popover>
       </Badge>
     </div>
-    <VariableGrid type="graphical">
+    <VariableGrid :type="selectedCardType">
       <VariableGridGroup
         v-for="group in selectedDashboard.groups"
         :key="group.name"
@@ -69,11 +69,13 @@ onUnmounted(stopPollingAlarms);
         <VariableGridHeader>
           {{ group.name }}
         </VariableGridHeader>
-        <VariableGridItem
-          v-for="variableId in group.variables"
-          :id="variableId"
-          :key="variableId"
-        />
+
+        <template #item="{ variable }">
+          <VariableGridItem
+            :id="variable.id"
+            :variable="variable"
+          />
+        </template>
       </VariableGridGroup>
     </VariableGrid>
   </article>

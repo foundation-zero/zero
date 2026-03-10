@@ -1,9 +1,9 @@
-<script setup lang="ts">
+<script setup lang="ts" generic="T">
 import type { toggleVariants } from "@/components/ui/toggle";
 import { cn } from "@common/lib/utils";
 import { reactiveOmit } from "@vueuse/core";
 import type { VariantProps } from "class-variance-authority";
-import type { ToggleGroupRootEmits, ToggleGroupRootProps } from "reka-ui";
+import type { ToggleGroupRootProps } from "reka-ui";
 import { ToggleGroupRoot, useForwardPropsEmits } from "reka-ui";
 import type { HTMLAttributes } from "vue";
 import { provide } from "vue";
@@ -11,13 +11,15 @@ import { provide } from "vue";
 type ToggleGroupVariants = VariantProps<typeof toggleVariants>;
 
 const props = defineProps<
-  ToggleGroupRootProps & {
+  ToggleGroupRootProps<T> & {
     class?: HTMLAttributes["class"];
     variant?: ToggleGroupVariants["variant"];
     size?: ToggleGroupVariants["size"];
   }
 >();
-const emits = defineEmits<ToggleGroupRootEmits>();
+const emits = defineEmits<{
+  "update:modelValue": [payload: T];
+}>();
 
 provide("toggleGroup", {
   variant: props.variant,

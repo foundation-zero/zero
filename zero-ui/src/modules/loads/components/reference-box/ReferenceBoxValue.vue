@@ -1,16 +1,15 @@
 <script setup lang="ts">
 import { cn } from "@/modules/common/lib/utils";
-import { computed, HTMLAttributes } from "vue";
-import { formatLoad } from "../../lib/utils";
+import { HTMLAttributes } from "vue";
+import { formatLoadFn } from "../../lib/utils";
 import { VariableUnit } from "../../types";
+import AnimatedNumber from "../animated-number/AnimatedNumber.vue";
 
 const props = defineProps<{
   class?: HTMLAttributes["class"];
   type: VariableUnit;
   value: number | undefined;
 }>();
-
-const formattedTarget = computed(() => formatLoad(props.value, props.type));
 </script>
 
 <template>
@@ -23,6 +22,9 @@ const formattedTarget = computed(() => formatLoad(props.value, props.type));
       )
     "
   >
-    {{ formattedTarget }}
+    <AnimatedNumber
+      :to="props.value"
+      :format="formatLoadFn(props.type)"
+    />
   </div>
 </template>

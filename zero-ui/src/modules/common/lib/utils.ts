@@ -497,6 +497,13 @@ export const isHistoryOf = <T extends Record<string, unknown>>(
 
 export const cast = <T>(input: unknown): T => input as T;
 
+export const mmath = {
+  avg: (...numbers: number[]) => numbers.reduce((sum, num) => sum + num, 0) / numbers.length,
+  normalizeDegrees: (angle: number) => ((angle % 360) + 360) % 360,
+};
+
+export const generateRandomId = (prefix: string = "") =>
+  `${prefix}-${Math.random().toString(36).substring(2, 9)}`;
 export const extractProperty =
   <K extends string | number | symbol>(property: K) =>
   <V>(item: { [key in K]: V }): V =>

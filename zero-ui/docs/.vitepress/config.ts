@@ -39,6 +39,7 @@ export default defineConfig({
           { text: "Info Tooltip", link: "/components/info-tooltip" },
           { text: "Input", link: "/components/input" },
           { text: "Labeled Input", link: "/components/labeled-input" },
+          { text: "Loads Card", link: "/components/loads-card" },
           { text: "Variable Card", link: "/components/variable-card" },
           { text: "Mast Lock", link: "/components/mast-lock" },
           { text: "Popover", link: "/components/popover" },
@@ -65,7 +66,7 @@ export default defineConfig({
       __VUE_PROD_DEVTOOLS__: "false",
     },
     ssr: {
-      noExternal: ["vue-i18n"],
+      noExternal: ["vue-i18n", "lodash"],
     },
   },
 });

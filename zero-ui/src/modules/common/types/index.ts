@@ -1,3 +1,5 @@
+import { Ref } from "vue";
+
 export type Stamped<T> = { value: T; timestamp: Date };
 export type Unstamp<T> = T extends Stamped<infer U> ? U : never;
 export type History<T> =
@@ -39,4 +41,7 @@ export type MapEntries<T> =
       : [key: K, value: V]
     : never;
 
+export type Refs<T extends object> = {
+  [K in keyof T]: Ref<T[K]>;
+};
 export type Entries<K, V> = [key: K, value: V][];
