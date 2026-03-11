@@ -1,7 +1,10 @@
 import { Breakpoints } from "@/modules/domestic/types";
 import {
+  BasicColorSchema,
   breakpointsTailwind,
   useBreakpoints,
+  useColorMode,
+  useLocalStorage,
   useScreenOrientation,
   useScroll,
   useWindowSize,
@@ -15,6 +18,11 @@ const twBreakpoints = useBreakpoints(breakpointsTailwind);
 const orientation = useScreenOrientation();
 
 export const useUIStore = defineStore("UI", () => {
+  const darkMode = useLocalStorage<BasicColorSchema>("dark-mode", "auto");
+  const colorMode = useColorMode({
+    initialValue: darkMode.value,
+  });
+
   const auth = useAuthStore();
   const isTouchDevice = "ontouchstart" in document.documentElement;
   const scroll = useScroll(window, { behavior: "smooth" });
@@ -39,9 +47,23 @@ export const useUIStore = defineStore("UI", () => {
 
   const showSideNav = ref((!isTouchDevice || breakpoints.value.tablet) && auth.isAdmin);
 
+  // Only show the sidenav for admins, and hide it on mobile devices
+  watch(
+    () => auth.isAdmin,
+    (isAdmin) => {
+      showSideNav.value = isAdmin && (!isTouchDevice || breakpoints.value.tablet);
+    },
+    { immediate: true },
+  );
+
   const setScrollPosition = (key: string, value: number) => (scrollPositions.value[key] = value);
   const toggleNav = (val = !showSideNav.value) => {
     showSideNav.value = val || !isTouchDevice;
+  };
+
+  const setColorMode = (mode: BasicColorSchema) => {
+    darkMode.value = mode;
+    colorMode.value = mode;
   };
 
   watch(
@@ -63,5 +85,8 @@ export const useUIStore = defineStore("UI", () => {
     showSideNav,
     toggleNav,
     setScrollPosition,
+    darkMode,
+    colorMode,
+    setColorMode,
   };
 });

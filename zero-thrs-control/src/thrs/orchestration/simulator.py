@@ -5,10 +5,16 @@ from datetime import datetime, timedelta
 from thrs.classes.control import Control
 from thrs.classes.executor import Executor
 from thrs.input_output.alarms import BaseAlarms
-from thrs.input_output.base import SimulationInputs, SimulationValues, ThrsValues
+from thrs.input_output.base import (
+    CombinedValues,
+    SimulationInputs,
+    SimulationValues,
+    ThrsValues,
+)
 from thrs.orchestration.collector import PolarsCollector
 from thrs.orchestration.executor import SimulationExecutor
 from thrs.orchestration.cycler import Cycler
+from thrs.orchestration.module import CombinedModule
 from thrs.simulation.fmu import Fmu
 from thrs.simulation.io_mapping import ThrsModelIoMapping
 
@@ -25,7 +31,6 @@ class SimulatorModel:
     simulation_inputs: SimulationInputs
     start_time: datetime = datetime.now()
     tick_duration: timedelta = timedelta(seconds=1)
-    solver_step_size: timedelta = timedelta(seconds=0.001)
 
     @contextmanager
     def executor(self):
@@ -45,6 +50,34 @@ class SimulatorModel:
         return self.control_cls(self.control_parameters, executor.time)
 
 
+@dataclass
+class ModuleSimulatorModel:
+    fmu_path: str
+    module: CombinedModule
+    control_parameters: CombinedValues
+    simulation_inputs: SimulationInputs
+    start_time: datetime = datetime.now()
+    tick_duration: timedelta = timedelta(seconds=1)
+
+    @contextmanager
+    def executor(self):
+        with Fmu(self.fmu_path) as fmu:
+            yield SimulationExecutor(
+                self.module.io_mapping(),
+                fmu,
+                self.simulation_inputs,
+                self.start_time,
+                self.tick_duration,
+            )
+
+    def control(self, executor: Executor):
+        return self.module.control(self.control_parameters, executor.time)
+
+    @property
+    def alarms(self):
+        return self.module.alarms()
+
+
 class Simulator:
     def __init__(self, executor: Executor, control: Control, alarms: BaseAlarms):
         self._executor = executor
@@ -55,10 +88,12 @@ class Simulator:
         )
 
     @staticmethod
-    def from_model(model: SimulatorModel, executor: Executor) -> "Simulator":
+    def from_model(
+        model: SimulatorModel | ModuleSimulatorModel, executor: Executor
+    ) -> "Simulator":
         return Simulator(
             executor,
-            model.control_cls(model.control_parameters, executor.time),
+            model.control(executor),
             model.alarms,
         )
 

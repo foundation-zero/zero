@@ -2,12 +2,12 @@
   setup
   lang="ts"
   generic="
-    K extends keyof THRSModules,
+    K extends keyof ThrsModules,
     Definitions extends ParameterDefinitions,
     Values extends ExtractAllValues<Definitions>
   "
 >
-import { QUERIES, THRSModules } from "@/modules/thrs/lib/consts";
+import { QUERIES, ThrsModules } from "@/modules/thrs/lib/consts";
 import { ExtractAllValues, ParameterDefinitions, ParametersType } from "@/modules/thrs/types";
 import { type Component, computed, toRefs } from "vue";
 import { useThrsHistory } from "../stores/history";

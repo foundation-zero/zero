@@ -175,16 +175,10 @@ export type ModuleDefinition<
   TSensors extends SensorDefinitions = SensorDefinitions,
   TControls extends ControlDefinitions = ControlDefinitions,
   TParameters extends ParameterDefinitions = ParameterDefinitions,
-  TSimulationInputs extends SimulationDefinitions = SimulationDefinitions,
-  TSimulationOutputs extends SimulationDefinitions = SimulationDefinitions,
 > = {
   sensorValues: TSensors;
   controlValues: TControls;
   parameters: TParameters;
-  simulation: {
-    inputs: TSimulationInputs;
-    outputs: TSimulationOutputs;
-  };
 };
 
 export type SensorDefinition<T extends SensorComponentType = SensorComponentType> =

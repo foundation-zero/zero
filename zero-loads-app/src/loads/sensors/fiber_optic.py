@@ -1,13 +1,35 @@
+from typing import Annotated
+
 from .base import LoadsModel
-from .units import Load
+from .units import Load, VariableMeta
 
 
-class SideStayMeasurements(LoadsModel):
-    TOPIC = "fiber-optic/side-stay-measurements"
-
-    v1: Load
-    d1: Load
-    d2: Load
-    d3: Load
-    d4: Load
-    d5: Load
+class FiberOptic(LoadsModel):
+    TOPIC = "fiber-optic/placeholder"
+    main_v1_sb: Annotated[
+        Load, VariableMeta(display_name="V1 sb", scale_min=0, scale_max=85)
+    ]
+    main_v1_ps: Annotated[
+        Load, VariableMeta(display_name="V1 ps", scale_min=0, scale_max=85)
+    ]
+    main_d1_sb: Annotated[
+        Load, VariableMeta(display_name="D1 sb", scale_min=0, scale_max=43)
+    ]
+    main_d1_ps: Annotated[
+        Load, VariableMeta(display_name="D1 ps", scale_min=0, scale_max=43)
+    ]
+    mizzen_v1_sb: Annotated[
+        Load, VariableMeta(display_name="V1 sb", scale_min=0, scale_max=47)
+    ]
+    mizzen_v1_ps: Annotated[
+        Load, VariableMeta(display_name="V1 ps", scale_min=0, scale_max=47)
+    ]
+    mizzen_d1_sb: Annotated[
+        Load, VariableMeta(display_name="D1 sb", scale_min=0, scale_max=25)
+    ]
+    mizzen_d1_ps: Annotated[
+        Load, VariableMeta(display_name="D1 ps", scale_min=0, scale_max=25)
+    ]
+    mizzen_forestay: Annotated[
+        Load, VariableMeta(display_name="forestay", scale_min=0, scale_max=31)
+    ]

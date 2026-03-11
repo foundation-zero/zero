@@ -6,7 +6,7 @@ import PopoverTrigger from "@/components/ui/popover/PopoverTrigger.vue";
 import { cn } from "@/modules/common/lib/utils";
 import { HTMLAttributes, toRefs } from "vue";
 import { useI18n } from "vue-i18n";
-import { POSITION_GROUPS, SailId } from "../lib/consts.sails";
+import { SailId } from "../lib/consts.sails";
 import { useVariablesStore } from "../stores/variables";
 import { PositionId } from "../types";
 import {
@@ -32,7 +32,7 @@ const onSelect = (position: PositionId, sailId: SailId) => {
   setSelectedSails(selectedSails.value);
 };
 
-const { selectedSails } = toRefs(useVariablesStore());
+const { selectedSails, positionGroups } = toRefs(useVariablesStore());
 const { setSelectedSails } = useVariablesStore();
 </script>
 
@@ -46,7 +46,7 @@ const { setSelectedSails } = useVariablesStore();
     >
       <SailSelector>
         <SailSelectorGroup
-          v-for="group in POSITION_GROUPS"
+          v-for="group in positionGroups"
           :key="group.name"
           :group="group"
         >
@@ -61,7 +61,7 @@ const { setSelectedSails } = useVariablesStore();
               :model-value="selectedSails[position.position] === sail.id"
               @update:model-value="onSelect(position.position, sail.id)"
             >
-              {{ sail.name }}
+              {{ sail.variantName }}
             </SailSelectorItem>
           </SailSelectorPosition>
         </SailSelectorGroup>

@@ -1,11 +1,11 @@
-<script setup lang="ts" generic="K extends keyof THRSModules">
+<script setup lang="ts" generic="K extends keyof ThrsModules">
 import { Button } from "@/components/ui/button";
 import Select from "@/components/ui/select/Select.vue";
 import SelectContent from "@/components/ui/select/SelectContent.vue";
 import SelectItem from "@/components/ui/select/SelectItem.vue";
 import SelectTrigger from "@/components/ui/select/SelectTrigger.vue";
 import SelectValue from "@/components/ui/select/SelectValue.vue";
-import { THRSModules, THRUSTER_MODES } from "@/modules/thrs/lib/consts";
+import { ThrsModules, ThrsSimulationType, THRUSTER_MODES } from "@/modules/thrs/lib/consts";
 import { controlValuesForm, MutationType } from "@/modules/thrs/stores/thrs";
 import { PcsSimulation, SimulationComponentType } from "@/modules/thrs/types";
 import { toUpperCamelCase } from "@common/lib/utils";
@@ -19,7 +19,7 @@ const props = defineProps<{
   values: PcsSimulation;
   componentName: string;
   query: string;
-  module: keyof THRSModules;
+  simulation: ThrsSimulationType;
   componentType: SimulationComponentType;
 }>();
 
@@ -30,7 +30,7 @@ const emit = defineEmits<{
 }>();
 
 const { submit, isSubmitting, error, mode } = controlValuesForm(
-  props.module,
+  props.simulation,
   MutationType.Simulation,
   "PcsInputType!",
   props.componentName,

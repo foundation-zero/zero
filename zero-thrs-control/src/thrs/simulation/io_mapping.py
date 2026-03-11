@@ -38,15 +38,21 @@ def flatten_model_values(model: ThrsValues, fmu_only: bool) -> dict[str, float]:
             if (included_in_fmu(field) if fmu_only else True)
         }
 
-    vals = [
-        _values_for_component(component_name, getattr(model, component_name))
-        for component_name, component in {
-            **type(model).model_fields,
-            **type(model).model_computed_fields,
-        }.items()
-        if (included_in_fmu(component) if fmu_only else True)
-    ]
-    return reduce(operator.ior, vals, {})
+    if isinstance(model, CombinedValues):
+        vals = [
+            flatten_model_values(values, fmu_only) for values in model.values.values()
+        ]
+        return reduce(operator.ior, vals, {})
+    else:
+        vals = [
+            _values_for_component(component_name, getattr(model, component_name))
+            for component_name, component in {
+                **type(model).model_fields,
+                **type(model).model_computed_fields,
+            }.items()
+            if (included_in_fmu(component) if fmu_only else True)
+        ]
+        return reduce(operator.ior, vals, {})
 
 
 class IoMapping[S, C, I, O](ABC):

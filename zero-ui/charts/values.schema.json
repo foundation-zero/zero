@@ -1,0 +1,41 @@
+{
+  "$schema": "https://json-schema.org/draft-07/schema#",
+  "properties": {
+    "ui": {
+      "type": "object",
+      "properties": {
+        "config": {
+          "type": "object",
+          "properties": {
+            "VITE_GRAPHQL_URL": {
+              "description": "Main GraphQL (Hasura) endpoint",
+              "type": "string"
+            },
+            "VITE_GRAPHQL_WS_URL": {
+              "description": "Main GraphQL (Hasura) websocket (subscriptions)",
+              "type": "string"
+            },
+            "VITE_THRS_API_SERVER_URL": {
+              "description": "THRS API GraphQL endpoint",
+              "type": "string"
+            },
+            "VITE_LOADS_API_SERVER_URL": {
+              "description": "Loads API GraphQL endpoint",
+              "type": "string"
+            }
+          },
+          "required": [
+            "VITE_GRAPHQL_URL",
+            "VITE_GRAPHQL_WS_URL",
+            "VITE_THRS_API_SERVER_URL",
+            "VITE_LOADS_API_SERVER_URL"
+          ]
+        }
+      },
+      "required": ["config"]
+    }
+  },
+  "required": ["ui"],
+  "title": "Values",
+  "type": "object"
+}

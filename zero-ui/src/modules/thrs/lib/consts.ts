@@ -5,6 +5,7 @@ import {
   SensorComponentType,
   SensorFields,
   SimulationComponentType,
+  SimulationDefinitions,
   SimulationFields,
   ThrusterMode,
 } from "@/modules/thrs/types";
@@ -15,6 +16,8 @@ import {
   CONSUMERS_SENSOR_DEFINITION,
   CONSUMERS_SIMULATION_INPUTS,
   CONSUMERS_SIMULATION_OUTPUTS,
+  HIGH_TEMPERATURE_SIMULATION_INPUTS,
+  HIGH_TEMPERATURE_SIMULATION_OUTPUTS,
   PCM_CONTROL_DEFINITION,
   PCM_PARAMETER_DEFINITION,
   PCM_SENSOR_DEFINITION,
@@ -31,13 +34,20 @@ import {
   THRUSTERS_SIMULATION_INPUTS,
   THRUSTERS_SIMULATION_OUTPUTS,
 } from "./consts.generated";
-import { THRSQueries } from "./consts.types";
+import {
+  SimulationInputsType,
+  SimulationOutputsType,
+  ThrsQueries,
+  ThrsSimulationType,
+} from "./consts.types";
 import {
   CONSUMERS_CONTROL_QUERY,
   CONSUMERS_PARAMETERS_QUERY,
   CONSUMERS_SENSOR_QUERY,
   CONSUMERS_SIMULATION_INPUTS_QUERY,
   CONSUMERS_SIMULATION_OUTPUTS_QUERY,
+  HIGH_TEMPERATURE_SIMULATION_INPUTS_QUERY,
+  HIGH_TEMPERATURE_SIMULATION_OUTPUTS_QUERY,
   PCM_CONTROL_QUERY,
   PCM_PARAMETERS_QUERY,
   PCM_SENSOR_QUERY,
@@ -64,46 +74,68 @@ export const THRUSTER_MODES: ThrusterMode[] = [
   ThrusterMode.Regeneration,
 ];
 
-export const toDefinitions = <T extends Record<string, ModuleDefinition>>(input: T): T => input;
+export type SimulationInputsOutputs<
+  TInput extends Record<string, SimulationDefinitions> = Record<string, SimulationDefinitions>,
+  TOutput extends Record<string, SimulationDefinitions> = Record<string, SimulationDefinitions>,
+> = {
+  inputs: TInput;
+  outputs: TOutput;
+};
+
+type ModuleDefinitions = Record<string, ModuleDefinition>;
+
+export const toDefinitions = <T extends ModuleDefinitions>(input: T): T => input;
+
+export const toSimulation = <
+  TInput extends Record<ThrsSimulationType, SimulationDefinitions>,
+  TOutput extends Record<ThrsSimulationType, SimulationDefinitions>,
+>(
+  input: TInput,
+  output: TOutput,
+): SimulationInputsOutputs<TInput, TOutput> => ({
+  inputs: input,
+  outputs: output,
+});
 
 export const DEFINITIONS = toDefinitions({
   thrusters: {
     sensorValues: THRUSTERS_SENSOR_DEFINITION,
     controlValues: THRUSTERS_CONTROL_DEFINITION,
     parameters: THRUSTERS_PARAMETER_DEFINITION,
-    simulation: {
-      inputs: THRUSTERS_SIMULATION_INPUTS,
-      outputs: THRUSTERS_SIMULATION_OUTPUTS,
-    },
   },
   pcm: {
     sensorValues: PCM_SENSOR_DEFINITION,
     controlValues: PCM_CONTROL_DEFINITION,
     parameters: PCM_PARAMETER_DEFINITION,
-    simulation: {
-      inputs: PCM_SIMULATION_INPUTS,
-      outputs: PCM_SIMULATION_OUTPUTS,
-    },
   },
   pvt: {
     sensorValues: PVT_SENSOR_DEFINITION,
     controlValues: PVT_CONTROL_DEFINITION,
     parameters: PVT_PARAMETER_DEFINITION,
-    simulation: {
-      inputs: PVT_SIMULATION_INPUTS,
-      outputs: PVT_SIMULATION_OUTPUTS,
-    },
   },
   consumers: {
     sensorValues: CONSUMERS_SENSOR_DEFINITION,
     controlValues: CONSUMERS_CONTROL_DEFINITION,
     parameters: CONSUMERS_PARAMETER_DEFINITION,
-    simulation: {
-      inputs: CONSUMERS_SIMULATION_INPUTS,
-      outputs: CONSUMERS_SIMULATION_OUTPUTS,
-    },
   },
 });
+
+export const SIMULATION = toSimulation(
+  {
+    highTemperature: HIGH_TEMPERATURE_SIMULATION_INPUTS,
+    thrusters: THRUSTERS_SIMULATION_INPUTS,
+    pcm: PCM_SIMULATION_INPUTS,
+    pvt: PVT_SIMULATION_INPUTS,
+    consumers: CONSUMERS_SIMULATION_INPUTS,
+  },
+  {
+    highTemperature: HIGH_TEMPERATURE_SIMULATION_OUTPUTS,
+    thrusters: THRUSTERS_SIMULATION_OUTPUTS,
+    pcm: PCM_SIMULATION_OUTPUTS,
+    pvt: PVT_SIMULATION_OUTPUTS,
+    consumers: CONSUMERS_SIMULATION_OUTPUTS,
+  },
+);
 
 export const CONTROL_FIELDS: ControlFields = {
   [ControlComponentType.Pump]: ["dutypoint", "on"],
@@ -130,8 +162,8 @@ export const SIMULATION_FIELDS: SimulationFields = {
 };
 
 export const toQueries = <
-  TDefinitions extends Record<string, ModuleDefinition> = typeof DEFINITIONS,
-  Queries extends THRSQueries<TDefinitions> = THRSQueries<TDefinitions>,
+  TDefinitions extends ModuleDefinitions = typeof DEFINITIONS,
+  Queries extends ThrsQueries<TDefinitions> = ThrsQueries<TDefinitions>,
 >(
   input: Queries,
 ): Queries => input;
@@ -141,70 +173,62 @@ export const QUERIES = toQueries({
     controlValues: THRUSTERS_CONTROL_QUERY,
     parameters: THRUSTERS_PARAMETERS_QUERY,
     sensorValues: THRUSTERS_SENSOR_QUERY,
-    simulation: {
-      inputs: THRUSTERS_SIMULATION_INPUTS_QUERY,
-      outputs: THRUSTERS_SIMULATION_OUTPUTS_QUERY,
-    },
   },
   pcm: {
     controlValues: PCM_CONTROL_QUERY,
     parameters: PCM_PARAMETERS_QUERY,
     sensorValues: PCM_SENSOR_QUERY,
-    simulation: {
-      inputs: PCM_SIMULATION_INPUTS_QUERY,
-      outputs: PCM_SIMULATION_OUTPUTS_QUERY,
-    },
   },
   pvt: {
     controlValues: PVT_CONTROL_QUERY,
     parameters: PVT_PARAMETERS_QUERY,
     sensorValues: PVT_SENSOR_QUERY,
-    simulation: {
-      inputs: PVT_SIMULATION_INPUTS_QUERY,
-      outputs: PVT_SIMULATION_OUTPUTS_QUERY,
-    },
   },
   consumers: {
     controlValues: CONSUMERS_CONTROL_QUERY,
     parameters: CONSUMERS_PARAMETERS_QUERY,
     sensorValues: CONSUMERS_SENSOR_QUERY,
-    simulation: {
-      inputs: CONSUMERS_SIMULATION_INPUTS_QUERY,
-      outputs: CONSUMERS_SIMULATION_OUTPUTS_QUERY,
-    },
   },
 });
+
+export const SIMULATION_INPUT_QUERIES: Record<ThrsSimulationType, string> = {
+  highTemperature: HIGH_TEMPERATURE_SIMULATION_INPUTS_QUERY,
+  thrusters: THRUSTERS_SIMULATION_INPUTS_QUERY,
+  pcm: PCM_SIMULATION_INPUTS_QUERY,
+  pvt: PVT_SIMULATION_INPUTS_QUERY,
+  consumers: CONSUMERS_SIMULATION_INPUTS_QUERY,
+};
+
+export const SIMULATION_OUTPUT_QUERIES: Record<ThrsSimulationType, string> = {
+  highTemperature: HIGH_TEMPERATURE_SIMULATION_OUTPUTS_QUERY,
+  thrusters: THRUSTERS_SIMULATION_OUTPUTS_QUERY,
+  pcm: PCM_SIMULATION_OUTPUTS_QUERY,
+  pvt: PVT_SIMULATION_OUTPUTS_QUERY,
+  consumers: CONSUMERS_SIMULATION_OUTPUTS_QUERY,
+};
+
+const toInputType = <K extends string>(key: K): SimulationInputsType<K> =>
+  `${key.charAt(0).toUpperCase()}${key.slice(1)}SimulationInputsType` as SimulationInputsType<K>;
+
+const toOutputType = <K extends string>(key: K): SimulationOutputsType<K> =>
+  `${key.charAt(0).toUpperCase()}${key.slice(1)}SimulationOutputsType` as SimulationOutputsType<K>;
+
+const toUnionQueries = <K extends string, T extends Record<K, string>>(
+  queries: T,
+  keyMapFn: (key: string) => string,
+): string =>
+  Object.entries(queries)
+    .map(([key, query]) => `... on ${keyMapFn(key)} { __typename ${query} }`)
+    .join("\n");
 
 export const QUERY_ALL = gql`
   query QueryAll {
     simulation {
       inputs {
-        thrusters {
-          ${THRUSTERS_SIMULATION_INPUTS_QUERY}
-        }
-        pcm {
-          ${PCM_SIMULATION_INPUTS_QUERY}
-        }
-        pvt {
-          ${PVT_SIMULATION_INPUTS_QUERY}
-        }
-        consumers {
-          ${CONSUMERS_SIMULATION_INPUTS_QUERY}
-        }
+        ${toUnionQueries(SIMULATION_INPUT_QUERIES, toInputType)}
       }
       outputs {
-        thrusters {
-          ${THRUSTERS_SIMULATION_OUTPUTS_QUERY}
-        }
-        pcm {
-          ${PCM_SIMULATION_OUTPUTS_QUERY}
-        }
-        pvt {
-          ${PVT_SIMULATION_OUTPUTS_QUERY}
-        }
-        consumers {
-          ${CONSUMERS_SIMULATION_OUTPUTS_QUERY}
-        }
+        ${toUnionQueries(SIMULATION_OUTPUT_QUERIES, toOutputType)}
       }
     }
     modules {

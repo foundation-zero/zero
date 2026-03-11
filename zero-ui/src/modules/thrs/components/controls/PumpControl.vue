@@ -8,7 +8,7 @@ import {
   NumberFieldInput,
 } from "@/components/ui/number-field";
 import { Switch } from "@/components/ui/switch";
-import { THRSModules } from "@/modules/thrs/lib/consts";
+import { ThrsModules } from "@/modules/thrs/lib/consts";
 import { controlValuesForm, MutationType } from "@/modules/thrs/stores/thrs";
 import { PumpControl } from "@/modules/thrs/types";
 import { toUpperCamelCase } from "@common/lib/utils";
@@ -20,7 +20,7 @@ const props = defineProps<{
   componentName: string;
   yardTag: string;
   query: string;
-  module: keyof THRSModules;
+  module: keyof ThrsModules;
 }>();
 const emit = defineEmits<{
   (e: "update:controlValues", value: unknown): void;

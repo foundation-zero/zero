@@ -1,8 +1,10 @@
+import { extractProperty, toRecord } from "@/modules/common/lib/utils";
 import { useQuery } from "@urql/vue";
 import { useIntervalFn, useLocalStorage } from "@vueuse/core";
 import { defineStore } from "pinia";
 import { computed } from "vue";
 import { LOADS_CONTEXT } from "../graphql/client";
+import { ALL_SAILS } from "../graphql/queries/sails";
 import {
   VARIABLE_ACTUALS,
   VARIABLE_DEFINITIONS,
@@ -10,10 +12,21 @@ import {
 } from "../graphql/queries/variables";
 import { AWA_VALUES, AWS_VALUES } from "../lib/consts";
 import { Dashboard, DASHBOARDS, OVERVIEW } from "../lib/consts.dashboards";
-import { SailId, SAILS } from "../lib/consts.sails";
+import { POSITIONS_WITH_SAILS, SailId, SAILS } from "../lib/consts.sails";
 import { findInRange, unique } from "../lib/utils";
-import { AWA, MaybeVariable, NumRangeId, PositionId, SailSelection, Variable } from "../types";
 import {
+  AWA,
+  CardType,
+  MaybeVariable,
+  NumRangeId,
+  PositionId,
+  Sail,
+  SailPositionGroup,
+  SailSelection,
+  Variable,
+} from "../types";
+import {
+  QuerySails,
   QueryVariableActual,
   QueryVariableDefinition,
   QueryVariableReference,
@@ -21,57 +34,67 @@ import {
 
 const UPDATE_INTERVAL_MS = 5000;
 
+const toSupportedSailSelection = (
+  storedValue: SailSelection,
+  defaultValue: SailSelection,
+): SailSelection =>
+  toRecord(defaultValue, (position, defaultSail) =>
+    storedValue[position] === null || POSITIONS_WITH_SAILS[position].includes(storedValue[position])
+      ? storedValue[position]
+      : defaultSail,
+  );
+
+const toSupportedValue =
+  <T>(supportedValues: T[]) =>
+  (storedValue: T, defaultValue: T): T =>
+    supportedValues.includes(storedValue) ? storedValue : defaultValue;
+
+const extractId = extractProperty("id");
+
 export const useVariablesStore = defineStore("loads-variables", () => {
-  const selectedAWA = useLocalStorage<AWA>("loads-variable-awa", AWA_VALUES[0].id);
-  const selectedAWS = useLocalStorage<NumRangeId>("loads-variable-aws", AWS_VALUES[0].id);
+  const selectedCardType = useLocalStorage<CardType>("loads-variable-card-type", "numerical");
 
-  const selectedDashboardId = useLocalStorage<SailId>(
-    "loads-variable-selected-dashboard",
-    SailId.None,
-  );
-  const selectedDashboard = computed<Dashboard>({
-    get() {
-      return DASHBOARDS.find((d) => d.sail === selectedDashboardId.value) ?? OVERVIEW;
-    },
-    set(dashboard: Dashboard) {
-      selectedDashboardId.value = dashboard.sail;
-    },
+  /*** SAILS ***/
+
+  const { data: sailsData } = useQuery<QuerySails>({
+    query: ALL_SAILS,
+    context: LOADS_CONTEXT,
   });
 
-  const availableDashboards = computed(() =>
-    SAILS.filter(
-      (sail) =>
-        selectedSailIds.value.includes(sail.id) && DASHBOARDS.some((d) => d.sail === sail.id),
-    ),
-  );
+  const sails = computed<Sail<SailId>[]>(() => sailsData.value?.sails ?? []);
 
-  const currentVariables = computed(() =>
-    // Always query for AWA and AWS
-    selectedDashboard.value.groups.flatMap((g) => g.variables).concat(["awa", "aws"]),
-  );
-
-  const selectedSails = useLocalStorage<SailSelection>("loads-variables-selected-sails", {
-    [PositionId.Main]: null,
-    [PositionId.ForeInner]: null,
-    [PositionId.ForeOuter]: null,
-    [PositionId.Mizzen]: null,
-    [PositionId.MizzenFore]: null,
+  const position = (name: string, ...positions: PositionId[]): SailPositionGroup => ({
+    name,
+    positions: positions.map((positionId) => ({
+      sails: sails.value.filter((sail) => sail.positionId === positionId) ?? [],
+      position: positionId,
+    })),
   });
+
+  const positionGroups = computed(() => [
+    position("Main", PositionId.Main),
+    position("Mizzen", PositionId.Mizzen, PositionId.MizzenFore),
+    position("Foresails", PositionId.ForeInner, PositionId.ForeOuter),
+  ]);
+
+  const selectedSails = useLocalStorage<SailSelection>(
+    "loads-variables-selected-sails",
+    {
+      [PositionId.Main]: null,
+      [PositionId.ForeInner]: null,
+      [PositionId.ForeOuter]: null,
+      [PositionId.Mizzen]: null,
+      [PositionId.MizzenFore]: null,
+    },
+    {
+      writeDefaults: true,
+      mergeDefaults: toSupportedSailSelection,
+    },
+  );
 
   const selectedSailIds = computed(() =>
-    unique(selectedSails.value).filter((id) => SAILS.some((s) => s.id === id)),
+    unique(selectedSails.value).filter((id) => !!id && SAILS.includes(id)),
   );
-
-  const getVariableById = <T extends number | boolean>(id: string) =>
-    computed(() => variables.value.find((variable) => variable.id === id) as Variable<T>);
-
-  const setAWA = (id: AWA) => {
-    selectedAWA.value = id;
-  };
-
-  const setAWS = (id: NumRangeId) => {
-    selectedAWS.value = id;
-  };
 
   const setSelectedSails = (sails: SailSelection) => {
     selectedSails.value = sails;
@@ -82,9 +105,52 @@ export const useVariablesStore = defineStore("loads-variables", () => {
     }
   };
 
+  /*** DASHBOARDS ***/
+  const selectedAWA = useLocalStorage<AWA>("loads-variable-awa", AWA_VALUES[0].id, {
+    writeDefaults: true,
+    mergeDefaults: toSupportedValue(AWA_VALUES.map(extractId)),
+  });
+  const selectedAWS = useLocalStorage<NumRangeId>("loads-variable-aws", AWS_VALUES[0].id, {
+    writeDefaults: true,
+    mergeDefaults: toSupportedValue(AWS_VALUES.map(extractId)),
+  });
+
+  const selectedDashboardId = useLocalStorage<SailId>(
+    "loads-variable-selected-dashboard",
+    SailId.None,
+    { writeDefaults: true, mergeDefaults: toSupportedValue(SAILS) },
+  );
+
+  const selectedDashboard = computed<Dashboard>({
+    get() {
+      return DASHBOARDS.find((d) => d.sail === selectedDashboardId.value) ?? OVERVIEW;
+    },
+    set(dashboard: Dashboard) {
+      selectedDashboardId.value = dashboard.sail;
+    },
+  });
+
+  const availableDashboards = computed(
+    () =>
+      sails.value.filter(
+        (sail) =>
+          selectedSailIds.value.includes(sail.id) && DASHBOARDS.some((d) => d.sail === sail.id),
+      ) ?? [],
+  );
+
   const setDashboard = (sail: SailId) => {
     selectedDashboardId.value = sail;
   };
+
+  /*** VARIABLES ***/
+
+  const currentVariables = computed(() =>
+    // Always query for AWA and AWS
+    selectedDashboard.value.groups.flatMap((g) => g.variables).concat(["awa", "aws"]),
+  );
+
+  const getVariableById = <T extends number | boolean>(id: string) =>
+    computed(() => variables.value.find((variable) => variable.id === id) as Variable<T>);
 
   const { data: definitions } = useQuery<QueryVariableDefinition>({
     query: VARIABLE_DEFINITIONS,
@@ -138,6 +204,22 @@ export const useVariablesStore = defineStore("loads-variables", () => {
     },
   );
 
+  /*** SETTINGS ***/
+
+  const setAWA = (id: AWA) => {
+    selectedAWA.value = id;
+  };
+
+  const setAWS = (id: NumRangeId) => {
+    selectedAWS.value = id;
+  };
+
+  const setCardType = (type: CardType | null | undefined) => {
+    if (type) {
+      selectedCardType.value = type;
+    }
+  };
+
   const currentAWS = computed(
     () => actuals.value?.variables.find((v) => v.id === "aws")?.actual.value,
   );
@@ -155,8 +237,12 @@ export const useVariablesStore = defineStore("loads-variables", () => {
     getVariableById,
     selectedAWA,
     selectedAWS,
+    selectedCardType,
+    sails,
+    positionGroups,
     setAWA,
     setAWS,
+    setCardType,
     currentAWA,
     currentAWS,
     selectedSails,

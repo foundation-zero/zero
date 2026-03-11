@@ -31,8 +31,8 @@
   src: url("./fonts/Inter/Inter-Italic-VariableFont_opsz\,wght.ttf") format("truetype");
 }
 
-@source inline('{sm:,md:,lg:,xl:,2xl:,}col-span-{1,2,3,4,5,6,7,8,9,10,11,12}');
-@source inline('{sm:,md:,lg:,xl:,2xl:,}grid-cols-{1,2,3,4,5,6,7,8,9,10,11,12}');
+@source inline('{,sm:,md:,lg:,xl:,2xl:,3xl:,4xl:}col-span-{1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,full}');
+@source inline('{,sm:,md:,lg:,xl:,2xl:,3xl:,4xl:}grid-cols-{1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24}');
 
 :root {
   --background: var(--color-neutral-grey-0);
@@ -303,7 +303,7 @@ h6 {
   --sidebar-ring: oklch(0.439 0 0);
 }
 
-@source inline("dark,grid-cols-1,grid-cols-2,grid-cols-3");
+@source inline("dark");
 
 @theme inline {
   --text-2xs: 0.625rem;

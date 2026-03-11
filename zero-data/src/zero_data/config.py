@@ -10,10 +10,11 @@ io_lists: List[Tuple[Source, List[str]]] = [
         "marpower",
         [
             "ZERO mocked IO-List.xlsx",
-            "52422003_3210_AMCS IO-List R2.25-MQTT-fix.xlsx",
-            "52422003_3211_PMS IO-List R2.11-MQTT-fix.xlsx",
+            "52422003_3210_AMCS IO-List R2.29_PvK_MQTT.xlsx",
+            "52422003_3211_PMS IO-List R2.13-fixed.xlsx",
         ],
-    )
+    ),
+    ("sail_system", ["3094_SailPLC.PLC_MAIN.Application.xml"]),
 ]
 
 

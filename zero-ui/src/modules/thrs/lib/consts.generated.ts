@@ -112,13 +112,100 @@ export const CONSUMERS_SENSOR_DEFINITION = toSensorDefinition({
 });
 
 export const CONSUMERS_SIMULATION_INPUTS = toSimulationDefinition({
+  consumersFahrenheitSupply: {
+    componentType: SimulationComponentType.Boundary,
+  },
+  consumersBoostingSupply: {
+    componentType: SimulationComponentType.Boundary,
+  },
   consumersModuleSupply: {
     componentType: SimulationComponentType.Boundary,
   },
 });
 
 export const CONSUMERS_SIMULATION_OUTPUTS = toSimulationDefinition({
+  consumersFahrenheitReturn: {
+    componentType: SimulationComponentType.Temperature,
+  },
+  consumersBoostingReturn: {
+    componentType: SimulationComponentType.Temperature,
+  },
   consumersModuleReturn: {
+    componentType: SimulationComponentType.Boundary,
+  },
+});
+
+export const HIGH_TEMPERATURE_SIMULATION_INPUTS = toSimulationDefinition({
+  thrustersAft: {
+    componentType: SimulationComponentType.Thruster,
+  },
+  thrustersFwd: {
+    componentType: SimulationComponentType.Thruster,
+  },
+  thrustersSeawaterSupply: {
+    componentType: SimulationComponentType.Boundary,
+  },
+  thrustersPcs: {
+    componentType: SimulationComponentType.Pcs,
+  },
+  pvtMainFwd: {
+    componentType: SimulationComponentType.HeatSource,
+  },
+  pvtMainAft: {
+    componentType: SimulationComponentType.HeatSource,
+  },
+  pvtOwners: {
+    componentType: SimulationComponentType.HeatSource,
+  },
+  pvtSeawaterSupply: {
+    componentType: SimulationComponentType.Boundary,
+  },
+  pcmFreshwaterSupply: {
+    componentType: SimulationComponentType.Boundary,
+  },
+  consumersFahrenheitSupply: {
+    componentType: SimulationComponentType.Boundary,
+  },
+  consumersBoostingSupply: {
+    componentType: SimulationComponentType.Boundary,
+  },
+});
+
+export const HIGH_TEMPERATURE_SIMULATION_OUTPUTS = toSimulationDefinition({
+  thrustersSeawaterReturn: {
+    componentType: SimulationComponentType.Temperature,
+  },
+  thrustersModuleSupply: {
+    componentType: SimulationComponentType.Flow,
+  },
+  thrustersModuleReturn: {
+    componentType: SimulationComponentType.Boundary,
+  },
+  pvtModuleReturn: {
+    componentType: SimulationComponentType.Boundary,
+  },
+  pvtModuleSupply: {
+    componentType: SimulationComponentType.Flow,
+  },
+  pvtSeawaterReturn: {
+    componentType: SimulationComponentType.Temperature,
+  },
+  consumersFahrenheitReturn: {
+    componentType: SimulationComponentType.Temperature,
+  },
+  consumersBoostingReturn: {
+    componentType: SimulationComponentType.Temperature,
+  },
+  consumersModuleReturn: {
+    componentType: SimulationComponentType.Boundary,
+  },
+  pcmConsumersReturn: {
+    componentType: SimulationComponentType.Boundary,
+  },
+  pcmProducersReturn: {
+    componentType: SimulationComponentType.Boundary,
+  },
+  pcmFreshwaterReturn: {
     componentType: SimulationComponentType.Boundary,
   },
 });

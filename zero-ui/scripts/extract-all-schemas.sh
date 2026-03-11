@@ -20,6 +20,15 @@ pnpm run generate-graphql-queries THRUSTERS_PARAMETER_DEFINITION THRUSTERS_PARAM
 pnpm run generate-graphql-queries THRUSTERS_SIMULATION_INPUTS THRUSTERS_SIMULATION_INPUTS_QUERY
 pnpm run generate-graphql-queries THRUSTERS_SIMULATION_OUTPUTS THRUSTERS_SIMULATION_OUTPUTS_QUERY
 
+# HIGH TEMPERATURE simulation
+echo "📋 Extracting HIGH TEMPERATURE simulation definitions..."
+pnpm run extract-schema-values HIGH_TEMPERATURE_SIMULATION_INPUTS HighTemperatureSimulationInputsType
+pnpm run extract-schema-values HIGH_TEMPERATURE_SIMULATION_OUTPUTS HighTemperatureSimulationOutputsType
+
+echo "📋 Generating HIGH TEMPERATURE GraphQL queries..."
+pnpm run generate-graphql-queries HIGH_TEMPERATURE_SIMULATION_INPUTS HIGH_TEMPERATURE_SIMULATION_INPUTS_QUERY
+pnpm run generate-graphql-queries HIGH_TEMPERATURE_SIMULATION_OUTPUTS HIGH_TEMPERATURE_SIMULATION_OUTPUTS_QUERY
+
 # PVT module
 echo "📋 Extracting PVT definitions..."
 pnpm run extract-schema-values PVT_CONTROL_DEFINITION PvtControlValuesType

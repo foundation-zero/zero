@@ -19,15 +19,56 @@
   "fiscalYearStartMonth": 0,
   "graphTooltip": 0,
   "id": 0,
-  "links": [],
+  "links": [
+    {
+      "asDropdown": true,
+      "icon": "external link",
+      "includeVars": false,
+      "keepTime": true,
+      "tags": [
+        "commisssioning"
+      ],
+      "targetBlank": false,
+      "title": "Dashboards",
+      "tooltip": "",
+      "type": "dashboards",
+      "url": ""
+    }
+  ],
   "panels": [
+    {
+      "fieldConfig": {
+        "defaults": {},
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 2,
+        "w": 24,
+        "x": 0,
+        "y": 0
+      },
+      "id": 11,
+      "options": {
+        "code": {
+          "language": "plaintext",
+          "showLineNumbers": false,
+          "showMiniMap": false
+        },
+        "content": "<center>\r\n  <h1>Sea water</h1>\r\n</center>\r\n",
+        "mode": "html"
+      },
+      "pluginVersion": "12.3.0",
+      "title": "",
+      "transparent": true,
+      "type": "text"
+    },
     {
       "collapsed": false,
       "gridPos": {
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 0
+        "y": 2
       },
       "id": 5,
       "panels": [],
@@ -65,7 +106,7 @@
         "h": 5,
         "w": 5,
         "x": 0,
-        "y": 1
+        "y": 3
       },
       "id": 1,
       "options": {
@@ -249,7 +290,7 @@
         "h": 5,
         "w": 6,
         "x": 5,
-        "y": 1
+        "y": 3
       },
       "id": 2,
       "options": {
@@ -679,7 +720,7 @@
         "h": 5,
         "w": 6,
         "x": 11,
-        "y": 1
+        "y": 3
       },
       "id": 3,
       "options": {
@@ -942,7 +983,7 @@
         "h": 5,
         "w": 7,
         "x": 17,
-        "y": 1
+        "y": 3
       },
       "id": 4,
       "options": {
@@ -1099,14 +1140,14 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 6
+        "y": 8
       },
       "id": 8,
       "panels": [
         {
           "datasource": {
             "type": "grafana-postgresql-datasource",
-            "uid": "ceyj3m7wtn3swb"
+            "uid": "${datasource}"
           },
           "fieldConfig": {
             "defaults": {
@@ -1257,7 +1298,7 @@
         {
           "datasource": {
             "type": "grafana-postgresql-datasource",
-            "uid": "ceyj3m7wtn3swb"
+            "uid": "${datasource}"
           },
           "fieldConfig": {
             "defaults": {
@@ -1387,7 +1428,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 7
+        "y": 9
       },
       "id": 6,
       "panels": [],
@@ -1439,7 +1480,7 @@
             },
             {
               "options": {
-                "pattern": ".*xv38001004_1",
+                "pattern": ".*xv38001004-1",
                 "result": {
                   "index": 2,
                   "text": "Frame 49 SB (XV38001004_1)"
@@ -1449,7 +1490,7 @@
             },
             {
               "options": {
-                "pattern": ".*xv38001004_2",
+                "pattern": ".*xv38001004-2",
                 "result": {
                   "index": 3,
                   "text": "Frame 49 PS (XV38001004_2)"
@@ -1459,7 +1500,7 @@
             },
             {
               "options": {
-                "pattern": ".*xv38001004_3",
+                "pattern": ".*xv38001004-3",
                 "result": {
                   "index": 4,
                   "text": "Frame 52 (XV38001004_3)"
@@ -1489,7 +1530,7 @@
             },
             {
               "options": {
-                "pattern": ".*xv38001154_1",
+                "pattern": ".*xv38001154-1",
                 "result": {
                   "index": 7,
                   "text": "XV38001154_1"
@@ -1499,7 +1540,7 @@
             },
             {
               "options": {
-                "pattern": ".*xv38001154_2",
+                "pattern": ".*xv38001154-2",
                 "result": {
                   "index": 8,
                   "text": "XV38001154_2"
@@ -1509,7 +1550,7 @@
             },
             {
               "options": {
-                "pattern": ".*xv38001154_3",
+                "pattern": ".*xv38001154-3",
                 "result": {
                   "index": 9,
                   "text": "Input valve (XV38001154_3)"
@@ -1519,7 +1560,7 @@
             },
             {
               "options": {
-                "pattern": ".*xv38001154_4",
+                "pattern": ".*xv38001154-4",
                 "result": {
                   "index": 10,
                   "text": "Input valve (XV38001154_4)"
@@ -1529,7 +1570,7 @@
             },
             {
               "options": {
-                "pattern": ".*xv38001154_5",
+                "pattern": ".*xv38001154-5",
                 "result": {
                   "index": 11,
                   "text": "Input valve (XV38001154_5)"
@@ -1597,7 +1638,7 @@
         "h": 11,
         "w": 24,
         "x": 0,
-        "y": 8
+        "y": 10
       },
       "id": 7,
       "options": {
@@ -1620,7 +1661,7 @@
           "editorMode": "code",
           "format": "table",
           "rawQuery": true,
-          "rawSql": "SELECT\r\n  topic,\r\n  ARG_MAX((\"Opened\").Value, (\"Opened\").Timestamp) AS Opened,\r\n  ARG_MAX((\"Closed\").Value, (\"Closed\").Timestamp) AS Closed,\r\n  ARG_MAX((\"HmiCmdOpen\").Value, (\"HmiCmdOpen\").Timestamp) AS HmiCmdOpen,\r\n  ARG_MAX((\"HmiCmdClose\").Value, (\"HmiCmdClose\").Timestamp) AS HmiCmdClose,\r\n  ARG_MAX((\"ShouldBeOpen\").Value, (\"ShouldBeOpen\").Timestamp) AS ShouldBeOpen,\r\n  ARG_MAX((\"HmiControlAvailable\").Value, (\"HmiControlAvailable\").Timestamp) AS HmiControlAvailable,\r\n  ARG_MAX((\"Open\").Value, (\"Open\").Timestamp) AS Open,\r\n  ARG_MAX((\"Close\").Value, (\"Close\").Timestamp) AS Close,\r\n  ARG_MAX((\"Alarm\").Value, (\"Alarm\").Timestamp) AS Alarm\r\nFROM marpower.\"380000_seawater_cooling\"\r\nGROUP BY topic\r\nORDER BY topic",
+          "rawSql": "SELECT\r\n  topic,\r\n  ARG_MAX((\"Opened\").Value, (\"Opened\").Timestamp)                           AS Opened,\r\n  ARG_MAX((\"Closed\").Value, (\"Closed\").Timestamp)                           AS Closed,\r\n  ARG_MAX((\"HmiCmdOpen\").Value, (\"HmiCmdOpen\").Timestamp)                   AS HmiCmdOpen,\r\n  ARG_MAX((\"HmiCmdClose\").Value, (\"HmiCmdClose\").Timestamp)                 AS HmiCmdClose,\r\n  ARG_MAX((\"ShouldBeOpen\").Value, (\"ShouldBeOpen\").Timestamp)               AS ShouldBeOpen,\r\n  ARG_MAX((\"HmiControlAvailable\").Value, (\"HmiControlAvailable\").Timestamp) AS HmiControlAvailable,\r\n  ARG_MAX((\"Open\").Value, (\"Open\").Timestamp)                               AS Open,\r\n  ARG_MAX((\"Close\").Value, (\"Close\").Timestamp)                             AS Close,\r\n  ARG_MAX((\"Alarm\").Value, (\"Alarm\").Timestamp)                             AS Alarm\r\nFROM marpower.\"380000_seawater_cooling\"\r\nGROUP BY topic\r\nORDER BY topic",
           "refId": "A",
           "sql": {
             "columns": [
@@ -1670,13 +1711,15 @@
   "preload": false,
   "refresh": "5s",
   "schemaVersion": 42,
-  "tags": [],
+  "tags": [
+    "commisssioning"
+  ],
   "templating": {
     "list": [
       {
         "current": {
           "text": "RisingWave",
-          "value": "ceyj3m7wtn3swb"
+          "value": "${datasource}"
         },
         "name": "datasource",
         "options": [],

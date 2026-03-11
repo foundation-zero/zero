@@ -1,0 +1,14 @@
+name: "UI: Deploy zero-ui chart"
+on:
+  release:
+    types: [released]
+
+jobs:
+  helm-push:
+    uses: "./.github/workflows/job_helm_push.yaml"
+    permissions:
+      contents: "read"
+      id-token: "write"
+    secrets: inherit
+    with:
+      helm_chart: "zero-ui/charts"

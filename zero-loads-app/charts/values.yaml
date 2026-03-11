@@ -1,0 +1,42 @@
+replicaCount: 1
+
+image:
+  repository: europe-west1-docker.pkg.dev/common-449414/common/zero-loads-app
+  pullPolicy: IfNotPresent
+  tag: ""
+
+mqtt:
+  host:
+  port: 1883
+  username: loads
+  existingSecret:
+  existingSecretPasswordKey:
+
+postgresql:
+  host:
+  port: 5432
+  user: loads
+  db:
+  existingSecret:
+  existingSecretPasswordKey:
+
+api:
+  env: production
+  resources: {}
+  nodeSelector: {}
+  tolerations: []
+  affinity: {}
+
+imagePullSecrets: []
+
+nameOverride: ""
+fullnameOverride: ""
+
+podAnnotations: {}
+podLabels: {}
+
+service:
+  port: 80
+  externalIPs: []
+  labels: {}
+  annotations: {}

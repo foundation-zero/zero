@@ -23,7 +23,12 @@ const delegatedProps = reactiveOmit(props, "class");
   >
     <div
       data-slot="glass"
-      :class="cn('size-full rounded-full', indicatorLightVariants({ variant }))"
+      :class="
+        cn(
+          'size-full rounded-full transition-all duration-250',
+          indicatorLightVariants({ variant }),
+        )
+      "
     ></div>
   </div>
 </template>

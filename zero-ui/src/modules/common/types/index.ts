@@ -1,3 +1,5 @@
+import { Ref } from "vue";
+
 export type Stamped<T> = { value: T; timestamp: Date };
 export type Unstamp<T> = T extends Stamped<infer U> ? U : never;
 export type History<T> =
@@ -14,6 +16,10 @@ export type ChartDataType = number | boolean | string;
 export type TimeSeriesData<T extends ChartDataType = ChartDataType> = [time: Date, value: T];
 export type SeriesData = { value: number };
 
+export type RecordIndex = string | number | symbol;
+
+export type StringKeyOf<T> = Extract<keyof T, string>;
+
 export interface Chart<
   Type extends ChartDataType,
   Value extends Stamped<Type> | TimeSeriesData<Type>,
@@ -28,9 +34,14 @@ export type SeriesChart<Type extends ChartDataType = ChartDataType> = Chart<
   TimeSeriesData<Type>
 >;
 
-export type Entries<T> =
+export type MapEntries<T> =
   T extends Map<infer K, infer V>
     ? V extends Map<unknown, unknown>
-      ? [key: K, value: Entries<V>[]]
+      ? [key: K, value: MapEntries<V>[]]
       : [key: K, value: V]
     : never;
+
+export type Refs<T extends object> = {
+  [K in keyof T]: Ref<T[K]>;
+};
+export type Entries<K, V> = [key: K, value: V][];

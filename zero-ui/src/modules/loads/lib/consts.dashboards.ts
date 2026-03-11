@@ -29,7 +29,11 @@ export const MAIN_MAST_GROUP = group(
   "main-checkstay-sb-load",
   "main-checkstay-deflector-load",
   "main-checkstay-deflector-relative-position",
-  "combined-headstay-load",
+  "fiber-optic-main-v1-ps",
+  "fiber-optic-main-v1-sb",
+  "fiber-optic-main-d1-ps",
+  "fiber-optic-main-d1-sb",
+  "main-headstay-combined-load",
 );
 
 export const MAIN_SAIL_GROUP = group(
@@ -37,11 +41,11 @@ export const MAIN_SAIL_GROUP = group(
   "main-sheet-load",
   "main-traveller-relative-position",
   "main-vang-relative-position",
-  "main-vang-load",
   "main-cunningham-load",
   "main-outhaul-load",
   "main-outhaul-relative-position",
   "main-preventer-load",
+  "main-halyard-load",
 );
 
 export const MAIN_LOCKS_GROUP = group(
@@ -63,17 +67,22 @@ export const MIZZEN_MAST_GROUP = group(
   "mizzen-checkstay-sb-load",
   "mizzen-checkstay-deflector-load",
   "mizzen-checkstay-deflector-relative-position",
+  "fiber-optic-mizzen-v1-ps",
+  "fiber-optic-mizzen-v1-sb",
+  "fiber-optic-mizzen-d1-ps",
+  "fiber-optic-mizzen-d1-sb",
+  "fiber-optic-mizzen-forestay",
 );
 
 export const MIZZEN_SAIL_GROUP = group(
   "Mizzen sail",
   "mizzen-sheet-load",
   "mizzen-vang-relative-position",
-  "mizzen-vang-load",
   "mizzen-cunningham-load",
   "mizzen-outhaul-load",
   "mizzen-outhaul-relative-position",
   "mizzen-preventer-load",
+  "mizzen-halyard-load",
 );
 
 export const MIZZEN_LOCKS_GROUP = group(
@@ -103,13 +112,9 @@ export const MIZZEN_HEADSAIL_LOCKS_GROUP = group("Locks", "mizzen-headsail-locks
 
 export const TRISAIL_GROUP = group(
   "Trisail",
-  "main-sheet-load",
   "main-traveller-relative-position",
   "main-vang-relative-position",
   "main-vang-load",
-  "main-outhaul-load",
-  "main-outhaul-relative-position",
-  "main-preventer-load",
   "main-halyard-load",
   "aft-winch-ps-load",
   "aft-winch-sb-load",
@@ -117,7 +122,6 @@ export const TRISAIL_GROUP = group(
 
 export const TRISAIL_LOCKS_GROUP = group(
   "Locks",
-  "main-halyard-lock-full",
   "main-halyard-lock-3",
   "main-halyard-boom-lock-3",
 );

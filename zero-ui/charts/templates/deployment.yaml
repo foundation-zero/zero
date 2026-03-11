@@ -1,0 +1,99 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "..fullname" . }}
+  namespace: {{ .Release.Namespace }}
+  labels:
+    {{- include "..labels" . | nindent 4 }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      {{- include "..selectorLabels" . | nindent 6 }}
+      app.kubernetes.io/part-of: ui
+      app.kubernetes.io/component: spa
+  template:
+    metadata:
+      annotations:
+        checksum/config: "{{ include (print $.Template.BasePath "/configmap.yaml") . | sha256sum }}"
+      {{- with .Values.podAnnotations }}
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      labels:
+        {{- include "..labels" . | nindent 8 }}
+        {{- with .Values.podLabels }}
+        {{- toYaml . | nindent 8 }}
+        {{- end }}
+        app.kubernetes.io/part-of: ui
+        app.kubernetes.io/component: spa
+    spec:
+      {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      securityContext:
+        fsGroupChangePolicy: Always
+        sysctls: []
+        supplementalGroups: []
+        fsGroup: 1001
+      containers:
+        - name: ui
+          securityContext:
+            securityContext:
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop:
+              - ALL
+            privileged: false
+            readOnlyRootFilesystem: true
+            runAsGroup: 1001
+            runAsNonRoot: true
+            runAsUser: 1001
+            seLinuxOptions: {}
+            seccompProfile:
+              type: RuntimeDefault
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          ports:
+            - name: http
+              containerPort: 80
+              protocol: TCP
+          livenessProbe:
+            httpGet:
+              path: /
+              port: http
+          readinessProbe:
+            httpGet:
+              path: /
+              port: http
+          {{- with .Values.resources }}
+          resources:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+          volumeMounts:
+            - name: config
+              mountPath: /usr/share/nginx/html/env.json
+              subPath: env.json
+            - mountPath: /tmp
+              name: tmp
+      volumes:
+        - name: config
+          configMap:
+            name: {{ include "..fullname" . }}-config
+            items: 
+              - key: env.json
+                path: env.json
+        - emptyDir: {}
+          name: tmp
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}

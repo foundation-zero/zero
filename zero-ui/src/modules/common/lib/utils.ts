@@ -19,6 +19,7 @@ import {
   ChartDataType,
   Entries,
   History,
+  MapEntries,
   SeriesChart,
   Stamped,
   StampedChart,
@@ -347,14 +348,6 @@ export function isStamped(input: unknown): boolean {
 
 export const unstamp = <T>(input: T | Stamped<T>): T => (isStamped(input) ? input.value : input);
 
-export const mapFromObject = <K extends string | number | symbol, V, T>(
-  record: Record<K, V> | Partial<Record<K, V>>,
-  mapFn: (key: K, value: V) => T,
-): Map<K, T> =>
-  new Map<K, T>(
-    Object.entries(record ?? {}).map(([key, value]) => [key as K, mapFn(key as K, value as V)]),
-  );
-
 export const isStampedNumber = (item: unknown): item is Stamped<number> =>
   isStamped(item) && typeof item.value === "number";
 
@@ -366,29 +359,85 @@ export function tuple(...args: unknown[]) {
   return args;
 }
 
-export const fromEntries = <K, V, T>(
-  entries: [K, V][],
-  mapFn: (key: K, value: V) => T,
-): Map<K, T> => new Map(entries.map(([k, v]) => [k, mapFn(k, v)]));
+export const isTuple =
+  (size: number) =>
+  (input: unknown): input is unknown[] =>
+    Array.isArray(input) && input.length === size;
 
-export const toEntries = <K, V>(map: Map<K, V>): Entries<Map<K, V>>[] => {
-  const entries = Array.from(map.entries());
+export const isEntry = isTuple(2);
 
-  return entries.map(([key, value]) =>
-    tuple(key, value instanceof Map ? toEntries(value) : value),
-  ) as Entries<Map<K, V>>[];
-};
+export type MapFrom<K, V> =
+  | [K, V][]
+  | K[]
+  | readonly K[]
+  | Map<K, V>
+  | (K extends string | number | symbol ? Record<K, V> : never);
+
+export function entriesOf<K, V>(map: Map<K, V>): MapEntries<Map<K, V>>[];
+export function entriesOf<K, V>(input: MapFrom<K, V>): [K, V][];
+export function entriesOf<K, V>(obj?: MapFrom<K, V>) {
+  if (obj == undefined) {
+    return [];
+  } else if (Array.isArray(obj)) {
+    if (obj.every(isEntry)) {
+      return obj as [K, V][];
+    } else {
+      return obj.map((key) => [key] as [K]);
+    }
+  } else if (obj instanceof Map) {
+    const entries = Array.from(obj.entries());
+
+    return entries.map(([key, value]) =>
+      tuple(key, value instanceof Map ? entriesOf(value) : value),
+    ) as MapEntries<Map<K, V>>[];
+  } else return Object.entries(obj) as [K, V][];
+}
+
+export type EntryMapFn<K, V, T> = (key: K, value: V) => T;
+export type KeyMapFn<K, V> = (key: K) => V;
+
+export function toEntries<K extends string | number | symbol, V>(
+  input: K[],
+  mapFn: KeyMapFn<K, V>,
+): [K, V][];
+export function toEntries<K, V, T>(input: MapFrom<K, V>, mapFn: EntryMapFn<K, V, T>): [K, T][];
+export function toEntries<K, V, T>(input: MapFrom<K, V>, mapFn: EntryMapFn<K, V, T>): [K, T][] {
+  return entriesOf(input).map(([k, v]) => [k, mapFn(k, v)]);
+}
+
+export function toMap<K, V>(keys: K[] | readonly K[], mapFn: KeyMapFn<K, V>): Map<K, V>;
+export function toMap<K extends string | number | symbol, V, T>(
+  obj: Record<K, V>,
+  mapFn: EntryMapFn<K, V, T>,
+): Map<K, T>;
+export function toMap<K, V, T>(
+  input: Map<K, V> | Entries<K, V>,
+  mapFn: EntryMapFn<K, V, T>,
+): Map<K, T>;
+export function toMap<K, V, T>(input: MapFrom<K, V>, mapFn: EntryMapFn<K, V, T>) {
+  return new Map(toEntries(input, mapFn));
+}
+
+export function toRecord<K extends string | number | symbol, V>(
+  keys: K[] | readonly K[],
+  mapFn: KeyMapFn<K, V>,
+): Record<K, V>;
+export function toRecord<K extends string | number | symbol, V, T>(
+  input: Record<K, V> | Map<K, V> | Entries<K, V>,
+  mapFn: EntryMapFn<K, V, T>,
+): Record<K, T>;
+export function toRecord<K extends string | number | symbol, V, T>(
+  input: MapFrom<K, V>,
+  mapFn: EntryMapFn<K, V, T>,
+): Record<K, T> {
+  return Object.fromEntries(toEntries(input, mapFn)) as Record<K, T>;
+}
 
 export function keysOf<T extends Record<string, unknown>>(obj: T): (keyof T)[];
 export function keysOf<T extends Record<string, unknown>>(obj?: T): (keyof T)[] | undefined;
 export function keysOf<T extends Record<string, unknown>>(obj?: T) {
   return obj ? (Object.keys(obj) as (keyof T)[]) : undefined;
 }
-
-export const fromKeys = <K extends string | number | symbol, T>(
-  keys: K[] | ReadonlyArray<K>,
-  mapFn: (key: K) => T,
-): Record<K, T> => Object.fromEntries(keys.map((key) => [key, mapFn(key)])) as Record<K, T>;
 
 function isChartType<T extends ChartDataType>(type: string) {
   function isChart(chart: StampedChart): chart is StampedChart<T>;
@@ -447,3 +496,15 @@ export const isHistoryOf = <T extends Record<string, unknown>>(
 };
 
 export const cast = <T>(input: unknown): T => input as T;
+
+export const mmath = {
+  avg: (...numbers: number[]) => numbers.reduce((sum, num) => sum + num, 0) / numbers.length,
+  normalizeDegrees: (angle: number) => ((angle % 360) + 360) % 360,
+};
+
+export const generateRandomId = (prefix: string = "") =>
+  `${prefix}-${Math.random().toString(36).substring(2, 9)}`;
+export const extractProperty =
+  <K extends string | number | symbol>(property: K) =>
+  <V>(item: { [key in K]: V }): V =>
+    item[property];

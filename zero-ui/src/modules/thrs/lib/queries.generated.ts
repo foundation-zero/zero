@@ -65,6 +65,14 @@ export const CONSUMERS_SENSOR_QUERY = `
 `;
 
 export const CONSUMERS_SIMULATION_INPUTS_QUERY = `
+  consumersFahrenheitSupply {
+    temperature { value timestamp }
+    flow { value timestamp }
+  }
+  consumersBoostingSupply {
+    temperature { value timestamp }
+    flow { value timestamp }
+  }
   consumersModuleSupply {
     temperature { value timestamp }
     flow { value timestamp }
@@ -72,7 +80,101 @@ export const CONSUMERS_SIMULATION_INPUTS_QUERY = `
 `;
 
 export const CONSUMERS_SIMULATION_OUTPUTS_QUERY = `
+  consumersFahrenheitReturn {
+    temperature { value timestamp }
+  }
+  consumersBoostingReturn {
+    temperature { value timestamp }
+  }
   consumersModuleReturn {
+    temperature { value timestamp }
+    flow { value timestamp }
+  }
+`;
+
+export const HIGH_TEMPERATURE_SIMULATION_INPUTS_QUERY = `
+  thrustersAft {
+    heatFlow { value timestamp }
+    active { value timestamp }
+  }
+  thrustersFwd {
+    heatFlow { value timestamp }
+    active { value timestamp }
+  }
+  thrustersSeawaterSupply {
+    temperature { value timestamp }
+    flow { value timestamp }
+  }
+  thrustersPcs {
+    mode { value timestamp }
+  }
+  pvtMainFwd {
+    heatFlow { value timestamp }
+  }
+  pvtMainAft {
+    heatFlow { value timestamp }
+  }
+  pvtOwners {
+    heatFlow { value timestamp }
+  }
+  pvtSeawaterSupply {
+    temperature { value timestamp }
+    flow { value timestamp }
+  }
+  pcmFreshwaterSupply {
+    temperature { value timestamp }
+    flow { value timestamp }
+  }
+  consumersFahrenheitSupply {
+    temperature { value timestamp }
+    flow { value timestamp }
+  }
+  consumersBoostingSupply {
+    temperature { value timestamp }
+    flow { value timestamp }
+  }
+`;
+
+export const HIGH_TEMPERATURE_SIMULATION_OUTPUTS_QUERY = `
+  thrustersSeawaterReturn {
+    temperature { value timestamp }
+  }
+  thrustersModuleSupply {
+    flow { value timestamp }
+  }
+  thrustersModuleReturn {
+    temperature { value timestamp }
+    flow { value timestamp }
+  }
+  pvtModuleReturn {
+    temperature { value timestamp }
+    flow { value timestamp }
+  }
+  pvtModuleSupply {
+    flow { value timestamp }
+  }
+  pvtSeawaterReturn {
+    temperature { value timestamp }
+  }
+  consumersFahrenheitReturn {
+    temperature { value timestamp }
+  }
+  consumersBoostingReturn {
+    temperature { value timestamp }
+  }
+  consumersModuleReturn {
+    temperature { value timestamp }
+    flow { value timestamp }
+  }
+  pcmConsumersReturn {
+    temperature { value timestamp }
+    flow { value timestamp }
+  }
+  pcmProducersReturn {
+    temperature { value timestamp }
+    flow { value timestamp }
+  }
+  pcmFreshwaterReturn {
     temperature { value timestamp }
     flow { value timestamp }
   }

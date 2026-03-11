@@ -1,10 +1,10 @@
 import { SailId } from "../lib/consts.sails";
 
 export type ReferenceThresholds = {
-  warningLow: number;
-  warningHigh: number;
-  alarmLow: number;
-  alarmHigh: number;
+  warningLow?: number;
+  warningHigh?: number;
+  alarmLow?: number;
+  alarmHigh?: number;
   target: number;
 };
 
@@ -46,16 +46,20 @@ export type VariableDefinition = {
   id: string;
   name: string;
   unit: VariableUnit;
-  minimumValue: number;
-  maximumValue: number | null;
+  scaleMin: number;
+  scaleMax: number;
+  scaleMinLabel: Nullable<string>;
+  scaleMaxLabel: Nullable<string>;
 };
+
+export type Nullable<T> = T | null;
 
 export type VariableActual<T extends number | boolean = number> = {
   id: string;
   value: T;
 };
 
-export type VariableReference = Partial<ReferenceThresholds>;
+export type VariableReference = ReferenceThresholds;
 
 export type PickChild<T, K1 extends keyof T, K2 extends keyof T[K1]> = {
   [P in K2]: T[K1][P];
@@ -94,6 +98,9 @@ export type SailPosition = {
 export type Sail<SailId extends string = string> = {
   name: string;
   id: SailId;
+  abbreviation: string;
+  positionId: PositionId;
+  variantName: string;
 };
 
 export type MastLock = {

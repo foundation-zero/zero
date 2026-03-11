@@ -4,14 +4,14 @@ from unittest.mock import AsyncMock, patch
 
 from pydantic import TypeAdapter
 from zero_data.config import MQTTConfig
-from zero_data.data_gen.generator import Generator, MarpowerMessage
+from zero_data.data_gen.marpower_generator import MarpowerGenerator, MarpowerStruct
 from zero_data.io_list.types import IOTopic, IOValue
 import random
 import datetime
 from freezegun import freeze_time
 
 
-async def test_generator():
+async def test_marpower_generator():
     mqtt_config = MQTTConfig(host="mocked", port=1885)
     topics = [
         IOTopic("a", [IOValue("field1", "BOOLEAN"), IOValue("field2", "REAL")]),
@@ -29,7 +29,7 @@ async def test_generator():
     with patch("zero_data.data_gen.generator.Client", return_value=mock_client):
         random.seed(1)
 
-        gen = Generator(1, mqtt_config, topics)
+        gen = MarpowerGenerator(1, mqtt_config, topics)
         with freeze_time(now, real_asyncio=True):
             try:
                 async with asyncio.timeout(0.1):
@@ -45,10 +45,10 @@ async def test_generator():
                     "a",
                     jsonfyier.dump_json(
                         {
-                            "field1": MarpowerMessage(
+                            "field1": MarpowerStruct(
                                 value=True, timestamp=now, is_valid=True, has_value=True
                             ).model_dump(by_alias=True),
-                            "field2": MarpowerMessage(
+                            "field2": MarpowerStruct(
                                 value=10.60040562252202,
                                 timestamp=now,
                                 is_valid=True,
@@ -61,10 +61,10 @@ async def test_generator():
                     "b",
                     jsonfyier.dump_json(
                         {
-                            "field1": MarpowerMessage(
+                            "field1": MarpowerStruct(
                                 value=8, timestamp=now, is_valid=True, has_value=True
                             ).model_dump(by_alias=True),
-                            "field2": MarpowerMessage(
+                            "field2": MarpowerStruct(
                                 value=5, timestamp=now, is_valid=True, has_value=True
                             ).model_dump(by_alias=True),
                         }

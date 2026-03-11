@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Symbolconfiguration xmlns="http://www.3s-software.com/schemas/Symbolconfiguration.xsd">
+  <Header>
+    <Version>3.5.14.0</Version>
+    <SymbolConfigObject version="4.5.2.0" runtimeid="3.5.20.60" libversion="4.5.0.0" compiler="3.5.20.60" lmm="3.5.20.60" profile="CODESYS V3.5 SP20 Patch 6+" settings="XmlIncludeComments, XmlIncludeAttributes, XmlIncludeTypeNodeAttributes, SymbolAttributeFilterType.All, SymbolCommentFilterType.PreferDocuComments, LayoutCalculator=OptimizedClientSideLayoutCalculator" />
+    <ProjectInfo name="3094_SailPLC" devicename="PLC_MAIN" appname="Application" />
+  </Header>
+  <TypeList>
+    <TypeSimple name="T_BOOL" size="1" swapsize="0" typeclass="Bool" iecname="BOOL" />
+    <TypeSimple name="T_INT" size="2" swapsize="2" typeclass="Int" iecname="INT" />
+    <TypeSimple name="T_REAL" size="4" swapsize="4" typeclass="Real" iecname="REAL" />
+    <TypeSimple name="T_TIME" size="4" swapsize="4" typeclass="Time" iecname="TIME" />
+    <TypeSimple name="T_UDINT" size="4" swapsize="4" typeclass="UDInt" iecname="UDINT" />
+    <TypeSimple name="T_UINT" size="2" swapsize="2" typeclass="UInt" iecname="UINT" />
+    <TypeWeird name="T_WORD" size="2" swapsize="2" typeclass="Word" iecname="WORD" />
+    <TypeUserDef name="T_sCoolpump" size="20" nativesize="20" typeclass="Userdef" pouclass="STRUCTURE" iecname="sCoolpump" basetype="T_sFunctionState">
+      <UserDefElement iecname="x_ExtOnOff" type="T_BOOL" byteoffset="8" vartype="VAR" inherited_from="T_sFunctionState" access="ReadWrite">
+        <Comment>Modbus: Set 0-&gt;1 to toggle enable</Comment>
+      </UserDefElement>
+      <UserDefElement iecname="i_State" type="T_INT" byteoffset="10" vartype="VAR" inherited_from="T_sFunctionState" access="ReadWrite">
+        <Comment>
+          0:GroupEnable onwaar.
+          1:GroupEnable waar, Individual Enable waar, En niet actief
+          2:GroupEnable waar, Individual Enalbe onwaar
+          3:GroupEnable waar, Individual Enable waar en functie is actief.</Comment>
+      </UserDefElement>
+      <UserDefElement iecname="ui_RunningHours" type="T_UINT" byteoffset="12" vartype="VAR" inherited_from="T_sFunctionState" access="ReadWrite">
+        <Comment>Running tinme in hours</Comment>
+      </UserDefElement>
+      <UserDefElement iecname="i_Temperature" type="T_INT" byteoffset="18" vartype="VAR" access="ReadWrite" />
+    </TypeUserDef>
+    <TypeUserDef name="T_sCooling" size="82" nativesize="82" typeclass="Userdef" pouclass="STRUCTURE" iecname="sCooling">
+      <UserDefElement iecname="sFrpk" type="T_sCoolpump" byteoffset="0" vartype="VAR" access="ReadWrite" />
+      <UserDefElement iecname="sHlyrdpt" type="T_sCoolpump" byteoffset="20" vartype="VAR" access="ReadWrite" />
+      <UserDefElement iecname="sTchSpc" type="T_sCoolpump" byteoffset="40" vartype="VAR" access="ReadWrite" />
+      <UserDefElement iecname="sLzrtt" type="T_sCoolpump" byteoffset="60" vartype="VAR" access="ReadWrite" />
+      <UserDefElement iecname="iDelayTime" type="T_INT" byteoffset="80" vartype="VAR" access="ReadWrite">
+        <Comment>Time in seconds</Comment>
+      </UserDefElement>
+    </TypeUserDef>
+  </TypeList>
+     <NodeList>
+    <Node name="Application">
+      <Node name="HmiData">
+        <Node name="CoolingPumps" type="T_sCooling" access="ReadWrite" />
+        <Node name="x_AcknowledgeAlarm" type="T_BOOL" access="ReadWrite" />
+      </Node>
+    </Node>
+  </NodeList>
+</Symbolconfiguration>

@@ -25,6 +25,10 @@
         "short": "AWS",
         "label": "Select AWS",
         "unit": "kts"
+      },
+      "cardTypeToggle": {
+        "numerical": "Numerical",
+        "graphical": "Graphical"
       }
     }
   }

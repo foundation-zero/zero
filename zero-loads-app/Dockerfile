@@ -42,3 +42,4 @@ COPY zero-loads-app/src/ ./zero-loads-app
 WORKDIR /app/zero-loads-app
 
 ENTRYPOINT ["python", "-m", "loads"]
+CMD ["api"]

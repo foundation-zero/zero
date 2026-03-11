@@ -2,11 +2,11 @@
   setup
   lang="ts"
   generic="
-    K extends keyof THRSModules,
+    K extends keyof ThrsModules,
     Definitions extends SchemaDefinitions<SchemaDefinition<unknown>>
   "
 >
-import { THRSModules, THRUSTER_MODES } from "@/modules/thrs/lib/consts";
+import { ThrsModules, THRUSTER_MODES } from "@/modules/thrs/lib/consts";
 import { SchemaDefinition, SchemaDefinitions } from "@/modules/thrs/types";
 
 import TimeBasedValueChart from "@/modules/common/components/time-based-chart/TimeBasedValueChart.vue";

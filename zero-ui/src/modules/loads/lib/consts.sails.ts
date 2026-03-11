@@ -1,73 +1,39 @@
-import { PositionId, Sail, SailPositionGroup } from "../types";
-
-const position = (name: string, ...positions: PositionId[]): SailPositionGroup => ({
-  name,
-  positions: positions.map((positionId) => ({
-    sails: POSITIONS_WITH_SAILS[positionId],
-    position: positionId,
-  })),
-});
-
-export const sail = (name: string, id: SailId): Sail<SailId> => ({
-  name,
-  id,
-});
+import { PositionId } from "../types";
 
 export const enum SailId {
   None = "none",
-  FullMain = "full_main",
-  MainReef1 = "main_reef1",
-  MainReef2 = "main_reef2",
-  MainReef3 = "main_reef3",
+  FullMain = "full-main",
+  MainReef1 = "main-reef1",
+  MainReef2 = "main-reef2",
+  MainReef3 = "main-reef3",
   Trisail = "trisail",
-  UtilityMain = "utility_main",
-  FullMizzen = "full_mizzen",
-  MizzenReef1 = "mizzen_reef1",
-  MizzenReef2 = "mizzen_reef2",
+  UtilityMain = "utility-main",
+  FullMizzen = "full-mizzen",
+  MizzenReef1 = "mizzen-reef1",
+  MizzenReef2 = "mizzen-reef2",
   Blade = "blade",
-  CodeZero = "code_zero",
+  CodeZero = "code-zero",
   A3 = "A3",
   A2 = "A2",
   Staysail = "staysail",
-  StormJib = "storm_jib",
-  MizzenJib = "mizzen_jib",
-  MizzenStaysail = "mizzen_staysail",
+  StormJib = "storm-jib",
+  MizzenJib = "mizzen-jib",
+  MizzenStaysail = "mizzen-staysail",
 }
 
-const POSITIONS_WITH_SAILS: Record<PositionId, Sail<SailId>[]> = {
+export const POSITIONS_WITH_SAILS: Record<PositionId, SailId[]> = {
   [PositionId.Main]: [
-    sail("Full Main", SailId.FullMain),
-    sail("Main R1", SailId.MainReef1),
-    sail("Main R2", SailId.MainReef2),
-    sail("Main R3", SailId.MainReef3),
-    sail("Utility Main", SailId.UtilityMain),
-    sail("Main Trisail", SailId.Trisail),
+    SailId.FullMain,
+    SailId.MainReef1,
+    SailId.MainReef2,
+    SailId.MainReef3,
+    SailId.UtilityMain,
+    SailId.Trisail,
   ],
-  [PositionId.ForeInner]: [
-    sail("Blade", SailId.Blade),
-    sail("Staysail", SailId.Staysail),
-    sail("Storm Jib", SailId.StormJib),
-  ],
-  [PositionId.ForeOuter]: [
-    sail("A2", SailId.A2),
-    sail("A3", SailId.A3),
-    sail("Code-0", SailId.CodeZero),
-  ],
-  [PositionId.Mizzen]: [
-    sail("Full Mizzen", SailId.FullMizzen),
-    sail("Mizzen R1", SailId.MizzenReef1),
-    sail("Mizzen R2", SailId.MizzenReef2),
-  ],
-  [PositionId.MizzenFore]: [
-    sail("Mizzen Staysail", SailId.MizzenStaysail),
-    sail("Mizzen Jib", SailId.MizzenJib),
-  ],
+  [PositionId.ForeInner]: [SailId.Blade, SailId.Staysail, SailId.StormJib],
+  [PositionId.ForeOuter]: [SailId.A2, SailId.A3, SailId.CodeZero],
+  [PositionId.Mizzen]: [SailId.FullMizzen, SailId.MizzenReef1, SailId.MizzenReef2],
+  [PositionId.MizzenFore]: [SailId.MizzenStaysail, SailId.MizzenJib],
 };
 
 export const SAILS = Object.values(POSITIONS_WITH_SAILS).flat();
-
-export const POSITION_GROUPS: SailPositionGroup[] = [
-  position("Main", PositionId.Main),
-  position("Mizzen", PositionId.Mizzen, PositionId.MizzenFore),
-  position("Foresails", PositionId.ForeInner, PositionId.ForeOuter),
-];

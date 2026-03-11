@@ -29,27 +29,48 @@ logger = logging.getLogger("cli")
 class ApiCli(Settings):
     async def cli_cmd(self) -> None:
         logger.info("Running API...")
-        uvicorn.run("loads.api.api:app", host="0.0.0.0", port=5101, reload=True)
+        uvicorn.run(
+            "loads.api.api:app", host="0.0.0.0", port=5101, reload=self.is_development
+        )
 
 
 class GenerateJWT(Settings):
     roles: str
+    jwt_secret: str
 
     async def cli_cmd(self) -> None:
-        await generate_jwt(self)
+        await generate_jwt(self, roles=self.roles, jwt_secret=self.jwt_secret)
 
 
 class AdapterCmd(Settings):
+    canbus_ip: str
+    canbus_port: int
+    canbus_buffer_size: int
+
     async def cli_cmd(self) -> None:
         logger.info("Running adapter...")
-        async with PCanAdapter.init_from_settings(self) as adapter:
+        async with PCanAdapter.init_from_settings(
+            self,
+            canbus_ip=self.canbus_ip,
+            canbus_port=self.canbus_port,
+            canbus_buffer_size=self.canbus_buffer_size,
+        ) as adapter:
             await adapter.run()
 
 
 class PCanStubCmd(Settings):
+    canbus_ip: str
+    canbus_port: int
+    canbus_buffer_size: int
+
     async def cli_cmd(self) -> None:
         logger.info("Running pcan stub...")
-        async with PCanStub.init_from_settings(self) as stub:
+        async with PCanStub.init_from_settings(
+            self,
+            canbus_ip=self.canbus_ip,
+            canbus_port=self.canbus_port,
+            canbus_buffer_size=self.canbus_buffer_size,
+        ) as stub:
             await stub.run()
 
 
