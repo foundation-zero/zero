@@ -157,8 +157,29 @@ class SimulationValues(ThrsValues):
             _dedataframed_dataclasses[component.annotation] = (model, ...)
             return (model, ...)
 
+        def _component_with_metadata(component_name, component):
+            dedataframed_component = _component(component_name, component)
+            # Preserve the original field metadata (like included_in_fmu) from the parent class
+            if component.json_schema_extra:
+                info = FieldInfo.from_annotation(
+                    Annotated[
+                        dedataframed_component[0]
+                        if isinstance(dedataframed_component, tuple)
+                        else dedataframed_component,
+                        Field(json_schema_extra=component.json_schema_extra),
+                    ]  # type: ignore
+                )
+                return Annotated[
+                    dedataframed_component[0]
+                    if isinstance(dedataframed_component, tuple)
+                    else dedataframed_component,
+                    info,
+                ]
+            else:
+                return dedataframed_component
+
         components = {
-            component_name: _component(component_name, component)
+            component_name: _component_with_metadata(component_name, component)
             for component_name, component in cls.model_fields.items()
         }
 

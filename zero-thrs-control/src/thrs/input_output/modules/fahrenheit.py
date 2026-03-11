@@ -67,16 +67,16 @@ class FahrenheitSensorValues(ThrsValues):
         component_meta(yard_tag="50001038-56", component_type="temperature_sensor"),
     ]
     fahrenheit_available_hot_temperature: Annotated[
-        sensor.CalculatedTemperature,
-        component_meta(component_type="calculated_temperature", included_in_fmu=False),
+        sensor.TemperatureSensor,
+        component_meta(component_type="external_sensor", included_in_fmu=False),
     ]
     fahrenheit_available_cold_temperature: Annotated[
-        sensor.CalculatedTemperature,
-        component_meta(component_type="calculated_temperature", included_in_fmu=False),
+        sensor.TemperatureSensor,
+        component_meta(component_type="external_sensor", included_in_fmu=False),
     ]
     fahrenheit_available_seawater_temperature: Annotated[
-        sensor.CalculatedTemperature,
-        component_meta(component_type="calculated_temperature", included_in_fmu=False),
+        sensor.TemperatureSensor,
+        component_meta(component_type="external_sensor", included_in_fmu=False),
     ]
 
 
@@ -97,16 +97,26 @@ class FahrenheitControlValues(ThrsValues):
 
 
 class FahrenheitSimulationInputs(SimulationInputs):
-    fahrenheit_hot_supply: simulation.Boundary
-    fahrenheit_waste_supply: simulation.Boundary
     fahrenheit_cold_supply: simulation.TemperatureBoundary
-    fahrenheit_available_hot_temperature: simulation.TemperatureBoundary
-    fahrenheit_available_cold_temperature: simulation.TemperatureBoundary
     fahrenheit_seawater_supply: simulation.Boundary
+    fahrenheit_available_hot_temperature: Annotated[
+        simulation.TemperatureBoundary, component_meta(included_in_fmu=False)
+    ]
+    fahrenheit_available_cold_temperature: Annotated[
+        simulation.TemperatureBoundary, component_meta(included_in_fmu=False)
+    ]
+    fahrenheit_available_seawater_temperature: Annotated[
+        simulation.TemperatureBoundary, component_meta(included_in_fmu=False)
+    ]
+    fahrenheit_chiller: Annotated[
+        simulation.Fahrenheit, component_meta(included_in_fmu=False)
+    ]
+    fahrenheit_ht_supply: simulation.Boundary
+    fahrenheit_boilers_supply: simulation.Boundary
 
 
 class FahrenheitSimulationOutputs(SimulationValues):
-    fahrenheit_hot_return: simulation.TemperatureBoundary
-    fahrenheit_waste_return: simulation.TemperatureBoundary
-    fahrenheit_cold_return: simulation.TemperatureBoundary
+    fahrenheit_cold_return: simulation.Boundary
     fahrenheit_seawater_return: simulation.TemperatureBoundary
+    fahrenheit_boilers_return: simulation.TemperatureBoundary
+    fahrenheit_ht_return: simulation.TemperatureBoundary

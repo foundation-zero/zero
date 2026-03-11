@@ -1,6 +1,6 @@
 {
     "python.testing.pytestArgs": [
-        "tests"
+        "zero-loads-app"
     ],
     "python.testing.unittestEnabled": false,
     "python.testing.pytestEnabled": true
