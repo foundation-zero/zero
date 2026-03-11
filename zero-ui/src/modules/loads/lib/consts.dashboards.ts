@@ -47,33 +47,30 @@ const dashboard = (id: DashboardId, ...groups: VariableGroup[]): Dashboard => ({
 
 export const MAIN_MAST_GROUP = group(
   "Main mast",
-  // Dynamic
-  ["main-runner-ps-load", true],
-  // Static
-  ["main-runner-sb-load"],
-  // Static
-  ["main-checkstay-ps-load", false],
-  // Dynamic
+  "main-runner-ps-load",
+  "main-runner-sb-load",
+  "main-checkstay-ps-load",
   "main-checkstay-sb-load",
   "main-checkstay-deflector-load",
   "main-checkstay-deflector-relative-position",
   "fiber-optic-main-v1-ps",
   "fiber-optic-main-v1-sb",
-  "fiber-optic-main-d1-ps",
-  "fiber-optic-main-d1-sb",
   "main-headstay-combined-load",
+  ["fiber-optic-main-d1-ps", false],
+  ["fiber-optic-main-d1-sb", false],
 );
 
 export const MAIN_SAIL_GROUP = group(
   "Main sail",
   "main-sheet-load",
   "main-traveller-relative-position",
+  "main-vang-load",
   "main-vang-relative-position",
   "main-cunningham-load",
-  "main-outhaul-load",
-  "main-outhaul-relative-position",
   "main-preventer-load",
-  "main-halyard-load",
+  "main-outhaul-load",
+  ["main-outhaul-relative-position", false],
+  ["main-halyard-load", false],
 );
 
 export const MAIN_LOCKS_GROUP = group(
@@ -97,20 +94,21 @@ export const MIZZEN_MAST_GROUP = group(
   "mizzen-checkstay-deflector-relative-position",
   "fiber-optic-mizzen-v1-ps",
   "fiber-optic-mizzen-v1-sb",
-  "fiber-optic-mizzen-d1-ps",
-  "fiber-optic-mizzen-d1-sb",
   "fiber-optic-mizzen-forestay",
+  ["fiber-optic-mizzen-d1-ps", false],
+  ["fiber-optic-mizzen-d1-sb", false],
 );
 
 export const MIZZEN_SAIL_GROUP = group(
   "Mizzen sail",
   "mizzen-sheet-load",
+  "mizzen-vang-load",
   "mizzen-vang-relative-position",
   "mizzen-cunningham-load",
-  "mizzen-outhaul-load",
-  "mizzen-outhaul-relative-position",
   "mizzen-preventer-load",
-  "mizzen-halyard-load",
+  "mizzen-outhaul-load",
+  ["mizzen-outhaul-relative-position", false],
+  ["mizzen-halyard-load", false],
 );
 
 export const MIZZEN_LOCKS_GROUP = group(
@@ -140,12 +138,12 @@ export const MIZZEN_HEADSAIL_LOCKS_GROUP = group("Locks", "mizzen-headsail-locks
 
 export const TRISAIL_GROUP = group(
   "Trisail",
-  "main-traveller-relative-position",
-  "main-vang-relative-position",
-  "main-vang-load",
   "main-halyard-load",
   "aft-winch-ps-load",
   "aft-winch-sb-load",
+  ["main-traveller-relative-position", false],
+  ["main-vang-load", false],
+  ["main-vang-relative-position", false],
 );
 
 export const TRISAIL_LOCKS_GROUP = group(
@@ -154,18 +152,18 @@ export const TRISAIL_LOCKS_GROUP = group(
   "main-halyard-boom-lock-3",
 );
 
-export const BLADE_SAIL_GROUP = group(
+export const BLADE_GROUP = group(
   "Blade",
-  "blade-adjuster-load",
-  "blade-adjuster-relative-position",
   "blade-cunningham-load",
   "blade-cunningham-relative-position",
   "blade-sheet-feeder-ps-load",
-  "blade-tweaker-ps-load",
-  "blade-tweaker-ps-relative-position",
   "blade-sheet-feeder-sb-load",
-  "blade-tweaker-sb-load",
-  "blade-tweaker-sb-relative-position",
+  "blade-adjuster-load",
+  ["blade-adjuster-relative-position", false],
+  ["blade-tweaker-ps-load", false],
+  ["blade-tweaker-ps-relative-position", false],
+  ["blade-tweaker-sb-load", false],
+  ["blade-tweaker-sb-relative-position", false],
 );
 
 export const STAYSAIL_GROUP = group(
@@ -183,6 +181,14 @@ export const OUTBOARD_LEAD_GROUP = group(
 );
 
 export const STAYSAIL_LOCKS_GROUP = group("Locks", "headsail-locks-lock-staysail");
+
+export const A3_GROUP = group(
+  "A3",
+  "code-zero-tack-load",
+  "code-zero-tack-relative-position",
+  "primary-winch-ps-load",
+  "primary-winch-sb-load",
+);
 
 export const CODE_ZERO_GROUP = group(
   "Code Zero",
@@ -214,13 +220,18 @@ export const STORM_JIB_LOCKS_GROUP = group("Locks", "headsail-locks-lock-stormji
 export const OVERVIEW = dashboard(
   DashboardType.Static,
   MAIN_MAST_GROUP,
-  MAIN_SAIL_GROUP,
   MIZZEN_MAST_GROUP,
+  MAIN_SAIL_GROUP,
   MIZZEN_SAIL_GROUP,
-  BLADE_SAIL_GROUP,
+  BLADE_GROUP,
   STAYSAIL_GROUP,
-  CODE_ZERO_GROUP,
   STORM_JIB_GROUP,
+  OUTBOARD_LEAD_GROUP,
+  CODE_ZERO_GROUP,
+  A3_GROUP,
+  A2_GROUP,
+  MIZZEN_JIB_GROUP,
+  MIZZEN_STAYSAIL_GROUP,
 );
 
 export const MAIN = dashboard(SailId.FullMain, MAIN_MAST_GROUP, MAIN_SAIL_GROUP, MAIN_LOCKS_GROUP);
@@ -303,12 +314,7 @@ export const STAYSAIL = dashboard(
   STAYSAIL_LOCKS_GROUP,
 );
 
-export const BLADE = dashboard(
-  SailId.Blade,
-  MAIN_MAST_GROUP,
-  BLADE_SAIL_GROUP,
-  OUTBOARD_LEAD_GROUP,
-);
+export const BLADE = dashboard(SailId.Blade, MAIN_MAST_GROUP, BLADE_GROUP, OUTBOARD_LEAD_GROUP);
 
 export const CODE_ZERO = dashboard(
   SailId.CodeZero,
@@ -319,15 +325,8 @@ export const CODE_ZERO = dashboard(
 
 export const DYNAMIC = dashboard(
   DashboardType.Dynamic,
-  dynamic(
-    MAIN_MAST_GROUP,
-    SailId.FullMain,
-    SailId.MainReef1,
-    SailId.MainReef2,
-    SailId.MainReef3,
-    SailId.Trisail,
-    SailId.UtilityMain,
-  ),
+  MAIN_MAST_GROUP,
+  MIZZEN_MAST_GROUP,
   dynamic(
     MAIN_SAIL_GROUP,
     SailId.FullMain,
@@ -337,12 +336,16 @@ export const DYNAMIC = dashboard(
     SailId.Trisail,
     SailId.UtilityMain,
   ),
-  dynamic(MIZZEN_MAST_GROUP, SailId.FullMizzen, SailId.MizzenReef1, SailId.MizzenReef2),
   dynamic(MIZZEN_SAIL_GROUP, SailId.FullMizzen, SailId.MizzenReef1, SailId.MizzenReef2),
-  dynamic(BLADE_SAIL_GROUP, SailId.Blade),
+  dynamic(A2_GROUP, SailId.A2),
+  dynamic(BLADE_GROUP, SailId.Blade),
   dynamic(STAYSAIL_GROUP, SailId.Staysail),
   dynamic(CODE_ZERO_GROUP, SailId.CodeZero),
   dynamic(STORM_JIB_GROUP, SailId.StormJib),
+  dynamic(MIZZEN_JIB_GROUP, SailId.MizzenJib),
+  dynamic(MIZZEN_STAYSAIL_GROUP, SailId.MizzenStaysail),
+  dynamic(OUTBOARD_LEAD_GROUP, SailId.Staysail, SailId.StormJib),
+  dynamic(TRISAIL_GROUP, SailId.Trisail),
 );
 
 export const A3 = dashboard(SailId.A3, MAIN_MAST_GROUP, CODE_ZERO_GROUP, CODE_ZERO_LOCKS_GROUP);
