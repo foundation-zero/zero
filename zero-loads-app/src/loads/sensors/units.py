@@ -90,7 +90,7 @@ ReliefLoad: TypeAlias = Annotated[
     VariableMeta(unit="tonne", type="alarm_threshold"),
 ]
 Alarm: TypeAlias = Annotated[bool, VariableMeta(type="alarm")]
-Lock: TypeAlias = Annotated[bool, VariableMeta(unit="bool")]
+Lock: TypeAlias = Annotated[bool, VariableMeta(unit="bool", type="actual")]
 Speed: TypeAlias = Annotated[
     float,
     Field(ge=0),

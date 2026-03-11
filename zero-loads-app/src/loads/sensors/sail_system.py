@@ -238,42 +238,42 @@ class HeadsailLocks(LoadsModel, ABC):
     lock_A2: Annotated[
         Lock,
         Field(validation_alias="ox_IndctA2Lck_Ext"),
-        VariableMeta(name="lock_a2", type="actual"),
+        VariableMeta(name="lock_a2", display_name="A2"),
     ]
     overhoist_A2: Annotated[
         Lock,
         Field(validation_alias="ox_IndctA2LckOvrhst_Ext"),
-        VariableMeta(name="overhoist_a2", type="actual"),
+        VariableMeta(name="overhoist_a2", display_name="A2"),
     ]
     lock_A3C0: Annotated[
         Lock,
         Field(validation_alias="ox_IndctA3C0Lck_Ext"),
-        VariableMeta(name="lock_a3c0", type="actual"),
+        VariableMeta(name="lock_a3c0", display_name="A3/C0"),
     ]
     overhoist_A3C0: Annotated[
         Lock,
         Field(validation_alias="ox_IndctA3C0LckOverhst_Ext"),
-        VariableMeta(name="overhoist_a3c0", type="actual"),
+        VariableMeta(name="overhoist_a3c0", display_name="A3/C0"),
     ]
     lock_staysail: Annotated[
         Lock,
         Field(validation_alias="ox_IndctStyslLck_Ext"),
-        VariableMeta(name="lock_staysail", type="actual"),
+        VariableMeta(name="lock_staysail", display_name="staysail"),
     ]
     overhoist_staysail: Annotated[
         Lock,
         Field(validation_alias="ox_IndctStyslLckOverhst_Ext"),
-        VariableMeta(name="overhoist_staysail", type="actual"),
+        VariableMeta(name="overhoist_staysail", display_name="staysail"),
     ]
     lock_stormjib: Annotated[
         Lock,
         Field(validation_alias="ox_IndctStmjbLck_Ext"),
-        VariableMeta(name="lock_stormjib", type="actual"),
+        VariableMeta(name="lock_stormjib", display_name="storm jib"),
     ]
     overhoist_stormjib: Annotated[
         Lock,
         Field(validation_alias="ox_IndctStmjbLckOvrhst_Ext"),
-        VariableMeta(name="overhoist_stormjib", type="actual"),
+        VariableMeta(name="overhoist_stormjib", display_name="storm jib"),
     ]
 
 
@@ -336,57 +336,57 @@ class MainHalyard(LoadsModel, ABC):
     lock_full: Annotated[
         Lock,
         Field(validation_alias="ox_IndctHlyrdLckFh_Ext"),
-        VariableMeta(name="lock_full", type="actual"),
+        VariableMeta(name="lock_full", display_name="masthead"),
     ]
     lock_1: Annotated[
         Lock,
         Field(validation_alias="ox_IndctHlyrdLck1_Ext"),
-        VariableMeta(name="lock_1", type="actual"),
+        VariableMeta(name="lock_1", display_name="reef 1"),
     ]
     lock_2: Annotated[
         Lock,
         Field(validation_alias="ox_IndctHlyrdLck2_Ext"),
-        VariableMeta(name="lock_2", type="actual"),
+        VariableMeta(name="lock_2", display_name="reef 2"),
     ]
     lock_3: Annotated[
         Lock,
         Field(validation_alias="ox_IndctHlyrdLck3_Ext"),
-        VariableMeta(name="lock_3", type="actual"),
+        VariableMeta(name="lock_3", display_name="reef 3"),
     ]
     overhoist_full: Annotated[
         Lock,
         Field(validation_alias="ox_IndctHlyrdLckFhOvrhst_Ext"),
-        VariableMeta(name="overhoist_full", type="actual"),
+        VariableMeta(name="overhoist_full", display_name="masthead"),
     ]
     overhoist_1: Annotated[
         Lock,
         Field(validation_alias="ox_IndctHlyrdLck1Ovrhst_Ext"),
-        VariableMeta(name="overhoist_1", type="actual"),
+        VariableMeta(name="overhoist_1", display_name="reef 1"),
     ]
     overhoist_2: Annotated[
         Lock,
         Field(validation_alias="ox_IndctHlyrdLck2Ovrhst_Ext"),
-        VariableMeta(name="overhoist_2", type="actual"),
+        VariableMeta(name="overhoist_2", display_name="reef 2"),
     ]
     overhoist_3: Annotated[
         Lock,
         Field(validation_alias="ox_IndctHlyrdLck3Ovrhst_Ext"),
-        VariableMeta(name="overhoist_3", type="actual"),
+        VariableMeta(name="overhoist_3", display_name="reef 3"),
     ]
     boom_lock_1: Annotated[
         Lock,
         Field(validation_alias="ox_IndctBmRfLck1_Ext"),
-        VariableMeta(name="boom_lock_1", type="actual"),
+        VariableMeta(name="boom_lock_1", display_name="boom 1"),
     ]
     boom_lock_2: Annotated[
         Lock,
         Field(validation_alias="ox_IndctBmRfLck2_Ext"),
-        VariableMeta(name="boom_lock_2", type="actual"),
+        VariableMeta(name="boom_lock_2", display_name="boom 2"),
     ]
     boom_lock_3: Annotated[
         Lock,
         Field(validation_alias="ox_IndctBmRfLck3_Ext"),
-        VariableMeta(name="boom_lock_3", type="actual"),
+        VariableMeta(name="boom_lock_3", display_name="boom 3"),
     ]
 
 
@@ -535,46 +535,46 @@ class MizzenCunningham(LoadsModel, ABC):
 
 class MizzenHalyard(LoadsModel, ABC):
     TOPIC = "sail-systems/fe404_mzznhlyrd"
-    load: Load
+    load: Annotated[Load, VariableMeta(display_name="halyard")]
     lock_full: Annotated[
         Lock,
         Field(validation_alias="ox_IndctMzznHlyrdLckFh_Ext"),
-        VariableMeta(name="lock_full", type="actual"),
+        VariableMeta(name="lock_full", display_name="masthead"),
     ]
     lock_1: Annotated[
         Lock,
         Field(validation_alias="ox_IndctMzznHlyrdLck1_Ext"),
-        VariableMeta(name="lock_1", type="actual"),
+        VariableMeta(name="lock_1", display_name="reef 1"),
     ]
     lock_2: Annotated[
         Lock,
         Field(validation_alias="ox_IndctMzznHlyrdLck2_Ext"),
-        VariableMeta(name="lock_2", type="actual"),
+        VariableMeta(name="lock_2", display_name="reef 2"),
     ]
     overhoist_full: Annotated[
         Lock,
         Field(validation_alias="ox_IndctMzznHlyrdLckFhOvrhst_Ext"),
-        VariableMeta(name="overhoist_full", type="actual"),
+        VariableMeta(name="overhoist_full", display_name="masthead"),
     ]
     overhoist_1: Annotated[
         Lock,
         Field(validation_alias="ox_IndctMzznHlyrdLck1Ovrhst_Ext"),
-        VariableMeta(name="overhoist_1", type="actual"),
+        VariableMeta(name="overhoist_1", display_name="reef 1"),
     ]
     overhoist_2: Annotated[
         Lock,
         Field(validation_alias="ox_IndctMzznHlyrdLck2Ovrhst_Ext"),
-        VariableMeta(name="overhoist_2", type="actual"),
+        VariableMeta(name="overhoist_2", display_name="reef 2"),
     ]
     boom_lock_1: Annotated[
         Lock,
         Field(validation_alias="ox_IndctMzznBmRfLck1_Ext"),
-        VariableMeta(name="boom_lock_1", type="actual"),
+        VariableMeta(name="boom_lock_1", display_name="boom 1"),
     ]
     boom_lock_2: Annotated[
         Lock,
         Field(validation_alias="ox_IndctMzznBmRfLck2_Ext"),
-        VariableMeta(name="boom_lock_2", type="actual"),
+        VariableMeta(name="boom_lock_2", display_name="boom 2"),
     ]
 
 
@@ -583,12 +583,12 @@ class MizzenHeadsailLocks(LoadsModel, ABC):
     lock: Annotated[
         Lock,
         Field(validation_alias="ox_IndctHdslLck_Ext"),
-        VariableMeta(name="lock", type="actual"),
+        VariableMeta(name="lock", display_name="headsail"),
     ]
     overhoist: Annotated[
         Lock,
         Field(validation_alias="ox_IndctHdslLckOvrhst_Ext"),
-        VariableMeta(name="overhoist", type="actual"),
+        VariableMeta(name="overhoist", display_name="headsail"),
     ]
 
 
