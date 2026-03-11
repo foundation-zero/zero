@@ -1,31 +1,59 @@
 import { SailId } from "./consts.sails";
 import { VariableId } from "./consts.variables";
 
+export const enum DashboardType {
+  Static = "static",
+  Dynamic = "dynamic",
+}
+
+export const DASHBOARD_TYPES = [DashboardType.Static, DashboardType.Dynamic] as const;
+
+export const isDashboardType = (value: string): value is DashboardType =>
+  DASHBOARD_TYPES.includes(value as DashboardType);
+
+export type DashboardId = SailId | DashboardType;
+
 export type Dashboard = {
-  sail: SailId;
+  id: DashboardId;
   groups: VariableGroup[];
 };
 
+export type GroupVariable = [id: VariableId, includeInDynamic?: boolean];
+
 export type VariableGroup = {
   name: string;
-  variables: VariableId[];
+  variables: GroupVariable[];
+  includeInDynamic: "always" | SailId[];
 };
 
-export const group = (name: string, ...variables: VariableId[]): VariableGroup => ({
+export const group = (
+  name: string,
+  ...variables: (VariableId | GroupVariable)[]
+): VariableGroup => ({
   name,
-  variables,
+  variables: variables.map((v) => (Array.isArray(v) ? v : [v, true])),
+  includeInDynamic: "always",
 });
 
-const dashboard = (sail: SailId, ...groups: VariableGroup[]): Dashboard => ({
-  sail,
+export const dynamic = (group: VariableGroup, ...sails: SailId[]): VariableGroup => ({
+  ...group,
+  includeInDynamic: sails,
+});
+
+const dashboard = (id: DashboardId, ...groups: VariableGroup[]): Dashboard => ({
+  id,
   groups,
 });
 
 export const MAIN_MAST_GROUP = group(
   "Main mast",
-  "main-runner-ps-load",
-  "main-runner-sb-load",
-  "main-checkstay-ps-load",
+  // Dynamic
+  ["main-runner-ps-load", true],
+  // Static
+  ["main-runner-sb-load"],
+  // Static
+  ["main-checkstay-ps-load", false],
+  // Dynamic
   "main-checkstay-sb-load",
   "main-checkstay-deflector-load",
   "main-checkstay-deflector-relative-position",
@@ -184,7 +212,7 @@ export const STORM_JIB_GROUP = group(
 export const STORM_JIB_LOCKS_GROUP = group("Locks", "headsail-locks-lock-stormjib");
 
 export const OVERVIEW = dashboard(
-  SailId.None,
+  DashboardType.Static,
   MAIN_MAST_GROUP,
   MAIN_SAIL_GROUP,
   MIZZEN_MAST_GROUP,
@@ -289,12 +317,41 @@ export const CODE_ZERO = dashboard(
   CODE_ZERO_LOCKS_GROUP,
 );
 
+export const DYNAMIC = dashboard(
+  DashboardType.Dynamic,
+  dynamic(
+    MAIN_MAST_GROUP,
+    SailId.FullMain,
+    SailId.MainReef1,
+    SailId.MainReef2,
+    SailId.MainReef3,
+    SailId.Trisail,
+    SailId.UtilityMain,
+  ),
+  dynamic(
+    MAIN_SAIL_GROUP,
+    SailId.FullMain,
+    SailId.MainReef1,
+    SailId.MainReef2,
+    SailId.MainReef3,
+    SailId.Trisail,
+    SailId.UtilityMain,
+  ),
+  dynamic(MIZZEN_MAST_GROUP, SailId.FullMizzen, SailId.MizzenReef1, SailId.MizzenReef2),
+  dynamic(MIZZEN_SAIL_GROUP, SailId.FullMizzen, SailId.MizzenReef1, SailId.MizzenReef2),
+  dynamic(BLADE_SAIL_GROUP, SailId.Blade),
+  dynamic(STAYSAIL_GROUP, SailId.Staysail),
+  dynamic(CODE_ZERO_GROUP, SailId.CodeZero),
+  dynamic(STORM_JIB_GROUP, SailId.StormJib),
+);
+
 export const A3 = dashboard(SailId.A3, MAIN_MAST_GROUP, CODE_ZERO_GROUP, CODE_ZERO_LOCKS_GROUP);
 
 export const A2 = dashboard(SailId.A2, MAIN_MAST_GROUP, A2_GROUP, A2_LOCKS_GROUP);
 
 export const DASHBOARDS: Dashboard[] = [
   OVERVIEW,
+  DYNAMIC,
   MAIN,
   MAIN_REEF_1,
   MAIN_REEF_2,

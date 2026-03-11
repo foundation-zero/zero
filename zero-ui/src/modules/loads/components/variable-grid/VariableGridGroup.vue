@@ -1,18 +1,21 @@
 <script setup lang="ts">
 import { cn } from "@/modules/common/lib/utils";
-import { computed, HTMLAttributes } from "vue";
+import { computed, HTMLAttributes, toRefs } from "vue";
 import { getContext } from ".";
+import { GroupVariable } from "../../lib/consts.dashboards";
 import { useVariablesStore } from "../../stores/variables";
 import { Variable, VariableUnit } from "../../types";
 
 const { getVariableById } = useVariablesStore();
+const { isDynamicDashboard } = toRefs(useVariablesStore());
 
 const { type } = getContext();
-const props = defineProps<{ items: string[]; class?: HTMLAttributes["class"] }>();
-const variables = computed<Variable[]>(() =>
+const props = defineProps<{ items: GroupVariable[]; class?: HTMLAttributes["class"] }>();
+const variables = computed(() =>
   props.items
-    .map((id) => getVariableById(id).value)
-    .filter<Variable>((v): v is Variable => !!v && !!v.variable),
+    .filter(([, includeInDynamic]) => includeInDynamic || !isDynamicDashboard.value)
+    .map(([id]) => getVariableById(id).value)
+    .filter((v): v is Variable => !!v && !!v.variable),
 );
 
 const onOffs = computed(

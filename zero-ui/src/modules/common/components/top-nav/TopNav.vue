@@ -1,9 +1,6 @@
 <script setup lang="ts">
 import { ref } from "vue";
-import { useI18n } from "vue-i18n";
 import { useScrollOffset } from ".";
-
-const { t } = useI18n();
 
 const title = ref<HTMLElement | null>(null);
 const scrollOffset = useScrollOffset(title);
@@ -14,12 +11,6 @@ const scrollOffset = useScrollOffset(title);
     class="fixed right-0 left-0 flex flex-col justify-between overflow-hidden backdrop-blur-md"
     :style="{ top: scrollOffset }"
   >
-    <h1
-      ref="title"
-      class="tracking-ultrawide py-3 text-center text-xl font-bold uppercase"
-    >
-      {{ t("app.title") }}
-    </h1>
     <slot />
   </nav>
 </template>

@@ -1,7 +1,8 @@
 <script setup lang="ts">
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
 import { cn } from "@/modules/common/lib/utils";
-import { BarChart3, List } from "lucide-vue-next";
+import { DashboardIcon } from "@radix-icons/vue";
+import { MenuIcon } from "lucide-vue-next";
 import type { HTMLAttributes } from "vue";
 import { useI18n } from "vue-i18n";
 import type { CardType } from "../../types";
@@ -35,7 +36,7 @@ const onUpdate = (value: CardType | null) => {
       :aria-label="t('loads.components.cardTypeToggle.numerical')"
       :title="t('loads.components.cardTypeToggle.numerical')"
     >
-      <List class="size-4" />
+      <MenuIcon class="size-4" />
       <span class="sr-only">{{ t("loads.components.cardTypeToggle.numerical") }}</span>
     </ToggleGroupItem>
     <ToggleGroupItem
@@ -44,7 +45,8 @@ const onUpdate = (value: CardType | null) => {
       :aria-label="t('loads.components.cardTypeToggle.graphical')"
       :title="t('loads.components.cardTypeToggle.graphical')"
     >
-      <BarChart3 class="size-4" />
+      <DashboardIcon class="size-4" />
+
       <span class="sr-only">{{ t("loads.components.cardTypeToggle.graphical") }}</span>
     </ToggleGroupItem>
   </ToggleGroup>

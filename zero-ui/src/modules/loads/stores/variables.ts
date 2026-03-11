@@ -11,7 +11,16 @@ import {
   VARIABLE_REFERENCE_VALUES,
 } from "../graphql/queries/variables";
 import { AWA_VALUES, AWS_VALUES } from "../lib/consts";
-import { Dashboard, DASHBOARDS, OVERVIEW } from "../lib/consts.dashboards";
+import {
+  Dashboard,
+  DASHBOARD_TYPES,
+  DashboardId,
+  DASHBOARDS,
+  DashboardType,
+  isDashboardType,
+  OVERVIEW,
+  VariableGroup,
+} from "../lib/consts.dashboards";
 import { POSITIONS_WITH_SAILS, SailId, SAILS } from "../lib/consts.sails";
 import { findInRange, unique } from "../lib/utils";
 import {
@@ -99,9 +108,11 @@ export const useVariablesStore = defineStore("loads-variables", () => {
   const setSelectedSails = (sails: SailSelection) => {
     selectedSails.value = sails;
 
+    if (isDashboardType(selectedDashboardId.value)) return;
+
     // If the currently selected dashboard is not valid for the new sailset, reset to OVERVIEW
     if (!selectedSailIds.value.includes(selectedDashboardId.value)) {
-      setDashboard(OVERVIEW.sail);
+      setDashboard(OVERVIEW.id);
     }
   };
 
@@ -115,30 +126,49 @@ export const useVariablesStore = defineStore("loads-variables", () => {
     mergeDefaults: toSupportedValue(AWS_VALUES.map(extractId)),
   });
 
-  const selectedDashboardId = useLocalStorage<SailId>(
+  const selectedDashboardId = useLocalStorage<DashboardId>(
     "loads-variable-selected-dashboard",
-    SailId.None,
-    { writeDefaults: true, mergeDefaults: toSupportedValue(SAILS) },
+    DashboardType.Static,
+    {
+      writeDefaults: true,
+      mergeDefaults: toSupportedValue([...DASHBOARD_TYPES, ...SAILS]),
+    },
   );
 
   const selectedDashboard = computed<Dashboard>({
     get() {
-      return DASHBOARDS.find((d) => d.sail === selectedDashboardId.value) ?? OVERVIEW;
+      return DASHBOARDS.find((d) => d.id === selectedDashboardId.value) ?? OVERVIEW;
     },
     set(dashboard: Dashboard) {
-      selectedDashboardId.value = dashboard.sail;
+      selectedDashboardId.value = dashboard.id;
     },
+  });
+
+  const isDynamicDashboard = computed(() => selectedDashboardId.value === DashboardType.Dynamic);
+
+  const visibleDashboardGroups = computed<VariableGroup[]>(() => {
+    const dashboard = selectedDashboard.value;
+
+    if (!isDynamicDashboard.value) {
+      return dashboard.groups;
+    } else {
+      return dashboard.groups.filter(
+        (group) =>
+          group.includeInDynamic === "always" ||
+          group.includeInDynamic.some((sail) => selectedSailIds.value.includes(sail)),
+      );
+    }
   });
 
   const availableDashboards = computed(
     () =>
       sails.value.filter(
         (sail) =>
-          selectedSailIds.value.includes(sail.id) && DASHBOARDS.some((d) => d.sail === sail.id),
+          selectedSailIds.value.includes(sail.id) && DASHBOARDS.some((d) => d.id === sail.id),
       ) ?? [],
   );
 
-  const setDashboard = (sail: SailId) => {
+  const setDashboard = (sail: DashboardId) => {
     selectedDashboardId.value = sail;
   };
 
@@ -146,7 +176,9 @@ export const useVariablesStore = defineStore("loads-variables", () => {
 
   const currentVariables = computed(() =>
     // Always query for AWA and AWS
-    selectedDashboard.value.groups.flatMap((g) => g.variables).concat(["awa", "aws"]),
+    selectedDashboard.value.groups
+      .flatMap((g) => g.variables.map(([id]) => id))
+      .concat(["awa", "aws"]),
   );
 
   const getVariableById = <T extends number | boolean>(id: string) =>
@@ -248,8 +280,10 @@ export const useVariablesStore = defineStore("loads-variables", () => {
     selectedSails,
     setSelectedSails,
     selectedDashboard,
+    isDynamicDashboard,
     setDashboard,
     availableDashboards,
+    visibleDashboardGroups,
     currentVariables,
     startPolling,
     stopPolling,

@@ -1,7 +1,7 @@
 <template>
   <component
     :is="tag ?? 'span'"
-    v-if="to === undefined"
+    v-if="to == undefined"
   >
     -
   </component>
