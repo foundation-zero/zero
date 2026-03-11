@@ -74,7 +74,7 @@ async def test_graphql(async_client: AsyncClient, override_dependency):
                         },
                         "variable": {
                             "id": "main-runner-ps-load",
-                            "name": "runner ps",
+                            "name": "Runner PS",
                             "unit": "tonne",
                             "scaleMin": 0.0,
                             "scaleMax": 29.0,
