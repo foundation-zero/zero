@@ -72,6 +72,7 @@ class Pcm(ThrsValues):
     charged: Stamped[Charged]
 
 
+# Leaving in commented fields as we might need these IOs in the future, but need to accomodate for them in the SimulationInputs or in the FMU first as they are currently not part of the FMU. For now, they are to be used as reference for the IOs that we might want to add in the future.
 class Fahrenheit(ThrsValues):
     operating: Stamped[Operating]
     no_error: Stamped[NoError]
