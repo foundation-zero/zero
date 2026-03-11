@@ -7,29 +7,29 @@ from .units import Load, VariableMeta
 class FiberOptic(LoadsModel):
     TOPIC = "fiber-optic/placeholder"
     main_v1_sb: Annotated[
-        Load, VariableMeta(display_name="V1 sb", scale_min=0, scale_max=85)
+        Load, VariableMeta(display_name="V1 SB", scale_min=0, scale_max=85)
     ]
     main_v1_ps: Annotated[
-        Load, VariableMeta(display_name="V1 ps", scale_min=0, scale_max=85)
+        Load, VariableMeta(display_name="V1 PS", scale_min=0, scale_max=85)
     ]
     main_d1_sb: Annotated[
-        Load, VariableMeta(display_name="D1 sb", scale_min=0, scale_max=43)
+        Load, VariableMeta(display_name="D1 SB", scale_min=0, scale_max=43)
     ]
     main_d1_ps: Annotated[
-        Load, VariableMeta(display_name="D1 ps", scale_min=0, scale_max=43)
+        Load, VariableMeta(display_name="D1 PS", scale_min=0, scale_max=43)
     ]
     mizzen_v1_sb: Annotated[
-        Load, VariableMeta(display_name="V1 sb", scale_min=0, scale_max=47)
+        Load, VariableMeta(display_name="V1 SB", scale_min=0, scale_max=47)
     ]
     mizzen_v1_ps: Annotated[
-        Load, VariableMeta(display_name="V1 ps", scale_min=0, scale_max=47)
+        Load, VariableMeta(display_name="V1 PS", scale_min=0, scale_max=47)
     ]
     mizzen_d1_sb: Annotated[
-        Load, VariableMeta(display_name="D1 sb", scale_min=0, scale_max=25)
+        Load, VariableMeta(display_name="D1 SB", scale_min=0, scale_max=25)
     ]
     mizzen_d1_ps: Annotated[
-        Load, VariableMeta(display_name="D1 ps", scale_min=0, scale_max=25)
+        Load, VariableMeta(display_name="D1 PS", scale_min=0, scale_max=25)
     ]
     mizzen_forestay: Annotated[
-        Load, VariableMeta(display_name="forestay", scale_min=0, scale_max=31)
+        Load, VariableMeta(display_name="Forestay", scale_min=0, scale_max=31)
     ]
