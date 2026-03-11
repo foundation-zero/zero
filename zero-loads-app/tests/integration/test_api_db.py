@@ -1,8 +1,9 @@
 import pytest
-from sqlalchemy import inspect
+from sqlalchemy import inspect, select
 
-from loads.api.schema import Base
+from loads.api.schema import Base, ReferenceValues
 from loads.config import Settings
+from loads.registry import VARIABLES
 
 
 @pytest.mark.asyncio
@@ -37,3 +38,16 @@ async def test_declarative_base_matches_db(settings: Settings, sessionmanager):
             assert model_cols == db_columns[table], (
                 f"Column mismatch {table}: {model_cols} != {db_columns[table]}"
             )
+
+
+@pytest.mark.asyncio
+async def test_reference_values_variable_ids_in_registry(sessionmanager):
+    async with sessionmanager.session() as session:
+        query = select(ReferenceValues.variable_id).distinct()
+        result = await session.execute(query)
+        db_variable_ids = set(result.scalars().all())
+        registry_variable_ids = set(VARIABLES.keys())
+        missing_variables = db_variable_ids - registry_variable_ids
+        assert not missing_variables, (
+            f"The following variable_ids from reference_values are not in VARIABLES registry: {missing_variables}"
+        )

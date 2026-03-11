@@ -1,3 +1,4 @@
+import asyncio
 from unittest.mock import Mock
 
 import pytest
@@ -6,7 +7,7 @@ from httpx import AsyncClient
 from loads.api.dependencies import get_messaging
 from loads.registry.registry import VARIABLES
 from loads.sensors.at import ApparentWindSpeed
-from loads.sensors.fiber_optic import SideStayMeasurements
+from loads.sensors.fiber_optic import FiberOptic
 from loads.sensors.sail_system import MainCheckstay, PrimaryWinchPs
 
 
@@ -28,7 +29,7 @@ async def test_graphql(async_client: AsyncClient, override_dependency):
                 query {
                     variables(variables: ["main-runner-ps-load"]) {
                         id
-                        reference(case: {awaRange: upwind, awsRange: aws_15_20, sailset: ["full-main", "full-mizzen", "blade"]}) {
+                        reference(case: {awaRange: upwind, awsRange: aws_20_25, sailset: ["full-main", "full-mizzen", "blade"]}) {
                             alarmLow
                             alarmHigh
                             target
@@ -61,11 +62,11 @@ async def test_graphql(async_client: AsyncClient, override_dependency):
                     {
                         "id": "main-runner-ps-load",
                         "reference": {
-                            "alarmLow": 6.0,
-                            "warningLow": 9.0,
-                            "target": 12.0,
-                            "warningHigh": 15.0,
-                            "alarmHigh": 18.0,
+                            "alarmLow": None,
+                            "warningLow": None,
+                            "target": 17.3,
+                            "warningHigh": 23.76,
+                            "alarmHigh": 26.4,
                         },
                         "actual": {
                             "id": "main-runner-ps-load",
@@ -76,7 +77,7 @@ async def test_graphql(async_client: AsyncClient, override_dependency):
                             "name": "runner ps",
                             "unit": "tonne",
                             "scaleMin": 0.0,
-                            "scaleMax": 20.0,
+                            "scaleMax": 29.0,
                             "scaleMinLabel": None,
                             "scaleMaxLabel": None,
                         },
@@ -87,9 +88,7 @@ async def test_graphql(async_client: AsyncClient, override_dependency):
 
 
 @pytest.mark.asyncio
-async def test_graphql_set_reference_values(
-    async_client: AsyncClient, override_dependency
-):
+async def test_graphql_set_reference_values(async_client: AsyncClient):
     insert = await async_client.post(
         "/graphql",
         json={
@@ -142,134 +141,127 @@ async def test_graphql_set_reference_values(
 
 
 @pytest.mark.asyncio
-async def test_graphql_all_variables(async_client: AsyncClient, override_dependency):
-    with override_dependency(get_messaging, override_messaging):
-        response = await async_client.post(
-            "/graphql",
-            json={
-                "query": """
-                query {
-                    variables {
+async def test_graphql_all_variables(async_client: AsyncClient):
+    response = await async_client.post(
+        "/graphql",
+        json={
+            "query": """
+            query {
+                variables {
+                    id
+                    variable {
                         id
-                        variable {
-                            id
-                            name
-                            unit
-                            scaleMin
-                            scaleMax
-                            scaleMinLabel
-                            scaleMaxLabel
-                        }
+                        name
+                        unit
+                        scaleMin
+                        scaleMax
+                        scaleMinLabel
+                        scaleMaxLabel
                     }
                 }
-                """
-            },
-        )
-
-        assert response.status_code == 200
-        assert len(response.json()["data"]["variables"]) == len(VARIABLES.keys())
-
-
-@pytest.mark.asyncio
-async def test_graphql_variable_duplicates(
-    async_client: AsyncClient, override_dependency
-):
-    with override_dependency(get_messaging, override_messaging):
-        response = await async_client.post(
-            "/graphql",
-            json={
-                "query": """
-                query {
-                    a: variables {
-                        id
-                        variable {
-                            id
-                            name
-                            unit
-                            scaleMin
-                            scaleMax
-                            scaleMinLabel
-                            scaleMaxLabel
-                        }
-                    }
-                    b: variables {
-                        id
-                        variable {
-                            id
-                            name
-                            unit
-                            scaleMin
-                            scaleMax
-                            scaleMinLabel
-                            scaleMaxLabel
-                        }
-                    }
-                }
-                """
-            },
-        )
-
-        assert response.status_code == 200
-        assert len(response.json()["data"]["a"]) == len(VARIABLES.keys())
-        assert len(response.json()["data"]["b"]) == len(VARIABLES.keys())
-
-
-@pytest.mark.asyncio
-async def test_graphql_reference_duplicates(
-    async_client: AsyncClient, override_dependency
-):
-    with override_dependency(get_messaging, override_messaging):
-        response = await async_client.post(
-            "/graphql",
-            json={
-                "query": """
-                query {
-                    variables(variables: ["main-runner-ps-load"]) {
-                        id
-                        a: reference(case: {awaRange: upwind, awsRange: aws_15_20, sailset: ["full-main", "full-mizzen", "blade"]}) {
-                            alarmLow
-                            alarmHigh
-                            target
-                            warningHigh
-                            warningLow
-                        }
-                        b: reference(case: {awaRange: upwind, awsRange: aws_15_20, sailset: ["full-main", "full-mizzen", "blade"]}) {
-                            alarmLow
-                            alarmHigh
-                            target
-                            warningHigh
-                            warningLow
-                        }
-                    }
-                }
-                """
-            },
-        )
-
-        assert response.status_code == 200
-        assert response.json() == {
-            "data": {
-                "variables": [
-                    {
-                        "id": "main-runner-ps-load",
-                        "a": {
-                            "alarmLow": 6.0,
-                            "warningLow": 9.0,
-                            "target": 12.0,
-                            "warningHigh": 15.0,
-                            "alarmHigh": 18.0,
-                        },
-                        "b": {
-                            "alarmLow": 6.0,
-                            "warningLow": 9.0,
-                            "target": 12.0,
-                            "warningHigh": 15.0,
-                            "alarmHigh": 18.0,
-                        },
-                    },
-                ]
             }
+            """
+        },
+    )
+
+    assert response.status_code == 200
+    assert len(response.json()["data"]["variables"]) == len(VARIABLES.keys())
+
+
+@pytest.mark.asyncio
+async def test_graphql_variable_duplicates(async_client: AsyncClient):
+    response = await async_client.post(
+        "/graphql",
+        json={
+            "query": """
+            query {
+                a: variables {
+                    id
+                    variable {
+                        id
+                        name
+                        unit
+                        scaleMin
+                        scaleMax
+                        scaleMinLabel
+                        scaleMaxLabel
+                    }
+                }
+                b: variables {
+                    id
+                    variable {
+                        id
+                        name
+                        unit
+                        scaleMin
+                        scaleMax
+                        scaleMinLabel
+                        scaleMaxLabel
+                    }
+                }
+            }
+            """
+        },
+    )
+
+    assert response.status_code == 200
+    assert len(response.json()["data"]["a"]) == len(VARIABLES.keys())
+    assert len(response.json()["data"]["b"]) == len(VARIABLES.keys())
+
+
+@pytest.mark.asyncio
+async def test_graphql_reference_duplicates(async_client: AsyncClient):
+    response = await async_client.post(
+        "/graphql",
+        json={
+            "query": """
+            query {
+                variables(variables: ["main-runner-ps-load"]) {
+                    id
+                    a: reference(case: {awaRange: upwind, awsRange: aws_20_25, sailset: ["full-main", "full-mizzen", "blade"]}) {
+                        alarmLow
+                        alarmHigh
+                        target
+                        warningHigh
+                        warningLow
+                    }
+                    b: reference(case: {awaRange: upwind, awsRange: aws_20_25, sailset: ["full-main", "full-mizzen", "blade"]}) {
+                        alarmLow
+                        alarmHigh
+                        target
+                        warningHigh
+                        warningLow
+                    }
+                }
+            }
+            """
+        },
+    )
+
+    assert response.status_code == 200
+    assert response.json() == {
+        "data": {
+            "variables": [
+                {
+                    "id": "main-runner-ps-load",
+                    "a": {
+                        "alarmLow": None,
+                        "warningLow": None,
+                        "target": 17.3,
+                        "warningHigh": 23.76,
+                        "alarmHigh": 26.4,
+                    },
+                    "b": {
+                        "alarmLow": None,
+                        "warningLow": None,
+                        "target": 17.3,
+                        "warningHigh": 23.76,
+                        "alarmHigh": 26.4,
+                    },
+                },
+            ]
         }
+    }
 
 
 @pytest.mark.asyncio
@@ -282,6 +274,7 @@ async def test_sail_system_actual(async_client: AsyncClient, mqtt_client_send):
             "ox_LoadAlarm": false
         }""",
     )
+    await asyncio.sleep(0.1)
     response = await async_client.post(
         "/graphql",
         json={
@@ -328,6 +321,7 @@ async def test_alarms(async_client: AsyncClient, mqtt_client_send):
             "ox_LoadAlarm": true
         }""",
     )
+    await asyncio.sleep(0.1)
     response = await async_client.post(
         "/graphql",
         json={
@@ -386,6 +380,7 @@ async def test_active_alarms(async_client: AsyncClient, mqtt_client_send):
             "ox_LoadAlarm": true
         }""",
     )
+    await asyncio.sleep(0.1)
     response = await async_client.post(
         "/graphql",
         json={
@@ -422,6 +417,7 @@ async def test_at_sensors(async_client: AsyncClient, mqtt_client_send):
     variable_name = "aws"
     raw_value = "16.7"
     await mqtt_client_send.publish(ApparentWindSpeed.TOPIC, raw_value)
+    await asyncio.sleep(0.1)
     response = await async_client.post(
         "/graphql",
         json={
@@ -456,22 +452,26 @@ async def test_at_sensors(async_client: AsyncClient, mqtt_client_send):
 @pytest.mark.asyncio
 async def test_fiber_optics_actual(async_client: AsyncClient, mqtt_client_send):
     await mqtt_client_send.publish(
-        SideStayMeasurements.TOPIC,
+        FiberOptic.TOPIC,
         """{
-            "v1": 20,
-            "d1": 1,
-            "d2": 2,
-            "d3": 3,
-            "d4": 4,
-            "d5": 5
+            "main_v1_ps": 20,
+            "main_v1_sb": 1,
+            "main_d1_ps": 2,
+            "main_d1_sb": 3,
+            "mizzen_v1_ps": 4,
+            "mizzen_v1_sb": 5,
+            "mizzen_d1_ps": 6,
+            "mizzen_d1_sb": 7,
+            "mizzen_forestay": 8
         }""",
     )
+    await asyncio.sleep(0.1)
     response = await async_client.post(
         "/graphql",
         json={
             "query": """
             query {
-                variables(variables: ["side-stay-measurements-v1"]) {
+                variables(variables: ["fiber-optic-main-v1-ps"]) {
                     id
                     actual {
                         id
@@ -488,9 +488,9 @@ async def test_fiber_optics_actual(async_client: AsyncClient, mqtt_client_send):
         "data": {
             "variables": [
                 {
-                    "id": "side-stay-measurements-v1",
+                    "id": "fiber-optic-main-v1-ps",
                     "actual": {
-                        "id": "side-stay-measurements-v1",
+                        "id": "fiber-optic-main-v1-ps",
                         "value": 20,
                     },
                 },

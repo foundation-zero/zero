@@ -116,7 +116,7 @@ SAIL_SYSTEM_MODELS: list[type[LoadsModel]] = [
     sail_system.CodeZeroTack,
     sail_system.A2Tack,
     sail_system.StormJibTack,
-    sail_system.CombinedHeadstay,
+    sail_system.MainHeadstayCombined,
     sail_system.HeadsailLocks,
     sail_system.MainCheckstay,
     sail_system.MainCunningham,
@@ -144,7 +144,7 @@ SAIL_SYSTEM_MODELS: list[type[LoadsModel]] = [
     sail_system.StaysailStayAdjuster,
 ]
 AT_MODELS = [at.ApparentWindSpeed, at.ApparentWindAngle]
-FIBER_OPTIC_MODELS = [fiber_optic.SideStayMeasurements]
+FIBER_OPTIC_MODELS = [fiber_optic.FiberOptic]
 
 _SAIL_SYSTEM_VARIABLES: dict[str, VariableDefinition] = {
     variable.id: variable

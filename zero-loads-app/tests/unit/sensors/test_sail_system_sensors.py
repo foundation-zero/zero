@@ -5,7 +5,6 @@ from pydantic import Field
 
 from loads.sensors.base import LoadsModel
 from loads.sensors.sail_system import (
-    ConstrainedLoad,
     Load,
     Position,
     RelativePosition,
@@ -15,7 +14,7 @@ from loads.sensors.sail_system import (
 class SailSystemSensor(LoadsModel, ABC):
     TOPIC = "test-topic"
 
-    load: Annotated[ConstrainedLoad, Field(validation_alias="load")]
+    load: Annotated[Load, Field(validation_alias="load")]
     position: Annotated[Position, Field(validation_alias="position")]
     relative_position: Annotated[
         RelativePosition, Field(validation_alias="relative_position")
@@ -44,7 +43,7 @@ def test_load_bounds():
         override_load: Annotated[
             Load, Field(ge=-10, le=10, validation_alias="override_load")
         ]
-        load: Annotated[ConstrainedLoad, Field(validation_alias="load")]
+        load: Annotated[Load, Field(validation_alias="load", ge=0, le=20)]
 
     sensor = OverrideLoadSensor.model_validate(message)
 
