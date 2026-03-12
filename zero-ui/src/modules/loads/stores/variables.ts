@@ -1,6 +1,7 @@
 import { extractProperty, toRecord } from "@/modules/common/lib/utils";
 import { useQuery } from "@urql/vue";
 import { useIntervalFn, useLocalStorage } from "@vueuse/core";
+import { isBoolean } from "lodash";
 import { defineStore } from "pinia";
 import { computed } from "vue";
 import { LOADS_CONTEXT } from "../graphql/client";
@@ -152,10 +153,10 @@ export const useVariablesStore = defineStore("loads-variables", () => {
     if (!isDynamicDashboard.value) {
       return dashboard.groups;
     } else {
-      return dashboard.groups.filter(
-        (group) =>
-          group.includeInDynamic === "always" ||
-          group.includeInDynamic.some((sail) => selectedSailIds.value.includes(sail)),
+      return dashboard.groups.filter((group) =>
+        isBoolean(group.includeInDynamic)
+          ? group.includeInDynamic
+          : group.includeInDynamic.some((sail) => selectedSailIds.value.includes(sail)),
       );
     }
   });

@@ -23,7 +23,7 @@ export type GroupVariable = [id: VariableId, includeInDynamic?: boolean];
 export type VariableGroup = {
   name: string;
   variables: GroupVariable[];
-  includeInDynamic: "always" | SailId[];
+  includeInDynamic: boolean | SailId[];
 };
 
 export const group = (
@@ -32,12 +32,12 @@ export const group = (
 ): VariableGroup => ({
   name,
   variables: variables.map((v) => (Array.isArray(v) ? v : [v, true])),
-  includeInDynamic: "always",
+  includeInDynamic: false,
 });
 
 export const dynamic = (group: VariableGroup, ...sails: SailId[]): VariableGroup => ({
   ...group,
-  includeInDynamic: sails,
+  includeInDynamic: sails.length > 0 ? sails : true,
 });
 
 const dashboard = (id: DashboardId, ...groups: VariableGroup[]): Dashboard => ({
@@ -325,8 +325,8 @@ export const CODE_ZERO = dashboard(
 
 export const DYNAMIC = dashboard(
   DashboardType.Dynamic,
-  MAIN_MAST_GROUP,
-  MIZZEN_MAST_GROUP,
+  dynamic(MAIN_MAST_GROUP),
+  dynamic(MIZZEN_MAST_GROUP),
   dynamic(
     MAIN_SAIL_GROUP,
     SailId.FullMain,
