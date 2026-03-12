@@ -70,8 +70,11 @@ services:
         condition: service_healthy
 
   risingwave:
-    image: risingwavelabs/risingwave:nightly-20250928
-    command: single_node
+    image: risingwavelabs/risingwave:v2.7.2
+    command:
+      - single_node
+      - --config-path
+      - /risingwave.toml
     ports:
       - 4566:4566
       - 5691:5691
@@ -90,6 +93,8 @@ services:
       timeout: 5s
     depends_on:
       - vernemq
+    volumes:
+      - ./risingwave.toml:/risingwave.toml
 
   setup-risingwave:
     build:
