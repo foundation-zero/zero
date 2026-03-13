@@ -1,0 +1,6 @@
+dependencies:
+- name: hasura-enterprise-stack
+  repository: https://hasura.github.io/helm-charts
+  version: 0.9.1
+digest: sha256:0dca12fc3f43e1d17882798af82dd522cbf8754a5c35c362b2df8770e5ecc753
+generated: "2026-03-13T16:40:57.370622+01:00"

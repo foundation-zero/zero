@@ -5,6 +5,10 @@ on:
         description: "Path to the helm chart directory"
         type: string
         required: true
+      version_updates:
+        description: "Optional JSON array of objects with file and path keys to update with the release version"
+        type: string
+        required: false
 
 jobs:
   helm-push:
@@ -18,6 +22,8 @@ jobs:
       - name: Update Chart Versions
         id: chart_info
         if: ${{ github.event_name == 'release' }}
+        env:
+          VERSION_UPDATES: ${{ inputs.version_updates }}
         run: |
           # v1.2.3
           export GIT_REF=${{github.ref_name}}
@@ -25,6 +31,13 @@ jobs:
           export VERSION=${GIT_REF#v}
           yq e -i '.version = strenv(VERSION)' ${{ inputs.helm_chart }}/Chart.yaml
           yq e -i '.appVersion = strenv(VERSION)'  ${{ inputs.helm_chart }}/Chart.yaml
+          if [ -n "$VERSION_UPDATES" ]; then
+            printf '%s' "$VERSION_UPDATES" | jq -c '.[]' | while IFS= read -r update; do
+              update_file=$(printf '%s' "$update" | jq -r '.file')
+              update_path=$(printf '%s' "$update" | jq -r '.path')
+              yq e -i "${update_path} = strenv(VERSION)" "$update_file"
+            done
+          fi
       - id: auth
         name: Authenticate with Google Cloud
         uses: google-github-actions/auth@v2
@@ -42,9 +55,14 @@ jobs:
           password: ${{ steps.auth.outputs.access_token }}
       - name: Set up Helm
         uses: azure/setup-helm@v4
+      - name: Set up Helm repositories
+        run: |
+          helm repo add hasura https://hasura.github.io/helm-charts
+          helm repo update
       - name: Publish Helm chart
         run: |
           CHART_NAME=$(yq '.name' '${{ inputs.helm_chart }}/Chart.yaml')
           CHART_VERSION=$(yq '.version' '${{ inputs.helm_chart }}/Chart.yaml')
+          helm dependency build ${{ inputs.helm_chart }}
           helm package ${{ inputs.helm_chart }}
           helm push $CHART_NAME-$CHART_VERSION.tgz oci://europe-west1-docker.pkg.dev/common-449414/common
