@@ -1,0 +1,6 @@
+apiVersion: v2
+name: iceburger-chart
+description: Charts for the Iceburger application
+type: application
+version: 0.0.0
+appVersion: "0.0.0"

@@ -1,0 +1,13 @@
+# This is just a simple example for now. We should generate this from zero-data
+batch:
+  size: 10
+  seconds: 20
+amqp: # RabbitMQ config
+  exchange: mqtt # Exchange which to bind
+  queue: mqtt.messages # Name of the queue
+  routing_keys: ["#"] # Routing keys to bind to the queue
+routings: # Routing keys to combine
+  - routing_key_prefix: a # Messages with routing keys start with with "a" get combined
+    table: messages.as # Stored in table "as" in namespace "messages" (namespace is required)
+    timestamp: true # And the RabbitMQ timestamp is included in the table
+    exclude_routing_key: true # The routing key of the message isn't included in the table (default false)

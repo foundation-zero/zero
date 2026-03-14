@@ -1,0 +1,40 @@
+replicaCount: 1
+
+image:
+  repository: europe-west1-docker.pkg.dev/common-449414/common/iceburger
+  pullPolicy: IfNotPresent
+  tag: ""
+
+iceburger:
+  sinkWorkers: 30
+  resources: {}
+  nodeSelector: {}
+  tolerations: []
+  affinity: {}
+
+rabbitmq:
+  host: ""
+  port: 5672
+  username: ""
+  existingSecret: ""
+  existingSecretPasswordKey: "rabbitmq-password"
+
+iceberg:
+  catalogType: "rest"
+  catalogUri: ""
+  warehouse: ""
+  namespace: ""
+
+s3:
+  endpoint: ""
+  region: ""
+  accessKeyId: ""
+  existingSecret: ""
+  existingSecretAccessKeyKey: "s3-secret-access-key"
+
+imagePullSecrets: []
+nameOverride: ""
+fullnameOverride: ""
+
+podAnnotations: {}
+podLabels: {}
