@@ -1,0 +1,5 @@
+hasura-enterprise-stack:
+  graphql-engine:
+    image:
+      repository: europe-west1-docker.pkg.dev/common-449414/common/hasura-graphql-engine
+      tag: "0.0.0" # Overwritten in CI

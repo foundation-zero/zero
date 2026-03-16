@@ -1,0 +1,10 @@
+apiVersion: v2
+name: hasura-chart
+description: Charts for Hasura GraphQL Engine
+type: application
+version: 0.0.0
+appVersion: "0.0.0"
+dependencies:
+  - name: hasura-enterprise-stack
+    version: 0.9.1
+    repository: https://hasura.github.io/helm-charts

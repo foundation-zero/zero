@@ -1,0 +1,15 @@
+name: "Hasura: Deploy hasura chart"
+on:
+  release:
+    types: [released]
+
+jobs:
+  helm-push:
+    uses: "./.github/workflows/job_helm_push.yaml"
+    permissions:
+      contents: "read"
+      id-token: "write"
+    secrets: inherit
+    with:
+      helm_chart: "hasura/charts"
+      version_updates: '[{"file": "hasura/charts/values.yaml", "path": ".hasura-enterprise-stack.graphql-engine.image.tag"}]'
