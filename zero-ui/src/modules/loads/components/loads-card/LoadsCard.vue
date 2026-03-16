@@ -34,7 +34,7 @@ const state = computed(() => getLoadState(props.value, props.thresholds));
   >
     <GaugeTarget
       :target="thresholds?.target"
-      :class="{ invisible: thresholds?.target === undefined }"
+      :class="{ invisible: thresholds?.target == undefined }"
       class="-mb-7"
     >
       <ReferenceBoxLine />

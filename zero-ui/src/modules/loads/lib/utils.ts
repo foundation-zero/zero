@@ -31,19 +31,19 @@ export const getLoadState = (
 
   if (!thresholds) return VariableState.Neutral;
 
-  if (thresholds.alarmLow !== undefined && value < thresholds.alarmLow) {
+  if (thresholds.alarmLow != undefined && value < thresholds.alarmLow) {
     return VariableState.Alarm;
   }
 
-  if (thresholds.alarmHigh !== undefined && value > thresholds.alarmHigh) {
+  if (thresholds.alarmHigh != undefined && value >= thresholds.alarmHigh) {
     return VariableState.Alarm;
   }
 
-  if (thresholds.warningLow !== undefined && value < thresholds.warningLow) {
+  if (thresholds.warningLow != undefined && value < thresholds.warningLow) {
     return VariableState.Warning;
   }
 
-  if (thresholds.warningHigh !== undefined && value > thresholds.warningHigh) {
+  if (thresholds.warningHigh != undefined && value >= thresholds.warningHigh) {
     return VariableState.Warning;
   }
 

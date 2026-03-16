@@ -4,7 +4,7 @@ export { default as VariableUnit } from "./VariableUnit.vue";
 import type { VariantProps } from "class-variance-authority";
 import { cva } from "class-variance-authority";
 
-export const variableStateVariants = cva("relative flex justify-center", {
+export const variableStateVariants = cva("relative inline-flex justify-center transition-colors", {
   variants: {
     state: {
       unknown: "text-disabled-foreground",
@@ -13,8 +13,9 @@ export const variableStateVariants = cva("relative flex justify-center", {
       warning: "text-warning",
     },
     size: {
-      xl: "font-semibold text-6xl [&>[data-slot='load-value']]:font-headers leading-[4rem]",
+      xl: "font-semibold text-5xl [&>[data-slot='load-value']]:font-headers leading-[4rem]",
       lg: "font-medium text-xl",
+      sm: "font-medium text-sm",
     },
   },
   defaultVariants: {

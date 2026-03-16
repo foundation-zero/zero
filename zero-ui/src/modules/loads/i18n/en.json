@@ -5,9 +5,9 @@
     },
     "dashboard": {
       "status": "Loads status",
-      "alarms": "No alarms | One alarm | {count} alarms",
+      "alarms": "No alarms | Critical alert | Critical alerts ({count})",
       "showAlarms": "Show",
-      "alarmActive": "{alarm}: {actualValue} {unit} exceeds threshold {thresholdValue} {unit}"
+      "alarmActive": "<strong>{actualValue} {unit}</strong> exceeds threshold <b>{thresholdValue} {unit}</b>"
     },
     "components": {
       "mastLock": {

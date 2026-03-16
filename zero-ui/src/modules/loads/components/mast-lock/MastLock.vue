@@ -25,12 +25,9 @@ const delegatedProps = reactiveOmit(props, "class");
   <Card
     data-slot="mast-lock"
     v-bind="delegatedProps"
-    :class="cn('h-[13.375rem] justify-between px-2 py-5', props.class)"
+    :class="cn('justify-between px-2 py-5', props.class)"
   >
-    <MastLockPosition
-      class="w-full"
-      :state="locked"
-    >
+    <MastLockPosition :state="locked">
       {{ $t("locked") }}
     </MastLockPosition>
     <MastLockPosition

@@ -28,32 +28,17 @@ provideContext({
 <template>
   <Card
     data-slot="card"
-    :class="cn('h-[13.375rem] min-w-[11em] gap-2', state, props.class)"
+    :class="
+      cn(
+        'gap-2 transition-colors',
+        {
+          'border-destructive text-destructive': state === 'alarm',
+          'border-warning text-warning': state === 'warning',
+        },
+        props.class,
+      )
+    "
   >
     <slot />
   </Card>
 </template>
-
-<style lang="scss" scoped>
-[data-slot="card"] {
-  &.alarm {
-    background:
-      linear-gradient(
-        180deg,
-        oklch(from var(--color-destructive) l c h / 0),
-        oklch(from var(--color-destructive) l c h / 0.1) 100%
-      ),
-      var(--color-background);
-  }
-
-  &.warning {
-    background:
-      linear-gradient(
-        180deg,
-        oklch(from var(--color-warning) l c h / 0),
-        oklch(from var(--color-warning) l c h / 0.1) 100%
-      ),
-      var(--color-background);
-  }
-}
-</style>
