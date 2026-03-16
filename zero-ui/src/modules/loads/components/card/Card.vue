@@ -9,7 +9,7 @@ const props = defineProps<{ class?: HTMLAttributes["class"] }>();
   <div
     :class="
       cn(
-        'bg-background border-border-subtle flex flex-col items-center justify-end rounded-xs border px-6 py-5',
+        'bg-background border-border-subtle flex flex-col items-center justify-end rounded-xs border p-2',
         props.class,
       )
     "

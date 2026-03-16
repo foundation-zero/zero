@@ -16,7 +16,7 @@ const props = defineProps<{
     :type="VariableUnit.Ratio"
     :value="value"
     :thresholds="thresholds"
-    :class="cn('h-[13.375rem] w-[21rem]', props.class)"
+    :class="cn('px-4', props.class)"
   >
     <slot />
   </VariableCard>

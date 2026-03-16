@@ -10,12 +10,14 @@ const props = defineProps<{
 <template>
   <div
     :class="
-      cn('text-foreground -mt-2 flex max-w-full items-center gap-2.5 pb-1 font-medium', props.class)
+      cn(
+        '-mt-1 flex w-full py-1 font-medium capitalize transition-colors',
+
+        props.class,
+      )
     "
   >
-    <span
-      class="min-h-5 overflow-hidden text-base leading-[1rem]! overflow-ellipsis whitespace-nowrap"
-    >
+    <span class="min-h-4.5 overflow-x-hidden overflow-ellipsis whitespace-nowrap">
       <slot />
     </span>
   </div>

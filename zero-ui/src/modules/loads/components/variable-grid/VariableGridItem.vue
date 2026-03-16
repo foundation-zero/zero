@@ -12,13 +12,8 @@ import {
   PositionCardTitle,
   PositionCardValue,
 } from "../position-card";
-import { ReferenceBoxLine } from "../reference-box";
-import {
-  VariableCard,
-  VariableCardReferenceTarget,
-  VariableCardReferenceThresholds,
-  VariableCardValue,
-} from "../variable-card";
+import { VariableCard, VariableCardReferenceThresholds, VariableCardValue } from "../variable-card";
+import VariableCardReferenceTarget from "../variable-card/VariableCardReferenceTarget.vue";
 import VariableCardTitle from "../variable-card/VariableCardTitle.vue";
 
 const props = defineProps<{ id: string; variable: Variable }>();
@@ -60,13 +55,14 @@ const overhoist = computed(() => {
     :type="variable?.variable?.unit"
     class="col-span-1 w-full max-w-full"
   >
-    <VariableCardReferenceTarget>
-      <ReferenceBoxLine />
-    </VariableCardReferenceTarget>
-
-    <VariableCardValue />
     <VariableCardTitle>{{ variable?.variable?.name }}</VariableCardTitle>
-    <VariableCardReferenceThresholds />
+    <div class="w-full">
+      <VariableCardValue />
+    </div>
+    <hr class="w-full" />
+    <VariableCardReferenceThresholds>
+      <VariableCardReferenceTarget />
+    </VariableCardReferenceThresholds>
   </VariableCard>
   <LoadsCard
     v-else-if="isLoad"
@@ -75,7 +71,9 @@ const overhoist = computed(() => {
     :scale="[variable.variable.scaleMin, variable.variable.scaleMax]"
     class="col-span-2 w-full max-w-full"
   >
-    <VariableCardTitle class="-mt-2">{{ variable?.variable?.name }}</VariableCardTitle>
+    <VariableCardTitle class="-mt-2 w-full justify-center">{{
+      variable?.variable?.name
+    }}</VariableCardTitle>
   </LoadsCard>
   <PositionCard
     v-else
@@ -86,6 +84,8 @@ const overhoist = computed(() => {
     <PositionCardReferenceTarget />
     <PositionCardSlider :type="variable.variable.scaleMin < 0 ? 'symmetric' : 'asymmetric'" />
     <PositionCardValue />
-    <PositionCardTitle>{{ variable?.variable?.name }}</PositionCardTitle>
+    <PositionCardTitle class="w-full justify-center">{{
+      variable?.variable?.name
+    }}</PositionCardTitle>
   </PositionCard>
 </template>

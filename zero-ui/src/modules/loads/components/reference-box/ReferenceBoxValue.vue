@@ -17,7 +17,7 @@ const props = defineProps<{
     data-slot="target-box-value"
     :class="
       cn(
-        'border-attention text-constructive font-headers relative rounded-sm border px-2 text-xl font-semibold',
+        'border-attention text-constructive font-headers relative rounded-sm border px-2 text-sm font-semibold',
         props.class,
       )
     "
