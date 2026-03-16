@@ -139,7 +139,8 @@ services:
     restart: always
 
   hasura:
-    image: hasura/graphql-engine:v2.42.0.cli-migrations-v3
+    build:
+      context: ./hasura
     ports:
       - 8080:8080
     restart: always
@@ -169,8 +170,7 @@ services:
         condition: service_healthy
 
   hass:
-    build:
-      context: ./hasura
+    image: ghcr.io/home-assistant/home-assistant:stable
     profiles:
       - zero
       - domestic
