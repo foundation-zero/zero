@@ -76,7 +76,7 @@ describe("Loads API", () => {
   });
 
   const usedVariables = Array.from(
-    new Set(DASHBOARDS.flatMap((d) => d.groups.flatMap((g) => g.variables))),
+    new Set(DASHBOARDS.flatMap((d) => d.groups.flatMap((g) => g.variables.map(([id]) => id)))),
   ).sort();
 
   describe("Dashboards", () => {
