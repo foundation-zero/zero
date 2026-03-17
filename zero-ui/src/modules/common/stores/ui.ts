@@ -14,7 +14,18 @@ import { computed, ref, watch } from "vue";
 import { useRoute } from "vue-router";
 import { useAuthStore } from "../../domestic/stores/auth";
 
-const twBreakpoints = useBreakpoints(breakpointsTailwind);
+export type BreakpointsZero = typeof breakpointsTailwind & {
+  "3xl": number;
+  "4xl": number;
+};
+
+export const breakpointsZero: BreakpointsZero = {
+  ...breakpointsTailwind,
+  "3xl": 120 * 16,
+  "4xl": 144 * 16,
+};
+
+export const BREAKPOINTS = useBreakpoints(breakpointsZero);
 const orientation = useScreenOrientation();
 
 export const useUIStore = defineStore("UI", () => {
@@ -35,12 +46,12 @@ export const useUIStore = defineStore("UI", () => {
   const breakpoints = computed<Breakpoints>(() => ({
     touch: isTouchDevice,
     phone:
-      twBreakpoints.smaller("md").value ||
-      (twBreakpoints.between("md", "lg").value &&
+      BREAKPOINTS.smaller("md").value ||
+      (BREAKPOINTS.between("md", "lg").value &&
         !!orientation.orientation.value?.includes("landscape")),
 
-    tablet: twBreakpoints.greaterOrEqual("md").value,
-    desktop: twBreakpoints.greaterOrEqual("lg").value,
+    tablet: BREAKPOINTS.greaterOrEqual("md").value,
+    desktop: BREAKPOINTS.greaterOrEqual("lg").value,
     landscape: !!orientation.orientation.value?.includes("landscape"),
     portrait: !!orientation.orientation.value?.includes("portrait"),
   }));

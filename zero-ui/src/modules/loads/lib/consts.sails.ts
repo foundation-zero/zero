@@ -1,7 +1,6 @@
 import { PositionId } from "../types";
 
 export const enum SailId {
-  None = "none",
   FullMain = "full-main",
   MainReef1 = "main-reef1",
   MainReef2 = "main-reef2",

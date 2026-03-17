@@ -1,7 +1,8 @@
 {
   "loads": {
     "dashboards": {
-      "overview": "Overview"
+      "overview": "Overview",
+      "dynamic": "Dynamic"
     },
     "dashboard": {
       "status": "Loads status",
@@ -10,6 +11,10 @@
       "alarmActive": "<strong>{actualValue} {unit}</strong> exceeds threshold <b>{thresholdValue} {unit}</b>"
     },
     "components": {
+      "grid": {
+        "sensors": "No sensors | {count} sensor | {count} sensors",
+        "sensorsSub": "No sensors | {count}/{total} sensors | {count}/{total} sensors"
+      },
       "mastLock": {
         "locked": "Locked",
         "overhoist": "Overhoist"

@@ -3,8 +3,9 @@ import { cn } from "@/modules/common/lib/utils";
 </script>
 
 <template>
-  <div :class="cn('col-span-full flex items-center gap-2 text-xl font-medium')">
+  <div :class="cn('col-span-full flex items-center gap-2')">
     <slot />
     <hr class="border-border-subtle flex-grow border-t" />
+    <slot name="right" />
   </div>
 </template>

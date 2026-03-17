@@ -2,7 +2,7 @@
 import { Tabs, TabsList, TabsTrigger } from "@common/components/tab-links";
 import { toRefs } from "vue";
 import { useI18n } from "vue-i18n";
-import { SailId } from "../lib/consts.sails";
+import { DashboardType } from "../lib/consts.dashboards";
 import { useVariablesStore } from "../stores/variables";
 
 const { availableDashboards, selectedDashboard } = toRefs(useVariablesStore());
@@ -12,7 +12,7 @@ const { t } = useI18n();
 
 <template>
   <Tabs
-    :model-value="selectedDashboard.sail"
+    :model-value="selectedDashboard.id"
     @update:model-value="setDashboard"
   >
     <TabsList
@@ -20,10 +20,16 @@ const { t } = useI18n();
       class="py-0"
     >
       <TabsTrigger
-        :value="SailId.None"
+        :value="DashboardType.Static"
         class="h-16 text-base font-medium"
       >
         {{ t("loads.dashboards.overview") }}
+      </TabsTrigger>
+      <TabsTrigger
+        :value="DashboardType.Dynamic"
+        class="h-16 text-base font-medium"
+      >
+        {{ t("loads.dashboards.dynamic") }}
       </TabsTrigger>
       <TabsTrigger
         v-for="item in availableDashboards"

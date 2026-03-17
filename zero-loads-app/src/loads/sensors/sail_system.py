@@ -130,7 +130,7 @@ class BladeCunningham(LoadsModel, ABC):
     load: Annotated[
         Load,
         VariableMeta(
-            display_name="Adjuster",
+            display_name="Cunningham",
             scale_min_label="out",
             scale_max_label="in",
         ),
