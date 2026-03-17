@@ -54,7 +54,7 @@ spec:
               type: RuntimeDefault
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
-          command: ["python", "-m", "zero_domestic_control", "control"]
+          command: ["python", "-m", "domestic_control", "control"]
           resources:
             {{- toYaml .Values.resources.control | nindent 12 }}
           env:

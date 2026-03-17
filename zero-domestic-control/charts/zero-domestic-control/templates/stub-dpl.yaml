@@ -55,7 +55,7 @@ spec:
               type: RuntimeDefault
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
-          command: ["python", "-m", "zero_domestic_control", "stub"]
+          command: ["python", "-m", "domestic_control", "stub"]
           ports:
             - name: modbus
               containerPort: 502
