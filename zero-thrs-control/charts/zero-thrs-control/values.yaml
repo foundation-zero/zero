@@ -4,7 +4,7 @@ mqtt:
   port: 1883
   username: thrs
   existingSecret:
-  existingSecretPasswordKey:
+  existingSecretPasswordKey: password
 
 # This sets the container image more information can be found here: https://kubernetes.io/docs/concepts/containers/images/
 control:
