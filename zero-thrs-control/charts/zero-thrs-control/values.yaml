@@ -1,7 +1,10 @@
 # Required: MQTT host
 mqtt:
   host:
-  port:
+  port: 1883
+  username: thrs
+  existingSecret:
+  existingSecretPasswordKey:
 
 # This sets the container image more information can be found here: https://kubernetes.io/docs/concepts/containers/images/
 control:
@@ -13,6 +16,11 @@ control:
     # Overrides the image tag whose default is the chart appVersion.
     tag: ""
   resources: {}
+  service:
+    port: 80
+    externalIPs: []
+    labels: {}
+    annotations: {}
 
 simulation:
   enabled: false
