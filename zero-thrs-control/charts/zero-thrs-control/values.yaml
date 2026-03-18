@@ -17,7 +17,6 @@ control:
     tag: ""
   resources: {}
   service:
-    port: 80
     labels: {}
     annotations: {}
 
