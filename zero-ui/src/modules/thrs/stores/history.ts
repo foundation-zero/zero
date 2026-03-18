@@ -26,7 +26,11 @@ type ModuleHistory = Record<HistoryKey, TimeSeriesData[]>;
 
 type TypelessRecord<T extends Record<string, unknown>> = Omit<T, "__typename">;
 
-const toTypelessRecord = <T extends Record<string, unknown>>(record: T): TypelessRecord<T> => {
+const toTypelessRecord = <T extends Record<string, unknown>>(
+  record: T | null,
+): TypelessRecord<T> => {
+  if (record === null) return {} as TypelessRecord<T>;
+
   const { __typename, ...rest } = record;
   return rest;
 };
