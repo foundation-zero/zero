@@ -48,7 +48,6 @@ spec:
               type: RuntimeDefault
           image: "{{ .Values.simulation.image.repository }}:{{ .Values.simulation.image.tag | default .Chart.AppVersion }}"
           imagePullPolicy: {{ .Values.simulation.image.pullPolicy }}
-          command: ["python", "-m", "thrs.cli", "run", "thrusters"]
           resources:
             {{- toYaml .Values.simulation.resources | nindent 12 }}
           envFrom:

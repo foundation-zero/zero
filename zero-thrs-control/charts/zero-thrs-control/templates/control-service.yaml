@@ -7,8 +7,7 @@ metadata:
   labels:
     {{- include "zero-thrs-control.labels" . | nindent 4 }}
 spec:
-  type: LoadBalancer
-  externalIPs: {{ .Values.control.service.externalIPs }}
+  type: ClusterIP
   ports:
     - port: {{ .Values.control.service.port }}
       targetPort: http
@@ -16,7 +15,6 @@ spec:
       name: http
   selector:
     {{- include "zero-thrs-control.selectorLabels" . | nindent 4 }}
-    app.kubernetes.io/part-of: thrs-control
     app.kubernetes.io/component: control
   type: ClusterIP
 {{- end }}
