@@ -14,6 +14,7 @@ import { useThrsHistory } from "../stores/history";
 import ModuleControls from "./controls/ModuleControls.vue";
 import NumberParameter from "./controls/NumberParameter.vue";
 import PIDParameter from "./controls/PIDParameter.vue";
+import NoDataAvailable from "./NoDataAvailable.vue";
 
 const props = defineProps<{
   module: K;
@@ -34,6 +35,7 @@ const COMPONENTS: Record<ParametersType, Component | null> = {
 </script>
 <template>
   <ModuleControls
+    v-if="parametersData"
     :controls="definition"
     :data="parametersData"
     :disabled="false"
@@ -51,4 +53,5 @@ const COMPONENTS: Record<ParametersType, Component | null> = {
       />
     </template>
   </ModuleControls>
+  <NoDataAvailable v-else />
 </template>

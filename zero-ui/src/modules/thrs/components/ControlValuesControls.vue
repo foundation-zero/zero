@@ -15,6 +15,7 @@ import ModuleControls from "../components/controls/ModuleControls.vue";
 import PumpControl from "../components/controls/PumpControl.vue";
 import ValveControl from "../components/controls/ValveControl.vue";
 import { useThrsHistory } from "../stores/history";
+import NoDataAvailable from "./NoDataAvailable.vue";
 
 const props = defineProps<{
   module: K;
@@ -35,6 +36,7 @@ const COMPONENTS: Record<ControlComponentType, Component> = {
 </script>
 <template>
   <ModuleControls
+    v-if="controlsData"
     :controls="definition"
     :data="controlsData"
     :disabled="false"
@@ -58,4 +60,5 @@ const COMPONENTS: Record<ControlComponentType, Component> = {
       />
     </template>
   </ModuleControls>
+  <NoDataAvailable v-else />
 </template>

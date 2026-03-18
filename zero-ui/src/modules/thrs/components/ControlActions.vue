@@ -14,7 +14,9 @@ const { control, isProcessing } = toRefs(useSimulationStore());
 const simulationStore = useSimulationStore();
 const setAutomatedControl = simulationStore.setAutomatedControl(props.module);
 
-const isAutomated = computed(() => !!control.value?.modules?.[props.module].controlMode.automatic);
+const isAutomated = computed(
+  () => !!control.value?.modules?.[props.module]?.controlMode?.automatic,
+);
 </script>
 
 <template>

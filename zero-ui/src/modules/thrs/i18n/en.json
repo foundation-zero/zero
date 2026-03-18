@@ -69,6 +69,7 @@
       }
     },
     "labels": {
+      "noDataAvailable": "No data available. Is the simulation running?",
       "reset": "Reset",
       "connect": "Connect",
       "sensorValues": "Sensor values",
