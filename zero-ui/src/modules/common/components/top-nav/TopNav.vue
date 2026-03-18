@@ -8,6 +8,7 @@ const scrollOffset = useScrollOffset(title);
 
 <template>
   <nav
+    data-slot="top-nav"
     class="fixed right-0 left-0 flex flex-col justify-between overflow-hidden backdrop-blur-md"
     :style="{ top: scrollOffset }"
   >
@@ -16,7 +17,7 @@ const scrollOffset = useScrollOffset(title);
 </template>
 
 <style lang="scss" scoped>
-nav::before {
+[data-slot="top-nav"]::before {
   content: "";
   position: absolute;
   top: -200%;
@@ -25,7 +26,10 @@ nav::before {
   height: 500%;
   z-index: -1;
   opacity: 0.9;
+}
 
+:global(.dark [data-slot="top-nav"]::before) {
+  // This gradient was provided by the design team (@Wadim)
   background:
     radial-gradient(
       43.74% 35.44% at 50.03% 36.53%,
@@ -33,7 +37,5 @@ nav::before {
       rgba(153, 182, 204, 0) 100%
     ),
     var(----general---background-muted, #121619);
-
-  // This gradient was provided by the design team (@Wadim)
 }
 </style>
