@@ -59,7 +59,8 @@
         }
       },
       "controlActions": {
-        "automatedControl": "Automated control"
+        "automatedControl": "Automated control",
+        "off": "Off"
       },
       "clearChartHistory": {
         "title": "Clear Chart History",

@@ -14,6 +14,7 @@ import { provideClient } from "@urql/vue";
 import { computed, provide } from "vue";
 import { useRoute } from "vue-router";
 import ClearChartHistory from "../components/ClearChartHistory.vue";
+import ControlActions from "../components/ControlActions.vue";
 import SimulationTabs from "../components/SimulationTabs.vue";
 import SubNavTabs from "../components/SubNavTabs.vue";
 
@@ -62,6 +63,12 @@ provide("currentModule", currentModuleKey);
       <template #left>
         <SubNavTabs v-if="currentRoute.params.module" />
         <SimulationTabs v-else />
+      </template>
+      <template
+        v-if="currentRoute.params.module"
+        #right
+      >
+        <ControlActions :module="currentModuleKey" />
       </template>
     </TopNavToolbar>
   </TopNav>

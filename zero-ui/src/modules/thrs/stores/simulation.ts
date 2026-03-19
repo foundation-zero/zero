@@ -2,6 +2,7 @@ import { PromiseFn } from "@/modules/domestic/types";
 import { mutationWithoutValue, mutationWithValue } from "@/modules/thrs/graphql";
 import { context } from "@/modules/thrs/graphql/client";
 
+import { Nullable } from "@/modules/loads/types";
 import { gql, useClientHandle, useQuery } from "@urql/vue";
 import { useIntervalFn } from "@vueuse/core";
 import { OperationResult } from "graphql-ws";
@@ -19,13 +20,20 @@ export type SimulationStatus = {
   };
 };
 
+export type AutomaticMode = {
+  mode: string;
+};
+
+export type ControlMode = {
+  automatic: boolean;
+  automaticMode: Nullable<AutomaticMode>;
+};
+
 export type ControlStatus = {
   modules: Record<
     string,
     {
-      controlMode: {
-        automatic: boolean;
-      };
+      controlMode: Nullable<ControlMode>;
     }
   >;
 };
@@ -45,6 +53,9 @@ export const CONTROL_QUERY = gql`
       thrusters {
         controlMode {
           automatic
+          automaticMode {
+            mode
+          }
         }
       }
       pvt {
@@ -55,6 +66,9 @@ export const CONTROL_QUERY = gql`
       pcm {
         controlMode {
           automatic
+          automaticMode {
+            mode
+          }
         }
       }
       consumers {
