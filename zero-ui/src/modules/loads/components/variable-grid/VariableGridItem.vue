@@ -14,6 +14,7 @@ import {
 } from "../position-card";
 import { VariableCard, VariableCardReferenceThresholds, VariableCardValue } from "../variable-card";
 import VariableCardReferenceTarget from "../variable-card/VariableCardReferenceTarget.vue";
+import VariableCardState from "../variable-card/VariableCardState.vue";
 import VariableCardTitle from "../variable-card/VariableCardTitle.vue";
 
 const props = defineProps<{ id: string; variable: Variable }>();
@@ -58,6 +59,12 @@ const overhoist = computed(() => {
     <VariableCardTitle>{{ variable?.variable?.name }}</VariableCardTitle>
     <div class="w-full">
       <VariableCardValue />
+      <VariableCardState
+        :min="variable?.variable.scaleMin"
+        :max="variable?.variable.scaleMax"
+        :min-label="variable?.variable.scaleMinLabel"
+        :max-label="variable?.variable.scaleMaxLabel"
+      />
     </div>
     <hr class="w-full" />
     <VariableCardReferenceThresholds>
