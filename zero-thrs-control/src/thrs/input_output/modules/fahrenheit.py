@@ -18,6 +18,9 @@ class FahrenheitSensorValues(ThrsValues):
     fahrenheit_mix_waste: Annotated[
         sensor.Valve, component_meta(yard_tag="50001047-01", component_type="valve")
     ]
+    fahrenheit_switch_waste: Annotated[
+        sensor.Valve, component_meta(yard_tag="50001187-01", component_type="valve")
+    ]
     fahrenheit_chiller: Annotated[
         sensor.Fahrenheit,
         component_meta(yard_tag="50001034", component_type="fahrenheit"),
@@ -89,6 +92,9 @@ class FahrenheitControlValues(ThrsValues):
     ]
     fahrenheit_mix_waste: Annotated[
         control.Valve, component_meta(yard_tag="50001047-01", component_type="valve")
+    ]
+    fahrenheit_switch_waste: Annotated[
+        control.Valve, component_meta(yard_tag="50001187-01", component_type="valve")
     ]
     fahrenheit_chiller: Annotated[
         control.Fahrenheit,
