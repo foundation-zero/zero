@@ -8,6 +8,7 @@ authors = [
 ]
 packages = [
     { include = "loads", from = "src" },
+    { include = "sailpack", from = "src" }
 ]
 requires-python = ">= 3.13.1,<4.0"
 dynamic = ["version"]
@@ -28,6 +29,7 @@ greenlet = ">=3.2.4,<4.0.0"
 uvicorn = ">=0.35.0,<0.36.0"
 generator = { path = "../zero-generator", develop=true}
 pyjwt = "^2.11.0"
+polars = "^1.39.3"
 
 
 [tool.poetry-dynamic-versioning]
@@ -43,6 +45,7 @@ optional = true
 mypy = "^1.14.1"
 ruff = "^0.9.5"
 python-dotenv = "^1.1.0"
+jupyter = "^1.1.1"
 
 [tool.poetry.group.test]
 optional = true
