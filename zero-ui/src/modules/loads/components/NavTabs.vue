@@ -21,13 +21,13 @@ const { t } = useI18n();
     >
       <TabsTrigger
         :value="DashboardType.Static"
-        class="h-16 text-base font-medium"
+        class="h-16 text-base font-medium uppercase"
       >
         {{ t("loads.dashboards.overview") }}
       </TabsTrigger>
       <TabsTrigger
         :value="DashboardType.Dynamic"
-        class="h-16 text-base font-medium"
+        class="h-16 text-base font-medium uppercase"
       >
         {{ t("loads.dashboards.dynamic") }}
       </TabsTrigger>
@@ -35,7 +35,7 @@ const { t } = useI18n();
         v-for="item in availableDashboards"
         :key="item.id"
         :value="item.id"
-        class="h-16 text-base font-medium"
+        class="h-16 text-base font-medium uppercase"
       >
         {{ item.name }}
       </TabsTrigger>
