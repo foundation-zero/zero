@@ -1,6 +1,7 @@
 from pathlib import Path
-from bs4 import BeautifulSoup
+
 import polars as pl
+from bs4 import BeautifulSoup
 
 
 def parse_directory(folder: str) -> pl.DataFrame:

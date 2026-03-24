@@ -29,11 +29,6 @@ greenlet = ">=3.2.4,<4.0.0"
 uvicorn = ">=0.35.0,<0.36.0"
 generator = { path = "../zero-generator", develop=true}
 pyjwt = "^2.11.0"
-polars = "^1.39.3"
-pyarrow = "^23.0.1"
-pandas = "^3.0.1"
-matplotlib = "^3.10.8"
-seaborn = "^0.13.2"
 
 
 [tool.poetry-dynamic-versioning]
@@ -50,6 +45,12 @@ mypy = "^1.14.1"
 ruff = "^0.9.5"
 python-dotenv = "^1.1.0"
 jupyter = "^1.1.1"
+polars = "^1.39.3"
+pyarrow = "^23.0.1"
+pandas = "^3.0.1"
+matplotlib = "^3.10.8"
+seaborn = "^0.13.2"
+bs4 = "^0.0.2"
 
 [tool.poetry.group.test]
 optional = true
