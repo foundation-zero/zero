@@ -1,10 +1,3 @@
-# https://mail.google.com/mail/u/0/#search/floris+io+link/QgrcJHsTnPHxqsTcrcdrvkDdNHpJVLrFpJv
-
-# SM6120	Quantity	0	32	Float32
-# SM6120	Flow	4	16	INT (16 bit)
-# SM6120	Temperature	8	16	INT (16 bit)
-# SM6120	Device status	11	4	INT (4 bit)
-
 from dataclasses import dataclass
 from enum import Enum
 from typing import ClassVar
