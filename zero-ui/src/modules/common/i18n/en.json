@@ -53,6 +53,27 @@
     }
   },
   "views": {
+    "splash": {
+      "brand": "Foundation Zero",
+      "kicker": "Integrated yacht systems",
+      "description": "Which subsystem do you want to operate?",
+      "open": "Open",
+      "enter": "Enter",
+      "apps": {
+        "loads": {
+          "title": "Loads",
+          "description": "Live rigging loads, grouped dashboards, and sailing system feedback."
+        },
+        "thrs": {
+          "title": "THRS",
+          "description": "Thermal heat recovery monitoring, controls, simulation, and parameter tuning."
+        },
+        "domestic": {
+          "title": "Domestic",
+          "description": "Cabin comfort, lighting, blinds, climate, and onboard room controls."
+        }
+      }
+    },
     "ac": {
       "setTo": "Set to"
     },
