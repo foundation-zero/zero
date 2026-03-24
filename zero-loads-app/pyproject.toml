@@ -8,6 +8,7 @@ authors = [
 ]
 packages = [
     { include = "loads", from = "src" },
+    { include = "sailpack", from = "src" }
 ]
 requires-python = ">= 3.13.1,<4.0"
 dynamic = ["version"]
@@ -43,6 +44,13 @@ optional = true
 mypy = "^1.14.1"
 ruff = "^0.9.5"
 python-dotenv = "^1.1.0"
+jupyter = "^1.1.1"
+polars = "^1.39.3"
+pyarrow = "^23.0.1"
+pandas = "^3.0.1"
+matplotlib = "^3.10.8"
+seaborn = "^0.13.2"
+bs4 = "^0.0.2"
 
 [tool.poetry.group.test]
 optional = true
