@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { cn } from "@/modules/common/lib/utils";
+import { cn, formatInt, useFixed } from "@/modules/common/lib/utils";
 import { reactiveOmit } from "@vueuse/core";
 import { PrimitiveProps } from "reka-ui";
 import { HTMLAttributes, provide, toRef } from "vue";
@@ -21,20 +21,38 @@ const delegatedProps = reactiveOmit(props, "class");
 const type = toRef(props, "type");
 
 provide("load-type", type);
+
+const splitValue = useFixed(toRef(props, "value"), 1);
 </script>
 
 <template>
   <span
     data-slot="load-state"
-    :class="cn(variableStateVariants({ size, state }), props.class)"
+    :class="cn(variableStateVariants({ size, state }), 'items-baseline', props.class)"
     v-bind="delegatedProps"
   >
-    <span data-slot="load-value">
+    <template v-if="type === VariableUnit.Tonne">
       <animated-number
-        :to="props.value!"
-        :format="formatLoadFn(props.type)"
+        data-slot="load-value"
+        :to="splitValue[0]"
+        :format="formatInt"
       />
-    </span>
+
+      <animated-number
+        v-if="splitValue[1] != undefined"
+        class="text-r2xs"
+        data-slot="load-value"
+        :to="splitValue[1]"
+        :format="(val: number) => `.${formatInt(val)}`"
+      />
+    </template>
+    <template v-else>
+      <animated-number
+        data-slot="load-value"
+        :to="value"
+        :format="formatLoadFn(type)"
+      />
+    </template>
     <slot />
   </span>
 </template>

@@ -1,5 +1,5 @@
 <template>
-  <span class="overflow-x-hidden text-xl font-medium text-ellipsis whitespace-nowrap">
+  <span class="overflow-x-hidden font-medium text-ellipsis whitespace-nowrap uppercase">
     <slot />
   </span>
 </template>

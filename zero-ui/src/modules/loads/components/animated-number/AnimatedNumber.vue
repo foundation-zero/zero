@@ -21,5 +21,5 @@ import AnimatedNumber from "vue-number-animation";
 // Without this check building the vitepress docs will fail.
 const isBrowser = typeof window !== "undefined" && typeof window.document !== "undefined";
 
-defineProps<{ to?: number; tag?: string }>();
+defineProps<{ to?: number | null; tag?: string }>();
 </script>

@@ -508,3 +508,12 @@ export const extractProperty =
   <K extends string | number | symbol>(property: K) =>
   <V>(item: { [key in K]: V }): V =>
     item[property];
+
+export const useFixed = (value: Ref<number | undefined | null>, digits: number) =>
+  computed(() => {
+    if (value.value == undefined) {
+      return [undefined, undefined];
+    } else {
+      return value.value.toFixed(digits).split(".").map(Number);
+    }
+  });

@@ -30,7 +30,8 @@ provideContext({
     data-slot="card"
     :class="
       cn(
-        'gap-2 transition-colors',
+        'gap-2 transition-all',
+        state,
         {
           'border-destructive text-destructive': state === 'alarm',
           'border-warning text-warning': state === 'warning',
@@ -42,3 +43,27 @@ provideContext({
     <slot />
   </Card>
 </template>
+
+<style lang="scss" scoped>
+[data-slot="card"] {
+  &.alarm {
+    background:
+      linear-gradient(
+        180deg,
+        oklch(from var(--color-destructive) l c h / 0),
+        oklch(from var(--color-destructive) l c h / 0.1) 100%
+      ),
+      var(--color-background);
+  }
+
+  &.warning {
+    background:
+      linear-gradient(
+        180deg,
+        oklch(from var(--color-warning) l c h / 0),
+        oklch(from var(--color-warning) l c h / 0.1) 100%
+      ),
+      var(--color-background);
+  }
+}
+</style>
