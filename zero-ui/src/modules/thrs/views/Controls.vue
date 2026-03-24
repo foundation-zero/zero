@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import ControlActions from "@/modules/thrs/components/ControlActions.vue";
 import { ModuleDefinition } from "@/modules/thrs/types";
 
 import ControlValuesControls from "@/modules/thrs/components/ControlValuesControls.vue";
@@ -17,12 +16,8 @@ const definition = computed<ModuleDefinition>(() => DEFINITIONS[currentDefinitio
     {{ t("thrs.views.controls.title") }}
   </header>
 
-  <ControlActions
-    class="my-4 md:my-6"
-    :module="currentDefinition"
-  />
-
   <ControlValuesControls
+    class="my-4 md:my-6"
     :module="currentDefinition"
     :definition="definition.controlValues"
   />
