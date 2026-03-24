@@ -1,0 +1,39 @@
+name: "Prop Test: Test"
+on:
+  pull_request:
+    paths:
+      - zero-prop-test/**
+      - .github/workflows/ci_prop_test.yaml
+  release:
+    types: [released]
+  push:
+    branches:
+      - main
+    paths:
+      - zero-prop-test/**
+      - .github/workflows/ci_prop_test.yaml
+
+jobs:
+  test:
+    timeout-minutes: 15
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: "0"
+      - uses: actions/setup-python@v5
+        with:
+          python-version: 3.13
+      - run: pipx install poetry==2.2.1
+      - run: poetry check
+        working-directory: zero-prop-test
+      - run: poetry install --with dev,test
+        working-directory: zero-prop-test
+      - run: poetry run ruff check src tests
+        working-directory: zero-prop-test
+      - run: poetry run ruff format --check src tests
+        working-directory: zero-prop-test
+      - run: poetry run pyright
+        working-directory: zero-prop-test
+      - run: poetry run pytest -v
+        working-directory: zero-prop-test
