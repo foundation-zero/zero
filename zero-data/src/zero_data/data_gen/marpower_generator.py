@@ -19,7 +19,7 @@ class MarpowerStruct[T](BaseModel):
 
 class MarpowerGenerator(Generator):
     def get_topic(self, topic: IOTopic):
-        return topic.topic.removeprefix("marpower/")
+        return topic.topic
 
     def serialize_message(self, message):
         return TypeAdapter(dict[str, dict[str, Any]]).dump_json(message, by_alias=True)

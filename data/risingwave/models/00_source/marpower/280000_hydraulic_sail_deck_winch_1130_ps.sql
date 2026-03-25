@@ -19,4 +19,4 @@ CREATE TABLE {{ this }} (
 	"Main_Mst_Aft_Alm_Code"	{{ marpower_struct("INTEGER") }},
 )
 INCLUDE partition AS topic
-{{ mqtt_with('marpower/280000-hydraulic-sail/deck-winch-1130/#') }}
+{{ mqtt_with('marpower/280000-hydraulic-sail/deck-winch-1130/ps') }}

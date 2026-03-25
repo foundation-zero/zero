@@ -20,23 +20,11 @@ CREATE TABLE {{ this }} (
 	"FWD_THRUST_WINDING_TEMP_W1"	{{ marpower_struct("REAL") }},
 	"FWD_THRUST_VENTTEMP1"	{{ marpower_struct("REAL") }},
 	"FWD_THRUSTER_WATERLEAKALARM"	{{ marpower_struct("BOOLEAN") }},
-	"FWD_ARA2_PCS_STARTCOMM"	{{ marpower_struct("BOOLEAN") }},
-	"FWD_ARA2_PCS_STOPCOMM"	{{ marpower_struct("BOOLEAN") }},
-	"FWD_ARA2_PCS_RESETCOMM"	{{ marpower_struct("BOOLEAN") }},
-	"FWD_ARA2_PCS_EMSTOPACT"	{{ marpower_struct("BOOLEAN") }},
-	"FWD_ARA2_PCS_SECTHRSEL"	{{ marpower_struct("BOOLEAN") }},
-	"FWD_ARA2_PCS_NAMURFAULT"	{{ marpower_struct("BOOLEAN") }},
-	"FWD_ARA2_PCS_SHAFTBRAKEENG"	{{ marpower_struct("BOOLEAN") }},
 	"BOW_THRUST_WINDINGTEMPU2"	{{ marpower_struct("REAL") }},
 	"BOW_THRUST_WINDINGTEMPV2"	{{ marpower_struct("REAL") }},
 	"BOW_THRUST_WINDINGTEMPW2"	{{ marpower_struct("REAL") }},
 	"FWD_THRUST_VENTTEMP2"	{{ marpower_struct("REAL") }},
 	"FWD_MOTOR_HEATINGONOFF"	{{ marpower_struct("BOOLEAN") }},
-	"FWD_ARA2_PCS_DRIVEREADYFDBCK"	{{ marpower_struct("BOOLEAN") }},
-	"FWD_ARA2_PCS_DRIVERUNNINGFDBCK"	{{ marpower_struct("BOOLEAN") }},
-	"FWD_ARA2_PCS_DRIVEWARNFDBCK"	{{ marpower_struct("BOOLEAN") }},
-	"FWD_ARA2_PCS_DRIVEFAILFDBCK"	{{ marpower_struct("BOOLEAN") }},
-	"FWD_ARA2_PCS_DRIVEPWRREDUCEFDBCK"	{{ marpower_struct("BOOLEAN") }},
 )
 INCLUDE partition AS topic
 {{ mqtt_with('marpower/150000-propulsion-general') }}
