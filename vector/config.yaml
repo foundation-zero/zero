@@ -1,0 +1,31 @@
+sources:
+  mqtt:
+    type: mqtt
+    host: "${MQTT_HOST}:${MQTT_PORT}"
+    decoding:
+      codec: json
+    topic: "marpower/#"
+    user: "${MQTT_USER}"
+    password: "${MQTT_PASSWORD}"
+    
+transforms:
+  process:
+    type: remap
+    inputs: ["mqtt"]
+    files:
+      - "./marpower/0_consts.vrl"
+      - "./marpower/1_table.vrl"
+      - "./marpower/2_flatten.vrl"
+      - "./marpower/3_timestamp.vrl"
+      - "./marpower/4_spell_fix.vrl"
+      - "./marpower/5_snakecase.vrl"
+
+sinks:
+  greptimedb:
+    type: greptimedb_logs
+    inputs: ["process"]
+    endpoint: "http://${GREPTIMEDB_HOST}:${GREPTIMEDB_PORT}"
+    dbname: "public"
+    table: "{{ table }}"
+    extra_params:
+      custom_time_index: "timestamp;datestr;%+"

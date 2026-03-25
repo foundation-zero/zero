@@ -1,9 +1,10 @@
-from itertools import groupby
 from pathlib import Path
 from typing import List
 
 from zero_data.io_list.types import IOTopic, IOValue
 import logging
+
+from zero_data.utils import detect_same_format
 
 logger = logging.getLogger(__name__)
 
@@ -15,48 +16,12 @@ class MarpowerRawGenerator:
 
     def generate(self, topics: List[IOTopic]):
         """Generate dbt models for the given topics."""
-        reduced_topics = self.detect_same_format(topics)
-        for topic in reduced_topics:
-            file_name = self._table(topic.topic)
+
+        unnested, squashed, unsquashed = detect_same_format(topics)
+        for topic in unnested + squashed + unsquashed:
+            file_name = self._table(topic.topic.removeprefix("marpower/"))
             table = self._generate_topic(topic)
             self._write_file(self.table_path, file_name, table)
-
-    def detect_same_format(self, topics: List[IOTopic]):
-        """Detect topics with the same format and group them into a wildcard."""
-        nested_topics = [topic for topic in topics if len(topic.topic.split("/")) >= 3]
-        unnested_topics = [topic for topic in topics if len(topic.topic.split("/")) < 3]
-
-        def _nesting(topic: IOTopic):
-            """Extract the nesting from the topic."""
-            return topic.topic.split("/")[1:-1]
-
-        sorted_topics = sorted(nested_topics, key=_nesting)
-        grouped = groupby(sorted_topics, key=_nesting)
-        squashed_topics = []
-        unsquashed_topics: list[IOTopic] = []
-        for nest, group in grouped:
-            list_of_group = list(group)
-            if len(list_of_group) > 1:
-                # Check if all topics in the group have the same format
-                if all(
-                    set(topic.fields) == set(list_of_group[0].fields)
-                    for topic in list_of_group
-                ):
-                    logger.info(f"Generating single table for nesting: {nest}")
-                    squashed_topics.append(
-                        IOTopic(
-                            topic="/".join(["marpower", *nest, "#"]),
-                            fields=list_of_group[0].fields,
-                        )
-                    )
-                else:
-                    logger.warning(
-                        f"Different formats found in nesting: {nest}, generating separate tables."
-                    )
-                    unsquashed_topics.extend(list_of_group)
-            else:
-                unsquashed_topics.append(list_of_group[0])
-        return unnested_topics + squashed_topics + unsquashed_topics
 
     @classmethod
     def _write_file(cls, path: Path, file_name: str, content: str):

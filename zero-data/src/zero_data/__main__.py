@@ -6,6 +6,7 @@ from pydantic_settings import BaseSettings, CliApp, CliSubCommand
 
 from zero_data.dbt_gen import generate_dbt
 from zero_data.data_gen import generate_data
+from zero_data.vector_gen import generate_vector
 
 
 def setup_logging():
@@ -30,6 +31,13 @@ class GenerateDbtCmd(BaseModel):
         generate_dbt()
 
 
+class GenerateVectorCmd(BaseModel):
+    """Generate all vector resources"""
+
+    def cli_cmd(self):
+        generate_vector()
+
+
 class ZeroDataCli(BaseSettings, cli_kebab_case=True):
     """Zero Data
 
@@ -43,6 +51,7 @@ class ZeroDataCli(BaseSettings, cli_kebab_case=True):
 
     generate_data: CliSubCommand[GenerateDataCmd]
     generate_dbt: CliSubCommand[GenerateDbtCmd]
+    generate_vector: CliSubCommand[GenerateVectorCmd]
 
     def cli_cmd(self):
         CliApp.run_subcommand(self)
