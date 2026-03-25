@@ -1,0 +1,39 @@
+sources:
+  input:
+    type: exec
+    command:
+      - "cat"
+      - "tests/test-cases.json"
+    mode: streaming
+    decoding:
+      codec: json
+    streaming:
+      respawn_on_exit: false
+  
+transforms:
+  take_msg:
+    type: remap
+    inputs: ["input"]
+    source: |
+      del(.command)
+      del(.host)
+      del(.pid)
+      del(.source_type)
+      del(.stream)
+  process:
+    type: remap
+    inputs: ["take_msg"]
+    files:
+      - "./marpower/0_consts.vrl"
+      - "./marpower/1_table.vrl"
+      - "./marpower/2_flatten.vrl"
+      - "./marpower/3_timestamp.vrl"
+      - "./marpower/4_spell_fix.vrl"
+      - "./marpower/5_snakecase.vrl"
+
+sinks:
+  output:
+    type: console
+    inputs: ["process"]
+    encoding:
+      codec: json

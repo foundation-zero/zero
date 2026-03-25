@@ -1,0 +1,26 @@
+name: "Vector: Test"
+on:
+  pull_request:
+    paths:
+      - .github/workflows/ci_vector.yaml
+      - vector/**
+  release:
+    types: [released]
+  push:
+    branches:
+      - main
+    paths:
+      - .github/workflows/ci_vector.yaml
+      - vector/**
+
+jobs:
+  test:
+    timeout-minutes: 15
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: "0"
+      - name: Run Vector test
+        working-directory: vector
+        run: bash test.sh

@@ -1,0 +1,7 @@
+. = map_keys(.) -> |key| {
+  if ends_with(key, "TimeStamp") {
+    replace(key, "TimeStamp", "Timestamp")
+  } else {
+    key
+  }
+}

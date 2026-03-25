@@ -1,0 +1,18 @@
+max_ts = null
+
+for_each(.) -> |key, value| {
+    if ends_with(key, "TimeStamp") {
+        ts = if is_timestamp(value) {
+            value
+        } else {
+            parse_timestamp(value, "%+") ?? null
+        }
+
+        if ts != null && (max_ts == null || ts > max_ts ?? null) {
+            max_ts = ts
+        }
+    }
+}
+
+# Default to current time if nothing found
+.timestamp = if is_null(max_ts) { now() } else { max_ts }

@@ -1,0 +1,1 @@
+. = map_keys(.) -> |key| { snakecase(key, original_case: "PascalCase") }
