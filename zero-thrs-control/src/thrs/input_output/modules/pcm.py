@@ -22,7 +22,7 @@ class PcmSensorValues(ThrsValues):
     ]
     pcm_temperature_module_1_out: Annotated[
         sensor.TemperatureSensor,
-        component_meta(yard_tag="50001038-32", component_type="temperature_sensor"),
+        component_meta(yard_tag="50001038-60", component_type="temperature_sensor"),
     ]
     pcm_temperature_module_2_out: Annotated[
         sensor.TemperatureSensor,
