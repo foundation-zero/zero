@@ -61,6 +61,9 @@ def _INITIAL_CONTROL_VALUES(timestamp) -> FahrenheitControlValues:
         fahrenheit_mix_waste=Valve(
             setpoint=Stamped(value=Valve.MIXING_A_TO_AB, timestamp=timestamp)
         ),
+        fahrenheit_switch_waste=Valve(
+            setpoint=Stamped(value=Valve.OPEN, timestamp=timestamp)
+        ),
         fahrenheit_chiller=Fahrenheit(
             enable=Stamped(value=False, timestamp=timestamp),
             mode=Stamped(value=FAHRENHEIT_MODE_OFF, timestamp=timestamp),
