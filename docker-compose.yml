@@ -383,7 +383,6 @@ services:
         condition: service_healthy
 
   thrs-thruster-simulation:
-    command: python -m  thrs.cli run thrusters
     build:
       context: ./zero-thrs-control
       dockerfile: Dockerfile
