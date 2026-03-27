@@ -23,6 +23,12 @@ def incorrect_simulation_inputs(simulation_inputs, request):
     return inputs
 
 
+async def test_simulation_step(control, executor):
+    result = await executor.tick(control.initial().values)
+
+    assert isinstance(result.simulation_outputs, Lt2SimulationOutputs)
+
+
 async def test_lt2_simulation_inputs(incorrect_simulation_inputs):
     with Fmu(lt2_path) as fmu:
         mapping = ThrsModelIoMapping(

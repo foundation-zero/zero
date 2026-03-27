@@ -1,6 +1,7 @@
 from datetime import datetime, timedelta
 from pytest import fixture
 
+from thrs.control.modules.lt2 import Lt2Alarms, Lt2Control, Lt2Parameters
 from thrs.input_output.base import Stamped
 from thrs.input_output.definitions.simulation import Boundary, HeatSource
 from thrs.input_output.modules.lt2 import (
@@ -8,6 +9,7 @@ from thrs.input_output.modules.lt2 import (
     Lt2SimulationInputs,
     Lt2SimulationOutputs,
 )
+from thrs.orchestration.cycler import Cycler
 from thrs.orchestration.executor import SimulationExecutor
 from thrs.simulation.fmu import Fmu
 from thrs.simulation.io_mapping import ThrsModelIoMapping
@@ -32,6 +34,21 @@ def simulation_inputs():
             temperature=Stamped.stamp(35), flow=Stamped.stamp(20)
         ),
     )
+
+
+@fixture()
+def control(executor) -> Lt2Control:
+    return Lt2Control(Lt2Parameters(), executor.time)
+
+
+@fixture
+def alarms() -> Lt2Alarms:
+    return Lt2Alarms()
+
+
+@fixture()
+def cycler(control, executor, alarms) -> Cycler:
+    return Cycler(control, executor, alarms)
 
 
 @fixture
