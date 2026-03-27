@@ -1,3 +1,4 @@
+data_dir: /vector-data
 api:
   enabled: true
   address: 127.0.0.1:8686
@@ -17,12 +18,12 @@ transforms:
     type: remap
     inputs: ["mqtt"]
     files:
-      - "./marpower/0_consts.vrl"
-      - "./marpower/1_table.vrl"
-      - "./marpower/2_flatten.vrl"
-      - "./marpower/3_timestamp.vrl"
-      - "./marpower/4_spell_fix.vrl"
-      - "./marpower/5_snakecase.vrl"
+      - "/etc/vector/0_consts.vrl"
+      - "/etc/vector/1_table.vrl"
+      - "/etc/vector/2_flatten.vrl"
+      - "/etc/vector/3_timestamp.vrl"
+      - "/etc/vector/4_spell_fix.vrl"
+      - "/etc/vector/5_snakecase.vrl"
 
 sinks:
   greptimedb:
