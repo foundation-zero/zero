@@ -1,3 +1,7 @@
+api:
+  enabled: true
+  address: 127.0.0.1:8686
+  playground: false
 sources:
   mqtt:
     type: mqtt
@@ -7,7 +11,7 @@ sources:
     topic: "marpower/#"
     user: "${MQTT_USER}"
     password: "${MQTT_PASSWORD}"
-    
+
 transforms:
   process:
     type: remap

@@ -1,0 +1,7 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: marpower
+  namespace: {{ .Release.Namespace }}
+data:
+  {{- (.Files.Glob "marpower/*").AsConfig | nindent 2 }}
