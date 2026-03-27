@@ -34,7 +34,7 @@ class Lt1Parameters(ThrsValues):
     propulsion_maximum_supply_temperature: Celsius = 60
     recovery_temperature: Celsius = 50
     shorepower_flow_setpoint: LMin = 20
-    propulsion_drive_flow_setpoint: LMin = 15
+    propulsion_drives_flow_setpoint: LMin = 30
     pump_tuning: Tuning = (0.01, 0.001, 0)
     warmup_mix_tuning: Tuning = (-0.05, -0.001, 0)
     heat_dump_tuning: Tuning = (0.05, 0.01, 0)
@@ -128,7 +128,7 @@ class Lt1Control(
 
         self._transitions = [
             {
-                "trigger": "_check_shore_power",
+                "trigger": "_check_shorepower",
                 "source": "idle",
                 "dest": "shorepower",
                 "conditions": self._shorepower_on,
@@ -140,16 +140,20 @@ class Lt1Control(
                 "conditions": self._propdrive_active,
             },
             {
-                "trigger": "_check_shore_power",
+                "trigger": "_check_shorepower",
                 "source": "shorepower",
                 "dest": "idle",
-                "conditions": not self._shorepower_on,
+                "conditions": lambda sensor_values: not self._shorepower_on(
+                    sensor_values
+                ),
             },
             {
                 "trigger": "_check_thrusters",
                 "source": "propulsion",
                 "dest": "idle",
-                "conditions": not self._propdrive_active,
+                "conditions": lambda sensor_values: not self._propdrive_active(
+                    sensor_values
+                ),
             },
         ]
 
@@ -192,14 +196,14 @@ class Lt1Control(
 
         self._aft_flow_controller = Controller[Ratio, LMin](
             initial=self._current_values.lt1_switch_propdrive_aft.setpoint.value,
-            setpoint=lambda: self._parameters.propulsion_drive_flow_setpoint,
+            setpoint=lambda: self._parameters.propulsion_drives_flow_setpoint,
             tuning=lambda: self._parameters.aft_flow_balance_tuning,
             time_fn=self._time,
         )
 
         self._fwd_flow_controller = Controller[Ratio, LMin](
             initial=self._current_values.lt1_switch_propdrive_fwd.setpoint.value,
-            setpoint=lambda: self._parameters.propulsion_drive_flow_setpoint,
+            setpoint=lambda: self._parameters.propulsion_drives_flow_setpoint,
             tuning=lambda: self._parameters.fwd_flow_balance_tuning,
             time_fn=self._time,
         )
@@ -244,8 +248,10 @@ class Lt1Control(
     def control(
         self, sensor_values: Lt1SensorValues
     ) -> ControlResult[Lt1ControlValues]:
-        self._check_shorepower(sensor_values)  # type: ignore
-        self._check_thrusters(sensor_values)  # type: ignore
+        if not self.mode.is_propulsion:
+            self._check_shorepower(sensor_values)  # type: ignore
+        if not self.mode.is_shorepower:
+            self._check_thrusters(sensor_values)  # type: ignore
         self._control_heat_dump(sensor_values)
         self._control_flow_balance(sensor_values)
         self._control_pump_shorepower(sensor_values)

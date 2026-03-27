@@ -20,6 +20,8 @@ from thrs.simulation.fmu import Fmu
 from thrs.simulation.io_mapping import ThrsModelIoMapping
 from thrs.simulation.models.fmu_paths import lt1_path
 
+SEAWATER_TEMPERATURE = 20
+
 
 @fixture
 def simulation_inputs_inactive():
@@ -42,7 +44,7 @@ def simulation_inputs_inactive():
             heat_flow=Stamped.stamp(0), active=Stamped.stamp(False)
         ),
         lt1_seawater_supply=Boundary(
-            temperature=Stamped.stamp(32), flow=Stamped.stamp(64)
+            temperature=Stamped.stamp(SEAWATER_TEMPERATURE), flow=Stamped.stamp(64)
         ),
         lt1_boilers_supply=Boundary(
             temperature=Stamped.stamp(20), flow=Stamped.stamp(29)
@@ -71,7 +73,7 @@ def simulation_inputs_all_drives_active():
             heat_flow=Stamped.stamp(0), active=Stamped.stamp(False)
         ),
         lt1_seawater_supply=Boundary(
-            temperature=Stamped.stamp(32), flow=Stamped.stamp(64)
+            temperature=Stamped.stamp(SEAWATER_TEMPERATURE), flow=Stamped.stamp(64)
         ),
         lt1_boilers_supply=Boundary(
             temperature=Stamped.stamp(20), flow=Stamped.stamp(29)
@@ -100,7 +102,7 @@ def simulation_inputs_shorepower():
             heat_flow=Stamped.stamp(15000), active=Stamped.stamp(True)
         ),
         lt1_seawater_supply=Boundary(
-            temperature=Stamped.stamp(32), flow=Stamped.stamp(64)
+            temperature=Stamped.stamp(SEAWATER_TEMPERATURE), flow=Stamped.stamp(64)
         ),
         lt1_boilers_supply=Boundary(
             temperature=Stamped.stamp(20), flow=Stamped.stamp(29)
@@ -117,10 +119,14 @@ def io_mapping():
 
 
 @fixture
-def executor(io_mapping, simulation_inputs):
+def executor(io_mapping, simulation_inputs_all_drives_active):
     with Fmu(lt1_path) as fmu:
         yield SimulationExecutor(
-            io_mapping, fmu, simulation_inputs, datetime.now(), timedelta(seconds=1)
+            io_mapping,
+            fmu,
+            simulation_inputs_all_drives_active,
+            datetime.now(),
+            timedelta(seconds=1),
         )
 
 
