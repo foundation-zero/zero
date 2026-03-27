@@ -69,7 +69,7 @@ jobs:
       - run: poetry run fmpy compile src/thrs/simulation/models/Boilers_ModuleV2.fmu
         working-directory: zero-thrs-control
 
-      - run: poetry run fmpy compile src/thrs/simulation/models/LT1_ModuleV1_2.fmu
+      - run: poetry run fmpy compile src/thrs/simulation/models/LT1_ModuleV2.fmu
         working-directory: zero-thrs-control
 
       - run: poetry run fmpy compile src/thrs/simulation/models/LT2_ModuleV1_1.fmu
