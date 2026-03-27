@@ -65,7 +65,7 @@ class PvtParameters(ThrsValues):
         return self
 
 
-def _INITIAL_CONTROL_VALUES(timestamp) -> PvtControlValues:
+def _INITIAL_CONTROL_VALUES(timestamp: datetime) -> PvtControlValues:
     return PvtControlValues(
         pvt_pump_main_fwd=Pump(
             dutypoint=Stamped(value=0.0, timestamp=timestamp),

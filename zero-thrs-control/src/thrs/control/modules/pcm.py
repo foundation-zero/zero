@@ -25,7 +25,7 @@ class PcmParameters(ThrsValues):
     module_4_flow_balance_tuning: Tuning = (0.05, 0.01, 0)
 
 
-def _INITIAL_CONTROL_VALUES(timestamp) -> PcmControlValues:
+def _INITIAL_CONTROL_VALUES(timestamp: datetime) -> PcmControlValues:
     return PcmControlValues(
         pcm_pump=Pump(
             dutypoint=Stamped(value=0, timestamp=timestamp),

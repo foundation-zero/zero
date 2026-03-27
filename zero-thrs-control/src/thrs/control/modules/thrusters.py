@@ -61,7 +61,7 @@ class ThrustersParameters(ThrsValues):
         return self
 
 
-def _INITIAL_CONTROL_VALUES(timestamp) -> ThrustersControlValues:
+def _INITIAL_CONTROL_VALUES(timestamp: datetime) -> ThrustersControlValues:
     return ThrustersControlValues(
         thrusters_pump_1=Pump(
             dutypoint=Stamped(value=0.0, timestamp=timestamp),
@@ -207,7 +207,7 @@ class ThrustersControl(
         self._heat_dump_controller = Controller[Ratio, Celsius](
             self._current_values.thrusters_mix_exchanger.setpoint.value,
             lambda: self._parameters.maximum_supply_temperature
-            if self.mode == ThrustersControlMode(mode="recovery")
+            if self.mode.is_recovery
             else self._parameters.cooling_temperature,
             lambda: self._parameters.heat_dump_tuning,
             self._time,
@@ -469,13 +469,14 @@ class ThrustersControl(
         self._flow_balance_controller.set_setpoint(25.0)
 
     def _control_flow_balance(self, sensor_values: ThrustersSensorValues):
-        self._flow_balance_controller.set_pump(self._active_pump)
-        self._flow_balance_controller(
-            [
-                sensor_values.thrusters_flow_aft.flow.value,
-                sensor_values.thrusters_flow_fwd.flow.value,
-            ]
-        )
+        if self._flow_balance_controller.enabled:
+            self._flow_balance_controller.set_pump(self._active_pump)
+            self._flow_balance_controller(
+                [
+                    sensor_values.thrusters_flow_aft.flow.value,
+                    sensor_values.thrusters_flow_fwd.flow.value,
+                ]
+            )
 
     def _pcs_off(self, sensor_values: ThrustersSensorValues):
         return sensor_values.thrusters_pcs.mode.value == PcsMode.OFF.value

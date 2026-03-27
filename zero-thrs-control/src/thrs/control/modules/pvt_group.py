@@ -48,7 +48,7 @@ class PvtGroupParameters(ThrsValues):
         return self
 
 
-def _INITIAL_CONTROL_VALUES(timestamp) -> PvtGroupControlValues:
+def _INITIAL_CONTROL_VALUES(timestamp: datetime) -> PvtGroupControlValues:
     return PvtGroupControlValues(
         pump=Pump(
             dutypoint=Stamped(value=0.0, timestamp=timestamp),
