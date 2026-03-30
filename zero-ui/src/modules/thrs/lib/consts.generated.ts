@@ -15,6 +15,318 @@ export const toSensorDefinition = <T extends SensorDefinitions>(input: T): T => 
 export const toParameterDefinition = <T extends ParameterDefinitions>(input: T): T => input;
 export const toSimulationDefinition = <T extends SimulationDefinitions>(input: T): T => input;
 
+export const BOILERS_CONTROL_DEFINITION = toControlDefinition({
+  boilersPump: {
+    yardTag: "50001022",
+    componentType: ControlComponentType.Pump,
+  },
+  boilersHeatpump: {
+    yardTag: "50001035",
+    componentType: ControlComponentType.Heatpump,
+  },
+  boilersFlowcontrolLt2: {
+    yardTag: "50001064-03",
+    componentType: ControlComponentType.Valve,
+    valveType: ValveType.FlowControl,
+  },
+  boilersFlowcontrolLt1: {
+    yardTag: "50001064-08",
+    componentType: ControlComponentType.Valve,
+    valveType: ValveType.FlowControl,
+  },
+  boilersSwitchTank3Fill: {
+    yardTag: "50001067-03",
+    componentType: ControlComponentType.Valve,
+    valveType: ValveType.Switch,
+  },
+  boilersSwitchTank3BoostingReturn: {
+    yardTag: "50001067-04",
+    componentType: ControlComponentType.Valve,
+    valveType: ValveType.Switch,
+  },
+  boilersSwitchTank3Empty: {
+    yardTag: "50001067-05",
+    componentType: ControlComponentType.Valve,
+    valveType: ValveType.Switch,
+  },
+  boilersSwitchTank3BoostingSupply: {
+    yardTag: "50001067-06",
+    componentType: ControlComponentType.Valve,
+    valveType: ValveType.Switch,
+  },
+  boilersSwitchTank2Fill: {
+    yardTag: "50001067-07",
+    componentType: ControlComponentType.Valve,
+    valveType: ValveType.Switch,
+  },
+  boilersSwitchTank2BoostingReturn: {
+    yardTag: "50001067-08",
+    componentType: ControlComponentType.Valve,
+    valveType: ValveType.Switch,
+  },
+  boilersSwitchTank2Empty: {
+    yardTag: "50001067-09",
+    componentType: ControlComponentType.Valve,
+    valveType: ValveType.Switch,
+  },
+  boilersSwitchTank2BoostingSupply: {
+    yardTag: "50001067-10",
+    componentType: ControlComponentType.Valve,
+    valveType: ValveType.Switch,
+  },
+  boilersSwitchTank1Fill: {
+    yardTag: "50001067-11",
+    componentType: ControlComponentType.Valve,
+    valveType: ValveType.Switch,
+  },
+  boilersSwitchTank1BoostingReturn: {
+    yardTag: "50001067-12",
+    componentType: ControlComponentType.Valve,
+    valveType: ValveType.Switch,
+  },
+  boilersSwitchTank1Empty: {
+    yardTag: "50001067-13",
+    componentType: ControlComponentType.Valve,
+    valveType: ValveType.Switch,
+  },
+  boilersSwitchTank1BoostingSupply: {
+    yardTag: "50001067-14",
+    componentType: ControlComponentType.Valve,
+    valveType: ValveType.Switch,
+  },
+  boilersSwitchLowTemperature: {
+    yardTag: "50001067-16",
+    componentType: ControlComponentType.Valve,
+    valveType: ValveType.Switch,
+  },
+  boilersSwitchHeatpump: {
+    yardTag: "50001067-17",
+    componentType: ControlComponentType.Valve,
+    valveType: ValveType.Switch,
+  },
+  boilersSwitchHighTemperature: {
+    yardTag: "50001067-18",
+    componentType: ControlComponentType.Valve,
+    valveType: ValveType.Switch,
+  },
+});
+
+export const BOILERS_PARAMETER_DEFINITION = toParameterDefinition({
+  pumpTemperatureTuning: {
+    componentType: ParametersType.Tuning,
+  },
+  pumpFlowTuning: {
+    componentType: ParametersType.Tuning,
+  },
+  lt2FlowTuning: {
+    componentType: ParametersType.Tuning,
+  },
+  lt1FlowTuning: {
+    componentType: ParametersType.Tuning,
+  },
+});
+
+export const BOILERS_SENSOR_DEFINITION = toSensorDefinition({
+  boilersPump: {
+    yardTag: "50001022",
+    componentType: SensorComponentType.Pump,
+  },
+  boilersTemperatureChillerReturn: {
+    yardTag: "50001038-25",
+    componentType: SensorComponentType.Temperature,
+  },
+  boilersTemperatureLt2Return: {
+    yardTag: "50001038-26",
+    componentType: SensorComponentType.Temperature,
+  },
+  boilersTemperatureTank3: {
+    yardTag: "50001038-27",
+    componentType: SensorComponentType.Temperature,
+  },
+  boilersTemperatureTank2: {
+    yardTag: "50001038-44",
+    componentType: SensorComponentType.Temperature,
+  },
+  boilersTemperatureTank1: {
+    yardTag: "50001038-45",
+    componentType: SensorComponentType.Temperature,
+  },
+  boilersTemperatureLt1Return: {
+    yardTag: "50001038-46",
+    componentType: SensorComponentType.Temperature,
+  },
+  boilersTemperatureFreshwaterSupply: {
+    yardTag: "50001038-47",
+    componentType: SensorComponentType.Temperature,
+  },
+  boilersTemperatureFahrenheitReturn: {
+    yardTag: "50001038-51",
+    componentType: SensorComponentType.Temperature,
+  },
+  boilersTemperatureBoostingSupply: {
+    yardTag: "50001038-65",
+    componentType: SensorComponentType.Temperature,
+  },
+  boilersTemperatureBoostingReturn: {
+    yardTag: "50001038-66",
+    componentType: SensorComponentType.Temperature,
+  },
+  boilersLevelTank1: {
+    yardTag: "50001056-01",
+    componentType: SensorComponentType.Level,
+  },
+  boilersLevelTank2: {
+    yardTag: "50001056-02",
+    componentType: SensorComponentType.Level,
+  },
+  boilersLevelTank3: {
+    yardTag: "50001056-03",
+    componentType: SensorComponentType.Level,
+  },
+  boilersFlowLt2: {
+    yardTag: "50001057-17",
+    componentType: SensorComponentType.Flow,
+  },
+  boilersFlowLt1: {
+    yardTag: "50001057-24",
+    componentType: SensorComponentType.Flow,
+  },
+  boilersFlowBoosting: {
+    yardTag: "50001058-11",
+    componentType: SensorComponentType.Flow,
+  },
+  boilersFlowcontrolLt2: {
+    yardTag: "50001064-03",
+    componentType: SensorComponentType.Valve,
+    valveType: ValveType.FlowControl,
+  },
+  boilersFlowcontrolLt1: {
+    yardTag: "50001064-08",
+    componentType: SensorComponentType.Valve,
+    valveType: ValveType.FlowControl,
+  },
+  boilersSwitchTank3Fill: {
+    yardTag: "50001067-03",
+    componentType: SensorComponentType.Valve,
+    valveType: ValveType.Switch,
+  },
+  boilersSwitchTank3BoostingReturn: {
+    yardTag: "50001067-04",
+    componentType: SensorComponentType.Valve,
+    valveType: ValveType.Switch,
+  },
+  boilersSwitchTank3Empty: {
+    yardTag: "50001067-05",
+    componentType: SensorComponentType.Valve,
+    valveType: ValveType.Switch,
+  },
+  boilersSwitchTank3BoostingSupply: {
+    yardTag: "50001067-06",
+    componentType: SensorComponentType.Valve,
+    valveType: ValveType.Switch,
+  },
+  boilersSwitchTank2Fill: {
+    yardTag: "50001067-07",
+    componentType: SensorComponentType.Valve,
+    valveType: ValveType.Switch,
+  },
+  boilersSwitchTank2BoostingReturn: {
+    yardTag: "50001067-08",
+    componentType: SensorComponentType.Valve,
+    valveType: ValveType.Switch,
+  },
+  boilersSwitchTank2Empty: {
+    yardTag: "50001067-09",
+    componentType: SensorComponentType.Valve,
+    valveType: ValveType.Switch,
+  },
+  boilersSwitchTank2BoostingSupply: {
+    yardTag: "50001067-10",
+    componentType: SensorComponentType.Valve,
+    valveType: ValveType.Switch,
+  },
+  boilersSwitchTank1Fill: {
+    yardTag: "50001067-11",
+    componentType: SensorComponentType.Valve,
+    valveType: ValveType.Switch,
+  },
+  boilersSwitchTank1BoostingReturn: {
+    yardTag: "50001067-12",
+    componentType: SensorComponentType.Valve,
+    valveType: ValveType.Switch,
+  },
+  boilersSwitchTank1Empty: {
+    yardTag: "50001067-13",
+    componentType: SensorComponentType.Valve,
+    valveType: ValveType.Switch,
+  },
+  boilersSwitchTank1BoostingSupply: {
+    yardTag: "50001067-14",
+    componentType: SensorComponentType.Valve,
+    valveType: ValveType.Switch,
+  },
+  boilersSwitchLowTemperature: {
+    yardTag: "50001067-16",
+    componentType: SensorComponentType.Valve,
+    valveType: ValveType.Switch,
+  },
+  boilersSwitchHeatpump: {
+    yardTag: "50001067-17",
+    componentType: SensorComponentType.Valve,
+    valveType: ValveType.Switch,
+  },
+  boilersSwitchHighTemperature: {
+    yardTag: "50001067-18",
+    componentType: SensorComponentType.Valve,
+    valveType: ValveType.Switch,
+  },
+});
+
+export const BOILERS_SIMULATION_INPUTS = toSimulationDefinition({
+  boilersLt1Supply: {
+    componentType: SimulationComponentType.Boundary,
+  },
+  boilersLt2Supply: {
+    componentType: SimulationComponentType.Boundary,
+  },
+  boilersFahrenheitSupply: {
+    componentType: SimulationComponentType.Boundary,
+  },
+  boilersHtSupply: {
+    componentType: SimulationComponentType.Boundary,
+  },
+  boilersExchangerGas: {
+    componentType: SimulationComponentType.HeatSource,
+  },
+  boilersSeawaterSupply: {
+    componentType: SimulationComponentType.Temperature,
+  },
+});
+
+export const BOILERS_SIMULATION_OUTPUTS = toSimulationDefinition({
+  boilersLt1Return: {
+    componentType: SimulationComponentType.Temperature,
+  },
+  boilersLt2Return: {
+    componentType: SimulationComponentType.Temperature,
+  },
+  boilersFahrenheitReturn: {
+    componentType: SimulationComponentType.Temperature,
+  },
+  boilersHtReturn: {
+    componentType: SimulationComponentType.Temperature,
+  },
+  boilersFreshwaterReturn: {
+    componentType: SimulationComponentType.Flow,
+  },
+  boilersSeawaterReturn: {
+    componentType: SimulationComponentType.Temperature,
+  },
+  boilersSeawaterSupply: {
+    componentType: SimulationComponentType.Flow,
+  },
+});
+
 export const CONSUMERS_CONTROL_DEFINITION = toControlDefinition({
   consumersFlowcontrolFahrenheit: {
     yardTag: "50001061",
@@ -302,7 +614,7 @@ export const PCM_SENSOR_DEFINITION = toSensorDefinition({
     componentType: SensorComponentType.Temperature,
   },
   pcmTemperatureModule1Out: {
-    yardTag: "50001038-32",
+    yardTag: "50001038-60",
     componentType: SensorComponentType.Temperature,
   },
   pcmTemperatureModule2Out: {

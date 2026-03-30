@@ -81,6 +81,7 @@ const SENSOR_TYPE_MAP: Record<string, string> = {
   SensorThrusterType: "Thruster",
   SensorPcsType: "Pcs",
   SensorPcmType: "Pcm",
+  SensorLevelSensorType: "Level",
 };
 
 const SIMULATION_TYPE_MAP: Record<string, string> = {
@@ -96,6 +97,7 @@ const CONTROL_TYPE_MAP: Record<string, string> = {
   pcm: "Pcm",
   pump: "Pump",
   valve: "Valve",
+  heatpump: "Heatpump",
 };
 
 const VALVE_TYPE_MAP: Record<string, string> = {

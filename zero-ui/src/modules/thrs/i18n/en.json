@@ -5,7 +5,8 @@
       "thrusters": "Thrusters",
       "pcm": "PCM",
       "pvt": "PVT",
-      "consumers": "Consumers"
+      "consumers": "Consumers",
+      "boilers": "Boilers"
     },
     "title": "HMI",
     "views": {
