@@ -36,7 +36,7 @@ class Lt1Parameters(ThrsValues):
     shorepower_flow_setpoint: LMin = 20
     propulsion_drives_flow_setpoint: LMin = 30
     pump_tuning: Tuning = (0.01, 0.001, 0)
-    warmup_mix_tuning: Tuning = (-0.05, -0.001, 0)
+    recovery_mix_tuning: Tuning = (-0.05, -0.001, 0)
     heat_dump_tuning: Tuning = (0.05, 0.01, 0)
     aft_flow_balance_tuning: Tuning = (0.01, 0.001, 0)
     fwd_flow_balance_tuning: Tuning = (0.01, 0.001, 0)
@@ -103,12 +103,12 @@ class Lt1Control(
                 on_enter=[
                     self._deactivate_pump,
                     self._disable_heat_dump,
-                    self._disable_warmup_mix,
+                    self._disable_recovery_mix,
                 ],
                 on_exit=[
                     self._activate_pump,
                     self._enable_heat_dump,
-                    self._enable_warmup_mix,
+                    self._enable_recovery_mix,
                 ],
             ),
             State(
@@ -173,10 +173,10 @@ class Lt1Control(
             time_fn=self._time,
         )
 
-        self._warmup_mix_controller = Controller[Ratio, Celsius](
+        self._recovery_mix_controller = Controller[Ratio, Celsius](
             initial=self._current_values.lt1_mix_recovery.setpoint.value,
             setpoint=lambda: self._parameters.recovery_temperature,
-            tuning=lambda: self._parameters.warmup_mix_tuning,
+            tuning=lambda: self._parameters.recovery_mix_tuning,
             time_fn=self._time,
         )
 
@@ -255,6 +255,7 @@ class Lt1Control(
         self._control_heat_dump(sensor_values)
         self._control_flow_balance(sensor_values)
         self._control_pump_shorepower(sensor_values)
+        self._control_recovery_mix(sensor_values)
 
         if self.mode.is_shorepower:
             self._control_pump_shorepower(sensor_values)
@@ -274,16 +275,16 @@ class Lt1Control(
             or sensor_values.lt1_propdrive_fwd2.active.value
         )
 
-    def _enable_warmup_mix(self, sensor_values: Lt1SensorValues):
-        self._warmup_mix_controller.enable()
+    def _enable_recovery_mix(self, sensor_values: Lt1SensorValues):
+        self._recovery_mix_controller.enable()
 
-    def _disable_warmup_mix(self, sensor_values: Lt1SensorValues):
-        self._warmup_mix_controller.disable()
+    def _disable_recovery_mix(self, sensor_values: Lt1SensorValues):
+        self._recovery_mix_controller.disable()
 
-    def _control_warmup_mix(self, sensor_values: Lt1SensorValues):
-        if self._warmup_mix_controller.enabled():
+    def _control_recovery_mix(self, sensor_values: Lt1SensorValues):
+        if self._recovery_mix_controller.enabled():
             self._current_values.lt1_mix_recovery.setpoint = Stamped(
-                value=self._warmup_mix_controller(
+                value=self._recovery_mix_controller(
                     sensor_values.lt1_temperature_recovery.temperature.value
                 ),
                 timestamp=self._time(),
@@ -398,9 +399,7 @@ class Lt1Control(
             value=Valve.CLOSED, timestamp=self._time()
         )
 
-    def _set_valves_to_propulsion(
-        self, sensor_values: Lt1SensorValues
-    ):  # TODO: should take into account switches per propdrive? currently opens all switches and depends on flowcontrol valve
+    def _set_valves_to_propulsion(self, sensor_values: Lt1SensorValues):
         self._current_values.lt1_switch_shorepower_supply.setpoint = Stamped(
             value=Valve.CLOSED, timestamp=self._time()
         )

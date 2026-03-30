@@ -27,7 +27,7 @@ class Lt1SensorValues(ThrsValues):
         sensor.TemperatureSensor,
         component_meta(yard_tag="50001038-16", component_type="temperature_sensor"),
     ]
-    lt1_temperature_recovery_mix: Annotated[
+    lt1_temperature_recovery_mix: Annotated[  # TODO: rename?
         sensor.TemperatureSensor,
         component_meta(yard_tag="50001038-57", component_type="temperature_sensor"),
     ]
@@ -208,13 +208,13 @@ class Lt1ControlValues(ThrsValues):
             yard_tag="50001046-03", component_type="valve", valve_type="mix"
         ),
     ]
-    lt1_switch_propdrive_aft: Annotated[  # TODO: this is a flowcontrol valve
+    lt1_switch_propdrive_aft: Annotated[  # TODO: Rename to flowcontrol valve
         control.Valve,
         component_meta(
             yard_tag="50001065-02", component_type="valve", valve_type="switch"
         ),
     ]
-    lt1_switch_propdrive_fwd: Annotated[  # TODO: this is a flowcontrol valve
+    lt1_switch_propdrive_fwd: Annotated[  # TODO: Rename to flowcontrol valve
         control.Valve,
         component_meta(
             yard_tag="50001065-03", component_type="valve", valve_type="switch"

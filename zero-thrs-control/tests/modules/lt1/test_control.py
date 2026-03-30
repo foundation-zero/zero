@@ -116,6 +116,49 @@ async def test_heat_dump(
     )
 
 
-# TODO test_recovery_mixing
+async def test_heat_recovery(
+    cycler: Cycler, simulation_inputs_shorepower: Lt1SimulationInputs
+):
+    cycler.update_simulation_inputs(simulation_inputs_shorepower)
+    cycler._control.update_parameters(
+        Lt1Parameters(
+            shorepower_maximum_supply_temperature=90,
+            recovery_temperature=50,
+        )
+    )
 
-# TODO def test_flow_balancing
+    result = await cycler.run(120)
+
+    assert isinstance(result, SimulationExecutionResult)
+    assert result.sensor_values.lt1_temperature_recovery.temperature.value == approx(
+        50.0, abs=1
+    )
+    assert (
+        result.sensor_values.lt1_temperature_recovery_mix.temperature.value
+        < result.sensor_values.lt1_temperature_recovery.temperature.value
+    )
+
+
+async def test_flow_balancing(
+    cycler: Cycler, simulation_inputs_all_drives_active: Lt1SimulationInputs
+):
+    cycler.update_simulation_inputs(simulation_inputs_all_drives_active)
+
+    result = await cycler.run(120)
+
+    assert isinstance(cycler._control, Lt1Control)
+    assert cycler._control.mode.is_propulsion
+
+    assert isinstance(result, SimulationExecutionResult)
+    assert result.sensor_values.lt1_flow_propdrive_aft1.flow.value == approx(
+        15.0, abs=0.5
+    )
+    assert result.sensor_values.lt1_flow_propdrive_aft2.flow.value == approx(
+        15.0, abs=0.5
+    )
+    assert result.sensor_values.lt1_flow_propdrive_fwd1.flow.value == approx(
+        15.0, abs=0.5
+    )
+    assert result.sensor_values.lt1_flow_propdrive_fwd2.flow.value == approx(
+        15.0, abs=0.5
+    )
