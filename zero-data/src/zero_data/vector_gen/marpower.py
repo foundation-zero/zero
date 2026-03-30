@@ -1,5 +1,4 @@
 from pathlib import Path
-from typing import IO
 
 from zero_data.io_list.types import IOTopic
 from zero_data.utils import detect_same_format
@@ -20,5 +19,5 @@ class MarpowerVectorGenerator:
                 ]
             )
             for topic in squashed:
-                f.write(f"  {topic.topic.removesuffix("#")}\n")
+                f.write(f"\t\"{topic.topic.removesuffix("#")}\",\n")
             f.write("]\n")

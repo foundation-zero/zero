@@ -1,10 +1,8 @@
-from itertools import groupby
+import logging
 from pathlib import Path
 from typing import List
 
 from zero_data.io_list.types import IOTopic, IOValue
-import logging
-
 from zero_data.utils import detect_same_format
 
 logger = logging.getLogger(__name__)
