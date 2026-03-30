@@ -1,5 +1,4 @@
 import logging
-from operator import ge
 from pathlib import Path
 
 from zero_data.config import io_lists
