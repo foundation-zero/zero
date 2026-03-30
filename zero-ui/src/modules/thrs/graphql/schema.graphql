@@ -1,5 +1,118 @@
 directive @jsonSchemaDirective(yardTag: String = null, componentType: String = null, valveType: String = null) on FIELD_DEFINITION
 
+type BoilersControlModeType {
+  Empty: Void
+}
+
+type BoilersControlValuesType {
+  boilersPump: ControlPumpType! @jsonSchemaDirective(yardTag: "50001022", componentType: "pump", valveType: null)
+  boilersHeatpump: ControlHeatPumpType! @jsonSchemaDirective(yardTag: "50001035", componentType: "heatpump", valveType: null)
+  boilersFlowcontrolLt2: ControlValveType! @jsonSchemaDirective(yardTag: "50001064-03", componentType: "valve", valveType: "flowcontrol")
+  boilersFlowcontrolLt1: ControlValveType! @jsonSchemaDirective(yardTag: "50001064-08", componentType: "valve", valveType: "flowcontrol")
+  boilersSwitchTank3Fill: ControlValveType! @jsonSchemaDirective(yardTag: "50001067-03", componentType: "valve", valveType: "switch")
+  boilersSwitchTank3BoostingReturn: ControlValveType! @jsonSchemaDirective(yardTag: "50001067-04", componentType: "valve", valveType: "switch")
+  boilersSwitchTank3Empty: ControlValveType! @jsonSchemaDirective(yardTag: "50001067-05", componentType: "valve", valveType: "switch")
+  boilersSwitchTank3BoostingSupply: ControlValveType! @jsonSchemaDirective(yardTag: "50001067-06", componentType: "valve", valveType: "switch")
+  boilersSwitchTank2Fill: ControlValveType! @jsonSchemaDirective(yardTag: "50001067-07", componentType: "valve", valveType: "switch")
+  boilersSwitchTank2BoostingReturn: ControlValveType! @jsonSchemaDirective(yardTag: "50001067-08", componentType: "valve", valveType: "switch")
+  boilersSwitchTank2Empty: ControlValveType! @jsonSchemaDirective(yardTag: "50001067-09", componentType: "valve", valveType: "switch")
+  boilersSwitchTank2BoostingSupply: ControlValveType! @jsonSchemaDirective(yardTag: "50001067-10", componentType: "valve", valveType: "switch")
+  boilersSwitchTank1Fill: ControlValveType! @jsonSchemaDirective(yardTag: "50001067-11", componentType: "valve", valveType: "switch")
+  boilersSwitchTank1BoostingReturn: ControlValveType! @jsonSchemaDirective(yardTag: "50001067-12", componentType: "valve", valveType: "switch")
+  boilersSwitchTank1Empty: ControlValveType! @jsonSchemaDirective(yardTag: "50001067-13", componentType: "valve", valveType: "switch")
+  boilersSwitchTank1BoostingSupply: ControlValveType! @jsonSchemaDirective(yardTag: "50001067-14", componentType: "valve", valveType: "switch")
+  boilersSwitchLowTemperature: ControlValveType! @jsonSchemaDirective(yardTag: "50001067-16", componentType: "valve", valveType: "switch")
+  boilersSwitchHeatpump: ControlValveType! @jsonSchemaDirective(yardTag: "50001067-17", componentType: "valve", valveType: "switch")
+  boilersSwitchHighTemperature: ControlValveType! @jsonSchemaDirective(yardTag: "50001067-18", componentType: "valve", valveType: "switch")
+}
+
+type BoilersParametersType {
+  heatpumpFlowSetpoint: Float!
+  boostingTemperatureSetpoint: Float!
+  tankTemperatureSetpoint: Float!
+  lt1FlowcontrolMinimumSetpoint: Float!
+  lt2FlowcontrolMinimumSetpoint: Float!
+  fillingTemperatureSetpoint: Float!
+  minimumTankLevel: Float!
+  maximumTankLevel: Float!
+  tank1Disabled: Boolean!
+  tank2Disabled: Boolean!
+  tank3Disabled: Boolean!
+  pumpTemperatureTuning: [Float!]!
+  pumpFlowTuning: [Float!]!
+  lt2FlowTuning: [Float!]!
+  lt1FlowTuning: [Float!]!
+}
+
+type BoilersSensorValuesType {
+  boilersPump: SensorPumpType! @jsonSchemaDirective(yardTag: "50001022", componentType: "pump", valveType: null)
+  boilersTemperatureChillerReturn: SensorTemperatureSensorType! @jsonSchemaDirective(yardTag: "50001038-25", componentType: "temperature_sensor", valveType: null)
+  boilersTemperatureLt2Return: SensorTemperatureSensorType! @jsonSchemaDirective(yardTag: "50001038-26", componentType: "temperature_sensor", valveType: null)
+  boilersTemperatureTank3: SensorTemperatureSensorType! @jsonSchemaDirective(yardTag: "50001038-27", componentType: "temperature_sensor", valveType: null)
+  boilersTemperatureTank2: SensorTemperatureSensorType! @jsonSchemaDirective(yardTag: "50001038-44", componentType: "temperature_sensor", valveType: null)
+  boilersTemperatureTank1: SensorTemperatureSensorType! @jsonSchemaDirective(yardTag: "50001038-45", componentType: "temperature_sensor", valveType: null)
+  boilersTemperatureLt1Return: SensorTemperatureSensorType! @jsonSchemaDirective(yardTag: "50001038-46", componentType: "temperature_sensor", valveType: null)
+  boilersTemperatureFreshwaterSupply: SensorTemperatureSensorType! @jsonSchemaDirective(yardTag: "50001038-47", componentType: "temperature_sensor", valveType: null)
+  boilersTemperatureFahrenheitReturn: SensorTemperatureSensorType! @jsonSchemaDirective(yardTag: "50001038-51", componentType: "temperature_sensor", valveType: null)
+  boilersTemperatureBoostingSupply: SensorTemperatureSensorType! @jsonSchemaDirective(yardTag: "50001038-65", componentType: "temperature_sensor", valveType: null)
+  boilersTemperatureBoostingReturn: SensorTemperatureSensorType! @jsonSchemaDirective(yardTag: "50001038-66", componentType: "temperature_sensor", valveType: null)
+  boilersLevelTank1: SensorLevelSensorType! @jsonSchemaDirective(yardTag: "50001056-01", componentType: "pressure_sensor", valveType: null)
+  boilersLevelTank2: SensorLevelSensorType! @jsonSchemaDirective(yardTag: "50001056-02", componentType: "pressure_sensor", valveType: null)
+  boilersLevelTank3: SensorLevelSensorType! @jsonSchemaDirective(yardTag: "50001056-03", componentType: "pressure_sensor", valveType: null)
+  boilersFlowLt2: SensorFlowSensorType! @jsonSchemaDirective(yardTag: "50001057-17", componentType: "flow_sensor", valveType: null)
+  boilersFlowLt1: SensorFlowSensorType! @jsonSchemaDirective(yardTag: "50001057-24", componentType: "flow_sensor", valveType: null)
+  boilersFlowBoosting: SensorFlowSensorType! @jsonSchemaDirective(yardTag: "50001058-11", componentType: "flow_sensor", valveType: null)
+  boilersFlowcontrolLt2: SensorValveType! @jsonSchemaDirective(yardTag: "50001064-03", componentType: "valve", valveType: "flowcontrol")
+  boilersFlowcontrolLt1: SensorValveType! @jsonSchemaDirective(yardTag: "50001064-08", componentType: "valve", valveType: "flowcontrol")
+  boilersSwitchTank3Fill: SensorValveType! @jsonSchemaDirective(yardTag: "50001067-03", componentType: "valve", valveType: "switch")
+  boilersSwitchTank3BoostingReturn: SensorValveType! @jsonSchemaDirective(yardTag: "50001067-04", componentType: "valve", valveType: "switch")
+  boilersSwitchTank3Empty: SensorValveType! @jsonSchemaDirective(yardTag: "50001067-05", componentType: "valve", valveType: "switch")
+  boilersSwitchTank3BoostingSupply: SensorValveType! @jsonSchemaDirective(yardTag: "50001067-06", componentType: "valve", valveType: "switch")
+  boilersSwitchTank2Fill: SensorValveType! @jsonSchemaDirective(yardTag: "50001067-07", componentType: "valve", valveType: "switch")
+  boilersSwitchTank2BoostingReturn: SensorValveType! @jsonSchemaDirective(yardTag: "50001067-08", componentType: "valve", valveType: "switch")
+  boilersSwitchTank2Empty: SensorValveType! @jsonSchemaDirective(yardTag: "50001067-09", componentType: "valve", valveType: "switch")
+  boilersSwitchTank2BoostingSupply: SensorValveType! @jsonSchemaDirective(yardTag: "50001067-10", componentType: "valve", valveType: "switch")
+  boilersSwitchTank1Fill: SensorValveType! @jsonSchemaDirective(yardTag: "50001067-11", componentType: "valve", valveType: "switch")
+  boilersSwitchTank1BoostingReturn: SensorValveType! @jsonSchemaDirective(yardTag: "50001067-12", componentType: "valve", valveType: "switch")
+  boilersSwitchTank1Empty: SensorValveType! @jsonSchemaDirective(yardTag: "50001067-13", componentType: "valve", valveType: "switch")
+  boilersSwitchTank1BoostingSupply: SensorValveType! @jsonSchemaDirective(yardTag: "50001067-14", componentType: "valve", valveType: "switch")
+  boilersSwitchLowTemperature: SensorValveType! @jsonSchemaDirective(yardTag: "50001067-16", componentType: "valve", valveType: "switch")
+  boilersSwitchHeatpump: SensorValveType! @jsonSchemaDirective(yardTag: "50001067-17", componentType: "valve", valveType: "switch")
+  boilersSwitchHighTemperature: SensorValveType! @jsonSchemaDirective(yardTag: "50001067-18", componentType: "valve", valveType: "switch")
+}
+
+type BoilersSensorValuesTypeBoilersControlValuesTypeBoilersParametersTypeBoilersControlModeTypeControlModule {
+  sensorValues: BoilersSensorValuesType
+  controlValues: BoilersControlValuesType
+  parameters: BoilersParametersType
+  controlMode: BoilersSensorValuesTypeBoilersControlValuesTypeBoilersParametersTypeBoilersControlModeTypeSwitchingControlModeType
+}
+
+type BoilersSensorValuesTypeBoilersControlValuesTypeBoilersParametersTypeBoilersControlModeTypeSwitchingControlModeType {
+  automaticMode: BoilersControlModeType
+  automatic: Boolean!
+}
+
+type BoilersSimulationInputsType {
+  boilersLt1Supply: BoundarySimulationType!
+  boilersLt2Supply: BoundarySimulationType!
+  boilersFahrenheitSupply: BoundarySimulationType!
+  boilersHtSupply: BoundarySimulationType!
+  boilersFreshwaterSupply: OverpressureTemperatureBoundarySimulationType!
+  boilersExchangerGas: HeatSourceSimulationType!
+  boilersSeawaterSupply: TemperatureBoundarySimulationType!
+}
+
+type BoilersSimulationOutputsType {
+  boilersLt1Return: TemperatureBoundarySimulationType!
+  boilersLt2Return: TemperatureBoundarySimulationType!
+  boilersFahrenheitReturn: TemperatureBoundarySimulationType!
+  boilersHtReturn: TemperatureBoundarySimulationType!
+  boilersFreshwaterReturn: FlowBoundarySimulationType!
+  boilersSeawaterReturn: TemperatureBoundarySimulationType!
+  boilersSeawaterSupply: FlowBoundarySimulationType!
+}
+
 type BoolStampedType {
   value: Boolean!
   timestamp: DateTime!
@@ -76,11 +189,17 @@ type ConsumersSimulationOutputsType {
   consumersModuleReturn: BoundarySimulationType!
 }
 
+type ControlHeatPumpType {
+  on: BoolStampedType!
+  temperatureSetpoint: FloatStampedType!
+}
+
 type ControlModules {
   thrusters: ThrustersSensorValuesTypeThrustersControlValuesTypeThrustersParametersTypeThrustersControlModeTypeControlModule!
   pvt: PvtSensorValuesTypePvtControlValuesTypePvtParametersTypePvtControlModeTypeControlModule!
   pcm: PcmSensorValuesTypePcmControlValuesTypePcmParametersTypePcmControlModeTypeControlModule!
   consumers: ConsumersSensorValuesTypeConsumersControlValuesTypeConsumersParametersTypeConsumersControlModeTypeControlModule!
+  boilers: BoilersSensorValuesTypeBoilersControlValuesTypeBoilersParametersTypeBoilersControlModeTypeControlModule!
 }
 
 type ControlPcmType {
@@ -106,6 +225,11 @@ type FloatStampedType {
 
 type FlowBoundarySimulationType {
   flow: FloatStampedType!
+}
+
+input HeatPumpInputType {
+  on: Boolean!
+  temperatureSetpoint: Float!
 }
 
 input HeatSourceInputType {
@@ -231,6 +355,48 @@ type Mutation {
   consumersControlSetConsumersFlowcontrolBoosting(component: ValveInputType!): ConsumersControlValuesType!
   consumersControlSetConsumersSwitchFahrenheitExchanger(component: ValveInputType!): ConsumersControlValuesType!
   consumersControlSetConsumersSwitchBoosting(component: ValveInputType!): ConsumersControlValuesType!
+  boilersSetAutomationMode(automatic: Boolean!): Boolean!
+  boilersParameterSetHeatpumpFlowSetpoint(value: Float!): BoilersParametersType!
+  boilersParameterSetBoostingTemperatureSetpoint(value: Float!): BoilersParametersType!
+  boilersParameterSetTankTemperatureSetpoint(value: Float!): BoilersParametersType!
+  boilersParameterSetLt1FlowcontrolMinimumSetpoint(value: Float!): BoilersParametersType!
+  boilersParameterSetLt2FlowcontrolMinimumSetpoint(value: Float!): BoilersParametersType!
+  boilersParameterSetFillingTemperatureSetpoint(value: Float!): BoilersParametersType!
+  boilersParameterSetMinimumTankLevel(value: Float!): BoilersParametersType!
+  boilersParameterSetMaximumTankLevel(value: Float!): BoilersParametersType!
+  boilersParameterSetTank1Disabled(value: Boolean!): BoilersParametersType!
+  boilersParameterSetTank2Disabled(value: Boolean!): BoilersParametersType!
+  boilersParameterSetTank3Disabled(value: Boolean!): BoilersParametersType!
+  boilersParameterSetPumpTemperatureTuning(value: [Float!]!): BoilersParametersType!
+  boilersParameterSetPumpFlowTuning(value: [Float!]!): BoilersParametersType!
+  boilersParameterSetLt2FlowTuning(value: [Float!]!): BoilersParametersType!
+  boilersParameterSetLt1FlowTuning(value: [Float!]!): BoilersParametersType!
+  boilersControlSetBoilersPump(component: PumpInputType!): BoilersControlValuesType!
+  boilersControlSetBoilersHeatpump(component: HeatPumpInputType!): BoilersControlValuesType!
+  boilersControlSetBoilersFlowcontrolLt2(component: ValveInputType!): BoilersControlValuesType!
+  boilersControlSetBoilersFlowcontrolLt1(component: ValveInputType!): BoilersControlValuesType!
+  boilersControlSetBoilersSwitchTank3Fill(component: ValveInputType!): BoilersControlValuesType!
+  boilersControlSetBoilersSwitchTank3BoostingReturn(component: ValveInputType!): BoilersControlValuesType!
+  boilersControlSetBoilersSwitchTank3Empty(component: ValveInputType!): BoilersControlValuesType!
+  boilersControlSetBoilersSwitchTank3BoostingSupply(component: ValveInputType!): BoilersControlValuesType!
+  boilersControlSetBoilersSwitchTank2Fill(component: ValveInputType!): BoilersControlValuesType!
+  boilersControlSetBoilersSwitchTank2BoostingReturn(component: ValveInputType!): BoilersControlValuesType!
+  boilersControlSetBoilersSwitchTank2Empty(component: ValveInputType!): BoilersControlValuesType!
+  boilersControlSetBoilersSwitchTank2BoostingSupply(component: ValveInputType!): BoilersControlValuesType!
+  boilersControlSetBoilersSwitchTank1Fill(component: ValveInputType!): BoilersControlValuesType!
+  boilersControlSetBoilersSwitchTank1BoostingReturn(component: ValveInputType!): BoilersControlValuesType!
+  boilersControlSetBoilersSwitchTank1Empty(component: ValveInputType!): BoilersControlValuesType!
+  boilersControlSetBoilersSwitchTank1BoostingSupply(component: ValveInputType!): BoilersControlValuesType!
+  boilersControlSetBoilersSwitchLowTemperature(component: ValveInputType!): BoilersControlValuesType!
+  boilersControlSetBoilersSwitchHeatpump(component: ValveInputType!): BoilersControlValuesType!
+  boilersControlSetBoilersSwitchHighTemperature(component: ValveInputType!): BoilersControlValuesType!
+  boilersSimulationSetBoilersLt1Supply(component: BoundaryInputType!): BoilersSimulationInputsType!
+  boilersSimulationSetBoilersLt2Supply(component: BoundaryInputType!): BoilersSimulationInputsType!
+  boilersSimulationSetBoilersFahrenheitSupply(component: BoundaryInputType!): BoilersSimulationInputsType!
+  boilersSimulationSetBoilersHtSupply(component: BoundaryInputType!): BoilersSimulationInputsType!
+  boilersSimulationSetBoilersFreshwaterSupply(component: OverpressureTemperatureBoundaryInputType!): BoilersSimulationInputsType!
+  boilersSimulationSetBoilersExchangerGas(component: HeatSourceInputType!): BoilersSimulationInputsType!
+  boilersSimulationSetBoilersSeawaterSupply(component: TemperatureBoundaryInputType!): BoilersSimulationInputsType!
   highTemperatureSimulationSetThrustersAft(component: ThrusterInputType!): HighTemperatureSimulationInputsType!
   highTemperatureSimulationSetThrustersFwd(component: ThrusterInputType!): HighTemperatureSimulationInputsType!
   highTemperatureSimulationSetThrustersSeawaterSupply(component: BoundaryInputType!): HighTemperatureSimulationInputsType!
@@ -261,6 +427,16 @@ type Mutation {
   simulationPlay(playbackRate: Float! = 1): Void
   simulationPause: Void
   simulationStep(seconds: Float!): Void
+}
+
+input OverpressureTemperatureBoundaryInputType {
+  temperature: Float!
+  overpressure: Float!
+}
+
+type OverpressureTemperatureBoundarySimulationType {
+  temperature: FloatStampedType!
+  overpressure: FloatStampedType!
 }
 
 type PcmControlModeType {
@@ -302,7 +478,7 @@ type PcmSensorValuesType {
   pcmPump: SensorPumpType! @jsonSchemaDirective(yardTag: "50001017", componentType: "pump", valveType: null)
   pcmTemperatureProducersReturn: SensorTemperatureSensorType! @jsonSchemaDirective(yardTag: "50001038-31", componentType: "temperature_sensor", valveType: null)
   pcmTemperatureProducersSupply: SensorTemperatureSensorType! @jsonSchemaDirective(yardTag: "50001038-55", componentType: "temperature_sensor", valveType: null)
-  pcmTemperatureModule1Out: SensorTemperatureSensorType! @jsonSchemaDirective(yardTag: "50001038-32", componentType: "temperature_sensor", valveType: null)
+  pcmTemperatureModule1Out: SensorTemperatureSensorType! @jsonSchemaDirective(yardTag: "50001038-60", componentType: "temperature_sensor", valveType: null)
   pcmTemperatureModule2Out: SensorTemperatureSensorType! @jsonSchemaDirective(yardTag: "50001038-33", componentType: "temperature_sensor", valveType: null)
   pcmTemperatureModule3Out: SensorTemperatureSensorType! @jsonSchemaDirective(yardTag: "50001038-34", componentType: "temperature_sensor", valveType: null)
   pcmTemperatureModule4Out: SensorTemperatureSensorType! @jsonSchemaDirective(yardTag: "50001038-35", componentType: "temperature_sensor", valveType: null)
@@ -546,6 +722,10 @@ type SensorFlowSensorType {
   temperature: FloatStampedType!
 }
 
+type SensorLevelSensorType {
+  level: FloatStampedType!
+}
+
 type SensorPcmType {
   charged: BoolStampedType!
 }
@@ -576,9 +756,9 @@ type SensorValveType {
   positionRel: FloatStampedType!
 }
 
-union SimulationInputsType = ThrustersSimulationInputsType | PcmSimulationInputsType | PvtSimulationInputsType | ConsumersSimulationInputsType | HighTemperatureSimulationInputsType
+union SimulationInputsType = ThrustersSimulationInputsType | PcmSimulationInputsType | PvtSimulationInputsType | ConsumersSimulationInputsType | HighTemperatureSimulationInputsType | BoilersSimulationInputsType
 
-union SimulationOutputsType = ThrustersSimulationOutputsType | PcmSimulationOutputsType | PvtSimulationOutputsType | ConsumersSimulationOutputsType | HighTemperatureSimulationOutputsType
+union SimulationOutputsType = ThrustersSimulationOutputsType | PcmSimulationOutputsType | PvtSimulationOutputsType | ConsumersSimulationOutputsType | HighTemperatureSimulationOutputsType | BoilersSimulationOutputsType
 
 type SimulationState {
   time: DateTime!

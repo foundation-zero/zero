@@ -5,6 +5,10 @@ from thrs.graphql.helpers import (
     optional_pydantic_to_graphql,
 )
 from thrs.graphql.messaging import SimulationMessaging
+from thrs.input_output.modules.boilers import (
+    BoilersSimulationInputs,
+    BoilersSimulationOutputs,
+)
 from thrs.input_output.modules.consumers import (
     ConsumersSimulationInputs,
     ConsumersSimulationOutputs,
@@ -29,6 +33,7 @@ io_mapping = {
         HighTemperatureSimulationInputs,
         HighTemperatureSimulationOutputs,
     ),
+    "boilers": (BoilersSimulationInputs, BoilersSimulationOutputs),
 }
 
 inputs_strawberry_type_mapping = {
@@ -103,6 +108,12 @@ def resolve_outputs(
 )
 @add_simulation_input_mutations(
     "high_temperature",
+    io_mapping,
+    inputs_strawberry_type_mapping,
+    lambda context: context.simulation_messaging,
+)
+@add_simulation_input_mutations(
+    "boilers",
     io_mapping,
     inputs_strawberry_type_mapping,
     lambda context: context.simulation_messaging,

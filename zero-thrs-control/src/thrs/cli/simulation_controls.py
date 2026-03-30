@@ -18,8 +18,20 @@ from pydantic import (
     model_validator,
 )
 
+from thrs.control.modules.boilers import (
+    BoilersAlarms,
+    BoilersControl,
+    BoilersControlMode,
+    BoilersParameters,
+)
 from thrs.control.modules.high_temperature import HighTemperatureModule
 from thrs.control.switching import SwitchingControlMode
+from thrs.input_output.modules.boilers import (
+    BoilersControlValues,
+    BoilersSensorValues,
+    BoilersSimulationInputs,
+    BoilersSimulationOutputs,
+)
 from thrs.input_output.modules.high_temperature import HighTemperatureSimulationInputs
 from thrs.orchestration.module import ModuleDescription, CombinedModule, CombinedControl
 from thrs.control.modules.consumers import (
@@ -56,6 +68,7 @@ from thrs.input_output.base import (
 from thrs.input_output.definitions.simulation import (
     Boundary,
     HeatSource,
+    OverpressureTemperatureBoundary,
     Pcs,
     TemperatureBoundary,
     Thruster,
@@ -94,12 +107,15 @@ from thrs.simulation.models.fmu_paths import (
     pcm_path,
     consumers_path,
     high_temperature_path,
+    boilers_path,
 )
 from thrs.orchestration.simulator import Simulator
 
 logger = logging.getLogger(__name__)
 
 settings = Config()  # type: ignore
+
+SEAWATER_TEMPERATURE = 20.0
 
 INPUTS = {
     "thrusters": ThrustersSimulationInputs(
@@ -121,7 +137,7 @@ INPUTS = {
         pvt_owners=HeatSource(heat_flow=Stamped.stamp(0)),
         pvt_module_supply=TemperatureBoundary(temperature=Stamped.stamp(50)),
         pvt_seawater_supply=Boundary(
-            temperature=Stamped.stamp(32), flow=Stamped.stamp(50)
+            temperature=Stamped.stamp(SEAWATER_TEMPERATURE), flow=Stamped.stamp(50)
         ),
     ),
     "pcm": PcmSimulationInputs(
@@ -154,7 +170,7 @@ INPUTS = {
             heat_flow=Stamped.stamp(0.0), active=Stamped.stamp(True)
         ),
         thrusters_seawater_supply=Boundary(
-            temperature=Stamped.stamp(32.0),
+            temperature=Stamped.stamp(SEAWATER_TEMPERATURE),
             flow=Stamped.stamp(64.0),
         ),
         thrusters_pcs=Pcs(mode=Stamped.stamp(PcsMode.PROPULSION)),
@@ -162,7 +178,7 @@ INPUTS = {
         pvt_main_aft=HeatSource(heat_flow=Stamped.stamp(0)),
         pvt_owners=HeatSource(heat_flow=Stamped.stamp(0)),
         pvt_seawater_supply=Boundary(
-            temperature=Stamped.stamp(32), flow=Stamped.stamp(50)
+            temperature=Stamped.stamp(SEAWATER_TEMPERATURE), flow=Stamped.stamp(50)
         ),
         pcm_freshwater_supply=Boundary(
             temperature=Stamped.stamp(40.0),
@@ -177,13 +193,41 @@ INPUTS = {
             flow=Stamped.stamp(0.0),
         ),
     ),
+    "boilers": BoilersSimulationInputs(
+        boilers_lt1_supply=Boundary(
+            temperature=Stamped.stamp(50),
+            flow=Stamped.stamp(35),
+        ),
+        boilers_lt2_supply=Boundary(
+            temperature=Stamped.stamp(60),
+            flow=Stamped.stamp(60),
+        ),
+        boilers_fahrenheit_supply=Boundary(
+            temperature=Stamped.stamp(40),
+            flow=Stamped.stamp(45),
+        ),
+        boilers_ht_supply=Boundary(
+            temperature=Stamped.stamp(60),
+            flow=Stamped.stamp(60),
+        ),
+        boilers_freshwater_supply=OverpressureTemperatureBoundary(
+            temperature=Stamped.stamp(20),
+            overpressure=Stamped.stamp(3),
+        ),
+        boilers_exchanger_gas=HeatSource(heat_flow=Stamped.stamp(300)),
+        boilers_seawater_supply=TemperatureBoundary(
+            temperature=Stamped.stamp(SEAWATER_TEMPERATURE)
+        ),
+    ),
 }
+
 
 CONTROL_PARAMS = {
     "thrusters": ThrustersParameters(),
     "pvt": PvtParameters(),
     "pcm": PcmParameters(),
     "consumers": ConsumersParameters(),
+    "boilers": BoilersParameters(),
 }
 
 CONTROLS = {
@@ -191,6 +235,7 @@ CONTROLS = {
     "pvt": PvtControl,
     "pcm": PcmControl,
     "consumers": ConsumersControl,
+    "boilers": BoilersControl,
 }
 
 THRUSTERS_MODULE_DESCRIPTION = ModuleDescription(
@@ -226,6 +271,15 @@ CONSUMERS_MODULE_DESCRIPTION = ModuleDescription(
     ConsumersControl,
     ConsumersControlMode,
     ConsumersAlarms,
+)
+
+BOILERS_MODULE_DESCRIPTION = ModuleDescription(
+    BoilersSensorValues,
+    BoilersControlValues,
+    BoilersParameters,
+    BoilersControl,
+    BoilersControlMode,
+    BoilersAlarms,
 )
 
 MODES: dict[str, tuple[str, CombinedModule]] = {
@@ -271,9 +325,18 @@ MODES: dict[str, tuple[str, CombinedModule]] = {
         high_temperature_path,
         HighTemperatureModule(control_topic_suffix=settings.mqtt_control_topic_suffix),
     ),
+    "boilers": (
+        boilers_path,
+        CombinedModule(
+            {"boilers": BOILERS_MODULE_DESCRIPTION},
+            BoilersSimulationInputs,
+            BoilersSimulationOutputs,
+            control_topic_suffix=settings.mqtt_control_topic_suffix,
+        ),
+    ),
 }
 
-Modes = Literal["thrusters", "pvt", "pcm", "consumers", "high_temperature"]
+Modes = Literal["thrusters", "pvt", "pcm", "consumers", "high_temperature", "boilers"]
 
 
 @dataclass

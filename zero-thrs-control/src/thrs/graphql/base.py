@@ -2,6 +2,7 @@ from dataclasses import dataclass
 from inspect import isclass
 from typing import Callable, Coroutine
 import strawberry
+from thrs.control.modules.boilers import BoilersControlMode, BoilersParameters
 from thrs.control.modules.consumers import ConsumersControlMode, ConsumersParameters
 from thrs.control.modules.pcm import PcmControlMode, PcmParameters
 from thrs.control.modules.pvt import PvtControlMode, PvtParameters
@@ -20,6 +21,7 @@ from thrs.graphql.helpers import (
     optional_pydantic_to_graphql,
 )
 
+from thrs.input_output.modules.boilers import BoilersControlValues, BoilersSensorValues
 from thrs.input_output.modules.consumers import (
     ConsumersControlValues,
     ConsumersSensorValues,
@@ -65,6 +67,13 @@ type ConsumersMessaging = ControlMessaging[
     ConsumersControlValues,
     ConsumersParameters,
     ConsumersControlMode,
+]
+
+type BoilersMessaging = ControlMessaging[
+    BoilersSensorValues,
+    BoilersControlValues,
+    BoilersParameters,
+    BoilersControlMode,
 ]
 
 
@@ -140,6 +149,7 @@ class ThrsContext(BaseContext):
     pvt_messaging: PvtMessaging
     pcm_messaging: PcmMessaging
     consumers_messaging: ConsumersMessaging
+    boilers_messaging: BoilersMessaging
     simulation_messaging: SimulationMessaging
 
 
