@@ -11,4 +11,4 @@ CREATE TABLE {{ this }} (
 	"Ps_Act_Load"	{{ marpower_struct("INTEGER") }},
 )
 INCLUDE partition AS topic
-{{ mqtt_with('marpower/280000-hydraulic-sail/tension-cylinder-deflector/mizzen') }}
+{{ mqtt_with('marpower/280000-hydraulic-sail/tension-cylinder-deflector/#') }}

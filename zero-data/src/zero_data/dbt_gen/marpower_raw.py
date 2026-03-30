@@ -39,7 +39,8 @@ class MarpowerRawGenerator:
             if len(list_of_group) > 1:
                 # Check if all topics in the group have the same format
                 if all(
-                    topic.fields == list_of_group[0].fields for topic in list_of_group
+                    set(topic.fields) == set(list_of_group[0].fields)
+                    for topic in list_of_group
                 ):
                     logger.info(f"Generating single table for nesting: {nest}")
                     squashed_topics.append(
