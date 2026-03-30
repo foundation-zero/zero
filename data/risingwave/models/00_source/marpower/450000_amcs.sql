@@ -48,16 +48,16 @@ CREATE TABLE {{ this }} (
 	"KEB2_CABINET_INTERNAL_FAN_CONTROL"	{{ marpower_struct("BOOLEAN") }},
 	"KEB2_ACC_SENSOR_ZEROING2"	{{ marpower_struct("BOOLEAN") }},
 	"KEB2_HELM_SB_AMCS_MUTEFB"	{{ marpower_struct("BOOLEAN") }},
-	"KEB6_AmcsPlcPowerModule1FuseBlown"	{{ marpower_struct("BOOLEAN") }},
 	"KEB6_AmcsPlcPowerModule1PowerFailure"	{{ marpower_struct("BOOLEAN") }},
-	"KEB7_AmcsPlcPowerModule1FuseBlown"	{{ marpower_struct("BOOLEAN") }},
+	"KEB6_AmcsPlcPowerModule1FuseBlown"	{{ marpower_struct("BOOLEAN") }},
 	"KEB7_AmcsPlcPowerModule1PowerFailure"	{{ marpower_struct("BOOLEAN") }},
+	"KEB7_AmcsPlcPowerModule1FuseBlown"	{{ marpower_struct("BOOLEAN") }},
 	"KEB8_ASI_BUS_EARTHFAULT"	{{ marpower_struct("BOOLEAN") }},
-	"KEB8_AmcsPlcPowerModule1FuseBlown"	{{ marpower_struct("BOOLEAN") }},
 	"KEB8_AmcsPlcPowerModule1PowerFailure"	{{ marpower_struct("BOOLEAN") }},
+	"KEB8_AmcsPlcPowerModule1FuseBlown"	{{ marpower_struct("BOOLEAN") }},
 	"KEB8_ASI_BUS_EARTHFAULTRESET"	{{ marpower_struct("BOOLEAN") }},
-	"KEB9_AmcsPlcPowerModule1FuseBlown"	{{ marpower_struct("BOOLEAN") }},
 	"KEB9_AmcsPlcPowerModule1PowerFailure"	{{ marpower_struct("BOOLEAN") }},
+	"KEB9_AmcsPlcPowerModule1FuseBlown"	{{ marpower_struct("BOOLEAN") }},
 )
 INCLUDE partition AS topic
 {{ mqtt_with('marpower/450000-amcs') }}

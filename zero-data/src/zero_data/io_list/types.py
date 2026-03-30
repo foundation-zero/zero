@@ -5,7 +5,7 @@ from polars import DataFrame
 type Source = Literal["marpower", "sail_system"]
 
 
-@dataclass
+@dataclass(frozen=True, eq=True)
 class IOValue:
     name: str
     data_type: str
@@ -18,14 +18,14 @@ class IOValue:
         )
 
 
-@dataclass
+@dataclass(frozen=True, eq=True)
 class IOTopic:
     topic: str
     fields: List[IOValue]
     group: str | None = None
 
 
-@dataclass
+@dataclass(frozen=True, eq=True)
 class IOResult:
     io_list: DataFrame
     topics: List[IOTopic]
