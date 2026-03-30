@@ -1,7 +1,7 @@
 directive @jsonSchemaDirective(yardTag: String = null, componentType: String = null, valveType: String = null) on FIELD_DEFINITION
 
 type BoilersControlModeType {
-  Empty: Void
+  mode: String!
 }
 
 type BoilersControlValuesType {

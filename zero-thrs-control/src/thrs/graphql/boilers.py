@@ -1,6 +1,6 @@
 import strawberry
 
-from thrs.control.modules.boilers import BoilersParameters
+from thrs.control.modules.boilers import BoilersControlMode, BoilersParameters
 from thrs.graphql.base import (
     BoilersMessaging,
     SwitchingControlModeType,
@@ -21,11 +21,7 @@ from thrs.input_output.modules.boilers import BoilersControlValues, BoilersSenso
 BoilersSensorValuesType = pydantic_to_strawberry_type(BoilersSensorValues)
 BoilersControlValuesType = pydantic_to_strawberry_type(BoilersControlValues)
 BoilersParametersType = pydantic_to_strawberry_type(BoilersParameters)
-
-
-@strawberry.type()
-class BoilersControlModeType:
-    _empty: None = None
+BoilersControlModeType = pydantic_to_strawberry_type(BoilersControlMode)
 
 
 BoilersModule = ControlModule[

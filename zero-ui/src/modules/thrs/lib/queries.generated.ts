@@ -3,7 +3,10 @@ export const BOILERS_CONTROL_QUERY = `
     dutypoint { value timestamp }
     on { value timestamp }
   }
-  boilersHeatpump { value timestamp }
+  boilersHeatpump {
+    temperatureSetpoint { value timestamp }
+    on { value timestamp }
+  }
   boilersFlowcontrolLt2 {
     setpoint { value timestamp }
   }
@@ -100,9 +103,15 @@ export const BOILERS_SENSOR_QUERY = `
   boilersTemperatureBoostingReturn {
     temperature { value timestamp }
   }
-  boilersLevelTank1 { value timestamp }
-  boilersLevelTank2 { value timestamp }
-  boilersLevelTank3 { value timestamp }
+  boilersLevelTank1 {
+    level { value timestamp }
+  }
+  boilersLevelTank2 {
+    level { value timestamp }
+  }
+  boilersLevelTank3 {
+    level { value timestamp }
+  }
   boilersFlowLt2 {
     flow { value timestamp }
     temperature { value timestamp }
