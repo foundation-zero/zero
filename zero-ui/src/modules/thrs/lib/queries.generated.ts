@@ -61,6 +61,17 @@ export const BOILERS_CONTROL_QUERY = `
 `;
 
 export const BOILERS_PARAMETERS_QUERY = `
+  heatpumpFlowSetpoint
+  boostingTemperatureSetpoint
+  tankTemperatureSetpoint
+  lt1FlowcontrolMinimumSetpoint
+  lt2FlowcontrolMinimumSetpoint
+  fillingTemperatureSetpoint
+  minimumTankLevel
+  maximumTankLevel
+  tank1Disabled
+  tank2Disabled
+  tank3Disabled
   pumpTemperatureTuning
   pumpFlowTuning
   lt2FlowTuning
@@ -245,6 +256,10 @@ export const CONSUMERS_CONTROL_QUERY = `
 `;
 
 export const CONSUMERS_PARAMETERS_QUERY = `
+  boostingEnabled
+  boostingFlowRatioSetpoint
+  fahrenheitEnabled
+  fahrenheitFlowRatioSetpoint
   boostingFlowBalanceTuning
   bypassFlowBalanceTuning
   fahrenheitFlowBalanceTuning
@@ -445,8 +460,11 @@ export const PCM_CONTROL_QUERY = `
 export const PCM_PARAMETERS_QUERY = `
   pcmDischargeFlow
   pcmChargeFlow
+  minimumChargingDt
   minimumChargingTemperature
   pumpTuning
+  supplyingEnabled
+  chargingEnabled
   module1FlowBalanceTuning
   module2FlowBalanceTuning
   module3FlowBalanceTuning
@@ -602,6 +620,9 @@ export const PVT_PARAMETERS_QUERY = `
   warmupTemperature
   recoveryActivationStringTemperature
   minimumReturnTemperature
+  mainFwdMinimumPumpDutypoint
+  mainAftMinimumPumpDutypoint
+  ownersMinimumPumpDutypoint
   heatDumpTuning
   mainFwdMixTuning
   mainAftMixTuning

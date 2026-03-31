@@ -112,6 +112,39 @@ export const BOILERS_CONTROL_DEFINITION = toControlDefinition({
 });
 
 export const BOILERS_PARAMETER_DEFINITION = toParameterDefinition({
+  heatpumpFlowSetpoint: {
+    componentType: ParametersType.Flow,
+  },
+  boostingTemperatureSetpoint: {
+    componentType: ParametersType.Temperature,
+  },
+  tankTemperatureSetpoint: {
+    componentType: ParametersType.Temperature,
+  },
+  lt1FlowcontrolMinimumSetpoint: {
+    componentType: ParametersType.Flow,
+  },
+  lt2FlowcontrolMinimumSetpoint: {
+    componentType: ParametersType.Flow,
+  },
+  fillingTemperatureSetpoint: {
+    componentType: ParametersType.Temperature,
+  },
+  minimumTankLevel: {
+    componentType: ParametersType.Level,
+  },
+  maximumTankLevel: {
+    componentType: ParametersType.Level,
+  },
+  tank1Disabled: {
+    componentType: ParametersType.Disabled,
+  },
+  tank2Disabled: {
+    componentType: ParametersType.Disabled,
+  },
+  tank3Disabled: {
+    componentType: ParametersType.Disabled,
+  },
   pumpTemperatureTuning: {
     componentType: ParametersType.Tuning,
   },
@@ -356,6 +389,18 @@ export const CONSUMERS_CONTROL_DEFINITION = toControlDefinition({
 });
 
 export const CONSUMERS_PARAMETER_DEFINITION = toParameterDefinition({
+  boostingEnabled: {
+    componentType: ParametersType.Enabled,
+  },
+  boostingFlowRatioSetpoint: {
+    componentType: ParametersType.Flow,
+  },
+  fahrenheitEnabled: {
+    componentType: ParametersType.Enabled,
+  },
+  fahrenheitFlowRatioSetpoint: {
+    componentType: ParametersType.Flow,
+  },
   boostingFlowBalanceTuning: {
     componentType: ParametersType.Tuning,
   },
@@ -580,11 +625,20 @@ export const PCM_PARAMETER_DEFINITION = toParameterDefinition({
   pcmChargeFlow: {
     componentType: ParametersType.Flow,
   },
+  minimumChargingDt: {
+    componentType: ParametersType.dT,
+  },
   minimumChargingTemperature: {
     componentType: ParametersType.Temperature,
   },
   pumpTuning: {
     componentType: ParametersType.Tuning,
+  },
+  supplyingEnabled: {
+    componentType: ParametersType.Enabled,
+  },
+  chargingEnabled: {
+    componentType: ParametersType.Enabled,
   },
   module1FlowBalanceTuning: {
     componentType: ParametersType.Tuning,
@@ -792,6 +846,15 @@ export const PVT_PARAMETER_DEFINITION = toParameterDefinition({
   },
   minimumReturnTemperature: {
     componentType: ParametersType.Temperature,
+  },
+  mainFwdMinimumPumpDutypoint: {
+    componentType: ParametersType.Dutypoint,
+  },
+  mainAftMinimumPumpDutypoint: {
+    componentType: ParametersType.Dutypoint,
+  },
+  ownersMinimumPumpDutypoint: {
+    componentType: ParametersType.Dutypoint,
   },
   heatDumpTuning: {
     componentType: ParametersType.Tuning,

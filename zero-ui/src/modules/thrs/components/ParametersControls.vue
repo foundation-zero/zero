@@ -14,6 +14,8 @@ import { useThrsHistory } from "../stores/history";
 import ModuleControls from "./controls/ModuleControls.vue";
 import NumberParameter from "./controls/NumberParameter.vue";
 import PIDParameter from "./controls/PIDParameter.vue";
+import BooleanParameter from "./controls/BooleanParameter.vue";
+import RatioParameter from "./controls/RatioParameter.vue";
 import NoDataAvailable from "./NoDataAvailable.vue";
 
 const props = defineProps<{
@@ -31,6 +33,12 @@ const COMPONENTS: Record<ParametersType, Component | null> = {
   [ParametersType.Flow]: NumberParameter,
   [ParametersType.Temperature]: NumberParameter,
   [ParametersType.Tuning]: PIDParameter,
+  [ParametersType.Enabled]: BooleanParameter,
+  [ParametersType.Ratio]: RatioParameter,
+  [ParametersType.Dutypoint]: NumberParameter,
+  [ParametersType.dT]: NumberParameter,
+  [ParametersType.Level]: NumberParameter,
+  [ParametersType.Disabled]: BooleanParameter,
 };
 </script>
 <template>

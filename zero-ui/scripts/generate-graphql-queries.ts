@@ -110,6 +110,12 @@ const FIELD_MAPPINGS: AllFieldMappings = {
   ParametersType: {
     Temperature: [],
     Flow: [],
+    Enabled: [],
+    Ratio: [],
+    Dutypoint: [],
+    dT: [],
+    Level: [],
+    Disabled: [],
     Tuning: [],
   },
 };

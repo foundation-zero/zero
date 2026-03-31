@@ -244,6 +244,12 @@ export const enum ParametersType {
   Temperature = "temperature",
   Flow = "flow",
   Tuning = "tuning",
+  Enabled = "enabled",
+  Ratio = "ratio",
+  Dutypoint = "dutypoint",
+  dT = "dT",
+  Level = "level",
+  Disabled = "disabled",
 }
 
 export type ParameterDefinition<T extends ParametersType = ParametersType> = SchemaDefinition<T>;
@@ -252,6 +258,12 @@ export type ParameterDefinitions = SchemaDefinitions<ParameterDefinition>;
 export type TemperatureParameterDefinition = ParameterDefinition<ParametersType.Temperature>;
 export type FlowParameterDefinition = ParameterDefinition<ParametersType.Flow>;
 export type TuningParameterDefinition = ParameterDefinition<ParametersType.Tuning>;
+export type EnabledParameterDefinition = ParameterDefinition<ParametersType.Enabled>;
+export type RatioParameterDefinition = ParameterDefinition<ParametersType.Ratio>;
+export type DutypointParameterDefinition = ParameterDefinition<ParametersType.Dutypoint>;
+export type dTParameterDefinition = ParameterDefinition<ParametersType.dT>;
+export type LevelParameterDefinition = ParameterDefinition<ParametersType.Level>;
+export type DisabledParameterDefinition = ParameterDefinition<ParametersType.Disabled>;
 export type Parameters = Record<string, number | PID>;
 
 export type ExtractParameterValues<T extends ParameterDefinitions> = PickMap<
@@ -260,7 +272,13 @@ export type ExtractParameterValues<T extends ParameterDefinitions> = PickMap<
   number
 > &
   PickMap<T, FlowParameterDefinition, number> &
-  PickMap<T, TuningParameterDefinition, PID>;
+  PickMap<T, TuningParameterDefinition, PID> &
+  PickMap<T, EnabledParameterDefinition, boolean> &
+  PickMap<T, RatioParameterDefinition, number> &
+  PickMap<T, DutypointParameterDefinition, number> &
+  PickMap<T, dTParameterDefinition, number> &
+  PickMap<T, LevelParameterDefinition, number> &
+  PickMap<T, DisabledParameterDefinition, boolean>;
 
 export type ThrusterSimulation = {
   heatFlow: Stamped<number>;
