@@ -11,10 +11,10 @@ import { QUERIES, ThrsModules } from "@/modules/thrs/lib/consts";
 import { ExtractAllValues, ParameterDefinitions, ParametersType } from "@/modules/thrs/types";
 import { type Component, computed, toRefs } from "vue";
 import { useThrsHistory } from "../stores/history";
+import BooleanParameter from "./controls/BooleanParameter.vue";
 import ModuleControls from "./controls/ModuleControls.vue";
 import NumberParameter from "./controls/NumberParameter.vue";
 import PIDParameter from "./controls/PIDParameter.vue";
-import BooleanParameter from "./controls/BooleanParameter.vue";
 import RatioParameter from "./controls/RatioParameter.vue";
 import NoDataAvailable from "./NoDataAvailable.vue";
 
