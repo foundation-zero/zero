@@ -1,7 +1,7 @@
 .table = .topic
 for_each(grouped_topics) -> |_index, group| {
   if starts_with(string!(.topic), group) {
-    .table = replace!(group, r'/$', "")
+    .table = replace(group, r'/$', "")
   }
 }
 .table = replace(replace!(.table, "/", "__"), "-", "_")
