@@ -4,7 +4,6 @@ from pytest import fixture
 import pytest
 
 from thrs.input_output.modules.lt1 import (
-    Lt1ControlValues,
     Lt1SensorValues,
     Lt1SimulationInputs,
     Lt1SimulationOutputs,
@@ -17,8 +16,8 @@ from tests.helpers.simulation_inputs import simulator_input_field_setters
 
 
 @fixture(params=list(simulator_input_field_setters(Lt1SimulationInputs)))
-def incorrect_simulation_inputs(simulation_inputs, request):
-    inputs = simulation_inputs.get_values_at_time(datetime.now())
+def incorrect_simulation_inputs(simulation_inputs_inactive, request):
+    inputs = simulation_inputs_inactive.get_values_at_time(datetime.now())
     request.param(inputs, -9e7)
     return inputs
 
@@ -29,7 +28,7 @@ async def test_simulation_step(control, executor):
     assert isinstance(result.simulation_outputs, Lt1SimulationOutputs)
 
 
-async def test_lt1_simulation_inputs(incorrect_simulation_inputs):
+async def test_lt1_simulation_inputs(incorrect_simulation_inputs, control):
     with Fmu(lt1_path) as fmu:
         mapping = ThrsModelIoMapping(
             Lt1SensorValues,
@@ -45,6 +44,4 @@ async def test_lt1_simulation_inputs(incorrect_simulation_inputs):
 
         with pytest.raises(Exception):
             for i in range(300):
-                await executor.tick(
-                    Lt1ControlValues.zero(),  # TODO: add actual control values
-                )
+                await executor.tick(control.initial(datetime.now()).values)
