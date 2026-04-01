@@ -1,1 +1,2 @@
 { "topic": "marpower/test", "A": { "Value": "test", "TimeStamp": "2024-06-01T12:00:00Z" }, "PascalCase": "test" }
+{ "topic": "marpower/150000-propulsion/a", "A": { "Value": "test", "TimeStamp": "2024-06-01T12:00:00Z" }, "PascalCase": "test" }
