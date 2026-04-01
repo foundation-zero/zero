@@ -8,6 +8,7 @@ from typing import (
     Callable,
 )
 from fastapi import Depends, FastAPI
+from fastapi.middleware.cors import CORSMiddleware
 import strawberry
 from strawberry.fastapi import GraphQLRouter
 
@@ -264,6 +265,13 @@ async def lifespan(app: FastAPI):
 
 app = FastAPI(lifespan=lifespan)
 
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 def messaging() -> Messaging:
     return app.state.messaging
