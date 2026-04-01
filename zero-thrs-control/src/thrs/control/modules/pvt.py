@@ -156,8 +156,8 @@ class PvtControl(
 
         self._heat_dump_controller = Controller[Ratio, Celsius](
             self._current_values.pvt_mix_exchanger.setpoint.value,
-            parameters.maximum_supply_temperature,
-            parameters.heat_dump_tuning,
+            lambda: self._parameters.maximum_supply_temperature,
+            lambda: self._parameters.heat_dump_tuning,
             self._time,
         )
 
@@ -183,9 +183,9 @@ class PvtControl(
     @property
     def mode(self) -> PvtControlMode:
         return PvtControlMode(
-            fwd=PvtGroupControlMode(mode=self._main_fwd_control.mode.mode),
-            aft=PvtGroupControlMode(mode=self._main_aft_control.mode.mode),
-            owners=PvtGroupControlMode(mode=self._owners_control.mode.mode),
+            fwd=self._main_fwd_control.mode,
+            aft=self._main_aft_control.mode,
+            owners=self._owners_control.mode,
         )
 
     @staticmethod
@@ -209,13 +209,31 @@ class PvtControl(
         self._main_aft_control.update_parameters(aft_pvt_group_parameters(parameters))
         self._owners_control.update_parameters(owners_pvt_group_parameters(parameters))
 
-    def _control_heat_dump_mix(self, sensor_values: PvtSensorValues):
+    def _control_heat_dump(self, sensor_values: PvtSensorValues):
         self._current_values.pvt_mix_exchanger.setpoint = Stamped(
             value=self._heat_dump_controller(
                 sensor_values.pvt_temperature_supply.temperature.value
             ),
             timestamp=self._time(),
         )
+
+    def _update_group_control_values(self):
+        self._current_values.pvt_pump_main_fwd = (
+            self._main_fwd_control.current_values.pump
+        )
+        self._current_values.pvt_mix_main_fwd = (
+            self._main_fwd_control.current_values.mix
+        )
+
+        self._current_values.pvt_pump_main_aft = (
+            self._main_aft_control.current_values.pump
+        )
+        self._current_values.pvt_mix_main_aft = (
+            self._main_aft_control.current_values.mix
+        )
+
+        self._current_values.pvt_pump_owners = self._owners_control.current_values.pump
+        self._current_values.pvt_mix_owners = self._owners_control.current_values.mix
 
     def _control_groups(self, sensor_values: PvtSensorValues):
         self._main_fwd_control.control(
@@ -249,27 +267,14 @@ class PvtControl(
             )
         )
 
+        self._update_group_control_values()
+
     def control(
         self, sensor_values: PvtSensorValues
     ) -> ControlResult[PvtControlValues]:
-        self._control_heat_dump_mix(sensor_values)
+        self._control_heat_dump(sensor_values)
 
         self._control_groups(sensor_values)
-
-        self._current_values.pvt_pump_main_fwd = (
-            self._main_fwd_control.current_values.pump
-        )
-        self._current_values.pvt_pump_main_aft = (
-            self._main_aft_control.current_values.pump
-        )
-        self._current_values.pvt_pump_owners = self._owners_control.current_values.pump
-        self._current_values.pvt_mix_main_fwd = (
-            self._main_fwd_control.current_values.mix
-        )
-        self._current_values.pvt_mix_main_aft = (
-            self._main_aft_control.current_values.mix
-        )
-        self._current_values.pvt_mix_owners = self._owners_control.current_values.mix
 
         return ControlResult(self._time(), self._current_values)
 
