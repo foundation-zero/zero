@@ -1,13 +1,14 @@
 from datetime import datetime
 from typing import Callable
 
-from transitions import Machine
+from transitions import Machine, State
 
 from thrs.classes.control import Control, ControlResult
 
 from thrs.input_output.alarms import BaseAlarms
 from thrs.input_output.base import Stamped, ThrsValues
 from thrs.input_output.definitions.control import Pump, Valve
+from thrs.input_output.definitions.units import Celsius, LMin
 from thrs.input_output.modules.lt2 import Lt2ControlValues, Lt2SensorValues
 
 
@@ -16,7 +17,12 @@ class Lt2ControlMode(ThrsValues):
 
 
 class Lt2Parameters(ThrsValues):
-    pass
+    maximum_supply_temperature: Celsius = 63
+    recovery_temperature: Celsius = 60
+    brightloop_flow_setpoint: LMin = 5
+    ugrid_flow_setpoint: LMin = 20
+    brightloop_return_temperature = 60
+    ugrid_return_temperature = 60
 
 
 def _INITIAL_CONTROL_VALUES(timestamp: datetime) -> Lt2ControlValues:
@@ -87,9 +93,39 @@ class Lt2Control(
             deep=True
         )
 
-        self._states = []
+        self._states = [
+             State(
+                name="idle",
+                on_enter=[
+                    self._disable_flow_controls,
+                    self._enable_warmup_mixes,
+                    self._disable_heat_dump,
+                    self._disable_recovery_mix,
+                ],
+            ),
+            State(
+                name="recovery",
+                on_enter=[
+                    self._enable_flow_controls,
+                    self._disable_warmup_mixes,
+                    self._enable_heat_dump,
+                    self._enable_recovery_mix,
+                ],
+            ),
+        ]
 
-        self._transitions = []
+        self._transitions = [{
+                "trigger": "_check_converters",
+                "source": "idle",
+                "dest": "recovery",
+                "conditions": self._converter_on,
+            },
+            {
+                "trigger": "_check_converters",
+                "source": "recovery",
+                "dest": "idle",
+                "conditions": lambda sensor_values: not self._converter_on(sensor_values),
+            }]
 
         self._state_machine = Machine(
             model=self,

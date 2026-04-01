@@ -71,6 +71,8 @@ class PropulsionDrive(ThrsValues):
 class ShorePowerConverter(ThrsValues):
     active: Stamped[OnOff]
 
+class Brightloop(ThrsValues):
+    active: Stamped[OnOff]
 
 class Pcs(ThrsValues):
     mode: Stamped[PcsMode]
