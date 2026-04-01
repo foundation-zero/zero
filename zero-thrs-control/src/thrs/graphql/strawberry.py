@@ -273,6 +273,7 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+
 def messaging() -> Messaging:
     return app.state.messaging
 
