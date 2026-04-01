@@ -37,7 +37,7 @@ class Lt1SensorValues(ThrsValues):
     ]
     lt1_temperature_propdrive_aft1_return: Annotated[
         sensor.TemperatureSensor,
-        component_meta(yard_tag="50001038-60", component_type="temperature_sensor"),
+        component_meta(yard_tag="50001038-32", component_type="temperature_sensor"),
     ]
     lt1_temperature_propdrive_fwd1_return: Annotated[
         sensor.TemperatureSensor,

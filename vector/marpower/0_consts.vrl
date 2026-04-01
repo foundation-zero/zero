@@ -36,5 +36,5 @@ grouped_topics = [
   "marpower/marpower/bms-master/",
   "marpower/marpower/hydro/",
   "marpower/marpower/power-tag/",
-  "marpower/marpower/pvt/",
+  "marpower/marpower/pvt/"
 ]

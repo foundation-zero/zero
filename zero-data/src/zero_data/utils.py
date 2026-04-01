@@ -1,9 +1,10 @@
-from itertools import groupby
 import logging
+from itertools import groupby
 
 from zero_data.io_list.types import IOTopic
 
 logger = logging.getLogger(__name__)
+
 
 def detect_same_format(
     topics: list[IOTopic],
@@ -24,7 +25,10 @@ def detect_same_format(
         list_of_group = list(group)
         if len(list_of_group) > 1:
             # Check if all topics in the group have the same format
-            if all(topic.fields == list_of_group[0].fields for topic in list_of_group):
+            if all(
+                set(topic.fields) == set(list_of_group[0].fields)
+                for topic in list_of_group
+            ):
                 logger.info(f"Generating single table for nesting: {nest}")
                 squashed_topics.append(
                     IOTopic(

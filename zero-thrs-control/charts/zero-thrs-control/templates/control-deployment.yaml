@@ -51,6 +51,12 @@ spec:
               protocol: TCP
           resources:
             {{- toYaml .Values.control.resources | nindent 12 }}
+          env:
+            - name: MQTT_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.mqtt.existingSecret }}
+                  key: {{ .Values.mqtt.existingSecretPasswordKey }}
           envFrom:
             - configMapRef:
                 name: {{ include "zero-thrs-control.envvars" . }}

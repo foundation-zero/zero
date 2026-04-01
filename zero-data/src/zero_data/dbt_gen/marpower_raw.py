@@ -5,8 +5,6 @@ from typing import List
 from zero_data.io_list.types import IOTopic, IOValue
 from zero_data.utils import detect_same_format
 
-logger = logging.getLogger(__name__)
-
 
 class MarpowerRawGenerator:
     def __init__(self, dbt_path: Path):
@@ -15,6 +13,7 @@ class MarpowerRawGenerator:
 
     def generate(self, topics: List[IOTopic]):
         """Generate dbt models for the given topics."""
+
         unnested, squashed, unsquashed = detect_same_format(topics)
         for topic in unnested + squashed + unsquashed:
             file_name = self._table(topic.topic.removeprefix("marpower/"))
@@ -42,7 +41,7 @@ class MarpowerRawGenerator:
     @classmethod
     def _generate_gcs_sink(cls, topic: IOTopic) -> str:
         """Generate the SQL for a given sink."""
-        topic_table = cls._table(topic.topic).removeprefix("marpower/")
+        topic_table = cls._table(topic.topic)
         return (
             f"{{{{ sink_append_gcs('raw', '{topic_table}', '{topic_table}_sink') }}}}"
         )
@@ -69,4 +68,4 @@ class MarpowerRawGenerator:
     @staticmethod
     def _with_mqtt(topic: str):
         """Generate the SQL for the MQTT connector."""
-        return f"{{{{ mqtt_with('{topic.removeprefix('marpower/')}') }}}}"
+        return f"{{{{ mqtt_with('{topic}') }}}}"

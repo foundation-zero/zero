@@ -9,3 +9,4 @@ data:
   MQTT_PORT: {{ .Values.mqtt.port | quote }}
   MQTT_TOPIC_PREFIX: thrs
   MQTT_CONTROL_TOPIC_SUFFIX: Command
+  MQTT_USERNAME: {{ .Values.mqtt.username }}

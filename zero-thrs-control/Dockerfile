@@ -44,6 +44,7 @@ RUN apt-get update && \
     rm -rf /var/lib/apt/lists/*
 
 RUN fmpy compile /app/thrs/simulation/models/thruster_moduleV18.fmu
+CMD ["python", "-m", "thrs.cli", "run", "thrusters"]
 
 FROM prod-base AS control
 CMD ["uvicorn", "thrs.graphql.strawberry:app", "--port", "5102", "--host", "0.0.0.0"]

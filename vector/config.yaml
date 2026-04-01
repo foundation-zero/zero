@@ -12,7 +12,6 @@ sources:
     topic: "marpower/#"
     user: "${MQTT_USER}"
     password: "${MQTT_PASSWORD}"
-
 transforms:
   process:
     type: remap

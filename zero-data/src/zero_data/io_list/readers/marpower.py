@@ -22,7 +22,7 @@ _DATA_TYPES = {
 
 class MarpowerReader(ReaderBase):
     def __init__(self):
-        self.topic_prefix = "marpower/"
+        self.topic_prefix = ""
 
     @staticmethod
     def _read_headers(workbook):

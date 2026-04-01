@@ -5,10 +5,10 @@ CREATE TABLE {{ this }} (
 	"Gen_Alm"	{{ marpower_struct("BOOLEAN") }},
 	"Load_Alm"	{{ marpower_struct("BOOLEAN") }},
 	"Enbl_HMI_Ext"	{{ marpower_struct("BOOLEAN") }},
-	"Ps_Act_Load"	{{ marpower_struct("INTEGER") }},
 	"Sb_Act_Load"	{{ marpower_struct("INTEGER") }},
 	"Act_Position_Mill"	{{ marpower_struct("INTEGER") }},
 	"Act_Load"	{{ marpower_struct("INTEGER") }},
+	"Ps_Act_Load"	{{ marpower_struct("INTEGER") }},
 )
 INCLUDE partition AS topic
 {{ mqtt_with('marpower/280000-hydraulic-sail/tension-cylinder-deflector/#') }}
