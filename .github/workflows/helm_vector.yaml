@@ -2,9 +2,6 @@ name: "Zero Deploy vector config chart"
 on:
   release:
     types: [released]
-  push:
-    branches:
-      - feature/add-helm-chart-vector
 
 jobs:
   helm-push:
