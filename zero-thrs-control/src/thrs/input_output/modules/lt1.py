@@ -27,7 +27,7 @@ class Lt1SensorValues(ThrsValues):
         sensor.TemperatureSensor,
         component_meta(yard_tag="50001038-16", component_type="temperature_sensor"),
     ]
-    lt1_temperature_recovery_mix: Annotated[  # TODO: rename?
+    lt1_temperature_recovery_mix: Annotated[
         sensor.TemperatureSensor,
         component_meta(yard_tag="50001038-57", component_type="temperature_sensor"),
     ]

@@ -98,36 +98,6 @@ class Lt2Control(
             initial="idle",
         )
 
-        # self._heat_dump_controller = Controller[Ratio, Celsius](
-        #     initial=self._current_values.lt2_mix_exchanger.setpoint.value,
-        #     setpoint=lambda: self._parameters.propulsion_maximum_supply_temperature
-        #     if self.mode.is_propulsion
-        #     else self._parameters.shorepower_maximum_supply_temperature,
-        #     tuning=lambda: self._parameters.heat_dump_tuning,
-        #     time_fn=self._time,
-        # )
-
-        # self._warmup_mix_controller = Controller[Ratio, Celsius](
-        #     initial=self._current_values.lt1_mix_recovery.setpoint.value,
-        #     setpoint=lambda: self._parameters.recovery_temperature,
-        #     tuning=lambda: self._parameters.warmup_mix_tuning,
-        #     time_fn=self._time,
-        # )
-
-        # self._pump_controller_shorepower = Controller[Ratio, LMin](
-        #     initial=self._current_values.lt1_pump1.dutypoint.value,
-        #     setpoint=lambda: self._parameters.shorepower_flow_setpoint,
-        #     tuning=lambda: self._parameters.pump_tuning,
-        #     time_fn=self._time,
-        # )
-
-        # self._pump_controller_propulsion = Controller[Ratio, LMin](
-        #     initial=self._current_values.lt1_pump1.dutypoint.value,
-        #     setpoint=0,  # gets overriden by flow balance controller
-        #     tuning=lambda: self._parameters.pump_tuning,
-        #     time_fn=self._time,
-        # )
-
     @property
     def parameters(self) -> Lt2Parameters:
         return self._parameters
