@@ -1,0 +1,17 @@
+name: "Zero Deploy vector config chart"
+on:
+  release:
+    types: [released]
+  push:
+    branches:
+      - feature/add-helm-chart-vector
+
+jobs:
+  helm-push:
+    uses: "./.github/workflows/job_helm_push.yaml"
+    permissions:
+      contents: "read"
+      id-token: "write"
+    secrets: inherit
+    with:
+      helm_chart: "vector/"
