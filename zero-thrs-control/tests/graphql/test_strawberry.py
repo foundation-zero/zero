@@ -9,6 +9,7 @@ from thrs.cli.simulation_controls import (
     SimulationInputMessage,
     SimulationStatusMessage,
 )
+from thrs.control.modules.boilers import BoilersParameters
 from thrs.control.modules.consumers import ConsumersParameters
 from thrs.control.modules.pcm import PcmParameters
 from thrs.control.modules.pvt import PvtControlMode, PvtParameters
@@ -20,6 +21,7 @@ from thrs.graphql.base import ThrustersMessaging
 from thrs.graphql.messaging import ControlMessaging, Messaging, SimulationMessaging
 from thrs.graphql.strawberry import (
     app,
+    boilers_messaging,
     consumers_messaging,
     messaging,
     pcm_messaging,
@@ -28,6 +30,7 @@ from thrs.graphql.strawberry import (
     thrusters_messaging,
 )
 
+from thrs.input_output.modules.boilers import BoilersControlValues, BoilersSensorValues
 from thrs.input_output.modules.consumers import (
     ConsumersControlValues,
     ConsumersSensorValues,
@@ -136,6 +139,24 @@ async def override_consumers_messaging():
     return mock
 
 
+async def override_boilers_messaging():
+    mock = Mock(ControlMessaging)
+    mock.sensor_values = BoilersSensorValues.zero()
+    mock.control_values = BoilersControlValues.zero()
+    mock.parameters = BoilersParameters()
+    mock.control_mode = ControlModeMessage(
+        module="boilers", mode=SwitchingControlMode(automatic_mode=None)
+    )
+
+    async def wait(condition, *_args, timeout):
+        return None
+
+    mock.wait_for_control_mode.side_effect = wait
+    mock.wait_for_control_values.side_effect = wait
+    mock.wait_for_parameters.side_effect = wait
+    return mock
+
+
 async def override_messaging():
     mock = Mock(Messaging)
     mock.simulation_status = SimulationStatusMessage(
@@ -171,6 +192,7 @@ async def test_query_sensor_values(async_client):
     app.dependency_overrides[pvt_messaging] = override_pvt_messaging
     app.dependency_overrides[pcm_messaging] = override_pcm_messaging
     app.dependency_overrides[consumers_messaging] = override_consumers_messaging
+    app.dependency_overrides[boilers_messaging] = override_boilers_messaging
     app.dependency_overrides[simulation_messaging] = override_simulation_messaging
     response = await async_client.post(
         "/graphql",
@@ -208,6 +230,7 @@ async def test_query_control_values(async_client):
     app.dependency_overrides[pvt_messaging] = override_pvt_messaging
     app.dependency_overrides[pcm_messaging] = override_pcm_messaging
     app.dependency_overrides[consumers_messaging] = override_consumers_messaging
+    app.dependency_overrides[boilers_messaging] = override_boilers_messaging
     app.dependency_overrides[simulation_messaging] = override_simulation_messaging
     response = await async_client.post(
         "/graphql",
@@ -245,6 +268,7 @@ async def test_query_parameters(async_client):
     app.dependency_overrides[pvt_messaging] = override_pvt_messaging
     app.dependency_overrides[pcm_messaging] = override_pcm_messaging
     app.dependency_overrides[consumers_messaging] = override_consumers_messaging
+    app.dependency_overrides[boilers_messaging] = override_boilers_messaging
     app.dependency_overrides[simulation_messaging] = override_simulation_messaging
     response = await async_client.post(
         "/graphql",
@@ -276,6 +300,7 @@ async def test_query_control_mode(async_client):
     app.dependency_overrides[pvt_messaging] = override_pvt_messaging
     app.dependency_overrides[pcm_messaging] = override_pcm_messaging
     app.dependency_overrides[consumers_messaging] = override_consumers_messaging
+    app.dependency_overrides[boilers_messaging] = override_boilers_messaging
     app.dependency_overrides[simulation_messaging] = override_simulation_messaging
     response = await async_client.post(
         "/graphql",
@@ -354,6 +379,7 @@ async def test_query_simulation_inputs(async_client):
     app.dependency_overrides[pvt_messaging] = override_pvt_messaging
     app.dependency_overrides[pcm_messaging] = override_pcm_messaging
     app.dependency_overrides[consumers_messaging] = override_consumers_messaging
+    app.dependency_overrides[boilers_messaging] = override_boilers_messaging
     app.dependency_overrides[simulation_messaging] = override_simulation_messaging
     response = await async_client.post(
         "/graphql",
@@ -404,6 +430,7 @@ async def test_query_simulation_inputs_actual(async_client, mqtt_client, mqtt_cl
     app.dependency_overrides[pvt_messaging] = override_pvt_messaging
     app.dependency_overrides[pcm_messaging] = override_pcm_messaging
     app.dependency_overrides[consumers_messaging] = override_consumers_messaging
+    app.dependency_overrides[boilers_messaging] = override_boilers_messaging
     app.dependency_overrides[simulation_messaging] = lambda: simulation_msg
 
     await mqtt_client2.publish("thrs/simulation/inputs", None, qos=1, retain=True)
@@ -464,6 +491,7 @@ async def test_query_simulation_outputs(async_client):
     app.dependency_overrides[pvt_messaging] = override_pvt_messaging
     app.dependency_overrides[pcm_messaging] = override_pcm_messaging
     app.dependency_overrides[consumers_messaging] = override_consumers_messaging
+    app.dependency_overrides[boilers_messaging] = override_boilers_messaging
 
     sim = await override_simulation_messaging()
     sim.simulation_outputs.thrusters_module_return.flow.value = 10.0  # type: ignore
@@ -525,6 +553,7 @@ async def test_query_control_automation_mode(async_client):
     app.dependency_overrides[pvt_messaging] = override_pvt_messaging
     app.dependency_overrides[pcm_messaging] = override_pcm_messaging
     app.dependency_overrides[consumers_messaging] = override_consumers_messaging
+    app.dependency_overrides[boilers_messaging] = override_boilers_messaging
     app.dependency_overrides[simulation_messaging] = override_simulation_messaging
     response = await async_client.post(
         "/graphql",
@@ -554,6 +583,7 @@ async def test_mutation_simulation_play(async_client):
     app.dependency_overrides[pvt_messaging] = override_pvt_messaging
     app.dependency_overrides[pcm_messaging] = override_pcm_messaging
     app.dependency_overrides[consumers_messaging] = override_consumers_messaging
+    app.dependency_overrides[boilers_messaging] = override_boilers_messaging
     app.dependency_overrides[simulation_messaging] = override_simulation_messaging
 
     response = await async_client.post(
@@ -582,6 +612,7 @@ async def test_mutation_simulation_pause(async_client):
     app.dependency_overrides[pvt_messaging] = override_pvt_messaging
     app.dependency_overrides[pcm_messaging] = override_pcm_messaging
     app.dependency_overrides[consumers_messaging] = override_consumers_messaging
+    app.dependency_overrides[boilers_messaging] = override_boilers_messaging
     app.dependency_overrides[simulation_messaging] = override_simulation_messaging
 
     response = await async_client.post(
@@ -604,6 +635,7 @@ async def test_mutation_simulation_step(async_client):
     app.dependency_overrides[pvt_messaging] = override_pvt_messaging
     app.dependency_overrides[pcm_messaging] = override_pcm_messaging
     app.dependency_overrides[consumers_messaging] = override_consumers_messaging
+    app.dependency_overrides[boilers_messaging] = override_boilers_messaging
     app.dependency_overrides[simulation_messaging] = override_simulation_messaging
     response = await async_client.post(
         "/graphql",
@@ -625,6 +657,7 @@ async def test_mutation_control_value(async_client):
     app.dependency_overrides[pvt_messaging] = override_pvt_messaging
     app.dependency_overrides[pcm_messaging] = override_pcm_messaging
     app.dependency_overrides[consumers_messaging] = override_consumers_messaging
+    app.dependency_overrides[boilers_messaging] = override_boilers_messaging
     app.dependency_overrides[simulation_messaging] = override_simulation_messaging
     response = await async_client.post(
         "/graphql",
@@ -661,6 +694,7 @@ async def test_mutation_control_set_automation_mode(async_client):
     app.dependency_overrides[pvt_messaging] = override_pvt_messaging
     app.dependency_overrides[pcm_messaging] = override_pcm_messaging
     app.dependency_overrides[consumers_messaging] = override_consumers_messaging
+    app.dependency_overrides[boilers_messaging] = override_boilers_messaging
     app.dependency_overrides[simulation_messaging] = override_simulation_messaging
 
     response = await async_client.post(
@@ -683,6 +717,7 @@ async def test_mutation_control_values_hanging_around(async_client):
     app.dependency_overrides[pvt_messaging] = override_pvt_messaging
     app.dependency_overrides[pcm_messaging] = override_pcm_messaging
     app.dependency_overrides[consumers_messaging] = override_consumers_messaging
+    app.dependency_overrides[boilers_messaging] = override_boilers_messaging
     app.dependency_overrides[simulation_messaging] = override_simulation_messaging
 
     await async_client.post(
@@ -736,6 +771,7 @@ async def test_mutation_parameter(async_client):
     app.dependency_overrides[messaging] = override_messaging
     app.dependency_overrides[pcm_messaging] = override_pcm_messaging
     app.dependency_overrides[consumers_messaging] = override_consumers_messaging
+    app.dependency_overrides[boilers_messaging] = override_boilers_messaging
     app.dependency_overrides[simulation_messaging] = override_simulation_messaging
 
     response = await async_client.post(
@@ -764,6 +800,7 @@ async def test_mutation_set_simulation_inputs(async_client):
     app.dependency_overrides[pvt_messaging] = override_pvt_messaging
     app.dependency_overrides[pcm_messaging] = override_pcm_messaging
     app.dependency_overrides[consumers_messaging] = override_consumers_messaging
+    app.dependency_overrides[boilers_messaging] = override_boilers_messaging
     app.dependency_overrides[simulation_messaging] = lambda: simulation_mock
 
     response = await async_client.post(
