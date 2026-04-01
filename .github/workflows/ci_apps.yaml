@@ -177,8 +177,8 @@ jobs:
         working-directory: zero-ui/dist
         run: |
           echo '{
-            "VITE_THRS_API_SERVER": "https://thrs-control-singel.tail0b4840.ts.net",
-            "VITE_LOADS_API_SERVER": "https://loads-app-singel.tail0b4840.ts.net",
+            "VITE_THRS_API_SERVER_URL": "https://thrs-control-singel.tail0b4840.ts.net/graphql",
+            "VITE_LOADS_API_SERVER_URL": "https://loads-app-singel.tail0b4840.ts.net/graphql",
             "VITE_GRAPHQL_URL": "https://hasura-singel.tail0b4840.ts.net/v1/graphql",
             "VITE_GRAPHQL_WS_URL": "ws://hasura-singel.tail0b4840.ts.net/v1/graphql",
             "VITE_GRAPHQL_TOKEN": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwczovL2hhc3VyYS5pby9qd3QvY2xhaW1zIjp7IngtaGFzdXJhLWRlZmF1bHQtcm9sZSI6InVzZXIiLCJ4LWhhc3VyYS1hbGxvd2VkLXJvbGVzIjpbInVzZXIiXX19.8brSVzCMabnkuvgO4ipCVAPaAWieM3sqWADXoUxgmEA"
