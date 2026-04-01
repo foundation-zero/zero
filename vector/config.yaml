@@ -6,7 +6,8 @@ api:
 sources:
   mqtt:
     type: mqtt
-    host: "${MQTT_HOST}:${MQTT_PORT}"
+    host: "${MQTT_HOST}"
+    port: ${MQTT_PORT}
     decoding:
       codec: json
     topic: "marpower/#"
