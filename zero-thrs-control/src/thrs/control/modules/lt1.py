@@ -36,7 +36,7 @@ class Lt1Parameters(ThrsValues):
     shorepower_flow_setpoint: LMin = 20
     propulsion_drives_flow_setpoint: LMin = 30
     pump_tuning: Tuning = (0.01, 0.001, 0)
-    recovery_mix_tuning: Tuning = (-0.05, -0.001, 0)
+    recovery_mix_tuning: Tuning = (-0.1, -0.0005, 0)
     heat_dump_tuning: Tuning = (0.05, 0.01, 0)
     aft_flow_balance_tuning: Tuning = (0.01, 0.001, 0)
     fwd_flow_balance_tuning: Tuning = (0.01, 0.001, 0)

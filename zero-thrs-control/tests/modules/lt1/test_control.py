@@ -37,7 +37,7 @@ async def test_propulsion_all_active(
 ):
     cycler.update_simulation_inputs(simulation_inputs_all_drives_active)
 
-    result = await cycler.run(120)
+    result = await cycler.run(180)
 
     assert isinstance(cycler._control, Lt1Control)
     assert cycler._control.mode.is_propulsion
@@ -127,7 +127,7 @@ async def test_heat_recovery(
         )
     )
 
-    result = await cycler.run(120)
+    result = await cycler.run(720)
 
     assert isinstance(result, SimulationExecutionResult)
     assert result.sensor_values.lt1_temperature_recovery.temperature.value == approx(

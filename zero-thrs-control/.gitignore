@@ -10,3 +10,4 @@ SolarTestModel.log
 **/__pycache__
 analysis/plots
 analysis/csv
+.vscode/
