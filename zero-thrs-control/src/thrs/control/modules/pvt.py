@@ -7,6 +7,7 @@ from thrs.control.controllers import Controller
 from thrs.control.modules.pvt_group import (
     PvtGroupControl,
     PvtGroupControlMode,
+    PvtGroupControlValues,
     PvtGroupParameters,
     PvtGroupSensorValues,
 )
@@ -165,14 +166,26 @@ class PvtControl(
 
         self._main_fwd_control = PvtGroupControl(
             main_pvt_group_parameters(parameters),
+            PvtGroupControlValues(
+                pump=self._current_values.pvt_pump_main_fwd,
+                mix=self._current_values.pvt_mix_main_fwd,
+            ),
             time_fn,
         )
         self._main_aft_control = PvtGroupControl(
             aft_pvt_group_parameters(parameters),
+            PvtGroupControlValues(
+                pump=self._current_values.pvt_pump_main_aft,
+                mix=self._current_values.pvt_mix_main_aft,
+            ),
             time_fn,
         )
         self._owners_control = PvtGroupControl(
             owners_pvt_group_parameters(parameters),
+            PvtGroupControlValues(
+                pump=self._current_values.pvt_pump_owners,
+                mix=self._current_values.pvt_mix_owners,
+            ),
             time_fn,
         )
 

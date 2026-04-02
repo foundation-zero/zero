@@ -48,7 +48,7 @@ class PropulsionDrive(HeatSource):
     active: Annotated[Stamp[bool], field_meta(included_in_fmu=False)]
 
 
-class ShorePowerConverter(HeatSource):
+class Converter(HeatSource):
     active: Annotated[Stamp[bool], field_meta(included_in_fmu=False)]
 
 

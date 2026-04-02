@@ -3,7 +3,7 @@ from pytest import fixture
 
 from thrs.control.modules.lt2 import Lt2Alarms, Lt2Control, Lt2Parameters
 from thrs.input_output.base import Stamped
-from thrs.input_output.definitions.simulation import Boundary, HeatSource
+from thrs.input_output.definitions.simulation import Boundary, Converter
 from thrs.input_output.modules.lt2 import (
     Lt2SensorValues,
     Lt2SimulationInputs,
@@ -15,20 +15,98 @@ from thrs.simulation.fmu import Fmu
 from thrs.simulation.io_mapping import ThrsModelIoMapping
 from thrs.simulation.models.fmu_paths import lt2_path
 
+SEAWATER_TEMPERATURE = 20
+
+
+@fixture
+def simulation_inputs_inactive():
+    return Lt2SimulationInputs(
+        lt2_brightloop_fwd1=Converter(
+            heat_flow=Stamped.stamp(0), active=Stamped.stamp(False)
+        ),
+        lt2_brightloop_fwd2=Converter(
+            heat_flow=Stamped.stamp(0), active=Stamped.stamp(False)
+        ),
+        lt2_ugrid1=Converter(heat_flow=Stamped.stamp(0), active=Stamped.stamp(False)),
+        lt2_ugrid2=Converter(heat_flow=Stamped.stamp(0), active=Stamped.stamp(False)),
+        lt2_brightloop_aft1=Converter(
+            heat_flow=Stamped.stamp(0), active=Stamped.stamp(False)
+        ),
+        lt2_brightloop_aft2=Converter(
+            heat_flow=Stamped.stamp(0), active=Stamped.stamp(False)
+        ),
+        lt2_brightloop_aft3=Converter(
+            heat_flow=Stamped.stamp(0), active=Stamped.stamp(False)
+        ),
+        lt2_brightloop_aft4=Converter(
+            heat_flow=Stamped.stamp(0), active=Stamped.stamp(False)
+        ),
+        lt2_seawater_supply=Boundary(
+            temperature=Stamped.stamp(SEAWATER_TEMPERATURE), flow=Stamped.stamp(64)
+        ),
+        lt2_boilers_supply=Boundary(
+            temperature=Stamped.stamp(35), flow=Stamped.stamp(20)
+        ),
+    )
+
+
+@fixture
+def simulation_inputs_brightloops_aft_active():
+    return Lt2SimulationInputs(
+        lt2_brightloop_fwd1=Converter(
+            heat_flow=Stamped.stamp(0), active=Stamped.stamp(False)
+        ),
+        lt2_brightloop_fwd2=Converter(
+            heat_flow=Stamped.stamp(0), active=Stamped.stamp(False)
+        ),
+        lt2_ugrid1=Converter(heat_flow=Stamped.stamp(0), active=Stamped.stamp(False)),
+        lt2_ugrid2=Converter(heat_flow=Stamped.stamp(0), active=Stamped.stamp(False)),
+        lt2_brightloop_aft1=Converter(
+            heat_flow=Stamped.stamp(500), active=Stamped.stamp(True)
+        ),
+        lt2_brightloop_aft2=Converter(
+            heat_flow=Stamped.stamp(500), active=Stamped.stamp(True)
+        ),
+        lt2_brightloop_aft3=Converter(
+            heat_flow=Stamped.stamp(500), active=Stamped.stamp(True)
+        ),
+        lt2_brightloop_aft4=Converter(
+            heat_flow=Stamped.stamp(500), active=Stamped.stamp(True)
+        ),
+        lt2_seawater_supply=Boundary(
+            temperature=Stamped.stamp(SEAWATER_TEMPERATURE), flow=Stamped.stamp(64)
+        ),
+        lt2_boilers_supply=Boundary(
+            temperature=Stamped.stamp(35), flow=Stamped.stamp(20)
+        ),
+    )
+
 
 @fixture
 def simulation_inputs():
     return Lt2SimulationInputs(
-        lt2_brightloop_fwd1=HeatSource(heat_flow=Stamped.stamp(500)),
-        lt2_brightloop_fwd2=HeatSource(heat_flow=Stamped.stamp(500)),
-        lt2_ugrid1=HeatSource(heat_flow=Stamped.stamp(2000)),
-        lt2_ugrid2=HeatSource(heat_flow=Stamped.stamp(2000)),
-        lt2_brightloop_aft1=HeatSource(heat_flow=Stamped.stamp(500)),
-        lt2_brightloop_aft2=HeatSource(heat_flow=Stamped.stamp(500)),
-        lt2_brightloop_aft3=HeatSource(heat_flow=Stamped.stamp(500)),
-        lt2_brightloop_aft4=HeatSource(heat_flow=Stamped.stamp(500)),
+        lt2_brightloop_fwd1=Converter(
+            heat_flow=Stamped.stamp(500), active=Stamped.stamp(True)
+        ),
+        lt2_brightloop_fwd2=Converter(
+            heat_flow=Stamped.stamp(500), active=Stamped.stamp(True)
+        ),
+        lt2_ugrid1=Converter(heat_flow=Stamped.stamp(2000), active=Stamped.stamp(True)),
+        lt2_ugrid2=Converter(heat_flow=Stamped.stamp(2000), active=Stamped.stamp(True)),
+        lt2_brightloop_aft1=Converter(
+            heat_flow=Stamped.stamp(500), active=Stamped.stamp(True)
+        ),
+        lt2_brightloop_aft2=Converter(
+            heat_flow=Stamped.stamp(500), active=Stamped.stamp(True)
+        ),
+        lt2_brightloop_aft3=Converter(
+            heat_flow=Stamped.stamp(500), active=Stamped.stamp(True)
+        ),
+        lt2_brightloop_aft4=Converter(
+            heat_flow=Stamped.stamp(500), active=Stamped.stamp(True)
+        ),
         lt2_seawater_supply=Boundary(
-            temperature=Stamped.stamp(32), flow=Stamped.stamp(64)
+            temperature=Stamped.stamp(SEAWATER_TEMPERATURE), flow=Stamped.stamp(64)
         ),
         lt2_boilers_supply=Boundary(
             temperature=Stamped.stamp(35), flow=Stamped.stamp(20)

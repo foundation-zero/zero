@@ -265,7 +265,7 @@ class Lt1SimulationInputs(SimulationInputs):
     lt1_propdrive_aft2: simulation.PropulsionDrive
     lt1_propdrive_fwd1: simulation.PropulsionDrive
     lt1_propdrive_fwd2: simulation.PropulsionDrive
-    lt1_shorepower: simulation.ShorePowerConverter
+    lt1_shorepower: simulation.Converter
     lt1_seawater_supply: simulation.Boundary
     lt1_boilers_supply: simulation.Boundary
 

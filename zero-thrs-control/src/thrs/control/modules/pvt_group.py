@@ -8,7 +8,7 @@ from thrs.control.controllers import Controller
 from thrs.input_output.base import Stamped, ThrsValues
 from thrs.input_output.definitions import sensor
 from thrs.input_output.definitions import control
-from thrs.input_output.definitions.control import Pump, Valve
+from thrs.input_output.definitions.control import Valve
 from thrs.input_output.definitions.units import Celsius, Ratio, Tuning
 
 
@@ -48,16 +48,6 @@ class PvtGroupParameters(ThrsValues):
         return self
 
 
-def _INITIAL_CONTROL_VALUES(timestamp: datetime) -> PvtGroupControlValues:
-    return PvtGroupControlValues(
-        pump=Pump(
-            dutypoint=Stamped(value=0.0, timestamp=timestamp),
-            on=Stamped(value=False, timestamp=timestamp),
-        ),
-        mix=Valve(setpoint=Stamped(value=Valve.MIXING_B_TO_AB, timestamp=timestamp)),
-    )
-
-
 class PvtGroupControlMode(ControlMode):
     mode: str
 
@@ -71,13 +61,14 @@ class PvtGroupControl(
     ]
 ):
     def __init__(
-        self, parameters: PvtGroupParameters, time_fn: Callable[[], datetime]
+        self,
+        parameters: PvtGroupParameters,
+        initial_control_values: PvtGroupControlValues,
+        time_fn: Callable[[], datetime],
     ) -> None:
         self._parameters = parameters
         self._time = time_fn
-        self._current_values = _INITIAL_CONTROL_VALUES(self._time()).model_copy(
-            deep=True
-        )
+        self._current_values = initial_control_values
         self._states = [
             State(name="idle", on_enter=self._set_mix_to_a),
             State(
@@ -157,7 +148,7 @@ class PvtGroupControl(
         self._parameters = parameters
 
     def initial(self) -> ControlResult[PvtGroupControlValues]:
-        return ControlResult(self._time(), _INITIAL_CONTROL_VALUES(self._time()))
+        return ControlResult(self._time(), self._current_values)
 
     def _string_warm(self, sensor_values: PvtGroupSensorValues):
         return (

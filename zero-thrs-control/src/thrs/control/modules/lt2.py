@@ -1,12 +1,13 @@
 from datetime import datetime
 from typing import Callable
 
-from thrs.classes.control import Control, ControlResult
+from thrs.classes.control import Control, ControlMode, ControlResult
 
 from thrs.control.controllers import Controller
 from thrs.control.modules.converters import (
     ConvertersControl,
     ConvertersControlMode,
+    ConvertersControlValues,
     ConvertersParameters,
     ConvertersSensorValues,
 )
@@ -17,7 +18,7 @@ from thrs.input_output.definitions.units import Celsius, LMin, Ratio, Tuning
 from thrs.input_output.modules.lt2 import Lt2ControlValues, Lt2SensorValues
 
 
-class Lt2ControlMode(ThrsValues):
+class Lt2ControlMode(ControlMode):
     brightloops_aft: ConvertersControlMode
     brightloops_fwd: ConvertersControlMode
     ugrids: ConvertersControlMode
@@ -155,16 +156,42 @@ class Lt2Control(
 
         self._brightloops_aft_control = ConvertersControl(
             brightloops_aft_parameters(parameters),
+            ConvertersControlValues(
+                pump=self._current_values.lt2_pump_aft,
+                mix=self._current_values.lt2_mix_aft,
+                switches=[
+                    self._current_values.lt2_switch_aft1,
+                    self._current_values.lt2_switch_aft2,
+                    self._current_values.lt2_switch_aft3,
+                    self._current_values.lt2_switch_aft4,
+                ],
+            ),
             time_fn=self._time,
         )
 
         self._brightloops_fwd_control = ConvertersControl(
             brightloops_fwd_parameters(parameters),
+            ConvertersControlValues(
+                pump=self._current_values.lt2_pump_fwd,
+                mix=self._current_values.lt2_mix_fwd,
+                switches=[
+                    self._current_values.lt2_switch_fwd1,
+                    self._current_values.lt2_switch_fwd2,
+                ],
+            ),
             time_fn=self._time,
         )
 
         self._ugrids_control = ConvertersControl(
             ugrids_parameters(parameters),
+            ConvertersControlValues(
+                pump=self._current_values.lt2_pump_ugrid,
+                mix=self._current_values.lt2_mix_ugrid,
+                switches=[
+                    self._current_values.lt2_switch_ugrid1,
+                    self._current_values.lt2_switch_ugrid2,
+                ],
+            ),
             time_fn=self._time,
         )
 

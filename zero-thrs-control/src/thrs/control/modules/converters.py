@@ -3,19 +3,27 @@ from typing import Callable
 
 from transitions import Machine, State
 
-from thrs.classes.control import Control, ControlResult
+from thrs.classes.control import Control, ControlMode, ControlResult
 
 from thrs.control.controllers import Controller
 from thrs.input_output.alarms import BaseAlarms
 from thrs.input_output.base import Stamped, ThrsValues
 from thrs.input_output.definitions import sensor
 from thrs.input_output.definitions import control
-from thrs.input_output.definitions.control import Pump, Valve
+from thrs.input_output.definitions.control import Valve
 from thrs.input_output.definitions.units import Celsius, LMin, Ratio, Tuning
 
 
-class ConvertersControlMode(ThrsValues):
+class ConvertersControlMode(ControlMode):
     mode: str
+
+    @property
+    def is_idle(self) -> bool:
+        return self.mode == "idle"
+
+    @property
+    def is_recovery(self) -> bool:
+        return self.mode == "recovery"
 
 
 class ConvertersParameters(ThrsValues):
@@ -41,11 +49,14 @@ class ConvertersSensorValues(ThrsValues):
         self,
     ) -> Celsius | None:
         return max(
-            temperature_sensor.temperature.value
-            for temperature_sensor, flow_sensor in zip(
-                self.converter_return_temperatures, self.flows
-            )
-            if flow_sensor.flow.value > 0.01
+            (
+                temperature_sensor.temperature.value
+                for temperature_sensor, flow_sensor in zip(
+                    self.converter_return_temperatures, self.flows
+                )
+                if flow_sensor.flow.value > 0
+            ),
+            default=None,
         )
 
     @property
@@ -59,22 +70,6 @@ class ConvertersControlValues(ThrsValues):
     switches: list[control.Valve]
 
 
-def _INITIAL_CONTROL_VALUES(timestamp: datetime) -> ConvertersControlValues:
-    return ConvertersControlValues(
-        pump=Pump(
-            dutypoint=Stamped(value=0.0, timestamp=timestamp),
-            on=Stamped(value=False, timestamp=timestamp),
-        ),
-        mix=Valve(setpoint=Stamped(value=Valve.MIXING_B_TO_AB, timestamp=timestamp)),
-        switches=[
-            Valve(setpoint=Stamped(value=Valve.CLOSED, timestamp=timestamp)),
-            Valve(setpoint=Stamped(value=Valve.CLOSED, timestamp=timestamp)),
-            Valve(setpoint=Stamped(value=Valve.CLOSED, timestamp=timestamp)),
-            Valve(setpoint=Stamped(value=Valve.CLOSED, timestamp=timestamp)),
-        ],
-    )
-
-
 class ConvertersControl(
     Control[
         ConvertersSensorValues,
@@ -84,28 +79,45 @@ class ConvertersControl(
     ]
 ):
     def __init__(
-        self, parameters: ConvertersParameters, time_fn: Callable[[], datetime]
+        self,
+        parameters: ConvertersParameters,
+        initial_control_values: ConvertersControlValues,
+        time_fn: Callable[[], datetime],
     ) -> None:
         self._parameters = parameters
         self._time = time_fn
-        self.current_values = _INITIAL_CONTROL_VALUES(self._time()).model_copy(
-            deep=True
+        self.current_values = initial_control_values
+
+        self._pump_controller = Controller[Ratio, LMin](
+            initial=self.current_values.pump.dutypoint.value,
+            setpoint=0.0,  # Overwritten in control
+            tuning=lambda: self._parameters.pump_tuning,
+            time_fn=self._time,
+        )
+
+        self._warmup_mix_controller = Controller[Ratio, Celsius](
+            initial=self.current_values.mix.setpoint.value,
+            setpoint=lambda: self._parameters.converter_return_temperature,
+            tuning=lambda: self._parameters.warmup_mix_tuning,
+            time_fn=self._time,
         )
 
         self._states = [
             State(
                 name="idle",
-                on_enter=self._set_mix_to_a,
+                on_enter=self._close_circuit,
             ),
             State(
                 name="recovery",
                 on_enter=[
-                    self._pump_controller.enable,
-                    self._warmup_mix_controller.enable,
+                    lambda sensor_values: self._pump_controller.enable(),
+                    lambda sensor_values: self._warmup_mix_controller.enable(),
+                    self._activate_pump,
                 ],
                 on_exit=[
-                    self._pump_controller.disable,
-                    self._warmup_mix_controller.disable,
+                    lambda sensor_values: self._pump_controller.disable(),
+                    lambda sensor_values: self._warmup_mix_controller.disable(),
+                    self._deactivate_pump,
                 ],
             ),
         ]
@@ -134,20 +146,6 @@ class ConvertersControl(
             initial="idle",
         )
 
-        self._warmup_mix_controller = Controller[Ratio, Celsius](
-            initial=self.current_values.mix.setpoint.value,
-            setpoint=lambda: self._parameters.converter_return_temperature,
-            tuning=lambda: self._parameters.warmup_mix_tuning,
-            time_fn=self._time,
-        )
-
-        self._pump_controller = Controller[Ratio, LMin](
-            initial=self.current_values.pump.dutypoint.value,
-            setpoint=0.0,  # Overwritten in control
-            tuning=lambda: self._parameters.pump_tuning,
-            time_fn=self._time,
-        )
-
     @property
     def parameters(self) -> ConvertersParameters:
         return self._parameters
@@ -169,20 +167,26 @@ class ConvertersControl(
         return ConvertersControlMode(mode=mode)
 
     def initial(self) -> ControlResult[ConvertersControlValues]:
-        return ControlResult(self._time(), _INITIAL_CONTROL_VALUES(self._time()))
+        return ControlResult(self._time(), self.current_values)
 
-    def _set_mix_to_a(self):
+    def _close_circuit(self):
         self.current_values.mix.setpoint = Stamped(
-            value=Valve.MIXING_A_TO_AB, timestamp=self._time()
+            value=Valve.MIXING_B_TO_AB, timestamp=self._time()
         )
 
+    def _activate_pump(self, sensor_values: ConvertersSensorValues):
+        self.current_values.pump.on = Stamped(value=True, timestamp=self._time())
+
+    def _deactivate_pump(self, sensor_values: ConvertersSensorValues):
+        self.current_values.pump.on = Stamped(value=False, timestamp=self._time())
+
     def _converter_active(self, sensor_values: ConvertersSensorValues) -> bool:
-        return any(converter.active for converter in sensor_values.converters)
+        return any(converter.active.value for converter in sensor_values.converters)
 
     def control(
         self, sensor_values: ConvertersSensorValues
     ) -> ControlResult[ConvertersControlValues]:
-        self._check_components_active(sensor_values)  # type: ignore
+        self._check_converters_active(sensor_values)  # type: ignore
         self._control_warmup_mix(sensor_values)
         self._control_switch_valves(sensor_values)
         self._control_flow(sensor_values)
@@ -202,7 +206,10 @@ class ConvertersControl(
             converter.active.value for converter in sensor_values.converters
         )
 
-        self._pump_controller(sensor_values.total_flow)
+        self.current_values.pump.dutypoint = Stamped(
+            value=self._pump_controller(sensor_values.total_flow),
+            timestamp=self._time(),
+        )
 
     def _control_switch_valves(self, sensor_values: ConvertersSensorValues):
         for switch, converter in zip(
