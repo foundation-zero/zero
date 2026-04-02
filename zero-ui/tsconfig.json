@@ -2,10 +2,9 @@
   "files": [],
   "references": [{ "path": "./tsconfig.app.json" }, { "path": "./tsconfig.node.json" }],
   "compilerOptions": {
-    "baseUrl": ".",
     "paths": {
       "@/*": ["./src/*"],
-      "@env/*": ["src/settings/*"],
+      "@env/*": ["./src/settings/*"],
       "@common/*": ["./src/modules/common/*"],
       "@tests/*": ["./tests/*"],
       "@components/*": ["./src/components/ui/*"],

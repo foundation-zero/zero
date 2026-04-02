@@ -21,9 +21,19 @@ import { createTestingPinia, TestingPinia } from "@pinia/testing";
 import * as urql from "@urql/vue";
 import { graphql, HttpResponse } from "msw";
 import { setupServer } from "msw/node";
-import { afterEach } from "node:test";
+
 import { setActivePinia } from "pinia";
-import { afterAll, beforeAll, beforeEach, describe, expect, Mock, test, vi } from "vitest";
+import {
+  afterAll,
+  afterEach,
+  beforeAll,
+  beforeEach,
+  describe,
+  expect,
+  Mock,
+  test,
+  vi,
+} from "vitest";
 import { ref } from "vue";
 import { useI18n } from "vue-i18n";
 import allRooms from "../../../../tests/data/all-rooms";

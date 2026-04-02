@@ -3,11 +3,11 @@ import { mutationWithoutValue, mutationWithValue } from "@/modules/thrs/graphql"
 import { context } from "@/modules/thrs/graphql/client";
 
 import { Nullable } from "@/modules/loads/types";
-import { gql, useClientHandle, useQuery } from "@urql/vue";
+import { gql, TypedDocumentNode, useClientHandle, useQuery } from "@urql/vue";
 import { useIntervalFn } from "@vueuse/core";
 import { OperationResult } from "graphql-ws";
 import { Maybe } from "graphql/jsutils/Maybe";
-import { TypedDocumentNode } from "msw/core/graphql";
+
 import { defineStore } from "pinia";
 import { computed, ref, toRefs } from "vue";
 import { SIMULATION_TYPES } from "../lib/consts.types";
