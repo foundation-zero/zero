@@ -1,4 +1,7 @@
 import re
+from typing import List, TypeVar, Union
+
+T = TypeVar("T")
 
 
 def hyphenize(text: str):
@@ -18,3 +21,8 @@ def camel_to_title(text: str) -> str:
 
 def snake_to_title(text: str) -> str:
     return text.replace("_", " ").title()
+
+
+def ensure_list(x: Union[T, List[T]]) -> List[T]:
+    """Provide list or single object, return list in both cases"""
+    return x if isinstance(x, list) else [x]

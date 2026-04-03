@@ -9,6 +9,7 @@ from pydantic_settings import (
     CliSubCommand,
     SettingsConfigDict,
 )
+from util import ensure_list
 
 from loads.api.auth import generate_jwt
 from loads.config import Settings
@@ -90,10 +91,13 @@ class ControlCli(Settings):
 
 
 async def _run_data_generator(
-    settings: GeneratorSettings, id: str, module: MessagingModule
+    settings: GeneratorSettings,
+    id: str,
+    modules: list[MessagingModule] | MessagingModule,
 ):
+
     async with DataGenerator.init_from_settings(settings, id) as data_gen:
-        config = module.gen_config()
+        config = [module.gen_config() for module in ensure_list(modules)]
         await data_gen.generate(config=config)
 
 
@@ -119,6 +123,27 @@ class FiberOpticSensorsStubCmd(GeneratorSettings):
         )
 
 
+class SensorsStubCMD(GeneratorSettings):
+    async def cli_cmd(self) -> None:
+
+        messaging_modules: list[MessagingModule] = [
+            sail_system_sensors,
+            at_sensors,
+            fiber_optic_sensors,
+        ]
+
+        # Log
+        messaging_module_names = ", ".join(
+            [type(module).__name__ for module in messaging_modules]
+        )
+
+        logger.info(
+            f"Running all sensor stubs, using the following modules: {messaging_module_names}..."
+        )
+
+        await _run_data_generator(self, "stub_generator", messaging_modules)
+
+
 class ZeroLoads(BaseSettings, cli_kebab_case=True):
     model_config = SettingsConfigDict(
         env_file=".env",
@@ -136,6 +161,7 @@ class ZeroLoads(BaseSettings, cli_kebab_case=True):
     at_sensors_stub: CliSubCommand[ATSensorsStubCmd]
     fiber_optic_sensors_stub: CliSubCommand[FiberOpticSensorsStubCmd]
     sail_system_sensors_stub: CliSubCommand[SailSystemSensorsStubCmd]
+    sensors_stub: CliSubCommand[SensorsStubCMD]
 
     def cli_cmd(self) -> None:
         CliApp.run_subcommand(self)
