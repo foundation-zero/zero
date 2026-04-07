@@ -29,7 +29,7 @@ class BoilersParameters(ThrsValues):
     lt1_flow_tuning: Tuning = (0.01, 0.001, 0.0)
 
 
-def _INITIAL_CONTROL_VALUES(timestamp) -> BoilersControlValues:
+def _INITIAL_CONTROL_VALUES(timestamp: datetime) -> BoilersControlValues:
     return BoilersControlValues(
         boilers_pump=control.Pump(
             dutypoint=Stamped(value=0.0, timestamp=timestamp),

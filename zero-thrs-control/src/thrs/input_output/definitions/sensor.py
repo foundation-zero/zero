@@ -64,6 +64,14 @@ class Thruster(ThrsValues):
     active: Stamped[OnOff]
 
 
+class PropulsionDrive(ThrsValues):
+    active: Stamped[OnOff]
+
+
+class ShorePowerConverter(ThrsValues):
+    active: Stamped[OnOff]
+
+
 class Pcs(ThrsValues):
     mode: Stamped[PcsMode]
 

@@ -95,13 +95,13 @@ class Lt1SensorValues(ThrsValues):
         sensor.FlowSensor,
         component_meta(yard_tag="50001058-03", component_type="flow_sensor"),
     ]
-    lt1_switch_propdrive_aft: Annotated[
+    lt1_switch_propdrive_aft: Annotated[  # TODO: rename lt1_flowcontrol_propdrives_aft
         sensor.Valve,
         component_meta(
             yard_tag="50001065-02", component_type="valve", valve_type="switch"
         ),
     ]
-    lt1_switch_propdrive_fwd: Annotated[
+    lt1_switch_propdrive_fwd: Annotated[  # TODO: rename lt1_flowcontrol_propdrives_fwd
         sensor.Valve,
         component_meta(
             yard_tag="50001065-03", component_type="valve", valve_type="switch"
@@ -125,6 +125,12 @@ class Lt1SensorValues(ThrsValues):
             yard_tag="50001069-06", component_type="valve", valve_type="switch"
         ),
     ]
+    lt1_switch_propdrive_aft2: Annotated[
+        sensor.Valve,
+        component_meta(
+            yard_tag="50001069-09", component_type="valve", valve_type="switch"
+        ),
+    ]
     lt1_switch_propdrive_fwd1: Annotated[
         sensor.Valve,
         component_meta(
@@ -137,15 +143,49 @@ class Lt1SensorValues(ThrsValues):
             yard_tag="50001069-08", component_type="valve", valve_type="switch"
         ),
     ]
-    lt1_switch_propdrive_aft2: Annotated[
-        sensor.Valve,
-        component_meta(
-            yard_tag="50001069-09", component_type="valve", valve_type="switch"
-        ),
-    ]
     lt1_pressure: Annotated[
         sensor.PressureSensor,
         component_meta(yard_tag="50001097-10", component_type="pressure_sensor"),
+    ]
+    lt1_propdrive_aft1: Annotated[
+        sensor.PropulsionDrive,
+        component_meta(
+            yard_tag="45002079",  # TODO: figure out correct yard tag. We do expect separate signal from each Aradex
+            component_type="propulsion_drive",
+            included_in_fmu=False,
+        ),
+    ]
+    lt1_propdrive_aft2: Annotated[
+        sensor.PropulsionDrive,
+        component_meta(
+            yard_tag="45002079",  # TODO: figure out correct yard tag. We do expect separate signal from each Aradex
+            component_type="propulsion_drive",
+            included_in_fmu=False,
+        ),
+    ]
+    lt1_propdrive_fwd1: Annotated[
+        sensor.PropulsionDrive,
+        component_meta(
+            yard_tag="45002080",  # TODO: figure out correct yard tag. We do expect separate signal from each Aradex
+            component_type="propulsion_drive",
+            included_in_fmu=False,
+        ),
+    ]
+    lt1_propdrive_fwd2: Annotated[
+        sensor.PropulsionDrive,
+        component_meta(
+            yard_tag="45002080",  # TODO: figure out correct yard tag. We do expect separate signal from each Aradex
+            component_type="propulsion_drive",
+            included_in_fmu=False,
+        ),
+    ]
+    lt1_shorepower: Annotated[
+        sensor.ShorePowerConverter,
+        component_meta(
+            yard_tag="45002001",
+            component_type="shore_power_converter",
+            included_in_fmu=False,
+        ),
     ]
 
 
@@ -168,13 +208,13 @@ class Lt1ControlValues(ThrsValues):
             yard_tag="50001046-03", component_type="valve", valve_type="mix"
         ),
     ]
-    lt1_switch_propdrive_aft: Annotated[
+    lt1_switch_propdrive_aft: Annotated[  # TODO: Rename to flowcontrol valve
         control.Valve,
         component_meta(
             yard_tag="50001065-02", component_type="valve", valve_type="switch"
         ),
     ]
-    lt1_switch_propdrive_fwd: Annotated[
+    lt1_switch_propdrive_fwd: Annotated[  # TODO: Rename to flowcontrol valve
         control.Valve,
         component_meta(
             yard_tag="50001065-03", component_type="valve", valve_type="switch"
@@ -198,6 +238,12 @@ class Lt1ControlValues(ThrsValues):
             yard_tag="50001069-06", component_type="valve", valve_type="switch"
         ),
     ]
+    lt1_switch_propdrive_aft2: Annotated[
+        control.Valve,
+        component_meta(
+            yard_tag="50001069-09", component_type="valve", valve_type="switch"
+        ),
+    ]
     lt1_switch_propdrive_fwd1: Annotated[
         control.Valve,
         component_meta(
@@ -210,22 +256,16 @@ class Lt1ControlValues(ThrsValues):
             yard_tag="50001069-08", component_type="valve", valve_type="switch"
         ),
     ]
-    lt1_switch_propdrive_aft2: Annotated[
-        control.Valve,
-        component_meta(
-            yard_tag="50001069-09", component_type="valve", valve_type="switch"
-        ),
-    ]
 
 
 class Lt1SimulationInputs(SimulationInputs):
     lt1_oil_cooler_aft: simulation.HeatSource
     lt1_oil_cooler_fwd: simulation.HeatSource
-    lt1_propdrive_aft1: simulation.HeatSource
-    lt1_propdrive_aft2: simulation.HeatSource
-    lt1_propdrive_fwd1: simulation.HeatSource
-    lt1_propdrive_fwd2: simulation.HeatSource
-    lt1_shorepower: simulation.HeatSource
+    lt1_propdrive_aft1: simulation.PropulsionDrive
+    lt1_propdrive_aft2: simulation.PropulsionDrive
+    lt1_propdrive_fwd1: simulation.PropulsionDrive
+    lt1_propdrive_fwd2: simulation.PropulsionDrive
+    lt1_shorepower: simulation.ShorePowerConverter
     lt1_seawater_supply: simulation.Boundary
     lt1_boilers_supply: simulation.Boundary
 

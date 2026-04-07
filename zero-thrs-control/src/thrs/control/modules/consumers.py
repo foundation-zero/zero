@@ -27,7 +27,7 @@ class ConsumersParameters(ThrsValues):
     fahrenheit_flow_balance_tuning: Tuning = (0.01, 0.001, 0)
 
 
-def _INITIAL_CONTROL_VALUES(timestamp) -> ConsumersControlValues:
+def _INITIAL_CONTROL_VALUES(timestamp: datetime) -> ConsumersControlValues:
     return ConsumersControlValues(
         consumers_flowcontrol_bypass=Valve(
             setpoint=Stamped(value=Valve.OPEN, timestamp=timestamp)

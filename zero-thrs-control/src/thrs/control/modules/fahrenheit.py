@@ -50,7 +50,7 @@ class FahrenheitParameters(ThrsValues):
         return self
 
 
-def _INITIAL_CONTROL_VALUES(timestamp) -> FahrenheitControlValues:
+def _INITIAL_CONTROL_VALUES(timestamp: datetime) -> FahrenheitControlValues:
     return FahrenheitControlValues(
         fahrenheit_flowcontrol_waste=Valve(
             setpoint=Stamped(value=Valve.CLOSED, timestamp=timestamp)
