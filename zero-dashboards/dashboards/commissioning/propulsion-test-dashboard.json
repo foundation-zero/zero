@@ -3702,7 +3702,7 @@
           {
             "matcher": {
               "id": "byName",
-              "options": "C"
+              "options": "total_efficiency"
             },
             "properties": [
               {
@@ -3715,7 +3715,7 @@
       },
       "gridPos": {
         "h": 4,
-        "w": 12,
+        "w": 24,
         "x": 0,
         "y": 49
       },
@@ -3757,7 +3757,7 @@
                 },
                 "size": 20,
                 "text": {
-                  "field": "theoretical_power",
+                  "field": "total_theoretical_power",
                   "fixed": "",
                   "mode": "field"
                 },
@@ -3772,6 +3772,7 @@
               "placement": {
                 "height": 30,
                 "left": 240,
+                "rotation": 0,
                 "top": 10,
                 "width": 175
               },
@@ -3795,7 +3796,7 @@
                 },
                 "size": 16,
                 "text": {
-                  "fixed": "Theoretical power"
+                  "fixed": "Total theoretical power"
                 },
                 "valign": "middle"
               },
@@ -3832,7 +3833,7 @@
                 },
                 "size": 20,
                 "text": {
-                  "field": "C",
+                  "field": "total_efficiency",
                   "fixed": "",
                   "mode": "field"
                 },
@@ -3847,6 +3848,7 @@
               "placement": {
                 "height": 30,
                 "left": 240,
+                "rotation": 0,
                 "top": 45,
                 "width": 175
               },
@@ -3888,6 +3890,158 @@
                 "width": 180
               },
               "type": "text"
+            },
+            {
+              "background": {
+                "color": {
+                  "fixed": "#D9D9D9"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "center",
+                "color": {
+                  "fixed": "#000000"
+                },
+                "size": 20,
+                "text": {
+                  "field": "aradex1_theoretical_power",
+                  "fixed": "",
+                  "mode": "field"
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "links": [],
+              "name": "aradex1_theoretical_power",
+              "placement": {
+                "height": 30,
+                "left": 740,
+                "rotation": 0,
+                "top": 9,
+                "width": 175
+              },
+              "type": "metric-value"
+            },
+            {
+              "background": {
+                "color": {
+                  "fixed": "transparent"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "left",
+                "color": {
+                  "fixed": "rgb(204, 204, 220)"
+                },
+                "size": 16,
+                "text": {
+                  "fixed": "Aradex 1 theoretical power"
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "links": [],
+              "name": "aradex1_theoretical_power label",
+              "placement": {
+                "height": 30,
+                "left": 515,
+                "rotation": 0,
+                "top": 10,
+                "width": 211
+              },
+              "type": "text"
+            },
+            {
+              "background": {
+                "color": {
+                  "fixed": "#D9D9D9"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "center",
+                "color": {
+                  "fixed": "#000000"
+                },
+                "size": 20,
+                "text": {
+                  "field": "aradex2_theoretical_power",
+                  "fixed": "",
+                  "mode": "field"
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "links": [],
+              "name": "aradex2_theoretical_power",
+              "placement": {
+                "height": 30,
+                "left": 1240,
+                "rotation": 0,
+                "top": 10,
+                "width": 175
+              },
+              "type": "metric-value"
+            },
+            {
+              "background": {
+                "color": {
+                  "fixed": "transparent"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "left",
+                "color": {
+                  "fixed": "rgb(204, 204, 220)"
+                },
+                "size": 16,
+                "text": {
+                  "fixed": "Aradex 2 theoretical power"
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "links": [],
+              "name": "aradex2_theoretical_power label",
+              "placement": {
+                "height": 30,
+                "left": 1015,
+                "rotation": 0,
+                "top": 11,
+                "width": 216
+              },
+              "type": "text"
             }
           ],
           "name": "Element 1767775905609",
@@ -3919,7 +4073,7 @@
           "format": "table",
           "hide": false,
           "rawQuery": true,
-          "rawSql": "SELECT\r\n  LAST_VALUE(time ORDER BY time) AS time,\r\n  LAST_VALUE((\"Total_Active_Power\").value ORDER BY time) AS total_active_power\r\nFROM marpower.hydrogeneration\r\nWHERE '$aft_fwd' = 'AFT' AND topic = 'marpower/hydrogeneration/thruster1'\r\n  OR '$aft_fwd' = 'FWD' AND topic = 'marpower/hydrogeneration/thruster2'",
+          "rawSql": "WITH theoretical_power_data AS (\r\n\tWITH motor_data AS (\r\n\t\tSELECT\r\n\t\t  LAST_VALUE(time ORDER BY time) AS time,\r\n\t\t  LAST_VALUE((\"Aradex_1_speed_feedback\").value ORDER BY time) AS aradex1_speed,\r\n\t\t  LAST_VALUE((\"Aradex_2_speed_feedback\").value ORDER BY time) AS aradex2_speed,\r\n\t\t  LAST_VALUE((\"Aradex_1_torque_feedback\").value ORDER BY time) AS aradex1_torque,\r\n\t\t  LAST_VALUE((\"Aradex_2_torque_feedback\").value ORDER BY time) AS aradex2_torque\r\n\t\tFROM marpower.thruster\r\n\t  WHERE topic = 'marpower/thruster/' || lower('$aft_fwd')\r\n\t)\r\n\tSELECT\r\n\t\ttime,\r\n\t\t(aradex1_speed * aradex1_torque * 2 * PI()) / 60 AS aradex1_theoretical_power,\r\n\t\t(aradex2_speed * aradex2_torque * 2 * PI()) / 60 AS aradex2_theoretical_power\r\n\tFROM motor_data\r\n),\r\nmeasured_power_data AS(\r\n\tSELECT\r\n\t  LAST_VALUE(time ORDER BY time) AS time,\r\n\t  LAST_VALUE((\"Total_Active_Power\").value ORDER BY time) AS total_active_power\r\n\tFROM marpower.hydrogeneration\r\n  WHERE '$aft_fwd' = 'AFT' AND topic = 'marpower/hydrogeneration/thruster1'\r\n    OR '$aft_fwd' = 'FWD' AND topic = 'marpower/hydrogeneration/thruster2'\r\n)\r\nSELECT\r\n\tt.time,\r\n\tt.aradex1_theoretical_power,\r\n\tt.aradex2_theoretical_power,\r\n\tt.aradex1_theoretical_power + aradex2_theoretical_power AS total_theoretical_power,\r\n\tm.total_active_power * 100 / (t.aradex1_theoretical_power + aradex2_theoretical_power) AS total_efficiency\r\nFROM theoretical_power_data t\r\nJOIN measured_power_data m ON m.time >= t.time\r\n",
           "refId": "A",
           "sql": {
             "columns": [
@@ -3938,47 +4092,6 @@
             ],
             "limit": 50
           }
-        },
-        {
-          "dataset": "dev",
-          "datasource": {
-            "type": "grafana-postgresql-datasource",
-            "uid": "${datasource}"
-          },
-          "editorMode": "code",
-          "format": "table",
-          "hide": false,
-          "rawQuery": true,
-          "rawSql": "WITH motor_data AS (\r\n\tSELECT\r\n\t  LAST_VALUE(thruster.time ORDER BY thruster.time) AS time,\r\n\t  LAST_VALUE((\"Aradex_1_speed_feedback\").value ORDER BY thruster.time) AS aradex1_speed,\r\n\t  LAST_VALUE((\"Aradex_2_speed_feedback\").value ORDER BY thruster.time) AS aradex2_speed,\r\n\t  LAST_VALUE((\"Torque\").value ORDER BY ext_motor.time) AS torque\r\n\tFROM marpower.thruster thruster\r\n\tJOIN marpower.externalmotor AS ext_motor ON ext_motor.time >= thruster.time\r\n\tWHERE thruster.topic = 'marpower/thruster/' || lower('$aft_fwd')\r\n)\r\nSELECT \r\n  ((aradex1_speed + aradex2_speed) * torque * 2 * PI()) / 60 AS theoretical_power\r\nFROM motor_data",
-          "refId": "B",
-          "sql": {
-            "columns": [
-              {
-                "parameters": [],
-                "type": "function"
-              }
-            ],
-            "groupBy": [
-              {
-                "property": {
-                  "type": "string"
-                },
-                "type": "groupBy"
-              }
-            ],
-            "limit": 50
-          }
-        },
-        {
-          "datasource": {
-            "name": "Expression",
-            "type": "__expr__",
-            "uid": "__expr__"
-          },
-          "expression": "$A * 100 / $B",
-          "hide": false,
-          "refId": "C",
-          "type": "math"
         }
       ],
       "title": "Electrical efficiency",
@@ -4026,20 +4139,20 @@
       {
         "allowCustomValue": false,
         "current": {
-          "text": "FWD",
-          "value": "FWD"
+          "text": "AFT",
+          "value": "AFT"
         },
         "description": "Select the AFT or FWD thruster system",
         "label": "AFT/FWD",
         "name": "aft_fwd",
         "options": [
           {
-            "selected": false,
+            "selected": true,
             "text": "AFT",
             "value": "AFT"
           },
           {
-            "selected": true,
+            "selected": false,
             "text": "FWD",
             "value": "FWD"
           }
