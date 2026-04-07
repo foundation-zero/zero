@@ -29,7 +29,7 @@ const { activeSimulationType } = toRefs(useSimulationStore());
       ]"
     >
       <header class="col-span-full flex justify-between max-2xl:flex-col max-2xl:gap-6">
-        <span class="text-3xl capitalize">{{ t("thrs.views.simulation.inputsOutputs") }}</span>
+        <span class="text-3xl capitalize">{{ t("thrs.views.simulation.outputs") }}</span>
         <FieldsFilter />
       </header>
 
@@ -43,7 +43,7 @@ const { activeSimulationType } = toRefs(useSimulationStore());
     </FieldsValues>
 
     <header class="mt-8 mb-4 text-3xl capitalize">
-      {{ t("thrs.views.controls.title") }}
+      {{ t("thrs.views.simulation.inputs") }}
     </header>
 
     <SimulationControls :type="activeSimulationType" />
