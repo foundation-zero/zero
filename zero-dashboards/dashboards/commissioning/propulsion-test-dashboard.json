@@ -72,7 +72,7 @@
       },
       "id": 24,
       "panels": [],
-      "title": "Propulsion status",
+      "title": "PCS status",
       "type": "row"
     },
     {
@@ -96,13 +96,37 @@
                 "value": 0
               }
             ]
-          },
-          "unit": "percent"
+          }
         },
-        "overrides": []
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byRegexp",
+              "options": "/speed/"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "percent"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byRegexp",
+              "options": "/rotation/"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "degree"
+              }
+            ]
+          }
+        ]
       },
       "gridPos": {
-        "h": 5,
+        "h": 9,
         "w": 24,
         "x": 0,
         "y": 3
@@ -317,7 +341,6 @@
                 },
                 "valign": "middle"
               },
-              "connections": [],
               "constraint": {
                 "horizontal": "left",
                 "vertical": "top"
@@ -326,8 +349,8 @@
               "name": "fwd_thruster_regeneration_mode",
               "placement": {
                 "height": 25,
-                "left": 762,
-                "top": 49,
+                "left": 725,
+                "top": 50,
                 "width": 25
               },
               "type": "ellipse"
@@ -364,8 +387,8 @@
               "name": "fwd_thruster_regeneration_mode label",
               "placement": {
                 "height": 26,
-                "left": 797,
-                "top": 49,
+                "left": 760,
+                "top": 50,
                 "width": 372
               },
               "type": "text"
@@ -404,7 +427,7 @@
                 "height": 30,
                 "left": 454,
                 "rotation": 0,
-                "top": 83,
+                "top": 150,
                 "width": 175
               },
               "type": "metric-value"
@@ -428,7 +451,7 @@
                 "size": 16,
                 "text": {
                   "field": "sub_pump1_alarm",
-                  "fixed": "AFT Thruster - Lever setting",
+                  "fixed": "AFT Thruster - Lever speed setting",
                   "mode": "fixed"
                 },
                 "valign": "middle"
@@ -444,8 +467,328 @@
                 "height": 26,
                 "left": 50,
                 "rotation": 0,
-                "top": 85,
-                "width": 246
+                "top": 150,
+                "width": 334
+              },
+              "type": "text"
+            },
+            {
+              "background": {
+                "color": {
+                  "field": "aft_thruster_regeneration_mode",
+                  "fixed": "#D9D9D9"
+                },
+                "image": {
+                  "field": "sub_pump1_alarm",
+                  "mode": "fixed"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "center",
+                "color": {
+                  "fixed": "#000000"
+                },
+                "text": {
+                  "field": "sub_pump2_alarm",
+                  "mode": "fixed"
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "links": [],
+              "name": "aft_thruster_propulsion_mode",
+              "placement": {
+                "height": 25,
+                "left": 15,
+                "rotation": 0,
+                "top": 80,
+                "width": 25
+              },
+              "type": "ellipse"
+            },
+            {
+              "background": {
+                "color": {
+                  "fixed": "transparent"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "left",
+                "color": {
+                  "fixed": "rgb(204, 204, 220)"
+                },
+                "size": 16,
+                "text": {
+                  "field": "sub_pump1_alarm",
+                  "fixed": "AFT Thruster - Propulsion mode selected",
+                  "mode": "fixed"
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "links": [],
+              "name": "aft_thruster_propulsion_mode label",
+              "placement": {
+                "height": 26,
+                "left": 50,
+                "rotation": 0,
+                "top": 80,
+                "width": 372
+              },
+              "type": "text"
+            },
+            {
+              "background": {
+                "color": {
+                  "field": "aft_thruster_propulsion_mode",
+                  "fixed": "#D9D9D9"
+                },
+                "image": {
+                  "field": "sub_pump1_alarm",
+                  "mode": "fixed"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "center",
+                "color": {
+                  "fixed": "#000000"
+                },
+                "text": {
+                  "field": "sub_pump2_alarm",
+                  "mode": "fixed"
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "links": [],
+              "name": "fwd_thruster_propulsion_mode",
+              "placement": {
+                "height": 25,
+                "left": 725,
+                "top": 80,
+                "width": 25
+              },
+              "type": "ellipse"
+            },
+            {
+              "background": {
+                "color": {
+                  "fixed": "transparent"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "left",
+                "color": {
+                  "fixed": "rgb(204, 204, 220)"
+                },
+                "size": 16,
+                "text": {
+                  "field": "sub_pump1_alarm",
+                  "fixed": "FWD Thruster - Propulsion mode selected",
+                  "mode": "fixed"
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "links": [],
+              "name": "fwd_thruster_propulsion_mode label",
+              "placement": {
+                "height": 26,
+                "left": 760,
+                "top": 80,
+                "width": 372
+              },
+              "type": "text"
+            },
+            {
+              "background": {
+                "color": {
+                  "field": "aft_thruster_regeneration_mode",
+                  "fixed": "#D9D9D9"
+                },
+                "image": {
+                  "field": "sub_pump1_alarm",
+                  "mode": "fixed"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "center",
+                "color": {
+                  "fixed": "#000000"
+                },
+                "text": {
+                  "field": "sub_pump2_alarm",
+                  "mode": "fixed"
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "links": [],
+              "name": "aft_thruster_maneuvring_mode",
+              "placement": {
+                "height": 25,
+                "left": 15,
+                "rotation": 0,
+                "top": 110,
+                "width": 25
+              },
+              "type": "ellipse"
+            },
+            {
+              "background": {
+                "color": {
+                  "fixed": "transparent"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "left",
+                "color": {
+                  "fixed": "rgb(204, 204, 220)"
+                },
+                "size": 16,
+                "text": {
+                  "field": "sub_pump1_alarm",
+                  "fixed": "AFT Thruster - Maneuvering mode selected",
+                  "mode": "fixed"
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "links": [],
+              "name": "aft_thruster_maneuvring_mode label",
+              "placement": {
+                "height": 26,
+                "left": 50,
+                "rotation": 0,
+                "top": 110,
+                "width": 372
+              },
+              "type": "text"
+            },
+            {
+              "background": {
+                "color": {
+                  "field": "fwd_thruster_maneuvring_mode",
+                  "fixed": "#D9D9D9"
+                },
+                "image": {
+                  "field": "sub_pump1_alarm",
+                  "mode": "fixed"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "center",
+                "color": {
+                  "fixed": "#000000"
+                },
+                "text": {
+                  "field": "sub_pump2_alarm",
+                  "mode": "fixed"
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "links": [],
+              "name": "fwd_thruster_maneuvring_mode",
+              "placement": {
+                "height": 25,
+                "left": 725,
+                "top": 110,
+                "width": 25
+              },
+              "type": "ellipse"
+            },
+            {
+              "background": {
+                "color": {
+                  "fixed": "transparent"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "left",
+                "color": {
+                  "fixed": "rgb(204, 204, 220)"
+                },
+                "size": 16,
+                "text": {
+                  "field": "sub_pump1_alarm",
+                  "fixed": "FWD Thruster - Maneuvering mode selected",
+                  "mode": "fixed"
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "links": [],
+              "name": "fwd_thruster_maneuvring_mode label",
+              "placement": {
+                "height": 26,
+                "left": 760,
+                "top": 110,
+                "width": 372
               },
               "type": "text"
             },
@@ -481,9 +824,8 @@
               "name": "fwd_thruster_lever_speed_signal",
               "placement": {
                 "height": 30,
-                "left": 1169,
-                "rotation": 0,
-                "top": 83,
+                "left": 1164,
+                "top": 150,
                 "width": 175
               },
               "type": "metric-value"
@@ -507,7 +849,7 @@
                 "size": 16,
                 "text": {
                   "field": "sub_pump1_alarm",
-                  "fixed": "FWD Thruster - Lever setting",
+                  "fixed": "FWD Thruster - Lever speed setting",
                   "mode": "fixed"
                 },
                 "valign": "middle"
@@ -520,9 +862,477 @@
               "name": "fwd_thruster_lever_speed_signal label",
               "placement": {
                 "height": 26,
-                "left": 797,
-                "top": 85,
-                "width": 246
+                "left": 760,
+                "rotation": 0,
+                "top": 150,
+                "width": 348
+              },
+              "type": "text"
+            },
+            {
+              "background": {
+                "color": {
+                  "fixed": "#D9D9D9"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "center",
+                "color": {
+                  "fixed": "#000000"
+                },
+                "size": 20,
+                "text": {
+                  "field": "aft_thruster_lever_azimuth_rotation_signal",
+                  "fixed": "",
+                  "mode": "field"
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "links": [],
+              "name": "aft_thruster_lever_azimuth_signal",
+              "placement": {
+                "height": 30,
+                "left": 454,
+                "rotation": 0,
+                "top": 185,
+                "width": 175
+              },
+              "type": "metric-value"
+            },
+            {
+              "background": {
+                "color": {
+                  "fixed": "transparent"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "left",
+                "color": {
+                  "fixed": "rgb(204, 204, 220)"
+                },
+                "size": 16,
+                "text": {
+                  "field": "sub_pump1_alarm",
+                  "fixed": "AFT Thruster - Azimuth rotation setting",
+                  "mode": "fixed"
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "links": [],
+              "name": "aft_thruster_lever_azimuth_signal label",
+              "placement": {
+                "height": 26,
+                "left": 50,
+                "rotation": 0,
+                "top": 185,
+                "width": 334
+              },
+              "type": "text"
+            },
+            {
+              "background": {
+                "color": {
+                  "fixed": "#D9D9D9"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "center",
+                "color": {
+                  "fixed": "#000000"
+                },
+                "size": 20,
+                "text": {
+                  "field": "fwd_thruster_lever_azimuth_rotation_signal",
+                  "fixed": "",
+                  "mode": "field"
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "links": [],
+              "name": "fwd_thruster_lever_azimuth_signal",
+              "placement": {
+                "height": 30,
+                "left": 1164,
+                "rotation": 0,
+                "top": 185,
+                "width": 175
+              },
+              "type": "metric-value"
+            },
+            {
+              "background": {
+                "color": {
+                  "fixed": "transparent"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "left",
+                "color": {
+                  "fixed": "rgb(204, 204, 220)"
+                },
+                "size": 16,
+                "text": {
+                  "field": "sub_pump1_alarm",
+                  "fixed": "FWD Thruster - Azimuth rotation setting",
+                  "mode": "fixed"
+                },
+                "valign": "middle"
+              },
+              "connections": [],
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "links": [],
+              "name": "fwd_thruster_lever_azimuth_signal label",
+              "placement": {
+                "height": 26,
+                "left": 760,
+                "rotation": 0,
+                "top": 185,
+                "width": 348
+              },
+              "type": "text"
+            },
+            {
+              "background": {
+                "color": {
+                  "fixed": "#D9D9D9"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "center",
+                "color": {
+                  "fixed": "#000000"
+                },
+                "size": 20,
+                "text": {
+                  "field": "aft_thruster_lever_azimuth_x_signal",
+                  "fixed": "",
+                  "mode": "field"
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "links": [],
+              "name": "aft_thruster_lever_azimuth_x_signal",
+              "placement": {
+                "height": 30,
+                "left": 454,
+                "rotation": 0,
+                "top": 220,
+                "width": 175
+              },
+              "type": "metric-value"
+            },
+            {
+              "background": {
+                "color": {
+                  "fixed": "transparent"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "left",
+                "color": {
+                  "fixed": "rgb(204, 204, 220)"
+                },
+                "size": 16,
+                "text": {
+                  "field": "sub_pump1_alarm",
+                  "fixed": "AFT Thruster - Azimuth X setting",
+                  "mode": "fixed"
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "links": [],
+              "name": "aft_thruster_lever_azimuth_x_signal label",
+              "placement": {
+                "height": 26,
+                "left": 50,
+                "top": 220,
+                "width": 334
+              },
+              "type": "text"
+            },
+            {
+              "background": {
+                "color": {
+                  "fixed": "#D9D9D9"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "center",
+                "color": {
+                  "fixed": "#000000"
+                },
+                "size": 20,
+                "text": {
+                  "field": "aft_thruster_lever_azimuth_y_signal",
+                  "fixed": "",
+                  "mode": "field"
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "links": [],
+              "name": "aft_thruster_lever_azimuth_y_signal",
+              "placement": {
+                "height": 30,
+                "left": 454,
+                "rotation": 0,
+                "top": 255,
+                "width": 175
+              },
+              "type": "metric-value"
+            },
+            {
+              "background": {
+                "color": {
+                  "fixed": "transparent"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "left",
+                "color": {
+                  "fixed": "rgb(204, 204, 220)"
+                },
+                "size": 16,
+                "text": {
+                  "field": "sub_pump1_alarm",
+                  "fixed": "AFT Thruster - Azimuth Y setting",
+                  "mode": "fixed"
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "links": [],
+              "name": "aft_thruster_lever_azimuth_y_signal label",
+              "placement": {
+                "height": 26,
+                "left": 50,
+                "top": 255,
+                "width": 334
+              },
+              "type": "text"
+            },
+            {
+              "background": {
+                "color": {
+                  "fixed": "#D9D9D9"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "center",
+                "color": {
+                  "fixed": "#000000"
+                },
+                "size": 20,
+                "text": {
+                  "field": "fwd_thruster_lever_azimuth_x_signal",
+                  "fixed": "",
+                  "mode": "field"
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "links": [],
+              "name": "fwd_thruster_lever_azimuth_x_signal",
+              "placement": {
+                "height": 30,
+                "left": 1164,
+                "rotation": 0,
+                "top": 223,
+                "width": 175
+              },
+              "type": "metric-value"
+            },
+            {
+              "background": {
+                "color": {
+                  "fixed": "transparent"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "left",
+                "color": {
+                  "fixed": "rgb(204, 204, 220)"
+                },
+                "size": 16,
+                "text": {
+                  "field": "sub_pump1_alarm",
+                  "fixed": "FWD Thruster - Azimuth X setting",
+                  "mode": "fixed"
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "links": [],
+              "name": "fwd_thruster_lever_azimuth_x_signal label",
+              "placement": {
+                "height": 26,
+                "left": 760,
+                "rotation": 0,
+                "top": 223,
+                "width": 334
+              },
+              "type": "text"
+            },
+            {
+              "background": {
+                "color": {
+                  "fixed": "#D9D9D9"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "center",
+                "color": {
+                  "fixed": "#000000"
+                },
+                "size": 20,
+                "text": {
+                  "field": "fwd_thruster_lever_azimuth_y_signal",
+                  "fixed": "",
+                  "mode": "field"
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "links": [],
+              "name": "fwd_thruster_lever_azimuth_y_signal",
+              "placement": {
+                "height": 30,
+                "left": 1164,
+                "rotation": 0,
+                "top": 258,
+                "width": 175
+              },
+              "type": "metric-value"
+            },
+            {
+              "background": {
+                "color": {
+                  "fixed": "transparent"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "left",
+                "color": {
+                  "fixed": "rgb(204, 204, 220)"
+                },
+                "size": 16,
+                "text": {
+                  "field": "sub_pump1_alarm",
+                  "fixed": "FWD Thruster - Azimuth Y setting",
+                  "mode": "fixed"
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "links": [],
+              "name": "fwd_thruster_lever_azimuth_y_signal label",
+              "placement": {
+                "height": 26,
+                "left": 760,
+                "rotation": 0,
+                "top": 258,
+                "width": 334
               },
               "type": "text"
             }
@@ -555,7 +1365,7 @@
           "editorMode": "code",
           "format": "table",
           "rawQuery": true,
-          "rawSql": "SELECT\r\n  LAST_VALUE(time ORDER BY time) AS time,\r\n  LAST_VALUE((\"StationSelected\").value ORDER BY time)                     AS station_selected,\r\n  LAST_VALUE((\"RegenerationModeSelectedAFTThruster\").value ORDER BY time) AS aft_thruster_regeneration_mode,\r\n  LAST_VALUE((\"RegenerationModeSelectedFWDThruster\").value ORDER BY time) AS fwd_thruster_regeneration_mode,\r\n  LAST_VALUE((\"MAINThrusterLeverSpeedSignal\").value ORDER BY time)        AS aft_thruster_lever_speed_signal,\r\n  LAST_VALUE((\"FWDThrusterLeverSpeedSignal\").value ORDER BY time)         AS fwd_thruster_lever_speed_signal\r\nFROM marpower.\"helm_console\"\r\nWHERE topic = 'marpower/helm-console/ps'",
+          "rawSql": "SELECT\r\n  LAST_VALUE(time ORDER BY time) AS time,\r\n  LAST_VALUE((\"StationSelected\").value ORDER BY time)                     AS station_selected,\r\n  LAST_VALUE((\"RegenerationModeSelectedAFTThruster\").value ORDER BY time) AS aft_thruster_regeneration_mode,\r\n  LAST_VALUE((\"RegenerationModeSelectedFWDThruster\").value ORDER BY time) AS fwd_thruster_regeneration_mode,\r\n  LAST_VALUE((\"PropulsionModeSelectedAFTThruster\").value ORDER BY time)   AS aft_thruster_propulsion_mode,\r\n  LAST_VALUE((\"PropulsionModeSelectedFWDThruster\").value ORDER BY time)   AS fwd_thruster_propulsion_mode,\r\n  LAST_VALUE((\"MoeveringModeSelectedAFTThruster\").value ORDER BY time)    AS aft_thruster_maneuvring_mode,\r\n  LAST_VALUE((\"MoeveringModeSelectedFWDThruster\").value ORDER BY time)    AS fwd_thruster_maneuvring_mode,\r\n  LAST_VALUE((\"MAINThrusterLeverSpeedSignal\").value ORDER BY time)        AS aft_thruster_lever_speed_signal,\r\n  LAST_VALUE((\"FWDThrusterLeverSpeedSignal\").value ORDER BY time)         AS fwd_thruster_lever_speed_signal,\r\n  LAST_VALUE((\"MAINThrusterLeverAzimuthSignal\").value ORDER BY time)      AS aft_thruster_lever_azimuth_rotation_signal,\r\n  LAST_VALUE((\"FWDThrusterLeverAzimuthSignal\").value ORDER BY time)       AS fwd_thruster_lever_azimuth_rotation_signal,\r\n  LAST_VALUE((\"MAINThrusterLeverAzimuthSignal_X\").value ORDER BY time)    AS aft_thruster_lever_azimuth_x_signal,\r\n  LAST_VALUE((\"MAINThrusterLeverAzimuthSignal_Y\").value ORDER BY time)    AS aft_thruster_lever_azimuth_y_signal,\r\n  LAST_VALUE((\"FWDThrusterLeverAzimuthSignal_X\").value ORDER BY time)     AS fwd_thruster_lever_azimuth_x_signal,\r\n  LAST_VALUE((\"FWDThrusterLeverAzimuthSignal_Y\").value ORDER BY time)     AS fwd_thruster_lever_azimuth_y_signal  \r\nFROM marpower.\"helm_console\"\r\nWHERE topic = 'marpower/helm-console/ps'",
           "refId": "A",
           "sql": {
             "columns": [
@@ -600,18 +1410,42 @@
                 "value": 0
               }
             ]
-          },
-          "unit": "percent"
+          }
         },
-        "overrides": []
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byRegexp",
+              "options": "/speed/"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "percent"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byRegexp",
+              "options": "/rotation/"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "degree"
+              }
+            ]
+          }
+        ]
       },
       "gridPos": {
-        "h": 5,
+        "h": 9,
         "w": 24,
         "x": 0,
-        "y": 8
+        "y": 12
       },
-      "id": 29,
+      "id": 56,
       "options": {
         "inlineEditing": false,
         "panZoom": false,
@@ -693,7 +1527,7 @@
                 "size": 16,
                 "text": {
                   "field": "sub_pump1_alarm",
-                  "fixed": "SB Helm station selected",
+                  "fixed": "PS Helm station selected",
                   "mode": "fixed"
                 },
                 "valign": "middle"
@@ -821,7 +1655,6 @@
                 },
                 "valign": "middle"
               },
-              "connections": [],
               "constraint": {
                 "horizontal": "left",
                 "vertical": "top"
@@ -830,9 +1663,8 @@
               "name": "fwd_thruster_regeneration_mode",
               "placement": {
                 "height": 25,
-                "left": 762,
-                "rotation": 0,
-                "top": 49,
+                "left": 725,
+                "top": 50,
                 "width": 25
               },
               "type": "ellipse"
@@ -869,9 +1701,8 @@
               "name": "fwd_thruster_regeneration_mode label",
               "placement": {
                 "height": 26,
-                "left": 797,
-                "rotation": 0,
-                "top": 49,
+                "left": 760,
+                "top": 50,
                 "width": 372
               },
               "type": "text"
@@ -910,7 +1741,7 @@
                 "height": 30,
                 "left": 454,
                 "rotation": 0,
-                "top": 83,
+                "top": 150,
                 "width": 175
               },
               "type": "metric-value"
@@ -934,7 +1765,7 @@
                 "size": 16,
                 "text": {
                   "field": "sub_pump1_alarm",
-                  "fixed": "AFT Thruster - Lever setting",
+                  "fixed": "AFT Thruster - Lever speed setting",
                   "mode": "fixed"
                 },
                 "valign": "middle"
@@ -950,8 +1781,328 @@
                 "height": 26,
                 "left": 50,
                 "rotation": 0,
-                "top": 85,
-                "width": 246
+                "top": 150,
+                "width": 334
+              },
+              "type": "text"
+            },
+            {
+              "background": {
+                "color": {
+                  "field": "aft_thruster_regeneration_mode",
+                  "fixed": "#D9D9D9"
+                },
+                "image": {
+                  "field": "sub_pump1_alarm",
+                  "mode": "fixed"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "center",
+                "color": {
+                  "fixed": "#000000"
+                },
+                "text": {
+                  "field": "sub_pump2_alarm",
+                  "mode": "fixed"
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "links": [],
+              "name": "aft_thruster_propulsion_mode",
+              "placement": {
+                "height": 25,
+                "left": 15,
+                "rotation": 0,
+                "top": 80,
+                "width": 25
+              },
+              "type": "ellipse"
+            },
+            {
+              "background": {
+                "color": {
+                  "fixed": "transparent"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "left",
+                "color": {
+                  "fixed": "rgb(204, 204, 220)"
+                },
+                "size": 16,
+                "text": {
+                  "field": "sub_pump1_alarm",
+                  "fixed": "AFT Thruster - Propulsion mode selected",
+                  "mode": "fixed"
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "links": [],
+              "name": "aft_thruster_propulsion_mode label",
+              "placement": {
+                "height": 26,
+                "left": 50,
+                "rotation": 0,
+                "top": 80,
+                "width": 372
+              },
+              "type": "text"
+            },
+            {
+              "background": {
+                "color": {
+                  "field": "aft_thruster_propulsion_mode",
+                  "fixed": "#D9D9D9"
+                },
+                "image": {
+                  "field": "sub_pump1_alarm",
+                  "mode": "fixed"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "center",
+                "color": {
+                  "fixed": "#000000"
+                },
+                "text": {
+                  "field": "sub_pump2_alarm",
+                  "mode": "fixed"
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "links": [],
+              "name": "fwd_thruster_propulsion_mode",
+              "placement": {
+                "height": 25,
+                "left": 725,
+                "top": 80,
+                "width": 25
+              },
+              "type": "ellipse"
+            },
+            {
+              "background": {
+                "color": {
+                  "fixed": "transparent"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "left",
+                "color": {
+                  "fixed": "rgb(204, 204, 220)"
+                },
+                "size": 16,
+                "text": {
+                  "field": "sub_pump1_alarm",
+                  "fixed": "FWD Thruster - Propulsion mode selected",
+                  "mode": "fixed"
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "links": [],
+              "name": "fwd_thruster_propulsion_mode label",
+              "placement": {
+                "height": 26,
+                "left": 760,
+                "top": 80,
+                "width": 372
+              },
+              "type": "text"
+            },
+            {
+              "background": {
+                "color": {
+                  "field": "aft_thruster_regeneration_mode",
+                  "fixed": "#D9D9D9"
+                },
+                "image": {
+                  "field": "sub_pump1_alarm",
+                  "mode": "fixed"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "center",
+                "color": {
+                  "fixed": "#000000"
+                },
+                "text": {
+                  "field": "sub_pump2_alarm",
+                  "mode": "fixed"
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "links": [],
+              "name": "aft_thruster_maneuvring_mode",
+              "placement": {
+                "height": 25,
+                "left": 15,
+                "rotation": 0,
+                "top": 110,
+                "width": 25
+              },
+              "type": "ellipse"
+            },
+            {
+              "background": {
+                "color": {
+                  "fixed": "transparent"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "left",
+                "color": {
+                  "fixed": "rgb(204, 204, 220)"
+                },
+                "size": 16,
+                "text": {
+                  "field": "sub_pump1_alarm",
+                  "fixed": "AFT Thruster - Maneuvering mode selected",
+                  "mode": "fixed"
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "links": [],
+              "name": "aft_thruster_maneuvring_mode label",
+              "placement": {
+                "height": 26,
+                "left": 50,
+                "rotation": 0,
+                "top": 110,
+                "width": 372
+              },
+              "type": "text"
+            },
+            {
+              "background": {
+                "color": {
+                  "field": "fwd_thruster_maneuvring_mode",
+                  "fixed": "#D9D9D9"
+                },
+                "image": {
+                  "field": "sub_pump1_alarm",
+                  "mode": "fixed"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "center",
+                "color": {
+                  "fixed": "#000000"
+                },
+                "text": {
+                  "field": "sub_pump2_alarm",
+                  "mode": "fixed"
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "links": [],
+              "name": "fwd_thruster_maneuvring_mode",
+              "placement": {
+                "height": 25,
+                "left": 725,
+                "top": 110,
+                "width": 25
+              },
+              "type": "ellipse"
+            },
+            {
+              "background": {
+                "color": {
+                  "fixed": "transparent"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "left",
+                "color": {
+                  "fixed": "rgb(204, 204, 220)"
+                },
+                "size": 16,
+                "text": {
+                  "field": "sub_pump1_alarm",
+                  "fixed": "FWD Thruster - Maneuvering mode selected",
+                  "mode": "fixed"
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "links": [],
+              "name": "fwd_thruster_maneuvring_mode label",
+              "placement": {
+                "height": 26,
+                "left": 760,
+                "top": 110,
+                "width": 372
               },
               "type": "text"
             },
@@ -987,9 +2138,8 @@
               "name": "fwd_thruster_lever_speed_signal",
               "placement": {
                 "height": 30,
-                "left": 1169,
-                "rotation": 0,
-                "top": 83,
+                "left": 1164,
+                "top": 150,
                 "width": 175
               },
               "type": "metric-value"
@@ -1013,7 +2163,7 @@
                 "size": 16,
                 "text": {
                   "field": "sub_pump1_alarm",
-                  "fixed": "FWD Thruster - Lever setting",
+                  "fixed": "FWD Thruster - Lever speed setting",
                   "mode": "fixed"
                 },
                 "valign": "middle"
@@ -1026,10 +2176,477 @@
               "name": "fwd_thruster_lever_speed_signal label",
               "placement": {
                 "height": 26,
-                "left": 797,
+                "left": 760,
                 "rotation": 0,
-                "top": 85,
-                "width": 246
+                "top": 150,
+                "width": 348
+              },
+              "type": "text"
+            },
+            {
+              "background": {
+                "color": {
+                  "fixed": "#D9D9D9"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "center",
+                "color": {
+                  "fixed": "#000000"
+                },
+                "size": 20,
+                "text": {
+                  "field": "aft_thruster_lever_azimuth_rotation_signal",
+                  "fixed": "",
+                  "mode": "field"
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "links": [],
+              "name": "aft_thruster_lever_azimuth_signal",
+              "placement": {
+                "height": 30,
+                "left": 454,
+                "rotation": 0,
+                "top": 185,
+                "width": 175
+              },
+              "type": "metric-value"
+            },
+            {
+              "background": {
+                "color": {
+                  "fixed": "transparent"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "left",
+                "color": {
+                  "fixed": "rgb(204, 204, 220)"
+                },
+                "size": 16,
+                "text": {
+                  "field": "sub_pump1_alarm",
+                  "fixed": "AFT Thruster - Azimuth rotation setting",
+                  "mode": "fixed"
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "links": [],
+              "name": "aft_thruster_lever_azimuth_signal label",
+              "placement": {
+                "height": 26,
+                "left": 50,
+                "rotation": 0,
+                "top": 185,
+                "width": 334
+              },
+              "type": "text"
+            },
+            {
+              "background": {
+                "color": {
+                  "fixed": "#D9D9D9"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "center",
+                "color": {
+                  "fixed": "#000000"
+                },
+                "size": 20,
+                "text": {
+                  "field": "fwd_thruster_lever_azimuth_rotation_signal",
+                  "fixed": "",
+                  "mode": "field"
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "links": [],
+              "name": "fwd_thruster_lever_azimuth_signal",
+              "placement": {
+                "height": 30,
+                "left": 1164,
+                "rotation": 0,
+                "top": 185,
+                "width": 175
+              },
+              "type": "metric-value"
+            },
+            {
+              "background": {
+                "color": {
+                  "fixed": "transparent"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "left",
+                "color": {
+                  "fixed": "rgb(204, 204, 220)"
+                },
+                "size": 16,
+                "text": {
+                  "field": "sub_pump1_alarm",
+                  "fixed": "FWD Thruster - Azimuth rotation setting",
+                  "mode": "fixed"
+                },
+                "valign": "middle"
+              },
+              "connections": [],
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "links": [],
+              "name": "fwd_thruster_lever_azimuth_signal label",
+              "placement": {
+                "height": 26,
+                "left": 760,
+                "rotation": 0,
+                "top": 185,
+                "width": 348
+              },
+              "type": "text"
+            },
+            {
+              "background": {
+                "color": {
+                  "fixed": "#D9D9D9"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "center",
+                "color": {
+                  "fixed": "#000000"
+                },
+                "size": 20,
+                "text": {
+                  "field": "aft_thruster_lever_azimuth_x_signal",
+                  "fixed": "",
+                  "mode": "field"
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "links": [],
+              "name": "aft_thruster_lever_azimuth_x_signal",
+              "placement": {
+                "height": 30,
+                "left": 454,
+                "rotation": 0,
+                "top": 220,
+                "width": 175
+              },
+              "type": "metric-value"
+            },
+            {
+              "background": {
+                "color": {
+                  "fixed": "transparent"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "left",
+                "color": {
+                  "fixed": "rgb(204, 204, 220)"
+                },
+                "size": 16,
+                "text": {
+                  "field": "sub_pump1_alarm",
+                  "fixed": "AFT Thruster - Azimuth X setting",
+                  "mode": "fixed"
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "links": [],
+              "name": "aft_thruster_lever_azimuth_x_signal label",
+              "placement": {
+                "height": 26,
+                "left": 50,
+                "top": 220,
+                "width": 334
+              },
+              "type": "text"
+            },
+            {
+              "background": {
+                "color": {
+                  "fixed": "#D9D9D9"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "center",
+                "color": {
+                  "fixed": "#000000"
+                },
+                "size": 20,
+                "text": {
+                  "field": "aft_thruster_lever_azimuth_y_signal",
+                  "fixed": "",
+                  "mode": "field"
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "links": [],
+              "name": "aft_thruster_lever_azimuth_y_signal",
+              "placement": {
+                "height": 30,
+                "left": 454,
+                "rotation": 0,
+                "top": 255,
+                "width": 175
+              },
+              "type": "metric-value"
+            },
+            {
+              "background": {
+                "color": {
+                  "fixed": "transparent"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "left",
+                "color": {
+                  "fixed": "rgb(204, 204, 220)"
+                },
+                "size": 16,
+                "text": {
+                  "field": "sub_pump1_alarm",
+                  "fixed": "AFT Thruster - Azimuth Y setting",
+                  "mode": "fixed"
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "links": [],
+              "name": "aft_thruster_lever_azimuth_y_signal label",
+              "placement": {
+                "height": 26,
+                "left": 50,
+                "top": 255,
+                "width": 334
+              },
+              "type": "text"
+            },
+            {
+              "background": {
+                "color": {
+                  "fixed": "#D9D9D9"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "center",
+                "color": {
+                  "fixed": "#000000"
+                },
+                "size": 20,
+                "text": {
+                  "field": "fwd_thruster_lever_azimuth_x_signal",
+                  "fixed": "",
+                  "mode": "field"
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "links": [],
+              "name": "fwd_thruster_lever_azimuth_x_signal",
+              "placement": {
+                "height": 30,
+                "left": 1164,
+                "rotation": 0,
+                "top": 223,
+                "width": 175
+              },
+              "type": "metric-value"
+            },
+            {
+              "background": {
+                "color": {
+                  "fixed": "transparent"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "left",
+                "color": {
+                  "fixed": "rgb(204, 204, 220)"
+                },
+                "size": 16,
+                "text": {
+                  "field": "sub_pump1_alarm",
+                  "fixed": "FWD Thruster - Azimuth X setting",
+                  "mode": "fixed"
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "links": [],
+              "name": "fwd_thruster_lever_azimuth_x_signal label",
+              "placement": {
+                "height": 26,
+                "left": 760,
+                "rotation": 0,
+                "top": 223,
+                "width": 334
+              },
+              "type": "text"
+            },
+            {
+              "background": {
+                "color": {
+                  "fixed": "#D9D9D9"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "center",
+                "color": {
+                  "fixed": "#000000"
+                },
+                "size": 20,
+                "text": {
+                  "field": "fwd_thruster_lever_azimuth_y_signal",
+                  "fixed": "",
+                  "mode": "field"
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "links": [],
+              "name": "fwd_thruster_lever_azimuth_y_signal",
+              "placement": {
+                "height": 30,
+                "left": 1164,
+                "rotation": 0,
+                "top": 258,
+                "width": 175
+              },
+              "type": "metric-value"
+            },
+            {
+              "background": {
+                "color": {
+                  "fixed": "transparent"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "left",
+                "color": {
+                  "fixed": "rgb(204, 204, 220)"
+                },
+                "size": 16,
+                "text": {
+                  "field": "sub_pump1_alarm",
+                  "fixed": "FWD Thruster - Azimuth Y setting",
+                  "mode": "fixed"
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "links": [],
+              "name": "fwd_thruster_lever_azimuth_y_signal label",
+              "placement": {
+                "height": 26,
+                "left": 760,
+                "rotation": 0,
+                "top": 258,
+                "width": 334
               },
               "type": "text"
             }
@@ -1062,7 +2679,7 @@
           "editorMode": "code",
           "format": "table",
           "rawQuery": true,
-          "rawSql": "SELECT\r\n  LAST_VALUE(time ORDER BY time) AS time,\r\n  LAST_VALUE((\"StationSelected\").value ORDER BY time)                     AS station_selected,\r\n  LAST_VALUE((\"RegenerationModeSelectedAFTThruster\").value ORDER BY time) AS aft_thruster_regeneration_mode,\r\n  LAST_VALUE((\"RegenerationModeSelectedFWDThruster\").value ORDER BY time) AS fwd_thruster_regeneration_mode,\r\n  LAST_VALUE((\"MAINThrusterLeverSpeedSignal\").value ORDER BY time)        AS aft_thruster_lever_speed_signal,\r\n  LAST_VALUE((\"FWDThrusterLeverSpeedSignal\").value ORDER BY time)         AS fwd_thruster_lever_speed_signal\r\nFROM marpower.\"helm_console\"\r\nWHERE topic = 'marpower/helm-console/sb'",
+          "rawSql": "SELECT\r\n  LAST_VALUE(time ORDER BY time) AS time,\r\n  LAST_VALUE((\"StationSelected\").value ORDER BY time)                     AS station_selected,\r\n  LAST_VALUE((\"RegenerationModeSelectedAFTThruster\").value ORDER BY time) AS aft_thruster_regeneration_mode,\r\n  LAST_VALUE((\"RegenerationModeSelectedFWDThruster\").value ORDER BY time) AS fwd_thruster_regeneration_mode,\r\n  LAST_VALUE((\"PropulsionModeSelectedAFTThruster\").value ORDER BY time)   AS aft_thruster_propulsion_mode,\r\n  LAST_VALUE((\"PropulsionModeSelectedFWDThruster\").value ORDER BY time)   AS fwd_thruster_propulsion_mode,\r\n  LAST_VALUE((\"MoeveringModeSelectedAFTThruster\").value ORDER BY time)    AS aft_thruster_maneuvring_mode,\r\n  LAST_VALUE((\"MoeveringModeSelectedFWDThruster\").value ORDER BY time)    AS fwd_thruster_maneuvring_mode,\r\n  LAST_VALUE((\"MAINThrusterLeverSpeedSignal\").value ORDER BY time)        AS aft_thruster_lever_speed_signal,\r\n  LAST_VALUE((\"FWDThrusterLeverSpeedSignal\").value ORDER BY time)         AS fwd_thruster_lever_speed_signal,\r\n  LAST_VALUE((\"MAINThrusterLeverAzimuthSignal\").value ORDER BY time)      AS aft_thruster_lever_azimuth_rotation_signal,\r\n  LAST_VALUE((\"FWDThrusterLeverAzimuthSignal\").value ORDER BY time)       AS fwd_thruster_lever_azimuth_rotation_signal,\r\n  LAST_VALUE((\"MAINThrusterLeverAzimuthSignal_X\").value ORDER BY time)    AS aft_thruster_lever_azimuth_x_signal,\r\n  LAST_VALUE((\"MAINThrusterLeverAzimuthSignal_Y\").value ORDER BY time)    AS aft_thruster_lever_azimuth_y_signal,\r\n  LAST_VALUE((\"FWDThrusterLeverAzimuthSignal_X\").value ORDER BY time)     AS fwd_thruster_lever_azimuth_x_signal,\r\n  LAST_VALUE((\"FWDThrusterLeverAzimuthSignal_Y\").value ORDER BY time)     AS fwd_thruster_lever_azimuth_y_signal  \r\nFROM marpower.\"helm_console\"\r\nWHERE topic = 'marpower/helm-console/sb'",
           "refId": "A",
           "sql": {
             "columns": [
@@ -1092,7 +2709,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 13
+        "y": 21
       },
       "id": 25,
       "panels": [],
@@ -1152,7 +2769,7 @@
         "h": 4,
         "w": 24,
         "x": 0,
-        "y": 14
+        "y": 22
       },
       "id": 42,
       "options": {
@@ -1473,7 +3090,7 @@
         "h": 4,
         "w": 12,
         "x": 0,
-        "y": 18
+        "y": 26
       },
       "id": 41,
       "options": {
@@ -1601,7 +3218,7 @@
         "h": 4,
         "w": 12,
         "x": 12,
-        "y": 18
+        "y": 26
       },
       "id": 43,
       "options": {
@@ -1911,7 +3528,7 @@
         "h": 8,
         "w": 12,
         "x": 0,
-        "y": 22
+        "y": 30
       },
       "id": 31,
       "options": {
@@ -2041,7 +3658,7 @@
         "h": 8,
         "w": 12,
         "x": 12,
-        "y": 22
+        "y": 30
       },
       "id": 33,
       "options": {
@@ -2094,7 +3711,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 30
+        "y": 38
       },
       "id": 26,
       "panels": [],
@@ -2207,7 +3824,7 @@
         "h": 6,
         "w": 15,
         "x": 0,
-        "y": 31
+        "y": 39
       },
       "id": 37,
       "options": {
@@ -2319,7 +3936,7 @@
         "h": 6,
         "w": 9,
         "x": 15,
-        "y": 31
+        "y": 39
       },
       "id": 13,
       "options": {
@@ -2734,7 +4351,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 37
+        "y": 45
       },
       "id": 27,
       "panels": [],
@@ -2783,7 +4400,7 @@
         "h": 2,
         "w": 12,
         "x": 0,
-        "y": 38
+        "y": 46
       },
       "id": 48,
       "options": {
@@ -2941,7 +4558,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 40
+        "y": 48
       },
       "id": 52,
       "panels": [],
@@ -3013,7 +4630,7 @@
         "h": 4,
         "w": 12,
         "x": 0,
-        "y": 41
+        "y": 49
       },
       "id": 54,
       "options": {
@@ -3270,7 +4887,7 @@
         "h": 4,
         "w": 24,
         "x": 0,
-        "y": 45
+        "y": 53
       },
       "id": 51,
       "options": {
@@ -3717,7 +5334,7 @@
         "h": 4,
         "w": 24,
         "x": 0,
-        "y": 49
+        "y": 57
       },
       "id": 53,
       "options": {
