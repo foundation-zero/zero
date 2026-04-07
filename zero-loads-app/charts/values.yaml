@@ -29,6 +29,7 @@ api:
   service:
     labels: {}
     annotations: {}
+    externalIPs: []
 
   ingress:
     enabled: false
