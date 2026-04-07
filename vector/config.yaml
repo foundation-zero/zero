@@ -1,24 +1,29 @@
+data_dir: /vector-data
+api:
+  enabled: true
+  address: 127.0.0.1:8686
+  playground: false
 sources:
   mqtt:
     type: mqtt
-    host: "${MQTT_HOST}:${MQTT_PORT}"
+    host: "${MQTT_HOST}"
+    port: ${MQTT_PORT}
     decoding:
       codec: json
     topic: "marpower/#"
     user: "${MQTT_USER}"
     password: "${MQTT_PASSWORD}"
-    
 transforms:
   process:
     type: remap
     inputs: ["mqtt"]
     files:
-      - "./marpower/0_consts.vrl"
-      - "./marpower/1_table.vrl"
-      - "./marpower/2_flatten.vrl"
-      - "./marpower/3_timestamp.vrl"
-      - "./marpower/4_spell_fix.vrl"
-      - "./marpower/5_snakecase.vrl"
+      - "/etc/vector/0_consts.vrl"
+      - "/etc/vector/1_table.vrl"
+      - "/etc/vector/2_flatten.vrl"
+      - "/etc/vector/3_timestamp.vrl"
+      - "/etc/vector/4_spell_fix.vrl"
+      - "/etc/vector/5_snakecase.vrl"
 
 sinks:
   greptimedb:

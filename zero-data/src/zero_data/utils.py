@@ -1,5 +1,5 @@
-from itertools import groupby
 import logging
+from itertools import groupby
 
 from zero_data.io_list.types import IOTopic
 

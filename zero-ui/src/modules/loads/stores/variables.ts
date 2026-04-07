@@ -192,21 +192,21 @@ export const useVariablesStore = defineStore("loads-variables", () => {
 
   const { data: actuals, executeQuery: updateActuals } = useQuery<QueryVariableActual>({
     query: VARIABLE_ACTUALS,
-    variables: {
-      variables: currentVariables,
-    },
+    variables: computed(() => ({
+      variables: currentVariables.value,
+    })),
     requestPolicy: "network-only",
     context: LOADS_CONTEXT,
   });
 
   const { data: referenceValues } = useQuery<QueryVariableReference>({
     query: VARIABLE_REFERENCE_VALUES,
-    variables: {
-      variables: currentVariables,
-      sailset: selectedSailIds,
-      awaRange: selectedAWA,
-      awsRange: selectedAWS,
-    },
+    variables: computed(() => ({
+      variables: currentVariables.value,
+      sailset: selectedSailIds.value,
+      awaRange: selectedAWA.value,
+      awsRange: selectedAWS.value,
+    })),
     requestPolicy: "network-only",
     context: LOADS_CONTEXT,
   });
