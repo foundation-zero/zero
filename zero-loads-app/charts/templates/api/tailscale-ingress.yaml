@@ -1,0 +1,19 @@
+{{- if .Values.api.ingress.enabled }}
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: {{ include "..fullname" . }}
+  namespace: {{ .Release.Namespace }}
+  labels:
+    {{- include "..labels" . | nindent 4 }}
+spec:
+  defaultBackend:
+    service:
+      name: {{ include "..fullname" . }}
+      port:
+        name: http
+  ingressClassName: tailscale
+  tls:
+    - hosts:
+        - {{ .Values.api.ingress.hostname }}
+{{- end }}
