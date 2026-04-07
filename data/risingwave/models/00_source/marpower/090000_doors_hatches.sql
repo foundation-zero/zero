@@ -54,6 +54,7 @@ CREATE TABLE {{ this }} (
 	"W_TIGHT_DOOR_RM19_SEALINFLATED"	{{ marpower_struct("BOOLEAN") }},
 	"W_TIGHT_DOOR_RM19_DOOR_OPEN"	{{ marpower_struct("BOOLEAN") }},
 	"W_TIGHT_DOOR_RM19_POS_PROG_SWITCH"	{{ marpower_struct("BOOLEAN") }},
+	"FIRE_DOOR_GALLEY_KEEL_OPEN"	{{ marpower_struct("BOOLEAN") }},
 	"HATCH_ANCHOR_SENSOR1_OPEN"	{{ marpower_struct("BOOLEAN") }},
 	"HATCH_ANCHOR_SENSOR2_OPEN"	{{ marpower_struct("BOOLEAN") }},
 	"HULL_VALVES_ALLGREENCLOSED"	{{ marpower_struct("BOOLEAN") }},

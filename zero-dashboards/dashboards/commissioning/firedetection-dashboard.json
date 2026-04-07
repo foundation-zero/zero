@@ -632,88 +632,6 @@
                 "width": 300
               },
               "type": "text"
-            },
-            {
-              "background": {
-                "color": {
-                  "field": "door_galley_keel_open",
-                  "fixed": "#D9D9D9"
-                },
-                "image": {
-                  "field": "sea_water_cool_pmp1_running",
-                  "mode": "fixed"
-                }
-              },
-              "border": {
-                "color": {
-                  "fixed": "dark-green"
-                }
-              },
-              "config": {
-                "align": "center",
-                "color": {
-                  "fixed": "#000000"
-                },
-                "text": {
-                  "field": "sea_water_cool_pmp1_running",
-                  "mode": "fixed"
-                },
-                "valign": "middle"
-              },
-              "connections": [],
-              "constraint": {
-                "horizontal": "left",
-                "vertical": "top"
-              },
-              "links": [],
-              "name": "door_galley_keel_open",
-              "placement": {
-                "height": 25,
-                "left": 15,
-                "rotation": 0,
-                "top": 40,
-                "width": 25
-              },
-              "type": "ellipse"
-            },
-            {
-              "background": {
-                "color": {
-                  "fixed": "transparent"
-                }
-              },
-              "border": {
-                "color": {
-                  "fixed": "dark-green"
-                }
-              },
-              "config": {
-                "align": "left",
-                "color": {
-                  "fixed": "rgb(204, 204, 220)"
-                },
-                "size": 16,
-                "text": {
-                  "field": "sea_water_cool_pmp1_running",
-                  "fixed": "Door galley keel open",
-                  "mode": "fixed"
-                },
-                "valign": "middle"
-              },
-              "constraint": {
-                "horizontal": "left",
-                "vertical": "top"
-              },
-              "links": [],
-              "name": "door_galley_keel_open label",
-              "placement": {
-                "height": 26,
-                "left": 50,
-                "rotation": 0,
-                "top": 40,
-                "width": 320
-              },
-              "type": "text"
             }
           ],
           "name": "Element 1767698352074",
@@ -744,7 +662,7 @@
           "editorMode": "code",
           "format": "table",
           "rawQuery": true,
-          "rawSql": "SELECT\r\n  LAST_VALUE(time ORDER BY time) AS time,\r\n  LAST_VALUE((\"DOORS_RELEASE\").value ORDER BY time)         AS doors_release,\r\n  LAST_VALUE((\"DOOR_GALLEY_KEEL_OPEN\").value ORDER BY time) AS door_galley_keel_open\r\nFROM marpower.\"450000_firedetection_general\"",
+          "rawSql": "SELECT\r\n  LAST_VALUE(time ORDER BY time) AS time,\r\n  LAST_VALUE((\"DOORS_RELEASE\").value ORDER BY time)         AS doors_release\r\nFROM marpower.\"450000_firedetection_general\"",
           "refId": "A",
           "sql": {
             "columns": [
@@ -842,7 +760,7 @@
             "h": 9,
             "w": 24,
             "x": 0,
-            "y": 306
+            "y": 8
           },
           "id": 9,
           "options": {
