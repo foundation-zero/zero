@@ -35,12 +35,6 @@ FROM prod-base AS simulation
 
 RUN apt-get update && \
     apt-get install -y ca-certificates curl gnupg build-essential && \
-    curl -fsSL http://build.openmodelica.org/apt/openmodelica.asc | \
-    gpg --dearmor -o /usr/share/keyrings/openmodelica-keyring.gpg && \
-    echo "deb [arch=arm64 signed-by=/usr/share/keyrings/openmodelica-keyring.gpg] \
-    https://build.openmodelica.org/apt \
-    bookworm \
-    stable" | tee /etc/apt/sources.list.d/openmodelica.list && \
     rm -rf /var/lib/apt/lists/*
 
 RUN fmpy compile /app/thrs/simulation/models/thruster_moduleV18.fmu
