@@ -5,12 +5,12 @@ metadata:
   namespace: {{ .Release.Namespace }}
   name: {{ include "zero-thrs-control.control" . }}
   labels:
-    {{- include "..labels" . | nindent 4 }}
-    {{- with .Values.service.labels }}
+    {{- include "zero-thrs-control.labels" . | nindent 4 }}
+    {{- with .Values.control.service.labels }}
     {{- toYaml . | nindent 4 }}
     {{- end }}
   annotations:
-    {{- with .Values.service.annotations }}
+    {{- with .Values.control.service.annotations }}
     {{- toYaml . | nindent 4 }}
     {{- end }}
 spec:
@@ -22,5 +22,4 @@ spec:
   selector:
     {{- include "zero-thrs-control.selectorLabels" . | nindent 4 }}
     app.kubernetes.io/component: control
-  type: ClusterIP
 {{- end }}
