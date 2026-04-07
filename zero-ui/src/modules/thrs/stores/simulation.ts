@@ -46,7 +46,7 @@ export const STATUS_QUERY = gql`
     }
   }
 `;
-
+// Add boilers and high temperature
 export const CONTROL_QUERY = gql`
   query ControlStatus {
     modules {
@@ -74,6 +74,14 @@ export const CONTROL_QUERY = gql`
       consumers {
         controlMode {
           automatic
+        }
+      }
+      boilers {
+        controlMode {
+          automatic
+          automaticMode {
+            mode
+          }
         }
       }
     }
