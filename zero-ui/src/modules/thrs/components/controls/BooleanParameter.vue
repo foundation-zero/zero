@@ -54,6 +54,7 @@ const {
 
     <Button
       :disabled="isSubmitting || !isDirty"
+      class="mt-3 w-full"
       @click="submit"
     >
       <Loader2Icon

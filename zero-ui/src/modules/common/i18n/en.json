@@ -109,6 +109,10 @@
         "i": "I",
         "d": "D"
       },
+      "level": {
+        "label": "Level",
+        "unit": "Liters"
+      },
       "flow": {
         "label": "Flow",
         "unit": "L/min"
