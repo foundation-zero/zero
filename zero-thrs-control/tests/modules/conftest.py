@@ -6,7 +6,7 @@ import polars as pl
 from thrs.simulation.io_mapping import flatten_model_values
 
 
-SHEET_URL = "https://docs.google.com/spreadsheets/d/1YyfkKmqL8MZuJfStljTjhgFxawcco2cp2qCmBGFrR04/export?gid=0&format=csv"
+SHEET_URL = "https://docs.google.com/spreadsheets/d/1YyfkKmqL8MZuJfStljTjhgFxawcco2cp2qCmBGFrR04/export?gid=990884182&format=csv"
 
 
 def modelica_names_from_classes(classes: list[ThrsValues]) -> set[str]:
@@ -25,7 +25,9 @@ def compare_modelica_names(
     """
     Compare the Modelica names in the Python code with the Modelica names in the Google Sheet.
     """
-    sheet = pl.read_csv(SHEET_URL, skip_lines=1)
+    sheet = pl.read_csv(
+        SHEET_URL, skip_lines=1, schema_overrides={"Pos": pl.String, "Sub": pl.String}
+    )
 
     if isinstance(module_name, str):
         module_name = [module_name]
