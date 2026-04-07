@@ -152,3 +152,51 @@ jobs:
           push: true
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
+
+  push-cloudflare:
+    runs-on: ubuntu-latest
+    needs: test
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+        with:
+          package_json_file: zero-ui/package.json
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22.x"
+          cache: "pnpm"
+          cache-dependency-path: zero-ui/pnpm-lock.yaml
+      - name: Install dependencies
+        working-directory: zero-ui
+        run: pnpm install
+      - name: Build
+        run: pnpm build
+        working-directory: zero-ui
+      - name: Add env.json
+        working-directory: zero-ui/dist
+        run: |
+          echo '{
+            "VITE_THRS_API_SERVER_URL": "https://thrs-control-singel.tail0b4840.ts.net/graphql",
+            "VITE_LOADS_API_SERVER_URL": "https://loads-app-singel.tail0b4840.ts.net/graphql",
+            "VITE_GRAPHQL_URL": "https://hasura-singel.tail0b4840.ts.net/v1/graphql",
+            "VITE_GRAPHQL_WS_URL": "ws://hasura-singel.tail0b4840.ts.net/v1/graphql",
+            "VITE_GRAPHQL_TOKEN": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwczovL2hhc3VyYS5pby9qd3QvY2xhaW1zIjp7IngtaGFzdXJhLWRlZmF1bHQtcm9sZSI6InVzZXIiLCJ4LWhhc3VyYS1hbGxvd2VkLXJvbGVzIjpbInVzZXIiXX19.8brSVzCMabnkuvgO4ipCVAPaAWieM3sqWADXoUxgmEA"
+          }' > env.json
+      - name: Deploy preview
+        id: deploy
+        uses: cloudflare/pages-action@1
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          projectName: zero-ui
+          directory: "zero-ui/dist"
+          wranglerVersion: 3
+      - uses: chrnorm/deployment-action@v2
+        name: Create GitHub deployment
+        id: deployment
+        with:
+          token: "${{ github.token }}"
+          initial-status: success
+          environment-url: ${{steps.deploy.outputs.url}}
+          environment: ${{steps.deploy.outputs.environment}}
