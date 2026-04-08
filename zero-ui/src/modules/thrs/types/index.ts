@@ -20,10 +20,16 @@ export type PcmControl = {
   on: Stamped<boolean>;
 };
 
+export type HeatpumpControl = {
+  dutypoint: Stamped<number>;
+  on: Stamped<boolean>;
+};
+
 export type ControlFields = {
   [ControlComponentType.Pump]: (keyof PumpControl)[];
   [ControlComponentType.Valve]: (keyof ValveControl)[];
   [ControlComponentType.Pcm]: (keyof PcmControl)[];
+  [ControlComponentType.Heatpump]: (keyof HeatpumpControl)[];
 };
 
 export type SensorFields = {
@@ -35,6 +41,7 @@ export type SensorFields = {
   [SensorComponentType.Thruster]: (keyof ThrusterSensor)[];
   [SensorComponentType.Pcs]: (keyof PcsSensor)[];
   [SensorComponentType.Pcm]: (keyof PcmSensor)[];
+  [SensorComponentType.Level]: (keyof LevelSensor)[];
 };
 
 export type SimulationFields = {
@@ -79,6 +86,10 @@ export type PcmSensor = {
   charged: Stamped<boolean>;
 };
 
+export type LevelSensor = {
+  level: Stamped<number>;
+};
+
 export type ThrusterSensor = Toggle;
 export type PcsSensor = ModeSelector<string>;
 
@@ -89,7 +100,8 @@ export type SensorType =
   | FlowSensor
   | PressureSensor
   | ThrusterSensor
-  | PcsSensor;
+  | PcsSensor
+  | LevelSensor;
 
 export type ControlType = PumpControl | ValveControl;
 
@@ -120,6 +132,7 @@ export const enum ControlComponentType {
   Pump = "pump",
   Valve = "valve",
   Pcm = "pcm",
+  Heatpump = "heatpump",
 }
 
 export const enum ValveType {
@@ -141,9 +154,10 @@ export type ValveControlDefinition = ControlDefinition<ControlComponentType.Valv
 };
 
 export type PcmControlDefinition = ControlDefinition<ControlComponentType.Pcm>;
+export type HeatpumpControlDefinition = ControlDefinition<ControlComponentType.Heatpump>;
 
 export type ControlDefinitions = SchemaDefinitions<
-  PumpControlDefinition | ValveControlDefinition | PcmControlDefinition
+  PumpControlDefinition | ValveControlDefinition | PcmControlDefinition | HeatpumpControlDefinition
 >;
 
 export type ExtractControlValues<T extends ControlDefinitions> = PickMap<
@@ -152,7 +166,8 @@ export type ExtractControlValues<T extends ControlDefinitions> = PickMap<
   PumpControl
 > &
   PickMap<T, ValveControlDefinition, ValveControl> &
-  PickMap<T, PcmControlDefinition, PcmControl>;
+  PickMap<T, PcmControlDefinition, PcmControl> &
+  PickMap<T, HeatpumpControlDefinition, PumpControl>;
 
 export const enum SensorComponentType {
   Temperature = "temperature",
@@ -163,6 +178,7 @@ export const enum SensorComponentType {
   Thruster = "thruster",
   Pcs = "pcs",
   Pcm = "pcm",
+  Level = "level",
 }
 
 export type THRSModule<TDefinition extends ModuleDefinition = ModuleDefinition> = {
@@ -196,6 +212,7 @@ export type ValveSensorDefinition = SensorDefinition<SensorComponentType.Valve> 
 export type PcmSensorDefinition = SensorDefinition<SensorComponentType.Pcm>;
 export type ThrusterSensorDefinition = SensorDefinition<SensorComponentType.Thruster>;
 export type PcsSensorDefinition = SensorDefinition<SensorComponentType.Pcs>;
+export type LevelSensorDefinition = SensorDefinition<SensorComponentType.Level>;
 
 export type SensorDefinitions = SchemaDefinitions<SensorDefinition>;
 
@@ -210,7 +227,8 @@ export type ExtractSensorValues<T extends SensorDefinitions> = PickMap<
   PickMap<T, ValveSensorDefinition, Valve> &
   PickMap<T, ThrusterSensorDefinition, ThrusterSensor> &
   PickMap<T, PcsSensorDefinition, PcsSensor> &
-  PickMap<T, PcmSensorDefinition, PcmSensor>;
+  PickMap<T, PcmSensorDefinition, PcmSensor> &
+  PickMap<T, LevelSensorDefinition, LevelSensor>;
 
 export type StringKeys<T extends Record<string, unknown>> = {
   [K in keyof T as K extends string ? K : never]: T[K];
@@ -226,6 +244,12 @@ export const enum ParametersType {
   Temperature = "temperature",
   Flow = "flow",
   Tuning = "tuning",
+  Enabled = "enabled",
+  Ratio = "ratio",
+  Dutypoint = "dutypoint",
+  dT = "dT",
+  Level = "level",
+  Disabled = "disabled",
 }
 
 export type ParameterDefinition<T extends ParametersType = ParametersType> = SchemaDefinition<T>;
@@ -234,6 +258,12 @@ export type ParameterDefinitions = SchemaDefinitions<ParameterDefinition>;
 export type TemperatureParameterDefinition = ParameterDefinition<ParametersType.Temperature>;
 export type FlowParameterDefinition = ParameterDefinition<ParametersType.Flow>;
 export type TuningParameterDefinition = ParameterDefinition<ParametersType.Tuning>;
+export type EnabledParameterDefinition = ParameterDefinition<ParametersType.Enabled>;
+export type RatioParameterDefinition = ParameterDefinition<ParametersType.Ratio>;
+export type DutypointParameterDefinition = ParameterDefinition<ParametersType.Dutypoint>;
+export type dTParameterDefinition = ParameterDefinition<ParametersType.dT>;
+export type LevelParameterDefinition = ParameterDefinition<ParametersType.Level>;
+export type DisabledParameterDefinition = ParameterDefinition<ParametersType.Disabled>;
 export type Parameters = Record<string, number | PID>;
 
 export type ExtractParameterValues<T extends ParameterDefinitions> = PickMap<
@@ -242,7 +272,13 @@ export type ExtractParameterValues<T extends ParameterDefinitions> = PickMap<
   number
 > &
   PickMap<T, FlowParameterDefinition, number> &
-  PickMap<T, TuningParameterDefinition, PID>;
+  PickMap<T, TuningParameterDefinition, PID> &
+  PickMap<T, EnabledParameterDefinition, boolean> &
+  PickMap<T, RatioParameterDefinition, number> &
+  PickMap<T, DutypointParameterDefinition, number> &
+  PickMap<T, dTParameterDefinition, number> &
+  PickMap<T, LevelParameterDefinition, number> &
+  PickMap<T, DisabledParameterDefinition, boolean>;
 
 export type ThrusterSimulation = {
   heatFlow: Stamped<number>;

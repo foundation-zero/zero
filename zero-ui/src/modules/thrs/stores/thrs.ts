@@ -49,7 +49,7 @@ export const enum MutationType {
 
 export type InputType = {
   [MutationType.Control]: ["PumpInputType!", "ValveInputType!"];
-  [MutationType.Parameter]: ["Float!", "[Float!]!"];
+  [MutationType.Parameter]: ["Float!", "[Float!]!", "Boolean!"];
   [MutationType.Simulation]: [
     "ThrusterInputType!",
     "BoundaryInputType!",

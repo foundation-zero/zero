@@ -4,6 +4,7 @@ from typing import Callable
 from transitions import Machine, State
 from thrs.classes.control import Control, ControlMode, ControlResult
 from thrs.control.controllers import Controller
+from thrs.input_output.alarms import BaseAlarms
 from thrs.input_output.base import Stamped, ThrsValues
 from thrs.input_output.definitions.units import Celsius, LMin, Liter, Ratio, Tuning
 from thrs.input_output.modules.boilers import BoilersControlValues, BoilersSensorValues
@@ -562,3 +563,7 @@ class BoilersControl(
 
     def _disable_pump_flow_control(self):
         self._pump_flow_controller.disable()
+
+
+class BoilersAlarms(BaseAlarms):
+    pass

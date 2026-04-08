@@ -1,3 +1,242 @@
+export const BOILERS_CONTROL_QUERY = `
+  boilersPump {
+    dutypoint { value timestamp }
+    on { value timestamp }
+  }
+  boilersHeatpump {
+    temperatureSetpoint { value timestamp }
+    on { value timestamp }
+  }
+  boilersFlowcontrolLt2 {
+    setpoint { value timestamp }
+  }
+  boilersFlowcontrolLt1 {
+    setpoint { value timestamp }
+  }
+  boilersSwitchTank3Fill {
+    setpoint { value timestamp }
+  }
+  boilersSwitchTank3BoostingReturn {
+    setpoint { value timestamp }
+  }
+  boilersSwitchTank3Empty {
+    setpoint { value timestamp }
+  }
+  boilersSwitchTank3BoostingSupply {
+    setpoint { value timestamp }
+  }
+  boilersSwitchTank2Fill {
+    setpoint { value timestamp }
+  }
+  boilersSwitchTank2BoostingReturn {
+    setpoint { value timestamp }
+  }
+  boilersSwitchTank2Empty {
+    setpoint { value timestamp }
+  }
+  boilersSwitchTank2BoostingSupply {
+    setpoint { value timestamp }
+  }
+  boilersSwitchTank1Fill {
+    setpoint { value timestamp }
+  }
+  boilersSwitchTank1BoostingReturn {
+    setpoint { value timestamp }
+  }
+  boilersSwitchTank1Empty {
+    setpoint { value timestamp }
+  }
+  boilersSwitchTank1BoostingSupply {
+    setpoint { value timestamp }
+  }
+  boilersSwitchLowTemperature {
+    setpoint { value timestamp }
+  }
+  boilersSwitchHeatpump {
+    setpoint { value timestamp }
+  }
+  boilersSwitchHighTemperature {
+    setpoint { value timestamp }
+  }
+`;
+
+export const BOILERS_PARAMETERS_QUERY = `
+  heatpumpFlowSetpoint
+  boostingTemperatureSetpoint
+  tankTemperatureSetpoint
+  lt1FlowcontrolMinimumSetpoint
+  lt2FlowcontrolMinimumSetpoint
+  fillingTemperatureSetpoint
+  minimumTankLevel
+  maximumTankLevel
+  tank1Disabled
+  tank2Disabled
+  tank3Disabled
+  pumpTemperatureTuning
+  pumpFlowTuning
+  lt2FlowTuning
+  lt1FlowTuning
+`;
+
+export const BOILERS_SENSOR_QUERY = `
+  boilersPump {
+    flow { value timestamp }
+    speed { value timestamp }
+    opTime { value timestamp }
+  }
+  boilersTemperatureChillerReturn {
+    temperature { value timestamp }
+  }
+  boilersTemperatureLt2Return {
+    temperature { value timestamp }
+  }
+  boilersTemperatureTank3 {
+    temperature { value timestamp }
+  }
+  boilersTemperatureTank2 {
+    temperature { value timestamp }
+  }
+  boilersTemperatureTank1 {
+    temperature { value timestamp }
+  }
+  boilersTemperatureLt1Return {
+    temperature { value timestamp }
+  }
+  boilersTemperatureFreshwaterSupply {
+    temperature { value timestamp }
+  }
+  boilersTemperatureFahrenheitReturn {
+    temperature { value timestamp }
+  }
+  boilersTemperatureBoostingSupply {
+    temperature { value timestamp }
+  }
+  boilersTemperatureBoostingReturn {
+    temperature { value timestamp }
+  }
+  boilersLevelTank1 {
+    level { value timestamp }
+  }
+  boilersLevelTank2 {
+    level { value timestamp }
+  }
+  boilersLevelTank3 {
+    level { value timestamp }
+  }
+  boilersFlowLt2 {
+    flow { value timestamp }
+    temperature { value timestamp }
+  }
+  boilersFlowLt1 {
+    flow { value timestamp }
+    temperature { value timestamp }
+  }
+  boilersFlowBoosting {
+    flow { value timestamp }
+    temperature { value timestamp }
+  }
+  boilersFlowcontrolLt2 {
+    positionRel { value timestamp }
+  }
+  boilersFlowcontrolLt1 {
+    positionRel { value timestamp }
+  }
+  boilersSwitchTank3Fill {
+    positionRel { value timestamp }
+  }
+  boilersSwitchTank3BoostingReturn {
+    positionRel { value timestamp }
+  }
+  boilersSwitchTank3Empty {
+    positionRel { value timestamp }
+  }
+  boilersSwitchTank3BoostingSupply {
+    positionRel { value timestamp }
+  }
+  boilersSwitchTank2Fill {
+    positionRel { value timestamp }
+  }
+  boilersSwitchTank2BoostingReturn {
+    positionRel { value timestamp }
+  }
+  boilersSwitchTank2Empty {
+    positionRel { value timestamp }
+  }
+  boilersSwitchTank2BoostingSupply {
+    positionRel { value timestamp }
+  }
+  boilersSwitchTank1Fill {
+    positionRel { value timestamp }
+  }
+  boilersSwitchTank1BoostingReturn {
+    positionRel { value timestamp }
+  }
+  boilersSwitchTank1Empty {
+    positionRel { value timestamp }
+  }
+  boilersSwitchTank1BoostingSupply {
+    positionRel { value timestamp }
+  }
+  boilersSwitchLowTemperature {
+    positionRel { value timestamp }
+  }
+  boilersSwitchHeatpump {
+    positionRel { value timestamp }
+  }
+  boilersSwitchHighTemperature {
+    positionRel { value timestamp }
+  }
+`;
+
+export const BOILERS_SIMULATION_INPUTS_QUERY = `
+  boilersLt1Supply {
+    temperature { value timestamp }
+    flow { value timestamp }
+  }
+  boilersLt2Supply {
+    temperature { value timestamp }
+    flow { value timestamp }
+  }
+  boilersFahrenheitSupply {
+    temperature { value timestamp }
+    flow { value timestamp }
+  }
+  boilersHtSupply {
+    temperature { value timestamp }
+    flow { value timestamp }
+  }
+  boilersExchangerGas {
+    heatFlow { value timestamp }
+  }
+  boilersSeawaterSupply {
+    temperature { value timestamp }
+  }
+`;
+
+export const BOILERS_SIMULATION_OUTPUTS_QUERY = `
+  boilersLt1Return {
+    temperature { value timestamp }
+  }
+  boilersLt2Return {
+    temperature { value timestamp }
+  }
+  boilersFahrenheitReturn {
+    temperature { value timestamp }
+  }
+  boilersHtReturn {
+    temperature { value timestamp }
+  }
+  boilersFreshwaterReturn {
+    flow { value timestamp }
+  }
+  boilersSeawaterReturn {
+    temperature { value timestamp }
+  }
+  boilersSeawaterSupply {
+    flow { value timestamp }
+  }
+`;
+
 export const CONSUMERS_CONTROL_QUERY = `
   consumersFlowcontrolFahrenheit {
     setpoint { value timestamp }
@@ -17,6 +256,10 @@ export const CONSUMERS_CONTROL_QUERY = `
 `;
 
 export const CONSUMERS_PARAMETERS_QUERY = `
+  boostingEnabled
+  boostingFlowRatioSetpoint
+  fahrenheitEnabled
+  fahrenheitFlowRatioSetpoint
   boostingFlowBalanceTuning
   bypassFlowBalanceTuning
   fahrenheitFlowBalanceTuning
@@ -217,8 +460,11 @@ export const PCM_CONTROL_QUERY = `
 export const PCM_PARAMETERS_QUERY = `
   pcmDischargeFlow
   pcmChargeFlow
+  minimumChargingDt
   minimumChargingTemperature
   pumpTuning
+  supplyingEnabled
+  chargingEnabled
   module1FlowBalanceTuning
   module2FlowBalanceTuning
   module3FlowBalanceTuning
@@ -374,6 +620,9 @@ export const PVT_PARAMETERS_QUERY = `
   warmupTemperature
   recoveryActivationStringTemperature
   minimumReturnTemperature
+  mainFwdMinimumPumpDutypoint
+  mainAftMinimumPumpDutypoint
+  ownersMinimumPumpDutypoint
   heatDumpTuning
   mainFwdMixTuning
   mainAftMixTuning

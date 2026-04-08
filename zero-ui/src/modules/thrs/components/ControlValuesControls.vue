@@ -28,10 +28,11 @@ const controlsData = computed(
   () => data.value?.modules[props.module]?.controlValues as Values | undefined,
 );
 
-const COMPONENTS: Record<ControlComponentType, Component> = {
+const COMPONENTS: Record<ControlComponentType, Component | null> = {
   [ControlComponentType.Pump]: PumpControl,
   [ControlComponentType.Valve]: ValveControl,
   [ControlComponentType.Pcm]: ValveControl,
+  [ControlComponentType.Heatpump]: null,
 };
 </script>
 <template>
@@ -44,6 +45,7 @@ const COMPONENTS: Record<ControlComponentType, Component> = {
     <template #default="{ componentName, componentDefinition, setControlValues, values }">
       <component
         :is="COMPONENTS[componentDefinition.componentType]"
+        v-if="COMPONENTS[componentDefinition.componentType]"
         :definition="componentDefinition"
         :module="module"
         :values="values"

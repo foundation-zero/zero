@@ -6,5 +6,5 @@ const props = defineProps<{ class?: HTMLAttributes["class"] }>();
 </script>
 
 <template>
-  <p :class="cn('h-[400px] grow', props.class)"><slot /></p>
+  <p :class="cn('min-h-100 grow', props.class)"><slot /></p>
 </template>

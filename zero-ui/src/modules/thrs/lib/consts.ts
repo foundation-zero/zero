@@ -11,6 +11,11 @@ import {
 } from "@/modules/thrs/types";
 import { gql } from "@urql/vue";
 import {
+  BOILERS_CONTROL_DEFINITION,
+  BOILERS_PARAMETER_DEFINITION,
+  BOILERS_SENSOR_DEFINITION,
+  BOILERS_SIMULATION_INPUTS,
+  BOILERS_SIMULATION_OUTPUTS,
   CONSUMERS_CONTROL_DEFINITION,
   CONSUMERS_PARAMETER_DEFINITION,
   CONSUMERS_SENSOR_DEFINITION,
@@ -41,6 +46,11 @@ import {
   ThrsSimulationType,
 } from "./consts.types";
 import {
+  BOILERS_CONTROL_QUERY,
+  BOILERS_PARAMETERS_QUERY,
+  BOILERS_SENSOR_QUERY,
+  BOILERS_SIMULATION_INPUTS_QUERY,
+  BOILERS_SIMULATION_OUTPUTS_QUERY,
   CONSUMERS_CONTROL_QUERY,
   CONSUMERS_PARAMETERS_QUERY,
   CONSUMERS_SENSOR_QUERY,
@@ -118,6 +128,11 @@ export const DEFINITIONS = toDefinitions({
     controlValues: CONSUMERS_CONTROL_DEFINITION,
     parameters: CONSUMERS_PARAMETER_DEFINITION,
   },
+  boilers: {
+    sensorValues: BOILERS_SENSOR_DEFINITION,
+    controlValues: BOILERS_CONTROL_DEFINITION,
+    parameters: BOILERS_PARAMETER_DEFINITION,
+  },
 });
 
 export const SIMULATION = toSimulation(
@@ -127,6 +142,7 @@ export const SIMULATION = toSimulation(
     pcm: PCM_SIMULATION_INPUTS,
     pvt: PVT_SIMULATION_INPUTS,
     consumers: CONSUMERS_SIMULATION_INPUTS,
+    boilers: BOILERS_SIMULATION_INPUTS,
   },
   {
     highTemperature: HIGH_TEMPERATURE_SIMULATION_OUTPUTS,
@@ -134,6 +150,7 @@ export const SIMULATION = toSimulation(
     pcm: PCM_SIMULATION_OUTPUTS,
     pvt: PVT_SIMULATION_OUTPUTS,
     consumers: CONSUMERS_SIMULATION_OUTPUTS,
+    boilers: BOILERS_SIMULATION_OUTPUTS,
   },
 );
 
@@ -141,6 +158,7 @@ export const CONTROL_FIELDS: ControlFields = {
   [ControlComponentType.Pump]: ["dutypoint", "on"],
   [ControlComponentType.Valve]: ["setpoint"],
   [ControlComponentType.Pcm]: ["on"],
+  [ControlComponentType.Heatpump]: ["dutypoint", "on"],
 };
 
 export const SENSOR_FIELDS: SensorFields = {
@@ -152,6 +170,7 @@ export const SENSOR_FIELDS: SensorFields = {
   [SensorComponentType.Pcs]: ["mode"],
   [SensorComponentType.Flow]: ["flow", "temperature"],
   [SensorComponentType.Pcm]: ["charged"],
+  [SensorComponentType.Level]: ["level"],
 };
 
 export const SIMULATION_FIELDS: SimulationFields = {
@@ -189,6 +208,11 @@ export const QUERIES = toQueries({
     parameters: CONSUMERS_PARAMETERS_QUERY,
     sensorValues: CONSUMERS_SENSOR_QUERY,
   },
+  boilers: {
+    controlValues: BOILERS_CONTROL_QUERY,
+    parameters: BOILERS_PARAMETERS_QUERY,
+    sensorValues: BOILERS_SENSOR_QUERY,
+  },
 });
 
 export const SIMULATION_INPUT_QUERIES: Record<ThrsSimulationType, string> = {
@@ -197,6 +221,7 @@ export const SIMULATION_INPUT_QUERIES: Record<ThrsSimulationType, string> = {
   pcm: PCM_SIMULATION_INPUTS_QUERY,
   pvt: PVT_SIMULATION_INPUTS_QUERY,
   consumers: CONSUMERS_SIMULATION_INPUTS_QUERY,
+  boilers: BOILERS_SIMULATION_INPUTS_QUERY,
 };
 
 export const SIMULATION_OUTPUT_QUERIES: Record<ThrsSimulationType, string> = {
@@ -205,6 +230,7 @@ export const SIMULATION_OUTPUT_QUERIES: Record<ThrsSimulationType, string> = {
   pcm: PCM_SIMULATION_OUTPUTS_QUERY,
   pvt: PVT_SIMULATION_OUTPUTS_QUERY,
   consumers: CONSUMERS_SIMULATION_OUTPUTS_QUERY,
+  boilers: BOILERS_SIMULATION_OUTPUTS_QUERY,
 };
 
 const toInputType = <K extends string>(key: K): SimulationInputsType<K> =>
@@ -274,6 +300,17 @@ export const QUERY_ALL = gql`
         }
         parameters {
           ${CONSUMERS_PARAMETERS_QUERY}
+        }
+      }
+      boilers {
+        sensorValues {
+          ${BOILERS_SENSOR_QUERY}
+        }
+        controlValues {
+          ${BOILERS_CONTROL_QUERY}
+        }
+        parameters {
+          ${BOILERS_PARAMETERS_QUERY}
         }
       }
     }

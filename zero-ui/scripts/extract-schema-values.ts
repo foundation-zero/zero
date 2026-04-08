@@ -81,6 +81,7 @@ const SENSOR_TYPE_MAP: Record<string, string> = {
   SensorThrusterType: "Thruster",
   SensorPcsType: "Pcs",
   SensorPcmType: "Pcm",
+  SensorLevelSensorType: "Level",
 };
 
 const SIMULATION_TYPE_MAP: Record<string, string> = {
@@ -96,6 +97,7 @@ const CONTROL_TYPE_MAP: Record<string, string> = {
   pcm: "Pcm",
   pump: "Pump",
   valve: "Valve",
+  heatpump: "Heatpump",
 };
 
 const VALVE_TYPE_MAP: Record<string, string> = {
@@ -178,15 +180,19 @@ function inferSensorComponentType(fieldType: string): string | null {
 function inferParameterType(fieldName: string, fieldType: string): string | null {
   // Infer from field name patterns
   const lowerFieldName = fieldName.toLowerCase();
-  if (lowerFieldName.endsWith("temperature")) return "Temperature";
-  if (lowerFieldName.endsWith("flow")) return "Flow";
   if (lowerFieldName.endsWith("tuning")) return "Tuning";
+  if (lowerFieldName.includes("temperature")) return "Temperature";
+  if (lowerFieldName.includes("flow")) return "Flow";
+  if (lowerFieldName.includes("enabled")) return "Enabled";
+  if (lowerFieldName.includes("ratio")) return "Ratio";
+  if (lowerFieldName.includes("dutypoint")) return "Dutypoint";
+  if (lowerFieldName.includes("dt")) return "dT";
+  if (lowerFieldName.includes("level")) return "Level";
+  if (lowerFieldName.includes("disabled")) return "Disabled";
 
-  // Fallback based on GraphQL type
-  if (fieldType === "Float") return "Temperature";
-  if (fieldType === "[Float!]") return "Tuning";
-
-  return null;
+  throw new Error(
+    `Cannot infer parameter type from field name: ${fieldName} and type: ${fieldType}`,
+  );
 }
 
 function inferSimulationComponentType(fieldType: string): string | null {

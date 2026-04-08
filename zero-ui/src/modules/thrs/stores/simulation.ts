@@ -76,6 +76,14 @@ export const CONTROL_QUERY = gql`
           automatic
         }
       }
+      boilers {
+        controlMode {
+          automatic
+          automaticMode {
+            mode
+          }
+        }
+      }
     }
   }
 `;

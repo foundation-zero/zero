@@ -12,11 +12,13 @@ from fastapi.middleware.cors import CORSMiddleware
 import strawberry
 from strawberry.fastapi import GraphQLRouter
 
+from thrs.control.modules.boilers import BoilersControlMode, BoilersParameters
 from thrs.control.modules.consumers import ConsumersControlMode, ConsumersParameters
 from thrs.control.modules.pcm import PcmControlMode, PcmParameters
 from thrs.control.modules.pvt import PvtControlMode, PvtParameters
 from thrs.control.modules.thrusters import ThrustersControlMode, ThrustersParameters
 from thrs.graphql.base import (
+    BoilersMessaging,
     ConsumersMessaging,
     FieldMutation,
     PcmMessaging,
@@ -47,7 +49,12 @@ from thrs.graphql.consumers import (
     ConsumersModule,
     ConsumersMutations,
 )
+from thrs.graphql.boilers import (
+    BoilersModule,
+    BoilersMutations,
+)
 
+from thrs.input_output.modules.boilers import BoilersControlValues, BoilersSensorValues
 from thrs.input_output.modules.consumers import (
     ConsumersControlValues,
     ConsumersSensorValues,
@@ -68,6 +75,7 @@ import thrs.graphql.thrusters as thrusters
 import thrs.graphql.pvt as pvt
 import thrs.graphql.pcm as pcm
 import thrs.graphql.consumers as consumers
+import thrs.graphql.boilers as boilers
 import thrs.graphql.simulation as simulation
 from pydantic.fields import FieldInfo
 from aiomqtt import Client as MqttClient
@@ -95,6 +103,10 @@ class ControlModules:
     @strawberry.field
     def consumers(self, info: strawberry.Info[ThrsContext]) -> ConsumersModule:
         return consumers.resolve_module(info.context.consumers_messaging)
+
+    @strawberry.field
+    def boilers(self, info: strawberry.Info[ThrsContext]) -> BoilersModule:
+        return boilers.resolve_module(info.context.boilers_messaging)
 
 
 @strawberry.type
@@ -158,6 +170,7 @@ class Mutation(
     PvtMutations,
     PcmMutations,
     ConsumersMutations,
+    BoilersMutations,
     SimulationMutations,
 ):
     @strawberry.mutation
@@ -237,12 +250,26 @@ async def lifespan(app: FastAPI):
             ConsumersControlMode,
             mqtt,
         )
+        boilers_messaging: BoilersMessaging = ControlMessaging(
+            "boilers",
+            BoilersSensorValues,
+            BoilersControlValues,
+            BoilersParameters,
+            BoilersControlMode,
+            mqtt,
+        )
         simulation_messaging: SimulationMessaging = SimulationMessaging(
             simulation.io_mapping, mqtt
         )
         messaging = Messaging(
             mqtt,
-            [thrusters_messaging, pvt_messaging, pcm_messaging, consumers_messaging],
+            [
+                thrusters_messaging,
+                pvt_messaging,
+                pcm_messaging,
+                consumers_messaging,
+                boilers_messaging,
+            ],
             simulation_messaging,
         )
         run_task = create_task(await messaging.run())
@@ -258,6 +285,7 @@ async def lifespan(app: FastAPI):
         app.state.pvt_messaging = pvt_messaging
         app.state.pcm_messaging = pcm_messaging
         app.state.consumers_messaging = consumers_messaging
+        app.state.boilers_messaging = boilers_messaging
         app.state.simulation_messaging = simulation_messaging
         yield
         run_task.cancel()
@@ -294,6 +322,10 @@ def consumers_messaging() -> ConsumersMessaging:
     return app.state.consumers_messaging
 
 
+def boilers_messaging() -> BoilersMessaging:
+    return app.state.boilers_messaging
+
+
 def simulation_messaging() -> SimulationMessaging:
     return app.state.simulation_messaging
 
@@ -304,6 +336,7 @@ async def get_context(
     pvt_messaging: Annotated[PvtMessaging, Depends(pvt_messaging)],
     pcm_messaging: Annotated[PcmMessaging, Depends(pcm_messaging)],
     consumers_messaging: Annotated[ConsumersMessaging, Depends(consumers_messaging)],
+    boilers_messaging: Annotated[BoilersMessaging, Depends(boilers_messaging)],
     simulation_messaging: Annotated[SimulationMessaging, Depends(simulation_messaging)],
 ):
     return ThrsContext(
@@ -312,6 +345,7 @@ async def get_context(
         pvt_messaging=pvt_messaging,
         pcm_messaging=pcm_messaging,
         consumers_messaging=consumers_messaging,
+        boilers_messaging=boilers_messaging,
         simulation_messaging=simulation_messaging,
     )
 

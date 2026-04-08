@@ -55,15 +55,15 @@ class BoilersSensorValues(ThrsValues):
     ]
     boilers_level_tank1: Annotated[
         sensor.LevelSensor,
-        component_meta(yard_tag="50001056-01", component_type="pressure_sensor"),
+        component_meta(yard_tag="50001056-01", component_type="level_sensor"),
     ]
     boilers_level_tank2: Annotated[
         sensor.LevelSensor,
-        component_meta(yard_tag="50001056-02", component_type="pressure_sensor"),
+        component_meta(yard_tag="50001056-02", component_type="level_sensor"),
     ]
     boilers_level_tank3: Annotated[
         sensor.LevelSensor,
-        component_meta(yard_tag="50001056-03", component_type="pressure_sensor"),
+        component_meta(yard_tag="50001056-03", component_type="level_sensor"),
     ]
     boilers_flow_lt2: Annotated[
         sensor.FlowSensor,

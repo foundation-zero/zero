@@ -80,6 +80,7 @@ const FIELD_MAPPINGS: AllFieldMappings = {
     Pump: ["dutypoint", "on"],
     Valve: ["setpoint"],
     Pcm: ["on"],
+    Heatpump: ["temperatureSetpoint", "on"],
   },
 
   // Sensor component fields
@@ -92,6 +93,7 @@ const FIELD_MAPPINGS: AllFieldMappings = {
     Thruster: ["active"],
     Pcs: ["mode"],
     Pcm: ["charged"],
+    Level: ["level"],
   },
 
   // Simulation component fields
@@ -108,6 +110,12 @@ const FIELD_MAPPINGS: AllFieldMappings = {
   ParametersType: {
     Temperature: [],
     Flow: [],
+    Enabled: [],
+    Ratio: [],
+    Dutypoint: [],
+    dT: [],
+    Level: [],
+    Disabled: [],
     Tuning: [],
   },
 };
