@@ -8,7 +8,9 @@ import { SimulationComponentType, SimulationDefinitions } from "@/modules/thrs/t
 import { type Component, computed, toRefs } from "vue";
 import { useThrsHistory } from "../stores/history";
 import BoundaryControl from "./controls/BoundaryControl.vue";
+import HeatSourceControl from "./controls/HeatSourceControl.vue";
 import ModuleControls from "./controls/ModuleControls.vue";
+import OverpressureTemperatureControl from "./controls/OverpressureTemperatureControl.vue";
 import PcsControl from "./controls/PcsControl.vue";
 import TemperatureControl from "./controls/TemperatureControl.vue";
 import ThrustersControl from "./controls/ThrustersControl.vue";
@@ -18,8 +20,9 @@ const COMPONENTS: Record<SimulationComponentType, Component | null> = {
   [SimulationComponentType.Boundary]: BoundaryControl,
   [SimulationComponentType.Flow]: null,
   [SimulationComponentType.Temperature]: TemperatureControl,
+  [SimulationComponentType.OverpressureTemperature]: OverpressureTemperatureControl,
   [SimulationComponentType.Pcs]: PcsControl,
-  [SimulationComponentType.HeatSource]: null,
+  [SimulationComponentType.HeatSource]: HeatSourceControl,
 };
 
 const { data } = toRefs(useThrsHistory());

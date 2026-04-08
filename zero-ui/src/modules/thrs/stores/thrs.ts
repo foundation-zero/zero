@@ -55,6 +55,8 @@ export type InputType = {
     "BoundaryInputType!",
     "PcsInputType!",
     "TemperatureBoundaryInputType!",
+    "OverpressureTemperatureBoundaryInputType!",
+    "HeatSourceInputType!",
   ];
 };
 

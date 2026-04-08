@@ -176,8 +176,10 @@ export const SENSOR_FIELDS: SensorFields = {
 export const SIMULATION_FIELDS: SimulationFields = {
   [SimulationComponentType.Pcs]: ["mode"],
   [SimulationComponentType.Temperature]: ["temperature"],
+  [SimulationComponentType.OverpressureTemperature]: ["temperature", "overpressure"],
   [SimulationComponentType.Thruster]: ["active", "heatFlow"],
   [SimulationComponentType.Boundary]: ["temperature", "flow"],
+  [SimulationComponentType.HeatSource]: ["heatFlow"],
 };
 
 export const toQueries = <

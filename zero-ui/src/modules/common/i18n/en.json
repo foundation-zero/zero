@@ -121,8 +121,17 @@
         "label": "Temperature",
         "unit": "°C"
       },
+      "overpressure": {
+        "label": "Overpressure",
+        "unit": "Bar"
+      },
       "thruster": {
-        "label": "Heat flow"
+        "label": "Heat flow",
+        "unit": "W"
+      },
+      "heatFlow": {
+        "label": "Heat flow",
+        "unit": "W"
       },
       "mode": {
         "label": "Mode"
