@@ -10,7 +10,7 @@ mqtt:
   port: 1883
   username: loads
   existingSecret:
-  existingSecretPasswordKey:
+  existingSecretPasswordKey: password
 
 postgresql:
   host:
@@ -18,7 +18,7 @@ postgresql:
   user: loads
   db:
   existingSecret:
-  existingSecretPasswordKey:
+  existingSecretPasswordKey: password
 
 api:
   env: production
@@ -26,6 +26,15 @@ api:
   nodeSelector: {}
   tolerations: []
   affinity: {}
+  service:
+    labels: {}
+    annotations: {}
+    externalIPs: []
+
+  ingress:
+    enabled: false
+    hostname: ""
+    className: "tailscale"
 
 imagePullSecrets: []
 
@@ -34,9 +43,3 @@ fullnameOverride: ""
 
 podAnnotations: {}
 podLabels: {}
-
-service:
-  port: 80
-  externalIPs: []
-  labels: {}
-  annotations: {}

@@ -20,13 +20,7 @@
           "type": "string"
         }
       },
-      "required": [
-        "host",
-        "port",
-        "username",
-        "existingSecret",
-        "existingSecretPasswordKey"
-      ],
+      "required": ["host", "port", "username", "existingSecret"],
       "type": "object"
     },
     "postgresql": {
@@ -51,14 +45,7 @@
           "type": "string"
         }
       },
-      "required": [
-        "host",
-        "port",
-        "user",
-        "db",
-        "existingSecret",
-        "existingSecretPasswordKey"
-      ],
+      "required": ["host", "port", "user", "db", "existingSecret"],
       "type": "object"
     },
     "api": {

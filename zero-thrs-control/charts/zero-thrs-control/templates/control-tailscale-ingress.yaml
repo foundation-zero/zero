@@ -1,0 +1,19 @@
+{{- if and .Values.control.enabled .Values.control.ingress.enabled }}
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: {{ include "zero-thrs-control.control" . }}
+  namespace: {{ .Release.Namespace }}
+  labels:
+    {{- include "zero-thrs-control.labels" . | nindent 4 }}
+spec:
+  defaultBackend:
+    service:
+      name: {{ include "zero-thrs-control.control" . }}
+      port:
+        name: http
+  ingressClassName: {{ .Values.control.ingress.className }}
+  tls:
+    - hosts:
+        - {{ .Values.control.ingress.hostname }}
+{{- end }}

@@ -19,6 +19,10 @@ control:
   service:
     labels: {}
     annotations: {}
+  ingress:
+    enabled: false
+    hostname: ""
+    className: ""
 
 simulation:
   enabled: false
