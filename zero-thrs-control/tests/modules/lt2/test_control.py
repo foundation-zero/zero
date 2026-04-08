@@ -33,7 +33,7 @@ async def test_only_brightloops_aft(
 ):
     cycler.update_simulation_inputs(simulation_inputs_brightloops_aft_active)
 
-    result = await cycler.run(90)
+    result = await cycler.run(180)
 
     assert isinstance(cycler._control, Lt2Control)
     assert cycler._control.mode.brightloops_aft.is_recovery
@@ -63,7 +63,7 @@ async def test_only_one_brightloop(
     )
     cycler.update_simulation_inputs(simulation_inputs_aft1_active)
 
-    result = await cycler.run(120)
+    result = await cycler.run(240)
 
     assert isinstance(cycler._control, Lt2Control)
     assert cycler._control.mode.brightloops_aft.is_recovery
@@ -84,11 +84,13 @@ async def test_only_one_brightloop(
 async def test_recovery(cycler: Cycler):
     cycler._control.update_parameters(
         Lt2Parameters(
-            recovery_temperature=50,
+            recovery_temperature=45,
+            brightloop_return_temperature=45,
+            ugrid_return_temperature=45,
         )
     )
 
-    result = await cycler.run(600)  # why so long?
+    result = await cycler.run(1200)
 
     assert isinstance(cycler._control, Lt2Control)
     assert cycler._control.mode.brightloops_aft.is_recovery
@@ -127,4 +129,27 @@ async def test_recovery(cycler: Cycler):
     assert (
         result.sensor_values.lt2_temperature_ugrid2_return.temperature.value
         > result.sensor_values.lt2_temperature_ugrid_supply.temperature.value
+    )
+
+    assert result.sensor_values.lt2_temperature_recovery.temperature.value == approx(
+        45, abs=1
+    )
+
+
+async def test_heat_dump(cycler: Cycler):
+    cycler._control.update_parameters(
+        Lt2Parameters(
+            recovery_temperature=10,
+            brightloop_return_temperature=10,
+            ugrid_return_temperature=10,
+            maximum_supply_temperature=35,
+        )
+    )
+
+    result = await cycler.run(1200)
+
+    assert isinstance(result, SimulationExecutionResult)
+    assert result.sensor_values.lt2_temperature_recovery.temperature.value > 35
+    assert result.sensor_values.lt2_temperature_supply.temperature.value == approx(
+        35, abs=2
     )
