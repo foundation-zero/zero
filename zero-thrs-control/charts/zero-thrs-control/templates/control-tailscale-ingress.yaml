@@ -12,7 +12,7 @@ spec:
       name: {{ include "zero-thrs-control.control" . }}
       port:
         name: http
-  ingressClassName: tailscale
+  ingressClassName: {{ .Values.control.ingress.className }}
   tls:
     - hosts:
         - {{ .Values.control.ingress.hostname }}

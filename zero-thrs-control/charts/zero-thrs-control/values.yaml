@@ -22,6 +22,7 @@ control:
   ingress:
     enabled: false
     hostname: ""
+    className: ""
 
 simulation:
   enabled: false

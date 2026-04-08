@@ -12,7 +12,7 @@ spec:
       name: {{ include "..fullname" . }}
       port:
         name: http
-  ingressClassName: tailscale
+  ingressClassName: {{ .Values.api.ingress.className }}
   tls:
     - hosts:
         - {{ .Values.api.ingress.hostname }}
