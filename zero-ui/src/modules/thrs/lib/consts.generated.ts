@@ -328,6 +328,9 @@ export const BOILERS_SIMULATION_INPUTS = toSimulationDefinition({
   boilersHtSupply: {
     componentType: SimulationComponentType.Boundary,
   },
+  boilersFreshwaterSupply: {
+    componentType: SimulationComponentType.OverpressureTemperature,
+  },
   boilersExchangerGas: {
     componentType: SimulationComponentType.HeatSource,
   },

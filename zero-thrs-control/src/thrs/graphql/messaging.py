@@ -287,6 +287,7 @@ class SimulationMessaging:
         self._simulation_outputs = RawMessageReceiver(
             SimulationValues, "simulation/outputs"
         )
+        self._simulation_inputs_cls = None
 
     @property
     def receivers(self):
@@ -313,6 +314,7 @@ class SimulationMessaging:
         await self._try_reprocess(outputs, self._simulation_outputs)
         self._simulation_inputs = inputs
         self._simulation_outputs = outputs
+        self._simulation_inputs_cls = simulation_inputs_cls
 
     async def _try_reprocess(self, new, old):
         if isinstance(old, RawMessageReceiver) and (
@@ -358,7 +360,11 @@ class SimulationMessaging:
         return self._simulation_outputs.last if self._simulation_outputs else None
 
     async def set_simulation_inputs(self, inputs: SimulationInputs):
-        message = SetSimulationInputsMessage[SimulationInputs](inputs=inputs)
+        if self._simulation_inputs_cls is None:
+            raise Exception(
+                "Cannot set simulation inputs before simulation mode is selected"
+            )
+        message = SetSimulationInputsMessage[self._simulation_inputs_cls](inputs=inputs)
         await self._mqtt_client.publish(
             f"{settings.mqtt_topic_prefix}/{message.topic()}",
             message.model_dump_json(),

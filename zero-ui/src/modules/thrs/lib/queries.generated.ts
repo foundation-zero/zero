@@ -205,6 +205,10 @@ export const BOILERS_SIMULATION_INPUTS_QUERY = `
     temperature { value timestamp }
     flow { value timestamp }
   }
+  boilersFreshwaterSupply {
+    temperature { value timestamp }
+    overpressure { value timestamp }
+  }
   boilersExchangerGas {
     heatFlow { value timestamp }
   }

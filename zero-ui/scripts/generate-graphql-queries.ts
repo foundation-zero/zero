@@ -101,6 +101,7 @@ const FIELD_MAPPINGS: AllFieldMappings = {
     Thruster: ["heatFlow", "active"],
     Boundary: ["temperature", "flow"],
     Temperature: ["temperature"],
+    OverpressureTemperature: ["temperature", "overpressure"],
     Flow: ["flow"],
     Pcs: ["mode"],
     HeatSource: ["heatFlow"],

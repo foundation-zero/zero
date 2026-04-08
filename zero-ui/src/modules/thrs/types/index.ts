@@ -46,9 +46,11 @@ export type SensorFields = {
 
 export type SimulationFields = {
   [SimulationComponentType.Temperature]: (keyof TemperatureBoundarySimulation)[];
+  [SimulationComponentType.OverpressureTemperature]: (keyof OverpressureTemperatureSimulation)[];
   [SimulationComponentType.Thruster]: (keyof ThrusterSimulation)[];
   [SimulationComponentType.Pcs]: (keyof PcsSimulation)[];
   [SimulationComponentType.Boundary]: (keyof BoundarySimulation)[];
+  [SimulationComponentType.HeatSource]: (keyof HeatSourceSimulation)[];
 };
 
 export type PumpSensor = {
@@ -298,8 +300,17 @@ export type TemperatureBoundarySimulation = {
   temperature: Stamped<number>;
 };
 
+export type OverpressureTemperatureSimulation = {
+  temperature: Stamped<number>;
+  overpressure: Stamped<number>;
+};
+
 export type FlowSimulation = {
   flow: Stamped<number>;
+};
+
+export type HeatSourceSimulation = {
+  heatFlow: Stamped<number>;
 };
 
 export type PcsSimulation = ModeSelector<ThrusterMode>;
@@ -308,6 +319,7 @@ export const enum SimulationComponentType {
   Thruster = "thruster",
   Boundary = "boundary",
   Temperature = "temperature",
+  OverpressureTemperature = "overpressureTemperature",
   Flow = "flow",
   Pcs = "pcs",
   HeatSource = "heatSource",
@@ -321,8 +333,12 @@ export type ThrusterSimulationDefinition = SimulationDefinition<SimulationCompon
 export type BoundarySimulationDefinition = SimulationDefinition<SimulationComponentType.Boundary>;
 export type TemperatureSimulationDefinition =
   SimulationDefinition<SimulationComponentType.Temperature>;
+export type OverpressureTemperatureSimulationDefinition =
+  SimulationDefinition<SimulationComponentType.OverpressureTemperature>;
 export type FlowSimulationDefinition = SimulationDefinition<SimulationComponentType.Flow>;
 export type PcsSimulationDefinition = SimulationDefinition<SimulationComponentType.Pcs>;
+export type HeatSourceSimulationDefinition =
+  SimulationDefinition<SimulationComponentType.HeatSource>;
 
 export type ExtractSimulationValues<T extends SimulationDefinitions> = PickMap<
   T,
@@ -331,8 +347,10 @@ export type ExtractSimulationValues<T extends SimulationDefinitions> = PickMap<
 > &
   PickMap<T, BoundarySimulationDefinition, BoundarySimulation> &
   PickMap<T, TemperatureSimulationDefinition, TemperatureSimulation> &
+  PickMap<T, OverpressureTemperatureSimulationDefinition, OverpressureTemperatureSimulation> &
   PickMap<T, FlowSimulationDefinition, FlowSimulation> &
-  PickMap<T, PcsSimulationDefinition, PcsSimulation>;
+  PickMap<T, PcsSimulationDefinition, PcsSimulation> &
+  PickMap<T, HeatSourceSimulationDefinition, HeatSourceSimulation>;
 
 export type ExtractAllValues<T extends SchemaDefinitions<SchemaDefinition<string>>> =
   T extends SensorDefinitions
