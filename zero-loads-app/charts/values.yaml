@@ -34,7 +34,7 @@ api:
   ingress:
     enabled: false
     hostname: ""
-    className: "tailscale"
+    className: tailscale
 
 imagePullSecrets: []
 
