@@ -2,6 +2,7 @@ import logging
 
 import uvicorn
 from generator import DataGenerator
+from generator.base import GeneratorConfig
 from generator.config import Settings as GeneratorSettings
 from pydantic_settings import (
     BaseSettings,
@@ -9,7 +10,6 @@ from pydantic_settings import (
     CliSubCommand,
     SettingsConfigDict,
 )
-from util import ensure_list
 
 from loads.api.auth import generate_jwt
 from loads.config import Settings
@@ -21,10 +21,11 @@ from loads.registry import (
     fiber_optic_sensors,
     sail_system_sensors,
 )
+from loads.util import ensure_list
 
 setup_logging()
 
-logger = logging.getLogger("cli")
+logger: logging.Logger = logging.getLogger("cli")
 
 
 class ApiCli(Settings):
@@ -95,9 +96,10 @@ async def _run_data_generator(
     id: str,
     modules: list[MessagingModule] | MessagingModule,
 ):
-
     async with DataGenerator.init_from_settings(settings, id) as data_gen:
-        config = [module.gen_config() for module in ensure_list(modules)]
+        config: list[GeneratorConfig] = []
+        for module in ensure_list(modules):
+            config.extend(module.gen_config())
         await data_gen.generate(config=config)
 
 
@@ -132,16 +134,15 @@ class SensorsStubCMD(GeneratorSettings):
             fiber_optic_sensors,
         ]
 
-        # Log
         messaging_module_names = ", ".join(
-            [type(module).__name__ for module in messaging_modules]
+            [module.display_name for module in messaging_modules]
         )
 
         logger.info(
             f"Running all sensor stubs, using the following modules: {messaging_module_names}..."
         )
 
-        await _run_data_generator(self, "stub_generator", messaging_modules)
+        await _run_data_generator(self, "all_sensors_stub_generator", messaging_modules)
 
 
 class ZeroLoads(BaseSettings, cli_kebab_case=True):
