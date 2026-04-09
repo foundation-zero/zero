@@ -31,8 +31,12 @@
   src: url("./fonts/Inter/Inter-Italic-VariableFont_opsz\,wght.ttf") format("truetype");
 }
 
-@source inline('{,sm:,md:,lg:,xl:,2xl:,3xl:,4xl:}col-span-{1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,full}');
-@source inline('{,sm:,md:,lg:,xl:,2xl:,3xl:,4xl:}grid-cols-{1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24}');
+@source inline(
+  "{,sm:,md:,lg:,xl:,2xl:,3xl:,4xl:}col-span-{1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,full}"
+);
+@source inline(
+  "{,sm:,md:,lg:,xl:,2xl:,3xl:,4xl:}grid-cols-{1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24}"
+);
 
 :root {
   --background: var(--color-neutral-grey-0);
@@ -65,13 +69,13 @@
   --constructive-muted: var(--color-accent-c-600);
   --constructive-dull: var(--color-accent-c-500);
 
-  --warning: var(--color-accent-b-700);
-  --warning-muted: var(--color-accent-b-600);
-  --warning-dull: var(--color-accent-b-500);
+  --warning: var(--color-accent-b-500);
+  --warning-muted: var(--color-accent-b-400);
+  --warning-dull: var(--color-accent-b-300);
 
-  --destructive: var(--color-accent-a-700);
-  --destructive-muted: var(--color-accent-a-600);
-  --destructive-dull: var(--color-accent-a-500);
+  --destructive: var(--color-accent-d-500);
+  --destructive-muted: var(--color-accent-d-400);
+  --destructive-dull: var(--color-accent-d-300);
 
   --primary: var(--color-neutral-1000);
   --primary-foreground: oklch(0.985 0 0);
@@ -218,6 +222,48 @@ h6 {
   --color-accent-c-900: oklch(0.299 0.0692 119.04);
   --color-accent-c-1000: oklch(0.2021 0.0468 117.41);
 
+  /* SUB SECTION: Accent D - True Red */
+  --color-accent-d-0: oklch(0.989 0.0114 84.58);
+  --color-accent-d-50: oklch(0.9233 0.0504 62.3);
+  --color-accent-d-100: oklch(0.8477 0.0941 51.9);
+  --color-accent-d-200: oklch(0.7793 0.1379 45.37);
+  --color-accent-d-300: oklch(0.7191 0.1811 40.19);
+  --color-accent-d-400: oklch(0.6691 0.2217 36.21);
+  --color-accent-d-500: oklch(0.6058 0.2404 30.36);
+  --color-accent-d-600: oklch(0.5598 0.2297 29.23);
+  --color-accent-d-700: oklch(0.5132 0.2106 29.23);
+  --color-accent-d-800: oklch(0.4594 0.1885 29.23);
+  --color-accent-d-900: oklch(0.3999 0.1641 29.23);
+  --color-accent-d-1000: oklch(0.3358 0.1378 29.23);
+
+  /* SUB SECTION: Accent E - Heating Red */
+  --color-accent-e-0: oklch(0.9709 0.0045 78.3);
+  --color-accent-e-50: oklch(0.9504 0.0165 70.53);
+  --color-accent-e-100: oklch(0.9282 0.0284 65.76);
+  --color-accent-e-200: oklch(0.8481 0.0678 62.31);
+  --color-accent-e-300: oklch(0.7251 0.1162 51.02);
+  --color-accent-e-400: oklch(0.6009 0.1594 41.03);
+  --color-accent-e-500: oklch(0.4957 0.17706 34.2706);
+  --color-accent-e-600: oklch(0.4115 0.156158 31.9481);
+  --color-accent-e-700: oklch(0.33 0.1285 31.01);
+  --color-accent-e-800: oklch(0.2519 0.0975 31.24);
+  --color-accent-e-900: oklch(0.1832 0.0696 31.9);
+  --color-accent-e-1000: oklch(0.1089 0.0369 36.43);
+
+  /* SUB SECTION: Accent F - Cooling Blue */
+  --color-accent-f-0: oklch(1 0 0);
+  --color-accent-f-50: oklch(0.9439 0.0095 222.06);
+  --color-accent-f-100: oklch(0.9166 0.0237 227.74);
+  --color-accent-f-200: oklch(0.783 0.0416 236.79);
+  --color-accent-f-300: oklch(0.6645 0.0645 241.54);
+  --color-accent-f-400: oklch(0.559 0.0733 239.92);
+  --color-accent-f-500: oklch(0.4543 0.0714 246.48);
+  --color-accent-f-600: oklch(0.3761 0.0608 247.41);
+  --color-accent-f-700: oklch(0.2916 0.046 251.91);
+  --color-accent-f-800: oklch(0.2164 0.0308 259.01);
+  --color-accent-f-900: oklch(0.2164 0.0308 259.01);
+  --color-accent-f-1000: oklch(0.1307 0.0129 241.44);
+
   /* END SECTION */
 }
 
@@ -260,9 +306,9 @@ h6 {
   --warning-muted: var(--color-accent-b-600);
   --warning-dull: var(--color-accent-b-700);
 
-  --destructive: var(--color-accent-a-500);
-  --destructive-muted: var(--color-accent-a-600);
-  --destructive-dull: var(--color-accent-a-700);
+  --destructive: var(--color-accent-d-500);
+  --destructive-muted: var(--color-accent-d-700);
+  --destructive-dull: var(--color-accent-d-900);
 
   --input: var(--background);
   --input-border: var(--border);

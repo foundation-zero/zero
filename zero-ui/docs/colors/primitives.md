@@ -701,3 +701,348 @@ Primitive colors are the foundation of our color system. Each scale provides a r
     </div>
   </div>
 </div>
+
+## Accent D
+
+<div class="mb-8">
+  <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+    <div class="flex items-center gap-3 p-3 border rounded-lg">
+      <div class="w-12 h-12 rounded-md border bg-accent-d-0"></div>
+      <div>
+        <div class="font-mono text-sm font-medium">accent-d-0</div>
+        <div class="font-mono text-xs text-muted-foreground">
+          {{ getColorValue('accent-d-0') }}
+        </div>
+      </div>
+    </div>
+    <div class="flex items-center gap-3 p-3 border rounded-lg">
+      <div class="w-12 h-12 rounded-md border bg-accent-d-50"></div>
+      <div>
+        <div class="font-mono text-sm font-medium">accent-d-50</div>
+        <div class="font-mono text-xs text-muted-foreground">
+          {{ getColorValue('accent-d-50') }}
+        </div>
+      </div>
+    </div>
+    <div class="flex items-center gap-3 p-3 border rounded-lg">
+      <div class="w-12 h-12 rounded-md border bg-accent-d-100"></div>
+      <div>
+        <div class="font-mono text-sm font-medium">accent-d-100</div>
+        <div class="font-mono text-xs text-muted-foreground">
+          {{ getColorValue('accent-d-100') }}
+        </div>
+      </div>
+    </div>
+    <div class="flex items-center gap-3 p-3 border rounded-lg">
+      <div class="w-12 h-12 rounded-md border bg-accent-d-200"></div>
+      <div>
+        <div class="font-mono text-sm font-medium">accent-d-200</div>
+        <div class="font-mono text-xs text-muted-foreground">
+          {{ getColorValue('accent-d-200') }}
+        </div>
+      </div>
+    </div>
+    <div class="flex items-center gap-3 p-3 border rounded-lg">
+      <div class="w-12 h-12 rounded-md border bg-accent-d-300"></div>
+      <div>
+        <div class="font-mono text-sm font-medium">accent-d-300</div>
+        <div class="font-mono text-xs text-muted-foreground">
+          {{ getColorValue('accent-d-300') }}
+        </div>
+      </div>
+    </div>
+    <div class="flex items-center gap-3 p-3 border rounded-lg">
+      <div class="w-12 h-12 rounded-md border bg-accent-d-400"></div>
+      <div>
+        <div class="font-mono text-sm font-medium">accent-d-400</div>
+        <div class="font-mono text-xs text-muted-foreground">
+          {{ getColorValue('accent-d-400') }}
+        </div>
+      </div>
+    </div>
+    <div class="flex items-center gap-3 p-3 border rounded-lg">
+      <div class="w-12 h-12 rounded-md border bg-accent-d-500"></div>
+      <div>
+        <div class="font-mono text-sm font-medium">accent-d-500</div>
+        <div class="font-mono text-xs text-muted-foreground">
+          {{ getColorValue('accent-d-500') }}
+        </div>
+      </div>
+    </div>
+    <div class="flex items-center gap-3 p-3 border rounded-lg">
+      <div class="w-12 h-12 rounded-md border bg-accent-d-600"></div>
+      <div>
+        <div class="font-mono text-sm font-medium">accent-d-600</div>
+        <div class="font-mono text-xs text-muted-foreground">
+          {{ getColorValue('accent-d-600') }}
+        </div>
+      </div>
+    </div>
+    <div class="flex items-center gap-3 p-3 border rounded-lg">
+      <div class="w-12 h-12 rounded-md border bg-accent-d-700"></div>
+      <div>
+        <div class="font-mono text-sm font-medium">accent-d-700</div>
+        <div class="font-mono text-xs text-muted-foreground">
+          {{ getColorValue('accent-d-700') }}
+        </div>
+      </div>
+    </div>
+    <div class="flex items-center gap-3 p-3 border rounded-lg">
+      <div class="w-12 h-12 rounded-md border bg-accent-d-800"></div>
+      <div>
+        <div class="font-mono text-sm font-medium">accent-d-800</div>
+        <div class="font-mono text-xs text-muted-foreground">
+          {{ getColorValue('accent-d-800') }}
+        </div>
+      </div>
+    </div>
+    <div class="flex items-center gap-3 p-3 border rounded-lg">
+      <div class="w-12 h-12 rounded-md border bg-accent-d-900"></div>
+      <div>
+        <div class="font-mono text-sm font-medium">accent-d-900</div>
+        <div class="font-mono text-xs text-muted-foreground">
+          {{ getColorValue('accent-d-900') }}
+        </div>
+      </div>
+    </div>
+    <div class="flex items-center gap-3 p-3 border rounded-lg">
+      <div class="w-12 h-12 rounded-md border bg-accent-d-1000"></div>
+      <div>
+        <div class="font-mono text-sm font-medium">accent-d-1000</div>
+        <div class="font-mono text-xs text-muted-foreground">
+          {{ getColorValue('accent-d-1000') }}
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+## Accent E
+
+<div class="mb-8">
+  <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+    <div class="flex items-center gap-3 p-3 border rounded-lg">
+      <div class="w-12 h-12 rounded-md border bg-accent-e-0"></div>
+      <div>
+        <div class="font-mono text-sm font-medium">accent-e-0</div>
+        <div class="font-mono text-xs text-muted-foreground">
+          {{ getColorValue('accent-e-0') }}
+        </div>
+      </div>
+    </div>
+    <div class="flex items-center gap-3 p-3 border rounded-lg">
+      <div class="w-12 h-12 rounded-md border bg-accent-e-50"></div>
+      <div>
+        <div class="font-mono text-sm font-medium">accent-e-50</div>
+        <div class="font-mono text-xs text-muted-foreground">
+          {{ getColorValue('accent-e-50') }}
+        </div>
+      </div>
+    </div>
+    <div class="flex items-center gap-3 p-3 border rounded-lg">
+      <div class="w-12 h-12 rounded-md border bg-accent-e-100"></div>
+      <div>
+        <div class="font-mono text-sm font-medium">accent-e-100</div>
+        <div class="font-mono text-xs text-muted-foreground">
+          {{ getColorValue('accent-e-100') }}
+        </div>
+      </div>
+    </div>
+    <div class="flex items-center gap-3 p-3 border rounded-lg">
+      <div class="w-12 h-12 rounded-md border bg-accent-e-200"></div>
+      <div>
+        <div class="font-mono text-sm font-medium">accent-e-200</div>
+        <div class="font-mono text-xs text-muted-foreground">
+          {{ getColorValue('accent-e-200') }}
+        </div>
+      </div>
+    </div>
+    <div class="flex items-center gap-3 p-3 border rounded-lg">
+      <div class="w-12 h-12 rounded-md border bg-accent-e-300"></div>
+      <div>
+        <div class="font-mono text-sm font-medium">accent-e-300</div>
+        <div class="font-mono text-xs text-muted-foreground">
+          {{ getColorValue('accent-e-300') }}
+        </div>
+      </div>
+    </div>
+    <div class="flex items-center gap-3 p-3 border rounded-lg">
+      <div class="w-12 h-12 rounded-md border bg-accent-e-400"></div>
+      <div>
+        <div class="font-mono text-sm font-medium">accent-e-400</div>
+        <div class="font-mono text-xs text-muted-foreground">
+          {{ getColorValue('accent-e-400') }}
+        </div>
+      </div>
+    </div>
+    <div class="flex items-center gap-3 p-3 border rounded-lg">
+      <div class="w-12 h-12 rounded-md border bg-accent-e-500"></div>
+      <div>
+        <div class="font-mono text-sm font-medium">accent-e-500</div>
+        <div class="font-mono text-xs text-muted-foreground">
+          {{ getColorValue('accent-e-500') }}
+        </div>
+      </div>
+    </div>
+    <div class="flex items-center gap-3 p-3 border rounded-lg">
+      <div class="w-12 h-12 rounded-md border bg-accent-e-600"></div>
+      <div>
+        <div class="font-mono text-sm font-medium">accent-e-600</div>
+        <div class="font-mono text-xs text-muted-foreground">
+          {{ getColorValue('accent-e-600') }}
+        </div>
+      </div>
+    </div>
+    <div class="flex items-center gap-3 p-3 border rounded-lg">
+      <div class="w-12 h-12 rounded-md border bg-accent-e-700"></div>
+      <div>
+        <div class="font-mono text-sm font-medium">accent-e-700</div>
+        <div class="font-mono text-xs text-muted-foreground">
+          {{ getColorValue('accent-e-700') }}
+        </div>
+      </div>
+    </div>
+    <div class="flex items-center gap-3 p-3 border rounded-lg">
+      <div class="w-12 h-12 rounded-md border bg-accent-e-800"></div>
+      <div>
+        <div class="font-mono text-sm font-medium">accent-e-800</div>
+        <div class="font-mono text-xs text-muted-foreground">
+          {{ getColorValue('accent-e-800') }}
+        </div>
+      </div>
+    </div>
+    <div class="flex items-center gap-3 p-3 border rounded-lg">
+      <div class="w-12 h-12 rounded-md border bg-accent-e-900"></div>
+      <div>
+        <div class="font-mono text-sm font-medium">accent-e-900</div>
+        <div class="font-mono text-xs text-muted-foreground">
+          {{ getColorValue('accent-e-900') }}
+        </div>
+      </div>
+    </div>
+    <div class="flex items-center gap-3 p-3 border rounded-lg">
+      <div class="w-12 h-12 rounded-md border bg-accent-e-1000"></div>
+      <div>
+        <div class="font-mono text-sm font-medium">accent-e-1000</div>
+        <div class="font-mono text-xs text-muted-foreground">
+          {{ getColorValue('accent-e-1000') }}
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+## Accent F
+
+<div class="mb-8">
+  <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+    <div class="flex items-center gap-3 p-3 border rounded-lg">
+      <div class="w-12 h-12 rounded-md border bg-accent-f-0"></div>
+      <div>
+        <div class="font-mono text-sm font-medium">accent-f-0</div>
+        <div class="font-mono text-xs text-muted-foreground">
+          {{ getColorValue('accent-f-0') }}
+        </div>
+      </div>
+    </div>
+    <div class="flex items-center gap-3 p-3 border rounded-lg">
+      <div class="w-12 h-12 rounded-md border bg-accent-f-50"></div>
+      <div>
+        <div class="font-mono text-sm font-medium">accent-f-50</div>
+        <div class="font-mono text-xs text-muted-foreground">
+          {{ getColorValue('accent-f-50') }}
+        </div>
+      </div>
+    </div>
+    <div class="flex items-center gap-3 p-3 border rounded-lg">
+      <div class="w-12 h-12 rounded-md border bg-accent-f-100"></div>
+      <div>
+        <div class="font-mono text-sm font-medium">accent-f-100</div>
+        <div class="font-mono text-xs text-muted-foreground">
+          {{ getColorValue('accent-f-100') }}
+        </div>
+      </div>
+    </div>
+    <div class="flex items-center gap-3 p-3 border rounded-lg">
+      <div class="w-12 h-12 rounded-md border bg-accent-f-200"></div>
+      <div>
+        <div class="font-mono text-sm font-medium">accent-f-200</div>
+        <div class="font-mono text-xs text-muted-foreground">
+          {{ getColorValue('accent-f-200') }}
+        </div>
+      </div>
+    </div>
+    <div class="flex items-center gap-3 p-3 border rounded-lg">
+      <div class="w-12 h-12 rounded-md border bg-accent-f-300"></div>
+      <div>
+        <div class="font-mono text-sm font-medium">accent-f-300</div>
+        <div class="font-mono text-xs text-muted-foreground">
+          {{ getColorValue('accent-f-300') }}
+        </div>
+      </div>
+    </div>
+    <div class="flex items-center gap-3 p-3 border rounded-lg">
+      <div class="w-12 h-12 rounded-md border bg-accent-f-400"></div>
+      <div>
+        <div class="font-mono text-sm font-medium">accent-f-400</div>
+        <div class="font-mono text-xs text-muted-foreground">
+          {{ getColorValue('accent-f-400') }}
+        </div>
+      </div>
+    </div>
+    <div class="flex items-center gap-3 p-3 border rounded-lg">
+      <div class="w-12 h-12 rounded-md border bg-accent-f-500"></div>
+      <div>
+        <div class="font-mono text-sm font-medium">accent-f-500</div>
+        <div class="font-mono text-xs text-muted-foreground">
+          {{ getColorValue('accent-f-500') }}
+        </div>
+      </div>
+    </div>
+    <div class="flex items-center gap-3 p-3 border rounded-lg">
+      <div class="w-12 h-12 rounded-md border bg-accent-f-600"></div>
+      <div>
+        <div class="font-mono text-sm font-medium">accent-f-600</div>
+        <div class="font-mono text-xs text-muted-foreground">
+          {{ getColorValue('accent-f-600') }}
+        </div>
+      </div>
+    </div>
+    <div class="flex items-center gap-3 p-3 border rounded-lg">
+      <div class="w-12 h-12 rounded-md border bg-accent-f-700"></div>
+      <div>
+        <div class="font-mono text-sm font-medium">accent-f-700</div>
+        <div class="font-mono text-xs text-muted-foreground">
+          {{ getColorValue('accent-f-700') }}
+        </div>
+      </div>
+    </div>
+    <div class="flex items-center gap-3 p-3 border rounded-lg">
+      <div class="w-12 h-12 rounded-md border bg-accent-f-800"></div>
+      <div>
+        <div class="font-mono text-sm font-medium">accent-f-800</div>
+        <div class="font-mono text-xs text-muted-foreground">
+          {{ getColorValue('accent-f-800') }}
+        </div>
+      </div>
+    </div>
+    <div class="flex items-center gap-3 p-3 border rounded-lg">
+      <div class="w-12 h-12 rounded-md border bg-accent-f-900"></div>
+      <div>
+        <div class="font-mono text-sm font-medium">accent-f-900</div>
+        <div class="font-mono text-xs text-muted-foreground">
+          {{ getColorValue('accent-f-900') }}
+        </div>
+      </div>
+    </div>
+    <div class="flex items-center gap-3 p-3 border rounded-lg">
+      <div class="w-12 h-12 rounded-md border bg-accent-f-1000"></div>
+      <div>
+        <div class="font-mono text-sm font-medium">accent-f-1000</div>
+        <div class="font-mono text-xs text-muted-foreground">
+          {{ getColorValue('accent-f-1000') }}
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
