@@ -52,7 +52,7 @@ CREATE TABLE {{ this }} (
 	"KEB9_LDC02_ISOLATIONWARNING"	{{ marpower_struct("BOOLEAN") }},
 	"KEB9_LDC02_ISOLATIONFAULT"	{{ marpower_struct("BOOLEAN") }},
 	"KEB9_LDC02_ISOLATIONDISABLED"	{{ marpower_struct("BOOLEAN") }},
-	"KEB9_LDC01_ISOLATIONDISABLE"	{{ marpower_struct("BOOLEAN") }},
+	"KEB9_LDC02_ISOLATIONDISABLE"	{{ marpower_struct("BOOLEAN") }},
 	"KEB9_BOW_THRUST_MAINBREAKOF1F110OPENCMD"	{{ marpower_struct("BOOLEAN") }},
 )
 INCLUDE partition AS topic

@@ -32,6 +32,7 @@ CREATE TABLE {{ this }} (
 	"AFT_SLIDE_WIND_ONOFF"	{{ marpower_struct("BOOLEAN") }},
 	"PS_SLIDE_WIND_ONOFF"	{{ marpower_struct("BOOLEAN") }},
 	"SB_SLIDE_WIND_ONOFF"	{{ marpower_struct("BOOLEAN") }},
+	"WTD_PNEUMATIC_SUPPORT_ONOFF"	{{ marpower_struct("BOOLEAN") }},
 	"FIRE_SLIDE_DOOR_GALL_CREW_OPEN"	{{ marpower_struct("BOOLEAN") }},
 	"SAIL_STOR_HATCH_OPEN"	{{ marpower_struct("BOOLEAN") }},
 	"FOREPEAK_ACC_HATCH_OPEN"	{{ marpower_struct("BOOLEAN") }},

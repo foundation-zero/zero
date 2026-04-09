@@ -10,6 +10,8 @@ CREATE TABLE {{ this }} (
 	"Enbl_E1_08_HMI_Ext_Sail_drum"	{{ marpower_struct("BOOLEAN") }},
 	"Fifi_pump_start_request"	{{ marpower_struct("BOOLEAN") }},
 	"Fifi_pump_stop_request"	{{ marpower_struct("BOOLEAN") }},
+	"Miz_Check_Sb_Act_Load2"	{{ marpower_struct("INTEGER") }},
+	"Main_boom_Prev_Act_Load2"	{{ marpower_struct("INTEGER") }},
 	"Miz_boom_Prev_loadpin"	{{ marpower_struct("INTEGER") }},
 	"Depth"	{{ marpower_struct("REAL") }},
 )

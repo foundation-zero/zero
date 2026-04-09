@@ -27,7 +27,8 @@ CREATE TABLE {{ this }} (
 	"Miz_headsail_tack_Adj_Act_Position_Mill"	{{ marpower_struct("INTEGER") }},
 	"Miz_headsail_tack_Adj_Act_Load"	{{ marpower_struct("INTEGER") }},
 	"Miz_Outhaul_Act_Position_Mill"	{{ marpower_struct("INTEGER") }},
-	"Miz_Outhaul_Act_Load"	{{ marpower_struct("INTEGER") }},
+	"Miz_Outhaul_Act_Load1"	{{ marpower_struct("INTEGER") }},
+	"Miz_Outhaul_Act_Load2"	{{ marpower_struct("INTEGER") }},
 )
 INCLUDE partition AS topic
 {{ mqtt_with('marpower/280000-hydraulic-sail/tension-cylinder') }}
