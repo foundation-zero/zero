@@ -3385,6 +3385,18 @@
                 "value": "pressurebar"
               }
             ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Torque setpoint"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "Q/rpm²"
+              }
+            ]
           }
         ]
       },
@@ -3411,7 +3423,7 @@
           "editorMode": "code",
           "format": "table",
           "rawQuery": true,
-          "rawSql": "SELECT\r\n  LAST_VALUE(time ORDER BY time) AS time,\r\n  'Aradex 1' AS device,\r\n  LAST_VALUE((\"Aradex_1_speed_feedback\").value ORDER BY time) AS speed,\r\n  LAST_VALUE((\"Aradex_1_torque_feedback\").value ORDER BY time) AS torque,\r\n  LAST_VALUE((\"SpeedorTorqueSetpointSignal(Aradex1)\").value ORDER BY time) AS speed_torque_setpoint,\r\n  LAST_VALUE((\"Aradex1Temperature\").value ORDER BY time) AS temperature,\r\n  LAST_VALUE((\"Aradex1Flow\").value ORDER BY time) AS flow,\r\n  LAST_VALUE((\"Aradex1Pressure\").value ORDER BY time) AS pressure\r\nFROM marpower.thruster thruster\r\nWHERE topic = 'marpower/thruster/' || lower('$aft_fwd')\r\nUNION ALL\r\nSELECT\r\n  LAST_VALUE(time ORDER BY time) AS time,\r\n  'Aradex 2' AS device,\r\n  LAST_VALUE((\"Aradex_2_speed_feedback\").value ORDER BY time) AS speed,\r\n  LAST_VALUE((\"Aradex_2_torque_feedback\").value ORDER BY time) AS torque,\r\n  LAST_VALUE((\"SpeedorTorqueSetpointSignal(Aradex2)\").value ORDER BY time) AS speed_torque_setpoint,\r\n  LAST_VALUE((\"Aradex2Temperature\").value ORDER BY time) AS temperature,\r\n  LAST_VALUE((\"Aradex2Flow\").value ORDER BY time) AS flow,\r\n  LAST_VALUE((\"Aradex2Pressure\").value ORDER BY time) AS pressure\r\nFROM marpower.thruster\r\nWHERE topic = 'marpower/thruster/' || lower('$aft_fwd')\r\nORDER BY device",
+          "rawSql": "SELECT\r\n  LAST_VALUE(time ORDER BY time) AS time,\r\n  'Aradex 1' AS device,\r\n  LAST_VALUE((\"Aradex_1_speed_feedback\").value ORDER BY time) AS speed,\r\n  LAST_VALUE((\"Aradex_1_torque_feedback\").value ORDER BY time) AS torque,\r\n  LAST_VALUE((\"SpeedorTorqueSetpointSignal(Aradex1)\").value ORDER BY time) AS torque_setpoint,\r\n  LAST_VALUE((\"Aradex1Temperature\").value ORDER BY time) AS temperature,\r\n  LAST_VALUE((\"Aradex1Flow\").value ORDER BY time) AS flow,\r\n  LAST_VALUE((\"Aradex1Pressure\").value ORDER BY time) AS pressure\r\nFROM marpower.thruster thruster\r\nWHERE topic = 'marpower/thruster/' || lower('$aft_fwd')\r\nUNION ALL\r\nSELECT\r\n  LAST_VALUE(time ORDER BY time) AS time,\r\n  'Aradex 2' AS device,\r\n  LAST_VALUE((\"Aradex_2_speed_feedback\").value ORDER BY time) AS speed,\r\n  LAST_VALUE((\"Aradex_2_torque_feedback\").value ORDER BY time) AS torque,\r\n  LAST_VALUE((\"SpeedorTorqueSetpointSignal(Aradex2)\").value ORDER BY time) AS torque_setpoint,\r\n  LAST_VALUE((\"Aradex2Temperature\").value ORDER BY time) AS temperature,\r\n  LAST_VALUE((\"Aradex2Flow\").value ORDER BY time) AS flow,\r\n  LAST_VALUE((\"Aradex2Pressure\").value ORDER BY time) AS pressure\r\nFROM marpower.thruster\r\nWHERE topic = 'marpower/thruster/' || lower('$aft_fwd')\r\nORDER BY device",
           "refId": "A",
           "sql": {
             "columns": [
@@ -3447,7 +3459,7 @@
               "pressure": "Pressure",
               "seq_nr": "",
               "speed": "Speed",
-              "speed_torque_setpoint": "Speed/Torque setpoint",
+              "speed_torque_setpoint": "",
               "temperature": "Temperature",
               "temperature_delta": "T delta",
               "temperature_in": "T in",
@@ -4212,7 +4224,137 @@
                 "width": 161
               },
               "type": "text"
+            }
+          ],
+          "name": "Element 1767775905609",
+          "placement": {
+            "height": 100,
+            "left": 0,
+            "rotation": 0,
+            "top": 0,
+            "width": 100
+          },
+          "type": "frame"
+        },
+        "showAdvancedTypes": false,
+        "tooltip": {
+          "disableForOneClick": false,
+          "mode": "none"
+        },
+        "zoomToContent": false
+      },
+      "pluginVersion": "12.3.0",
+      "targets": [
+        {
+          "dataset": "dev",
+          "datasource": {
+            "type": "grafana-postgresql-datasource",
+            "uid": "${datasource}"
+          },
+          "editorMode": "code",
+          "format": "table",
+          "hide": false,
+          "rawQuery": true,
+          "rawSql": "SELECT\r\n  LAST_VALUE(time ORDER BY time) AS time,\r\n  LAST_VALUE((\"GearboxOilTemperature\").value ORDER BY time) AS oil_temperature,\r\n  LAST_VALUE((\"Aradex1Temperature\").value ORDER BY time) AS aradex1_temperature,\r\n  LAST_VALUE((\"Aradex2Temperature\").value ORDER BY time) AS aradex2_temperature\r\nFROM marpower.thruster\r\nwhere topic = 'marpower/thruster/' || lower('$aft_fwd')",
+          "refId": "A",
+          "sql": {
+            "columns": [
+              {
+                "parameters": [],
+                "type": "function"
+              }
+            ],
+            "groupBy": [
+              {
+                "property": {
+                  "type": "string"
+                },
+                "type": "groupBy"
+              }
+            ],
+            "limit": 50
+          }
+        }
+      ],
+      "title": "Internal temperatures",
+      "type": "canvas"
+    },
+    {
+      "datasource": {
+        "type": "grafana-postgresql-datasource",
+        "uid": "${datasource}"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "decimals": 2,
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": 0
+              }
+            ]
+          },
+          "unit": "celsius"
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "forepeak_tempsensor"
             },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "celsius"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "tank_level"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "percent"
+              }
+            ]
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 5,
+        "w": 24,
+        "x": 0,
+        "y": 43
+      },
+      "id": 59,
+      "options": {
+        "inlineEditing": false,
+        "panZoom": false,
+        "root": {
+          "background": {
+            "color": {
+              "fixed": "transparent"
+            }
+          },
+          "border": {
+            "color": {
+              "fixed": "dark-green"
+            }
+          },
+          "constraint": {
+            "horizontal": "left",
+            "vertical": "top"
+          },
+          "elements": [
             {
               "background": {
                 "color": {
@@ -4231,7 +4373,7 @@
                 },
                 "size": 20,
                 "text": {
-                  "field": "thruster_temperature",
+                  "field": "winding_temp_u1",
                   "fixed": "",
                   "mode": "field"
                 },
@@ -4242,12 +4384,12 @@
                 "vertical": "top"
               },
               "links": [],
-              "name": "thruster_temperature",
+              "name": "winding_temp_u1",
               "placement": {
                 "height": 30,
                 "left": 190,
                 "rotation": 0,
-                "top": 115,
+                "top": 10,
                 "width": 175
               },
               "type": "metric-value"
@@ -4270,7 +4412,7 @@
                 },
                 "size": 16,
                 "text": {
-                  "fixed": "Thruster"
+                  "fixed": "Winding U1"
                 },
                 "valign": "middle"
               },
@@ -4279,12 +4421,544 @@
                 "vertical": "top"
               },
               "links": [],
-              "name": "thruster_temperature label",
+              "name": "winding_temp_u1 label",
               "placement": {
                 "height": 30,
                 "left": 15,
                 "rotation": 0,
-                "top": 115,
+                "top": 10,
+                "width": 161
+              },
+              "type": "text"
+            },
+            {
+              "background": {
+                "color": {
+                  "fixed": "#D9D9D9"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "center",
+                "color": {
+                  "fixed": "#000000"
+                },
+                "size": 20,
+                "text": {
+                  "field": "winding_temp_v1",
+                  "fixed": "",
+                  "mode": "field"
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "links": [],
+              "name": "winding_temp_v1",
+              "placement": {
+                "height": 30,
+                "left": 190,
+                "rotation": 0,
+                "top": 45,
+                "width": 175
+              },
+              "type": "metric-value"
+            },
+            {
+              "background": {
+                "color": {
+                  "fixed": "transparent"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "left",
+                "color": {
+                  "fixed": "rgb(204, 204, 220)"
+                },
+                "size": 16,
+                "text": {
+                  "fixed": "Winding V1"
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "links": [],
+              "name": "winding_temp_v1 label",
+              "placement": {
+                "height": 30,
+                "left": 15,
+                "rotation": 0,
+                "top": 45,
+                "width": 161
+              },
+              "type": "text"
+            },
+            {
+              "background": {
+                "color": {
+                  "fixed": "#D9D9D9"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "center",
+                "color": {
+                  "fixed": "#000000"
+                },
+                "size": 20,
+                "text": {
+                  "field": "winding_temp_w1",
+                  "fixed": "",
+                  "mode": "field"
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "links": [],
+              "name": "winding_temp_w1",
+              "placement": {
+                "height": 30,
+                "left": 190,
+                "rotation": 0,
+                "top": 80,
+                "width": 175
+              },
+              "type": "metric-value"
+            },
+            {
+              "background": {
+                "color": {
+                  "fixed": "transparent"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "left",
+                "color": {
+                  "fixed": "rgb(204, 204, 220)"
+                },
+                "size": 16,
+                "text": {
+                  "fixed": "Winding W1"
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "links": [],
+              "name": "winding_temp_w1 label",
+              "placement": {
+                "height": 30,
+                "left": 15,
+                "rotation": 0,
+                "top": 80,
+                "width": 161
+              },
+              "type": "text"
+            },
+            {
+              "background": {
+                "color": {
+                  "fixed": "#D9D9D9"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "center",
+                "color": {
+                  "fixed": "#000000"
+                },
+                "size": 20,
+                "text": {
+                  "field": "winding_temp_u2",
+                  "fixed": "",
+                  "mode": "field"
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "links": [],
+              "name": "winding_temp_u2",
+              "placement": {
+                "height": 30,
+                "left": 615,
+                "rotation": 0,
+                "top": 10,
+                "width": 175
+              },
+              "type": "metric-value"
+            },
+            {
+              "background": {
+                "color": {
+                  "fixed": "transparent"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "left",
+                "color": {
+                  "fixed": "rgb(204, 204, 220)"
+                },
+                "size": 16,
+                "text": {
+                  "fixed": "Winding U2"
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "links": [],
+              "name": "winding_temp_u2 label",
+              "placement": {
+                "height": 30,
+                "left": 440,
+                "rotation": 0,
+                "top": 10,
+                "width": 161
+              },
+              "type": "text"
+            },
+            {
+              "background": {
+                "color": {
+                  "fixed": "#D9D9D9"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "center",
+                "color": {
+                  "fixed": "#000000"
+                },
+                "size": 20,
+                "text": {
+                  "field": "winding_temp_v2",
+                  "fixed": "",
+                  "mode": "field"
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "links": [],
+              "name": "winding_temp_v2",
+              "placement": {
+                "height": 30,
+                "left": 615,
+                "rotation": 0,
+                "top": 45,
+                "width": 175
+              },
+              "type": "metric-value"
+            },
+            {
+              "background": {
+                "color": {
+                  "fixed": "transparent"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "left",
+                "color": {
+                  "fixed": "rgb(204, 204, 220)"
+                },
+                "size": 16,
+                "text": {
+                  "fixed": "Winding V2"
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "links": [],
+              "name": "winding_temp_v2 label",
+              "placement": {
+                "height": 30,
+                "left": 440,
+                "rotation": 0,
+                "top": 45,
+                "width": 161
+              },
+              "type": "text"
+            },
+            {
+              "background": {
+                "color": {
+                  "fixed": "#D9D9D9"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "center",
+                "color": {
+                  "fixed": "#000000"
+                },
+                "size": 20,
+                "text": {
+                  "field": "winding_temp_w2",
+                  "fixed": "",
+                  "mode": "field"
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "links": [],
+              "name": "winding_temp_w2",
+              "placement": {
+                "height": 30,
+                "left": 615,
+                "rotation": 0,
+                "top": 80,
+                "width": 175
+              },
+              "type": "metric-value"
+            },
+            {
+              "background": {
+                "color": {
+                  "fixed": "transparent"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "left",
+                "color": {
+                  "fixed": "rgb(204, 204, 220)"
+                },
+                "size": 16,
+                "text": {
+                  "fixed": "Winding W2"
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "links": [],
+              "name": "winding_temp_w2 label",
+              "placement": {
+                "height": 30,
+                "left": 440,
+                "rotation": 0,
+                "top": 80,
+                "width": 161
+              },
+              "type": "text"
+            },
+            {
+              "background": {
+                "color": {
+                  "fixed": "#D9D9D9"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "center",
+                "color": {
+                  "fixed": "#000000"
+                },
+                "size": 20,
+                "text": {
+                  "field": "bearing_de_temp",
+                  "fixed": "",
+                  "mode": "field"
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "links": [],
+              "name": "bearing_de_temp",
+              "placement": {
+                "height": 30,
+                "left": 1040,
+                "rotation": 0,
+                "top": 8,
+                "width": 175
+              },
+              "type": "metric-value"
+            },
+            {
+              "background": {
+                "color": {
+                  "fixed": "transparent"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "left",
+                "color": {
+                  "fixed": "rgb(204, 204, 220)"
+                },
+                "size": 16,
+                "text": {
+                  "fixed": "Bearing DE"
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "links": [],
+              "name": "bearing_de_temp label",
+              "placement": {
+                "height": 30,
+                "left": 865,
+                "rotation": 0,
+                "top": 8,
+                "width": 161
+              },
+              "type": "text"
+            },
+            {
+              "background": {
+                "color": {
+                  "fixed": "#D9D9D9"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "center",
+                "color": {
+                  "fixed": "#000000"
+                },
+                "size": 20,
+                "text": {
+                  "field": "bearing_nde_temp",
+                  "fixed": "",
+                  "mode": "field"
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "links": [],
+              "name": "bearing_nde_temp",
+              "placement": {
+                "height": 30,
+                "left": 1040,
+                "rotation": 0,
+                "top": 43,
+                "width": 175
+              },
+              "type": "metric-value"
+            },
+            {
+              "background": {
+                "color": {
+                  "fixed": "transparent"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "left",
+                "color": {
+                  "fixed": "rgb(204, 204, 220)"
+                },
+                "size": 16,
+                "text": {
+                  "fixed": "Bearing NDE"
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "links": [],
+              "name": "bearing_nde_temp label",
+              "placement": {
+                "height": 30,
+                "left": 865,
+                "rotation": 0,
+                "top": 43,
                 "width": 161
               },
               "type": "text"
@@ -4318,38 +4992,8 @@
           "editorMode": "code",
           "format": "table",
           "rawQuery": true,
-          "rawSql": "SELECT\r\n  LAST_VALUE(time ORDER BY time) AS time,\r\n  CASE WHEN '$aft_fwd' = 'AFT' THEN\r\n    (\r\n      LAST_VALUE((\"AFT_THRUST_WINDINGTEMPU1\").value ORDER BY time) +\r\n      LAST_VALUE((\"AFT_THRUST_WINDINGTEMPV1\").value ORDER BY time) +\r\n      LAST_VALUE((\"AFT_THRUST_WINDINGTEMPW1\").value ORDER BY time) +\r\n      LAST_VALUE((\"AFT_THRUST_WINDINGTEMPU2\").value ORDER BY time) +\r\n      LAST_VALUE((\"AFT_THRUST_WINDINGTEMPV2\").value ORDER BY time) +\r\n      LAST_VALUE((\"AFT_THRUST_WINDINGTEMPW2\").value ORDER BY time) +\r\n      LAST_VALUE((\"STERN_THRUST_BEARING_DE_TEMP\").value ORDER BY time) +\r\n      LAST_VALUE((\"STERN_THRUST_BEARING_NDE_TEMP\").value ORDER BY time)\r\n    ) / 8.0 \r\n  ELSE\r\n    (\r\n      LAST_VALUE((\"FWD_THRUST_WINDINGTEMPU1\").value ORDER BY time) +\r\n      LAST_VALUE((\"FWD_THRUST_WINDINGTEMPV1\").value ORDER BY time) +\r\n      LAST_VALUE((\"FWD_THRUST_WINDING_TEMP_W1\").value ORDER BY time) +\r\n      LAST_VALUE((\"BOW_THRUST_WINDINGTEMPU2\").value ORDER BY time) +\r\n      LAST_VALUE((\"BOW_THRUST_WINDINGTEMPV2\").value ORDER BY time) +\r\n      LAST_VALUE((\"BOW_THRUST_WINDINGTEMPW2\").value ORDER BY time) +\r\n      LAST_VALUE((\"BOW_THRUST_BEARING_DE_TEMP\").value ORDER BY time) +\r\n      LAST_VALUE((\"BOW_THRUST_BEARING_NDE_TEMP\").value ORDER BY time)\r\n    ) / 8.0 \r\n  END AS thruster_temperature\r\nFROM marpower.\"150000_propulsion_general\"",
+          "rawSql": "SELECT\r\n  LAST_VALUE(time ORDER BY time) AS time,\r\n  CASE WHEN '$aft_fwd' = 'AFT'\r\n    THEN LAST_VALUE((\"AFT_THRUST_WINDINGTEMPU1\").value ORDER BY time)\r\n    ELSE LAST_VALUE((\"FWD_THRUST_WINDINGTEMPU1\").value ORDER BY time)\r\n    END AS winding_temp_u1,\r\n  CASE WHEN '$aft_fwd' = 'AFT'\r\n    THEN LAST_VALUE((\"AFT_THRUST_WINDINGTEMPV1\").value ORDER BY time)\r\n    ELSE LAST_VALUE((\"FWD_THRUST_WINDINGTEMPU1\").value ORDER BY time)\r\n    END AS winding_temp_v1,\r\n  CASE WHEN '$aft_fwd' = 'AFT'\r\n    THEN LAST_VALUE((\"AFT_THRUST_WINDINGTEMPW1\").value ORDER BY time)\r\n    ELSE LAST_VALUE((\"FWD_THRUST_WINDING_TEMP_W1\").value ORDER BY time)\r\n    END AS winding_temp_w1,\r\n  CASE WHEN '$aft_fwd' = 'AFT'\r\n    THEN LAST_VALUE((\"AFT_THRUST_WINDINGTEMPU2\").value ORDER BY time)\r\n    ELSE LAST_VALUE((\"BOW_THRUST_WINDINGTEMPU2\").value ORDER BY time)\r\n    END AS winding_temp_u2,\r\n  CASE WHEN '$aft_fwd' = 'AFT'\r\n    THEN LAST_VALUE((\"AFT_THRUST_WINDINGTEMPV2\").value ORDER BY time)\r\n    ELSE LAST_VALUE((\"BOW_THRUST_WINDINGTEMPV2\").value ORDER BY time)\r\n    END AS winding_temp_v2,\r\n  CASE WHEN '$aft_fwd' = 'AFT'\r\n    THEN LAST_VALUE((\"AFT_THRUST_WINDINGTEMPW2\").value ORDER BY time)\r\n    ELSE LAST_VALUE((\"BOW_THRUST_WINDINGTEMPW2\").value ORDER BY time)\r\n    END AS winding_temp_w2,\r\n  CASE WHEN '$aft_fwd' = 'AFT'\r\n    THEN LAST_VALUE((\"STERN_THRUST_BEARING_DE_TEMP\").value ORDER BY time)\r\n    ELSE LAST_VALUE((\"BOW_THRUST_BEARING_DE_TEMP\").value ORDER BY time)\r\n    END AS bearing_de_temp,\r\n  CASE WHEN '$aft_fwd' = 'AFT'\r\n    THEN LAST_VALUE((\"STERN_THRUST_BEARING_NDE_TEMP\").value ORDER BY time)\r\n    ELSE LAST_VALUE((\"BOW_THRUST_BEARING_NDE_TEMP\").value ORDER BY time)\r\n    END AS bearing_nde_temp\r\nFROM marpower.\"150000_propulsion_general\"",
           "refId": "A",
-          "sql": {
-            "columns": [
-              {
-                "parameters": [],
-                "type": "function"
-              }
-            ],
-            "groupBy": [
-              {
-                "property": {
-                  "type": "string"
-                },
-                "type": "groupBy"
-              }
-            ],
-            "limit": 50
-          }
-        },
-        {
-          "dataset": "dev",
-          "datasource": {
-            "type": "grafana-postgresql-datasource",
-            "uid": "${datasource}"
-          },
-          "editorMode": "code",
-          "format": "table",
-          "hide": false,
-          "rawQuery": true,
-          "rawSql": "SELECT\r\n  LAST_VALUE(time ORDER BY time) AS time,\r\n  LAST_VALUE((\"GearboxOilTemperature\").value ORDER BY time) AS oil_temperature,\r\n  LAST_VALUE((\"Aradex1Temperature\").value ORDER BY time) AS aradex1_temperature,\r\n  LAST_VALUE((\"Aradex2Temperature\").value ORDER BY time) AS aradex2_temperature\r\nFROM marpower.thruster\r\nwhere topic = 'marpower/thruster/' || lower('$aft_fwd')",
-          "refId": "B",
           "sql": {
             "columns": [
               {
@@ -4369,7 +5013,7 @@
           }
         }
       ],
-      "title": "Internal temperatures",
+      "title": "Internal thruster temperatures",
       "type": "canvas"
     },
     {
@@ -4378,7 +5022,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 43
+        "y": 48
       },
       "id": 27,
       "panels": [],
@@ -4427,7 +5071,7 @@
         "h": 2,
         "w": 12,
         "x": 0,
-        "y": 44
+        "y": 49
       },
       "id": 48,
       "options": {
@@ -4580,12 +5224,12 @@
       "type": "canvas"
     },
     {
-      "collapsed": true,
+      "collapsed": false,
       "gridPos": {
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 46
+        "y": 51
       },
       "id": 52,
       "panels": [],
@@ -4602,6 +5246,18 @@
           "color": {
             "mode": "thresholds"
           },
+          "custom": {
+            "align": "left",
+            "cellOptions": {
+              "type": "auto"
+            },
+            "filterable": false,
+            "footer": {
+              "reducers": []
+            },
+            "inspect": false,
+            "minWidth": 125
+          },
           "decimals": 2,
           "mappings": [],
           "thresholds": {
@@ -4610,6 +5266,10 @@
               {
                 "color": "green",
                 "value": 0
+              },
+              {
+                "color": "red",
+                "value": 80
               }
             ]
           }
@@ -4617,13 +5277,61 @@
         "overrides": [
           {
             "matcher": {
+              "id": "byName",
+              "options": "time"
+            },
+            "properties": [
+              {
+                "id": "custom.hideFrom.viz",
+                "value": true
+              }
+            ]
+          },
+          {
+            "matcher": {
               "id": "byRegexp",
-              "options": "/efficiency/"
+              "options": "/torque/"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "rotrpm"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byRegexp",
+              "options": "/[E|e]fficiency/"
             },
             "properties": [
               {
                 "id": "unit",
                 "value": "percent"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Device"
+            },
+            "properties": [
+              {
+                "id": "custom.width",
+                "value": 125
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Gear ratio"
+            },
+            "properties": [
+              {
+                "id": "custom.width",
+                "value": 125
               }
             ]
           }
@@ -4633,497 +5341,13 @@
         "h": 5,
         "w": 24,
         "x": 0,
-        "y": 47
+        "y": 52
       },
-      "id": 51,
+      "id": 58,
       "options": {
-        "inlineEditing": false,
-        "panZoom": false,
-        "root": {
-          "background": {
-            "color": {
-              "fixed": "transparent"
-            }
-          },
-          "border": {
-            "color": {
-              "fixed": "dark-green"
-            }
-          },
-          "constraint": {
-            "horizontal": "left",
-            "vertical": "top"
-          },
-          "elements": [
-            {
-              "background": {
-                "color": {
-                  "fixed": "#D9D9D9"
-                }
-              },
-              "border": {
-                "color": {
-                  "fixed": "dark-green"
-                }
-              },
-              "config": {
-                "align": "center",
-                "color": {
-                  "fixed": "#000000"
-                },
-                "size": 20,
-                "text": {
-                  "field": "aradex1_eff_theoretical_ratio",
-                  "fixed": "",
-                  "mode": "field"
-                },
-                "valign": "middle"
-              },
-              "constraint": {
-                "horizontal": "left",
-                "vertical": "top"
-              },
-              "links": [],
-              "name": "aradex1_eff_theoretical_ratio",
-              "placement": {
-                "height": 30,
-                "left": 385,
-                "rotation": 0,
-                "top": 10,
-                "width": 175
-              },
-              "type": "metric-value"
-            },
-            {
-              "background": {
-                "color": {
-                  "fixed": "transparent"
-                }
-              },
-              "border": {
-                "color": {
-                  "fixed": "dark-green"
-                }
-              },
-              "config": {
-                "align": "left",
-                "color": {
-                  "fixed": "rgb(204, 204, 220)"
-                },
-                "size": 16,
-                "text": {
-                  "fixed": "Aradex 1 efficiency (theoretical gear ratio)"
-                },
-                "valign": "middle"
-              },
-              "constraint": {
-                "horizontal": "left",
-                "vertical": "top"
-              },
-              "links": [],
-              "name": "aradex1_eff_theoretical_ratio label",
-              "placement": {
-                "height": 30,
-                "left": 15,
-                "rotation": 0,
-                "top": 10,
-                "width": 340
-              },
-              "type": "text"
-            },
-            {
-              "background": {
-                "color": {
-                  "fixed": "#D9D9D9"
-                }
-              },
-              "border": {
-                "color": {
-                  "fixed": "dark-green"
-                }
-              },
-              "config": {
-                "align": "center",
-                "color": {
-                  "fixed": "#000000"
-                },
-                "size": 20,
-                "text": {
-                  "field": "aradex1_eff_meassured_ratio",
-                  "fixed": "",
-                  "mode": "field"
-                },
-                "valign": "middle"
-              },
-              "constraint": {
-                "horizontal": "left",
-                "vertical": "top"
-              },
-              "links": [],
-              "name": "aradex1_eff_meassured_ratio",
-              "placement": {
-                "height": 30,
-                "left": 385,
-                "rotation": 0,
-                "top": 45,
-                "width": 175
-              },
-              "type": "metric-value"
-            },
-            {
-              "background": {
-                "color": {
-                  "fixed": "transparent"
-                }
-              },
-              "border": {
-                "color": {
-                  "fixed": "dark-green"
-                }
-              },
-              "config": {
-                "align": "left",
-                "color": {
-                  "fixed": "rgb(204, 204, 220)"
-                },
-                "size": 16,
-                "text": {
-                  "fixed": "Aradex 1 efficiency (measured gear ratio)"
-                },
-                "valign": "middle"
-              },
-              "constraint": {
-                "horizontal": "left",
-                "vertical": "top"
-              },
-              "links": [],
-              "name": "aradex1_eff_meassured_ratio label",
-              "placement": {
-                "height": 30,
-                "left": 15,
-                "rotation": 0,
-                "top": 45,
-                "width": 340
-              },
-              "type": "text"
-            },
-            {
-              "background": {
-                "color": {
-                  "fixed": "#D9D9D9"
-                }
-              },
-              "border": {
-                "color": {
-                  "fixed": "dark-green"
-                }
-              },
-              "config": {
-                "align": "center",
-                "color": {
-                  "fixed": "#000000"
-                },
-                "size": 20,
-                "text": {
-                  "field": "aradex2_eff_theoretical_ratio",
-                  "fixed": "",
-                  "mode": "field"
-                },
-                "valign": "middle"
-              },
-              "constraint": {
-                "horizontal": "left",
-                "vertical": "top"
-              },
-              "links": [],
-              "name": "aradex2_eff_theoretical_ratio",
-              "placement": {
-                "height": 30,
-                "left": 1030,
-                "top": 10,
-                "width": 175
-              },
-              "type": "metric-value"
-            },
-            {
-              "background": {
-                "color": {
-                  "fixed": "transparent"
-                }
-              },
-              "border": {
-                "color": {
-                  "fixed": "dark-green"
-                }
-              },
-              "config": {
-                "align": "left",
-                "color": {
-                  "fixed": "rgb(204, 204, 220)"
-                },
-                "size": 16,
-                "text": {
-                  "fixed": "Aradex 2 efficiency (theoretical gear ratio)"
-                },
-                "valign": "middle"
-              },
-              "constraint": {
-                "horizontal": "left",
-                "vertical": "top"
-              },
-              "links": [],
-              "name": "aradex2_eff_theoretical_ratio label",
-              "placement": {
-                "height": 30,
-                "left": 660,
-                "top": 10,
-                "width": 340
-              },
-              "type": "text"
-            },
-            {
-              "background": {
-                "color": {
-                  "fixed": "#D9D9D9"
-                }
-              },
-              "border": {
-                "color": {
-                  "fixed": "dark-green"
-                }
-              },
-              "config": {
-                "align": "center",
-                "color": {
-                  "fixed": "#000000"
-                },
-                "size": 20,
-                "text": {
-                  "field": "aradex2_eff_meassured_ratio",
-                  "fixed": "",
-                  "mode": "field"
-                },
-                "valign": "middle"
-              },
-              "constraint": {
-                "horizontal": "left",
-                "vertical": "top"
-              },
-              "links": [],
-              "name": "aradex2_eff_meassured_ratio",
-              "placement": {
-                "height": 30,
-                "left": 1030,
-                "top": 45,
-                "width": 175
-              },
-              "type": "metric-value"
-            },
-            {
-              "background": {
-                "color": {
-                  "fixed": "transparent"
-                }
-              },
-              "border": {
-                "color": {
-                  "fixed": "dark-green"
-                }
-              },
-              "config": {
-                "align": "left",
-                "color": {
-                  "fixed": "rgb(204, 204, 220)"
-                },
-                "size": 16,
-                "text": {
-                  "fixed": "Aradex 2 efficiency (measured gear ratio)"
-                },
-                "valign": "middle"
-              },
-              "constraint": {
-                "horizontal": "left",
-                "vertical": "top"
-              },
-              "links": [],
-              "name": "aradex2_eff_meassured_ratio label",
-              "placement": {
-                "height": 30,
-                "left": 660,
-                "top": 45,
-                "width": 340
-              },
-              "type": "text"
-            },
-            {
-              "background": {
-                "color": {
-                  "fixed": "#D9D9D9"
-                }
-              },
-              "border": {
-                "color": {
-                  "fixed": "dark-green"
-                }
-              },
-              "config": {
-                "align": "center",
-                "color": {
-                  "fixed": "#000000"
-                },
-                "size": 20,
-                "text": {
-                  "field": "aradex1_gear_ratio",
-                  "fixed": "",
-                  "mode": "field"
-                },
-                "valign": "middle"
-              },
-              "constraint": {
-                "horizontal": "left",
-                "vertical": "top"
-              },
-              "links": [],
-              "name": "aradex1_gear_ratio",
-              "placement": {
-                "height": 30,
-                "left": 385,
-                "rotation": 0,
-                "top": 80,
-                "width": 175
-              },
-              "type": "metric-value"
-            },
-            {
-              "background": {
-                "color": {
-                  "fixed": "transparent"
-                }
-              },
-              "border": {
-                "color": {
-                  "fixed": "dark-green"
-                }
-              },
-              "config": {
-                "align": "left",
-                "color": {
-                  "fixed": "rgb(204, 204, 220)"
-                },
-                "size": 16,
-                "text": {
-                  "fixed": "Aradex 1 gear ratio"
-                },
-                "valign": "middle"
-              },
-              "constraint": {
-                "horizontal": "left",
-                "vertical": "top"
-              },
-              "links": [],
-              "name": "aradex1_gear_ratio label",
-              "placement": {
-                "height": 30,
-                "left": 15,
-                "rotation": 0,
-                "top": 80,
-                "width": 340
-              },
-              "type": "text"
-            },
-            {
-              "background": {
-                "color": {
-                  "fixed": "#D9D9D9"
-                }
-              },
-              "border": {
-                "color": {
-                  "fixed": "dark-green"
-                }
-              },
-              "config": {
-                "align": "center",
-                "color": {
-                  "fixed": "#000000"
-                },
-                "size": 20,
-                "text": {
-                  "field": "aradex2_gear_ratio",
-                  "fixed": "",
-                  "mode": "field"
-                },
-                "valign": "middle"
-              },
-              "constraint": {
-                "horizontal": "left",
-                "vertical": "top"
-              },
-              "links": [],
-              "name": "aradex2_gear_ratio",
-              "placement": {
-                "height": 30,
-                "left": 1030,
-                "rotation": 0,
-                "top": 80,
-                "width": 175
-              },
-              "type": "metric-value"
-            },
-            {
-              "background": {
-                "color": {
-                  "fixed": "transparent"
-                }
-              },
-              "border": {
-                "color": {
-                  "fixed": "dark-green"
-                }
-              },
-              "config": {
-                "align": "left",
-                "color": {
-                  "fixed": "rgb(204, 204, 220)"
-                },
-                "size": 16,
-                "text": {
-                  "fixed": "Aradex 2 gear ratio"
-                },
-                "valign": "middle"
-              },
-              "constraint": {
-                "horizontal": "left",
-                "vertical": "top"
-              },
-              "links": [],
-              "name": "aradex2_gear_ratio label",
-              "placement": {
-                "height": 30,
-                "left": 660,
-                "rotation": 0,
-                "top": 80,
-                "width": 340
-              },
-              "type": "text"
-            }
-          ],
-          "name": "Element 1767775905609",
-          "placement": {
-            "height": 100,
-            "left": 0,
-            "rotation": 0,
-            "top": 0,
-            "width": 100
-          },
-          "type": "frame"
-        },
-        "showAdvancedTypes": false,
-        "tooltip": {
-          "disableForOneClick": false,
-          "mode": "none"
-        },
-        "zoomToContent": false
+        "cellHeight": "sm",
+        "enablePagination": false,
+        "showHeader": true
       },
       "pluginVersion": "12.3.0",
       "targets": [
@@ -5136,38 +5360,8 @@
           "editorMode": "code",
           "format": "table",
           "rawQuery": true,
-          "rawSql": "WITH aradex_data AS (\r\n\tSELECT\r\n\t  LAST_VALUE(thruster.time ORDER BY thruster.time) AS time,\r\n\t  LAST_VALUE((\"Aradex_1_speed_feedback\").value ORDER BY thruster.time) / LAST_VALUE((\"Speed\").value ORDER BY ext_motor.time) AS gear_ratio,\r\n\t  LAST_VALUE((\"Aradex_1_torque_feedback\").value ORDER BY thruster.time) AS aradex_torque,\r\n\t  LAST_VALUE((\"Torque\").value ORDER BY ext_motor.time) AS motor_torque\r\n\tFROM marpower.thruster thruster\r\n\tJOIN marpower.externalmotor AS ext_motor ON ext_motor.time >= thruster.time\r\n\tWHERE thruster.topic = 'marpower/thruster/' || lower('$aft_fwd')\r\n)\r\nSELECT \r\n  (aradex_torque * 100) / (motor_torque * $gear_ratio) AS aradex1_eff_theoretical_ratio,\r\n  (aradex_torque * 100) / (motor_torque * gear_ratio)  AS aradex1_eff_meassured_ratio,\r\n\tgear_ratio AS aradex1_gear_ratio\r\nFROM aradex_data",
-          "refId": "Aradex 1",
-          "sql": {
-            "columns": [
-              {
-                "parameters": [],
-                "type": "function"
-              }
-            ],
-            "groupBy": [
-              {
-                "property": {
-                  "type": "string"
-                },
-                "type": "groupBy"
-              }
-            ],
-            "limit": 50
-          }
-        },
-        {
-          "dataset": "dev",
-          "datasource": {
-            "type": "grafana-postgresql-datasource",
-            "uid": "${datasource}"
-          },
-          "editorMode": "code",
-          "format": "table",
-          "hide": false,
-          "rawQuery": true,
-          "rawSql": "WITH aradex_data AS (\r\n\tSELECT\r\n\t  LAST_VALUE(thruster.time ORDER BY thruster.time) AS time,\r\n\t  LAST_VALUE((\"Aradex_2_speed_feedback\").value ORDER BY thruster.time) / LAST_VALUE((\"Speed\").value ORDER BY ext_motor.time) AS gear_ratio,\r\n\t  LAST_VALUE((\"Aradex_2_torque_feedback\").value ORDER BY thruster.time) AS aradex_torque,\r\n\t  LAST_VALUE((\"Torque\").value ORDER BY ext_motor.time) AS motor_torque\r\n\tFROM marpower.thruster thruster\r\n\tJOIN marpower.externalmotor AS ext_motor ON ext_motor.time >= thruster.time\r\n\tWHERE thruster.topic = 'marpower/thruster/' || lower('$aft_fwd')\r\n)\r\nSELECT \r\n  (aradex_torque * 100) / (motor_torque * $gear_ratio) AS aradex2_eff_theoretical_ratio,\r\n  (aradex_torque * 100) / (motor_torque * gear_ratio)  AS aradex2_eff_meassured_ratio,\r\n\tgear_ratio AS aradex2_gear_ratio\r\nFROM aradex_data",
-          "refId": "Aradex 2",
+          "rawSql": "\r\nWITH aradex_calculations AS (\r\n\tWITH aradex_data AS (\r\n\t\tSELECT\r\n\t\t  LAST_VALUE(time ORDER BY time) AS time,\r\n\t\t  'Aradex 1' AS device,\r\n\t\t  LAST_VALUE((\"Aradex_1_speed_feedback\").value ORDER BY time) AS speed,\r\n\t\t  LAST_VALUE((\"Aradex_1_torque_feedback\").value ORDER BY time) AS torque,\r\n\t\t  LAST_VALUE((\"SpeedorTorqueSetpointSignal(Aradex1)\").value ORDER BY time) AS torque_setpoint\r\n\t\tFROM marpower.thruster\r\n\t\tWHERE topic = 'marpower/thruster/' || lower('$aft_fwd')\r\n\t\tUNION ALL\r\n\t\tSELECT\r\n\t\t  LAST_VALUE(time ORDER BY time) AS time,\r\n\t\t  'Aradex 2' AS device,\r\n\t\t  LAST_VALUE((\"Aradex_2_speed_feedback\").value ORDER BY time) AS speed,\r\n\t\t  LAST_VALUE((\"Aradex_2_torque_feedback\").value ORDER BY time) AS torque,\r\n\t\t  LAST_VALUE((\"SpeedorTorqueSetpointSignal(Aradex2)\").value ORDER BY time) AS torque_setpoint\r\n\t\tFROM marpower.thruster\r\n\t\tWHERE topic = 'marpower/thruster/' || lower('$aft_fwd')\r\n\t),\r\n\tmotor_data AS (\r\n\t\tSELECT\r\n\t\t\tLAST_VALUE(time ORDER BY time) AS time,\r\n\t\t\tLAST_VALUE((\"Speed\").value ORDER BY time) AS speed,\r\n\t\t\tLAST_VALUE((\"Torque\").value ORDER BY time) AS torque\r\n\t\tFROM marpower.externalmotor\r\n\t)\r\n\tSELECT\r\n\t\taradex.time,\r\n\t\taradex.device,\r\n\t\taradex.speed AS aradex_speed,\r\n\t\taradex.torque AS aradex_torque,\r\n\t\taradex.torque_setpoint as aradex_torque_setpoint,\r\n\t\text_motor.speed AS motor_speed,\r\n\t\text_motor.torque AS motor_torque,\r\n\t\taradex.speed / ext_motor.speed AS gear_ratio\r\n\tFROM aradex_data AS aradex\r\n\tJOIN motor_data AS ext_motor ON ext_motor.time >= aradex.time\r\n)\r\nSELECT\r\n\ttime,\r\n\tdevice,\r\n\tgear_ratio,\r\n\taradex_torque_setpoint / (motor_torque * motor_torque)\tAS expected_motor_torque,\r\n\tmotor_torque / $gear_ratio\t\t\t\t\t\t\t\t\t\t\t\t\t\t\tAS ideal_torque1, -- ideal torque (given ratio)\r\n\tmotor_torque / gear_ratio\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\tAS ideal_torque2, -- ideal torque (measured ratio)\r\n\t(motor_torque * 100 / $gear_ratio) / motor_torque\t\t\t\tAS efficiency1,\t\t-- efficiency (given ratio)\r\n\t(motor_torque * 100 / gear_ratio) / motor_torque\t\t\t\tAS efficiency2\t\t-- efficiency (measured ratio)\r\nFROM aradex_calculations\r\nORDER BY device\r\n",
+          "refId": "A",
           "sql": {
             "columns": [
               {
@@ -5188,7 +5382,39 @@
         }
       ],
       "title": "Mechanical efficiency",
-      "type": "canvas"
+      "transformations": [
+        {
+          "id": "organize",
+          "options": {
+            "excludeByName": {},
+            "includeByName": {},
+            "indexByName": {},
+            "renameByName": {
+              "device": "Device",
+              "efficiency1": "Efficiency (given gear ratio)",
+              "efficiency2": "Efficiency (measured gear ratio)",
+              "efficiency_1": "",
+              "efficiency_2": "Efficiency (measured gear ratio)",
+              "expected_motor_torque": "Expected motor torque",
+              "flow": "Flow",
+              "gear_ratio": "Gear ratio",
+              "ideal_torque1": "Ideal torque (given gear ratio)",
+              "ideal_torque2": "Ideal torque (measured gear ratio)",
+              "pressure": "Pressure",
+              "seq_nr": "",
+              "speed": "Speed",
+              "speed_torque_setpoint": "Speed/Torque setpoint",
+              "temperature": "Temperature",
+              "temperature_delta": "T delta",
+              "temperature_in": "T in",
+              "temperature_out": "T out",
+              "torque": "Torque",
+              "torque_setpoint": "Torque setpoint"
+            }
+          }
+        }
+      ],
+      "type": "table"
     },
     {
       "datasource": {
@@ -5232,7 +5458,7 @@
         "h": 4,
         "w": 24,
         "x": 0,
-        "y": 52
+        "y": 57
       },
       "id": 53,
       "options": {
