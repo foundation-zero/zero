@@ -20,6 +20,9 @@ The foundational color scales that serve as the building blocks for our entire s
 - **Accent A** - Red/pink accent colors for destructive states
 - **Accent B** - Yellow/amber accent colors for warning states  
 - **Accent C** - Green accent colors for constructive states
+- **Accent D** - Red accent colors for destructive states
+- **Accent E** - Heating red accent colors
+- **Accent F** - Cooling blue accent colors
 
 ### [Semantic Colors](./colors/semantic.md)
 
