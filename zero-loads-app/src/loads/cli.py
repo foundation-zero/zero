@@ -127,7 +127,6 @@ class FiberOpticSensorsStubCmd(GeneratorSettings):
 
 class SensorsStubCMD(GeneratorSettings):
     async def cli_cmd(self) -> None:
-
         messaging_modules: list[MessagingModule] = [
             sail_system_sensors,
             at_sensors,
