@@ -3,7 +3,7 @@ replicaCount: 1
 image:
   repository: europe-west1-docker.pkg.dev/common-449414/common/zero-loads-app
   pullPolicy: IfNotPresent
-  tag: "0.9.18"
+  tag: ""
 
 mqtt:
   host:
