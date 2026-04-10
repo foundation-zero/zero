@@ -315,6 +315,10 @@ class TanksController:
                 )
                 self._boosting_tank.boost(self._time)
 
+    @property
+    def filling(self) -> bool:
+        return self._filling_tank is not None
+
     def __call__(
         self, sensor_values: BoilersSensorValues, parameters: BoilersParameters
     ):
@@ -443,8 +447,6 @@ class BoilersControl(
             lambda: (self._parameters.lt1_flowcontrol_minimum_setpoint, 1.0),
         )
 
-        self._lt1_flow_controller.enable()
-
         self._lt2_flow_controller = Controller[Ratio, Celsius](
             self._current_values.boilers_flowcontrol_lt2.setpoint.value,
             lambda: self._parameters.filling_temperature_setpoint,
@@ -452,8 +454,6 @@ class BoilersControl(
             self._time,
             lambda: (self._parameters.lt2_flowcontrol_minimum_setpoint, 1.0),
         )
-
-        self._lt2_flow_controller.enable()
 
         self._tanks_controller = TanksController(
             tank1=Tank(
@@ -508,9 +508,35 @@ class BoilersControl(
     ) -> ControlResult[BoilersControlValues]:
         self._tanks_controller(sensor_values, self._parameters)
         self._try_boosting(sensor_values)  # type: ignore
+        self._enable_filling_flow_control(sensor_values)
         self._control_filling_flow(sensor_values)
 
         return ControlResult(self._time(), self._current_values)
+
+    def _enable_filling_flow_control(self, sensor_values: BoilersSensorValues):
+        if self._tanks_controller.filling:
+            if not self._lt2_flow_controller.enabled():
+                self._lt2_flow_controller.enable()
+            if (
+                self._lt1_heat_available(sensor_values)
+                and not self._lt1_flow_controller.enabled()
+            ):
+                self._lt1_flow_controller.enable()
+
+        if not self._tanks_controller.filling or not self._lt1_heat_available(
+            sensor_values
+        ):
+            if self._lt1_flow_controller.enabled():
+                self._lt1_flow_controller.disable()
+                self._current_values.boilers_flowcontrol_lt1.setpoint = Stamped(
+                    value=0.0, timestamp=self._time()
+                )
+        if not self._tanks_controller.filling:
+            if self._lt2_flow_controller.enabled():
+                self._lt2_flow_controller.disable()
+                self._current_values.boilers_flowcontrol_lt2.setpoint = Stamped(
+                    value=0.0, timestamp=self._time()
+                )
 
     def _control_filling_flow(self, sensor_values: BoilersSensorValues):
         self._lt1_flow_controller(
@@ -519,6 +545,9 @@ class BoilersControl(
         self._lt2_flow_controller(
             sensor_values.boilers_temperature_lt2_return.temperature.value
         )
+
+    def _lt1_heat_available(self, sensor_values: BoilersSensorValues) -> bool:
+        return sensor_values.lt1_flow_recovery.flow.value > 0.1
 
     def _set_valves_to_boosting_low_temperature(
         self, sensor_values: BoilersSensorValues

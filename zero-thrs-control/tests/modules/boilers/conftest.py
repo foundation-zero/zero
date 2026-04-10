@@ -1,7 +1,9 @@
 from datetime import datetime, timedelta
 from pytest import fixture
+from thrs.orchestration.cycler import Cycler
 
 from thrs.control.modules.boilers import (
+    BoilersAlarms,
     BoilersControl,
     BoilersParameters,
     Tank,
@@ -77,8 +79,18 @@ def control(executor) -> BoilersControl:
 
 
 @fixture
+def alarms() -> BoilersAlarms:
+    return BoilersAlarms()
+
+
+@fixture
 def parameters() -> BoilersParameters:
     return BoilersParameters()
+
+
+@fixture()
+def cycler(control: BoilersControl, executor, alarms: BoilersAlarms) -> Cycler:
+    return Cycler(control, executor, alarms)
 
 
 @fixture

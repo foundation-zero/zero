@@ -1,8 +1,11 @@
-from typing import Annotated
+from typing import Annotated, cast
+
+from pydantic import computed_field
 
 from thrs.input_output.base import (
     SimulationInputs,
     SimulationValues,
+    Stamped,
     ThrsValues,
     component_meta,
 )
@@ -179,6 +182,12 @@ class BoilersSensorValues(ThrsValues):
             yard_tag="50001067-18", component_type="valve", valve_type="switch"
         ),
     ]
+    lt1_flow_recovery: Annotated[
+        sensor.FlowSensor,
+        component_meta(
+            yard_tag="50001058-03", component_type="flow_sensor", included_in_fmu=False
+        ),
+    ]
     boilers_pressure_boosting: Annotated[
         sensor.PressureSensor,
         component_meta(yard_tag="50001097-11", component_type="pressure_sensor"),
@@ -304,6 +313,16 @@ class BoilersSimulationInputs(SimulationInputs):
     boilers_freshwater_supply: simulation.OverpressureTemperatureBoundary
     boilers_exchanger_gas: simulation.HeatSource
     boilers_seawater_supply: simulation.TemperatureBoundary
+
+    @computed_field
+    @property
+    def lt1_flow_recovery(
+        self,
+    ) -> Annotated[sensor.FlowSensor, component_meta(included_in_fmu=False)]:
+        return sensor.FlowSensor(
+            flow=cast(Stamped, self.boilers_lt1_supply.flow),
+            temperature=cast(Stamped, self.boilers_lt1_supply.temperature),
+        )
 
 
 class BoilersSimulationOutputs(SimulationValues):
