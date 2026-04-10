@@ -3,7 +3,7 @@ replicaCount: 1
 image:
   repository: europe-west1-docker.pkg.dev/common-449414/common/zero-loads-app
   pullPolicy: IfNotPresent
-  tag: ""
+  tag: "0.9.18"
 
 mqtt:
   host:
@@ -21,6 +21,15 @@ postgresql:
   existingSecretPasswordKey:
 
 api:
+  enabled: true
+  env: production
+  resources: {}
+  nodeSelector: {}
+  tolerations: []
+  affinity: {}
+
+sensorStub:
+  enabled: false
   env: production
   resources: {}
   nodeSelector: {}

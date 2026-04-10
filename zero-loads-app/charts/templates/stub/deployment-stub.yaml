@@ -1,0 +1,103 @@
+{{- if .Values.sensorStub.enabled }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "..fullname" . }}-sensor-stub
+  namespace: {{ .Release.Namespace }}
+  labels:
+    {{- include "..labels" . | nindent 4 }}
+    app.kubernetes.io/component: sensor-stub
+spec:
+  replicas: {{ .Values.sensorStub.replicaCount }}
+  selector:
+    matchLabels:
+      {{- include "..selectorLabels" . | nindent 6 }}
+      app.kubernetes.io/part-of: loads-app
+      app.kubernetes.io/component: sensor-stub
+  template:
+    metadata:
+      {{- with .Values.sensorStub.podAnnotations }}
+      annotations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      labels:
+        {{- include "..labels" . | nindent 8 }}
+        {{- with .Values.sensorStub.podLabels }}
+        {{- toYaml . | nindent 8 }}
+        {{- end }}
+        app.kubernetes.io/part-of: loads-app
+        app.kubernetes.io/component: sensor-stub
+    spec:
+      {{- with .Values.sensorStub.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      securityContext:
+        fsGroupChangePolicy: Always
+        sysctls: []
+        supplementalGroups: []
+        fsGroup: 1001
+      containers:
+        - name: sensor-stub
+          command: ["python", "-m", "loads", "sensors-stub"]
+          securityContext:
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop:
+              - ALL
+            privileged: false
+            readOnlyRootFilesystem: true
+            runAsGroup: 1001
+            runAsNonRoot: true
+            runAsUser: 1001
+            seLinuxOptions: {}
+            seccompProfile:
+              type: RuntimeDefault
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          
+          {{- with .Values.sensorStub.resources }}
+          resources:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+          env:
+            - name: ENV
+              value: {{ .Values.api.env | quote }}
+            - name: PG_HOST
+              value: {{ .Values.postgresql.host | quote }}
+            - name: PG_PORT
+              value: {{ .Values.postgresql.port | quote }}
+            - name: PG_USER
+              value: {{ .Values.postgresql.user | quote }}
+            - name: PG_PASSWORD
+              valueFrom:
+                secretKeyRef: 
+                  name: {{ .Values.postgresql.existingSecret }}
+                  key: {{ .Values.postgresql.existingSecretPasswordKey }}
+            - name: PG_DB
+              value: {{ .Values.postgresql.db | quote }}
+            - name: MQTT_HOST
+              value: {{ .Values.mqtt.host | quote }}
+            - name: MQTT_PORT
+              value: {{ .Values.mqtt.port | quote }}
+            - name: MQTT_USERNAME
+              value: {{ .Values.mqtt.username | quote }}
+            - name: MQTT_PASSWORD
+              valueFrom:
+                secretKeyRef: 
+                  name: {{ .Values.mqtt.existingSecret }}
+                  key: {{ .Values.mqtt.existingSecretPasswordKey }}
+
+      {{- with .Values.sensorStub.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.sensorStub.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.sensorStub.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+{{- end }}
