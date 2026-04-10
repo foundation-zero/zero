@@ -22,7 +22,7 @@ control:
   ingress:
     enabled: false
     hostname: ""
-    className: ""
+    className: tailscale
 
 simulation:
   enabled: false
