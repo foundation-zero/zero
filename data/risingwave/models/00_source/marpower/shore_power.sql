@@ -5,4 +5,4 @@ CREATE TABLE {{ this }} (
 	"Total_Power_Factor"	{{ marpower_struct("REAL") }},
 )
 INCLUDE partition AS topic
-{{ mqtt_with('marpower/hydro/#') }}
+{{ mqtt_with('marpower/shore-power') }}
