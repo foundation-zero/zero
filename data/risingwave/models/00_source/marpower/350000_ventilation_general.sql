@@ -13,6 +13,7 @@ CREATE TABLE {{ this }} (
 	"BATT_VENT_AFT_SB_ON_READY"	{{ marpower_struct("BOOLEAN") }},
 	"BATT_VENT_AFT_PS_SPEED"	{{ marpower_struct("REAL") }},
 	"BATT_VENT_AFT_SB_SPEED"	{{ marpower_struct("REAL") }},
+	"MTS_TEMPERATURE"	{{ marpower_struct("REAL") }},
 	"EXTR_TECH_SPACE_STARTSTOP"	{{ marpower_struct("BOOLEAN") }},
 	"FP_FR10_PS_ONOFF"	{{ marpower_struct("BOOLEAN") }},
 	"FP_FR10_PS_SPEED_LOWHIGH"	{{ marpower_struct("BOOLEAN") }},

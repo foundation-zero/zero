@@ -2,7 +2,7 @@
 CREATE TABLE {{ this }} (
 	time TIMESTAMPTZ AS proctime(),
 	"SpeedSetpoint"	{{ marpower_struct("INTEGER") }},
-	"SpeedCtrlMode"	{{ marpower_struct("BOOLEAN") }},
+	"CtrlMode"	{{ marpower_struct("INTEGER") }},
 	"Stop"	{{ marpower_struct("BOOLEAN") }},
 	"TempMan"	{{ marpower_struct("BOOLEAN") }},
 	"IGBTCool"	{{ marpower_struct("BOOLEAN") }},
