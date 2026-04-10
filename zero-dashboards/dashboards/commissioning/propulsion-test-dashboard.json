@@ -18,7 +18,7 @@
   "editable": true,
   "fiscalYearStartMonth": 0,
   "graphTooltip": 0,
-  "id": 0,
+  "id": 16,
   "links": [
     {
       "asDropdown": true,
@@ -3410,7 +3410,13 @@
       "options": {
         "cellHeight": "sm",
         "enablePagination": false,
-        "showHeader": true
+        "showHeader": true,
+        "sortBy": [
+          {
+            "desc": false,
+            "displayName": "Device"
+          }
+        ]
       },
       "pluginVersion": "12.3.0",
       "targets": [
@@ -3750,7 +3756,7 @@
       },
       "id": 26,
       "panels": [],
-      "title": "Thermal",
+      "title": "Cooling circuit",
       "type": "row"
     },
     {
@@ -5290,7 +5296,31 @@
           {
             "matcher": {
               "id": "byRegexp",
-              "options": "/torque/"
+              "options": "/[tT]orque/"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "forceNm"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byRegexp",
+              "options": "/Relative/"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "percent"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Speed prop"
             },
             "properties": [
               {
@@ -5301,13 +5331,173 @@
           },
           {
             "matcher": {
-              "id": "byRegexp",
-              "options": "/[E|e]fficiency/"
+              "id": "byName",
+              "options": "Loss"
             },
             "properties": [
               {
                 "id": "unit",
-                "value": "percent"
+                "value": "forceNm"
+              }
+            ]
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 5,
+        "w": 24,
+        "x": 0,
+        "y": 52
+      },
+      "id": 58,
+      "options": {
+        "cellHeight": "sm",
+        "enablePagination": false,
+        "showHeader": true,
+        "sortBy": [
+          {
+            "desc": false,
+            "displayName": "Speed prop"
+          }
+        ]
+      },
+      "pluginVersion": "12.3.0",
+      "targets": [
+        {
+          "dataset": "dev",
+          "datasource": {
+            "type": "grafana-postgresql-datasource",
+            "uid": "${datasource}"
+          },
+          "editorMode": "code",
+          "format": "table",
+          "rawQuery": true,
+          "rawSql": "WITH aradex_data AS (\r\n    SELECT\r\n        LAST_VALUE(time ORDER BY time)                                           AS time,\r\n        LAST_VALUE((\"SpeedorTorqueSetpointSignal(Aradex1)\").value ORDER BY time) AS torque_setpoint\r\n    FROM marpower.thruster\r\n    WHERE topic = 'marpower/thruster/' || lower('$aft_fwd')\r\n),\r\nmotor_data AS (\r\n    SELECT\r\n        LAST_VALUE(time ORDER BY time)             AS time,\r\n        LAST_VALUE((\"Speed\").value ORDER BY time)  AS prop_speed,\r\n        LAST_VALUE((\"Torque\").value ORDER BY time) AS prop_torque\r\n    FROM marpower.externalmotor\r\n),\r\ncombined AS (\r\n    SELECT\r\n        a.time,\r\n        a.torque_setpoint,\r\n        a.torque_setpoint * (m.prop_speed * m.prop_speed) AS expected_prop_torque,\r\n        m.prop_speed,\r\n        m.prop_torque,\r\n        m.prop_torque / $gear_ratio                       AS ideal_torque_thruster\r\n    FROM aradex_data a\r\n    JOIN motor_data m ON m.time >= a.time\r\n)\r\nSELECT\r\n    time,\r\n    prop_speed,\r\n    torque_setpoint,\r\n    expected_prop_torque,\r\n    prop_torque,\r\n    ideal_torque_thruster,\r\n    expected_prop_torque - prop_torque                          AS prop_torque_loss,\r\n    100* (expected_prop_torque - prop_torque) / expected_prop_torque AS prop_torque_rel_loss\r\nFROM combined",
+          "refId": "A",
+          "sql": {
+            "columns": [
+              {
+                "parameters": [],
+                "type": "function"
+              }
+            ],
+            "groupBy": [
+              {
+                "property": {
+                  "type": "string"
+                },
+                "type": "groupBy"
+              }
+            ],
+            "limit": 50
+          }
+        }
+      ],
+      "title": "Loss",
+      "transformations": [
+        {
+          "id": "organize",
+          "options": {
+            "excludeByName": {},
+            "includeByName": {},
+            "indexByName": {},
+            "renameByName": {
+              "?column?": "",
+              "device": "Device",
+              "efficiency1": "Efficiency (given gear ratio)",
+              "efficiency2": "Efficiency (measured gear ratio)",
+              "efficiency_1": "",
+              "efficiency_2": "Efficiency (measured gear ratio)",
+              "expected_motor_torque": "Expected torque (propshaft)",
+              "expected_prop_torque": "Ideal torque prop",
+              "flow": "Flow",
+              "gear_ratio": "Gear ratio (measured)",
+              "gear_ratio_measured": "Gear ratio (measured)",
+              "gear_ratio_rel_error": "Gear ratio relative error (%)",
+              "ideal_torque1": "Ideal torque (fixed gear ratio)",
+              "ideal_torque2": "Ideal torque (measured gear ratio)",
+              "ideal_torque_thruster": "Ideal torque thruster",
+              "ideal_torque_thruster_measured": "Ideal torque thruster (measured gear ratio)",
+              "pressure": "Pressure",
+              "prop_speed": "Speed prop",
+              "prop_torque": "Measured torque prop",
+              "prop_torque_loss": "Loss",
+              "prop_torque_rel_loss": "Relative loss",
+              "seq_nr": "",
+              "speed": "Speed",
+              "speed_torque_setpoint": "Speed/Torque setpoint",
+              "temperature": "Temperature",
+              "temperature_delta": "T delta",
+              "temperature_in": "T in",
+              "temperature_out": "T out",
+              "torque": "Torque",
+              "torque_setpoint": "Torque setpoint"
+            }
+          }
+        }
+      ],
+      "type": "table"
+    },
+    {
+      "datasource": {
+        "type": "grafana-postgresql-datasource",
+        "uid": "${datasource}"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "custom": {
+            "align": "left",
+            "cellOptions": {
+              "type": "auto"
+            },
+            "filterable": false,
+            "footer": {
+              "reducers": []
+            },
+            "inspect": false,
+            "minWidth": 125
+          },
+          "decimals": 2,
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": 0
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "time"
+            },
+            "properties": [
+              {
+                "id": "custom.hideFrom.viz",
+                "value": true
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byRegexp",
+              "options": "/[Tt]orque/"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "forceNm"
               }
             ]
           },
@@ -5334,6 +5524,18 @@
                 "value": 125
               }
             ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Gear ratio relative error"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "percent"
+              }
+            ]
           }
         ]
       },
@@ -5341,13 +5543,19 @@
         "h": 5,
         "w": 24,
         "x": 0,
-        "y": 52
+        "y": 57
       },
-      "id": 58,
+      "id": 60,
       "options": {
         "cellHeight": "sm",
         "enablePagination": false,
-        "showHeader": true
+        "showHeader": true,
+        "sortBy": [
+          {
+            "desc": true,
+            "displayName": "Expected motor torque"
+          }
+        ]
       },
       "pluginVersion": "12.3.0",
       "targets": [
@@ -5360,7 +5568,7 @@
           "editorMode": "code",
           "format": "table",
           "rawQuery": true,
-          "rawSql": "\r\nWITH aradex_calculations AS (\r\n\tWITH aradex_data AS (\r\n\t\tSELECT\r\n\t\t  LAST_VALUE(time ORDER BY time) AS time,\r\n\t\t  'Aradex 1' AS device,\r\n\t\t  LAST_VALUE((\"Aradex_1_speed_feedback\").value ORDER BY time) AS speed,\r\n\t\t  LAST_VALUE((\"Aradex_1_torque_feedback\").value ORDER BY time) AS torque,\r\n\t\t  LAST_VALUE((\"SpeedorTorqueSetpointSignal(Aradex1)\").value ORDER BY time) AS torque_setpoint\r\n\t\tFROM marpower.thruster\r\n\t\tWHERE topic = 'marpower/thruster/' || lower('$aft_fwd')\r\n\t\tUNION ALL\r\n\t\tSELECT\r\n\t\t  LAST_VALUE(time ORDER BY time) AS time,\r\n\t\t  'Aradex 2' AS device,\r\n\t\t  LAST_VALUE((\"Aradex_2_speed_feedback\").value ORDER BY time) AS speed,\r\n\t\t  LAST_VALUE((\"Aradex_2_torque_feedback\").value ORDER BY time) AS torque,\r\n\t\t  LAST_VALUE((\"SpeedorTorqueSetpointSignal(Aradex2)\").value ORDER BY time) AS torque_setpoint\r\n\t\tFROM marpower.thruster\r\n\t\tWHERE topic = 'marpower/thruster/' || lower('$aft_fwd')\r\n\t),\r\n\tmotor_data AS (\r\n\t\tSELECT\r\n\t\t\tLAST_VALUE(time ORDER BY time) AS time,\r\n\t\t\tLAST_VALUE((\"Speed\").value ORDER BY time) AS speed,\r\n\t\t\tLAST_VALUE((\"Torque\").value ORDER BY time) AS torque\r\n\t\tFROM marpower.externalmotor\r\n\t)\r\n\tSELECT\r\n\t\taradex.time,\r\n\t\taradex.device,\r\n\t\taradex.speed AS aradex_speed,\r\n\t\taradex.torque AS aradex_torque,\r\n\t\taradex.torque_setpoint as aradex_torque_setpoint,\r\n\t\text_motor.speed AS motor_speed,\r\n\t\text_motor.torque AS motor_torque,\r\n\t\taradex.speed / ext_motor.speed AS gear_ratio\r\n\tFROM aradex_data AS aradex\r\n\tJOIN motor_data AS ext_motor ON ext_motor.time >= aradex.time\r\n)\r\nSELECT\r\n\ttime,\r\n\tdevice,\r\n\tgear_ratio,\r\n\taradex_torque_setpoint / (motor_torque * motor_torque)\tAS expected_motor_torque,\r\n\tmotor_torque / $gear_ratio\t\t\t\t\t\t\t\t\t\t\t\t\t\t\tAS ideal_torque1, -- ideal torque (given ratio)\r\n\tmotor_torque / gear_ratio\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\tAS ideal_torque2, -- ideal torque (measured ratio)\r\n\t(motor_torque * 100 / $gear_ratio) / motor_torque\t\t\t\tAS efficiency1,\t\t-- efficiency (given ratio)\r\n\t(motor_torque * 100 / gear_ratio) / motor_torque\t\t\t\tAS efficiency2\t\t-- efficiency (measured ratio)\r\nFROM aradex_calculations\r\nORDER BY device\r\n",
+          "rawSql": "\r\nWITH aradex_calculations AS (\r\n\tWITH aradex_data AS (\r\n\t\tSELECT\r\n\t\t  LAST_VALUE(time ORDER BY time) AS time,\r\n\t\t  'Aradex 1' AS device,\r\n\t\t  LAST_VALUE((\"Aradex_1_speed_feedback\").value ORDER BY time) AS speed,\r\n\t\t  LAST_VALUE((\"Aradex_1_torque_feedback\").value ORDER BY time) AS torque\r\n\t\tFROM marpower.thruster\r\n\t\tWHERE topic = 'marpower/thruster/' || lower('$aft_fwd')\r\n\t\tUNION ALL\r\n\t\tSELECT\r\n\t\t  LAST_VALUE(time ORDER BY time) AS time,\r\n\t\t  'Aradex 2' AS device,\r\n\t\t  LAST_VALUE((\"Aradex_2_speed_feedback\").value ORDER BY time) AS speed,\r\n\t\t  LAST_VALUE((\"Aradex_2_torque_feedback\").value ORDER BY time) AS torque\r\n\t\tFROM marpower.thruster\r\n\t\tWHERE topic = 'marpower/thruster/' || lower('$aft_fwd')\r\n\t),\r\n\tmotor_data AS (\r\n\t\tSELECT\r\n\t\t\tLAST_VALUE(time ORDER BY time) AS time,\r\n\t\t\tLAST_VALUE((\"Speed\").value ORDER BY time) AS speed,\r\n\t\t\tLAST_VALUE((\"Torque\").value ORDER BY time) AS torque\r\n\t\tFROM marpower.externalmotor\r\n\t)\r\n\tSELECT\r\n\t\taradex.time,\r\n\t\taradex.device,\r\n\t\taradex.speed AS aradex_speed,\r\n\t\taradex.torque AS aradex_torque,\r\n\t\text_motor.speed AS prop_speed,\r\n\t\text_motor.torque AS prop_torque,\r\n\t\taradex.speed / ext_motor.speed AS gear_ratio_measured\r\n\tFROM aradex_data AS aradex\r\n\tJOIN motor_data AS ext_motor ON ext_motor.time >= aradex.time\r\n)\r\nSELECT\r\n\ttime,\r\n\tdevice,\r\n\tgear_ratio_measured,\r\n\t100 * (gear_ratio_measured - $gear_ratio) / $gear_ratio AS gear_ratio_rel_error,\r\n\tprop_torque,\r\n\taradex_torque,\r\n\tprop_torque / $gear_ratio\t\t\t\t\t\t\t\t\t\t\t\t\t\t\tAS ideal_torque_aradex, -- ideal torque (given ratio)\r\n\tprop_torque / gear_ratio_measured\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\tAS ideal_torque_thruster_measured -- ideal torque (measured ratio)\r\nFROM aradex_calculations\r\nORDER BY device\r\n",
           "refId": "A",
           "sql": {
             "columns": [
@@ -5390,17 +5598,28 @@
             "includeByName": {},
             "indexByName": {},
             "renameByName": {
+              "?column?": "",
+              "aradex_torque": "Torque Aradex",
               "device": "Device",
               "efficiency1": "Efficiency (given gear ratio)",
               "efficiency2": "Efficiency (measured gear ratio)",
               "efficiency_1": "",
               "efficiency_2": "Efficiency (measured gear ratio)",
-              "expected_motor_torque": "Expected motor torque",
+              "expected_motor_torque": "Expected torque (propshaft)",
+              "expected_prop_torque": "Ideal prop torque (Nm)",
               "flow": "Flow",
-              "gear_ratio": "Gear ratio",
-              "ideal_torque1": "Ideal torque (given gear ratio)",
+              "gear_ratio": "Gear ratio (measured)",
+              "gear_ratio_measured": "Gear ratio",
+              "gear_ratio_rel_error": "Gear ratio relative error",
+              "ideal_torque1": "Ideal torque (fixed gear ratio)",
               "ideal_torque2": "Ideal torque (measured gear ratio)",
+              "ideal_torque_aradex": "Idea torque Aradex",
+              "ideal_torque_thruster": "Ideal torque thruster",
+              "ideal_torque_thruster_measured": "Ideal torque Aradex (measured gear ratio)",
               "pressure": "Pressure",
+              "prop_torque": "Measured torque prop",
+              "prop_torque_loss": "Torque loss (Nm)",
+              "prop_torque_rel_loss": "Torque relative loss (%)",
               "seq_nr": "",
               "speed": "Speed",
               "speed_torque_setpoint": "Speed/Torque setpoint",
@@ -5458,7 +5677,7 @@
         "h": 4,
         "w": 24,
         "x": 0,
-        "y": 57
+        "y": 62
       },
       "id": 53,
       "options": {
@@ -5982,5 +6201,5 @@
   "timezone": "browser",
   "title": "Propulsion test",
   "uid": "commissioning-propulsion-test",
-  "version": 1
+  "version": 3
 }
