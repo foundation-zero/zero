@@ -183,9 +183,15 @@ class SimulationValues(ThrsValues):
             for component_name, component in cls.model_fields.items()
         }
 
+        methods = {
+            method_name: getattr(cls, method_name)
+            for method_name in cls.model_computed_fields
+        }
+
         SelectedInputsModel = create_model(
             cls.__name__,
             __base__=SimulationValues,
+            __validators__=methods,
             **components,  # type: ignore
         )  # type: ignore
 
