@@ -41,7 +41,7 @@ const label = computed(() => {
 <template>
   <span
     v-if="label"
-    class="text-muted-foreground ml-1 text-sm"
+    class="text-muted-foreground ml-1 overflow-x-hidden text-sm text-ellipsis"
     :class="cn(props.class)"
   >
     {{ label }}
