@@ -42,5 +42,6 @@ span {
   transform: translateY(1.25rem) scale(0.94);
   text-shadow: 0 0 30px color-mix(in srgb, var(--brand-dull) 24%, transparent);
   animation: zero-letter cubic-bezier(0.2, 1, 0.3, 1) forwards;
+  animation-delay: var(--letter-delay);
 }
 </style>

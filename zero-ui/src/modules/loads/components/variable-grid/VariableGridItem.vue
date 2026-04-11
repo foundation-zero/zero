@@ -57,7 +57,7 @@ const overhoist = computed(() => {
     class="col-span-1 w-full max-w-full"
   >
     <VariableCardTitle>{{ variable?.variable?.name }}</VariableCardTitle>
-    <div class="w-full">
+    <div class="flex w-full flex-nowrap items-baseline-last whitespace-nowrap">
       <VariableCardValue />
       <VariableCardState
         :min="variable?.variable.scaleMin"
@@ -76,7 +76,7 @@ const overhoist = computed(() => {
     :thresholds="variable?.reference"
     :value="<number>variable.actual?.value"
     :scale="[variable.variable.scaleMin, variable.variable.scaleMax]"
-    class="col-span-2 w-full max-w-full"
+    class="col-span-1 w-full max-w-full"
   >
     <VariableCardTitle class="-mt-2 w-full justify-center">{{
       variable?.variable?.name
@@ -84,7 +84,7 @@ const overhoist = computed(() => {
   </LoadsCard>
   <PositionCard
     v-else
-    class="col-span-2 w-full"
+    class="col-span-1 w-full"
     :thresholds="variable?.reference"
     :value="<number>variable.actual?.value"
   >

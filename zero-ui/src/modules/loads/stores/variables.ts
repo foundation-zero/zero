@@ -82,9 +82,9 @@ export const useVariablesStore = defineStore("loads-variables", () => {
   });
 
   const positionGroups = computed(() => [
-    position("Main", PositionId.Main),
     position("Mizzen", PositionId.Mizzen, PositionId.MizzenFore),
-    position("Foresails", PositionId.ForeInner, PositionId.ForeOuter),
+    position("Main", PositionId.Main),
+    position("Headsails", PositionId.ForeInner, PositionId.ForeOuter),
   ]);
 
   const selectedSails = useLocalStorage<SailSelection>(
@@ -161,12 +161,14 @@ export const useVariablesStore = defineStore("loads-variables", () => {
     }
   });
 
-  const availableDashboards = computed(
-    () =>
-      sails.value.filter(
+  const availableDashboards = computed(() =>
+    positionGroups.value
+      .flatMap(({ positions }) => positions)
+      .flatMap(({ sails }) => sails)
+      .filter(
         (sail) =>
           selectedSailIds.value.includes(sail.id) && DASHBOARDS.some((d) => d.id === sail.id),
-      ) ?? [],
+      ),
   );
 
   const setDashboard = (sail: DashboardId) => {
