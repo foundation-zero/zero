@@ -22,6 +22,7 @@ docker compose --profile <profile_name> up
 |---------|-------------|-------------------|
 | `zero` | Core infrastructure services required for the platform foundation. | MQTT, Postgres, RisingWave, Hasura, Home Assistant |
 | `data` | Tools for data generation and DBT model generation. | Core Infra + Data Generators, DBT |
+| `data-collection` | Ingestion pipeline for collecting MQTT data and storing time-series data. | Core Infra + Vector, GreptimeDB |
 | `domestic` | The Domestic Control application for home automation logic. | Core Infra, Domestic Control API, Control and Stub |
 | `loads` | The Loads subsystem for capturing and exposing rigging loads (and other relevated values). | Core Infra, Loads API, Control and Stubs |
 | `thrs` | The THRS (Thermal Harvesting & Recovery System) Application stack. | MQTT, THRS Control, THRS Simulation |
@@ -42,6 +43,10 @@ docker compose --profile <profile_name> up
 ### Data Tools
 *   **data-gen**: Python tool to generate synthetic data for testing.
 *   **dbt-gen**: Generates DBT models for data transformation.
+
+### Data Collection
+*   **vector**: Collects and routes MQTT events into the time-series backend.
+*   **greptimedb**: Time-series database used to store and query collected telemetry.
 
 ### Domestic Control
 *   **domestic-control-api**: GraphQL API service for the domestic control application.

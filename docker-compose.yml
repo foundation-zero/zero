@@ -213,6 +213,50 @@ services:
       postgres:
         condition: service_healthy
 
+  # ---- data collection ----
+  vector:
+    image: timberio/vector:0.54.0-debian
+    profiles:
+      - data-collection
+    command: -c /etc/vector-config.yaml
+    environment:
+      MQTT_HOST: vernemq
+      MQTT_PORT: 1883
+      MQTT_USER: ${PG_USER}
+      MQTT_PASSWORD: ${PG_PASSWORD}
+      GREPTIMEDB_HOST: greptimedb
+      GREPTIMEDB_PORT: 4000
+    volumes:
+      - ./vector/config.yaml:/etc/vector-config.yaml
+      - ./vector/marpower:/etc/vector/
+    depends_on:
+      vernemq:
+        condition: service_healthy
+      greptimedb:
+        condition: service_healthy
+
+  greptimedb:
+    image: greptime/greptimedb:v1.0.0
+    security_opt:
+      - seccomp=unconfined
+    ports:
+      - "4000-4003:4000-4003"
+    restart: always
+    profiles:
+      - data-collection
+    healthcheck:
+      test: ["CMD-SHELL", "curl --silent --fail http://localhost:4000/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    command: >
+      standalone start
+      --http-addr 0.0.0.0:4000
+      --rpc-bind-addr 0.0.0.0:4001
+      --mysql-addr 0.0.0.0:4002
+      --postgres-addr 0.0.0.0:4003
+
+
   # ---- domestic-control ----
   domestic-control-api:
     command: api
