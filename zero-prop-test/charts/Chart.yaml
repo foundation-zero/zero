@@ -1,0 +1,6 @@
+apiVersion: v2
+name: zero-prop-test-chart
+description: Zero propulsion test data collection service (TwinCAT mode).
+type: application
+version: 0.0.0
+appVersion: 0.0.0

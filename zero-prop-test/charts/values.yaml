@@ -1,0 +1,37 @@
+# Required: IP address this service is reachable at from TwinCAT.
+# Used as the external IP of the LoadBalancer service.
+# TWINCAT_SELF_NETID is derived by appending ".1" (e.g. 10.0.0.5 -> 10.0.0.5.1).
+selfIp: ""
+
+# Required: MQTT configuration
+mqtt:
+  host: ""
+  port: 1883
+  username: prop-test
+  existingSecret: ""
+  existingSecretPasswordKey: password
+
+# Required: TwinCAT configuration
+twincat:
+  ip: ""
+  netid: ""
+  username: ""
+  routeName: ""
+  existingSecret: ""
+  existingSecretPasswordKey: password
+
+image:
+  repository: europe-west1-docker.pkg.dev/common-449414/common/zero-prop-test
+  pullPolicy: IfNotPresent
+  tag: ""
+
+resources: {}
+
+imagePullSecrets: []
+
+service:
+  labels: {}
+  annotations: {}
+
+nameOverride: ""
+fullnameOverride: ""

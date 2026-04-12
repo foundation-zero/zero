@@ -9,7 +9,7 @@ from pyads import (
     set_local_address,
 )
 
-from zero_prop_test.settings import Settings
+from zero_prop_test.settings import TwinCatSettings
 
 
 logger = logging.getLogger(__name__)
@@ -21,7 +21,7 @@ class Client:
 
     @contextmanager
     @staticmethod
-    def from_settings(settings: Settings) -> "Generator[Client, None, None]":
+    def from_settings(settings: TwinCatSettings) -> "Generator[Client, None, None]":
         set_local_address(settings.twincat_self_netid)
         plc = Connection(
             settings.twincat_netid,

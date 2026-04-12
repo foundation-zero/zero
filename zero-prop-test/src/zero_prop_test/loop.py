@@ -1,6 +1,7 @@
 from asyncio import TaskGroup, sleep
+from contextlib import asynccontextmanager
 from datetime import timedelta, datetime
-from typing import Any, Sequence
+from typing import Any, AsyncGenerator, Sequence
 
 from pydantic import BaseModel
 
@@ -11,7 +12,7 @@ from zero_prop_test.io_link import (
 )
 from zero_prop_test.modbus import Address as ModbusAddress
 from zero_prop_test.modbus import Client as ModbusClient
-from zero_prop_test.settings import Settings
+from zero_prop_test.settings import MqttSettings
 from zero_prop_test.twincat import Client as TwinCatClient
 from zero_prop_test.twincat import TwinCatVariable
 from aiomqtt import Client as MqttClient
@@ -41,26 +42,27 @@ class Loop:
         self._interval = interval
 
     @staticmethod
-    def from_settings(
-        settings: Settings,
+    @asynccontextmanager
+    async def from_settings(
+        settings: MqttSettings,
         iolink_client: IoLinkClient | None = None,
         modbus_client: ModbusClient | None = None,
         twincat_client: TwinCatClient | None = None,
         interval: timedelta = timedelta(seconds=1),
-    ) -> "Loop":
-        mqtt = MqttClient(
+    ) -> AsyncGenerator["Loop", None]:
+        async with MqttClient(
             hostname=settings.mqtt_host,
             port=settings.mqtt_port,
             username=settings.mqtt_username,
             password=settings.mqtt_password,
-        )
-        return Loop(
-            mqtt=mqtt,
-            interval=interval,
-            iolink_client=iolink_client,
-            modbus_client=modbus_client,
-            twincat_client=twincat_client,
-        )
+        ) as mqtt:
+            yield Loop(
+                mqtt=mqtt,
+                interval=interval,
+                iolink_client=iolink_client,
+                modbus_client=modbus_client,
+                twincat_client=twincat_client,
+            )
 
     async def _collect_one(self, address: AddressType) -> DeviceType:
         if isinstance(address, IoLinkDevice):
