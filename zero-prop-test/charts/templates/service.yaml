@@ -15,7 +15,7 @@ metadata:
 spec:
   type: LoadBalancer
   externalIPs:
-    - {{ .Values.selfIp }}
+    - {{ .Values.twincat.externalIp }}
   ports:
     - port: 48898
       targetPort: 48898

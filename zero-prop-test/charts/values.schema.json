@@ -1,13 +1,8 @@
 {
   "$schema": "http://json-schema.org/draft-07/schema#",
   "type": "object",
-  "required": ["selfIp", "mqtt", "twincat"],
+  "required": ["mqtt", "twincat"],
   "properties": {
-    "selfIp": {
-      "type": "string",
-      "description": "IP address of this service as seen by TwinCAT. Used as the external IP of the ClusterIP service. TWINCAT_SELF_NETID is set to selfIp + '.1'.",
-      "minLength": 1
-    },
     "mqtt": {
       "type": "object",
       "required": ["host", "existingSecret"],
@@ -40,8 +35,20 @@
     },
     "twincat": {
       "type": "object",
-      "required": ["ip", "netid", "username", "routeName", "existingSecret"],
+      "required": [
+        "externalIp",
+        "ip",
+        "netid",
+        "username",
+        "routeName",
+        "existingSecret"
+      ],
       "properties": {
+        "externalIp": {
+          "type": "string",
+          "description": "IP address of this service as seen by TwinCAT. Used as the external IP of the LoadBalancer service. TWINCAT_SELF_NETID is set to externalIp + '.1'.",
+          "minLength": 1
+        },
         "ip": {
           "type": "string",
           "description": "IP address of the TwinCAT PLC.",

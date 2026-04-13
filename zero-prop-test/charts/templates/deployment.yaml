@@ -45,7 +45,7 @@ spec:
             {{- toYaml .Values.resources | nindent 12 }}
           env:
             - name: TWINCAT_SELF_NETID
-              value: "{{ .Values.selfIp }}.1"
+              value: "{{ .Values.twincat.externalIp }}.1"
             - name: MQTT_HOST
               value: {{ .Values.mqtt.host | quote }}
             - name: MQTT_PORT

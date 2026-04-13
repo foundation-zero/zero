@@ -1,8 +1,3 @@
-# Required: IP address this service is reachable at from TwinCAT.
-# Used as the external IP of the LoadBalancer service.
-# TWINCAT_SELF_NETID is derived by appending ".1" (e.g. 10.0.0.5 -> 10.0.0.5.1).
-selfIp: ""
-
 # Required: MQTT configuration
 mqtt:
   host: ""
@@ -13,6 +8,10 @@ mqtt:
 
 # Required: TwinCAT configuration
 twincat:
+  # Required: IP address this service is reachable at from TwinCAT.
+  # Used as the external IP of the LoadBalancer service.
+  # TWINCAT_SELF_NETID is derived by appending ".1" (e.g. 10.0.0.5 -> 10.0.0.5.1).
+  externalIp: ""
   ip: ""
   netid: ""
   username: ""
