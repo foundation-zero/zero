@@ -21,7 +21,6 @@ postgresql:
   existingSecretPasswordKey:
 
 api:
-  enabled: true
   env: production
   resources: {}
   nodeSelector: {}

@@ -98,11 +98,9 @@ async def _run_data_generator(
 ):
     async with DataGenerator.init_from_settings(settings, id) as data_gen:
         configs: list[GeneratorConfig] = [
-          config
-          for module in ensure_list(modules)
-          for config in module
+            config for module in ensure_list(modules) for config in module.gen_config()
         ]
-        await data_gen.generate(config=config)
+        await data_gen.generate(config=configs)
 
 
 class SailSystemSensorsStubCmd(GeneratorSettings):
@@ -140,7 +138,7 @@ class SensorsStubCmd(GeneratorSettings):
         )
 
         logger.info(
-            f"Running all sensor stubs, using the following modules: {messaging_module_names}..."
+            f"Running sensor stubs, using the following modules: {messaging_module_names}..."
         )
 
         await _run_data_generator(self, "all_sensors_stub_generator", messaging_modules)
@@ -163,7 +161,7 @@ class ZeroLoads(BaseSettings, cli_kebab_case=True):
     at_sensors_stub: CliSubCommand[ATSensorsStubCmd]
     fiber_optic_sensors_stub: CliSubCommand[FiberOpticSensorsStubCmd]
     sail_system_sensors_stub: CliSubCommand[SailSystemSensorsStubCmd]
-    sensors_stub: CliSubCommand[SensorsStubCMD]
+    sensors_stub: CliSubCommand[SensorsStubCmd]
 
     def cli_cmd(self) -> None:
         CliApp.run_subcommand(self)
