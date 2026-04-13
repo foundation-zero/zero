@@ -24,12 +24,12 @@ transforms:
     type: remap
     inputs: ["take_msg"]
     files:
-      - "./marpower/0_consts.vrl"
-      - "./marpower/1_table.vrl"
-      - "./marpower/2_flatten.vrl"
-      - "./marpower/3_timestamp.vrl"
-      - "./marpower/4_spell_fix.vrl"
-      - "./marpower/5_snakecase.vrl"
+      - "./processing/0_consts.vrl"
+      - "./processing/1_table.vrl"
+      - "./processing/2_flatten.vrl"
+      - "./processing/3_timestamp.vrl"
+      - "./processing/4_spell_fix.vrl"
+      - "./processing/5_snakecase.vrl"
 
 sinks:
   output:

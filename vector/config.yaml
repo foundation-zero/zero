@@ -10,7 +10,9 @@ sources:
     port: ${MQTT_PORT}
     decoding:
       codec: json
-    topic: "marpower/#"
+    topic: 
+      - "marpower/#"
+      - "prop-test/#"
     user: "${MQTT_USER}"
     password: "${MQTT_PASSWORD}"
 transforms:
