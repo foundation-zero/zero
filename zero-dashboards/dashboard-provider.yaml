@@ -1,11 +1,12 @@
 apiVersion: 1
+
 providers:
-  - name: "dashboards"
+  - name: "embedded-dashboards"
     orgId: 1
+    folder: ""
     type: file
     disableDeletion: false
-    updateIntervalSeconds: 1
-    allowUiUpdates: true
+    editable: true
     options:
-      path: /dashboards
+      path: /embedded-dashboards
       foldersFromFilesStructure: true
