@@ -133,12 +133,8 @@ class SensorsStubCmd(GeneratorSettings):
             fiber_optic_sensors,
         ]
 
-        messaging_module_names = ", ".join(
-            module.display_name for module in messaging_modules
-        )
-
         logger.info(
-            f"Running sensor stubs, using the following modules: {messaging_module_names}..."
+            f"Running sensor stubs, using the following modules: {', '.join(module.display_name for module in messaging_modules)}..."
         )
 
         await _run_data_generator(self, "all_sensors_stub_generator", messaging_modules)

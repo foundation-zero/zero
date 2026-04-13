@@ -1,5 +1,5 @@
 import re
-from typing import List, TypeVar, Union
+from typing import TypeVar
 
 T = TypeVar("T")
 
@@ -23,6 +23,6 @@ def snake_to_title(text: str) -> str:
     return text.replace("_", " ").title()
 
 
-def ensure_list(x: Union[T, List[T]]) -> List[T]:
+def ensure_list(x: T | list[T]) -> list[T]:
     """Provide list or single object, return list in both cases"""
     return x if isinstance(x, list) else [x]
