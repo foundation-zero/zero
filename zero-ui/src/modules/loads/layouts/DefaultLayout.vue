@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import TopNavToolbar from "@/modules/common/components/top-nav/TopNavToolbar.vue";
-import TopNavZero from "@/modules/common/components/top-nav/TopNavZero.vue";
 import { toRefs } from "vue";
 import TopNav from "../../common/components/top-nav/TopNav.vue";
 import { AWASelector } from "../components/awa-selector";
@@ -8,7 +7,6 @@ import { AWSSelector } from "../components/aws-selector";
 import { CardTypeToggle } from "../components/card-type-toggle";
 import NavTabs from "../components/NavTabs.vue";
 import SailSelector from "../components/SailSelector.vue";
-import SystemAlerts from "../components/system-alerts/SystemAlerts.vue";
 import { WindConditions, WindConditionsLockTrigger } from "../components/wind-conditions";
 import { useVariablesStore } from "../stores/variables";
 
@@ -24,15 +22,6 @@ const { setAWA, setAWS, setCardType, lockWindConditions } = useVariablesStore();
     </Suspense>
   </main>
   <TopNav>
-    <TopNavToolbar class="border-0">
-      <template #right-content>
-        <SystemAlerts />
-      </template>
-      <template #center>
-        <TopNavZero />
-      </template>
-    </TopNavToolbar>
-
     <TopNavToolbar>
       <template #left>
         <SailSelector />
