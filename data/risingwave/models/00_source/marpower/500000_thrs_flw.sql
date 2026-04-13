@@ -6,4 +6,4 @@ CREATE TABLE {{ this }} (
 	"Temperature"	{{ marpower_struct("REAL") }},
 )
 INCLUDE partition AS topic
-{{ mqtt_with('marpower/500000-thrs/cooling/cooling-flow-hydronic') }}
+{{ mqtt_with('marpower/500000-thrs/flw/#') }}
