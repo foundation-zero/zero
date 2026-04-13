@@ -112,7 +112,8 @@ services:
       setup-postgres:
         condition: service_completed_successfully
   grafana:
-    image: "grafana/grafana:12.3.0"
+    build:
+      context: ./zero-dashboards
     command: []
     ports:
       - "3000:3000"
