@@ -332,29 +332,6 @@ services:
     environment:
       <<: *app_env
 
-  loads-pcan-stub:
-    command: pcan-stub
-    build:
-      context: .
-      dockerfile: ./zero-loads-app/Dockerfile
-    profiles:
-      - loads-dev
-    environment:
-      <<: *app_env
-
-  loads-control:
-    command: control
-    build:
-      context: .
-      dockerfile: ./zero-loads-app/Dockerfile
-    profiles:
-      - loads-dev
-    environment:
-      <<: *app_env
-    depends_on:
-      vernemq:
-        condition: service_healthy
-
   loads-conditions-stub:
     command: conditions-stub
     build:
