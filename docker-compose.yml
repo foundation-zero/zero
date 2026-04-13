@@ -222,8 +222,8 @@ services:
     environment:
       MQTT_HOST: vernemq
       MQTT_PORT: 1883
-      MQTT_USER: ${PG_USER}
-      MQTT_PASSWORD: ${PG_PASSWORD}
+      MQTT_USER: mqtt
+      MQTT_PASSWORD: mqtt
       GREPTIMEDB_HOST: greptimedb
       GREPTIMEDB_PORT: 4000
     volumes:
