@@ -22,11 +22,11 @@ class MessagingModule:
 
 
 sail_system_sensors = MessagingModule(
-    models=SAIL_SYSTEM_MODELS, display_name="sail_system_sensors"
+    models=SAIL_SYSTEM_MODELS, display_name="Sail System"
 )
 
-at_sensors = MessagingModule(models=AT_MODELS, display_name="at_sensors")
+at_sensors = MessagingModule(models=AT_MODELS, display_name="A+T")
 
 fiber_optic_sensors = MessagingModule(
-    models=FIBER_OPTIC_MODELS, display_name="fiber_optic_sensors"
+    models=FIBER_OPTIC_MODELS, display_name="Fiber Optics"
 )

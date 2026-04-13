@@ -97,9 +97,11 @@ async def _run_data_generator(
     modules: list[MessagingModule] | MessagingModule,
 ):
     async with DataGenerator.init_from_settings(settings, id) as data_gen:
-        config: list[GeneratorConfig] = []
-        for module in ensure_list(modules):
-            config.extend(module.gen_config())
+        configs: list[GeneratorConfig] = [
+          config
+          for module in ensure_list(modules)
+          for config in module
+        ]
         await data_gen.generate(config=config)
 
 
@@ -125,7 +127,7 @@ class FiberOpticSensorsStubCmd(GeneratorSettings):
         )
 
 
-class SensorsStubCMD(GeneratorSettings):
+class SensorsStubCmd(GeneratorSettings):
     async def cli_cmd(self) -> None:
         messaging_modules: list[MessagingModule] = [
             sail_system_sensors,
@@ -134,7 +136,7 @@ class SensorsStubCMD(GeneratorSettings):
         ]
 
         messaging_module_names = ", ".join(
-            [module.display_name for module in messaging_modules]
+            module.display_name for module in messaging_modules
         )
 
         logger.info(
