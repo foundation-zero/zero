@@ -34,5 +34,5 @@ RUN if [ ! -z "${GF_INSTALL_PLUGINS}" ]; then \
       done \
     fi
 
-COPY ./dashboard-provider.yaml /etc/grafana/provisioning/dashboard-provider.yaml
-COPY ./dashboards /etc/grafana/provisioning/dashboards
+COPY ./dashboard-provider.yaml /etc/grafana/provisioning/dashboards/dashboard-embedded-provider.yaml
+COPY ./dashboards /embedded-dashboards
