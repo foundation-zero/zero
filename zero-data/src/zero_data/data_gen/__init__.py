@@ -17,10 +17,18 @@ _GENERATORS: dict[Source, type[Generator]] = {
 }
 
 
-async def _run_all_generators(mqtt_config: MQTTConfig):
+async def _run_all_generators(
+    mqtt_config: MQTTConfig, excluded_io_list_names: list[str] | None = None
+):
     """Run all data generators concurrently."""
+    excluded_set: set[str] = set(excluded_io_list_names or [])
+
     async with asyncio.TaskGroup() as tg:
         for source, file_names in io_lists:
+            if source in excluded_set:
+                logger.info(f"Skipping {source}; excluded by name")
+                continue
+
             paths = [Path(f"io_lists/{file_name}") for file_name in file_names]
             logger.debug(f"Processing {source} {paths}")
             topics = read_io_list(paths, source).topics
@@ -28,9 +36,11 @@ async def _run_all_generators(mqtt_config: MQTTConfig):
             tg.create_task(_GENERATORS[source](10, mqtt_config, topics).run())
 
 
-def generate_data():
+def generate_data(excluded_io_list_names: list[str] | None = None):
     """Generate data for all IO lists."""
     logger.info("Generating data for all IO lists")
+    if excluded_io_list_names:
+        logger.info(f"Excluding IO lists: {excluded_io_list_names}")
     mqtt_config = MQTTConfig()  # pyright: ignore
     logger.info(f"Using MQTTConfig: {mqtt_config.model_dump_json()}")
-    asyncio.run(_run_all_generators(mqtt_config))
+    asyncio.run(_run_all_generators(mqtt_config, excluded_io_list_names))
