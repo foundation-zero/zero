@@ -228,7 +228,7 @@ services:
       GREPTIMEDB_PORT: 4000
     volumes:
       - ./vector/config.yaml:/etc/vector-config.yaml
-      - ./vector/marpower:/etc/vector/
+      - ./vector/processing:/etc/vector/
     depends_on:
       vernemq:
         condition: service_healthy
