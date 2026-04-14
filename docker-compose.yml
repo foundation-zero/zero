@@ -329,6 +329,9 @@ services:
       - loads
     environment:
       <<: *app_env
+    depends_on:
+      vernemq:
+        condition: service_healthy
 
   loads-pcan-stub:
     command: pcan-stub
