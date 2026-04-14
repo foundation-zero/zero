@@ -4,4 +4,4 @@ CREATE TABLE {{ this }} (
 	"ECOMODE"	{{ marpower_struct("BOOLEAN") }},
 )
 INCLUDE partition AS topic
-{{ mqtt_with('marpower/thermodynamica') }}
+{{ mqtt_with('marpower/termodinamica') }}
