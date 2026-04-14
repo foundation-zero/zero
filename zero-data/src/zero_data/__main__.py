@@ -1,7 +1,8 @@
 import logging
 import sys
+from typing import Annotated
 
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 from pydantic_settings import BaseSettings, CliApp, CliSubCommand
 
 from zero_data.dbt_gen import generate_dbt
@@ -20,8 +21,16 @@ def setup_logging():
 class GenerateDataCmd(BaseModel):
     """Generate values"""
 
+    exclude_io_lists: Annotated[
+        list[str],
+        Field(
+            default_factory=list,
+            description="IO list names to exclude (repeat option for multiple names)",
+        ),
+    ]
+
     def cli_cmd(self):
-        generate_data()
+        generate_data(excluded_io_list_names=self.exclude_io_lists)
 
 
 class GenerateDbtCmd(BaseModel):

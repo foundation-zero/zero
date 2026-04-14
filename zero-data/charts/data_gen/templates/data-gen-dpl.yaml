@@ -36,7 +36,7 @@ spec:
             seccompProfile:
               type: RuntimeDefault
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
-          command: ["python", "-m", "zero_data.__main__", "generate-data"]
+          command: ["python", "-m", "zero_data.__main__", "generate-data", "--exclude-io-lists", "sail_system"]
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           resources:
             {{- toYaml .Values.resources | nindent 12 }}

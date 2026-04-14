@@ -36,6 +36,14 @@ api:
     hostname: ""
     className: tailscale
 
+sensorStub:
+  enabled: false
+  env: production
+  resources: {}
+  nodeSelector: {}
+  tolerations: []
+  affinity: {}
+
 imagePullSecrets: []
 
 nameOverride: ""

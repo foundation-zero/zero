@@ -8,7 +8,8 @@ from .registry import AT_MODELS, FIBER_OPTIC_MODELS, SAIL_SYSTEM_MODELS
 class MessagingModule:
     """Module handling one source of MQTT messages"""
 
-    def __init__(self, models: Sequence[type[LoadsModel]]) -> None:
+    def __init__(self, models: Sequence[type[LoadsModel]], display_name: str) -> None:
+        self.display_name = display_name
         self._models = models
         self._mapping = {model.TOPIC: model for model in models}
 
@@ -20,9 +21,12 @@ class MessagingModule:
         return [model.gen_config() for model in self._models]
 
 
-sail_system_sensors = MessagingModule(models=SAIL_SYSTEM_MODELS)
+sail_system_sensors = MessagingModule(
+    models=SAIL_SYSTEM_MODELS, display_name="Sail System"
+)
 
+at_sensors = MessagingModule(models=AT_MODELS, display_name="A+T")
 
-at_sensors = MessagingModule(models=AT_MODELS)
-
-fiber_optic_sensors = MessagingModule(models=FIBER_OPTIC_MODELS)
+fiber_optic_sensors = MessagingModule(
+    models=FIBER_OPTIC_MODELS, display_name="Fiber Optics"
+)

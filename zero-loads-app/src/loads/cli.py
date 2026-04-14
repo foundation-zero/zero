@@ -2,6 +2,7 @@ import logging
 
 import uvicorn
 from generator import DataGenerator
+from generator.base import GeneratorConfig
 from generator.config import Settings as GeneratorSettings
 from pydantic_settings import (
     BaseSettings,
@@ -20,10 +21,11 @@ from loads.registry import (
     fiber_optic_sensors,
     sail_system_sensors,
 )
+from loads.util import ensure_list
 
 setup_logging()
 
-logger = logging.getLogger("cli")
+logger: logging.Logger = logging.getLogger("cli")
 
 
 class ApiCli(Settings):
@@ -90,11 +92,15 @@ class ControlCli(Settings):
 
 
 async def _run_data_generator(
-    settings: GeneratorSettings, id: str, module: MessagingModule
+    settings: GeneratorSettings,
+    id: str,
+    modules: list[MessagingModule] | MessagingModule,
 ):
     async with DataGenerator.init_from_settings(settings, id) as data_gen:
-        config = module.gen_config()
-        await data_gen.generate(config=config)
+        configs: list[GeneratorConfig] = [
+            config for module in ensure_list(modules) for config in module.gen_config()
+        ]
+        await data_gen.generate(config=configs)
 
 
 class SailSystemSensorsStubCmd(GeneratorSettings):
@@ -119,6 +125,21 @@ class FiberOpticSensorsStubCmd(GeneratorSettings):
         )
 
 
+class SensorsStubCmd(GeneratorSettings):
+    async def cli_cmd(self) -> None:
+        messaging_modules: list[MessagingModule] = [
+            sail_system_sensors,
+            at_sensors,
+            fiber_optic_sensors,
+        ]
+
+        logger.info(
+            f"Running sensor stubs, using the following modules: {', '.join(module.display_name for module in messaging_modules)}..."
+        )
+
+        await _run_data_generator(self, "all_sensors_stub_generator", messaging_modules)
+
+
 class ZeroLoads(BaseSettings, cli_kebab_case=True):
     model_config = SettingsConfigDict(
         env_file=".env",
@@ -136,6 +157,7 @@ class ZeroLoads(BaseSettings, cli_kebab_case=True):
     at_sensors_stub: CliSubCommand[ATSensorsStubCmd]
     fiber_optic_sensors_stub: CliSubCommand[FiberOpticSensorsStubCmd]
     sail_system_sensors_stub: CliSubCommand[SailSystemSensorsStubCmd]
+    sensors_stub: CliSubCommand[SensorsStubCmd]
 
     def cli_cmd(self) -> None:
         CliApp.run_subcommand(self)
