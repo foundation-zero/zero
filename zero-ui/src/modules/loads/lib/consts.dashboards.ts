@@ -1,8 +1,4 @@
-import {
-  ColumnLayout,
-  FixedColumnsLayout,
-  SmartColumnsLayout,
-} from "../components/variable-grid/strategies/columns";
+import { ColumnLayout, FixedColumnsLayout } from "../components/variable-grid/strategies/columns";
 import {
   BrokenRowsLayout,
   RowLayout,
@@ -296,7 +292,7 @@ export const OVERVIEW = dashboard(
 
 export const MAIN = dashboard(
   SailId.FullMain,
-  SmartColumnsLayout,
+  UnbrokenRowsLayout,
   UnbrokenRowsLayout,
   MAIN_MAST_GROUP,
   MAIN_SAIL_GROUP,
@@ -304,7 +300,7 @@ export const MAIN = dashboard(
 );
 export const MAIN_REEF_1 = dashboard(
   SailId.MainReef1,
-  SmartColumnsLayout,
+  UnbrokenRowsLayout,
   UnbrokenRowsLayout,
   MAIN_MAST_GROUP,
   MAIN_SAIL_GROUP,
@@ -312,7 +308,7 @@ export const MAIN_REEF_1 = dashboard(
 );
 export const MAIN_REEF_2 = dashboard(
   SailId.MainReef2,
-  SmartColumnsLayout,
+  UnbrokenRowsLayout,
   UnbrokenRowsLayout,
   MAIN_MAST_GROUP,
   MAIN_SAIL_GROUP,
@@ -320,7 +316,7 @@ export const MAIN_REEF_2 = dashboard(
 );
 export const MAIN_REEF_3 = dashboard(
   SailId.MainReef3,
-  SmartColumnsLayout,
+  UnbrokenRowsLayout,
   UnbrokenRowsLayout,
   MAIN_MAST_GROUP,
   MAIN_SAIL_GROUP,
@@ -329,7 +325,7 @@ export const MAIN_REEF_3 = dashboard(
 
 export const UTILITY_MAIN = dashboard(
   SailId.UtilityMain,
-  SmartColumnsLayout,
+  UnbrokenRowsLayout,
   UnbrokenRowsLayout,
   MAIN_MAST_GROUP,
   MAIN_SAIL_GROUP,
@@ -338,7 +334,7 @@ export const UTILITY_MAIN = dashboard(
 
 export const TRISAIL = dashboard(
   SailId.Trisail,
-  SmartColumnsLayout,
+  UnbrokenRowsLayout,
   UnbrokenRowsLayout,
   TRISAIL_GROUP,
   TRISAIL_LOCKS_GROUP,
@@ -355,7 +351,7 @@ export const MIZZEN = dashboard(
 
 export const MIZZEN_REEF_1 = dashboard(
   SailId.MizzenReef1,
-  SmartColumnsLayout,
+  UnbrokenRowsLayout,
   UnbrokenRowsLayout,
   MIZZEN_MAST_GROUP,
   MIZZEN_SAIL_GROUP,
@@ -364,7 +360,7 @@ export const MIZZEN_REEF_1 = dashboard(
 
 export const MIZZEN_REEF_2 = dashboard(
   SailId.MizzenReef2,
-  SmartColumnsLayout,
+  UnbrokenRowsLayout,
   UnbrokenRowsLayout,
   MIZZEN_MAST_GROUP,
   MIZZEN_SAIL_GROUP,
@@ -373,7 +369,7 @@ export const MIZZEN_REEF_2 = dashboard(
 
 export const MIZZEN_JIB = dashboard(
   SailId.MizzenJib,
-  SmartColumnsLayout,
+  UnbrokenRowsLayout,
   UnbrokenRowsLayout,
   MIZZEN_MAST_GROUP,
   MIZZEN_JIB_GROUP,
@@ -383,7 +379,7 @@ export const MIZZEN_JIB = dashboard(
 
 export const MIZZEN_STAYSAIL = dashboard(
   SailId.MizzenStaysail,
-  SmartColumnsLayout,
+  UnbrokenRowsLayout,
   UnbrokenRowsLayout,
   MIZZEN_MAST_GROUP,
   MIZZEN_STAYSAIL_GROUP,
@@ -392,7 +388,7 @@ export const MIZZEN_STAYSAIL = dashboard(
 
 export const STORM_JIB = dashboard(
   SailId.StormJib,
-  SmartColumnsLayout,
+  UnbrokenRowsLayout,
   UnbrokenRowsLayout,
   STORM_JIB_GROUP,
   OUTBOARD_LEAD_GROUP,
@@ -401,7 +397,7 @@ export const STORM_JIB = dashboard(
 
 export const STAYSAIL = dashboard(
   SailId.Staysail,
-  SmartColumnsLayout,
+  UnbrokenRowsLayout,
   UnbrokenRowsLayout,
   MAIN_MAST_GROUP,
   STAYSAIL_GROUP,
@@ -411,7 +407,7 @@ export const STAYSAIL = dashboard(
 
 export const BLADE = dashboard(
   SailId.Blade,
-  SmartColumnsLayout,
+  UnbrokenRowsLayout,
   UnbrokenRowsLayout,
   MAIN_MAST_GROUP,
   BLADE_GROUP,
@@ -420,7 +416,7 @@ export const BLADE = dashboard(
 
 export const CODE_ZERO = dashboard(
   SailId.CodeZero,
-  SmartColumnsLayout,
+  UnbrokenRowsLayout,
   UnbrokenRowsLayout,
   MAIN_MAST_GROUP,
   CODE_ZERO_GROUP,
@@ -429,7 +425,7 @@ export const CODE_ZERO = dashboard(
 
 export const DYNAMIC = dashboard(
   DashboardType.Dynamic,
-  SmartColumnsLayout,
+  FixedColumnsLayout,
   UnbrokenRowsLayout,
   dynamic(MAIN_MAST_GROUP),
   dynamic(MIZZEN_MAST_GROUP),
@@ -456,7 +452,7 @@ export const DYNAMIC = dashboard(
 
 export const A3 = dashboard(
   SailId.A3,
-  SmartColumnsLayout,
+  UnbrokenRowsLayout,
   UnbrokenRowsLayout,
   MAIN_MAST_GROUP,
   CODE_ZERO_GROUP,
@@ -465,7 +461,7 @@ export const A3 = dashboard(
 
 export const A2 = dashboard(
   SailId.A2,
-  SmartColumnsLayout,
+  UnbrokenRowsLayout,
   UnbrokenRowsLayout,
   MAIN_MAST_GROUP,
   A2_GROUP,
