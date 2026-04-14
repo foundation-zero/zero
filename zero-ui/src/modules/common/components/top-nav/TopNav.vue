@@ -1,8 +1,11 @@
 <script setup lang="ts">
-import { ref } from "vue";
-import { useScrollOffset } from ".";
+import { useTemplateRef } from "vue";
+import { TopNavToolbar, useScrollOffset } from ".";
+import { AppLauncher } from "../app-launcher";
+import { DarkModeToggle } from "../dark-mode";
+import TopNavZero from "./TopNavZero.vue";
 
-const title = ref<HTMLElement | null>(null);
+const title = useTemplateRef("title");
 const scrollOffset = useScrollOffset(title);
 </script>
 
@@ -12,6 +15,21 @@ const scrollOffset = useScrollOffset(title);
     class="fixed right-0 left-0 flex flex-col justify-between overflow-hidden backdrop-blur-md"
     :style="{ top: scrollOffset }"
   >
+    <slot name="header">
+      <TopNavToolbar
+        ref="title"
+        class="border-0"
+      >
+        <template #right-content>
+          <DarkModeToggle />
+          <AppLauncher />
+        </template>
+        <template #center>
+          <TopNavZero />
+        </template>
+      </TopNavToolbar>
+    </slot>
+
     <slot />
   </nav>
 </template>

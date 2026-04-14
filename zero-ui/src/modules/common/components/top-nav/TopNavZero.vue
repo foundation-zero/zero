@@ -1,14 +1,10 @@
 <script setup lang="ts">
-import { useI18n } from "vue-i18n";
-
-const { t } = useI18n();
+import { ZeroLogo } from "../zero-logo";
 </script>
 
 <template>
-  <h1
-    ref="title"
-    class="tracking-ultrawide py-3 text-center text-xl font-bold uppercase"
-  >
-    {{ t("app.title") }}
-  </h1>
+  <ZeroLogo
+    tag="h1"
+    class="py-3"
+  />
 </template>

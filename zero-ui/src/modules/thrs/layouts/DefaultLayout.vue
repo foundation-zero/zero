@@ -4,9 +4,9 @@ import { useI18n } from "vue-i18n";
 
 import SimulationActions from "@/modules/thrs/components/SimulationActions.vue";
 
-import { DarkModeToggle } from "@/modules/common/components/dark-mode";
 import TopNav from "@/modules/common/components/top-nav/TopNav.vue";
 import TopNavToolbar from "@/modules/common/components/top-nav/TopNavToolbar.vue";
+import { ZeroLogo } from "@/modules/common/components/zero-logo";
 import { client } from "@/modules/thrs/graphql/client";
 import { ThrsModules } from "@/modules/thrs/lib/consts.types";
 import { DividerVerticalIcon } from "@radix-icons/vue";
@@ -40,10 +40,11 @@ provide("currentModule", currentModuleKey);
   </main>
   <TopNav class="z-1">
     <TopNavToolbar>
-      <template #left>
-        <h4 class="pl-4 font-semibold uppercase max-md:hidden md:text-4xl">
-          {{ t("thrs.title") }}
-        </h4>
+      <template #left-content>
+        <ZeroLogo />
+        <span class="text-disabled-foreground ml-1 text-xs font-extralight">{{
+          t("apps.thrs")
+        }}</span>
         <NavTabs
           :active-module="currentModuleKey"
           class="md:ml-12"
@@ -51,9 +52,7 @@ provide("currentModule", currentModuleKey);
         />
       </template>
 
-      <template #right>
-        <DarkModeToggle />
-        <DividerVerticalIcon class="text-disabled-foreground" />
+      <template #right-content>
         <ClearChartHistory />
         <DividerVerticalIcon class="text-disabled-foreground" />
         <SimulationActions class="max-md:hidden" />

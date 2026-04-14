@@ -2,6 +2,11 @@
   "app": {
     "title": "ZERO"
   },
+  "apps": {
+    "loads": "Loads",
+    "thrs": "THRS",
+    "domestic": "Domestic Control"
+  },
   "labels": {
     "airconditioning": {
       "short": "A/C",
