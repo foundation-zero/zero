@@ -14,7 +14,7 @@ from construct import (
 )
 from pydantic import BaseModel
 
-from zero_prop_test.settings import Settings
+from zero_prop_test.settings import IoLinkSettings
 
 
 class DeviceStatus(Enum):
@@ -114,7 +114,7 @@ class Client:
         self._port = port
 
     @staticmethod
-    def from_settings(settings: Settings) -> "Client":
+    def from_settings(settings: IoLinkSettings) -> "Client":
         return Client(
             session=ClientSession(),
             host=settings.iolink_host,

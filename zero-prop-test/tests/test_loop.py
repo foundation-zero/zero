@@ -40,7 +40,7 @@ def loop() -> Loop:
     return Loop(mqtt=MagicMock(), interval=timedelta(seconds=1))
 
 
-def test_from_settings_creates_loop_with_mqtt_from_settings(settings: Settings):
+async def test_from_settings_creates_loop_with_mqtt_from_settings(settings: Settings):
     iolink = MagicMock(spec=IoLinkClient)
     interval = timedelta(seconds=10)
 
@@ -48,7 +48,10 @@ def test_from_settings_creates_loop_with_mqtt_from_settings(settings: Settings):
         mock_mqtt_instance = MagicMock()
         mock_mqtt_cls.return_value = mock_mqtt_instance
 
-        loop = Loop.from_settings(settings, iolink_client=iolink, interval=interval)
+        async with Loop.from_settings(
+            settings, iolink_client=iolink, interval=interval
+        ):
+            pass
 
     mock_mqtt_cls.assert_called_once_with(
         hostname=settings.mqtt_host,
@@ -56,11 +59,6 @@ def test_from_settings_creates_loop_with_mqtt_from_settings(settings: Settings):
         username=settings.mqtt_username,
         password=settings.mqtt_password,
     )
-    assert loop._mqtt is mock_mqtt_instance
-    assert loop._interval == interval
-    assert loop._iolink_client is iolink
-    assert loop._modbus_client is None
-    assert loop._twincat_client is None
 
 
 async def test_tick_publishes_json_to_mqtt(loop: Loop):

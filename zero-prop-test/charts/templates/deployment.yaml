@@ -1,0 +1,72 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "zero-prop-test.name" . }}
+  namespace: {{ .Release.Namespace }}
+  labels:
+    {{- include "zero-prop-test.labels" . | nindent 4 }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      {{- include "zero-prop-test.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      labels:
+        {{- include "zero-prop-test.labels" . | nindent 8 }}
+    spec:
+      {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      securityContext:
+        fsGroupChangePolicy: Always
+        sysctls: []
+        supplementalGroups: []
+        fsGroup: 1001
+      containers:
+        - name: prop-test
+          securityContext:
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop:
+              - ALL
+            privileged: false
+            readOnlyRootFilesystem: true
+            runAsGroup: 1001
+            runAsNonRoot: true
+            runAsUser: 1001
+            seLinuxOptions: {}
+            seccompProfile:
+              type: RuntimeDefault
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+          env:
+            - name: TWINCAT_SELF_NETID
+              value: "{{ .Values.twincat.externalIp }}.1"
+            - name: MQTT_HOST
+              value: {{ .Values.mqtt.host | quote }}
+            - name: MQTT_PORT
+              value: {{ .Values.mqtt.port | quote }}
+            - name: MQTT_USERNAME
+              value: {{ .Values.mqtt.username | quote }}
+            - name: MQTT_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.mqtt.existingSecret }}
+                  key: {{ .Values.mqtt.existingSecretPasswordKey }}
+            - name: TWINCAT_IP
+              value: {{ .Values.twincat.ip | quote }}
+            - name: TWINCAT_NETID
+              value: {{ .Values.twincat.netid | quote }}
+            - name: TWINCAT_USERNAME
+              value: {{ .Values.twincat.username | quote }}
+            - name: TWINCAT_ROUTE_NAME
+              value: {{ .Values.twincat.routeName | quote }}
+            - name: TWINCAT_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.twincat.existingSecret }}
+                  key: {{ .Values.twincat.existingSecretPasswordKey }}

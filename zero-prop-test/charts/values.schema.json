@@ -1,0 +1,121 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "required": ["mqtt", "twincat"],
+  "properties": {
+    "mqtt": {
+      "type": "object",
+      "required": ["host", "existingSecret"],
+      "properties": {
+        "host": {
+          "type": "string",
+          "description": "MQTT broker hostname.",
+          "minLength": 1
+        },
+        "port": {
+          "type": "integer",
+          "description": "MQTT broker port.",
+          "minimum": 1,
+          "maximum": 65535
+        },
+        "username": {
+          "type": "string",
+          "description": "MQTT username."
+        },
+        "existingSecret": {
+          "type": "string",
+          "description": "Name of an existing Kubernetes Secret containing the MQTT password.",
+          "minLength": 1
+        },
+        "existingSecretPasswordKey": {
+          "type": "string",
+          "description": "Key in the existing Secret that holds the MQTT password."
+        }
+      }
+    },
+    "twincat": {
+      "type": "object",
+      "required": [
+        "externalIp",
+        "ip",
+        "netid",
+        "username",
+        "routeName",
+        "existingSecret"
+      ],
+      "properties": {
+        "externalIp": {
+          "type": "string",
+          "description": "IP address of this service as seen by TwinCAT. Used as the external IP of the LoadBalancer service. TWINCAT_SELF_NETID is set to externalIp + '.1'.",
+          "minLength": 1
+        },
+        "ip": {
+          "type": "string",
+          "description": "IP address of the TwinCAT PLC.",
+          "minLength": 1
+        },
+        "netid": {
+          "type": "string",
+          "description": "ADS Net ID of the TwinCAT PLC.",
+          "minLength": 1
+        },
+        "username": {
+          "type": "string",
+          "description": "Username for TwinCAT ADS route authentication.",
+          "minLength": 1
+        },
+        "routeName": {
+          "type": "string",
+          "description": "ADS route name registered on the PLC.",
+          "minLength": 1
+        },
+        "existingSecret": {
+          "type": "string",
+          "description": "Name of an existing Kubernetes Secret containing the TwinCAT password.",
+          "minLength": 1
+        },
+        "existingSecretPasswordKey": {
+          "type": "string",
+          "description": "Key in the existing Secret that holds the TwinCAT password."
+        }
+      }
+    },
+    "image": {
+      "type": "object",
+      "properties": {
+        "repository": {
+          "type": "string",
+          "description": "Container image repository."
+        },
+        "pullPolicy": {
+          "type": "string",
+          "description": "Image pull policy.",
+          "enum": ["Always", "IfNotPresent", "Never"]
+        },
+        "tag": {
+          "type": "string",
+          "description": "Overrides the image tag whose default is the chart appVersion."
+        }
+      }
+    },
+    "resources": {
+      "type": "object",
+      "description": "Container resource requests and limits."
+    },
+    "imagePullSecrets": {
+      "type": "array",
+      "description": "Secrets for pulling images from a private registry.",
+      "items": {
+        "type": "object"
+      }
+    },
+    "nameOverride": {
+      "type": "string",
+      "description": "Override the chart name."
+    },
+    "fullnameOverride": {
+      "type": "string",
+      "description": "Override the full name."
+    }
+  }
+}

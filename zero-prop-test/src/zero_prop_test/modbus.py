@@ -4,7 +4,7 @@ import struct
 from typing import assert_never, cast
 from pyModbusTCP.client import ModbusClient
 
-from zero_prop_test.settings import Settings
+from zero_prop_test.settings import ModbusSettings
 
 
 class RegisterType(Enum):
@@ -51,7 +51,7 @@ class Client:
         self._client = client
 
     @staticmethod
-    def from_settings(settings: Settings) -> "Client":
+    def from_settings(settings: ModbusSettings) -> "Client":
         return Client(
             ModbusClient(
                 host=settings.modbus_host,
