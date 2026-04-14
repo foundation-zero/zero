@@ -86,6 +86,7 @@
             "mode": "continuous-reds"
           },
           "mappings": [],
+          "noValue": "-",
           "thresholds": {
             "mode": "absolute",
             "steps": [
@@ -163,8 +164,7 @@
               "name": "frame 68",
               "placement": {
                 "height": 25,
-                "left": 265,
-                "rotation": 0,
+                "left": 323,
                 "top": 220,
                 "width": 25
               },
@@ -205,8 +205,7 @@
               "name": "frame 53",
               "placement": {
                 "height": 25,
-                "left": 265,
-                "rotation": 0,
+                "left": 323,
                 "top": 190,
                 "width": 25
               },
@@ -247,8 +246,7 @@
               "name": "frame 48",
               "placement": {
                 "height": 25,
-                "left": 265,
-                "rotation": 0,
+                "left": 323,
                 "top": 160,
                 "width": 25
               },
@@ -289,8 +287,7 @@
               "name": "frame 47 SB",
               "placement": {
                 "height": 25,
-                "left": 265,
-                "rotation": 0,
+                "left": 323,
                 "top": 130,
                 "width": 25
               },
@@ -331,8 +328,7 @@
               "name": "frame 46",
               "placement": {
                 "height": 25,
-                "left": 265,
-                "rotation": 0,
+                "left": 323,
                 "top": 100,
                 "width": 25
               },
@@ -373,8 +369,7 @@
               "name": "frame 38 SB",
               "placement": {
                 "height": 25,
-                "left": 265,
-                "rotation": 0,
+                "left": 323,
                 "top": 70,
                 "width": 25
               },
@@ -415,8 +410,7 @@
               "name": "frame 38 PS",
               "placement": {
                 "height": 25,
-                "left": 265,
-                "rotation": 0,
+                "left": 323,
                 "top": 40,
                 "width": 25
               },
@@ -457,8 +451,7 @@
               "name": "frame 38",
               "placement": {
                 "height": 25,
-                "left": 265,
-                "rotation": 0,
+                "left": 323,
                 "top": 10,
                 "width": 25
               },
@@ -830,9 +823,9 @@
               "name": "frame 68 label",
               "placement": {
                 "height": 26,
-                "left": 300,
+                "left": 358,
                 "top": 220,
-                "width": 200
+                "width": 113
               },
               "type": "text"
             },
@@ -868,9 +861,9 @@
               "name": "frame 53 label",
               "placement": {
                 "height": 26,
-                "left": 300,
+                "left": 358,
                 "top": 190,
-                "width": 200
+                "width": 113
               },
               "type": "text"
             },
@@ -906,9 +899,9 @@
               "name": "frame 48 label",
               "placement": {
                 "height": 26,
-                "left": 300,
+                "left": 358,
                 "top": 160,
-                "width": 200
+                "width": 113
               },
               "type": "text"
             },
@@ -944,9 +937,9 @@
               "name": "frame 47 SB label",
               "placement": {
                 "height": 26,
-                "left": 300,
+                "left": 358,
                 "top": 130,
-                "width": 200
+                "width": 113
               },
               "type": "text"
             },
@@ -982,9 +975,9 @@
               "name": "frame 46 label",
               "placement": {
                 "height": 26,
-                "left": 300,
+                "left": 358,
                 "top": 100,
-                "width": 200
+                "width": 113
               },
               "type": "text"
             },
@@ -1020,9 +1013,9 @@
               "name": "frame 38 SB label",
               "placement": {
                 "height": 26,
-                "left": 300,
+                "left": 358,
                 "top": 70,
-                "width": 200
+                "width": 113
               },
               "type": "text"
             },
@@ -1058,9 +1051,9 @@
               "name": "frame 38 PS label",
               "placement": {
                 "height": 26,
-                "left": 300,
+                "left": 358,
                 "top": 40,
-                "width": 200
+                "width": 113
               },
               "type": "text"
             },
@@ -1096,9 +1089,9 @@
               "name": "frame 38 label",
               "placement": {
                 "height": 26,
-                "left": 300,
+                "left": 358,
                 "top": 10,
-                "width": 200
+                "width": 113
               },
               "type": "text"
             },
@@ -1136,7 +1129,7 @@
                 "height": 26,
                 "left": 50,
                 "top": 220,
-                "width": 200
+                "width": 135
               },
               "type": "text"
             },
@@ -1174,7 +1167,7 @@
                 "height": 26,
                 "left": 50,
                 "top": 190,
-                "width": 200
+                "width": 135
               },
               "type": "text"
             },
@@ -1211,9 +1204,8 @@
               "placement": {
                 "height": 26,
                 "left": 50,
-                "rotation": 0,
                 "top": 160,
-                "width": 200
+                "width": 135
               },
               "type": "text"
             },
@@ -1246,12 +1238,12 @@
                 "vertical": "top"
               },
               "links": [],
-              "name": "batt comp 6 label",
+              "name": "batt_comp_6_alarm label",
               "placement": {
                 "height": 26,
                 "left": 50,
                 "top": 130,
-                "width": 200
+                "width": 135
               },
               "type": "text"
             },
@@ -1284,12 +1276,12 @@
                 "vertical": "top"
               },
               "links": [],
-              "name": "batt comp 5 label",
+              "name": "batt_comp_5_alarm label",
               "placement": {
                 "height": 26,
                 "left": 50,
                 "top": 100,
-                "width": 200
+                "width": 135
               },
               "type": "text"
             },
@@ -1312,7 +1304,7 @@
                 "size": 16,
                 "text": {
                   "field": "sub_pump1_alarm",
-                  "fixed": "Submersible pump 3",
+                  "fixed": "Subm. pump 3",
                   "mode": "fixed"
                 },
                 "valign": "middle"
@@ -1322,13 +1314,12 @@
                 "vertical": "top"
               },
               "links": [],
-              "name": "sub pump 3 label",
+              "name": "sub_pump3_alarm label",
               "placement": {
                 "height": 26,
                 "left": 50,
-                "rotation": 0,
                 "top": 70,
-                "width": 200
+                "width": 135
               },
               "type": "text"
             },
@@ -1351,7 +1342,7 @@
                 "size": 16,
                 "text": {
                   "field": "sub_pump1_alarm",
-                  "fixed": "Submersible pump 2",
+                  "fixed": "Subm. pump 2",
                   "mode": "fixed"
                 },
                 "valign": "middle"
@@ -1361,13 +1352,12 @@
                 "vertical": "top"
               },
               "links": [],
-              "name": "sub pump 2 label",
+              "name": "sub_pump2_alarm label",
               "placement": {
                 "height": 26,
                 "left": 50,
-                "rotation": 0,
                 "top": 40,
-                "width": 200
+                "width": 135
               },
               "type": "text"
             },
@@ -1390,7 +1380,7 @@
                 "size": 16,
                 "text": {
                   "field": "sub_pump1_alarm",
-                  "fixed": "Submersible pump 1",
+                  "fixed": "Subm. pump 1",
                   "mode": "fixed"
                 },
                 "valign": "middle"
@@ -1400,13 +1390,621 @@
                 "vertical": "top"
               },
               "links": [],
-              "name": "sub pump 1 label",
+              "name": "sub_pump1_alarm label",
               "placement": {
                 "height": 26,
                 "left": 50,
+                "top": 10,
+                "width": 135
+              },
+              "type": "text"
+            },
+            {
+              "background": {
+                "color": {
+                  "fixed": "transparent"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "left",
+                "color": {
+                  "fixed": "rgb(204, 204, 220)"
+                },
+                "size": 12,
+                "text": {
+                  "field": "frame38_alarm_tag",
+                  "fixed": "",
+                  "mode": "field"
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "links": [],
+              "name": "frame38_alarm_tag",
+              "placement": {
+                "height": 26,
+                "left": 471,
+                "top": 10,
+                "width": 105
+              },
+              "type": "text"
+            },
+            {
+              "background": {
+                "color": {
+                  "fixed": "transparent"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "left",
+                "color": {
+                  "fixed": "rgb(204, 204, 220)"
+                },
+                "size": 12,
+                "text": {
+                  "field": "frame38ps_alarm_tag",
+                  "fixed": "",
+                  "mode": "field"
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "links": [],
+              "name": "frame38ps_alarm_tag",
+              "placement": {
+                "height": 26,
+                "left": 471,
+                "top": 40,
+                "width": 105
+              },
+              "type": "text"
+            },
+            {
+              "background": {
+                "color": {
+                  "fixed": "transparent"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "left",
+                "color": {
+                  "fixed": "rgb(204, 204, 220)"
+                },
+                "size": 12,
+                "text": {
+                  "field": "frame46_alarm_tag",
+                  "fixed": "",
+                  "mode": "field"
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "links": [],
+              "name": "frame46_alarm_tag",
+              "placement": {
+                "height": 26,
+                "left": 471,
+                "top": 100,
+                "width": 105
+              },
+              "type": "text"
+            },
+            {
+              "background": {
+                "color": {
+                  "fixed": "transparent"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "left",
+                "color": {
+                  "fixed": "rgb(204, 204, 220)"
+                },
+                "size": 12,
+                "text": {
+                  "field": "frame38sb_alarm_tag",
+                  "fixed": "",
+                  "mode": "field"
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "links": [],
+              "name": "frame38sb_alarm_tag",
+              "placement": {
+                "height": 26,
+                "left": 471,
+                "top": 70,
+                "width": 105
+              },
+              "type": "text"
+            },
+            {
+              "background": {
+                "color": {
+                  "fixed": "transparent"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "left",
+                "color": {
+                  "fixed": "rgb(204, 204, 220)"
+                },
+                "size": 12,
+                "text": {
+                  "field": "frame48_alarm_tag",
+                  "fixed": "",
+                  "mode": "field"
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "links": [],
+              "name": "frame48_alarm_tag",
+              "placement": {
+                "height": 26,
+                "left": 471,
+                "top": 160,
+                "width": 105
+              },
+              "type": "text"
+            },
+            {
+              "background": {
+                "color": {
+                  "fixed": "transparent"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "left",
+                "color": {
+                  "fixed": "rgb(204, 204, 220)"
+                },
+                "size": 12,
+                "text": {
+                  "field": "frame47sb_alarm_tag",
+                  "fixed": "",
+                  "mode": "field"
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "links": [],
+              "name": "frame47sb_alarm_tag",
+              "placement": {
+                "height": 26,
+                "left": 471,
+                "top": 130,
+                "width": 105
+              },
+              "type": "text"
+            },
+            {
+              "background": {
+                "color": {
+                  "fixed": "transparent"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "left",
+                "color": {
+                  "fixed": "rgb(204, 204, 220)"
+                },
+                "size": 12,
+                "text": {
+                  "field": "frame68_alarm_tag",
+                  "fixed": "",
+                  "mode": "field"
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "links": [],
+              "name": "frame68_alarm_tag",
+              "placement": {
+                "height": 26,
+                "left": 471,
+                "top": 220,
+                "width": 105
+              },
+              "type": "text"
+            },
+            {
+              "background": {
+                "color": {
+                  "fixed": "transparent"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "left",
+                "color": {
+                  "fixed": "rgb(204, 204, 220)"
+                },
+                "size": 12,
+                "text": {
+                  "field": "frame53_alarm_tag",
+                  "fixed": "",
+                  "mode": "field"
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "links": [],
+              "name": "frame53_alarm_tag",
+              "placement": {
+                "height": 26,
+                "left": 471,
+                "top": 190,
+                "width": 105
+              },
+              "type": "text"
+            },
+            {
+              "background": {
+                "color": {
+                  "fixed": "transparent"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "left",
+                "color": {
+                  "fixed": "rgb(204, 204, 220)"
+                },
+                "size": 12,
+                "text": {
+                  "field": "sub_pump2_alarm_tag",
+                  "fixed": "",
+                  "mode": "field"
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "links": [],
+              "name": "sub_pump2_alarm_tag",
+              "placement": {
+                "height": 26,
+                "left": 185,
+                "top": 40,
+                "width": 98
+              },
+              "type": "text"
+            },
+            {
+              "background": {
+                "color": {
+                  "fixed": "transparent"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "left",
+                "color": {
+                  "fixed": "rgb(204, 204, 220)"
+                },
+                "size": 12,
+                "text": {
+                  "field": "batt_comp_5_alarm_tag",
+                  "fixed": "",
+                  "mode": "field"
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "links": [],
+              "name": "batt_comp_5_alarm_tag",
+              "placement": {
+                "height": 26,
+                "left": 185,
+                "top": 100,
+                "width": 98
+              },
+              "type": "text"
+            },
+            {
+              "background": {
+                "color": {
+                  "fixed": "transparent"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "left",
+                "color": {
+                  "fixed": "rgb(204, 204, 220)"
+                },
+                "size": 12,
+                "text": {
+                  "field": "sub_pump3_alarm_tag",
+                  "fixed": "",
+                  "mode": "field"
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "links": [],
+              "name": "sub_pump3_alarm_tag",
+              "placement": {
+                "height": 26,
+                "left": 185,
+                "top": 70,
+                "width": 98
+              },
+              "type": "text"
+            },
+            {
+              "background": {
+                "color": {
+                  "fixed": "transparent"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "left",
+                "color": {
+                  "fixed": "rgb(204, 204, 220)"
+                },
+                "size": 12,
+                "text": {
+                  "field": "frame13_alarm_tag",
+                  "fixed": "",
+                  "mode": "field"
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "links": [],
+              "name": "frame13_alarm_tag",
+              "placement": {
+                "height": 26,
+                "left": 185,
+                "top": 160,
+                "width": 98
+              },
+              "type": "text"
+            },
+            {
+              "background": {
+                "color": {
+                  "fixed": "transparent"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "left",
+                "color": {
+                  "fixed": "rgb(204, 204, 220)"
+                },
+                "size": 12,
+                "text": {
+                  "field": "batt_comp_6_alarm_tag",
+                  "fixed": "",
+                  "mode": "field"
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "links": [],
+              "name": "batt_comp_6_alarm_tag",
+              "placement": {
+                "height": 26,
+                "left": 185,
+                "top": 130,
+                "width": 98
+              },
+              "type": "text"
+            },
+            {
+              "background": {
+                "color": {
+                  "fixed": "transparent"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "left",
+                "color": {
+                  "fixed": "rgb(204, 204, 220)"
+                },
+                "size": 12,
+                "text": {
+                  "field": "frame15_alarm_tag",
+                  "fixed": "",
+                  "mode": "field"
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "links": [],
+              "name": "frame15_alarm_tag",
+              "placement": {
+                "height": 26,
+                "left": 185,
+                "top": 190,
+                "width": 98
+              },
+              "type": "text"
+            },
+            {
+              "background": {
+                "color": {
+                  "fixed": "transparent"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "left",
+                "color": {
+                  "fixed": "rgb(204, 204, 220)"
+                },
+                "size": 12,
+                "text": {
+                  "field": "sub_pump1_alarm_tag",
+                  "fixed": "",
+                  "mode": "field"
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "links": [],
+              "name": "sub_pump1_alarm_tag",
+              "placement": {
+                "height": 26,
+                "left": 185,
                 "rotation": 0,
                 "top": 10,
-                "width": 200
+                "width": 98
+              },
+              "type": "text"
+            },
+            {
+              "background": {
+                "color": {
+                  "fixed": "transparent"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "left",
+                "color": {
+                  "fixed": "rgb(204, 204, 220)"
+                },
+                "size": 12,
+                "text": {
+                  "field": "frame30_alarm_tag",
+                  "fixed": "",
+                  "mode": "field"
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "links": [],
+              "name": "frame30_alarm_tag",
+              "placement": {
+                "height": 26,
+                "left": 185,
+                "top": 220,
+                "width": 98
               },
               "type": "text"
             }
@@ -1458,6 +2056,36 @@
             ],
             "limit": 50
           }
+        },
+        {
+          "dataset": "dev",
+          "datasource": {
+            "type": "grafana-postgresql-datasource",
+            "uid": "${datasource}"
+          },
+          "editorMode": "code",
+          "format": "table",
+          "hide": false,
+          "rawQuery": true,
+          "rawSql": "SELECT \r\n  MAX(CASE WHEN mqtt_json_path = LOWER('LEVEL_SUB_PUMP1_ALARM') THEN '(' || yard_tag || ')' ELSE NULL END) AS sub_pump1_alarm_tag,\r\n  MAX(CASE WHEN mqtt_json_path = LOWER('LEVEL_SUB_PUMP2_ALARM') THEN '(' || yard_tag || ')' ELSE NULL END) AS sub_pump2_alarm_tag,\r\n  MAX(CASE WHEN mqtt_json_path = LOWER('LEVEL_SUB_PUMP3_ALARM') THEN '(' || yard_tag || ')' ELSE NULL END) AS sub_pump3_alarm_tag,\r\n  MAX(CASE WHEN mqtt_json_path = LOWER('BATT_COMP_5_ALARM') THEN '(' || yard_tag || ')' ELSE NULL END) AS batt_comp_5_alarm_tag,\r\n  MAX(CASE WHEN mqtt_json_path = LOWER('BATT_COMP_6_ALARM') THEN '(' || yard_tag || ')' ELSE NULL END) AS batt_comp_6_alarm_tag,\r\n  MAX(CASE WHEN mqtt_json_path = LOWER('FRAME13_ALARM') THEN '(' || yard_tag || ')' ELSE NULL END) AS frame13_alarm_tag,\r\n  MAX(CASE WHEN mqtt_json_path = LOWER('FRAME15_ALARM') THEN '(' || yard_tag || ')' ELSE NULL END) AS frame15_alarm_tag,\r\n  MAX(CASE WHEN mqtt_json_path = LOWER('FRAME30_ALARM') THEN '(' || yard_tag || ')' ELSE NULL END) AS frame30_alarm_tag,\r\n  MAX(CASE WHEN mqtt_json_path = LOWER('FRAME38_ALARM') THEN '(' || yard_tag || ')' ELSE NULL END) AS frame38_alarm_tag,\r\n  MAX(CASE WHEN mqtt_json_path = LOWER('FRAME38PS_ALARM') THEN '(' || yard_tag || ')' ELSE NULL END) AS frame38ps_alarm_tag,\r\n  MAX(CASE WHEN mqtt_json_path = LOWER('FRAME38SB_ALARM') THEN '(' || yard_tag || ')' ELSE NULL END) AS frame38sb_alarm_tag,\r\n  MAX(CASE WHEN mqtt_json_path = LOWER('FRAME46_ALARM') THEN '(' || yard_tag || ')' ELSE NULL END) AS frame46_alarm_tag,\r\n  MAX(CASE WHEN mqtt_json_path = LOWER('FRAME47SB_ALARM') THEN '(' || yard_tag || ')' ELSE NULL END) AS frame47sb_alarm_tag,\r\n  MAX(CASE WHEN mqtt_json_path = LOWER('FRAME48_ALARM') THEN '(' || yard_tag || ')' ELSE NULL END) AS frame48_alarm_tag,\r\n  MAX(CASE WHEN mqtt_json_path = LOWER('FRAME53_ALARM') THEN '(' || yard_tag || ')' ELSE NULL END) AS frame53_alarm_tag,\r\n  MAX(CASE WHEN mqtt_json_path = LOWER('FRAME68_ALARM') THEN '(' || yard_tag || ')' ELSE NULL END) AS frame68_alarm_tag\r\nFROM marpower.io_metadata_marpower\r\nWHERE mqtt_topic = 'marpower/210000-bilge-fifi-general'",
+          "refId": "B",
+          "sql": {
+            "columns": [
+              {
+                "parameters": [],
+                "type": "function"
+              }
+            ],
+            "groupBy": [
+              {
+                "property": {
+                  "type": "string"
+                },
+                "type": "groupBy"
+              }
+            ],
+            "limit": 50
+          }
         }
       ],
       "title": "Alarms",
@@ -1475,6 +2103,7 @@
             "mode": "continuous-greens"
           },
           "mappings": [],
+          "noValue": "-",
           "thresholds": {
             "mode": "absolute",
             "steps": [
@@ -1846,8 +2475,7 @@
               "name": "chain lock pump run",
               "placement": {
                 "height": 25,
-                "left": 400,
-                "rotation": 0,
+                "left": 518,
                 "top": 220,
                 "width": 25
               },
@@ -1888,7 +2516,7 @@
               "name": "chain lock pump rem avail",
               "placement": {
                 "height": 25,
-                "left": 400,
+                "left": 518,
                 "top": 190,
                 "width": 25
               },
@@ -1929,7 +2557,7 @@
               "name": "strip pump run",
               "placement": {
                 "height": 25,
-                "left": 400,
+                "left": 518,
                 "top": 160,
                 "width": 25
               },
@@ -1970,7 +2598,7 @@
               "name": "strip pump rem avail",
               "placement": {
                 "height": 25,
-                "left": 400,
+                "left": 518,
                 "top": 130,
                 "width": 25
               },
@@ -2011,7 +2639,7 @@
               "name": "gen serv pump 2 stop",
               "placement": {
                 "height": 25,
-                "left": 400,
+                "left": 518,
                 "top": 100,
                 "width": 25
               },
@@ -2053,7 +2681,7 @@
               "name": "gen serv pump 2 start",
               "placement": {
                 "height": 25,
-                "left": 400,
+                "left": 518,
                 "top": 70,
                 "width": 25
               },
@@ -2095,8 +2723,7 @@
               "name": "gen serv pump 2 rem avail",
               "placement": {
                 "height": 25,
-                "left": 400,
-                "rotation": 0,
+                "left": 518,
                 "top": 40,
                 "width": 25
               },
@@ -2134,8 +2761,7 @@
               "name": "gen serv pump 1 rem avail",
               "placement": {
                 "height": 25,
-                "left": 400,
-                "rotation": 0,
+                "left": 518,
                 "top": 10,
                 "width": 25
               },
@@ -2176,7 +2802,7 @@
                 "left": 50,
                 "rotation": 0,
                 "top": 190,
-                "width": 340
+                "width": 313
               },
               "type": "text"
             },
@@ -2215,7 +2841,7 @@
                 "left": 50,
                 "rotation": 0,
                 "top": 160,
-                "width": 275
+                "width": 313
               },
               "type": "text"
             },
@@ -2254,7 +2880,7 @@
                 "left": 50,
                 "rotation": 0,
                 "top": 130,
-                "width": 300
+                "width": 313
               },
               "type": "text"
             },
@@ -2293,7 +2919,7 @@
                 "left": 50,
                 "rotation": 0,
                 "top": 100,
-                "width": 275
+                "width": 313
               },
               "type": "text"
             },
@@ -2371,7 +2997,7 @@
                 "left": 50,
                 "rotation": 0,
                 "top": 40,
-                "width": 275
+                "width": 313
               },
               "type": "text"
             },
@@ -2399,6 +3025,7 @@
                 },
                 "valign": "middle"
               },
+              "connections": [],
               "constraint": {
                 "horizontal": "left",
                 "vertical": "top"
@@ -2409,8 +3036,8 @@
                 "height": 26,
                 "left": 50,
                 "rotation": 0,
-                "top": 10,
-                "width": 322
+                "top": 9,
+                "width": 313
               },
               "type": "text"
             },
@@ -2446,8 +3073,7 @@
               "name": "chain lock pump run label",
               "placement": {
                 "height": 26,
-                "left": 435,
-                "rotation": 0,
+                "left": 553,
                 "top": 220,
                 "width": 275
               },
@@ -2485,8 +3111,7 @@
               "name": "chain lock pump rem avail label",
               "placement": {
                 "height": 26,
-                "left": 435,
-                "rotation": 0,
+                "left": 553,
                 "top": 190,
                 "width": 275
               },
@@ -2524,8 +3149,7 @@
               "name": "strip pump run label",
               "placement": {
                 "height": 26,
-                "left": 435,
-                "rotation": 0,
+                "left": 553,
                 "top": 160,
                 "width": 275
               },
@@ -2563,8 +3187,7 @@
               "name": "strip pump rem avail label",
               "placement": {
                 "height": 26,
-                "left": 435,
-                "rotation": 0,
+                "left": 553,
                 "top": 130,
                 "width": 275
               },
@@ -2602,8 +3225,7 @@
               "name": "gen serv pump 2 stop label",
               "placement": {
                 "height": 26,
-                "left": 435,
-                "rotation": 0,
+                "left": 553,
                 "top": 100,
                 "width": 275
               },
@@ -2641,8 +3263,7 @@
               "name": "gen serv pump 2 start label",
               "placement": {
                 "height": 26,
-                "left": 435,
-                "rotation": 0,
+                "left": 553,
                 "top": 70,
                 "width": 275
               },
@@ -2681,8 +3302,7 @@
               "name": "gen serv pump 2 rem avail label",
               "placement": {
                 "height": 26,
-                "left": 435,
-                "rotation": 0,
+                "left": 553,
                 "top": 40,
                 "width": 275
               },
@@ -2720,10 +3340,596 @@
               "name": "gen serv pump 1 rem avail label",
               "placement": {
                 "height": 26,
-                "left": 435,
+                "left": 553,
                 "rotation": 0,
                 "top": 10,
                 "width": 275
+              },
+              "type": "text"
+            },
+            {
+              "background": {
+                "color": {
+                  "fixed": "transparent"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "left",
+                "color": {
+                  "fixed": "rgb(204, 204, 220)"
+                },
+                "size": 12,
+                "text": {
+                  "field": "submers_pump1_remavail_tag",
+                  "fixed": "Submersible pump 1 - Remote avail.",
+                  "mode": "field"
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "links": [],
+              "name": "submers_pump1_remavail_tag",
+              "placement": {
+                "height": 26,
+                "left": 376,
+                "rotation": 0,
+                "top": 9,
+                "width": 102
+              },
+              "type": "text"
+            },
+            {
+              "background": {
+                "color": {
+                  "fixed": "transparent"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "left",
+                "color": {
+                  "fixed": "rgb(204, 204, 220)"
+                },
+                "size": 12,
+                "text": {
+                  "field": "submers_pump1_running_tag",
+                  "fixed": "Submersible pump 1 - Remote avail.",
+                  "mode": "field"
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "links": [],
+              "name": "submers_pump1_running_tag",
+              "placement": {
+                "height": 26,
+                "left": 376,
+                "rotation": 0,
+                "top": 40,
+                "width": 102
+              },
+              "type": "text"
+            },
+            {
+              "background": {
+                "color": {
+                  "fixed": "transparent"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "left",
+                "color": {
+                  "fixed": "rgb(204, 204, 220)"
+                },
+                "size": 12,
+                "text": {
+                  "field": "submers_pump2_remavail_tag",
+                  "fixed": "Submersible pump 1 - Remote avail.",
+                  "mode": "field"
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "links": [],
+              "name": "submers_pump2_remavail_tag",
+              "placement": {
+                "height": 26,
+                "left": 376,
+                "rotation": 0,
+                "top": 70,
+                "width": 102
+              },
+              "type": "text"
+            },
+            {
+              "background": {
+                "color": {
+                  "fixed": "transparent"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "left",
+                "color": {
+                  "fixed": "rgb(204, 204, 220)"
+                },
+                "size": 12,
+                "text": {
+                  "field": "submers_pump2_running_tag",
+                  "fixed": "Submersible pump 1 - Remote avail.",
+                  "mode": "field"
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "links": [],
+              "name": "submers_pump2_running_tag",
+              "placement": {
+                "height": 26,
+                "left": 376,
+                "rotation": 0,
+                "top": 100,
+                "width": 102
+              },
+              "type": "text"
+            },
+            {
+              "background": {
+                "color": {
+                  "fixed": "transparent"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "left",
+                "color": {
+                  "fixed": "rgb(204, 204, 220)"
+                },
+                "size": 12,
+                "text": {
+                  "field": "submers_pump3_remavail_tag",
+                  "fixed": "Submersible pump 1 - Remote avail.",
+                  "mode": "field"
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "links": [],
+              "name": "submers_pump3_remavail_tag",
+              "placement": {
+                "height": 26,
+                "left": 376,
+                "rotation": 0,
+                "top": 130,
+                "width": 102
+              },
+              "type": "text"
+            },
+            {
+              "background": {
+                "color": {
+                  "fixed": "transparent"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "left",
+                "color": {
+                  "fixed": "rgb(204, 204, 220)"
+                },
+                "size": 12,
+                "text": {
+                  "field": "submers_pump3_running_tag",
+                  "fixed": "Submersible pump 1 - Remote avail.",
+                  "mode": "field"
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "links": [],
+              "name": "submers_pump3_running_tag",
+              "placement": {
+                "height": 26,
+                "left": 376,
+                "rotation": 0,
+                "top": 160,
+                "width": 102
+              },
+              "type": "text"
+            },
+            {
+              "background": {
+                "color": {
+                  "fixed": "transparent"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "left",
+                "color": {
+                  "fixed": "rgb(204, 204, 220)"
+                },
+                "size": 12,
+                "text": {
+                  "field": "bckup_gen_serv_pump_remavail_tag",
+                  "fixed": "Submersible pump 1 - Remote avail.",
+                  "mode": "field"
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "links": [],
+              "name": "bckup_gen_serv_pump_remavail_tag",
+              "placement": {
+                "height": 26,
+                "left": 376,
+                "rotation": 0,
+                "top": 190,
+                "width": 102
+              },
+              "type": "text"
+            },
+            {
+              "background": {
+                "color": {
+                  "fixed": "transparent"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "left",
+                "color": {
+                  "fixed": "rgb(204, 204, 220)"
+                },
+                "size": 12,
+                "text": {
+                  "field": "gen_serv_pump1_remavail_tag",
+                  "fixed": "Submersible pump 1 - Remote avail.",
+                  "mode": "field"
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "links": [],
+              "name": "gen_serv_pump1_remavail_tag",
+              "placement": {
+                "height": 26,
+                "left": 828,
+                "rotation": 0,
+                "top": 10,
+                "width": 102
+              },
+              "type": "text"
+            },
+            {
+              "background": {
+                "color": {
+                  "fixed": "transparent"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "left",
+                "color": {
+                  "fixed": "rgb(204, 204, 220)"
+                },
+                "size": 12,
+                "text": {
+                  "field": "strip_pump_remavail_tag",
+                  "fixed": "Submersible pump 1 - Remote avail.",
+                  "mode": "field"
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "links": [],
+              "name": "strip_pump_remavail_tag",
+              "placement": {
+                "height": 26,
+                "left": 828,
+                "rotation": 0,
+                "top": 130,
+                "width": 102
+              },
+              "type": "text"
+            },
+            {
+              "background": {
+                "color": {
+                  "fixed": "transparent"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "left",
+                "color": {
+                  "fixed": "rgb(204, 204, 220)"
+                },
+                "size": 12,
+                "text": {
+                  "field": "submers_pump1_running_tag",
+                  "fixed": "Submersible pump 1 - Remote avail.",
+                  "mode": "field"
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "links": [],
+              "name": "gen_serv_pump2_remavail_tag",
+              "placement": {
+                "height": 26,
+                "left": 828,
+                "rotation": 0,
+                "top": 40,
+                "width": 102
+              },
+              "type": "text"
+            },
+            {
+              "background": {
+                "color": {
+                  "fixed": "transparent"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "left",
+                "color": {
+                  "fixed": "rgb(204, 204, 220)"
+                },
+                "size": 12,
+                "text": {
+                  "field": "gen_serv_pump2_field_start_tag",
+                  "fixed": "Submersible pump 1 - Remote avail.",
+                  "mode": "field"
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "links": [],
+              "name": "gen_serv_pump2_field_start_tag",
+              "placement": {
+                "height": 26,
+                "left": 828,
+                "rotation": 0,
+                "top": 70,
+                "width": 102
+              },
+              "type": "text"
+            },
+            {
+              "background": {
+                "color": {
+                  "fixed": "transparent"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "left",
+                "color": {
+                  "fixed": "rgb(204, 204, 220)"
+                },
+                "size": 12,
+                "text": {
+                  "field": "gen_serv_pump2_field_stop_tag",
+                  "fixed": "Submersible pump 1 - Remote avail.",
+                  "mode": "field"
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "links": [],
+              "name": "gen_serv_pump2_field_stop_tag",
+              "placement": {
+                "height": 26,
+                "left": 828,
+                "rotation": 0,
+                "top": 100,
+                "width": 102
+              },
+              "type": "text"
+            },
+            {
+              "background": {
+                "color": {
+                  "fixed": "transparent"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "left",
+                "color": {
+                  "fixed": "rgb(204, 204, 220)"
+                },
+                "size": 12,
+                "text": {
+                  "field": "strip_pump_running_tag",
+                  "fixed": "Submersible pump 1 - Remote avail.",
+                  "mode": "field"
+                },
+                "valign": "middle"
+              },
+              "connections": [],
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "links": [],
+              "name": "strip_pump_running_tag",
+              "placement": {
+                "height": 26,
+                "left": 828,
+                "rotation": 0,
+                "top": 160,
+                "width": 102
+              },
+              "type": "text"
+            },
+            {
+              "background": {
+                "color": {
+                  "fixed": "transparent"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "left",
+                "color": {
+                  "fixed": "rgb(204, 204, 220)"
+                },
+                "size": 12,
+                "text": {
+                  "field": "chain_lock_pump_remavail_tag",
+                  "fixed": "Submersible pump 1 - Remote avail.",
+                  "mode": "field"
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "links": [],
+              "name": "chain_lock_pump_remavail_tag",
+              "placement": {
+                "height": 26,
+                "left": 828,
+                "rotation": 0,
+                "top": 190,
+                "width": 102
+              },
+              "type": "text"
+            },
+            {
+              "background": {
+                "color": {
+                  "fixed": "transparent"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "left",
+                "color": {
+                  "fixed": "rgb(204, 204, 220)"
+                },
+                "size": 12,
+                "text": {
+                  "field": "chain_lock_pump_running_tag",
+                  "fixed": "Submersible pump 1 - Remote avail.",
+                  "mode": "field"
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "links": [],
+              "name": "chain_lock_pump_running_tag",
+              "placement": {
+                "height": 26,
+                "left": 828,
+                "rotation": 0,
+                "top": 220,
+                "width": 102
               },
               "type": "text"
             }
@@ -2756,8 +3962,38 @@
           "editorMode": "code",
           "format": "table",
           "rawQuery": true,
-          "rawSql": "SELECT\r\n  LAST_VALUE(time ORDER BY time) AS time,\r\n  LAST_VALUE((\"SUBMERS_PUMP1_REMAVAIL\").value ORDER BY time) AS submers_pump1_remavail,\r\n  LAST_VALUE((\"SUBMERS_PUMP1_RUNNING\").value ORDER BY time) AS submers_pump1_running,\r\n  LAST_VALUE((\"SUBMERS_PUMP2_REMAVAIL\").value ORDER BY time) AS submers_pump2_remavail,\r\n  LAST_VALUE((\"SUBMERS_PUMP2_RUNNING\").value ORDER BY time) AS submers_pump2_running,\r\n  LAST_VALUE((\"SUBMERS_PUMP2_REMAVAIL\").value ORDER BY time) AS submers_pump3_remavail,\r\n  LAST_VALUE((\"SUBMERS_PUMP3_RUNNING\").value ORDER BY time) AS submers_pump3_running,\r\n  LAST_VALUE((\"BCKUP_GEN_SERV_PUMP_REMAVAIL\").value ORDER BY time) AS bckup_gen_serv_pump_remavail,\r\n  LAST_VALUE((\"GEN_SERV_PUMP1_REMAVAIL\").value ORDER BY time) AS gen_serv_pump1_remavail,\r\n  LAST_VALUE((\"GEN_SERV_PUMP2_REMAVAIL\").value ORDER BY time) AS gen_serv_pump2_remavail,\r\n  LAST_VALUE((\"GEN_SERV_PUMP2_FIELD_START\").value ORDER BY time) AS gen_serv_pump2_field_start,\r\n  LAST_VALUE((\"GEN_SERV_PUMP2_FIELD_STOP\").value ORDER BY time) AS gen_serv_pump2_field_stop,\r\n  LAST_VALUE((\"STRIP_PUMP_REMAVAIL\").value ORDER BY time) AS strip_pump_remavail,\r\n  LAST_VALUE((\"STRIP_PUMP_RUNNING\").value ORDER BY time) AS strip_pump_running,\r\n  LAST_VALUE((\"CHAIN_LOCK_PUMP_REMAVAIL\").value ORDER BY time) AS chain_lock_pump_remavail,\r\n  LAST_VALUE((\"CHAIN_LOCK_PUMP_RUNNING\").value ORDER BY time) AS chain_lock_pump_running\r\nFROM marpower.\"210000_bilge_fifi_general\"",
+          "rawSql": "SELECT\r\n  LAST_VALUE(time ORDER BY time) AS time,\r\n  LAST_VALUE((\"SUBMERS_PUMP1_REMAVAIL\").value ORDER BY time) AS submers_pump1_remavail,\r\n  LAST_VALUE((\"SUBMERS_PUMP1_RUNNING\").value ORDER BY time) AS submers_pump1_running,\r\n  LAST_VALUE((\"SUBMERS_PUMP2_REMAVAIL\").value ORDER BY time) AS submers_pump2_remavail,\r\n  LAST_VALUE((\"SUBMERS_PUMP2_RUNNING\").value ORDER BY time) AS submers_pump2_running,\r\n  LAST_VALUE((\"SUBMERS_PUMP3_REMAVAIL\").value ORDER BY time) AS submers_pump3_remavail,\r\n  LAST_VALUE((\"SUBMERS_PUMP3_RUNNING\").value ORDER BY time) AS submers_pump3_running,\r\n  LAST_VALUE((\"BCKUP_GEN_SERV_PUMP_REMAVAIL\").value ORDER BY time) AS bckup_gen_serv_pump_remavail,\r\n  LAST_VALUE((\"GEN_SERV_PUMP1_REMAVAIL\").value ORDER BY time) AS gen_serv_pump1_remavail,\r\n  LAST_VALUE((\"GEN_SERV_PUMP2_REMAVAIL\").value ORDER BY time) AS gen_serv_pump2_remavail,\r\n  LAST_VALUE((\"GEN_SERV_PUMP2_FIELD_START\").value ORDER BY time) AS gen_serv_pump2_field_start,\r\n  LAST_VALUE((\"GEN_SERV_PUMP2_FIELD_STOP\").value ORDER BY time) AS gen_serv_pump2_field_stop,\r\n  LAST_VALUE((\"STRIP_PUMP_REMAVAIL\").value ORDER BY time) AS strip_pump_remavail,\r\n  LAST_VALUE((\"STRIP_PUMP_RUNNING\").value ORDER BY time) AS strip_pump_running,\r\n  LAST_VALUE((\"CHAIN_LOCK_PUMP_REMAVAIL\").value ORDER BY time) AS chain_lock_pump_remavail,\r\n  LAST_VALUE((\"CHAIN_LOCK_PUMP_RUNNING\").value ORDER BY time) AS chain_lock_pump_running\r\nFROM marpower.\"210000_bilge_fifi_general\"",
           "refId": "A",
+          "sql": {
+            "columns": [
+              {
+                "parameters": [],
+                "type": "function"
+              }
+            ],
+            "groupBy": [
+              {
+                "property": {
+                  "type": "string"
+                },
+                "type": "groupBy"
+              }
+            ],
+            "limit": 50
+          }
+        },
+        {
+          "dataset": "dev",
+          "datasource": {
+            "type": "grafana-postgresql-datasource",
+            "uid": "${datasource}"
+          },
+          "editorMode": "code",
+          "format": "table",
+          "hide": false,
+          "rawQuery": true,
+          "rawSql": "SELECT\r\n  MAX(CASE WHEN mqtt_json_path = LOWER('SUBMERS_PUMP1_REMAVAIL') THEN '(' || yard_tag || ')' ELSE NULL END) AS submers_pump1_remavail_tag,\r\n  MAX(CASE WHEN mqtt_json_path = LOWER('SUBMERS_PUMP1_RUNNING') THEN '(' || yard_tag || ')' ELSE NULL END) AS submers_pump1_running_tag,\r\n  MAX(CASE WHEN mqtt_json_path = LOWER('SUBMERS_PUMP2_REMAVAIL') THEN '(' || yard_tag || ')' ELSE NULL END) AS submers_pump2_remavail_tag,\r\n  MAX(CASE WHEN mqtt_json_path = LOWER('SUBMERS_PUMP2_RUNNING') THEN '(' || yard_tag || ')' ELSE NULL END) AS submers_pump2_running_tag,\r\n  MAX(CASE WHEN mqtt_json_path = LOWER('SUBMERS_PUMP3_REMAVAIL') THEN '(' || yard_tag || ')' ELSE NULL END) AS submers_pump3_remavail_tag,\r\n  MAX(CASE WHEN mqtt_json_path = LOWER('SUBMERS_PUMP3_RUNNING') THEN '(' || yard_tag || ')' ELSE NULL END) AS submers_pump3_running_tag,\r\n  MAX(CASE WHEN mqtt_json_path = LOWER('BCKUP_GEN_SERV_PUMP_REMAVAIL') THEN '(' || yard_tag || ')' ELSE NULL END) AS bckup_gen_serv_pump_remavail_tag,\r\n  MAX(CASE WHEN mqtt_json_path = LOWER('GEN_SERV_PUMP1_REMAVAIL') THEN '(' || yard_tag || ')' ELSE NULL END) AS gen_serv_pump1_remavail_tag,\r\n  MAX(CASE WHEN mqtt_json_path = LOWER('GEN_SERV_PUMP2_REMAVAIL') THEN '(' || yard_tag || ')' ELSE NULL END) AS gen_serv_pump2_remavail_tag,\r\n  MAX(CASE WHEN mqtt_json_path = LOWER('GEN_SERV_PUMP2_FIELD_START') THEN '(' || yard_tag || ')' ELSE NULL END) AS gen_serv_pump2_field_start_tag,\r\n  MAX(CASE WHEN mqtt_json_path = LOWER('GEN_SERV_PUMP2_FIELD_STOP') THEN '(' || yard_tag || ')' ELSE NULL END) AS gen_serv_pump2_field_stop_tag,\r\n  MAX(CASE WHEN mqtt_json_path = LOWER('STRIP_PUMP_REMAVAIL') THEN '(' || yard_tag || ')' ELSE NULL END) AS strip_pump_remavail_tag,\r\n  MAX(CASE WHEN mqtt_json_path = LOWER('STRIP_PUMP_RUNNING') THEN '(' || yard_tag || ')' ELSE NULL END) AS strip_pump_running_tag,\r\n  MAX(CASE WHEN mqtt_json_path = LOWER('CHAIN_LOCK_PUMP_REMAVAIL') THEN '(' || yard_tag || ')' ELSE NULL END) AS chain_lock_pump_remavail_tag,\r\n  MAX(CASE WHEN mqtt_json_path = LOWER('CHAIN_LOCK_PUMP_RUNNING') THEN '(' || yard_tag || ')' ELSE NULL END) AS chain_lock_pump_running_tag\r\nFROM marpower.io_metadata_marpower\r\nWHERE mqtt_topic = 'marpower/210000-bilge-fifi-general'",
+          "refId": "B",
           "sql": {
             "columns": [
               {
@@ -2791,6 +4027,7 @@
             "mode": "continuous-blues"
           },
           "mappings": [],
+          "noValue": "-",
           "thresholds": {
             "mode": "absolute",
             "steps": [
@@ -3193,9 +4430,8 @@
               "placement": {
                 "height": 26,
                 "left": 50,
-                "rotation": 0,
                 "top": 160,
-                "width": 250
+                "width": 275
               },
               "type": "text"
             },
@@ -3232,9 +4468,8 @@
               "placement": {
                 "height": 26,
                 "left": 50,
-                "rotation": 0,
                 "top": 130,
-                "width": 250
+                "width": 275
               },
               "type": "text"
             },
@@ -3272,9 +4507,8 @@
               "placement": {
                 "height": 26,
                 "left": 50,
-                "rotation": 0,
                 "top": 100,
-                "width": 250
+                "width": 275
               },
               "type": "text"
             },
@@ -3311,9 +4545,8 @@
               "placement": {
                 "height": 26,
                 "left": 50,
-                "rotation": 0,
                 "top": 70,
-                "width": 250
+                "width": 275
               },
               "type": "text"
             },
@@ -3350,9 +4583,8 @@
               "placement": {
                 "height": 26,
                 "left": 50,
-                "rotation": 0,
                 "top": 40,
-                "width": 250
+                "width": 275
               },
               "type": "text"
             },
@@ -3389,9 +4621,281 @@
               "placement": {
                 "height": 26,
                 "left": 50,
+                "top": 10,
+                "width": 275
+              },
+              "type": "text"
+            },
+            {
+              "background": {
+                "color": {
+                  "fixed": "transparent"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "left",
+                "color": {
+                  "fixed": "rgb(204, 204, 220)"
+                },
+                "size": 12,
+                "text": {
+                  "field": "submers_pump1_startstop_tag",
+                  "fixed": "Submersible pump 1 - Start",
+                  "mode": "field"
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "links": [],
+              "name": "submers_pump1_startstop_tag",
+              "placement": {
+                "height": 26,
+                "left": 335,
                 "rotation": 0,
                 "top": 10,
-                "width": 250
+                "width": 96
+              },
+              "type": "text"
+            },
+            {
+              "background": {
+                "color": {
+                  "fixed": "transparent"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "left",
+                "color": {
+                  "fixed": "rgb(204, 204, 220)"
+                },
+                "size": 12,
+                "text": {
+                  "field": "submers_pump2_startstop_tag",
+                  "fixed": "Submersible pump 1 - Start",
+                  "mode": "field"
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "links": [],
+              "name": "submers_pump2_startstop_tag",
+              "placement": {
+                "height": 26,
+                "left": 335,
+                "rotation": 0,
+                "top": 40,
+                "width": 96
+              },
+              "type": "text"
+            },
+            {
+              "background": {
+                "color": {
+                  "fixed": "transparent"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "left",
+                "color": {
+                  "fixed": "rgb(204, 204, 220)"
+                },
+                "size": 12,
+                "text": {
+                  "field": "submers_pump3_startstop_tag",
+                  "fixed": "Submersible pump 1 - Start",
+                  "mode": "field"
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "links": [],
+              "name": "submers_pump3_startstop_tag",
+              "placement": {
+                "height": 26,
+                "left": 335,
+                "rotation": 0,
+                "top": 70,
+                "width": 96
+              },
+              "type": "text"
+            },
+            {
+              "background": {
+                "color": {
+                  "fixed": "transparent"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "left",
+                "color": {
+                  "fixed": "rgb(204, 204, 220)"
+                },
+                "size": 12,
+                "text": {
+                  "field": "strip_pump_startstop_tag",
+                  "fixed": "Submersible pump 1 - Start",
+                  "mode": "field"
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "links": [],
+              "name": "strip_pump_startstop_tag",
+              "placement": {
+                "height": 26,
+                "left": 335,
+                "rotation": 0,
+                "top": 100,
+                "width": 96
+              },
+              "type": "text"
+            },
+            {
+              "background": {
+                "color": {
+                  "fixed": "transparent"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "left",
+                "color": {
+                  "fixed": "rgb(204, 204, 220)"
+                },
+                "size": 12,
+                "text": {
+                  "field": "chain_lock_pump_startstop_tag",
+                  "fixed": "Submersible pump 1 - Start",
+                  "mode": "field"
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "links": [],
+              "name": "chain_lock_pump_startstop_tag",
+              "placement": {
+                "height": 26,
+                "left": 335,
+                "rotation": 0,
+                "top": 130,
+                "width": 96
+              },
+              "type": "text"
+            },
+            {
+              "background": {
+                "color": {
+                  "fixed": "transparent"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "left",
+                "color": {
+                  "fixed": "rgb(204, 204, 220)"
+                },
+                "size": 12,
+                "text": {
+                  "field": "separator_start_tag",
+                  "fixed": "Submersible pump 1 - Start",
+                  "mode": "field"
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "links": [],
+              "name": "separator_start_tag",
+              "placement": {
+                "height": 26,
+                "left": 335,
+                "rotation": 0,
+                "top": 160,
+                "width": 96
+              },
+              "type": "text"
+            },
+            {
+              "background": {
+                "color": {
+                  "fixed": "transparent"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "left",
+                "color": {
+                  "fixed": "rgb(204, 204, 220)"
+                },
+                "size": 12,
+                "text": {
+                  "field": "gen_serv_pump1_fdbck_fault_tag",
+                  "fixed": "Submersible pump 1 - Start",
+                  "mode": "field"
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "links": [],
+              "name": "gen_serv_pump1_fdbck_fault_tag",
+              "placement": {
+                "height": 26,
+                "left": 335,
+                "rotation": 0,
+                "top": 190,
+                "width": 96
               },
               "type": "text"
             }
@@ -3443,6 +4947,36 @@
             ],
             "limit": 50
           }
+        },
+        {
+          "dataset": "dev",
+          "datasource": {
+            "type": "grafana-postgresql-datasource",
+            "uid": "${datasource}"
+          },
+          "editorMode": "code",
+          "format": "table",
+          "hide": false,
+          "rawQuery": true,
+          "rawSql": "SELECT\r\n  MAX(CASE WHEN mqtt_json_path = LOWER('SUBMERS_PUMP1_STARTSTOP') THEN '(' || yard_tag || ')' ELSE NULL END) AS submers_pump1_startstop_tag,\r\n  MAX(CASE WHEN mqtt_json_path = LOWER('SUBMERS_PUMP2_STARTSTOP') THEN '(' || yard_tag || ')' ELSE NULL END) AS submers_pump2_startstop_tag,\r\n  MAX(CASE WHEN mqtt_json_path = LOWER('SUBMERS_PUMP3_STARTSTOP') THEN '(' || yard_tag || ')' ELSE NULL END) AS submers_pump3_startstop_tag,\r\n  MAX(CASE WHEN mqtt_json_path = LOWER('STRIP_PUMP_STARTSTOP') THEN '(' || yard_tag || ')' ELSE NULL END) AS strip_pump_startstop_tag,\r\n  MAX(CASE WHEN mqtt_json_path = LOWER('CHAIN_LOCK_PUMP_STARTSTOP') THEN '(' || yard_tag || ')' ELSE NULL END) AS chain_lock_pump_startstop_tag,\r\n  MAX(CASE WHEN mqtt_json_path = LOWER('SEPARATOR_START') THEN '(' || yard_tag || ')' ELSE NULL END) AS separator_start_tag,\r\n  MAX(CASE WHEN mqtt_json_path = LOWER('GEN_SERV_PUMP1_FDBCK_FAULT') THEN '(' || yard_tag || ')' ELSE NULL END) AS gen_serv_pump1_fdbck_fault_tag\r\nFROM marpower.io_metadata_marpower\r\nWHERE mqtt_topic = 'marpower/210000-bilge-fifi-general'",
+          "refId": "B",
+          "sql": {
+            "columns": [
+              {
+                "parameters": [],
+                "type": "function"
+              }
+            ],
+            "groupBy": [
+              {
+                "property": {
+                  "type": "string"
+                },
+                "type": "groupBy"
+              }
+            ],
+            "limit": 50
+          }
         }
       ],
       "title": "Control signals",
@@ -3460,6 +4994,7 @@
           },
           "decimals": 2,
           "mappings": [],
+          "noValue": "-",
           "thresholds": {
             "mode": "absolute",
             "steps": [
@@ -3557,7 +5092,7 @@
               "name": "forepeak temp",
               "placement": {
                 "height": 30,
-                "left": 720,
+                "left": 874,
                 "top": 170,
                 "width": 175
               },
@@ -3595,8 +5130,7 @@
               "name": "tank level",
               "placement": {
                 "height": 30,
-                "left": 720,
-                "rotation": 0,
+                "left": 874,
                 "top": 130,
                 "width": 175
               },
@@ -3634,7 +5168,7 @@
               "name": "21001069_3 pressure",
               "placement": {
                 "height": 30,
-                "left": 720,
+                "left": 874,
                 "top": 90,
                 "width": 175
               },
@@ -3672,7 +5206,7 @@
               "name": "21001069_2 pressure",
               "placement": {
                 "height": 30,
-                "left": 720,
+                "left": 874,
                 "top": 50,
                 "width": 175
               },
@@ -3710,8 +5244,7 @@
               "name": "21001069_1 pressure",
               "placement": {
                 "height": 30,
-                "left": 720,
-                "rotation": 0,
+                "left": 874,
                 "top": 10,
                 "width": 175
               },
@@ -3749,7 +5282,7 @@
               "name": "chain lock pressure",
               "placement": {
                 "height": 30,
-                "left": 235,
+                "left": 327,
                 "top": 170,
                 "width": 175
               },
@@ -3787,7 +5320,7 @@
               "name": "aft sb pressure",
               "placement": {
                 "height": 30,
-                "left": 235,
+                "left": 327,
                 "top": 130,
                 "width": 175
               },
@@ -3825,7 +5358,7 @@
               "name": "aft ps pressure",
               "placement": {
                 "height": 30,
-                "left": 235,
+                "left": 327,
                 "top": 90,
                 "width": 175
               },
@@ -3864,7 +5397,7 @@
               "name": "fwd sb pressure",
               "placement": {
                 "height": 30,
-                "left": 235,
+                "left": 327,
                 "top": 50,
                 "width": 175
               },
@@ -3902,7 +5435,7 @@
               "name": "fwd ps pressure",
               "placement": {
                 "height": 30,
-                "left": 235,
+                "left": 327,
                 "top": 10,
                 "width": 175
               },
@@ -3938,9 +5471,9 @@
               "name": "forepeak temp label",
               "placement": {
                 "height": 30,
-                "left": 500,
+                "left": 592,
                 "top": 170,
-                "width": 200
+                "width": 182
               },
               "type": "text"
             },
@@ -3974,10 +5507,9 @@
               "name": "tank level label",
               "placement": {
                 "height": 30,
-                "left": 500,
-                "rotation": 0,
+                "left": 592,
                 "top": 130,
-                "width": 200
+                "width": 182
               },
               "type": "text"
             },
@@ -4011,9 +5543,9 @@
               "name": "21001069_3 pressure label",
               "placement": {
                 "height": 30,
-                "left": 500,
+                "left": 592,
                 "top": 90,
-                "width": 200
+                "width": 182
               },
               "type": "text"
             },
@@ -4047,9 +5579,9 @@
               "name": "21001069_2 pressure label",
               "placement": {
                 "height": 30,
-                "left": 500,
+                "left": 592,
                 "top": 50,
-                "width": 200
+                "width": 182
               },
               "type": "text"
             },
@@ -4083,10 +5615,9 @@
               "name": "21001069_1 pressure label",
               "placement": {
                 "height": 30,
-                "left": 500,
-                "rotation": 0,
+                "left": 592,
                 "top": 10,
-                "width": 200
+                "width": 182
               },
               "type": "text"
             },
@@ -4271,6 +5802,391 @@
                 "width": 200
               },
               "type": "text"
+            },
+            {
+              "background": {
+                "color": {
+                  "fixed": "transparent"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "left",
+                "color": {
+                  "fixed": "rgb(204, 204, 220)"
+                },
+                "size": 12,
+                "text": {
+                  "field": "press_sensor_fwd_ps_battery_tag",
+                  "fixed": "FWD PS battery pressure",
+                  "mode": "field"
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "links": [],
+              "name": "press_sensor_fwd_ps_battery_tag",
+              "placement": {
+                "height": 30,
+                "left": 221,
+                "rotation": 0,
+                "top": 10,
+                "width": 100
+              },
+              "type": "text"
+            },
+            {
+              "background": {
+                "color": {
+                  "fixed": "transparent"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "left",
+                "color": {
+                  "fixed": "rgb(204, 204, 220)"
+                },
+                "size": 12,
+                "text": {
+                  "field": "press_sensor_fwd_sb_battery_tag",
+                  "fixed": "FWD PS battery pressure",
+                  "mode": "field"
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "links": [],
+              "name": "press_sensor_fwd_sb_battery_tag",
+              "placement": {
+                "height": 30,
+                "left": 221,
+                "rotation": 0,
+                "top": 50,
+                "width": 100
+              },
+              "type": "text"
+            },
+            {
+              "background": {
+                "color": {
+                  "fixed": "transparent"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "left",
+                "color": {
+                  "fixed": "rgb(204, 204, 220)"
+                },
+                "size": 12,
+                "text": {
+                  "field": "press_sensor_aft_ps_battery_tag",
+                  "fixed": "FWD PS battery pressure",
+                  "mode": "field"
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "links": [],
+              "name": "press_sensor_aft_ps_battery_tag",
+              "placement": {
+                "height": 30,
+                "left": 221,
+                "rotation": 0,
+                "top": 90,
+                "width": 100
+              },
+              "type": "text"
+            },
+            {
+              "background": {
+                "color": {
+                  "fixed": "transparent"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "left",
+                "color": {
+                  "fixed": "rgb(204, 204, 220)"
+                },
+                "size": 12,
+                "text": {
+                  "field": "press_sensor_aft_sb_battery_tag",
+                  "fixed": "FWD PS battery pressure",
+                  "mode": "field"
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "links": [],
+              "name": "press_sensor_aft_sb_battery_tag",
+              "placement": {
+                "height": 30,
+                "left": 221,
+                "rotation": 0,
+                "top": 130,
+                "width": 100
+              },
+              "type": "text"
+            },
+            {
+              "background": {
+                "color": {
+                  "fixed": "transparent"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "left",
+                "color": {
+                  "fixed": "rgb(204, 204, 220)"
+                },
+                "size": 12,
+                "text": {
+                  "field": "chain_lock_presssensor_tag",
+                  "fixed": "FWD PS battery pressure",
+                  "mode": "field"
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "links": [],
+              "name": "chain_lock_presssensor_tag",
+              "placement": {
+                "height": 30,
+                "left": 221,
+                "rotation": 0,
+                "top": 170,
+                "width": 100
+              },
+              "type": "text"
+            },
+            {
+              "background": {
+                "color": {
+                  "fixed": "transparent"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "left",
+                "color": {
+                  "fixed": "rgb(204, 204, 220)"
+                },
+                "size": 12,
+                "text": {
+                  "field": "pressure_sensor_210010691_tag",
+                  "fixed": "FWD PS battery pressure",
+                  "mode": "field"
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "links": [],
+              "name": "pressure_sensor_210010691_tag",
+              "placement": {
+                "height": 30,
+                "left": 774,
+                "top": 10,
+                "width": 100
+              },
+              "type": "text"
+            },
+            {
+              "background": {
+                "color": {
+                  "fixed": "transparent"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "left",
+                "color": {
+                  "fixed": "rgb(204, 204, 220)"
+                },
+                "size": 12,
+                "text": {
+                  "field": "pressure_sensor_210010693_tag",
+                  "fixed": "FWD PS battery pressure",
+                  "mode": "field"
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "links": [],
+              "name": "pressure_sensor_210010693_tag",
+              "placement": {
+                "height": 30,
+                "left": 774,
+                "top": 90,
+                "width": 100
+              },
+              "type": "text"
+            },
+            {
+              "background": {
+                "color": {
+                  "fixed": "transparent"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "left",
+                "color": {
+                  "fixed": "rgb(204, 204, 220)"
+                },
+                "size": 12,
+                "text": {
+                  "field": "pressure_sensor_210010692_tag",
+                  "fixed": "FWD PS battery pressure",
+                  "mode": "field"
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "links": [],
+              "name": "pressure_sensor_210010692_tag",
+              "placement": {
+                "height": 30,
+                "left": 774,
+                "top": 50,
+                "width": 100
+              },
+              "type": "text"
+            },
+            {
+              "background": {
+                "color": {
+                  "fixed": "transparent"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "left",
+                "color": {
+                  "fixed": "rgb(204, 204, 220)"
+                },
+                "size": 12,
+                "text": {
+                  "field": "forepeak_tempsensor_tag",
+                  "fixed": "FWD PS battery pressure",
+                  "mode": "field"
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "links": [],
+              "name": "forepeak_tempsensor_tag",
+              "placement": {
+                "height": 30,
+                "left": 774,
+                "top": 170,
+                "width": 100
+              },
+              "type": "text"
+            },
+            {
+              "background": {
+                "color": {
+                  "fixed": "transparent"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "left",
+                "color": {
+                  "fixed": "rgb(204, 204, 220)"
+                },
+                "size": 12,
+                "text": {
+                  "field": "tank_level_tag",
+                  "fixed": "FWD PS battery pressure",
+                  "mode": "field"
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "links": [],
+              "name": "tank_level_tag",
+              "placement": {
+                "height": 30,
+                "left": 774,
+                "top": 130,
+                "width": 100
+              },
+              "type": "text"
             }
           ],
           "name": "Element 1767775905609",
@@ -4303,6 +6219,36 @@
           "rawQuery": true,
           "rawSql": "SELECT\r\n  LAST_VALUE(time ORDER BY time) AS time,\r\n  LAST_VALUE((\"PRESS_SENSOR_FWD_PS_BATTERY\").value ORDER BY time) AS press_sensor_fwd_ps_battery,\r\n  LAST_VALUE((\"PRESS_SENSOR_FWD_SB_BATTERY\").value ORDER BY time) AS press_sensor_fwd_sb_battery,\r\n  LAST_VALUE((\"PRESS_SENSOR_AFT_PS_BATTERY\").value ORDER BY time) AS press_sensor_aft_ps_battery,\r\n  LAST_VALUE((\"PRESS_SENSOR_AFT_SB_BATTERY\").value ORDER BY time) AS press_sensor_aft_sb_battery,\r\n  LAST_VALUE((\"CHAIN_LOCK_PRESSSENSOR\").value ORDER BY time) AS chain_lock_presssensor,\r\n  LAST_VALUE((\"PRESSURE_SENSOR_210010691\").value ORDER BY time) AS pressure_sensor_210010691,\r\n  LAST_VALUE((\"PRESSURE_SENSOR_210010692\").value ORDER BY time) AS pressure_sensor_210010692,\r\n  LAST_VALUE((\"PRESSURE_SENSOR_210010693\").value ORDER BY time) AS pressure_sensor_210010693,\r\n  LAST_VALUE((\"TANK_LEVEL\").value ORDER BY time) AS tank_level,\r\n  LAST_VALUE((\"FOREPEAK_TEMPSENSOR\").value ORDER BY time) AS forepeak_tempsensor\r\nFROM marpower.\"210000_bilge_fifi_general\"",
           "refId": "A",
+          "sql": {
+            "columns": [
+              {
+                "parameters": [],
+                "type": "function"
+              }
+            ],
+            "groupBy": [
+              {
+                "property": {
+                  "type": "string"
+                },
+                "type": "groupBy"
+              }
+            ],
+            "limit": 50
+          }
+        },
+        {
+          "dataset": "dev",
+          "datasource": {
+            "type": "grafana-postgresql-datasource",
+            "uid": "${datasource}"
+          },
+          "editorMode": "code",
+          "format": "table",
+          "hide": false,
+          "rawQuery": true,
+          "rawSql": "SELECT\r\n  MAX(CASE WHEN mqtt_json_path = LOWER('PRESS_SENSOR_FWD_PS_BATTERY') THEN '(' || yard_tag || ')' ELSE NULL END) AS press_sensor_fwd_ps_battery_tag,\r\n  MAX(CASE WHEN mqtt_json_path = LOWER('PRESS_SENSOR_FWD_SB_BATTERY') THEN '(' || yard_tag || ')' ELSE NULL END) AS press_sensor_fwd_sb_battery_tag,\r\n  MAX(CASE WHEN mqtt_json_path = LOWER('PRESS_SENSOR_AFT_PS_BATTERY') THEN '(' || yard_tag || ')' ELSE NULL END) AS press_sensor_aft_ps_battery_tag,\r\n  MAX(CASE WHEN mqtt_json_path = LOWER('PRESS_SENSOR_AFT_SB_BATTERY') THEN '(' || yard_tag || ')' ELSE NULL END) AS press_sensor_aft_sb_battery_tag,\r\n  MAX(CASE WHEN mqtt_json_path = LOWER('CHAIN_LOCK_PRESSSENSOR') THEN '(' || yard_tag || ')' ELSE NULL END)      AS chain_lock_presssensor_tag,\r\n  MAX(CASE WHEN mqtt_json_path = LOWER('PRESSURE_SENSOR_210010691') THEN '(' || yard_tag || ')' ELSE NULL END)   AS pressure_sensor_210010691_tag,\r\n  MAX(CASE WHEN mqtt_json_path = LOWER('PRESSURE_SENSOR_210010692') THEN '(' || yard_tag || ')' ELSE NULL END)   AS pressure_sensor_210010692_tag,\r\n  MAX(CASE WHEN mqtt_json_path = LOWER('PRESSURE_SENSOR_210010693') THEN '(' || yard_tag || ')' ELSE NULL END)   AS pressure_sensor_210010693_tag,\r\n  MAX(CASE WHEN mqtt_json_path = LOWER('TANK_LEVEL') THEN '(' || yard_tag || ')' ELSE NULL END)                  AS tank_level_tag,\r\n  MAX(CASE WHEN mqtt_json_path = LOWER('FOREPEAK_TEMPSENSOR') THEN '(' || yard_tag || ')' ELSE NULL END)         AS forepeak_tempsensor_tag\r\nFROM marpower.io_metadata_marpower\r\nWHERE mqtt_topic = 'marpower/210000-bilge-fifi-general'",
+          "refId": "B",
           "sql": {
             "columns": [
               {
@@ -4631,8 +6577,8 @@
     ]
   },
   "time": {
-    "from": "now-5m",
-    "to": "now"
+    "from": "2026-04-14T15:50:37.396Z",
+    "to": "2026-04-14T15:55:37.396Z"
   },
   "timepicker": {},
   "timezone": "browser",
