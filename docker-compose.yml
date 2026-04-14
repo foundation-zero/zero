@@ -329,6 +329,9 @@ services:
       - loads
     environment:
       <<: *app_env
+    depends_on:
+      vernemq:
+        condition: service_healthy
 
   loads-conditions-stub:
     command: conditions-stub
