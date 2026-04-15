@@ -82,7 +82,9 @@ class Controller[ActuatorUnit: float, MeasurementUnit: float]:
             pid_result = None
         else:
             pid_result = cast(ActuatorUnit | None, self._pid(measurement))
-        return pid_result if pid_result is not None else self._initial
+        return (
+            pid_result if pid_result is not None else self._initial
+        )  # TODO: is returning self._intial desireable?
 
 
 class FlowBalanceController:

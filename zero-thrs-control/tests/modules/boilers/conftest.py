@@ -50,7 +50,7 @@ def simulation_inputs():
         ),
         boilers_freshwater_supply=OverpressureTemperatureBoundary(
             temperature=Stamped.stamp(20),
-            overpressure=Stamped.stamp(3),
+            overpressure=Stamped.stamp(0.5),
         ),
         boilers_exchanger_gas=HeatSource(heat_flow=Stamped.stamp(300)),
         boilers_seawater_supply=TemperatureBoundary(temperature=Stamped.stamp(32)),

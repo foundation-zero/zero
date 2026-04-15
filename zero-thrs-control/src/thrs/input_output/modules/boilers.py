@@ -188,6 +188,28 @@ class BoilersSensorValues(ThrsValues):
             yard_tag="50001058-03", component_type="flow_sensor", included_in_fmu=False
         ),
     ]
+    lt1_temperature_recovery: Annotated[
+        sensor.TemperatureSensor,
+        component_meta(
+            yard_tag="50001038-16",
+            component_type="temperature_sensor",
+            included_in_fmu=False,
+        ),
+    ]
+    consumers_flow_boosting: Annotated[
+        sensor.FlowSensor,
+        component_meta(
+            yard_tag="50001058-07", component_type="flow_sensor", included_in_fmu=False
+        ),
+    ]
+    consumers_temperature_boosting_supply: Annotated[
+        sensor.TemperatureSensor,
+        component_meta(
+            yard_tag="50001038-53",
+            component_type="temperature_sensor",
+            included_in_fmu=False,
+        ),
+    ]  # TODO: check if we need duplicate definition of component_meta
     boilers_pressure_boosting: Annotated[
         sensor.PressureSensor,
         component_meta(yard_tag="50001097-11", component_type="pressure_sensor"),
@@ -314,14 +336,88 @@ class BoilersSimulationInputs(SimulationInputs):
     boilers_exchanger_gas: simulation.HeatSource
     boilers_seawater_supply: simulation.TemperatureBoundary
 
-    @computed_field
+    @computed_field(
+        json_schema_extra=component_meta(
+            included_in_fmu=False, yard_tag="50001058-03", component_type="flow_sensor"
+        ).json_schema_extra
+    )
     @property
     def lt1_flow_recovery(
         self,
-    ) -> Annotated[sensor.FlowSensor, component_meta(included_in_fmu=False)]:
+    ) -> Annotated[
+        sensor.FlowSensor,
+        component_meta(
+            included_in_fmu=False, yard_tag="50001058-03", component_type="flow_sensor"
+        ),
+    ]:
         return sensor.FlowSensor(
             flow=cast(Stamped, self.boilers_lt1_supply.flow),
             temperature=cast(Stamped, self.boilers_lt1_supply.temperature),
+        )
+
+    @computed_field(
+        json_schema_extra=component_meta(
+            included_in_fmu=False,
+            yard_tag="50001038-16",
+            component_type="temperature_sensor",
+        ).json_schema_extra
+    )
+    @property
+    def lt1_temperature_recovery(
+        self,
+    ) -> Annotated[
+        sensor.TemperatureSensor,
+        component_meta(
+            included_in_fmu=False,
+            yard_tag="50001038-16",
+            component_type="temperature_sensor",
+        ),
+    ]:
+        return sensor.TemperatureSensor(
+            temperature=cast(Stamped, self.boilers_lt1_supply.temperature)
+        )
+
+    @computed_field(
+        json_schema_extra=component_meta(
+            included_in_fmu=False,
+            yard_tag="50001058-07",
+            component_type="flow_sensor",
+        ).json_schema_extra
+    )
+    @property
+    def consumers_flow_boosting(
+        self,
+    ) -> Annotated[
+        sensor.FlowSensor,
+        component_meta(
+            included_in_fmu=False, yard_tag="50001058-07", component_type="flow_sensor"
+        ),
+    ]:
+        return sensor.FlowSensor(
+            flow=cast(Stamped, self.boilers_ht_supply.flow),
+            temperature=cast(Stamped, self.boilers_ht_supply.temperature),
+        )
+
+    @computed_field(
+        json_schema_extra=component_meta(
+            included_in_fmu=False,
+            yard_tag="50001038-53",
+            component_type="temperature_sensor",
+        ).json_schema_extra
+    )
+    @property
+    def consumers_temperature_boosting_supply(
+        self,
+    ) -> Annotated[
+        sensor.TemperatureSensor,
+        component_meta(
+            included_in_fmu=False,
+            yard_tag="50001038-53",
+            component_type="temperature_sensor",
+        ),
+    ]:
+        return sensor.TemperatureSensor(
+            temperature=cast(Stamped, self.boilers_ht_supply.temperature)
         )
 
 
