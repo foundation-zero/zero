@@ -8,4 +8,4 @@ high_temperature_path = str(Path(__file__).resolve().parent / "HT_SystemV13_2.fm
 fahrenheit_path = str(Path(__file__).resolve().parent / "Fahrenheit_ModuleV4.fmu")
 boilers_path = str(Path(__file__).resolve().parent / "Boilers_ModuleV2.fmu")
 lt1_path = str(Path(__file__).resolve().parent / "LT1_ModuleV3_1.fmu")
-lt2_path = str(Path(__file__).resolve().parent / "LT2_ModuleV3_1.fmu")
+lt2_path = str(Path(__file__).resolve().parent / "LT2_ModuleV3_2.fmu")

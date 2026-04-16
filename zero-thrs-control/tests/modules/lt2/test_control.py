@@ -139,17 +139,19 @@ async def test_recovery(cycler: Cycler):
 async def test_heat_dump(cycler: Cycler):
     cycler._control.update_parameters(
         Lt2Parameters(
-            recovery_temperature=10,
-            brightloop_return_temperature=10,
-            ugrid_return_temperature=10,
-            maximum_supply_temperature=35,
+            recovery_temperature=50,
+            brightloop_return_temperature=50,
+            ugrid_return_temperature=50,
+            maximum_supply_temperature=45,
         )
     )
 
-    result = await cycler.run(1200)
+    result = await cycler.run(960)
 
     assert isinstance(result, SimulationExecutionResult)
-    assert result.sensor_values.lt2_temperature_recovery.temperature.value > 35
+    assert result.sensor_values.lt2_temperature_recovery.temperature.value == approx(
+        50, abs=1
+    )
     assert result.sensor_values.lt2_temperature_supply.temperature.value == approx(
-        35, abs=2
+        45, abs=1
     )
