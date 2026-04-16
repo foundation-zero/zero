@@ -99,7 +99,7 @@ def sensor_values() -> BoilersSensorValues:
 
 
 @fixture
-def tanks_controller(test_time, parameters) -> TanksController:
+def tanks_controller(parameters) -> TanksController:
     control_values = BoilersControlValues.zero()
     return TanksController(
         tank1=Tank(
@@ -123,5 +123,5 @@ def tanks_controller(test_time, parameters) -> TanksController:
             boosting_return_valve=control_values.boilers_switch_tank3_boosting_return,
             disabled=parameters.tank3_disabled,
         ),
-        time_fn=test_time.time,
+        time_fn=lambda: datetime.now(),
     )

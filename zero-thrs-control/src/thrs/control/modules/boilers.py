@@ -27,8 +27,8 @@ class BoilersParameters(ThrsValues):
         2  # required delta T between boosting source and tank temperature
     )
     tank_temperature_setpoint: Celsius = 50
-    lt1_flowcontrol_minimum_setpoint: Ratio = 0.3  # need flow to have temp measurement available, and these minima are needed to control the minimum filling flow
-    lt2_flowcontrol_minimum_setpoint: Ratio = 0.3
+    lt1_flowcontrol_minimum_setpoint: Ratio = 0.1  # need flow to have temp measurement available, and these minima are needed to control the minimum filling flow
+    lt2_flowcontrol_minimum_setpoint: Ratio = 0.1
     filling_temperature_setpoint: Celsius = 40
     minimum_tank_level: Liter = 30
     maximum_tank_level: Liter = 260
@@ -349,23 +349,24 @@ class TanksController:
 
 
 class BoilersControlMode(ControlMode):
-    mode: str
+    boosting_mode: str
+    filling_mode: str
 
     @property
-    def is_idle(self) -> bool:
-        return self.mode == "idle"
+    def is_boosting_idle(self) -> bool:
+        return self.boosting_mode == "idle"
 
     @property
     def is_boosting_low_temperature(self) -> bool:
-        return self.mode == "boosting_low_temperature"
+        return self.boosting_mode == "boosting_low_temperature"
 
     @property
     def is_boosting_high_temperature(self) -> bool:
-        return self.mode == "boosting_high_temperature"
+        return self.boosting_mode == "boosting_high_temperature"
 
     @property
     def is_boosting_heatpump(self) -> bool:
-        return self.mode == "boosting_heatpump"
+        return self.boosting_mode == "boosting_heatpump"
 
 
 class BoilersControl(
@@ -517,12 +518,13 @@ class BoilersControl(
     @property
     def initial_mode(self) -> BoilersControlMode:
         initial_mode: str = self._state_machine.initial  # type: ignore
-        return BoilersControlMode(mode=initial_mode)
+        return BoilersControlMode(boosting_mode=initial_mode, filling_mode="idle")
 
     @property
     def mode(self) -> BoilersControlMode:
         mode: str = self.state  # type: ignore
-        return BoilersControlMode(mode=mode)
+        filling_mode: str = "idle" if not self._tanks_controller.filling else "filling"
+        return BoilersControlMode(boosting_mode=mode, filling_mode=filling_mode)
 
     def initial(self) -> ControlResult[BoilersControlValues]:
         return ControlResult(self._time(), _INITIAL_CONTROL_VALUES(self._time()))
