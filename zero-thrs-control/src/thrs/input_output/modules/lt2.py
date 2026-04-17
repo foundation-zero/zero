@@ -10,7 +10,7 @@ from thrs.input_output.definitions import control, sensor, simulation
 
 class Lt2SensorValues(ThrsValues):
     lt2_pump_aft: Annotated[
-        sensor.Pump, component_meta(yard_tag="50001021", component_type="pump")
+        sensor.Pump, component_meta(yard_tag="50001020", component_type="pump")
     ]
     lt2_pump_ugrid: Annotated[
         sensor.Pump, component_meta(yard_tag="50001023", component_type="pump")
@@ -232,7 +232,7 @@ class Lt2SensorValues(ThrsValues):
 
 class Lt2ControlValues(ThrsValues):
     lt2_pump_aft: Annotated[
-        control.Pump, component_meta(yard_tag="50001021", component_type="pump")
+        control.Pump, component_meta(yard_tag="50001020", component_type="pump")
     ]
     lt2_pump_ugrid: Annotated[
         control.Pump, component_meta(yard_tag="50001023", component_type="pump")
