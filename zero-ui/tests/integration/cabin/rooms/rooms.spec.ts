@@ -1,13 +1,12 @@
 import allRooms from "../../../data/all-rooms";
-import { toAmplifierStatus } from "../../../lib/helpers";
 import { expect, test as testBase } from "../../../mocks/playwright";
-import { getAllRooms, getControlLogs, getSensorLogs, getVersion } from "../../../mocks/queries";
+import { getAllRooms, getVersion } from "../../../mocks/queries";
 import RoomsPage from "./page";
 
 const test = testBase.extend<{ roomsPage: RoomsPage }>({
   roomsPage: [
     async ({ page, worker, subscriptions }, use) => {
-      worker.use(getAllRooms, getVersion, getSensorLogs, getControlLogs);
+      worker.use(getAllRooms, getVersion);
 
       const roomsPage = new RoomsPage(page, subscriptions);
 
@@ -37,11 +36,11 @@ test.describe("Rooms", () => {
     });
 
     test("shows the correct state of the audio system", async ({ roomsPage, page }) => {
-      roomsPage.updateRoom(dutchCabin, { roomControls: [toAmplifierStatus(false)] });
+      roomsPage.updateRoom(dutchCabin, { amplifier: { on: false } });
 
       await expect(roomsPage.audioSystemToggle).toHaveAttribute("data-state", "unchecked");
 
-      roomsPage.updateRoom(dutchCabin, { roomControls: [toAmplifierStatus(true)] });
+      roomsPage.updateRoom(dutchCabin, { amplifier: { on: true } });
 
       await page.waitForTimeout(1000);
 

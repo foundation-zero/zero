@@ -1,27 +1,26 @@
 <script setup lang="ts">
 import { groupLights } from "@/modules/domestic/lib/mappers";
 import { useRoomStore } from "@/modules/domestic/stores/rooms";
-import { LightingControl } from "@/modules/domestic/types";
 import LightGroup from "@common/components/lights-list/LightGroup.vue";
-import { isLightControl } from "@common/lib/utils";
 import { useUIStore } from "@common/stores/ui";
 
+import { LightingGroup } from "@/modules/domestic/types";
 import { computed, provide, Ref, toRefs, watch } from "vue";
 
 const roomStore = useRoomStore();
 const { currentRoom, hasPendingRequests } = toRefs(roomStore);
 const { breakpoints } = toRefs(useUIStore());
 
-const lights = computed(() => groupLights(currentRoom.value.roomControls.filter(isLightControl)));
+const lights = computed(() => groupLights(currentRoom.value.lightingGroups));
 
-const commit = async (control: LightingControl, brightness: Ref<number>) => {
+const commit = async (control: LightingGroup, brightness: Ref<number>) => {
   if (hasPendingRequests.value) return;
 
   await roomStore.setLightLevel(control.id, brightness.value);
 
   if (!hasPendingRequests.value) return;
 
-  watch(hasPendingRequests, () => (brightness.value = control.value), {
+  watch(hasPendingRequests, () => (brightness.value = control.level), {
     once: true,
   });
 };

@@ -1,12 +1,11 @@
 <script setup lang="ts">
 import { Room } from "@/modules/domestic/types";
 import { TemperatureDisplay } from "@common/components/temperature-display";
-import { extractActualTemperature } from "@common/lib/utils";
 import { computed } from "vue";
 import { useI18n } from "vue-i18n";
 const props = defineProps<{ room: Room }>();
 
-const actualTemperature = computed(() => extractActualTemperature(props.room));
+const actualTemperature = computed(() => props.room.airConditioning?.actualTemperature);
 
 const { t } = useI18n();
 </script>

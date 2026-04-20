@@ -13,7 +13,7 @@ export const domesticRoutes: RouteRecordRaw = {
   redirect: () => {
     const { isAdmin } = useAuthStore();
 
-    return { name: isAdmin ? "environment:control" : "cabin:airconditioning", query: {} };
+    return { name: isAdmin ? "environment:control" : "cabin:air-conditioning", query: {} };
   },
   children: [cabinRoutes, envRoutes, authRoutes],
 };

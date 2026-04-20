@@ -4,12 +4,12 @@ table:
 object_relationships:
   - name: room
     using:
-      foreign_key_constraint_on: room_id
+      foreign_key_constraint_on: id
 select_permissions:
   - role: user
     permission:
       columns: '*'
       filter:
-        room_id:
+        id:
           _eq: X-Hasura-Cabin
     comment: ""

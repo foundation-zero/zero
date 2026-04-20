@@ -10,7 +10,7 @@ from domestic_control.config import Settings
 import re
 
 from domestic_control.messages import Blind, LightingGroup
-from domestic_control.mqtt import DataCollection
+from domestic_control.sink import Sink
 from domestic_control.util import invert_dict
 from asyncio import TaskGroup
 
@@ -125,6 +125,10 @@ _LIGHT_GROUP_IDS_INV = invert_dict(_LIGHT_GROUP_IDS)
 _BLIND_IDS_INV = invert_dict(_BLIND_IDS)
 
 
+def id_to_room_id(id: str) -> str:
+    return id.split("/")[0]
+
+
 class Hass:
     def __init__(self, client: HassClient):
         self._client = client
@@ -150,7 +154,11 @@ class Hass:
             for lighting_group_id in _LIGHT_GROUP_IDS.keys():
                 tg.create_task(
                     self.set_lighting_group(
-                        LightingGroup(id=lighting_group_id, level=level)
+                        LightingGroup(
+                            id=lighting_group_id,
+                            room_id=id_to_room_id(lighting_group_id),
+                            level=level,
+                        )
                     )
                 )
 
@@ -226,7 +234,7 @@ class CoverChanged(BaseModel):
 
 
 class HassControl:
-    def __init__(self, hass: HassWsClient, data: DataCollection):
+    def __init__(self, hass: HassWsClient, data: Sink):
         self._hass = hass
         self._data = data
 
@@ -239,26 +247,33 @@ class HassControl:
                     if (
                         number_change.id in _LIGHT_GROUP_IDS.keys()
                         and number_change.id is not None
+                        and number_change.old_state.state
+                        != number_change.new_state.state
                     ):  # is not None check superfluous, just for type checking
                         lighting_group_msg = LightingGroup(
                             id=number_change.id,
+                            room_id=id_to_room_id(number_change.id),
                             level=number_change.new_state.state
                             / 100,  # hass uses 0..100 values
                         )
-                        loop.create_task(
-                            self._data.send_lighting_group(lighting_group_msg)
-                        )
+                        loop.create_task(self._data.send(lighting_group_msg))
                 elif event.data["entity_id"].startswith("cover."):
                     cover_change = CoverChanged(**event.data)
                     if (
-                        cover_change.id in _BLIND_IDS.keys()
-                    ) and cover_change.id is not None:
+                        (cover_change.id in _BLIND_IDS.keys())
+                        and cover_change.id is not None
+                        and (
+                            cover_change.old_state.attributes.current_position
+                            != cover_change.new_state.attributes.current_position
+                        )
+                    ):
                         blind_msg = Blind(
                             id=cover_change.id,
+                            room_id=id_to_room_id(cover_change.id),
                             level=cover_change.new_state.attributes.current_position
                             / 100,
                         )
-                        loop.create_task(self._data.send_blind(blind_msg))
+                        loop.create_task(self._data.send(blind_msg))
 
     async def run(self):
         loop = asyncio.get_event_loop()

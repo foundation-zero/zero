@@ -15,8 +15,8 @@ mqtt:
   host:
   port:
 
-# Required: Risingwave URL
-risingwave:
+# Required: GreptimeDB URL
+greptime:
   url:
 
 # Required: PostgresQL configuration
@@ -39,6 +39,7 @@ stub:
   enabled: false
   host: domestic-control-stub.zero.svc.cluster.local
   port: 502
+  ventilationPort: 503
 
 # Required: Home Assistant configuration
 homeAssistant:

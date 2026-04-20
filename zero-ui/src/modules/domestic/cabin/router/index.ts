@@ -18,8 +18,8 @@ export const cabinRoutes: RouteRecordRaw = {
   },
   children: [
     {
-      path: "airconditioning",
-      name: "cabin:airconditioning",
+      path: "air-conditioning",
+      name: "cabin:air-conditioning",
       beforeEnter: attachReturnUrlGuard,
       component: () => import("@/modules/domestic/cabin/views/Airco.vue"),
     },

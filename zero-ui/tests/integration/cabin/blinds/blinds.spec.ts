@@ -1,7 +1,6 @@
 import { rooms } from "../../../data/all-rooms";
-import { isBlindsControl } from "../../../lib/helpers";
 import { expect, test as testBase } from "../../../mocks/playwright";
-import { getAllRooms, getControlLogs, getSensorLogs, getVersion } from "../../../mocks/queries";
+import { getAllRooms, getVersion } from "../../../mocks/queries";
 import BlindsPage from "./page";
 
 const dutchCabin = rooms.find((room) => room.id === "dutch-cabin")!;
@@ -9,7 +8,7 @@ const dutchCabin = rooms.find((room) => room.id === "dutch-cabin")!;
 const test = testBase.extend<{ blindsPage: BlindsPage }>({
   blindsPage: [
     async ({ worker, page, subscriptions, auth }, use) => {
-      worker.use(getAllRooms, getVersion, getSensorLogs, getControlLogs);
+      worker.use(getAllRooms, getVersion);
 
       const blindsPage = new BlindsPage(page, subscriptions);
 
@@ -30,9 +29,7 @@ const test = testBase.extend<{ blindsPage: BlindsPage }>({
 });
 
 test.describe("Blinds", () => {
-  const roomWithTwoBlinds = rooms.find(
-    (room) => room.roomControls.filter(isBlindsControl).length === 2,
-  )!;
+  const roomWithTwoBlinds = rooms.find((room) => room.blinds.length === 2)!;
 
   test.describe("with 2 blinds", () => {
     const targetLevels = [0.51, 0.75];
@@ -40,7 +37,7 @@ test.describe("Blinds", () => {
     test.beforeEach(async ({ page, blindsPage }) => {
       blindsPage.setBlindLevels(targetLevels, {
         ...dutchCabin,
-        roomControls: roomWithTwoBlinds.roomControls,
+        blinds: roomWithTwoBlinds.blinds,
       });
 
       await page.waitForTimeout(500);
@@ -60,21 +57,17 @@ test.describe("Blinds", () => {
   });
 
   test.describe("with > 2 blinds", () => {
-    const roomWithMoreThanTwoBlinds = rooms.find(
-      (room) => room.roomControls.filter(isBlindsControl).length > 2,
-    )!;
+    const roomWithMoreThanTwoBlinds = rooms.find((room) => room.blinds.length > 2)!;
 
     test.beforeEach(async ({ blindsPage }) => {
       blindsPage.setBlindLevels([], {
         ...dutchCabin,
-        roomControls: roomWithMoreThanTwoBlinds.roomControls,
+        blinds: roomWithMoreThanTwoBlinds.blinds,
       });
     });
 
     test("shows the correct amount of controls", async ({ blindsPage }) => {
-      await expect(blindsPage.listItems).toHaveCount(
-        roomWithMoreThanTwoBlinds.roomControls.filter(isBlindsControl).length,
-      );
+      await expect(blindsPage.listItems).toHaveCount(roomWithMoreThanTwoBlinds.blinds.length);
     });
 
     test("does not show numeral values", async ({ blindsPage }) => {

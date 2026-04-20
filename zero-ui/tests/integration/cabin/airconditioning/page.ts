@@ -1,7 +1,6 @@
 import { SubscriptionInterceptor } from "@foundation-zero/graphql-subscriptions-mock";
 import { Locator, Page } from "@playwright/test";
 import { Room } from "../../../../src/modules/domestic/types";
-import { toTemperatureControl, toTemperatureSensor } from "../../../lib/helpers";
 import { ZeroSubscriptions } from "../../../mocks/playwright";
 
 export type LightControl = [slider: Locator, track: Locator, toggle: Locator, value: string | null];
@@ -21,7 +20,10 @@ export default class AirconditioningPage {
       rooms: [
         {
           ...room,
-          roomControls: [toTemperatureControl(temperatureSetpoint)],
+          airConditioning: {
+            ...room.airConditioning,
+            temperatureSetpoint,
+          },
         },
       ],
     });
@@ -32,7 +34,10 @@ export default class AirconditioningPage {
       rooms: [
         {
           ...room,
-          roomSensors: [toTemperatureSensor(temperature)],
+          airConditioning: {
+            ...room.airConditioning,
+            actualTemperature: temperature,
+          },
         },
       ],
     });

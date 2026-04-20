@@ -1,9 +1,9 @@
 import i18n from "@/i18n";
 import {
-  BlindsControl,
+  Blind,
   BlindsGroup,
   LightGroup,
-  LightingControl,
+  LightingGroup,
   Room,
   RoomGroup,
   ShipArea,
@@ -18,21 +18,21 @@ export const createArea = (group: RoomGroup, name: string, allRooms: Room[]): Sh
   };
 };
 
-export const groupBlindsByGroup = (blinds: BlindsControl[]): BlindsGroup[] =>
+export const groupBlindsByGroup = (blinds: Blind[]): BlindsGroup[] =>
   Object.values(Object.groupBy(blinds ?? [], ({ name }) => (blinds.length > 2 ? name : "blinds")))
     .filter(isDefined)
     .map<BlindsGroup>((blinds) => ({
       name: blinds[0].name,
       controls: blinds.map((blind) => ({
         ...blind,
-        value: Number(blind.value ?? 0),
+        value: Number(blind.level ?? 0),
         name: blind.id.includes("blind")
           ? i18n.global.t("labels.blinds")
           : i18n.global.t("labels.shears"),
       })),
     }));
 
-export const groupLights = (lights: LightingControl[]): LightGroup[] => [
+export const groupLights = (lights: LightingGroup[]): LightGroup[] => [
   {
     name: i18n.global.t("labels.lights"),
     controls: lights.sort(compareByName),

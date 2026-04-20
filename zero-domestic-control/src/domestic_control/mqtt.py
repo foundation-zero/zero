@@ -6,7 +6,6 @@ from domestic_control.messages import (
     Amplifier,
     LightingGroup,
     Message,
-    Room,
     RoomTemperatureSetpoint,
     RoomHumiditySetpoint,
     RoomCo2Setpoint,
@@ -27,17 +26,17 @@ class DataCollection:
     def __init__(self, mqtt: Client):
         self._mqtt = mqtt
 
-    async def send_room(self, room: Room):
-        await send_message(self._mqtt, room)
+    async def send(self, message: Message):
+        await send_message(self._mqtt, message)
 
     async def send_amplifier(self, amplifier: Amplifier):
-        await send_message(self._mqtt, amplifier)
+        await self.send(amplifier)
 
     async def send_blind(self, blind: Blind):
-        await send_message(self._mqtt, blind)
+        await self.send(blind)
 
     async def send_lighting_group(self, lighting_group: LightingGroup):
-        await send_message(self._mqtt, lighting_group)
+        await self.send(lighting_group)
 
 
 class ControlSend:

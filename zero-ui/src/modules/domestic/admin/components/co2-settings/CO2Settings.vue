@@ -10,26 +10,26 @@ import {
 import { CO2_SETPOINT_RANGE } from "@/modules/domestic/lib/consts";
 import { useRoomStore } from "@/modules/domestic/stores/rooms";
 import { ResponsivePopup } from "@common/components/responsive-dialog";
-import { isCO2Control, updateSetpointWhenControlsHaveChanged } from "@common/lib/utils";
+import { hasCO2Control, updateSetpointWhenControlsHaveChanged } from "@common/lib/utils";
 
 import { Settings } from "lucide-vue-next";
 import { computed, ref, toRefs } from "vue";
 import { useI18n } from "vue-i18n";
 
 const store = useRoomStore();
-const { allControls, rooms } = toRefs(store);
+const { rooms } = toRefs(store);
 
-const roomsWithCO2Control = computed(() =>
-  rooms.value.filter((room) => room.roomControls.some(isCO2Control)),
+const roomsWithCO2Control = computed(() => rooms.value.filter((room) => hasCO2Control(room)));
+
+const controls = computed(() =>
+  roomsWithCO2Control.value.map((room) => room.ventilation).filter((control) => !!control),
 );
-
-const controls = computed(() => allControls.value.filter(isCO2Control));
 
 const { t } = useI18n();
 
-const value = ref(controls.value?.[0]?.value ?? CO2_SETPOINT_RANGE[0]);
+const value = ref(controls.value?.[0]?.co2Setpoint ?? CO2_SETPOINT_RANGE[0]);
 
-updateSetpointWhenControlsHaveChanged(value, controls);
+updateSetpointWhenControlsHaveChanged(value, controls, "co2Setpoint");
 
 const open = ref(false);
 
@@ -61,7 +61,8 @@ const save = () => {
         :max="CO2_SETPOINT_RANGE[1]"
       >
         <NumberFieldContent>
-          <NumberFieldDecrement /> <NumberFieldInput class="text-xl" /> <NumberFieldIncrement />
+          <NumberFieldDecrement /> <NumberFieldInput class="text-xl" />
+          <NumberFieldIncrement />
         </NumberFieldContent>
       </NumberField>
       <Button

@@ -41,8 +41,8 @@ export const useRoomStore = defineStore("rooms", () => {
   const emptyRoom: Room = {
     name: t("labels.emptyRoom"),
     group: RoomGroup.AFT,
-    roomControls: [],
-    roomSensors: [],
+    lightingGroups: [],
+    blinds: [],
     id: "empty",
   };
 
@@ -121,12 +121,15 @@ export const useRoomStore = defineStore("rooms", () => {
     }),
   );
 
-  const { data: roomData } = useSubscription<GetAllRoomsQuery, Room[]>(
+  const { data: roomData, error: roomError } = useSubscription<GetAllRoomsQuery, Room[]>(
     {
       query: subscribeToRooms,
     },
     (_prev, result) => result.rooms ?? [],
   );
+  watch(roomError, (val) => {
+    console.error(val);
+  });
 
   const rooms = computed(() => roomData.value ?? []);
   const currentRoom = computed<Room>(
@@ -141,9 +144,6 @@ export const useRoomStore = defineStore("rooms", () => {
     createArea(RoomGroup.HALLWAYS, t("labels.roomGroup.hallways"), rooms.value),
   ]);
 
-  const allControls = computed(() => rooms.value.flatMap((room) => room.roomControls));
-  const allSensors = computed(() => rooms.value.flatMap((room) => room.roomSensors));
-
   watch(rooms, (rooms) => {
     if (currentRoomId.value === emptyRoom.id && rooms.length > 0) {
       currentRoomId.value = rooms[0].id;
@@ -155,8 +155,6 @@ export const useRoomStore = defineStore("rooms", () => {
   return {
     areas,
     rooms,
-    allControls,
-    allSensors,
     currentRoom,
     currentRoomId,
     setRoom,

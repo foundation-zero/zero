@@ -1,14 +1,12 @@
 <script setup lang="ts">
 import { CO2_RANGE, CO2_SETPOINT_RANGE, CO2_THRESHOLDS } from "@/modules/domestic/lib/consts";
-import { useHistoryStore } from "@/modules/domestic/stores/history";
 import { Room, Units } from "@/modules/domestic/types";
 import AreaChart from "@common/components/area-chart/AreaChart.vue";
 import { ValueTile } from "@common/components/value-tile";
 import {
   extractActualCO2,
   formatInt,
-  isCO2Control,
-  isCO2Sensor,
+  logToSeries,
   useDemoControlValues,
   useDemoSensorValues,
   useThresholds,
@@ -16,21 +14,22 @@ import {
 import { SeriesOption } from "echarts/types/dist/shared";
 import { computed } from "vue";
 
-const props = defineProps<{ room: Room }>();
+const props = defineProps<{
+  room: Room;
+  ventilationLog?: { timestamp: Date; actualCo2: number; co2Setpoint: number }[];
+}>();
 
-const hasCO2Sensor = computed(() => props.room.roomSensors.some(isCO2Sensor));
+const hasCO2Sensor = computed(() => !!props.room.ventilation);
 const actualCO2 = computed(() => extractActualCO2(props.room) ?? 0);
 
-const { useSensorHistory, useControlHistory } = useHistoryStore();
-
 const history = useDemoSensorValues(
-  () => useSensorHistory(props.room.roomSensors.find(isCO2Sensor)?.id),
+  () => computed(() => logToSeries(props.ventilationLog, "actualCo2")),
   24,
   { min: CO2_RANGE[0], max: CO2_RANGE[1] },
 );
 
 const setpointHistory = useDemoControlValues(
-  () => useControlHistory(props.room.roomControls.find(isCO2Control)?.id),
+  () => computed(() => logToSeries(props.ventilationLog, "co2Setpoint")),
   24,
   { min: CO2_SETPOINT_RANGE[0], max: CO2_SETPOINT_RANGE[1] },
 );

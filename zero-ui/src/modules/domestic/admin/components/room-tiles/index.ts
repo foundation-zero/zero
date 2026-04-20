@@ -1,21 +1,18 @@
 import { useRoomStore } from "@/modules/domestic/stores/rooms";
 import { Room } from "@/modules/domestic/types";
-import { isLightControl } from "@common/lib/utils";
 import { computed, Ref } from "vue";
 
 export const useToggleableLights = (rooms: Ref<Room[]>) => {
-  const controls = computed(() =>
-    rooms.value.flatMap((room) => room.roomControls.filter(isLightControl)),
-  );
+  const groups = computed(() => rooms.value.flatMap((room) => room.lightingGroups));
 
-  const someLightsAreOn = computed(() => controls.value.some((control) => control.value > 0));
+  const someLightsAreOn = computed(() => groups.value.some((group) => group.level > 0));
 
   const store = useRoomStore();
   const toggle = () =>
     store.setLightingGroupsLevel(
-      controls.value.map((control) => control.id),
+      groups.value.map((group) => group.id),
       someLightsAreOn.value ? 0 : 1,
     );
 
-  return { toggle, someLightsAreOn, controls };
+  return { toggle, someLightsAreOn, groups };
 };

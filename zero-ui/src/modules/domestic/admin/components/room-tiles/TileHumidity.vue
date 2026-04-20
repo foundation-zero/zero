@@ -4,14 +4,13 @@ import {
   HUMIDITY_SETPOINT_RANGE,
   HUMIDITY_THRESHOLDS,
 } from "@/modules/domestic/lib/consts";
-import { useHistoryStore } from "@/modules/domestic/stores/history";
 import { Room } from "@/modules/domestic/types";
 import AreaChart from "@common/components/area-chart/AreaChart.vue";
 import { ValueTile } from "@common/components/value-tile";
 import {
   extractActualHumidity,
-  isHumidityControl,
-  isHumiditySensor,
+  hasHumidityControl,
+  logToSeries,
   useDemoControlValues,
   useDemoSensorValues,
   useSafeRange,
@@ -19,21 +18,22 @@ import {
 import { SeriesOption } from "echarts/types/dist/shared";
 import { computed } from "vue";
 
-const props = defineProps<{ room: Room }>();
+const props = defineProps<{
+  room: Room;
+  humidityLog?: { timestamp: Date; actualHumidity: number; humiditySetpoint: number }[];
+}>();
 
-const hasHumiditySensor = computed(() => props.room.roomSensors.some(isHumiditySensor));
+const hasHumiditySensor = computed(() => hasHumidityControl(props.room));
 const actualHumidity = computed(() => extractActualHumidity(props.room) ?? 0);
 
-const { useSensorHistory, useControlHistory } = useHistoryStore();
-
 const history = useDemoSensorValues(
-  () => useSensorHistory(props.room.roomSensors.find(isHumiditySensor)?.id),
+  () => computed(() => logToSeries(props.humidityLog, "actualHumidity")),
   24,
   { min: HUMIDITY_RANGE[0], max: HUMIDITY_RANGE[1] },
 );
 
 const setpointHistory = useDemoControlValues(
-  () => useControlHistory(props.room.roomControls.find(isHumidityControl)?.id),
+  () => computed(() => logToSeries(props.humidityLog, "humiditySetpoint")),
   24,
   { min: HUMIDITY_SETPOINT_RANGE[0], max: HUMIDITY_SETPOINT_RANGE[1] },
 );

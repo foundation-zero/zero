@@ -13,8 +13,8 @@
       },
       "type": "object"
     },
-    "risingwave": {
-      "description": "RisingWave configuration",
+    "greptime": {
+      "description": "GreptimeDB configuration",
       "properties": {
         "url": {
           "type": "string"
@@ -47,6 +47,9 @@
           "type": "string"
         },
         "port": {
+          "type": "integer"
+        },
+        "ventilationPort": {
           "type": "integer"
         }
       },

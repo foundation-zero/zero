@@ -3,7 +3,7 @@ import BottomTabs from "@/modules/common/components/navigation/BottomTabs.vue";
 import { NavItem } from "@/modules/common/types";
 
 const navItems: NavItem[] = [
-  { title: "labels.airconditioning.short", to: "cabin:airconditioning" },
+  { title: "labels.airConditioning.short", to: "cabin:air-conditioning" },
   { title: "labels.lights", to: "cabin:lights" },
   { title: "labels.blinds", to: "cabin:blinds" },
 ];

@@ -1,8 +1,8 @@
 import { ENV } from "@env";
 
 export const CO2_THRESHOLDS: [warning: number, critical: number] = [1000, 2000];
-export const CO2_RANGE = [400, 2500];
-export const CO2_SETPOINT_RANGE = [400, 1000];
+export const CO2_RANGE = [200, 2500];
+export const CO2_SETPOINT_RANGE = [200, 1000];
 
 export const HUMIDITY_THRESHOLDS: [humidityLow: number, humidityHigh: number] = [35, 60];
 export const HUMIDITY_RANGE = [30, 80];

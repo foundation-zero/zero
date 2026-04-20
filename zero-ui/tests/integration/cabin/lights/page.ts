@@ -3,7 +3,6 @@ import { Locator, Page } from "@playwright/test";
 import { SubscriptionInterceptor } from "@foundation-zero/graphql-subscriptions-mock";
 import { Room } from "../../../../src/modules/domestic/types";
 import allRooms from "../../../data/all-rooms";
-import { isLightControl } from "../../../lib/helpers";
 import { ZeroSubscriptions } from "../../../mocks/playwright";
 
 export type LightControl = [slider: Locator, track: Locator, toggle: Locator, value: string | null];
@@ -24,19 +23,17 @@ export default class LightsPage {
 
   public setLightLevels(
     lightLevels: number[],
-    room: Room = allRooms.rooms.find(
-      (room) => room.roomControls.filter(isLightControl).length === lightLevels.length,
-    )!,
+    room: Room = allRooms.rooms.find((room) => room.lightingGroups.length === lightLevels.length)!,
   ): void {
-    const lights = room.roomControls.filter(isLightControl);
+    const lights = room.lightingGroups;
 
     this.subscribeToRoom.dispatch({
       rooms: [
         {
           ...room,
-          roomControls: lights.map((light, index) => ({
+          lightingGroups: lights.map((light, index) => ({
             ...light,
-            value: lightLevels[index] !== undefined ? lightLevels[index] : light.value,
+            level: lightLevels[index] !== undefined ? lightLevels[index] : light.value,
             time: Date.now(),
           })),
         },

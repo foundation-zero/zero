@@ -57,5 +57,8 @@ export default defineConfig(({ mode }) => {
         "@modules": fileURLToPath(new URL("./src/modules", import.meta.url)),
       },
     },
+    watch: {
+      ignored: ["playwright-report/**"],
+    },
   };
 });

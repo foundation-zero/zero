@@ -45,7 +45,7 @@ jobs:
         working-directory: zero-domestic-control
       - run: poetry run ruff format --check src tests
         working-directory: zero-domestic-control
-      - run: poetry run mypy src
+      - run: poetry run pyright src
         working-directory: zero-domestic-control
       - name: Unit Test
         run: poetry run pytest --run=unit

@@ -5,9 +5,10 @@ from aiomqtt import Client as MqttClient
 from pytest import fixture
 
 from domestic_control.config import Settings
+from domestic_control.messages import RoomTemperatureSetpoint
 from domestic_control.mqtt import ControlReceive, ControlSend, DataCollection
-from domestic_control.services.ac import Ac, AcControl, TermodinamicaAc
-from domestic_control.services.stubs.ac import TermodinamicaStub
+from domestic_control.services.ac import Ac, AcControl, AcInterface
+from domestic_control.services.stubs.ac import AcStub
 from domestic_control.services.ac.thrs import Thrs
 
 from pyModbusTCP.client import ModbusClient
@@ -17,7 +18,7 @@ from asyncio import TaskGroup
 
 @fixture
 def settings():
-    return Settings()
+    return Settings()  # type: ignore
 
 
 async def _mqtt_client(settings):
@@ -28,8 +29,8 @@ async def _mqtt_client(settings):
 @fixture
 async def modbus_client(settings):
     return ModbusClient(
-        host=settings.termodinamica_host,
-        port=settings.termodinamica_port,
+        host=settings.air_conditioning_host,
+        port=settings.air_conditioning_port,
         auto_open=True,
     )
 
@@ -50,6 +51,7 @@ async def test_control_receive(settings, mqtt_client, mqtt_client2):
     await asyncio.sleep(1)
     async for message in control_receive.messages:
         assert message.id == "owners-cabin"
+        assert isinstance(message, RoomTemperatureSetpoint)
         assert message.temperature == 10
         break
 
@@ -57,13 +59,13 @@ async def test_control_receive(settings, mqtt_client, mqtt_client2):
 async def test_termodinamica_adjustment_forwarded_to_thrs(
     settings, modbus_client, mqtt_client, mqtt_client2, mqtt_client3
 ):
-    """Test that the Termodinamica adjustments are forwarded to THRS and domestic/ac topics"""
-    stub = TermodinamicaStub(settings.termodinamica_host, settings.termodinamica_port)
-    termodinamica = TermodinamicaAc(modbus_client)
+    """Test that the AC adjustments are forwarded to THRS and domestic/ac topics"""
+    stub = AcStub(settings.air_conditioning_host, settings.air_conditioning_port)
+    ac_interface = AcInterface(modbus_client)
     thrs = Thrs(mqtt_client)
     data_collection = DataCollection(mqtt_client)
     control_receiver = ControlReceive(mqtt_client2)
-    ac_control = AcControl(control_receiver, termodinamica, thrs, data_collection)
+    ac_control = AcControl(control_receiver, ac_interface, thrs, data_collection)
 
     await mqtt_client3.subscribe("thrs/#", qos=1)
     await mqtt_client3.subscribe("domestic/ac", qos=1)
@@ -79,7 +81,7 @@ async def test_termodinamica_adjustment_forwarded_to_thrs(
 
     try:
         await asyncio.sleep(0.1)
-        termodinamica.write_room_temperature_setpoint("dutch-cabin", 15)
+        ac_interface.write_room_temperature_setpoint("dutch-cabin", 15)
         await asyncio.sleep(0.2)
         assert next(
             True
@@ -103,15 +105,15 @@ async def test_termodinamica_adjustment_forwarded_to_thrs(
 async def test_setting_setpoints(
     settings, modbus_client, mqtt_client, mqtt_client2, mqtt_client3
 ):
-    """Test that the setpoint is set correctly in Termodinamica and sent to THRS and domestic/ac topics"""
-    stub = TermodinamicaStub(settings.termodinamica_host, settings.termodinamica_port)
-    termodinamica = TermodinamicaAc(modbus_client)
+    """Test that the setpoint is set correctly in AC and sent to THRS and domestic/ac topics"""
+    stub = AcStub(settings.air_conditioning_host, settings.air_conditioning_port)
+    ac_interface = AcInterface(modbus_client)
     thrs = Thrs(mqtt_client)
     data_collection = DataCollection(mqtt_client)
     control_send = ControlSend(mqtt_client)
     control_receiver = ControlReceive(mqtt_client2)
     ac = Ac(control_send)
-    ac_control = AcControl(control_receiver, termodinamica, thrs, data_collection)
+    ac_control = AcControl(control_receiver, ac_interface, thrs, data_collection)
 
     await mqtt_client3.subscribe("thrs/#", qos=1)
     await mqtt_client3.subscribe("domestic/ac", qos=1)
@@ -128,7 +130,7 @@ async def test_setting_setpoints(
     try:
         await ac.write_room_temperature_setpoint("french-cabin", 20)
         await asyncio.sleep(0.2)
-        assert termodinamica.read_room_temperature_setpoint("french-cabin") == 20
+        assert ac_interface.read_room_temperature_setpoint("french-cabin") == 20
         assert next(
             True
             for m in received_messages
@@ -146,7 +148,7 @@ async def test_setting_setpoints(
         await asyncio.sleep(0.1)
         await ac.write_room_humidity_setpoint("italian-cabin", 0.5)
         await asyncio.sleep(0.2)
-        assert termodinamica.read_room_humidity_setpoint("italian-cabin") == 0.5
+        assert ac_interface.read_room_humidity_setpoint("italian-cabin") == 0.5
         assert next(
             True
             for m in received_messages
@@ -159,24 +161,6 @@ async def test_setting_setpoints(
             if m.topic.value == "domestic/ac"
             and _pick_json(m.payload, ["id", "humidity_setpoint"])
             == {"id": "italian-cabin", "humidity_setpoint": 0.5}
-        )
-        received_messages = []
-        await asyncio.sleep(0.1)
-        await ac.write_room_co2_setpoint("californian-lounge", 0.4)
-        await asyncio.sleep(0.2)
-        assert termodinamica.read_room_co2_setpoint("californian-lounge") == 0.4
-        assert next(
-            True
-            for m in received_messages
-            if m.topic.value == "thrs/room-co2-setpoint/californian-lounge"
-            and json.loads(m.payload).get("co2") == 0.4
-        )
-        assert next(
-            True
-            for m in received_messages
-            if m.topic.value == "domestic/ac"
-            and _pick_json(m.payload, ["id", "co2_setpoint"])
-            == {"id": "californian-lounge", "co2_setpoint": 0.4}
         )
     finally:
         stub_run.cancel()
@@ -195,14 +179,14 @@ async def test_multiple_mutations(
     settings: Settings, modbus_client, mqtt_client, mqtt_client2, mqtt_client3
 ):
     """When multiple mutations are made simultaneously to Termodinamica, test if they are forwarded correctly and not overwritten."""
-    stub = TermodinamicaStub(settings.termodinamica_host, settings.termodinamica_port)
-    termodinamica = TermodinamicaAc(modbus_client)
+    stub = AcStub(settings.air_conditioning_host, settings.air_conditioning_port)
+    ac_interface = AcInterface(modbus_client)
     thrs = Thrs(mqtt_client)
     data_collection = DataCollection(mqtt_client)
     control_send = ControlSend(mqtt_client)
     control_receiver = ControlReceive(mqtt_client2)
     ac = Ac(control_send)
-    ac_control = AcControl(control_receiver, termodinamica, thrs, data_collection)
+    ac_control = AcControl(control_receiver, ac_interface, thrs, data_collection)
 
     stub_run = create_task(stub.run())
     ac_run = create_task(await ac_control.run())
@@ -216,8 +200,8 @@ async def test_multiple_mutations(
                 )
         await asyncio.sleep(1)
 
-        assert termodinamica.read_room_temperature_setpoint("dutch-cabin") == 19
-        assert termodinamica.read_room_temperature_setpoint("californian-lounge") == 19
+        assert ac_interface.read_room_temperature_setpoint("dutch-cabin") == 19
+        assert ac_interface.read_room_temperature_setpoint("californian-lounge") == 19
     finally:
         stub_run.cancel()
         ac_run.cancel()

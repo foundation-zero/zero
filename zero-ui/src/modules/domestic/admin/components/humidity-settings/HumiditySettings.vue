@@ -11,7 +11,7 @@ import { HUMIDITY_SETPOINT_RANGE } from "@/modules/domestic/lib/consts";
 import { useRoomStore } from "@/modules/domestic/stores/rooms";
 import { ResponsivePopup } from "@common/components/responsive-dialog";
 import {
-  isHumidityControl,
+  hasHumidityControl,
   ratioAsPercentage,
   updateSetpointWhenControlsHaveChanged,
 } from "@common/lib/utils";
@@ -21,20 +21,25 @@ import { computed, ref, toRefs } from "vue";
 import { useI18n } from "vue-i18n";
 
 const store = useRoomStore();
-const { allControls, rooms } = toRefs(store);
+const { rooms } = toRefs(store);
 
 const roomsWithHumidityControl = computed(() =>
-  rooms.value.filter((room) => room.roomControls.some(isHumidityControl)),
+  rooms.value.filter((room) => hasHumidityControl(room)),
 );
 
-const controls = computed(() => allControls.value.filter(isHumidityControl));
+const controls = computed(() =>
+  roomsWithHumidityControl.value.map((room) => room.airConditioning).filter((control) => !!control),
+);
 
 const { t } = useI18n();
 
-const value = ref(controls.value?.[0]?.value ?? HUMIDITY_SETPOINT_RANGE[0]);
+const value = ref(
+  roomsWithHumidityControl.value?.[0]?.airConditioning?.humiditySetpoint ??
+    HUMIDITY_SETPOINT_RANGE[0],
+);
 const valuePercentage = ratioAsPercentage(value);
 
-updateSetpointWhenControlsHaveChanged(valuePercentage, controls);
+updateSetpointWhenControlsHaveChanged(valuePercentage, controls, "humiditySetpoint");
 
 const open = ref(false);
 

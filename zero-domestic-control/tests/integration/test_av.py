@@ -1,8 +1,10 @@
 from asyncio import create_task
 import asyncio
 import json
+from unittest.mock import MagicMock
 from pytest import fixture
 import pytest
+from domestic_control.messages import Amplifier
 from domestic_control.services.av import (
     AFT_PDU,
     FWD_PDU,
@@ -15,12 +17,12 @@ from domestic_control.config import Settings
 from domestic_control.mqtt import DataCollection
 from aiomqtt import Client as MqttClient
 from fastapi.testclient import TestClient
-from domestic_control.app import app
+from domestic_control.app import data_collection
 
 
 @fixture
 def settings():
-    return Settings()
+    return Settings()  # type: ignore
 
 
 async def _mqtt_client(settings):
@@ -104,7 +106,7 @@ async def test_av_control_receive(mqtt_client, mqtt_client2, mqtt_client3):
         ):
             msg = json.loads(message.payload)
             if msg["id"] == "owners-cockpit":
-                assert msg["is_on"]
+                assert msg["on"]
                 break
 
     stub_task.cancel()
@@ -112,9 +114,12 @@ async def test_av_control_receive(mqtt_client, mqtt_client2, mqtt_client3):
 
 
 @pytest.mark.timeout(10)
-async def test_av_through_gq(mqtt_client):
+async def test_av_through_gq(mqtt_client, test_app):
+    data_collection_mock = MagicMock(spec=DataCollection)
     await mqtt_client.subscribe("domestic/amplifiers")
-    client = TestClient(app)
+    client = TestClient(test_app)
+    test_app.dependency_overrides[data_collection] = lambda: data_collection_mock
+
     response = client.post(
         "/graphql",
         json={
@@ -124,11 +129,6 @@ async def test_av_through_gq(mqtt_client):
     await asyncio.sleep(0.05)
     assert response.status_code == 200
 
-    async for message in mqtt_client.messages:
-        if message.topic.value == "domestic/amplifiers" and isinstance(
-            message.payload, str | bytes
-        ):
-            msg = json.loads(message.payload)
-            if msg["id"] == "owners-cabin":
-                assert msg["is_on"]
-                break
+    data_collection_mock.send.assert_called_once_with(
+        Amplifier(id="owners-cabin", on=True)
+    )

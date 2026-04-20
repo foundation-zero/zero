@@ -2,7 +2,6 @@ import { SubscriptionInterceptor } from "@foundation-zero/graphql-subscriptions-
 import { Locator, Page } from "@playwright/test";
 import { BlindsControl, Room } from "../../../../src/modules/domestic/types";
 import allRooms from "../../../data/all-rooms";
-import { isBlindsControl } from "../../../lib/helpers";
 import { ZeroSubscriptions } from "../../../mocks/playwright";
 
 export type LightControl = [slider: Locator, track: Locator, toggle: Locator, value: string | null];
@@ -23,20 +22,18 @@ export default class BlindsPage {
 
   public setBlindLevels(
     blindLevels: number[],
-    room: Room = allRooms.rooms.find(
-      (room) => room.roomControls.filter(isBlindsControl).length === blindLevels.length,
-    )!,
+    room: Room = allRooms.rooms.find((room) => room.blinds.length === blindLevels.length)!,
   ): void {
-    const blinds = room.roomControls.filter(isBlindsControl);
+    const blinds = room.blinds;
 
     this.subscribeToRoom.dispatch({
       rooms: [
         {
           ...room,
-          roomControls: blinds.map<BlindsControl>((blind, index) => ({
+          blinds: blinds.map<BlindsControl>((blind, index) => ({
             ...blind,
             time: Date.now(),
-            value: blindLevels[index] !== undefined ? blindLevels[index] : blind.value,
+            level: blindLevels[index] !== undefined ? blindLevels[index] : blind.level,
           })),
         },
       ],
