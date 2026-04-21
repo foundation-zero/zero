@@ -40,6 +40,7 @@ import { ref } from "vue";
 import { useI18n } from "vue-i18n";
 import allRooms from "../../../../tests/data/all-rooms";
 import { tokens } from "../../../../tests/lib/auth";
+import { DomesticRooms } from "../gql/graphql";
 import { useRoomStore } from "./rooms";
 
 vi.mock(import("vue-i18n"), async (importOriginal) => ({
@@ -135,6 +136,8 @@ describe("Rooms Store", () => {
           {
             ...room,
             airConditioning: {
+              id: "1",
+              room: {} as DomesticRooms,
               actualTemperature: 25,
               temperatureSetpoint: 22,
               actualHumidity: 50,
@@ -156,6 +159,8 @@ describe("Rooms Store", () => {
           {
             ...room,
             ventilation: {
+              id: "1",
+              room: {} as DomesticRooms,
               actualCo2: 400,
               co2Setpoint: 600,
             },
@@ -174,6 +179,8 @@ describe("Rooms Store", () => {
             ...room,
             amplifier: {
               on: true,
+              id: "1",
+              room: {} as DomesticRooms,
             },
           },
         ],
@@ -295,7 +302,7 @@ describe("Rooms Store", () => {
 
         expect(useMutation).toHaveBeenCalledWith(setBlindsLevelMutation);
         expect(executeMutation).toHaveBeenCalledWith({
-          ids: "1",
+          ids: ["1"],
           level: nextLevel,
         });
       });
@@ -303,11 +310,11 @@ describe("Rooms Store", () => {
       test("it sends a mutation to change the light level", async () => {
         const nextLevel = 0.75;
 
-        await store.setLightLevel("1", nextLevel);
+        await store.setLightingGroupsLevel(["1"], nextLevel);
 
         expect(useMutation).toHaveBeenCalledWith(setLightingGroupsLevelMutation);
         expect(executeMutation).toHaveBeenCalledWith({
-          ids: "1",
+          ids: ["1"],
           level: nextLevel,
         });
       });

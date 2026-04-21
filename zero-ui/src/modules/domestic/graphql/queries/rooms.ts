@@ -55,7 +55,7 @@ export const subscribeToRoom = gql`
 `;
 
 export const subscribeToRooms = gql`
-  subscription SubscribeToRoom {
+  subscription SubscribeToRooms {
     rooms: domesticRooms {
       ...RoomItem
     }

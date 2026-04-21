@@ -57,7 +57,7 @@ const state = useSafeRange(HUMIDITY_THRESHOLDS, actualHumidity);
 <template>
   <ValueTile
     v-if="hasHumiditySensor"
-    :title="room.name"
+    :title="room.name!"
     :state="state"
   >
     <template #background>

@@ -1,8 +1,9 @@
 <script setup lang="ts">
 import { separateDecimals } from "@common/lib/utils";
+import { Maybe } from "graphql/jsutils/Maybe";
 import { toRef } from "vue";
 
-const props = defineProps<{ value: number }>();
+const props = defineProps<{ value: Maybe<number> }>();
 const value = toRef(props, "value");
 
 const { integer, decimal } = separateDecimals(value);

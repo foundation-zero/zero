@@ -65,7 +65,7 @@ const { t } = useI18n();
 <template>
   <ValueTile
     v-if="hasTemperatureSensor"
-    :title="room.name"
+    :title="room.name!"
     :state="state"
   >
     <template #background>

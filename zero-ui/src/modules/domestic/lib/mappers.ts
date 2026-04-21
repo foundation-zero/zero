@@ -1,14 +1,7 @@
 import i18n from "@/i18n";
-import {
-  Blind,
-  BlindsGroup,
-  LightGroup,
-  LightingGroup,
-  Room,
-  RoomGroup,
-  ShipArea,
-} from "@/modules/domestic/types";
+import { BlindsGroup, LightGroup, Room, RoomGroup, ShipArea } from "@/modules/domestic/types";
 import { compareByName, isDefined } from "../../common/lib/utils";
+import { DomesticBlinds, DomesticLightingGroups } from "../gql/graphql";
 
 export const createArea = (group: RoomGroup, name: string, allRooms: Room[]): ShipArea => {
   return {
@@ -18,11 +11,11 @@ export const createArea = (group: RoomGroup, name: string, allRooms: Room[]): Sh
   };
 };
 
-export const groupBlindsByGroup = (blinds: Blind[]): BlindsGroup[] =>
-  Object.values(Object.groupBy(blinds ?? [], ({ name }) => (blinds.length > 2 ? name : "blinds")))
+export const groupBlindsByGroup = (blinds: DomesticBlinds[]): BlindsGroup[] =>
+  Object.values(Object.groupBy(blinds ?? [], ({ name }) => (blinds.length > 2 ? name! : "blinds")))
     .filter(isDefined)
     .map<BlindsGroup>((blinds) => ({
-      name: blinds[0].name,
+      name: blinds[0].name!,
       controls: blinds.map((blind) => ({
         ...blind,
         value: Number(blind.level ?? 0),
@@ -32,7 +25,7 @@ export const groupBlindsByGroup = (blinds: Blind[]): BlindsGroup[] =>
       })),
     }));
 
-export const groupLights = (lights: LightingGroup[]): LightGroup[] => [
+export const groupLights = (lights: DomesticLightingGroups[]): LightGroup[] => [
   {
     name: i18n.global.t("labels.lights"),
     controls: lights.sort(compareByName),

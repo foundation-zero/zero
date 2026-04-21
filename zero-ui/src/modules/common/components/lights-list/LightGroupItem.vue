@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { Switch } from "@/components/ui/switch";
-import { LightingGroup } from "@/modules/domestic/types";
+import { DomesticLightingGroups } from "@/modules/domestic/gql/graphql";
 import { LightsSlider } from "@common/components/lights-slider";
 import { ListItem } from "@common/components/list";
 import { ZSpacer } from "@common/components/spacer";
@@ -9,7 +9,7 @@ import { LampCeiling, LampWallUp } from "lucide-vue-next";
 import { computed, inject, Ref, ref, toRef, watch } from "vue";
 import { getContext } from ".";
 
-const props = defineProps<{ control: LightingGroup }>();
+const props = defineProps<{ control: DomesticLightingGroups }>();
 const control = toRef(props, "control");
 const brightness = ref(control.value.level);
 

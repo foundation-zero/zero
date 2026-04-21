@@ -5,7 +5,9 @@ import { computed, Ref } from "vue";
 export const useToggleableLights = (rooms: Ref<Room[]>) => {
   const groups = computed(() => rooms.value.flatMap((room) => room.lightingGroups));
 
-  const someLightsAreOn = computed(() => groups.value.some((group) => group.level > 0));
+  const someLightsAreOn = computed(() =>
+    groups.value.some((group) => group.level != undefined && group.level > 0),
+  );
 
   const store = useRoomStore();
   const toggle = () =>

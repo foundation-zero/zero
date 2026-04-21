@@ -16,7 +16,7 @@ const lights = computed(() => groupLights(currentRoom.value.lightingGroups));
 const commit = async (control: LightingGroup, brightness: Ref<number>) => {
   if (hasPendingRequests.value) return;
 
-  await roomStore.setLightLevel(control.id, brightness.value);
+  await roomStore.setLightingGroupsLevel([control.id], brightness.value);
 
   if (!hasPendingRequests.value) return;
 

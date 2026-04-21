@@ -53,7 +53,7 @@ const state = useThresholds(CO2_THRESHOLDS, actualCO2);
 <template>
   <ValueTile
     v-if="hasCO2Sensor"
-    :title="room.name"
+    :title="room.name!"
     :state="state"
   >
     <template #background>

@@ -21,6 +21,7 @@ import {
 } from "@common/types";
 import { ArgumentsType, useIntervalFn } from "@vueuse/core";
 import { type ClassValue, clsx } from "clsx";
+import { Maybe } from "graphql/jsutils/Maybe";
 import { twMerge } from "tailwind-merge";
 import { computed, ComputedRef, ref, Ref, watch, WritableComputedRef } from "vue";
 import { useI18n } from "vue-i18n";
@@ -38,8 +39,8 @@ export function cn(...inputs: ClassValue[]) {
 export const isDefined = <T>(value: T | undefined | null): value is T =>
   value !== undefined && value !== null;
 
-export const compareByName = <T extends { name: string }>(a: T, b: T) =>
-  a.name.localeCompare(b.name);
+export const compareByName = <T extends { name?: string | null }>(a: T, b: T) =>
+  (a.name ?? "").localeCompare(b.name ?? "");
 
 export const validationStatusToNumber: Record<ValidationStatus, number> = {
   [ValidationStatus.OK]: 0,
@@ -52,8 +53,8 @@ export const compareByValidationStatus = (a: ValidationStatus, b: ValidationStat
   validationStatusToNumber[a] - validationStatusToNumber[b];
 
 export const updateSetpointWhenControlsHaveChanged = <K extends string>(
-  value: Ref<number>,
-  controls: Ref<{ [key in K]: number }[]>,
+  value: Ref<Maybe<number>>,
+  controls: Ref<{ [key in K]?: Maybe<number> }[]>,
   key: K,
 ) =>
   watch(controls, ([next], [prev]) => {
@@ -62,7 +63,7 @@ export const updateSetpointWhenControlsHaveChanged = <K extends string>(
     }
   });
 
-export const ratioAsPercentage = (ratio: Ref<number | string>) =>
+export const ratioAsPercentage = (ratio: Ref<Maybe<number>>) =>
   computed({
     get() {
       return Number(ratio.value) * 100;
@@ -74,12 +75,12 @@ export const ratioAsPercentage = (ratio: Ref<number | string>) =>
 
 export const toInversedPercentage = (percentage: number) => 100 - percentage;
 export const separateDecimals = (
-  value: Ref<number>,
+  value: Ref<Maybe<number>>,
   digits: number = 1,
 ): { integer: Ref<number>; decimal: Ref<number> } => {
   return {
-    integer: computed(() => Math.floor(value.value)),
-    decimal: computed(() => Math.round((value.value % 1) * 10 ** digits)),
+    integer: computed(() => Math.floor(value.value ?? 0)),
+    decimal: computed(() => Math.round(((value.value ?? 0) % 1) * 10 ** digits)),
   };
 };
 
@@ -200,9 +201,9 @@ export const toTimeValueTuple = <T>(value: TimeValueObject<T>): TimeValueTuple<T
 
 export const validateSafeRange = (
   thresholds: SafeRangeThresholds,
-  value?: number,
+  value?: number | null,
 ): ValidationStatus => {
-  if (value === undefined || isNaN(value)) {
+  if (value == undefined || isNaN(value)) {
     return ValidationStatus.UNKNOWN;
   } else if (value < thresholds[0] || value > thresholds[1]) {
     return ValidationStatus.WARN;
@@ -216,8 +217,11 @@ export const useSafeRange = (
   value: Ref<number>,
 ): Ref<ValidationStatus> => computed(() => validateSafeRange(thresholds, value.value));
 
-export const validateThreshold = (thresholds: Thresholds, value?: number): ValidationStatus => {
-  if (value === undefined || isNaN(value)) {
+export const validateThreshold = (
+  thresholds: Thresholds,
+  value?: number | null,
+): ValidationStatus => {
+  if (value == undefined || isNaN(value)) {
     return ValidationStatus.UNKNOWN;
   } else if (value >= thresholds[1]) {
     return ValidationStatus.FAIL;

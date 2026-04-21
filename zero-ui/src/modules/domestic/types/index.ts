@@ -1,3 +1,5 @@
+import { DomesticBlinds, DomesticLightingGroups, DomesticRooms } from "../gql/graphql";
+
 export const enum ControlType {
   LIGHT = "lights",
   BLIND = "blinds",
@@ -59,16 +61,12 @@ export type Amplifier = {
   on: boolean;
 };
 
-export interface Room {
-  id: string;
-  name: string;
+export type Room = Pick<
+  DomesticRooms,
+  "airConditioning" | "amplifier" | "blinds" | "id" | "lightingGroups" | "name" | "ventilation"
+> & {
   group: RoomGroup;
-  lightingGroups: LightingGroup[];
-  blinds: Blind[];
-  airConditioning?: AirConditioning;
-  ventilation?: Ventilation;
-  amplifier?: Amplifier;
-}
+};
 
 export interface ShipArea {
   name: string;
@@ -98,8 +96,8 @@ export interface ControlGroup<T> {
   controls: T[];
 }
 
-export type LightGroup = ControlGroup<LightingGroup>;
-export type BlindsGroup = ControlGroup<Blind>;
+export type LightGroup = ControlGroup<DomesticLightingGroups>;
+export type BlindsGroup = ControlGroup<DomesticBlinds>;
 
 export const enum Roles {
   User = "user",

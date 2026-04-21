@@ -1,13 +1,13 @@
 <script setup lang="ts">
+import { DomesticBlinds } from "@/modules/domestic/gql/graphql";
 import { useRoomStore } from "@/modules/domestic/stores/rooms";
-import { Blind } from "@/modules/domestic/types";
 import { cn, writeProtected } from "@common/lib/utils";
 import { HTMLAttributes, provide, ref, toRefs, watch } from "vue";
 
 const props = defineProps<{
   class?: HTMLAttributes["class"];
   editable?: boolean;
-  control: Blind;
+  control: DomesticBlinds;
 }>();
 
 const { editable, control } = toRefs(props);

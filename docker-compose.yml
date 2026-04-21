@@ -278,15 +278,17 @@ services:
       PG_USER: ${PG_USER}
       PG_PASSWORD: ${PG_PASSWORD}
       PG_DB: ${PG_DB}
-      RISINGWAVE_URL: postgres://root@risingwave:4566/dev
       JWT_SECRET: ${JWT_SECRET}
       MQTT_HOST: vernemq
       MQTT_PORT: 1883
       HOME_ASSISTANT_URL: http://hass:8123/api
       HOME_ASSISTANT_WS_URL: ws://hass:8123/api/websocket
       HOME_ASSISTANT_TOKEN: ${HOME_ASSISTANT_TOKEN}
-      TERMODINAMICA_HOST: domestic-control-stub
-      TERMODINAMICA_PORT: 502
+      AIR_CONDITIONING_HOST: domestic-control-stub
+      AIR_CONDITIONING_PORT: 1502
+      VENTILATION_HOST: domestic-control-stub
+      VENTILATION_PORT: 1503
+      GREPTIME_URL: mysql://app@greptimedb:4002/public
       CANBUS_IP: 127.0.0.1
       CANBUS_PORT: 55001
       CANBUS_BUFFER_SIZE: 1024
@@ -318,7 +320,6 @@ services:
         condition: service_healthy
     environment:
       <<: *app_env
-      TERMODINAMICA_HOST: 0.0.0.0
 
   # ---- loads ----
   loads-api:

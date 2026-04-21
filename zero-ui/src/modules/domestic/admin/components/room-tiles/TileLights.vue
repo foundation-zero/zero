@@ -14,7 +14,7 @@ const { groups, someLightsAreOn, toggle } = useToggleableLights(computed(() => [
 <template>
   <ValueTile
     v-if="groups.length > 0"
-    :title="room.name"
+    :title="room.name!"
     :class="{ on: someLightsAreOn }"
     selectable
     :state="ValidationStatus.OK"
