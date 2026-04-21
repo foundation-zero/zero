@@ -86,6 +86,7 @@
             "mode": "continuous-reds"
           },
           "mappings": [],
+          "noValue": "-",
           "thresholds": {
             "mode": "absolute",
             "steps": [
@@ -104,7 +105,7 @@
       },
       "gridPos": {
         "h": 4,
-        "w": 3,
+        "w": 4,
         "x": 0,
         "y": 3
       },
@@ -205,7 +206,46 @@
                 "left": 50,
                 "rotation": 0,
                 "top": 10,
-                "width": 300
+                "width": 116
+              },
+              "type": "text"
+            },
+            {
+              "background": {
+                "color": {
+                  "fixed": "transparent"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "left",
+                "color": {
+                  "fixed": "rgb(204, 204, 220)"
+                },
+                "size": 12,
+                "text": {
+                  "field": "chlorine_unit_alarm_tag",
+                  "fixed": "Chlorine unit",
+                  "mode": "field"
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "links": [],
+              "name": "chlorine_unit_alarm_tag",
+              "placement": {
+                "height": 26,
+                "left": 176,
+                "rotation": 0,
+                "top": 9,
+                "width": 116
               },
               "type": "text"
             }
@@ -257,6 +297,36 @@
             ],
             "limit": 50
           }
+        },
+        {
+          "dataset": "dev",
+          "datasource": {
+            "type": "grafana-postgresql-datasource",
+            "uid": "${datasource}"
+          },
+          "editorMode": "code",
+          "format": "table",
+          "hide": false,
+          "rawQuery": true,
+          "rawSql": "SELECT \r\n  MAX(CASE WHEN mqtt_json_path = LOWER('CHLORINE_UNIT_ALARM') THEN '(' || yard_tag || ')' ELSE NULL END) AS chlorine_unit_alarm_tag\r\nFROM marpower.io_metadata_marpower\r\nWHERE mqtt_topic = 'marpower/250000-techwater'",
+          "refId": "B",
+          "sql": {
+            "columns": [
+              {
+                "parameters": [],
+                "type": "function"
+              }
+            ],
+            "groupBy": [
+              {
+                "property": {
+                  "type": "string"
+                },
+                "type": "groupBy"
+              }
+            ],
+            "limit": 50
+          }
         }
       ],
       "title": "Alarms",
@@ -288,8 +358,8 @@
       },
       "gridPos": {
         "h": 4,
-        "w": 15,
-        "x": 3,
+        "w": 12,
+        "x": 4,
         "y": 3
       },
       "id": 2,
@@ -394,7 +464,7 @@
                 "left": 50,
                 "rotation": 0,
                 "top": 10,
-                "width": 340
+                "width": 209
               },
               "type": "text"
             },
@@ -475,7 +545,7 @@
                 "left": 50,
                 "rotation": 0,
                 "top": 40,
-                "width": 340
+                "width": 209
               },
               "type": "text"
             },
@@ -515,8 +585,7 @@
               "name": "mts_exhaust_flap_released",
               "placement": {
                 "height": 25,
-                "left": 350,
-                "rotation": 0,
+                "left": 389,
                 "top": 10,
                 "width": 25
               },
@@ -554,9 +623,9 @@
               "name": "mts_exhaust_flap_released label",
               "placement": {
                 "height": 26,
-                "left": 385,
+                "left": 424,
                 "top": 10,
-                "width": 340
+                "width": 238
               },
               "type": "text"
             },
@@ -596,7 +665,7 @@
               "name": "mts_exhaust_flap_reset",
               "placement": {
                 "height": 25,
-                "left": 350,
+                "left": 389,
                 "top": 40,
                 "width": 25
               },
@@ -634,9 +703,9 @@
               "name": "mts_exhaust_flap_reset label",
               "placement": {
                 "height": 26,
-                "left": 385,
+                "left": 424,
                 "top": 40,
-                "width": 340
+                "width": 238
               },
               "type": "text"
             },
@@ -672,10 +741,9 @@
               "name": "drain_valve_pos_overboard label",
               "placement": {
                 "height": 26,
-                "left": 720,
-                "rotation": 0,
-                "top": 10,
-                "width": 340
+                "left": 424,
+                "top": 70,
+                "width": 265
               },
               "type": "text"
             },
@@ -715,12 +783,203 @@
               "name": "drain_valve_pos_overboard",
               "placement": {
                 "height": 25,
-                "left": 685,
-                "rotation": 0,
-                "top": 10,
+                "left": 389,
+                "top": 70,
                 "width": 25
               },
               "type": "ellipse"
+            },
+            {
+              "background": {
+                "color": {
+                  "fixed": "transparent"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "left",
+                "color": {
+                  "fixed": "rgb(204, 204, 220)"
+                },
+                "size": 12,
+                "text": {
+                  "field": "mts_inlet_flap_released_tag",
+                  "fixed": "MTS inlet flap - Released",
+                  "mode": "field"
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "links": [],
+              "name": "mts_inlet_flap_released_tag",
+              "placement": {
+                "height": 26,
+                "left": 259,
+                "rotation": 0,
+                "top": 10,
+                "width": 102
+              },
+              "type": "text"
+            },
+            {
+              "background": {
+                "color": {
+                  "fixed": "transparent"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "left",
+                "color": {
+                  "fixed": "rgb(204, 204, 220)"
+                },
+                "size": 12,
+                "text": {
+                  "field": "mts_inlet_flap_reset_tag",
+                  "fixed": "MTS inlet flap - Released",
+                  "mode": "field"
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "links": [],
+              "name": "mts_inlet_flap_reset_tag",
+              "placement": {
+                "height": 26,
+                "left": 259,
+                "rotation": 0,
+                "top": 40,
+                "width": 102
+              },
+              "type": "text"
+            },
+            {
+              "background": {
+                "color": {
+                  "fixed": "transparent"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "left",
+                "color": {
+                  "fixed": "rgb(204, 204, 220)"
+                },
+                "size": 12,
+                "text": {
+                  "field": "mts_exhaust_flap_released_tag",
+                  "fixed": "MTS inlet flap - Released",
+                  "mode": "field"
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "links": [],
+              "name": "mts_exhaust_flap_released_tag",
+              "placement": {
+                "height": 26,
+                "left": 689,
+                "top": 9,
+                "width": 102
+              },
+              "type": "text"
+            },
+            {
+              "background": {
+                "color": {
+                  "fixed": "transparent"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "left",
+                "color": {
+                  "fixed": "rgb(204, 204, 220)"
+                },
+                "size": 12,
+                "text": {
+                  "field": "mts_exhaust_flap_reset_tag",
+                  "fixed": "MTS inlet flap - Released",
+                  "mode": "field"
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "links": [],
+              "name": "mts_exhaust_flap_reset_tag",
+              "placement": {
+                "height": 26,
+                "left": 689,
+                "top": 39,
+                "width": 102
+              },
+              "type": "text"
+            },
+            {
+              "background": {
+                "color": {
+                  "fixed": "transparent"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "left",
+                "color": {
+                  "fixed": "rgb(204, 204, 220)"
+                },
+                "size": 12,
+                "text": {
+                  "field": "drain_valve_pos_overboard_tag",
+                  "fixed": "MTS inlet flap - Released",
+                  "mode": "field"
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "links": [],
+              "name": "drain_valve_pos_overboard_tag",
+              "placement": {
+                "height": 26,
+                "left": 689,
+                "top": 69,
+                "width": 102
+              },
+              "type": "text"
             }
           ],
           "name": "Element 1767698352074",
@@ -770,6 +1029,36 @@
             ],
             "limit": 50
           }
+        },
+        {
+          "dataset": "dev",
+          "datasource": {
+            "type": "grafana-postgresql-datasource",
+            "uid": "${datasource}"
+          },
+          "editorMode": "code",
+          "format": "table",
+          "hide": false,
+          "rawQuery": true,
+          "rawSql": "SELECT \r\n  MAX(CASE WHEN mqtt_json_path = LOWER('MTS_INLET_FIRE_FLAP_RELEASED') THEN '(' || yard_tag || ')' ELSE NULL END)      AS mts_inlet_flap_released_tag,\r\n  MAX(CASE WHEN mqtt_json_path = LOWER('MTS_INLET_FIRE_FLAP_FULLY_RESET') THEN '(' || yard_tag || ')' ELSE NULL END)   AS mts_inlet_flap_reset_tag,\r\n  MAX(CASE WHEN mqtt_json_path = LOWER('MTS_EXHAUST_FIRE_FLAP_RELEASED') THEN '(' || yard_tag || ')' ELSE NULL END)    AS mts_exhaust_flap_released_tag,\r\n  MAX(CASE WHEN mqtt_json_path = LOWER('MTS_EXHAUST_FIRE_FLAP_FULLY_RESET') THEN '(' || yard_tag || ')' ELSE NULL END) AS mts_exhaust_flap_reset_tag,\r\n  MAX(CASE WHEN mqtt_json_path = LOWER('DRAIN_VLV_Y02_POS_OVERBOARD') THEN '(' || yard_tag || ')' ELSE NULL END)       AS drain_valve_pos_overboard_tag\r\nFROM marpower.io_metadata_marpower\r\nWHERE mqtt_topic = 'marpower/250000-techwater'",
+          "refId": "B",
+          "sql": {
+            "columns": [
+              {
+                "parameters": [],
+                "type": "function"
+              }
+            ],
+            "groupBy": [
+              {
+                "property": {
+                  "type": "string"
+                },
+                "type": "groupBy"
+              }
+            ],
+            "limit": 50
+          }
         }
       ],
       "title": "Status",
@@ -786,6 +1075,7 @@
             "mode": "continuous-blues"
           },
           "mappings": [],
+          "noValue": "-",
           "thresholds": {
             "mode": "absolute",
             "steps": [
@@ -800,8 +1090,8 @@
       },
       "gridPos": {
         "h": 4,
-        "w": 6,
-        "x": 18,
+        "w": 8,
+        "x": 16,
         "y": 3
       },
       "id": 3,
@@ -903,7 +1193,7 @@
                 "left": 50,
                 "rotation": 0,
                 "top": 10,
-                "width": 340
+                "width": 321
               },
               "type": "text"
             },
@@ -983,9 +1273,8 @@
               "placement": {
                 "height": 26,
                 "left": 50,
-                "rotation": 0,
                 "top": 40,
-                "width": 340
+                "width": 321
               },
               "type": "text"
             },
@@ -1064,9 +1353,125 @@
               "placement": {
                 "height": 26,
                 "left": 50,
-                "rotation": 0,
                 "top": 70,
-                "width": 340
+                "width": 321
+              },
+              "type": "text"
+            },
+            {
+              "background": {
+                "color": {
+                  "fixed": "transparent"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "left",
+                "color": {
+                  "fixed": "rgb(204, 204, 220)"
+                },
+                "size": 12,
+                "text": {
+                  "field": "valve_cold_air_cool_water_y03_tag",
+                  "fixed": "Valve cold air cooling water Y03 - Open",
+                  "mode": "field"
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "links": [],
+              "name": "valve_cold_air_cool_water_y03_tag",
+              "placement": {
+                "height": 26,
+                "left": 371,
+                "rotation": 0,
+                "top": 9,
+                "width": 105
+              },
+              "type": "text"
+            },
+            {
+              "background": {
+                "color": {
+                  "fixed": "transparent"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "left",
+                "color": {
+                  "fixed": "rgb(204, 204, 220)"
+                },
+                "size": 12,
+                "text": {
+                  "field": "valve_cold_air_cool_water_y04_tag",
+                  "fixed": "Valve cold air cooling water Y03 - Open",
+                  "mode": "field"
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "links": [],
+              "name": "valve_cold_air_cool_water_y04_tag",
+              "placement": {
+                "height": 26,
+                "left": 371,
+                "rotation": 0,
+                "top": 40,
+                "width": 105
+              },
+              "type": "text"
+            },
+            {
+              "background": {
+                "color": {
+                  "fixed": "transparent"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "left",
+                "color": {
+                  "fixed": "rgb(204, 204, 220)"
+                },
+                "size": 12,
+                "text": {
+                  "field": "valve_cold_air_cool_water_y05_tag",
+                  "fixed": "Valve cold air cooling water Y03 - Open",
+                  "mode": "field"
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "links": [],
+              "name": "valve_cold_air_cool_water_y05_tag",
+              "placement": {
+                "height": 26,
+                "left": 371,
+                "rotation": 0,
+                "top": 71,
+                "width": 105
               },
               "type": "text"
             }
@@ -1101,6 +1506,36 @@
           "rawQuery": true,
           "rawSql": "SELECT\r\n  LAST_VALUE(time ORDER BY time) AS time,\r\n  LAST_VALUE((\"VALVE_COLD_AIR_FR68_Y03_OPENCLOSE\").value ORDER BY time) AS valve_cold_air_cool_water_y03,\r\n  LAST_VALUE((\"VALVE_COLD_AIR_FR32_Y04_OPENCLOSE\").value ORDER BY time) AS valve_cold_air_cool_water_y04,\r\n  LAST_VALUE((\"VALVE_COLD_AIR_FR32_Y05_OPENCLOSE\").value ORDER BY time) AS valve_cold_air_cool_water_y05\r\nFROM marpower.\"250000_techwater\"",
           "refId": "A",
+          "sql": {
+            "columns": [
+              {
+                "parameters": [],
+                "type": "function"
+              }
+            ],
+            "groupBy": [
+              {
+                "property": {
+                  "type": "string"
+                },
+                "type": "groupBy"
+              }
+            ],
+            "limit": 50
+          }
+        },
+        {
+          "dataset": "dev",
+          "datasource": {
+            "type": "grafana-postgresql-datasource",
+            "uid": "${datasource}"
+          },
+          "editorMode": "code",
+          "format": "table",
+          "hide": false,
+          "rawQuery": true,
+          "rawSql": "SELECT \r\n  MAX(CASE WHEN mqtt_json_path = LOWER('VALVE_COLD_AIR_FR68_Y03_OPENCLOSE') THEN '(' || yard_tag || ')' ELSE NULL END) AS valve_cold_air_cool_water_y03_tag,\r\n  MAX(CASE WHEN mqtt_json_path = LOWER('VALVE_COLD_AIR_FR32_Y04_OPENCLOSE') THEN '(' || yard_tag || ')' ELSE NULL END) AS valve_cold_air_cool_water_y04_tag,\r\n  MAX(CASE WHEN mqtt_json_path = LOWER('VALVE_COLD_AIR_FR32_Y05_OPENCLOSE') THEN '(' || yard_tag || ')' ELSE NULL END) AS valve_cold_air_cool_water_y05_tag\r\nFROM marpower.io_metadata_marpower\r\nWHERE mqtt_topic = 'marpower/250000-techwater'",
+          "refId": "B",
           "sql": {
             "columns": [
               {
@@ -1314,6 +1749,7 @@
           },
           "decimals": 2,
           "mappings": [],
+          "noValue": "-",
           "thresholds": {
             "mode": "absolute",
             "steps": [
@@ -1328,8 +1764,8 @@
         "overrides": []
       },
       "gridPos": {
-        "h": 6,
-        "w": 12,
+        "h": 8,
+        "w": 16,
         "x": 0,
         "y": 9
       },
@@ -1383,7 +1819,7 @@
               "name": "Adiabatic_cool_b03",
               "placement": {
                 "height": 30,
-                "left": 205,
+                "left": 305,
                 "rotation": 0,
                 "top": 10,
                 "width": 180
@@ -1422,7 +1858,7 @@
                 "left": 15,
                 "rotation": 0,
                 "top": 10,
-                "width": 204
+                "width": 181
               },
               "type": "text"
             },
@@ -1456,7 +1892,7 @@
               "name": "Adiabatic_cool_b07",
               "placement": {
                 "height": 30,
-                "left": 205,
+                "left": 305,
                 "top": 45,
                 "width": 180
               },
@@ -1492,9 +1928,8 @@
               "placement": {
                 "height": 30,
                 "left": 15,
-                "rotation": 0,
                 "top": 45,
-                "width": 204
+                "width": 181
               },
               "type": "text"
             },
@@ -1528,7 +1963,7 @@
               "name": "Adiabatic_cool_b08",
               "placement": {
                 "height": 30,
-                "left": 205,
+                "left": 305,
                 "top": 80,
                 "width": 180
               },
@@ -1564,9 +1999,8 @@
               "placement": {
                 "height": 30,
                 "left": 15,
-                "rotation": 0,
                 "top": 80,
-                "width": 204
+                "width": 181
               },
               "type": "text"
             },
@@ -1600,7 +2034,7 @@
               "name": "Adiabatic_cool_b09",
               "placement": {
                 "height": 30,
-                "left": 205,
+                "left": 305,
                 "top": 115,
                 "width": 180
               },
@@ -1637,7 +2071,7 @@
                 "height": 30,
                 "left": 15,
                 "top": 115,
-                "width": 204
+                "width": 181
               },
               "type": "text"
             },
@@ -1671,8 +2105,7 @@
               "name": "deckwash_reel_b04",
               "placement": {
                 "height": 30,
-                "left": 590,
-                "rotation": 0,
+                "left": 840,
                 "top": 10,
                 "width": 180
               },
@@ -1707,10 +2140,9 @@
               "name": "deckwash_reel_b04 label",
               "placement": {
                 "height": 30,
-                "left": 425,
-                "rotation": 0,
+                "left": 564,
                 "top": 10,
-                "width": 204
+                "width": 167
               },
               "type": "text"
             },
@@ -1744,7 +2176,7 @@
               "name": "deckwash_reel_b05",
               "placement": {
                 "height": 30,
-                "left": 590,
+                "left": 840,
                 "top": 45,
                 "width": 180
               },
@@ -1779,9 +2211,9 @@
               "name": "deckwash_reel_b05 label",
               "placement": {
                 "height": 30,
-                "left": 425,
+                "left": 564,
                 "top": 45,
-                "width": 204
+                "width": 167
               },
               "type": "text"
             },
@@ -1815,7 +2247,7 @@
               "name": "deckwash_reel_b06",
               "placement": {
                 "height": 30,
-                "left": 590,
+                "left": 840,
                 "top": 80,
                 "width": 180
               },
@@ -1850,9 +2282,272 @@
               "name": "deckwash_reel_b06 label",
               "placement": {
                 "height": 30,
-                "left": 425,
+                "left": 564,
                 "top": 80,
-                "width": 204
+                "width": 167
+              },
+              "type": "text"
+            },
+            {
+              "background": {
+                "color": {
+                  "fixed": "transparent"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "left",
+                "color": {
+                  "fixed": "rgb(204,204,220)"
+                },
+                "size": 12,
+                "text": {
+                  "field": "adiabatic_cool_b03_tag",
+                  "fixed": "Adiabatic cooling B03",
+                  "mode": "field"
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "name": "adiabatic_cool_b03_tag",
+              "placement": {
+                "height": 30,
+                "left": 196,
+                "rotation": 0,
+                "top": 10,
+                "width": 109
+              },
+              "type": "text"
+            },
+            {
+              "background": {
+                "color": {
+                  "fixed": "transparent"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "left",
+                "color": {
+                  "fixed": "rgb(204,204,220)"
+                },
+                "size": 12,
+                "text": {
+                  "field": "adiabatic_cool_b07_tag",
+                  "fixed": "Adiabatic cooling B03",
+                  "mode": "field"
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "name": "adiabatic_cool_b07_tag",
+              "placement": {
+                "height": 30,
+                "left": 196,
+                "rotation": 0,
+                "top": 45,
+                "width": 109
+              },
+              "type": "text"
+            },
+            {
+              "background": {
+                "color": {
+                  "fixed": "transparent"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "left",
+                "color": {
+                  "fixed": "rgb(204,204,220)"
+                },
+                "size": 12,
+                "text": {
+                  "field": "adiabatic_cool_b08_tag",
+                  "fixed": "Adiabatic cooling B03",
+                  "mode": "field"
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "name": "adiabatic_cool_b08_tag",
+              "placement": {
+                "height": 30,
+                "left": 196,
+                "rotation": 0,
+                "top": 80,
+                "width": 109
+              },
+              "type": "text"
+            },
+            {
+              "background": {
+                "color": {
+                  "fixed": "transparent"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "left",
+                "color": {
+                  "fixed": "rgb(204,204,220)"
+                },
+                "size": 12,
+                "text": {
+                  "field": "adiabatic_cool_b09_tag",
+                  "fixed": "Adiabatic cooling B03",
+                  "mode": "field"
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "name": "adiabatic_cool_b09_tag",
+              "placement": {
+                "height": 30,
+                "left": 196,
+                "rotation": 0,
+                "top": 115,
+                "width": 109
+              },
+              "type": "text"
+            },
+            {
+              "background": {
+                "color": {
+                  "fixed": "transparent"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "left",
+                "color": {
+                  "fixed": "rgb(204,204,220)"
+                },
+                "size": 12,
+                "text": {
+                  "field": "deckwash_reel_b04_tag",
+                  "fixed": "Adiabatic cooling B03",
+                  "mode": "field"
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "name": "deckwash_reel_B04_tag",
+              "placement": {
+                "height": 30,
+                "left": 731,
+                "top": 10,
+                "width": 109
+              },
+              "type": "text"
+            },
+            {
+              "background": {
+                "color": {
+                  "fixed": "transparent"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "left",
+                "color": {
+                  "fixed": "rgb(204,204,220)"
+                },
+                "size": 12,
+                "text": {
+                  "field": "deckwash_reel_b05_tag",
+                  "fixed": "Adiabatic cooling B03",
+                  "mode": "field"
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "name": "deckwash_reel_B05_tag",
+              "placement": {
+                "height": 30,
+                "left": 731,
+                "top": 45,
+                "width": 109
+              },
+              "type": "text"
+            },
+            {
+              "background": {
+                "color": {
+                  "fixed": "transparent"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "left",
+                "color": {
+                  "fixed": "rgb(204,204,220)"
+                },
+                "size": 12,
+                "text": {
+                  "field": "deckwash_reel_b06_tag",
+                  "fixed": "Adiabatic cooling B03",
+                  "mode": "field"
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "name": "deckwash_reel_B06_tag",
+              "placement": {
+                "height": 30,
+                "left": 731,
+                "top": 80,
+                "width": 109
               },
               "type": "text"
             }
@@ -1880,8 +2575,38 @@
           "editorMode": "code",
           "format": "table",
           "rawQuery": true,
-          "rawSql": "SELECT\n  LAST_VALUE(time ORDER BY time) AS time,\n  \n  LAST_VALUE((\"ADIABATIC_COOL_B03_FLOW\").value ORDER BY time)      AS adiabatic_cool_b03,\n  LAST_VALUE((\"ADIABATIC_COOL_B07_FLOW\").value ORDER BY time)      AS adiabatic_cool_b07,\n  LAST_VALUE((\"ADIABATIC_COOL_B08_FLOW\").value ORDER BY time)      AS adiabatic_cool_b08,\n  LAST_VALUE((\"ADIABATIC_COOL_B09_FLOW\").value ORDER BY time)      AS adiabatic_cool_b09,\n  LAST_VALUE((\"REEL_FOR_DECKWASH_B04_FLOW\").value ORDER BY time)   AS deckwash_reel_B04,\n  LAST_VALUE((\"REEL_FOR_DECKWASH_B05_FLOW\").value ORDER BY time)   AS deckwash_reel_B05,\n  LAST_VALUE((\"REEL_FOR_DECKWASH_B06_FLOW\").value ORDER BY time)   AS deckwash_reel_B06\n\nFROM marpower.\"250000_techwater\"\n",
+          "rawSql": "SELECT\n  LAST_VALUE(time ORDER BY time) AS time,\n  \n  LAST_VALUE((\"ADIABATIC_COOL_B03_FLOW\").value ORDER BY time)    AS adiabatic_cool_b03,\n  LAST_VALUE((\"ADIABATIC_COOL_B07_FLOW\").value ORDER BY time)    AS adiabatic_cool_b07,\n  LAST_VALUE((\"ADIABATIC_COOL_B08_FLOW\").value ORDER BY time)    AS adiabatic_cool_b08,\n  LAST_VALUE((\"ADIABATIC_COOL_B09_FLOW\").value ORDER BY time)    AS adiabatic_cool_b09,\n  LAST_VALUE((\"REEL_FOR_DECKWASH_B04_FLOW\").value ORDER BY time) AS deckwash_reel_B04,\n  LAST_VALUE((\"REEL_FOR_DECKWASH_B05_FLOW\").value ORDER BY time) AS deckwash_reel_B05,\n  LAST_VALUE((\"REEL_FOR_DECKWASH_B06_FLOW\").value ORDER BY time) AS deckwash_reel_B06\n\nFROM marpower.\"250000_techwater\"\n",
           "refId": "A",
+          "sql": {
+            "columns": [
+              {
+                "parameters": [],
+                "type": "function"
+              }
+            ],
+            "groupBy": [
+              {
+                "property": {
+                  "type": "string"
+                },
+                "type": "groupBy"
+              }
+            ],
+            "limit": 50
+          }
+        },
+        {
+          "dataset": "dev",
+          "datasource": {
+            "type": "grafana-postgresql-datasource",
+            "uid": "${datasource}"
+          },
+          "editorMode": "code",
+          "format": "table",
+          "hide": false,
+          "rawQuery": true,
+          "rawSql": "SELECT \r\n  MAX(CASE WHEN mqtt_json_path = LOWER('ADIABATIC_COOL_B03_FLOW') THEN '(' || yard_tag || ')' ELSE NULL END)    AS adiabatic_cool_b03_tag,\r\n  MAX(CASE WHEN mqtt_json_path = LOWER('ADIABATIC_COOL_B07_FLOW') THEN '(' || yard_tag || ')' ELSE NULL END)    AS adiabatic_cool_b07_tag,\r\n  MAX(CASE WHEN mqtt_json_path = LOWER('ADIABATIC_COOL_B08_FLOW') THEN '(' || yard_tag || ')' ELSE NULL END)    AS adiabatic_cool_b08_tag,\r\n  MAX(CASE WHEN mqtt_json_path = LOWER('ADIABATIC_COOL_B09_FLOW') THEN '(' || yard_tag || ')' ELSE NULL END)    AS adiabatic_cool_b09_tag,\r\n  MAX(CASE WHEN mqtt_json_path = LOWER('REEL_FOR_DECKWASH_B04_FLOW') THEN '(' || yard_tag || ')' ELSE NULL END) AS deckwash_reel_B04_tag,\r\n  MAX(CASE WHEN mqtt_json_path = LOWER('REEL_FOR_DECKWASH_B05_FLOW') THEN '(' || yard_tag || ')' ELSE NULL END) AS deckwash_reel_B05_tag,\r\n  MAX(CASE WHEN mqtt_json_path = LOWER('REEL_FOR_DECKWASH_B06_FLOW') THEN '(' || yard_tag || ')' ELSE NULL END) AS deckwash_reel_B06_tag\r\nFROM marpower.io_metadata_marpower\r\nWHERE mqtt_topic = 'marpower/250000-techwater'",
+          "refId": "B",
           "sql": {
             "columns": [
               {
@@ -1916,6 +2641,7 @@
           },
           "decimals": 2,
           "mappings": [],
+          "noValue": "-",
           "thresholds": {
             "mode": "absolute",
             "steps": [
@@ -1979,9 +2705,9 @@
         ]
       },
       "gridPos": {
-        "h": 6,
-        "w": 12,
-        "x": 12,
+        "h": 8,
+        "w": 8,
+        "x": 16,
         "y": 9
       },
       "id": 14,
@@ -2034,7 +2760,7 @@
               "name": "charcoal_filter_flow",
               "placement": {
                 "height": 30,
-                "left": 205,
+                "left": 311,
                 "rotation": 0,
                 "top": 10,
                 "width": 180
@@ -2071,8 +2797,9 @@
               "placement": {
                 "height": 30,
                 "left": 15,
+                "rotation": 0,
                 "top": 10,
-                "width": 219
+                "width": 190
               },
               "type": "text"
             },
@@ -2106,7 +2833,7 @@
               "name": "charcoal_filter_temp",
               "placement": {
                 "height": 30,
-                "left": 205,
+                "left": 311,
                 "top": 45,
                 "width": 180
               },
@@ -2142,8 +2869,9 @@
               "placement": {
                 "height": 30,
                 "left": 15,
+                "rotation": 0,
                 "top": 45,
-                "width": 219
+                "width": 190
               },
               "type": "text"
             },
@@ -2177,7 +2905,7 @@
               "name": "salinity1",
               "placement": {
                 "height": 30,
-                "left": 205,
+                "left": 311,
                 "top": 90,
                 "width": 180
               },
@@ -2213,9 +2941,8 @@
               "placement": {
                 "height": 30,
                 "left": 15,
-                "rotation": 0,
                 "top": 90,
-                "width": 134
+                "width": 190
               },
               "type": "text"
             },
@@ -2249,7 +2976,7 @@
               "name": "salinity2",
               "placement": {
                 "height": 30,
-                "left": 205,
+                "left": 311,
                 "top": 125,
                 "width": 180
               },
@@ -2286,9 +3013,8 @@
               "placement": {
                 "height": 30,
                 "left": 15,
-                "rotation": 0,
                 "top": 125,
-                "width": 134
+                "width": 190
               },
               "type": "text"
             },
@@ -2322,9 +3048,8 @@
               "name": "tank1_level",
               "placement": {
                 "height": 30,
-                "left": 535,
-                "rotation": 0,
-                "top": 10,
+                "left": 311,
+                "top": 170,
                 "width": 180
               },
               "type": "metric-value"
@@ -2358,10 +3083,9 @@
               "name": "tank1_level label",
               "placement": {
                 "height": 30,
-                "left": 425,
-                "rotation": 0,
-                "top": 10,
-                "width": 134
+                "left": 15,
+                "top": 170,
+                "width": 190
               },
               "type": "text"
             },
@@ -2396,8 +3120,8 @@
               "name": "tank2_level",
               "placement": {
                 "height": 30,
-                "left": 535,
-                "top": 45,
+                "left": 311,
+                "top": 205,
                 "width": 180
               },
               "type": "metric-value"
@@ -2431,9 +3155,237 @@
               "name": "tank2_level label",
               "placement": {
                 "height": 30,
-                "left": 425,
+                "left": 15,
+                "top": 205,
+                "width": 190
+              },
+              "type": "text"
+            },
+            {
+              "background": {
+                "color": {
+                  "fixed": "transparent"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "left",
+                "color": {
+                  "fixed": "rgb(204,204,220)"
+                },
+                "size": 12,
+                "text": {
+                  "field": "charcoal_filter_flow_tag",
+                  "fixed": "Charcoal filter - Flow",
+                  "mode": "field"
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "name": "charcoal_filter_flow_tag",
+              "placement": {
+                "height": 30,
+                "left": 205,
+                "rotation": 0,
+                "top": 10,
+                "width": 106
+              },
+              "type": "text"
+            },
+            {
+              "background": {
+                "color": {
+                  "fixed": "transparent"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "left",
+                "color": {
+                  "fixed": "rgb(204,204,220)"
+                },
+                "size": 12,
+                "text": {
+                  "field": "charcoal_filter_temp_tag",
+                  "fixed": "Charcoal filter - Flow",
+                  "mode": "field"
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "name": "charcoal_filter_temp_tag",
+              "placement": {
+                "height": 30,
+                "left": 205,
+                "rotation": 0,
                 "top": 45,
-                "width": 134
+                "width": 106
+              },
+              "type": "text"
+            },
+            {
+              "background": {
+                "color": {
+                  "fixed": "transparent"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "left",
+                "color": {
+                  "fixed": "rgb(204,204,220)"
+                },
+                "size": 12,
+                "text": {
+                  "field": "salinity1_tag",
+                  "fixed": "Charcoal filter - Flow",
+                  "mode": "field"
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "name": "salinity1_tag",
+              "placement": {
+                "height": 30,
+                "left": 205,
+                "rotation": 0,
+                "top": 90,
+                "width": 106
+              },
+              "type": "text"
+            },
+            {
+              "background": {
+                "color": {
+                  "fixed": "transparent"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "left",
+                "color": {
+                  "fixed": "rgb(204,204,220)"
+                },
+                "size": 12,
+                "text": {
+                  "field": "salinity2_tag",
+                  "fixed": "Charcoal filter - Flow",
+                  "mode": "field"
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "name": "salinity2_tag",
+              "placement": {
+                "height": 30,
+                "left": 205,
+                "rotation": 0,
+                "top": 125,
+                "width": 106
+              },
+              "type": "text"
+            },
+            {
+              "background": {
+                "color": {
+                  "fixed": "transparent"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "left",
+                "color": {
+                  "fixed": "rgb(204,204,220)"
+                },
+                "size": 12,
+                "text": {
+                  "field": "tank1_level_tag",
+                  "fixed": "Charcoal filter - Flow",
+                  "mode": "field"
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "name": "tank1_level_tag",
+              "placement": {
+                "height": 30,
+                "left": 205,
+                "rotation": 0,
+                "top": 170,
+                "width": 106
+              },
+              "type": "text"
+            },
+            {
+              "background": {
+                "color": {
+                  "fixed": "transparent"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "left",
+                "color": {
+                  "fixed": "rgb(204,204,220)"
+                },
+                "size": 12,
+                "text": {
+                  "field": "tank2_level_tag",
+                  "fixed": "Charcoal filter - Flow",
+                  "mode": "field"
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "name": "tank2_level_tag",
+              "placement": {
+                "height": 30,
+                "left": 205,
+                "rotation": 0,
+                "top": 205,
+                "width": 106
               },
               "type": "text"
             }
@@ -2461,8 +3413,38 @@
           "editorMode": "code",
           "format": "table",
           "rawQuery": true,
-          "rawSql": "SELECT\n  LAST_VALUE(time ORDER BY time) AS time,\n  \n  LAST_VALUE((\"CHARCOAL_FILTER_B01_FLOW\").value ORDER BY time)      AS charcoal_filter_flow,\n  LAST_VALUE((\"CHARCOAL_FILTER_B01_TEMP\").value ORDER BY time)      AS charcoal_filter_temp,\n  LAST_VALUE((\"SALINITY1\").value ORDER BY time)                     AS salinity1,\n  LAST_VALUE((\"SALINITY2\").value ORDER BY time)                     AS salinity2,\n  LAST_VALUE((\"TANK1_LEVEL\").value ORDER BY time)                   AS tank1_level,\n  LAST_VALUE((\"TANK2_LEVEL\").value ORDER BY time)                   AS tank2_level\n\nFROM marpower.\"250000_techwater\"\n",
+          "rawSql": "SELECT\n  LAST_VALUE(time ORDER BY time) AS time,\n  LAST_VALUE((\"CHARCOAL_FILTER_B01_FLOW\").value ORDER BY time) AS charcoal_filter_flow,\n  LAST_VALUE((\"CHARCOAL_FILTER_B01_TEMP\").value ORDER BY time) AS charcoal_filter_temp,\n  LAST_VALUE((\"SALINITY1\").value ORDER BY time)                AS salinity1,\n  LAST_VALUE((\"SALINITY2\").value ORDER BY time)                AS salinity2,\n  LAST_VALUE((\"TANK1_LEVEL\").value ORDER BY time)              AS tank1_level,\n  LAST_VALUE((\"TANK2_LEVEL\").value ORDER BY time)              AS tank2_level\nFROM marpower.\"250000_techwater\"\n",
           "refId": "A",
+          "sql": {
+            "columns": [
+              {
+                "parameters": [],
+                "type": "function"
+              }
+            ],
+            "groupBy": [
+              {
+                "property": {
+                  "type": "string"
+                },
+                "type": "groupBy"
+              }
+            ],
+            "limit": 50
+          }
+        },
+        {
+          "dataset": "dev",
+          "datasource": {
+            "type": "grafana-postgresql-datasource",
+            "uid": "${datasource}"
+          },
+          "editorMode": "code",
+          "format": "table",
+          "hide": false,
+          "rawQuery": true,
+          "rawSql": "SELECT \r\n  MAX(CASE WHEN mqtt_json_path = LOWER('CHARCOAL_FILTER_B01_FLOW') THEN '(' || yard_tag || ')' ELSE NULL END) AS charcoal_filter_flow_tag,\r\n  MAX(CASE WHEN mqtt_json_path = LOWER('CHARCOAL_FILTER_B01_TEMP') THEN '(' || yard_tag || ')' ELSE NULL END) AS charcoal_filter_temp_tag,\r\n  MAX(CASE WHEN mqtt_json_path = LOWER('SALINITY1') THEN '(' || yard_tag || ')' ELSE NULL END)                AS salinity1_tag,\r\n  MAX(CASE WHEN mqtt_json_path = LOWER('SALINITY2') THEN '(' || yard_tag || ')' ELSE NULL END)                AS salinity2_tag,\r\n  MAX(CASE WHEN mqtt_json_path = LOWER('TANK1_LEVEL') THEN '(' || yard_tag || ')' ELSE NULL END)              AS tank1_level_tag,\r\n  MAX(CASE WHEN mqtt_json_path = LOWER('TANK2_LEVEL') THEN '(' || yard_tag || ')' ELSE NULL END)              AS tank2_level_tag\r\nFROM marpower.io_metadata_marpower\r\nWHERE mqtt_topic = 'marpower/250000-techwater'",
+          "refId": "B",
           "sql": {
             "columns": [
               {
@@ -2491,7 +3473,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 15
+        "y": 17
       },
       "id": 13,
       "panels": [
