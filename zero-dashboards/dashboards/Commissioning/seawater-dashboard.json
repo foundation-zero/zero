@@ -229,7 +229,7 @@
                 "size": 12,
                 "text": {
                   "field": "vacuumalarm_tag",
-                  "fixed": "Sea water vacuum alarm",
+                  "fixed": " ",
                   "mode": "field"
                 },
                 "valign": "middle"
@@ -727,7 +727,7 @@
                 "size": 12,
                 "text": {
                   "field": "pmp1_remote_tag",
-                  "fixed": "Cool. pump 1 - Remote avail.",
+                  "fixed": " ",
                   "mode": "field"
                 },
                 "valign": "middle"
@@ -766,7 +766,7 @@
                 "size": 12,
                 "text": {
                   "field": "pmp1_running_tag",
-                  "fixed": "Cool. pump 1 - Remote avail.",
+                  "fixed": " ",
                   "mode": "field"
                 },
                 "valign": "middle"
@@ -806,7 +806,7 @@
                 "size": 12,
                 "text": {
                   "field": "pmp2_remote_tag",
-                  "fixed": "Cool. pump 1 - Remote avail.",
+                  "fixed": " ",
                   "mode": "field"
                 },
                 "valign": "middle"
@@ -845,7 +845,7 @@
                 "size": 12,
                 "text": {
                   "field": "pmp2_running_tag",
-                  "fixed": "Cool. pump 1 - Remote avail.",
+                  "fixed": " ",
                   "mode": "field"
                 },
                 "valign": "middle"
@@ -1175,7 +1175,7 @@
                 "size": 12,
                 "text": {
                   "field": "pmp1_startstop_tag",
-                  "fixed": "",
+                  "fixed": " ",
                   "mode": "field"
                 },
                 "valign": "middle"
@@ -1214,7 +1214,7 @@
                 "size": 12,
                 "text": {
                   "field": "pmp2_startstop_tag",
-                  "fixed": "",
+                  "fixed": " ",
                   "mode": "field"
                 },
                 "valign": "middle"
@@ -1464,7 +1464,7 @@
                 "size": 12,
                 "text": {
                   "field": "flow_tag",
-                  "fixed": "",
+                  "fixed": " ",
                   "mode": "field"
                 },
                 "valign": "middle"

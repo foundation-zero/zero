@@ -310,7 +310,7 @@
                 "size": 12,
                 "text": {
                   "field": "treatment_general_warning_alarm_tag",
-                  "fixed": "Treatment plant - General warning alarm",
+                  "fixed": " ",
                   "mode": "field"
                 },
                 "valign": "middle"
@@ -349,7 +349,7 @@
                 "size": 12,
                 "text": {
                   "field": "treatment_general_alarm_tag",
-                  "fixed": "Treatment plant - General warning alarm",
+                  "fixed": " ",
                   "mode": "field"
                 },
                 "valign": "middle"
@@ -565,7 +565,7 @@
                 "size": 16,
                 "text": {
                   "field": "sea_water_cool_pmp1_remote",
-                  "fixed": "Grey water FWD pump - Remote avail.",
+                  "fixed": " ",
                   "mode": "fixed"
                 },
                 "valign": "middle"
@@ -1252,7 +1252,7 @@
                 "size": 12,
                 "text": {
                   "field": "fwd_pump_grey_remavail_tag",
-                  "fixed": "Grey water FWD pump - Remote avail.",
+                  "fixed": " ",
                   "mode": "field"
                 },
                 "valign": "middle"
@@ -1291,7 +1291,7 @@
                 "size": 12,
                 "text": {
                   "field": "fwd_pump_grey_running_tag",
-                  "fixed": "Grey water FWD pump - Remote avail.",
+                  "fixed": " ",
                   "mode": "field"
                 },
                 "valign": "middle"
@@ -1331,7 +1331,7 @@
                 "size": 12,
                 "text": {
                   "field": "trans_pump_grey_remavail_tag",
-                  "fixed": "Grey water FWD pump - Remote avail.",
+                  "fixed": " ",
                   "mode": "field"
                 },
                 "valign": "middle"
@@ -1370,7 +1370,7 @@
                 "size": 12,
                 "text": {
                   "field": "trans_pump_grey_running_tag",
-                  "fixed": "Grey water FWD pump - Remote avail.",
+                  "fixed": " ",
                   "mode": "field"
                 },
                 "valign": "middle"
@@ -1409,7 +1409,7 @@
                 "size": 12,
                 "text": {
                   "field": "trans_pump_black_remavail_tag",
-                  "fixed": "Grey water FWD pump - Remote avail.",
+                  "fixed": " ",
                   "mode": "field"
                 },
                 "valign": "middle"
@@ -1448,7 +1448,7 @@
                 "size": 12,
                 "text": {
                   "field": "trans_pump_black_running_tag",
-                  "fixed": "Grey water FWD pump - Remote avail.",
+                  "fixed": " ",
                   "mode": "field"
                 },
                 "valign": "middle"
@@ -1487,7 +1487,7 @@
                 "size": 12,
                 "text": {
                   "field": "treatment_on_tag",
-                  "fixed": "Grey water FWD pump - Remote avail.",
+                  "fixed": " ",
                   "mode": "field"
                 },
                 "valign": "middle"
@@ -1526,7 +1526,7 @@
                 "size": 12,
                 "text": {
                   "field": "treatment_release_tag",
-                  "fixed": "Grey water FWD pump - Remote avail.",
+                  "fixed": " ",
                   "mode": "field"
                 },
                 "valign": "middle"
@@ -1565,7 +1565,7 @@
                 "size": 12,
                 "text": {
                   "field": "treatment_dry_run_protection_tag",
-                  "fixed": "Grey water FWD pump - Remote avail.",
+                  "fixed": " ",
                   "mode": "field"
                 },
                 "valign": "middle"
@@ -1978,7 +1978,7 @@
                 "size": 12,
                 "text": {
                   "field": "grey_wat_fwd_pump_startstop_tag",
-                  "fixed": "Grey water FWR pump - Start",
+                  "fixed": " ",
                   "mode": "field"
                 },
                 "valign": "middle"
@@ -2017,7 +2017,7 @@
                 "size": 12,
                 "text": {
                   "field": "grey_wat_transfer_pump_startstop_tag",
-                  "fixed": "Grey water FWR pump - Start",
+                  "fixed": " ",
                   "mode": "field"
                 },
                 "valign": "middle"
@@ -2056,7 +2056,7 @@
                 "size": 12,
                 "text": {
                   "field": "black_wat_transfer_pump_startstop_tag",
-                  "fixed": "Grey water FWR pump - Start",
+                  "fixed": " ",
                   "mode": "field"
                 },
                 "valign": "middle"
@@ -2680,7 +2680,7 @@
                 "size": 12,
                 "text": {
                   "field": "sludge_tank_tag",
-                  "fixed": "Sludge tank",
+                  "fixed": " ",
                   "mode": "field"
                 },
                 "valign": "middle"
@@ -2719,7 +2719,7 @@
                 "size": 12,
                 "text": {
                   "field": "treatment_holding_tank_tag",
-                  "fixed": "Sludge tank",
+                  "fixed": " ",
                   "mode": "field"
                 },
                 "valign": "middle"
@@ -2758,7 +2758,7 @@
                 "size": 12,
                 "text": {
                   "field": "treatment_sludge_tank_tag",
-                  "fixed": "Sludge tank",
+                  "fixed": " ",
                   "mode": "field"
                 },
                 "valign": "middle"
@@ -2797,7 +2797,7 @@
                 "size": 12,
                 "text": {
                   "field": "grey_wat_aft_tank_tag",
-                  "fixed": "Sludge tank",
+                  "fixed": " ",
                   "mode": "field"
                 },
                 "valign": "middle"
@@ -2836,7 +2836,7 @@
                 "size": 12,
                 "text": {
                   "field": "grey_wat_fwd_tank_tag",
-                  "fixed": "Sludge tank",
+                  "fixed": " ",
                   "mode": "field"
                 },
                 "valign": "middle"
@@ -2875,7 +2875,7 @@
                 "size": 12,
                 "text": {
                   "field": "black_wat_aft_tank_tag",
-                  "fixed": "Sludge tank",
+                  "fixed": " ",
                   "mode": "field"
                 },
                 "valign": "middle"

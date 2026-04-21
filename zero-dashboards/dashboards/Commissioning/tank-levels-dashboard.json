@@ -290,7 +290,7 @@
                 "size": 12,
                 "text": {
                   "field": "fresh_water_tank_1_level_tag",
-                  "fixed": "Fresh water tank 1",
+                  "fixed": " ",
                   "mode": "field"
                 },
                 "valign": "middle"
@@ -328,7 +328,7 @@
                 "size": 12,
                 "text": {
                   "field": "fresh_water_tank_2_level_tag",
-                  "fixed": "Fresh water tank 1",
+                  "fixed": " ",
                   "mode": "field"
                 },
                 "valign": "middle"
@@ -760,7 +760,7 @@
                 "size": 12,
                 "text": {
                   "field": "tank11_level_tag",
-                  "fixed": "Hot water tank 11",
+                  "fixed": " ",
                   "mode": "field"
                 },
                 "valign": "middle"
@@ -798,7 +798,7 @@
                 "size": 12,
                 "text": {
                   "field": "tank13_level_tag",
-                  "fixed": "Hot water tank 11",
+                  "fixed": " ",
                   "mode": "field"
                 },
                 "valign": "middle"
@@ -836,7 +836,7 @@
                 "size": 12,
                 "text": {
                   "field": "tank15_level_tag",
-                  "fixed": "Hot water tank 11",
+                  "fixed": " ",
                   "mode": "field"
                 },
                 "valign": "middle"
@@ -1105,7 +1105,7 @@
                 "size": 12,
                 "text": {
                   "field": "tank_level_tag",
-                  "fixed": "Bilge tank",
+                  "fixed": " ",
                   "mode": "field"
                 },
                 "valign": "middle"
@@ -1380,7 +1380,7 @@
                 "size": 12,
                 "text": {
                   "field": "sludge_tank_tag",
-                  "fixed": "Sludge tank",
+                  "fixed": " ",
                   "mode": "field"
                 },
                 "valign": "middle"
@@ -1778,7 +1778,7 @@
                 "size": 12,
                 "text": {
                   "field": "grey_wat_aft_tank_tag",
-                  "fixed": "Grey water AFT tank",
+                  "fixed": " ",
                   "mode": "field"
                 },
                 "valign": "middle"
@@ -1817,7 +1817,7 @@
                 "size": 12,
                 "text": {
                   "field": "grey_wat_fwd_tank_tag",
-                  "fixed": "Grey water AFT tank",
+                  "fixed": " ",
                   "mode": "field"
                 },
                 "valign": "middle"
@@ -1856,7 +1856,7 @@
                 "size": 12,
                 "text": {
                   "field": "black_wat_aft_tank_tag",
-                  "fixed": "Grey water AFT tank",
+                  "fixed": " ",
                   "mode": "field"
                 },
                 "valign": "middle"
@@ -2225,7 +2225,7 @@
                 "size": 12,
                 "text": {
                   "field": "tank1_level_tag",
-                  "fixed": "Technical water tank 1",
+                  "fixed": " ",
                   "mode": "field"
                 },
                 "valign": "middle"
@@ -2263,7 +2263,7 @@
                 "size": 12,
                 "text": {
                   "field": "tank2_level_tag",
-                  "fixed": "Technical water tank 1",
+                  "fixed": " ",
                   "mode": "field"
                 },
                 "valign": "middle"
@@ -2532,7 +2532,7 @@
                 "size": 12,
                 "text": {
                   "field": "tank_level_tag",
-                  "fixed": "Dirty oil sludge tank",
+                  "fixed": " ",
                   "mode": "field"
                 },
                 "valign": "middle"

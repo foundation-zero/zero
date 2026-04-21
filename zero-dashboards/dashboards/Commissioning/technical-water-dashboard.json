@@ -229,7 +229,7 @@
                 "size": 12,
                 "text": {
                   "field": "chlorine_unit_alarm_tag",
-                  "fixed": "Chlorine unit",
+                  "fixed": " ",
                   "mode": "field"
                 },
                 "valign": "middle"
@@ -808,7 +808,7 @@
                 "size": 12,
                 "text": {
                   "field": "mts_inlet_flap_released_tag",
-                  "fixed": "MTS inlet flap - Released",
+                  "fixed": " ",
                   "mode": "field"
                 },
                 "valign": "middle"
@@ -847,7 +847,7 @@
                 "size": 12,
                 "text": {
                   "field": "mts_inlet_flap_reset_tag",
-                  "fixed": "MTS inlet flap - Released",
+                  "fixed": " ",
                   "mode": "field"
                 },
                 "valign": "middle"
@@ -886,7 +886,7 @@
                 "size": 12,
                 "text": {
                   "field": "mts_exhaust_flap_released_tag",
-                  "fixed": "MTS inlet flap - Released",
+                  "fixed": " ",
                   "mode": "field"
                 },
                 "valign": "middle"
@@ -924,7 +924,7 @@
                 "size": 12,
                 "text": {
                   "field": "mts_exhaust_flap_reset_tag",
-                  "fixed": "MTS inlet flap - Released",
+                  "fixed": " ",
                   "mode": "field"
                 },
                 "valign": "middle"
@@ -962,7 +962,7 @@
                 "size": 12,
                 "text": {
                   "field": "drain_valve_pos_overboard_tag",
-                  "fixed": "MTS inlet flap - Released",
+                  "fixed": " ",
                   "mode": "field"
                 },
                 "valign": "middle"
@@ -1377,7 +1377,7 @@
                 "size": 12,
                 "text": {
                   "field": "valve_cold_air_cool_water_y03_tag",
-                  "fixed": "Valve cold air cooling water Y03 - Open",
+                  "fixed": " ",
                   "mode": "field"
                 },
                 "valign": "middle"
@@ -1416,7 +1416,7 @@
                 "size": 12,
                 "text": {
                   "field": "valve_cold_air_cool_water_y04_tag",
-                  "fixed": "Valve cold air cooling water Y03 - Open",
+                  "fixed": " ",
                   "mode": "field"
                 },
                 "valign": "middle"
@@ -1455,7 +1455,7 @@
                 "size": 12,
                 "text": {
                   "field": "valve_cold_air_cool_water_y05_tag",
-                  "fixed": "Valve cold air cooling water Y03 - Open",
+                  "fixed": " ",
                   "mode": "field"
                 },
                 "valign": "middle"
@@ -2307,7 +2307,7 @@
                 "size": 12,
                 "text": {
                   "field": "adiabatic_cool_b03_tag",
-                  "fixed": "Adiabatic cooling B03",
+                  "fixed": " ",
                   "mode": "field"
                 },
                 "valign": "middle"
@@ -2345,7 +2345,7 @@
                 "size": 12,
                 "text": {
                   "field": "adiabatic_cool_b07_tag",
-                  "fixed": "Adiabatic cooling B03",
+                  "fixed": " ",
                   "mode": "field"
                 },
                 "valign": "middle"
@@ -2383,7 +2383,7 @@
                 "size": 12,
                 "text": {
                   "field": "adiabatic_cool_b08_tag",
-                  "fixed": "Adiabatic cooling B03",
+                  "fixed": " ",
                   "mode": "field"
                 },
                 "valign": "middle"
@@ -2421,7 +2421,7 @@
                 "size": 12,
                 "text": {
                   "field": "adiabatic_cool_b09_tag",
-                  "fixed": "Adiabatic cooling B03",
+                  "fixed": " ",
                   "mode": "field"
                 },
                 "valign": "middle"
@@ -2459,7 +2459,7 @@
                 "size": 12,
                 "text": {
                   "field": "deckwash_reel_b04_tag",
-                  "fixed": "Adiabatic cooling B03",
+                  "fixed": " ",
                   "mode": "field"
                 },
                 "valign": "middle"
@@ -2496,7 +2496,7 @@
                 "size": 12,
                 "text": {
                   "field": "deckwash_reel_b05_tag",
-                  "fixed": "Adiabatic cooling B03",
+                  "fixed": " ",
                   "mode": "field"
                 },
                 "valign": "middle"
@@ -2533,7 +2533,7 @@
                 "size": 12,
                 "text": {
                   "field": "deckwash_reel_b06_tag",
-                  "fixed": "Adiabatic cooling B03",
+                  "fixed": " ",
                   "mode": "field"
                 },
                 "valign": "middle"
@@ -3180,7 +3180,7 @@
                 "size": 12,
                 "text": {
                   "field": "charcoal_filter_flow_tag",
-                  "fixed": "Charcoal filter - Flow",
+                  "fixed": " ",
                   "mode": "field"
                 },
                 "valign": "middle"
@@ -3218,7 +3218,7 @@
                 "size": 12,
                 "text": {
                   "field": "charcoal_filter_temp_tag",
-                  "fixed": "Charcoal filter - Flow",
+                  "fixed": " ",
                   "mode": "field"
                 },
                 "valign": "middle"
@@ -3256,7 +3256,7 @@
                 "size": 12,
                 "text": {
                   "field": "salinity1_tag",
-                  "fixed": "Charcoal filter - Flow",
+                  "fixed": " ",
                   "mode": "field"
                 },
                 "valign": "middle"
@@ -3294,7 +3294,7 @@
                 "size": 12,
                 "text": {
                   "field": "salinity2_tag",
-                  "fixed": "Charcoal filter - Flow",
+                  "fixed": " ",
                   "mode": "field"
                 },
                 "valign": "middle"
@@ -3332,7 +3332,7 @@
                 "size": 12,
                 "text": {
                   "field": "tank1_level_tag",
-                  "fixed": "Charcoal filter - Flow",
+                  "fixed": " ",
                   "mode": "field"
                 },
                 "valign": "middle"
@@ -3370,7 +3370,7 @@
                 "size": 12,
                 "text": {
                   "field": "tank2_level_tag",
-                  "fixed": "Charcoal filter - Flow",
+                  "fixed": " ",
                   "mode": "field"
                 },
                 "valign": "middle"

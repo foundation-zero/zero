@@ -4877,7 +4877,7 @@
                 "size": 12,
                 "text": {
                   "field": "anchor_hatch1_open_tag",
-                  "fixed": "Anchor hatch 1 - Open",
+                  "fixed": " ",
                   "mode": "field"
                 },
                 "valign": "middle"
@@ -4916,7 +4916,7 @@
                 "size": 12,
                 "text": {
                   "field": "anchor_hatch2_open_tag",
-                  "fixed": "Anchor hatch 1 - Open",
+                  "fixed": " ",
                   "mode": "field"
                 },
                 "valign": "middle"

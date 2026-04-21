@@ -389,7 +389,7 @@
                 "size": 12,
                 "text": {
                   "field": "fresh_water_mak1_alarm_tag",
-                  "fixed": "Water maker 1",
+                  "fixed": " ",
                   "mode": "field"
                 },
                 "valign": "middle"
@@ -428,7 +428,7 @@
                 "size": 12,
                 "text": {
                   "field": "fresh_water_mak2_alarm_tag",
-                  "fixed": "Water maker 1",
+                  "fixed": " ",
                   "mode": "field"
                 },
                 "valign": "middle"
@@ -467,7 +467,7 @@
                 "size": 12,
                 "text": {
                   "field": "fresh_water_chlorine_unit_alarm_tag",
-                  "fixed": "Water maker 1",
+                  "fixed": " ",
                   "mode": "field"
                 },
                 "valign": "middle"
@@ -735,7 +735,7 @@
                 "size": 12,
                 "text": {
                   "field": "fresh_water_circ_pump_running_tag",
-                  "fixed": "Circulation pump - Running",
+                  "fixed": " ",
                   "mode": "field"
                 },
                 "valign": "middle"
@@ -1002,7 +1002,7 @@
                 "size": 12,
                 "text": {
                   "field": "fresh_water_circ_pump_onoff_tag",
-                  "fixed": "Circulation pump - On",
+                  "fixed": " ",
                   "mode": "field"
                 },
                 "valign": "middle"
@@ -2242,7 +2242,7 @@
                 "size": 12,
                 "text": {
                   "field": "coldwater_guest_cabin_sb_flow_tag",
-                  "fixed": "Guest cabin SB",
+                  "fixed": " ",
                   "mode": "field"
                 },
                 "valign": "middle"
@@ -2280,7 +2280,7 @@
                 "size": 12,
                 "text": {
                   "field": "coldwater_guest_cabin_ps_fwd_flow_tag",
-                  "fixed": "Guest cabin SB",
+                  "fixed": " ",
                   "mode": "field"
                 },
                 "valign": "middle"
@@ -2318,7 +2318,7 @@
                 "size": 12,
                 "text": {
                   "field": "coldwater_guest_cabin_ps_aft_flow_tag",
-                  "fixed": "Guest cabin SB",
+                  "fixed": " ",
                   "mode": "field"
                 },
                 "valign": "middle"
@@ -2356,7 +2356,7 @@
                 "size": 12,
                 "text": {
                   "field": "coldwater_master_cabin_sb_flow_tag",
-                  "fixed": "Guest cabin SB",
+                  "fixed": " ",
                   "mode": "field"
                 },
                 "valign": "middle"
@@ -2393,7 +2393,7 @@
                 "size": 12,
                 "text": {
                   "field": "coldwater_master_cabin_ps_flow_tag",
-                  "fixed": "Guest cabin SB",
+                  "fixed": " ",
                   "mode": "field"
                 },
                 "valign": "middle"
@@ -2430,7 +2430,7 @@
                 "size": 12,
                 "text": {
                   "field": "coldwater_guest_bathroom_flow_tag",
-                  "fixed": "Guest cabin SB",
+                  "fixed": " ",
                   "mode": "field"
                 },
                 "valign": "middle"
@@ -2467,7 +2467,7 @@
                 "size": 12,
                 "text": {
                   "field": "coldwater_captains_cabin_flow_tag",
-                  "fixed": "Guest cabin SB",
+                  "fixed": " ",
                   "mode": "field"
                 },
                 "valign": "middle"
@@ -2504,7 +2504,7 @@
                 "size": 12,
                 "text": {
                   "field": "coldwater_crew_cabin_ps_mid_flow_tag",
-                  "fixed": "Guest cabin SB",
+                  "fixed": " ",
                   "mode": "field"
                 },
                 "valign": "middle"
@@ -2541,7 +2541,7 @@
                 "size": 12,
                 "text": {
                   "field": "coldwater_crew_cabin_sb_fwd_flow_tag",
-                  "fixed": "Guest cabin SB",
+                  "fixed": " ",
                   "mode": "field"
                 },
                 "valign": "middle"
@@ -2578,7 +2578,7 @@
                 "size": 12,
                 "text": {
                   "field": "coldwater_crew_cabin_ps_fwd_flow_tag",
-                  "fixed": "Guest cabin SB",
+                  "fixed": " ",
                   "mode": "field"
                 },
                 "valign": "middle"
@@ -2615,7 +2615,7 @@
                 "size": 12,
                 "text": {
                   "field": "coldwater_crew_cabin_sb_aft_flow_tag",
-                  "fixed": "Guest cabin SB",
+                  "fixed": " ",
                   "mode": "field"
                 },
                 "valign": "middle"
@@ -2652,7 +2652,7 @@
                 "size": 12,
                 "text": {
                   "field": "coldwater_crew_cabin_sb_mid_flow_tag",
-                  "fixed": "Guest cabin SB",
+                  "fixed": " ",
                   "mode": "field"
                 },
                 "valign": "middle"
@@ -3635,7 +3635,7 @@
                 "size": 12,
                 "text": {
                   "field": "coldwater_crew_mess_flow_tag",
-                  "fixed": "Crew mess",
+                  "fixed": " ",
                   "mode": "field"
                 },
                 "valign": "middle"
@@ -3673,7 +3673,7 @@
                 "size": 12,
                 "text": {
                   "field": "coldwater_galley_2_flow_tag",
-                  "fixed": "Crew mess",
+                  "fixed": " ",
                   "mode": "field"
                 },
                 "valign": "middle"
@@ -3711,7 +3711,7 @@
                 "size": 12,
                 "text": {
                   "field": "coldwater_dayhead_flow_tag",
-                  "fixed": "Crew mess",
+                  "fixed": " ",
                   "mode": "field"
                 },
                 "valign": "middle"
@@ -3749,7 +3749,7 @@
                 "size": 12,
                 "text": {
                   "field": "coldwater_lazaret_flow_tag",
-                  "fixed": "Crew mess",
+                  "fixed": " ",
                   "mode": "field"
                 },
                 "valign": "middle"
@@ -3786,7 +3786,7 @@
                 "size": 12,
                 "text": {
                   "field": "coldwater_lower_saloon_flow_tag",
-                  "fixed": "Crew mess",
+                  "fixed": " ",
                   "mode": "field"
                 },
                 "valign": "middle"
@@ -3823,7 +3823,7 @@
                 "size": 12,
                 "text": {
                   "field": "coldwater_laundry_ps_flow_tag",
-                  "fixed": "Crew mess",
+                  "fixed": " ",
                   "mode": "field"
                 },
                 "valign": "middle"
@@ -3861,7 +3861,7 @@
                 "size": 12,
                 "text": {
                   "field": "coldwater_deckhouse_flow_tag",
-                  "fixed": "Crew mess",
+                  "fixed": " ",
                   "mode": "field"
                 },
                 "valign": "middle"
@@ -3899,7 +3899,7 @@
                 "size": 12,
                 "text": {
                   "field": "coldwater_deck_fr48_sb_tech_cor_flow_tag",
-                  "fixed": "Crew mess",
+                  "fixed": " ",
                   "mode": "field"
                 },
                 "valign": "middle"
@@ -3937,7 +3937,7 @@
                 "size": 12,
                 "text": {
                   "field": "coldwater_main_tech_space_flow_tag",
-                  "fixed": "Crew mess",
+                  "fixed": " ",
                   "mode": "field"
                 },
                 "valign": "middle"
@@ -3975,7 +3975,7 @@
                 "size": 12,
                 "text": {
                   "field": "coldwater_main_tech_space_fr45_flow_tag",
-                  "fixed": "Crew mess",
+                  "fixed": " ",
                   "mode": "field"
                 },
                 "valign": "middle"
@@ -4013,7 +4013,7 @@
                 "size": 12,
                 "text": {
                   "field": "coldwater_water_softner_flow_tag",
-                  "fixed": "Crew mess",
+                  "fixed": " ",
                   "mode": "field"
                 },
                 "valign": "middle"
@@ -5077,7 +5077,7 @@
                 "size": 12,
                 "text": {
                   "field": "hotwater_guest_cabin_sb_flow_tag",
-                  "fixed": "Guest cabin SB",
+                  "fixed": " ",
                   "mode": "field"
                 },
                 "valign": "middle"
@@ -5115,7 +5115,7 @@
                 "size": 12,
                 "text": {
                   "field": "hotwater_guest_cabin_ps_fwd_flow_tag",
-                  "fixed": "Guest cabin SB",
+                  "fixed": " ",
                   "mode": "field"
                 },
                 "valign": "middle"
@@ -5153,7 +5153,7 @@
                 "size": 12,
                 "text": {
                   "field": "hotwater_guest_cabin_ps_aft_flow_tag",
-                  "fixed": "Guest cabin SB",
+                  "fixed": " ",
                   "mode": "field"
                 },
                 "valign": "middle"
@@ -5191,7 +5191,7 @@
                 "size": 12,
                 "text": {
                   "field": "hotwater_master_cabin_sb_flow_tag",
-                  "fixed": "Guest cabin SB",
+                  "fixed": " ",
                   "mode": "field"
                 },
                 "valign": "middle"
@@ -5229,7 +5229,7 @@
                 "size": 12,
                 "text": {
                   "field": "hotwater_master_cabin_ps_flow_tag",
-                  "fixed": "Guest cabin SB",
+                  "fixed": " ",
                   "mode": "field"
                 },
                 "valign": "middle"
@@ -5267,7 +5267,7 @@
                 "size": 12,
                 "text": {
                   "field": "hotwater_guest_bathroom_flow_tag",
-                  "fixed": "Guest cabin SB",
+                  "fixed": " ",
                   "mode": "field"
                 },
                 "valign": "middle"
@@ -5305,7 +5305,7 @@
                 "size": 12,
                 "text": {
                   "field": "hotwater_captains_cabin_flow_tag",
-                  "fixed": "Guest cabin SB",
+                  "fixed": " ",
                   "mode": "field"
                 },
                 "valign": "middle"
@@ -5343,7 +5343,7 @@
                 "size": 12,
                 "text": {
                   "field": "hotwater_crew_cabin_ps_mid_flow_tag",
-                  "fixed": "Guest cabin SB",
+                  "fixed": " ",
                   "mode": "field"
                 },
                 "valign": "middle"
@@ -5381,7 +5381,7 @@
                 "size": 12,
                 "text": {
                   "field": "hotwater_crew_cabin_sb_fwd_flow_tag",
-                  "fixed": "Guest cabin SB",
+                  "fixed": " ",
                   "mode": "field"
                 },
                 "valign": "middle"
@@ -5419,7 +5419,7 @@
                 "size": 12,
                 "text": {
                   "field": "hotwater_crew_cabin_ps_fwd_flow_tag",
-                  "fixed": "Guest cabin SB",
+                  "fixed": " ",
                   "mode": "field"
                 },
                 "valign": "middle"
@@ -5457,7 +5457,7 @@
                 "size": 12,
                 "text": {
                   "field": "hotwater_crew_cabin_sb_aft_flow_tag",
-                  "fixed": "Guest cabin SB",
+                  "fixed": " ",
                   "mode": "field"
                 },
                 "valign": "middle"
@@ -5495,7 +5495,7 @@
                 "size": 12,
                 "text": {
                   "field": "hotwater_crew_cabin_sb_mid_flow_tag",
-                  "fixed": "Guest cabin SB",
+                  "fixed": " ",
                   "mode": "field"
                 },
                 "valign": "middle"
@@ -5786,7 +5786,7 @@
                 },
                 "size": 16,
                 "text": {
-                  "fixed": "Crew mess"
+                  "fixed": " "
                 },
                 "valign": "middle"
               },
@@ -6260,7 +6260,7 @@
                 "size": 12,
                 "text": {
                   "field": "hotwater_crew_mess_flow_tag",
-                  "fixed": "Crew mess",
+                  "fixed": " ",
                   "mode": "field"
                 },
                 "valign": "middle"
@@ -6298,7 +6298,7 @@
                 "size": 12,
                 "text": {
                   "field": "hotwater_galley_2_flow_tag",
-                  "fixed": "Crew mess",
+                  "fixed": " ",
                   "mode": "field"
                 },
                 "valign": "middle"
@@ -6336,7 +6336,7 @@
                 "size": 12,
                 "text": {
                   "field": "hotwater_dayhead_flow_tag",
-                  "fixed": "Crew mess",
+                  "fixed": " ",
                   "mode": "field"
                 },
                 "valign": "middle"
@@ -6374,7 +6374,7 @@
                 "size": 12,
                 "text": {
                   "field": "hotwater_lazaret_flow_tag",
-                  "fixed": "Crew mess",
+                  "fixed": " ",
                   "mode": "field"
                 },
                 "valign": "middle"
@@ -6412,7 +6412,7 @@
                 "size": 12,
                 "text": {
                   "field": "hotwater_laundry_ps_flow_tag",
-                  "fixed": "Crew mess",
+                  "fixed": " ",
                   "mode": "field"
                 },
                 "valign": "middle"
@@ -6450,7 +6450,7 @@
                 "size": 12,
                 "text": {
                   "field": "hotwater_deckhouse_flow_tag",
-                  "fixed": "Crew mess",
+                  "fixed": " ",
                   "mode": "field"
                 },
                 "valign": "middle"
@@ -6488,7 +6488,7 @@
                 "size": 12,
                 "text": {
                   "field": "hotwater_deck_fr48_sb_tech_cor_flow_tag",
-                  "fixed": "Crew mess",
+                  "fixed": " ",
                   "mode": "field"
                 },
                 "valign": "middle"
@@ -6526,7 +6526,7 @@
                 "size": 12,
                 "text": {
                   "field": "hotwater_main_tech_space_flow_tag",
-                  "fixed": "Crew mess",
+                  "fixed": " ",
                   "mode": "field"
                 },
                 "valign": "middle"
@@ -7004,7 +7004,7 @@
                 "size": 12,
                 "text": {
                   "field": "technical_room_energ_rec_flow_tag",
-                  "fixed": "Techical room energy recovery",
+                  "fixed": " ",
                   "mode": "field"
                 },
                 "valign": "middle"
@@ -7042,7 +7042,7 @@
                 "size": 12,
                 "text": {
                   "field": "flow_sensor_25001137c1_tag",
-                  "fixed": "Techical room energy recovery",
+                  "fixed": " ",
                   "mode": "field"
                 },
                 "valign": "middle"
@@ -7080,7 +7080,7 @@
                 "size": 12,
                 "text": {
                   "field": "flow_sensor_25001037c3_tag",
-                  "fixed": "Techical room energy recovery",
+                  "fixed": " ",
                   "mode": "field"
                 },
                 "valign": "middle"
@@ -7118,7 +7118,7 @@
                 "size": 12,
                 "text": {
                   "field": "flow_sensor_25001037c4_tag",
-                  "fixed": "Techical room energy recovery",
+                  "fixed": " ",
                   "mode": "field"
                 },
                 "valign": "middle"
@@ -7659,7 +7659,7 @@
                 "size": 12,
                 "text": {
                   "field": "energy_rec_temp4_tag",
-                  "fixed": "Energy recovery sensor S04",
+                  "fixed": " ",
                   "mode": "field"
                 },
                 "valign": "middle"
@@ -7697,7 +7697,7 @@
                 "size": 12,
                 "text": {
                   "field": "energy_rec_temp5_tag",
-                  "fixed": "Energy recovery sensor S04",
+                  "fixed": " ",
                   "mode": "field"
                 },
                 "valign": "middle"
@@ -7735,7 +7735,7 @@
                 "size": 12,
                 "text": {
                   "field": "energy_rec_temp6_tag",
-                  "fixed": "Energy recovery sensor S04",
+                  "fixed": " ",
                   "mode": "field"
                 },
                 "valign": "middle"
@@ -7773,7 +7773,7 @@
                 "size": 12,
                 "text": {
                   "field": "energy_rec_temp7_tag",
-                  "fixed": "Energy recovery sensor S04",
+                  "fixed": " ",
                   "mode": "field"
                 },
                 "valign": "middle"
@@ -7811,7 +7811,7 @@
                 "size": 12,
                 "text": {
                   "field": "energy_rec_temp8_tag",
-                  "fixed": "Energy recovery sensor S04",
+                  "fixed": " ",
                   "mode": "field"
                 },
                 "valign": "middle"
@@ -8136,7 +8136,7 @@
                 "size": 12,
                 "text": {
                   "field": "fresh_water_tank_1_level_tag",
-                  "fixed": "Fresh water tank 1",
+                  "fixed": " ",
                   "mode": "field"
                 },
                 "valign": "middle"
@@ -8174,7 +8174,7 @@
                 "size": 12,
                 "text": {
                   "field": "fresh_water_tank_2_level_tag",
-                  "fixed": "Fresh water tank 1",
+                  "fixed": " ",
                   "mode": "field"
                 },
                 "valign": "middle"
@@ -8428,7 +8428,7 @@
                 "size": 12,
                 "text": {
                   "field": "fr46_system_pressure_tag",
-                  "fixed": "Pressure Sensor FR46",
+                  "fixed": " ",
                   "mode": "field"
                 },
                 "valign": "middle"
