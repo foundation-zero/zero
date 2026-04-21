@@ -11,12 +11,12 @@ export default class AirconditioningPage {
     private readonly subscriptions: SubscriptionInterceptor<ZeroSubscriptions>,
   ) {}
 
-  private get subscribeToRoom() {
-    return this.subscriptions.subscribe("SubscribeToRoom");
+  private get subscribeToRooms() {
+    return this.subscriptions.subscribe("SubscribeToRooms");
   }
 
   public setTemperatureSetpoint(room: Room, temperatureSetpoint: number): void {
-    this.subscribeToRoom.dispatch({
+    this.subscribeToRooms.dispatch({
       rooms: [
         {
           ...room,
@@ -30,7 +30,7 @@ export default class AirconditioningPage {
   }
 
   public setInsideTemperature(room: Room, temperature: number): void {
-    this.subscribeToRoom.dispatch({
+    this.subscribeToRooms.dispatch({
       rooms: [
         {
           ...room,

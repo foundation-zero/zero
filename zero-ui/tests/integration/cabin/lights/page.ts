@@ -17,8 +17,8 @@ export default class LightsPage {
     return this.page.getByRole("tab").getByText("Lights").click();
   }
 
-  private get subscribeToRoom() {
-    return this.subscriptions.subscribe("SubscribeToRoom");
+  private get subscribeToRooms() {
+    return this.subscriptions.subscribe("SubscribeToRooms");
   }
 
   public setLightLevels(
@@ -27,7 +27,7 @@ export default class LightsPage {
   ): void {
     const lights = room.lightingGroups;
 
-    this.subscribeToRoom.dispatch({
+    this.subscribeToRooms.dispatch({
       rooms: [
         {
           ...room,

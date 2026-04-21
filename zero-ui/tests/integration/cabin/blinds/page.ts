@@ -16,8 +16,8 @@ export default class BlindsPage {
     return this.page.getByRole("tab").getByText("Blinds").click();
   }
 
-  private get subscribeToRoom() {
-    return this.subscriptions.subscribe("SubscribeToRoom");
+  private get subscribeToRooms() {
+    return this.subscriptions.subscribe("SubscribeToRooms");
   }
 
   public setBlindLevels(
@@ -26,7 +26,7 @@ export default class BlindsPage {
   ): void {
     const blinds = room.blinds;
 
-    this.subscribeToRoom.dispatch({
+    this.subscribeToRooms.dispatch({
       rooms: [
         {
           ...room,

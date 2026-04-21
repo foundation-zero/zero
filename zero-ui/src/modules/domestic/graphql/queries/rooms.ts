@@ -44,16 +44,6 @@ export const getAll = gql`
   }
 `;
 
-export const subscribeToRoom = gql`
-  subscription SubscribeToRoom($roomId: String!) {
-    domesticRooms(where: { id: { _eq: $roomId } }) {
-      ...RoomItem
-    }
-  }
-
-  ${RoomFragment}
-`;
-
 export const subscribeToRooms = gql`
   subscription SubscribeToRooms {
     rooms: domesticRooms {

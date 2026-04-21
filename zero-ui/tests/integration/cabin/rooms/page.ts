@@ -12,12 +12,12 @@ export default class RoomsPage {
     private readonly subscriptions: SubscriptionInterceptor<ZeroSubscriptions>,
   ) {}
 
-  private get subscribeToRoom() {
-    return this.subscriptions.subscribe("SubscribeToRoom");
+  private get subscribeToRooms() {
+    return this.subscriptions.subscribe("SubscribeToRooms");
   }
 
   public updateRoom(room: Room, delta: Partial<Room> = {}): void {
-    this.subscribeToRoom.dispatch({
+    this.subscribeToRooms.dispatch({
       rooms: [{ ...room, ...delta }],
     });
   }
@@ -47,7 +47,7 @@ export default class RoomsPage {
   }
 
   public get subscribers(): SubscribeMessage[] {
-    return this.subscribeToRoom.subscribers;
+    return this.subscribeToRooms.subscribers;
   }
 
   public get actualTemperature(): Locator {

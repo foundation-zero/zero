@@ -116,7 +116,7 @@ describe("Rooms Store", () => {
       expect(store.areas.flatMap((area) => area.rooms)).toHaveLength(allRooms.rooms.length);
     });
 
-    test('it subscribes to "subscribeToRoom" query', () => {
+    test('it subscribes to "subscribeToRooms" query', () => {
       expect(useSubscription).toHaveBeenCalled();
       expect(useSubscription.mock.calls[0][0].query).toEqual(subscribeToRooms);
       expect(useSubscription.mock.calls[0][0].variables).toEqual(undefined);
