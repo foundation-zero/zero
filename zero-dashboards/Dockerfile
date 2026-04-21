@@ -36,5 +36,3 @@ RUN if [ ! -z "${GF_INSTALL_PLUGINS}" ]; then \
 
 COPY ./dashboard-provider.yaml /etc/grafana/provisioning/dashboards/dashboard-embedded-provider.yaml
 COPY ./dashboards /embedded-dashboards
-
-COPY ./greptime.yaml /etc/grafana/provisioning/datasources/greptime.yaml
