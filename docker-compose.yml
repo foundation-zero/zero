@@ -164,7 +164,7 @@ services:
       HASURA_GRAPHQL_DEFAULT_NAMING_CONVENTION: graphql-default
       HASURA_GRAPHQL_STREAMING_QUERIES_MULTIPLEXED_REFETCH_INTERVAL: 200
       PG_DATABASE_URL: postgres://${PG_USER}:${PG_PASSWORD}@postgres:5432/${PG_DB}
-      REMOTE_SCHEMA_DOMESTIC: http://host.docker.internal:5100/graphql
+      REMOTE_SCHEMA_DOMESTIC: http://domestic-control-api:5100/graphql
     volumes:
       - ./hasura/metadata:/hasura-metadata
     depends_on:
