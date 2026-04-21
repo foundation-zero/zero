@@ -86,6 +86,7 @@
             "mode": "continuous-reds"
           },
           "mappings": [],
+          "noValue": "-",
           "thresholds": {
             "mode": "absolute",
             "steps": [
@@ -103,8 +104,8 @@
         "overrides": []
       },
       "gridPos": {
-        "h": 5,
-        "w": 5,
+        "h": 3,
+        "w": 8,
         "x": 0,
         "y": 3
       },
@@ -205,7 +206,46 @@
                 "left": 50,
                 "rotation": 0,
                 "top": 10,
-                "width": 300
+                "width": 206
+              },
+              "type": "text"
+            },
+            {
+              "background": {
+                "color": {
+                  "fixed": "transparent"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "left",
+                "color": {
+                  "fixed": "rgb(204, 204, 220)"
+                },
+                "size": 12,
+                "text": {
+                  "field": "vacuumalarm_tag",
+                  "fixed": "Sea water vacuum alarm",
+                  "mode": "field"
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "links": [],
+              "name": "vacuumalarm_tag",
+              "placement": {
+                "height": 26,
+                "left": 256,
+                "rotation": 0,
+                "top": 10,
+                "width": 96
               },
               "type": "text"
             }
@@ -257,6 +297,36 @@
             ],
             "limit": 50
           }
+        },
+        {
+          "dataset": "dev",
+          "datasource": {
+            "type": "grafana-postgresql-datasource",
+            "uid": "${datasource}"
+          },
+          "editorMode": "code",
+          "format": "table",
+          "hide": false,
+          "rawQuery": true,
+          "rawSql": "SELECT\r\n  MAX(CASE WHEN mqtt_json_path = LOWER('VACUUMALARM') THEN '(' || yard_tag || ')' ELSE NULL END) AS vacuumalarm_tag\r\nFROM marpower.io_metadata_marpower\r\nWHERE mqtt_topic = 'marpower/380000-seawater'",
+          "refId": "B",
+          "sql": {
+            "columns": [
+              {
+                "parameters": [],
+                "type": "function"
+              }
+            ],
+            "groupBy": [
+              {
+                "property": {
+                  "type": "string"
+                },
+                "type": "groupBy"
+              }
+            ],
+            "limit": 50
+          }
         }
       ],
       "title": "Alarms",
@@ -274,6 +344,7 @@
             "mode": "continuous-greens"
           },
           "mappings": [],
+          "noValue": "-",
           "thresholds": {
             "mode": "absolute",
             "steps": [
@@ -287,9 +358,9 @@
         "overrides": []
       },
       "gridPos": {
-        "h": 5,
-        "w": 6,
-        "x": 5,
+        "h": 6,
+        "w": 8,
+        "x": 8,
         "y": 3
       },
       "id": 2,
@@ -519,7 +590,7 @@
                 "left": 50,
                 "rotation": 0,
                 "top": 10,
-                "width": 300
+                "width": 243
               },
               "type": "text"
             },
@@ -556,9 +627,8 @@
               "placement": {
                 "height": 26,
                 "left": 50,
-                "rotation": 0,
                 "top": 40,
-                "width": 320
+                "width": 243
               },
               "type": "text"
             },
@@ -595,9 +665,8 @@
               "placement": {
                 "height": 26,
                 "left": 50,
-                "rotation": 0,
                 "top": 70,
-                "width": 300
+                "width": 243
               },
               "type": "text"
             },
@@ -634,9 +703,165 @@
               "placement": {
                 "height": 26,
                 "left": 50,
+                "top": 100,
+                "width": 243
+              },
+              "type": "text"
+            },
+            {
+              "background": {
+                "color": {
+                  "fixed": "transparent"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "left",
+                "color": {
+                  "fixed": "rgb(204, 204, 220)"
+                },
+                "size": 12,
+                "text": {
+                  "field": "pmp1_remote_tag",
+                  "fixed": "Cool. pump 1 - Remote avail.",
+                  "mode": "field"
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "links": [],
+              "name": "pmp1_remote_tag",
+              "placement": {
+                "height": 26,
+                "left": 293,
+                "rotation": 0,
+                "top": 10,
+                "width": 107
+              },
+              "type": "text"
+            },
+            {
+              "background": {
+                "color": {
+                  "fixed": "transparent"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "left",
+                "color": {
+                  "fixed": "rgb(204, 204, 220)"
+                },
+                "size": 12,
+                "text": {
+                  "field": "pmp1_running_tag",
+                  "fixed": "Cool. pump 1 - Remote avail.",
+                  "mode": "field"
+                },
+                "valign": "middle"
+              },
+              "connections": [],
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "links": [],
+              "name": "pmp1_running_tag",
+              "placement": {
+                "height": 26,
+                "left": 293,
+                "rotation": 0,
+                "top": 40,
+                "width": 107
+              },
+              "type": "text"
+            },
+            {
+              "background": {
+                "color": {
+                  "fixed": "transparent"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "left",
+                "color": {
+                  "fixed": "rgb(204, 204, 220)"
+                },
+                "size": 12,
+                "text": {
+                  "field": "pmp2_remote_tag",
+                  "fixed": "Cool. pump 1 - Remote avail.",
+                  "mode": "field"
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "links": [],
+              "name": "pmp2_remote_tag",
+              "placement": {
+                "height": 26,
+                "left": 293,
+                "rotation": 0,
+                "top": 70,
+                "width": 107
+              },
+              "type": "text"
+            },
+            {
+              "background": {
+                "color": {
+                  "fixed": "transparent"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "left",
+                "color": {
+                  "fixed": "rgb(204, 204, 220)"
+                },
+                "size": 12,
+                "text": {
+                  "field": "pmp2_running_tag",
+                  "fixed": "Cool. pump 1 - Remote avail.",
+                  "mode": "field"
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "links": [],
+              "name": "pmp2_running_tag",
+              "placement": {
+                "height": 26,
+                "left": 293,
                 "rotation": 0,
                 "top": 100,
-                "width": 320
+                "width": 107
               },
               "type": "text"
             }
@@ -688,6 +913,36 @@
             ],
             "limit": 50
           }
+        },
+        {
+          "dataset": "dev",
+          "datasource": {
+            "type": "grafana-postgresql-datasource",
+            "uid": "${datasource}"
+          },
+          "editorMode": "code",
+          "format": "table",
+          "hide": false,
+          "rawQuery": true,
+          "rawSql": "SELECT \r\n  MAX(CASE WHEN mqtt_json_path = LOWER('COOL_PMP1_REMOTE') THEN '(' || yard_tag || ')' ELSE NULL END)  AS pmp1_remote_tag,\r\n  MAX(CASE WHEN mqtt_json_path = LOWER('COOL_PMP1_RUNNING') THEN '(' || yard_tag || ')' ELSE NULL END) AS pmp1_running_tag,\r\n  MAX(CASE WHEN mqtt_json_path = LOWER('COOL_PMP2_REMOTE') THEN '(' || yard_tag || ')' ELSE NULL END)  AS pmp2_remote_tag,\r\n  MAX(CASE WHEN mqtt_json_path = LOWER('COOL_PMP2_RUNNING') THEN '(' || yard_tag || ')' ELSE NULL END) AS pmp2_running_tag\r\nFROM marpower.io_metadata_marpower\r\nWHERE mqtt_topic = 'marpower/380000-seawater'",
+          "refId": "B",
+          "sql": {
+            "columns": [
+              {
+                "parameters": [],
+                "type": "function"
+              }
+            ],
+            "groupBy": [
+              {
+                "property": {
+                  "type": "string"
+                },
+                "type": "groupBy"
+              }
+            ],
+            "limit": 50
+          }
         }
       ],
       "title": "Status",
@@ -717,9 +972,9 @@
         "overrides": []
       },
       "gridPos": {
-        "h": 5,
-        "w": 6,
-        "x": 11,
+        "h": 6,
+        "w": 8,
+        "x": 16,
         "y": 3
       },
       "id": 3,
@@ -858,7 +1113,7 @@
                 "left": 50,
                 "rotation": 0,
                 "top": 40,
-                "width": 300
+                "width": 175
               },
               "type": "text"
             },
@@ -897,7 +1152,85 @@
                 "left": 50,
                 "rotation": 0,
                 "top": 10,
-                "width": 300
+                "width": 175
+              },
+              "type": "text"
+            },
+            {
+              "background": {
+                "color": {
+                  "fixed": "transparent"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "left",
+                "color": {
+                  "fixed": "rgb(204, 204, 220)"
+                },
+                "size": 12,
+                "text": {
+                  "field": "pmp1_startstop_tag",
+                  "fixed": "",
+                  "mode": "field"
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "links": [],
+              "name": "pmp1_startstop_tag",
+              "placement": {
+                "height": 26,
+                "left": 235,
+                "rotation": 0,
+                "top": 10,
+                "width": 96
+              },
+              "type": "text"
+            },
+            {
+              "background": {
+                "color": {
+                  "fixed": "transparent"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "left",
+                "color": {
+                  "fixed": "rgb(204, 204, 220)"
+                },
+                "size": 12,
+                "text": {
+                  "field": "pmp2_startstop_tag",
+                  "fixed": "",
+                  "mode": "field"
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "links": [],
+              "name": "pmp2_startstop_tag",
+              "placement": {
+                "height": 26,
+                "left": 235,
+                "rotation": 0,
+                "top": 40,
+                "width": 96
               },
               "type": "text"
             }
@@ -949,6 +1282,36 @@
             ],
             "limit": 50
           }
+        },
+        {
+          "dataset": "dev",
+          "datasource": {
+            "type": "grafana-postgresql-datasource",
+            "uid": "${datasource}"
+          },
+          "editorMode": "code",
+          "format": "table",
+          "hide": false,
+          "rawQuery": true,
+          "rawSql": "SELECT \r\n  MAX(CASE WHEN mqtt_json_path = LOWER('COOL_PMP1_STARTSTOP') THEN '(' || yard_tag || ')' ELSE NULL END) AS pmp1_startstop_tag,\r\n  MAX(CASE WHEN mqtt_json_path = LOWER('COOL_PMP2_STARTSTOP') THEN '(' || yard_tag || ')' ELSE NULL END) AS pmp2_startstop_tag\r\nFROM marpower.io_metadata_marpower\r\nWHERE mqtt_topic = 'marpower/380000-seawater'",
+          "refId": "B",
+          "sql": {
+            "columns": [
+              {
+                "parameters": [],
+                "type": "function"
+              }
+            ],
+            "groupBy": [
+              {
+                "property": {
+                  "type": "string"
+                },
+                "type": "groupBy"
+              }
+            ],
+            "limit": 50
+          }
         }
       ],
       "title": "Control signals",
@@ -980,10 +1343,10 @@
         "overrides": []
       },
       "gridPos": {
-        "h": 5,
-        "w": 7,
-        "x": 17,
-        "y": 3
+        "h": 3,
+        "w": 8,
+        "x": 0,
+        "y": 6
       },
       "id": 4,
       "options": {
@@ -1038,7 +1401,7 @@
               "name": "sea water flow",
               "placement": {
                 "height": 30,
-                "left": 200,
+                "left": 206,
                 "rotation": 0,
                 "top": 10,
                 "width": 175
@@ -1076,8 +1439,48 @@
               "placement": {
                 "height": 30,
                 "left": 15,
+                "rotation": 0,
                 "top": 10,
-                "width": 240
+                "width": 55
+              },
+              "type": "text"
+            },
+            {
+              "background": {
+                "color": {
+                  "fixed": "transparent"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "left",
+                "color": {
+                  "fixed": "rgb(204, 204, 220)"
+                },
+                "size": 12,
+                "text": {
+                  "field": "flow_tag",
+                  "fixed": "",
+                  "mode": "field"
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "links": [],
+              "name": "flow_tag",
+              "placement": {
+                "height": 30,
+                "left": 70,
+                "rotation": 0,
+                "top": 10,
+                "width": 98
               },
               "type": "text"
             }
@@ -1129,6 +1532,36 @@
             ],
             "limit": 50
           }
+        },
+        {
+          "dataset": "dev",
+          "datasource": {
+            "type": "grafana-postgresql-datasource",
+            "uid": "${datasource}"
+          },
+          "editorMode": "code",
+          "format": "table",
+          "hide": false,
+          "rawQuery": true,
+          "rawSql": "SELECT \r\n  MAX(CASE WHEN mqtt_json_path = LOWER('FLOW') THEN '(' || yard_tag || ')' ELSE NULL END) AS flow_tag\r\nFROM marpower.io_metadata_marpower\r\nWHERE mqtt_topic = 'marpower/380000-seawater'",
+          "refId": "B",
+          "sql": {
+            "columns": [
+              {
+                "parameters": [],
+                "type": "function"
+              }
+            ],
+            "groupBy": [
+              {
+                "property": {
+                  "type": "string"
+                },
+                "type": "groupBy"
+              }
+            ],
+            "limit": 50
+          }
         }
       ],
       "title": "Sensors",
@@ -1140,7 +1573,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 8
+        "y": 9
       },
       "id": 8,
       "panels": [
@@ -1428,7 +1861,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 9
+        "y": 10
       },
       "id": 6,
       "panels": [],
@@ -1638,7 +2071,7 @@
         "h": 11,
         "w": 24,
         "x": 0,
-        "y": 10
+        "y": 11
       },
       "id": 7,
       "options": {
