@@ -21,7 +21,7 @@ const { activeSimulationType } = toRefs(useSimulationStore());
         :key="type"
         :value="type"
         :disabled="activeSimulationType !== type"
-        class="text-sm md:text-base"
+        class="text-xs md:text-sm!"
       >
         {{ t(`thrs.simulationTypes.${type}`) }}
       </TabsTrigger>

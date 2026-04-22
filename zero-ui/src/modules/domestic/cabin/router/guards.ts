@@ -4,7 +4,9 @@ import { isBlindsControl, isLightControl } from "@common/lib/utils";
 import { toRefs, watch } from "vue";
 
 export const waitForRoom: BeforeResolveGuard = (to) => {
-  if (to.query.room) {
+  const roomId = to.query.room ?? to.params.room;
+
+  if (roomId) {
     return new Promise((resolve) => {
       const store = useRoomStore();
       const { currentRoom } = toRefs(store);
@@ -19,13 +21,13 @@ export const waitForRoom: BeforeResolveGuard = (to) => {
 
           resolve({
             name: invalidRoute ? "cabin:airconditioning" : to.name,
-            query: {},
+            query: to.query.returnUrl ? { returnUrl: to.query.returnUrl.toString() } : {},
           });
         },
         { once: true },
       );
 
-      useRoomStore().setRoom(String(to.query.room));
+      useRoomStore().setRoom(String(roomId));
     });
   }
 };

@@ -9,3 +9,5 @@ export const sharedRoutes: RouteRecordRaw = {
   },
   component: () => import("@/modules/common/views/SplashScreen.vue"),
 };
+
+export const getRootRoute = (route: string = "") => route.split(":")[0];

@@ -46,7 +46,7 @@ const commit = async () => {
 
 <template>
   <section
-    class="flex grow flex-col items-center justify-around max-md:pb-[96px] md:pb-[32px]"
+    class="mt-4 flex grow flex-col items-center justify-around max-md:pb-24 md:pb-8"
     :class="{ container: !breakpoints.touch, 'w-full px-4 md:px-6': breakpoints.touch }"
   >
     <RoomTemperature

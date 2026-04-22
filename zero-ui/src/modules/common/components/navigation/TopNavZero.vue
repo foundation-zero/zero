@@ -5,6 +5,6 @@ import { ZeroLogo } from "../zero-logo";
 <template>
   <ZeroLogo
     tag="h1"
-    class="py-3"
+    class="py-1.5 text-lg transition-all md:py-3 md:text-xl"
   />
 </template>

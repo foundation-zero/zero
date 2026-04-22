@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import TopNavToolbar from "@/modules/common/components/top-nav/TopNavToolbar.vue";
+import TopNavToolbar from "@/modules/common/components/navigation/TopNavToolbar.vue";
 import { toRefs } from "vue";
-import TopNav from "../../common/components/top-nav/TopNav.vue";
+import TopNav from "../../common/components/navigation/TopNav.vue";
 import { AWASelector } from "../components/awa-selector";
 import { AWSSelector } from "../components/aws-selector";
 import { CardTypeToggle } from "../components/card-type-toggle";

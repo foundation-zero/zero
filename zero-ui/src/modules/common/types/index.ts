@@ -45,3 +45,8 @@ export type Refs<T extends object> = {
   [K in keyof T]: Ref<T[K]>;
 };
 export type Entries<K, V> = [key: K, value: V][];
+
+export type NavItem = {
+  title: string;
+  to: string;
+};

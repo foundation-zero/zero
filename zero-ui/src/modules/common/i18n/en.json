@@ -12,6 +12,7 @@
       "short": "A/C",
       "long": "Air conditioning"
     },
+    "control": "Control",
     "back": "Back",
     "clear": "Clear",
     "environment": "Environment",
@@ -46,6 +47,7 @@
     "more": "More",
     "save": "Save",
     "off": "Off",
+    "cabins": "Cabins",
     "overview": "Overview",
     "submit": "Submit",
     "status": "Status",

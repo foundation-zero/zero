@@ -1,12 +1,19 @@
 <script setup lang="ts">
-import { useTemplateRef } from "vue";
+import { Button } from "@/components/ui/button";
+import { ArrowLeft } from "lucide-vue-next";
+import { toRefs, useTemplateRef } from "vue";
+import { useI18n } from "vue-i18n";
+import { useRoute } from "vue-router";
 import { TopNavToolbar, useScrollOffset } from ".";
 import { AppLauncher } from "../app-launcher";
 import { DarkModeToggle } from "../dark-mode";
 import TopNavZero from "./TopNavZero.vue";
 
+const { meta, query } = toRefs(useRoute());
 const title = useTemplateRef("title");
 const scrollOffset = useScrollOffset(title);
+
+const { t } = useI18n();
 </script>
 
 <template>
@@ -20,9 +27,23 @@ const scrollOffset = useScrollOffset(title);
         ref="title"
         class="border-0"
       >
+        <template
+          v-if="query.returnUrl"
+          #left-content
+        >
+          <RouterLink :to="{ name: query.returnUrl.toString() }">
+            <Button
+              variant="secondary"
+              class="flex items-center rounded-full max-md:p-0 max-sm:size-7 sm:gap-1"
+            >
+              <ArrowLeft class="inline size-4" />
+              <span class="max-sm:hidden">{{ t("labels.back") }}</span>
+            </Button>
+          </RouterLink>
+        </template>
         <template #right-content>
           <DarkModeToggle />
-          <AppLauncher />
+          <AppLauncher v-if="!meta.hideAppSwitcher" />
         </template>
         <template #center>
           <TopNavZero />

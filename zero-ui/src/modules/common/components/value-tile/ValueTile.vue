@@ -10,7 +10,7 @@ const disabled = inject<Ref<boolean>>("disabled");
 
 <template>
   <li
-    class="border-border/50 bg-background relative flex aspect-4/3 flex-col justify-between rounded border px-[0.625em] py-[0.3em] transition-all 2xl:aspect-16/10"
+    class="border-border/50 bg-background relative flex aspect-5/3 flex-col justify-between rounded border px-[0.625em] py-[0.3em] transition-all sm:aspect-4/3 2xl:aspect-16/10"
     :class="{
       'hover:bg-primary/15 hover:text-primary cursor-pointer': selectable && !disabled,
       'cursor-wait': disabled,
@@ -22,10 +22,9 @@ const disabled = inject<Ref<boolean>>("disabled");
     </div>
     <span class="flex w-full items-center">
       <slot name="top-left">
-        <span
-          class="text-rlg text-muted-foreground overflow-hidden pr-1 text-ellipsis whitespace-nowrap"
-          >{{ title }}</span
-        >
+        <span class="overflow-hidden pr-1 text-sm text-ellipsis whitespace-nowrap">{{
+          title
+        }}</span>
       </slot>
       <span class="grow" />
       <slot name="top-right">
@@ -33,9 +32,7 @@ const disabled = inject<Ref<boolean>>("disabled");
       </slot>
     </span>
 
-    <span
-      class="text-r5xl text-primary relative flex place-items-baseline justify-center font-bold"
-    >
+    <span class="text-primary relative flex place-items-baseline justify-center text-4xl font-bold">
       <slot name="center" />
     </span>
 

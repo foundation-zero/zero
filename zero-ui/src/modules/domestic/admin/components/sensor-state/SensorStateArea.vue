@@ -15,12 +15,8 @@ const roomsWithState = computed<RoomWithState[]>(() =>
 </script>
 
 <template>
-  <section
-    class="text-[0.8rem] md:text-[0.9rem] lg:text-[0.95rem] xl:text-[1.2rem] portrait:lg:text-[1rem]"
-  >
-    <header
-      class="text-rxl text-muted-foreground flex items-center pb-2 font-bold tracking-wider uppercase md:pb-4"
-    >
+  <section>
+    <header class="flex items-center pb-2 font-bold tracking-wider uppercase md:pb-4 md:text-lg">
       {{ area.name }}
 
       <span class="grow" />
@@ -29,7 +25,7 @@ const roomsWithState = computed<RoomWithState[]>(() =>
         v-bind="{ area }"
       />
     </header>
-    <Table>
+    <Table class="bg-background rounded-md py-4">
       <TableBody>
         <SensorStateRow
           v-for="{ room, state } in roomsWithState"
