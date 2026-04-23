@@ -5,20 +5,20 @@ datasources:
     type: info8fcc-greptimedb-datasource
     access: proxy
     jsonData:
-      host: http://100.74.188.47:4000
+      host: http://greptime-zero.tail0b4840.ts.net:4000
     isDefault: true
     editable: true
   - name: greptimedb-subzero
     type: info8fcc-greptimedb-datasource
     access: proxy
     jsonData:
-      host: http://100.119.41.76:4000
+      host: http://greptime-subzero.tail0b4840.ts.net:4000
     isDefault: false
     editable: true
   - name: greptimedb-singel
     type: info8fcc-greptimedb-datasource
     access: proxy
     jsonData:
-      host: http://100.77.32.21:4000
+      host: http://greptime-singel.tail0b4840.ts.net:4000
     isDefault: false
     editable: true
