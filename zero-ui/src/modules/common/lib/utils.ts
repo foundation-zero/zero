@@ -28,7 +28,7 @@ import {
 import { ArgumentsType, useIntervalFn } from "@vueuse/core";
 import { type ClassValue, clsx } from "clsx";
 import { twMerge } from "tailwind-merge";
-import { computed, ComputedRef, ref, Ref, watch, WritableComputedRef } from "vue";
+import { computed, ComputedRef, isRef, MaybeRef, ref, Ref, watch, WritableComputedRef } from "vue";
 import { useI18n } from "vue-i18n";
 import {
   CO2_THRESHOLDS,
@@ -517,3 +517,5 @@ export const useFixed = (value: Ref<number | undefined | null>, digits: number) 
       return value.value.toFixed(digits).split(".").map(Number);
     }
   });
+
+export const refValue = <T>(ref: MaybeRef<T>): T => (isRef(ref) ? ref.value : ref);

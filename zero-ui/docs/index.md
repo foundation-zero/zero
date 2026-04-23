@@ -36,6 +36,7 @@ Our design system includes comprehensive documentation for:
   - **[Semantic Colors](/colors/semantic)** - Contextual colors with meaning (Base, Interactive, State)
   - **[Component Colors](/colors/components)** - Specialized colors for specific UI elements
 - **[Typography](/typography)** - Font families, sizes, and text styling guidelines
+- **[Figma MCP Bridge Setup](/figma-mcp-bridge)** - Configure VS Code + Copilot to read and write Figma nodes
 
 ### UI Components
 
@@ -44,6 +45,11 @@ Our design system includes comprehensive documentation for:
 - **[Input](/components/input)** - Text input field for capturing user input with validation support
 - **[Labeled Input](/components/labeled-input)** - Input field with an associated label for better accessibility and UX
 - **[Select](/components/select)** - Dropdown selection component with search and customization options
+
+### Mimic Components
+
+- **[Mimic Components Overview](/mimics/)** - Domain-specific SVG components for mimic diagrams
+- **[Valve](/mimics/valve)** - Unified switch + flow-control directional valve mimic component
 
 Each component comes with:
 - Multiple visual variants for different use cases

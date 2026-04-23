@@ -11,6 +11,7 @@ export default defineConfig({
     nav: [
       { text: "Home", link: "/" },
       { text: "Components", link: "/components/" },
+      { text: "Mimics", link: "/mimics/" },
     ],
 
     sidebar: [
@@ -18,6 +19,7 @@ export default defineConfig({
         text: "Getting Started",
         items: [
           { text: "Introduction", link: "/" },
+          { text: "Figma MCP Bridge", link: "/figma-mcp-bridge" },
           { text: "Typography", link: "/typography" },
           { text: "Colors", link: "/colors" },
         ],
@@ -47,6 +49,15 @@ export default defineConfig({
           { text: "Select", link: "/components/select" },
           { text: "TWA Selector", link: "/components/twa-selector" },
           { text: "TWS Selector", link: "/components/tws-selector" },
+        ],
+      },
+      {
+        text: "Mimic Components",
+        items: [
+          { text: "Overview", link: "/mimics/" },
+          { text: "Authoring New Components", link: "/mimics/authoring-workflow" },
+          { text: "Updating Components", link: "/mimics/updating-components" },
+          { text: "Valve", link: "/mimics/valve" },
         ],
       },
     ],
