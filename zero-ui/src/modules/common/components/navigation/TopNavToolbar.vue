@@ -6,7 +6,7 @@ const props = defineProps<{ class?: HTMLAttributes["class"] }>();
 </script>
 
 <template>
-  <div :class="cn('border-border-subtle flex items-center border-b px-4', props.class)">
+  <div :class="cn('border-border-subtle flex items-center border-b px-3 md:px-4', props.class)">
     <slot name="left">
       <span
         class="flex items-center"
@@ -20,7 +20,7 @@ const props = defineProps<{ class?: HTMLAttributes["class"] }>();
     <span class="grow" />
     <slot name="right">
       <span
-        class="flex items-center justify-end gap-2"
+        class="flex items-center justify-end"
         :class="{ 'w-1/4': $slots.center }"
       >
         <slot name="right-content" />

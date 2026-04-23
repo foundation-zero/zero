@@ -5,7 +5,6 @@ import { useRoute } from "vue-router";
 
 const { t } = useI18n();
 
-// Menu items.
 const menuItems = [
   {
     title: t("thrs.views.monitoring.title"),
@@ -35,10 +34,7 @@ const route = useRoute();
         :key="item.to"
         :to="{ name: item.to }"
       >
-        <TabsTrigger
-          :value="item.to"
-          class="text-sm md:text-base"
-        >
+        <TabsTrigger :value="item.to">
           {{ item.title }}
         </TabsTrigger>
       </RouterLink>

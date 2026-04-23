@@ -31,7 +31,7 @@ provide("commit", commit);
 
 <template>
   <section
-    class="grid grid-cols-1 gap-6 px-4 max-md:pb-[96px] md:grid-cols-2 md:px-6 md:pb-[32px] xl:grid-cols-3 landscape:lg:grid-cols-3"
+    class="grid grid-cols-1 gap-6 px-4 max-md:pb-24 md:grid-cols-2 md:px-6 md:pb-8 xl:grid-cols-3 landscape:lg:grid-cols-3"
     :class="{
       'max-xl:w-full xl:container xl:px-0': !breakpoints.touch,
       'w-full': breakpoints.touch,

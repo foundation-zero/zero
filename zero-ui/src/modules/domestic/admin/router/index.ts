@@ -6,25 +6,25 @@ export const envRoutes: RouteRecordRaw = {
   path: "environment",
   name: "environment",
   meta: {
-    layout: defineAsyncComponent(
-      () => import("@/modules/domestic/admin/layouts/DefaultLayout.vue"),
-    ),
+    mainNav: defineAsyncComponent(() => import("@/modules/domestic/admin/components/MainNav.vue")),
+    subNav: defineAsyncComponent(() => import("@/modules/domestic/admin/components/SubNav.vue")),
     role: Roles.Admin,
   },
+  component: () => import("@/modules/domestic/admin/layouts/DefaultLayout.vue"),
   children: [
     {
-      path: "overview",
-      name: "env:overview",
+      path: "control",
+      name: "environment:control",
       component: () => import("@/modules/domestic/admin/views/Overview.vue"),
     },
     {
       path: "temperature",
-      name: "env:temperature",
+      name: "environment:temperature",
       component: () => import("@/modules/domestic/admin/views/Temperature.vue"),
     },
     {
       path: "ventilation",
-      name: "env:ventilation",
+      name: "environment:ventilation",
       component: () => import("@/modules/domestic/admin/views/Ventilation.vue"),
       meta: {
         settings: defineAsyncComponent(
@@ -34,12 +34,12 @@ export const envRoutes: RouteRecordRaw = {
     },
     {
       path: "lights",
-      name: "env:lights",
+      name: "environment:lights",
       component: () => import("@/modules/domestic/admin/views/Lights.vue"),
     },
     {
       path: "humidity",
-      name: "env:humidity",
+      name: "environment:humidity",
       component: () => import("@/modules/domestic/admin/views/Humidity.vue"),
       meta: {
         settings: defineAsyncComponent(

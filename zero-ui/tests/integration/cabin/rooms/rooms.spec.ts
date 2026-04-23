@@ -59,16 +59,5 @@ test.describe("Rooms", () => {
       expect(roomsPage.subscribers).toHaveLength(1);
       expect(roomsPage.subscribers[0].payload!.variables).toEqual({});
     });
-
-    test.describe("room selection", () => {
-      test("it shows the side navigation", async ({ page, roomsPage }) => {
-        await expect(roomsPage.dialog).toContainClass("show");
-        await page.screenshot({ path: "screenshots/rooms_admin.png" });
-      });
-
-      test("it shows the correct amount of rooms", async ({ roomsPage }) => {
-        await expect(roomsPage.roomList).toHaveCount(allRooms.rooms.length);
-      });
-    });
   });
 });

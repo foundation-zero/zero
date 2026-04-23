@@ -1,9 +1,7 @@
 <script setup lang="ts">
 import { HTMLAttributes } from "vue";
-import { useI18n } from "vue-i18n";
 import { cn } from "../../lib/utils";
-
-const { t } = useI18n();
+import { ZeroLogo } from "../zero-logo";
 
 const props = withDefaults(
   defineProps<{
@@ -18,10 +16,12 @@ const props = withDefaults(
 
 <template>
   <component
-    :is="props.tag"
-    ref="title"
-    :class="cn('tracking-ultrawide text-center font-bold uppercase', props.class)"
+    :is="tag"
+    :class="cn('flex items-center gap-1 text-nowrap max-sm:hidden', props.class)"
   >
-    {{ t("app.title") }}
+    <ZeroLogo />
+    <span class="text-disabled-foreground text-xs font-extralight uppercase">
+      <slot />
+    </span>
   </component>
 </template>
