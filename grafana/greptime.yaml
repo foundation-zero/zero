@@ -1,0 +1,24 @@
+apiVersion: 1
+
+datasources:
+  - name: greptimedb-zero
+    type: info8fcc-greptimedb-datasource
+    access: proxy
+    jsonData:
+      host: http://greptime-zero.tail0b4840.ts.net:4000
+    isDefault: true
+    editable: true
+  - name: greptimedb-subzero
+    type: info8fcc-greptimedb-datasource
+    access: proxy
+    jsonData:
+      host: http://greptime-subzero.tail0b4840.ts.net:4000
+    isDefault: false
+    editable: true
+  - name: greptimedb-singel
+    type: info8fcc-greptimedb-datasource
+    access: proxy
+    jsonData:
+      host: http://greptime-singel.tail0b4840.ts.net:4000
+    isDefault: false
+    editable: true

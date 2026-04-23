@@ -77,7 +77,7 @@
     },
     {
       "datasource": {
-        "type": "grafana-postgresql-datasource",
+        "type": "info8fcc-greptimedb-datasource",
         "uid": "${datasource}"
       },
       "fieldConfig": {
@@ -398,9 +398,23 @@
             "uid": "${datasource}"
           },
           "editorMode": "code",
-          "format": "table",
+          "editorType": "sql",
+          "format": 1,
+          "meta": {
+            "builderOptions": {
+              "columns": [],
+              "database": "",
+              "limit": 1000,
+              "meta": {},
+              "mode": "list",
+              "queryType": "table",
+              "table": ""
+            }
+          },
+          "pluginVersion": "2.1.4",
+          "queryType": "table",
           "rawQuery": true,
-          "rawSql": "SELECT\r\n  LAST_VALUE(time ORDER BY time) AS time,\r\n  LAST_VALUE((\"MAK1_ALARM\").value ORDER BY time) AS fresh_water_mak1_alarm,\r\n  LAST_VALUE((\"MAK2_ALARM\").value ORDER BY time) AS fresh_water_mak2_alarm,\r\n  LAST_VALUE((\"CHLORINE_UNIT_ALARM\").value ORDER BY time) AS fresh_water_chlorine_unit_alarm\r\nFROM marpower.\"250000_fresh_water\"",
+          "rawSql": "SELECT\r\n  timestamp                  AS time,\r\n  mak_1_alarm__value         AS fresh_water_mak1_alarm,\r\n  mak_2_alarm__value         AS fresh_water_mak2_alarm,\r\n  chlorine_unit_alarm__value AS fresh_water_chlorine_unit_alarm\r\nFROM public.marpower__250000_fresh_water\r\nORDER BY timestamp DESC\r\nLIMIT 1",
           "refId": "A",
           "sql": {
             "columns": [
@@ -426,7 +440,7 @@
     },
     {
       "datasource": {
-        "type": "grafana-postgresql-datasource",
+        "type": "info8fcc-greptimedb-datasource",
         "uid": "${datasource}"
       },
       "fieldConfig": {
@@ -583,9 +597,23 @@
             "uid": "${datasource}"
           },
           "editorMode": "code",
-          "format": "table",
+          "editorType": "sql",
+          "format": 1,
+          "meta": {
+            "builderOptions": {
+              "columns": [],
+              "database": "",
+              "limit": 1000,
+              "meta": {},
+              "mode": "list",
+              "queryType": "table",
+              "table": ""
+            }
+          },
+          "pluginVersion": "2.1.4",
+          "queryType": "table",
           "rawQuery": true,
-          "rawSql": "SELECT\r\n  LAST_VALUE(time ORDER BY time) AS time,\r\n  LAST_VALUE((\"CIRC_PUMP_RUNNING\").value ORDER BY time) AS fresh_water_circ_pump_running\r\nFROM marpower.\"250000_fresh_water\"",
+          "rawSql": "SELECT\r\n  timestamp                AS time,\r\n  circ_pump_running__value AS fresh_water_circ_pump_running\r\nFROM public.marpower__250000_fresh_water\r\nORDER BY timestamp DESC\r\nLIMIT 1",
           "refId": "A",
           "sql": {
             "columns": [
@@ -767,9 +795,23 @@
             "uid": "${datasource}"
           },
           "editorMode": "code",
-          "format": "table",
+          "editorType": "sql",
+          "format": 1,
+          "meta": {
+            "builderOptions": {
+              "columns": [],
+              "database": "",
+              "limit": 1000,
+              "meta": {},
+              "mode": "list",
+              "queryType": "table",
+              "table": ""
+            }
+          },
+          "pluginVersion": "2.1.4",
+          "queryType": "table",
           "rawQuery": true,
-          "rawSql": "SELECT\r\n  LAST_VALUE(time ORDER BY time) AS time,\r\n  LAST_VALUE((\"CIRC_PUMP_ONOFF\").value ORDER BY time) AS fresh_water_circ_pump_onoff\r\nFROM marpower.\"250000_fresh_water\"",
+          "rawSql": "SELECT\r\n  timestamp              AS time,\r\n  circ_pump_onoff__value AS fresh_water_circ_pump_onoff\r\nFROM public.marpower__250000_fresh_water\r\nORDER BY timestamp DESC\r\nLIMIT 1",
           "refId": "A",
           "sql": {
             "columns": [
@@ -881,7 +923,7 @@
             "h": 7,
             "w": 24,
             "x": 0,
-            "y": 26
+            "y": 8
           },
           "id": 12,
           "options": {
@@ -908,9 +950,23 @@
                 "uid": "${datasource}"
               },
               "editorMode": "code",
-              "format": "table",
+              "editorType": "sql",
+              "format": 1,
+              "meta": {
+                "builderOptions": {
+                  "columns": [],
+                  "database": "",
+                  "limit": 1000,
+                  "meta": {},
+                  "mode": "list",
+                  "queryType": "table",
+                  "table": ""
+                }
+              },
+              "pluginVersion": "2.1.4",
+              "queryType": "table",
               "rawQuery": true,
-              "rawSql": "SELECT\r\n  time,\r\n\r\n  -- Alarm\r\n  (\"MAK1_ALARM\").value AS fresh_water_mak1_alarm,\r\n  (\"MAK2_ALARM\").value AS fresh_water_mak2_alarm,\r\n  (\"CHLORINE_UNIT_ALARM\").value AS fresh_water_chlorine_unit_alarm,\r\n\r\n  -- Status\r\n  (\"CIRC_PUMP_RUNNING\").value AS fresh_water_circ_pump_running,\r\n\r\n  -- Control signals\r\n  (\"CIRC_PUMP_ONOFF\").value AS fresh_water_circ_pump_onoff\r\nFROM marpower.\"250000_fresh_water\"\r\nWHERE $__timeFilter(time)",
+              "rawSql": "SELECT\r\n  timestamp                  AS time,\r\n\r\n  -- Alarm\r\n  mak_1_alarm__value         AS fresh_water_mak1_alarm,\r\n  mak_2_alarm__value         AS fresh_water_mak2_alarm,\r\n  chlorine_unit_alarm__value AS fresh_water_chlorine_unit_alarm,\r\n\r\n  -- Status\r\n  circ_pump_running__value AS fresh_water_circ_pump_running,\r\n\r\n  -- Control signals\r\n  circ_pump_onoff__value AS fresh_water_circ_pump_onoff\r\nFROM public.marpower__250000_fresh_water\r\nWHERE $__timeFilter(timestamp)",
               "refId": "A",
               "sql": {
                 "columns": [
@@ -1039,7 +1095,7 @@
                 },
                 "size": 18,
                 "text": {
-                  "field": "coldwater_guest_cabin_sb_flow",
+                  "field": "guest_cabin_sb_flow",
                   "mode": "field"
                 },
                 "valign": "middle"
@@ -1112,7 +1168,7 @@
                 },
                 "size": 18,
                 "text": {
-                  "field": "coldwater_guest_cabin_ps_fwd_flow",
+                  "field": "guest_cabin_ps_fwd_flow",
                   "mode": "field"
                 },
                 "valign": "middle"
@@ -1125,6 +1181,7 @@
               "placement": {
                 "height": 30,
                 "left": 200,
+                "rotation": 0,
                 "top": 45,
                 "width": 180
               },
@@ -1183,7 +1240,7 @@
                 },
                 "size": 18,
                 "text": {
-                  "field": "coldwater_guest_cabin_ps_aft_flow",
+                  "field": "guest_cabin_ps_aft_flow",
                   "mode": "field"
                 },
                 "valign": "middle"
@@ -1196,6 +1253,7 @@
               "placement": {
                 "height": 30,
                 "left": 200,
+                "rotation": 0,
                 "top": 80,
                 "width": 180
               },
@@ -1254,7 +1312,7 @@
                 },
                 "size": 18,
                 "text": {
-                  "field": "coldwater_master_cabin_sb_flow",
+                  "field": "master_cabin_sb_flow",
                   "mode": "field"
                 },
                 "valign": "middle"
@@ -1267,6 +1325,7 @@
               "placement": {
                 "height": 30,
                 "left": 200,
+                "rotation": 0,
                 "top": 115,
                 "width": 180
               },
@@ -1325,7 +1384,7 @@
                 },
                 "size": 18,
                 "text": {
-                  "field": "coldwater_master_cabin_ps_flow",
+                  "field": "master_cabin_ps_flow",
                   "mode": "field"
                 },
                 "valign": "middle"
@@ -1338,6 +1397,7 @@
               "placement": {
                 "height": 30,
                 "left": 200,
+                "rotation": 0,
                 "top": 150,
                 "width": 180
               },
@@ -1396,7 +1456,7 @@
                 },
                 "size": 18,
                 "text": {
-                  "field": "coldwater_captains_cabin_flow",
+                  "field": "captains_cabin_flow",
                   "mode": "field"
                 },
                 "valign": "middle"
@@ -1409,6 +1469,7 @@
               "placement": {
                 "height": 30,
                 "left": 590,
+                "rotation": 0,
                 "top": 10,
                 "width": 180
               },
@@ -1468,7 +1529,7 @@
                 },
                 "size": 18,
                 "text": {
-                  "field": "coldwater_crew_cabin_sb_aft_flow",
+                  "field": "crew_cabin_sb_aft_flow",
                   "mode": "field"
                 },
                 "valign": "middle"
@@ -1481,6 +1542,7 @@
               "placement": {
                 "height": 30,
                 "left": 590,
+                "rotation": 0,
                 "top": 45,
                 "width": 180
               },
@@ -1539,7 +1601,7 @@
                 },
                 "size": 18,
                 "text": {
-                  "field": "coldwater_crew_cabin_sb_mid_flow",
+                  "field": "crew_cabin_sb_mid_flow",
                   "mode": "field"
                 },
                 "valign": "middle"
@@ -1552,6 +1614,7 @@
               "placement": {
                 "height": 30,
                 "left": 590,
+                "rotation": 0,
                 "top": 80,
                 "width": 180
               },
@@ -1610,7 +1673,7 @@
                 },
                 "size": 18,
                 "text": {
-                  "field": "coldwater_crew_cabin_ps_mid_flow",
+                  "field": "crew_cabin_ps_mid_flow",
                   "mode": "field"
                 },
                 "valign": "middle"
@@ -1623,6 +1686,7 @@
               "placement": {
                 "height": 30,
                 "left": 590,
+                "rotation": 0,
                 "top": 115,
                 "width": 180
               },
@@ -1681,7 +1745,7 @@
                 },
                 "size": 18,
                 "text": {
-                  "field": "coldwater_crew_cabin_sb_fwd_flow",
+                  "field": "crew_cabin_sb_fwd_flow",
                   "mode": "field"
                 },
                 "valign": "middle"
@@ -1694,6 +1758,7 @@
               "placement": {
                 "height": 30,
                 "left": 590,
+                "rotation": 0,
                 "top": 150,
                 "width": 180
               },
@@ -1752,7 +1817,7 @@
                 },
                 "size": 18,
                 "text": {
-                  "field": "coldwater_crew_cabin_ps_fwd_flow",
+                  "field": "crew_cabin_ps_fwd_flow",
                   "mode": "field"
                 },
                 "valign": "middle"
@@ -1765,6 +1830,7 @@
               "placement": {
                 "height": 30,
                 "left": 590,
+                "rotation": 0,
                 "top": 185,
                 "width": 180
               },
@@ -1823,7 +1889,7 @@
                 },
                 "size": 18,
                 "text": {
-                  "field": "coldwater_guest_bathroom_flow",
+                  "field": "guest_bathroom_flow",
                   "mode": "field"
                 },
                 "valign": "middle"
@@ -1836,6 +1902,7 @@
               "placement": {
                 "height": 30,
                 "left": 200,
+                "rotation": 0,
                 "top": 185,
                 "width": 180
               },
@@ -1899,9 +1966,23 @@
       "targets": [
         {
           "editorMode": "code",
-          "format": "table",
+          "editorType": "sql",
+          "format": 1,
+          "meta": {
+            "builderOptions": {
+              "columns": [],
+              "database": "",
+              "limit": 1000,
+              "meta": {},
+              "mode": "list",
+              "queryType": "table",
+              "table": ""
+            }
+          },
+          "pluginVersion": "2.1.4",
+          "queryType": "table",
           "rawQuery": true,
-          "rawSql": "SELECT\n  LAST_VALUE(time ORDER BY time) AS time,  \n  LAST_VALUE((\"COLDWATER_GUEST_CABIN_SB_FLOW\").value ORDER BY time)          AS coldwater_guest_cabin_sb_flow,\n  LAST_VALUE((\"COLDWATER_GUEST_CABIN_PS_FWD_FLOW\").value ORDER BY time)      AS coldwater_guest_cabin_ps_fwd_flow,\n  LAST_VALUE((\"COLDWATER_GUEST_CABIN_PS_AFT_FLOW\").value ORDER BY time)      AS coldwater_guest_cabin_ps_aft_flow,\n  LAST_VALUE((\"COLDWATER_MASTER_CABIN_SB_FLOW\").value ORDER BY time)         AS coldwater_master_cabin_sb_flow,\n  LAST_VALUE((\"COLDWATER_MASTER_CABIN_PS_FLOW\").value ORDER BY time)         AS coldwater_master_cabin_ps_flow,\n  LAST_VALUE((\"COLDWATER_GUEST_BATHR_PS_FWD_FLOW\").value ORDER BY time)      AS coldwater_guest_bathroom_flow,\n  LAST_VALUE((\"COLDWATER_CAPTAINS_CABIN_FLOW\").value ORDER BY time)          AS coldwater_captains_cabin_flow,\n  LAST_VALUE((\"COLDWATER_CREW_CABIN_SB_AFT_FLOW\").value ORDER BY time)       AS coldwater_crew_cabin_sb_aft_flow,\n  LAST_VALUE((\"COLDWATER_CREW_CABIN_SB_MID_FLOW\").value ORDER BY time)       AS coldwater_crew_cabin_sb_mid_flow,\n  LAST_VALUE((\"COLDWATER_CREW_CABIN_PS_MID_FLOW\").value ORDER BY time)       AS coldwater_crew_cabin_ps_mid_flow,\n  LAST_VALUE((\"COLDWATER_CREW_CABIN_SB_FWD_FLOW\").value ORDER BY time)       AS coldwater_crew_cabin_sb_fwd_flow,\n  LAST_VALUE((\"COLDWATER_CREW_CABIN_PS_FWD_FLOW\").value ORDER BY time)       AS coldwater_crew_cabin_ps_fwd_flow\nFROM marpower.\"250000_fresh_water\";\n",
+          "rawSql": "SELECT\r\n  timestamp                                AS time,\r\n  coldwater_guest_cabin_sb_flow__value     AS guest_cabin_sb_flow,\r\n  coldwater_guest_cabin_ps_fwd_flow__value AS guest_cabin_ps_fwd_flow,\r\n  coldwater_guest_cabin_ps_aft_flow__value AS guest_cabin_ps_aft_flow,\r\n  coldwater_master_cabin_sb_flow__value    AS master_cabin_sb_flow,\r\n  coldwater_master_cabin_ps_flow__value    AS master_cabin_ps_flow,\r\n  coldwater_guest_bathr_ps_fwd_flow__value AS guest_bathroom_flow,\r\n  coldwater_captains_cabin_flow__value     AS captains_cabin_flow,\r\n  coldwater_crew_cabin_sb_aft_flow__value  AS crew_cabin_sb_aft_flow,\r\n  coldwater_crew_cabin_sb_mid_flow__value  AS crew_cabin_sb_mid_flow,\r\n  coldwater_crew_cabin_ps_mid_flow__value  AS crew_cabin_ps_mid_flow,\r\n  coldwater_crew_cabin_sb_fwd_flow__value  AS crew_cabin_sb_fwd_flow,\r\n  coldwater_crew_cabin_ps_fwd_flow__value  AS crew_cabin_ps_fwd_flow\r\nFROM public.marpower__250000_fresh_water\r\nORDER BY timestamp DESC\r\nLIMIT 1\r\n",
           "refId": "A",
           "sql": {
             "columns": [
@@ -1994,7 +2075,7 @@
                 },
                 "size": 18,
                 "text": {
-                  "field": "coldwater_lower_saloon_flow",
+                  "field": "lower_saloon_flow",
                   "mode": "field"
                 },
                 "valign": "middle"
@@ -2068,7 +2149,7 @@
                 },
                 "size": 18,
                 "text": {
-                  "field": "coldwater_dayhead_flow",
+                  "field": "dayhead_flow",
                   "mode": "field"
                 },
                 "valign": "middle"
@@ -2081,6 +2162,7 @@
               "placement": {
                 "height": 30,
                 "left": 140,
+                "rotation": 0,
                 "top": 80,
                 "width": 180
               },
@@ -2139,7 +2221,7 @@
                 },
                 "size": 18,
                 "text": {
-                  "field": "coldwater_crew_mess_flow",
+                  "field": "crew_mess_flow",
                   "mode": "field"
                 },
                 "valign": "middle"
@@ -2152,6 +2234,7 @@
               "placement": {
                 "height": 30,
                 "left": 140,
+                "rotation": 0,
                 "top": 10,
                 "width": 180
               },
@@ -2211,7 +2294,7 @@
                 },
                 "size": 18,
                 "text": {
-                  "field": "coldwater_lazaret_flow",
+                  "field": "lazaret_flow",
                   "mode": "field"
                 },
                 "valign": "middle"
@@ -2224,6 +2307,7 @@
               "placement": {
                 "height": 30,
                 "left": 140,
+                "rotation": 0,
                 "top": 115,
                 "width": 180
               },
@@ -2282,7 +2366,7 @@
                 },
                 "size": 18,
                 "text": {
-                  "field": "coldwater_galley_2_flow",
+                  "field": "galley_2_flow",
                   "mode": "field"
                 },
                 "valign": "middle"
@@ -2295,6 +2379,7 @@
               "placement": {
                 "height": 30,
                 "left": 140,
+                "rotation": 0,
                 "top": 45,
                 "width": 180
               },
@@ -2353,7 +2438,7 @@
                 },
                 "size": 18,
                 "text": {
-                  "field": "coldwater_laundry_ps_flow",
+                  "field": "laundry_ps_flow",
                   "mode": "field"
                 },
                 "valign": "middle"
@@ -2366,6 +2451,7 @@
               "placement": {
                 "height": 30,
                 "left": 140,
+                "rotation": 0,
                 "top": 150,
                 "width": 180
               },
@@ -2424,7 +2510,7 @@
                 },
                 "size": 18,
                 "text": {
-                  "field": "coldwater_deckhouse_flow",
+                  "field": "deckhouse_flow",
                   "mode": "field"
                 },
                 "valign": "middle"
@@ -2496,7 +2582,7 @@
                 },
                 "size": 18,
                 "text": {
-                  "field": "coldwater_deck_fr48_sb_tech_cor_flow",
+                  "field": "deck_fr_48_sb_tech_cor_flow",
                   "mode": "field"
                 },
                 "valign": "middle"
@@ -2509,6 +2595,7 @@
               "placement": {
                 "height": 30,
                 "left": 575,
+                "rotation": 0,
                 "top": 45,
                 "width": 180
               },
@@ -2568,7 +2655,7 @@
                 },
                 "size": 18,
                 "text": {
-                  "field": "coldwater_water_softner_flow",
+                  "field": "water_softner_flow",
                   "mode": "field"
                 },
                 "valign": "middle"
@@ -2581,6 +2668,7 @@
               "placement": {
                 "height": 30,
                 "left": 575,
+                "rotation": 0,
                 "top": 150,
                 "width": 180
               },
@@ -2639,7 +2727,7 @@
                 },
                 "size": 18,
                 "text": {
-                  "field": "coldwater_main_tech_space_flow",
+                  "field": "main_tech_space_flow",
                   "mode": "field"
                 },
                 "valign": "middle"
@@ -2652,6 +2740,7 @@
               "placement": {
                 "height": 30,
                 "left": 575,
+                "rotation": 0,
                 "top": 80,
                 "width": 180
               },
@@ -2710,7 +2799,7 @@
                 },
                 "size": 18,
                 "text": {
-                  "field": "coldwater_main_tech_space_fr45_flow",
+                  "field": "main_tech_space_fr_45_flow",
                   "mode": "field"
                 },
                 "valign": "middle"
@@ -2723,6 +2812,7 @@
               "placement": {
                 "height": 30,
                 "left": 575,
+                "rotation": 0,
                 "top": 115,
                 "width": 180
               },
@@ -2785,9 +2875,23 @@
       "targets": [
         {
           "editorMode": "code",
-          "format": "table",
+          "editorType": "sql",
+          "format": 1,
+          "meta": {
+            "builderOptions": {
+              "columns": [],
+              "database": "",
+              "limit": 1000,
+              "meta": {},
+              "mode": "list",
+              "queryType": "table",
+              "table": ""
+            }
+          },
+          "pluginVersion": "2.1.4",
+          "queryType": "table",
           "rawQuery": true,
-          "rawSql": "SELECT\n  LAST_VALUE(time ORDER BY time) AS time,\n  LAST_VALUE((\"COLDWATER_CAPTAINS_CABIN_FLOW\").value ORDER BY time)          AS coldwater_captains_cabin_flow,\n  LAST_VALUE((\"COLDWATER_CREW_CABIN_SB_AFT_FLOW\").value ORDER BY time)       AS coldwater_crew_cabin_sb_aft_flow,\n  LAST_VALUE((\"COLDWATER_CREW_CABIN_SB_MID_FLOW\").value ORDER BY time)       AS coldwater_crew_cabin_sb_mid_flow,\n  LAST_VALUE((\"COLDWATER_CREW_CABIN_PS_MID_FLOW\").value ORDER BY time)       AS coldwater_crew_cabin_ps_mid_flow,\n  LAST_VALUE((\"COLDWATER_CREW_CABIN_SB_FWD_FLOW\").value ORDER BY time)       AS coldwater_crew_cabin_sb_fwd_flow,\n  LAST_VALUE((\"COLDWATER_CREW_CABIN_PS_FWD_FLOW\").value ORDER BY time)       AS coldwater_crew_cabin_ps_fwd_flow,\n\n  LAST_VALUE((\"COLDWATER_LOWER_SALOON_FLOW\").value ORDER BY time)            AS coldwater_lower_saloon_flow,\n  LAST_VALUE((\"COLDWATER_CREW_MESS_FLOW\").value ORDER BY time)               AS coldwater_crew_mess_flow,\n  LAST_VALUE((\"COLDWATER_GALLEY_2_FLOW\").value ORDER BY time)               AS coldwater_galley_2_flow,\n  LAST_VALUE((\"COLDWATER_DAYHEAD_FLOW\").value ORDER BY time)                AS coldwater_dayhead_flow,\n  LAST_VALUE((\"COLDWATER_LAZARET_FLOW\").value ORDER BY time)                 AS coldwater_lazaret_flow,\n  LAST_VALUE((\"COLDWATER_LAUNDRY_PS_FLOW\").value ORDER BY time)             AS coldwater_laundry_ps_flow,\n  LAST_VALUE((\"COLDWATER_DECKHOUSE_FLOW\").value ORDER BY time)              AS coldwater_deckhouse_flow,\n  LAST_VALUE((\"COLDWATER_DECK_FR48_SB_TECH_COR_FLOW\").value ORDER BY time)   AS coldwater_deck_fr48_sb_tech_cor_flow,\n  LAST_VALUE((\"COLDWATER_WATER_SOFTNER_FLOW\").value ORDER BY time)          AS coldwater_water_softner_flow,\n  LAST_VALUE((\"COLDWATER_MAIN_TECH_SPACE_FLOW\").value ORDER BY time)        AS coldwater_main_tech_space_flow,\n  LAST_VALUE((\"COLDWATER_MAIN_TECH_SPACE_FR45_FLOW\").value ORDER BY time)   AS coldwater_main_tech_space_fr45_flow\nFROM marpower.\"250000_fresh_water\";\n",
+          "rawSql": "SELECT\r\n  timestamp                                     AS time,\r\n  coldwater_lower_saloon_flow__value            AS lower_saloon_flow,\r\n  coldwater_crew_mess_flow__value               AS crew_mess_flow,\r\n  coldwater_galley_2_flow__value                AS galley_2_flow,\r\n  coldwater_dayhead_flow__value                 AS dayhead_flow,\r\n  coldwater_lazaret_flow__value                 AS lazaret_flow,\r\n  coldwater_laundry_ps_flow__value              AS laundry_ps_flow,\r\n  coldwater_deckhouse_flow__value               AS deckhouse_flow,\r\n  coldwater_deck_fr_48_sb_tech_cor_flow__value  AS deck_fr_48_sb_tech_cor_flow,\r\n  coldwater_water_softner_flow__value           AS water_softner_flow,\r\n  coldwater_main_tech_space_flow__value         AS main_tech_space_flow,\r\n  coldwater_main_tech_space_fr_45_flow__value   AS main_tech_space_fr_45_flow\r\nFROM public.marpower__250000_fresh_water\r\nORDER BY timestamp DESC\r\nLIMIT 1",
           "refId": "A",
           "sql": {
             "columns": [
@@ -2855,7 +2959,7 @@
         "x": 0,
         "y": 18
       },
-      "id": 7,
+      "id": 20,
       "options": {
         "inlineEditing": false,
         "panZoom": false,
@@ -2893,7 +2997,7 @@
                 },
                 "size": 18,
                 "text": {
-                  "field": "hotwater_guest_cabin_sb_flow",
+                  "field": "guest_cabin_sb_flow",
                   "mode": "field"
                 },
                 "valign": "middle"
@@ -2934,6 +3038,7 @@
                 },
                 "valign": "middle"
               },
+              "connections": [],
               "constraint": {
                 "horizontal": "left",
                 "vertical": "top"
@@ -2942,9 +3047,8 @@
               "placement": {
                 "height": 30,
                 "left": 15,
-                "rotation": 0,
                 "top": 10,
-                "width": 190
+                "width": 207
               },
               "type": "text"
             },
@@ -2966,7 +3070,7 @@
                 },
                 "size": 18,
                 "text": {
-                  "field": "hotwater_guest_cabin_ps_fwd_flow",
+                  "field": "guest_cabin_ps_fwd_flow",
                   "mode": "field"
                 },
                 "valign": "middle"
@@ -2979,6 +3083,7 @@
               "placement": {
                 "height": 30,
                 "left": 200,
+                "rotation": 0,
                 "top": 45,
                 "width": 180
               },
@@ -3015,7 +3120,7 @@
                 "height": 30,
                 "left": 15,
                 "top": 45,
-                "width": 226
+                "width": 207
               },
               "type": "text"
             },
@@ -3037,7 +3142,7 @@
                 },
                 "size": 18,
                 "text": {
-                  "field": "hotwater_guest_cabin_ps_aft_flow",
+                  "field": "guest_cabin_ps_aft_flow",
                   "mode": "field"
                 },
                 "valign": "middle"
@@ -3050,6 +3155,7 @@
               "placement": {
                 "height": 30,
                 "left": 200,
+                "rotation": 0,
                 "top": 80,
                 "width": 180
               },
@@ -3086,7 +3192,7 @@
                 "height": 30,
                 "left": 15,
                 "top": 80,
-                "width": 226
+                "width": 207
               },
               "type": "text"
             },
@@ -3108,7 +3214,7 @@
                 },
                 "size": 18,
                 "text": {
-                  "field": "hotwater_master_cabin_sb_flow",
+                  "field": "master_cabin_sb_flow",
                   "mode": "field"
                 },
                 "valign": "middle"
@@ -3121,6 +3227,7 @@
               "placement": {
                 "height": 30,
                 "left": 200,
+                "rotation": 0,
                 "top": 115,
                 "width": 180
               },
@@ -3157,7 +3264,7 @@
                 "height": 30,
                 "left": 15,
                 "top": 115,
-                "width": 226
+                "width": 207
               },
               "type": "text"
             },
@@ -3179,7 +3286,7 @@
                 },
                 "size": 18,
                 "text": {
-                  "field": "hotwater_master_cabin_ps_flow",
+                  "field": "master_cabin_ps_flow",
                   "mode": "field"
                 },
                 "valign": "middle"
@@ -3192,6 +3299,7 @@
               "placement": {
                 "height": 30,
                 "left": 200,
+                "rotation": 0,
                 "top": 150,
                 "width": 180
               },
@@ -3228,7 +3336,7 @@
                 "height": 30,
                 "left": 15,
                 "top": 150,
-                "width": 226
+                "width": 207
               },
               "type": "text"
             },
@@ -3250,7 +3358,7 @@
                 },
                 "size": 18,
                 "text": {
-                  "field": "hotwater_captains_cabin_flow",
+                  "field": "captains_cabin_flow",
                   "mode": "field"
                 },
                 "valign": "middle"
@@ -3301,7 +3409,7 @@
                 "height": 30,
                 "left": 420,
                 "top": 10,
-                "width": 165
+                "width": 158
               },
               "type": "text"
             },
@@ -3323,7 +3431,7 @@
                 },
                 "size": 18,
                 "text": {
-                  "field": "hotwater_crew_cabin_sb_aft_flow",
+                  "field": "crew_cabin_sb_aft_flow",
                   "mode": "field"
                 },
                 "valign": "middle"
@@ -3336,6 +3444,7 @@
               "placement": {
                 "height": 30,
                 "left": 590,
+                "rotation": 0,
                 "top": 45,
                 "width": 180
               },
@@ -3371,8 +3480,8 @@
               "placement": {
                 "height": 30,
                 "left": 420,
-                "top": 40,
-                "width": 182
+                "top": 45,
+                "width": 179
               },
               "type": "text"
             },
@@ -3394,7 +3503,7 @@
                 },
                 "size": 18,
                 "text": {
-                  "field": "hotwater_crew_cabin_sb_mid_flow",
+                  "field": "crew_cabin_sb_mid_flow",
                   "mode": "field"
                 },
                 "valign": "middle"
@@ -3407,6 +3516,7 @@
               "placement": {
                 "height": 30,
                 "left": 590,
+                "rotation": 0,
                 "top": 80,
                 "width": 180
               },
@@ -3442,8 +3552,8 @@
               "placement": {
                 "height": 30,
                 "left": 420,
-                "top": 75,
-                "width": 182
+                "top": 80,
+                "width": 179
               },
               "type": "text"
             },
@@ -3465,7 +3575,7 @@
                 },
                 "size": 18,
                 "text": {
-                  "field": "hotwater_crew_cabin_ps_mid_flow",
+                  "field": "crew_cabin_ps_mid_flow",
                   "mode": "field"
                 },
                 "valign": "middle"
@@ -3478,6 +3588,7 @@
               "placement": {
                 "height": 30,
                 "left": 590,
+                "rotation": 0,
                 "top": 115,
                 "width": 180
               },
@@ -3513,8 +3624,8 @@
               "placement": {
                 "height": 30,
                 "left": 420,
-                "top": 110,
-                "width": 182
+                "top": 115,
+                "width": 179
               },
               "type": "text"
             },
@@ -3536,7 +3647,7 @@
                 },
                 "size": 18,
                 "text": {
-                  "field": "hotwater_crew_cabin_sb_fwd_flow",
+                  "field": "crew_cabin_sb_fwd_flow",
                   "mode": "field"
                 },
                 "valign": "middle"
@@ -3549,6 +3660,7 @@
               "placement": {
                 "height": 30,
                 "left": 590,
+                "rotation": 0,
                 "top": 150,
                 "width": 180
               },
@@ -3584,8 +3696,8 @@
               "placement": {
                 "height": 30,
                 "left": 420,
-                "top": 145,
-                "width": 182
+                "top": 150,
+                "width": 179
               },
               "type": "text"
             },
@@ -3607,7 +3719,7 @@
                 },
                 "size": 18,
                 "text": {
-                  "field": "hotwater_crew_cabin_ps_fwd_flow",
+                  "field": "crew_cabin_ps_fwd_flow",
                   "mode": "field"
                 },
                 "valign": "middle"
@@ -3620,6 +3732,7 @@
               "placement": {
                 "height": 30,
                 "left": 590,
+                "rotation": 0,
                 "top": 185,
                 "width": 180
               },
@@ -3655,8 +3768,8 @@
               "placement": {
                 "height": 30,
                 "left": 420,
-                "top": 180,
-                "width": 182
+                "top": 185,
+                "width": 179
               },
               "type": "text"
             },
@@ -3678,7 +3791,7 @@
                 },
                 "size": 18,
                 "text": {
-                  "field": "hotwater_guest_bathroom_flow",
+                  "field": "guest_bathroom_flow",
                   "mode": "field"
                 },
                 "valign": "middle"
@@ -3691,6 +3804,7 @@
               "placement": {
                 "height": 30,
                 "left": 200,
+                "rotation": 0,
                 "top": 185,
                 "width": 180
               },
@@ -3728,7 +3842,7 @@
                 "left": 15,
                 "rotation": 0,
                 "top": 185,
-                "width": 226
+                "width": 207
               },
               "type": "text"
             }
@@ -3754,9 +3868,23 @@
       "targets": [
         {
           "editorMode": "code",
-          "format": "table",
+          "editorType": "sql",
+          "format": 1,
+          "meta": {
+            "builderOptions": {
+              "columns": [],
+              "database": "",
+              "limit": 1000,
+              "meta": {},
+              "mode": "list",
+              "queryType": "table",
+              "table": ""
+            }
+          },
+          "pluginVersion": "2.1.4",
+          "queryType": "table",
           "rawQuery": true,
-          "rawSql": "SELECT\n  LAST_VALUE(time ORDER BY time) AS time,  \n  LAST_VALUE((\"HOTWATER_GUEST_CABIN_SB_FLOW\").value ORDER BY time)           AS hotwater_guest_cabin_sb_flow,\n  LAST_VALUE((\"HOTWATER_GUEST_CABIN_PS_FWD_FLOW\").value ORDER BY time)       AS hotwater_guest_cabin_ps_fwd_flow,\n  LAST_VALUE((\"HOTWATER_GUEST_CABIN_PS_AFT_FLOW\").value ORDER BY time)       AS hotwater_guest_cabin_ps_aft_flow,\n  LAST_VALUE((\"HOTWATER_MASTER_CABIN_SB_FLOW\").value ORDER BY time)          AS hotwater_master_cabin_sb_flow,\n  LAST_VALUE((\"HOTWATER_MASTER_CABIN_PS_FLOW\").value ORDER BY time)          AS hotwater_master_cabin_ps_flow,\n  LAST_VALUE((\"HOTWATER_GUEST_BATHR_PS_FWD_FLOW\").value ORDER BY time)       AS hotwater_guest_bathroom_flow,\n  LAST_VALUE((\"HOTWATER_CAPTAINS_CABIN_FLOW\").value ORDER BY time)           AS hotwater_captains_cabin_flow,\n  LAST_VALUE((\"HOTWATER_CREW_CABIN_SB_AFT_FLOW\").value ORDER BY time)        AS hotwater_crew_cabin_sb_aft_flow,\n  LAST_VALUE((\"HOTWATER_CREW_CABIN_SB_MID_FLOW\").value ORDER BY time)        AS hotwater_crew_cabin_sb_mid_flow,\n  LAST_VALUE((\"HOTWATER_CREW_CABIN_PS_MID_FLOW\").value ORDER BY time)        AS hotwater_crew_cabin_ps_mid_flow,\n  LAST_VALUE((\"HOTWATER_CREW_CABIN_SB_FWD_FLOW\").value ORDER BY time)        AS hotwater_crew_cabin_sb_fwd_flow,\n  LAST_VALUE((\"HOTWATER_CREW_CABIN_PS_FWD_FLOW\").value ORDER BY time)        AS hotwater_crew_cabin_ps_fwd_flow\nFROM marpower.\"250000_fresh_water\"\n",
+          "rawSql": "SELECT\r\n  timestamp                                AS time,\r\n  hotwater_guest_cabin_sb_flow__value     AS guest_cabin_sb_flow,\r\n  hotwater_guest_cabin_ps_fwd_flow__value AS guest_cabin_ps_fwd_flow,\r\n  hotwater_guest_cabin_ps_aft_flow__value AS guest_cabin_ps_aft_flow,\r\n  hotwater_master_cabin_sb_flow__value    AS master_cabin_sb_flow,\r\n  hotwater_master_cabin_ps_flow__value    AS master_cabin_ps_flow,\r\n  hotwater_guest_bathr_ps_fwd_flow__value AS guest_bathroom_flow,\r\n  hotwater_captains_cabin_flow__value     AS captains_cabin_flow,\r\n  hotwater_crew_cabin_sb_aft_flow__value  AS crew_cabin_sb_aft_flow,\r\n  hotwater_crew_cabin_sb_mid_flow__value  AS crew_cabin_sb_mid_flow,\r\n  hotwater_crew_cabin_ps_mid_flow__value  AS crew_cabin_ps_mid_flow,\r\n  hotwater_crew_cabin_sb_fwd_flow__value  AS crew_cabin_sb_fwd_flow,\r\n  hotwater_crew_cabin_ps_fwd_flow__value  AS crew_cabin_ps_fwd_flow\r\nFROM public.marpower__250000_fresh_water\r\nORDER BY timestamp DESC\r\nLIMIT 1\r\n",
           "refId": "A",
           "sql": {
             "columns": [
@@ -3811,7 +3939,7 @@
         "x": 12,
         "y": 18
       },
-      "id": 18,
+      "id": 21,
       "options": {
         "inlineEditing": false,
         "panZoom": false,
@@ -3849,7 +3977,7 @@
                 },
                 "size": 18,
                 "text": {
-                  "field": "hotwater_dayhead_flow",
+                  "field": "dayhead_flow",
                   "mode": "field"
                 },
                 "valign": "middle"
@@ -3862,6 +3990,7 @@
               "placement": {
                 "height": 30,
                 "left": 140,
+                "rotation": 0,
                 "top": 80,
                 "width": 180
               },
@@ -3898,7 +4027,7 @@
                 "height": 30,
                 "left": 15,
                 "top": 80,
-                "width": 127.99999999999997
+                "width": 122.94999694824219
               },
               "type": "text"
             },
@@ -3920,7 +4049,7 @@
                 },
                 "size": 18,
                 "text": {
-                  "field": "hotwater_crew_mess_flow",
+                  "field": "crew_mess_flow",
                   "mode": "field"
                 },
                 "valign": "middle"
@@ -3969,8 +4098,9 @@
               "placement": {
                 "height": 30,
                 "left": 15,
+                "rotation": 0,
                 "top": 10,
-                "width": 127.99999999999997
+                "width": 123
               },
               "type": "text"
             },
@@ -3992,7 +4122,7 @@
                 },
                 "size": 18,
                 "text": {
-                  "field": "hotwater_lazaret_flow",
+                  "field": "lazaret_flow",
                   "mode": "field"
                 },
                 "valign": "middle"
@@ -4005,6 +4135,7 @@
               "placement": {
                 "height": 30,
                 "left": 140,
+                "rotation": 0,
                 "top": 115,
                 "width": 180
               },
@@ -4041,7 +4172,7 @@
                 "height": 30,
                 "left": 15,
                 "top": 115,
-                "width": 127.99999999999997
+                "width": 122.94999694824219
               },
               "type": "text"
             },
@@ -4063,7 +4194,7 @@
                 },
                 "size": 18,
                 "text": {
-                  "field": "hotwater_galley_2_flow",
+                  "field": "galley_2_flow",
                   "mode": "field"
                 },
                 "valign": "middle"
@@ -4076,6 +4207,7 @@
               "placement": {
                 "height": 30,
                 "left": 140,
+                "rotation": 0,
                 "top": 45,
                 "width": 180
               },
@@ -4112,7 +4244,7 @@
                 "height": 30,
                 "left": 15,
                 "top": 45,
-                "width": 127.99999999999997
+                "width": 122.94999694824219
               },
               "type": "text"
             },
@@ -4134,7 +4266,7 @@
                 },
                 "size": 18,
                 "text": {
-                  "field": "hotwater_laundry_ps_1_flow",
+                  "field": "laundry_ps_flow",
                   "mode": "field"
                 },
                 "valign": "middle"
@@ -4147,6 +4279,7 @@
               "placement": {
                 "height": 30,
                 "left": 140,
+                "rotation": 0,
                 "top": 150,
                 "width": 180
               },
@@ -4182,9 +4315,8 @@
               "placement": {
                 "height": 30,
                 "left": 15,
-                "rotation": 0,
                 "top": 150,
-                "width": 127.99999999999997
+                "width": 122.94999694824219
               },
               "type": "text"
             },
@@ -4206,7 +4338,7 @@
                 },
                 "size": 18,
                 "text": {
-                  "field": "hotwater_deckhouse_flow",
+                  "field": "deckhouse_flow",
                   "mode": "field"
                 },
                 "valign": "middle"
@@ -4255,9 +4387,8 @@
               "placement": {
                 "height": 30,
                 "left": 360,
-                "rotation": 0,
                 "top": 10,
-                "width": 245
+                "width": 148
               },
               "type": "text"
             },
@@ -4279,7 +4410,7 @@
                 },
                 "size": 18,
                 "text": {
-                  "field": "hotwater_deck_fr48_sb_tech_cor_flow",
+                  "field": "deck_fr_48_sb_tech_cor_flow",
                   "mode": "field"
                 },
                 "valign": "middle"
@@ -4292,6 +4423,7 @@
               "placement": {
                 "height": 30,
                 "left": 575,
+                "rotation": 0,
                 "top": 45,
                 "width": 180
               },
@@ -4329,7 +4461,7 @@
                 "left": 360,
                 "rotation": 0,
                 "top": 45,
-                "width": 245
+                "width": 350
               },
               "type": "text"
             },
@@ -4351,7 +4483,7 @@
                 },
                 "size": 18,
                 "text": {
-                  "field": "hotwater_main_tech_space_flow",
+                  "field": "main_tech_space_flow",
                   "mode": "field"
                 },
                 "valign": "middle"
@@ -4364,6 +4496,7 @@
               "placement": {
                 "height": 30,
                 "left": 575,
+                "rotation": 0,
                 "top": 80,
                 "width": 180
               },
@@ -4400,7 +4533,7 @@
                 "height": 30,
                 "left": 360,
                 "top": 80,
-                "width": 245
+                "width": 350
               },
               "type": "text"
             }
@@ -4426,9 +4559,23 @@
       "targets": [
         {
           "editorMode": "code",
-          "format": "table",
+          "editorType": "sql",
+          "format": 1,
+          "meta": {
+            "builderOptions": {
+              "columns": [],
+              "database": "",
+              "limit": 1000,
+              "meta": {},
+              "mode": "list",
+              "queryType": "table",
+              "table": ""
+            }
+          },
+          "pluginVersion": "2.1.4",
+          "queryType": "table",
           "rawQuery": true,
-          "rawSql": "SELECT\n  LAST_VALUE(time ORDER BY time) AS time,\n  LAST_VALUE((\"HOTWATER_CREW_MESS_FLOW\").value ORDER BY time)                AS hotwater_crew_mess_flow,\n  LAST_VALUE((\"HOTWATER_GALLEY_2_FLOW\").value ORDER BY time)                 AS hotwater_galley_2_flow,\n  LAST_VALUE((\"HOTWATER_DAYHEAD_FLOW\").value ORDER BY time)                  AS hotwater_dayhead_flow,\n  LAST_VALUE((\"HOTWATER_LAZARET_FLOW\").value ORDER BY time)                  AS hotwater_lazaret_flow,\n  LAST_VALUE((\"HOTWATER_LAUNDRY_PS_1_FLOW\").value ORDER BY time)             AS hotwater_laundry_ps_1_flow,\n  LAST_VALUE((\"HOTWATER_DECKHOUSE_FLOW\").value ORDER BY time)                AS hotwater_deckhouse_flow,\n  LAST_VALUE((\"HOTWATER_DECK_FR48_SB_TECH_COR_FLOW\").value ORDER BY time)    AS hotwater_deck_fr48_sb_tech_cor_flow,\n  LAST_VALUE((\"HOTWATER_MAIN_TECH_SPACE_FLOW\").value ORDER BY time)          AS hotwater_main_tech_space_flow\nFROM marpower.\"250000_fresh_water\"\n",
+          "rawSql": "SELECT\r\n  timestamp                                    AS time,\r\n  hotwater_crew_mess_flow__value               AS crew_mess_flow,\r\n  hotwater_galley_2_flow__value                AS galley_2_flow,\r\n  hotwater_dayhead_flow__value                 AS dayhead_flow,\r\n  hotwater_lazaret_flow__value                 AS lazaret_flow,\r\n  hotwater_laundry_ps_1_flow__value            AS laundry_ps_flow,\r\n  hotwater_deckhouse_flow__value               AS deckhouse_flow,\r\n  hotwater_deck_fr_48_sb_tech_cor_flow__value  AS deck_fr_48_sb_tech_cor_flow,\r\n  hotwater_main_tech_space_flow__value         AS main_tech_space_flow\r\nFROM public.marpower__250000_fresh_water\r\nORDER BY timestamp DESC\r\nLIMIT 1",
           "refId": "A",
           "sql": {
             "columns": [
@@ -4449,7 +4596,7 @@
           }
         }
       ],
-      "title": "Hot water flow",
+      "title": "Other areas",
       "type": "canvas"
     },
     {
@@ -4824,9 +4971,23 @@
       "targets": [
         {
           "editorMode": "code",
-          "format": "table",
+          "editorType": "sql",
+          "format": 1,
+          "meta": {
+            "builderOptions": {
+              "columns": [],
+              "database": "",
+              "limit": 1000,
+              "meta": {},
+              "mode": "list",
+              "queryType": "table",
+              "table": ""
+            }
+          },
+          "pluginVersion": "2.1.4",
+          "queryType": "table",
           "rawQuery": true,
-          "rawSql": "SELECT\n  LAST_VALUE(time ORDER BY time) AS time,\n  LAST_VALUE((\"TECHNICAL_ROOM_ENERG_REC_FLOW\").value ORDER BY time)          AS technical_room_energ_rec_flow,\n  LAST_VALUE((\"FLOW_SENSOR_25001137C1\").value ORDER BY time)                AS flow_sensor_25001137c1,\n  LAST_VALUE((\"FLOW_SENSOR_25001037C3\").value ORDER BY time)                AS flow_sensor_25001037c3,\n  LAST_VALUE((\"FLOW_SENSOR_25001037C4\").value ORDER BY time)                AS flow_sensor_25001037c4\nFROM marpower.\"250000_fresh_water\";\n",
+          "rawSql": "SELECT\r\n  timestamp                            AS time,\r\n  technical_room_energ_rec_flow__value AS technical_room_energ_rec_flow,\r\n  flow_sensor_25001137_c_1__value      AS flow_sensor_25001137c1,\r\n  flow_sensor_25001037_c_3__value      AS flow_sensor_25001037c3,\r\n  flow_sensor_25001037_c_4__value      AS flow_sensor_25001037c4\r\nFROM public.marpower__250000_fresh_water\r\nORDER BY timestamp DESC\r\nLIMIT 1",
           "refId": "A",
           "sql": {
             "columns": [
@@ -5283,9 +5444,23 @@
       "targets": [
         {
           "editorMode": "code",
-          "format": "table",
+          "editorType": "sql",
+          "format": 1,
+          "meta": {
+            "builderOptions": {
+              "columns": [],
+              "database": "",
+              "limit": 1000,
+              "meta": {},
+              "mode": "list",
+              "queryType": "table",
+              "table": ""
+            }
+          },
+          "pluginVersion": "2.1.4",
+          "queryType": "table",
           "rawQuery": true,
-          "rawSql": "SELECT\n  LAST_VALUE(time ORDER BY time) AS time,\n  LAST_VALUE((\"ENERGY_REC_SYSTEM_TEMP4\").value ORDER BY time)               AS energy_rec_temp4,\n  LAST_VALUE((\"ENERGY_REC_SYSTEM_TEMP5\").value ORDER BY time)               AS energy_rec_temp5,\n  LAST_VALUE((\"ENERGY_REC_SYSTEM_TEMP6\").value ORDER BY time)               AS energy_rec_temp6,\n  LAST_VALUE((\"ENERGY_REC_SYSTEM_TEMP7\").value ORDER BY time)               AS energy_rec_temp7,\n  LAST_VALUE((\"ENERGY_REC_SYSTEM_TEMP8\").value ORDER BY time)               AS energy_rec_temp8\nFROM marpower.\"250000_fresh_water\";\n",
+          "rawSql": "SELECT\r\n  timestamp                       AS time,\r\n  energy_rec_system_temp_4__value AS energy_rec_temp4,\r\n  energy_rec_system_temp_5__value AS energy_rec_temp5,\r\n  energy_rec_system_temp_6__value AS energy_rec_temp6,\r\n  energy_rec_system_temp_7__value AS energy_rec_temp7,\r\n  energy_rec_system_temp_8__value AS energy_rec_temp8\r\nFROM public.marpower__250000_fresh_water\r\nORDER BY timestamp DESC\r\nLIMIT 1",
           "refId": "A",
           "sql": {
             "columns": [
@@ -5526,9 +5701,23 @@
       "targets": [
         {
           "editorMode": "code",
-          "format": "table",
+          "editorType": "sql",
+          "format": 1,
+          "meta": {
+            "builderOptions": {
+              "columns": [],
+              "database": "",
+              "limit": 1000,
+              "meta": {},
+              "mode": "list",
+              "queryType": "table",
+              "table": ""
+            }
+          },
+          "pluginVersion": "2.1.4",
+          "queryType": "table",
           "rawQuery": true,
-          "rawSql": "SELECT\n  LAST_VALUE(time ORDER BY time) AS time,\n  LAST_VALUE((\"TANK_1_FR_45_PS_LEVEL\").value ORDER BY time)      AS fresh_water_tank_1_level,\n  LAST_VALUE((\"TANK_2_FR_45_SB_LEVEL\").value ORDER BY time)      AS fresh_water_tank_2_level\nFROM marpower.\"250000_fresh_water\";\n",
+          "rawSql": "SELECT\r\n  timestamp                    AS time,\r\n  tank_1_fr_45_ps_level__value AS fresh_water_tank_1_level,\r\n  tank_2_fr_45_sb_level__value AS fresh_water_tank_2_level\r\nFROM public.marpower__250000_fresh_water\r\nORDER BY timestamp DESC\r\nLIMIT 1",
           "refId": "A",
           "sql": {
             "columns": [
@@ -5698,9 +5887,23 @@
       "targets": [
         {
           "editorMode": "code",
-          "format": "table",
+          "editorType": "sql",
+          "format": 1,
+          "meta": {
+            "builderOptions": {
+              "columns": [],
+              "database": "",
+              "limit": 1000,
+              "meta": {},
+              "mode": "list",
+              "queryType": "table",
+              "table": ""
+            }
+          },
+          "pluginVersion": "2.1.4",
+          "queryType": "table",
           "rawQuery": true,
-          "rawSql": "SELECT\n  LAST_VALUE(time ORDER BY time) AS time,\n  LAST_VALUE((\"FR_46_SYSTEM_BEH_PRES_PUMPS_PRESS\").value ORDER BY time) AS fr46_system_pressure\nFROM marpower.\"250000_fresh_water\";\n",
+          "rawSql": "SELECT\r\n  timestamp                                AS time,\r\n  fr_46_system_beh_pres_pumps_press__value AS fr46_system_pressure\r\nFROM public.marpower__250000_fresh_water\r\nORDER BY timestamp DESC\r\nLIMIT 1",
           "refId": "A",
           "sql": {
             "columns": [
@@ -5735,12 +5938,12 @@
     "list": [
       {
         "current": {
-          "text": "RisingWave",
-          "value": "ceyj3m7wtn3swb"
+          "text": "greptimedb-singel",
+          "value": "ffjo2lr661bswd"
         },
         "name": "datasource",
         "options": [],
-        "query": "grafana-postgresql-datasource",
+        "query": "info8fcc-greptimedb-datasource",
         "refresh": 1,
         "regex": "",
         "type": "datasource"
