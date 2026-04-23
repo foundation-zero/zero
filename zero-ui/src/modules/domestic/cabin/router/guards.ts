@@ -21,15 +21,16 @@ export const waitForRoom: BeforeResolveGuard = (to) => {
               (to.name === "cabin:blinds" && next.blinds.length === 0) ||
               (to.name === "cabin:lights" && next.lightingGroups.length === 0);
 
-          resolve({
-            name: invalidRoute ? "cabin:air-conditioning" : to.name,
-            query: to.query.returnUrl ? { returnUrl: to.query.returnUrl.toString() } : {},
-          });
-        },
-        { once: true },
-      );
+            resolve({
+              name: invalidRoute ? "cabin:air-conditioning" : to.name,
+              query: to.query.returnUrl ? { returnUrl: to.query.returnUrl.toString() } : {},
+            });
+          },
+          { once: true },
+        );
 
-      useRoomStore().setRoom(String(roomId));
+        useRoomStore().setRoom(String(roomId));
+      }
     });
   }
 };

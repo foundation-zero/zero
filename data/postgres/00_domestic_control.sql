@@ -8,14 +8,6 @@ CREATE TABLE domestic.rooms (
   "group" TEXT
 );
 
--- Master table for conditions (temperature, humidity, co2, etc) per room
-DROP TABLE IF EXISTS domestic.conditions CASCADE;
-CREATE TABLE domestic.conditions (
-  "id" TEXT PRIMARY KEY REFERENCES domestic.rooms("id"),
-  "type" TEXT,
-  "name" TEXT
-);
-
 -- Master table for blinds per room
 DROP TABLE IF EXISTS domestic.blinds CASCADE;
 CREATE TABLE domestic.blinds (
