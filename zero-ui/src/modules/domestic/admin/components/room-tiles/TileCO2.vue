@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { CO2_RANGE, CO2_SETPOINT_RANGE, CO2_THRESHOLDS } from "@/modules/domestic/lib/consts";
-import { Room, Units } from "@/modules/domestic/types";
+import { Room, Units, VentilationLog } from "@/modules/domestic/types";
 import AreaChart from "@common/components/area-chart/AreaChart.vue";
 import { ValueTile } from "@common/components/value-tile";
 import {
@@ -16,7 +16,7 @@ import { computed } from "vue";
 
 const props = defineProps<{
   room: Room;
-  ventilationLog?: { timestamp: Date; actualCo2: number; co2Setpoint: number }[];
+  ventilationLog?: VentilationLog[];
 }>();
 
 const hasCO2Sensor = computed(() => !!props.room.ventilation);

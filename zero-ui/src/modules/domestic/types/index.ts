@@ -99,6 +99,17 @@ export interface ControlGroup<T> {
 export type LightGroup = ControlGroup<DomesticLightingGroups>;
 export type BlindsGroup = ControlGroup<DomesticBlinds>;
 
+export type ActualAndSetpoint<T extends string> = `actual${Capitalize<T>}` | `${T}Setpoint`;
+
+export type LogItem<T extends string> = {
+  timestamp: Date;
+} & {
+  [K in ActualAndSetpoint<T>]: number;
+};
+
+export type AirConditioningLog = LogItem<"humidity" | "temperature">;
+export type VentilationLog = LogItem<"co2">;
+
 export const enum Roles {
   User = "user",
   Admin = "admin",

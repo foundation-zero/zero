@@ -23,9 +23,7 @@ import { useI18n } from "vue-i18n";
 const store = useRoomStore();
 const { rooms } = toRefs(store);
 
-const roomsWithHumidityControl = computed(() =>
-  rooms.value.filter((room) => hasHumidityControl(room)),
-);
+const roomsWithHumidityControl = computed(() => rooms.value.filter(hasHumidityControl));
 
 const controls = computed(() =>
   roomsWithHumidityControl.value.map((room) => room.airConditioning).filter((control) => !!control),

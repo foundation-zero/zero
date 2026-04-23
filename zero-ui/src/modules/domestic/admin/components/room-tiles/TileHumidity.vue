@@ -4,7 +4,7 @@ import {
   HUMIDITY_SETPOINT_RANGE,
   HUMIDITY_THRESHOLDS,
 } from "@/modules/domestic/lib/consts";
-import { Room } from "@/modules/domestic/types";
+import { AirConditioningLog, Room } from "@/modules/domestic/types";
 import AreaChart from "@common/components/area-chart/AreaChart.vue";
 import { ValueTile } from "@common/components/value-tile";
 import {
@@ -20,7 +20,7 @@ import { computed } from "vue";
 
 const props = defineProps<{
   room: Room;
-  humidityLog?: { timestamp: Date; actualHumidity: number; humiditySetpoint: number }[];
+  humidityLog?: AirConditioningLog[];
 }>();
 
 const hasHumiditySensor = computed(() => hasHumidityControl(props.room));

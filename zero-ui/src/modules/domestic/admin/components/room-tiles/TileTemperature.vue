@@ -4,7 +4,7 @@ import {
   TEMPERATURE_SETPOINT_RANGE,
   TEMPERATURE_THRESHOLDS,
 } from "@/modules/domestic/lib/consts";
-import { Room } from "@/modules/domestic/types";
+import { AirConditioningLog, Room } from "@/modules/domestic/types";
 import AreaChart from "@common/components/area-chart/AreaChart.vue";
 import { ValueTile } from "@common/components/value-tile";
 import {
@@ -24,7 +24,7 @@ import { useI18n } from "vue-i18n";
 
 const props = defineProps<{
   room: Room;
-  temperatureLog?: { timestamp: Date; actualTemperature: number; temperatureSetpoint: number }[];
+  temperatureLog?: AirConditioningLog[];
 }>();
 
 const history = useDemoSensorValues(

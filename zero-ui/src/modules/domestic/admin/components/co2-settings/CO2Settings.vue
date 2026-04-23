@@ -19,7 +19,7 @@ import { useI18n } from "vue-i18n";
 const store = useRoomStore();
 const { rooms } = toRefs(store);
 
-const roomsWithCO2Control = computed(() => rooms.value.filter((room) => hasCO2Control(room)));
+const roomsWithCO2Control = computed(() => rooms.value.filter(hasCO2Control));
 
 const controls = computed(() =>
   roomsWithCO2Control.value.map((room) => room.ventilation).filter((control) => !!control),

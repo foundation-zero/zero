@@ -21,7 +21,7 @@ from .properties import (
 from .constants import ROOM_INDICES
 import logging
 
-VENTILATION_CONTROL_BUS_INTERVAL = 0.1  # 100 ms
+VENTILATION_CONTROL_BUS_INTERVAL_SEC = 0.1  # 100 ms
 
 type CommOp = Callable[[], None]
 
@@ -104,7 +104,7 @@ class VentilationControl:
         while True:
             async with TaskGroup() as tg:
                 tg.create_task(_step())
-                tg.create_task(sleep(VENTILATION_CONTROL_BUS_INTERVAL))
+                tg.create_task(sleep(VENTILATION_CONTROL_BUS_INTERVAL_SEC))
 
     async def _control_systems(self):
         while True:
