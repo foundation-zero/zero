@@ -38,6 +38,8 @@ class TwinCatSettings(BaseSettings):
     twincat_password: str
     twincat_route_name: str
 
+    twincat_prefices: list[str]
+
 
 class Settings(MqttSettings, IoLinkSettings, ModbusSettings, TwinCatSettings):
     model_config = _env_config

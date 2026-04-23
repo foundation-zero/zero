@@ -35,6 +35,7 @@ COPY --from=builder ${VIRTUAL_ENV} ${VIRTUAL_ENV}
 WORKDIR /app
 
 COPY zero-prop-test/src/ ./zero-prop-test
+COPY zero-prop-test/plc.tpy ./zero-prop-test/plc.tpy
 
 WORKDIR /app/zero-prop-test
 
