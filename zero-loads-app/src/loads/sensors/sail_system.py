@@ -114,11 +114,11 @@ class AftWinchSb(LoadsModel, ABC):
 
 class BladeAdjuster(LoadsModel, ABC):
     TOPIC = "sail-systems/f0103_bldadjstr"
-    load: Annotated[Load, VariableMeta(display_name="Adjuster")]
+    load: Annotated[Load, VariableMeta(display_name="RTA")]
     relative_position: Annotated[
         RelativePosition,
         VariableMeta(
-            display_name="Adjuster",
+            display_name="RTA",
             scale_min_label="out",
             scale_max_label="in",
         ),
@@ -597,12 +597,12 @@ class MizzenHeadsailTackAdjuster(LoadsModel, ABC):
     load: Annotated[
         Load,
         Field(ge=0, le=22),
-        VariableMeta(display_name="Adjuster", scale_min=0, scale_max=22),
+        VariableMeta(display_name="Tack", scale_min=0, scale_max=22),
     ]
     relative_position: Annotated[
         RelativePosition,
         VariableMeta(
-            display_name="Adjuster",
+            display_name="Tack",
             scale_min_label="out",
             scale_max_label="in",
         ),
@@ -709,12 +709,12 @@ class StaysailStayAdjuster(LoadsModel, ABC):
     TOPIC = "sail-systems/f0104_stysladjstr"
     load: Annotated[
         Load,
-        VariableMeta(display_name="Adjuster"),
+        VariableMeta(display_name="RTA"),
     ]
     relative_position: Annotated[
         RelativePosition,
         VariableMeta(
-            display_name="Adjuster",
+            display_name="RTA",
             scale_min_label="out",
             scale_max_label="in",
         ),
