@@ -2,7 +2,7 @@
 import Button from "@/components/ui/button/Button.vue";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { tScoped } from "@/modules/common/lib/utils";
-import { Trash2 } from "lucide-vue-next";
+import { RiDeleteBinLine } from "@remixicon/vue";
 import { ref } from "vue";
 import { useThrsHistory } from "../stores/history";
 
@@ -24,7 +24,7 @@ const clearCache = () => {
         variant="ghost"
         size="icon"
       >
-        <Trash2 />
+        <RiDeleteBinLine />
       </Button>
     </PopoverTrigger>
     <PopoverContent>

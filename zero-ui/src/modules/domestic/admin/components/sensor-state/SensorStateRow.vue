@@ -7,7 +7,7 @@ import {
   extractActualTemperature,
   formatInt,
 } from "@common/lib/utils";
-import { DropletsIcon, Fan, ThermometerIcon } from "lucide-vue-next";
+import { RiDropLine, RiThermometerLine, RiWindyLine } from "@remixicon/vue";
 import { computed } from "vue";
 import SensorStateValue from "./StatusIcon.vue";
 
@@ -34,7 +34,7 @@ const actualCO2 = computed(() => extractActualCO2(props.room) ?? 0);
     <TableCell class="w-12 md:w-16">
       <SensorStateValue
         :state="state.temperature"
-        :icon="ThermometerIcon"
+        :icon="RiThermometerLine"
         class="group-hover:hidden"
       />
       <div class="hidden group-hover:block">
@@ -45,7 +45,7 @@ const actualCO2 = computed(() => extractActualCO2(props.room) ?? 0);
     <TableCell class="w-12 md:w-16">
       <SensorStateValue
         :state="state.humidity"
-        :icon="DropletsIcon"
+        :icon="RiDropLine"
         class="group-hover:hidden"
       />
       <div class="hidden group-hover:block">
@@ -57,7 +57,7 @@ const actualCO2 = computed(() => extractActualCO2(props.room) ?? 0);
       <SensorStateValue
         :state="state.co2"
         class="group-hover:hidden"
-        :icon="Fan"
+        :icon="RiWindyLine"
       />
       <div class="hidden group-hover:block">
         <span>{{ formatInt(actualCO2) }}</span>

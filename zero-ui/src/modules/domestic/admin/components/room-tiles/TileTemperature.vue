@@ -18,8 +18,8 @@ import {
   useDemoSensorValues,
   useThresholds,
 } from "@common/lib/utils";
+import { RiDropLine } from "@remixicon/vue";
 import { SeriesOption } from "echarts/types/dist/shared";
-import { Droplets } from "lucide-vue-next";
 import { computed } from "vue";
 import { useI18n } from "vue-i18n";
 
@@ -85,7 +85,7 @@ const { t } = useI18n();
       <sup class="text-rxs text-muted-foreground top-[-0.3em] font-extralight">&deg;</sup>
     </template>
     <template #bottom-left>
-      <Droplets class="inline h-[1em] w-[1em]" />
+      <RiDropLine class="inline h-[1em] w-[1em]" />
       <span>
         <span class="ml-[0.5em] font-extrabold">{{ actualHumidity.toFixed(0) }}</span>
         <span class="text-rsm ml-[0.25em] font-extralight">&percnt;</span>

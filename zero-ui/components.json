@@ -15,5 +15,5 @@
     "utils": "@common/lib/utils",
     "lib": "@common/lib"
   },
-  "iconLibrary": "lucide"
+  "iconLibrary": "remixicon"
 }

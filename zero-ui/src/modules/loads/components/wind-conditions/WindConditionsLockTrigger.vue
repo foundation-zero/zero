@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { Button } from "@/components/ui/button";
+import { RiArrowLeftWideLine } from "@remixicon/vue";
 import { useTimeoutFn } from "@vueuse/core";
-import { ArrowBigLeft } from "lucide-vue-next";
 import { nextTick, ref } from "vue";
 
 const isAnimating = ref(false);
@@ -26,11 +26,11 @@ const emit = defineEmits(["trigger"]);
     @click="triggerAnimation"
   >
     <span class="lock-trigger__icon">
-      <ArrowBigLeft
+      <RiArrowLeftWideLine
         stroke-width="2"
         class="lock-trigger__icon-base"
       />
-      <ArrowBigLeft
+      <RiArrowLeftWideLine
         stroke-width="2"
         class="lock-trigger__icon-fill"
         :class="{ 'is-animating': isAnimating }"

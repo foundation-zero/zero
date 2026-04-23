@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { cn } from "@common/lib/utils";
+import { RiCheckLine } from "@remixicon/vue";
 import { reactiveOmit } from "@vueuse/core";
-import { Check } from "lucide-vue-next";
 import type { CheckboxRootEmits, CheckboxRootProps } from "reka-ui";
 import { CheckboxIndicator, CheckboxRoot, useForwardPropsEmits } from "reka-ui";
 import type { HTMLAttributes } from "vue";
@@ -30,7 +30,7 @@ const forwarded = useForwardPropsEmits(delegatedProps, emits);
       class="flex items-center justify-center text-current transition-none"
     >
       <slot>
-        <Check class="size-3.5" />
+        <RiCheckLine class="size-3.5" />
       </slot>
     </CheckboxIndicator>
   </CheckboxRoot>

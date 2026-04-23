@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import { ValidationStatus } from "@/modules/domestic/types";
-import { ExclamationTriangleIcon } from "@radix-icons/vue";
-import { CheckCircle2 } from "lucide-vue-next";
+import { RiAlertLine, RiCheckboxCircleLine } from "@remixicon/vue";
 import { type Component } from "vue";
 
 defineProps<{ state: ValidationStatus; icon?: Component }>();
@@ -11,7 +10,7 @@ defineProps<{ state: ValidationStatus; icon?: Component }>();
   <component
     :is="icon"
     v-if="icon"
-    :size="16"
+    size="16"
     :class="{
       'text-constructive': state === ValidationStatus.OK,
       'text-warning': state === ValidationStatus.WARN,
@@ -20,14 +19,14 @@ defineProps<{ state: ValidationStatus; icon?: Component }>();
     }"
   />
   <template v-else>
-    <CheckCircle2
+    <RiCheckboxCircleLine
       v-if="state === ValidationStatus.OK"
-      :size="16"
+      size="16"
       class="text-green-500/90"
     />
-    <ExclamationTriangleIcon
+    <RiAlertLine
       v-else
-      :size="16"
+      size="16"
       :class="{
         'text-warning': state === ValidationStatus.WARN,
         'text-destructive': state === ValidationStatus.FAIL,

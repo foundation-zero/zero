@@ -10,7 +10,7 @@ import {
 import { controlValuesForm, MutationType } from "@/modules/thrs/stores/thrs";
 import { BoundarySimulation } from "@/modules/thrs/types";
 import { toUpperCamelCase } from "@common/lib/utils";
-import { Loader2Icon, SendIcon } from "lucide-vue-next";
+import { RiLoader2Line, RiSendPlaneLine } from "@remixicon/vue";
 import { toRef } from "vue";
 import { useI18n } from "vue-i18n";
 import { ThrsSimulationType } from "../../lib/consts";
@@ -94,11 +94,11 @@ const { submit, isSubmitting, error, flow, temperature } = controlValuesForm(
       class="mt-6"
       @click="submit"
     >
-      <Loader2Icon
+      <RiLoader2Line
         v-if="isSubmitting"
         class="animate-spin"
       />
-      <SendIcon v-else />
+      <RiSendPlaneLine v-else />
     </Button>
 
     <div

@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { Button } from "@/components/ui/button";
-import { ArrowLeft } from "lucide-vue-next";
+import { RiArrowLeftLine } from "@remixicon/vue";
 import { toRefs, useTemplateRef } from "vue";
 import { useI18n } from "vue-i18n";
 import { useRoute } from "vue-router";
@@ -36,7 +36,7 @@ const { t } = useI18n();
               variant="secondary"
               class="flex items-center rounded-full max-md:p-0 max-sm:size-7 sm:gap-1"
             >
-              <ArrowLeft class="inline size-4" />
+              <RiArrowLeftLine class="inline size-4" />
               <span class="max-sm:hidden">{{ t("labels.back") }}</span>
             </Button>
           </RouterLink>

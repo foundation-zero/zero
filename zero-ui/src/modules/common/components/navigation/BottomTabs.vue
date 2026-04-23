@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { Tabs, TabsList, TabsTrigger } from "@common/components/bottom-tabs";
 import { useUIStore } from "@common/stores/ui";
-import { Snowflake } from "lucide-vue-next";
+import { RiSnowflakeLine } from "@remixicon/vue";
 import { toRefs } from "vue";
 import { useI18n } from "vue-i18n";
 import { useRoute } from "vue-router";
@@ -34,8 +34,8 @@ const { t } = useI18n();
         class="text-center"
       >
         <TabsTrigger :value="item.to">
-          <Snowflake
-            :size="22"
+          <RiSnowflakeLine
+            size="22"
             stroke-width="2"
           />
           {{ t(item.title) }}

@@ -9,7 +9,7 @@ import TopNavAppLogo from "@/modules/common/components/navigation/TopNavAppLogo.
 import TopNavToolbar from "@/modules/common/components/navigation/TopNavToolbar.vue";
 import { client } from "@/modules/thrs/graphql/client";
 import { ThrsModules } from "@/modules/thrs/lib/consts.types";
-import { DividerVerticalIcon } from "@radix-icons/vue";
+import { RiSeparator } from "@remixicon/vue";
 import { provideClient } from "@urql/vue";
 import { computed, provide } from "vue";
 import { useRoute } from "vue-router";
@@ -54,7 +54,7 @@ provide("currentModule", currentModuleKey);
 
       <template #right-content>
         <ClearChartHistory />
-        <DividerVerticalIcon class="text-disabled-foreground" />
+        <RiSeparator class="text-disabled-foreground" />
         <SimulationActions class="max-md:hidden" />
       </template>
     </TopNavToolbar>
