@@ -2,7 +2,7 @@
 import { Badge } from "@/components/ui/badge";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { cn } from "@/modules/common/lib/utils";
-import { TriangleAlert } from "lucide-vue-next";
+import { RiAlertLine } from "@remixicon/vue";
 import { HTMLAttributes, ref, toRefs, watch } from "vue";
 import { useI18n } from "vue-i18n";
 import { useAlarmsStore } from "../../stores/alarms";
@@ -33,7 +33,7 @@ watch(alarmsStatus, (newStatus) => {
         "
         variant="destructive"
       >
-        <TriangleAlert />
+        <RiAlertLine />
         {{ t("loads.dashboard.alarms", { count: activeAlarms.length }) }}
       </Badge>
     </PopoverTrigger>
@@ -44,9 +44,7 @@ watch(alarmsStatus, (newStatus) => {
         class="bg-popover grid gap-2 rounded-md px-6 py-4"
       >
         <header class="flex items-center gap-3 text-lg font-semibold">
-          <TriangleAlert class="text-destructive-dull inline size-5 flex-shrink-0" />{{
-            alarm.name
-          }}
+          <RiAlertLine class="text-destructive-dull inline size-5 flex-shrink-0" />{{ alarm.name }}
         </header>
         <p
           v-html="

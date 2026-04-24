@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ValidationStatus } from "@/modules/domestic/types";
-import { ExclamationTriangleIcon } from "@radix-icons/vue";
+import { RiAlertLine } from "@remixicon/vue";
 import { inject, Ref } from "vue";
 
 defineProps<{ state?: ValidationStatus; title: string; selectable?: boolean }>();
@@ -28,7 +28,7 @@ const disabled = inject<Ref<boolean>>("disabled");
       </slot>
       <span class="grow" />
       <slot name="top-right">
-        <ExclamationTriangleIcon class="text-primary h-[1.25em] w-[1.25em]" />
+        <RiAlertLine class="text-primary h-[1.25em] w-[1.25em]" />
       </slot>
     </span>
 

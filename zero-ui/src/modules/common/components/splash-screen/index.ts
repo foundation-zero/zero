@@ -1,6 +1,6 @@
 export { default as SplashScreen } from "./SplashScreen.vue";
 
-import { Heater, LampCeiling, Wind } from "lucide-vue-next";
+import { RiLightbulbLine, RiTempHotLine, RiWindyLine } from "@remixicon/vue";
 import type { Component } from "vue";
 
 export type SplashAppLink = {
@@ -34,7 +34,7 @@ export const SPLASH_APP_LINKS: SplashAppLink[] = [
     nameKey: "views.splash.apps.loads.title",
     descriptionKey: "views.splash.apps.loads.description",
     to: "/loads",
-    icon: Wind,
+    icon: RiWindyLine,
     glow: "color-mix(in srgb, var(--brand-dull) 42%, transparent)",
     border: "var(--brand-dull)",
     shadow: "var(--brand-dull)",
@@ -45,7 +45,7 @@ export const SPLASH_APP_LINKS: SplashAppLink[] = [
     nameKey: "views.splash.apps.thrs.title",
     descriptionKey: "views.splash.apps.thrs.description",
     to: "/thrs",
-    icon: Heater,
+    icon: RiTempHotLine,
     glow: "color-mix(in srgb, var(--warning-dull) 38%, transparent)",
     border: "var(--warning-dull)",
     shadow: "var(--warning-dull)",
@@ -56,7 +56,7 @@ export const SPLASH_APP_LINKS: SplashAppLink[] = [
     nameKey: "views.splash.apps.domestic.title",
     descriptionKey: "views.splash.apps.domestic.description",
     to: "/domestic",
-    icon: LampCeiling,
+    icon: RiLightbulbLine,
     glow: "color-mix(in srgb, var(--constructive-dull) 38%, transparent)",
     border: "var(--constructive-dull)",
     shadow: "var(--constructive-dull)",

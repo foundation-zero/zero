@@ -10,8 +10,8 @@ import {
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { useSimulationStore } from "@/modules/thrs/stores/simulation";
 import { tScoped } from "@common/lib/utils";
+import { RiPauseLine, RiPlayLine, RiRestartLine, RiSettingsLine } from "@remixicon/vue";
 import { useLocalStorage } from "@vueuse/core";
-import { PauseIcon, Play, RedoDot, Settings } from "lucide-vue-next";
 import { toRefs } from "vue";
 
 const { pause, play, step } = useSimulationStore();
@@ -44,7 +44,7 @@ const next = () => step(playbackRate.value);
           size="icon"
           :disabled="isRunning"
         >
-          <Settings />
+          <RiSettingsLine />
         </Button>
       </PopoverTrigger>
       <PopoverContent class="z-10">
@@ -77,8 +77,8 @@ const next = () => step(playbackRate.value);
       :class="{ 'text-brand': isRunning }"
       @click="toggle()"
     >
-      <PauseIcon v-if="isRunning" />
-      <Play v-else />
+      <RiPauseLine v-if="isRunning" />
+      <RiPlayLine v-else />
     </Button>
 
     <Button
@@ -87,7 +87,7 @@ const next = () => step(playbackRate.value);
       :disabled="isProcessing || isRunning"
       @click="next()"
     >
-      <RedoDot />
+      <RiRestartLine />
     </Button>
   </div>
 </template>

@@ -5,7 +5,7 @@ import { LightsSlider } from "@common/components/lights-slider";
 import { ListItem } from "@common/components/list";
 import { ZSpacer } from "@common/components/spacer";
 import { ratioAsPercentage } from "@common/lib/utils";
-import { LampCeiling, LampWallUp } from "lucide-vue-next";
+import { RiLightbulbFill, RiLightbulbLine } from "@remixicon/vue";
 import { computed, inject, Ref, ref, toRef, watch } from "vue";
 import { getContext } from ".";
 
@@ -41,15 +41,15 @@ const commit = () => context.commit(props.control, brightness);
 <template>
   <ListItem class="flex-col space-y-3 py-6">
     <span class="flex w-full items-center">
-      <LampCeiling
+      <RiLightbulbLine
         v-if="control.name === 'Ambient'"
         class="mr-3 inline"
-        :size="18"
+        size="18"
       />
-      <LampWallUp
+      <RiLightbulbFill
         v-else
         class="mr-3 inline"
-        :size="18"
+        size="18"
       />
       <label class="text-md text-muted-foreground font-medium"> {{ control.name }}</label>
       <ZSpacer />

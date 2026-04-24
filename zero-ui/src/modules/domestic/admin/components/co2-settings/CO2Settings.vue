@@ -12,7 +12,7 @@ import { useRoomStore } from "@/modules/domestic/stores/rooms";
 import { ResponsivePopup } from "@common/components/responsive-dialog";
 import { isCO2Control, updateSetpointWhenControlsHaveChanged } from "@common/lib/utils";
 
-import { Settings } from "lucide-vue-next";
+import { RiSettingsLine } from "@remixicon/vue";
 import { computed, ref, toRefs } from "vue";
 import { useI18n } from "vue-i18n";
 
@@ -49,7 +49,7 @@ const save = () => {
     :description="t('views.co2Settings.description')"
   >
     <template #trigger>
-      <button><Settings /></button>
+      <button><RiSettingsLine /></button>
     </template>
     <div class="max-md:p-4">
       <NumberField

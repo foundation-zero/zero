@@ -12,7 +12,7 @@ import { ThrsModules } from "@/modules/thrs/lib/consts";
 import { controlValuesForm, MutationType } from "@/modules/thrs/stores/thrs";
 import { PumpControl } from "@/modules/thrs/types";
 import { toUpperCamelCase } from "@common/lib/utils";
-import { Loader2Icon, SendIcon } from "lucide-vue-next";
+import { RiLoader2Line, RiSendPlaneLine } from "@remixicon/vue";
 import { toRef } from "vue";
 
 const props = defineProps<{
@@ -75,11 +75,11 @@ const { submit, isSubmitting, error, dutypoint, on } = controlValuesForm(
           :disabled="isSubmitting || (!dutypoint.isDirty.value && !on.isDirty.value)"
           @click="submit"
         >
-          <Loader2Icon
+          <RiLoader2Line
             v-if="isSubmitting"
             class="animate-spin"
           />
-          <SendIcon v-else />
+          <RiSendPlaneLine v-else />
         </Button>
       </div>
     </div>

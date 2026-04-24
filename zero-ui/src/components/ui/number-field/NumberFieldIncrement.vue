@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { cn } from "@common/lib/utils";
+import { RiAddLine } from "@remixicon/vue";
 import { reactiveOmit } from "@vueuse/core";
-import { Plus } from "lucide-vue-next";
 import type { NumberFieldIncrementProps } from "reka-ui";
 import { NumberFieldIncrement, useForwardProps } from "reka-ui";
 import type { HTMLAttributes } from "vue";
@@ -25,7 +25,7 @@ const forwarded = useForwardProps(delegatedProps);
     "
   >
     <slot>
-      <Plus class="h-4 w-4" />
+      <RiAddLine class="h-4 w-4" />
     </slot>
   </NumberFieldIncrement>
 </template>

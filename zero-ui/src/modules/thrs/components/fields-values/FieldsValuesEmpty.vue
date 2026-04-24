@@ -7,7 +7,7 @@ import {
   EmptyTitle,
 } from "@/components/ui/empty";
 import { tScoped } from "@/modules/common/lib/utils";
-import { FilterX } from "lucide-vue-next";
+import { RiFilterOffLine } from "@remixicon/vue";
 import { getContext } from ".";
 
 const t = tScoped("thrs.components.fieldsValues.empty");
@@ -21,7 +21,7 @@ const { selected } = getContext();
   >
     <EmptyHeader>
       <EmptyMedia variant="icon">
-        <FilterX />
+        <RiFilterOffLine />
       </EmptyMedia>
     </EmptyHeader>
     <EmptyTitle>{{ t("title") }}</EmptyTitle>
