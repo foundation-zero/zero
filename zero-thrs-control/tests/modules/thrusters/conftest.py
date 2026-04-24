@@ -1,5 +1,6 @@
 from datetime import datetime, timedelta
 from pytest import fixture
+from thrs.classes.machine_state_logger import MachineStateLoggingService
 from thrs.control.modules.thrusters import (
     ThrustersAlarms,
     ThrustersControl,
@@ -59,7 +60,9 @@ def io_mapping():
 
 @fixture
 def control(executor):
-    return ThrustersControl(ThrustersParameters(), executor.time)
+    return ThrustersControl(
+        ThrustersParameters(), executor.time, MachineStateLoggingService()
+    )
 
 
 @fixture

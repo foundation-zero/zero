@@ -1,12 +1,11 @@
 from datetime import datetime
-from typing import Callable, Literal
+from typing import Callable, Literal, NoReturn
 from pydantic import model_validator
 
 from transitions import Machine, State
 
 from thrs.classes.machine_state_logger import (
-    MachineStateLoggingService,
-    MachineStateValuesType,
+    StateLogger,
 )
 from thrs.control.controllers import Controller, FlowBalanceController
 from thrs.db.models.machine_state import (
@@ -112,12 +111,24 @@ class ThrustersControl(
         ThrustersParameters,
         ThrustersControlMode,
     ],
-    MachineStateLoggingService,
 ):
     state: str  # Set by transitions logic
+    _states: list[State]
+    _transitions: list[dict]
+
+    last_state: str = "Unknown"
+    last_evaluated_conditions = []
+    last_trigger_name: str | None = None
+
+    _state_machine: Machine
+    state_logger: "StateLogger"
+    _parameters: "ThrustersParameters"
 
     def __init__(
-        self, parameters: ThrustersParameters, time_fn: Callable[[], datetime]
+        self,
+        parameters: ThrustersParameters,
+        time_fn: Callable[[], datetime],
+        state_logger: StateLogger,
     ) -> None:
         self._parameters = parameters
         self._time: Callable[[], datetime] = time_fn
@@ -126,29 +137,19 @@ class ThrustersControl(
         )
 
         # State machine setup
-        self.configure_state_machine_states()
-        self.configure_state_machine_transitions()
-
-        self._state_machine = Machine(
-            model=self,
-            states=self._states,
-            transitions=self._transitions,
-            initial="idle",
-            before_state_change="_before_log",
-            after_state_change="_after_log",
+        self._init_state_machine_states()
+        self._init_state_machine_transitions()
+        self._state_machine = state_logger.create_logged_state_machine(
+            self, transitions=self._transitions, states=self._states, initial="idle"
         )
-        self.create_control_methods(parameters)
+        self._init_controllers(parameters)
 
         # Log configuration
-        self._last_control_values: ThrustersControlValues = self._current_control_values
-        self.log_model_initial_state(parameters, MachineStateValuesType.PARAMETERS)
-        self.log_model_initial_state(
-            self._current_control_values, MachineStateValuesType.CONTROL
-        )
-        self.setup_condition_tracking(self._transitions)
-        self.setup_transition_tracking(self._transitions)
+        state_logger.log_parameters_initial_state(parameters)
 
-    def create_control_methods(self, parameters):
+        self.state_logger = state_logger
+
+    def _init_controllers(self, parameters):
         if not hasattr(self, "_state_machine") or self._state_machine is None:
             raise ValueError(
                 "State machine must be initialized before creating control methods"
@@ -226,7 +227,7 @@ class ThrustersControl(
             self._time,
         )
 
-    def configure_state_machine_transitions(self):
+    def _init_state_machine_transitions(self):
         """Define the transitions between states, their triggers and conditions."""
         self._transitions = [
             {
@@ -267,7 +268,7 @@ class ThrustersControl(
             },
         ]
 
-    def configure_state_machine_states(self):
+    def _init_state_machine_states(self):
         """Define the states and their entry/exit actions."""
         self._states = [
             State(
@@ -317,12 +318,8 @@ class ThrustersControl(
     def parameters(self) -> ThrustersParameters:
         return self._parameters
 
+    @StateLogger.log_parameters
     def update_parameters(self, parameters: ThrustersParameters):
-        self.log_thrsvalues_on_differ(
-            values_from=self._parameters,
-            values_to=parameters,
-            values_type=MachineStateValuesType.PARAMETERS,
-        )
         self._parameters = parameters
 
     def modes(self) -> list[str]:
@@ -341,6 +338,7 @@ class ThrustersControl(
     def initial(self) -> ControlResult[ThrustersControlValues]:
         return ControlResult(self._time(), _INITIAL_CONTROL_VALUES(self._time()))
 
+    @StateLogger.log_warnings
     def control(
         self, sensor_values: ThrustersSensorValues
     ) -> ControlResult[ThrustersControlValues]:
@@ -357,15 +355,6 @@ class ThrustersControl(
 
         # Basic controls
         self._control_flow_balance(sensor_values)
-
-        # Log control values if changed
-        self.log_thrsvalues_on_differ(
-            values_from=self._last_control_values,
-            values_to=self._current_control_values,
-            values_type=MachineStateValuesType.CONTROL,
-        )
-        self._last_control_values = self._current_control_values
-
         return ControlResult(self._time(), self._current_control_values)
 
     def _is_overheating(self, sensor_values: ThrustersSensorValues):
@@ -546,7 +535,7 @@ class ThrustersControl(
 
     def _activate_pump(self, sensor_values: ThrustersSensorValues):
         if self._active_pump:
-            self.log_and_raise_warning("A pump was already active upon selecting")
+            self.raise_warning("A pump was already active upon selecting")
         else:
             if self._most_recently_active_pump == "pump1":
                 self._most_recently_active_pump = "pump2"
@@ -557,7 +546,7 @@ class ThrustersControl(
                 self._active_pump = self._current_control_values.thrusters_pump_1
 
             # Example event log
-            self._machinestate_logger.log_event(
+            self.state_logger.log_event(
                 MachineStateEvent(
                     control_name=self.__class__.__name__,
                     event_name="pump activated",
@@ -568,11 +557,14 @@ class ThrustersControl(
 
     def _deactivate_pump(self, sensor_values: ThrustersSensorValues):
         if not self._active_pump:
-            self.log_and_raise_warning("No pump active when deactivating")
+            self.raise_warning("No pump active when deactivating")
 
         self._active_pump.on = Stamped(value=False, timestamp=self._time())
         self._active_pump.dutypoint = Stamped(value=0, timestamp=self._time())
         self._active_pump = None
+
+    def raise_warning(self, message: str) -> NoReturn:
+        raise Warning(message)
 
 
 class ThrustersAlarms(BaseAlarms):

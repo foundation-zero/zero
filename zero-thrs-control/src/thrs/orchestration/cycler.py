@@ -1,7 +1,7 @@
 import warnings
 from thrs.classes.executor import ExecutionResult
-from thrs.classes.machine_state_logger import MachineStateLoggingService
-from thrs.input_output.alarms import Alarm, BaseAlarms
+from thrs.classes.machine_state_logger import StateLogger
+from thrs.input_output.alarms import BaseAlarms
 from thrs.input_output.base import SimulationInputs
 from thrs.orchestration.collector import Collector
 from thrs.orchestration.executor import (
@@ -20,6 +20,7 @@ class Cycler:
         self._alarms = alarms
         self._control_values = self._control.initial().values
 
+    @StateLogger.log_alarms
     async def run(
         self, ticks: int, collector: Collector | None = None
     ) -> ExecutionResult | None:
@@ -42,27 +43,14 @@ class Cycler:
                     result.timestamp,
                 )
             self._control_values = self._control.control(result.sensor_values).values
-            alarms = self._alarms.check(
-                result.sensor_values, self._control_values
-            )  # Todo: required to log as well in transition log?
+            alarms = self._alarms.check(result.sensor_values, self._control_values)
+
             if alarms:
                 warnings.warn(
                     f"Alarms detected: {alarms}"
-                )  # TODO: properly handle alarms
-
-                self.log_alarms(alarms)
+                )  # These will be caught by the StateLogger.log_alarms
 
         return result
-
-    def log_alarms(self, alarms: list[Alarm]):
-        if not isinstance(self._control, MachineStateLoggingService):
-            warnings.warn(
-                f"Control '{self._control.__qualname__}' does not support machine state logging. Alarms will not be logged."
-            )
-            return
-
-        for alarm in alarms:
-            self._control.log_issue(message=alarm.code, severity=alarm.severity)
 
     def update_simulation_inputs(self, simulation_inputs: SimulationInputs):
         if isinstance(self._executor, SimulationExecutor):

@@ -17,3 +17,7 @@
 - "!include loads_sail_sets_combined.yaml"
 - "!include loads_sails.yaml"
 - "!include loads_variables.yaml"
+- "!include thrs_machinestate_event.yaml"
+- "!include thrs_machinestate_issue.yaml"
+- "!include thrs_machinestate_parameters.yaml"
+- "!include thrs_machinestate_transition.yaml"

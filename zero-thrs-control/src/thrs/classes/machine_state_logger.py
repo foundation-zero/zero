@@ -1,14 +1,16 @@
+from abc import abstractmethod
 from enum import Enum
+from functools import partial, wraps
 import json
-from typing import Any, Literal, NoReturn, Type
+from typing import TYPE_CHECKING, Any, Literal
+import warnings
 
 from sqlmodel import SQLModel, Session
+from transitions import Machine, State
 from thrs.classes import database
 from thrs.db.models.machine_state import (
-    MachineStateControlValue,
     MachineStateEvent,
     MachineStateIssue,
-    MachineStateGenericUpdate,
     MachineStateParametersUpdate,
     MachineStateTransition,
 )
@@ -17,17 +19,19 @@ from thrs.input_output.base import ThrsValues
 from thrs.utils.list import ensure_list
 from thrs.utils.model import get_model_from_to_diff
 
+from thrs.classes.control import Control
+
+if TYPE_CHECKING:
+    from thrs.control.modules.thrusters import ThrustersParameters
+
 
 class MachineStateValuesType(Enum):
     PARAMETERS = "parameters"
     CONTROL = "control"
 
 
-class MachineStateLogger:
+class _MachineStateLogger:
     """Provide direct log methods for the state machine, saving to the database."""
-
-    def __init__(self) -> None:
-        self.create_machinestate_tables()
 
     def log_event(self, event: MachineStateEvent):
         self._log_model(event)
@@ -35,9 +39,7 @@ class MachineStateLogger:
     def log_transition(self, transition_change: MachineStateTransition):
         self._log_model(transition_change)
 
-    def log_state_update(
-        self, parameter: MachineStateParametersUpdate | MachineStateControlValue
-    ):
+    def log_parameters(self, parameter: MachineStateParametersUpdate):
         self._log_model(parameter)
 
     def log_alarm(self, alarm_name: str, severity: Severity, message: str):
@@ -70,60 +72,160 @@ class MachineStateLogger:
             print(f"Failed to log model {model}: {e}")
             # raise e
 
-    def create_machinestate_tables(self):
-        MachineStateIssue.metadata.create_all(database.db.engine)
-        MachineStateTransition.metadata.create_all(database.db.engine)
-        MachineStateParametersUpdate.metadata.create_all(database.db.engine)
-        MachineStateControlValue.metadata.create_all(database.db.engine)
-        MachineStateEvent.metadata.create_all(database.db.engine)
+
+class StateLogger:
+    @abstractmethod
+    def create_logged_state_machine(
+        self,
+        control: "Control",
+        transitions: list[dict],
+        states: list[State],
+        initial: str,
+    ) -> Machine: ...
+
+    @property
+    def machinestate_logger(self) -> _MachineStateLogger: ...
+
+    def log_issue(self, message: str, severity: Severity): ...
+    def log_event(self, event: MachineStateEvent): ...
+
+    @abstractmethod
+    def log_parameters_on_change(
+        self,
+        values_from: ThrsValues,
+        values_to: ThrsValues,
+    ): ...
+    @abstractmethod
+    def log_parameters_initial_state(self, initial_state: ThrsValues): ...
+    @abstractmethod
+    def log_warning(self, message: str): ...
+
+    @staticmethod
+    def log_parameters(func):
+        def wrapper(self: "Control", parameters: "ThrustersParameters"):
+            if hasattr(self, "state_logger") and self.state_logger:
+                self.state_logger.log_parameters_on_change(
+                    values_from=self._parameters,
+                    values_to=parameters,
+                )
+            self._parameters = parameters
+            return func(self, parameters)
+
+        return wrapper
+
+    @staticmethod
+    def log_warnings(func):
+        @wraps(func)
+        def wrapper(self: "Control", *args, **kwargs):
+            try:
+                return func(self, *args, **kwargs)
+            except Warning as e:
+                if hasattr(self, "state_logger") and self.state_logger:
+                    self.state_logger.log_warning(str(e))
+                raise
+
+        return wrapper
+
+    @staticmethod
+    def log_alarms(func):
+        @wraps(func)
+        async def wrapper(self: "Control", *args, **kwargs):
+            if hasattr(self, "state_logger") and self.state_logger:
+                with warnings.catch_warnings(record=True) as w:
+                    warnings.simplefilter("always")
+                    result = await func(self, *args, **kwargs)
+                    for warning in w:
+                        if isinstance(warning.message, Warning):
+                            self.state_logger.log_issue(
+                                message=str(warning.message), severity=Severity.ALARM
+                            )
+            return result
+
+        return wrapper
 
 
-class MachineStateLoggingService:
+class MachineStateLoggingServiceNoop(StateLogger):
+    """A no-op version of the MachineStateLoggingService, for when logging is not desired."""
+
+    def create_logged_state_machine(
+        self,
+        control: "Control",
+        transitions: list[dict],
+        states: list[State],
+        initial: str,
+    ) -> Machine:
+        """Creates a MachineStateConstruct with the given states, transitions and initial state. The construct can then be applied to a control to enable logging."""
+
+        return Machine(
+            model=control,
+            states=states,
+            transitions=transitions,
+            initial=initial,
+        )
+
+
+class MachineStateLoggingService(StateLogger):
     """Service to be inherited by a state machine using class. Providing logging capabilities for state transitions (and the triggered condition(s)), changing THRS values, custom events and issues."""
 
     state: str  # Set by transitions logic
     _initialized: bool = False
+    last_trigger_name = "Unknown"
+    last_evaluated_conditions = []
 
-    @property
-    def machinestate_logger(self) -> MachineStateLogger:
-        self.ensure_init()
-        return self._machinestate_logger
+    def create_logged_state_machine(
+        self,
+        control: "Control",
+        transitions: list[dict],
+        states: list[State],
+        initial: str,
+    ) -> Machine:
+        """Creates a MachineStateConstruct with the given states, transitions and initial state. The construct can then be applied to a control to enable logging."""
 
-    def ensure_init(self):
-        """Ensures that the logger is initialized. __init__ is not used to avoid issues with multiple inheritance and to allow for lazy initialization."""
-        if self._initialized:
-            return
-        self._initialized = True
+        self.setup_condition_tracking(
+            transitions, control
+        )  # Setup before Machine creation
 
-        self._machinestate_logger: MachineStateLogger = MachineStateLogger()
+        machine = Machine(
+            model=control,
+            states=states,
+            transitions=transitions,
+            initial=initial,
+        )
 
-        self._last_state: str = "Unknown"
-        self._last_evaluated_conditions = []
-        self._last_trigger_name: str | None = None
+        self.setup_transition_tracking(transitions, control)
 
-    def setup_transition_tracking(self, transitions: list[dict[str, Any]]):
+        machine.before_state_change = partial(self._before_log, control)
+        machine.after_state_change = partial(self._after_log, control)
+
+        return machine
+
+    def setup_transition_tracking(
+        self, transitions: list[dict[str, Any]], control: "Control"
+    ):
         """Wraps the trigger methods of the transitions to track the last triggered transition."""
         for t in transitions:
             trigger_name = t["trigger"]
-            trigger_method = getattr(self, trigger_name)
+            trigger_method = getattr(control, trigger_name)
 
             def wrapper(trigger_method=trigger_method, trigger_name=trigger_name):
                 def _inner(*a, **kw):
-                    self._last_trigger_name = trigger_name
+                    self.last_trigger_name = trigger_name
                     return trigger_method(*a, **kw)
 
                 return _inner
 
-            setattr(self, trigger_name, wrapper())
+            setattr(control, trigger_name, wrapper())
 
-    def setup_condition_tracking(self, transitions: list[dict[str, Any]]):
+    def setup_condition_tracking(
+        self, transitions: list[dict[str, Any]], control: "Control"
+    ):
         """Wraps the condition methods to track the last created conditions."""
 
         def make_wrapper(func, condition_name):
             def wrapper(*a, **kw):
                 result = func(*a, **kw)
                 if result:
-                    self._last_evaluated_conditions.append(condition_name)
+                    self.last_evaluated_conditions.append(condition_name)
                 return result
 
             return wrapper
@@ -139,65 +241,65 @@ class MachineStateLoggingService:
                         func = c
                     else:
                         name = c
-                        func = getattr(self, c)
-
+                        func = getattr(control, c)
                     wrapped.append(make_wrapper(func, name))
 
                 transition["conditions"] = wrapped
 
-    def _before_log(self, sensor_values):
-        """Called before the transition is made, to track the last state."""
-        self._last_state = self.state
+    @property
+    def machinestate_logger(self) -> _MachineStateLogger:
+        self._ensure_init()
+        return self._machinestate_logger
 
-    def _after_log(self, sensor_values):
+    def _ensure_init(self):
+        """Ensures that the logger is initialized. __init__ is not used to avoid issues with multiple inheritance and to allow for lazy initialization."""
+        if self._initialized:
+            return
+        self._initialized = True
+
+        self._machinestate_logger: _MachineStateLogger = _MachineStateLogger()
+
+    def _before_log(self, control: "Control", sensor_values):
+        """Called before the transition is made, to track the last state."""
+        self.last_state = control.state
+
+    def _after_log(self, control: "Control", sensor_values):
         """Called after the transition is made, to log the transition and reset the tracked conditions."""
         condition_name: str = (
-            ", ".join(self._last_evaluated_conditions)
-            if self._last_evaluated_conditions
+            ", ".join(self.last_evaluated_conditions)
+            if self.last_evaluated_conditions
             else "Unknown"
         )
-
         transition_change = MachineStateTransition(
-            control_name=self.__class__.__name__,
-            trigger_name=self._last_trigger_name or "Unknown",
+            control_name=control.__class__.__name__,
+            trigger_name=self.last_trigger_name or "Unknown",
             condition_name=condition_name,
-            state_from=self._last_state,
-            state_to=self.state,
+            state_from=self.last_state,
+            state_to=control.state,
         )
-        self.machinestate_logger.log_transition(transition_change)
-        self._last_evaluated_conditions = []
+        self._machinestate_logger.log_transition(transition_change)
+        self.last_evaluated_conditions = []
 
-    def log_and_raise_warning(self, message: str) -> NoReturn:
-        """Logs a warning and raises it as an exception."""
+    def log_warning(self, message: str):
         self.log_issue(message, Severity.WARNING)
-        raise Warning(message)
 
-    def log_model_initial_state(
-        self, initial_state: ThrsValues, values_type: MachineStateValuesType
-    ):
-        """Logs the initial state of the parameter or control values when they are first created. Not saving a from state and difference."""
+    def log_parameters_initial_state(self, initial_state: ThrsValues):
+        """Logs the initial state of the parameter values when they are first created. Not saving a from state and difference."""
 
-        cls: Type[MachineStateGenericUpdate] = (
-            MachineStateControlValue
-            if values_type == MachineStateValuesType.CONTROL
-            else MachineStateParametersUpdate
+        self.machinestate_logger.log_parameters(
+            MachineStateParametersUpdate(
+                control_name=self.__class__.__name__,
+                data_container_name=type(initial_state).__name__,
+                parameters_from=None,
+                parameters_to=initial_state.model_dump_json(),
+                parameters_diff=None,
+            )
         )
 
-        parameters_log: MachineStateGenericUpdate = cls(
-            control_name=self.__class__.__name__,
-            data_container_name=type(initial_state).__name__,
-            parameters_from=None,
-            parameters_to=initial_state.model_dump_json(),
-            parameters_diff=None,
-        )
-
-        self.machinestate_logger.log_state_update(parameters_log)
-
-    def log_thrsvalues_on_differ(
+    def log_parameters_on_change(
         self,
         values_from: ThrsValues,
         values_to: ThrsValues,
-        values_type: MachineStateValuesType,
     ):
         """Logs only the changes in the thrs values if they differ, accompanied by the full from and to values."""
         if type(values_from) is not type(values_to):
@@ -213,21 +315,15 @@ class MachineStateLoggingService:
                 get_model_from_to_diff(model_to, model_from)
             )
 
-            cls: Type[MachineStateGenericUpdate] = (
-                MachineStateControlValue
-                if values_type == MachineStateValuesType.CONTROL
-                else MachineStateParametersUpdate
+            self.machinestate_logger.log_parameters(
+                MachineStateParametersUpdate(
+                    control_name=self.__class__.__name__,
+                    data_container_name=type(values_from).__name__,
+                    parameters_from=values_from.model_dump_json(),
+                    parameters_to=values_to.model_dump_json(),
+                    parameters_diff=json.dumps(model_diff),
+                )
             )
-
-            parameters_log: MachineStateGenericUpdate = cls(
-                control_name=self.__class__.__name__,
-                data_container_name=type(values_from).__name__,
-                parameters_from=values_from.model_dump_json(),
-                parameters_to=values_to.model_dump_json(),
-                parameters_diff=json.dumps(model_diff),
-            )
-
-            self.machinestate_logger.log_state_update(parameters_log)
 
     def log_issue(self, message: str, severity: Severity):
         self.machinestate_logger.log_issue(
@@ -237,3 +333,6 @@ class MachineStateLoggingService:
                 issue_details=message,
             )
         )
+
+    def log_event(self, event: MachineStateEvent):
+        self.machinestate_logger.log_event(event)

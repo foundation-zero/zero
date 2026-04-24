@@ -3,6 +3,9 @@ from typing import Generator
 from pytest import fixture
 
 from tests.modules.thrusters.conftest import ThrustersSimulationExecutor
+from thrs.classes.machine_state_logger import (
+    MachineStateLoggingService,
+)
 from thrs.control.modules.thrusters import ThrustersControl, ThrustersParameters
 from thrs.input_output.base import Stamped
 from thrs.input_output.definitions.simulation import (
@@ -60,4 +63,8 @@ def executor(
 
 @fixture
 def thrusters_control(executor) -> ThrustersControl:
-    return ThrustersControl(ThrustersParameters(), executor.time)
+    return ThrustersControl(
+        parameters=ThrustersParameters(),
+        time_fn=executor.time,
+        state_logger=MachineStateLoggingService(),
+    )

@@ -1,0 +1,3 @@
+table:
+  name: machinestate_event
+  schema: thrs

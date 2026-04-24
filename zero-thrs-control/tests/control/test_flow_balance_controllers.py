@@ -12,12 +12,16 @@ def test_all_valves_active(thrusters_control: ThrustersControl):
     thrusters_control._flow_balance_controller([10.0, 31.0])
 
     assert (
-        thrusters_control._current_values.thrusters_flowcontrol_aft.setpoint.value > 0
+        thrusters_control._current_control_values.thrusters_flowcontrol_aft.setpoint.value
+        > 0
     )
     assert (
-        thrusters_control._current_values.thrusters_flowcontrol_fwd.setpoint.value < 1
+        thrusters_control._current_control_values.thrusters_flowcontrol_fwd.setpoint.value
+        < 1
     )
-    assert thrusters_control._current_values.thrusters_pump_1.dutypoint.value > 0
+    assert (
+        thrusters_control._current_control_values.thrusters_pump_1.dutypoint.value > 0
+    )
 
 
 def test_no_valves_active(thrusters_control: ThrustersControl):
@@ -29,12 +33,16 @@ def test_no_valves_active(thrusters_control: ThrustersControl):
     thrusters_control._flow_balance_controller([10.0, 31.0])
 
     assert (
-        thrusters_control._current_values.thrusters_flowcontrol_aft.setpoint.value == 0
+        thrusters_control._current_control_values.thrusters_flowcontrol_aft.setpoint.value
+        == 0
     )
     assert (
-        thrusters_control._current_values.thrusters_flowcontrol_fwd.setpoint.value == 0
+        thrusters_control._current_control_values.thrusters_flowcontrol_fwd.setpoint.value
+        == 0
     )
-    assert thrusters_control._current_values.thrusters_pump_1.dutypoint.value == 0
+    assert (
+        thrusters_control._current_control_values.thrusters_pump_1.dutypoint.value == 0
+    )
 
 
 def test_inactive_valves(thrusters_control: ThrustersControl):
@@ -48,23 +56,31 @@ def test_inactive_valves(thrusters_control: ThrustersControl):
     thrusters_control._flow_balance_controller([0, 29.0])
 
     assert (
-        thrusters_control._current_values.thrusters_flowcontrol_aft.setpoint.value == 0
+        thrusters_control._current_control_values.thrusters_flowcontrol_aft.setpoint.value
+        == 0
     )
     assert (
-        thrusters_control._current_values.thrusters_flowcontrol_fwd.setpoint.value > 0
+        thrusters_control._current_control_values.thrusters_flowcontrol_fwd.setpoint.value
+        > 0
     )
     assert thrusters_control._pump_controller.setpoint == 30.0
-    assert thrusters_control._current_values.thrusters_pump_1.dutypoint.value > 0
+    assert (
+        thrusters_control._current_control_values.thrusters_pump_1.dutypoint.value > 0
+    )
 
     thrusters_control._flow_balance_controller.set_active_valves([False, False])
 
     thrusters_control._flow_balance_controller([0, 29.0])
 
     assert (
-        thrusters_control._current_values.thrusters_flowcontrol_aft.setpoint.value == 0
+        thrusters_control._current_control_values.thrusters_flowcontrol_aft.setpoint.value
+        == 0
     )
     assert (
-        thrusters_control._current_values.thrusters_flowcontrol_fwd.setpoint.value == 0
+        thrusters_control._current_control_values.thrusters_flowcontrol_fwd.setpoint.value
+        == 0
     )
     assert thrusters_control._pump_controller.setpoint == 0.0
-    assert thrusters_control._current_values.thrusters_pump_1.dutypoint.value == 0
+    assert (
+        thrusters_control._current_control_values.thrusters_pump_1.dutypoint.value == 0
+    )

@@ -1,8 +1,12 @@
 from dataclasses import dataclass
 from datetime import datetime
-from typing import Callable, Protocol
+from typing import TYPE_CHECKING, Callable, Protocol
+
 
 from thrs.input_output.base import ThrsValues
+
+if TYPE_CHECKING:
+    from thrs.classes.machine_state_logger import StateLogger
 
 
 @dataclass
@@ -21,10 +25,15 @@ class Control[S, C, P, M](Protocol):
     @property
     def parameters(self) -> P: ...
 
+    _parameters: "P"
+
     @property
     def mode(self) -> M | None: ...
 
     def update_parameters(self, parameters: P): ...
+
+    state: str  # Set by transitions logic
+    state_logger: "StateLogger"
 
 
 class ControlMode(ThrsValues):
