@@ -38,7 +38,7 @@ docker compose --profile <profile_name> up
 *   **risingwave**: Streaming database for real-time data processing and analytics.
 *   **hasura**: GraphQL engine providing an instant API over Postgres and RisingWave.
 *   **hass**: Home Assistant instance for home automation integration.
-*   **setup-postgres / setup-risingwave**: Initialization containers that configure schemas and sources on startup.
+*   **setup-risingwave**: Initialization container that configures RisingWave sources on startup.
 
 ### Data Tools
 *   **data-gen**: Python tool to generate synthetic data for testing.

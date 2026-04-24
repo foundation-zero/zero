@@ -23,9 +23,6 @@ ENV PATH="/app/.venv/bin:$PATH"
 
 COPY ./config.py ./config.py
 
-COPY ./postgres ./postgres
-COPY ./setup_postgres.py ./setup_postgres.py
-
 COPY ./risingwave ./risingwave
 COPY ./setup_risingwave.py ./setup_risingwave.py
 
