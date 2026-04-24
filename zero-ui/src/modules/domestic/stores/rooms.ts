@@ -10,15 +10,14 @@ import {
   subscribeToRooms,
 } from "@/modules/domestic/graphql/queries/rooms";
 import {
-  Blinds,
-  LightingGroups,
-  MutationRootSetAmplifierArgs,
-  MutationRootSetBlindArgs,
-  MutationRootSetLightingGroupArgs,
-  MutationRootSetLightingGroupsArgs,
-  MutationRootSetRoomCo2SetpointsArgs,
-  MutationRootSetRoomHumiditySetpointsArgs,
-  MutationRootSetRoomTemperatureSetpointArgs,
+  DomesticBlinds,
+  DomesticLightingGroups,
+  MutationRootDomesticSetAmplifiersArgs,
+  MutationRootDomesticSetBlindsArgs,
+  MutationRootDomesticSetLightingGroupsArgs,
+  MutationRootDomesticSetRoomCo2SetpointsArgs,
+  MutationRootDomesticSetRoomHumiditySetpointsArgs,
+  MutationRootDomesticSetRoomTemperatureSetpointsArgs,
 } from "@/modules/domestic/graphql/types.generated";
 import { createArea } from "@/modules/domestic/lib/mappers";
 import { Room, RoomGroup, ShipArea } from "@/modules/domestic/types";
@@ -41,8 +40,8 @@ export const useRoomStore = defineStore("rooms", () => {
   const emptyRoom: Room = {
     name: t("labels.emptyRoom"),
     group: RoomGroup.AFT,
-    roomControls: [],
-    roomSensors: [],
+    lightingGroups: [],
+    blinds: [],
     id: "empty",
   };
 
@@ -69,7 +68,7 @@ export const useRoomStore = defineStore("rooms", () => {
 
   // TODO: Find a better way to handle admin and user mutations
   const setTemperatureSetpoint = useDebounceMutation(
-    useMutation<Room, MutationRootSetRoomTemperatureSetpointArgs>(
+    useMutation<Room, MutationRootDomesticSetRoomTemperatureSetpointsArgs>(
       isAdmin.value ? setTemperatureSetpointForRoomMutation : setTemperatureSetpointMutation,
     ),
     (temperature: number) => ({
@@ -79,7 +78,7 @@ export const useRoomStore = defineStore("rooms", () => {
   );
 
   const toggleAmplifier = useDebounceMutation(
-    useMutation<Room, MutationRootSetAmplifierArgs>(
+    useMutation<Room, MutationRootDomesticSetAmplifiersArgs>(
       isAdmin.value ? setAmplifierForRoomMutation : setAmplifierMutation,
     ),
     (amplifierOn: boolean, roomId: string) => ({
@@ -89,24 +88,23 @@ export const useRoomStore = defineStore("rooms", () => {
     0,
   );
 
-  const setLightLevel = useDebounceMutation(
-    useMutation<LightingGroups, MutationRootSetLightingGroupArgs>(setLightingGroupsLevelMutation),
-    (lightId: string, level: number) => ({ ids: lightId, level }),
-  );
-
   const setLightingGroupsLevel = useDebounceMutation(
-    useMutation<LightingGroups, MutationRootSetLightingGroupsArgs>(setLightingGroupsLevelMutation),
+    useMutation<DomesticLightingGroups, MutationRootDomesticSetLightingGroupsArgs>(
+      setLightingGroupsLevelMutation,
+    ),
     (lightIds: string[], level: number) => ({ ids: lightIds, level }),
     0,
   );
 
   const setBlindsLevel = useDebounceMutation(
-    useMutation<Blinds, MutationRootSetBlindArgs>(setBlindsLevelMutation),
-    (blindId: string, level: number) => ({ ids: blindId, level }),
+    useMutation<DomesticBlinds, MutationRootDomesticSetBlindsArgs>(setBlindsLevelMutation),
+    (blindId: string, level: number) => ({ ids: [blindId], level }),
   );
 
   const setHumiditySetpoints = useDebounceMutation(
-    useMutation<Room, MutationRootSetRoomHumiditySetpointsArgs>(setHumiditySetpointMutation),
+    useMutation<Room, MutationRootDomesticSetRoomHumiditySetpointsArgs>(
+      setHumiditySetpointMutation,
+    ),
     (roomIds: string[], humidity: number) => ({
       ids: roomIds,
       humidity,
@@ -114,19 +112,22 @@ export const useRoomStore = defineStore("rooms", () => {
   );
 
   const setCO2Setpoints = useDebounceMutation(
-    useMutation<Room, MutationRootSetRoomCo2SetpointsArgs>(setCO2SetpointMutation),
+    useMutation<Room, MutationRootDomesticSetRoomCo2SetpointsArgs>(setCO2SetpointMutation),
     (roomIds: string[], co2: number) => ({
       ids: roomIds,
       co2,
     }),
   );
 
-  const { data: roomData } = useSubscription<GetAllRoomsQuery, Room[]>(
+  const { data: roomData, error: roomError } = useSubscription<GetAllRoomsQuery, Room[]>(
     {
       query: subscribeToRooms,
     },
     (_prev, result) => result.rooms ?? [],
   );
+  watch(roomError, (val) => {
+    console.error(val);
+  });
 
   const rooms = computed(() => roomData.value ?? []);
   const currentRoom = computed<Room>(
@@ -141,9 +142,6 @@ export const useRoomStore = defineStore("rooms", () => {
     createArea(RoomGroup.HALLWAYS, t("labels.roomGroup.hallways"), rooms.value),
   ]);
 
-  const allControls = computed(() => rooms.value.flatMap((room) => room.roomControls));
-  const allSensors = computed(() => rooms.value.flatMap((room) => room.roomSensors));
-
   watch(rooms, (rooms) => {
     if (currentRoomId.value === emptyRoom.id && rooms.length > 0) {
       currentRoomId.value = rooms[0].id;
@@ -155,15 +153,12 @@ export const useRoomStore = defineStore("rooms", () => {
   return {
     areas,
     rooms,
-    allControls,
-    allSensors,
     currentRoom,
     currentRoomId,
     setRoom,
     hasPendingRequests,
     setTemperatureSetpoint,
     toggleAmplifier,
-    setLightLevel,
     setLightingGroupsLevel,
     setBlindsLevel,
     setHumiditySetpoints,

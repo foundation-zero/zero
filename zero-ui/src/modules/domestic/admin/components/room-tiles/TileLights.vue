@@ -8,13 +8,13 @@ import { useToggleableLights } from ".";
 
 const props = defineProps<{ room: Room }>();
 
-const { controls, someLightsAreOn, toggle } = useToggleableLights(computed(() => [props.room]));
+const { groups, someLightsAreOn, toggle } = useToggleableLights(computed(() => [props.room]));
 </script>
 
 <template>
   <ValueTile
-    v-if="controls.length > 0"
-    :title="room.name"
+    v-if="groups.length > 0"
+    :title="room.name!"
     :class="{ on: someLightsAreOn }"
     selectable
     :state="ValidationStatus.OK"

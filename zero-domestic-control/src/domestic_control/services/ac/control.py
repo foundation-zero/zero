@@ -4,27 +4,24 @@ from functools import partial
 from typing import Callable, Coroutine, Generator, assert_never
 
 from domestic_control.messages import (
-    Room,
+    AirConditioning,
     RoomTemperatureSetpoint,
     RoomHumiditySetpoint,
     RoomCo2Setpoint,
 )
 from domestic_control.mqtt import (
-    ControlMessages,
     ControlReceive,
-    DataCollection,
 )
+from domestic_control.sink import Sink
 from domestic_control.services.ac.thrs import Thrs
-from .interface import TermodinamicaAc
+from .interface import AcInterface
 from .properties import (
-    TermodinamicaUpdate,
+    AcUpdate,
     AcProperty,
     TemperatureSetpoint,
     ActualTemperature,
     ActualHumidity,
     HumiditySetpoint,
-    ActualCo2,
-    Co2Setpoint,
 )
 from .constants import ROOM_INDICES
 import logging
@@ -42,30 +39,28 @@ class AcControl:
     Managing Termodinamica comms means looping through the rooms and their properties and checking if the values have changed.
     This is done in a single process to prevent overloading the system with too many requests.
     Queues are used to communicate between the different parts of the system.
-    _write_ops contains the write requests to the Termonidamica bus
+    _write_ops contains the write requests to the Termodinamica bus
     _control_messages is used to signal a change to the control process
     """
 
     def __init__(
         self,
         receiver: ControlReceive,
-        termodinamica: TermodinamicaAc,
+        termodinamica: AcInterface,
         thrs: Thrs,
-        data_collection: DataCollection,
+        data_collection: Sink,
     ):
         self._receiver = receiver
-        self._control_messages: asyncio.Queue[ControlMessages | TermodinamicaUpdate] = (
-            asyncio.Queue()
-        )
+        self._control_messages: asyncio.Queue[
+            RoomTemperatureSetpoint | RoomHumiditySetpoint | AcUpdate
+        ] = asyncio.Queue()
         self._rooms = {
-            id: Room(
+            id: AirConditioning(
                 id=id,
                 actual_temperature=None,
                 temperature_setpoint=None,
                 actual_humidity=None,
                 humidity_setpoint=None,
-                actual_co2=None,
-                co2_setpoint=None,
             )
             for id in ROOM_INDICES.keys()
         }
@@ -91,18 +86,14 @@ class AcControl:
                     HumiditySetpoint,
                 ),
                 (self._termodinamica.read_room_humidity, ActualHumidity),
-                (
-                    self._termodinamica.read_room_co2_setpoint,
-                    Co2Setpoint,
-                ),
-                (self._termodinamica.read_room_co2, ActualCo2),
             ]:
                 for room_id in ROOM_INDICES.keys():
                     yield partial(_read_data, op, room_id, property)
 
     async def _receive_control_messages(self):
         async for message in self._receiver.messages:
-            await self._control_messages.put(message)
+            if not isinstance(message, RoomCo2Setpoint):
+                await self._control_messages.put(message)
 
     async def _termodinamica_comms(self):
         reads = self.read_ops()
@@ -120,7 +111,7 @@ class AcControl:
                         f"Update for {room_id} {property}. Old value: {old_value}"
                     )
                     await self._control_messages.put(
-                        TermodinamicaUpdate(room=room_id, value=property)
+                        AcUpdate(room=room_id, value=property)
                     )
                     property.set(self._rooms[room_id])
 
@@ -149,7 +140,7 @@ class AcControl:
                 await self._thrs.set_room_temperature_setpoint(
                     msg_temp.id, msg_temp.temperature
                 )
-                await self._data_collection.send_room(self._rooms[message.id])
+                await self._data_collection.send(self._rooms[message.id])
             elif isinstance(message, RoomHumiditySetpoint):
                 self._rooms[message.id].humidity_setpoint = message.humidity
                 msg_hum: RoomHumiditySetpoint = message
@@ -166,24 +157,9 @@ class AcControl:
                 await self._thrs.set_room_humidity_setpoint(
                     msg_hum.id, msg_hum.humidity
                 )
-                await self._data_collection.send_room(self._rooms[message.id])
-            elif isinstance(message, RoomCo2Setpoint):
-                self._rooms[message.id].co2_setpoint = message.co2
-                msg_co2: RoomCo2Setpoint = message
-                logging.info(f"CO2 setpoint changed: {message.id}: {message.co2}")
-                await self._write_ops.put(
-                    partial(
-                        self._termodinamica.write_room_co2_setpoint,
-                        msg_co2.id,
-                        msg_co2.co2,
-                    )
-                )
-                await self._thrs.set_room_co2_setpoint(msg_co2.id, msg_co2.co2)
-                await self._data_collection.send_room(self._rooms[message.id])
-            elif isinstance(message, TermodinamicaUpdate):
-                logging.info(
-                    f"Termodinamica update received: {message.room}: {message.value}"
-                )
+                await self._data_collection.send(self._rooms[message.id])
+            elif isinstance(message, AcUpdate):
+                logging.info(f"Ac update received: {message.room}: {message.value}")
                 if isinstance(message.value, TemperatureSetpoint):
                     await self._thrs.set_room_temperature_setpoint(
                         message.room, message.value.value
@@ -192,11 +168,7 @@ class AcControl:
                     await self._thrs.set_room_humidity_setpoint(
                         message.room, message.value.value
                     )
-                elif isinstance(message.value, Co2Setpoint):
-                    await self._thrs.set_room_co2_setpoint(
-                        message.room, message.value.value
-                    )
-                await self._data_collection.send_room(self._rooms[message.room])
+                await self._data_collection.send(self._rooms[message.room])
             else:
                 assert_never(message)  # type: ignore
 

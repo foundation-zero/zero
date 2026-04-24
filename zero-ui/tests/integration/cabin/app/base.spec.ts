@@ -1,10 +1,10 @@
 import { ConnectionInitMessage } from "../../../lib/types";
 import { expect, test } from "../../../mocks/playwright";
-import { getAllRooms, getControlLogs, getSensorLogs, getVersion } from "../../../mocks/queries";
+import { getAllRooms, getVersion } from "../../../mocks/queries";
 
 test.describe("App", () => {
   test.beforeEach(async ({ worker, page, auth }) => {
-    worker.use(getAllRooms, getVersion, getControlLogs, getSensorLogs);
+    worker.use(getAllRooms, getVersion);
     await page.goto("/");
     await auth.asUser();
   });
@@ -14,7 +14,8 @@ test.describe("App", () => {
     await expect(page).toHaveTitle(/Zero/);
   });
 
-  test("connects to graphql server", async ({ subscriptions }) => {
+  test("connects to graphql server", async ({ subscriptions, page }) => {
+    await page.waitForTimeout(3000);
     expect(subscriptions.incoming).toHaveLength(2);
 
     const message = subscriptions.incoming[0] as ConnectionInitMessage;

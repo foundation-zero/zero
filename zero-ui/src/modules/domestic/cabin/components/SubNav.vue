@@ -7,7 +7,7 @@ import RoomSelector from "../../components/RoomSelector.vue";
 import ToggleAV from "./ToggleAV.vue";
 
 const navItems: NavItem[] = [
-  { title: "labels.airconditioning.long", to: "cabin:airconditioning" },
+  { title: "labels.airConditioning.long", to: "cabin:air-conditioning" },
   { title: "labels.lights", to: "cabin:lights" },
   { title: "labels.blinds", to: "cabin:blinds" },
 ];

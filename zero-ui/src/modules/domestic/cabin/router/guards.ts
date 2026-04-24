@@ -1,6 +1,5 @@
 import { BeforeResolveGuard } from "@/modules/domestic/router/guards";
 import { useRoomStore } from "@/modules/domestic/stores/rooms";
-import { isBlindsControl, isLightControl } from "@common/lib/utils";
 import { toRefs, watch } from "vue";
 
 export const waitForRoom: BeforeResolveGuard = (to) => {
@@ -11,23 +10,27 @@ export const waitForRoom: BeforeResolveGuard = (to) => {
       const store = useRoomStore();
       const { currentRoom } = toRefs(store);
 
-      watch(
-        currentRoom,
-        (next) => {
-          const invalidRoute =
-            (to.name === "cabin:blinds" &&
-              next.roomControls.filter(isBlindsControl).length === 0) ||
-            (to.name === "cabin:lights" && next.roomControls.filter(isLightControl).length === 0);
+      if (currentRoom.value.id === to.query.room) {
+        resolve();
+        return;
+      } else {
+        watch(
+          currentRoom,
+          (next) => {
+            const invalidRoute =
+              (to.name === "cabin:blinds" && next.blinds.length === 0) ||
+              (to.name === "cabin:lights" && next.lightingGroups.length === 0);
 
-          resolve({
-            name: invalidRoute ? "cabin:airconditioning" : to.name,
-            query: to.query.returnUrl ? { returnUrl: to.query.returnUrl.toString() } : {},
-          });
-        },
-        { once: true },
-      );
+            resolve({
+              name: invalidRoute ? "cabin:air-conditioning" : to.name,
+              query: to.query.returnUrl ? { returnUrl: to.query.returnUrl.toString() } : {},
+            });
+          },
+          { once: true },
+        );
 
-      useRoomStore().setRoom(String(roomId));
+        useRoomStore().setRoom(String(roomId));
+      }
     });
   }
 };

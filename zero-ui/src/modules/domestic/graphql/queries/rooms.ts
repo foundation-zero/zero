@@ -1,25 +1,35 @@
 import { gql } from "@urql/vue";
 import { mutationResponse } from ".";
-import { LightGroupFragment } from "./light-groups";
 
 export const RoomFragment = gql`
   fragment RoomItem on DomesticRooms {
     id
     name
     group
-    roomControls(orderBy: { id: ASC }) {
+    lightingGroups(orderBy: { id: ASC }) {
       id
-      type
-      value
-      time
       name
+      level
     }
-    roomSensors(orderBy: { id: ASC }) {
+    blinds(orderBy: { id: ASC }) {
       id
-      type
-      value
-      time
       name
+      level
+      opacity
+      group
+    }
+    airConditioning {
+      temperatureSetpoint
+      humiditySetpoint
+      actualTemperature
+      actualHumidity
+    }
+    ventilation {
+      co2Setpoint
+      actualCo2
+    }
+    amplifier {
+      on
     }
   }
 `;
@@ -30,38 +40,12 @@ export const getAll = gql`
       id
       name
       group
-      roomControls(orderBy: { id: ASC }) {
-        id
-        type
-        value
-        time
-        name
-      }
-      roomSensors(orderBy: { id: ASC }) {
-        id
-        type
-        value
-        time
-        name
-      }
     }
   }
-
-  ${LightGroupFragment}
-`;
-
-export const subscribeToRoom = gql`
-  subscription SubscribeToRoom($roomId: String!) {
-    domesticRooms(where: { id: { _eq: $roomId } }) {
-      ...RoomItem
-    }
-  }
-
-  ${RoomFragment}
 `;
 
 export const subscribeToRooms = gql`
-  subscription SubscribeToRoom {
+  subscription SubscribeToRooms {
     rooms: domesticRooms {
       ...RoomItem
     }
@@ -137,8 +121,8 @@ export const setHumiditySetpointMutation = gql`
 `;
 
 export const setCO2SetpointMutation = gql`
-  mutation SetRoomCo2Setpoint($ids: [ID!]!, $co2: Float!) {
-    setRoomCo2Setpoint: domesticSetRoomCo2Setpoint(ids: $ids, co2: $co2) {
+  mutation SetRoomCo2Setpoints($ids: [ID!]!, $co2: Float!) {
+    setRoomCo2Setpoints: domesticSetRoomCo2Setpoints(ids: $ids, co2: $co2) {
       ...MutationResponse
     }
   }

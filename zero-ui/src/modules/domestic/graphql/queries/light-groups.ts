@@ -2,7 +2,7 @@ import { gql } from "@urql/vue";
 import { mutationResponse } from ".";
 
 export const LightGroupFragment = gql`
-  fragment LightGroupItem on LightingGroups {
+  fragment LightGroupItem on DomesticLightingGroups {
     id
     name
     level
@@ -22,7 +22,7 @@ export const byRoomId = gql`
 
 export const setLightLevelMutation = gql`
   mutation SetLightLevel($id: ID!, $level: Float!) {
-    setLightingGroup: domesticSetLightingGroups(id: $id, level: $level) {
+    setLightingGroup: domesticSetLightingGroups(ids: [$id], level: $level) {
       ...MutationResponse
     }
   }

@@ -2,7 +2,6 @@
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 import { useRoomStore } from "@/modules/domestic/stores/rooms";
-import { extractAmplifierStatus, isAmplifierControl } from "@common/lib/utils";
 import { computed, toRefs } from "vue";
 
 import { useI18n } from "vue-i18n";
@@ -11,18 +10,18 @@ const { currentRoom, hasPendingRequests } = toRefs(useRoomStore());
 
 const { t } = useI18n();
 
-const amplifierStatus = computed(() => extractAmplifierStatus(currentRoom.value));
+const amplifierStatus = computed(() => currentRoom.value.amplifier?.on);
 
 const isOn = computed({
-  get: () => amplifierStatus.value === 1,
+  get: () => amplifierStatus.value ?? false,
   set: (val) => {
-    const amp = currentRoom.value.roomControls.find(isAmplifierControl);
+    const amp = currentRoom.value.amplifier;
 
     if (!amp) return;
 
     toggleAmplifier(val, currentRoom.value.id);
 
-    amp.value = val ? 1 : 0;
+    amp.on = val;
   },
 });
 </script>

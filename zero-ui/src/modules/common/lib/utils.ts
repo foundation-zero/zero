@@ -1,13 +1,7 @@
 import {
-  ControlType,
-  ControlTypeMap,
   Room,
-  RoomControl,
-  RoomSensor,
   RoomState,
   SafeRangeThresholds,
-  SensorType,
-  SensorTypeMap,
   Thresholds,
   TimeValueObject,
   TimeValueTuple,
@@ -27,6 +21,7 @@ import {
 } from "@common/types";
 import { ArgumentsType, useIntervalFn } from "@vueuse/core";
 import { type ClassValue, clsx } from "clsx";
+import { Maybe } from "graphql/jsutils/Maybe";
 import { twMerge } from "tailwind-merge";
 import { computed, ComputedRef, ref, Ref, watch, WritableComputedRef } from "vue";
 import { useI18n } from "vue-i18n";
@@ -44,8 +39,8 @@ export function cn(...inputs: ClassValue[]) {
 export const isDefined = <T>(value: T | undefined | null): value is T =>
   value !== undefined && value !== null;
 
-export const compareByName = <T extends { name: string }>(a: T, b: T) =>
-  a.name.localeCompare(b.name);
+export const compareByName = <T extends { name?: string | null }>(a: T, b: T) =>
+  (a.name ?? "").localeCompare(b.name ?? "");
 
 export const validationStatusToNumber: Record<ValidationStatus, number> = {
   [ValidationStatus.OK]: 0,
@@ -57,17 +52,18 @@ export const validationStatusToNumber: Record<ValidationStatus, number> = {
 export const compareByValidationStatus = (a: ValidationStatus, b: ValidationStatus) =>
   validationStatusToNumber[a] - validationStatusToNumber[b];
 
-export const updateSetpointWhenControlsHaveChanged = <T extends RoomControl>(
-  value: Ref<number>,
-  controls: Ref<T[]>,
+export const updateSetpointWhenControlsHaveChanged = <K extends string>(
+  value: Ref<Maybe<number>>,
+  controls: Ref<{ [key in K]?: Maybe<number> }[]>,
+  key: K,
 ) =>
   watch(controls, ([next], [prev]) => {
-    if (next?.value !== prev?.value && next !== undefined) {
-      value.value = next.value;
+    if (next?.[key] !== prev?.[key] && next !== undefined) {
+      value.value = next[key];
     }
   });
 
-export const ratioAsPercentage = (ratio: Ref<number | string>) =>
+export const ratioAsPercentage = (ratio: Ref<Maybe<number>>) =>
   computed({
     get() {
       return Number(ratio.value) * 100;
@@ -79,12 +75,12 @@ export const ratioAsPercentage = (ratio: Ref<number | string>) =>
 
 export const toInversedPercentage = (percentage: number) => 100 - percentage;
 export const separateDecimals = (
-  value: Ref<number>,
+  value: Ref<Maybe<number>>,
   digits: number = 1,
 ): { integer: Ref<number>; decimal: Ref<number> } => {
   return {
-    integer: computed(() => Math.floor(value.value)),
-    decimal: computed(() => Math.round((value.value % 1) * 10 ** digits)),
+    integer: computed(() => Math.floor(value.value ?? 0)),
+    decimal: computed(() => Math.round(((value.value ?? 0) % 1) * 10 ** digits)),
   };
 };
 
@@ -205,9 +201,9 @@ export const toTimeValueTuple = <T>(value: TimeValueObject<T>): TimeValueTuple<T
 
 export const validateSafeRange = (
   thresholds: SafeRangeThresholds,
-  value?: number,
+  value?: number | null,
 ): ValidationStatus => {
-  if (value === undefined || isNaN(value)) {
+  if (value == undefined || isNaN(value)) {
     return ValidationStatus.UNKNOWN;
   } else if (value < thresholds[0] || value > thresholds[1]) {
     return ValidationStatus.WARN;
@@ -221,8 +217,11 @@ export const useSafeRange = (
   value: Ref<number>,
 ): Ref<ValidationStatus> => computed(() => validateSafeRange(thresholds, value.value));
 
-export const validateThreshold = (thresholds: Thresholds, value?: number): ValidationStatus => {
-  if (value === undefined || isNaN(value)) {
+export const validateThreshold = (
+  thresholds: Thresholds,
+  value?: number | null,
+): ValidationStatus => {
+  if (value == undefined || isNaN(value)) {
     return ValidationStatus.UNKNOWN;
   } else if (value >= thresholds[1]) {
     return ValidationStatus.FAIL;
@@ -272,51 +271,21 @@ export const toElementRefs = <Items extends unknown[]>(items: Ref<Items>) =>
     }),
   ) as { [K in keyof Items]: WritableComputedRef<Items[K]> };
 
-export const isSensorType =
-  <T extends SensorType>(type: T) =>
-  (sensor: RoomSensor): sensor is SensorTypeMap[T] =>
-    sensor.type === type;
+export const hasLightControl = (room: Room) => room.lightingGroups.length > 0;
+export const hasBlindsControl = (room: Room) => room.blinds.length > 0;
+export const hasTemperatureControl = (room: Room) => !!room.airConditioning;
+export const hasHumidityControl = (room: Room) => !!room.airConditioning;
+export const hasCO2Control = (room: Room) => !!room.ventilation;
+export const hasAmplifierControl = (room: Room) => !!room.amplifier;
 
-export const isControlType =
-  <T extends ControlType>(type: T) =>
-  (control: RoomControl): control is ControlTypeMap[T] =>
-    control.type === type;
+export const extractActualHumidity = (room: Room) => room.airConditioning?.actualHumidity;
+export const extractActualTemperature = (room: Room) => room.airConditioning?.actualTemperature;
+export const extractActualCO2 = (room: Room) => room.ventilation?.actualCo2;
 
-export const isLightControl = isControlType(ControlType.LIGHT);
-export const isBlindsControl = isControlType(ControlType.BLIND);
-export const isTemperatureControl = isControlType(ControlType.TEMPERATURE);
-export const isHumidityControl = isControlType(ControlType.HUMIDITY);
-export const isCO2Control = isControlType(ControlType.CO2);
-export const isAmplifierControl = isControlType(ControlType.AMPLIFIER);
-
-export const isPresenceSensor = isSensorType(SensorType.PRESENCE);
-export const isTemperatureSensor = isSensorType(SensorType.TEMPERATURE);
-export const isHumiditySensor = isSensorType(SensorType.HUMIDITY);
-export const isCO2Sensor = isSensorType(SensorType.CO2);
-
-export const extractActualSensorValue =
-  <T extends SensorType>(type: T) =>
-  (room: Room) => {
-    const value = room.roomSensors.find(isSensorType(type))?.value;
-    if (value !== undefined) return Number(value);
-  };
-
-export const extractActualControlValue =
-  <T extends ControlType>(type: T) =>
-  (room: Room) => {
-    const value = room.roomControls.find(isControlType(type))?.value;
-    if (value !== undefined) return Number(value);
-  };
-
-export const extractActualHumidity = extractActualSensorValue(SensorType.HUMIDITY);
-export const extractActualTemperature = extractActualSensorValue(SensorType.TEMPERATURE);
-export const extractActualCO2 = extractActualSensorValue(SensorType.CO2);
-export const extractActualPresence = extractActualSensorValue(SensorType.PRESENCE);
-
-export const extractTemperatureSetpoint = extractActualControlValue(ControlType.TEMPERATURE);
-export const extractAmplifierStatus = extractActualControlValue(ControlType.AMPLIFIER);
-export const extractHumiditySetpoint = extractActualControlValue(ControlType.HUMIDITY);
-export const extractCO2Setpoint = extractActualControlValue(ControlType.CO2);
+export const extractTemperatureSetpoint = (room: Room) => room.airConditioning?.temperatureSetpoint;
+export const extractAmplifierStatus = (room: Room) => room.amplifier?.on;
+export const extractHumiditySetpoint = (room: Room) => room.airConditioning?.humiditySetpoint;
+export const extractCO2Setpoint = (room: Room) => room.ventilation?.co2Setpoint;
 
 export const toUpperCamelCase = (str: string) => str.replace(/([A-Z])/g, " $1").trim();
 export const toCapitalized = (str: string) =>
@@ -336,6 +305,19 @@ export const toTimeSeriesData = <T extends ChartDataType>({
   timestamp,
   value,
 }: Stamped<T>): TimeSeriesData<T> => [new Date(timestamp), value];
+
+export type LogEntry = {
+  timestamp: Date | string | number;
+};
+
+export const logToSeries = <T extends LogEntry, K extends keyof T>(
+  log: T[] | undefined,
+  key: K,
+): TimeSeriesData<Extract<T[K], ChartDataType>>[] =>
+  log?.map((entry) => [
+    entry.timestamp instanceof Date ? entry.timestamp : new Date(entry.timestamp),
+    entry[key] as Extract<T[K], ChartDataType>,
+  ]) ?? [];
 
 export function isStamped<T>(input: unknown[] | Stamped<T>[]): input is Stamped<T>[];
 export function isStamped<T>(input: unknown | Stamped<T>): input is Stamped<T>;

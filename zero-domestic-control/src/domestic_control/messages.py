@@ -1,6 +1,7 @@
-from typing import ClassVar, Optional, Annotated
+from typing import ClassVar, Annotated
 from aiomqtt import Topic, Wildcard
-from pydantic import BaseModel, model_validator, Field
+from pydantic import BaseModel, model_validator
+from sqlmodel import SQLModel, Field
 
 
 class Message(BaseModel):
@@ -26,29 +27,50 @@ class Message(BaseModel):
         return values
 
 
-class Room(Message):
+class Model(SQLModel, Message):
+    __table_args__ = {"schema": "domestic"}
+
+
+class AirConditioning(Model, table=True):
+    __tablename__ = "air_conditioning"  # type: ignore
     TOPIC: ClassVar[str] = "domestic/ac"
-    actual_temperature: Optional[float]
-    temperature_setpoint: Optional[float]
-    actual_humidity: Optional[float]
-    humidity_setpoint: Optional[float]
-    actual_co2: Optional[float]
-    co2_setpoint: Optional[float]
+    id: Annotated[str, Field(primary_key=True)]
+    actual_temperature: float | None
+    temperature_setpoint: float | None
+    actual_humidity: float | None
+    humidity_setpoint: float | None
 
 
-class Amplifier(Message):
+class Amplifier(Model, table=True):
+    __tablename__ = "amplifiers"  # type: ignore
+
     TOPIC: ClassVar[str] = "domestic/amplifiers"
-    is_on: bool
+    id: Annotated[str, Field(primary_key=True)]
+    on: bool
 
 
-class Blind(Message):
+class Blind(Model, table=True):
+    __tablename__ = "blinds"  # type: ignore
     TOPIC: ClassVar[str] = "domestic/blinds"
+    id: Annotated[str, Field(primary_key=True)]
+    room_id: str
     level: Annotated[float, Field(ge=0, le=1)]
 
 
-class LightingGroup(Message):
+class LightingGroup(Model, table=True):
+    __tablename__ = "lighting_groups"  # type: ignore
     TOPIC: ClassVar[str] = "domestic/lighting-groups"
+    id: Annotated[str, Field(primary_key=True)]
+    room_id: str
     level: Annotated[float, Field(ge=0, le=1)]
+
+
+class Ventilation(Model, table=True):
+    __tablename__ = "ventilation"  # type: ignore
+    TOPIC: ClassVar[str] = "domestic/ventilation"
+    id: Annotated[str, Field(primary_key=True)]
+    actual_co2: float | None
+    co2_setpoint: float | None
 
 
 class RoomTemperatureSetpoint(Message):

@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { Switch } from "@/components/ui/switch";
-import { LightingControl } from "@/modules/domestic/types";
+import { DomesticLightingGroups } from "@/modules/domestic/gql/graphql";
 import { LightsSlider } from "@common/components/lights-slider";
 import { ListItem } from "@common/components/list";
 import { ZSpacer } from "@common/components/spacer";
@@ -9,16 +9,16 @@ import { RiLightbulbFill, RiLightbulbLine } from "@remixicon/vue";
 import { computed, inject, Ref, ref, toRef, watch } from "vue";
 import { getContext } from ".";
 
-const props = defineProps<{ control: LightingControl }>();
+const props = defineProps<{ control: DomesticLightingGroups }>();
 const control = toRef(props, "control");
-const brightness = ref(control.value.value);
+const brightness = ref(control.value.level);
 
 const context = getContext();
 
 watch(
   control,
   (control) => {
-    brightness.value = control.value;
+    brightness.value = control.level;
   },
   { immediate: true },
 );

@@ -20,17 +20,25 @@ class Settings(BaseSettings):
     home_assistant_ws_url: str
     home_assistant_token: str
 
-    termodinamica_host: str
-    termodinamica_port: int
+    air_conditioning_host: str
+    air_conditioning_port: int
+
+    ventilation_host: str
+    ventilation_port: int
 
     jwt_secret: str
 
-    risingwave_url: str
+    greptime_url: str
 
     @computed_field  # type: ignore[misc]
     @property
     def pg_url(self) -> str:
-        return f"postgresql://{self.pg_user}:{self.pg_password}@{self.pg_host}:{self.pg_port}/{self.pg_db}"
+        return f"postgresql+psycopg://{self.pg_user}:{self.pg_password}@{self.pg_host}:{self.pg_port}/{self.pg_db}"
+
+    @computed_field  # type: ignore[misc]
+    @property
+    def greptime_url_with_driver(self) -> str:
+        return self.greptime_url.replace("mysql", "mysql+aiomysql")
 
 
 settings = Settings()  # type: ignore

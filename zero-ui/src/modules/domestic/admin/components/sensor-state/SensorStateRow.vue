@@ -23,7 +23,7 @@ const actualCO2 = computed(() => extractActualCO2(props.room) ?? 0);
     <TableCell class="">
       <RouterLink
         :to="{
-          name: 'cabin:airconditioning',
+          name: 'cabin:air-conditioning',
           query: { room: room.id, returnUrl: 'environment:control' },
         }"
         class="w-full font-medium hover:underline"

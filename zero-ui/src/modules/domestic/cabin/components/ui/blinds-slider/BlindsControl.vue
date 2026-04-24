@@ -1,17 +1,17 @@
 <script setup lang="ts">
+import { DomesticBlinds } from "@/modules/domestic/gql/graphql";
 import { useRoomStore } from "@/modules/domestic/stores/rooms";
-import { BlindsControl } from "@/modules/domestic/types";
 import { cn, writeProtected } from "@common/lib/utils";
 import { HTMLAttributes, provide, ref, toRefs, watch } from "vue";
 
 const props = defineProps<{
   class?: HTMLAttributes["class"];
   editable?: boolean;
-  control: BlindsControl;
+  control: DomesticBlinds;
 }>();
 
 const { editable, control } = toRefs(props);
-const targetLevel = ref(Number(props.control.value));
+const targetLevel = ref(Number(props.control.level));
 const { setBlindsLevel } = useRoomStore();
 const { hasPendingRequests } = toRefs(useRoomStore());
 
@@ -24,7 +24,7 @@ provide("commit", async () => {
 
   if (!hasPendingRequests.value) return;
 
-  watch(hasPendingRequests, () => (targetLevel.value = Number(control.value.value)), {
+  watch(hasPendingRequests, () => (targetLevel.value = Number(control.value.level)), {
     once: true,
   });
 });
@@ -32,7 +32,7 @@ provide("disabled", hasPendingRequests);
 provide("editable", editable);
 
 watch(props, ({ control }) => {
-  targetLevel.value = Number(control.value);
+  targetLevel.value = Number(control.level);
 });
 </script>
 

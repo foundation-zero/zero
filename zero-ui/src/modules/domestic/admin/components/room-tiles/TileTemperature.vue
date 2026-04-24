@@ -4,16 +4,15 @@ import {
   TEMPERATURE_SETPOINT_RANGE,
   TEMPERATURE_THRESHOLDS,
 } from "@/modules/domestic/lib/consts";
-import { useHistoryStore } from "@/modules/domestic/stores/history";
-import { Room } from "@/modules/domestic/types";
+import { AirConditioningLog, Room } from "@/modules/domestic/types";
 import AreaChart from "@common/components/area-chart/AreaChart.vue";
 import { ValueTile } from "@common/components/value-tile";
 import {
   extractActualHumidity,
   extractActualTemperature,
   extractTemperatureSetpoint,
-  isTemperatureControl,
-  isTemperatureSensor,
+  hasTemperatureControl,
+  logToSeries,
   useDemoControlValues,
   useDemoSensorValues,
   useThresholds,
@@ -23,23 +22,24 @@ import { SeriesOption } from "echarts/types/dist/shared";
 import { computed } from "vue";
 import { useI18n } from "vue-i18n";
 
-const props = defineProps<{ room: Room }>();
-
-const { useSensorHistory, useControlHistory } = useHistoryStore();
+const props = defineProps<{
+  room: Room;
+  temperatureLog?: AirConditioningLog[];
+}>();
 
 const history = useDemoSensorValues(
-  () => useSensorHistory(props.room.roomSensors.find(isTemperatureSensor)?.id),
+  () => computed(() => logToSeries(props.temperatureLog, "actualTemperature")),
   24,
   { min: TEMPERATURE_RANGE[0], max: TEMPERATURE_RANGE[1] },
 );
 
 const setpointHistory = useDemoControlValues(
-  () => useControlHistory(props.room.roomControls.find(isTemperatureControl)?.id),
+  () => computed(() => logToSeries(props.temperatureLog, "temperatureSetpoint")),
   24,
   { min: TEMPERATURE_SETPOINT_RANGE[0], max: TEMPERATURE_SETPOINT_RANGE[1] },
 );
 
-const hasTemperatureSensor = computed(() => props.room.roomSensors.some(isTemperatureSensor));
+const hasTemperatureSensor = computed(() => hasTemperatureControl(props.room));
 const actualTemperature = computed(() => extractActualTemperature(props.room) ?? 0);
 const actualHumidity = computed(() => extractActualHumidity(props.room) ?? 0);
 const temperatureSetpoint = computed(() => extractTemperatureSetpoint(props.room) ?? 0);
@@ -65,7 +65,7 @@ const { t } = useI18n();
 <template>
   <ValueTile
     v-if="hasTemperatureSensor"
-    :title="room.name"
+    :title="room.name!"
     :state="state"
   >
     <template #background>

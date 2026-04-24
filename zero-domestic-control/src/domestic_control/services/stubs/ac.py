@@ -8,12 +8,11 @@ from pyModbusTCP.server import DataBank, ModbusServer
 from domestic_control.services.ac.constants import (
     HUMIDITY_SETPOINT_START_ADDRESS,
     TEMPERATURE_SETPOINT_START_ADDRESS,
-    CO2_SETPOINT_START_ADDRESS,
 )
 import logging
 
 
-class TermodinamicaDataBank(DataBank):
+class AcDataBank(DataBank):
     def on_holding_registers_change(
         self, address, from_value, to_value, srv_info
     ) -> None:
@@ -26,22 +25,16 @@ class TermodinamicaDataBank(DataBank):
             HUMIDITY_SETPOINT_START_ADDRESS.start + 100
         ):
             self.set_holding_registers(address - 100, [to_value])
-        elif address >= CO2_SETPOINT_START_ADDRESS.start and address < (
-            CO2_SETPOINT_START_ADDRESS.start + 100
-        ):
-            self.set_holding_registers(address - 100, [to_value])
         return super().on_holding_registers_change(
             address, from_value, to_value, srv_info
         )
 
 
-class TermodinamicaStub:
+class AcStub:
     """Stub for a Termodinamica AC Modbus TCP control system"""
 
     def __init__(self, host, port):
-        self._server = ModbusServer(
-            host=host, port=port, data_bank=TermodinamicaDataBank()
-        )
+        self._server = ModbusServer(host=host, port=port, data_bank=AcDataBank())
         self._host = host
         self._port = port
 

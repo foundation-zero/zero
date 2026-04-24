@@ -37,7 +37,7 @@ class GenerateJWT(Settings):
             )
 
         claims = {
-            "x-hasura-default-role": "user",
+            "x-hasura-default-role": next(iter(self.roles), "user"),
             "x-hasura-allowed-roles": roles,
         }
 

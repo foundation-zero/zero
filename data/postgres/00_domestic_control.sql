@@ -8,15 +8,6 @@ CREATE TABLE domestic.rooms (
   "group" TEXT
 );
 
--- Master table for conditions (temperature, humidity, co2, etc) per room
-DROP TABLE IF EXISTS domestic.conditions CASCADE;
-CREATE TABLE domestic.conditions (
-  "id" TEXT PRIMARY KEY,
-  "room_id" VARCHAR REFERENCES domestic.rooms("id"),
-  "type" TEXT,
-  "name" TEXT
-);
-
 -- Master table for blinds per room
 DROP TABLE IF EXISTS domestic.blinds CASCADE;
 CREATE TABLE domestic.blinds (
@@ -24,7 +15,24 @@ CREATE TABLE domestic.blinds (
   "room_id" VARCHAR REFERENCES domestic.rooms("id"),
   "name" TEXT,
   "opacity" TEXT,
-  "group" TEXT
+  "group" TEXT,
+  "level" REAL
+);
+
+DROP TABLE IF EXISTS domestic.air_conditioning CASCADE;
+CREATE TABLE domestic.air_conditioning (
+  "id" TEXT PRIMARY KEY REFERENCES domestic.rooms("id"),
+  "temperature_setpoint" REAL,
+  "humidity_setpoint" REAL,
+  "actual_temperature" REAL,
+  "actual_humidity" REAL
+);
+
+DROP TABLE IF EXISTS domestic.ventilation CASCADE;
+CREATE TABLE domestic.ventilation (
+  "id" TEXT PRIMARY KEY REFERENCES domestic.rooms("id"),
+  "co2_setpoint" REAL,
+  "actual_co2" REAL
 );
 
 -- Master table for lighting groups per room
@@ -32,70 +40,19 @@ DROP TABLE IF EXISTS domestic.lighting_groups CASCADE;
 CREATE TABLE domestic.lighting_groups (
   "id" VARCHAR PRIMARY KEY,
   "room_id" VARCHAR REFERENCES domestic.rooms("id"),
-  "name" TEXT
+  "name" TEXT,
+  "level" REAL
 );
 
 -- Master table for amplifiers per room
 DROP TABLE IF EXISTS domestic.amplifiers CASCADE;
 CREATE TABLE domestic.amplifiers (
-  "id" VARCHAR PRIMARY KEY,
-  "room_id" VARCHAR REFERENCES domestic.rooms("id"),
-  "name" TEXT
-);
-
--- Current state of room controls (conditions + amplifiers + blinds + lighting)
-DROP TABLE IF EXISTS domestic.room_controls CASCADE;
-CREATE TABLE domestic.room_controls (
-  "id" TEXT PRIMARY KEY,
-  "room_id" VARCHAR REFERENCES domestic.rooms("id"),
+  "id" VARCHAR PRIMARY KEY REFERENCES domestic.rooms("id"),
   "name" TEXT,
-  "type" TEXT,
-  "value" REAL,
-  "time" TIMESTAMPTZ
+  "on" BOOLEAN
 );
 
--- Every change to room controls over time (id + time is the effective primary key)
-DROP TABLE IF EXISTS domestic.room_controls_log CASCADE;
-CREATE TABLE domestic.room_controls_log (
-  "id" VARCHAR,
-  "room_id" VARCHAR REFERENCES domestic.rooms("id"),
-  "name" TEXT,
-  "type" TEXT,
-  "value" REAL,
-  "time" TIMESTAMPTZ
-
-);
-
--- Master table for sensors per room
-DROP TABLE IF EXISTS domestic.sensors CASCADE;
-CREATE TABLE domestic.sensors (
-  "id" TEXT PRIMARY KEY,
-  "room_id" VARCHAR REFERENCES domestic.rooms("id"),
-  "type" TEXT,
-  "name" TEXT
-);
-
--- Current state of room sensors
-DROP TABLE IF EXISTS domestic.room_sensors CASCADE;
-CREATE TABLE domestic.room_sensors (
-  "id" TEXT PRIMARY KEY,
-  "room_id" VARCHAR REFERENCES domestic.rooms("id"),
-  "name" TEXT,
-  "type" TEXT,
-  "value" REAL,
-  "time" TIMESTAMPTZ
-);
-
--- Every change to room sensors over time (id + time is the effective primary key)
-DROP TABLE IF EXISTS domestic.room_sensors_log CASCADE;
-CREATE TABLE domestic.room_sensors_log (
-  "id" VARCHAR REFERENCES domestic.sensors("id"),
-  "room_id" VARCHAR REFERENCES domestic.rooms("id"),
-  "name" TEXT,
-  "type" TEXT,
-  "value" REAL,
-  "time" TIMESTAMPTZ
-);
+-- Legacy room_sensors tables removed in favor of room_state + dedicated logs above.
 
 INSERT INTO domestic.rooms ("id", "name", "group") VALUES
 ('owners-cabin', 'Owners cabin', 'AFT'),
@@ -125,87 +82,20 @@ INSERT INTO domestic.rooms ("id", "name", "group") VALUES
 ('guest-corridor', 'Guest corridor', 'HALLWAYS'),
 ('polynesian-corridor', 'Polynesian corridor', 'HALLWAYS');
 
-INSERT INTO domestic.conditions ("id", "room_id", "type", "name") VALUES
-('owners-cabin/control/temperature', 'owners-cabin', 'temperature', ''),
-('owners-cabin/control/humidity', 'owners-cabin', 'humidity', ''),
-('owners-cabin/control/co2', 'owners-cabin', 'co2', ''),
-('dutch-cabin/control/temperature', 'dutch-cabin', 'temperature', ''),
-('dutch-cabin/control/humidity', 'dutch-cabin', 'humidity', ''),
-('dutch-cabin/control/co2', 'dutch-cabin', 'co2', ''),
-('french-cabin/control/temperature', 'french-cabin', 'temperature', ''),
-('french-cabin/control/humidity', 'french-cabin', 'humidity', ''),
-('french-cabin/control/co2', 'french-cabin', 'co2', ''),
-('italian-cabin/control/temperature', 'italian-cabin', 'temperature', ''),
-('italian-cabin/control/humidity', 'italian-cabin', 'humidity', ''),
-('italian-cabin/control/co2', 'italian-cabin', 'co2', ''),
-('californian-lounge/control/temperature', 'californian-lounge', 'temperature', ''),
-('californian-lounge/control/humidity', 'californian-lounge', 'humidity', ''),
-('californian-lounge/control/co2', 'californian-lounge', 'co2', ''),
-('polynesian-cabin/control/temperature', 'polynesian-cabin', 'temperature', ''),
-('polynesian-cabin/control/humidity', 'polynesian-cabin', 'humidity', ''),
-('polynesian-cabin/control/co2', 'polynesian-cabin', 'co2', ''),
-('galley/control/temperature', 'galley', 'temperature', ''),
-('galley/control/humidity', 'galley', 'humidity', ''),
-('galley/control/co2', 'galley', 'co2', ''),
-('crew-mess/control/temperature', 'crew-mess', 'temperature', ''),
-('crew-mess/control/humidity', 'crew-mess', 'humidity', ''),
-('crew-mess/control/co2', 'crew-mess', 'co2', ''),
-('mission-room/control/temperature', 'mission-room', 'temperature', ''),
-('mission-room/control/humidity', 'mission-room', 'humidity', ''),
-('mission-room/control/co2', 'mission-room', 'co2', ''),
-('laundry/control/temperature', 'laundry', 'temperature', ''),
-('laundry/control/humidity', 'laundry', 'humidity', ''),
-('laundry/control/co2', 'laundry', 'co2', ''),
-('engineers-office/control/temperature', 'engineers-office', 'temperature', ''),
-('engineers-office/control/humidity', 'engineers-office', 'humidity', ''),
-('engineers-office/control/co2', 'engineers-office', 'co2', ''),
-('captains-cabin/control/temperature', 'captains-cabin', 'temperature', ''),
-('captains-cabin/control/humidity', 'captains-cabin', 'humidity', ''),
-('captains-cabin/control/co2', 'captains-cabin', 'co2', ''),
-('crew-sb-aft-cabin/control/temperature', 'crew-sb-aft-cabin', 'temperature', ''),
-('crew-sb-aft-cabin/control/humidity', 'crew-sb-aft-cabin', 'humidity', ''),
-('crew-sb-aft-cabin/control/co2', 'crew-sb-aft-cabin', 'co2', ''),
-('crew-sb-mid-cabin/control/temperature', 'crew-sb-mid-cabin', 'temperature', ''),
-('crew-sb-mid-cabin/control/humidity', 'crew-sb-mid-cabin', 'humidity', ''),
-('crew-sb-mid-cabin/control/co2', 'crew-sb-mid-cabin', 'co2', ''),
-('crew-sb-fwd-cabin/control/temperature', 'crew-sb-fwd-cabin', 'temperature', ''),
-('crew-sb-fwd-cabin/control/humidity', 'crew-sb-fwd-cabin', 'humidity', ''),
-('crew-sb-fwd-cabin/control/co2', 'crew-sb-fwd-cabin', 'co2', ''),
-('crew-ps-mid-cabin/control/temperature', 'crew-ps-mid-cabin', 'temperature', ''),
-('crew-ps-mid-cabin/control/humidity', 'crew-ps-mid-cabin', 'humidity', ''),
-('crew-ps-mid-cabin/control/co2', 'crew-ps-mid-cabin', 'co2', ''),
-('crew-ps-fwd-cabin/control/temperature', 'crew-ps-fwd-cabin', 'temperature', ''),
-('crew-ps-fwd-cabin/control/humidity', 'crew-ps-fwd-cabin', 'humidity', ''),
-('crew-ps-fwd-cabin/control/co2', 'crew-ps-fwd-cabin', 'co2', ''),
-('owners-deckhouse/control/temperature', 'owners-deckhouse', 'temperature', ''),
-('owners-deckhouse/control/humidity', 'owners-deckhouse', 'humidity', ''),
-('owners-deckhouse/control/co2', 'owners-deckhouse', 'co2', ''),
-('main-deckhouse/control/temperature', 'main-deckhouse', 'temperature', ''),
-('main-deckhouse/control/humidity', 'main-deckhouse', 'humidity', ''),
-('main-deckhouse/control/co2', 'main-deckhouse', 'co2', ''),
-('owners-stairway/control/temperature', 'owners-stairway', 'temperature', ''),
-('owners-stairway/control/humidity', 'owners-stairway', 'humidity', ''),
-('owners-stairway/control/co2', 'owners-stairway', 'co2', ''),
-('guest-corridor/control/temperature', 'guest-corridor', 'temperature', ''),
-('guest-corridor/control/humidity', 'guest-corridor', 'humidity', ''),
-('guest-corridor/control/co2', 'guest-corridor', 'co2', ''),
-('polynesian-corridor/control/temperature', 'polynesian-corridor', 'temperature', ''),
-('polynesian-corridor/control/humidity', 'polynesian-corridor', 'humidity', ''),
-('polynesian-corridor/control/co2', 'polynesian-corridor', 'co2', '');
 
-INSERT INTO domestic.amplifiers ("id", "room_id", "name") VALUES
-('owners-cockpit/amplifier', 'owners-cockpit', 'Owners cockpit'),
-('owners-deckhouse/amplifier', 'owners-deckhouse', 'Owners deckhouse'),
-('owners-cabin/amplifier', 'owners-cabin', 'Owners cabin'),
-('main-cockpit/amplifier', 'main-cockpit', 'Main cockpit'),
-('italian-cabin/amplifier', 'italian-cabin', 'Italian cabin'),
-('galley/amplifier', 'galley', 'Galley'),
-('french-cabin/amplifier', 'french-cabin', 'French cabin'),
-('dutch-cabin/amplifier', 'dutch-cabin', 'Dutch cabin'),
-('polynesian-cabin/amplifier', 'polynesian-cabin', 'Polynesian cabin'),
-('main-deckhouse/amplifier', 'main-deckhouse', 'Main deckhouse'),
-('office/amplifier', 'office', 'Office'),
-('lounge/amplifier', 'lounge', 'lounge');
+INSERT INTO domestic.amplifiers ("id", "name") VALUES
+('owners-cockpit', 'Owners cockpit'),
+('owners-deckhouse', 'Owners deckhouse'),
+('owners-cabin', 'Owners cabin'),
+('main-cockpit', 'Main cockpit'),
+('italian-cabin', 'Italian cabin'),
+('galley', 'Galley'),
+('french-cabin', 'French cabin'),
+('dutch-cabin', 'Dutch cabin'),
+('polynesian-cabin', 'Polynesian cabin'),
+('main-deckhouse', 'Main deckhouse'),
+('office', 'Office'),
+('lounge', 'lounge');
 
 INSERT INTO domestic.blinds ("id", "room_id", "name", "opacity", "group") VALUES
 ('owners-cabin/main/shear', 'owners-cabin', 'Main', 'shear', 'MAIN'),
@@ -285,71 +175,3 @@ INSERT INTO domestic.lighting_groups ("id", "room_id", "name") VALUES
 ('owners-stairway/main', 'owners-stairway', 'Main'),
 ('guest-corridor/main', 'guest-corridor', 'Main'),
 ('polynesian-corridor/main', 'polynesian-corridor', 'Main');
-
-INSERT INTO domestic.sensors ("id", "room_id", "type", "name") VALUES
-('owners-cabin/sensor/temperature', 'owners-cabin', 'temperature', ''),
-('owners-cabin/sensor/humidity', 'owners-cabin', 'humidity', ''),
-('owners-cabin/sensor/co2', 'owners-cabin', 'co2', ''),
-('dutch-cabin/sensor/temperature', 'dutch-cabin', 'temperature', ''),
-('dutch-cabin/sensor/humidity', 'dutch-cabin', 'humidity', ''),
-('dutch-cabin/sensor/co2', 'dutch-cabin', 'co2', ''),
-('french-cabin/sensor/temperature', 'french-cabin', 'temperature', ''),
-('french-cabin/sensor/humidity', 'french-cabin', 'humidity', ''),
-('french-cabin/sensor/co2', 'french-cabin', 'co2', ''),
-('italian-cabin/sensor/temperature', 'italian-cabin', 'temperature', ''),
-('italian-cabin/sensor/humidity', 'italian-cabin', 'humidity', ''),
-('italian-cabin/sensor/co2', 'italian-cabin', 'co2', ''),
-('californian-lounge/sensor/temperature', 'californian-lounge', 'temperature', ''),
-('californian-lounge/sensor/humidity', 'californian-lounge', 'humidity', ''),
-('californian-lounge/sensor/co2', 'californian-lounge', 'co2', ''),
-('polynesian-cabin/sensor/temperature', 'polynesian-cabin', 'temperature', ''),
-('polynesian-cabin/sensor/humidity', 'polynesian-cabin', 'humidity', ''),
-('polynesian-cabin/sensor/co2', 'polynesian-cabin', 'co2', ''),
-('galley/sensor/temperature', 'galley', 'temperature', ''),
-('galley/sensor/humidity', 'galley', 'humidity', ''),
-('galley/sensor/co2', 'galley', 'co2', ''),
-('crew-mess/sensor/temperature', 'crew-mess', 'temperature', ''),
-('crew-mess/sensor/humidity', 'crew-mess', 'humidity', ''),
-('crew-mess/sensor/co2', 'crew-mess', 'co2', ''),
-('mission-room/sensor/temperature', 'mission-room', 'temperature', ''),
-('mission-room/sensor/humidity', 'mission-room', 'humidity', ''),
-('mission-room/sensor/co2', 'mission-room', 'co2', ''),
-('laundry/sensor/temperature', 'laundry', 'temperature', ''),
-('laundry/sensor/humidity', 'laundry', 'humidity', ''),
-('laundry/sensor/co2', 'laundry', 'co2', ''),
-('engineers-office/sensor/temperature', 'engineers-office', 'temperature', ''),
-('engineers-office/sensor/humidity', 'engineers-office', 'humidity', ''),
-('engineers-office/sensor/co2', 'engineers-office', 'co2', ''),
-('captains-cabin/sensor/temperature', 'captains-cabin', 'temperature', ''),
-('captains-cabin/sensor/humidity', 'captains-cabin', 'humidity', ''),
-('captains-cabin/sensor/co2', 'captains-cabin', 'co2', ''),
-('crew-sb-aft-cabin/sensor/temperature', 'crew-sb-aft-cabin', 'temperature', ''),
-('crew-sb-aft-cabin/sensor/humidity', 'crew-sb-aft-cabin', 'humidity', ''),
-('crew-sb-aft-cabin/sensor/co2', 'crew-sb-aft-cabin', 'co2', ''),
-('crew-sb-mid-cabin/sensor/temperature', 'crew-sb-mid-cabin', 'temperature', ''),
-('crew-sb-mid-cabin/sensor/humidity', 'crew-sb-mid-cabin', 'humidity', ''),
-('crew-sb-mid-cabin/sensor/co2', 'crew-sb-mid-cabin', 'co2', ''),
-('crew-sb-fwd-cabin/sensor/temperature', 'crew-sb-fwd-cabin', 'temperature', ''),
-('crew-sb-fwd-cabin/sensor/humidity', 'crew-sb-fwd-cabin', 'humidity', ''),
-('crew-sb-fwd-cabin/sensor/co2', 'crew-sb-fwd-cabin', 'co2', ''),
-('crew-ps-mid-cabin/sensor/temperature', 'crew-ps-mid-cabin', 'temperature', ''),
-('crew-ps-mid-cabin/sensor/humidity', 'crew-ps-mid-cabin', 'humidity', ''),
-('crew-ps-mid-cabin/sensor/co2', 'crew-ps-mid-cabin', 'co2', ''),
-('crew-ps-fwd-cabin/sensor/temperature', 'crew-ps-fwd-cabin', 'temperature', ''),
-('crew-ps-fwd-cabin/sensor/humidity', 'crew-ps-fwd-cabin', 'humidity', ''),
-('crew-ps-fwd-cabin/sensor/co2', 'crew-ps-fwd-cabin', 'co2', ''),
-('owners-deckhouse/sensor/temperature', 'owners-deckhouse', 'temperature', ''),
-('owners-deckhouse/sensor/humidity', 'owners-deckhouse', 'humidity', ''),
-('owners-deckhouse/sensor/co2', 'owners-deckhouse', 'co2', ''),
-('main-deckhouse/sensor/temperature', 'main-deckhouse', 'temperature', ''),
-('main-deckhouse/sensor/humidity', 'main-deckhouse', 'humidity', ''),
-('main-deckhouse/sensor/co2', 'main-deckhouse', 'co2', ''),
-('owners-stairway/sensor/temperature', 'owners-stairway', 'temperature', ''),
-('owners-stairway/sensor/humidity', 'owners-stairway', 'humidity', ''),
-('owners-stairway/sensor/co2', 'owners-stairway', 'co2', ''),
-('guest-corridor/sensor/temperature', 'guest-corridor', 'temperature', ''),
-('guest-corridor/sensor/humidity', 'guest-corridor', 'humidity', ''),
-('guest-corridor/sensor/co2', 'guest-corridor', 'co2', ''),
-('polynesian-corridor/sensor/temperature', 'polynesian-corridor', 'temperature', ''),
-('polynesian-corridor/sensor/humidity', 'polynesian-corridor', 'humidity', ''),
-('polynesian-corridor/sensor/co2', 'polynesian-corridor', 'co2', '');

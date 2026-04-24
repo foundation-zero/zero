@@ -58,10 +58,14 @@ spec:
           resources:
             {{- toYaml .Values.resources.control | nindent 12 }}
           env:
-            - name: TERMODINAMICA_HOST
+            - name: AIR_CONDITIONING_HOST
               value: {{ .Values.stub.host | quote }}
-            - name: TERMODINAMICA_PORT
+            - name: AIR_CONDITIONING_PORT
               value: {{ .Values.stub.port | quote }}
+            - name: VENTILATION_HOST
+              value: {{ .Values.stub.host | quote }}
+            - name: VENTILATION_PORT
+              value: {{ .Values.stub.ventilationPort | quote }}
             {{- include "zero-domestic-control.postgresqlPasswordEnvFromSecret" . | nindent 12 -}}
             {{- include "zero-domestic-control.hasuraJwtEnvFromSecret" . | indent 12 -}}
             {{- include "zero-domestic-control.homeAssistantTokenEnvFromSecret" . | indent 12 }}

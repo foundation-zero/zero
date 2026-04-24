@@ -8,7 +8,7 @@
     "domestic": "Domestic Control"
   },
   "labels": {
-    "airconditioning": {
+    "airConditioning": {
       "short": "A/C",
       "long": "Air conditioning"
     },

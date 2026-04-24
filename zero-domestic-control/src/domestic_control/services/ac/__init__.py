@@ -1,5 +1,5 @@
-from .interface import TermodinamicaAc
+from .interface import AcInterface
 from .control import AcControl
 from .interface import Ac
 
-__all__ = ["AcControl", "TermodinamicaAc", "Ac"]
+__all__ = ["AcControl", "AcInterface", "Ac"]

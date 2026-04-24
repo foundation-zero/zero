@@ -1,6 +1,6 @@
 import { ConnectionInitMessage } from "../../../lib/types";
 import { expect, test } from "../../../mocks/playwright";
-import { getAllRooms, getControlLogs, getSensorLogs, getVersion } from "../../../mocks/queries";
+import { getAllRooms, getVersion } from "../../../mocks/queries";
 
 import { Roles } from "../../../../src/modules/domestic/types";
 import { tokens } from "../../../lib/auth";
@@ -8,7 +8,7 @@ import { tokens } from "../../../lib/auth";
 test.describe("Auth", () => {
   test.describe("using the authentication route", () => {
     test("uses the new token for authentication", async ({ worker, subscriptions, page }) => {
-      worker.use(getAllRooms, getVersion, getControlLogs, getSensorLogs);
+      worker.use(getAllRooms, getVersion);
       await page.goto(`/domestic/auth?token=${tokens[Roles.User]}`);
       await page.waitForTimeout(3000);
 

@@ -1,4 +1,4 @@
-from dataclasses import dataclass
+from domestic_control.services.modbus import AddressRange
 
 ROOM_INDICES = {
     "owners-cabin": 0,
@@ -27,29 +27,8 @@ ROOM_INDICES = {
     "polynesian-corridor": 23,
 }
 
-
-@dataclass
-class AddressRange:
-    """Denotes a modbus address range for a specific property with entries for each room"""
-
-    start: int
-    """scaling factor from modbus to real (so if modbus temperature is 200, then scale would be 0.1)"""
-    scale: float
-
-    def scale_to_real(self, modbus_value: float) -> float:
-        return self.scale * modbus_value
-
-    def scale_to_modbus(self, real_value: float) -> float:
-        return int(real_value / self.scale)
-
-    def address_for_room(self, room: str) -> int:
-        return self.start + ROOM_INDICES[room]
-
-
 # TODO: correct these to the actual addresses when we receive those
 ACTUAL_TEMPERATURE_START_ADDRESS = AddressRange(100, 0.1)
 TEMPERATURE_SETPOINT_START_ADDRESS = AddressRange(200, 0.1)
 ACTUAL_HUMIDITY_START_ADDRESS = AddressRange(300, 0.1)
 HUMIDITY_SETPOINT_START_ADDRESS = AddressRange(400, 0.1)
-ACTUAL_CO2_START_ADDRESS = AddressRange(500, 0.1)
-CO2_SETPOINT_START_ADDRESS = AddressRange(600, 0.1)
