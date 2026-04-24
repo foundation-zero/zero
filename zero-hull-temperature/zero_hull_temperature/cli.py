@@ -39,14 +39,16 @@ class ReadWithMqttCmd(ModbusSettings, MqttSettings):
             self, self, self.activate_topic, self.activate_json_path, ""
         ) as reader:
             temperatures = await reader.read_temperatures()
-            print(Temperatures(temperatures=temperatures).model_dump_json(indent=2))
+            for reading in temperatures:
+                print(f"{reading.sensor}: {reading.temperature}")
 
 
 class ReadSkipMqttCmd(ModbusSettings):
     async def cli_cmd(self) -> None:
         async with TemperatureReader.from_settings(self) as reader:
             temperatures = await reader.read_temperatures()
-            print(Temperatures(temperatures=temperatures).model_dump_json(indent=2))
+            for reading in temperatures:
+                print(f"{reading.sensor}: {reading.temperature}")
 
 
 class StubCmd(ModbusSettings, MqttSettings):

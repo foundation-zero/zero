@@ -142,7 +142,9 @@ class RelaySwitchingTemperatureReader(TemperatureReader):
         """
         await self._mqtt.publish(
             self._send_topic,
-            Temperatures(temperatures=temperatures).model_dump_json(),
+            Temperatures(
+                temperatures={t.sensor: t.temperature for t in temperatures}
+            ).model_dump_json(),
             qos=1,
         )
 
@@ -156,4 +158,6 @@ class RelaySwitchingTemperatureReader(TemperatureReader):
         try:
             yield
         finally:
-            await self._send_activate(False)
+            pass
+            # Keep HES on for now, prevent issues with having to wait for it to boot up again on next read
+            # await self._send_activate(False)

@@ -1,0 +1,97 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "zero-hull-temperature.name" . }}
+  namespace: {{ .Release.Namespace }}
+  labels:
+    {{- include "zero-hull-temperature.labels" . | nindent 4 }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      {{- include "zero-hull-temperature.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      {{- with .Values.podAnnotations }}
+      annotations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      labels:
+        {{- include "zero-hull-temperature.labels" . | nindent 8 }}
+        {{- with .Values.podLabels }}
+        {{- toYaml . | nindent 8 }}
+        {{- end }}
+    spec:
+      {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      securityContext:
+        fsGroupChangePolicy: Always
+        sysctls: []
+        supplementalGroups: []
+        fsGroup: 1001
+      containers:
+        - name: hull-temperature
+          command: ["python", "-m", "zero_hull_temperature", "run"]
+          securityContext:
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop:
+              - ALL
+            privileged: false
+            readOnlyRootFilesystem: true
+            runAsGroup: 1001
+            runAsNonRoot: true
+            runAsUser: 1001
+            seLinuxOptions: {}
+            seccompProfile:
+              type: RuntimeDefault
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          env:
+            - name: RUN__MQTT_HOST
+              value: {{ .Values.mqtt.host | quote }}
+            - name: RUN__MQTT_PORT
+              value: {{ .Values.mqtt.port | quote }}
+            - name: RUN__MQTT_USERNAME
+              value: {{ .Values.mqtt.username | quote }}
+            - name: RUN__MQTT_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.mqtt.existingSecret }}
+                  key: {{ .Values.mqtt.existingSecretPasswordKey }}
+            - name: RUN__MODBUS_HOST
+              value: {{ .Values.modbus.host | quote }}
+            - name: RUN__MODBUS_PORT
+              value: {{ .Values.modbus.port | quote }}
+            - name: RUN__SEND_TOPIC
+              value: {{ .Values.run.sendTopic | quote }}
+            - name: RUN__SECONDS
+              value: {{ .Values.run.intervalSeconds | quote }}
+            - name: RUN__N
+              value: {{ .Values.run.n | toString | quote }}
+            - name: RUN__ACTIVATE_TOPIC
+              value: {{ .Values.run.activateTopic | quote }}
+            - name: RUN__ACTIVATE_JSON_PATH
+              value: {{ .Values.run.activateJsonPath | quote }}
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+          volumeMounts:
+            - mountPath: /tmp
+              name: tmp
+      volumes:
+        - emptyDir: {}
+          name: tmp
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
