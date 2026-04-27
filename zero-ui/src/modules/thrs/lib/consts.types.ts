@@ -69,6 +69,7 @@ export const SIMULATION_TYPES = [
 export type ThrsSimulationType = (typeof SIMULATION_TYPES)[number];
 
 export type THRS = {
+  environment: "boat" | "simulation";
   modules: ThrsModules;
-  simulation: ThrsSimulation;
+  simulation: ThrsSimulation | null;
 };

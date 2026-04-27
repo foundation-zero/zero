@@ -1,4 +1,5 @@
 from pydantic_settings import BaseSettings, SettingsConfigDict
+from typing import Literal
 
 
 class Config(BaseSettings):
@@ -9,3 +10,4 @@ class Config(BaseSettings):
     mqtt_port: int
     mqtt_topic_prefix: str
     mqtt_control_topic_suffix: str
+    thrs_environment: Literal["boat", "simulation"] = "simulation"

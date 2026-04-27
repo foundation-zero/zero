@@ -34,6 +34,15 @@
       "sensors": {
         "title": "Sensors",
         "description": "View real-time data from the THRS sensors."
+      },
+      "overview": {
+        "title": "Overview",
+        "environment": "Environment",
+        "moduleAdvisoryControl": "Module Advisory Control",
+        "advisoryEnabled": "enabled",
+        "advisoryDisabled": "disabled",
+        "advisoryNotReceived": "Advisory control mode not received",
+        "simulationIndicator": "Simulation environment active"
       }
     },
     "components": {

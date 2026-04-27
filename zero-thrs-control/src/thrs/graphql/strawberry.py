@@ -132,6 +132,10 @@ class ControlState:
 
 @strawberry.type
 class Query:
+    @strawberry.field
+    def environment(self, info: strawberry.Info[ThrsContext]) -> str:
+        return info.context.messaging.environment
+
     @strawberry.field()
     def modules(self, info: strawberry.Info[ThrsContext]) -> ControlModules:
         return ControlModules()

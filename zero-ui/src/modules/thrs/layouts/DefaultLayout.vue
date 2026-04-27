@@ -9,9 +9,10 @@ import TopNavAppLogo from "@/modules/common/components/navigation/TopNavAppLogo.
 import TopNavToolbar from "@/modules/common/components/navigation/TopNavToolbar.vue";
 import { client } from "@/modules/thrs/graphql/client";
 import { ThrsModules } from "@/modules/thrs/lib/consts.types";
+import { useThrsHistory } from "@/modules/thrs/stores/history";
 import { RiSeparator } from "@remixicon/vue";
 import { provideClient } from "@urql/vue";
-import { computed, provide } from "vue";
+import { computed, provide, toRefs } from "vue";
 import { useRoute } from "vue-router";
 import ClearChartHistory from "../components/ClearChartHistory.vue";
 import ControlActions from "../components/ControlActions.vue";
@@ -25,7 +26,18 @@ const { t } = useI18n();
 
 const currentRoute = useRoute();
 const modules: Array<keyof ThrsModules> = ["thrusters", "pvt", "pcm", "consumers", "boilers"];
-const currentModuleKey = computed(() => (currentRoute.params.module as string) ?? "simulation");
+const currentModuleKey = computed(() => {
+  if (currentRoute.params.module) return currentRoute.params.module as string;
+  if (currentRoute.name === "thrs/hmi/overview") return "overview";
+  return "simulation";
+});
+const isSimulationRoute = computed(() => currentRoute.name === "thrs/hmi/simulation");
+const isModuleRoute = computed(() => Boolean(currentRoute.params.module));
+
+const { data } = toRefs(useThrsHistory());
+const isSimulationEnvironment = computed(
+  () => (data.value?.environment ?? "simulation") === "simulation",
+);
 
 provide("currentModule", currentModuleKey);
 </script>
@@ -54,17 +66,22 @@ provide("currentModule", currentModuleKey);
 
       <template #right-content>
         <ClearChartHistory />
-        <RiSeparator class="text-disabled-foreground" />
-        <SimulationActions class="max-md:hidden" />
+        <template v-if="isSimulationEnvironment">
+          <RiSeparator class="text-disabled-foreground" />
+          <SimulationActions class="max-md:hidden" />
+        </template>
       </template>
     </TopNavToolbar>
-    <TopNavToolbar class="py-1 transition-all duration-300 md:py-2">
+    <TopNavToolbar
+      v-if="isModuleRoute || isSimulationRoute"
+      class="py-1 transition-all duration-300 md:py-2"
+    >
       <template #left>
-        <SubNavTabs v-if="currentRoute.params.module" />
-        <SimulationTabs v-else />
+        <SubNavTabs v-if="isModuleRoute" />
+        <SimulationTabs v-else-if="isSimulationRoute" />
       </template>
       <template
-        v-if="currentRoute.params.module"
+        v-if="isModuleRoute"
         #right
       >
         <ControlActions :module="currentModuleKey" />

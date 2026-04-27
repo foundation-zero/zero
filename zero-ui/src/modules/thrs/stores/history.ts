@@ -27,9 +27,9 @@ type ModuleHistory = Record<HistoryKey, TimeSeriesData[]>;
 type TypelessRecord<T extends Record<string, unknown>> = Omit<T, "__typename">;
 
 const toTypelessRecord = <T extends Record<string, unknown>>(
-  record: T | null,
+  record: T | null | undefined,
 ): TypelessRecord<T> => {
-  if (record === null) return {} as TypelessRecord<T>;
+  if (record === null || record === undefined) return {} as TypelessRecord<T>;
 
   const { __typename, ...rest } = record;
   return rest;
@@ -71,8 +71,8 @@ export const extractHistory = (source: THRS, currentHistory: ModuleHistory): Mod
     extract(moduleName, module.sensorValues);
   });
 
-  extract("simulation", toTypelessRecord(source.simulation.outputs));
-  extract("simulation", toTypelessRecord(source.simulation.inputs));
+  extract("simulation", toTypelessRecord(source.simulation?.outputs));
+  extract("simulation", toTypelessRecord(source.simulation?.inputs));
 
   return newHistory;
 };

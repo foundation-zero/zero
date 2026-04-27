@@ -251,6 +251,7 @@ const toUnionQueries = <K extends string, T extends Record<K, string>>(
 
 export const QUERY_ALL = gql`
   query QueryAll {
+    environment
     simulation {
       inputs {
         ${toUnionQueries(SIMULATION_INPUT_QUERIES, toInputType)}
@@ -261,6 +262,7 @@ export const QUERY_ALL = gql`
     }
     modules {
       thrusters {
+        advisoryControlEnabled
         sensorValues {
           ${THRUSTERS_SENSOR_QUERY}
         }
@@ -272,6 +274,7 @@ export const QUERY_ALL = gql`
         }
       }
       pcm {
+        advisoryControlEnabled
         sensorValues {
           ${PCM_SENSOR_QUERY}
         }
@@ -283,6 +286,7 @@ export const QUERY_ALL = gql`
         }
       }
       pvt {
+        advisoryControlEnabled
         sensorValues {
           ${PVT_SENSOR_QUERY}
         }
@@ -294,6 +298,7 @@ export const QUERY_ALL = gql`
         }
       }
       consumers {
+        advisoryControlEnabled
         sensorValues {
           ${CONSUMERS_SENSOR_QUERY}
         }
@@ -305,6 +310,7 @@ export const QUERY_ALL = gql`
         }
       }
       boilers {
+        advisoryControlEnabled
         sensorValues {
           ${BOILERS_SENSOR_QUERY}
         }

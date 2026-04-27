@@ -86,6 +86,7 @@ type BoilersSensorValuesTypeBoilersControlValuesTypeBoilersParametersTypeBoilers
   controlValues: BoilersControlValuesType
   parameters: BoilersParametersType
   controlMode: BoilersSensorValuesTypeBoilersControlValuesTypeBoilersParametersTypeBoilersControlModeTypeSwitchingControlModeType
+  advisoryControlEnabled: Boolean
 }
 
 type BoilersSensorValuesTypeBoilersControlValuesTypeBoilersParametersTypeBoilersControlModeTypeSwitchingControlModeType {
@@ -170,6 +171,7 @@ type ConsumersSensorValuesTypeConsumersControlValuesTypeConsumersParametersTypeC
   controlValues: ConsumersControlValuesType
   parameters: ConsumersParametersType
   controlMode: ConsumersSensorValuesTypeConsumersControlValuesTypeConsumersParametersTypeConsumersControlModeTypeSwitchingControlModeType
+  advisoryControlEnabled: Boolean
 }
 
 type ConsumersSensorValuesTypeConsumersControlValuesTypeConsumersParametersTypeConsumersControlModeTypeSwitchingControlModeType {
@@ -505,6 +507,7 @@ type PcmSensorValuesTypePcmControlValuesTypePcmParametersTypePcmControlModeTypeC
   controlValues: PcmControlValuesType
   parameters: PcmParametersType
   controlMode: PcmSensorValuesTypePcmControlValuesTypePcmParametersTypePcmControlModeTypeSwitchingControlModeType
+  advisoryControlEnabled: Boolean
 }
 
 type PcmSensorValuesTypePcmControlValuesTypePcmParametersTypePcmControlModeTypeSwitchingControlModeType {
@@ -691,6 +694,7 @@ type PvtSensorValuesTypePvtControlValuesTypePvtParametersTypePvtControlModeTypeC
   controlValues: PvtControlValuesType
   parameters: PvtParametersType
   controlMode: PvtSensorValuesTypePvtControlValuesTypePvtParametersTypePvtControlModeTypeSwitchingControlModeType
+  advisoryControlEnabled: Boolean
 }
 
 type PvtSensorValuesTypePvtControlValuesTypePvtParametersTypePvtControlModeTypeSwitchingControlModeType {
@@ -713,6 +717,7 @@ type PvtSimulationOutputsType {
 }
 
 type Query {
+  environment: String!
   modules: ControlModules!
   simulation: SimulationState
 }
@@ -847,6 +852,7 @@ type ThrustersSensorValuesTypeThrustersControlValuesTypeThrustersParametersTypeT
   controlValues: ThrustersControlValuesType
   parameters: ThrustersParametersType
   controlMode: ThrustersSensorValuesTypeThrustersControlValuesTypeThrustersParametersTypeThrustersControlModeTypeSwitchingControlModeType
+  advisoryControlEnabled: Boolean
 }
 
 type ThrustersSensorValuesTypeThrustersControlValuesTypeThrustersParametersTypeThrustersControlModeTypeSwitchingControlModeType {

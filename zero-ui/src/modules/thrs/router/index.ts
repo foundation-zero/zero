@@ -9,8 +9,13 @@ const thrsChildRoutes: RouteRecordRaw[] = [
       layout: defineAsyncComponent(() => import("@/modules/thrs/layouts/DefaultLayout.vue")),
       requiresAuth: false,
     },
-    redirect: () => ({ path: "/thrs/hmi/thrusters/monitoring", query: {} }),
+    redirect: () => ({ path: "/thrs/hmi/overview", query: {} }),
     children: [
+      {
+        path: "overview",
+        name: "thrs/hmi/overview",
+        component: () => import("@/modules/thrs/views/Overview.vue"),
+      },
       {
         path: "simulation",
         name: "thrs/hmi/simulation",

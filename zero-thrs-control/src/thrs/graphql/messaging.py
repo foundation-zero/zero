@@ -8,6 +8,7 @@ from dataclasses import dataclass
 from thrs.cli.simulation_controls import (
     ControlModeMessage,
     ManualControlMessage,
+    OutgoingMessage,
     ParametersMessage,
     PauseMessage,
     PlayMessage,
@@ -18,7 +19,12 @@ from thrs.cli.simulation_controls import (
     StepMessage,
     SetAutomationMessage,
 )
-from thrs.input_output.base import SimulationInputs, SimulationValues, ThrsValues
+from thrs.input_output.base import (
+    SimulationInputs,
+    SimulationValues,
+    Stamped,
+    ThrsValues,
+)
 from thrs.input_output.model_builder import PartialModelBuilder
 from thrs.utils.string import dash_to_snake
 from thrs.orchestration.config import Config
@@ -123,6 +129,10 @@ class SimulationStatusMessageReceiver(MessageReceiver[SimulationStatusMessage]):
         await super().handle(msg, context)
 
 
+class AdvisoryControlMessage(ThrsValues):
+    enabled: Stamped[bool]
+
+
 settings = Config()  # type: ignore
 
 
@@ -142,7 +152,7 @@ class ControlMessaging[
         mqtt_client: MqttClient,
     ):
         self.name = name
-        self._active = False
+        self._active = settings.thrs_environment == "boat"
         self.sensor_values_cls = sensor_values_cls
         self.control_values_cls = control_values_cls
 
@@ -158,11 +168,16 @@ class ControlMessaging[
         self._control_mode = MessageReceiver(
             ControlModeMessage[mode_cls], ControlModeMessage.subscribe_topic()
         )
+        self._advisory_control = MessageReceiver(
+            AdvisoryControlMessage,
+            f"{name}/advisory_control",
+        )
         self._mqtt_client = mqtt_client
 
     @property
     def receivers(self):
         return [
+            self._advisory_control,
             self._sensor_values,
             self._control_values,
             self._parameters,
@@ -240,6 +255,11 @@ class ControlMessaging[
     @property
     def control_mode(self) -> ControlModeMessage | None:
         return self._control_mode.last
+
+    @property
+    def advisory_control_enabled(self) -> bool | None:
+        message = self._advisory_control.last
+        return message.enabled.value if message else None
 
 
 class RawMessageReceiver[T: ThrsValues](MessageReceiver[T]):
@@ -472,3 +492,7 @@ class Messaging:
     @property
     def simulation_status(self) -> SimulationStatusMessage | None:
         return self._simulation_status.last
+
+    @property
+    def environment(self) -> Literal["boat", "simulation"]:
+        return settings.thrs_environment

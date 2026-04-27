@@ -53,6 +53,7 @@ def resolve_module(
         )
         if module.control_mode
         else None,
+        advisory_control_enabled=module.advisory_control_enabled,
     )
 
 

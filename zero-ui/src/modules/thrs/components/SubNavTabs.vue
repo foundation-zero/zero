@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useI18n } from "vue-i18n";
-import { useRoute } from "vue-router";
+import { RouterLink, useRoute } from "vue-router";
 
 const { t } = useI18n();
 

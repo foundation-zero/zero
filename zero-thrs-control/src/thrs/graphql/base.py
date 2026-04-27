@@ -140,6 +140,7 @@ class ControlModule[
     control_values: ControlValuesType | None
     parameters: ParametersType | None
     control_mode: SwitchingControlModeType[Mode] | None = None  # type: ignore
+    advisory_control_enabled: bool | None = None
 
 
 @dataclass

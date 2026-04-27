@@ -100,7 +100,7 @@ export const useSimulationStore = defineStore("simulation", () => {
     mutationWithValue(`${module}SetAutomationMode`, "automatic", "Boolean!");
   const isProcessing = ref(false);
   const { data } = toRefs(useThrsHistory());
-  const activeSimulation = computed(() => data.value?.simulation.inputs?.__typename);
+  const activeSimulation = computed(() => data.value?.simulation?.inputs?.__typename);
   const activeSimulationType = computed(() =>
     SIMULATION_TYPES.find((type) => activeSimulation.value?.toLocaleLowerCase().startsWith(type)),
   );
@@ -127,7 +127,7 @@ export const useSimulationStore = defineStore("simulation", () => {
     immediate: true,
   });
 
-  const status = computed(() => statusQuery.data?.value?.simulation.status);
+  const status = computed(() => statusQuery.data?.value?.simulation?.status);
   const isAvailable = computed(() => status.value === "available");
   const isRunning = computed(() => status.value === "running");
   const isStepping = computed(() => status.value === "stepping");

@@ -184,6 +184,7 @@ export const enum SensorComponentType {
 }
 
 export type THRSModule<TDefinition extends ModuleDefinition = ModuleDefinition> = {
+  advisoryControlEnabled: boolean | null;
   sensorValues: ExtractSensorValues<TDefinition["sensorValues"]>;
   controlValues: ExtractControlValues<TDefinition["controlValues"]>;
   parameters: ExtractParameterValues<TDefinition["parameters"]>;
