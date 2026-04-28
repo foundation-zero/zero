@@ -44,7 +44,10 @@ onUnmounted(stopPollingAlarms);
       <template #default="{ group, size, variables: groupVariables, hasBooleans }">
         <VariableGridGroup
           v-if="size > 0"
-          :class="[`grid-cols-${hasBooleans ? size * 3 : size}`, `col-span-${size}`]"
+          :class="[
+            `grid-cols-${hasBooleans && selectedCardType === 'graphical' ? size * 3 : size}`,
+            `col-span-${size}`,
+          ]"
         >
           <VariableGridHeader>
             <VariableGridHeaderTitle>{{ group.name }}</VariableGridHeaderTitle>
