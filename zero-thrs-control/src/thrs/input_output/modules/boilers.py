@@ -179,6 +179,10 @@ class BoilersSensorValues(ThrsValues):
             yard_tag="50001067-18", component_type="valve", valve_type="switch"
         ),
     ]
+    boilers_pressure_boosting: Annotated[
+        sensor.PressureSensor,
+        component_meta(yard_tag="50001097-11", component_type="pressure_sensor"),
+    ]
 
 
 class BoilersControlValues(ThrsValues):
