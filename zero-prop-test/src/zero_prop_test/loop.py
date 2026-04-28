@@ -91,8 +91,7 @@ class Loop:
         await self._mqtt.publish("prop-test/data", message.model_dump_json())
 
     async def run(self, addresses: Sequence[AddressType]):
-        async with self._mqtt:
-            while True:
-                async with TaskGroup() as tg:
-                    tg.create_task(sleep(self._interval.total_seconds()))
-                    tg.create_task(self.tick(addresses))
+        while True:
+            async with TaskGroup() as tg:
+                tg.create_task(sleep(self._interval.total_seconds()))
+                tg.create_task(self.tick(addresses))

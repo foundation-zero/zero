@@ -21,5 +21,9 @@ spec:
       targetPort: 48898
       protocol: TCP
       name: ads
+    - port: 30000
+      targetPort: 30000
+      protocol: TCP
+      name: ads
   selector:
     {{- include "zero-prop-test.selectorLabels" . | nindent 4 }}
