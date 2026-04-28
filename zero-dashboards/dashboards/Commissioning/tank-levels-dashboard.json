@@ -87,6 +87,7 @@
           },
           "decimals": 2,
           "mappings": [],
+          "noValue": "-",
           "thresholds": {
             "mode": "absolute",
             "steps": [
@@ -156,8 +157,7 @@
               "name": "Fresh water tank 1",
               "placement": {
                 "height": 30,
-                "left": 235,
-                "rotation": 0,
+                "left": 277,
                 "top": 10,
                 "width": 180
               },
@@ -195,7 +195,7 @@
                 "left": 10,
                 "rotation": 0,
                 "top": 10,
-                "width": 350
+                "width": 157
               },
               "type": "text"
             },
@@ -229,8 +229,7 @@
               "name": "Fresh water tank 2",
               "placement": {
                 "height": 30,
-                "left": 235,
-                "rotation": 0,
+                "left": 277,
                 "top": 45,
                 "width": 180
               },
@@ -268,7 +267,83 @@
                 "left": 10,
                 "rotation": 0,
                 "top": 45,
-                "width": 350
+                "width": 157
+              },
+              "type": "text"
+            },
+            {
+              "background": {
+                "color": {
+                  "fixed": "transparent"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "left",
+                "color": {
+                  "fixed": "rgb(204,204,220)"
+                },
+                "size": 12,
+                "text": {
+                  "field": "fresh_water_tank_1_level_tag",
+                  "fixed": " ",
+                  "mode": "field"
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "name": "fresh_water_tank_1_level_tag",
+              "placement": {
+                "height": 30,
+                "left": 167,
+                "rotation": 0,
+                "top": 10,
+                "width": 96
+              },
+              "type": "text"
+            },
+            {
+              "background": {
+                "color": {
+                  "fixed": "transparent"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "left",
+                "color": {
+                  "fixed": "rgb(204,204,220)"
+                },
+                "size": 12,
+                "text": {
+                  "field": "fresh_water_tank_2_level_tag",
+                  "fixed": " ",
+                  "mode": "field"
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "name": "fresh_water_tank_2_level_tag",
+              "placement": {
+                "height": 30,
+                "left": 167,
+                "rotation": 0,
+                "top": 45,
+                "width": 96
               },
               "type": "text"
             }
@@ -283,7 +358,7 @@
           },
           "type": "frame"
         },
-        "showAdvancedTypes": true,
+        "showAdvancedTypes": false,
         "tooltip": {
           "disableForOneClick": false,
           "mode": "none"
@@ -298,6 +373,36 @@
           "rawQuery": true,
           "rawSql": "SELECT\n  LAST_VALUE(time ORDER BY time) AS time,\n  LAST_VALUE((\"TANK_1_FR_45_PS_LEVEL\").value ORDER BY time)      AS fresh_water_tank_1_level,\n  LAST_VALUE((\"TANK_2_FR_45_SB_LEVEL\").value ORDER BY time)      AS fresh_water_tank_2_level\nFROM marpower.\"250000_fresh_water\";\n",
           "refId": "A",
+          "sql": {
+            "columns": [
+              {
+                "parameters": [],
+                "type": "function"
+              }
+            ],
+            "groupBy": [
+              {
+                "property": {
+                  "type": "string"
+                },
+                "type": "groupBy"
+              }
+            ],
+            "limit": 50
+          }
+        },
+        {
+          "dataset": "dev",
+          "datasource": {
+            "type": "grafana-postgresql-datasource",
+            "uid": "${datasource}"
+          },
+          "editorMode": "code",
+          "format": "table",
+          "hide": false,
+          "rawQuery": true,
+          "rawSql": "SELECT \r\n  MAX(CASE WHEN mqtt_json_path = LOWER('TANK_1_FR_45_PS_LEVEL') THEN '(' || yard_tag || ')' ELSE NULL END) AS fresh_water_tank_1_level_tag,\r\n  MAX(CASE WHEN mqtt_json_path = LOWER('TANK_2_FR_45_SB_LEVEL') THEN '(' || yard_tag || ')' ELSE NULL END) AS fresh_water_tank_2_level_tag\r\nFROM marpower.io_metadata_marpower\r\nWHERE mqtt_topic = 'marpower/250000-fresh-water'",
+          "refId": "B",
           "sql": {
             "columns": [
               {
@@ -450,8 +555,7 @@
               "name": "tank11_level",
               "placement": {
                 "height": 30,
-                "left": 235,
-                "rotation": 0,
+                "left": 277,
                 "top": 10,
                 "width": 180
               },
@@ -489,7 +593,7 @@
                 "left": 10,
                 "rotation": 0,
                 "top": 10,
-                "width": 208
+                "width": 146
               },
               "type": "text"
             },
@@ -524,8 +628,7 @@
               "name": "tank13_level",
               "placement": {
                 "height": 30,
-                "left": 235,
-                "rotation": 0,
+                "left": 277,
                 "top": 45,
                 "width": 180
               },
@@ -562,9 +665,8 @@
               "placement": {
                 "height": 30,
                 "left": 10,
-                "rotation": 0,
                 "top": 45,
-                "width": 208
+                "width": 150
               },
               "type": "text"
             },
@@ -598,8 +700,7 @@
               "name": "tank15_level",
               "placement": {
                 "height": 30,
-                "left": 235,
-                "rotation": 0,
+                "left": 277,
                 "top": 80,
                 "width": 180
               },
@@ -635,9 +736,122 @@
               "placement": {
                 "height": 30,
                 "left": 10,
+                "top": 80,
+                "width": 150
+              },
+              "type": "text"
+            },
+            {
+              "background": {
+                "color": {
+                  "fixed": "transparent"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "left",
+                "color": {
+                  "fixed": "rgb(204,204,220)"
+                },
+                "size": 12,
+                "text": {
+                  "field": "tank11_level_tag",
+                  "fixed": " ",
+                  "mode": "field"
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "name": "tank11_level_tag",
+              "placement": {
+                "height": 30,
+                "left": 160,
+                "rotation": 0,
+                "top": 10,
+                "width": 98
+              },
+              "type": "text"
+            },
+            {
+              "background": {
+                "color": {
+                  "fixed": "transparent"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "left",
+                "color": {
+                  "fixed": "rgb(204,204,220)"
+                },
+                "size": 12,
+                "text": {
+                  "field": "tank13_level_tag",
+                  "fixed": " ",
+                  "mode": "field"
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "name": "tank13_level_tag",
+              "placement": {
+                "height": 30,
+                "left": 160,
+                "rotation": 0,
+                "top": 45,
+                "width": 98
+              },
+              "type": "text"
+            },
+            {
+              "background": {
+                "color": {
+                  "fixed": "transparent"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "left",
+                "color": {
+                  "fixed": "rgb(204,204,220)"
+                },
+                "size": 12,
+                "text": {
+                  "field": "tank15_level_tag",
+                  "fixed": " ",
+                  "mode": "field"
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "name": "tank15_level_tag",
+              "placement": {
+                "height": 30,
+                "left": 160,
                 "rotation": 0,
                 "top": 80,
-                "width": 208
+                "width": 98
               },
               "type": "text"
             }
@@ -665,8 +879,38 @@
           "editorMode": "code",
           "format": "table",
           "rawQuery": true,
-          "rawSql": "SELECT\n  LAST_VALUE(time ORDER BY time) AS time,\n  LAST_VALUE((\"HOTWATER11_LEVEL\").value ORDER BY time)                   AS tank11_level,\n  LAST_VALUE((\"HOTWATER13_LEVEL\").value ORDER BY time)                   AS tank13_level,\n  LAST_VALUE((\"HOTWATER15_LEVEL\").value ORDER BY time)                   AS tank15_level\nFROM marpower.\"340000_tankage\";\n",
+          "rawSql": "SELECT\n  LAST_VALUE(time ORDER BY time) AS time,\n  LAST_VALUE((\"HOTWATER11_LEVEL\").value ORDER BY time) AS tank11_level,\n  LAST_VALUE((\"HOTWATER13_LEVEL\").value ORDER BY time) AS tank13_level,\n  LAST_VALUE((\"HOTWATER15_LEVEL\").value ORDER BY time) AS tank15_level\nFROM marpower.\"340000_tankage\";\n",
           "refId": "A",
+          "sql": {
+            "columns": [
+              {
+                "parameters": [],
+                "type": "function"
+              }
+            ],
+            "groupBy": [
+              {
+                "property": {
+                  "type": "string"
+                },
+                "type": "groupBy"
+              }
+            ],
+            "limit": 50
+          }
+        },
+        {
+          "dataset": "dev",
+          "datasource": {
+            "type": "grafana-postgresql-datasource",
+            "uid": "${datasource}"
+          },
+          "editorMode": "code",
+          "format": "table",
+          "hide": false,
+          "rawQuery": true,
+          "rawSql": "SELECT \r\n  MAX(CASE WHEN mqtt_json_path = LOWER('HOTWATER11_LEVEL') THEN '(' || yard_tag || ')' ELSE NULL END) AS tank11_level_tag,\r\n  MAX(CASE WHEN mqtt_json_path = LOWER('HOTWATER13_LEVEL') THEN '(' || yard_tag || ')' ELSE NULL END) AS tank13_level_tag,\r\n  MAX(CASE WHEN mqtt_json_path = LOWER('HOTWATER15_LEVEL') THEN '(' || yard_tag || ')' ELSE NULL END) AS tank15_level_tag\r\nFROM marpower.io_metadata_marpower\r\nWHERE mqtt_topic = 'marpower/340000-tankage'",
+          "refId": "B",
           "sql": {
             "columns": [
               {
@@ -701,6 +945,7 @@
           },
           "decimals": 2,
           "mappings": [],
+          "noValue": "-",
           "thresholds": {
             "mode": "absolute",
             "steps": [
@@ -797,7 +1042,7 @@
               "name": "tank level",
               "placement": {
                 "height": 30,
-                "left": 235,
+                "left": 275,
                 "rotation": 0,
                 "top": 10,
                 "width": 175
@@ -837,7 +1082,46 @@
                 "left": 15,
                 "rotation": 0,
                 "top": 10,
-                "width": 200
+                "width": 92
+              },
+              "type": "text"
+            },
+            {
+              "background": {
+                "color": {
+                  "fixed": "transparent"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "left",
+                "color": {
+                  "fixed": "rgb(204, 204, 220)"
+                },
+                "size": 12,
+                "text": {
+                  "field": "tank_level_tag",
+                  "fixed": " ",
+                  "mode": "field"
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "links": [],
+              "name": "tank_level_tag",
+              "placement": {
+                "height": 30,
+                "left": 107,
+                "rotation": 0,
+                "top": 10,
+                "width": 92
               },
               "type": "text"
             }
@@ -889,6 +1173,36 @@
             ],
             "limit": 50
           }
+        },
+        {
+          "dataset": "dev",
+          "datasource": {
+            "type": "grafana-postgresql-datasource",
+            "uid": "${datasource}"
+          },
+          "editorMode": "code",
+          "format": "table",
+          "hide": false,
+          "rawQuery": true,
+          "rawSql": "SELECT \r\n  MAX(CASE WHEN mqtt_json_path = LOWER('TANK_LEVEL') THEN '(' || yard_tag || ')' ELSE NULL END) AS tank_level_tag\r\nFROM marpower.io_metadata_marpower\r\nWHERE mqtt_topic = 'marpower/210000-bilge-fifi-general'",
+          "refId": "B",
+          "sql": {
+            "columns": [
+              {
+                "parameters": [],
+                "type": "function"
+              }
+            ],
+            "groupBy": [
+              {
+                "property": {
+                  "type": "string"
+                },
+                "type": "groupBy"
+              }
+            ],
+            "limit": 50
+          }
         }
       ],
       "title": "Bilge",
@@ -906,6 +1220,7 @@
           },
           "decimals": 2,
           "mappings": [],
+          "noValue": "-",
           "thresholds": {
             "mode": "absolute",
             "steps": [
@@ -1002,7 +1317,7 @@
               "name": "tank level",
               "placement": {
                 "height": 30,
-                "left": 235,
+                "left": 275,
                 "rotation": 0,
                 "top": 10,
                 "width": 175
@@ -1042,7 +1357,46 @@
                 "left": 15,
                 "rotation": 0,
                 "top": 10,
-                "width": 200
+                "width": 107
+              },
+              "type": "text"
+            },
+            {
+              "background": {
+                "color": {
+                  "fixed": "transparent"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "left",
+                "color": {
+                  "fixed": "rgb(204, 204, 220)"
+                },
+                "size": 12,
+                "text": {
+                  "field": "sludge_tank_tag",
+                  "fixed": " ",
+                  "mode": "field"
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "links": [],
+              "name": "sludge_tank_tag",
+              "placement": {
+                "height": 30,
+                "left": 122,
+                "rotation": 0,
+                "top": 10,
+                "width": 107
               },
               "type": "text"
             }
@@ -1094,6 +1448,36 @@
             ],
             "limit": 50
           }
+        },
+        {
+          "dataset": "dev",
+          "datasource": {
+            "type": "grafana-postgresql-datasource",
+            "uid": "${datasource}"
+          },
+          "editorMode": "code",
+          "format": "table",
+          "hide": false,
+          "rawQuery": true,
+          "rawSql": "SELECT \r\n  MAX(CASE WHEN mqtt_json_path = LOWER('SLUDGE_TANK_PS_LEVEL') THEN '(' || yard_tag || ')' ELSE NULL END) AS sludge_tank_tag\r\nFROM marpower.io_metadata_marpower\r\nWHERE mqtt_topic = 'marpower/340000-sewage'",
+          "refId": "B",
+          "sql": {
+            "columns": [
+              {
+                "parameters": [],
+                "type": "function"
+              }
+            ],
+            "groupBy": [
+              {
+                "property": {
+                  "type": "string"
+                },
+                "type": "groupBy"
+              }
+            ],
+            "limit": 50
+          }
         }
       ],
       "title": "Sludge",
@@ -1111,6 +1495,7 @@
           },
           "decimals": 2,
           "mappings": [],
+          "noValue": "-",
           "thresholds": {
             "mode": "absolute",
             "steps": [
@@ -1183,8 +1568,7 @@
               "name": "grey_wat_aft_tank",
               "placement": {
                 "height": 30,
-                "left": 235,
-                "rotation": 0,
+                "left": 309,
                 "top": 10,
                 "width": 175
               },
@@ -1223,7 +1607,7 @@
                 "left": 15,
                 "rotation": 0,
                 "top": 10,
-                "width": 240
+                "width": 176
               },
               "type": "text"
             },
@@ -1259,7 +1643,7 @@
               "name": "grey_wat_fwd_tank",
               "placement": {
                 "height": 30,
-                "left": 235,
+                "left": 309,
                 "top": 45,
                 "width": 175
               },
@@ -1296,9 +1680,8 @@
               "placement": {
                 "height": 30,
                 "left": 15,
-                "rotation": 0,
                 "top": 45,
-                "width": 240
+                "width": 176
               },
               "type": "text"
             },
@@ -1334,7 +1717,7 @@
               "name": "black_wat_aft_tank",
               "placement": {
                 "height": 30,
-                "left": 235,
+                "left": 309,
                 "top": 80,
                 "width": 175
               },
@@ -1371,9 +1754,125 @@
               "placement": {
                 "height": 30,
                 "left": 15,
-                "rotation": 0,
                 "top": 80,
-                "width": 240
+                "width": 176
+              },
+              "type": "text"
+            },
+            {
+              "background": {
+                "color": {
+                  "fixed": "transparent"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "left",
+                "color": {
+                  "fixed": "rgb(204, 204, 220)"
+                },
+                "size": 12,
+                "text": {
+                  "field": "grey_wat_aft_tank_tag",
+                  "fixed": " ",
+                  "mode": "field"
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "links": [],
+              "name": "grey_wat_aft_tank_tag",
+              "placement": {
+                "height": 30,
+                "left": 191,
+                "rotation": 0,
+                "top": 15,
+                "width": 104
+              },
+              "type": "text"
+            },
+            {
+              "background": {
+                "color": {
+                  "fixed": "transparent"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "left",
+                "color": {
+                  "fixed": "rgb(204, 204, 220)"
+                },
+                "size": 12,
+                "text": {
+                  "field": "grey_wat_fwd_tank_tag",
+                  "fixed": " ",
+                  "mode": "field"
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "links": [],
+              "name": "grey_wat_fwd_tank_tag",
+              "placement": {
+                "height": 30,
+                "left": 191,
+                "rotation": 0,
+                "top": 50,
+                "width": 104
+              },
+              "type": "text"
+            },
+            {
+              "background": {
+                "color": {
+                  "fixed": "transparent"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "left",
+                "color": {
+                  "fixed": "rgb(204, 204, 220)"
+                },
+                "size": 12,
+                "text": {
+                  "field": "black_wat_aft_tank_tag",
+                  "fixed": " ",
+                  "mode": "field"
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "links": [],
+              "name": "black_wat_aft_tank_tag",
+              "placement": {
+                "height": 30,
+                "left": 191,
+                "rotation": 0,
+                "top": 85,
+                "width": 104
               },
               "type": "text"
             }
@@ -1425,6 +1924,36 @@
             ],
             "limit": 50
           }
+        },
+        {
+          "dataset": "dev",
+          "datasource": {
+            "type": "grafana-postgresql-datasource",
+            "uid": "${datasource}"
+          },
+          "editorMode": "code",
+          "format": "table",
+          "hide": false,
+          "rawQuery": true,
+          "rawSql": "SELECT \r\n  MAX(CASE WHEN mqtt_json_path = LOWER('GREY_WATER_TANK_AFT_SB_LEVEL') THEN '(' || yard_tag || ')' ELSE NULL END)       AS grey_wat_aft_tank_tag,\r\n  MAX(CASE WHEN mqtt_json_path = LOWER('GREY_WATER_TANK_FWD_SB_LEVEL') THEN '(' || yard_tag || ')' ELSE NULL END)       AS grey_wat_fwd_tank_tag,\r\n  MAX(CASE WHEN mqtt_json_path = LOWER('BLACK_GREY_WATER_TANK_AFT_PS_LEVEL') THEN '(' || yard_tag || ')' ELSE NULL END) AS black_wat_aft_tank_tag\r\nFROM marpower.io_metadata_marpower\r\nWHERE mqtt_topic = 'marpower/340000-sewage'",
+          "refId": "B",
+          "sql": {
+            "columns": [
+              {
+                "parameters": [],
+                "type": "function"
+              }
+            ],
+            "groupBy": [
+              {
+                "property": {
+                  "type": "string"
+                },
+                "type": "groupBy"
+              }
+            ],
+            "limit": 50
+          }
         }
       ],
       "title": "Grey/Black water",
@@ -1442,6 +1971,7 @@
           },
           "decimals": 2,
           "mappings": [],
+          "noValue": "-",
           "thresholds": {
             "mode": "absolute",
             "steps": [
@@ -1553,6 +2083,7 @@
                 },
                 "valign": "middle"
               },
+              "connections": [],
               "constraint": {
                 "horizontal": "left",
                 "vertical": "top"
@@ -1560,8 +2091,7 @@
               "name": "tank1_level",
               "placement": {
                 "height": 30,
-                "left": 235,
-                "rotation": 0,
+                "left": 320,
                 "top": 10,
                 "width": 180
               },
@@ -1599,7 +2129,7 @@
                 "left": 10,
                 "rotation": 0,
                 "top": 10,
-                "width": 350
+                "width": 189
               },
               "type": "text"
             },
@@ -1634,8 +2164,7 @@
               "name": "tank2_level",
               "placement": {
                 "height": 30,
-                "left": 235,
-                "rotation": 0,
+                "left": 320,
                 "top": 45,
                 "width": 180
               },
@@ -1673,7 +2202,83 @@
                 "left": 10,
                 "rotation": 0,
                 "top": 45,
-                "width": 350
+                "width": 189
+              },
+              "type": "text"
+            },
+            {
+              "background": {
+                "color": {
+                  "fixed": "transparent"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "left",
+                "color": {
+                  "fixed": "rgb(204,204,220)"
+                },
+                "size": 12,
+                "text": {
+                  "field": "tank1_level_tag",
+                  "fixed": " ",
+                  "mode": "field"
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "name": "tank1_level_tag",
+              "placement": {
+                "height": 30,
+                "left": 205,
+                "rotation": 0,
+                "top": 10,
+                "width": 109
+              },
+              "type": "text"
+            },
+            {
+              "background": {
+                "color": {
+                  "fixed": "transparent"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "left",
+                "color": {
+                  "fixed": "rgb(204,204,220)"
+                },
+                "size": 12,
+                "text": {
+                  "field": "tank2_level_tag",
+                  "fixed": " ",
+                  "mode": "field"
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "name": "tank2_level_tag",
+              "placement": {
+                "height": 30,
+                "left": 205,
+                "rotation": 0,
+                "top": 45,
+                "width": 109
               },
               "type": "text"
             }
@@ -1688,7 +2293,7 @@
           },
           "type": "frame"
         },
-        "showAdvancedTypes": true,
+        "showAdvancedTypes": false,
         "tooltip": {
           "disableForOneClick": false,
           "mode": "none"
@@ -1701,8 +2306,38 @@
           "editorMode": "code",
           "format": "table",
           "rawQuery": true,
-          "rawSql": "SELECT\n  LAST_VALUE(time ORDER BY time) AS time,\n  LAST_VALUE((\"TANK1_LEVEL\").value ORDER BY time)                   AS tank1_level,\n  LAST_VALUE((\"TANK2_LEVEL\").value ORDER BY time)                   AS tank2_level\nFROM marpower.\"250000_techwater\";\n",
+          "rawSql": "SELECT\n  LAST_VALUE(time ORDER BY time) AS time,\n  LAST_VALUE((\"TANK1_LEVEL\").value ORDER BY time) AS tank1_level,\n  LAST_VALUE((\"TANK2_LEVEL\").value ORDER BY time) AS tank2_level\nFROM marpower.\"250000_techwater\";\n",
           "refId": "A",
+          "sql": {
+            "columns": [
+              {
+                "parameters": [],
+                "type": "function"
+              }
+            ],
+            "groupBy": [
+              {
+                "property": {
+                  "type": "string"
+                },
+                "type": "groupBy"
+              }
+            ],
+            "limit": 50
+          }
+        },
+        {
+          "dataset": "dev",
+          "datasource": {
+            "type": "grafana-postgresql-datasource",
+            "uid": "${datasource}"
+          },
+          "editorMode": "code",
+          "format": "table",
+          "hide": false,
+          "rawQuery": true,
+          "rawSql": "SELECT \r\n  MAX(CASE WHEN mqtt_json_path = LOWER('TANK1_LEVEL') THEN '(' || yard_tag || ')' ELSE NULL END) AS tank1_level_tag,\r\n  MAX(CASE WHEN mqtt_json_path = LOWER('TANK2_LEVEL') THEN '(' || yard_tag || ')' ELSE NULL END) AS tank2_level_tag\r\nFROM marpower.io_metadata_marpower\r\nWHERE mqtt_topic = 'marpower/250000-techwater'",
+          "refId": "B",
           "sql": {
             "columns": [
               {
@@ -1737,6 +2372,7 @@
           },
           "decimals": 2,
           "mappings": [],
+          "noValue": "-",
           "thresholds": {
             "mode": "absolute",
             "steps": [
@@ -1833,7 +2469,7 @@
               "name": "tank level",
               "placement": {
                 "height": 30,
-                "left": 235,
+                "left": 275,
                 "rotation": 0,
                 "top": 10,
                 "width": 175
@@ -1873,7 +2509,46 @@
                 "left": 15,
                 "rotation": 0,
                 "top": 10,
-                "width": 200
+                "width": 165
+              },
+              "type": "text"
+            },
+            {
+              "background": {
+                "color": {
+                  "fixed": "transparent"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "left",
+                "color": {
+                  "fixed": "rgb(204, 204, 220)"
+                },
+                "size": 12,
+                "text": {
+                  "field": "tank_level_tag",
+                  "fixed": " ",
+                  "mode": "field"
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "links": [],
+              "name": "tank_level_tag",
+              "placement": {
+                "height": 30,
+                "left": 180,
+                "rotation": 0,
+                "top": 10,
+                "width": 85
               },
               "type": "text"
             }
@@ -1908,6 +2583,36 @@
           "rawQuery": true,
           "rawSql": "SELECT\r\n  LAST_VALUE(time ORDER BY time) AS time,\r\n  LAST_VALUE((\"SLUDGE_TANK_LEVEL\").value ORDER BY time) AS tank_level\r\nFROM marpower.\"300000_dirty_oil\"",
           "refId": "A",
+          "sql": {
+            "columns": [
+              {
+                "parameters": [],
+                "type": "function"
+              }
+            ],
+            "groupBy": [
+              {
+                "property": {
+                  "type": "string"
+                },
+                "type": "groupBy"
+              }
+            ],
+            "limit": 50
+          }
+        },
+        {
+          "dataset": "dev",
+          "datasource": {
+            "type": "grafana-postgresql-datasource",
+            "uid": "${datasource}"
+          },
+          "editorMode": "code",
+          "format": "table",
+          "hide": false,
+          "rawQuery": true,
+          "rawSql": "SELECT \r\n  MAX(CASE WHEN mqtt_json_path = LOWER('SLUDGE_TANK_LEVEL') THEN '(' || yard_tag || ')' ELSE NULL END) AS tank_level_tag\r\nFROM marpower.io_metadata_marpower\r\nWHERE mqtt_topic = 'marpower/300000-dirty-oil'",
+          "refId": "B",
           "sql": {
             "columns": [
               {

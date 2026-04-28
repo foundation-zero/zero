@@ -4220,7 +4220,7 @@
                 "height": 26,
                 "left": 560,
                 "top": 250,
-                "width": 385
+                "width": 365.04025436792733
               },
               "type": "text"
             },
@@ -4299,7 +4299,7 @@
                 "height": 26,
                 "left": 560,
                 "top": 220,
-                "width": 385
+                "width": 365.04025436792733
               },
               "type": "text"
             },
@@ -4378,7 +4378,7 @@
                 "height": 26,
                 "left": 560,
                 "top": 190,
-                "width": 385
+                "width": 365.04025436792733
               },
               "type": "text"
             },
@@ -4457,7 +4457,7 @@
                 "height": 26,
                 "left": 560,
                 "top": 160,
-                "width": 385
+                "width": 365.04025436792733
               },
               "type": "text"
             },
@@ -4536,7 +4536,7 @@
                 "height": 26,
                 "left": 560,
                 "top": 130,
-                "width": 385
+                "width": 365.04025436792733
               },
               "type": "text"
             },
@@ -4615,7 +4615,7 @@
                 "height": 26,
                 "left": 560,
                 "top": 100,
-                "width": 385
+                "width": 365.04025436792733
               },
               "type": "text"
             },
@@ -4695,7 +4695,7 @@
                 "height": 26,
                 "left": 560,
                 "top": 70,
-                "width": 385
+                "width": 365.04025436792733
               },
               "type": "text"
             },
@@ -4777,7 +4777,7 @@
                 "height": 26,
                 "left": 560,
                 "top": 40,
-                "width": 385
+                "width": 365.04025436792733
               },
               "type": "text"
             },
@@ -4853,9 +4853,86 @@
               "placement": {
                 "height": 26,
                 "left": 555,
-                "rotation": 0,
                 "top": 10,
-                "width": 385
+                "width": 369.7807792430624
+              },
+              "type": "text"
+            },
+            {
+              "background": {
+                "color": {
+                  "fixed": "transparent"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "left",
+                "color": {
+                  "fixed": "rgb(204, 204, 220)"
+                },
+                "size": 12,
+                "text": {
+                  "field": "anchor_hatch1_open_tag",
+                  "fixed": " ",
+                  "mode": "field"
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "links": [],
+              "name": "anchor_hatch1_open_tag",
+              "placement": {
+                "height": 26,
+                "left": 925,
+                "rotation": 0,
+                "top": 70,
+                "width": 103
+              },
+              "type": "text"
+            },
+            {
+              "background": {
+                "color": {
+                  "fixed": "transparent"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "left",
+                "color": {
+                  "fixed": "rgb(204, 204, 220)"
+                },
+                "size": 12,
+                "text": {
+                  "field": "anchor_hatch2_open_tag",
+                  "fixed": " ",
+                  "mode": "field"
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "links": [],
+              "name": "anchor_hatch2_open_tag",
+              "placement": {
+                "height": 26,
+                "left": 925,
+                "rotation": 0,
+                "top": 100,
+                "width": 103
               },
               "type": "text"
             }
@@ -4890,6 +4967,36 @@
           "rawQuery": true,
           "rawSql": "SELECT\r\n  LAST_VALUE(time ORDER BY time) AS time,\r\n  LAST_VALUE((\"LAZA_ACCESS_HATCH_SB_FWD_OPEN\").value ORDER BY time)     AS laz_hatch_fwd_sb_open,\r\n  LAST_VALUE((\"LAZA_ACCESS_HATCH_PS_FWD_OPEN\").value ORDER BY time)     AS laz_hatch_fwd_ps_open,\r\n  LAST_VALUE((\"LAZA_ACCESS_HATCH_SB_MID_OPEN\").value ORDER BY time)     AS laz_hatch_mid_sb_open,\r\n  LAST_VALUE((\"LAZA_ACCESS_HATCH_PS_MID_OPEN\").value ORDER BY time)     AS laz_hatch_mid_ps_open,\r\n  LAST_VALUE((\"LAZA_ACCESS_HATCH_SB_AFT_OPEN\").value ORDER BY time)     AS laz_hatch_aft_sb_open,\r\n  LAST_VALUE((\"LAZA_ACCESS_HATCH_PS_AFT_OPEN\").value ORDER BY time)     AS laz_hatch_aft_ps_open,\r\n  LAST_VALUE((\"FORESHIP_STOR_AREA_ACC_HATCH_OPEN\").value ORDER BY time) AS foreship_stor_hatch_open,\r\n  LAST_VALUE((\"CRANE_HATCH_AFT_OPEN\").value ORDER BY time)              AS crane_hatch_open,\r\n  LAST_VALUE((\"FOREPEAK_ACC_HATCH_OPEN\").value ORDER BY time)           AS forepeak_hatch_open,\r\n  LAST_VALUE((\"SAIL_STOR_HATCH_OPEN\").value ORDER BY time)              AS sail_stor_hatch_open,\r\n  LAST_VALUE((\"PLATFROM_CLOSED_LOCKED\").value ORDER BY time)            AS crew_platform_closed,\r\n  LAST_VALUE((\"DINGHY_STOR_ACC_FWD_OPEN\").value ORDER BY time)          AS dinghy_stor_open,\r\n  LAST_VALUE((\"HATCH_ANCHOR_SENSOR1_OPEN\").value ORDER BY time)         AS anchor_hatch1_open,\r\n  LAST_VALUE((\"HATCH_ANCHOR_SENSOR2_OPEN\").value ORDER BY time)         AS anchor_hatch2_open,\r\n  LAST_VALUE((\"ALL_HULL_VALVES_CLOSE\").value ORDER BY time)             AS close_all_hull_valves,\r\n  LAST_VALUE((\"WTSD_DOORCLOSE\").value ORDER BY time)                    AS wtsd_close,\r\n  LAST_VALUE((\"WTSD_DOOROPENED\").value ORDER BY time)                   AS wtsd_opened,\r\n  LAST_VALUE((\"WTSD_DOORCLOSED\").value ORDER BY time)                   AS wtsd_closed,\r\n  LAST_VALUE((\"WTSD_LOWAIRPRESS\").value ORDER BY time)                  AS wtsd_low_air_pressure\r\nFROM marpower.\"090000_doors_hatches\"",
           "refId": "A",
+          "sql": {
+            "columns": [
+              {
+                "parameters": [],
+                "type": "function"
+              }
+            ],
+            "groupBy": [
+              {
+                "property": {
+                  "type": "string"
+                },
+                "type": "groupBy"
+              }
+            ],
+            "limit": 50
+          }
+        },
+        {
+          "dataset": "dev",
+          "datasource": {
+            "type": "grafana-postgresql-datasource",
+            "uid": "${datasource}"
+          },
+          "editorMode": "code",
+          "format": "table",
+          "hide": false,
+          "rawQuery": true,
+          "rawSql": "SELECT \r\n  MAX(CASE WHEN mqtt_json_path = LOWER('HATCH_ANCHOR_SENSOR1_OPEN') THEN '(' || yard_tag || ')' ELSE NULL END) AS anchor_hatch1_open_tag,\r\n  MAX(CASE WHEN mqtt_json_path = LOWER('HATCH_ANCHOR_SENSOR2_OPEN') THEN '(' || yard_tag || ')' ELSE NULL END) AS anchor_hatch2_open_tag\r\nFROM marpower.io_metadata_marpower\r\nWHERE mqtt_topic = 'marpower/090000-doors-hatches'",
+          "refId": "B",
           "sql": {
             "columns": [
               {

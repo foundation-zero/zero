@@ -86,6 +86,7 @@
             "mode": "continuous-reds"
           },
           "mappings": [],
+          "noValue": "-",
           "thresholds": {
             "mode": "absolute",
             "steps": [
@@ -205,7 +206,7 @@
                 "left": 50,
                 "rotation": 0,
                 "top": 10,
-                "width": 300
+                "width": 126
               },
               "type": "text"
             },
@@ -284,9 +285,8 @@
               "placement": {
                 "height": 26,
                 "left": 50,
-                "rotation": 0,
                 "top": 40,
-                "width": 300
+                "width": 125.99999999999997
               },
               "type": "text"
             },
@@ -365,9 +365,125 @@
               "placement": {
                 "height": 26,
                 "left": 50,
+                "top": 70,
+                "width": 125.99999999999997
+              },
+              "type": "text"
+            },
+            {
+              "background": {
+                "color": {
+                  "fixed": "transparent"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "left",
+                "color": {
+                  "fixed": "rgb(204, 204, 220)"
+                },
+                "size": 12,
+                "text": {
+                  "field": "fresh_water_mak1_alarm_tag",
+                  "fixed": " ",
+                  "mode": "field"
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "links": [],
+              "name": "fresh_water_mak1_alarm_tag",
+              "placement": {
+                "height": 26,
+                "left": 205,
+                "rotation": 0,
+                "top": 10,
+                "width": 108
+              },
+              "type": "text"
+            },
+            {
+              "background": {
+                "color": {
+                  "fixed": "transparent"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "left",
+                "color": {
+                  "fixed": "rgb(204, 204, 220)"
+                },
+                "size": 12,
+                "text": {
+                  "field": "fresh_water_mak2_alarm_tag",
+                  "fixed": " ",
+                  "mode": "field"
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "links": [],
+              "name": "fresh_water_mak2_alarm_tag",
+              "placement": {
+                "height": 26,
+                "left": 205,
+                "rotation": 0,
+                "top": 40,
+                "width": 108
+              },
+              "type": "text"
+            },
+            {
+              "background": {
+                "color": {
+                  "fixed": "transparent"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "left",
+                "color": {
+                  "fixed": "rgb(204, 204, 220)"
+                },
+                "size": 12,
+                "text": {
+                  "field": "fresh_water_chlorine_unit_alarm_tag",
+                  "fixed": " ",
+                  "mode": "field"
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "links": [],
+              "name": "fresh_water_chlorine_unit_alarm_tag",
+              "placement": {
+                "height": 26,
+                "left": 205,
                 "rotation": 0,
                 "top": 70,
-                "width": 300
+                "width": 108
               },
               "type": "text"
             }
@@ -416,6 +532,36 @@
           "rawQuery": true,
           "rawSql": "SELECT\r\n  timestamp                  AS time,\r\n  mak_1_alarm__value         AS fresh_water_mak1_alarm,\r\n  mak_2_alarm__value         AS fresh_water_mak2_alarm,\r\n  chlorine_unit_alarm__value AS fresh_water_chlorine_unit_alarm\r\nFROM public.marpower__250000_fresh_water\r\nORDER BY timestamp DESC\r\nLIMIT 1",
           "refId": "A",
+          "sql": {
+            "columns": [
+              {
+                "parameters": [],
+                "type": "function"
+              }
+            ],
+            "groupBy": [
+              {
+                "property": {
+                  "type": "string"
+                },
+                "type": "groupBy"
+              }
+            ],
+            "limit": 50
+          }
+        },
+        {
+          "dataset": "dev",
+          "datasource": {
+            "type": "grafana-postgresql-datasource",
+            "uid": "${datasource}"
+          },
+          "editorMode": "code",
+          "format": "table",
+          "hide": false,
+          "rawQuery": true,
+          "rawSql": "SELECT \r\n  MAX(CASE WHEN mqtt_json_path = LOWER('MAK1_ALARM') THEN '(' || yard_tag || ')' ELSE NULL END)          AS fresh_water_mak1_alarm_tag,\r\n  MAX(CASE WHEN mqtt_json_path = LOWER('MAK2_ALARM') THEN '(' || yard_tag || ')' ELSE NULL END)          AS fresh_water_mak2_alarm_tag,\r\n  MAX(CASE WHEN mqtt_json_path = LOWER('CHLORINE_UNIT_ALARM') THEN '(' || yard_tag || ')' ELSE NULL END) AS fresh_water_chlorine_unit_alarm_tag\r\nFROM marpower.io_metadata_marpower\r\nWHERE mqtt_topic = 'marpower/250000-fresh-water'",
+          "refId": "B",
           "sql": {
             "columns": [
               {
@@ -566,7 +712,46 @@
                 "left": 50,
                 "rotation": 0,
                 "top": 10,
-                "width": 340
+                "width": 229
+              },
+              "type": "text"
+            },
+            {
+              "background": {
+                "color": {
+                  "fixed": "transparent"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "left",
+                "color": {
+                  "fixed": "rgb(204, 204, 220)"
+                },
+                "size": 12,
+                "text": {
+                  "field": "fresh_water_circ_pump_running_tag",
+                  "fixed": " ",
+                  "mode": "field"
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "links": [],
+              "name": "fresh_water_circ_pump_running_tag",
+              "placement": {
+                "height": 26,
+                "left": 293,
+                "rotation": 0,
+                "top": 10,
+                "width": 105
               },
               "type": "text"
             }
@@ -615,6 +800,36 @@
           "rawQuery": true,
           "rawSql": "SELECT\r\n  timestamp                AS time,\r\n  circ_pump_running__value AS fresh_water_circ_pump_running\r\nFROM public.marpower__250000_fresh_water\r\nORDER BY timestamp DESC\r\nLIMIT 1",
           "refId": "A",
+          "sql": {
+            "columns": [
+              {
+                "parameters": [],
+                "type": "function"
+              }
+            ],
+            "groupBy": [
+              {
+                "property": {
+                  "type": "string"
+                },
+                "type": "groupBy"
+              }
+            ],
+            "limit": 50
+          }
+        },
+        {
+          "dataset": "dev",
+          "datasource": {
+            "type": "grafana-postgresql-datasource",
+            "uid": "${datasource}"
+          },
+          "editorMode": "code",
+          "format": "table",
+          "hide": false,
+          "rawQuery": true,
+          "rawSql": "SELECT \r\n  MAX(CASE WHEN mqtt_json_path = LOWER('CIRC_PUMP_RUNNING') THEN '(' || yard_tag || ')' ELSE NULL END) AS fresh_water_circ_pump_running_tag\r\nFROM marpower.io_metadata_marpower\r\nWHERE mqtt_topic = 'marpower/250000-fresh-water'",
+          "refId": "B",
           "sql": {
             "columns": [
               {
@@ -764,7 +979,46 @@
                 "left": 50,
                 "rotation": 0,
                 "top": 10,
-                "width": 340
+                "width": 191
+              },
+              "type": "text"
+            },
+            {
+              "background": {
+                "color": {
+                  "fixed": "transparent"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "left",
+                "color": {
+                  "fixed": "rgb(204, 204, 220)"
+                },
+                "size": 12,
+                "text": {
+                  "field": "fresh_water_circ_pump_onoff_tag",
+                  "fixed": " ",
+                  "mode": "field"
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "links": [],
+              "name": "fresh_water_circ_pump_onoff_tag",
+              "placement": {
+                "height": 26,
+                "left": 251,
+                "rotation": 0,
+                "top": 10,
+                "width": 191
               },
               "type": "text"
             }
@@ -813,6 +1067,36 @@
           "rawQuery": true,
           "rawSql": "SELECT\r\n  timestamp              AS time,\r\n  circ_pump_onoff__value AS fresh_water_circ_pump_onoff\r\nFROM public.marpower__250000_fresh_water\r\nORDER BY timestamp DESC\r\nLIMIT 1",
           "refId": "A",
+          "sql": {
+            "columns": [
+              {
+                "parameters": [],
+                "type": "function"
+              }
+            ],
+            "groupBy": [
+              {
+                "property": {
+                  "type": "string"
+                },
+                "type": "groupBy"
+              }
+            ],
+            "limit": 50
+          }
+        },
+        {
+          "dataset": "dev",
+          "datasource": {
+            "type": "grafana-postgresql-datasource",
+            "uid": "${datasource}"
+          },
+          "editorMode": "code",
+          "format": "table",
+          "hide": false,
+          "rawQuery": true,
+          "rawSql": "SELECT \r\n  MAX(CASE WHEN mqtt_json_path = LOWER('CIRC_PUMP_ONOFF') THEN '(' || yard_tag || ')' ELSE NULL END) AS fresh_water_circ_pump_onoff_tag\r\nFROM marpower.io_metadata_marpower\r\nWHERE mqtt_topic = 'marpower/250000-fresh-water'",
+          "refId": "B",
           "sql": {
             "columns": [
               {
@@ -1038,6 +1322,7 @@
           },
           "decimals": 2,
           "mappings": [],
+          "noValue": "-",
           "thresholds": {
             "mode": "absolute",
             "steps": [
@@ -1052,8 +1337,8 @@
         "overrides": []
       },
       "gridPos": {
-        "h": 8,
-        "w": 12,
+        "h": 6,
+        "w": 24,
         "x": 0,
         "y": 9
       },
@@ -1104,10 +1389,10 @@
                 "horizontal": "left",
                 "vertical": "top"
               },
-              "name": "Guest cabin SB",
+              "name": "coldwater_guest_cabin_sb_flow",
               "placement": {
                 "height": 30,
-                "left": 200,
+                "left": 318,
                 "rotation": 0,
                 "top": 10,
                 "width": 180
@@ -1141,12 +1426,13 @@
                 "horizontal": "left",
                 "vertical": "top"
               },
-              "name": "Element 6",
+              "name": "coldwater_guest_cabin_sb_flow label",
               "placement": {
                 "height": 30,
                 "left": 15,
+                "rotation": 0,
                 "top": 10,
-                "width": 207
+                "width": 177
               },
               "type": "text"
             },
@@ -1177,10 +1463,10 @@
                 "horizontal": "left",
                 "vertical": "top"
               },
-              "name": "Guest cabin PS FWD",
+              "name": "coldwater_guest_cabin_ps_fwd_flow",
               "placement": {
                 "height": 30,
-                "left": 200,
+                "left": 318,
                 "rotation": 0,
                 "top": 45,
                 "width": 180
@@ -1213,12 +1499,13 @@
                 "horizontal": "left",
                 "vertical": "top"
               },
-              "name": "Element 8",
+              "name": "coldwater_guest_cabin_ps_fwd_flowlabel",
               "placement": {
                 "height": 30,
                 "left": 15,
+                "rotation": 0,
                 "top": 45,
-                "width": 207
+                "width": 177
               },
               "type": "text"
             },
@@ -1249,10 +1536,10 @@
                 "horizontal": "left",
                 "vertical": "top"
               },
-              "name": "Guest cabin PS AFT",
+              "name": "coldwater_guest_cabin_ps_aft_flow",
               "placement": {
                 "height": 30,
-                "left": 200,
+                "left": 318,
                 "rotation": 0,
                 "top": 80,
                 "width": 180
@@ -1285,12 +1572,13 @@
                 "horizontal": "left",
                 "vertical": "top"
               },
-              "name": "Element 10",
+              "name": "coldwater_guest_cabin_ps_aft_flow label",
               "placement": {
                 "height": 30,
                 "left": 15,
+                "rotation": 0,
                 "top": 80,
-                "width": 207
+                "width": 177
               },
               "type": "text"
             },
@@ -1321,12 +1609,11 @@
                 "horizontal": "left",
                 "vertical": "top"
               },
-              "name": "Master cabin SB",
+              "name": "coldwater_master_cabin_sb_flow",
               "placement": {
                 "height": 30,
-                "left": 200,
-                "rotation": 0,
-                "top": 115,
+                "left": 819,
+                "top": 10,
                 "width": 180
               },
               "type": "metric-value"
@@ -1357,12 +1644,12 @@
                 "horizontal": "left",
                 "vertical": "top"
               },
-              "name": "Element 12",
+              "name": "coldwater_master_cabin_sb_flow label",
               "placement": {
                 "height": 30,
-                "left": 15,
-                "top": 115,
-                "width": 207
+                "left": 558,
+                "top": 10,
+                "width": 146
               },
               "type": "text"
             },
@@ -1393,12 +1680,11 @@
                 "horizontal": "left",
                 "vertical": "top"
               },
-              "name": "Master cabin PS",
+              "name": "coldwater_master_cabin_ps_flow",
               "placement": {
                 "height": 30,
-                "left": 200,
-                "rotation": 0,
-                "top": 150,
+                "left": 819,
+                "top": 45,
                 "width": 180
               },
               "type": "metric-value"
@@ -1429,12 +1715,12 @@
                 "horizontal": "left",
                 "vertical": "top"
               },
-              "name": "Element 14",
+              "name": "coldwater_master_cabin_ps_flow label",
               "placement": {
                 "height": 30,
-                "left": 15,
-                "top": 150,
-                "width": 207
+                "left": 558,
+                "top": 45,
+                "width": 146
               },
               "type": "text"
             },
@@ -1465,12 +1751,11 @@
                 "horizontal": "left",
                 "vertical": "top"
               },
-              "name": "Captain's cabin",
+              "name": "coldwater_captains_cabin_flow",
               "placement": {
                 "height": 30,
-                "left": 590,
-                "rotation": 0,
-                "top": 10,
+                "left": 819,
+                "top": 80,
                 "width": 180
               },
               "type": "metric-value"
@@ -1502,12 +1787,12 @@
                 "horizontal": "left",
                 "vertical": "top"
               },
-              "name": "Element 16",
+              "name": "coldwater_captains_cabin_flow label",
               "placement": {
                 "height": 30,
-                "left": 420,
-                "top": 10,
-                "width": 158
+                "left": 558,
+                "top": 80,
+                "width": 146
               },
               "type": "text"
             },
@@ -1538,12 +1823,11 @@
                 "horizontal": "left",
                 "vertical": "top"
               },
-              "name": "Crew cabin SB AFT",
+              "name": "coldwater_crew_cabin_sb_aft_flow",
               "placement": {
                 "height": 30,
-                "left": 590,
-                "rotation": 0,
-                "top": 45,
+                "left": 1344,
+                "top": 10,
                 "width": 180
               },
               "type": "metric-value"
@@ -1574,12 +1858,13 @@
                 "horizontal": "left",
                 "vertical": "top"
               },
-              "name": "Element 20",
+              "name": "coldwater_crew_cabin_sb_aft_flow label",
               "placement": {
                 "height": 30,
-                "left": 420,
-                "top": 45,
-                "width": 179
+                "left": 1059,
+                "rotation": 0,
+                "top": 10,
+                "width": 170
               },
               "type": "text"
             },
@@ -1610,12 +1895,11 @@
                 "horizontal": "left",
                 "vertical": "top"
               },
-              "name": "Crew cabin SB MID",
+              "name": "coldwater_crew_cabin_sb_mid_flow",
               "placement": {
                 "height": 30,
-                "left": 590,
-                "rotation": 0,
-                "top": 80,
+                "left": 1344,
+                "top": 45,
                 "width": 180
               },
               "type": "metric-value"
@@ -1646,12 +1930,12 @@
                 "horizontal": "left",
                 "vertical": "top"
               },
-              "name": "Element 22",
+              "name": "coldwater_crew_cabin_sb_mid_flow label",
               "placement": {
                 "height": 30,
-                "left": 420,
-                "top": 80,
-                "width": 179
+                "left": 1059,
+                "top": 45,
+                "width": 170
               },
               "type": "text"
             },
@@ -1682,12 +1966,11 @@
                 "horizontal": "left",
                 "vertical": "top"
               },
-              "name": "Crew cabin PS MID",
+              "name": "coldwater_crew_cabin_ps_mid_flow",
               "placement": {
                 "height": 30,
-                "left": 590,
-                "rotation": 0,
-                "top": 115,
+                "left": 1344,
+                "top": 80,
                 "width": 180
               },
               "type": "metric-value"
@@ -1718,12 +2001,12 @@
                 "horizontal": "left",
                 "vertical": "top"
               },
-              "name": "Element 24",
+              "name": "coldwater_crew_cabin_ps_mid_flow label",
               "placement": {
                 "height": 30,
-                "left": 420,
-                "top": 115,
-                "width": 179
+                "left": 1059,
+                "top": 80,
+                "width": 170
               },
               "type": "text"
             },
@@ -1754,12 +2037,11 @@
                 "horizontal": "left",
                 "vertical": "top"
               },
-              "name": "Crew cabin SB FWD",
+              "name": "coldwater_crew_cabin_sb_fwd_flow",
               "placement": {
                 "height": 30,
-                "left": 590,
-                "rotation": 0,
-                "top": 150,
+                "left": 1344,
+                "top": 115,
                 "width": 180
               },
               "type": "metric-value"
@@ -1790,12 +2072,12 @@
                 "horizontal": "left",
                 "vertical": "top"
               },
-              "name": "Element 26",
+              "name": "coldwater_crew_cabin_sb_fwd_flow label",
               "placement": {
                 "height": 30,
-                "left": 420,
-                "top": 150,
-                "width": 179
+                "left": 1059,
+                "top": 115,
+                "width": 170
               },
               "type": "text"
             },
@@ -1826,12 +2108,11 @@
                 "horizontal": "left",
                 "vertical": "top"
               },
-              "name": "Crew cabin PS FWD",
+              "name": "coldwater_crew_cabin_ps_fwd_flow",
               "placement": {
                 "height": 30,
-                "left": 590,
-                "rotation": 0,
-                "top": 185,
+                "left": 1344,
+                "top": 150,
                 "width": 180
               },
               "type": "metric-value"
@@ -1862,12 +2143,12 @@
                 "horizontal": "left",
                 "vertical": "top"
               },
-              "name": "Element 28",
+              "name": "coldwater_crew_cabin_ps_fwd_flowlabel",
               "placement": {
                 "height": 30,
-                "left": 420,
-                "top": 185,
-                "width": 179
+                "left": 1059,
+                "top": 150,
+                "width": 170
               },
               "type": "text"
             },
@@ -1898,12 +2179,11 @@
                 "horizontal": "left",
                 "vertical": "top"
               },
-              "name": "Element 45",
+              "name": "coldwater_guest_bathroom_flow",
               "placement": {
                 "height": 30,
-                "left": 200,
-                "rotation": 0,
-                "top": 185,
+                "left": 318,
+                "top": 115,
                 "width": 180
               },
               "type": "metric-value"
@@ -1934,13 +2214,459 @@
                 "horizontal": "left",
                 "vertical": "top"
               },
-              "name": "Element 46",
+              "name": "coldwater_guest_bathroom_flow label",
               "placement": {
                 "height": 30,
                 "left": 15,
+                "top": 115,
+                "width": 177
+              },
+              "type": "text"
+            },
+            {
+              "background": {
+                "color": {
+                  "fixed": "transparent"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "left",
+                "color": {
+                  "fixed": "rgb(204,204,220)"
+                },
+                "size": 12,
+                "text": {
+                  "field": "coldwater_guest_cabin_sb_flow_tag",
+                  "fixed": " ",
+                  "mode": "field"
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "name": "coldwater_guest_cabin_sb_flow_tag",
+              "placement": {
+                "height": 30,
+                "left": 203,
                 "rotation": 0,
-                "top": 185,
-                "width": 207
+                "top": 10,
+                "width": 115
+              },
+              "type": "text"
+            },
+            {
+              "background": {
+                "color": {
+                  "fixed": "transparent"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "left",
+                "color": {
+                  "fixed": "rgb(204,204,220)"
+                },
+                "size": 12,
+                "text": {
+                  "field": "coldwater_guest_cabin_ps_fwd_flow_tag",
+                  "fixed": " ",
+                  "mode": "field"
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "name": "coldwater_guest_cabin_ps_fwd_flow_tag",
+              "placement": {
+                "height": 30,
+                "left": 203,
+                "rotation": 0,
+                "top": 45,
+                "width": 115
+              },
+              "type": "text"
+            },
+            {
+              "background": {
+                "color": {
+                  "fixed": "transparent"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "left",
+                "color": {
+                  "fixed": "rgb(204,204,220)"
+                },
+                "size": 12,
+                "text": {
+                  "field": "coldwater_guest_cabin_ps_aft_flow_tag",
+                  "fixed": " ",
+                  "mode": "field"
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "name": "coldwater_guest_cabin_ps_aft_flow_tag",
+              "placement": {
+                "height": 30,
+                "left": 203,
+                "rotation": 0,
+                "top": 80,
+                "width": 115
+              },
+              "type": "text"
+            },
+            {
+              "background": {
+                "color": {
+                  "fixed": "transparent"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "left",
+                "color": {
+                  "fixed": "rgb(204,204,220)"
+                },
+                "size": 12,
+                "text": {
+                  "field": "coldwater_master_cabin_sb_flow_tag",
+                  "fixed": " ",
+                  "mode": "field"
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "name": "coldwater_master_cabin_sb_flow_tag",
+              "placement": {
+                "height": 30,
+                "left": 704,
+                "top": 10,
+                "width": 115
+              },
+              "type": "text"
+            },
+            {
+              "background": {
+                "color": {
+                  "fixed": "transparent"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "left",
+                "color": {
+                  "fixed": "rgb(204,204,220)"
+                },
+                "size": 12,
+                "text": {
+                  "field": "coldwater_master_cabin_ps_flow_tag",
+                  "fixed": " ",
+                  "mode": "field"
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "name": "coldwater_master_cabin_ps_flow_tag",
+              "placement": {
+                "height": 30,
+                "left": 704,
+                "top": 45,
+                "width": 115
+              },
+              "type": "text"
+            },
+            {
+              "background": {
+                "color": {
+                  "fixed": "transparent"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "left",
+                "color": {
+                  "fixed": "rgb(204,204,220)"
+                },
+                "size": 12,
+                "text": {
+                  "field": "coldwater_guest_bathroom_flow_tag",
+                  "fixed": " ",
+                  "mode": "field"
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "name": "coldwater_guest_bathroom_flow_tag",
+              "placement": {
+                "height": 30,
+                "left": 203,
+                "top": 115,
+                "width": 115
+              },
+              "type": "text"
+            },
+            {
+              "background": {
+                "color": {
+                  "fixed": "transparent"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "left",
+                "color": {
+                  "fixed": "rgb(204,204,220)"
+                },
+                "size": 12,
+                "text": {
+                  "field": "coldwater_captains_cabin_flow_tag",
+                  "fixed": " ",
+                  "mode": "field"
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "name": "coldwater_captains_cabin_flow_tag",
+              "placement": {
+                "height": 30,
+                "left": 704,
+                "top": 80,
+                "width": 115
+              },
+              "type": "text"
+            },
+            {
+              "background": {
+                "color": {
+                  "fixed": "transparent"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "left",
+                "color": {
+                  "fixed": "rgb(204,204,220)"
+                },
+                "size": 12,
+                "text": {
+                  "field": "coldwater_crew_cabin_ps_mid_flow_tag",
+                  "fixed": " ",
+                  "mode": "field"
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "name": "coldwater_crew_cabin_ps_mid_flow_tag",
+              "placement": {
+                "height": 30,
+                "left": 1229,
+                "top": 80,
+                "width": 115
+              },
+              "type": "text"
+            },
+            {
+              "background": {
+                "color": {
+                  "fixed": "transparent"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "left",
+                "color": {
+                  "fixed": "rgb(204,204,220)"
+                },
+                "size": 12,
+                "text": {
+                  "field": "coldwater_crew_cabin_sb_fwd_flow_tag",
+                  "fixed": " ",
+                  "mode": "field"
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "name": "coldwater_crew_cabin_sb_fwd_flow_tag",
+              "placement": {
+                "height": 30,
+                "left": 1229,
+                "top": 115,
+                "width": 115
+              },
+              "type": "text"
+            },
+            {
+              "background": {
+                "color": {
+                  "fixed": "transparent"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "left",
+                "color": {
+                  "fixed": "rgb(204,204,220)"
+                },
+                "size": 12,
+                "text": {
+                  "field": "coldwater_crew_cabin_ps_fwd_flow_tag",
+                  "fixed": " ",
+                  "mode": "field"
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "name": "coldwater_crew_cabin_ps_fwd_flow_tag",
+              "placement": {
+                "height": 30,
+                "left": 1229,
+                "top": 150,
+                "width": 115
+              },
+              "type": "text"
+            },
+            {
+              "background": {
+                "color": {
+                  "fixed": "transparent"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "left",
+                "color": {
+                  "fixed": "rgb(204,204,220)"
+                },
+                "size": 12,
+                "text": {
+                  "field": "coldwater_crew_cabin_sb_aft_flow_tag",
+                  "fixed": " ",
+                  "mode": "field"
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "name": "coldwater_crew_cabin_sb_aft_flow_tag",
+              "placement": {
+                "height": 30,
+                "left": 1229,
+                "top": 10,
+                "width": 115
+              },
+              "type": "text"
+            },
+            {
+              "background": {
+                "color": {
+                  "fixed": "transparent"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "left",
+                "color": {
+                  "fixed": "rgb(204,204,220)"
+                },
+                "size": 12,
+                "text": {
+                  "field": "coldwater_crew_cabin_sb_mid_flow_tag",
+                  "fixed": " ",
+                  "mode": "field"
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "name": "coldwater_crew_cabin_sb_mid_flow_tag",
+              "placement": {
+                "height": 30,
+                "left": 1229,
+                "top": 45,
+                "width": 115
               },
               "type": "text"
             }
@@ -2001,6 +2727,36 @@
             ],
             "limit": 50
           }
+        },
+        {
+          "dataset": "dev",
+          "datasource": {
+            "type": "grafana-postgresql-datasource",
+            "uid": "${datasource}"
+          },
+          "editorMode": "code",
+          "format": "table",
+          "hide": false,
+          "rawQuery": true,
+          "rawSql": "SELECT\r\n  MAX(CASE WHEN mqtt_json_path = LOWER('COLDWATER_GUEST_CABIN_SB_FLOW') THEN '(' || yard_tag || ')' ELSE NULL END)     AS coldwater_guest_cabin_sb_flow_tag,\r\n  MAX(CASE WHEN mqtt_json_path = LOWER('COLDWATER_GUEST_CABIN_PS_FWD_FLOW') THEN '(' || yard_tag || ')' ELSE NULL END) AS coldwater_guest_cabin_ps_fwd_flow_tag,\r\n  MAX(CASE WHEN mqtt_json_path = LOWER('COLDWATER_GUEST_CABIN_PS_AFT_FLOW') THEN '(' || yard_tag || ')' ELSE NULL END) AS coldwater_guest_cabin_ps_aft_flow_tag,\r\n  MAX(CASE WHEN mqtt_json_path = LOWER('COLDWATER_MASTER_CABIN_SB_FLOW') THEN '(' || yard_tag || ')' ELSE NULL END)    AS coldwater_master_cabin_sb_flow_tag,\r\n  MAX(CASE WHEN mqtt_json_path = LOWER('COLDWATER_MASTER_CABIN_PS_FLOW') THEN '(' || yard_tag || ')' ELSE NULL END)    AS coldwater_master_cabin_ps_flow_tag,\r\n  MAX(CASE WHEN mqtt_json_path = LOWER('COLDWATER_GUEST_BATHR_PS_FWD_FLOW') THEN '(' || yard_tag || ')' ELSE NULL END) AS coldwater_guest_bathroom_flow_tag,\r\n  MAX(CASE WHEN mqtt_json_path = LOWER('COLDWATER_CAPTAINS_CABIN_FLOW') THEN '(' || yard_tag || ')' ELSE NULL END)     AS coldwater_captains_cabin_flow_tag,\r\n  MAX(CASE WHEN mqtt_json_path = LOWER('COLDWATER_CREW_CABIN_SB_AFT_FLOW') THEN '(' || yard_tag || ')' ELSE NULL END)  AS coldwater_crew_cabin_sb_aft_flow_tag,\r\n  MAX(CASE WHEN mqtt_json_path = LOWER('COLDWATER_CREW_CABIN_SB_MID_FLOW') THEN '(' || yard_tag || ')' ELSE NULL END)  AS coldwater_crew_cabin_sb_mid_flow_tag,\r\n  MAX(CASE WHEN mqtt_json_path = LOWER('COLDWATER_CREW_CABIN_PS_MID_FLOW') THEN '(' || yard_tag || ')' ELSE NULL END)  AS coldwater_crew_cabin_ps_mid_flow_tag,\r\n  MAX(CASE WHEN mqtt_json_path = LOWER('COLDWATER_CREW_CABIN_SB_FWD_FLOW') THEN '(' || yard_tag || ')' ELSE NULL END)  AS coldwater_crew_cabin_sb_fwd_flow_tag,\r\n  MAX(CASE WHEN mqtt_json_path = LOWER('COLDWATER_CREW_CABIN_PS_FWD_FLOW') THEN '(' || yard_tag || ')' ELSE NULL END)  AS coldwater_crew_cabin_ps_fwd_flow_tag\r\nFROM marpower.io_metadata_marpower\r\nWHERE mqtt_topic = 'marpower/250000-fresh-water'",
+          "refId": "B",
+          "sql": {
+            "columns": [
+              {
+                "parameters": [],
+                "type": "function"
+              }
+            ],
+            "groupBy": [
+              {
+                "property": {
+                  "type": "string"
+                },
+                "type": "groupBy"
+              }
+            ],
+            "limit": 50
+          }
         }
       ],
       "title": "Accommodations",
@@ -2018,6 +2774,7 @@
           },
           "decimals": 2,
           "mappings": [],
+          "noValue": "-",
           "thresholds": {
             "mode": "absolute",
             "steps": [
@@ -2032,10 +2789,10 @@
         "overrides": []
       },
       "gridPos": {
-        "h": 8,
-        "w": 12,
-        "x": 12,
-        "y": 9
+        "h": 6,
+        "w": 24,
+        "x": 0,
+        "y": 15
       },
       "id": 15,
       "options": {
@@ -2085,12 +2842,11 @@
                 "horizontal": "left",
                 "vertical": "top"
               },
-              "name": "Lower saloon",
+              "name": "coldwater_lower_saloon_flow",
               "placement": {
                 "height": 30,
-                "left": 140,
-                "rotation": 0,
-                "top": 185,
+                "left": 700,
+                "top": 115,
                 "width": 180
               },
               "type": "metric-value"
@@ -2122,11 +2878,11 @@
                 "horizontal": "left",
                 "vertical": "top"
               },
-              "name": "Element 2",
+              "name": "coldwater_lower_saloon_flow label",
               "placement": {
                 "height": 30,
-                "left": 15,
-                "top": 185,
+                "left": 464,
+                "top": 115,
                 "width": 122.94999694824219
               },
               "type": "text"
@@ -2158,10 +2914,10 @@
                 "horizontal": "left",
                 "vertical": "top"
               },
-              "name": "Dayhead",
+              "name": "coldwater_dayhead_flow",
               "placement": {
                 "height": 30,
-                "left": 140,
+                "left": 224,
                 "rotation": 0,
                 "top": 80,
                 "width": 180
@@ -2194,12 +2950,13 @@
                 "horizontal": "left",
                 "vertical": "top"
               },
-              "name": "Element 4",
+              "name": "coldwater_dayhead_flow label",
               "placement": {
                 "height": 30,
                 "left": 15,
+                "rotation": 0,
                 "top": 80,
-                "width": 122.94999694824219
+                "width": 95.9609756097561
               },
               "type": "text"
             },
@@ -2230,10 +2987,10 @@
                 "horizontal": "left",
                 "vertical": "top"
               },
-              "name": "Crew mess",
+              "name": "coldwater_crew_mess_flow",
               "placement": {
                 "height": 30,
-                "left": 140,
+                "left": 224,
                 "rotation": 0,
                 "top": 10,
                 "width": 180
@@ -2266,13 +3023,13 @@
                 "horizontal": "left",
                 "vertical": "top"
               },
-              "name": "Element 18",
+              "name": "coldwater_crew_mess_flow label",
               "placement": {
                 "height": 30,
                 "left": 15,
                 "rotation": 0,
                 "top": 10,
-                "width": 123
+                "width": 96
               },
               "type": "text"
             },
@@ -2303,12 +3060,11 @@
                 "horizontal": "left",
                 "vertical": "top"
               },
-              "name": "Lazaret",
+              "name": "coldwater_lazaret_flow",
               "placement": {
                 "height": 30,
-                "left": 140,
-                "rotation": 0,
-                "top": 115,
+                "left": 700,
+                "top": 80,
                 "width": 180
               },
               "type": "metric-value"
@@ -2339,12 +3095,13 @@
                 "horizontal": "left",
                 "vertical": "top"
               },
-              "name": "Element 30",
+              "name": "coldwater_lazaret_flow label",
               "placement": {
                 "height": 30,
-                "left": 15,
-                "top": 115,
-                "width": 122.94999694824219
+                "left": 464,
+                "rotation": 0,
+                "top": 80,
+                "width": 95.96665954589844
               },
               "type": "text"
             },
@@ -2375,10 +3132,10 @@
                 "horizontal": "left",
                 "vertical": "top"
               },
-              "name": "Galley 2",
+              "name": "coldwater_galley_2_flow",
               "placement": {
                 "height": 30,
-                "left": 140,
+                "left": 224,
                 "rotation": 0,
                 "top": 45,
                 "width": 180
@@ -2411,12 +3168,13 @@
                 "horizontal": "left",
                 "vertical": "top"
               },
-              "name": "Element 32",
+              "name": "coldwater_galley_2_flow label",
               "placement": {
                 "height": 30,
                 "left": 15,
+                "rotation": 0,
                 "top": 45,
-                "width": 122.94999694824219
+                "width": 95.9609756097561
               },
               "type": "text"
             },
@@ -2447,12 +3205,12 @@
                 "horizontal": "left",
                 "vertical": "top"
               },
-              "name": "Laundry PS",
+              "name": "coldwater_laundry_ps_flow",
               "placement": {
                 "height": 30,
-                "left": 140,
+                "left": 700,
                 "rotation": 0,
-                "top": 150,
+                "top": 10,
                 "width": 180
               },
               "type": "metric-value"
@@ -2483,11 +3241,12 @@
                 "horizontal": "left",
                 "vertical": "top"
               },
-              "name": "Element 34",
+              "name": "coldwater_laundry_ps_flow label",
               "placement": {
                 "height": 30,
-                "left": 15,
-                "top": 150,
+                "left": 464,
+                "rotation": 0,
+                "top": 10,
                 "width": 122.94999694824219
               },
               "type": "text"
@@ -2519,12 +3278,12 @@
                 "horizontal": "left",
                 "vertical": "top"
               },
-              "name": "Deckhouse",
+              "name": "coldwater_deckhouse_flow",
               "placement": {
                 "height": 30,
-                "left": 575,
+                "left": 700,
                 "rotation": 0,
-                "top": 10,
+                "top": 45,
                 "width": 180
               },
               "type": "metric-value"
@@ -2555,12 +3314,13 @@
                 "horizontal": "left",
                 "vertical": "top"
               },
-              "name": "Element 36",
+              "name": "coldwater_deckhouse_flow label",
               "placement": {
                 "height": 30,
-                "left": 360,
-                "top": 10,
-                "width": 148
+                "left": 464,
+                "rotation": 0,
+                "top": 45,
+                "width": 123
               },
               "type": "text"
             },
@@ -2591,12 +3351,12 @@
                 "horizontal": "left",
                 "vertical": "top"
               },
-              "name": "Deck FR48 SB tech corridor",
+              "name": "coldwater_deck_fr48_sb_tech_cor_flow",
               "placement": {
                 "height": 30,
-                "left": 575,
+                "left": 1259,
                 "rotation": 0,
-                "top": 45,
+                "top": 10,
                 "width": 180
               },
               "type": "metric-value"
@@ -2627,13 +3387,13 @@
                 "horizontal": "left",
                 "vertical": "top"
               },
-              "name": "Element 38",
+              "name": "coldwater_deck_fr48_sb_tech_cor_flow label",
               "placement": {
                 "height": 30,
-                "left": 360,
+                "left": 940,
                 "rotation": 0,
-                "top": 45,
-                "width": 350
+                "top": 10,
+                "width": 206
               },
               "type": "text"
             },
@@ -2664,12 +3424,12 @@
                 "horizontal": "left",
                 "vertical": "top"
               },
-              "name": "Water softner",
+              "name": "coldwater_water_softner_flow",
               "placement": {
                 "height": 30,
-                "left": 575,
+                "left": 1259,
                 "rotation": 0,
-                "top": 150,
+                "top": 115,
                 "width": 180
               },
               "type": "metric-value"
@@ -2700,12 +3460,13 @@
                 "horizontal": "left",
                 "vertical": "top"
               },
-              "name": "Element 40",
+              "name": "coldwater_water_softner_flow label",
               "placement": {
                 "height": 30,
-                "left": 360,
-                "top": 150,
-                "width": 350
+                "left": 940,
+                "rotation": 0,
+                "top": 115,
+                "width": 206
               },
               "type": "text"
             },
@@ -2736,12 +3497,12 @@
                 "horizontal": "left",
                 "vertical": "top"
               },
-              "name": "Main tech space",
+              "name": "coldwater_main_tech_space_flow",
               "placement": {
                 "height": 30,
-                "left": 575,
+                "left": 1259,
                 "rotation": 0,
-                "top": 80,
+                "top": 45,
                 "width": 180
               },
               "type": "metric-value"
@@ -2772,12 +3533,13 @@
                 "horizontal": "left",
                 "vertical": "top"
               },
-              "name": "Element 42",
+              "name": "coldwater_main_tech_space_flow label",
               "placement": {
                 "height": 30,
-                "left": 360,
-                "top": 80,
-                "width": 350
+                "left": 940,
+                "rotation": 0,
+                "top": 45,
+                "width": 206
               },
               "type": "text"
             },
@@ -2808,12 +3570,12 @@
                 "horizontal": "left",
                 "vertical": "top"
               },
-              "name": "Main tech space FR45",
+              "name": "coldwater_main_tech_space_fr45_flow",
               "placement": {
                 "height": 30,
-                "left": 575,
+                "left": 1259,
                 "rotation": 0,
-                "top": 115,
+                "top": 80,
                 "width": 180
               },
               "type": "metric-value"
@@ -2844,12 +3606,429 @@
                 "horizontal": "left",
                 "vertical": "top"
               },
-              "name": "Element 44",
+              "name": "coldwater_main_tech_space_fr45_flow label",
               "placement": {
                 "height": 30,
-                "left": 360,
+                "left": 940,
+                "rotation": 0,
+                "top": 80,
+                "width": 206
+              },
+              "type": "text"
+            },
+            {
+              "background": {
+                "color": {
+                  "fixed": "transparent"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "left",
+                "color": {
+                  "fixed": "rgb(204,204,220)"
+                },
+                "size": 12,
+                "text": {
+                  "field": "coldwater_crew_mess_flow_tag",
+                  "fixed": " ",
+                  "mode": "field"
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "name": "coldwater_crew_mess_flow_tag",
+              "placement": {
+                "height": 30,
+                "left": 111,
+                "rotation": 0,
+                "top": 10,
+                "width": 113
+              },
+              "type": "text"
+            },
+            {
+              "background": {
+                "color": {
+                  "fixed": "transparent"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "left",
+                "color": {
+                  "fixed": "rgb(204,204,220)"
+                },
+                "size": 12,
+                "text": {
+                  "field": "coldwater_galley_2_flow_tag",
+                  "fixed": " ",
+                  "mode": "field"
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "name": "coldwater_galley_2_flow_tag",
+              "placement": {
+                "height": 30,
+                "left": 111,
+                "rotation": 0,
+                "top": 45,
+                "width": 113
+              },
+              "type": "text"
+            },
+            {
+              "background": {
+                "color": {
+                  "fixed": "transparent"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "left",
+                "color": {
+                  "fixed": "rgb(204,204,220)"
+                },
+                "size": 12,
+                "text": {
+                  "field": "coldwater_dayhead_flow_tag",
+                  "fixed": " ",
+                  "mode": "field"
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "name": "coldwater_dayhead_flow_tag",
+              "placement": {
+                "height": 30,
+                "left": 111,
+                "rotation": 0,
+                "top": 80,
+                "width": 113
+              },
+              "type": "text"
+            },
+            {
+              "background": {
+                "color": {
+                  "fixed": "transparent"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "left",
+                "color": {
+                  "fixed": "rgb(204,204,220)"
+                },
+                "size": 12,
+                "text": {
+                  "field": "coldwater_lazaret_flow_tag",
+                  "fixed": " ",
+                  "mode": "field"
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "name": "coldwater_lazaret_flow_tag",
+              "placement": {
+                "height": 30,
+                "left": 587,
+                "top": 80,
+                "width": 113
+              },
+              "type": "text"
+            },
+            {
+              "background": {
+                "color": {
+                  "fixed": "transparent"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "left",
+                "color": {
+                  "fixed": "rgb(204,204,220)"
+                },
+                "size": 12,
+                "text": {
+                  "field": "coldwater_lower_saloon_flow_tag",
+                  "fixed": " ",
+                  "mode": "field"
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "name": "coldwater_lower_saloon_flow_tag",
+              "placement": {
+                "height": 30,
+                "left": 587,
+                "top": 116,
+                "width": 113
+              },
+              "type": "text"
+            },
+            {
+              "background": {
+                "color": {
+                  "fixed": "transparent"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "left",
+                "color": {
+                  "fixed": "rgb(204,204,220)"
+                },
+                "size": 12,
+                "text": {
+                  "field": "coldwater_laundry_ps_flow_tag",
+                  "fixed": " ",
+                  "mode": "field"
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "name": "coldwater_laundry_ps_flow_tag",
+              "placement": {
+                "height": 30,
+                "left": 587,
+                "rotation": 0,
+                "top": 11,
+                "width": 113
+              },
+              "type": "text"
+            },
+            {
+              "background": {
+                "color": {
+                  "fixed": "transparent"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "left",
+                "color": {
+                  "fixed": "rgb(204,204,220)"
+                },
+                "size": 12,
+                "text": {
+                  "field": "coldwater_deckhouse_flow_tag",
+                  "fixed": " ",
+                  "mode": "field"
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "name": "coldwater_deckhouse_flow_tag",
+              "placement": {
+                "height": 30,
+                "left": 587,
+                "rotation": 0,
+                "top": 45,
+                "width": 113
+              },
+              "type": "text"
+            },
+            {
+              "background": {
+                "color": {
+                  "fixed": "transparent"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "left",
+                "color": {
+                  "fixed": "rgb(204,204,220)"
+                },
+                "size": 12,
+                "text": {
+                  "field": "coldwater_deck_fr48_sb_tech_cor_flow_tag",
+                  "fixed": " ",
+                  "mode": "field"
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "name": "coldwater_deck_fr48_sb_tech_cor_flow_tag",
+              "placement": {
+                "height": 30,
+                "left": 1146,
+                "rotation": 0,
+                "top": 10,
+                "width": 113
+              },
+              "type": "text"
+            },
+            {
+              "background": {
+                "color": {
+                  "fixed": "transparent"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "left",
+                "color": {
+                  "fixed": "rgb(204,204,220)"
+                },
+                "size": 12,
+                "text": {
+                  "field": "coldwater_main_tech_space_flow_tag",
+                  "fixed": " ",
+                  "mode": "field"
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "name": "coldwater_main_tech_space_flow_tag",
+              "placement": {
+                "height": 30,
+                "left": 1146,
+                "rotation": 0,
+                "top": 45,
+                "width": 113
+              },
+              "type": "text"
+            },
+            {
+              "background": {
+                "color": {
+                  "fixed": "transparent"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "left",
+                "color": {
+                  "fixed": "rgb(204,204,220)"
+                },
+                "size": 12,
+                "text": {
+                  "field": "coldwater_main_tech_space_fr45_flow_tag",
+                  "fixed": " ",
+                  "mode": "field"
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "name": "coldwater_main_tech_space_fr45_flow_tag",
+              "placement": {
+                "height": 30,
+                "left": 1146,
+                "rotation": 0,
+                "top": 80,
+                "width": 113
+              },
+              "type": "text"
+            },
+            {
+              "background": {
+                "color": {
+                  "fixed": "transparent"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "left",
+                "color": {
+                  "fixed": "rgb(204,204,220)"
+                },
+                "size": 12,
+                "text": {
+                  "field": "coldwater_water_softner_flow_tag",
+                  "fixed": " ",
+                  "mode": "field"
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "name": "coldwater_water_softner_flow_tag",
+              "placement": {
+                "height": 30,
+                "left": 1146,
+                "rotation": 0,
                 "top": 115,
-                "width": 350
+                "width": 113
               },
               "type": "text"
             }
@@ -2910,6 +4089,36 @@
             ],
             "limit": 50
           }
+        },
+        {
+          "dataset": "dev",
+          "datasource": {
+            "type": "grafana-postgresql-datasource",
+            "uid": "${datasource}"
+          },
+          "editorMode": "code",
+          "format": "table",
+          "hide": false,
+          "rawQuery": true,
+          "rawSql": "SELECT\r\n  MAX(CASE WHEN mqtt_json_path = LOWER('COLDWATER_LOWER_SALOON_FLOW') THEN '(' || yard_tag || ')' ELSE NULL END)            AS coldwater_lower_saloon_flow_tag,\r\n  MAX(CASE WHEN mqtt_json_path = LOWER('COLDWATER_CREW_MESS_FLOW') THEN '(' || yard_tag || ')' ELSE NULL END)               AS coldwater_crew_mess_flow_tag,\r\n  MAX(CASE WHEN mqtt_json_path = LOWER('COLDWATER_GALLEY_2_FLOW') THEN '(' || yard_tag || ')' ELSE NULL END)               AS coldwater_galley_2_flow_tag,\r\n  MAX(CASE WHEN mqtt_json_path = LOWER('COLDWATER_DAYHEAD_FLOW') THEN '(' || yard_tag || ')' ELSE NULL END)                AS coldwater_dayhead_flow_tag,\r\n  MAX(CASE WHEN mqtt_json_path = LOWER('COLDWATER_LAZARET_FLOW') THEN '(' || yard_tag || ')' ELSE NULL END)                 AS coldwater_lazaret_flow_tag,\r\n  MAX(CASE WHEN mqtt_json_path = LOWER('COLDWATER_LAUNDRY_PS_FLOW') THEN '(' || yard_tag || ')' ELSE NULL END)             AS coldwater_laundry_ps_flow_tag,\r\n  MAX(CASE WHEN mqtt_json_path = LOWER('COLDWATER_DECKHOUSE_FLOW') THEN '(' || yard_tag || ')' ELSE NULL END)              AS coldwater_deckhouse_flow_tag,\r\n  MAX(CASE WHEN mqtt_json_path = LOWER('COLDWATER_DECK_FR48_SB_TECH_COR_FLOW') THEN '(' || yard_tag || ')' ELSE NULL END)   AS coldwater_deck_fr48_sb_tech_cor_flow_tag,\r\n  MAX(CASE WHEN mqtt_json_path = LOWER('COLDWATER_WATER_SOFTNER_FLOW') THEN '(' || yard_tag || ')' ELSE NULL END)          AS coldwater_water_softner_flow_tag,\r\n  MAX(CASE WHEN mqtt_json_path = LOWER('COLDWATER_MAIN_TECH_SPACE_FLOW') THEN '(' || yard_tag || ')' ELSE NULL END)        AS coldwater_main_tech_space_flow_tag,\r\n  MAX(CASE WHEN mqtt_json_path = LOWER('COLDWATER_MAIN_TECH_SPACE_FR45_FLOW') THEN '(' || yard_tag || ')' ELSE NULL END)   AS coldwater_main_tech_space_fr45_flow_tag\r\nFROM marpower.io_metadata_marpower\r\nWHERE mqtt_topic = 'marpower/250000-fresh-water'",
+          "refId": "B",
+          "sql": {
+            "columns": [
+              {
+                "parameters": [],
+                "type": "function"
+              }
+            ],
+            "groupBy": [
+              {
+                "property": {
+                  "type": "string"
+                },
+                "type": "groupBy"
+              }
+            ],
+            "limit": 50
+          }
         }
       ],
       "title": "Other areas",
@@ -2921,7 +4130,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 17
+        "y": 21
       },
       "id": 16,
       "panels": [],
@@ -2940,6 +4149,7 @@
           },
           "decimals": 2,
           "mappings": [],
+          "noValue": "-",
           "thresholds": {
             "mode": "absolute",
             "steps": [
@@ -2954,10 +4164,10 @@
         "overrides": []
       },
       "gridPos": {
-        "h": 8,
-        "w": 12,
+        "h": 6,
+        "w": 24,
         "x": 0,
-        "y": 18
+        "y": 22
       },
       "id": 20,
       "options": {
@@ -3006,10 +4216,10 @@
                 "horizontal": "left",
                 "vertical": "top"
               },
-              "name": "Guest cabin SB",
+              "name": "coldwater_guest_cabin_sb_flow",
               "placement": {
                 "height": 30,
-                "left": 200,
+                "left": 318,
                 "rotation": 0,
                 "top": 10,
                 "width": 180
@@ -3043,12 +4253,12 @@
                 "horizontal": "left",
                 "vertical": "top"
               },
-              "name": "Element 6",
+              "name": "coldwater_guest_cabin_sb_flow label",
               "placement": {
                 "height": 30,
                 "left": 15,
                 "top": 10,
-                "width": 207
+                "width": 177
               },
               "type": "text"
             },
@@ -3079,10 +4289,10 @@
                 "horizontal": "left",
                 "vertical": "top"
               },
-              "name": "Guest cabin PS FWD",
+              "name": "coldwater_guest_cabin_ps_fwd_flow",
               "placement": {
                 "height": 30,
-                "left": 200,
+                "left": 318,
                 "rotation": 0,
                 "top": 45,
                 "width": 180
@@ -3115,12 +4325,13 @@
                 "horizontal": "left",
                 "vertical": "top"
               },
-              "name": "Element 8",
+              "name": "coldwater_guest_cabin_ps_fwd_flowlabel",
               "placement": {
                 "height": 30,
                 "left": 15,
+                "rotation": 0,
                 "top": 45,
-                "width": 207
+                "width": 177
               },
               "type": "text"
             },
@@ -3151,10 +4362,10 @@
                 "horizontal": "left",
                 "vertical": "top"
               },
-              "name": "Guest cabin PS AFT",
+              "name": "coldwater_guest_cabin_ps_aft_flow",
               "placement": {
                 "height": 30,
-                "left": 200,
+                "left": 318,
                 "rotation": 0,
                 "top": 80,
                 "width": 180
@@ -3187,12 +4398,13 @@
                 "horizontal": "left",
                 "vertical": "top"
               },
-              "name": "Element 10",
+              "name": "coldwater_guest_cabin_ps_aft_flow label",
               "placement": {
                 "height": 30,
                 "left": 15,
+                "rotation": 0,
                 "top": 80,
-                "width": 207
+                "width": 177
               },
               "type": "text"
             },
@@ -3223,12 +4435,12 @@
                 "horizontal": "left",
                 "vertical": "top"
               },
-              "name": "Master cabin SB",
+              "name": "coldwater_master_cabin_sb_flow",
               "placement": {
                 "height": 30,
-                "left": 200,
+                "left": 819,
                 "rotation": 0,
-                "top": 115,
+                "top": 10,
                 "width": 180
               },
               "type": "metric-value"
@@ -3259,12 +4471,12 @@
                 "horizontal": "left",
                 "vertical": "top"
               },
-              "name": "Element 12",
+              "name": "coldwater_master_cabin_sb_flow label",
               "placement": {
                 "height": 30,
-                "left": 15,
-                "top": 115,
-                "width": 207
+                "left": 558,
+                "top": 10,
+                "width": 146
               },
               "type": "text"
             },
@@ -3295,12 +4507,12 @@
                 "horizontal": "left",
                 "vertical": "top"
               },
-              "name": "Master cabin PS",
+              "name": "coldwater_master_cabin_ps_flow",
               "placement": {
                 "height": 30,
-                "left": 200,
+                "left": 819,
                 "rotation": 0,
-                "top": 150,
+                "top": 45,
                 "width": 180
               },
               "type": "metric-value"
@@ -3331,12 +4543,12 @@
                 "horizontal": "left",
                 "vertical": "top"
               },
-              "name": "Element 14",
+              "name": "coldwater_master_cabin_ps_flow label",
               "placement": {
                 "height": 30,
-                "left": 15,
-                "top": 150,
-                "width": 207
+                "left": 558,
+                "top": 45,
+                "width": 146
               },
               "type": "text"
             },
@@ -3367,12 +4579,12 @@
                 "horizontal": "left",
                 "vertical": "top"
               },
-              "name": "Captain's cabin",
+              "name": "coldwater_captains_cabin_flow",
               "placement": {
                 "height": 30,
-                "left": 590,
+                "left": 819,
                 "rotation": 0,
-                "top": 10,
+                "top": 80,
                 "width": 180
               },
               "type": "metric-value"
@@ -3404,12 +4616,12 @@
                 "horizontal": "left",
                 "vertical": "top"
               },
-              "name": "Element 16",
+              "name": "coldwater_captains_cabin_flow label",
               "placement": {
                 "height": 30,
-                "left": 420,
-                "top": 10,
-                "width": 158
+                "left": 558,
+                "top": 80,
+                "width": 146
               },
               "type": "text"
             },
@@ -3440,12 +4652,12 @@
                 "horizontal": "left",
                 "vertical": "top"
               },
-              "name": "Crew cabin SB AFT",
+              "name": "coldwater_crew_cabin_sb_aft_flow",
               "placement": {
                 "height": 30,
-                "left": 590,
+                "left": 1344,
                 "rotation": 0,
-                "top": 45,
+                "top": 10,
                 "width": 180
               },
               "type": "metric-value"
@@ -3476,12 +4688,13 @@
                 "horizontal": "left",
                 "vertical": "top"
               },
-              "name": "Element 20",
+              "name": "coldwater_crew_cabin_sb_aft_flow label",
               "placement": {
                 "height": 30,
-                "left": 420,
-                "top": 45,
-                "width": 179
+                "left": 1059,
+                "rotation": 0,
+                "top": 10,
+                "width": 170
               },
               "type": "text"
             },
@@ -3512,12 +4725,12 @@
                 "horizontal": "left",
                 "vertical": "top"
               },
-              "name": "Crew cabin SB MID",
+              "name": "coldwater_crew_cabin_sb_mid_flow",
               "placement": {
                 "height": 30,
-                "left": 590,
+                "left": 1344,
                 "rotation": 0,
-                "top": 80,
+                "top": 45,
                 "width": 180
               },
               "type": "metric-value"
@@ -3548,12 +4761,12 @@
                 "horizontal": "left",
                 "vertical": "top"
               },
-              "name": "Element 22",
+              "name": "coldwater_crew_cabin_sb_mid_flow label",
               "placement": {
                 "height": 30,
-                "left": 420,
-                "top": 80,
-                "width": 179
+                "left": 1059,
+                "top": 45,
+                "width": 170
               },
               "type": "text"
             },
@@ -3584,12 +4797,12 @@
                 "horizontal": "left",
                 "vertical": "top"
               },
-              "name": "Crew cabin PS MID",
+              "name": "coldwater_crew_cabin_ps_mid_flow",
               "placement": {
                 "height": 30,
-                "left": 590,
+                "left": 1344,
                 "rotation": 0,
-                "top": 115,
+                "top": 80,
                 "width": 180
               },
               "type": "metric-value"
@@ -3620,12 +4833,12 @@
                 "horizontal": "left",
                 "vertical": "top"
               },
-              "name": "Element 24",
+              "name": "coldwater_crew_cabin_ps_mid_flow label",
               "placement": {
                 "height": 30,
-                "left": 420,
-                "top": 115,
-                "width": 179
+                "left": 1059,
+                "top": 80,
+                "width": 170
               },
               "type": "text"
             },
@@ -3656,12 +4869,12 @@
                 "horizontal": "left",
                 "vertical": "top"
               },
-              "name": "Crew cabin SB FWD",
+              "name": "coldwater_crew_cabin_sb_fwd_flow",
               "placement": {
                 "height": 30,
-                "left": 590,
+                "left": 1344,
                 "rotation": 0,
-                "top": 150,
+                "top": 115,
                 "width": 180
               },
               "type": "metric-value"
@@ -3692,12 +4905,12 @@
                 "horizontal": "left",
                 "vertical": "top"
               },
-              "name": "Element 26",
+              "name": "coldwater_crew_cabin_sb_fwd_flow label",
               "placement": {
                 "height": 30,
-                "left": 420,
-                "top": 150,
-                "width": 179
+                "left": 1059,
+                "top": 115,
+                "width": 170
               },
               "type": "text"
             },
@@ -3728,12 +4941,12 @@
                 "horizontal": "left",
                 "vertical": "top"
               },
-              "name": "Crew cabin PS FWD",
+              "name": "coldwater_crew_cabin_ps_fwd_flow",
               "placement": {
                 "height": 30,
-                "left": 590,
+                "left": 1344,
                 "rotation": 0,
-                "top": 185,
+                "top": 150,
                 "width": 180
               },
               "type": "metric-value"
@@ -3764,12 +4977,12 @@
                 "horizontal": "left",
                 "vertical": "top"
               },
-              "name": "Element 28",
+              "name": "coldwater_crew_cabin_ps_fwd_flowlabel",
               "placement": {
                 "height": 30,
-                "left": 420,
-                "top": 185,
-                "width": 179
+                "left": 1059,
+                "top": 150,
+                "width": 170
               },
               "type": "text"
             },
@@ -3800,12 +5013,12 @@
                 "horizontal": "left",
                 "vertical": "top"
               },
-              "name": "Element 45",
+              "name": "coldwater_guest_bathroom_flow",
               "placement": {
                 "height": 30,
-                "left": 200,
+                "left": 318,
                 "rotation": 0,
-                "top": 185,
+                "top": 115,
                 "width": 180
               },
               "type": "metric-value"
@@ -3836,13 +5049,468 @@
                 "horizontal": "left",
                 "vertical": "top"
               },
-              "name": "Element 46",
+              "name": "coldwater_guest_bathroom_flow label",
               "placement": {
                 "height": 30,
                 "left": 15,
+                "top": 115,
+                "width": 177
+              },
+              "type": "text"
+            },
+            {
+              "background": {
+                "color": {
+                  "fixed": "transparent"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "left",
+                "color": {
+                  "fixed": "rgb(204,204,220)"
+                },
+                "size": 12,
+                "text": {
+                  "field": "hotwater_guest_cabin_sb_flow_tag",
+                  "fixed": " ",
+                  "mode": "field"
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "name": "coldwater_guest_cabin_sb_flow_tag",
+              "placement": {
+                "height": 30,
+                "left": 203,
                 "rotation": 0,
-                "top": 185,
-                "width": 207
+                "top": 10,
+                "width": 115
+              },
+              "type": "text"
+            },
+            {
+              "background": {
+                "color": {
+                  "fixed": "transparent"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "left",
+                "color": {
+                  "fixed": "rgb(204,204,220)"
+                },
+                "size": 12,
+                "text": {
+                  "field": "hotwater_guest_cabin_ps_fwd_flow_tag",
+                  "fixed": " ",
+                  "mode": "field"
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "name": "coldwater_guest_cabin_ps_fwd_flow_tag",
+              "placement": {
+                "height": 30,
+                "left": 203,
+                "rotation": 0,
+                "top": 45,
+                "width": 115
+              },
+              "type": "text"
+            },
+            {
+              "background": {
+                "color": {
+                  "fixed": "transparent"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "left",
+                "color": {
+                  "fixed": "rgb(204,204,220)"
+                },
+                "size": 12,
+                "text": {
+                  "field": "hotwater_guest_cabin_ps_aft_flow_tag",
+                  "fixed": " ",
+                  "mode": "field"
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "name": "coldwater_guest_cabin_ps_aft_flow_tag",
+              "placement": {
+                "height": 30,
+                "left": 203,
+                "rotation": 0,
+                "top": 80,
+                "width": 115
+              },
+              "type": "text"
+            },
+            {
+              "background": {
+                "color": {
+                  "fixed": "transparent"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "left",
+                "color": {
+                  "fixed": "rgb(204,204,220)"
+                },
+                "size": 12,
+                "text": {
+                  "field": "hotwater_master_cabin_sb_flow_tag",
+                  "fixed": " ",
+                  "mode": "field"
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "name": "coldwater_master_cabin_sb_flow_tag",
+              "placement": {
+                "height": 30,
+                "left": 704,
+                "rotation": 0,
+                "top": 10,
+                "width": 115
+              },
+              "type": "text"
+            },
+            {
+              "background": {
+                "color": {
+                  "fixed": "transparent"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "left",
+                "color": {
+                  "fixed": "rgb(204,204,220)"
+                },
+                "size": 12,
+                "text": {
+                  "field": "hotwater_master_cabin_ps_flow_tag",
+                  "fixed": " ",
+                  "mode": "field"
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "name": "coldwater_master_cabin_ps_flow_tag",
+              "placement": {
+                "height": 30,
+                "left": 704,
+                "rotation": 0,
+                "top": 45,
+                "width": 115
+              },
+              "type": "text"
+            },
+            {
+              "background": {
+                "color": {
+                  "fixed": "transparent"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "left",
+                "color": {
+                  "fixed": "rgb(204,204,220)"
+                },
+                "size": 12,
+                "text": {
+                  "field": "hotwater_guest_bathroom_flow_tag",
+                  "fixed": " ",
+                  "mode": "field"
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "name": "coldwater_guest_bathroom_flow_tag",
+              "placement": {
+                "height": 30,
+                "left": 203,
+                "rotation": 0,
+                "top": 115,
+                "width": 115
+              },
+              "type": "text"
+            },
+            {
+              "background": {
+                "color": {
+                  "fixed": "transparent"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "left",
+                "color": {
+                  "fixed": "rgb(204,204,220)"
+                },
+                "size": 12,
+                "text": {
+                  "field": "hotwater_captains_cabin_flow_tag",
+                  "fixed": " ",
+                  "mode": "field"
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "name": "coldwater_captains_cabin_flow_tag",
+              "placement": {
+                "height": 30,
+                "left": 704,
+                "rotation": 0,
+                "top": 80,
+                "width": 115
+              },
+              "type": "text"
+            },
+            {
+              "background": {
+                "color": {
+                  "fixed": "transparent"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "left",
+                "color": {
+                  "fixed": "rgb(204,204,220)"
+                },
+                "size": 12,
+                "text": {
+                  "field": "hotwater_crew_cabin_ps_mid_flow_tag",
+                  "fixed": " ",
+                  "mode": "field"
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "name": "coldwater_crew_cabin_ps_mid_flow_tag",
+              "placement": {
+                "height": 30,
+                "left": 1229,
+                "rotation": 0,
+                "top": 80,
+                "width": 115
+              },
+              "type": "text"
+            },
+            {
+              "background": {
+                "color": {
+                  "fixed": "transparent"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "left",
+                "color": {
+                  "fixed": "rgb(204,204,220)"
+                },
+                "size": 12,
+                "text": {
+                  "field": "hotwater_crew_cabin_sb_fwd_flow_tag",
+                  "fixed": " ",
+                  "mode": "field"
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "name": "coldwater_crew_cabin_sb_fwd_flow_tag",
+              "placement": {
+                "height": 30,
+                "left": 1229,
+                "rotation": 0,
+                "top": 115,
+                "width": 115
+              },
+              "type": "text"
+            },
+            {
+              "background": {
+                "color": {
+                  "fixed": "transparent"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "left",
+                "color": {
+                  "fixed": "rgb(204,204,220)"
+                },
+                "size": 12,
+                "text": {
+                  "field": "hotwater_crew_cabin_ps_fwd_flow_tag",
+                  "fixed": " ",
+                  "mode": "field"
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "name": "coldwater_crew_cabin_ps_fwd_flow_tag",
+              "placement": {
+                "height": 30,
+                "left": 1229,
+                "rotation": 0,
+                "top": 150,
+                "width": 115
+              },
+              "type": "text"
+            },
+            {
+              "background": {
+                "color": {
+                  "fixed": "transparent"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "left",
+                "color": {
+                  "fixed": "rgb(204,204,220)"
+                },
+                "size": 12,
+                "text": {
+                  "field": "hotwater_crew_cabin_sb_aft_flow_tag",
+                  "fixed": " ",
+                  "mode": "field"
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "name": "coldwater_crew_cabin_sb_aft_flow_tag",
+              "placement": {
+                "height": 30,
+                "left": 1229,
+                "rotation": 0,
+                "top": 10,
+                "width": 115
+              },
+              "type": "text"
+            },
+            {
+              "background": {
+                "color": {
+                  "fixed": "transparent"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "left",
+                "color": {
+                  "fixed": "rgb(204,204,220)"
+                },
+                "size": 12,
+                "text": {
+                  "field": "hotwater_crew_cabin_sb_mid_flow_tag",
+                  "fixed": " ",
+                  "mode": "field"
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "name": "coldwater_crew_cabin_sb_mid_flow_tag",
+              "placement": {
+                "height": 30,
+                "left": 1229,
+                "rotation": 0,
+                "top": 45,
+                "width": 115
               },
               "type": "text"
             }
@@ -3903,6 +5571,36 @@
             ],
             "limit": 50
           }
+        },
+        {
+          "dataset": "dev",
+          "datasource": {
+            "type": "grafana-postgresql-datasource",
+            "uid": "${datasource}"
+          },
+          "editorMode": "code",
+          "format": "table",
+          "hide": false,
+          "rawQuery": true,
+          "rawSql": "SELECT\r\n  MAX(CASE WHEN mqtt_json_path = LOWER('HOTWATER_GUEST_CABIN_SB_FLOW') THEN '(' || yard_tag || ')' ELSE NULL END)     AS hotwater_guest_cabin_sb_flow_tag,\r\n  MAX(CASE WHEN mqtt_json_path = LOWER('HOTWATER_GUEST_CABIN_PS_FWD_FLOW') THEN '(' || yard_tag || ')' ELSE NULL END) AS hotwater_guest_cabin_ps_fwd_flow_tag,\r\n  MAX(CASE WHEN mqtt_json_path = LOWER('HOTWATER_GUEST_CABIN_PS_AFT_FLOW') THEN '(' || yard_tag || ')' ELSE NULL END) AS hotwater_guest_cabin_ps_aft_flow_tag,\r\n  MAX(CASE WHEN mqtt_json_path = LOWER('HOTWATER_MASTER_CABIN_SB_FLOW') THEN '(' || yard_tag || ')' ELSE NULL END)    AS hotwater_master_cabin_sb_flow_tag,\r\n  MAX(CASE WHEN mqtt_json_path = LOWER('HOTWATER_MASTER_CABIN_PS_FLOW') THEN '(' || yard_tag || ')' ELSE NULL END)    AS hotwater_master_cabin_ps_flow_tag,\r\n  MAX(CASE WHEN mqtt_json_path = LOWER('HOTWATER_GUEST_BATHR_PS_FWD_FLOW') THEN '(' || yard_tag || ')' ELSE NULL END) AS hotwater_guest_bathroom_flow_tag,\r\n  MAX(CASE WHEN mqtt_json_path = LOWER('HOTWATER_CAPTAINS_CABIN_FLOW') THEN '(' || yard_tag || ')' ELSE NULL END)     AS hotwater_captains_cabin_flow_tag,\r\n  MAX(CASE WHEN mqtt_json_path = LOWER('HOTWATER_CREW_CABIN_SB_AFT_FLOW') THEN '(' || yard_tag || ')' ELSE NULL END)  AS hotwater_crew_cabin_sb_aft_flow_tag,\r\n  MAX(CASE WHEN mqtt_json_path = LOWER('HOTWATER_CREW_CABIN_SB_MID_FLOW') THEN '(' || yard_tag || ')' ELSE NULL END)  AS hotwater_crew_cabin_sb_mid_flow_tag,\r\n  MAX(CASE WHEN mqtt_json_path = LOWER('HOTWATER_CREW_CABIN_PS_MID_FLOW') THEN '(' || yard_tag || ')' ELSE NULL END)  AS hotwater_crew_cabin_ps_mid_flow_tag,\r\n  MAX(CASE WHEN mqtt_json_path = LOWER('HOTWATER_CREW_CABIN_SB_FWD_FLOW') THEN '(' || yard_tag || ')' ELSE NULL END)  AS hotwater_crew_cabin_sb_fwd_flow_tag,\r\n  MAX(CASE WHEN mqtt_json_path = LOWER('HOTWATER_CREW_CABIN_PS_FWD_FLOW') THEN '(' || yard_tag || ')' ELSE NULL END)  AS hotwater_crew_cabin_ps_fwd_flow_tag\r\nFROM marpower.io_metadata_marpower\r\nWHERE mqtt_topic = 'marpower/250000-fresh-water'",
+          "refId": "B",
+          "sql": {
+            "columns": [
+              {
+                "parameters": [],
+                "type": "function"
+              }
+            ],
+            "groupBy": [
+              {
+                "property": {
+                  "type": "string"
+                },
+                "type": "groupBy"
+              }
+            ],
+            "limit": 50
+          }
         }
       ],
       "title": "Accommodations",
@@ -3920,6 +5618,7 @@
           },
           "decimals": 2,
           "mappings": [],
+          "noValue": "-",
           "thresholds": {
             "mode": "absolute",
             "steps": [
@@ -3934,10 +5633,10 @@
         "overrides": []
       },
       "gridPos": {
-        "h": 8,
-        "w": 12,
-        "x": 12,
-        "y": 18
+        "h": 5,
+        "w": 24,
+        "x": 0,
+        "y": 28
       },
       "id": 21,
       "options": {
@@ -3986,10 +5685,10 @@
                 "horizontal": "left",
                 "vertical": "top"
               },
-              "name": "Dayhead",
+              "name": "coldwater_dayhead_flow",
               "placement": {
                 "height": 30,
-                "left": 140,
+                "left": 224,
                 "rotation": 0,
                 "top": 80,
                 "width": 180
@@ -4022,12 +5721,13 @@
                 "horizontal": "left",
                 "vertical": "top"
               },
-              "name": "Element 4",
+              "name": "coldwater_dayhead_flow label",
               "placement": {
                 "height": 30,
                 "left": 15,
+                "rotation": 0,
                 "top": 80,
-                "width": 122.94999694824219
+                "width": 96
               },
               "type": "text"
             },
@@ -4058,10 +5758,10 @@
                 "horizontal": "left",
                 "vertical": "top"
               },
-              "name": "Crew mess",
+              "name": "coldwater_crew_mess_flow",
               "placement": {
                 "height": 30,
-                "left": 140,
+                "left": 224,
                 "rotation": 0,
                 "top": 10,
                 "width": 180
@@ -4086,7 +5786,7 @@
                 },
                 "size": 16,
                 "text": {
-                  "fixed": "Crew mess"
+                  "fixed": " "
                 },
                 "valign": "middle"
               },
@@ -4094,13 +5794,13 @@
                 "horizontal": "left",
                 "vertical": "top"
               },
-              "name": "Element 18",
+              "name": "coldwater_crew_mess_flow label",
               "placement": {
                 "height": 30,
                 "left": 15,
                 "rotation": 0,
                 "top": 10,
-                "width": 123
+                "width": 96
               },
               "type": "text"
             },
@@ -4131,12 +5831,12 @@
                 "horizontal": "left",
                 "vertical": "top"
               },
-              "name": "Lazaret",
+              "name": "coldwater_lazaret_flow",
               "placement": {
                 "height": 30,
-                "left": 140,
+                "left": 700,
                 "rotation": 0,
-                "top": 115,
+                "top": 80,
                 "width": 180
               },
               "type": "metric-value"
@@ -4167,12 +5867,13 @@
                 "horizontal": "left",
                 "vertical": "top"
               },
-              "name": "Element 30",
+              "name": "coldwater_lazaret_flow label",
               "placement": {
                 "height": 30,
-                "left": 15,
-                "top": 115,
-                "width": 122.94999694824219
+                "left": 464,
+                "rotation": 0,
+                "top": 80,
+                "width": 96
               },
               "type": "text"
             },
@@ -4203,10 +5904,10 @@
                 "horizontal": "left",
                 "vertical": "top"
               },
-              "name": "Galley 2",
+              "name": "coldwater_galley_2_flow",
               "placement": {
                 "height": 30,
-                "left": 140,
+                "left": 224,
                 "rotation": 0,
                 "top": 45,
                 "width": 180
@@ -4239,12 +5940,13 @@
                 "horizontal": "left",
                 "vertical": "top"
               },
-              "name": "Element 32",
+              "name": "coldwater_galley_2_flow label",
               "placement": {
                 "height": 30,
                 "left": 15,
+                "rotation": 0,
                 "top": 45,
-                "width": 122.94999694824219
+                "width": 96
               },
               "type": "text"
             },
@@ -4275,12 +5977,12 @@
                 "horizontal": "left",
                 "vertical": "top"
               },
-              "name": "Laundry PS",
+              "name": "coldwater_laundry_ps_flow",
               "placement": {
                 "height": 30,
-                "left": 140,
+                "left": 700,
                 "rotation": 0,
-                "top": 150,
+                "top": 10,
                 "width": 180
               },
               "type": "metric-value"
@@ -4311,11 +6013,12 @@
                 "horizontal": "left",
                 "vertical": "top"
               },
-              "name": "Element 34",
+              "name": "coldwater_laundry_ps_flow label",
               "placement": {
                 "height": 30,
-                "left": 15,
-                "top": 150,
+                "left": 464,
+                "rotation": 0,
+                "top": 10,
                 "width": 122.94999694824219
               },
               "type": "text"
@@ -4347,12 +6050,12 @@
                 "horizontal": "left",
                 "vertical": "top"
               },
-              "name": "Deckhouse",
+              "name": "coldwater_deckhouse_flow",
               "placement": {
                 "height": 30,
-                "left": 575,
+                "left": 700,
                 "rotation": 0,
-                "top": 10,
+                "top": 45,
                 "width": 180
               },
               "type": "metric-value"
@@ -4383,12 +6086,12 @@
                 "horizontal": "left",
                 "vertical": "top"
               },
-              "name": "Element 36",
+              "name": "coldwater_deckhouse_flow label",
               "placement": {
                 "height": 30,
-                "left": 360,
-                "top": 10,
-                "width": 148
+                "left": 464,
+                "top": 45,
+                "width": 123
               },
               "type": "text"
             },
@@ -4419,12 +6122,12 @@
                 "horizontal": "left",
                 "vertical": "top"
               },
-              "name": "Deck FR48 SB tech corridor",
+              "name": "coldwater_deck_fr48_sb_tech_cor_flow",
               "placement": {
                 "height": 30,
-                "left": 575,
+                "left": 1259,
                 "rotation": 0,
-                "top": 45,
+                "top": 10,
                 "width": 180
               },
               "type": "metric-value"
@@ -4455,13 +6158,13 @@
                 "horizontal": "left",
                 "vertical": "top"
               },
-              "name": "Element 38",
+              "name": "coldwater_deck_fr48_sb_tech_cor_flow label",
               "placement": {
                 "height": 30,
-                "left": 360,
+                "left": 940,
                 "rotation": 0,
-                "top": 45,
-                "width": 350
+                "top": 10,
+                "width": 206
               },
               "type": "text"
             },
@@ -4492,12 +6195,12 @@
                 "horizontal": "left",
                 "vertical": "top"
               },
-              "name": "Main tech space",
+              "name": "coldwater_main_tech_space_flow",
               "placement": {
                 "height": 30,
-                "left": 575,
+                "left": 1259,
                 "rotation": 0,
-                "top": 80,
+                "top": 45,
                 "width": 180
               },
               "type": "metric-value"
@@ -4528,12 +6231,317 @@
                 "horizontal": "left",
                 "vertical": "top"
               },
-              "name": "Element 42",
+              "name": "coldwater_main_tech_space_flow label",
               "placement": {
                 "height": 30,
-                "left": 360,
+                "left": 940,
+                "rotation": 0,
+                "top": 45,
+                "width": 206
+              },
+              "type": "text"
+            },
+            {
+              "background": {
+                "color": {
+                  "fixed": "transparent"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "left",
+                "color": {
+                  "fixed": "rgb(204,204,220)"
+                },
+                "size": 12,
+                "text": {
+                  "field": "hotwater_crew_mess_flow_tag",
+                  "fixed": " ",
+                  "mode": "field"
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "name": "coldwater_crew_mess_flow_tag",
+              "placement": {
+                "height": 30,
+                "left": 111,
+                "rotation": 0,
+                "top": 10,
+                "width": 113
+              },
+              "type": "text"
+            },
+            {
+              "background": {
+                "color": {
+                  "fixed": "transparent"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "left",
+                "color": {
+                  "fixed": "rgb(204,204,220)"
+                },
+                "size": 12,
+                "text": {
+                  "field": "hotwater_galley_2_flow_tag",
+                  "fixed": " ",
+                  "mode": "field"
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "name": "coldwater_galley_2_flow_tag",
+              "placement": {
+                "height": 30,
+                "left": 111,
+                "rotation": 0,
+                "top": 45,
+                "width": 113
+              },
+              "type": "text"
+            },
+            {
+              "background": {
+                "color": {
+                  "fixed": "transparent"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "left",
+                "color": {
+                  "fixed": "rgb(204,204,220)"
+                },
+                "size": 12,
+                "text": {
+                  "field": "hotwater_dayhead_flow_tag",
+                  "fixed": " ",
+                  "mode": "field"
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "name": "coldwater_dayhead_flow_tag",
+              "placement": {
+                "height": 30,
+                "left": 111,
+                "rotation": 0,
                 "top": 80,
-                "width": 350
+                "width": 113
+              },
+              "type": "text"
+            },
+            {
+              "background": {
+                "color": {
+                  "fixed": "transparent"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "left",
+                "color": {
+                  "fixed": "rgb(204,204,220)"
+                },
+                "size": 12,
+                "text": {
+                  "field": "hotwater_lazaret_flow_tag",
+                  "fixed": " ",
+                  "mode": "field"
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "name": "coldwater_lazaret_flow_tag",
+              "placement": {
+                "height": 30,
+                "left": 587,
+                "rotation": 0,
+                "top": 80,
+                "width": 113
+              },
+              "type": "text"
+            },
+            {
+              "background": {
+                "color": {
+                  "fixed": "transparent"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "left",
+                "color": {
+                  "fixed": "rgb(204,204,220)"
+                },
+                "size": 12,
+                "text": {
+                  "field": "hotwater_laundry_ps_flow_tag",
+                  "fixed": " ",
+                  "mode": "field"
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "name": "coldwater_laundry_ps_flow_tag",
+              "placement": {
+                "height": 30,
+                "left": 587,
+                "rotation": 0,
+                "top": 11,
+                "width": 113
+              },
+              "type": "text"
+            },
+            {
+              "background": {
+                "color": {
+                  "fixed": "transparent"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "left",
+                "color": {
+                  "fixed": "rgb(204,204,220)"
+                },
+                "size": 12,
+                "text": {
+                  "field": "hotwater_deckhouse_flow_tag",
+                  "fixed": " ",
+                  "mode": "field"
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "name": "coldwater_deckhouse_flow_tag",
+              "placement": {
+                "height": 30,
+                "left": 587,
+                "rotation": 0,
+                "top": 46,
+                "width": 113
+              },
+              "type": "text"
+            },
+            {
+              "background": {
+                "color": {
+                  "fixed": "transparent"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "left",
+                "color": {
+                  "fixed": "rgb(204,204,220)"
+                },
+                "size": 12,
+                "text": {
+                  "field": "hotwater_deck_fr48_sb_tech_cor_flow_tag",
+                  "fixed": " ",
+                  "mode": "field"
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "name": "coldwater_deck_fr48_sb_tech_cor_flow_tag",
+              "placement": {
+                "height": 30,
+                "left": 1146,
+                "rotation": 0,
+                "top": 10,
+                "width": 113
+              },
+              "type": "text"
+            },
+            {
+              "background": {
+                "color": {
+                  "fixed": "transparent"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "left",
+                "color": {
+                  "fixed": "rgb(204,204,220)"
+                },
+                "size": 12,
+                "text": {
+                  "field": "hotwater_main_tech_space_flow_tag",
+                  "fixed": " ",
+                  "mode": "field"
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "name": "coldwater_main_tech_space_flow_tag",
+              "placement": {
+                "height": 30,
+                "left": 1146,
+                "rotation": 0,
+                "top": 45,
+                "width": 113
               },
               "type": "text"
             }
@@ -4594,6 +6602,36 @@
             ],
             "limit": 50
           }
+        },
+        {
+          "dataset": "dev",
+          "datasource": {
+            "type": "grafana-postgresql-datasource",
+            "uid": "${datasource}"
+          },
+          "editorMode": "code",
+          "format": "table",
+          "hide": false,
+          "rawQuery": true,
+          "rawSql": "SELECT\r\n  MAX(CASE WHEN mqtt_json_path = LOWER('HOTWATER_CREW_MESS_FLOW') THEN '(' || yard_tag || ')' ELSE NULL END)               AS hotwater_crew_mess_flow_tag,\r\n  MAX(CASE WHEN mqtt_json_path = LOWER('HOTWATER_GALLEY_2_FLOW') THEN '(' || yard_tag || ')' ELSE NULL END)               AS hotwater_galley_2_flow_tag,\r\n  MAX(CASE WHEN mqtt_json_path = LOWER('HOTWATER_DAYHEAD_FLOW') THEN '(' || yard_tag || ')' ELSE NULL END)                AS hotwater_dayhead_flow_tag,\r\n  MAX(CASE WHEN mqtt_json_path = LOWER('HOTWATER_LAZARET_FLOW') THEN '(' || yard_tag || ')' ELSE NULL END)                 AS hotwater_lazaret_flow_tag,\r\n  MAX(CASE WHEN mqtt_json_path = LOWER('HOTWATER_LAUNDRY_PS_1_FLOW') THEN '(' || yard_tag || ')' ELSE NULL END)             AS hotwater_laundry_ps_flow_tag,\r\n  MAX(CASE WHEN mqtt_json_path = LOWER('HOTWATER_DECKHOUSE_FLOW') THEN '(' || yard_tag || ')' ELSE NULL END)              AS hotwater_deckhouse_flow_tag,\r\n  MAX(CASE WHEN mqtt_json_path = LOWER('HOTWATER_DECK_FR48_SB_TECH_COR_FLOW') THEN '(' || yard_tag || ')' ELSE NULL END)   AS hotwater_deck_fr48_sb_tech_cor_flow_tag,\r\n  MAX(CASE WHEN mqtt_json_path = LOWER('HOTWATER_MAIN_TECH_SPACE_FLOW') THEN '(' || yard_tag || ')' ELSE NULL END)        AS hotwater_main_tech_space_flow_tag\r\nFROM marpower.io_metadata_marpower\r\nWHERE mqtt_topic = 'marpower/250000-fresh-water'",
+          "refId": "B",
+          "sql": {
+            "columns": [
+              {
+                "parameters": [],
+                "type": "function"
+              }
+            ],
+            "groupBy": [
+              {
+                "property": {
+                  "type": "string"
+                },
+                "type": "groupBy"
+              }
+            ],
+            "limit": 50
+          }
         }
       ],
       "title": "Other areas",
@@ -4605,7 +6643,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 26
+        "y": 33
       },
       "id": 17,
       "panels": [],
@@ -4638,10 +6676,10 @@
         "overrides": []
       },
       "gridPos": {
-        "h": 7,
-        "w": 8,
+        "h": 6,
+        "w": 9,
         "x": 0,
-        "y": 27
+        "y": 34
       },
       "id": 8,
       "options": {
@@ -4693,8 +6731,7 @@
               "name": "Tech room energy recovery",
               "placement": {
                 "height": 30,
-                "left": 315,
-                "rotation": 0,
+                "left": 364,
                 "top": 10,
                 "width": 180
               },
@@ -4730,9 +6767,8 @@
               "placement": {
                 "height": 30,
                 "left": 15,
-                "rotation": 0,
                 "top": 10,
-                "width": 272
+                "width": 251
               },
               "type": "text"
             },
@@ -4766,7 +6802,7 @@
               "name": "Flow Sensor 25001037c1",
               "placement": {
                 "height": 30,
-                "left": 315,
+                "left": 364,
                 "top": 45,
                 "width": 180
               },
@@ -4803,7 +6839,7 @@
                 "height": 30,
                 "left": 15,
                 "top": 45,
-                "width": 272
+                "width": 251
               },
               "type": "text"
             },
@@ -4837,7 +6873,7 @@
               "name": "Guest cabin PS AFT",
               "placement": {
                 "height": 30,
-                "left": 315,
+                "left": 364,
                 "top": 80,
                 "width": 180
               },
@@ -4874,7 +6910,7 @@
                 "height": 30,
                 "left": 15,
                 "top": 80,
-                "width": 272
+                "width": 251
               },
               "type": "text"
             },
@@ -4908,7 +6944,7 @@
               "name": "Flow Sensor 25001037c4",
               "placement": {
                 "height": 30,
-                "left": 315,
+                "left": 364,
                 "top": 115,
                 "width": 180
               },
@@ -4945,7 +6981,159 @@
                 "height": 30,
                 "left": 15,
                 "top": 115,
-                "width": 272
+                "width": 251
+              },
+              "type": "text"
+            },
+            {
+              "background": {
+                "color": {
+                  "fixed": "transparent"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "left",
+                "color": {
+                  "fixed": "rgb(204,204,220)"
+                },
+                "size": 12,
+                "text": {
+                  "field": "technical_room_energ_rec_flow_tag",
+                  "fixed": " ",
+                  "mode": "field"
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "name": "technical_room_energ_rec_flow_tag",
+              "placement": {
+                "height": 30,
+                "left": 266,
+                "rotation": 0,
+                "top": 10,
+                "width": 98
+              },
+              "type": "text"
+            },
+            {
+              "background": {
+                "color": {
+                  "fixed": "transparent"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "left",
+                "color": {
+                  "fixed": "rgb(204,204,220)"
+                },
+                "size": 12,
+                "text": {
+                  "field": "flow_sensor_25001137c1_tag",
+                  "fixed": " ",
+                  "mode": "field"
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "name": "flow_sensor_25001137c1_tag",
+              "placement": {
+                "height": 30,
+                "left": 266,
+                "rotation": 0,
+                "top": 45,
+                "width": 98
+              },
+              "type": "text"
+            },
+            {
+              "background": {
+                "color": {
+                  "fixed": "transparent"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "left",
+                "color": {
+                  "fixed": "rgb(204,204,220)"
+                },
+                "size": 12,
+                "text": {
+                  "field": "flow_sensor_25001037c3_tag",
+                  "fixed": " ",
+                  "mode": "field"
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "name": "flow_sensor_25001037c3_tag",
+              "placement": {
+                "height": 30,
+                "left": 266,
+                "rotation": 0,
+                "top": 80,
+                "width": 98
+              },
+              "type": "text"
+            },
+            {
+              "background": {
+                "color": {
+                  "fixed": "transparent"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "left",
+                "color": {
+                  "fixed": "rgb(204,204,220)"
+                },
+                "size": 12,
+                "text": {
+                  "field": "flow_sensor_25001037c4_tag",
+                  "fixed": " ",
+                  "mode": "field"
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "name": "flow_sensor_25001037c4_tag",
+              "placement": {
+                "height": 30,
+                "left": 266,
+                "rotation": 0,
+                "top": 115,
+                "width": 98
               },
               "type": "text"
             }
@@ -5006,6 +7194,36 @@
             ],
             "limit": 50
           }
+        },
+        {
+          "dataset": "dev",
+          "datasource": {
+            "type": "grafana-postgresql-datasource",
+            "uid": "${datasource}"
+          },
+          "editorMode": "code",
+          "format": "table",
+          "hide": false,
+          "rawQuery": true,
+          "rawSql": "\r\nSELECT\r\n  MAX(CASE WHEN mqtt_json_path = LOWER('TECHNICAL_ROOM_ENERG_REC_FLOW') THEN '(' || yard_tag || ')' ELSE NULL END) AS technical_room_energ_rec_flow_tag,\r\n  MAX(CASE WHEN mqtt_json_path = LOWER('FLOW_SENSOR_25001137C1') THEN '(' || yard_tag || ')' ELSE NULL END)        AS flow_sensor_25001137c1_tag,\r\n  MAX(CASE WHEN mqtt_json_path = LOWER('FLOW_SENSOR_25001037C3') THEN '(' || yard_tag || ')' ELSE NULL END)        AS flow_sensor_25001037c3_tag,\r\n  MAX(CASE WHEN mqtt_json_path = LOWER('FLOW_SENSOR_25001037C4') THEN '(' || yard_tag || ')' ELSE NULL END)        AS flow_sensor_25001037c4_tag\r\nFROM marpower.io_metadata_marpower\r\nWHERE mqtt_topic = 'marpower/250000-fresh-water'",
+          "refId": "B",
+          "sql": {
+            "columns": [
+              {
+                "parameters": [],
+                "type": "function"
+              }
+            ],
+            "groupBy": [
+              {
+                "property": {
+                  "type": "string"
+                },
+                "type": "groupBy"
+              }
+            ],
+            "limit": 50
+          }
         }
       ],
       "title": "Other flow",
@@ -5039,8 +7257,8 @@
       "gridPos": {
         "h": 7,
         "w": 9,
-        "x": 8,
-        "y": 27
+        "x": 9,
+        "y": 34
       },
       "id": 10,
       "options": {
@@ -5092,7 +7310,7 @@
               "name": "Energy recovery temp 4",
               "placement": {
                 "height": 30,
-                "left": 301,
+                "left": 355,
                 "top": 10,
                 "width": 180
               },
@@ -5164,7 +7382,7 @@
               "name": "Energy recovery temp 5",
               "placement": {
                 "height": 30,
-                "left": 301,
+                "left": 355,
                 "top": 45,
                 "width": 180
               },
@@ -5236,7 +7454,7 @@
               "name": "Energy recovery temp 6",
               "placement": {
                 "height": 30,
-                "left": 301,
+                "left": 355,
                 "top": 80,
                 "width": 180
               },
@@ -5308,7 +7526,7 @@
               "name": "Energy recovery temp 7",
               "placement": {
                 "height": 30,
-                "left": 301,
+                "left": 355,
                 "top": 115,
                 "width": 180
               },
@@ -5380,7 +7598,7 @@
               "name": "Energy recovery temp 8",
               "placement": {
                 "height": 30,
-                "left": 301,
+                "left": 355,
                 "top": 150,
                 "width": 180
               },
@@ -5419,6 +7637,196 @@
                 "rotation": 0,
                 "top": 150,
                 "width": 234.99999999999997
+              },
+              "type": "text"
+            },
+            {
+              "background": {
+                "color": {
+                  "fixed": "transparent"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "left",
+                "color": {
+                  "fixed": "rgb(204,204,220)"
+                },
+                "size": 12,
+                "text": {
+                  "field": "energy_rec_temp4_tag",
+                  "fixed": " ",
+                  "mode": "field"
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "name": "energy_rec_temp4_tag",
+              "placement": {
+                "height": 30,
+                "left": 250,
+                "rotation": 0,
+                "top": 10,
+                "width": 114
+              },
+              "type": "text"
+            },
+            {
+              "background": {
+                "color": {
+                  "fixed": "transparent"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "left",
+                "color": {
+                  "fixed": "rgb(204,204,220)"
+                },
+                "size": 12,
+                "text": {
+                  "field": "energy_rec_temp5_tag",
+                  "fixed": " ",
+                  "mode": "field"
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "name": "energy_rec_temp5_tag",
+              "placement": {
+                "height": 30,
+                "left": 250,
+                "rotation": 0,
+                "top": 45,
+                "width": 114
+              },
+              "type": "text"
+            },
+            {
+              "background": {
+                "color": {
+                  "fixed": "transparent"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "left",
+                "color": {
+                  "fixed": "rgb(204,204,220)"
+                },
+                "size": 12,
+                "text": {
+                  "field": "energy_rec_temp6_tag",
+                  "fixed": " ",
+                  "mode": "field"
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "name": "energy_rec_temp6_tag",
+              "placement": {
+                "height": 30,
+                "left": 250,
+                "rotation": 0,
+                "top": 80,
+                "width": 114
+              },
+              "type": "text"
+            },
+            {
+              "background": {
+                "color": {
+                  "fixed": "transparent"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "left",
+                "color": {
+                  "fixed": "rgb(204,204,220)"
+                },
+                "size": 12,
+                "text": {
+                  "field": "energy_rec_temp7_tag",
+                  "fixed": " ",
+                  "mode": "field"
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "name": "energy_rec_temp7_tag",
+              "placement": {
+                "height": 30,
+                "left": 250,
+                "rotation": 0,
+                "top": 115,
+                "width": 114
+              },
+              "type": "text"
+            },
+            {
+              "background": {
+                "color": {
+                  "fixed": "transparent"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "left",
+                "color": {
+                  "fixed": "rgb(204,204,220)"
+                },
+                "size": 12,
+                "text": {
+                  "field": "energy_rec_temp8_tag",
+                  "fixed": " ",
+                  "mode": "field"
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "name": "energy_rec_temp8_tag",
+              "placement": {
+                "height": 30,
+                "left": 250,
+                "rotation": 0,
+                "top": 150,
+                "width": 114
               },
               "type": "text"
             }
@@ -5479,6 +7887,36 @@
             ],
             "limit": 50
           }
+        },
+        {
+          "dataset": "dev",
+          "datasource": {
+            "type": "grafana-postgresql-datasource",
+            "uid": "${datasource}"
+          },
+          "editorMode": "code",
+          "format": "table",
+          "hide": false,
+          "rawQuery": true,
+          "rawSql": "SELECT\r\n  MAX(CASE WHEN mqtt_json_path = LOWER('ENERGY_REC_SYSTEM_TEMP4') THEN '(' || yard_tag || ')' ELSE NULL END) AS energy_rec_temp4_tag,\r\n  MAX(CASE WHEN mqtt_json_path = LOWER('ENERGY_REC_SYSTEM_TEMP5') THEN '(' || yard_tag || ')' ELSE NULL END) AS energy_rec_temp5_tag,\r\n  MAX(CASE WHEN mqtt_json_path = LOWER('ENERGY_REC_SYSTEM_TEMP6') THEN '(' || yard_tag || ')' ELSE NULL END) AS energy_rec_temp6_tag,\r\n  MAX(CASE WHEN mqtt_json_path = LOWER('ENERGY_REC_SYSTEM_TEMP7') THEN '(' || yard_tag || ')' ELSE NULL END) AS energy_rec_temp7_tag,\r\n  MAX(CASE WHEN mqtt_json_path = LOWER('ENERGY_REC_SYSTEM_TEMP8') THEN '(' || yard_tag || ')' ELSE NULL END) AS energy_rec_temp8_tag\r\nFROM marpower.io_metadata_marpower\r\nWHERE mqtt_topic = 'marpower/250000-fresh-water'",
+          "refId": "B",
+          "sql": {
+            "columns": [
+              {
+                "parameters": [],
+                "type": "function"
+              }
+            ],
+            "groupBy": [
+              {
+                "property": {
+                  "type": "string"
+                },
+                "type": "groupBy"
+              }
+            ],
+            "limit": 50
+          }
         }
       ],
       "title": "Temperature",
@@ -5511,9 +7949,9 @@
       },
       "gridPos": {
         "h": 4,
-        "w": 7,
-        "x": 17,
-        "y": 27
+        "w": 9,
+        "x": 0,
+        "y": 40
       },
       "id": 9,
       "options": {
@@ -5565,9 +8003,8 @@
               "name": "Fresh water tank 1",
               "placement": {
                 "height": 30,
-                "left": 220,
-                "rotation": 0,
-                "top": 10,
+                "left": 275,
+                "top": 8,
                 "width": 180
               },
               "type": "metric-value"
@@ -5602,8 +8039,9 @@
               "placement": {
                 "height": 30,
                 "left": 15,
+                "rotation": 0,
                 "top": 10,
-                "width": 188
+                "width": 160
               },
               "type": "text"
             },
@@ -5637,9 +8075,8 @@
               "name": "Fresh water tank 2",
               "placement": {
                 "height": 30,
-                "left": 220,
-                "rotation": 0,
-                "top": 45,
+                "left": 275,
+                "top": 43,
                 "width": 180
               },
               "type": "metric-value"
@@ -5674,8 +8111,85 @@
               "placement": {
                 "height": 30,
                 "left": 15,
+                "rotation": 0,
                 "top": 45,
-                "width": 188
+                "width": 160
+              },
+              "type": "text"
+            },
+            {
+              "background": {
+                "color": {
+                  "fixed": "transparent"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "left",
+                "color": {
+                  "fixed": "rgb(204,204,220)"
+                },
+                "size": 12,
+                "text": {
+                  "field": "fresh_water_tank_1_level_tag",
+                  "fixed": " ",
+                  "mode": "field"
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "name": "fresh_water_tank_1_level_tag",
+              "placement": {
+                "height": 30,
+                "left": 175,
+                "rotation": 0,
+                "top": 10,
+                "width": 100
+              },
+              "type": "text"
+            },
+            {
+              "background": {
+                "color": {
+                  "fixed": "transparent"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "left",
+                "color": {
+                  "fixed": "rgb(204,204,220)"
+                },
+                "size": 12,
+                "text": {
+                  "field": "fresh_water_tank_2_level_tag",
+                  "fixed": " ",
+                  "mode": "field"
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "name": "fresh_water_tank_2_level_tag",
+              "placement": {
+                "height": 30,
+                "left": 175,
+                "rotation": 0,
+                "top": 43,
+                "width": 100
               },
               "type": "text"
             }
@@ -5736,9 +8250,39 @@
             ],
             "limit": 50
           }
+        },
+        {
+          "dataset": "dev",
+          "datasource": {
+            "type": "grafana-postgresql-datasource",
+            "uid": "${datasource}"
+          },
+          "editorMode": "code",
+          "format": "table",
+          "hide": false,
+          "rawQuery": true,
+          "rawSql": "SELECT\r\n  MAX(CASE WHEN mqtt_json_path = LOWER('TANK_1_FR_45_PS_LEVEL') THEN '(' || yard_tag || ')' ELSE NULL END) AS fresh_water_tank_1_level_tag,\r\n  MAX(CASE WHEN mqtt_json_path = LOWER('TANK_2_FR_45_SB_LEVEL') THEN '(' || yard_tag || ')' ELSE NULL END) AS fresh_water_tank_2_level_tag\r\nFROM marpower.io_metadata_marpower\r\nWHERE mqtt_topic = 'marpower/250000-fresh-water'",
+          "refId": "B",
+          "sql": {
+            "columns": [
+              {
+                "parameters": [],
+                "type": "function"
+              }
+            ],
+            "groupBy": [
+              {
+                "property": {
+                  "type": "string"
+                },
+                "type": "groupBy"
+              }
+            ],
+            "limit": 50
+          }
         }
       ],
-      "title": "Tank level",
+      "title": "Fresh water tank level",
       "type": "canvas"
     },
     {
@@ -5768,9 +8312,9 @@
       },
       "gridPos": {
         "h": 3,
-        "w": 7,
-        "x": 17,
-        "y": 31
+        "w": 9,
+        "x": 9,
+        "y": 41
       },
       "id": 11,
       "options": {
@@ -5822,7 +8366,7 @@
               "name": "Pressure Sensor frame 46",
               "placement": {
                 "height": 30,
-                "left": 220,
+                "left": 305,
                 "rotation": 0,
                 "top": 10,
                 "width": 180
@@ -5862,6 +8406,44 @@
                 "rotation": 0,
                 "top": 10,
                 "width": 201
+              },
+              "type": "text"
+            },
+            {
+              "background": {
+                "color": {
+                  "fixed": "transparent"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "left",
+                "color": {
+                  "fixed": "rgb(204,204,220)"
+                },
+                "size": 12,
+                "text": {
+                  "field": "fr46_system_pressure_tag",
+                  "fixed": " ",
+                  "mode": "field"
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "name": "fr46_system_pressure_tag",
+              "placement": {
+                "height": 30,
+                "left": 210,
+                "rotation": 0,
+                "top": 10,
+                "width": 95
               },
               "type": "text"
             }
@@ -5905,6 +8487,36 @@
           "rawQuery": true,
           "rawSql": "SELECT\r\n  timestamp                                AS time,\r\n  fr_46_system_beh_pres_pumps_press__value AS fr46_system_pressure\r\nFROM public.marpower__250000_fresh_water\r\nORDER BY timestamp DESC\r\nLIMIT 1",
           "refId": "A",
+          "sql": {
+            "columns": [
+              {
+                "parameters": [],
+                "type": "function"
+              }
+            ],
+            "groupBy": [
+              {
+                "property": {
+                  "type": "string"
+                },
+                "type": "groupBy"
+              }
+            ],
+            "limit": 50
+          }
+        },
+        {
+          "dataset": "dev",
+          "datasource": {
+            "type": "grafana-postgresql-datasource",
+            "uid": "${datasource}"
+          },
+          "editorMode": "code",
+          "format": "table",
+          "hide": false,
+          "rawQuery": true,
+          "rawSql": "SELECT\r\n  MAX(CASE WHEN mqtt_json_path = LOWER('FR_46_SYSTEM_BEH_PRES_PUMPS_PRESS') THEN '(' || yard_tag || ')' ELSE NULL END) AS fr46_system_pressure_tag\r\nFROM marpower.io_metadata_marpower\r\nWHERE mqtt_topic = 'marpower/250000-fresh-water'",
+          "refId": "B",
           "sql": {
             "columns": [
               {

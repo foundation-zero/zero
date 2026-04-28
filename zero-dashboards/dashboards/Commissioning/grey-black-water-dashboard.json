@@ -86,6 +86,7 @@
             "mode": "continuous-reds"
           },
           "mappings": [],
+          "noValue": "-",
           "thresholds": {
             "mode": "absolute",
             "steps": [
@@ -103,8 +104,8 @@
         "overrides": []
       },
       "gridPos": {
-        "h": 7,
-        "w": 6,
+        "h": 3,
+        "w": 7,
         "x": 0,
         "y": 3
       },
@@ -205,7 +206,7 @@
                 "left": 50,
                 "rotation": 0,
                 "top": 10,
-                "width": 376
+                "width": 327
               },
               "type": "text"
             },
@@ -286,7 +287,85 @@
                 "left": 50,
                 "rotation": 0,
                 "top": 40,
-                "width": 300
+                "width": 327
+              },
+              "type": "text"
+            },
+            {
+              "background": {
+                "color": {
+                  "fixed": "transparent"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "left",
+                "color": {
+                  "fixed": "rgb(204, 204, 220)"
+                },
+                "size": 12,
+                "text": {
+                  "field": "treatment_general_warning_alarm_tag",
+                  "fixed": " ",
+                  "mode": "field"
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "links": [],
+              "name": "treatment_general_warning_alarm_tag",
+              "placement": {
+                "height": 26,
+                "left": 377,
+                "rotation": 0,
+                "top": 10,
+                "width": 127
+              },
+              "type": "text"
+            },
+            {
+              "background": {
+                "color": {
+                  "fixed": "transparent"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "left",
+                "color": {
+                  "fixed": "rgb(204, 204, 220)"
+                },
+                "size": 12,
+                "text": {
+                  "field": "treatment_general_alarm_tag",
+                  "fixed": " ",
+                  "mode": "field"
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "links": [],
+              "name": "treatment_general_alarm_tag",
+              "placement": {
+                "height": 26,
+                "left": 377,
+                "rotation": 0,
+                "top": 40,
+                "width": 127
               },
               "type": "text"
             }
@@ -338,6 +417,36 @@
             ],
             "limit": 50
           }
+        },
+        {
+          "dataset": "dev",
+          "datasource": {
+            "type": "grafana-postgresql-datasource",
+            "uid": "${datasource}"
+          },
+          "editorMode": "code",
+          "format": "table",
+          "hide": false,
+          "rawQuery": true,
+          "rawSql": "SELECT \r\n  MAX(CASE WHEN mqtt_json_path = LOWER('TREAT_GEN_WARNING_ALARM') THEN '(' || yard_tag || ')' ELSE NULL END)              AS treatment_general_warning_alarm_tag,\r\n  MAX(CASE WHEN mqtt_json_path = LOWER('SEWAGE_TREATMENT_PLANT_GENERAL_ALARM') THEN '(' || yard_tag || ')' ELSE NULL END) AS treatment_general_alarm_tag\r\nFROM marpower.io_metadata_marpower\r\nWHERE mqtt_topic = 'marpower/340000-sewage'",
+          "refId": "B",
+          "sql": {
+            "columns": [
+              {
+                "parameters": [],
+                "type": "function"
+              }
+            ],
+            "groupBy": [
+              {
+                "property": {
+                  "type": "string"
+                },
+                "type": "groupBy"
+              }
+            ],
+            "limit": 50
+          }
         }
       ],
       "title": "Alarms",
@@ -355,6 +464,7 @@
             "mode": "continuous-greens"
           },
           "mappings": [],
+          "noValue": "-",
           "thresholds": {
             "mode": "absolute",
             "steps": [
@@ -369,8 +479,8 @@
       },
       "gridPos": {
         "h": 7,
-        "w": 13,
-        "x": 6,
+        "w": 17,
+        "x": 7,
         "y": 3
       },
       "id": 2,
@@ -455,7 +565,7 @@
                 "size": 16,
                 "text": {
                   "field": "sea_water_cool_pmp1_remote",
-                  "fixed": "Grey water FWD pump - Remote avail.",
+                  "fixed": " ",
                   "mode": "fixed"
                 },
                 "valign": "middle"
@@ -471,7 +581,7 @@
                 "left": 50,
                 "rotation": 0,
                 "top": 10,
-                "width": 300
+                "width": 332
               },
               "type": "text"
             },
@@ -553,7 +663,7 @@
                 "left": 50,
                 "rotation": 0,
                 "top": 40,
-                "width": 320
+                "width": 332
               },
               "type": "text"
             },
@@ -633,9 +743,8 @@
               "placement": {
                 "height": 26,
                 "left": 50,
-                "rotation": 0,
                 "top": 70,
-                "width": 339
+                "width": 331.99999999999994
               },
               "type": "text"
             },
@@ -715,9 +824,8 @@
               "placement": {
                 "height": 26,
                 "left": 50,
-                "rotation": 0,
                 "top": 100,
-                "width": 320
+                "width": 331.99999999999994
               },
               "type": "text"
             },
@@ -798,7 +906,7 @@
                 "left": 50,
                 "rotation": 0,
                 "top": 130,
-                "width": 348
+                "width": 332
               },
               "type": "text"
             },
@@ -879,7 +987,7 @@
                 "left": 50,
                 "rotation": 0,
                 "top": 160,
-                "width": 320
+                "width": 332
               },
               "type": "text"
             },
@@ -919,7 +1027,7 @@
               "name": "treatment_on",
               "placement": {
                 "height": 25,
-                "left": 440,
+                "left": 524,
                 "rotation": 0,
                 "top": 10,
                 "width": 25
@@ -958,8 +1066,7 @@
               "name": "treatment_on label",
               "placement": {
                 "height": 26,
-                "left": 475,
-                "rotation": 0,
+                "left": 559,
                 "top": 10,
                 "width": 300
               },
@@ -1001,7 +1108,7 @@
               "name": "treatment_release",
               "placement": {
                 "height": 25,
-                "left": 440,
+                "left": 524,
                 "rotation": 0,
                 "top": 40,
                 "width": 25
@@ -1040,8 +1147,7 @@
               "name": "treatment_release label",
               "placement": {
                 "height": 26,
-                "left": 475,
-                "rotation": 0,
+                "left": 559,
                 "top": 40,
                 "width": 320
               },
@@ -1083,8 +1189,7 @@
               "name": "treatment_dry_run_protection",
               "placement": {
                 "height": 25,
-                "left": 440,
-                "rotation": 0,
+                "left": 524,
                 "top": 70,
                 "width": 25
               },
@@ -1122,10 +1227,361 @@
               "name": "treatment_dry_run_protection label",
               "placement": {
                 "height": 26,
-                "left": 475,
-                "rotation": 0,
+                "left": 559,
                 "top": 70,
                 "width": 383
+              },
+              "type": "text"
+            },
+            {
+              "background": {
+                "color": {
+                  "fixed": "transparent"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "left",
+                "color": {
+                  "fixed": "rgb(204, 204, 220)"
+                },
+                "size": 12,
+                "text": {
+                  "field": "fwd_pump_grey_remavail_tag",
+                  "fixed": " ",
+                  "mode": "field"
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "links": [],
+              "name": "fwd_pump_grey_remavail_tag",
+              "placement": {
+                "height": 26,
+                "left": 392,
+                "rotation": 0,
+                "top": 10,
+                "width": 93
+              },
+              "type": "text"
+            },
+            {
+              "background": {
+                "color": {
+                  "fixed": "transparent"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "left",
+                "color": {
+                  "fixed": "rgb(204, 204, 220)"
+                },
+                "size": 12,
+                "text": {
+                  "field": "fwd_pump_grey_running_tag",
+                  "fixed": " ",
+                  "mode": "field"
+                },
+                "valign": "middle"
+              },
+              "connections": [],
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "links": [],
+              "name": "fwd_pump_grey_running_tag",
+              "placement": {
+                "height": 26,
+                "left": 392,
+                "rotation": 0,
+                "top": 40,
+                "width": 93
+              },
+              "type": "text"
+            },
+            {
+              "background": {
+                "color": {
+                  "fixed": "transparent"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "left",
+                "color": {
+                  "fixed": "rgb(204, 204, 220)"
+                },
+                "size": 12,
+                "text": {
+                  "field": "trans_pump_grey_remavail_tag",
+                  "fixed": " ",
+                  "mode": "field"
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "links": [],
+              "name": "trans_pump_grey_remavail_tag",
+              "placement": {
+                "height": 26,
+                "left": 392,
+                "rotation": 0,
+                "top": 70,
+                "width": 93
+              },
+              "type": "text"
+            },
+            {
+              "background": {
+                "color": {
+                  "fixed": "transparent"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "left",
+                "color": {
+                  "fixed": "rgb(204, 204, 220)"
+                },
+                "size": 12,
+                "text": {
+                  "field": "trans_pump_grey_running_tag",
+                  "fixed": " ",
+                  "mode": "field"
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "links": [],
+              "name": "trans_pump_grey_running_tag",
+              "placement": {
+                "height": 26,
+                "left": 392,
+                "rotation": 0,
+                "top": 100,
+                "width": 93
+              },
+              "type": "text"
+            },
+            {
+              "background": {
+                "color": {
+                  "fixed": "transparent"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "left",
+                "color": {
+                  "fixed": "rgb(204, 204, 220)"
+                },
+                "size": 12,
+                "text": {
+                  "field": "trans_pump_black_remavail_tag",
+                  "fixed": " ",
+                  "mode": "field"
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "links": [],
+              "name": "trans_pump_black_remavail_tag",
+              "placement": {
+                "height": 26,
+                "left": 392,
+                "rotation": 0,
+                "top": 130,
+                "width": 93
+              },
+              "type": "text"
+            },
+            {
+              "background": {
+                "color": {
+                  "fixed": "transparent"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "left",
+                "color": {
+                  "fixed": "rgb(204, 204, 220)"
+                },
+                "size": 12,
+                "text": {
+                  "field": "trans_pump_black_running_tag",
+                  "fixed": " ",
+                  "mode": "field"
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "links": [],
+              "name": "trans_pump_black_running_tag",
+              "placement": {
+                "height": 26,
+                "left": 392,
+                "rotation": 0,
+                "top": 160,
+                "width": 93
+              },
+              "type": "text"
+            },
+            {
+              "background": {
+                "color": {
+                  "fixed": "transparent"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "left",
+                "color": {
+                  "fixed": "rgb(204, 204, 220)"
+                },
+                "size": 12,
+                "text": {
+                  "field": "treatment_on_tag",
+                  "fixed": " ",
+                  "mode": "field"
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "links": [],
+              "name": "treatment_on_tag",
+              "placement": {
+                "height": 26,
+                "left": 942,
+                "rotation": 0,
+                "top": 10,
+                "width": 93
+              },
+              "type": "text"
+            },
+            {
+              "background": {
+                "color": {
+                  "fixed": "transparent"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "left",
+                "color": {
+                  "fixed": "rgb(204, 204, 220)"
+                },
+                "size": 12,
+                "text": {
+                  "field": "treatment_release_tag",
+                  "fixed": " ",
+                  "mode": "field"
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "links": [],
+              "name": "treatment_release_tag",
+              "placement": {
+                "height": 26,
+                "left": 942,
+                "rotation": 0,
+                "top": 40,
+                "width": 93
+              },
+              "type": "text"
+            },
+            {
+              "background": {
+                "color": {
+                  "fixed": "transparent"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "left",
+                "color": {
+                  "fixed": "rgb(204, 204, 220)"
+                },
+                "size": 12,
+                "text": {
+                  "field": "treatment_dry_run_protection_tag",
+                  "fixed": " ",
+                  "mode": "field"
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "links": [],
+              "name": "treatment_dry_run_protection_tag",
+              "placement": {
+                "height": 26,
+                "left": 942,
+                "rotation": 0,
+                "top": 70,
+                "width": 93
               },
               "type": "text"
             }
@@ -1177,6 +1633,36 @@
             ],
             "limit": 50
           }
+        },
+        {
+          "dataset": "dev",
+          "datasource": {
+            "type": "grafana-postgresql-datasource",
+            "uid": "${datasource}"
+          },
+          "editorMode": "code",
+          "format": "table",
+          "hide": false,
+          "rawQuery": true,
+          "rawSql": "SELECT \r\n  MAX(CASE WHEN mqtt_json_path = LOWER('PUMP_FWD_GREY_WAT_REMAVAIL') THEN '(' || yard_tag || ')' ELSE NULL END)   AS fwd_pump_grey_remavail_tag,\r\n  MAX(CASE WHEN mqtt_json_path = LOWER('PUMP_FWD_GREY_WAT_RUNNING') THEN '(' || yard_tag || ')' ELSE NULL END)    AS fwd_pump_grey_running_tag,\r\n  MAX(CASE WHEN mqtt_json_path = LOWER('TRANS_PUMP_GREY_WAT_REMAVAIL') THEN '(' || yard_tag || ')' ELSE NULL END) AS trans_pump_grey_remavail_tag,\r\n  MAX(CASE WHEN mqtt_json_path = LOWER('TRANS_PUMP_GREY_WAT_RUNNING') THEN '(' || yard_tag || ')' ELSE NULL END)  AS trans_pump_grey_running_tag,\r\n  MAX(CASE WHEN mqtt_json_path = LOWER('TRANS_PUMP_BLCK_WAT_REMAVAIL') THEN '(' || yard_tag || ')' ELSE NULL END) AS trans_pump_black_remavail_tag,\r\n  MAX(CASE WHEN mqtt_json_path = LOWER('TRANS_PUMP_BLCK_WAT_RUNNING') THEN '(' || yard_tag || ')' ELSE NULL END)  AS trans_pump_black_running_tag,\r\n  MAX(CASE WHEN mqtt_json_path = LOWER('SEWAGE_TREATMENT_PLANT_ON') THEN '(' || yard_tag || ')' ELSE NULL END)    AS treatment_on_tag,\r\n  MAX(CASE WHEN mqtt_json_path = LOWER('TREAT_RELEASE') THEN '(' || yard_tag || ')' ELSE NULL END)                AS treatment_release_tag,\r\n  MAX(CASE WHEN mqtt_json_path = LOWER('TREAT_DRYRUNNPROT') THEN '(' || yard_tag || ')' ELSE NULL END)            AS treatment_dry_run_protection_tag\r\nFROM marpower.io_metadata_marpower\r\nWHERE mqtt_topic = 'marpower/340000-sewage'",
+          "refId": "B",
+          "sql": {
+            "columns": [
+              {
+                "parameters": [],
+                "type": "function"
+              }
+            ],
+            "groupBy": [
+              {
+                "property": {
+                  "type": "string"
+                },
+                "type": "groupBy"
+              }
+            ],
+            "limit": 50
+          }
         }
       ],
       "title": "Status",
@@ -1193,6 +1679,7 @@
             "mode": "continuous-blues"
           },
           "mappings": [],
+          "noValue": "-",
           "thresholds": {
             "mode": "absolute",
             "steps": [
@@ -1206,10 +1693,10 @@
         "overrides": []
       },
       "gridPos": {
-        "h": 7,
-        "w": 5,
-        "x": 19,
-        "y": 3
+        "h": 4,
+        "w": 7,
+        "x": 0,
+        "y": 6
       },
       "id": 3,
       "options": {
@@ -1306,7 +1793,7 @@
                 "left": 50,
                 "rotation": 0,
                 "top": 10,
-                "width": 300
+                "width": 272
               },
               "type": "text"
             },
@@ -1376,6 +1863,7 @@
                 },
                 "valign": "middle"
               },
+              "connections": [],
               "constraint": {
                 "horizontal": "left",
                 "vertical": "top"
@@ -1385,9 +1873,8 @@
               "placement": {
                 "height": 26,
                 "left": 50,
-                "rotation": 0,
                 "top": 40,
-                "width": 300
+                "width": 272
               },
               "type": "text"
             },
@@ -1468,7 +1955,124 @@
                 "left": 50,
                 "rotation": 0,
                 "top": 70,
-                "width": 300
+                "width": 272
+              },
+              "type": "text"
+            },
+            {
+              "background": {
+                "color": {
+                  "fixed": "transparent"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "left",
+                "color": {
+                  "fixed": "rgb(204, 204, 220)"
+                },
+                "size": 12,
+                "text": {
+                  "field": "grey_wat_fwd_pump_startstop_tag",
+                  "fixed": " ",
+                  "mode": "field"
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "links": [],
+              "name": "grey_wat_fwd_pump_startstop_tag",
+              "placement": {
+                "height": 26,
+                "left": 322,
+                "rotation": 0,
+                "top": 10,
+                "width": 97
+              },
+              "type": "text"
+            },
+            {
+              "background": {
+                "color": {
+                  "fixed": "transparent"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "left",
+                "color": {
+                  "fixed": "rgb(204, 204, 220)"
+                },
+                "size": 12,
+                "text": {
+                  "field": "grey_wat_transfer_pump_startstop_tag",
+                  "fixed": " ",
+                  "mode": "field"
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "links": [],
+              "name": "grey_wat_transfer_pump_startstop_tag",
+              "placement": {
+                "height": 26,
+                "left": 322,
+                "rotation": 0,
+                "top": 40,
+                "width": 97
+              },
+              "type": "text"
+            },
+            {
+              "background": {
+                "color": {
+                  "fixed": "transparent"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "left",
+                "color": {
+                  "fixed": "rgb(204, 204, 220)"
+                },
+                "size": 12,
+                "text": {
+                  "field": "black_wat_transfer_pump_startstop_tag",
+                  "fixed": " ",
+                  "mode": "field"
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "links": [],
+              "name": "black_wat_transfer_pump_startstop_tag",
+              "placement": {
+                "height": 26,
+                "left": 322,
+                "rotation": 0,
+                "top": 70,
+                "width": 97
               },
               "type": "text"
             }
@@ -1520,6 +2124,36 @@
             ],
             "limit": 50
           }
+        },
+        {
+          "dataset": "dev",
+          "datasource": {
+            "type": "grafana-postgresql-datasource",
+            "uid": "${datasource}"
+          },
+          "editorMode": "code",
+          "format": "table",
+          "hide": false,
+          "rawQuery": true,
+          "rawSql": "SELECT \r\n  MAX(CASE WHEN mqtt_json_path = LOWER('PUMP_FWD_GREY_WAT_STARTSTOP') THEN '(' || yard_tag || ')' ELSE NULL END)   AS grey_wat_fwd_pump_startstop_tag,\r\n  MAX(CASE WHEN mqtt_json_path = LOWER('TRANS_PUMP_GREY_WAT_STARTSTOP') THEN '(' || yard_tag || ')' ELSE NULL END) AS grey_wat_transfer_pump_startstop_tag,\r\n  MAX(CASE WHEN mqtt_json_path = LOWER('TRANS_PUMP_BLCK_WAT_STARTSTOP') THEN '(' || yard_tag || ')' ELSE NULL END) AS black_wat_transfer_pump_startstop_tag\r\nFROM marpower.io_metadata_marpower\r\nWHERE mqtt_topic = 'marpower/340000-sewage'",
+          "refId": "B",
+          "sql": {
+            "columns": [
+              {
+                "parameters": [],
+                "type": "function"
+              }
+            ],
+            "groupBy": [
+              {
+                "property": {
+                  "type": "string"
+                },
+                "type": "groupBy"
+              }
+            ],
+            "limit": 50
+          }
         }
       ],
       "title": "Control signals",
@@ -1537,6 +2171,7 @@
           },
           "decimals": 2,
           "mappings": [],
+          "noValue": "-",
           "thresholds": {
             "mode": "absolute",
             "steps": [
@@ -1609,8 +2244,7 @@
               "name": "grey_wat_aft_tank",
               "placement": {
                 "height": 30,
-                "left": 200,
-                "rotation": 0,
+                "left": 299,
                 "top": 10,
                 "width": 175
               },
@@ -1649,7 +2283,7 @@
                 "left": 15,
                 "rotation": 0,
                 "top": 10,
-                "width": 240
+                "width": 180
               },
               "type": "text"
             },
@@ -1685,8 +2319,7 @@
               "name": "grey_wat_fwd_tank",
               "placement": {
                 "height": 30,
-                "left": 200,
-                "rotation": 0,
+                "left": 299,
                 "top": 45,
                 "width": 175
               },
@@ -1725,7 +2358,7 @@
                 "left": 15,
                 "rotation": 0,
                 "top": 45,
-                "width": 240
+                "width": 180
               },
               "type": "text"
             },
@@ -1761,8 +2394,7 @@
               "name": "black_wat_aft_tank",
               "placement": {
                 "height": 30,
-                "left": 200,
-                "rotation": 0,
+                "left": 299,
                 "top": 80,
                 "width": 175
               },
@@ -1801,7 +2433,7 @@
                 "left": 15,
                 "rotation": 0,
                 "top": 80,
-                "width": 240
+                "width": 180
               },
               "type": "text"
             },
@@ -1837,8 +2469,7 @@
               "name": "treatment_holding_tank",
               "placement": {
                 "height": 30,
-                "left": 760,
-                "rotation": 0,
+                "left": 870,
                 "top": 10,
                 "width": 175
               },
@@ -1875,10 +2506,9 @@
               "name": "treatment_holding_tank label",
               "placement": {
                 "height": 30,
-                "left": 525,
-                "rotation": 0,
+                "left": 532,
                 "top": 10,
-                "width": 240
+                "width": 230
               },
               "type": "text"
             },
@@ -1914,8 +2544,7 @@
               "name": "treatment_sludge_tank",
               "placement": {
                 "height": 30,
-                "left": 760,
-                "rotation": 0,
+                "left": 870,
                 "top": 45,
                 "width": 175
               },
@@ -1951,10 +2580,10 @@
               "name": "treatment_sludge_tank label",
               "placement": {
                 "height": 30,
-                "left": 525,
+                "left": 532,
                 "rotation": 0,
                 "top": 45,
-                "width": 240
+                "width": 230
               },
               "type": "text"
             },
@@ -1990,7 +2619,7 @@
               "name": "sludge_tank",
               "placement": {
                 "height": 30,
-                "left": 1270,
+                "left": 1310,
                 "top": 10,
                 "width": 175
               },
@@ -2026,9 +2655,243 @@
               "name": "sludge_tank label",
               "placement": {
                 "height": 30,
-                "left": 1135,
+                "left": 1102,
                 "top": 10,
-                "width": 240
+                "width": 104
+              },
+              "type": "text"
+            },
+            {
+              "background": {
+                "color": {
+                  "fixed": "transparent"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "left",
+                "color": {
+                  "fixed": "rgb(204, 204, 220)"
+                },
+                "size": 12,
+                "text": {
+                  "field": "sludge_tank_tag",
+                  "fixed": " ",
+                  "mode": "field"
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "links": [],
+              "name": "sludge_tank_tag",
+              "placement": {
+                "height": 30,
+                "left": 1206,
+                "rotation": 0,
+                "top": 10,
+                "width": 104
+              },
+              "type": "text"
+            },
+            {
+              "background": {
+                "color": {
+                  "fixed": "transparent"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "left",
+                "color": {
+                  "fixed": "rgb(204, 204, 220)"
+                },
+                "size": 12,
+                "text": {
+                  "field": "treatment_holding_tank_tag",
+                  "fixed": " ",
+                  "mode": "field"
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "links": [],
+              "name": "treatment_holding_tank_tag",
+              "placement": {
+                "height": 30,
+                "left": 766,
+                "rotation": 0,
+                "top": 10,
+                "width": 104
+              },
+              "type": "text"
+            },
+            {
+              "background": {
+                "color": {
+                  "fixed": "transparent"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "left",
+                "color": {
+                  "fixed": "rgb(204, 204, 220)"
+                },
+                "size": 12,
+                "text": {
+                  "field": "treatment_sludge_tank_tag",
+                  "fixed": " ",
+                  "mode": "field"
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "links": [],
+              "name": "treatment_sludge_tank_tag",
+              "placement": {
+                "height": 30,
+                "left": 766,
+                "rotation": 0,
+                "top": 45,
+                "width": 104
+              },
+              "type": "text"
+            },
+            {
+              "background": {
+                "color": {
+                  "fixed": "transparent"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "left",
+                "color": {
+                  "fixed": "rgb(204, 204, 220)"
+                },
+                "size": 12,
+                "text": {
+                  "field": "grey_wat_aft_tank_tag",
+                  "fixed": " ",
+                  "mode": "field"
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "links": [],
+              "name": "grey_wat_aft_tank_tag",
+              "placement": {
+                "height": 30,
+                "left": 195,
+                "rotation": 0,
+                "top": 10,
+                "width": 104
+              },
+              "type": "text"
+            },
+            {
+              "background": {
+                "color": {
+                  "fixed": "transparent"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "left",
+                "color": {
+                  "fixed": "rgb(204, 204, 220)"
+                },
+                "size": 12,
+                "text": {
+                  "field": "grey_wat_fwd_tank_tag",
+                  "fixed": " ",
+                  "mode": "field"
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "links": [],
+              "name": "grey_wat_fwd_tank_tag",
+              "placement": {
+                "height": 30,
+                "left": 195,
+                "rotation": 0,
+                "top": 45,
+                "width": 104
+              },
+              "type": "text"
+            },
+            {
+              "background": {
+                "color": {
+                  "fixed": "transparent"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "left",
+                "color": {
+                  "fixed": "rgb(204, 204, 220)"
+                },
+                "size": 12,
+                "text": {
+                  "field": "black_wat_aft_tank_tag",
+                  "fixed": " ",
+                  "mode": "field"
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "links": [],
+              "name": "black_wat_aft_tank_tag",
+              "placement": {
+                "height": 30,
+                "left": 195,
+                "rotation": 0,
+                "top": 80,
+                "width": 104
               },
               "type": "text"
             }
@@ -2063,6 +2926,36 @@
           "rawQuery": true,
           "rawSql": "SELECT\r\n  LAST_VALUE(time ORDER BY time) AS time,\r\n  LAST_VALUE((\"GREY_WATER_TANK_AFT_SB_LEVEL\").value ORDER BY time)       AS grey_wat_aft_tank,\r\n  LAST_VALUE((\"GREY_WATER_TANK_FWD_SB_LEVEL\").value ORDER BY time)       AS grey_wat_fwd_tank,\r\n  LAST_VALUE((\"BLACK_GREY_WATER_TANK_AFT_PS_LEVEL\").value ORDER BY time) AS black_wat_aft_tank,\r\n  LAST_VALUE((\"TREAT_HOLDING_TANK_LEVEL\").value ORDER BY time)           AS treatment_holding_tank,\r\n  LAST_VALUE((\"TREAT_SLUDGE_TANK_LEVEL\").value ORDER BY time)            AS treatment_sludge_tank,\r\n  LAST_VALUE((\"SLUDGE_TANK_PS_LEVEL\").value ORDER BY time)               AS sludge_tank\r\nFROM marpower.\"340000_sewage\"",
           "refId": "A",
+          "sql": {
+            "columns": [
+              {
+                "parameters": [],
+                "type": "function"
+              }
+            ],
+            "groupBy": [
+              {
+                "property": {
+                  "type": "string"
+                },
+                "type": "groupBy"
+              }
+            ],
+            "limit": 50
+          }
+        },
+        {
+          "dataset": "dev",
+          "datasource": {
+            "type": "grafana-postgresql-datasource",
+            "uid": "${datasource}"
+          },
+          "editorMode": "code",
+          "format": "table",
+          "hide": false,
+          "rawQuery": true,
+          "rawSql": "SELECT \r\n  MAX(CASE WHEN mqtt_json_path = LOWER('GREY_WATER_TANK_AFT_SB_LEVEL') THEN '(' || yard_tag || ')' ELSE NULL END)       AS grey_wat_aft_tank_tag,\r\n  MAX(CASE WHEN mqtt_json_path = LOWER('GREY_WATER_TANK_FWD_SB_LEVEL') THEN '(' || yard_tag || ')' ELSE NULL END)       AS grey_wat_fwd_tank_tag,\r\n  MAX(CASE WHEN mqtt_json_path = LOWER('BLACK_GREY_WATER_TANK_AFT_PS_LEVEL') THEN '(' || yard_tag || ')' ELSE NULL END) AS black_wat_aft_tank_tag,\r\n  MAX(CASE WHEN mqtt_json_path = LOWER('TREAT_HOLDING_TANK_LEVEL') THEN '(' || yard_tag || ')' ELSE NULL END)           AS treatment_holding_tank_tag,\r\n  MAX(CASE WHEN mqtt_json_path = LOWER('TREAT_SLUDGE_TANK_LEVEL') THEN '(' || yard_tag || ')' ELSE NULL END)            AS treatment_sludge_tank_tag,\r\n  MAX(CASE WHEN mqtt_json_path = LOWER('SLUDGE_TANK_PS_LEVEL') THEN '(' || yard_tag || ')' ELSE NULL END)               AS sludge_tank_tag\r\nFROM marpower.io_metadata_marpower\r\nWHERE mqtt_topic = 'marpower/340000-sewage'",
+          "refId": "B",
           "sql": {
             "columns": [
               {
@@ -2145,7 +3038,7 @@
             "h": 4,
             "w": 24,
             "x": 0,
-            "y": 14
+            "y": 16
           },
           "id": 9,
           "options": {
@@ -2263,7 +3156,7 @@
             "h": 10,
             "w": 24,
             "x": 0,
-            "y": 18
+            "y": 20
           },
           "id": 12,
           "options": {
@@ -2389,7 +3282,7 @@
             "h": 5,
             "w": 24,
             "x": 0,
-            "y": 28
+            "y": 30
           },
           "id": 11,
           "options": {
@@ -2533,7 +3426,7 @@
             "h": 7,
             "w": 24,
             "x": 0,
-            "y": 33
+            "y": 35
           },
           "id": 10,
           "options": {
@@ -2671,7 +3564,7 @@
             "h": 7,
             "w": 24,
             "x": 0,
-            "y": 40
+            "y": 42
           },
           "id": 14,
           "options": {
@@ -2809,7 +3702,7 @@
             "h": 7,
             "w": 24,
             "x": 0,
-            "y": 47
+            "y": 49
           },
           "id": 13,
           "options": {
