@@ -1,0 +1,20 @@
+# Mimic Components
+
+Mimic components are domain-specific visual components used in THRAPP mimic diagrams.
+
+They are intentionally compact, SVG-first, and designed to map closely to process schematics while still following Zero UI semantic design tokens.
+
+## Available Mimic Components
+
+- [Valve](/mimics/valve) - Unified switch + flow-control valve component for mimic diagrams
+
+## Authoring
+
+- [Mimic Component Authoring Workflow](/mimics/authoring-workflow) - Canonical process for implementing Figma-based mimic components
+
+## Design Principles
+
+- **Pure SVG output** for precision and portability in mimic layouts
+- **Semantic color tokens** for theme consistency (`attention`, `attention-dull`, etc.)
+- **State-driven visuals** where rotation and token changes represent operational state
+- **Small, composable primitives** intended for larger mimic scenes
