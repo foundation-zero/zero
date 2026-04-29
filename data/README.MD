@@ -1,6 +1,6 @@
 # Data
 
-This repository sets up the PostgreSQL and RisingWave databases using SQL and `dbt`.
+This repository sets up the RisingWave database using SQL and `dbt`.
 
 ## Setup Instructions
 
@@ -20,9 +20,9 @@ docker compose --profile zero up
 This will set up the following relevant services:
  - VerneMQ: MQTT client
  - RisingWave: Streaming database
+ - Postgres: managed through Hasura migrations
 
-Run the scripts for PostgreSQL and RisingWave:
+Run the script for RisingWave:
 ```bash
-poetry run python -m setup_postgres
 poetry run python -m setup_risingwave
 ```

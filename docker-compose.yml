@@ -45,30 +45,6 @@ services:
       POSTGRES_PASSWORD: ${PG_PASSWORD}
       POSTGRES_DB: ${PG_DB}
 
-  setup-postgres:
-    build:
-      context: ./data
-    command: setup_postgres --target docker
-    profiles:
-      - zero
-      - domestic
-      - loads
-      - data
-    environment: &setup
-      PG_HOST: postgres
-      PG_HOST_DOCKER: postgres
-      PG_PORT: 5432
-      PG_USER: ${PG_USER}
-      PG_PASSWORD: ${PG_PASSWORD}
-      PG_DB: ${PG_DB}
-      MQTT_PROTOCOL: mqtt
-      MQTT_HOST: vernemq
-      MQTT_PORT: 1883
-      RISINGWAVE_URL: postgres://root@risingwave:4566/dev
-    depends_on:
-      postgres:
-        condition: service_healthy
-
   risingwave:
     image: risingwavelabs/risingwave:v2.7.2
     command:
@@ -109,12 +85,19 @@ services:
       - domestic
       - data
     environment:
-      <<: *setup
+      PG_HOST: postgres
+      PG_HOST_DOCKER: postgres
+      PG_PORT: 5432
+      PG_USER: ${PG_USER}
+      PG_PASSWORD: ${PG_PASSWORD}
+      PG_DB: ${PG_DB}
+      MQTT_PROTOCOL: mqtt
+      MQTT_HOST: vernemq
+      MQTT_PORT: 1883
+      RISINGWAVE_URL: postgres://root@risingwave:4566/dev
     depends_on:
       risingwave:
         condition: service_healthy
-      setup-postgres:
-        condition: service_completed_successfully
 
   grafana:
     build:

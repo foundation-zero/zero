@@ -31,4 +31,4 @@ jobs:
         run: |
           echo "${{ secrets.ENV }}" > .env
       - name: Run services
-        run: docker compose --profile zero up -d --quiet-pull --wait vernemq setup-postgres setup-risingwave
+        run: docker compose --profile zero up -d --quiet-pull --wait vernemq setup-risingwave

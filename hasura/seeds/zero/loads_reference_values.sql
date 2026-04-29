@@ -1,3 +1,5 @@
+DELETE FROM loads.reference_values;
+
 -- Maximum working loads
 INSERT INTO loads.reference_values (variable_id, load_case_id, alarm_low, warning_low, target, warning_high, alarm_high)
 SELECT
@@ -46,7 +48,7 @@ FROM (VALUES
     ('mizzen-cunningham-load', NULL, 6.1),
     ('mizzen-outhaul-load', NULL, 15.4),
     ('mizzen-preventer-load', NULL, 13.9),
-    
+
     -- BLADE
     -- TODO: RT adjuster, cunningham
     ('blade-sheet-feeder-ps-load', NULL, 18.0),
@@ -197,7 +199,7 @@ FROM (VALUES
     ('mizzen-outhaul-load', 7.1),
     ('mizzen-outhaul-relative-position', 0.04),
     ('mizzen-preventer-load', 0.0),
-    
+
     -- BLADE
     -- TODO: RT adjuster, cunningham
     ('blade-sheet-feeder-ps-load', 9.8),

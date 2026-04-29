@@ -1,7 +1,6 @@
 CREATE SCHEMA IF NOT EXISTS domestic;
 
 -- Master table for rooms
-DROP TABLE IF EXISTS domestic.rooms CASCADE;
 CREATE TABLE domestic.rooms (
   "id" TEXT PRIMARY KEY,
   "name" TEXT,
@@ -9,7 +8,6 @@ CREATE TABLE domestic.rooms (
 );
 
 -- Master table for blinds per room
-DROP TABLE IF EXISTS domestic.blinds CASCADE;
 CREATE TABLE domestic.blinds (
   "id" TEXT PRIMARY KEY,
   "room_id" VARCHAR REFERENCES domestic.rooms("id"),
@@ -19,7 +17,6 @@ CREATE TABLE domestic.blinds (
   "level" REAL
 );
 
-DROP TABLE IF EXISTS domestic.air_conditioning CASCADE;
 CREATE TABLE domestic.air_conditioning (
   "id" TEXT PRIMARY KEY REFERENCES domestic.rooms("id"),
   "temperature_setpoint" REAL,
@@ -28,7 +25,6 @@ CREATE TABLE domestic.air_conditioning (
   "actual_humidity" REAL
 );
 
-DROP TABLE IF EXISTS domestic.ventilation CASCADE;
 CREATE TABLE domestic.ventilation (
   "id" TEXT PRIMARY KEY REFERENCES domestic.rooms("id"),
   "co2_setpoint" REAL,
@@ -36,7 +32,6 @@ CREATE TABLE domestic.ventilation (
 );
 
 -- Master table for lighting groups per room
-DROP TABLE IF EXISTS domestic.lighting_groups CASCADE;
 CREATE TABLE domestic.lighting_groups (
   "id" VARCHAR PRIMARY KEY,
   "room_id" VARCHAR REFERENCES domestic.rooms("id"),
@@ -45,7 +40,6 @@ CREATE TABLE domestic.lighting_groups (
 );
 
 -- Master table for amplifiers per room
-DROP TABLE IF EXISTS domestic.amplifiers CASCADE;
 CREATE TABLE domestic.amplifiers (
   "id" VARCHAR PRIMARY KEY REFERENCES domestic.rooms("id"),
   "name" TEXT,

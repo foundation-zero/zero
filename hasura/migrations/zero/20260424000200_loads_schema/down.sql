@@ -1,0 +1,9 @@
+DROP TABLE IF EXISTS loads.reference_values CASCADE;
+DROP TABLE IF EXISTS loads.load_cases CASCADE;
+DROP TABLE IF EXISTS loads.aws_ranges CASCADE;
+DROP TABLE IF EXISTS loads.awa_ranges CASCADE;
+DROP VIEW IF EXISTS loads.sail_sets_combined CASCADE;
+DROP TABLE IF EXISTS loads.sail_sets CASCADE;
+DROP TABLE IF EXISTS loads.sails CASCADE;
+DROP TABLE IF EXISTS loads.sail_positions CASCADE;
+DROP SCHEMA IF EXISTS loads CASCADE;
