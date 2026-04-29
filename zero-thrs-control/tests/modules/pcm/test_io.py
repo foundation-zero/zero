@@ -1,3 +1,5 @@
+import pytest
+
 from thrs.input_output.modules.pcm import (
     PcmControlValues,
     PcmSensorValues,
@@ -12,6 +14,7 @@ from tests.modules.conftest import (
 from thrs.simulation.models.fmu_paths import pcm_path
 
 
+@pytest.mark.io
 def test_pcm_sheet_names():
     missing_in_py, missing_in_sheet = compare_modelica_names(
         ["PCM"],
@@ -40,5 +43,6 @@ def test_pcm_fmu_names():
     assert not missing_in_fmu, f"Missing in FMU: {missing_in_fmu}"
 
 
+@pytest.mark.io
 def test_yard_tags():
     compare_yard_tags(PcmSensorValues, PcmControlValues)

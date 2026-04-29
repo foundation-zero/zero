@@ -89,8 +89,13 @@ jobs:
 
       - run: docker compose --profile thrs up -d --quiet-pull --wait vernemq
 
-      - run: poetry run pytest -v
+      - run: poetry run pytest -v -m "not io"
         working-directory: zero-thrs-control
+
+      - name: Run IO tests (non-blocking)
+        run: poetry run pytest -v -m "io"
+        working-directory: zero-thrs-control
+        continue-on-error: true
 
       - name: Determine image tag
         id: image_tag

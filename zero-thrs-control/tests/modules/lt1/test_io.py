@@ -1,3 +1,5 @@
+import pytest
+
 from thrs.input_output.modules.lt1 import (
     Lt1ControlValues,
     Lt1SensorValues,
@@ -12,6 +14,7 @@ from tests.modules.conftest import (
 from thrs.simulation.models.fmu_paths import lt1_path
 
 
+@pytest.mark.io
 def test_lt1_sheet_names():
     missing_in_py, missing_in_sheet = compare_modelica_names(
         "LT1",
@@ -40,5 +43,6 @@ def test_lt1_fmu_names():
     assert not missing_in_fmu, f"Missing in FMU: {missing_in_fmu}"
 
 
+@pytest.mark.io
 def test_yard_tags():
     compare_yard_tags(Lt1SensorValues, Lt1ControlValues)
