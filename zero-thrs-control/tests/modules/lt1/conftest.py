@@ -7,7 +7,7 @@ from thrs.input_output.definitions.simulation import (
     Boundary,
     HeatSource,
     PropulsionDrive,
-    ShorePowerConverter,
+    Converter,
 )
 from thrs.input_output.modules.lt1 import (
     Lt1SensorValues,
@@ -40,7 +40,7 @@ def simulation_inputs_inactive():
         lt1_propdrive_fwd2=PropulsionDrive(
             heat_flow=Stamped.stamp(0), active=Stamped.stamp(False)
         ),
-        lt1_shorepower=ShorePowerConverter(
+        lt1_shorepower=Converter(
             heat_flow=Stamped.stamp(0), active=Stamped.stamp(False)
         ),
         lt1_seawater_supply=Boundary(
@@ -69,7 +69,7 @@ def simulation_inputs_all_drives_active():
         lt1_propdrive_fwd2=PropulsionDrive(
             heat_flow=Stamped.stamp(1250), active=Stamped.stamp(True)
         ),
-        lt1_shorepower=ShorePowerConverter(
+        lt1_shorepower=Converter(
             heat_flow=Stamped.stamp(0), active=Stamped.stamp(False)
         ),
         lt1_seawater_supply=Boundary(
@@ -98,7 +98,7 @@ def simulation_inputs_shorepower():
         lt1_propdrive_fwd2=PropulsionDrive(
             heat_flow=Stamped.stamp(0), active=Stamped.stamp(False)
         ),
-        lt1_shorepower=ShorePowerConverter(
+        lt1_shorepower=Converter(
             heat_flow=Stamped.stamp(15000), active=Stamped.stamp(True)
         ),
         lt1_seawater_supply=Boundary(

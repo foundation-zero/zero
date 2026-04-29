@@ -228,28 +228,76 @@ class Lt2SensorValues(ThrsValues):
         sensor.PressureSensor,
         component_meta(yard_tag="50001097-09", component_type="pressure_sensor"),
     ]
+    lt2_brightloop_aft1: Annotated[
+        sensor.Brightloop,
+        component_meta(
+            yard_tag="45002076", component_type="brightloop", included_in_fmu=False
+        ),
+    ]
+    lt2_brightloop_aft2: Annotated[
+        sensor.Brightloop,
+        component_meta(
+            yard_tag="45002075", component_type="brightloop", included_in_fmu=False
+        ),
+    ]
+    lt2_brightloop_aft3: Annotated[
+        sensor.Brightloop,
+        component_meta(
+            yard_tag="45002074", component_type="brightloop", included_in_fmu=False
+        ),
+    ]
+    lt2_brightloop_aft4: Annotated[
+        sensor.Brightloop,
+        component_meta(
+            yard_tag="45002073", component_type="brightloop", included_in_fmu=False
+        ),
+    ]
+    lt2_brightloop_fwd1: Annotated[
+        sensor.Brightloop,
+        component_meta(
+            yard_tag="45002078", component_type="brightloop", included_in_fmu=False
+        ),
+    ]
+    lt2_brightloop_fwd2: Annotated[
+        sensor.Brightloop,
+        component_meta(
+            yard_tag="45002077", component_type="brightloop", included_in_fmu=False
+        ),
+    ]
+    lt2_ugrid1: Annotated[
+        sensor.Ugrid,
+        component_meta(
+            yard_tag="45002082", component_type="ugrid", included_in_fmu=False
+        ),
+    ]
+    lt2_ugrid2: Annotated[
+        sensor.Ugrid,
+        component_meta(
+            yard_tag="45002081", component_type="ugrid", included_in_fmu=False
+        ),
+    ]
 
 
 class Lt2ControlValues(ThrsValues):
     lt2_pump_aft: Annotated[
         control.Pump, component_meta(yard_tag="50001020", component_type="pump")
     ]
-    lt2_pump_ugrid: Annotated[
-        control.Pump, component_meta(yard_tag="50001023", component_type="pump")
-    ]
     lt2_pump_fwd: Annotated[
         control.Pump, component_meta(yard_tag="50001025", component_type="pump")
     ]
-    lt2_mix_fwd: Annotated[
-        control.Valve,
-        component_meta(
-            yard_tag="50001042-03", component_type="valve", valve_type="mix"
-        ),
+    lt2_pump_ugrid: Annotated[
+        control.Pump, component_meta(yard_tag="50001023", component_type="pump")
     ]
     lt2_mix_aft: Annotated[
         control.Valve,
         component_meta(
             yard_tag="50001043-02", component_type="valve", valve_type="mix"
+        ),
+    ]
+    lt2_mix_fwd: Annotated[
+        control.Valve,
+        component_meta(
+            yard_tag="50001042-03", component_type="valve", valve_type="mix"
         ),
     ]
     lt2_mix_ugrid: Annotated[
@@ -321,14 +369,14 @@ class Lt2ControlValues(ThrsValues):
 
 
 class Lt2SimulationInputs(SimulationInputs):
-    lt2_brightloop_fwd1: simulation.HeatSource
-    lt2_brightloop_fwd2: simulation.HeatSource
-    lt2_ugrid1: simulation.HeatSource
-    lt2_ugrid2: simulation.HeatSource
-    lt2_brightloop_aft1: simulation.HeatSource
-    lt2_brightloop_aft2: simulation.HeatSource
-    lt2_brightloop_aft3: simulation.HeatSource
-    lt2_brightloop_aft4: simulation.HeatSource
+    lt2_brightloop_fwd1: simulation.Converter
+    lt2_brightloop_fwd2: simulation.Converter
+    lt2_ugrid1: simulation.Converter
+    lt2_ugrid2: simulation.Converter
+    lt2_brightloop_aft1: simulation.Converter
+    lt2_brightloop_aft2: simulation.Converter
+    lt2_brightloop_aft3: simulation.Converter
+    lt2_brightloop_aft4: simulation.Converter
     lt2_seawater_supply: simulation.Boundary
     lt2_boilers_supply: simulation.Boundary
 

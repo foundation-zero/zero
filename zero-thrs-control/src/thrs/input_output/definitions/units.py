@@ -115,7 +115,7 @@ Ratio: TypeAlias = Annotated[
     AfterValidator(validate_ratio_within_precision),
     UnitMeta(modelica_name="ratio"),
 ]
-Bar: TypeAlias = Annotated[float, Field(ge=-1e-2), UnitMeta(modelica_name="Bar")]
+Bar: TypeAlias = Annotated[float, Field(ge=-1), UnitMeta(modelica_name="Bar")]
 Watt: TypeAlias = Annotated[float, UnitMeta(modelica_name="Watt")]
 seconds: TypeAlias = Annotated[float, UnitMeta(modelica_name="s")]
 Joule: TypeAlias = Annotated[float, UnitMeta(modelica_name="Joule")]

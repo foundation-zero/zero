@@ -15,6 +15,10 @@ class CoolingPanelsSensorValues(ThrsValues):
         sensor.TemperatureSensor,
         component_meta(yard_tag="50001038-43", component_type="temperature_sensor"),
     ]
+    cooling_temperature_fahrenheit_return: Annotated[
+        sensor.TemperatureSensor,
+        component_meta(yard_tag="50001038-42", component_type="temperature_sensor"),
+    ]
     cooling_temperature_hydronic_return: Annotated[
         sensor.TemperatureSensor,
         component_meta(yard_tag="50001038-67", component_type="temperature_sensor"),
