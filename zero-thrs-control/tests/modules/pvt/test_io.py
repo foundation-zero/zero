@@ -1,3 +1,5 @@
+import pytest
+
 from thrs.input_output.modules.pvt import (
     PvtControlValues,
     PvtSensorValues,
@@ -12,6 +14,7 @@ from tests.modules.conftest import (
 from thrs.simulation.models.fmu_paths import pvt_path
 
 
+@pytest.mark.io
 def test_pvt_sheet_names():
     missing_in_py, missing_in_sheet = compare_modelica_names(
         "PVT",
@@ -40,5 +43,6 @@ def test_pvt_fmu_names():
     assert not missing_in_fmu, f"Missing in FMU: {missing_in_fmu}"
 
 
+@pytest.mark.io
 def test_yard_tags():
     compare_yard_tags(PvtSensorValues, PvtControlValues)

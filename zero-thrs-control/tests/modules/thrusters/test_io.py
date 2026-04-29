@@ -1,4 +1,6 @@
+import pytest
 from pytest import approx
+
 from thrs.input_output.definitions.control import Valve
 from thrs.input_output.modules.thrusters import (
     ThrustersControlValues,
@@ -14,6 +16,7 @@ from tests.modules.conftest import (
 from thrs.simulation.models.fmu_paths import thrusters_path
 
 
+@pytest.mark.io
 def test_thrusters_sheet_names():
     missing_in_py, missing_in_sheet = compare_modelica_names(
         "Thrusters",
@@ -42,6 +45,7 @@ def test_thrusters_fmu_names():
     assert not missing_in_fmu, f"Missing in FMU: {missing_in_fmu}"
 
 
+@pytest.mark.io
 def test_yard_tags():
     compare_yard_tags(ThrustersSensorValues, ThrustersControlValues, {"thrusters_pcs"})
 

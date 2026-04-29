@@ -1,3 +1,5 @@
+import pytest
+
 from tests.modules.conftest import (
     compare_fmu_to_classes,
     compare_modelica_names,
@@ -12,6 +14,7 @@ from thrs.input_output.modules.fahrenheit import (
 from thrs.simulation.models.fmu_paths import fahrenheit_path
 
 
+@pytest.mark.io
 def test_fahrenheit_sheet_names():
     missing_in_py, missing_in_sheet = compare_modelica_names(
         ["Fahrenheit"],
@@ -40,6 +43,7 @@ def test_fahrenheit_fmu_names():
     assert not missing_in_fmu, f"Missing in FMU: {missing_in_fmu}"
 
 
+@pytest.mark.io
 def test_yard_tags():
     compare_yard_tags(
         FahrenheitSensorValues,

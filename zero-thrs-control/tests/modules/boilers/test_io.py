@@ -15,6 +15,7 @@ from thrs.input_output.modules.boilers import (
 from thrs.simulation.models.fmu_paths import boilers_path
 
 
+@pytest.mark.io
 def test_boilers_sheet_names():
     missing_in_py, missing_in_sheet = compare_modelica_names(
         ["Boilers"],
@@ -44,5 +45,6 @@ def test_boilers_fmu_names():
     assert not missing_in_fmu, f"Missing in FMU: {missing_in_fmu}"
 
 
+@pytest.mark.io
 def test_yard_tags():
     compare_yard_tags(BoilersSensorValues, BoilersControlValues)
