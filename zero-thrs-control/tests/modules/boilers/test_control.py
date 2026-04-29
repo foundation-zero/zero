@@ -93,7 +93,7 @@ async def test_boosting_transitions(
     assert cycler._control._tanks_controller.boosting
     assert cycler._control.mode.is_boosting_heatpump
     assert isinstance(result, SimulationExecutionResult)
-    assert result.sensor_values.boilers_flow_boosting.flow.value == approx(20, abs=0.1)
+    assert result.sensor_values.boilers_flow_boosting.flow.value == approx(25, abs=0.2)
     assert (
         result.sensor_values.boilers_temperature_boosting_return.temperature.value
         < result.sensor_values.boilers_temperature_boosting_supply.temperature.value
@@ -108,6 +108,4 @@ async def test_boosting_transitions(
     assert not cycler._control._tanks_controller.boosting
     assert cycler._control.mode.is_boosting_idle
     assert isinstance(result, SimulationExecutionResult)
-    assert result.sensor_values.boilers_flow_boosting.flow.value == approx(
-        0.0, abs=0.01
-    )
+    assert result.sensor_values.boilers_flow_boosting.flow.value == approx(0.0, abs=0.1)

@@ -196,17 +196,19 @@ class PvtGroupControl(
         return ControlResult(self._time(), self._current_values)
 
     def _control_warmup_mix(self, sensor_values: PvtGroupSensorValues):
-        self._current_values.mix.setpoint = Stamped(
-            value=self._warmup_mix_controller(
-                sensor_values.temperature_return.temperature.value
-            ),
-            timestamp=self._time(),
-        )
+        if self._warmup_mix_controller.enabled():
+            self._current_values.mix.setpoint = Stamped(
+                value=self._warmup_mix_controller(
+                    sensor_values.temperature_return.temperature.value
+                ),
+                timestamp=self._time(),
+            )
 
     def _control_pump(self, sensor_values: PvtGroupSensorValues):
-        self._current_values.pump.dutypoint = Stamped(
-            value=self._pump_controller(
-                sensor_values.temperature_return.temperature.value
-            ),
-            timestamp=self._time(),
-        )
+        if self._pump_controller.enabled():
+            self._current_values.pump.dutypoint = Stamped(
+                value=self._pump_controller(
+                    sensor_values.temperature_return.temperature.value
+                ),
+                timestamp=self._time(),
+            )

@@ -279,14 +279,7 @@ class TanksController:
         if self._filling_tank is not None and self._filling_tank.full(parameters):
             self._filling_tank.stop_filling(self._time)
 
-            if all(
-                filling_valve.position_rel.value < (Valve.CLOSED + 0.001)
-                for filling_valve in [
-                    sensor_values.boilers_switch_tank1_fill,
-                    sensor_values.boilers_switch_tank2_fill,
-                    sensor_values.boilers_switch_tank3_fill,
-                ]
-            ):
+            if self._filling_valves_closed(sensor_values):
                 self._filling_tank = None
 
         if self._filling_tank is None:
@@ -305,20 +298,9 @@ class TanksController:
             and self._boosting_tank.above_temperature_setpoint(parameters)
         ):
             self._boosting_tank.stop_boosting(self._time)
-            if all(
-                boosting_valve.position_rel.value < (Valve.CLOSED + 0.001)
-                for boosting_valve in [
-                    sensor_values.boilers_switch_tank1_boosting_supply,
-                    sensor_values.boilers_switch_tank1_boosting_return,
-                    sensor_values.boilers_switch_tank2_boosting_supply,
-                    sensor_values.boilers_switch_tank2_boosting_return,
-                    sensor_values.boilers_switch_tank3_boosting_supply,
-                    sensor_values.boilers_switch_tank3_boosting_return,
-                ]
-            ):
-                self._boosting_tank = None
+            self._boosting_tank = None  # Don't wait for valves to close as we want boosting to stop when the valves are closing
 
-        if self._boosting_tank is None:
+        if self._boosting_tank is None and self._boosting_valves_closed(sensor_values):
             boostable_tanks = [
                 tank for tank in self.available_tanks if tank.boostable(parameters)
             ]
@@ -330,6 +312,31 @@ class TanksController:
                     else 0,
                 )
                 self._boosting_tank.boost(self._time)
+
+    @staticmethod
+    def _boosting_valves_closed(sensor_values: BoilersSensorValues) -> bool:
+        return all(
+            boosting_valve.position_rel.value < (Valve.CLOSED + 0.001)
+            for boosting_valve in [
+                sensor_values.boilers_switch_tank1_boosting_supply,
+                sensor_values.boilers_switch_tank1_boosting_return,
+                sensor_values.boilers_switch_tank2_boosting_supply,
+                sensor_values.boilers_switch_tank2_boosting_return,
+                sensor_values.boilers_switch_tank3_boosting_supply,
+                sensor_values.boilers_switch_tank3_boosting_return,
+            ]
+        )
+
+    @staticmethod
+    def _filling_valves_closed(sensor_values: BoilersSensorValues) -> bool:
+        return all(
+            filling_valve.position_rel.value < (Valve.CLOSED + 0.001)
+            for filling_valve in [
+                sensor_values.boilers_switch_tank1_fill,
+                sensor_values.boilers_switch_tank2_fill,
+                sensor_values.boilers_switch_tank3_fill,
+            ]
+        )
 
     @property
     def filling(self) -> bool:
@@ -388,13 +395,12 @@ class BoilersControl(
                 name="idle",
                 on_enter=[
                     self._deactivate_pump,
-                    self._disable_pump_flow_control,
                     self._close_boosting_valves,
                 ],
                 on_exit=[self._activate_pump],
             ),
             # State(
-            #     name="boosting_low_temperature",  # TODO: Need separate valve settings for Low temperature boosting since it uses filling valves..
+            #     name="boosting_low_temperature",  # TODO: Need separate valve settings for low temperature boosting since it uses filling valves..
             #     on_enter=[
             #         self._set_valves_to_boosting_low_temperature,
             #         self._enable_pump_temperature_control,
@@ -406,6 +412,7 @@ class BoilersControl(
                     self._set_valves_to_boosting_high_temperature,
                     self._enable_pump_temperature_control,
                 ],
+                on_exit=[self._disable_pump_temperature_control],
             ),
             State(
                 name="boosting_heatpump",
@@ -414,7 +421,7 @@ class BoilersControl(
                     self._activate_heatpump,
                     self._enable_pump_flow_control,
                 ],
-                on_exit=[self._deactivate_heatpump],
+                on_exit=[self._deactivate_heatpump, self._disable_pump_flow_control],
             ),
         ]
 
@@ -433,7 +440,7 @@ class BoilersControl(
                 "conditions": lambda sensor_values: self._tanks_controller.boosting
                 and not self._ht_sufficient_boosting_heat(
                     sensor_values
-                ),  # TODO: using electricity is worth it. <- maybe use a heatpump_boosting_enabled parameter. Or let it depend on whether there is a tank standby or not...
+                ),  # TODO: using electricity is worth it. <- maybe use a heatpump_boosting_enabled parameter
             },
             {
                 "trigger": "_try_boosting",
@@ -459,7 +466,7 @@ class BoilersControl(
 
         self._pump_flow_controller = Controller[Ratio, LMin](
             self._current_values.boilers_pump.dutypoint.value,
-            0,
+            self._parameters.heatpump_flow_setpoint,
             lambda: self._parameters.pump_flow_tuning,
             self._time,
         )
@@ -536,6 +543,7 @@ class BoilersControl(
         self._try_boosting(sensor_values)  # type: ignore
         self._enable_filling_flow_control(sensor_values)
         self._control_filling_flow(sensor_values)
+        self._control_boosting_flow(sensor_values)
 
         return ControlResult(self._time(), self._current_values)
 
@@ -611,6 +619,31 @@ class BoilersControl(
                 timestamp=self._time(),
             )
 
+    def _control_boosting_flow(self, sensor_values: BoilersSensorValues):
+        if (
+            self._pump_temperature_controller.enabled()
+            and self._pump_flow_controller.enabled()
+        ):
+            raise Exception(
+                "Both pump temperature and flow controllers cannot be enabled at the same time"
+            )
+
+        elif self._pump_flow_controller.enabled():
+            self._current_values.boilers_pump.dutypoint = Stamped(
+                value=self._pump_flow_controller(
+                    sensor_values.boilers_flow_boosting.flow.value
+                ),
+                timestamp=self._time(),
+            )
+
+        elif self._pump_temperature_controller.enabled():
+            self._current_values.boilers_pump.dutypoint = Stamped(
+                value=self._pump_temperature_controller(
+                    sensor_values.boilers_flow_boosting.temperature.value
+                ),
+                timestamp=self._time(),
+            )
+
     def _lt1_heat_available(self, sensor_values: BoilersSensorValues) -> bool:
         return sensor_values.lt1_flow_recovery.flow.value > 0.1
 
@@ -670,6 +703,9 @@ class BoilersControl(
     def _deactivate_pump(self, sensor_values: BoilersSensorValues):
         self._current_values.boilers_pump.on = Stamped(
             value=False, timestamp=self._time()
+        )
+        self._current_values.boilers_pump.dutypoint = Stamped(
+            value=0.0, timestamp=self._time()
         )
 
     def _activate_heatpump(self, sensor_values: BoilersSensorValues):
