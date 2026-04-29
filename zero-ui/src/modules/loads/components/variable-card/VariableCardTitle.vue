@@ -11,7 +11,7 @@ const props = defineProps<{
   <div
     :class="
       cn(
-        '-mt-1 flex w-full py-1 font-medium capitalize transition-colors',
+        'flex w-full font-medium capitalize transition-colors',
 
         props.class,
       )
