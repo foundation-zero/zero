@@ -60,7 +60,7 @@ async def test_filling(cycler: Cycler, simulation_inputs: BoilersSimulationInput
 async def test_boosting_transitions(
     cycler: Cycler, simulation_inputs: BoilersSimulationInputs
 ):
-    # all tanks full
+    # all tanks full and ht available
     cycler._control.update_parameters(
         cycler._control.parameters.copy(update={"maximum_tank_level": 10})
     )
@@ -99,7 +99,7 @@ async def test_boosting_transitions(
         < result.sensor_values.boilers_temperature_boosting_supply.temperature.value
     )
 
-    # all tank at temperature
+    # all tanks at temperature
     cycler._control.update_parameters(
         cycler._control.parameters.copy(update={"maximum_tank_temperature": 10})
     )

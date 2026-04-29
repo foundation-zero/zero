@@ -182,6 +182,10 @@ class BoilersSensorValues(ThrsValues):
             yard_tag="50001067-18", component_type="valve", valve_type="switch"
         ),
     ]
+    # boilers_pressure_boosting: Annotated[
+    #     sensor.PressureSensor,
+    #     component_meta(yard_tag="50001097-11", component_type="pressure_sensor"),
+    # ] #Add to FMU
     lt1_flow_recovery: Annotated[
         sensor.FlowSensor,
         component_meta(
@@ -335,6 +339,7 @@ class BoilersSimulationInputs(SimulationInputs):
     boilers_freshwater_supply: simulation.OverpressureTemperatureBoundary
     boilers_exchanger_gas: simulation.HeatSource
     boilers_seawater_supply: simulation.TemperatureBoundary
+    boilers_freshwater_return_set: simulation.FlowBoundary
 
     @computed_field(
         json_schema_extra=component_meta(
