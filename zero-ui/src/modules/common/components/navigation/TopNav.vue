@@ -42,6 +42,7 @@ const { t } = useI18n();
           </RouterLink>
         </template>
         <template #right-content>
+          <slot name="right-content" />
           <DarkModeToggle />
           <AppLauncher v-if="!meta.hideAppSwitcher" />
         </template>
