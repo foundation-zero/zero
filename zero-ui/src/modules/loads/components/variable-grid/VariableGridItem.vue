@@ -4,6 +4,7 @@ import { getContext } from ".";
 import { useVariablesStore } from "../../stores/variables";
 import { Variable, VariableUnit } from "../../types";
 import LoadsCard from "../loads-card/LoadsCard.vue";
+import { MastLockCompact } from "../mast-lock-compact";
 import MastLock from "../mast-lock/MastLock.vue";
 import {
   PositionCard,
@@ -42,13 +43,21 @@ const overhoist = computed(() => {
 
 <template>
   <MastLock
-    v-if="isMastLock"
-    class="col-span-2 w-full max-w-full"
+    v-if="isMastLock && type === 'graphical'"
+    class="col-span-1 w-full max-w-full"
     :locked="!!variable.actual?.value"
     :overhoist="!!overhoist?.actual?.value"
   >
     {{ variable?.variable?.name }}
   </MastLock>
+  <MastLockCompact
+    v-else-if="isMastLock && type === 'numerical'"
+    class="col-span-1 w-full max-w-full"
+    :locked="!!variable.actual?.value"
+    :overhoist="!!overhoist?.actual?.value"
+  >
+    {{ variable?.variable?.name }}
+  </MastLockCompact>
   <VariableCard
     v-else-if="isNumerical"
     :thresholds="variable?.reference"
