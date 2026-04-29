@@ -49,8 +49,8 @@ const positions = (modelValue: number[] | null = []) => {
       />
     </SliderTrack>
     <SliderThumb
-      v-for="pos in positions(modelValue)"
-      :key="pos"
+      v-for="(pos, i) in positions(modelValue)"
+      :key="i"
       :style="{ bottom: pos + '%' }"
       data-slot="slider-thumb"
       class="transition-color border-brand bg-background ring-offset-background focus-visible:ring-ring absolute block h-3 w-10 translate-y-[65%] cursor-pointer rounded-full border-2 focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none disabled:pointer-events-none disabled:cursor-default disabled:opacity-50"

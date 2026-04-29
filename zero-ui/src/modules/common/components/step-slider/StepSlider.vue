@@ -64,8 +64,8 @@ const stepPositions = computed(() =>
     ></div>
 
     <SliderThumb
-      v-for="pos in positions"
-      :key="pos"
+      v-for="(pos, i) in positions"
+      :key="i"
       :style="{ bottom: pos + '%' }"
       :class="{ 'opacity-0': hideThumb }"
       class="transition-color border-brand bg-background ring-offset-background focus-visible:ring-ring absolute -mx-[1.5%] block h-3 w-[105%] translate-y-[50%] cursor-pointer rounded-md border-2 shadow-sm focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none disabled:pointer-events-none disabled:cursor-default disabled:opacity-50"
