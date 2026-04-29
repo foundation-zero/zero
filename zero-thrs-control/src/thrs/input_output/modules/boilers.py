@@ -214,10 +214,6 @@ class BoilersSensorValues(ThrsValues):
             included_in_fmu=False,
         ),
     ]  # TODO: check if we need duplicate definition of component_meta
-    boilers_pressure_boosting: Annotated[
-        sensor.PressureSensor,
-        component_meta(yard_tag="50001097-11", component_type="pressure_sensor"),
-    ]
 
 
 class BoilersControlValues(ThrsValues):
