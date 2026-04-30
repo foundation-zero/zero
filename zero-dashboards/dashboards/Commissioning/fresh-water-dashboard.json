@@ -551,34 +551,28 @@
           }
         },
         {
-          "dataset": "dev",
           "datasource": {
-            "type": "grafana-postgresql-datasource",
+            "type": "info8fcc-greptimedb-datasource",
             "uid": "${datasource}"
           },
-          "editorMode": "code",
-          "format": "table",
+          "editorType": "sql",
+          "format": 1,
           "hide": false,
-          "rawQuery": true,
-          "rawSql": "SELECT \r\n  MAX(CASE WHEN mqtt_json_path = LOWER('MAK1_ALARM') THEN '(' || yard_tag || ')' ELSE NULL END)          AS fresh_water_mak1_alarm_tag,\r\n  MAX(CASE WHEN mqtt_json_path = LOWER('MAK2_ALARM') THEN '(' || yard_tag || ')' ELSE NULL END)          AS fresh_water_mak2_alarm_tag,\r\n  MAX(CASE WHEN mqtt_json_path = LOWER('CHLORINE_UNIT_ALARM') THEN '(' || yard_tag || ')' ELSE NULL END) AS fresh_water_chlorine_unit_alarm_tag\r\nFROM marpower.io_metadata_marpower\r\nWHERE mqtt_topic = 'marpower/250000-fresh-water'",
-          "refId": "B",
-          "sql": {
-            "columns": [
-              {
-                "parameters": [],
-                "type": "function"
-              }
-            ],
-            "groupBy": [
-              {
-                "property": {
-                  "type": "string"
-                },
-                "type": "groupBy"
-              }
-            ],
-            "limit": 50
-          }
+          "meta": {
+            "builderOptions": {
+              "columns": [],
+              "database": "",
+              "limit": 1000,
+              "meta": {},
+              "mode": "list",
+              "queryType": "table",
+              "table": ""
+            }
+          },
+          "pluginVersion": "2.1.4",
+          "queryType": "table",
+          "rawSql": "SELECT \r\n  MAX(CASE WHEN mqtt_json_path = LOWER('MAK1_ALARM') THEN '(' || yard_tag || ')' ELSE NULL END)          AS fresh_water_mak1_alarm_tag,\r\n  MAX(CASE WHEN mqtt_json_path = LOWER('MAK2_ALARM') THEN '(' || yard_tag || ')' ELSE NULL END)          AS fresh_water_mak2_alarm_tag,\r\n  MAX(CASE WHEN mqtt_json_path = LOWER('CHLORINE_UNIT_ALARM') THEN '(' || yard_tag || ')' ELSE NULL END) AS fresh_water_chlorine_unit_alarm_tag\r\nFROM marpower__io_metadata\r\nWHERE mqtt_topic = 'marpower/250000-fresh-water'",
+          "refId": "B"
         }
       ],
       "title": "Alarms",
@@ -825,10 +819,24 @@
             "uid": "${datasource}"
           },
           "editorMode": "code",
-          "format": "table",
+          "editorType": "sql",
+          "format": 1,
           "hide": false,
+          "meta": {
+            "builderOptions": {
+              "columns": [],
+              "database": "",
+              "limit": 1000,
+              "meta": {},
+              "mode": "list",
+              "queryType": "table",
+              "table": ""
+            }
+          },
+          "pluginVersion": "2.1.4",
+          "queryType": "table",
           "rawQuery": true,
-          "rawSql": "SELECT \r\n  MAX(CASE WHEN mqtt_json_path = LOWER('CIRC_PUMP_RUNNING') THEN '(' || yard_tag || ')' ELSE NULL END) AS fresh_water_circ_pump_running_tag\r\nFROM marpower.io_metadata_marpower\r\nWHERE mqtt_topic = 'marpower/250000-fresh-water'",
+          "rawSql": "SELECT \r\n  MAX(CASE WHEN mqtt_json_path = LOWER('CIRC_PUMP_RUNNING') THEN '(' || yard_tag || ')' ELSE NULL END) AS fresh_water_circ_pump_running_tag\r\nFROM marpower__io_metadata\r\nWHERE mqtt_topic = 'marpower/250000-fresh-water'",
           "refId": "B",
           "sql": {
             "columns": [
@@ -1092,10 +1100,24 @@
             "uid": "${datasource}"
           },
           "editorMode": "code",
-          "format": "table",
+          "editorType": "sql",
+          "format": 1,
           "hide": false,
+          "meta": {
+            "builderOptions": {
+              "columns": [],
+              "database": "",
+              "limit": 1000,
+              "meta": {},
+              "mode": "list",
+              "queryType": "table",
+              "table": ""
+            }
+          },
+          "pluginVersion": "2.1.4",
+          "queryType": "table",
           "rawQuery": true,
-          "rawSql": "SELECT \r\n  MAX(CASE WHEN mqtt_json_path = LOWER('CIRC_PUMP_ONOFF') THEN '(' || yard_tag || ')' ELSE NULL END) AS fresh_water_circ_pump_onoff_tag\r\nFROM marpower.io_metadata_marpower\r\nWHERE mqtt_topic = 'marpower/250000-fresh-water'",
+          "rawSql": "SELECT \r\n  MAX(CASE WHEN mqtt_json_path = LOWER('CIRC_PUMP_ONOFF') THEN '(' || yard_tag || ')' ELSE NULL END) AS fresh_water_circ_pump_onoff_tag\r\nFROM marpower__io_metadata\r\nWHERE mqtt_topic = 'marpower/250000-fresh-water'",
           "refId": "B",
           "sql": {
             "columns": [
@@ -1312,7 +1334,7 @@
     },
     {
       "datasource": {
-        "type": "grafana-postgresql-datasource",
+        "type": "info8fcc-greptimedb-datasource",
         "uid": "${datasource}"
       },
       "fieldConfig": {
@@ -1331,8 +1353,7 @@
                 "value": 0
               }
             ]
-          },
-          "unit": "flowlpm"
+          }
         },
         "overrides": []
       },
@@ -1374,7 +1395,7 @@
                 }
               },
               "config": {
-                "align": "center",
+                "align": "right",
                 "color": {
                   "fixed": "#000000"
                 },
@@ -1385,6 +1406,7 @@
                 },
                 "valign": "middle"
               },
+              "connections": [],
               "constraint": {
                 "horizontal": "left",
                 "vertical": "top"
@@ -1395,7 +1417,7 @@
                 "left": 318,
                 "rotation": 0,
                 "top": 10,
-                "width": 180
+                "width": 107
               },
               "type": "metric-value"
             },
@@ -1448,7 +1470,7 @@
                 }
               },
               "config": {
-                "align": "center",
+                "align": "right",
                 "color": {
                   "fixed": "#000000"
                 },
@@ -1469,7 +1491,7 @@
                 "left": 318,
                 "rotation": 0,
                 "top": 45,
-                "width": 180
+                "width": 107
               },
               "type": "metric-value"
             },
@@ -1521,7 +1543,7 @@
                 }
               },
               "config": {
-                "align": "center",
+                "align": "right",
                 "color": {
                   "fixed": "#000000"
                 },
@@ -1542,7 +1564,7 @@
                 "left": 318,
                 "rotation": 0,
                 "top": 80,
-                "width": 180
+                "width": 107
               },
               "type": "metric-value"
             },
@@ -1594,7 +1616,7 @@
                 }
               },
               "config": {
-                "align": "center",
+                "align": "right",
                 "color": {
                   "fixed": "#000000"
                 },
@@ -1613,8 +1635,9 @@
               "placement": {
                 "height": 30,
                 "left": 819,
+                "rotation": 0,
                 "top": 10,
-                "width": 180
+                "width": 107
               },
               "type": "metric-value"
             },
@@ -1665,7 +1688,7 @@
                 }
               },
               "config": {
-                "align": "center",
+                "align": "right",
                 "color": {
                   "fixed": "#000000"
                 },
@@ -1684,8 +1707,9 @@
               "placement": {
                 "height": 30,
                 "left": 819,
+                "rotation": 0,
                 "top": 45,
-                "width": 180
+                "width": 107
               },
               "type": "metric-value"
             },
@@ -1736,7 +1760,7 @@
                 }
               },
               "config": {
-                "align": "center",
+                "align": "right",
                 "color": {
                   "fixed": "#000000"
                 },
@@ -1755,8 +1779,9 @@
               "placement": {
                 "height": 30,
                 "left": 819,
+                "rotation": 0,
                 "top": 80,
-                "width": 180
+                "width": 107
               },
               "type": "metric-value"
             },
@@ -1808,7 +1833,7 @@
                 }
               },
               "config": {
-                "align": "center",
+                "align": "right",
                 "color": {
                   "fixed": "#000000"
                 },
@@ -1827,8 +1852,9 @@
               "placement": {
                 "height": 30,
                 "left": 1344,
+                "rotation": 0,
                 "top": 10,
-                "width": 180
+                "width": 107
               },
               "type": "metric-value"
             },
@@ -1880,7 +1906,7 @@
                 }
               },
               "config": {
-                "align": "center",
+                "align": "right",
                 "color": {
                   "fixed": "#000000"
                 },
@@ -1899,8 +1925,9 @@
               "placement": {
                 "height": 30,
                 "left": 1344,
+                "rotation": 0,
                 "top": 45,
-                "width": 180
+                "width": 107
               },
               "type": "metric-value"
             },
@@ -1951,7 +1978,7 @@
                 }
               },
               "config": {
-                "align": "center",
+                "align": "right",
                 "color": {
                   "fixed": "#000000"
                 },
@@ -1970,8 +1997,9 @@
               "placement": {
                 "height": 30,
                 "left": 1344,
+                "rotation": 0,
                 "top": 80,
-                "width": 180
+                "width": 107
               },
               "type": "metric-value"
             },
@@ -2022,7 +2050,7 @@
                 }
               },
               "config": {
-                "align": "center",
+                "align": "right",
                 "color": {
                   "fixed": "#000000"
                 },
@@ -2041,8 +2069,9 @@
               "placement": {
                 "height": 30,
                 "left": 1344,
+                "rotation": 0,
                 "top": 115,
-                "width": 180
+                "width": 107
               },
               "type": "metric-value"
             },
@@ -2093,7 +2122,7 @@
                 }
               },
               "config": {
-                "align": "center",
+                "align": "right",
                 "color": {
                   "fixed": "#000000"
                 },
@@ -2112,8 +2141,9 @@
               "placement": {
                 "height": 30,
                 "left": 1344,
+                "rotation": 0,
                 "top": 150,
-                "width": 180
+                "width": 107
               },
               "type": "metric-value"
             },
@@ -2164,7 +2194,7 @@
                 }
               },
               "config": {
-                "align": "center",
+                "align": "right",
                 "color": {
                   "fixed": "#000000"
                 },
@@ -2183,8 +2213,9 @@
               "placement": {
                 "height": 30,
                 "left": 318,
+                "rotation": 0,
                 "top": 115,
-                "width": 180
+                "width": 107
               },
               "type": "metric-value"
             },
@@ -2241,7 +2272,7 @@
                 },
                 "size": 12,
                 "text": {
-                  "field": "coldwater_guest_cabin_sb_flow_tag",
+                  "field": "guest_cabin_sb_flow_tag",
                   "fixed": " ",
                   "mode": "field"
                 },
@@ -2279,7 +2310,7 @@
                 },
                 "size": 12,
                 "text": {
-                  "field": "coldwater_guest_cabin_ps_fwd_flow_tag",
+                  "field": "guest_cabin_ps_fwd_flow_tag",
                   "fixed": " ",
                   "mode": "field"
                 },
@@ -2317,7 +2348,7 @@
                 },
                 "size": 12,
                 "text": {
-                  "field": "coldwater_guest_cabin_ps_aft_flow_tag",
+                  "field": "guest_cabin_ps_aft_flow_tag",
                   "fixed": " ",
                   "mode": "field"
                 },
@@ -2355,7 +2386,7 @@
                 },
                 "size": 12,
                 "text": {
-                  "field": "coldwater_master_cabin_sb_flow_tag",
+                  "field": "master_cabin_sb_flow_tag",
                   "fixed": " ",
                   "mode": "field"
                 },
@@ -2369,6 +2400,7 @@
               "placement": {
                 "height": 30,
                 "left": 704,
+                "rotation": 0,
                 "top": 10,
                 "width": 115
               },
@@ -2392,7 +2424,7 @@
                 },
                 "size": 12,
                 "text": {
-                  "field": "coldwater_master_cabin_ps_flow_tag",
+                  "field": "master_cabin_ps_flow_tag",
                   "fixed": " ",
                   "mode": "field"
                 },
@@ -2406,6 +2438,7 @@
               "placement": {
                 "height": 30,
                 "left": 704,
+                "rotation": 0,
                 "top": 45,
                 "width": 115
               },
@@ -2429,7 +2462,7 @@
                 },
                 "size": 12,
                 "text": {
-                  "field": "coldwater_guest_bathroom_flow_tag",
+                  "field": "guest_bathroom_flow_tag",
                   "fixed": " ",
                   "mode": "field"
                 },
@@ -2443,6 +2476,7 @@
               "placement": {
                 "height": 30,
                 "left": 203,
+                "rotation": 0,
                 "top": 115,
                 "width": 115
               },
@@ -2466,7 +2500,7 @@
                 },
                 "size": 12,
                 "text": {
-                  "field": "coldwater_captains_cabin_flow_tag",
+                  "field": "captains_cabin_flow_tag",
                   "fixed": " ",
                   "mode": "field"
                 },
@@ -2480,6 +2514,7 @@
               "placement": {
                 "height": 30,
                 "left": 704,
+                "rotation": 0,
                 "top": 80,
                 "width": 115
               },
@@ -2503,7 +2538,7 @@
                 },
                 "size": 12,
                 "text": {
-                  "field": "coldwater_crew_cabin_ps_mid_flow_tag",
+                  "field": "crew_cabin_ps_mid_flow_tag",
                   "fixed": " ",
                   "mode": "field"
                 },
@@ -2517,6 +2552,7 @@
               "placement": {
                 "height": 30,
                 "left": 1229,
+                "rotation": 0,
                 "top": 80,
                 "width": 115
               },
@@ -2540,7 +2576,7 @@
                 },
                 "size": 12,
                 "text": {
-                  "field": "coldwater_crew_cabin_sb_fwd_flow_tag",
+                  "field": "crew_cabin_sb_fwd_flow_tag",
                   "fixed": " ",
                   "mode": "field"
                 },
@@ -2554,6 +2590,7 @@
               "placement": {
                 "height": 30,
                 "left": 1229,
+                "rotation": 0,
                 "top": 115,
                 "width": 115
               },
@@ -2577,7 +2614,7 @@
                 },
                 "size": 12,
                 "text": {
-                  "field": "coldwater_crew_cabin_ps_fwd_flow_tag",
+                  "field": "crew_cabin_ps_fwd_flow_tag",
                   "fixed": " ",
                   "mode": "field"
                 },
@@ -2591,6 +2628,7 @@
               "placement": {
                 "height": 30,
                 "left": 1229,
+                "rotation": 0,
                 "top": 150,
                 "width": 115
               },
@@ -2614,7 +2652,7 @@
                 },
                 "size": 12,
                 "text": {
-                  "field": "coldwater_crew_cabin_sb_aft_flow_tag",
+                  "field": "crew_cabin_sb_aft_flow_tag",
                   "fixed": " ",
                   "mode": "field"
                 },
@@ -2628,6 +2666,7 @@
               "placement": {
                 "height": 30,
                 "left": 1229,
+                "rotation": 0,
                 "top": 10,
                 "width": 115
               },
@@ -2651,7 +2690,7 @@
                 },
                 "size": 12,
                 "text": {
-                  "field": "coldwater_crew_cabin_sb_mid_flow_tag",
+                  "field": "crew_cabin_sb_mid_flow_tag",
                   "fixed": " ",
                   "mode": "field"
                 },
@@ -2665,10 +2704,878 @@
               "placement": {
                 "height": 30,
                 "left": 1229,
+                "rotation": 0,
                 "top": 45,
                 "width": 115
               },
               "type": "text"
+            },
+            {
+              "background": {
+                "color": {
+                  "fixed": "#D9D9D9"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "left",
+                "color": {
+                  "fixed": "#000000"
+                },
+                "size": 18,
+                "text": {
+                  "fixed": " ",
+                  "mode": "fixed"
+                },
+                "valign": "middle"
+              },
+              "connections": [],
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "name": "space1",
+              "placement": {
+                "height": 30,
+                "left": 425,
+                "rotation": 0,
+                "top": 10,
+                "width": 15
+              },
+              "type": "metric-value"
+            },
+            {
+              "background": {
+                "color": {
+                  "fixed": "#D9D9D9"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "left",
+                "color": {
+                  "fixed": "#000000"
+                },
+                "size": 18,
+                "text": {
+                  "field": "unit",
+                  "mode": "field"
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "name": "Element 38",
+              "placement": {
+                "height": 30,
+                "left": 440,
+                "rotation": 0,
+                "top": 10,
+                "width": 58
+              },
+              "type": "metric-value"
+            },
+            {
+              "background": {
+                "color": {
+                  "fixed": "#D9D9D9"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "left",
+                "color": {
+                  "fixed": "#000000"
+                },
+                "size": 18,
+                "text": {
+                  "fixed": " ",
+                  "mode": "fixed"
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "name": "Element 39",
+              "placement": {
+                "height": 30,
+                "left": 425,
+                "top": 45,
+                "width": 15
+              },
+              "type": "metric-value"
+            },
+            {
+              "background": {
+                "color": {
+                  "fixed": "#D9D9D9"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "left",
+                "color": {
+                  "fixed": "#000000"
+                },
+                "size": 18,
+                "text": {
+                  "field": "unit",
+                  "mode": "field"
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "name": "Element 40",
+              "placement": {
+                "height": 30,
+                "left": 440,
+                "top": 45,
+                "width": 58
+              },
+              "type": "metric-value"
+            },
+            {
+              "background": {
+                "color": {
+                  "fixed": "#D9D9D9"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "left",
+                "color": {
+                  "fixed": "#000000"
+                },
+                "size": 18,
+                "text": {
+                  "fixed": " ",
+                  "mode": "fixed"
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "name": "Element 41",
+              "placement": {
+                "height": 30,
+                "left": 425,
+                "top": 80,
+                "width": 15
+              },
+              "type": "metric-value"
+            },
+            {
+              "background": {
+                "color": {
+                  "fixed": "#D9D9D9"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "left",
+                "color": {
+                  "fixed": "#000000"
+                },
+                "size": 18,
+                "text": {
+                  "field": "unit",
+                  "mode": "field"
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "name": "Element 42",
+              "placement": {
+                "height": 30,
+                "left": 440,
+                "top": 80,
+                "width": 58
+              },
+              "type": "metric-value"
+            },
+            {
+              "background": {
+                "color": {
+                  "fixed": "#D9D9D9"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "left",
+                "color": {
+                  "fixed": "#000000"
+                },
+                "size": 18,
+                "text": {
+                  "fixed": " ",
+                  "mode": "fixed"
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "name": "Element 43",
+              "placement": {
+                "height": 30,
+                "left": 425,
+                "top": 115,
+                "width": 15
+              },
+              "type": "metric-value"
+            },
+            {
+              "background": {
+                "color": {
+                  "fixed": "#D9D9D9"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "left",
+                "color": {
+                  "fixed": "#000000"
+                },
+                "size": 18,
+                "text": {
+                  "field": "unit",
+                  "mode": "field"
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "name": "Element 44",
+              "placement": {
+                "height": 30,
+                "left": 440,
+                "top": 115,
+                "width": 58
+              },
+              "type": "metric-value"
+            },
+            {
+              "background": {
+                "color": {
+                  "fixed": "#D9D9D9"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "left",
+                "color": {
+                  "fixed": "#000000"
+                },
+                "size": 18,
+                "text": {
+                  "fixed": " ",
+                  "mode": "fixed"
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "name": "Element 46",
+              "placement": {
+                "height": 30,
+                "left": 926,
+                "top": 10,
+                "width": 15
+              },
+              "type": "metric-value"
+            },
+            {
+              "background": {
+                "color": {
+                  "fixed": "#D9D9D9"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "left",
+                "color": {
+                  "fixed": "#000000"
+                },
+                "size": 18,
+                "text": {
+                  "field": "unit",
+                  "mode": "field"
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "name": "Element 47",
+              "placement": {
+                "height": 30,
+                "left": 941,
+                "top": 10,
+                "width": 58
+              },
+              "type": "metric-value"
+            },
+            {
+              "background": {
+                "color": {
+                  "fixed": "#D9D9D9"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "left",
+                "color": {
+                  "fixed": "#000000"
+                },
+                "size": 18,
+                "text": {
+                  "fixed": " ",
+                  "mode": "fixed"
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "name": "Element 48",
+              "placement": {
+                "height": 30,
+                "left": 926,
+                "top": 45,
+                "width": 15
+              },
+              "type": "metric-value"
+            },
+            {
+              "background": {
+                "color": {
+                  "fixed": "#D9D9D9"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "left",
+                "color": {
+                  "fixed": "#000000"
+                },
+                "size": 18,
+                "text": {
+                  "field": "unit",
+                  "mode": "field"
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "name": "Element 49",
+              "placement": {
+                "height": 30,
+                "left": 941,
+                "top": 45,
+                "width": 58
+              },
+              "type": "metric-value"
+            },
+            {
+              "background": {
+                "color": {
+                  "fixed": "#D9D9D9"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "left",
+                "color": {
+                  "fixed": "#000000"
+                },
+                "size": 18,
+                "text": {
+                  "fixed": " ",
+                  "mode": "fixed"
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "name": "Element 50",
+              "placement": {
+                "height": 30,
+                "left": 926,
+                "top": 80,
+                "width": 15
+              },
+              "type": "metric-value"
+            },
+            {
+              "background": {
+                "color": {
+                  "fixed": "#D9D9D9"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "left",
+                "color": {
+                  "fixed": "#000000"
+                },
+                "size": 18,
+                "text": {
+                  "field": "unit",
+                  "mode": "field"
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "name": "Element 51",
+              "placement": {
+                "height": 30,
+                "left": 941,
+                "top": 80,
+                "width": 58
+              },
+              "type": "metric-value"
+            },
+            {
+              "background": {
+                "color": {
+                  "fixed": "#D9D9D9"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "left",
+                "color": {
+                  "fixed": "#000000"
+                },
+                "size": 18,
+                "text": {
+                  "fixed": " ",
+                  "mode": "fixed"
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "name": "Element 52",
+              "placement": {
+                "height": 30,
+                "left": 1451,
+                "top": 10,
+                "width": 15
+              },
+              "type": "metric-value"
+            },
+            {
+              "background": {
+                "color": {
+                  "fixed": "#D9D9D9"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "left",
+                "color": {
+                  "fixed": "#000000"
+                },
+                "size": 18,
+                "text": {
+                  "field": "unit",
+                  "mode": "field"
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "name": "Element 53",
+              "placement": {
+                "height": 30,
+                "left": 1466,
+                "top": 10,
+                "width": 58
+              },
+              "type": "metric-value"
+            },
+            {
+              "background": {
+                "color": {
+                  "fixed": "#D9D9D9"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "left",
+                "color": {
+                  "fixed": "#000000"
+                },
+                "size": 18,
+                "text": {
+                  "fixed": " ",
+                  "mode": "fixed"
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "name": "Element 54",
+              "placement": {
+                "height": 30,
+                "left": 1451,
+                "top": 45,
+                "width": 15
+              },
+              "type": "metric-value"
+            },
+            {
+              "background": {
+                "color": {
+                  "fixed": "#D9D9D9"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "left",
+                "color": {
+                  "fixed": "#000000"
+                },
+                "size": 18,
+                "text": {
+                  "field": "unit",
+                  "mode": "field"
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "name": "Element 55",
+              "placement": {
+                "height": 30,
+                "left": 1466,
+                "top": 45,
+                "width": 58
+              },
+              "type": "metric-value"
+            },
+            {
+              "background": {
+                "color": {
+                  "fixed": "#D9D9D9"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "left",
+                "color": {
+                  "fixed": "#000000"
+                },
+                "size": 18,
+                "text": {
+                  "fixed": " ",
+                  "mode": "fixed"
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "name": "Element 56",
+              "placement": {
+                "height": 30,
+                "left": 1451,
+                "top": 80,
+                "width": 15
+              },
+              "type": "metric-value"
+            },
+            {
+              "background": {
+                "color": {
+                  "fixed": "#D9D9D9"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "left",
+                "color": {
+                  "fixed": "#000000"
+                },
+                "size": 18,
+                "text": {
+                  "field": "unit",
+                  "mode": "field"
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "name": "Element 57",
+              "placement": {
+                "height": 30,
+                "left": 1466,
+                "top": 80,
+                "width": 58
+              },
+              "type": "metric-value"
+            },
+            {
+              "background": {
+                "color": {
+                  "fixed": "#D9D9D9"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "left",
+                "color": {
+                  "fixed": "#000000"
+                },
+                "size": 18,
+                "text": {
+                  "fixed": " ",
+                  "mode": "fixed"
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "name": "Element 58",
+              "placement": {
+                "height": 30,
+                "left": 1451,
+                "top": 115,
+                "width": 15
+              },
+              "type": "metric-value"
+            },
+            {
+              "background": {
+                "color": {
+                  "fixed": "#D9D9D9"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "left",
+                "color": {
+                  "fixed": "#000000"
+                },
+                "size": 18,
+                "text": {
+                  "field": "unit",
+                  "mode": "field"
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "name": "Element 59",
+              "placement": {
+                "height": 30,
+                "left": 1466,
+                "top": 115,
+                "width": 58
+              },
+              "type": "metric-value"
+            },
+            {
+              "background": {
+                "color": {
+                  "fixed": "#D9D9D9"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "left",
+                "color": {
+                  "fixed": "#000000"
+                },
+                "size": 18,
+                "text": {
+                  "fixed": " ",
+                  "mode": "fixed"
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "name": "Element 60",
+              "placement": {
+                "height": 30,
+                "left": 1451,
+                "top": 150,
+                "width": 15
+              },
+              "type": "metric-value"
+            },
+            {
+              "background": {
+                "color": {
+                  "fixed": "#D9D9D9"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "left",
+                "color": {
+                  "fixed": "#000000"
+                },
+                "size": 18,
+                "text": {
+                  "field": "unit",
+                  "mode": "field"
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "name": "Element 61",
+              "placement": {
+                "height": 30,
+                "left": 1466,
+                "top": 150,
+                "width": 58
+              },
+              "type": "metric-value"
             }
           ],
           "name": "Element 1768816105883",
@@ -2691,6 +3598,10 @@
       "pluginVersion": "12.3.0",
       "targets": [
         {
+          "datasource": {
+            "type": "info8fcc-greptimedb-datasource",
+            "uid": "${datasource}"
+          },
           "editorMode": "code",
           "editorType": "sql",
           "format": 1,
@@ -2708,7 +3619,7 @@
           "pluginVersion": "2.1.4",
           "queryType": "table",
           "rawQuery": true,
-          "rawSql": "SELECT\r\n  timestamp                                AS time,\r\n  coldwater_guest_cabin_sb_flow__value     AS guest_cabin_sb_flow,\r\n  coldwater_guest_cabin_ps_fwd_flow__value AS guest_cabin_ps_fwd_flow,\r\n  coldwater_guest_cabin_ps_aft_flow__value AS guest_cabin_ps_aft_flow,\r\n  coldwater_master_cabin_sb_flow__value    AS master_cabin_sb_flow,\r\n  coldwater_master_cabin_ps_flow__value    AS master_cabin_ps_flow,\r\n  coldwater_guest_bathr_ps_fwd_flow__value AS guest_bathroom_flow,\r\n  coldwater_captains_cabin_flow__value     AS captains_cabin_flow,\r\n  coldwater_crew_cabin_sb_aft_flow__value  AS crew_cabin_sb_aft_flow,\r\n  coldwater_crew_cabin_sb_mid_flow__value  AS crew_cabin_sb_mid_flow,\r\n  coldwater_crew_cabin_ps_mid_flow__value  AS crew_cabin_ps_mid_flow,\r\n  coldwater_crew_cabin_sb_fwd_flow__value  AS crew_cabin_sb_fwd_flow,\r\n  coldwater_crew_cabin_ps_fwd_flow__value  AS crew_cabin_ps_fwd_flow\r\nFROM public.marpower__250000_fresh_water\r\nORDER BY timestamp DESC\r\nLIMIT 1\r\n",
+          "rawSql": "SELECT\r\n  timestamp AS time,\r\n  CASE WHEN $use_volume THEN 'L' ELSE 'L/min' END AS unit,\r\n  CASE WHEN $use_volume THEN coldwater_guest_cabin_sb_flow__value * $volume_time / 60.0 ELSE coldwater_guest_cabin_sb_flow__value END AS guest_cabin_sb_flow,\r\n  CASE WHEN $use_volume THEN coldwater_guest_cabin_ps_fwd_flow__value * $volume_time / 60.0 ELSE coldwater_guest_cabin_ps_fwd_flow__value END AS guest_cabin_ps_fwd_flow,\r\n  CASE WHEN $use_volume THEN coldwater_guest_cabin_ps_aft_flow__value * $volume_time / 60.0 ELSE coldwater_guest_cabin_ps_aft_flow__value END AS guest_cabin_ps_aft_flow,\r\n  CASE WHEN $use_volume THEN coldwater_master_cabin_sb_flow__value * $volume_time / 60.0 ELSE coldwater_master_cabin_sb_flow__value END AS master_cabin_sb_flow,\r\n  CASE WHEN $use_volume THEN coldwater_master_cabin_ps_flow__value * $volume_time / 60.0 ELSE coldwater_master_cabin_ps_flow__value END AS master_cabin_ps_flow,\r\n  CASE WHEN $use_volume THEN coldwater_guest_bathr_ps_fwd_flow__value * $volume_time / 60.0 ELSE coldwater_guest_bathr_ps_fwd_flow__value END AS guest_bathroom_flow,\r\n  CASE WHEN $use_volume THEN coldwater_captains_cabin_flow__value * $volume_time / 60.0 ELSE coldwater_captains_cabin_flow__value END AS captains_cabin_flow,\r\n  CASE WHEN $use_volume THEN coldwater_crew_cabin_sb_aft_flow__value * $volume_time / 60.0 ELSE coldwater_crew_cabin_sb_aft_flow__value END AS crew_cabin_sb_aft_flow,\r\n  CASE WHEN $use_volume THEN coldwater_crew_cabin_sb_mid_flow__value * $volume_time / 60.0 ELSE coldwater_crew_cabin_sb_mid_flow__value END AS crew_cabin_sb_mid_flow,\r\n  CASE WHEN $use_volume THEN coldwater_crew_cabin_ps_mid_flow__value * $volume_time / 60.0 ELSE coldwater_crew_cabin_ps_mid_flow__value END AS crew_cabin_ps_mid_flow,\r\n  CASE WHEN $use_volume THEN coldwater_crew_cabin_sb_fwd_flow__value * $volume_time / 60.0 ELSE coldwater_crew_cabin_sb_fwd_flow__value END AS crew_cabin_sb_fwd_flow,\r\n  CASE WHEN $use_volume THEN coldwater_crew_cabin_ps_fwd_flow__value * $volume_time / 60.0 ELSE coldwater_crew_cabin_ps_fwd_flow__value END AS crew_cabin_ps_fwd_flow\r\nFROM public.marpower__250000_fresh_water\r\nORDER BY timestamp DESC\r\nLIMIT 1",
           "refId": "A",
           "sql": {
             "columns": [
@@ -2729,34 +3640,28 @@
           }
         },
         {
-          "dataset": "dev",
           "datasource": {
-            "type": "grafana-postgresql-datasource",
+            "type": "info8fcc-greptimedb-datasource",
             "uid": "${datasource}"
           },
-          "editorMode": "code",
-          "format": "table",
+          "editorType": "sql",
+          "format": 1,
           "hide": false,
-          "rawQuery": true,
-          "rawSql": "SELECT\r\n  MAX(CASE WHEN mqtt_json_path = LOWER('COLDWATER_GUEST_CABIN_SB_FLOW') THEN '(' || yard_tag || ')' ELSE NULL END)     AS coldwater_guest_cabin_sb_flow_tag,\r\n  MAX(CASE WHEN mqtt_json_path = LOWER('COLDWATER_GUEST_CABIN_PS_FWD_FLOW') THEN '(' || yard_tag || ')' ELSE NULL END) AS coldwater_guest_cabin_ps_fwd_flow_tag,\r\n  MAX(CASE WHEN mqtt_json_path = LOWER('COLDWATER_GUEST_CABIN_PS_AFT_FLOW') THEN '(' || yard_tag || ')' ELSE NULL END) AS coldwater_guest_cabin_ps_aft_flow_tag,\r\n  MAX(CASE WHEN mqtt_json_path = LOWER('COLDWATER_MASTER_CABIN_SB_FLOW') THEN '(' || yard_tag || ')' ELSE NULL END)    AS coldwater_master_cabin_sb_flow_tag,\r\n  MAX(CASE WHEN mqtt_json_path = LOWER('COLDWATER_MASTER_CABIN_PS_FLOW') THEN '(' || yard_tag || ')' ELSE NULL END)    AS coldwater_master_cabin_ps_flow_tag,\r\n  MAX(CASE WHEN mqtt_json_path = LOWER('COLDWATER_GUEST_BATHR_PS_FWD_FLOW') THEN '(' || yard_tag || ')' ELSE NULL END) AS coldwater_guest_bathroom_flow_tag,\r\n  MAX(CASE WHEN mqtt_json_path = LOWER('COLDWATER_CAPTAINS_CABIN_FLOW') THEN '(' || yard_tag || ')' ELSE NULL END)     AS coldwater_captains_cabin_flow_tag,\r\n  MAX(CASE WHEN mqtt_json_path = LOWER('COLDWATER_CREW_CABIN_SB_AFT_FLOW') THEN '(' || yard_tag || ')' ELSE NULL END)  AS coldwater_crew_cabin_sb_aft_flow_tag,\r\n  MAX(CASE WHEN mqtt_json_path = LOWER('COLDWATER_CREW_CABIN_SB_MID_FLOW') THEN '(' || yard_tag || ')' ELSE NULL END)  AS coldwater_crew_cabin_sb_mid_flow_tag,\r\n  MAX(CASE WHEN mqtt_json_path = LOWER('COLDWATER_CREW_CABIN_PS_MID_FLOW') THEN '(' || yard_tag || ')' ELSE NULL END)  AS coldwater_crew_cabin_ps_mid_flow_tag,\r\n  MAX(CASE WHEN mqtt_json_path = LOWER('COLDWATER_CREW_CABIN_SB_FWD_FLOW') THEN '(' || yard_tag || ')' ELSE NULL END)  AS coldwater_crew_cabin_sb_fwd_flow_tag,\r\n  MAX(CASE WHEN mqtt_json_path = LOWER('COLDWATER_CREW_CABIN_PS_FWD_FLOW') THEN '(' || yard_tag || ')' ELSE NULL END)  AS coldwater_crew_cabin_ps_fwd_flow_tag\r\nFROM marpower.io_metadata_marpower\r\nWHERE mqtt_topic = 'marpower/250000-fresh-water'",
-          "refId": "B",
-          "sql": {
-            "columns": [
-              {
-                "parameters": [],
-                "type": "function"
-              }
-            ],
-            "groupBy": [
-              {
-                "property": {
-                  "type": "string"
-                },
-                "type": "groupBy"
-              }
-            ],
-            "limit": 50
-          }
+          "meta": {
+            "builderOptions": {
+              "columns": [],
+              "database": "",
+              "limit": 1000,
+              "meta": {},
+              "mode": "list",
+              "queryType": "table",
+              "table": ""
+            }
+          },
+          "pluginVersion": "2.1.4",
+          "queryType": "table",
+          "rawSql": "SELECT\r\n  MAX(CASE WHEN mqtt_json_path = LOWER('COLDWATER_GUEST_CABIN_SB_FLOW') THEN '(' || yard_tag || ')' ELSE NULL END)     AS guest_cabin_sb_flow_tag,\r\n  MAX(CASE WHEN mqtt_json_path = LOWER('COLDWATER_GUEST_CABIN_PS_FWD_FLOW') THEN '(' || yard_tag || ')' ELSE NULL END) AS guest_cabin_ps_fwd_flow_tag,\r\n  MAX(CASE WHEN mqtt_json_path = LOWER('COLDWATER_GUEST_CABIN_PS_AFT_FLOW') THEN '(' || yard_tag || ')' ELSE NULL END) AS guest_cabin_ps_aft_flow_tag,\r\n  MAX(CASE WHEN mqtt_json_path = LOWER('COLDWATER_MASTER_CABIN_SB_FLOW') THEN '(' || yard_tag || ')' ELSE NULL END)    AS master_cabin_sb_flow_tag,\r\n  MAX(CASE WHEN mqtt_json_path = LOWER('COLDWATER_MASTER_CABIN_PS_FLOW') THEN '(' || yard_tag || ')' ELSE NULL END)    AS master_cabin_ps_flow_tag,\r\n  MAX(CASE WHEN mqtt_json_path = LOWER('COLDWATER_GUEST_BATHR_PS_FWD_FLOW') THEN '(' || yard_tag || ')' ELSE NULL END) AS guest_bathroom_flow_tag,\r\n  MAX(CASE WHEN mqtt_json_path = LOWER('COLDWATER_CAPTAINS_CABIN_FLOW') THEN '(' || yard_tag || ')' ELSE NULL END)     AS captains_cabin_flow_tag,\r\n  MAX(CASE WHEN mqtt_json_path = LOWER('COLDWATER_CREW_CABIN_SB_AFT_FLOW') THEN '(' || yard_tag || ')' ELSE NULL END)  AS crew_cabin_sb_aft_flow_tag,\r\n  MAX(CASE WHEN mqtt_json_path = LOWER('COLDWATER_CREW_CABIN_SB_MID_FLOW') THEN '(' || yard_tag || ')' ELSE NULL END)  AS crew_cabin_sb_mid_flow_tag,\r\n  MAX(CASE WHEN mqtt_json_path = LOWER('COLDWATER_CREW_CABIN_PS_MID_FLOW') THEN '(' || yard_tag || ')' ELSE NULL END)  AS crew_cabin_ps_mid_flow_tag,\r\n  MAX(CASE WHEN mqtt_json_path = LOWER('COLDWATER_CREW_CABIN_SB_FWD_FLOW') THEN '(' || yard_tag || ')' ELSE NULL END)  AS crew_cabin_sb_fwd_flow_tag,\r\n  MAX(CASE WHEN mqtt_json_path = LOWER('COLDWATER_CREW_CABIN_PS_FWD_FLOW') THEN '(' || yard_tag || ')' ELSE NULL END)  AS crew_cabin_ps_fwd_flow_tag\r\nFROM marpower__io_metadata\r\nWHERE mqtt_topic = 'marpower/250000-fresh-water'",
+          "refId": "B"
         }
       ],
       "title": "Accommodations",
@@ -2764,7 +3669,7 @@
     },
     {
       "datasource": {
-        "type": "grafana-postgresql-datasource",
+        "type": "info8fcc-greptimedb-datasource",
         "uid": "${datasource}"
       },
       "fieldConfig": {
@@ -2783,8 +3688,7 @@
                 "value": 0
               }
             ]
-          },
-          "unit": "flowlpm"
+          }
         },
         "overrides": []
       },
@@ -2826,7 +3730,7 @@
                 }
               },
               "config": {
-                "align": "center",
+                "align": "right",
                 "color": {
                   "fixed": "#000000"
                 },
@@ -2846,8 +3750,9 @@
               "placement": {
                 "height": 30,
                 "left": 700,
+                "rotation": 0,
                 "top": 115,
-                "width": 180
+                "width": 107
               },
               "type": "metric-value"
             },
@@ -2899,7 +3804,7 @@
                 }
               },
               "config": {
-                "align": "center",
+                "align": "right",
                 "color": {
                   "fixed": "#000000"
                 },
@@ -2920,7 +3825,7 @@
                 "left": 224,
                 "rotation": 0,
                 "top": 80,
-                "width": 180
+                "width": 107
               },
               "type": "metric-value"
             },
@@ -2972,7 +3877,7 @@
                 }
               },
               "config": {
-                "align": "center",
+                "align": "right",
                 "color": {
                   "fixed": "#000000"
                 },
@@ -2993,7 +3898,7 @@
                 "left": 224,
                 "rotation": 0,
                 "top": 10,
-                "width": 180
+                "width": 107
               },
               "type": "metric-value"
             },
@@ -3045,7 +3950,7 @@
                 }
               },
               "config": {
-                "align": "center",
+                "align": "right",
                 "color": {
                   "fixed": "#000000"
                 },
@@ -3064,8 +3969,9 @@
               "placement": {
                 "height": 30,
                 "left": 700,
+                "rotation": 0,
                 "top": 80,
-                "width": 180
+                "width": 107
               },
               "type": "metric-value"
             },
@@ -3117,7 +4023,7 @@
                 }
               },
               "config": {
-                "align": "center",
+                "align": "right",
                 "color": {
                   "fixed": "#000000"
                 },
@@ -3138,7 +4044,7 @@
                 "left": 224,
                 "rotation": 0,
                 "top": 45,
-                "width": 180
+                "width": 107
               },
               "type": "metric-value"
             },
@@ -3190,7 +4096,7 @@
                 }
               },
               "config": {
-                "align": "center",
+                "align": "right",
                 "color": {
                   "fixed": "#000000"
                 },
@@ -3211,7 +4117,7 @@
                 "left": 700,
                 "rotation": 0,
                 "top": 10,
-                "width": 180
+                "width": 107
               },
               "type": "metric-value"
             },
@@ -3263,7 +4169,7 @@
                 }
               },
               "config": {
-                "align": "center",
+                "align": "right",
                 "color": {
                   "fixed": "#000000"
                 },
@@ -3284,7 +4190,7 @@
                 "left": 700,
                 "rotation": 0,
                 "top": 45,
-                "width": 180
+                "width": 107
               },
               "type": "metric-value"
             },
@@ -3336,7 +4242,7 @@
                 }
               },
               "config": {
-                "align": "center",
+                "align": "right",
                 "color": {
                   "fixed": "#000000"
                 },
@@ -3357,7 +4263,7 @@
                 "left": 1259,
                 "rotation": 0,
                 "top": 10,
-                "width": 180
+                "width": 107
               },
               "type": "metric-value"
             },
@@ -3409,7 +4315,7 @@
                 }
               },
               "config": {
-                "align": "center",
+                "align": "right",
                 "color": {
                   "fixed": "#000000"
                 },
@@ -3430,7 +4336,7 @@
                 "left": 1259,
                 "rotation": 0,
                 "top": 115,
-                "width": 180
+                "width": 107
               },
               "type": "metric-value"
             },
@@ -3482,7 +4388,7 @@
                 }
               },
               "config": {
-                "align": "center",
+                "align": "right",
                 "color": {
                   "fixed": "#000000"
                 },
@@ -3503,7 +4409,7 @@
                 "left": 1259,
                 "rotation": 0,
                 "top": 45,
-                "width": 180
+                "width": 107
               },
               "type": "metric-value"
             },
@@ -3555,7 +4461,7 @@
                 }
               },
               "config": {
-                "align": "center",
+                "align": "right",
                 "color": {
                   "fixed": "#000000"
                 },
@@ -3576,7 +4482,7 @@
                 "left": 1259,
                 "rotation": 0,
                 "top": 80,
-                "width": 180
+                "width": 107
               },
               "type": "metric-value"
             },
@@ -3634,7 +4540,7 @@
                 },
                 "size": 12,
                 "text": {
-                  "field": "coldwater_crew_mess_flow_tag",
+                  "field": "crew_mess_flow_tag",
                   "fixed": " ",
                   "mode": "field"
                 },
@@ -3672,7 +4578,7 @@
                 },
                 "size": 12,
                 "text": {
-                  "field": "coldwater_galley_2_flow_tag",
+                  "field": "galley_2_flow_tag",
                   "fixed": " ",
                   "mode": "field"
                 },
@@ -3710,7 +4616,7 @@
                 },
                 "size": 12,
                 "text": {
-                  "field": "coldwater_dayhead_flow_tag",
+                  "field": "dayhead_flow_tag",
                   "fixed": " ",
                   "mode": "field"
                 },
@@ -3748,7 +4654,7 @@
                 },
                 "size": 12,
                 "text": {
-                  "field": "coldwater_lazaret_flow_tag",
+                  "field": "lazaret_flow_tag",
                   "fixed": " ",
                   "mode": "field"
                 },
@@ -3762,6 +4668,7 @@
               "placement": {
                 "height": 30,
                 "left": 587,
+                "rotation": 0,
                 "top": 80,
                 "width": 113
               },
@@ -3785,7 +4692,7 @@
                 },
                 "size": 12,
                 "text": {
-                  "field": "coldwater_lower_saloon_flow_tag",
+                  "field": "lower_saloon_flow_tag",
                   "fixed": " ",
                   "mode": "field"
                 },
@@ -3799,6 +4706,7 @@
               "placement": {
                 "height": 30,
                 "left": 587,
+                "rotation": 0,
                 "top": 116,
                 "width": 113
               },
@@ -3822,7 +4730,7 @@
                 },
                 "size": 12,
                 "text": {
-                  "field": "coldwater_laundry_ps_flow_tag",
+                  "field": "laundry_ps_flow_tag",
                   "fixed": " ",
                   "mode": "field"
                 },
@@ -3860,7 +4768,7 @@
                 },
                 "size": 12,
                 "text": {
-                  "field": "coldwater_deckhouse_flow_tag",
+                  "field": "deckhouse_flow_tag",
                   "fixed": " ",
                   "mode": "field"
                 },
@@ -3898,7 +4806,7 @@
                 },
                 "size": 12,
                 "text": {
-                  "field": "coldwater_deck_fr48_sb_tech_cor_flow_tag",
+                  "field": "deck_fr48_sb_tech_cor_flow_tag",
                   "fixed": " ",
                   "mode": "field"
                 },
@@ -3936,7 +4844,7 @@
                 },
                 "size": 12,
                 "text": {
-                  "field": "coldwater_main_tech_space_flow_tag",
+                  "field": "main_tech_space_flow_tag",
                   "fixed": " ",
                   "mode": "field"
                 },
@@ -3974,7 +4882,7 @@
                 },
                 "size": 12,
                 "text": {
-                  "field": "coldwater_main_tech_space_fr45_flow_tag",
+                  "field": "main_tech_space_fr45_flow_tag",
                   "fixed": " ",
                   "mode": "field"
                 },
@@ -4012,7 +4920,7 @@
                 },
                 "size": 12,
                 "text": {
-                  "field": "coldwater_water_softner_flow_tag",
+                  "field": "water_softner_flow_tag",
                   "fixed": " ",
                   "mode": "field"
                 },
@@ -4031,6 +4939,800 @@
                 "width": 113
               },
               "type": "text"
+            },
+            {
+              "background": {
+                "color": {
+                  "fixed": "#D9D9D9"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "right",
+                "color": {
+                  "fixed": "#000000"
+                },
+                "size": 18,
+                "text": {
+                  "fixed": " ",
+                  "mode": "fixed"
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "name": "space1",
+              "placement": {
+                "height": 30,
+                "left": 331,
+                "rotation": 0,
+                "top": 10,
+                "width": 15
+              },
+              "type": "metric-value"
+            },
+            {
+              "background": {
+                "color": {
+                  "fixed": "#D9D9D9"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "left",
+                "color": {
+                  "fixed": "#000000"
+                },
+                "size": 18,
+                "text": {
+                  "field": "unit",
+                  "mode": "field"
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "name": "Element 35",
+              "placement": {
+                "height": 30,
+                "left": 346,
+                "rotation": 0,
+                "top": 10,
+                "width": 58
+              },
+              "type": "metric-value"
+            },
+            {
+              "background": {
+                "color": {
+                  "fixed": "#D9D9D9"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "right",
+                "color": {
+                  "fixed": "#000000"
+                },
+                "size": 18,
+                "text": {
+                  "fixed": " ",
+                  "mode": "fixed"
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "name": "Element 36",
+              "placement": {
+                "height": 30,
+                "left": 331,
+                "top": 45,
+                "width": 15
+              },
+              "type": "metric-value"
+            },
+            {
+              "background": {
+                "color": {
+                  "fixed": "#D9D9D9"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "left",
+                "color": {
+                  "fixed": "#000000"
+                },
+                "size": 18,
+                "text": {
+                  "field": "unit",
+                  "mode": "field"
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "name": "Element 37",
+              "placement": {
+                "height": 30,
+                "left": 346,
+                "top": 45,
+                "width": 58
+              },
+              "type": "metric-value"
+            },
+            {
+              "background": {
+                "color": {
+                  "fixed": "#D9D9D9"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "right",
+                "color": {
+                  "fixed": "#000000"
+                },
+                "size": 18,
+                "text": {
+                  "fixed": " ",
+                  "mode": "fixed"
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "name": "Element 38",
+              "placement": {
+                "height": 30,
+                "left": 331,
+                "top": 80,
+                "width": 15
+              },
+              "type": "metric-value"
+            },
+            {
+              "background": {
+                "color": {
+                  "fixed": "#D9D9D9"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "left",
+                "color": {
+                  "fixed": "#000000"
+                },
+                "size": 18,
+                "text": {
+                  "field": "unit",
+                  "mode": "field"
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "name": "Element 39",
+              "placement": {
+                "height": 30,
+                "left": 346,
+                "top": 80,
+                "width": 58
+              },
+              "type": "metric-value"
+            },
+            {
+              "background": {
+                "color": {
+                  "fixed": "#D9D9D9"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "right",
+                "color": {
+                  "fixed": "#000000"
+                },
+                "size": 18,
+                "text": {
+                  "fixed": " ",
+                  "mode": "fixed"
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "name": "Element 41",
+              "placement": {
+                "height": 30,
+                "left": 807,
+                "top": 10,
+                "width": 15
+              },
+              "type": "metric-value"
+            },
+            {
+              "background": {
+                "color": {
+                  "fixed": "#D9D9D9"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "left",
+                "color": {
+                  "fixed": "#000000"
+                },
+                "size": 18,
+                "text": {
+                  "field": "unit",
+                  "mode": "field"
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "name": "Element 42",
+              "placement": {
+                "height": 30,
+                "left": 822,
+                "top": 10,
+                "width": 58
+              },
+              "type": "metric-value"
+            },
+            {
+              "background": {
+                "color": {
+                  "fixed": "#D9D9D9"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "right",
+                "color": {
+                  "fixed": "#000000"
+                },
+                "size": 18,
+                "text": {
+                  "fixed": " ",
+                  "mode": "fixed"
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "name": "Element 43",
+              "placement": {
+                "height": 30,
+                "left": 807,
+                "top": 45,
+                "width": 15
+              },
+              "type": "metric-value"
+            },
+            {
+              "background": {
+                "color": {
+                  "fixed": "#D9D9D9"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "left",
+                "color": {
+                  "fixed": "#000000"
+                },
+                "size": 18,
+                "text": {
+                  "field": "unit",
+                  "mode": "field"
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "name": "Element 44",
+              "placement": {
+                "height": 30,
+                "left": 822,
+                "top": 45,
+                "width": 58
+              },
+              "type": "metric-value"
+            },
+            {
+              "background": {
+                "color": {
+                  "fixed": "#D9D9D9"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "right",
+                "color": {
+                  "fixed": "#000000"
+                },
+                "size": 18,
+                "text": {
+                  "fixed": " ",
+                  "mode": "fixed"
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "name": "Element 45",
+              "placement": {
+                "height": 30,
+                "left": 807,
+                "top": 80,
+                "width": 15
+              },
+              "type": "metric-value"
+            },
+            {
+              "background": {
+                "color": {
+                  "fixed": "#D9D9D9"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "left",
+                "color": {
+                  "fixed": "#000000"
+                },
+                "size": 18,
+                "text": {
+                  "field": "unit",
+                  "mode": "field"
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "name": "Element 46",
+              "placement": {
+                "height": 30,
+                "left": 822,
+                "top": 80,
+                "width": 58
+              },
+              "type": "metric-value"
+            },
+            {
+              "background": {
+                "color": {
+                  "fixed": "#D9D9D9"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "right",
+                "color": {
+                  "fixed": "#000000"
+                },
+                "size": 18,
+                "text": {
+                  "fixed": " ",
+                  "mode": "fixed"
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "name": "Element 47",
+              "placement": {
+                "height": 30,
+                "left": 807,
+                "top": 115,
+                "width": 15
+              },
+              "type": "metric-value"
+            },
+            {
+              "background": {
+                "color": {
+                  "fixed": "#D9D9D9"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "left",
+                "color": {
+                  "fixed": "#000000"
+                },
+                "size": 18,
+                "text": {
+                  "field": "unit",
+                  "mode": "field"
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "name": "Element 48",
+              "placement": {
+                "height": 30,
+                "left": 822,
+                "top": 115,
+                "width": 58
+              },
+              "type": "metric-value"
+            },
+            {
+              "background": {
+                "color": {
+                  "fixed": "#D9D9D9"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "right",
+                "color": {
+                  "fixed": "#000000"
+                },
+                "size": 18,
+                "text": {
+                  "fixed": " ",
+                  "mode": "fixed"
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "name": "Element 49",
+              "placement": {
+                "height": 30,
+                "left": 1366,
+                "top": 10,
+                "width": 15
+              },
+              "type": "metric-value"
+            },
+            {
+              "background": {
+                "color": {
+                  "fixed": "#D9D9D9"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "left",
+                "color": {
+                  "fixed": "#000000"
+                },
+                "size": 18,
+                "text": {
+                  "field": "unit",
+                  "mode": "field"
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "name": "Element 50",
+              "placement": {
+                "height": 30,
+                "left": 1381,
+                "top": 10,
+                "width": 58
+              },
+              "type": "metric-value"
+            },
+            {
+              "background": {
+                "color": {
+                  "fixed": "#D9D9D9"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "right",
+                "color": {
+                  "fixed": "#000000"
+                },
+                "size": 18,
+                "text": {
+                  "fixed": " ",
+                  "mode": "fixed"
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "name": "Element 51",
+              "placement": {
+                "height": 30,
+                "left": 1366,
+                "top": 45,
+                "width": 15
+              },
+              "type": "metric-value"
+            },
+            {
+              "background": {
+                "color": {
+                  "fixed": "#D9D9D9"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "left",
+                "color": {
+                  "fixed": "#000000"
+                },
+                "size": 18,
+                "text": {
+                  "field": "unit",
+                  "mode": "field"
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "name": "Element 52",
+              "placement": {
+                "height": 30,
+                "left": 1381,
+                "top": 45,
+                "width": 58
+              },
+              "type": "metric-value"
+            },
+            {
+              "background": {
+                "color": {
+                  "fixed": "#D9D9D9"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "right",
+                "color": {
+                  "fixed": "#000000"
+                },
+                "size": 18,
+                "text": {
+                  "fixed": " ",
+                  "mode": "fixed"
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "name": "Element 53",
+              "placement": {
+                "height": 30,
+                "left": 1366,
+                "top": 80,
+                "width": 15
+              },
+              "type": "metric-value"
+            },
+            {
+              "background": {
+                "color": {
+                  "fixed": "#D9D9D9"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "left",
+                "color": {
+                  "fixed": "#000000"
+                },
+                "size": 18,
+                "text": {
+                  "field": "unit",
+                  "mode": "field"
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "name": "Element 54",
+              "placement": {
+                "height": 30,
+                "left": 1381,
+                "top": 80,
+                "width": 58
+              },
+              "type": "metric-value"
+            },
+            {
+              "background": {
+                "color": {
+                  "fixed": "#D9D9D9"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "right",
+                "color": {
+                  "fixed": "#000000"
+                },
+                "size": 18,
+                "text": {
+                  "fixed": " ",
+                  "mode": "fixed"
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "name": "Element 55",
+              "placement": {
+                "height": 30,
+                "left": 1366,
+                "top": 115,
+                "width": 15
+              },
+              "type": "metric-value"
+            },
+            {
+              "background": {
+                "color": {
+                  "fixed": "#D9D9D9"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "left",
+                "color": {
+                  "fixed": "#000000"
+                },
+                "size": 18,
+                "text": {
+                  "field": "unit",
+                  "mode": "field"
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "name": "Element 56",
+              "placement": {
+                "height": 30,
+                "left": 1381,
+                "top": 115,
+                "width": 58
+              },
+              "type": "metric-value"
             }
           ],
           "name": "Element 1768816105883",
@@ -4053,6 +5755,10 @@
       "pluginVersion": "12.3.0",
       "targets": [
         {
+          "datasource": {
+            "type": "info8fcc-greptimedb-datasource",
+            "uid": "${datasource}"
+          },
           "editorMode": "code",
           "editorType": "sql",
           "format": 1,
@@ -4070,7 +5776,7 @@
           "pluginVersion": "2.1.4",
           "queryType": "table",
           "rawQuery": true,
-          "rawSql": "SELECT\r\n  timestamp                                     AS time,\r\n  coldwater_lower_saloon_flow__value            AS lower_saloon_flow,\r\n  coldwater_crew_mess_flow__value               AS crew_mess_flow,\r\n  coldwater_galley_2_flow__value                AS galley_2_flow,\r\n  coldwater_dayhead_flow__value                 AS dayhead_flow,\r\n  coldwater_lazaret_flow__value                 AS lazaret_flow,\r\n  coldwater_laundry_ps_flow__value              AS laundry_ps_flow,\r\n  coldwater_deckhouse_flow__value               AS deckhouse_flow,\r\n  coldwater_deck_fr_48_sb_tech_cor_flow__value  AS deck_fr_48_sb_tech_cor_flow,\r\n  coldwater_water_softner_flow__value           AS water_softner_flow,\r\n  coldwater_main_tech_space_flow__value         AS main_tech_space_flow,\r\n  coldwater_main_tech_space_fr_45_flow__value   AS main_tech_space_fr_45_flow\r\nFROM public.marpower__250000_fresh_water\r\nORDER BY timestamp DESC\r\nLIMIT 1",
+          "rawSql": "SELECT\r\n  timestamp AS time,\r\n  CASE WHEN $use_volume THEN 'L' ELSE 'L/min' END AS unit,\r\n  CASE WHEN $use_volume THEN coldwater_lower_saloon_flow__value * $volume_time / 60.0 ELSE coldwater_lower_saloon_flow__value END AS lower_saloon_flow,\r\n  CASE WHEN $use_volume THEN coldwater_crew_mess_flow__value * $volume_time / 60.0 ELSE coldwater_crew_mess_flow__value END AS crew_mess_flow,\r\n  CASE WHEN $use_volume THEN coldwater_galley_2_flow__value * $volume_time / 60.0 ELSE coldwater_galley_2_flow__value END AS galley_2_flow,\r\n  CASE WHEN $use_volume THEN coldwater_dayhead_flow__value * $volume_time / 60.0 ELSE coldwater_dayhead_flow__value END AS dayhead_flow,\r\n  CASE WHEN $use_volume THEN coldwater_lazaret_flow__value * $volume_time / 60.0 ELSE coldwater_lazaret_flow__value END AS lazaret_flow,\r\n  CASE WHEN $use_volume THEN coldwater_laundry_ps_flow__value * $volume_time / 60.0 ELSE coldwater_laundry_ps_flow__value END AS laundry_ps_flow,\r\n  CASE WHEN $use_volume THEN coldwater_deckhouse_flow__value * $volume_time / 60.0 ELSE coldwater_deckhouse_flow__value END AS deckhouse_flow,\r\n  CASE WHEN $use_volume THEN coldwater_deck_fr_48_sb_tech_cor_flow__value * $volume_time / 60.0 ELSE coldwater_deck_fr_48_sb_tech_cor_flow__value END AS deck_fr_48_sb_tech_cor_flow,\r\n  CASE WHEN $use_volume THEN coldwater_water_softner_flow__value * $volume_time / 60.0 ELSE coldwater_water_softner_flow__value END AS water_softner_flow,\r\n  CASE WHEN $use_volume THEN coldwater_main_tech_space_flow__value * $volume_time / 60.0 ELSE coldwater_main_tech_space_flow__value END AS main_tech_space_flow,\r\n  CASE WHEN $use_volume THEN coldwater_main_tech_space_fr_45_flow__value * $volume_time / 60.0 ELSE coldwater_main_tech_space_fr_45_flow__value END AS main_tech_space_fr_45_flow\r\nFROM public.marpower__250000_fresh_water\r\nORDER BY timestamp DESC\r\nLIMIT 1;",
           "refId": "A",
           "sql": {
             "columns": [
@@ -4091,34 +5797,28 @@
           }
         },
         {
-          "dataset": "dev",
           "datasource": {
-            "type": "grafana-postgresql-datasource",
+            "type": "info8fcc-greptimedb-datasource",
             "uid": "${datasource}"
           },
-          "editorMode": "code",
-          "format": "table",
+          "editorType": "sql",
+          "format": 1,
           "hide": false,
-          "rawQuery": true,
-          "rawSql": "SELECT\r\n  MAX(CASE WHEN mqtt_json_path = LOWER('COLDWATER_LOWER_SALOON_FLOW') THEN '(' || yard_tag || ')' ELSE NULL END)            AS coldwater_lower_saloon_flow_tag,\r\n  MAX(CASE WHEN mqtt_json_path = LOWER('COLDWATER_CREW_MESS_FLOW') THEN '(' || yard_tag || ')' ELSE NULL END)               AS coldwater_crew_mess_flow_tag,\r\n  MAX(CASE WHEN mqtt_json_path = LOWER('COLDWATER_GALLEY_2_FLOW') THEN '(' || yard_tag || ')' ELSE NULL END)               AS coldwater_galley_2_flow_tag,\r\n  MAX(CASE WHEN mqtt_json_path = LOWER('COLDWATER_DAYHEAD_FLOW') THEN '(' || yard_tag || ')' ELSE NULL END)                AS coldwater_dayhead_flow_tag,\r\n  MAX(CASE WHEN mqtt_json_path = LOWER('COLDWATER_LAZARET_FLOW') THEN '(' || yard_tag || ')' ELSE NULL END)                 AS coldwater_lazaret_flow_tag,\r\n  MAX(CASE WHEN mqtt_json_path = LOWER('COLDWATER_LAUNDRY_PS_FLOW') THEN '(' || yard_tag || ')' ELSE NULL END)             AS coldwater_laundry_ps_flow_tag,\r\n  MAX(CASE WHEN mqtt_json_path = LOWER('COLDWATER_DECKHOUSE_FLOW') THEN '(' || yard_tag || ')' ELSE NULL END)              AS coldwater_deckhouse_flow_tag,\r\n  MAX(CASE WHEN mqtt_json_path = LOWER('COLDWATER_DECK_FR48_SB_TECH_COR_FLOW') THEN '(' || yard_tag || ')' ELSE NULL END)   AS coldwater_deck_fr48_sb_tech_cor_flow_tag,\r\n  MAX(CASE WHEN mqtt_json_path = LOWER('COLDWATER_WATER_SOFTNER_FLOW') THEN '(' || yard_tag || ')' ELSE NULL END)          AS coldwater_water_softner_flow_tag,\r\n  MAX(CASE WHEN mqtt_json_path = LOWER('COLDWATER_MAIN_TECH_SPACE_FLOW') THEN '(' || yard_tag || ')' ELSE NULL END)        AS coldwater_main_tech_space_flow_tag,\r\n  MAX(CASE WHEN mqtt_json_path = LOWER('COLDWATER_MAIN_TECH_SPACE_FR45_FLOW') THEN '(' || yard_tag || ')' ELSE NULL END)   AS coldwater_main_tech_space_fr45_flow_tag\r\nFROM marpower.io_metadata_marpower\r\nWHERE mqtt_topic = 'marpower/250000-fresh-water'",
-          "refId": "B",
-          "sql": {
-            "columns": [
-              {
-                "parameters": [],
-                "type": "function"
-              }
-            ],
-            "groupBy": [
-              {
-                "property": {
-                  "type": "string"
-                },
-                "type": "groupBy"
-              }
-            ],
-            "limit": 50
-          }
+          "meta": {
+            "builderOptions": {
+              "columns": [],
+              "database": "",
+              "limit": 1000,
+              "meta": {},
+              "mode": "list",
+              "queryType": "table",
+              "table": ""
+            }
+          },
+          "pluginVersion": "2.1.4",
+          "queryType": "table",
+          "rawSql": "SELECT\r\n  MAX(CASE WHEN mqtt_json_path = LOWER('COLDWATER_LOWER_SALOON_FLOW') THEN '(' || yard_tag || ')' ELSE NULL END)            AS lower_saloon_flow_tag,\r\n  MAX(CASE WHEN mqtt_json_path = LOWER('COLDWATER_CREW_MESS_FLOW') THEN '(' || yard_tag || ')' ELSE NULL END)               AS crew_mess_flow_tag,\r\n  MAX(CASE WHEN mqtt_json_path = LOWER('COLDWATER_GALLEY_2_FLOW') THEN '(' || yard_tag || ')' ELSE NULL END)               AS galley_2_flow_tag,\r\n  MAX(CASE WHEN mqtt_json_path = LOWER('COLDWATER_DAYHEAD_FLOW') THEN '(' || yard_tag || ')' ELSE NULL END)                AS dayhead_flow_tag,\r\n  MAX(CASE WHEN mqtt_json_path = LOWER('COLDWATER_LAZARET_FLOW') THEN '(' || yard_tag || ')' ELSE NULL END)                 AS lazaret_flow_tag,\r\n  MAX(CASE WHEN mqtt_json_path = LOWER('COLDWATER_LAUNDRY_PS_FLOW') THEN '(' || yard_tag || ')' ELSE NULL END)             AS laundry_ps_flow_tag,\r\n  MAX(CASE WHEN mqtt_json_path = LOWER('COLDWATER_DECKHOUSE_FLOW') THEN '(' || yard_tag || ')' ELSE NULL END)              AS deckhouse_flow_tag,\r\n  MAX(CASE WHEN mqtt_json_path = LOWER('COLDWATER_DECK_FR48_SB_TECH_COR_FLOW') THEN '(' || yard_tag || ')' ELSE NULL END)   AS deck_fr48_sb_tech_cor_flow_tag,\r\n  MAX(CASE WHEN mqtt_json_path = LOWER('COLDWATER_WATER_SOFTNER_FLOW') THEN '(' || yard_tag || ')' ELSE NULL END)          AS water_softner_flow_tag,\r\n  MAX(CASE WHEN mqtt_json_path = LOWER('COLDWATER_MAIN_TECH_SPACE_FLOW') THEN '(' || yard_tag || ')' ELSE NULL END)        AS main_tech_space_flow_tag,\r\n  MAX(CASE WHEN mqtt_json_path = LOWER('COLDWATER_MAIN_TECH_SPACE_FR45_FLOW') THEN '(' || yard_tag || ')' ELSE NULL END)   AS main_tech_space_fr45_flow_tag\r\nFROM marpower__io_metadata\r\nWHERE mqtt_topic = 'marpower/250000-fresh-water'",
+          "refId": "B"
         }
       ],
       "title": "Other areas",
@@ -4139,7 +5839,7 @@
     },
     {
       "datasource": {
-        "type": "grafana-postgresql-datasource",
+        "type": "info8fcc-greptimedb-datasource",
         "uid": "${datasource}"
       },
       "fieldConfig": {
@@ -4158,8 +5858,7 @@
                 "value": 0
               }
             ]
-          },
-          "unit": "flowlpm"
+          }
         },
         "overrides": []
       },
@@ -4169,7 +5868,7 @@
         "x": 0,
         "y": 22
       },
-      "id": 20,
+      "id": 23,
       "options": {
         "inlineEditing": false,
         "panZoom": false,
@@ -4201,7 +5900,7 @@
                 }
               },
               "config": {
-                "align": "center",
+                "align": "right",
                 "color": {
                   "fixed": "#000000"
                 },
@@ -4212,6 +5911,7 @@
                 },
                 "valign": "middle"
               },
+              "connections": [],
               "constraint": {
                 "horizontal": "left",
                 "vertical": "top"
@@ -4222,7 +5922,7 @@
                 "left": 318,
                 "rotation": 0,
                 "top": 10,
-                "width": 180
+                "width": 107
               },
               "type": "metric-value"
             },
@@ -4257,6 +5957,7 @@
               "placement": {
                 "height": 30,
                 "left": 15,
+                "rotation": 0,
                 "top": 10,
                 "width": 177
               },
@@ -4274,7 +5975,7 @@
                 }
               },
               "config": {
-                "align": "center",
+                "align": "right",
                 "color": {
                   "fixed": "#000000"
                 },
@@ -4295,7 +5996,7 @@
                 "left": 318,
                 "rotation": 0,
                 "top": 45,
-                "width": 180
+                "width": 107
               },
               "type": "metric-value"
             },
@@ -4347,7 +6048,7 @@
                 }
               },
               "config": {
-                "align": "center",
+                "align": "right",
                 "color": {
                   "fixed": "#000000"
                 },
@@ -4368,7 +6069,7 @@
                 "left": 318,
                 "rotation": 0,
                 "top": 80,
-                "width": 180
+                "width": 107
               },
               "type": "metric-value"
             },
@@ -4420,7 +6121,7 @@
                 }
               },
               "config": {
-                "align": "center",
+                "align": "right",
                 "color": {
                   "fixed": "#000000"
                 },
@@ -4441,7 +6142,7 @@
                 "left": 819,
                 "rotation": 0,
                 "top": 10,
-                "width": 180
+                "width": 107
               },
               "type": "metric-value"
             },
@@ -4492,7 +6193,7 @@
                 }
               },
               "config": {
-                "align": "center",
+                "align": "right",
                 "color": {
                   "fixed": "#000000"
                 },
@@ -4513,7 +6214,7 @@
                 "left": 819,
                 "rotation": 0,
                 "top": 45,
-                "width": 180
+                "width": 107
               },
               "type": "metric-value"
             },
@@ -4564,7 +6265,7 @@
                 }
               },
               "config": {
-                "align": "center",
+                "align": "right",
                 "color": {
                   "fixed": "#000000"
                 },
@@ -4585,7 +6286,7 @@
                 "left": 819,
                 "rotation": 0,
                 "top": 80,
-                "width": 180
+                "width": 107
               },
               "type": "metric-value"
             },
@@ -4637,7 +6338,7 @@
                 }
               },
               "config": {
-                "align": "center",
+                "align": "right",
                 "color": {
                   "fixed": "#000000"
                 },
@@ -4658,7 +6359,7 @@
                 "left": 1344,
                 "rotation": 0,
                 "top": 10,
-                "width": 180
+                "width": 107
               },
               "type": "metric-value"
             },
@@ -4710,7 +6411,7 @@
                 }
               },
               "config": {
-                "align": "center",
+                "align": "right",
                 "color": {
                   "fixed": "#000000"
                 },
@@ -4731,7 +6432,7 @@
                 "left": 1344,
                 "rotation": 0,
                 "top": 45,
-                "width": 180
+                "width": 107
               },
               "type": "metric-value"
             },
@@ -4782,7 +6483,7 @@
                 }
               },
               "config": {
-                "align": "center",
+                "align": "right",
                 "color": {
                   "fixed": "#000000"
                 },
@@ -4803,7 +6504,7 @@
                 "left": 1344,
                 "rotation": 0,
                 "top": 80,
-                "width": 180
+                "width": 107
               },
               "type": "metric-value"
             },
@@ -4854,7 +6555,7 @@
                 }
               },
               "config": {
-                "align": "center",
+                "align": "right",
                 "color": {
                   "fixed": "#000000"
                 },
@@ -4875,7 +6576,7 @@
                 "left": 1344,
                 "rotation": 0,
                 "top": 115,
-                "width": 180
+                "width": 107
               },
               "type": "metric-value"
             },
@@ -4926,7 +6627,7 @@
                 }
               },
               "config": {
-                "align": "center",
+                "align": "right",
                 "color": {
                   "fixed": "#000000"
                 },
@@ -4947,7 +6648,7 @@
                 "left": 1344,
                 "rotation": 0,
                 "top": 150,
-                "width": 180
+                "width": 107
               },
               "type": "metric-value"
             },
@@ -4998,7 +6699,7 @@
                 }
               },
               "config": {
-                "align": "center",
+                "align": "right",
                 "color": {
                   "fixed": "#000000"
                 },
@@ -5019,7 +6720,7 @@
                 "left": 318,
                 "rotation": 0,
                 "top": 115,
-                "width": 180
+                "width": 107
               },
               "type": "metric-value"
             },
@@ -5076,7 +6777,7 @@
                 },
                 "size": 12,
                 "text": {
-                  "field": "hotwater_guest_cabin_sb_flow_tag",
+                  "field": "guest_cabin_sb_flow_tag",
                   "fixed": " ",
                   "mode": "field"
                 },
@@ -5114,7 +6815,7 @@
                 },
                 "size": 12,
                 "text": {
-                  "field": "hotwater_guest_cabin_ps_fwd_flow_tag",
+                  "field": "guest_cabin_ps_fwd_flow_tag",
                   "fixed": " ",
                   "mode": "field"
                 },
@@ -5152,7 +6853,7 @@
                 },
                 "size": 12,
                 "text": {
-                  "field": "hotwater_guest_cabin_ps_aft_flow_tag",
+                  "field": "guest_cabin_ps_aft_flow_tag",
                   "fixed": " ",
                   "mode": "field"
                 },
@@ -5190,7 +6891,7 @@
                 },
                 "size": 12,
                 "text": {
-                  "field": "hotwater_master_cabin_sb_flow_tag",
+                  "field": "master_cabin_sb_flow_tag",
                   "fixed": " ",
                   "mode": "field"
                 },
@@ -5228,7 +6929,7 @@
                 },
                 "size": 12,
                 "text": {
-                  "field": "hotwater_master_cabin_ps_flow_tag",
+                  "field": "master_cabin_ps_flow_tag",
                   "fixed": " ",
                   "mode": "field"
                 },
@@ -5266,7 +6967,7 @@
                 },
                 "size": 12,
                 "text": {
-                  "field": "hotwater_guest_bathroom_flow_tag",
+                  "field": "guest_bathroom_flow_tag",
                   "fixed": " ",
                   "mode": "field"
                 },
@@ -5304,7 +7005,7 @@
                 },
                 "size": 12,
                 "text": {
-                  "field": "hotwater_captains_cabin_flow_tag",
+                  "field": "captains_cabin_flow_tag",
                   "fixed": " ",
                   "mode": "field"
                 },
@@ -5342,7 +7043,7 @@
                 },
                 "size": 12,
                 "text": {
-                  "field": "hotwater_crew_cabin_ps_mid_flow_tag",
+                  "field": "crew_cabin_ps_mid_flow_tag",
                   "fixed": " ",
                   "mode": "field"
                 },
@@ -5380,7 +7081,7 @@
                 },
                 "size": 12,
                 "text": {
-                  "field": "hotwater_crew_cabin_sb_fwd_flow_tag",
+                  "field": "crew_cabin_sb_fwd_flow_tag",
                   "fixed": " ",
                   "mode": "field"
                 },
@@ -5418,7 +7119,7 @@
                 },
                 "size": 12,
                 "text": {
-                  "field": "hotwater_crew_cabin_ps_fwd_flow_tag",
+                  "field": "crew_cabin_ps_fwd_flow_tag",
                   "fixed": " ",
                   "mode": "field"
                 },
@@ -5456,7 +7157,7 @@
                 },
                 "size": 12,
                 "text": {
-                  "field": "hotwater_crew_cabin_sb_aft_flow_tag",
+                  "field": "crew_cabin_sb_aft_flow_tag",
                   "fixed": " ",
                   "mode": "field"
                 },
@@ -5494,7 +7195,7 @@
                 },
                 "size": 12,
                 "text": {
-                  "field": "hotwater_crew_cabin_sb_mid_flow_tag",
+                  "field": "crew_cabin_sb_mid_flow_tag",
                   "fixed": " ",
                   "mode": "field"
                 },
@@ -5513,6 +7214,873 @@
                 "width": 115
               },
               "type": "text"
+            },
+            {
+              "background": {
+                "color": {
+                  "fixed": "#D9D9D9"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "left",
+                "color": {
+                  "fixed": "#000000"
+                },
+                "size": 18,
+                "text": {
+                  "fixed": " ",
+                  "mode": "fixed"
+                },
+                "valign": "middle"
+              },
+              "connections": [],
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "name": "space1",
+              "placement": {
+                "height": 30,
+                "left": 425,
+                "rotation": 0,
+                "top": 10,
+                "width": 15
+              },
+              "type": "metric-value"
+            },
+            {
+              "background": {
+                "color": {
+                  "fixed": "#D9D9D9"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "left",
+                "color": {
+                  "fixed": "#000000"
+                },
+                "size": 18,
+                "text": {
+                  "field": "unit",
+                  "mode": "field"
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "name": "Element 38",
+              "placement": {
+                "height": 30,
+                "left": 440,
+                "rotation": 0,
+                "top": 10,
+                "width": 58
+              },
+              "type": "metric-value"
+            },
+            {
+              "background": {
+                "color": {
+                  "fixed": "#D9D9D9"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "left",
+                "color": {
+                  "fixed": "#000000"
+                },
+                "size": 18,
+                "text": {
+                  "fixed": " ",
+                  "mode": "fixed"
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "name": "Element 39",
+              "placement": {
+                "height": 30,
+                "left": 425,
+                "top": 45,
+                "width": 15
+              },
+              "type": "metric-value"
+            },
+            {
+              "background": {
+                "color": {
+                  "fixed": "#D9D9D9"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "left",
+                "color": {
+                  "fixed": "#000000"
+                },
+                "size": 18,
+                "text": {
+                  "field": "unit",
+                  "mode": "field"
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "name": "Element 40",
+              "placement": {
+                "height": 30,
+                "left": 440,
+                "top": 45,
+                "width": 58
+              },
+              "type": "metric-value"
+            },
+            {
+              "background": {
+                "color": {
+                  "fixed": "#D9D9D9"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "left",
+                "color": {
+                  "fixed": "#000000"
+                },
+                "size": 18,
+                "text": {
+                  "fixed": " ",
+                  "mode": "fixed"
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "name": "Element 41",
+              "placement": {
+                "height": 30,
+                "left": 425,
+                "top": 80,
+                "width": 15
+              },
+              "type": "metric-value"
+            },
+            {
+              "background": {
+                "color": {
+                  "fixed": "#D9D9D9"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "left",
+                "color": {
+                  "fixed": "#000000"
+                },
+                "size": 18,
+                "text": {
+                  "field": "unit",
+                  "mode": "field"
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "name": "Element 42",
+              "placement": {
+                "height": 30,
+                "left": 440,
+                "top": 80,
+                "width": 58
+              },
+              "type": "metric-value"
+            },
+            {
+              "background": {
+                "color": {
+                  "fixed": "#D9D9D9"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "left",
+                "color": {
+                  "fixed": "#000000"
+                },
+                "size": 18,
+                "text": {
+                  "fixed": " ",
+                  "mode": "fixed"
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "name": "Element 43",
+              "placement": {
+                "height": 30,
+                "left": 425,
+                "top": 115,
+                "width": 15
+              },
+              "type": "metric-value"
+            },
+            {
+              "background": {
+                "color": {
+                  "fixed": "#D9D9D9"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "left",
+                "color": {
+                  "fixed": "#000000"
+                },
+                "size": 18,
+                "text": {
+                  "field": "unit",
+                  "mode": "field"
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "name": "Element 44",
+              "placement": {
+                "height": 30,
+                "left": 440,
+                "top": 115,
+                "width": 58
+              },
+              "type": "metric-value"
+            },
+            {
+              "background": {
+                "color": {
+                  "fixed": "#D9D9D9"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "left",
+                "color": {
+                  "fixed": "#000000"
+                },
+                "size": 18,
+                "text": {
+                  "fixed": " ",
+                  "mode": "fixed"
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "name": "Element 46",
+              "placement": {
+                "height": 30,
+                "left": 926,
+                "top": 10,
+                "width": 15
+              },
+              "type": "metric-value"
+            },
+            {
+              "background": {
+                "color": {
+                  "fixed": "#D9D9D9"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "left",
+                "color": {
+                  "fixed": "#000000"
+                },
+                "size": 18,
+                "text": {
+                  "field": "unit",
+                  "mode": "field"
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "name": "Element 47",
+              "placement": {
+                "height": 30,
+                "left": 941,
+                "top": 10,
+                "width": 58
+              },
+              "type": "metric-value"
+            },
+            {
+              "background": {
+                "color": {
+                  "fixed": "#D9D9D9"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "left",
+                "color": {
+                  "fixed": "#000000"
+                },
+                "size": 18,
+                "text": {
+                  "fixed": " ",
+                  "mode": "fixed"
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "name": "Element 48",
+              "placement": {
+                "height": 30,
+                "left": 926,
+                "top": 45,
+                "width": 15
+              },
+              "type": "metric-value"
+            },
+            {
+              "background": {
+                "color": {
+                  "fixed": "#D9D9D9"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "left",
+                "color": {
+                  "fixed": "#000000"
+                },
+                "size": 18,
+                "text": {
+                  "field": "unit",
+                  "mode": "field"
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "name": "Element 49",
+              "placement": {
+                "height": 30,
+                "left": 941,
+                "top": 45,
+                "width": 58
+              },
+              "type": "metric-value"
+            },
+            {
+              "background": {
+                "color": {
+                  "fixed": "#D9D9D9"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "left",
+                "color": {
+                  "fixed": "#000000"
+                },
+                "size": 18,
+                "text": {
+                  "fixed": " ",
+                  "mode": "fixed"
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "name": "Element 50",
+              "placement": {
+                "height": 30,
+                "left": 926,
+                "top": 80,
+                "width": 15
+              },
+              "type": "metric-value"
+            },
+            {
+              "background": {
+                "color": {
+                  "fixed": "#D9D9D9"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "left",
+                "color": {
+                  "fixed": "#000000"
+                },
+                "size": 18,
+                "text": {
+                  "field": "unit",
+                  "mode": "field"
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "name": "Element 51",
+              "placement": {
+                "height": 30,
+                "left": 941,
+                "top": 80,
+                "width": 58
+              },
+              "type": "metric-value"
+            },
+            {
+              "background": {
+                "color": {
+                  "fixed": "#D9D9D9"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "left",
+                "color": {
+                  "fixed": "#000000"
+                },
+                "size": 18,
+                "text": {
+                  "fixed": " ",
+                  "mode": "fixed"
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "name": "Element 52",
+              "placement": {
+                "height": 30,
+                "left": 1451,
+                "top": 10,
+                "width": 15
+              },
+              "type": "metric-value"
+            },
+            {
+              "background": {
+                "color": {
+                  "fixed": "#D9D9D9"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "left",
+                "color": {
+                  "fixed": "#000000"
+                },
+                "size": 18,
+                "text": {
+                  "field": "unit",
+                  "mode": "field"
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "name": "Element 53",
+              "placement": {
+                "height": 30,
+                "left": 1466,
+                "top": 10,
+                "width": 58
+              },
+              "type": "metric-value"
+            },
+            {
+              "background": {
+                "color": {
+                  "fixed": "#D9D9D9"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "left",
+                "color": {
+                  "fixed": "#000000"
+                },
+                "size": 18,
+                "text": {
+                  "fixed": " ",
+                  "mode": "fixed"
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "name": "Element 54",
+              "placement": {
+                "height": 30,
+                "left": 1451,
+                "top": 45,
+                "width": 15
+              },
+              "type": "metric-value"
+            },
+            {
+              "background": {
+                "color": {
+                  "fixed": "#D9D9D9"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "left",
+                "color": {
+                  "fixed": "#000000"
+                },
+                "size": 18,
+                "text": {
+                  "field": "unit",
+                  "mode": "field"
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "name": "Element 55",
+              "placement": {
+                "height": 30,
+                "left": 1466,
+                "top": 45,
+                "width": 58
+              },
+              "type": "metric-value"
+            },
+            {
+              "background": {
+                "color": {
+                  "fixed": "#D9D9D9"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "left",
+                "color": {
+                  "fixed": "#000000"
+                },
+                "size": 18,
+                "text": {
+                  "fixed": " ",
+                  "mode": "fixed"
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "name": "Element 56",
+              "placement": {
+                "height": 30,
+                "left": 1451,
+                "top": 80,
+                "width": 15
+              },
+              "type": "metric-value"
+            },
+            {
+              "background": {
+                "color": {
+                  "fixed": "#D9D9D9"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "left",
+                "color": {
+                  "fixed": "#000000"
+                },
+                "size": 18,
+                "text": {
+                  "field": "unit",
+                  "mode": "field"
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "name": "Element 57",
+              "placement": {
+                "height": 30,
+                "left": 1466,
+                "top": 80,
+                "width": 58
+              },
+              "type": "metric-value"
+            },
+            {
+              "background": {
+                "color": {
+                  "fixed": "#D9D9D9"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "left",
+                "color": {
+                  "fixed": "#000000"
+                },
+                "size": 18,
+                "text": {
+                  "fixed": " ",
+                  "mode": "fixed"
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "name": "Element 58",
+              "placement": {
+                "height": 30,
+                "left": 1451,
+                "top": 115,
+                "width": 15
+              },
+              "type": "metric-value"
+            },
+            {
+              "background": {
+                "color": {
+                  "fixed": "#D9D9D9"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "left",
+                "color": {
+                  "fixed": "#000000"
+                },
+                "size": 18,
+                "text": {
+                  "field": "unit",
+                  "mode": "field"
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "name": "Element 59",
+              "placement": {
+                "height": 30,
+                "left": 1466,
+                "top": 115,
+                "width": 58
+              },
+              "type": "metric-value"
+            },
+            {
+              "background": {
+                "color": {
+                  "fixed": "#D9D9D9"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "left",
+                "color": {
+                  "fixed": "#000000"
+                },
+                "size": 18,
+                "text": {
+                  "fixed": " ",
+                  "mode": "fixed"
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "name": "Element 60",
+              "placement": {
+                "height": 30,
+                "left": 1451,
+                "top": 150,
+                "width": 15
+              },
+              "type": "metric-value"
+            },
+            {
+              "background": {
+                "color": {
+                  "fixed": "#D9D9D9"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "left",
+                "color": {
+                  "fixed": "#000000"
+                },
+                "size": 18,
+                "text": {
+                  "field": "unit",
+                  "mode": "field"
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "name": "Element 61",
+              "placement": {
+                "height": 30,
+                "left": 1466,
+                "top": 150,
+                "width": 58
+              },
+              "type": "metric-value"
             }
           ],
           "name": "Element 1768816105883",
@@ -5535,6 +8103,10 @@
       "pluginVersion": "12.3.0",
       "targets": [
         {
+          "datasource": {
+            "type": "info8fcc-greptimedb-datasource",
+            "uid": "${datasource}"
+          },
           "editorMode": "code",
           "editorType": "sql",
           "format": 1,
@@ -5552,7 +8124,7 @@
           "pluginVersion": "2.1.4",
           "queryType": "table",
           "rawQuery": true,
-          "rawSql": "SELECT\r\n  timestamp                                AS time,\r\n  hotwater_guest_cabin_sb_flow__value     AS guest_cabin_sb_flow,\r\n  hotwater_guest_cabin_ps_fwd_flow__value AS guest_cabin_ps_fwd_flow,\r\n  hotwater_guest_cabin_ps_aft_flow__value AS guest_cabin_ps_aft_flow,\r\n  hotwater_master_cabin_sb_flow__value    AS master_cabin_sb_flow,\r\n  hotwater_master_cabin_ps_flow__value    AS master_cabin_ps_flow,\r\n  hotwater_guest_bathr_ps_fwd_flow__value AS guest_bathroom_flow,\r\n  hotwater_captains_cabin_flow__value     AS captains_cabin_flow,\r\n  hotwater_crew_cabin_sb_aft_flow__value  AS crew_cabin_sb_aft_flow,\r\n  hotwater_crew_cabin_sb_mid_flow__value  AS crew_cabin_sb_mid_flow,\r\n  hotwater_crew_cabin_ps_mid_flow__value  AS crew_cabin_ps_mid_flow,\r\n  hotwater_crew_cabin_sb_fwd_flow__value  AS crew_cabin_sb_fwd_flow,\r\n  hotwater_crew_cabin_ps_fwd_flow__value  AS crew_cabin_ps_fwd_flow\r\nFROM public.marpower__250000_fresh_water\r\nORDER BY timestamp DESC\r\nLIMIT 1\r\n",
+          "rawSql": "SELECT\r\n  timestamp AS time,\r\n  CASE WHEN $use_volume THEN 'L' ELSE 'L/min' END AS unit,\r\n  CASE WHEN $use_volume THEN hotwater_guest_cabin_sb_flow__value * $volume_time / 60.0 ELSE hotwater_guest_cabin_sb_flow__value END AS guest_cabin_sb_flow,\r\n  CASE WHEN $use_volume THEN hotwater_guest_cabin_ps_fwd_flow__value * $volume_time / 60.0 ELSE hotwater_guest_cabin_ps_fwd_flow__value END AS guest_cabin_ps_fwd_flow,\r\n  CASE WHEN $use_volume THEN hotwater_guest_cabin_ps_aft_flow__value * $volume_time / 60.0 ELSE hotwater_guest_cabin_ps_aft_flow__value END AS guest_cabin_ps_aft_flow,\r\n  CASE WHEN $use_volume THEN hotwater_master_cabin_sb_flow__value * $volume_time / 60.0 ELSE hotwater_master_cabin_sb_flow__value END AS master_cabin_sb_flow,\r\n  CASE WHEN $use_volume THEN hotwater_master_cabin_ps_flow__value * $volume_time / 60.0 ELSE hotwater_master_cabin_ps_flow__value END AS master_cabin_ps_flow,\r\n  CASE WHEN $use_volume THEN hotwater_guest_bathr_ps_fwd_flow__value * $volume_time / 60.0 ELSE hotwater_guest_bathr_ps_fwd_flow__value END AS guest_bathroom_flow,\r\n  CASE WHEN $use_volume THEN hotwater_captains_cabin_flow__value * $volume_time / 60.0 ELSE hotwater_captains_cabin_flow__value END AS captains_cabin_flow,\r\n  CASE WHEN $use_volume THEN hotwater_crew_cabin_sb_aft_flow__value * $volume_time / 60.0 ELSE hotwater_crew_cabin_sb_aft_flow__value END AS crew_cabin_sb_aft_flow,\r\n  CASE WHEN $use_volume THEN hotwater_crew_cabin_sb_mid_flow__value * $volume_time / 60.0 ELSE hotwater_crew_cabin_sb_mid_flow__value END AS crew_cabin_sb_mid_flow,\r\n  CASE WHEN $use_volume THEN hotwater_crew_cabin_ps_mid_flow__value * $volume_time / 60.0 ELSE hotwater_crew_cabin_ps_mid_flow__value END AS crew_cabin_ps_mid_flow,\r\n  CASE WHEN $use_volume THEN hotwater_crew_cabin_sb_fwd_flow__value * $volume_time / 60.0 ELSE hotwater_crew_cabin_sb_fwd_flow__value END AS crew_cabin_sb_fwd_flow,\r\n  CASE WHEN $use_volume THEN hotwater_crew_cabin_ps_fwd_flow__value * $volume_time / 60.0 ELSE hotwater_crew_cabin_ps_fwd_flow__value END AS crew_cabin_ps_fwd_flow\r\nFROM public.marpower__250000_fresh_water\r\nORDER BY timestamp DESC\r\nLIMIT 1",
           "refId": "A",
           "sql": {
             "columns": [
@@ -5573,34 +8145,28 @@
           }
         },
         {
-          "dataset": "dev",
           "datasource": {
-            "type": "grafana-postgresql-datasource",
+            "type": "info8fcc-greptimedb-datasource",
             "uid": "${datasource}"
           },
-          "editorMode": "code",
-          "format": "table",
+          "editorType": "sql",
+          "format": 1,
           "hide": false,
-          "rawQuery": true,
-          "rawSql": "SELECT\r\n  MAX(CASE WHEN mqtt_json_path = LOWER('HOTWATER_GUEST_CABIN_SB_FLOW') THEN '(' || yard_tag || ')' ELSE NULL END)     AS hotwater_guest_cabin_sb_flow_tag,\r\n  MAX(CASE WHEN mqtt_json_path = LOWER('HOTWATER_GUEST_CABIN_PS_FWD_FLOW') THEN '(' || yard_tag || ')' ELSE NULL END) AS hotwater_guest_cabin_ps_fwd_flow_tag,\r\n  MAX(CASE WHEN mqtt_json_path = LOWER('HOTWATER_GUEST_CABIN_PS_AFT_FLOW') THEN '(' || yard_tag || ')' ELSE NULL END) AS hotwater_guest_cabin_ps_aft_flow_tag,\r\n  MAX(CASE WHEN mqtt_json_path = LOWER('HOTWATER_MASTER_CABIN_SB_FLOW') THEN '(' || yard_tag || ')' ELSE NULL END)    AS hotwater_master_cabin_sb_flow_tag,\r\n  MAX(CASE WHEN mqtt_json_path = LOWER('HOTWATER_MASTER_CABIN_PS_FLOW') THEN '(' || yard_tag || ')' ELSE NULL END)    AS hotwater_master_cabin_ps_flow_tag,\r\n  MAX(CASE WHEN mqtt_json_path = LOWER('HOTWATER_GUEST_BATHR_PS_FWD_FLOW') THEN '(' || yard_tag || ')' ELSE NULL END) AS hotwater_guest_bathroom_flow_tag,\r\n  MAX(CASE WHEN mqtt_json_path = LOWER('HOTWATER_CAPTAINS_CABIN_FLOW') THEN '(' || yard_tag || ')' ELSE NULL END)     AS hotwater_captains_cabin_flow_tag,\r\n  MAX(CASE WHEN mqtt_json_path = LOWER('HOTWATER_CREW_CABIN_SB_AFT_FLOW') THEN '(' || yard_tag || ')' ELSE NULL END)  AS hotwater_crew_cabin_sb_aft_flow_tag,\r\n  MAX(CASE WHEN mqtt_json_path = LOWER('HOTWATER_CREW_CABIN_SB_MID_FLOW') THEN '(' || yard_tag || ')' ELSE NULL END)  AS hotwater_crew_cabin_sb_mid_flow_tag,\r\n  MAX(CASE WHEN mqtt_json_path = LOWER('HOTWATER_CREW_CABIN_PS_MID_FLOW') THEN '(' || yard_tag || ')' ELSE NULL END)  AS hotwater_crew_cabin_ps_mid_flow_tag,\r\n  MAX(CASE WHEN mqtt_json_path = LOWER('HOTWATER_CREW_CABIN_SB_FWD_FLOW') THEN '(' || yard_tag || ')' ELSE NULL END)  AS hotwater_crew_cabin_sb_fwd_flow_tag,\r\n  MAX(CASE WHEN mqtt_json_path = LOWER('HOTWATER_CREW_CABIN_PS_FWD_FLOW') THEN '(' || yard_tag || ')' ELSE NULL END)  AS hotwater_crew_cabin_ps_fwd_flow_tag\r\nFROM marpower.io_metadata_marpower\r\nWHERE mqtt_topic = 'marpower/250000-fresh-water'",
-          "refId": "B",
-          "sql": {
-            "columns": [
-              {
-                "parameters": [],
-                "type": "function"
-              }
-            ],
-            "groupBy": [
-              {
-                "property": {
-                  "type": "string"
-                },
-                "type": "groupBy"
-              }
-            ],
-            "limit": 50
-          }
+          "meta": {
+            "builderOptions": {
+              "columns": [],
+              "database": "",
+              "limit": 1000,
+              "meta": {},
+              "mode": "list",
+              "queryType": "table",
+              "table": ""
+            }
+          },
+          "pluginVersion": "2.1.4",
+          "queryType": "table",
+          "rawSql": "SELECT\r\n  MAX(CASE WHEN mqtt_json_path = LOWER('HOTWATER_GUEST_CABIN_SB_FLOW') THEN '(' || yard_tag || ')' ELSE NULL END)     AS guest_cabin_sb_flow_tag,\r\n  MAX(CASE WHEN mqtt_json_path = LOWER('HOTWATER_GUEST_CABIN_PS_FWD_FLOW') THEN '(' || yard_tag || ')' ELSE NULL END) AS guest_cabin_ps_fwd_flow_tag,\r\n  MAX(CASE WHEN mqtt_json_path = LOWER('HOTWATER_GUEST_CABIN_PS_AFT_FLOW') THEN '(' || yard_tag || ')' ELSE NULL END) AS guest_cabin_ps_aft_flow_tag,\r\n  MAX(CASE WHEN mqtt_json_path = LOWER('HOTWATER_MASTER_CABIN_SB_FLOW') THEN '(' || yard_tag || ')' ELSE NULL END)    AS master_cabin_sb_flow_tag,\r\n  MAX(CASE WHEN mqtt_json_path = LOWER('HOTWATER_MASTER_CABIN_PS_FLOW') THEN '(' || yard_tag || ')' ELSE NULL END)    AS master_cabin_ps_flow_tag,\r\n  MAX(CASE WHEN mqtt_json_path = LOWER('HOTWATER_GUEST_BATHR_PS_FWD_FLOW') THEN '(' || yard_tag || ')' ELSE NULL END) AS guest_bathroom_flow_tag,\r\n  MAX(CASE WHEN mqtt_json_path = LOWER('HOTWATER_CAPTAINS_CABIN_FLOW') THEN '(' || yard_tag || ')' ELSE NULL END)     AS captains_cabin_flow_tag,\r\n  MAX(CASE WHEN mqtt_json_path = LOWER('HOTWATER_CREW_CABIN_SB_AFT_FLOW') THEN '(' || yard_tag || ')' ELSE NULL END)  AS crew_cabin_sb_aft_flow_tag,\r\n  MAX(CASE WHEN mqtt_json_path = LOWER('HOTWATER_CREW_CABIN_SB_MID_FLOW') THEN '(' || yard_tag || ')' ELSE NULL END)  AS crew_cabin_sb_mid_flow_tag,\r\n  MAX(CASE WHEN mqtt_json_path = LOWER('HOTWATER_CREW_CABIN_PS_MID_FLOW') THEN '(' || yard_tag || ')' ELSE NULL END)  AS crew_cabin_ps_mid_flow_tag,\r\n  MAX(CASE WHEN mqtt_json_path = LOWER('HOTWATER_CREW_CABIN_SB_FWD_FLOW') THEN '(' || yard_tag || ')' ELSE NULL END)  AS crew_cabin_sb_fwd_flow_tag,\r\n  MAX(CASE WHEN mqtt_json_path = LOWER('HOTWATER_CREW_CABIN_PS_FWD_FLOW') THEN '(' || yard_tag || ')' ELSE NULL END)  AS crew_cabin_ps_fwd_flow_tag\r\nFROM marpower__io_metadata\r\nWHERE mqtt_topic = 'marpower/250000-fresh-water'",
+          "refId": "B"
         }
       ],
       "title": "Accommodations",
@@ -5608,7 +8174,7 @@
     },
     {
       "datasource": {
-        "type": "grafana-postgresql-datasource",
+        "type": "info8fcc-greptimedb-datasource",
         "uid": "${datasource}"
       },
       "fieldConfig": {
@@ -5627,18 +8193,17 @@
                 "value": 0
               }
             ]
-          },
-          "unit": "flowlpm"
+          }
         },
         "overrides": []
       },
       "gridPos": {
-        "h": 5,
+        "h": 6,
         "w": 24,
         "x": 0,
         "y": 28
       },
-      "id": 21,
+      "id": 24,
       "options": {
         "inlineEditing": false,
         "panZoom": false,
@@ -5670,7 +8235,7 @@
                 }
               },
               "config": {
-                "align": "center",
+                "align": "right",
                 "color": {
                   "fixed": "#000000"
                 },
@@ -5691,7 +8256,7 @@
                 "left": 224,
                 "rotation": 0,
                 "top": 80,
-                "width": 180
+                "width": 107
               },
               "type": "metric-value"
             },
@@ -5727,7 +8292,7 @@
                 "left": 15,
                 "rotation": 0,
                 "top": 80,
-                "width": 96
+                "width": 95.9609756097561
               },
               "type": "text"
             },
@@ -5743,7 +8308,7 @@
                 }
               },
               "config": {
-                "align": "center",
+                "align": "right",
                 "color": {
                   "fixed": "#000000"
                 },
@@ -5764,7 +8329,7 @@
                 "left": 224,
                 "rotation": 0,
                 "top": 10,
-                "width": 180
+                "width": 107
               },
               "type": "metric-value"
             },
@@ -5786,7 +8351,7 @@
                 },
                 "size": 16,
                 "text": {
-                  "fixed": " "
+                  "fixed": "Crew mess"
                 },
                 "valign": "middle"
               },
@@ -5816,7 +8381,7 @@
                 }
               },
               "config": {
-                "align": "center",
+                "align": "right",
                 "color": {
                   "fixed": "#000000"
                 },
@@ -5837,7 +8402,7 @@
                 "left": 700,
                 "rotation": 0,
                 "top": 80,
-                "width": 180
+                "width": 107
               },
               "type": "metric-value"
             },
@@ -5873,7 +8438,7 @@
                 "left": 464,
                 "rotation": 0,
                 "top": 80,
-                "width": 96
+                "width": 95.96665954589844
               },
               "type": "text"
             },
@@ -5889,7 +8454,7 @@
                 }
               },
               "config": {
-                "align": "center",
+                "align": "right",
                 "color": {
                   "fixed": "#000000"
                 },
@@ -5910,7 +8475,7 @@
                 "left": 224,
                 "rotation": 0,
                 "top": 45,
-                "width": 180
+                "width": 107
               },
               "type": "metric-value"
             },
@@ -5946,7 +8511,7 @@
                 "left": 15,
                 "rotation": 0,
                 "top": 45,
-                "width": 96
+                "width": 95.9609756097561
               },
               "type": "text"
             },
@@ -5962,7 +8527,7 @@
                 }
               },
               "config": {
-                "align": "center",
+                "align": "right",
                 "color": {
                   "fixed": "#000000"
                 },
@@ -5983,7 +8548,7 @@
                 "left": 700,
                 "rotation": 0,
                 "top": 10,
-                "width": 180
+                "width": 107
               },
               "type": "metric-value"
             },
@@ -6035,7 +8600,7 @@
                 }
               },
               "config": {
-                "align": "center",
+                "align": "right",
                 "color": {
                   "fixed": "#000000"
                 },
@@ -6056,7 +8621,7 @@
                 "left": 700,
                 "rotation": 0,
                 "top": 45,
-                "width": 180
+                "width": 107
               },
               "type": "metric-value"
             },
@@ -6090,6 +8655,7 @@
               "placement": {
                 "height": 30,
                 "left": 464,
+                "rotation": 0,
                 "top": 45,
                 "width": 123
               },
@@ -6107,7 +8673,7 @@
                 }
               },
               "config": {
-                "align": "center",
+                "align": "right",
                 "color": {
                   "fixed": "#000000"
                 },
@@ -6128,7 +8694,7 @@
                 "left": 1259,
                 "rotation": 0,
                 "top": 10,
-                "width": 180
+                "width": 107
               },
               "type": "metric-value"
             },
@@ -6180,7 +8746,7 @@
                 }
               },
               "config": {
-                "align": "center",
+                "align": "right",
                 "color": {
                   "fixed": "#000000"
                 },
@@ -6201,7 +8767,7 @@
                 "left": 1259,
                 "rotation": 0,
                 "top": 45,
-                "width": 180
+                "width": 107
               },
               "type": "metric-value"
             },
@@ -6259,7 +8825,7 @@
                 },
                 "size": 12,
                 "text": {
-                  "field": "hotwater_crew_mess_flow_tag",
+                  "field": "crew_mess_flow_tag",
                   "fixed": " ",
                   "mode": "field"
                 },
@@ -6297,7 +8863,7 @@
                 },
                 "size": 12,
                 "text": {
-                  "field": "hotwater_galley_2_flow_tag",
+                  "field": "galley_2_flow_tag",
                   "fixed": " ",
                   "mode": "field"
                 },
@@ -6335,7 +8901,7 @@
                 },
                 "size": 12,
                 "text": {
-                  "field": "hotwater_dayhead_flow_tag",
+                  "field": "dayhead_flow_tag",
                   "fixed": " ",
                   "mode": "field"
                 },
@@ -6373,7 +8939,7 @@
                 },
                 "size": 12,
                 "text": {
-                  "field": "hotwater_lazaret_flow_tag",
+                  "field": "lazaret_flow_tag",
                   "fixed": " ",
                   "mode": "field"
                 },
@@ -6411,7 +8977,7 @@
                 },
                 "size": 12,
                 "text": {
-                  "field": "hotwater_laundry_ps_flow_tag",
+                  "field": "laundry_ps_flow_tag",
                   "fixed": " ",
                   "mode": "field"
                 },
@@ -6449,7 +9015,7 @@
                 },
                 "size": 12,
                 "text": {
-                  "field": "hotwater_deckhouse_flow_tag",
+                  "field": "deckhouse_flow_tag",
                   "fixed": " ",
                   "mode": "field"
                 },
@@ -6464,7 +9030,7 @@
                 "height": 30,
                 "left": 587,
                 "rotation": 0,
-                "top": 46,
+                "top": 45,
                 "width": 113
               },
               "type": "text"
@@ -6487,7 +9053,7 @@
                 },
                 "size": 12,
                 "text": {
-                  "field": "hotwater_deck_fr48_sb_tech_cor_flow_tag",
+                  "field": "deck_fr48_sb_tech_cor_flow_tag",
                   "fixed": " ",
                   "mode": "field"
                 },
@@ -6525,7 +9091,7 @@
                 },
                 "size": 12,
                 "text": {
-                  "field": "hotwater_main_tech_space_flow_tag",
+                  "field": "main_tech_space_flow_tag",
                   "fixed": " ",
                   "mode": "field"
                 },
@@ -6544,6 +9110,584 @@
                 "width": 113
               },
               "type": "text"
+            },
+            {
+              "background": {
+                "color": {
+                  "fixed": "#D9D9D9"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "right",
+                "color": {
+                  "fixed": "#000000"
+                },
+                "size": 18,
+                "text": {
+                  "fixed": " ",
+                  "mode": "fixed"
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "name": "space1",
+              "placement": {
+                "height": 30,
+                "left": 331,
+                "rotation": 0,
+                "top": 10,
+                "width": 15
+              },
+              "type": "metric-value"
+            },
+            {
+              "background": {
+                "color": {
+                  "fixed": "#D9D9D9"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "left",
+                "color": {
+                  "fixed": "#000000"
+                },
+                "size": 18,
+                "text": {
+                  "field": "unit",
+                  "mode": "field"
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "name": "Element 35",
+              "placement": {
+                "height": 30,
+                "left": 346,
+                "rotation": 0,
+                "top": 10,
+                "width": 58
+              },
+              "type": "metric-value"
+            },
+            {
+              "background": {
+                "color": {
+                  "fixed": "#D9D9D9"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "right",
+                "color": {
+                  "fixed": "#000000"
+                },
+                "size": 18,
+                "text": {
+                  "fixed": " ",
+                  "mode": "fixed"
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "name": "Element 36",
+              "placement": {
+                "height": 30,
+                "left": 331,
+                "top": 45,
+                "width": 15
+              },
+              "type": "metric-value"
+            },
+            {
+              "background": {
+                "color": {
+                  "fixed": "#D9D9D9"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "left",
+                "color": {
+                  "fixed": "#000000"
+                },
+                "size": 18,
+                "text": {
+                  "field": "unit",
+                  "mode": "field"
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "name": "Element 37",
+              "placement": {
+                "height": 30,
+                "left": 346,
+                "top": 45,
+                "width": 58
+              },
+              "type": "metric-value"
+            },
+            {
+              "background": {
+                "color": {
+                  "fixed": "#D9D9D9"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "right",
+                "color": {
+                  "fixed": "#000000"
+                },
+                "size": 18,
+                "text": {
+                  "fixed": " ",
+                  "mode": "fixed"
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "name": "Element 38",
+              "placement": {
+                "height": 30,
+                "left": 331,
+                "top": 80,
+                "width": 15
+              },
+              "type": "metric-value"
+            },
+            {
+              "background": {
+                "color": {
+                  "fixed": "#D9D9D9"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "left",
+                "color": {
+                  "fixed": "#000000"
+                },
+                "size": 18,
+                "text": {
+                  "field": "unit",
+                  "mode": "field"
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "name": "Element 39",
+              "placement": {
+                "height": 30,
+                "left": 346,
+                "top": 80,
+                "width": 58
+              },
+              "type": "metric-value"
+            },
+            {
+              "background": {
+                "color": {
+                  "fixed": "#D9D9D9"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "right",
+                "color": {
+                  "fixed": "#000000"
+                },
+                "size": 18,
+                "text": {
+                  "fixed": " ",
+                  "mode": "fixed"
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "name": "Element 41",
+              "placement": {
+                "height": 30,
+                "left": 807,
+                "top": 10,
+                "width": 15
+              },
+              "type": "metric-value"
+            },
+            {
+              "background": {
+                "color": {
+                  "fixed": "#D9D9D9"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "left",
+                "color": {
+                  "fixed": "#000000"
+                },
+                "size": 18,
+                "text": {
+                  "field": "unit",
+                  "mode": "field"
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "name": "Element 42",
+              "placement": {
+                "height": 30,
+                "left": 822,
+                "top": 10,
+                "width": 58
+              },
+              "type": "metric-value"
+            },
+            {
+              "background": {
+                "color": {
+                  "fixed": "#D9D9D9"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "right",
+                "color": {
+                  "fixed": "#000000"
+                },
+                "size": 18,
+                "text": {
+                  "fixed": " ",
+                  "mode": "fixed"
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "name": "Element 43",
+              "placement": {
+                "height": 30,
+                "left": 807,
+                "top": 45,
+                "width": 15
+              },
+              "type": "metric-value"
+            },
+            {
+              "background": {
+                "color": {
+                  "fixed": "#D9D9D9"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "left",
+                "color": {
+                  "fixed": "#000000"
+                },
+                "size": 18,
+                "text": {
+                  "field": "unit",
+                  "mode": "field"
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "name": "Element 44",
+              "placement": {
+                "height": 30,
+                "left": 822,
+                "top": 45,
+                "width": 58
+              },
+              "type": "metric-value"
+            },
+            {
+              "background": {
+                "color": {
+                  "fixed": "#D9D9D9"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "right",
+                "color": {
+                  "fixed": "#000000"
+                },
+                "size": 18,
+                "text": {
+                  "fixed": " ",
+                  "mode": "fixed"
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "name": "Element 45",
+              "placement": {
+                "height": 30,
+                "left": 807,
+                "top": 80,
+                "width": 15
+              },
+              "type": "metric-value"
+            },
+            {
+              "background": {
+                "color": {
+                  "fixed": "#D9D9D9"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "left",
+                "color": {
+                  "fixed": "#000000"
+                },
+                "size": 18,
+                "text": {
+                  "field": "unit",
+                  "mode": "field"
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "name": "Element 46",
+              "placement": {
+                "height": 30,
+                "left": 822,
+                "top": 80,
+                "width": 58
+              },
+              "type": "metric-value"
+            },
+            {
+              "background": {
+                "color": {
+                  "fixed": "#D9D9D9"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "right",
+                "color": {
+                  "fixed": "#000000"
+                },
+                "size": 18,
+                "text": {
+                  "fixed": " ",
+                  "mode": "fixed"
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "name": "Element 49",
+              "placement": {
+                "height": 30,
+                "left": 1366,
+                "top": 10,
+                "width": 15
+              },
+              "type": "metric-value"
+            },
+            {
+              "background": {
+                "color": {
+                  "fixed": "#D9D9D9"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "left",
+                "color": {
+                  "fixed": "#000000"
+                },
+                "size": 18,
+                "text": {
+                  "field": "unit",
+                  "mode": "field"
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "name": "Element 50",
+              "placement": {
+                "height": 30,
+                "left": 1381,
+                "top": 10,
+                "width": 58
+              },
+              "type": "metric-value"
+            },
+            {
+              "background": {
+                "color": {
+                  "fixed": "#D9D9D9"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "right",
+                "color": {
+                  "fixed": "#000000"
+                },
+                "size": 18,
+                "text": {
+                  "fixed": " ",
+                  "mode": "fixed"
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "name": "Element 51",
+              "placement": {
+                "height": 30,
+                "left": 1366,
+                "top": 45,
+                "width": 15
+              },
+              "type": "metric-value"
+            },
+            {
+              "background": {
+                "color": {
+                  "fixed": "#D9D9D9"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "left",
+                "color": {
+                  "fixed": "#000000"
+                },
+                "size": 18,
+                "text": {
+                  "field": "unit",
+                  "mode": "field"
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "name": "Element 52",
+              "placement": {
+                "height": 30,
+                "left": 1381,
+                "top": 45,
+                "width": 58
+              },
+              "type": "metric-value"
             }
           ],
           "name": "Element 1768816105883",
@@ -6566,6 +9710,10 @@
       "pluginVersion": "12.3.0",
       "targets": [
         {
+          "datasource": {
+            "type": "info8fcc-greptimedb-datasource",
+            "uid": "${datasource}"
+          },
           "editorMode": "code",
           "editorType": "sql",
           "format": 1,
@@ -6583,7 +9731,7 @@
           "pluginVersion": "2.1.4",
           "queryType": "table",
           "rawQuery": true,
-          "rawSql": "SELECT\r\n  timestamp                                    AS time,\r\n  hotwater_crew_mess_flow__value               AS crew_mess_flow,\r\n  hotwater_galley_2_flow__value                AS galley_2_flow,\r\n  hotwater_dayhead_flow__value                 AS dayhead_flow,\r\n  hotwater_lazaret_flow__value                 AS lazaret_flow,\r\n  hotwater_laundry_ps_1_flow__value            AS laundry_ps_flow,\r\n  hotwater_deckhouse_flow__value               AS deckhouse_flow,\r\n  hotwater_deck_fr_48_sb_tech_cor_flow__value  AS deck_fr_48_sb_tech_cor_flow,\r\n  hotwater_main_tech_space_flow__value         AS main_tech_space_flow\r\nFROM public.marpower__250000_fresh_water\r\nORDER BY timestamp DESC\r\nLIMIT 1",
+          "rawSql": "SELECT\r\n  timestamp AS time,\r\n  CASE WHEN $use_volume THEN 'L' ELSE 'L/min' END AS unit,\r\n  CASE WHEN $use_volume THEN hotwater_crew_mess_flow__value * $volume_time / 60.0 ELSE hotwater_crew_mess_flow__value END AS crew_mess_flow,\r\n  CASE WHEN $use_volume THEN hotwater_galley_2_flow__value * $volume_time / 60.0 ELSE hotwater_galley_2_flow__value END AS galley_2_flow,\r\n  CASE WHEN $use_volume THEN hotwater_dayhead_flow__value * $volume_time / 60.0 ELSE hotwater_dayhead_flow__value END AS dayhead_flow,\r\n  CASE WHEN $use_volume THEN hotwater_lazaret_flow__value * $volume_time / 60.0 ELSE hotwater_lazaret_flow__value END AS lazaret_flow,\r\n  CASE WHEN $use_volume THEN hotwater_laundry_ps_1_flow__value * $volume_time / 60.0 ELSE hotwater_laundry_ps_1_flow__value END AS laundry_ps_flow,\r\n  CASE WHEN $use_volume THEN hotwater_deckhouse_flow__value * $volume_time / 60.0 ELSE hotwater_deckhouse_flow__value END AS deckhouse_flow,\r\n  CASE WHEN $use_volume THEN hotwater_deck_fr_48_sb_tech_cor_flow__value * $volume_time / 60.0 ELSE hotwater_deck_fr_48_sb_tech_cor_flow__value END AS deck_fr_48_sb_tech_cor_flow,\r\n  CASE WHEN $use_volume THEN hotwater_main_tech_space_flow__value * $volume_time / 60.0 ELSE hotwater_main_tech_space_flow__value END AS main_tech_space_flow\r\nFROM public.marpower__250000_fresh_water\r\nORDER BY timestamp DESC\r\nLIMIT 1;",
           "refId": "A",
           "sql": {
             "columns": [
@@ -6604,34 +9752,28 @@
           }
         },
         {
-          "dataset": "dev",
           "datasource": {
-            "type": "grafana-postgresql-datasource",
+            "type": "info8fcc-greptimedb-datasource",
             "uid": "${datasource}"
           },
-          "editorMode": "code",
-          "format": "table",
+          "editorType": "sql",
+          "format": 1,
           "hide": false,
-          "rawQuery": true,
-          "rawSql": "SELECT\r\n  MAX(CASE WHEN mqtt_json_path = LOWER('HOTWATER_CREW_MESS_FLOW') THEN '(' || yard_tag || ')' ELSE NULL END)               AS hotwater_crew_mess_flow_tag,\r\n  MAX(CASE WHEN mqtt_json_path = LOWER('HOTWATER_GALLEY_2_FLOW') THEN '(' || yard_tag || ')' ELSE NULL END)               AS hotwater_galley_2_flow_tag,\r\n  MAX(CASE WHEN mqtt_json_path = LOWER('HOTWATER_DAYHEAD_FLOW') THEN '(' || yard_tag || ')' ELSE NULL END)                AS hotwater_dayhead_flow_tag,\r\n  MAX(CASE WHEN mqtt_json_path = LOWER('HOTWATER_LAZARET_FLOW') THEN '(' || yard_tag || ')' ELSE NULL END)                 AS hotwater_lazaret_flow_tag,\r\n  MAX(CASE WHEN mqtt_json_path = LOWER('HOTWATER_LAUNDRY_PS_1_FLOW') THEN '(' || yard_tag || ')' ELSE NULL END)             AS hotwater_laundry_ps_flow_tag,\r\n  MAX(CASE WHEN mqtt_json_path = LOWER('HOTWATER_DECKHOUSE_FLOW') THEN '(' || yard_tag || ')' ELSE NULL END)              AS hotwater_deckhouse_flow_tag,\r\n  MAX(CASE WHEN mqtt_json_path = LOWER('HOTWATER_DECK_FR48_SB_TECH_COR_FLOW') THEN '(' || yard_tag || ')' ELSE NULL END)   AS hotwater_deck_fr48_sb_tech_cor_flow_tag,\r\n  MAX(CASE WHEN mqtt_json_path = LOWER('HOTWATER_MAIN_TECH_SPACE_FLOW') THEN '(' || yard_tag || ')' ELSE NULL END)        AS hotwater_main_tech_space_flow_tag\r\nFROM marpower.io_metadata_marpower\r\nWHERE mqtt_topic = 'marpower/250000-fresh-water'",
-          "refId": "B",
-          "sql": {
-            "columns": [
-              {
-                "parameters": [],
-                "type": "function"
-              }
-            ],
-            "groupBy": [
-              {
-                "property": {
-                  "type": "string"
-                },
-                "type": "groupBy"
-              }
-            ],
-            "limit": 50
-          }
+          "meta": {
+            "builderOptions": {
+              "columns": [],
+              "database": "",
+              "limit": 1000,
+              "meta": {},
+              "mode": "list",
+              "queryType": "table",
+              "table": ""
+            }
+          },
+          "pluginVersion": "2.1.4",
+          "queryType": "table",
+          "rawSql": "SELECT\r\n  MAX(CASE WHEN mqtt_json_path = LOWER('HOTWATER_CREW_MESS_FLOW') THEN '(' || yard_tag || ')' ELSE NULL END)               AS crew_mess_flow_tag,\r\n  MAX(CASE WHEN mqtt_json_path = LOWER('HOTWATER_GALLEY_2_FLOW') THEN '(' || yard_tag || ')' ELSE NULL END)               AS galley_2_flow_tag,\r\n  MAX(CASE WHEN mqtt_json_path = LOWER('HOTWATER_DAYHEAD_FLOW') THEN '(' || yard_tag || ')' ELSE NULL END)                AS dayhead_flow_tag,\r\n  MAX(CASE WHEN mqtt_json_path = LOWER('HOTWATER_LAZARET_FLOW') THEN '(' || yard_tag || ')' ELSE NULL END)                 AS lazaret_flow_tag,\r\n  MAX(CASE WHEN mqtt_json_path = LOWER('HOTWATER_LAUNDRY_PS_1_FLOW') THEN '(' || yard_tag || ')' ELSE NULL END)             AS laundry_ps_flow_tag,\r\n  MAX(CASE WHEN mqtt_json_path = LOWER('HOTWATER_DECKHOUSE_FLOW') THEN '(' || yard_tag || ')' ELSE NULL END)              AS deckhouse_flow_tag,\r\n  MAX(CASE WHEN mqtt_json_path = LOWER('HOTWATER_DECK_FR48_SB_TECH_COR_FLOW') THEN '(' || yard_tag || ')' ELSE NULL END)   AS deck_fr48_sb_tech_cor_flow_tag,\r\n  MAX(CASE WHEN mqtt_json_path = LOWER('HOTWATER_MAIN_TECH_SPACE_FLOW') THEN '(' || yard_tag || ')' ELSE NULL END)        AS main_tech_space_flow_tag\r\nFROM marpower__io_metadata\r\nWHERE mqtt_topic = 'marpower/250000-fresh-water'",
+          "refId": "B"
         }
       ],
       "title": "Other areas",
@@ -6643,7 +9785,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 33
+        "y": 34
       },
       "id": 17,
       "panels": [],
@@ -6652,7 +9794,7 @@
     },
     {
       "datasource": {
-        "type": "grafana-postgresql-datasource",
+        "type": "info8fcc-greptimedb-datasource",
         "uid": "${datasource}"
       },
       "fieldConfig": {
@@ -6670,8 +9812,7 @@
                 "value": 0
               }
             ]
-          },
-          "unit": "flowlpm"
+          }
         },
         "overrides": []
       },
@@ -6679,7 +9820,7 @@
         "h": 6,
         "w": 9,
         "x": 0,
-        "y": 34
+        "y": 35
       },
       "id": 8,
       "options": {
@@ -6713,7 +9854,7 @@
                 }
               },
               "config": {
-                "align": "center",
+                "align": "right",
                 "color": {
                   "fixed": "#000000"
                 },
@@ -6732,8 +9873,9 @@
               "placement": {
                 "height": 30,
                 "left": 364,
+                "rotation": 0,
                 "top": 10,
-                "width": 180
+                "width": 107
               },
               "type": "metric-value"
             },
@@ -6784,7 +9926,7 @@
                 }
               },
               "config": {
-                "align": "center",
+                "align": "right",
                 "color": {
                   "fixed": "#000000"
                 },
@@ -6795,6 +9937,7 @@
                 },
                 "valign": "middle"
               },
+              "connections": [],
               "constraint": {
                 "horizontal": "left",
                 "vertical": "top"
@@ -6803,8 +9946,9 @@
               "placement": {
                 "height": 30,
                 "left": 364,
+                "rotation": 0,
                 "top": 45,
-                "width": 180
+                "width": 107
               },
               "type": "metric-value"
             },
@@ -6855,7 +9999,7 @@
                 }
               },
               "config": {
-                "align": "center",
+                "align": "right",
                 "color": {
                   "fixed": "#000000"
                 },
@@ -6874,8 +10018,9 @@
               "placement": {
                 "height": 30,
                 "left": 364,
+                "rotation": 0,
                 "top": 80,
-                "width": 180
+                "width": 107
               },
               "type": "metric-value"
             },
@@ -6926,7 +10071,7 @@
                 }
               },
               "config": {
-                "align": "center",
+                "align": "right",
                 "color": {
                   "fixed": "#000000"
                 },
@@ -6945,8 +10090,9 @@
               "placement": {
                 "height": 30,
                 "left": 364,
+                "rotation": 0,
                 "top": 115,
-                "width": 180
+                "width": 107
               },
               "type": "metric-value"
             },
@@ -7136,6 +10282,296 @@
                 "width": 98
               },
               "type": "text"
+            },
+            {
+              "background": {
+                "color": {
+                  "fixed": "#D9D9D9"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "right",
+                "color": {
+                  "fixed": "#000000"
+                },
+                "size": 18,
+                "text": {
+                  "fixed": " ",
+                  "mode": "fixed"
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "name": "Element 13",
+              "placement": {
+                "height": 30,
+                "left": 471,
+                "rotation": 0,
+                "top": 10,
+                "width": 15
+              },
+              "type": "metric-value"
+            },
+            {
+              "background": {
+                "color": {
+                  "fixed": "#D9D9D9"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "left",
+                "color": {
+                  "fixed": "#000000"
+                },
+                "size": 18,
+                "text": {
+                  "field": "unit",
+                  "mode": "field"
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "name": "Element 14",
+              "placement": {
+                "height": 30,
+                "left": 486,
+                "rotation": 0,
+                "top": 10,
+                "width": 58
+              },
+              "type": "metric-value"
+            },
+            {
+              "background": {
+                "color": {
+                  "fixed": "#D9D9D9"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "right",
+                "color": {
+                  "fixed": "#000000"
+                },
+                "size": 18,
+                "text": {
+                  "fixed": " ",
+                  "mode": "fixed"
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "name": "Element 15",
+              "placement": {
+                "height": 30,
+                "left": 471,
+                "top": 45,
+                "width": 15
+              },
+              "type": "metric-value"
+            },
+            {
+              "background": {
+                "color": {
+                  "fixed": "#D9D9D9"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "left",
+                "color": {
+                  "fixed": "#000000"
+                },
+                "size": 18,
+                "text": {
+                  "field": "unit",
+                  "mode": "field"
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "name": "Element 16",
+              "placement": {
+                "height": 30,
+                "left": 486,
+                "top": 45,
+                "width": 58
+              },
+              "type": "metric-value"
+            },
+            {
+              "background": {
+                "color": {
+                  "fixed": "#D9D9D9"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "right",
+                "color": {
+                  "fixed": "#000000"
+                },
+                "size": 18,
+                "text": {
+                  "fixed": " ",
+                  "mode": "fixed"
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "name": "Element 17",
+              "placement": {
+                "height": 30,
+                "left": 471,
+                "top": 80,
+                "width": 15
+              },
+              "type": "metric-value"
+            },
+            {
+              "background": {
+                "color": {
+                  "fixed": "#D9D9D9"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "left",
+                "color": {
+                  "fixed": "#000000"
+                },
+                "size": 18,
+                "text": {
+                  "field": "unit",
+                  "mode": "field"
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "name": "Element 18",
+              "placement": {
+                "height": 30,
+                "left": 486,
+                "top": 80,
+                "width": 58
+              },
+              "type": "metric-value"
+            },
+            {
+              "background": {
+                "color": {
+                  "fixed": "#D9D9D9"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "right",
+                "color": {
+                  "fixed": "#000000"
+                },
+                "size": 18,
+                "text": {
+                  "fixed": " ",
+                  "mode": "fixed"
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "name": "Element 19",
+              "placement": {
+                "height": 30,
+                "left": 471,
+                "top": 115,
+                "width": 15
+              },
+              "type": "metric-value"
+            },
+            {
+              "background": {
+                "color": {
+                  "fixed": "#D9D9D9"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "left",
+                "color": {
+                  "fixed": "#000000"
+                },
+                "size": 18,
+                "text": {
+                  "field": "unit",
+                  "mode": "field"
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "name": "Element 20",
+              "placement": {
+                "height": 30,
+                "left": 486,
+                "top": 115,
+                "width": 58
+              },
+              "type": "metric-value"
             }
           ],
           "name": "Element 1768816105883",
@@ -7158,6 +10594,10 @@
       "pluginVersion": "12.3.0",
       "targets": [
         {
+          "datasource": {
+            "type": "info8fcc-greptimedb-datasource",
+            "uid": "${datasource}"
+          },
           "editorMode": "code",
           "editorType": "sql",
           "format": 1,
@@ -7175,7 +10615,7 @@
           "pluginVersion": "2.1.4",
           "queryType": "table",
           "rawQuery": true,
-          "rawSql": "SELECT\r\n  timestamp                            AS time,\r\n  technical_room_energ_rec_flow__value AS technical_room_energ_rec_flow,\r\n  flow_sensor_25001137_c_1__value      AS flow_sensor_25001137c1,\r\n  flow_sensor_25001037_c_3__value      AS flow_sensor_25001037c3,\r\n  flow_sensor_25001037_c_4__value      AS flow_sensor_25001037c4\r\nFROM public.marpower__250000_fresh_water\r\nORDER BY timestamp DESC\r\nLIMIT 1",
+          "rawSql": "SELECT\r\n  timestamp AS time,\r\n  CASE WHEN $use_volume THEN 'L' ELSE 'L/min' END AS unit,\r\n  CASE WHEN $use_volume THEN technical_room_energ_rec_flow__value * $volume_time / 60.0 ELSE technical_room_energ_rec_flow__value END AS technical_room_energ_rec_flow,\r\n  CASE WHEN $use_volume THEN flow_sensor_25001137_c_1__value * $volume_time / 60.0 ELSE flow_sensor_25001137_c_1__value END AS flow_sensor_25001137c1,\r\n  CASE WHEN $use_volume THEN flow_sensor_25001037_c_3__value * $volume_time / 60.0 ELSE flow_sensor_25001037_c_3__value END AS flow_sensor_25001037c3,\r\n  CASE WHEN $use_volume THEN flow_sensor_25001037_c_4__value * $volume_time / 60.0 ELSE flow_sensor_25001037_c_4__value END AS flow_sensor_25001037c4\r\nFROM public.marpower__250000_fresh_water\r\nORDER BY timestamp DESC\r\nLIMIT 1;",
           "refId": "A",
           "sql": {
             "columns": [
@@ -7196,34 +10636,28 @@
           }
         },
         {
-          "dataset": "dev",
           "datasource": {
-            "type": "grafana-postgresql-datasource",
+            "type": "info8fcc-greptimedb-datasource",
             "uid": "${datasource}"
           },
-          "editorMode": "code",
-          "format": "table",
+          "editorType": "sql",
+          "format": 1,
           "hide": false,
-          "rawQuery": true,
-          "rawSql": "\r\nSELECT\r\n  MAX(CASE WHEN mqtt_json_path = LOWER('TECHNICAL_ROOM_ENERG_REC_FLOW') THEN '(' || yard_tag || ')' ELSE NULL END) AS technical_room_energ_rec_flow_tag,\r\n  MAX(CASE WHEN mqtt_json_path = LOWER('FLOW_SENSOR_25001137C1') THEN '(' || yard_tag || ')' ELSE NULL END)        AS flow_sensor_25001137c1_tag,\r\n  MAX(CASE WHEN mqtt_json_path = LOWER('FLOW_SENSOR_25001037C3') THEN '(' || yard_tag || ')' ELSE NULL END)        AS flow_sensor_25001037c3_tag,\r\n  MAX(CASE WHEN mqtt_json_path = LOWER('FLOW_SENSOR_25001037C4') THEN '(' || yard_tag || ')' ELSE NULL END)        AS flow_sensor_25001037c4_tag\r\nFROM marpower.io_metadata_marpower\r\nWHERE mqtt_topic = 'marpower/250000-fresh-water'",
-          "refId": "B",
-          "sql": {
-            "columns": [
-              {
-                "parameters": [],
-                "type": "function"
-              }
-            ],
-            "groupBy": [
-              {
-                "property": {
-                  "type": "string"
-                },
-                "type": "groupBy"
-              }
-            ],
-            "limit": 50
-          }
+          "meta": {
+            "builderOptions": {
+              "columns": [],
+              "database": "",
+              "limit": 1000,
+              "meta": {},
+              "mode": "list",
+              "queryType": "table",
+              "table": ""
+            }
+          },
+          "pluginVersion": "2.1.4",
+          "queryType": "table",
+          "rawSql": "\r\nSELECT\r\n  MAX(CASE WHEN mqtt_json_path = LOWER('TECHNICAL_ROOM_ENERG_REC_FLOW') THEN '(' || yard_tag || ')' ELSE NULL END) AS technical_room_energ_rec_flow_tag,\r\n  MAX(CASE WHEN mqtt_json_path = LOWER('FLOW_SENSOR_25001137C1') THEN '(' || yard_tag || ')' ELSE NULL END)        AS flow_sensor_25001137c1_tag,\r\n  MAX(CASE WHEN mqtt_json_path = LOWER('FLOW_SENSOR_25001037C3') THEN '(' || yard_tag || ')' ELSE NULL END)        AS flow_sensor_25001037c3_tag,\r\n  MAX(CASE WHEN mqtt_json_path = LOWER('FLOW_SENSOR_25001037C4') THEN '(' || yard_tag || ')' ELSE NULL END)        AS flow_sensor_25001037c4_tag\r\nFROM marpower__io_metadata\r\nWHERE mqtt_topic = 'marpower/250000-fresh-water'",
+          "refId": "B"
         }
       ],
       "title": "Other flow",
@@ -7258,7 +10692,7 @@
         "h": 7,
         "w": 9,
         "x": 9,
-        "y": 34
+        "y": 35
       },
       "id": 10,
       "options": {
@@ -7895,10 +11329,24 @@
             "uid": "${datasource}"
           },
           "editorMode": "code",
-          "format": "table",
+          "editorType": "sql",
+          "format": 1,
           "hide": false,
+          "meta": {
+            "builderOptions": {
+              "columns": [],
+              "database": "",
+              "limit": 1000,
+              "meta": {},
+              "mode": "list",
+              "queryType": "table",
+              "table": ""
+            }
+          },
+          "pluginVersion": "2.1.4",
+          "queryType": "table",
           "rawQuery": true,
-          "rawSql": "SELECT\r\n  MAX(CASE WHEN mqtt_json_path = LOWER('ENERGY_REC_SYSTEM_TEMP4') THEN '(' || yard_tag || ')' ELSE NULL END) AS energy_rec_temp4_tag,\r\n  MAX(CASE WHEN mqtt_json_path = LOWER('ENERGY_REC_SYSTEM_TEMP5') THEN '(' || yard_tag || ')' ELSE NULL END) AS energy_rec_temp5_tag,\r\n  MAX(CASE WHEN mqtt_json_path = LOWER('ENERGY_REC_SYSTEM_TEMP6') THEN '(' || yard_tag || ')' ELSE NULL END) AS energy_rec_temp6_tag,\r\n  MAX(CASE WHEN mqtt_json_path = LOWER('ENERGY_REC_SYSTEM_TEMP7') THEN '(' || yard_tag || ')' ELSE NULL END) AS energy_rec_temp7_tag,\r\n  MAX(CASE WHEN mqtt_json_path = LOWER('ENERGY_REC_SYSTEM_TEMP8') THEN '(' || yard_tag || ')' ELSE NULL END) AS energy_rec_temp8_tag\r\nFROM marpower.io_metadata_marpower\r\nWHERE mqtt_topic = 'marpower/250000-fresh-water'",
+          "rawSql": "SELECT\r\n  MAX(CASE WHEN mqtt_json_path = LOWER('ENERGY_REC_SYSTEM_TEMP4') THEN '(' || yard_tag || ')' ELSE NULL END) AS energy_rec_temp4_tag,\r\n  MAX(CASE WHEN mqtt_json_path = LOWER('ENERGY_REC_SYSTEM_TEMP5') THEN '(' || yard_tag || ')' ELSE NULL END) AS energy_rec_temp5_tag,\r\n  MAX(CASE WHEN mqtt_json_path = LOWER('ENERGY_REC_SYSTEM_TEMP6') THEN '(' || yard_tag || ')' ELSE NULL END) AS energy_rec_temp6_tag,\r\n  MAX(CASE WHEN mqtt_json_path = LOWER('ENERGY_REC_SYSTEM_TEMP7') THEN '(' || yard_tag || ')' ELSE NULL END) AS energy_rec_temp7_tag,\r\n  MAX(CASE WHEN mqtt_json_path = LOWER('ENERGY_REC_SYSTEM_TEMP8') THEN '(' || yard_tag || ')' ELSE NULL END) AS energy_rec_temp8_tag\r\nFROM marpower__io_metadata\r\nWHERE mqtt_topic = 'marpower/250000-fresh-water'",
           "refId": "B",
           "sql": {
             "columns": [
@@ -7943,7 +11391,7 @@
               }
             ]
           },
-          "unit": "percent"
+          "unit": "mamp"
         },
         "overrides": []
       },
@@ -7951,7 +11399,7 @@
         "h": 4,
         "w": 9,
         "x": 0,
-        "y": 40
+        "y": 41
       },
       "id": 9,
       "options": {
@@ -8258,10 +11706,24 @@
             "uid": "${datasource}"
           },
           "editorMode": "code",
-          "format": "table",
+          "editorType": "sql",
+          "format": 1,
           "hide": false,
+          "meta": {
+            "builderOptions": {
+              "columns": [],
+              "database": "",
+              "limit": 1000,
+              "meta": {},
+              "mode": "list",
+              "queryType": "table",
+              "table": ""
+            }
+          },
+          "pluginVersion": "2.1.4",
+          "queryType": "table",
           "rawQuery": true,
-          "rawSql": "SELECT\r\n  MAX(CASE WHEN mqtt_json_path = LOWER('TANK_1_FR_45_PS_LEVEL') THEN '(' || yard_tag || ')' ELSE NULL END) AS fresh_water_tank_1_level_tag,\r\n  MAX(CASE WHEN mqtt_json_path = LOWER('TANK_2_FR_45_SB_LEVEL') THEN '(' || yard_tag || ')' ELSE NULL END) AS fresh_water_tank_2_level_tag\r\nFROM marpower.io_metadata_marpower\r\nWHERE mqtt_topic = 'marpower/250000-fresh-water'",
+          "rawSql": "SELECT\r\n  MAX(CASE WHEN mqtt_json_path = LOWER('TANK_1_FR_45_PS_LEVEL') THEN '(' || yard_tag || ')' ELSE NULL END) AS fresh_water_tank_1_level_tag,\r\n  MAX(CASE WHEN mqtt_json_path = LOWER('TANK_2_FR_45_SB_LEVEL') THEN '(' || yard_tag || ')' ELSE NULL END) AS fresh_water_tank_2_level_tag\r\nFROM marpower__io_metadata\r\nWHERE mqtt_topic = 'marpower/250000-fresh-water'",
           "refId": "B",
           "sql": {
             "columns": [
@@ -8314,7 +11776,7 @@
         "h": 3,
         "w": 9,
         "x": 9,
-        "y": 41
+        "y": 42
       },
       "id": 11,
       "options": {
@@ -8512,10 +11974,24 @@
             "uid": "${datasource}"
           },
           "editorMode": "code",
-          "format": "table",
+          "editorType": "sql",
+          "format": 1,
           "hide": false,
+          "meta": {
+            "builderOptions": {
+              "columns": [],
+              "database": "",
+              "limit": 1000,
+              "meta": {},
+              "mode": "list",
+              "queryType": "table",
+              "table": ""
+            }
+          },
+          "pluginVersion": "2.1.4",
+          "queryType": "table",
           "rawQuery": true,
-          "rawSql": "SELECT\r\n  MAX(CASE WHEN mqtt_json_path = LOWER('FR_46_SYSTEM_BEH_PRES_PUMPS_PRESS') THEN '(' || yard_tag || ')' ELSE NULL END) AS fr46_system_pressure_tag\r\nFROM marpower.io_metadata_marpower\r\nWHERE mqtt_topic = 'marpower/250000-fresh-water'",
+          "rawSql": "SELECT\r\n  MAX(CASE WHEN mqtt_json_path = LOWER('FR_46_SYSTEM_BEH_PRES_PUMPS_PRESS') THEN '(' || yard_tag || ')' ELSE NULL END) AS fr46_system_pressure_tag\r\nFROM marpower__io_metadata\r\nWHERE mqtt_topic = 'marpower/250000-fresh-water'",
           "refId": "B",
           "sql": {
             "columns": [
@@ -8559,6 +12035,90 @@
         "refresh": 1,
         "regex": "",
         "type": "datasource"
+      },
+      {
+        "current": {
+          "text": "false",
+          "value": "false"
+        },
+        "description": "Show volume values (L) instead of flow values (L/min).",
+        "label": "Show volume",
+        "name": "use_volume",
+        "options": [
+          {
+            "text": "true",
+            "value": "true"
+          },
+          {
+            "text": "false",
+            "value": "false"
+          }
+        ],
+        "type": "switch"
+      },
+      {
+        "allowCustomValue": false,
+        "current": {
+          "text": "30",
+          "value": "30"
+        },
+        "description": "Select the time used for calculating the volume values (flow * time).",
+        "label": "Volume time (sec)",
+        "name": "volume_time",
+        "options": [
+          {
+            "selected": false,
+            "text": "5",
+            "value": "5"
+          },
+          {
+            "selected": false,
+            "text": "10",
+            "value": "10"
+          },
+          {
+            "selected": false,
+            "text": "20",
+            "value": "20"
+          },
+          {
+            "selected": true,
+            "text": "30",
+            "value": "30"
+          },
+          {
+            "selected": false,
+            "text": "45",
+            "value": "45"
+          },
+          {
+            "selected": false,
+            "text": "60",
+            "value": "60"
+          },
+          {
+            "selected": false,
+            "text": "120",
+            "value": "120"
+          },
+          {
+            "selected": false,
+            "text": "150",
+            "value": "150"
+          },
+          {
+            "selected": false,
+            "text": "180",
+            "value": "180"
+          },
+          {
+            "selected": false,
+            "text": "300",
+            "value": "300"
+          }
+        ],
+        "query": "5,10,20,30,45,60,120,150,180,300",
+        "type": "custom"
       }
     ]
   },
