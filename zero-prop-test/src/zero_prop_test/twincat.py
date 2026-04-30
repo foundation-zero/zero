@@ -33,8 +33,7 @@ class TwincatProject:
     def _get_element_text(self, element: ElementTree.Element, tag: str) -> str:
         child_element = element.find(tag)
         if child_element is None:
-            raise ValueError(
-                f"Symbol element does not contain a {tag} element.")
+            raise ValueError(f"Symbol element does not contain a {tag} element.")
         if child_element.text is None:
             raise ValueError(f"{tag} element does not contain text.")
         return child_element.text
@@ -52,8 +51,7 @@ class TwincatProject:
             return set()
         symbol_elements = symbols.findall("Symbol")
         return {
-            Variable(name=self._variable_name(symbol),
-                     type=self._variable_type(symbol))
+            Variable(name=self._variable_name(symbol), type=self._variable_type(symbol))
             for symbol in symbol_elements
         }
 

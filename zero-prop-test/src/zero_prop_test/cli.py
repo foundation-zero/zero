@@ -74,6 +74,14 @@ class TwinCatCommand(BaseModel):
                 await loop.run(addresses)
 
 
+class TwinCatVariablesCommand(BaseModel):
+    async def cli_cmd(self) -> None:
+        settings = TwinCatOnlySettings()  # pyright: ignore[reportCallIssue]
+        addresses = list(TwincatProject.variables_from_settings(settings))
+        for address in addresses:
+            print(address)
+
+
 class App(BaseSettings):
     model_config = SettingsConfigDict(
         cli_kebab_case=True,
@@ -82,6 +90,7 @@ class App(BaseSettings):
 
     run: CliSubCommand[RunCommand]
     twincat: CliSubCommand[TwinCatCommand]
+    twincat_variables: CliSubCommand[TwinCatVariablesCommand]
 
     def cli_cmd(self) -> None:
         CliApp.run_subcommand(self)
