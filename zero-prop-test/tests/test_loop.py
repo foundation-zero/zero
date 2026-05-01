@@ -28,6 +28,11 @@ def settings() -> Settings:
         twincat_username="user",
         twincat_password="password",
         twincat_route_name="route",
+        twincat_prefices=[
+            "ThrusterTest.",
+            "CanAradex.",
+            "CanAkasol.act_P_BatteryPower_kW",
+        ],
         mqtt_host="broker.local",
         mqtt_port=1883,
         mqtt_username="mqtt-user",

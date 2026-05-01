@@ -6,7 +6,6 @@ from xml.etree import ElementTree
 from attr import dataclass
 from pyads import (
     Connection,
-    PORT_TC3PLC1,
     set_local_address,
 )
 
@@ -79,13 +78,14 @@ class Client:
     def from_settings(settings: TwinCatSettings) -> "Generator[Client, None, None]":
         set_local_address(settings.twincat_self_netid)
         logger.info(
-            f"Connecting to TwinCAT PLC {settings.twincat_netid}. Local address: {settings.twincat_self_netid}"
+            f"Connecting to TwinCAT PLC {settings.twincat_netid}. Local address: {settings.twincat_self_netid}, settings: {settings}"
         )
         plc = Connection(
             settings.twincat_netid,
-            PORT_TC3PLC1,
+            852,
             settings.twincat_ip,
         )
+        plc.set_timeout(1000)
         logger.info("Built PLC object")
         with plc:
             logger.info(
@@ -95,6 +95,10 @@ class Client:
 
     def query(self, variable: "Variable") -> Any:
         logger.debug(f"Querying TwinCAT variable: {variable.name}")
-        res = self._plc.read_by_name(variable.name)
+        try:
+            res = self._plc.read_by_name(variable.name)
+        except Exception as e:
+            logger.debug(f"Error querying TwinCAT variable {variable.name}: {e}")
+            res = None
         logger.debug(f"Received value from TwinCAT: {res}")
         return res

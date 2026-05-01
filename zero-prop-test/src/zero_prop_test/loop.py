@@ -2,7 +2,7 @@ from asyncio import TaskGroup, sleep
 from contextlib import asynccontextmanager
 from datetime import timedelta, datetime
 from typing import Any, AsyncGenerator, Sequence
-
+import logging
 from pydantic import BaseModel
 
 from zero_prop_test.io_link import (
@@ -19,6 +19,8 @@ from aiomqtt import Client as MqttClient
 
 type DeviceType = IoLinkDeviceType | int | float | bool | Any
 type AddressType = IoLinkDevice | ModbusAddress | TwinCatVariable
+
+logger = logging.getLogger(__name__)
 
 
 class Message(BaseModel):
@@ -86,6 +88,7 @@ class Loop:
         return {address.name: await self._collect_one(address) for address in addresses}
 
     async def tick(self, addresses: Sequence[AddressType]):
+        logger.info("Collecting data from devices...")
         data = await self._collect(addresses)
         message = Message(timestamp=datetime.now(), devices=data)
         await self._mqtt.publish("prop-test/data", message.model_dump_json())

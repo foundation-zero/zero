@@ -1,8 +1,7 @@
 from unittest.mock import MagicMock, patch
 
 from zero_prop_test.settings import Settings
-from zero_prop_test import twincat
-from zero_prop_test.twincat import Client, TwinCatVariable
+from zero_prop_test.twincat import Client, Variable as TwincatVariable
 
 
 def test_query_reads_variable_by_name():
@@ -10,7 +9,7 @@ def test_query_reads_variable_by_name():
     plc.read_by_name.return_value = 123
     client = Client(plc)
 
-    result = client.query(TwinCatVariable(name="GVL.test"))
+    result = client.query(TwincatVariable(name="GVL.test", type="INT"))
 
     assert result == 123
     plc.read_by_name.assert_called_once_with("GVL.test")
@@ -28,6 +27,11 @@ def test_from_settings_creates_and_opens_connection():
         twincat_username="user",
         twincat_password="password",
         twincat_route_name="route",
+        twincat_prefices=[
+            "ThrusterTest.",
+            "CanAradex.",
+            "CanAkasol.act_P_BatteryPower_kW",
+        ],
         mqtt_host="127.0.0.1",
         mqtt_port=3,
         mqtt_username="mqtt-user",
@@ -45,7 +49,7 @@ def test_from_settings_creates_and_opens_connection():
     set_local_address.assert_called_once_with(settings.twincat_self_netid)
     connection.assert_called_once_with(
         settings.twincat_netid,
-        twincat.PORT_TC3PLC1,
+        852,
         settings.twincat_ip,
     )
     plc.__enter__.assert_called_once_with()
