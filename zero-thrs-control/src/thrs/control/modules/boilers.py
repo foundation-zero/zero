@@ -53,6 +53,7 @@ class BoilersParameters(ThrsValues):
             )
         return self
 
+
 def _INITIAL_CONTROL_VALUES(timestamp: datetime) -> BoilersControlValues:
     return BoilersControlValues(
         boilers_pump=Pump(

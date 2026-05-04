@@ -1,6 +1,12 @@
 <script setup lang="ts">
 import { Switch } from "@/components/ui/switch";
-import { useSimulationStore } from "@/modules/thrs/stores/simulation";
+import {
+  BoilersAutomaticMode,
+  PcmAutomaticMode,
+  PvtAutomaticMode,
+  ThrustersAutomaticMode,
+  useSimulationStore,
+} from "@/modules/thrs/stores/simulation";
 import { computed, toRefs } from "vue";
 import { useI18n } from "vue-i18n";
 
@@ -18,9 +24,21 @@ const isAutomated = computed(
   () => !!control.value?.modules?.[props.module]?.controlMode?.automatic,
 );
 
-const mode = computed(
-  () => control.value?.modules?.[props.module]?.controlMode?.automaticMode?.mode,
-);
+const mode = computed(() => {
+  const automaticMode = control.value?.modules?.[props.module]?.controlMode?.automaticMode;
+  if (!automaticMode) return undefined;
+  if ("mode" in automaticMode)
+    return (automaticMode as ThrustersAutomaticMode | PcmAutomaticMode).mode;
+  if ("boostingMode" in automaticMode) {
+    const m = automaticMode as BoilersAutomaticMode;
+    return [`boosting: ${m.boostingMode}`, `filling: ${m.fillingMode}`].join(" / ");
+  }
+  if ("aft" in automaticMode) {
+    const m = automaticMode as PvtAutomaticMode;
+    return [`aft: ${m.aft.mode}`, `fwd: ${m.fwd.mode}`, `owners: ${m.owners.mode}`].join(" / ");
+  }
+  return undefined;
+});
 </script>
 
 <template>

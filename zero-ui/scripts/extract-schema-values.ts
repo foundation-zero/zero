@@ -187,7 +187,7 @@ function inferParameterType(fieldName: string, fieldType: string): string | null
   if (lowerFieldName.includes("enabled")) return "Enabled";
   if (lowerFieldName.includes("ratio")) return "Ratio";
   if (lowerFieldName.includes("dutypoint")) return "Dutypoint";
-  if (lowerFieldName.includes("dt")) return "dT";
+  if (lowerFieldName.includes("dt") || lowerFieldName.includes("delta")) return "dT";
   if (lowerFieldName.includes("level")) return "Level";
   if (lowerFieldName.includes("disabled")) return "Disabled";
 

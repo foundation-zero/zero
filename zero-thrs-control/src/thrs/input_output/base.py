@@ -199,7 +199,7 @@ class SimulationValues(ThrsValues):
 
 
 class SimulationInputs(SimulationValues):
-    model_config = ConfigDict(extra="forbid", arbitrary_types_allowed=True)
+    model_config = ConfigDict(extra="ignore", arbitrary_types_allowed=True)
 
     def get_values_at_time(self, time: datetime) -> Self:
         SelectedInputsModel = self.dedataframe()

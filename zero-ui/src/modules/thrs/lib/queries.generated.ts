@@ -62,8 +62,11 @@ export const BOILERS_CONTROL_QUERY = `
 
 export const BOILERS_PARAMETERS_QUERY = `
   heatpumpFlowSetpoint
-  boostingTemperatureSetpoint
-  tankTemperatureSetpoint
+  heatpumpTemperatureSetpoint
+  htBoostingTemperatureSetpoint
+  minimumTankTemperature
+  maximumTankTemperature
+  boostingDelta
   lt1FlowcontrolMinimumSetpoint
   lt2FlowcontrolMinimumSetpoint
   fillingTemperatureSetpoint
@@ -186,6 +189,20 @@ export const BOILERS_SENSOR_QUERY = `
   boilersSwitchHighTemperature {
     positionRel { value timestamp }
   }
+  lt1FlowRecovery {
+    flow { value timestamp }
+    temperature { value timestamp }
+  }
+  lt1TemperatureRecovery {
+    temperature { value timestamp }
+  }
+  consumersFlowBoosting {
+    flow { value timestamp }
+    temperature { value timestamp }
+  }
+  consumersTemperatureBoostingSupply {
+    temperature { value timestamp }
+  }
 `;
 
 export const BOILERS_SIMULATION_INPUTS_QUERY = `
@@ -214,6 +231,9 @@ export const BOILERS_SIMULATION_INPUTS_QUERY = `
   }
   boilersSeawaterSupply {
     temperature { value timestamp }
+  }
+  boilersFreshwaterReturnSet {
+    flow { value timestamp }
   }
 `;
 
