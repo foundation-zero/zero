@@ -1,6 +1,7 @@
 from datetime import datetime
-from typing import Callable
+from typing import Annotated, Callable
 
+from pydantic import Field, model_validator
 from transitions import Machine, State
 from thrs.classes.control import Control, ControlMode, ControlResult
 from thrs.control.controllers import Controller
@@ -26,12 +27,11 @@ class BoilersParameters(ThrsValues):
     boosting_delta: Kelvin = (
         2  # required delta T between boosting source and tank temperature
     )
-    tank_temperature_setpoint: Celsius = 50
     lt1_flowcontrol_minimum_setpoint: Ratio = 0.1  # need flow to have temp measurement available, and these minima are needed to control the minimum filling flow
     lt2_flowcontrol_minimum_setpoint: Ratio = 0.1
     filling_temperature_setpoint: Celsius = 40
     minimum_tank_level: Liter = 30
-    maximum_tank_level: Liter = 260
+    maximum_tank_level: Annotated[Liter, Field(le=275)] = 260
     tank1_disabled: bool = False
     tank2_disabled: bool = False
     tank3_disabled: bool = False
@@ -40,6 +40,17 @@ class BoilersParameters(ThrsValues):
     lt2_flow_tuning: Tuning = (-0.01, -0.001, 0.0)
     lt1_flow_tuning: Tuning = (-0.01, -0.001, 0.0)
 
+    @model_validator(mode="after")
+    def check_tank_setpoints(self):
+        if self.minimum_tank_temperature > self.maximum_tank_temperature:
+            raise ValueError(
+                "Maximum tank temperature must be greater than minimum tank temperature"
+            )
+        if self.minimum_tank_level > self.maximum_tank_level:
+            raise ValueError(
+                "Maximum tank level must be greater than minimum tank level"
+            )
+        return self
 
 def _INITIAL_CONTROL_VALUES(timestamp: datetime) -> BoilersControlValues:
     return BoilersControlValues(
