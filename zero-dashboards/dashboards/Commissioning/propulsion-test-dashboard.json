@@ -18,7 +18,7 @@
   "editable": true,
   "fiscalYearStartMonth": 0,
   "graphTooltip": 0,
-  "id": 16,
+  "id": 12,
   "links": [
     {
       "asDropdown": true,
@@ -4308,32 +4308,7 @@
           },
           "unit": "celsius"
         },
-        "overrides": [
-          {
-            "matcher": {
-              "id": "byName",
-              "options": "forepeak_tempsensor"
-            },
-            "properties": [
-              {
-                "id": "unit",
-                "value": "celsius"
-              }
-            ]
-          },
-          {
-            "matcher": {
-              "id": "byName",
-              "options": "tank_level"
-            },
-            "properties": [
-              {
-                "id": "unit",
-                "value": "percent"
-              }
-            ]
-          }
-        ]
+        "overrides": []
       },
       "gridPos": {
         "h": 5,
@@ -4996,9 +4971,23 @@
             "uid": "${datasource}"
           },
           "editorMode": "code",
-          "format": "table",
+          "editorType": "sql",
+          "format": 1,
+          "meta": {
+            "builderOptions": {
+              "columns": [],
+              "database": "",
+              "limit": 1000,
+              "meta": {},
+              "mode": "list",
+              "queryType": "table",
+              "table": ""
+            }
+          },
+          "pluginVersion": "2.1.4",
+          "queryType": "table",
           "rawQuery": true,
-          "rawSql": "SELECT\r\n  LAST_VALUE(time ORDER BY time) AS time,\r\n  CASE WHEN '$aft_fwd' = 'AFT'\r\n    THEN LAST_VALUE((\"AFT_THRUST_WINDINGTEMPU1\").value ORDER BY time)\r\n    ELSE LAST_VALUE((\"FWD_THRUST_WINDINGTEMPU1\").value ORDER BY time)\r\n    END AS winding_temp_u1,\r\n  CASE WHEN '$aft_fwd' = 'AFT'\r\n    THEN LAST_VALUE((\"AFT_THRUST_WINDINGTEMPV1\").value ORDER BY time)\r\n    ELSE LAST_VALUE((\"FWD_THRUST_WINDINGTEMPU1\").value ORDER BY time)\r\n    END AS winding_temp_v1,\r\n  CASE WHEN '$aft_fwd' = 'AFT'\r\n    THEN LAST_VALUE((\"AFT_THRUST_WINDINGTEMPW1\").value ORDER BY time)\r\n    ELSE LAST_VALUE((\"FWD_THRUST_WINDING_TEMP_W1\").value ORDER BY time)\r\n    END AS winding_temp_w1,\r\n  CASE WHEN '$aft_fwd' = 'AFT'\r\n    THEN LAST_VALUE((\"AFT_THRUST_WINDINGTEMPU2\").value ORDER BY time)\r\n    ELSE LAST_VALUE((\"BOW_THRUST_WINDINGTEMPU2\").value ORDER BY time)\r\n    END AS winding_temp_u2,\r\n  CASE WHEN '$aft_fwd' = 'AFT'\r\n    THEN LAST_VALUE((\"AFT_THRUST_WINDINGTEMPV2\").value ORDER BY time)\r\n    ELSE LAST_VALUE((\"BOW_THRUST_WINDINGTEMPV2\").value ORDER BY time)\r\n    END AS winding_temp_v2,\r\n  CASE WHEN '$aft_fwd' = 'AFT'\r\n    THEN LAST_VALUE((\"AFT_THRUST_WINDINGTEMPW2\").value ORDER BY time)\r\n    ELSE LAST_VALUE((\"BOW_THRUST_WINDINGTEMPW2\").value ORDER BY time)\r\n    END AS winding_temp_w2,\r\n  CASE WHEN '$aft_fwd' = 'AFT'\r\n    THEN LAST_VALUE((\"STERN_THRUST_BEARING_DE_TEMP\").value ORDER BY time)\r\n    ELSE LAST_VALUE((\"BOW_THRUST_BEARING_DE_TEMP\").value ORDER BY time)\r\n    END AS bearing_de_temp,\r\n  CASE WHEN '$aft_fwd' = 'AFT'\r\n    THEN LAST_VALUE((\"STERN_THRUST_BEARING_NDE_TEMP\").value ORDER BY time)\r\n    ELSE LAST_VALUE((\"BOW_THRUST_BEARING_NDE_TEMP\").value ORDER BY time)\r\n    END AS bearing_nde_temp\r\nFROM marpower.\"150000_propulsion_general\"",
+          "rawSql": "SELECT\r\n  timestamp AS time,\r\n  CASE WHEN '$aft_fwd' = 'AFT'\r\n    THEN aft_thrust_windingtempu_1__value\r\n    ELSE fwd_thrust_windingtempu_1__value\r\n  END AS winding_temp_u1,\r\n  CASE WHEN '$aft_fwd' = 'AFT'\r\n    THEN aft_thrust_windingtempv_1__value\r\n    ELSE fwd_thrust_windingtempv_1__value\r\n  END AS winding_temp_v1,\r\n  CASE WHEN '$aft_fwd' = 'AFT'\r\n    THEN aft_thrust_windingtempw_1__value\r\n    ELSE fwd_thrust_winding_temp_w_1__value\r\n  END AS winding_temp_w1,\r\n  CASE WHEN '$aft_fwd' = 'AFT'\r\n    THEN aft_thrust_windingtempu_2__value\r\n    ELSE bow_thrust_windingtempu_2__value\r\n  END AS winding_temp_u2,\r\n  CASE WHEN '$aft_fwd' = 'AFT'\r\n    THEN aft_thrust_windingtempv_2__value\r\n    ELSE bow_thrust_windingtempv_2__value\r\n  END AS winding_temp_v2,\r\n  CASE WHEN '$aft_fwd' = 'AFT'\r\n    THEN aft_thrust_windingtempw_2__value\r\n    ELSE bow_thrust_windingtempw_2__value\r\n  END AS winding_temp_w2,\r\n  CASE WHEN '$aft_fwd' = 'AFT'\r\n    THEN stern_thrust_bearing_de_temp__value\r\n    ELSE bow_thrust_bearing_de_temp__value\r\n  END AS bearing_de_temp,\r\n  CASE WHEN '$aft_fwd' = 'AFT'\r\n    THEN stern_thrust_bearing_nde_temp__value\r\n    ELSE bow_thrust_bearing_nde_temp__value\r\n  END AS bearing_nde_temp\r\nFROM public.marpower__150000_propulsion_general\r\nORDER BY timestamp DESC\r\nLIMIT 1",
           "refId": "A",
           "sql": {
             "columns": [
@@ -6144,7 +6133,7 @@
         },
         "name": "datasource",
         "options": [],
-        "query": "grafana-postgresql-datasource",
+        "query": "info8fcc-greptimedb-datasource",
         "refresh": 1,
         "regex": "",
         "type": "datasource"
@@ -6201,5 +6190,5 @@
   "timezone": "browser",
   "title": "Propulsion test",
   "uid": "commissioning-propulsion-test",
-  "version": 3
+  "version": 1
 }
