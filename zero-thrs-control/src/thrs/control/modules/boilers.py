@@ -22,6 +22,7 @@ from thrs.input_output.modules.boilers import BoilersControlValues, BoilersSenso
 class BoilersParameters(ThrsValues):
     heatpump_flow_setpoint: LMin = 25
     heatpump_temperature_setpoint: Celsius = 65
+    ht_boosting_temperature_setpoint: Celsius = 65
     minimum_tank_temperature: Celsius = 55
     maximum_tank_temperature: Celsius = 60
     boosting_delta: Kelvin = (
@@ -650,7 +651,7 @@ class BoilersControl(
         elif self._pump_temperature_controller.enabled():
             self._current_values.boilers_pump.dutypoint = Stamped(
                 value=self._pump_temperature_controller(
-                    sensor_values.boilers_flow_boosting.temperature.value
+                    sensor_values.boilers_temperature_boosting_supply.temperature.value
                 ),
                 timestamp=self._time(),
             )
