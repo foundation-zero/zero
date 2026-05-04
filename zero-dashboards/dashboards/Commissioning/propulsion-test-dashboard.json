@@ -2956,10 +2956,24 @@
             "uid": "${datasource}"
           },
           "editorMode": "code",
-          "format": "table",
+          "editorType": "sql",
+          "format": 1,
           "hide": false,
+          "meta": {
+            "builderOptions": {
+              "columns": [],
+              "database": "",
+              "limit": 1000,
+              "meta": {},
+              "mode": "list",
+              "queryType": "table",
+              "table": ""
+            }
+          },
+          "pluginVersion": "2.1.4",
+          "queryType": "table",
           "rawQuery": true,
-          "rawSql": "SELECT\r\n  LAST_VALUE(time ORDER BY time) AS time,\r\n  LAST_VALUE((\"Speed\").value ORDER BY time) AS external_speed,\r\n  LAST_VALUE((\"Torque\").value ORDER BY time) AS external_torque\r\nFROM marpower.externalmotor",
+          "rawSql": "SELECT\r\n  timestamp     AS time,\r\n  CASE WHEN '$aft_fwd' = 'AFT' THEN \"devices__can_aradex.i_aft_thrstr_speed_rpm\" ELSE \"devices__can_aradex.i_fwd_thrstr_speed_rpm\" END AS external_speed,\r\n  CASE WHEN '$aft_fwd' = 'AFT' THEN \"devices__can_aradex.i_aft_thrstr_torque_nm\" ELSE \"devices__can_aradex.i_fwd_thrstr_torque_nm\" END AS external_torque\r\nFROM public.prop_test__data\r\nORDER BY timestamp DESC\r\nLIMIT 1",
           "refId": "External motor",
           "sql": {
             "columns": [
