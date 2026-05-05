@@ -865,12 +865,186 @@
       "type": "timeseries"
     },
     {
+      "datasource": {
+        "type": "grafana-postgresql-datasource",
+        "uid": "${datasource}"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisBorderShow": false,
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "barWidthFactor": 0.6,
+            "drawStyle": "line",
+            "fillOpacity": 0,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "insertNulls": false,
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "auto",
+            "showValues": false,
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "decimals": 2,
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": 0
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          },
+          "unit": "amp"
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Voltage"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "volt"
+              }
+            ]
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 9,
+        "w": 24,
+        "x": 0,
+        "y": 32
+      },
+      "id": 66,
+      "options": {
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "hideZeros": false,
+          "mode": "single",
+          "sort": "none"
+        }
+      },
+      "pluginVersion": "12.3.0",
+      "targets": [
+        {
+          "dataset": "dev",
+          "datasource": {
+            "type": "grafana-postgresql-datasource",
+            "uid": "${datasource}"
+          },
+          "editorMode": "code",
+          "editorType": "sql",
+          "format": 1,
+          "meta": {
+            "builderOptions": {
+              "columns": [],
+              "database": "",
+              "limit": 1000,
+              "meta": {},
+              "mode": "list",
+              "queryType": "table",
+              "table": ""
+            }
+          },
+          "pluginVersion": "2.1.4",
+          "queryType": "table",
+          "rawQuery": true,
+          "rawSql": "SELECT\r\n  timestamp AS time,\r\n  CASE WHEN '${aft_fwd}' = 'AFT' THEN \"devices__can_aradex.r_aft_thrstr_dc_current\"  ELSE \"devices__can_aradex.r_fwd_thrstr_dc_current\"  END AS \"current\",\r\n  CASE WHEN '${aft_fwd}' = 'AFT' THEN \"devices__can_aradex.r_aft_thrstr_dc_voltage\"  ELSE \"devices__can_aradex.r_fwd_thrstr_dc_voltage\"  END AS voltage\r\nFROM public.prop_test__data\r\nWHERE $__timeFilter(timestamp)",
+          "refId": "A",
+          "sql": {
+            "columns": [
+              {
+                "parameters": [],
+                "type": "function"
+              }
+            ],
+            "groupBy": [
+              {
+                "property": {
+                  "type": "string"
+                },
+                "type": "groupBy"
+              }
+            ],
+            "limit": 50
+          }
+        }
+      ],
+      "title": "Electrical",
+      "transformations": [
+        {
+          "id": "organize",
+          "options": {
+            "excludeByName": {},
+            "includeByName": {},
+            "indexByName": {},
+            "renameByName": {
+              "current": "Current",
+              "device": "Device",
+              "e_motor_temp": "Motor temp",
+              "flow": "Flow",
+              "gear_ratio": "Gear ratio",
+              "igbt_temp": "IGBT temp",
+              "pressure": "Pressure",
+              "seq_nr": "",
+              "speed": "Speed",
+              "speed_torque_setpoint": "",
+              "temperature": "Temperature",
+              "temperature_delta": "T delta",
+              "temperature_in": "T in",
+              "temperature_out": "T out",
+              "torque": "Torque",
+              "torque_setpoint": "Torque setpoint",
+              "voltage": "Voltage"
+            }
+          }
+        }
+      ],
+      "type": "timeseries"
+    },
+    {
       "collapsed": false,
       "gridPos": {
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 32
+        "y": 41
       },
       "id": 24,
       "panels": [],
@@ -931,7 +1105,7 @@
         "h": 16,
         "w": 12,
         "x": 0,
-        "y": 33
+        "y": 42
       },
       "id": 50,
       "options": {
@@ -2238,7 +2412,7 @@
         "h": 16,
         "w": 12,
         "x": 12,
-        "y": 33
+        "y": 42
       },
       "id": 57,
       "options": {
@@ -3497,7 +3671,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 49
+        "y": 58
       },
       "id": 25,
       "panels": [],
@@ -3557,7 +3731,7 @@
         "h": 4,
         "w": 12,
         "x": 0,
-        "y": 50
+        "y": 59
       },
       "id": 42,
       "options": {
@@ -3864,7 +4038,7 @@
         "h": 4,
         "w": 12,
         "x": 12,
-        "y": 50
+        "y": 59
       },
       "id": 43,
       "options": {
@@ -4220,7 +4394,7 @@
         "h": 4,
         "w": 24,
         "x": 0,
-        "y": 54
+        "y": 63
       },
       "id": 41,
       "options": {
@@ -4391,7 +4565,7 @@
         "h": 8,
         "w": 12,
         "x": 0,
-        "y": 58
+        "y": 67
       },
       "id": 31,
       "options": {
@@ -4539,7 +4713,7 @@
         "h": 8,
         "w": 12,
         "x": 12,
-        "y": 58
+        "y": 67
       },
       "id": 33,
       "options": {
@@ -4610,7 +4784,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 66
+        "y": 75
       },
       "id": 26,
       "panels": [],
@@ -4723,7 +4897,7 @@
         "h": 6,
         "w": 15,
         "x": 0,
-        "y": 67
+        "y": 76
       },
       "id": 37,
       "options": {
@@ -4839,7 +5013,7 @@
         "h": 6,
         "w": 9,
         "x": 15,
-        "y": 67
+        "y": 76
       },
       "id": 13,
       "options": {
@@ -5172,7 +5346,7 @@
         "h": 5,
         "w": 24,
         "x": 0,
-        "y": 73
+        "y": 82
       },
       "id": 59,
       "options": {
@@ -5875,7 +6049,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 78
+        "y": 87
       },
       "id": 27,
       "panels": [],
@@ -5924,7 +6098,7 @@
         "h": 2,
         "w": 12,
         "x": 0,
-        "y": 79
+        "y": 88
       },
       "id": 48,
       "options": {
@@ -6082,7 +6256,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 81
+        "y": 90
       },
       "id": 52,
       "panels": [],
@@ -6194,7 +6368,7 @@
         "h": 5,
         "w": 24,
         "x": 0,
-        "y": 82
+        "y": 91
       },
       "id": 58,
       "options": {
@@ -6390,7 +6564,7 @@
         "h": 5,
         "w": 24,
         "x": 0,
-        "y": 87
+        "y": 96
       },
       "id": 60,
       "options": {
@@ -6524,7 +6698,7 @@
         "h": 4,
         "w": 24,
         "x": 0,
-        "y": 92
+        "y": 101
       },
       "id": 53,
       "options": {
