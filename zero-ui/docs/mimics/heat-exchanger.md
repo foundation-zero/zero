@@ -1,11 +1,9 @@
 # Heat Exchanger
 
-Directional mimic heat exchanger component with five operational states:
+Directional mimic heat exchanger component with three operational states:
 
-- Heat A-b
-- Heat a-B
-- Cool A-b
-- Cool a-B
+- Heating
+- Cooling
 - Idle
 
 <script setup lang="ts">
@@ -27,35 +25,23 @@ The component is directional and follows the shared mimic orientation convention
 
 | Prop | Type | Default | Description |
 |---|---|---|---|
-| `state` | `HeatExchangerState` | `HeatExchangerState.Idle` | State variant (`heat-a-b`, `heat-a-B`, `cool-a-b`, `cool-a-B`, `idle`) |
+| `state` | `HeatExchangerState` | `HeatExchangerState.Idle` | State variant (`heating`, `cooling`, `idle`) |
 | `orientation` | `ComponentOrientation` | `ComponentOrientation.Right` | Required direction for this instance |
 
 ## State Variants
 
-<div class="grid grid-cols-2 md:grid-cols-5 gap-4 my-6">
+<div class="grid grid-cols-2 md:grid-cols-3 gap-4 my-6">
   <div class="flex flex-col items-center justify-center gap-2">
     <div class="p-4 bg-muted rounded-md">
-      <HeatExchanger :state="HeatExchangerState.HeatAB" />
+      <HeatExchanger :state="HeatExchangerState.Heating" />
     </div>
-    <span class="text-sm font-mono">Heat A-b</span>
+    <span class="text-sm font-mono">Heating</span>
   </div>
   <div class="flex flex-col items-center justify-center gap-2">
     <div class="p-4 bg-muted rounded-md">
-      <HeatExchanger :state="HeatExchangerState.HeataB" />
+      <HeatExchanger :state="HeatExchangerState.Cooling" />
     </div>
-    <span class="text-sm font-mono">Heat a-B</span>
-  </div>
-  <div class="flex flex-col items-center justify-center gap-2">
-    <div class="p-4 bg-muted rounded-md">
-      <HeatExchanger :state="HeatExchangerState.CoolAB" />
-    </div>
-    <span class="text-sm font-mono">Cool A-b</span>
-  </div>
-  <div class="flex flex-col items-center justify-center gap-2">
-    <div class="p-4 bg-muted rounded-md">
-      <HeatExchanger :state="HeatExchangerState.CoolaB" />
-    </div>
-    <span class="text-sm font-mono">Cool a-B</span>
+    <span class="text-sm font-mono">Cooling</span>
   </div>
   <div class="flex flex-col items-center justify-center gap-2">
     <div class="p-4 bg-muted rounded-md">
@@ -70,25 +56,25 @@ The component is directional and follows the shared mimic orientation convention
 <div class="grid grid-cols-2 md:grid-cols-4 gap-4 my-6">
   <div class="flex flex-col items-center justify-center gap-2">
     <div class="p-4 bg-muted rounded-md">
-      <HeatExchanger :state="HeatExchangerState.HeatAB" :orientation="ComponentOrientation.Up" />
+      <HeatExchanger :state="HeatExchangerState.Heating" :orientation="ComponentOrientation.Up" />
     </div>
     <span class="text-sm font-mono">Up</span>
   </div>
   <div class="flex flex-col items-center justify-center gap-2">
     <div class="p-4 bg-muted rounded-md">
-      <HeatExchanger :state="HeatExchangerState.HeatAB" :orientation="ComponentOrientation.Right" />
+      <HeatExchanger :state="HeatExchangerState.Heating" :orientation="ComponentOrientation.Right" />
     </div>
     <span class="text-sm font-mono">Right</span>
   </div>
   <div class="flex flex-col items-center justify-center gap-2">
     <div class="p-4 bg-muted rounded-md">
-      <HeatExchanger :state="HeatExchangerState.HeatAB" :orientation="ComponentOrientation.Down" />
+      <HeatExchanger :state="HeatExchangerState.Heating" :orientation="ComponentOrientation.Down" />
     </div>
     <span class="text-sm font-mono">Down</span>
   </div>
   <div class="flex flex-col items-center justify-center gap-2">
     <div class="p-4 bg-muted rounded-md">
-      <HeatExchanger :state="HeatExchangerState.HeatAB" :orientation="ComponentOrientation.Left" />
+      <HeatExchanger :state="HeatExchangerState.Heating" :orientation="ComponentOrientation.Left" />
     </div>
     <span class="text-sm font-mono">Left</span>
   </div>
@@ -103,8 +89,8 @@ import { ComponentOrientation } from '@/modules/thrapp/mimics/components'
 
 <template>
   <div class="flex gap-4">
-    <HeatExchanger :state="HeatExchangerState.HeatAB" :orientation="ComponentOrientation.Right" />
-    <HeatExchanger :state="HeatExchangerState.CoolaB" :orientation="ComponentOrientation.Down" />
+    <HeatExchanger :state="HeatExchangerState.Heating" :orientation="ComponentOrientation.Right" />
+    <HeatExchanger :state="HeatExchangerState.Cooling" :orientation="ComponentOrientation.Down" />
     <HeatExchanger :state="HeatExchangerState.Idle" :orientation="ComponentOrientation.Left" />
   </div>
 </template>
@@ -112,23 +98,18 @@ import { ComponentOrientation } from '@/modules/thrapp/mimics/components'
 
 ## Semantic Token Mapping
 
-- `heat-a-b`
-  - shell: `--attention`
+- `heating`
+  - shell fill: `--inverse-muted`
+  - shell stroke: `--attention-dull`
   - left: `--heating-medium`
-  - right: `--heating-low`
-- `heat-a-B`
-  - shell: `--attention`
+  - right: `--heating-medium`
+- `cooling`
+  - shell fill: `--inverse-muted`
+  - shell stroke: `--attention-dull`
   - left: `--cooling-medium`
-  - right: `--cooling-medium`
-- `cool-a-b`
-  - shell: `transparent` (hidden)
-  - left: `--cooling-medium`
-  - right: `--cooling-low`
-- `cool-a-B`
-  - shell: `--attention`
-  - left: `--cooling-low`
   - right: `--cooling-medium`
 - `idle`
-  - shell: `--attention-dull`
+  - shell fill: `--inverse-muted`
+  - shell stroke: `--attention`
   - left: `--disabled-foreground`
   - right: `--disabled-foreground`

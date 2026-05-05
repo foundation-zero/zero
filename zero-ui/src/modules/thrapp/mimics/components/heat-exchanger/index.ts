@@ -1,13 +1,11 @@
 import { ComponentOrientation } from "..";
 
 export const FIGMA_URL =
-  "https://www.figma.com/design/DDNAUHsV56fQMTh3Ej76gL/App-screens---On-board-monitoring?node-id=6147-47124&t=JfBIEDjiEP5NKk6I-4";
+  "https://www.figma.com/design/DDNAUHsV56fQMTh3Ej76gL/App-screens---On-board-monitoring?node-id=6186-116662&t=JfBIEDjiEP5NKk6I-4";
 
 export const enum HeatExchangerState {
-  HeatAB = "heat-a-b",
-  HeataB = "heat-a-B",
-  CoolAB = "cool-a-b",
-  CoolaB = "cool-a-B",
+  Heating = "heating",
+  Cooling = "cooling",
   Idle = "idle",
 }
 
@@ -34,28 +32,18 @@ export const HEAT_EXCHANGER_SHELL = {
 };
 
 export const HEAT_EXCHANGER_STATE_COLORS: Record<HeatExchangerState, HeatExchangerStateColors> = {
-  [HeatExchangerState.HeatAB]: {
-    shell: "var(--attention)",
+  [HeatExchangerState.Heating]: {
+    shell: "var(--attention-dull)",
     exchangerLeft: "var(--heating-medium)",
-    exchangerRight: "var(--heating-low)",
+    exchangerRight: "var(--heating-medium)",
   },
-  [HeatExchangerState.HeataB]: {
-    shell: "var(--attention)",
+  [HeatExchangerState.Cooling]: {
+    shell: "var(--attention-dull)",
     exchangerLeft: "var(--cooling-medium)",
-    exchangerRight: "var(--cooling-medium)",
-  },
-  [HeatExchangerState.CoolAB]: {
-    shell: "transparent",
-    exchangerLeft: "var(--cooling-medium)",
-    exchangerRight: "var(--cooling-low)",
-  },
-  [HeatExchangerState.CoolaB]: {
-    shell: "var(--attention)",
-    exchangerLeft: "var(--cooling-low)",
     exchangerRight: "var(--cooling-medium)",
   },
   [HeatExchangerState.Idle]: {
-    shell: "var(--attention-dull)",
+    shell: "var(--attention)",
     exchangerLeft: "var(--disabled-foreground)",
     exchangerRight: "var(--disabled-foreground)",
   },
