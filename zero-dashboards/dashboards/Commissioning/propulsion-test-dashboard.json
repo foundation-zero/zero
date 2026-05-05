@@ -3772,595 +3772,8 @@
       },
       "id": 25,
       "panels": [],
-      "title": "Mechanical",
+      "title": "Thrusters",
       "type": "row"
-    },
-    {
-      "datasource": {
-        "type": "grafana-postgresql-datasource",
-        "uid": "${datasource}"
-      },
-      "fieldConfig": {
-        "defaults": {
-          "color": {
-            "mode": "thresholds"
-          },
-          "decimals": 2,
-          "mappings": [],
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "green",
-                "value": 0
-              }
-            ]
-          }
-        },
-        "overrides": [
-          {
-            "matcher": {
-              "id": "byRegexp",
-              "options": "/speed/"
-            },
-            "properties": [
-              {
-                "id": "unit",
-                "value": "rotrpm"
-              }
-            ]
-          },
-          {
-            "matcher": {
-              "id": "byRegexp",
-              "options": "/torque/"
-            },
-            "properties": [
-              {
-                "id": "unit",
-                "value": "forceNm"
-              }
-            ]
-          }
-        ]
-      },
-      "gridPos": {
-        "h": 4,
-        "w": 12,
-        "x": 0,
-        "y": 68
-      },
-      "id": 42,
-      "options": {
-        "inlineEditing": false,
-        "panZoom": false,
-        "root": {
-          "background": {
-            "color": {
-              "fixed": "transparent"
-            }
-          },
-          "border": {
-            "color": {
-              "fixed": "dark-green"
-            }
-          },
-          "constraint": {
-            "horizontal": "left",
-            "vertical": "top"
-          },
-          "elements": [
-            {
-              "background": {
-                "color": {
-                  "fixed": "#D9D9D9"
-                }
-              },
-              "border": {
-                "color": {
-                  "fixed": "dark-green"
-                }
-              },
-              "config": {
-                "align": "center",
-                "color": {
-                  "fixed": "#000000"
-                },
-                "size": 20,
-                "text": {
-                  "field": "external_speed",
-                  "fixed": "",
-                  "mode": "field"
-                },
-                "valign": "middle"
-              },
-              "constraint": {
-                "horizontal": "left",
-                "vertical": "top"
-              },
-              "links": [],
-              "name": "external_speed",
-              "placement": {
-                "height": 30,
-                "left": 220,
-                "rotation": 0,
-                "top": 10,
-                "width": 175
-              },
-              "type": "metric-value"
-            },
-            {
-              "background": {
-                "color": {
-                  "fixed": "transparent"
-                }
-              },
-              "border": {
-                "color": {
-                  "fixed": "dark-green"
-                }
-              },
-              "config": {
-                "align": "left",
-                "color": {
-                  "fixed": "rgb(204, 204, 220)"
-                },
-                "size": 16,
-                "text": {
-                  "fixed": "Speed"
-                },
-                "valign": "middle"
-              },
-              "constraint": {
-                "horizontal": "left",
-                "vertical": "top"
-              },
-              "links": [],
-              "name": "external_speed label",
-              "placement": {
-                "height": 30,
-                "left": 15,
-                "rotation": 0,
-                "top": 10,
-                "width": 194
-              },
-              "type": "text"
-            },
-            {
-              "background": {
-                "color": {
-                  "fixed": "#D9D9D9"
-                }
-              },
-              "border": {
-                "color": {
-                  "fixed": "dark-green"
-                }
-              },
-              "config": {
-                "align": "center",
-                "color": {
-                  "fixed": "#000000"
-                },
-                "size": 20,
-                "text": {
-                  "field": "external_torque",
-                  "fixed": "",
-                  "mode": "field"
-                },
-                "valign": "middle"
-              },
-              "constraint": {
-                "horizontal": "left",
-                "vertical": "top"
-              },
-              "links": [],
-              "name": "external_torque",
-              "placement": {
-                "height": 30,
-                "left": 220,
-                "rotation": 0,
-                "top": 45,
-                "width": 175
-              },
-              "type": "metric-value"
-            },
-            {
-              "background": {
-                "color": {
-                  "fixed": "transparent"
-                }
-              },
-              "border": {
-                "color": {
-                  "fixed": "dark-green"
-                }
-              },
-              "config": {
-                "align": "left",
-                "color": {
-                  "fixed": "rgb(204, 204, 220)"
-                },
-                "size": 16,
-                "text": {
-                  "fixed": "Torque"
-                },
-                "valign": "middle"
-              },
-              "constraint": {
-                "horizontal": "left",
-                "vertical": "top"
-              },
-              "links": [],
-              "name": "external_torque label",
-              "placement": {
-                "height": 30,
-                "left": 15,
-                "rotation": 0,
-                "top": 45,
-                "width": 194
-              },
-              "type": "text"
-            }
-          ],
-          "name": "Element 1767775905609",
-          "placement": {
-            "height": 100,
-            "left": 0,
-            "rotation": 0,
-            "top": 0,
-            "width": 100
-          },
-          "type": "frame"
-        },
-        "showAdvancedTypes": false,
-        "tooltip": {
-          "disableForOneClick": false,
-          "mode": "none"
-        },
-        "zoomToContent": false
-      },
-      "pluginVersion": "12.3.0",
-      "targets": [
-        {
-          "dataset": "dev",
-          "datasource": {
-            "type": "grafana-postgresql-datasource",
-            "uid": "${datasource}"
-          },
-          "editorMode": "code",
-          "editorType": "sql",
-          "format": 1,
-          "hide": false,
-          "meta": {
-            "builderOptions": {
-              "columns": [],
-              "database": "",
-              "limit": 1000,
-              "meta": {},
-              "mode": "list",
-              "queryType": "table",
-              "table": ""
-            }
-          },
-          "pluginVersion": "2.1.4",
-          "queryType": "table",
-          "rawQuery": true,
-          "rawSql": "SELECT\r\n  timestamp     AS time,\r\n  CASE WHEN '$aft_fwd' = 'AFT' THEN \"devices__can_aradex.i_aft_thrstr_speed_rpm\" ELSE \"devices__can_aradex.i_fwd_thrstr_speed_rpm\" END AS external_speed,\r\n  CASE WHEN '$aft_fwd' = 'AFT' THEN \"devices__can_aradex.i_aft_thrstr_torque_nm\" ELSE \"devices__can_aradex.i_fwd_thrstr_torque_nm\" END AS external_torque\r\nFROM public.prop_test__data\r\nORDER BY timestamp DESC\r\nLIMIT 1",
-          "refId": "External motor",
-          "sql": {
-            "columns": [
-              {
-                "parameters": [],
-                "type": "function"
-              }
-            ],
-            "groupBy": [
-              {
-                "property": {
-                  "type": "string"
-                },
-                "type": "groupBy"
-              }
-            ],
-            "limit": 50
-          }
-        }
-      ],
-      "title": "External motor",
-      "type": "canvas"
-    },
-    {
-      "datasource": {
-        "type": "grafana-postgresql-datasource",
-        "uid": "${datasource}"
-      },
-      "fieldConfig": {
-        "defaults": {
-          "color": {
-            "mode": "thresholds"
-          },
-          "decimals": 2,
-          "mappings": [],
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "green",
-                "value": 0
-              }
-            ]
-          }
-        },
-        "overrides": [
-          {
-            "matcher": {
-              "id": "byRegexp",
-              "options": "/speed/"
-            },
-            "properties": [
-              {
-                "id": "unit",
-                "value": "rotrpm"
-              }
-            ]
-          },
-          {
-            "matcher": {
-              "id": "byRegexp",
-              "options": "/torque/"
-            },
-            "properties": [
-              {
-                "id": "unit",
-                "value": "forceNm"
-              }
-            ]
-          },
-          {
-            "matcher": {
-              "id": "byRegexp",
-              "options": "/temperature/"
-            },
-            "properties": [
-              {
-                "id": "unit",
-                "value": "celsius"
-              }
-            ]
-          }
-        ]
-      },
-      "gridPos": {
-        "h": 4,
-        "w": 12,
-        "x": 12,
-        "y": 68
-      },
-      "id": 43,
-      "options": {
-        "inlineEditing": false,
-        "panZoom": false,
-        "root": {
-          "background": {
-            "color": {
-              "fixed": "transparent"
-            }
-          },
-          "border": {
-            "color": {
-              "fixed": "dark-green"
-            }
-          },
-          "constraint": {
-            "horizontal": "left",
-            "vertical": "top"
-          },
-          "elements": [
-            {
-              "background": {
-                "color": {
-                  "fixed": "#D9D9D9"
-                }
-              },
-              "border": {
-                "color": {
-                  "fixed": "dark-green"
-                }
-              },
-              "config": {
-                "align": "center",
-                "color": {
-                  "fixed": "#000000"
-                },
-                "size": 20,
-                "text": {
-                  "field": "oil_temperature",
-                  "fixed": "",
-                  "mode": "field"
-                },
-                "valign": "middle"
-              },
-              "constraint": {
-                "horizontal": "left",
-                "vertical": "top"
-              },
-              "links": [],
-              "name": "oil_temperature",
-              "placement": {
-                "height": 30,
-                "left": 220,
-                "rotation": 0,
-                "top": 10,
-                "width": 175
-              },
-              "type": "metric-value"
-            },
-            {
-              "background": {
-                "color": {
-                  "fixed": "transparent"
-                }
-              },
-              "border": {
-                "color": {
-                  "fixed": "dark-green"
-                }
-              },
-              "config": {
-                "align": "left",
-                "color": {
-                  "fixed": "rgb(204, 204, 220)"
-                },
-                "size": 16,
-                "text": {
-                  "fixed": "Gearbox oil - Temp."
-                },
-                "valign": "middle"
-              },
-              "constraint": {
-                "horizontal": "left",
-                "vertical": "top"
-              },
-              "links": [],
-              "name": "oil_temperature label",
-              "placement": {
-                "height": 30,
-                "left": 15,
-                "rotation": 0,
-                "top": 10,
-                "width": 195
-              },
-              "type": "text"
-            },
-            {
-              "background": {
-                "color": {
-                  "fixed": "#D9D9D9"
-                }
-              },
-              "border": {
-                "color": {
-                  "fixed": "dark-green"
-                }
-              },
-              "config": {
-                "align": "center",
-                "color": {
-                  "fixed": "#000000"
-                },
-                "size": 20,
-                "text": {
-                  "field": "thruster_temperature",
-                  "fixed": "",
-                  "mode": "field"
-                },
-                "valign": "middle"
-              },
-              "constraint": {
-                "horizontal": "left",
-                "vertical": "top"
-              },
-              "links": [],
-              "name": "thruster_temperature",
-              "placement": {
-                "height": 30,
-                "left": 220,
-                "rotation": 0,
-                "top": 45,
-                "width": 175
-              },
-              "type": "metric-value"
-            },
-            {
-              "background": {
-                "color": {
-                  "fixed": "transparent"
-                }
-              },
-              "border": {
-                "color": {
-                  "fixed": "dark-green"
-                }
-              },
-              "config": {
-                "align": "left",
-                "color": {
-                  "fixed": "rgb(204, 204, 220)"
-                },
-                "size": 16,
-                "text": {
-                  "fixed": "Thruster - Temperature"
-                },
-                "valign": "middle"
-              },
-              "constraint": {
-                "horizontal": "left",
-                "vertical": "top"
-              },
-              "links": [],
-              "name": "thruster_temperature label",
-              "placement": {
-                "height": 30,
-                "left": 15,
-                "rotation": 0,
-                "top": 45,
-                "width": 195
-              },
-              "type": "text"
-            }
-          ],
-          "name": "Element 1767775905609",
-          "placement": {
-            "height": 100,
-            "left": 0,
-            "rotation": 0,
-            "top": 0,
-            "width": 100
-          },
-          "type": "frame"
-        },
-        "showAdvancedTypes": false,
-        "tooltip": {
-          "disableForOneClick": false,
-          "mode": "none"
-        },
-        "zoomToContent": false
-      },
-      "pluginVersion": "12.3.0",
-      "targets": [
-        {
-          "dataset": "dev",
-          "datasource": {
-            "type": "grafana-postgresql-datasource",
-            "uid": "${datasource}"
-          },
-          "editorMode": "code",
-          "format": "table",
-          "rawQuery": true,
-          "rawSql": "SELECT\r\n  LAST_VALUE(time ORDER BY time) AS time,\r\n  LAST_VALUE((\"OilTemperatureOut\").value ORDER BY time) AS oil_temperature,\r\n  LAST_VALUE((\"TemperatureOut\").value ORDER BY time)    AS thruster_temperature\r\nFROM marpower.thruster\r\nwhere topic = 'marpower/thruster/' || lower('$aft_fwd')",
-          "refId": "A",
-          "sql": {
-            "columns": [
-              {
-                "parameters": [],
-                "type": "function"
-              }
-            ],
-            "groupBy": [
-              {
-                "property": {
-                  "type": "string"
-                },
-                "type": "groupBy"
-              }
-            ],
-            "limit": 50
-          }
-        }
-      ],
-      "title": "Temperatures",
-      "type": "canvas"
     },
     {
       "datasource": {
@@ -4464,24 +3877,24 @@
           {
             "matcher": {
               "id": "byName",
-              "options": "Pressure"
-            },
-            "properties": [
-              {
-                "id": "unit",
-                "value": "pressurebar"
-              }
-            ]
-          },
-          {
-            "matcher": {
-              "id": "byName",
               "options": "Torque setpoint"
             },
             "properties": [
               {
                 "id": "unit",
                 "value": "Q/rpm²"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "power"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "kwatt"
               }
             ]
           }
@@ -4491,7 +3904,7 @@
         "h": 4,
         "w": 24,
         "x": 0,
-        "y": 72
+        "y": 68
       },
       "id": 41,
       "options": {
@@ -4530,7 +3943,7 @@
           "pluginVersion": "2.1.4",
           "queryType": "table",
           "rawQuery": true,
-          "rawSql": "WITH last_record AS (\r\n  SELECT *\r\n  FROM public.marpower__150000_propulsion\r\n  WHERE topic = 'marpower/150000-propulsion/pcs-' || lower('$aft_fwd')\r\n  ORDER BY timestamp DESC\r\n  LIMIT 1\r\n)\r\n\r\nSELECT\r\n  timestamp                     AS time,\r\n  'Aradex 1'                    AS device,\r\n  ara_1_speed__value            AS speed,\r\n  ara_1_torque__value           AS torque,\r\n  NULL                          AS torque_setpoint,\r\n  ara_1_temp_power_stage__value AS temperature,\r\n  NULL                          AS flow\r\nFROM last_record\r\n\r\nUNION ALL\r\n\r\nSELECT\r\n  timestamp                     AS time,\r\n  'Aradex 2'                    AS device,\r\n  ara_2_speed__value            AS speed,\r\n  ara_2_torque__value           AS torque,\r\n  NULL                          AS torque_setpoint,\r\n  ara_2_temp_power_stage__value AS temperature,\r\n  NULL                          AS flow\r\nFROM last_record\r\nORDER BY device",
+          "rawSql": "WITH last_record AS (\r\n  SELECT *\r\n  FROM public.marpower__150000_propulsion\r\n  WHERE topic = 'marpower/150000-propulsion/pcs-' || lower('$aft_fwd')\r\n  ORDER BY timestamp DESC\r\n  LIMIT 1\r\n)\r\n\r\nSELECT\r\n  timestamp                     AS time,\r\n  'Aradex 1'                    AS device,\r\n  ara_1_speed__value            AS speed,\r\n  ara_1_torque__value           AS torque,\r\n  NULL                          AS torque_setpoint,\r\n  ara_1_temp_power_stage__value AS temperature,\r\n  NULL                          AS flow,\r\n  ara_1_power__value            AS \"power\"\r\nFROM last_record\r\n\r\nUNION ALL\r\n\r\nSELECT\r\n  timestamp                     AS time,\r\n  'Aradex 2'                    AS device,\r\n  ara_2_speed__value            AS speed,\r\n  ara_2_torque__value           AS torque,\r\n  NULL                          AS torque_setpoint,\r\n  ara_2_temp_power_stage__value AS temperature,\r\n  NULL                          AS flow,\r\n  ara_2_power__value            AS \"power\"\r\nFROM last_record\r\nORDER BY device",
           "refId": "A",
           "sql": {
             "columns": [
@@ -4563,6 +3976,7 @@
               "device": "Device",
               "flow": "Flow",
               "gear_ratio": "Gear ratio",
+              "power": "Power",
               "pressure": "Pressure",
               "seq_nr": "",
               "speed": "Speed",
@@ -4662,7 +4076,7 @@
         "h": 8,
         "w": 12,
         "x": 0,
-        "y": 76
+        "y": 72
       },
       "id": 31,
       "options": {
@@ -4725,6 +4139,20 @@
         }
       ],
       "title": "Aradex 1",
+      "transformations": [
+        {
+          "id": "organize",
+          "options": {
+            "excludeByName": {},
+            "includeByName": {},
+            "indexByName": {},
+            "renameByName": {
+              "speed": "Speed",
+              "torque": "Torque"
+            }
+          }
+        }
+      ],
       "type": "timeseries"
     },
     {
@@ -4810,7 +4238,7 @@
         "h": 8,
         "w": 12,
         "x": 12,
-        "y": 76
+        "y": 72
       },
       "id": 33,
       "options": {
@@ -4873,6 +4301,180 @@
         }
       ],
       "title": "Aradex 2",
+      "transformations": [
+        {
+          "id": "organize",
+          "options": {
+            "excludeByName": {},
+            "includeByName": {},
+            "indexByName": {},
+            "renameByName": {
+              "speed": "Speed",
+              "torque": "Torque"
+            }
+          }
+        }
+      ],
+      "type": "timeseries"
+    },
+    {
+      "datasource": {
+        "type": "grafana-postgresql-datasource",
+        "uid": "${datasource}"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisBorderShow": false,
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "barWidthFactor": 0.6,
+            "drawStyle": "line",
+            "fillOpacity": 0,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "insertNulls": false,
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "auto",
+            "showValues": false,
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "decimals": 2,
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": 0
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          },
+          "unit": "kwatt"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 24,
+        "x": 0,
+        "y": 80
+      },
+      "id": 69,
+      "options": {
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "hideZeros": false,
+          "mode": "single",
+          "sort": "none"
+        }
+      },
+      "pluginVersion": "12.3.0",
+      "targets": [
+        {
+          "dataset": "dev",
+          "datasource": {
+            "type": "grafana-postgresql-datasource",
+            "uid": "${datasource}"
+          },
+          "editorMode": "code",
+          "editorType": "sql",
+          "format": 1,
+          "meta": {
+            "builderOptions": {
+              "columns": [],
+              "database": "",
+              "limit": 1000,
+              "meta": {},
+              "mode": "list",
+              "queryType": "table",
+              "table": ""
+            }
+          },
+          "pluginVersion": "2.1.4",
+          "queryType": "table",
+          "rawQuery": true,
+          "rawSql": "SELECT\r\n  timestamp                     AS time,\r\n  ara_1_power__value            AS aradex1_power,\r\n  ara_2_power__value            AS aradex2_power\r\nFROM public.marpower__150000_propulsion\r\nWHERE topic = 'marpower/150000-propulsion/pcs-' || lower('$aft_fwd')\r\nAND $__timeFilter(timestamp)",
+          "refId": "A",
+          "sql": {
+            "columns": [
+              {
+                "parameters": [],
+                "type": "function"
+              }
+            ],
+            "groupBy": [
+              {
+                "property": {
+                  "type": "string"
+                },
+                "type": "groupBy"
+              }
+            ],
+            "limit": 50
+          }
+        }
+      ],
+      "title": "Power",
+      "transformations": [
+        {
+          "id": "organize",
+          "options": {
+            "excludeByName": {},
+            "includeByName": {},
+            "indexByName": {},
+            "renameByName": {
+              "aradex1_power": "Aradex 1",
+              "aradex2_power": "Aradex 2",
+              "device": "Device",
+              "flow": "Flow",
+              "gear_ratio": "Gear ratio",
+              "power": "Power",
+              "pressure": "Pressure",
+              "seq_nr": "",
+              "speed": "Speed",
+              "speed_torque_setpoint": "",
+              "temperature": "Temperature",
+              "temperature_delta": "T delta",
+              "temperature_in": "T in",
+              "temperature_out": "T out",
+              "torque": "Torque",
+              "torque_setpoint": "Torque setpoint"
+            }
+          }
+        }
+      ],
       "type": "timeseries"
     },
     {
@@ -4881,7 +4483,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 84
+        "y": 88
       },
       "id": 26,
       "panels": [],
@@ -4994,7 +4596,7 @@
         "h": 6,
         "w": 15,
         "x": 0,
-        "y": 85
+        "y": 89
       },
       "id": 37,
       "options": {
@@ -5110,7 +4712,7 @@
         "h": 6,
         "w": 9,
         "x": 15,
-        "y": 85
+        "y": 89
       },
       "id": 13,
       "options": {
@@ -5443,7 +5045,7 @@
         "h": 5,
         "w": 24,
         "x": 0,
-        "y": 91
+        "y": 95
       },
       "id": 59,
       "options": {
@@ -6146,7 +5748,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 96
+        "y": 100
       },
       "id": 27,
       "panels": [],
@@ -6195,7 +5797,7 @@
         "h": 2,
         "w": 12,
         "x": 0,
-        "y": 97
+        "y": 101
       },
       "id": 48,
       "options": {
@@ -6353,7 +5955,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 99
+        "y": 103
       },
       "id": 52,
       "panels": [],
@@ -6465,7 +6067,7 @@
         "h": 5,
         "w": 24,
         "x": 0,
-        "y": 100
+        "y": 104
       },
       "id": 58,
       "options": {
@@ -6661,7 +6263,7 @@
         "h": 5,
         "w": 24,
         "x": 0,
-        "y": 105
+        "y": 109
       },
       "id": 60,
       "options": {
@@ -6795,7 +6397,7 @@
         "h": 4,
         "w": 24,
         "x": 0,
-        "y": 110
+        "y": 114
       },
       "id": 53,
       "options": {
