@@ -8,9 +8,10 @@ sources:
     type: mqtt
     host: "${MQTT_HOST}"
     port: ${MQTT_PORT}
+    client_id: vector
     decoding:
       codec: json
-    topic: 
+    topic:
       - "marpower/#"
       - "prop-test/#"
       - "domestic/+"
