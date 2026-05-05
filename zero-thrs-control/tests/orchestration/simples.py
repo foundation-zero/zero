@@ -79,5 +79,5 @@ class SimpleControl(Control[SimpleInOut, SimpleInOut, SimpleParameters, SimpleMo
         pass
 
 
-class SimpleAlarms(BaseAlarms[SimpleInOut, SimpleInOut]):
+class SimpleAlarms(BaseAlarms[SimpleInOut, SimpleInOut, SimpleParameters]):
     pass

@@ -5,8 +5,6 @@ from functools import wraps
 from inspect import getmembers
 from typing import Callable
 
-from thrs.input_output.base import ThrsValues
-
 
 class Severity(Enum):
     WARNING = "warning"

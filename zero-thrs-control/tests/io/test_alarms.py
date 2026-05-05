@@ -17,11 +17,11 @@ class MyAlarms(BaseAlarms[MySensorValues, None, None]):
 def test_alarms():
     alarms = MyAlarms()
     sensor_values = MySensorValues(sensor=10)
-    alarm_list = alarms.check(sensor_values, None, parameters = None)
+    alarm_list = alarms.check(sensor_values, None, parameters=None)
     assert len(alarm_list) == 1
     assert alarm_list[0].code == "A001"
     assert alarm_list[0].severity == Severity.ALARM
 
     sensor_values.sensor = 3
-    alarm_list = alarms.check(sensor_values, None, parameters = None)
+    alarm_list = alarms.check(sensor_values, None, parameters=None)
     assert len(alarm_list) == 0

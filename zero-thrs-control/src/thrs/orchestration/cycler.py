@@ -41,7 +41,9 @@ class Cycler:
                     result.timestamp,
                 )
             self._control_values = self._control.control(result.sensor_values).values
-            alarms = self._alarms.check(result.sensor_values, self._control_values)
+            alarms = self._alarms.check(
+                result.sensor_values, self._control_values, self._control.parameters
+            )
             if alarms:
                 warnings.warn(
                     f"Alarms detected: {alarms}"
