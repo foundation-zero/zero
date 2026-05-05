@@ -3441,9 +3441,23 @@
             "uid": "${datasource}"
           },
           "editorMode": "code",
-          "format": "table",
+          "editorType": "sql",
+          "format": 1,
+          "meta": {
+            "builderOptions": {
+              "columns": [],
+              "database": "",
+              "limit": 1000,
+              "meta": {},
+              "mode": "list",
+              "queryType": "table",
+              "table": ""
+            }
+          },
+          "pluginVersion": "2.1.4",
+          "queryType": "table",
           "rawQuery": true,
-          "rawSql": "SELECT\r\n  LAST_VALUE(time ORDER BY time) AS time,\r\n  'Aradex 1' AS device,\r\n  LAST_VALUE((\"Aradex_1_speed_feedback\").value ORDER BY time) AS speed,\r\n  LAST_VALUE((\"Aradex_1_torque_feedback\").value ORDER BY time) AS torque,\r\n  LAST_VALUE((\"SpeedorTorqueSetpointSignal(Aradex1)\").value ORDER BY time) AS torque_setpoint,\r\n  LAST_VALUE((\"Aradex1Temperature\").value ORDER BY time) AS temperature,\r\n  LAST_VALUE((\"Aradex1Flow\").value ORDER BY time) AS flow,\r\n  LAST_VALUE((\"Aradex1Pressure\").value ORDER BY time) AS pressure\r\nFROM marpower.thruster thruster\r\nWHERE topic = 'marpower/thruster/' || lower('$aft_fwd')\r\nUNION ALL\r\nSELECT\r\n  LAST_VALUE(time ORDER BY time) AS time,\r\n  'Aradex 2' AS device,\r\n  LAST_VALUE((\"Aradex_2_speed_feedback\").value ORDER BY time) AS speed,\r\n  LAST_VALUE((\"Aradex_2_torque_feedback\").value ORDER BY time) AS torque,\r\n  LAST_VALUE((\"SpeedorTorqueSetpointSignal(Aradex2)\").value ORDER BY time) AS torque_setpoint,\r\n  LAST_VALUE((\"Aradex2Temperature\").value ORDER BY time) AS temperature,\r\n  LAST_VALUE((\"Aradex2Flow\").value ORDER BY time) AS flow,\r\n  LAST_VALUE((\"Aradex2Pressure\").value ORDER BY time) AS pressure\r\nFROM marpower.thruster\r\nWHERE topic = 'marpower/thruster/' || lower('$aft_fwd')\r\nORDER BY device",
+          "rawSql": "WITH last_record AS (\r\n  SELECT *\r\n  FROM public.marpower__150000_propulsion\r\n  WHERE topic = 'marpower/150000-propulsion/pcs-' || lower('$aft_fwd')\r\n  ORDER BY timestamp DESC\r\n  LIMIT 1\r\n)\r\n\r\nSELECT\r\n  timestamp                     AS time,\r\n  'Aradex 1'                    AS device,\r\n  ara_1_speed__value            AS speed,\r\n  ara_1_torque__value           AS torque,\r\n  NULL                          AS torque_setpoint,\r\n  ara_1_temp_power_stage__value AS temperature,\r\n  NULL                          AS flow\r\nFROM last_record\r\n\r\nUNION ALL\r\n\r\nSELECT\r\n  timestamp                     AS time,\r\n  'Aradex 2'                    AS device,\r\n  ara_2_speed__value            AS speed,\r\n  ara_2_torque__value           AS torque,\r\n  NULL                          AS torque_setpoint,\r\n  ara_2_temp_power_stage__value AS temperature,\r\n  NULL                          AS flow\r\nFROM last_record\r\nORDER BY device",
           "refId": "A",
           "sql": {
             "columns": [
@@ -3600,9 +3614,23 @@
             "uid": "${datasource}"
           },
           "editorMode": "code",
-          "format": "table",
+          "editorType": "sql",
+          "format": 1,
+          "meta": {
+            "builderOptions": {
+              "columns": [],
+              "database": "",
+              "limit": 1000,
+              "meta": {},
+              "mode": "list",
+              "queryType": "table",
+              "table": ""
+            }
+          },
+          "pluginVersion": "2.1.4",
+          "queryType": "table",
           "rawQuery": true,
-          "rawSql": "SELECT\r\n  time,\r\n  (\"Aradex_1_speed_feedback\").value  AS speed,\r\n  (\"Aradex_1_torque_feedback\").value AS torque\r\nFROM marpower.thruster\r\nwhere topic = 'marpower/thruster/' || lower('$aft_fwd')",
+          "rawSql": "SELECT\r\n  timestamp           AS time,\r\n  ara_1_speed__value  AS speed,\r\n  ara_1_torque__value AS torque\r\nFROM public.marpower__150000_propulsion\r\nWHERE topic = 'marpower/150000-propulsion/pcs-' || lower('$aft_fwd')\r\nAND $__timeFilter(timestamp)",
           "refId": "A",
           "sql": {
             "columns": [
@@ -3734,9 +3762,23 @@
             "uid": "${datasource}"
           },
           "editorMode": "code",
-          "format": "table",
+          "editorType": "sql",
+          "format": 1,
+          "meta": {
+            "builderOptions": {
+              "columns": [],
+              "database": "",
+              "limit": 1000,
+              "meta": {},
+              "mode": "list",
+              "queryType": "table",
+              "table": ""
+            }
+          },
+          "pluginVersion": "2.1.4",
+          "queryType": "table",
           "rawQuery": true,
-          "rawSql": "SELECT\r\n  time,\r\n  (\"Aradex_2_speed_feedback\").value  AS speed,\r\n  (\"Aradex_2_torque_feedback\").value AS torque\r\nFROM marpower.thruster\r\nwhere topic = 'marpower/thruster/' || lower('$aft_fwd')",
+          "rawSql": "SELECT\r\n  timestamp           AS time,\r\n  ara_2_speed__value  AS speed,\r\n  ara_2_torque__value AS torque\r\nFROM public.marpower__150000_propulsion\r\nWHERE topic = 'marpower/150000-propulsion/pcs-' || lower('$aft_fwd')\r\nAND $__timeFilter(timestamp)",
           "refId": "A",
           "sql": {
             "columns": [
