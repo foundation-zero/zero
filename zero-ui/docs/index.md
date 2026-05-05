@@ -49,7 +49,7 @@ Our design system includes comprehensive documentation for:
 ### Mimic Components
 
 - **[Mimic Components Overview](/mimics/)** - Domain-specific SVG components for mimic diagrams
-- **[Valve](/mimics/valve)** - Unified switch + flow-control directional valve mimic component
+- **[Actuated Valve](/mimics/actuated-valve)** - Unified switch + flow-control directional actuated valve mimic component
 
 Each component comes with:
 - Multiple visual variants for different use cases
