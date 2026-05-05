@@ -59,6 +59,7 @@ export default defineConfig({
           { text: "Updating Components", link: "/mimics/updating-components" },
           { text: "Valve", link: "/mimics/valve" },
           { text: "Pump", link: "/mimics/pump" },
+          { text: "Heat Exchanger", link: "/mimics/heat-exchanger" },
         ],
       },
     ],

@@ -66,6 +66,20 @@ The agent will use these shared composables automatically — you do not need to
 | `ComponentOrientation` | Typed enum for directional components |
 | `CLOCKWISE_ORIENTATIONS` | Ordered orientation array for rotation math |
 
+## What Goes in index.ts vs the Template
+
+Only extract SVG geometry to `index.ts` when the value is **computed** or **shared across files**.
+
+| Geometry type | Where it lives |
+|---|---|
+| `d` attribute on a static path | Inline in the template — do not extract |
+| `d` attribute that is computed per state | Computed property or `Record` in `index.ts` |
+| `width`, `height` (component dimensions) | Constants in `index.ts` — used for `createSizeAndViewbox` |
+| `rx`, `ry`, `cx`, `cy`, `r` on static shapes | Inline in the template |
+| Static `rect` / `circle` geometry shared across states | Inline in the template |
+
+The rule: if a geometry value never changes and is only used in the template, write it there directly.
+
 ## Orientation Convention (Required)
 
 All directional mimic components must include both a base orientation constant and an instance orientation prop:

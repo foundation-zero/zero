@@ -8,6 +8,7 @@ They are intentionally compact, SVG-first, and designed to map closely to proces
 
 - [Valve](/mimics/valve) - Unified switch + flow-control valve component for mimic diagrams
 - [Pump](/mimics/pump) - Four-state pump icon for mimic diagrams (Active, Transient, Closed, Alarm)
+- [Heat Exchanger](/mimics/heat-exchanger) - Five-state directional heat exchanger icon for mimic diagrams
 
 ## Authoring
 

@@ -104,9 +104,19 @@ Before considering a component complete, verify all items:
 - Component compiles with zero diagnostics.
 - Documentation exists and is linked from the Mimics section.
 
+## What Belongs in index.ts vs the Template
+
+Only extract SVG geometry values to `index.ts` when they are computed or shared:
+
+- **Static path `d` values** — write inline in the template. Do not extract to a named constant.
+- **Computed `d` values** (for example a `Record<State, string>` where paths differ per state) — extract to `index.ts`.
+- **Component dimensions** (`width`, `height`) — always export as constants; they drive `createSizeAndViewbox`.
+- **Static shape attributes** (`cx`, `cy`, `r`, rect `x`/`y`/`width`/`height`) — inline in the template unless they are computed.
+
 ## Common Pitfalls
 
 - Building approximate geometry manually instead of exporting exact paths.
 - Using multiple SVG trees when one rotated geometry is enough.
 - Mixing semantic tokens with leftover hardcoded colors.
 - Adding HTML wrappers around what should be pure SVG output.
+- Extracting static path `d` strings into constants when they never change and are only used in one template.
