@@ -65,3 +65,19 @@ The agent will use these shared composables automatically — you do not need to
 | `createSizeAndViewbox` | Derives SVG size and viewBox from width/height constants |
 | `ComponentOrientation` | Typed enum for directional components |
 | `CLOCKWISE_ORIENTATIONS` | Ordered orientation array for rotation math |
+
+## Orientation Convention (Required)
+
+All directional mimic components must include both a base orientation constant and an instance orientation prop:
+
+- `*_BASE_ORIENTATION` in `index.ts` describes how the component is drawn in Figma (for example `ComponentOrientation.Up` or `ComponentOrientation.Right`).
+- `orientation` prop describes the required direction for the component instance in the mimic diagram.
+- Rendered rotation should always be computed with `useOrientation(orientation, *_BASE_ORIENTATION)`.
+
+When state variants are rotational changes of the same geometry, keep one canonical geometry and derive state rotation from the requested `orientation`:
+
+- Start from the requested instance `orientation`.
+- Apply state-specific orientation offsets (for example with `getNextOrientation`).
+- Pass the resulting orientation into `useOrientation` with the same base orientation constant.
+
+This keeps component APIs consistent across mimics and prevents state-specific geometry duplication.

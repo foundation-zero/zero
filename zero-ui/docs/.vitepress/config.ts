@@ -58,6 +58,7 @@ export default defineConfig({
           { text: "Authoring New Components", link: "/mimics/authoring-workflow" },
           { text: "Updating Components", link: "/mimics/updating-components" },
           { text: "Valve", link: "/mimics/valve" },
+          { text: "Pump", link: "/mimics/pump" },
         ],
       },
     ],

@@ -34,12 +34,12 @@ const { orientation, state } = toRefs(props);
 
 const portColors = computed<ValvePortColors>(() => VALVE_PORT_COLORS[props.state]);
 
-const baseOrientation = computed<ComponentOrientation>(() => {
-  if (state.value !== "closed") return VALVE_BASE_ORIENTATION;
-  return getNextOrientation(VALVE_BASE_ORIENTATION);
+const orientationWithRotation = computed<ComponentOrientation>(() => {
+  if (state.value !== "closed") return orientation.value;
+  return getNextOrientation(orientation.value, 2);
 });
 
-const rotation = useOrientation(orientation, baseOrientation);
+const rotation = useOrientation(orientationWithRotation, VALVE_BASE_ORIENTATION);
 </script>
 
 <template>

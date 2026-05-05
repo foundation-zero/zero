@@ -7,6 +7,7 @@ They are intentionally compact, SVG-first, and designed to map closely to proces
 ## Available Mimic Components
 
 - [Valve](/mimics/valve) - Unified switch + flow-control valve component for mimic diagrams
+- [Pump](/mimics/pump) - Four-state pump icon for mimic diagrams (Active, Transient, Closed, Alarm)
 
 ## Authoring
 
