@@ -6099,6 +6099,388 @@
               "reducers": []
             },
             "inspect": false,
+            "minWidth": 160
+          },
+          "decimals": 2,
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": 0
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "time"
+            },
+            "properties": [
+              {
+                "id": "custom.hideFrom.viz",
+                "value": true
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byRegexp",
+              "options": "/speed/"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "rotrpm"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byRegexp",
+              "options": "/torque/"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "forceNm"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Aradex power"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "kwatt"
+              }
+            ]
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 3,
+        "w": 24,
+        "x": 0,
+        "y": 115
+      },
+      "id": 73,
+      "options": {
+        "cellHeight": "sm",
+        "enablePagination": false,
+        "showHeader": true,
+        "sortBy": [
+          {
+            "desc": false,
+            "displayName": "Device"
+          }
+        ]
+      },
+      "pluginVersion": "12.3.0",
+      "targets": [
+        {
+          "dataset": "dev",
+          "datasource": {
+            "type": "grafana-postgresql-datasource",
+            "uid": "${datasource}"
+          },
+          "editorMode": "code",
+          "editorType": "sql",
+          "format": 1,
+          "meta": {
+            "builderOptions": {
+              "columns": [],
+              "database": "",
+              "limit": 1000,
+              "meta": {},
+              "mode": "list",
+              "queryType": "table",
+              "table": ""
+            }
+          },
+          "pluginVersion": "2.1.4",
+          "queryType": "table",
+          "rawQuery": true,
+          "rawSql": "SELECT\r\n  CASE WHEN motor.timestamp < thruster.timestamp\r\n    THEN motor.timestamp\r\n    ELSE thruster.timestamp\r\n  END                                                       AS time,\r\n  NULL                                                      AS lever_pos,\r\n  CASE WHEN '${aft_fwd}' = 'AFT'\r\n    THEN \"devices__can_aradex.i_aft_thrstr_speed_rpm\"\r\n    ELSE \"devices__can_aradex.i_fwd_thrstr_speed_rpm\"\r\n  END                                                       AS motor_speed,\r\n  thruster.ara_1_speed__value                               AS aradex1_speed,\r\n  thruster.ara_2_speed__value                               AS aradex2_speed,\r\n  thruster.ara_1_power__value + thruster.ara_1_power__value AS aradex_power,\r\n  thruster.ara_1_torque__value                              AS aradex1_torque,\r\n  thruster.ara_2_torque__value                              AS aradex2_torque\r\n\r\nFROM (\r\n  SELECT *\r\n  FROM public.marpower__150000_propulsion\r\n  WHERE topic = 'marpower/150000-propulsion/pcs-' || lower('$aft_fwd')\r\n  ORDER BY timestamp DESC\r\n  LIMIT 1\r\n) AS thruster\r\nCROSS JOIN (\r\n  SELECT *\r\n  FROM public.prop_test__data\r\n  ORDER BY timestamp DESC\r\n  LIMIT 1\r\n) AS motor",
+          "refId": "A",
+          "sql": {
+            "columns": [
+              {
+                "parameters": [],
+                "type": "function"
+              }
+            ],
+            "groupBy": [
+              {
+                "property": {
+                  "type": "string"
+                },
+                "type": "groupBy"
+              }
+            ],
+            "limit": 50
+          }
+        }
+      ],
+      "title": "",
+      "transformations": [
+        {
+          "id": "organize",
+          "options": {
+            "excludeByName": {},
+            "includeByName": {},
+            "indexByName": {},
+            "renameByName": {
+              "aradex1_speed": "Aradex 1 speed",
+              "aradex1_torque": "Aradex 1 torque",
+              "aradex2_speed": "Aradex 2 speed",
+              "aradex2_torque": "Aradex 2 torque",
+              "aradex_power": "Aradex power",
+              "device": "Device",
+              "flow": "Flow",
+              "gear_ratio": "Gear ratio",
+              "lever_pos": "Lever",
+              "motor_power": "Motor power",
+              "motor_speed": "Motor speed",
+              "power": "Power",
+              "pressure": "Pressure",
+              "seq_nr": "",
+              "speed": "Speed",
+              "speed_torque_setpoint": "",
+              "temperature": "Temperature",
+              "temperature_delta": "T delta",
+              "temperature_in": "T in",
+              "temperature_out": "T out",
+              "theoretical_power": "Theoretical Aradex power",
+              "torque": "Torque",
+              "torque_setpoint": "Torque setpoint"
+            }
+          }
+        }
+      ],
+      "type": "table"
+    },
+    {
+      "datasource": {
+        "type": "grafana-postgresql-datasource",
+        "uid": "${datasource}"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "custom": {
+            "align": "left",
+            "cellOptions": {
+              "type": "auto"
+            },
+            "filterable": false,
+            "footer": {
+              "reducers": []
+            },
+            "inspect": false,
+            "minWidth": 200
+          },
+          "decimals": 2,
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": 0
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "time"
+            },
+            "properties": [
+              {
+                "id": "custom.hideFrom.viz",
+                "value": true
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byRegexp",
+              "options": "/error/"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "percent"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Aradex 1 speed"
+            },
+            "properties": [
+              {
+                "id": "custom.width",
+                "value": 164
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Speed"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "rotrpm"
+              }
+            ]
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 3,
+        "w": 24,
+        "x": 0,
+        "y": 118
+      },
+      "id": 74,
+      "options": {
+        "cellHeight": "sm",
+        "enablePagination": false,
+        "showHeader": true,
+        "sortBy": []
+      },
+      "pluginVersion": "12.3.0",
+      "targets": [
+        {
+          "dataset": "dev",
+          "datasource": {
+            "type": "grafana-postgresql-datasource",
+            "uid": "${datasource}"
+          },
+          "editorMode": "code",
+          "editorType": "sql",
+          "format": 1,
+          "meta": {
+            "builderOptions": {
+              "columns": [],
+              "database": "",
+              "limit": 1000,
+              "meta": {},
+              "mode": "list",
+              "queryType": "table",
+              "table": ""
+            }
+          },
+          "pluginVersion": "2.1.4",
+          "queryType": "table",
+          "rawQuery": true,
+          "rawSql": "WITH speed_values AS \r\n(\r\n  SELECT\r\n  CASE WHEN motor.timestamp < thruster.timestamp\r\n    THEN motor.timestamp\r\n    ELSE thruster.timestamp\r\n  END                                                       AS time,\r\n  CASE WHEN '${aft_fwd}' = 'AFT'\r\n    THEN \"devices__can_aradex.i_aft_thrstr_speed_rpm\"\r\n    ELSE \"devices__can_aradex.i_fwd_thrstr_speed_rpm\"\r\n  END                                                       AS motor_speed,\r\n  thruster.ara_1_speed__value                               AS aradex1_speed,\r\n  thruster.ara_2_speed__value                               AS aradex2_speed\r\n  FROM (\r\n    SELECT *\r\n    FROM public.marpower__150000_propulsion\r\n    WHERE topic = 'marpower/150000-propulsion/pcs-' || lower('$aft_fwd')\r\n    ORDER BY timestamp DESC\r\n    LIMIT 1\r\n  ) AS thruster\r\n  CROSS JOIN (\r\n    SELECT *\r\n    FROM public.prop_test__data\r\n    ORDER BY timestamp DESC\r\n    LIMIT 1\r\n  ) AS motor\r\n)\r\nSELECT\r\n  time,\r\n  'Aradex 1'                                                      AS device,\r\n  aradex1_speed,\r\n  aradex1_speed / motor_speed                                     AS gear_ratio,\r\n  100 * (aradex1_speed / motor_speed - $gear_ratio) / $gear_ratio AS gear_ratio_rel_error\r\nFROM speed_values\r\nUNION ALL\r\nSELECT\r\n  time,\r\n  'Aradex 2'                                                      AS device,\r\n  aradex2_speed,\r\n  aradex2_speed / motor_speed                                     AS gear_ratio,\r\n  100 * (aradex2_speed / motor_speed - $gear_ratio) / $gear_ratio AS gear_ratio_rel_error\r\nFROM speed_values\r\nORDER BY device\r\n",
+          "refId": "A",
+          "sql": {
+            "columns": [
+              {
+                "parameters": [],
+                "type": "function"
+              }
+            ],
+            "groupBy": [
+              {
+                "property": {
+                  "type": "string"
+                },
+                "type": "groupBy"
+              }
+            ],
+            "limit": 50
+          }
+        }
+      ],
+      "title": "",
+      "transformations": [
+        {
+          "id": "organize",
+          "options": {
+            "excludeByName": {},
+            "includeByName": {},
+            "indexByName": {},
+            "renameByName": {
+              "aradex1_speed": "Speed",
+              "aradex1_torque": "Aradex 1 torque",
+              "aradex2_speed": "Aradex 2 speed",
+              "aradex2_torque": "Aradex 2 torque",
+              "aradex_power": "Aradex power",
+              "device": "Device",
+              "flow": "Flow",
+              "gear_ratio": "Gear ratio",
+              "gear_ratio1": "Aradex 1 gear ratio",
+              "gear_ratio1_rel_error": "Gear ratio 1 relative error",
+              "gear_ratio2": "Aradex 2 gear ratio",
+              "gear_ratio2_rel_error": "Gear ratio 2 relative error",
+              "gear_ratio_rel_error": "Relative error",
+              "lever_pos": "Lever",
+              "motor_power": "Motor power",
+              "motor_speed": "Motor speed",
+              "power": "Power",
+              "pressure": "Pressure",
+              "seq_nr": "",
+              "speed": "Speed",
+              "speed_torque_setpoint": "",
+              "temperature": "Temperature",
+              "temperature_delta": "T delta",
+              "temperature_in": "T in",
+              "temperature_out": "T out",
+              "theoretical_power": "Theoretical Aradex power",
+              "torque": "Torque",
+              "torque_setpoint": "Torque setpoint"
+            }
+          }
+        }
+      ],
+      "type": "table"
+    },
+    {
+      "datasource": {
+        "type": "grafana-postgresql-datasource",
+        "uid": "${datasource}"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "custom": {
+            "align": "left",
+            "cellOptions": {
+              "type": "auto"
+            },
+            "filterable": false,
+            "footer": {
+              "reducers": []
+            },
+            "inspect": false,
             "minWidth": 125
           },
           "decimals": 2,
@@ -6184,7 +6566,7 @@
         "h": 5,
         "w": 24,
         "x": 0,
-        "y": 115
+        "y": 121
       },
       "id": 58,
       "options": {
@@ -6380,7 +6762,7 @@
         "h": 5,
         "w": 24,
         "x": 0,
-        "y": 120
+        "y": 126
       },
       "id": 60,
       "options": {
@@ -6514,7 +6896,7 @@
         "h": 4,
         "w": 24,
         "x": 0,
-        "y": 125
+        "y": 131
       },
       "id": 53,
       "options": {
