@@ -5,7 +5,7 @@ from pydantic import Field, model_validator
 from transitions import Machine, State
 from thrs.classes.control import Control, ControlMode, ControlResult
 from thrs.control.controllers import Controller
-from thrs.input_output.alarms import BaseAlarms
+from thrs.input_output.alarms import BaseAlarms, Severity, alarm
 from thrs.input_output.base import Stamped, ThrsValues
 from thrs.input_output.definitions.control import HeatPump, Pump, Valve
 from thrs.input_output.definitions.units import (
@@ -763,4 +763,173 @@ class BoilersControl(
 
 
 class BoilersAlarms(BaseAlarms):
-    pass
+    @staticmethod
+    def _check_tank_temperature(
+        tank_number: int,
+        temperature: float,
+        maximum: float,
+        delta: float,
+    ) -> str | None:
+        if temperature > maximum + delta:
+            return f"Tank {tank_number} temperature {temperature:.1f}°C above maximum {maximum}°C"
+        return None
+
+    @staticmethod
+    def _check_tank_level(
+        tank_number: int,
+        level: float,
+        maximum: float,
+    ) -> str | None:
+        if level > maximum:
+            return f"Tank {tank_number} level {level:.1f}L above {maximum}L"
+        return None
+
+    @alarm("Tank 1 high temperature warning", severity=Severity.WARNING)
+    def check_tank1_temperature_warning(
+        self,
+        sensor_values: BoilersSensorValues,
+        control_values: BoilersControlValues,
+        parameters: BoilersParameters,
+    ) -> str | None:
+        return self._check_tank_temperature(
+            1,
+            sensor_values.boilers_temperature_tank1.temperature.value,
+            parameters.maximum_tank_temperature,
+            2,
+        )
+
+    @alarm("Tank 2 high temperature warning", severity=Severity.WARNING)
+    def check_tank2_temperature_warning(
+        self,
+        sensor_values: BoilersSensorValues,
+        control_values: BoilersControlValues,
+        parameters: BoilersParameters,
+    ) -> str | None:
+        return self._check_tank_temperature(
+            2,
+            sensor_values.boilers_temperature_tank2.temperature.value,
+            parameters.maximum_tank_temperature,
+            2,
+        )
+
+    @alarm("Tank 3 high temperature warning", severity=Severity.WARNING)
+    def check_tank3_temperature_warning(
+        self,
+        sensor_values: BoilersSensorValues,
+        control_values: BoilersControlValues,
+        parameters: BoilersParameters,
+    ) -> str | None:
+        return self._check_tank_temperature(
+            3,
+            sensor_values.boilers_temperature_tank3.temperature.value,
+            parameters.maximum_tank_temperature,
+            2,
+        )
+
+    @alarm("Tank 1 high temperature alarm", severity=Severity.ALARM)
+    def check_tank1_temperature_alarm(
+        self,
+        sensor_values: BoilersSensorValues,
+        control_values: BoilersControlValues,
+        parameters: BoilersParameters,
+    ) -> str | None:
+        return self._check_tank_temperature(
+            1,
+            sensor_values.boilers_temperature_tank1.temperature.value,
+            parameters.maximum_tank_temperature,
+            5,
+        )
+
+    @alarm("Tank 2 high temperature alarm", severity=Severity.ALARM)
+    def check_tank2_temperature_alarm(
+        self,
+        sensor_values: BoilersSensorValues,
+        control_values: BoilersControlValues,
+        parameters: BoilersParameters,
+    ) -> str | None:
+        return self._check_tank_temperature(
+            2,
+            sensor_values.boilers_temperature_tank2.temperature.value,
+            parameters.maximum_tank_temperature,
+            5,
+        )
+
+    @alarm("Tank 3 high temperature alarm", severity=Severity.ALARM)
+    def check_tank3_temperature_alarm(
+        self,
+        sensor_values: BoilersSensorValues,
+        control_values: BoilersControlValues,
+        parameters: BoilersParameters,
+    ) -> str | None:
+        return self._check_tank_temperature(
+            3,
+            sensor_values.boilers_temperature_tank3.temperature.value,
+            parameters.maximum_tank_temperature,
+            5,
+        )
+
+    @alarm("Tank 1 high level warning", severity=Severity.WARNING)
+    def check_tank1_level_warning(
+        self,
+        sensor_values: BoilersSensorValues,
+        control_values: BoilersControlValues,
+        parameters: BoilersParameters,
+    ) -> str | None:
+        return self._check_tank_level(
+            1, sensor_values.boilers_level_tank1.level.value, 265
+        )
+
+    @alarm("Tank 2 high level warning", severity=Severity.WARNING)
+    def check_tank2_level_warning(
+        self,
+        sensor_values: BoilersSensorValues,
+        control_values: BoilersControlValues,
+        parameters: BoilersParameters,
+    ) -> str | None:
+        return self._check_tank_level(
+            2, sensor_values.boilers_level_tank2.level.value, 265
+        )
+
+    @alarm("Tank 3 high level warning", severity=Severity.WARNING)
+    def check_tank3_level_warning(
+        self,
+        sensor_values: BoilersSensorValues,
+        control_values: BoilersControlValues,
+        parameters: BoilersParameters,
+    ) -> str | None:
+        return self._check_tank_level(
+            3, sensor_values.boilers_level_tank3.level.value, 265
+        )
+
+    @alarm("Tank 1 high level alarm", severity=Severity.ALARM)
+    def check_tank1_level_alarm(
+        self,
+        sensor_values: BoilersSensorValues,
+        control_values: BoilersControlValues,
+        parameters: BoilersParameters,
+    ) -> str | None:
+        return self._check_tank_level(
+            1, sensor_values.boilers_level_tank1.level.value, 270
+        )
+
+    @alarm("Tank 2 high level alarm", severity=Severity.ALARM)
+    def check_tank2_level_alarm(
+        self,
+        sensor_values: BoilersSensorValues,
+        control_values: BoilersControlValues,
+        parameters: BoilersParameters,
+    ) -> str | None:
+        return self._check_tank_level(
+            2, sensor_values.boilers_level_tank2.level.value, 270
+        )
+
+    @alarm("Tank 3 high level alarm", severity=Severity.ALARM)
+    def check_tank3_level_alarm(
+        self,
+        sensor_values: BoilersSensorValues,
+        control_values: BoilersControlValues,
+        parameters: BoilersParameters,
+    ) -> str | None:
+        return self._check_tank_level(
+            3, sensor_values.boilers_level_tank3.level.value, 270
+        )
