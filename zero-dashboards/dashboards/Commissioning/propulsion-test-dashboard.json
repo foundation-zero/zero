@@ -133,89 +133,10 @@
                 "value": 80
               }
             ]
-          }
+          },
+          "unit": "kwatt"
         },
-        "overrides": [
-          {
-            "matcher": {
-              "id": "byName",
-              "options": "time"
-            },
-            "properties": []
-          },
-          {
-            "matcher": {
-              "id": "byName",
-              "options": "Speed"
-            },
-            "properties": [
-              {
-                "id": "unit",
-                "value": "rotrpm"
-              }
-            ]
-          },
-          {
-            "matcher": {
-              "id": "byName",
-              "options": "Temperature"
-            },
-            "properties": [
-              {
-                "id": "unit",
-                "value": "celsius"
-              }
-            ]
-          },
-          {
-            "matcher": {
-              "id": "byName",
-              "options": "Torque"
-            },
-            "properties": [
-              {
-                "id": "unit",
-                "value": "forceNm"
-              }
-            ]
-          },
-          {
-            "matcher": {
-              "id": "byName",
-              "options": "Flow"
-            },
-            "properties": [
-              {
-                "id": "unit",
-                "value": "flowlpm"
-              }
-            ]
-          },
-          {
-            "matcher": {
-              "id": "byName",
-              "options": "Pressure"
-            },
-            "properties": [
-              {
-                "id": "unit",
-                "value": "pressurebar"
-              }
-            ]
-          },
-          {
-            "matcher": {
-              "id": "byName",
-              "options": "Torque setpoint"
-            },
-            "properties": [
-              {
-                "id": "unit",
-                "value": "Q/rpm²"
-              }
-            ]
-          }
-        ]
+        "overrides": []
       },
       "gridPos": {
         "h": 7,
