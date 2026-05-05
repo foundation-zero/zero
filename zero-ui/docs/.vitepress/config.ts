@@ -57,6 +57,7 @@ export default defineConfig({
           { text: "Overview", link: "/mimics/" },
           { text: "Authoring New Components", link: "/mimics/authoring-workflow" },
           { text: "Updating Components", link: "/mimics/updating-components" },
+          { text: "Manual Valve", link: "/mimics/manual-valve" },
           { text: "Actuated Valve", link: "/mimics/actuated-valve" },
           { text: "Pump", link: "/mimics/pump" },
           { text: "Heat Exchanger", link: "/mimics/heat-exchanger" },
