@@ -691,12 +691,186 @@
       "type": "timeseries"
     },
     {
+      "datasource": {
+        "type": "grafana-postgresql-datasource",
+        "uid": "${datasource}"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisBorderShow": false,
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "barWidthFactor": 0.6,
+            "drawStyle": "line",
+            "fillOpacity": 0,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "insertNulls": false,
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "auto",
+            "showValues": false,
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "decimals": 2,
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": 0
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          },
+          "unit": "rotrpm"
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Torque"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "forceNm"
+              }
+            ]
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 9,
+        "w": 24,
+        "x": 0,
+        "y": 23
+      },
+      "id": 65,
+      "options": {
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "hideZeros": false,
+          "mode": "single",
+          "sort": "none"
+        }
+      },
+      "pluginVersion": "12.3.0",
+      "targets": [
+        {
+          "dataset": "dev",
+          "datasource": {
+            "type": "grafana-postgresql-datasource",
+            "uid": "${datasource}"
+          },
+          "editorMode": "code",
+          "editorType": "sql",
+          "format": 1,
+          "meta": {
+            "builderOptions": {
+              "columns": [],
+              "database": "",
+              "limit": 1000,
+              "meta": {},
+              "mode": "list",
+              "queryType": "table",
+              "table": ""
+            }
+          },
+          "pluginVersion": "2.1.4",
+          "queryType": "table",
+          "rawQuery": true,
+          "rawSql": "SELECT\r\n  timestamp AS time,\r\n  CASE WHEN '${aft_fwd}' = 'AFT' THEN \"devices__can_aradex.i_aft_thrstr_speed_rpm\"   ELSE \"devices__can_aradex.i_fwd_thrstr_speed_rpm\"   END AS speed,\r\n  CASE WHEN '${aft_fwd}' = 'AFT' THEN \"devices__can_aradex.i_aft_thrstr_torque_nm\"   ELSE \"devices__can_aradex.i_fwd_thrstr_torque_nm\"   END AS torque\r\nFROM public.prop_test__data\r\nWHERE $__timeFilter(timestamp)",
+          "refId": "A",
+          "sql": {
+            "columns": [
+              {
+                "parameters": [],
+                "type": "function"
+              }
+            ],
+            "groupBy": [
+              {
+                "property": {
+                  "type": "string"
+                },
+                "type": "groupBy"
+              }
+            ],
+            "limit": 50
+          }
+        }
+      ],
+      "title": "External motor",
+      "transformations": [
+        {
+          "id": "organize",
+          "options": {
+            "excludeByName": {},
+            "includeByName": {},
+            "indexByName": {},
+            "renameByName": {
+              "current": "Current",
+              "device": "Device",
+              "e_motor_temp": "Motor temp",
+              "flow": "Flow",
+              "gear_ratio": "Gear ratio",
+              "igbt_temp": "IGBT temp",
+              "pressure": "Pressure",
+              "seq_nr": "",
+              "speed": "Speed",
+              "speed_torque_setpoint": "",
+              "temperature": "Temperature",
+              "temperature_delta": "T delta",
+              "temperature_in": "T in",
+              "temperature_out": "T out",
+              "torque": "Torque",
+              "torque_setpoint": "Torque setpoint",
+              "voltage": "Voltage"
+            }
+          }
+        }
+      ],
+      "type": "timeseries"
+    },
+    {
       "collapsed": false,
       "gridPos": {
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 23
+        "y": 32
       },
       "id": 24,
       "panels": [],
@@ -757,7 +931,7 @@
         "h": 16,
         "w": 12,
         "x": 0,
-        "y": 24
+        "y": 33
       },
       "id": 50,
       "options": {
@@ -2064,7 +2238,7 @@
         "h": 16,
         "w": 12,
         "x": 12,
-        "y": 24
+        "y": 33
       },
       "id": 57,
       "options": {
@@ -3323,7 +3497,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 40
+        "y": 49
       },
       "id": 25,
       "panels": [],
@@ -3383,7 +3557,7 @@
         "h": 4,
         "w": 12,
         "x": 0,
-        "y": 41
+        "y": 50
       },
       "id": 42,
       "options": {
@@ -3690,7 +3864,7 @@
         "h": 4,
         "w": 12,
         "x": 12,
-        "y": 41
+        "y": 50
       },
       "id": 43,
       "options": {
@@ -4046,7 +4220,7 @@
         "h": 4,
         "w": 24,
         "x": 0,
-        "y": 45
+        "y": 54
       },
       "id": 41,
       "options": {
@@ -4217,7 +4391,7 @@
         "h": 8,
         "w": 12,
         "x": 0,
-        "y": 49
+        "y": 58
       },
       "id": 31,
       "options": {
@@ -4365,7 +4539,7 @@
         "h": 8,
         "w": 12,
         "x": 12,
-        "y": 49
+        "y": 58
       },
       "id": 33,
       "options": {
@@ -4436,7 +4610,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 57
+        "y": 66
       },
       "id": 26,
       "panels": [],
@@ -4549,7 +4723,7 @@
         "h": 6,
         "w": 15,
         "x": 0,
-        "y": 58
+        "y": 67
       },
       "id": 37,
       "options": {
@@ -4665,7 +4839,7 @@
         "h": 6,
         "w": 9,
         "x": 15,
-        "y": 58
+        "y": 67
       },
       "id": 13,
       "options": {
@@ -4998,7 +5172,7 @@
         "h": 5,
         "w": 24,
         "x": 0,
-        "y": 64
+        "y": 73
       },
       "id": 59,
       "options": {
@@ -5701,7 +5875,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 69
+        "y": 78
       },
       "id": 27,
       "panels": [],
@@ -5750,7 +5924,7 @@
         "h": 2,
         "w": 12,
         "x": 0,
-        "y": 70
+        "y": 79
       },
       "id": 48,
       "options": {
@@ -5908,7 +6082,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 72
+        "y": 81
       },
       "id": 52,
       "panels": [],
@@ -6020,7 +6194,7 @@
         "h": 5,
         "w": 24,
         "x": 0,
-        "y": 73
+        "y": 82
       },
       "id": 58,
       "options": {
@@ -6216,7 +6390,7 @@
         "h": 5,
         "w": 24,
         "x": 0,
-        "y": 78
+        "y": 87
       },
       "id": 60,
       "options": {
@@ -6350,7 +6524,7 @@
         "h": 4,
         "w": 24,
         "x": 0,
-        "y": 83
+        "y": 92
       },
       "id": 53,
       "options": {
