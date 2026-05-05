@@ -378,18 +378,6 @@
           {
             "matcher": {
               "id": "byName",
-              "options": "Temperature"
-            },
-            "properties": [
-              {
-                "id": "unit",
-                "value": "celsius"
-              }
-            ]
-          },
-          {
-            "matcher": {
-              "id": "byName",
               "options": "Torque"
             },
             "properties": [
@@ -401,37 +389,37 @@
           },
           {
             "matcher": {
-              "id": "byName",
-              "options": "Flow"
+              "id": "byRegexp",
+              "options": "/temp/"
             },
             "properties": [
               {
                 "id": "unit",
-                "value": "flowlpm"
+                "value": "celsius"
               }
             ]
           },
           {
             "matcher": {
               "id": "byName",
-              "options": "Pressure"
+              "options": "Current"
             },
             "properties": [
               {
                 "id": "unit",
-                "value": "pressurebar"
+                "value": "amp"
               }
             ]
           },
           {
             "matcher": {
               "id": "byName",
-              "options": "Torque setpoint"
+              "options": "Voltage"
             },
             "properties": [
               {
                 "id": "unit",
-                "value": "Q/rpm²"
+                "value": "volt"
               }
             ]
           }
@@ -480,7 +468,7 @@
           "pluginVersion": "2.1.4",
           "queryType": "table",
           "rawQuery": true,
-          "rawSql": "WITH last_record AS (\r\n  SELECT *\r\n  FROM public.marpower__150000_propulsion\r\n  WHERE topic = 'marpower/150000-propulsion/pcs-' || lower('$aft_fwd')\r\n  ORDER BY timestamp DESC\r\n  LIMIT 1\r\n)\r\n\r\nSELECT\r\n  timestamp                     AS time,\r\n  'Aradex 1'                    AS device,\r\n  ara_1_speed__value            AS speed,\r\n  ara_1_torque__value           AS torque,\r\n  NULL                          AS torque_setpoint,\r\n  ara_1_temp_power_stage__value AS temperature,\r\n  NULL                          AS flow\r\nFROM last_record\r\n\r\nUNION ALL\r\n\r\nSELECT\r\n  timestamp                     AS time,\r\n  'Aradex 2'                    AS device,\r\n  ara_2_speed__value            AS speed,\r\n  ara_2_torque__value           AS torque,\r\n  NULL                          AS torque_setpoint,\r\n  ara_2_temp_power_stage__value AS temperature,\r\n  NULL                          AS flow\r\nFROM last_record\r\nORDER BY device",
+          "rawSql": "SELECT\r\n  timestamp AS time,\r\n  CASE WHEN '${aft_fwd}' = 'AFT' THEN \"devices__can_aradex.i_aft_thrstr_emotor_temp\" ELSE \"devices__can_aradex.i_fwd_thrstr_emotor_temp\" END AS e_motor_temp,\r\n  CASE WHEN '${aft_fwd}' = 'AFT' THEN \"devices__can_aradex.i_aft_thrstr_igbt_temp\"   ELSE \"devices__can_aradex.i_fwd_thrstr_igbt_temp\"   END AS igbt_temp,\r\n  CASE WHEN '${aft_fwd}' = 'AFT' THEN \"devices__can_aradex.i_aft_thrstr_speed_rpm\"   ELSE \"devices__can_aradex.i_fwd_thrstr_speed_rpm\"   END AS speed,\r\n  CASE WHEN '${aft_fwd}' = 'AFT' THEN \"devices__can_aradex.i_aft_thrstr_torque_nm\"   ELSE \"devices__can_aradex.i_fwd_thrstr_torque_nm\"   END AS torque,\r\n  CASE WHEN '${aft_fwd}' = 'AFT' THEN \"devices__can_aradex.r_aft_thrstr_dc_current\"  ELSE \"devices__can_aradex.r_fwd_thrstr_dc_current\"  END AS \"current\",\r\n  CASE WHEN '${aft_fwd}' = 'AFT' THEN \"devices__can_aradex.r_aft_thrstr_dc_voltage\"  ELSE \"devices__can_aradex.r_fwd_thrstr_dc_voltage\"  END AS voltage\r\nFROM public.prop_test__data                                                   \r\nORDER BY timestamp DESC\r\nLIMIT 1",
           "refId": "A",
           "sql": {
             "columns": [
@@ -501,7 +489,7 @@
           }
         }
       ],
-      "title": "",
+      "title": "Aradex",
       "transformations": [
         {
           "id": "organize",
@@ -510,9 +498,12 @@
             "includeByName": {},
             "indexByName": {},
             "renameByName": {
+              "current": "Current",
               "device": "Device",
+              "e_motor_temp": "Motor temp",
               "flow": "Flow",
               "gear_ratio": "Gear ratio",
+              "igbt_temp": "IGBT temp",
               "pressure": "Pressure",
               "seq_nr": "",
               "speed": "Speed",
@@ -522,7 +513,8 @@
               "temperature_in": "T in",
               "temperature_out": "T out",
               "torque": "Torque",
-              "torque_setpoint": "Torque setpoint"
+              "torque_setpoint": "Torque setpoint",
+              "voltage": "Voltage"
             }
           }
         }
