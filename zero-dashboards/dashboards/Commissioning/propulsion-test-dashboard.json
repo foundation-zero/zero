@@ -6356,6 +6356,18 @@
                 "value": "rotrpm"
               }
             ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Gear ratio"
+            },
+            "properties": [
+              {
+                "id": "decimals",
+                "value": 3
+              }
+            ]
           }
         ]
       },
@@ -6397,7 +6409,7 @@
           "pluginVersion": "2.1.4",
           "queryType": "table",
           "rawQuery": true,
-          "rawSql": "WITH speed_values AS \r\n(\r\n  SELECT\r\n  CASE WHEN motor.timestamp < thruster.timestamp\r\n    THEN motor.timestamp\r\n    ELSE thruster.timestamp\r\n  END                                                       AS time,\r\n  CASE WHEN '${aft_fwd}' = 'AFT'\r\n    THEN \"devices__can_aradex.i_aft_thrstr_speed_rpm\"\r\n    ELSE \"devices__can_aradex.i_fwd_thrstr_speed_rpm\"\r\n  END                                                       AS motor_speed,\r\n  thruster.ara_1_speed__value                               AS aradex1_speed,\r\n  thruster.ara_2_speed__value                               AS aradex2_speed\r\n  FROM (\r\n    SELECT *\r\n    FROM public.marpower__150000_propulsion\r\n    WHERE topic = 'marpower/150000-propulsion/pcs-' || lower('$aft_fwd')\r\n    ORDER BY timestamp DESC\r\n    LIMIT 1\r\n  ) AS thruster\r\n  CROSS JOIN (\r\n    SELECT *\r\n    FROM public.prop_test__data\r\n    ORDER BY timestamp DESC\r\n    LIMIT 1\r\n  ) AS motor\r\n)\r\nSELECT\r\n  time,\r\n  'Aradex 1'                                                      AS device,\r\n  aradex1_speed,\r\n  aradex1_speed / motor_speed                                     AS gear_ratio,\r\n  100 * (aradex1_speed / motor_speed - $gear_ratio) / $gear_ratio AS gear_ratio_rel_error\r\nFROM speed_values\r\nUNION ALL\r\nSELECT\r\n  time,\r\n  'Aradex 2'                                                      AS device,\r\n  aradex2_speed,\r\n  aradex2_speed / motor_speed                                     AS gear_ratio,\r\n  100 * (aradex2_speed / motor_speed - $gear_ratio) / $gear_ratio AS gear_ratio_rel_error\r\nFROM speed_values\r\nORDER BY device\r\n",
+          "rawSql": "WITH speed_values AS \r\n(\r\n  SELECT\r\n  CASE WHEN motor.timestamp < thruster.timestamp\r\n    THEN motor.timestamp\r\n    ELSE thruster.timestamp\r\n  END                                                       AS time,\r\n  CASE WHEN '${aft_fwd}' = 'AFT'\r\n    THEN \"devices__can_aradex.i_aft_thrstr_speed_rpm\"\r\n    ELSE \"devices__can_aradex.i_fwd_thrstr_speed_rpm\"\r\n  END                                                       AS motor_speed,\r\n  thruster.ara_1_speed__value                               AS aradex1_speed,\r\n  thruster.ara_2_speed__value                               AS aradex2_speed\r\n  FROM (\r\n    SELECT *\r\n    FROM public.marpower__150000_propulsion\r\n    WHERE topic = 'marpower/150000-propulsion/pcs-' || lower('$aft_fwd')\r\n    ORDER BY timestamp DESC\r\n    LIMIT 1\r\n  ) AS thruster\r\n  CROSS JOIN (\r\n    SELECT *\r\n    FROM public.prop_test__data\r\n    ORDER BY timestamp DESC\r\n    LIMIT 1\r\n  ) AS motor\r\n)\r\nSELECT\r\n  time,\r\n  'Aradex 1'                                                      AS device,\r\n  aradex1_speed,\r\n  aradex1_speed / GREATEST(motor_speed, 1)                        AS gear_ratio,\r\n  100 * (aradex1_speed / GREATEST(motor_speed, 1) - $gear_ratio) / $gear_ratio AS gear_ratio_rel_error\r\nFROM speed_values\r\nUNION ALL\r\nSELECT\r\n  time,\r\n  'Aradex 2'                                                      AS device,\r\n  aradex2_speed,\r\n  aradex2_speed / GREATEST(motor_speed, 1)                        AS gear_ratio,\r\n  100 * (aradex2_speed / GREATEST(motor_speed, 1) - $gear_ratio) / $gear_ratio AS gear_ratio_rel_error\r\nFROM speed_values\r\nORDER BY device\r\n",
           "refId": "A",
           "sql": {
             "columns": [
@@ -6481,7 +6493,7 @@
               "reducers": []
             },
             "inspect": false,
-            "minWidth": 125
+            "minWidth": 160
           },
           "decimals": 2,
           "mappings": [],
@@ -6515,31 +6527,7 @@
           {
             "matcher": {
               "id": "byRegexp",
-              "options": "/[tT]orque/"
-            },
-            "properties": [
-              {
-                "id": "unit",
-                "value": "forceNm"
-              }
-            ]
-          },
-          {
-            "matcher": {
-              "id": "byRegexp",
-              "options": "/Relative/"
-            },
-            "properties": [
-              {
-                "id": "unit",
-                "value": "percent"
-              }
-            ]
-          },
-          {
-            "matcher": {
-              "id": "byName",
-              "options": "Speed prop"
+              "options": "/speed/"
             },
             "properties": [
               {
@@ -6550,8 +6538,8 @@
           },
           {
             "matcher": {
-              "id": "byName",
-              "options": "Loss"
+              "id": "byRegexp",
+              "options": "/torque/"
             },
             "properties": [
               {
@@ -6559,16 +6547,28 @@
                 "value": "forceNm"
               }
             ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Aradex power"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "kwatt"
+              }
+            ]
           }
         ]
       },
       "gridPos": {
-        "h": 5,
+        "h": 3,
         "w": 24,
         "x": 0,
         "y": 121
       },
-      "id": 58,
+      "id": 75,
       "options": {
         "cellHeight": "sm",
         "enablePagination": false,
@@ -6576,7 +6576,7 @@
         "sortBy": [
           {
             "desc": false,
-            "displayName": "Speed prop"
+            "displayName": "Device"
           }
         ]
       },
@@ -6589,9 +6589,23 @@
             "uid": "${datasource}"
           },
           "editorMode": "code",
-          "format": "table",
+          "editorType": "sql",
+          "format": 1,
+          "meta": {
+            "builderOptions": {
+              "columns": [],
+              "database": "",
+              "limit": 1000,
+              "meta": {},
+              "mode": "list",
+              "queryType": "table",
+              "table": ""
+            }
+          },
+          "pluginVersion": "2.1.4",
+          "queryType": "table",
           "rawQuery": true,
-          "rawSql": "WITH aradex_data AS (\r\n    SELECT\r\n        LAST_VALUE(time ORDER BY time)                                           AS time,\r\n        LAST_VALUE((\"SpeedorTorqueSetpointSignal(Aradex1)\").value ORDER BY time) AS torque_setpoint\r\n    FROM marpower.thruster\r\n    WHERE topic = 'marpower/thruster/' || lower('$aft_fwd')\r\n),\r\nmotor_data AS (\r\n    SELECT\r\n        LAST_VALUE(time ORDER BY time)             AS time,\r\n        LAST_VALUE((\"Speed\").value ORDER BY time)  AS prop_speed,\r\n        LAST_VALUE((\"Torque\").value ORDER BY time) AS prop_torque\r\n    FROM marpower.externalmotor\r\n),\r\ncombined AS (\r\n    SELECT\r\n        a.time,\r\n        a.torque_setpoint,\r\n        a.torque_setpoint * (m.prop_speed * m.prop_speed) AS expected_prop_torque,\r\n        m.prop_speed,\r\n        m.prop_torque,\r\n        m.prop_torque / $gear_ratio                       AS ideal_torque_thruster\r\n    FROM aradex_data a\r\n    JOIN motor_data m ON m.time >= a.time\r\n)\r\nSELECT\r\n    time,\r\n    prop_speed,\r\n    torque_setpoint,\r\n    expected_prop_torque,\r\n    prop_torque,\r\n    ideal_torque_thruster,\r\n    expected_prop_torque - prop_torque                          AS prop_torque_loss,\r\n    100* (expected_prop_torque - prop_torque) / expected_prop_torque AS prop_torque_rel_loss\r\nFROM combined",
+          "rawSql": "SELECT\r\n  CASE WHEN motor.timestamp < thruster.timestamp\r\n    THEN motor.timestamp\r\n    ELSE thruster.timestamp\r\n  END                                                                 AS time,\r\n  CASE WHEN '${aft_fwd}' = 'AFT'\r\n    THEN \"devices__can_aradex.i_aft_thrstr_torque_nm\"\r\n    ELSE \"devices__can_aradex.i_fwd_thrstr_torque_nm\"\r\n  END                                                                 AS motor_torque,\r\n  thruster.ara_1_torque__value                        AS aradex1_torque,\r\n  thruster.ara_2_torque__value                        AS aradex2_torque,\r\n  NULL AS abs_loss,\r\n  NULL AS rel_loss\r\n\r\nFROM (\r\n  SELECT *\r\n  FROM public.marpower__150000_propulsion\r\n  WHERE topic = 'marpower/150000-propulsion/pcs-' || lower('$aft_fwd')\r\n  ORDER BY timestamp DESC\r\n  LIMIT 1\r\n) AS thruster\r\nCROSS JOIN (\r\n  SELECT *\r\n  FROM public.prop_test__data\r\n  ORDER BY timestamp DESC\r\n  LIMIT 1\r\n) AS motor",
           "refId": "A",
           "sql": {
             "columns": [
@@ -6612,7 +6626,7 @@
           }
         }
       ],
-      "title": "Loss",
+      "title": "",
       "transformations": [
         {
           "id": "organize",
@@ -6621,34 +6635,27 @@
             "includeByName": {},
             "indexByName": {},
             "renameByName": {
-              "?column?": "",
+              "aradex1_speed": "Aradex 1 speed",
+              "aradex1_torque": "Aradex 1 torque",
+              "aradex2_speed": "Aradex 2 speed",
+              "aradex2_torque": "Aradex 2 torque",
+              "aradex_power": "Aradex power",
               "device": "Device",
-              "efficiency1": "Efficiency (given gear ratio)",
-              "efficiency2": "Efficiency (measured gear ratio)",
-              "efficiency_1": "",
-              "efficiency_2": "Efficiency (measured gear ratio)",
-              "expected_motor_torque": "Expected torque (propshaft)",
-              "expected_prop_torque": "Ideal torque prop",
               "flow": "Flow",
-              "gear_ratio": "Gear ratio (measured)",
-              "gear_ratio_measured": "Gear ratio (measured)",
-              "gear_ratio_rel_error": "Gear ratio relative error (%)",
-              "ideal_torque1": "Ideal torque (fixed gear ratio)",
-              "ideal_torque2": "Ideal torque (measured gear ratio)",
-              "ideal_torque_thruster": "Ideal torque thruster",
-              "ideal_torque_thruster_measured": "Ideal torque thruster (measured gear ratio)",
+              "gear_ratio": "Gear ratio",
+              "lever_pos": "Lever",
+              "motor_power": "Motor power",
+              "motor_speed": "Motor speed",
+              "power": "Power",
               "pressure": "Pressure",
-              "prop_speed": "Speed prop",
-              "prop_torque": "Measured torque prop",
-              "prop_torque_loss": "Loss",
-              "prop_torque_rel_loss": "Relative loss",
               "seq_nr": "",
               "speed": "Speed",
-              "speed_torque_setpoint": "Speed/Torque setpoint",
+              "speed_torque_setpoint": "",
               "temperature": "Temperature",
               "temperature_delta": "T delta",
               "temperature_in": "T in",
               "temperature_out": "T out",
+              "theoretical_power": "Theoretical Aradex power",
               "torque": "Torque",
               "torque_setpoint": "Torque setpoint"
             }
@@ -6656,696 +6663,6 @@
         }
       ],
       "type": "table"
-    },
-    {
-      "datasource": {
-        "type": "grafana-postgresql-datasource",
-        "uid": "${datasource}"
-      },
-      "fieldConfig": {
-        "defaults": {
-          "color": {
-            "mode": "thresholds"
-          },
-          "custom": {
-            "align": "left",
-            "cellOptions": {
-              "type": "auto"
-            },
-            "filterable": false,
-            "footer": {
-              "reducers": []
-            },
-            "inspect": false,
-            "minWidth": 125
-          },
-          "decimals": 2,
-          "mappings": [],
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "green",
-                "value": 0
-              },
-              {
-                "color": "red",
-                "value": 80
-              }
-            ]
-          }
-        },
-        "overrides": [
-          {
-            "matcher": {
-              "id": "byName",
-              "options": "time"
-            },
-            "properties": [
-              {
-                "id": "custom.hideFrom.viz",
-                "value": true
-              }
-            ]
-          },
-          {
-            "matcher": {
-              "id": "byRegexp",
-              "options": "/[Tt]orque/"
-            },
-            "properties": [
-              {
-                "id": "unit",
-                "value": "forceNm"
-              }
-            ]
-          },
-          {
-            "matcher": {
-              "id": "byName",
-              "options": "Device"
-            },
-            "properties": [
-              {
-                "id": "custom.width",
-                "value": 125
-              }
-            ]
-          },
-          {
-            "matcher": {
-              "id": "byName",
-              "options": "Gear ratio"
-            },
-            "properties": [
-              {
-                "id": "custom.width",
-                "value": 125
-              }
-            ]
-          },
-          {
-            "matcher": {
-              "id": "byName",
-              "options": "Gear ratio relative error"
-            },
-            "properties": [
-              {
-                "id": "unit",
-                "value": "percent"
-              }
-            ]
-          }
-        ]
-      },
-      "gridPos": {
-        "h": 5,
-        "w": 24,
-        "x": 0,
-        "y": 126
-      },
-      "id": 60,
-      "options": {
-        "cellHeight": "sm",
-        "enablePagination": false,
-        "showHeader": true,
-        "sortBy": [
-          {
-            "desc": true,
-            "displayName": "Expected motor torque"
-          }
-        ]
-      },
-      "pluginVersion": "12.3.0",
-      "targets": [
-        {
-          "dataset": "dev",
-          "datasource": {
-            "type": "grafana-postgresql-datasource",
-            "uid": "${datasource}"
-          },
-          "editorMode": "code",
-          "format": "table",
-          "rawQuery": true,
-          "rawSql": "\r\nWITH aradex_calculations AS (\r\n\tWITH aradex_data AS (\r\n\t\tSELECT\r\n\t\t  LAST_VALUE(time ORDER BY time) AS time,\r\n\t\t  'Aradex 1' AS device,\r\n\t\t  LAST_VALUE((\"Aradex_1_speed_feedback\").value ORDER BY time) AS speed,\r\n\t\t  LAST_VALUE((\"Aradex_1_torque_feedback\").value ORDER BY time) AS torque\r\n\t\tFROM marpower.thruster\r\n\t\tWHERE topic = 'marpower/thruster/' || lower('$aft_fwd')\r\n\t\tUNION ALL\r\n\t\tSELECT\r\n\t\t  LAST_VALUE(time ORDER BY time) AS time,\r\n\t\t  'Aradex 2' AS device,\r\n\t\t  LAST_VALUE((\"Aradex_2_speed_feedback\").value ORDER BY time) AS speed,\r\n\t\t  LAST_VALUE((\"Aradex_2_torque_feedback\").value ORDER BY time) AS torque\r\n\t\tFROM marpower.thruster\r\n\t\tWHERE topic = 'marpower/thruster/' || lower('$aft_fwd')\r\n\t),\r\n\tmotor_data AS (\r\n\t\tSELECT\r\n\t\t\tLAST_VALUE(time ORDER BY time) AS time,\r\n\t\t\tLAST_VALUE((\"Speed\").value ORDER BY time) AS speed,\r\n\t\t\tLAST_VALUE((\"Torque\").value ORDER BY time) AS torque\r\n\t\tFROM marpower.externalmotor\r\n\t)\r\n\tSELECT\r\n\t\taradex.time,\r\n\t\taradex.device,\r\n\t\taradex.speed AS aradex_speed,\r\n\t\taradex.torque AS aradex_torque,\r\n\t\text_motor.speed AS prop_speed,\r\n\t\text_motor.torque AS prop_torque,\r\n\t\taradex.speed / ext_motor.speed AS gear_ratio_measured\r\n\tFROM aradex_data AS aradex\r\n\tJOIN motor_data AS ext_motor ON ext_motor.time >= aradex.time\r\n)\r\nSELECT\r\n\ttime,\r\n\tdevice,\r\n\tgear_ratio_measured,\r\n\t100 * (gear_ratio_measured - $gear_ratio) / $gear_ratio AS gear_ratio_rel_error,\r\n\tprop_torque,\r\n\taradex_torque,\r\n\tprop_torque / $gear_ratio\t\t\t\t\t\t\t\t\t\t\t\t\t\t\tAS ideal_torque_aradex, -- ideal torque (given ratio)\r\n\tprop_torque / gear_ratio_measured\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\tAS ideal_torque_thruster_measured -- ideal torque (measured ratio)\r\nFROM aradex_calculations\r\nORDER BY device\r\n",
-          "refId": "A",
-          "sql": {
-            "columns": [
-              {
-                "parameters": [],
-                "type": "function"
-              }
-            ],
-            "groupBy": [
-              {
-                "property": {
-                  "type": "string"
-                },
-                "type": "groupBy"
-              }
-            ],
-            "limit": 50
-          }
-        }
-      ],
-      "title": "Mechanical efficiency",
-      "transformations": [
-        {
-          "id": "organize",
-          "options": {
-            "excludeByName": {},
-            "includeByName": {},
-            "indexByName": {},
-            "renameByName": {
-              "?column?": "",
-              "aradex_torque": "Torque Aradex",
-              "device": "Device",
-              "efficiency1": "Efficiency (given gear ratio)",
-              "efficiency2": "Efficiency (measured gear ratio)",
-              "efficiency_1": "",
-              "efficiency_2": "Efficiency (measured gear ratio)",
-              "expected_motor_torque": "Expected torque (propshaft)",
-              "expected_prop_torque": "Ideal prop torque (Nm)",
-              "flow": "Flow",
-              "gear_ratio": "Gear ratio (measured)",
-              "gear_ratio_measured": "Gear ratio",
-              "gear_ratio_rel_error": "Gear ratio relative error",
-              "ideal_torque1": "Ideal torque (fixed gear ratio)",
-              "ideal_torque2": "Ideal torque (measured gear ratio)",
-              "ideal_torque_aradex": "Idea torque Aradex",
-              "ideal_torque_thruster": "Ideal torque thruster",
-              "ideal_torque_thruster_measured": "Ideal torque Aradex (measured gear ratio)",
-              "pressure": "Pressure",
-              "prop_torque": "Measured torque prop",
-              "prop_torque_loss": "Torque loss (Nm)",
-              "prop_torque_rel_loss": "Torque relative loss (%)",
-              "seq_nr": "",
-              "speed": "Speed",
-              "speed_torque_setpoint": "Speed/Torque setpoint",
-              "temperature": "Temperature",
-              "temperature_delta": "T delta",
-              "temperature_in": "T in",
-              "temperature_out": "T out",
-              "torque": "Torque",
-              "torque_setpoint": "Torque setpoint"
-            }
-          }
-        }
-      ],
-      "type": "table"
-    },
-    {
-      "datasource": {
-        "type": "grafana-postgresql-datasource",
-        "uid": "${datasource}"
-      },
-      "fieldConfig": {
-        "defaults": {
-          "color": {
-            "mode": "thresholds"
-          },
-          "decimals": 2,
-          "mappings": [],
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "green",
-                "value": 0
-              }
-            ]
-          },
-          "unit": "watt"
-        },
-        "overrides": [
-          {
-            "matcher": {
-              "id": "byName",
-              "options": "D"
-            },
-            "properties": [
-              {
-                "id": "unit",
-                "value": "percent"
-              }
-            ]
-          }
-        ]
-      },
-      "gridPos": {
-        "h": 4,
-        "w": 24,
-        "x": 0,
-        "y": 131
-      },
-      "id": 53,
-      "options": {
-        "inlineEditing": false,
-        "panZoom": false,
-        "root": {
-          "background": {
-            "color": {
-              "fixed": "transparent"
-            }
-          },
-          "border": {
-            "color": {
-              "fixed": "dark-green"
-            }
-          },
-          "constraint": {
-            "horizontal": "left",
-            "vertical": "top"
-          },
-          "elements": [
-            {
-              "background": {
-                "color": {
-                  "fixed": "#D9D9D9"
-                }
-              },
-              "border": {
-                "color": {
-                  "fixed": "dark-green"
-                }
-              },
-              "config": {
-                "align": "center",
-                "color": {
-                  "fixed": "#000000"
-                },
-                "size": 20,
-                "text": {
-                  "field": "total_theoretical_power",
-                  "fixed": "",
-                  "mode": "field"
-                },
-                "valign": "middle"
-              },
-              "constraint": {
-                "horizontal": "left",
-                "vertical": "top"
-              },
-              "links": [],
-              "name": "theoretical_power",
-              "placement": {
-                "height": 30,
-                "left": 240,
-                "rotation": 0,
-                "top": 10,
-                "width": 175
-              },
-              "type": "metric-value"
-            },
-            {
-              "background": {
-                "color": {
-                  "fixed": "transparent"
-                }
-              },
-              "border": {
-                "color": {
-                  "fixed": "dark-green"
-                }
-              },
-              "config": {
-                "align": "left",
-                "color": {
-                  "fixed": "rgb(204, 204, 220)"
-                },
-                "size": 16,
-                "text": {
-                  "fixed": "Total theoretical power"
-                },
-                "valign": "middle"
-              },
-              "constraint": {
-                "horizontal": "left",
-                "vertical": "top"
-              },
-              "links": [],
-              "name": "theoretical_power label",
-              "placement": {
-                "height": 30,
-                "left": 15,
-                "rotation": 0,
-                "top": 10,
-                "width": 180
-              },
-              "type": "text"
-            },
-            {
-              "background": {
-                "color": {
-                  "fixed": "#D9D9D9"
-                }
-              },
-              "border": {
-                "color": {
-                  "fixed": "dark-green"
-                }
-              },
-              "config": {
-                "align": "center",
-                "color": {
-                  "fixed": "#000000"
-                },
-                "size": 20,
-                "text": {
-                  "field": "D",
-                  "fixed": "",
-                  "mode": "field"
-                },
-                "valign": "middle"
-              },
-              "constraint": {
-                "horizontal": "left",
-                "vertical": "top"
-              },
-              "links": [],
-              "name": "power_efficiency",
-              "placement": {
-                "height": 30,
-                "left": 240,
-                "rotation": 0,
-                "top": 45,
-                "width": 175
-              },
-              "type": "metric-value"
-            },
-            {
-              "background": {
-                "color": {
-                  "fixed": "transparent"
-                }
-              },
-              "border": {
-                "color": {
-                  "fixed": "dark-green"
-                }
-              },
-              "config": {
-                "align": "left",
-                "color": {
-                  "fixed": "rgb(204, 204, 220)"
-                },
-                "size": 16,
-                "text": {
-                  "fixed": "Power efficiency"
-                },
-                "valign": "middle"
-              },
-              "constraint": {
-                "horizontal": "left",
-                "vertical": "top"
-              },
-              "links": [],
-              "name": "power_efficiency label",
-              "placement": {
-                "height": 30,
-                "left": 15,
-                "rotation": 0,
-                "top": 46,
-                "width": 180
-              },
-              "type": "text"
-            },
-            {
-              "background": {
-                "color": {
-                  "fixed": "#D9D9D9"
-                }
-              },
-              "border": {
-                "color": {
-                  "fixed": "dark-green"
-                }
-              },
-              "config": {
-                "align": "center",
-                "color": {
-                  "fixed": "#000000"
-                },
-                "size": 20,
-                "text": {
-                  "field": "aradex1_theoretical_power",
-                  "fixed": "",
-                  "mode": "field"
-                },
-                "valign": "middle"
-              },
-              "constraint": {
-                "horizontal": "left",
-                "vertical": "top"
-              },
-              "links": [],
-              "name": "aradex1_theoretical_power",
-              "placement": {
-                "height": 30,
-                "left": 740,
-                "rotation": 0,
-                "top": 9,
-                "width": 175
-              },
-              "type": "metric-value"
-            },
-            {
-              "background": {
-                "color": {
-                  "fixed": "transparent"
-                }
-              },
-              "border": {
-                "color": {
-                  "fixed": "dark-green"
-                }
-              },
-              "config": {
-                "align": "left",
-                "color": {
-                  "fixed": "rgb(204, 204, 220)"
-                },
-                "size": 16,
-                "text": {
-                  "fixed": "Aradex 1 theoretical power"
-                },
-                "valign": "middle"
-              },
-              "constraint": {
-                "horizontal": "left",
-                "vertical": "top"
-              },
-              "links": [],
-              "name": "aradex1_theoretical_power label",
-              "placement": {
-                "height": 30,
-                "left": 515,
-                "rotation": 0,
-                "top": 10,
-                "width": 211
-              },
-              "type": "text"
-            },
-            {
-              "background": {
-                "color": {
-                  "fixed": "#D9D9D9"
-                }
-              },
-              "border": {
-                "color": {
-                  "fixed": "dark-green"
-                }
-              },
-              "config": {
-                "align": "center",
-                "color": {
-                  "fixed": "#000000"
-                },
-                "size": 20,
-                "text": {
-                  "field": "aradex2_theoretical_power",
-                  "fixed": "",
-                  "mode": "field"
-                },
-                "valign": "middle"
-              },
-              "constraint": {
-                "horizontal": "left",
-                "vertical": "top"
-              },
-              "links": [],
-              "name": "aradex2_theoretical_power",
-              "placement": {
-                "height": 30,
-                "left": 1240,
-                "rotation": 0,
-                "top": 10,
-                "width": 175
-              },
-              "type": "metric-value"
-            },
-            {
-              "background": {
-                "color": {
-                  "fixed": "transparent"
-                }
-              },
-              "border": {
-                "color": {
-                  "fixed": "dark-green"
-                }
-              },
-              "config": {
-                "align": "left",
-                "color": {
-                  "fixed": "rgb(204, 204, 220)"
-                },
-                "size": 16,
-                "text": {
-                  "fixed": "Aradex 2 theoretical power"
-                },
-                "valign": "middle"
-              },
-              "constraint": {
-                "horizontal": "left",
-                "vertical": "top"
-              },
-              "links": [],
-              "name": "aradex2_theoretical_power label",
-              "placement": {
-                "height": 30,
-                "left": 1015,
-                "rotation": 0,
-                "top": 11,
-                "width": 216
-              },
-              "type": "text"
-            }
-          ],
-          "name": "Element 1767775905609",
-          "placement": {
-            "height": 100,
-            "left": 0,
-            "rotation": 0,
-            "top": 0,
-            "width": 100
-          },
-          "type": "frame"
-        },
-        "showAdvancedTypes": false,
-        "tooltip": {
-          "disableForOneClick": false,
-          "mode": "none"
-        },
-        "zoomToContent": false
-      },
-      "pluginVersion": "12.3.0",
-      "targets": [
-        {
-          "dataset": "dev",
-          "datasource": {
-            "type": "grafana-postgresql-datasource",
-            "uid": "${datasource}"
-          },
-          "editorMode": "code",
-          "format": "table",
-          "hide": false,
-          "rawQuery": true,
-          "rawSql": "WITH motor_data AS (\r\n\tSELECT\r\n\t\tLAST_VALUE(time ORDER BY time) AS time,\r\n\t\tLAST_VALUE((\"Aradex_1_speed_feedback\").value ORDER BY time) AS aradex1_speed,\r\n\t\tLAST_VALUE((\"Aradex_2_speed_feedback\").value ORDER BY time) AS aradex2_speed,\r\n\t\tLAST_VALUE((\"Aradex_1_torque_feedback\").value ORDER BY time) AS aradex1_torque,\r\n\t\tLAST_VALUE((\"Aradex_2_torque_feedback\").value ORDER BY time) AS aradex2_torque\r\n\tFROM marpower.thruster\r\n\tWHERE topic = 'marpower/thruster/' || lower('$aft_fwd')\r\n)\r\nSELECT\r\n\ttime,\r\n\t(aradex1_speed * aradex1_torque * 2 * PI()) / 60 AS aradex1_theoretical_power,\r\n\t(aradex2_speed * aradex2_torque * 2 * PI()) / 60 AS aradex2_theoretical_power\r\nFROM motor_data",
-          "refId": "A",
-          "sql": {
-            "columns": [
-              {
-                "parameters": [],
-                "type": "function"
-              }
-            ],
-            "groupBy": [
-              {
-                "property": {
-                  "type": "string"
-                },
-                "type": "groupBy"
-              }
-            ],
-            "limit": 50
-          }
-        },
-        {
-          "dataset": "dev",
-          "datasource": {
-            "type": "grafana-postgresql-datasource",
-            "uid": "${datasource}"
-          },
-          "editorMode": "code",
-          "format": "table",
-          "hide": false,
-          "rawQuery": true,
-          "rawSql": "WITH motor_data AS (\r\n\tSELECT\r\n\t\tLAST_VALUE(time ORDER BY time) AS time,\r\n\t\tLAST_VALUE((\"Aradex_1_speed_feedback\").value ORDER BY time) AS aradex1_speed,\r\n\t\tLAST_VALUE((\"Aradex_2_speed_feedback\").value ORDER BY time) AS aradex2_speed,\r\n\t\tLAST_VALUE((\"Aradex_1_torque_feedback\").value ORDER BY time) AS aradex1_torque,\r\n\t\tLAST_VALUE((\"Aradex_2_torque_feedback\").value ORDER BY time) AS aradex2_torque\r\n\tFROM marpower.thruster\r\n\tWHERE topic = 'marpower/thruster/' || lower('$aft_fwd')\r\n)\r\nSELECT\r\n\t((aradex1_speed * aradex1_torque * 2 * PI()) + (aradex2_speed * aradex2_torque * 2 * PI())) / 60 AS total_theoretical_power\r\nFROM motor_data",
-          "refId": "B",
-          "sql": {
-            "columns": [
-              {
-                "parameters": [],
-                "type": "function"
-              }
-            ],
-            "groupBy": [
-              {
-                "property": {
-                  "type": "string"
-                },
-                "type": "groupBy"
-              }
-            ],
-            "limit": 50
-          }
-        },
-        {
-          "dataset": "dev",
-          "datasource": {
-            "type": "grafana-postgresql-datasource",
-            "uid": "${datasource}"
-          },
-          "editorMode": "code",
-          "format": "table",
-          "hide": false,
-          "rawQuery": true,
-          "rawSql": "SELECT\r\n  LAST_VALUE((\"Total_Active_Power\").value ORDER BY time) AS total_active_power\r\nFROM marpower.hydrogeneration\r\nWHERE '$aft_fwd' = 'AFT' AND topic = 'marpower/hydrogeneration/thruster1'\r\n  OR '$aft_fwd' = 'FWD' AND topic = 'marpower/hydrogeneration/thruster2'",
-          "refId": "C",
-          "sql": {
-            "columns": [
-              {
-                "parameters": [],
-                "type": "function"
-              }
-            ],
-            "groupBy": [
-              {
-                "property": {
-                  "type": "string"
-                },
-                "type": "groupBy"
-              }
-            ],
-            "limit": 50
-          }
-        },
-        {
-          "datasource": {
-            "name": "Expression",
-            "type": "__expr__",
-            "uid": "__expr__"
-          },
-          "expression": "($C * 100) / $B",
-          "hide": false,
-          "refId": "D",
-          "type": "math"
-        }
-      ],
-      "title": "Electrical efficiency",
-      "type": "canvas"
     }
   ],
   "preload": false,
