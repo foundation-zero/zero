@@ -25,11 +25,24 @@ class BoilersParameters(ThrsValues):
     ht_boosting_temperature_setpoint: Celsius = 65
     minimum_tank_temperature: Celsius = 55
     maximum_tank_temperature: Celsius = 60
-    boosting_delta: Kelvin = (
-        2  # required delta T between boosting source and tank temperature
-    )
-    lt1_flowcontrol_minimum_setpoint: Ratio = 0.1  # need flow to have temp measurement available, and these minima are needed to control the minimum filling flow
-    lt2_flowcontrol_minimum_setpoint: Ratio = 0.1
+    boosting_delta: Annotated[
+        Kelvin,
+        Field(
+            description="Required delta T between boosting source and tank temperature"
+        ),
+    ] = 2
+    lt1_flowcontrol_minimum_setpoint: Annotated[
+        Ratio,
+        Field(
+            description="Minimum pump dutypoint to guarantee sufficient flow for a temperature measurement"
+        ),
+    ] = 0.1
+    lt2_flowcontrol_minimum_setpoint: Annotated[
+        Ratio,
+        Field(
+            description="Minimum pump dutypoint to guarantee sufficient flow for a temperature measurement"
+        ),
+    ] = 0.1
     filling_temperature_setpoint: Celsius = 40
     minimum_tank_level: Liter = 30
     maximum_tank_level: Annotated[Liter, Field(le=275)] = 260
@@ -412,13 +425,13 @@ class BoilersControl(
                 ],
                 on_exit=[self._activate_pump],
             ),
-            # State(
-            #     name="boosting_low_temperature",  # TODO: Need separate valve settings for low temperature boosting since it uses filling valves..
-            #     on_enter=[
-            #         self._set_valves_to_boosting_low_temperature,
-            #         self._enable_pump_temperature_control,
-            #     ],
-            # ),
+            State(
+                name="boosting_low_temperature",  # TODO: Low temperature boosting not implemented yet
+                on_enter=[
+                    self._set_valves_to_boosting_low_temperature,
+                    self._enable_pump_temperature_control,
+                ],
+            ),
             State(
                 name="boosting_high_temperature",
                 on_enter=[
@@ -453,7 +466,7 @@ class BoilersControl(
                 "conditions": lambda sensor_values: self._tanks_controller.boosting
                 and not self._ht_sufficient_boosting_heat(
                     sensor_values
-                ),  # TODO: using electricity is worth it. <- maybe use a heatpump_boosting_enabled parameter
+                ),  # TODO: Should be extended with a assessment of whether using electricity for boosting is desireable. Alternatively, this should be controlled by a high-level controller that can enable or disable heatpump boosting.
             },
             {
                 "trigger": "_try_boosting",
