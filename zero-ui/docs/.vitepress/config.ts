@@ -63,6 +63,7 @@ export default defineConfig({
           { text: "Heat Exchanger", link: "/mimics/heat-exchanger" },
           { text: "Pipe Heat Exchanger", link: "/mimics/pipe-heat-exchanger" },
           { text: "Temperature Sensor", link: "/mimics/temperature-sensor" },
+          { text: "Flow Sensor", link: "/mimics/flow-sensor" },
         ],
       },
     ],

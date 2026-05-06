@@ -121,3 +121,4 @@ Only extract SVG geometry values to `index.ts` when they are computed or shared:
 - Mixing semantic tokens with leftover hardcoded colors.
 - Adding HTML wrappers around what should be pure SVG output.
 - Extracting static path `d` strings into constants when they never change and are only used in one template.
+- Adding comments in the template that describe what a shape represents (for example `<!-- Circular body -->` or `<!-- Connecting stem -->`). SVG element type and attributes are self-documenting; prose comments add noise without value.
