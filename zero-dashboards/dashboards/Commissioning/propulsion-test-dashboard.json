@@ -717,7 +717,7 @@
           "calcs": [],
           "displayMode": "list",
           "placement": "bottom",
-          "showLegend": true
+          "showLegend": false
         },
         "tooltip": {
           "hideZeros": false,
@@ -771,7 +771,7 @@
           }
         }
       ],
-      "title": "Speed & Torque",
+      "title": "Torque",
       "transformations": [
         {
           "id": "organize",
@@ -891,7 +891,7 @@
           "calcs": [],
           "displayMode": "list",
           "placement": "bottom",
-          "showLegend": true
+          "showLegend": false
         },
         "tooltip": {
           "hideZeros": false,
@@ -1052,7 +1052,7 @@
           "calcs": [],
           "displayMode": "list",
           "placement": "bottom",
-          "showLegend": true
+          "showLegend": false
         },
         "tooltip": {
           "hideZeros": false,
@@ -1213,7 +1213,7 @@
           "calcs": [],
           "displayMode": "list",
           "placement": "bottom",
-          "showLegend": true
+          "showLegend": false
         },
         "tooltip": {
           "hideZeros": false,
@@ -4380,7 +4380,7 @@
         "overrides": []
       },
       "gridPos": {
-        "h": 8,
+        "h": 10,
         "w": 12,
         "x": 0,
         "y": 76
@@ -4424,7 +4424,7 @@
           "pluginVersion": "2.1.4",
           "queryType": "table",
           "rawQuery": true,
-          "rawSql": "SELECT\r\n  timestamp           AS time,\r\n  ara_1_speed__value  AS speed\r\nFROM public.marpower__150000_propulsion\r\nWHERE topic = 'marpower/150000-propulsion/pcs-' || lower('$aft_fwd')\r\nAND $__timeFilter(timestamp)",
+          "rawSql": "SELECT\r\n  timestamp           AS time,\r\n  ara_1_speed__value  AS aradex1_speed,\r\n  ara_2_speed__value  AS aradex2_speed\r\nFROM public.marpower__150000_propulsion\r\nWHERE topic = 'marpower/150000-propulsion/pcs-' || lower('$aft_fwd')\r\nAND $__timeFilter(timestamp)",
           "refId": "A",
           "sql": {
             "columns": [
@@ -4445,7 +4445,7 @@
           }
         }
       ],
-      "title": "Aradex 1 - Speed",
+      "title": "Speed",
       "transformations": [
         {
           "id": "organize",
@@ -4454,151 +4454,8 @@
             "includeByName": {},
             "indexByName": {},
             "renameByName": {
-              "speed": "Speed",
-              "torque": "Torque"
-            }
-          }
-        }
-      ],
-      "type": "timeseries"
-    },
-    {
-      "datasource": {
-        "type": "grafana-postgresql-datasource",
-        "uid": "${datasource}"
-      },
-      "fieldConfig": {
-        "defaults": {
-          "color": {
-            "mode": "palette-classic"
-          },
-          "custom": {
-            "axisBorderShow": false,
-            "axisCenteredZero": false,
-            "axisColorMode": "text",
-            "axisLabel": "",
-            "axisPlacement": "auto",
-            "barAlignment": 0,
-            "barWidthFactor": 0.6,
-            "drawStyle": "line",
-            "fillOpacity": 0,
-            "gradientMode": "none",
-            "hideFrom": {
-              "legend": false,
-              "tooltip": false,
-              "viz": false
-            },
-            "insertNulls": false,
-            "lineInterpolation": "linear",
-            "lineWidth": 1,
-            "pointSize": 5,
-            "scaleDistribution": {
-              "type": "linear"
-            },
-            "showPoints": "auto",
-            "showValues": false,
-            "spanNulls": false,
-            "stacking": {
-              "group": "A",
-              "mode": "none"
-            },
-            "thresholdsStyle": {
-              "mode": "off"
-            }
-          },
-          "mappings": [],
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "green",
-                "value": 0
-              },
-              {
-                "color": "red",
-                "value": 80
-              }
-            ]
-          },
-          "unit": "rotrpm"
-        },
-        "overrides": []
-      },
-      "gridPos": {
-        "h": 8,
-        "w": 12,
-        "x": 12,
-        "y": 76
-      },
-      "id": 33,
-      "options": {
-        "legend": {
-          "calcs": [],
-          "displayMode": "list",
-          "placement": "bottom",
-          "showLegend": true
-        },
-        "tooltip": {
-          "hideZeros": false,
-          "mode": "single",
-          "sort": "none"
-        }
-      },
-      "pluginVersion": "12.3.0",
-      "targets": [
-        {
-          "dataset": "dev",
-          "datasource": {
-            "type": "grafana-postgresql-datasource",
-            "uid": "${datasource}"
-          },
-          "editorMode": "code",
-          "editorType": "sql",
-          "format": 1,
-          "meta": {
-            "builderOptions": {
-              "columns": [],
-              "database": "",
-              "limit": 1000,
-              "meta": {},
-              "mode": "list",
-              "queryType": "table",
-              "table": ""
-            }
-          },
-          "pluginVersion": "2.1.4",
-          "queryType": "table",
-          "rawQuery": true,
-          "rawSql": "SELECT\r\n  timestamp           AS time,\r\n  ara_2_speed__value  AS speed\r\nFROM public.marpower__150000_propulsion\r\nWHERE topic = 'marpower/150000-propulsion/pcs-' || lower('$aft_fwd')\r\nAND $__timeFilter(timestamp)",
-          "refId": "A",
-          "sql": {
-            "columns": [
-              {
-                "parameters": [],
-                "type": "function"
-              }
-            ],
-            "groupBy": [
-              {
-                "property": {
-                  "type": "string"
-                },
-                "type": "groupBy"
-              }
-            ],
-            "limit": 50
-          }
-        }
-      ],
-      "title": "Aradex 2 - Speed",
-      "transformations": [
-        {
-          "id": "organize",
-          "options": {
-            "excludeByName": {},
-            "includeByName": {},
-            "indexByName": {},
-            "renameByName": {
+              "aradex1_speed": "Aradex 1",
+              "aradex2_speed": "Aradex 2",
               "speed": "Speed",
               "torque": "Torque"
             }
@@ -4670,10 +4527,10 @@
         "overrides": []
       },
       "gridPos": {
-        "h": 8,
+        "h": 10,
         "w": 12,
-        "x": 0,
-        "y": 84
+        "x": 12,
+        "y": 76
       },
       "id": 84,
       "options": {
@@ -4714,7 +4571,7 @@
           "pluginVersion": "2.1.4",
           "queryType": "table",
           "rawQuery": true,
-          "rawSql": "SELECT\r\n  timestamp           AS time,\r\n  ara_1_torque__value AS torque\r\nFROM public.marpower__150000_propulsion\r\nWHERE topic = 'marpower/150000-propulsion/pcs-' || lower('$aft_fwd')\r\nAND $__timeFilter(timestamp)",
+          "rawSql": "SELECT\r\n  timestamp           AS time,\r\n  ara_1_torque__value AS aradex1_torque,\r\n  ara_2_torque__value AS aradex2_torque\r\nFROM public.marpower__150000_propulsion\r\nWHERE topic = 'marpower/150000-propulsion/pcs-' || lower('$aft_fwd')\r\nAND $__timeFilter(timestamp)",
           "refId": "A",
           "sql": {
             "columns": [
@@ -4735,7 +4592,7 @@
           }
         }
       ],
-      "title": "Aradex 1 - Torque",
+      "title": "Torque",
       "transformations": [
         {
           "id": "organize",
@@ -4744,151 +4601,8 @@
             "includeByName": {},
             "indexByName": {},
             "renameByName": {
-              "speed": "Speed",
-              "torque": "Torque"
-            }
-          }
-        }
-      ],
-      "type": "timeseries"
-    },
-    {
-      "datasource": {
-        "type": "grafana-postgresql-datasource",
-        "uid": "${datasource}"
-      },
-      "fieldConfig": {
-        "defaults": {
-          "color": {
-            "mode": "palette-classic"
-          },
-          "custom": {
-            "axisBorderShow": false,
-            "axisCenteredZero": false,
-            "axisColorMode": "text",
-            "axisLabel": "",
-            "axisPlacement": "auto",
-            "barAlignment": 0,
-            "barWidthFactor": 0.6,
-            "drawStyle": "line",
-            "fillOpacity": 0,
-            "gradientMode": "none",
-            "hideFrom": {
-              "legend": false,
-              "tooltip": false,
-              "viz": false
-            },
-            "insertNulls": false,
-            "lineInterpolation": "linear",
-            "lineWidth": 1,
-            "pointSize": 5,
-            "scaleDistribution": {
-              "type": "linear"
-            },
-            "showPoints": "auto",
-            "showValues": false,
-            "spanNulls": false,
-            "stacking": {
-              "group": "A",
-              "mode": "none"
-            },
-            "thresholdsStyle": {
-              "mode": "off"
-            }
-          },
-          "mappings": [],
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "green",
-                "value": 0
-              },
-              {
-                "color": "red",
-                "value": 80
-              }
-            ]
-          },
-          "unit": "forceNm"
-        },
-        "overrides": []
-      },
-      "gridPos": {
-        "h": 8,
-        "w": 12,
-        "x": 12,
-        "y": 84
-      },
-      "id": 85,
-      "options": {
-        "legend": {
-          "calcs": [],
-          "displayMode": "list",
-          "placement": "bottom",
-          "showLegend": true
-        },
-        "tooltip": {
-          "hideZeros": false,
-          "mode": "single",
-          "sort": "none"
-        }
-      },
-      "pluginVersion": "12.3.0",
-      "targets": [
-        {
-          "dataset": "dev",
-          "datasource": {
-            "type": "grafana-postgresql-datasource",
-            "uid": "${datasource}"
-          },
-          "editorMode": "code",
-          "editorType": "sql",
-          "format": 1,
-          "meta": {
-            "builderOptions": {
-              "columns": [],
-              "database": "",
-              "limit": 1000,
-              "meta": {},
-              "mode": "list",
-              "queryType": "table",
-              "table": ""
-            }
-          },
-          "pluginVersion": "2.1.4",
-          "queryType": "table",
-          "rawQuery": true,
-          "rawSql": "SELECT\r\n  timestamp           AS time,\r\n  ara_2_torque__value AS torque\r\nFROM public.marpower__150000_propulsion\r\nWHERE topic = 'marpower/150000-propulsion/pcs-' || lower('$aft_fwd')\r\nAND $__timeFilter(timestamp)",
-          "refId": "A",
-          "sql": {
-            "columns": [
-              {
-                "parameters": [],
-                "type": "function"
-              }
-            ],
-            "groupBy": [
-              {
-                "property": {
-                  "type": "string"
-                },
-                "type": "groupBy"
-              }
-            ],
-            "limit": 50
-          }
-        }
-      ],
-      "title": "Aradex 2 - Torque",
-      "transformations": [
-        {
-          "id": "organize",
-          "options": {
-            "excludeByName": {},
-            "includeByName": {},
-            "indexByName": {},
-            "renameByName": {
+              "aradex1_torque": "Aradex 1",
+              "aradex2_torque": "Aradex 2",
               "speed": "Speed",
               "torque": "Torque"
             }
@@ -4961,10 +4675,10 @@
         "overrides": []
       },
       "gridPos": {
-        "h": 8,
+        "h": 9,
         "w": 24,
         "x": 0,
-        "y": 92
+        "y": 86
       },
       "id": 69,
       "options": {
@@ -5063,7 +4777,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 100
+        "y": 95
       },
       "id": 26,
       "panels": [],
@@ -5176,7 +4890,7 @@
         "h": 6,
         "w": 15,
         "x": 0,
-        "y": 101
+        "y": 96
       },
       "id": 37,
       "options": {
@@ -5292,7 +5006,7 @@
         "h": 6,
         "w": 9,
         "x": 15,
-        "y": 101
+        "y": 96
       },
       "id": 13,
       "options": {
@@ -5625,7 +5339,7 @@
         "h": 5,
         "w": 24,
         "x": 0,
-        "y": 107
+        "y": 102
       },
       "id": 59,
       "options": {
@@ -6328,7 +6042,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 112
+        "y": 107
       },
       "id": 27,
       "panels": [],
@@ -6393,7 +6107,7 @@
         "h": 4,
         "w": 24,
         "x": 0,
-        "y": 113
+        "y": 108
       },
       "id": 70,
       "options": {
@@ -6552,7 +6266,7 @@
         "h": 9,
         "w": 24,
         "x": 0,
-        "y": 117
+        "y": 112
       },
       "id": 71,
       "options": {
@@ -6652,7 +6366,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 126
+        "y": 121
       },
       "id": 52,
       "panels": [],
@@ -6752,7 +6466,7 @@
         "h": 3,
         "w": 24,
         "x": 0,
-        "y": 127
+        "y": 122
       },
       "id": 73,
       "options": {
@@ -6955,7 +6669,7 @@
         "h": 3,
         "w": 24,
         "x": 0,
-        "y": 130
+        "y": 125
       },
       "id": 74,
       "options": {
@@ -7135,7 +6849,7 @@
         "h": 3,
         "w": 24,
         "x": 0,
-        "y": 133
+        "y": 128
       },
       "id": 75,
       "options": {
@@ -7247,8 +6961,8 @@
     "list": [
       {
         "current": {
-          "text": "greptimedb-zero",
-          "value": "PBAD09CF7391C3C43"
+          "text": "RisingWave",
+          "value": "ceyj3m7wtn3swb"
         },
         "name": "datasource",
         "options": [],
@@ -7302,7 +7016,7 @@
     ]
   },
   "time": {
-    "from": "now-15m",
+    "from": "now-5m",
     "to": "now"
   },
   "timepicker": {},
