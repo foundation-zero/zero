@@ -5,7 +5,8 @@
   "apps": {
     "loads": "Loads",
     "thrs": "THRS",
-    "domestic": "Domestic Control"
+    "domestic": "Domestic Control",
+    "grafana": "Grafana"
   },
   "labels": {
     "airConditioning": {
@@ -78,6 +79,10 @@
         "domestic": {
           "title": "Domestic",
           "description": "Cabin comfort, lighting, blinds, climate, and onboard room controls."
+        },
+        "grafana": {
+          "title": "Grafana",
+          "description": "Operational dashboards and metrics visualized in Grafana."
         }
       }
     },
