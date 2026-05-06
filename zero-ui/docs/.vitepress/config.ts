@@ -52,19 +52,30 @@ export default defineConfig({
         ],
       },
       {
-        text: "Mimic Components",
+        text: "Mimics",
         items: [
           { text: "Overview", link: "/mimics/" },
           { text: "Authoring New Components", link: "/mimics/authoring-workflow" },
           { text: "Updating Components", link: "/mimics/updating-components" },
+        ],
+      },
+      {
+        text: "Mimic Components",
+        items: [
           { text: "Manual Valve", link: "/mimics/manual-valve" },
           { text: "Actuated Valve", link: "/mimics/actuated-valve" },
           { text: "Pump", link: "/mimics/pump" },
           { text: "Heat Exchanger", link: "/mimics/heat-exchanger" },
           { text: "Pipe Heat Exchanger", link: "/mimics/pipe-heat-exchanger" },
+        ],
+      },
+      {
+        text: "Mimic Sensors",
+        items: [
           { text: "Temperature Sensor", link: "/mimics/temperature-sensor" },
           { text: "Flow Sensor", link: "/mimics/flow-sensor" },
           { text: "Pressure Sensor", link: "/mimics/pressure-sensor" },
+          { text: "Level Sensor", link: "/mimics/level-sensor" },
         ],
       },
     ],
