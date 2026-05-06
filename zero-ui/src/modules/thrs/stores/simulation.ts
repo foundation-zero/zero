@@ -37,18 +37,25 @@ export type AutomaticMode =
   | BoilersAutomaticMode
   | ConsumersAutomaticMode;
 
-export type ControlMode = {
+export type ControlMode<T extends AutomaticMode = AutomaticMode> = {
   automatic: boolean;
-  automaticMode: Nullable<AutomaticMode>;
+  automaticMode: Nullable<T>;
+};
+
+export type ControlModes = {
+  thrusters: ThrustersAutomaticMode;
+  pcm: PcmAutomaticMode;
+  pvt: PvtAutomaticMode;
+  boilers: BoilersAutomaticMode;
+  consumers: ConsumersAutomaticMode;
 };
 
 export type ControlStatus = {
-  modules: Record<
-    string,
-    {
-      controlMode: Nullable<ControlMode>;
-    }
-  >;
+  modules: {
+    [K in keyof ControlModes]: {
+      controlMode: ControlMode<ControlModes[K]>;
+    };
+  };
 };
 
 export const STATUS_QUERY = gql`

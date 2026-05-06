@@ -24,7 +24,7 @@ import { type ClassValue, clsx } from "clsx";
 import { Maybe } from "graphql/jsutils/Maybe";
 import { twMerge } from "tailwind-merge";
 import { computed, ComputedRef, isRef, MaybeRef, ref, Ref, watch, WritableComputedRef } from "vue";
-import { useI18n } from "vue-i18n";
+import { NamedValue, useI18n } from "vue-i18n";
 import {
   CO2_THRESHOLDS,
   DEMO_MODE,
@@ -291,7 +291,10 @@ export const toUpperCamelCase = (str: string) => str.replace(/([A-Z])/g, " $1").
 export const toCapitalized = (str: string) =>
   `${str.charAt(0).toLocaleUpperCase()}${str.slice(1).toLocaleLowerCase()}`;
 
-export const tScoped = (scope: string) => (key: string) => useI18n().t(`${scope}.${key}`);
+export const tScoped = (scope: string) => (key: string, value?: NamedValue) => {
+  const { t } = useI18n();
+  return value ? t(`${scope}.${key}`, value) : t(`${scope}.${key}`);
+};
 
 export const objectFilter = <T extends Record<string, unknown>, K extends keyof T>(
   obj: T,
