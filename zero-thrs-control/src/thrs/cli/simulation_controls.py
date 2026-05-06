@@ -67,6 +67,7 @@ from thrs.input_output.base import (
 )
 from thrs.input_output.definitions.simulation import (
     Boundary,
+    FlowBoundary,
     HeatSource,
     OverpressureTemperatureBoundary,
     Pcs,
@@ -218,6 +219,7 @@ INPUTS = {
         boilers_seawater_supply=TemperatureBoundary(
             temperature=Stamped.stamp(SEAWATER_TEMPERATURE)
         ),
+        boilers_freshwater_return_set=FlowBoundary(flow=Stamped.stamp(30)),
     ),
 }
 

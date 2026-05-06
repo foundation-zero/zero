@@ -20,22 +20,42 @@ export type SimulationStatus = {
   };
 };
 
-export type AutomaticMode = {
-  mode: string;
+export type ThrustersAutomaticMode = { mode: string };
+export type PcmAutomaticMode = { mode: string };
+export type PvtAutomaticMode = {
+  aft: { mode: string };
+  fwd: { mode: string };
+  owners: { mode: string };
+};
+export type BoilersAutomaticMode = { boostingMode: string; fillingMode: string };
+export type ConsumersAutomaticMode = Record<string, never>;
+
+export type AutomaticMode =
+  | ThrustersAutomaticMode
+  | PcmAutomaticMode
+  | PvtAutomaticMode
+  | BoilersAutomaticMode
+  | ConsumersAutomaticMode;
+
+export type ControlMode<T extends AutomaticMode = AutomaticMode> = {
+  automatic: boolean;
+  automaticMode: Nullable<T>;
 };
 
-export type ControlMode = {
-  automatic: boolean;
-  automaticMode: Nullable<AutomaticMode>;
+export type ControlModes = {
+  thrusters: ThrustersAutomaticMode;
+  pcm: PcmAutomaticMode;
+  pvt: PvtAutomaticMode;
+  boilers: BoilersAutomaticMode;
+  consumers: ConsumersAutomaticMode;
 };
 
 export type ControlStatus = {
-  modules: Record<
-    string,
-    {
-      controlMode: Nullable<ControlMode>;
-    }
-  >;
+  modules: {
+    [K in keyof ControlModes]: {
+      controlMode: ControlMode<ControlModes[K]>;
+    };
+  };
 };
 
 export const STATUS_QUERY = gql`
@@ -61,6 +81,17 @@ export const CONTROL_QUERY = gql`
       pvt {
         controlMode {
           automatic
+          automaticMode {
+            aft {
+              mode
+            }
+            fwd {
+              mode
+            }
+            owners {
+              mode
+            }
+          }
         }
       }
       pcm {
@@ -80,7 +111,8 @@ export const CONTROL_QUERY = gql`
         controlMode {
           automatic
           automaticMode {
-            mode
+            boostingMode
+            fillingMode
           }
         }
       }

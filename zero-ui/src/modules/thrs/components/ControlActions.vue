@@ -1,6 +1,11 @@
-<script setup lang="ts">
+<script setup lang="ts" generic="K extends keyof ControlStatus['modules']">
 import { Switch } from "@/components/ui/switch";
-import { useSimulationStore } from "@/modules/thrs/stores/simulation";
+import { tScoped } from "@/modules/common/lib/utils";
+import {
+  ControlStatus,
+  PvtAutomaticMode,
+  useSimulationStore,
+} from "@/modules/thrs/stores/simulation";
 import { computed, toRefs } from "vue";
 import { useI18n } from "vue-i18n";
 
@@ -8,19 +13,34 @@ const props = defineProps<{
   module: string;
 }>();
 
-const { t } = useI18n();
+const t = tScoped("thrs.components.controlActions");
+const { te } = useI18n();
 
 const { control, isProcessing } = toRefs(useSimulationStore());
 const simulationStore = useSimulationStore();
 const setAutomatedControl = simulationStore.setAutomatedControl(props.module);
 
 const isAutomated = computed(
-  () => !!control.value?.modules?.[props.module]?.controlMode?.automatic,
+  () => !!control.value?.modules?.[props.module as K]?.controlMode?.automatic,
 );
 
-const mode = computed(
-  () => control.value?.modules?.[props.module]?.controlMode?.automaticMode?.mode,
-);
+const mode = computed(() => {
+  const automaticMode = control.value?.modules?.[props.module as K]?.controlMode?.automaticMode;
+
+  if (!automaticMode || !te(`modes.${props.module}`)) {
+    return undefined;
+  } else if (props.module === "pvt") {
+    const pvtMode = automaticMode as PvtAutomaticMode;
+
+    return t("modes.pvt", {
+      aftMode: pvtMode.aft.mode,
+      fwdMode: pvtMode.fwd.mode,
+      ownersMode: pvtMode.owners.mode,
+    });
+  } else {
+    return t(`modes.${props.module}`, automaticMode);
+  }
+});
 </script>
 
 <template>
@@ -29,9 +49,9 @@ const mode = computed(
     @click="setAutomatedControl(!isAutomated)"
   >
     <span class="flex flex-col items-end text-sm">
-      {{ t("thrs.components.controlActions.automatedControl") }}
+      {{ t("automatedControl") }}
       <span class="text-muted-foreground text-xs font-light uppercase">
-        {{ isAutomated ? mode : $t("thrs.components.controlActions.off") }}
+        {{ isAutomated ? mode : t("off") }}
       </span>
     </span>
     <Switch

@@ -1,10 +1,5 @@
-import pytest
 from thrs.control.modules.boilers import BoilersParameters, TanksController
 from thrs.input_output.modules.boilers import BoilersSensorValues
-
-pytest.skip(
-    allow_module_level=True
-)  # Skip as long as boiler module is not implemented yet
 
 
 def test_selection_all_full_all_hot(
@@ -46,7 +41,7 @@ def test_selection_all_full_one_hot(
     assert tanks_controller._boosting_tank is tanks_controller._tanks[2]
 
 
-def test_selection_all_full_none_hot(
+def test_all_full_none_hot(
     tanks_controller: TanksController,
     sensor_values: BoilersSensorValues,
     parameters: BoilersParameters,
@@ -65,7 +60,7 @@ def test_selection_all_full_none_hot(
     assert tanks_controller._boosting_tank is tanks_controller._tanks[0]
 
 
-def test_selection_none_full(
+def test_none_full(
     tanks_controller: TanksController,
     sensor_values: BoilersSensorValues,
     parameters: BoilersParameters,
@@ -84,7 +79,7 @@ def test_selection_none_full(
     assert tanks_controller._boosting_tank is None
 
 
-def test_selection_one_full_one_hot(
+def test_one_full_one_hot(
     tanks_controller: TanksController,
     sensor_values: BoilersSensorValues,
     parameters: BoilersParameters,
@@ -103,7 +98,7 @@ def test_selection_one_full_one_hot(
     assert tanks_controller._boosting_tank is None
 
 
-def test_selection_two_full_one_hot(
+def test_two_full_one_hot(
     tanks_controller: TanksController,
     sensor_values: BoilersSensorValues,
     parameters: BoilersParameters,
@@ -122,8 +117,7 @@ def test_selection_two_full_one_hot(
     assert tanks_controller._boosting_tank is tanks_controller._tanks[2]
 
 
-@pytest.mark.skip(reason="Need criterium for when tank is empty")
-def test_selection_becomes_empty(
+def test_becomes_empty(
     tanks_controller: TanksController,
     sensor_values: BoilersSensorValues,
     parameters: BoilersParameters,
@@ -154,7 +148,7 @@ def test_selection_becomes_empty(
     assert tanks_controller._boosting_tank is None
 
 
-def test_selection_becomes_cold(
+def test_becomes_cold(
     tanks_controller: TanksController,
     sensor_values: BoilersSensorValues,
     parameters: BoilersParameters,

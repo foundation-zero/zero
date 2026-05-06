@@ -1,7 +1,9 @@
 from datetime import datetime, timedelta
 from pytest import fixture
+from thrs.orchestration.cycler import Cycler
 
 from thrs.control.modules.boilers import (
+    BoilersAlarms,
     BoilersControl,
     BoilersParameters,
     Tank,
@@ -10,6 +12,7 @@ from thrs.control.modules.boilers import (
 from thrs.input_output.base import Stamped
 from thrs.input_output.definitions.simulation import (
     Boundary,
+    FlowBoundary,
     HeatSource,
     OverpressureTemperatureBoundary,
     TemperatureBoundary,
@@ -48,10 +51,11 @@ def simulation_inputs():
         ),
         boilers_freshwater_supply=OverpressureTemperatureBoundary(
             temperature=Stamped.stamp(20),
-            overpressure=Stamped.stamp(3),
+            overpressure=Stamped.stamp(0.5),
         ),
         boilers_exchanger_gas=HeatSource(heat_flow=Stamped.stamp(300)),
         boilers_seawater_supply=TemperatureBoundary(temperature=Stamped.stamp(32)),
+        boilers_freshwater_return_set=FlowBoundary(flow=Stamped.stamp(40)),
     )
 
 
@@ -77,8 +81,18 @@ def control(executor) -> BoilersControl:
 
 
 @fixture
+def alarms() -> BoilersAlarms:
+    return BoilersAlarms()
+
+
+@fixture
 def parameters() -> BoilersParameters:
     return BoilersParameters()
+
+
+@fixture()
+def cycler(control: BoilersControl, executor, alarms: BoilersAlarms) -> Cycler:
+    return Cycler(control, executor, alarms)
 
 
 @fixture
@@ -87,7 +101,7 @@ def sensor_values() -> BoilersSensorValues:
 
 
 @fixture
-def tanks_controller(test_time, parameters) -> TanksController:
+def tanks_controller(parameters) -> TanksController:
     control_values = BoilersControlValues.zero()
     return TanksController(
         tank1=Tank(
@@ -111,5 +125,5 @@ def tanks_controller(test_time, parameters) -> TanksController:
             boosting_return_valve=control_values.boilers_switch_tank3_boosting_return,
             disabled=parameters.tank3_disabled,
         ),
-        time_fn=test_time.time,
+        time_fn=lambda: datetime.now(),
     )

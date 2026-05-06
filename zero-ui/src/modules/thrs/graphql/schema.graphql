@@ -1,7 +1,8 @@
 directive @jsonSchemaDirective(yardTag: String = null, componentType: String = null, valveType: String = null) on FIELD_DEFINITION
 
 type BoilersControlModeType {
-  mode: String!
+  boostingMode: String!
+  fillingMode: String!
 }
 
 type BoilersControlValuesType {
@@ -28,8 +29,11 @@ type BoilersControlValuesType {
 
 type BoilersParametersType {
   heatpumpFlowSetpoint: Float!
-  boostingTemperatureSetpoint: Float!
-  tankTemperatureSetpoint: Float!
+  heatpumpTemperatureSetpoint: Float!
+  htBoostingTemperatureSetpoint: Float!
+  minimumTankTemperature: Float!
+  maximumTankTemperature: Float!
+  boostingDelta: Float!
   lt1FlowcontrolMinimumSetpoint: Float!
   lt2FlowcontrolMinimumSetpoint: Float!
   fillingTemperatureSetpoint: Float!
@@ -79,6 +83,10 @@ type BoilersSensorValuesType {
   boilersSwitchLowTemperature: SensorValveType! @jsonSchemaDirective(yardTag: "50001067-16", componentType: "valve", valveType: "switch")
   boilersSwitchHeatpump: SensorValveType! @jsonSchemaDirective(yardTag: "50001067-17", componentType: "valve", valveType: "switch")
   boilersSwitchHighTemperature: SensorValveType! @jsonSchemaDirective(yardTag: "50001067-18", componentType: "valve", valveType: "switch")
+  lt1FlowRecovery: SensorFlowSensorType! @jsonSchemaDirective(yardTag: "50001058-03", componentType: "flow_sensor", valveType: null)
+  lt1TemperatureRecovery: SensorTemperatureSensorType! @jsonSchemaDirective(yardTag: "50001038-16", componentType: "temperature_sensor", valveType: null)
+  consumersFlowBoosting: SensorFlowSensorType! @jsonSchemaDirective(yardTag: "50001058-07", componentType: "flow_sensor", valveType: null)
+  consumersTemperatureBoostingSupply: SensorTemperatureSensorType! @jsonSchemaDirective(yardTag: "50001038-53", componentType: "temperature_sensor", valveType: null)
 }
 
 type BoilersSensorValuesTypeBoilersControlValuesTypeBoilersParametersTypeBoilersControlModeTypeControlModule {
@@ -101,6 +109,7 @@ type BoilersSimulationInputsType {
   boilersFreshwaterSupply: OverpressureTemperatureBoundarySimulationType!
   boilersExchangerGas: HeatSourceSimulationType!
   boilersSeawaterSupply: TemperatureBoundarySimulationType!
+  boilersFreshwaterReturnSet: FlowBoundarySimulationType!
 }
 
 type BoilersSimulationOutputsType {
@@ -221,6 +230,10 @@ scalar DateTime
 type FloatStampedType {
   value: Float!
   timestamp: DateTime!
+}
+
+input FlowBoundaryInputType {
+  flow: Float!
 }
 
 type FlowBoundarySimulationType {
@@ -357,8 +370,11 @@ type Mutation {
   consumersControlSetConsumersSwitchBoosting(component: ValveInputType!): ConsumersControlValuesType!
   boilersSetAutomationMode(automatic: Boolean!): Boolean!
   boilersParameterSetHeatpumpFlowSetpoint(value: Float!): BoilersParametersType!
-  boilersParameterSetBoostingTemperatureSetpoint(value: Float!): BoilersParametersType!
-  boilersParameterSetTankTemperatureSetpoint(value: Float!): BoilersParametersType!
+  boilersParameterSetHeatpumpTemperatureSetpoint(value: Float!): BoilersParametersType!
+  boilersParameterSetHtBoostingTemperatureSetpoint(value: Float!): BoilersParametersType!
+  boilersParameterSetMinimumTankTemperature(value: Float!): BoilersParametersType!
+  boilersParameterSetMaximumTankTemperature(value: Float!): BoilersParametersType!
+  boilersParameterSetBoostingDelta(value: Float!): BoilersParametersType!
   boilersParameterSetLt1FlowcontrolMinimumSetpoint(value: Float!): BoilersParametersType!
   boilersParameterSetLt2FlowcontrolMinimumSetpoint(value: Float!): BoilersParametersType!
   boilersParameterSetFillingTemperatureSetpoint(value: Float!): BoilersParametersType!
@@ -397,6 +413,7 @@ type Mutation {
   boilersSimulationSetBoilersFreshwaterSupply(component: OverpressureTemperatureBoundaryInputType!): BoilersSimulationInputsType!
   boilersSimulationSetBoilersExchangerGas(component: HeatSourceInputType!): BoilersSimulationInputsType!
   boilersSimulationSetBoilersSeawaterSupply(component: TemperatureBoundaryInputType!): BoilersSimulationInputsType!
+  boilersSimulationSetBoilersFreshwaterReturnSet(component: FlowBoundaryInputType!): BoilersSimulationInputsType!
   highTemperatureSimulationSetThrustersAft(component: ThrusterInputType!): HighTemperatureSimulationInputsType!
   highTemperatureSimulationSetThrustersFwd(component: ThrusterInputType!): HighTemperatureSimulationInputsType!
   highTemperatureSimulationSetThrustersSeawaterSupply(component: BoundaryInputType!): HighTemperatureSimulationInputsType!

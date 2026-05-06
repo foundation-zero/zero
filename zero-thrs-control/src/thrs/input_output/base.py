@@ -183,9 +183,15 @@ class SimulationValues(ThrsValues):
             for component_name, component in cls.model_fields.items()
         }
 
+        methods = {
+            method_name: getattr(cls, method_name)
+            for method_name in cls.model_computed_fields
+        }
+
         SelectedInputsModel = create_model(
             cls.__name__,
             __base__=SimulationValues,
+            __validators__=methods,
             **components,  # type: ignore
         )  # type: ignore
 
@@ -193,7 +199,7 @@ class SimulationValues(ThrsValues):
 
 
 class SimulationInputs(SimulationValues):
-    model_config = ConfigDict(extra="forbid", arbitrary_types_allowed=True)
+    model_config = ConfigDict(extra="ignore", arbitrary_types_allowed=True)
 
     def get_values_at_time(self, time: datetime) -> Self:
         SelectedInputsModel = self.dedataframe()

@@ -29,25 +29,35 @@ def extract_non_fmu_values(
     """Extract values from simulation inputs that are not included in the FMU."""
 
     def _lookup_values(
-        simulation_inputs: SimulationInputs, sensor_component_field: FieldInfo
+        simulation_input: ThrsValues,
+        sensor_component_field: FieldInfo | ComputedFieldInfo,
     ):
-        component_type = sensor_component_field.annotation
-        # If the whole component is excluded, return all fields
+        # If the whole component is excluded from FMU, extract all available fields
         if not included_in_fmu(sensor_component_field):
             return {
-                name: getattr(simulation_inputs, name)
-                for name in component_type.model_fields.keys()  # type: ignore
+                name: getattr(simulation_input, name)
+                for name in type(simulation_input).model_fields
             }
         # Otherwise, only return fields that are excluded
+        component_type = (
+            sensor_component_field.return_type
+            if isinstance(sensor_component_field, ComputedFieldInfo)
+            else sensor_component_field.annotation
+        )
         return {
-            name: getattr(simulation_inputs, name)
+            name: getattr(simulation_input, name)
             for name, field in component_type.model_fields.items()  # type: ignore
             if not included_in_fmu(field)
         }
 
+    all_sensor_fields: dict[str, FieldInfo | ComputedFieldInfo] = {
+        **sensor_cls.model_fields,
+        **sensor_cls.model_computed_fields,
+    }
+
     return {
         component_name: values
-        for component_name, field in sensor_cls.model_fields.items()
+        for component_name, field in all_sensor_fields.items()
         if hasattr(simulation_inputs, component_name)
         and (
             values := _lookup_values(getattr(simulation_inputs, component_name), field)

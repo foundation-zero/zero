@@ -115,11 +115,20 @@ export const BOILERS_PARAMETER_DEFINITION = toParameterDefinition({
   heatpumpFlowSetpoint: {
     componentType: ParametersType.Flow,
   },
-  boostingTemperatureSetpoint: {
+  heatpumpTemperatureSetpoint: {
     componentType: ParametersType.Temperature,
   },
-  tankTemperatureSetpoint: {
+  htBoostingTemperatureSetpoint: {
     componentType: ParametersType.Temperature,
+  },
+  minimumTankTemperature: {
+    componentType: ParametersType.Temperature,
+  },
+  maximumTankTemperature: {
+    componentType: ParametersType.Temperature,
+  },
+  boostingDelta: {
+    componentType: ParametersType.dT,
   },
   lt1FlowcontrolMinimumSetpoint: {
     componentType: ParametersType.Flow,
@@ -313,6 +322,22 @@ export const BOILERS_SENSOR_DEFINITION = toSensorDefinition({
     componentType: SensorComponentType.Valve,
     valveType: ValveType.Switch,
   },
+  lt1FlowRecovery: {
+    yardTag: "50001058-03",
+    componentType: SensorComponentType.Flow,
+  },
+  lt1TemperatureRecovery: {
+    yardTag: "50001038-16",
+    componentType: SensorComponentType.Temperature,
+  },
+  consumersFlowBoosting: {
+    yardTag: "50001058-07",
+    componentType: SensorComponentType.Flow,
+  },
+  consumersTemperatureBoostingSupply: {
+    yardTag: "50001038-53",
+    componentType: SensorComponentType.Temperature,
+  },
 });
 
 export const BOILERS_SIMULATION_INPUTS = toSimulationDefinition({
@@ -336,6 +361,9 @@ export const BOILERS_SIMULATION_INPUTS = toSimulationDefinition({
   },
   boilersSeawaterSupply: {
     componentType: SimulationComponentType.Temperature,
+  },
+  boilersFreshwaterReturnSet: {
+    componentType: SimulationComponentType.Flow,
   },
 });
 
