@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { computed, toRefs } from "vue";
-import { ComponentOrientation, getNextOrientation } from "..";
+import { ComponentOrientation, MimicComponentBaseProps, getNextOrientation } from "..";
 import MimicComponent from "../MimicComponent.vue";
 import {
   PUMP_BASE_ORIENTATION,
@@ -14,7 +14,7 @@ import {
   PumpState,
 } from "./index";
 
-const props = withDefaults(defineProps<PumpProps>(), {
+const props = withDefaults(defineProps<PumpProps & MimicComponentBaseProps>(), {
   state: PumpState.Active,
   orientation: PUMP_BASE_ORIENTATION,
 });

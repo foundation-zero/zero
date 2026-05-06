@@ -12,7 +12,6 @@ export const enum PumpState {
 
 export interface PumpProps {
   state?: PumpState;
-  orientation?: ComponentOrientation;
 }
 
 interface PumpStateColors {

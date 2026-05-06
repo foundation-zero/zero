@@ -14,17 +14,12 @@ export const enum ManualValveType {
 
 export interface ManualValveProps {
   type: ManualValveType;
-  orientation?: ComponentOrientation;
 }
 
 export const MANUAL_VALVE_WIDTH = 36;
 export const MANUAL_VALVE_HEIGHT = 36;
-/** Port triangle fill and FlowControl pivot ring stroke. */
 export const MANUAL_VALVE_PORT_FILL = "var(--background)";
-/** Port triangle stroke and FlowControl pivot ring stroke. */
 export const MANUAL_VALVE_BORDER_COLOR = "var(--brand-muted)";
-/** Switch and ThreeWay pivot outer ring stroke. */
 export const MANUAL_VALVE_PIVOT_BORDER_COLOR = "var(--inverse-border-subtle)";
-/** Switch/ThreeWay inner dot fill and FlowControl arrow fill. */
 export const MANUAL_VALVE_MARK_COLOR = "var(--foreground)";
 export const MANUAL_VALVE_BASE_ORIENTATION = ComponentOrientation.Up;

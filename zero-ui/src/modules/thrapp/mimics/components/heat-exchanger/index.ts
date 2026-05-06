@@ -11,7 +11,6 @@ export const enum HeatExchangerState {
 
 export interface HeatExchangerProps {
   state?: HeatExchangerState;
-  orientation?: ComponentOrientation;
 }
 
 interface HeatExchangerStateColors {

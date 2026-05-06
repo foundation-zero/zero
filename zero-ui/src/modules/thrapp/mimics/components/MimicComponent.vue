@@ -1,8 +1,14 @@
 <script setup lang="ts">
 import { toRefs } from "vue";
-import { ComponentOrientation, createSizeAndViewbox, MimicComponentProps, useOrientation } from ".";
+import {
+  ComponentOrientation,
+  createSizeAndViewbox,
+  MimicComponentBaseProps,
+  MimicComponentProps,
+  useOrientation,
+} from ".";
 
-const props = withDefaults(defineProps<MimicComponentProps>(), {
+const props = withDefaults(defineProps<MimicComponentProps & MimicComponentBaseProps>(), {
   orientation: ComponentOrientation.Up,
   baseOrientation: ComponentOrientation.Up,
 });

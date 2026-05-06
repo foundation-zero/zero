@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { computed, toRefs } from "vue";
+import { MimicComponentBaseProps } from "..";
 import MimicComponent from "../MimicComponent.vue";
 import {
   HEAT_EXCHANGER_BASE_ORIENTATION,
@@ -11,7 +12,7 @@ import {
   HeatExchangerState,
 } from "./index";
 
-const props = withDefaults(defineProps<HeatExchangerProps>(), {
+const props = withDefaults(defineProps<HeatExchangerProps & MimicComponentBaseProps>(), {
   state: HeatExchangerState.Idle,
   orientation: HEAT_EXCHANGER_BASE_ORIENTATION,
 });

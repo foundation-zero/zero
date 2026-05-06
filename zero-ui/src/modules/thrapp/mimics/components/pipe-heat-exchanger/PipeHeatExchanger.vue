@@ -1,13 +1,13 @@
 <script setup lang="ts">
+import { MimicComponentBaseProps } from "..";
 import MimicComponent from "../MimicComponent.vue";
 import {
   PIPE_HEAT_EXCHANGER_BASE_ORIENTATION,
   PIPE_HEAT_EXCHANGER_HEIGHT,
   PIPE_HEAT_EXCHANGER_WIDTH,
-  PipeHeatExchangerProps,
 } from "./index";
 
-withDefaults(defineProps<PipeHeatExchangerProps>(), {
+withDefaults(defineProps<MimicComponentBaseProps>(), {
   orientation: PIPE_HEAT_EXCHANGER_BASE_ORIENTATION,
 });
 </script>

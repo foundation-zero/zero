@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { computed, toRefs } from "vue";
-import { ComponentOrientation, getNextOrientation } from "..";
+import { ComponentOrientation, MimicComponentBaseProps, getNextOrientation } from "..";
 import MimicComponent from "../MimicComponent.vue";
 import {
   ACTUATED_VALVE_BASE_ORIENTATION,
@@ -21,9 +21,12 @@ import {
 
 const props = withDefaults(
   defineProps<
-    | (ActuatedValveProps<ActuatedValveType.FlowControl> & FlowValveProps)
-    | (ActuatedValveProps<ActuatedValveType.Switch> & SwitchValveProps)
-    | (ActuatedValveProps<ActuatedValveType.ThreeWay> & ThreeWayValveProps)
+    MimicComponentBaseProps &
+      (
+        | (ActuatedValveProps<ActuatedValveType.FlowControl> & FlowValveProps)
+        | (ActuatedValveProps<ActuatedValveType.Switch> & SwitchValveProps)
+        | (ActuatedValveProps<ActuatedValveType.ThreeWay> & ThreeWayValveProps)
+      )
   >(),
   {
     orientation: ACTUATED_VALVE_BASE_ORIENTATION,

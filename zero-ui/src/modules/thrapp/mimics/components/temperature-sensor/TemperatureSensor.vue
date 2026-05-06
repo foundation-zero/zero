@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { MimicComponentBaseProps } from "..";
 import MimicComponent from "../MimicComponent.vue";
 import {
   TEMPERATURE_SENSOR_BASE_ORIENTATION,
@@ -7,10 +8,9 @@ import {
   TEMPERATURE_SENSOR_MARK_COLOR,
   TEMPERATURE_SENSOR_STROKE_COLOR,
   TEMPERATURE_SENSOR_WIDTH,
-  TemperatureSensorProps,
 } from "./index";
 
-withDefaults(defineProps<TemperatureSensorProps>(), {
+withDefaults(defineProps<MimicComponentBaseProps>(), {
   orientation: TEMPERATURE_SENSOR_BASE_ORIENTATION,
 });
 </script>

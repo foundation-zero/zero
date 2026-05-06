@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { MimicComponentBaseProps } from "..";
 import MimicComponent from "../MimicComponent.vue";
 import {
   MANUAL_VALVE_BASE_ORIENTATION,
@@ -12,7 +13,7 @@ import {
   ManualValveType,
 } from "./index";
 
-withDefaults(defineProps<ManualValveProps>(), {
+withDefaults(defineProps<ManualValveProps & MimicComponentBaseProps>(), {
   orientation: MANUAL_VALVE_BASE_ORIENTATION,
 });
 </script>

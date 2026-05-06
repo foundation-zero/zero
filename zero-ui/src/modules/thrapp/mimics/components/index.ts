@@ -23,8 +23,11 @@ export const CLOCKWISE_ORIENTATIONS = [
   ComponentOrientation.UpLeft,
 ];
 
-export interface MimicComponentProps {
+export interface MimicComponentBaseProps {
   orientation?: ComponentOrientation;
+}
+
+export interface MimicComponentProps {
   baseOrientation?: ComponentOrientation;
   id?: string;
   width: number;
