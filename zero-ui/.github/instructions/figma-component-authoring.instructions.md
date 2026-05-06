@@ -33,6 +33,7 @@ These components should be small, composable primitives intended for larger mimi
 - Types, constants, dimensions, and design references should live in the component folder `index.ts`.
 - Use shared mimic composables such as `useStateColor` and `useOrientation` instead of re-implementing local helpers.
 - For directional components, include a typed `orientation: ComponentOrientation` prop and rotate the SVG group around the icon center.
+- Use `MimicComponent` as the base wrapper in every mimic `.vue` component; do not build standalone root `<svg>` wrappers per component.
 
 ## Design Reference Convention
 
@@ -78,8 +79,8 @@ Keep this updated when a component is intentionally re-pointed to a new Figma so
 - Use `<script setup lang="ts">`.
 - Define exported prop contracts in `index.ts`, then consume them with `defineProps` in the `.vue` file.
 - Use `toRefs(props)` when passing values to shared composables.
-- Keep the template strictly SVG.
-- Bind SVG sizing to exported width and height constants.
+- Keep the template SVG-only by rendering shapes inside `<MimicComponent>`.
+- Bind `MimicComponent` width and height to exported constants and pass base orientation/orientation props through.
 
 ### 6. Validate and refine
 

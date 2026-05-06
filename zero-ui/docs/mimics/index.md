@@ -11,6 +11,7 @@ They are intentionally compact, SVG-first, and designed to map closely to proces
 - [Heat Exchanger](/mimics/heat-exchanger) - Three-state directional heat exchanger icon for mimic diagrams
 - [Pipe Heat Exchanger](/mimics/pipe-heat-exchanger) - Stateless directional pipe heat exchanger icon for mimic diagrams
 - [Manual Valve](/mimics/manual-valve) - Stateless switch, flow-control, and three-way manual valve icon for mimic diagrams
+- [Temperature Sensor](/mimics/temperature-sensor) - Stateless directional temperature sensor icon for mimic diagrams
 
 ## Authoring
 
