@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { computed, toRefs } from "vue";
-import { ComponentOrientation, createSizeAndViewbox, getNextOrientation, useOrientation } from "..";
+import { ComponentOrientation, getNextOrientation } from "..";
+import MimicComponent from "../MimicComponent.vue";
 import {
   PUMP_BASE_ORIENTATION,
   PUMP_CENTER_X,
@@ -27,17 +28,15 @@ const orientationWithRotation = computed<ComponentOrientation>(() => {
   else if (state.value === PumpState.Closed) return getNextOrientation(orientation.value, -2);
   else return orientation.value;
 });
-
-const rotation = useOrientation(orientationWithRotation, PUMP_BASE_ORIENTATION);
 </script>
 
 <template>
-  <svg
+  <MimicComponent
+    :width="PUMP_WIDTH"
+    :height="PUMP_HEIGHT"
+    :base-orientation="PUMP_BASE_ORIENTATION"
+    :orientation="orientationWithRotation"
     data-slot="pump"
-    v-bind="createSizeAndViewbox(PUMP_WIDTH, PUMP_HEIGHT)"
-    xmlns="http://www.w3.org/2000/svg"
-    fill="none"
-    aria-hidden="true"
   >
     <circle
       :cx="PUMP_CENTER_X"
@@ -47,16 +46,12 @@ const rotation = useOrientation(orientationWithRotation, PUMP_BASE_ORIENTATION);
       :stroke="colors.ring"
       class="transition-colors duration-300"
     />
-    <g
-      :style="rotation"
-      class="origin-center transition-transform duration-300"
-    >
-      <path
-        d="M8.00293 24.3281L8.00293 11.6719L29.0977 18L8.00293 24.3281Z"
-        :fill="colors.blade"
-        :stroke="colors.ring"
-        class="transition-colors duration-300"
-      />
-    </g>
-  </svg>
+
+    <path
+      d="M8.00293 24.3281L8.00293 11.6719L29.0977 18L8.00293 24.3281Z"
+      :fill="colors.blade"
+      :stroke="colors.ring"
+      class="transition-colors duration-300"
+    />
+  </MimicComponent>
 </template>

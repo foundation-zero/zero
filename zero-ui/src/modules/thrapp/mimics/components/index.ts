@@ -23,6 +23,14 @@ export const CLOCKWISE_ORIENTATIONS = [
   ComponentOrientation.UpLeft,
 ];
 
+export interface MimicComponentProps {
+  orientation?: ComponentOrientation;
+  baseOrientation?: ComponentOrientation;
+  id?: string;
+  width: number;
+  height: number;
+}
+
 export const getNextOrientation = (orientation: ComponentOrientation, stepSize = 1) => {
   const nextOrientationIndex =
     (CLOCKWISE_ORIENTATIONS.indexOf(orientation) + stepSize + CLOCKWISE_ORIENTATIONS.length) %
