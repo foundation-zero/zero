@@ -74,6 +74,7 @@ export default defineConfig({
         items: [
           { text: "Temperature Sensor", link: "/mimics/temperature-sensor" },
           { text: "Flow Sensor", link: "/mimics/flow-sensor" },
+          { text: "Pressure Gauge", link: "/mimics/pressure-gauge" },
           { text: "Pressure Sensor", link: "/mimics/pressure-sensor" },
           { text: "Level Sensor", link: "/mimics/level-sensor" },
         ],
