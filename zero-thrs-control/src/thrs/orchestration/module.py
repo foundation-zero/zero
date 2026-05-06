@@ -34,7 +34,7 @@ class ModuleDescription[
         parameters_cls: type[P],
         control: Callable[[P, Callable[[], datetime]], Control[S, C, P, M]],
         control_mode_cls: type[M],
-        alarms: Callable[[], BaseAlarms[S, C]],
+        alarms: Callable[[], BaseAlarms[S, C, P]],
     ):
         self.sensor_values_cls = sensor_values_cls
         self.control_values_cls = control_values_cls
@@ -223,14 +223,19 @@ class CombinedControl(
         self._modules[module].switch_mode("automatic" if automation else "manual")
 
 
-class CombinedAlarms(BaseAlarms[CombinedValues, CombinedValues]):
+class CombinedAlarms(BaseAlarms[CombinedValues, CombinedValues, CombinedValues]):
     """Combination of sub alarms for combined modules"""
 
-    def __init__(self, modules: Mapping[str, BaseAlarms[ThrsValues, ThrsValues]]):
+    def __init__(
+        self, modules: Mapping[str, BaseAlarms[ThrsValues, ThrsValues, ThrsValues]]
+    ):
         self._modules = dict(modules)
 
     def check(
-        self, sensor_values: CombinedValues, control_values: CombinedValues
+        self,
+        sensor_values: CombinedValues,
+        control_values: CombinedValues,
+        parameters: CombinedValues,
     ) -> list[Alarm]:
         if not sensor_values.values:
             return []
@@ -238,7 +243,9 @@ class CombinedAlarms(BaseAlarms[CombinedValues, CombinedValues]):
             alarm
             for name, module in self._modules.items()
             for alarm in module.check(
-                sensor_values.values[name], control_values.values[name]
+                sensor_values.values[name],
+                control_values.values[name],
+                parameters.values[name],
             )
         ]
 

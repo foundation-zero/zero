@@ -238,15 +238,16 @@ class TestCombinedAlarms:
 
         combined_alarms = CombinedAlarms(subs)
 
-        sensor_values = CombinedValues(values={})
-        control_values = CombinedValues(values={})
+        values = CombinedValues(values={})
 
-        result = combined_alarms.check(sensor_values, control_values)
+        result = combined_alarms.check(values, values, values)
 
         assert result == []
 
     def test_check_with_alarms(self):
-        mock_alarm = Alarm(code="Test", severity=Severity.WARNING)
+        mock_alarm = Alarm(
+            code="Test", message="Test message", severity=Severity.WARNING
+        )
         mock_alarms = Mock(spec=BaseAlarms)
         mock_alarms.check.return_value = [mock_alarm]
 
@@ -263,7 +264,9 @@ class TestCombinedAlarms:
             }
         )
 
-        result = combined_alarms.check(values, values)
+        parameters = CombinedValues(values={"module1": SimpleParameters()})
+
+        result = combined_alarms.check(values, values, parameters)
 
         assert len(result) == 1
         assert result[0] == mock_alarm

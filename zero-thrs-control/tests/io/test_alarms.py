@@ -6,22 +6,22 @@ class MySensorValues(ThrsValues):
     sensor: float
 
 
-class MyAlarms(BaseAlarms[MySensorValues, None]):
+class MyAlarms(BaseAlarms[MySensorValues, None, None]):
     @alarm("A001", Severity.ALARM)
     def alarm_if_ge_5(
-        self, sensor_values: MySensorValues, control_values: None
-    ) -> bool:
-        return sensor_values.sensor > 5
+        self, sensor_values: MySensorValues, control_values: None, parameters: None
+    ) -> str | None:
+        return "Sensor value is too high" if sensor_values.sensor > 5 else None
 
 
 def test_alarms():
     alarms = MyAlarms()
     sensor_values = MySensorValues(sensor=10)
-    alarm_list = alarms.check(sensor_values, None)
+    alarm_list = alarms.check(sensor_values, None, parameters=None)
     assert len(alarm_list) == 1
     assert alarm_list[0].code == "A001"
     assert alarm_list[0].severity == Severity.ALARM
 
     sensor_values.sensor = 3
-    alarm_list = alarms.check(sensor_values, None)
+    alarm_list = alarms.check(sensor_values, None, parameters=None)
     assert len(alarm_list) == 0

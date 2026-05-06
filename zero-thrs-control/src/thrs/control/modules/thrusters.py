@@ -514,13 +514,13 @@ class ThrustersControl(
 
 
 class ThrustersAlarms(BaseAlarms):
-    @alarm("A004", severity=Severity.ALARM)
+    @alarm("Overheating alarm", severity=Severity.ALARM)
     def check_overheating(
         self,
         sensor_values: ThrustersSensorValues,
         control_values: ThrustersControlValues,
-    ) -> bool:
-        return self.is_overheating(sensor_values)
-
-    def is_overheating(self, sensor_values: ThrustersSensorValues) -> bool:
-        return sensor_values.thrusters_temperature_supply.temperature.value > 95
+        parameters: ThrustersParameters,
+    ) -> str | None:
+        if sensor_values.thrusters_temperature_supply.temperature.value > 95:
+            return "Thrusters supply temperature above 95 °C"
+        return None
