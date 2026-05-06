@@ -767,21 +767,23 @@ class BoilersAlarms(BaseAlarms):
     def _check_tank_temperature(
         tank_number: int,
         temperature: float,
+        yard_tag: str,
         maximum: float,
         delta: float,
     ) -> str | None:
         if temperature > maximum + delta:
-            return f"Tank {tank_number} temperature {temperature:.1f}°C above maximum {maximum}°C"
+            return f"Tank {tank_number} temperature sensor {yard_tag} at {temperature:.1f}°C, above maximum {maximum}°C"
         return None
 
     @staticmethod
     def _check_tank_level(
         tank_number: int,
         level: float,
+        yard_tag: str,
         maximum: float,
     ) -> str | None:
         if level > maximum:
-            return f"Tank {tank_number} level {level:.1f}L above {maximum}L"
+            return f"Tank {tank_number} level sensor {yard_tag} at {level:.1f}L, above maximum {maximum}L"
         return None
 
     @alarm("Tank 1 high temperature warning", severity=Severity.WARNING)
@@ -794,6 +796,7 @@ class BoilersAlarms(BaseAlarms):
         return self._check_tank_temperature(
             1,
             sensor_values.boilers_temperature_tank1.temperature.value,
+            BoilersSensorValues.yard_tag("boilers_temperature_tank1"),
             parameters.maximum_tank_temperature,
             2,
         )
@@ -808,6 +811,7 @@ class BoilersAlarms(BaseAlarms):
         return self._check_tank_temperature(
             2,
             sensor_values.boilers_temperature_tank2.temperature.value,
+            BoilersSensorValues.yard_tag("boilers_temperature_tank2"),
             parameters.maximum_tank_temperature,
             2,
         )
@@ -822,6 +826,7 @@ class BoilersAlarms(BaseAlarms):
         return self._check_tank_temperature(
             3,
             sensor_values.boilers_temperature_tank3.temperature.value,
+            BoilersSensorValues.yard_tag("boilers_temperature_tank3"),
             parameters.maximum_tank_temperature,
             2,
         )
@@ -836,6 +841,7 @@ class BoilersAlarms(BaseAlarms):
         return self._check_tank_temperature(
             1,
             sensor_values.boilers_temperature_tank1.temperature.value,
+            BoilersSensorValues.yard_tag("boilers_temperature_tank1"),
             parameters.maximum_tank_temperature,
             5,
         )
@@ -850,6 +856,7 @@ class BoilersAlarms(BaseAlarms):
         return self._check_tank_temperature(
             2,
             sensor_values.boilers_temperature_tank2.temperature.value,
+            BoilersSensorValues.yard_tag("boilers_temperature_tank2"),
             parameters.maximum_tank_temperature,
             5,
         )
@@ -864,6 +871,7 @@ class BoilersAlarms(BaseAlarms):
         return self._check_tank_temperature(
             3,
             sensor_values.boilers_temperature_tank3.temperature.value,
+            BoilersSensorValues.yard_tag("boilers_temperature_tank3"),
             parameters.maximum_tank_temperature,
             5,
         )
@@ -876,7 +884,10 @@ class BoilersAlarms(BaseAlarms):
         parameters: BoilersParameters,
     ) -> str | None:
         return self._check_tank_level(
-            1, sensor_values.boilers_level_tank1.level.value, 265
+            1,
+            sensor_values.boilers_level_tank1.level.value,
+            BoilersSensorValues.yard_tag("boilers_level_tank1"),
+            265,
         )
 
     @alarm("Tank 2 high level warning", severity=Severity.WARNING)
@@ -887,7 +898,10 @@ class BoilersAlarms(BaseAlarms):
         parameters: BoilersParameters,
     ) -> str | None:
         return self._check_tank_level(
-            2, sensor_values.boilers_level_tank2.level.value, 265
+            2,
+            sensor_values.boilers_level_tank2.level.value,
+            BoilersSensorValues.yard_tag("boilers_level_tank2"),
+            265,
         )
 
     @alarm("Tank 3 high level warning", severity=Severity.WARNING)
@@ -898,7 +912,10 @@ class BoilersAlarms(BaseAlarms):
         parameters: BoilersParameters,
     ) -> str | None:
         return self._check_tank_level(
-            3, sensor_values.boilers_level_tank3.level.value, 265
+            3,
+            sensor_values.boilers_level_tank3.level.value,
+            BoilersSensorValues.yard_tag("boilers_level_tank3"),
+            265,
         )
 
     @alarm("Tank 1 high level alarm", severity=Severity.ALARM)
@@ -909,7 +926,10 @@ class BoilersAlarms(BaseAlarms):
         parameters: BoilersParameters,
     ) -> str | None:
         return self._check_tank_level(
-            1, sensor_values.boilers_level_tank1.level.value, 270
+            1,
+            sensor_values.boilers_level_tank1.level.value,
+            BoilersSensorValues.yard_tag("boilers_level_tank1"),
+            270,
         )
 
     @alarm("Tank 2 high level alarm", severity=Severity.ALARM)
@@ -920,7 +940,10 @@ class BoilersAlarms(BaseAlarms):
         parameters: BoilersParameters,
     ) -> str | None:
         return self._check_tank_level(
-            2, sensor_values.boilers_level_tank2.level.value, 270
+            2,
+            sensor_values.boilers_level_tank2.level.value,
+            BoilersSensorValues.yard_tag("boilers_level_tank2"),
+            270,
         )
 
     @alarm("Tank 3 high level alarm", severity=Severity.ALARM)
@@ -931,5 +954,8 @@ class BoilersAlarms(BaseAlarms):
         parameters: BoilersParameters,
     ) -> str | None:
         return self._check_tank_level(
-            3, sensor_values.boilers_level_tank3.level.value, 270
+            3,
+            sensor_values.boilers_level_tank3.level.value,
+            BoilersSensorValues.yard_tag("boilers_level_tank3"),
+            270,
         )

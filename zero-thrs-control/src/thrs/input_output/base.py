@@ -1,6 +1,6 @@
 from dataclasses import dataclass
 from datetime import datetime
-from typing import Annotated, Any, Literal, Self
+from typing import Annotated, Any, Literal, Self, cast
 from warnings import warn
 
 import polars as pl
@@ -52,6 +52,10 @@ class ThrsValues(BaseModel):
             for component_name, component in cls.model_fields.items()
         }
         return cls(**vals)
+
+    @classmethod
+    def yard_tag(cls, field_name: str) -> str:
+        return cast(dict, cls.model_fields[field_name].json_schema_extra)["yard_tag"]
 
 
 class Stamped[T](ThrsValues):
