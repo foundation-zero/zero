@@ -72,166 +72,8 @@
       },
       "id": 61,
       "panels": [],
-      "title": "External motor",
+      "title": "Test PLC",
       "type": "row"
-    },
-    {
-      "datasource": {
-        "type": "grafana-postgresql-datasource",
-        "uid": "${datasource}"
-      },
-      "fieldConfig": {
-        "defaults": {
-          "color": {
-            "mode": "palette-classic"
-          },
-          "custom": {
-            "axisBorderShow": false,
-            "axisCenteredZero": false,
-            "axisColorMode": "text",
-            "axisLabel": "",
-            "axisPlacement": "auto",
-            "barAlignment": 0,
-            "barWidthFactor": 0.6,
-            "drawStyle": "line",
-            "fillOpacity": 0,
-            "gradientMode": "none",
-            "hideFrom": {
-              "legend": false,
-              "tooltip": false,
-              "viz": false
-            },
-            "insertNulls": false,
-            "lineInterpolation": "linear",
-            "lineWidth": 1,
-            "pointSize": 5,
-            "scaleDistribution": {
-              "type": "linear"
-            },
-            "showPoints": "auto",
-            "showValues": false,
-            "spanNulls": false,
-            "stacking": {
-              "group": "A",
-              "mode": "none"
-            },
-            "thresholdsStyle": {
-              "mode": "off"
-            }
-          },
-          "decimals": 2,
-          "mappings": [],
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "green",
-                "value": 0
-              },
-              {
-                "color": "red",
-                "value": 80
-              }
-            ]
-          },
-          "unit": "kwatt"
-        },
-        "overrides": []
-      },
-      "gridPos": {
-        "h": 7,
-        "w": 24,
-        "x": 0,
-        "y": 3
-      },
-      "id": 62,
-      "options": {
-        "legend": {
-          "calcs": [],
-          "displayMode": "list",
-          "placement": "bottom",
-          "showLegend": false
-        },
-        "tooltip": {
-          "hideZeros": false,
-          "mode": "single",
-          "sort": "none"
-        }
-      },
-      "pluginVersion": "12.3.0",
-      "targets": [
-        {
-          "dataset": "dev",
-          "datasource": {
-            "type": "grafana-postgresql-datasource",
-            "uid": "${datasource}"
-          },
-          "editorMode": "code",
-          "editorType": "sql",
-          "format": 1,
-          "meta": {
-            "builderOptions": {
-              "columns": [],
-              "database": "",
-              "limit": 1000,
-              "meta": {},
-              "mode": "list",
-              "queryType": "table",
-              "table": ""
-            }
-          },
-          "pluginVersion": "2.1.4",
-          "queryType": "table",
-          "rawQuery": true,
-          "rawSql": "SELECT\r\n  timestamp                                     AS time,\r\n  \"devices__can_akasol.act_p_battery_power_k_w\" AS akasol\r\nFROM public.\"prop_test__data\"\r\nWHERE $__timeFilter(timestamp)",
-          "refId": "A",
-          "sql": {
-            "columns": [
-              {
-                "parameters": [],
-                "type": "function"
-              }
-            ],
-            "groupBy": [
-              {
-                "property": {
-                  "type": "string"
-                },
-                "type": "groupBy"
-              }
-            ],
-            "limit": 50
-          }
-        }
-      ],
-      "title": "Akasol",
-      "transformations": [
-        {
-          "id": "organize",
-          "options": {
-            "excludeByName": {},
-            "includeByName": {},
-            "indexByName": {},
-            "renameByName": {
-              "akasol": "",
-              "device": "Device",
-              "flow": "Flow",
-              "gear_ratio": "Gear ratio",
-              "pressure": "Pressure",
-              "seq_nr": "",
-              "speed": "Speed",
-              "speed_torque_setpoint": "",
-              "temperature": "Temperature",
-              "temperature_delta": "T delta",
-              "temperature_in": "T in",
-              "temperature_out": "T out",
-              "torque": "Torque",
-              "torque_setpoint": "Torque setpoint"
-            }
-          }
-        }
-      ],
-      "type": "timeseries"
     },
     {
       "datasource": {
@@ -350,7 +192,7 @@
         "h": 4,
         "w": 24,
         "x": 0,
-        "y": 10
+        "y": 3
       },
       "id": 63,
       "options": {
@@ -443,347 +285,538 @@
       "type": "table"
     },
     {
-      "datasource": {
-        "type": "grafana-postgresql-datasource",
-        "uid": "${datasource}"
-      },
-      "fieldConfig": {
-        "defaults": {
-          "color": {
-            "mode": "palette-classic"
-          },
-          "custom": {
-            "axisBorderShow": false,
-            "axisCenteredZero": false,
-            "axisColorMode": "text",
-            "axisLabel": "",
-            "axisPlacement": "auto",
-            "barAlignment": 0,
-            "barWidthFactor": 0.6,
-            "drawStyle": "line",
-            "fillOpacity": 0,
-            "gradientMode": "none",
-            "hideFrom": {
-              "legend": false,
-              "tooltip": false,
-              "viz": false
-            },
-            "insertNulls": false,
-            "lineInterpolation": "linear",
-            "lineWidth": 1,
-            "pointSize": 5,
-            "scaleDistribution": {
-              "type": "linear"
-            },
-            "showPoints": "auto",
-            "showValues": false,
-            "spanNulls": false,
-            "stacking": {
-              "group": "A",
-              "mode": "none"
-            },
-            "thresholdsStyle": {
-              "mode": "off"
-            }
-          },
-          "decimals": 2,
-          "mappings": [],
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "green",
-                "value": 0
-              },
-              {
-                "color": "red",
-                "value": 80
-              }
-            ]
-          },
-          "unit": "celsius"
-        },
-        "overrides": [
-          {
-            "matcher": {
-              "id": "byName",
-              "options": "time"
-            },
-            "properties": []
-          }
-        ]
-      },
+      "collapsed": true,
       "gridPos": {
-        "h": 9,
+        "h": 1,
         "w": 24,
         "x": 0,
-        "y": 14
+        "y": 7
       },
-      "id": 64,
-      "options": {
-        "legend": {
-          "calcs": [],
-          "displayMode": "list",
-          "placement": "bottom",
-          "showLegend": true
-        },
-        "tooltip": {
-          "hideZeros": false,
-          "mode": "single",
-          "sort": "none"
-        }
-      },
-      "pluginVersion": "12.3.0",
-      "targets": [
+      "id": 78,
+      "panels": [
         {
-          "dataset": "dev",
           "datasource": {
             "type": "grafana-postgresql-datasource",
             "uid": "${datasource}"
           },
-          "editorMode": "code",
-          "editorType": "sql",
-          "format": 1,
-          "meta": {
-            "builderOptions": {
-              "columns": [],
-              "database": "",
-              "limit": 1000,
-              "meta": {},
-              "mode": "list",
-              "queryType": "table",
-              "table": ""
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "palette-classic"
+              },
+              "custom": {
+                "axisBorderShow": false,
+                "axisCenteredZero": false,
+                "axisColorMode": "text",
+                "axisLabel": "",
+                "axisPlacement": "auto",
+                "barAlignment": 0,
+                "barWidthFactor": 0.6,
+                "drawStyle": "line",
+                "fillOpacity": 0,
+                "gradientMode": "none",
+                "hideFrom": {
+                  "legend": false,
+                  "tooltip": false,
+                  "viz": false
+                },
+                "insertNulls": false,
+                "lineInterpolation": "linear",
+                "lineWidth": 1,
+                "pointSize": 5,
+                "scaleDistribution": {
+                  "type": "linear"
+                },
+                "showPoints": "auto",
+                "showValues": false,
+                "spanNulls": false,
+                "stacking": {
+                  "group": "A",
+                  "mode": "none"
+                },
+                "thresholdsStyle": {
+                  "mode": "off"
+                }
+              },
+              "decimals": 2,
+              "mappings": [],
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green",
+                    "value": 0
+                  },
+                  {
+                    "color": "red",
+                    "value": 80
+                  }
+                ]
+              },
+              "unit": "celsius"
+            },
+            "overrides": [
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "time"
+                },
+                "properties": []
+              }
+            ]
+          },
+          "gridPos": {
+            "h": 9,
+            "w": 24,
+            "x": 0,
+            "y": 8
+          },
+          "id": 64,
+          "options": {
+            "legend": {
+              "calcs": [],
+              "displayMode": "list",
+              "placement": "bottom",
+              "showLegend": true
+            },
+            "tooltip": {
+              "hideZeros": false,
+              "mode": "single",
+              "sort": "none"
             }
           },
-          "pluginVersion": "2.1.4",
-          "queryType": "table",
-          "rawQuery": true,
-          "rawSql": "SELECT\r\n  timestamp                                             AS time,\r\n  CASE WHEN '${aft_fwd}' = 'AFT'\r\n    THEN \"devices__can_aradex.i_aft_thrstr_emotor_temp\"\r\n    ELSE \"devices__can_aradex.i_fwd_thrstr_emotor_temp\"\r\n  END                                                   AS e_motor_temp,\r\n  CASE WHEN '${aft_fwd}' = 'AFT'\r\n    THEN \"devices__can_aradex.i_aft_thrstr_igbt_temp\"\r\n    ELSE \"devices__can_aradex.i_fwd_thrstr_igbt_temp\"\r\n  END                                                   AS igbt_temp\r\nFROM public.prop_test__data                                                   \r\nWHERE $__timeFilter(timestamp)",
-          "refId": "A",
-          "sql": {
-            "columns": [
-              {
-                "parameters": [],
-                "type": "function"
+          "pluginVersion": "12.3.0",
+          "targets": [
+            {
+              "dataset": "dev",
+              "datasource": {
+                "type": "grafana-postgresql-datasource",
+                "uid": "${datasource}"
+              },
+              "editorMode": "code",
+              "editorType": "sql",
+              "format": 1,
+              "meta": {
+                "builderOptions": {
+                  "columns": [],
+                  "database": "",
+                  "limit": 1000,
+                  "meta": {},
+                  "mode": "list",
+                  "queryType": "table",
+                  "table": ""
+                }
+              },
+              "pluginVersion": "2.1.4",
+              "queryType": "table",
+              "rawQuery": true,
+              "rawSql": "SELECT\r\n  timestamp                                             AS time,\r\n  CASE WHEN '${aft_fwd}' = 'AFT'\r\n    THEN \"devices__can_aradex.i_aft_thrstr_emotor_temp\"\r\n    ELSE \"devices__can_aradex.i_fwd_thrstr_emotor_temp\"\r\n  END                                                   AS e_motor_temp,\r\n  CASE WHEN '${aft_fwd}' = 'AFT'\r\n    THEN \"devices__can_aradex.i_aft_thrstr_igbt_temp\"\r\n    ELSE \"devices__can_aradex.i_fwd_thrstr_igbt_temp\"\r\n  END                                                   AS igbt_temp\r\nFROM public.prop_test__data                                                   \r\nWHERE $__timeFilter(timestamp)",
+              "refId": "A",
+              "sql": {
+                "columns": [
+                  {
+                    "parameters": [],
+                    "type": "function"
+                  }
+                ],
+                "groupBy": [
+                  {
+                    "property": {
+                      "type": "string"
+                    },
+                    "type": "groupBy"
+                  }
+                ],
+                "limit": 50
               }
-            ],
-            "groupBy": [
-              {
-                "property": {
-                  "type": "string"
-                },
-                "type": "groupBy"
-              }
-            ],
-            "limit": 50
-          }
-        }
-      ],
-      "title": "Temperatures",
-      "transformations": [
-        {
-          "id": "organize",
-          "options": {
-            "excludeByName": {},
-            "includeByName": {},
-            "indexByName": {},
-            "renameByName": {
-              "current": "Current",
-              "device": "Device",
-              "e_motor_temp": "Motor",
-              "flow": "Flow",
-              "gear_ratio": "Gear ratio",
-              "igbt_temp": "IGBT",
-              "pressure": "Pressure",
-              "seq_nr": "",
-              "speed": "Speed",
-              "speed_torque_setpoint": "",
-              "temperature": "Temperature",
-              "temperature_delta": "T delta",
-              "temperature_in": "T in",
-              "temperature_out": "T out",
-              "torque": "Torque",
-              "torque_setpoint": "Torque setpoint",
-              "voltage": "Voltage"
             }
-          }
+          ],
+          "title": "Temperatures",
+          "transformations": [
+            {
+              "id": "organize",
+              "options": {
+                "excludeByName": {},
+                "includeByName": {},
+                "indexByName": {},
+                "renameByName": {
+                  "current": "Current",
+                  "device": "Device",
+                  "e_motor_temp": "Motor",
+                  "flow": "Flow",
+                  "gear_ratio": "Gear ratio",
+                  "igbt_temp": "IGBT",
+                  "pressure": "Pressure",
+                  "seq_nr": "",
+                  "speed": "Speed",
+                  "speed_torque_setpoint": "",
+                  "temperature": "Temperature",
+                  "temperature_delta": "T delta",
+                  "temperature_in": "T in",
+                  "temperature_out": "T out",
+                  "torque": "Torque",
+                  "torque_setpoint": "Torque setpoint",
+                  "voltage": "Voltage"
+                }
+              }
+            }
+          ],
+          "type": "timeseries"
         }
       ],
-      "type": "timeseries"
+      "title": "Test PLC - Temperatures",
+      "type": "row"
     },
     {
-      "datasource": {
-        "type": "grafana-postgresql-datasource",
-        "uid": "${datasource}"
-      },
-      "fieldConfig": {
-        "defaults": {
-          "color": {
-            "mode": "palette-classic"
-          },
-          "custom": {
-            "axisBorderShow": false,
-            "axisCenteredZero": false,
-            "axisColorMode": "text",
-            "axisLabel": "",
-            "axisPlacement": "auto",
-            "barAlignment": 0,
-            "barWidthFactor": 0.6,
-            "drawStyle": "line",
-            "fillOpacity": 0,
-            "gradientMode": "none",
-            "hideFrom": {
-              "legend": false,
-              "tooltip": false,
-              "viz": false
-            },
-            "insertNulls": false,
-            "lineInterpolation": "linear",
-            "lineWidth": 1,
-            "pointSize": 5,
-            "scaleDistribution": {
-              "type": "linear"
-            },
-            "showPoints": "auto",
-            "showValues": false,
-            "spanNulls": false,
-            "stacking": {
-              "group": "A",
-              "mode": "none"
-            },
-            "thresholdsStyle": {
-              "mode": "off"
-            }
-          },
-          "decimals": 2,
-          "mappings": [],
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "green",
-                "value": 0
-              },
-              {
-                "color": "red",
-                "value": 80
-              }
-            ]
-          },
-          "unit": "rotrpm"
-        },
-        "overrides": [
-          {
-            "matcher": {
-              "id": "byName",
-              "options": "Torque"
-            },
-            "properties": [
-              {
-                "id": "unit",
-                "value": "forceNm"
-              }
-            ]
-          }
-        ]
-      },
+      "collapsed": true,
       "gridPos": {
-        "h": 9,
+        "h": 1,
         "w": 24,
         "x": 0,
-        "y": 23
+        "y": 8
       },
-      "id": 65,
-      "options": {
-        "legend": {
-          "calcs": [],
-          "displayMode": "list",
-          "placement": "bottom",
-          "showLegend": true
-        },
-        "tooltip": {
-          "hideZeros": false,
-          "mode": "single",
-          "sort": "none"
-        }
-      },
-      "pluginVersion": "12.3.0",
-      "targets": [
+      "id": 77,
+      "panels": [
         {
-          "dataset": "dev",
           "datasource": {
             "type": "grafana-postgresql-datasource",
             "uid": "${datasource}"
           },
-          "editorMode": "code",
-          "editorType": "sql",
-          "format": 1,
-          "meta": {
-            "builderOptions": {
-              "columns": [],
-              "database": "",
-              "limit": 1000,
-              "meta": {},
-              "mode": "list",
-              "queryType": "table",
-              "table": ""
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "palette-classic"
+              },
+              "custom": {
+                "axisBorderShow": false,
+                "axisCenteredZero": false,
+                "axisColorMode": "text",
+                "axisLabel": "",
+                "axisPlacement": "auto",
+                "barAlignment": 0,
+                "barWidthFactor": 0.6,
+                "drawStyle": "line",
+                "fillOpacity": 0,
+                "gradientMode": "none",
+                "hideFrom": {
+                  "legend": false,
+                  "tooltip": false,
+                  "viz": false
+                },
+                "insertNulls": false,
+                "lineInterpolation": "linear",
+                "lineWidth": 1,
+                "pointSize": 5,
+                "scaleDistribution": {
+                  "type": "linear"
+                },
+                "showPoints": "auto",
+                "showValues": false,
+                "spanNulls": false,
+                "stacking": {
+                  "group": "A",
+                  "mode": "none"
+                },
+                "thresholdsStyle": {
+                  "mode": "off"
+                }
+              },
+              "decimals": 2,
+              "mappings": [],
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green",
+                    "value": 0
+                  },
+                  {
+                    "color": "red",
+                    "value": 80
+                  }
+                ]
+              },
+              "unit": "rotrpm"
+            },
+            "overrides": []
+          },
+          "gridPos": {
+            "h": 9,
+            "w": 24,
+            "x": 0,
+            "y": 9
+          },
+          "id": 65,
+          "options": {
+            "legend": {
+              "calcs": [],
+              "displayMode": "list",
+              "placement": "bottom",
+              "showLegend": true
+            },
+            "tooltip": {
+              "hideZeros": false,
+              "mode": "single",
+              "sort": "none"
             }
           },
-          "pluginVersion": "2.1.4",
-          "queryType": "table",
-          "rawQuery": true,
-          "rawSql": "SELECT\r\n  timestamp                                           AS time,\r\n  CASE WHEN '${aft_fwd}' = 'AFT'\r\n    THEN \"devices__can_aradex.i_aft_thrstr_speed_rpm\"\r\n    ELSE \"devices__can_aradex.i_fwd_thrstr_speed_rpm\"\r\n  END                                                 AS speed,\r\n  CASE WHEN '${aft_fwd}' = 'AFT'\r\n    THEN \"devices__can_aradex.i_aft_thrstr_torque_nm\"\r\n    ELSE \"devices__can_aradex.i_fwd_thrstr_torque_nm\"\r\n  END                                                 AS torque\r\nFROM public.prop_test__data\r\nWHERE $__timeFilter(timestamp)",
-          "refId": "A",
-          "sql": {
-            "columns": [
-              {
-                "parameters": [],
-                "type": "function"
+          "pluginVersion": "12.3.0",
+          "targets": [
+            {
+              "dataset": "dev",
+              "datasource": {
+                "type": "grafana-postgresql-datasource",
+                "uid": "${datasource}"
+              },
+              "editorMode": "code",
+              "editorType": "sql",
+              "format": 1,
+              "meta": {
+                "builderOptions": {
+                  "columns": [],
+                  "database": "",
+                  "limit": 1000,
+                  "meta": {},
+                  "mode": "list",
+                  "queryType": "table",
+                  "table": ""
+                }
+              },
+              "pluginVersion": "2.1.4",
+              "queryType": "table",
+              "rawQuery": true,
+              "rawSql": "SELECT\r\n  timestamp                                                 AS time,\r\n  CASE WHEN '${aft_fwd}' = 'AFT'\r\n    THEN \"devices__can_aradex.i_aft_thrstr_speed_rpm\"\r\n    ELSE \"devices__can_aradex.i_fwd_thrstr_speed_rpm\"\r\n  END                                                       AS aradex_speed,\r\n  CASE WHEN '${aft_fwd}' = 'AFT'\r\n    THEN \"devices__thruster_test.r_prop_spd_aft_thrstr_rpm\"\r\n    ELSE \"devices__thruster_test.r_prop_spd_fwd_thrstr_rpm\"\r\n  END                                                       AS plc_speed\r\nFROM public.prop_test__data\r\nWHERE $__timeFilter(timestamp)",
+              "refId": "A",
+              "sql": {
+                "columns": [
+                  {
+                    "parameters": [],
+                    "type": "function"
+                  }
+                ],
+                "groupBy": [
+                  {
+                    "property": {
+                      "type": "string"
+                    },
+                    "type": "groupBy"
+                  }
+                ],
+                "limit": 50
               }
-            ],
-            "groupBy": [
-              {
-                "property": {
-                  "type": "string"
-                },
-                "type": "groupBy"
-              }
-            ],
-            "limit": 50
-          }
-        }
-      ],
-      "title": "Speed & Torque",
-      "transformations": [
-        {
-          "id": "organize",
-          "options": {
-            "excludeByName": {},
-            "includeByName": {},
-            "indexByName": {},
-            "renameByName": {
-              "current": "Current",
-              "device": "Device",
-              "e_motor_temp": "Motor temp",
-              "flow": "Flow",
-              "gear_ratio": "Gear ratio",
-              "igbt_temp": "IGBT temp",
-              "pressure": "Pressure",
-              "seq_nr": "",
-              "speed": "Speed",
-              "speed_torque_setpoint": "",
-              "temperature": "Temperature",
-              "temperature_delta": "T delta",
-              "temperature_in": "T in",
-              "temperature_out": "T out",
-              "torque": "Torque",
-              "torque_setpoint": "Torque setpoint",
-              "voltage": "Voltage"
             }
-          }
+          ],
+          "title": "Speed",
+          "transformations": [
+            {
+              "id": "organize",
+              "options": {
+                "excludeByName": {},
+                "includeByName": {},
+                "indexByName": {},
+                "renameByName": {
+                  "aradex_speed": "Speed (Aradex)",
+                  "current": "Current",
+                  "device": "Device",
+                  "e_motor_temp": "Motor temp",
+                  "flow": "Flow",
+                  "gear_ratio": "Gear ratio",
+                  "igbt_temp": "IGBT temp",
+                  "plc_speed": "Speed (PLC)",
+                  "pressure": "Pressure",
+                  "seq_nr": "",
+                  "speed": "Speed",
+                  "speed_torque_setpoint": "",
+                  "temperature": "Temperature",
+                  "temperature_delta": "T delta",
+                  "temperature_in": "T in",
+                  "temperature_out": "T out",
+                  "torque": "Torque",
+                  "torque_setpoint": "Torque setpoint",
+                  "voltage": "Voltage"
+                }
+              }
+            }
+          ],
+          "type": "timeseries"
+        },
+        {
+          "datasource": {
+            "type": "grafana-postgresql-datasource",
+            "uid": "${datasource}"
+          },
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "palette-classic"
+              },
+              "custom": {
+                "axisBorderShow": false,
+                "axisCenteredZero": false,
+                "axisColorMode": "text",
+                "axisLabel": "",
+                "axisPlacement": "auto",
+                "barAlignment": 0,
+                "barWidthFactor": 0.6,
+                "drawStyle": "line",
+                "fillOpacity": 0,
+                "gradientMode": "none",
+                "hideFrom": {
+                  "legend": false,
+                  "tooltip": false,
+                  "viz": false
+                },
+                "insertNulls": false,
+                "lineInterpolation": "linear",
+                "lineWidth": 1,
+                "pointSize": 5,
+                "scaleDistribution": {
+                  "type": "linear"
+                },
+                "showPoints": "auto",
+                "showValues": false,
+                "spanNulls": false,
+                "stacking": {
+                  "group": "A",
+                  "mode": "none"
+                },
+                "thresholdsStyle": {
+                  "mode": "off"
+                }
+              },
+              "decimals": 2,
+              "mappings": [],
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green",
+                    "value": 0
+                  },
+                  {
+                    "color": "red",
+                    "value": 80
+                  }
+                ]
+              },
+              "unit": "forceNm"
+            },
+            "overrides": []
+          },
+          "gridPos": {
+            "h": 9,
+            "w": 24,
+            "x": 0,
+            "y": 18
+          },
+          "id": 82,
+          "options": {
+            "legend": {
+              "calcs": [],
+              "displayMode": "list",
+              "placement": "bottom",
+              "showLegend": true
+            },
+            "tooltip": {
+              "hideZeros": false,
+              "mode": "single",
+              "sort": "none"
+            }
+          },
+          "pluginVersion": "12.3.0",
+          "targets": [
+            {
+              "dataset": "dev",
+              "datasource": {
+                "type": "grafana-postgresql-datasource",
+                "uid": "${datasource}"
+              },
+              "editorMode": "code",
+              "editorType": "sql",
+              "format": 1,
+              "meta": {
+                "builderOptions": {
+                  "columns": [],
+                  "database": "",
+                  "limit": 1000,
+                  "meta": {},
+                  "mode": "list",
+                  "queryType": "table",
+                  "table": ""
+                }
+              },
+              "pluginVersion": "2.1.4",
+              "queryType": "table",
+              "rawQuery": true,
+              "rawSql": "SELECT\r\n  timestamp                                           AS time,\r\n  CASE WHEN '${aft_fwd}' = 'AFT'\r\n    THEN \"devices__can_aradex.i_aft_thrstr_torque_nm\"\r\n    ELSE \"devices__can_aradex.i_fwd_thrstr_torque_nm\"\r\n  END                                                 AS torque\r\nFROM public.prop_test__data\r\nWHERE $__timeFilter(timestamp)",
+              "refId": "A",
+              "sql": {
+                "columns": [
+                  {
+                    "parameters": [],
+                    "type": "function"
+                  }
+                ],
+                "groupBy": [
+                  {
+                    "property": {
+                      "type": "string"
+                    },
+                    "type": "groupBy"
+                  }
+                ],
+                "limit": 50
+              }
+            }
+          ],
+          "title": "Speed & Torque",
+          "transformations": [
+            {
+              "id": "organize",
+              "options": {
+                "excludeByName": {},
+                "includeByName": {},
+                "indexByName": {},
+                "renameByName": {
+                  "current": "Current",
+                  "device": "Device",
+                  "e_motor_temp": "Motor temp",
+                  "flow": "Flow",
+                  "gear_ratio": "Gear ratio",
+                  "igbt_temp": "IGBT temp",
+                  "pressure": "Pressure",
+                  "seq_nr": "",
+                  "speed": "Speed",
+                  "speed_torque_setpoint": "",
+                  "temperature": "Temperature",
+                  "temperature_delta": "T delta",
+                  "temperature_in": "T in",
+                  "temperature_out": "T out",
+                  "torque": "Torque",
+                  "torque_setpoint": "Torque setpoint",
+                  "voltage": "Voltage"
+                }
+              }
+            }
+          ],
+          "type": "timeseries"
         }
       ],
-      "type": "timeseries"
+      "title": "Test PLC - Speed & Torque",
+      "type": "row"
+    },
+    {
+      "collapsed": false,
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 9
+      },
+      "id": 79,
+      "panels": [],
+      "title": "Test PLC - Electrical",
+      "type": "row"
     },
     {
       "datasource": {
@@ -846,26 +879,13 @@
           },
           "unit": "amp"
         },
-        "overrides": [
-          {
-            "matcher": {
-              "id": "byName",
-              "options": "Voltage"
-            },
-            "properties": [
-              {
-                "id": "unit",
-                "value": "volt"
-              }
-            ]
-          }
-        ]
+        "overrides": []
       },
       "gridPos": {
         "h": 9,
-        "w": 24,
+        "w": 12,
         "x": 0,
-        "y": 32
+        "y": 10
       },
       "id": 66,
       "options": {
@@ -906,7 +926,7 @@
           "pluginVersion": "2.1.4",
           "queryType": "table",
           "rawQuery": true,
-          "rawSql": "SELECT\r\n  timestamp                                            AS time,\r\n  CASE WHEN '${aft_fwd}' = 'AFT'\r\n    THEN \"devices__can_aradex.r_aft_thrstr_dc_current\"\r\n    ELSE \"devices__can_aradex.r_fwd_thrstr_dc_current\"\r\n  END                                                  AS \"current\",\r\n  CASE WHEN '${aft_fwd}' = 'AFT'\r\n    THEN \"devices__can_aradex.r_aft_thrstr_dc_voltage\"\r\n    ELSE \"devices__can_aradex.r_fwd_thrstr_dc_voltage\"\r\n  END                                                  AS voltage\r\nFROM public.prop_test__data\r\nWHERE $__timeFilter(timestamp)",
+          "rawSql": "SELECT\r\n  timestamp                                            AS time,\r\n  CASE WHEN '${aft_fwd}' = 'AFT'\r\n    THEN \"devices__can_aradex.r_aft_thrstr_dc_current\"\r\n    ELSE \"devices__can_aradex.r_fwd_thrstr_dc_current\"\r\n  END                                                  AS \"current\"\r\nFROM public.prop_test__data\r\nWHERE $__timeFilter(timestamp)",
           "refId": "A",
           "sql": {
             "columns": [
@@ -927,7 +947,7 @@
           }
         }
       ],
-      "title": "Current & Voltage",
+      "title": "Current",
       "transformations": [
         {
           "id": "organize",
@@ -1018,28 +1038,176 @@
               }
             ]
           },
-          "unit": "rotrpm"
+          "unit": "volt"
         },
-        "overrides": [
-          {
-            "matcher": {
-              "id": "byName",
-              "options": "Power"
-            },
-            "properties": [
-              {
-                "id": "unit",
-                "value": "kwatt"
-              }
-            ]
-          }
-        ]
+        "overrides": []
       },
       "gridPos": {
         "h": 9,
-        "w": 24,
+        "w": 12,
+        "x": 12,
+        "y": 10
+      },
+      "id": 83,
+      "options": {
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "hideZeros": false,
+          "mode": "single",
+          "sort": "none"
+        }
+      },
+      "pluginVersion": "12.3.0",
+      "targets": [
+        {
+          "dataset": "dev",
+          "datasource": {
+            "type": "grafana-postgresql-datasource",
+            "uid": "${datasource}"
+          },
+          "editorMode": "code",
+          "editorType": "sql",
+          "format": 1,
+          "meta": {
+            "builderOptions": {
+              "columns": [],
+              "database": "",
+              "limit": 1000,
+              "meta": {},
+              "mode": "list",
+              "queryType": "table",
+              "table": ""
+            }
+          },
+          "pluginVersion": "2.1.4",
+          "queryType": "table",
+          "rawQuery": true,
+          "rawSql": "SELECT\r\n  timestamp                                            AS time,\r\n  CASE WHEN '${aft_fwd}' = 'AFT'\r\n    THEN \"devices__can_aradex.r_aft_thrstr_dc_voltage\"\r\n    ELSE \"devices__can_aradex.r_fwd_thrstr_dc_voltage\"\r\n  END                                                  AS voltage\r\nFROM public.prop_test__data\r\nWHERE $__timeFilter(timestamp)",
+          "refId": "A",
+          "sql": {
+            "columns": [
+              {
+                "parameters": [],
+                "type": "function"
+              }
+            ],
+            "groupBy": [
+              {
+                "property": {
+                  "type": "string"
+                },
+                "type": "groupBy"
+              }
+            ],
+            "limit": 50
+          }
+        }
+      ],
+      "title": "Voltage",
+      "transformations": [
+        {
+          "id": "organize",
+          "options": {
+            "excludeByName": {},
+            "includeByName": {},
+            "indexByName": {},
+            "renameByName": {
+              "current": "Current",
+              "device": "Device",
+              "e_motor_temp": "Motor temp",
+              "flow": "Flow",
+              "gear_ratio": "Gear ratio",
+              "igbt_temp": "IGBT temp",
+              "pressure": "Pressure",
+              "seq_nr": "",
+              "speed": "Speed",
+              "speed_torque_setpoint": "",
+              "temperature": "Temperature",
+              "temperature_delta": "T delta",
+              "temperature_in": "T in",
+              "temperature_out": "T out",
+              "torque": "Torque",
+              "torque_setpoint": "Torque setpoint",
+              "voltage": "Voltage"
+            }
+          }
+        }
+      ],
+      "type": "timeseries"
+    },
+    {
+      "datasource": {
+        "type": "grafana-postgresql-datasource",
+        "uid": "${datasource}"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisBorderShow": false,
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "barWidthFactor": 0.6,
+            "drawStyle": "line",
+            "fillOpacity": 0,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "insertNulls": false,
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "auto",
+            "showValues": false,
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "decimals": 2,
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": 0
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          },
+          "unit": "kwatt"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 12,
         "x": 0,
-        "y": 41
+        "y": 19
       },
       "id": 68,
       "options": {
@@ -1080,7 +1248,7 @@
           "pluginVersion": "2.1.4",
           "queryType": "table",
           "rawQuery": true,
-          "rawSql": "SELECT\r\n  timestamp                                                 AS time,\r\n  CASE WHEN '${aft_fwd}' = 'AFT'\r\n    THEN \"devices__thruster_test.r_prop_spd_aft_thrstr_rpm\"\r\n    ELSE \"devices__thruster_test.r_prop_spd_fwd_thrstr_rpm\"\r\n  END                                                       AS speed,\r\n  CASE WHEN '${aft_fwd}' = 'AFT'\r\n    THEN \"devices__thruster_test.r_power_aft_trstr_kw\"\r\n    ELSE \"devices__thruster_test.r_power_fwd_trstr_kw\"\r\n  END                                                       AS \"power\"\r\nFROM public.prop_test__data\r\nWHERE $__timeFilter(timestamp)",
+          "rawSql": "SELECT\r\n  timestamp                                                 AS time,\r\n  CASE WHEN '${aft_fwd}' = 'AFT'\r\n    THEN \"devices__thruster_test.r_power_aft_trstr_kw\"\r\n    ELSE \"devices__thruster_test.r_power_fwd_trstr_kw\"\r\n  END                                                       AS \"power\"\r\nFROM public.prop_test__data\r\nWHERE $__timeFilter(timestamp)",
           "refId": "A",
           "sql": {
             "columns": [
@@ -1101,7 +1269,7 @@
           }
         }
       ],
-      "title": "PLC values",
+      "title": "Power",
       "transformations": [
         {
           "id": "organize",
@@ -1136,12 +1304,170 @@
       "type": "timeseries"
     },
     {
+      "datasource": {
+        "type": "grafana-postgresql-datasource",
+        "uid": "${datasource}"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisBorderShow": false,
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "barWidthFactor": 0.6,
+            "drawStyle": "line",
+            "fillOpacity": 0,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "insertNulls": false,
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "auto",
+            "showValues": false,
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "decimals": 2,
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": 0
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          },
+          "unit": "kwatt"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 12,
+        "y": 19
+      },
+      "id": 62,
+      "options": {
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": false
+        },
+        "tooltip": {
+          "hideZeros": false,
+          "mode": "single",
+          "sort": "none"
+        }
+      },
+      "pluginVersion": "12.3.0",
+      "targets": [
+        {
+          "dataset": "dev",
+          "datasource": {
+            "type": "grafana-postgresql-datasource",
+            "uid": "${datasource}"
+          },
+          "editorMode": "code",
+          "editorType": "sql",
+          "format": 1,
+          "meta": {
+            "builderOptions": {
+              "columns": [],
+              "database": "",
+              "limit": 1000,
+              "meta": {},
+              "mode": "list",
+              "queryType": "table",
+              "table": ""
+            }
+          },
+          "pluginVersion": "2.1.4",
+          "queryType": "table",
+          "rawQuery": true,
+          "rawSql": "SELECT\r\n  timestamp                                     AS time,\r\n  \"devices__can_akasol.act_p_battery_power_k_w\" AS akasol\r\nFROM public.\"prop_test__data\"\r\nWHERE $__timeFilter(timestamp)",
+          "refId": "A",
+          "sql": {
+            "columns": [
+              {
+                "parameters": [],
+                "type": "function"
+              }
+            ],
+            "groupBy": [
+              {
+                "property": {
+                  "type": "string"
+                },
+                "type": "groupBy"
+              }
+            ],
+            "limit": 50
+          }
+        }
+      ],
+      "title": "Akasol",
+      "transformations": [
+        {
+          "id": "organize",
+          "options": {
+            "excludeByName": {},
+            "includeByName": {},
+            "indexByName": {},
+            "renameByName": {
+              "akasol": "",
+              "device": "Device",
+              "flow": "Flow",
+              "gear_ratio": "Gear ratio",
+              "pressure": "Pressure",
+              "seq_nr": "",
+              "speed": "Speed",
+              "speed_torque_setpoint": "",
+              "temperature": "Temperature",
+              "temperature_delta": "T delta",
+              "temperature_in": "T in",
+              "temperature_out": "T out",
+              "torque": "Torque",
+              "torque_setpoint": "Torque setpoint"
+            }
+          }
+        }
+      ],
+      "type": "timeseries"
+    },
+    {
       "collapsed": false,
       "gridPos": {
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 50
+        "y": 27
       },
       "id": 24,
       "panels": [],
@@ -1202,7 +1528,7 @@
         "h": 16,
         "w": 12,
         "x": 0,
-        "y": 51
+        "y": 28
       },
       "id": 50,
       "options": {
@@ -2509,7 +2835,7 @@
         "h": 16,
         "w": 12,
         "x": 12,
-        "y": 51
+        "y": 28
       },
       "id": 57,
       "options": {
@@ -3768,7 +4094,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 67
+        "y": 44
       },
       "id": 25,
       "panels": [],
@@ -3904,7 +4230,7 @@
         "h": 4,
         "w": 24,
         "x": 0,
-        "y": 68
+        "y": 45
       },
       "id": 41,
       "options": {
@@ -4007,7 +4333,7 @@
             "axisBorderShow": false,
             "axisCenteredZero": false,
             "axisColorMode": "text",
-            "axisLabel": "Speed",
+            "axisLabel": "",
             "axisPlacement": "auto",
             "barAlignment": 0,
             "barWidthFactor": 0.6,
@@ -4053,30 +4379,13 @@
           },
           "unit": "rotrpm"
         },
-        "overrides": [
-          {
-            "matcher": {
-              "id": "byName",
-              "options": "torque"
-            },
-            "properties": [
-              {
-                "id": "unit",
-                "value": "forceNm"
-              },
-              {
-                "id": "custom.axisLabel",
-                "value": "Torque"
-              }
-            ]
-          }
-        ]
+        "overrides": []
       },
       "gridPos": {
         "h": 8,
         "w": 12,
         "x": 0,
-        "y": 72
+        "y": 49
       },
       "id": 31,
       "options": {
@@ -4117,7 +4426,7 @@
           "pluginVersion": "2.1.4",
           "queryType": "table",
           "rawQuery": true,
-          "rawSql": "SELECT\r\n  timestamp           AS time,\r\n  ara_1_speed__value  AS speed,\r\n  ara_1_torque__value AS torque\r\nFROM public.marpower__150000_propulsion\r\nWHERE topic = 'marpower/150000-propulsion/pcs-' || lower('$aft_fwd')\r\nAND $__timeFilter(timestamp)",
+          "rawSql": "SELECT\r\n  timestamp           AS time,\r\n  ara_1_speed__value  AS speed\r\nFROM public.marpower__150000_propulsion\r\nWHERE topic = 'marpower/150000-propulsion/pcs-' || lower('$aft_fwd')\r\nAND $__timeFilter(timestamp)",
           "refId": "A",
           "sql": {
             "columns": [
@@ -4138,7 +4447,7 @@
           }
         }
       ],
-      "title": "Aradex 1",
+      "title": "Aradex 1 - Speed",
       "transformations": [
         {
           "id": "organize",
@@ -4169,7 +4478,7 @@
             "axisBorderShow": false,
             "axisCenteredZero": false,
             "axisColorMode": "text",
-            "axisLabel": "Speed",
+            "axisLabel": "",
             "axisPlacement": "auto",
             "barAlignment": 0,
             "barWidthFactor": 0.6,
@@ -4215,30 +4524,13 @@
           },
           "unit": "rotrpm"
         },
-        "overrides": [
-          {
-            "matcher": {
-              "id": "byName",
-              "options": "torque"
-            },
-            "properties": [
-              {
-                "id": "unit",
-                "value": "forceNm"
-              },
-              {
-                "id": "custom.axisLabel",
-                "value": "Torque"
-              }
-            ]
-          }
-        ]
+        "overrides": []
       },
       "gridPos": {
         "h": 8,
         "w": 12,
         "x": 12,
-        "y": 72
+        "y": 49
       },
       "id": 33,
       "options": {
@@ -4279,7 +4571,7 @@
           "pluginVersion": "2.1.4",
           "queryType": "table",
           "rawQuery": true,
-          "rawSql": "SELECT\r\n  timestamp           AS time,\r\n  ara_2_speed__value  AS speed,\r\n  ara_2_torque__value AS torque\r\nFROM public.marpower__150000_propulsion\r\nWHERE topic = 'marpower/150000-propulsion/pcs-' || lower('$aft_fwd')\r\nAND $__timeFilter(timestamp)",
+          "rawSql": "SELECT\r\n  timestamp           AS time,\r\n  ara_2_speed__value  AS speed\r\nFROM public.marpower__150000_propulsion\r\nWHERE topic = 'marpower/150000-propulsion/pcs-' || lower('$aft_fwd')\r\nAND $__timeFilter(timestamp)",
           "refId": "A",
           "sql": {
             "columns": [
@@ -4300,7 +4592,297 @@
           }
         }
       ],
-      "title": "Aradex 2",
+      "title": "Aradex 2 - Speed",
+      "transformations": [
+        {
+          "id": "organize",
+          "options": {
+            "excludeByName": {},
+            "includeByName": {},
+            "indexByName": {},
+            "renameByName": {
+              "speed": "Speed",
+              "torque": "Torque"
+            }
+          }
+        }
+      ],
+      "type": "timeseries"
+    },
+    {
+      "datasource": {
+        "type": "grafana-postgresql-datasource",
+        "uid": "${datasource}"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisBorderShow": false,
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "barWidthFactor": 0.6,
+            "drawStyle": "line",
+            "fillOpacity": 0,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "insertNulls": false,
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "auto",
+            "showValues": false,
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": 0
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          },
+          "unit": "forceNm"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 0,
+        "y": 57
+      },
+      "id": 84,
+      "options": {
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "hideZeros": false,
+          "mode": "single",
+          "sort": "none"
+        }
+      },
+      "pluginVersion": "12.3.0",
+      "targets": [
+        {
+          "dataset": "dev",
+          "datasource": {
+            "type": "grafana-postgresql-datasource",
+            "uid": "${datasource}"
+          },
+          "editorMode": "code",
+          "editorType": "sql",
+          "format": 1,
+          "meta": {
+            "builderOptions": {
+              "columns": [],
+              "database": "",
+              "limit": 1000,
+              "meta": {},
+              "mode": "list",
+              "queryType": "table",
+              "table": ""
+            }
+          },
+          "pluginVersion": "2.1.4",
+          "queryType": "table",
+          "rawQuery": true,
+          "rawSql": "SELECT\r\n  timestamp           AS time,\r\n  ara_1_torque__value AS torque\r\nFROM public.marpower__150000_propulsion\r\nWHERE topic = 'marpower/150000-propulsion/pcs-' || lower('$aft_fwd')\r\nAND $__timeFilter(timestamp)",
+          "refId": "A",
+          "sql": {
+            "columns": [
+              {
+                "parameters": [],
+                "type": "function"
+              }
+            ],
+            "groupBy": [
+              {
+                "property": {
+                  "type": "string"
+                },
+                "type": "groupBy"
+              }
+            ],
+            "limit": 50
+          }
+        }
+      ],
+      "title": "Aradex 1 - Torque",
+      "transformations": [
+        {
+          "id": "organize",
+          "options": {
+            "excludeByName": {},
+            "includeByName": {},
+            "indexByName": {},
+            "renameByName": {
+              "speed": "Speed",
+              "torque": "Torque"
+            }
+          }
+        }
+      ],
+      "type": "timeseries"
+    },
+    {
+      "datasource": {
+        "type": "grafana-postgresql-datasource",
+        "uid": "${datasource}"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisBorderShow": false,
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "barWidthFactor": 0.6,
+            "drawStyle": "line",
+            "fillOpacity": 0,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "insertNulls": false,
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "auto",
+            "showValues": false,
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": 0
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          },
+          "unit": "forceNm"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 12,
+        "y": 57
+      },
+      "id": 85,
+      "options": {
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "hideZeros": false,
+          "mode": "single",
+          "sort": "none"
+        }
+      },
+      "pluginVersion": "12.3.0",
+      "targets": [
+        {
+          "dataset": "dev",
+          "datasource": {
+            "type": "grafana-postgresql-datasource",
+            "uid": "${datasource}"
+          },
+          "editorMode": "code",
+          "editorType": "sql",
+          "format": 1,
+          "meta": {
+            "builderOptions": {
+              "columns": [],
+              "database": "",
+              "limit": 1000,
+              "meta": {},
+              "mode": "list",
+              "queryType": "table",
+              "table": ""
+            }
+          },
+          "pluginVersion": "2.1.4",
+          "queryType": "table",
+          "rawQuery": true,
+          "rawSql": "SELECT\r\n  timestamp           AS time,\r\n  ara_2_torque__value AS torque\r\nFROM public.marpower__150000_propulsion\r\nWHERE topic = 'marpower/150000-propulsion/pcs-' || lower('$aft_fwd')\r\nAND $__timeFilter(timestamp)",
+          "refId": "A",
+          "sql": {
+            "columns": [
+              {
+                "parameters": [],
+                "type": "function"
+              }
+            ],
+            "groupBy": [
+              {
+                "property": {
+                  "type": "string"
+                },
+                "type": "groupBy"
+              }
+            ],
+            "limit": 50
+          }
+        }
+      ],
+      "title": "Aradex 2 - Torque",
       "transformations": [
         {
           "id": "organize",
@@ -4384,7 +4966,7 @@
         "h": 8,
         "w": 24,
         "x": 0,
-        "y": 80
+        "y": 65
       },
       "id": 69,
       "options": {
@@ -4483,7 +5065,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 88
+        "y": 73
       },
       "id": 26,
       "panels": [],
@@ -4596,7 +5178,7 @@
         "h": 6,
         "w": 15,
         "x": 0,
-        "y": 89
+        "y": 74
       },
       "id": 37,
       "options": {
@@ -4712,7 +5294,7 @@
         "h": 6,
         "w": 9,
         "x": 15,
-        "y": 89
+        "y": 74
       },
       "id": 13,
       "options": {
@@ -5045,7 +5627,7 @@
         "h": 5,
         "w": 24,
         "x": 0,
-        "y": 95
+        "y": 80
       },
       "id": 59,
       "options": {
@@ -5748,7 +6330,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 100
+        "y": 85
       },
       "id": 27,
       "panels": [],
@@ -5813,7 +6395,7 @@
         "h": 4,
         "w": 24,
         "x": 0,
-        "y": 101
+        "y": 86
       },
       "id": 70,
       "options": {
@@ -5972,7 +6554,7 @@
         "h": 9,
         "w": 24,
         "x": 0,
-        "y": 105
+        "y": 90
       },
       "id": 71,
       "options": {
@@ -6072,7 +6654,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 114
+        "y": 99
       },
       "id": 52,
       "panels": [],
@@ -6172,7 +6754,7 @@
         "h": 3,
         "w": 24,
         "x": 0,
-        "y": 115
+        "y": 100
       },
       "id": 73,
       "options": {
@@ -6375,7 +6957,7 @@
         "h": 3,
         "w": 24,
         "x": 0,
-        "y": 118
+        "y": 103
       },
       "id": 74,
       "options": {
@@ -6555,7 +7137,7 @@
         "h": 3,
         "w": 24,
         "x": 0,
-        "y": 121
+        "y": 106
       },
       "id": 75,
       "options": {
