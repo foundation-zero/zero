@@ -347,7 +347,7 @@
           "pluginVersion": "2.1.4",
           "queryType": "table",
           "rawQuery": true,
-          "rawSql": "SELECT\r\n  timestamp                                           AS time,\r\n  CASE WHEN '${aft_fwd}' = 'AFT'\r\n    THEN \"devices__can_aradex.r_aft_prop_torque_nm\"\r\n    ELSE \"devices__can_aradex.r_fwd_prop_torque_nm\"\r\n  END                                                 AS torque\r\nFROM public.prop_test__data\r\nWHERE $__timeFilter(timestamp)",
+          "rawSql": "SELECT\r\n  timestamp                      AS time,\r\n  \"devices__.r_propellor_torque\" AS torque\r\nFROM public.prop_test__data\r\nWHERE $__timeFilter(timestamp)",
           "refId": "A",
           "sql": {
             "columns": [
@@ -508,7 +508,7 @@
           "pluginVersion": "2.1.4",
           "queryType": "table",
           "rawQuery": true,
-          "rawSql": "SELECT\r\n  timestamp                                                 AS time,\r\n  CASE WHEN '${aft_fwd}' = 'AFT'\r\n    THEN \"devices__thruster_test.r_prop_spd_aft_thrstr_rpm\" * \"devices__can_aradex.r_aft_prop_torque_nm\"\r\n    ELSE \"devices__thruster_test.r_prop_spd_fwd_thrstr_rpm\" * \"devices__can_aradex.r_fwd_prop_torque_nm\"\r\n  END                                                       AS \"power\"\r\nFROM public.prop_test__data\r\nWHERE $__timeFilter(timestamp)",
+          "rawSql": "SELECT\r\n  timestamp                                                 AS time,\r\n  CASE WHEN '${aft_fwd}' = 'AFT'\r\n    THEN \"devices__thruster_test.r_prop_spd_aft_thrstr_rpm\" * \"devices__.r_propellor_torque\"\r\n    ELSE \"devices__thruster_test.r_prop_spd_fwd_thrstr_rpm\" * \"devices__.r_propellor_torque\"\r\n  END                                                       AS \"power\"\r\nFROM public.prop_test__data\r\nWHERE $__timeFilter(timestamp)",
           "refId": "A",
           "sql": {
             "columns": [
