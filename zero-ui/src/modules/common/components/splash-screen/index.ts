@@ -1,6 +1,6 @@
 export { default as SplashScreen } from "./SplashScreen.vue";
 
-import { RiLightbulbLine, RiTempHotLine, RiWindyLine } from "@remixicon/vue";
+import { RiBarChart2Line, RiLightbulbLine, RiTempHotLine, RiWindyLine } from "@remixicon/vue";
 import type { Component } from "vue";
 
 export type SplashAppLink = {
@@ -61,5 +61,16 @@ export const SPLASH_APP_LINKS: SplashAppLink[] = [
     border: "var(--constructive-dull)",
     shadow: "var(--constructive-dull)",
     iconBackground: "color-mix(in srgb, var(--constructive) 16%, transparent)",
+  },
+  {
+    id: "grafana",
+    nameKey: "views.splash.apps.grafana.title",
+    descriptionKey: "views.splash.apps.grafana.description",
+    to: "/grafana",
+    icon: RiBarChart2Line,
+    glow: "color-mix(in srgb, var(--warning-dull) 36%, transparent)",
+    border: "var(--warning-dull)",
+    shadow: "var(--warning-dull)",
+    iconBackground: "color-mix(in srgb, var(--warning) 16%, transparent)",
   },
 ];

@@ -5,7 +5,8 @@
   "apps": {
     "loads": "Loads",
     "thrs": "THRS",
-    "domestic": "Domestic Control"
+    "domestic": "Domestic Control",
+    "grafana": "Grafana"
   },
   "labels": {
     "airConditioning": {
@@ -78,6 +79,10 @@
         "domestic": {
           "title": "Domestic",
           "description": "Cabin comfort, lighting, blinds, climate, and onboard room controls."
+        },
+        "grafana": {
+          "title": "Grafana",
+          "description": "Operational dashboards and metrics visualized in Grafana."
         }
       }
     },
@@ -107,6 +112,11 @@
       "main": {
         "editSailset": "Edit sailset"
       }
+    },
+    "grafana": {
+      "notConfigured": "Grafana is not configured",
+      "configureEnv": "Set VITE_GRAFANA_URL in your environment to enable dashboard embedding.",
+      "backToSplash": "Back to splash"
     }
   },
   "components": {
