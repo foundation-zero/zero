@@ -18,6 +18,11 @@ class HeatSource(ThrsValues):
     heat_flow: Stamp[Watt]
 
 
+class GasExchanger(ThrsValues):
+    heat_flow: Stamp[Watt]
+    max_temp: Stamp[Celsius]
+
+
 class Boundary(ThrsValues):
     temperature: Stamp[Celsius]
     flow: Stamp[LMin]
