@@ -112,6 +112,11 @@
       "main": {
         "editSailset": "Edit sailset"
       }
+    },
+    "grafana": {
+      "notConfigured": "Grafana is not configured",
+      "configureEnv": "Set VITE_GRAFANA_URL in your environment to enable dashboard embedding.",
+      "backToSplash": "Back to splash"
     }
   },
   "components": {
