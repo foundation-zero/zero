@@ -25,11 +25,14 @@ ENV PYTHONDONTWRITEBYTECODE=1 \
 ENV VIRTUAL_ENV=/app/.venv
 ENV PATH="/app/.venv/bin:$PATH"
 
-COPY --from=builder ${VIRTUAL_ENV} ${VIRTUAL_ENV}
+RUN groupadd -g 1001 app && \
+    useradd -r -u 1001 -g app app
+
+COPY --chown=1001:1001 --from=builder ${VIRTUAL_ENV} ${VIRTUAL_ENV}
 
 WORKDIR /app
 
-COPY ./src/thrs/ thrs/
+COPY --chown=1001:1001 ./src/thrs/ thrs/
 
 FROM prod-base AS simulation
 
@@ -38,7 +41,10 @@ RUN apt-get update && \
     rm -rf /var/lib/apt/lists/*
 
 RUN fmpy compile /app/thrs/simulation/models/thruster_moduleV18.fmu
+
+USER 1001
 CMD ["python", "-m", "thrs.cli", "run", "thrusters"]
 
 FROM prod-base AS control
+USER 1001
 CMD ["uvicorn", "thrs.graphql.strawberry:app", "--port", "5102", "--host", "0.0.0.0"]
