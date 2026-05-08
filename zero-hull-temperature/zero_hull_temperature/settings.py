@@ -14,10 +14,17 @@ class MqttSettings(BaseModel):
     mqtt_port: int
     mqtt_topic: str = TOPIC
     json_path: str = PATH
+    mqtt_username: str | None = None
+    mqtt_password: str | None = None
 
     @asynccontextmanager
     async def mqtt_client(self) -> AsyncGenerator[MqttClient, None]:
-        async with MqttClient(self.mqtt_host, self.mqtt_port) as mqtt:
+        async with MqttClient(
+            self.mqtt_host,
+            self.mqtt_port,
+            username=self.mqtt_username,
+            password=self.mqtt_password,
+        ) as mqtt:
             yield mqtt
 
 

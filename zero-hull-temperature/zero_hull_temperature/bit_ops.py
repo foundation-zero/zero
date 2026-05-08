@@ -10,6 +10,7 @@ def lsw_registers_to_float(regs):
     val = struct.unpack("<f", b)[0]  # Read as float
     return val
 
+
 def float_to_lsw_registers(value):
     """
     Convert a float to two Modbus registers.
