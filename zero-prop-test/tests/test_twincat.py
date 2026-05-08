@@ -24,6 +24,7 @@ def test_from_settings_creates_and_opens_connection():
         twincat_self_netid="1.2.3.4.5.6",
         twincat_ip="192.168.0.10",
         twincat_netid="5.6.7.8.9.10",
+        twincat_port=852,
         twincat_username="user",
         twincat_password="password",
         twincat_route_name="route",
@@ -49,7 +50,7 @@ def test_from_settings_creates_and_opens_connection():
     set_local_address.assert_called_once_with(settings.twincat_self_netid)
     connection.assert_called_once_with(
         settings.twincat_netid,
-        852,
+        settings.twincat_port,
         settings.twincat_ip,
     )
     plc.__enter__.assert_called_once_with()

@@ -25,6 +25,7 @@ def settings() -> Settings:
         twincat_self_netid="1.2.3.4.5.6",
         twincat_ip="192.168.0.10",
         twincat_netid="5.6.7.8.9.10",
+        twincat_port=852,
         twincat_username="user",
         twincat_password="password",
         twincat_route_name="route",

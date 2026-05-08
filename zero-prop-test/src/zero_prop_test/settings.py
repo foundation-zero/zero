@@ -34,6 +34,7 @@ class TwinCatSettings(BaseSettings):
     twincat_self_netid: str
     twincat_ip: str
     twincat_netid: str
+    twincat_port: int
     twincat_username: str
     twincat_password: str
     twincat_route_name: str

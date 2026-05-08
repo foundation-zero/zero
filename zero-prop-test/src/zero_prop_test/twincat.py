@@ -82,7 +82,7 @@ class Client:
         )
         plc = Connection(
             settings.twincat_netid,
-            852,
+            settings.twincat_port,
             settings.twincat_ip,
         )
         plc.set_timeout(1000)
@@ -93,7 +93,7 @@ class Client:
             )
             yield Client(plc)
 
-    def query(self, variable: "Variable") -> Any:
+    def query(self, variable: Variable) -> Any:
         logger.debug(f"Querying TwinCAT variable: {variable.name}")
         try:
             res = self._plc.read_by_name(variable.name)
