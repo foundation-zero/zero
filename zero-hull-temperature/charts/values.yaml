@@ -16,7 +16,7 @@ modbus:
   host: ""
   port: 502
 
-run:
+hullTemperature:
   sendTopic: "hull-temperature/temperatures"
   intervalSeconds: 300
   n: -1

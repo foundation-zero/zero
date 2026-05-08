@@ -66,15 +66,15 @@ spec:
             - name: RUN__MODBUS_PORT
               value: {{ .Values.modbus.port | quote }}
             - name: RUN__SEND_TOPIC
-              value: {{ .Values.run.sendTopic | quote }}
+              value: {{ .Values.hullTemperature.sendTopic | quote }}
             - name: RUN__SECONDS
-              value: {{ .Values.run.intervalSeconds | quote }}
+              value: {{ .Values.hullTemperature.intervalSeconds | quote }}
             - name: RUN__N
-              value: {{ .Values.run.n | toString | quote }}
+              value: {{ .Values.hullTemperature.n | toString | quote }}
             - name: RUN__ACTIVATE_TOPIC
-              value: {{ .Values.run.activateTopic | quote }}
+              value: {{ .Values.hullTemperature.activateTopic | quote }}
             - name: RUN__ACTIVATE_JSON_PATH
-              value: {{ .Values.run.activateJsonPath | quote }}
+              value: {{ .Values.hullTemperature.activateJsonPath | quote }}
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
           volumeMounts:
