@@ -28,9 +28,11 @@ FROM python:3.13-slim-bookworm AS runtime
 ENV PYTHONDONTWRITEBYTECODE=1 \
     PYTHONUNBUFFERED=1
 
-
 ENV VIRTUAL_ENV=/app/zero-loads-app/.venv
 ENV PATH="/app/zero-loads-app/.venv/bin:$PATH"
+
+RUN groupadd -g 1001 app && \
+    useradd -r -u 1001 -g app app
 
 COPY --from=builder ${VIRTUAL_ENV} ${VIRTUAL_ENV}
 

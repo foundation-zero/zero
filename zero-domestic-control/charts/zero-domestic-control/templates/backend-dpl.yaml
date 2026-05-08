@@ -33,10 +33,9 @@ spec:
         {{- toYaml . | nindent 8 }}
       {{- end }}
       securityContext:
-        fsGroupChangePolicy: Always
-        sysctls: []
-        supplementalGroups: []
         fsGroup: 1001
+        seccompProfile:
+          type: RuntimeDefault
       containers:
         - name: domestic-control-backend
           securityContext:
@@ -44,14 +43,8 @@ spec:
             capabilities:
               drop:
               - ALL
-            privileged: false
             readOnlyRootFilesystem: true
-            runAsGroup: 1001
             runAsNonRoot: true
-            runAsUser: 1001
-            seLinuxOptions: {}
-            seccompProfile:
-              type: RuntimeDefault
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           command: ["fastapi", "run", "/app/domestic_control/app.py", "--host", "0.0.0.0", "--port", "{{ .Values.service.backend.containerPort }}"]
