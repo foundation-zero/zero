@@ -4367,9 +4367,23 @@
             "uid": "${datasource}"
           },
           "editorMode": "code",
-          "format": "table",
+          "editorType": "sql",
+          "format": 1,
+          "meta": {
+            "builderOptions": {
+              "columns": [],
+              "database": "",
+              "limit": 1000,
+              "meta": {},
+              "mode": "list",
+              "queryType": "table",
+              "table": ""
+            }
+          },
+          "pluginVersion": "2.1.4",
+          "queryType": "table",
           "rawQuery": true,
-          "rawSql": "SELECT\r\n  LAST_VALUE(time ORDER BY time) AS time,\r\n  LAST_VALUE((\"KEB6_BATT_CONV01_HVIL\").value ORDER BY time)     AS batt_conv_1,\r\n  LAST_VALUE((\"KEB6_BATT_CONV02_HVIL\").value ORDER BY time)     AS batt_conv_2,\r\n  LAST_VALUE((\"KEB7_BATT_CONV03_HVIL\").value ORDER BY time)     AS batt_conv_3,\r\n  LAST_VALUE((\"KEB7_BATT_CONV04_HVIL\").value ORDER BY time)     AS batt_conv_4,\r\n  LAST_VALUE((\"KEB8_BATT_CONV05_HVIL\").value ORDER BY time)     AS batt_conv_5,\r\n  LAST_VALUE((\"KEB9_BATT_CONV06_HVIL\").value ORDER BY time)     AS batt_conv_6\r\nFROM marpower.\"450000_dc_distribution_general\"",
+          "rawSql": "SELECT\r\n  timestamp                      AS time,\r\n  keb_6_batt_conv_01_hvil__value AS batt_conv_1,\r\n  keb_6_batt_conv_02_hvil__value AS batt_conv_2,\r\n  keb_7_batt_conv_03_hvil__value AS batt_conv_3,\r\n  keb_7_batt_conv_04_hvil__value AS batt_conv_4,\r\n  keb_8_batt_conv_05_hvil__value AS batt_conv_5,\r\n  keb_9_batt_conv_06_hvil__value AS batt_conv_6\r\nFROM public.marpower__450000_dc_distribution_general\r\nORDER BY timestamp DESC\r\nLIMIT 1",
           "refId": "A",
           "sql": {
             "columns": [
@@ -5081,10 +5095,24 @@
             "uid": "${datasource}"
           },
           "editorMode": "code",
-          "format": "table",
+          "editorType": "sql",
+          "format": 1,
           "hide": false,
+          "meta": {
+            "builderOptions": {
+              "columns": [],
+              "database": "",
+              "limit": 1000,
+              "meta": {},
+              "mode": "list",
+              "queryType": "table",
+              "table": ""
+            }
+          },
+          "pluginVersion": "2.1.4",
+          "queryType": "table",
           "rawQuery": true,
-          "rawSql": "SELECT\r\n  LAST_VALUE(time ORDER BY time) AS time,\r\n  LAST_VALUE((\"TRIPPED\").value ORDER BY time) AS tripped,\r\n  LAST_VALUE((\"OPENED\").value ORDER BY time)  AS status_opened,\r\n  LAST_VALUE((\"CLOSED\").value ORDER BY time)  AS status_closed,\r\n  LAST_VALUE((\"RUNNING\").value ORDER BY time) AS status_running,\r\n  LAST_VALUE((\"OPEN\").value ORDER BY time)    AS control_open,\r\n  LAST_VALUE((\"CLOSE\").value ORDER BY time)   AS control_close,\r\n  LAST_VALUE((\"RESET\").value ORDER BY time)   AS control_reset\r\nFROM marpower.\"450000_dc_distribution_dc_switch\"\r\nWHERE topic = 'marpower/450000-dc-distribution/dc-switch/keb6-0571'\r\n\r\n\r\n\r\n\r\n\r\n\r\n",
+          "rawSql": "SELECT\r\n  topic,\r\n  timestamp      AS time,\r\n  tripped__value AS tripped,\r\n  opened__value  AS status_opened,\r\n  closed__value  AS status_closed,\r\n  running__value AS status_running,\r\n  open__value    AS control_open,\r\n  close__value   AS control_close,\r\n  reset__value   AS control_reset\r\nFROM public.marpower__450000_dc_distribution__dc_switch__keb6_0571\r\nORDER BY timestamp DESC\r\nLIMIT 1\r\n",
           "refId": "A",
           "sql": {
             "columns": [
@@ -5783,10 +5811,24 @@
             "uid": "${datasource}"
           },
           "editorMode": "code",
-          "format": "table",
+          "editorType": "sql",
+          "format": 1,
           "hide": false,
+          "meta": {
+            "builderOptions": {
+              "columns": [],
+              "database": "",
+              "limit": 1000,
+              "meta": {},
+              "mode": "list",
+              "queryType": "table",
+              "table": ""
+            }
+          },
+          "pluginVersion": "2.1.4",
+          "queryType": "table",
           "rawQuery": true,
-          "rawSql": "SELECT\r\n  LAST_VALUE(time ORDER BY time) AS time,\r\n  LAST_VALUE((\"TRIPPED\").value ORDER BY time) AS tripped,\r\n  LAST_VALUE((\"OPENED\").value ORDER BY time)  AS status_opened,\r\n  LAST_VALUE((\"CLOSED\").value ORDER BY time)  AS status_closed,\r\n  LAST_VALUE((\"RUNNING\").value ORDER BY time) AS status_running,\r\n  LAST_VALUE((\"OPEN\").value ORDER BY time)    AS control_open,\r\n  LAST_VALUE((\"CLOSE\").value ORDER BY time)   AS control_close,\r\n  LAST_VALUE((\"RESET\").value ORDER BY time)   AS control_reset\r\nFROM marpower.\"450000_dc_distribution_dc_switch\"\r\nWHERE topic = 'marpower/450000-dc-distribution/dc-switch/keb6-0572'\r\n\r\n\r\n\r\n\r\n\r\n\r\n",
+          "rawSql": "SELECT\r\n  topic,\r\n  timestamp      AS time,\r\n  tripped__value AS tripped,\r\n  opened__value  AS status_opened,\r\n  closed__value  AS status_closed,\r\n  running__value AS status_running,\r\n  open__value    AS control_open,\r\n  close__value   AS control_close,\r\n  reset__value   AS control_reset\r\nFROM public.marpower__450000_dc_distribution__dc_switch__keb6_0572\r\nORDER BY timestamp DESC\r\nLIMIT 1\r\n",
           "refId": "A",
           "sql": {
             "columns": [
@@ -6486,10 +6528,24 @@
             "uid": "${datasource}"
           },
           "editorMode": "code",
-          "format": "table",
+          "editorType": "sql",
+          "format": 1,
           "hide": false,
+          "meta": {
+            "builderOptions": {
+              "columns": [],
+              "database": "",
+              "limit": 1000,
+              "meta": {},
+              "mode": "list",
+              "queryType": "table",
+              "table": ""
+            }
+          },
+          "pluginVersion": "2.1.4",
+          "queryType": "table",
           "rawQuery": true,
-          "rawSql": "SELECT\r\n  LAST_VALUE(time ORDER BY time) AS time,\r\n  LAST_VALUE((\"TRIPPED\").value ORDER BY time) AS tripped,\r\n  LAST_VALUE((\"OPENED\").value ORDER BY time)  AS status_opened,\r\n  LAST_VALUE((\"CLOSED\").value ORDER BY time)  AS status_closed,\r\n  LAST_VALUE((\"RUNNING\").value ORDER BY time) AS status_running,\r\n  LAST_VALUE((\"OPEN\").value ORDER BY time)    AS control_open,\r\n  LAST_VALUE((\"CLOSE\").value ORDER BY time)   AS control_close,\r\n  LAST_VALUE((\"RESET\").value ORDER BY time)   AS control_reset\r\nFROM marpower.\"450000_dc_distribution_dc_switch\"\r\nWHERE topic = 'marpower/450000-dc-distribution/dc-switch/keb6-0573'\r\n\r\n\r\n\r\n\r\n\r\n\r\n",
+          "rawSql": "SELECT\r\n  topic,\r\n  timestamp      AS time,\r\n  tripped__value AS tripped,\r\n  opened__value  AS status_opened,\r\n  closed__value  AS status_closed,\r\n  running__value AS status_running,\r\n  open__value    AS control_open,\r\n  close__value   AS control_close,\r\n  reset__value   AS control_reset\r\nFROM public.marpower__450000_dc_distribution__dc_switch__keb6_0573\r\nORDER BY timestamp DESC\r\nLIMIT 1\r\n",
           "refId": "A",
           "sql": {
             "columns": [
@@ -7189,10 +7245,24 @@
             "uid": "${datasource}"
           },
           "editorMode": "code",
-          "format": "table",
+          "editorType": "sql",
+          "format": 1,
           "hide": false,
+          "meta": {
+            "builderOptions": {
+              "columns": [],
+              "database": "",
+              "limit": 1000,
+              "meta": {},
+              "mode": "list",
+              "queryType": "table",
+              "table": ""
+            }
+          },
+          "pluginVersion": "2.1.4",
+          "queryType": "table",
           "rawQuery": true,
-          "rawSql": "SELECT\r\n  LAST_VALUE(time ORDER BY time) AS time,\r\n  LAST_VALUE((\"TRIPPED\").value ORDER BY time) AS tripped,\r\n  LAST_VALUE((\"OPENED\").value ORDER BY time)  AS status_opened,\r\n  LAST_VALUE((\"CLOSED\").value ORDER BY time)  AS status_closed,\r\n  LAST_VALUE((\"RUNNING\").value ORDER BY time) AS status_running,\r\n  LAST_VALUE((\"OPEN\").value ORDER BY time)    AS control_open,\r\n  LAST_VALUE((\"CLOSE\").value ORDER BY time)   AS control_close,\r\n  LAST_VALUE((\"RESET\").value ORDER BY time)   AS control_reset\r\nFROM marpower.\"450000_dc_distribution_dc_switch\"\r\nWHERE topic = 'marpower/450000-dc-distribution/dc-switch/keb6-0574'\r\n\r\n\r\n\r\n\r\n\r\n\r\n",
+          "rawSql": "SELECT\r\n  topic,\r\n  timestamp      AS time,\r\n  tripped__value AS tripped,\r\n  opened__value  AS status_opened,\r\n  closed__value  AS status_closed,\r\n  running__value AS status_running,\r\n  open__value    AS control_open,\r\n  close__value   AS control_close,\r\n  reset__value   AS control_reset\r\nFROM public.marpower__450000_dc_distribution__dc_switch__keb6_0574\r\nORDER BY timestamp DESC\r\nLIMIT 1\r\n",
           "refId": "A",
           "sql": {
             "columns": [
@@ -7891,10 +7961,24 @@
             "uid": "${datasource}"
           },
           "editorMode": "code",
-          "format": "table",
+          "editorType": "sql",
+          "format": 1,
           "hide": false,
+          "meta": {
+            "builderOptions": {
+              "columns": [],
+              "database": "",
+              "limit": 1000,
+              "meta": {},
+              "mode": "list",
+              "queryType": "table",
+              "table": ""
+            }
+          },
+          "pluginVersion": "2.1.4",
+          "queryType": "table",
           "rawQuery": true,
-          "rawSql": "SELECT\r\n  LAST_VALUE(time ORDER BY time) AS time,\r\n  LAST_VALUE((\"TRIPPED\").value ORDER BY time) AS tripped,\r\n  LAST_VALUE((\"OPENED\").value ORDER BY time)  AS status_opened,\r\n  LAST_VALUE((\"CLOSED\").value ORDER BY time)  AS status_closed,\r\n  LAST_VALUE((\"RUNNING\").value ORDER BY time) AS status_running,\r\n  LAST_VALUE((\"OPEN\").value ORDER BY time)    AS control_open,\r\n  LAST_VALUE((\"CLOSE\").value ORDER BY time)   AS control_close,\r\n  LAST_VALUE((\"RESET\").value ORDER BY time)   AS control_reset\r\nFROM marpower.\"450000_dc_distribution_dc_switch\"\r\nWHERE topic = 'marpower/450000-dc-distribution/dc-switch/keb7-0575'\r\n\r\n\r\n\r\n\r\n\r\n\r\n",
+          "rawSql": "SELECT\r\n  topic,\r\n  timestamp      AS time,\r\n  tripped__value AS tripped,\r\n  opened__value  AS status_opened,\r\n  closed__value  AS status_closed,\r\n  running__value AS status_running,\r\n  open__value    AS control_open,\r\n  close__value   AS control_close,\r\n  reset__value   AS control_reset\r\nFROM public.marpower__450000_dc_distribution__dc_switch__keb7_0575\r\nORDER BY timestamp DESC\r\nLIMIT 1\r\n",
           "refId": "A",
           "sql": {
             "columns": [
@@ -8593,10 +8677,24 @@
             "uid": "${datasource}"
           },
           "editorMode": "code",
-          "format": "table",
+          "editorType": "sql",
+          "format": 1,
           "hide": false,
+          "meta": {
+            "builderOptions": {
+              "columns": [],
+              "database": "",
+              "limit": 1000,
+              "meta": {},
+              "mode": "list",
+              "queryType": "table",
+              "table": ""
+            }
+          },
+          "pluginVersion": "2.1.4",
+          "queryType": "table",
           "rawQuery": true,
-          "rawSql": "SELECT\r\n  LAST_VALUE(time ORDER BY time) AS time,\r\n  LAST_VALUE((\"TRIPPED\").value ORDER BY time) AS tripped,\r\n  LAST_VALUE((\"OPENED\").value ORDER BY time)  AS status_opened,\r\n  LAST_VALUE((\"CLOSED\").value ORDER BY time)  AS status_closed,\r\n  LAST_VALUE((\"RUNNING\").value ORDER BY time) AS status_running,\r\n  LAST_VALUE((\"OPEN\").value ORDER BY time)    AS control_open,\r\n  LAST_VALUE((\"CLOSE\").value ORDER BY time)   AS control_close,\r\n  LAST_VALUE((\"RESET\").value ORDER BY time)   AS control_reset\r\nFROM marpower.\"450000_dc_distribution_dc_switch\"\r\nWHERE topic = 'marpower/450000-dc-distribution/dc-switch/keb8-0576'\r\n\r\n\r\n\r\n\r\n\r\n\r\n",
+          "rawSql": "SELECT\r\n  topic,\r\n  timestamp      AS time,\r\n  tripped__value AS tripped,\r\n  opened__value  AS status_opened,\r\n  closed__value  AS status_closed,\r\n  running__value AS status_running,\r\n  open__value    AS control_open,\r\n  close__value   AS control_close,\r\n  reset__value   AS control_reset\r\nFROM public.marpower__450000_dc_distribution__dc_switch__keb8_0576\r\nORDER BY timestamp DESC\r\nLIMIT 1\r\n",
           "refId": "A",
           "sql": {
             "columns": [
@@ -9295,10 +9393,24 @@
             "uid": "${datasource}"
           },
           "editorMode": "code",
-          "format": "table",
+          "editorType": "sql",
+          "format": 1,
           "hide": false,
+          "meta": {
+            "builderOptions": {
+              "columns": [],
+              "database": "",
+              "limit": 1000,
+              "meta": {},
+              "mode": "list",
+              "queryType": "table",
+              "table": ""
+            }
+          },
+          "pluginVersion": "2.1.4",
+          "queryType": "table",
           "rawQuery": true,
-          "rawSql": "SELECT\r\n  LAST_VALUE(time ORDER BY time) AS time,\r\n  LAST_VALUE((\"TRIPPED\").value ORDER BY time) AS tripped,\r\n  LAST_VALUE((\"OPENED\").value ORDER BY time)  AS status_opened,\r\n  LAST_VALUE((\"CLOSED\").value ORDER BY time)  AS status_closed,\r\n  LAST_VALUE((\"RUNNING\").value ORDER BY time) AS status_running,\r\n  LAST_VALUE((\"OPEN\").value ORDER BY time)    AS control_open,\r\n  LAST_VALUE((\"CLOSE\").value ORDER BY time)   AS control_close,\r\n  LAST_VALUE((\"RESET\").value ORDER BY time)   AS control_reset\r\nFROM marpower.\"450000_dc_distribution_dc_switch\"\r\nWHERE topic = 'marpower/450000-dc-distribution/dc-switch/keb8-0577'\r\n\r\n\r\n\r\n\r\n\r\n\r\n",
+          "rawSql": "SELECT\r\n  topic,\r\n  timestamp      AS time,\r\n  tripped__value AS tripped,\r\n  opened__value  AS status_opened,\r\n  closed__value  AS status_closed,\r\n  running__value AS status_running,\r\n  open__value    AS control_open,\r\n  close__value   AS control_close,\r\n  reset__value   AS control_reset\r\nFROM public.marpower__450000_dc_distribution__dc_switch__keb8_0577\r\nORDER BY timestamp DESC\r\nLIMIT 1\r\n",
           "refId": "A",
           "sql": {
             "columns": [
@@ -9997,10 +10109,24 @@
             "uid": "${datasource}"
           },
           "editorMode": "code",
-          "format": "table",
+          "editorType": "sql",
+          "format": 1,
           "hide": false,
+          "meta": {
+            "builderOptions": {
+              "columns": [],
+              "database": "",
+              "limit": 1000,
+              "meta": {},
+              "mode": "list",
+              "queryType": "table",
+              "table": ""
+            }
+          },
+          "pluginVersion": "2.1.4",
+          "queryType": "table",
           "rawQuery": true,
-          "rawSql": "SELECT\r\n  LAST_VALUE(time ORDER BY time) AS time,\r\n  LAST_VALUE((\"TRIPPED\").value ORDER BY time) AS tripped,\r\n  LAST_VALUE((\"OPENED\").value ORDER BY time)  AS status_opened,\r\n  LAST_VALUE((\"CLOSED\").value ORDER BY time)  AS status_closed,\r\n  LAST_VALUE((\"RUNNING\").value ORDER BY time) AS status_running,\r\n  LAST_VALUE((\"OPEN\").value ORDER BY time)    AS control_open,\r\n  LAST_VALUE((\"CLOSE\").value ORDER BY time)   AS control_close,\r\n  LAST_VALUE((\"RESET\").value ORDER BY time)   AS control_reset\r\nFROM marpower.\"450000_dc_distribution_dc_switch\"\r\nWHERE topic = 'marpower/450000-dc-distribution/dc-switch/keb9-0578'\r\n\r\n\r\n\r\n\r\n\r\n\r\n",
+          "rawSql": "SELECT\r\n  topic,\r\n  timestamp      AS time,\r\n  tripped__value AS tripped,\r\n  opened__value  AS status_opened,\r\n  closed__value  AS status_closed,\r\n  running__value AS status_running,\r\n  open__value    AS control_open,\r\n  close__value   AS control_close,\r\n  reset__value   AS control_reset\r\nFROM public.marpower__450000_dc_distribution__dc_switch__keb9_0578\r\nORDER BY timestamp DESC\r\nLIMIT 1\r\n",
           "refId": "A",
           "sql": {
             "columns": [
@@ -10693,10 +10819,24 @@
             "uid": "${datasource}"
           },
           "editorMode": "code",
-          "format": "table",
+          "editorType": "sql",
+          "format": 1,
           "hide": false,
+          "meta": {
+            "builderOptions": {
+              "columns": [],
+              "database": "",
+              "limit": 1000,
+              "meta": {},
+              "mode": "list",
+              "queryType": "table",
+              "table": ""
+            }
+          },
+          "pluginVersion": "2.1.4",
+          "queryType": "table",
           "rawQuery": true,
-          "rawSql": "SELECT\r\n  LAST_VALUE(time ORDER BY time) AS time,\r\n  LAST_VALUE((\"TRIPPED\").value ORDER BY time) AS tripped,\r\n  LAST_VALUE((\"OPENED\").value ORDER BY time)  AS status_opened,\r\n  LAST_VALUE((\"CLOSED\").value ORDER BY time)  AS status_closed,\r\n  LAST_VALUE((\"RUNNING\").value ORDER BY time) AS status_running,\r\n  LAST_VALUE((\"OPEN\").value ORDER BY time)    AS control_open,\r\n  LAST_VALUE((\"CLOSE\").value ORDER BY time)   AS control_close,\r\n  LAST_VALUE((\"RESET\").value ORDER BY time)   AS control_reset\r\nFROM marpower.\"450000_dc_distribution_dc_switch\"\r\nWHERE topic = 'marpower/450000-dc-distribution/dc-switch/keb7-0573'\r\n\r\n\r\n\r\n\r\n\r\n\r\n",
+          "rawSql": "SELECT\r\n  topic,\r\n  timestamp      AS time,\r\n  tripped__value AS tripped,\r\n  opened__value  AS status_opened,\r\n  closed__value  AS status_closed,\r\n  running__value AS status_running,\r\n  open__value    AS control_open,\r\n  close__value   AS control_close,\r\n  reset__value   AS control_reset\r\nFROM public.marpower__450000_dc_distribution__dc_switch__keb7_0573\r\nORDER BY timestamp DESC\r\nLIMIT 1\r\n",
           "refId": "A",
           "sql": {
             "columns": [
@@ -11389,10 +11529,24 @@
             "uid": "${datasource}"
           },
           "editorMode": "code",
-          "format": "table",
+          "editorType": "sql",
+          "format": 1,
           "hide": false,
+          "meta": {
+            "builderOptions": {
+              "columns": [],
+              "database": "",
+              "limit": 1000,
+              "meta": {},
+              "mode": "list",
+              "queryType": "table",
+              "table": ""
+            }
+          },
+          "pluginVersion": "2.1.4",
+          "queryType": "table",
           "rawQuery": true,
-          "rawSql": "SELECT\r\n  LAST_VALUE(time ORDER BY time) AS time,\r\n  LAST_VALUE((\"TRIPPED\").value ORDER BY time) AS tripped,\r\n  LAST_VALUE((\"OPENED\").value ORDER BY time)  AS status_opened,\r\n  LAST_VALUE((\"CLOSED\").value ORDER BY time)  AS status_closed,\r\n  LAST_VALUE((\"RUNNING\").value ORDER BY time) AS status_running,\r\n  LAST_VALUE((\"OPEN\").value ORDER BY time)    AS control_open,\r\n  LAST_VALUE((\"CLOSE\").value ORDER BY time)   AS control_close,\r\n  LAST_VALUE((\"RESET\").value ORDER BY time)   AS control_reset\r\nFROM marpower.\"450000_dc_distribution_dc_switch\"\r\nWHERE topic = 'marpower/450000-dc-distribution/dc-switch/keb7-0574'\r\n\r\n\r\n\r\n\r\n\r\n\r\n",
+          "rawSql": "SELECT\r\n  topic,\r\n  timestamp      AS time,\r\n  tripped__value AS tripped,\r\n  opened__value  AS status_opened,\r\n  closed__value  AS status_closed,\r\n  running__value AS status_running,\r\n  open__value    AS control_open,\r\n  close__value   AS control_close,\r\n  reset__value   AS control_reset\r\nFROM public.marpower__450000_dc_distribution__dc_switch__keb7_0574\r\nORDER BY timestamp DESC\r\nLIMIT 1\r\n",
           "refId": "A",
           "sql": {
             "columns": [
