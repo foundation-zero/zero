@@ -12527,10 +12527,24 @@
             "uid": "${datasource}"
           },
           "editorMode": "code",
-          "format": "table",
+          "editorType": "sql",
+          "format": 1,
           "hide": false,
+          "meta": {
+            "builderOptions": {
+              "columns": [],
+              "database": "",
+              "limit": 1000,
+              "meta": {},
+              "mode": "list",
+              "queryType": "table",
+              "table": ""
+            }
+          },
+          "pluginVersion": "2.1.4",
+          "queryType": "table",
           "rawQuery": true,
-          "rawSql": "SELECT\r\n  LAST_VALUE(time ORDER BY time) AS time,\r\n  LAST_VALUE((\"AUTOMODE\").value ORDER BY time)           AS automode,\r\n  LAST_VALUE((\"BREAKEROPENED\").value ORDER BY time)      AS breaker_opened,\r\n  LAST_VALUE((\"BREAKERCLOSED\").value ORDER BY time)      AS breaker_closed,\r\n  LAST_VALUE((\"SYNCRODEVICESTATUS\").value ORDER BY time) AS sync_status,\r\n  LAST_VALUE((\"SYNCROSPEEDUP\").value ORDER BY time)      AS sync_speed_up,\r\n  LAST_VALUE((\"SYNCROSPEEDDOWN\").value ORDER BY time)    AS sync_speed_down,\r\n  LAST_VALUE((\"ROTATINGFIELD\").value ORDER BY time)      AS rotation_field\r\nFROM marpower.\"450000_dynamic_conv_ps_general\"",
+          "rawSql": "SELECT\r\n  timestamp                 AS time,\r\n  automode__value           AS automode,\r\n  breakeropened__value      AS breaker_opened,\r\n  breakerclosed__value      AS breaker_closed,\r\n  syncrodevicestatus__value AS sync_status,\r\n  syncrospeedup__value      AS sync_speed_up,\r\n  syncrospeeddown__value    AS sync_speed_down,\r\n  rotatingfield__value      AS rotation_field\r\nFROM public.marpower__450000_dynamic_conv_ps_general\r\nORDER BY timestamp DESC\r\nLIMIT 1",
           "refId": "A",
           "sql": {
             "columns": [
@@ -13032,9 +13046,23 @@
             "uid": "${datasource}"
           },
           "editorMode": "code",
-          "format": "table",
+          "editorType": "sql",
+          "format": 1,
+          "meta": {
+            "builderOptions": {
+              "columns": [],
+              "database": "",
+              "limit": 1000,
+              "meta": {},
+              "mode": "list",
+              "queryType": "table",
+              "table": ""
+            }
+          },
+          "pluginVersion": "2.1.4",
+          "queryType": "table",
           "rawQuery": true,
-          "rawSql": "SELECT\r\n  LAST_VALUE(time ORDER BY time) AS time,\r\n  LAST_VALUE((\"SYNCCOMM\").value ORDER BY time)     AS sync_cmd,\r\n  LAST_VALUE((\"OPENCBCOMM\").value ORDER BY time)   AS open_breaker_cmd,\r\n  LAST_VALUE((\"NONPREFTRIP1\").value ORDER BY time) AS non_pref_trip1,\r\n  LAST_VALUE((\"NONPREFTRIP2\").value ORDER BY time) AS non_pref_trip2,\r\n  LAST_VALUE((\"NONPREFTRIP3\").value ORDER BY time) AS non_pref_trip3\r\nFROM marpower.\"450000_dynamic_conv_ps_general\"",
+          "rawSql": "SELECT\r\n  timestamp              AS time,\r\n  synccomm__value        AS sync_cmd,\r\n  opencbcomm__value      AS open_breaker_cmd,\r\n  nonpreftrip_1__value   AS non_pref_trip1,\r\n  nonpreftrip_2__value   AS non_pref_trip2,\r\n  nonpreftrip_3__value   AS non_pref_trip3\r\nFROM public.marpower__450000_dynamic_conv_ps_general\r\nORDER BY timestamp DESC\r\nLIMIT 1",
           "refId": "A",
           "sql": {
             "columns": [
@@ -13298,9 +13326,23 @@
             "uid": "${datasource}"
           },
           "editorMode": "code",
-          "format": "table",
+          "editorType": "sql",
+          "format": 1,
+          "meta": {
+            "builderOptions": {
+              "columns": [],
+              "database": "",
+              "limit": 1000,
+              "meta": {},
+              "mode": "list",
+              "queryType": "table",
+              "table": ""
+            }
+          },
+          "pluginVersion": "2.1.4",
+          "queryType": "table",
           "rawQuery": true,
-          "rawSql": "SELECT\r\n  LAST_VALUE(time ORDER BY time) AS time,\r\n  LAST_VALUE((\"BREAKERTRIPPED\").value ORDER BY time)     AS breaker_tripped,\r\n  LAST_VALUE((\"CONTROLFAILURE\").value ORDER BY time)     AS control_failure\r\nFROM marpower.\"450000_dynamic_conv_ps_general\"",
+          "rawSql": "SELECT\r\n  timestamp             AS time,\r\n  breakertripped__value AS breaker_tripped,\r\n  controlfailure__value AS control_failure\r\nFROM public.marpower__450000_dynamic_conv_ps_general\r\nORDER BY timestamp DESC\r\nLIMIT 1",
           "refId": "A",
           "sql": {
             "columns": [
@@ -13321,7 +13363,7 @@
           }
         }
       ],
-      "title": "Alamrs - AC Grid - PS",
+      "title": "Alarms - AC Grid - PS",
       "type": "canvas"
     },
     {
@@ -13971,10 +14013,24 @@
             "uid": "${datasource}"
           },
           "editorMode": "code",
-          "format": "table",
+          "editorType": "sql",
+          "format": 1,
           "hide": false,
+          "meta": {
+            "builderOptions": {
+              "columns": [],
+              "database": "",
+              "limit": 1000,
+              "meta": {},
+              "mode": "list",
+              "queryType": "table",
+              "table": ""
+            }
+          },
+          "pluginVersion": "2.1.4",
+          "queryType": "table",
           "rawQuery": true,
-          "rawSql": "SELECT\r\n  LAST_VALUE(time ORDER BY time) AS time,\r\n  LAST_VALUE((\"AUTOMODE\").value ORDER BY time)           AS automode,\r\n  LAST_VALUE((\"BREAKEROPENED\").value ORDER BY time)      AS breaker_opened,\r\n  LAST_VALUE((\"BREAKERCLOSED\").value ORDER BY time)      AS breaker_closed,\r\n  LAST_VALUE((\"SYNCRODEVICESTATUS\").value ORDER BY time) AS sync_status,\r\n  LAST_VALUE((\"SYNCROSPEEDUP\").value ORDER BY time)      AS sync_speed_up,\r\n  LAST_VALUE((\"SYNCROSPEEDDOWN\").value ORDER BY time)    AS sync_speed_down,\r\n  LAST_VALUE((\"ROTATINGFIELD\").value ORDER BY time)      AS rotation_field\r\nFROM marpower.\"450000_dynamic_conv_sb_general\"",
+          "rawSql": "SELECT\r\n  timestamp                 AS time,\r\n  automode__value           AS automode,\r\n  breakeropened__value      AS breaker_opened,\r\n  breakerclosed__value      AS breaker_closed,\r\n  syncrodevicestatus__value AS sync_status,\r\n  syncrospeedup__value      AS sync_speed_up,\r\n  syncrospeeddown__value    AS sync_speed_down,\r\n  rotatingfield__value      AS rotation_field\r\nFROM public.marpower__450000_dynamic_conv_sb_general\r\nORDER BY timestamp DESC\r\nLIMIT 1",
           "refId": "A",
           "sql": {
             "columns": [
@@ -14476,9 +14532,23 @@
             "uid": "${datasource}"
           },
           "editorMode": "code",
-          "format": "table",
+          "editorType": "sql",
+          "format": 1,
+          "meta": {
+            "builderOptions": {
+              "columns": [],
+              "database": "",
+              "limit": 1000,
+              "meta": {},
+              "mode": "list",
+              "queryType": "table",
+              "table": ""
+            }
+          },
+          "pluginVersion": "2.1.4",
+          "queryType": "table",
           "rawQuery": true,
-          "rawSql": "SELECT\r\n  LAST_VALUE(time ORDER BY time) AS time,\r\n  LAST_VALUE((\"SYNCCOMM\").value ORDER BY time)     AS sync_cmd,\r\n  LAST_VALUE((\"OPENCBCOMM\").value ORDER BY time)   AS open_breaker_cmd,\r\n  LAST_VALUE((\"NONPREFTRIP4\").value ORDER BY time) AS non_pref_trip1,\r\n  LAST_VALUE((\"NONPREFTRIP5\").value ORDER BY time) AS non_pref_trip2,\r\n  LAST_VALUE((\"NONPREFTRIP6\").value ORDER BY time) AS non_pref_trip3\r\nFROM marpower.\"450000_dynamic_conv_sb_general\"",
+          "rawSql": "SELECT\r\n  timestamp            AS time,\r\n  synccomm__value      AS sync_cmd,\r\n  opencbcomm__value    AS open_breaker_cmd,\r\n  nonpreftrip_4__value AS non_pref_trip1,\r\n  nonpreftrip_5__value AS non_pref_trip2,\r\n  nonpreftrip_6__value AS non_pref_trip3\r\nFROM public.marpower__450000_dynamic_conv_sb_general\r\nORDER BY timestamp DESC\r\nLIMIT 1",
           "refId": "A",
           "sql": {
             "columns": [
@@ -14742,9 +14812,23 @@
             "uid": "${datasource}"
           },
           "editorMode": "code",
-          "format": "table",
+          "editorType": "sql",
+          "format": 1,
+          "meta": {
+            "builderOptions": {
+              "columns": [],
+              "database": "",
+              "limit": 1000,
+              "meta": {},
+              "mode": "list",
+              "queryType": "table",
+              "table": ""
+            }
+          },
+          "pluginVersion": "2.1.4",
+          "queryType": "table",
           "rawQuery": true,
-          "rawSql": "SELECT\r\n  LAST_VALUE(time ORDER BY time) AS time,\r\n  LAST_VALUE((\"BREAKERTRIPPED\").value ORDER BY time)     AS breaker_tripped,\r\n  LAST_VALUE((\"CONTROLFAILURE\").value ORDER BY time)     AS control_failure\r\nFROM marpower.\"450000_dynamic_conv_sb_general\"",
+          "rawSql": "SELECT\r\n  timestamp             AS time,\r\n  breakertripped__value AS breaker_tripped,\r\n  controlfailure__value AS control_failure\r\nFROM public.marpower__450000_dynamic_conv_sb_general\r\nORDER BY timestamp DESC\r\nLIMIT 1",
           "refId": "A",
           "sql": {
             "columns": [
@@ -14765,7 +14849,7 @@
           }
         }
       ],
-      "title": "Alamrs - AC Grid - SB",
+      "title": "Alarms - AC Grid - SB",
       "type": "canvas"
     },
     {
@@ -15008,9 +15092,23 @@
             "uid": "${datasource}"
           },
           "editorMode": "code",
-          "format": "table",
+          "editorType": "sql",
+          "format": 1,
+          "meta": {
+            "builderOptions": {
+              "columns": [],
+              "database": "",
+              "limit": 1000,
+              "meta": {},
+              "mode": "list",
+              "queryType": "table",
+              "table": ""
+            }
+          },
+          "pluginVersion": "2.1.4",
+          "queryType": "table",
           "rawQuery": true,
-          "rawSql": "SELECT\r\n  LAST_VALUE(time ORDER BY time) AS time,\r\n  LAST_VALUE((\"ACGRID_BUSTIEOPENED\").value ORDER BY time)     AS bustie_opened,\r\n  LAST_VALUE((\"ACGRID_BUSTIECLOSED\").value ORDER BY time)     AS bustie_closed\r\nFROM marpower.\"450000_dynamic_conv\"",
+          "rawSql": "SELECT\r\n  timestamp                  AS time,\r\n  acgrid_bustieopened__value AS bustie_opened,\r\n  acgrid_bustieclosed__value AS bustie_closed\r\nFROM public.marpower__450000_dynamic_conv\r\nORDER BY timestamp DESC\r\nLIMIT 1",
           "refId": "A",
           "sql": {
             "columns": [
@@ -15709,9 +15807,23 @@
             "uid": "${datasource}"
           },
           "editorMode": "code",
-          "format": "table",
+          "editorType": "sql",
+          "format": 1,
+          "meta": {
+            "builderOptions": {
+              "columns": [],
+              "database": "",
+              "limit": 1000,
+              "meta": {},
+              "mode": "list",
+              "queryType": "table",
+              "table": ""
+            }
+          },
+          "pluginVersion": "2.1.4",
+          "queryType": "table",
           "rawQuery": true,
-          "rawSql": "SELECT\r\n  LAST_VALUE(time ORDER BY time) AS time,\r\n  LAST_VALUE((\"TOTALACTIVEPOWER\").value ORDER BY time)    AS active_power,\r\n  LAST_VALUE((\"TOTALREACTIVEPOWER\").value ORDER BY time)  AS reactive_power,\r\n  LAST_VALUE((\"TOTALAPPARENTPOWER\").value ORDER BY time)  AS apparent_power,\r\n  LAST_VALUE((\"TOTALACTIVEENERGY\").value ORDER BY time)   AS active_energy,\r\n  LAST_VALUE((\"TOTALREACTIVEENERGY\").value ORDER BY time) AS reactive_energy,\r\n  LAST_VALUE((\"TOTALAPPARENTENERGY\").value ORDER BY time) AS apparent_energy,\r\n  LAST_VALUE((\"TOTALPOWERFACTOR\").value ORDER BY time)    AS power_factor\r\nFROM marpower.\"450000_dynamic_conv_ps_general\"",
+          "rawSql": "SELECT\r\n  timestamp                   AS time,\r\n  \"totalactivepower __value\"  AS active_power,\r\n  totalreactivepower__value   AS reactive_power,\r\n  totalapparentpower__value   AS apparent_power,\r\n  totalactiveenergy__value    AS active_energy,\r\n  totalreactiveenergy__value  AS reactive_energy,\r\n  totalapparentenergy__value  AS apparent_energy,\r\n  totalpowerfactor__value     AS power_factor\r\nFROM public.marpower__450000_dynamic_conv_ps_general\r\nORDER BY timestamp DESC\r\nLIMIT 1",
           "refId": "A",
           "sql": {
             "columns": [
@@ -16410,9 +16522,23 @@
             "uid": "${datasource}"
           },
           "editorMode": "code",
-          "format": "table",
+          "editorType": "sql",
+          "format": 1,
+          "meta": {
+            "builderOptions": {
+              "columns": [],
+              "database": "",
+              "limit": 1000,
+              "meta": {},
+              "mode": "list",
+              "queryType": "table",
+              "table": ""
+            }
+          },
+          "pluginVersion": "2.1.4",
+          "queryType": "table",
           "rawQuery": true,
-          "rawSql": "SELECT\r\n  LAST_VALUE(time ORDER BY time) AS time,\r\n  LAST_VALUE((\"TOTALACTIVEPOWER\").value ORDER BY time)    AS active_power,\r\n  LAST_VALUE((\"TOTALREACTIVEPOWER\").value ORDER BY time)  AS reactive_power,\r\n  LAST_VALUE((\"TOTALAPPARENTPOWER\").value ORDER BY time)  AS apparent_power,\r\n  LAST_VALUE((\"TOTALACTIVEENERGY\").value ORDER BY time)   AS active_energy,\r\n  LAST_VALUE((\"TOTALREACTIVEENERGY\").value ORDER BY time) AS reactive_energy,\r\n  LAST_VALUE((\"TOTALAPPARENTENERGY\").value ORDER BY time) AS apparent_energy,\r\n  LAST_VALUE((\"TOTALPOWERFACTOR\").value ORDER BY time)    AS power_factor,\r\n  LAST_VALUE((\"ROTATINGFIELD\").value ORDER BY time)       AS rotation_field\r\nFROM marpower.\"450000_dynamic_conv_sb_general\"",
+          "rawSql": "SELECT\r\n  timestamp                   AS time,\r\n  totalactivepower__value     AS active_power,\r\n  totalreactivepower__value   AS reactive_power,\r\n  totalapparentpower__value   AS apparent_power,\r\n  totalactiveenergy__value    AS active_energy,\r\n  totalreactiveenergy__value  AS reactive_energy,\r\n  totalapparentenergy__value  AS apparent_energy,\r\n  totalpowerfactor__value     AS power_factor,\r\n  rotatingfield__value        AS rotation_field\r\nFROM public.marpower__450000_dynamic_conv_sb_general\r\nORDER BY timestamp DESC\r\nLIMIT 1",
           "refId": "A",
           "sql": {
             "columns": [
@@ -17621,9 +17747,23 @@
             "uid": "${datasource}"
           },
           "editorMode": "code",
-          "format": "table",
+          "editorType": "sql",
+          "format": 1,
+          "meta": {
+            "builderOptions": {
+              "columns": [],
+              "database": "",
+              "limit": 1000,
+              "meta": {},
+              "mode": "list",
+              "queryType": "table",
+              "table": ""
+            }
+          },
+          "pluginVersion": "2.1.4",
+          "queryType": "table",
           "rawQuery": true,
-          "rawSql": "SELECT\r\n  LAST_VALUE(time ORDER BY time) AS time,\r\n  LAST_VALUE((\"CURRENT\").value ORDER BY time)       AS current,\r\n  LAST_VALUE((\"OVERCURRENT\").value ORDER BY time)   AS over_current,\r\n  LAST_VALUE((\"VOLTAGE\").value ORDER BY time)       AS voltage,\r\n  LAST_VALUE((\"UNDERVOLTAGE\").value ORDER BY time)  AS under_voltage,\r\n  LAST_VALUE((\"OVERVOLTAGE\").value ORDER BY time)   AS over_voltage,\r\n  LAST_VALUE((\"ACTIVEPOWER\").value ORDER BY time)   AS active_power,\r\n  LAST_VALUE((\"REACTIVEPOWER\").value ORDER BY time) AS reactive_power,\r\n  LAST_VALUE((\"APPARENTPOWER\").value ORDER BY time) AS apparent_power,\r\n  LAST_VALUE((\"COSPHI\").value ORDER BY time)        AS cos_phi,\r\n  LAST_VALUE((\"POWERFACTOR\").value ORDER BY time)   AS power_factor,\r\n  LAST_VALUE((\"FREQUENCY\").value ORDER BY time)     AS frequency,\r\n  LAST_VALUE((\"NOZERO\").value ORDER BY time)        AS no_zero,\r\n  LAST_VALUE((\"VOLTAGESAG\").value ORDER BY time)    AS voltage_sag,\r\n  LAST_VALUE((\"4QUADRANT\").value ORDER BY time)     AS four_quadrant\r\nFROM marpower.\"450000_dynamic_conv_ps\"\r\nwhere topic = 'marpower/450000-dynamic-conv-ps/ch1'",
+          "rawSql": "SELECT\r\n  timestamp               AS time,\r\n  current__value          AS current,\r\n  overcurrent__value      AS over_current,\r\n  voltage__value          AS voltage,\r\n  undervoltage__value     AS under_voltage,\r\n  overvoltage__value      AS over_voltage,\r\n  activepower__value      AS active_power,\r\n  reactivepower__value    AS reactive_power,\r\n  apparentpower__value    AS apparent_power,\r\n  cosphi__value           AS cos_phi,\r\n  powerfactor__value      AS power_factor,\r\n  frequency__value        AS frequency,\r\n  nozero__value           AS no_zero,\r\n  voltagesag__value       AS voltage_sag,\r\n  \"4_quadrant__value\"       AS four_quadrant\r\nFROM public.marpower__450000_dynamic_conv_ps\r\nWHERE topic = 'marpower/450000-dynamic-conv-ps/ch1'\r\nORDER BY timestamp DESC\r\nLIMIT 1",
           "refId": "A",
           "sql": {
             "columns": [
@@ -18832,9 +18972,23 @@
             "uid": "${datasource}"
           },
           "editorMode": "code",
-          "format": "table",
+          "editorType": "sql",
+          "format": 1,
+          "meta": {
+            "builderOptions": {
+              "columns": [],
+              "database": "",
+              "limit": 1000,
+              "meta": {},
+              "mode": "list",
+              "queryType": "table",
+              "table": ""
+            }
+          },
+          "pluginVersion": "2.1.4",
+          "queryType": "table",
           "rawQuery": true,
-          "rawSql": "SELECT\r\n  LAST_VALUE(time ORDER BY time) AS time,\r\n  LAST_VALUE((\"CURRENT\").value ORDER BY time)       AS current,\r\n  LAST_VALUE((\"OVERCURRENT\").value ORDER BY time)   AS over_current,\r\n  LAST_VALUE((\"VOLTAGE\").value ORDER BY time)       AS voltage,\r\n  LAST_VALUE((\"UNDERVOLTAGE\").value ORDER BY time)  AS under_voltage,\r\n  LAST_VALUE((\"OVERVOLTAGE\").value ORDER BY time)   AS over_voltage,\r\n  LAST_VALUE((\"ACTIVEPOWER\").value ORDER BY time)   AS active_power,\r\n  LAST_VALUE((\"REACTIVEPOWER\").value ORDER BY time) AS reactive_power,\r\n  LAST_VALUE((\"APPARENTPOWER\").value ORDER BY time) AS apparent_power,\r\n  LAST_VALUE((\"COSPHI\").value ORDER BY time)        AS cos_phi,\r\n  LAST_VALUE((\"POWERFACTOR\").value ORDER BY time)   AS power_factor,\r\n  LAST_VALUE((\"FREQUENCY\").value ORDER BY time)     AS frequency,\r\n  LAST_VALUE((\"NOZERO\").value ORDER BY time)        AS no_zero,\r\n  LAST_VALUE((\"VOLTAGESAG\").value ORDER BY time)    AS voltage_sag,\r\n  LAST_VALUE((\"4QUADRANT\").value ORDER BY time)     AS four_quadrant\r\nFROM marpower.\"450000_dynamic_conv_sb\"\r\nWHERE topic = 'marpower/450000-dynamic-conv-sb/ch1'\r\n",
+          "rawSql": "SELECT\r\n  timestamp               AS time,\r\n  current__value          AS current,\r\n  overcurrent__value      AS over_current,\r\n  voltage__value          AS voltage,\r\n  undervoltage__value     AS under_voltage,\r\n  overvoltage__value      AS over_voltage,\r\n  activepower__value      AS active_power,\r\n  reactivepower__value    AS reactive_power,\r\n  apparentpower__value    AS apparent_power,\r\n  cosphi__value           AS cos_phi,\r\n  powerfactor__value      AS power_factor,\r\n  frequency__value        AS frequency,\r\n  nozero__value           AS no_zero,\r\n  voltagesag__value       AS voltage_sag,\r\n  \"4_quadrant__value\"       AS four_quadrant\r\nFROM public.marpower__450000_dynamic_conv_sb\r\nWHERE topic = 'marpower/450000-dynamic-conv-sb/ch1'\r\nORDER BY timestamp DESC\r\nLIMIT 1",
           "refId": "A",
           "sql": {
             "columns": [
@@ -20043,9 +20197,23 @@
             "uid": "${datasource}"
           },
           "editorMode": "code",
-          "format": "table",
+          "editorType": "sql",
+          "format": 1,
+          "meta": {
+            "builderOptions": {
+              "columns": [],
+              "database": "",
+              "limit": 1000,
+              "meta": {},
+              "mode": "list",
+              "queryType": "table",
+              "table": ""
+            }
+          },
+          "pluginVersion": "2.1.4",
+          "queryType": "table",
           "rawQuery": true,
-          "rawSql": "SELECT\r\n  LAST_VALUE(time ORDER BY time) AS time,\r\n  LAST_VALUE((\"CURRENT\").value ORDER BY time)       AS current,\r\n  LAST_VALUE((\"OVERCURRENT\").value ORDER BY time)   AS over_current,\r\n  LAST_VALUE((\"VOLTAGE\").value ORDER BY time)       AS voltage,\r\n  LAST_VALUE((\"UNDERVOLTAGE\").value ORDER BY time)  AS under_voltage,\r\n  LAST_VALUE((\"OVERVOLTAGE\").value ORDER BY time)   AS over_voltage,\r\n  LAST_VALUE((\"ACTIVEPOWER\").value ORDER BY time)   AS active_power,\r\n  LAST_VALUE((\"REACTIVEPOWER\").value ORDER BY time) AS reactive_power,\r\n  LAST_VALUE((\"APPARENTPOWER\").value ORDER BY time) AS apparent_power,\r\n  LAST_VALUE((\"COSPHI\").value ORDER BY time)        AS cos_phi,\r\n  LAST_VALUE((\"POWERFACTOR\").value ORDER BY time)   AS power_factor,\r\n  LAST_VALUE((\"FREQUENCY\").value ORDER BY time)     AS frequency,\r\n  LAST_VALUE((\"NOZERO\").value ORDER BY time)        AS no_zero,\r\n  LAST_VALUE((\"VOLTAGESAG\").value ORDER BY time)    AS voltage_sag,\r\n  LAST_VALUE((\"4QUADRANT\").value ORDER BY time)     AS four_quadrant\r\nFROM marpower.\"450000_dynamic_conv_ps\"\r\nwhere topic = 'marpower/450000-dynamic-conv-ps/ch2'",
+          "rawSql": "SELECT\r\n  timestamp               AS time,\r\n  current__value          AS current,\r\n  overcurrent__value      AS over_current,\r\n  voltage__value          AS voltage,\r\n  undervoltage__value     AS under_voltage,\r\n  overvoltage__value      AS over_voltage,\r\n  activepower__value      AS active_power,\r\n  reactivepower__value    AS reactive_power,\r\n  apparentpower__value    AS apparent_power,\r\n  cosphi__value           AS cos_phi,\r\n  powerfactor__value      AS power_factor,\r\n  frequency__value        AS frequency,\r\n  nozero__value           AS no_zero,\r\n  voltagesag__value       AS voltage_sag,\r\n  \"4_quadrant__value\"       AS four_quadrant\r\nFROM public.marpower__450000_dynamic_conv_ps\r\nWHERE topic = 'marpower/450000-dynamic-conv-ps/ch2'\r\nORDER BY timestamp DESC\r\nLIMIT 1",
           "refId": "A",
           "sql": {
             "columns": [
@@ -21254,9 +21422,23 @@
             "uid": "${datasource}"
           },
           "editorMode": "code",
-          "format": "table",
+          "editorType": "sql",
+          "format": 1,
+          "meta": {
+            "builderOptions": {
+              "columns": [],
+              "database": "",
+              "limit": 1000,
+              "meta": {},
+              "mode": "list",
+              "queryType": "table",
+              "table": ""
+            }
+          },
+          "pluginVersion": "2.1.4",
+          "queryType": "table",
           "rawQuery": true,
-          "rawSql": "SELECT\r\n  LAST_VALUE(time ORDER BY time) AS time,\r\n  LAST_VALUE((\"CURRENT\").value ORDER BY time)       AS current,\r\n  LAST_VALUE((\"OVERCURRENT\").value ORDER BY time)   AS over_current,\r\n  LAST_VALUE((\"VOLTAGE\").value ORDER BY time)       AS voltage,\r\n  LAST_VALUE((\"UNDERVOLTAGE\").value ORDER BY time)  AS under_voltage,\r\n  LAST_VALUE((\"OVERVOLTAGE\").value ORDER BY time)   AS over_voltage,\r\n  LAST_VALUE((\"ACTIVEPOWER\").value ORDER BY time)   AS active_power,\r\n  LAST_VALUE((\"REACTIVEPOWER\").value ORDER BY time) AS reactive_power,\r\n  LAST_VALUE((\"APPARENTPOWER\").value ORDER BY time) AS apparent_power,\r\n  LAST_VALUE((\"COSPHI\").value ORDER BY time)        AS cos_phi,\r\n  LAST_VALUE((\"POWERFACTOR\").value ORDER BY time)   AS power_factor,\r\n  LAST_VALUE((\"FREQUENCY\").value ORDER BY time)     AS frequency,\r\n  LAST_VALUE((\"NOZERO\").value ORDER BY time)        AS no_zero,\r\n  LAST_VALUE((\"VOLTAGESAG\").value ORDER BY time)    AS voltage_sag,\r\n  LAST_VALUE((\"4QUADRANT\").value ORDER BY time)     AS four_quadrant\r\nFROM marpower.\"450000_dynamic_conv_sb\"\r\nWHERE topic = 'marpower/450000-dynamic-conv-sb/ch2'\r\n",
+          "rawSql": "SELECT\r\n  timestamp               AS time,\r\n  current__value          AS current,\r\n  overcurrent__value      AS over_current,\r\n  voltage__value          AS voltage,\r\n  undervoltage__value     AS under_voltage,\r\n  overvoltage__value      AS over_voltage,\r\n  activepower__value      AS active_power,\r\n  reactivepower__value    AS reactive_power,\r\n  apparentpower__value    AS apparent_power,\r\n  cosphi__value           AS cos_phi,\r\n  powerfactor__value      AS power_factor,\r\n  frequency__value        AS frequency,\r\n  nozero__value           AS no_zero,\r\n  voltagesag__value       AS voltage_sag,\r\n  \"4_quadrant__value\"       AS four_quadrant\r\nFROM public.marpower__450000_dynamic_conv_sb\r\nWHERE topic = 'marpower/450000-dynamic-conv-sb/ch2'\r\nORDER BY timestamp DESC\r\nLIMIT 1",
           "refId": "A",
           "sql": {
             "columns": [
@@ -22465,9 +22647,23 @@
             "uid": "${datasource}"
           },
           "editorMode": "code",
-          "format": "table",
+          "editorType": "sql",
+          "format": 1,
+          "meta": {
+            "builderOptions": {
+              "columns": [],
+              "database": "",
+              "limit": 1000,
+              "meta": {},
+              "mode": "list",
+              "queryType": "table",
+              "table": ""
+            }
+          },
+          "pluginVersion": "2.1.4",
+          "queryType": "table",
           "rawQuery": true,
-          "rawSql": "SELECT\r\n  LAST_VALUE(time ORDER BY time) AS time,\r\n  LAST_VALUE((\"CURRENT\").value ORDER BY time)       AS current,\r\n  LAST_VALUE((\"OVERCURRENT\").value ORDER BY time)   AS over_current,\r\n  LAST_VALUE((\"VOLTAGE\").value ORDER BY time)       AS voltage,\r\n  LAST_VALUE((\"UNDERVOLTAGE\").value ORDER BY time)  AS under_voltage,\r\n  LAST_VALUE((\"OVERVOLTAGE\").value ORDER BY time)   AS over_voltage,\r\n  LAST_VALUE((\"ACTIVEPOWER\").value ORDER BY time)   AS active_power,\r\n  LAST_VALUE((\"REACTIVEPOWER\").value ORDER BY time) AS reactive_power,\r\n  LAST_VALUE((\"APPARENTPOWER\").value ORDER BY time) AS apparent_power,\r\n  LAST_VALUE((\"COSPHI\").value ORDER BY time)        AS cos_phi,\r\n  LAST_VALUE((\"POWERFACTOR\").value ORDER BY time)   AS power_factor,\r\n  LAST_VALUE((\"FREQUENCY\").value ORDER BY time)     AS frequency,\r\n  LAST_VALUE((\"NOZERO\").value ORDER BY time)        AS no_zero,\r\n  LAST_VALUE((\"VOLTAGESAG\").value ORDER BY time)    AS voltage_sag,\r\n  LAST_VALUE((\"4QUADRANT\").value ORDER BY time)     AS four_quadrant\r\nFROM marpower.\"450000_dynamic_conv_ps\"\r\nwhere topic = 'marpower/450000-dynamic-conv-ps/ch3'",
+          "rawSql": "SELECT\r\n  timestamp               AS time,\r\n  current__value          AS current,\r\n  overcurrent__value      AS over_current,\r\n  voltage__value          AS voltage,\r\n  undervoltage__value     AS under_voltage,\r\n  overvoltage__value      AS over_voltage,\r\n  activepower__value      AS active_power,\r\n  reactivepower__value    AS reactive_power,\r\n  apparentpower__value    AS apparent_power,\r\n  cosphi__value           AS cos_phi,\r\n  powerfactor__value      AS power_factor,\r\n  frequency__value        AS frequency,\r\n  nozero__value           AS no_zero,\r\n  voltagesag__value       AS voltage_sag,\r\n  \"4_quadrant__value\"       AS four_quadrant\r\nFROM public.marpower__450000_dynamic_conv_ps\r\nWHERE topic = 'marpower/450000-dynamic-conv-ps/ch3'\r\nORDER BY timestamp DESC\r\nLIMIT 1",
           "refId": "A",
           "sql": {
             "columns": [
@@ -23676,9 +23872,23 @@
             "uid": "${datasource}"
           },
           "editorMode": "code",
-          "format": "table",
+          "editorType": "sql",
+          "format": 1,
+          "meta": {
+            "builderOptions": {
+              "columns": [],
+              "database": "",
+              "limit": 1000,
+              "meta": {},
+              "mode": "list",
+              "queryType": "table",
+              "table": ""
+            }
+          },
+          "pluginVersion": "2.1.4",
+          "queryType": "table",
           "rawQuery": true,
-          "rawSql": "SELECT\r\n  LAST_VALUE(time ORDER BY time) AS time,\r\n  LAST_VALUE((\"CURRENT\").value ORDER BY time)       AS current,\r\n  LAST_VALUE((\"OVERCURRENT\").value ORDER BY time)   AS over_current,\r\n  LAST_VALUE((\"VOLTAGE\").value ORDER BY time)       AS voltage,\r\n  LAST_VALUE((\"UNDERVOLTAGE\").value ORDER BY time)  AS under_voltage,\r\n  LAST_VALUE((\"OVERVOLTAGE\").value ORDER BY time)   AS over_voltage,\r\n  LAST_VALUE((\"ACTIVEPOWER\").value ORDER BY time)   AS active_power,\r\n  LAST_VALUE((\"REACTIVEPOWER\").value ORDER BY time) AS reactive_power,\r\n  LAST_VALUE((\"APPARENTPOWER\").value ORDER BY time) AS apparent_power,\r\n  LAST_VALUE((\"COSPHI\").value ORDER BY time)        AS cos_phi,\r\n  LAST_VALUE((\"POWERFACTOR\").value ORDER BY time)   AS power_factor,\r\n  LAST_VALUE((\"FREQUENCY\").value ORDER BY time)     AS frequency,\r\n  LAST_VALUE((\"NOZERO\").value ORDER BY time)        AS no_zero,\r\n  LAST_VALUE((\"VOLTAGESAG\").value ORDER BY time)    AS voltage_sag,\r\n  LAST_VALUE((\"4QUADRANT\").value ORDER BY time)     AS four_quadrant\r\nFROM marpower.\"450000_dynamic_conv_sb\"\r\nWHERE topic = 'marpower/450000-dynamic-conv-sb/ch3'\r\n",
+          "rawSql": "SELECT\r\n  timestamp               AS time,\r\n  current__value          AS current,\r\n  overcurrent__value      AS over_current,\r\n  voltage__value          AS voltage,\r\n  undervoltage__value     AS under_voltage,\r\n  overvoltage__value      AS over_voltage,\r\n  activepower__value      AS active_power,\r\n  reactivepower__value    AS reactive_power,\r\n  apparentpower__value    AS apparent_power,\r\n  cosphi__value           AS cos_phi,\r\n  powerfactor__value      AS power_factor,\r\n  frequency__value        AS frequency,\r\n  nozero__value           AS no_zero,\r\n  voltagesag__value       AS voltage_sag,\r\n  \"4_quadrant__value\"       AS four_quadrant\r\nFROM public.marpower__450000_dynamic_conv_sb\r\nWHERE topic = 'marpower/450000-dynamic-conv-sb/ch3'\r\nORDER BY timestamp DESC\r\nLIMIT 1",
           "refId": "A",
           "sql": {
             "columns": [
