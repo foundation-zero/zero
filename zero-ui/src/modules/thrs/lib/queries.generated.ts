@@ -87,7 +87,7 @@ export const BOILERS_SENSOR_QUERY = `
     speed { value timestamp }
     opTime { value timestamp }
   }
-  boilersTemperatureChillerReturn {
+  boilersTemperatureHvacExchangerReturn {
     temperature { value timestamp }
   }
   boilersTemperatureLt2Return {
@@ -189,6 +189,9 @@ export const BOILERS_SENSOR_QUERY = `
   boilersSwitchHighTemperature {
     positionRel { value timestamp }
   }
+  boilersPressureBoosting {
+    pressure { value timestamp }
+  }
   lt1FlowRecovery {
     flow { value timestamp }
     temperature { value timestamp }
@@ -226,13 +229,10 @@ export const BOILERS_SIMULATION_INPUTS_QUERY = `
     temperature { value timestamp }
     overpressure { value timestamp }
   }
-  boilersExchangerGas {
-    heatFlow { value timestamp }
-  }
   boilersSeawaterSupply {
     temperature { value timestamp }
   }
-  boilersFreshwaterReturnSet {
+  boilersHotwaterDemand {
     flow { value timestamp }
   }
 `;
@@ -250,13 +250,13 @@ export const BOILERS_SIMULATION_OUTPUTS_QUERY = `
   boilersHtReturn {
     temperature { value timestamp }
   }
-  boilersFreshwaterReturn {
-    flow { value timestamp }
-  }
   boilersSeawaterReturn {
     temperature { value timestamp }
   }
   boilersSeawaterSupply {
+    flow { value timestamp }
+  }
+  boilersFreshwaterReturn {
     flow { value timestamp }
   }
 `;
