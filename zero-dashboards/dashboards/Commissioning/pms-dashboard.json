@@ -18,7 +18,7 @@
   "editable": true,
   "fiscalYearStartMonth": 0,
   "graphTooltip": 0,
-  "id": 0,
+  "id": 13,
   "links": [
     {
       "asDropdown": true,
@@ -77,8 +77,8 @@
     },
     {
       "datasource": {
-        "type": "grafana-postgresql-datasource",
-        "uid": "${datasource}"
+        "type": "info8fcc-greptimedb-datasource",
+        "uid": "PBAD09CF7391C3C43"
       },
       "fieldConfig": {
         "defaults": {
@@ -815,10 +815,24 @@
             "uid": "${datasource}"
           },
           "editorMode": "code",
-          "format": "table",
+          "editorType": "sql",
+          "format": 1,
           "hide": false,
+          "meta": {
+            "builderOptions": {
+              "columns": [],
+              "database": "",
+              "limit": 1000,
+              "meta": {},
+              "mode": "list",
+              "queryType": "table",
+              "table": ""
+            }
+          },
+          "pluginVersion": "2.1.4",
+          "queryType": "table",
           "rawQuery": true,
-          "rawSql": "SELECT\r\n  LAST_VALUE(time ORDER BY time) AS time,\r\n  LAST_VALUE((\"KEB6_AFT_THRUST_MAIN_BREAK_OF1_F105_FAULT\").value ORDER BY time) AS f105_fault,\r\n  LAST_VALUE((\"KEB6_AFT_THRUST_MAINBREAKOF1F105OPENCMD\").value ORDER BY time)   AS control_f105_open,\r\n  LAST_VALUE((\"KEB6_AFT_THRUST_MAIN_BREAK_OF1_F105_OPEN\").value ORDER BY time)  AS status_f105_open1,\r\n  LAST_VALUE((\"KEB6_AFT_THRUST_MAIN_BREAK_OF2_F105_OPEN\").value ORDER BY time)  AS status_f105_open2,\r\n  LAST_VALUE((\"KEB7_AFT_THRUST_MAINBREAKOF1F110FAULT\").value ORDER BY time)     AS f110_fault,\r\n  LAST_VALUE((\"KEB7_AFT_THRUST_MAINBREAKOF1F110OPENCMD\").value ORDER BY time)   AS control_f110_open,\r\n  LAST_VALUE((\"KEB7_AFT_THRUST_MAINBREAKOF1F110OPEN\").value ORDER BY time)      AS status_f110_open1,\r\n  LAST_VALUE((\"KEB7_AFT_THRUST_MAINBREAKOF2F110OPEN\").value ORDER BY time)      AS status_f110_open2\r\nFROM marpower.\"450000_dc_distribution_general\"\r\n\r\n\r\n\r\n\r\n\r\n\r\n",
+          "rawSql": "SELECT\r\n  timestamp                                           AS time,\r\n  keb_6_aft_thrust_main_break_of_1_f_105_fault__value AS f105_fault,\r\n  keb_6_aft_thrust_mainbreakof_1_f_105_opencmd__value AS control_f105_open,\r\n  keb_6_aft_thrust_main_break_of_1_f_105_open__value  AS status_f105_open1,\r\n  keb_6_aft_thrust_main_break_of_2_f_105_open__value  AS status_f105_open2,\r\n  keb_7_aft_thrust_mainbreakof_1_f_110_fault__value   AS f110_fault,\r\n  keb_7_aft_thrust_mainbreakof_1_f_110_opencmd__value AS control_f110_open,\r\n  keb_7_aft_thrust_mainbreakof_1_f_110_open__value    AS status_f110_open1,\r\n  keb_7_aft_thrust_mainbreakof_2_f_110_open__value    AS status_f110_open2\r\nFROM public.marpower__450000_dc_distribution_general\r\nORDER BY timestamp DESC\r\nLIMIT 1",
           "refId": "A",
           "sql": {
             "columns": [
@@ -1582,10 +1596,24 @@
             "uid": "${datasource}"
           },
           "editorMode": "code",
-          "format": "table",
+          "editorType": "sql",
+          "format": 1,
           "hide": false,
+          "meta": {
+            "builderOptions": {
+              "columns": [],
+              "database": "",
+              "limit": 1000,
+              "meta": {},
+              "mode": "list",
+              "queryType": "table",
+              "table": ""
+            }
+          },
+          "pluginVersion": "2.1.4",
+          "queryType": "table",
           "rawQuery": true,
-          "rawSql": "SELECT\r\n  LAST_VALUE(time ORDER BY time) AS time,\r\n  LAST_VALUE((\"KEB8_BOW_THRUST_MAINBREAKOF1F105FAULT\").value ORDER BY time)   AS f105_fault,\r\n  LAST_VALUE((\"KEB8_BOW_THRUST_MAINBREAKOF1F105OPENCMD\").value ORDER BY time) AS control_f105_open,\r\n  LAST_VALUE((\"KEB8_BOW_THRUST_MAINBREAKOF1F105OPEN\").value ORDER BY time)    AS status_f105_open1,\r\n  LAST_VALUE((\"KEB8_BOW_THRUST_MAINBREAKOF2F105OPEN\").value ORDER BY time)    AS status_f105_open2,\r\n  LAST_VALUE((\"KEB9_BOW_THRUST_MAINBREAKOF1F110FAULT\").value ORDER BY time)   AS f110_fault,\r\n  LAST_VALUE((\"KEB9_BOW_THRUST_MAINBREAKOF1F110OPENCMD\").value ORDER BY time) AS control_f110_open,\r\n  LAST_VALUE((\"KEB9_BOW_THRUST_MAINBREAKOF1F110OPEN\").value ORDER BY time)    AS status_f110_open1,\r\n  LAST_VALUE((\"KEB9_BOW_THRUST_MAINBREAKOF2F110OPEN\").value ORDER BY time)    AS status_f110_open2\r\nFROM marpower.\"450000_dc_distribution_general\"\r\n\r\n\r\n\r\n\r\n\r\n\r\n",
+          "rawSql": "SELECT\r\n  timestamp                                           AS time,\r\n  keb_8_bow_thrust_mainbreakof_1_f_105_fault__value   AS f105_fault,\r\n  keb_8_bow_thrust_mainbreakof_1_f_105_opencmd__value AS control_f105_open,\r\n  keb_8_bow_thrust_mainbreakof_1_f_105_open__value    AS status_f105_open1,\r\n  keb_8_bow_thrust_mainbreakof_2_f_105_open__value    AS status_f105_open2,\r\n  keb_9_bow_thrust_mainbreakof_1_f_110_fault__value   AS f110_fault,\r\n  keb_9_bow_thrust_mainbreakof_1_f_110_opencmd__value AS control_f110_open,\r\n  keb_9_bow_thrust_mainbreakof_1_f_110_open__value    AS status_f110_open1,\r\n  keb_9_bow_thrust_mainbreakof_2_f_110_open__value    AS status_f110_open2\r\nFROM public.marpower__450000_dc_distribution_general\r\nORDER BY timestamp DESC\r\nLIMIT 1",
           "refId": "A",
           "sql": {
             "columns": [
@@ -36648,12 +36676,12 @@
     "list": [
       {
         "current": {
-          "text": "RisingWave",
-          "value": "ceyj3m7wtn3swb"
+          "text": "greptimedb-singel",
+          "value": "PE746E5A5E0A52672"
         },
         "name": "datasource",
         "options": [],
-        "query": "grafana-postgresql-datasource",
+        "query": "info8fcc-greptimedb-datasource",
         "refresh": 1,
         "regex": "",
         "type": "datasource"
