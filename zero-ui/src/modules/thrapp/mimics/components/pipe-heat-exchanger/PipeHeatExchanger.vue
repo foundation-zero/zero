@@ -1,15 +1,24 @@
 <script setup lang="ts">
+import { computed } from "vue";
 import { MimicComponentBaseProps } from "..";
 import MimicComponent from "../MimicComponent.vue";
 import {
   PIPE_HEAT_EXCHANGER_BASE_ORIENTATION,
+  PIPE_HEAT_EXCHANGER_FILL_COLORS,
   PIPE_HEAT_EXCHANGER_HEIGHT,
+  PIPE_HEAT_EXCHANGER_INNER_FILL_COLORS,
   PIPE_HEAT_EXCHANGER_WIDTH,
+  PipeHeatExchangerProps,
+  PipeHeatExchangerState,
 } from "./index";
 
-withDefaults(defineProps<MimicComponentBaseProps>(), {
+const props = withDefaults(defineProps<PipeHeatExchangerProps & MimicComponentBaseProps>(), {
   orientation: PIPE_HEAT_EXCHANGER_BASE_ORIENTATION,
+  state: PipeHeatExchangerState.Idle,
 });
+
+const fillColor = computed(() => PIPE_HEAT_EXCHANGER_FILL_COLORS[props.state]);
+const innerFillColor = computed(() => PIPE_HEAT_EXCHANGER_INNER_FILL_COLORS[props.state]);
 </script>
 
 <template>
@@ -27,11 +36,12 @@ withDefaults(defineProps<MimicComponentBaseProps>(), {
         width="41.0864"
         height="15.7601"
         rx="7.88004"
-        fill="var(--background)"
+        :fill="fillColor"
         stroke="var(--attention)"
       />
       <path
         d="M32.1006 4.96924C34.1897 4.96948 35.8828 6.66322 35.8828 8.75244C35.8828 10.8416 34.1897 12.5354 32.1006 12.5356H14.1641V4.96924H32.1006Z"
+        :fill="innerFillColor"
         stroke="var(--attention)"
       />
       <line
