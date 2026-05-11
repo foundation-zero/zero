@@ -24328,10 +24328,24 @@
             "uid": "${datasource}"
           },
           "editorMode": "code",
-          "format": "table",
+          "editorType": "sql",
+          "format": 1,
           "hide": false,
+          "meta": {
+            "builderOptions": {
+              "columns": [],
+              "database": "",
+              "limit": 1000,
+              "meta": {},
+              "mode": "list",
+              "queryType": "table",
+              "table": ""
+            }
+          },
+          "pluginVersion": "2.1.4",
+          "queryType": "table",
           "rawQuery": true,
-          "rawSql": "SELECT\r\n  LAST_VALUE(time ORDER BY time) AS time,\r\n  LAST_VALUE((\"KEB7_UGRID_AFT_DIGIN1\").value ORDER BY time) AS aft_dig_in1,\r\n  LAST_VALUE((\"KEB7_UGRID_AFT_DIGIN2\").value ORDER BY time) AS aft_dig_in2,\r\n  LAST_VALUE((\"KEB9_UGRID_FWD_DIGIN1\").value ORDER BY time) AS fwd_dig_in1,\r\n  LAST_VALUE((\"KEB9_UGRID_FWD_DIGIN2\").value ORDER BY time) AS fwd_dig_in2\r\nFROM marpower.\"450000_dc_distribution_general\"",
+          "rawSql": "SELECT\r\n  timestamp                      AS time,\r\n  keb_7_ugrid_aft_digin_1__value AS aft_dig_in1,\r\n  keb_7_ugrid_aft_digin_2__value AS aft_dig_in2,\r\n  keb_9_ugrid_fwd_digin_1__value AS fwd_dig_in1,\r\n  keb_9_ugrid_fwd_digin_2__value AS fwd_dig_in2\r\nFROM public.marpower__450000_dc_distribution_general\r\nORDER BY timestamp DESC\r\nLIMIT 1",
           "refId": "B",
           "sql": {
             "columns": [
@@ -24756,9 +24770,23 @@
             "uid": "${datasource}"
           },
           "editorMode": "code",
-          "format": "table",
+          "editorType": "sql",
+          "format": 1,
+          "meta": {
+            "builderOptions": {
+              "columns": [],
+              "database": "",
+              "limit": 1000,
+              "meta": {},
+              "mode": "list",
+              "queryType": "table",
+              "table": ""
+            }
+          },
+          "pluginVersion": "2.1.4",
+          "queryType": "table",
           "rawQuery": true,
-          "rawSql": "SELECT\r\n  LAST_VALUE(time ORDER BY time) AS time,\r\n  LAST_VALUE((\"ENABLE\").value ORDER BY time)         AS enable,\r\n  LAST_VALUE((\"ENABLEFIRMWARE\").value ORDER BY time) AS enable_firmware_update,\r\n  LAST_VALUE((\"DIGOUT1\").value ORDER BY time)        AS digital_output1,\r\n  LAST_VALUE((\"DIGOUT2\").value ORDER BY time)        AS digital_output2\r\nFROM marpower.\"450000_ugrid\"\r\nWHERE topic = 'marpower/450000-ugrid/aft'",
+          "rawSql": "SELECT\r\n  timestamp             AS time,\r\n  ugrid_aft_digout_1__value       AS digital_output1,\r\n  ugrid_aft_digout_2__value       AS digital_output2\r\nFROM public.marpower__450000_ugrid\r\nORDER BY timestamp DESC\r\nLIMIT 1",
           "refId": "A",
           "sql": {
             "columns": [
@@ -25183,9 +25211,23 @@
             "uid": "${datasource}"
           },
           "editorMode": "code",
-          "format": "table",
+          "editorType": "sql",
+          "format": 1,
+          "meta": {
+            "builderOptions": {
+              "columns": [],
+              "database": "",
+              "limit": 1000,
+              "meta": {},
+              "mode": "list",
+              "queryType": "table",
+              "table": ""
+            }
+          },
+          "pluginVersion": "2.1.4",
+          "queryType": "table",
           "rawQuery": true,
-          "rawSql": "SELECT\r\n  LAST_VALUE(time ORDER BY time) AS time,\r\n  LAST_VALUE((\"ENABLE\").value ORDER BY time)         AS enable,\r\n  LAST_VALUE((\"ENABLEFIRMWARE\").value ORDER BY time) AS enable_firmware_update,\r\n  LAST_VALUE((\"DIGOUT1\").value ORDER BY time)        AS digital_output1,\r\n  LAST_VALUE((\"DIGOUT2\").value ORDER BY time)        AS digital_output2\r\nFROM marpower.\"450000_ugrid\"\r\nWHERE topic = 'marpower/450000-ugrid/fwd'",
+          "rawSql": "SELECT\r\n  timestamp             AS time,\r\n  ugrid_fwd_digout_1__value       AS digital_output1,\r\n  ugrid_fwd_digout_2__value       AS digital_output2\r\nFROM public.marpower__450000_ugrid\r\nORDER BY timestamp DESC\r\nLIMIT 1",
           "refId": "A",
           "sql": {
             "columns": [
@@ -25973,9 +26015,23 @@
             "uid": "${datasource}"
           },
           "editorMode": "code",
-          "format": "table",
+          "editorType": "sql",
+          "format": 1,
+          "meta": {
+            "builderOptions": {
+              "columns": [],
+              "database": "",
+              "limit": 1000,
+              "meta": {},
+              "mode": "list",
+              "queryType": "table",
+              "table": ""
+            }
+          },
+          "pluginVersion": "2.1.4",
+          "queryType": "table",
           "rawQuery": true,
-          "rawSql": "SELECT\r\n  LAST_VALUE(time ORDER BY time) AS time,\r\n  LAST_VALUE((\"WINDINGTEMPU1\").value ORDER BY time) AS winding_U1_temp,\r\n  LAST_VALUE((\"WINDINGTEMPV1\").value ORDER BY time) AS winding_V1_temp,\r\n  LAST_VALUE((\"WINDINGTEMPW1\").value ORDER BY time) AS winding_W1_temp,\r\n  LAST_VALUE((\"WINDINGTEMPU2\").value ORDER BY time) AS winding_U2_temp,\r\n  LAST_VALUE((\"WINDINGTEMPV2\").value ORDER BY time) AS winding_V2_temp,\r\n  LAST_VALUE((\"WINDINGTEMPW2\").value ORDER BY time) AS winding_W2_temp,\r\n  LAST_VALUE((\"LCFILTTEMPU\").value ORDER BY time)   AS lc_filter_U_temp,\r\n  LAST_VALUE((\"LCFILTTEMPV\").value ORDER BY time)   AS lc_filter_V_temp,\r\n  LAST_VALUE((\"LCFILTTEMPW\").value ORDER BY time)   AS lc_filter_W_temp\r\nFROM marpower.\"450000_dynamic_conv_ps_general\"",
+          "rawSql": "SELECT\r\n  timestamp             AS time,\r\n  windingtempu_1__value AS winding_U1_temp,\r\n  windingtempv_1__value AS winding_V1_temp,\r\n  windingtempw_1__value AS winding_W1_temp,\r\n  windingtempu_2__value AS winding_U2_temp,\r\n  windingtempv_2__value AS winding_V2_temp,\r\n  windingtempw_2__value AS winding_W2_temp,\r\n  lcfilttempu__value    AS lc_filter_U_temp,\r\n  lcfilttempv__value    AS lc_filter_V_temp,\r\n  lcfilttempw__value    AS lc_filter_W_temp\r\nFROM public.marpower__450000_dynamic_conv_ps_general\r\nORDER BY timestamp DESC\r\nLIMIT 1",
           "refId": "A",
           "sql": {
             "columns": [
@@ -26763,9 +26819,23 @@
             "uid": "${datasource}"
           },
           "editorMode": "code",
-          "format": "table",
+          "editorType": "sql",
+          "format": 1,
+          "meta": {
+            "builderOptions": {
+              "columns": [],
+              "database": "",
+              "limit": 1000,
+              "meta": {},
+              "mode": "list",
+              "queryType": "table",
+              "table": ""
+            }
+          },
+          "pluginVersion": "2.1.4",
+          "queryType": "table",
           "rawQuery": true,
-          "rawSql": "SELECT\r\n  LAST_VALUE(time ORDER BY time) AS time,\r\n  LAST_VALUE((\"WINDINGTEMPU1\").value ORDER BY time) AS winding_U1_temp,\r\n  LAST_VALUE((\"WINDINGTEMPV1\").value ORDER BY time) AS winding_V1_temp,\r\n  LAST_VALUE((\"WINDINGTEMPW1\").value ORDER BY time) AS winding_W1_temp,\r\n  LAST_VALUE((\"WINDINGTEMPU2\").value ORDER BY time) AS winding_U2_temp,\r\n  LAST_VALUE((\"WINDINGTEMPV2\").value ORDER BY time) AS winding_V2_temp,\r\n  LAST_VALUE((\"WINDINGTEMPW2\").value ORDER BY time) AS winding_W2_temp,\r\n  LAST_VALUE((\"LCFILTTEMPU\").value ORDER BY time)   AS lc_filter_U_temp,\r\n  LAST_VALUE((\"LCFILTTEMPV\").value ORDER BY time)   AS lc_filter_V_temp,\r\n  LAST_VALUE((\"LCFILTTEMPW\").value ORDER BY time)   AS lc_filter_W_temp\r\nFROM marpower.\"450000_dynamic_conv_sb_general\"",
+          "rawSql": "SELECT\r\n  timestamp             AS time,\r\n  windingtempu_1__value AS winding_U1_temp,\r\n  windingtempv_1__value AS winding_V1_temp,\r\n  windingtempw_1__value AS winding_W1_temp,\r\n  windingtempu_2__value AS winding_U2_temp,\r\n  windingtempv_2__value AS winding_V2_temp,\r\n  windingtempw_2__value AS winding_W2_temp,\r\n  lcfilttempu__value    AS lc_filter_U_temp,\r\n  lcfilttempv__value    AS lc_filter_V_temp,\r\n  lcfilttempw__value    AS lc_filter_W_temp\r\nFROM public.marpower__450000_dynamic_conv_sb_general\r\nORDER BY timestamp DESC\r\nLIMIT 1",
           "refId": "A",
           "sql": {
             "columns": [
