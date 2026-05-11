@@ -24786,7 +24786,7 @@
           "pluginVersion": "2.1.4",
           "queryType": "table",
           "rawQuery": true,
-          "rawSql": "SELECT\r\n  timestamp             AS time,\r\n  ugrid_aft_digout_1__value       AS digital_output1,\r\n  ugrid_aft_digout_2__value       AS digital_output2\r\nFROM public.marpower__450000_ugrid\r\nORDER BY timestamp DESC\r\nLIMIT 1",
+          "rawSql": "SELECT\r\n  timestamp             AS time,\r\n  ugrid_aft_enable__value         AS enable,\r\n  ugrid_aft_enablefirmware__value AS enable_firmware_update,\r\n  ugrid_aft_digout_1__value       AS digital_output1,\r\n  ugrid_aft_digout_2__value       AS digital_output2\r\nFROM public.marpower__450000_ugrid\r\nORDER BY timestamp DESC\r\nLIMIT 1",
           "refId": "A",
           "sql": {
             "columns": [
@@ -25227,7 +25227,7 @@
           "pluginVersion": "2.1.4",
           "queryType": "table",
           "rawQuery": true,
-          "rawSql": "SELECT\r\n  timestamp             AS time,\r\n  ugrid_fwd_digout_1__value       AS digital_output1,\r\n  ugrid_fwd_digout_2__value       AS digital_output2\r\nFROM public.marpower__450000_ugrid\r\nORDER BY timestamp DESC\r\nLIMIT 1",
+          "rawSql": "SELECT\r\n  timestamp             AS time,\r\n  ugrid_fwd_enable__value         AS enable,\r\n  ugrid_fwd_enablefirmware__value AS enable_firmware_update,\r\n  ugrid_fwd_digout_1__value       AS digital_output1,\r\n  ugrid_fwd_digout_2__value       AS digital_output2\r\nFROM public.marpower__450000_ugrid\r\nORDER BY timestamp DESC\r\nLIMIT 1",
           "refId": "A",
           "sql": {
             "columns": [
@@ -35873,7 +35873,7 @@
                 "size": 16,
                 "text": {
                   "field": "sub_pump1_alarm",
-                  "fixed": "Emergency switch PTU 1 - Off",
+                  "fixed": "Emergency switch - Off",
                   "mode": "fixed"
                 },
                 "valign": "middle"
@@ -35890,87 +35890,6 @@
                 "rotation": 0,
                 "top": 85,
                 "width": 241.23333740234375
-              },
-              "type": "text"
-            },
-            {
-              "background": {
-                "color": {
-                  "field": "control_em_switch2_off",
-                  "fixed": "#D9D9D9"
-                },
-                "image": {
-                  "field": "sub_pump1_alarm",
-                  "mode": "fixed"
-                }
-              },
-              "border": {
-                "color": {
-                  "fixed": "dark-green"
-                }
-              },
-              "config": {
-                "align": "center",
-                "color": {
-                  "fixed": "#000000"
-                },
-                "text": {
-                  "field": "sub_pump2_alarm",
-                  "mode": "fixed"
-                },
-                "valign": "middle"
-              },
-              "constraint": {
-                "horizontal": "left",
-                "vertical": "top"
-              },
-              "links": [],
-              "name": "control_em_switch2_off",
-              "placement": {
-                "height": 25,
-                "left": 15,
-                "rotation": 0,
-                "top": 115,
-                "width": 25
-              },
-              "type": "ellipse"
-            },
-            {
-              "background": {
-                "color": {
-                  "fixed": "transparent"
-                }
-              },
-              "border": {
-                "color": {
-                  "fixed": "dark-green"
-                }
-              },
-              "config": {
-                "align": "left",
-                "color": {
-                  "fixed": "rgb(204, 204, 220)"
-                },
-                "size": 16,
-                "text": {
-                  "field": "sub_pump1_alarm",
-                  "fixed": "Emergency switch PTU 2 - Off",
-                  "mode": "fixed"
-                },
-                "valign": "middle"
-              },
-              "constraint": {
-                "horizontal": "left",
-                "vertical": "top"
-              },
-              "links": [],
-              "name": "control_em_switch2_off label",
-              "placement": {
-                "height": 26,
-                "left": 50,
-                "rotation": 0,
-                "top": 115,
-                "width": 241
               },
               "type": "text"
             }
@@ -36018,52 +35937,8 @@
           "pluginVersion": "2.1.4",
           "queryType": "table",
           "rawQuery": true,
-          "rawSql": "SELECT\r\n  timestamp          AS time,\r\n  error__value       AS error,\r\n  overload__value    AS overload,\r\n  online__value      AS status_online,\r\n  available__value   AS status_available\r\nFROM public.marpower__450000_dc_distribution__esi\r\nWHERE topic = 'marpower/450000-dc-distribution/esi/keb6'\r\nORDER BY timestamp DESC\r\nLIMIT 1",
+          "rawSql": "SELECT\r\n  timestamp             AS time,\r\n  error__value          AS error,\r\n  overload__value       AS overload,\r\n  online__value         AS status_online,\r\n  available__value      AS status_available,\r\n  emergswitchoff__value AS control_em_switch1_off\r\nFROM public.marpower__450000_dc_distribution__esi\r\nWHERE topic = 'marpower/450000-dc-distribution/esi/keb6'\r\nORDER BY timestamp DESC\r\nLIMIT 1",
           "refId": "A",
-          "sql": {
-            "columns": [
-              {
-                "parameters": [],
-                "type": "function"
-              }
-            ],
-            "groupBy": [
-              {
-                "property": {
-                  "type": "string"
-                },
-                "type": "groupBy"
-              }
-            ],
-            "limit": 50
-          }
-        },
-        {
-          "dataset": "dev",
-          "datasource": {
-            "type": "grafana-postgresql-datasource",
-            "uid": "${datasource}"
-          },
-          "editorMode": "code",
-          "editorType": "sql",
-          "format": 1,
-          "hide": false,
-          "meta": {
-            "builderOptions": {
-              "columns": [],
-              "database": "",
-              "limit": 1000,
-              "meta": {},
-              "mode": "list",
-              "queryType": "table",
-              "table": ""
-            }
-          },
-          "pluginVersion": "2.1.4",
-          "queryType": "table",
-          "rawQuery": true,
-          "rawSql": "SELECT\r\n  timestamp                                     AS time,\r\n  NULL AS control_em_switch1_off,\r\n  NULL AS control_em_switch2_off\r\nFROM public.marpower__450000_dc_distribution_general\r\nORDER BY timestamp DESC\r\nLIMIT 1",
-          "refId": "B",
           "sql": {
             "columns": [
               {
@@ -36547,7 +36422,7 @@
                 "size": 16,
                 "text": {
                   "field": "sub_pump1_alarm",
-                  "fixed": "Emergency switch PTU 3 - Off",
+                  "fixed": "Emergency switch - Off",
                   "mode": "fixed"
                 },
                 "valign": "middle"
@@ -36564,87 +36439,6 @@
                 "rotation": 0,
                 "top": 85,
                 "width": 241.23333740234375
-              },
-              "type": "text"
-            },
-            {
-              "background": {
-                "color": {
-                  "field": "control_em_switch2_off",
-                  "fixed": "#D9D9D9"
-                },
-                "image": {
-                  "field": "sub_pump1_alarm",
-                  "mode": "fixed"
-                }
-              },
-              "border": {
-                "color": {
-                  "fixed": "dark-green"
-                }
-              },
-              "config": {
-                "align": "center",
-                "color": {
-                  "fixed": "#000000"
-                },
-                "text": {
-                  "field": "sub_pump2_alarm",
-                  "mode": "fixed"
-                },
-                "valign": "middle"
-              },
-              "constraint": {
-                "horizontal": "left",
-                "vertical": "top"
-              },
-              "links": [],
-              "name": "control_em_switch2_off",
-              "placement": {
-                "height": 25,
-                "left": 15,
-                "rotation": 0,
-                "top": 115,
-                "width": 25
-              },
-              "type": "ellipse"
-            },
-            {
-              "background": {
-                "color": {
-                  "fixed": "transparent"
-                }
-              },
-              "border": {
-                "color": {
-                  "fixed": "dark-green"
-                }
-              },
-              "config": {
-                "align": "left",
-                "color": {
-                  "fixed": "rgb(204, 204, 220)"
-                },
-                "size": 16,
-                "text": {
-                  "field": "sub_pump1_alarm",
-                  "fixed": "Emergency switch PTU 4 - Off",
-                  "mode": "fixed"
-                },
-                "valign": "middle"
-              },
-              "constraint": {
-                "horizontal": "left",
-                "vertical": "top"
-              },
-              "links": [],
-              "name": "control_em_switch2_off label",
-              "placement": {
-                "height": 26,
-                "left": 50,
-                "rotation": 0,
-                "top": 115,
-                "width": 241
               },
               "type": "text"
             }
@@ -36692,38 +36486,8 @@
           "pluginVersion": "2.1.4",
           "queryType": "table",
           "rawQuery": true,
-          "rawSql": "SELECT\r\n  timestamp          AS time,\r\n  error__value       AS error,\r\n  overload__value    AS overload,\r\n  online__value      AS status_online,\r\n  available__value   AS status_available\r\nFROM public.marpower__450000_dc_distribution__esi\r\nWHERE topic = 'marpower/450000-dc-distribution/esi/keb7'\r\nORDER BY timestamp DESC\r\nLIMIT 1",
+          "rawSql": "SELECT\r\n  timestamp             AS time,\r\n  error__value          AS error,\r\n  overload__value       AS overload,\r\n  online__value         AS status_online,\r\n  available__value      AS status_available,\r\n  emergswitchoff__value AS control_em_switch1_off\r\nFROM public.marpower__450000_dc_distribution__esi\r\nWHERE topic = 'marpower/450000-dc-distribution/esi/keb7'\r\nORDER BY timestamp DESC\r\nLIMIT 1",
           "refId": "A",
-          "sql": {
-            "columns": [
-              {
-                "parameters": [],
-                "type": "function"
-              }
-            ],
-            "groupBy": [
-              {
-                "property": {
-                  "type": "string"
-                },
-                "type": "groupBy"
-              }
-            ],
-            "limit": 50
-          }
-        },
-        {
-          "dataset": "dev",
-          "datasource": {
-            "type": "grafana-postgresql-datasource",
-            "uid": "${datasource}"
-          },
-          "editorMode": "code",
-          "format": "table",
-          "hide": false,
-          "rawQuery": true,
-          "rawSql": "SELECT\r\n  LAST_VALUE(time ORDER BY time) AS time,\r\n  LAST_VALUE((\"KEB7_ESI_SB_EMERGSWITCHOFF3\").value ORDER BY time) AS control_em_switch1_off,\r\n  LAST_VALUE((\"KEB7_ESI_SB_EMERGSWITCHOFF4\").value ORDER BY time) AS control_em_switch2_off\r\nFROM marpower.\"450000_dc_distribution_general\"",
-          "refId": "B",
           "sql": {
             "columns": [
               {
