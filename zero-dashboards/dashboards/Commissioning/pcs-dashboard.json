@@ -8697,9 +8697,23 @@
             "uid": "${datasource}"
           },
           "editorMode": "code",
-          "format": "table",
+          "editorType": "sql",
+          "format": 1,
+          "meta": {
+            "builderOptions": {
+              "columns": [],
+              "database": "",
+              "limit": 1000,
+              "meta": {},
+              "mode": "list",
+              "queryType": "table",
+              "table": ""
+            }
+          },
+          "pluginVersion": "2.1.4",
+          "queryType": "table",
           "rawQuery": true,
-          "rawSql": "SELECT\r\n  LAST_VALUE(time ORDER BY time) AS time,\r\n  LAST_VALUE((\"AFT_THRUST_WINDINGTEMPU1\").value ORDER BY time)      AS winding_U1_temp,\r\n  LAST_VALUE((\"AFT_THRUST_WINDINGTEMPV1\").value ORDER BY time)      AS winding_V1_temp,\r\n  LAST_VALUE((\"AFT_THRUST_WINDINGTEMPW1\").value ORDER BY time)      AS winding_W1_temp,\r\n  LAST_VALUE((\"AFT_THRUST_VENTTEMP1\").value ORDER BY time)          AS ventilation1_temp,\r\n  LAST_VALUE((\"AFT_THRUST_WINDINGTEMPU2\").value ORDER BY time)      AS winding_U2_temp,\r\n  LAST_VALUE((\"AFT_THRUST_WINDINGTEMPV2\").value ORDER BY time)      AS winding_V2_temp,\r\n  LAST_VALUE((\"AFT_THRUST_WINDINGTEMPW2\").value ORDER BY time)      AS winding_W2_temp,\r\n  LAST_VALUE((\"AFT_THRUST_VENTTEMP2\").value ORDER BY time)          AS ventilation2_temp,\r\n  LAST_VALUE((\"STERN_THRUST_BEARING_DE_TEMP\").value ORDER BY time)  AS bearing_de_temp,\r\n  LAST_VALUE((\"STERN_THRUST_BEARING_NDE_TEMP\").value ORDER BY time) AS bearing_nde_temp\r\nFROM marpower.\"150000_propulsion_general\"",
+          "rawSql": "SELECT\r\n  timestamp                         AS time,\r\n  aft_thrust_windingtempu_1__value  AS winding_U1_temp,\r\n  aft_thrust_windingtempv_1__value  AS winding_V1_temp,\r\n  aft_thrust_windingtempw_1__value  AS winding_W1_temp,\r\n  aft_thrust_venttemp_1__value      AS ventilation1_temp,\r\n  aft_thrust_windingtempu_2__value  AS winding_U2_temp,\r\n  aft_thrust_windingtempv_2__value  AS winding_V2_temp,\r\n  aft_thrust_windingtempw_2__value  AS winding_W2_temp,\r\n  aft_thrust_venttemp_2__value      AS ventilation2_temp,\r\n  stern_thrust_bearing_de_temp__value  AS bearing_de_temp,\r\n  stern_thrust_bearing_nde_temp__value AS bearing_nde_temp\r\nFROM public.marpower__150000_propulsion_general\r\nORDER BY timestamp DESC\r\nLIMIT 1",
           "refId": "A",
           "sql": {
             "columns": [
@@ -9576,9 +9590,23 @@
             "uid": "${datasource}"
           },
           "editorMode": "code",
-          "format": "table",
+          "editorType": "sql",
+          "format": 1,
+          "meta": {
+            "builderOptions": {
+              "columns": [],
+              "database": "",
+              "limit": 1000,
+              "meta": {},
+              "mode": "list",
+              "queryType": "table",
+              "table": ""
+            }
+          },
+          "pluginVersion": "2.1.4",
+          "queryType": "table",
           "rawQuery": true,
-          "rawSql": "SELECT\r\n  LAST_VALUE(time ORDER BY time) AS time,\r\n  LAST_VALUE((\"FWD_THRUST_WINDINGTEMPU1\").value ORDER BY time)      AS winding_U1_temp,\r\n  LAST_VALUE((\"FWD_THRUST_WINDINGTEMPV1\").value ORDER BY time)      AS winding_V1_temp,\r\n  LAST_VALUE((\"FWD_THRUST_WINDING_TEMP_W1\").value ORDER BY time)    AS winding_W1_temp,\r\n  LAST_VALUE((\"FWD_THRUST_VENTTEMP1\").value ORDER BY time)          AS ventilation1_temp,\r\n  LAST_VALUE((\"BOW_THRUST_WINDINGTEMPU2\").value ORDER BY time)      AS winding_U2_temp,\r\n  LAST_VALUE((\"BOW_THRUST_WINDINGTEMPV2\").value ORDER BY time)      AS winding_V2_temp,\r\n  LAST_VALUE((\"BOW_THRUST_WINDINGTEMPW2\").value ORDER BY time)      AS winding_W2_temp,\r\n  LAST_VALUE((\"FWD_THRUST_VENTTEMP2\").value ORDER BY time)          AS ventilation2_temp,\r\n  LAST_VALUE((\"BOW_THRUST_BEARING_DE_TEMP\").value ORDER BY time)    AS bearing_de_temp,\r\n  LAST_VALUE((\"BOW_THRUST_BEARING_NDE_TEMP\").value ORDER BY time)   AS bearing_nde_temp\r\nFROM marpower.\"150000_propulsion_general\"",
+          "rawSql": "SELECT\r\n  timestamp                         AS time,\r\n  fwd_thrust_windingtempu_1__value  AS winding_U1_temp,\r\n  fwd_thrust_windingtempv_1__value  AS winding_V1_temp,\r\n  fwd_thrust_winding_temp_w_1__value AS winding_W1_temp,\r\n  fwd_thrust_venttemp_1__value      AS ventilation1_temp,\r\n  bow_thrust_windingtempu_2__value  AS winding_U2_temp,\r\n  bow_thrust_windingtempv_2__value  AS winding_V2_temp,\r\n  bow_thrust_windingtempw_2__value  AS winding_W2_temp,\r\n  fwd_thrust_venttemp_2__value      AS ventilation2_temp,\r\n  bow_thrust_bearing_de_temp__value  AS bearing_de_temp,\r\n  bow_thrust_bearing_nde_temp__value AS bearing_nde_temp\r\nFROM public.marpower__150000_propulsion_general\r\nORDER BY timestamp DESC\r\nLIMIT 1",
           "refId": "A",
           "sql": {
             "columns": [
