@@ -18,9 +18,9 @@ class HeatSource(ThrsValues):
     heat_flow: Stamp[Watt]
 
 
-class GasExchanger(ThrsValues):
+class HvacExchanger(ThrsValues):
     heat_flow: Stamp[Watt]
-    max_temp: Stamp[Celsius]
+    maximum_temperature: Stamp[Celsius]
 
 
 class Boundary(ThrsValues):

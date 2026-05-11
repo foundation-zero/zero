@@ -10,7 +10,7 @@ from thrs.orchestration.executor import SimulationExecutionResult
 async def test_filling(cycler: Cycler, simulation_inputs: BoilersSimulationInputs):
     simulation_inputs_no_consumption = simulation_inputs.model_copy(
         update={
-            "boilers_freshwater_return_set": simulation_inputs.boilers_freshwater_return_set.model_copy(
+            "boilers_freshwater_return_set": simulation_inputs.boilers_hotwater_demand.model_copy(
                 update={"flow": Stamped.stamp(0)}
             )
         }

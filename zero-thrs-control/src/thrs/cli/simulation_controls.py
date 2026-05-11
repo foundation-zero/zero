@@ -69,6 +69,7 @@ from thrs.input_output.definitions.simulation import (
     Boundary,
     FlowBoundary,
     HeatSource,
+    HvacExchanger,
     OverpressureTemperatureBoundary,
     Pcs,
     TemperatureBoundary,
@@ -215,14 +216,13 @@ INPUTS = {
             temperature=Stamped.stamp(20),
             overpressure=Stamped.stamp(3),
         ),
-        boilers_gas_exchanger=HeatSource(heat_flow=Stamped.stamp(300)),
-        boilers_gas_exchanger_max_temp=TemperatureBoundary(
-            temperature=Stamped.stamp(36)
+        boilers_hvac_exchanger=HvacExchanger(
+            heat_flow=Stamped.stamp(300), maximum_temperature=Stamped.stamp(36)
         ),
         boilers_seawater_supply=TemperatureBoundary(
             temperature=Stamped.stamp(SEAWATER_TEMPERATURE)
         ),
-        boilers_freshwater_return=FlowBoundary(flow=Stamped.stamp(30)),
+        boilers_hotwater_demand=FlowBoundary(flow=Stamped.stamp(30)),
     ),
 }
 

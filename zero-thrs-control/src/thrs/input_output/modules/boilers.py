@@ -16,7 +16,7 @@ class BoilersSensorValues(ThrsValues):
     boilers_pump: Annotated[
         sensor.Pump, component_meta(yard_tag="50001022", component_type="pump")
     ]
-    boilers_temperature_HVAC_exchanger_return: Annotated[
+    boilers_temperature_hvac_exchanger_return: Annotated[
         sensor.TemperatureSensor,
         component_meta(yard_tag="50001038-25", component_type="temperature_sensor"),
     ]
@@ -333,11 +333,9 @@ class BoilersSimulationInputs(SimulationInputs):
     boilers_fahrenheit_supply: simulation.Boundary
     boilers_ht_supply: simulation.Boundary
     boilers_freshwater_supply: simulation.OverpressureTemperatureBoundary
-    # boilers_gas_exchanger: simulation.GasExchanger
-    boilers_gas_exchanger: simulation.HeatSource
-    boilers_gas_exchanger_max_temp: simulation.TemperatureBoundary
+    boilers_hvac_exchanger: simulation.HvacExchanger
     boilers_seawater_supply: simulation.TemperatureBoundary
-    boilers_freshwater_return: simulation.FlowBoundary
+    boilers_hotwater_demand: simulation.FlowBoundary
 
     @computed_field(
         json_schema_extra=component_meta(
@@ -431,3 +429,4 @@ class BoilersSimulationOutputs(SimulationValues):
     boilers_ht_return: simulation.TemperatureBoundary
     boilers_seawater_return: simulation.TemperatureBoundary
     boilers_seawater_supply: simulation.FlowBoundary
+    boilers_freshwater_return: simulation.FlowBoundary
