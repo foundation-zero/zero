@@ -22,6 +22,28 @@ from thrs.utils.string import hyphenize
 logger = logging.getLogger(__name__)
 
 
+class NoopExecutor(Executor[CombinedValues, CombinedValues]):
+    def __init__(self, start_time: datetime | None = None):
+        self._start_time = start_time or datetime.now()
+
+    async def start(self):
+        pass
+
+    async def tick(
+        self, control_values: CombinedValues
+    ) -> ExecutionResult[CombinedValues]:
+        return ExecutionResult(
+            timestamp=datetime.now(), sensor_values=CombinedValues(values={})
+        )
+
+    @property
+    def start_time(self) -> datetime:
+        return self._start_time
+
+    def time(self) -> datetime:
+        return datetime.now()
+
+
 class MqttExecutor[O: SimulationValues](Executor[CombinedValues, CombinedValues]):
     # Controller client listens to sensor values and publishes control values (our control logic)
     # Environment client listens to control values and publishes sensor values (mimicking the PLC)
@@ -180,6 +202,48 @@ class MqttExecutor[O: SimulationValues](Executor[CombinedValues, CombinedValues]
             timestamp=datetime.now(),
             sensor_values=sensors if sensors else CombinedValues(values={}),
         )
+
+    @property
+    def start_time(self) -> datetime:
+        return self._inner.start_time
+
+    def time(self) -> datetime:
+        return self._inner.time()
+
+
+class BoatExecutor(Executor[CombinedValues, CombinedValues]):
+    # The boat executor works by using one side of the MqttExecutor by passing the NoopExecutor as the inner executor
+    # The MqttExecutor does:
+    # 1) On tick publish control values and return the latest sensor values
+    # 2) Listen to control values, pass them to the inner executor and publish the resulting sensor values
+
+    # The NoopExecutor returns empty sensor values, so the MqttExecutor has nothing to publish. This makes the boat executor just do 1)
+    def __init__(
+        self,
+        controller_client: Client,
+        environment_client: Client,
+        topic_prefix: str,
+        module_nesting: CombinedModule,
+        start_time: datetime | None = None,
+    ):
+        self._inner = MqttExecutor(
+            NoopExecutor(start_time=start_time),
+            controller_client,
+            environment_client,
+            topic_prefix,
+            module_nesting,
+        )
+
+    async def start(self):
+        await self._inner.start()
+
+    async def run(self):
+        await self._inner.run()
+
+    async def tick(
+        self, control_values: CombinedValues
+    ) -> ExecutionResult[CombinedValues]:
+        return await self._inner.tick(control_values)
 
     @property
     def start_time(self) -> datetime:
