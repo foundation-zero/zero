@@ -36001,10 +36001,24 @@
             "uid": "${datasource}"
           },
           "editorMode": "code",
-          "format": "table",
+          "editorType": "sql",
+          "format": 1,
           "hide": false,
+          "meta": {
+            "builderOptions": {
+              "columns": [],
+              "database": "",
+              "limit": 1000,
+              "meta": {},
+              "mode": "list",
+              "queryType": "table",
+              "table": ""
+            }
+          },
+          "pluginVersion": "2.1.4",
+          "queryType": "table",
           "rawQuery": true,
-          "rawSql": "SELECT\r\n  LAST_VALUE(time ORDER BY time) AS time,\r\n  LAST_VALUE((\"ERROR\").value ORDER BY time)     AS error,\r\n  LAST_VALUE((\"OVERLOAD\").value ORDER BY time)  AS overload,\r\n  LAST_VALUE((\"ONLINE\").value ORDER BY time)    AS status_online,\r\n  LAST_VALUE((\"AVAILABLE\").value ORDER BY time) AS status_available\r\nFROM marpower.\"450000_dc_distribution_esi\"\r\nWHERE topic = 'marpower/450000-dc-distribution/esi/keb6'",
+          "rawSql": "SELECT\r\n  timestamp          AS time,\r\n  error__value       AS error,\r\n  overload__value    AS overload,\r\n  online__value      AS status_online,\r\n  available__value   AS status_available\r\nFROM public.marpower__450000_dc_distribution__esi\r\nWHERE topic = 'marpower/450000-dc-distribution/esi/keb6'\r\nORDER BY timestamp DESC\r\nLIMIT 1",
           "refId": "A",
           "sql": {
             "columns": [
@@ -36031,10 +36045,24 @@
             "uid": "${datasource}"
           },
           "editorMode": "code",
-          "format": "table",
+          "editorType": "sql",
+          "format": 1,
           "hide": false,
+          "meta": {
+            "builderOptions": {
+              "columns": [],
+              "database": "",
+              "limit": 1000,
+              "meta": {},
+              "mode": "list",
+              "queryType": "table",
+              "table": ""
+            }
+          },
+          "pluginVersion": "2.1.4",
+          "queryType": "table",
           "rawQuery": true,
-          "rawSql": "SELECT\r\n  LAST_VALUE(time ORDER BY time) AS time,\r\n  LAST_VALUE((\"KEB6_ESI_PS_EMERGSWITCHOFF1\").value ORDER BY time) AS control_em_switch1_off,\r\n  LAST_VALUE((\"KEB6_ESI_PS_EMERGSWITCHOFF2\").value ORDER BY time) AS control_em_switch2_off\r\nFROM marpower.\"450000_dc_distribution_general\"",
+          "rawSql": "SELECT\r\n  timestamp                                     AS time,\r\n  NULL AS control_em_switch1_off,\r\n  NULL AS control_em_switch2_off\r\nFROM public.marpower__450000_dc_distribution_general\r\nORDER BY timestamp DESC\r\nLIMIT 1",
           "refId": "B",
           "sql": {
             "columns": [
@@ -36647,10 +36675,24 @@
             "uid": "${datasource}"
           },
           "editorMode": "code",
-          "format": "table",
+          "editorType": "sql",
+          "format": 1,
           "hide": false,
+          "meta": {
+            "builderOptions": {
+              "columns": [],
+              "database": "",
+              "limit": 1000,
+              "meta": {},
+              "mode": "list",
+              "queryType": "table",
+              "table": ""
+            }
+          },
+          "pluginVersion": "2.1.4",
+          "queryType": "table",
           "rawQuery": true,
-          "rawSql": "SELECT\r\n  LAST_VALUE(time ORDER BY time) AS time,\r\n  LAST_VALUE((\"ERROR\").value ORDER BY time)     AS error,\r\n  LAST_VALUE((\"OVERLOAD\").value ORDER BY time)  AS overload,\r\n  LAST_VALUE((\"ONLINE\").value ORDER BY time)    AS status_online,\r\n  LAST_VALUE((\"AVAILABLE\").value ORDER BY time) AS status_available\r\nFROM marpower.\"450000_dc_distribution_esi\"\r\nWHERE topic = 'marpower/450000-dc-distribution/esi/keb7'",
+          "rawSql": "SELECT\r\n  timestamp          AS time,\r\n  error__value       AS error,\r\n  overload__value    AS overload,\r\n  online__value      AS status_online,\r\n  available__value   AS status_available\r\nFROM public.marpower__450000_dc_distribution__esi\r\nWHERE topic = 'marpower/450000-dc-distribution/esi/keb7'\r\nORDER BY timestamp DESC\r\nLIMIT 1",
           "refId": "A",
           "sql": {
             "columns": [
@@ -37339,9 +37381,23 @@
             "uid": "${datasource}"
           },
           "editorMode": "code",
-          "format": "table",
+          "editorType": "sql",
+          "format": 1,
+          "meta": {
+            "builderOptions": {
+              "columns": [],
+              "database": "",
+              "limit": 1000,
+              "meta": {},
+              "mode": "list",
+              "queryType": "table",
+              "table": ""
+            }
+          },
+          "pluginVersion": "2.1.4",
+          "queryType": "table",
           "rawQuery": true,
-          "rawSql": "SELECT\r\n  LAST_VALUE(time ORDER BY time) AS time,\r\n  LAST_VALUE((\"KEB6_SB08_TEMP\").value ORDER BY time)        AS sb08,\r\n  LAST_VALUE((\"KEB6_MSB_AFT_TEMPP01\").value ORDER BY time)  AS msb_aft1,\r\n  LAST_VALUE((\"KEB6_MSB_AFT_TEMPP02\").value ORDER BY time)  AS msb_aft2,\r\n  LAST_VALUE((\"KEB7_MSB_AFT_P03_TEMP\").value ORDER BY time) AS msb_aft3,\r\n  LAST_VALUE((\"KEB7_MSB_AFT_P04_TEMP\").value ORDER BY time) AS msb_aft4,\r\n  LAST_VALUE((\"KEB8_FWD_SB02_TEMPP01\").value ORDER BY time) AS sb02_fwd1,\r\n  LAST_VALUE((\"KEB8_FWD_SB02_TEMPP02\").value ORDER BY time) AS sb02_fwd2\r\nFROM marpower.\"450000_dc_distribution_general\"",
+          "rawSql": "SELECT\r\n  timestamp                       AS time,\r\n  keb_6_sb_08_temp__value         AS sb08,\r\n  keb_6_msb_aft_tempp_01__value   AS msb_aft1,\r\n  keb_6_msb_aft_tempp_02__value   AS msb_aft2,\r\n  keb_7_msb_aft_p_03_temp__value  AS msb_aft3,\r\n  keb_7_msb_aft_p_04_temp__value  AS msb_aft4,\r\n  keb_8_fwd_sb_02_tempp_01__value AS sb02_fwd1,\r\n  keb_8_fwd_sb_02_tempp_02__value AS sb02_fwd2\r\nFROM public.marpower__450000_dc_distribution_general\r\nORDER BY timestamp DESC\r\nLIMIT 1",
           "refId": "A",
           "sql": {
             "columns": [
