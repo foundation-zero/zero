@@ -5517,10 +5517,24 @@
             "uid": "${datasource}"
           },
           "editorMode": "code",
-          "format": "table",
+          "editorType": "sql",
+          "format": 1,
           "hide": false,
+          "meta": {
+            "builderOptions": {
+              "columns": [],
+              "database": "",
+              "limit": 1000,
+              "meta": {},
+              "mode": "list",
+              "queryType": "table",
+              "table": ""
+            }
+          },
+          "pluginVersion": "2.1.4",
+          "queryType": "table",
           "rawQuery": true,
-          "rawSql": "SELECT\r\n  LAST_VALUE(time ORDER BY time) AS time,\r\n  LAST_VALUE((\"AFT_MOTOR_HEATINGONOFF\").value ORDER BY time) AS heating_on_off\r\nFROM marpower.\"150000_propulsion_general\"",
+          "rawSql": "SELECT\r\n  timestamp                     AS time,\r\n  aft_motor_heatingonoff__value AS heating_on_off\r\nFROM public.marpower__150000_propulsion_general\r\nORDER BY timestamp DESC\r\nLIMIT 1",
           "refId": "C",
           "sql": {
             "columns": [
@@ -5701,10 +5715,24 @@
             "uid": "${datasource}"
           },
           "editorMode": "code",
-          "format": "table",
+          "editorType": "sql",
+          "format": 1,
           "hide": false,
+          "meta": {
+            "builderOptions": {
+              "columns": [],
+              "database": "",
+              "limit": 1000,
+              "meta": {},
+              "mode": "list",
+              "queryType": "table",
+              "table": ""
+            }
+          },
+          "pluginVersion": "2.1.4",
+          "queryType": "table",
           "rawQuery": true,
-          "rawSql": "SELECT\r\n  LAST_VALUE(time ORDER BY time) AS time,\r\n  LAST_VALUE((\"FWD_MOTOR_HEATINGONOFF\").value ORDER BY time) AS heating_on_off\r\nFROM marpower.\"150000_propulsion_general\"",
+          "rawSql": "SELECT\r\n  timestamp                     AS time,\r\n  fwd_motor_heatingonoff__value AS heating_on_off\r\nFROM public.marpower__150000_propulsion_general\r\nORDER BY timestamp DESC\r\nLIMIT 1",
           "refId": "C",
           "sql": {
             "columns": [
@@ -6210,9 +6238,23 @@
             "uid": "${datasource}"
           },
           "editorMode": "code",
-          "format": "table",
+          "editorType": "sql",
+          "format": 1,
+          "meta": {
+            "builderOptions": {
+              "columns": [],
+              "database": "",
+              "limit": 1000,
+              "meta": {},
+              "mode": "list",
+              "queryType": "table",
+              "table": ""
+            }
+          },
+          "pluginVersion": "2.1.4",
+          "queryType": "table",
           "rawQuery": true,
-          "rawSql": "SELECT\r\n  LAST_VALUE(time ORDER BY time) AS time,\r\n  LAST_VALUE((\"DRIVEREADYFDBCK\").value ORDER BY time)     AS drive_ready,\r\n  LAST_VALUE((\"DRIVERUNNINGFDBCK\").value ORDER BY time)   AS drive_running,\r\n  LAST_VALUE((\"DRIVEWARNFDBCK\").value ORDER BY time)      AS drive_warning,\r\n  LAST_VALUE((\"DRIVEFAILFDBCK\").value ORDER BY time)      AS drive_fail,\r\n  LAST_VALUE((\"DRIVEPWRREDUCEFDBCK\").value ORDER BY time) AS drive_power_reduce\r\nFROM marpower.\"150000_propulsion\"\r\nWHERE topic = 'marpower/150000-propulsion/aft-ara1-pcs'",
+          "rawSql": "SELECT\r\n  timestamp                    AS time,\r\n  drivereadyfdbck__value       AS drive_ready,\r\n  driverunningfdbck__value     AS drive_running,\r\n  drivewarnfdbck__value        AS drive_warning,\r\n  drivefailfdbck__value        AS drive_fail,\r\n  drivepwrreducefdbck__value   AS drive_power_reduce\r\nFROM public.marpower__150000_propulsion\r\nWHERE topic = 'marpower/150000-propulsion/aft_ara1_pcs'\r\nORDER BY timestamp DESC\r\nLIMIT 1",
           "refId": "A",
           "sql": {
             "columns": [
@@ -6718,9 +6760,23 @@
             "uid": "${datasource}"
           },
           "editorMode": "code",
-          "format": "table",
+          "editorType": "sql",
+          "format": 1,
+          "meta": {
+            "builderOptions": {
+              "columns": [],
+              "database": "",
+              "limit": 1000,
+              "meta": {},
+              "mode": "list",
+              "queryType": "table",
+              "table": ""
+            }
+          },
+          "pluginVersion": "2.1.4",
+          "queryType": "table",
           "rawQuery": true,
-          "rawSql": "SELECT\r\n  LAST_VALUE(time ORDER BY time) AS time,\r\n  LAST_VALUE((\"DRIVEREADYFDBCK\").value ORDER BY time)     AS drive_ready,\r\n  LAST_VALUE((\"DRIVERUNNINGFDBCK\").value ORDER BY time)   AS drive_running,\r\n  LAST_VALUE((\"DRIVEWARNFDBCK\").value ORDER BY time)      AS drive_warning,\r\n  LAST_VALUE((\"DRIVEFAILFDBCK\").value ORDER BY time)      AS drive_fail,\r\n  LAST_VALUE((\"DRIVEPWRREDUCEFDBCK\").value ORDER BY time) AS drive_power_reduce\r\nFROM marpower.\"150000_propulsion\"\r\nWHERE topic = 'marpower/150000-propulsion/aft-ara2-pcs'",
+          "rawSql": "SELECT\r\n  timestamp                    AS time,\r\n  drivereadyfdbck__value       AS drive_ready,\r\n  driverunningfdbck__value     AS drive_running,\r\n  drivewarnfdbck__value        AS drive_warning,\r\n  drivefailfdbck__value        AS drive_fail,\r\n  drivepwrreducefdbck__value   AS drive_power_reduce\r\nFROM public.marpower__150000_propulsion\r\nWHERE topic = 'marpower/150000-propulsion/aft_ara2_pcs'\r\nORDER BY timestamp DESC\r\nLIMIT 1",
           "refId": "A",
           "sql": {
             "columns": [
@@ -7226,9 +7282,23 @@
             "uid": "${datasource}"
           },
           "editorMode": "code",
-          "format": "table",
+          "editorType": "sql",
+          "format": 1,
+          "meta": {
+            "builderOptions": {
+              "columns": [],
+              "database": "",
+              "limit": 1000,
+              "meta": {},
+              "mode": "list",
+              "queryType": "table",
+              "table": ""
+            }
+          },
+          "pluginVersion": "2.1.4",
+          "queryType": "table",
           "rawQuery": true,
-          "rawSql": "SELECT\r\n  LAST_VALUE(time ORDER BY time) AS time,\r\n  LAST_VALUE((\"DRIVEREADYFDBCK\").value ORDER BY time)     AS drive_ready,\r\n  LAST_VALUE((\"DRIVERUNNINGFDBCK\").value ORDER BY time)   AS drive_running,\r\n  LAST_VALUE((\"DRIVEWARNFDBCK\").value ORDER BY time)      AS drive_warning,\r\n  LAST_VALUE((\"DRIVEFAILFDBCK\").value ORDER BY time)      AS drive_fail,\r\n  LAST_VALUE((\"DRIVEPWRREDUCEFDBCK\").value ORDER BY time) AS drive_power_reduce\r\nFROM marpower.\"150000_propulsion\"\r\nWHERE topic = 'marpower/150000-propulsion/fwd-ara1-pcs'",
+          "rawSql": "SELECT\r\n  timestamp                    AS time,\r\n  drivereadyfdbck__value       AS drive_ready,\r\n  driverunningfdbck__value     AS drive_running,\r\n  drivewarnfdbck__value        AS drive_warning,\r\n  drivefailfdbck__value        AS drive_fail,\r\n  drivepwrreducefdbck__value   AS drive_power_reduce\r\nFROM public.marpower__150000_propulsion\r\nWHERE topic = 'marpower/150000-propulsion/fwd_ara1_pcs'\r\nORDER BY timestamp DESC\r\nLIMIT 1",
           "refId": "A",
           "sql": {
             "columns": [
@@ -7734,9 +7804,23 @@
             "uid": "${datasource}"
           },
           "editorMode": "code",
-          "format": "table",
+          "editorType": "sql",
+          "format": 1,
+          "meta": {
+            "builderOptions": {
+              "columns": [],
+              "database": "",
+              "limit": 1000,
+              "meta": {},
+              "mode": "list",
+              "queryType": "table",
+              "table": ""
+            }
+          },
+          "pluginVersion": "2.1.4",
+          "queryType": "table",
           "rawQuery": true,
-          "rawSql": "SELECT\r\n  LAST_VALUE(time ORDER BY time) AS time,\r\n  LAST_VALUE((\"DRIVEREADYFDBCK\").value ORDER BY time)     AS drive_ready,\r\n  LAST_VALUE((\"DRIVERUNNINGFDBCK\").value ORDER BY time)   AS drive_running,\r\n  LAST_VALUE((\"DRIVEWARNFDBCK\").value ORDER BY time)      AS drive_warning,\r\n  LAST_VALUE((\"DRIVEFAILFDBCK\").value ORDER BY time)      AS drive_fail,\r\n  LAST_VALUE((\"DRIVEPWRREDUCEFDBCK\").value ORDER BY time) AS drive_power_reduce\r\nFROM marpower.\"150000_propulsion\"\r\nWHERE topic = 'marpower/150000-propulsion/fwd-ara2-pcs'",
+          "rawSql": "SELECT\r\n  timestamp                    AS time,\r\n  drivereadyfdbck__value       AS drive_ready,\r\n  driverunningfdbck__value     AS drive_running,\r\n  drivewarnfdbck__value        AS drive_warning,\r\n  drivefailfdbck__value        AS drive_fail,\r\n  drivepwrreducefdbck__value   AS drive_power_reduce\r\nFROM public.marpower__150000_propulsion\r\nWHERE topic = 'marpower/150000-propulsion/fwd_ara2_pcs'\r\nORDER BY timestamp DESC\r\nLIMIT 1",
           "refId": "A",
           "sql": {
             "columns": [
