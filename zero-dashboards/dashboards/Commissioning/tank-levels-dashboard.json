@@ -77,7 +77,7 @@
     },
     {
       "datasource": {
-        "type": "grafana-postgresql-datasource",
+        "type": "info8fcc-greptimedb-datasource",
         "uid": "${datasource}"
       },
       "fieldConfig": {
@@ -97,7 +97,7 @@
               }
             ]
           },
-          "unit": "percent"
+          "unit": "mamp"
         },
         "overrides": []
       },
@@ -371,7 +371,7 @@
           "editorMode": "code",
           "format": "table",
           "rawQuery": true,
-          "rawSql": "SELECT\n  LAST_VALUE(time ORDER BY time) AS time,\n  LAST_VALUE((\"TANK_1_FR_45_PS_LEVEL\").value ORDER BY time)      AS fresh_water_tank_1_level,\n  LAST_VALUE((\"TANK_2_FR_45_SB_LEVEL\").value ORDER BY time)      AS fresh_water_tank_2_level\nFROM marpower.\"250000_fresh_water\";\n",
+          "rawSql": "select timestamp as time, tank_1_fr_45_ps_level__value AS fresh_water_tank_1_level, tank_2_fr_45_sb_level__value AS fresh_water_tank_2_level from marpower__250000_fresh_water ORDER BY timestamp DESC LIMIT 1;",
           "refId": "A",
           "sql": {
             "columns": [
@@ -394,14 +394,14 @@
         {
           "dataset": "dev",
           "datasource": {
-            "type": "grafana-postgresql-datasource",
+            "type": "info8fcc-greptimedb-datasource",
             "uid": "${datasource}"
           },
           "editorMode": "code",
           "format": "table",
           "hide": false,
           "rawQuery": true,
-          "rawSql": "SELECT \r\n  MAX(CASE WHEN mqtt_json_path = LOWER('TANK_1_FR_45_PS_LEVEL') THEN '(' || yard_tag || ')' ELSE NULL END) AS fresh_water_tank_1_level_tag,\r\n  MAX(CASE WHEN mqtt_json_path = LOWER('TANK_2_FR_45_SB_LEVEL') THEN '(' || yard_tag || ')' ELSE NULL END) AS fresh_water_tank_2_level_tag\r\nFROM marpower.io_metadata_marpower\r\nWHERE mqtt_topic = 'marpower/250000-fresh-water'",
+          "rawSql": "select max(case when mqtt_json_path = lower('tank_1_fr_45_ps_level') then '(' || yard_tag || ')' else null end) AS fresh_water_tank_1_level_tag, max(case when mqtt_json_path = lower('tank_2_fr_45_sb_level') then '(' || yard_tag || ')' else null end) AS fresh_water_tank_2_level_tag from marpower__io_metadata where mqtt_topic = 'marpower/250000-fresh-water';",
           "refId": "B",
           "sql": {
             "columns": [
@@ -427,7 +427,7 @@
     },
     {
       "datasource": {
-        "type": "grafana-postgresql-datasource",
+        "type": "info8fcc-greptimedb-datasource",
         "uid": "${datasource}"
       },
       "fieldConfig": {
@@ -446,7 +446,7 @@
               }
             ]
           },
-          "unit": "percent"
+          "unit": "mamp"
         },
         "overrides": [
           {
@@ -879,7 +879,7 @@
           "editorMode": "code",
           "format": "table",
           "rawQuery": true,
-          "rawSql": "SELECT\n  LAST_VALUE(time ORDER BY time) AS time,\n  LAST_VALUE((\"HOTWATER11_LEVEL\").value ORDER BY time) AS tank11_level,\n  LAST_VALUE((\"HOTWATER13_LEVEL\").value ORDER BY time) AS tank13_level,\n  LAST_VALUE((\"HOTWATER15_LEVEL\").value ORDER BY time) AS tank15_level\nFROM marpower.\"340000_tankage\";\n",
+          "rawSql": "--select timestamp as time, hotwater_11_level__value AS tank11_level, hotwater_13_level__value AS tank13_level, hotwater_15_level__value AS tank15_level from marpower__340000_tankage ORDER BY timestamp DESC LIMIT 1;",
           "refId": "A",
           "sql": {
             "columns": [
@@ -902,14 +902,14 @@
         {
           "dataset": "dev",
           "datasource": {
-            "type": "grafana-postgresql-datasource",
+            "type": "info8fcc-greptimedb-datasource",
             "uid": "${datasource}"
           },
           "editorMode": "code",
           "format": "table",
           "hide": false,
           "rawQuery": true,
-          "rawSql": "SELECT \r\n  MAX(CASE WHEN mqtt_json_path = LOWER('HOTWATER11_LEVEL') THEN '(' || yard_tag || ')' ELSE NULL END) AS tank11_level_tag,\r\n  MAX(CASE WHEN mqtt_json_path = LOWER('HOTWATER13_LEVEL') THEN '(' || yard_tag || ')' ELSE NULL END) AS tank13_level_tag,\r\n  MAX(CASE WHEN mqtt_json_path = LOWER('HOTWATER15_LEVEL') THEN '(' || yard_tag || ')' ELSE NULL END) AS tank15_level_tag\r\nFROM marpower.io_metadata_marpower\r\nWHERE mqtt_topic = 'marpower/340000-tankage'",
+          "rawSql": "select max(case when mqtt_json_path = lower('hotwater_11_level') then '(' || yard_tag || ')' else null end) AS tank11_level_tag, max(case when mqtt_json_path = lower('hotwater_13_level') then '(' || yard_tag || ')' else null end) AS tank13_level_tag, max(case when mqtt_json_path = lower('hotwater_15_level') then '(' || yard_tag || ')' else null end) AS tank15_level_tag from marpower__io_metadata where mqtt_topic = 'marpower/340000-tankage';",
           "refId": "B",
           "sql": {
             "columns": [
@@ -935,7 +935,7 @@
     },
     {
       "datasource": {
-        "type": "grafana-postgresql-datasource",
+        "type": "info8fcc-greptimedb-datasource",
         "uid": "${datasource}"
       },
       "fieldConfig": {
@@ -978,7 +978,7 @@
             "properties": [
               {
                 "id": "unit",
-                "value": "percent"
+                "value": "mamp"
               }
             ]
           }
@@ -1148,13 +1148,13 @@
         {
           "dataset": "dev",
           "datasource": {
-            "type": "grafana-postgresql-datasource",
+            "type": "info8fcc-greptimedb-datasource",
             "uid": "${datasource}"
           },
           "editorMode": "code",
           "format": "table",
           "rawQuery": true,
-          "rawSql": "SELECT\r\n  LAST_VALUE(time ORDER BY time) AS time,\r\n  LAST_VALUE((\"TANK_LEVEL\").value ORDER BY time) AS tank_level\r\nFROM marpower.\"210000_bilge_fifi_general\"",
+          "rawSql": "select timestamp as time, tank_level__value AS tank_level from marpower__210000_bilge_fifi_general ORDER BY timestamp DESC LIMIT 1;",
           "refId": "A",
           "sql": {
             "columns": [
@@ -1177,14 +1177,14 @@
         {
           "dataset": "dev",
           "datasource": {
-            "type": "grafana-postgresql-datasource",
+            "type": "info8fcc-greptimedb-datasource",
             "uid": "${datasource}"
           },
           "editorMode": "code",
           "format": "table",
           "hide": false,
           "rawQuery": true,
-          "rawSql": "SELECT \r\n  MAX(CASE WHEN mqtt_json_path = LOWER('TANK_LEVEL') THEN '(' || yard_tag || ')' ELSE NULL END) AS tank_level_tag\r\nFROM marpower.io_metadata_marpower\r\nWHERE mqtt_topic = 'marpower/210000-bilge-fifi-general'",
+          "rawSql": "select max(case when mqtt_json_path = lower('tank_level') then '(' || yard_tag || ')' else null end) AS tank_level_tag from marpower__io_metadata where mqtt_topic = 'marpower/210000-bilge-fifi-general';",
           "refId": "B",
           "sql": {
             "columns": [
@@ -1210,7 +1210,7 @@
     },
     {
       "datasource": {
-        "type": "grafana-postgresql-datasource",
+        "type": "info8fcc-greptimedb-datasource",
         "uid": "${datasource}"
       },
       "fieldConfig": {
@@ -1253,7 +1253,7 @@
             "properties": [
               {
                 "id": "unit",
-                "value": "percent"
+                "value": "mamp"
               }
             ]
           }
@@ -1423,13 +1423,13 @@
         {
           "dataset": "dev",
           "datasource": {
-            "type": "grafana-postgresql-datasource",
+            "type": "info8fcc-greptimedb-datasource",
             "uid": "${datasource}"
           },
           "editorMode": "code",
           "format": "table",
           "rawQuery": true,
-          "rawSql": "SELECT\r\n  LAST_VALUE(time ORDER BY time) AS time,\r\n  LAST_VALUE((\"SLUDGE_TANK_PS_LEVEL\").value ORDER BY time) AS sludge_tank\r\nFROM marpower.\"340000_sewage\"",
+          "rawSql": "select timestamp as time, sludge_tank_ps_level__value AS sludge_tank from marpower__340000_sewage ORDER BY timestamp DESC LIMIT 1;",
           "refId": "A",
           "sql": {
             "columns": [
@@ -1452,14 +1452,14 @@
         {
           "dataset": "dev",
           "datasource": {
-            "type": "grafana-postgresql-datasource",
+            "type": "info8fcc-greptimedb-datasource",
             "uid": "${datasource}"
           },
           "editorMode": "code",
           "format": "table",
           "hide": false,
           "rawQuery": true,
-          "rawSql": "SELECT \r\n  MAX(CASE WHEN mqtt_json_path = LOWER('SLUDGE_TANK_PS_LEVEL') THEN '(' || yard_tag || ')' ELSE NULL END) AS sludge_tank_tag\r\nFROM marpower.io_metadata_marpower\r\nWHERE mqtt_topic = 'marpower/340000-sewage'",
+          "rawSql": "select max(case when mqtt_json_path = lower('sludge_tank_ps_level') then '(' || yard_tag || ')' else null end) AS sludge_tank_tag from marpower__io_metadata where mqtt_topic = 'marpower/340000-sewage';",
           "refId": "B",
           "sql": {
             "columns": [
@@ -1485,7 +1485,7 @@
     },
     {
       "datasource": {
-        "type": "grafana-postgresql-datasource",
+        "type": "info8fcc-greptimedb-datasource",
         "uid": "${datasource}"
       },
       "fieldConfig": {
@@ -1505,7 +1505,7 @@
               }
             ]
           },
-          "unit": "percent"
+          "unit": "mamp"
         },
         "overrides": []
       },
@@ -1899,13 +1899,13 @@
         {
           "dataset": "dev",
           "datasource": {
-            "type": "grafana-postgresql-datasource",
+            "type": "info8fcc-greptimedb-datasource",
             "uid": "${datasource}"
           },
           "editorMode": "code",
           "format": "table",
           "rawQuery": true,
-          "rawSql": "SELECT\r\n  LAST_VALUE(time ORDER BY time) AS time,\r\n  LAST_VALUE((\"GREY_WATER_TANK_AFT_SB_LEVEL\").value ORDER BY time)       AS grey_wat_aft_tank,\r\n  LAST_VALUE((\"GREY_WATER_TANK_FWD_SB_LEVEL\").value ORDER BY time)       AS grey_wat_fwd_tank,\r\n  LAST_VALUE((\"BLACK_GREY_WATER_TANK_AFT_PS_LEVEL\").value ORDER BY time) AS black_wat_aft_tank\r\nFROM marpower.\"340000_sewage\"",
+          "rawSql": "select timestamp as time, grey_water_tank_aft_sb_level__value AS grey_wat_aft_tank, grey_water_tank_fwd_sb_level__value AS grey_wat_fwd_tank, black_grey_water_tank_aft_ps_level__value AS black_wat_aft_tank from marpower__340000_sewage ORDER BY timestamp DESC LIMIT 1;",
           "refId": "A",
           "sql": {
             "columns": [
@@ -1928,14 +1928,14 @@
         {
           "dataset": "dev",
           "datasource": {
-            "type": "grafana-postgresql-datasource",
+            "type": "info8fcc-greptimedb-datasource",
             "uid": "${datasource}"
           },
           "editorMode": "code",
           "format": "table",
           "hide": false,
           "rawQuery": true,
-          "rawSql": "SELECT \r\n  MAX(CASE WHEN mqtt_json_path = LOWER('GREY_WATER_TANK_AFT_SB_LEVEL') THEN '(' || yard_tag || ')' ELSE NULL END)       AS grey_wat_aft_tank_tag,\r\n  MAX(CASE WHEN mqtt_json_path = LOWER('GREY_WATER_TANK_FWD_SB_LEVEL') THEN '(' || yard_tag || ')' ELSE NULL END)       AS grey_wat_fwd_tank_tag,\r\n  MAX(CASE WHEN mqtt_json_path = LOWER('BLACK_GREY_WATER_TANK_AFT_PS_LEVEL') THEN '(' || yard_tag || ')' ELSE NULL END) AS black_wat_aft_tank_tag\r\nFROM marpower.io_metadata_marpower\r\nWHERE mqtt_topic = 'marpower/340000-sewage'",
+          "rawSql": "select max(case when mqtt_json_path = lower('grey_water_tank_aft_sb_level') then '(' || yard_tag || ')' else null end) AS grey_wat_aft_tank_tag, max(case when mqtt_json_path = lower('grey_water_tank_fwd_sb_level') then '(' || yard_tag || ')' else null end) AS grey_wat_fwd_tank_tag, max(case when mqtt_json_path = lower('black_grey_water_tank_aft_ps_level') then '(' || yard_tag || ')' else null end) AS black_wat_aft_tank_tag from marpower__io_metadata where mqtt_topic = 'marpower/340000-sewage';",
           "refId": "B",
           "sql": {
             "columns": [
@@ -1961,7 +1961,7 @@
     },
     {
       "datasource": {
-        "type": "grafana-postgresql-datasource",
+        "type": "info8fcc-greptimedb-datasource",
         "uid": "${datasource}"
       },
       "fieldConfig": {
@@ -1981,7 +1981,7 @@
               }
             ]
           },
-          "unit": "percent"
+          "unit": "mamp"
         },
         "overrides": [
           {
@@ -2306,7 +2306,7 @@
           "editorMode": "code",
           "format": "table",
           "rawQuery": true,
-          "rawSql": "SELECT\n  LAST_VALUE(time ORDER BY time) AS time,\n  LAST_VALUE((\"TANK1_LEVEL\").value ORDER BY time) AS tank1_level,\n  LAST_VALUE((\"TANK2_LEVEL\").value ORDER BY time) AS tank2_level\nFROM marpower.\"250000_techwater\";\n",
+          "rawSql": "--select timestamp as time, tank_1_level__value AS tank1_level, tank_2_level__value AS tank2_level from marpower__250000_techwater ORDER BY timestamp DESC LIMIT 1;",
           "refId": "A",
           "sql": {
             "columns": [
@@ -2329,14 +2329,14 @@
         {
           "dataset": "dev",
           "datasource": {
-            "type": "grafana-postgresql-datasource",
+            "type": "info8fcc-greptimedb-datasource",
             "uid": "${datasource}"
           },
           "editorMode": "code",
           "format": "table",
           "hide": false,
           "rawQuery": true,
-          "rawSql": "SELECT \r\n  MAX(CASE WHEN mqtt_json_path = LOWER('TANK1_LEVEL') THEN '(' || yard_tag || ')' ELSE NULL END) AS tank1_level_tag,\r\n  MAX(CASE WHEN mqtt_json_path = LOWER('TANK2_LEVEL') THEN '(' || yard_tag || ')' ELSE NULL END) AS tank2_level_tag\r\nFROM marpower.io_metadata_marpower\r\nWHERE mqtt_topic = 'marpower/250000-techwater'",
+          "rawSql": "select max(case when mqtt_json_path = lower('tank_1_level') then '(' || yard_tag || ')' else null end) AS tank1_level_tag, max(case when mqtt_json_path = lower('tank_2_level') then '(' || yard_tag || ')' else null end) AS tank2_level_tag from marpower__io_metadata where mqtt_topic = 'marpower/250000-techwater';",
           "refId": "B",
           "sql": {
             "columns": [
@@ -2362,7 +2362,7 @@
     },
     {
       "datasource": {
-        "type": "grafana-postgresql-datasource",
+        "type": "info8fcc-greptimedb-datasource",
         "uid": "${datasource}"
       },
       "fieldConfig": {
@@ -2405,7 +2405,7 @@
             "properties": [
               {
                 "id": "unit",
-                "value": "percent"
+                "value": "mamp"
               }
             ]
           }
@@ -2575,13 +2575,13 @@
         {
           "dataset": "dev",
           "datasource": {
-            "type": "grafana-postgresql-datasource",
+            "type": "info8fcc-greptimedb-datasource",
             "uid": "${datasource}"
           },
           "editorMode": "code",
           "format": "table",
           "rawQuery": true,
-          "rawSql": "SELECT\r\n  LAST_VALUE(time ORDER BY time) AS time,\r\n  LAST_VALUE((\"SLUDGE_TANK_LEVEL\").value ORDER BY time) AS tank_level\r\nFROM marpower.\"300000_dirty_oil\"",
+          "rawSql": "select timestamp as time, sludge_tank_level__value AS tank_level from marpower__300000_dirty_oil ORDER BY timestamp DESC LIMIT 1;",
           "refId": "A",
           "sql": {
             "columns": [
@@ -2604,14 +2604,14 @@
         {
           "dataset": "dev",
           "datasource": {
-            "type": "grafana-postgresql-datasource",
+            "type": "info8fcc-greptimedb-datasource",
             "uid": "${datasource}"
           },
           "editorMode": "code",
           "format": "table",
           "hide": false,
           "rawQuery": true,
-          "rawSql": "SELECT \r\n  MAX(CASE WHEN mqtt_json_path = LOWER('SLUDGE_TANK_LEVEL') THEN '(' || yard_tag || ')' ELSE NULL END) AS tank_level_tag\r\nFROM marpower.io_metadata_marpower\r\nWHERE mqtt_topic = 'marpower/300000-dirty-oil'",
+          "rawSql": "select max(case when mqtt_json_path = lower('sludge_tank_level') then '(' || yard_tag || ')' else null end) AS tank_level_tag from marpower__io_metadata where mqtt_topic = 'marpower/300000-dirty-oil';",
           "refId": "B",
           "sql": {
             "columns": [
@@ -2647,7 +2647,7 @@
       "panels": [
         {
           "datasource": {
-            "type": "grafana-postgresql-datasource",
+            "type": "info8fcc-greptimedb-datasource",
             "uid": "${datasource}"
           },
           "fieldConfig": {
@@ -2700,7 +2700,7 @@
                   }
                 ]
               },
-              "unit": "percent"
+              "unit": "mamp"
             },
             "overrides": [
               {
@@ -2743,7 +2743,7 @@
               "editorMode": "code",
               "format": "table",
               "rawQuery": true,
-              "rawSql": "SELECT\r\n  time,\r\n  (\"TANK_1_FR_45_PS_LEVEL\").value as tank1_level,\r\n  (\"TANK_2_FR_45_SB_LEVEL\").value as tank2_level\r\nFROM marpower.\"250000_fresh_water\"",
+              "rawSql": "select timestamp as time, TANK_1_FR_45_PS_LEVEL__value as tank1_level, TANK_2_FR_45_SB_LEVEL__value as tank2_level from marpower__250000_fresh_water WHERE $__timeFilter(timestamp) ORDER BY timestamp DESC ;",
               "refId": "A",
               "sql": {
                 "columns": [
@@ -2784,7 +2784,7 @@
         },
         {
           "datasource": {
-            "type": "grafana-postgresql-datasource",
+            "type": "info8fcc-greptimedb-datasource",
             "uid": "${datasource}"
           },
           "fieldConfig": {
@@ -2837,7 +2837,7 @@
                   }
                 ]
               },
-              "unit": "percent"
+              "unit": "mamp"
             },
             "overrides": [
               {
@@ -2880,7 +2880,7 @@
               "editorMode": "code",
               "format": "table",
               "rawQuery": true,
-              "rawSql": "SELECT\r\n  time,\r\n  (\"HOTWATER11_LEVEL\").value as tank11_level,\r\n  (\"HOTWATER13_LEVEL\").value as tank13_level,\r\n  (\"HOTWATER15_LEVEL\").value as tank15_level\r\nFROM marpower.\"340000_tankage\"",
+              "rawSql": "--select timestamp as time, HOTWATER11_LEVEL__value as tank11_level, HOTWATER13_LEVEL__value as tank13_level, HOTWATER15_LEVEL__value as tank15_level from marpower__340000_tankage ORDER BY timestamp DESC LIMIT 1;",
               "refId": "A",
               "sql": {
                 "columns": [
@@ -2924,7 +2924,7 @@
         },
         {
           "datasource": {
-            "type": "grafana-postgresql-datasource",
+            "type": "info8fcc-greptimedb-datasource",
             "uid": "${datasource}"
           },
           "fieldConfig": {
@@ -2977,7 +2977,7 @@
                   }
                 ]
               },
-              "unit": "percent"
+              "unit": "mamp"
             },
             "overrides": [
               {
@@ -3020,7 +3020,7 @@
               "editorMode": "code",
               "format": "table",
               "rawQuery": true,
-              "rawSql": "SELECT\r\n  time,\r\n  (\"TANK1_LEVEL\").value as tank1_level,\r\n  (\"TANK2_LEVEL\").value as tank2_level\r\nFROM marpower.\"250000_techwater\"",
+              "rawSql": "--select timestamp as time, TANK1_LEVEL__value as tank1_level, TANK2_LEVEL__value as tank2_level from marpower__250000_techwater WHERE $__timeFilter(timestamp) ORDER BY timestamp DESC ;",
               "refId": "A",
               "sql": {
                 "columns": [
@@ -3061,7 +3061,7 @@
         },
         {
           "datasource": {
-            "type": "grafana-postgresql-datasource",
+            "type": "info8fcc-greptimedb-datasource",
             "uid": "${datasource}"
           },
           "fieldConfig": {
@@ -3114,7 +3114,7 @@
                   }
                 ]
               },
-              "unit": "percent"
+              "unit": "mamp"
             },
             "overrides": [
               {
@@ -3157,7 +3157,7 @@
               "editorMode": "code",
               "format": "table",
               "rawQuery": true,
-              "rawSql": "SELECT\r\n  time,\r\n  (\"GREY_WATER_TANK_AFT_SB_LEVEL\").value as grey_wat_aft_tank,\r\n  (\"GREY_WATER_TANK_FWD_SB_LEVEL\").value as grey_wat_fwd_tank,\r\n  (\"BLACK_GREY_WATER_TANK_AFT_PS_LEVEL\").value as black_wat_aft_tank\r\nFROM marpower.\"340000_sewage\"",
+              "rawSql": "select timestamp as time, GREY_WATER_TANK_AFT_SB_LEVEL__value as grey_wat_aft_tank, GREY_WATER_TANK_FWD_SB_LEVEL__value as grey_wat_fwd_tank, BLACK_GREY_WATER_TANK_AFT_PS_LEVEL__value as black_wat_aft_tank from marpower__340000_sewage WHERE $__timeFilter(timestamp) ORDER BY timestamp DESC ;",
               "refId": "A",
               "sql": {
                 "columns": [
@@ -3199,7 +3199,7 @@
         },
         {
           "datasource": {
-            "type": "grafana-postgresql-datasource",
+            "type": "info8fcc-greptimedb-datasource",
             "uid": "${datasource}"
           },
           "fieldConfig": {
@@ -3252,7 +3252,7 @@
                   }
                 ]
               },
-              "unit": "percent"
+              "unit": "mamp"
             },
             "overrides": [
               {
@@ -3295,7 +3295,7 @@
               "editorMode": "code",
               "format": "table",
               "rawQuery": true,
-              "rawSql": "SELECT\r\n  time,\r\n  (\"TANK_LEVEL\").value as bilge_tank\r\nFROM marpower.\"210000_bilge_fifi_general\"",
+              "rawSql": "select timestamp as time, TANK_LEVEL__value as bilge_tank from marpower__210000_bilge_fifi_general WHERE $__timeFilter(timestamp) ORDER BY timestamp DESC ;",
               "refId": "A",
               "sql": {
                 "columns": [
@@ -3336,7 +3336,7 @@
         },
         {
           "datasource": {
-            "type": "grafana-postgresql-datasource",
+            "type": "info8fcc-greptimedb-datasource",
             "uid": "${datasource}"
           },
           "fieldConfig": {
@@ -3389,7 +3389,7 @@
                   }
                 ]
               },
-              "unit": "percent"
+              "unit": "mamp"
             },
             "overrides": [
               {
@@ -3432,7 +3432,7 @@
               "editorMode": "code",
               "format": "table",
               "rawQuery": true,
-              "rawSql": "SELECT\r\n  time,\r\n  (\"SLUDGE_TANK_PS_LEVEL\").value as sludge_tank\r\nFROM marpower.\"340000_sewage\"",
+              "rawSql": "select timestamp as time, SLUDGE_TANK_PS_LEVEL__value as sludge_tank from marpower__340000_sewage WHERE $__timeFilter(timestamp) ORDER BY timestamp DESC ;",
               "refId": "A",
               "sql": {
                 "columns": [
@@ -3472,7 +3472,7 @@
         },
         {
           "datasource": {
-            "type": "grafana-postgresql-datasource",
+            "type": "info8fcc-greptimedb-datasource",
             "uid": "${datasource}"
           },
           "fieldConfig": {
@@ -3525,7 +3525,7 @@
                   }
                 ]
               },
-              "unit": "percent"
+              "unit": "mamp"
             },
             "overrides": [
               {
@@ -3568,7 +3568,7 @@
               "editorMode": "code",
               "format": "table",
               "rawQuery": true,
-              "rawSql": "SELECT\r\n  time,\r\n  (\"SLUDGE_TANK_LEVEL\").value as sludge_tank\r\nFROM marpower.\"300000_dirty_oil\"",
+              "rawSql": "select timestamp as time, SLUDGE_TANK_LEVEL__value as sludge_tank from marpower__300000_dirty_oil WHERE $__timeFilter(timestamp) ORDER BY timestamp DESC ;",
               "refId": "A",
               "sql": {
                 "columns": [
@@ -3627,7 +3627,7 @@
         },
         "name": "datasource",
         "options": [],
-        "query": "grafana-postgresql-datasource",
+        "query": "info8fcc-greptimedb-datasource",
         "refresh": 1,
         "regex": "",
         "type": "datasource"

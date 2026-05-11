@@ -77,7 +77,7 @@
     },
     {
       "datasource": {
-        "type": "grafana-postgresql-datasource",
+        "type": "info8fcc-greptimedb-datasource",
         "uid": "${datasource}"
       },
       "fieldConfig": {
@@ -471,13 +471,13 @@
         {
           "dataset": "dev",
           "datasource": {
-            "type": "grafana-postgresql-datasource",
+            "type": "info8fcc-greptimedb-datasource",
             "uid": "${datasource}"
           },
           "editorMode": "code",
           "format": "table",
           "rawQuery": true,
-          "rawSql": "SELECT\r\n  LAST_VALUE(time ORDER BY time) AS time,\r\n  LAST_VALUE((\"DETECT_FAULT\").value ORDER BY time)                         AS detect_fault,\r\n  LAST_VALUE((\"DOOR_POWERSUPPLYFAIL\").value ORDER BY time)                 AS door_power_supply_fail,\r\n  LAST_VALUE((\"AUXILIARY_SYSTEM_SERVICESUPPLYFAIL\").value ORDER BY time)   AS aux_sys_service_supply_fail,\r\n  LAST_VALUE((\"AUXILIARY_SYSTEM_EMERGENCYSUPPLYFAIL\").value ORDER BY time) AS aux_sys_emergency_supply_fail\r\nFROM marpower.\"450000_firedetection_general\"",
+          "rawSql": "select timestamp as timestamp, detect_fault__value as detect_fault, door_powersupplyfail__value as door_power_supply_fail, auxiliary_system_servicesupplyfail__value as aux_sys_service_supply_fail, auxiliary_system_emergencysupplyfail__value as aux_sys_emergency_supply_fail from marpower__450000_firedetection_general order by timestamp desc limit 1;",
           "refId": "A",
           "sql": {
             "columns": [
@@ -503,7 +503,7 @@
     },
     {
       "datasource": {
-        "type": "grafana-postgresql-datasource",
+        "type": "info8fcc-greptimedb-datasource",
         "uid": "${datasource}"
       },
       "fieldConfig": {
@@ -656,13 +656,13 @@
         {
           "dataset": "dev",
           "datasource": {
-            "type": "grafana-postgresql-datasource",
+            "type": "info8fcc-greptimedb-datasource",
             "uid": "${datasource}"
           },
           "editorMode": "code",
           "format": "table",
           "rawQuery": true,
-          "rawSql": "SELECT\r\n  LAST_VALUE(time ORDER BY time) AS time,\r\n  LAST_VALUE((\"DOORS_RELEASE\").value ORDER BY time)         AS doors_release\r\nFROM marpower.\"450000_firedetection_general\"",
+          "rawSql": "select timestamp as timestamp, doors_release__value as doors_release from marpower__450000_firedetection_general order by timestamp desc limit 1;",
           "refId": "A",
           "sql": {
             "columns": [
@@ -698,7 +698,7 @@
       "panels": [
         {
           "datasource": {
-            "type": "grafana-postgresql-datasource",
+            "type": "info8fcc-greptimedb-datasource",
             "uid": "${datasource}"
           },
           "fieldConfig": {
@@ -783,13 +783,13 @@
             {
               "dataset": "dev",
               "datasource": {
-                "type": "grafana-postgresql-datasource",
+                "type": "info8fcc-greptimedb-datasource",
                 "uid": "${datasource}"
               },
               "editorMode": "code",
               "format": "table",
               "rawQuery": true,
-              "rawSql": "SELECT\r\n  time,\r\n\r\n  -- Alarm\r\n  (\"DETECT_FAULT\").value                         AS detect_fault,\r\n  (\"DOOR_POWERSUPPLYFAIL\").value                 AS door_power_supply_fail,\r\n  (\"AUXILIARY_SYSTEM_SERVICESUPPLYFAIL\").value   AS aux_sys_service_supply_fail,\r\n  (\"AUXILIARY_SYSTEM_EMERGENCYSUPPLYFAIL\").value AS aux_sys_emergency_supply_fail,\r\n\r\n  -- Status\r\n  (\"DOORS_RELEASE\").value                        AS doors_release,\r\n  (\"DOOR_GALLEY_KEEL_OPEN\").value                AS door_galley_keel_open\r\nFROM marpower.\"450000_firedetection_general\"\r\nWHERE $__timeFilter(time)",
+              "rawSql": "select timestamp, detect_fault__value as detect_fault, door_powersupplyfail__value as door_power_supply_fail, auxiliary_system_servicesupplyfail__value as aux_sys_service_supply_fail, auxiliary_system_emergencysupplyfail__value as aux_sys_emergency_supply_fail, doors_release__value as doors_release, door_galley_keel_open__value as door_galley_keel_open from marpower__450000_firedetection_general limit 1;",
               "refId": "A",
               "sql": {
                 "columns": [
@@ -851,7 +851,7 @@
     },
     {
       "datasource": {
-        "type": "grafana-postgresql-datasource",
+        "type": "info8fcc-greptimedb-datasource",
         "uid": "${datasource}"
       },
       "fieldConfig": {
@@ -950,7 +950,7 @@
         {
           "dataset": "dev",
           "datasource": {
-            "type": "grafana-postgresql-datasource",
+            "type": "info8fcc-greptimedb-datasource",
             "uid": "${datasource}"
           },
           "editorMode": "code",
@@ -1000,7 +1000,7 @@
     },
     {
       "datasource": {
-        "type": "grafana-postgresql-datasource",
+        "type": "info8fcc-greptimedb-datasource",
         "uid": "${datasource}"
       },
       "fieldConfig": {
@@ -1099,7 +1099,7 @@
         {
           "dataset": "dev",
           "datasource": {
-            "type": "grafana-postgresql-datasource",
+            "type": "info8fcc-greptimedb-datasource",
             "uid": "${datasource}"
           },
           "editorMode": "code",
@@ -1149,7 +1149,7 @@
     },
     {
       "datasource": {
-        "type": "grafana-postgresql-datasource",
+        "type": "info8fcc-greptimedb-datasource",
         "uid": "${datasource}"
       },
       "fieldConfig": {
@@ -1248,7 +1248,7 @@
         {
           "dataset": "dev",
           "datasource": {
-            "type": "grafana-postgresql-datasource",
+            "type": "info8fcc-greptimedb-datasource",
             "uid": "${datasource}"
           },
           "editorMode": "code",
@@ -1298,7 +1298,7 @@
     },
     {
       "datasource": {
-        "type": "grafana-postgresql-datasource",
+        "type": "info8fcc-greptimedb-datasource",
         "uid": "${datasource}"
       },
       "fieldConfig": {
@@ -1397,7 +1397,7 @@
         {
           "dataset": "dev",
           "datasource": {
-            "type": "grafana-postgresql-datasource",
+            "type": "info8fcc-greptimedb-datasource",
             "uid": "${datasource}"
           },
           "editorMode": "code",
@@ -1460,7 +1460,7 @@
     },
     {
       "datasource": {
-        "type": "grafana-postgresql-datasource",
+        "type": "info8fcc-greptimedb-datasource",
         "uid": "${datasource}"
       },
       "fieldConfig": {
@@ -1559,7 +1559,7 @@
         {
           "dataset": "dev",
           "datasource": {
-            "type": "grafana-postgresql-datasource",
+            "type": "info8fcc-greptimedb-datasource",
             "uid": "${datasource}"
           },
           "editorMode": "code",
@@ -1609,7 +1609,7 @@
     },
     {
       "datasource": {
-        "type": "grafana-postgresql-datasource",
+        "type": "info8fcc-greptimedb-datasource",
         "uid": "${datasource}"
       },
       "fieldConfig": {
@@ -1708,7 +1708,7 @@
         {
           "dataset": "dev",
           "datasource": {
-            "type": "grafana-postgresql-datasource",
+            "type": "info8fcc-greptimedb-datasource",
             "uid": "${datasource}"
           },
           "editorMode": "code",
@@ -1771,7 +1771,7 @@
     },
     {
       "datasource": {
-        "type": "grafana-postgresql-datasource",
+        "type": "info8fcc-greptimedb-datasource",
         "uid": "${datasource}"
       },
       "fieldConfig": {
@@ -1870,7 +1870,7 @@
         {
           "dataset": "dev",
           "datasource": {
-            "type": "grafana-postgresql-datasource",
+            "type": "info8fcc-greptimedb-datasource",
             "uid": "${datasource}"
           },
           "editorMode": "code",
@@ -1920,7 +1920,7 @@
     },
     {
       "datasource": {
-        "type": "grafana-postgresql-datasource",
+        "type": "info8fcc-greptimedb-datasource",
         "uid": "${datasource}"
       },
       "fieldConfig": {
@@ -2019,7 +2019,7 @@
         {
           "dataset": "dev",
           "datasource": {
-            "type": "grafana-postgresql-datasource",
+            "type": "info8fcc-greptimedb-datasource",
             "uid": "${datasource}"
           },
           "editorMode": "code",
@@ -2069,7 +2069,7 @@
     },
     {
       "datasource": {
-        "type": "grafana-postgresql-datasource",
+        "type": "info8fcc-greptimedb-datasource",
         "uid": "${datasource}"
       },
       "fieldConfig": {
@@ -2168,7 +2168,7 @@
         {
           "dataset": "dev",
           "datasource": {
-            "type": "grafana-postgresql-datasource",
+            "type": "info8fcc-greptimedb-datasource",
             "uid": "${datasource}"
           },
           "editorMode": "code",
@@ -2231,7 +2231,7 @@
     },
     {
       "datasource": {
-        "type": "grafana-postgresql-datasource",
+        "type": "info8fcc-greptimedb-datasource",
         "uid": "${datasource}"
       },
       "fieldConfig": {
@@ -2330,7 +2330,7 @@
         {
           "dataset": "dev",
           "datasource": {
-            "type": "grafana-postgresql-datasource",
+            "type": "info8fcc-greptimedb-datasource",
             "uid": "${datasource}"
           },
           "editorMode": "code",
@@ -2380,7 +2380,7 @@
     },
     {
       "datasource": {
-        "type": "grafana-postgresql-datasource",
+        "type": "info8fcc-greptimedb-datasource",
         "uid": "${datasource}"
       },
       "fieldConfig": {
@@ -2479,7 +2479,7 @@
         {
           "dataset": "dev",
           "datasource": {
-            "type": "grafana-postgresql-datasource",
+            "type": "info8fcc-greptimedb-datasource",
             "uid": "${datasource}"
           },
           "editorMode": "code",
@@ -2543,7 +2543,7 @@
         },
         "name": "datasource",
         "options": [],
-        "query": "grafana-postgresql-datasource",
+        "query": "info8fcc-greptimedb-datasource",
         "refresh": 1,
         "regex": "",
         "type": "datasource"
