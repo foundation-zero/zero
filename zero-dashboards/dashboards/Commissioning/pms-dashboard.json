@@ -2400,10 +2400,24 @@
             "uid": "${datasource}"
           },
           "editorMode": "code",
-          "format": "table",
+          "editorType": "sql",
+          "format": 1,
           "hide": false,
+          "meta": {
+            "builderOptions": {
+              "columns": [],
+              "database": "",
+              "limit": 1000,
+              "meta": {},
+              "mode": "list",
+              "queryType": "table",
+              "table": ""
+            }
+          },
+          "pluginVersion": "2.1.4",
+          "queryType": "table",
           "rawQuery": true,
-          "rawSql": "SELECT\r\n  LAST_VALUE(time ORDER BY time) AS time,\r\n  LAST_VALUE((\"TEMPWARN1\").value ORDER BY time)        AS temp_warning_1,\r\n  LAST_VALUE((\"TEMPWARN2\").value ORDER BY time)        AS temp_warning_2,\r\n  LAST_VALUE((\"STATUSOK\").value ORDER BY time)         AS status_ok,\r\n  LAST_VALUE((\"ENABLEDISABLE\").value ORDER BY time)    AS control_enable,\r\n  LAST_VALUE((\"SAFETYDISCONNECT\").value ORDER BY time) AS control_safety_discon\r\nFROM marpower.\"450000_dc_distribution_conv\"\r\nWHERE topic = 'marpower/450000-dc-distribution/conv/keb7-sol1'",
+          "rawSql": "SELECT\r\n  timestamp                   AS time,\r\n  tempwarn_1__value           AS temp_warning_1,\r\n  tempwarn_2__value           AS temp_warning_2,\r\n  statusok__value             AS status_ok,\r\n  enabledisable__value        AS control_enable,\r\n  safetydisconnect__value     AS control_safety_discon\r\nFROM public.marpower__450000_dc_distribution__conv\r\nWHERE topic = 'marpower/450000-dc-distribution/conv/keb7_sol1'\r\nORDER BY timestamp DESC\r\nLIMIT 1",
           "refId": "A",
           "sql": {
             "columns": [
@@ -2430,10 +2444,24 @@
             "uid": "${datasource}"
           },
           "editorMode": "code",
-          "format": "table",
+          "editorType": "sql",
+          "format": 1,
           "hide": false,
+          "meta": {
+            "builderOptions": {
+              "columns": [],
+              "database": "",
+              "limit": 1000,
+              "meta": {},
+              "mode": "list",
+              "queryType": "table",
+              "table": ""
+            }
+          },
+          "pluginVersion": "2.1.4",
+          "queryType": "table",
           "rawQuery": true,
-          "rawSql": "SELECT\r\n  LAST_VALUE(time ORDER BY time) AS time,\r\n  LAST_VALUE((\"KEB7_SOL1_BEND_MPLUS\").value ORDER BY time) AS status_bend_mplus,\r\n  LAST_VALUE((\"KEB7_SOL1_BEND_Q\").value ORDER BY time)     AS status_bend_q,\r\n  LAST_VALUE((\"KEB7_SOL1_BENDI\").value ORDER BY time)      AS control_bend_i\r\nFROM marpower.\"450000_dc_distribution_general\"",
+          "rawSql": "SELECT\r\n  timestamp                     AS time,\r\n  keb_7_sol_1_bend_mplus__value AS status_bend_mplus,\r\n  keb_7_sol_1_bend_q__value     AS status_bend_q,\r\n  keb_7_sol_1_bendi__value      AS control_bend_i\r\nFROM public.marpower__450000_dc_distribution_general\r\nORDER BY timestamp DESC\r\nLIMIT 1",
           "refId": "B",
           "sql": {
             "columns": [
@@ -3605,10 +3633,24 @@
             "uid": "${datasource}"
           },
           "editorMode": "code",
-          "format": "table",
+          "editorType": "sql",
+          "format": 1,
           "hide": false,
+          "meta": {
+            "builderOptions": {
+              "columns": [],
+              "database": "",
+              "limit": 1000,
+              "meta": {},
+              "mode": "list",
+              "queryType": "table",
+              "table": ""
+            }
+          },
+          "pluginVersion": "2.1.4",
+          "queryType": "table",
           "rawQuery": true,
-          "rawSql": "SELECT\r\n  LAST_VALUE(time ORDER BY time) AS time,\r\n  LAST_VALUE((\"TEMPWARN1\").value ORDER BY time)        AS conv1_temp_warning_1,\r\n  LAST_VALUE((\"TEMPWARN2\").value ORDER BY time)        AS conv1_temp_warning_2,\r\n  LAST_VALUE((\"STATUSOK\").value ORDER BY time)         AS status_conv1_ok,\r\n  LAST_VALUE((\"ENABLEDISABLE\").value ORDER BY time)    AS control_conv1_enable,\r\n  LAST_VALUE((\"SAFETYDISCONNECT\").value ORDER BY time) AS control_conv1_safety_discon\r\nFROM marpower.\"450000_dc_distribution_conv\"\r\nWHERE topic = 'marpower/450000-dc-distribution/conv/keb6-sol2-1'",
+          "rawSql": "SELECT\r\n  timestamp               AS time,\r\n  tempwarn_1__value       AS conv1_temp_warning_1,\r\n  tempwarn_2__value       AS conv1_temp_warning_2,\r\n  statusok__value         AS status_conv1_ok,\r\n  enabledisable__value    AS control_conv1_enable,\r\n  safetydisconnect__value AS control_conv1_safety_discon\r\nFROM public.marpower__450000_dc_distribution__conv\r\nWHERE topic = 'marpower/450000-dc-distribution/conv/keb6_sol2_1'\r\nORDER BY timestamp DESC\r\nLIMIT 1",
           "refId": "A",
           "sql": {
             "columns": [
@@ -3635,10 +3677,24 @@
             "uid": "${datasource}"
           },
           "editorMode": "code",
-          "format": "table",
+          "editorType": "sql",
+          "format": 1,
           "hide": false,
+          "meta": {
+            "builderOptions": {
+              "columns": [],
+              "database": "",
+              "limit": 1000,
+              "meta": {},
+              "mode": "list",
+              "queryType": "table",
+              "table": ""
+            }
+          },
+          "pluginVersion": "2.1.4",
+          "queryType": "table",
           "rawQuery": true,
-          "rawSql": "SELECT\r\n  LAST_VALUE(time ORDER BY time) AS time,\r\n  LAST_VALUE((\"TEMPWARN1\").value ORDER BY time)        AS conv2_temp_warning_1,\r\n  LAST_VALUE((\"TEMPWARN2\").value ORDER BY time)        AS conv2_temp_warning_2,\r\n  LAST_VALUE((\"STATUSOK\").value ORDER BY time)         AS status_conv2_ok,\r\n  LAST_VALUE((\"ENABLEDISABLE\").value ORDER BY time)    AS control_conv2_enable,\r\n  LAST_VALUE((\"SAFETYDISCONNECT\").value ORDER BY time) AS control_conv2_safety_discon\r\nFROM marpower.\"450000_dc_distribution_conv\"\r\nWHERE topic = 'marpower/450000-dc-distribution/conv/keb6-sol2-2'",
+          "rawSql": "SELECT\r\n  timestamp               AS time,\r\n  tempwarn_1__value       AS conv2_temp_warning_1,\r\n  tempwarn_2__value       AS conv2_temp_warning_2,\r\n  statusok__value         AS status_conv2_ok,\r\n  enabledisable__value    AS control_conv2_enable,\r\n  safetydisconnect__value AS control_conv2_safety_discon\r\nFROM public.marpower__450000_dc_distribution__conv\r\nWHERE topic = 'marpower/450000-dc-distribution/conv/keb6_sol2_2'\r\nORDER BY timestamp DESC\r\nLIMIT 1",
           "refId": "B",
           "sql": {
             "columns": [
@@ -3665,10 +3721,24 @@
             "uid": "${datasource}"
           },
           "editorMode": "code",
-          "format": "table",
+          "editorType": "sql",
+          "format": 1,
           "hide": false,
+          "meta": {
+            "builderOptions": {
+              "columns": [],
+              "database": "",
+              "limit": 1000,
+              "meta": {},
+              "mode": "list",
+              "queryType": "table",
+              "table": ""
+            }
+          },
+          "pluginVersion": "2.1.4",
+          "queryType": "table",
           "rawQuery": true,
-          "rawSql": "SELECT\r\n  LAST_VALUE(time ORDER BY time) AS time,\r\n  LAST_VALUE((\"KEB6_SOL2_BENDMPLUS\").value ORDER BY time) AS status_bend_mplus,\r\n  LAST_VALUE((\"KEB6_SOL2_BENDQ\").value ORDER BY time)     AS status_bend_q,\r\n  LAST_VALUE((\"KEB6_SOL2_BENDI\").value ORDER BY time)     AS control_bend_i\r\nFROM marpower.\"450000_dc_distribution_general\"",
+          "rawSql": "SELECT\r\n  timestamp                    AS time,\r\n  keb_6_sol_2_bendmplus__value AS status_bend_mplus,\r\n  keb_6_sol_2_bendq__value     AS status_bend_q,\r\n  keb_6_sol_2_bendi__value     AS control_bend_i\r\nFROM public.marpower__450000_dc_distribution_general\r\nORDER BY timestamp DESC\r\nLIMIT 1",
           "refId": "C",
           "sql": {
             "columns": [
