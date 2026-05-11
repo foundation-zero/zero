@@ -3520,9 +3520,23 @@
             "uid": "${datasource}"
           },
           "editorMode": "code",
-          "format": "table",
+          "editorType": "sql",
+          "format": 1,
+          "meta": {
+            "builderOptions": {
+              "columns": [],
+              "database": "",
+              "limit": 1000,
+              "meta": {},
+              "mode": "list",
+              "queryType": "table",
+              "table": ""
+            }
+          },
+          "pluginVersion": "2.1.4",
+          "queryType": "table",
           "rawQuery": true,
-          "rawSql": "SELECT\r\n  LAST_VALUE(time ORDER BY time) AS time,\r\n  LAST_VALUE((\"STARTCOMM\").value ORDER BY time)     AS start_command,\r\n  LAST_VALUE((\"STOPCOMM\").value ORDER BY time)      AS stop_command,\r\n  LAST_VALUE((\"RESETCOMM\").value ORDER BY time)     AS reset_command,\r\n  LAST_VALUE((\"EMSTOPACT\").value ORDER BY time)     AS e_stop_active,\r\n  LAST_VALUE((\"SECTHRSEL\").value ORDER BY time)     AS secundary_throttle_signal_selected,\r\n  LAST_VALUE((\"SHAFTBRAKEENG\").value ORDER BY time) AS shaft_brake_engaged\r\nFROM marpower.\"150000_propulsion\"\r\nWHERE topic = 'marpower/150000-propulsion/aft-ara1-pcs'",
+          "rawSql": "SELECT\r\n  timestamp                          AS time,\r\n  startcomm__value                   AS start_command,\r\n  stopcomm__value                    AS stop_command,\r\n  resetcomm__value                   AS reset_command,\r\n  emstopact__value                   AS e_stop_active,\r\n  secthrsel__value                   AS secundary_throttle_signal_selected,\r\n  shaftbrakeeng__value               AS shaft_brake_engaged\r\nFROM public.marpower__150000_propulsion\r\nWHERE topic = 'marpower/150000-propulsion/aft_ara1_pcs'\r\nORDER BY timestamp DESC\r\nLIMIT 1",
           "refId": "A",
           "sql": {
             "columns": [
@@ -4106,9 +4120,23 @@
             "uid": "${datasource}"
           },
           "editorMode": "code",
-          "format": "table",
+          "editorType": "sql",
+          "format": 1,
+          "meta": {
+            "builderOptions": {
+              "columns": [],
+              "database": "",
+              "limit": 1000,
+              "meta": {},
+              "mode": "list",
+              "queryType": "table",
+              "table": ""
+            }
+          },
+          "pluginVersion": "2.1.4",
+          "queryType": "table",
           "rawQuery": true,
-          "rawSql": "SELECT\r\n  LAST_VALUE(time ORDER BY time) AS time,\r\n  LAST_VALUE((\"STARTCOMM\").value ORDER BY time)     AS start_command,\r\n  LAST_VALUE((\"STOPCOMM\").value ORDER BY time)      AS stop_command,\r\n  LAST_VALUE((\"RESETCOMM\").value ORDER BY time)     AS reset_command,\r\n  LAST_VALUE((\"EMSTOPACT\").value ORDER BY time)     AS e_stop_active,\r\n  LAST_VALUE((\"SECTHRSEL\").value ORDER BY time)     AS secundary_throttle_signal_selected,\r\n  LAST_VALUE((\"SHAFTBRAKEENG\").value ORDER BY time) AS shaft_brake_engaged\r\nFROM marpower.\"150000_propulsion\"\r\nWHERE topic = 'marpower/150000-propulsion/aft-ara2-pcs'",
+          "rawSql": "SELECT\r\n  timestamp                          AS time,\r\n  startcomm__value                   AS start_command,\r\n  stopcomm__value                    AS stop_command,\r\n  resetcomm__value                   AS reset_command,\r\n  emstopact__value                   AS e_stop_active,\r\n  secthrsel__value                   AS secundary_throttle_signal_selected,\r\n  shaftbrakeeng__value               AS shaft_brake_engaged\r\nFROM public.marpower__150000_propulsion\r\nWHERE topic = 'marpower/150000-propulsion/aft_ara2_pcs'\r\nORDER BY timestamp DESC\r\nLIMIT 1",
           "refId": "A",
           "sql": {
             "columns": [
@@ -4692,9 +4720,23 @@
             "uid": "${datasource}"
           },
           "editorMode": "code",
-          "format": "table",
+          "editorType": "sql",
+          "format": 1,
+          "meta": {
+            "builderOptions": {
+              "columns": [],
+              "database": "",
+              "limit": 1000,
+              "meta": {},
+              "mode": "list",
+              "queryType": "table",
+              "table": ""
+            }
+          },
+          "pluginVersion": "2.1.4",
+          "queryType": "table",
           "rawQuery": true,
-          "rawSql": "SELECT\r\n  LAST_VALUE(time ORDER BY time) AS time,\r\n  LAST_VALUE((\"STARTCOMM\").value ORDER BY time)     AS start_command,\r\n  LAST_VALUE((\"STOPCOMM\").value ORDER BY time)      AS stop_command,\r\n  LAST_VALUE((\"RESETCOMM\").value ORDER BY time)     AS reset_command,\r\n  LAST_VALUE((\"EMSTOPACT\").value ORDER BY time)     AS e_stop_active,\r\n  LAST_VALUE((\"SECTHRSEL\").value ORDER BY time)     AS secundary_throttle_signal_selected,\r\n  LAST_VALUE((\"SHAFTBRAKEENG\").value ORDER BY time) AS shaft_brake_engaged\r\nFROM marpower.\"150000_propulsion\"\r\nWHERE topic = 'marpower/150000-propulsion/fwd-ara1-pcs'",
+          "rawSql": "SELECT\r\n  timestamp                          AS time,\r\n  startcomm__value                   AS start_command,\r\n  stopcomm__value                    AS stop_command,\r\n  resetcomm__value                   AS reset_command,\r\n  emstopact__value                   AS e_stop_active,\r\n  secthrsel__value                   AS secundary_throttle_signal_selected,\r\n  shaftbrakeeng__value               AS shaft_brake_engaged\r\nFROM public.marpower__150000_propulsion\r\nWHERE topic = 'marpower/150000-propulsion/fwd_ara1_pcs'\r\nORDER BY timestamp DESC\r\nLIMIT 1",
           "refId": "A",
           "sql": {
             "columns": [
@@ -5278,9 +5320,23 @@
             "uid": "${datasource}"
           },
           "editorMode": "code",
-          "format": "table",
+          "editorType": "sql",
+          "format": 1,
+          "meta": {
+            "builderOptions": {
+              "columns": [],
+              "database": "",
+              "limit": 1000,
+              "meta": {},
+              "mode": "list",
+              "queryType": "table",
+              "table": ""
+            }
+          },
+          "pluginVersion": "2.1.4",
+          "queryType": "table",
           "rawQuery": true,
-          "rawSql": "SELECT\r\n  LAST_VALUE(time ORDER BY time) AS time,\r\n  LAST_VALUE((\"STARTCOMM\").value ORDER BY time)     AS start_command,\r\n  LAST_VALUE((\"STOPCOMM\").value ORDER BY time)      AS stop_command,\r\n  LAST_VALUE((\"RESETCOMM\").value ORDER BY time)     AS reset_command,\r\n  LAST_VALUE((\"EMSTOPACT\").value ORDER BY time)     AS e_stop_active,\r\n  LAST_VALUE((\"SECTHRSEL\").value ORDER BY time)     AS secundary_throttle_signal_selected,\r\n  LAST_VALUE((\"SHAFTBRAKEENG\").value ORDER BY time) AS shaft_brake_engaged\r\nFROM marpower.\"150000_propulsion\"\r\nWHERE topic = 'marpower/150000-propulsion/fwd-ara2-pcs'",
+          "rawSql": "SELECT\r\n  timestamp                          AS time,\r\n  startcomm__value                   AS start_command,\r\n  stopcomm__value                    AS stop_command,\r\n  resetcomm__value                   AS reset_command,\r\n  emstopact__value                   AS e_stop_active,\r\n  secthrsel__value                   AS secundary_throttle_signal_selected,\r\n  shaftbrakeeng__value               AS shaft_brake_engaged\r\nFROM public.marpower__150000_propulsion\r\nWHERE topic = 'marpower/150000-propulsion/fwd_ara2_pcs'\r\nORDER BY timestamp DESC\r\nLIMIT 1",
           "refId": "A",
           "sql": {
             "columns": [
