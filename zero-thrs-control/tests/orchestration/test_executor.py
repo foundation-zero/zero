@@ -63,19 +63,6 @@ async def test_mqtt_executor(mqtt_client, mqtt_client2):
     await sleep(0)
 
     try:
-        empty_result = await executor.tick(
-            CombinedValues(
-                values={
-                    "simple": SimpleInOut(
-                        go_with_the=FlowSensor(
-                            flow=Stamped.stamp(1), temperature=Stamped.stamp(2)
-                        )
-                    )
-                }
-            )
-        )
-        assert not empty_result.sensor_values.values
-        await sleep(0.005)
         first_result = await executor.tick(
             CombinedValues(
                 values={
@@ -93,10 +80,10 @@ async def test_mqtt_executor(mqtt_client, mqtt_client2):
             first_result.sensor_values.values["simple"].go_with_the.temperature.value
             == 2
         )
-        await sleep(0.1)
+        await sleep(0.005)
         second_result = await executor.tick(
             CombinedValues(
-                {
+                values={
                     "simple": SimpleInOut(
                         go_with_the=FlowSensor(
                             flow=Stamped.stamp(1), temperature=Stamped.stamp(2)
@@ -109,6 +96,24 @@ async def test_mqtt_executor(mqtt_client, mqtt_client2):
         assert second_result.sensor_values.values["simple"].go_with_the.flow.value == 1
         assert (
             second_result.sensor_values.values["simple"].go_with_the.temperature.value
+            == 2
+        )
+        await sleep(0.1)
+        third_result = await executor.tick(
+            CombinedValues(
+                {
+                    "simple": SimpleInOut(
+                        go_with_the=FlowSensor(
+                            flow=Stamped.stamp(1), temperature=Stamped.stamp(2)
+                        )
+                    )
+                }
+            )
+        )
+        assert isinstance(third_result.sensor_values.values["simple"], SimpleInOut)
+        assert third_result.sensor_values.values["simple"].go_with_the.flow.value == 1
+        assert (
+            third_result.sensor_values.values["simple"].go_with_the.temperature.value
             == 2
         )
     finally:
