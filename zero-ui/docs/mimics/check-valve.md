@@ -13,16 +13,11 @@ import { ComponentOrientation } from '@/modules/thrapp/mimics/components'
 
 The original exported geometry is `24×32`. It is centered inside a `32×32` square viewBox using `translate(4 0)` so vertical rotations (`Up` / `Down`) do not clip.
 
-The component is stateless and directional:
-
-- `CHECK_VALVE_BASE_ORIENTATION` is `ComponentOrientation.Right` (the flow indicator arrow points right in the Figma drawing)
-- `orientation` sets the required flow direction per instance in your mimic diagram
-
 ## Props
 
 | Prop | Type | Default | Description |
 |---|---|---|---|
-| `orientation` | `ComponentOrientation` | `ComponentOrientation.Right` | Required flow direction for this valve instance |
+| `orientation` | `ComponentOrientation` | `ComponentOrientation.Up` | Rotation of the valve relative to its base orientation |
 
 ## Orientation Examples
 
