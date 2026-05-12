@@ -938,7 +938,7 @@
           "pluginVersion": "2.1.4",
           "queryType": "table",
           "rawQuery": true,
-          "rawSql": "SELECT\r\n  MAX(CASE WHEN mqtt_json_path = LOWER('hotwater_11_level') THEN '(' || yard_tag || ')' ELSE NULL END) AS tank11_level_tag,\r\n  MAX(CASE WHEN mqtt_json_path = LOWER('hotwater_13_level') THEN '(' || yard_tag || ')' ELSE NULL END) AS tank13_level_tag,\r\n  MAX(CASE WHEN mqtt_json_path = LOWER('hotwater_15_level') THEN '(' || yard_tag || ')' ELSE NULL END) AS tank15_level_tag\r\nFROM marpower__io_metadata\r\nWHERE mqtt_topic = 'marpower/340000-tankage';",
+          "rawSql": "SELECT\r\n  MAX(CASE WHEN mqtt_json_path = LOWER('HOTWATER11_LEVEL') THEN '(' || yard_tag || ')' ELSE NULL END) AS tank11_level_tag,\r\n  MAX(CASE WHEN mqtt_json_path = LOWER('HOTWATER13_LEVEL') THEN '(' || yard_tag || ')' ELSE NULL END) AS tank13_level_tag,\r\n  MAX(CASE WHEN mqtt_json_path = LOWER('HOTWATER15_LEVEL') THEN '(' || yard_tag || ')' ELSE NULL END) AS tank15_level_tag\r\nFROM marpower__io_metadata\r\nWHERE mqtt_topic = 'marpower/340000-tankage'",
           "refId": "B",
           "sql": {
             "columns": [
@@ -2393,7 +2393,7 @@
           "pluginVersion": "2.1.4",
           "queryType": "table",
           "rawQuery": true,
-          "rawSql": "SELECT\r\n  MAX(CASE WHEN mqtt_json_path = LOWER('tank_1_level') THEN '(' || yard_tag || ')' ELSE NULL END) AS tank1_level_tag,\r\n  MAX(CASE WHEN mqtt_json_path = LOWER('tank_2_level') THEN '(' || yard_tag || ')' ELSE NULL END) AS tank2_level_tag\r\nFROM marpower__io_metadata\r\nWHERE mqtt_topic = 'marpower/250000-techwater';",
+          "rawSql": "SELECT\r\n  MAX(CASE WHEN mqtt_json_path = LOWER('TANK1_LEVEL') THEN '(' || yard_tag || ')' ELSE NULL END) AS tank1_level_tag,\r\n  MAX(CASE WHEN mqtt_json_path = LOWER('TANK2_LEVEL') THEN '(' || yard_tag || ')' ELSE NULL END) AS tank2_level_tag\r\nFROM marpower__io_metadata\r\nWHERE mqtt_topic = 'marpower/250000-techwater';",
           "refId": "B",
           "sql": {
             "columns": [
