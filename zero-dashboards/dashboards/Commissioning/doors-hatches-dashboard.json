@@ -2768,9 +2768,23 @@
             "uid": "${datasource}"
           },
           "editorMode": "code",
-          "format": "table",
+          "editorType": "sql",
+          "format": 1,
+          "meta": {
+            "builderOptions": {
+              "columns": [],
+              "database": "",
+              "limit": 1000,
+              "meta": {},
+              "mode": "list",
+              "queryType": "table",
+              "table": ""
+            }
+          },
+          "pluginVersion": "2.1.4",
+          "queryType": "table",
           "rawQuery": true,
-          "rawSql": "SELECT timestamp AS time, w_tight_door_rm_19_sealinflated__value AS rm19_wtd_seal_infl, w_tight_door_rm_19_door_open__value AS rm19_wtd_open, w_tight_door_rm_19_pos_prog_switch__value AS rm19_wtd_pos_prog_switch, w_tight_hatch_rm_35_sealinflated__value AS rm35_wth_seal_infl, w_tight_hatch_rm_35_dooropen__value AS rm35_wth_open, w_tight_hatch_rm_35_posprogswitch__value AS rm35_wth_pos_prog_switch, w_tight_hatch_rm_36_sealinflated__value AS rm36_wth_seal_infl, w_tight_hatch_rm_36_dooropen__value AS rm36_wth_open, w_tight_hatch_rm_36_posprogswitch__value AS rm36_wth_pos_prog_switch, fire_slide_door_gall_crew_open__value AS fire_door_galley_open, true AS fire_door_galley_keel_open, crew_escape_hatch_open__value AS crew_esc_hatch_open FROM marpower__090000_doors_hatches ORDER BY timestamp DESC LIMIT 1",
+          "rawSql": "SELECT\r\n  timestamp                                     AS time,\r\n  w_tight_door_rm_19_sealinflated__value        AS rm19_wtd_seal_infl,\r\n  w_tight_door_rm_19_door_open__value           AS rm19_wtd_open,\r\n  w_tight_door_rm_19_pos_prog_switch__value     AS rm19_wtd_pos_prog_switch,\r\n  w_tight_hatch_rm_35_sealinflated__value       AS rm35_wth_seal_infl,\r\n  w_tight_hatch_rm_35_dooropen__value           AS rm35_wth_open,\r\n  w_tight_hatch_rm_35_posprogswitch__value      AS rm35_wth_pos_prog_switch,\r\n  w_tight_hatch_rm_36_sealinflated__value       AS rm36_wth_seal_infl,\r\n  w_tight_hatch_rm_36_dooropen__value           AS rm36_wth_open,\r\n  w_tight_hatch_rm_36_posprogswitch__value      AS rm36_wth_pos_prog_switch,\r\n  fire_slide_door_gall_crew_open__value         AS fire_door_galley_open,\r\n  crew_escape_hatch_open__value                 AS crew_esc_hatch_open\r\nFROM public.marpower__090000_doors_hatches\r\nORDER BY timestamp DESC\r\nLIMIT 1;",
           "refId": "A",
           "sql": {
             "columns": [
@@ -2789,6 +2803,30 @@
             ],
             "limit": 50
           }
+        },
+        {
+          "datasource": {
+            "type": "info8fcc-greptimedb-datasource",
+            "uid": "${datasource}"
+          },
+          "editorType": "sql",
+          "format": 1,
+          "hide": false,
+          "meta": {
+            "builderOptions": {
+              "columns": [],
+              "database": "",
+              "limit": 1000,
+              "meta": {},
+              "mode": "list",
+              "queryType": "table",
+              "table": ""
+            }
+          },
+          "pluginVersion": "2.1.4",
+          "queryType": "table",
+          "rawSql": "SELECT\r\n  timestamp                    AS time,\r\n  door_galley_keel_open__value AS fire_door_galley_keel_open\r\nFROM public.marpower__090000_doors_hatches_general\r\nORDER BY \"timestamp\"\r\nDESC LIMIT 1",
+          "refId": "B"
         }
       ],
       "title": "Crew areas",
@@ -3312,6 +3350,7 @@
             "mode": "continuous-greens"
           },
           "mappings": [],
+          "noValue": "-",
           "thresholds": {
             "mode": "absolute",
             "steps": [
@@ -4992,10 +5031,24 @@
             "uid": "${datasource}"
           },
           "editorMode": "code",
-          "format": "table",
+          "editorType": "sql",
+          "format": 1,
           "hide": false,
+          "meta": {
+            "builderOptions": {
+              "columns": [],
+              "database": "",
+              "limit": 1000,
+              "meta": {},
+              "mode": "list",
+              "queryType": "table",
+              "table": ""
+            }
+          },
+          "pluginVersion": "2.1.4",
+          "queryType": "table",
           "rawQuery": true,
-          "rawSql": "SELECT MAX(CASE WHEN mqtt_json_path = LOWER('hatch_anchor_sensor_1_open') THEN '(' || yard_tag || ')' ELSE NULL END) AS anchor_hatch1_open_tag, MAX(CASE WHEN mqtt_json_path = LOWER('hatch_anchor_sensor_2_open') THEN '(' || yard_tag || ')' ELSE NULL END) AS anchor_hatch2_open_tag FROM marpower__io_metadata WHERE mqtt_topic = 'marpower/090000-doors-hatches'",
+          "rawSql": "SELECT MAX(CASE WHEN mqtt_json_path = LOWER('HATCH_ANCHOR_SENSOR1_OPEN') THEN '(' || yard_tag || ')' ELSE NULL END) AS anchor_hatch1_open_tag, MAX(CASE WHEN mqtt_json_path = LOWER('HATCH_ANCHOR_SENSOR2_OPEN') THEN '(' || yard_tag || ')' ELSE NULL END) AS anchor_hatch2_open_tag FROM marpower__io_metadata WHERE mqtt_topic = 'marpower/090000-doors-hatches'",
           "refId": "B",
           "sql": {
             "columns": [
@@ -5536,8 +5589,8 @@
     "list": [
       {
         "current": {
-          "text": "RisingWave",
-          "value": "ceyj3m7wtn3swb"
+          "text": "greptimedb-singel",
+          "value": "PE746E5A5E0A52672"
         },
         "name": "datasource",
         "options": [],
