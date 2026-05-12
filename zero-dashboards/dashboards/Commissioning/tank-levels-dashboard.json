@@ -437,6 +437,7 @@
           },
           "decimals": 2,
           "mappings": [],
+          "noValue": "-",
           "thresholds": {
             "mode": "absolute",
             "steps": [
@@ -877,9 +878,23 @@
       "targets": [
         {
           "editorMode": "code",
-          "format": "table",
+          "editorType": "sql",
+          "format": 1,
+          "meta": {
+            "builderOptions": {
+              "columns": [],
+              "database": "",
+              "limit": 1000,
+              "meta": {},
+              "mode": "list",
+              "queryType": "table",
+              "table": ""
+            }
+          },
+          "pluginVersion": "2.1.4",
+          "queryType": "table",
           "rawQuery": true,
-          "rawSql": "--select timestamp as time, hotwater_11_level__value AS tank11_level, hotwater_13_level__value AS tank13_level, hotwater_15_level__value AS tank15_level from marpower__340000_tankage ORDER BY timestamp DESC LIMIT 1;",
+          "rawSql": "SELECT\r\n  timestamp AS time,\r\n  hotwater_11_level__value AS tank11_level,\r\n  hotwater_13_level__value AS tank13_level,\r\n  hotwater_15_level__value AS tank15_level\r\nFROM marpower__340000_tankage\r\nORDER BY timestamp\r\nDESC LIMIT 1",
           "refId": "A",
           "sql": {
             "columns": [
@@ -906,10 +921,24 @@
             "uid": "${datasource}"
           },
           "editorMode": "code",
-          "format": "table",
+          "editorType": "sql",
+          "format": 1,
           "hide": false,
+          "meta": {
+            "builderOptions": {
+              "columns": [],
+              "database": "",
+              "limit": 1000,
+              "meta": {},
+              "mode": "list",
+              "queryType": "table",
+              "table": ""
+            }
+          },
+          "pluginVersion": "2.1.4",
+          "queryType": "table",
           "rawQuery": true,
-          "rawSql": "select max(case when mqtt_json_path = lower('hotwater_11_level') then '(' || yard_tag || ')' else null end) AS tank11_level_tag, max(case when mqtt_json_path = lower('hotwater_13_level') then '(' || yard_tag || ')' else null end) AS tank13_level_tag, max(case when mqtt_json_path = lower('hotwater_15_level') then '(' || yard_tag || ')' else null end) AS tank15_level_tag from marpower__io_metadata where mqtt_topic = 'marpower/340000-tankage';",
+          "rawSql": "SELECT\r\n  MAX(CASE WHEN mqtt_json_path = LOWER('hotwater_11_level') THEN '(' || yard_tag || ')' ELSE NULL END) AS tank11_level_tag,\r\n  MAX(CASE WHEN mqtt_json_path = LOWER('hotwater_13_level') THEN '(' || yard_tag || ')' ELSE NULL END) AS tank13_level_tag,\r\n  MAX(CASE WHEN mqtt_json_path = LOWER('hotwater_15_level') THEN '(' || yard_tag || ')' ELSE NULL END) AS tank15_level_tag\r\nFROM marpower__io_metadata\r\nWHERE mqtt_topic = 'marpower/340000-tankage';",
           "refId": "B",
           "sql": {
             "columns": [
@@ -1230,7 +1259,7 @@
               }
             ]
           },
-          "unit": "pressurebar"
+          "unit": "mamp"
         },
         "overrides": [
           {
@@ -2304,9 +2333,23 @@
       "targets": [
         {
           "editorMode": "code",
-          "format": "table",
+          "editorType": "sql",
+          "format": 1,
+          "meta": {
+            "builderOptions": {
+              "columns": [],
+              "database": "",
+              "limit": 1000,
+              "meta": {},
+              "mode": "list",
+              "queryType": "table",
+              "table": ""
+            }
+          },
+          "pluginVersion": "2.1.4",
+          "queryType": "table",
           "rawQuery": true,
-          "rawSql": "--select timestamp as time, tank_1_level__value AS tank1_level, tank_2_level__value AS tank2_level from marpower__250000_techwater ORDER BY timestamp DESC LIMIT 1;",
+          "rawSql": "SELECT\r\n  timestamp            AS time,\r\n  tank_1_level__value  AS tank1_level,\r\n  tank_2_level__value  AS tank2_level\r\nFROM marpower__250000_techwater\r\nORDER BY timestamp DESC\r\nLIMIT 1",
           "refId": "A",
           "sql": {
             "columns": [
@@ -2333,10 +2376,24 @@
             "uid": "${datasource}"
           },
           "editorMode": "code",
-          "format": "table",
+          "editorType": "sql",
+          "format": 1,
           "hide": false,
+          "meta": {
+            "builderOptions": {
+              "columns": [],
+              "database": "",
+              "limit": 1000,
+              "meta": {},
+              "mode": "list",
+              "queryType": "table",
+              "table": ""
+            }
+          },
+          "pluginVersion": "2.1.4",
+          "queryType": "table",
           "rawQuery": true,
-          "rawSql": "select max(case when mqtt_json_path = lower('tank_1_level') then '(' || yard_tag || ')' else null end) AS tank1_level_tag, max(case when mqtt_json_path = lower('tank_2_level') then '(' || yard_tag || ')' else null end) AS tank2_level_tag from marpower__io_metadata where mqtt_topic = 'marpower/250000-techwater';",
+          "rawSql": "SELECT\r\n  MAX(CASE WHEN mqtt_json_path = LOWER('tank_1_level') THEN '(' || yard_tag || ')' ELSE NULL END) AS tank1_level_tag,\r\n  MAX(CASE WHEN mqtt_json_path = LOWER('tank_2_level') THEN '(' || yard_tag || ')' ELSE NULL END) AS tank2_level_tag\r\nFROM marpower__io_metadata\r\nWHERE mqtt_topic = 'marpower/250000-techwater';",
           "refId": "B",
           "sql": {
             "columns": [
@@ -2878,9 +2935,23 @@
             {
               "dataset": "dev",
               "editorMode": "code",
-              "format": "table",
+              "editorType": "sql",
+              "format": 1,
+              "meta": {
+                "builderOptions": {
+                  "columns": [],
+                  "database": "",
+                  "limit": 1000,
+                  "meta": {},
+                  "mode": "list",
+                  "queryType": "table",
+                  "table": ""
+                }
+              },
+              "pluginVersion": "2.1.4",
+              "queryType": "table",
               "rawQuery": true,
-              "rawSql": "--select timestamp as time, HOTWATER11_LEVEL__value as tank11_level, HOTWATER13_LEVEL__value as tank13_level, HOTWATER15_LEVEL__value as tank15_level from marpower__340000_tankage ORDER BY timestamp DESC LIMIT 1;",
+              "rawSql": "SELECT\r\n  timestamp                AS time,\r\n  hotwater_11_level__value AS tank11_level,\r\n  hotwater_13_level__value AS tank13_level,\r\n  hotwater_15_level__value AS tank15_level\r\nFROM marpower__340000_tankage\r\nWHERE $__timeFilter(timestamp)",
               "refId": "A",
               "sql": {
                 "columns": [
@@ -3018,9 +3089,23 @@
             {
               "dataset": "dev",
               "editorMode": "code",
-              "format": "table",
+              "editorType": "sql",
+              "format": 1,
+              "meta": {
+                "builderOptions": {
+                  "columns": [],
+                  "database": "",
+                  "limit": 1000,
+                  "meta": {},
+                  "mode": "list",
+                  "queryType": "table",
+                  "table": ""
+                }
+              },
+              "pluginVersion": "2.1.4",
+              "queryType": "table",
               "rawQuery": true,
-              "rawSql": "--select timestamp as time, TANK1_LEVEL__value as tank1_level, TANK2_LEVEL__value as tank2_level from marpower__250000_techwater WHERE $__timeFilter(timestamp) ORDER BY timestamp DESC ;",
+              "rawSql": "SELECT\r\n  timestamp            AS time,\r\n  tank_1_level__value  AS tank1_level,\r\n  tank_2_level__value  AS tank2_level\r\nFROM marpower__250000_techwater\r\nWHERE $__timeFilter(timestamp)",
               "refId": "A",
               "sql": {
                 "columns": [
@@ -3622,8 +3707,8 @@
       {
         "allowCustomValue": false,
         "current": {
-          "text": "RisingWave",
-          "value": "ceyj3m7wtn3swb"
+          "text": "greptimedb-zero",
+          "value": "PBAD09CF7391C3C43"
         },
         "name": "datasource",
         "options": [],
