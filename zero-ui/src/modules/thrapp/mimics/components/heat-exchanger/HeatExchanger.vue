@@ -1,25 +1,25 @@
 <script setup lang="ts">
-import { computed, toRefs } from "vue";
-import { MimicComponentBaseProps } from "..";
+import { computed } from "vue";
+import { HEATING_STATE_COLORS, HeatingState, MimicComponentBaseProps } from "..";
 import MimicComponent from "../MimicComponent.vue";
 import {
   HEAT_EXCHANGER_BASE_ORIENTATION,
   HEAT_EXCHANGER_HEIGHT,
   HEAT_EXCHANGER_SHELL,
-  HEAT_EXCHANGER_STATE_COLORS,
   HEAT_EXCHANGER_WIDTH,
   HeatExchangerProps,
-  HeatExchangerState,
 } from "./index";
 
 const props = withDefaults(defineProps<HeatExchangerProps & MimicComponentBaseProps>(), {
-  state: HeatExchangerState.Idle,
+  state: HeatingState.Idle,
   orientation: HEAT_EXCHANGER_BASE_ORIENTATION,
 });
 
-const { state } = toRefs(props);
+const shellState = computed(() =>
+  props.state === HeatingState.Idle ? HeatingState.Inactive : HeatingState.Active,
+);
 
-const colors = computed(() => HEAT_EXCHANGER_STATE_COLORS[state.value]);
+const shellColor = computed(() => HEATING_STATE_COLORS[shellState.value]);
 </script>
 
 <template>
@@ -34,20 +34,10 @@ const colors = computed(() => HEAT_EXCHANGER_STATE_COLORS[state.value]);
       :y="HEAT_EXCHANGER_SHELL.y"
       :width="HEAT_EXCHANGER_SHELL.width"
       :height="HEAT_EXCHANGER_SHELL.height"
-      :stroke="colors.shell"
+      :stroke="shellColor"
+      stroke-width="2"
       class="transition-colors duration-300"
     />
-    <path
-      d="M6 10H17L12 12L17 14L12 16L17 18L12 20L17 22L12 24L17 26H6"
-      :stroke="colors.exchangerLeft"
-      stroke-linejoin="round"
-      class="transition-colors duration-300"
-    />
-    <path
-      d="M30 26L19 26L24 24L19 22L24 20L19 18L24 16L19 14L24 12L19 10L30 10"
-      :stroke="colors.exchangerRight"
-      stroke-linejoin="round"
-      class="transition-colors duration-300"
-    />
+    <slot />
   </MimicComponent>
 </template>

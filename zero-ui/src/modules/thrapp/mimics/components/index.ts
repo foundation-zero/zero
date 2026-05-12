@@ -12,6 +12,30 @@ export const enum ComponentOrientation {
   UpLeft = 315,
 }
 
+export const enum HeatingState {
+  HeatingHigh = "heating-high",
+  HeatingMedium = "heating-medium",
+  HeatingLow = "heating-low",
+  CoolingHigh = "cooling-high",
+  CoolingMedium = "cooling-medium",
+  CoolingLow = "cooling-low",
+  Active = "active",
+  Inactive = "inactive",
+  Idle = "idle",
+}
+
+export const HEATING_STATE_COLORS: Record<HeatingState, string> = {
+  [HeatingState.HeatingHigh]: "var(--heating-high)",
+  [HeatingState.HeatingMedium]: "var(--heating-medium)",
+  [HeatingState.HeatingLow]: "var(--heating-low)",
+  [HeatingState.CoolingHigh]: "var(--cooling-high)",
+  [HeatingState.CoolingMedium]: "var(--cooling-medium)",
+  [HeatingState.CoolingLow]: "var(--cooling-low)",
+  [HeatingState.Active]: "var(--attention)",
+  [HeatingState.Inactive]: "var(--attention-dull)",
+  [HeatingState.Idle]: "var(--disabled)",
+};
+
 export const CLOCKWISE_ORIENTATIONS = [
   ComponentOrientation.Up,
   ComponentOrientation.UpRight,
