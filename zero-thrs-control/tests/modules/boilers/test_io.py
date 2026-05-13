@@ -11,6 +11,7 @@ from tests.modules.conftest import (
 from thrs.input_output.base import Stamped
 from thrs.input_output.definitions import sensor
 from thrs.input_output.definitions.units import WATER_HEAT_TRANSFER_CONVERSION
+from thrs.input_output.fmu_mapping import included_in_fmu
 from thrs.input_output.modules.boilers import (
     BoilersControlValues,
     BoilersSensorValues,
@@ -77,7 +78,7 @@ def test_boilers_hvac_exchanger_computed_field():
 
     exchanger = values.boilers_hvac_exchanger
     assert isinstance(exchanger, sensor.HvacExchanger)
-    assert exchanger.delta_T.value == approx(t_supply - t_return)
+    assert exchanger.delta_t.value == approx(t_supply - t_return)
     assert exchanger.heat.value == approx(
         flow * (t_supply - t_return) * WATER_HEAT_TRANSFER_CONVERSION
     )
@@ -105,7 +106,7 @@ def test_boilers_heatpump_computed_field():
 
     heatpump = values.boilers_heatpump
     assert isinstance(heatpump, sensor.HeatPump)
-    assert heatpump.delta_T.value == approx(t_supply - t_return)
+    assert heatpump.delta_t.value == approx(t_supply - t_return)
     assert heatpump.heat.value == approx(
         flow * (t_supply - t_return) * WATER_HEAT_TRANSFER_CONVERSION
     )
@@ -131,5 +132,33 @@ def test_computed_field_timestamp_uses_oldest():
     )
 
     exchanger = values.boilers_hvac_exchanger
-    assert exchanger.delta_T.timestamp == t_old
+    assert exchanger.delta_t.timestamp == t_old
     assert exchanger.heat.timestamp == t_old
+
+
+def test_all_computed_fields_evaluate():
+    values = BoilersSensorValues.zero()
+    for name in BoilersSensorValues.model_computed_fields:
+        result = getattr(values, name)
+        assert result is not None, f"Computed field '{name}' returned None"
+
+
+def test_all_non_fmu_sensor_fields_have_simulation_source():
+    non_fmu_sensor_fields = {
+        name
+        for name, field in BoilersSensorValues.model_fields.items()
+        if not included_in_fmu(field)
+    }
+
+    simulation_inputs_sources = set(BoilersSimulationInputs.model_fields) | set(
+        BoilersSimulationInputs.model_computed_fields
+    )
+    simulation_outputs_sources = set(BoilersSimulationOutputs.model_fields) | set(
+        BoilersSimulationOutputs.model_computed_fields
+    )
+    all_sources = simulation_inputs_sources | simulation_outputs_sources
+
+    missing = non_fmu_sensor_fields - all_sources
+    assert not missing, (
+        f"Non-FMU sensor fields with no simulation input/output source: {missing}\n"
+    )

@@ -54,25 +54,46 @@ class CalculatedTemperature(ThrsValues):
         )
 
 
+class CalculatedFlow(ThrsValues):
+    flow: Stamped[LMin]
+
+
+class TemperatureDelta(ThrsValues):
+    delta_t: Stamped[Kelvin]
+
+    @classmethod
+    def from_temperature_sensors(
+        cls, temperature_supply: Stamped[Celsius], temperature_return: Stamped[Celsius]
+    ) -> Self:
+        delta_t = Stamped.combine(
+            temperature_supply,
+            temperature_return,
+            value=temperature_supply.value - temperature_return.value,
+        )
+        return cls(delta_t=delta_t)
+
+
 class HeatTransferDevice(ThrsValues):
-    delta_T: Stamped[Kelvin]
+    delta_t: Stamped[Kelvin]
     heat: Stamped[Watt]
 
     @classmethod
     def from_sensors(
         cls,
-        t_supply: Stamped[Celsius],
-        t_return: Stamped[Celsius],
+        temperature_supply: Stamped[Celsius],
+        temperature_return: Stamped[Celsius],
         flow: Stamped[LMin],
         heat_transfer_conversion: float,
     ) -> Self:
-        delta_T = Stamped.combine(
-            t_supply, t_return, value=t_supply.value - t_return.value
+        delta_t = Stamped.combine(
+            temperature_supply,
+            temperature_return,
+            value=temperature_supply.value - temperature_return.value,
         )
         heat = Stamped.combine(
-            delta_T, flow, value=flow.value * delta_T.value * heat_transfer_conversion
+            delta_t, flow, value=flow.value * delta_t.value * heat_transfer_conversion
         )
-        return cls(delta_T=delta_T, heat=heat)
+        return cls(delta_t=delta_t, heat=heat)
 
 
 class HvacExchanger(HeatTransferDevice):
@@ -178,10 +199,20 @@ __all__ = [
     "FlowSensor",
     "Pump",
     "TemperatureSensor",
+    "TemperatureDelta",
     "CalculatedTemperature",
+    "CalculatedFlow",
+    "HeatTransferDevice",
+    "HvacExchanger",
+    "HeatPump",
+    "HeatExchanger",
     "Valve",
     "PressureSensor",
     "Thruster",
+    "PropulsionDrive",
+    "ShorePowerConverter",
+    "Brightloop",
+    "Ugrid",
     "Pcs",
     "Pcm",
     "Fahrenheit",
