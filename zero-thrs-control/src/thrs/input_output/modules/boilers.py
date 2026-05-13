@@ -10,6 +10,7 @@ from thrs.input_output.base import (
     component_meta,
 )
 from thrs.input_output.definitions import control, sensor, simulation
+from thrs.input_output.definitions.units import WATER_HEAT_TRANSFER_CONVERSION
 
 
 class BoilersSensorValues(ThrsValues):
@@ -213,7 +214,91 @@ class BoilersSensorValues(ThrsValues):
             component_type="temperature_sensor",
             included_in_fmu=False,
         ),
-    ]  # TODO: check if we need duplicate definition of component_meta
+    ]
+
+    @computed_field(
+        json_schema_extra=component_meta(
+            yard_tag="41001001", component_type="hvac_exchanger", included_in_fmu=False
+        ).json_schema_extra
+    )
+    @property
+    def boilers_hvac_exchanger(self) -> sensor.HvacExchanger:
+        return sensor.HvacExchanger.from_sensors(
+            t_supply=self.boilers_temperature_hvac_exchanger_return.temperature,
+            t_return=self.boilers_temperature_fahrenheit_return.temperature,
+            flow=self.boilers_flow_lt2.flow,
+            heat_transfer_conversion=WATER_HEAT_TRANSFER_CONVERSION,
+        )
+
+    @computed_field(
+        json_schema_extra=component_meta(
+            yard_tag="50001035", component_type="heatpump", included_in_fmu=False
+        ).json_schema_extra
+    )
+    @property
+    def boilers_heatpump(self) -> sensor.HeatPump:
+        return sensor.HeatPump.from_sensors(
+            t_supply=self.boilers_temperature_boosting_supply.temperature,
+            t_return=self.boilers_temperature_boosting_return.temperature,
+            flow=self.boilers_flow_boosting.flow,
+            heat_transfer_conversion=WATER_HEAT_TRANSFER_CONVERSION,
+        )
+
+    @computed_field(
+        json_schema_extra=component_meta(
+            yard_tag="50001004", component_type="heat_exchanger", included_in_fmu=False
+        ).json_schema_extra
+    )
+    @property
+    def boilers_fahrenheit_exchanger(self) -> sensor.HeatExchanger:
+        return sensor.HeatExchanger.from_sensors(
+            t_supply=self.boilers_temperature_freshwater_supply.temperature,
+            t_return=self.boilers_temperature_fahrenheit_return.temperature,
+            flow=self.boilers_flow_lt2.flow,
+            heat_transfer_conversion=WATER_HEAT_TRANSFER_CONVERSION,
+        )
+
+    @computed_field(
+        json_schema_extra=component_meta(
+            yard_tag="50001007", component_type="heat_exchanger", included_in_fmu=False
+        ).json_schema_extra
+    )
+    @property
+    def boilers_consumers_exchanger(self) -> sensor.HeatExchanger:
+        return sensor.HeatExchanger.from_sensors(
+            t_supply=self.boilers_temperature_boosting_supply.temperature,
+            t_return=self.boilers_temperature_boosting_return.temperature,
+            flow=self.boilers_flow_boosting.flow,
+            heat_transfer_conversion=WATER_HEAT_TRANSFER_CONVERSION,
+        )
+
+    @computed_field(
+        json_schema_extra=component_meta(
+            yard_tag="50001008", component_type="heat_exchanger", included_in_fmu=False
+        ).json_schema_extra
+    )
+    @property
+    def boilers_lt2_exchanger(self) -> sensor.HeatExchanger:
+        return sensor.HeatExchanger.from_sensors(
+            t_supply=self.boilers_temperature_hvac_exchanger_return.temperature,
+            t_return=self.boilers_temperature_lt2_return.temperature,
+            flow=self.boilers_flow_lt2.flow,
+            heat_transfer_conversion=WATER_HEAT_TRANSFER_CONVERSION,
+        )
+
+    @computed_field(
+        json_schema_extra=component_meta(
+            yard_tag="50001009", component_type="heat_exchanger", included_in_fmu=False
+        ).json_schema_extra
+    )
+    @property
+    def boilers_lt1_exchanger(self) -> sensor.HeatExchanger:
+        return sensor.HeatExchanger.from_sensors(
+            t_supply=self.boilers_temperature_hvac_exchanger_return.temperature,
+            t_return=self.boilers_temperature_lt1_return.temperature,
+            flow=self.boilers_flow_lt1.flow,
+            heat_transfer_conversion=WATER_HEAT_TRANSFER_CONVERSION,
+        )
 
 
 class BoilersControlValues(ThrsValues):

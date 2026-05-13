@@ -1,3 +1,5 @@
+from typing import Self
+
 from thrs.input_output.base import Stamped, ThrsValues
 from thrs.input_output.definitions.units import (
     Bar,
@@ -50,6 +52,39 @@ class CalculatedTemperature(ThrsValues):
                 timestamp=max_sensor.temperature.timestamp,
             )
         )
+
+
+class HeatTransferDevice(ThrsValues):
+    delta_T: Stamped[Kelvin]
+    heat: Stamped[Watt]
+
+    @classmethod
+    def from_sensors(
+        cls,
+        t_supply: Stamped[Celsius],
+        t_return: Stamped[Celsius],
+        flow: Stamped[LMin],
+        heat_transfer_conversion: float,
+    ) -> Self:
+        delta_T = Stamped.combine(
+            t_supply, t_return, value=t_supply.value - t_return.value
+        )
+        heat = Stamped.combine(
+            delta_T, flow, value=flow.value * delta_T.value * heat_transfer_conversion
+        )
+        return cls(delta_T=delta_T, heat=heat)
+
+
+class HvacExchanger(HeatTransferDevice):
+    pass
+
+
+class HeatPump(HeatTransferDevice):
+    pass
+
+
+class HeatExchanger(HeatTransferDevice):
+    pass
 
 
 class Valve(ThrsValues):
