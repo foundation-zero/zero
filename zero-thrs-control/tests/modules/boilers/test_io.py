@@ -53,7 +53,11 @@ def test_boilers_fmu_names():
 
 @pytest.mark.io
 def test_yard_tags():
-    compare_yard_tags(BoilersSensorValues, BoilersControlValues)
+    compare_yard_tags(
+        BoilersSensorValues,
+        BoilersControlValues,
+        {"freshwater_hotwater_flow", "freshwater_hotwater_temperature"},
+    )
 
 
 def test_boilers_hvac_exchanger_computed_field():

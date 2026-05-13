@@ -578,7 +578,7 @@ class BoilersControl(
             return False
 
         delta = (
-            sensor_values.lt1_temperature_supply.temperature.value
+            sensor_values.lt1_temperature_recovery.temperature.value
             - self._tanks_controller._boosting_tank.temperature
             if self._tanks_controller._boosting_tank.temperature is not None
             else False
@@ -586,7 +586,7 @@ class BoilersControl(
 
         return (
             delta > self._parameters.boosting_delta
-            and sensor_values.lt1_flow.flow.value > 0.1
+            and sensor_values.lt1_flow_recovery.flow.value > 0.1
         )
 
     def _ht_sufficient_boosting_heat(self, sensor_values: BoilersSensorValues) -> bool:
@@ -594,7 +594,7 @@ class BoilersControl(
             return False
 
         delta = (
-            sensor_values.consumers_temperature_supply.temperature.value
+            sensor_values.consumers_temperature_boosting_supply.temperature.value
             - self._tanks_controller._boosting_tank.temperature
             if self._tanks_controller._boosting_tank.temperature is not None
             else False
@@ -602,7 +602,7 @@ class BoilersControl(
 
         return (
             delta > self._parameters.boosting_delta
-            and sensor_values.consumers_flow.flow.value > 0.1
+            and sensor_values.consumers_flow_boosting.flow.value > 0.1
         )
 
     def _enable_filling_flow_control(self, sensor_values: BoilersSensorValues):
@@ -671,7 +671,7 @@ class BoilersControl(
             )
 
     def _lt1_heat_available(self, sensor_values: BoilersSensorValues) -> bool:
-        return sensor_values.lt1_flow.flow.value > 0.1
+        return sensor_values.lt1_flow_recovery.flow.value > 0.1
 
     def _set_valves_to_boosting_low_temperature(
         self, sensor_values: BoilersSensorValues
