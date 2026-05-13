@@ -173,7 +173,7 @@ export const BOILERS_SENSOR_DEFINITION = toSensorDefinition({
     yardTag: "50001022",
     componentType: SensorComponentType.Pump,
   },
-  boilersTemperatureChillerReturn: {
+  boilersTemperatureHvacExchangerReturn: {
     yardTag: "50001038-25",
     componentType: SensorComponentType.Temperature,
   },
@@ -322,6 +322,10 @@ export const BOILERS_SENSOR_DEFINITION = toSensorDefinition({
     componentType: SensorComponentType.Valve,
     valveType: ValveType.Switch,
   },
+  boilersPressureBoosting: {
+    yardTag: "50001097-11",
+    componentType: SensorComponentType.Pressure,
+  },
   lt1FlowRecovery: {
     yardTag: "50001058-03",
     componentType: SensorComponentType.Flow,
@@ -356,13 +360,10 @@ export const BOILERS_SIMULATION_INPUTS = toSimulationDefinition({
   boilersFreshwaterSupply: {
     componentType: SimulationComponentType.OverpressureTemperature,
   },
-  boilersExchangerGas: {
-    componentType: SimulationComponentType.HeatSource,
-  },
   boilersSeawaterSupply: {
     componentType: SimulationComponentType.Temperature,
   },
-  boilersFreshwaterReturnSet: {
+  boilersHotwaterDemand: {
     componentType: SimulationComponentType.Flow,
   },
 });
@@ -380,13 +381,13 @@ export const BOILERS_SIMULATION_OUTPUTS = toSimulationDefinition({
   boilersHtReturn: {
     componentType: SimulationComponentType.Temperature,
   },
-  boilersFreshwaterReturn: {
-    componentType: SimulationComponentType.Flow,
-  },
   boilersSeawaterReturn: {
     componentType: SimulationComponentType.Temperature,
   },
   boilersSeawaterSupply: {
+    componentType: SimulationComponentType.Flow,
+  },
+  boilersFreshwaterReturn: {
     componentType: SimulationComponentType.Flow,
   },
 });

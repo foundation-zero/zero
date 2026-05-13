@@ -16,7 +16,7 @@ class BoilersSensorValues(ThrsValues):
     boilers_pump: Annotated[
         sensor.Pump, component_meta(yard_tag="50001022", component_type="pump")
     ]
-    boilers_temperature_chiller_return: Annotated[
+    boilers_temperature_hvac_exchanger_return: Annotated[
         sensor.TemperatureSensor,
         component_meta(yard_tag="50001038-25", component_type="temperature_sensor"),
     ]
@@ -182,10 +182,10 @@ class BoilersSensorValues(ThrsValues):
             yard_tag="50001067-18", component_type="valve", valve_type="switch"
         ),
     ]
-    # boilers_pressure_boosting: Annotated[
-    #     sensor.PressureSensor,
-    #     component_meta(yard_tag="50001097-11", component_type="pressure_sensor"),
-    # ] # TODO: Add to FMU
+    boilers_pressure_boosting: Annotated[
+        sensor.PressureSensor,
+        component_meta(yard_tag="50001097-11", component_type="pressure_sensor"),
+    ]
     lt1_flow_recovery: Annotated[
         sensor.FlowSensor,
         component_meta(
@@ -333,9 +333,9 @@ class BoilersSimulationInputs(SimulationInputs):
     boilers_fahrenheit_supply: simulation.Boundary
     boilers_ht_supply: simulation.Boundary
     boilers_freshwater_supply: simulation.OverpressureTemperatureBoundary
-    boilers_exchanger_gas: simulation.HeatSource
+    boilers_hvac_exchanger: simulation.HvacExchanger
     boilers_seawater_supply: simulation.TemperatureBoundary
-    boilers_freshwater_return_set: simulation.FlowBoundary
+    boilers_hotwater_demand: simulation.FlowBoundary
 
     @computed_field(
         json_schema_extra=component_meta(
@@ -427,6 +427,6 @@ class BoilersSimulationOutputs(SimulationValues):
     boilers_lt2_return: simulation.TemperatureBoundary
     boilers_fahrenheit_return: simulation.TemperatureBoundary
     boilers_ht_return: simulation.TemperatureBoundary
-    boilers_freshwater_return: simulation.FlowBoundary
     boilers_seawater_return: simulation.TemperatureBoundary
     boilers_seawater_supply: simulation.FlowBoundary
+    boilers_freshwater_return: simulation.FlowBoundary
