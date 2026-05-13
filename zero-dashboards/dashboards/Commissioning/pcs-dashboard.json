@@ -18,7 +18,7 @@
   "editable": true,
   "fiscalYearStartMonth": 0,
   "graphTooltip": 0,
-  "id": 0,
+  "id": 13,
   "links": [
     {
       "asDropdown": true,
@@ -1339,10 +1339,24 @@
             "uid": "${datasource}"
           },
           "editorMode": "code",
-          "format": "table",
+          "editorType": "sql",
+          "format": 1,
           "hide": false,
+          "meta": {
+            "builderOptions": {
+              "columns": [],
+              "database": "",
+              "limit": 1000,
+              "meta": {},
+              "mode": "list",
+              "queryType": "table",
+              "table": ""
+            }
+          },
+          "pluginVersion": "2.1.4",
+          "queryType": "table",
           "rawQuery": true,
-          "rawSql": "SELECT\r\n  LAST_VALUE(time ORDER BY time) AS time,\r\n  LAST_VALUE((\"CB_10_COMALARM\").value ORDER BY time)              AS communication_alarm,\r\n  LAST_VALUE((\"CB_10_24VDCSERVFAIL\").value ORDER BY time)         AS \"24v_service_failure\",\r\n  LAST_VALUE((\"CB_10_24VDCEMERGFAIL\").value ORDER BY time)        AS \"24v_emergency_failure\",\r\n  LAST_VALUE((\"CB_10_POWERDISTRINS\").value ORDER BY time)         AS power_distr_insul_alarm,\r\n  LAST_VALUE((\"CB_10_HYDRPRESSALARM\").value ORDER BY time)        AS hydraulic_pressure_alarm,\r\n  LAST_VALUE((\"CB_10_OILLEVALARMSEALTANK\").value ORDER BY time)   AS seal_tank_oil_level_alarm,\r\n  LAST_VALUE((\"CB_10_GEAROILLEVALARM\").value ORDER BY time)       AS gear_oil_level_alarm,\r\n  LAST_VALUE((\"CB_10_GEAROILTEMPALARM\").value ORDER BY time)      AS gear_oil_temp_alarm,\r\n  LAST_VALUE((\"CB_10_OVERSPEEDALARM\").value ORDER BY time)        AS overspeed_alarm,\r\n  LAST_VALUE((\"CB_10_OVERLOADALARM\").value ORDER BY time)         AS overload_alarm,\r\n  LAST_VALUE((\"CB_10_AZIFOLLUPFAILALARM\").value ORDER BY time)    AS azimuth_follow_up_alarm,\r\n  LAST_VALUE((\"CB_10_PITCHFOLLUPFAILALARM\").value ORDER BY time)  AS pitch_follow_up_alarm\r\nFROM marpower.\"150000_pcs\"",
+          "rawSql": "SELECT\r\n  timestamp                          AS time,\r\n  cb_10_comalarm__value              AS communication_alarm,\r\n  cb_10_24_vdcservfail__value        AS \"24v_service_failure\",\r\n  cb_10_24_vdcemergfail__value       AS \"24v_emergency_failure\",\r\n  cb_10_powerdistrins__value         AS power_distr_insul_alarm,\r\n  cb_10_hydrpressalarm__value        AS hydraulic_pressure_alarm,\r\n  cb_10_oillevalarmsealtank__value   AS seal_tank_oil_level_alarm,\r\n  cb_10_gearoillevalarm__value       AS gear_oil_level_alarm,\r\n  cb_10_gearoiltempalarm__value      AS gear_oil_temp_alarm,\r\n  cb_10_overspeedalarm__value        AS overspeed_alarm,\r\n  cb_10_overloadalarm__value         AS overload_alarm,\r\n  cb_10_azifollupfailalarm__value    AS azimuth_follow_up_alarm,\r\n  cb_10_pitchfollupfailalarm__value  AS pitch_follow_up_alarm\r\nFROM public.marpower__150000_pcs\r\nORDER BY timestamp DESC\r\nLIMIT 1",
           "refId": "A",
           "sql": {
             "columns": [
@@ -1369,9 +1383,23 @@
             "uid": "${datasource}"
           },
           "editorMode": "code",
-          "format": "table",
+          "editorType": "sql",
+          "format": 1,
+          "meta": {
+            "builderOptions": {
+              "columns": [],
+              "database": "",
+              "limit": 1000,
+              "meta": {},
+              "mode": "list",
+              "queryType": "table",
+              "table": ""
+            }
+          },
+          "pluginVersion": "2.1.4",
+          "queryType": "table",
           "rawQuery": true,
-          "rawSql": "SELECT\r\n  LAST_VALUE(time ORDER BY time) AS time,\r\n  LAST_VALUE((\"AFT_THRUSTER_WATERLEAKALARM\").value ORDER BY time) AS water_leak_alarm\r\nFROM marpower.\"150000_propulsion_general\"",
+          "rawSql": "SELECT\r\n  timestamp                   AS time,\r\n  aft_thruster_waterleakalarm__value AS water_leak_alarm\r\nFROM public.marpower__150000_propulsion_general\r\nORDER BY timestamp DESC\r\nLIMIT 1",
           "refId": "B",
           "sql": {
             "columns": [
@@ -1398,10 +1426,24 @@
             "uid": "${datasource}"
           },
           "editorMode": "code",
-          "format": "table",
+          "editorType": "sql",
+          "format": 1,
           "hide": false,
+          "meta": {
+            "builderOptions": {
+              "columns": [],
+              "database": "",
+              "limit": 1000,
+              "meta": {},
+              "mode": "list",
+              "queryType": "table",
+              "table": ""
+            }
+          },
+          "pluginVersion": "2.1.4",
+          "queryType": "table",
           "rawQuery": true,
-          "rawSql": "SELECT\r\n  LAST_VALUE(time ORDER BY time) AS time,\r\n  LAST_VALUE((\"NAMURFAULT\").value ORDER BY time)    AS e_stop_namur_fault_aradex_1\r\nFROM marpower.\"150000_propulsion\"\r\nWHERE topic = 'marpower/150000-propulsion/aft-ara1-pcs'",
+          "rawSql": "SELECT\r\n  timestamp          AS time,\r\n  namurfault__value  AS e_stop_namur_fault_aradex_1\r\nFROM public.marpower__150000_propulsion\r\nWHERE topic = 'marpower/150000-propulsion/aft_ara1_pcs'\r\nORDER BY timestamp DESC\r\nLIMIT 1",
           "refId": "C",
           "sql": {
             "columns": [
@@ -1428,10 +1470,24 @@
             "uid": "${datasource}"
           },
           "editorMode": "code",
-          "format": "table",
+          "editorType": "sql",
+          "format": 1,
           "hide": false,
+          "meta": {
+            "builderOptions": {
+              "columns": [],
+              "database": "",
+              "limit": 1000,
+              "meta": {},
+              "mode": "list",
+              "queryType": "table",
+              "table": ""
+            }
+          },
+          "pluginVersion": "2.1.4",
+          "queryType": "table",
           "rawQuery": true,
-          "rawSql": "SELECT\r\n  LAST_VALUE(time ORDER BY time) AS time,\r\n  LAST_VALUE((\"NAMURFAULT\").value ORDER BY time)    AS e_stop_namur_fault_aradex_2\r\nFROM marpower.\"150000_propulsion\"\r\nWHERE topic = 'marpower/150000-propulsion/aft-ara2-pcs'",
+          "rawSql": "SELECT\r\n  timestamp          AS time,\r\n  namurfault__value  AS e_stop_namur_fault_aradex_2\r\nFROM public.marpower__150000_propulsion\r\nWHERE topic = 'marpower/150000-propulsion/aft_ara2_pcs'\r\nORDER BY timestamp DESC\r\nLIMIT 1",
           "refId": "D",
           "sql": {
             "columns": [
@@ -2732,10 +2788,24 @@
             "uid": "${datasource}"
           },
           "editorMode": "code",
-          "format": "table",
+          "editorType": "sql",
+          "format": 1,
           "hide": false,
+          "meta": {
+            "builderOptions": {
+              "columns": [],
+              "database": "",
+              "limit": 1000,
+              "meta": {},
+              "mode": "list",
+              "queryType": "table",
+              "table": ""
+            }
+          },
+          "pluginVersion": "2.1.4",
+          "queryType": "table",
           "rawQuery": true,
-          "rawSql": "SELECT\r\n  LAST_VALUE(time ORDER BY time) AS time,\r\n  LAST_VALUE((\"CB_11_COMALARM\").value ORDER BY time)              AS communication_alarm,\r\n  LAST_VALUE((\"CB_11_24VDCSERVFAIL\").value ORDER BY time)         AS \"24v_service_failure\",\r\n  LAST_VALUE((\"CB_11_24VDCEMERGFAIL\").value ORDER BY time)        AS \"24v_emergency_failure\",\r\n  LAST_VALUE((\"CB_11_POWERDISTRINS\").value ORDER BY time)         AS power_distr_insul_alarm,\r\n  LAST_VALUE((\"CB_11_HYDRPRESSALARM\").value ORDER BY time)        AS hydraulic_pressure_alarm,\r\n  LAST_VALUE((\"CB_11_OILLEVALARMSEALTANK\").value ORDER BY time)   AS seal_tank_oil_level_alarm,\r\n  LAST_VALUE((\"CB_11_GEAROILLEVALARM\").value ORDER BY time)       AS gear_oil_level_alarm,\r\n  LAST_VALUE((\"CB_11_GEAROILTEMPALARM\").value ORDER BY time)      AS gear_oil_temp_alarm,\r\n  LAST_VALUE((\"CB_11_OVERSPALARM\").value ORDER BY time)        AS overspeed_alarm,\r\n  LAST_VALUE((\"CB_11_OVERLALARM\").value ORDER BY time)         AS overload_alarm,\r\n  LAST_VALUE((\"CB_11_AZIFOLLUPFAILALARM\").value ORDER BY time)    AS azimuth_follow_up_alarm,\r\n  LAST_VALUE((\"CB_11_PITCHFOLLUPFAILALARM\").value ORDER BY time)  AS pitch_follow_up_alarm\r\nFROM marpower.\"150000_pcs\"",
+          "rawSql": "SELECT\r\n  timestamp                          AS time,\r\n  cb_11_comalarm__value              AS communication_alarm,\r\n  cb_11_24_vdcservfail__value        AS \"24v_service_failure\",\r\n  cb_11_24_vdcemergfail__value       AS \"24v_emergency_failure\",\r\n  cb_11_powerdistrins__value         AS power_distr_insul_alarm,\r\n  cb_11_hydrpressalarm__value        AS hydraulic_pressure_alarm,\r\n  cb_11_oillevalarmsealtank__value   AS seal_tank_oil_level_alarm,\r\n  cb_11_gearoillevalarm__value       AS gear_oil_level_alarm,\r\n  cb_11_gearoiltempalarm__value      AS gear_oil_temp_alarm,\r\n  cb_11_overspalarm__value           AS overspeed_alarm,\r\n  cb_11_overlalarm__value            AS overload_alarm,\r\n  cb_11_azifollupfailalarm__value    AS azimuth_follow_up_alarm,\r\n  cb_11_pitchfollupfailalarm__value  AS pitch_follow_up_alarm\r\nFROM public.marpower__150000_pcs\r\nORDER BY timestamp DESC\r\nLIMIT 1",
           "refId": "A",
           "sql": {
             "columns": [
@@ -2762,9 +2832,23 @@
             "uid": "${datasource}"
           },
           "editorMode": "code",
-          "format": "table",
+          "editorType": "sql",
+          "format": 1,
+          "meta": {
+            "builderOptions": {
+              "columns": [],
+              "database": "",
+              "limit": 1000,
+              "meta": {},
+              "mode": "list",
+              "queryType": "table",
+              "table": ""
+            }
+          },
+          "pluginVersion": "2.1.4",
+          "queryType": "table",
           "rawQuery": true,
-          "rawSql": "SELECT\r\n  LAST_VALUE(time ORDER BY time) AS time,\r\n  LAST_VALUE((\"FWD_THRUSTER_WATERLEAKALARM\").value ORDER BY time) AS water_leak_alarm\r\nFROM marpower.\"150000_propulsion_general\"",
+          "rawSql": "SELECT\r\n  timestamp                          AS time,\r\n  fwd_thruster_waterleakalarm__value AS water_leak_alarm\r\nFROM public.marpower__150000_propulsion_general\r\nORDER BY timestamp DESC\r\nLIMIT 1",
           "refId": "B",
           "sql": {
             "columns": [
@@ -2791,10 +2875,24 @@
             "uid": "${datasource}"
           },
           "editorMode": "code",
-          "format": "table",
+          "editorType": "sql",
+          "format": 1,
           "hide": false,
+          "meta": {
+            "builderOptions": {
+              "columns": [],
+              "database": "",
+              "limit": 1000,
+              "meta": {},
+              "mode": "list",
+              "queryType": "table",
+              "table": ""
+            }
+          },
+          "pluginVersion": "2.1.4",
+          "queryType": "table",
           "rawQuery": true,
-          "rawSql": "SELECT\r\n  LAST_VALUE(time ORDER BY time) AS time,\r\n  LAST_VALUE((\"NAMURFAULT\").value ORDER BY time)    AS e_stop_namur_fault_aradex_1\r\nFROM marpower.\"150000_propulsion\"\r\nWHERE topic = 'marpower/150000-propulsion/fwd-ara1-pcs'",
+          "rawSql": "SELECT\r\n  timestamp          AS time,\r\n  namurfault__value  AS e_stop_namur_fault_aradex_1\r\nFROM public.marpower__150000_propulsion\r\nWHERE topic = 'marpower/150000-propulsion/fwd_ara1_pcs'\r\nORDER BY timestamp DESC\r\nLIMIT 1",
           "refId": "C",
           "sql": {
             "columns": [
@@ -2821,10 +2919,24 @@
             "uid": "${datasource}"
           },
           "editorMode": "code",
-          "format": "table",
+          "editorType": "sql",
+          "format": 1,
           "hide": false,
+          "meta": {
+            "builderOptions": {
+              "columns": [],
+              "database": "",
+              "limit": 1000,
+              "meta": {},
+              "mode": "list",
+              "queryType": "table",
+              "table": ""
+            }
+          },
+          "pluginVersion": "2.1.4",
+          "queryType": "table",
           "rawQuery": true,
-          "rawSql": "SELECT\r\n  LAST_VALUE(time ORDER BY time) AS time,\r\n  LAST_VALUE((\"NAMURFAULT\").value ORDER BY time)    AS e_stop_namur_fault_aradex_2\r\nFROM marpower.\"150000_propulsion\"\r\nWHERE topic = 'marpower/150000-propulsion/fwd-ara2-pcs'",
+          "rawSql": "SELECT\r\n  timestamp          AS time,\r\n  namurfault__value  AS e_stop_namur_fault_aradex_2\r\nFROM public.marpower__150000_propulsion\r\nWHERE topic = 'marpower/150000-propulsion/fwd_ara2_pcs'\r\nORDER BY timestamp DESC\r\nLIMIT 1",
           "refId": "D",
           "sql": {
             "columns": [
@@ -3408,9 +3520,23 @@
             "uid": "${datasource}"
           },
           "editorMode": "code",
-          "format": "table",
+          "editorType": "sql",
+          "format": 1,
+          "meta": {
+            "builderOptions": {
+              "columns": [],
+              "database": "",
+              "limit": 1000,
+              "meta": {},
+              "mode": "list",
+              "queryType": "table",
+              "table": ""
+            }
+          },
+          "pluginVersion": "2.1.4",
+          "queryType": "table",
           "rawQuery": true,
-          "rawSql": "SELECT\r\n  LAST_VALUE(time ORDER BY time) AS time,\r\n  LAST_VALUE((\"STARTCOMM\").value ORDER BY time)     AS start_command,\r\n  LAST_VALUE((\"STOPCOMM\").value ORDER BY time)      AS stop_command,\r\n  LAST_VALUE((\"RESETCOMM\").value ORDER BY time)     AS reset_command,\r\n  LAST_VALUE((\"EMSTOPACT\").value ORDER BY time)     AS e_stop_active,\r\n  LAST_VALUE((\"SECTHRSEL\").value ORDER BY time)     AS secundary_throttle_signal_selected,\r\n  LAST_VALUE((\"SHAFTBRAKEENG\").value ORDER BY time) AS shaft_brake_engaged\r\nFROM marpower.\"150000_propulsion\"\r\nWHERE topic = 'marpower/150000-propulsion/aft-ara1-pcs'",
+          "rawSql": "SELECT\r\n  timestamp                          AS time,\r\n  startcomm__value                   AS start_command,\r\n  stopcomm__value                    AS stop_command,\r\n  resetcomm__value                   AS reset_command,\r\n  emstopact__value                   AS e_stop_active,\r\n  secthrsel__value                   AS secundary_throttle_signal_selected,\r\n  shaftbrakeeng__value               AS shaft_brake_engaged\r\nFROM public.marpower__150000_propulsion\r\nWHERE topic = 'marpower/150000-propulsion/aft_ara1_pcs'\r\nORDER BY timestamp DESC\r\nLIMIT 1",
           "refId": "A",
           "sql": {
             "columns": [
@@ -3994,9 +4120,23 @@
             "uid": "${datasource}"
           },
           "editorMode": "code",
-          "format": "table",
+          "editorType": "sql",
+          "format": 1,
+          "meta": {
+            "builderOptions": {
+              "columns": [],
+              "database": "",
+              "limit": 1000,
+              "meta": {},
+              "mode": "list",
+              "queryType": "table",
+              "table": ""
+            }
+          },
+          "pluginVersion": "2.1.4",
+          "queryType": "table",
           "rawQuery": true,
-          "rawSql": "SELECT\r\n  LAST_VALUE(time ORDER BY time) AS time,\r\n  LAST_VALUE((\"STARTCOMM\").value ORDER BY time)     AS start_command,\r\n  LAST_VALUE((\"STOPCOMM\").value ORDER BY time)      AS stop_command,\r\n  LAST_VALUE((\"RESETCOMM\").value ORDER BY time)     AS reset_command,\r\n  LAST_VALUE((\"EMSTOPACT\").value ORDER BY time)     AS e_stop_active,\r\n  LAST_VALUE((\"SECTHRSEL\").value ORDER BY time)     AS secundary_throttle_signal_selected,\r\n  LAST_VALUE((\"SHAFTBRAKEENG\").value ORDER BY time) AS shaft_brake_engaged\r\nFROM marpower.\"150000_propulsion\"\r\nWHERE topic = 'marpower/150000-propulsion/aft-ara2-pcs'",
+          "rawSql": "SELECT\r\n  timestamp                          AS time,\r\n  startcomm__value                   AS start_command,\r\n  stopcomm__value                    AS stop_command,\r\n  resetcomm__value                   AS reset_command,\r\n  emstopact__value                   AS e_stop_active,\r\n  secthrsel__value                   AS secundary_throttle_signal_selected,\r\n  shaftbrakeeng__value               AS shaft_brake_engaged\r\nFROM public.marpower__150000_propulsion\r\nWHERE topic = 'marpower/150000-propulsion/aft_ara2_pcs'\r\nORDER BY timestamp DESC\r\nLIMIT 1",
           "refId": "A",
           "sql": {
             "columns": [
@@ -4580,9 +4720,23 @@
             "uid": "${datasource}"
           },
           "editorMode": "code",
-          "format": "table",
+          "editorType": "sql",
+          "format": 1,
+          "meta": {
+            "builderOptions": {
+              "columns": [],
+              "database": "",
+              "limit": 1000,
+              "meta": {},
+              "mode": "list",
+              "queryType": "table",
+              "table": ""
+            }
+          },
+          "pluginVersion": "2.1.4",
+          "queryType": "table",
           "rawQuery": true,
-          "rawSql": "SELECT\r\n  LAST_VALUE(time ORDER BY time) AS time,\r\n  LAST_VALUE((\"STARTCOMM\").value ORDER BY time)     AS start_command,\r\n  LAST_VALUE((\"STOPCOMM\").value ORDER BY time)      AS stop_command,\r\n  LAST_VALUE((\"RESETCOMM\").value ORDER BY time)     AS reset_command,\r\n  LAST_VALUE((\"EMSTOPACT\").value ORDER BY time)     AS e_stop_active,\r\n  LAST_VALUE((\"SECTHRSEL\").value ORDER BY time)     AS secundary_throttle_signal_selected,\r\n  LAST_VALUE((\"SHAFTBRAKEENG\").value ORDER BY time) AS shaft_brake_engaged\r\nFROM marpower.\"150000_propulsion\"\r\nWHERE topic = 'marpower/150000-propulsion/fwd-ara1-pcs'",
+          "rawSql": "SELECT\r\n  timestamp                          AS time,\r\n  startcomm__value                   AS start_command,\r\n  stopcomm__value                    AS stop_command,\r\n  resetcomm__value                   AS reset_command,\r\n  emstopact__value                   AS e_stop_active,\r\n  secthrsel__value                   AS secundary_throttle_signal_selected,\r\n  shaftbrakeeng__value               AS shaft_brake_engaged\r\nFROM public.marpower__150000_propulsion\r\nWHERE topic = 'marpower/150000-propulsion/fwd_ara1_pcs'\r\nORDER BY timestamp DESC\r\nLIMIT 1",
           "refId": "A",
           "sql": {
             "columns": [
@@ -5166,9 +5320,23 @@
             "uid": "${datasource}"
           },
           "editorMode": "code",
-          "format": "table",
+          "editorType": "sql",
+          "format": 1,
+          "meta": {
+            "builderOptions": {
+              "columns": [],
+              "database": "",
+              "limit": 1000,
+              "meta": {},
+              "mode": "list",
+              "queryType": "table",
+              "table": ""
+            }
+          },
+          "pluginVersion": "2.1.4",
+          "queryType": "table",
           "rawQuery": true,
-          "rawSql": "SELECT\r\n  LAST_VALUE(time ORDER BY time) AS time,\r\n  LAST_VALUE((\"STARTCOMM\").value ORDER BY time)     AS start_command,\r\n  LAST_VALUE((\"STOPCOMM\").value ORDER BY time)      AS stop_command,\r\n  LAST_VALUE((\"RESETCOMM\").value ORDER BY time)     AS reset_command,\r\n  LAST_VALUE((\"EMSTOPACT\").value ORDER BY time)     AS e_stop_active,\r\n  LAST_VALUE((\"SECTHRSEL\").value ORDER BY time)     AS secundary_throttle_signal_selected,\r\n  LAST_VALUE((\"SHAFTBRAKEENG\").value ORDER BY time) AS shaft_brake_engaged\r\nFROM marpower.\"150000_propulsion\"\r\nWHERE topic = 'marpower/150000-propulsion/fwd-ara2-pcs'",
+          "rawSql": "SELECT\r\n  timestamp                          AS time,\r\n  startcomm__value                   AS start_command,\r\n  stopcomm__value                    AS stop_command,\r\n  resetcomm__value                   AS reset_command,\r\n  emstopact__value                   AS e_stop_active,\r\n  secthrsel__value                   AS secundary_throttle_signal_selected,\r\n  shaftbrakeeng__value               AS shaft_brake_engaged\r\nFROM public.marpower__150000_propulsion\r\nWHERE topic = 'marpower/150000-propulsion/fwd_ara2_pcs'\r\nORDER BY timestamp DESC\r\nLIMIT 1",
           "refId": "A",
           "sql": {
             "columns": [
@@ -5349,10 +5517,24 @@
             "uid": "${datasource}"
           },
           "editorMode": "code",
-          "format": "table",
+          "editorType": "sql",
+          "format": 1,
           "hide": false,
+          "meta": {
+            "builderOptions": {
+              "columns": [],
+              "database": "",
+              "limit": 1000,
+              "meta": {},
+              "mode": "list",
+              "queryType": "table",
+              "table": ""
+            }
+          },
+          "pluginVersion": "2.1.4",
+          "queryType": "table",
           "rawQuery": true,
-          "rawSql": "SELECT\r\n  LAST_VALUE(time ORDER BY time) AS time,\r\n  LAST_VALUE((\"AFT_MOTOR_HEATINGONOFF\").value ORDER BY time) AS heating_on_off\r\nFROM marpower.\"150000_propulsion_general\"",
+          "rawSql": "SELECT\r\n  timestamp                     AS time,\r\n  aft_motor_heatingonoff__value AS heating_on_off\r\nFROM public.marpower__150000_propulsion_general\r\nORDER BY timestamp DESC\r\nLIMIT 1",
           "refId": "C",
           "sql": {
             "columns": [
@@ -5533,10 +5715,24 @@
             "uid": "${datasource}"
           },
           "editorMode": "code",
-          "format": "table",
+          "editorType": "sql",
+          "format": 1,
           "hide": false,
+          "meta": {
+            "builderOptions": {
+              "columns": [],
+              "database": "",
+              "limit": 1000,
+              "meta": {},
+              "mode": "list",
+              "queryType": "table",
+              "table": ""
+            }
+          },
+          "pluginVersion": "2.1.4",
+          "queryType": "table",
           "rawQuery": true,
-          "rawSql": "SELECT\r\n  LAST_VALUE(time ORDER BY time) AS time,\r\n  LAST_VALUE((\"FWD_MOTOR_HEATINGONOFF\").value ORDER BY time) AS heating_on_off\r\nFROM marpower.\"150000_propulsion_general\"",
+          "rawSql": "SELECT\r\n  timestamp                     AS time,\r\n  fwd_motor_heatingonoff__value AS heating_on_off\r\nFROM public.marpower__150000_propulsion_general\r\nORDER BY timestamp DESC\r\nLIMIT 1",
           "refId": "C",
           "sql": {
             "columns": [
@@ -6042,9 +6238,23 @@
             "uid": "${datasource}"
           },
           "editorMode": "code",
-          "format": "table",
+          "editorType": "sql",
+          "format": 1,
+          "meta": {
+            "builderOptions": {
+              "columns": [],
+              "database": "",
+              "limit": 1000,
+              "meta": {},
+              "mode": "list",
+              "queryType": "table",
+              "table": ""
+            }
+          },
+          "pluginVersion": "2.1.4",
+          "queryType": "table",
           "rawQuery": true,
-          "rawSql": "SELECT\r\n  LAST_VALUE(time ORDER BY time) AS time,\r\n  LAST_VALUE((\"DRIVEREADYFDBCK\").value ORDER BY time)     AS drive_ready,\r\n  LAST_VALUE((\"DRIVERUNNINGFDBCK\").value ORDER BY time)   AS drive_running,\r\n  LAST_VALUE((\"DRIVEWARNFDBCK\").value ORDER BY time)      AS drive_warning,\r\n  LAST_VALUE((\"DRIVEFAILFDBCK\").value ORDER BY time)      AS drive_fail,\r\n  LAST_VALUE((\"DRIVEPWRREDUCEFDBCK\").value ORDER BY time) AS drive_power_reduce\r\nFROM marpower.\"150000_propulsion\"\r\nWHERE topic = 'marpower/150000-propulsion/aft-ara1-pcs'",
+          "rawSql": "SELECT\r\n  timestamp                    AS time,\r\n  drivereadyfdbck__value       AS drive_ready,\r\n  driverunningfdbck__value     AS drive_running,\r\n  drivewarnfdbck__value        AS drive_warning,\r\n  drivefailfdbck__value        AS drive_fail,\r\n  drivepwrreducefdbck__value   AS drive_power_reduce\r\nFROM public.marpower__150000_propulsion\r\nWHERE topic = 'marpower/150000-propulsion/aft_ara1_pcs'\r\nORDER BY timestamp DESC\r\nLIMIT 1",
           "refId": "A",
           "sql": {
             "columns": [
@@ -6550,9 +6760,23 @@
             "uid": "${datasource}"
           },
           "editorMode": "code",
-          "format": "table",
+          "editorType": "sql",
+          "format": 1,
+          "meta": {
+            "builderOptions": {
+              "columns": [],
+              "database": "",
+              "limit": 1000,
+              "meta": {},
+              "mode": "list",
+              "queryType": "table",
+              "table": ""
+            }
+          },
+          "pluginVersion": "2.1.4",
+          "queryType": "table",
           "rawQuery": true,
-          "rawSql": "SELECT\r\n  LAST_VALUE(time ORDER BY time) AS time,\r\n  LAST_VALUE((\"DRIVEREADYFDBCK\").value ORDER BY time)     AS drive_ready,\r\n  LAST_VALUE((\"DRIVERUNNINGFDBCK\").value ORDER BY time)   AS drive_running,\r\n  LAST_VALUE((\"DRIVEWARNFDBCK\").value ORDER BY time)      AS drive_warning,\r\n  LAST_VALUE((\"DRIVEFAILFDBCK\").value ORDER BY time)      AS drive_fail,\r\n  LAST_VALUE((\"DRIVEPWRREDUCEFDBCK\").value ORDER BY time) AS drive_power_reduce\r\nFROM marpower.\"150000_propulsion\"\r\nWHERE topic = 'marpower/150000-propulsion/aft-ara2-pcs'",
+          "rawSql": "SELECT\r\n  timestamp                    AS time,\r\n  drivereadyfdbck__value       AS drive_ready,\r\n  driverunningfdbck__value     AS drive_running,\r\n  drivewarnfdbck__value        AS drive_warning,\r\n  drivefailfdbck__value        AS drive_fail,\r\n  drivepwrreducefdbck__value   AS drive_power_reduce\r\nFROM public.marpower__150000_propulsion\r\nWHERE topic = 'marpower/150000-propulsion/aft_ara2_pcs'\r\nORDER BY timestamp DESC\r\nLIMIT 1",
           "refId": "A",
           "sql": {
             "columns": [
@@ -7058,9 +7282,23 @@
             "uid": "${datasource}"
           },
           "editorMode": "code",
-          "format": "table",
+          "editorType": "sql",
+          "format": 1,
+          "meta": {
+            "builderOptions": {
+              "columns": [],
+              "database": "",
+              "limit": 1000,
+              "meta": {},
+              "mode": "list",
+              "queryType": "table",
+              "table": ""
+            }
+          },
+          "pluginVersion": "2.1.4",
+          "queryType": "table",
           "rawQuery": true,
-          "rawSql": "SELECT\r\n  LAST_VALUE(time ORDER BY time) AS time,\r\n  LAST_VALUE((\"DRIVEREADYFDBCK\").value ORDER BY time)     AS drive_ready,\r\n  LAST_VALUE((\"DRIVERUNNINGFDBCK\").value ORDER BY time)   AS drive_running,\r\n  LAST_VALUE((\"DRIVEWARNFDBCK\").value ORDER BY time)      AS drive_warning,\r\n  LAST_VALUE((\"DRIVEFAILFDBCK\").value ORDER BY time)      AS drive_fail,\r\n  LAST_VALUE((\"DRIVEPWRREDUCEFDBCK\").value ORDER BY time) AS drive_power_reduce\r\nFROM marpower.\"150000_propulsion\"\r\nWHERE topic = 'marpower/150000-propulsion/fwd-ara1-pcs'",
+          "rawSql": "SELECT\r\n  timestamp                    AS time,\r\n  drivereadyfdbck__value       AS drive_ready,\r\n  driverunningfdbck__value     AS drive_running,\r\n  drivewarnfdbck__value        AS drive_warning,\r\n  drivefailfdbck__value        AS drive_fail,\r\n  drivepwrreducefdbck__value   AS drive_power_reduce\r\nFROM public.marpower__150000_propulsion\r\nWHERE topic = 'marpower/150000-propulsion/fwd_ara1_pcs'\r\nORDER BY timestamp DESC\r\nLIMIT 1",
           "refId": "A",
           "sql": {
             "columns": [
@@ -7566,9 +7804,23 @@
             "uid": "${datasource}"
           },
           "editorMode": "code",
-          "format": "table",
+          "editorType": "sql",
+          "format": 1,
+          "meta": {
+            "builderOptions": {
+              "columns": [],
+              "database": "",
+              "limit": 1000,
+              "meta": {},
+              "mode": "list",
+              "queryType": "table",
+              "table": ""
+            }
+          },
+          "pluginVersion": "2.1.4",
+          "queryType": "table",
           "rawQuery": true,
-          "rawSql": "SELECT\r\n  LAST_VALUE(time ORDER BY time) AS time,\r\n  LAST_VALUE((\"DRIVEREADYFDBCK\").value ORDER BY time)     AS drive_ready,\r\n  LAST_VALUE((\"DRIVERUNNINGFDBCK\").value ORDER BY time)   AS drive_running,\r\n  LAST_VALUE((\"DRIVEWARNFDBCK\").value ORDER BY time)      AS drive_warning,\r\n  LAST_VALUE((\"DRIVEFAILFDBCK\").value ORDER BY time)      AS drive_fail,\r\n  LAST_VALUE((\"DRIVEPWRREDUCEFDBCK\").value ORDER BY time) AS drive_power_reduce\r\nFROM marpower.\"150000_propulsion\"\r\nWHERE topic = 'marpower/150000-propulsion/fwd-ara2-pcs'",
+          "rawSql": "SELECT\r\n  timestamp                    AS time,\r\n  drivereadyfdbck__value       AS drive_ready,\r\n  driverunningfdbck__value     AS drive_running,\r\n  drivewarnfdbck__value        AS drive_warning,\r\n  drivefailfdbck__value        AS drive_fail,\r\n  drivepwrreducefdbck__value   AS drive_power_reduce\r\nFROM public.marpower__150000_propulsion\r\nWHERE topic = 'marpower/150000-propulsion/fwd_ara2_pcs'\r\nORDER BY timestamp DESC\r\nLIMIT 1",
           "refId": "A",
           "sql": {
             "columns": [
@@ -8445,9 +8697,23 @@
             "uid": "${datasource}"
           },
           "editorMode": "code",
-          "format": "table",
+          "editorType": "sql",
+          "format": 1,
+          "meta": {
+            "builderOptions": {
+              "columns": [],
+              "database": "",
+              "limit": 1000,
+              "meta": {},
+              "mode": "list",
+              "queryType": "table",
+              "table": ""
+            }
+          },
+          "pluginVersion": "2.1.4",
+          "queryType": "table",
           "rawQuery": true,
-          "rawSql": "SELECT\r\n  LAST_VALUE(time ORDER BY time) AS time,\r\n  LAST_VALUE((\"AFT_THRUST_WINDINGTEMPU1\").value ORDER BY time)      AS winding_U1_temp,\r\n  LAST_VALUE((\"AFT_THRUST_WINDINGTEMPV1\").value ORDER BY time)      AS winding_V1_temp,\r\n  LAST_VALUE((\"AFT_THRUST_WINDINGTEMPW1\").value ORDER BY time)      AS winding_W1_temp,\r\n  LAST_VALUE((\"AFT_THRUST_VENTTEMP1\").value ORDER BY time)          AS ventilation1_temp,\r\n  LAST_VALUE((\"AFT_THRUST_WINDINGTEMPU2\").value ORDER BY time)      AS winding_U2_temp,\r\n  LAST_VALUE((\"AFT_THRUST_WINDINGTEMPV2\").value ORDER BY time)      AS winding_V2_temp,\r\n  LAST_VALUE((\"AFT_THRUST_WINDINGTEMPW2\").value ORDER BY time)      AS winding_W2_temp,\r\n  LAST_VALUE((\"AFT_THRUST_VENTTEMP2\").value ORDER BY time)          AS ventilation2_temp,\r\n  LAST_VALUE((\"STERN_THRUST_BEARING_DE_TEMP\").value ORDER BY time)  AS bearing_de_temp,\r\n  LAST_VALUE((\"STERN_THRUST_BEARING_NDE_TEMP\").value ORDER BY time) AS bearing_nde_temp\r\nFROM marpower.\"150000_propulsion_general\"",
+          "rawSql": "SELECT\r\n  timestamp                         AS time,\r\n  aft_thrust_windingtempu_1__value  AS winding_U1_temp,\r\n  aft_thrust_windingtempv_1__value  AS winding_V1_temp,\r\n  aft_thrust_windingtempw_1__value  AS winding_W1_temp,\r\n  aft_thrust_venttemp_1__value      AS ventilation1_temp,\r\n  aft_thrust_windingtempu_2__value  AS winding_U2_temp,\r\n  aft_thrust_windingtempv_2__value  AS winding_V2_temp,\r\n  aft_thrust_windingtempw_2__value  AS winding_W2_temp,\r\n  aft_thrust_venttemp_2__value      AS ventilation2_temp,\r\n  stern_thrust_bearing_de_temp__value  AS bearing_de_temp,\r\n  stern_thrust_bearing_nde_temp__value AS bearing_nde_temp\r\nFROM public.marpower__150000_propulsion_general\r\nORDER BY timestamp DESC\r\nLIMIT 1",
           "refId": "A",
           "sql": {
             "columns": [
@@ -9324,9 +9590,23 @@
             "uid": "${datasource}"
           },
           "editorMode": "code",
-          "format": "table",
+          "editorType": "sql",
+          "format": 1,
+          "meta": {
+            "builderOptions": {
+              "columns": [],
+              "database": "",
+              "limit": 1000,
+              "meta": {},
+              "mode": "list",
+              "queryType": "table",
+              "table": ""
+            }
+          },
+          "pluginVersion": "2.1.4",
+          "queryType": "table",
           "rawQuery": true,
-          "rawSql": "SELECT\r\n  LAST_VALUE(time ORDER BY time) AS time,\r\n  LAST_VALUE((\"FWD_THRUST_WINDINGTEMPU1\").value ORDER BY time)      AS winding_U1_temp,\r\n  LAST_VALUE((\"FWD_THRUST_WINDINGTEMPV1\").value ORDER BY time)      AS winding_V1_temp,\r\n  LAST_VALUE((\"FWD_THRUST_WINDING_TEMP_W1\").value ORDER BY time)    AS winding_W1_temp,\r\n  LAST_VALUE((\"FWD_THRUST_VENTTEMP1\").value ORDER BY time)          AS ventilation1_temp,\r\n  LAST_VALUE((\"BOW_THRUST_WINDINGTEMPU2\").value ORDER BY time)      AS winding_U2_temp,\r\n  LAST_VALUE((\"BOW_THRUST_WINDINGTEMPV2\").value ORDER BY time)      AS winding_V2_temp,\r\n  LAST_VALUE((\"BOW_THRUST_WINDINGTEMPW2\").value ORDER BY time)      AS winding_W2_temp,\r\n  LAST_VALUE((\"FWD_THRUST_VENTTEMP2\").value ORDER BY time)          AS ventilation2_temp,\r\n  LAST_VALUE((\"BOW_THRUST_BEARING_DE_TEMP\").value ORDER BY time)    AS bearing_de_temp,\r\n  LAST_VALUE((\"BOW_THRUST_BEARING_NDE_TEMP\").value ORDER BY time)   AS bearing_nde_temp\r\nFROM marpower.\"150000_propulsion_general\"",
+          "rawSql": "SELECT\r\n  timestamp                         AS time,\r\n  fwd_thrust_windingtempu_1__value  AS winding_U1_temp,\r\n  fwd_thrust_windingtempv_1__value  AS winding_V1_temp,\r\n  fwd_thrust_winding_temp_w_1__value AS winding_W1_temp,\r\n  fwd_thrust_venttemp_1__value      AS ventilation1_temp,\r\n  bow_thrust_windingtempu_2__value  AS winding_U2_temp,\r\n  bow_thrust_windingtempv_2__value  AS winding_V2_temp,\r\n  bow_thrust_windingtempw_2__value  AS winding_W2_temp,\r\n  fwd_thrust_venttemp_2__value      AS ventilation2_temp,\r\n  bow_thrust_bearing_de_temp__value  AS bearing_de_temp,\r\n  bow_thrust_bearing_nde_temp__value AS bearing_nde_temp\r\nFROM public.marpower__150000_propulsion_general\r\nORDER BY timestamp DESC\r\nLIMIT 1",
           "refId": "A",
           "sql": {
             "columns": [
@@ -9361,12 +9641,12 @@
     "list": [
       {
         "current": {
-          "text": "RisingWave",
-          "value": "ceyj3m7wtn3swb"
+          "text": "greptimedb-singel",
+          "value": "PE746E5A5E0A52672"
         },
         "name": "datasource",
         "options": [],
-        "query": "grafana-postgresql-datasource",
+        "query": "info8fcc-greptimedb-datasource",
         "refresh": 1,
         "regex": "",
         "type": "datasource"
