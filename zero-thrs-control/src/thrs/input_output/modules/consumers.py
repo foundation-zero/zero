@@ -35,7 +35,7 @@ class ConsumersSensorValues(ThrsValues):
     ]
     consumers_flow_bypass: Annotated[
         sensor.FlowSensor,
-        component_meta(yard_tag="50001060-01", component_type="flow_sensor"),
+        component_meta(yard_tag="50001192", component_type="flow_sensor"),
     ]
     consumers_flowcontrol_fahrenheit: Annotated[
         sensor.Valve,
