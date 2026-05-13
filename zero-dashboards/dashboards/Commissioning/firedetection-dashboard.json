@@ -787,9 +787,23 @@
                 "uid": "${datasource}"
               },
               "editorMode": "code",
-              "format": "table",
+              "editorType": "sql",
+              "format": 1,
+              "meta": {
+                "builderOptions": {
+                  "columns": [],
+                  "database": "",
+                  "limit": 1000,
+                  "meta": {},
+                  "mode": "list",
+                  "queryType": "table",
+                  "table": ""
+                }
+              },
+              "pluginVersion": "2.1.4",
+              "queryType": "table",
               "rawQuery": true,
-              "rawSql": "select timestamp, detect_fault__value as detect_fault, door_powersupplyfail__value as door_power_supply_fail, auxiliary_system_servicesupplyfail__value as aux_sys_service_supply_fail, auxiliary_system_emergencysupplyfail__value as aux_sys_emergency_supply_fail, doors_release__value as doors_release, door_galley_keel_open__value as door_galley_keel_open from marpower__450000_firedetection_general limit 1;",
+              "rawSql": "SELECT\r\n  timestamp,\r\n  detect_fault__value                         AS detect_fault,\r\n  door_powersupplyfail__value                 AS door_power_supply_fail,\r\n  auxiliary_system_servicesupplyfail__value   AS aux_sys_service_supply_fail,\r\n  auxiliary_system_emergencysupplyfail__value AS aux_sys_emergency_supply_fail,\r\n  doors_release__value                        AS doors_release\r\nFROM marpower__450000_firedetection_general\r\nWHERE $__timeFilter(timestamp)",
               "refId": "A",
               "sql": {
                 "columns": [
@@ -954,9 +968,23 @@
             "uid": "${datasource}"
           },
           "editorMode": "code",
-          "format": "table",
+          "editorType": "sql",
+          "format": 1,
+          "meta": {
+            "builderOptions": {
+              "columns": [],
+              "database": "",
+              "limit": 1000,
+              "meta": {},
+              "mode": "list",
+              "queryType": "table",
+              "table": ""
+            }
+          },
+          "pluginVersion": "2.1.4",
+          "queryType": "table",
           "rawQuery": true,
-          "rawSql": "SELECT\r\n  meta.\"description\",\r\n  ARG_MAX((fire.\"disabled\").Value, (fire.\"disabled\").Timestamp) AS disabled,\r\n  ARG_MAX((fire.\"fault\").Value, (fire.\"fault\").Timestamp)       AS fault,\r\n  ARG_MAX((fire.\"prealarm\").Value, (fire.\"prealarm\").Timestamp) AS prealarm,\r\n  ARG_MAX((fire.\"alarm\").Value, (fire.\"alarm\").Timestamp)       AS alarm,\r\n  ARG_MAX((fire.\"test\").Value, (fire.\"test\").Timestamp)         AS test\r\nFROM marpower.\"450000_firedetection\" AS fire\r\nJOIN marpower.firedetection_metadata AS meta ON fire.topic = meta.topic\r\nWHERE meta.section = 'Accommodation'\r\n  AND meta.room_or_area LIKE '%Cabin%'\r\nGROUP BY meta.\"description\"\r\nORDER BY meta.\"description\"",
+          "rawSql": "SELECT DISTINCT\r\n  meta.description,\r\n  LAST_VALUE(fire.disabled__value) OVER (PARTITION BY meta.description ORDER BY fire.timestamp ASC RANGE BETWEEN UNBOUNDED PRECEDING AND UNBOUNDED FOLLOWING) AS disabled,\r\n  LAST_VALUE(fire.fault__value) OVER (PARTITION BY meta.description ORDER BY fire.timestamp ASC RANGE BETWEEN UNBOUNDED PRECEDING AND UNBOUNDED FOLLOWING) AS fault,\r\n  LAST_VALUE(fire.prealarm__value) OVER (PARTITION BY meta.description ORDER BY fire.timestamp ASC RANGE BETWEEN UNBOUNDED PRECEDING AND UNBOUNDED FOLLOWING) AS prealarm,\r\n  LAST_VALUE(fire.alarm__value) OVER (PARTITION BY meta.description ORDER BY fire.timestamp ASC RANGE BETWEEN UNBOUNDED PRECEDING AND UNBOUNDED FOLLOWING) AS alarm,\r\n  LAST_VALUE(fire.test__value) OVER (PARTITION BY meta.description ORDER BY fire.timestamp ASC RANGE BETWEEN UNBOUNDED PRECEDING AND UNBOUNDED FOLLOWING) AS test\r\nFROM public.marpower__450000_firedetection AS fire\r\nJOIN public.marpower__firedetection_metadata AS meta \r\n  ON fire.topic = meta.topic\r\nWHERE meta.section = 'Accommodation'\r\n  AND meta.room_or_area LIKE '%Cabin%'\r\nORDER BY meta.description;",
           "refId": "A",
           "sql": {
             "columns": [
@@ -2538,8 +2566,8 @@
     "list": [
       {
         "current": {
-          "text": "RisingWave",
-          "value": "ceyj3m7wtn3swb"
+          "text": "greptimedb-zero",
+          "value": "PBAD09CF7391C3C43"
         },
         "name": "datasource",
         "options": [],
