@@ -33,6 +33,7 @@ These components should be small, composable primitives intended for larger mimi
 - Types, constants, dimensions, and design references should live in the component folder `index.ts`.
 - Use shared mimic composables such as `useStateColor` and `useOrientation` instead of re-implementing local helpers.
 - For directional components, include a typed `orientation: ComponentOrientation` prop and rotate the SVG group around the icon center.
+- Use `MimicComponent` as the base wrapper in every mimic `.vue` component; do not build standalone root `<svg>` wrappers per component.
 
 ## Design Reference Convention
 
@@ -78,8 +79,8 @@ Keep this updated when a component is intentionally re-pointed to a new Figma so
 - Use `<script setup lang="ts">`.
 - Define exported prop contracts in `index.ts`, then consume them with `defineProps` in the `.vue` file.
 - Use `toRefs(props)` when passing values to shared composables.
-- Keep the template strictly SVG.
-- Bind SVG sizing to exported width and height constants.
+- Keep the template SVG-only by rendering shapes inside `<MimicComponent>`.
+- Bind `MimicComponent` width and height to exported constants and pass base orientation/orientation props through.
 
 ### 6. Validate and refine
 
@@ -104,9 +105,20 @@ Before considering a component complete, verify all items:
 - Component compiles with zero diagnostics.
 - Documentation exists and is linked from the Mimics section.
 
+## What Belongs in index.ts vs the Template
+
+Only extract SVG geometry values to `index.ts` when they are computed or shared:
+
+- **Static path `d` values** — write inline in the template. Do not extract to a named constant.
+- **Computed `d` values** (for example a `Record<State, string>` where paths differ per state) — extract to `index.ts`.
+- **Component dimensions** (`width`, `height`) — always export as constants; they drive `createSizeAndViewbox`.
+- **Static shape attributes** (`cx`, `cy`, `r`, rect `x`/`y`/`width`/`height`) — inline in the template unless they are computed.
+
 ## Common Pitfalls
 
 - Building approximate geometry manually instead of exporting exact paths.
 - Using multiple SVG trees when one rotated geometry is enough.
 - Mixing semantic tokens with leftover hardcoded colors.
 - Adding HTML wrappers around what should be pure SVG output.
+- Extracting static path `d` strings into constants when they never change and are only used in one template.
+- Adding comments in the template that describe what a shape represents (for example `<!-- Circular body -->` or `<!-- Connecting stem -->`). SVG element type and attributes are self-documenting; prose comments add noise without value.

@@ -1,0 +1,140 @@
+<script setup lang="ts">
+import { computed } from "vue";
+import { MimicComponentBaseProps } from "..";
+import MimicComponent from "../MimicComponent.vue";
+import {
+  PIPE_HEAT_EXCHANGER_BASE_ORIENTATION,
+  PIPE_HEAT_EXCHANGER_FILL_COLORS,
+  PIPE_HEAT_EXCHANGER_HEIGHT,
+  PIPE_HEAT_EXCHANGER_INNER_FILL_COLORS,
+  PIPE_HEAT_EXCHANGER_WIDTH,
+  PipeHeatExchangerProps,
+  PipeHeatExchangerState,
+} from "./index";
+
+const props = withDefaults(defineProps<PipeHeatExchangerProps & MimicComponentBaseProps>(), {
+  orientation: PIPE_HEAT_EXCHANGER_BASE_ORIENTATION,
+  state: PipeHeatExchangerState.Idle,
+});
+
+const fillColor = computed(() => PIPE_HEAT_EXCHANGER_FILL_COLORS[props.state]);
+const innerFillColor = computed(() => PIPE_HEAT_EXCHANGER_INNER_FILL_COLORS[props.state]);
+</script>
+
+<template>
+  <MimicComponent
+    :width="PIPE_HEAT_EXCHANGER_WIDTH"
+    :height="PIPE_HEAT_EXCHANGER_HEIGHT"
+    :base-orientation="PIPE_HEAT_EXCHANGER_BASE_ORIENTATION"
+    :orientation="orientation"
+  >
+    <!-- Geometry is centered vertically within the 52×52 square viewBox (15px Y offset) -->
+    <g transform="translate(0 15)">
+      <rect
+        x="5.96875"
+        y="0.5"
+        width="41.0864"
+        height="15.7601"
+        rx="7.88004"
+        :fill="fillColor"
+        stroke="var(--attention)"
+      />
+      <path
+        d="M32.1006 4.96924C34.1897 4.96948 35.8828 6.66322 35.8828 8.75244C35.8828 10.8416 34.1897 12.5354 32.1006 12.5356H14.1641V4.96924H32.1006Z"
+        :fill="innerFillColor"
+        stroke="var(--attention)"
+      />
+      <line
+        x1="14.1641"
+        y1="0.372559"
+        x2="14.1641"
+        y2="20.4846"
+        stroke="var(--attention)"
+      />
+      <line
+        x1="39.4883"
+        y1="0.372559"
+        x2="39.4883"
+        y2="20.4846"
+        stroke="var(--attention)"
+      />
+      <line
+        x1="33.7734"
+        y1="19.9844"
+        x2="44.2019"
+        y2="19.9844"
+        stroke="var(--attention)"
+      />
+      <line
+        x1="51.5234"
+        y1="13.7803"
+        x2="51.5234"
+        y2="3.35178"
+        stroke="var(--attention)"
+      />
+      <line
+        x1="50.4062"
+        y1="13.7803"
+        x2="50.4062"
+        y2="3.35178"
+        stroke="var(--attention)"
+      />
+      <line
+        x1="31.7852"
+        y1="13.0356"
+        x2="31.7852"
+        y2="4.46939"
+        stroke="var(--attention)"
+      />
+      <line
+        x1="1.61719"
+        y1="13.7803"
+        x2="1.61719"
+        y2="3.35178"
+        stroke="var(--attention)"
+      />
+      <line
+        x1="0.5"
+        y1="13.7803"
+        x2="0.5"
+        y2="3.35178"
+        stroke="var(--attention)"
+      />
+      <line
+        x1="8.82031"
+        y1="19.9844"
+        x2="19.2488"
+        y2="19.9844"
+        stroke="var(--attention)"
+      />
+      <line
+        x1="2.11719"
+        y1="8.43848"
+        x2="5.84165"
+        y2="8.43848"
+        stroke="var(--attention)"
+      />
+      <line
+        x1="47.1836"
+        y1="8.43848"
+        x2="50.9081"
+        y2="8.43848"
+        stroke="var(--attention)"
+      />
+      <line
+        x1="8.82031"
+        y1="21.1021"
+        x2="19.2488"
+        y2="21.1021"
+        stroke="var(--attention)"
+      />
+      <line
+        x1="33.7734"
+        y1="21.1021"
+        x2="44.2019"
+        y2="21.1021"
+        stroke="var(--attention)"
+      />
+    </g>
+  </MimicComponent>
+</template>

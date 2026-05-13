@@ -12,7 +12,7 @@ Figma is the single source of truth. When a design changes, update the component
 Every mimic component stores its Figma source URL in a `FIGMA_URL` constant inside its `index.ts`:
 
 ```ts
-// src/modules/thrapp/mimics/components/valve/index.ts
+// src/modules/thrapp/mimics/components/actuated-valve/index.ts
 export const FIGMA_URL = "https://www.figma.com/design/...";
 ```
 
@@ -24,11 +24,11 @@ Open GitHub Copilot chat and tell the agent which component to update.
 
 **Design changed, URL unchanged** (agent fetches the current design automatically):
 
-> Update the Valve component from Figma. The design has changed — please re-read it and apply any differences.
+> Update the Actuated Valve component from Figma. The design has changed — please re-read it and apply any differences.
 
 **Design moved to a new Figma file:**
 
-> Update the Valve component using this new Figma design: `<paste Figma URL>`
+> Update the Actuated Valve component using this new Figma design: `<paste Figma URL>`
 
 ## What the Agent Does
 
@@ -52,15 +52,15 @@ After the agent finishes:
 
 | Scenario | What to say |
 |---|---|
-| Design updated in place | "The Valve design has changed. Please re-read Figma and apply any differences." |
-| Design moved to a new file | "The Valve component has moved to this Figma file: `<URL>`. Update the component and store the new URL." |
+| Design updated in place | "The Actuated Valve design has changed. Please re-read Figma and apply any differences." |
+| Design moved to a new file | "The Actuated Valve component has moved to this Figma file: `<URL>`. Update the component and store the new URL." |
 | Component merged or renamed in Figma | See section below. |
 
 ## When a Component Is Merged or Replaced
 
 If Figma has consolidated two components into one (or a component has been renamed), tell the agent explicitly:
 
-> The SwitchValve and FlowValve have been merged into a single Valve component in Figma: `<URL>`. Please merge the two Vue components into one, update the docs, and remove the old files.
+> The SwitchValve and FlowValve have been merged into a single Actuated Valve component in Figma: `<URL>`. Please merge the two Vue components into one, update the docs, and remove the old files.
 
 The agent will:
 - Merge the implementations into one canonical component.
