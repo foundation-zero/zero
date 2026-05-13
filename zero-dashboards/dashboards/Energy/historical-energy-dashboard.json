@@ -332,10 +332,24 @@
             "uid": "${datasource}"
           },
           "editorMode": "code",
-          "format": "table",
+          "editorType": "sql",
+          "format": 1,
+          "meta": {
+            "builderOptions": {
+              "columns": [],
+              "database": "",
+              "limit": 1000,
+              "meta": {},
+              "mode": "list",
+              "queryType": "table",
+              "table": ""
+            }
+          },
+          "pluginVersion": "2.1.4",
+          "queryType": "table",
           "hide": false,
           "rawQuery": true,
-          "rawSql": "SELECT\r\n\tDAY,\r\n\tAVG(total_soc) * 100 / $max_soc AS soc\r\nFROM (\r\n\tSELECT\r\n\t\tdate_trunc('day', HOUR AT TIME ZONE 'Etc/Universal') AS day,\r\n\t\tSUM(soc) AS total_soc\r\n\tFROM energy.electrical_soc_hourly\r\n\tGROUP BY hour\r\n)\r\nGROUP BY DAY\r\nORDER BY day",
+          "rawSql": "SELECT DAY,\r\n\t\t\tAVG(total_soc) * 100 / $max_soc AS soc\r\nFROM\r\n\t(SELECT date_trunc('day', HOUR AT TIME ZONE 'Etc/Universal') AS day,\r\n\t\t\t\t\tSUM(soc) AS total_soc\r\n\tFROM energy.electrical_soc_hourly\r\n\tGROUP BY hour)\r\nGROUP BY DAY\r\nORDER BY day",
           "refId": "SoC",
           "sql": {
             "columns": [
@@ -362,10 +376,24 @@
             "uid": "${datasource}"
           },
           "editorMode": "code",
-          "format": "table",
+          "editorType": "sql",
+          "format": 1,
+          "meta": {
+            "builderOptions": {
+              "columns": [],
+              "database": "",
+              "limit": 1000,
+              "meta": {},
+              "mode": "list",
+              "queryType": "table",
+              "table": ""
+            }
+          },
+          "pluginVersion": "2.1.4",
+          "queryType": "table",
           "hide": false,
           "rawQuery": true,
-          "rawSql": "SELECT *\r\nFROM (\r\n  WITH\r\n  start_value AS (\r\n    SELECT\r\n      day AS start_day,\r\n      AVG(total_soc) as start_soc\r\n    FROM (\r\n      SELECT\r\n        date_trunc('day', hour) AS day,\r\n        SUM(soc) AS total_soc\r\n      FROM energy.electrical_soc_hourly\r\n      WHERE hour BETWEEN to_date('$start_date', 'DD Mon YYYY') AND to_date('$start_date', 'DD Mon YYYY') + TIME '23:59'\r\n      GROUP BY hour\r\n    )\r\n    GROUP BY day\r\n  ),\r\n  future AS (\r\n    SELECT\r\n      (start_day + n * INTERVAL '1 day')::date AS day,\r\n      start_soc - $daily_consumption * n AS soc\r\n    FROM start_value\r\n    CROSS JOIN generate_series(0, 30) AS n\r\n  )\r\n  SELECT\r\n    day AS time,\r\n    soc * 100 / $max_soc AS soc_prediction\r\n  FROM future\r\n)\r\nORDER BY time",
+          "rawSql": "SELECT *\r\nFROM\r\n\t(WITH start_value AS\r\n\t\t(SELECT day AS start_day,\r\n\t\t\t\t\t\t\t\t\t\tAVG(total_soc) as start_soc\r\n\t\t\tFROM\r\n\t\t\t\t(SELECT date_trunc('day', hour) AS day,\r\n\t\t\t\t\t\t\t\tSUM(soc) AS total_soc\r\n\t\t\t\tFROM energy.electrical_soc_hourly\r\n\t\t\t\tWHERE hour BETWEEN to_date('$start_date', 'DD Mon YYYY') AND to_date('$start_date', 'DD Mon YYYY') + TIME '23:59'\r\n\t\t\t\tGROUP BY hour)\r\n\t\t\tGROUP BY day),\r\n\t\t\t\tfuture AS\r\n\t\t(SELECT (start_day + n * INTERVAL '1 day')::date AS day,\r\n\t\t\t\t\t\tstart_soc - $daily_consumption * n AS soc\r\n\t\t\tFROM start_value\r\n\t\t\tCROSS JOIN generate_series(0, 30) AS n) SELECT day AS time,\r\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\tsoc * 100 / $max_soc AS soc_prediction\r\n\tFROM future)\r\nORDER BY time",
           "refId": "SoC prediction",
           "sql": {
             "columns": [
@@ -392,10 +420,24 @@
             "uid": "${datasource}"
           },
           "editorMode": "code",
-          "format": "table",
+          "editorType": "sql",
+          "format": 1,
+          "meta": {
+            "builderOptions": {
+              "columns": [],
+              "database": "",
+              "limit": 1000,
+              "meta": {},
+              "mode": "list",
+              "queryType": "table",
+              "table": ""
+            }
+          },
+          "pluginVersion": "2.1.4",
+          "queryType": "table",
           "hide": false,
           "rawQuery": true,
-          "rawSql": "WITH\r\n  start_point AS (\r\n    SELECT\r\n      day::date AS start_day,\r\n      AVG(total_soc) as start_soc\r\n    FROM (\r\n      SELECT\r\n        date_trunc('day', hour) AS day,\r\n        SUM(soc) AS total_soc\r\n      FROM energy.electrical_soc_hourly\r\n      WHERE hour BETWEEN to_date('$start_date', 'DD Mon YYYY') AND to_date('$start_date', 'DD Mon YYYY') + TIME '23:59'\r\n      GROUP BY hour\r\n    )\r\n    GROUP BY day\r\n  ),\r\n  end_point AS (\r\n    SELECT\r\n      day::date AS end_day,\r\n      AVG(total_soc) as end_soc\r\n    FROM (\r\n      SELECT\r\n        date_trunc('day', hour) AS day,\r\n        SUM(soc) AS total_soc\r\n      FROM energy.electrical_soc_hourly\r\n      WHERE hour >= (SELECT date_trunc('day', MAX(hour)) FROM energy.electrical_soc_hourly)\r\n      GROUP BY hour\r\n    )\r\n    GROUP BY day\r\n  ),\r\n  consumption_values AS (\r\n    SELECT \r\n      s.start_day AS start_date,\r\n      e.end_day AS end_date,\r\n      s.start_soc AS start_value,\r\n      (e.end_soc - s.start_soc) / GREATEST(1, (e.end_day - s.start_day)) AS daily_consumption\r\n    FROM start_point s\r\n    CROSS JOIN end_point e\r\n  )\r\nSELECT\r\n  (start_date + n * INTERVAL '1 day')::date AS day,\r\n  CASE WHEN start_date = end_date\r\n    THEN NULL\r\n    ELSE (start_value + n * daily_consumption) * 100 / $max_soc\r\n  END AS soc_calculated\r\nFROM consumption_values\r\nCROSS JOIN generate_series(0, 30) AS n\r\n",
+          "rawSql": "WITH start_point AS\r\n\t(SELECT day::date AS start_day,\r\n\t\t\t\t\tAVG(total_soc) as start_soc\r\n\tFROM\r\n\t\t(SELECT date_trunc('day', hour) AS day,\r\n\t\t\t\t\t\tSUM(soc) AS total_soc\r\n\t\t\tFROM energy.electrical_soc_hourly\r\n\t\t\tWHERE hour BETWEEN to_date('$start_date', 'DD Mon YYYY') AND to_date('$start_date', 'DD Mon YYYY') + TIME '23:59'\r\n\t\t\tGROUP BY hour)\r\n\tGROUP BY day),\r\n\t\tend_point AS\r\n\t(SELECT day::date AS end_day,\r\n\t\t\t\t\tAVG(total_soc) as end_soc\r\n\tFROM\r\n\t\t(SELECT date_trunc('day', hour) AS day,\r\n\t\t\t\t\t\tSUM(soc) AS total_soc\r\n\t\t\tFROM energy.electrical_soc_hourly\r\n\t\t\tWHERE hour >=\r\n\t\t\t\t\t(SELECT date_trunc('day', MAX(hour))\r\n\t\t\t\t\tFROM energy.electrical_soc_hourly)\r\n\t\t\tGROUP BY hour)\r\n\tGROUP BY day),\r\n\t\tconsumption_values AS\r\n\t(SELECT s.start_day AS start_date,\r\n\t\t\t\t\te.end_day AS end_date,\r\n\t\t\t\t\ts.start_soc AS start_value,\r\n\t\t\t\t\t(e.end_soc - s.start_soc) / GREATEST(1, (e.end_day - s.start_day)) AS daily_consumption\r\n\tFROM start_point s\r\n\tCROSS JOIN end_point e)\r\nSELECT (start_date + n * INTERVAL '1 day')::date AS day,\r\n\t\t\tCASE\r\n\t\t\t\t\tWHEN start_date = end_date THEN NULL\r\n\t\t\t\t\tELSE (start_value + n * daily_consumption) * 100 / $max_soc\r\n\t\t\tEND AS soc_calculated\r\nFROM consumption_values\r\nCROSS JOIN generate_series(0, 30) AS n",
           "refId": "SoC calculated",
           "sql": {
             "columns": [
@@ -422,10 +464,24 @@
             "uid": "${datasource}"
           },
           "editorMode": "code",
-          "format": "table",
+          "editorType": "sql",
+          "format": 1,
+          "meta": {
+            "builderOptions": {
+              "columns": [],
+              "database": "",
+              "limit": 1000,
+              "meta": {},
+              "mode": "list",
+              "queryType": "table",
+              "table": ""
+            }
+          },
+          "pluginVersion": "2.1.4",
+          "queryType": "table",
           "hide": false,
           "rawQuery": true,
-          "rawSql": "WITH start_date AS (\r\n  SELECT to_timestamp($__from / 1000)::date AS start\r\n)\r\nSELECT\r\n  (start + n * INTERVAL '1 day')::date AS day,\r\n  $min_soc AS soc_threshold\r\nFROM start_date\r\nCROSS JOIN generate_series(0, 100) AS n",
+          "rawSql": "WITH start_date AS\r\n\t(SELECT to_timestamp($__from / 1000)::date AS start)\r\nSELECT\r\n\t(start + n * INTERVAL '1 day')::date AS day,\r\n\t\t\t$min_soc AS soc_threshold\r\nFROM start_date\r\nCROSS JOIN generate_series(0, 100) AS n",
           "refId": "SoC threshold",
           "sql": {
             "columns": [
@@ -452,10 +508,24 @@
             "uid": "${datasource}"
           },
           "editorMode": "code",
-          "format": "table",
+          "editorType": "sql",
+          "format": 1,
+          "meta": {
+            "builderOptions": {
+              "columns": [],
+              "database": "",
+              "limit": 1000,
+              "meta": {},
+              "mode": "list",
+              "queryType": "table",
+              "table": ""
+            }
+          },
+          "pluginVersion": "2.1.4",
+          "queryType": "table",
           "hide": false,
           "rawQuery": true,
-          "rawSql": "SELECT\r\n  date_trunc('day',  hour) DAY,\r\n  CASE WHEN SUM(-energy_wh) > 0 THEN SUM(-energy_wh)\r\n  ELSE NULL END AS daily_consumption,\r\n  CASE WHEN SUM(energy_wh) > 0 THEN SUM(energy_wh)\r\n  ELSE NULL END AS daily_production\r\nFROM energy.electrical_hourly\r\nGROUP BY DAY\r\nORDER BY DAY desc",
+          "rawSql": "SELECT date_trunc('day', hour) DAY,\r\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\tCASE\r\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\tWHEN SUM(-energy_wh) > 0 THEN SUM(-energy_wh)\r\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\tELSE NULL\r\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\tEND AS daily_consumption,\r\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\tCASE\r\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\tWHEN SUM(energy_wh) > 0 THEN SUM(energy_wh)\r\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\tELSE NULL\r\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\tEND AS daily_production\r\nFROM energy.electrical_hourly\r\nGROUP BY DAY\r\nORDER BY DAY desc",
           "refId": "Net consumption/production",
           "sql": {
             "columns": [
@@ -708,10 +778,24 @@
             "uid": "${datasource}"
           },
           "editorMode": "code",
-          "format": "table",
+          "editorType": "sql",
+          "format": 1,
+          "meta": {
+            "builderOptions": {
+              "columns": [],
+              "database": "",
+              "limit": 1000,
+              "meta": {},
+              "mode": "list",
+              "queryType": "table",
+              "table": ""
+            }
+          },
+          "pluginVersion": "2.1.4",
+          "queryType": "table",
           "hide": false,
           "rawQuery": true,
-          "rawSql": "SELECT\r\n\tdate_trunc('day', hour) AS day,\r\n\t-- Producers\r\n\tSUM(CASE WHEN group_name = 'Hydrogeneration' THEN energy_wh ELSE 0 END) AS hydrogeneration,\r\n\tSUM(CASE WHEN group_name = 'Solar' THEN energy_wh ELSE 0 END) AS solar,\r\n\tSUM(CASE WHEN group_name = 'Shore' THEN energy_wh ELSE 0 END) AS shore,\r\n\t-- Consumers\r\n\tSUM(CASE WHEN group_name = 'Domestic' THEN -energy_wh ELSE 0 END) AS domestic,\r\n\tSUM(CASE WHEN group_name = 'HVAC' THEN -energy_wh ELSE 0 END) AS hvac,\r\n\tSUM(CASE WHEN group_name = 'Technical' THEN -energy_wh ELSE 0 END) AS technical,\r\n\tSUM(CASE WHEN group_name = 'Propulsion' THEN -energy_wh ELSE 0 END) AS propulsion\r\nFROM energy.electrical_hourly\r\nGROUP BY day",
+          "rawSql": "SELECT date_trunc('day', hour) AS day, -- Producers\r\nSUM(CASE\r\n\t\t\t\tWHEN group_name = 'Hydrogeneration' THEN energy_wh\r\n\t\t\t\tELSE 0\r\n\t\tEND) AS hydrogeneration,\r\nSUM(CASE\r\n\t\t\t\tWHEN group_name = 'Solar' THEN energy_wh\r\n\t\t\t\tELSE 0\r\n\t\tEND) AS solar,\r\nSUM(CASE\r\n\t\t\t\tWHEN group_name = 'Shore' THEN energy_wh\r\n\t\t\t\tELSE 0\r\n\t\tEND) AS shore, -- Consumers\r\nSUM(CASE\r\n\t\t\t\tWHEN group_name = 'Domestic' THEN -energy_wh\r\n\t\t\t\tELSE 0\r\n\t\tEND) AS domestic,\r\nSUM(CASE\r\n\t\t\t\tWHEN group_name = 'HVAC' THEN -energy_wh\r\n\t\t\t\tELSE 0\r\n\t\tEND) AS hvac,\r\nSUM(CASE\r\n\t\t\t\tWHEN group_name = 'Technical' THEN -energy_wh\r\n\t\t\t\tELSE 0\r\n\t\tEND) AS technical,\r\nSUM(CASE\r\n\t\t\t\tWHEN group_name = 'Propulsion' THEN -energy_wh\r\n\t\t\t\tELSE 0\r\n\t\tEND) AS propulsion\r\nFROM energy.electrical_hourly\r\nGROUP BY day",
           "refId": "A",
           "sql": {
             "columns": [
@@ -807,9 +891,23 @@
             "uid": "${datasource}"
           },
           "editorMode": "code",
-          "format": "table",
+          "editorType": "sql",
+          "format": 1,
+          "meta": {
+            "builderOptions": {
+              "columns": [],
+              "database": "",
+              "limit": 1000,
+              "meta": {},
+              "mode": "list",
+              "queryType": "table",
+              "table": ""
+            }
+          },
+          "pluginVersion": "2.1.4",
+          "queryType": "table",
           "rawQuery": true,
-          "rawSql": "SELECT\r\n\tgroup_name,\r\n\tsub_group_name,\r\n  SUM(SUM(energy)) OVER (PARTITION BY group_name) AS group_energy,\r\n\tSUM(energy) AS sub_group_energy\r\nFROM (\r\n\tSELECT\r\n\t\tgroup_name,\r\n\t\tsub_group_name,\r\n\t\tSUM(energy_wh) AS energy\r\n\tFROM energy.electrical_hourly\r\n\tWHERE group_name IN ('Domestic', 'HVAC', 'Technical', 'Propulsion')\r\n\tAND $__timeFilter(hour)\r\n\tGROUP BY topic, group_name, sub_group_name\r\n)\r\nGROUP BY group_name, sub_group_name\r\n",
+          "rawSql": "SELECT group_name,\r\n\t\t\tsub_group_name,\r\n\t\t\tSUM(SUM(energy)) OVER (PARTITION BY group_name) AS group_energy,\r\n\t\t\tSUM(energy) AS sub_group_energy\r\nFROM\r\n\t(SELECT group_name,\r\n\t\t\t\t\tsub_group_name,\r\n\t\t\t\t\tSUM(energy_wh) AS energy\r\n\tFROM energy.electrical_hourly\r\n\tWHERE group_name IN ('Domestic',\r\n\t\t\t\t\t\t\t\t\t\t\t\t'HVAC',\r\n\t\t\t\t\t\t\t\t\t\t\t\t'Technical',\r\n\t\t\t\t\t\t\t\t\t\t\t\t'Propulsion')\r\n\t\tAND $__timeFilter(hour)\r\n\tGROUP BY topic,\r\n\t\t\t\t\t\tgroup_name,\r\n\t\t\t\t\t\tsub_group_name)\r\nGROUP BY group_name,\r\n\t\t\t\tsub_group_name",
           "refId": "A",
           "sql": {
             "columns": [

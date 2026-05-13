@@ -475,9 +475,23 @@
             "uid": "${datasource}"
           },
           "editorMode": "code",
-          "format": "table",
+          "editorType": "sql",
+          "format": 1,
+          "meta": {
+            "builderOptions": {
+              "columns": [],
+              "database": "",
+              "limit": 1000,
+              "meta": {},
+              "mode": "list",
+              "queryType": "table",
+              "table": ""
+            }
+          },
+          "pluginVersion": "2.1.4",
+          "queryType": "table",
           "rawQuery": true,
-          "rawSql": "select timestamp as timestamp, detect_fault__value as detect_fault, door_powersupplyfail__value as door_power_supply_fail, auxiliary_system_servicesupplyfail__value as aux_sys_service_supply_fail, auxiliary_system_emergencysupplyfail__value as aux_sys_emergency_supply_fail from marpower__450000_firedetection_general order by timestamp desc limit 1;",
+          "rawSql": "select timestamp as timestamp,\r\n\t\t\tdetect_fault__value as detect_fault,\r\n\t\t\tdoor_powersupplyfail__value as door_power_supply_fail,\r\n\t\t\tauxiliary_system_servicesupplyfail__value as aux_sys_service_supply_fail,\r\n\t\t\tauxiliary_system_emergencysupplyfail__value as aux_sys_emergency_supply_fail\r\nfrom marpower__450000_firedetection_general\r\norder by timestamp desc\r\nlimit 1;",
           "refId": "A",
           "sql": {
             "columns": [
@@ -660,9 +674,23 @@
             "uid": "${datasource}"
           },
           "editorMode": "code",
-          "format": "table",
+          "editorType": "sql",
+          "format": 1,
+          "meta": {
+            "builderOptions": {
+              "columns": [],
+              "database": "",
+              "limit": 1000,
+              "meta": {},
+              "mode": "list",
+              "queryType": "table",
+              "table": ""
+            }
+          },
+          "pluginVersion": "2.1.4",
+          "queryType": "table",
           "rawQuery": true,
-          "rawSql": "select timestamp as timestamp, doors_release__value as doors_release from marpower__450000_firedetection_general order by timestamp desc limit 1;",
+          "rawSql": "select timestamp as timestamp,\r\n\t\t\tdoors_release__value as doors_release\r\nfrom marpower__450000_firedetection_general\r\norder by timestamp desc\r\nlimit 1;",
           "refId": "A",
           "sql": {
             "columns": [
@@ -803,7 +831,7 @@
               "pluginVersion": "2.1.4",
               "queryType": "table",
               "rawQuery": true,
-              "rawSql": "SELECT\r\n  timestamp,\r\n  detect_fault__value                         AS detect_fault,\r\n  door_powersupplyfail__value                 AS door_power_supply_fail,\r\n  auxiliary_system_servicesupplyfail__value   AS aux_sys_service_supply_fail,\r\n  auxiliary_system_emergencysupplyfail__value AS aux_sys_emergency_supply_fail,\r\n  doors_release__value                        AS doors_release\r\nFROM marpower__450000_firedetection_general\r\nWHERE $__timeFilter(timestamp)",
+              "rawSql": "SELECT timestamp, detect_fault__value AS detect_fault,\r\n\t\t\t\t\t\t\t\t\tdoor_powersupplyfail__value AS door_power_supply_fail,\r\n\t\t\t\t\t\t\t\t\tauxiliary_system_servicesupplyfail__value AS aux_sys_service_supply_fail,\r\n\t\t\t\t\t\t\t\t\tauxiliary_system_emergencysupplyfail__value AS aux_sys_emergency_supply_fail,\r\n\t\t\t\t\t\t\t\t\tdoors_release__value AS doors_release\r\nFROM marpower__450000_firedetection_general\r\nWHERE $__timeFilter(timestamp)",
               "refId": "A",
               "sql": {
                 "columns": [
@@ -897,12 +925,12 @@
                 "false": {
                   "color": "transparent",
                   "index": 1,
-                  "text": "❌"
+                  "text": "\u274c"
                 },
                 "true": {
                   "color": "transparent",
                   "index": 0,
-                  "text": "✅"
+                  "text": "\u2705"
                 }
               },
               "type": "value"
@@ -984,7 +1012,7 @@
           "pluginVersion": "2.1.4",
           "queryType": "table",
           "rawQuery": true,
-          "rawSql": "SELECT DISTINCT\r\n  meta.description,\r\n  LAST_VALUE(fire.disabled__value) OVER (PARTITION BY meta.description ORDER BY fire.timestamp ASC RANGE BETWEEN UNBOUNDED PRECEDING AND UNBOUNDED FOLLOWING) AS disabled,\r\n  LAST_VALUE(fire.fault__value) OVER (PARTITION BY meta.description ORDER BY fire.timestamp ASC RANGE BETWEEN UNBOUNDED PRECEDING AND UNBOUNDED FOLLOWING) AS fault,\r\n  LAST_VALUE(fire.prealarm__value) OVER (PARTITION BY meta.description ORDER BY fire.timestamp ASC RANGE BETWEEN UNBOUNDED PRECEDING AND UNBOUNDED FOLLOWING) AS prealarm,\r\n  LAST_VALUE(fire.alarm__value) OVER (PARTITION BY meta.description ORDER BY fire.timestamp ASC RANGE BETWEEN UNBOUNDED PRECEDING AND UNBOUNDED FOLLOWING) AS alarm,\r\n  LAST_VALUE(fire.test__value) OVER (PARTITION BY meta.description ORDER BY fire.timestamp ASC RANGE BETWEEN UNBOUNDED PRECEDING AND UNBOUNDED FOLLOWING) AS test\r\nFROM public.marpower__450000_firedetection AS fire\r\nJOIN public.marpower__firedetection_metadata AS meta \r\n  ON fire.topic = meta.topic\r\nWHERE meta.section = 'Accommodation'\r\n  AND meta.room_or_area LIKE '%Cabin%'\r\nORDER BY meta.description;",
+          "rawSql": "select timestamp as timestamp,\r\n\t\t\tdetect_fault__value as detect_fault,\r\n\t\t\tdoor_powersupplyfail__value as door_power_supply_fail,\r\n\t\t\tauxiliary_system_servicesupplyfail__value as aux_sys_service_supply_fail,\r\n\t\t\tauxiliary_system_emergencysupplyfail__value as aux_sys_emergency_supply_fail\r\nfrom marpower__450000_firedetection_general\r\norder by timestamp desc\r\nlimit 1;",
           "refId": "A",
           "sql": {
             "columns": [
@@ -1060,12 +1088,12 @@
                 "false": {
                   "color": "transparent",
                   "index": 1,
-                  "text": "❌"
+                  "text": "\u274c"
                 },
                 "true": {
                   "color": "transparent",
                   "index": 0,
-                  "text": "✅"
+                  "text": "\u2705"
                 }
               },
               "type": "value"
@@ -1131,9 +1159,23 @@
             "uid": "${datasource}"
           },
           "editorMode": "code",
-          "format": "table",
+          "editorType": "sql",
+          "format": 1,
+          "meta": {
+            "builderOptions": {
+              "columns": [],
+              "database": "",
+              "limit": 1000,
+              "meta": {},
+              "mode": "list",
+              "queryType": "table",
+              "table": ""
+            }
+          },
+          "pluginVersion": "2.1.4",
+          "queryType": "table",
           "rawQuery": true,
-          "rawSql": "SELECT\r\n  meta.\"description\",\r\n  ARG_MAX((fire.\"disabled\").Value, (fire.\"disabled\").Timestamp) AS disabled,\r\n  ARG_MAX((fire.\"fault\").Value, (fire.\"fault\").Timestamp)       AS fault,\r\n  ARG_MAX((fire.\"prealarm\").Value, (fire.\"prealarm\").Timestamp) AS prealarm,\r\n  ARG_MAX((fire.\"alarm\").Value, (fire.\"alarm\").Timestamp)       AS alarm,\r\n  ARG_MAX((fire.\"test\").Value, (fire.\"test\").Timestamp)         AS test\r\nFROM marpower.\"450000_firedetection\" AS fire\r\nJOIN marpower.firedetection_metadata AS meta ON fire.topic = meta.topic\r\nWHERE meta.section = 'Accommodation'\r\n  AND meta.room_or_area LIKE '%Corridor%'\r\nGROUP BY meta.\"description\"\r\nORDER BY meta.\"description\"",
+          "rawSql": "select timestamp as timestamp,\r\n\t\t\tdoors_release__value as doors_release\r\nfrom marpower__450000_firedetection_general\r\norder by timestamp desc\r\nlimit 1;",
           "refId": "A",
           "sql": {
             "columns": [
@@ -1209,12 +1251,12 @@
                 "false": {
                   "color": "transparent",
                   "index": 1,
-                  "text": "❌"
+                  "text": "\u274c"
                 },
                 "true": {
                   "color": "transparent",
                   "index": 0,
-                  "text": "✅"
+                  "text": "\u2705"
                 }
               },
               "type": "value"
@@ -1280,9 +1322,23 @@
             "uid": "${datasource}"
           },
           "editorMode": "code",
-          "format": "table",
+          "editorType": "sql",
+          "format": 1,
+          "meta": {
+            "builderOptions": {
+              "columns": [],
+              "database": "",
+              "limit": 1000,
+              "meta": {},
+              "mode": "list",
+              "queryType": "table",
+              "table": ""
+            }
+          },
+          "pluginVersion": "2.1.4",
+          "queryType": "table",
           "rawQuery": true,
-          "rawSql": "SELECT\r\n  meta.\"description\",\r\n  ARG_MAX((fire.\"disabled\").Value, (fire.\"disabled\").Timestamp) AS disabled,\r\n  ARG_MAX((fire.\"fault\").Value, (fire.\"fault\").Timestamp)       AS fault,\r\n  ARG_MAX((fire.\"prealarm\").Value, (fire.\"prealarm\").Timestamp) AS prealarm,\r\n  ARG_MAX((fire.\"alarm\").Value, (fire.\"alarm\").Timestamp)       AS alarm,\r\n  ARG_MAX((fire.\"test\").Value, (fire.\"test\").Timestamp)         AS test\r\nFROM marpower.\"450000_firedetection\" AS fire\r\nJOIN marpower.firedetection_metadata AS meta ON fire.topic = meta.topic\r\nWHERE meta.section = 'Accommodation'\r\n  AND meta.room_or_area LIKE '%Owner%'\r\n  AND meta.room_or_area NOT LIKE '%Cabin%'\r\n  AND meta.room_or_area NOT LIKE '%Corridor%'\r\nGROUP BY meta.\"description\"\r\nORDER BY meta.\"description\"",
+          "rawSql": "select timestamp, detect_fault__value as detect_fault,\r\n\t\t\t\t\t\t\t\t\tdoor_powersupplyfail__value as door_power_supply_fail,\r\n\t\t\t\t\t\t\t\t\tauxiliary_system_servicesupplyfail__value as aux_sys_service_supply_fail,\r\n\t\t\t\t\t\t\t\t\tauxiliary_system_emergencysupplyfail__value as aux_sys_emergency_supply_fail,\r\n\t\t\t\t\t\t\t\t\tdoors_release__value as doors_release\r\nfrom marpower__450000_firedetection_general\r\nwhere $__timefilter(timestamp);",
           "refId": "A",
           "sql": {
             "columns": [
@@ -1358,12 +1414,12 @@
                 "false": {
                   "color": "transparent",
                   "index": 1,
-                  "text": "❌"
+                  "text": "\u274c"
                 },
                 "true": {
                   "color": "transparent",
                   "index": 0,
-                  "text": "✅"
+                  "text": "\u2705"
                 }
               },
               "type": "value"
@@ -1429,9 +1485,23 @@
             "uid": "${datasource}"
           },
           "editorMode": "code",
-          "format": "table",
+          "editorType": "sql",
+          "format": 1,
+          "meta": {
+            "builderOptions": {
+              "columns": [],
+              "database": "",
+              "limit": 1000,
+              "meta": {},
+              "mode": "list",
+              "queryType": "table",
+              "table": ""
+            }
+          },
+          "pluginVersion": "2.1.4",
+          "queryType": "table",
           "rawQuery": true,
-          "rawSql": "SELECT\r\n  meta.\"description\",\r\n  ARG_MAX((fire.\"disabled\").Value, (fire.\"disabled\").Timestamp) AS disabled,\r\n  ARG_MAX((fire.\"fault\").Value, (fire.\"fault\").Timestamp)       AS fault,\r\n  ARG_MAX((fire.\"prealarm\").Value, (fire.\"prealarm\").Timestamp) AS prealarm,\r\n  ARG_MAX((fire.\"alarm\").Value, (fire.\"alarm\").Timestamp)       AS alarm,\r\n  ARG_MAX((fire.\"test\").Value, (fire.\"test\").Timestamp)         AS test\r\nFROM marpower.\"450000_firedetection\" AS fire\r\nJOIN marpower.firedetection_metadata AS meta ON fire.topic = meta.topic\r\nWHERE meta.section = 'Accommodation'\r\n  AND (meta.room_or_area LIKE '%Lounge%' OR meta.room_or_area LIKE '%Salon%')\r\n  AND meta.room_or_area NOT LIKE '%Cabin%'\r\n  AND meta.room_or_area NOT LIKE '%Corridor%'\r\n  AND meta.room_or_area NOT LIKE '%Crew%'\r\n  AND meta.room_or_area NOT LIKE '%Owner%'\r\nGROUP BY meta.\"description\"\r\nORDER BY meta.\"description\"",
+          "rawSql": "select distinct meta.description,\r\n\t\t\t\t\t\t\t\tfire.disabled__value as disabled,\r\n\t\t\t\t\t\t\t\tfire.fault__value as fault,\r\n\t\t\t\t\t\t\t\tfire.prealarm__value as prealarm,\r\n\t\t\t\t\t\t\t\tfire.alarm__value as alarm,\r\n\t\t\t\t\t\t\t\tfire.test__value as test\r\nfrom marpower__450000_firedetection as fire\r\njoin marpower__firedetection_metadata as meta on fire.topic = meta.topic\r\nwhere meta.section = 'Accommodation'\r\n\tand meta.room_or_area like '%Cabin%'\r\norder by timestamp desc\r\nlimit 1;",
           "refId": "A",
           "sql": {
             "columns": [
@@ -1520,12 +1590,12 @@
                 "false": {
                   "color": "transparent",
                   "index": 1,
-                  "text": "❌"
+                  "text": "\u274c"
                 },
                 "true": {
                   "color": "transparent",
                   "index": 0,
-                  "text": "✅"
+                  "text": "\u2705"
                 }
               },
               "type": "value"
@@ -1591,9 +1661,23 @@
             "uid": "${datasource}"
           },
           "editorMode": "code",
-          "format": "table",
+          "editorType": "sql",
+          "format": 1,
+          "meta": {
+            "builderOptions": {
+              "columns": [],
+              "database": "",
+              "limit": 1000,
+              "meta": {},
+              "mode": "list",
+              "queryType": "table",
+              "table": ""
+            }
+          },
+          "pluginVersion": "2.1.4",
+          "queryType": "table",
           "rawQuery": true,
-          "rawSql": "SELECT\r\n  meta.\"description\",\r\n  ARG_MAX((fire.\"disabled\").Value, (fire.\"disabled\").Timestamp) AS disabled,\r\n  ARG_MAX((fire.\"fault\").Value, (fire.\"fault\").Timestamp)       AS fault,\r\n  ARG_MAX((fire.\"prealarm\").Value, (fire.\"prealarm\").Timestamp) AS prealarm,\r\n  ARG_MAX((fire.\"alarm\").Value, (fire.\"alarm\").Timestamp)       AS alarm,\r\n  ARG_MAX((fire.\"test\").Value, (fire.\"test\").Timestamp)         AS test\r\nFROM marpower.\"450000_firedetection\" AS fire\r\nJOIN marpower.firedetection_metadata AS meta ON fire.topic = meta.topic\r\nWHERE meta.section = 'Accommodation'\r\n  AND (meta.room_or_area LIKE '%Storage%' OR meta.room_or_area LIKE '%Office%' OR meta.room_or_area LIKE '%Galley%' OR meta.room_or_area LIKE '%Laundry%')\r\n  AND meta.room_or_area NOT LIKE '%Cabin%'\r\n  AND meta.room_or_area NOT LIKE '%Corridor%'\r\nGROUP BY meta.\"description\"\r\nORDER BY meta.\"description\"",
+          "rawSql": "select meta.description,\r\n\t\t\tfire.disabled__value as disabled,\r\n\t\t\tfire.fault__value as fault,\r\n\t\t\tfire.prealarm__value as prealarm,\r\n\t\t\tfire.alarm__value as alarm,\r\n\t\t\tfire.test__value as test\r\nfrom marpower__450000_firedetection as fire\r\njoin marpower__firedetection_metadata as meta on fire.topic = meta.topic\r\nwhere meta.section = 'Accommodation'\r\n\tand meta.room_or_area like '%Corridor%'\r\norder by timestamp desc\r\nlimit 1;",
           "refId": "A",
           "sql": {
             "columns": [
@@ -1669,12 +1753,12 @@
                 "false": {
                   "color": "transparent",
                   "index": 1,
-                  "text": "❌"
+                  "text": "\u274c"
                 },
                 "true": {
                   "color": "transparent",
                   "index": 0,
-                  "text": "✅"
+                  "text": "\u2705"
                 }
               },
               "type": "value"
@@ -1740,9 +1824,23 @@
             "uid": "${datasource}"
           },
           "editorMode": "code",
-          "format": "table",
+          "editorType": "sql",
+          "format": 1,
+          "meta": {
+            "builderOptions": {
+              "columns": [],
+              "database": "",
+              "limit": 1000,
+              "meta": {},
+              "mode": "list",
+              "queryType": "table",
+              "table": ""
+            }
+          },
+          "pluginVersion": "2.1.4",
+          "queryType": "table",
           "rawQuery": true,
-          "rawSql": "SELECT\r\n  meta.\"description\",\r\n  ARG_MAX((fire.\"disabled\").Value, (fire.\"disabled\").Timestamp) AS disabled,\r\n  ARG_MAX((fire.\"fault\").Value, (fire.\"fault\").Timestamp)       AS fault,\r\n  ARG_MAX((fire.\"prealarm\").Value, (fire.\"prealarm\").Timestamp) AS prealarm,\r\n  ARG_MAX((fire.\"alarm\").Value, (fire.\"alarm\").Timestamp)       AS alarm,\r\n  ARG_MAX((fire.\"test\").Value, (fire.\"test\").Timestamp)         AS test\r\nFROM marpower.\"450000_firedetection\" AS fire\r\nJOIN marpower.firedetection_metadata AS meta ON fire.topic = meta.topic\r\nWHERE meta.section = 'Accommodation'\r\n  AND meta.room_or_area LIKE '%Crew%'\r\n  AND meta.room_or_area NOT LIKE '%Cabin%'\r\n  AND meta.room_or_area NOT LIKE '%Corridor%'\r\nGROUP BY meta.\"description\"\r\nORDER BY meta.\"description\"",
+          "rawSql": "select meta.description,\r\n\t\t\tfire.disabled__value as disabled,\r\n\t\t\tfire.fault__value as fault,\r\n\t\t\tfire.prealarm__value as prealarm,\r\n\t\t\tfire.alarm__value as alarm,\r\n\t\t\tfire.test__value as test\r\nfrom marpower__450000_firedetection as fire\r\njoin marpower__firedetection_metadata as meta on fire.topic = meta.topic\r\nwhere meta.section = 'Accommodation'\r\n\tand meta.room_or_area like '%Owner%'\r\n\tand meta.room_or_area not like '%Cabin%'\r\n\tand meta.room_or_area not like '%Corridor%'\r\norder by timestamp desc\r\nlimit 1;",
           "refId": "A",
           "sql": {
             "columns": [
@@ -1831,12 +1929,12 @@
                 "false": {
                   "color": "transparent",
                   "index": 1,
-                  "text": "❌"
+                  "text": "\u274c"
                 },
                 "true": {
                   "color": "transparent",
                   "index": 0,
-                  "text": "✅"
+                  "text": "\u2705"
                 }
               },
               "type": "value"
@@ -1902,9 +2000,23 @@
             "uid": "${datasource}"
           },
           "editorMode": "code",
-          "format": "table",
+          "editorType": "sql",
+          "format": 1,
+          "meta": {
+            "builderOptions": {
+              "columns": [],
+              "database": "",
+              "limit": 1000,
+              "meta": {},
+              "mode": "list",
+              "queryType": "table",
+              "table": ""
+            }
+          },
+          "pluginVersion": "2.1.4",
+          "queryType": "table",
           "rawQuery": true,
-          "rawSql": "SELECT\r\n  meta.\"description\",\r\n  ARG_MAX((fire.\"disabled\").Value, (fire.\"disabled\").Timestamp) AS disabled,\r\n  ARG_MAX((fire.\"fault\").Value, (fire.\"fault\").Timestamp)       AS fault,\r\n  ARG_MAX((fire.\"prealarm\").Value, (fire.\"prealarm\").Timestamp) AS prealarm,\r\n  ARG_MAX((fire.\"alarm\").Value, (fire.\"alarm\").Timestamp)       AS alarm,\r\n  ARG_MAX((fire.\"test\").Value, (fire.\"test\").Timestamp)         AS test\r\nFROM marpower.\"450000_firedetection\" AS fire\r\nJOIN marpower.firedetection_metadata AS meta ON fire.topic = meta.topic\r\nWHERE meta.section = 'Technical'\r\nAND meta.room_or_area LIKE '%Battery%'\r\nGROUP BY meta.\"description\"\r\nORDER BY meta.\"description\"",
+          "rawSql": "select meta.description,\r\n\t\t\tfire.disabled__value as disabled,\r\n\t\t\tfire.fault__value as fault,\r\n\t\t\tfire.prealarm__value as prealarm,\r\n\t\t\tfire.alarm__value as alarm,\r\n\t\t\tfire.test__value as test\r\nfrom marpower__450000_firedetection as fire\r\njoin marpower__firedetection_metadata as meta on fire.topic = meta.topic\r\nwhere meta.section = 'Accommodation'\r\n\tand (meta.room_or_area like '%Lounge%'\r\n\t\t\tor meta.room_or_area like '%Salon%')\r\n\tand meta.room_or_area not like '%Cabin%'\r\n\tand meta.room_or_area not like '%Corridor%'\r\n\tand meta.room_or_area not like '%Crew%'\r\n\tand meta.room_or_area not like '%Owner%'\r\norder by timestamp desc\r\nlimit 1;",
           "refId": "A",
           "sql": {
             "columns": [
@@ -1980,12 +2092,12 @@
                 "false": {
                   "color": "transparent",
                   "index": 1,
-                  "text": "❌"
+                  "text": "\u274c"
                 },
                 "true": {
                   "color": "transparent",
                   "index": 0,
-                  "text": "✅"
+                  "text": "\u2705"
                 }
               },
               "type": "value"
@@ -2051,9 +2163,23 @@
             "uid": "${datasource}"
           },
           "editorMode": "code",
-          "format": "table",
+          "editorType": "sql",
+          "format": 1,
+          "meta": {
+            "builderOptions": {
+              "columns": [],
+              "database": "",
+              "limit": 1000,
+              "meta": {},
+              "mode": "list",
+              "queryType": "table",
+              "table": ""
+            }
+          },
+          "pluginVersion": "2.1.4",
+          "queryType": "table",
           "rawQuery": true,
-          "rawSql": "SELECT\r\n  meta.\"description\",\r\n  ARG_MAX((fire.\"disabled\").Value, (fire.\"disabled\").Timestamp) AS disabled,\r\n  ARG_MAX((fire.\"fault\").Value, (fire.\"fault\").Timestamp)       AS fault,\r\n  ARG_MAX((fire.\"prealarm\").Value, (fire.\"prealarm\").Timestamp) AS prealarm,\r\n  ARG_MAX((fire.\"alarm\").Value, (fire.\"alarm\").Timestamp)       AS alarm,\r\n  ARG_MAX((fire.\"test\").Value, (fire.\"test\").Timestamp)         AS test\r\nFROM marpower.\"450000_firedetection\" AS fire\r\nJOIN marpower.firedetection_metadata AS meta ON fire.topic = meta.topic\r\nWHERE meta.section = 'Technical'\r\nAND (meta.room_or_area LIKE '%Fore%' OR meta.room_or_area LIKE '%Lazarette%' OR meta.room_or_area LIKE '%Bilge%' OR meta.room_or_area LIKE '%Pod%')\r\nGROUP BY meta.\"description\"\r\nORDER BY meta.\"description\"",
+          "rawSql": "select meta.description,\r\n\t\t\tfire.disabled__value as disabled,\r\n\t\t\tfire.fault__value as fault,\r\n\t\t\tfire.prealarm__value as prealarm,\r\n\t\t\tfire.alarm__value as alarm,\r\n\t\t\tfire.test__value as test\r\nfrom marpower__450000_firedetection as fire\r\njoin marpower__firedetection_metadata as meta on fire.topic = meta.topic\r\nwhere meta.section = 'Accommodation'\r\n\tand (meta.room_or_area like '%Storage%'\r\n\t\t\tor meta.room_or_area like '%Office%'\r\n\t\t\tor meta.room_or_area like '%Galley%'\r\n\t\t\tor meta.room_or_area like '%Laundry%')\r\n\tand meta.room_or_area not like '%Cabin%'\r\n\tand meta.room_or_area not like '%Corridor%'\r\norder by timestamp desc\r\nlimit 1;",
           "refId": "A",
           "sql": {
             "columns": [
@@ -2129,12 +2255,12 @@
                 "false": {
                   "color": "transparent",
                   "index": 1,
-                  "text": "❌"
+                  "text": "\u274c"
                 },
                 "true": {
                   "color": "transparent",
                   "index": 0,
-                  "text": "✅"
+                  "text": "\u2705"
                 }
               },
               "type": "value"
@@ -2200,9 +2326,23 @@
             "uid": "${datasource}"
           },
           "editorMode": "code",
-          "format": "table",
+          "editorType": "sql",
+          "format": 1,
+          "meta": {
+            "builderOptions": {
+              "columns": [],
+              "database": "",
+              "limit": 1000,
+              "meta": {},
+              "mode": "list",
+              "queryType": "table",
+              "table": ""
+            }
+          },
+          "pluginVersion": "2.1.4",
+          "queryType": "table",
           "rawQuery": true,
-          "rawSql": "SELECT\r\n  meta.\"description\",\r\n  ARG_MAX((fire.\"disabled\").Value, (fire.\"disabled\").Timestamp) AS disabled,\r\n  ARG_MAX((fire.\"fault\").Value, (fire.\"fault\").Timestamp)       AS fault,\r\n  ARG_MAX((fire.\"prealarm\").Value, (fire.\"prealarm\").Timestamp) AS prealarm,\r\n  ARG_MAX((fire.\"alarm\").Value, (fire.\"alarm\").Timestamp)       AS alarm,\r\n  ARG_MAX((fire.\"test\").Value, (fire.\"test\").Timestamp)         AS test\r\nFROM marpower.\"450000_firedetection\" AS fire\r\nJOIN marpower.firedetection_metadata AS meta ON fire.topic = meta.topic\r\nWHERE meta.section = 'Technical'\r\nAND meta.room_or_area LIKE '%Technical%'\r\nGROUP BY meta.\"description\"\r\nORDER BY meta.\"description\"",
+          "rawSql": "select meta.description,\r\n\t\t\tfire.disabled__value as disabled,\r\n\t\t\tfire.fault__value as fault,\r\n\t\t\tfire.prealarm__value as prealarm,\r\n\t\t\tfire.alarm__value as alarm,\r\n\t\t\tfire.test__value as test\r\nfrom marpower__450000_firedetection as fire\r\njoin marpower__firedetection_metadata as meta on fire.topic = meta.topic\r\nwhere meta.section = 'Accommodation'\r\n\tand meta.room_or_area like '%Crew%'\r\n\tand meta.room_or_area not like '%Cabin%'\r\n\tand meta.room_or_area not like '%Corridor%'\r\norder by timestamp desc\r\nlimit 1;",
           "refId": "A",
           "sql": {
             "columns": [
@@ -2291,12 +2431,12 @@
                 "false": {
                   "color": "transparent",
                   "index": 1,
-                  "text": "❌"
+                  "text": "\u274c"
                 },
                 "true": {
                   "color": "transparent",
                   "index": 0,
-                  "text": "✅"
+                  "text": "\u2705"
                 }
               },
               "type": "value"
@@ -2362,9 +2502,23 @@
             "uid": "${datasource}"
           },
           "editorMode": "code",
-          "format": "table",
+          "editorType": "sql",
+          "format": 1,
+          "meta": {
+            "builderOptions": {
+              "columns": [],
+              "database": "",
+              "limit": 1000,
+              "meta": {},
+              "mode": "list",
+              "queryType": "table",
+              "table": ""
+            }
+          },
+          "pluginVersion": "2.1.4",
+          "queryType": "table",
           "rawQuery": true,
-          "rawSql": "SELECT\r\n  meta.\"description\",\r\n  ARG_MAX((fire.\"disabled\").Value, (fire.\"disabled\").Timestamp) AS disabled,\r\n  ARG_MAX((fire.\"fault\").Value, (fire.\"fault\").Timestamp)       AS fault,\r\n  ARG_MAX((fire.\"prealarm\").Value, (fire.\"prealarm\").Timestamp) AS prealarm,\r\n  ARG_MAX((fire.\"alarm\").Value, (fire.\"alarm\").Timestamp)       AS alarm,\r\n  ARG_MAX((fire.\"test\").Value, (fire.\"test\").Timestamp)         AS test\r\nFROM marpower.\"450000_firedetection\" AS fire\r\nJOIN marpower.firedetection_metadata AS meta ON fire.topic = meta.topic\r\nWHERE meta.section = 'Hatch'\r\nGROUP BY meta.\"description\"\r\nORDER BY meta.\"description\"",
+          "rawSql": "select meta.description,\r\n\t\t\tfire.disabled__value as disabled,\r\n\t\t\tfire.fault__value as fault,\r\n\t\t\tfire.prealarm__value as prealarm,\r\n\t\t\tfire.alarm__value as alarm,\r\n\t\t\tfire.test__value as test\r\nfrom marpower__450000_firedetection as fire\r\njoin marpower__firedetection_metadata as meta on fire.topic = meta.topic\r\nwhere meta.section = 'Technical'\r\n\tand meta.room_or_area like '%Battery%'\r\norder by timestamp desc\r\nlimit 1;",
           "refId": "A",
           "sql": {
             "columns": [
@@ -2440,12 +2594,12 @@
                 "false": {
                   "color": "transparent",
                   "index": 1,
-                  "text": "❌"
+                  "text": "\u274c"
                 },
                 "true": {
                   "color": "transparent",
                   "index": 0,
-                  "text": "✅"
+                  "text": "\u2705"
                 }
               },
               "type": "value"
@@ -2511,9 +2665,23 @@
             "uid": "${datasource}"
           },
           "editorMode": "code",
-          "format": "table",
+          "editorType": "sql",
+          "format": 1,
+          "meta": {
+            "builderOptions": {
+              "columns": [],
+              "database": "",
+              "limit": 1000,
+              "meta": {},
+              "mode": "list",
+              "queryType": "table",
+              "table": ""
+            }
+          },
+          "pluginVersion": "2.1.4",
+          "queryType": "table",
           "rawQuery": true,
-          "rawSql": "SELECT\r\n  meta.\"description\",\r\n  ARG_MAX((fire.\"disabled\").Value, (fire.\"disabled\").Timestamp) AS disabled,\r\n  ARG_MAX((fire.\"fault\").Value, (fire.\"fault\").Timestamp)       AS fault,\r\n  ARG_MAX((fire.\"prealarm\").Value, (fire.\"prealarm\").Timestamp) AS prealarm,\r\n  ARG_MAX((fire.\"alarm\").Value, (fire.\"alarm\").Timestamp)       AS alarm,\r\n  ARG_MAX((fire.\"test\").Value, (fire.\"test\").Timestamp)         AS test\r\nFROM marpower.\"450000_firedetection\" AS fire\r\nJOIN marpower.firedetection_metadata AS meta ON fire.topic = meta.topic\r\nWHERE meta.section = 'Storage'\r\nGROUP BY meta.\"description\"\r\nORDER BY meta.\"description\"",
+          "rawSql": "select meta.description,\r\n\t\t\tfire.disabled__value as disabled,\r\n\t\t\tfire.fault__value as fault,\r\n\t\t\tfire.prealarm__value as prealarm,\r\n\t\t\tfire.alarm__value as alarm,\r\n\t\t\tfire.test__value as test\r\nfrom marpower__450000_firedetection as fire\r\njoin marpower__firedetection_metadata as meta on fire.topic = meta.topic\r\nwhere meta.section = 'Technical'\r\n\tand (meta.room_or_area like '%Fore%'\r\n\t\t\tor meta.room_or_area like '%Lazarette%'\r\n\t\t\tor meta.room_or_area like '%Bilge%'\r\n\t\t\tor meta.room_or_area like '%Pod%')\r\norder by timestamp desc\r\nlimit 1;",
           "refId": "A",
           "sql": {
             "columns": [
