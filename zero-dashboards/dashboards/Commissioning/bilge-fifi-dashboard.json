@@ -2035,9 +2035,23 @@
             "uid": "${datasource}"
           },
           "editorMode": "code",
-          "format": "table",
+          "editorType": "sql",
+          "format": 1,
+          "meta": {
+            "builderOptions": {
+              "columns": [],
+              "database": "",
+              "limit": 1000,
+              "meta": {},
+              "mode": "list",
+              "queryType": "table",
+              "table": ""
+            }
+          },
+          "pluginVersion": "2.1.4",
+          "queryType": "table",
           "rawQuery": true,
-          "rawSql": "--select timestamp, sub_pump_1_alarm, sub_pump_2_alarm, sub_pump_3_alarm, batt_comp_5_alarm, batt_comp_6_alarm, frame_13_alarm, frame_15_alarm, frame_30_alarm, frame_38_alarm, frame_38ps_alarm, frame_38sb_alarm, frame_46_alarm, frame_47sb_alarm, frame_48_alarm, frame_53_alarm, frame_68_alarm from marpower__210000_bilge_fifi_general ORDER BY timestamp DESC LIMIT 1;",
+          "rawSql": "SELECT\r\n  timestamp                        AS time,\r\n  level_sub_pump_1_alarm__value    AS sub_pump1_alarm,\r\n  level_sub_pump_2_alarm__value    AS sub_pump2_alarm,\r\n  level_sub_pump_3_alarm__value    AS sub_pump3_alarm,\r\n  batt_comp_5_alarm__value         AS batt_comp_5_alarm,\r\n  batt_comp_6_alarm__value         AS batt_comp_6_alarm,\r\n  frame_13_alarm__value            AS frame13_alarm,\r\n  frame_15_alarm__value            AS frame15_alarm,\r\n  frame_30_alarm__value            AS frame30_alarm,\r\n  frame_38_alarm__value            AS frame38_alarm,\r\n  frame_38_ps_alarm__value         AS frame38ps_alarm,\r\n  frame_38_sb_alarm__value         AS frame38sb_alarm,\r\n  frame_46_alarm__value            AS frame46_alarm,\r\n  frame_47_sb_alarm__value         AS frame47sb_alarm,\r\n  frame_48_alarm__value            AS frame48_alarm,\r\n  frame_53_alarm__value            AS frame53_alarm,\r\n  frame_68_alarm__value            AS frame68_alarm\r\nFROM public.marpower__210000_bilge_fifi_general\r\nORDER BY timestamp DESC\r\nLIMIT 1;",
           "refId": "A",
           "sql": {
             "columns": [
@@ -2064,10 +2078,24 @@
             "uid": "${datasource}"
           },
           "editorMode": "code",
-          "format": "table",
+          "editorType": "sql",
+          "format": 1,
           "hide": false,
+          "meta": {
+            "builderOptions": {
+              "columns": [],
+              "database": "",
+              "limit": 1000,
+              "meta": {},
+              "mode": "list",
+              "queryType": "table",
+              "table": ""
+            }
+          },
+          "pluginVersion": "2.1.4",
+          "queryType": "table",
           "rawQuery": true,
-          "rawSql": "--select max(case when mqtt_json_path = lower('LEVEL_SUB_PUMP1_ALARM') then '(' || yard_tag || ')' else null end) as sub_pump_1_alarm_tag, max(case when mqtt_json_path = lower('LEVEL_SUB_PUMP2_ALARM') then '(' || yard_tag || ')' else null end) as sub_pump_2_alarm_tag, max(case when mqtt_json_path = lower('LEVEL_SUB_PUMP3_ALARM') then '(' || yard_tag || ')' else null end) as sub_pump_3_alarm_tag, max(case when mqtt_json_path = lower('BATT_COMP_5_ALARM') then '(' || yard_tag || ')' else null end) as batt_comp_5_alarm_tag, max(case when mqtt_json_path = lower('BATT_COMP_6_ALARM') then '(' || yard_tag || ')' else null end) as batt_comp_6_alarm_tag, max(case when mqtt_json_path = lower('FRAME13_ALARM') then '(' || yard_tag || ')' else null end) as frame_13_alarm_tag, max(case when mqtt_json_path = lower('FRAME15_ALARM') then '(' || yard_tag || ')' else null end) as frame_15_alarm_tag, max(case when mqtt_json_path = lower('FRAME30_ALARM') then '(' || yard_tag || ')' else null end) as frame_30_alarm_tag, max(case when mqtt_json_path = lower('FRAME38_ALARM') then '(' || yard_tag || ')' else null end) as frame_38_alarm_tag, max(case when mqtt_json_path = lower('FRAME38_PS_ALARM') then '(' || yard_tag || ')' else null end) as frame_38ps_alarm_tag, max(case when mqtt_json_path = lower('FRAME38_SB_ALARM') then '(' || yard_tag || ')' else null end) as frame_38sb_alarm_tag, max(case when mqtt_json_path = lower('FRAME46_ALARM') then '(' || yard_tag || ')' else null end) as frame_46_alarm_tag, max(case when mqtt_json_path = lower('FRAME47_SB_ALARM') then '(' || yard_tag || ')' else null end) as frame_47sb_alarm_tag, max(case when mqtt_json_path = lower('FRAME48_ALARM') then '(' || yard_tag || ')' else null end) as frame_48_alarm_tag, max(case when mqtt_json_path = lower('FRAME53_ALARM') then '(' || yard_tag || ')' else null end) as frame_53_alarm_tag, max(case when mqtt_json_path = lower('FRAME68_ALARM') then '(' || yard_tag || ')' else null end) as frame_68_alarm_tag from marpower__io_metadata where mqtt_topic = 'marpower/210000-bilge-fifi-general' ORDER BY timestamp DESC LIMIT 1;",
+          "rawSql": "SELECT \r\n  MAX(CASE WHEN mqtt_json_path = LOWER('LEVEL_SUB_PUMP1_ALARM') THEN '(' || yard_tag || ')' ELSE NULL END) AS sub_pump1_alarm_tag,\r\n  MAX(CASE WHEN mqtt_json_path = LOWER('LEVEL_SUB_PUMP2_ALARM') THEN '(' || yard_tag || ')' ELSE NULL END) AS sub_pump2_alarm_tag,\r\n  MAX(CASE WHEN mqtt_json_path = LOWER('LEVEL_SUB_PUMP3_ALARM') THEN '(' || yard_tag || ')' ELSE NULL END) AS sub_pump3_alarm_tag,\r\n  MAX(CASE WHEN mqtt_json_path = LOWER('BATT_COMP_5_ALARM') THEN '(' || yard_tag || ')' ELSE NULL END) AS batt_comp_5_alarm_tag,\r\n  MAX(CASE WHEN mqtt_json_path = LOWER('BATT_COMP_6_ALARM') THEN '(' || yard_tag || ')' ELSE NULL END) AS batt_comp_6_alarm_tag,\r\n  MAX(CASE WHEN mqtt_json_path = LOWER('FRAME13_ALARM') THEN '(' || yard_tag || ')' ELSE NULL END) AS frame13_alarm_tag,\r\n  MAX(CASE WHEN mqtt_json_path = LOWER('FRAME15_ALARM') THEN '(' || yard_tag || ')' ELSE NULL END) AS frame15_alarm_tag,\r\n  MAX(CASE WHEN mqtt_json_path = LOWER('FRAME30_ALARM') THEN '(' || yard_tag || ')' ELSE NULL END) AS frame30_alarm_tag,\r\n  MAX(CASE WHEN mqtt_json_path = LOWER('FRAME38_ALARM') THEN '(' || yard_tag || ')' ELSE NULL END) AS frame38_alarm_tag,\r\n  MAX(CASE WHEN mqtt_json_path = LOWER('FRAME38PS_ALARM') THEN '(' || yard_tag || ')' ELSE NULL END) AS frame38ps_alarm_tag,\r\n  MAX(CASE WHEN mqtt_json_path = LOWER('FRAME38SB_ALARM') THEN '(' || yard_tag || ')' ELSE NULL END) AS frame38sb_alarm_tag,\r\n  MAX(CASE WHEN mqtt_json_path = LOWER('FRAME46_ALARM') THEN '(' || yard_tag || ')' ELSE NULL END) AS frame46_alarm_tag,\r\n  MAX(CASE WHEN mqtt_json_path = LOWER('FRAME47SB_ALARM') THEN '(' || yard_tag || ')' ELSE NULL END) AS frame47sb_alarm_tag,\r\n  MAX(CASE WHEN mqtt_json_path = LOWER('FRAME48_ALARM') THEN '(' || yard_tag || ')' ELSE NULL END) AS frame48_alarm_tag,\r\n  MAX(CASE WHEN mqtt_json_path = LOWER('FRAME53_ALARM') THEN '(' || yard_tag || ')' ELSE NULL END) AS frame53_alarm_tag,\r\n  MAX(CASE WHEN mqtt_json_path = LOWER('FRAME68_ALARM') THEN '(' || yard_tag || ')' ELSE NULL END) AS frame68_alarm_tag\r\nFROM marpower__io_metadata\r\nWHERE mqtt_topic = 'marpower/210000-bilge-fifi-general'",
           "refId": "B",
           "sql": {
             "columns": [
@@ -6501,9 +6529,23 @@
             "uid": "${datasource}"
           },
           "editorMode": "code",
-          "format": "table",
+          "editorType": "sql",
+          "format": 1,
+          "meta": {
+            "builderOptions": {
+              "columns": [],
+              "database": "",
+              "limit": 1000,
+              "meta": {},
+              "mode": "list",
+              "queryType": "table",
+              "table": ""
+            }
+          },
+          "pluginVersion": "2.1.4",
+          "queryType": "table",
           "rawQuery": true,
-          "rawSql": "SELECT DISTINCT ON (topic) topic, alarm__value, close__value, closed__value, hmi_cmd_close__value, hmi_cmd_open__value, hmi_control_available__value, open__value, opened__value, should_be_open__value, timestamp FROM marpower__210000_bilge_fifi where $__timeFilter(timestamp) ORDER BY topic, timestamp DESC;",
+          "rawSql": "SELECT DISTINCT ON (topic)\r\n  topic,\r\n  alarm__value                  AS alarm,\r\n  close__value                  AS close,\r\n  closed__value                 AS closed,\r\n  hmi_cmd_close__value          AS hmi_cmd_close,\r\n  hmi_cmd_open__value           AS hmi_cmd_open,\r\n  hmi_control_available__value  AS hmi_control_available,\r\n  open__value                   AS open,\r\n  opened__value                 AS opened,\r\n  should_be_open__value         AS should_be_open\r\nFROM marpower__210000_bilge_fifi\r\nWHERE $__timeFilter(timestamp)\r\nORDER BY \r\n  topic, \r\n  timestamp DESC",
           "refId": "A",
           "sql": {
             "columns": [
@@ -6564,8 +6606,8 @@
     "list": [
       {
         "current": {
-          "text": "RisingWave",
-          "value": "ceyj3m7wtn3swb"
+          "text": "greptimedb-singel",
+          "value": "PE746E5A5E0A52672"
         },
         "name": "datasource",
         "options": [],
@@ -6577,8 +6619,8 @@
     ]
   },
   "time": {
-    "from": "2026-04-14T15:50:37.396Z",
-    "to": "2026-04-14T15:55:37.396Z"
+    "from": "now-5m",
+    "to": "now"
   },
   "timepicker": {},
   "timezone": "browser",
