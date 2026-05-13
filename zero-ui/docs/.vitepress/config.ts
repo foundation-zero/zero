@@ -51,6 +51,7 @@ export default defineConfig({
           { text: "TWS Selector", link: "/components/tws-selector" },
         ],
       },
+
       {
         text: "Mimics",
         items: [
@@ -83,6 +84,13 @@ export default defineConfig({
           { text: "Flow Sensor", link: "/mimics/flow-sensor" },
           { text: "Pressure Sensor", link: "/mimics/pressure-sensor" },
           { text: "Level Sensor", link: "/mimics/level-sensor" },
+        ],
+      },
+      {
+        text: "Modules",
+        items: [
+          { text: "Overview", link: "/mimics/modules/" },
+          { text: "Boilers Module", link: "/mimics/modules/boilers-module" },
         ],
       },
     ],

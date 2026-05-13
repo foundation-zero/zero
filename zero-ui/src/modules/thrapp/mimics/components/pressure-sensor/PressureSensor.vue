@@ -22,6 +22,7 @@ withDefaults(defineProps<MimicComponentBaseProps>(), {
     :base-orientation="PRESSURE_SENSOR_BASE_ORIENTATION"
     :orientation="orientation"
     data-slot="pressure-sensor"
+    class="fill-muted"
   >
     <!--
       Original Figma geometry is 24×30. Centered in a 32×32 square canvas

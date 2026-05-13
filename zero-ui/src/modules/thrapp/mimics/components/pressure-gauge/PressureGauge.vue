@@ -22,6 +22,7 @@ withDefaults(defineProps<MimicComponentBaseProps>(), {
     :base-orientation="PRESSURE_GAUGE_BASE_ORIENTATION"
     :orientation="orientation"
     data-slot="pressure-gauge"
+    class="fill-muted"
   >
     <g transform="translate(4 1)">
       <rect

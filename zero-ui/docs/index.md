@@ -51,6 +51,11 @@ Our design system includes comprehensive documentation for:
 - **[Mimic Components Overview](/mimics/)** - Domain-specific SVG components for mimic diagrams
 - **[Actuated Valve](/mimics/actuated-valve)** - Unified switch + flow-control directional actuated valve mimic component
 
+### Modules
+
+- **[Modules Overview](/mimics/modules/)** - Composed mimic scene documentation
+- **[Boilers Scene](/mimics/modules/boilers-module)** - Initial documentation page for the BoilersModule composition
+
 Each component comes with:
 - Multiple visual variants for different use cases
 - Comprehensive accessibility features

@@ -40,6 +40,11 @@ const portColors = computed<ActuatedValvePortColors>(() => ACTUATED_VALVE_PORT_C
 
 const orientationWithRotation = computed<ComponentOrientation>(() => {
   if (state.value !== "closed") return orientation.value;
+  if (
+    orientation.value === ComponentOrientation.Left ||
+    orientation.value === ComponentOrientation.Right
+  )
+    return ComponentOrientation.Up;
   else return getNextOrientation(orientation.value, 2);
 });
 </script>

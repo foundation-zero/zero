@@ -11,19 +11,16 @@ import {
 } from "./index";
 
 const props = withDefaults(defineProps<HeatExchangerProps & MimicComponentBaseProps>(), {
-  state: HeatingState.Idle,
+  state: HeatingState.Inactive,
   orientation: HEAT_EXCHANGER_BASE_ORIENTATION,
 });
 
-const shellState = computed(() =>
-  props.state === HeatingState.Idle ? HeatingState.Inactive : HeatingState.Active,
-);
-
-const shellColor = computed(() => HEATING_STATE_COLORS[shellState.value]);
+const shellColor = computed(() => HEATING_STATE_COLORS[props.state]);
 </script>
 
 <template>
   <MimicComponent
+    class="fill-background"
     :width="HEAT_EXCHANGER_WIDTH"
     :height="HEAT_EXCHANGER_HEIGHT"
     :base-orientation="HEAT_EXCHANGER_BASE_ORIENTATION"
@@ -35,7 +32,7 @@ const shellColor = computed(() => HEATING_STATE_COLORS[shellState.value]);
       :width="HEAT_EXCHANGER_SHELL.width"
       :height="HEAT_EXCHANGER_SHELL.height"
       :stroke="shellColor"
-      stroke-width="2"
+      stroke-width="1"
       class="transition-colors duration-300"
     />
     <slot />

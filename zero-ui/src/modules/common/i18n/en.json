@@ -2,6 +2,17 @@
   "app": {
     "title": "ZERO"
   },
+  "units": {
+    "bar": "bar",
+    "celsius": "°C",
+    "percent": "%",
+    "ppm": "ppm",
+    "liters": "L",
+    "lpm": "L/min",
+    "watts": "W",
+    "kilowatt": "kW",
+    "deltaT": "ΔT"
+  },
   "apps": {
     "loads": "Loads",
     "thrs": "THRS",

@@ -20,9 +20,9 @@ interface PumpStateColors {
   blade: string;
 }
 
-export const PUMP_WIDTH = 36;
-export const PUMP_HEIGHT = 36;
-export const PUMP_RADIUS = 13.5;
+export const PUMP_WIDTH = 54;
+export const PUMP_HEIGHT = 54;
+export const PUMP_RADIUS = 20.25;
 export const PUMP_CENTER_X = PUMP_WIDTH / 2;
 export const PUMP_CENTER_Y = PUMP_HEIGHT / 2;
 export const PUMP_BASE_ORIENTATION = ComponentOrientation.Right;

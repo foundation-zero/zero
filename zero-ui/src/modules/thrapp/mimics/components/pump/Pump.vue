@@ -48,7 +48,7 @@ const orientationWithRotation = computed<ComponentOrientation>(() => {
     />
 
     <path
-      d="M8.00293 24.3281L8.00293 11.6719L29.0977 18L8.00293 24.3281Z"
+      d="M12.00439 36.4922L12.00439 17.5078L43.6465 27L12.00439 36.4922Z"
       :fill="colors.blade"
       :stroke="colors.ring"
       class="transition-colors duration-300"

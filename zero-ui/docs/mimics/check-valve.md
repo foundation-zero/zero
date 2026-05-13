@@ -20,12 +20,9 @@ The original exported geometry is `24×32`. It is centered inside a `32×32` squ
 | `orientation` | `ComponentOrientation` | `ComponentOrientation.Up` | Rotation of the valve relative to its base orientation |
 
 ## Orientation Examples
-
-<div class="grid grid-cols-2 md:grid-cols-4 gap-4 my-6">
+<div>
   <div class="flex flex-col items-center justify-center gap-2">
-    <div class="p-4 bg-muted rounded-md">
       <CheckValve :orientation="ComponentOrientation.Up" />
-    </div>
     <span class="text-sm font-mono">Up</span>
   </div>
   <div class="flex flex-col items-center justify-center gap-2">
