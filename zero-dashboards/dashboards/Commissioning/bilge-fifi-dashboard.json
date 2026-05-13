@@ -6367,7 +6367,7 @@
             },
             {
               "options": {
-                "pattern": ".*xv21001011-1",
+                "pattern": ".*xv21001011_1",
                 "result": {
                   "index": 3,
                   "text": "Frame 30 (XV21001011_1)"
@@ -6377,7 +6377,7 @@
             },
             {
               "options": {
-                "pattern": ".*xv21001011-2",
+                "pattern": ".*xv21001011_2",
                 "result": {
                   "index": 4,
                   "text": "Frame 53 (XV21001011_2)"
@@ -6387,7 +6387,7 @@
             },
             {
               "options": {
-                "pattern": ".*xv21001012-1",
+                "pattern": ".*xv21001012_1",
                 "result": {
                   "index": 5,
                   "text": "Frame 38 (XV21001012_1)"
@@ -6397,7 +6397,7 @@
             },
             {
               "options": {
-                "pattern": ".*xv21001012-2",
+                "pattern": ".*xv21001012_2",
                 "result": {
                   "index": 6,
                   "text": "Frame 46 (XV21001012_2)"
@@ -6407,7 +6407,7 @@
             },
             {
               "options": {
-                "pattern": ".*xv21001012-3",
+                "pattern": ".*xv21001012_3",
                 "result": {
                   "index": 7,
                   "text": "Frame 68 (XV21001012_3)"
@@ -6417,7 +6417,7 @@
             },
             {
               "options": {
-                "pattern": ".*xv21001012-4",
+                "pattern": ".*xv21001012_4",
                 "result": {
                   "index": 8,
                   "text": "Frame 48 (XV21001012_4)"
@@ -6427,7 +6427,7 @@
             },
             {
               "options": {
-                "pattern": ".*xv21001012-5",
+                "pattern": ".*xv21001012_5",
                 "result": {
                   "index": 9,
                   "text": "Frame 15 (XV21001012_5)"
@@ -6437,7 +6437,7 @@
             },
             {
               "options": {
-                "pattern": ".*xv21001013-1",
+                "pattern": ".*xv21001013_1",
                 "result": {
                   "index": 10,
                   "text": "Frame 13 (XV21001013_1)"
@@ -6447,7 +6447,7 @@
             },
             {
               "options": {
-                "pattern": ".*xv21001013-2",
+                "pattern": ".*xv21001013_2",
                 "result": {
                   "index": 11,
                   "text": "Frame 13 (XV21001013_2)"
@@ -6494,6 +6494,18 @@
               {
                 "id": "custom.align",
                 "value": "left"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Name"
+            },
+            "properties": [
+              {
+                "id": "custom.width",
+                "value": 239
               }
             ]
           }
