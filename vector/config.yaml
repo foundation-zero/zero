@@ -15,6 +15,7 @@ sources:
       - "marpower/#"
       - "prop-test/#"
       - "domestic/+"
+      - "hull-temperature/temperatures"
     user: "${MQTT_USER}"
     password: "${MQTT_PASSWORD}"
 transforms:

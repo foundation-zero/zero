@@ -28,18 +28,21 @@ FROM python:3.13-slim-bookworm AS runtime
 ENV PYTHONDONTWRITEBYTECODE=1 \
     PYTHONUNBUFFERED=1
 
-
 ENV VIRTUAL_ENV=/app/zero-loads-app/.venv
 ENV PATH="/app/zero-loads-app/.venv/bin:$PATH"
 
-COPY --from=builder ${VIRTUAL_ENV} ${VIRTUAL_ENV}
+RUN groupadd -g 1001 app && \
+    useradd -r -u 1001 -g app app
+
+COPY --from=builder --chown=1001:1001 ${VIRTUAL_ENV} ${VIRTUAL_ENV}
 
 WORKDIR /app
 
-COPY zero-generator/ zero-generator/
-COPY zero-loads-app/src/ ./zero-loads-app
+COPY --chown=1001:1001 zero-generator/ zero-generator/
+COPY --chown=1001:1001 zero-loads-app/src/ ./zero-loads-app
 
 WORKDIR /app/zero-loads-app
+USER 1001
 
 ENTRYPOINT ["python", "-m", "loads"]
 CMD ["api"]

@@ -1,8 +1,8 @@
 # Per https://chatgpt.com/share/68878e3e-7eb8-8006-9142-92fbd124b502
 from dataclasses import dataclass
 
-TOPIC = "450000 AMCS"
-PATH = "$.ACTIVATE_HULL_TEMP_MEASUREMENT"
+TOPIC = "marpower/450000-amcs/Command"
+PATH = "$.KEB1_ACTIVATE_HULL_MEASUREMENT_ONOFF"
 
 HULL_TEMP_SENSORS = {
     "LOOP 1": [
@@ -491,6 +491,7 @@ HULL_TEMP_SENSORS = {
     ],
 }
 
+
 @dataclass
 class ProbeAddress:
     register: int
@@ -498,11 +499,13 @@ class ProbeAddress:
     sensor: str
     channel: int
 
+
 @dataclass
 class DiagnosticAddress:
     register: int
     loop: str
     description: str
+
 
 type Address = ProbeAddress | DiagnosticAddress
 
@@ -511,17 +514,22 @@ PROBE_ADDRESSES = [
         register=probe["Modbus Register"],
         transmitter=probe["Transmitter"],
         sensor=probe["Sensor"],
-        channel=probe["Channel"]
+        channel=probe["Channel"],
     )
-    for loop in [HULL_TEMP_SENSORS["LOOP 1"], HULL_TEMP_SENSORS["LOOP 2"],
-                 HULL_TEMP_SENSORS["LOOP 3"], HULL_TEMP_SENSORS["LOOP 4"]]
-                 for probe in loop]
+    for loop in [
+        HULL_TEMP_SENSORS["LOOP 1"],
+        HULL_TEMP_SENSORS["LOOP 2"],
+        HULL_TEMP_SENSORS["LOOP 3"],
+        HULL_TEMP_SENSORS["LOOP 4"],
+    ]
+    for probe in loop
+]
 
 DIAGNOSTIC_ADDRESSES = [
     DiagnosticAddress(
         register=diag["Modbus Register"],
         loop=diag["Loop"],
-        description=diag["Description"]
+        description=diag["Description"],
     )
     for diag in HULL_TEMP_SENSORS["Diagnostics"]
 ]

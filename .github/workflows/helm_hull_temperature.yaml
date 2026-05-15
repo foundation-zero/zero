@@ -1,4 +1,4 @@
-name: "Prop Test: Helm chart"
+name: "Hull temperature: Helm chart"
 on:
   release:
     types: [released]
@@ -11,4 +11,4 @@ jobs:
       id-token: "write"
     secrets: inherit
     with:
-      helm_chart: "zero-prop-test/charts"
+      helm_chart: "zero-hull-temperature/charts"

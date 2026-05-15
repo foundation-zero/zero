@@ -1,17 +1,17 @@
-# Valve
+# Actuated Valve
 
 A unified mimic valve component that supports switch, flow-control, and three-way variants.
 
 <script setup lang="ts">
 import { ref } from 'vue'
 import { useIntervalFn } from '@vueuse/core'
-import Valve from '@/modules/thrapp/mimics/components/valve/Valve.vue'
+import ActuatedValve from '@/modules/thrapp/mimics/components/actuated-valve/ActuatedValve.vue'
 import {
-  ValveType,
+  ActuatedValveType,
   SwitchValveState,
   FlowValveState,
   ThreeWayValveState,
-} from '@/modules/thrapp/mimics/components/valve'
+} from '@/modules/thrapp/mimics/components/actuated-valve'
 import { ComponentOrientation } from '@/modules/thrapp/mimics/components'
 
 const animatedSwitchState = ref(SwitchValveState.Open)
@@ -26,7 +26,7 @@ useIntervalFn(() => {
 
 ## Overview
 
-`Valve` combines switch, flow-control, and three-way valve types into one reusable component.
+`ActuatedValve` combines switch, flow-control, and three-way valve types into one reusable component.
 
 - `type="switch"` — renders two triangular ports with a circular labeled marker
 - `type="flow-control"` — renders two triangular ports with a control-arrow marker
@@ -47,8 +47,8 @@ For the three-way valve, each port's color reflects whether that specific port i
 <div class="grid grid-cols-2 gap-4 my-6">
   <div class="flex flex-col items-center justify-center gap-2">
     <div class="p-4 bg-muted rounded-md">
-      <Valve
-        :type="ValveType.Switch"
+      <ActuatedValve
+        :type="ActuatedValveType.Switch"
         :state="SwitchValveState.Open"
         :orientation="ComponentOrientation.Up"
         marker-label="A"
@@ -58,8 +58,8 @@ For the three-way valve, each port's color reflects whether that specific port i
   </div>
   <div class="flex flex-col items-center justify-center gap-2">
     <div class="p-4 bg-muted rounded-md">
-      <Valve
-        :type="ValveType.Switch"
+      <ActuatedValve
+        :type="ActuatedValveType.Switch"
         :state="SwitchValveState.Closed"
         :orientation="ComponentOrientation.Up"
       />
@@ -71,14 +71,14 @@ For the three-way valve, each port's color reflects whether that specific port i
 ```vue
 <template>
   <div class="flex gap-4">
-    <Valve
-      :type="ValveType.Switch"
+    <ActuatedValve
+      :type="ActuatedValveType.Switch"
       :state="SwitchValveState.Open"
       :orientation="ComponentOrientation.Up"
       marker-label="A"
     />
-    <Valve
-      :type="ValveType.Switch"
+    <ActuatedValve
+      :type="ActuatedValveType.Switch"
       :state="SwitchValveState.Closed"
       :orientation="ComponentOrientation.Up"
     />
@@ -95,8 +95,8 @@ This example toggles between open and closed every 1.2 seconds to show both tran
 
 <div class="my-6 flex flex-col items-center justify-center gap-3">
   <div class="rounded-md bg-muted p-4">
-    <Valve
-      :type="ValveType.Switch"
+    <ActuatedValve
+      :type="ActuatedValveType.Switch"
       :state="animatedSwitchState"
       :orientation="ComponentOrientation.Up"
       marker-label="A"
@@ -109,8 +109,8 @@ This example toggles between open and closed every 1.2 seconds to show both tran
 <script setup lang="ts">
 import { ref } from 'vue'
 import { useIntervalFn } from '@vueuse/core'
-import Valve from '@/modules/thrapp/mimics/components/valve/Valve.vue'
-import { ValveType, SwitchValveState } from '@/modules/thrapp/mimics/components/valve'
+import ActuatedValve from '@/modules/thrapp/mimics/components/actuated-valve/ActuatedValve.vue'
+import { ActuatedValveType, SwitchValveState } from '@/modules/thrapp/mimics/components/actuated-valve'
 import { ComponentOrientation } from '@/modules/thrapp/mimics/components'
 
 const switchState = ref(SwitchValveState.Open)
@@ -124,8 +124,8 @@ useIntervalFn(() => {
 </script>
 
 <template>
-  <Valve
-    :type="ValveType.Switch"
+  <ActuatedValve
+    :type="ActuatedValveType.Switch"
     :state="switchState"
     :orientation="ComponentOrientation.Up"
     marker-label="A"
@@ -138,8 +138,8 @@ useIntervalFn(() => {
 <div class="grid grid-cols-3 gap-4 my-6">
   <div class="flex flex-col items-center justify-center gap-2">
     <div class="p-4 bg-muted rounded-md">
-      <Valve
-        :type="ValveType.FlowControl"
+      <ActuatedValve
+        :type="ActuatedValveType.FlowControl"
         :state="FlowValveState.Open"
         :orientation="ComponentOrientation.Up"
       />
@@ -148,8 +148,8 @@ useIntervalFn(() => {
   </div>
   <div class="flex flex-col items-center justify-center gap-2">
     <div class="p-4 bg-muted rounded-md">
-      <Valve
-        :type="ValveType.FlowControl"
+      <ActuatedValve
+        :type="ActuatedValveType.FlowControl"
         :state="FlowValveState.Partial"
         :orientation="ComponentOrientation.Up"
       />
@@ -158,8 +158,8 @@ useIntervalFn(() => {
   </div>
   <div class="flex flex-col items-center justify-center gap-2">
     <div class="p-4 bg-muted rounded-md">
-      <Valve
-        :type="ValveType.FlowControl"
+      <ActuatedValve
+        :type="ActuatedValveType.FlowControl"
         :state="FlowValveState.Closed"
         :orientation="ComponentOrientation.Up"
       />
@@ -171,18 +171,18 @@ useIntervalFn(() => {
 ```vue
 <template>
   <div class="flex gap-4">
-    <Valve
-      :type="ValveType.FlowControl"
+    <ActuatedValve
+      :type="ActuatedValveType.FlowControl"
       :state="FlowValveState.Open"
       :orientation="ComponentOrientation.Up"
     />
-    <Valve
-      :type="ValveType.FlowControl"
+    <ActuatedValve
+      :type="ActuatedValveType.FlowControl"
       :state="FlowValveState.Partial"
       :orientation="ComponentOrientation.Up"
     />
-    <Valve
-      :type="ValveType.FlowControl"
+    <ActuatedValve
+      :type="ActuatedValveType.FlowControl"
       :state="FlowValveState.Closed"
       :orientation="ComponentOrientation.Up"
     />
@@ -195,25 +195,25 @@ useIntervalFn(() => {
 <div class="grid grid-cols-4 gap-4 my-6">
   <div class="flex flex-col items-center justify-center gap-2">
     <div class="p-4 bg-muted rounded-md">
-      <Valve :type="ValveType.FlowControl" :state="FlowValveState.Open" :orientation="ComponentOrientation.Up" />
+      <ActuatedValve :type="ActuatedValveType.FlowControl" :state="FlowValveState.Open" :orientation="ComponentOrientation.Up" />
     </div>
     <span class="text-sm font-mono">Up</span>
   </div>
   <div class="flex flex-col items-center justify-center gap-2">
     <div class="p-4 bg-muted rounded-md">
-      <Valve :type="ValveType.FlowControl" :state="FlowValveState.Open" :orientation="ComponentOrientation.Right" />
+      <ActuatedValve :type="ActuatedValveType.FlowControl" :state="FlowValveState.Open" :orientation="ComponentOrientation.Right" />
     </div>
     <span class="text-sm font-mono">Right</span>
   </div>
   <div class="flex flex-col items-center justify-center gap-2">
     <div class="p-4 bg-muted rounded-md">
-      <Valve :type="ValveType.FlowControl" :state="FlowValveState.Open" :orientation="ComponentOrientation.Down" />
+      <ActuatedValve :type="ActuatedValveType.FlowControl" :state="FlowValveState.Open" :orientation="ComponentOrientation.Down" />
     </div>
     <span class="text-sm font-mono">Down</span>
   </div>
   <div class="flex flex-col items-center justify-center gap-2">
     <div class="p-4 bg-muted rounded-md">
-      <Valve :type="ValveType.FlowControl" :state="FlowValveState.Open" :orientation="ComponentOrientation.Left" />
+      <ActuatedValve :type="ActuatedValveType.FlowControl" :state="FlowValveState.Open" :orientation="ComponentOrientation.Left" />
     </div>
     <span class="text-sm font-mono">Left</span>
   </div>
@@ -224,31 +224,31 @@ useIntervalFn(() => {
 <div class="grid grid-cols-5 gap-4 my-6">
   <div class="flex flex-col items-center justify-center gap-2">
     <div class="p-4 bg-muted rounded-md">
-      <Valve :type="ValveType.ThreeWay" :state="ThreeWayValveState.Open" />
+      <ActuatedValve :type="ActuatedValveType.ThreeWay" :state="ThreeWayValveState.Open" />
     </div>
     <span class="text-sm font-mono">Open</span>
   </div>
   <div class="flex flex-col items-center justify-center gap-2">
     <div class="p-4 bg-muted rounded-md">
-      <Valve :type="ValveType.ThreeWay" :state="ThreeWayValveState.AA" />
+      <ActuatedValve :type="ActuatedValveType.ThreeWay" :state="ThreeWayValveState.AA" />
     </div>
     <span class="text-sm font-mono">A-A</span>
   </div>
   <div class="flex flex-col items-center justify-center gap-2">
     <div class="p-4 bg-muted rounded-md">
-      <Valve :type="ValveType.ThreeWay" :state="ThreeWayValveState.AB" />
+      <ActuatedValve :type="ActuatedValveType.ThreeWay" :state="ThreeWayValveState.AB" />
     </div>
     <span class="text-sm font-mono">A-B</span>
   </div>
   <div class="flex flex-col items-center justify-center gap-2">
     <div class="p-4 bg-muted rounded-md">
-      <Valve :type="ValveType.ThreeWay" :state="ThreeWayValveState.BA" />
+      <ActuatedValve :type="ActuatedValveType.ThreeWay" :state="ThreeWayValveState.BA" />
     </div>
     <span class="text-sm font-mono">B-A</span>
   </div>
   <div class="flex flex-col items-center justify-center gap-2">
     <div class="p-4 bg-muted rounded-md">
-      <Valve :type="ValveType.ThreeWay" :state="ThreeWayValveState.Closed" />
+      <ActuatedValve :type="ActuatedValveType.ThreeWay" :state="ThreeWayValveState.Closed" />
     </div>
     <span class="text-sm font-mono">Closed</span>
   </div>
@@ -257,11 +257,11 @@ useIntervalFn(() => {
 ```vue
 <template>
   <div class="flex gap-4">
-    <Valve :type="ValveType.ThreeWay" :state="ThreeWayValveState.Open" />
-    <Valve :type="ValveType.ThreeWay" :state="ThreeWayValveState.AA" />
-    <Valve :type="ValveType.ThreeWay" :state="ThreeWayValveState.AB" />
-    <Valve :type="ValveType.ThreeWay" :state="ThreeWayValveState.BA" />
-    <Valve :type="ValveType.ThreeWay" :state="ThreeWayValveState.Closed" />
+    <ActuatedValve :type="ActuatedValveType.ThreeWay" :state="ThreeWayValveState.Open" />
+    <ActuatedValve :type="ActuatedValveType.ThreeWay" :state="ThreeWayValveState.AA" />
+    <ActuatedValve :type="ActuatedValveType.ThreeWay" :state="ThreeWayValveState.AB" />
+    <ActuatedValve :type="ActuatedValveType.ThreeWay" :state="ThreeWayValveState.BA" />
+    <ActuatedValve :type="ActuatedValveType.ThreeWay" :state="ThreeWayValveState.Closed" />
   </div>
 </template>
 ```
@@ -280,7 +280,7 @@ State meanings for the three-way (T) valve:
 
 | Prop | Type | Default | Description |
 |------|------|---------|-------------|
-| type | `ValveType` | - | Required valve variant (`Switch`, `FlowControl`, or `ThreeWay`) |
+| type | `ActuatedValveType` | - | Required valve variant (`Switch`, `FlowControl`, or `ThreeWay`) |
 | state | `SwitchValveState \| FlowValveState \| ThreeWayValveState` | - | Required state for selected valve type |
 | orientation | `ComponentOrientation` | `ComponentOrientation.Up` | Optional orientation used to rotate geometry |
 | markerLabel | `string` | `'E'` | Optional marker text for switch valve only |
@@ -289,35 +289,35 @@ State meanings for the three-way (T) valve:
 
 ```vue
 <script setup lang="ts">
-import Valve from '@/modules/thrapp/mimics/components/valve/Valve.vue'
+import ActuatedValve from '@/modules/thrapp/mimics/components/actuated-valve/ActuatedValve.vue'
 import {
-  ValveType,
+  ActuatedValveType,
   SwitchValveState,
   FlowValveState,
   ThreeWayValveState,
-} from '@/modules/thrapp/mimics/components/valve'
+} from '@/modules/thrapp/mimics/components/actuated-valve'
 import { ComponentOrientation } from '@/modules/thrapp/mimics/components'
 </script>
 
 <template>
   <!-- Switch valve -->
-  <Valve
-    :type="ValveType.Switch"
+  <ActuatedValve
+    :type="ActuatedValveType.Switch"
     :state="SwitchValveState.Open"
     :orientation="ComponentOrientation.Up"
     marker-label="A"
   />
 
   <!-- Flow-control valve -->
-  <Valve
-    :type="ValveType.FlowControl"
+  <ActuatedValve
+    :type="ActuatedValveType.FlowControl"
     :state="FlowValveState.Partial"
     :orientation="ComponentOrientation.Right"
   />
 
   <!-- Three-way valve -->
-  <Valve
-    :type="ValveType.ThreeWay"
+  <ActuatedValve
+    :type="ActuatedValveType.ThreeWay"
     :state="ThreeWayValveState.AB"
     :orientation="ComponentOrientation.Up"
   />

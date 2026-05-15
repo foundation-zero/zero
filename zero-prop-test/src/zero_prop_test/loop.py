@@ -2,7 +2,7 @@ from asyncio import TaskGroup, sleep
 from contextlib import asynccontextmanager
 from datetime import timedelta, datetime
 from typing import Any, AsyncGenerator, Sequence
-
+import logging
 from pydantic import BaseModel
 
 from zero_prop_test.io_link import (
@@ -14,11 +14,13 @@ from zero_prop_test.modbus import Address as ModbusAddress
 from zero_prop_test.modbus import Client as ModbusClient
 from zero_prop_test.settings import MqttSettings
 from zero_prop_test.twincat import Client as TwinCatClient
-from zero_prop_test.twincat import TwinCatVariable
+from zero_prop_test.twincat import Variable as TwinCatVariable
 from aiomqtt import Client as MqttClient
 
 type DeviceType = IoLinkDeviceType | int | float | bool | Any
 type AddressType = IoLinkDevice | ModbusAddress | TwinCatVariable
+
+logger = logging.getLogger(__name__)
 
 
 class Message(BaseModel):
@@ -86,13 +88,13 @@ class Loop:
         return {address.name: await self._collect_one(address) for address in addresses}
 
     async def tick(self, addresses: Sequence[AddressType]):
+        logger.info("Collecting data from devices...")
         data = await self._collect(addresses)
         message = Message(timestamp=datetime.now(), devices=data)
         await self._mqtt.publish("prop-test/data", message.model_dump_json())
 
     async def run(self, addresses: Sequence[AddressType]):
-        async with self._mqtt:
-            while True:
-                async with TaskGroup() as tg:
-                    tg.create_task(sleep(self._interval.total_seconds()))
-                    tg.create_task(self.tick(addresses))
+        while True:
+            async with TaskGroup() as tg:
+                tg.create_task(sleep(self._interval.total_seconds()))
+                tg.create_task(self.tick(addresses))

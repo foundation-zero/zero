@@ -1,16 +1,16 @@
 {
-  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$schema": "https://json-schema.org/draft-07/schema#",
+  "title": "Values",
   "type": "object",
-  "required": ["mqtt", "twincat"],
+  "required": ["mqtt", "modbus", "hullTemperature"],
   "properties": {
     "mqtt": {
       "type": "object",
-      "required": ["host", "existingSecret"],
+      "required": ["host", "port", "existingSecret"],
       "properties": {
         "host": {
           "type": "string",
-          "description": "MQTT broker hostname.",
-          "minLength": 1
+          "description": "MQTT broker hostname."
         },
         "port": {
           "type": "integer",
@@ -24,8 +24,7 @@
         },
         "existingSecret": {
           "type": "string",
-          "description": "Name of an existing Kubernetes Secret containing the MQTT password.",
-          "minLength": 1
+          "description": "Name of an existing Kubernetes Secret containing the MQTT password."
         },
         "existingSecretPasswordKey": {
           "type": "string",
@@ -33,50 +32,46 @@
         }
       }
     },
-    "twincat": {
+    "modbus": {
       "type": "object",
-      "required": [
-        "externalIp",
-        "ip",
-        "netid",
-        "username",
-        "routeName",
-        "existingSecret"
-      ],
+      "required": ["host", "port"],
       "properties": {
-        "externalIp": {
+        "host": {
           "type": "string",
-          "description": "IP address of this service as seen by TwinCAT. Used as the external IP of the LoadBalancer service. TWINCAT_SELF_NETID is set to externalIp + '.1'.",
-          "minLength": 1
+          "description": "Modbus server hostname."
         },
-        "ip": {
+        "port": {
+          "type": "integer",
+          "description": "Modbus TCP port.",
+          "minimum": 1,
+          "maximum": 65535
+        }
+      }
+    },
+    "hullTemperature": {
+      "type": "object",
+      "required": ["sendTopic", "intervalSeconds"],
+      "properties": {
+        "sendTopic": {
           "type": "string",
-          "description": "IP address of the TwinCAT PLC.",
-          "minLength": 1
+          "description": "MQTT topic where temperature payloads are published."
         },
-        "netid": {
-          "type": "string",
-          "description": "ADS Net ID of the TwinCAT PLC.",
-          "minLength": 1
+        "intervalSeconds": {
+          "type": "integer",
+          "description": "Polling interval for sending temperature updates.",
+          "minimum": 1
         },
-        "username": {
-          "type": "string",
-          "description": "Username for TwinCAT ADS route authentication.",
-          "minLength": 1
+        "n": {
+          "type": "integer",
+          "description": "Number of iterations before exit. Use -1 to run forever."
         },
-        "routeName": {
+        "activateTopic": {
           "type": "string",
-          "description": "ADS route name registered on the PLC.",
-          "minLength": 1
+          "description": "MQTT topic used to toggle the relay/multiplexer before reading."
         },
-        "existingSecret": {
+        "activateJsonPath": {
           "type": "string",
-          "description": "Name of an existing Kubernetes Secret containing the TwinCAT password.",
-          "minLength": 1
-        },
-        "existingSecretPasswordKey": {
-          "type": "string",
-          "description": "Key in the existing Secret that holds the TwinCAT password."
+          "description": "JSONPath where the boolean activation value is written in the payload."
         }
       }
     },

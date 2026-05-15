@@ -25,6 +25,10 @@ const APPS: App[] = [
     name: "domestic",
     link: "/domestic",
   },
+  {
+    name: "grafana",
+    link: "/grafana",
+  },
 ];
 </script>
 <template>

@@ -22,6 +22,10 @@
             "VITE_LOADS_API_SERVER_URL": {
               "description": "Loads API GraphQL endpoint",
               "type": "string"
+            },
+            "VITE_GRAFANA_URL": {
+              "description": "Grafana URL embedded in the UI dashboard iframe (optional)",
+              "type": "string"
             }
           },
           "required": [
