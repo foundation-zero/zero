@@ -7636,7 +7636,7 @@
             "properties": [
               {
                 "id": "unit",
-                "value": "mamp"
+                "value": "percent"
               }
             ]
           }
@@ -8515,7 +8515,7 @@
             "properties": [
               {
                 "id": "unit",
-                "value": "mamp"
+                "value": "percent"
               }
             ]
           }
