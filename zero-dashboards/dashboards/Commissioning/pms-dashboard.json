@@ -16593,7 +16593,7 @@
             "properties": [
               {
                 "id": "unit",
-                "value": "percent"
+                "value": "amp"
               }
             ]
           },
@@ -17818,7 +17818,7 @@
             "properties": [
               {
                 "id": "unit",
-                "value": "percent"
+                "value": "amp"
               }
             ]
           },
@@ -19043,7 +19043,7 @@
             "properties": [
               {
                 "id": "unit",
-                "value": "percent"
+                "value": "amp"
               }
             ]
           },
@@ -20268,7 +20268,7 @@
             "properties": [
               {
                 "id": "unit",
-                "value": "percent"
+                "value": "amp"
               }
             ]
           },
@@ -21493,7 +21493,7 @@
             "properties": [
               {
                 "id": "unit",
-                "value": "percent"
+                "value": "amp"
               }
             ]
           },
@@ -22718,7 +22718,7 @@
             "properties": [
               {
                 "id": "unit",
-                "value": "percent"
+                "value": "amp"
               }
             ]
           },
