@@ -594,23 +594,9 @@
             "uid": "${datasource}"
           },
           "editorMode": "code",
-          "editorType": "sql",
-          "format": 1,
-          "meta": {
-            "builderOptions": {
-              "columns": [],
-              "database": "",
-              "limit": 1000,
-              "meta": {},
-              "mode": "list",
-              "queryType": "table",
-              "table": ""
-            }
-          },
-          "pluginVersion": "2.1.4",
-          "queryType": "table",
+          "format": "table",
           "rawQuery": true,
-          "rawSql": "SELECT -- Producers\r\nMAX(CASE\r\n\t\t\t\tWHEN group_name = 'Solar' THEN power_value\r\n\t\tEND) AS solar,\r\nMAX(CASE\r\n\t\t\t\tWHEN group_name = 'Shore' THEN power_value\r\n\t\tEND) AS shore,\r\nMAX(CASE\r\n\t\t\t\tWHEN group_name = 'Hydrogeneration' THEN power_value\r\n\t\tEND) AS hydro, -- Consumers\r\nMAX(CASE\r\n\t\t\t\tWHEN group_name = 'Domestic' THEN power_value\r\n\t\tEND) AS domestic,\r\nMAX(CASE\r\n\t\t\t\tWHEN group_name = 'Technical' THEN power_value\r\n\t\tEND) AS technical,\r\nMAX(CASE\r\n\t\t\t\tWHEN group_name = 'HVAC' THEN power_value\r\n\t\tEND) AS hvac,\r\nMAX(CASE\r\n\t\t\t\tWHEN group_name = 'Propulsion' THEN power_value\r\n\t\tEND) AS propulsion, -- Batteries\r\nMAX(CASE\r\n\t\t\t\tWHEN group_name = 'Charging'\r\n\t\t\t\t\t\t\tAND power_value >= 0 THEN power_value\r\n\t\t\t\tELSE 0\r\n\t\tEND) AS charging,\r\nMAX(CASE\r\n\t\t\t\tWHEN group_name = 'Charging'\r\n\t\t\t\t\t\t\tAND power_value < 0 THEN -power_value\r\n\t\t\t\tELSE 0\r\n\t\tEND) AS discharging, -- For testing the value is artificially increased\r\nMAX(CASE\r\n\t\t\t\tWHEN group_name = 'State of charge' THEN power_value\r\n\t\tEND) * 100000 + 130000000 AS soc, -- For testing an artificial soc% is created\r\nMAX(CASE\r\n\t\t\t\tWHEN group_name = 'State of charge' THEN power_value\r\n\t\tEND) + 55 AS soc_perc\r\nFROM\r\n\t(SELECT time,\r\n\t\t\t\t\tgroup_name,\r\n\t\t\t\t\tgroup_power AS power_value\r\n\tFROM energy.electrical_flow\r\n\tUNION ALL SELECT MAX(time) AS time,\r\n\t\t\t\t\t\t\t\t\t\tgroup_name,\r\n\t\t\t\t\t\t\t\t\t\tSUM(stored_energy) AS power_value\r\n\tFROM energy.electrical_soc\r\n\tGROUP BY group_name)",
+          "rawSql": "SELECT\r\n  -- Producers\r\n  MAX(CASE WHEN group_name = 'Solar' THEN power_value END) AS solar,\r\n  MAX(CASE WHEN group_name = 'Shore' THEN power_value END) AS shore,\r\n  MAX(CASE WHEN group_name = 'Hydrogeneration' THEN power_value END) AS hydro,\r\n\r\n  -- Consumers\r\n  MAX(CASE WHEN group_name = 'Domestic' THEN power_value END) AS domestic,\r\n  MAX(CASE WHEN group_name = 'Technical' THEN power_value END) AS technical,\r\n  MAX(CASE WHEN group_name = 'HVAC' THEN power_value END) AS hvac,\r\n  MAX(CASE WHEN group_name = 'Propulsion' THEN power_value END) AS propulsion,\r\n  \r\n  -- Batteries\r\n  MAX(CASE WHEN group_name = 'Charging' AND power_value >= 0 THEN power_value ELSE 0 END) AS charging,\r\n  MAX(CASE WHEN group_name = 'Charging' AND power_value < 0 THEN -power_value ELSE 0 END) AS discharging,\r\n  \t-- For testing the value is artificially increased\r\n  MAX(CASE WHEN group_name = 'State of charge' THEN power_value END) * 100000 + 130000000 AS soc,\r\n  \t-- For testing an artificial soc% is created\r\n  MAX(CASE WHEN group_name = 'State of charge' THEN power_value END) + 55 AS soc_perc\r\nFROM  (\r\n\tSELECT\r\n    time,\r\n    group_name,\r\n    group_power AS power_value\r\n\tFROM energy.electrical_flow\r\n\r\n\tUNION ALL\r\n\r\n\tSELECT\r\n    MAX(time) AS time,\r\n    group_name,\r\n    SUM(stored_energy) AS power_value\r\n\tFROM energy.electrical_soc\r\n\tGROUP BY group_name\r\n)",
           "refId": "electrical_flow",
           "sql": {
             "columns": [
@@ -709,23 +695,9 @@
             "uid": "${datasource}"
           },
           "editorMode": "code",
-          "editorType": "sql",
-          "format": 1,
-          "meta": {
-            "builderOptions": {
-              "columns": [],
-              "database": "",
-              "limit": 1000,
-              "meta": {},
-              "mode": "list",
-              "queryType": "table",
-              "table": ""
-            }
-          },
-          "pluginVersion": "2.1.4",
-          "queryType": "table",
+          "format": "table",
           "rawQuery": true,
-          "rawSql": "SELECT group_name,\r\n\t\t\tsub_group_name,\r\n\t\t\tSUM(avg_energy) AS energy,\r\n\t\t\tSUM(SUM(avg_energy)) OVER (PARTITION BY group_name) AS group_energy\r\nFROM\r\n\t(SELECT group_name,\r\n\t\t\t\t\tsub_group_name,\r\n\t\t\t\t\tAVG(energy_wh) AS avg_energy\r\n\tFROM energy.electrical_hourly\r\n\tWHERE group_name IN ('Domestic',\r\n\t\t\t\t\t\t\t\t\t\t\t\t'HVAC',\r\n\t\t\t\t\t\t\t\t\t\t\t\t'Technical',\r\n\t\t\t\t\t\t\t\t\t\t\t\t'Propulsion')\r\n\t\tAND $__timeFilter(hour)\r\n\tGROUP BY topic,\r\n\t\t\t\t\t\tgroup_name,\r\n\t\t\t\t\t\tsub_group_name)\r\nGROUP BY group_name,\r\n\t\t\t\tsub_group_name",
+          "rawSql": "SELECT\r\n\tgroup_name,\r\n\tsub_group_name,\r\n\tSUM(avg_energy) AS energy,\r\n  SUM(SUM(avg_energy)) OVER (PARTITION BY group_name) AS group_energy\r\nFROM (\r\n\tSELECT\r\n\t\tgroup_name,\r\n\t\tsub_group_name,\r\n\t\tAVG(energy_wh) AS avg_energy\r\n\tFROM energy.electrical_hourly\r\n\tWHERE group_name IN ('Domestic', 'HVAC', 'Technical', 'Propulsion')\r\n\tAND $__timeFilter(hour)\r\n\tGROUP BY topic, group_name, sub_group_name\r\n)\r\nGROUP BY group_name, sub_group_name\r\n",
           "refId": "A",
           "sql": {
             "columns": [
@@ -960,7 +932,7 @@
           "editorMode": "code",
           "format": "time_series",
           "rawQuery": true,
-          "rawSql": "SELECT time, -- Producers\r\nSUM(CASE\r\n\t\t\t\tWHEN group_name = 'Solar' THEN energy_wh\r\n\t\t\t\tELSE 0\r\n\t\tEND) AS solar,\r\nSUM(CASE\r\n\t\t\t\tWHEN group_name = 'Shore' THEN energy_wh\r\n\t\t\t\tELSE 0\r\n\t\tEND) AS shore,\r\nSUM(CASE\r\n\t\t\t\tWHEN group_name = 'Hydrogeneration' THEN energy_wh\r\n\t\t\t\tELSE 0\r\n\t\tEND) AS hydrogeneration, -- Consumers\r\nSUM(CASE\r\n\t\t\t\tWHEN group_name = 'Domestic' THEN energy_wh\r\n\t\t\t\tELSE 0\r\n\t\tEND) AS domestic,\r\nSUM(CASE\r\n\t\t\t\tWHEN group_name = 'Technical' THEN energy_wh\r\n\t\t\t\tELSE 0\r\n\t\tEND) AS technical,\r\nSUM(CASE\r\n\t\t\t\tWHEN group_name = 'HVAC' THEN energy_wh\r\n\t\t\t\tELSE 0\r\n\t\tEND) AS hvac,\r\nSUM(CASE\r\n\t\t\t\tWHEN group_name = 'Propulsion' THEN energy_wh\r\n\t\t\t\tELSE 0\r\n\t\tEND) AS propulsion\r\nFROM\r\n\t(SELECT group_name, -- To display producers and consumers side-by-side, I altered the time value.\r\nCASE\r\n\t\tWHEN group_name IN ('Solar',\r\n\t\t\t\t\t\t\t\t\t\t\t\t'Shore',\r\n\t\t\t\t\t\t\t\t\t\t\t\t'Hydrogeneration') THEN hour - INTERVAL '5 minutes'\r\n\t\tELSE hour + INTERVAL '5 minutes'\r\nEND AS time, -- For testing purposes, I multiplied the values of the producers by 50.\r\nCASE\r\n\t\tWHEN group_name IN ('Solar',\r\n\t\t\t\t\t\t\t\t\t\t\t\t'Shore',\r\n\t\t\t\t\t\t\t\t\t\t\t\t'Hydrogeneration') THEN energy_wh * 40\r\n\t\tELSE energy_wh\r\nEND AS energy_wh\r\n\tFROM energy.electrical_hourly\r\n\tWHERE group_name IS NOT NULL)\r\nGROUP BY time\r\nORDER BY time",
+          "rawSql": "SELECT\r\n  time,\r\n\t-- Producers\r\n  SUM(CASE WHEN group_name = 'Solar' THEN energy_wh ELSE 0 END) AS solar,\r\n  SUM(CASE WHEN group_name = 'Shore' THEN energy_wh ELSE 0 END) AS shore,\r\n  SUM(CASE WHEN group_name = 'Hydrogeneration' THEN energy_wh ELSE 0 END) AS hydrogeneration,\r\n\t-- Consumers\r\n  SUM(CASE WHEN group_name = 'Domestic' THEN energy_wh ELSE 0 END) AS domestic,\r\n  SUM(CASE WHEN group_name = 'Technical' THEN energy_wh ELSE 0 END) AS technical,\r\n  SUM(CASE WHEN group_name = 'HVAC' THEN energy_wh ELSE 0 END) AS hvac,\r\n  SUM(CASE WHEN group_name = 'Propulsion' THEN energy_wh ELSE 0 END) AS propulsion\r\nFROM (\r\n  SELECT group_name,\r\n\t\t\t-- To display producers and consumers side-by-side, I altered the time value.\r\n  \t\tCASE\r\n  \t\t\tWHEN group_name IN ('Solar', 'Shore', 'Hydrogeneration' ) THEN hour - INTERVAL '5 minutes'\r\n  \t\t\tELSE hour + INTERVAL '5 minutes'\r\n  \t\tEND AS time,\r\n\t\t\t-- For testing purposes, I multiplied the values of the producers by 50.\r\n  \t\tCASE\r\n  \t\t\tWHEN group_name IN ('Solar', 'Shore', 'Hydrogeneration' ) THEN energy_wh * 40\r\n  \t\t\tELSE energy_wh\r\n  \t\tEND AS energy_wh\r\n\tFROM energy.electrical_hourly\r\n\tWHERE group_name IS NOT NULL\r\n)\r\nGROUP BY time\r\nORDER BY time",
           "refId": "Electrical hourly",
           "sql": {
             "columns": [
