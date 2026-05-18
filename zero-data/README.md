@@ -57,3 +57,7 @@ poetry run zero-data generate-data
 ### Charts
 
 The charts are deployed by their respective pipelines. Their versions are controlled by the `version` field in `Chart.yaml`. The version of `zero-data` they deploy is based on the `appVersion`.
+
+## Firedetection metadata
+
+The `metadata` folder contains an SQL file for creating and filling a metadata table in Greptime DB used for firedetection data. This table is now created by hand until a method is found to automate this process.

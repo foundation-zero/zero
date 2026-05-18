@@ -77,7 +77,7 @@
     },
     {
       "datasource": {
-        "type": "grafana-postgresql-datasource",
+        "type": "info8fcc-greptimedb-datasource",
         "uid": "${datasource}"
       },
       "fieldConfig": {
@@ -272,13 +272,27 @@
         {
           "dataset": "dev",
           "datasource": {
-            "type": "grafana-postgresql-datasource",
+            "type": "info8fcc-greptimedb-datasource",
             "uid": "${datasource}"
           },
           "editorMode": "code",
-          "format": "table",
+          "editorType": "sql",
+          "format": 1,
+          "meta": {
+            "builderOptions": {
+              "columns": [],
+              "database": "",
+              "limit": 1000,
+              "meta": {},
+              "mode": "list",
+              "queryType": "table",
+              "table": ""
+            }
+          },
+          "pluginVersion": "2.1.4",
+          "queryType": "table",
           "rawQuery": true,
-          "rawSql": "SELECT\r\n  LAST_VALUE(time ORDER BY time) AS time,\r\n  LAST_VALUE((\"CHLORINE_UNIT_ALARM\").value ORDER BY time) AS chlorine_unit_alarm\r\nFROM marpower.\"250000_techwater\"",
+          "rawSql": "select timestamp as timestamp,\r\n\t\t\tchlorine_unit_alarm__value as chlorine_unit_alarm\r\nfrom marpower__250000_techwater\r\nORDER BY timestamp DESC\r\nLIMIT 1;",
           "refId": "A",
           "sql": {
             "columns": [
@@ -301,14 +315,28 @@
         {
           "dataset": "dev",
           "datasource": {
-            "type": "grafana-postgresql-datasource",
+            "type": "info8fcc-greptimedb-datasource",
             "uid": "${datasource}"
           },
           "editorMode": "code",
-          "format": "table",
+          "editorType": "sql",
+          "format": 1,
+          "meta": {
+            "builderOptions": {
+              "columns": [],
+              "database": "",
+              "limit": 1000,
+              "meta": {},
+              "mode": "list",
+              "queryType": "table",
+              "table": ""
+            }
+          },
+          "pluginVersion": "2.1.4",
+          "queryType": "table",
           "hide": false,
           "rawQuery": true,
-          "rawSql": "SELECT \r\n  MAX(CASE WHEN mqtt_json_path = LOWER('CHLORINE_UNIT_ALARM') THEN '(' || yard_tag || ')' ELSE NULL END) AS chlorine_unit_alarm_tag\r\nFROM marpower.io_metadata_marpower\r\nWHERE mqtt_topic = 'marpower/250000-techwater'",
+          "rawSql": "select max(case\r\n\t\t\t\t\t\t\twhen mqtt_json_path = lower('chlorine_unit_alarm') then '(' || yard_tag || ')'\r\n\t\t\t\t\t\t\telse null\r\n\t\t\t\t\tend) as chlorine_unit_alarm_tag\r\nfrom marpower__io_metadata\r\nwhere mqtt_topic = 'marpower/250000-techwater';",
           "refId": "B",
           "sql": {
             "columns": [
@@ -334,7 +362,7 @@
     },
     {
       "datasource": {
-        "type": "grafana-postgresql-datasource",
+        "type": "info8fcc-greptimedb-datasource",
         "uid": "${datasource}"
       },
       "fieldConfig": {
@@ -1004,13 +1032,27 @@
         {
           "dataset": "dev",
           "datasource": {
-            "type": "grafana-postgresql-datasource",
+            "type": "info8fcc-greptimedb-datasource",
             "uid": "${datasource}"
           },
           "editorMode": "code",
-          "format": "table",
+          "editorType": "sql",
+          "format": 1,
+          "meta": {
+            "builderOptions": {
+              "columns": [],
+              "database": "",
+              "limit": 1000,
+              "meta": {},
+              "mode": "list",
+              "queryType": "table",
+              "table": ""
+            }
+          },
+          "pluginVersion": "2.1.4",
+          "queryType": "table",
           "rawQuery": true,
-          "rawSql": "SELECT\r\n  LAST_VALUE(time ORDER BY time) AS time,\r\n  LAST_VALUE((\"MTS_INLET_FIRE_FLAP_RELEASED\").value ORDER BY time) AS mts_inlet_flap_released,\r\n  LAST_VALUE((\"MTS_INLET_FIRE_FLAP_FULLY_RESET\").value ORDER BY time) AS mts_inlet_flap_reset,\r\n  LAST_VALUE((\"MTS_EXHAUST_FIRE_FLAP_RELEASED\").value ORDER BY time) AS mts_exhaust_flap_released,\r\n  LAST_VALUE((\"MTS_EXHAUST_FIRE_FLAP_FULLY_RESET\").value ORDER BY time) AS mts_exhaust_flap_reset,\r\n  LAST_VALUE((\"DRAIN_VLV_Y02_POS_OVERBOARD\").value ORDER BY time) AS drain_valve_pos_overboard\r\nFROM marpower.\"250000_techwater\"",
+          "rawSql": "select timestamp as timestamp,\r\n\t\t\tmts_inlet_fire_flap_released__value as mts_inlet_flap_released,\r\n\t\t\tmts_inlet_fire_flap_fully_reset__value as mts_inlet_flap_reset,\r\n\t\t\tmts_exhaust_fire_flap_released__value as mts_exhaust_flap_released,\r\n\t\t\tmts_exhaust_fire_flap_fully_reset__value as mts_exhaust_flap_reset,\r\n\t\t\tdrain_vlv_y_02_pos_overboard__value as drain_valve_pos_overboard\r\nfrom marpower__250000_techwater\r\nORDER BY timestamp DESC\r\nLIMIT 1;",
           "refId": "A",
           "sql": {
             "columns": [
@@ -1033,14 +1075,28 @@
         {
           "dataset": "dev",
           "datasource": {
-            "type": "grafana-postgresql-datasource",
+            "type": "info8fcc-greptimedb-datasource",
             "uid": "${datasource}"
           },
           "editorMode": "code",
-          "format": "table",
+          "editorType": "sql",
+          "format": 1,
+          "meta": {
+            "builderOptions": {
+              "columns": [],
+              "database": "",
+              "limit": 1000,
+              "meta": {},
+              "mode": "list",
+              "queryType": "table",
+              "table": ""
+            }
+          },
+          "pluginVersion": "2.1.4",
+          "queryType": "table",
           "hide": false,
           "rawQuery": true,
-          "rawSql": "SELECT \r\n  MAX(CASE WHEN mqtt_json_path = LOWER('MTS_INLET_FIRE_FLAP_RELEASED') THEN '(' || yard_tag || ')' ELSE NULL END)      AS mts_inlet_flap_released_tag,\r\n  MAX(CASE WHEN mqtt_json_path = LOWER('MTS_INLET_FIRE_FLAP_FULLY_RESET') THEN '(' || yard_tag || ')' ELSE NULL END)   AS mts_inlet_flap_reset_tag,\r\n  MAX(CASE WHEN mqtt_json_path = LOWER('MTS_EXHAUST_FIRE_FLAP_RELEASED') THEN '(' || yard_tag || ')' ELSE NULL END)    AS mts_exhaust_flap_released_tag,\r\n  MAX(CASE WHEN mqtt_json_path = LOWER('MTS_EXHAUST_FIRE_FLAP_FULLY_RESET') THEN '(' || yard_tag || ')' ELSE NULL END) AS mts_exhaust_flap_reset_tag,\r\n  MAX(CASE WHEN mqtt_json_path = LOWER('DRAIN_VLV_Y02_POS_OVERBOARD') THEN '(' || yard_tag || ')' ELSE NULL END)       AS drain_valve_pos_overboard_tag\r\nFROM marpower.io_metadata_marpower\r\nWHERE mqtt_topic = 'marpower/250000-techwater'",
+          "rawSql": "SELECT\r\nMAX(CASE WHEN mqtt_json_path = 'mts_inlet_fire_flap_released' THEN '(' || yard_tag || ')' END) AS mts_inlet_flap_released_tag,\r\nMAX(CASE WHEN mqtt_json_path = 'mts_inlet_fire_flap_fully_reset' THEN '(' || yard_tag || ')' END) AS mts_inlet_flap_reset_tag,\r\nMAX(CASE WHEN mqtt_json_path = 'mts_exhaust_fire_flap_released' THEN '(' || yard_tag || ')' END) AS mts_exhaust_flap_released_tag,\r\nMAX(CASE WHEN mqtt_json_path = 'mts_exhaust_fire_flap_fully_reset' THEN '(' || yard_tag || ')' END) AS mts_exhaust_flap_reset_tag,\r\nMAX(CASE WHEN mqtt_json_path = 'drain_vlv_y02_pos_overboard' THEN '(' || yard_tag || ')' END) AS drain_valve_pos_overboard_tag\r\nFROM marpower__io_metadata\r\nWHERE mqtt_topic = 'marpower/250000-techwater';",
           "refId": "B",
           "sql": {
             "columns": [
@@ -1066,7 +1122,7 @@
     },
     {
       "datasource": {
-        "type": "grafana-postgresql-datasource",
+        "type": "info8fcc-greptimedb-datasource",
         "uid": "${datasource}"
       },
       "fieldConfig": {
@@ -1498,13 +1554,27 @@
         {
           "dataset": "dev",
           "datasource": {
-            "type": "grafana-postgresql-datasource",
+            "type": "info8fcc-greptimedb-datasource",
             "uid": "${datasource}"
           },
           "editorMode": "code",
-          "format": "table",
+          "editorType": "sql",
+          "format": 1,
+          "meta": {
+            "builderOptions": {
+              "columns": [],
+              "database": "",
+              "limit": 1000,
+              "meta": {},
+              "mode": "list",
+              "queryType": "table",
+              "table": ""
+            }
+          },
+          "pluginVersion": "2.1.4",
+          "queryType": "table",
           "rawQuery": true,
-          "rawSql": "SELECT\r\n  LAST_VALUE(time ORDER BY time) AS time,\r\n  LAST_VALUE((\"VALVE_COLD_AIR_FR68_Y03_OPENCLOSE\").value ORDER BY time) AS valve_cold_air_cool_water_y03,\r\n  LAST_VALUE((\"VALVE_COLD_AIR_FR32_Y04_OPENCLOSE\").value ORDER BY time) AS valve_cold_air_cool_water_y04,\r\n  LAST_VALUE((\"VALVE_COLD_AIR_FR32_Y05_OPENCLOSE\").value ORDER BY time) AS valve_cold_air_cool_water_y05\r\nFROM marpower.\"250000_techwater\"",
+          "rawSql": "select timestamp as timestamp,\r\n\t\t\tvalve_cold_air_fr_68_y_03_openclose__value as valve_cold_air_cool_water_y03,\r\n\t\t\tvalve_cold_air_fr_32_y_04_openclose__value as valve_cold_air_cool_water_y04,\r\n\t\t\tvalve_cold_air_fr_32_y_05_openclose__value as valve_cold_air_cool_water_y05\r\nfrom marpower__250000_techwater\r\nORDER BY timestamp DESC\r\nLIMIT 1;",
           "refId": "A",
           "sql": {
             "columns": [
@@ -1527,14 +1597,28 @@
         {
           "dataset": "dev",
           "datasource": {
-            "type": "grafana-postgresql-datasource",
+            "type": "info8fcc-greptimedb-datasource",
             "uid": "${datasource}"
           },
           "editorMode": "code",
-          "format": "table",
+          "editorType": "sql",
+          "format": 1,
+          "meta": {
+            "builderOptions": {
+              "columns": [],
+              "database": "",
+              "limit": 1000,
+              "meta": {},
+              "mode": "list",
+              "queryType": "table",
+              "table": ""
+            }
+          },
+          "pluginVersion": "2.1.4",
+          "queryType": "table",
           "hide": false,
           "rawQuery": true,
-          "rawSql": "SELECT \r\n  MAX(CASE WHEN mqtt_json_path = LOWER('VALVE_COLD_AIR_FR68_Y03_OPENCLOSE') THEN '(' || yard_tag || ')' ELSE NULL END) AS valve_cold_air_cool_water_y03_tag,\r\n  MAX(CASE WHEN mqtt_json_path = LOWER('VALVE_COLD_AIR_FR32_Y04_OPENCLOSE') THEN '(' || yard_tag || ')' ELSE NULL END) AS valve_cold_air_cool_water_y04_tag,\r\n  MAX(CASE WHEN mqtt_json_path = LOWER('VALVE_COLD_AIR_FR32_Y05_OPENCLOSE') THEN '(' || yard_tag || ')' ELSE NULL END) AS valve_cold_air_cool_water_y05_tag\r\nFROM marpower.io_metadata_marpower\r\nWHERE mqtt_topic = 'marpower/250000-techwater'",
+          "rawSql": "SELECT MAX(CASE\r\n\t\t\t\t\t\t\tWHEN mqtt_json_path = LOWER('valve_cold_air_fr68_y03_openclose') THEN '(' || yard_tag || ')'\r\n\t\t\t\t\t\t\tELSE NULL\r\n\t\t\t\t\tEND) AS valve_cold_air_cool_water_y03_tag,\r\n\t\t\tMAX(CASE\r\n\t\t\t\t\t\t\tWHEN mqtt_json_path = LOWER('valve_cold_air_fr32_y04_openclose') THEN '(' || yard_tag || ')'\r\n\t\t\t\t\t\t\tELSE NULL\r\n\t\t\t\t\tEND) AS valve_cold_air_cool_water_y04_tag,\r\n\t\t\tMAX(CASE\r\n\t\t\t\t\t\t\tWHEN mqtt_json_path = LOWER('valve_cold_air_fr32_y05_openclose') THEN '(' || yard_tag || ')'\r\n\t\t\t\t\t\t\tELSE NULL\r\n\t\t\t\t\tEND) AS valve_cold_air_cool_water_y05_tag\r\nFROM marpower__io_metadata\r\nWHERE mqtt_topic = 'marpower/250000-techwater'\r\nGROUP BY ts;",
           "refId": "B",
           "sql": {
             "columns": [
@@ -1570,7 +1654,7 @@
       "panels": [
         {
           "datasource": {
-            "type": "grafana-postgresql-datasource",
+            "type": "info8fcc-greptimedb-datasource",
             "uid": "${datasource}"
           },
           "fieldConfig": {
@@ -1669,13 +1753,27 @@
             {
               "dataset": "dev",
               "datasource": {
-                "type": "grafana-postgresql-datasource",
+                "type": "info8fcc-greptimedb-datasource",
                 "uid": "${datasource}"
               },
               "editorMode": "code",
-              "format": "table",
+              "editorType": "sql",
+              "format": 1,
+              "meta": {
+                "builderOptions": {
+                  "columns": [],
+                  "database": "",
+                  "limit": 1000,
+                  "meta": {},
+                  "mode": "list",
+                  "queryType": "table",
+                  "table": ""
+                }
+              },
+              "pluginVersion": "2.1.4",
+              "queryType": "table",
               "rawQuery": true,
-              "rawSql": "SELECT\r\n  time,\r\n\r\n  -- Alarm\r\n  (\"CHLORINE_UNIT_ALARM\").value AS fresh_water_chlorine_unit_alarm,\r\n\r\n  -- Status\r\n  (\"MTS_INLET_FIRE_FLAP_RELEASED\").value AS mts_inlet_flap_released,\r\n  (\"MTS_INLET_FIRE_FLAP_FULLY_RESET\").value AS mts_inlet_flap_reset,\r\n  (\"MTS_EXHAUST_FIRE_FLAP_RELEASED\").value AS mts_exhaust_flap_released,\r\n  (\"MTS_EXHAUST_FIRE_FLAP_FULLY_RESET\").value AS mts_exhaust_flap_reset,\r\n\r\n  -- Control signals\r\n  (\"VALVE_COLD_AIR_FR68_Y03_OPENCLOSE\").value AS valve_cold_air_cool_water_y03_openclose,\r\n  (\"VALVE_COLD_AIR_FR32_Y04_OPENCLOSE\").value AS valve_cold_air_cool_water_y04_openclose,\r\n  (\"VALVE_COLD_AIR_FR32_Y05_OPENCLOSE\").value AS valve_cold_air_cool_water_y05_openclose\r\nFROM marpower.\"250000_techwater\"\r\nWHERE $__timeFilter(time) ",
+              "rawSql": "SELECT timestamp, chlorine_unit_alarm__value AS fresh_water_chlorine_unit_alarm,\r\n\t\t\t\t\t\t\t\t\tmts_inlet_fire_flap_released__value AS mts_inlet_flap_released,\r\n\t\t\t\t\t\t\t\t\tmts_inlet_fire_flap_fully_reset__value AS mts_inlet_flap_reset,\r\n\t\t\t\t\t\t\t\t\tmts_exhaust_fire_flap_released__value AS mts_exhaust_flap_released,\r\n\t\t\t\t\t\t\t\t\tmts_exhaust_fire_flap_fully_reset__value AS mts_exhaust_flap_reset,\r\n\t\t\t\t\t\t\t\t\tvalve_cold_air_fr_68_y_03_openclose__value AS valve_cold_air_cool_water_y03_openclose,\r\n\t\t\t\t\t\t\t\t\tvalve_cold_air_fr_32_y_04_openclose__value AS valve_cold_air_cool_water_y04_openclose,\r\n\t\t\t\t\t\t\t\t\tvalve_cold_air_fr_32_y_05_openclose__value AS valve_cold_air_cool_water_y05_openclose\r\nFROM marpower__250000_techwater\r\nWHERE $__timeFilter(timestamp)\r\nORDER BY timestamp DESC;",
               "refId": "A",
               "sql": {
                 "columns": [
@@ -1739,7 +1837,7 @@
     },
     {
       "datasource": {
-        "type": "grafana-postgresql-datasource",
+        "type": "info8fcc-greptimedb-datasource",
         "uid": "${datasource}"
       },
       "fieldConfig": {
@@ -2573,9 +2671,23 @@
       "targets": [
         {
           "editorMode": "code",
-          "format": "table",
+          "editorType": "sql",
+          "format": 1,
+          "meta": {
+            "builderOptions": {
+              "columns": [],
+              "database": "",
+              "limit": 1000,
+              "meta": {},
+              "mode": "list",
+              "queryType": "table",
+              "table": ""
+            }
+          },
+          "pluginVersion": "2.1.4",
+          "queryType": "table",
           "rawQuery": true,
-          "rawSql": "SELECT\n  LAST_VALUE(time ORDER BY time) AS time,\n  \n  LAST_VALUE((\"ADIABATIC_COOL_B03_FLOW\").value ORDER BY time)    AS adiabatic_cool_b03,\n  LAST_VALUE((\"ADIABATIC_COOL_B07_FLOW\").value ORDER BY time)    AS adiabatic_cool_b07,\n  LAST_VALUE((\"ADIABATIC_COOL_B08_FLOW\").value ORDER BY time)    AS adiabatic_cool_b08,\n  LAST_VALUE((\"ADIABATIC_COOL_B09_FLOW\").value ORDER BY time)    AS adiabatic_cool_b09,\n  LAST_VALUE((\"REEL_FOR_DECKWASH_B04_FLOW\").value ORDER BY time) AS deckwash_reel_B04,\n  LAST_VALUE((\"REEL_FOR_DECKWASH_B05_FLOW\").value ORDER BY time) AS deckwash_reel_B05,\n  LAST_VALUE((\"REEL_FOR_DECKWASH_B06_FLOW\").value ORDER BY time) AS deckwash_reel_B06\n\nFROM marpower.\"250000_techwater\"\n",
+          "rawSql": "SELECT timestamp AS timestamp,\r\nadiabatic_cool_b_03_flow__value AS adiabatic_cool_b03,\r\nadiabatic_cool_b_07_flow__value AS adiabatic_cool_b07,\r\nadiabatic_cool_b_08_flow__value AS adiabatic_cool_b08,\r\nadiabatic_cool_b_09_flow__value AS adiabatic_cool_b09,\r\nreel_for_deckwash_b_04_flow__value AS deckwash_reel_B04,\r\nreel_for_deckwash_b_05_flow__value AS deckwash_reel_B05,\r\nreel_for_deckwash_b_06_flow__value AS deckwash_reel_B06\r\nFROM marpower__250000_techwater\r\nWHERE $__timeFilter(timestamp)\r\nORDER BY timestamp;",
           "refId": "A",
           "sql": {
             "columns": [
@@ -2598,14 +2710,28 @@
         {
           "dataset": "dev",
           "datasource": {
-            "type": "grafana-postgresql-datasource",
+            "type": "info8fcc-greptimedb-datasource",
             "uid": "${datasource}"
           },
           "editorMode": "code",
-          "format": "table",
+          "editorType": "sql",
+          "format": 1,
+          "meta": {
+            "builderOptions": {
+              "columns": [],
+              "database": "",
+              "limit": 1000,
+              "meta": {},
+              "mode": "list",
+              "queryType": "table",
+              "table": ""
+            }
+          },
+          "pluginVersion": "2.1.4",
+          "queryType": "table",
           "hide": false,
           "rawQuery": true,
-          "rawSql": "SELECT \r\n  MAX(CASE WHEN mqtt_json_path = LOWER('ADIABATIC_COOL_B03_FLOW') THEN '(' || yard_tag || ')' ELSE NULL END)    AS adiabatic_cool_b03_tag,\r\n  MAX(CASE WHEN mqtt_json_path = LOWER('ADIABATIC_COOL_B07_FLOW') THEN '(' || yard_tag || ')' ELSE NULL END)    AS adiabatic_cool_b07_tag,\r\n  MAX(CASE WHEN mqtt_json_path = LOWER('ADIABATIC_COOL_B08_FLOW') THEN '(' || yard_tag || ')' ELSE NULL END)    AS adiabatic_cool_b08_tag,\r\n  MAX(CASE WHEN mqtt_json_path = LOWER('ADIABATIC_COOL_B09_FLOW') THEN '(' || yard_tag || ')' ELSE NULL END)    AS adiabatic_cool_b09_tag,\r\n  MAX(CASE WHEN mqtt_json_path = LOWER('REEL_FOR_DECKWASH_B04_FLOW') THEN '(' || yard_tag || ')' ELSE NULL END) AS deckwash_reel_B04_tag,\r\n  MAX(CASE WHEN mqtt_json_path = LOWER('REEL_FOR_DECKWASH_B05_FLOW') THEN '(' || yard_tag || ')' ELSE NULL END) AS deckwash_reel_B05_tag,\r\n  MAX(CASE WHEN mqtt_json_path = LOWER('REEL_FOR_DECKWASH_B06_FLOW') THEN '(' || yard_tag || ')' ELSE NULL END) AS deckwash_reel_B06_tag\r\nFROM marpower.io_metadata_marpower\r\nWHERE mqtt_topic = 'marpower/250000-techwater'",
+          "rawSql": "SELECT MAX(CASE WHEN mqtt_json_path = LOWER('adiabatic_cool_b03_flow') THEN '(' || yard_tag || ')' ELSE NULL END) AS adiabatic_cool_b03_tag,\r\nMAX(CASE WHEN mqtt_json_path = LOWER('adiabatic_cool_b07_flow') THEN '(' || yard_tag || ')' ELSE NULL END) AS adiabatic_cool_b07_tag,\r\nMAX(CASE WHEN mqtt_json_path = LOWER('adiabatic_cool_b08_flow') THEN '(' || yard_tag || ')' ELSE NULL END) AS adiabatic_cool_b08_tag,\r\nMAX(CASE WHEN mqtt_json_path = LOWER('adiabatic_cool_b09_flow') THEN '(' || yard_tag || ')' ELSE NULL END) AS adiabatic_cool_b09_tag,\r\nMAX(CASE WHEN mqtt_json_path = LOWER('reel_for_deckwash_b04_flow') THEN '(' || yard_tag || ')' ELSE NULL END) AS deckwash_reel_b04_tag,\r\nMAX(CASE WHEN mqtt_json_path = LOWER('reel_for_deckwash_b05_flow') THEN '(' || yard_tag || ')' ELSE NULL END) AS deckwash_reel_b05_tag,\r\nMAX(CASE WHEN mqtt_json_path = LOWER('reel_for_deckwash_b06_flow') THEN '(' || yard_tag || ')' ELSE NULL END) AS deckwash_reel_b06_tag\r\nFROM marpower__io_metadata\r\nWHERE mqtt_topic = 'marpower/250000-techwater'\r\nLIMIT 1;",
           "refId": "B",
           "sql": {
             "columns": [
@@ -2631,7 +2757,7 @@
     },
     {
       "datasource": {
-        "type": "grafana-postgresql-datasource",
+        "type": "info8fcc-greptimedb-datasource",
         "uid": "${datasource}"
       },
       "fieldConfig": {
@@ -2651,7 +2777,7 @@
               }
             ]
           },
-          "unit": "percent"
+          "unit": "mamp"
         },
         "overrides": [
           {
@@ -3411,9 +3537,23 @@
       "targets": [
         {
           "editorMode": "code",
-          "format": "table",
+          "editorType": "sql",
+          "format": 1,
+          "meta": {
+            "builderOptions": {
+              "columns": [],
+              "database": "",
+              "limit": 1000,
+              "meta": {},
+              "mode": "list",
+              "queryType": "table",
+              "table": ""
+            }
+          },
+          "pluginVersion": "2.1.4",
+          "queryType": "table",
           "rawQuery": true,
-          "rawSql": "SELECT\n  LAST_VALUE(time ORDER BY time) AS time,\n  LAST_VALUE((\"CHARCOAL_FILTER_B01_FLOW\").value ORDER BY time) AS charcoal_filter_flow,\n  LAST_VALUE((\"CHARCOAL_FILTER_B01_TEMP\").value ORDER BY time) AS charcoal_filter_temp,\n  LAST_VALUE((\"SALINITY1\").value ORDER BY time)                AS salinity1,\n  LAST_VALUE((\"SALINITY2\").value ORDER BY time)                AS salinity2,\n  LAST_VALUE((\"TANK1_LEVEL\").value ORDER BY time)              AS tank1_level,\n  LAST_VALUE((\"TANK2_LEVEL\").value ORDER BY time)              AS tank2_level\nFROM marpower.\"250000_techwater\"\n",
+          "rawSql": "SELECT timestamp AS timestamp,\r\n\t\t\tcharcoal_filter_b_01_flow__value AS charcoal_filter_flow,\r\n\t\t\tcharcoal_filter_b_01_temp__value AS charcoal_filter_temp,\r\n\t\t\tsalinity_1__value AS salinity1,\r\n\t\t\tsalinity_2__value AS salinity2,\r\n\t\t\ttank_1_level__value AS tank1_level,\r\n\t\t\ttank_2_level__value AS tank2_level\r\nFROM marpower__250000_techwater\r\nWHERE $__timeFilter(timestamp)\r\nORDER BY timestamp;",
           "refId": "A",
           "sql": {
             "columns": [
@@ -3436,14 +3576,28 @@
         {
           "dataset": "dev",
           "datasource": {
-            "type": "grafana-postgresql-datasource",
+            "type": "info8fcc-greptimedb-datasource",
             "uid": "${datasource}"
           },
           "editorMode": "code",
-          "format": "table",
+          "editorType": "sql",
+          "format": 1,
+          "meta": {
+            "builderOptions": {
+              "columns": [],
+              "database": "",
+              "limit": 1000,
+              "meta": {},
+              "mode": "list",
+              "queryType": "table",
+              "table": ""
+            }
+          },
+          "pluginVersion": "2.1.4",
+          "queryType": "table",
           "hide": false,
           "rawQuery": true,
-          "rawSql": "SELECT \r\n  MAX(CASE WHEN mqtt_json_path = LOWER('CHARCOAL_FILTER_B01_FLOW') THEN '(' || yard_tag || ')' ELSE NULL END) AS charcoal_filter_flow_tag,\r\n  MAX(CASE WHEN mqtt_json_path = LOWER('CHARCOAL_FILTER_B01_TEMP') THEN '(' || yard_tag || ')' ELSE NULL END) AS charcoal_filter_temp_tag,\r\n  MAX(CASE WHEN mqtt_json_path = LOWER('SALINITY1') THEN '(' || yard_tag || ')' ELSE NULL END)                AS salinity1_tag,\r\n  MAX(CASE WHEN mqtt_json_path = LOWER('SALINITY2') THEN '(' || yard_tag || ')' ELSE NULL END)                AS salinity2_tag,\r\n  MAX(CASE WHEN mqtt_json_path = LOWER('TANK1_LEVEL') THEN '(' || yard_tag || ')' ELSE NULL END)              AS tank1_level_tag,\r\n  MAX(CASE WHEN mqtt_json_path = LOWER('TANK2_LEVEL') THEN '(' || yard_tag || ')' ELSE NULL END)              AS tank2_level_tag\r\nFROM marpower.io_metadata_marpower\r\nWHERE mqtt_topic = 'marpower/250000-techwater'",
+          "rawSql": "SELECT MAX(CASE WHEN mqtt_json_path = LOWER('charcoal_filter_b01_flow') THEN '(' || yard_tag || ')' ELSE NULL END) AS charcoal_filter_flow_tag,\r\nMAX(CASE WHEN mqtt_json_path = LOWER('charcoal_filter_b01_temp') THEN '(' || yard_tag || ')' ELSE NULL END) AS charcoal_filter_temp_tag,\r\nMAX(CASE WHEN mqtt_json_path = LOWER('salinity1') THEN '(' || yard_tag || ')' ELSE NULL END) AS salinity1_tag,\r\nMAX(CASE WHEN mqtt_json_path = LOWER('salinity2') THEN '(' || yard_tag || ')' ELSE NULL END) AS salinity2_tag,\r\nMAX(CASE WHEN mqtt_json_path = LOWER('tank1_level') THEN '(' || yard_tag || ')' ELSE NULL END) AS tank1_level_tag,\r\nMAX(CASE WHEN mqtt_json_path = LOWER('tank2_level') THEN '(' || yard_tag || ')' ELSE NULL END) AS tank2_level_tag\r\nFROM marpower__io_metadata\r\nWHERE mqtt_topic = 'marpower/250000-techwater'\r\nLIMIT 1;",
           "refId": "B",
           "sql": {
             "columns": [
@@ -3479,7 +3633,7 @@
       "panels": [
         {
           "datasource": {
-            "type": "grafana-postgresql-datasource",
+            "type": "info8fcc-greptimedb-datasource",
             "uid": "${datasource}"
           },
           "fieldConfig": {
@@ -3573,9 +3727,23 @@
             {
               "dataset": "dev",
               "editorMode": "code",
-              "format": "table",
+              "editorType": "sql",
+              "format": 1,
+              "meta": {
+                "builderOptions": {
+                  "columns": [],
+                  "database": "",
+                  "limit": 1000,
+                  "meta": {},
+                  "mode": "list",
+                  "queryType": "table",
+                  "table": ""
+                }
+              },
+              "pluginVersion": "2.1.4",
+              "queryType": "table",
               "rawQuery": true,
-              "rawSql": "SELECT\r\n  time,\r\n  (\"ADIABATIC_COOL_B03_FLOW\").value as adiab_cool_b03_flow,\r\n  (\"ADIABATIC_COOL_B07_FLOW\").value as adiab_cool_b07_flow,\r\n  (\"ADIABATIC_COOL_B08_FLOW\").value as adiab_cool_b08_flow,\r\n  (\"ADIABATIC_COOL_B09_FLOW\").value as adiab_cool_b09_flow\r\nFROM marpower.\"250000_techwater\"",
+              "rawSql": "SELECT timestamp, adiabatic_cool_b_03_flow__value AS adiab_cool_b03_flow,\r\n\t\t\t\t\t\t\t\t\tadiabatic_cool_b_07_flow__value AS adiab_cool_b07_flow,\r\n\t\t\t\t\t\t\t\t\tadiabatic_cool_b_08_flow__value AS adiab_cool_b08_flow,\r\n\t\t\t\t\t\t\t\t\tadiabatic_cool_b_09_flow__value AS adiab_cool_b09_flow\r\nFROM marpower__250000_techwater\r\nWHERE $__timeFilter(timestamp)\r\nORDER BY timestamp;",
               "refId": "A",
               "sql": {
                 "columns": [
@@ -3618,7 +3786,7 @@
         },
         {
           "datasource": {
-            "type": "grafana-postgresql-datasource",
+            "type": "info8fcc-greptimedb-datasource",
             "uid": "${datasource}"
           },
           "fieldConfig": {
@@ -3712,9 +3880,23 @@
             {
               "dataset": "dev",
               "editorMode": "code",
-              "format": "table",
+              "editorType": "sql",
+              "format": 1,
+              "meta": {
+                "builderOptions": {
+                  "columns": [],
+                  "database": "",
+                  "limit": 1000,
+                  "meta": {},
+                  "mode": "list",
+                  "queryType": "table",
+                  "table": ""
+                }
+              },
+              "pluginVersion": "2.1.4",
+              "queryType": "table",
               "rawQuery": true,
-              "rawSql": "SELECT\r\n  time,\r\n  (\"REEL_FOR_DECKWASH_B04_FLOW\").value as deckwash_reel_b04_flow,\r\n  (\"REEL_FOR_DECKWASH_B05_FLOW\").value as deckwash_reel_b05_flow,\r\n  (\"REEL_FOR_DECKWASH_B06_FLOW\").value as deckwash_reel_b06_flow\r\nFROM marpower.\"250000_techwater\"",
+              "rawSql": "SELECT timestamp, reel_for_deckwash_b_04_flow__value AS deckwash_reel_b04_flow,\r\n\t\t\t\t\t\t\t\t\treel_for_deckwash_b_05_flow__value AS deckwash_reel_b05_flow,\r\n\t\t\t\t\t\t\t\t\treel_for_deckwash_b_06_flow__value AS deckwash_reel_b06_flow\r\nFROM marpower__250000_techwater\r\nWHERE $__timeFilter(timestamp)\r\nORDER BY timestamp;",
               "refId": "A",
               "sql": {
                 "columns": [
@@ -3756,7 +3938,7 @@
         },
         {
           "datasource": {
-            "type": "grafana-postgresql-datasource",
+            "type": "info8fcc-greptimedb-datasource",
             "uid": "${datasource}"
           },
           "fieldConfig": {
@@ -3862,9 +4044,23 @@
             {
               "dataset": "dev",
               "editorMode": "code",
-              "format": "table",
+              "editorType": "sql",
+              "format": 1,
+              "meta": {
+                "builderOptions": {
+                  "columns": [],
+                  "database": "",
+                  "limit": 1000,
+                  "meta": {},
+                  "mode": "list",
+                  "queryType": "table",
+                  "table": ""
+                }
+              },
+              "pluginVersion": "2.1.4",
+              "queryType": "table",
               "rawQuery": true,
-              "rawSql": "SELECT\r\n  time,\r\n  (\"CHARCOAL_FILTER_B01_FLOW\").value as charcoal_filter_flow,\r\n  (\"CHARCOAL_FILTER_B01_TEMP\").value as charcoal_filter_temp\r\nFROM marpower.\"250000_techwater\"",
+              "rawSql": "SELECT timestamp, charcoal_filter_b_01_flow__value AS charcoal_filter_flow,\r\n\t\t\t\t\t\t\t\t\tcharcoal_filter_b_01_temp__value AS charcoal_filter_temp\r\nFROM marpower__250000_techwater\r\nWHERE $__timeFilter(timestamp)\r\nORDER BY timestamp;",
               "refId": "A",
               "sql": {
                 "columns": [
@@ -3905,7 +4101,7 @@
         },
         {
           "datasource": {
-            "type": "grafana-postgresql-datasource",
+            "type": "info8fcc-greptimedb-datasource",
             "uid": "${datasource}"
           },
           "fieldConfig": {
@@ -3999,9 +4195,23 @@
             {
               "dataset": "dev",
               "editorMode": "code",
-              "format": "table",
+              "editorType": "sql",
+              "format": 1,
+              "meta": {
+                "builderOptions": {
+                  "columns": [],
+                  "database": "",
+                  "limit": 1000,
+                  "meta": {},
+                  "mode": "list",
+                  "queryType": "table",
+                  "table": ""
+                }
+              },
+              "pluginVersion": "2.1.4",
+              "queryType": "table",
               "rawQuery": true,
-              "rawSql": "SELECT\r\n  time,\r\n  (\"SALINITY1\").value as salinity1,\r\n  (\"SALINITY2\").value as salinity2\r\nFROM marpower.\"250000_techwater\"",
+              "rawSql": "SELECT timestamp, salinity_1__value AS salinity1,\r\n\t\t\t\t\t\t\t\t\tsalinity_2__value AS salinity2\r\nFROM marpower__250000_techwater\r\nWHERE $__timeFilter(timestamp)\r\nORDER BY timestamp;",
               "refId": "A",
               "sql": {
                 "columns": [
@@ -4042,7 +4252,7 @@
         },
         {
           "datasource": {
-            "type": "grafana-postgresql-datasource",
+            "type": "info8fcc-greptimedb-datasource",
             "uid": "${datasource}"
           },
           "fieldConfig": {
@@ -4095,7 +4305,7 @@
                   }
                 ]
               },
-              "unit": "percent"
+              "unit": "mamp"
             },
             "overrides": [
               {
@@ -4136,9 +4346,23 @@
             {
               "dataset": "dev",
               "editorMode": "code",
-              "format": "table",
+              "editorType": "sql",
+              "format": 1,
+              "meta": {
+                "builderOptions": {
+                  "columns": [],
+                  "database": "",
+                  "limit": 1000,
+                  "meta": {},
+                  "mode": "list",
+                  "queryType": "table",
+                  "table": ""
+                }
+              },
+              "pluginVersion": "2.1.4",
+              "queryType": "table",
               "rawQuery": true,
-              "rawSql": "SELECT\r\n  time,\r\n  (\"TANK1_LEVEL\").value as tank1_level,\r\n  (\"TANK2_LEVEL\").value as tank2_level\r\nFROM marpower.\"250000_techwater\"",
+              "rawSql": "SELECT timestamp, tank_1_level__value AS tank1_level,\r\n\t\t\t\t\t\t\t\t\ttank_2_level__value AS tank2_level\r\nFROM marpower__250000_techwater\r\nWHERE $__timeFilter(timestamp)\r\nORDER BY timestamp;",
               "refId": "A",
               "sql": {
                 "columns": [
@@ -4197,7 +4421,7 @@
         },
         "name": "datasource",
         "options": [],
-        "query": "grafana-postgresql-datasource",
+        "query": "info8fcc-greptimedb-datasource",
         "refresh": 1,
         "regex": "",
         "type": "datasource"

@@ -64,7 +64,7 @@
     },
     {
       "datasource": {
-        "type": "grafana-postgresql-datasource",
+        "type": "info8fcc-greptimedb-datasource",
         "uid": "${datasource}"
       },
       "fieldConfig": {
@@ -770,13 +770,27 @@
         {
           "dataset": "dev",
           "datasource": {
-            "type": "grafana-postgresql-datasource",
+            "type": "info8fcc-greptimedb-datasource",
             "uid": "${datasource}"
           },
           "editorMode": "code",
-          "format": "table",
+          "editorType": "sql",
+          "format": 1,
+          "meta": {
+            "builderOptions": {
+              "columns": [],
+              "database": "",
+              "limit": 1000,
+              "meta": {},
+              "mode": "list",
+              "queryType": "table",
+              "table": ""
+            }
+          },
+          "pluginVersion": "2.1.4",
+          "queryType": "table",
           "rawQuery": true,
-          "rawSql": "SELECT\r\n  LAST_VALUE(time ORDER BY time) AS time,\r\n  LAST_VALUE((\"DECK_SLIDE_WIND_DRIVE_FAIL\").value ORDER BY time)     AS deck_slide_wind_drive_fail,\r\n  LAST_VALUE((\"W_TIGHT_HATCH_RM35_COMMONALARM\").value ORDER BY time) AS wt_hatch_rm35_alarm,\r\n  LAST_VALUE((\"W_TIGHT_HATCH_RM36_COMMONALARM\").value ORDER BY time) AS wt_hatch_rm36_alarm,\r\n  LAST_VALUE((\"WTSD_MAINBACKUPPWRFAIL\").value ORDER BY time)         AS wtsd_pwr_fail,\r\n  LAST_VALUE((\"SOS_LOCK_SUPPLY14E11FAIL\").value ORDER BY time)       AS sos_lock_supply_fail1,\r\n  LAST_VALUE((\"SOS_LOCK_SUPPLY14E12FAIL\").value ORDER BY time)       AS sos_lock_supply_fail2,\r\n  LAST_VALUE((\"SOS_LOCK_SUPPLY14E13FAIL\").value ORDER BY time)       AS sos_lock_supply_fail3,\r\n  LAST_VALUE((\"HAZ_CONSUMERS_EMERGSTOPACTIVE\").value ORDER BY time)  AS em_stop_haz_cons_active\r\nFROM marpower.\"090000_doors_hatches\"",
+          "rawSql": "SELECT timestamp AS time,\r\n\t\t\tdeck_slide_wind_drive_fail__value AS deck_slide_wind_drive_fail,\r\n\t\t\tw_tight_hatch_rm_35_commonalarm__value AS wt_hatch_rm35_alarm,\r\n\t\t\tw_tight_hatch_rm_36_commonalarm__value AS wt_hatch_rm36_alarm,\r\n\t\t\twtsd_mainbackuppwrfail__value AS wtsd_pwr_fail,\r\n\t\t\tsos_lock_supply_14_e_11_fail__value AS sos_lock_supply_fail1,\r\n\t\t\tsos_lock_supply_14_e_12_fail__value AS sos_lock_supply_fail2,\r\n\t\t\tsos_lock_supply_14_e_13_fail__value AS sos_lock_supply_fail3,\r\n\t\t\thaz_consumers_emergstopactive__value AS em_stop_haz_cons_active\r\nFROM marpower__090000_doors_hatches\r\nORDER BY timestamp DESC\r\nLIMIT 1",
           "refId": "A",
           "sql": {
             "columns": [
@@ -802,7 +816,7 @@
     },
     {
       "datasource": {
-        "type": "grafana-postgresql-datasource",
+        "type": "info8fcc-greptimedb-datasource",
         "uid": "${datasource}"
       },
       "fieldConfig": {
@@ -1349,13 +1363,27 @@
         {
           "dataset": "dev",
           "datasource": {
-            "type": "grafana-postgresql-datasource",
+            "type": "info8fcc-greptimedb-datasource",
             "uid": "${datasource}"
           },
           "editorMode": "code",
-          "format": "table",
+          "editorType": "sql",
+          "format": 1,
+          "meta": {
+            "builderOptions": {
+              "columns": [],
+              "database": "",
+              "limit": 1000,
+              "meta": {},
+              "mode": "list",
+              "queryType": "table",
+              "table": ""
+            }
+          },
+          "pluginVersion": "2.1.4",
+          "queryType": "table",
           "rawQuery": true,
-          "rawSql": "SELECT\r\n  LAST_VALUE(time ORDER BY time) AS time,\r\n  LAST_VALUE((\"DECK_SLIDE_WIND_ONOFF\").value ORDER BY time)      AS deck_slide_wind_on,\r\n  LAST_VALUE((\"AFT_SLIDE_WIND_ONOFF\").value ORDER BY time)       AS aft_slide_wind_on,\r\n  LAST_VALUE((\"PS_SLIDE_WIND_ONOFF\").value ORDER BY time)        AS ps_slide_wind_on,\r\n  LAST_VALUE((\"SB_SLIDE_WIND_ONOFF\").value ORDER BY time)        AS sb_slide_wind_on,\r\n  LAST_VALUE((\"HULL_VALVES_ALLGREENCLOSED\").value ORDER BY time) AS hull_valves_all_closed,\r\n  LAST_VALUE((\"HULL_VALVES_REDOPENED\").value ORDER BY time)      AS hull_valves_not_all_closed\r\nFROM marpower.\"090000_doors_hatches\"",
+          "rawSql": "SELECT timestamp AS time,\r\n\t\t\tdeck_slide_wind_onoff__value AS deck_slide_wind_on,\r\n\t\t\taft_slide_wind_onoff__value AS aft_slide_wind_on,\r\n\t\t\tps_slide_wind_onoff__value AS ps_slide_wind_on,\r\n\t\t\tsb_slide_wind_onoff__value AS sb_slide_wind_on,\r\n\t\t\thull_valves_allgreenclosed__value AS hull_valves_all_closed,\r\n\t\t\thull_valves_redopened__value AS hull_valves_not_all_closed\r\nFROM marpower__090000_doors_hatches\r\nORDER BY timestamp DESC\r\nLIMIT 1",
           "refId": "A",
           "sql": {
             "columns": [
@@ -1381,7 +1409,7 @@
     },
     {
       "datasource": {
-        "type": "grafana-postgresql-datasource",
+        "type": "info8fcc-greptimedb-datasource",
         "uid": "${datasource}"
       },
       "fieldConfig": {
@@ -1423,7 +1451,7 @@
             "properties": [
               {
                 "id": "unit",
-                "value": "percent"
+                "value": "mamp"
               }
             ]
           }
@@ -1703,13 +1731,27 @@
         {
           "dataset": "dev",
           "datasource": {
-            "type": "grafana-postgresql-datasource",
+            "type": "info8fcc-greptimedb-datasource",
             "uid": "${datasource}"
           },
           "editorMode": "code",
-          "format": "table",
+          "editorType": "sql",
+          "format": 1,
+          "meta": {
+            "builderOptions": {
+              "columns": [],
+              "database": "",
+              "limit": 1000,
+              "meta": {},
+              "mode": "list",
+              "queryType": "table",
+              "table": ""
+            }
+          },
+          "pluginVersion": "2.1.4",
+          "queryType": "table",
           "rawQuery": true,
-          "rawSql": "SELECT\r\n  LAST_VALUE(time ORDER BY time) AS time,\r\n  LAST_VALUE((\"MAIN_DECKH_VENT_HATCH_PS_PERC\").value ORDER BY time) AS main_deckh_hatch_ps_perc,\r\n  LAST_VALUE((\"MAIN_DECKH_VENT_HATCH_SB_PERC\").value ORDER BY time) AS main_deckh_hatch_sb_perc,\r\n  LAST_VALUE((\"AFT_DECKH_VENT_HATCH_PERC\").value ORDER BY time)     AS aft_deckh_hatch_perc\r\nFROM marpower.\"090000_doors_hatches\"",
+          "rawSql": "SELECT timestamp AS time,\r\n\t\t\tmain_deckh_vent_hatch_ps_perc__value AS main_deckh_hatch_ps_perc,\r\n\t\t\tmain_deckh_vent_hatch_sb_perc__value AS main_deckh_hatch_sb_perc,\r\n\t\t\taft_deckh_vent_hatch_perc__value AS aft_deckh_hatch_perc\r\nFROM marpower__090000_doors_hatches\r\nORDER BY timestamp DESC\r\nLIMIT 1",
           "refId": "A",
           "sql": {
             "columns": [
@@ -1735,7 +1777,7 @@
     },
     {
       "datasource": {
-        "type": "grafana-postgresql-datasource",
+        "type": "info8fcc-greptimedb-datasource",
         "uid": "${datasource}"
       },
       "fieldConfig": {
@@ -2764,13 +2806,27 @@
         {
           "dataset": "dev",
           "datasource": {
-            "type": "grafana-postgresql-datasource",
+            "type": "info8fcc-greptimedb-datasource",
             "uid": "${datasource}"
           },
           "editorMode": "code",
-          "format": "table",
+          "editorType": "sql",
+          "format": 1,
+          "meta": {
+            "builderOptions": {
+              "columns": [],
+              "database": "",
+              "limit": 1000,
+              "meta": {},
+              "mode": "list",
+              "queryType": "table",
+              "table": ""
+            }
+          },
+          "pluginVersion": "2.1.4",
+          "queryType": "table",
           "rawQuery": true,
-          "rawSql": "SELECT\r\n  LAST_VALUE(time ORDER BY time) AS time,\r\n  LAST_VALUE((\"W_TIGHT_DOOR_RM19_SEALINFLATED\").value ORDER BY time)    AS rm19_wtd_seal_infl,\r\n  LAST_VALUE((\"W_TIGHT_DOOR_RM19_DOOR_OPEN\").value ORDER BY time)       AS rm19_wtd_open,\r\n  LAST_VALUE((\"W_TIGHT_DOOR_RM19_POS_PROG_SWITCH\").value ORDER BY time) AS rm19_wtd_pos_prog_switch,\r\n  LAST_VALUE((\"W_TIGHT_HATCH_RM35_SEALINFLATED\").value ORDER BY time)   AS rm35_wth_seal_infl,\r\n  LAST_VALUE((\"W_TIGHT_HATCH_RM35_DOOROPEN\").value ORDER BY time)       AS rm35_wth_open,\r\n  LAST_VALUE((\"W_TIGHT_HATCH_RM35_POSPROGSWITCH\").value ORDER BY time)  AS rm35_wth_pos_prog_switch,\r\n  LAST_VALUE((\"W_TIGHT_HATCH_RM36_SEALINFLATED\").value ORDER BY time)   AS rm36_wth_seal_infl,\r\n  LAST_VALUE((\"W_TIGHT_HATCH_RM36_DOOROPEN\").value ORDER BY time)       AS rm36_wth_open,\r\n  LAST_VALUE((\"W_TIGHT_HATCH_RM36_POSPROGSWITCH\").value ORDER BY time)  AS rm36_wth_pos_prog_switch,\r\n  LAST_VALUE((\"FIRE_SLIDE_DOOR_GALL_CREW_OPEN\").value ORDER BY time)    AS fire_door_galley_open,\r\n  LAST_VALUE((\"FIRE_DOOR_GALLEY_KEEL_OPEN\").value ORDER BY time)        AS fire_door_galley_keel_open,\r\n  LAST_VALUE((\"CREW_ESCAPE_HATCH_OPEN\").value ORDER BY time)            AS crew_esc_hatch_open\r\nFROM marpower.\"090000_doors_hatches\"",
+          "rawSql": "SELECT timestamp AS time,\r\n\t\t\tw_tight_door_rm_19_sealinflated__value AS rm19_wtd_seal_infl,\r\n\t\t\tw_tight_door_rm_19_door_open__value AS rm19_wtd_open,\r\n\t\t\tw_tight_door_rm_19_pos_prog_switch__value AS rm19_wtd_pos_prog_switch,\r\n\t\t\tw_tight_hatch_rm_35_sealinflated__value AS rm35_wth_seal_infl,\r\n\t\t\tw_tight_hatch_rm_35_dooropen__value AS rm35_wth_open,\r\n\t\t\tw_tight_hatch_rm_35_posprogswitch__value AS rm35_wth_pos_prog_switch,\r\n\t\t\tw_tight_hatch_rm_36_sealinflated__value AS rm36_wth_seal_infl,\r\n\t\t\tw_tight_hatch_rm_36_dooropen__value AS rm36_wth_open,\r\n\t\t\tw_tight_hatch_rm_36_posprogswitch__value AS rm36_wth_pos_prog_switch,\r\n\t\t\tfire_slide_door_gall_crew_open__value AS fire_door_galley_open,\r\n\t\t\tcrew_escape_hatch_open__value AS crew_esc_hatch_open\r\nFROM public.marpower__090000_doors_hatches\r\nORDER BY timestamp DESC\r\nLIMIT 1;",
           "refId": "A",
           "sql": {
             "columns": [
@@ -2789,6 +2845,30 @@
             ],
             "limit": 50
           }
+        },
+        {
+          "datasource": {
+            "type": "info8fcc-greptimedb-datasource",
+            "uid": "${datasource}"
+          },
+          "editorType": "sql",
+          "format": 1,
+          "hide": false,
+          "meta": {
+            "builderOptions": {
+              "columns": [],
+              "database": "",
+              "limit": 1000,
+              "meta": {},
+              "mode": "list",
+              "queryType": "table",
+              "table": ""
+            }
+          },
+          "pluginVersion": "2.1.4",
+          "queryType": "table",
+          "rawSql": "SELECT timestamp AS time,\r\n\t\t\tdoor_galley_keel_open__value AS fire_door_galley_keel_open\r\nFROM public.marpower__090000_doors_hatches_general\r\nORDER BY \"timestamp\" DESC\r\nLIMIT 1",
+          "refId": "B"
         }
       ],
       "title": "Crew areas",
@@ -2796,7 +2876,7 @@
     },
     {
       "datasource": {
-        "type": "grafana-postgresql-datasource",
+        "type": "info8fcc-greptimedb-datasource",
         "uid": "${datasource}"
       },
       "fieldConfig": {
@@ -3270,13 +3350,27 @@
         {
           "dataset": "dev",
           "datasource": {
-            "type": "grafana-postgresql-datasource",
+            "type": "info8fcc-greptimedb-datasource",
             "uid": "${datasource}"
           },
           "editorMode": "code",
-          "format": "table",
+          "editorType": "sql",
+          "format": 1,
+          "meta": {
+            "builderOptions": {
+              "columns": [],
+              "database": "",
+              "limit": 1000,
+              "meta": {},
+              "mode": "list",
+              "queryType": "table",
+              "table": ""
+            }
+          },
+          "pluginVersion": "2.1.4",
+          "queryType": "table",
           "rawQuery": true,
-          "rawSql": "SELECT\r\n  LAST_VALUE(time ORDER BY time) AS time,\r\n  LAST_VALUE((\"MAIN_DECKH_VENT_HATCH_PS_OPENED\").value ORDER BY time) AS main_deckh_hatch_ps_open,\r\n  LAST_VALUE((\"MAIN_DECKH_VENT_HATCH_SB_OPENED\").value ORDER BY time) AS main_deckh_hatch_sb_open,\r\n  LAST_VALUE((\"AFT_DECKH_VENT_HATCH_OPEN\").value ORDER BY time)       AS aft_deckh_hatch_open,\r\n  LAST_VALUE((\"DECK_SLIDE_WIND_REMAVAIL\").value ORDER BY time)        AS owner_deckh_wind_remavail,\r\n  LAST_VALUE((\"DECK_SLIDE_WIND_DRIVE_RUNN\").value ORDER BY time)      AS owner_deckh_wind_running\r\nFROM marpower.\"090000_doors_hatches\"",
+          "rawSql": "SELECT timestamp AS time,\r\n\t\t\tmain_deckh_vent_hatch_ps_opened__value AS main_deckh_hatch_ps_open,\r\n\t\t\tmain_deckh_vent_hatch_sb_opened__value AS main_deckh_hatch_sb_open,\r\n\t\t\taft_deckh_vent_hatch_open__value AS aft_deckh_hatch_open,\r\n\t\t\tdeck_slide_wind_remavail__value AS owner_deckh_wind_remavail,\r\n\t\t\tdeck_slide_wind_drive_runn__value AS owner_deckh_wind_running\r\nFROM marpower__090000_doors_hatches\r\nORDER BY timestamp DESC\r\nLIMIT 1",
           "refId": "A",
           "sql": {
             "columns": [
@@ -3302,7 +3396,7 @@
     },
     {
       "datasource": {
-        "type": "grafana-postgresql-datasource",
+        "type": "info8fcc-greptimedb-datasource",
         "uid": "${datasource}"
       },
       "fieldConfig": {
@@ -3312,6 +3406,7 @@
             "mode": "continuous-greens"
           },
           "mappings": [],
+          "noValue": "-",
           "thresholds": {
             "mode": "absolute",
             "steps": [
@@ -4959,13 +5054,27 @@
         {
           "dataset": "dev",
           "datasource": {
-            "type": "grafana-postgresql-datasource",
+            "type": "info8fcc-greptimedb-datasource",
             "uid": "${datasource}"
           },
           "editorMode": "code",
-          "format": "table",
+          "editorType": "sql",
+          "format": 1,
+          "meta": {
+            "builderOptions": {
+              "columns": [],
+              "database": "",
+              "limit": 1000,
+              "meta": {},
+              "mode": "list",
+              "queryType": "table",
+              "table": ""
+            }
+          },
+          "pluginVersion": "2.1.4",
+          "queryType": "table",
           "rawQuery": true,
-          "rawSql": "SELECT\r\n  LAST_VALUE(time ORDER BY time) AS time,\r\n  LAST_VALUE((\"LAZA_ACCESS_HATCH_SB_FWD_OPEN\").value ORDER BY time)     AS laz_hatch_fwd_sb_open,\r\n  LAST_VALUE((\"LAZA_ACCESS_HATCH_PS_FWD_OPEN\").value ORDER BY time)     AS laz_hatch_fwd_ps_open,\r\n  LAST_VALUE((\"LAZA_ACCESS_HATCH_SB_MID_OPEN\").value ORDER BY time)     AS laz_hatch_mid_sb_open,\r\n  LAST_VALUE((\"LAZA_ACCESS_HATCH_PS_MID_OPEN\").value ORDER BY time)     AS laz_hatch_mid_ps_open,\r\n  LAST_VALUE((\"LAZA_ACCESS_HATCH_SB_AFT_OPEN\").value ORDER BY time)     AS laz_hatch_aft_sb_open,\r\n  LAST_VALUE((\"LAZA_ACCESS_HATCH_PS_AFT_OPEN\").value ORDER BY time)     AS laz_hatch_aft_ps_open,\r\n  LAST_VALUE((\"FORESHIP_STOR_AREA_ACC_HATCH_OPEN\").value ORDER BY time) AS foreship_stor_hatch_open,\r\n  LAST_VALUE((\"CRANE_HATCH_AFT_OPEN\").value ORDER BY time)              AS crane_hatch_open,\r\n  LAST_VALUE((\"FOREPEAK_ACC_HATCH_OPEN\").value ORDER BY time)           AS forepeak_hatch_open,\r\n  LAST_VALUE((\"SAIL_STOR_HATCH_OPEN\").value ORDER BY time)              AS sail_stor_hatch_open,\r\n  LAST_VALUE((\"PLATFROM_CLOSED_LOCKED\").value ORDER BY time)            AS crew_platform_closed,\r\n  LAST_VALUE((\"DINGHY_STOR_ACC_FWD_OPEN\").value ORDER BY time)          AS dinghy_stor_open,\r\n  LAST_VALUE((\"HATCH_ANCHOR_SENSOR1_OPEN\").value ORDER BY time)         AS anchor_hatch1_open,\r\n  LAST_VALUE((\"HATCH_ANCHOR_SENSOR2_OPEN\").value ORDER BY time)         AS anchor_hatch2_open,\r\n  LAST_VALUE((\"ALL_HULL_VALVES_CLOSE\").value ORDER BY time)             AS close_all_hull_valves,\r\n  LAST_VALUE((\"WTSD_DOORCLOSE\").value ORDER BY time)                    AS wtsd_close,\r\n  LAST_VALUE((\"WTSD_DOOROPENED\").value ORDER BY time)                   AS wtsd_opened,\r\n  LAST_VALUE((\"WTSD_DOORCLOSED\").value ORDER BY time)                   AS wtsd_closed,\r\n  LAST_VALUE((\"WTSD_LOWAIRPRESS\").value ORDER BY time)                  AS wtsd_low_air_pressure\r\nFROM marpower.\"090000_doors_hatches\"",
+          "rawSql": "SELECT timestamp AS time,\r\n\t\t\tlaza_access_hatch_sb_fwd_open__value AS laz_hatch_fwd_sb_open,\r\n\t\t\tlaza_access_hatch_ps_fwd_open__value AS laz_hatch_fwd_ps_open,\r\n\t\t\tlaza_access_hatch_sb_mid_open__value AS laz_hatch_mid_sb_open,\r\n\t\t\tlaza_access_hatch_ps_mid_open__value AS laz_hatch_mid_ps_open,\r\n\t\t\tlaza_access_hatch_sb_aft_open__value AS laz_hatch_aft_sb_open,\r\n\t\t\tlaza_access_hatch_ps_aft_open__value AS laz_hatch_aft_ps_open,\r\n\t\t\tforeship_stor_area_acc_hatch_open__value AS foreship_stor_hatch_open,\r\n\t\t\tcrane_hatch_aft_open__value AS crane_hatch_open,\r\n\t\t\tforepeak_acc_hatch_open__value AS forepeak_hatch_open,\r\n\t\t\tsail_stor_hatch_open__value AS sail_stor_hatch_open,\r\n\t\t\tplatfrom_closed_locked__value AS crew_platform_closed,\r\n\t\t\tdinghy_stor_acc_fwd_open__value AS dinghy_stor_open,\r\n\t\t\thatch_anchor_sensor_1_open__value AS anchor_hatch1_open,\r\n\t\t\thatch_anchor_sensor_2_open__value AS anchor_hatch2_open,\r\n\t\t\tall_hull_valves_close__value AS close_all_hull_valves,\r\n\t\t\twtsd_doorclose__value AS wtsd_close,\r\n\t\t\twtsd_dooropened__value AS wtsd_opened,\r\n\t\t\twtsd_doorclosed__value AS wtsd_closed,\r\n\t\t\twtsd_lowairpress__value AS wtsd_low_air_pressure\r\nFROM marpower__090000_doors_hatches\r\nORDER BY timestamp DESC\r\nLIMIT 1",
           "refId": "A",
           "sql": {
             "columns": [
@@ -4988,14 +5097,28 @@
         {
           "dataset": "dev",
           "datasource": {
-            "type": "grafana-postgresql-datasource",
+            "type": "info8fcc-greptimedb-datasource",
             "uid": "${datasource}"
           },
           "editorMode": "code",
-          "format": "table",
+          "editorType": "sql",
+          "format": 1,
           "hide": false,
+          "meta": {
+            "builderOptions": {
+              "columns": [],
+              "database": "",
+              "limit": 1000,
+              "meta": {},
+              "mode": "list",
+              "queryType": "table",
+              "table": ""
+            }
+          },
+          "pluginVersion": "2.1.4",
+          "queryType": "table",
           "rawQuery": true,
-          "rawSql": "SELECT \r\n  MAX(CASE WHEN mqtt_json_path = LOWER('HATCH_ANCHOR_SENSOR1_OPEN') THEN '(' || yard_tag || ')' ELSE NULL END) AS anchor_hatch1_open_tag,\r\n  MAX(CASE WHEN mqtt_json_path = LOWER('HATCH_ANCHOR_SENSOR2_OPEN') THEN '(' || yard_tag || ')' ELSE NULL END) AS anchor_hatch2_open_tag\r\nFROM marpower.io_metadata_marpower\r\nWHERE mqtt_topic = 'marpower/090000-doors-hatches'",
+          "rawSql": "SELECT MAX(CASE\r\n\t\t\t\t\t\t\tWHEN mqtt_json_path = LOWER('HATCH_ANCHOR_SENSOR1_OPEN') THEN '(' || yard_tag || ')'\r\n\t\t\t\t\t\t\tELSE NULL\r\n\t\t\t\t\tEND) AS anchor_hatch1_open_tag,\r\n\t\t\tMAX(CASE\r\n\t\t\t\t\t\t\tWHEN mqtt_json_path = LOWER('HATCH_ANCHOR_SENSOR2_OPEN') THEN '(' || yard_tag || ')'\r\n\t\t\t\t\t\t\tELSE NULL\r\n\t\t\t\t\tEND) AS anchor_hatch2_open_tag\r\nFROM marpower__io_metadata\r\nWHERE mqtt_topic = 'marpower/090000-doors-hatches'",
           "refId": "B",
           "sql": {
             "columns": [
@@ -5021,7 +5144,7 @@
     },
     {
       "datasource": {
-        "type": "grafana-postgresql-datasource",
+        "type": "info8fcc-greptimedb-datasource",
         "uid": "${datasource}"
       },
       "fieldConfig": {
@@ -5495,13 +5618,27 @@
         {
           "dataset": "dev",
           "datasource": {
-            "type": "grafana-postgresql-datasource",
+            "type": "info8fcc-greptimedb-datasource",
             "uid": "${datasource}"
           },
           "editorMode": "code",
-          "format": "table",
+          "editorType": "sql",
+          "format": 1,
+          "meta": {
+            "builderOptions": {
+              "columns": [],
+              "database": "",
+              "limit": 1000,
+              "meta": {},
+              "mode": "list",
+              "queryType": "table",
+              "table": ""
+            }
+          },
+          "pluginVersion": "2.1.4",
+          "queryType": "table",
           "rawQuery": true,
-          "rawSql": "SELECT\r\n  LAST_VALUE(time ORDER BY time) AS time,\r\n  LAST_VALUE((\"WTID_TECH_ROOM_ACCESS_DOOR\").value ORDER BY time)      AS tech_room_door,\r\n  LAST_VALUE((\"TECH_ROOM_ESC_HATCH_PS_OPEN\").value ORDER BY time)     AS tech_room_esc_hatch_open,\r\n  LAST_VALUE((\"TECH_CORRIDOR_ESC_HATCH_SB_OPEN\").value ORDER BY time) AS tech_corr_esc_hatch_open,\r\n  LAST_VALUE((\"WTID_FWD_CORRIDOR_DOOR_OPEN\").value ORDER BY time)     AS fwd_corr_door_open,\r\n  LAST_VALUE((\"WTID_AFT_CORRIDOR_DOOR_OPEN\").value ORDER BY time)     AS aft_corr_door_open\r\nFROM marpower.\"090000_doors_hatches\"",
+          "rawSql": "SELECT timestamp AS time,\r\n\t\t\twtid_tech_room_access_door__value AS tech_room_door,\r\n\t\t\ttech_room_esc_hatch_ps_open__value AS tech_room_esc_hatch_open,\r\n\t\t\ttech_corridor_esc_hatch_sb_open__value AS tech_corr_esc_hatch_open,\r\n\t\t\twtid_fwd_corridor_door_open__value AS fwd_corr_door_open,\r\n\t\t\twtid_aft_corridor_door_open__value AS aft_corr_door_open\r\nFROM marpower__090000_doors_hatches\r\nORDER BY timestamp DESC\r\nLIMIT 1",
           "refId": "A",
           "sql": {
             "columns": [
@@ -5536,12 +5673,12 @@
     "list": [
       {
         "current": {
-          "text": "RisingWave",
-          "value": "ceyj3m7wtn3swb"
+          "text": "greptimedb-singel",
+          "value": "PE746E5A5E0A52672"
         },
         "name": "datasource",
         "options": [],
-        "query": "grafana-postgresql-datasource",
+        "query": "info8fcc-greptimedb-datasource",
         "refresh": 1,
         "regex": "",
         "type": "datasource"
