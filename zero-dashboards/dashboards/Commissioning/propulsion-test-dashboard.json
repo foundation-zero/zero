@@ -2735,9 +2735,23 @@
             "uid": "${datasource}"
           },
           "editorMode": "code",
-          "format": "table",
+          "editorType": "sql",
+          "format": 1,
+          "meta": {
+            "builderOptions": {
+              "columns": [],
+              "database": "",
+              "limit": 1000,
+              "meta": {},
+              "mode": "list",
+              "queryType": "table",
+              "table": ""
+            }
+          },
+          "pluginVersion": "2.1.4",
+          "queryType": "table",
           "rawQuery": true,
-          "rawSql": "SELECT\r\n  LAST_VALUE(time ORDER BY time) AS time,\r\n  LAST_VALUE((\"StationSelected\").value ORDER BY time)                     AS station_selected,\r\n  LAST_VALUE((\"RegenerationModeSelectedAFTThruster\").value ORDER BY time) AS aft_thruster_regeneration_mode,\r\n  LAST_VALUE((\"RegenerationModeSelectedFWDThruster\").value ORDER BY time) AS fwd_thruster_regeneration_mode,\r\n  LAST_VALUE((\"PropulsionModeSelectedAFTThruster\").value ORDER BY time)   AS aft_thruster_propulsion_mode,\r\n  LAST_VALUE((\"PropulsionModeSelectedFWDThruster\").value ORDER BY time)   AS fwd_thruster_propulsion_mode,\r\n  LAST_VALUE((\"MoeveringModeSelectedAFTThruster\").value ORDER BY time)    AS aft_thruster_maneuvring_mode,\r\n  LAST_VALUE((\"MoeveringModeSelectedFWDThruster\").value ORDER BY time)    AS fwd_thruster_maneuvring_mode,\r\n  LAST_VALUE((\"MAINThrusterLeverSpeedSignal\").value ORDER BY time)        AS aft_thruster_lever_speed_signal,\r\n  LAST_VALUE((\"FWDThrusterLeverSpeedSignal\").value ORDER BY time)         AS fwd_thruster_lever_speed_signal,\r\n  LAST_VALUE((\"MAINThrusterLeverAzimuthSignal\").value ORDER BY time)      AS aft_thruster_lever_azimuth_rotation_signal,\r\n  LAST_VALUE((\"FWDThrusterLeverAzimuthSignal\").value ORDER BY time)       AS fwd_thruster_lever_azimuth_rotation_signal,\r\n  LAST_VALUE((\"MAINThrusterLeverAzimuthSignal_X\").value ORDER BY time)    AS aft_thruster_lever_azimuth_x_signal,\r\n  LAST_VALUE((\"MAINThrusterLeverAzimuthSignal_Y\").value ORDER BY time)    AS aft_thruster_lever_azimuth_y_signal,\r\n  LAST_VALUE((\"FWDThrusterLeverAzimuthSignal_X\").value ORDER BY time)     AS fwd_thruster_lever_azimuth_x_signal,\r\n  LAST_VALUE((\"FWDThrusterLeverAzimuthSignal_Y\").value ORDER BY time)     AS fwd_thruster_lever_azimuth_y_signal  \r\nFROM marpower.\"helm_console\"\r\nWHERE topic = 'marpower/helm-console/ps'",
+          "rawSql": "SELECT\r\n  timestamp                   AS time,\r\n  StationSelected             AS station_selected,\r\n  RegModeSelectedAftThruster  AS aft_thruster_regeneration_mode,\r\n  RegModeSelectedFwdThruster  AS fwd_thruster_regeneration_mode,\r\n  PropModeSelectedAftThruster AS aft_thruster_propulsion_mode,\r\n  PropModeSelectedFwdThruster AS fwd_thruster_propulsion_mode,\r\n  ManModeSelectedAftThruster  AS aft_thruster_maneuvring_mode,\r\n  ManModeSelectedFwdThruster  AS fwd_thruster_maneuvring_mode,\r\n  AftThrusterLeverSpeedSignal AS aft_thruster_lever_speed_signal,\r\n  FwdThrusterLeverSpeedSignal AS fwd_thruster_lever_speed_signal,\r\n  NULL                        AS aft_thruster_lever_azimuth_rotation_signal,\r\n  NULL                        AS fwd_thruster_lever_azimuth_rotation_signal,\r\n  NULL                        AS aft_thruster_lever_azimuth_x_signal,\r\n  NULL                        AS aft_thruster_lever_azimuth_y_signal,\r\n  NULL                        AS fwd_thruster_lever_azimuth_x_signal,\r\n  NULL                        AS fwd_thruster_lever_azimuth_y_signal\r\nFROM public.marpower__150000propulsion\r\nWHERE topic like 'marpower/150000propulsion/pcs-aft-pshelm'\r\nORDER BY timestamp DESC\r\nLIMIT 1",
           "refId": "A",
           "sql": {
             "columns": [
