@@ -459,7 +459,7 @@
               }
             ]
           },
-          "unit": "rotrpm"
+          "unit": "kwatt"
         },
         "overrides": []
       },
@@ -6487,7 +6487,7 @@
           "pluginVersion": "2.1.4",
           "queryType": "table",
           "rawQuery": true,
-          "rawSql": "SELECT\r\n  LEAST(motor.timestamp, thruster.timestamp)                AS time,\r\n  NULL                                                      AS lever_pos,\r\n  CASE WHEN '${aft_fwd}' = 'AFT'\r\n    THEN \"devices__can_aradex.i_aft_thrstr_speed_rpm\"\r\n    ELSE \"devices__can_aradex.i_fwd_thrstr_speed_rpm\"\r\n  END                                                       AS motor_speed,\r\n  thruster.ara_1_speed__value                               AS aradex1_speed,\r\n  thruster.ara_2_speed__value                               AS aradex2_speed,\r\n  thruster.ara_1_power__value + thruster.ara_1_power__value AS aradex_power,\r\n  thruster.ara_1_torque__value                              AS aradex1_torque,\r\n  thruster.ara_2_torque__value                              AS aradex2_torque\r\n\r\nFROM (\r\n  SELECT *\r\n  FROM public.marpower__150000_propulsion\r\n  WHERE topic = 'marpower/150000-propulsion/pcs-' || lower('$aft_fwd')\r\n  ORDER BY timestamp DESC\r\n  LIMIT 1\r\n) AS thruster\r\nCROSS JOIN (\r\n  SELECT *\r\n  FROM public.prop_test__data\r\n  ORDER BY timestamp DESC\r\n  LIMIT 1\r\n) AS motor",
+          "rawSql": "SELECT\r\n  LEAST(\r\n    motor.timestamp,\r\n    thruster.timestamp,\r\n    ps_helm.timestamp,\r\n    sb_helm.timestamp)                                      AS time,\r\n  CASE\r\n    WHEN ps_helm.station_selected THEN ps_helm.lever_speed\r\n    WHEN sb_helm.station_selected THEN sb_helm.lever_speed\r\n    ELSE 0\r\n  END                                                       AS lever_pos\r\n  CASE WHEN '${aft_fwd}' = 'AFT'\r\n    THEN motor.\"devices__can_aradex.i_aft_thrstr_speed_rpm\"\r\n    ELSE motor.\"devices__can_aradex.i_fwd_thrstr_speed_rpm\"\r\n  END                                                       AS motor_speed,\r\n  thruster.ara_1_speed__value                               AS aradex1_speed,\r\n  thruster.ara_2_speed__value                               AS aradex2_speed,\r\n  thruster.ara_1_power__value + thruster.ara_1_power__value AS aradex_power,\r\n  thruster.ara_1_torque__value                              AS aradex1_torque,\r\n  thruster.ara_2_torque__value                              AS aradex2_torque\r\nFROM (\r\n  SELECT *\r\n  FROM public.marpower__150000_propulsion\r\n  WHERE topic = 'marpower/150000-propulsion/pcs-' || lower('$aft_fwd')\r\n  ORDER BY timestamp DESC\r\n  LIMIT 1\r\n) AS thruster\r\nCROSS JOIN (\r\n  SELECT *\r\n  FROM public.prop_test__data\r\n  ORDER BY timestamp DESC\r\n  LIMIT 1\r\n) AS motor\r\nCROSS JOIN (\r\n  SELECT\r\n    timestamp,\r\n    StationSelected                                        AS station_selected,\r\n    CASE WHEN '$aft_fwd' = 'AFT'\r\n      THEN AftThrusterLeverSpeedSignal\r\n      ELSE FwdThrusterLeverSpeedSignal\r\n    END                                                    AS lever_speed\r\n  FROM public.marpower__150000propulsion\r\n  WHERE topic = 'marpower/150000propulsion/pcs-aft-pshelm'\r\n  ORDER BY timestamp DESC\r\n  LIMIT 1\r\n) AS ps_helm\r\nCROSS JOIN (\r\n  SELECT\r\n    timestamp,\r\n    StationSelected                                        AS station_selected,\r\n    CASE WHEN '$aft_fwd' = 'AFT'\r\n      THEN AftThrusterLeverSpeedSignal\r\n      ELSE FwdThrusterLeverSpeedSignal\r\n    END                                                    AS lever_speed\r\n  FROM public.marpower__150000propulsion\r\n  WHERE topic = 'marpower/150000propulsion/pcs-aft-sbhelm'\r\n  ORDER BY timestamp DESC\r\n  LIMIT 1\r\n) AS sb_helm",
           "refId": "A",
           "sql": {
             "columns": [
@@ -6943,8 +6943,8 @@
     "list": [
       {
         "current": {
-          "text": "RisingWave",
-          "value": "ceyj3m7wtn3swb"
+          "text": "greptimedb-zero",
+          "value": "PBAD09CF7391C3C43"
         },
         "name": "datasource",
         "options": [],
