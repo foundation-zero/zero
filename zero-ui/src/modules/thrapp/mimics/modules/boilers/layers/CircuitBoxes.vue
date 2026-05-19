@@ -9,6 +9,7 @@
  */
 
 import { LoopCircuitInstance } from "../../../instances";
+import HotWaterCircuitInstance from "../../../instances/HotWaterCircuitInstance.vue";
 </script>
 
 <template>
@@ -32,6 +33,11 @@ import { LoopCircuitInstance } from "../../../instances";
       x="903"
       y="730"
       title="Fahrenheit"
+    />
+    <HotWaterCircuitInstance
+      x="1215"
+      y="455"
+      title="Domestic Hot Water"
     />
   </g>
 </template>

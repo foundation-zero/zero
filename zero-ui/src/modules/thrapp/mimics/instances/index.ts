@@ -38,10 +38,7 @@ export const useRandomizedState = <T>(possibleValues: T[], interval = 10_000) =>
   );
 
 export const useDeltaT = (tIn: MaybeRef<number>, tOut: MaybeRef<number>) =>
-  computed(() => refValue(tIn) - refValue(tOut));
-
-export const useDeltaTSign = (deltaT: MaybeRef<number>) =>
-  computed(() => (refValue(deltaT) >= 0 ? "+" : ""));
+  computed(() => refValue(tOut) - refValue(tIn));
 
 export const useRandomizedNumber = (min: number, max: number, interval = 10_000) =>
   useRandomizedValue(() => Math.floor(Math.random() * (max - min + 1)) + min, interval);

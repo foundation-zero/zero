@@ -7,7 +7,7 @@ const props = defineProps<{ class?: HTMLAttributes["class"] }>();
 </script>
 
 <template>
-  <svg v-bind="createSizeAndViewbox(210, 128)">
+  <svg v-bind="createSizeAndViewbox(210, 250)">
     <foreignObject
       width="100%"
       height="100%"
