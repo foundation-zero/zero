@@ -508,7 +508,7 @@
           "pluginVersion": "2.1.4",
           "queryType": "table",
           "rawQuery": true,
-          "rawSql": "SELECT\r\n  timestamp                                                 AS time,\r\n  CASE WHEN '${aft_fwd}' = 'AFT'\r\n    THEN \"devices__thruster_test.r_prop_spd_aft_thrstr_rpm\" * \"devices__.r_propellor_torque\"\r\n    ELSE \"devices__thruster_test.r_prop_spd_fwd_thrstr_rpm\" * \"devices__.r_propellor_torque\"\r\n  END                                                       AS \"power\"\r\nFROM public.prop_test__data\r\nWHERE $__timeFilter(timestamp)",
+          "rawSql": "SELECT\r\n  timestamp                                                 AS time,\r\n  CASE WHEN '${aft_fwd}' = 'AFT'\r\n    THEN \"devices__thruster_test.r_prop_spd_aft_thrstr_rpm\" * \"devices__.r_propellor_torque\" / 60 * 2 * PI()\r\n    ELSE \"devices__thruster_test.r_prop_spd_fwd_thrstr_rpm\" * \"devices__.r_propellor_torque\" / 60 * 2 * PI()\r\n  END                                                       AS \"power\"\r\nFROM public.prop_test__data\r\nWHERE $__timeFilter(timestamp)",
           "refId": "A",
           "sql": {
             "columns": [
@@ -4377,7 +4377,7 @@
       },
       "gridPos": {
         "h": 10,
-        "w": 12,
+        "w": 24,
         "x": 0,
         "y": 93
       },
@@ -4524,9 +4524,9 @@
       },
       "gridPos": {
         "h": 10,
-        "w": 12,
-        "x": 12,
-        "y": 93
+        "w": 24,
+        "x": 0,
+        "y": 103
       },
       "id": 84,
       "options": {
@@ -4674,7 +4674,7 @@
         "h": 9,
         "w": 24,
         "x": 0,
-        "y": 103
+        "y": 113
       },
       "id": 69,
       "options": {
@@ -4773,7 +4773,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 112
+        "y": 122
       },
       "id": 26,
       "panels": [],
@@ -4886,7 +4886,7 @@
         "h": 6,
         "w": 15,
         "x": 0,
-        "y": 113
+        "y": 123
       },
       "id": 37,
       "options": {
@@ -5002,7 +5002,7 @@
         "h": 6,
         "w": 9,
         "x": 15,
-        "y": 113
+        "y": 123
       },
       "id": 13,
       "options": {
@@ -5335,7 +5335,7 @@
         "h": 5,
         "w": 24,
         "x": 0,
-        "y": 119
+        "y": 129
       },
       "id": 59,
       "options": {
@@ -6038,7 +6038,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 124
+        "y": 134
       },
       "id": 27,
       "panels": [],
@@ -6103,7 +6103,7 @@
         "h": 4,
         "w": 24,
         "x": 0,
-        "y": 125
+        "y": 135
       },
       "id": 70,
       "options": {
@@ -6262,7 +6262,7 @@
         "h": 9,
         "w": 24,
         "x": 0,
-        "y": 129
+        "y": 139
       },
       "id": 71,
       "options": {
@@ -6362,7 +6362,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 138
+        "y": 148
       },
       "id": 52,
       "panels": [],
@@ -6462,7 +6462,7 @@
         "h": 3,
         "w": 24,
         "x": 0,
-        "y": 139
+        "y": 149
       },
       "id": 73,
       "options": {
@@ -6665,7 +6665,7 @@
         "h": 3,
         "w": 24,
         "x": 0,
-        "y": 142
+        "y": 152
       },
       "id": 74,
       "options": {
@@ -6845,7 +6845,7 @@
         "h": 3,
         "w": 24,
         "x": 0,
-        "y": 145
+        "y": 155
       },
       "id": 75,
       "options": {
