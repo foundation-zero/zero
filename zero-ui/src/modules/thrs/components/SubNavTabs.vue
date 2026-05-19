@@ -18,6 +18,10 @@ const menuItems = [
     title: t("thrs.views.parameters.title"),
     to: "thrs/hmi/parameters",
   },
+  {
+    title: t("thrs.views.mimic.title"),
+    to: "thrs/hmi/mimic",
+  },
 ];
 
 const route = useRoute();
