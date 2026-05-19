@@ -11,7 +11,9 @@
     "lpm": "L/min",
     "watts": "W",
     "kilowatt": "kW",
-    "deltaT": "ΔT"
+    "deltaT": "ΔT",
+    "Tin": "Tin",
+    "Tout": "Tout"
   },
   "apps": {
     "loads": "Loads",
