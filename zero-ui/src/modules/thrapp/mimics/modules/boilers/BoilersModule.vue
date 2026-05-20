@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import ActuatedValves from "./layers/ActuatedValves.vue";
+import BoilerTanks from "./layers/BoilerTanks.vue";
 import Bypasses from "./layers/Bypasses.vue";
 import CircuitBoxes from "./layers/CircuitBoxes.vue";
 import DirectionArrows from "./layers/DirectionArrows.vue";
@@ -37,5 +38,6 @@ import TemperatureSensors from "./layers/TemperatureSensors.vue";
     <Labels />
     <DirectionArrows />
     <CircuitBoxes />
+    <BoilerTanks />
   </svg>
 </template>

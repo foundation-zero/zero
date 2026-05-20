@@ -13,7 +13,12 @@
     "kilowatt": "kW",
     "deltaT": "ΔT",
     "Tin": "Tin",
-    "Tout": "Tout"
+    "Tout": "Tout",
+    "minutes": "min",
+    "temperature": "Temp",
+    "flow": "Flow",
+    "level": "Level",
+    "estimatedTime": "Est. time"
   },
   "apps": {
     "loads": "Loads",

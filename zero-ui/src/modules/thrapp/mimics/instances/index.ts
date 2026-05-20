@@ -19,8 +19,8 @@ export { default as TemperatureSensorInstance } from "./TemperatureSensorInstanc
 
 export type MimicComponentInstanceProps = MimicComponentBaseProps & {
   tagId?: string;
-  x: number | string;
-  y: number | string;
+  x?: number | string;
+  y?: number | string;
 };
 
 export const useRandomizedValue = <T>(valueFn: () => T, interval = 10_000) => {
