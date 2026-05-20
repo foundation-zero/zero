@@ -6,7 +6,7 @@ const props = defineProps<{ class?: HTMLAttributes["class"] }>();
 </script>
 
 <template>
-  <li :class="cn('flex items-center justify-between', props.class)">
+  <li :class="cn('flex flex-nowrap items-center justify-between text-nowrap', props.class)">
     <slot />
   </li>
 </template>

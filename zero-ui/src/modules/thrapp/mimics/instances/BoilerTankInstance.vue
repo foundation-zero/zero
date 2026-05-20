@@ -4,7 +4,6 @@ import {
   BoilerTank,
   BoilerTankMode,
   BoilerTankModes,
-  BoilerTankTagLabel,
   BoilerTankTitle,
 } from "../components/boiler-tank";
 import {
@@ -13,6 +12,7 @@ import {
   ValueListTemperatureItem,
   ValueListTimeItem,
 } from "../components/value-list";
+import YardTag from "../components/yard-tag/YardTag.vue";
 
 const props = defineProps<MimicComponentInstanceProps & { title: string }>();
 
@@ -33,7 +33,7 @@ const mode = useRandomizedState([
     v-bind="props"
     :mode="mode"
   >
-    <BoilerTankTagLabel>{{ tagId }}</BoilerTankTagLabel>
+    <YardTag>{{ tagId }}</YardTag>
     <BoilerTankTitle>{{ title }}</BoilerTankTitle>
     <BoilerTankMode :mode="mode" />
     <ValueList class="gap-0">

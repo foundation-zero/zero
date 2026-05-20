@@ -3,7 +3,6 @@ export { default as BoilerTank } from "./BoilerTank.vue";
 export { default as BoilerTankLevel } from "./BoilerTankLevel.vue";
 export { default as BoilerTankLevelIndicator } from "./BoilerTankLevelIndicator.vue";
 export { default as BoilerTankMode } from "./BoilerTankMode.vue";
-export { default as BoilerTankTagLabel } from "./BoilerTankTagLabel.vue";
 
 export const BOILER_TANK_WIDTH = 204;
 export const BOILER_TANK_HEIGHT = 148;

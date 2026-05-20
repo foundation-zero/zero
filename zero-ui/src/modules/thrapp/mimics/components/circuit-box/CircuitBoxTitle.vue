@@ -7,7 +7,12 @@ const props = defineProps<{ class?: HTMLAttributes["class"] }>();
 
 <template>
   <header
-    :class="cn('text-foreground font-headers font-bold tracking-wider uppercase', props.class)"
+    :class="
+      cn(
+        'text-foreground font-headers flex items-center font-bold tracking-wider uppercase',
+        props.class,
+      )
+    "
   >
     <slot />
   </header>
