@@ -1,0 +1,19 @@
+{
+  "thrapp": {
+    "mimics": {
+      "boilerTank": {
+        "modes": {
+          "standby": "Standby",
+          "boosting": "Boosting",
+          "in-use": "In use"
+        }
+      },
+      "heatPump": {
+        "modes": {
+          "active": "Active",
+          "inactive": "Inactive"
+        }
+      }
+    }
+  }
+}

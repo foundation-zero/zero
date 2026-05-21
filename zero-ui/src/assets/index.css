@@ -107,6 +107,9 @@
   --cooling-medium: var(--color-accent-f-400);
   --cooling-high: var(--color-accent-f-600);
 
+  --flows-pipe: oklch(0.451543 0.214199 322.2162);
+  --flows-pipe-arrow: oklch(0.5413 0.2335 322.85);
+
   --chart-1: oklch(0.646 0.222 41.116);
   --chart-2: oklch(0.6 0.118 184.704);
   --chart-3: oklch(0.398 0.07 227.392);
@@ -351,6 +354,9 @@ h6 {
   --sidebar-accent-foreground: oklch(0.985 0 0);
   --sidebar-border: oklch(0.269 0 0);
   --sidebar-ring: oklch(0.439 0 0);
+
+  --flows-pipe: oklch(0.6038 0.2837 324.06);
+  --flows-pipe-arrow: oklch(0.6846 0.2574 332.43);
 }
 
 @source inline("dark");
@@ -436,6 +442,13 @@ h6 {
   --color-brand-muted: var(--brand-muted);
   --color-brand-dull: var(--brand-dull);
 
+  --color-heating-low: var(--heating-low);
+  --color-heating-medium: var(--heating-medium);
+  --color-heating-high: var(--heating-high);
+  --color-cooling-low: var(--cooling-low);
+  --color-cooling-medium: var(--cooling-medium);
+  --color-cooling-high: var(--cooling-high);
+
   /* SECTION: state colours */
 
   --color-attention: var(--attention);
@@ -480,6 +493,11 @@ h6 {
 
   --color-popover: var(--popover);
   --color-popover-foreground: var(--popover-foreground);
+
+  /* SUB SECTION: Mimics */
+
+  --color-flows-pipe: var(--flows-pipe);
+  --color-flows-pipe-arrow: var(--flows-pipe-arrow);
 
   /* SUB SECTION: Charts */
 

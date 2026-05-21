@@ -14,6 +14,9 @@
         "title": "Monitoring",
         "description": "Monitor the sensor and control values in real-time."
       },
+      "mimic": {
+        "title": "Mimic"
+      },
       "simulation": {
         "title": "Simulation",
         "noActive": "No active simulation. Please run a simulation to see the controls.",

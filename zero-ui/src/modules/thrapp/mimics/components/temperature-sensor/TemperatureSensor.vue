@@ -22,6 +22,7 @@ withDefaults(defineProps<MimicComponentBaseProps>(), {
     :base-orientation="TEMPERATURE_SENSOR_BASE_ORIENTATION"
     :orientation="orientation"
     data-slot="temperature-sensor"
+    class="fill-muted"
   >
     <!-- Center 24x30 source geometry in a 32x32 canvas to prevent clipping on 90deg rotations. -->
     <g transform="translate(4 0.75)">

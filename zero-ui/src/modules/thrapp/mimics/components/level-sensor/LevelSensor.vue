@@ -22,6 +22,7 @@ withDefaults(defineProps<MimicComponentBaseProps>(), {
     :base-orientation="LEVEL_SENSOR_BASE_ORIENTATION"
     :orientation="orientation"
     data-slot="level-sensor"
+    class="fill-muted"
   >
     <g transform="translate(4 1)">
       <path

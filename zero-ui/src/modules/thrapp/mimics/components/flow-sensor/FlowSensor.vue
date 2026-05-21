@@ -22,6 +22,7 @@ withDefaults(defineProps<MimicComponentBaseProps>(), {
     :base-orientation="FLOW_SENSOR_BASE_ORIENTATION"
     :orientation="orientation"
     data-slot="flow-sensor"
+    class="fill-muted"
   >
     <!--
       Original Figma geometry is 24×40. Centered in a 40×40 square canvas

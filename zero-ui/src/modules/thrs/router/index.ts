@@ -29,11 +29,15 @@ const thrsChildRoutes: RouteRecordRaw[] = [
             name: "thrs/hmi/monitoring",
             component: () => import("@/modules/thrs/views/Monitoring.vue"),
           },
-
           {
             path: "parameters",
             name: "thrs/hmi/parameters",
             component: () => import("@/modules/thrs/views/Parameters.vue"),
+          },
+          {
+            path: "mimic",
+            name: "thrs/hmi/mimic",
+            component: () => import("@/modules/thrs/views/Mimic.vue"),
           },
         ],
       },
