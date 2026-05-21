@@ -10,7 +10,9 @@ from thrs.input_output.base import (
     component_meta,
 )
 from thrs.input_output.definitions import control, sensor, simulation, controllers
-from thrs.input_output.definitions.units import WATER_HEAT_TRANSFER_CONVERSION
+from thrs.input_output.definitions.units import (
+    WATER_HEAT_TRANSFER_CONVERSION,
+)
 
 
 class BoilersSensorValues(ThrsValues):
@@ -564,6 +566,22 @@ class BoilersControlValues(ThrsValues):
     ]
     boilers_tanks_controller: Annotated[
         controllers.TanksControllerValues, component_meta(included_in_fmu=False)
+    ]
+    boilers_pump_flow_controller: Annotated[
+        controllers.PidControllerValues,
+        component_meta(included_in_fmu=False),
+    ]
+    boilers_pump_temperature_controller: Annotated[
+        controllers.PidControllerValues,
+        component_meta(included_in_fmu=False),
+    ]
+    boilers_lt1_flow_controller: Annotated[
+        controllers.PidControllerValues,
+        component_meta(included_in_fmu=False),
+    ]
+    boilers_lt2_flow_controller: Annotated[
+        controllers.PidControllerValues,
+        component_meta(included_in_fmu=False),
     ]
 
 

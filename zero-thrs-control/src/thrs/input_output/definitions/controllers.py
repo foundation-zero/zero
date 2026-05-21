@@ -1,17 +1,15 @@
-from enum import Enum
-
 from thrs.input_output.base import Stamped, ThrsValues
-from thrs.input_output.definitions.units import Seconds
+from thrs.input_output.definitions.units import Seconds, TankState
 
 
-class TankState(Enum):
-    IN_USE = "in use"
-    FILLING = "filling"
-    BOOSTING = "boosting"
-    DISABLED = "disabled"
-    NEEDS_BOOST = "needs boost"
-    NEEDS_FILL = "needs fill"
-    STANDBY = "standby"
+class PidControllerValues(ThrsValues):
+    setpoint: Stamped[float]
+    measurement: Stamped[float | None]
+    output: Stamped[float | None]
+    error: Stamped[float | None]
+    enabled: Stamped[bool]
+    tuning: Stamped[tuple[float, float, float]]
+    components: Stamped[tuple[float, float, float]]
 
 
 class TanksControllerValues(ThrsValues):
@@ -21,4 +19,4 @@ class TanksControllerValues(ThrsValues):
     time_to_fill: Stamped[Seconds | None]
 
 
-__all__ = ["TanksControllerValues"]
+__all__ = ["TanksControllerValues", "PidControllerValues"]

@@ -4,7 +4,7 @@ from typing import Callable, Literal
 from transitions import Machine, State
 
 from thrs.classes.control import Control, ControlMode, ControlResult
-from thrs.control.controllers import Controller, FlowBalanceController
+from thrs.control.controllers import PidController, FlowBalanceController
 from thrs.control.modules.thrusters import ThrustersControlMode
 from thrs.input_output.alarms import BaseAlarms
 from thrs.input_output.base import Stamped, ThrsValues
@@ -164,7 +164,7 @@ class Lt1Control(
             initial="idle",
         )
 
-        self._heat_dump_controller = Controller[Ratio, Celsius](
+        self._heat_dump_controller = PidController[Ratio, Celsius](
             initial=self._current_values.lt1_mix_exchanger.setpoint.value,
             setpoint=lambda: self._parameters.propulsion_maximum_supply_temperature
             if self.mode.is_propulsion
@@ -173,35 +173,35 @@ class Lt1Control(
             time_fn=self._time,
         )
 
-        self._recovery_mix_controller = Controller[Ratio, Celsius](
+        self._recovery_mix_controller = PidController[Ratio, Celsius](
             initial=self._current_values.lt1_mix_recovery.setpoint.value,
             setpoint=lambda: self._parameters.recovery_temperature,
             tuning=lambda: self._parameters.recovery_mix_tuning,
             time_fn=self._time,
         )
 
-        self._pump_controller_shorepower = Controller[Ratio, LMin](
+        self._pump_controller_shorepower = PidController[Ratio, LMin](
             initial=self._current_values.lt1_pump1.dutypoint.value,
             setpoint=lambda: self._parameters.shorepower_flow_setpoint,
             tuning=lambda: self._parameters.pump_tuning,
             time_fn=self._time,
         )
 
-        self._pump_controller_propulsion = Controller[Ratio, LMin](
+        self._pump_controller_propulsion = PidController[Ratio, LMin](
             initial=self._current_values.lt1_pump1.dutypoint.value,
             setpoint=0,  # gets overriden by flow balance controller
             tuning=lambda: self._parameters.pump_tuning,
             time_fn=self._time,
         )
 
-        self._aft_flow_controller = Controller[Ratio, LMin](
+        self._aft_flow_controller = PidController[Ratio, LMin](
             initial=self._current_values.lt1_switch_propdrive_aft.setpoint.value,
             setpoint=lambda: self._parameters.propulsion_drives_flow_setpoint,
             tuning=lambda: self._parameters.aft_flow_balance_tuning,
             time_fn=self._time,
         )
 
-        self._fwd_flow_controller = Controller[Ratio, LMin](
+        self._fwd_flow_controller = PidController[Ratio, LMin](
             initial=self._current_values.lt1_switch_propdrive_fwd.setpoint.value,
             setpoint=lambda: self._parameters.propulsion_drives_flow_setpoint,
             tuning=lambda: self._parameters.fwd_flow_balance_tuning,

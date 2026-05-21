@@ -4,7 +4,7 @@ from typing import Callable
 from pydantic import model_validator
 from transitions import Machine, State
 from thrs.classes.control import Control, ControlMode, ControlResult
-from thrs.control.controllers import Controller
+from thrs.control.controllers import PidController
 from thrs.input_output.base import Stamped, ThrsValues
 from thrs.input_output.definitions.control import Fahrenheit, Valve
 from thrs.input_output.definitions.units import (
@@ -156,21 +156,21 @@ class FahrenheitControl(
             initial="idle",
         )
 
-        self._hot_mix_controller = Controller[Ratio, Celsius](
+        self._hot_mix_controller = PidController[Ratio, Celsius](
             self._current_values.fahrenheit_mix_hot.setpoint.value,
             lambda: self._parameters.hot_supply_temperature_setpoint,
             lambda: self._parameters.hot_mix_tuning,
             self._time,
         )
 
-        self._recovery_controller = Controller[Ratio, Celsius](
+        self._recovery_controller = PidController[Ratio, Celsius](
             self._current_values.fahrenheit_flowcontrol_waste.setpoint.value,
             lambda: self._parameters.waste_recovery_temperature_setpoint,
             lambda: self._parameters.recovery_tuning,
             self._time,
         )
 
-        self._waste_cooling_controller = Controller[Ratio, Celsius](
+        self._waste_cooling_controller = PidController[Ratio, Celsius](
             self._current_values.fahrenheit_mix_waste.setpoint.value,
             lambda: self._parameters.waste_cooling_temperature_setpoint,
             lambda: self._parameters.waste_cooling_tuning,

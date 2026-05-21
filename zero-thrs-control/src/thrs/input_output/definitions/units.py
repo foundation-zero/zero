@@ -138,6 +138,16 @@ Overpressure: TypeAlias = Annotated[float, UnitMeta(modelica_name="Bar")]
 Liter: TypeAlias = Annotated[float, Field(ge=0), UnitMeta(modelica_name="Liter")]
 
 
+class TankState(Enum):
+    IN_USE = "in use"
+    FILLING = "filling"
+    BOOSTING = "boosting"
+    DISABLED = "disabled"
+    NEEDS_BOOST = "needs boost"
+    NEEDS_FILL = "needs fill"
+    STANDBY = "standby"
+
+
 class PcsMode(Enum):
     OFF = "off"
     MANEUVERING = "maneuvering"

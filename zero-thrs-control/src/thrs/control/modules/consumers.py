@@ -4,7 +4,7 @@ from typing import Annotated, Callable
 from pydantic import Field
 from thrs.classes.control import Control, ControlMode, ControlResult
 from thrs.control.controllers import (
-    Controller,
+    PidController,
     FlowDistributionController,
 )
 from thrs.input_output.alarms import BaseAlarms
@@ -68,21 +68,21 @@ class ConsumersControl(
             deep=True
         )
 
-        self._boosting_flow_controller = Controller[Ratio, LMin](
+        self._boosting_flow_controller = PidController[Ratio, LMin](
             self._current_values.consumers_flowcontrol_boosting.setpoint.value,
             0.0,
             lambda: self._parameters.boosting_flow_balance_tuning,
             self._time,
         )
 
-        self._bypass_flow_controller = Controller[Ratio, LMin](
+        self._bypass_flow_controller = PidController[Ratio, LMin](
             self._current_values.consumers_flowcontrol_bypass.setpoint.value,
             0.0,
             lambda: self._parameters.bypass_flow_balance_tuning,
             self._time,
         )
 
-        self._fahrenheit_flow_controller = Controller[Ratio, LMin](
+        self._fahrenheit_flow_controller = PidController[Ratio, LMin](
             self._current_values.consumers_flowcontrol_fahrenheit.setpoint.value,
             0.0,
             lambda: self._parameters.fahrenheit_flow_balance_tuning,

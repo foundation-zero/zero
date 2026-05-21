@@ -4,11 +4,15 @@ from typing import Annotated, Callable
 from pydantic import Field, model_validator
 from transitions import Machine, State
 from thrs.classes.control import Control, ControlMode, ControlResult
-from thrs.control.controllers import Controller
+from thrs.control.controllers import PidController
 from thrs.input_output.alarms import BaseAlarms, Severity, alarm
 from thrs.input_output.base import Stamped, ThrsValues
 from thrs.input_output.definitions.control import HeatPump, Pump, Valve
-from thrs.input_output.definitions.controllers import TankState, TanksControllerValues
+from thrs.input_output.definitions.controllers import (
+    PidControllerValues,
+    TankState,
+    TanksControllerValues,
+)
 from thrs.input_output.definitions.units import (
     Celsius,
     Kelvin,
@@ -130,6 +134,10 @@ def _INITIAL_CONTROL_VALUES(timestamp: datetime) -> BoilersControlValues:
             tank3_state=Stamped(value=TankState.NEEDS_FILL, timestamp=timestamp),
             time_to_fill=Stamped(value=None, timestamp=timestamp),
         ),
+        boilers_lt1_flow_controller=PidControllerValues.zero(),
+        boilers_lt2_flow_controller=PidControllerValues.zero(),
+        boilers_pump_flow_controller=PidControllerValues.zero(),
+        boilers_pump_temperature_controller=PidControllerValues.zero(),
     )
 
 
@@ -540,21 +548,21 @@ class BoilersControl(
             initial="idle",
         )
 
-        self._pump_temperature_controller = Controller[Ratio, Celsius](
+        self._pump_temperature_controller = PidController[Ratio, Celsius](
             self._current_values.boilers_pump.dutypoint.value,
             0,
             lambda: self._parameters.pump_temperature_tuning,
             self._time,
         )
 
-        self._pump_flow_controller = Controller[Ratio, LMin](
+        self._pump_flow_controller = PidController[Ratio, LMin](
             self._current_values.boilers_pump.dutypoint.value,
             self._parameters.heatpump_flow_setpoint,
             lambda: self._parameters.pump_flow_tuning,
             self._time,
         )
 
-        self._lt1_flow_controller = Controller[Ratio, Celsius](
+        self._lt1_flow_controller = PidController[Ratio, Celsius](
             self._current_values.boilers_flowcontrol_lt1.setpoint.value,
             lambda: self._parameters.filling_temperature_setpoint,
             lambda: self._parameters.lt1_flow_tuning,
@@ -562,7 +570,7 @@ class BoilersControl(
             lambda: (self._parameters.lt1_flowcontrol_minimum_setpoint, 1.0),
         )
 
-        self._lt2_flow_controller = Controller[Ratio, Celsius](
+        self._lt2_flow_controller = PidController[Ratio, Celsius](
             self._current_values.boilers_flowcontrol_lt2.setpoint.value,
             lambda: self._parameters.filling_temperature_setpoint,
             lambda: self._parameters.lt2_flow_tuning,
@@ -622,15 +630,12 @@ class BoilersControl(
     def control(
         self, sensor_values: BoilersSensorValues
     ) -> ControlResult[BoilersControlValues]:
-        tanks_controller_values = self._tanks_controller(
-            sensor_values, self._parameters
-        )
+        self._tanks_controller(sensor_values, self._parameters)
         self._try_boosting(sensor_values)  # type: ignore
         self._enable_filling_flow_control(sensor_values)
         self._control_filling_flow(sensor_values)
         self._control_boosting_flow(sensor_values)
 
-        self._current_values.boilers_tanks_controller = tanks_controller_values
         return ControlResult(self._time(), self._current_values)
 
     def _lt1_sufficient_boosting_heat(self, sensor_values: BoilersSensorValues) -> bool:
