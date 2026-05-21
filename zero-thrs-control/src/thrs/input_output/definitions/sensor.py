@@ -15,7 +15,7 @@ from thrs.input_output.definitions.units import (
     OptionalCelsius,
     PcsMode,
     Ratio,
-    seconds,
+    Seconds,
     Watt,
 )
 
@@ -27,7 +27,7 @@ class FlowSensor(ThrsValues):
 
 class Pump(ThrsValues):
     speed: Stamped[Hz]
-    op_time: Stamped[seconds]
+    op_time: Stamped[Seconds]
     flow: Stamped[LMin]
 
 
@@ -168,10 +168,10 @@ class Fahrenheit(ThrsValues):
     # ]
     # available_temperature_waste: Annotated[Stamped[Celsius], field_meta(included_in_fmu=False)]
     # operating_hours_adsorption: Annotated[
-    #    Stamped[seconds], field_meta(included_in_fmu=False)
+    #    Stamped[Seconds], field_meta(included_in_fmu=False)
     # ]
     # operating_hours_free_cooling: Annotated[
-    #    Stamped[seconds], field_meta(included_in_fmu=False)
+    #    Stamped[Seconds], field_meta(included_in_fmu=False)
     # ]
     # cooling_energy: Annotated[Stamped[Joule], field_meta(included_in_fmu=False)]
     pump_speed_hot: Stamped[Ratio]

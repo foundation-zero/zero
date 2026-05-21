@@ -1,5 +1,5 @@
 from datetime import datetime
-from typing import Annotated, Callable
+from typing import Annotated, Callable, Literal
 
 from pydantic import Field, model_validator
 from transitions import Machine, State
@@ -8,12 +8,14 @@ from thrs.control.controllers import Controller
 from thrs.input_output.alarms import BaseAlarms, Severity, alarm
 from thrs.input_output.base import Stamped, ThrsValues
 from thrs.input_output.definitions.control import HeatPump, Pump, Valve
+from thrs.input_output.definitions.controllers import TanksControllerValues
 from thrs.input_output.definitions.units import (
     Celsius,
     Kelvin,
     LMin,
     Liter,
     Ratio,
+    Seconds,
     Tuning,
 )
 from thrs.input_output.modules.boilers import BoilersControlValues, BoilersSensorValues
@@ -122,7 +124,18 @@ def _INITIAL_CONTROL_VALUES(timestamp: datetime) -> BoilersControlValues:
         boilers_switch_high_temperature=Valve(
             setpoint=Stamped(value=0.0, timestamp=timestamp)
         ),
+        boilers_tanks_controller=TanksControllerValues(
+            tank1_state=Stamped(value="needs fill", timestamp=timestamp),
+            tank2_state=Stamped(value="needs fill", timestamp=timestamp),
+            tank3_state=Stamped(value="needs fill", timestamp=timestamp),
+            time_to_fill=Stamped(value=None, timestamp=timestamp),
+        ),
     )
+
+
+TankState = Literal[
+    "in use", "filling", "boosting", "disabled", "needs boost", "needs fill", "standby"
+]
 
 
 class Tank:
@@ -141,6 +154,9 @@ class Tank:
         self._disabled = disabled
         self._temperature = None
         self._level = None
+        self._filling = False
+        self._boosting = False
+        self._in_use = False
 
     @property
     def level(self) -> Liter | None:
@@ -196,6 +212,7 @@ class Tank:
         )
 
     def boost(self, time: Callable[[], datetime]):
+        self._boosting = True
         for valve in [
             self._boosting_supply_valve,
             self._boosting_return_valve,
@@ -204,6 +221,7 @@ class Tank:
                 valve.setpoint = Stamped(value=Valve.OPEN, timestamp=time())
 
     def stop_boosting(self, time: Callable[[], datetime]):
+        self._boosting = False
         for valve in [self._boosting_supply_valve, self._boosting_return_valve]:
             if valve.setpoint.value != Valve.CLOSED:
                 valve.setpoint = Stamped(value=Valve.CLOSED, timestamp=time())
@@ -216,10 +234,12 @@ class Tank:
         )
 
     def fill(self, time: Callable[[], datetime]):
+        self._filling = True
         if self._fill_valve.setpoint.value != Valve.OPEN:
             self._fill_valve.setpoint = Stamped(value=Valve.OPEN, timestamp=time())
 
     def stop_filling(self, time: Callable[[], datetime]):
+        self._filling = False
         if self._fill_valve.setpoint.value != Valve.CLOSED:
             self._fill_valve.setpoint = Stamped(value=Valve.CLOSED, timestamp=time())
 
@@ -227,12 +247,31 @@ class Tank:
         return not self.disabled and not self.full(parameters)
 
     def use(self, time: Callable[[], datetime]):
+        self._in_use = True
         if self._empty_valve.setpoint.value != Valve.OPEN:
             self._empty_valve.setpoint = Stamped(value=Valve.OPEN, timestamp=time())
 
     def stop_use(self, time: Callable[[], datetime]):
+        self._in_use = False
         if self._empty_valve.setpoint.value != Valve.CLOSED:
             self._empty_valve.setpoint = Stamped(value=Valve.CLOSED, timestamp=time())
+
+    @property
+    def state(self) -> TankState:
+        if self._in_use:
+            return "in use"
+        elif self._filling:
+            return "filling"
+        elif self._boosting:
+            return "boosting"
+        elif self.disabled:
+            return "disabled"
+        elif self.boostable:
+            return "needs boost"
+        elif self.fillable:
+            return "needs fill"
+        else:  # standby
+            return "standby"
 
 
 class TanksController:
@@ -288,7 +327,7 @@ class TanksController:
         if self._tank_in_use is not None and self._tank_in_use.empty(parameters):
             self._tank_in_use.stop_use(self._time)
             self._tank_in_use = (
-                None  # Don't wait for valve to close as we always want tank in use
+                None  # Don't wait for valve to close as we always need water available
             )
 
         if self._tank_in_use is None:
@@ -305,7 +344,9 @@ class TanksController:
         if self._filling_tank is not None and self._filling_tank.full(parameters):
             self._filling_tank.stop_filling(self._time)
 
-            if self._filling_valves_closed(sensor_values):
+            if self._filling_valves_closed(
+                sensor_values
+            ):  # Filling is temperature controlled so we can wait for the filling valves to close before deselecting tank.
                 self._filling_tank = None
 
         if self._filling_tank is None:
@@ -324,7 +365,7 @@ class TanksController:
             and self._boosting_tank.above_temperature_setpoint(parameters)
         ):
             self._boosting_tank.stop_boosting(self._time)
-            self._boosting_tank = None  # Don't wait for valves to close as we want boosting to stop when the valves are closing
+            self._boosting_tank = None  # Don't wait for valves to close as we want boosting flow to stop when the valves are closing
 
         if self._boosting_tank is None and self._boosting_valves_closed(sensor_values):
             boostable_tanks = [
@@ -372,6 +413,17 @@ class TanksController:
     def boosting(self) -> bool:
         return self._boosting_tank is not None
 
+    def time_to_fill(
+        self, sensor_values: BoilersSensorValues, parameters: BoilersParameters
+    ) -> Seconds | None:
+        if self._filling_tank is None or self._filling_tank.level is None:
+            return None
+        return (
+            (parameters.maximum_tank_level - self._filling_tank.level)
+            / sensor_values.freshwater_flow_supply.flow.value
+            * 60
+        )
+
     def __call__(
         self, sensor_values: BoilersSensorValues, parameters: BoilersParameters
     ):
@@ -379,6 +431,16 @@ class TanksController:
         self._select_tank_in_use(parameters)
         self._select_filling_tank(parameters, sensor_values)
         self._select_boosting_tank(parameters, sensor_values)
+
+        return TanksControllerValues(
+            tank1_state=Stamped(value=self._tanks[0].state, timestamp=self._time()),
+            tank2_state=Stamped(value=self._tanks[1].state, timestamp=self._time()),
+            tank3_state=Stamped(value=self._tanks[2].state, timestamp=self._time()),
+            time_to_fill=Stamped(
+                value=self.time_to_fill(sensor_values, parameters),
+                timestamp=self._time(),
+            ),
+        )
 
 
 class BoilersControlMode(ControlMode):
@@ -565,12 +627,15 @@ class BoilersControl(
     def control(
         self, sensor_values: BoilersSensorValues
     ) -> ControlResult[BoilersControlValues]:
-        self._tanks_controller(sensor_values, self._parameters)
+        tanks_controller_values = self._tanks_controller(
+            sensor_values, self._parameters
+        )
         self._try_boosting(sensor_values)  # type: ignore
         self._enable_filling_flow_control(sensor_values)
         self._control_filling_flow(sensor_values)
         self._control_boosting_flow(sensor_values)
 
+        self._current_values.boilers_tanks_controller = tanks_controller_values
         return ControlResult(self._time(), self._current_values)
 
     def _lt1_sufficient_boosting_heat(self, sensor_values: BoilersSensorValues) -> bool:
