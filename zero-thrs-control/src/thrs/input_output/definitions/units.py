@@ -8,6 +8,7 @@ from typing import (
     Literal,
     TypeAlias,
     TypeAliasType,
+    Union,
     get_args,
     get_origin,
 )
@@ -65,10 +66,15 @@ def zero_for_unit(unit: Any) -> Any:
 
     elif get_origin(unit) is Annotated:
         unit = get_args(unit)[0]
+
+    if get_origin(unit) in (UnionType, Union):
+        if type(None) in get_args(unit):
+            return None
+        else:
+            return zero_for_unit(next(arg for arg in get_args(unit)))
+
     if unit is float:
         return 0.0
-    elif unit == float | None:
-        return None
     elif get_origin(unit) is Literal:
         return get_args(unit)[0]
     elif issubclass(unit, Enum):

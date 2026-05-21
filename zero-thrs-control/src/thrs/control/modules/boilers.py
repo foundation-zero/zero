@@ -1,5 +1,5 @@
 from datetime import datetime
-from typing import Annotated, Callable, Literal
+from typing import Annotated, Callable
 
 from pydantic import Field, model_validator
 from transitions import Machine, State
@@ -8,7 +8,7 @@ from thrs.control.controllers import Controller
 from thrs.input_output.alarms import BaseAlarms, Severity, alarm
 from thrs.input_output.base import Stamped, ThrsValues
 from thrs.input_output.definitions.control import HeatPump, Pump, Valve
-from thrs.input_output.definitions.controllers import TanksControllerValues
+from thrs.input_output.definitions.controllers import TankState, TanksControllerValues
 from thrs.input_output.definitions.units import (
     Celsius,
     Kelvin,
@@ -125,17 +125,12 @@ def _INITIAL_CONTROL_VALUES(timestamp: datetime) -> BoilersControlValues:
             setpoint=Stamped(value=0.0, timestamp=timestamp)
         ),
         boilers_tanks_controller=TanksControllerValues(
-            tank1_state=Stamped(value="needs fill", timestamp=timestamp),
-            tank2_state=Stamped(value="needs fill", timestamp=timestamp),
-            tank3_state=Stamped(value="needs fill", timestamp=timestamp),
+            tank1_state=Stamped(value=TankState.NEEDS_FILL, timestamp=timestamp),
+            tank2_state=Stamped(value=TankState.NEEDS_FILL, timestamp=timestamp),
+            tank3_state=Stamped(value=TankState.NEEDS_FILL, timestamp=timestamp),
             time_to_fill=Stamped(value=None, timestamp=timestamp),
         ),
     )
-
-
-TankState = Literal[
-    "in use", "filling", "boosting", "disabled", "needs boost", "needs fill", "standby"
-]
 
 
 class Tank:
@@ -259,19 +254,19 @@ class Tank:
     @property
     def state(self) -> TankState:
         if self._in_use:
-            return "in use"
+            return TankState.IN_USE
         elif self._filling:
-            return "filling"
+            return TankState.FILLING
         elif self._boosting:
-            return "boosting"
+            return TankState.BOOSTING
         elif self.disabled:
-            return "disabled"
+            return TankState.DISABLED
         elif self.boostable:
-            return "needs boost"
+            return TankState.NEEDS_BOOST
         elif self.fillable:
-            return "needs fill"
+            return TankState.NEEDS_FILL
         else:  # standby
-            return "standby"
+            return TankState.STANDBY
 
 
 class TanksController:

@@ -56,7 +56,11 @@ def test_yard_tags():
     compare_yard_tags(
         BoilersSensorValues,
         BoilersControlValues,
-        {"freshwater_hotwater_flow", "freshwater_hotwater_temperature"},
+        {
+            "freshwater_hotwater_flow",
+            "freshwater_hotwater_temperature",
+            "boilers_tanks_controller",
+        },
     )
 
 
