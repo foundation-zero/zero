@@ -198,7 +198,7 @@ type ConsumersSensorValuesType {
   consumersTemperatureFahrenheitSupply: SensorTemperatureSensorType! @jsonSchemaDirective(yardTag: "50001038-54", componentType: "temperature_sensor", valveType: null)
   consumersFlowBoosting: SensorFlowSensorType! @jsonSchemaDirective(yardTag: "50001058-07", componentType: "flow_sensor", valveType: null)
   consumersFlowFahrenheit: SensorFlowSensorType! @jsonSchemaDirective(yardTag: "50001058-08", componentType: "flow_sensor", valveType: null)
-  consumersFlowBypass: SensorFlowSensorType! @jsonSchemaDirective(yardTag: "50001060-01", componentType: "flow_sensor", valveType: null)
+  consumersFlowBypass: SensorFlowSensorType! @jsonSchemaDirective(yardTag: "50001192", componentType: "flow_sensor", valveType: null)
   consumersFlowcontrolFahrenheit: SensorValveType! @jsonSchemaDirective(yardTag: "50001061", componentType: "valve", valveType: "flowcontrol")
   consumersFlowcontrolBypass: SensorValveType! @jsonSchemaDirective(yardTag: "50001062-01", componentType: "valve", valveType: "flowcontrol")
   consumersFlowcontrolBoosting: SensorValveType! @jsonSchemaDirective(yardTag: "50001065-01", componentType: "valve", valveType: "flowcontrol")
