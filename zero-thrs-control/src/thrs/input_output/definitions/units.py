@@ -106,6 +106,7 @@ OptionalCelsius: TypeAlias = Annotated[
 ]
 Celsius: TypeAlias = Annotated[float, Field(ge=-273.15), UnitMeta(modelica_name="C")]
 Kelvin: TypeAlias = Annotated[float, Field(ge=0), UnitMeta(modelica_name="K")]
+DeltaT: TypeAlias = Annotated[float, UnitMeta(modelica_name="K")]
 LMin: TypeAlias = Annotated[
     float,
     Field(ge=-0.1),
