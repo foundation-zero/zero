@@ -10,7 +10,9 @@ from thrs.input_output.base import (
     component_meta,
 )
 from thrs.input_output.definitions import control, sensor, simulation
-from thrs.input_output.definitions.units import WATER_HEAT_TRANSFER_CONVERSION
+from thrs.input_output.definitions.units import (
+    WATER_HEAT_TRANSFER_CONVERSION,
+)
 
 
 class BoilersSensorValues(ThrsValues):
@@ -735,7 +737,9 @@ class BoilersSimulationOutputs(SimulationValues):
     def freshwater_hotwater_flow(self) -> sensor.FlowSensor:
         return sensor.FlowSensor(
             flow=cast(Stamped, self.boilers_freshwater_return.flow),
-            temperature=Stamped.stamp(0),
+            temperature=Stamped.stamp(
+                0
+            ),  # TODO: Add hot water temperature as output to the FMU
         )
 
     @computed_field(
@@ -748,5 +752,5 @@ class BoilersSimulationOutputs(SimulationValues):
         return sensor.TemperatureSensor(
             temperature=Stamped.stamp(
                 0
-            )  # TODO: Add the temperature of the boundary to FMU
+            )  # TODO: Add hot water temperature as output to the FMU
         )
