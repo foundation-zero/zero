@@ -73,6 +73,18 @@ class BoilersParameters(ThrsValues):
         return self
 
 
+def _zero_pid():
+    return PidControllerValues(
+        setpoint=Stamped.stamp(0.0),
+        measurement=Stamped.stamp(None),
+        output=Stamped.stamp(None),
+        error=Stamped.stamp(None),
+        enabled=Stamped.stamp(False),
+        tuning=Stamped.stamp((0.0, 0.0, 0.0)),
+        components=Stamped.stamp((0.0, 0.0, 0.0)),
+    )
+
+
 def _INITIAL_CONTROL_VALUES(timestamp: datetime) -> BoilersControlValues:
     return BoilersControlValues(
         boilers_pump=Pump(
@@ -134,10 +146,18 @@ def _INITIAL_CONTROL_VALUES(timestamp: datetime) -> BoilersControlValues:
             tank3_state=Stamped(value=TankState.NEEDS_FILL, timestamp=timestamp),
             time_to_fill=Stamped(value=None, timestamp=timestamp),
         ),
-        boilers_lt1_flow_controller=PidControllerValues.zero(),
-        boilers_lt2_flow_controller=PidControllerValues.zero(),
-        boilers_pump_flow_controller=PidControllerValues.zero(),
-        boilers_pump_temperature_controller=PidControllerValues.zero(),
+        boilers_lt1_flow_controller=PidControllerValues(
+            setpoint=Stamped.stamp(0.0),
+            measurement=Stamped.stamp(None),
+            output=Stamped.stamp(None),
+            error=Stamped.stamp(None),
+            enabled=Stamped.stamp(False),
+            tuning=Stamped.stamp((0.0, 0.0, 0.0)),
+            components=Stamped.stamp((0.0, 0.0, 0.0)),
+        ),
+        boilers_lt2_flow_controller=_zero_pid(),
+        boilers_pump_flow_controller=_zero_pid(),
+        boilers_pump_temperature_controller=_zero_pid(),
     )
 
 
@@ -419,7 +439,11 @@ class TanksController:
     def time_to_fill(
         self, sensor_values: BoilersSensorValues, parameters: BoilersParameters
     ) -> Seconds | None:
-        if self._filling_tank is None or self._filling_tank.level is None:
+        if (
+            self._filling_tank is None
+            or self._filling_tank.level is None
+            or sensor_values.freshwater_flow_supply.flow.value == 0
+        ):
             return None
         return (
             (parameters.maximum_tank_level - self._filling_tank.level)

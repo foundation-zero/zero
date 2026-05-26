@@ -77,10 +77,12 @@ def zero_for_unit(unit: Any) -> Any:
         return 0.0
     elif get_origin(unit) is Literal:
         return get_args(unit)[0]
-    elif issubclass(unit, Enum):
+    elif isinstance(unit, type) and issubclass(unit, Enum):
         return next(e for e in unit)
     elif unit is bool:
         return False
+    elif get_origin(unit) is tuple:
+        return tuple(zero_for_unit(arg) for arg in get_args(unit))
     else:
         raise ValueError(f"Unsupported unit type: {unit}")
 
