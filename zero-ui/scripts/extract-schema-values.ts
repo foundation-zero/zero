@@ -82,6 +82,11 @@ const SENSOR_TYPE_MAP: Record<string, string> = {
   SensorPcsType: "Pcs",
   SensorPcmType: "Pcm",
   SensorLevelSensorType: "Level",
+  SensorTemperatureDeltaType: "DeltaT",
+  SensorCalculatedFlowType: "Flow",
+  SensorHeatPumpType: "HeatExchanger",
+  SensorHeatExchangerType: "HeatExchanger",
+  SensorHvacExchangerType: "HeatExchanger",
 };
 
 const SIMULATION_TYPE_MAP: Record<string, string> = {
@@ -259,10 +264,8 @@ function processSensorField(
   fieldType: string,
   directiveArgs: DirectiveArgs,
 ): ExtractedValue | null {
-  if (!directiveArgs.yardTag) return null;
-
   const entry: ExtractedValue = {
-    yardTag: directiveArgs.yardTag,
+    yardTag: directiveArgs.yardTag ?? "N/A",
     fieldType: fieldType,
   };
 

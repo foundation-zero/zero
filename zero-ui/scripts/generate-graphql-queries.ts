@@ -94,6 +94,8 @@ const FIELD_MAPPINGS: AllFieldMappings = {
     Pcs: ["mode"],
     Pcm: ["charged"],
     Level: ["level"],
+    DeltaT: ["deltaT"],
+    HeatExchanger: ["heat", "deltaT"],
   },
 
   // Simulation component fields

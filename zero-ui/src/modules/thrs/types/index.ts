@@ -67,6 +67,10 @@ export type DeltaTSensor = {
   deltaT: Stamped<number>;
 };
 
+export type HeatExchangerSensor = DeltaTSensor & {
+  heat: Stamped<number>;
+};
+
 export type Valve = {
   positionRel: Stamped<number>;
 };
@@ -190,6 +194,7 @@ export const enum SensorComponentType {
   Pcm = "pcm",
   Level = "level",
   DeltaT = "deltaT",
+  HeatExchanger = "heatExchanger",
 }
 
 export type THRSModule<TDefinition extends ModuleDefinition = ModuleDefinition> = {
@@ -238,6 +243,7 @@ export type SensorDefinitionMap = {
   [SensorComponentType.Pcs]: PcsSensor;
   [SensorComponentType.Level]: LevelSensor;
   [SensorComponentType.DeltaT]: DeltaTSensor;
+  [SensorComponentType.HeatExchanger]: HeatExchangerSensor;
 };
 
 export type ExtractValues<
