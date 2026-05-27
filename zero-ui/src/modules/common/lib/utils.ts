@@ -23,7 +23,7 @@ import { ArgumentsType, useIntervalFn } from "@vueuse/core";
 import { type ClassValue, clsx } from "clsx";
 import { Maybe } from "graphql/jsutils/Maybe";
 import { twMerge } from "tailwind-merge";
-import { computed, ComputedRef, isRef, MaybeRef, ref, Ref, watch, WritableComputedRef } from "vue";
+import { computed, ComputedRef, MaybeRef, ref, Ref, unref, watch, WritableComputedRef } from "vue";
 import { NamedValue, useI18n } from "vue-i18n";
 import {
   CO2_THRESHOLDS,
@@ -340,6 +340,10 @@ export function isStamped(input: unknown): boolean {
   return typeof input === "object" && input !== null && "value" in input && "timestamp" in input;
 }
 
+export const stamp = <T>(value: MaybeRef<T>, timestamp = new Date()): Stamped<T> => ({
+  value: unref(value),
+  timestamp,
+});
 export const unstamp = <T>(input: T | Stamped<T>): T => (isStamped(input) ? input.value : input);
 
 export const isStampedNumber = (item: unknown): item is Stamped<number> =>
@@ -368,6 +372,9 @@ export type MapFrom<K, V> =
   | (K extends string | number | symbol ? Record<K, V> : never);
 
 export function entriesOf<K, V>(map: Map<K, V>): MapEntries<Map<K, V>>[];
+export function entriesOf<K extends string | number | symbol, V>(
+  map: Record<K, V>,
+): MapEntries<Map<K, V>>[];
 export function entriesOf<K, V>(input: MapFrom<K, V>): [K, V][];
 export function entriesOf<K, V>(obj?: MapFrom<K, V>) {
   if (obj == undefined) {
@@ -512,4 +519,4 @@ export const useFixed = (value: Ref<number | undefined | null>, digits: number) 
     }
   });
 
-export const refValue = <T>(ref: MaybeRef<T>): T => (isRef(ref) ? ref.value : ref);
+export const refValue = unref;
