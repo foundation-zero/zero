@@ -253,7 +253,6 @@ export const BOILERS_SENSOR_QUERY = `
   }
   freshwaterFlowSupply {
     flow { value timestamp }
-    temperature { value timestamp }
   }
   boilersHvacExchanger {
     heat { value timestamp }

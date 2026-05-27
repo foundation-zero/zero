@@ -400,7 +400,7 @@ export const BOILERS_SENSOR_DEFINITION = toSensorDefinition({
   },
   freshwaterFlowSupply: {
     yardTag: "N/A",
-    componentType: SensorComponentType.Flow,
+    componentType: SensorComponentType.CalculatedFlow,
   },
   boilersHvacExchanger: {
     yardTag: "N/A",
