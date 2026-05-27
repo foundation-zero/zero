@@ -80,6 +80,11 @@ export type FlowSensor = {
   temperature: Stamped<number>;
 };
 
+export type CalculatedFlowSensor = {
+  flow: Stamped<number>;
+  temperature: Stamped<number>;
+};
+
 export type PressureSensor = {
   pressure: Stamped<number>;
 };
@@ -195,6 +200,7 @@ export const enum SensorComponentType {
   Level = "level",
   DeltaT = "deltaT",
   HeatExchanger = "heatExchanger",
+  CalculatedFlow = "calculatedFlow",
 }
 
 export type THRSModule<TDefinition extends ModuleDefinition = ModuleDefinition> = {
@@ -244,6 +250,7 @@ export type SensorDefinitionMap = {
   [SensorComponentType.Level]: LevelSensor;
   [SensorComponentType.DeltaT]: DeltaTSensor;
   [SensorComponentType.HeatExchanger]: HeatExchangerSensor;
+  [SensorComponentType.CalculatedFlow]: CalculatedFlowSensor;
 };
 
 export type ExtractValues<

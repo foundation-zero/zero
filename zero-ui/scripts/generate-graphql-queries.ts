@@ -96,6 +96,7 @@ const FIELD_MAPPINGS: AllFieldMappings = {
     Level: ["level"],
     DeltaT: ["deltaT"],
     HeatExchanger: ["heat", "deltaT"],
+    CalculatedFlow: ["flow"],
   },
 
   // Simulation component fields
