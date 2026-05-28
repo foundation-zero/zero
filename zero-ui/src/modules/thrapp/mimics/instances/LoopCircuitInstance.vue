@@ -2,7 +2,7 @@
 import AnimatedNumber from "@/modules/loads/components/animated-number/AnimatedNumber.vue";
 import { SensorComponentType } from "@/modules/thrs/types";
 import { useI18n } from "vue-i18n";
-import { MimicComponentInstanceProps, ModuleProp, TitleProps } from ".";
+import { MimicComponentInstanceProps, TitleProps } from ".";
 import { CircuitBox, CircuitBoxTitle } from "../components/circuit-box";
 import {
   ValueList,
@@ -10,16 +10,16 @@ import {
   ValueListFlowItem,
   ValueListItem,
 } from "../components/value-list";
-import { getMimicDataProvider } from "../providers";
+import { getMimicDataProvider, ModuleField } from "../providers";
 
 const { t } = useI18n();
 const props = defineProps<
   MimicComponentInstanceProps &
     TitleProps & {
-      deltaT: ModuleProp<SensorComponentType.DeltaT>;
-      flow: ModuleProp<SensorComponentType.Flow>;
-      tIn: ModuleProp<SensorComponentType.Temperature>;
-      tOut: ModuleProp<SensorComponentType.Temperature>;
+      deltaT: ModuleField<SensorComponentType.DeltaT>;
+      flow: ModuleField<SensorComponentType.Flow>;
+      tIn: ModuleField<SensorComponentType.Temperature>;
+      tOut: ModuleField<SensorComponentType.Temperature>;
     }
 >();
 

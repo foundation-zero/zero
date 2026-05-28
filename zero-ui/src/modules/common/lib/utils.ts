@@ -23,7 +23,17 @@ import { ArgumentsType, useIntervalFn } from "@vueuse/core";
 import { type ClassValue, clsx } from "clsx";
 import { Maybe } from "graphql/jsutils/Maybe";
 import { twMerge } from "tailwind-merge";
-import { computed, ComputedRef, MaybeRef, ref, Ref, unref, watch, WritableComputedRef } from "vue";
+import {
+  computed,
+  ComputedRef,
+  isRef,
+  MaybeRef,
+  ref,
+  Ref,
+  unref,
+  watch,
+  WritableComputedRef,
+} from "vue";
 import { NamedValue, useI18n } from "vue-i18n";
 import {
   CO2_THRESHOLDS,
@@ -63,13 +73,15 @@ export const updateSetpointWhenControlsHaveChanged = <K extends string>(
     }
   });
 
-export const ratioAsPercentage = (ratio: Ref<Maybe<number>>) =>
+export const ratioAsPercentage = (ratio: MaybeRef<Maybe<number>>) =>
   computed({
     get() {
-      return Number(ratio.value) * 100;
+      return Number(unref(ratio)) * 100;
     },
     set(percentage: number) {
-      ratio.value = percentage / 100;
+      if (isRef(ratio)) {
+        ratio.value = percentage / 100;
+      }
     },
   });
 

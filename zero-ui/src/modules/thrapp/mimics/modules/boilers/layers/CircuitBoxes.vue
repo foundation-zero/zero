@@ -9,8 +9,9 @@
  */
 
 import { SensorComponentType } from "@/modules/thrs/types/index.ts";
-import { getField, LoopCircuitInstance } from "../../../instances";
 import HotWaterCircuitInstance from "../../../instances/HotWaterCircuitInstance.vue";
+import { LoopCircuitInstance } from "../../../instances/index.ts";
+import { getField } from "../../../providers";
 </script>
 
 <template>
@@ -32,49 +33,39 @@ import HotWaterCircuitInstance from "../../../instances/HotWaterCircuitInstance.
       x="397"
       y="730"
       title="Brightloop"
-      :delta-t="getField(SensorComponentType.DeltaT, 'boilers', null)"
+      :delta-t="getField(SensorComponentType.DeltaT, 'boilers', 'lt2Delta')"
       :flow="getField(SensorComponentType.Flow, 'boilers', 'boilersFlowLt2')"
-      :t-in="getField(SensorComponentType.Temperature, 'boilers', 'lt')"
-      :t-out="getField(SensorComponentType.Temperature, 'boilers', 'boilers')"
+      :t-in="getField(SensorComponentType.Temperature, 'boilers', 'lt2TemperatureRecovery')"
+      :t-out="getField(SensorComponentType.Temperature, 'boilers', 'lt2TemperatureRecoveryReturn')"
     />
     <LoopCircuitInstance
       x="650"
       y="730"
       title="Drives"
-      :delta-t="getField(SensorComponentType.DeltaT, 'boilers', null)"
-      :flow="getField(SensorComponentType.Flow, 'boilers', 'consumersFlowBoosting')"
-      :t-in="
-        getField(SensorComponentType.Temperature, 'boilers', 'consumersTemperatureBoostingSupply')
-      "
-      :t-out="
-        getField(SensorComponentType.Temperature, 'boilers', 'consumersTemperatureBoostingReturn')
-      "
+      :delta-t="getField(SensorComponentType.DeltaT, 'boilers', 'lt1Delta')"
+      :flow="getField(SensorComponentType.Flow, 'boilers', 'boilersFlowLt1')"
+      :t-in="getField(SensorComponentType.Temperature, 'boilers', 'lt1TemperatureRecovery')"
+      :t-out="getField(SensorComponentType.Temperature, 'boilers', 'lt1TemperatureRecoveryReturn')"
     />
     <LoopCircuitInstance
       x="903"
       y="730"
       title="Fahrenheit"
-      :delta-t="getField(SensorComponentType.DeltaT, 'boilers', null)"
-      :flow="getField(SensorComponentType.Flow, 'boilers', 'boilersFlowLt1')"
+      :delta-t="getField(SensorComponentType.DeltaT, 'boilers', 'fahrenheitDelta')"
+      :flow="getField(SensorComponentType.Flow, 'boilers', 'fahrenheitFlowBoilers')"
       :t-in="
-        getField(SensorComponentType.Temperature, 'boilers', 'consumersTemperatureBoostingSupply')
+        getField(SensorComponentType.Temperature, 'boilers', 'fahrenheitTemperatureWasteReturn')
       "
       :t-out="
-        getField(SensorComponentType.Temperature, 'boilers', 'consumersTemperatureBoostingReturn')
+        getField(SensorComponentType.Temperature, 'boilers', 'boilersTemperatureFahrenheitReturn')
       "
     />
     <HotWaterCircuitInstance
       x="1215"
       y="455"
       title="Domestic Hot Water"
-      :delta-t="getField(SensorComponentType.DeltaT, 'boilers', null)"
-      :flow="getField(SensorComponentType.Flow, 'boilers', 'consumersFlowBoosting')"
-      :t-in="
-        getField(SensorComponentType.Temperature, 'boilers', 'consumersTemperatureBoostingSupply')
-      "
-      :t-out="
-        getField(SensorComponentType.Temperature, 'boilers', 'consumersTemperatureBoostingReturn')
-      "
+      :flow-in="getField(SensorComponentType.Flow, 'boilers', 'freshwaterHotwaterFlow')"
+      :flow-out="getField(SensorComponentType.Flow, 'boilers', 'boilersFlowBoosting')"
     />
   </g>
 </template>

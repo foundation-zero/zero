@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { SensorComponentType } from "@/modules/thrs/types/index.ts";
 import BoilerTankInstance from "../../../instances/BoilerTankInstance.vue";
-import { getField } from "../../../instances/index.ts";
+import { getField } from "../../../providers";
 </script>
 
 <template>

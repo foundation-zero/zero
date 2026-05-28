@@ -36,7 +36,7 @@ const color = computed(() => BOILER_TANK_MODE_COLORS[props.mode]);
       <g
         class="transition-all"
         :style="{
-          transform: `translateY(${100 - level}%)`,
+          transform: `translateY(${100 - Math.min(100, level)}%)`,
         }"
       >
         <BoilerTankLevel :y="-BOILER_TANK_LEVEL_LINE_OFFSET" />

@@ -19,7 +19,6 @@ const provider = computed(() => (demoMode.value ? MockProvider : GraphQLProvider
   <component
     :is="provider"
     v-if="currentDefinition === 'boilers'"
-    module="boilers"
   >
     <BoilersModule />
   </component>

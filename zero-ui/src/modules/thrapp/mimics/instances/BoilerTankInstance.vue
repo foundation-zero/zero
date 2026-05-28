@@ -1,12 +1,6 @@
 <script setup lang="ts">
 import { SensorComponentType } from "@/modules/thrs/types";
-import {
-  MimicComponentInstanceProps,
-  ModuleProp,
-  TitleProps,
-  useRandomizedNumber,
-  useRandomizedState,
-} from ".";
+import { MimicComponentInstanceProps, TitleProps } from ".";
 import {
   BoilerTank,
   BoilerTankMode,
@@ -20,13 +14,14 @@ import {
   ValueListTimeItem,
 } from "../components/value-list";
 import YardTag from "../components/yard-tag/YardTag.vue";
-import { getMimicDataProvider } from "../providers";
+import { getMimicDataProvider, ModuleField } from "../providers";
+import { useRandomizedNumber, useRandomizedState } from "../providers/mock-helpers.ts";
 
 const props = defineProps<
   MimicComponentInstanceProps &
     TitleProps & {
-      level: ModuleProp<SensorComponentType.Level>;
-      temperature: ModuleProp<SensorComponentType.Temperature>;
+      level: ModuleField<SensorComponentType.Level>;
+      temperature: ModuleField<SensorComponentType.Temperature>;
     }
 >();
 
@@ -45,6 +40,8 @@ const mode = useRandomizedState([
 
 <template>
   <BoilerTank
+    :x="x"
+    :y="y"
     :level="fillLevel?.level.value ?? 0"
     :mode="mode"
   >
@@ -52,7 +49,7 @@ const mode = useRandomizedState([
     <BoilerTankTitle>{{ title }}</BoilerTankTitle>
     <BoilerTankMode :mode="mode" />
     <ValueList class="gap-0">
-      <ValueListTemperatureItem :in="temperature?.temperature.value ?? 0" />
+      <ValueListTemperatureItem :temperature="temperature?.temperature.value" />
       <ValueListFillLevelItem :value="fillLevel?.level.value" />
       <ValueListTimeItem
         v-if="mode === BoilerTankModes.Boosting"

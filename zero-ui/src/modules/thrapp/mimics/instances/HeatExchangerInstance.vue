@@ -1,11 +1,12 @@
 <script setup lang="ts">
 import { computed } from "vue";
-import { MimicComponentInstanceProps, useRandomizedState } from ".";
+import { MimicComponentInstanceProps } from ".";
 import { HeatingState } from "../components";
 import { HeatExchangerPortOrientation } from "../components/heat-exchanger";
 
 import HeatExchanger from "../components/heat-exchanger/HeatExchanger.vue";
 import HeatExchangerPort from "../components/heat-exchanger/HeatExchangerPort.vue";
+import { useRandomizedState } from "../providers/mock-helpers.ts";
 
 export type HeatExchangerInstanceProps = {
   sideA?: HeatExchangerPortOrientation;

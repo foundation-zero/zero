@@ -1,6 +1,8 @@
 <script setup lang="ts">
+import { SensorComponentType } from "@/modules/thrs/types/index.ts";
 import { RiSnowflakeLine, RiTempHotLine } from "@remixicon/vue";
 import HeatPumpInstance from "../../../instances/HeatPumpInstance.vue";
+import { getField } from "../../../providers";
 </script>
 
 <template>
@@ -13,6 +15,7 @@ import HeatPumpInstance from "../../../instances/HeatPumpInstance.vue";
       tag-id="1035"
       title="Heat Pump"
       :icon="RiTempHotLine"
+      :heat-exchanger="getField(SensorComponentType.HeatExchanger, 'boilers', 'boilersHeatpump')"
     />
 
     <HeatPumpInstance
@@ -23,6 +26,9 @@ import HeatPumpInstance from "../../../instances/HeatPumpInstance.vue";
       tag-id="41001001"
       title="HVAC"
       :icon="RiSnowflakeLine"
+      :heat-exchanger="
+        getField(SensorComponentType.HeatExchanger, 'boilers', 'boilersHvacExchanger')
+      "
     />
   </g>
 </template>

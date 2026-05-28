@@ -82,7 +82,6 @@ export type FlowSensor = {
 
 export type CalculatedFlowSensor = {
   flow: Stamped<number>;
-  temperature: Stamped<number>;
 };
 
 export type PressureSensor = {

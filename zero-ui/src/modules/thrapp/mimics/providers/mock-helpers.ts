@@ -7,13 +7,34 @@ import {
   SensorDefinitionMap,
   ThrusterMode,
 } from "@/modules/thrs/types";
-import { computed, Ref } from "vue";
-import {
-  useRandomizedBoolean,
-  useRandomizedNumber,
-  useRandomizedRatio,
-  useRandomizedState,
-} from "../instances";
+import { useIntervalFn } from "@vueuse/core";
+import { computed, MaybeRef, ref, Ref, unref } from "vue";
+
+export const useRandomizedValue = <T>(valueFn: () => T, interval = 10_000) => {
+  const value = ref<T>(valueFn());
+
+  useIntervalFn(() => (value.value = valueFn()), interval);
+
+  return value;
+};
+
+export const useRandomizedState = <T>(possibleValues: T[], interval = 10_000) =>
+  useRandomizedValue(
+    () => possibleValues[Math.floor(Math.random() * possibleValues.length)],
+    interval,
+  );
+
+export const useDeltaT = (tIn: MaybeRef<number>, tOut: MaybeRef<number>) =>
+  computed(() => unref(tOut) - unref(tIn));
+
+export const useRandomizedNumber = (min: number, max: number, interval = 10_000) =>
+  useRandomizedValue(() => Math.floor(Math.random() * (max - min + 1)) + min, interval);
+
+export const useRandomizedRatio = (interval = 10_000) =>
+  useRandomizedValue(() => Math.random(), interval);
+
+export const useRandomizedBoolean = (interval = 10_000) =>
+  useRandomizedValue(() => Math.random() < 0.5, interval);
 
 export type ValueFactory<T extends Record<string, unknown>> = {
   [K in keyof T]: () => Ref<T[K] | undefined>;
@@ -71,6 +92,19 @@ export const SENSOR_VALUES_FACTORY: ValueFactory<SensorDefinitionMap> = {
   [SensorComponentType.Valve]: () => {
     const positionRel = useRandomizedRatio();
     return computed(() => ({ positionRel: stamp(positionRel) }));
+  },
+  [SensorComponentType.HeatExchanger]: () => {
+    const deltaT = useRandomizedNumber(-20, 20);
+    const heat = useRandomizedNumber(0, 100);
+    return computed(() => ({ deltaT: stamp(deltaT), heat: stamp(heat) }));
+  },
+  [SensorComponentType.DeltaT]: () => {
+    const deltaT = useRandomizedNumber(-20, 20);
+    return computed(() => ({ deltaT: stamp(deltaT) }));
+  },
+  [SensorComponentType.CalculatedFlow]: () => {
+    const flow = useRandomizedNumber(0, 10);
+    return computed(() => ({ flow: stamp(flow) }));
   },
 };
 

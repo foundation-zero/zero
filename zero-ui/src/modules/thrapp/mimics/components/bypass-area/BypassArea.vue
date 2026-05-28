@@ -3,37 +3,18 @@ import { createSizeAndViewbox } from "..";
 
 defineProps<{ width: number; height: number }>();
 </script>
+
 <template>
   <svg v-bind="createSizeAndViewbox(width, height)">
-    <rect
-      :width="width"
-      :height="height"
-      rx="16"
-      fill="rgba(244, 249, 254, 0.05)"
-      stroke="#AA22BB"
-      stroke-width="1.5"
-      stroke-dasharray="3,3"
-    />
-
-    <rect
-      x="0.5"
-      y="0.5"
-      :width="width - 1"
-      :height="height - 1"
-      rx="15.5"
-      class="stroke-flows-pipe"
-      stroke-opacity="0.55"
-      stroke-dasharray="2 2"
-    />
-
-    <text
-      y="16"
-      height="30"
-      :x="width / 2"
-      class="text-2xs fill-muted-foreground"
-      text-anchor="middle"
+    <foreignObject
+      width="100%"
+      height="100%"
     >
-      <slot />
-    </text>
+      <div
+        class="border-flows-pipe text-2xs bg-background/60 text-muted-foreground h-full w-full flex-col rounded-md border border-dashed p-1 text-center"
+      >
+        <slot />
+      </div>
+    </foreignObject>
   </svg>
 </template>
