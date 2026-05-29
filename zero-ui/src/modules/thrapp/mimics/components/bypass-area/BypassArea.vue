@@ -11,7 +11,11 @@ defineProps<{ width: number; height: number }>();
       height="100%"
     >
       <div
-        class="border-flows-pipe text-2xs bg-background/60 text-muted-foreground h-full w-full flex-col rounded-md border border-dashed p-1 text-center"
+        class="border-flows-pipe text-2xs bg-background/60 text-muted-foreground flex-col rounded-md border border-dashed p-1 text-center"
+        :style="{
+          height: `${height}px`,
+          width: `${width}px`,
+        }"
       >
         <slot />
       </div>
