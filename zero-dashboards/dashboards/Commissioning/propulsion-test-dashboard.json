@@ -3977,8 +3977,8 @@
         ]
       },
       "gridPos": {
-        "h": 6,
-        "w": 15,
+        "h": 5,
+        "w": 12,
         "x": 0,
         "y": 117
       },
@@ -4093,9 +4093,9 @@
         ]
       },
       "gridPos": {
-        "h": 6,
-        "w": 9,
-        "x": 15,
+        "h": 5,
+        "w": 12,
+        "x": 12,
         "y": 117
       },
       "id": 13,
@@ -4150,7 +4150,7 @@
               "name": "oil_temperature",
               "placement": {
                 "height": 30,
-                "left": 190,
+                "left": 210,
                 "rotation": 0,
                 "top": 10,
                 "width": 175
@@ -4175,7 +4175,7 @@
                 },
                 "size": 16,
                 "text": {
-                  "fixed": "Gearbox oil"
+                  "fixed": "Gearbox oil tank"
                 },
                 "valign": "middle"
               },
@@ -4188,9 +4188,8 @@
               "placement": {
                 "height": 30,
                 "left": 15,
-                "rotation": 0,
                 "top": 10,
-                "width": 161
+                "width": 187
               },
               "type": "text"
             },
@@ -4212,7 +4211,7 @@
                 },
                 "size": 20,
                 "text": {
-                  "field": "aradex1_temperature",
+                  "field": "ara1_power_stage_temp",
                   "fixed": "",
                   "mode": "field"
                 },
@@ -4226,9 +4225,9 @@
               "name": "aradex1_temperature",
               "placement": {
                 "height": 30,
-                "left": 190,
+                "left": 212,
                 "rotation": 0,
-                "top": 45,
+                "top": 55,
                 "width": 175
               },
               "type": "metric-value"
@@ -4251,7 +4250,7 @@
                 },
                 "size": 16,
                 "text": {
-                  "fixed": "Aradex 1"
+                  "fixed": "Aradex 1 power stage"
                 },
                 "valign": "middle"
               },
@@ -4263,10 +4262,9 @@
               "name": "aradex1_temperature label",
               "placement": {
                 "height": 30,
-                "left": 15,
-                "rotation": 0,
-                "top": 45,
-                "width": 161
+                "left": 17,
+                "top": 55,
+                "width": 187
               },
               "type": "text"
             },
@@ -4288,7 +4286,7 @@
                 },
                 "size": 20,
                 "text": {
-                  "field": "aradex2_temperature",
+                  "field": "ara1_power_igbt_temp",
                   "fixed": "",
                   "mode": "field"
                 },
@@ -4302,9 +4300,9 @@
               "name": "aradex2_temperature",
               "placement": {
                 "height": 30,
-                "left": 190,
+                "left": 212,
                 "rotation": 0,
-                "top": 80,
+                "top": 90,
                 "width": 175
               },
               "type": "metric-value"
@@ -4327,7 +4325,7 @@
                 },
                 "size": 16,
                 "text": {
-                  "fixed": "Aradex 2"
+                  "fixed": "Aradex 1 IGBT"
                 },
                 "valign": "middle"
               },
@@ -4339,10 +4337,233 @@
               "name": "aradex2_temperature label",
               "placement": {
                 "height": 30,
-                "left": 15,
+                "left": 17,
+                "top": 90,
+                "width": 187
+              },
+              "type": "text"
+            },
+            {
+              "background": {
+                "color": {
+                  "fixed": "#D9D9D9"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "center",
+                "color": {
+                  "fixed": "#000000"
+                },
+                "size": 20,
+                "text": {
+                  "field": "oil_temperature",
+                  "fixed": "",
+                  "mode": "field"
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "links": [],
+              "name": "Element 9",
+              "placement": {
+                "height": 30,
+                "left": 630,
+                "top": 10,
+                "width": 175
+              },
+              "type": "metric-value"
+            },
+            {
+              "background": {
+                "color": {
+                  "fixed": "transparent"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "left",
+                "color": {
+                  "fixed": "rgb(204, 204, 220)"
+                },
+                "size": 16,
+                "text": {
+                  "fixed": "Gearbox oil pump"
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "links": [],
+              "name": "Element 10",
+              "placement": {
+                "height": 30,
+                "left": 435,
+                "top": 10,
+                "width": 187
+              },
+              "type": "text"
+            },
+            {
+              "background": {
+                "color": {
+                  "fixed": "#D9D9D9"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "center",
+                "color": {
+                  "fixed": "#000000"
+                },
+                "size": 20,
+                "text": {
+                  "field": "ara2_power_stage_temp",
+                  "fixed": "",
+                  "mode": "field"
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "links": [],
+              "name": "Element 11",
+              "placement": {
+                "height": 30,
+                "left": 630,
                 "rotation": 0,
-                "top": 80,
-                "width": 161
+                "top": 55,
+                "width": 175
+              },
+              "type": "metric-value"
+            },
+            {
+              "background": {
+                "color": {
+                  "fixed": "transparent"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "left",
+                "color": {
+                  "fixed": "rgb(204, 204, 220)"
+                },
+                "size": 16,
+                "text": {
+                  "fixed": "Aradex 2 power stage"
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "links": [],
+              "name": "Element 12",
+              "placement": {
+                "height": 30,
+                "left": 435,
+                "top": 55,
+                "width": 187
+              },
+              "type": "text"
+            },
+            {
+              "background": {
+                "color": {
+                  "fixed": "#D9D9D9"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "center",
+                "color": {
+                  "fixed": "#000000"
+                },
+                "size": 20,
+                "text": {
+                  "field": "ara2_power_igbt_temp",
+                  "fixed": "",
+                  "mode": "field"
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "links": [],
+              "name": "Element 13",
+              "placement": {
+                "height": 30,
+                "left": 630,
+                "rotation": 0,
+                "top": 90,
+                "width": 175
+              },
+              "type": "metric-value"
+            },
+            {
+              "background": {
+                "color": {
+                  "fixed": "transparent"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "left",
+                "color": {
+                  "fixed": "rgb(204, 204, 220)"
+                },
+                "size": 16,
+                "text": {
+                  "fixed": "Aradex IGBT"
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "links": [],
+              "name": "Element 14",
+              "placement": {
+                "height": 30,
+                "left": 435,
+                "top": 90,
+                "width": 187
               },
               "type": "text"
             }
@@ -4373,10 +4594,24 @@
             "uid": "${datasource}"
           },
           "editorMode": "code",
-          "format": "table",
+          "editorType": "sql",
+          "format": 1,
           "hide": false,
+          "meta": {
+            "builderOptions": {
+              "columns": [],
+              "database": "",
+              "limit": 1000,
+              "meta": {},
+              "mode": "list",
+              "queryType": "table",
+              "table": ""
+            }
+          },
+          "pluginVersion": "2.1.4",
+          "queryType": "table",
           "rawQuery": true,
-          "rawSql": "SELECT\r\n  LAST_VALUE(time ORDER BY time) AS time,\r\n  LAST_VALUE((\"GearboxOilTemperature\").value ORDER BY time) AS oil_temperature,\r\n  LAST_VALUE((\"Aradex1Temperature\").value ORDER BY time) AS aradex1_temperature,\r\n  LAST_VALUE((\"Aradex2Temperature\").value ORDER BY time) AS aradex2_temperature\r\nFROM marpower.thruster\r\nwhere topic = 'marpower/thruster/' || lower('$aft_fwd')",
+          "rawSql": "SELECT \r\n  LEAST(fwd_ara1.time, fwd_ara2.time)     AS time,\r\n  CASE WHEN '${aft_fwd}' = 'AFT'\r\n    THEN NULL -- aft_ara1.power_stage_temperature\r\n    ELSE fwd_ara1.power_stage_temperature\r\n  END                                     AS ara1_power_stage_temp,\r\n  CASE WHEN '${aft_fwd}' = 'AFT'\r\n    THEN NULL -- aft_ara1.igbt_temperature\r\n    ELSE fwd_ara1.igbt_temperature\r\n  END                                     AS ara1_power_igbt_temp,\r\n  CASE WHEN '${aft_fwd}' = 'AFT'\r\n    THEN NULL -- aft_ara2.power_stage_temperature\r\n    ELSE fwd_ara2.power_stage_temperature\r\n  END                                     AS ara2_power_stage_temp,\r\n  CASE WHEN '${aft_fwd}' = 'AFT'\r\n    THEN NULL -- aft_ara2.igbt_temperature\r\n    ELSE fwd_ara2.igbt_temperature\r\n  END                                     AS ara2_power_igbt_temp\r\nFROM (\r\n  SELECT\r\n    timestamp               AS time,\r\n    temp_power_stage__value AS power_stage_temperature,\r\n    temp_igbt__value        AS igbt_temperature\r\n  FROM public.marpower__150000propulsion__pcs_fwd_ara1\r\n  ORDER BY timestamp DESC\r\n  LIMIT 1\r\n) AS fwd_ara1\r\nCROSS JOIN (\r\n    SELECT\r\n    timestamp               AS time,\r\n    temp_power_stage__value AS power_stage_temperature,\r\n    temp_igbt__value        AS igbt_temperature\r\n  FROM public.marpower__150000propulsion__pcs_fwd_ara2\r\n  ORDER BY timestamp DESC\r\n  LIMIT 1\r\n) AS fwd_ara2\r\n-- CROSS JOIN (\r\n--   SELECT\r\n--     timestamp               AS time,\r\n--     temp_power_stage__value AS power_stage_temperature,\r\n--     temp_igbt__value        AS igbt_temperature\r\n--   FROM public.marpower__150000propulsion__pcs_aft_ara1\r\n--   ORDER BY timestamp DESC\r\n--   LIMIT 1\r\n-- ) AS aft_ara1\r\n-- CROSS JOIN (\r\n--     SELECT\r\n--     timestamp               AS time,\r\n--     temp_power_stage__value AS power_stage_temperature,\r\n--     temp_igbt__value        AS igbt_temperature\r\n--   FROM public.marpower__150000propulsion__pcs_aft_ara2\r\n--   ORDER BY timestamp DESC\r\n--   LIMIT 1\r\n-- ) AS aft_ara2",
           "refId": "A",
           "sql": {
             "columns": [
@@ -4429,7 +4664,7 @@
         "h": 5,
         "w": 24,
         "x": 0,
-        "y": 123
+        "y": 122
       },
       "id": 59,
       "options": {
@@ -5132,7 +5367,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 128
+        "y": 127
       },
       "id": 27,
       "panels": [],
@@ -5197,7 +5432,7 @@
         "h": 4,
         "w": 24,
         "x": 0,
-        "y": 129
+        "y": 128
       },
       "id": 70,
       "options": {
@@ -5356,7 +5591,7 @@
         "h": 9,
         "w": 24,
         "x": 0,
-        "y": 133
+        "y": 132
       },
       "id": 71,
       "options": {
@@ -5456,7 +5691,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 142
+        "y": 141
       },
       "id": 52,
       "panels": [],
@@ -5556,7 +5791,7 @@
         "h": 3,
         "w": 24,
         "x": 0,
-        "y": 143
+        "y": 142
       },
       "id": 73,
       "options": {
@@ -5759,7 +5994,7 @@
         "h": 3,
         "w": 24,
         "x": 0,
-        "y": 146
+        "y": 145
       },
       "id": 74,
       "options": {
@@ -5939,7 +6174,7 @@
         "h": 3,
         "w": 24,
         "x": 0,
-        "y": 149
+        "y": 148
       },
       "id": 75,
       "options": {
