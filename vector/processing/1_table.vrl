@@ -5,5 +5,5 @@ for_each(grouped_topics) -> |_index, group| {
   }
 }
 .table = replace(replace!(.table, "/", "__"), "-", "_")
-.table = replace(.table, ' ', "_")
+.table = replace(.table, " ", "_")
 .table = replace(.table, r'_{3,}', "__")
