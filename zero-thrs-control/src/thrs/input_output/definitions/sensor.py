@@ -1,10 +1,12 @@
+from typing import Self
+
 from thrs.input_output.base import Stamped, ThrsValues
 from thrs.input_output.definitions.units import (
     Bar,
     Celsius,
     Charged,
+    DeltaT,
     Hz,
-    Kelvin,
     LMin,
     Liter,
     NoError,
@@ -50,6 +52,60 @@ class CalculatedTemperature(ThrsValues):
                 timestamp=max_sensor.temperature.timestamp,
             )
         )
+
+
+class CalculatedFlow(ThrsValues):
+    flow: Stamped[LMin]
+
+
+class TemperatureDelta(ThrsValues):
+    delta_t: Stamped[DeltaT]
+
+    @classmethod
+    def from_temperature_sensors(
+        cls, temperature_supply: Stamped[Celsius], temperature_return: Stamped[Celsius]
+    ) -> Self:
+        delta_t = Stamped.combine(
+            temperature_supply,
+            temperature_return,
+            value=temperature_supply.value - temperature_return.value,
+        )
+        return cls(delta_t=delta_t)
+
+
+class HeatTransferDevice(ThrsValues):
+    delta_t: Stamped[DeltaT]
+    heat: Stamped[Watt]
+
+    @classmethod
+    def from_sensors(
+        cls,
+        temperature_supply: Stamped[Celsius],
+        temperature_return: Stamped[Celsius],
+        flow: Stamped[LMin],
+        heat_transfer_conversion: float,
+    ) -> Self:
+        delta_t = Stamped.combine(
+            temperature_supply,
+            temperature_return,
+            value=temperature_supply.value - temperature_return.value,
+        )
+        heat = Stamped.combine(
+            delta_t, flow, value=flow.value * delta_t.value * heat_transfer_conversion
+        )
+        return cls(delta_t=delta_t, heat=heat)
+
+
+class HvacExchanger(HeatTransferDevice):
+    pass
+
+
+class HeatPump(HeatTransferDevice):
+    pass
+
+
+class HeatExchanger(HeatTransferDevice):
+    pass
 
 
 class Valve(ThrsValues):
@@ -134,7 +190,7 @@ class Fahrenheit(ThrsValues):
 class PowerSensor(ThrsValues):
     flow: Stamped[LMin]
     power: Stamped[Watt]
-    delta_t: Stamped[Kelvin]
+    delta_t: Stamped[DeltaT]
     temperature_warm: Stamped[Celsius]
     temperature_cold: Stamped[Celsius]
 
@@ -143,10 +199,20 @@ __all__ = [
     "FlowSensor",
     "Pump",
     "TemperatureSensor",
+    "TemperatureDelta",
     "CalculatedTemperature",
+    "CalculatedFlow",
+    "HeatTransferDevice",
+    "HvacExchanger",
+    "HeatPump",
+    "HeatExchanger",
     "Valve",
     "PressureSensor",
     "Thruster",
+    "PropulsionDrive",
+    "ShorePowerConverter",
+    "Brightloop",
+    "Ugrid",
     "Pcs",
     "Pcm",
     "Fahrenheit",

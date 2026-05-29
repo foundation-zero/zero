@@ -47,7 +47,9 @@ def ensure_dedataframes(cls):
 
 
 def pydantic_to_strawberry_type(
-    pydantic_model: type[BaseModel], suffix: str = "Type"
+    pydantic_model: type[BaseModel],
+    suffix: str = "Type",
+    include_computed: bool = False,
 ) -> type:
     """
     Convert a Pydantic model to a Strawberry GraphQL type.
@@ -55,6 +57,7 @@ def pydantic_to_strawberry_type(
     Args:
         pydantic_model: The Pydantic model class to convert
         suffix: Suffix to add to the type name (default: "Type")
+        include_computed: Whether to include computed fields (default: False)
 
     Returns:
         A Strawberry GraphQL type class
@@ -78,6 +81,7 @@ def pydantic_to_strawberry_type(
     return strawberry.experimental.pydantic.type(
         model=pydantic_model,
         all_fields=True,
+        include_computed=include_computed,
         json_schema_directive=JsonSchemaDirective,
         use_pydantic_alias=False,
     )(graphql_class)

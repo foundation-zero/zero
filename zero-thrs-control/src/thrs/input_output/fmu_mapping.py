@@ -4,7 +4,11 @@ from typing import Any, overload
 
 from pydantic.fields import FieldInfo, ComputedFieldInfo
 
-from thrs.input_output.base import SimulationInputs, Stamped, ThrsValues
+from thrs.input_output.base import (
+    SimulationValues,
+    Stamped,
+    ThrsValues,
+)
 
 
 def groupby(iterable, key):
@@ -24,9 +28,9 @@ def included_in_fmu(field: FieldInfo | ComputedFieldInfo) -> bool:
 
 
 def extract_non_fmu_values(
-    simulation_inputs: SimulationInputs, sensor_cls: type[ThrsValues]
+    simulation_values: SimulationValues, sensor_cls: type[ThrsValues]
 ) -> dict[str, dict[str, Stamped[Any]]]:
-    """Extract values from simulation inputs that are not included in the FMU."""
+    """Extract values from simulation values that are not included in the FMU."""
 
     def _lookup_values(
         simulation_input: ThrsValues,
@@ -58,9 +62,9 @@ def extract_non_fmu_values(
     return {
         component_name: values
         for component_name, field in all_sensor_fields.items()
-        if hasattr(simulation_inputs, component_name)
+        if hasattr(simulation_values, component_name)
         and (
-            values := _lookup_values(getattr(simulation_inputs, component_name), field)
+            values := _lookup_values(getattr(simulation_values, component_name), field)
         )
     }
 
