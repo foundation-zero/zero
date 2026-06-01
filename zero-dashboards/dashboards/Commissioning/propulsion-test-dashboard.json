@@ -3925,54 +3925,6 @@
                 "value": true
               }
             ]
-          },
-          {
-            "matcher": {
-              "id": "byName",
-              "options": "seq_nr"
-            },
-            "properties": [
-              {
-                "id": "custom.hideFrom.viz",
-                "value": true
-              }
-            ]
-          },
-          {
-            "matcher": {
-              "id": "byName",
-              "options": "flow"
-            },
-            "properties": [
-              {
-                "id": "unit",
-                "value": "flowlpm"
-              }
-            ]
-          },
-          {
-            "matcher": {
-              "id": "byName",
-              "options": "pressure"
-            },
-            "properties": [
-              {
-                "id": "unit",
-                "value": "pressurebar"
-              }
-            ]
-          },
-          {
-            "matcher": {
-              "id": "byName",
-              "options": "Device"
-            },
-            "properties": [
-              {
-                "id": "custom.width",
-                "value": 100
-              }
-            ]
           }
         ]
       },
@@ -3997,9 +3949,23 @@
             "uid": "${datasource}"
           },
           "editorMode": "code",
-          "format": "table",
+          "editorType": "sql",
+          "format": 1,
+          "meta": {
+            "builderOptions": {
+              "columns": [],
+              "database": "",
+              "limit": 1000,
+              "meta": {},
+              "mode": "list",
+              "queryType": "table",
+              "table": ""
+            }
+          },
+          "pluginVersion": "2.1.4",
+          "queryType": "table",
           "rawQuery": true,
-          "rawSql": "SELECT\r\n  LAST_VALUE(time ORDER BY time) AS time,\r\n  1 AS seq_nr,\r\n  'Gearbox oil' AS device,\r\n  LAST_VALUE((\"OilTemperatureIn\").value ORDER BY time)  AS temperature_in,\r\n  LAST_VALUE((\"OilTemperatureOut\").value ORDER BY time) AS temperature_out,\r\n  LAST_VALUE((\"OilTemperatureOut\").value ORDER BY time) - LAST_VALUE((\"OilTemperatureIn\").value ORDER BY time) AS temperature_delta,\r\n  LAST_VALUE((\"OilFlow\").value ORDER BY time) AS flow,\r\n  NULL AS pressure\r\nFROM marpower.thruster\r\nWHERE topic = 'marpower/thruster/' || lower('$aft_fwd')\r\nUNION ALL\r\nSELECT\r\n  LAST_VALUE(time ORDER BY time) AS time,\r\n  2 AS seq_nr,\r\n  'Aradex 1' AS device,\r\n  LAST_VALUE((\"Aradex1TemperatureIn\").value ORDER BY time)  AS temperature_in,\r\n  LAST_VALUE((\"Aradex1TemperatureOut\").value ORDER BY time) AS temperature_out,\r\n  LAST_VALUE((\"Aradex1TemperatureOut\").value ORDER BY time) - LAST_VALUE((\"Aradex1TemperatureIn\").value ORDER BY time) AS temperature_delta,\r\n  LAST_VALUE((\"Aradex1Flow\").value ORDER BY time) AS flow,\r\n  LAST_VALUE((\"Aradex1Pressure\").value ORDER BY time) AS pressure\r\nFROM marpower.thruster\r\nWHERE topic = 'marpower/thruster/' || lower('$aft_fwd')\r\nUNION ALL\r\nSELECT\r\n  LAST_VALUE(time ORDER BY time) AS time,\r\n  3 AS seq_nr,\r\n  'Aradex 2' AS device,\r\n  LAST_VALUE((\"Aradex2TemperatureIn\").value ORDER BY time)  AS temperature_in,\r\n  LAST_VALUE((\"Aradex2TemperatureOut\").value ORDER BY time) AS temperature_out,\r\n  LAST_VALUE((\"Aradex2TemperatureOut\").value ORDER BY time) - LAST_VALUE((\"Aradex2TemperatureIn\").value ORDER BY time) AS temperature_delta,\r\n  LAST_VALUE((\"Aradex2Flow\").value ORDER BY time) AS flow,\r\n  LAST_VALUE((\"Aradex2Pressure\").value ORDER BY time) AS pressure\r\nFROM marpower.thruster\r\nWHERE topic = 'marpower/thruster/' || lower('$aft_fwd')\r\nUNION ALL\r\nSELECT\r\n  LAST_VALUE(time ORDER BY time) AS time,\r\n  4 AS seq_nr,\r\n  'Thruster' AS device,\r\n  LAST_VALUE((\"TemperatureIn\").value ORDER BY time)  AS temperature_in,\r\n  LAST_VALUE((\"TemperatureOut\").value ORDER BY time) AS temperature_out,\r\n  LAST_VALUE((\"TemperatureOut\").value ORDER BY time) - LAST_VALUE((\"Aradex2TemperatureIn\").value ORDER BY time) AS temperature_delta,\r\n  LAST_VALUE((\"Flow\").value ORDER BY time) AS flow,\r\n  LAST_VALUE((\"Pressure\").value ORDER BY time) AS pressure\r\nFROM marpower.thruster\r\nWHERE topic = 'marpower/thruster/' || lower('$aft_fwd')\r\nORDER BY seq_nr",
+          "rawSql": "SELECT\r\n  CASE WHEN '${aft_fwd}' = 'AFT'\r\n    THEN LEAST(aft_supply.time, aft_return1.time, aft_return2.time)\r\n    ELSE LEAST(fwd_supply.time, fwd_return1.time, fwd_return2.time)\r\n  END                               AS time,\r\n  CASE WHEN '${aft_fwd}' = 'AFT'\r\n    THEN aft_supply.temperature\r\n    ELSE fwd_supply.temperature\r\n  END                               AS supply_temp,\r\n  CASE WHEN '${aft_fwd}' = 'AFT'\r\n    THEN aft_return1.temperature\r\n    ELSE fwd_return1.temperature\r\n  END                               AS return1_temp,\r\n  CASE WHEN '${aft_fwd}' = 'AFT'\r\n    THEN aft_return2.temperature\r\n    ELSE fwd_return2.temperature\r\n  END                               AS return2_temp,\r\n  CASE WHEN '${aft_fwd}' = 'AFT'\r\n    THEN aft_return1.temperature - aft_supply.temperature\r\n    ELSE fwd_return1.temperature - fwd_supply.temperature\r\n  END                               AS delta1_temp,\r\n  CASE WHEN '${aft_fwd}' = 'AFT'\r\n    THEN aft_return2.temperature - aft_supply.temperature\r\n    ELSE NULL -- fwd_return2.temperature - fwd_supply.temperature\r\n  END                               AS delta2_temp \r\nFROM (\r\n  SELECT\r\n    timestamp          AS time,\r\n    temperature__value AS temperature\r\n  FROM public.marpower__500000_thrs__lt1__lt1_temperature_propdrive_aft_supply\r\n  ORDER BY timestamp\r\n  DESC LIMIT 1\r\n) AS aft_supply\r\nCROSS JOIN (\r\n  SELECT\r\n    timestamp          AS time,\r\n    temperature__value AS temperature\r\n  FROM public.marpower__500000_thrs__lt1__lt1_temperature_propdrive_aft1_return\r\n  ORDER BY timestamp\r\n  DESC LIMIT 1\r\n) AS aft_return1\r\nCROSS JOIN (\r\n  SELECT\r\n    timestamp          AS time,\r\n    temperature__value AS temperature\r\n  FROM public.marpower__500000_thrs__lt1__lt1_temperature_propdrive_aft2_return\r\n  ORDER BY timestamp\r\n  DESC LIMIT 1\r\n) AS aft_return2\r\nCROSS JOIN (\r\n  SELECT\r\n    timestamp          AS time,\r\n    temperature__value AS temperature\r\n  FROM public.marpower__500000_thrs__lt1__lt1_temperature_propdrive_fwd_supply\r\n  ORDER BY timestamp\r\n  DESC LIMIT 1\r\n) AS fwd_supply\r\nCROSS JOIN (\r\n  SELECT\r\n    timestamp          AS time,\r\n    temperature__value AS temperature\r\n  FROM public.marpower__500000_thrs__lt1__lt1_temperature_propdrive_fwd1_return\r\n  ORDER BY timestamp\r\n  DESC LIMIT 1\r\n) AS fwd_return1\r\nCROSS JOIN (\r\n  SELECT\r\n    timestamp          AS time,\r\n    temperature__value AS temperature\r\n  FROM public.marpower__500000_thrs__lt1__lt1_temperature_propdrive_fwd2_return\r\n  ORDER BY timestamp\r\n  DESC LIMIT 1\r\n) AS fwd_return2\r\n",
           "refId": "A",
           "sql": {
             "columns": [
@@ -4020,7 +3986,7 @@
           }
         }
       ],
-      "title": "",
+      "title": "Aradex cooling",
       "transformations": [
         {
           "id": "organize",
@@ -4029,10 +3995,15 @@
             "includeByName": {},
             "indexByName": {},
             "renameByName": {
+              "delta1_temp": "Aradex 1 delta",
+              "delta2_temp": "Aradex 2 delta",
               "device": "Device",
               "flow": "Flow",
               "pressure": "Pressure",
+              "return1_temp": "Aradex 1 return temp",
+              "return2_temp": "Aradex 2 return temp",
               "seq_nr": "",
+              "supply_temp": "Supply temp",
               "temperature_delta": "T delta",
               "temperature_in": "T in",
               "temperature_out": "T out"
@@ -6213,7 +6184,7 @@
           "pluginVersion": "2.1.4",
           "queryType": "table",
           "rawQuery": true,
-          "rawSql": "WITH torque_values AS (\r\n  SELECT\r\n  LEAST(motor.timestamp, thruster_ara1.timestamp, thruster_ara2.timestamp)            AS time,\r\n    CASE WHEN '${aft_fwd}' = 'AFT'\r\n      THEN \"devices__can_aradex.i_aft_thrstr_torque_nm\"\r\n      ELSE \"devices__can_aradex.i_fwd_thrstr_torque_nm\"\r\n    END                                                 AS motor_torque,\r\n    thruster_ara1.torque__value                        AS aradex1_torque,\r\n    thruster_ara2.torque__value                        AS aradex2_torque\r\n\r\n  FROM (\r\nSELECT *\r\n    FROM public.marpower__150000propulsion__pcs_fwd_ara1\r\n    WHERE topic = 'marpower/150000propulsion/pcs-fwd-ara1'\r\n    ORDER BY timestamp DESC\r\n    LIMIT 1\r\n  ) AS thruster_ara1\r\n  CROSS JOIN (\r\nSELECT *\r\n    FROM public.marpower__150000propulsion__pcs_fwd_ara2\r\n    WHERE topic = 'marpower/150000propulsion/pcs-fwd-ara2'\r\n    ORDER BY timestamp DESC\r\n    LIMIT 1\r\n  ) AS thruster_ara2\r\n  CROSS JOIN (\r\n    SELECT *\r\n    FROM public.prop_test__data\r\n    ORDER BY timestamp DESC\r\n    LIMIT 1\r\n  ) AS motor\r\n)\r\nSELECT\r\n  motor_torque,\r\n  aradex1_torque,\r\n  aradex2_torque,\r\n  motor_torque - (aradex1_torque * 1) AS abs_loss,\r\n  (100 * (motor_torque - (aradex1_torque * 1)) / GREATEST(motor_torque, 1)) AS rel_loss\r\nFROM torque_values",
+          "rawSql": "WITH torque_values AS (\r\n  SELECT\r\n  LEAST(motor.timestamp, thruster_ara1.timestamp, thruster_ara2.timestamp)            AS time,\r\n    CASE WHEN '${aft_fwd}' = 'AFT'\r\n      THEN \"devices__can_aradex.i_aft_thrstr_torque_nm\"\r\n      ELSE \"devices__can_aradex.i_fwd_thrstr_torque_nm\"\r\n    END                                                 AS motor_torque,\r\n    thruster_ara1.torque__value                        AS aradex1_torque,\r\n    thruster_ara2.torque__value                        AS aradex2_torque\r\n\r\n  FROM (\r\nSELECT *\r\n    FROM public.marpower__150000propulsion__pcs_fwd_ara1\r\n    ORDER BY timestamp DESC\r\n    LIMIT 1\r\n  ) AS thruster_ara1\r\n  CROSS JOIN (\r\nSELECT *\r\n    FROM public.marpower__150000propulsion__pcs_fwd_ara2\r\n    ORDER BY timestamp DESC\r\n    LIMIT 1\r\n  ) AS thruster_ara2\r\n  CROSS JOIN (\r\n    SELECT *\r\n    FROM public.prop_test__data\r\n    ORDER BY timestamp DESC\r\n    LIMIT 1\r\n  ) AS motor\r\n)\r\nSELECT\r\n  motor_torque,\r\n  aradex1_torque,\r\n  aradex2_torque,\r\n  motor_torque - (aradex1_torque * 1) AS abs_loss,\r\n  (100 * (motor_torque - (aradex1_torque * 1)) / GREATEST(motor_torque, 1)) AS rel_loss\r\nFROM torque_values",
           "refId": "A",
           "sql": {
             "columns": [
