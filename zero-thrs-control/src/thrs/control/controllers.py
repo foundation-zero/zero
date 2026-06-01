@@ -2,7 +2,7 @@ from datetime import datetime
 from typing import Callable, cast
 from simple_pid import PID
 
-from thrs.input_output.base import Stamped, ThrsValues
+from thrs.input_output.base import Stamped
 from thrs.input_output.definitions.control import Pump, Valve
 from thrs.input_output.definitions.controllers import PidControllerValues
 from thrs.input_output.definitions.units import LMin, Ratio
@@ -41,6 +41,9 @@ class PidController[ActuatorUnit: float, MeasurementUnit: float]:
             time_fn=lambda: time_fn().timestamp(),
         )
         self._initial = initial
+        self._pid_result = None
+        self._measurement = None
+        self._time = time_fn
 
     def _sync_parameters(self):
         if self._tuning_getter:
@@ -92,17 +95,16 @@ class PidController[ActuatorUnit: float, MeasurementUnit: float]:
     def error(self) -> MeasurementUnit | None:
         return cast(MeasurementUnit | None, self._pid._last_error)  # type: ignore
 
-    def values(
-        self, sensor_values: ThrsValues, parameters: ThrsValues, time: datetime
-    ) -> PidControllerValues:
+    def values(self) -> PidControllerValues:
+        timestamp = self._time()
         return PidControllerValues(
-            setpoint=Stamped(value=self.setpoint, timestamp=time),
-            measurement=Stamped(value=self._measurement, timestamp=time),
-            output=Stamped(value=self._pid_result, timestamp=time),
-            error=Stamped(value=self.error, timestamp=time),
-            enabled=Stamped(value=self.enabled(), timestamp=time),
-            tuning=Stamped(value=self._tuning, timestamp=time),
-            components=Stamped(value=self._pid.components, timestamp=time),
+            setpoint=Stamped(value=self.setpoint, timestamp=timestamp),
+            measurement=Stamped(value=self._measurement, timestamp=timestamp),
+            output=Stamped(value=self._pid_result, timestamp=timestamp),
+            error=Stamped(value=self.error, timestamp=timestamp),
+            enabled=Stamped(value=self.enabled(), timestamp=timestamp),
+            tuning=Stamped(value=self._tuning, timestamp=timestamp),
+            components=Stamped(value=self._pid.components, timestamp=timestamp),
         )
 
 

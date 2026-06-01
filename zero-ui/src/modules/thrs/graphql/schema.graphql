@@ -642,12 +642,12 @@ type PcsSimulationType {
 
 input PidControllerValuesInputType {
   setpoint: Float!
-  measurement: Float!
-  output: Float!
-  error: Float!
+  measurement: Float
+  output: Float
+  error: Float
   enabled: Boolean!
-  tuning: Float!
-  components: Float!
+  tuning: [Float!]!
+  components: [Float!]!
 }
 
 input PumpInputType {
@@ -915,7 +915,7 @@ input TanksControllerValuesInputType {
   tank1State: TankState!
   tank2State: TankState!
   tank3State: TankState!
-  timeToFill: Float!
+  timeToFill: Float
 }
 
 input TemperatureBoundaryInputType {

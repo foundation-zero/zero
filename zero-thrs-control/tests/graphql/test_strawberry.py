@@ -4,6 +4,7 @@ from unittest.mock import Mock
 from aiomqtt import Client as MqttClient
 from httpx import ASGITransport, AsyncClient
 import pytest
+import strawberry
 from thrs.cli.simulation_controls import (
     ControlModeMessage,
     SimulationInputMessage,
@@ -18,6 +19,7 @@ from thrs.control.modules.thrusters import ThrustersControlMode, ThrustersParame
 from thrs.control.switching import SwitchingControlMode
 from thrs.graphql import simulation
 from thrs.graphql.base import ThrustersMessaging
+from thrs.graphql.helpers import UnstampedInput
 from thrs.graphql.messaging import ControlMessaging, Messaging, SimulationMessaging
 from thrs.graphql.strawberry import (
     app,
@@ -29,6 +31,7 @@ from thrs.graphql.strawberry import (
     simulation_messaging,
     thrusters_messaging,
 )
+from thrs.input_output.base import Stamped, ThrsValues
 
 from thrs.input_output.modules.boilers import BoilersControlValues, BoilersSensorValues
 from thrs.input_output.modules.consumers import (
@@ -49,6 +52,53 @@ from thrs.input_output.modules.thrusters import (
     ThrustersSimulationInputs,
     ThrustersSimulationOutputs,
 )
+
+
+class _FloatShapesStampedModel(ThrsValues):
+    required_float: Stamped[float]
+    optional_float: Stamped[float | None]
+    tuple_float: Stamped[tuple[float, float, float]]
+    optional_tuple_float: Stamped[tuple[float, float, float] | None]
+
+
+def _schema_block(schema_str: str, type_kind: str, type_name: str) -> str:
+    start = schema_str.index(f"{type_kind} {type_name} {{")
+    end = schema_str.index("\n}\n", start)
+    return schema_str[start:end]
+
+
+def test_unstamped_input_generation_keeps_optional_and_tuple_types():
+    model = UnstampedInput.generate_for_model(
+        "FloatShapesInputType", _FloatShapesStampedModel
+    )
+
+    input_type = strawberry.experimental.pydantic.input(
+        model=model,
+        all_fields=True,
+        use_pydantic_alias=False,
+    )(type("FloatShapesInput", (object,), {}))
+
+    @strawberry.type
+    class _Query:
+        @strawberry.field
+        def ok(self) -> bool:
+            return True
+
+    @strawberry.type
+    class _Mutation:
+        @strawberry.mutation
+        def set_values(self, value: input_type) -> bool:  # type: ignore
+            return True
+
+    schema_str = str(strawberry.Schema(query=_Query, mutation=_Mutation))
+    block = _schema_block(schema_str, "input", "FloatShapesInput")
+
+    assert "requiredFloat: Float!" in block
+    assert "optionalFloat: Float" in block
+    assert "optionalFloat: Float!" not in block
+    assert "tupleFloat: [Float!]!" in block
+    assert "optionalTupleFloat: [Float!]" in block
+    assert "optionalTupleFloat: [Float!]!" not in block
 
 
 @pytest.fixture

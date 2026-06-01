@@ -2,7 +2,9 @@ from thrs.input_output.base import Stamped, ThrsValues
 from thrs.input_output.definitions.units import Seconds, TankState
 
 
-class PidControllerValues(ThrsValues):
+class PidControllerValues(
+    ThrsValues
+):  # Not using generics here for strawberry compatibility.
     setpoint: Stamped[float]
     measurement: Stamped[float | None]
     output: Stamped[float | None]

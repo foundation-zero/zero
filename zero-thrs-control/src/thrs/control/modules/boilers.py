@@ -73,15 +73,15 @@ class BoilersParameters(ThrsValues):
         return self
 
 
-def _zero_pid():
+def _zero_pid(timestamp: datetime) -> PidControllerValues:
     return PidControllerValues(
-        setpoint=Stamped.stamp(0.0),
-        measurement=Stamped.stamp(None),
-        output=Stamped.stamp(None),
-        error=Stamped.stamp(None),
-        enabled=Stamped.stamp(False),
-        tuning=Stamped.stamp((0.0, 0.0, 0.0)),
-        components=Stamped.stamp((0.0, 0.0, 0.0)),
+        setpoint=Stamped(value=0.0, timestamp=timestamp),
+        measurement=Stamped(value=None, timestamp=timestamp),
+        output=Stamped(value=None, timestamp=timestamp),
+        error=Stamped(value=None, timestamp=timestamp),
+        enabled=Stamped(value=False, timestamp=timestamp),
+        tuning=Stamped(value=(0.0, 0.0, 0.0), timestamp=timestamp),
+        components=Stamped(value=(0.0, 0.0, 0.0), timestamp=timestamp),
     )
 
 
@@ -146,18 +146,10 @@ def _INITIAL_CONTROL_VALUES(timestamp: datetime) -> BoilersControlValues:
             tank3_state=Stamped(value=TankState.NEEDS_FILL, timestamp=timestamp),
             time_to_fill=Stamped(value=None, timestamp=timestamp),
         ),
-        boilers_lt1_flow_controller=PidControllerValues(
-            setpoint=Stamped.stamp(0.0),
-            measurement=Stamped.stamp(None),
-            output=Stamped.stamp(None),
-            error=Stamped.stamp(None),
-            enabled=Stamped.stamp(False),
-            tuning=Stamped.stamp((0.0, 0.0, 0.0)),
-            components=Stamped.stamp((0.0, 0.0, 0.0)),
-        ),
-        boilers_lt2_flow_controller=_zero_pid(),
-        boilers_pump_flow_controller=_zero_pid(),
-        boilers_pump_temperature_controller=_zero_pid(),
+        boilers_lt1_flow_controller=_zero_pid(timestamp),
+        boilers_lt2_flow_controller=_zero_pid(timestamp),
+        boilers_pump_flow_controller=_zero_pid(timestamp),
+        boilers_pump_temperature_controller=_zero_pid(timestamp),
     )
 
 
@@ -279,8 +271,7 @@ class Tank:
         if self._empty_valve.setpoint.value != Valve.CLOSED:
             self._empty_valve.setpoint = Stamped(value=Valve.CLOSED, timestamp=time())
 
-    @property
-    def state(self) -> TankState:
+    def state(self, parameters: BoilersParameters) -> TankState:
         if self._in_use:
             return TankState.IN_USE
         elif self._filling:
@@ -289,9 +280,9 @@ class Tank:
             return TankState.BOOSTING
         elif self.disabled:
             return TankState.DISABLED
-        elif self.boostable:
+        elif self.boostable(parameters):
             return TankState.NEEDS_BOOST
-        elif self.fillable:
+        elif self.fillable(parameters):
             return TankState.NEEDS_FILL
         else:  # standby
             return TankState.STANDBY
@@ -459,13 +450,17 @@ class TanksController:
         self._select_filling_tank(parameters, sensor_values)
         self._select_boosting_tank(parameters, sensor_values)
 
+    def values(
+        self, sensor_values: BoilersSensorValues, parameters: BoilersParameters
+    ) -> TanksControllerValues:
+        time = self._time()
         return TanksControllerValues(
-            tank1_state=Stamped(value=self._tanks[0].state, timestamp=self._time()),
-            tank2_state=Stamped(value=self._tanks[1].state, timestamp=self._time()),
-            tank3_state=Stamped(value=self._tanks[2].state, timestamp=self._time()),
+            tank1_state=Stamped(value=self._tanks[0].state(parameters), timestamp=time),
+            tank2_state=Stamped(value=self._tanks[1].state(parameters), timestamp=time),
+            tank3_state=Stamped(value=self._tanks[2].state(parameters), timestamp=time),
             time_to_fill=Stamped(
                 value=self.time_to_fill(sensor_values, parameters),
-                timestamp=self._time(),
+                timestamp=time,
             ),
         )
 
@@ -627,6 +622,23 @@ class BoilersControl(
             time_fn=self._time,
         )
 
+    def update_controller_values(self, sensor_values: BoilersSensorValues):
+        self._current_values.boilers_tanks_controller = self._tanks_controller.values(
+            sensor_values=sensor_values, parameters=self._parameters
+        )
+        self._current_values.boilers_lt1_flow_controller = (
+            self._lt1_flow_controller.values()
+        )
+        self._current_values.boilers_lt2_flow_controller = (
+            self._lt2_flow_controller.values()
+        )
+        self._current_values.boilers_pump_flow_controller = (
+            self._pump_flow_controller.values()
+        )
+        self._current_values.boilers_pump_temperature_controller = (
+            self._pump_temperature_controller.values()
+        )
+
     @property
     def parameters(self) -> BoilersParameters:
         return self._parameters
@@ -659,6 +671,8 @@ class BoilersControl(
         self._enable_filling_flow_control(sensor_values)
         self._control_filling_flow(sensor_values)
         self._control_boosting_flow(sensor_values)
+
+        self.update_controller_values(sensor_values)
 
         return ControlResult(self._time(), self._current_values)
 

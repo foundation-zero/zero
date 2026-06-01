@@ -1,4 +1,4 @@
-from typing import Annotated, get_args
+from typing import Annotated, get_args, get_origin
 from pydantic import Field, create_model, BaseModel
 import strawberry
 from strawberry.schema_directive import Location
@@ -200,9 +200,13 @@ class UnstampedInput(ThrsValues):
         Returns:
             A new Pydantic model class with unstamped fields
         """
+
+        def _unstamped_type(unit):
+            return get_args(unit)[0] if get_origin(unit) is Annotated else unit
+
         fields = {
             key: Annotated[
-                get_args(unit)[0] if get_args(unit) else unit,
+                _unstamped_type(unit),
                 Field(),
             ]
             for key, field in model.model_fields.items()
