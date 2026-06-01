@@ -199,12 +199,84 @@ export const BOILERS_SENSOR_QUERY = `
   lt1TemperatureRecovery {
     temperature { value timestamp }
   }
+  lt1TemperatureRecoveryReturn {
+    temperature { value timestamp }
+  }
+  lt2FlowRecovery {
+    flow { value timestamp }
+    temperature { value timestamp }
+  }
+  lt2TemperatureRecovery {
+    temperature { value timestamp }
+  }
+  lt2TemperatureRecoveryReturn {
+    temperature { value timestamp }
+  }
   consumersFlowBoosting {
     flow { value timestamp }
     temperature { value timestamp }
   }
   consumersTemperatureBoostingSupply {
     temperature { value timestamp }
+  }
+  consumersTemperatureBoostingReturn {
+    temperature { value timestamp }
+  }
+  fahrenheitFlowBoilers {
+    flow { value timestamp }
+    temperature { value timestamp }
+  }
+  fahrenheitTemperatureWasteReturn {
+    temperature { value timestamp }
+  }
+  fahrenheitTemperatureBoilersReturn {
+    temperature { value timestamp }
+  }
+  freshwaterHotwaterFlow {
+    flow { value timestamp }
+    temperature { value timestamp }
+  }
+  freshwaterHotwaterTemperature {
+    temperature { value timestamp }
+  }
+  lt1Delta {
+    deltaT { value timestamp }
+  }
+  lt2Delta {
+    deltaT { value timestamp }
+  }
+  consumersDelta {
+    deltaT { value timestamp }
+  }
+  fahrenheitDelta {
+    deltaT { value timestamp }
+  }
+  freshwaterFlowSupply {
+    flow { value timestamp }
+  }
+  boilersHvacExchanger {
+    heat { value timestamp }
+    deltaT { value timestamp }
+  }
+  boilersHeatpump {
+    heat { value timestamp }
+    deltaT { value timestamp }
+  }
+  boilersFahrenheitExchanger {
+    heat { value timestamp }
+    deltaT { value timestamp }
+  }
+  boilersConsumersExchanger {
+    heat { value timestamp }
+    deltaT { value timestamp }
+  }
+  boilersLt2Exchanger {
+    heat { value timestamp }
+    deltaT { value timestamp }
+  }
+  boilersLt1Exchanger {
+    heat { value timestamp }
+    deltaT { value timestamp }
   }
 `;
 

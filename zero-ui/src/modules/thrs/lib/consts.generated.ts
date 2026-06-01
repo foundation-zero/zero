@@ -334,6 +334,22 @@ export const BOILERS_SENSOR_DEFINITION = toSensorDefinition({
     yardTag: "50001038-16",
     componentType: SensorComponentType.Temperature,
   },
+  lt1TemperatureRecoveryReturn: {
+    yardTag: "50001038-59",
+    componentType: SensorComponentType.Temperature,
+  },
+  lt2FlowRecovery: {
+    yardTag: "50001058-04",
+    componentType: SensorComponentType.Flow,
+  },
+  lt2TemperatureRecovery: {
+    yardTag: "50001038-52",
+    componentType: SensorComponentType.Temperature,
+  },
+  lt2TemperatureRecoveryReturn: {
+    yardTag: "50001038-58",
+    componentType: SensorComponentType.Temperature,
+  },
   consumersFlowBoosting: {
     yardTag: "50001058-07",
     componentType: SensorComponentType.Flow,
@@ -341,6 +357,74 @@ export const BOILERS_SENSOR_DEFINITION = toSensorDefinition({
   consumersTemperatureBoostingSupply: {
     yardTag: "50001038-53",
     componentType: SensorComponentType.Temperature,
+  },
+  consumersTemperatureBoostingReturn: {
+    yardTag: "50001038-48",
+    componentType: SensorComponentType.Temperature,
+  },
+  fahrenheitFlowBoilers: {
+    yardTag: "50001058-10",
+    componentType: SensorComponentType.Flow,
+  },
+  fahrenheitTemperatureWasteReturn: {
+    yardTag: "50001038-38",
+    componentType: SensorComponentType.Temperature,
+  },
+  fahrenheitTemperatureBoilersReturn: {
+    yardTag: "50001038-56",
+    componentType: SensorComponentType.Temperature,
+  },
+  freshwaterHotwaterFlow: {
+    yardTag: "25001123-1",
+    componentType: SensorComponentType.Flow,
+  },
+  freshwaterHotwaterTemperature: {
+    yardTag: "25001038-1",
+    componentType: SensorComponentType.Temperature,
+  },
+  lt1Delta: {
+    yardTag: "N/A",
+    componentType: SensorComponentType.DeltaT,
+  },
+  lt2Delta: {
+    yardTag: "N/A",
+    componentType: SensorComponentType.DeltaT,
+  },
+  consumersDelta: {
+    yardTag: "N/A",
+    componentType: SensorComponentType.DeltaT,
+  },
+  fahrenheitDelta: {
+    yardTag: "N/A",
+    componentType: SensorComponentType.DeltaT,
+  },
+  freshwaterFlowSupply: {
+    yardTag: "N/A",
+    componentType: SensorComponentType.CalculatedFlow,
+  },
+  boilersHvacExchanger: {
+    yardTag: "N/A",
+    componentType: SensorComponentType.HeatExchanger,
+  },
+  boilersHeatpump: {
+    yardTag: "N/A",
+    componentType: SensorComponentType.HeatExchanger,
+  },
+  boilersFahrenheitExchanger: {
+    yardTag: "N/A",
+    componentType: SensorComponentType.HeatExchanger,
+  },
+  boilersConsumersExchanger: {
+    yardTag: "N/A",
+    componentType: SensorComponentType.HeatExchanger,
+  },
+  boilersLt2Exchanger: {
+    yardTag: "N/A",
+    componentType: SensorComponentType.HeatExchanger,
+  },
+  boilersLt1Exchanger: {
+    yardTag: "N/A",
+    componentType: SensorComponentType.HeatExchanger,
   },
 });
 
@@ -470,7 +554,7 @@ export const CONSUMERS_SENSOR_DEFINITION = toSensorDefinition({
     componentType: SensorComponentType.Flow,
   },
   consumersFlowBypass: {
-    yardTag: "50001060-01",
+    yardTag: "50001192",
     componentType: SensorComponentType.Flow,
   },
   consumersFlowcontrolFahrenheit: {

@@ -18,7 +18,9 @@ from thrs.graphql.helpers import (
 from thrs.input_output.modules.boilers import BoilersControlValues, BoilersSensorValues
 
 
-BoilersSensorValuesType = pydantic_to_strawberry_type(BoilersSensorValues)
+BoilersSensorValuesType = pydantic_to_strawberry_type(
+    BoilersSensorValues, include_computed=True
+)
 BoilersControlValuesType = pydantic_to_strawberry_type(BoilersControlValues)
 BoilersParametersType = pydantic_to_strawberry_type(BoilersParameters)
 BoilersControlModeType = pydantic_to_strawberry_type(BoilersControlMode)

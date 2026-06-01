@@ -99,11 +99,14 @@ def validate_nonzero_float_within_precision(
     return value
 
 
+WATER_HEAT_TRANSFER_CONVERSION = 4184 / 60  # kW min/(l*K)
+
 OptionalCelsius: TypeAlias = Annotated[
     float | None, Field(ge=-273.15), UnitMeta(modelica_name="C")
 ]
 Celsius: TypeAlias = Annotated[float, Field(ge=-273.15), UnitMeta(modelica_name="C")]
 Kelvin: TypeAlias = Annotated[float, Field(ge=0), UnitMeta(modelica_name="K")]
+DeltaT: TypeAlias = Annotated[float, UnitMeta(modelica_name="K")]
 LMin: TypeAlias = Annotated[
     float,
     Field(ge=-0.1),

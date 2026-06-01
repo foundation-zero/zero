@@ -66,6 +66,10 @@ class Stamped[T](ThrsValues):
     def stamp[V](value: V) -> "Stamped[V]":
         return Stamped(value=value, timestamp=datetime.now())
 
+    @staticmethod
+    def combine[V](*stamped: "Stamped[Any]", value: V) -> "Stamped[V]":
+        return Stamped(value=value, timestamp=min(s.timestamp for s in stamped))
+
 
 class StampedDf[T](ThrsValues):
     model_config = ConfigDict(arbitrary_types_allowed=True)
