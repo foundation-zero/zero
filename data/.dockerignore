@@ -2,7 +2,6 @@
 !poetry.lock
 !pyproject.toml
 !postgres
-!risingwave
 !*.py
 
 # Python
