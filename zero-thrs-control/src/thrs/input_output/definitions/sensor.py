@@ -68,7 +68,7 @@ class TemperatureDelta(ThrsValues):
         delta_t = Stamped.combine(
             temperature_supply,
             temperature_return,
-            value=temperature_supply.value - temperature_return.value,
+            value=temperature_return.value - temperature_supply.value,
         )
         return cls(delta_t=delta_t)
 
@@ -88,7 +88,7 @@ class HeatTransferDevice(ThrsValues):
         delta_t = Stamped.combine(
             temperature_supply,
             temperature_return,
-            value=temperature_supply.value - temperature_return.value,
+            value=temperature_return.value - temperature_supply.value,
         )
         heat = Stamped.combine(
             delta_t, flow, value=flow.value * delta_t.value * heat_transfer_conversion

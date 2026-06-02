@@ -82,10 +82,8 @@ def test_boilers_hvac_exchanger_computed_field():
 
     exchanger = values.boilers_hvac_exchanger
     assert isinstance(exchanger, sensor.HvacExchanger)
-    assert exchanger.delta_t.value == approx(t_supply - t_return)
-    assert exchanger.heat.value == approx(
-        flow * (t_supply - t_return) * WATER_HEAT_TRANSFER_CONVERSION
-    )
+    assert exchanger.delta_t.value == approx(-20.0)
+    assert exchanger.heat.value == approx(30.0 * -20.0 * WATER_HEAT_TRANSFER_CONVERSION)
 
 
 def test_boilers_heatpump_computed_field():
@@ -110,10 +108,8 @@ def test_boilers_heatpump_computed_field():
 
     heatpump = values.boilers_heatpump
     assert isinstance(heatpump, sensor.HeatPump)
-    assert heatpump.delta_t.value == approx(t_supply - t_return)
-    assert heatpump.heat.value == approx(
-        flow * (t_supply - t_return) * WATER_HEAT_TRANSFER_CONVERSION
-    )
+    assert heatpump.delta_t.value == approx(-20.0)
+    assert heatpump.heat.value == approx(20.0 * -20.0 * WATER_HEAT_TRANSFER_CONVERSION)
 
 
 def test_computed_field_timestamp_uses_oldest():
