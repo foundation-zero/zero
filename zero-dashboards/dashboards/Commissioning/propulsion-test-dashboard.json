@@ -3255,18 +3255,6 @@
           {
             "matcher": {
               "id": "byName",
-              "options": "Temperature"
-            },
-            "properties": [
-              {
-                "id": "unit",
-                "value": "celsius"
-              }
-            ]
-          },
-          {
-            "matcher": {
-              "id": "byName",
               "options": "Torque"
             },
             "properties": [
@@ -3309,6 +3297,18 @@
               {
                 "id": "unit",
                 "value": "kwatt"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byRegexp",
+              "options": "/temp/"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "celsius"
               }
             ]
           }
@@ -3357,7 +3357,7 @@
           "pluginVersion": "2.1.4",
           "queryType": "table",
           "rawQuery": true,
-          "rawSql": "WITH last_record AS (\r\n  SELECT *\r\n  FROM public.marpower__150000_propulsion\r\n  WHERE topic = 'marpower/150000-propulsion/pcs-' || lower('$aft_fwd')\r\n  AND $__timeFilter(timestamp)\r\n  ORDER BY timestamp DESC\r\n  LIMIT 1\r\n),\r\naft1 AS\r\n(\r\n  SELECT flow__value AS flow\r\n  FROM public.marpower__500000_thrs__flw__lt1_propdrive_aft1\r\n  WHERE $__timeFilter(timestamp)\r\n  ORDER BY timestamp\r\n  DESC LIMIT 1\r\n),\r\naft2 AS\r\n(\r\n  SELECT flow__value AS flow\r\n  FROM public.marpower__500000_thrs__flw__lt1_propdrive_aft2\r\n  WHERE $__timeFilter(timestamp)\r\n  ORDER BY timestamp\r\n  DESC LIMIT 1\r\n),\r\nfwd1 AS\r\n(\r\n  SELECT flow__value AS flow\r\n  FROM public.marpower__500000_thrs__flw__lt1_propdrive_fwd1\r\n  WHERE $__timeFilter(timestamp)\r\n  ORDER BY timestamp\r\n  DESC LIMIT 1\r\n),\r\nfwd2 AS\r\n(\r\n  SELECT flow__value AS flow\r\n  FROM public.marpower__500000_thrs__flw__lt1_propdrive_fwd2\r\n  WHERE $__timeFilter(timestamp)\r\n  ORDER BY timestamp\r\n  DESC LIMIT 1\r\n)\r\n\r\nSELECT\r\n  timestamp                     AS time,\r\n  'Aradex 1'                    AS device,\r\n  ara_1_speed__value            AS speed,\r\n  ara_1_torque__value           AS torque,\r\n  NULL                          AS torque_setpoint,\r\n  ara_1_temp_power_stage__value AS temperature,\r\n  CASE WHEN '${aft_fwd}' = 'AFT'\r\n    THEN aft1.flow\r\n    ELSE fwd1.flow\r\n  END                           AS flow,\r\n  ara_1_power__value            AS \"power\"\r\nFROM last_record, aft1, fwd1\r\n\r\nUNION ALL\r\n\r\nSELECT\r\n  timestamp                     AS time,\r\n  'Aradex 2'                    AS device,\r\n  ara_2_speed__value            AS speed,\r\n  ara_2_torque__value           AS torque,\r\n  NULL                          AS torque_setpoint,\r\n  ara_2_temp_power_stage__value AS temperature,\r\n  CASE WHEN '${aft_fwd}' = 'AFT'\r\n    THEN aft2.flow\r\n    ELSE fwd2.flow\r\n  END                           AS flow,\r\n  ara_2_power__value            AS \"power\"\r\nFROM last_record, aft2, fwd2\r\n\r\nORDER BY device",
+          "rawSql": "WITH fwd1 AS (\r\n  SELECT\r\n    timestamp AS time,\r\n    speed__value AS speed,\r\n    torque__value AS torque,\r\n    power__value AS \"power\",\r\n    temp_igbt__value AS igbt_temp,\r\n    temp_power_stage__value AS power_stage_temp\r\n  FROM public.marpower__150000propulsion__pcs_fwd_ara1\r\n  WHERE $__timeFilter(timestamp)\r\n  ORDER BY timestamp DESC\r\n  LIMIT 1\r\n),\r\nfwd2 AS (\r\n  SELECT\r\n    timestamp AS time,\r\n    speed__value AS speed,\r\n    torque__value AS torque,\r\n    power__value AS \"power\",\r\n    temp_igbt__value AS igbt_temp,\r\n    temp_power_stage__value AS power_stage_temp\r\n  FROM public.marpower__150000propulsion__pcs_fwd_ara2\r\n  ORDER BY timestamp DESC\r\n  LIMIT 1\r\n)\r\n-- ,\r\n-- aft1 AS (\r\n--   SELECT\r\n--     timestamp AS time,\r\n--     speed__value AS speed,\r\n--     torque__value AS torque,\r\n--     power__value AS \"power\",\r\n--     temp_igbt__value AS igbt_temp,\r\n--     temp_power_stage__value AS power_stage_temp\r\n--   FROM public.marpower__150000propulsion__pcs_aft_ara1\r\n--   ORDER BY timestamp DESC\r\n--   LIMIT 1\r\n-- ),\r\n-- aft2 AS (\r\n--   SELECT\r\n--     timestamp AS time,\r\n--     speed__value AS speed,\r\n--     torque__value AS torque,\r\n--     power__value AS \"power\",\r\n--     temp_igbt__value AS igbt_temp,\r\n--     temp_power_stage__value AS power_stage_temp\r\n--   FROM public.marpower__150000propulsion__pcs_aft_ara2\r\n--   ORDER BY timestamp DESC\r\n--   LIMIT 1\r\n-- )\r\n\r\nSELECT\r\n  'Aradex 1'                    AS device,\r\n  CASE WHEN '${aft_fwd}' = 'AFT'\r\n    THEN NULL\r\n    ELSE fwd1.time\r\n  END                           AS time,\r\n  CASE WHEN '${aft_fwd}' = 'AFT'\r\n    THEN NULL\r\n    ELSE fwd1.speed\r\n  END                           AS speed,\r\n  CASE WHEN '${aft_fwd}' = 'AFT'\r\n    THEN NULL\r\n    ELSE fwd1.torque\r\n  END                           AS torque,\r\n  NULL                          AS torque_setpoint,\r\n  CASE WHEN '${aft_fwd}' = 'AFT'\r\n    THEN NULL\r\n    ELSE fwd1.power_stage_temp\r\n  END                            AS power_stage_temp,\r\n  CASE WHEN '${aft_fwd}' = 'AFT'\r\n    THEN NULL\r\n    ELSE fwd1.igbt_temp\r\n  END                            AS igbt_temp,\r\n  CASE WHEN '${aft_fwd}' = 'AFT'\r\n    THEN NULL\r\n    ELSE fwd1.\"power\"\r\n  END                           AS \"power\"\r\nFROM fwd1--,aft1\r\n\r\nUNION ALL\r\n\r\nSELECT\r\n  'Aradex 2'                    AS device,\r\n  CASE WHEN '${aft_fwd}' = 'AFT'\r\n    THEN NULL\r\n    ELSE fwd2.time\r\n  END                           AS time,\r\n  CASE WHEN '${aft_fwd}' = 'AFT'\r\n    THEN NULL\r\n    ELSE fwd2.speed\r\n  END                           AS speed,\r\n  CASE WHEN '${aft_fwd}' = 'AFT'\r\n    THEN NULL\r\n    ELSE fwd2.torque\r\n  END                           AS torque,\r\n  NULL                          AS torque_setpoint,\r\n  CASE WHEN '${aft_fwd}' = 'AFT'\r\n    THEN NULL\r\n    ELSE fwd2.power_stage_temp\r\n  END                            AS power_stage_temp,\r\n  CASE WHEN '${aft_fwd}' = 'AFT'\r\n    THEN NULL\r\n    ELSE fwd2.igbt_temp\r\n  END                            AS igbt_temp,\r\n  CASE WHEN '${aft_fwd}' = 'AFT'\r\n    THEN NULL\r\n    ELSE fwd2.\"power\"\r\n  END                           AS \"power\"\r\nFROM fwd2--,aft2\r\n\r\nORDER BY device",
           "refId": "A",
           "sql": {
             "columns": [
@@ -3390,7 +3390,9 @@
               "device": "Device",
               "flow": "Flow",
               "gear_ratio": "Gear ratio",
+              "igbt_temp": "IGBT temp",
               "power": "Power",
+              "power_stage_temp": "Power stage temp",
               "pressure": "Pressure",
               "seq_nr": "",
               "speed": "Speed",
@@ -3492,14 +3494,13 @@
       "pluginVersion": "12.3.0",
       "targets": [
         {
-          "dataset": "dev",
           "datasource": {
-            "type": "grafana-postgresql-datasource",
+            "type": "info8fcc-greptimedb-datasource",
             "uid": "${datasource}"
           },
-          "editorMode": "code",
           "editorType": "sql",
           "format": 1,
+          "hide": false,
           "meta": {
             "builderOptions": {
               "columns": [],
@@ -3513,26 +3514,8 @@
           },
           "pluginVersion": "2.1.4",
           "queryType": "table",
-          "rawQuery": true,
-          "rawSql": "SELECT\r\n  timestamp           AS time,\r\n  ara_1_speed__value  AS aradex1_speed,\r\n  ara_2_speed__value  AS aradex2_speed\r\nFROM public.marpower__150000_propulsion\r\nWHERE topic = 'marpower/150000-propulsion/pcs-' || lower('$aft_fwd')\r\nAND $__timeFilter(timestamp)",
-          "refId": "A",
-          "sql": {
-            "columns": [
-              {
-                "parameters": [],
-                "type": "function"
-              }
-            ],
-            "groupBy": [
-              {
-                "property": {
-                  "type": "string"
-                },
-                "type": "groupBy"
-              }
-            ],
-            "limit": 50
-          }
+          "rawSql": "WITH fwd1 AS (\r\n  SELECT\r\n    timestamp AS time,\r\n    speed__value AS speed,\r\n  FROM public.marpower__150000propulsion__pcs_fwd_ara1\r\n  WHERE $__timeFilter(timestamp)\r\n),\r\nfwd2 AS (\r\n  SELECT\r\n    timestamp AS time,\r\n    speed__value AS speed,\r\n  FROM public.marpower__150000propulsion__pcs_fwd_ara2\r\n  WHERE $__timeFilter(timestamp)\r\n)\r\n--,\r\n-- aft1 AS (\r\n--   SELECT\r\n--     timestamp AS time,\r\n--     speed__value AS speed,\r\n--   FROM public.marpower__150000propulsion__pcs_aft_ara1\r\n--   WHERE $__timeFilter(timestamp)\r\n-- )\r\n-- aft2 AS (\r\n--   SELECT\r\n--     timestamp AS time,\r\n--     speed__value AS speed,\r\n--   FROM public.marpower__150000propulsion__pcs_aft_ara2\r\n--   WHERE $__timeFilter(timestamp)\r\nSELECT\r\n  CASE WHEN '${aft_fwd}' = 'AFT'\r\n    THEN NULL -- LEAST(aft1.time, aft2.time)\r\n    ELSE LEAST(fwd1.time, fwd2.time)\r\n  END                                             AS time,\r\n  CASE WHEN '${aft_fwd}' = 'AFT'\r\n    THEN NULL -- aft1.speed\r\n    ELSE fwd1.speed\r\n  END                                             AS aradex1_speed,\r\n  CASE WHEN '${aft_fwd}' = 'AFT'\r\n    THEN NULL -- aft2.speed\r\n    ELSE fwd2.speed\r\n  END                                             AS aradex2_speed\r\nFROM fwd1, fwd2 --,aft1, aft2\r\n",
+          "refId": "A"
         }
       ],
       "title": "Speed",
@@ -3661,7 +3644,7 @@
           "pluginVersion": "2.1.4",
           "queryType": "table",
           "rawQuery": true,
-          "rawSql": "SELECT\r\n  timestamp           AS time,\r\n  ara_1_torque__value AS aradex1_torque,\r\n  ara_2_torque__value AS aradex2_torque\r\nFROM public.marpower__150000_propulsion\r\nWHERE topic = 'marpower/150000-propulsion/pcs-' || lower('$aft_fwd')\r\nAND $__timeFilter(timestamp)",
+          "rawSql": "WITH fwd1 AS (\r\n  SELECT\r\n    timestamp AS time,\r\n    torque__value AS torque,\r\n  FROM public.marpower__150000propulsion__pcs_fwd_ara1\r\n  WHERE $__timeFilter(timestamp)\r\n),\r\nfwd2 AS (\r\n  SELECT\r\n    timestamp AS time,\r\n    torque__value AS torque,\r\n  FROM public.marpower__150000propulsion__pcs_fwd_ara2\r\n  WHERE $__timeFilter(timestamp)\r\n)\r\n--,\r\n-- aft1 AS (\r\n--   SELECT\r\n--     timestamp AS time,\r\n--     torque__value AS torque,\r\n--   FROM public.marpower__150000propulsion__pcs_aft_ara1\r\n--   WHERE $__timeFilter(timestamp)\r\n-- )\r\n-- aft2 AS (\r\n--   SELECT\r\n--     timestamp AS time,\r\n--     torque__value AS torque,\r\n--   FROM public.marpower__150000propulsion__pcs_aft_ara2\r\n--   WHERE $__timeFilter(timestamp)\r\nSELECT\r\n  CASE WHEN '${aft_fwd}' = 'AFT'\r\n    THEN NULL -- LEAST(aft1.time, aft2.time)\r\n    ELSE LEAST(fwd1.time, fwd2.time)\r\n  END                                             AS time,\r\n  CASE WHEN '${aft_fwd}' = 'AFT'\r\n    THEN NULL -- aft1.torque\r\n    ELSE fwd1.torque\r\n  END                                             AS aradex1_torque,\r\n  CASE WHEN '${aft_fwd}' = 'AFT'\r\n    THEN NULL -- aft2.torque\r\n    ELSE fwd2.torque\r\n  END                                             AS aradex2_torque\r\nFROM fwd1, fwd2 --,aft1, aft2\r\n",
           "refId": "A",
           "sql": {
             "columns": [
@@ -3809,7 +3792,7 @@
           "pluginVersion": "2.1.4",
           "queryType": "table",
           "rawQuery": true,
-          "rawSql": "SELECT\r\n  timestamp                     AS time,\r\n  ara_1_power__value            AS aradex1_power,\r\n  ara_2_power__value            AS aradex2_power\r\nFROM public.marpower__150000_propulsion\r\nWHERE topic = 'marpower/150000-propulsion/pcs-' || lower('$aft_fwd')\r\nAND $__timeFilter(timestamp)",
+          "rawSql": "WITH fwd1 AS (\r\n  SELECT\r\n    timestamp AS time,\r\n    power__value AS \"power\",\r\n  FROM public.marpower__150000propulsion__pcs_fwd_ara1\r\n  WHERE $__timeFilter(timestamp)\r\n),\r\nfwd2 AS (\r\n  SELECT\r\n    timestamp AS time,\r\n    power__value AS \"power\",\r\n  FROM public.marpower__150000propulsion__pcs_fwd_ara2\r\n  WHERE $__timeFilter(timestamp)\r\n)\r\n--,\r\n-- aft1 AS (\r\n--   SELECT\r\n--     timestamp AS time,\r\n--     power__value AS \"power\",\r\n--   FROM public.marpower__150000propulsion__pcs_aft_ara1\r\n--   WHERE $__timeFilter(timestamp)\r\n-- )\r\n-- aft2 AS (\r\n--   SELECT\r\n--     timestamp AS time,\r\n--     power__value AS \"power\",\r\n--   FROM public.marpower__150000propulsion__pcs_aft_ara2\r\n--   WHERE $__timeFilter(timestamp)\r\nSELECT\r\n  CASE WHEN '${aft_fwd}' = 'AFT'\r\n    THEN NULL -- LEAST(aft1.time, aft2.time)\r\n    ELSE LEAST(fwd1.time, fwd2.time)\r\n  END                                             AS time,\r\n  CASE WHEN '${aft_fwd}' = 'AFT'\r\n    THEN NULL -- aft1.torque\r\n    ELSE fwd1.\"power\"\r\n  END                                             AS aradex1_power,\r\n  CASE WHEN '${aft_fwd}' = 'AFT'\r\n    THEN NULL -- aft2.torque\r\n    ELSE fwd2.\"power\"\r\n  END                                             AS aradex2_power\r\nFROM fwd1, fwd2 --,aft1, aft2\r\n",
           "refId": "A",
           "sql": {
             "columns": [
@@ -6424,20 +6407,20 @@
       {
         "allowCustomValue": false,
         "current": {
-          "text": "AFT",
-          "value": "AFT"
+          "text": "FWD",
+          "value": "FWD"
         },
         "description": "Select the AFT or FWD thruster system",
         "label": "AFT/FWD",
         "name": "aft_fwd",
         "options": [
           {
-            "selected": true,
+            "selected": false,
             "text": "AFT",
             "value": "AFT"
           },
           {
-            "selected": false,
+            "selected": true,
             "text": "FWD",
             "value": "FWD"
           }
@@ -6466,7 +6449,7 @@
     ]
   },
   "time": {
-    "from": "now-5m",
+    "from": "now-30m",
     "to": "now"
   },
   "timepicker": {},
