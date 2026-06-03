@@ -4,16 +4,20 @@ import { HTMLAttributes } from "vue";
 
 import { createSizeAndViewbox } from "..";
 
-const props = defineProps<{
-  class?: HTMLAttributes["class"];
-  width: number | string;
-  height: number | string;
-}>();
+const props = withDefaults(
+  defineProps<{
+    class?: HTMLAttributes["class"];
+    width?: number | string;
+    height?: number | string;
+    forceHeight?: boolean;
+  }>(),
+  { width: 200, height: 162, forceHeight: false },
+);
 </script>
 
 <template>
   <svg
-    v-bind="createSizeAndViewbox(props.width, props.height)"
+    v-bind="createSizeAndViewbox(width, height, forceHeight)"
     class="fill-background"
   >
     <foreignObject

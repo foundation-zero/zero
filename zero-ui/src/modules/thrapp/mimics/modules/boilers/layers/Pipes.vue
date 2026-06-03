@@ -142,83 +142,40 @@
       <g>
         <path
           d="M499.214 392.704L499.214 589.944"
-          stroke="#882299"
+          class="stroke-flows-connecting"
           stroke-dasharray="2 2"
         />
         <path
           d="M467.284 392.704V589.944"
-          stroke="#882299"
+          class="stroke-flows-connecting"
           stroke-dasharray="2 2"
         />
         <path
           d="M0.500013 1.26042L0.5 304.364L94.3528 304.364L94.3528 152.812L94.3528 1.26042"
-          stroke="#882299"
+          class="stroke-flows-connecting"
           stroke-dasharray="2 2"
         />
         <path
           d="M993.617 392.704L993.617 588.893"
-          stroke="#882299"
+          class="stroke-flows-connecting"
           stroke-dasharray="2 2"
         />
         <path
           d="M961.751 392.704L961.751 589.419"
-          stroke="#882299"
+          class="stroke-flows-connecting"
           stroke-dasharray="2 2"
         />
         <path
           d="M715.26 550.572L715.26 589.419"
-          stroke="#882299"
+          class="stroke-flows-connecting"
           stroke-dasharray="2 2"
         />
         <path
           d="M747.68 551.304L747.68 588.893"
-          stroke="#882299"
+          class="stroke-flows-connecting"
           stroke-dasharray="2 2"
         />
       </g>
     </g>
-    <defs>
-      <filter
-        id="filter0_d_7164_2"
-        x="359.23"
-        y="148.61"
-        width="701.348"
-        height="9"
-        filterUnits="userSpaceOnUse"
-        color-interpolation-filters="sRGB"
-      >
-        <feFlood
-          flood-opacity="0"
-          result="BackgroundImageFix"
-        />
-        <feColorMatrix
-          in="SourceAlpha"
-          type="matrix"
-          values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0"
-          result="hardAlpha"
-        />
-        <feOffset dy="4" />
-        <feGaussianBlur stdDeviation="2" />
-        <feComposite
-          in2="hardAlpha"
-          operator="out"
-        />
-        <feColorMatrix
-          type="matrix"
-          values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.25 0"
-        />
-        <feBlend
-          mode="normal"
-          in2="BackgroundImageFix"
-          result="effect1_dropShadow_7164_2"
-        />
-        <feBlend
-          mode="normal"
-          in="SourceGraphic"
-          in2="effect1_dropShadow_7164_2"
-          result="shape"
-        />
-      </filter>
-    </defs>
   </svg>
 </template>

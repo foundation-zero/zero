@@ -1,30 +1,37 @@
 <script setup lang="ts">
-import { MimicComponentInstanceProps, useRandomizedNumber } from ".";
+import { SensorComponentType } from "@/modules/thrs/types";
+import { MimicComponentInstanceProps } from ".";
 import { Label } from "../components/label";
 import { ValueList, ValueListDeltaTItem, ValueListHeatPowerItem } from "../components/value-list";
+import { getMimicDataProvider, ModuleField } from "../providers";
 
-defineProps<MimicComponentInstanceProps>();
+const props = defineProps<
+  MimicComponentInstanceProps & {
+    heatExchanger: ModuleField<SensorComponentType.HeatExchanger>;
+  }
+>();
 
-const deltaTRaw = useRandomizedNumber(-90, 90);
-const powerRaw = useRandomizedNumber(5, 30);
+const { getSensorValue } = getMimicDataProvider();
+const heatExchanger = getSensorValue(props.heatExchanger);
 </script>
 
 <template>
   <Label
     :x="x"
     :y="y"
-    class="w-20"
+    height="70"
+    class="w-20 py-0.5"
   >
     {{ tagId }}
     <template #value>
       <ValueList>
         <ValueListDeltaTItem
           class="text-sm"
-          :value="deltaTRaw"
+          :value="heatExchanger?.deltaT?.value"
         />
         <ValueListHeatPowerItem
           class="text-sm"
-          :value="powerRaw"
+          :value="heatExchanger?.heat?.value"
         />
       </ValueList>
     </template>

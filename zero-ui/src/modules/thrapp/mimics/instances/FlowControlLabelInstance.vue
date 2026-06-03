@@ -1,14 +1,22 @@
 <script setup lang="ts">
+import { ratioAsPercentage } from "@/modules/common/lib/utils";
 import AnimatedNumber from "@/modules/loads/components/animated-number/AnimatedNumber.vue";
+import { SensorComponentType } from "@/modules/thrs/types";
+import { computed } from "vue";
 import { useI18n } from "vue-i18n";
-import { MimicComponentInstanceProps, useRandomizedNumber } from ".";
+import { MimicComponentInstanceProps } from ".";
 import { Label } from "../components/label";
+import { getMimicDataProvider, ModuleField } from "../providers";
 
-defineProps<MimicComponentInstanceProps>();
+const props = defineProps<
+  MimicComponentInstanceProps & { valve: ModuleField<SensorComponentType.Valve> }
+>();
 
+const { getSensorValue } = getMimicDataProvider();
+const valve = getSensorValue(props.valve);
+const position = computed(() => valve.value?.positionRel?.value);
+const positionPercentage = ratioAsPercentage(position);
 const { t } = useI18n();
-
-const value = useRandomizedNumber(0, 100);
 </script>
 
 <template>
@@ -19,7 +27,7 @@ const value = useRandomizedNumber(0, 100);
     {{ tagId }}
     <template #value>
       <AnimatedNumber
-        :to="value"
+        :to="positionPercentage"
         :fraction-digits="0"
       />
       <span>{{ t("units.percent") }}</span>

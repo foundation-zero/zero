@@ -2,7 +2,9 @@
 import { cn } from "@/modules/common/lib/utils";
 import { HTMLAttributes } from "vue";
 
-const props = defineProps<{ class?: HTMLAttributes["class"] }>();
+const props = withDefaults(defineProps<{ class?: HTMLAttributes["class"]; offsetY?: number }>(), {
+  offsetY: -7.5,
+});
 </script>
 
 <template>
@@ -14,7 +16,7 @@ const props = defineProps<{ class?: HTMLAttributes["class"] }>();
     <foreignObject
       width="100%"
       height="100%"
-      y="-7.5"
+      :y="offsetY"
     >
       <hgroup
         xmlns="http://www.w3.org/1999/xhtml"

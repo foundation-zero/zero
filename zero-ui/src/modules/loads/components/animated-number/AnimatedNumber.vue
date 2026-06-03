@@ -1,9 +1,9 @@
 <template>
   <component
-    :is="tag ?? 'span'"
+    :is="tag"
     v-if="to == undefined"
   >
-    -
+    {{ fallback }}
   </component>
   <AnimatedNumber
     v-else-if="isBrowser"
@@ -28,10 +28,13 @@ withDefaults(
     tag?: string;
     fractionDigits?: number;
     format?: NumberFormatter;
+    fallback?: string;
   }>(),
   {
     from: 0,
     fractionDigits: 1,
+    fallback: "-",
+    tag: "span",
   },
 );
 </script>

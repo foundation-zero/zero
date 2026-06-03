@@ -1,7 +1,8 @@
 <script setup lang="ts">
-import { MimicComponentInstanceProps, useRandomizedState } from ".";
+import { MimicComponentInstanceProps } from ".";
 import { PipeHeatExchangerState } from "../components/pipe-heat-exchanger";
 import PipeHeatExchanger from "../components/pipe-heat-exchanger/PipeHeatExchanger.vue";
+import { useRandomizedState } from "../providers/mock-helpers.ts";
 
 const props = defineProps<MimicComponentInstanceProps>();
 

@@ -1,34 +1,31 @@
 <script setup lang="ts">
-import { MimicComponentInstanceProps, useRandomizedState } from ".";
-import {
-  ActuatedValveType,
-  FlowValveState,
-  SwitchValveState,
-  ThreeWayValveState,
-} from "../components/actuated-valve";
+import { SensorComponentType } from "@/modules/thrs/types/index.ts";
+import { computed } from "vue";
+import { MimicComponentInstanceProps } from ".";
+import { ActuatedValveType, SwitchValveState } from "../components/actuated-valve";
 import ActuatedValve from "../components/actuated-valve/ActuatedValve.vue";
+import { getMimicDataProvider, ModuleField } from "../providers";
 
-const props = defineProps<MimicComponentInstanceProps & { type: ActuatedValveType }>();
+const props = defineProps<
+  MimicComponentInstanceProps & {
+    type: ActuatedValveType;
+    valve: ModuleField<SensorComponentType.Valve>;
+  }
+>();
 
-const valveStates = {
-  [ActuatedValveType.Switch]: [SwitchValveState.Open, SwitchValveState.Closed],
-  [ActuatedValveType.FlowControl]: [
-    FlowValveState.Open,
-    FlowValveState.Closed,
-    FlowValveState.Partial,
-  ],
-  [ActuatedValveType.ThreeWay]: [
-    ThreeWayValveState.Open,
-    ThreeWayValveState.Closed,
-    ThreeWayValveState.AA,
-    ThreeWayValveState.AB,
-    ThreeWayValveState.BA,
-  ],
-};
+const { getSensorValue } = getMimicDataProvider();
+const valve = getSensorValue(props.valve);
 
-const state = useRandomizedState<SwitchValveState | FlowValveState | ThreeWayValveState>(
-  valveStates[props.type],
-);
+const CLOSED_THRESHOLD = 0.0001;
+
+const state = computed(() => {
+  if (
+    valve.value?.positionRel.value != undefined &&
+    valve.value?.positionRel.value <= CLOSED_THRESHOLD
+  )
+    return SwitchValveState.Closed;
+  else return SwitchValveState.Open;
+});
 </script>
 
 <template>

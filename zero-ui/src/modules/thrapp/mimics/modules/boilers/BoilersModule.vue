@@ -1,12 +1,12 @@
 <script setup lang="ts">
 import ActuatedValves from "./layers/ActuatedValves.vue";
+import Assets from "./layers/Assets.vue";
 import BoilerTanks from "./layers/BoilerTanks.vue";
 import Bypasses from "./layers/Bypasses.vue";
 import CircuitBoxes from "./layers/CircuitBoxes.vue";
 import DirectionArrows from "./layers/DirectionArrows.vue";
 import FlowSensors from "./layers/FlowSensors.vue";
 import HeatExchangers from "./layers/HeatExchangers.vue";
-import HeatPumps from "./layers/HeatPumps.vue";
 import Labels from "./layers/Labels.vue";
 import LevelSensors from "./layers/LevelSensors.vue";
 import ManualValves from "./layers/ManualValves.vue";
@@ -39,6 +39,6 @@ import TemperatureSensors from "./layers/TemperatureSensors.vue";
     <DirectionArrows />
     <CircuitBoxes />
     <BoilerTanks />
-    <HeatPumps />
+    <Assets />
   </svg>
 </template>

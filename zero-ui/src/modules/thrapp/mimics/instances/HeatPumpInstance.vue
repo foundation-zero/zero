@@ -1,6 +1,7 @@
 <script setup lang="ts">
-import { type Component } from "vue";
-import { MimicComponentInstanceProps, useRandomizedNumber, useRandomizedState } from ".";
+import { SensorComponentType } from "@/modules/thrs/types";
+import { computed, type Component } from "vue";
+import { MimicComponentInstanceProps, TitleProps } from ".";
 import { HeatPump, HeatPumpMode, HeatPumpModes, HeatPumpTitle } from "../components/heat-pump";
 import {
   ValueList,
@@ -9,19 +10,29 @@ import {
   ValueListSeparator,
 } from "../components/value-list";
 import { YardTag } from "../components/yard-tag";
+import { getMimicDataProvider, ModuleField } from "../providers";
 
 const props = defineProps<
-  MimicComponentInstanceProps & {
-    icon: Component;
-    title: string;
-    width: number | string;
-    height: number | string;
-  }
+  MimicComponentInstanceProps &
+    TitleProps & {
+      heatExchanger: ModuleField<SensorComponentType.HeatExchanger>;
+    } & {
+      icon: Component;
+      width?: number | string;
+      height?: number | string;
+      forceHeight?: boolean;
+      hideMode?: boolean;
+    }
 >();
 
-const deltaT = useRandomizedNumber(-20, 20);
-const heatPower = useRandomizedNumber(5, 30);
-const mode = useRandomizedState([HeatPumpModes.Active, HeatPumpModes.Inactive]);
+const { getSensorValue } = getMimicDataProvider();
+
+const heatExchanger = getSensorValue(props.heatExchanger);
+
+const mode = computed(() => {
+  if (heatExchanger.value?.heat.value !== 0) return HeatPumpModes.Active;
+  else return HeatPumpModes.Inactive;
+});
 </script>
 
 <template>
@@ -34,11 +45,14 @@ const mode = useRandomizedState([HeatPumpModes.Active, HeatPumpModes.Inactive]);
       />
       {{ title }}
     </HeatPumpTitle>
-    <HeatPumpMode :mode="mode" />
+    <HeatPumpMode
+      v-if="!hideMode"
+      :mode="mode"
+    />
     <ValueList class="gap-0">
       <ValueListSeparator />
-      <ValueListHeatPowerItem :value="heatPower" />
-      <ValueListDeltaTItem :value="deltaT" />
+      <ValueListHeatPowerItem :value="heatExchanger?.heat?.value" />
+      <ValueListDeltaTItem :value="heatExchanger?.deltaT.value" />
       <ValueListSeparator />
     </ValueList>
   </HeatPump>

@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { useUIStore } from "@common/stores/ui";
-import { computed, defineAsyncComponent, toRefs } from "vue";
+import { computed, defineAsyncComponent, HTMLAttributes, toRefs } from "vue";
 
 const { breakpoints } = toRefs(useUIStore());
 
@@ -9,7 +9,11 @@ const dialog = defineAsyncComponent(() => import("./ResponsivePopupDialog.vue"))
 
 const wrapper = computed(() => (breakpoints.value.phone ? drawer : dialog));
 const open = defineModel<boolean>("open", { required: true, default: false });
-defineProps<{ title: string; description: string }>();
+const props = defineProps<{
+  title?: string;
+  description?: string;
+  class?: HTMLAttributes["class"];
+}>();
 </script>
 
 <template>
@@ -18,7 +22,14 @@ defineProps<{ title: string; description: string }>();
     v-model:open="open"
     :title="title"
     :description="description"
+    :class="props.class"
   >
+    <template
+      v-if="$slots['title']"
+      #title
+    >
+      <slot name="title" />
+    </template>
     <template #trigger>
       <slot name="trigger" />
     </template>
