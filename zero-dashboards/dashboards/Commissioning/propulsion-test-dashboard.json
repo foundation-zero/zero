@@ -347,7 +347,7 @@
           "pluginVersion": "2.1.4",
           "queryType": "table",
           "rawQuery": true,
-          "rawSql": "SELECT\r\n  timestamp                      AS time,\r\n  \"devices__.r_propellor_torque\" AS torque\r\nFROM public.prop_test__data\r\nWHERE $__timeFilter(timestamp)",
+          "rawSql": "SELECT\r\n  timestamp                      AS time,\r\n  \"devices__thruster_test.r_propellor_torque\" AS torque\r\nFROM public.prop_test__data\r\nWHERE $__timeFilter(timestamp)",
           "refId": "A",
           "sql": {
             "columns": [
@@ -508,7 +508,7 @@
           "pluginVersion": "2.1.4",
           "queryType": "table",
           "rawQuery": true,
-          "rawSql": "SELECT\r\n  timestamp                                                 AS time,\r\n  CASE WHEN '${aft_fwd}' = 'AFT'\r\n    THEN \"devices__thruster_test.r_prop_spd_aft_thrstr_rpm\" * \"devices__.r_propellor_torque\" / 60 * 2 * PI()\r\n    ELSE \"devices__thruster_test.r_prop_spd_fwd_thrstr_rpm\" * \"devices__.r_propellor_torque\" / 60 * 2 * PI()\r\n  END                                                       AS \"power\"\r\nFROM public.prop_test__data\r\nWHERE $__timeFilter(timestamp)",
+          "rawSql": "SELECT\r\n  timestamp                                                 AS time,\r\n  CASE WHEN '${aft_fwd}' = 'AFT'\r\n    THEN \"devices__thruster_test.r_prop_spd_aft_thrstr_rpm\" * \"devices__thruster_test.r_propellor_torque\" / 60 * 2 * PI()\r\n    ELSE \"devices__thruster_test.r_prop_spd_fwd_thrstr_rpm\" * \"devices__thruster_test.r_propellor_torque\" / 60 * 2 * PI()\r\n  END                                                       AS \"power\"\r\nFROM public.prop_test__data\r\nWHERE $__timeFilter(timestamp)",
           "refId": "A",
           "sql": {
             "columns": [
@@ -6407,20 +6407,20 @@
       {
         "allowCustomValue": false,
         "current": {
-          "text": "FWD",
-          "value": "FWD"
+          "text": "AFT",
+          "value": "AFT"
         },
         "description": "Select the AFT or FWD thruster system",
         "label": "AFT/FWD",
         "name": "aft_fwd",
         "options": [
           {
-            "selected": false,
+            "selected": true,
             "text": "AFT",
             "value": "AFT"
           },
           {
-            "selected": true,
+            "selected": false,
             "text": "FWD",
             "value": "FWD"
           }
@@ -6449,7 +6449,7 @@
     ]
   },
   "time": {
-    "from": "now-30m",
+    "from": "now-5m",
     "to": "now"
   },
   "timepicker": {},
