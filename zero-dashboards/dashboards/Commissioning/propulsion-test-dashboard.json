@@ -3676,6 +3676,7 @@
             "renameByName": {
               "aradex1_torque": "Aradex 1",
               "aradex2_torque": "Aradex 2",
+              "measured_torque": "Measured torque",
               "speed": "Speed",
               "torque": "Torque"
             }
