@@ -17,9 +17,9 @@ import httpx
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 topic_mapping = {
-    "marpower/150000propulsion/pcs-fwd" : "marpower__150000propulsion__pcs_fwd2"
+    "marpower/150000propulsion/pcs-fwd" : "marpower__150000propulsion__pcs_fwd",
+    "marpower/150000propulsion/pcs-aft" : "marpower__150000propulsion__pcs_aft"
 }
-
 
 
 class Settings(BaseSettings):
@@ -65,6 +65,7 @@ async def subscribe_and_ingest(
                 else str(message.payload)
             )
             data = json.loads(payload_str)
+            data["topic"] = message.topic.value
         except (UnicodeDecodeError, json.JSONDecodeError) as e:
             logger.error(f"Failed to decode or parse JSON from message on topic '{topic}': {e}")
             continue
@@ -80,6 +81,8 @@ async def subscribe_and_ingest(
                 timestamp = datetime.fromisoformat(value["TimeStamp"])
                 if max_timestamp is None or timestamp > max_timestamp:
                     max_timestamp = timestamp
+
+        data["timestamp"] = max_timestamp
 
         # Prepare the ingestion URL
         ingest_url = f"http://{settings.greptimedb_host}:{settings.greptimedb_port}/v1/ingest"
