@@ -15,6 +15,12 @@ export CFLAGS="-include unistd.h"
 poetry run fmpy compile <path-to-fmu-file>
 ```
 
+**Note:** On Linux, when using a newer compiler like GCC 15 or higher you need to set `CFLAGS` to fix and issue with the number of arguments for `select`
+
+```bash
+CFLAGS="-std=gnu17" poetry run fmpy compile <path-to-fmu-file>
+```
+
 ## Simulator
 
 Run the simulator with:
