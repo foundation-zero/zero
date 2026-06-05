@@ -10,7 +10,7 @@ run_control module='thrusters':
     poetry run python -m thrs.cli run {{ module }}
 
 [parallel]
-run: run_api run_control
+run module='thrusters': run_api (run_control module)
 
 check: lint type_check test
 
