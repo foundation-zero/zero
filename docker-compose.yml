@@ -1,3 +1,18 @@
+x-thrs-thruster-simulation-th-template: &thrs_sim_template
+  build:
+    context: ./zero-thrs-control
+    dockerfile: Dockerfile
+    target: simulation
+  profiles:
+    - thrs
+  environment: &thrs_env
+    MQTT_HOST: vernemq
+    MQTT_PORT: 1883
+    MQTT_TOPIC_PREFIX: thrs
+    MQTT_CONTROL_TOPIC_SUFFIX: Command
+  depends_on:
+    vernemq:
+      condition: service_healthy
 services:
   vernemq:
     image: vernemq/vernemq:2.0.0-alpine
@@ -391,18 +406,30 @@ services:
       vernemq:
         condition: service_healthy
 
-  thrs-thruster-simulation:
-    build:
-      context: ./zero-thrs-control
-      dockerfile: Dockerfile
-      target: simulation
-    profiles:
-      - thrs
-    environment:
-      <<: *thrs_env
-    depends_on:
-      vernemq:
-        condition: service_healthy
+
+  thrs-thruster-simulation-th-thrusters:
+    <<: *thrs_sim_template
+    command: ["thrusters"]
+
+  thrs-thruster-simulation-th-pvt:
+    <<: *thrs_sim_template
+    command: ["pvt"]
+
+  thrs-thruster-simulation-th-pcm:
+    <<: *thrs_sim_template
+    command: ["pcm"]
+
+  thrs-thruster-simulation-th-consumers:
+    <<: *thrs_sim_template
+    command: ["consumers"]
+
+  thrs-thruster-simulation-th-high_temperature:
+    <<: *thrs_sim_template
+    command: ["high_temperature"]
+
+  thrs-thruster-simulation-th-boilers:
+    <<: *thrs_sim_template
+    command: ["boilers"]
 
 volumes:
   db_data:
