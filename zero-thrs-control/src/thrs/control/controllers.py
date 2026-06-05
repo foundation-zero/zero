@@ -4,10 +4,11 @@ from simple_pid import PID
 
 from thrs.input_output.base import Stamped
 from thrs.input_output.definitions.control import Pump, Valve
+from thrs.input_output.definitions.controllers import PidControllerValues
 from thrs.input_output.definitions.units import LMin, Ratio
 
 
-class Controller[ActuatorUnit: float, MeasurementUnit: float]:
+class PidController[ActuatorUnit: float, MeasurementUnit: float]:
     def __init__(
         self,
         initial: ActuatorUnit,
@@ -40,6 +41,9 @@ class Controller[ActuatorUnit: float, MeasurementUnit: float]:
             time_fn=lambda: time_fn().timestamp(),
         )
         self._initial = initial
+        self._pid_result = None
+        self._measurement = None
+        self._time = time_fn
 
     def _sync_parameters(self):
         if self._tuning_getter:
@@ -48,7 +52,7 @@ class Controller[ActuatorUnit: float, MeasurementUnit: float]:
 
         if self._setpoint_getter:
             self._setpoint = self._setpoint_getter()
-            self._pid.setpoint = self._setpoint_getter()
+            self._pid.setpoint = self._setpoint
 
         if self._output_limits_getter:
             self._output_limits = self._output_limits_getter()
@@ -77,23 +81,40 @@ class Controller[ActuatorUnit: float, MeasurementUnit: float]:
 
     def __call__(self, measurement: MeasurementUnit | None) -> ActuatorUnit:
         self._sync_parameters()
+        self._measurement = measurement
 
         if measurement is None:
-            pid_result = None
+            self._pid_result = None
         else:
-            pid_result = cast(ActuatorUnit | None, self._pid(measurement))
+            self._pid_result = cast(ActuatorUnit | None, self._pid(measurement))
         return (
-            pid_result if pid_result is not None else self._initial
-        )  # TODO: is returning self._intial desireable?
+            self._pid_result if self._pid_result is not None else self._initial
+        )  # TODO: is returning self._initial desireable? Perhaps better return either None or last value. Better handled in the control than in here..
+
+    @property
+    def error(self) -> MeasurementUnit | None:
+        return cast(MeasurementUnit | None, self._pid._last_error)  # type: ignore
+
+    def values(self) -> PidControllerValues:
+        timestamp = self._time()
+        return PidControllerValues(
+            setpoint=Stamped(value=self.setpoint, timestamp=timestamp),
+            measurement=Stamped(value=self._measurement, timestamp=timestamp),
+            output=Stamped(value=self._pid_result, timestamp=timestamp),
+            error=Stamped(value=self.error, timestamp=timestamp),
+            enabled=Stamped(value=self.enabled(), timestamp=timestamp),
+            tuning=Stamped(value=self._tuning, timestamp=timestamp),
+            components=Stamped(value=self._pid.components, timestamp=timestamp),
+        )
 
 
 class FlowBalanceController:
     def __init__(
         self,
         valves: list[Valve],
-        valve_controllers: list[Controller[Ratio, LMin]],
+        valve_controllers: list[PidController[Ratio, LMin]],
         pump: Pump | None = None,
-        pump_controller: Controller[Ratio, LMin] | None = None,
+        pump_controller: PidController[Ratio, LMin] | None = None,
         time_fn: Callable[[], datetime] = datetime.now,
     ):
         self._valve_controllers = valve_controllers
@@ -186,7 +207,7 @@ class FlowDistributionController:
     def __init__(
         self,
         valves: list[Valve],
-        valve_controllers: list[Controller[Ratio, LMin]],
+        valve_controllers: list[PidController[Ratio, LMin]],
     ):
         self._flow_balance_controller = FlowBalanceController(valves, valve_controllers)
 

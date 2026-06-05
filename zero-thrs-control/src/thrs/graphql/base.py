@@ -11,6 +11,7 @@ from thrs.control.switching import SwitchingControlMode
 from thrs.graphql.messaging import ControlMessaging, Messaging, SimulationMessaging
 import thrs.input_output.definitions.sensor as sensor
 import thrs.input_output.definitions.control as control
+import thrs.input_output.definitions.controllers as controllers
 from thrs.input_output.base import SimulationInputs, Stamped, ThrsValues
 from strawberry.fastapi import BaseContext
 from pydantic.fields import FieldInfo
@@ -109,6 +110,7 @@ def convert_module(module, class_name_prefix: str):
 
 convert_module(sensor, "Sensor")
 convert_module(control, "Control")
+convert_module(controllers, "Controller")
 
 
 # TODO: check if this can't just be based on the pydantic model directly

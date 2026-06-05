@@ -4,7 +4,7 @@ from typing import Callable
 from pydantic import model_validator
 from transitions import Machine, State
 from thrs.classes.control import Control, ControlMode, ControlResult
-from thrs.control.controllers import Controller
+from thrs.control.controllers import PidController
 from thrs.input_output.base import Stamped, ThrsValues
 from thrs.input_output.definitions import sensor
 from thrs.input_output.definitions import control
@@ -108,14 +108,14 @@ class PvtGroupControl(
             initial="idle",
         )
 
-        self._warmup_mix_controller = Controller[Ratio, Celsius](
+        self._warmup_mix_controller = PidController[Ratio, Celsius](
             self._current_values.mix.setpoint.value,
             lambda: self._parameters.warmup_temperature,
             lambda: self._parameters.warmup_mix_tuning,
             self._time,
         )
 
-        self._pump_controller = Controller[Ratio, Celsius](
+        self._pump_controller = PidController[Ratio, Celsius](
             self._current_values.pump.dutypoint.value,
             lambda: self._parameters.recovery_temperature,
             lambda: self._parameters.pump_tuning,

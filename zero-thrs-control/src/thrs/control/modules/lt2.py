@@ -3,7 +3,7 @@ from typing import Callable
 
 from thrs.classes.control import Control, ControlMode, ControlResult
 
-from thrs.control.controllers import Controller
+from thrs.control.controllers import PidController
 from thrs.control.modules.converters import (
     ConvertersControl,
     ConvertersControlMode,
@@ -136,7 +136,7 @@ class Lt2Control(
             deep=True
         )
 
-        self._heat_dump_controller = Controller[Ratio, Celsius](
+        self._heat_dump_controller = PidController[Ratio, Celsius](
             initial=self._current_values.lt2_mix_exchanger.setpoint.value,
             setpoint=lambda: self._parameters.maximum_supply_temperature,
             tuning=lambda: self._parameters.heat_dump_tuning,
@@ -145,7 +145,7 @@ class Lt2Control(
 
         self._heat_dump_controller.enable()  # always enabled
 
-        self._recovery_mix_controller = Controller[Ratio, Celsius](
+        self._recovery_mix_controller = PidController[Ratio, Celsius](
             initial=self._current_values.lt2_mix_recovery.setpoint.value,
             setpoint=lambda: self._parameters.recovery_temperature,
             tuning=lambda: self._parameters.recovery_mix_tuning,

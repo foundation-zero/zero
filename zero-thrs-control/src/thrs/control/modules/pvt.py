@@ -3,7 +3,7 @@ from typing import Annotated, Callable
 from pydantic import Field, model_validator
 
 from thrs.classes.control import Control, ControlMode, ControlResult
-from thrs.control.controllers import Controller
+from thrs.control.controllers import PidController
 from thrs.control.modules.pvt_group import (
     PvtGroupControl,
     PvtGroupControlMode,
@@ -155,7 +155,7 @@ class PvtControl(
             deep=True
         )
 
-        self._heat_dump_controller = Controller[Ratio, Celsius](
+        self._heat_dump_controller = PidController[Ratio, Celsius](
             self._current_values.pvt_mix_exchanger.setpoint.value,
             lambda: self._parameters.maximum_supply_temperature,
             lambda: self._parameters.heat_dump_tuning,

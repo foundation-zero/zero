@@ -4,7 +4,7 @@ from pydantic import model_validator
 
 from transitions import Machine, State
 
-from thrs.control.controllers import Controller, FlowBalanceController
+from thrs.control.controllers import PidController, FlowBalanceController
 from thrs.input_output.alarms import BaseAlarms, Severity, alarm
 from thrs.input_output.base import Stamped, ThrsValues
 from thrs.input_output.definitions.control import Pump, Valve
@@ -204,7 +204,7 @@ class ThrustersControl(
             initial="idle",
         )
 
-        self._heat_dump_controller = Controller[Ratio, Celsius](
+        self._heat_dump_controller = PidController[Ratio, Celsius](
             self._current_values.thrusters_mix_exchanger.setpoint.value,
             lambda: self._parameters.maximum_supply_temperature
             if self.mode.is_recovery
@@ -212,20 +212,20 @@ class ThrustersControl(
             lambda: self._parameters.heat_dump_tuning,
             self._time,
         )
-        self._warmup_mix_controller = Controller[Ratio, Celsius](
+        self._warmup_mix_controller = PidController[Ratio, Celsius](
             self._current_values.thrusters_mix_recovery.setpoint.value,
             lambda: self._parameters.warmup_temperature,
             lambda: self._parameters.warmup_mix_tuning,
             self._time,
         )
-        self._pump_controller = Controller[Ratio, LMin](
+        self._pump_controller = PidController[Ratio, LMin](
             self._current_values.thrusters_pump_1.dutypoint.value,
             0,  # Gets overriden by flow balance controller
             lambda: self._parameters.pump_tuning,
             self._time,
         )
 
-        self._aft_recovery_temperature_controller = Controller[LMin, Celsius](
+        self._aft_recovery_temperature_controller = PidController[LMin, Celsius](
             parameters.thrusters_minimum_flow,
             lambda: self._parameters.recovery_temperature,
             lambda: self._parameters.aft_temperature_tuning,
@@ -236,7 +236,7 @@ class ThrustersControl(
             ),
         )
 
-        self._fwd_recovery_temperature_controller = Controller[LMin, Celsius](
+        self._fwd_recovery_temperature_controller = PidController[LMin, Celsius](
             parameters.thrusters_minimum_flow,
             lambda: self._parameters.recovery_temperature,
             lambda: self._parameters.fwd_temperature_tuning,
@@ -247,14 +247,14 @@ class ThrustersControl(
             ),
         )
 
-        self._aft_flow_controller = Controller[Ratio, LMin](
+        self._aft_flow_controller = PidController[Ratio, LMin](
             self._current_values.thrusters_flowcontrol_aft.setpoint.value,
             0,  # Gets overriden by flow balance controller
             lambda: self._parameters.aft_flow_balance_tuning,
             self._time,
         )
 
-        self._fwd_flow_controller = Controller[Ratio, LMin](
+        self._fwd_flow_controller = PidController[Ratio, LMin](
             self._current_values.thrusters_flowcontrol_fwd.setpoint.value,
             0,  # Gets overriden by flow balance controller
             lambda: self._parameters.fwd_flow_balance_tuning,

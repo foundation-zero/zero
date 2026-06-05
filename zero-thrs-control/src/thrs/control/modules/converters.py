@@ -5,7 +5,7 @@ from transitions import Machine, State
 
 from thrs.classes.control import Control, ControlMode, ControlResult
 
-from thrs.control.controllers import Controller
+from thrs.control.controllers import PidController
 from thrs.input_output.alarms import BaseAlarms
 from thrs.input_output.base import Stamped, ThrsValues
 from thrs.input_output.definitions import sensor
@@ -88,14 +88,14 @@ class ConvertersControl(
         self._time = time_fn
         self.current_values = initial_control_values
 
-        self._pump_controller = Controller[Ratio, LMin](
+        self._pump_controller = PidController[Ratio, LMin](
             initial=self.current_values.pump.dutypoint.value,
             setpoint=0.0,  # Overwritten in control
             tuning=lambda: self._parameters.pump_tuning,
             time_fn=self._time,
         )
 
-        self._warmup_mix_controller = Controller[Ratio, Celsius](
+        self._warmup_mix_controller = PidController[Ratio, Celsius](
             initial=self.current_values.mix.setpoint.value,
             setpoint=lambda: self._parameters.converter_return_temperature,
             tuning=lambda: self._parameters.warmup_mix_tuning,

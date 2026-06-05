@@ -25,6 +25,11 @@ type BoilersControlValuesType {
   boilersSwitchLowTemperature: ControlValveType! @jsonSchemaDirective(yardTag: "50001067-16", componentType: "valve", valveType: "switch")
   boilersSwitchHeatpump: ControlValveType! @jsonSchemaDirective(yardTag: "50001067-17", componentType: "valve", valveType: "switch")
   boilersSwitchHighTemperature: ControlValveType! @jsonSchemaDirective(yardTag: "50001067-18", componentType: "valve", valveType: "switch")
+  boilersTanksController: ControllerTanksControllerValuesType! @jsonSchemaDirective(yardTag: "", componentType: null, valveType: null)
+  boilersPumpFlowController: ControllerPidControllerValuesType! @jsonSchemaDirective(yardTag: "", componentType: null, valveType: null)
+  boilersPumpTemperatureController: ControllerPidControllerValuesType! @jsonSchemaDirective(yardTag: "", componentType: null, valveType: null)
+  boilersLt1FlowController: ControllerPidControllerValuesType! @jsonSchemaDirective(yardTag: "", componentType: null, valveType: null)
+  boilersLt2FlowController: ControllerPidControllerValuesType! @jsonSchemaDirective(yardTag: "", componentType: null, valveType: null)
 }
 
 type BoilersParametersType {
@@ -256,8 +261,35 @@ type ControlValveType {
   setpoint: FloatStampedType!
 }
 
+type ControllerPidControllerValuesType {
+  setpoint: FloatStampedType!
+  measurement: FloatOptionalStampedType!
+  output: FloatOptionalStampedType!
+  error: FloatOptionalStampedType!
+  enabled: BoolStampedType!
+  tuning: FloatListStampedType!
+  components: FloatListStampedType!
+}
+
+type ControllerTanksControllerValuesType {
+  tank1State: TankStateStampedType!
+  tank2State: TankStateStampedType!
+  tank3State: TankStateStampedType!
+  timeToFill: FloatOptionalStampedType!
+}
+
 """Date with time (isoformat)"""
 scalar DateTime
+
+type FloatListStampedType {
+  value: [Float!]!
+  timestamp: DateTime!
+}
+
+type FloatOptionalStampedType {
+  value: Float
+  timestamp: DateTime!
+}
 
 type FloatStampedType {
   value: Float!
@@ -448,6 +480,11 @@ type Mutation {
   boilersControlSetBoilersSwitchLowTemperature(component: ValveInputType!): BoilersControlValuesType!
   boilersControlSetBoilersSwitchHeatpump(component: ValveInputType!): BoilersControlValuesType!
   boilersControlSetBoilersSwitchHighTemperature(component: ValveInputType!): BoilersControlValuesType!
+  boilersControlSetBoilersTanksController(component: TanksControllerValuesInputType!): BoilersControlValuesType!
+  boilersControlSetBoilersPumpFlowController(component: PidControllerValuesInputType!): BoilersControlValuesType!
+  boilersControlSetBoilersPumpTemperatureController(component: PidControllerValuesInputType!): BoilersControlValuesType!
+  boilersControlSetBoilersLt1FlowController(component: PidControllerValuesInputType!): BoilersControlValuesType!
+  boilersControlSetBoilersLt2FlowController(component: PidControllerValuesInputType!): BoilersControlValuesType!
   boilersSimulationSetBoilersLt1Supply(component: BoundaryInputType!): BoilersSimulationInputsType!
   boilersSimulationSetBoilersLt2Supply(component: BoundaryInputType!): BoilersSimulationInputsType!
   boilersSimulationSetBoilersFahrenheitSupply(component: BoundaryInputType!): BoilersSimulationInputsType!
@@ -601,6 +638,16 @@ type PcsModeStampedType {
 
 type PcsSimulationType {
   mode: PcsModeStampedType!
+}
+
+input PidControllerValuesInputType {
+  setpoint: Float!
+  measurement: Float
+  output: Float
+  error: Float
+  enabled: Boolean!
+  tuning: [Float!]!
+  components: [Float!]!
 }
 
 input PumpInputType {
@@ -847,6 +894,28 @@ type SimulationState {
   status: String!
   inputs: SimulationInputsType
   outputs: SimulationOutputsType
+}
+
+enum TankState {
+  IN_USE
+  FILLING
+  BOOSTING
+  DISABLED
+  NEEDS_BOOST
+  NEEDS_FILL
+  STANDBY
+}
+
+type TankStateStampedType {
+  value: TankState!
+  timestamp: DateTime!
+}
+
+input TanksControllerValuesInputType {
+  tank1State: TankState!
+  tank2State: TankState!
+  tank3State: TankState!
+  timeToFill: Float
 }
 
 input TemperatureBoundaryInputType {

@@ -33,7 +33,7 @@ class ControlMode(ThrsValues):
             getattr(self, field_name)
             if isinstance(getattr(self, field_name), str)
             else f"{field_name}: {str(getattr(self, field_name))}"
-            for field_name, field_info in self.model_fields.items()
+            for field_name, field_info in type(self).model_fields.items()
         ]
 
         return ", ".join(values)

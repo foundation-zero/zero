@@ -3,7 +3,7 @@ from typing import Callable
 
 from transitions import Machine, State
 from thrs.classes.control import Control, ControlMode, ControlResult
-from thrs.control.controllers import Controller, FlowBalanceController
+from thrs.control.controllers import PidController, FlowBalanceController
 from thrs.input_output.alarms import BaseAlarms
 from thrs.input_output.base import Stamped, ThrsValues
 from thrs.input_output.definitions.control import Pcm, Pump, Valve
@@ -161,35 +161,35 @@ class PcmControl(
             initial="idle",
         )
 
-        self._pump_flow_controller = Controller[Ratio, LMin](
+        self._pump_flow_controller = PidController[Ratio, LMin](
             self._current_values.pcm_pump.dutypoint.value,
             0,
             lambda: self._parameters.pump_tuning,
             self._time,
         )
 
-        self.module_1_flow_controller = Controller[Ratio, LMin](
+        self.module_1_flow_controller = PidController[Ratio, LMin](
             self._current_values.pcm_flowcontrol_module_1.setpoint.value,
             0,
             lambda: self._parameters.module_1_flow_balance_tuning,
             self._time,
         )
 
-        self.module_2_flow_controller = Controller[Ratio, LMin](
+        self.module_2_flow_controller = PidController[Ratio, LMin](
             self._current_values.pcm_flowcontrol_module_2.setpoint.value,
             0,
             lambda: self._parameters.module_2_flow_balance_tuning,
             self._time,
         )
 
-        self.module_3_flow_controller = Controller[Ratio, LMin](
+        self.module_3_flow_controller = PidController[Ratio, LMin](
             self._current_values.pcm_flowcontrol_module_3.setpoint.value,
             0,
             lambda: self._parameters.module_3_flow_balance_tuning,
             self._time,
         )
 
-        self.module_4_flow_controller = Controller[Ratio, LMin](
+        self.module_4_flow_controller = PidController[Ratio, LMin](
             self._current_values.pcm_flowcontrol_module_4.setpoint.value,
             0,
             lambda: self._parameters.module_4_flow_balance_tuning,

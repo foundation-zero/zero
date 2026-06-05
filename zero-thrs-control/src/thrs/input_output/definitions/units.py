@@ -8,6 +8,7 @@ from typing import (
     Literal,
     TypeAlias,
     TypeAliasType,
+    Union,
     get_args,
     get_origin,
 )
@@ -65,16 +66,23 @@ def zero_for_unit(unit: Any) -> Any:
 
     elif get_origin(unit) is Annotated:
         unit = get_args(unit)[0]
+
+    if get_origin(unit) in (UnionType, Union):
+        if type(None) in get_args(unit):
+            return None
+        else:
+            return zero_for_unit(next(arg for arg in get_args(unit)))
+
     if unit is float:
         return 0.0
-    elif unit == float | None:
-        return None
     elif get_origin(unit) is Literal:
         return get_args(unit)[0]
-    elif issubclass(unit, Enum):
+    elif isinstance(unit, type) and issubclass(unit, Enum):
         return next(e for e in unit)
     elif unit is bool:
         return False
+    elif get_origin(unit) is tuple:
+        return tuple(zero_for_unit(arg) for arg in get_args(unit))
     else:
         raise ValueError(f"Unsupported unit type: {unit}")
 
@@ -120,7 +128,7 @@ Ratio: TypeAlias = Annotated[
 ]
 Bar: TypeAlias = Annotated[float, Field(ge=-1), UnitMeta(modelica_name="Bar")]
 Watt: TypeAlias = Annotated[float, UnitMeta(modelica_name="Watt")]
-seconds: TypeAlias = Annotated[float, UnitMeta(modelica_name="s")]
+Seconds: TypeAlias = Annotated[float, UnitMeta(modelica_name="s")]
 Joule: TypeAlias = Annotated[float, UnitMeta(modelica_name="Joule")]
 OnOff: TypeAlias = Annotated[bool, UnitMeta(modelica_name="bool")]
 NoError: TypeAlias = Annotated[bool, UnitMeta(modelica_name="bool")]
@@ -130,6 +138,16 @@ Charged: TypeAlias = Annotated[bool, UnitMeta(modelica_name="bool")]
 Tuning: TypeAlias = tuple[float, float, float]
 Overpressure: TypeAlias = Annotated[float, UnitMeta(modelica_name="Bar")]
 Liter: TypeAlias = Annotated[float, Field(ge=0), UnitMeta(modelica_name="Liter")]
+
+
+class TankState(Enum):
+    IN_USE = "in use"
+    FILLING = "filling"
+    BOOSTING = "boosting"
+    DISABLED = "disabled"
+    NEEDS_BOOST = "needs boost"
+    NEEDS_FILL = "needs fill"
+    STANDBY = "standby"
 
 
 class PcsMode(Enum):
