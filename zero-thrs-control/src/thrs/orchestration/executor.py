@@ -21,28 +21,6 @@ from thrs.utils.string import hyphenize
 logger = logging.getLogger(__name__)
 
 
-class NoopExecutor(Executor[CombinedValues, CombinedValues]):
-    def __init__(self, start_time: datetime | None = None):
-        self._start_time = start_time or datetime.now()
-
-    async def start(self):
-        pass
-
-    async def tick(
-        self, control_values: CombinedValues
-    ) -> ExecutionResult[CombinedValues]:
-        return ExecutionResult(
-            timestamp=datetime.now(), sensor_values=CombinedValues(values={})
-        )
-
-    @property
-    def start_time(self) -> datetime:
-        return self._start_time
-
-    def time(self) -> datetime:
-        return datetime.now()
-
-
 class DualExecutor[
     I,
     F,
@@ -66,9 +44,9 @@ class DualExecutor[
         await self._first.start()
         await self._second.start()
 
-    async def tick(self, values: I) -> ExecutionResult[S]:  # type:ignore[reportIncompatibleMethodOverride]
-        first_result = await self._first.tick(values)
-        second_input = self._second_input(values, first_result)
+    async def tick(self, control_values: I) -> ExecutionResult[S]:  # type:ignore[reportIncompatibleMethodOverride]
+        first_result = await self._first.tick(control_values)
+        second_input = self._second_input(control_values, first_result)
         return await self._second.tick(second_input)
 
     @property
@@ -165,9 +143,7 @@ class MqttControlExecutor(Executor[CombinedValues, CombinedValues]):
         return datetime.now()
 
 
-class MqttSimulationExecutor[O: SimulationValues](
-    Executor[CombinedValues, CombinedValues]
-):
+class MqttSimulationExecutor(Executor[CombinedValues, CombinedValues]):
     def __init__(
         self,
         inner: Executor,
@@ -248,7 +224,7 @@ class MqttSimulationExecutor[O: SimulationValues](
         return self._inner.time()
 
 
-class MqttExecutor[O: SimulationValues](Executor[CombinedValues, CombinedValues]):
+class MqttExecutor(Executor[CombinedValues, CombinedValues]):
     # Compatibility wrapper composed from split executors:
     # - MqttControlExecutor handles controller-side MQTT I/O
     # - MqttSimulationExecutor handles simulation-side execution and publishing

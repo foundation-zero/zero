@@ -358,7 +358,6 @@ class MqttContext:
 class MessageContext[
     SensorValues: ThrsValues,
     ControlValues: ThrsValues,
-    Parameters: ThrsValues,
     Inputs: SimulationInputs,
     Outputs: SimulationValues,
 ]:
@@ -607,7 +606,7 @@ class ManualControlMessage[ControlValues: ThrsValues](IncomingModuleMessage):
     async def handle(
         self,
         context: MessageContext[
-            ThrsValues, ControlValues, ThrsValues, SimulationInputs, SimulationValues
+            ThrsValues, ControlValues, SimulationInputs, SimulationValues
         ],
     ):
         context.control.manual_controls(self.module, self.control_values)
@@ -671,7 +670,7 @@ class SetParametersMessage[Parameters: ThrsValues](IncomingModuleMessage):
     def topic(self):
         return f"{self.module}/controls/set_parameters"
 
-    async def handle(self, context: MessageContext[Any, Any, Parameters, Any, Any]):
+    async def handle(self, context: MessageContext[Any, Any, Any, Any]):
         context.control.update_parameters_for(self.module, self.parameters)
         await context.send(
             ParametersMessage(
@@ -748,7 +747,7 @@ class SimulationControls:
 
     async def _receive_controls(
         self,
-        handlers: list[IncomingMessage],
+        handlers: list[type[IncomingMessage]],
         context: MessageContext,
         modules: CombinedModule,
     ):
