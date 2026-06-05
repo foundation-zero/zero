@@ -19,7 +19,7 @@ import PressureGauges from "./items/PressureGauges.vue";
 import PressureSensors from "./items/PressureSensors.vue";
 import Pumps from "./items/Pumps.vue";
 import SectionArea from "./items/SectionArea.vue";
-import SwitchValve from "./items/SwitchValve.vue";
+import SwitchValve from "./items/SwitchValves.vue";
 import TemperatureSensors from "./items/TemperatureSensors.vue";
 
 const props = defineProps<{ class?: HTMLAttributes["class"] }>();
@@ -45,14 +45,12 @@ const t = tScoped("thrapp.legends");
       <LegendGroup class="max-md:hidden xl:hidden">
         <SwitchValve />
         <FlowValve />
-        <!-- <ThreeWayMixValve /> -->
       </LegendGroup>
       <LegendGroupHeader class="max-md:hidden xl:hidden">
         {{ t("boilerLegend.groups.heatExchangers") }}
       </LegendGroupHeader>
       <LegendGroup class="max-md:hidden xl:hidden">
         <PlateHeatExchanger />
-        <!-- <PipeHeatExchanger /> -->
       </LegendGroup>
     </Legend>
 
@@ -65,12 +63,10 @@ const t = tScoped("thrapp.legends");
       <LegendGroup>
         <SwitchValve />
         <FlowValve />
-        <!-- <ThreeWayMixValve /> -->
       </LegendGroup>
       <LegendGroupHeader>{{ t("boilerLegend.groups.heatExchangers") }}</LegendGroupHeader>
       <LegendGroup>
         <PlateHeatExchanger />
-        <!-- <PipeHeatExchanger /> -->
       </LegendGroup>
       <LegendGroupHeader>{{ t("boilerLegend.groups.sensors") }}</LegendGroupHeader>
       <LegendGroup class="gap-2">
@@ -100,10 +96,7 @@ const t = tScoped("thrapp.legends");
       <LegendGroupHeader>{{ t("boilerLegend.groups.manualComponents") }}</LegendGroupHeader>
       <LegendGroup>
         <ManualSwitchValve />
-        <!-- <ManualFlowControlValve /> -->
-        <!-- <ManualThreeWayValve /> -->
         <PressureGauges />
-        <!-- <CheckValves /> -->
       </LegendGroup>
       <LegendGroupHeader>{{ t("boilerLegend.groups.pipes") }}</LegendGroupHeader>
       <LegendGroup>

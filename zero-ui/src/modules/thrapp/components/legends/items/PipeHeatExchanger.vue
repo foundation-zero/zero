@@ -16,9 +16,9 @@ const t = tScoped("thrapp.legends.pipeHeatExchanger");
 <template>
   <LegendItem>
     <LegendItemPreview class="gap-2">
-      <PipeHeatExchanger :state="PipeHeatExchangerState.Heating" />
-      <PipeHeatExchanger :state="PipeHeatExchangerState.Cooling" />
-      <PipeHeatExchanger :state="PipeHeatExchangerState.Idle" />
+      <PipeHeatExchanger :pump-state="PipeHeatExchangerState.Heating" />
+      <PipeHeatExchanger :pump-state="PipeHeatExchangerState.Cooling" />
+      <PipeHeatExchanger :pump-state="PipeHeatExchangerState.Idle" />
     </LegendItemPreview>
     <LegendItemInfo>
       <LegendItemTitle>{{ t("title") }}</LegendItemTitle>

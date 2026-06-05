@@ -29,7 +29,7 @@ const props = defineProps<
     }
 >();
 
-const { getSensorValue } = getMimicDataProvider();
+const { getSensorValue, getComponentState } = getMimicDataProvider();
 
 const level = getSensorValue(props.level);
 const fillLevel = computed(() => (level.value?.level.value ?? 0) / 2.75);
@@ -41,6 +41,8 @@ const mode = useRandomizedState([
   BoilerTankModes.Boosting,
   BoilerTankModes.Standby,
 ]);
+
+const state = getComponentState();
 </script>
 
 <template>
@@ -48,10 +50,14 @@ const mode = useRandomizedState([
     v-bind="props"
     :level="fillLevel"
     :mode="mode"
+    :state="state"
   >
     <YardTag>{{ tagId }}</YardTag>
     <BoilerTankTitle>{{ title }}</BoilerTankTitle>
-    <BoilerTankMode :mode="mode" />
+    <BoilerTankMode
+      :mode="mode"
+      :state="state"
+    />
     <ValueList class="gap-0">
       <ValueListTemperatureItem :temperature="temperature?.temperature.value" />
       <ValueListFillLevelItem :value="fillLevel" />

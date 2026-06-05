@@ -1,333 +1,152 @@
 # Actuated Valve
 
-A unified mimic valve component that supports switch, flow-control, and three-way variants.
+Composable actuator shell for valve mimics. Instead of selecting a built-in variant, you compose marker and body primitives as slot content.
 
 <script setup lang="ts">
-import { ref } from 'vue'
-import { useIntervalFn } from '@vueuse/core'
 import ActuatedValve from '@/modules/thrapp/mimics/components/actuated-valve/ActuatedValve.vue'
-import {
-  ActuatedValveType,
-  SwitchValveState,
-  FlowValveState,
-  ThreeWayValveState,
-} from '@/modules/thrapp/mimics/components/actuated-valve'
-import { ComponentOrientation } from '@/modules/thrapp/mimics/components'
-
-const animatedSwitchState = ref(SwitchValveState.Open)
-
-useIntervalFn(() => {
-  animatedSwitchState.value =
-    animatedSwitchState.value === SwitchValveState.Open
-      ? SwitchValveState.Closed
-      : SwitchValveState.Open
-}, 1200)
+import MixValve from '@/modules/thrapp/mimics/components/actuated-valve/MixValve.vue'
+import SwitchValve from '@/modules/thrapp/mimics/components/actuated-valve/SwitchValve.vue'
+import ThreeWayValve from '@/modules/thrapp/mimics/components/actuated-valve/ThreeWayValve.vue'
+import TwoWayValve from '@/modules/thrapp/mimics/components/actuated-valve/TwoWayValve.vue'
+import { ComponentOrientation, MimicComponentState } from '@/modules/thrapp/mimics/components'
 </script>
 
 ## Overview
 
-`ActuatedValve` combines switch, flow-control, and three-way valve types into one reusable component.
+`ActuatedValve` now works as a base container that provides:
 
-- `type="switch"` — renders two triangular ports with a circular labeled marker
-- `type="flow-control"` — renders two triangular ports with a control-arrow marker
-- `type="three-way"` — renders three triangular ports (left, right, bottom) with a control-arrow marker; each port is colored independently
+- orientation and rotation behavior
+- mimic state coloring (`normal`, `manual`, `alarm`)
+- center pivot and actuator stem
 
-State colors use semantic tokens:
+The valve geometry and marker are provided by slot children:
 
-- `open` → constructive (`--constructive-dull`)
-- `partial` → warning (`--warning-dull`, flow-control only)
-- `closed` → destructive (`--destructive-dull`)
+- `TwoWayValve` or `ThreeWayValve` for ports/body
+- `SwitchValve` or `MixValve` for actuator marker
 
-For the three-way valve, each port's color reflects whether that specific port is open or closed for the given state.
+This matches how runtime instances are composed in THRAPP:
 
-## Examples
+- switch: `SwitchValve + TwoWayValve`
+- flow-control: `MixValve + TwoWayValve`
+- three-way switch: `SwitchValve + ThreeWayValve`
+- three-way mix: `MixValve + ThreeWayValve`
 
-### Switch Valve States
+## Composition Examples
 
-<div class="grid grid-cols-2 gap-4 my-6">
-  <div class="flex flex-col items-center justify-center gap-2">
-    <div class="p-4 bg-muted rounded-md">
-      <ActuatedValve
-        :type="ActuatedValveType.Switch"
-        :state="SwitchValveState.Open"
-        :orientation="ComponentOrientation.Up"
-        marker-label="A"
-      />
-    </div>
-    <span class="text-sm font-mono">Open</span>
-  </div>
-  <div class="flex flex-col items-center justify-center gap-2">
-    <div class="p-4 bg-muted rounded-md">
-      <ActuatedValve
-        :type="ActuatedValveType.Switch"
-        :state="SwitchValveState.Closed"
-        :orientation="ComponentOrientation.Up"
-      />
-    </div>
-    <span class="text-sm font-mono">Closed</span>
-  </div>
-</div>
+### Switch Valve
 
-```vue
-<template>
-  <div class="flex gap-4">
-    <ActuatedValve
-      :type="ActuatedValveType.Switch"
-      :state="SwitchValveState.Open"
-      :orientation="ComponentOrientation.Up"
-      marker-label="A"
-    />
-    <ActuatedValve
-      :type="ActuatedValveType.Switch"
-      :state="SwitchValveState.Closed"
-      :orientation="ComponentOrientation.Up"
-    />
-  </div>
-</template>
-```
-
-### Switch Valve Animated Interval
-
-This example toggles between open and closed every 1.2 seconds to show both transition effects:
-
-- Rotation transition on the valve body
-- Color transition between constructive and destructive states
-
-<div class="my-6 flex flex-col items-center justify-center gap-3">
+<div class="my-6 flex flex-col items-center justify-center gap-2">
   <div class="rounded-md bg-muted p-4">
-    <ActuatedValve
-      :type="ActuatedValveType.Switch"
-      :state="animatedSwitchState"
-      :orientation="ComponentOrientation.Up"
-      marker-label="A"
-    />
+    <ActuatedValve :state="MimicComponentState.Normal" :rotation="0.35">
+      <SwitchValve>A</SwitchValve>
+      <TwoWayValve :flow="0.65" />
+    </ActuatedValve>
   </div>
-  <span class="text-sm font-mono">Current state: {{ animatedSwitchState }}</span>
+  <span class="text-sm font-mono">SwitchValve + TwoWayValve</span>
 </div>
 
 ```vue
-<script setup lang="ts">
-import { ref } from 'vue'
-import { useIntervalFn } from '@vueuse/core'
-import ActuatedValve from '@/modules/thrapp/mimics/components/actuated-valve/ActuatedValve.vue'
-import { ActuatedValveType, SwitchValveState } from '@/modules/thrapp/mimics/components/actuated-valve'
-import { ComponentOrientation } from '@/modules/thrapp/mimics/components'
-
-const switchState = ref(SwitchValveState.Open)
-
-useIntervalFn(() => {
-  switchState.value =
-    switchState.value === SwitchValveState.Open
-      ? SwitchValveState.Closed
-      : SwitchValveState.Open
-}, 1200)
-</script>
-
-<template>
-  <ActuatedValve
-    :type="ActuatedValveType.Switch"
-    :state="switchState"
-    :orientation="ComponentOrientation.Up"
-    marker-label="A"
-  />
-</template>
+<ActuatedValve :state="MimicComponentState.Normal" :rotation="0.35">
+  <SwitchValve>A</SwitchValve>
+  <TwoWayValve :flow="0.65" />
+</ActuatedValve>
 ```
 
-### Flow-Control Valve States
+### Flow-Control Valve
 
-<div class="grid grid-cols-3 gap-4 my-6">
-  <div class="flex flex-col items-center justify-center gap-2">
-    <div class="p-4 bg-muted rounded-md">
-      <ActuatedValve
-        :type="ActuatedValveType.FlowControl"
-        :state="FlowValveState.Open"
-        :orientation="ComponentOrientation.Up"
-      />
-    </div>
-    <span class="text-sm font-mono">Open</span>
+<div class="my-6 flex flex-col items-center justify-center gap-2">
+  <div class="rounded-md bg-muted p-4">
+    <ActuatedValve>
+      <TwoWayValve :flow="0.45" />
+      <MixValve />
+    </ActuatedValve>
   </div>
-  <div class="flex flex-col items-center justify-center gap-2">
-    <div class="p-4 bg-muted rounded-md">
-      <ActuatedValve
-        :type="ActuatedValveType.FlowControl"
-        :state="FlowValveState.Partial"
-        :orientation="ComponentOrientation.Up"
-      />
-    </div>
-    <span class="text-sm font-mono">Partial</span>
-  </div>
-  <div class="flex flex-col items-center justify-center gap-2">
-    <div class="p-4 bg-muted rounded-md">
-      <ActuatedValve
-        :type="ActuatedValveType.FlowControl"
-        :state="FlowValveState.Closed"
-        :orientation="ComponentOrientation.Up"
-      />
-    </div>
-    <span class="text-sm font-mono">Closed</span>
-  </div>
+  <span class="text-sm font-mono">MixValve + TwoWayValve</span>
 </div>
 
 ```vue
-<template>
-  <div class="flex gap-4">
-    <ActuatedValve
-      :type="ActuatedValveType.FlowControl"
-      :state="FlowValveState.Open"
-      :orientation="ComponentOrientation.Up"
-    />
-    <ActuatedValve
-      :type="ActuatedValveType.FlowControl"
-      :state="FlowValveState.Partial"
-      :orientation="ComponentOrientation.Up"
-    />
-    <ActuatedValve
-      :type="ActuatedValveType.FlowControl"
-      :state="FlowValveState.Closed"
-      :orientation="ComponentOrientation.Up"
-    />
-  </div>
-</template>
+<ActuatedValve>
+  <TwoWayValve :flow="0.45" />
+  <MixValve />
+</ActuatedValve>
 ```
 
-### Flow-Control Orientations
+### Three-Way Switch Valve
 
-<div class="grid grid-cols-4 gap-4 my-6">
-  <div class="flex flex-col items-center justify-center gap-2">
-    <div class="p-4 bg-muted rounded-md">
-      <ActuatedValve :type="ActuatedValveType.FlowControl" :state="FlowValveState.Open" :orientation="ComponentOrientation.Up" />
-    </div>
-    <span class="text-sm font-mono">Up</span>
+<div class="my-6 flex flex-col items-center justify-center gap-2">
+  <div class="rounded-md bg-muted p-4">
+    <ActuatedValve>
+      <SwitchValve />
+      <ThreeWayValve :flow="0" />
+    </ActuatedValve>
   </div>
-  <div class="flex flex-col items-center justify-center gap-2">
-    <div class="p-4 bg-muted rounded-md">
-      <ActuatedValve :type="ActuatedValveType.FlowControl" :state="FlowValveState.Open" :orientation="ComponentOrientation.Right" />
-    </div>
-    <span class="text-sm font-mono">Right</span>
-  </div>
-  <div class="flex flex-col items-center justify-center gap-2">
-    <div class="p-4 bg-muted rounded-md">
-      <ActuatedValve :type="ActuatedValveType.FlowControl" :state="FlowValveState.Open" :orientation="ComponentOrientation.Down" />
-    </div>
-    <span class="text-sm font-mono">Down</span>
-  </div>
-  <div class="flex flex-col items-center justify-center gap-2">
-    <div class="p-4 bg-muted rounded-md">
-      <ActuatedValve :type="ActuatedValveType.FlowControl" :state="FlowValveState.Open" :orientation="ComponentOrientation.Left" />
-    </div>
-    <span class="text-sm font-mono">Left</span>
-  </div>
-</div>
-
-### Three-Way Valve States
-
-<div class="grid grid-cols-5 gap-4 my-6">
-  <div class="flex flex-col items-center justify-center gap-2">
-    <div class="p-4 bg-muted rounded-md">
-      <ActuatedValve :type="ActuatedValveType.ThreeWay" :state="ThreeWayValveState.Open" />
-    </div>
-    <span class="text-sm font-mono">Open</span>
-  </div>
-  <div class="flex flex-col items-center justify-center gap-2">
-    <div class="p-4 bg-muted rounded-md">
-      <ActuatedValve :type="ActuatedValveType.ThreeWay" :state="ThreeWayValveState.AA" />
-    </div>
-    <span class="text-sm font-mono">A-A</span>
-  </div>
-  <div class="flex flex-col items-center justify-center gap-2">
-    <div class="p-4 bg-muted rounded-md">
-      <ActuatedValve :type="ActuatedValveType.ThreeWay" :state="ThreeWayValveState.AB" />
-    </div>
-    <span class="text-sm font-mono">A-B</span>
-  </div>
-  <div class="flex flex-col items-center justify-center gap-2">
-    <div class="p-4 bg-muted rounded-md">
-      <ActuatedValve :type="ActuatedValveType.ThreeWay" :state="ThreeWayValveState.BA" />
-    </div>
-    <span class="text-sm font-mono">B-A</span>
-  </div>
-  <div class="flex flex-col items-center justify-center gap-2">
-    <div class="p-4 bg-muted rounded-md">
-      <ActuatedValve :type="ActuatedValveType.ThreeWay" :state="ThreeWayValveState.Closed" />
-    </div>
-    <span class="text-sm font-mono">Closed</span>
-  </div>
+  <span class="text-sm font-mono">SwitchValve + ThreeWayValve</span>
 </div>
 
 ```vue
-<template>
-  <div class="flex gap-4">
-    <ActuatedValve :type="ActuatedValveType.ThreeWay" :state="ThreeWayValveState.Open" />
-    <ActuatedValve :type="ActuatedValveType.ThreeWay" :state="ThreeWayValveState.AA" />
-    <ActuatedValve :type="ActuatedValveType.ThreeWay" :state="ThreeWayValveState.AB" />
-    <ActuatedValve :type="ActuatedValveType.ThreeWay" :state="ThreeWayValveState.BA" />
-    <ActuatedValve :type="ActuatedValveType.ThreeWay" :state="ThreeWayValveState.Closed" />
-  </div>
-</template>
+<ActuatedValve>
+  <SwitchValve />
+  <ThreeWayValve :flow="0" />
+</ActuatedValve>
 ```
 
-State meanings for the three-way (T) valve:
+### Three-Way Mix Valve
 
-| State | Left port | Right port | Bottom port |
-|-------|-----------|------------|-------------|
-| `Open` | open | open | open |
-| `AA` | open | open | closed — left↔right flow |
-| `AB` | open | closed | open — left↔bottom flow |
-| `BA` | closed | open | open — right↔bottom flow |
-| `Closed` | closed | closed | closed |
+<div class="my-6 flex flex-col items-center justify-center gap-2">
+  <div class="rounded-md bg-muted p-4">
+    <ActuatedValve>
+      <MixValve />
+      <ThreeWayValve :flow="0.7" />
+    </ActuatedValve>
+  </div>
+  <span class="text-sm font-mono">MixValve + ThreeWayValve</span>
+</div>
 
-## Props
+```vue
+<ActuatedValve>
+  <MixValve />
+  <ThreeWayValve :flow="0.7" />
+</ActuatedValve>
+```
+
+## Orientation and Rotation
+
+- `orientation` rotates the full component relative to `ComponentOrientation.Up`.
+- `rotation` is an extra quarter-turn style offset used by instances to reflect actuator position.
+- The switch instance pattern uses `:rotation="1 - valve.positionRel"`, so the marker turns opposite to opening ratio.
+
+## API
+
+### ActuatedValve Props
 
 | Prop | Type | Default | Description |
-|------|------|---------|-------------|
-| type | `ActuatedValveType` | - | Required valve variant (`Switch`, `FlowControl`, or `ThreeWay`) |
-| state | `SwitchValveState \| FlowValveState \| ThreeWayValveState` | - | Required state for selected valve type |
-| orientation | `ComponentOrientation` | `ComponentOrientation.Up` | Optional orientation used to rotate geometry |
-| markerLabel | `string` | `'E'` | Optional marker text for switch valve only |
+|---|---|---|---|
+| `orientation` | `ComponentOrientation` | `ComponentOrientation.Up` | Desired orientation in the mimic |
+| `rotation` | `Ratio` | `0` | Additional rotational offset for actuator position |
+| `state` | `MimicComponentState` | `MimicComponentState.Normal` | State color source (`normal`, `manual`, `alarm`) |
 
-## Installation
+### Slot Primitives
 
-```vue
-<script setup lang="ts">
-import ActuatedValve from '@/modules/thrapp/mimics/components/actuated-valve/ActuatedValve.vue'
-import {
-  ActuatedValveType,
-  SwitchValveState,
-  FlowValveState,
-  ThreeWayValveState,
-} from '@/modules/thrapp/mimics/components/actuated-valve'
-import { ComponentOrientation } from '@/modules/thrapp/mimics/components'
-</script>
+| Component | Props | Description |
+|---|---|---|
+| `SwitchValve` | default slot text (optional) | Circular marker with optional label (`E` by default) |
+| `MixValve` | — | Diagonal arrow marker for flow-control and mixing valves |
+| `TwoWayValve` | `flow: Ratio` | Two triangular ports (left/right) with shared flow fill |
+| `ThreeWayValve` | `flow: Ratio` | Three-way ports: right is fixed open; bottom uses `1 - flow` |
 
-<template>
-  <!-- Switch valve -->
-  <ActuatedValve
-    :type="ActuatedValveType.Switch"
-    :state="SwitchValveState.Open"
-    :orientation="ComponentOrientation.Up"
-    marker-label="A"
-  />
+## Semantic Token Mapping
 
-  <!-- Flow-control valve -->
-  <ActuatedValve
-    :type="ActuatedValveType.FlowControl"
-    :state="FlowValveState.Partial"
-    :orientation="ComponentOrientation.Right"
-  />
-
-  <!-- Three-way valve -->
-  <ActuatedValve
-    :type="ActuatedValveType.ThreeWay"
-    :state="ThreeWayValveState.AB"
-    :orientation="ComponentOrientation.Up"
-  />
-</template>
-```
+| Element | Token |
+|---|---|
+| Base stroke + state accent (`normal`) | `var(--attention)` |
+| Base stroke + state accent (`manual`) | `var(--warning)` |
+| Base stroke + state accent (`alarm`) | `var(--destructive)` |
+| Port base fill | `var(--attention-dull)` |
+| Port active overlay | `var(--attention)` |
+| Marker fill | `var(--muted)` |
+| Marker text | `var(--foreground)` |
 
 ## Notes
 
-- Single SVG output with no HTML wrapper elements.
-- Uses semantic token colors only — no raw hex or rgb values.
-- The three-way valve renders a T-shaped body (left, right, bottom ports); each port is colored independently based on the active state.
-- The three-way valve does not shift orientation on `Closed` — unlike the switch and flow-control variants which rotate 90° when closed.
-- Replaces the legacy switch-valve and flow-valve components with one unified API.
+- Prefer instance components for production modules (`SwitchValveInstance`, `FlowControlValveInstance`, `MixValveInstance`, `ThreeWaySwitchValveInstance`) because they already wire telemetry (`positionRel`) and `MimicComponentState`.
+- Keep composition order consistent with existing instances: marker + body children inside one `ActuatedValve`.

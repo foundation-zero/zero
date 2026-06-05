@@ -24,7 +24,7 @@ const t = tScoped("thrapp.legends.plateHeatExchanger");
         viewBox="0 0 56 56"
       >
         <HeatExchanger
-          :state="HeatingState.Active"
+          :pump-state="HeatingState.Active"
           :orientation="ComponentOrientation.Up"
         >
           <HeatExchangerPort
@@ -46,7 +46,7 @@ const t = tScoped("thrapp.legends.plateHeatExchanger");
         viewBox="0 0 56 56"
       >
         <HeatExchanger
-          :state="HeatingState.Active"
+          :pump-state="HeatingState.Active"
           :orientation="ComponentOrientation.Up"
         >
           <HeatExchangerPort
@@ -68,7 +68,7 @@ const t = tScoped("thrapp.legends.plateHeatExchanger");
         viewBox="0 0 56 56"
       >
         <HeatExchanger
-          :state="HeatingState.Active"
+          :pump-state="HeatingState.Active"
           :orientation="ComponentOrientation.Up"
         >
           <HeatExchangerPort

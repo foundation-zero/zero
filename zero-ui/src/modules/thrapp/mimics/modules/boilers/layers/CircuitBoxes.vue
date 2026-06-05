@@ -35,7 +35,7 @@ const t = tScoped("thrapp.mimics.boilers.circuitBoxes");
     />
     <LoopCircuitInstance
       x="397"
-      y="730"
+      y="728"
       force-height
       :title="t('brightloopTitle')"
       :delta-t="getField(SensorComponentType.DeltaT, 'boilers', 'lt2Delta')"
@@ -45,7 +45,7 @@ const t = tScoped("thrapp.mimics.boilers.circuitBoxes");
     />
     <LoopCircuitInstance
       x="650"
-      y="730"
+      y="728"
       force-height
       :title="t('drivesTitle')"
       :delta-t="getField(SensorComponentType.DeltaT, 'boilers', 'lt1Delta')"
@@ -55,7 +55,7 @@ const t = tScoped("thrapp.mimics.boilers.circuitBoxes");
     />
     <LoopCircuitInstance
       x="903"
-      y="730"
+      y="728"
       force-height
       :title="t('fahrenheitTitle')"
       :delta-t="getField(SensorComponentType.DeltaT, 'boilers', 'fahrenheitDelta')"

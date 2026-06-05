@@ -16,6 +16,6 @@ const state = useRandomizedState([
 <template>
   <PipeHeatExchanger
     v-bind="props"
-    :state="state"
+    :pump-state="state"
   />
 </template>

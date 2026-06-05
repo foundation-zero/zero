@@ -9,7 +9,7 @@ export const enum HeatExchangerPortOrientation {
 }
 
 export interface HeatExchangerProps {
-  state?: HeatingState.Active | HeatingState.Inactive;
+  heatingState?: HeatingState.Active | HeatingState.Inactive;
 }
 
 export interface HeatExchangerPortProps {

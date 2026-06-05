@@ -11,11 +11,11 @@ import {
 } from "./index";
 
 const props = withDefaults(defineProps<HeatExchangerProps & MimicComponentBaseProps>(), {
-  state: HeatingState.Inactive,
+  heatingState: HeatingState.Inactive,
   orientation: HEAT_EXCHANGER_BASE_ORIENTATION,
 });
 
-const shellColor = computed(() => HEATING_STATE_COLORS[props.state]);
+const shellColor = computed(() => HEATING_STATE_COLORS[props.heatingState]);
 </script>
 
 <template>

@@ -1,4 +1,4 @@
-import { ComponentOrientation } from "..";
+import { ComponentOrientation, MimicComponentState } from "..";
 
 export const FIGMA_URL =
   "https://www.figma.com/design/DDNAUHsV56fQMTh3Ej76gL/App-screens---On-board-monitoring?node-id=6124-32160&t=JfBIEDjiEP5NKk6I-4";
@@ -6,11 +6,10 @@ export const FIGMA_URL =
 export const enum PumpState {
   Active = "active",
   Inactive = "inactive",
-  Alarm = "alarm",
 }
 
 export interface PumpProps {
-  state?: PumpState;
+  pumpState?: PumpState | MimicComponentState;
 }
 
 interface PumpStateColors {
@@ -26,7 +25,7 @@ export const PUMP_CENTER_X = PUMP_WIDTH / 2;
 export const PUMP_CENTER_Y = PUMP_HEIGHT / 2;
 export const PUMP_BASE_ORIENTATION = ComponentOrientation.Right;
 
-export const PUMP_STATE_COLORS: Record<PumpState, PumpStateColors> = {
+export const PUMP_STATE_COLORS: Record<PumpState | MimicComponentState, PumpStateColors> = {
   [PumpState.Active]: {
     body: "var(--background)",
     ring: "var(--attention)",
@@ -37,9 +36,19 @@ export const PUMP_STATE_COLORS: Record<PumpState, PumpStateColors> = {
     ring: "var(--attention)",
     blade: "var(--destructive-dull)",
   },
-  [PumpState.Alarm]: {
+  [MimicComponentState.Alarm]: {
     body: "var(--destructive-dull)",
     ring: "var(--destructive)",
     blade: "var(--destructive-muted)",
+  },
+  [MimicComponentState.Manual]: {
+    body: "var(--warning-muted)",
+    ring: "var(--warning)",
+    blade: "var(--warning)",
+  },
+  [MimicComponentState.Normal]: {
+    body: "var(--background)",
+    ring: "var(--attention)",
+    blade: "var(--constructive-muted)",
   },
 };

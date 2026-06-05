@@ -31,9 +31,9 @@ provide("currentModule", currentModuleKey);
 </script>
 
 <template>
-  <main class="h-svh pt-[12em] pb-8 md:pt-[14em]">
+  <main class="h-svh pt-[12em]">
     <Suspense>
-      <article class="px-4 pb-8 md:px-6">
+      <article class="h-full px-4 pb-4 md:px-6 md:pb-6">
         <slot />
       </article>
     </Suspense>

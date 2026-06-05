@@ -7,7 +7,7 @@ export enum PipeHeatExchangerState {
 }
 
 export interface PipeHeatExchangerProps {
-  state?: PipeHeatExchangerState;
+  exchangerState?: PipeHeatExchangerState;
 }
 
 export const FIGMA_URL =

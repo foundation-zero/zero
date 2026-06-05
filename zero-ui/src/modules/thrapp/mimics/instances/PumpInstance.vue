@@ -10,10 +10,11 @@ const props = defineProps<
   MimicComponentInstanceProps & { pump: ModuleField<SensorComponentType.Pump> }
 >();
 
-const { getSensorValue } = getMimicDataProvider();
+const { getSensorValue, getComponentState } = getMimicDataProvider();
 const pump = getSensorValue(props.pump);
+const state = getComponentState();
 
-const state = computed(() => {
+const pumpState = computed(() => {
   if (pump.value?.flow.value != undefined && pump.value?.flow.value > 0) return PumpState.Active;
   else return PumpState.Inactive;
 });
@@ -22,6 +23,7 @@ const state = computed(() => {
 <template>
   <Pump
     v-bind="props"
+    :pump-state="pumpState"
     :state="state"
   />
 </template>
