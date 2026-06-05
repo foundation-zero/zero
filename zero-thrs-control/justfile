@@ -1,0 +1,45 @@
+set dotenv-load := true
+set dotenv-required := true
+
+default: run
+
+run_api:
+    poetry run fastapi dev src/thrs/graphql/strawberry.py
+
+run_control module='thrusters':
+    poetry run python -m thrs.cli run {{ module }}
+
+[parallel]
+run: run_api run_control
+
+check: lint type_check test
+
+lint:
+    poetry run ruff check src tests
+
+type_check:
+    poetry run pyright
+
+test *args:
+    poetry run pytest -m "not io" {{ args }}
+
+test_io *args:
+    poetry run pytest -m "io" {{ args }}
+
+format:
+    poetry run ruff format --check src tests
+
+compile_fmu file:
+    CFLAGS="-std=gnu17 -include unistd.h" poetry run fmpy compile {{ file }}
+
+compile_fmus:
+    just compile_fmu src/thrs/simulation/models/XRGTestModel/FMUInterfaceTester_MECS_regular.fmu
+    just compile_fmu src/thrs/simulation/models/thruster_moduleV18.fmu
+    just compile_fmu src/thrs/simulation/models/pvt_moduleV15_1.fmu
+    just compile_fmu src/thrs/simulation/models/Consumer_ModuleV8_2.fmu
+    just compile_fmu src/thrs/simulation/models/HT_SystemV13_2.fmu
+    just compile_fmu src/thrs/simulation/models/pcm_moduleV7.fmu
+    just compile_fmu src/thrs/simulation/models/Boilers_ModuleV4_1.fmu
+    just compile_fmu src/thrs/simulation/models/LT1_ModuleV3_1.fmu
+    just compile_fmu src/thrs/simulation/models/LT2_ModuleV3_2.fmu
+    just compile_fmu src/thrs/simulation/models/Fahrenheit_ModuleV4.fmu
