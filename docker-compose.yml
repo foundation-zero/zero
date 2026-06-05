@@ -56,6 +56,7 @@ services:
       - 5691:5691
     profiles:
       - zero
+      - domestic
       - data
     healthcheck:
       test:
@@ -81,6 +82,7 @@ services:
     command: setup_risingwave --target docker
     profiles:
       - zero
+      - domestic
       - data
     environment:
       PG_HOST: postgres

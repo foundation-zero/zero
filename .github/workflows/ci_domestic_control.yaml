@@ -51,7 +51,7 @@ jobs:
         run: poetry run pytest --run=unit
         working-directory: zero-domestic-control
       - name: Run services
-        run: docker compose --profile domestic up -d --quiet-pull --wait
+        run: docker compose --profile domestic up -d --quiet-pull --wait hass vernemq postgres
       - name: Integration Test
         run: poetry run pytest --run=integration -vv
         working-directory: zero-domestic-control
