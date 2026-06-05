@@ -120,10 +120,9 @@ async def test_mqtt_executor(mqtt_client, mqtt_client2):
         running.cancel()
 
 
-async def test_boat_executor_echoes_controls_to_sensors(mqtt_client, mqtt_client2):
+async def test_boat_executor_echoes_controls_to_sensors(mqtt_client):
     executor = BoatExecutor(
         mqtt_client,
-        mqtt_client2,
         f"{settings.mqtt_topic_prefix}/simple",
         CombinedModule(
             {

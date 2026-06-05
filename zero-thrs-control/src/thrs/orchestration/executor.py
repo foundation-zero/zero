@@ -1,8 +1,7 @@
 import logging
-from asyncio import TaskGroup
 from dataclasses import dataclass
 from datetime import datetime, timedelta
-from typing import Any, Callable, Literal, cast
+from typing import Any, Literal
 
 from aiomqtt import Client, Topic
 
@@ -19,42 +18,6 @@ from thrs.simulation.io_mapping import IoMapping
 from thrs.utils.string import hyphenize
 
 logger = logging.getLogger(__name__)
-
-
-class DualExecutor[
-    I,
-    F,
-    C,
-    S,
-](Executor[S, I]):
-    def __init__(
-        self,
-        first: Executor[F, I],
-        second: Executor[S, C],
-        second_input: Callable[[I, ExecutionResult[F]], C] | None = None,
-    ):
-        self._first = first
-        self._second = second
-        self._second_input = second_input or cast(
-            Callable[[I, ExecutionResult[F]], C],
-            lambda original_input, _: original_input,
-        )
-
-    async def start(self):
-        await self._first.start()
-        await self._second.start()
-
-    async def tick(self, control_values: I) -> ExecutionResult[S]:  # type:ignore[reportIncompatibleMethodOverride]
-        first_result = await self._first.tick(control_values)
-        second_input = self._second_input(control_values, first_result)
-        return await self._second.tick(second_input)
-
-    @property
-    def start_time(self) -> datetime:
-        return self._second.start_time
-
-    def time(self) -> datetime:
-        return self._second.time()
 
 
 class MqttControlExecutor(Executor[CombinedValues, CombinedValues]):
@@ -247,69 +210,29 @@ class MqttExecutor(Executor[CombinedValues, CombinedValues]):
             topic_prefix=topic_prefix,
             module_nesting=module_nesting,
         )
-        self._inner = DualExecutor(
-            self._control_executor,
-            self._simulation_executor,
-        )
 
     async def start(self):
-        await self._inner.start()
+        await self._control_executor.start()
+        await self._simulation_executor.start()
 
     async def run(self):
-        try:
-            async with TaskGroup() as tg:
-                tg.create_task(self._control_executor.run())
-        except Exception as e:
-            logger.error(f"MqttExecutor run encountered an error: {e}")
+        await self._control_executor.run()
 
     async def tick(
         self, control_values: CombinedValues
     ) -> ExecutionResult[CombinedValues]:
-        return await self._inner.tick(control_values)
+        await self._control_executor.tick(control_values)
+        return await self._simulation_executor.tick(control_values)
 
     @property
     def start_time(self) -> datetime:
-        return self._inner.start_time
+        return self._simulation_executor.start_time
 
     def time(self) -> datetime:
-        return self._inner.time()
+        return self._simulation_executor.time()
 
 
-class BoatExecutor(Executor[CombinedValues, CombinedValues]):
-    # The boat executor only needs controller-side MQTT I/O:
-    # publish controls and return latest observed sensors.
-    def __init__(
-        self,
-        controller_client: Client,
-        environment_client: Client,
-        topic_prefix: str,
-        module_nesting: CombinedModule,
-        start_time: datetime | None = None,
-    ):
-        self._inner = MqttControlExecutor(
-            controller_client=controller_client,
-            topic_prefix=topic_prefix,
-            module_nesting=module_nesting,
-            start_time=start_time,
-        )
-
-    async def start(self):
-        await self._inner.start()
-
-    async def run(self):
-        await self._inner.run()
-
-    async def tick(
-        self, control_values: CombinedValues
-    ) -> ExecutionResult[CombinedValues]:
-        return await self._inner.tick(control_values)
-
-    @property
-    def start_time(self) -> datetime:
-        return self._inner.start_time
-
-    def time(self) -> datetime:
-        return self._inner.time()
+BoatExecutor = MqttControlExecutor
 
 
 @dataclass
