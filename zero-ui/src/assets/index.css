@@ -83,6 +83,8 @@
   --input-muted-border: var(--border-subtle);
   --input-muted-foreground: var(--muted-foreground);
 
+  --dull: var(--color-neutral-grey-100);
+
   --button-foreground: var(--inverse-foreground);
 
   --card: oklch(1 0 0);
@@ -108,7 +110,23 @@
   --cooling-high: var(--color-accent-f-600);
 
   --flows-pipe: oklch(0.451543 0.214199 322.2162);
-  --flows-pipe-arrow: oklch(0.5413 0.2335 322.85);
+  --flows-pipe-arrow: oklch(0.5413 0.2335 322.85 / 55%);
+  --flows-connecting: oklch(0.3793 0.1661 319.97);
+
+  --flows-use-low: oklch(0.4217 0.0976 150.7);
+  --flows-use-medium: oklch(0.6216 0.1582 150.25);
+  --flows-use-high: oklch(0.692082 0.19179 149.7397);
+  --flows-use-arrow: oklch(0.6216 0.1582 150.25);
+
+  --flows-fill-low: oklch(0.3945 0.0858 236.73);
+  --flows-fill-medium: oklch(0.5905 0.1234 233.91);
+  --flows-fill-high: oklch(0.6551 0.1263 226.9);
+  --flows-fill-arrow: oklch(0.5905 0.1234 233.91);
+
+  --flows-heat-low: oklch(0.4082 0.1154 45.65);
+  --flows-heat-medium: oklch(0.594841 0.168676 45.4846);
+  --flows-heat-high: oklch(0.675549 0.175486 51.2533);
+  --flows-heat-arrow: oklch(0.594841 0.168676 45.4846);
 
   --chart-1: oklch(0.646 0.222 41.116);
   --chart-2: oklch(0.6 0.118 184.704);
@@ -297,6 +315,7 @@ h6 {
   --border-subtle: var(--color-neutral-grey-700);
   --inverse-border-subtle: var(--color-neutral-grey-100);
 
+  --dull: var(--color-neutral-grey-800);
   --brand: var(--color-brand-a-300);
   --brand-muted: var(--color-brand-a-400);
   --brand-dull: var(--color-brand-a-500);
@@ -340,6 +359,19 @@ h6 {
 
   --ring: oklch(0.484 0.0295 68.98);
 
+  --flows-pipe: oklch(0.6038 0.2837 324.06);
+  --flows-pipe-arrow: oklch(0.6846 0.2574 332.43 / 55%);
+  --flows-connecting: oklch(0.4681 0.1928 321.42);
+
+  --flows-use-high: oklch(0.8283 0.2362 148.57);
+  --flows-use-arrow: oklch(0.8828 0.2181 150.65);
+
+  --flows-fill-high: oklch(0.776241 0.149277 226.5945);
+  --flows-fill-arrow: oklch(0.8327 0.132 216.25);
+
+  --flows-heat-high: oklch(0.744202 0.181171 56.4585);
+  --flows-heat-arrow: oklch(0.8044 0.1508 67.1);
+
   --chart-1: oklch(0.488 0.243 264.376);
   --chart-2: oklch(0.696 0.17 162.48);
   --chart-3: oklch(0.769 0.188 70.08);
@@ -354,9 +386,6 @@ h6 {
   --sidebar-accent-foreground: oklch(0.985 0 0);
   --sidebar-border: oklch(0.269 0 0);
   --sidebar-ring: oklch(0.439 0 0);
-
-  --flows-pipe: oklch(0.6038 0.2837 324.06);
-  --flows-pipe-arrow: oklch(0.6846 0.2574 332.43);
 }
 
 @source inline("dark");
@@ -442,6 +471,10 @@ h6 {
   --color-brand-muted: var(--brand-muted);
   --color-brand-dull: var(--brand-dull);
 
+  --color-flows-pipe: var(--flows-pipe);
+  --color-flows-pipe-arrow: var(--flows-pipe-arrow);
+  --color-flows-connecting: var(--flows-connecting);
+
   --color-heating-low: var(--heating-low);
   --color-heating-medium: var(--heating-medium);
   --color-heating-high: var(--heating-high);
@@ -449,7 +482,22 @@ h6 {
   --color-cooling-medium: var(--cooling-medium);
   --color-cooling-high: var(--cooling-high);
 
+  --color-flows-use-low: var(--flows-use-low);
+  --color-flows-use-medium: var(--flows-use-medium);
+  --color-flows-use-high: var(--flows-use-high);
+  --color-flows-use-arrow: var(--flows-use-arrow);
+  --color-flows-fill-low: var(--flows-fill-low);
+  --color-flows-fill-medium: var(--flows-fill-medium);
+  --color-flows-fill-high: var(--flows-fill-high);
+  --color-flows-fill-arrow: var(--flows-fill-arrow);
+  --color-flows-heat-low: var(--flows-heat-low);
+  --color-flows-heat-medium: var(--flows-heat-medium);
+  --color-flows-heat-high: var(--flows-heat-high);
+  --color-flows-heat-arrow: var(--flows-heat-arrow);
+
   /* SECTION: state colours */
+
+  --color-dull: var(--dull);
 
   --color-attention: var(--attention);
   --color-attention-muted: var(--attention-muted);
@@ -493,11 +541,6 @@ h6 {
 
   --color-popover: var(--popover);
   --color-popover-foreground: var(--popover-foreground);
-
-  /* SUB SECTION: Mimics */
-
-  --color-flows-pipe: var(--flows-pipe);
-  --color-flows-pipe-arrow: var(--flows-pipe-arrow);
 
   /* SUB SECTION: Charts */
 

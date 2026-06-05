@@ -1,6 +1,7 @@
 <script setup lang="ts">
+import { SensorComponentType } from "@/modules/thrs/types";
 import { RiArrowDownLine, RiArrowUpLine } from "@remixicon/vue";
-import { MimicComponentInstanceProps, useRandomizedNumber } from ".";
+import { MimicComponentInstanceProps, TitleProps } from ".";
 import { CircuitBox, CircuitBoxTitle } from "../components/circuit-box";
 import {
   ValueList,
@@ -9,13 +10,26 @@ import {
   ValueListSeparator,
   ValueListTemperatureItem,
 } from "../components/value-list";
+import { getMimicDataProvider, ModuleField } from "../providers";
 
-const props = defineProps<MimicComponentInstanceProps & { title: string }>();
+const props = defineProps<
+  MimicComponentInstanceProps &
+    TitleProps & {
+      width?: number | string;
+      height?: number | string;
+      forceHeight?: boolean;
+      flowIn: ModuleField<SensorComponentType.CalculatedFlow>;
+      tIn: ModuleField<SensorComponentType.Temperature>;
+      flowOut: ModuleField<SensorComponentType.Flow>;
+      tOut: ModuleField<SensorComponentType.Temperature>;
+    }
+>();
 
-const tIn = useRandomizedNumber(40, 90);
-const tOut = useRandomizedNumber(40, 90);
-const flowIn = useRandomizedNumber(1, 10);
-const flowOut = useRandomizedNumber(1, 10);
+const { getSensorValue } = getMimicDataProvider();
+const flowIn = getSensorValue(props.flowIn);
+const tIn = getSensorValue(props.tIn);
+const flowOut = getSensorValue(props.flowOut);
+const tOut = getSensorValue(props.tOut);
 </script>
 
 <template>
@@ -27,15 +41,15 @@ const flowOut = useRandomizedNumber(1, 10);
         <RiArrowUpLine class="text-muted-foreground size-3" />
         In
       </ValueListHeader>
-      <ValueListFlowItem :value="flowIn" />
-      <ValueListTemperatureItem :in="tIn" />
+      <ValueListFlowItem :value="flowIn?.flow.value" />
+      <ValueListTemperatureItem :temperature="tIn?.temperature.value" />
       <ValueListSeparator />
       <ValueListHeader>
         <RiArrowDownLine class="text-muted-foreground size-3" />
         Out
       </ValueListHeader>
-      <ValueListFlowItem :value="flowOut" />
-      <ValueListTemperatureItem :out="tOut" />
+      <ValueListFlowItem :value="flowOut?.flow.value" />
+      <ValueListTemperatureItem :temperature="tOut?.temperature.value" />
       <ValueListSeparator />
     </ValueList>
   </CircuitBox>

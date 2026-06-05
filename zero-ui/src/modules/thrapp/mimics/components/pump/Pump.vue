@@ -24,8 +24,7 @@ const { state, orientation } = toRefs(props);
 const colors = computed(() => PUMP_STATE_COLORS[state.value]);
 
 const orientationWithRotation = computed<ComponentOrientation>(() => {
-  if (state.value === PumpState.Transient) return getNextOrientation(orientation.value, -1);
-  else if (state.value === PumpState.Closed) return getNextOrientation(orientation.value, -2);
+  if (state.value === PumpState.Inactive) return getNextOrientation(orientation.value, -2);
   else return orientation.value;
 });
 </script>

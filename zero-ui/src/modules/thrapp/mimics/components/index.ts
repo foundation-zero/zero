@@ -74,8 +74,12 @@ export const useOrientation = (
     transform: `rotate(${mmath.normalizeDegrees(refValue(orientation) - refValue(baseOrientation))}deg)`,
   }));
 
-export const createSizeAndViewbox = (width: number | string, height: number | string) => ({
+export const createSizeAndViewbox = (
+  width: number | string,
+  height: number | string,
+  forceHeight = true,
+) => ({
   width,
-  height,
+  height: forceHeight ? height : undefined,
   viewBox: `0 0 ${width} ${height}`,
 });

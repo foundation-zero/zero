@@ -135,6 +135,8 @@ export const DEFINITIONS = toDefinitions({
   },
 });
 
+export type ThrsDefinitions = typeof DEFINITIONS;
+
 export const SIMULATION = toSimulation(
   {
     highTemperature: HIGH_TEMPERATURE_SIMULATION_INPUTS,

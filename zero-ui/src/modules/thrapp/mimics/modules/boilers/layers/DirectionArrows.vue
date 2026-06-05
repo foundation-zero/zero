@@ -19,7 +19,7 @@
         >
           <path
             d="M0.75 0.75L4.25 3.5L0.75 6.25"
-            class="stroke-flows-pipe-arrow/55"
+            class="stroke-flows-pipe-arrow"
             fill="none"
             stroke-width="1"
             stroke-linecap="round"
@@ -28,7 +28,7 @@
         </marker>
       </defs>
       <g
-        class="stroke-flows-pipe-arrow/55"
+        class="stroke-flows-pipe-arrow"
         stroke-width="1"
         fill="none"
         marker-end="url(#flows-dir-arrow)"

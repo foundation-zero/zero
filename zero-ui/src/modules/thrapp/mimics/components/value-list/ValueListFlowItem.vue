@@ -5,7 +5,7 @@ import { HTMLAttributes } from "vue";
 import { useI18n } from "vue-i18n";
 import ValueListItem from "./ValueListItem.vue";
 
-const props = defineProps<{ value: number; class?: HTMLAttributes["class"] }>();
+const props = defineProps<{ value?: number; class?: HTMLAttributes["class"] }>();
 
 const { t } = useI18n();
 </script>

@@ -1,5 +1,10 @@
 {
   "thrapp": {
+    "labels": {
+      "demoMode": "Demo mode",
+      "showLegend": "Show legend",
+      "legend": "Legend"
+    },
     "mimics": {
       "boilerTank": {
         "modes": {
@@ -13,6 +18,129 @@
           "active": "Active",
           "inactive": "Inactive"
         }
+      },
+      "boilers": {
+        "assets": {
+          "heatPumpTitle": "Heat pump",
+          "hvacTitle": "HVAC"
+        },
+        "boilerTanks": {
+          "tank1Title": "Tank 1",
+          "tank2Title": "Tank 2",
+          "tank3Title": "Tank 3"
+        },
+        "circuitBoxes": {
+          "highTempLoopTitle": "High temp loop",
+          "brightloopTitle": "Brightloop",
+          "drivesTitle": "Drives",
+          "fahrenheitTitle": "Fahrenheit",
+          "domesticHotWaterTitle": "Domestic hot water"
+        }
+      }
+    },
+    "legends": {
+      "boilerLegend": {
+        "groups": {
+          "connectingCircuits": "Connecting circuits",
+          "assets": "Assets",
+          "actuatedValveComponents": "Actuated valve components",
+          "heatExchangers": "Heat exchangers",
+          "pumps": "Pumps",
+          "sensors": "Sensors",
+          "manualComponents": "Manual components",
+          "pipes": "Pipes",
+          "labels": "Labels"
+        }
+      },
+      "pipes": {
+        "pipe": "Pipe",
+        "connectingCircuitPipe": "Connecting circuit pipe",
+        "inUseFlow": "In use flow",
+        "fillingFlow": "Filling flow",
+        "heatingFlow": "Heating flow",
+        "directionArrow": "Direction arrow"
+      },
+      "boilerTank": {
+        "title": "Asset - Boiler tank",
+        "description": "The Tank can have status in use, boosting, filling, standby and disabled. The properties are rendered based upon relevant sensor values of the asset.",
+        "assetTitle": "Tank"
+      },
+      "checkValves": {
+        "title": "Check valve (physical)"
+      },
+      "flowSensors": {
+        "title": "Flow sensor (L/min)"
+      },
+      "flowValve": {
+        "title": "Flow control valve",
+        "description": "(Open / Partial / Closed)"
+      },
+      "hvac": {
+        "title": "Asset - HVAC",
+        "description": "The HVAC can have status active and inactive. The properties are rendered based upon relevant sensor values of the asset.",
+        "assetTitle": "HVAC"
+      },
+      "heatPump": {
+        "title": "Asset - Heat pump",
+        "description": "The heat pump can have status active and inactive. The properties are rendered based upon relevant sensor values of the asset.",
+        "assetTitle": "Heat pump"
+      },
+      "labelTag": {
+        "title": "Label",
+        "labelValue": "1064-08"
+      },
+      "labelValue": {
+        "title": "Value"
+      },
+      "levelSensors": {
+        "title": "Level sensor (L)"
+      },
+      "manualFlowControlValve": {
+        "title": "Manual flow control valve"
+      },
+      "manualSwitchValve": {
+        "title": "Manual switch valve"
+      },
+      "manualThreeWayValve": {
+        "title": "Manual 3-way valve"
+      },
+      "otherMimic": {
+        "title": "Other mimic",
+        "description": "The properties are rendered based upon relevant circuit sensor values from the connecting circuit.",
+        "assetTitle": "Other mimic"
+      },
+      "pipeHeatExchanger": {
+        "title": "Pipe heat exchanger",
+        "description": "(Heating / Cooling / Neutral)"
+      },
+      "plateHeatExchanger": {
+        "title": "Heat exchanger",
+        "description": "(Heating / Cooling / Neutral)"
+      },
+      "pressureGauges": {
+        "title": "Pressure gauge"
+      },
+      "pressureSensors": {
+        "title": "Pressure sensor (bar)"
+      },
+      "pumps": {
+        "title": "Pumps",
+        "description": "(Active / Inactive / Alarm)"
+      },
+      "sectionArea": {
+        "title": "Section area",
+        "assetTitle": "Section area"
+      },
+      "switchValve": {
+        "title": "Switch valve",
+        "description": "(Open / Closed)"
+      },
+      "temperatureSensors": {
+        "title": "Temperature sensor (°C)"
+      },
+      "threeWayMixValve": {
+        "title": "3-way mix valve",
+        "description": "(A-AB / B-AB / A&B-AB)"
       }
     }
   }

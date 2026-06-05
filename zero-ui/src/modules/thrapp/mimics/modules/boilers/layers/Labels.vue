@@ -1,10 +1,12 @@
 <script setup lang="ts">
+import { SensorComponentType } from "@/modules/thrs/types/index.ts";
 import FlowControlLabelInstance from "../../../instances/FlowControlLabelInstance.vue";
 import FlowLabelInstance from "../../../instances/FlowLabelInstance.vue";
 import HeatExchangerLabelInstance from "../../../instances/HeatExchangerLabelInstance.vue";
 import PressureLabelInstance from "../../../instances/PressureLabelInstance.vue";
 import TagLabelInstance from "../../../instances/TagLabelInstance.vue";
 import TemperatureLabelInstance from "../../../instances/TemperatureLabelInstance.vue";
+import { getField } from "../../../providers/index.ts";
 </script>
 
 <template>
@@ -164,126 +166,177 @@ import TemperatureLabelInstance from "../../../instances/TemperatureLabelInstanc
       x="1090"
       y="420"
       tag-id="1057-24"
+      :flow="getField(SensorComponentType.Flow, 'boilers', 'boilersFlowLt1')"
     />
     <FlowLabelInstance
       x="236"
       y="467"
       tag-id="1058-11"
+      :flow="getField(SensorComponentType.Flow, 'boilers', 'boilersFlowBoosting')"
     />
     <FlowLabelInstance
       x="1090"
       y="579"
       tag-id="1057-17"
+      :flow="getField(SensorComponentType.Flow, 'boilers', 'boilersFlowLt2')"
     />
 
     <PressureLabelInstance
       x="565"
       y="71"
       tag-id="1056-01"
+      :pressure="getField(SensorComponentType.Pressure, 'boilers', 'boilersPressureBoosting')"
     />
     <PressureLabelInstance
       x="926"
       y="71"
       tag-id="1056-02"
+      :pressure="getField(SensorComponentType.Pressure, 'boilers', 'boilersPressureBoosting')"
     />
     <PressureLabelInstance
       x="1266"
       y="71"
       tag-id="1056-03"
+      :pressure="getField(SensorComponentType.Pressure, 'boilers', 'boilersPressureBoosting')"
     />
     <PressureLabelInstance
       x="277"
       y="186"
       tag-id="1097-11"
+      :pressure="getField(SensorComponentType.Pressure, 'boilers', 'boilersPressureBoosting')"
     />
 
     <TemperatureLabelInstance
       x="313"
       y="71"
       tag-id="1038-45"
+      :temperature="getField(SensorComponentType.Temperature, 'boilers', 'boilersTemperatureTank1')"
     />
     <TemperatureLabelInstance
       x="676"
       y="71"
       tag-id="1038-44"
+      :temperature="getField(SensorComponentType.Temperature, 'boilers', 'boilersTemperatureTank2')"
     />
     <TemperatureLabelInstance
       x="1016"
       y="71"
       tag-id="1038-27"
+      :temperature="getField(SensorComponentType.Temperature, 'boilers', 'boilersTemperatureTank3')"
     />
     <TemperatureLabelInstance
       x="180"
       y="158"
       tag-id="1038-65"
+      :temperature="
+        getField(SensorComponentType.Temperature, 'boilers', 'boilersTemperatureBoostingSupply')
+      "
     />
     <TemperatureLabelInstance
       x="395"
       y="423"
       tag-id="1038-26"
+      :temperature="
+        getField(SensorComponentType.Temperature, 'boilers', 'boilersTemperatureLt2Return')
+      "
     />
     <TemperatureLabelInstance
       x="553"
       y="420"
       tag-id="1038-25"
+      :temperature="
+        getField(
+          SensorComponentType.Temperature,
+          'boilers',
+          'boilersTemperatureHvacExchangerReturn',
+        )
+      "
     />
     <TemperatureLabelInstance
       x="1163"
       y="496"
       tag-id="1038-47"
+      :temperature="
+        getField(SensorComponentType.Temperature, 'boilers', 'boilersTemperatureFreshwaterSupply')
+      "
     />
     <TemperatureLabelInstance
       x="910"
       y="507"
       tag-id="1038-51"
+      :temperature="
+        getField(SensorComponentType.Temperature, 'boilers', 'boilersTemperatureFahrenheitReturn')
+      "
     />
     <TemperatureLabelInstance
       x="236"
       y="517"
       tag-id="1038-66"
+      :temperature="
+        getField(SensorComponentType.Temperature, 'boilers', 'boilersTemperatureBoostingReturn')
+      "
     />
     <TemperatureLabelInstance
       x="393"
       y="580"
       tag-id="1038-46"
+      :temperature="
+        getField(SensorComponentType.Temperature, 'boilers', 'boilersTemperatureLt1Return')
+      "
     />
 
     <FlowControlLabelInstance
       x="1043"
       y="442"
       tag-id="1064-08"
+      :valve="getField(SensorComponentType.Valve, 'boilers', 'boilersFlowcontrolLt1')"
     />
     <FlowControlLabelInstance
       x="1045"
       y="604"
       tag-id="1064-03"
+      :valve="getField(SensorComponentType.Valve, 'boilers', 'boilersFlowcontrolLt2')"
     />
 
+    // Check this one, field might be wrong
     <FlowControlLabelInstance
       x="220"
       y="329"
       tag-id="1022"
+      :valve="getField(SensorComponentType.Valve, 'boilers', 'boilersSwitchHeatpump')"
     />
 
     <HeatExchangerLabelInstance
       x="23"
       y="379.3"
       tag-id="1007"
+      :heat-exchanger="
+        getField(SensorComponentType.HeatExchanger, 'boilers', 'boilersConsumersExchanger')
+      "
     />
     <HeatExchangerLabelInstance
       x="460"
       y="425"
       tag-id="1008"
+      :heat-exchanger="
+        getField(SensorComponentType.HeatExchanger, 'boilers', 'boilersLt2Exchanger')
+      "
     />
     <HeatExchangerLabelInstance
       x="955"
       y="425"
       tag-id="1004"
+      :heat-exchanger="
+        getField(SensorComponentType.HeatExchanger, 'boilers', 'boilersFahrenheitExchanger')
+      "
     />
     <HeatExchangerLabelInstance
       x="710"
       y="585"
       tag-id="1009"
+      :heat-exchanger="
+        getField(SensorComponentType.HeatExchanger, 'boilers', 'boilersLt1Exchanger')
+      "
     />
   </g>
 </template>

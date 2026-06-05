@@ -5,7 +5,11 @@ import { HTMLAttributes } from "vue";
 import { useI18n } from "vue-i18n";
 import ValueListItem from "./ValueListItem.vue";
 
-const props = defineProps<{ in?: number; out?: number; class?: HTMLAttributes["class"] }>();
+const props = defineProps<{
+  temperature?: number;
+  setpoint?: number;
+  class?: HTMLAttributes["class"];
+}>();
 
 const { t } = useI18n();
 </script>
@@ -19,14 +23,11 @@ const { t } = useI18n();
       </slot>
     </span>
     <span class="text-foreground font-medium">
+      <AnimatedNumber :to="temperature" />
+      <span v-if="temperature != undefined && setpoint != undefined">/</span>
       <AnimatedNumber
-        v-if="props.in != undefined"
-        :to="props.in"
-      />
-      <span v-if="props.in != undefined && props.out != undefined">/</span>
-      <AnimatedNumber
-        v-if="props.out != undefined"
-        :to="props.out"
+        v-if="setpoint != undefined"
+        :to="setpoint"
       />
       {{ t("units.celsius") }}
     </span>

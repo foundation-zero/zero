@@ -12,31 +12,41 @@ import { createSizeAndViewbox } from "..";
 import BoilerTankLevel from "./BoilerTankLevel.vue";
 import BoilerTankLevelIndicator from "./BoilerTankLevelIndicator.vue";
 
-const props = defineProps<{
-  class?: HTMLAttributes["class"];
-  level: number;
-  mode: BoilerTankModes;
-}>();
+const props = withDefaults(
+  defineProps<{
+    class?: HTMLAttributes["class"];
+    level: number;
+    mode: BoilerTankModes;
+    width?: number | string;
+    height?: number | string;
+    forceHeight?: boolean;
+  }>(),
+  {
+    width: () => BOILER_TANK_WIDTH,
+    height: () => BOILER_TANK_HEIGHT,
+    forceHeight: false,
+  },
+);
 
 const color = computed(() => BOILER_TANK_MODE_COLORS[props.mode]);
 </script>
 
 <template>
   <svg
-    v-bind="createSizeAndViewbox(BOILER_TANK_WIDTH, BOILER_TANK_HEIGHT)"
+    v-bind="createSizeAndViewbox(width, height, forceHeight)"
     class="fill-background"
   >
     <g mask="url(#boiler-tank-mask)">
       <rect
-        :width="BOILER_TANK_WIDTH"
-        :height="BOILER_TANK_HEIGHT"
+        :width="width"
+        :height="height"
         class="fill-background"
       />
 
       <g
         class="transition-all"
         :style="{
-          transform: `translateY(${100 - level}%)`,
+          transform: `translateY(${100 - Math.min(100, level)}%)`,
         }"
       >
         <BoilerTankLevel :y="-BOILER_TANK_LEVEL_LINE_OFFSET" />
@@ -50,8 +60,8 @@ const color = computed(() => BOILER_TANK_MODE_COLORS[props.mode]);
     <defs>
       <mask id="boiler-tank-mask">
         <rect
-          :width="BOILER_TANK_WIDTH - 2"
-          :height="BOILER_TANK_HEIGHT - 2"
+          :width="+width - 2"
+          :height="+height - 2"
           x="1"
           y="1"
           rx="8"

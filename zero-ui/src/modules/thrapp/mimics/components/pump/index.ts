@@ -5,8 +5,7 @@ export const FIGMA_URL =
 
 export const enum PumpState {
   Active = "active",
-  Transient = "transient",
-  Closed = "closed",
+  Inactive = "inactive",
   Alarm = "alarm",
 }
 
@@ -33,12 +32,7 @@ export const PUMP_STATE_COLORS: Record<PumpState, PumpStateColors> = {
     ring: "var(--attention)",
     blade: "var(--constructive-muted)",
   },
-  [PumpState.Transient]: {
-    body: "var(--background)",
-    ring: "var(--attention)",
-    blade: "var(--warning)",
-  },
-  [PumpState.Closed]: {
+  [PumpState.Inactive]: {
     body: "var(--background)",
     ring: "var(--attention)",
     blade: "var(--destructive-dull)",

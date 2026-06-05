@@ -1,14 +1,21 @@
 <script setup lang="ts">
 import AnimatedNumber from "@/modules/loads/components/animated-number/AnimatedNumber.vue";
+import { SensorComponentType } from "@/modules/thrs/types";
 import { useI18n } from "vue-i18n";
-import { MimicComponentInstanceProps, useRandomizedNumber } from ".";
+import { MimicComponentInstanceProps } from ".";
 import { Label } from "../components/label";
+import { getMimicDataProvider } from "../providers";
 
-defineProps<MimicComponentInstanceProps>();
+const props = defineProps<
+  MimicComponentInstanceProps & {
+    pressure: import("../providers").ModuleField<SensorComponentType.Pressure>;
+  }
+>();
+
+const { getSensorValue } = getMimicDataProvider();
+const pressure = getSensorValue(props.pressure);
 
 const { t } = useI18n();
-
-const value = useRandomizedNumber(10, 30);
 </script>
 
 <template>
@@ -19,7 +26,7 @@ const value = useRandomizedNumber(10, 30);
     {{ tagId }}
     <template #value>
       <AnimatedNumber
-        :to="value"
+        :to="pressure?.pressure?.value"
         :fraction-digits="0"
       />
       {{ t("units.bar") }}
