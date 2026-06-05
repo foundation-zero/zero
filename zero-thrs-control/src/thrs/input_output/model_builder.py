@@ -3,7 +3,8 @@ from asyncio import Future, gather
 from typing import Any
 
 from pydantic import TypeAdapter
-from thrs.input_output.base import ThrsValues, CombinedValues
+
+from thrs.input_output.base import CombinedValues, ThrsValues
 from thrs.utils.string import dash_to_snake
 
 

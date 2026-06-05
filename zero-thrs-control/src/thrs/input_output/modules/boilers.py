@@ -9,7 +9,7 @@ from thrs.input_output.base import (
     ThrsValues,
     component_meta,
 )
-from thrs.input_output.definitions import control, sensor, simulation, controllers
+from thrs.input_output.definitions import control, controllers, sensor, simulation
 from thrs.input_output.definitions.units import (
     WATER_HEAT_TRANSFER_CONVERSION,
 )

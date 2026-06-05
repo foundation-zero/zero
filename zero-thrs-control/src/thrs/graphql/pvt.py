@@ -2,25 +2,22 @@ import strawberry
 
 from thrs.control.modules.pvt import PvtControlMode, PvtGroupControlMode, PvtParameters
 from thrs.graphql.base import (
+    ControlModule,
     PvtMessaging,
     SwitchingControlModeType,
     ThrsContext,
-)
-from thrs.graphql.base import (
-    ControlModule,
     add_automation_mode_mutation,
     add_control_mutations,
     add_parameter_mutations,
 )
 from thrs.graphql.helpers import (
-    pydantic_to_strawberry_type,
     optional_pydantic_to_graphql,
+    pydantic_to_strawberry_type,
 )
 from thrs.input_output.modules.pvt import (
     PvtControlValues,
     PvtSensorValues,
 )
-
 
 PvtSensorValuesType = pydantic_to_strawberry_type(PvtSensorValues)
 PvtControlValuesType = pydantic_to_strawberry_type(PvtControlValues)

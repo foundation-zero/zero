@@ -1,3 +1,5 @@
+from datetime import datetime, timedelta
+
 from pytest import fixture
 
 from thrs.control.modules.fahrenheit import FahrenheitControl, FahrenheitParameters
@@ -16,7 +18,6 @@ from thrs.orchestration.executor import SimulationExecutor
 from thrs.simulation.fmu import Fmu
 from thrs.simulation.io_mapping import ThrsModelIoMapping
 from thrs.simulation.models.fmu_paths import fahrenheit_path
-from datetime import datetime, timedelta
 
 
 @fixture

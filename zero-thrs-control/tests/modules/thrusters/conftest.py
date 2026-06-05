@@ -1,5 +1,7 @@
 from datetime import datetime, timedelta
+
 from pytest import fixture
+
 from thrs.control.modules.thrusters import (
     ThrustersAlarms,
     ThrustersControl,

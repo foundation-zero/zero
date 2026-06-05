@@ -1,23 +1,22 @@
-from asyncio import TaskGroup
 import asyncio
+import logging
+from asyncio import TaskGroup
 from dataclasses import dataclass
 from datetime import datetime, timedelta
-import logging
 from typing import Any, Literal
 
 from aiomqtt import Client, Topic
 
-from thrs.orchestration.module import CombinedModule, MqttMapping
+from thrs.classes.executor import ExecutionResult, Executor
 from thrs.input_output.base import (
+    CombinedValues,
     SimulationInputs,
     SimulationValues,
     ThrsValues,
-    CombinedValues,
 )
+from thrs.orchestration.module import CombinedModule, MqttMapping
 from thrs.simulation.fmu import Fmu
 from thrs.simulation.io_mapping import IoMapping
-
-from thrs.classes.executor import ExecutionResult, Executor
 from thrs.utils.string import hyphenize
 
 logger = logging.getLogger(__name__)

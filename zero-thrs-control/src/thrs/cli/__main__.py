@@ -1,7 +1,7 @@
-from argparse import ArgumentParser
 import logging
 import os
 import sys
+from argparse import ArgumentParser
 
 from thrs.cli.simulation_controls import (
     MODES,

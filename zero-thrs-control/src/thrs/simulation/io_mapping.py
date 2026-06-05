@@ -1,23 +1,23 @@
+import operator
 from abc import ABC, abstractmethod
 from datetime import datetime
 from functools import reduce
-import operator
 from typing import Any, cast
 
+from pydantic.fields import FieldInfo
+
 from thrs.input_output.base import (
+    CombinedValues,
     SimulationInputs,
     SimulationValues,
     ThrsValues,
-    CombinedValues,
 )
+from thrs.input_output.definitions.units import unit_for_annotation, unit_meta
 from thrs.input_output.fmu_mapping import (
     build_outputs_from_fmu,
     extract_non_fmu_values,
+    included_in_fmu,
 )
-
-from pydantic.fields import FieldInfo
-from thrs.input_output.definitions.units import unit_for_annotation, unit_meta
-from thrs.input_output.fmu_mapping import included_in_fmu
 
 
 def flatten_model_values(model: ThrsValues, fmu_only: bool) -> dict[str, float]:

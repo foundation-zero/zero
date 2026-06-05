@@ -4,14 +4,14 @@ from pydantic import computed_field
 
 import thrs.input_output.definitions.control as control
 import thrs.input_output.definitions.sensor as sensor
-from thrs.input_output.definitions import simulation
 from thrs.input_output.base import (
+    SimulationInputs,
     SimulationValues,
     Stamped,
-    component_meta,
-    SimulationInputs,
     ThrsValues,
+    component_meta,
 )
+from thrs.input_output.definitions import simulation
 
 
 class ThrustersSensorValues(ThrsValues):

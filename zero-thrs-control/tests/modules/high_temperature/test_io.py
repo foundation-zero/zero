@@ -7,7 +7,6 @@ from thrs.input_output.modules.high_temperature import (
     HighTemperatureSimulationInputs,
     HighTemperatureSimulationOutputs,
 )
-
 from thrs.input_output.modules.pcm import PcmControlValues, PcmSensorValues
 from thrs.input_output.modules.pvt import PvtControlValues, PvtSensorValues
 from thrs.input_output.modules.thrusters import (

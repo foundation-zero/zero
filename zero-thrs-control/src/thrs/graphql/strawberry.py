@@ -1,17 +1,26 @@
+import logging
+import sys
 from asyncio import Task, create_task
 from contextlib import asynccontextmanager
 from datetime import datetime
-import logging
-import sys
 from typing import (
     Annotated,
     Callable,
 )
+
+import strawberry
+from aiomqtt import Client as MqttClient
 from fastapi import Depends, FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-import strawberry
+from pydantic.fields import FieldInfo
 from strawberry.fastapi import GraphQLRouter
 
+import thrs.graphql.boilers as boilers
+import thrs.graphql.consumers as consumers
+import thrs.graphql.pcm as pcm
+import thrs.graphql.pvt as pvt
+import thrs.graphql.simulation as simulation
+import thrs.graphql.thrusters as thrusters
 from thrs.control.modules.boilers import BoilersControlMode, BoilersParameters
 from thrs.control.modules.consumers import ConsumersControlMode, ConsumersParameters
 from thrs.control.modules.pcm import PcmControlMode, PcmParameters
@@ -26,8 +35,20 @@ from thrs.graphql.base import (
     ThrsContext,
     ThrustersMessaging,
 )
+from thrs.graphql.boilers import (
+    BoilersModule,
+    BoilersMutations,
+)
+from thrs.graphql.consumers import (
+    ConsumersModule,
+    ConsumersMutations,
+)
 from thrs.graphql.helpers import ensure_input_type
 from thrs.graphql.messaging import ControlMessaging, Messaging, SimulationMessaging
+from thrs.graphql.pcm import (
+    PcmModule,
+    PcmMutations,
+)
 from thrs.graphql.pvt import (
     PvtModule,
     PvtMutations,
@@ -41,19 +62,6 @@ from thrs.graphql.thrusters import (
     ThrustersModule,
     ThrustersMutations,
 )
-from thrs.graphql.pcm import (
-    PcmModule,
-    PcmMutations,
-)
-from thrs.graphql.consumers import (
-    ConsumersModule,
-    ConsumersMutations,
-)
-from thrs.graphql.boilers import (
-    BoilersModule,
-    BoilersMutations,
-)
-
 from thrs.input_output.modules.boilers import BoilersControlValues, BoilersSensorValues
 from thrs.input_output.modules.consumers import (
     ConsumersControlValues,
@@ -71,17 +79,7 @@ from thrs.input_output.modules.thrusters import (
     ThrustersControlValues,
     ThrustersSensorValues,
 )
-import thrs.graphql.thrusters as thrusters
-import thrs.graphql.pvt as pvt
-import thrs.graphql.pcm as pcm
-import thrs.graphql.consumers as consumers
-import thrs.graphql.boilers as boilers
-import thrs.graphql.simulation as simulation
-from pydantic.fields import FieldInfo
-from aiomqtt import Client as MqttClient
-
 from thrs.orchestration.config import Config
-
 
 logger = logging.getLogger(__name__)
 

@@ -1,5 +1,7 @@
 from datetime import datetime, timedelta
 
+from pytest import approx
+
 from thrs.control.modules.fahrenheit import (
     FahrenheitControl,
     FahrenheitControlMode,
@@ -13,8 +15,6 @@ from thrs.input_output.definitions.simulation import (
 )
 from thrs.input_output.modules.fahrenheit import FahrenheitSimulationInputs
 from thrs.orchestration.executor import SimulationExecutor
-from pytest import approx
-
 from thrs.simulation.fmu import Fmu
 from thrs.simulation.models.fmu_paths import fahrenheit_path
 

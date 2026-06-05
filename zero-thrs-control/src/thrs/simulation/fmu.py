@@ -1,9 +1,10 @@
 from datetime import timedelta
 from types import TracebackType
 from typing import Any, Callable, Iterable, Self, cast
+
 from fmpy import extract, read_model_description
-from fmpy.model_description import ModelDescription
 from fmpy.fmi2 import FMU2Slave
+from fmpy.model_description import ModelDescription
 
 
 def _var_mapper(

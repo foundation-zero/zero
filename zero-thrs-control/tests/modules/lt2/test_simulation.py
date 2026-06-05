@@ -1,8 +1,9 @@
 from datetime import datetime, timedelta
 
-from pytest import fixture
 import pytest
+from pytest import fixture
 
+from tests.helpers.simulation_inputs import simulator_input_field_setters
 from thrs.input_output.modules.lt2 import (
     Lt2ControlValues,
     Lt2SensorValues,
@@ -13,7 +14,6 @@ from thrs.orchestration.executor import SimulationExecutor
 from thrs.simulation.fmu import Fmu
 from thrs.simulation.io_mapping import ThrsModelIoMapping
 from thrs.simulation.models.fmu_paths import lt2_path
-from tests.helpers.simulation_inputs import simulator_input_field_setters
 
 
 @fixture(params=list(simulator_input_field_setters(Lt2SimulationInputs)))

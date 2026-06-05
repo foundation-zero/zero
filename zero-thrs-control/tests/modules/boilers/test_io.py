@@ -18,7 +18,6 @@ from thrs.input_output.modules.boilers import (
     BoilersSimulationInputs,
     BoilersSimulationOutputs,
 )
-
 from thrs.simulation.models.fmu_paths import boilers_path
 
 

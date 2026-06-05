@@ -1,10 +1,8 @@
 import fmpy
-from thrs.input_output.base import ThrsValues
-
 import polars as pl
 
+from thrs.input_output.base import ThrsValues
 from thrs.simulation.io_mapping import flatten_model_values
-
 
 SHEET_URL = "https://docs.google.com/spreadsheets/d/1YyfkKmqL8MZuJfStljTjhgFxawcco2cp2qCmBGFrR04/export?gid=990884182&format=csv"
 

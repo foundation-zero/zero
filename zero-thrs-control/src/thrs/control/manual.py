@@ -1,5 +1,6 @@
 from datetime import datetime
 from typing import Callable
+
 from thrs.classes.control import Control, ControlResult
 from thrs.input_output.base import ThrsValues
 

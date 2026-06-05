@@ -1,4 +1,5 @@
 from pytest import approx
+
 from thrs.control.modules.pcm import PcmControl, PcmControlMode
 from thrs.input_output.base import Stamped
 from thrs.input_output.modules.pcm import (

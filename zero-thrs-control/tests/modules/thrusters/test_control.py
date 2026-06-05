@@ -1,11 +1,11 @@
 from pytest import approx
 
+from tests.modules.thrusters.conftest import ThrustersSimulationExecutor
 from thrs.control.modules.thrusters import ThrustersControl, ThrustersControlMode
 from thrs.input_output.base import Stamped
 from thrs.input_output.definitions.control import Valve
 from thrs.input_output.definitions.units import PcsMode
 from thrs.orchestration.executor import SimulationExecutor
-from tests.modules.thrusters.conftest import ThrustersSimulationExecutor
 
 
 async def test_idle(control: ThrustersControl, executor: SimulationExecutor):

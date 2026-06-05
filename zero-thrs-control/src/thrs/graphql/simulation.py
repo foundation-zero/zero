@@ -1,4 +1,5 @@
 import strawberry
+
 from thrs.graphql.base import add_simulation_input_mutations
 from thrs.graphql.helpers import (
     dedataframed_pydantic_to_strawberry_type,

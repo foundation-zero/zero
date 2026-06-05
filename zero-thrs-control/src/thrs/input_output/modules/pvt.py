@@ -1,11 +1,12 @@
 from typing import Annotated
 
 from pydantic import computed_field
+
 from thrs.input_output.base import (
-    SimulationValues,
-    component_meta,
     SimulationInputs,
+    SimulationValues,
     ThrsValues,
+    component_meta,
 )
 from thrs.input_output.definitions import control, sensor, simulation
 

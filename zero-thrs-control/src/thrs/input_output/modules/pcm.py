@@ -1,4 +1,5 @@
 from typing import Annotated
+
 from thrs.input_output.base import (
     SimulationInputs,
     SimulationValues,

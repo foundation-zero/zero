@@ -12,8 +12,8 @@ from thrs.input_output.base import (
     ThrsValues,
 )
 from thrs.orchestration.collector import PolarsCollector
-from thrs.orchestration.executor import SimulationExecutor
 from thrs.orchestration.cycler import Cycler
+from thrs.orchestration.executor import SimulationExecutor
 from thrs.orchestration.module import CombinedModule
 from thrs.simulation.fmu import Fmu
 from thrs.simulation.io_mapping import ThrsModelIoMapping

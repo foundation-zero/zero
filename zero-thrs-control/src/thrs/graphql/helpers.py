@@ -1,8 +1,10 @@
 from typing import Annotated, get_args, get_origin
-from pydantic import Field, create_model, BaseModel
+
 import strawberry
+from pydantic import BaseModel, Field, create_model
 from strawberry.schema_directive import Location
-from thrs.input_output.base import ThrsValues, Stamped, SimulationValues
+
+from thrs.input_output.base import SimulationValues, Stamped, ThrsValues
 from thrs.input_output.definitions.units import unit_for_annotation
 
 

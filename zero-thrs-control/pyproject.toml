@@ -69,7 +69,7 @@ markers = ["io: tests that check code against IOlist outside this repo"]
 fix = true
 
 [tool.ruff.lint]
-select = ["E4", "E7", "E9", "F", "W"]
+select = ["E4", "E7", "E9", "F", "W", "I"]
 
 [tool.poetry.requires-plugins]
 poetry-dynamic-versioning = { version = ">=1.0.0,<2.0.0", extras = ["plugin"] }

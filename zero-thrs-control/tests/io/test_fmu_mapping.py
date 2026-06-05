@@ -1,7 +1,6 @@
 from datetime import datetime
 from typing import Annotated
 
-
 from thrs.input_output.base import (
     SimulationInputs,
     Stamped,
@@ -9,12 +8,12 @@ from thrs.input_output.base import (
     component_meta,
     field_meta,
 )
+from thrs.input_output.definitions.sensor import FlowSensor
 from thrs.input_output.definitions.units import Ratio
 from thrs.input_output.fmu_mapping import (
     build_outputs_from_fmu,
     extract_non_fmu_values,
 )
-from thrs.input_output.definitions.sensor import FlowSensor
 from thrs.simulation.io_mapping import flatten_model_values
 
 

@@ -1,4 +1,6 @@
 import warnings
+
+from thrs.classes.control import Control
 from thrs.classes.executor import ExecutionResult
 from thrs.input_output.alarms import BaseAlarms
 from thrs.input_output.base import SimulationInputs
@@ -8,7 +10,6 @@ from thrs.orchestration.executor import (
     SimulationExecutionResult,
     SimulationExecutor,
 )
-from thrs.classes.control import Control
 from thrs.simulation.io_mapping import flatten_model_values
 
 

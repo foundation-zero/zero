@@ -1,6 +1,5 @@
 from pytest import approx
 
-
 from thrs.control.modules.lt2 import Lt2Control, Lt2Parameters
 from thrs.input_output.base import Stamped
 from thrs.input_output.definitions.sensor import FlowSensor

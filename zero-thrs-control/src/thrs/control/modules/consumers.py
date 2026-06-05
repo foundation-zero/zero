@@ -2,10 +2,11 @@ from datetime import datetime
 from typing import Annotated, Callable
 
 from pydantic import Field
+
 from thrs.classes.control import Control, ControlMode, ControlResult
 from thrs.control.controllers import (
-    PidController,
     FlowDistributionController,
+    PidController,
 )
 from thrs.input_output.alarms import BaseAlarms
 from thrs.input_output.base import Stamped, ThrsValues

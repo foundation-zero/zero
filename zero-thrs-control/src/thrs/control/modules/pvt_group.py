@@ -3,11 +3,11 @@ from typing import Callable
 
 from pydantic import model_validator
 from transitions import Machine, State
+
 from thrs.classes.control import Control, ControlMode, ControlResult
 from thrs.control.controllers import PidController
 from thrs.input_output.base import Stamped, ThrsValues
-from thrs.input_output.definitions import sensor
-from thrs.input_output.definitions import control
+from thrs.input_output.definitions import control, sensor
 from thrs.input_output.definitions.control import Valve
 from thrs.input_output.definitions.units import Celsius, Ratio, Tuning
 

@@ -1,5 +1,6 @@
 from datetime import datetime
 from typing import Callable, Literal, Mapping, Protocol
+
 from thrs.classes.control import Control, ControlResult
 from thrs.control.manual import ManualControl
 from thrs.control.switching import SwitchingControl, SwitchingControlMode
@@ -11,11 +12,11 @@ from thrs.input_output.base import (
     ThrsValues,
 )
 from thrs.input_output.model_builder import (
-    ModelBuilder,
     CombinedModelBuilder,
+    ModelBuilder,
     PartialModelBuilder,
 )
-from thrs.simulation.io_mapping import IoMapping, CombinedIoMapping
+from thrs.simulation.io_mapping import CombinedIoMapping, IoMapping
 from thrs.utils.string import hyphenize
 
 

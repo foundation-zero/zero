@@ -2,8 +2,9 @@ from datetime import datetime
 from typing import Callable
 
 from transitions import Machine, State
+
 from thrs.classes.control import Control, ControlMode, ControlResult
-from thrs.control.controllers import PidController, FlowBalanceController
+from thrs.control.controllers import FlowBalanceController, PidController
 from thrs.input_output.alarms import BaseAlarms
 from thrs.input_output.base import Stamped, ThrsValues
 from thrs.input_output.definitions.control import Pcm, Pump, Valve

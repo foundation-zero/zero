@@ -1,7 +1,9 @@
 from datetime import datetime, timedelta
-from pytest import fixture
-import pytest
 
+import pytest
+from pytest import fixture
+
+from tests.helpers.simulation_inputs import simulator_input_field_setters
 from thrs.control.modules.consumers import ConsumersParameters
 from thrs.control.modules.high_temperature import HighTemperatureModule
 from thrs.control.modules.pcm import PcmParameters
@@ -14,7 +16,6 @@ from thrs.input_output.modules.high_temperature import (
 from thrs.orchestration.executor import SimulationExecutor
 from thrs.orchestration.simulator import ModuleSimulatorModel, Simulator
 from thrs.simulation.fmu import Fmu
-from tests.helpers.simulation_inputs import simulator_input_field_setters
 from thrs.simulation.models.fmu_paths import high_temperature_path
 
 

@@ -1,15 +1,15 @@
 import pytest
 
+from tests.modules.conftest import (
+    compare_fmu_to_classes,
+    compare_modelica_names,
+    compare_yard_tags,
+)
 from thrs.input_output.modules.lt2 import (
     Lt2ControlValues,
     Lt2SensorValues,
     Lt2SimulationInputs,
     Lt2SimulationOutputs,
-)
-from tests.modules.conftest import (
-    compare_fmu_to_classes,
-    compare_modelica_names,
-    compare_yard_tags,
 )
 from thrs.simulation.models.fmu_paths import lt2_path
 

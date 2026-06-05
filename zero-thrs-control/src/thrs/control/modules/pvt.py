@@ -1,5 +1,6 @@
 from datetime import datetime
 from typing import Annotated, Callable
+
 from pydantic import Field, model_validator
 
 from thrs.classes.control import Control, ControlMode, ControlResult

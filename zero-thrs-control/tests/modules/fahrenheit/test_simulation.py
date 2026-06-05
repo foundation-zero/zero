@@ -1,5 +1,7 @@
-from pytest import fixture
+from datetime import datetime, timedelta
+
 import pytest
+from pytest import fixture
 
 from tests.helpers.simulation_inputs import simulator_input_field_setters
 from thrs.input_output.modules.fahrenheit import (
@@ -11,7 +13,6 @@ from thrs.orchestration.executor import SimulationExecutor
 from thrs.simulation.fmu import Fmu
 from thrs.simulation.io_mapping import ThrsModelIoMapping
 from thrs.simulation.models.fmu_paths import fahrenheit_path
-from datetime import datetime, timedelta
 
 
 @fixture(

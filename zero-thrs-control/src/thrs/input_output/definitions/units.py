@@ -12,9 +12,9 @@ from typing import (
     get_args,
     get_origin,
 )
-from typing_extensions import _AnnotatedAlias
 
 from pydantic import AfterValidator, Field
+from typing_extensions import _AnnotatedAlias
 
 
 @dataclass(eq=True, frozen=True)
