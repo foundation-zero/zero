@@ -1,10 +1,17 @@
-from asyncio import create_task
 import asyncio
 import json
+from asyncio import create_task
 from unittest.mock import MagicMock
-from pytest import fixture
+
 import pytest
+from aiomqtt import Client as MqttClient
+from fastapi.testclient import TestClient
+from pytest import fixture
+
+from domestic_control.app import data_collection
+from domestic_control.config import Settings
 from domestic_control.messages import Amplifier
+from domestic_control.mqtt import DataCollection
 from domestic_control.services.av import (
     AFT_PDU,
     FWD_PDU,
@@ -13,11 +20,6 @@ from domestic_control.services.av import (
     Gude,
 )
 from domestic_control.services.stubs.av import AV_STUB_TELEMETRY_INTERVAL, AvStub
-from domestic_control.config import Settings
-from domestic_control.mqtt import DataCollection
-from aiomqtt import Client as MqttClient
-from fastapi.testclient import TestClient
-from domestic_control.app import data_collection
 
 
 @fixture

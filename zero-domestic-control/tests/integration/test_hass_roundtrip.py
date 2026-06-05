@@ -1,12 +1,16 @@
 import asyncio
-from fastapi.testclient import TestClient
-from pytest import fixture
-from homeassistant_api import Client as HassClient, WebsocketClient as HassWsClient
+
+import pytest
 from aiomqtt import Client as MqttClient
+from fastapi.testclient import TestClient
+from homeassistant_api import Client as HassClient
+from homeassistant_api import WebsocketClient as HassWsClient
+from pytest import fixture
+
 from domestic_control.config import Settings
-from domestic_control.services.hass import Hass, HassControl
 from domestic_control.messages import Blind, LightingGroup
 from domestic_control.mqtt import DataCollection
+from domestic_control.services.hass import Hass, HassControl
 
 
 @fixture
@@ -39,6 +43,7 @@ async def mqtt(settings):
 mqtt_two = mqtt
 
 
+@pytest.mark.timeout(10)
 async def test_lighting_group_to_hass(hass, test_app):
     client = TestClient(test_app)
     response = client.post(
@@ -54,6 +59,7 @@ async def test_lighting_group_to_hass(hass, test_app):
     assert light.state.state == "50.0"
 
 
+@pytest.mark.timeout(10)
 async def test_hass_lighting_group_to_control_to_mqtt(
     mqtt: MqttClient, mqtt_two: MqttClient, hass_ws, hass
 ):
@@ -86,6 +92,7 @@ async def test_hass_lighting_group_to_control_to_mqtt(
     control_task.cancel()
 
 
+@pytest.mark.timeout(10)
 async def test_blind_to_hass(hass, test_app):
     client = TestClient(test_app)
     response = client.post(
@@ -101,6 +108,7 @@ async def test_blind_to_hass(hass, test_app):
     assert blind.state.attributes["current_position"] == 50.0
 
 
+@pytest.mark.timeout(10)
 async def test_hass_blind_to_control_to_mqtt(
     mqtt: MqttClient, mqtt_two: MqttClient, hass_ws, hass
 ):
