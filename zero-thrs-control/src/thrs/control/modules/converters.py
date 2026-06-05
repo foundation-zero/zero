@@ -5,7 +5,6 @@ from transitions import Machine, State
 
 from thrs.classes.control import Control, ControlMode, ControlResult
 from thrs.control.controllers import PidController
-from thrs.input_output.alarms import BaseAlarms
 from thrs.input_output.base import Stamped, ThrsValues
 from thrs.input_output.definitions import control, sensor
 from thrs.input_output.definitions.control import Valve
@@ -79,8 +78,8 @@ class ConvertersControl(
     def __init__(
         self,
         parameters: ConvertersParameters,
-        initial_control_values: ConvertersControlValues,
         time_fn: Callable[[], datetime],
+        initial_control_values: ConvertersControlValues,
     ) -> None:
         self._parameters = parameters
         self._time = time_fn
@@ -218,7 +217,3 @@ class ConvertersControl(
                 switch.setpoint = Stamped(value=Valve.OPEN, timestamp=self._time())
             elif switch.setpoint.value == Valve.OPEN and not converter.active.value:
                 switch.setpoint = Stamped(value=Valve.CLOSED, timestamp=self._time())
-
-
-class ConvertersAlarms(BaseAlarms):
-    pass

@@ -4,6 +4,7 @@ from typing import Callable, Literal
 from transitions import Machine, State
 
 from thrs.classes.control import Control, ControlMode, ControlResult
+from thrs.control.base import ModuleDescription
 from thrs.control.controllers import FlowBalanceController, PidController
 from thrs.control.modules.thrusters import ThrustersControlMode
 from thrs.input_output.alarms import BaseAlarms
@@ -425,3 +426,13 @@ class Lt1Control(
 
 class Lt1Alarms(BaseAlarms):
     pass
+
+
+LT1_MODULE_DESCRIPTION = ModuleDescription(
+    Lt1SensorValues,
+    Lt1ControlValues,
+    Lt1Parameters,
+    Lt1Control,
+    Lt1ControlMode,
+    Lt1Alarms,
+)

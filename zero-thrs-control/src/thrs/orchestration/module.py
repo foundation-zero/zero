@@ -2,6 +2,7 @@ from datetime import datetime
 from typing import Callable, Literal, Mapping, Protocol
 
 from thrs.classes.control import Control, ControlResult
+from thrs.control.base import ModuleDescription
 from thrs.control.manual import ManualControl
 from thrs.control.switching import SwitchingControl, SwitchingControlMode
 from thrs.input_output.alarms import Alarm, BaseAlarms
@@ -18,31 +19,6 @@ from thrs.input_output.model_builder import (
 )
 from thrs.simulation.io_mapping import CombinedIoMapping, IoMapping
 from thrs.utils.string import hyphenize
-
-
-class ModuleDescription[
-    S: ThrsValues,
-    C: ThrsValues,
-    P: ThrsValues,
-    M: ThrsValues,
-]:
-    """Description of a module with sensor values, control values, control parameters and control mode models and the control & alarm logic"""
-
-    def __init__(
-        self,
-        sensor_values_cls: type[S],
-        control_values_cls: type[C],
-        parameters_cls: type[P],
-        control: Callable[[P, Callable[[], datetime]], Control[S, C, P, M]],
-        control_mode_cls: type[M],
-        alarms: Callable[[], BaseAlarms[S, C, P]],
-    ):
-        self.sensor_values_cls = sensor_values_cls
-        self.control_values_cls = control_values_cls
-        self.parameters_cls = parameters_cls
-        self.control_mode_cls = control_mode_cls
-        self.control = control
-        self.alarms = alarms
 
 
 class MqttMapping[M](Protocol):

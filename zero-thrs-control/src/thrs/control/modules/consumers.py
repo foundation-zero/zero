@@ -4,6 +4,7 @@ from typing import Annotated, Callable
 from pydantic import Field
 
 from thrs.classes.control import Control, ControlMode, ControlResult
+from thrs.control.base import ModuleDescription
 from thrs.control.controllers import (
     FlowDistributionController,
     PidController,
@@ -186,3 +187,13 @@ class ConsumersControl(
 
 class ConsumersAlarms(BaseAlarms):
     pass
+
+
+CONSUMERS_MODULE_DESCRIPTION = ModuleDescription(
+    ConsumersSensorValues,
+    ConsumersControlValues,
+    ConsumersParameters,
+    ConsumersControl,
+    ConsumersControlMode,
+    ConsumersAlarms,
+)

@@ -63,8 +63,8 @@ class PvtGroupControl(
     def __init__(
         self,
         parameters: PvtGroupParameters,
-        initial_control_values: PvtGroupControlValues,
         time_fn: Callable[[], datetime],
+        initial_control_values: PvtGroupControlValues,
     ) -> None:
         self._parameters = parameters
         self._time = time_fn

@@ -5,6 +5,7 @@ from pydantic import model_validator
 from transitions import Machine, State
 
 from thrs.classes.control import Control, ControlMode, ControlResult
+from thrs.control.base import ModuleDescription
 from thrs.control.controllers import FlowBalanceController, PidController
 from thrs.input_output.alarms import BaseAlarms, Severity, alarm
 from thrs.input_output.base import Stamped, ThrsValues
@@ -524,3 +525,13 @@ class ThrustersAlarms(BaseAlarms):
         if sensor_values.thrusters_temperature_supply.temperature.value > 95:
             return "Thrusters supply temperature above 95 °C"
         return None
+
+
+THRUSTERS_MODULE_DESCRIPTION = ModuleDescription(
+    ThrustersSensorValues,
+    ThrustersControlValues,
+    ThrustersParameters,
+    ThrustersControl,
+    ThrustersControlMode,
+    ThrustersAlarms,
+)

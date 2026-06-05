@@ -4,6 +4,7 @@ from typing import Annotated, Callable
 from pydantic import Field, model_validator
 
 from thrs.classes.control import Control, ControlMode, ControlResult
+from thrs.control.base import ModuleDescription
 from thrs.control.controllers import PidController
 from thrs.control.modules.pvt_group import (
     PvtGroupControl,
@@ -167,27 +168,27 @@ class PvtControl(
 
         self._main_fwd_control = PvtGroupControl(
             main_pvt_group_parameters(parameters),
-            PvtGroupControlValues(
+            initial_control_values=PvtGroupControlValues(
                 pump=self._current_values.pvt_pump_main_fwd,
                 mix=self._current_values.pvt_mix_main_fwd,
             ),
-            time_fn,
+            time_fn=time_fn,
         )
         self._main_aft_control = PvtGroupControl(
             aft_pvt_group_parameters(parameters),
-            PvtGroupControlValues(
+            initial_control_values=PvtGroupControlValues(
                 pump=self._current_values.pvt_pump_main_aft,
                 mix=self._current_values.pvt_mix_main_aft,
             ),
-            time_fn,
+            time_fn=time_fn,
         )
         self._owners_control = PvtGroupControl(
             owners_pvt_group_parameters(parameters),
-            PvtGroupControlValues(
+            initial_control_values=PvtGroupControlValues(
                 pump=self._current_values.pvt_pump_owners,
                 mix=self._current_values.pvt_mix_owners,
             ),
-            time_fn,
+            time_fn=time_fn,
         )
 
     @property
@@ -295,3 +296,13 @@ class PvtControl(
 
 class PvtAlarms(BaseAlarms):
     pass
+
+
+PVT_MODULE_DESCRIPTION = ModuleDescription(
+    PvtSensorValues,
+    PvtControlValues,
+    PvtParameters,
+    PvtControl,
+    PvtControlMode,
+    PvtAlarms,
+)
