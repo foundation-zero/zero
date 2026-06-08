@@ -17,6 +17,7 @@ sources:
       - "hull-temperature/temperatures"
     user: "${MQTT_USER}"
     password: "${MQTT_PASSWORD}"
+    max_packet_size: 163840
 transforms:
   process:
     type: remap
