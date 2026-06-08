@@ -20,34 +20,29 @@ from pydantic import (
 )
 
 from thrs.control.modules.boilers import (
-    BoilersAlarms,
+    BOILERS_MODULE_DESCRIPTION,
     BoilersControl,
-    BoilersControlMode,
     BoilersParameters,
 )
 from thrs.control.modules.consumers import (
-    ConsumersAlarms,
+    CONSUMERS_MODULE_DESCRIPTION,
     ConsumersControl,
-    ConsumersControlMode,
     ConsumersParameters,
 )
 from thrs.control.modules.high_temperature import HighTemperatureModule
 from thrs.control.modules.pcm import (
-    PcmAlarms,
+    PCM_MODULE_DESCRIPTION,
     PcmControl,
-    PcmControlMode,
     PcmParameters,
 )
 from thrs.control.modules.pvt import (
-    PvtAlarms,
+    PVT_MODULE_DESCRIPTION,
     PvtControl,
-    PvtControlMode,
     PvtParameters,
 )
 from thrs.control.modules.thrusters import (
-    ThrustersAlarms,
+    THRUSTERS_MODULE_DESCRIPTION,
     ThrustersControl,
-    ThrustersControlMode,
     ThrustersParameters,
 )
 from thrs.control.switching import SwitchingControlMode
@@ -70,39 +65,23 @@ from thrs.input_output.definitions.simulation import (
 )
 from thrs.input_output.definitions.units import PcsMode
 from thrs.input_output.modules.boilers import (
-    BoilersControlValues,
-    BoilersSensorValues,
     BoilersSimulationInputs,
     BoilersSimulationOutputs,
 )
 from thrs.input_output.modules.consumers import (
-    ConsumersControlValues,
-    ConsumersSensorValues,
     ConsumersSimulationInputs,
     ConsumersSimulationOutputs,
 )
 from thrs.input_output.modules.high_temperature import HighTemperatureSimulationInputs
-from thrs.input_output.modules.pcm import (
-    PcmControlValues,
-    PcmSensorValues,
-    PcmSimulationInputs,
-    PcmSimulationOutputs,
-)
-from thrs.input_output.modules.pvt import (
-    PvtControlValues,
-    PvtSensorValues,
-    PvtSimulationInputs,
-    PvtSimulationOutputs,
-)
+from thrs.input_output.modules.pcm import PcmSimulationInputs, PcmSimulationOutputs
+from thrs.input_output.modules.pvt import PvtSimulationInputs, PvtSimulationOutputs
 from thrs.input_output.modules.thrusters import (
-    ThrustersControlValues,
-    ThrustersSensorValues,
     ThrustersSimulationInputs,
     ThrustersSimulationOutputs,
 )
 from thrs.orchestration.config import Config
 from thrs.orchestration.executor import MqttExecutor, SimulationExecutor
-from thrs.orchestration.module import CombinedControl, CombinedModule, ModuleDescription
+from thrs.orchestration.module import CombinedControl, CombinedModule
 from thrs.orchestration.simulator import Simulator
 from thrs.simulation.fmu import Fmu
 from thrs.simulation.models.fmu_paths import (
@@ -244,51 +223,11 @@ CONTROLS = {
     "boilers": BoilersControl,
 }
 
-THRUSTERS_MODULE_DESCRIPTION = ModuleDescription(
-    ThrustersSensorValues,
-    ThrustersControlValues,
-    ThrustersParameters,
-    ThrustersControl,
-    ThrustersControlMode,
-    ThrustersAlarms,
-)
+type Modes = Literal[
+    "thrusters", "pvt", "pcm", "consumers", "high_temperature", "boilers"
+]
 
-PVT_MODULE_DESCRIPTION = ModuleDescription(
-    PvtSensorValues,
-    PvtControlValues,
-    PvtParameters,
-    PvtControl,
-    PvtControlMode,
-    PvtAlarms,
-)
-
-PCM_MODULE_DESCRIPTION = ModuleDescription(
-    PcmSensorValues,
-    PcmControlValues,
-    PcmParameters,
-    PcmControl,
-    PcmControlMode,
-    PcmAlarms,
-)
-CONSUMERS_MODULE_DESCRIPTION = ModuleDescription(
-    ConsumersSensorValues,
-    ConsumersControlValues,
-    ConsumersParameters,
-    ConsumersControl,
-    ConsumersControlMode,
-    ConsumersAlarms,
-)
-
-BOILERS_MODULE_DESCRIPTION = ModuleDescription(
-    BoilersSensorValues,
-    BoilersControlValues,
-    BoilersParameters,
-    BoilersControl,
-    BoilersControlMode,
-    BoilersAlarms,
-)
-
-MODES: dict[str, tuple[str, CombinedModule]] = {
+MODES: dict[Modes, tuple[str, CombinedModule]] = {
     "thrusters": (
         thrusters_path,
         CombinedModule(
@@ -341,8 +280,6 @@ MODES: dict[str, tuple[str, CombinedModule]] = {
         ),
     ),
 }
-
-Modes = Literal["thrusters", "pvt", "pcm", "consumers", "high_temperature", "boilers"]
 
 
 @dataclass

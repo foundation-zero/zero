@@ -5,7 +5,9 @@ from pydantic import model_validator
 from transitions import Machine, State
 
 from thrs.classes.control import Control, ControlMode, ControlResult
+from thrs.control.base import ModuleDescription
 from thrs.control.controllers import PidController
+from thrs.input_output.alarms import BaseAlarms
 from thrs.input_output.base import Stamped, ThrsValues
 from thrs.input_output.definitions.control import Fahrenheit, Valve
 from thrs.input_output.definitions.units import (
@@ -310,3 +312,17 @@ class FahrenheitControl(
             - self._parameters.fahrenheit_hot_minimum,
             timestamp=self._time(),
         )
+
+
+class FahrenheitAlarms(BaseAlarms):
+    pass
+
+
+FAHRENHEIT_MODULE_DESCRIPTION = ModuleDescription(
+    FahrenheitSensorValues,
+    FahrenheitControlValues,
+    FahrenheitParameters,
+    FahrenheitControl,
+    FahrenheitControlMode,
+    FahrenheitAlarms,
+)

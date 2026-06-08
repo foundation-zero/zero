@@ -5,6 +5,7 @@ from pydantic import Field, model_validator
 from transitions import Machine, State
 
 from thrs.classes.control import Control, ControlMode, ControlResult
+from thrs.control.base import ModuleDescription
 from thrs.control.controllers import PidController
 from thrs.input_output.alarms import BaseAlarms, Severity, alarm
 from thrs.input_output.base import Stamped, ThrsValues
@@ -1063,3 +1064,13 @@ class BoilersAlarms(BaseAlarms):
             BoilersSensorValues.yard_tag("boilers_level_tank3"),
             270,
         )
+
+
+BOILERS_MODULE_DESCRIPTION = ModuleDescription(
+    BoilersSensorValues,
+    BoilersControlValues,
+    BoilersParameters,
+    BoilersControl,
+    BoilersControlMode,
+    BoilersAlarms,
+)

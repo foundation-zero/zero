@@ -2,6 +2,7 @@ from datetime import datetime
 from typing import Callable
 
 from thrs.classes.control import Control, ControlMode, ControlResult
+from thrs.control.base import ModuleDescription
 from thrs.control.controllers import PidController
 from thrs.control.modules.converters import (
     ConvertersControl,
@@ -155,7 +156,7 @@ class Lt2Control(
 
         self._brightloops_aft_control = ConvertersControl(
             brightloops_aft_parameters(parameters),
-            ConvertersControlValues(
+            initial_control_values=ConvertersControlValues(
                 pump=self._current_values.lt2_pump_aft,
                 mix=self._current_values.lt2_mix_aft,
                 switches=[
@@ -170,7 +171,7 @@ class Lt2Control(
 
         self._brightloops_fwd_control = ConvertersControl(
             brightloops_fwd_parameters(parameters),
-            ConvertersControlValues(
+            initial_control_values=ConvertersControlValues(
                 pump=self._current_values.lt2_pump_fwd,
                 mix=self._current_values.lt2_mix_fwd,
                 switches=[
@@ -183,7 +184,7 @@ class Lt2Control(
 
         self._ugrids_control = ConvertersControl(
             ugrids_parameters(parameters),
-            ConvertersControlValues(
+            initial_control_values=ConvertersControlValues(
                 pump=self._current_values.lt2_pump_ugrid,
                 mix=self._current_values.lt2_mix_ugrid,
                 switches=[
@@ -379,3 +380,13 @@ class Lt2Control(
 
 class Lt2Alarms(BaseAlarms):
     pass
+
+
+LT2_MODULE_DESCRIPTION = ModuleDescription(
+    Lt2SensorValues,
+    Lt2ControlValues,
+    Lt2Parameters,
+    Lt2Control,
+    Lt2ControlMode,
+    Lt2Alarms,
+)

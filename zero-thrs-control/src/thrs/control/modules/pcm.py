@@ -4,6 +4,7 @@ from typing import Callable
 from transitions import Machine, State
 
 from thrs.classes.control import Control, ControlMode, ControlResult
+from thrs.control.base import ModuleDescription
 from thrs.control.controllers import FlowBalanceController, PidController
 from thrs.input_output.alarms import BaseAlarms
 from thrs.input_output.base import Stamped, ThrsValues
@@ -419,3 +420,13 @@ class PcmControl(
 
 class PcmAlarms(BaseAlarms):
     pass
+
+
+PCM_MODULE_DESCRIPTION = ModuleDescription(
+    PcmSensorValues,
+    PcmControlValues,
+    PcmParameters,
+    PcmControl,
+    PcmControlMode,
+    PcmAlarms,
+)
