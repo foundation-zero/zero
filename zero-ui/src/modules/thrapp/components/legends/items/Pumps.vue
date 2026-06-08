@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { tScoped } from "@/modules/common/lib/utils.ts";
+import { MimicComponentState } from "@/modules/thrapp/mimics/components/index.ts";
 import Pump from "../../../mimics/components/pump/Pump.vue";
 import { PumpState } from "../../../mimics/components/pump/index.ts";
 import {
@@ -17,11 +18,11 @@ const t = tScoped("thrapp.legends.pumps");
   <LegendItem>
     <LegendItemPreview class="-my-2">
       <Pump
-        :state="PumpState.Active"
+        :pump-state="PumpState.Active"
         class="-ml-2"
       />
-      <Pump :state="PumpState.Inactive" />
-      <Pump :state="PumpState.Alarm" />
+      <Pump :pump-state="PumpState.Inactive" />
+      <Pump :pump-state="MimicComponentState.Alarm" />
     </LegendItemPreview>
     <LegendItemInfo>
       <LegendItemTitle>{{ t("title") }}</LegendItemTitle>

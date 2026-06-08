@@ -1,3 +1,5 @@
+import { MimicComponentState } from "../index.ts";
+
 export { default as BoilerTankTitle } from "../circuit-box/CircuitBoxTitle.vue";
 export { default as BoilerTank } from "./BoilerTank.vue";
 export { default as BoilerTankLevel } from "./BoilerTankLevel.vue";
@@ -13,10 +15,15 @@ export const enum BoilerTankModes {
   InUse = "in-use",
   Boosting = "boosting",
   Standby = "standby",
+  Disabled = "disabled",
 }
 
-export const BOILER_TANK_MODE_COLORS: Record<BoilerTankModes, string> = {
+export const BOILER_TANK_MODE_COLORS: Record<BoilerTankModes | MimicComponentState, string> = {
   [BoilerTankModes.InUse]: "var(--constructive)",
   [BoilerTankModes.Boosting]: "var(--heating-medium)",
   [BoilerTankModes.Standby]: "var(--muted-foreground)",
+  [MimicComponentState.Manual]: "var(--warning)",
+  [MimicComponentState.Alarm]: "var(--destructive)",
+  [MimicComponentState.Normal]: "var(--constructive)",
+  [BoilerTankModes.Disabled]: "var(--destructive-muted)",
 };

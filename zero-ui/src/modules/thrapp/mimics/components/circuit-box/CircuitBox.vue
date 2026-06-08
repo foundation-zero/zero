@@ -1,7 +1,8 @@
 <script setup lang="ts">
 import { cn } from "@/modules/common/lib/utils";
-import { HTMLAttributes } from "vue";
-import { createSizeAndViewbox } from "..";
+import { computed, HTMLAttributes, toRefs } from "vue";
+import { CIRCUIT_BOX_BORDER_COLOR } from ".";
+import { createMimicComponentContext, createSizeAndViewbox, MimicComponentState } from "..";
 
 const props = withDefaults(
   defineProps<{
@@ -9,13 +10,26 @@ const props = withDefaults(
     width?: string | number;
     height?: string | number;
     forceHeight?: boolean;
+    state?: MimicComponentState;
   }>(),
   {
     width: 196,
     height: 128,
     forceHeight: false,
+    state: MimicComponentState.Normal,
   },
 );
+
+const { state } = toRefs(props);
+const { stateColor, strokeWidth } = createMimicComponentContext(state);
+
+const borderColor = computed(() => {
+  if (state.value === MimicComponentState.Normal) {
+    return CIRCUIT_BOX_BORDER_COLOR;
+  } else {
+    return stateColor.value;
+  }
+});
 </script>
 
 <template>
@@ -25,11 +39,18 @@ const props = withDefaults(
       height="100%"
     >
       <div :class="cn('flex w-full gap-0.5', props.class)">
-        <div class="bg-flows-pipe w-3 rounded-tl-md rounded-bl-md" />
         <div
-          class="border-flows-pipe bg-background grow rounded-tr-md rounded-br-md border border-dashed p-2 pb-1"
-        >
-          <slot />
+          class="w-3 rounded-tl-md rounded-bl-md transition-colors"
+          :style="{ 'background-color': borderColor }"
+        />
+        <div class="relative grow p-2 pb-1">
+          <div
+            class="bg-background pointer-events-none absolute top-0 left-0 h-full w-full grow rounded-tr-md rounded-br-md border border-dashed transition-all"
+            :style="{ 'border-color': borderColor, 'border-width': strokeWidth + 'px' }"
+          />
+          <div class="relative">
+            <slot />
+          </div>
         </div>
       </div>
     </foreignObject>

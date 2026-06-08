@@ -11,7 +11,8 @@ import {
   SensorDefinitions,
 } from "@/modules/thrs/types";
 import { createContext } from "reka-ui";
-import { Ref } from "vue";
+import { MaybeRef, Ref } from "vue";
+import { MimicComponentState } from "../components/index.ts";
 
 export { default as GraphQLProvider } from "./GraphQLProvider.vue";
 export { default as MockProvider } from "./MockProvider.vue";
@@ -49,6 +50,9 @@ export interface MimicDataProvider {
   getControlValue: <Type extends ControlComponentType, Module extends keyof ThrsDefinitions>(
     prop: ModuleField<Type, Module>,
   ) => Ref<ControlDefinitionMap[Type] | undefined>;
+  getComponentState: (
+    state?: MaybeRef<MimicComponentState | undefined>,
+  ) => Ref<MimicComponentState>;
 }
 
 export const [getMimicDataProvider, createMimicDataProvider] =

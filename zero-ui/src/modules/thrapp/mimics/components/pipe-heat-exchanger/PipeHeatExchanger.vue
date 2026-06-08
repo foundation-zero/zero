@@ -14,11 +14,11 @@ import {
 
 const props = withDefaults(defineProps<PipeHeatExchangerProps & MimicComponentBaseProps>(), {
   orientation: PIPE_HEAT_EXCHANGER_BASE_ORIENTATION,
-  state: PipeHeatExchangerState.Idle,
+  exchangerState: PipeHeatExchangerState.Idle,
 });
 
-const fillColor = computed(() => PIPE_HEAT_EXCHANGER_FILL_COLORS[props.state]);
-const innerFillColor = computed(() => PIPE_HEAT_EXCHANGER_INNER_FILL_COLORS[props.state]);
+const fillColor = computed(() => PIPE_HEAT_EXCHANGER_FILL_COLORS[props.exchangerState]);
+const innerFillColor = computed(() => PIPE_HEAT_EXCHANGER_INNER_FILL_COLORS[props.exchangerState]);
 </script>
 
 <template>
@@ -27,6 +27,7 @@ const innerFillColor = computed(() => PIPE_HEAT_EXCHANGER_INNER_FILL_COLORS[prop
     :height="PIPE_HEAT_EXCHANGER_HEIGHT"
     :base-orientation="PIPE_HEAT_EXCHANGER_BASE_ORIENTATION"
     :orientation="orientation"
+    :state="state"
   >
     <!-- Geometry is centered vertically within the 52×52 square viewBox (15px Y offset) -->
     <g transform="translate(0 15)">

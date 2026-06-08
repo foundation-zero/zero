@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { cn } from "@/modules/common/lib/utils";
-import { computed, HTMLAttributes } from "vue";
+import { computed, HTMLAttributes, toRefs } from "vue";
 import {
   BOILER_TANK_HEIGHT,
   BOILER_TANK_LEVEL_LINE_OFFSET,
@@ -8,7 +8,12 @@ import {
   BOILER_TANK_WIDTH,
   BoilerTankModes,
 } from ".";
-import { createSizeAndViewbox } from "..";
+import {
+  createMimicComponentContext,
+  createSizeAndViewbox,
+  MimicComponentState,
+  provideMimicComponentContext,
+} from "..";
 import BoilerTankLevel from "./BoilerTankLevel.vue";
 import BoilerTankLevelIndicator from "./BoilerTankLevelIndicator.vue";
 
@@ -20,15 +25,27 @@ const props = withDefaults(
     width?: number | string;
     height?: number | string;
     forceHeight?: boolean;
+    state?: MimicComponentState;
   }>(),
   {
+    state: MimicComponentState.Normal,
     width: () => BOILER_TANK_WIDTH,
     height: () => BOILER_TANK_HEIGHT,
     forceHeight: false,
   },
 );
 
-const color = computed(() => BOILER_TANK_MODE_COLORS[props.mode]);
+const { state } = toRefs(props);
+
+const { strokeWidth } = provideMimicComponentContext(createMimicComponentContext(state));
+
+const color = computed(() => {
+  if (state.value === MimicComponentState.Normal) {
+    return BOILER_TANK_MODE_COLORS[props.mode];
+  } else {
+    return BOILER_TANK_MODE_COLORS[state.value];
+  }
+});
 </script>
 
 <template>
@@ -75,9 +92,15 @@ const color = computed(() => BOILER_TANK_MODE_COLORS[props.mode]);
       height="100%"
     >
       <div
-        :class="cn('h-37 w-51 rounded-md border pr-2 pb-1 pl-3 transition-colors', props.class)"
-        :style="{ borderColor: color }"
-      >
+        :class="cn('h-37 w-51 rounded-md border transition-all', props.class)"
+        :style="{ borderColor: color, borderWidth: `${strokeWidth}px` }"
+      />
+    </foreignObject>
+    <foreignObject
+      width="100%"
+      height="100%"
+    >
+      <div :class="cn('h-37 w-51 pr-2 pb-1 pl-3', props.class)">
         <slot />
       </div>
     </foreignObject>

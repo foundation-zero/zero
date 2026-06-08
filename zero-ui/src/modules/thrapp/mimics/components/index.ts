@@ -1,5 +1,7 @@
 import { mmath, refValue } from "@/modules/common/lib/utils";
-import { computed, MaybeRef } from "vue";
+import { Ratio } from "@/modules/thrs/types";
+import { createContext } from "reka-ui";
+import { computed, MaybeRef, Ref } from "vue";
 
 export const enum ComponentOrientation {
   Up = 0,
@@ -49,6 +51,14 @@ export const CLOCKWISE_ORIENTATIONS = [
 
 export interface MimicComponentBaseProps {
   orientation?: ComponentOrientation;
+  rotation?: Ratio;
+  state?: MimicComponentState;
+}
+
+export const enum MimicComponentState {
+  Normal = "normal",
+  Alarm = "alarm",
+  Manual = "manual",
 }
 
 export interface MimicComponentProps {
@@ -57,6 +67,30 @@ export interface MimicComponentProps {
   width: number;
   height: number;
 }
+
+export const stateColorMap: Record<MimicComponentState, string> = {
+  [MimicComponentState.Normal]: "var(--attention)",
+  [MimicComponentState.Alarm]: "var(--destructive)",
+  [MimicComponentState.Manual]: "var(--warning)",
+};
+
+export interface MimicComponentContext {
+  stateColor: Ref<string>;
+  state: Ref<MimicComponentState | undefined>;
+  strokeWidth: Ref<number>;
+}
+
+export const createMimicComponentContext = (
+  state: Ref<MimicComponentState | undefined>,
+  strokeWidth: number = 2,
+): MimicComponentContext => ({
+  stateColor: computed(() => stateColorMap[state.value!]),
+  state,
+  strokeWidth: computed(() => (state.value === MimicComponentState.Normal ? 1 : strokeWidth)),
+});
+
+export const [getMimicComponentContext, provideMimicComponentContext] =
+  createContext<MimicComponentContext>("MimicComponentContext");
 
 export const getNextOrientation = (orientation: ComponentOrientation, stepSize = 1) => {
   const nextOrientationIndex =
@@ -69,9 +103,10 @@ export const getNextOrientation = (orientation: ComponentOrientation, stepSize =
 export const useOrientation = (
   orientation: MaybeRef<ComponentOrientation>,
   baseOrientation: MaybeRef<ComponentOrientation>,
+  rotation: MaybeRef<Ratio> = 0,
 ) =>
   computed(() => ({
-    transform: `rotate(${mmath.normalizeDegrees(refValue(orientation) - refValue(baseOrientation))}deg)`,
+    transform: `rotate(${mmath.normalizeDegrees(refValue(orientation) - refValue(baseOrientation) - 90 * refValue(rotation))}deg)`,
   }));
 
 export const createSizeAndViewbox = (

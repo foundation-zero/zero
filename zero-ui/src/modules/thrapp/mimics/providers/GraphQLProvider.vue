@@ -7,8 +7,9 @@ import {
   SensorComponentType,
   SensorDefinitionMap,
 } from "@/modules/thrs/types";
-import { computed, Ref, toRefs } from "vue";
+import { computed, Ref, toRefs, unref } from "vue";
 import { createMimicDataProvider, ModuleField } from ".";
+import { MimicComponentState } from "../components";
 
 const { data } = toRefs(useThrsHistory());
 
@@ -39,6 +40,7 @@ const getControlValue = <Type extends ControlComponentType, Module extends keyof
 createMimicDataProvider({
   getSensorValue,
   getControlValue,
+  getComponentState: (state) => computed(() => unref(state) ?? MimicComponentState.Normal),
 });
 </script>
 

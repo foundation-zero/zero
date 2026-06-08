@@ -25,9 +25,10 @@ const props = defineProps<
     }
 >();
 
-const { getSensorValue } = getMimicDataProvider();
+const { getSensorValue, getComponentState } = getMimicDataProvider();
 
 const heatExchanger = getSensorValue(props.heatExchanger);
+const state = getComponentState();
 
 const mode = computed(() => {
   if (heatExchanger.value?.heat.value !== 0) return HeatPumpModes.Active;
@@ -36,7 +37,10 @@ const mode = computed(() => {
 </script>
 
 <template>
-  <HeatPump v-bind="props">
+  <HeatPump
+    v-bind="props"
+    :state="state"
+  >
     <YardTag>{{ tagId }}</YardTag>
     <HeatPumpTitle class="gap-1 py-1">
       <component
@@ -48,6 +52,7 @@ const mode = computed(() => {
     <HeatPumpMode
       v-if="!hideMode"
       :mode="mode"
+      :state="state"
     />
     <ValueList class="gap-0">
       <ValueListSeparator />

@@ -1,13 +1,22 @@
 <script setup lang="ts">
+import { tScoped } from "@/modules/common/lib/utils";
 import { computed } from "vue";
-import { useI18n } from "vue-i18n";
 import { BOILER_TANK_MODE_COLORS, BoilerTankModes } from ".";
+import { MimicComponentState } from "..";
 
-const props = defineProps<{ mode: BoilerTankModes }>();
+const props = withDefaults(defineProps<{ mode: BoilerTankModes; state?: MimicComponentState }>(), {
+  state: MimicComponentState.Normal,
+});
 
-const color = computed(() => BOILER_TANK_MODE_COLORS[props.mode]);
+const color = computed(() => {
+  if (props.state === MimicComponentState.Normal) {
+    return BOILER_TANK_MODE_COLORS[props.mode];
+  } else {
+    return BOILER_TANK_MODE_COLORS[props.state];
+  }
+});
 
-const { t } = useI18n();
+const t = tScoped("thrapp.mimics.boilerTank.modes");
 </script>
 
 <template>
@@ -17,6 +26,7 @@ const { t } = useI18n();
       backgroundColor: color,
     }"
   >
-    {{ t(`thrapp.mimics.boilerTank.modes.${props.mode}`) }}
+    <span v-if="state === MimicComponentState.Normal">{{ t(mode) }}</span>
+    <span v-else>{{ t(state) }}</span>
   </div>
 </template>

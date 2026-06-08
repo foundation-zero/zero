@@ -10,13 +10,18 @@
         "modes": {
           "standby": "Standby",
           "boosting": "Boosting",
-          "in-use": "In use"
+          "in-use": "In use",
+          "manual": "Manual",
+          "disabled": "Disabled",
+          "alarm": "Alarm"
         }
       },
       "heatPump": {
         "modes": {
           "active": "Active",
-          "inactive": "Inactive"
+          "inactive": "Inactive",
+          "manual": "Manual",
+          "alarm": "Alarm"
         }
       },
       "boilers": {
@@ -133,7 +138,7 @@
       },
       "switchValve": {
         "title": "Switch valve",
-        "description": "(Open / Closed)"
+        "description": "(Open / Transient / Closed)"
       },
       "temperatureSensors": {
         "title": "Temperature sensor (°C)"

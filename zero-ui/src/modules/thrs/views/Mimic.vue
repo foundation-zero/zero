@@ -18,10 +18,10 @@ const { t } = useI18n();
 <template>
   <component :is="provider">
     <section
-      class="flex h-full justify-around gap-4 max-lg:flex-col-reverse portrait:flex-col-reverse"
+      class="flex h-full justify-around gap-x-4 max-lg:flex-col-reverse portrait:flex-col-reverse"
     >
       <aside
-        class="flex w-full flex-row-reverse items-start justify-between max-lg:pt-4 landscape:lg:w-62.5 landscape:lg:flex-col"
+        class="flex w-full flex-row-reverse items-center justify-between landscape:lg:w-62.5 landscape:lg:flex-col landscape:lg:items-start"
       >
         <div class="flex items-center gap-3">
           <Switch v-model="demoMode" />
@@ -35,7 +35,7 @@ const { t } = useI18n();
 
       <BoilersModule
         v-if="currentDefinition === 'boilers'"
-        class="mx-auto portrait:max-h-[90vh] landscape:max-h-[65vh]"
+        class="mx-auto my-auto max-h-[calc(100svh-14em)]"
       />
     </section>
   </component>

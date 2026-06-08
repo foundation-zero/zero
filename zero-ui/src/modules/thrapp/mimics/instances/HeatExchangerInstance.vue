@@ -48,7 +48,7 @@ const exchangerState = computed(() => {
 <template>
   <HeatExchanger
     v-bind="props"
-    :state="exchangerState"
+    :heating-state="exchangerState"
   >
     <HeatExchangerPort
       side="a"

@@ -25,15 +25,19 @@ const props = defineProps<
     }
 >();
 
-const { getSensorValue } = getMimicDataProvider();
+const { getSensorValue, getComponentState } = getMimicDataProvider();
 const flowIn = getSensorValue(props.flowIn);
 const tIn = getSensorValue(props.tIn);
 const flowOut = getSensorValue(props.flowOut);
 const tOut = getSensorValue(props.tOut);
+const state = getComponentState();
 </script>
 
 <template>
-  <CircuitBox v-bind="props">
+  <CircuitBox
+    v-bind="props"
+    :state="state"
+  >
     <CircuitBoxTitle>{{ title }}</CircuitBoxTitle>
     <ValueList>
       <ValueListSeparator />

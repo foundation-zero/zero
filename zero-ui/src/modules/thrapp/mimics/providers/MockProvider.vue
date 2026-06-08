@@ -8,7 +8,8 @@ import {
 } from "@/modules/thrs/types";
 import { Ref } from "vue";
 import { createMimicDataProvider, getControlDefinition, getSensorDefinition, ModuleField } from ".";
-import { CONTROL_VALUES_FACTORY, SENSOR_VALUES_FACTORY } from "./mock-helpers";
+import { MimicComponentState } from "../components";
+import { CONTROL_VALUES_FACTORY, SENSOR_VALUES_FACTORY, useRandomizedState } from "./mock-helpers";
 
 const getSensorValue = <Type extends SensorComponentType, Module extends keyof ThrsDefinitions>([
   _type,
@@ -31,6 +32,12 @@ const getControlValue = <Type extends ControlComponentType, Module extends keyof
 createMimicDataProvider({
   getSensorValue,
   getControlValue,
+  getComponentState: () =>
+    useRandomizedState([
+      MimicComponentState.Normal,
+      MimicComponentState.Alarm,
+      MimicComponentState.Manual,
+    ]),
 });
 </script>
 
