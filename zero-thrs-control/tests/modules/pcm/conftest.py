@@ -1,4 +1,5 @@
 from datetime import datetime, timedelta
+
 from pytest import fixture
 
 from thrs.control.modules.pcm import PcmControl, PcmParameters

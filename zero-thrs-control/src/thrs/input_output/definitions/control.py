@@ -1,4 +1,5 @@
 from typing import Annotated, ClassVar
+
 from thrs.input_output.base import Stamped, ThrsValues, field_meta
 from thrs.input_output.definitions.units import (
     Celsius,

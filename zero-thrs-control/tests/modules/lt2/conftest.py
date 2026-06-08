@@ -1,4 +1,5 @@
 from datetime import datetime, timedelta
+
 from pytest import fixture
 
 from thrs.control.modules.lt2 import Lt2Alarms, Lt2Control, Lt2Parameters

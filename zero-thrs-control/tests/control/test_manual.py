@@ -1,4 +1,5 @@
 from datetime import datetime
+
 from tests.orchestration.simples import SimpleInOut
 from thrs.control.manual import ManualControl
 from thrs.input_output.base import Stamped

@@ -2,7 +2,7 @@ import operator
 from datetime import datetime
 from typing import Any, overload
 
-from pydantic.fields import FieldInfo, ComputedFieldInfo
+from pydantic.fields import ComputedFieldInfo, FieldInfo
 
 from thrs.input_output.base import (
     SimulationValues,

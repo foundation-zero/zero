@@ -1,9 +1,9 @@
 from typing import Annotated
 
 from tests.orchestration.simples import SimpleInOut
-from thrs.input_output.base import component_meta, ThrsValues
-from thrs.input_output.model_builder import CombinedModelBuilder, PartialModelBuilder
+from thrs.input_output.base import ThrsValues, component_meta
 from thrs.input_output.definitions.sensor import FlowSensor
+from thrs.input_output.model_builder import CombinedModelBuilder, PartialModelBuilder
 
 
 class SimpleSensors(ThrsValues):

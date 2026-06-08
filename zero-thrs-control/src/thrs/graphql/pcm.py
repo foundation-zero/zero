@@ -10,14 +10,13 @@ from thrs.graphql.base import (
     add_parameter_mutations,
 )
 from thrs.graphql.helpers import (
-    pydantic_to_strawberry_type,
     optional_pydantic_to_graphql,
+    pydantic_to_strawberry_type,
 )
 from thrs.input_output.modules.pcm import (
     PcmControlValues,
     PcmSensorValues,
 )
-
 
 PcmSensorValuesType = pydantic_to_strawberry_type(PcmSensorValues)
 PcmControlValuesType = pydantic_to_strawberry_type(PcmControlValues)

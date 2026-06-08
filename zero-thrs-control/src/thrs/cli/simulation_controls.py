@@ -1,9 +1,9 @@
+import logging
 from abc import abstractmethod
 from asyncio import Queue, TaskGroup, create_task, sleep
 from contextlib import asynccontextmanager, contextmanager
 from dataclasses import dataclass
 from datetime import datetime, timedelta
-import logging
 from typing import (
     Annotated,
     Any,
@@ -11,6 +11,7 @@ from typing import (
     Literal,
     cast,
 )
+
 from aiomqtt import Client as MqttClient
 from pydantic import (
     Field,
@@ -24,22 +25,13 @@ from thrs.control.modules.boilers import (
     BoilersControlMode,
     BoilersParameters,
 )
-from thrs.control.modules.high_temperature import HighTemperatureModule
-from thrs.control.switching import SwitchingControlMode
-from thrs.input_output.modules.boilers import (
-    BoilersControlValues,
-    BoilersSensorValues,
-    BoilersSimulationInputs,
-    BoilersSimulationOutputs,
-)
-from thrs.input_output.modules.high_temperature import HighTemperatureSimulationInputs
-from thrs.orchestration.module import ModuleDescription, CombinedModule, CombinedControl
 from thrs.control.modules.consumers import (
     ConsumersAlarms,
     ConsumersControl,
     ConsumersControlMode,
     ConsumersParameters,
 )
+from thrs.control.modules.high_temperature import HighTemperatureModule
 from thrs.control.modules.pcm import (
     PcmAlarms,
     PcmControl,
@@ -58,6 +50,7 @@ from thrs.control.modules.thrusters import (
     ThrustersControlMode,
     ThrustersParameters,
 )
+from thrs.control.switching import SwitchingControlMode
 from thrs.input_output.base import (
     CombinedValues,
     SimulationInputs,
@@ -76,12 +69,19 @@ from thrs.input_output.definitions.simulation import (
     Thruster,
 )
 from thrs.input_output.definitions.units import PcsMode
+from thrs.input_output.modules.boilers import (
+    BoilersControlValues,
+    BoilersSensorValues,
+    BoilersSimulationInputs,
+    BoilersSimulationOutputs,
+)
 from thrs.input_output.modules.consumers import (
     ConsumersControlValues,
     ConsumersSensorValues,
     ConsumersSimulationInputs,
     ConsumersSimulationOutputs,
 )
+from thrs.input_output.modules.high_temperature import HighTemperatureSimulationInputs
 from thrs.input_output.modules.pcm import (
     PcmControlValues,
     PcmSensorValues,
@@ -102,16 +102,17 @@ from thrs.input_output.modules.thrusters import (
 )
 from thrs.orchestration.config import Config
 from thrs.orchestration.executor import MqttExecutor, SimulationExecutor
+from thrs.orchestration.module import CombinedControl, CombinedModule, ModuleDescription
+from thrs.orchestration.simulator import Simulator
 from thrs.simulation.fmu import Fmu
 from thrs.simulation.models.fmu_paths import (
-    thrusters_path,
-    pvt_path,
-    pcm_path,
+    boilers_path,
     consumers_path,
     high_temperature_path,
-    boilers_path,
+    pcm_path,
+    pvt_path,
+    thrusters_path,
 )
-from thrs.orchestration.simulator import Simulator
 
 logger = logging.getLogger(__name__)
 

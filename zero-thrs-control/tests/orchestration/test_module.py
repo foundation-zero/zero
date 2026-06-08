@@ -1,6 +1,8 @@
-import pytest
 from datetime import datetime
 from unittest.mock import Mock
+
+import pytest
+
 from tests.orchestration.simples import (
     SimpleControl,
     SimpleInOut,
@@ -9,19 +11,18 @@ from tests.orchestration.simples import (
     SimpleSimulationInputs,
     SimpleSimulationOutputs,
 )
-from thrs.input_output.base import Stamped, ThrsValues, CombinedValues
-from thrs.input_output.alarms import Alarm, BaseAlarms, Severity
 from thrs.classes.control import Control, ControlResult
-
+from thrs.input_output.alarms import Alarm, BaseAlarms, Severity
+from thrs.input_output.base import CombinedValues, Stamped, ThrsValues
 from thrs.input_output.definitions.sensor import FlowSensor
 from thrs.orchestration.module import (
-    ModuleDescription,
-    PartialMqttMapping,
-    DirectMqttMapping,
-    ModuleMqttMapping,
-    CombinedControl,
     CombinedAlarms,
+    CombinedControl,
     CombinedModule,
+    DirectMqttMapping,
+    ModuleDescription,
+    ModuleMqttMapping,
+    PartialMqttMapping,
 )
 
 

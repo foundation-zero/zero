@@ -1,4 +1,5 @@
 from datetime import datetime
+
 from tests.orchestration.simples import SimpleControl, SimpleInOut, SimpleParameters
 from thrs.control.manual import ManualControl
 from thrs.control.switching import SwitchingControl, SwitchingControlMode

@@ -1,13 +1,14 @@
 from datetime import datetime, timedelta
+
 from pytest import fixture
 
 from thrs.control.modules.lt1 import Lt1Alarms, Lt1Control, Lt1Parameters
 from thrs.input_output.base import Stamped
 from thrs.input_output.definitions.simulation import (
     Boundary,
+    Converter,
     HeatSource,
     PropulsionDrive,
-    Converter,
 )
 from thrs.input_output.modules.lt1 import (
     Lt1SensorValues,

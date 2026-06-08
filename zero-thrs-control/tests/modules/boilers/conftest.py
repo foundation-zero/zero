@@ -1,6 +1,6 @@
 from datetime import datetime, timedelta
+
 from pytest import fixture
-from thrs.orchestration.cycler import Cycler
 
 from thrs.control.modules.boilers import (
     BoilersAlarms,
@@ -23,10 +23,10 @@ from thrs.input_output.modules.boilers import (
     BoilersSimulationInputs,
     BoilersSimulationOutputs,
 )
+from thrs.orchestration.cycler import Cycler
 from thrs.orchestration.executor import SimulationExecutor
 from thrs.simulation.fmu import Fmu
 from thrs.simulation.io_mapping import ThrsModelIoMapping
-
 from thrs.simulation.models.fmu_paths import boilers_path
 
 

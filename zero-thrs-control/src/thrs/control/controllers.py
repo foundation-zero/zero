@@ -1,5 +1,6 @@
 from datetime import datetime
 from typing import Callable, cast
+
 from simple_pid import PID
 
 from thrs.input_output.base import Stamped

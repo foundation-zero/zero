@@ -3,6 +3,7 @@ from typing import Callable
 
 from pydantic import model_validator
 from transitions import Machine, State
+
 from thrs.classes.control import Control, ControlMode, ControlResult
 from thrs.control.controllers import PidController
 from thrs.input_output.base import Stamped, ThrsValues

@@ -1,7 +1,9 @@
 from datetime import datetime, timedelta
-from pytest import fixture
-import pytest
 
+import pytest
+from pytest import fixture
+
+from tests.helpers.simulation_inputs import simulator_input_field_setters
 from thrs.input_output.modules.pcm import (
     PcmSensorValues,
     PcmSimulationInputs,
@@ -10,7 +12,6 @@ from thrs.input_output.modules.pcm import (
 from thrs.orchestration.executor import SimulationExecutor
 from thrs.simulation.fmu import Fmu
 from thrs.simulation.io_mapping import ThrsModelIoMapping
-from tests.helpers.simulation_inputs import simulator_input_field_setters
 from thrs.simulation.models.fmu_paths import pcm_path
 
 

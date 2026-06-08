@@ -2,7 +2,6 @@ from datetime import datetime
 from typing import Callable
 
 from thrs.classes.control import Control, ControlMode, ControlResult
-
 from thrs.control.controllers import PidController
 from thrs.control.modules.converters import (
     ConvertersControl,

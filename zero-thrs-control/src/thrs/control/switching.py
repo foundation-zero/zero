@@ -1,4 +1,5 @@
 from typing import Literal
+
 from thrs.classes.control import Control, ControlResult
 from thrs.control.manual import ManualControl
 from thrs.input_output.base import ThrsValues

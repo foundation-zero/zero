@@ -1,4 +1,5 @@
 from pytest import approx
+
 from thrs.control.modules.consumers import ConsumersControl
 from thrs.input_output.modules.consumers import (
     ConsumersControlValues,

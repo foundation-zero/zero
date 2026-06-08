@@ -1,12 +1,13 @@
 from datetime import datetime
-from thrs.orchestration.collector import NullCollector
-from thrs.orchestration.cycler import Cycler
+
 from tests.orchestration.simples import (
     SimpleAlarms,
     SimpleControl,
     SimpleExecutor,
     SimpleParameters,
 )
+from thrs.orchestration.collector import NullCollector
+from thrs.orchestration.cycler import Cycler
 
 
 async def test_interfacer():

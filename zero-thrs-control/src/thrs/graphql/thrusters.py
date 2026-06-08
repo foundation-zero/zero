@@ -2,19 +2,17 @@ import strawberry
 
 from thrs.control.modules.thrusters import ThrustersControlMode, ThrustersParameters
 from thrs.graphql.base import (
+    ControlModule,
     SwitchingControlModeType,
     ThrsContext,
     ThrustersMessaging,
     add_automation_mode_mutation,
-)
-from thrs.graphql.base import (
-    ControlModule,
     add_control_mutations,
     add_parameter_mutations,
 )
 from thrs.graphql.helpers import (
-    pydantic_to_strawberry_type,
     optional_pydantic_to_graphql,
+    pydantic_to_strawberry_type,
 )
 from thrs.input_output.modules.thrusters import (
     ThrustersControlValues,

@@ -1,4 +1,7 @@
 from typing import Annotated
+
+from pydantic.json_schema import SkipJsonSchema
+
 from thrs.input_output.base import Stamped, StampedDf, ThrsValues, field_meta
 from thrs.input_output.definitions.units import (
     Bar,
@@ -9,7 +12,6 @@ from thrs.input_output.definitions.units import (
     PcsMode,
     Watt,
 )
-from pydantic.json_schema import SkipJsonSchema
 
 type Stamp[T] = Stamped[T] | SkipJsonSchema[StampedDf[T]]
 

@@ -1,14 +1,15 @@
 from datetime import datetime, timedelta
+
 from pytest import fixture
 
-from thrs.control.modules.thrusters import ThrustersParameters
-from thrs.control.modules.pcm import PcmParameters
 from thrs.control.modules.consumers import ConsumersParameters
 from thrs.control.modules.high_temperature import (
     HighTemperatureModule,
 )
+from thrs.control.modules.pcm import PcmParameters
 from thrs.control.modules.pvt import PvtParameters
-from thrs.input_output.base import Stamped, CombinedValues
+from thrs.control.modules.thrusters import ThrustersParameters
+from thrs.input_output.base import CombinedValues, Stamped
 from thrs.input_output.definitions.simulation import (
     Boundary,
     HeatSource,

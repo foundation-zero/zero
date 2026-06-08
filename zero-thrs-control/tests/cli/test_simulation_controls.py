@@ -1,15 +1,14 @@
 from asyncio import create_task, sleep
 
-from aiomqtt import Client
 import pytest
+from aiomqtt import Client
 
 from thrs.cli.simulation_controls import (
     ParametersMessage,
+    SimulationControls,
     SimulationInputMessage,
     SimulationStatusMessage,
-    SimulationControls,
 )
-
 from thrs.control.modules.thrusters import ThrustersParameters
 from thrs.input_output.model_builder import PartialModelBuilder
 from thrs.input_output.modules.thrusters import (
@@ -19,7 +18,6 @@ from thrs.input_output.modules.thrusters import (
 )
 from thrs.orchestration.config import Config
 from thrs.utils.string import dash_to_snake
-
 
 settings = Config()  # type: ignore
 

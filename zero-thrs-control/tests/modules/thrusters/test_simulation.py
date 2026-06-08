@@ -1,10 +1,11 @@
 from datetime import datetime, timedelta
 
-from pytest import fixture
 import pytest
+from pytest import fixture
+
+from tests.helpers.simulation_inputs import simulator_input_field_setters
 from thrs.control.modules.thrusters import ThrustersControl, ThrustersParameters
 from thrs.input_output.definitions.control import Valve
-
 from thrs.input_output.modules.thrusters import (
     ThrustersControlValues,
     ThrustersSensorValues,
@@ -21,7 +22,6 @@ from thrs.simulation.io_mapping import (
     flatten_model_values,
 )
 from thrs.simulation.models.fmu_paths import thrusters_path
-from tests.helpers.simulation_inputs import simulator_input_field_setters
 
 
 async def test_interfacer(

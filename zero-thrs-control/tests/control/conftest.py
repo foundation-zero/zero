@@ -1,5 +1,6 @@
 from datetime import datetime, timedelta
 from typing import Generator
+
 from pytest import fixture
 
 from tests.modules.thrusters.conftest import ThrustersSimulationExecutor

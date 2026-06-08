@@ -3,20 +3,17 @@ import strawberry
 from thrs.control.modules.boilers import BoilersControlMode, BoilersParameters
 from thrs.graphql.base import (
     BoilersMessaging,
-    SwitchingControlModeType,
-)
-from thrs.graphql.base import (
     ControlModule,
+    SwitchingControlModeType,
     add_automation_mode_mutation,
     add_control_mutations,
     add_parameter_mutations,
 )
 from thrs.graphql.helpers import (
-    pydantic_to_strawberry_type,
     optional_pydantic_to_graphql,
+    pydantic_to_strawberry_type,
 )
 from thrs.input_output.modules.boilers import BoilersControlValues, BoilersSensorValues
-
 
 BoilersSensorValuesType = pydantic_to_strawberry_type(
     BoilersSensorValues, include_computed=True

@@ -1,9 +1,11 @@
-from asyncio import Queue
 import asyncio
+from asyncio import Queue
+from dataclasses import dataclass
 from time import monotonic
 from typing import Callable, Coroutine, Literal
-from aiomqtt import Client as MqttClient, Message, Topic
-from dataclasses import dataclass
+
+from aiomqtt import Client as MqttClient
+from aiomqtt import Message, Topic
 
 from thrs.cli.simulation_controls import (
     ControlModeMessage,
@@ -11,17 +13,17 @@ from thrs.cli.simulation_controls import (
     ParametersMessage,
     PauseMessage,
     PlayMessage,
+    SetAutomationMessage,
     SetParametersMessage,
     SetSimulationInputsMessage,
     SimulationInputMessage,
     SimulationStatusMessage,
     StepMessage,
-    SetAutomationMessage,
 )
 from thrs.input_output.base import SimulationInputs, SimulationValues, ThrsValues
 from thrs.input_output.model_builder import PartialModelBuilder
-from thrs.utils.string import dash_to_snake
 from thrs.orchestration.config import Config
+from thrs.utils.string import dash_to_snake
 
 
 @dataclass

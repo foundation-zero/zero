@@ -1,15 +1,15 @@
 import pytest
 
+from tests.modules.conftest import (
+    compare_fmu_to_classes,
+    compare_modelica_names,
+    compare_yard_tags,
+)
 from thrs.input_output.modules.consumers import (
     ConsumersControlValues,
     ConsumersSensorValues,
     ConsumersSimulationInputs,
     ConsumersSimulationOutputs,
-)
-from tests.modules.conftest import (
-    compare_fmu_to_classes,
-    compare_modelica_names,
-    compare_yard_tags,
 )
 from thrs.simulation.models.fmu_paths import consumers_path
 
