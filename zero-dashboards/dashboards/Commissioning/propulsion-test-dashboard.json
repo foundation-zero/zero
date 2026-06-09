@@ -620,18 +620,6 @@
           {
             "matcher": {
               "id": "byName",
-              "options": "time"
-            },
-            "properties": [
-              {
-                "id": "custom.hideFrom.viz",
-                "value": true
-              }
-            ]
-          },
-          {
-            "matcher": {
-              "id": "byName",
               "options": "Speed"
             },
             "properties": [
@@ -778,6 +766,7 @@
               "temperature_delta": "T delta",
               "temperature_in": "T in",
               "temperature_out": "T out",
+              "time": "Time",
               "torque": "Torque",
               "torque_setpoint": "Torque setpoint",
               "voltage": "Voltage"
@@ -3231,36 +3220,12 @@
           {
             "matcher": {
               "id": "byName",
-              "options": "time"
-            },
-            "properties": [
-              {
-                "id": "custom.hideFrom.viz",
-                "value": true
-              }
-            ]
-          },
-          {
-            "matcher": {
-              "id": "byName",
               "options": "Speed"
             },
             "properties": [
               {
                 "id": "unit",
                 "value": "rotrpm"
-              }
-            ]
-          },
-          {
-            "matcher": {
-              "id": "byName",
-              "options": "Torque"
-            },
-            "properties": [
-              {
-                "id": "unit",
-                "value": "forceNm"
               }
             ]
           },
@@ -3311,6 +3276,18 @@
                 "value": "celsius"
               }
             ]
+          },
+          {
+            "matcher": {
+              "id": "byRegexp",
+              "options": "/torque/"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "forceNm"
+              }
+            ]
           }
         ]
       },
@@ -3357,7 +3334,7 @@
           "pluginVersion": "2.1.4",
           "queryType": "table",
           "rawQuery": true,
-          "rawSql": "WITH aft1 AS (\r\n  SELECT\r\n    timestamp AS time,\r\n    speed__value AS speed,\r\n    torque__value AS torque,\r\n    power__value AS \"power\",\r\n    temp_igbt__value AS igbt_temp,\r\n    temp_power_stage__value AS power_stage_temp\r\n  FROM public.marpower__150000propulsion__pcs_aft_ara1\r\n  WHERE '${aft_fwd}' = 'AFT' AND $__timeFilter(timestamp)\r\n  ORDER BY timestamp DESC\r\n  LIMIT 1\r\n),\r\naft2 AS (\r\n  SELECT\r\n    timestamp AS time,\r\n    speed__value AS speed,\r\n    torque__value AS torque,\r\n    power__value AS \"power\",\r\n    temp_igbt__value AS igbt_temp,\r\n    temp_power_stage__value AS power_stage_temp\r\n  FROM public.marpower__150000propulsion__pcs_aft_ara2\r\n  WHERE '${aft_fwd}' = 'AFT' AND $__timeFilter(timestamp)\r\n  ORDER BY timestamp DESC\r\n  LIMIT 1\r\n),\r\naft_torque AS (\r\n  SELECT\r\n    \"ShearBeamCalculated.Value\" AS torque\r\n  FROM public.marpower__150000propulsion__pcs_aft\r\n  WHERE '${aft_fwd}' = 'AFT' AND $__timeFilter(greptime_timestamp)\r\n  ORDER BY greptime_timestamp DESC\r\n  LIMIT 1\r\n),\r\nfwd1 AS (\r\n  SELECT\r\n    timestamp AS time,\r\n    speed__value AS speed,\r\n    torque__value AS torque,\r\n    power__value AS \"power\",\r\n    temp_igbt__value AS igbt_temp,\r\n    temp_power_stage__value AS power_stage_temp\r\n  FROM public.marpower__150000propulsion__pcs_fwd_ara1\r\n  WHERE '${aft_fwd}' = 'FWD' AND $__timeFilter(timestamp)\r\n  ORDER BY timestamp DESC\r\n  LIMIT 1\r\n),\r\nfwd2 AS (\r\n  SELECT\r\n    timestamp AS time,\r\n    speed__value AS speed,\r\n    torque__value AS torque,\r\n    power__value AS \"power\",\r\n    temp_igbt__value AS igbt_temp,\r\n    temp_power_stage__value AS power_stage_temp\r\n  FROM public.marpower__150000propulsion__pcs_fwd_ara2\r\n  WHERE '${aft_fwd}' = 'FWD' AND $__timeFilter(timestamp)\r\n  ORDER BY timestamp DESC\r\n  LIMIT 1\r\n),\r\nfwd_torque AS (\r\n  SELECT\r\n    \"ShearBeamCalculated.Value\" AS torque\r\n  FROM public.marpower__150000propulsion__pcs_fwd\r\n  WHERE '${aft_fwd}' = 'FWD' AND $__timeFilter(greptime_timestamp)\r\n  ORDER BY greptime_timestamp DESC\r\n  LIMIT 1\r\n)\r\n\r\nSELECT\r\n  'Aradex 1' AS device,\r\n  aft1.time,\r\n  aft1.speed,\r\n  aft1.torque AS aradex_torque,\r\n  aft_torque.torque AS measured_torque,\r\n  NULL AS torque_setpoint,\r\n  aft1.power_stage_temp,\r\n  aft1.igbt_temp,\r\n  aft1.\"power\"\r\nFROM aft1, aft_torque\r\n\r\nUNION ALL\r\n\r\nSELECT\r\n  'Aradex 2' AS device,\r\n  aft2.time,\r\n  aft2.speed,\r\n  aft2.torque AS aradex_torque,\r\n  aft_torque.torque AS measured_torque,\r\n  NULL AS torque_setpoint,\r\n  aft2.power_stage_temp,\r\n  aft2.igbt_temp,\r\n  aft2.\"power\"\r\nFROM aft2, aft_torque\r\n\r\nUNION ALL\r\n\r\nSELECT\r\n  'Aradex 1' AS device,\r\n  fwd1.time,\r\n  fwd1.speed,\r\n  fwd1.torque AS aradex_torque,\r\n  fwd_torque.torque AS measured_torque,\r\n  NULL AS torque_setpoint,\r\n  fwd1.power_stage_temp,\r\n  fwd1.igbt_temp,\r\n  fwd1.\"power\"\r\nFROM fwd1, fwd_torque\r\n\r\nUNION ALL\r\n\r\nSELECT\r\n  'Aradex 2' AS device,\r\n  fwd2.time,\r\n  fwd2.speed,\r\n  fwd2.torque AS aradex_torque,\r\n  fwd_torque.torque AS measured_torque,\r\n  NULL AS torque_setpoint,\r\n  fwd2.power_stage_temp,\r\n  fwd2.igbt_temp,\r\n  fwd2.\"power\"\r\nFROM fwd2, fwd_torque\r\n\r\nORDER BY device;",
+          "rawSql": "WITH aft1 AS (\r\n  SELECT\r\n    timestamp AS time,\r\n    speed__value AS speed,\r\n    torque__value AS torque,\r\n    power__value AS \"power\",\r\n    temp_igbt__value AS igbt_temp,\r\n    temp_power_stage__value AS power_stage_temp\r\n  FROM public.marpower__150000propulsion__pcs_aft_ara1\r\n  WHERE '${aft_fwd}' = 'AFT' AND $__timeFilter(timestamp)\r\n  ORDER BY timestamp DESC\r\n  LIMIT 1\r\n),\r\naft2 AS (\r\n  SELECT\r\n    timestamp AS time,\r\n    speed__value AS speed,\r\n    torque__value AS torque,\r\n    power__value AS \"power\",\r\n    temp_igbt__value AS igbt_temp,\r\n    temp_power_stage__value AS power_stage_temp\r\n  FROM public.marpower__150000propulsion__pcs_aft_ara2\r\n  WHERE '${aft_fwd}' = 'AFT' AND $__timeFilter(timestamp)\r\n  ORDER BY timestamp DESC\r\n  LIMIT 1\r\n),\r\naft_torque AS (\r\n  SELECT\r\n    shear_beam_calculated__value AS torque\r\n  FROM public.marpower__150000propulsion__pcs_aft\r\n  WHERE '${aft_fwd}' = 'AFT' AND $__timeFilter(timestamp)\r\n  ORDER BY timestamp DESC\r\n  LIMIT 1\r\n),\r\nfwd1 AS (\r\n  SELECT\r\n    timestamp AS time,\r\n    speed__value AS speed,\r\n    torque__value AS torque,\r\n    power__value AS \"power\",\r\n    temp_igbt__value AS igbt_temp,\r\n    temp_power_stage__value AS power_stage_temp\r\n  FROM public.marpower__150000propulsion__pcs_fwd_ara1\r\n  WHERE '${aft_fwd}' = 'FWD' AND $__timeFilter(timestamp)\r\n  ORDER BY timestamp DESC\r\n  LIMIT 1\r\n),\r\nfwd2 AS (\r\n  SELECT\r\n    timestamp AS time,\r\n    speed__value AS speed,\r\n    torque__value AS torque,\r\n    power__value AS \"power\",\r\n    temp_igbt__value AS igbt_temp,\r\n    temp_power_stage__value AS power_stage_temp\r\n  FROM public.marpower__150000propulsion__pcs_fwd_ara2\r\n  WHERE '${aft_fwd}' = 'FWD' AND $__timeFilter(timestamp)\r\n  ORDER BY timestamp DESC\r\n  LIMIT 1\r\n),\r\nfwd_torque AS (\r\n  SELECT\r\n    shear_beam_calculated__value AS torque\r\n  FROM public.marpower__150000propulsion__pcs_fwd\r\n  WHERE '${aft_fwd}' = 'FWD' AND $__timeFilter(timestamp)\r\n  ORDER BY timestamp DESC\r\n  LIMIT 1\r\n)\r\n\r\nSELECT\r\n  aft1.time,\r\n  'Aradex 1' AS device,\r\n  aft1.speed,\r\n  aft1.torque AS aradex_torque,\r\n  aft_torque.torque AS measured_torque,\r\n  NULL AS torque_setpoint,\r\n  aft1.power_stage_temp,\r\n  aft1.igbt_temp,\r\n  aft1.\"power\"\r\nFROM aft1, aft_torque\r\n\r\nUNION ALL\r\n\r\nSELECT\r\n  aft2.time,\r\n  'Aradex 2' AS device,\r\n  aft2.speed,\r\n  aft2.torque AS aradex_torque,\r\n  aft_torque.torque AS measured_torque,\r\n  NULL AS torque_setpoint,\r\n  aft2.power_stage_temp,\r\n  aft2.igbt_temp,\r\n  aft2.\"power\"\r\nFROM aft2, aft_torque\r\n\r\nUNION ALL\r\n\r\nSELECT\r\n  fwd1.time,\r\n  'Aradex 1' AS device,\r\n  fwd1.speed,\r\n  fwd1.torque AS aradex_torque,\r\n  fwd_torque.torque AS measured_torque,\r\n  NULL AS torque_setpoint,\r\n  fwd1.power_stage_temp,\r\n  fwd1.igbt_temp,\r\n  fwd1.\"power\"\r\nFROM fwd1, fwd_torque\r\n\r\nUNION ALL\r\n\r\nSELECT\r\n  fwd2.time,\r\n  'Aradex 2' AS device,\r\n  fwd2.speed,\r\n  fwd2.torque AS aradex_torque,\r\n  fwd_torque.torque AS measured_torque,\r\n  NULL AS torque_setpoint,\r\n  fwd2.power_stage_temp,\r\n  fwd2.igbt_temp,\r\n  fwd2.\"power\"\r\nFROM fwd2, fwd_torque\r\n\r\nORDER BY device;",
           "refId": "A",
           "sql": {
             "columns": [
@@ -3387,10 +3364,12 @@
             "includeByName": {},
             "indexByName": {},
             "renameByName": {
+              "aradex_torque": "Aradex torque",
               "device": "Device",
               "flow": "Flow",
               "gear_ratio": "Gear ratio",
               "igbt_temp": "IGBT temp",
+              "measured_torque": "Measured torque",
               "power": "Power",
               "power_stage_temp": "Power stage temp",
               "pressure": "Pressure",
@@ -3401,6 +3380,7 @@
               "temperature_delta": "T delta",
               "temperature_in": "T in",
               "temperature_out": "T out",
+              "time": "Time",
               "torque": "Torque",
               "torque_setpoint": "Torque setpoint"
             }
@@ -3733,7 +3713,7 @@
           },
           "pluginVersion": "2.1.4",
           "queryType": "table",
-          "rawSql": "SELECT\r\n  greptime_timestamp AS time,\r\n  \"ShearBeamCalculated.Value\" AS measured_torque\r\nFROM public.marpower__150000propulsion__pcs_aft\r\nWHERE '${aft_fwd}' = 'AFT' AND $__timeFilter(greptime_timestamp)\r\n\r\nUNION ALL\r\n\r\nSELECT\r\n  greptime_timestamp AS time,\r\n  \"ShearBeamCalculated.Value\" AS measured_torque\r\nFROM public.marpower__150000propulsion__pcs_fwd\r\nWHERE '${aft_fwd}' = 'FWD' AND $__timeFilter(greptime_timestamp);",
+          "rawSql": "SELECT\r\n  timestamp AS time,\r\n  shear_beam_calculated__value AS measured_torque\r\nFROM public.marpower__150000propulsion__pcs_aft\r\nWHERE '${aft_fwd}' = 'AFT' AND $__timeFilter(timestamp)\r\n\r\nUNION ALL\r\n\r\nSELECT\r\n  timestamp AS time,\r\n  shear_beam_calculated__value AS measured_torque\r\nFROM public.marpower__150000propulsion__pcs_fwd\r\nWHERE '${aft_fwd}' = 'FWD' AND $__timeFilter(timestamp);",
           "refId": "C"
         }
       ],
@@ -3993,20 +3973,7 @@
           },
           "unit": "celsius"
         },
-        "overrides": [
-          {
-            "matcher": {
-              "id": "byName",
-              "options": "time"
-            },
-            "properties": [
-              {
-                "id": "custom.hideFrom.viz",
-                "value": true
-              }
-            ]
-          }
-        ]
+        "overrides": []
       },
       "gridPos": {
         "h": 5,
@@ -4089,7 +4056,7 @@
               "temperature_delta": "T delta",
               "temperature_in": "T in",
               "temperature_out": "T out",
-              "time": ""
+              "time": "Time"
             }
           }
         }
@@ -4776,20 +4743,7 @@
           },
           "unit": "celsius"
         },
-        "overrides": [
-          {
-            "matcher": {
-              "id": "byName",
-              "options": "time"
-            },
-            "properties": [
-              {
-                "id": "custom.hideFrom.viz",
-                "value": true
-              }
-            ]
-          }
-        ]
+        "overrides": []
       },
       "gridPos": {
         "h": 3,
@@ -4869,7 +4823,8 @@
               "supply_temp": "Supply temp",
               "temperature_delta": "T delta",
               "temperature_in": "T in",
-              "temperature_out": "T out"
+              "temperature_out": "T out",
+              "time": "Time"
             }
           }
         }
@@ -5654,32 +5609,7 @@
           },
           "unit": "kwatt"
         },
-        "overrides": [
-          {
-            "matcher": {
-              "id": "byName",
-              "options": "time"
-            },
-            "properties": [
-              {
-                "id": "custom.hideFrom.viz",
-                "value": true
-              }
-            ]
-          },
-          {
-            "matcher": {
-              "id": "byName",
-              "options": "Aradex power (theoretical)"
-            },
-            "properties": [
-              {
-                "id": "custom.width",
-                "value": 488
-              }
-            ]
-          }
-        ]
+        "overrides": []
       },
       "gridPos": {
         "h": 4,
@@ -5769,6 +5699,7 @@
               "temperature_in": "T in",
               "temperature_out": "T out",
               "theoretical_power": "Aradex power (theoretical)",
+              "time": "Time",
               "torque": "Torque",
               "torque_setpoint": "Torque setpoint"
             }
@@ -6017,18 +5948,6 @@
         "overrides": [
           {
             "matcher": {
-              "id": "byName",
-              "options": "time"
-            },
-            "properties": [
-              {
-                "id": "custom.hideFrom.viz",
-                "value": true
-              }
-            ]
-          },
-          {
-            "matcher": {
               "id": "byRegexp",
               "options": "/speed/"
             },
@@ -6108,7 +6027,7 @@
           "pluginVersion": "2.1.4",
           "queryType": "table",
           "rawQuery": true,
-          "rawSql": "\r\nWITH ps_helm AS (\r\n  SELECT\r\n    timestamp,\r\n    station_selected__value                                AS station_selected,\r\n    CASE WHEN '$aft_fwd' = 'AFT'\r\n      THEN aft_thruster_lever_speed_signal__value\r\n      ELSE fwd_thruster_lever_speed_signal__value\r\n    END                                                    AS lever_speed\r\n  FROM public.marpower__150000propulsion__pcs_fwd_pshelm\r\n  WHERE $__timeFilter(timestamp)\r\n  ORDER BY timestamp DESC\r\n  LIMIT 1\r\n),\r\nsb_helm AS (\r\n  SELECT\r\n    timestamp,\r\n    station_selected__value                                AS station_selected,\r\n    CASE WHEN '$aft_fwd' = 'AFT'\r\n      THEN aft_thruster_lever_speed_signal__value\r\n      ELSE fwd_thruster_lever_speed_signal__value\r\n    END                                                    AS lever_speed\r\n  FROM public.marpower__150000propulsion__pcs_fwd_sbhelm\r\n  WHERE $__timeFilter(timestamp)\r\n  ORDER BY timestamp DESC\r\n  LIMIT 1\r\n),\r\nmotor AS (\r\n  SELECT *\r\n  FROM public.prop_test__data\r\n  WHERE $__timeFilter(timestamp)\r\n  ORDER BY timestamp DESC\r\n  LIMIT 1\r\n),\r\nfwd1 AS (\r\n  SELECT\r\n    timestamp AS time,\r\n    speed__value AS speed,\r\n    torque__value AS torque,\r\n    power__value AS \"power\"\r\n  FROM public.marpower__150000propulsion__pcs_fwd_ara1\r\n  WHERE $__timeFilter(timestamp)\r\n  ORDER BY timestamp DESC\r\n  LIMIT 1\r\n),\r\nfwd2 AS (\r\n  SELECT\r\n    timestamp AS time,\r\n    speed__value AS speed,\r\n    torque__value AS torque,\r\n    power__value AS \"power\"\r\n  FROM public.marpower__150000propulsion__pcs_fwd_ara2\r\n  WHERE $__timeFilter(timestamp)\r\n  ORDER BY timestamp DESC\r\n  LIMIT 1\r\n),\r\naft1 AS (\r\n  SELECT\r\n    timestamp AS time,\r\n    speed__value AS speed,\r\n    torque__value AS torque,\r\n    power__value AS \"power\"\r\n  FROM public.marpower__150000propulsion__pcs_aft_ara1\r\n  WHERE $__timeFilter(timestamp)\r\n  ORDER BY timestamp DESC\r\n  LIMIT 1\r\n),\r\naft2 AS (\r\n  SELECT\r\n    timestamp AS time,\r\n    speed__value AS speed,\r\n    torque__value AS torque,\r\n    power__value AS \"power\"\r\n  FROM public.marpower__150000propulsion__pcs_aft_ara2\r\n  WHERE $__timeFilter(timestamp)\r\n  ORDER BY timestamp DESC\r\n  LIMIT 1\r\n)\r\n\r\nSELECT \r\n\tLEAST(\r\n\t\tmotor.timestamp,\r\n\t\tps_helm.timestamp,\r\n\t\tsb_helm.timestamp)                                      AS time,\r\n  CASE\r\n    WHEN ps_helm.station_selected THEN ((ps_helm.lever_speed /327.0 ) -50) * 2\r\n    WHEN sb_helm.station_selected THEN ((sb_helm.lever_speed /327.0 ) -50) * 2\r\n    ELSE 0\r\n  END                                                       AS lever_pos,\r\n  CASE WHEN '${aft_fwd}' = 'AFT'\r\n    THEN motor.\"devices__can_aradex.i_aft_thrstr_speed_rpm\"\r\n    ELSE motor.\"devices__can_aradex.i_fwd_thrstr_speed_rpm\"\r\n  END                                                       AS motor_speed,\r\n  CASE WHEN '${aft_fwd}' = 'AFT'\r\n   THEN aft1.speed\r\n   ELSE fwd1.speed\r\n  END                                                       AS aradex1_speed,\r\n  CASE WHEN '${aft_fwd}' = 'AFT'\r\n   THEN aft2.speed\r\n   ELSE fwd2.speed\r\n  END                                                       AS aradex2_speed,\r\n  CASE WHEN '${aft_fwd}' = 'AFT'\r\n   THEN aft1.\"power\" + aft2.\"power\"\r\n   ELSE fwd1.\"power\" + fwd2.\"power\"\r\n  END                                                       AS aradex_power,\r\n  CASE WHEN '${aft_fwd}' = 'AFT'\r\n   THEN aft1.torque\r\n   ELSE fwd1.torque\r\n  END                                                       AS aradex1_torque,\r\n  CASE WHEN '${aft_fwd}' = 'AFT'\r\n   THEN aft2.torque\r\n   ELSE fwd2.torque\r\n  END                                                       AS aradex2_torque\r\nFROM motor, ps_helm, sb_helm, fwd1, fwd2,aft1,aft2",
+          "rawSql": "WITH aft_ps_helm AS (\r\n  SELECT\r\n    timestamp,\r\n    station_selected__value AS station_selected,\r\n    aft_thruster_lever_speed_signal__value AS lever_speed\r\n  FROM public.marpower__150000propulsion__pcs_fwd_pshelm\r\n  WHERE '${aft_fwd}' = 'AFT' AND $__timeFilter(timestamp)\r\n  ORDER BY timestamp DESC\r\n  LIMIT 1\r\n),\r\nfwd_ps_helm AS (\r\n  SELECT\r\n    timestamp,\r\n    station_selected__value AS station_selected,\r\n    fwd_thruster_lever_speed_signal__value AS lever_speed\r\n  FROM public.marpower__150000propulsion__pcs_fwd_pshelm\r\n  WHERE '${aft_fwd}' = 'FWD' AND $__timeFilter(timestamp)\r\n  ORDER BY timestamp DESC\r\n  LIMIT 1\r\n),\r\naft_sb_helm AS (\r\n  SELECT\r\n    timestamp,\r\n    station_selected__value AS station_selected,\r\n    aft_thruster_lever_speed_signal__value AS lever_speed\r\n  FROM public.marpower__150000propulsion__pcs_fwd_sbhelm\r\n  WHERE '${aft_fwd}' = 'AFT' AND $__timeFilter(timestamp)\r\n  ORDER BY timestamp DESC\r\n  LIMIT 1\r\n),\r\nfwd_sb_helm AS (\r\n  SELECT\r\n    timestamp,\r\n    station_selected__value AS station_selected,\r\n    fwd_thruster_lever_speed_signal__value AS lever_speed\r\n  FROM public.marpower__150000propulsion__pcs_fwd_sbhelm\r\n  WHERE '${aft_fwd}' = 'FWD' AND $__timeFilter(timestamp)\r\n  ORDER BY timestamp DESC\r\n  LIMIT 1\r\n),\r\naft_motor AS (\r\n  SELECT\r\n    timestamp,\r\n    \"devices__can_aradex.i_aft_thrstr_speed_rpm\" AS motor_speed\r\n  FROM public.prop_test__data\r\n  WHERE '${aft_fwd}' = 'AFT' AND $__timeFilter(timestamp)\r\n  ORDER BY timestamp DESC\r\n  LIMIT 1\r\n),\r\nfwd_motor AS (\r\n  SELECT\r\n    timestamp,\r\n    \"devices__can_aradex.i_fwd_thrstr_speed_rpm\" AS motor_speed\r\n  FROM public.prop_test__data\r\n  WHERE '${aft_fwd}' = 'FWD' AND $__timeFilter(timestamp)\r\n  ORDER BY timestamp DESC\r\n  LIMIT 1\r\n),\r\naft1 AS (\r\n  SELECT\r\n    timestamp AS time,\r\n    speed__value AS speed,\r\n    torque__value AS torque,\r\n    power__value AS \"power\"\r\n  FROM public.marpower__150000propulsion__pcs_aft_ara1\r\n  WHERE '${aft_fwd}' = 'AFT' AND $__timeFilter(timestamp)\r\n  ORDER BY timestamp DESC\r\n  LIMIT 1\r\n),\r\naft2 AS (\r\n  SELECT\r\n    timestamp AS time,\r\n    speed__value AS speed,\r\n    torque__value AS torque,\r\n    power__value AS \"power\"\r\n  FROM public.marpower__150000propulsion__pcs_aft_ara2\r\n  WHERE '${aft_fwd}' = 'AFT' AND $__timeFilter(timestamp)\r\n  ORDER BY timestamp DESC\r\n  LIMIT 1\r\n),\r\nfwd1 AS (\r\n  SELECT\r\n    timestamp AS time,\r\n    speed__value AS speed,\r\n    torque__value AS torque,\r\n    power__value AS \"power\"\r\n  FROM public.marpower__150000propulsion__pcs_fwd_ara1\r\n  WHERE '${aft_fwd}' = 'FWD' AND $__timeFilter(timestamp)\r\n  ORDER BY timestamp DESC\r\n  LIMIT 1\r\n),\r\nfwd2 AS (\r\n  SELECT\r\n    timestamp AS time,\r\n    speed__value AS speed,\r\n    torque__value AS torque,\r\n    power__value AS \"power\"\r\n  FROM public.marpower__150000propulsion__pcs_fwd_ara2\r\n  WHERE '${aft_fwd}' = 'FWD' AND $__timeFilter(timestamp)\r\n  ORDER BY timestamp DESC\r\n  LIMIT 1\r\n)\r\n\r\nSELECT \r\n  LEAST(aft_motor.timestamp, aft_ps_helm.timestamp, aft_sb_helm.timestamp) AS time,\r\n  CASE\r\n    WHEN aft_ps_helm.station_selected THEN ((aft_ps_helm.lever_speed / 327.0) - 50) * 2\r\n    WHEN aft_sb_helm.station_selected THEN ((aft_sb_helm.lever_speed / 327.0) - 50) * 2\r\n    ELSE 0\r\n  END AS lever_pos,\r\n  aft_motor.motor_speed AS motor_speed,\r\n  aft1.speed AS aradex1_speed,\r\n  aft2.speed AS aradex2_speed,\r\n  aft1.\"power\" + aft2.\"power\" AS aradex_power,\r\n  aft1.torque AS aradex1_torque,\r\n  aft2.torque AS aradex2_torque\r\nFROM aft_motor, aft_ps_helm, aft_sb_helm, aft1, aft2\r\n\r\nUNION ALL\r\n\r\nSELECT \r\n  LEAST(fwd_motor.timestamp, fwd_ps_helm.timestamp, fwd_sb_helm.timestamp) AS time,\r\n  CASE\r\n    WHEN fwd_ps_helm.station_selected THEN ((fwd_ps_helm.lever_speed / 327.0) - 50) * 2\r\n    WHEN fwd_sb_helm.station_selected THEN ((fwd_sb_helm.lever_speed / 327.0) - 50) * 2\r\n    ELSE 0\r\n  END AS lever_pos,\r\n  fwd_motor.motor_speed AS motor_speed,\r\n  fwd1.speed AS aradex1_speed,\r\n  fwd2.speed AS aradex2_speed,\r\n  fwd1.\"power\" + fwd2.\"power\" AS aradex_power,\r\n  fwd1.torque AS aradex1_torque,\r\n  fwd2.torque AS aradex2_torque\r\nFROM fwd_motor, fwd_ps_helm, fwd_sb_helm, fwd1, fwd2;",
           "refId": "A",
           "sql": {
             "columns": [
@@ -6159,6 +6078,7 @@
               "temperature_in": "T in",
               "temperature_out": "T out",
               "theoretical_power": "Theoretical Aradex power",
+              "time": "Time",
               "torque": "Torque",
               "torque_setpoint": "Torque setpoint"
             }
@@ -6206,18 +6126,6 @@
           }
         },
         "overrides": [
-          {
-            "matcher": {
-              "id": "byName",
-              "options": "time"
-            },
-            "properties": [
-              {
-                "id": "custom.hideFrom.viz",
-                "value": true
-              }
-            ]
-          },
           {
             "matcher": {
               "id": "byRegexp",
@@ -6306,7 +6214,7 @@
           "pluginVersion": "2.1.4",
           "queryType": "table",
           "rawQuery": true,
-          "rawSql": "\r\nWITH motor AS (\r\n  SELECT\r\n    timestamp,\r\n    CASE WHEN '${aft_fwd}' = 'AFT'\r\n      THEN \"devices__can_aradex.i_aft_thrstr_speed_rpm\"\r\n      ELSE \"devices__can_aradex.i_fwd_thrstr_speed_rpm\"\r\n    END                                                 AS motor_speed\r\n  FROM public.prop_test__data\r\n  WHERE $__timeFilter(timestamp)\r\n  ORDER BY timestamp DESC\r\n  LIMIT 1\r\n),\r\nfwd1 AS (\r\n  SELECT\r\n    timestamp AS time,\r\n    speed__value AS speed,\r\n    torque__value AS torque,\r\n    power__value AS \"power\"\r\n  FROM public.marpower__150000propulsion__pcs_fwd_ara1\r\n  WHERE $__timeFilter(timestamp)\r\n  ORDER BY timestamp DESC\r\n  LIMIT 1\r\n),\r\nfwd2 AS (\r\n  SELECT\r\n    timestamp AS time,\r\n    speed__value AS speed,\r\n    torque__value AS torque,\r\n    power__value AS \"power\"\r\n  FROM public.marpower__150000propulsion__pcs_fwd_ara2\r\n  WHERE $__timeFilter(timestamp)\r\n  ORDER BY timestamp DESC\r\n  LIMIT 1\r\n),\r\naft1 AS (\r\n  SELECT\r\n    timestamp AS time,\r\n    speed__value AS speed,\r\n    torque__value AS torque,\r\n    power__value AS \"power\"\r\n  FROM public.marpower__150000propulsion__pcs_aft_ara1\r\n  WHERE $__timeFilter(timestamp)\r\n  ORDER BY timestamp DESC\r\n  LIMIT 1\r\n),\r\naft2 AS (\r\n  SELECT\r\n    timestamp AS time,\r\n    speed__value AS speed,\r\n    torque__value AS torque,\r\n    power__value AS \"power\"\r\n  FROM public.marpower__150000propulsion__pcs_aft_ara2\r\n  WHERE $__timeFilter(timestamp)\r\n  ORDER BY timestamp DESC\r\n  LIMIT 1\r\n)\r\n\r\nSELECT\r\n  CASE WHEN '${aft_fwd}' = 'AFT'\r\n\t  THEN LEAST(motor.timestamp, aft1.time)\r\n    ELSE LEAST(motor.timestamp, fwd1.time)\r\n  END                                                             AS time,\r\n  'Aradex 1'                                                      AS device,\r\n  CASE WHEN '${aft_fwd}' = 'AFT'\r\n    THEN aft1.speed\r\n\t  ELSE fwd1.speed\r\n  END                                                             AS aradex1_speed,\r\n  CASE WHEN '${aft_fwd}' = 'AFT'\r\n    THEN aft1.speed / GREATEST(motor_speed, 1)\r\n\t  ELSE fwd1.speed / GREATEST(motor_speed, 1)\r\n  END                                                             AS gear_ratio,\r\n  CASE WHEN '${aft_fwd}' = 'AFT'\r\n    THEN 100 * (aft1.speed / GREATEST(motor_speed, 1) - $gear_ratio) / $gear_ratio\r\n\t  ELSE 100 * (fwd1.speed / GREATEST(motor_speed, 1) - $gear_ratio) / $gear_ratio\r\n  END                                                             AS gear_ratio_rel_error\r\nFROM motor, fwd1, aft1\r\nUNION ALL\r\nSELECT\r\n  CASE WHEN '${aft_fwd}' = 'AFT'\r\n    THEN LEAST(motor.timestamp, aft2.time)\r\n    ELSE LEAST(motor.timestamp, fwd2.time)\r\n  END                                                             AS time,\r\n  'Aradex 2'                                                      AS device,\r\n  CASE WHEN '${aft_fwd}' = 'AFT'\r\n    THEN aft2.speed\r\n\t  ELSE fwd2.speed\r\n  END                                                             AS aradex1_speed,\r\n  CASE WHEN '${aft_fwd}' = 'AFT'\r\n    THEN aft2.speed / GREATEST(motor_speed, 1)\r\n\t  ELSE fwd2.speed / GREATEST(motor_speed, 1)\r\n  END                                                             AS gear_ratio,\r\n  CASE WHEN '${aft_fwd}' = 'AFT'\r\n    THEN 100 * (aft2.speed / GREATEST(motor_speed, 1) - $gear_ratio) / $gear_ratio\r\n\t  ELSE 100 * (fwd2.speed / GREATEST(motor_speed, 1) - $gear_ratio) / $gear_ratio\r\n  END                                                             AS gear_ratio_rel_error\r\nFROM motor, fwd2, aft2\r\nORDER BY device",
+          "rawSql": "WITH aft_motor AS (\r\n  SELECT\r\n    timestamp,\r\n    \"devices__can_aradex.i_aft_thrstr_speed_rpm\" AS motor_speed\r\n  FROM public.prop_test__data\r\n  WHERE '${aft_fwd}' = 'AFT' AND $__timeFilter(timestamp)\r\n  ORDER BY timestamp DESC\r\n  LIMIT 1\r\n),\r\nfwd_motor AS (\r\n  SELECT\r\n    timestamp,\r\n    \"devices__can_aradex.i_fwd_thrstr_speed_rpm\" AS motor_speed\r\n  FROM public.prop_test__data\r\n  WHERE '${aft_fwd}' = 'FWD' AND $__timeFilter(timestamp)\r\n  ORDER BY timestamp DESC\r\n  LIMIT 1\r\n),\r\naft1 AS (\r\n  SELECT\r\n    timestamp AS time,\r\n    speed__value AS speed,\r\n    torque__value AS torque,\r\n    power__value AS \"power\"\r\n  FROM public.marpower__150000propulsion__pcs_aft_ara1\r\n  WHERE '${aft_fwd}' = 'AFT' AND $__timeFilter(timestamp)\r\n  ORDER BY timestamp DESC\r\n  LIMIT 1\r\n),\r\naft2 AS (\r\n  SELECT\r\n    timestamp AS time,\r\n    speed__value AS speed,\r\n    torque__value AS torque,\r\n    power__value AS \"power\"\r\n  FROM public.marpower__150000propulsion__pcs_aft_ara2\r\n  WHERE '${aft_fwd}' = 'AFT' AND $__timeFilter(timestamp)\r\n  ORDER BY timestamp DESC\r\n  LIMIT 1\r\n),\r\nfwd1 AS (\r\n  SELECT\r\n    timestamp AS time,\r\n    speed__value AS speed,\r\n    torque__value AS torque,\r\n    power__value AS \"power\"\r\n  FROM public.marpower__150000propulsion__pcs_fwd_ara1\r\n  WHERE '${aft_fwd}' = 'FWD' AND $__timeFilter(timestamp)\r\n  ORDER BY timestamp DESC\r\n  LIMIT 1\r\n),\r\nfwd2 AS (\r\n  SELECT\r\n    timestamp AS time,\r\n    speed__value AS speed,\r\n    torque__value AS torque,\r\n    power__value AS \"power\"\r\n  FROM public.marpower__150000propulsion__pcs_fwd_ara2\r\n  WHERE '${aft_fwd}' = 'FWD' AND $__timeFilter(timestamp)\r\n  ORDER BY timestamp DESC\r\n  LIMIT 1\r\n)\r\n\r\nSELECT\r\n  LEAST(aft_motor.timestamp, aft1.time)                                                AS time,\r\n  'Aradex 1'                                                                           AS device,\r\n  aft1.speed                                                                           AS aradex_speed,\r\n  aft1.speed / GREATEST(aft_motor.motor_speed, 1)                                      AS gear_ratio,\r\n  100 * (aft1.speed / GREATEST(aft_motor.motor_speed, 1) - $gear_ratio) / $gear_ratio  AS gear_ratio_rel_error\r\nFROM aft_motor, aft1\r\n\r\nUNION ALL\r\n\r\nSELECT\r\n  LEAST(aft_motor.timestamp, aft2.time)                                                AS time,\r\n  'Aradex 2'                                                                           AS device,\r\n  aft2.speed                                                                           AS aradex_speed,\r\n  aft2.speed / GREATEST(aft_motor.motor_speed, 1)                                      AS gear_ratio,\r\n  100 * (aft2.speed / GREATEST(aft_motor.motor_speed, 1) - $gear_ratio) / $gear_ratio  AS gear_ratio_rel_error\r\nFROM aft_motor, aft2\r\n\r\nUNION ALL\r\n\r\nSELECT\r\n  LEAST(fwd_motor.timestamp, fwd1.time)                                                AS time,\r\n  'Aradex 1'                                                                           AS device,\r\n  fwd1.speed                                                                           AS aradex_speed,\r\n  fwd1.speed / GREATEST(fwd_motor.motor_speed, 1)                                      AS gear_ratio,\r\n  100 * (fwd1.speed / GREATEST(fwd_motor.motor_speed, 1) - $gear_ratio) / $gear_ratio  AS gear_ratio_rel_error\r\nFROM fwd_motor, fwd1\r\n\r\nUNION ALL\r\n\r\nSELECT\r\n  LEAST(fwd_motor.timestamp, fwd2.time)                                                AS time,\r\n  'Aradex 2'                                                                           AS device,\r\n  fwd2.speed                                                                           AS aradex_speed,\r\n  fwd2.speed / GREATEST(fwd_motor.motor_speed, 1)                                      AS gear_ratio,\r\n  100 * (fwd2.speed / GREATEST(fwd_motor.motor_speed, 1) - $gear_ratio) / $gear_ratio  AS gear_ratio_rel_error\r\nFROM fwd_motor, fwd2\r\n\r\nORDER BY device;",
           "refId": "A",
           "sql": {
             "columns": [
@@ -6336,11 +6244,12 @@
             "includeByName": {},
             "indexByName": {},
             "renameByName": {
-              "aradex1_speed": "Speed",
+              "aradex1_speed": "",
               "aradex1_torque": "Aradex 1 torque",
               "aradex2_speed": "Aradex 2 speed",
               "aradex2_torque": "Aradex 2 torque",
               "aradex_power": "Aradex power",
+              "aradex_speed": "Speed",
               "device": "Device",
               "flow": "Flow",
               "gear_ratio": "Gear ratio",
@@ -6362,6 +6271,7 @@
               "temperature_in": "T in",
               "temperature_out": "T out",
               "theoretical_power": "Theoretical Aradex power",
+              "time": "Time",
               "torque": "Torque",
               "torque_setpoint": "Torque setpoint"
             }
@@ -6413,18 +6323,6 @@
           {
             "matcher": {
               "id": "byName",
-              "options": "time"
-            },
-            "properties": [
-              {
-                "id": "custom.hideFrom.viz",
-                "value": true
-              }
-            ]
-          },
-          {
-            "matcher": {
-              "id": "byName",
               "options": "Loss (relative)"
             },
             "properties": [
@@ -6449,7 +6347,7 @@
         ]
       },
       "gridPos": {
-        "h": 3,
+        "h": 4,
         "w": 24,
         "x": 0,
         "y": 152
@@ -6491,7 +6389,7 @@
           "pluginVersion": "2.1.4",
           "queryType": "table",
           "rawQuery": true,
-          "rawSql": "WITH torque_values AS (\r\n  SELECT\r\n    CASE WHEN '${aft_fwd}' = 'AFT'\r\n      THEN LEAST(motor.timestamp, thruster_ara1.timestamp, thruster_ara2.timestamp, aft_torque.time)\r\n      ELSE LEAST(motor.timestamp, thruster_ara1.timestamp, thruster_ara2.timestamp, fwd_torque.time)\r\n    END                                                              AS time,\r\n    CASE WHEN '${aft_fwd}' = 'AFT'\r\n      THEN \"devices__can_aradex.i_aft_thrstr_torque_nm\"\r\n      ELSE \"devices__can_aradex.i_fwd_thrstr_torque_nm\"\r\n    END                                                              AS motor_torque,\r\n    thruster_ara1.torque__value                                      AS aradex1_torque,\r\n    thruster_ara2.torque__value                                      AS aradex2_torque,\r\n    CASE WHEN '${aft_fwd}' = 'AFT'\r\n      THEN aft_torque.torque\r\n      ELSE fwd_torque.torque\r\n    END                                                              AS measured_torque\r\n  FROM (\r\n    SELECT *\r\n    FROM public.marpower__150000propulsion__pcs_fwd_ara1\r\n    WHERE $__timeFilter(timestamp)\r\n    ORDER BY timestamp DESC\r\n    LIMIT 1\r\n  ) AS thruster_ara1\r\n  CROSS JOIN (\r\n    SELECT *\r\n    FROM public.marpower__150000propulsion__pcs_fwd_ara2\r\n    WHERE $__timeFilter(timestamp)\r\n    ORDER BY timestamp DESC\r\n    LIMIT 1\r\n  ) AS thruster_ara2\r\n  CROSS JOIN (\r\n    SELECT *\r\n    FROM public.prop_test__data\r\n    WHERE $__timeFilter(timestamp)\r\n    ORDER BY timestamp DESC\r\n    LIMIT 1\r\n  ) AS motor\r\n  CROSS JOIN (\r\n\tSELECT\r\n\t  greptime_timestamp AS time,\r\n\t  \"ShearBeamCalculated.Value\" AS torque\r\n\tFROM public.marpower__150000propulsion__pcs_fwd\r\n\tWHERE $__timeFilter(greptime_timestamp)\r\n\tORDER BY greptime_timestamp DESC\r\n\tLIMIT 1\r\n  ) AS fwd_torque\r\n  CROSS JOIN (\r\n\tSELECT\r\n\t  greptime_timestamp AS time,\r\n\t  \"ShearBeamCalculated.Value\" AS torque\r\n\tFROM public.marpower__150000propulsion__pcs_aft\r\n\tWHERE $__timeFilter(greptime_timestamp)\r\n\tORDER BY greptime_timestamp DESC\r\n\tLIMIT 1\r\n  ) AS aft_torque\r\n)\r\nSELECT\r\n  time,  \r\n  motor_torque,\r\n  aradex1_torque,\r\n  aradex2_torque,\r\n  measured_torque,\r\n  motor_torque - (measured_torque * ${gear_ratio})                                       AS abs_loss,\r\n  (100 * (motor_torque - (measured_torque * ${gear_ratio})) / GREATEST(ABS(motor_torque), 1)) AS rel_loss\r\nFROM torque_values",
+          "rawSql": "WITH aft_motor AS (\r\n  SELECT\r\n    timestamp AS time,\r\n    \"devices__can_aradex.i_aft_thrstr_torque_nm\" AS motor_torque\r\n  FROM public.prop_test__data\r\n  WHERE '${aft_fwd}' = 'AFT' AND $__timeFilter(timestamp)\r\n  ORDER BY timestamp DESC\r\n  LIMIT 1\r\n),\r\nfwd_motor AS (\r\n  SELECT\r\n    timestamp AS time,\r\n    \"devices__can_aradex.i_fwd_thrstr_torque_nm\" AS motor_torque\r\n  FROM public.prop_test__data\r\n  WHERE '${aft_fwd}' = 'FWD' AND $__timeFilter(timestamp)\r\n  ORDER BY timestamp DESC\r\n  LIMIT 1\r\n),\r\naft_ara1 AS (\r\n  SELECT\r\n    timestamp AS time,\r\n    torque__value AS torque\r\n  FROM public.marpower__150000propulsion__pcs_aft_ara1\r\n  WHERE '${aft_fwd}' = 'AFT' AND $__timeFilter(timestamp)\r\n  ORDER BY timestamp DESC\r\n  LIMIT 1\r\n),\r\nfwd_ara1 AS (\r\n  SELECT\r\n    timestamp AS time,\r\n    torque__value AS torque\r\n  FROM public.marpower__150000propulsion__pcs_fwd_ara1\r\n  WHERE '${aft_fwd}' = 'FWD' AND $__timeFilter(timestamp)\r\n  ORDER BY timestamp DESC\r\n  LIMIT 1\r\n),\r\naft_ara2 AS (\r\n  SELECT\r\n    timestamp AS time,\r\n    torque__value AS torque\r\n  FROM public.marpower__150000propulsion__pcs_aft_ara2\r\n  WHERE '${aft_fwd}' = 'AFT' AND $__timeFilter(timestamp)\r\n  ORDER BY timestamp DESC\r\n  LIMIT 1\r\n),\r\nfwd_ara2 AS (\r\n  SELECT\r\n    timestamp AS time,\r\n    torque__value AS torque\r\n  FROM public.marpower__150000propulsion__pcs_fwd_ara2\r\n  WHERE '${aft_fwd}' = 'FWD' AND $__timeFilter(timestamp)\r\n  ORDER BY timestamp DESC\r\n  LIMIT 1\r\n),\r\naft_measured AS (\r\n  SELECT\r\n    timestamp AS time,\r\n    shear_beam_calculated__value AS torque\r\n  FROM public.marpower__150000propulsion__pcs_aft\r\n  WHERE '${aft_fwd}' = 'AFT' AND $__timeFilter(timestamp)\r\n  ORDER BY timestamp DESC\r\n  LIMIT 1\r\n),\r\nfwd_measured AS (\r\n  SELECT\r\n    timestamp AS time,\r\n    shear_beam_calculated__value AS torque\r\n  FROM public.marpower__150000propulsion__pcs_fwd\r\n  WHERE '${aft_fwd}' = 'FWD' AND $__timeFilter(timestamp)\r\n  ORDER BY timestamp DESC\r\n  LIMIT 1\r\n)\r\n\r\nSELECT\r\n  LEAST(aft_motor.time, aft_ara1.time, aft_ara2.time, aft_measured.time)                         AS time,\r\n  aft_motor.motor_torque                                                                         AS motor_torque,\r\n  aft_ara1.torque                                                                                AS aradex1_torque,\r\n  aft_ara2.torque                                                                                AS aradex2_torque,\r\n  aft_measured.torque                                                                            AS measured_torque,\r\n  aft_motor.motor_torque - (aft_measured.torque * ${gear_ratio})                                 AS abs_loss,\r\n  (100 * (aft_motor.motor_torque - (aft_measured.torque * ${gear_ratio})) / GREATEST(ABS(aft_motor.motor_torque), 1)) AS rel_loss\r\nFROM aft_motor, aft_ara1, aft_ara2, aft_measured\r\n\r\nUNION ALL\r\n\r\nSELECT\r\n  LEAST(fwd_motor.time, fwd_ara1.time, fwd_ara2.time, fwd_measured.time)                         AS time,\r\n  fwd_motor.motor_torque                                                                         AS motor_torque,\r\n  fwd_ara1.torque                                                                                AS aradex1_torque,\r\n  fwd_ara2.torque                                                                                AS aradex2_torque,\r\n  fwd_measured.torque                                                                            AS measured_torque,\r\n  fwd_motor.motor_torque - (fwd_measured.torque * ${gear_ratio})                                 AS abs_loss,\r\n  (100 * (fwd_motor.motor_torque - (fwd_measured.torque * ${gear_ratio})) / GREATEST(ABS(fwd_motor.motor_torque), 1)) AS rel_loss\r\nFROM fwd_motor, fwd_ara1, fwd_ara2, fwd_measured;",
           "refId": "A",
           "sql": {
             "columns": [
@@ -6546,6 +6444,7 @@
               "temperature_in": "T in",
               "temperature_out": "T out",
               "theoretical_power": "Theoretical Aradex power",
+              "time": "Time",
               "torque": "Torque",
               "torque_setpoint": "Torque setpoint"
             }
