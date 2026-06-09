@@ -4058,7 +4058,7 @@
         "overrides": []
       },
       "gridPos": {
-        "h": 5,
+        "h": 6,
         "w": 11,
         "x": 0,
         "y": 118
@@ -4196,7 +4196,7 @@
         ]
       },
       "gridPos": {
-        "h": 5,
+        "h": 6,
         "w": 13,
         "x": 11,
         "y": 118
@@ -4669,6 +4669,45 @@
                 "width": 187
               },
               "type": "text"
+            },
+            {
+              "background": {
+                "color": {
+                  "fixed": "transparent"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "left",
+                "color": {
+                  "fixed": "text"
+                },
+                "size": 20,
+                "text": {
+                  "field": "time",
+                  "fixed": "",
+                  "mode": "field"
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "links": [],
+              "name": "Element 15",
+              "placement": {
+                "height": 30,
+                "left": 15,
+                "rotation": 0,
+                "top": 150,
+                "width": 399
+              },
+              "type": "metric-value"
             }
           ],
           "name": "Element 1767775905609",
@@ -4779,7 +4818,7 @@
           },
           "pluginVersion": "2.1.4",
           "queryType": "table",
-          "rawSql": "WITH aft AS (\r\n  SELECT\r\n    greptime_timestamp AS time,\r\n    \"HydrTankTemp.Value\" AS oil_tank_temp\r\n  FROM public.marpower__150000propulsion__pcs_aft\r\n  WHERE '${aft_fwd}' = 'AFT' AND $__timeFilter(greptime_timestamp)\r\n  ORDER BY greptime_timestamp DESC\r\n  LIMIT 1\r\n),\r\nfwd AS (\r\n  SELECT\r\n    greptime_timestamp AS time,\r\n    \"HydrTankTemp.Value\" AS oil_tank_temp\r\n  FROM public.marpower__150000propulsion__pcs_fwd\r\n  WHERE '${aft_fwd}' = 'FWD' AND $__timeFilter(greptime_timestamp)\r\n  ORDER BY greptime_timestamp DESC\r\n  LIMIT 1\r\n)\r\n\r\nSELECT * FROM aft\r\nUNION ALL\r\nSELECT * FROM fwd;",
+          "rawSql": "WITH aft AS (\r\n  SELECT\r\n    timestamp AS time,\r\n    hydr_tank_temp__value AS oil_tank_temp\r\n  FROM public.marpower__150000propulsion__pcs_aft\r\n  WHERE '${aft_fwd}' = 'AFT' AND $__timeFilter(timestamp)\r\n  ORDER BY timestamp DESC\r\n  LIMIT 1\r\n),\r\nfwd AS (\r\n  SELECT\r\n    timestamp AS time,\r\n    hydr_tank_temp__value AS oil_tank_temp\r\n  FROM public.marpower__150000propulsion__pcs_fwd\r\n  WHERE '${aft_fwd}' = 'FWD' AND $__timeFilter(timestamp)\r\n  ORDER BY timestamp DESC\r\n  LIMIT 1\r\n)\r\n\r\nSELECT * FROM aft\r\nUNION ALL\r\nSELECT * FROM fwd;",
           "refId": "C"
         }
       ],
@@ -4831,7 +4870,7 @@
         "h": 4,
         "w": 24,
         "x": 0,
-        "y": 123
+        "y": 124
       },
       "id": 37,
       "options": {
@@ -4939,10 +4978,10 @@
         "overrides": []
       },
       "gridPos": {
-        "h": 5,
+        "h": 6,
         "w": 24,
         "x": 0,
-        "y": 127
+        "y": 128
       },
       "id": 59,
       "options": {
@@ -5571,6 +5610,45 @@
                 "width": 161
               },
               "type": "text"
+            },
+            {
+              "background": {
+                "color": {
+                  "fixed": "transparent"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "left",
+                "color": {
+                  "fixed": "text"
+                },
+                "size": 20,
+                "text": {
+                  "field": "time",
+                  "fixed": "",
+                  "mode": "field"
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "links": [],
+              "name": "Element 17",
+              "placement": {
+                "height": 30,
+                "left": 15,
+                "rotation": 0,
+                "top": 150,
+                "width": 395
+              },
+              "type": "metric-value"
             }
           ],
           "name": "Element 1767775905609",
@@ -5645,7 +5723,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 132
+        "y": 134
       },
       "id": 27,
       "panels": [],
@@ -5697,7 +5775,7 @@
         "h": 4,
         "w": 24,
         "x": 0,
-        "y": 133
+        "y": 135
       },
       "id": 70,
       "options": {
@@ -5857,7 +5935,7 @@
         "h": 9,
         "w": 24,
         "x": 0,
-        "y": 137
+        "y": 139
       },
       "id": 71,
       "options": {
@@ -5982,7 +6060,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 146
+        "y": 148
       },
       "id": 52,
       "panels": [],
@@ -6070,7 +6148,7 @@
         "h": 3,
         "w": 24,
         "x": 0,
-        "y": 147
+        "y": 149
       },
       "id": 73,
       "options": {
@@ -6250,7 +6328,7 @@
         "h": 5,
         "w": 24,
         "x": 0,
-        "y": 150
+        "y": 152
       },
       "id": 74,
       "options": {
@@ -6420,7 +6498,7 @@
         "h": 4,
         "w": 24,
         "x": 0,
-        "y": 155
+        "y": 157
       },
       "id": 75,
       "options": {
