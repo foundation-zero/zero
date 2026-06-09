@@ -5724,7 +5724,7 @@
           "pluginVersion": "2.1.4",
           "queryType": "table",
           "rawQuery": true,
-          "rawSql": "WITH motor AS (\r\n  SELECT *\r\n  FROM public.prop_test__data\r\n  WHERE $__timeFilter(timestamp)\r\n  ORDER BY timestamp DESC\r\n  LIMIT 1\r\n),\r\nfwd1 AS (\r\n  SELECT\r\n    timestamp AS time,\r\n    speed__value AS speed,\r\n    torque__value AS torque,\r\n    power__value AS \"power\"\r\n  FROM public.marpower__150000propulsion__pcs_fwd_ara1\r\n  WHERE $__timeFilter(timestamp)\r\n  ORDER BY timestamp DESC\r\n  LIMIT 1\r\n),\r\nfwd2 AS (\r\n  SELECT\r\n    timestamp AS time,\r\n    speed__value AS speed,\r\n    torque__value AS torque,\r\n    power__value AS \"power\"\r\n  FROM public.marpower__150000propulsion__pcs_fwd_ara2\r\n  WHERE $__timeFilter(timestamp)\r\n  ORDER BY timestamp DESC\r\n  LIMIT 1\r\n),\r\naft1 AS (\r\n  SELECT\r\n    timestamp AS time,\r\n    speed__value AS speed,\r\n    torque__value AS torque,\r\n    power__value AS \"power\"\r\n  FROM public.marpower__150000propulsion__pcs_aft_ara1\r\n  WHERE $__timeFilter(timestamp)\r\n  ORDER BY timestamp DESC\r\n  LIMIT 1\r\n),\r\naft2 AS (\r\n  SELECT\r\n    timestamp AS time,\r\n    speed__value AS speed,\r\n    torque__value AS torque,\r\n    power__value AS \"power\"\r\n  FROM public.marpower__150000propulsion__pcs_aft_ara2\r\n  WHERE $__timeFilter(timestamp)\r\n  ORDER BY timestamp DESC\r\n  LIMIT 1\r\n)\r\n\r\nSELECT\r\n  CASE WHEN '${aft_fwd}' = 'AFT'\r\n    THEN motor.timestamp\r\n    ELSE LEAST(motor.timestamp, fwd1.time, fwd2.time)  \r\n  END                                                                          AS time,\r\n  CASE WHEN '${aft_fwd}' = 'AFT'\r\n    THEN motor.\"devices__thruster_test.r_power_aft_trstr_kw\"\r\n    ELSE motor.\"devices__thruster_test.r_power_fwd_trstr_kw\"\r\n  END                                                                           AS motor_power,\r\n  CASE WHEN '${aft_fwd}' = 'AFT'\r\n    THEN ((aft1.speed * aft1.torque) + (aft2.speed * aft2.torque)) / 60 * 2 * PI() \r\n    ELSE ((fwd1.speed * fwd1.torque) + (fwd2.speed * fwd2.torque)) / 60 * 2 * PI() \r\n  END                                                                           AS theoretical_power,\r\n  CASE WHEN '${aft_fwd}' = 'AFT'\r\n    THEN aft1.power + aft2.power\r\n    ELSE fwd1.power + fwd2.power\r\n  END                                                                           AS aradex_power\r\nFROM motor, fwd1, fwd2, aft1, aft2",
+          "rawSql": "WITH aft_motor AS (\r\n  SELECT\r\n    timestamp AS time,\r\n    \"devices__thruster_test.r_power_aft_trstr_kw\" AS motor_power\r\n  FROM public.prop_test__data\r\n  WHERE '${aft_fwd}' = 'AFT' AND $__timeFilter(timestamp)\r\n  ORDER BY timestamp DESC\r\n  LIMIT 1\r\n),\r\naft1 AS (\r\n  SELECT\r\n    timestamp AS time,\r\n    speed__value AS speed,\r\n    torque__value AS torque,\r\n    power__value AS \"power\"\r\n  FROM public.marpower__150000propulsion__pcs_aft_ara1\r\n  WHERE '${aft_fwd}' = 'AFT' AND $__timeFilter(timestamp)\r\n  ORDER BY timestamp DESC\r\n  LIMIT 1\r\n),\r\naft2 AS (\r\n  SELECT\r\n    timestamp AS time,\r\n    speed__value AS speed,\r\n    torque__value AS torque,\r\n    power__value AS \"power\"\r\n  FROM public.marpower__150000propulsion__pcs_aft_ara2\r\n  WHERE '${aft_fwd}' = 'AFT' AND $__timeFilter(timestamp)\r\n  ORDER BY timestamp DESC\r\n  LIMIT 1\r\n),\r\nfwd_motor AS (\r\n  SELECT\r\n    timestamp AS time,\r\n    \"devices__thruster_test.r_power_fwd_trstr_kw\" AS motor_power\r\n  FROM public.prop_test__data\r\n  WHERE '${aft_fwd}' = 'FWD' AND $__timeFilter(timestamp)\r\n  ORDER BY timestamp DESC\r\n  LIMIT 1\r\n),\r\nfwd1 AS (\r\n  SELECT\r\n    timestamp AS time,\r\n    speed__value AS speed,\r\n    torque__value AS torque,\r\n    power__value AS \"power\"\r\n  FROM public.marpower__150000propulsion__pcs_fwd_ara1\r\n  WHERE '${aft_fwd}' = 'FWD' AND $__timeFilter(timestamp)\r\n  ORDER BY timestamp DESC\r\n  LIMIT 1\r\n),\r\nfwd2 AS (\r\n  SELECT\r\n    timestamp AS time,\r\n    speed__value AS speed,\r\n    torque__value AS torque,\r\n    power__value AS \"power\"\r\n  FROM public.marpower__150000propulsion__pcs_fwd_ara2\r\n  WHERE '${aft_fwd}' = 'FWD' AND $__timeFilter(timestamp)\r\n  ORDER BY timestamp DESC\r\n  LIMIT 1\r\n)\r\n\r\nSELECT\r\n  aft_motor.time                                                            AS time,\r\n  aft_motor.motor_power                                                     AS motor_power,\r\n  ((aft1.speed * aft1.torque) + (aft2.speed * aft2.torque)) / 60 * 2 * PI() AS theoretical_power,\r\n  aft1.power + aft2.power                                                   AS aradex_power\r\nFROM aft_motor, aft1, aft2\r\n\r\nUNION ALL\r\n\r\nSELECT\r\n  LEAST(fwd_motor.time, fwd1.time, fwd2.time)                               AS time,\r\n  fwd_motor.motor_power                                                     AS motor_power,\r\n  ((fwd1.speed * fwd1.torque) + (fwd2.speed * fwd2.torque)) / 60 * 2 * PI() AS theoretical_power,\r\n  fwd1.power + fwd2.power                                                   AS aradex_power\r\nFROM fwd_motor, fwd1, fwd2;",
           "refId": "A",
           "sql": {
             "columns": [
@@ -5871,6 +5871,7 @@
           "editorMode": "code",
           "editorType": "sql",
           "format": 1,
+          "hide": false,
           "meta": {
             "builderOptions": {
               "columns": [],
@@ -5885,7 +5886,7 @@
           "pluginVersion": "2.1.4",
           "queryType": "table",
           "rawQuery": true,
-          "rawSql": "WITH motor AS (\r\n  SELECT *\r\n  FROM public.prop_test__data\r\n  WHERE $__timeFilter(timestamp)\r\n  ORDER BY timestamp DESC\r\n  LIMIT 1\r\n),\r\nfwd1 AS (\r\n  SELECT\r\n    timestamp AS time,\r\n    speed__value AS speed,\r\n    torque__value AS torque,\r\n    power__value AS \"power\"\r\n  FROM public.marpower__150000propulsion__pcs_fwd_ara1\r\n  WHERE $__timeFilter(timestamp)\r\n  ORDER BY timestamp DESC\r\n  LIMIT 1\r\n),\r\nfwd2 AS (\r\n  SELECT\r\n    timestamp AS time,\r\n    speed__value AS speed,\r\n    torque__value AS torque,\r\n    power__value AS \"power\"\r\n  FROM public.marpower__150000propulsion__pcs_fwd_ara2\r\n  WHERE $__timeFilter(timestamp)\r\n),\r\naft1 AS (\r\n  SELECT\r\n    timestamp AS time,\r\n    speed__value AS speed,\r\n    torque__value AS torque,\r\n    power__value AS \"power\"\r\n  FROM public.marpower__150000propulsion__pcs_aft_ara1\r\n  WHERE $__timeFilter(timestamp)\r\n),\r\naft2 AS (\r\n  SELECT\r\n    timestamp AS time,\r\n    speed__value AS speed,\r\n    torque__value AS torque,\r\n    power__value AS \"power\"\r\n  FROM public.marpower__150000propulsion__pcs_aft_ara2\r\n  WHERE $__timeFilter(timestamp)\r\n)\r\n\r\nSELECT\r\n  CASE WHEN '${aft_fwd}' = 'AFT'\r\n    THEN motor.timestamp\r\n    ELSE LEAST(motor.timestamp, fwd1.time, fwd2.time)  \r\n  END                                                                          AS time,\r\n  CASE WHEN '${aft_fwd}' = 'AFT'\r\n    THEN motor.\"devices__thruster_test.r_power_aft_trstr_kw\"\r\n    ELSE motor.\"devices__thruster_test.r_power_fwd_trstr_kw\"\r\n  END                                                                           AS motor_power,\r\n  CASE WHEN '${aft_fwd}' = 'AFT'\r\n    THEN ((aft1.speed * aft1.torque) + (aft2.speed * aft2.torque)) / 60 * 2 * PI() \r\n    ELSE ((fwd1.speed * fwd1.torque) + (fwd2.speed * fwd2.torque)) / 60 * 2 * PI() \r\n  END                                                                           AS theoretical_power,\r\n  CASE WHEN '${aft_fwd}' = 'AFT'\r\n    THEN aft1.power + aft2.power\r\n    ELSE fwd1.power + fwd2.power\r\n  END                                                                           AS aradex_power\r\nFROM motor, fwd1, fwd2, aft1, aft2",
+          "rawSql": "WITH aft1 AS (\r\n  SELECT\r\n    date_trunc('second', timestamp) AS time,\r\n    AVG(power__value) AS \"power\"\r\n  FROM public.marpower__150000propulsion__pcs_aft_ara1\r\n  WHERE '${aft_fwd}' = 'AFT' AND $__timeFilter(timestamp)\r\n  GROUP BY date_trunc('second', timestamp)\r\n),\r\naft2 AS (\r\n  SELECT\r\n    date_trunc('second', timestamp) AS time,\r\n    AVG(power__value) AS \"power\"\r\n  FROM public.marpower__150000propulsion__pcs_aft_ara2\r\n  WHERE '${aft_fwd}' = 'AFT' AND $__timeFilter(timestamp)\r\n  GROUP BY date_trunc('second', timestamp)\r\n),\r\nfwd1 AS (\r\n  SELECT\r\n    date_trunc('second', timestamp) AS time,\r\n    AVG(power__value) AS \"power\"\r\n  FROM public.marpower__150000propulsion__pcs_fwd_ara1\r\n  WHERE '${aft_fwd}' = 'FWD' AND $__timeFilter(timestamp)\r\n  GROUP BY date_trunc('second', timestamp)\r\n),\r\nfwd2 AS (\r\n  SELECT\r\n    date_trunc('second', timestamp) AS time,\r\n    AVG(power__value) AS \"power\"\r\n  FROM public.marpower__150000propulsion__pcs_fwd_ara2\r\n  WHERE '${aft_fwd}' = 'FWD' AND $__timeFilter(timestamp)\r\n  GROUP BY date_trunc('second', timestamp)\r\n)\r\n\r\nSELECT\r\n  aft1.time AS time,\r\n  aft1.\"power\" + aft2.\"power\" AS aradex_power\r\nFROM aft1\r\nINNER JOIN aft2 ON aft1.time = aft2.time\r\n\r\nUNION ALL\r\n\r\nSELECT\r\n  fwd1.time AS time,\r\n  fwd1.\"power\" + fwd2.\"power\" AS aradex_power\r\nFROM fwd1\r\nINNER JOIN fwd2 ON fwd1.time = fwd2.time;",
           "refId": "A",
           "sql": {
             "columns": [
@@ -5904,6 +5905,30 @@
             ],
             "limit": 50
           }
+        },
+        {
+          "datasource": {
+            "type": "info8fcc-greptimedb-datasource",
+            "uid": "${datasource}"
+          },
+          "editorType": "sql",
+          "format": 1,
+          "hide": false,
+          "meta": {
+            "builderOptions": {
+              "columns": [],
+              "database": "",
+              "limit": 1000,
+              "meta": {},
+              "mode": "list",
+              "queryType": "table",
+              "table": ""
+            }
+          },
+          "pluginVersion": "2.1.4",
+          "queryType": "table",
+          "rawSql": "SELECT\r\n  timestamp                                     AS time,\r\n  \"devices__thruster_test.r_power_aft_trstr_kw\" AS motor_power\r\nFROM public.prop_test__data\r\nWHERE '${aft_fwd}' = 'AFT' AND $__timeFilter(timestamp)\r\n\r\nUNION ALL\r\n\r\nSELECT\r\n  timestamp                                     AS time,\r\n  \"devices__thruster_test.r_power_fwd_trstr_kw\" AS motor_power\r\nFROM public.prop_test__data\r\nWHERE '${aft_fwd}' = 'FWD' AND $__timeFilter(timestamp);",
+          "refId": "B"
         }
       ],
       "title": "Electrical power",
@@ -5915,7 +5940,7 @@
             "includeByName": {},
             "indexByName": {},
             "renameByName": {
-              "aradex_power": "Measured Aradex power",
+              "aradex_power": "Aradex power",
               "device": "Device",
               "flow": "Flow",
               "gear_ratio": "Gear ratio",
