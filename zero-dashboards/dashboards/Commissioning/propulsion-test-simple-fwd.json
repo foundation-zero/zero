@@ -1,0 +1,3970 @@
+{
+  "annotations": {
+    "list": [
+      {
+        "builtIn": 1,
+        "datasource": {
+          "type": "grafana",
+          "uid": "-- Grafana --"
+        },
+        "enable": true,
+        "hide": true,
+        "iconColor": "rgba(0, 211, 255, 1)",
+        "name": "Annotations & Alerts",
+        "type": "dashboard"
+      }
+    ]
+  },
+  "editable": true,
+  "fiscalYearStartMonth": 0,
+  "graphTooltip": 0,
+  "id": 0,
+  "links": [
+    {
+      "asDropdown": true,
+      "icon": "external link",
+      "includeVars": false,
+      "keepTime": true,
+      "tags": [
+        "commisssioning"
+      ],
+      "targetBlank": false,
+      "title": "Dashboards",
+      "tooltip": "",
+      "type": "dashboards",
+      "url": ""
+    }
+  ],
+  "panels": [
+    {
+      "collapsed": false,
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 0
+      },
+      "id": 77,
+      "panels": [],
+      "title": "Test PLC - Speed, Torque & Power",
+      "type": "row"
+    },
+    {
+      "datasource": {
+        "type": "info8fcc-greptimedb-datasource",
+        "uid": "bflgbkhfwstfkb"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "custom": {
+            "align": "auto",
+            "cellOptions": {
+              "type": "auto"
+            },
+            "footer": {
+              "reducers": []
+            },
+            "inspect": false
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": 0
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Shaft speed"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "rotrpm"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Shaft torque"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "forceNm"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Shaft power"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "watt"
+              }
+            ]
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 4,
+        "w": 20,
+        "x": 0,
+        "y": 1
+      },
+      "id": 88,
+      "options": {
+        "cellHeight": "sm",
+        "showHeader": true,
+        "sortBy": [
+          {
+            "desc": true,
+            "displayName": "prop_speed"
+          }
+        ]
+      },
+      "pluginVersion": "12.3.0",
+      "targets": [
+        {
+          "datasource": {
+            "type": "info8fcc-greptimedb-datasource",
+            "uid": "bflgbkhfwstfkb"
+          },
+          "editorType": "sql",
+          "format": 1,
+          "hide": false,
+          "meta": {
+            "builderOptions": {
+              "columns": [],
+              "database": "",
+              "limit": 1000,
+              "meta": {},
+              "mode": "list",
+              "queryType": "table",
+              "table": ""
+            }
+          },
+          "pluginVersion": "2.1.4",
+          "queryType": "table",
+          "rawSql": "SELECT\n  timestamp                                                 AS time,\n  \"devices__thruster_test.r_prop_spd_fwd_thrstr_rpm\"          AS prop_speed,\n  \"devices__thruster_test.r_propellor_torque\"                 AS prop_torque,\n  \"devices__thruster_test.r_fwd_prop_shaft_power_w\" as \"shaft_power\"\nFROM public.prop_test__data\nWHERE $__timeFilter(timestamp)\nORDER BY timestamp DESC\nLIMIT 1",
+          "refId": "A"
+        }
+      ],
+      "title": "New panel",
+      "transformations": [
+        {
+          "id": "organize",
+          "options": {
+            "excludeByName": {},
+            "includeByName": {},
+            "indexByName": {},
+            "renameByName": {
+              "prop_speed": "Shaft speed",
+              "prop_torque": "Shaft torque",
+              "shaft_power": "Shaft power",
+              "time": "Time"
+            }
+          }
+        }
+      ],
+      "type": "table"
+    },
+    {
+      "datasource": {
+        "type": "grafana-postgresql-datasource",
+        "uid": "${datasource}"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisBorderShow": false,
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "barWidthFactor": 0.6,
+            "drawStyle": "line",
+            "fillOpacity": 0,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "insertNulls": false,
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "auto",
+            "showValues": false,
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "decimals": 2,
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": 0
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          },
+          "unit": "rotrpm"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 5,
+        "w": 24,
+        "x": 0,
+        "y": 5
+      },
+      "id": 65,
+      "options": {
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": false
+        },
+        "tooltip": {
+          "hideZeros": false,
+          "mode": "single",
+          "sort": "none"
+        }
+      },
+      "pluginVersion": "12.3.0",
+      "targets": [
+        {
+          "dataset": "dev",
+          "datasource": {
+            "type": "grafana-postgresql-datasource",
+            "uid": "${datasource}"
+          },
+          "editorMode": "code",
+          "editorType": "sql",
+          "format": 1,
+          "meta": {
+            "builderOptions": {
+              "columns": [],
+              "database": "",
+              "limit": 1000,
+              "meta": {},
+              "mode": "list",
+              "queryType": "table",
+              "table": ""
+            }
+          },
+          "pluginVersion": "2.1.4",
+          "queryType": "table",
+          "rawQuery": true,
+          "rawSql": "SELECT\r\n  timestamp                                                 AS time,\r\n  \"devices__thruster_test.r_prop_spd_fwd_thrstr_rpm\"        AS speed\r\nFROM public.prop_test__data\r\nWHERE $__timeFilter(timestamp)",
+          "refId": "A",
+          "sql": {
+            "columns": [
+              {
+                "parameters": [],
+                "type": "function"
+              }
+            ],
+            "groupBy": [
+              {
+                "property": {
+                  "type": "string"
+                },
+                "type": "groupBy"
+              }
+            ],
+            "limit": 50
+          }
+        }
+      ],
+      "title": "Prop shaft speed",
+      "transformations": [
+        {
+          "id": "organize",
+          "options": {
+            "excludeByName": {},
+            "includeByName": {},
+            "indexByName": {},
+            "renameByName": {
+              "aradex_speed": "Speed (Aradex)",
+              "current": "Current",
+              "device": "Device",
+              "e_motor_temp": "Motor temp",
+              "flow": "Flow",
+              "gear_ratio": "Gear ratio",
+              "igbt_temp": "IGBT temp",
+              "plc_speed": "Speed (PLC)",
+              "pressure": "Pressure",
+              "seq_nr": "",
+              "speed": "Prop shaft speed",
+              "speed_torque_setpoint": "",
+              "temperature": "Temperature",
+              "temperature_delta": "T delta",
+              "temperature_in": "T in",
+              "temperature_out": "T out",
+              "time": "",
+              "torque": "Torque",
+              "torque_setpoint": "Torque setpoint",
+              "voltage": "Voltage"
+            }
+          }
+        }
+      ],
+      "type": "timeseries"
+    },
+    {
+      "datasource": {
+        "type": "grafana-postgresql-datasource",
+        "uid": "${datasource}"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisBorderShow": false,
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "barWidthFactor": 0.6,
+            "drawStyle": "line",
+            "fillOpacity": 0,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "insertNulls": false,
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "auto",
+            "showValues": false,
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "decimals": 2,
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": 0
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          },
+          "unit": "forceNm"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 6,
+        "w": 24,
+        "x": 0,
+        "y": 10
+      },
+      "id": 82,
+      "options": {
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": false
+        },
+        "tooltip": {
+          "hideZeros": false,
+          "mode": "single",
+          "sort": "none"
+        }
+      },
+      "pluginVersion": "12.3.0",
+      "targets": [
+        {
+          "dataset": "dev",
+          "datasource": {
+            "type": "grafana-postgresql-datasource",
+            "uid": "${datasource}"
+          },
+          "editorMode": "code",
+          "editorType": "sql",
+          "format": 1,
+          "meta": {
+            "builderOptions": {
+              "columns": [],
+              "database": "",
+              "limit": 1000,
+              "meta": {},
+              "mode": "list",
+              "queryType": "table",
+              "table": ""
+            }
+          },
+          "pluginVersion": "2.1.4",
+          "queryType": "table",
+          "rawQuery": true,
+          "rawSql": "SELECT\r\n  timestamp                      AS time,\r\n  \"devices__thruster_test.r_propellor_torque\" AS torque\r\nFROM public.prop_test__data\r\nWHERE $__timeFilter(timestamp)",
+          "refId": "A",
+          "sql": {
+            "columns": [
+              {
+                "parameters": [],
+                "type": "function"
+              }
+            ],
+            "groupBy": [
+              {
+                "property": {
+                  "type": "string"
+                },
+                "type": "groupBy"
+              }
+            ],
+            "limit": 50
+          }
+        }
+      ],
+      "title": "Prop shaft torque",
+      "transformations": [
+        {
+          "id": "organize",
+          "options": {
+            "excludeByName": {},
+            "includeByName": {},
+            "indexByName": {},
+            "renameByName": {
+              "current": "Current",
+              "device": "Device",
+              "e_motor_temp": "Motor temp",
+              "flow": "Flow",
+              "gear_ratio": "Gear ratio",
+              "igbt_temp": "IGBT temp",
+              "pressure": "Pressure",
+              "seq_nr": "",
+              "speed": "Speed",
+              "speed_torque_setpoint": "",
+              "temperature": "Temperature",
+              "temperature_delta": "T delta",
+              "temperature_in": "T in",
+              "temperature_out": "T out",
+              "torque": "Torque",
+              "torque_setpoint": "Torque setpoint",
+              "voltage": "Voltage"
+            }
+          }
+        }
+      ],
+      "type": "timeseries"
+    },
+    {
+      "datasource": {
+        "type": "grafana-postgresql-datasource",
+        "uid": "${datasource}"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisBorderShow": false,
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "barWidthFactor": 0.6,
+            "drawStyle": "line",
+            "fillOpacity": 0,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "insertNulls": false,
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "auto",
+            "showValues": false,
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "decimals": 2,
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": 0
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          },
+          "unit": "watt"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 5,
+        "w": 24,
+        "x": 0,
+        "y": 16
+      },
+      "id": 85,
+      "options": {
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": false
+        },
+        "tooltip": {
+          "hideZeros": false,
+          "mode": "single",
+          "sort": "none"
+        }
+      },
+      "pluginVersion": "12.3.0",
+      "targets": [
+        {
+          "dataset": "dev",
+          "datasource": {
+            "type": "grafana-postgresql-datasource",
+            "uid": "${datasource}"
+          },
+          "editorMode": "code",
+          "editorType": "sql",
+          "format": 1,
+          "meta": {
+            "builderOptions": {
+              "columns": [],
+              "database": "",
+              "limit": 1000,
+              "meta": {},
+              "mode": "list",
+              "queryType": "table",
+              "table": ""
+            }
+          },
+          "pluginVersion": "2.1.4",
+          "queryType": "table",
+          "rawQuery": true,
+          "rawSql": "SELECT\r\n  timestamp                                                 AS time,\r\n  \"devices__thruster_test.r_fwd_prop_shaft_power_w\" as \"shaft_power\"\r\nFROM public.prop_test__data\r\nWHERE $__timeFilter(timestamp)",
+          "refId": "A",
+          "sql": {
+            "columns": [
+              {
+                "parameters": [],
+                "type": "function"
+              }
+            ],
+            "groupBy": [
+              {
+                "property": {
+                  "type": "string"
+                },
+                "type": "groupBy"
+              }
+            ],
+            "limit": 50
+          }
+        }
+      ],
+      "title": "Prop shaft power",
+      "transformations": [
+        {
+          "id": "organize",
+          "options": {
+            "excludeByName": {},
+            "includeByName": {},
+            "indexByName": {},
+            "renameByName": {
+              "aradex_speed": "Speed (Aradex)",
+              "current": "Current",
+              "device": "Device",
+              "e_motor_temp": "Motor temp",
+              "flow": "Flow",
+              "gear_ratio": "Gear ratio",
+              "igbt_temp": "IGBT temp",
+              "plc_speed": "Speed (PLC)",
+              "power": "",
+              "pressure": "Pressure",
+              "seq_nr": "",
+              "speed": "Prop shaft speed",
+              "speed_torque_setpoint": "",
+              "temperature": "Temperature",
+              "temperature_delta": "T delta",
+              "temperature_in": "T in",
+              "temperature_out": "T out",
+              "time": "",
+              "torque": "Torque",
+              "torque_setpoint": "Torque setpoint",
+              "voltage": "Voltage"
+            }
+          }
+        }
+      ],
+      "type": "timeseries"
+    },
+    {
+      "collapsed": true,
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 21
+      },
+      "id": 79,
+      "panels": [
+        {
+          "datasource": {
+            "type": "grafana-postgresql-datasource",
+            "uid": "${datasource}"
+          },
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "thresholds"
+              },
+              "custom": {
+                "align": "left",
+                "cellOptions": {
+                  "type": "auto"
+                },
+                "filterable": false,
+                "footer": {
+                  "reducers": []
+                },
+                "inspect": false,
+                "minWidth": 160
+              },
+              "decimals": 2,
+              "mappings": [],
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green",
+                    "value": 0
+                  },
+                  {
+                    "color": "red",
+                    "value": 80
+                  }
+                ]
+              }
+            },
+            "overrides": [
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "time"
+                },
+                "properties": [
+                  {
+                    "id": "custom.hideFrom.viz",
+                    "value": false
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "Speed"
+                },
+                "properties": [
+                  {
+                    "id": "unit",
+                    "value": "rotrpm"
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "Torque"
+                },
+                "properties": [
+                  {
+                    "id": "unit",
+                    "value": "forceNm"
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byRegexp",
+                  "options": "/temp/"
+                },
+                "properties": [
+                  {
+                    "id": "unit",
+                    "value": "celsius"
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "Current"
+                },
+                "properties": [
+                  {
+                    "id": "unit",
+                    "value": "amp"
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "Voltage"
+                },
+                "properties": [
+                  {
+                    "id": "unit",
+                    "value": "volt"
+                  }
+                ]
+              }
+            ]
+          },
+          "gridPos": {
+            "h": 4,
+            "w": 24,
+            "x": 0,
+            "y": 22
+          },
+          "id": 63,
+          "options": {
+            "cellHeight": "sm",
+            "enablePagination": false,
+            "showHeader": true,
+            "sortBy": [
+              {
+                "desc": false,
+                "displayName": "Speed"
+              }
+            ]
+          },
+          "pluginVersion": "12.3.0",
+          "targets": [
+            {
+              "dataset": "dev",
+              "datasource": {
+                "type": "grafana-postgresql-datasource",
+                "uid": "${datasource}"
+              },
+              "editorMode": "code",
+              "editorType": "sql",
+              "format": 1,
+              "meta": {
+                "builderOptions": {
+                  "columns": [],
+                  "database": "",
+                  "limit": 1000,
+                  "meta": {},
+                  "mode": "list",
+                  "queryType": "table",
+                  "table": ""
+                }
+              },
+              "pluginVersion": "2.1.4",
+              "queryType": "table",
+              "rawQuery": true,
+              "rawSql": "SELECT\r\n  timestamp AS time,\r\n  CASE WHEN '${aft_fwd}' = 'AFT' THEN \"devices__can_aradex.i_aft_thrstr_emotor_temp\" ELSE \"devices__can_aradex.i_fwd_thrstr_emotor_temp\" END AS e_motor_temp,\r\n  CASE WHEN '${aft_fwd}' = 'AFT' THEN \"devices__can_aradex.i_aft_thrstr_igbt_temp\"   ELSE \"devices__can_aradex.i_fwd_thrstr_igbt_temp\"   END AS igbt_temp,\r\n  CASE WHEN '${aft_fwd}' = 'AFT' THEN \"devices__can_aradex.i_aft_thrstr_speed_rpm\"   ELSE \"devices__can_aradex.i_fwd_thrstr_speed_rpm\"   END AS speed,\r\n  CASE WHEN '${aft_fwd}' = 'AFT' THEN \"devices__can_aradex.i_aft_thrstr_torque_nm\"   ELSE \"devices__can_aradex.i_fwd_thrstr_torque_nm\"   END AS torque,\r\n  CASE WHEN '${aft_fwd}' = 'AFT' THEN \"devices__can_aradex.r_aft_thrstr_dc_current\"  ELSE \"devices__can_aradex.r_fwd_thrstr_dc_current\"  END AS \"current\",\r\n  CASE WHEN '${aft_fwd}' = 'AFT' THEN \"devices__can_aradex.r_aft_thrstr_dc_voltage\"  ELSE \"devices__can_aradex.r_fwd_thrstr_dc_voltage\"  END AS voltage\r\nFROM public.prop_test__data\r\nWHERE $__timeFilter(timestamp)\r\nORDER BY timestamp DESC\r\nLIMIT 1;",
+              "refId": "A",
+              "sql": {
+                "columns": [
+                  {
+                    "parameters": [],
+                    "type": "function"
+                  }
+                ],
+                "groupBy": [
+                  {
+                    "property": {
+                      "type": "string"
+                    },
+                    "type": "groupBy"
+                  }
+                ],
+                "limit": 50
+              }
+            }
+          ],
+          "title": "Aradex",
+          "transformations": [
+            {
+              "id": "organize",
+              "options": {
+                "excludeByName": {},
+                "includeByName": {},
+                "indexByName": {
+                  "current": 1,
+                  "e_motor_temp": 5,
+                  "igbt_temp": 6,
+                  "speed": 4,
+                  "time": 0,
+                  "torque": 3,
+                  "voltage": 2
+                },
+                "orderByMode": "manual",
+                "renameByName": {
+                  "current": "Current",
+                  "device": "Device",
+                  "e_motor_temp": "Motor temp",
+                  "flow": "Flow",
+                  "gear_ratio": "Gear ratio",
+                  "igbt_temp": "IGBT temp",
+                  "pressure": "Pressure",
+                  "seq_nr": "",
+                  "speed": "Speed",
+                  "speed_torque_setpoint": "",
+                  "temperature": "Temperature",
+                  "temperature_delta": "T delta",
+                  "temperature_in": "T in",
+                  "temperature_out": "T out",
+                  "time": "Time",
+                  "torque": "Torque",
+                  "torque_setpoint": "Torque setpoint",
+                  "voltage": "Voltage"
+                }
+              }
+            }
+          ],
+          "type": "table"
+        },
+        {
+          "datasource": {
+            "type": "grafana-postgresql-datasource",
+            "uid": "${datasource}"
+          },
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "palette-classic"
+              },
+              "custom": {
+                "axisBorderShow": false,
+                "axisCenteredZero": false,
+                "axisColorMode": "text",
+                "axisLabel": "",
+                "axisPlacement": "auto",
+                "barAlignment": 0,
+                "barWidthFactor": 0.6,
+                "drawStyle": "line",
+                "fillOpacity": 0,
+                "gradientMode": "none",
+                "hideFrom": {
+                  "legend": false,
+                  "tooltip": false,
+                  "viz": false
+                },
+                "insertNulls": false,
+                "lineInterpolation": "linear",
+                "lineWidth": 1,
+                "pointSize": 5,
+                "scaleDistribution": {
+                  "type": "linear"
+                },
+                "showPoints": "auto",
+                "showValues": false,
+                "spanNulls": false,
+                "stacking": {
+                  "group": "A",
+                  "mode": "none"
+                },
+                "thresholdsStyle": {
+                  "mode": "off"
+                }
+              },
+              "decimals": 2,
+              "mappings": [],
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green",
+                    "value": 0
+                  },
+                  {
+                    "color": "red",
+                    "value": 80
+                  }
+                ]
+              },
+              "unit": "amp"
+            },
+            "overrides": []
+          },
+          "gridPos": {
+            "h": 9,
+            "w": 24,
+            "x": 0,
+            "y": 26
+          },
+          "id": 66,
+          "options": {
+            "legend": {
+              "calcs": [],
+              "displayMode": "list",
+              "placement": "bottom",
+              "showLegend": false
+            },
+            "tooltip": {
+              "hideZeros": false,
+              "mode": "single",
+              "sort": "none"
+            }
+          },
+          "pluginVersion": "12.3.0",
+          "targets": [
+            {
+              "dataset": "dev",
+              "datasource": {
+                "type": "grafana-postgresql-datasource",
+                "uid": "${datasource}"
+              },
+              "editorMode": "code",
+              "editorType": "sql",
+              "format": 1,
+              "meta": {
+                "builderOptions": {
+                  "columns": [],
+                  "database": "",
+                  "limit": 1000,
+                  "meta": {},
+                  "mode": "list",
+                  "queryType": "table",
+                  "table": ""
+                }
+              },
+              "pluginVersion": "2.1.4",
+              "queryType": "table",
+              "rawQuery": true,
+              "rawSql": "SELECT\r\n  timestamp                                            AS time,\r\n  CASE WHEN '${aft_fwd}' = 'AFT'\r\n    THEN \"devices__can_aradex.r_aft_thrstr_dc_current\"\r\n    ELSE \"devices__can_aradex.r_fwd_thrstr_dc_current\"\r\n  END                                                  AS \"current\"\r\nFROM public.prop_test__data\r\nWHERE $__timeFilter(timestamp)",
+              "refId": "A",
+              "sql": {
+                "columns": [
+                  {
+                    "parameters": [],
+                    "type": "function"
+                  }
+                ],
+                "groupBy": [
+                  {
+                    "property": {
+                      "type": "string"
+                    },
+                    "type": "groupBy"
+                  }
+                ],
+                "limit": 50
+              }
+            }
+          ],
+          "title": "Current",
+          "transformations": [
+            {
+              "id": "organize",
+              "options": {
+                "excludeByName": {},
+                "includeByName": {},
+                "indexByName": {},
+                "renameByName": {
+                  "current": "Current",
+                  "device": "Device",
+                  "e_motor_temp": "Motor temp",
+                  "flow": "Flow",
+                  "gear_ratio": "Gear ratio",
+                  "igbt_temp": "IGBT temp",
+                  "pressure": "Pressure",
+                  "seq_nr": "",
+                  "speed": "Speed",
+                  "speed_torque_setpoint": "",
+                  "temperature": "Temperature",
+                  "temperature_delta": "T delta",
+                  "temperature_in": "T in",
+                  "temperature_out": "T out",
+                  "torque": "Torque",
+                  "torque_setpoint": "Torque setpoint",
+                  "voltage": "Voltage"
+                }
+              }
+            }
+          ],
+          "type": "timeseries"
+        },
+        {
+          "datasource": {
+            "type": "grafana-postgresql-datasource",
+            "uid": "${datasource}"
+          },
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "palette-classic"
+              },
+              "custom": {
+                "axisBorderShow": false,
+                "axisCenteredZero": false,
+                "axisColorMode": "text",
+                "axisLabel": "",
+                "axisPlacement": "auto",
+                "barAlignment": 0,
+                "barWidthFactor": 0.6,
+                "drawStyle": "line",
+                "fillOpacity": 0,
+                "gradientMode": "none",
+                "hideFrom": {
+                  "legend": false,
+                  "tooltip": false,
+                  "viz": false
+                },
+                "insertNulls": false,
+                "lineInterpolation": "linear",
+                "lineWidth": 1,
+                "pointSize": 5,
+                "scaleDistribution": {
+                  "type": "linear"
+                },
+                "showPoints": "auto",
+                "showValues": false,
+                "spanNulls": false,
+                "stacking": {
+                  "group": "A",
+                  "mode": "none"
+                },
+                "thresholdsStyle": {
+                  "mode": "off"
+                }
+              },
+              "decimals": 2,
+              "mappings": [],
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green",
+                    "value": 0
+                  },
+                  {
+                    "color": "red",
+                    "value": 80
+                  }
+                ]
+              },
+              "unit": "volt"
+            },
+            "overrides": []
+          },
+          "gridPos": {
+            "h": 9,
+            "w": 24,
+            "x": 0,
+            "y": 35
+          },
+          "id": 83,
+          "options": {
+            "legend": {
+              "calcs": [],
+              "displayMode": "list",
+              "placement": "bottom",
+              "showLegend": false
+            },
+            "tooltip": {
+              "hideZeros": false,
+              "mode": "single",
+              "sort": "none"
+            }
+          },
+          "pluginVersion": "12.3.0",
+          "targets": [
+            {
+              "dataset": "dev",
+              "datasource": {
+                "type": "grafana-postgresql-datasource",
+                "uid": "${datasource}"
+              },
+              "editorMode": "code",
+              "editorType": "sql",
+              "format": 1,
+              "meta": {
+                "builderOptions": {
+                  "columns": [],
+                  "database": "",
+                  "limit": 1000,
+                  "meta": {},
+                  "mode": "list",
+                  "queryType": "table",
+                  "table": ""
+                }
+              },
+              "pluginVersion": "2.1.4",
+              "queryType": "table",
+              "rawQuery": true,
+              "rawSql": "SELECT\r\n  timestamp                                            AS time,\r\n  CASE WHEN '${aft_fwd}' = 'AFT'\r\n    THEN \"devices__can_aradex.r_aft_thrstr_dc_voltage\"\r\n    ELSE \"devices__can_aradex.r_fwd_thrstr_dc_voltage\"\r\n  END                                                  AS voltage\r\nFROM public.prop_test__data\r\nWHERE $__timeFilter(timestamp)",
+              "refId": "A",
+              "sql": {
+                "columns": [
+                  {
+                    "parameters": [],
+                    "type": "function"
+                  }
+                ],
+                "groupBy": [
+                  {
+                    "property": {
+                      "type": "string"
+                    },
+                    "type": "groupBy"
+                  }
+                ],
+                "limit": 50
+              }
+            }
+          ],
+          "title": "Voltage",
+          "transformations": [
+            {
+              "id": "organize",
+              "options": {
+                "excludeByName": {},
+                "includeByName": {},
+                "indexByName": {},
+                "renameByName": {
+                  "current": "Current",
+                  "device": "Device",
+                  "e_motor_temp": "Motor temp",
+                  "flow": "Flow",
+                  "gear_ratio": "Gear ratio",
+                  "igbt_temp": "IGBT temp",
+                  "pressure": "Pressure",
+                  "seq_nr": "",
+                  "speed": "Speed",
+                  "speed_torque_setpoint": "",
+                  "temperature": "Temperature",
+                  "temperature_delta": "T delta",
+                  "temperature_in": "T in",
+                  "temperature_out": "T out",
+                  "torque": "Torque",
+                  "torque_setpoint": "Torque setpoint",
+                  "voltage": "Voltage"
+                }
+              }
+            }
+          ],
+          "type": "timeseries"
+        },
+        {
+          "datasource": {
+            "type": "grafana-postgresql-datasource",
+            "uid": "${datasource}"
+          },
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "palette-classic"
+              },
+              "custom": {
+                "axisBorderShow": false,
+                "axisCenteredZero": false,
+                "axisColorMode": "text",
+                "axisLabel": "",
+                "axisPlacement": "auto",
+                "barAlignment": 0,
+                "barWidthFactor": 0.6,
+                "drawStyle": "line",
+                "fillOpacity": 0,
+                "gradientMode": "none",
+                "hideFrom": {
+                  "legend": false,
+                  "tooltip": false,
+                  "viz": false
+                },
+                "insertNulls": false,
+                "lineInterpolation": "linear",
+                "lineWidth": 1,
+                "pointSize": 5,
+                "scaleDistribution": {
+                  "type": "linear"
+                },
+                "showPoints": "auto",
+                "showValues": false,
+                "spanNulls": false,
+                "stacking": {
+                  "group": "A",
+                  "mode": "none"
+                },
+                "thresholdsStyle": {
+                  "mode": "off"
+                }
+              },
+              "decimals": 2,
+              "mappings": [],
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green",
+                    "value": 0
+                  },
+                  {
+                    "color": "red",
+                    "value": 80
+                  }
+                ]
+              },
+              "unit": "kwatt"
+            },
+            "overrides": []
+          },
+          "gridPos": {
+            "h": 9,
+            "w": 24,
+            "x": 0,
+            "y": 44
+          },
+          "id": 68,
+          "options": {
+            "legend": {
+              "calcs": [],
+              "displayMode": "list",
+              "placement": "bottom",
+              "showLegend": false
+            },
+            "tooltip": {
+              "hideZeros": false,
+              "mode": "single",
+              "sort": "none"
+            }
+          },
+          "pluginVersion": "12.3.0",
+          "targets": [
+            {
+              "dataset": "dev",
+              "datasource": {
+                "type": "grafana-postgresql-datasource",
+                "uid": "${datasource}"
+              },
+              "editorMode": "code",
+              "editorType": "sql",
+              "format": 1,
+              "meta": {
+                "builderOptions": {
+                  "columns": [],
+                  "database": "",
+                  "limit": 1000,
+                  "meta": {},
+                  "mode": "list",
+                  "queryType": "table",
+                  "table": ""
+                }
+              },
+              "pluginVersion": "2.1.4",
+              "queryType": "table",
+              "rawQuery": true,
+              "rawSql": "SELECT\r\n  timestamp                                                 AS time,\r\n  CASE WHEN '${aft_fwd}' = 'AFT'\r\n    THEN \"devices__thruster_test.r_power_aft_trstr_kw\"\r\n    ELSE \"devices__thruster_test.r_power_fwd_trstr_kw\"\r\n  END                                                       AS \"power\"\r\nFROM public.prop_test__data\r\nWHERE $__timeFilter(timestamp)",
+              "refId": "A",
+              "sql": {
+                "columns": [
+                  {
+                    "parameters": [],
+                    "type": "function"
+                  }
+                ],
+                "groupBy": [
+                  {
+                    "property": {
+                      "type": "string"
+                    },
+                    "type": "groupBy"
+                  }
+                ],
+                "limit": 50
+              }
+            }
+          ],
+          "title": "Power (V*A)",
+          "transformations": [
+            {
+              "id": "organize",
+              "options": {
+                "excludeByName": {},
+                "includeByName": {},
+                "indexByName": {},
+                "renameByName": {
+                  "current": "Current",
+                  "device": "Device",
+                  "e_motor_temp": "Motor temp",
+                  "flow": "Flow",
+                  "gear_ratio": "Gear ratio",
+                  "igbt_temp": "IGBT temp",
+                  "power": "Power",
+                  "pressure": "Pressure",
+                  "seq_nr": "",
+                  "speed": "Speed",
+                  "speed_torque_setpoint": "",
+                  "temperature": "Temperature",
+                  "temperature_delta": "T delta",
+                  "temperature_in": "T in",
+                  "temperature_out": "T out",
+                  "time": "",
+                  "torque": "Torque",
+                  "torque_setpoint": "Torque setpoint",
+                  "voltage": "Voltage"
+                }
+              }
+            }
+          ],
+          "type": "timeseries"
+        },
+        {
+          "datasource": {
+            "type": "grafana-postgresql-datasource",
+            "uid": "${datasource}"
+          },
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "palette-classic"
+              },
+              "custom": {
+                "axisBorderShow": false,
+                "axisCenteredZero": false,
+                "axisColorMode": "text",
+                "axisLabel": "",
+                "axisPlacement": "auto",
+                "barAlignment": 0,
+                "barWidthFactor": 0.6,
+                "drawStyle": "line",
+                "fillOpacity": 0,
+                "gradientMode": "none",
+                "hideFrom": {
+                  "legend": false,
+                  "tooltip": false,
+                  "viz": false
+                },
+                "insertNulls": false,
+                "lineInterpolation": "linear",
+                "lineWidth": 1,
+                "pointSize": 5,
+                "scaleDistribution": {
+                  "type": "linear"
+                },
+                "showPoints": "auto",
+                "showValues": false,
+                "spanNulls": false,
+                "stacking": {
+                  "group": "A",
+                  "mode": "none"
+                },
+                "thresholdsStyle": {
+                  "mode": "off"
+                }
+              },
+              "decimals": 2,
+              "mappings": [],
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green",
+                    "value": 0
+                  },
+                  {
+                    "color": "red",
+                    "value": 80
+                  }
+                ]
+              },
+              "unit": "celsius"
+            },
+            "overrides": [
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "time"
+                },
+                "properties": []
+              }
+            ]
+          },
+          "gridPos": {
+            "h": 9,
+            "w": 24,
+            "x": 0,
+            "y": 53
+          },
+          "id": 64,
+          "options": {
+            "legend": {
+              "calcs": [],
+              "displayMode": "list",
+              "placement": "bottom",
+              "showLegend": true
+            },
+            "tooltip": {
+              "hideZeros": false,
+              "mode": "single",
+              "sort": "none"
+            }
+          },
+          "pluginVersion": "12.3.0",
+          "targets": [
+            {
+              "dataset": "dev",
+              "datasource": {
+                "type": "grafana-postgresql-datasource",
+                "uid": "${datasource}"
+              },
+              "editorMode": "code",
+              "editorType": "sql",
+              "format": 1,
+              "meta": {
+                "builderOptions": {
+                  "columns": [],
+                  "database": "",
+                  "limit": 1000,
+                  "meta": {},
+                  "mode": "list",
+                  "queryType": "table",
+                  "table": ""
+                }
+              },
+              "pluginVersion": "2.1.4",
+              "queryType": "table",
+              "rawQuery": true,
+              "rawSql": "SELECT\r\n  timestamp                                             AS time,\r\n  CASE WHEN '${aft_fwd}' = 'AFT'\r\n    THEN \"devices__can_aradex.i_aft_thrstr_emotor_temp\"\r\n    ELSE \"devices__can_aradex.i_fwd_thrstr_emotor_temp\"\r\n  END                                                   AS e_motor_temp,\r\n  CASE WHEN '${aft_fwd}' = 'AFT'\r\n    THEN \"devices__can_aradex.i_aft_thrstr_igbt_temp\"\r\n    ELSE \"devices__can_aradex.i_fwd_thrstr_igbt_temp\"\r\n  END                                                   AS igbt_temp\r\nFROM public.prop_test__data                                                   \r\nWHERE $__timeFilter(timestamp)",
+              "refId": "A",
+              "sql": {
+                "columns": [
+                  {
+                    "parameters": [],
+                    "type": "function"
+                  }
+                ],
+                "groupBy": [
+                  {
+                    "property": {
+                      "type": "string"
+                    },
+                    "type": "groupBy"
+                  }
+                ],
+                "limit": 50
+              }
+            }
+          ],
+          "title": "Temperatures",
+          "transformations": [
+            {
+              "id": "organize",
+              "options": {
+                "excludeByName": {},
+                "includeByName": {},
+                "indexByName": {},
+                "renameByName": {
+                  "current": "Current",
+                  "device": "Device",
+                  "e_motor_temp": "Motor",
+                  "flow": "Flow",
+                  "gear_ratio": "Gear ratio",
+                  "igbt_temp": "IGBT",
+                  "pressure": "Pressure",
+                  "seq_nr": "",
+                  "speed": "Speed",
+                  "speed_torque_setpoint": "",
+                  "temperature": "Temperature",
+                  "temperature_delta": "T delta",
+                  "temperature_in": "T in",
+                  "temperature_out": "T out",
+                  "torque": "Torque",
+                  "torque_setpoint": "Torque setpoint",
+                  "voltage": "Voltage"
+                }
+              }
+            }
+          ],
+          "type": "timeseries"
+        }
+      ],
+      "title": "Test PLC - Aradex",
+      "type": "row"
+    },
+    {
+      "collapsed": true,
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 22
+      },
+      "id": 24,
+      "panels": [
+        {
+          "datasource": {
+            "type": "grafana-postgresql-datasource",
+            "uid": "${datasource}"
+          },
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "fixedColor": "green",
+                "mode": "continuous-greens"
+              },
+              "decimals": 2,
+              "mappings": [],
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "transparent",
+                    "value": 0
+                  }
+                ]
+              }
+            },
+            "overrides": [
+              {
+                "matcher": {
+                  "id": "byRegexp",
+                  "options": "/speed/"
+                },
+                "properties": [
+                  {
+                    "id": "unit",
+                    "value": "percent"
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byRegexp",
+                  "options": "/rotation/"
+                },
+                "properties": [
+                  {
+                    "id": "unit",
+                    "value": "degree"
+                  }
+                ]
+              }
+            ]
+          },
+          "gridPos": {
+            "h": 10,
+            "w": 12,
+            "x": 0,
+            "y": 166
+          },
+          "id": 50,
+          "options": {
+            "inlineEditing": false,
+            "panZoom": false,
+            "root": {
+              "background": {
+                "color": {
+                  "fixed": "transparent"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "elements": [
+                {
+                  "background": {
+                    "color": {
+                      "field": "station_selected",
+                      "fixed": "#D9D9D9"
+                    },
+                    "image": {
+                      "field": "sub_pump1_alarm",
+                      "mode": "fixed"
+                    }
+                  },
+                  "border": {
+                    "color": {
+                      "fixed": "dark-green"
+                    }
+                  },
+                  "config": {
+                    "align": "center",
+                    "color": {
+                      "fixed": "#000000"
+                    },
+                    "text": {
+                      "field": "sub_pump2_alarm",
+                      "mode": "fixed"
+                    },
+                    "valign": "middle"
+                  },
+                  "connections": [],
+                  "constraint": {
+                    "horizontal": "left",
+                    "vertical": "top"
+                  },
+                  "links": [],
+                  "name": "station_selected",
+                  "placement": {
+                    "height": 25,
+                    "left": 15,
+                    "rotation": 0,
+                    "top": 10,
+                    "width": 25
+                  },
+                  "type": "ellipse"
+                },
+                {
+                  "background": {
+                    "color": {
+                      "fixed": "transparent"
+                    }
+                  },
+                  "border": {
+                    "color": {
+                      "fixed": "dark-green"
+                    }
+                  },
+                  "config": {
+                    "align": "left",
+                    "color": {
+                      "fixed": "rgb(204, 204, 220)"
+                    },
+                    "size": 16,
+                    "text": {
+                      "field": "sub_pump1_alarm",
+                      "fixed": "PS Helm station selected",
+                      "mode": "fixed"
+                    },
+                    "valign": "middle"
+                  },
+                  "constraint": {
+                    "horizontal": "left",
+                    "vertical": "top"
+                  },
+                  "links": [],
+                  "name": "station_selected label",
+                  "placement": {
+                    "height": 26,
+                    "left": 50,
+                    "rotation": 0,
+                    "top": 10,
+                    "width": 235
+                  },
+                  "type": "text"
+                },
+                {
+                  "background": {
+                    "color": {
+                      "field": "aft_thruster_regeneration_mode",
+                      "fixed": "#D9D9D9"
+                    },
+                    "image": {
+                      "field": "sub_pump1_alarm",
+                      "mode": "fixed"
+                    }
+                  },
+                  "border": {
+                    "color": {
+                      "fixed": "dark-green"
+                    }
+                  },
+                  "config": {
+                    "align": "center",
+                    "color": {
+                      "fixed": "#000000"
+                    },
+                    "text": {
+                      "field": "sub_pump2_alarm",
+                      "mode": "fixed"
+                    },
+                    "valign": "middle"
+                  },
+                  "constraint": {
+                    "horizontal": "left",
+                    "vertical": "top"
+                  },
+                  "links": [],
+                  "name": "aft_thruster_regeneration_mode",
+                  "placement": {
+                    "height": 25,
+                    "left": 15,
+                    "rotation": 0,
+                    "top": 50,
+                    "width": 25
+                  },
+                  "type": "ellipse"
+                },
+                {
+                  "background": {
+                    "color": {
+                      "fixed": "transparent"
+                    }
+                  },
+                  "border": {
+                    "color": {
+                      "fixed": "dark-green"
+                    }
+                  },
+                  "config": {
+                    "align": "left",
+                    "color": {
+                      "fixed": "rgb(204, 204, 220)"
+                    },
+                    "size": 16,
+                    "text": {
+                      "field": "sub_pump1_alarm",
+                      "fixed": "AFT Thruster - Regeneration mode selected",
+                      "mode": "fixed"
+                    },
+                    "valign": "middle"
+                  },
+                  "constraint": {
+                    "horizontal": "left",
+                    "vertical": "top"
+                  },
+                  "links": [],
+                  "name": "aft_thruster_regeneration_mode label",
+                  "placement": {
+                    "height": 26,
+                    "left": 50,
+                    "rotation": 0,
+                    "top": 50,
+                    "width": 372
+                  },
+                  "type": "text"
+                },
+                {
+                  "background": {
+                    "color": {
+                      "field": "fwd_thruster_regeneration_mode",
+                      "fixed": "#D9D9D9"
+                    },
+                    "image": {
+                      "field": "sub_pump1_alarm",
+                      "mode": "fixed"
+                    }
+                  },
+                  "border": {
+                    "color": {
+                      "fixed": "dark-green"
+                    }
+                  },
+                  "config": {
+                    "align": "center",
+                    "color": {
+                      "fixed": "#000000"
+                    },
+                    "text": {
+                      "field": "sub_pump2_alarm",
+                      "mode": "fixed"
+                    },
+                    "valign": "middle"
+                  },
+                  "constraint": {
+                    "horizontal": "left",
+                    "vertical": "top"
+                  },
+                  "links": [],
+                  "name": "fwd_thruster_regeneration_mode",
+                  "placement": {
+                    "height": 25,
+                    "left": 15,
+                    "top": 200,
+                    "width": 25
+                  },
+                  "type": "ellipse"
+                },
+                {
+                  "background": {
+                    "color": {
+                      "fixed": "transparent"
+                    }
+                  },
+                  "border": {
+                    "color": {
+                      "fixed": "dark-green"
+                    }
+                  },
+                  "config": {
+                    "align": "left",
+                    "color": {
+                      "fixed": "rgb(204, 204, 220)"
+                    },
+                    "size": 16,
+                    "text": {
+                      "field": "sub_pump1_alarm",
+                      "fixed": "FWD Thruster - Regeneration mode selected",
+                      "mode": "fixed"
+                    },
+                    "valign": "middle"
+                  },
+                  "constraint": {
+                    "horizontal": "left",
+                    "vertical": "top"
+                  },
+                  "links": [],
+                  "name": "fwd_thruster_regeneration_mode label",
+                  "placement": {
+                    "height": 26,
+                    "left": 50,
+                    "rotation": 0,
+                    "top": 200,
+                    "width": 372
+                  },
+                  "type": "text"
+                },
+                {
+                  "background": {
+                    "color": {
+                      "fixed": "#D9D9D9"
+                    }
+                  },
+                  "border": {
+                    "color": {
+                      "fixed": "dark-green"
+                    }
+                  },
+                  "config": {
+                    "align": "center",
+                    "color": {
+                      "fixed": "#000000"
+                    },
+                    "size": 20,
+                    "text": {
+                      "field": "aft_thruster_lever_speed_signal",
+                      "fixed": "",
+                      "mode": "field"
+                    },
+                    "valign": "middle"
+                  },
+                  "constraint": {
+                    "horizontal": "left",
+                    "vertical": "top"
+                  },
+                  "links": [],
+                  "name": "aft_thruster_lever_speed_signal",
+                  "placement": {
+                    "height": 30,
+                    "left": 454,
+                    "rotation": 0,
+                    "top": 150,
+                    "width": 175
+                  },
+                  "type": "metric-value"
+                },
+                {
+                  "background": {
+                    "color": {
+                      "fixed": "transparent"
+                    }
+                  },
+                  "border": {
+                    "color": {
+                      "fixed": "dark-green"
+                    }
+                  },
+                  "config": {
+                    "align": "left",
+                    "color": {
+                      "fixed": "rgb(204, 204, 220)"
+                    },
+                    "size": 16,
+                    "text": {
+                      "field": "sub_pump1_alarm",
+                      "fixed": "AFT Thruster - Lever speed setting",
+                      "mode": "fixed"
+                    },
+                    "valign": "middle"
+                  },
+                  "connections": [],
+                  "constraint": {
+                    "horizontal": "left",
+                    "vertical": "top"
+                  },
+                  "links": [],
+                  "name": "aft_thruster_lever_speed_signal label",
+                  "placement": {
+                    "height": 26,
+                    "left": 50,
+                    "rotation": 0,
+                    "top": 150,
+                    "width": 334
+                  },
+                  "type": "text"
+                },
+                {
+                  "background": {
+                    "color": {
+                      "field": "aft_thruster_regeneration_mode",
+                      "fixed": "#D9D9D9"
+                    },
+                    "image": {
+                      "field": "sub_pump1_alarm",
+                      "mode": "fixed"
+                    }
+                  },
+                  "border": {
+                    "color": {
+                      "fixed": "dark-green"
+                    }
+                  },
+                  "config": {
+                    "align": "center",
+                    "color": {
+                      "fixed": "#000000"
+                    },
+                    "text": {
+                      "field": "sub_pump2_alarm",
+                      "mode": "fixed"
+                    },
+                    "valign": "middle"
+                  },
+                  "constraint": {
+                    "horizontal": "left",
+                    "vertical": "top"
+                  },
+                  "links": [],
+                  "name": "aft_thruster_propulsion_mode",
+                  "placement": {
+                    "height": 25,
+                    "left": 15,
+                    "rotation": 0,
+                    "top": 80,
+                    "width": 25
+                  },
+                  "type": "ellipse"
+                },
+                {
+                  "background": {
+                    "color": {
+                      "fixed": "transparent"
+                    }
+                  },
+                  "border": {
+                    "color": {
+                      "fixed": "dark-green"
+                    }
+                  },
+                  "config": {
+                    "align": "left",
+                    "color": {
+                      "fixed": "rgb(204, 204, 220)"
+                    },
+                    "size": 16,
+                    "text": {
+                      "field": "sub_pump1_alarm",
+                      "fixed": "AFT Thruster - Propulsion mode selected",
+                      "mode": "fixed"
+                    },
+                    "valign": "middle"
+                  },
+                  "constraint": {
+                    "horizontal": "left",
+                    "vertical": "top"
+                  },
+                  "links": [],
+                  "name": "aft_thruster_propulsion_mode label",
+                  "placement": {
+                    "height": 26,
+                    "left": 50,
+                    "rotation": 0,
+                    "top": 80,
+                    "width": 372
+                  },
+                  "type": "text"
+                },
+                {
+                  "background": {
+                    "color": {
+                      "field": "aft_thruster_propulsion_mode",
+                      "fixed": "#D9D9D9"
+                    },
+                    "image": {
+                      "field": "sub_pump1_alarm",
+                      "mode": "fixed"
+                    }
+                  },
+                  "border": {
+                    "color": {
+                      "fixed": "dark-green"
+                    }
+                  },
+                  "config": {
+                    "align": "center",
+                    "color": {
+                      "fixed": "#000000"
+                    },
+                    "text": {
+                      "field": "sub_pump2_alarm",
+                      "mode": "fixed"
+                    },
+                    "valign": "middle"
+                  },
+                  "constraint": {
+                    "horizontal": "left",
+                    "vertical": "top"
+                  },
+                  "links": [],
+                  "name": "fwd_thruster_propulsion_mode",
+                  "placement": {
+                    "height": 25,
+                    "left": 15,
+                    "top": 230,
+                    "width": 25
+                  },
+                  "type": "ellipse"
+                },
+                {
+                  "background": {
+                    "color": {
+                      "fixed": "transparent"
+                    }
+                  },
+                  "border": {
+                    "color": {
+                      "fixed": "dark-green"
+                    }
+                  },
+                  "config": {
+                    "align": "left",
+                    "color": {
+                      "fixed": "rgb(204, 204, 220)"
+                    },
+                    "size": 16,
+                    "text": {
+                      "field": "sub_pump1_alarm",
+                      "fixed": "FWD Thruster - Propulsion mode selected",
+                      "mode": "fixed"
+                    },
+                    "valign": "middle"
+                  },
+                  "constraint": {
+                    "horizontal": "left",
+                    "vertical": "top"
+                  },
+                  "links": [],
+                  "name": "fwd_thruster_propulsion_mode label",
+                  "placement": {
+                    "height": 26,
+                    "left": 50,
+                    "top": 230,
+                    "width": 372
+                  },
+                  "type": "text"
+                },
+                {
+                  "background": {
+                    "color": {
+                      "field": "aft_thruster_regeneration_mode",
+                      "fixed": "#D9D9D9"
+                    },
+                    "image": {
+                      "field": "sub_pump1_alarm",
+                      "mode": "fixed"
+                    }
+                  },
+                  "border": {
+                    "color": {
+                      "fixed": "dark-green"
+                    }
+                  },
+                  "config": {
+                    "align": "center",
+                    "color": {
+                      "fixed": "#000000"
+                    },
+                    "text": {
+                      "field": "sub_pump2_alarm",
+                      "mode": "fixed"
+                    },
+                    "valign": "middle"
+                  },
+                  "constraint": {
+                    "horizontal": "left",
+                    "vertical": "top"
+                  },
+                  "links": [],
+                  "name": "aft_thruster_maneuvring_mode",
+                  "placement": {
+                    "height": 25,
+                    "left": 15,
+                    "rotation": 0,
+                    "top": 110,
+                    "width": 25
+                  },
+                  "type": "ellipse"
+                },
+                {
+                  "background": {
+                    "color": {
+                      "fixed": "transparent"
+                    }
+                  },
+                  "border": {
+                    "color": {
+                      "fixed": "dark-green"
+                    }
+                  },
+                  "config": {
+                    "align": "left",
+                    "color": {
+                      "fixed": "rgb(204, 204, 220)"
+                    },
+                    "size": 16,
+                    "text": {
+                      "field": "sub_pump1_alarm",
+                      "fixed": "AFT Thruster - Maneuvering mode selected",
+                      "mode": "fixed"
+                    },
+                    "valign": "middle"
+                  },
+                  "constraint": {
+                    "horizontal": "left",
+                    "vertical": "top"
+                  },
+                  "links": [],
+                  "name": "aft_thruster_maneuvring_mode label",
+                  "placement": {
+                    "height": 26,
+                    "left": 50,
+                    "rotation": 0,
+                    "top": 110,
+                    "width": 372
+                  },
+                  "type": "text"
+                },
+                {
+                  "background": {
+                    "color": {
+                      "field": "fwd_thruster_maneuvring_mode",
+                      "fixed": "#D9D9D9"
+                    },
+                    "image": {
+                      "field": "sub_pump1_alarm",
+                      "mode": "fixed"
+                    }
+                  },
+                  "border": {
+                    "color": {
+                      "fixed": "dark-green"
+                    }
+                  },
+                  "config": {
+                    "align": "center",
+                    "color": {
+                      "fixed": "#000000"
+                    },
+                    "text": {
+                      "field": "sub_pump2_alarm",
+                      "mode": "fixed"
+                    },
+                    "valign": "middle"
+                  },
+                  "constraint": {
+                    "horizontal": "left",
+                    "vertical": "top"
+                  },
+                  "links": [],
+                  "name": "fwd_thruster_maneuvring_mode",
+                  "placement": {
+                    "height": 25,
+                    "left": 15,
+                    "top": 260,
+                    "width": 25
+                  },
+                  "type": "ellipse"
+                },
+                {
+                  "background": {
+                    "color": {
+                      "fixed": "transparent"
+                    }
+                  },
+                  "border": {
+                    "color": {
+                      "fixed": "dark-green"
+                    }
+                  },
+                  "config": {
+                    "align": "left",
+                    "color": {
+                      "fixed": "rgb(204, 204, 220)"
+                    },
+                    "size": 16,
+                    "text": {
+                      "field": "sub_pump1_alarm",
+                      "fixed": "FWD Thruster - Maneuvering mode selected",
+                      "mode": "fixed"
+                    },
+                    "valign": "middle"
+                  },
+                  "constraint": {
+                    "horizontal": "left",
+                    "vertical": "top"
+                  },
+                  "links": [],
+                  "name": "fwd_thruster_maneuvring_mode label",
+                  "placement": {
+                    "height": 26,
+                    "left": 50,
+                    "top": 260,
+                    "width": 372
+                  },
+                  "type": "text"
+                },
+                {
+                  "background": {
+                    "color": {
+                      "fixed": "#D9D9D9"
+                    }
+                  },
+                  "border": {
+                    "color": {
+                      "fixed": "dark-green"
+                    }
+                  },
+                  "config": {
+                    "align": "center",
+                    "color": {
+                      "fixed": "#000000"
+                    },
+                    "size": 20,
+                    "text": {
+                      "field": "fwd_thruster_lever_speed_signal",
+                      "fixed": "",
+                      "mode": "field"
+                    },
+                    "valign": "middle"
+                  },
+                  "constraint": {
+                    "horizontal": "left",
+                    "vertical": "top"
+                  },
+                  "links": [],
+                  "name": "fwd_thruster_lever_speed_signal",
+                  "placement": {
+                    "height": 30,
+                    "left": 454,
+                    "top": 300,
+                    "width": 175
+                  },
+                  "type": "metric-value"
+                },
+                {
+                  "background": {
+                    "color": {
+                      "fixed": "transparent"
+                    }
+                  },
+                  "border": {
+                    "color": {
+                      "fixed": "dark-green"
+                    }
+                  },
+                  "config": {
+                    "align": "left",
+                    "color": {
+                      "fixed": "rgb(204, 204, 220)"
+                    },
+                    "size": 16,
+                    "text": {
+                      "field": "sub_pump1_alarm",
+                      "fixed": "FWD Thruster - Lever speed setting",
+                      "mode": "fixed"
+                    },
+                    "valign": "middle"
+                  },
+                  "constraint": {
+                    "horizontal": "left",
+                    "vertical": "top"
+                  },
+                  "links": [],
+                  "name": "fwd_thruster_lever_speed_signal label",
+                  "placement": {
+                    "height": 26,
+                    "left": 50,
+                    "rotation": 0,
+                    "top": 300,
+                    "width": 348
+                  },
+                  "type": "text"
+                }
+              ],
+              "name": "Element 1767698352074",
+              "placement": {
+                "height": 100,
+                "left": 0,
+                "rotation": 0,
+                "top": 0,
+                "width": 100
+              },
+              "type": "frame"
+            },
+            "showAdvancedTypes": false,
+            "tooltip": {
+              "disableForOneClick": false,
+              "mode": "none"
+            },
+            "zoomToContent": false
+          },
+          "pluginVersion": "12.3.0",
+          "targets": [
+            {
+              "dataset": "dev",
+              "datasource": {
+                "type": "grafana-postgresql-datasource",
+                "uid": "${datasource}"
+              },
+              "editorMode": "code",
+              "editorType": "sql",
+              "format": 1,
+              "meta": {
+                "builderOptions": {
+                  "columns": [],
+                  "database": "",
+                  "limit": 1000,
+                  "meta": {},
+                  "mode": "list",
+                  "queryType": "table",
+                  "table": ""
+                }
+              },
+              "pluginVersion": "2.1.4",
+              "queryType": "table",
+              "rawQuery": true,
+              "rawSql": "SELECT\r\n  timestamp                                                  AS time,\r\n  station_selected__value                                    AS station_selected,\r\n  reg_mode_selected_aft_thruster__value                      AS aft_thruster_regeneration_mode,\r\n  reg_mode_selected_fwd_thruster__value                      AS fwd_thruster_regeneration_mode,\r\n  prop_mode_selected_aft_thruster__value                     AS aft_thruster_propulsion_mode,\r\n  prop_mode_selected_fwd_thruster__value                     AS fwd_thruster_propulsion_mode,\r\n  man_mode_selected_aft_thruster__value                      AS aft_thruster_maneuvring_mode,\r\n  man_mode_selected_fwd_thruster__value                      AS fwd_thruster_maneuvring_mode,\r\n  ((aft_thruster_lever_speed_signal__value /327.0 ) -50) * 2 AS aft_thruster_lever_speed_signal,\r\n  ((fwd_thruster_lever_speed_signal__value /327.0 ) -50) * 2 AS fwd_thruster_lever_speed_signal\r\nFROM public.marpower__150000propulsion__pcs_fwd_pshelm\r\nWHERE $__timeFilter(timestamp)\r\nORDER BY timestamp DESC\r\nLIMIT 1",
+              "refId": "A",
+              "sql": {
+                "columns": [
+                  {
+                    "parameters": [],
+                    "type": "function"
+                  }
+                ],
+                "groupBy": [
+                  {
+                    "property": {
+                      "type": "string"
+                    },
+                    "type": "groupBy"
+                  }
+                ],
+                "limit": 50
+              }
+            }
+          ],
+          "title": "PS Helm console",
+          "type": "canvas"
+        },
+        {
+          "datasource": {
+            "type": "grafana-postgresql-datasource",
+            "uid": "${datasource}"
+          },
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "fixedColor": "green",
+                "mode": "continuous-greens"
+              },
+              "decimals": 2,
+              "mappings": [],
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "transparent",
+                    "value": 0
+                  }
+                ]
+              }
+            },
+            "overrides": [
+              {
+                "matcher": {
+                  "id": "byRegexp",
+                  "options": "/speed/"
+                },
+                "properties": [
+                  {
+                    "id": "unit",
+                    "value": "percent"
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byRegexp",
+                  "options": "/rotation/"
+                },
+                "properties": [
+                  {
+                    "id": "unit",
+                    "value": "degree"
+                  }
+                ]
+              }
+            ]
+          },
+          "gridPos": {
+            "h": 10,
+            "w": 12,
+            "x": 12,
+            "y": 166
+          },
+          "id": 86,
+          "options": {
+            "inlineEditing": false,
+            "panZoom": false,
+            "root": {
+              "background": {
+                "color": {
+                  "fixed": "transparent"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "elements": [
+                {
+                  "background": {
+                    "color": {
+                      "field": "station_selected",
+                      "fixed": "#D9D9D9"
+                    },
+                    "image": {
+                      "field": "sub_pump1_alarm",
+                      "mode": "fixed"
+                    }
+                  },
+                  "border": {
+                    "color": {
+                      "fixed": "dark-green"
+                    }
+                  },
+                  "config": {
+                    "align": "center",
+                    "color": {
+                      "fixed": "#000000"
+                    },
+                    "text": {
+                      "field": "sub_pump2_alarm",
+                      "mode": "fixed"
+                    },
+                    "valign": "middle"
+                  },
+                  "connections": [],
+                  "constraint": {
+                    "horizontal": "left",
+                    "vertical": "top"
+                  },
+                  "links": [],
+                  "name": "station_selected",
+                  "placement": {
+                    "height": 25,
+                    "left": 15,
+                    "rotation": 0,
+                    "top": 10,
+                    "width": 25
+                  },
+                  "type": "ellipse"
+                },
+                {
+                  "background": {
+                    "color": {
+                      "fixed": "transparent"
+                    }
+                  },
+                  "border": {
+                    "color": {
+                      "fixed": "dark-green"
+                    }
+                  },
+                  "config": {
+                    "align": "left",
+                    "color": {
+                      "fixed": "rgb(204, 204, 220)"
+                    },
+                    "size": 16,
+                    "text": {
+                      "field": "sub_pump1_alarm",
+                      "fixed": "SB Helm station selected",
+                      "mode": "fixed"
+                    },
+                    "valign": "middle"
+                  },
+                  "constraint": {
+                    "horizontal": "left",
+                    "vertical": "top"
+                  },
+                  "links": [],
+                  "name": "station_selected label",
+                  "placement": {
+                    "height": 26,
+                    "left": 50,
+                    "rotation": 0,
+                    "top": 10,
+                    "width": 235
+                  },
+                  "type": "text"
+                },
+                {
+                  "background": {
+                    "color": {
+                      "field": "aft_thruster_regeneration_mode",
+                      "fixed": "#D9D9D9"
+                    },
+                    "image": {
+                      "field": "sub_pump1_alarm",
+                      "mode": "fixed"
+                    }
+                  },
+                  "border": {
+                    "color": {
+                      "fixed": "dark-green"
+                    }
+                  },
+                  "config": {
+                    "align": "center",
+                    "color": {
+                      "fixed": "#000000"
+                    },
+                    "text": {
+                      "field": "sub_pump2_alarm",
+                      "mode": "fixed"
+                    },
+                    "valign": "middle"
+                  },
+                  "constraint": {
+                    "horizontal": "left",
+                    "vertical": "top"
+                  },
+                  "links": [],
+                  "name": "aft_thruster_regeneration_mode",
+                  "placement": {
+                    "height": 25,
+                    "left": 15,
+                    "rotation": 0,
+                    "top": 50,
+                    "width": 25
+                  },
+                  "type": "ellipse"
+                },
+                {
+                  "background": {
+                    "color": {
+                      "fixed": "transparent"
+                    }
+                  },
+                  "border": {
+                    "color": {
+                      "fixed": "dark-green"
+                    }
+                  },
+                  "config": {
+                    "align": "left",
+                    "color": {
+                      "fixed": "rgb(204, 204, 220)"
+                    },
+                    "size": 16,
+                    "text": {
+                      "field": "sub_pump1_alarm",
+                      "fixed": "AFT Thruster - Regeneration mode selected",
+                      "mode": "fixed"
+                    },
+                    "valign": "middle"
+                  },
+                  "constraint": {
+                    "horizontal": "left",
+                    "vertical": "top"
+                  },
+                  "links": [],
+                  "name": "aft_thruster_regeneration_mode label",
+                  "placement": {
+                    "height": 26,
+                    "left": 50,
+                    "rotation": 0,
+                    "top": 50,
+                    "width": 372
+                  },
+                  "type": "text"
+                },
+                {
+                  "background": {
+                    "color": {
+                      "field": "fwd_thruster_regeneration_mode",
+                      "fixed": "#D9D9D9"
+                    },
+                    "image": {
+                      "field": "sub_pump1_alarm",
+                      "mode": "fixed"
+                    }
+                  },
+                  "border": {
+                    "color": {
+                      "fixed": "dark-green"
+                    }
+                  },
+                  "config": {
+                    "align": "center",
+                    "color": {
+                      "fixed": "#000000"
+                    },
+                    "text": {
+                      "field": "sub_pump2_alarm",
+                      "mode": "fixed"
+                    },
+                    "valign": "middle"
+                  },
+                  "constraint": {
+                    "horizontal": "left",
+                    "vertical": "top"
+                  },
+                  "links": [],
+                  "name": "fwd_thruster_regeneration_mode",
+                  "placement": {
+                    "height": 25,
+                    "left": 15,
+                    "top": 200,
+                    "width": 25
+                  },
+                  "type": "ellipse"
+                },
+                {
+                  "background": {
+                    "color": {
+                      "fixed": "transparent"
+                    }
+                  },
+                  "border": {
+                    "color": {
+                      "fixed": "dark-green"
+                    }
+                  },
+                  "config": {
+                    "align": "left",
+                    "color": {
+                      "fixed": "rgb(204, 204, 220)"
+                    },
+                    "size": 16,
+                    "text": {
+                      "field": "sub_pump1_alarm",
+                      "fixed": "FWD Thruster - Regeneration mode selected",
+                      "mode": "fixed"
+                    },
+                    "valign": "middle"
+                  },
+                  "constraint": {
+                    "horizontal": "left",
+                    "vertical": "top"
+                  },
+                  "links": [],
+                  "name": "fwd_thruster_regeneration_mode label",
+                  "placement": {
+                    "height": 26,
+                    "left": 50,
+                    "rotation": 0,
+                    "top": 200,
+                    "width": 372
+                  },
+                  "type": "text"
+                },
+                {
+                  "background": {
+                    "color": {
+                      "fixed": "#D9D9D9"
+                    }
+                  },
+                  "border": {
+                    "color": {
+                      "fixed": "dark-green"
+                    }
+                  },
+                  "config": {
+                    "align": "center",
+                    "color": {
+                      "fixed": "#000000"
+                    },
+                    "size": 20,
+                    "text": {
+                      "field": "aft_thruster_lever_speed_signal",
+                      "fixed": "",
+                      "mode": "field"
+                    },
+                    "valign": "middle"
+                  },
+                  "constraint": {
+                    "horizontal": "left",
+                    "vertical": "top"
+                  },
+                  "links": [],
+                  "name": "aft_thruster_lever_speed_signal",
+                  "placement": {
+                    "height": 30,
+                    "left": 454,
+                    "rotation": 0,
+                    "top": 150,
+                    "width": 175
+                  },
+                  "type": "metric-value"
+                },
+                {
+                  "background": {
+                    "color": {
+                      "fixed": "transparent"
+                    }
+                  },
+                  "border": {
+                    "color": {
+                      "fixed": "dark-green"
+                    }
+                  },
+                  "config": {
+                    "align": "left",
+                    "color": {
+                      "fixed": "rgb(204, 204, 220)"
+                    },
+                    "size": 16,
+                    "text": {
+                      "field": "sub_pump1_alarm",
+                      "fixed": "AFT Thruster - Lever speed setting",
+                      "mode": "fixed"
+                    },
+                    "valign": "middle"
+                  },
+                  "connections": [],
+                  "constraint": {
+                    "horizontal": "left",
+                    "vertical": "top"
+                  },
+                  "links": [],
+                  "name": "aft_thruster_lever_speed_signal label",
+                  "placement": {
+                    "height": 26,
+                    "left": 50,
+                    "rotation": 0,
+                    "top": 150,
+                    "width": 334
+                  },
+                  "type": "text"
+                },
+                {
+                  "background": {
+                    "color": {
+                      "field": "aft_thruster_regeneration_mode",
+                      "fixed": "#D9D9D9"
+                    },
+                    "image": {
+                      "field": "sub_pump1_alarm",
+                      "mode": "fixed"
+                    }
+                  },
+                  "border": {
+                    "color": {
+                      "fixed": "dark-green"
+                    }
+                  },
+                  "config": {
+                    "align": "center",
+                    "color": {
+                      "fixed": "#000000"
+                    },
+                    "text": {
+                      "field": "sub_pump2_alarm",
+                      "mode": "fixed"
+                    },
+                    "valign": "middle"
+                  },
+                  "constraint": {
+                    "horizontal": "left",
+                    "vertical": "top"
+                  },
+                  "links": [],
+                  "name": "aft_thruster_propulsion_mode",
+                  "placement": {
+                    "height": 25,
+                    "left": 15,
+                    "rotation": 0,
+                    "top": 80,
+                    "width": 25
+                  },
+                  "type": "ellipse"
+                },
+                {
+                  "background": {
+                    "color": {
+                      "fixed": "transparent"
+                    }
+                  },
+                  "border": {
+                    "color": {
+                      "fixed": "dark-green"
+                    }
+                  },
+                  "config": {
+                    "align": "left",
+                    "color": {
+                      "fixed": "rgb(204, 204, 220)"
+                    },
+                    "size": 16,
+                    "text": {
+                      "field": "sub_pump1_alarm",
+                      "fixed": "AFT Thruster - Propulsion mode selected",
+                      "mode": "fixed"
+                    },
+                    "valign": "middle"
+                  },
+                  "constraint": {
+                    "horizontal": "left",
+                    "vertical": "top"
+                  },
+                  "links": [],
+                  "name": "aft_thruster_propulsion_mode label",
+                  "placement": {
+                    "height": 26,
+                    "left": 50,
+                    "rotation": 0,
+                    "top": 80,
+                    "width": 372
+                  },
+                  "type": "text"
+                },
+                {
+                  "background": {
+                    "color": {
+                      "field": "aft_thruster_propulsion_mode",
+                      "fixed": "#D9D9D9"
+                    },
+                    "image": {
+                      "field": "sub_pump1_alarm",
+                      "mode": "fixed"
+                    }
+                  },
+                  "border": {
+                    "color": {
+                      "fixed": "dark-green"
+                    }
+                  },
+                  "config": {
+                    "align": "center",
+                    "color": {
+                      "fixed": "#000000"
+                    },
+                    "text": {
+                      "field": "sub_pump2_alarm",
+                      "mode": "fixed"
+                    },
+                    "valign": "middle"
+                  },
+                  "constraint": {
+                    "horizontal": "left",
+                    "vertical": "top"
+                  },
+                  "links": [],
+                  "name": "fwd_thruster_propulsion_mode",
+                  "placement": {
+                    "height": 25,
+                    "left": 15,
+                    "top": 230,
+                    "width": 25
+                  },
+                  "type": "ellipse"
+                },
+                {
+                  "background": {
+                    "color": {
+                      "fixed": "transparent"
+                    }
+                  },
+                  "border": {
+                    "color": {
+                      "fixed": "dark-green"
+                    }
+                  },
+                  "config": {
+                    "align": "left",
+                    "color": {
+                      "fixed": "rgb(204, 204, 220)"
+                    },
+                    "size": 16,
+                    "text": {
+                      "field": "sub_pump1_alarm",
+                      "fixed": "FWD Thruster - Propulsion mode selected",
+                      "mode": "fixed"
+                    },
+                    "valign": "middle"
+                  },
+                  "constraint": {
+                    "horizontal": "left",
+                    "vertical": "top"
+                  },
+                  "links": [],
+                  "name": "fwd_thruster_propulsion_mode label",
+                  "placement": {
+                    "height": 26,
+                    "left": 50,
+                    "top": 230,
+                    "width": 372
+                  },
+                  "type": "text"
+                },
+                {
+                  "background": {
+                    "color": {
+                      "field": "aft_thruster_regeneration_mode",
+                      "fixed": "#D9D9D9"
+                    },
+                    "image": {
+                      "field": "sub_pump1_alarm",
+                      "mode": "fixed"
+                    }
+                  },
+                  "border": {
+                    "color": {
+                      "fixed": "dark-green"
+                    }
+                  },
+                  "config": {
+                    "align": "center",
+                    "color": {
+                      "fixed": "#000000"
+                    },
+                    "text": {
+                      "field": "sub_pump2_alarm",
+                      "mode": "fixed"
+                    },
+                    "valign": "middle"
+                  },
+                  "constraint": {
+                    "horizontal": "left",
+                    "vertical": "top"
+                  },
+                  "links": [],
+                  "name": "aft_thruster_maneuvring_mode",
+                  "placement": {
+                    "height": 25,
+                    "left": 15,
+                    "rotation": 0,
+                    "top": 110,
+                    "width": 25
+                  },
+                  "type": "ellipse"
+                },
+                {
+                  "background": {
+                    "color": {
+                      "fixed": "transparent"
+                    }
+                  },
+                  "border": {
+                    "color": {
+                      "fixed": "dark-green"
+                    }
+                  },
+                  "config": {
+                    "align": "left",
+                    "color": {
+                      "fixed": "rgb(204, 204, 220)"
+                    },
+                    "size": 16,
+                    "text": {
+                      "field": "sub_pump1_alarm",
+                      "fixed": "AFT Thruster - Maneuvering mode selected",
+                      "mode": "fixed"
+                    },
+                    "valign": "middle"
+                  },
+                  "constraint": {
+                    "horizontal": "left",
+                    "vertical": "top"
+                  },
+                  "links": [],
+                  "name": "aft_thruster_maneuvring_mode label",
+                  "placement": {
+                    "height": 26,
+                    "left": 50,
+                    "rotation": 0,
+                    "top": 110,
+                    "width": 372
+                  },
+                  "type": "text"
+                },
+                {
+                  "background": {
+                    "color": {
+                      "field": "fwd_thruster_maneuvring_mode",
+                      "fixed": "#D9D9D9"
+                    },
+                    "image": {
+                      "field": "sub_pump1_alarm",
+                      "mode": "fixed"
+                    }
+                  },
+                  "border": {
+                    "color": {
+                      "fixed": "dark-green"
+                    }
+                  },
+                  "config": {
+                    "align": "center",
+                    "color": {
+                      "fixed": "#000000"
+                    },
+                    "text": {
+                      "field": "sub_pump2_alarm",
+                      "mode": "fixed"
+                    },
+                    "valign": "middle"
+                  },
+                  "constraint": {
+                    "horizontal": "left",
+                    "vertical": "top"
+                  },
+                  "links": [],
+                  "name": "fwd_thruster_maneuvring_mode",
+                  "placement": {
+                    "height": 25,
+                    "left": 15,
+                    "top": 260,
+                    "width": 25
+                  },
+                  "type": "ellipse"
+                },
+                {
+                  "background": {
+                    "color": {
+                      "fixed": "transparent"
+                    }
+                  },
+                  "border": {
+                    "color": {
+                      "fixed": "dark-green"
+                    }
+                  },
+                  "config": {
+                    "align": "left",
+                    "color": {
+                      "fixed": "rgb(204, 204, 220)"
+                    },
+                    "size": 16,
+                    "text": {
+                      "field": "sub_pump1_alarm",
+                      "fixed": "FWD Thruster - Maneuvering mode selected",
+                      "mode": "fixed"
+                    },
+                    "valign": "middle"
+                  },
+                  "constraint": {
+                    "horizontal": "left",
+                    "vertical": "top"
+                  },
+                  "links": [],
+                  "name": "fwd_thruster_maneuvring_mode label",
+                  "placement": {
+                    "height": 26,
+                    "left": 50,
+                    "top": 260,
+                    "width": 372
+                  },
+                  "type": "text"
+                },
+                {
+                  "background": {
+                    "color": {
+                      "fixed": "#D9D9D9"
+                    }
+                  },
+                  "border": {
+                    "color": {
+                      "fixed": "dark-green"
+                    }
+                  },
+                  "config": {
+                    "align": "center",
+                    "color": {
+                      "fixed": "#000000"
+                    },
+                    "size": 20,
+                    "text": {
+                      "field": "fwd_thruster_lever_speed_signal",
+                      "fixed": "",
+                      "mode": "field"
+                    },
+                    "valign": "middle"
+                  },
+                  "constraint": {
+                    "horizontal": "left",
+                    "vertical": "top"
+                  },
+                  "links": [],
+                  "name": "fwd_thruster_lever_speed_signal",
+                  "placement": {
+                    "height": 30,
+                    "left": 454,
+                    "top": 300,
+                    "width": 175
+                  },
+                  "type": "metric-value"
+                },
+                {
+                  "background": {
+                    "color": {
+                      "fixed": "transparent"
+                    }
+                  },
+                  "border": {
+                    "color": {
+                      "fixed": "dark-green"
+                    }
+                  },
+                  "config": {
+                    "align": "left",
+                    "color": {
+                      "fixed": "rgb(204, 204, 220)"
+                    },
+                    "size": 16,
+                    "text": {
+                      "field": "sub_pump1_alarm",
+                      "fixed": "FWD Thruster - Lever speed setting",
+                      "mode": "fixed"
+                    },
+                    "valign": "middle"
+                  },
+                  "constraint": {
+                    "horizontal": "left",
+                    "vertical": "top"
+                  },
+                  "links": [],
+                  "name": "fwd_thruster_lever_speed_signal label",
+                  "placement": {
+                    "height": 26,
+                    "left": 50,
+                    "top": 300,
+                    "width": 348
+                  },
+                  "type": "text"
+                }
+              ],
+              "name": "Element 1767698352074",
+              "placement": {
+                "height": 100,
+                "left": 0,
+                "rotation": 0,
+                "top": 0,
+                "width": 100
+              },
+              "type": "frame"
+            },
+            "showAdvancedTypes": false,
+            "tooltip": {
+              "disableForOneClick": false,
+              "mode": "none"
+            },
+            "zoomToContent": false
+          },
+          "pluginVersion": "12.3.0",
+          "targets": [
+            {
+              "dataset": "dev",
+              "datasource": {
+                "type": "grafana-postgresql-datasource",
+                "uid": "${datasource}"
+              },
+              "editorMode": "code",
+              "editorType": "sql",
+              "format": 1,
+              "meta": {
+                "builderOptions": {
+                  "columns": [],
+                  "database": "",
+                  "limit": 1000,
+                  "meta": {},
+                  "mode": "list",
+                  "queryType": "table",
+                  "table": ""
+                }
+              },
+              "pluginVersion": "2.1.4",
+              "queryType": "table",
+              "rawQuery": true,
+              "rawSql": "SELECT\r\n  timestamp                                                  AS time,\r\n  station_selected__value                                    AS station_selected,\r\n  -- reg_mode_selected_aft_thruster__value                      AS aft_thruster_regeneration_mode,\r\n  -- reg_mode_selected_fwd_thruster__value                      AS fwd_thruster_regeneration_mode,\r\n  -- prop_mode_selected_aft_thruster__value                     AS aft_thruster_propulsion_mode,\r\n  -- prop_mode_selected_fwd_thruster__value                     AS fwd_thruster_propulsion_mode,\r\n  -- man_mode_selected_aft_thruster__value                      AS aft_thruster_maneuvring_mode,\r\n  -- man_mode_selected_fwd_thruster__value                      AS fwd_thruster_maneuvring_mode,\r\n  ((aft_thruster_lever_speed_signal__value /327.0 ) -50) * 2 AS aft_thruster_lever_speed_signal,\r\n  ((fwd_thruster_lever_speed_signal__value /327.0 ) -50) * 2 AS fwd_thruster_lever_speed_signal\r\nFROM public.marpower__150000propulsion__pcs_fwd_sbhelm\r\nWHERE $__timeFilter(timestamp)\r\nORDER BY timestamp DESC\r\nLIMIT 1",
+              "refId": "A",
+              "sql": {
+                "columns": [
+                  {
+                    "parameters": [],
+                    "type": "function"
+                  }
+                ],
+                "groupBy": [
+                  {
+                    "property": {
+                      "type": "string"
+                    },
+                    "type": "groupBy"
+                  }
+                ],
+                "limit": 50
+              }
+            }
+          ],
+          "title": "SB Helm console",
+          "type": "canvas"
+        }
+      ],
+      "title": "PCS status",
+      "type": "row"
+    },
+    {
+      "datasource": {
+        "type": "grafana-postgresql-datasource",
+        "uid": "${datasource}"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "custom": {
+            "align": "left",
+            "cellOptions": {
+              "type": "auto"
+            },
+            "filterable": false,
+            "footer": {
+              "reducers": []
+            },
+            "inspect": false,
+            "minWidth": 160
+          },
+          "decimals": 2,
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": 0
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "time"
+            },
+            "properties": [
+              {
+                "id": "custom.hideFrom.viz",
+                "value": false
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Speed"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "rotrpm"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Torque"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "forceNm"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Flow"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "flowlpm"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Torque setpoint"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "Q/rpm²"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "power"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "kwatt"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byRegexp",
+              "options": "/temp/"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "celsius"
+              }
+            ]
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 4,
+        "w": 24,
+        "x": 0,
+        "y": 23
+      },
+      "id": 41,
+      "options": {
+        "cellHeight": "sm",
+        "enablePagination": false,
+        "showHeader": true,
+        "sortBy": [
+          {
+            "desc": false,
+            "displayName": "device"
+          }
+        ]
+      },
+      "pluginVersion": "12.3.0",
+      "targets": [
+        {
+          "dataset": "dev",
+          "datasource": {
+            "type": "grafana-postgresql-datasource",
+            "uid": "${datasource}"
+          },
+          "editorMode": "code",
+          "editorType": "sql",
+          "format": 1,
+          "meta": {
+            "builderOptions": {
+              "columns": [],
+              "database": "",
+              "limit": 1000,
+              "meta": {},
+              "mode": "list",
+              "queryType": "table",
+              "table": ""
+            }
+          },
+          "pluginVersion": "2.1.4",
+          "queryType": "table",
+          "rawQuery": true,
+          "rawSql": "WITH fwd1 AS (\r\n  SELECT\r\n    timestamp AS time,\r\n    speed__value AS speed,\r\n    torque__value AS torque,\r\n    power__value AS \"power\",\r\n    temp_igbt__value AS igbt_temp,\r\n    temp_power_stage__value AS power_stage_temp\r\n  FROM public.marpower__150000propulsion__pcs_fwd_ara1\r\n  WHERE $__timeFilter(timestamp)\r\n  ORDER BY timestamp DESC\r\n  LIMIT 5\r\n),\r\nfwd2 AS (\r\n  SELECT\r\n    timestamp AS time,\r\n    speed__value AS speed,\r\n    torque__value AS torque,\r\n    power__value AS \"power\",\r\n    temp_igbt__value AS igbt_temp,\r\n    temp_power_stage__value AS power_stage_temp\r\n  FROM public.marpower__150000propulsion__pcs_fwd_ara2\r\n  WHERE $__timeFilter(timestamp)\r\n  ORDER BY timestamp DESC\r\n  LIMIT 5\r\n)\r\nSELECT\r\n  'Aradex 1'                    AS device,\r\n  fwd1.time                     AS time,\r\n  fwd1.speed AS speed,\r\n  fwd1.torque AS torque,\r\n  NULL                          AS torque_setpoint,\r\n  fwd1.power_stage_temp AS power_stage_temp,\r\n  fwd1.igbt_temp AS igbt_temp,\r\n  fwd1.\"power\" AS \"power\"\r\nFROM fwd1\r\n\r\nUNION ALL\r\n\r\nSELECT\r\n  'Aradex 2'                    AS device,\r\n  fwd2.time AS time,\r\n  fwd2.speed AS speed,\r\n  fwd2.torque AS torque,\r\n  NULL                          AS torque_setpoint,\r\n  fwd2.power_stage_temp AS power_stage_temp,\r\n  fwd2.igbt_temp AS igbt_temp,\r\n  fwd2.\"power\" AS \"power\"\r\nFROM fwd2\r\n\r\nORDER BY device",
+          "refId": "A",
+          "sql": {
+            "columns": [
+              {
+                "parameters": [],
+                "type": "function"
+              }
+            ],
+            "groupBy": [
+              {
+                "property": {
+                  "type": "string"
+                },
+                "type": "groupBy"
+              }
+            ],
+            "limit": 50
+          }
+        }
+      ],
+      "title": "",
+      "type": "table"
+    },
+    {
+      "datasource": {
+        "type": "grafana-postgresql-datasource",
+        "uid": "${datasource}"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisBorderShow": false,
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "barWidthFactor": 0.6,
+            "drawStyle": "points",
+            "fillOpacity": 0,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "insertNulls": false,
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "auto",
+            "showValues": false,
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": 0
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          },
+          "unit": "rotrpm"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 10,
+        "w": 24,
+        "x": 0,
+        "y": 27
+      },
+      "id": 31,
+      "options": {
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "hideZeros": false,
+          "mode": "single",
+          "sort": "none"
+        }
+      },
+      "pluginVersion": "12.3.0",
+      "targets": [
+        {
+          "datasource": {
+            "type": "info8fcc-greptimedb-datasource",
+            "uid": "${datasource}"
+          },
+          "editorType": "sql",
+          "format": 1,
+          "hide": false,
+          "meta": {
+            "builderOptions": {
+              "columns": [],
+              "database": "",
+              "limit": 1000,
+              "meta": {},
+              "mode": "list",
+              "queryType": "table",
+              "table": ""
+            }
+          },
+          "pluginVersion": "2.1.4",
+          "queryType": "table",
+          "rawSql": "SELECT\r\n  timestamp AS time,\r\n  speed__value AS speed,\r\n  'Aradex 1' AS device\r\nFROM public.marpower__150000propulsion__pcs_fwd_ara1\r\nWHERE $__timeFilter(timestamp)\r\n\r\nUNION ALL\r\n\r\nSELECT\r\n  timestamp AS time,\r\n  speed__value AS speed,\r\n  'Aradex 2' AS device\r\nFROM public.marpower__150000propulsion__pcs_fwd_ara2\r\nWHERE $__timeFilter(timestamp)\r\n\r\nORDER BY time",
+          "refId": "A"
+        }
+      ],
+      "title": "Speed",
+      "transformations": [
+        {
+          "id": "partitionByValues",
+          "options": {
+            "fields": [
+              "device"
+            ],
+            "keepFields": false
+          }
+        }
+      ],
+      "type": "timeseries"
+    },
+    {
+      "datasource": {
+        "type": "grafana-postgresql-datasource",
+        "uid": "${datasource}"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisBorderShow": false,
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "barWidthFactor": 0.6,
+            "drawStyle": "line",
+            "fillOpacity": 0,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "insertNulls": false,
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "auto",
+            "showValues": false,
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": 0
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          },
+          "unit": "forceNm"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 10,
+        "w": 24,
+        "x": 0,
+        "y": 37
+      },
+      "id": 84,
+      "options": {
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "hideZeros": false,
+          "mode": "single",
+          "sort": "none"
+        }
+      },
+      "pluginVersion": "12.3.0",
+      "targets": [
+        {
+          "dataset": "dev",
+          "datasource": {
+            "type": "grafana-postgresql-datasource",
+            "uid": "${datasource}"
+          },
+          "editorMode": "code",
+          "editorType": "sql",
+          "format": 1,
+          "meta": {
+            "builderOptions": {
+              "columns": [],
+              "database": "",
+              "limit": 1000,
+              "meta": {},
+              "mode": "list",
+              "queryType": "table",
+              "table": ""
+            }
+          },
+          "pluginVersion": "2.1.4",
+          "queryType": "table",
+          "rawQuery": true,
+          "rawSql": "SELECT\r\n  greptime_timestamp AS time,\r\n  \"ShearBeamCalculated.Value\" AS torque\r\nFROM public.marpower__150000propulsion__pcs_fwd\r\nWHERE $__timeFilter(greptime_timestamp)",
+          "refId": "A",
+          "sql": {
+            "columns": [
+              {
+                "parameters": [],
+                "type": "function"
+              }
+            ],
+            "groupBy": [
+              {
+                "property": {
+                  "type": "string"
+                },
+                "type": "groupBy"
+              }
+            ],
+            "limit": 50
+          }
+        }
+      ],
+      "title": "Randax torque",
+      "transformations": [
+        {
+          "id": "organize",
+          "options": {
+            "excludeByName": {},
+            "includeByName": {},
+            "indexByName": {},
+            "renameByName": {
+              "aradex1_torque": "Aradex 1",
+              "aradex2_torque": "Aradex 2",
+              "measured_torque": "Measured",
+              "speed": "Speed",
+              "torque": "Torque"
+            }
+          }
+        }
+      ],
+      "type": "timeseries"
+    },
+    {
+      "datasource": {
+        "type": "grafana-postgresql-datasource",
+        "uid": "${datasource}"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisBorderShow": false,
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "barWidthFactor": 0.6,
+            "drawStyle": "points",
+            "fillOpacity": 0,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "insertNulls": false,
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "auto",
+            "showValues": false,
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "decimals": 2,
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": 0
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          },
+          "unit": "kwatt"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 9,
+        "w": 24,
+        "x": 0,
+        "y": 47
+      },
+      "id": 69,
+      "options": {
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "hideZeros": false,
+          "mode": "single",
+          "sort": "none"
+        }
+      },
+      "pluginVersion": "12.3.0",
+      "targets": [
+        {
+          "dataset": "dev",
+          "datasource": {
+            "type": "grafana-postgresql-datasource",
+            "uid": "${datasource}"
+          },
+          "editorMode": "code",
+          "editorType": "sql",
+          "format": 1,
+          "hide": false,
+          "meta": {
+            "builderOptions": {
+              "columns": [],
+              "database": "",
+              "limit": 1000,
+              "meta": {},
+              "mode": "list",
+              "queryType": "table",
+              "table": ""
+            }
+          },
+          "pluginVersion": "2.1.4",
+          "queryType": "table",
+          "rawQuery": true,
+          "rawSql": "SELECT\r\n  timestamp AS time,\r\n  power__value AS \"power\",\r\n  'Aradex 1' AS device\r\nFROM public.marpower__150000propulsion__pcs_fwd_ara1\r\nWHERE $__timeFilter(timestamp)\r\n\r\nUNION ALL\r\n\r\nSELECT\r\n  timestamp AS time,\r\n  power__value AS \"power\",\r\n  'Aradex 2' AS device\r\nFROM public.marpower__150000propulsion__pcs_fwd_ara2\r\nWHERE $__timeFilter(timestamp)\r\n\r\nORDER BY time",
+          "refId": "A",
+          "sql": {
+            "columns": [
+              {
+                "parameters": [],
+                "type": "function"
+              }
+            ],
+            "groupBy": [
+              {
+                "property": {
+                  "type": "string"
+                },
+                "type": "groupBy"
+              }
+            ],
+            "limit": 50
+          }
+        }
+      ],
+      "title": "Aradex power",
+      "transformations": [
+        {
+          "id": "partitionByValues",
+          "options": {
+            "fields": [
+              "device"
+            ],
+            "keepFields": false
+          }
+        }
+      ],
+      "type": "timeseries"
+    }
+  ],
+  "preload": false,
+  "refresh": "",
+  "schemaVersion": 42,
+  "tags": [
+    "commisssioning"
+  ],
+  "templating": {
+    "list": [
+      {
+        "current": {
+          "text": "GreptimeDB",
+          "value": "P6A33BD2DBCC29C4B"
+        },
+        "name": "datasource",
+        "options": [],
+        "query": "info8fcc-greptimedb-datasource",
+        "refresh": 1,
+        "regex": "",
+        "type": "datasource"
+      },
+      {
+        "current": {
+          "text": "1.478",
+          "value": "1.478"
+        },
+        "description": "This is the theoretical gear ratio between the external motor and the thruster",
+        "label": "Gear ratio",
+        "name": "gear_ratio",
+        "options": [
+          {
+            "selected": true,
+            "text": "1.478",
+            "value": "1.478"
+          }
+        ],
+        "query": "1.478",
+        "type": "textbox"
+      }
+    ]
+  },
+  "time": {
+    "from": "2026-06-05T06:18:56.000Z",
+    "to": "2026-06-05T07:21:18.000Z"
+  },
+  "timepicker": {
+    "refresh_intervals": [
+      "1m",
+      "5m",
+      "15m",
+      "30m",
+      "1h",
+      "2h",
+      "1d"
+    ]
+  },
+  "timezone": "browser",
+  "title": "Propulsion test FWD",
+  "uid": "propulsion-test-fwd",
+  "version": 3
+}
