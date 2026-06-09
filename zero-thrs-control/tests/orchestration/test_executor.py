@@ -21,7 +21,7 @@ from thrs.input_output.base import (
 )
 from thrs.input_output.definitions.sensor import FlowSensor
 from thrs.orchestration.config import Config
-from thrs.orchestration.executor import BoatExecutor, MqttExecutor
+from thrs.orchestration.executor import MqttControlConnector, MqttExecutor
 from thrs.orchestration.module import CombinedModule, ModuleDescription
 
 settings = Config()  # type: ignore
@@ -121,7 +121,7 @@ async def test_mqtt_executor(mqtt_client, mqtt_client2):
 
 
 async def test_boat_executor_echoes_controls_to_sensors(mqtt_client):
-    executor = BoatExecutor(
+    executor = MqttControlConnector(
         mqtt_client,
         f"{settings.mqtt_topic_prefix}/simple",
         CombinedModule(

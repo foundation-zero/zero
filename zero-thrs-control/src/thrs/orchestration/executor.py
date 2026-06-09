@@ -20,16 +20,16 @@ from thrs.utils.string import hyphenize
 logger = logging.getLogger(__name__)
 
 
-class MqttControlExecutor(Executor[CombinedValues, CombinedValues]):
+class MqttControlConnector(Executor[CombinedValues, CombinedValues]):
     def __init__(
         self,
-        controller_client: Client,
+        mqtt_client: Client,
         topic_prefix: str,
         module_nesting: CombinedModule,
         start_time: datetime | None = None,
     ):
         self._start_time = start_time or datetime.now()
-        self._controller_client = controller_client
+        self._mqtt_client = mqtt_client
         self._topic_prefix = topic_prefix
         self._module_nesting = module_nesting
 
@@ -37,7 +37,7 @@ class MqttControlExecutor(Executor[CombinedValues, CombinedValues]):
         self._sensors_builder = module_nesting.sensor_values_mqtt_mapping.builder()
 
     async def _listen_to_sensors(self):
-        async for message in self._controller_client.messages:
+        async for message in self._mqtt_client.messages:
             topic = self._clean_topic(message.topic)
             if not self._module_nesting.sensor_values_mqtt_mapping.has(topic):
                 continue
@@ -65,13 +65,13 @@ class MqttControlExecutor(Executor[CombinedValues, CombinedValues]):
     async def _send_control_values(self, control_values: CombinedValues):
         logging.debug("Publishing control values")
         await self._publish_by_mapping(
-            self._controller_client,
+            self._mqtt_client,
             self._module_nesting.control_values_mqtt_mapping,
             control_values,
         )
 
     async def start(self):
-        await self._controller_client.subscribe(
+        await self._mqtt_client.subscribe(
             f"{self._topic_prefix}/{self._module_nesting.sensor_values_mqtt_mapping.subscribe_topic()}",
             qos=1,
         )
@@ -106,16 +106,16 @@ class MqttControlExecutor(Executor[CombinedValues, CombinedValues]):
         return datetime.now()
 
 
-class MqttSimulationExecutor(Executor[CombinedValues, CombinedValues]):
+class MqttSimulationConnector(Executor[CombinedValues, CombinedValues]):
     def __init__(
         self,
         inner: Executor,
-        environment_client: Client,
+        mqtt_client: Client,
         topic_prefix: str,
         module_nesting: CombinedModule,
     ):
         self._inner = inner
-        self._environment_client = environment_client
+        self._mqtt_client = mqtt_client
         self._topic_prefix = topic_prefix
         self._module_nesting = module_nesting
 
@@ -153,7 +153,7 @@ class MqttSimulationExecutor(Executor[CombinedValues, CombinedValues]):
     ):
         logging.debug("Publishing sensor values")
         await self._publish_by_mapping(
-            self._environment_client,
+            self._mqtt_client,
             self._module_nesting.sensor_values_mqtt_mapping,
             execution_result.sensor_values,
         )
@@ -172,7 +172,7 @@ class MqttSimulationExecutor(Executor[CombinedValues, CombinedValues]):
         if isinstance(execution_result, SimulationExecutionResult):
             logging.debug("Publishing simulation output values")
             await self._publish_by_mapping(
-                self._environment_client,
+                self._mqtt_client,
                 self._module_nesting.simulation_output_mqtt_mapping,
                 execution_result.simulation_outputs,
             )
@@ -199,14 +199,14 @@ class MqttExecutor(Executor[CombinedValues, CombinedValues]):
         topic_prefix: str,
         module_nesting: CombinedModule,
     ):
-        self._control_executor = MqttControlExecutor(
-            controller_client=controller_client,
+        self._control_executor = MqttControlConnector(
+            mqtt_client=controller_client,
             topic_prefix=topic_prefix,
             module_nesting=module_nesting,
         )
-        self._simulation_executor = MqttSimulationExecutor(
+        self._simulation_executor = MqttSimulationConnector(
             inner=inner,
-            environment_client=environment_client,
+            mqtt_client=environment_client,
             topic_prefix=topic_prefix,
             module_nesting=module_nesting,
         )
@@ -230,9 +230,6 @@ class MqttExecutor(Executor[CombinedValues, CombinedValues]):
 
     def time(self) -> datetime:
         return self._simulation_executor.time()
-
-
-BoatExecutor = MqttControlExecutor
 
 
 @dataclass
