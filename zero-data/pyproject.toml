@@ -36,6 +36,8 @@ python-dotenv = "^1.1.0"
 ruff = "^0.9.3"
 types-openpyxl = "^3.1.5.20250602"
 sqlalchemy = "^2.0.43"
+adbc-driver-postgresql = "^1.11.0"
+pyarrow = "^24.0.0"
 
 [tool.poetry.group.test]
 optional = true
