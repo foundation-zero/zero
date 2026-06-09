@@ -680,7 +680,7 @@
         ]
       },
       "gridPos": {
-        "h": 4,
+        "h": 3,
         "w": 24,
         "x": 0,
         "y": 31
@@ -743,7 +743,7 @@
           }
         }
       ],
-      "title": "Aradex",
+      "title": "",
       "transformations": [
         {
           "id": "organize",
@@ -843,7 +843,7 @@
         "h": 9,
         "w": 24,
         "x": 0,
-        "y": 35
+        "y": 34
       },
       "id": 66,
       "options": {
@@ -1004,7 +1004,7 @@
         "h": 9,
         "w": 24,
         "x": 0,
-        "y": 44
+        "y": 43
       },
       "id": 83,
       "options": {
@@ -1165,7 +1165,7 @@
         "h": 9,
         "w": 24,
         "x": 0,
-        "y": 53
+        "y": 52
       },
       "id": 68,
       "options": {
@@ -1336,7 +1336,7 @@
         "h": 9,
         "w": 24,
         "x": 0,
-        "y": 62
+        "y": 61
       },
       "id": 64,
       "options": {
@@ -1436,7 +1436,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 71
+        "y": 70
       },
       "id": 24,
       "panels": [],
@@ -1497,7 +1497,7 @@
         "h": 10,
         "w": 12,
         "x": 0,
-        "y": 72
+        "y": 71
       },
       "id": 50,
       "options": {
@@ -2358,7 +2358,7 @@
         "h": 10,
         "w": 12,
         "x": 12,
-        "y": 72
+        "y": 71
       },
       "id": 86,
       "options": {
@@ -3171,7 +3171,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 82
+        "y": 81
       },
       "id": 25,
       "panels": [],
@@ -3232,36 +3232,12 @@
           {
             "matcher": {
               "id": "byName",
-              "options": "Flow"
-            },
-            "properties": [
-              {
-                "id": "unit",
-                "value": "flowlpm"
-              }
-            ]
-          },
-          {
-            "matcher": {
-              "id": "byName",
               "options": "Torque setpoint"
             },
             "properties": [
               {
                 "id": "unit",
                 "value": "Q/rpm²"
-              }
-            ]
-          },
-          {
-            "matcher": {
-              "id": "byName",
-              "options": "power"
-            },
-            "properties": [
-              {
-                "id": "unit",
-                "value": "kwatt"
               }
             ]
           },
@@ -3288,6 +3264,30 @@
                 "value": "forceNm"
               }
             ]
+          },
+          {
+            "matcher": {
+              "id": "byRegexp",
+              "options": "/power/"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "kwatt"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byRegexp",
+              "options": "/speed/"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "rotrpm"
+              }
+            ]
           }
         ]
       },
@@ -3295,7 +3295,7 @@
         "h": 4,
         "w": 24,
         "x": 0,
-        "y": 83
+        "y": 82
       },
       "id": 41,
       "options": {
@@ -3369,12 +3369,12 @@
               "flow": "Flow",
               "gear_ratio": "Gear ratio",
               "igbt_temp": "IGBT temp",
-              "measured_torque": "Measured torque",
-              "power": "Power",
+              "measured_torque": "Randax torque",
+              "power": "Aradex power",
               "power_stage_temp": "Power stage temp",
               "pressure": "Pressure",
               "seq_nr": "",
-              "speed": "Speed",
+              "speed": "Aradex speed",
               "speed_torque_setpoint": "",
               "temperature": "Temperature",
               "temperature_delta": "T delta",
@@ -3455,7 +3455,7 @@
         "h": 10,
         "w": 24,
         "x": 0,
-        "y": 87
+        "y": 86
       },
       "id": 31,
       "options": {
@@ -3522,7 +3522,7 @@
           "refId": "B"
         }
       ],
-      "title": "Speed",
+      "title": "Aradex speed",
       "transformations": [
         {
           "id": "organize",
@@ -3607,7 +3607,7 @@
         "h": 10,
         "w": 24,
         "x": 0,
-        "y": 97
+        "y": 96
       },
       "id": 84,
       "options": {
@@ -3634,6 +3634,7 @@
           "editorMode": "code",
           "editorType": "sql",
           "format": 1,
+          "hide": false,
           "meta": {
             "builderOptions": {
               "columns": [],
@@ -3717,7 +3718,7 @@
           "refId": "C"
         }
       ],
-      "title": "Torque",
+      "title": "Torques",
       "transformations": [
         {
           "id": "organize",
@@ -3726,9 +3727,9 @@
             "includeByName": {},
             "indexByName": {},
             "renameByName": {
-              "aradex1_torque": "Aradex 1",
-              "aradex2_torque": "Aradex 2",
-              "measured_torque": "Measured",
+              "aradex1_torque": "Aradex 1 torque",
+              "aradex2_torque": "Aradex 2 torque",
+              "measured_torque": "Randax torque",
               "speed": "Speed",
               "torque": "Torque"
             }
@@ -3804,7 +3805,7 @@
         "h": 9,
         "w": 24,
         "x": 0,
-        "y": 107
+        "y": 106
       },
       "id": 69,
       "options": {
@@ -3831,6 +3832,7 @@
           "editorMode": "code",
           "editorType": "sql",
           "format": 1,
+          "hide": false,
           "meta": {
             "builderOptions": {
               "columns": [],
@@ -3845,7 +3847,7 @@
           "pluginVersion": "2.1.4",
           "queryType": "table",
           "rawQuery": true,
-          "rawSql": "SELECT\r\n  timestamp AS time,\r\n  power__value AS \"power\"\r\nFROM public.marpower__150000propulsion__pcs_aft_ara1\r\nWHERE '${aft_fwd}' = 'AFT' AND $__timeFilter(timestamp)\r\n\r\nUNION ALL\r\n\r\nSELECT\r\n  timestamp AS time,\r\n  power__value AS \"power\"\r\nFROM public.marpower__150000propulsion__pcs_fwd_ara1\r\nWHERE '${aft_fwd}' = 'FWD' AND $__timeFilter(timestamp);",
+          "rawSql": "SELECT\r\n  timestamp AS time,\r\n  power__value AS aradex1_power\r\nFROM public.marpower__150000propulsion__pcs_aft_ara1\r\nWHERE '${aft_fwd}' = 'AFT' AND $__timeFilter(timestamp)\r\n\r\nUNION ALL\r\n\r\nSELECT\r\n  timestamp AS time,\r\n  power__value AS aradex1_power\r\nFROM public.marpower__150000propulsion__pcs_fwd_ara1\r\nWHERE '${aft_fwd}' = 'FWD' AND $__timeFilter(timestamp);",
           "refId": "A",
           "sql": {
             "columns": [
@@ -3886,11 +3888,11 @@
           },
           "pluginVersion": "2.1.4",
           "queryType": "table",
-          "rawSql": "SELECT\r\n  timestamp AS time,\r\n  power__value AS \"power\"\r\nFROM public.marpower__150000propulsion__pcs_aft_ara2\r\nWHERE '${aft_fwd}' = 'AFT' AND $__timeFilter(timestamp)\r\n\r\nUNION ALL\r\n\r\nSELECT\r\n  timestamp AS time,\r\n  power__value AS \"power\"\r\nFROM public.marpower__150000propulsion__pcs_fwd_ara2\r\nWHERE '${aft_fwd}' = 'FWD' AND $__timeFilter(timestamp);",
+          "rawSql": "SELECT\r\n  timestamp AS time,\r\n  power__value AS aradex2_power\r\nFROM public.marpower__150000propulsion__pcs_aft_ara2\r\nWHERE '${aft_fwd}' = 'AFT' AND $__timeFilter(timestamp)\r\n\r\nUNION ALL\r\n\r\nSELECT\r\n  timestamp AS time,\r\n  power__value AS aradex2_power\r\nFROM public.marpower__150000propulsion__pcs_fwd_ara2\r\nWHERE '${aft_fwd}' = 'FWD' AND $__timeFilter(timestamp);",
           "refId": "B"
         }
       ],
-      "title": "Power",
+      "title": "Aradex power",
       "transformations": [
         {
           "id": "organize",
@@ -3904,7 +3906,7 @@
               "device": "Device",
               "flow": "Flow",
               "gear_ratio": "Gear ratio",
-              "power": "Power",
+              "power": "",
               "pressure": "Pressure",
               "seq_nr": "",
               "speed": "Speed",
@@ -3927,7 +3929,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 116
+        "y": 115
       },
       "id": 26,
       "panels": [],
@@ -3979,7 +3981,7 @@
         "h": 5,
         "w": 11,
         "x": 0,
-        "y": 117
+        "y": 116
       },
       "id": 87,
       "options": {
@@ -4117,7 +4119,7 @@
         "h": 5,
         "w": 13,
         "x": 11,
-        "y": 117
+        "y": 116
       },
       "id": 13,
       "options": {
@@ -4746,10 +4748,10 @@
         "overrides": []
       },
       "gridPos": {
-        "h": 3,
+        "h": 4,
         "w": 24,
         "x": 0,
-        "y": 122
+        "y": 121
       },
       "id": 37,
       "options": {
@@ -5654,7 +5656,7 @@
           "pluginVersion": "2.1.4",
           "queryType": "table",
           "rawQuery": true,
-          "rawSql": "WITH aft_motor AS (\r\n  SELECT\r\n    timestamp AS time,\r\n    \"devices__thruster_test.r_power_aft_trstr_kw\" AS motor_power\r\n  FROM public.prop_test__data\r\n  WHERE '${aft_fwd}' = 'AFT' AND $__timeFilter(timestamp)\r\n  ORDER BY timestamp DESC\r\n  LIMIT 1\r\n),\r\naft1 AS (\r\n  SELECT\r\n    timestamp AS time,\r\n    speed__value AS speed,\r\n    torque__value AS torque,\r\n    power__value AS \"power\"\r\n  FROM public.marpower__150000propulsion__pcs_aft_ara1\r\n  WHERE '${aft_fwd}' = 'AFT' AND $__timeFilter(timestamp)\r\n  ORDER BY timestamp DESC\r\n  LIMIT 1\r\n),\r\naft2 AS (\r\n  SELECT\r\n    timestamp AS time,\r\n    speed__value AS speed,\r\n    torque__value AS torque,\r\n    power__value AS \"power\"\r\n  FROM public.marpower__150000propulsion__pcs_aft_ara2\r\n  WHERE '${aft_fwd}' = 'AFT' AND $__timeFilter(timestamp)\r\n  ORDER BY timestamp DESC\r\n  LIMIT 1\r\n),\r\nfwd_motor AS (\r\n  SELECT\r\n    timestamp AS time,\r\n    \"devices__thruster_test.r_power_fwd_trstr_kw\" AS motor_power\r\n  FROM public.prop_test__data\r\n  WHERE '${aft_fwd}' = 'FWD' AND $__timeFilter(timestamp)\r\n  ORDER BY timestamp DESC\r\n  LIMIT 1\r\n),\r\nfwd1 AS (\r\n  SELECT\r\n    timestamp AS time,\r\n    speed__value AS speed,\r\n    torque__value AS torque,\r\n    power__value AS \"power\"\r\n  FROM public.marpower__150000propulsion__pcs_fwd_ara1\r\n  WHERE '${aft_fwd}' = 'FWD' AND $__timeFilter(timestamp)\r\n  ORDER BY timestamp DESC\r\n  LIMIT 1\r\n),\r\nfwd2 AS (\r\n  SELECT\r\n    timestamp AS time,\r\n    speed__value AS speed,\r\n    torque__value AS torque,\r\n    power__value AS \"power\"\r\n  FROM public.marpower__150000propulsion__pcs_fwd_ara2\r\n  WHERE '${aft_fwd}' = 'FWD' AND $__timeFilter(timestamp)\r\n  ORDER BY timestamp DESC\r\n  LIMIT 1\r\n)\r\n\r\nSELECT\r\n  aft_motor.time                                                            AS time,\r\n  aft_motor.motor_power                                                     AS motor_power,\r\n  ((aft1.speed * aft1.torque) + (aft2.speed * aft2.torque)) / 60 * 2 * PI() AS theoretical_power,\r\n  aft1.power + aft2.power                                                   AS aradex_power\r\nFROM aft_motor, aft1, aft2\r\n\r\nUNION ALL\r\n\r\nSELECT\r\n  LEAST(fwd_motor.time, fwd1.time, fwd2.time)                               AS time,\r\n  fwd_motor.motor_power                                                     AS motor_power,\r\n  ((fwd1.speed * fwd1.torque) + (fwd2.speed * fwd2.torque)) / 60 * 2 * PI() AS theoretical_power,\r\n  fwd1.power + fwd2.power                                                   AS aradex_power\r\nFROM fwd_motor, fwd1, fwd2;",
+          "rawSql": "WITH aft_motor AS (\r\n  SELECT\r\n    timestamp AS time,\r\n    \"devices__thruster_test.r_power_aft_trstr_kw\" AS motor_power\r\n  FROM public.prop_test__data\r\n  WHERE '${aft_fwd}' = 'AFT' AND $__timeFilter(timestamp)\r\n  ORDER BY timestamp DESC\r\n  LIMIT 1\r\n),\r\naft1 AS (\r\n  SELECT\r\n    timestamp AS time,\r\n    power__value AS \"power\"\r\n  FROM public.marpower__150000propulsion__pcs_aft_ara1\r\n  WHERE '${aft_fwd}' = 'AFT' AND $__timeFilter(timestamp)\r\n  ORDER BY timestamp DESC\r\n  LIMIT 1\r\n),\r\naft2 AS (\r\n  SELECT\r\n    timestamp AS time,\r\n    power__value AS \"power\"\r\n  FROM public.marpower__150000propulsion__pcs_aft_ara2\r\n  WHERE '${aft_fwd}' = 'AFT' AND $__timeFilter(timestamp)\r\n  ORDER BY timestamp DESC\r\n  LIMIT 1\r\n),\r\nfwd_motor AS (\r\n  SELECT\r\n    timestamp AS time,\r\n    \"devices__thruster_test.r_power_fwd_trstr_kw\" AS motor_power\r\n  FROM public.prop_test__data\r\n  WHERE '${aft_fwd}' = 'FWD' AND $__timeFilter(timestamp)\r\n  ORDER BY timestamp DESC\r\n  LIMIT 1\r\n),\r\nfwd1 AS (\r\n  SELECT\r\n    timestamp AS time,\r\n    power__value AS \"power\"\r\n  FROM public.marpower__150000propulsion__pcs_fwd_ara1\r\n  WHERE '${aft_fwd}' = 'FWD' AND $__timeFilter(timestamp)\r\n  ORDER BY timestamp DESC\r\n  LIMIT 1\r\n),\r\nfwd2 AS (\r\n  SELECT\r\n    timestamp AS time,\r\n    power__value AS \"power\"\r\n  FROM public.marpower__150000propulsion__pcs_fwd_ara2\r\n  WHERE '${aft_fwd}' = 'FWD' AND $__timeFilter(timestamp)\r\n  ORDER BY timestamp DESC\r\n  LIMIT 1\r\n)\r\n\r\nSELECT\r\n  aft_motor.time                                                            AS time,\r\n  aft_motor.motor_power                                                     AS motor_power,\r\n  aft1.power + aft2.power                                                   AS aradex_power\r\nFROM aft_motor, aft1, aft2\r\n\r\nUNION ALL\r\n\r\nSELECT\r\n  LEAST(fwd_motor.time, fwd1.time, fwd2.time)                               AS time,\r\n  fwd_motor.motor_power                                                     AS motor_power,\r\n  fwd1.power + fwd2.power                                                   AS aradex_power\r\nFROM fwd_motor, fwd1, fwd2;",
           "refId": "A",
           "sql": {
             "columns": [
@@ -5684,7 +5686,7 @@
             "includeByName": {},
             "indexByName": {},
             "renameByName": {
-              "aradex_power": "Aradex power (measured)",
+              "aradex_power": "Aradex power",
               "device": "Device",
               "flow": "Flow",
               "gear_ratio": "Gear ratio",
@@ -5698,7 +5700,7 @@
               "temperature_delta": "T delta",
               "temperature_in": "T in",
               "temperature_out": "T out",
-              "theoretical_power": "Aradex power (theoretical)",
+              "theoretical_power": "",
               "time": "Time",
               "torque": "Torque",
               "torque_setpoint": "Torque setpoint"
@@ -6429,7 +6431,7 @@
               "flow": "Flow",
               "gear_ratio": "Gear ratio",
               "lever_pos": "Lever",
-              "measured_torque": "Measured torque",
+              "measured_torque": "Randax torque",
               "motor_power": "Motor power",
               "motor_speed": "Motor speed",
               "motor_torque": "Motor torque",
