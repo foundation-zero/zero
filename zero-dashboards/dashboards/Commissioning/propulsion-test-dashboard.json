@@ -18,7 +18,7 @@
   "editable": true,
   "fiscalYearStartMonth": 0,
   "graphTooltip": 0,
-  "id": 10,
+  "id": 0,
   "links": [
     {
       "asDropdown": true,
@@ -6471,18 +6471,6 @@
           {
             "matcher": {
               "id": "byName",
-              "options": "rel_efficiency"
-            },
-            "properties": [
-              {
-                "id": "unit",
-                "value": "percent"
-              }
-            ]
-          },
-          {
-            "matcher": {
-              "id": "byName",
               "options": "Aradex 1 torque"
             },
             "properties": [
@@ -6503,6 +6491,18 @@
                 "value": 243
               }
             ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Efficiency"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "percentunit"
+              }
+            ]
           }
         ]
       },
@@ -6519,8 +6519,8 @@
         "showHeader": true,
         "sortBy": [
           {
-            "desc": false,
-            "displayName": "Device"
+            "desc": true,
+            "displayName": "Efficiency"
           }
         ]
       },
@@ -6549,7 +6549,7 @@
           "pluginVersion": "2.1.4",
           "queryType": "table",
           "rawQuery": true,
-          "rawSql": "WITH aft_motor AS (\r\n  SELECT\r\n    timestamp AS time,\r\n    \"devices__thruster_test.r_propellor_torque\" AS motor_torque\r\n  FROM public.prop_test__data\r\n  WHERE '${aft_fwd}' = 'AFT' AND $__timeFilter(timestamp)\r\n  ORDER BY timestamp DESC\r\n  LIMIT 1\r\n),\r\nfwd_motor AS (\r\n  SELECT\r\n    timestamp AS time,\r\n    \"devices__thruster_test.r_propellor_torque\" AS motor_torque\r\n  FROM public.prop_test__data\r\n  WHERE '${aft_fwd}' = 'FWD' AND $__timeFilter(timestamp)\r\n  ORDER BY timestamp DESC\r\n  LIMIT 1\r\n),\r\n-- aft_ara1 AS (\r\n--   SELECT\r\n--     timestamp AS time,\r\n--     torque__value AS torque\r\n--   FROM public.marpower__150000propulsion__pcs_aft_ara1\r\n--   WHERE '${aft_fwd}' = 'AFT' AND $__timeFilter(timestamp)\r\n--   ORDER BY timestamp DESC\r\n--   LIMIT 1\r\n-- ),\r\n-- fwd_ara1 AS (\r\n--   SELECT\r\n--     timestamp AS time,\r\n--     torque__value AS torque\r\n--   FROM public.marpower__150000propulsion__pcs_fwd_ara1\r\n--   WHERE '${aft_fwd}' = 'FWD' AND $__timeFilter(timestamp)\r\n--   ORDER BY timestamp DESC\r\n--   LIMIT 1\r\n-- ),\r\n-- aft_ara2 AS (\r\n--   SELECT\r\n--     timestamp AS time,\r\n--     torque__value AS torque\r\n--   FROM public.marpower__150000propulsion__pcs_aft_ara2\r\n--   WHERE '${aft_fwd}' = 'AFT' AND $__timeFilter(timestamp)\r\n--   ORDER BY timestamp DESC\r\n--   LIMIT 1\r\n-- ),\r\n-- fwd_ara2 AS (\r\n--   SELECT\r\n--     timestamp AS time,\r\n--     torque__value AS torque\r\n--   FROM public.marpower__150000propulsion__pcs_fwd_ara2\r\n--   WHERE '${aft_fwd}' = 'FWD' AND $__timeFilter(timestamp)\r\n--   ORDER BY timestamp DESC\r\n--   LIMIT 1\r\n-- ),\r\naft_measured AS (\r\n  SELECT\r\n    timestamp AS time,\r\n    shear_beam_calculated__value AS torque\r\n  FROM public.marpower__150000propulsion__pcs_aft\r\n  WHERE '${aft_fwd}' = 'AFT' AND $__timeFilter(timestamp)\r\n  ORDER BY timestamp DESC\r\n  LIMIT 1\r\n),\r\nfwd_measured AS (\r\n  SELECT\r\n    timestamp AS time,\r\n    shear_beam_calculated__value AS torque\r\n  FROM public.marpower__150000propulsion__pcs_fwd\r\n  WHERE '${aft_fwd}' = 'FWD' AND $__timeFilter(timestamp)\r\n  ORDER BY timestamp DESC\r\n  LIMIT 1\r\n)\r\n\r\nSELECT\r\n  LEAST(aft_motor.time, aft_measured.time)                                                                                 AS time,\r\n  ABS(aft_motor.motor_torque)                                                                                              AS motor_torque,\r\n  aft_measured.torque                                                                                                      AS measured_torque,\r\n  ABS(aft_motor.motor_torque) / NULLIF(aft_measured.torque * ${gear_ratio}, 0)                                             AS thruster_efficiency,\r\n  (100 * (ABS(aft_motor.motor_torque) / (aft_measured.torque * ${gear_ratio})) / GREATEST(ABS(aft_motor.motor_torque), 1)) AS rel_efficiency\r\nFROM aft_motor, aft_measured\r\n\r\nUNION ALL\r\n\r\nSELECT\r\n  LEAST(fwd_motor.time, fwd_measured.time)                                                                                 AS time,\r\n  ABS(fwd_motor.motor_torque)                                                                                              AS motor_torque,\r\n  fwd_measured.torque                                                                                                      AS measured_torque,\r\n  ABS(fwd_motor.motor_torque) / NULLIF(fwd_measured.torque * ${gear_ratio}, 0)                                             AS thruster_efficiency,\r\n  (100 * (ABS(fwd_motor.motor_torque) / (fwd_measured.torque * ${gear_ratio})) / GREATEST(ABS(fwd_motor.motor_torque), 1)) AS rel_efficiency\r\nFROM fwd_motor, fwd_measured",
+          "rawSql": "WITH aft_motor AS (\r\n  SELECT\r\n    timestamp AS time,\r\n    \"devices__thruster_test.r_propellor_torque\" AS prop_torque\r\n  FROM public.prop_test__data\r\n  WHERE '${aft_fwd}' = 'AFT' AND $__timeFilter(timestamp)\r\n  ORDER BY timestamp DESC\r\n  LIMIT 1\r\n),\r\nfwd_motor AS (\r\n  SELECT\r\n    timestamp AS time,\r\n    \"devices__thruster_test.r_propellor_torque\" AS prop_torque\r\n  FROM public.prop_test__data\r\n  WHERE '${aft_fwd}' = 'FWD' AND $__timeFilter(timestamp)\r\n  ORDER BY timestamp DESC\r\n  LIMIT 1\r\n),\r\naft_measured AS (\r\n  SELECT\r\n    timestamp AS time,\r\n    shear_beam_calculated__value AS randax_torque\r\n  FROM public.marpower__150000propulsion__pcs_aft\r\n  WHERE '${aft_fwd}' = 'AFT' AND $__timeFilter(timestamp)\r\n  ORDER BY timestamp DESC\r\n  LIMIT 1\r\n),\r\nfwd_measured AS (\r\n  SELECT\r\n    timestamp AS time,\r\n    shear_beam_calculated__value AS randax_torque\r\n  FROM public.marpower__150000propulsion__pcs_fwd\r\n  WHERE '${aft_fwd}' = 'FWD' AND $__timeFilter(timestamp)\r\n  ORDER BY timestamp DESC\r\n  LIMIT 1\r\n)\r\n\r\nSELECT\r\n  LEAST(aft_motor.time, aft_measured.time)                                            AS time,\r\n  ABS(aft_motor.prop_torque)                                                           AS prop_torque,\r\n  aft_measured.randax_torque                                                           AS randax_torque,\r\n  (aft_measured.randax_torque * ${gear_ratio})                                         AS ideal_prop_torque,\r\n  (aft_measured.randax_torque * ${gear_ratio}) - ABS(aft_motor.prop_torque)            AS thruster_loss,\r\n  ABS(aft_motor.prop_torque) / NULLIF(aft_measured.randax_torque * ${gear_ratio}, 0)  AS thruster_efficiency\r\nFROM aft_motor, aft_measured\r\n\r\nUNION ALL\r\n\r\nSELECT\r\n  LEAST(fwd_motor.time, fwd_measured.time)                                            AS time,\r\n  ABS(fwd_motor.prop_torque)                                                           AS prop_torque,\r\n  fwd_measured.randax_torque                                                           AS randax_torque,\r\n  (fwd_measured.randax_torque * ${gear_ratio})                                         AS ideal_prop_torque,\r\n  (fwd_measured.randax_torque * ${gear_ratio}) - ABS(fwd_motor.prop_torque)            AS thruster_loss,\r\n  ABS(fwd_motor.prop_torque) / NULLIF(fwd_measured.randax_torque * ${gear_ratio}, 0)  AS thruster_efficiency\r\nFROM fwd_motor, fwd_measured",
           "refId": "A",
           "sql": {
             "columns": [
@@ -6588,6 +6588,7 @@
               "device": "Device",
               "flow": "Flow",
               "gear_ratio": "Gear ratio",
+              "ideal_prop_torque": "Ideal prop torque",
               "lever_pos": "Lever",
               "measured_torque": "Randax torque",
               "motor_power": "Motor power",
@@ -6595,6 +6596,8 @@
               "motor_torque": "Emrax torque",
               "power": "Power",
               "pressure": "Pressure",
+              "prop_torque": "Prop shaft torque",
+              "randax_torque": "Randax torque",
               "rel_efficiency": "Relative efficiency",
               "rel_loss": "Loss (relative)",
               "seq_nr": "",
@@ -6606,6 +6609,7 @@
               "temperature_out": "T out",
               "theoretical_power": "Theoretical Aradex power",
               "thruster_efficiency": "Efficiency",
+              "thruster_loss": "Loss ",
               "time": "Time",
               "torque": "Torque",
               "torque_setpoint": "Torque setpoint"
@@ -6617,7 +6621,7 @@
     }
   ],
   "preload": false,
-  "refresh": "5s",
+  "refresh": "",
   "schemaVersion": 42,
   "tags": [
     "commisssioning"
@@ -6626,8 +6630,8 @@
     "list": [
       {
         "current": {
-          "text": "greptimedb-zero",
-          "value": "PBAD09CF7391C3C43"
+          "text": "GreptimeDB",
+          "value": "P6A33BD2DBCC29C4B"
         },
         "name": "datasource",
         "options": [],
@@ -6639,20 +6643,20 @@
       {
         "allowCustomValue": false,
         "current": {
-          "text": "AFT",
-          "value": "AFT"
+          "text": "FWD",
+          "value": "FWD"
         },
         "description": "Select the AFT or FWD thruster system",
         "label": "AFT/FWD",
         "name": "aft_fwd",
         "options": [
           {
-            "selected": true,
+            "selected": false,
             "text": "AFT",
             "value": "AFT"
           },
           {
-            "selected": false,
+            "selected": true,
             "text": "FWD",
             "value": "FWD"
           }
@@ -6681,12 +6685,12 @@
     ]
   },
   "time": {
-    "from": "now-5m",
-    "to": "now"
+    "from": "2026-06-09T07:30:16.196Z",
+    "to": "2026-06-09T08:12:45.317Z"
   },
   "timepicker": {},
   "timezone": "browser",
-  "title": "Propulsion test",
-  "uid": "commissioning-propulsion-test",
-  "version": 1
+  "title": "Propulsion test (update 3)",
+  "uid": "commissioning-propulsion-test3",
+  "version": 3
 }
