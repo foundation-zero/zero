@@ -26,26 +26,10 @@ poetry install
 
 Settings are read from environment variables or a `.env` file. Because settings belong to CLI subcommands, variables must be prefixed with the subcommand name using `__` as a delimiter (e.g. `RUN__MODBUS_HOST`).
 
-```dotenv
-# run subcommand
-RUN__MODBUS_HOST=
-RUN__MODBUS_PORT=502
-RUN__MQTT_HOST=
-RUN__MQTT_PORT=1883
-RUN__MQTT_USERNAME=
-RUN__MQTT_PASSWORD=
-RUN__SEND_TOPIC=hull-temperature/temperatures
-RUN__SECONDS=300
-RUN__N=-1
+For a full list of options for each subcommand, use `--help`:
 
-# stub subcommand
-STUB__MODBUS_HOST=localhost
-STUB__MODBUS_PORT=502
-STUB__MQTT_HOST=
-STUB__MQTT_PORT=1883
-STUB__TEMPERATURE=20.0
-
-# read / read-skip-mqtt follow the same pattern
+```bash
+poetry run python -m zero_hull_temperature <command> --help
 ```
 
 ## Usage
@@ -129,30 +113,6 @@ Temperatures are published as a JSON object:
     "...": "..."
   }
 }
-```
-
-## Kubernetes / Helm
-
-A Helm chart is included in `charts/`. Key values:
-
-```yaml
-modbus:
-  host: ""
-  port: 502
-
-mqtt:
-  host: ""
-  port: 1883
-  username: hull-temperature
-  existingSecret: ""
-  existingSecretPasswordKey: password
-
-hullTemperature:
-  sendTopic: "hull-temperature/temperatures"
-  intervalSeconds: 300
-  n: -1
-  activateTopic: marpower/450000-amcs/Command
-  activateJsonPath: $.KEB1_ACTIVATE_HULL_MEASUREMENT_ONOFF
 ```
 
 ## Development
