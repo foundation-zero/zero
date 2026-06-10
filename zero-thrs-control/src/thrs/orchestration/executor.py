@@ -1,6 +1,4 @@
-import asyncio
 import logging
-from asyncio import TaskGroup
 from dataclasses import dataclass
 from datetime import datetime, timedelta
 from typing import Any, Literal
@@ -22,30 +20,24 @@ from thrs.utils.string import hyphenize
 logger = logging.getLogger(__name__)
 
 
-class MqttExecutor[O: SimulationValues](Executor[CombinedValues, CombinedValues]):
-    # Controller client listens to sensor values and publishes control values (our control logic)
-    # Environment client listens to control values and publishes sensor values (mimicking the PLC)
+class MqttControlConnector(Executor[CombinedValues, CombinedValues]):
     def __init__(
         self,
-        inner: Executor,
-        controller_client: Client,
-        environment_client: Client,
+        mqtt_client: Client,
         topic_prefix: str,
         module_nesting: CombinedModule,
+        start_time: datetime | None = None,
     ):
-        self._inner = inner
-        self._controller_client = controller_client
-        self._environment_client = environment_client
+        self._start_time = start_time or datetime.now()
+        self._mqtt_client = mqtt_client
         self._topic_prefix = topic_prefix
         self._module_nesting = module_nesting
 
         self._running = False
         self._sensors_builder = module_nesting.sensor_values_mqtt_mapping.builder()
-        self._controls_builder = module_nesting.control_values_mqtt_mapping.builder()
-        self._triggers: asyncio.Queue[None] = asyncio.Queue()
 
     async def _listen_to_sensors(self):
-        async for message in self._controller_client.messages:
+        async for message in self._mqtt_client.messages:
             topic = self._clean_topic(message.topic)
             if not self._module_nesting.sensor_values_mqtt_mapping.has(topic):
                 continue
@@ -54,42 +46,6 @@ class MqttExecutor[O: SimulationValues](Executor[CombinedValues, CombinedValues]
                     f"Expected string or bytes, got {type(message.payload)}"
                 )
             self._sensors_builder.input(topic, message.payload)
-
-    async def _listen_to_controls(self):
-        async for message in self._environment_client.messages:
-            logging.debug(f"Received control message on topic {message.topic}")
-            topic = self._clean_topic(message.topic)
-            if not self._module_nesting.control_values_mqtt_mapping.has(topic):
-                continue
-            if not isinstance(message.payload, str | bytes):
-                raise ValueError(
-                    f"Expected string or bytes, got {type(message.payload)}"
-                )
-            self._controls_builder.input(topic, message.payload)
-
-    async def _pass_controls_to_inner(self):
-        while True:
-            await self._triggers.get()
-            logging.debug("Received trigger, passing to inner executor")
-
-            control_values = self._controls_builder.result()
-            logging.debug(f"Control values {control_values} received from MQTT")
-            if control_values is None:
-                control_values = await self._controls_builder.wait_for_result()
-
-            logging.debug("Executing inner executor")
-            execution_result = await self._inner.tick(control_values)
-            logging.debug("Inner executor tick completed")
-            await self._send_sensor_values(execution_result)
-
-            if isinstance(execution_result, SimulationExecutionResult):
-                logging.debug("Publishing simulation output values")
-
-                await self._publish_by_mapping(
-                    self._environment_client,
-                    self._module_nesting.simulation_output_mqtt_mapping,
-                    execution_result.simulation_outputs,
-                )
 
     async def _publish_by_mapping[T](
         self, client: Client, mapping: MqttMapping[T], value: T
@@ -105,6 +61,75 @@ class MqttExecutor[O: SimulationValues](Executor[CombinedValues, CombinedValues]
 
     def _clean_topic(self, topic: Topic) -> str:
         return topic.value.removeprefix(f"{self._topic_prefix}/")
+
+    async def _send_control_values(self, control_values: CombinedValues):
+        logging.debug("Publishing control values")
+        await self._publish_by_mapping(
+            self._mqtt_client,
+            self._module_nesting.control_values_mqtt_mapping,
+            control_values,
+        )
+
+    async def start(self):
+        await self._mqtt_client.subscribe(
+            f"{self._topic_prefix}/{self._module_nesting.sensor_values_mqtt_mapping.subscribe_topic()}",
+            qos=1,
+        )
+
+    async def run(self):
+        self._running = True
+        try:
+            await self._listen_to_sensors()
+        finally:
+            self._running = False
+
+    async def tick(
+        self, control_values: CombinedValues
+    ) -> ExecutionResult[CombinedValues]:
+        if not self._running:
+            raise Exception(
+                "MqttControlExecutor not running, run() should be called in a create_task()"
+            )
+        sensors = self._sensors_builder.result()
+        await self._send_control_values(control_values)
+
+        return ExecutionResult(
+            timestamp=datetime.now(),
+            sensor_values=sensors if sensors else CombinedValues(values={}),
+        )
+
+    @property
+    def start_time(self) -> datetime:
+        return self._start_time
+
+    def time(self) -> datetime:
+        return datetime.now()
+
+
+class MqttSimulationConnector(Executor[CombinedValues, CombinedValues]):
+    def __init__(
+        self,
+        inner: Executor,
+        mqtt_client: Client,
+        topic_prefix: str,
+        module_nesting: CombinedModule,
+    ):
+        self._inner = inner
+        self._mqtt_client = mqtt_client
+        self._topic_prefix = topic_prefix
+        self._module_nesting = module_nesting
+
+    async def _publish_by_mapping[T](
+        self, client: Client, mapping: MqttMapping[T], value: T
+    ):
+        payloads = mapping.split_to_topics(value)
+        for topic_suffix, payload in payloads.items():
+            topic = f"{self._topic_prefix}/{topic_suffix}"
+            await client.publish(
+                topic,
+                payload,
+                qos=1,
+            )
 
     async def _send_model(
         self, client: Client, model: ThrsValues, topic_suffix: str | None = None
@@ -128,58 +153,31 @@ class MqttExecutor[O: SimulationValues](Executor[CombinedValues, CombinedValues]
     ):
         logging.debug("Publishing sensor values")
         await self._publish_by_mapping(
-            self._environment_client,
+            self._mqtt_client,
             self._module_nesting.sensor_values_mqtt_mapping,
             execution_result.sensor_values,
         )
 
-    async def _send_control_values(self, control_values: CombinedValues):
-        logging.debug("Publishing control values")
-        await self._publish_by_mapping(
-            self._controller_client,
-            self._module_nesting.control_values_mqtt_mapping,
-            control_values,
-        )
-
     async def start(self):
-        await self._controller_client.subscribe(
-            f"{self._topic_prefix}/{self._module_nesting.sensor_values_mqtt_mapping.subscribe_topic()}",
-            qos=1,
-        )
-
-        await self._environment_client.subscribe(
-            f"{self._topic_prefix}/{self._module_nesting.control_values_mqtt_mapping.subscribe_topic()}",
-            qos=1,
-        )
-
-    async def run(self):
-        self._running = True
-        try:
-            async with TaskGroup() as tg:
-                tg.create_task(self._listen_to_sensors())
-                tg.create_task(self._listen_to_controls())
-                tg.create_task(self._pass_controls_to_inner())
-        except Exception as e:
-            logger.error(f"MqttExecutor run encountered an error: {e}")
-        finally:
-            self._running = False
+        await self._inner.start()
 
     async def tick(
         self, control_values: CombinedValues
     ) -> ExecutionResult[CombinedValues]:
-        if not self._running:
-            raise Exception(
-                "MqttExecutor not running, run() should be called in a create_task()"
+        logging.debug("Executing inner executor")
+        execution_result = await self._inner.tick(control_values)
+        logging.debug("Inner executor tick completed")
+        await self._send_sensor_values(execution_result)
+
+        if isinstance(execution_result, SimulationExecutionResult):
+            logging.debug("Publishing simulation output values")
+            await self._publish_by_mapping(
+                self._mqtt_client,
+                self._module_nesting.simulation_output_mqtt_mapping,
+                execution_result.simulation_outputs,
             )
-        sensors = self._sensors_builder.result()
-        await self._send_control_values(control_values)
 
-        self._triggers.put_nowait(None)
-
-        return ExecutionResult(
-            timestamp=datetime.now(),
-            sensor_values=sensors if sensors else CombinedValues(values={}),
-        )
+        return execution_result
 
     @property
     def start_time(self) -> datetime:
@@ -187,6 +185,51 @@ class MqttExecutor[O: SimulationValues](Executor[CombinedValues, CombinedValues]
 
     def time(self) -> datetime:
         return self._inner.time()
+
+
+class MqttExecutor(Executor[CombinedValues, CombinedValues]):
+    # Compatibility wrapper composed from split executors:
+    # - MqttControlExecutor handles controller-side MQTT I/O
+    # - MqttSimulationExecutor handles simulation-side execution and publishing
+    def __init__(
+        self,
+        inner: Executor,
+        controller_client: Client,
+        environment_client: Client,
+        topic_prefix: str,
+        module_nesting: CombinedModule,
+    ):
+        self._control_executor = MqttControlConnector(
+            mqtt_client=controller_client,
+            topic_prefix=topic_prefix,
+            module_nesting=module_nesting,
+        )
+        self._simulation_executor = MqttSimulationConnector(
+            inner=inner,
+            mqtt_client=environment_client,
+            topic_prefix=topic_prefix,
+            module_nesting=module_nesting,
+        )
+
+    async def start(self):
+        await self._control_executor.start()
+        await self._simulation_executor.start()
+
+    async def run(self):
+        await self._control_executor.run()
+
+    async def tick(
+        self, control_values: CombinedValues
+    ) -> ExecutionResult[CombinedValues]:
+        await self._control_executor.tick(control_values)
+        return await self._simulation_executor.tick(control_values)
+
+    @property
+    def start_time(self) -> datetime:
+        return self._simulation_executor.start_time
+
+    def time(self) -> datetime:
+        return self._simulation_executor.time()
 
 
 @dataclass
