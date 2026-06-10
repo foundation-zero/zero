@@ -182,7 +182,7 @@
           },
           "pluginVersion": "2.1.4",
           "queryType": "table",
-          "rawSql": "SELECT\n  timestamp                                                 AS time,\n  \"devices__thruster_test.r_prop_spd_fwd_thrstr_rpm\"          AS prop_speed,\n  \"devices__thruster_test.r_propellor_torque\"                 AS prop_torque,\n  \"devices__thruster_test.r_fwd_prop_shaft_power_w\" as \"shaft_power\"\nFROM public.prop_test__data\nWHERE $__timeFilter(timestamp)\nORDER BY timestamp DESC\nLIMIT 1",
+          "rawSql": "WITH aft AS (\n  SELECT\n    timestamp                                          AS time,\n    \"devices__thruster_test.r_prop_spd_aft_thrstr_rpm\" AS prop_speed,\n    \"devices__thruster_test.r_propellor_torque\"        AS prop_torque,\n    \"devices__thruster_test.r_aft_prop_shaft_power_w\"  AS shaft_power\n  FROM public.prop_test__data\n  WHERE '${aft_fwd}' = 'AFT' AND $__timeFilter(timestamp)\n  ORDER BY timestamp DESC\n  LIMIT 1\n),\nfwd AS (\n  SELECT\n    timestamp                                          AS time,\n    \"devices__thruster_test.r_prop_spd_fwd_thrstr_rpm\" AS prop_speed,\n    \"devices__thruster_test.r_propellor_torque\"        AS prop_torque,\n    \"devices__thruster_test.r_fwd_prop_shaft_power_w\"  AS shaft_power\n  FROM public.prop_test__data\n  WHERE '${aft_fwd}' = 'FWD' AND $__timeFilter(timestamp)\n  ORDER BY timestamp DESC\n  LIMIT 1\n)\n\nSELECT * FROM aft\nUNION ALL\nSELECT * FROM fwd",
           "refId": "A"
         }
       ],
@@ -4594,80 +4594,6 @@
                 },
                 "size": 20,
                 "text": {
-                  "field": "oil_temperature",
-                  "fixed": "",
-                  "mode": "field"
-                },
-                "valign": "middle"
-              },
-              "constraint": {
-                "horizontal": "left",
-                "vertical": "top"
-              },
-              "links": [],
-              "name": "Element 9",
-              "placement": {
-                "height": 30,
-                "left": 630,
-                "top": 10,
-                "width": 175
-              },
-              "type": "metric-value"
-            },
-            {
-              "background": {
-                "color": {
-                  "fixed": "transparent"
-                }
-              },
-              "border": {
-                "color": {
-                  "fixed": "dark-green"
-                }
-              },
-              "config": {
-                "align": "left",
-                "color": {
-                  "fixed": "rgb(204, 204, 220)"
-                },
-                "size": 16,
-                "text": {
-                  "fixed": "Gearbox oil pump"
-                },
-                "valign": "middle"
-              },
-              "constraint": {
-                "horizontal": "left",
-                "vertical": "top"
-              },
-              "links": [],
-              "name": "Element 10",
-              "placement": {
-                "height": 30,
-                "left": 435,
-                "top": 10,
-                "width": 187
-              },
-              "type": "text"
-            },
-            {
-              "background": {
-                "color": {
-                  "fixed": "#D9D9D9"
-                }
-              },
-              "border": {
-                "color": {
-                  "fixed": "dark-green"
-                }
-              },
-              "config": {
-                "align": "center",
-                "color": {
-                  "fixed": "#000000"
-                },
-                "size": 20,
-                "text": {
                   "field": "ara2_power_stage_temp",
                   "fixed": "",
                   "mode": "field"
@@ -6774,8 +6700,8 @@
     "list": [
       {
         "current": {
-          "text": "GreptimeDB",
-          "value": "P6A33BD2DBCC29C4B"
+          "text": "greptimedb-zero",
+          "value": "PBAD09CF7391C3C43"
         },
         "name": "datasource",
         "options": [],
@@ -6836,5 +6762,5 @@
   "timezone": "browser",
   "title": "Propulsion test",
   "uid": "commissioning-propulsion-test",
-  "version": 7
+  "version": 1
 }
