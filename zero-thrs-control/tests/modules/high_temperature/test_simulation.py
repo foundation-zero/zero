@@ -14,7 +14,7 @@ from thrs.input_output.modules.high_temperature import (
     HighTemperatureSimulationInputs,
 )
 from thrs.orchestration.executor import SimulationExecutor
-from thrs.orchestration.simulator import ModuleSimulatorModel, Simulator
+from thrs.orchestration.runner import ModuleSimulatorModel, Runner
 from thrs.simulation.fmu import Fmu
 from thrs.simulation.models.fmu_paths import high_temperature_path
 
@@ -82,6 +82,6 @@ async def test_module_simulator_model():
         simulation_inputs=inputs,
     )
     with model.executor() as executor:
-        sim = Simulator.from_model(model, executor)
+        runner = Runner.from_model(model, executor)
 
-        await sim.run(100)
+        await runner.run(100)

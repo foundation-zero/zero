@@ -81,7 +81,12 @@ class ModuleSimulatorModel:
         return self.module.alarms()
 
 
-class Simulator:
+class Runner:
+    """Runs a module for a number of ticks
+
+    Allows for a pluggable collector to collect execution results during the run.
+    """
+
     last_tick_result: ExecutionResult | None  # TODO: Remove this, only used in tests
 
     def __init__(self, executor: Executor, control: Control, alarms: BaseAlarms):
@@ -94,8 +99,8 @@ class Simulator:
     @staticmethod
     def from_model(
         model: SimulatorModel | ModuleSimulatorModel, executor: Executor
-    ) -> "Simulator":
-        return Simulator(
+    ) -> "Runner":
+        return Runner(
             executor,
             model.control(executor),
             model.alarms,

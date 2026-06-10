@@ -82,7 +82,7 @@ from thrs.input_output.modules.thrusters import (
 from thrs.orchestration.config import Config
 from thrs.orchestration.executor import MqttExecutor, SimulationExecutor
 from thrs.orchestration.module import CombinedControl, CombinedModule
-from thrs.orchestration.simulator import Simulator
+from thrs.orchestration.runner import Runner
 from thrs.simulation.fmu import Fmu
 from thrs.simulation.models.fmu_paths import (
     boilers_path,
@@ -780,7 +780,7 @@ class SimulationControls:
                 self._topic_prefix,
                 modules,
             )
-            simulator = Simulator(executor, control, modules.alarms())
+            runner = Runner(executor, control, modules.alarms())
 
             await executor.start()
             executor_task = create_task(executor.run())
@@ -801,7 +801,7 @@ class SimulationControls:
                     )
                 )
                 await self._run_simulation(
-                    mode, modules, context, executor, simulator, cmds
+                    mode, modules, context, executor, runner, cmds
                 )
             except Exception as e:
                 logger.error(f"SimulationControls run encountered an error: {e}")
@@ -815,7 +815,7 @@ class SimulationControls:
         modules: CombinedModule,
         context: MessageContext,
         executor: MqttExecutor,
-        simulator: Simulator,
+        runner: Runner,
         cmds: Queue[SimulationCtrlMessage],
     ):
         logging.debug("Simulation control loop started")
@@ -848,7 +848,7 @@ class SimulationControls:
                 while cmds.empty():
                     async with TaskGroup() as tg:
                         tg.create_task(sleep(sleep_duration))
-                        tg.create_task(simulator.run(1))
+                        tg.create_task(runner.run(1))
                 logger.debug("Simulation paused")
             elif isinstance(cmd, StepMessage):
                 await context.send(
@@ -864,4 +864,4 @@ class SimulationControls:
                     1, int(cmd.seconds / context.executor.tick_duration.total_seconds())
                 )
                 logging.debug(f"Stepping simulation by {ticks} ticks")
-                await simulator.run(ticks)
+                await runner.run(ticks)

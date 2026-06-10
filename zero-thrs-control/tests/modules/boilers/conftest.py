@@ -24,7 +24,7 @@ from thrs.input_output.modules.boilers import (
     BoilersSimulationOutputs,
 )
 from thrs.orchestration.executor import SimulationExecutor
-from thrs.orchestration.simulator import Simulator
+from thrs.orchestration.runner import Runner
 from thrs.simulation.fmu import Fmu
 from thrs.simulation.io_mapping import ThrsModelIoMapping
 from thrs.simulation.models.fmu_paths import boilers_path
@@ -93,8 +93,8 @@ def parameters() -> BoilersParameters:
 
 
 @fixture()
-def simulator(control: BoilersControl, executor, alarms: BoilersAlarms) -> Simulator:
-    return Simulator(executor, control, alarms)
+def runner(control: BoilersControl, executor, alarms: BoilersAlarms) -> Runner:
+    return Runner(executor, control, alarms)
 
 
 @fixture
