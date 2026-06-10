@@ -19,32 +19,11 @@ from pydantic import (
     model_validator,
 )
 
-from thrs.control.modules.boilers import (
-    BOILERS_MODULE_DESCRIPTION,
-    BoilersControl,
-    BoilersParameters,
-)
-from thrs.control.modules.consumers import (
-    CONSUMERS_MODULE_DESCRIPTION,
-    ConsumersControl,
-    ConsumersParameters,
-)
-from thrs.control.modules.high_temperature import HighTemperatureModule
-from thrs.control.modules.pcm import (
-    PCM_MODULE_DESCRIPTION,
-    PcmControl,
-    PcmParameters,
-)
-from thrs.control.modules.pvt import (
-    PVT_MODULE_DESCRIPTION,
-    PvtControl,
-    PvtParameters,
-)
-from thrs.control.modules.thrusters import (
-    THRUSTERS_MODULE_DESCRIPTION,
-    ThrustersControl,
-    ThrustersParameters,
-)
+from thrs.control.modules.boilers import BOILERS_MODULE_DESCRIPTION
+from thrs.control.modules.consumers import CONSUMERS_MODULE_DESCRIPTION
+from thrs.control.modules.pcm import PCM_MODULE_DESCRIPTION
+from thrs.control.modules.pvt import PVT_MODULE_DESCRIPTION
+from thrs.control.modules.thrusters import THRUSTERS_MODULE_DESCRIPTION
 from thrs.control.switching import SwitchingControlMode
 from thrs.input_output.base import (
     CombinedValues,
@@ -207,22 +186,6 @@ INPUTS = {
     ),
 }
 
-
-CONTROL_PARAMS = {
-    "thrusters": ThrustersParameters(),
-    "pvt": PvtParameters(),
-    "pcm": PcmParameters(),
-    "consumers": ConsumersParameters(),
-    "boilers": BoilersParameters(),
-}
-
-CONTROLS = {
-    "thrusters": ThrustersControl,
-    "pvt": PvtControl,
-    "pcm": PcmControl,
-    "consumers": ConsumersControl,
-    "boilers": BoilersControl,
-}
 
 type Modes = Literal[
     "thrusters", "pvt", "pcm", "consumers", "high_temperature", "boilers"
@@ -762,7 +725,10 @@ class SimulationControls:
         simulation_inputs = INPUTS[mode]
 
         with self._simulation(fmu_path, modules, simulation_inputs) as simulation:
-            parameters = {module: CONTROL_PARAMS[module] for module in modules.modules}
+            parameters = {
+                module: modules.parameters_for_module(module)()
+                for module in modules.modules
+            }
             control = modules.control(CombinedValues(parameters), simulation.time)
 
             cmds: Queue[SimulationCtrlMessage] = Queue()
