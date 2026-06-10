@@ -2,8 +2,8 @@ from datetime import datetime
 
 from tests.orchestration.simples import (
     SimpleAlarms,
+    SimpleConnector,
     SimpleControl,
-    SimpleExecutor,
     SimpleParameters,
 )
 from thrs.orchestration.runner import Runner
@@ -11,9 +11,9 @@ from thrs.orchestration.runner import Runner
 
 async def test_simulator():
     control = SimpleControl(SimpleParameters(), lambda: datetime.now())
-    executor = SimpleExecutor(datetime.now())
-    runner = Runner(executor, control, SimpleAlarms())
+    connector = SimpleConnector(datetime.now())
+    runner = Runner(connector, control, SimpleAlarms())
     await runner.run(3)
-    assert len(executor.controls) == 3
-    assert executor.controls[0].go_with_the.flow.value == 0
-    assert executor.controls[0].go_with_the.temperature.value == 0
+    assert len(connector.controls) == 3
+    assert connector.controls[0].go_with_the.flow.value == 0
+    assert connector.controls[0].go_with_the.temperature.value == 0

@@ -13,8 +13,8 @@ from thrs.input_output.base import CombinedValues
 from thrs.input_output.modules.high_temperature import (
     HighTemperatureSimulationInputs,
 )
-from thrs.orchestration.executor import SimulationExecutor
 from thrs.orchestration.runner import ModuleSimulatorModel, Runner
+from thrs.orchestration.simulation import Simulation
 from thrs.simulation.fmu import Fmu
 from thrs.simulation.models.fmu_paths import high_temperature_path
 
@@ -49,7 +49,7 @@ async def test_high_temperature_simulation_inputs(
 ):
     with Fmu(high_temperature_path) as fmu:
         mapping = io_mapping
-        executor = SimulationExecutor(
+        simulation = Simulation(
             mapping,
             fmu,
             incorrect_simulation_inputs,
@@ -59,7 +59,7 @@ async def test_high_temperature_simulation_inputs(
 
         with pytest.raises(Exception):
             for i in range(300):
-                await executor.tick(
+                await simulation.tick(
                     control.initial(datetime.now()).values,
                 )
 
@@ -78,10 +78,9 @@ async def test_module_simulator_model():
     model = ModuleSimulatorModel(
         fmu_path=high_temperature_path,
         module=module,
-        control_parameters=params,
         simulation_inputs=inputs,
     )
-    with model.executor() as executor:
-        runner = Runner.from_model(model, executor)
+    with model.simulation() as simulation:
+        runner = Runner.from_module(module, params, simulation)
 
         await runner.run(100)

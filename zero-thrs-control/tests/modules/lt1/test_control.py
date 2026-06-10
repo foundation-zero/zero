@@ -3,12 +3,12 @@ from pytest import approx
 from thrs.control.modules.lt1 import Lt1Control, Lt1Parameters
 from thrs.input_output.definitions.control import Valve
 from thrs.input_output.modules.lt1 import Lt1SimulationInputs
-from thrs.orchestration.executor import SimulationExecutionResult
+from thrs.orchestration.connector import ExecutionResult
 from thrs.orchestration.runner import Runner
 
 
 async def test_idle(runner: Runner, simulation_inputs_inactive: Lt1SimulationInputs):
-    runner._executor.update_simulation_inputs(simulation_inputs_inactive)  # type: ignore
+    runner._connector.update_simulation_inputs(simulation_inputs_inactive)  # type: ignore
 
     await runner.run(90)
     result = runner.last_tick_result
@@ -16,7 +16,7 @@ async def test_idle(runner: Runner, simulation_inputs_inactive: Lt1SimulationInp
     assert isinstance(runner._control, Lt1Control)
     assert runner._control.mode.is_idle
 
-    assert isinstance(result, SimulationExecutionResult)
+    assert isinstance(result, ExecutionResult)
     assert result.sensor_values.lt1_flow_propdrive_aft1.flow.value == approx(
         0.0, abs=0.01
     )
@@ -36,7 +36,7 @@ async def test_idle(runner: Runner, simulation_inputs_inactive: Lt1SimulationInp
 async def test_propulsion_all_active(
     runner: Runner, simulation_inputs_all_drives_active: Lt1SimulationInputs
 ):
-    runner._executor.update_simulation_inputs(simulation_inputs_all_drives_active)  # type: ignore
+    runner._connector.update_simulation_inputs(simulation_inputs_all_drives_active)  # type: ignore
 
     await runner.run(180)
     result = runner.last_tick_result
@@ -44,7 +44,7 @@ async def test_propulsion_all_active(
     assert isinstance(runner._control, Lt1Control)
     assert runner._control.mode.is_propulsion
 
-    assert isinstance(result, SimulationExecutionResult)
+    assert isinstance(result, ExecutionResult)
     assert result.sensor_values.lt1_flow_propdrive_aft1.flow.value == approx(
         15.0, abs=0.1
     )
@@ -78,7 +78,7 @@ async def test_propulsion_all_active(
 async def test_shorepower(
     runner: Runner, simulation_inputs_shorepower: Lt1SimulationInputs
 ):
-    runner._executor.update_simulation_inputs(simulation_inputs_shorepower)  # type: ignore
+    runner._connector.update_simulation_inputs(simulation_inputs_shorepower)  # type: ignore
 
     await runner.run(180)
     result = runner.last_tick_result
@@ -86,7 +86,7 @@ async def test_shorepower(
     assert isinstance(runner._control, Lt1Control)
     assert runner._control.mode.is_shorepower
 
-    assert isinstance(result, SimulationExecutionResult)
+    assert isinstance(result, ExecutionResult)
     assert result.sensor_values.lt1_flow_shorepower.flow.value == approx(20.0, abs=0.5)
     assert (
         result.sensor_values.lt1_temperature_shorepower_return.temperature.value
@@ -97,7 +97,7 @@ async def test_shorepower(
 async def test_heat_dump(
     runner: Runner, simulation_inputs_shorepower: Lt1SimulationInputs
 ):
-    runner._executor.update_simulation_inputs(simulation_inputs_shorepower)  # type: ignore
+    runner._connector.update_simulation_inputs(simulation_inputs_shorepower)  # type: ignore
     runner._control.update_parameters(
         Lt1Parameters(
             shorepower_maximum_supply_temperature=30,
@@ -108,7 +108,7 @@ async def test_heat_dump(
     await runner.run(120)
     result = runner.last_tick_result
 
-    assert isinstance(result, SimulationExecutionResult)
+    assert isinstance(result, ExecutionResult)
     assert result.sensor_values.lt1_mix_recovery.position_rel.value == approx(
         Valve.MIXING_B_TO_AB, abs=0.01
     )
@@ -123,7 +123,7 @@ async def test_heat_dump(
 async def test_heat_recovery(
     runner: Runner, simulation_inputs_shorepower: Lt1SimulationInputs
 ):
-    runner._executor.update_simulation_inputs(simulation_inputs_shorepower)  # type: ignore
+    runner._connector.update_simulation_inputs(simulation_inputs_shorepower)  # type: ignore
     runner._control.update_parameters(
         Lt1Parameters(
             shorepower_maximum_supply_temperature=90,
@@ -134,7 +134,7 @@ async def test_heat_recovery(
     await runner.run(720)
     result = runner.last_tick_result
 
-    assert isinstance(result, SimulationExecutionResult)
+    assert isinstance(result, ExecutionResult)
     assert result.sensor_values.lt1_temperature_recovery.temperature.value == approx(
         50.0, abs=1
     )
@@ -147,7 +147,7 @@ async def test_heat_recovery(
 async def test_flow_balancing(
     runner: Runner, simulation_inputs_all_drives_active: Lt1SimulationInputs
 ):
-    runner._executor.update_simulation_inputs(simulation_inputs_all_drives_active)  # type: ignore
+    runner._connector.update_simulation_inputs(simulation_inputs_all_drives_active)  # type: ignore
 
     await runner.run(120)
     result = runner.last_tick_result
@@ -155,7 +155,7 @@ async def test_flow_balancing(
     assert isinstance(runner._control, Lt1Control)
     assert runner._control.mode.is_propulsion
 
-    assert isinstance(result, SimulationExecutionResult)
+    assert isinstance(result, ExecutionResult)
     assert result.sensor_values.lt1_flow_propdrive_aft1.flow.value == approx(
         15.0, abs=0.5
     )

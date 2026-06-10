@@ -1,9 +1,18 @@
 from pytest import approx
 
-from thrs.control.modules.boilers import BoilersControl, TanksController
+from thrs.control.modules.boilers import (
+    BoilersControl,
+    BoilersControlMode,
+    BoilersParameters,
+    TanksController,
+)
 from thrs.input_output.base import Stamped
-from thrs.input_output.modules.boilers import BoilersSimulationInputs
-from thrs.orchestration.executor import SimulationExecutionResult
+from thrs.input_output.modules.boilers import (
+    BoilersControlValues,
+    BoilersSensorValues,
+    BoilersSimulationInputs,
+)
+from thrs.orchestration.connector import ExecutionResult
 from thrs.orchestration.runner import Runner
 
 
@@ -15,7 +24,7 @@ async def test_filling(runner: Runner, simulation_inputs: BoilersSimulationInput
             )
         }
     )
-    runner._executor.update_simulation_inputs(simulation_inputs_no_consumption)  # type: ignore
+    runner._connector.update_simulation_inputs(simulation_inputs_no_consumption)  # type: ignore
 
     await runner.run(60)
     result = runner.last_tick_result
@@ -24,7 +33,7 @@ async def test_filling(runner: Runner, simulation_inputs: BoilersSimulationInput
     assert runner._control._lt1_flow_controller.enabled()
     assert runner._control._lt2_flow_controller.enabled()
 
-    assert isinstance(result, SimulationExecutionResult)
+    assert isinstance(result, ExecutionResult)
     assert result.sensor_values.boilers_flow_lt1.flow.value > 0.1
     assert result.sensor_values.boilers_flow_lt2.flow.value > 0.1
 
@@ -35,7 +44,7 @@ async def test_filling(runner: Runner, simulation_inputs: BoilersSimulationInput
             )
         }
     )
-    runner._executor.update_simulation_inputs(simulation_inputs_no_lt1)  # type: ignore
+    runner._connector.update_simulation_inputs(simulation_inputs_no_lt1)  # type: ignore
 
     await runner.run(180)
     result = runner.last_tick_result
@@ -44,7 +53,7 @@ async def test_filling(runner: Runner, simulation_inputs: BoilersSimulationInput
     assert not runner._control._lt1_flow_controller.enabled()
     assert runner._control._lt2_flow_controller.enabled()
 
-    assert isinstance(result, SimulationExecutionResult)
+    assert isinstance(result, ExecutionResult)
     assert result.sensor_values.boilers_flow_lt1.flow.value == approx(0.0, abs=0.01)
     assert result.sensor_values.boilers_flow_lt2.flow.value > 0.1
 
@@ -52,7 +61,7 @@ async def test_filling(runner: Runner, simulation_inputs: BoilersSimulationInput
     await runner.run(1000)
     result = runner.last_tick_result
 
-    assert isinstance(result, SimulationExecutionResult)
+    assert isinstance(result, ExecutionResult)
     assert isinstance(runner._control, BoilersControl) and isinstance(
         runner._control._tanks_controller, TanksController
     )
@@ -77,7 +86,10 @@ async def test_filling(runner: Runner, simulation_inputs: BoilersSimulationInput
 
 
 async def test_boosting_transitions(
-    runner: Runner, simulation_inputs: BoilersSimulationInputs
+    runner: Runner[
+        BoilersSensorValues, BoilersControlValues, BoilersParameters, BoilersControlMode
+    ],
+    simulation_inputs: BoilersSimulationInputs,
 ):
     # all tanks full and ht available
     runner._control.update_parameters(
@@ -92,7 +104,7 @@ async def test_boosting_transitions(
     )
     assert runner._control._tanks_controller.boosting
     assert runner._control.mode.is_boosting_high_temperature
-    assert isinstance(result, SimulationExecutionResult)
+    assert isinstance(result, ExecutionResult)
     assert result.sensor_values.boilers_flow_boosting.flow.value > 0.1
     assert (
         result.sensor_values.boilers_temperature_boosting_return.temperature.value
@@ -107,13 +119,13 @@ async def test_boosting_transitions(
             )
         }
     )
-    runner._executor.update_simulation_inputs(simulation_inputs_no_ht)  # type: ignore
+    runner._connector.update_simulation_inputs(simulation_inputs_no_ht)  # type: ignore
     await runner.run(120)
     result = runner.last_tick_result
 
     assert runner._control._tanks_controller.boosting
     assert runner._control.mode.is_boosting_heatpump
-    assert isinstance(result, SimulationExecutionResult)
+    assert isinstance(result, ExecutionResult)
     assert result.sensor_values.boilers_flow_boosting.flow.value == approx(25, abs=0.2)
     assert (
         result.sensor_values.boilers_temperature_boosting_return.temperature.value
@@ -129,5 +141,5 @@ async def test_boosting_transitions(
 
     assert not runner._control._tanks_controller.boosting
     assert runner._control.mode.is_boosting_idle
-    assert isinstance(result, SimulationExecutionResult)
+    assert isinstance(result, ExecutionResult)
     assert result.sensor_values.boilers_flow_boosting.flow.value == approx(0.0, abs=0.1)

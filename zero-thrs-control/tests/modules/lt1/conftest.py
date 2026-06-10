@@ -15,8 +15,8 @@ from thrs.input_output.modules.lt1 import (
     Lt1SimulationInputs,
     Lt1SimulationOutputs,
 )
-from thrs.orchestration.executor import SimulationExecutor
 from thrs.orchestration.runner import Runner
+from thrs.orchestration.simulation import Simulation
 from thrs.simulation.fmu import Fmu
 from thrs.simulation.io_mapping import ThrsModelIoMapping
 from thrs.simulation.models.fmu_paths import lt1_path
@@ -120,9 +120,9 @@ def io_mapping():
 
 
 @fixture
-def executor(io_mapping, simulation_inputs_all_drives_active):
+def simulation(io_mapping, simulation_inputs_all_drives_active):
     with Fmu(lt1_path) as fmu:
-        yield SimulationExecutor(
+        yield Simulation(
             io_mapping,
             fmu,
             simulation_inputs_all_drives_active,
@@ -132,8 +132,8 @@ def executor(io_mapping, simulation_inputs_all_drives_active):
 
 
 @fixture()
-def control(executor) -> Lt1Control:
-    return Lt1Control(Lt1Parameters(), executor.time)
+def control(simulation) -> Lt1Control:
+    return Lt1Control(Lt1Parameters(), simulation.time)
 
 
 @fixture
@@ -142,5 +142,5 @@ def alarms() -> Lt1Alarms:
 
 
 @fixture()
-def runner(control: Lt1Control, executor, alarms: Lt1Alarms) -> Runner:
-    return Runner(executor, control, alarms)
+def runner(control: Lt1Control, simulation, alarms: Lt1Alarms) -> Runner:
+    return Runner(simulation, control, alarms)
