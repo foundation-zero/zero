@@ -1,11 +1,10 @@
 from datetime import datetime
 from typing import Callable
 
-from thrs.classes.control import ControlResult
+from thrs.classes.control import Control, ControlResult
 from thrs.input_output.alarms import BaseAlarms
 from thrs.input_output.base import SimulationInputs, SimulationValues, ThrsValues
 from thrs.input_output.definitions.sensor import FlowSensor
-from thrs.orchestration.cycler import Control
 from thrs.orchestration.executor import ExecutionResult, Executor
 
 

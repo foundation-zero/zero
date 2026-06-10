@@ -13,7 +13,6 @@ from thrs.input_output.modules.thrusters import (
     ThrustersSimulationOutputs,
 )
 from thrs.orchestration.collector import PolarsCollector
-from thrs.orchestration.cycler import Cycler
 from thrs.orchestration.executor import SimulationExecutor
 from thrs.orchestration.simulator import Simulator, SimulatorModel
 from thrs.simulation.fmu import Fmu
@@ -28,8 +27,8 @@ async def test_interfacer(
     executor, fmu, io_mapping, simulation_inputs, control, alarms
 ):
     collector = PolarsCollector()
-    interfacer = Cycler(control, executor, alarms)
-    await interfacer.run(20, collector)
+    simulator = Simulator(executor, control, alarms)
+    await simulator.run(20, collector)
     frame = collector.result()
     inputs = io_mapping.generate_inputs(
         ThrustersControlValues.zero(), simulation_inputs
@@ -67,8 +66,8 @@ async def test_computed_collection(
     executor, io_mapping, simulation_inputs, control, alarms
 ):
     collector = PolarsCollector()
-    interfacer = Cycler(control, executor, alarms)
-    await interfacer.run(20, collector)
+    simulator = Simulator(executor, control, alarms)
+    await simulator.run(20, collector)
     frame = collector.result()
     assert frame is not None
     assert "thrusters_temperature_recovery__temperature__C" in frame.columns
@@ -89,8 +88,11 @@ async def test_simulation(simulation_inputs, control, alarms):
     with thrusters_model.executor() as executor:
         simulation = Simulator.from_model(thrusters_model, executor)
 
-        result = await simulation.run(20)
+        collector = PolarsCollector()
 
+        await simulation.run(20, collector)
+
+        result = collector.result()
         assert result is not None
         assert result["time"].len() == 20
 

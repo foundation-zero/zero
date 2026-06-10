@@ -15,8 +15,8 @@ from thrs.input_output.modules.lt1 import (
     Lt1SimulationInputs,
     Lt1SimulationOutputs,
 )
-from thrs.orchestration.cycler import Cycler
 from thrs.orchestration.executor import SimulationExecutor
+from thrs.orchestration.simulator import Simulator
 from thrs.simulation.fmu import Fmu
 from thrs.simulation.io_mapping import ThrsModelIoMapping
 from thrs.simulation.models.fmu_paths import lt1_path
@@ -142,5 +142,5 @@ def alarms() -> Lt1Alarms:
 
 
 @fixture()
-def cycler(control, executor, alarms) -> Cycler:
-    return Cycler(control, executor, alarms)
+def simulator(control: Lt1Control, executor, alarms: Lt1Alarms) -> Simulator:
+    return Simulator(executor, control, alarms)
