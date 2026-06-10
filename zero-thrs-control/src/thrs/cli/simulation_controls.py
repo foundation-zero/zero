@@ -51,7 +51,10 @@ from thrs.input_output.modules.consumers import (
     ConsumersSimulationInputs,
     ConsumersSimulationOutputs,
 )
-from thrs.input_output.modules.high_temperature import HighTemperatureSimulationInputs
+from thrs.input_output.modules.high_temperature import (
+    HighTemperatureSimulationInputs,
+    HighTemperatureSimulationOutputs,
+)
 from thrs.input_output.modules.pcm import PcmSimulationInputs, PcmSimulationOutputs
 from thrs.input_output.modules.pvt import PvtSimulationInputs, PvtSimulationOutputs
 from thrs.input_output.modules.thrusters import (
@@ -232,7 +235,17 @@ MODES: dict[Modes, tuple[str, CombinedModule]] = {
     ),
     "high_temperature": (
         high_temperature_path,
-        HighTemperatureModule(control_topic_suffix=settings.mqtt_control_topic_suffix),
+        CombinedModule(
+            {
+                "thrusters": THRUSTERS_MODULE_DESCRIPTION,
+                "pvt": PVT_MODULE_DESCRIPTION,
+                "pcm": PCM_MODULE_DESCRIPTION,
+                "consumers": CONSUMERS_MODULE_DESCRIPTION,
+            },
+            HighTemperatureSimulationInputs,
+            HighTemperatureSimulationOutputs,
+            control_topic_suffix=settings.mqtt_control_topic_suffix,
+        ),
     ),
     "boilers": (
         boilers_path,

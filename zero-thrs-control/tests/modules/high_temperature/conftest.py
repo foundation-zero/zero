@@ -2,13 +2,16 @@ from datetime import datetime, timedelta
 
 from pytest import fixture
 
-from thrs.control.modules.consumers import ConsumersParameters
-from thrs.control.modules.high_temperature import (
-    HighTemperatureModule,
+from thrs.control.modules.consumers import (
+    CONSUMERS_MODULE_DESCRIPTION,
+    ConsumersParameters,
 )
-from thrs.control.modules.pcm import PcmParameters
-from thrs.control.modules.pvt import PvtParameters
-from thrs.control.modules.thrusters import ThrustersParameters
+from thrs.control.modules.pcm import PCM_MODULE_DESCRIPTION, PcmParameters
+from thrs.control.modules.pvt import PVT_MODULE_DESCRIPTION, PvtParameters
+from thrs.control.modules.thrusters import (
+    THRUSTERS_MODULE_DESCRIPTION,
+    ThrustersParameters,
+)
 from thrs.input_output.base import CombinedValues, Stamped
 from thrs.input_output.definitions.simulation import (
     Boundary,
@@ -19,7 +22,9 @@ from thrs.input_output.definitions.simulation import (
 from thrs.input_output.definitions.units import PcsMode
 from thrs.input_output.modules.high_temperature import (
     HighTemperatureSimulationInputs,
+    HighTemperatureSimulationOutputs,
 )
+from thrs.orchestration.module import CombinedModule
 from thrs.orchestration.simulation import Simulation
 from thrs.simulation.fmu import Fmu
 from thrs.simulation.models.fmu_paths import high_temperature_path
@@ -60,7 +65,16 @@ def simulation_inputs():
 
 @fixture
 def module():
-    return HighTemperatureModule()
+    return CombinedModule(
+        {
+            "thrusters": THRUSTERS_MODULE_DESCRIPTION,
+            "pvt": PVT_MODULE_DESCRIPTION,
+            "pcm": PCM_MODULE_DESCRIPTION,
+            "consumers": CONSUMERS_MODULE_DESCRIPTION,
+        },
+        HighTemperatureSimulationInputs,
+        HighTemperatureSimulationOutputs,
+    )
 
 
 @fixture
