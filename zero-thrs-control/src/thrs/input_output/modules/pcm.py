@@ -104,7 +104,7 @@ class PcmSensorValues(ThrsValues):
     pcm_switch_charging_supply: Annotated[
         sensor.Valve,
         component_meta(
-            yard_tag="50001090-01", component_type="valve", valve_type="switch"
+            yard_tag="50001190-01", component_type="valve", valve_type="switch"
         ),
     ]
     pcm_switch_consumers: Annotated[
