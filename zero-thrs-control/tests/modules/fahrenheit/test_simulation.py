@@ -9,7 +9,7 @@ from thrs.input_output.modules.fahrenheit import (
     FahrenheitSimulationInputs,
     FahrenheitSimulationOutputs,
 )
-from thrs.orchestration.executor import SimulationExecutor
+from thrs.orchestration.simulation import Simulation
 from thrs.simulation.fmu import Fmu
 from thrs.simulation.io_mapping import ThrsModelIoMapping
 from thrs.simulation.models.fmu_paths import fahrenheit_path
@@ -30,7 +30,7 @@ async def test_thrusters_simulation_inputs(incorrect_simulation_inputs, control)
             FahrenheitSensorValues,
             FahrenheitSimulationOutputs,
         )
-        executor = SimulationExecutor(
+        simulation = Simulation(
             mapping,
             fmu,
             incorrect_simulation_inputs,
@@ -40,6 +40,6 @@ async def test_thrusters_simulation_inputs(incorrect_simulation_inputs, control)
 
         with pytest.raises(Exception):
             for i in range(100):
-                await executor.tick(
+                await simulation.tick(
                     control.initial(datetime.now()).values,
                 )

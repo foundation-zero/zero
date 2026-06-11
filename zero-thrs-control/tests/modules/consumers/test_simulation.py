@@ -9,7 +9,7 @@ from thrs.input_output.modules.consumers import (
     ConsumersSimulationInputs,
     ConsumersSimulationOutputs,
 )
-from thrs.orchestration.executor import SimulationExecutor
+from thrs.orchestration.simulation import Simulation
 from thrs.simulation.fmu import Fmu
 from thrs.simulation.io_mapping import ThrsModelIoMapping
 from thrs.simulation.models.fmu_paths import consumers_path
@@ -38,7 +38,7 @@ async def test_consumers_simulation_inputs(incorrect_simulation_inputs, control)
             ConsumersSensorValues,
             ConsumersSimulationOutputs,
         )
-        executor = SimulationExecutor(
+        simulation = Simulation(
             mapping,
             fmu,
             incorrect_simulation_inputs,
@@ -48,6 +48,6 @@ async def test_consumers_simulation_inputs(incorrect_simulation_inputs, control)
 
         with pytest.raises(Exception):
             for i in range(300):
-                await executor.tick(
+                await simulation.tick(
                     control.initial(datetime.now()).values,
                 )

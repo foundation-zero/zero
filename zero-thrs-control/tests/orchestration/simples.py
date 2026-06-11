@@ -1,12 +1,12 @@
 from datetime import datetime
 from typing import Callable
 
-from thrs.classes.control import ControlResult
+from thrs.classes.control import Control, ControlResult
 from thrs.input_output.alarms import BaseAlarms
 from thrs.input_output.base import SimulationInputs, SimulationValues, ThrsValues
 from thrs.input_output.definitions.sensor import FlowSensor
-from thrs.orchestration.cycler import Control
-from thrs.orchestration.executor import ExecutionResult, Executor
+from thrs.orchestration.connector import Connector, ExecutionResult
+from thrs.orchestration.simulation import Simulation, SimulationResult
 
 
 class SimpleInOut(ThrsValues):
@@ -21,7 +21,7 @@ class SimpleSimulationOutputs(SimulationValues):
     pass
 
 
-class SimpleExecutor(Executor):
+class SimpleConnector(Connector):
     def __init__(self, start_time):
         self.controls = []
         self._start_time = start_time
@@ -32,6 +32,30 @@ class SimpleExecutor(Executor):
     async def tick(self, control_values):
         self.controls.append(control_values)
         return ExecutionResult(timestamp=datetime.now(), sensor_values=control_values)
+
+    @property
+    def start_time(self):
+        return self._start_time
+
+    def time(self):
+        return datetime.now()
+
+
+class SimpleSimulation[
+    S,
+    I: SimulationInputs,
+    O: SimulationValues,
+](Simulation[S, S, I, O]):
+    def __init__(self, start_time):
+        self.controls = []
+        self._start_time = start_time
+
+    async def start(self):
+        pass
+
+    async def tick(self, control_values: S) -> SimulationResult[S, S, I, O]:
+        self.controls.append(control_values)
+        return ExecutionResult(timestamp=datetime.now(), sensor_values=control_values)  # type: ignore # TODO: make this make sense
 
     @property
     def start_time(self):

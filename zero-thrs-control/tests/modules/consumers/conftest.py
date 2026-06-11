@@ -10,7 +10,7 @@ from thrs.input_output.modules.consumers import (
     ConsumersSimulationInputs,
     ConsumersSimulationOutputs,
 )
-from thrs.orchestration.executor import SimulationExecutor
+from thrs.orchestration.simulation import Simulation
 from thrs.simulation.fmu import Fmu
 from thrs.simulation.io_mapping import ThrsModelIoMapping
 from thrs.simulation.models.fmu_paths import consumers_path
@@ -27,8 +27,8 @@ def parameters():
 
 
 @fixture
-def control(parameters, executor):
-    return ConsumersControl(parameters, executor.time)
+def control(parameters, simulation):
+    return ConsumersControl(parameters, simulation.time)
 
 
 @fixture
@@ -57,8 +57,8 @@ def io_mapping():
 
 
 @fixture
-def executor(io_mapping, simulation_inputs):
+def simulation(io_mapping, simulation_inputs):
     with Fmu(consumers_path) as fmu:
-        yield SimulationExecutor(
+        yield Simulation(
             io_mapping, fmu, simulation_inputs, datetime.now(), timedelta(seconds=1)
         )

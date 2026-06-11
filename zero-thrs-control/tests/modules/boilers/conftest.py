@@ -5,6 +5,7 @@ from pytest import fixture
 from thrs.control.modules.boilers import (
     BoilersAlarms,
     BoilersControl,
+    BoilersControlMode,
     BoilersParameters,
     Tank,
     TanksController,
@@ -23,8 +24,8 @@ from thrs.input_output.modules.boilers import (
     BoilersSimulationInputs,
     BoilersSimulationOutputs,
 )
-from thrs.orchestration.cycler import Cycler
-from thrs.orchestration.executor import SimulationExecutor
+from thrs.orchestration.runner import Runner
+from thrs.orchestration.simulation import Simulation
 from thrs.simulation.fmu import Fmu
 from thrs.simulation.io_mapping import ThrsModelIoMapping
 from thrs.simulation.models.fmu_paths import boilers_path
@@ -70,16 +71,16 @@ def io_mapping():
 
 
 @fixture
-def executor(io_mapping, simulation_inputs):
+def simulation(io_mapping, simulation_inputs):
     with Fmu(boilers_path) as fmu:
-        yield SimulationExecutor(
+        yield Simulation(
             io_mapping, fmu, simulation_inputs, datetime.now(), timedelta(seconds=1)
         )
 
 
 @fixture
-def control(executor) -> BoilersControl:
-    return BoilersControl(BoilersParameters(), executor.time)
+def control(simulation) -> BoilersControl:
+    return BoilersControl(BoilersParameters(), simulation.time)
 
 
 @fixture
@@ -93,8 +94,12 @@ def parameters() -> BoilersParameters:
 
 
 @fixture()
-def cycler(control: BoilersControl, executor, alarms: BoilersAlarms) -> Cycler:
-    return Cycler(control, executor, alarms)
+def runner(
+    control: BoilersControl, simulation, alarms: BoilersAlarms
+) -> Runner[
+    BoilersSensorValues, BoilersControlValues, BoilersParameters, BoilersControlMode
+]:
+    return Runner(simulation, control, alarms)
 
 
 @fixture

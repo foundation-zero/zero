@@ -8,10 +8,10 @@ from aiomqtt import Client
 from tests.orchestration.simples import (
     SimpleAlarms,
     SimpleControl,
-    SimpleExecutor,
     SimpleInOut,
     SimpleMode,
     SimpleParameters,
+    SimpleSimulation,
 )
 from thrs.input_output.base import (
     CombinedValues,
@@ -21,7 +21,7 @@ from thrs.input_output.base import (
 )
 from thrs.input_output.definitions.sensor import FlowSensor
 from thrs.orchestration.config import Config
-from thrs.orchestration.executor import MqttControlConnector, MqttExecutor
+from thrs.orchestration.connector import MqttConnector, MqttControlConnector
 from thrs.orchestration.module import CombinedModule, ModuleDescription
 
 settings = Config()  # type: ignore
@@ -36,10 +36,10 @@ mqtt_client = pytest.fixture(_mqtt_client)
 mqtt_client2 = pytest.fixture(_mqtt_client)
 
 
-async def test_mqtt_executor(mqtt_client, mqtt_client2):
-    simple_executor = SimpleExecutor(datetime.now())
-    executor = MqttExecutor(
-        simple_executor,
+async def test_mqtt_connector(mqtt_client, mqtt_client2):
+    simple_simulation = SimpleSimulation(datetime.now())
+    connector = MqttConnector(
+        simple_simulation,
         mqtt_client,
         mqtt_client2,
         f"{settings.mqtt_topic_prefix}/simple",
@@ -58,12 +58,12 @@ async def test_mqtt_executor(mqtt_client, mqtt_client2):
             cast(type[SimulationValues], SimpleInOut),
         ),
     )
-    await executor.start()
-    running = create_task(executor.run())
+    await connector.start()
+    running = create_task(connector.run())
     await sleep(0)
 
     try:
-        first_result = await executor.tick(
+        first_result = await connector.tick(
             CombinedValues(
                 values={
                     "simple": SimpleInOut(
@@ -81,7 +81,7 @@ async def test_mqtt_executor(mqtt_client, mqtt_client2):
             == 2
         )
         await sleep(0.005)
-        second_result = await executor.tick(
+        second_result = await connector.tick(
             CombinedValues(
                 values={
                     "simple": SimpleInOut(
@@ -99,7 +99,7 @@ async def test_mqtt_executor(mqtt_client, mqtt_client2):
             == 2
         )
         await sleep(0.1)
-        third_result = await executor.tick(
+        third_result = await connector.tick(
             CombinedValues(
                 {
                     "simple": SimpleInOut(
@@ -120,8 +120,8 @@ async def test_mqtt_executor(mqtt_client, mqtt_client2):
         running.cancel()
 
 
-async def test_boat_executor_echoes_controls_to_sensors(mqtt_client):
-    executor = MqttControlConnector(
+async def test_boat_connector_echoes_controls_to_sensors(mqtt_client):
+    connector = MqttControlConnector(
         mqtt_client,
         f"{settings.mqtt_topic_prefix}/simple",
         CombinedModule(
@@ -139,12 +139,12 @@ async def test_boat_executor_echoes_controls_to_sensors(mqtt_client):
             cast(type[SimulationValues], SimpleInOut),
         ),
     )
-    await executor.start()
-    running = create_task(executor.run())
+    await connector.start()
+    running = create_task(connector.run())
     await sleep(0)
 
     try:
-        empty_result = await executor.tick(
+        empty_result = await connector.tick(
             CombinedValues(
                 values={
                     "simple": SimpleInOut(
@@ -159,7 +159,7 @@ async def test_boat_executor_echoes_controls_to_sensors(mqtt_client):
 
         await sleep(0.005)
 
-        first_result = await executor.tick(
+        first_result = await connector.tick(
             CombinedValues(
                 values={
                     "simple": SimpleInOut(
@@ -179,7 +179,7 @@ async def test_boat_executor_echoes_controls_to_sensors(mqtt_client):
 
         await sleep(0.1)
 
-        second_result = await executor.tick(
+        second_result = await connector.tick(
             CombinedValues(
                 values={
                     "simple": SimpleInOut(
