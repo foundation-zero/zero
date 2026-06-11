@@ -4,7 +4,7 @@ from typing import Any, Protocol
 import polars as pl
 
 
-class Collector(Protocol):
+class Collector[R](Protocol):
     def collect(
         self,
         values: dict[str, float],
@@ -12,18 +12,10 @@ class Collector(Protocol):
         time: datetime,
     ): ...
 
-
-class NullCollector(Collector):
-    def collect(
-        self,
-        values: dict[str, float],
-        control_mode: str | None,
-        time: datetime,
-    ):
-        pass
+    def result(self) -> R | None: ...
 
 
-class PolarsCollector(Collector):
+class PolarsCollector(Collector[pl.DataFrame]):
     def __init__(self):
         self._data = None
         self._schema_overrides = None

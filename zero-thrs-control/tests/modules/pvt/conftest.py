@@ -14,7 +14,7 @@ from thrs.input_output.modules.pvt import (
     PvtSimulationInputs,
     PvtSimulationOutputs,
 )
-from thrs.orchestration.executor import SimulationExecutor
+from thrs.orchestration.simulation import Simulation
 from thrs.simulation.fmu import Fmu
 from thrs.simulation.io_mapping import ThrsModelIoMapping
 from thrs.simulation.models.fmu_paths import pvt_path
@@ -42,13 +42,13 @@ def io_mapping():
 
 
 @fixture
-def control(executor):
-    return PvtControl(PvtParameters(), executor.time)
+def control(simulation):
+    return PvtControl(PvtParameters(), simulation.time)
 
 
 @fixture
-def executor(io_mapping, simulation_inputs):
+def simulation(io_mapping, simulation_inputs):
     with Fmu(pvt_path) as fmu:
-        yield SimulationExecutor(
+        yield Simulation(
             io_mapping, fmu, simulation_inputs, datetime.now(), timedelta(seconds=1)
         )

@@ -20,7 +20,7 @@ from thrs.input_output.definitions.units import PcsMode
 from thrs.input_output.modules.high_temperature import (
     HighTemperatureSimulationInputs,
 )
-from thrs.orchestration.executor import SimulationExecutor
+from thrs.orchestration.simulation import Simulation
 from thrs.simulation.fmu import Fmu
 from thrs.simulation.models.fmu_paths import high_temperature_path
 
@@ -64,7 +64,7 @@ def module():
 
 
 @fixture
-def control(module, executor):
+def control(module, simulation):
     return module.control(
         CombinedValues(
             {
@@ -74,7 +74,7 @@ def control(module, executor):
                 "consumers": ConsumersParameters(),
             }
         ),
-        executor.time,
+        simulation.time,
     )
 
 
@@ -84,8 +84,8 @@ def io_mapping(module):
 
 
 @fixture
-def executor(io_mapping, simulation_inputs):
+def simulation(io_mapping, simulation_inputs):
     with Fmu(high_temperature_path) as fmu:
-        yield SimulationExecutor(
+        yield Simulation(
             io_mapping, fmu, simulation_inputs, datetime.now(), timedelta(seconds=1)
         )

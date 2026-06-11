@@ -80,9 +80,10 @@ from thrs.input_output.modules.thrusters import (
     ThrustersSimulationOutputs,
 )
 from thrs.orchestration.config import Config
-from thrs.orchestration.executor import MqttExecutor, SimulationExecutor
+from thrs.orchestration.connector import MqttConnector
 from thrs.orchestration.module import CombinedControl, CombinedModule
-from thrs.orchestration.simulator import Simulator
+from thrs.orchestration.runner import Runner
+from thrs.orchestration.simulation import Simulation
 from thrs.simulation.fmu import Fmu
 from thrs.simulation.models.fmu_paths import (
     boilers_path,
@@ -301,7 +302,7 @@ class MessageContext[
     cmds: "Queue[SimulationCtrlMessage]"
     control: CombinedControl
     client: MqttClient
-    executor: SimulationExecutor[
+    simulation: Simulation[
         SensorValues,
         ControlValues,
         Inputs,
@@ -639,7 +640,7 @@ class SetSimulationInputsMessage[Inputs: SimulationInputs](IncomingMessage):
         return "simulation/set_inputs"
 
     async def handle(self, context: MessageContext):
-        context.executor.update_simulation_inputs(self.inputs)
+        context.simulation.update_simulation_inputs(self.inputs)
         await context.send(SimulationInputMessage(inputs=self.inputs))
 
 
@@ -743,11 +744,11 @@ class SimulationControls:
                     )
 
     @contextmanager
-    def _executor(
+    def _simulation(
         self, fmu_path: str, modules: CombinedModule, inputs: SimulationInputs
-    ) -> Generator[SimulationExecutor, None, None]:
+    ) -> Generator[Simulation, None, None]:
         with Fmu(fmu_path) as fmu:
-            yield SimulationExecutor(
+            yield Simulation(
                 modules.io_mapping(), fmu, inputs, datetime.now(), timedelta(seconds=1)
             )
 
@@ -760,30 +761,30 @@ class SimulationControls:
         fmu_path, modules = MODES[mode]
         simulation_inputs = INPUTS[mode]
 
-        with self._executor(fmu_path, modules, simulation_inputs) as inner_executor:
+        with self._simulation(fmu_path, modules, simulation_inputs) as simulation:
             parameters = {module: CONTROL_PARAMS[module] for module in modules.modules}
-            control = modules.control(CombinedValues(parameters), inner_executor.time)
+            control = modules.control(CombinedValues(parameters), simulation.time)
 
             cmds: Queue[SimulationCtrlMessage] = Queue()
             context = MessageContext(
-                cmds, control, self._controls_client, inner_executor, self._topic_prefix
+                cmds, control, self._controls_client, simulation, self._topic_prefix
             )
             for module in modules.modules:
                 await context.send(
                     ControlModeMessage(module=module, mode=control.mode_for(module))
                 )
 
-            executor = MqttExecutor(
-                inner_executor,
+            connector = MqttConnector(
+                simulation,
                 self._control_client,
                 self._sensor_client,
                 self._topic_prefix,
                 modules,
             )
-            simulator = Simulator(executor, control, modules.alarms())
+            runner = Runner(connector, control, modules.alarms())  # type: ignore
 
-            await executor.start()
-            executor_task = create_task(executor.run())
+            await connector.start()
+            connector_task = create_task(connector.run())
             receive_task = create_task(
                 self._receive_controls(HANDLERS, context, modules)
             )
@@ -801,12 +802,12 @@ class SimulationControls:
                     )
                 )
                 await self._run_simulation(
-                    mode, modules, context, executor, simulator, cmds
+                    mode, modules, context, connector, runner, cmds
                 )
             except Exception as e:
                 logger.error(f"SimulationControls run encountered an error: {e}")
             finally:
-                executor_task.cancel()
+                connector_task.cancel()
                 receive_task.cancel()
 
     async def _run_simulation(
@@ -814,8 +815,8 @@ class SimulationControls:
         mode: Modes,
         modules: CombinedModule,
         context: MessageContext,
-        executor: MqttExecutor,
-        simulator: Simulator,
+        connector: MqttConnector,
+        runner: Runner,
         cmds: Queue[SimulationCtrlMessage],
     ):
         logging.debug("Simulation control loop started")
@@ -825,20 +826,20 @@ class SimulationControls:
                 SimulationStatusMessage(
                     mode=mode,
                     status="available",
-                    simulation_time=executor.time(),
+                    simulation_time=connector.time(),
                     control_modules=active_modules,
                 )
             )
             cmd = await cmds.get()
             if isinstance(cmd, PlayMessage):
                 sleep_duration = (
-                    context.executor.tick_duration.total_seconds() / cmd.playback_rate
+                    context.simulation.tick_duration.total_seconds() / cmd.playback_rate
                 )
                 await context.send(
                     SimulationStatusMessage(
                         mode=mode,
                         status="running",
-                        simulation_time=executor.time(),
+                        simulation_time=connector.time(),
                         control_modules=active_modules,
                     )
                 )
@@ -848,20 +849,21 @@ class SimulationControls:
                 while cmds.empty():
                     async with TaskGroup() as tg:
                         tg.create_task(sleep(sleep_duration))
-                        tg.create_task(simulator.run(1))
+                        tg.create_task(runner.run(1))
                 logger.debug("Simulation paused")
             elif isinstance(cmd, StepMessage):
                 await context.send(
                     SimulationStatusMessage(
                         mode=mode,
                         status="stepping",
-                        simulation_time=executor.time(),
+                        simulation_time=connector.time(),
                         control_modules=active_modules,
                     )
                 )
 
                 ticks = max(
-                    1, int(cmd.seconds / context.executor.tick_duration.total_seconds())
+                    1,
+                    int(cmd.seconds / context.simulation.tick_duration.total_seconds()),
                 )
                 logging.debug(f"Stepping simulation by {ticks} ticks")
-                await simulator.run(ticks)
+                await runner.run(ticks)
