@@ -36,7 +36,7 @@ class ReadWithMqttCmd(ModbusSettings, MqttSettings):
 
     async def cli_cmd(self) -> None:
         async with RelaySwitchingTemperatureReader.from_settings(
-            self, self, self.activate_topic, self.activate_json_path, ""
+            self, self, self.activate_topic, self.activate_json_path, "hull-temperature/temperatures"
         ) as reader:
             temperatures = await reader.read_temperatures()
             for reading in temperatures:
