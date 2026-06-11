@@ -1,13 +1,22 @@
 from pytest import approx
 
-from thrs.control.modules.boilers import BoilersControl, TanksController
+from thrs.control.modules.boilers import (
+    BoilersControl,
+    BoilersControlMode,
+    BoilersParameters,
+    TanksController,
+)
 from thrs.input_output.base import Stamped
-from thrs.input_output.modules.boilers import BoilersSimulationInputs
-from thrs.orchestration.cycler import Cycler
-from thrs.orchestration.executor import SimulationExecutionResult
+from thrs.input_output.modules.boilers import (
+    BoilersControlValues,
+    BoilersSensorValues,
+    BoilersSimulationInputs,
+)
+from thrs.orchestration.connector import ExecutionResult
+from thrs.orchestration.runner import Runner
 
 
-async def test_filling(cycler: Cycler, simulation_inputs: BoilersSimulationInputs):
+async def test_filling(runner: Runner, simulation_inputs: BoilersSimulationInputs):
     simulation_inputs_no_consumption = simulation_inputs.model_copy(
         update={
             "boilers_freshwater_return_set": simulation_inputs.boilers_hotwater_demand.model_copy(
@@ -15,15 +24,16 @@ async def test_filling(cycler: Cycler, simulation_inputs: BoilersSimulationInput
             )
         }
     )
-    cycler.update_simulation_inputs(simulation_inputs_no_consumption)
+    runner._connector.update_simulation_inputs(simulation_inputs_no_consumption)  # type: ignore
 
-    result = await cycler.run(60)
+    await runner.run(60)
+    result = runner.last_tick_result
 
-    assert isinstance(cycler._control, BoilersControl)
-    assert cycler._control._lt1_flow_controller.enabled()
-    assert cycler._control._lt2_flow_controller.enabled()
+    assert isinstance(runner._control, BoilersControl)
+    assert runner._control._lt1_flow_controller.enabled()
+    assert runner._control._lt2_flow_controller.enabled()
 
-    assert isinstance(result, SimulationExecutionResult)
+    assert isinstance(result, ExecutionResult)
     assert result.sensor_values.boilers_flow_lt1.flow.value > 0.1
     assert result.sensor_values.boilers_flow_lt2.flow.value > 0.1
 
@@ -34,60 +44,67 @@ async def test_filling(cycler: Cycler, simulation_inputs: BoilersSimulationInput
             )
         }
     )
-    cycler.update_simulation_inputs(simulation_inputs_no_lt1)
+    runner._connector.update_simulation_inputs(simulation_inputs_no_lt1)  # type: ignore
 
-    result = await cycler.run(180)
+    await runner.run(180)
+    result = runner.last_tick_result
 
-    assert isinstance(cycler._control, BoilersControl)
-    assert not cycler._control._lt1_flow_controller.enabled()
-    assert cycler._control._lt2_flow_controller.enabled()
+    assert isinstance(runner._control, BoilersControl)
+    assert not runner._control._lt1_flow_controller.enabled()
+    assert runner._control._lt2_flow_controller.enabled()
 
-    assert isinstance(result, SimulationExecutionResult)
+    assert isinstance(result, ExecutionResult)
     assert result.sensor_values.boilers_flow_lt1.flow.value == approx(0.0, abs=0.01)
     assert result.sensor_values.boilers_flow_lt2.flow.value > 0.1
 
     # wait for tanks to fill
-    result = await cycler.run(1000)
-    assert isinstance(result, SimulationExecutionResult)
-    assert isinstance(cycler._control, BoilersControl) and isinstance(
-        cycler._control._tanks_controller, TanksController
+    await runner.run(1000)
+    result = runner.last_tick_result
+
+    assert isinstance(result, ExecutionResult)
+    assert isinstance(runner._control, BoilersControl) and isinstance(
+        runner._control._tanks_controller, TanksController
     )
-    assert not cycler._control._tanks_controller.filling
-    assert not cycler._control._lt1_flow_controller.enabled()
-    assert not cycler._control._lt2_flow_controller.enabled()
+    assert not runner._control._tanks_controller.filling
+    assert not runner._control._lt1_flow_controller.enabled()
+    assert not runner._control._lt2_flow_controller.enabled()
 
     assert result.sensor_values.boilers_flow_lt1.flow.value == approx(0.0, abs=0.01)
     assert result.sensor_values.boilers_flow_lt2.flow.value == approx(0.0, abs=0.01)
     assert (
         result.sensor_values.boilers_level_tank1.level.value
-        > cycler._control.parameters.minimum_tank_level
+        > runner._control.parameters.minimum_tank_level
     )
     assert (
         result.sensor_values.boilers_level_tank2.level.value
-        > cycler._control.parameters.minimum_tank_level
+        > runner._control.parameters.minimum_tank_level
     )
     assert (
         result.sensor_values.boilers_level_tank3.level.value
-        > cycler._control.parameters.minimum_tank_level
+        > runner._control.parameters.minimum_tank_level
     )
 
 
 async def test_boosting_transitions(
-    cycler: Cycler, simulation_inputs: BoilersSimulationInputs
+    runner: Runner[
+        BoilersSensorValues, BoilersControlValues, BoilersParameters, BoilersControlMode
+    ],
+    simulation_inputs: BoilersSimulationInputs,
 ):
     # all tanks full and ht available
-    cycler._control.update_parameters(
-        cycler._control.parameters.copy(update={"maximum_tank_level": 10})
+    runner._control.update_parameters(
+        runner._control.parameters.copy(update={"maximum_tank_level": 10})
     )
 
-    result = await cycler.run(120)
+    await runner.run(120)
+    result = runner.last_tick_result
 
-    assert isinstance(cycler._control, BoilersControl) and isinstance(
-        cycler._control._tanks_controller, TanksController
+    assert isinstance(runner._control, BoilersControl) and isinstance(
+        runner._control._tanks_controller, TanksController
     )
-    assert cycler._control._tanks_controller.boosting
-    assert cycler._control.mode.is_boosting_high_temperature
-    assert isinstance(result, SimulationExecutionResult)
+    assert runner._control._tanks_controller.boosting
+    assert runner._control.mode.is_boosting_high_temperature
+    assert isinstance(result, ExecutionResult)
     assert result.sensor_values.boilers_flow_boosting.flow.value > 0.1
     assert (
         result.sensor_values.boilers_temperature_boosting_return.temperature.value
@@ -102,12 +119,13 @@ async def test_boosting_transitions(
             )
         }
     )
-    cycler.update_simulation_inputs(simulation_inputs_no_ht)
-    result = await cycler.run(120)
+    runner._connector.update_simulation_inputs(simulation_inputs_no_ht)  # type: ignore
+    await runner.run(120)
+    result = runner.last_tick_result
 
-    assert cycler._control._tanks_controller.boosting
-    assert cycler._control.mode.is_boosting_heatpump
-    assert isinstance(result, SimulationExecutionResult)
+    assert runner._control._tanks_controller.boosting
+    assert runner._control.mode.is_boosting_heatpump
+    assert isinstance(result, ExecutionResult)
     assert result.sensor_values.boilers_flow_boosting.flow.value == approx(25, abs=0.2)
     assert (
         result.sensor_values.boilers_temperature_boosting_return.temperature.value
@@ -115,12 +133,13 @@ async def test_boosting_transitions(
     )
 
     # all tanks at temperature
-    cycler._control.update_parameters(
-        cycler._control.parameters.copy(update={"maximum_tank_temperature": 10})
+    runner._control.update_parameters(
+        runner._control.parameters.copy(update={"maximum_tank_temperature": 10})
     )
-    result = await cycler.run(120)
+    await runner.run(120)
+    result = runner.last_tick_result
 
-    assert not cycler._control._tanks_controller.boosting
-    assert cycler._control.mode.is_boosting_idle
-    assert isinstance(result, SimulationExecutionResult)
+    assert not runner._control._tanks_controller.boosting
+    assert runner._control.mode.is_boosting_idle
+    assert isinstance(result, ExecutionResult)
     assert result.sensor_values.boilers_flow_boosting.flow.value == approx(0.0, abs=0.1)

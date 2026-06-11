@@ -9,7 +9,7 @@ from thrs.input_output.modules.lt1 import (
     Lt1SimulationInputs,
     Lt1SimulationOutputs,
 )
-from thrs.orchestration.executor import SimulationExecutor
+from thrs.orchestration.simulation import Simulation
 from thrs.simulation.fmu import Fmu
 from thrs.simulation.io_mapping import ThrsModelIoMapping
 from thrs.simulation.models.fmu_paths import lt1_path
@@ -22,8 +22,8 @@ def incorrect_simulation_inputs(simulation_inputs_inactive, request):
     return inputs
 
 
-async def test_simulation_step(control, executor):
-    result = await executor.tick(control.initial().values)
+async def test_simulation_step(control, simulation):
+    result = await simulation.tick(control.initial().values)
 
     assert isinstance(result.simulation_outputs, Lt1SimulationOutputs)
 
@@ -34,7 +34,7 @@ async def test_lt1_simulation_inputs(incorrect_simulation_inputs, control):
             Lt1SensorValues,
             Lt1SimulationOutputs,
         )
-        executor = SimulationExecutor(
+        simulation = Simulation(
             mapping,
             fmu,
             incorrect_simulation_inputs,
@@ -44,4 +44,4 @@ async def test_lt1_simulation_inputs(incorrect_simulation_inputs, control):
 
         with pytest.raises(Exception):
             for i in range(300):
-                await executor.tick(control.initial(datetime.now()).values)
+                await simulation.tick(control.initial(datetime.now()).values)

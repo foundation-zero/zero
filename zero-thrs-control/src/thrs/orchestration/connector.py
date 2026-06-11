@@ -1,11 +1,10 @@
 import logging
 from dataclasses import dataclass
 from datetime import datetime, timedelta
-from typing import Any, Literal
+from typing import Any, Literal, Protocol
 
 from aiomqtt import Client, Topic
 
-from thrs.classes.executor import ExecutionResult, Executor
 from thrs.input_output.base import (
     CombinedValues,
     SimulationInputs,
@@ -20,7 +19,23 @@ from thrs.utils.string import hyphenize
 logger = logging.getLogger(__name__)
 
 
-class MqttControlConnector(Executor[CombinedValues, CombinedValues]):
+@dataclass
+class ExecutionResult[S]:
+    timestamp: datetime
+    sensor_values: S
+
+
+class Connector[S, C](Protocol):
+    async def start(self): ...
+    async def tick(self, control_values: C) -> ExecutionResult[S]: ...
+
+    @property
+    def start_time(self) -> datetime: ...
+
+    def time(self) -> datetime: ...
+
+
+class MqttControlConnector(Connector[CombinedValues, CombinedValues]):
     def __init__(
         self,
         mqtt_client: Client,
@@ -88,7 +103,7 @@ class MqttControlConnector(Executor[CombinedValues, CombinedValues]):
     ) -> ExecutionResult[CombinedValues]:
         if not self._running:
             raise Exception(
-                "MqttControlExecutor not running, run() should be called in a create_task()"
+                "MqttControlConnector not running, run() should be called in a create_task()"
             )
         sensors = self._sensors_builder.result()
         await self._send_control_values(control_values)
@@ -106,10 +121,10 @@ class MqttControlConnector(Executor[CombinedValues, CombinedValues]):
         return datetime.now()
 
 
-class MqttSimulationConnector(Executor[CombinedValues, CombinedValues]):
+class MqttSimulationConnector(Connector[CombinedValues, CombinedValues]):
     def __init__(
         self,
-        inner: Executor,
+        inner: "Simulation",
         mqtt_client: Client,
         topic_prefix: str,
         module_nesting: CombinedModule,
@@ -164,20 +179,20 @@ class MqttSimulationConnector(Executor[CombinedValues, CombinedValues]):
     async def tick(
         self, control_values: CombinedValues
     ) -> ExecutionResult[CombinedValues]:
-        logging.debug("Executing inner executor")
-        execution_result = await self._inner.tick(control_values)
-        logging.debug("Inner executor tick completed")
-        await self._send_sensor_values(execution_result)
+        logging.debug("Executing simulation")
+        simulation_result = await self._inner.tick(control_values)
+        logging.debug("Simulation tick completed")
+        await self._send_sensor_values(simulation_result)
 
-        if isinstance(execution_result, SimulationExecutionResult):
+        if isinstance(simulation_result, SimulationResult):
             logging.debug("Publishing simulation output values")
             await self._publish_by_mapping(
                 self._mqtt_client,
                 self._module_nesting.simulation_output_mqtt_mapping,
-                execution_result.simulation_outputs,
+                simulation_result.simulation_outputs,
             )
 
-        return execution_result
+        return simulation_result
 
     @property
     def start_time(self) -> datetime:
@@ -187,24 +202,24 @@ class MqttSimulationConnector(Executor[CombinedValues, CombinedValues]):
         return self._inner.time()
 
 
-class MqttExecutor(Executor[CombinedValues, CombinedValues]):
-    # Compatibility wrapper composed from split executors:
-    # - MqttControlExecutor handles controller-side MQTT I/O
-    # - MqttSimulationExecutor handles simulation-side execution and publishing
+class MqttConnector(Connector[CombinedValues, CombinedValues]):
+    # Compatibility wrapper composed from split connectors:
+    # - MqttControlConnector handles controller-side MQTT I/O
+    # - MqttSimulationConnector handles simulation-side execution and publishing
     def __init__(
         self,
-        inner: Executor,
+        inner: "Simulation",
         controller_client: Client,
         environment_client: Client,
         topic_prefix: str,
         module_nesting: CombinedModule,
     ):
-        self._control_executor = MqttControlConnector(
+        self._control_connector = MqttControlConnector(
             mqtt_client=controller_client,
             topic_prefix=topic_prefix,
             module_nesting=module_nesting,
         )
-        self._simulation_executor = MqttSimulationConnector(
+        self._simulation_connector = MqttSimulationConnector(
             inner=inner,
             mqtt_client=environment_client,
             topic_prefix=topic_prefix,
@@ -212,28 +227,29 @@ class MqttExecutor(Executor[CombinedValues, CombinedValues]):
         )
 
     async def start(self):
-        await self._control_executor.start()
-        await self._simulation_executor.start()
+        await self._control_connector.start()
+        await self._simulation_connector.start()
 
     async def run(self):
-        await self._control_executor.run()
+        await self._control_connector.run()
 
     async def tick(
         self, control_values: CombinedValues
     ) -> ExecutionResult[CombinedValues]:
-        await self._control_executor.tick(control_values)
-        return await self._simulation_executor.tick(control_values)
+        await self._control_connector.tick(control_values)
+        return await self._simulation_connector.tick(control_values)
 
     @property
     def start_time(self) -> datetime:
-        return self._simulation_executor.start_time
+        return self._simulation_connector.start_time
 
     def time(self) -> datetime:
-        return self._simulation_executor.time()
+        return self._simulation_connector.time()
 
 
+# TODO: Move below classes to another file
 @dataclass
-class SimulationExecutionResult[
+class SimulationResult[
     S,
     C,
     I: SimulationInputs,
@@ -278,12 +294,12 @@ class SimulationExecutionResult[
         }
 
 
-class SimulationExecutor[
+class Simulation[
     S,
     C,
     I: SimulationInputs,
     O: SimulationValues,
-](Executor[S, C]):
+]:
     def __init__(
         self,
         io_mapping: IoMapping[S, C, I, O],
@@ -313,7 +329,7 @@ class SimulationExecutor[
     def time(self):
         return self._start_time + self._ticks * self._tick_duration
 
-    async def tick(self, control_values: C) -> SimulationExecutionResult[S, C, I, O]:
+    async def tick(self, control_values: C) -> SimulationResult[S, C, I, O]:
         logging.debug("Running simulation tick")
         time = self.time()
 
@@ -325,7 +341,7 @@ class SimulationExecutor[
         )
 
         self._ticks += 1
-        return SimulationExecutionResult(
+        return SimulationResult(
             timestamp=time,
             sensor_values=sensor_values,
             control_values=control_values,

@@ -4,7 +4,12 @@ import pytest
 from pytest import fixture
 
 from tests.helpers.simulation_inputs import simulator_input_field_setters
-from thrs.control.modules.thrusters import ThrustersControl, ThrustersParameters
+from tests.modules.thrusters.conftest import ThrustersSimulation
+from thrs.control.modules.thrusters import (
+    THRUSTERS_MODULE_DESCRIPTION,
+    ThrustersControl,
+    ThrustersParameters,
+)
 from thrs.input_output.definitions.control import Valve
 from thrs.input_output.modules.thrusters import (
     ThrustersControlValues,
@@ -13,9 +18,8 @@ from thrs.input_output.modules.thrusters import (
     ThrustersSimulationOutputs,
 )
 from thrs.orchestration.collector import PolarsCollector
-from thrs.orchestration.cycler import Cycler
-from thrs.orchestration.executor import SimulationExecutor
-from thrs.orchestration.simulator import Simulator, SimulatorModel
+from thrs.orchestration.runner import Runner, SimulatorModel
+from thrs.orchestration.simulation import Simulation
 from thrs.simulation.fmu import Fmu
 from thrs.simulation.io_mapping import (
     ThrsModelIoMapping,
@@ -25,11 +29,11 @@ from thrs.simulation.models.fmu_paths import thrusters_path
 
 
 async def test_interfacer(
-    executor, fmu, io_mapping, simulation_inputs, control, alarms
+    simulation, fmu, io_mapping, simulation_inputs, control, alarms
 ):
     collector = PolarsCollector()
-    interfacer = Cycler(control, executor, alarms)
-    await interfacer.run(20, collector)
+    runner = Runner(simulation, control, alarms)
+    await runner.run(20, collector)
     frame = collector.result()
     inputs = io_mapping.generate_inputs(
         ThrustersControlValues.zero(), simulation_inputs
@@ -64,11 +68,11 @@ async def test_interfacer(
 
 
 async def test_computed_collection(
-    executor, io_mapping, simulation_inputs, control, alarms
+    simulation: ThrustersSimulation, io_mapping, simulation_inputs, control, alarms
 ):
     collector = PolarsCollector()
-    interfacer = Cycler(control, executor, alarms)
-    await interfacer.run(20, collector)
+    runner = Runner(simulation, control, alarms)  # TODO: Make this make sense
+    await runner.run(20, collector)
     frame = collector.result()
     assert frame is not None
     assert "thrusters_temperature_recovery__temperature__C" in frame.columns
@@ -80,17 +84,23 @@ async def test_simulation(simulation_inputs, control, alarms):
         sensor_values_cls=ThrustersSensorValues,
         control_values_cls=ThrustersControlValues,
         control_cls=ThrustersControl,
-        control_parameters=ThrustersParameters(),
         simulation_outputs_cls=ThrustersSimulationOutputs,
         simulation_inputs=simulation_inputs,
         alarms=alarms,
     )
 
-    with thrusters_model.executor() as executor:
-        simulation = Simulator.from_model(thrusters_model, executor)
+    with thrusters_model.simulation() as simulation:
+        runner = Runner.from_module(
+            THRUSTERS_MODULE_DESCRIPTION,
+            ThrustersParameters(),
+            simulation,  # TODO: Make this make sense
+        )
 
-        result = await simulation.run(20)
+        collector = PolarsCollector()
 
+        await runner.run(20, collector)
+
+        result = collector.result()
         assert result is not None
         assert result["time"].len() == 20
 
@@ -108,7 +118,7 @@ async def test_thrusters_simulation_inputs(incorrect_simulation_inputs, control)
             ThrustersSensorValues,
             ThrustersSimulationOutputs,
         )
-        executor = SimulationExecutor(
+        simulation = Simulation(
             mapping,
             fmu,
             incorrect_simulation_inputs,
@@ -126,6 +136,6 @@ async def test_thrusters_simulation_inputs(incorrect_simulation_inputs, control)
 
         with pytest.raises(Exception):
             for i in range(100):
-                await executor.tick(
+                await simulation.tick(
                     control._current_values,
                 )

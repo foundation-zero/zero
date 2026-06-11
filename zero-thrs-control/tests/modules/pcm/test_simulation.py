@@ -9,7 +9,7 @@ from thrs.input_output.modules.pcm import (
     PcmSimulationInputs,
     PcmSimulationOutputs,
 )
-from thrs.orchestration.executor import SimulationExecutor
+from thrs.orchestration.simulation import Simulation
 from thrs.simulation.fmu import Fmu
 from thrs.simulation.io_mapping import ThrsModelIoMapping
 from thrs.simulation.models.fmu_paths import pcm_path
@@ -40,7 +40,7 @@ async def test_pcm_simulation_inputs(incorrect_simulation_inputs, control):
             PcmSensorValues,
             PcmSimulationOutputs,
         )
-        executor = SimulationExecutor(
+        simulation = Simulation(
             mapping,
             fmu,
             incorrect_simulation_inputs,
@@ -50,6 +50,6 @@ async def test_pcm_simulation_inputs(incorrect_simulation_inputs, control):
 
         with pytest.raises(Exception):
             for i in range(300):
-                await executor.tick(
+                await simulation.tick(
                     control.initial(datetime.now()).values,
                 )

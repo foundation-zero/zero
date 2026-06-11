@@ -7,9 +7,9 @@ from thrs.input_output.modules.consumers import (
     ConsumersSimulationInputs,
     ConsumersSimulationOutputs,
 )
-from thrs.orchestration.executor import SimulationExecutor
+from thrs.orchestration.simulation import Simulation
 
-type ConsumersExecutor = SimulationExecutor[
+type ConsumersSimulation = Simulation[
     ConsumersSensorValues,
     ConsumersControlValues,
     ConsumersSimulationInputs,
@@ -17,14 +17,14 @@ type ConsumersExecutor = SimulationExecutor[
 ]
 
 
-async def test_basic(control: ConsumersControl, executor: ConsumersExecutor):
-    result = await executor.tick(
+async def test_basic(control: ConsumersControl, simulation: ConsumersSimulation):
+    result = await simulation.tick(
         control.control(ConsumersSensorValues.zero()).values,
     )
 
     for i in range(180):
         control_values = control.control(result.sensor_values).values
-        result = await executor.tick(control_values)
+        result = await simulation.tick(control_values)
 
     total_flow = (
         result.sensor_values.consumers_flow_boosting.flow.value
@@ -40,17 +40,17 @@ async def test_basic(control: ConsumersControl, executor: ConsumersExecutor):
 
 
 async def test_boosting_disabled(
-    control: ConsumersControl, executor: ConsumersExecutor
+    control: ConsumersControl, simulation: ConsumersSimulation
 ):
     control._parameters.boosting_enabled = False
     control._parameters.fahrenheit_flow_ratio_setpoint = 0.5
-    result = await executor.tick(
+    result = await simulation.tick(
         control.control(ConsumersSensorValues.zero()).values,
     )
 
     for i in range(180):
         control_values = control.control(result.sensor_values).values
-        result = await executor.tick(control_values)
+        result = await simulation.tick(control_values)
 
     assert result.sensor_values.consumers_flow_boosting.flow.value == approx(0, abs=0.1)
     assert result.sensor_values.consumers_flow_fahrenheit.flow.value == approx(
@@ -59,17 +59,17 @@ async def test_boosting_disabled(
 
 
 async def test_fahrenheit_disabled(
-    control: ConsumersControl, executor: ConsumersExecutor
+    control: ConsumersControl, simulation: ConsumersSimulation
 ):
     control._parameters.fahrenheit_enabled = False
     control._parameters.boosting_flow_ratio_setpoint = 0.5
-    result = await executor.tick(
+    result = await simulation.tick(
         control.control(ConsumersSensorValues.zero()).values,
     )
 
     for i in range(180):
         control_values = control.control(result.sensor_values).values
-        result = await executor.tick(control_values)
+        result = await simulation.tick(control_values)
 
     assert result.sensor_values.consumers_flow_boosting.flow.value == approx(
         result.sensor_values.consumers_flow_bypass.flow.value, abs=1.0
@@ -79,16 +79,16 @@ async def test_fahrenheit_disabled(
     )
 
 
-async def test_only_bypass(control: ConsumersControl, executor: ConsumersExecutor):
+async def test_only_bypass(control: ConsumersControl, simulation: ConsumersSimulation):
     control._parameters.boosting_enabled = False
     control._parameters.fahrenheit_enabled = False
-    result = await executor.tick(
+    result = await simulation.tick(
         control.control(ConsumersSensorValues.zero()).values,
     )
 
     for i in range(180):
         control_values = control.control(result.sensor_values).values
-        result = await executor.tick(control_values)
+        result = await simulation.tick(control_values)
 
     assert result.sensor_values.consumers_flow_boosting.flow.value == approx(0, abs=0.2)
     assert result.sensor_values.consumers_flow_fahrenheit.flow.value == approx(

@@ -8,9 +8,9 @@ from thrs.input_output.modules.pcm import (
     PcmSimulationInputs,
     PcmSimulationOutputs,
 )
-from thrs.orchestration.executor import SimulationExecutor
+from thrs.orchestration.simulation import Simulation
 
-type PcmExecutor = SimulationExecutor[
+type PcmSimulation = Simulation[
     PcmSensorValues,
     PcmControlValues,
     PcmSimulationInputs,
@@ -18,17 +18,17 @@ type PcmExecutor = SimulationExecutor[
 ]
 
 
-async def test_idle(control: PcmControl, executor: PcmExecutor):
+async def test_idle(control: PcmControl, simulation: PcmSimulation):
     control._parameters.charging_enabled = False
     control._parameters.supplying_enabled = False
 
-    result = await executor.tick(
+    result = await simulation.tick(
         control.control(PcmSensorValues.zero()).values,
     )
 
     for i in range(100):
         control_values = control.control(result.sensor_values).values
-        result = await executor.tick(control_values)
+        result = await simulation.tick(control_values)
 
     pcm_flow = (
         result.sensor_values.pcm_flow_module_1.flow.value
@@ -43,8 +43,8 @@ async def test_idle(control: PcmControl, executor: PcmExecutor):
     )  # type: ignore
 
 
-async def test_charging(control: PcmControl, executor: PcmExecutor):
-    result = await executor.tick(
+async def test_charging(control: PcmControl, simulation: PcmSimulation):
+    result = await simulation.tick(
         control.control(PcmSensorValues.zero()).values,
     )
 
@@ -54,7 +54,7 @@ async def test_charging(control: PcmControl, executor: PcmExecutor):
         control_values = control.control(result.sensor_values).values
 
         control_values.pcm_switch_consumers.setpoint.value = 0.4  # close consumers switch partly to force flow past PCM #TODO: implement realistic pressure drop on consumers
-        result = await executor.tick(control_values)
+        result = await simulation.tick(control_values)
 
     assert (
         result.sensor_values.pcm_switch_charging_supply.position_rel.value
@@ -88,7 +88,7 @@ async def test_charging(control: PcmControl, executor: PcmExecutor):
         )
         control_values = control.control(result.sensor_values).values
         control_values.pcm_switch_consumers.setpoint.value = 0.4  # close consumers switch partly to force flow past PCM #TODO: implement realistic pressure drop on consumers
-        result = await executor.tick(control_values)
+        result = await simulation.tick(control_values)
 
     assert result.sensor_values.pcm_flow_module_1.flow.value == approx(0, abs=0.1)
 
@@ -102,8 +102,8 @@ async def test_charging(control: PcmControl, executor: PcmExecutor):
     )
 
 
-async def test_supplying(control: PcmControl, executor: PcmExecutor):
-    result = await executor.tick(
+async def test_supplying(control: PcmControl, simulation: PcmSimulation):
+    result = await simulation.tick(
         control.control(PcmSensorValues.zero()).values,
     )
 
@@ -112,7 +112,7 @@ async def test_supplying(control: PcmControl, executor: PcmExecutor):
 
     for i in range(100):
         control_values = control.control(result.sensor_values).values
-        result = await executor.tick(control_values)
+        result = await simulation.tick(control_values)
 
     assert (
         result.sensor_values.pcm_switch_charging_supply.position_rel.value
@@ -143,7 +143,7 @@ async def test_supplying(control: PcmControl, executor: PcmExecutor):
         result.sensor_values.pcm_module_1.charged.value = False
         result.sensor_values.pcm_module_2.charged.value = False
         control_values = control.control(result.sensor_values).values
-        result = await executor.tick(control_values)
+        result = await simulation.tick(control_values)
 
     pcm_flow = (
         result.sensor_values.pcm_flow_module_1.flow.value
@@ -162,7 +162,7 @@ async def test_supplying(control: PcmControl, executor: PcmExecutor):
         result.sensor_values.pcm_module_3.charged.value = False
         result.sensor_values.pcm_module_4.charged.value = False
         control_values = control.control(result.sensor_values).values
-        result = await executor.tick(control_values)
+        result = await simulation.tick(control_values)
 
     pcm_flow = (
         result.sensor_values.pcm_flow_module_1.flow.value
@@ -178,9 +178,9 @@ async def test_supplying(control: PcmControl, executor: PcmExecutor):
     assert pcm_flow == approx(0, abs=0.01)
 
 
-async def test_mode_switches(control: PcmControl, executor: PcmExecutor):
-    executor._simulation_inputs.pcm_producers_supply.temperature = Stamped.stamp(30)
-    result = await executor.tick(
+async def test_mode_switches(control: PcmControl, simulation: PcmSimulation):
+    simulation._simulation_inputs.pcm_producers_supply.temperature = Stamped.stamp(30)
+    result = await simulation.tick(
         control.control(PcmSensorValues.zero()).values,
     )
 
@@ -188,7 +188,7 @@ async def test_mode_switches(control: PcmControl, executor: PcmExecutor):
 
     for i in range(30):
         control_values = control.control(result.sensor_values).values
-        result = await executor.tick(control_values)
+        result = await simulation.tick(control_values)
 
     assert control.mode == PcmControlMode(mode="supplying")
 
@@ -198,7 +198,7 @@ async def test_mode_switches(control: PcmControl, executor: PcmExecutor):
         result.sensor_values.pcm_module_3.charged.value = False
         result.sensor_values.pcm_module_4.charged.value = True
         control_values = control.control(result.sensor_values).values
-        result = await executor.tick(control_values)
+        result = await simulation.tick(control_values)
 
     assert control.mode == PcmControlMode(mode="supplying")
 
@@ -208,28 +208,28 @@ async def test_mode_switches(control: PcmControl, executor: PcmExecutor):
         result.sensor_values.pcm_module_3.charged.value = False
         result.sensor_values.pcm_module_4.charged.value = False
         control_values = control.control(result.sensor_values).values
-        result = await executor.tick(control_values)
+        result = await simulation.tick(control_values)
 
     assert control.mode == PcmControlMode(mode="idle")
 
-    executor._simulation_inputs.pcm_producers_supply.temperature = Stamped.stamp(80)
+    simulation._simulation_inputs.pcm_producers_supply.temperature = Stamped.stamp(80)
     for i in range(10):
         result.sensor_values.pcm_module_1.charged.value = False
         result.sensor_values.pcm_module_2.charged.value = False
         result.sensor_values.pcm_module_3.charged.value = False
         result.sensor_values.pcm_module_4.charged.value = False
         control_values = control.control(result.sensor_values).values
-        result = await executor.tick(control_values)
+        result = await simulation.tick(control_values)
 
     assert control.mode == PcmControlMode(mode="charging")
 
-    executor._simulation_inputs.pcm_producers_supply.temperature = Stamped.stamp(30)
+    simulation._simulation_inputs.pcm_producers_supply.temperature = Stamped.stamp(30)
     for i in range(30):
         result.sensor_values.pcm_module_1.charged.value = False
         result.sensor_values.pcm_module_2.charged.value = False
         result.sensor_values.pcm_module_3.charged.value = False
         result.sensor_values.pcm_module_4.charged.value = False
         control_values = control.control(result.sensor_values).values
-        result = await executor.tick(control_values)
+        result = await simulation.tick(control_values)
 
     assert control.mode == PcmControlMode(mode="idle")

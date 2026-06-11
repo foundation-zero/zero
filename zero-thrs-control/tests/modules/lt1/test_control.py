@@ -3,19 +3,20 @@ from pytest import approx
 from thrs.control.modules.lt1 import Lt1Control, Lt1Parameters
 from thrs.input_output.definitions.control import Valve
 from thrs.input_output.modules.lt1 import Lt1SimulationInputs
-from thrs.orchestration.cycler import Cycler
-from thrs.orchestration.executor import SimulationExecutionResult
+from thrs.orchestration.connector import ExecutionResult
+from thrs.orchestration.runner import Runner
 
 
-async def test_idle(cycler: Cycler, simulation_inputs_inactive: Lt1SimulationInputs):
-    cycler.update_simulation_inputs(simulation_inputs_inactive)
+async def test_idle(runner: Runner, simulation_inputs_inactive: Lt1SimulationInputs):
+    runner._connector.update_simulation_inputs(simulation_inputs_inactive)  # type: ignore
 
-    result = await cycler.run(90)
+    await runner.run(90)
+    result = runner.last_tick_result
 
-    assert isinstance(cycler._control, Lt1Control)
-    assert cycler._control.mode.is_idle
+    assert isinstance(runner._control, Lt1Control)
+    assert runner._control.mode.is_idle
 
-    assert isinstance(result, SimulationExecutionResult)
+    assert isinstance(result, ExecutionResult)
     assert result.sensor_values.lt1_flow_propdrive_aft1.flow.value == approx(
         0.0, abs=0.01
     )
@@ -33,16 +34,17 @@ async def test_idle(cycler: Cycler, simulation_inputs_inactive: Lt1SimulationInp
 
 
 async def test_propulsion_all_active(
-    cycler: Cycler, simulation_inputs_all_drives_active: Lt1SimulationInputs
+    runner: Runner, simulation_inputs_all_drives_active: Lt1SimulationInputs
 ):
-    cycler.update_simulation_inputs(simulation_inputs_all_drives_active)
+    runner._connector.update_simulation_inputs(simulation_inputs_all_drives_active)  # type: ignore
 
-    result = await cycler.run(180)
+    await runner.run(180)
+    result = runner.last_tick_result
 
-    assert isinstance(cycler._control, Lt1Control)
-    assert cycler._control.mode.is_propulsion
+    assert isinstance(runner._control, Lt1Control)
+    assert runner._control.mode.is_propulsion
 
-    assert isinstance(result, SimulationExecutionResult)
+    assert isinstance(result, ExecutionResult)
     assert result.sensor_values.lt1_flow_propdrive_aft1.flow.value == approx(
         15.0, abs=0.1
     )
@@ -74,16 +76,17 @@ async def test_propulsion_all_active(
 
 
 async def test_shorepower(
-    cycler: Cycler, simulation_inputs_shorepower: Lt1SimulationInputs
+    runner: Runner, simulation_inputs_shorepower: Lt1SimulationInputs
 ):
-    cycler.update_simulation_inputs(simulation_inputs_shorepower)
+    runner._connector.update_simulation_inputs(simulation_inputs_shorepower)  # type: ignore
 
-    result = await cycler.run(180)
+    await runner.run(180)
+    result = runner.last_tick_result
 
-    assert isinstance(cycler._control, Lt1Control)
-    assert cycler._control.mode.is_shorepower
+    assert isinstance(runner._control, Lt1Control)
+    assert runner._control.mode.is_shorepower
 
-    assert isinstance(result, SimulationExecutionResult)
+    assert isinstance(result, ExecutionResult)
     assert result.sensor_values.lt1_flow_shorepower.flow.value == approx(20.0, abs=0.5)
     assert (
         result.sensor_values.lt1_temperature_shorepower_return.temperature.value
@@ -92,19 +95,20 @@ async def test_shorepower(
 
 
 async def test_heat_dump(
-    cycler: Cycler, simulation_inputs_shorepower: Lt1SimulationInputs
+    runner: Runner, simulation_inputs_shorepower: Lt1SimulationInputs
 ):
-    cycler.update_simulation_inputs(simulation_inputs_shorepower)
-    cycler._control.update_parameters(
+    runner._connector.update_simulation_inputs(simulation_inputs_shorepower)  # type: ignore
+    runner._control.update_parameters(
         Lt1Parameters(
             shorepower_maximum_supply_temperature=30,
             recovery_temperature=100,  # don't recover, dump all heat
         )
     )
 
-    result = await cycler.run(120)
+    await runner.run(120)
+    result = runner.last_tick_result
 
-    assert isinstance(result, SimulationExecutionResult)
+    assert isinstance(result, ExecutionResult)
     assert result.sensor_values.lt1_mix_recovery.position_rel.value == approx(
         Valve.MIXING_B_TO_AB, abs=0.01
     )
@@ -117,19 +121,20 @@ async def test_heat_dump(
 
 
 async def test_heat_recovery(
-    cycler: Cycler, simulation_inputs_shorepower: Lt1SimulationInputs
+    runner: Runner, simulation_inputs_shorepower: Lt1SimulationInputs
 ):
-    cycler.update_simulation_inputs(simulation_inputs_shorepower)
-    cycler._control.update_parameters(
+    runner._connector.update_simulation_inputs(simulation_inputs_shorepower)  # type: ignore
+    runner._control.update_parameters(
         Lt1Parameters(
             shorepower_maximum_supply_temperature=90,
             recovery_temperature=50,
         )
     )
 
-    result = await cycler.run(720)
+    await runner.run(720)
+    result = runner.last_tick_result
 
-    assert isinstance(result, SimulationExecutionResult)
+    assert isinstance(result, ExecutionResult)
     assert result.sensor_values.lt1_temperature_recovery.temperature.value == approx(
         50.0, abs=1
     )
@@ -140,16 +145,17 @@ async def test_heat_recovery(
 
 
 async def test_flow_balancing(
-    cycler: Cycler, simulation_inputs_all_drives_active: Lt1SimulationInputs
+    runner: Runner, simulation_inputs_all_drives_active: Lt1SimulationInputs
 ):
-    cycler.update_simulation_inputs(simulation_inputs_all_drives_active)
+    runner._connector.update_simulation_inputs(simulation_inputs_all_drives_active)  # type: ignore
 
-    result = await cycler.run(120)
+    await runner.run(120)
+    result = runner.last_tick_result
 
-    assert isinstance(cycler._control, Lt1Control)
-    assert cycler._control.mode.is_propulsion
+    assert isinstance(runner._control, Lt1Control)
+    assert runner._control.mode.is_propulsion
 
-    assert isinstance(result, SimulationExecutionResult)
+    assert isinstance(result, ExecutionResult)
     assert result.sensor_values.lt1_flow_propdrive_aft1.flow.value == approx(
         15.0, abs=0.5
     )

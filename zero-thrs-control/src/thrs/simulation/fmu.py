@@ -1,4 +1,7 @@
+import os
+from base64 import b64encode
 from datetime import timedelta
+from tempfile import gettempdir
 from types import TracebackType
 from typing import Any, Callable, Iterable, Self, cast
 
@@ -23,7 +26,15 @@ class Fmu:
         file: str,
     ):
         self._model_description = read_model_description(file)
-        self._temp_unzip_dir = extract(file)
+
+        tmp_dir = gettempdir()
+        self._temp_unzip_dir = os.path.join(
+            tmp_dir, f"fmu_{b64encode(file.encode()).decode()}"
+        )
+        if not os.path.exists(self._temp_unzip_dir):
+            os.mkdir(self._temp_unzip_dir)
+            extract(file, self._temp_unzip_dir)
+
         self._fmu_instance: FMU2Slave | None = None
         self._var_mapper = _var_mapper(self._model_description)
         self._time = 0.0
