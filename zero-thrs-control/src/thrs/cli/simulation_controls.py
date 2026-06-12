@@ -725,7 +725,7 @@ class SimulationControls:
     ) -> Generator[Simulation, None, None]:
         with Fmu(fmu_path) as fmu:
             yield Simulation(
-                modules.sensor_values_cls,
+                modules.sensor_values_clss,
                 modules.simulation_outputs_cls,
                 fmu,
                 inputs,
