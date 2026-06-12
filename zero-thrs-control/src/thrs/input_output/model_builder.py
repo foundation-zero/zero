@@ -1,10 +1,12 @@
 from abc import ABC, abstractmethod
 from asyncio import Future, gather
+from collections.abc import Mapping
 from typing import Any
 
 from pydantic import TypeAdapter
 
 from thrs.input_output.base import CombinedValues, ThrsValues
+from thrs.orchestration.module import ModuleClassMap
 from thrs.utils.string import dash_to_snake
 
 
@@ -49,9 +51,9 @@ class PartialModelBuilder[T: ThrsValues](ModelBuilder[T]):
 
 
 class CombinedModelBuilder(ModelBuilder[CombinedValues]):
-    def __init__(self, clss: dict[str, type[ThrsValues]]):
-        self._model_builders: dict[str, ModelBuilder[ThrsValues]] = {
-            name: PartialModelBuilder(cls) for name, cls in clss.items()
+    def __init__(self, clss: ModuleClassMap):
+        self._model_builders: Mapping[str, ModelBuilder[ThrsValues]] = {
+            name: PartialModelBuilder(module_cls) for name, module_cls in clss.items()
         }
 
     def input(self, topic: str, json: str | bytes):

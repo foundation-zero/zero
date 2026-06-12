@@ -12,12 +12,9 @@ from thrs.input_output.base import (
     SimulationValues,
     ThrsValues,
 )
-from thrs.orchestration.connector import (
-    DirectMqttMapping,
-    ModuleMqttMapping,
-    MqttMapping,
-)
 from thrs.simulation.io_mapping import CombinedIoMapping, IoMapping
+
+type ModuleClassMap = Mapping[str, type[ThrsValues]]
 
 
 class CombinedControl(
@@ -134,21 +131,16 @@ class CombinedModule[I: SimulationInputs, O: SimulationValues]:
         modules: dict[str, ModuleDescription],
         simulation_inputs_cls: type[I],
         simulation_outputs_cls: type[O],
-        control_topic_suffix: str | None = None,
     ):
         self._modules = modules
-        self._sensor_mqtt_mapping = ModuleMqttMapping(
-            {module: desc.sensor_values_cls for module, desc in modules.items()}
-        )
-        self._control_mqtt_mapping = ModuleMqttMapping(
-            {module: desc.control_values_cls for module, desc in modules.items()},
-            topic_suffix=control_topic_suffix,
-        )
+        self.sensor_values_clss: ModuleClassMap = {
+            module: desc.sensor_values_cls for module, desc in modules.items()
+        }
+        self.control_values_clss: ModuleClassMap = {
+            module: desc.control_values_cls for module, desc in modules.items()
+        }
         self._simulation_inputs_cls = simulation_inputs_cls
         self._simulation_outputs_cls = simulation_outputs_cls
-        self._simulation_output_mapping = DirectMqttMapping(
-            simulation_outputs_cls, topic="simulation/outputs"
-        )
 
     def io_mapping(self) -> IoMapping:
         return CombinedIoMapping(
@@ -159,18 +151,6 @@ class CombinedModule[I: SimulationInputs, O: SimulationValues]:
     @property
     def modules(self) -> list[str]:
         return list(self._modules.keys())
-
-    @property
-    def sensor_values_mqtt_mapping(self) -> MqttMapping[CombinedValues]:
-        return self._sensor_mqtt_mapping
-
-    @property
-    def control_values_mqtt_mapping(self) -> MqttMapping[CombinedValues]:
-        return self._control_mqtt_mapping
-
-    @property
-    def simulation_output_mqtt_mapping(self) -> MqttMapping[O]:
-        return self._simulation_output_mapping
 
     @property
     def simulation_inputs_cls(self) -> type[I]:

@@ -194,7 +194,7 @@ type Modes = Literal[
     "thrusters", "pvt", "pcm", "consumers", "high_temperature", "boilers"
 ]
 
-MODES: dict[Modes, tuple[str, CombinedModule]] = {
+MODES: dict[Modes, tuple[str, CombinedModule, str]] = {
     "thrusters": (
         thrusters_path,
         CombinedModule(
@@ -203,8 +203,8 @@ MODES: dict[Modes, tuple[str, CombinedModule]] = {
             },
             ThrustersSimulationInputs,
             ThrustersSimulationOutputs,
-            control_topic_suffix=settings.mqtt_control_topic_suffix,
         ),
+        settings.mqtt_control_topic_suffix,
     ),
     "pvt": (
         pvt_path,
@@ -212,8 +212,8 @@ MODES: dict[Modes, tuple[str, CombinedModule]] = {
             {"pvt": PVT_MODULE_DESCRIPTION},
             PvtSimulationInputs,
             PvtSimulationOutputs,
-            control_topic_suffix=settings.mqtt_control_topic_suffix,
         ),
+        settings.mqtt_control_topic_suffix,
     ),
     "pcm": (
         pcm_path,
@@ -221,8 +221,8 @@ MODES: dict[Modes, tuple[str, CombinedModule]] = {
             {"pcm": PCM_MODULE_DESCRIPTION},
             PcmSimulationInputs,
             PcmSimulationOutputs,
-            control_topic_suffix=settings.mqtt_control_topic_suffix,
         ),
+        settings.mqtt_control_topic_suffix,
     ),
     "consumers": (
         consumers_path,
@@ -230,8 +230,8 @@ MODES: dict[Modes, tuple[str, CombinedModule]] = {
             {"consumers": CONSUMERS_MODULE_DESCRIPTION},
             ConsumersSimulationInputs,
             ConsumersSimulationOutputs,
-            control_topic_suffix=settings.mqtt_control_topic_suffix,
         ),
+        settings.mqtt_control_topic_suffix,
     ),
     "high_temperature": (
         high_temperature_path,
@@ -244,8 +244,8 @@ MODES: dict[Modes, tuple[str, CombinedModule]] = {
             },
             HighTemperatureSimulationInputs,
             HighTemperatureSimulationOutputs,
-            control_topic_suffix=settings.mqtt_control_topic_suffix,
         ),
+        settings.mqtt_control_topic_suffix,
     ),
     "boilers": (
         boilers_path,
@@ -253,8 +253,8 @@ MODES: dict[Modes, tuple[str, CombinedModule]] = {
             {"boilers": BOILERS_MODULE_DESCRIPTION},
             BoilersSimulationInputs,
             BoilersSimulationOutputs,
-            control_topic_suffix=settings.mqtt_control_topic_suffix,
         ),
+        settings.mqtt_control_topic_suffix,
     ),
 }
 
@@ -708,7 +708,7 @@ class SimulationControls:
         all_modules = list(
             set(
                 module
-                for _fmu_path, nesting in MODES.values()
+                for _fmu_path, nesting, _control_topic_suffix in MODES.values()
                 for module in nesting.modules
             )
         )
@@ -734,7 +734,7 @@ class SimulationControls:
                 f"{self._topic_prefix}/{handler.subscribe_topic()}", qos=1
             )
 
-        fmu_path, modules = MODES[mode]
+        fmu_path, modules, control_topic_suffix = MODES[mode]
         simulation_inputs = INPUTS[mode]
 
         with self._simulation(fmu_path, modules, simulation_inputs) as simulation:
@@ -758,9 +758,10 @@ class SimulationControls:
                 self._control_client,
                 self._sensor_client,
                 self._topic_prefix,
-                modules.sensor_values_mqtt_mapping,
-                modules.control_values_mqtt_mapping,
-                modules.simulation_output_mqtt_mapping,
+                modules.sensor_values_clss,
+                modules.control_values_clss,
+                modules.simulation_outputs_cls,
+                control_topic_suffix,
             )
             runner = Runner(connector, control, modules.alarms())  # type: ignore
 
