@@ -2,6 +2,7 @@ from datetime import datetime, timedelta
 
 from pytest import fixture
 
+from tests.helpers.simulation_runner import SimulationTestRunner
 from thrs.control.modules.dc import DcAlarms, DcControl, DcParameters
 from thrs.input_output.base import Stamped
 from thrs.input_output.definitions.simulation import Boundary, Converter
@@ -10,7 +11,6 @@ from thrs.input_output.modules.dc import (
     DcSimulationInputs,
     DcSimulationOutputs,
 )
-from thrs.orchestration.runner import Runner
 from thrs.orchestration.simulation import Simulation
 from thrs.simulation.fmu import Fmu
 from thrs.simulation.models.fmu_paths import dc_path
@@ -119,9 +119,8 @@ def alarms() -> DcAlarms:
 
 
 @fixture()
-def runner(control: DcControl, simulation, alarms: DcAlarms) -> Runner:
-    simulation.transceive = simulation.tick  # type: ignore # TODO: Make this make sense
-    return Runner(simulation, control, alarms)
+def runner(control: DcControl, simulation, alarms: DcAlarms) -> SimulationTestRunner:
+    return SimulationTestRunner(simulation, control, alarms)
 
 
 @fixture

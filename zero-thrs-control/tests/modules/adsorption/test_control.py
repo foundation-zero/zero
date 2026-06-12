@@ -23,7 +23,7 @@ from thrs.simulation.fmu import Fmu
 from thrs.simulation.models.fmu_paths import adsorption_path
 
 
-async def test_state_mode_switches(control: AdsorptionControl, simulation: Simulation):
+def test_state_mode_switches(control: AdsorptionControl, simulation: Simulation):
     # start with cooling demand and insufficient heat
     simulation._simulation_inputs.adsorption_available_hot_temperature.temperature.value = (
         control._parameters.adsorption_hot_minimum - 1
@@ -32,11 +32,11 @@ async def test_state_mode_switches(control: AdsorptionControl, simulation: Simul
         control._parameters.adsorption_cold_trigger + 1
     )
 
-    result = await simulation.tick(control.initial().values)
+    result = simulation.tick(control.initial().values)
     control_values = control.control(result.sensor_values).values
 
     assert control.mode == AdsorptionControlMode(mode="idle")
-    result = await simulation.tick(control_values)
+    result = simulation.tick(control_values)
 
     # higher but still insufficient heat to trigger cooling
     simulation._simulation_inputs.adsorption_available_hot_temperature.temperature.value = (
@@ -48,7 +48,7 @@ async def test_state_mode_switches(control: AdsorptionControl, simulation: Simul
 
     for i in range(10):
         control_values = control.control(result.sensor_values).values
-        result = await simulation.tick(control_values)
+        result = simulation.tick(control_values)
 
     assert control.mode == AdsorptionControlMode(mode="idle")
 
@@ -59,7 +59,7 @@ async def test_state_mode_switches(control: AdsorptionControl, simulation: Simul
 
     for i in range(10):
         control_values = control.control(result.sensor_values).values
-        result = await simulation.tick(control_values)
+        result = simulation.tick(control_values)
 
     assert control.mode == AdsorptionControlMode(mode="cooling")
 
@@ -70,7 +70,7 @@ async def test_state_mode_switches(control: AdsorptionControl, simulation: Simul
 
     for i in range(10):
         control_values = control.control(result.sensor_values).values
-        result = await simulation.tick(control_values)
+        result = simulation.tick(control_values)
 
     assert control.mode == AdsorptionControlMode(mode="cooling")
 
@@ -81,7 +81,7 @@ async def test_state_mode_switches(control: AdsorptionControl, simulation: Simul
 
     for i in range(10):
         control_values = control.control(result.sensor_values).values
-        result = await simulation.tick(control_values)
+        result = simulation.tick(control_values)
 
     assert control.mode == AdsorptionControlMode(mode="idle")
 
@@ -95,7 +95,7 @@ async def test_state_mode_switches(control: AdsorptionControl, simulation: Simul
 
     for i in range(10):
         control_values = control.control(result.sensor_values).values
-        result = await simulation.tick(control_values)
+        result = simulation.tick(control_values)
 
     assert control.mode == AdsorptionControlMode(mode="idle")
 
@@ -106,7 +106,7 @@ async def test_state_mode_switches(control: AdsorptionControl, simulation: Simul
 
     for i in range(10):
         control_values = control.control(result.sensor_values).values
-        result = await simulation.tick(control_values)
+        result = simulation.tick(control_values)
 
     assert control.mode == AdsorptionControlMode(mode="idle")
 
@@ -117,7 +117,7 @@ async def test_state_mode_switches(control: AdsorptionControl, simulation: Simul
 
     for i in range(10):
         control_values = control.control(result.sensor_values).values
-        result = await simulation.tick(control_values)
+        result = simulation.tick(control_values)
 
     assert control.mode == AdsorptionControlMode(mode="cooling")
 
@@ -128,7 +128,7 @@ async def test_state_mode_switches(control: AdsorptionControl, simulation: Simul
 
     for i in range(10):
         control_values = control.control(result.sensor_values).values
-        result = await simulation.tick(control_values)
+        result = simulation.tick(control_values)
 
     assert control.mode == AdsorptionControlMode(mode="cooling")
 
@@ -139,23 +139,23 @@ async def test_state_mode_switches(control: AdsorptionControl, simulation: Simul
 
     for i in range(10):
         control_values = control.control(result.sensor_values).values
-        result = await simulation.tick(control_values)
+        result = simulation.tick(control_values)
 
     assert control.mode == AdsorptionControlMode(mode="idle")
 
 
-async def test_adsorption_cooling(control: AdsorptionControl, simulation: Simulation):
-    result = await simulation.tick(control.initial().values)
+def test_adsorption_cooling(control: AdsorptionControl, simulation: Simulation):
+    result = simulation.tick(control.initial().values)
 
     for i in range(10):
         control_values = control.control(result.sensor_values).values
-        result = await simulation.tick(control_values)
+        result = simulation.tick(control_values)
 
     assert control.mode == AdsorptionControlMode(mode="cooling")
 
     for i in range(100):
         control_values = control.control(result.sensor_values).values
-        result = await simulation.tick(control_values)
+        result = simulation.tick(control_values)
 
     assert (
         result.sensor_values.adsorption_chiller.temperature_waste_in.value
@@ -171,22 +171,22 @@ async def test_adsorption_cooling(control: AdsorptionControl, simulation: Simula
     )
 
 
-async def test_waste_recovery(control: AdsorptionControl, simulation: Simulation):
+def test_waste_recovery(control: AdsorptionControl, simulation: Simulation):
     simulation._simulation_inputs.adsorption_dhw_supply.temperature.value = 20
     control._parameters.waste_recovery_temperature_setpoint = 40
     control._parameters.waste_cooling_temperature_setpoint = 60
 
-    result = await simulation.tick(control.initial().values)
+    result = simulation.tick(control.initial().values)
 
     for i in range(100):
         control_values = control.control(result.sensor_values).values
-        result = await simulation.tick(control_values)
+        result = simulation.tick(control_values)
 
     assert control.mode == AdsorptionControlMode(mode="cooling")
 
     for i in range(5 * 60):
         control_values = control.control(result.sensor_values).values
-        result = await simulation.tick(control_values)
+        result = simulation.tick(control_values)
 
         assert (
             result.sensor_values.adsorption_chiller.temperature_waste_out.value
@@ -196,7 +196,7 @@ async def test_waste_recovery(control: AdsorptionControl, simulation: Simulation
         )
 
 
-async def test_waste_cooling():
+def test_waste_cooling():
     simulation_inputs = AdsorptionSimulationInputs(
         adsorption_cooling_supply=TemperatureBoundary(temperature=Stamped.stamp(20.0)),
         adsorption_seawater_supply=Boundary(
@@ -235,17 +235,17 @@ async def test_waste_cooling():
         )
         control = AdsorptionControl(parameters, simulation.time)
 
-        result = await simulation.tick(control.initial().values)
+        result = simulation.tick(control.initial().values)
 
         for i in range(100):
             control_values = control.control(result.sensor_values).values
-            result = await simulation.tick(control_values)
+            result = simulation.tick(control_values)
 
         assert control.mode == AdsorptionControlMode(mode="cooling")
 
         for i in range(5 * 60):
             control_values = control.control(result.sensor_values).values
-            result = await simulation.tick(control_values)
+            result = simulation.tick(control_values)
 
             assert (
                 result.sensor_values.adsorption_chiller.temperature_waste_in.value

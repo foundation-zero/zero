@@ -12,13 +12,10 @@ from thrs.input_output.base import (
     SimulationValues,
     ThrsValues,
 )
-from thrs.input_output.fmu_mapping import build_fmu_key_mapping
-from thrs.orchestration.collector import Collector
-from thrs.orchestration.connector import Connector, ExecutionResult
+from thrs.orchestration.connector import Connector
 from thrs.orchestration.module import CombinedModule
-from thrs.orchestration.simulation import Simulation, SimulationResult
+from thrs.orchestration.simulation import Simulation
 from thrs.simulation.fmu import Fmu
-from thrs.simulation.io_mapping import flatten_model_values
 
 
 @dataclass
@@ -68,12 +65,7 @@ class ModuleSimulatorModel:
 
 
 class Runner[S: ThrsValues, C: ThrsValues, P: ThrsValues, M: ThrsValues]:
-    """Runs a module for a number of ticks
-
-    Allows for a pluggable collector to collect execution results during the run.
-    """
-
-    last_tick_result: ExecutionResult | None  # TODO: Remove this, only used in tests
+    """Runs a module for a number of ticks."""
 
     def __init__(
         self,
@@ -85,7 +77,6 @@ class Runner[S: ThrsValues, C: ThrsValues, P: ThrsValues, M: ThrsValues]:
         self._connector = connector
         self._alarms = alarms
         self._control_values = self._control.initial().values
-        self.last_tick_result = None
 
     @staticmethod
     def from_module(
@@ -99,41 +90,9 @@ class Runner[S: ThrsValues, C: ThrsValues, P: ThrsValues, M: ThrsValues]:
             module.alarms(),  # type:ignore
         )
 
-    async def run(self, n_ticks: int, collector: Collector | None = None) -> None:
-        result = None
+    async def run(self, n_ticks: int) -> None:
         for _ in range(n_ticks):
             result = await self._connector.transceive(self._control_values)
-            if isinstance(result, SimulationResult) and collector is not None:
-                collector.collect(  # TODO: fix the fmu key mapping here, this is just a quick fix to get the tests working
-                    {
-                        **flatten_model_values(
-                            result.sensor_values,
-                            build_fmu_key_mapping(
-                                type(result.sensor_values), fmu_only=False
-                            ),
-                        ),
-                        **flatten_model_values(
-                            result.control_values,
-                            build_fmu_key_mapping(
-                                type(result.control_values), fmu_only=False
-                            ),
-                        ),
-                        **flatten_model_values(
-                            result.simulation_outputs,
-                            build_fmu_key_mapping(
-                                type(result.simulation_outputs), fmu_only=False
-                            ),
-                        ),
-                        **flatten_model_values(
-                            result.simulation_inputs,
-                            build_fmu_key_mapping(
-                                type(result.simulation_inputs), fmu_only=False
-                            ),
-                        ),
-                    },
-                    str(self._control.mode),
-                    result.timestamp,
-                )
             self._control_values = self._control.control(result.sensor_values).values
             alarms = self._alarms.check(
                 result.sensor_values, self._control_values, self._control.parameters
@@ -142,4 +101,3 @@ class Runner[S: ThrsValues, C: ThrsValues, P: ThrsValues, M: ThrsValues]:
                 warnings.warn(
                     f"Alarms detected: {alarms}"
                 )  # TODO: properly handle alarms
-        self.last_tick_result = result

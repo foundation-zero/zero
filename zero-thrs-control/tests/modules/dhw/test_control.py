@@ -1,22 +1,20 @@
 from pytest import approx
 
+from tests.helpers.simulation_runner import SimulationTestRunner
 from thrs.control.modules.dhw import (
     DhwControl,
-    DhwControlMode,
-    DhwParameters,
     TanksController,
 )
 from thrs.input_output.base import Stamped
 from thrs.input_output.modules.dhw import (
-    DhwControlValues,
-    DhwSensorValues,
     DhwSimulationInputs,
 )
 from thrs.orchestration.connector import ExecutionResult
-from thrs.orchestration.runner import Runner
 
 
-async def test_filling(runner: Runner, simulation_inputs: DhwSimulationInputs):
+async def test_filling(
+    runner: SimulationTestRunner, simulation_inputs: DhwSimulationInputs
+):
     simulation_inputs_no_consumption = simulation_inputs.model_copy(
         update={
             "dhw_hotwater_demand": simulation_inputs.dhw_hotwater_demand.model_copy(
@@ -24,9 +22,9 @@ async def test_filling(runner: Runner, simulation_inputs: DhwSimulationInputs):
             )
         }
     )
-    runner._connector.update_simulation_inputs(simulation_inputs_no_consumption)  # type: ignore
+    runner._simulation.update_simulation_inputs(simulation_inputs_no_consumption)  # type: ignore
 
-    await runner.run(60)
+    runner.run(60)
     result = runner.last_tick_result
 
     assert isinstance(runner._control, DhwControl)
@@ -44,9 +42,9 @@ async def test_filling(runner: Runner, simulation_inputs: DhwSimulationInputs):
             )
         }
     )
-    runner._connector.update_simulation_inputs(simulation_inputs_no_drives)  # type: ignore
+    runner._simulation.update_simulation_inputs(simulation_inputs_no_drives)  # type: ignore
 
-    await runner.run(180)
+    runner.run(180)
     result = runner.last_tick_result
 
     assert isinstance(runner._control, DhwControl)
@@ -58,7 +56,7 @@ async def test_filling(runner: Runner, simulation_inputs: DhwSimulationInputs):
     assert result.sensor_values.dhw_flow_dc.flow.value > 0.1
 
     # wait for tanks to fill
-    await runner.run(1000)
+    runner.run(1000)
     result = runner.last_tick_result
 
     assert isinstance(result, ExecutionResult)
@@ -85,16 +83,15 @@ async def test_filling(runner: Runner, simulation_inputs: DhwSimulationInputs):
     )
 
 
-async def test_boosting_transitions(
-    runner: Runner[DhwSensorValues, DhwControlValues, DhwParameters, DhwControlMode],
-    simulation_inputs: DhwSimulationInputs,
+def test_boosting_transitions(
+    runner: SimulationTestRunner, simulation_inputs: DhwSimulationInputs
 ):
     # all tanks full and ht available
     runner._control.update_parameters(
         runner._control.parameters.model_copy(update={"maximum_tank_level": 10})
     )
 
-    await runner.run(120)
+    runner.run(120)
     result = runner.last_tick_result
 
     assert isinstance(runner._control, DhwControl) and isinstance(
@@ -117,8 +114,8 @@ async def test_boosting_transitions(
             )
         }
     )
-    runner._connector.update_simulation_inputs(simulation_inputs_no_ht)  # type: ignore
-    await runner.run(120)
+    runner._simulation.update_simulation_inputs(simulation_inputs_no_ht)  # type: ignore
+    runner.run(120)
     result = runner.last_tick_result
 
     assert runner._control._tanks_controller.boosting
@@ -134,7 +131,7 @@ async def test_boosting_transitions(
     runner._control.update_parameters(
         runner._control.parameters.copy(update={"maximum_tank_temperature": 10})
     )
-    await runner.run(120)
+    runner.run(120)
     result = runner.last_tick_result
 
     assert not runner._control._tanks_controller.boosting

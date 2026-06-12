@@ -296,13 +296,13 @@ class MqttSimulationConnector(Connector[CombinedValues, CombinedValues]):
         )
 
     async def start(self):
-        await self._inner.start()
+        pass
 
     async def transceive(
         self, control_values: CombinedValues
     ) -> ExecutionResult[CombinedValues]:
         logging.debug("Executing simulation")
-        simulation_result = await self._inner.tick(control_values)
+        simulation_result = self._inner.tick(control_values)
         logging.debug("Simulation tick completed")
         await self._send_sensor_values(simulation_result)
 
@@ -356,7 +356,6 @@ class MqttConnector(Connector[CombinedValues, CombinedValues]):
 
     async def start(self):
         await self._control_connector.start()
-        await self._simulation_connector.start()
 
     async def run(self):
         await self._control_connector.run()

@@ -30,7 +30,7 @@ def incorrect_simulation_inputs(simulation_inputs, request):
     return inputs
 
 
-async def test_thrusters_simulation_inputs(incorrect_simulation_inputs, control):
+def test_thrusters_simulation_inputs(incorrect_simulation_inputs, control):
     with Fmu(pvt_path) as fmu:
         simulation = Simulation(
             PvtSensorValues,
@@ -43,6 +43,6 @@ async def test_thrusters_simulation_inputs(incorrect_simulation_inputs, control)
 
         with pytest.raises(Exception):
             for i in range(100):
-                await simulation.tick(
+                simulation.tick(
                     control.initial(datetime.now()).values,
                 )

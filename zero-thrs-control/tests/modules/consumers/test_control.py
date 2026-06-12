@@ -17,14 +17,14 @@ type ConsumersSimulation = Simulation[
 ]
 
 
-async def test_basic(control: ConsumersControl, simulation: ConsumersSimulation):
-    result = await simulation.tick(
+def test_basic(control: ConsumersControl, simulation: ConsumersSimulation):
+    result = simulation.tick(
         control.control(ConsumersSensorValues.zero()).values,
     )
 
     for i in range(180):
         control_values = control.control(result.sensor_values).values
-        result = await simulation.tick(control_values)
+        result = simulation.tick(control_values)
 
     total_flow = (
         result.sensor_values.consumers_flow_dhw.flow.value
@@ -42,13 +42,13 @@ async def test_basic(control: ConsumersControl, simulation: ConsumersSimulation)
 async def test_dhw_disabled(control: ConsumersControl, simulation: ConsumersSimulation):
     control._parameters.dhw_enabled = False
     control._parameters.adsorption_flow_ratio_setpoint = 0.5
-    result = await simulation.tick(
+    result = simulation.tick(
         control.control(ConsumersSensorValues.zero()).values,
     )
 
     for i in range(180):
         control_values = control.control(result.sensor_values).values
-        result = await simulation.tick(control_values)
+        result = simulation.tick(control_values)
 
     assert result.sensor_values.consumers_flow_dhw.flow.value == approx(0, abs=0.1)
     assert result.sensor_values.consumers_flow_adsorption.flow.value == approx(
@@ -56,18 +56,18 @@ async def test_dhw_disabled(control: ConsumersControl, simulation: ConsumersSimu
     )
 
 
-async def test_adsorption_disabled(
+def test_adsorption_disabled(
     control: ConsumersControl, simulation: ConsumersSimulation
 ):
     control._parameters.adsorption_enabled = False
     control._parameters.dhw_flow_ratio_setpoint = 0.5
-    result = await simulation.tick(
+    result = simulation.tick(
         control.control(ConsumersSensorValues.zero()).values,
     )
 
     for i in range(180):
         control_values = control.control(result.sensor_values).values
-        result = await simulation.tick(control_values)
+        result = simulation.tick(control_values)
 
     assert result.sensor_values.consumers_flow_dhw.flow.value == approx(
         result.sensor_values.consumers_flow_bypass.flow.value, abs=1.0
@@ -77,16 +77,16 @@ async def test_adsorption_disabled(
     )
 
 
-async def test_only_bypass(control: ConsumersControl, simulation: ConsumersSimulation):
+def test_only_bypass(control: ConsumersControl, simulation: ConsumersSimulation):
     control._parameters.dhw_enabled = False
     control._parameters.adsorption_enabled = False
-    result = await simulation.tick(
+    result = simulation.tick(
         control.control(ConsumersSensorValues.zero()).values,
     )
 
     for i in range(180):
         control_values = control.control(result.sensor_values).values
-        result = await simulation.tick(control_values)
+        result = simulation.tick(control_values)
 
     assert result.sensor_values.consumers_flow_dhw.flow.value == approx(0, abs=0.2)
     assert result.sensor_values.consumers_flow_adsorption.flow.value == approx(
