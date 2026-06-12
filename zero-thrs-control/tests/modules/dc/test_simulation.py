@@ -22,13 +22,13 @@ def incorrect_simulation_inputs(simulation_inputs, request):
     return inputs
 
 
-async def test_simulation_step(control, simulation):
-    result = await simulation.tick(control.initial().values)
+def test_simulation_step(control, simulation):
+    result = simulation.tick(control.initial().values)
 
     assert isinstance(result.simulation_outputs, DcSimulationOutputs)
 
 
-async def test_dc_simulation_inputs(incorrect_simulation_inputs):
+def test_dc_simulation_inputs(incorrect_simulation_inputs):
     with Fmu(dc_path) as fmu:
         simulation = Simulation(
             DcSensorValues,
@@ -41,6 +41,6 @@ async def test_dc_simulation_inputs(incorrect_simulation_inputs):
 
         with pytest.raises(Exception):
             for i in range(300):
-                await simulation.tick(
+                simulation.tick(
                     DcControlValues.zero(),  # TODO: add actual control values
                 )

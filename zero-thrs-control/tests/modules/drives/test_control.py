@@ -1,16 +1,18 @@
 from pytest import approx
 
+from tests.helpers.simulation_runner import SimulationTestRunner
 from thrs.control.modules.drives import DrivesControl, DrivesParameters
 from thrs.input_output.definitions.control import Valve
 from thrs.input_output.modules.drives import DrivesSimulationInputs
 from thrs.orchestration.connector import ExecutionResult
-from thrs.orchestration.runner import Runner
 
 
-async def test_idle(runner: Runner, simulation_inputs_inactive: DrivesSimulationInputs):
-    runner._connector.update_simulation_inputs(simulation_inputs_inactive)  # type: ignore
+def test_idle(
+    runner: SimulationTestRunner, simulation_inputs_inactive: DrivesSimulationInputs
+):
+    runner._simulation.update_simulation_inputs(simulation_inputs_inactive)  # type: ignore
 
-    await runner.run(90)
+    runner.run(90)
     result = runner.last_tick_result
 
     assert isinstance(runner._control, DrivesControl)
@@ -35,12 +37,13 @@ async def test_idle(runner: Runner, simulation_inputs_inactive: DrivesSimulation
     assert result.sensor_values.drives_flow_recovery.flow.value == approx(0.0, abs=0.01)
 
 
-async def test_propulsion_all_active(
-    runner: Runner, simulation_inputs_all_drives_active: DrivesSimulationInputs
+def test_propulsion_all_active(
+    runner: SimulationTestRunner,
+    simulation_inputs_all_drives_active: DrivesSimulationInputs,
 ):
-    runner._connector.update_simulation_inputs(simulation_inputs_all_drives_active)  # type: ignore
+    runner._simulation.update_simulation_inputs(simulation_inputs_all_drives_active)  # type: ignore
 
-    await runner.run(180)
+    runner.run(180)
     result = runner.last_tick_result
 
     assert isinstance(runner._control, DrivesControl)
@@ -77,12 +80,12 @@ async def test_propulsion_all_active(
     )
 
 
-async def test_shorepower(
-    runner: Runner, simulation_inputs_shorepower: DrivesSimulationInputs
+def test_shorepower(
+    runner: SimulationTestRunner, simulation_inputs_shorepower: DrivesSimulationInputs
 ):
-    runner._connector.update_simulation_inputs(simulation_inputs_shorepower)  # type: ignore
+    runner._simulation.update_simulation_inputs(simulation_inputs_shorepower)  # type: ignore
 
-    await runner.run(180)
+    runner.run(180)
     result = runner.last_tick_result
 
     assert isinstance(runner._control, DrivesControl)
@@ -98,10 +101,10 @@ async def test_shorepower(
     )
 
 
-async def test_heat_dump(
-    runner: Runner, simulation_inputs_shorepower: DrivesSimulationInputs
+def test_heat_dump(
+    runner: SimulationTestRunner, simulation_inputs_shorepower: DrivesSimulationInputs
 ):
-    runner._connector.update_simulation_inputs(simulation_inputs_shorepower)  # type: ignore
+    runner._simulation.update_simulation_inputs(simulation_inputs_shorepower)  # type: ignore
     runner._control.update_parameters(
         DrivesParameters(
             shorepower_maximum_supply_temperature=30,
@@ -109,7 +112,7 @@ async def test_heat_dump(
         )
     )
 
-    await runner.run(120)
+    runner.run(120)
     result = runner.last_tick_result
 
     assert isinstance(result, ExecutionResult)
@@ -125,10 +128,10 @@ async def test_heat_dump(
     )
 
 
-async def test_heat_recovery(
-    runner: Runner, simulation_inputs_shorepower: DrivesSimulationInputs
+def test_heat_recovery(
+    runner: SimulationTestRunner, simulation_inputs_shorepower: DrivesSimulationInputs
 ):
-    runner._connector.update_simulation_inputs(simulation_inputs_shorepower)  # type: ignore
+    runner._simulation.update_simulation_inputs(simulation_inputs_shorepower)  # type: ignore
     runner._control.update_parameters(
         DrivesParameters(
             shorepower_maximum_supply_temperature=90,
@@ -136,7 +139,7 @@ async def test_heat_recovery(
         )
     )
 
-    await runner.run(720)
+    runner.run(720)
     result = runner.last_tick_result
 
     assert isinstance(result, ExecutionResult)
@@ -149,12 +152,13 @@ async def test_heat_recovery(
     )
 
 
-async def test_flow_balancing(
-    runner: Runner, simulation_inputs_all_drives_active: DrivesSimulationInputs
+def test_flow_balancing(
+    runner: SimulationTestRunner,
+    simulation_inputs_all_drives_active: DrivesSimulationInputs,
 ):
-    runner._connector.update_simulation_inputs(simulation_inputs_all_drives_active)  # type: ignore
+    runner._simulation.update_simulation_inputs(simulation_inputs_all_drives_active)  # type: ignore
 
-    await runner.run(120)
+    runner.run(120)
     result = runner.last_tick_result
 
     assert isinstance(runner._control, DrivesControl)

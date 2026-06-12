@@ -28,7 +28,7 @@ def incorrect_simulation_inputs(simulation_inputs, request):
     return inputs
 
 
-async def test_pcm_simulation_inputs(incorrect_simulation_inputs, control):
+def test_pcm_simulation_inputs(incorrect_simulation_inputs, control):
     with Fmu(pcm_path) as fmu:
         simulation = Simulation(
             PcmSensorValues,
@@ -41,6 +41,6 @@ async def test_pcm_simulation_inputs(incorrect_simulation_inputs, control):
 
         with pytest.raises(Exception):
             for i in range(300):
-                await simulation.tick(
+                simulation.tick(
                     control.initial(datetime.now()).values,
                 )

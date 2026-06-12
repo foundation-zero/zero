@@ -4,6 +4,7 @@ import pytest
 from pytest import fixture
 
 from tests.helpers.simulation_inputs import simulator_input_field_setters
+from tests.helpers.simulation_runner import SimulationTestRunner
 from tests.modules.thrusters.conftest import ThrustersSimulation
 from thrs.control.modules.thrusters import (
     THRUSTERS_MODULE_DESCRIPTION,
@@ -19,19 +20,18 @@ from thrs.input_output.modules.thrusters import (
     ThrustersSimulationOutputs,
 )
 from thrs.orchestration.collector import PolarsCollector
-from thrs.orchestration.runner import Runner, SimulatorModel
+from thrs.orchestration.runner import SimulatorModel
 from thrs.orchestration.simulation import Simulation
 from thrs.simulation.fmu import Fmu
 from thrs.simulation.io_mapping import ThrsModelIoMapping, flatten_model_values
 from thrs.simulation.models.fmu_paths import thrusters_path
 
 
-async def test_runner(simulation, fmu, simulation_inputs, control, alarms):
+def test_runner(simulation, fmu, simulation_inputs, control, alarms):
     io_mapping = ThrsModelIoMapping(ThrustersSensorValues, ThrustersSimulationOutputs)
     collector = PolarsCollector()
-    simulation.transceive = simulation.tick  # type: ignore # TODO: Make this make sense
-    runner = Runner(simulation, control, alarms)
-    await runner.run(20, collector)
+    runner = SimulationTestRunner(simulation, control, alarms)
+    runner.run(20, collector)
     frame = collector.result()
     inputs = io_mapping.generate_inputs(
         ThrustersControlValues.zero(), simulation_inputs
@@ -85,19 +85,16 @@ async def test_runner(simulation, fmu, simulation_inputs, control, alarms):
     )
 
 
-async def test_computed_collection(
-    simulation: ThrustersSimulation, simulation_inputs, control, alarms
-):
+def test_computed_collection(simulation: ThrustersSimulation, control, alarms):
     collector = PolarsCollector()
-    simulation.transceive = simulation.tick  # type: ignore # TODO: Make this make sense
-    runner = Runner(simulation, control, alarms)  # type: ignore # TODO: Make this make sense
-    await runner.run(20, collector)
+    runner = SimulationTestRunner(simulation, control, alarms)
+    runner.run(20, collector)
     frame = collector.result()
     assert frame is not None
     assert "thrusters_temperature_recovery__temperature__C" in frame.columns
 
 
-async def test_simulation(simulation_inputs, control, alarms):
+def test_simulation(simulation_inputs, control, alarms):
     thrusters_model = SimulatorModel(
         fmu_path=thrusters_path,
         sensor_values_cls=ThrustersSensorValues,
@@ -109,16 +106,13 @@ async def test_simulation(simulation_inputs, control, alarms):
     )
 
     with thrusters_model.simulation() as simulation:
-        simulation.transceive = simulation.tick  # type: ignore # TODO: Make this make sense
-        runner = Runner.from_module(
-            THRUSTERS_MODULE_DESCRIPTION,
-            ThrustersParameters(),
-            simulation,  # type: ignore # TODO: Make this make sense
+        runner = SimulationTestRunner.from_module(
+            THRUSTERS_MODULE_DESCRIPTION, ThrustersParameters(), simulation
         )
 
         collector = PolarsCollector()
 
-        await runner.run(20, collector)
+        runner.run(20, collector)
 
         result = collector.result()
         assert result is not None
@@ -132,7 +126,7 @@ def incorrect_simulation_inputs(simulation_inputs, request):
     return inputs
 
 
-async def test_thrusters_simulation_inputs(incorrect_simulation_inputs, control):
+def test_thrusters_simulation_inputs(incorrect_simulation_inputs, control):
     with Fmu(thrusters_path) as fmu:
         simulation = Simulation(
             ThrustersSensorValues,
@@ -153,6 +147,6 @@ async def test_thrusters_simulation_inputs(incorrect_simulation_inputs, control)
 
         with pytest.raises(Exception):
             for i in range(100):
-                await simulation.tick(
+                simulation.tick(
                     control._current_values,
                 )
