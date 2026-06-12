@@ -124,7 +124,7 @@ class ModuleMqttMapping(MqttMapping[CombinedValues]):
 
 class Connector[S, C](Protocol):
     async def start(self): ...
-    async def tick(self, control_values: C) -> ExecutionResult[S]: ...
+    async def transceive(self, control_values: C) -> ExecutionResult[S]: ...
 
     @property
     def start_time(self) -> datetime: ...
@@ -200,7 +200,7 @@ class MqttControlConnector(Connector[CombinedValues, CombinedValues]):
         finally:
             self._running = False
 
-    async def tick(
+    async def transceive(
         self, control_values: CombinedValues
     ) -> ExecutionResult[CombinedValues]:
         if not self._running:
@@ -282,7 +282,7 @@ class MqttSimulationConnector(Connector[CombinedValues, CombinedValues]):
     async def start(self):
         await self._inner.start()
 
-    async def tick(
+    async def transceive(
         self, control_values: CombinedValues
     ) -> ExecutionResult[CombinedValues]:
         logging.debug("Executing simulation")
@@ -345,11 +345,11 @@ class MqttConnector(Connector[CombinedValues, CombinedValues]):
     async def run(self):
         await self._control_connector.run()
 
-    async def tick(
+    async def transceive(
         self, control_values: CombinedValues
     ) -> ExecutionResult[CombinedValues]:
-        await self._control_connector.tick(control_values)
-        return await self._simulation_connector.tick(control_values)
+        await self._control_connector.transceive(control_values)
+        return await self._simulation_connector.transceive(control_values)
 
     @property
     def start_time(self) -> datetime:
