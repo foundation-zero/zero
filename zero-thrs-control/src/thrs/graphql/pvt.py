@@ -1,6 +1,7 @@
 import strawberry
 
-from thrs.control.modules.pvt import PvtControlMode, PvtGroupControlMode, PvtParameters
+from thrs.control.modules.pvt import PvtControlMode, PvtParameters
+from thrs.control.modules.pvt_group import PvtGroupControlMode
 from thrs.graphql.base import (
     ControlModule,
     PvtMessaging,

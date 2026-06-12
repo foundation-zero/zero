@@ -1,5 +1,5 @@
 from datetime import datetime
-from typing import Callable, Literal, Mapping, Protocol
+from typing import Callable, Mapping
 
 from thrs.classes.control import Control, ControlResult
 from thrs.control.base import ModuleDescription
@@ -12,116 +12,12 @@ from thrs.input_output.base import (
     SimulationValues,
     ThrsValues,
 )
-from thrs.input_output.model_builder import (
-    CombinedModelBuilder,
-    ModelBuilder,
-    PartialModelBuilder,
+from thrs.orchestration.connector import (
+    DirectMqttMapping,
+    ModuleMqttMapping,
+    MqttMapping,
 )
 from thrs.simulation.io_mapping import CombinedIoMapping, IoMapping
-from thrs.utils.string import hyphenize
-
-
-class MqttMapping[M](Protocol):
-    """Mapping between a model and MQTT topics"""
-
-    def split_to_topics(self, model: M) -> dict[str, str]: ...
-
-    def builder(self) -> ModelBuilder[M]: ...
-
-    def has(self, topic: str) -> bool: ...
-
-    def subscribe_topic(self) -> str: ...
-
-
-class PartialMqttMapping[M: ThrsValues](MqttMapping[M]):
-    """MQTT mapping that maps each component in the model to a separate topic"""
-
-    def __init__(self, cls: type[M], topic_suffix: str | None = None):
-        self._cls = cls
-        self._topic_suffix = topic_suffix
-        self._keys = set(self._topic(key) for key in cls.model_fields.keys())
-
-    def split_to_topics(self, model: M) -> dict[str, str]:
-        return {
-            self._topic(key): getattr(model, key).model_dump_json(by_alias=True)
-            for key in type(model).model_fields.keys()
-        }
-
-    def _topic(self, key: str) -> str:
-        return (
-            f"{hyphenize(key)}/{self._topic_suffix}"
-            if self._topic_suffix
-            else hyphenize(key)
-        )
-
-    def has(self, topic: str) -> bool:
-        return topic in self._keys
-
-    def subscribe_topic(self) -> str:
-        return f"+/{self._topic_suffix}" if self._topic_suffix else "+"
-
-    def builder(self) -> ModelBuilder[M]:
-        return PartialModelBuilder(self._cls)
-
-
-class DirectMqttMapping[M: ThrsValues](MqttMapping[M]):
-    """MQTT mapping that maps the entire model to a single topic
-
-    Currently doesn't support builder"""
-
-    def __init__(self, cls: type[M], topic: str):
-        self._cls = cls
-        self._topic = topic
-
-    def split_to_topics(self, model: M) -> dict[str, str]:
-        return {self._topic: model.model_dump_json(by_alias=True)}
-
-    def has(self, topic: str) -> bool:
-        return topic == self._topic
-
-    def subscribe_topic(self) -> str:
-        return self._topic
-
-    def builder(self) -> ModelBuilder[M]:
-        raise NotImplementedError()
-
-
-class ModuleMqttMapping(MqttMapping[CombinedValues]):
-    """MQTT mapping for modules
-
-    Delegates to PartialMqttMapping for each sub-model."""
-
-    def __init__(
-        self, clss: Mapping[str, type[ThrsValues]], topic_suffix: str | None = None
-    ):
-        self._clss = dict(clss)
-        self._plain_mappings: dict[str, PartialMqttMapping] = {
-            name: PartialMqttMapping(cls, topic_suffix)
-            for name, cls in self._clss.items()
-        }
-        self._topic_suffix = topic_suffix
-
-    def split_to_topics(self, model: CombinedValues) -> dict[str, str]:
-        return {
-            f"{hyphenize(module)}/{key}": value
-            for module, model in model.values.items()
-            for key, value in self._plain_mappings[module]
-            .split_to_topics(model)
-            .items()
-        }
-
-    def builder(self) -> ModelBuilder[CombinedValues]:
-        return CombinedModelBuilder(self._clss)
-
-    def has(self, topic: str) -> bool:
-        module_name, key, *rest = topic.split("/")
-        mapping: PartialMqttMapping | Literal[False] = self._plain_mappings.get(
-            module_name, False
-        )
-        return mapping and mapping.has("/".join([key, *rest]))
-
-    def subscribe_topic(self) -> str:
-        return f"+/+/{self._topic_suffix}" if self._topic_suffix else "+/+"
 
 
 class CombinedControl(
@@ -256,7 +152,7 @@ class CombinedModule[I: SimulationInputs, O: SimulationValues]:
 
     def io_mapping(self) -> IoMapping:
         return CombinedIoMapping(
-            {name: module.sensor_values_cls for name, module in self._modules.items()},
+            {module: desc.sensor_values_cls for module, desc in self._modules.items()},
             self._simulation_outputs_cls,
         )
 

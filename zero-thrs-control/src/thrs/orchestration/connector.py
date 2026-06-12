@@ -1,4 +1,5 @@
 import logging
+from collections.abc import Mapping
 from dataclasses import dataclass
 from datetime import datetime, timedelta
 from typing import Any, Literal, Protocol
@@ -11,12 +12,119 @@ from thrs.input_output.base import (
     SimulationValues,
     ThrsValues,
 )
-from thrs.orchestration.module import CombinedModule, MqttMapping
+from thrs.input_output.model_builder import (
+    CombinedModelBuilder,
+    ModelBuilder,
+    PartialModelBuilder,
+)
 from thrs.simulation.fmu import Fmu
 from thrs.simulation.io_mapping import IoMapping
 from thrs.utils.string import hyphenize
 
 logger = logging.getLogger(__name__)
+
+
+class MqttMapping[M](Protocol):
+    """Mapping between a model and MQTT topics"""
+
+    def split_to_topics(self, model: M) -> dict[str, str]: ...
+
+    def builder(self) -> ModelBuilder[M]: ...
+
+    def has(self, topic: str) -> bool: ...
+
+    def subscribe_topic(self) -> str: ...
+
+
+class PartialMqttMapping[M: ThrsValues](MqttMapping[M]):
+    """MQTT mapping that maps each component in the model to a separate topic"""
+
+    def __init__(self, cls: type[M], topic_suffix: str | None = None):
+        self._cls = cls
+        self._topic_suffix = topic_suffix
+        self._keys = set(self._topic(key) for key in cls.model_fields.keys())
+
+    def split_to_topics(self, model: M) -> dict[str, str]:
+        return {
+            self._topic(key): getattr(model, key).model_dump_json(by_alias=True)
+            for key in type(model).model_fields.keys()
+        }
+
+    def _topic(self, key: str) -> str:
+        return (
+            f"{hyphenize(key)}/{self._topic_suffix}"
+            if self._topic_suffix
+            else hyphenize(key)
+        )
+
+    def has(self, topic: str) -> bool:
+        return topic in self._keys
+
+    def subscribe_topic(self) -> str:
+        return f"+/{self._topic_suffix}" if self._topic_suffix else "+"
+
+    def builder(self) -> ModelBuilder[M]:
+        return PartialModelBuilder(self._cls)
+
+
+class DirectMqttMapping[M: ThrsValues](MqttMapping[M]):
+    """MQTT mapping that maps the entire model to a single topic
+
+    Currently doesn't support builder"""
+
+    def __init__(self, cls: type[M], topic: str):
+        self._cls = cls
+        self._topic = topic
+
+    def split_to_topics(self, model: M) -> dict[str, str]:
+        return {self._topic: model.model_dump_json(by_alias=True)}
+
+    def has(self, topic: str) -> bool:
+        return topic == self._topic
+
+    def subscribe_topic(self) -> str:
+        return self._topic
+
+    def builder(self) -> ModelBuilder[M]:
+        raise NotImplementedError()
+
+
+class ModuleMqttMapping(MqttMapping[CombinedValues]):
+    """MQTT mapping for modules
+
+    Delegates to PartialMqttMapping for each sub-model."""
+
+    def __init__(
+        self, clss: Mapping[str, type[ThrsValues]], topic_suffix: str | None = None
+    ):
+        self._clss = dict(clss)
+        self._plain_mappings: dict[str, PartialMqttMapping] = {
+            name: PartialMqttMapping(cls, topic_suffix)
+            for name, cls in self._clss.items()
+        }
+        self._topic_suffix = topic_suffix
+
+    def split_to_topics(self, model: CombinedValues) -> dict[str, str]:
+        return {
+            f"{hyphenize(module)}/{key}": value
+            for module, model in model.values.items()
+            for key, value in self._plain_mappings[module]
+            .split_to_topics(model)
+            .items()
+        }
+
+    def builder(self) -> ModelBuilder[CombinedValues]:
+        return CombinedModelBuilder(self._clss)
+
+    def has(self, topic: str) -> bool:
+        module_name, key, *rest = topic.split("/")
+        mapping: PartialMqttMapping | Literal[False] = self._plain_mappings.get(
+            module_name, False
+        )
+        return mapping and mapping.has("/".join([key, *rest]))
+
+    def subscribe_topic(self) -> str:
+        return f"+/+/{self._topic_suffix}" if self._topic_suffix else "+/+"
 
 
 @dataclass
@@ -40,21 +148,23 @@ class MqttControlConnector(Connector[CombinedValues, CombinedValues]):
         self,
         mqtt_client: Client,
         topic_prefix: str,
-        module_nesting: CombinedModule,
+        sensor_values_mqtt_mapping: MqttMapping,
+        control_values_mqtt_mapping: MqttMapping,
         start_time: datetime | None = None,
     ):
         self._start_time = start_time or datetime.now()
         self._mqtt_client = mqtt_client
         self._topic_prefix = topic_prefix
-        self._module_nesting = module_nesting
+        self._sensor_values_mqtt_mapping = sensor_values_mqtt_mapping
+        self._control_values_mqtt_mapping = control_values_mqtt_mapping
 
         self._running = False
-        self._sensors_builder = module_nesting.sensor_values_mqtt_mapping.builder()
+        self._sensors_builder = self._sensor_values_mqtt_mapping.builder()
 
     async def _listen_to_sensors(self):
         async for message in self._mqtt_client.messages:
             topic = self._clean_topic(message.topic)
-            if not self._module_nesting.sensor_values_mqtt_mapping.has(topic):
+            if not self._sensor_values_mqtt_mapping.has(topic):
                 continue
             if not isinstance(message.payload, str | bytes):
                 raise ValueError(
@@ -81,13 +191,13 @@ class MqttControlConnector(Connector[CombinedValues, CombinedValues]):
         logging.debug("Publishing control values")
         await self._publish_by_mapping(
             self._mqtt_client,
-            self._module_nesting.control_values_mqtt_mapping,
+            self._control_values_mqtt_mapping,
             control_values,
         )
 
     async def start(self):
         await self._mqtt_client.subscribe(
-            f"{self._topic_prefix}/{self._module_nesting.sensor_values_mqtt_mapping.subscribe_topic()}",
+            f"{self._topic_prefix}/{self._sensor_values_mqtt_mapping.subscribe_topic()}",
             qos=1,
         )
 
@@ -127,12 +237,14 @@ class MqttSimulationConnector(Connector[CombinedValues, CombinedValues]):
         inner: "Simulation",
         mqtt_client: Client,
         topic_prefix: str,
-        module_nesting: CombinedModule,
+        sensor_values_mqtt_mapping: MqttMapping,
+        simulation_outputs_mqtt_mapping: MqttMapping,
     ):
         self._inner = inner
         self._mqtt_client = mqtt_client
         self._topic_prefix = topic_prefix
-        self._module_nesting = module_nesting
+        self._sensor_values_mqtt_mapping = sensor_values_mqtt_mapping
+        self._simulation_outputs_mqtt_mapping = simulation_outputs_mqtt_mapping
 
     async def _publish_by_mapping[T](
         self, client: Client, mapping: MqttMapping[T], value: T
@@ -169,7 +281,7 @@ class MqttSimulationConnector(Connector[CombinedValues, CombinedValues]):
         logging.debug("Publishing sensor values")
         await self._publish_by_mapping(
             self._mqtt_client,
-            self._module_nesting.sensor_values_mqtt_mapping,
+            self._sensor_values_mqtt_mapping,
             execution_result.sensor_values,
         )
 
@@ -188,7 +300,7 @@ class MqttSimulationConnector(Connector[CombinedValues, CombinedValues]):
             logging.debug("Publishing simulation output values")
             await self._publish_by_mapping(
                 self._mqtt_client,
-                self._module_nesting.simulation_output_mqtt_mapping,
+                self._simulation_outputs_mqtt_mapping,
                 simulation_result.simulation_outputs,
             )
 
@@ -212,18 +324,22 @@ class MqttConnector(Connector[CombinedValues, CombinedValues]):
         controller_client: Client,
         environment_client: Client,
         topic_prefix: str,
-        module_nesting: CombinedModule,
+        sensor_values_mqtt_mapping: MqttMapping,
+        control_values_mqtt_mapping: MqttMapping,
+        simulation_outputs_mqtt_mapping: MqttMapping,
     ):
         self._control_connector = MqttControlConnector(
             mqtt_client=controller_client,
             topic_prefix=topic_prefix,
-            module_nesting=module_nesting,
+            sensor_values_mqtt_mapping=sensor_values_mqtt_mapping,
+            control_values_mqtt_mapping=control_values_mqtt_mapping,
         )
         self._simulation_connector = MqttSimulationConnector(
             inner=inner,
             mqtt_client=environment_client,
             topic_prefix=topic_prefix,
-            module_nesting=module_nesting,
+            sensor_values_mqtt_mapping=sensor_values_mqtt_mapping,
+            simulation_outputs_mqtt_mapping=simulation_outputs_mqtt_mapping,
         )
 
     async def start(self):
