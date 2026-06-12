@@ -38,25 +38,28 @@ mqtt_client2 = pytest.fixture(_mqtt_client)
 
 async def test_mqtt_connector(mqtt_client, mqtt_client2):
     simple_simulation = SimpleSimulation(datetime.now())
+    module = CombinedModule(
+        {
+            "simple": ModuleDescription(
+                SimpleInOut,
+                SimpleInOut,
+                SimpleParameters,
+                SimpleControl,
+                SimpleMode,
+                SimpleAlarms,
+            )
+        },
+        cast(type[SimulationInputs], SimpleInOut),
+        cast(type[SimulationValues], SimpleInOut),
+    )
     connector = MqttConnector(
         simple_simulation,
         mqtt_client,
         mqtt_client2,
         f"{settings.mqtt_topic_prefix}/simple",
-        CombinedModule(
-            {
-                "simple": ModuleDescription(
-                    SimpleInOut,
-                    SimpleInOut,
-                    SimpleParameters,
-                    SimpleControl,
-                    SimpleMode,
-                    SimpleAlarms,
-                )
-            },
-            cast(type[SimulationInputs], SimpleInOut),
-            cast(type[SimulationValues], SimpleInOut),
-        ),
+        module.sensor_values_mqtt_mapping,
+        module.control_values_mqtt_mapping,
+        module.simulation_output_mqtt_mapping,
     )
     await connector.start()
     running = create_task(connector.run())
@@ -121,23 +124,25 @@ async def test_mqtt_connector(mqtt_client, mqtt_client2):
 
 
 async def test_boat_connector_echoes_controls_to_sensors(mqtt_client):
+    module = CombinedModule(
+        {
+            "simple": ModuleDescription(
+                SimpleInOut,
+                SimpleInOut,
+                SimpleParameters,
+                SimpleControl,
+                SimpleMode,
+                SimpleAlarms,
+            )
+        },
+        cast(type[SimulationInputs], SimpleInOut),
+        cast(type[SimulationValues], SimpleInOut),
+    )
     connector = MqttControlConnector(
         mqtt_client,
         f"{settings.mqtt_topic_prefix}/simple",
-        CombinedModule(
-            {
-                "simple": ModuleDescription(
-                    SimpleInOut,
-                    SimpleInOut,
-                    SimpleParameters,
-                    SimpleControl,
-                    SimpleMode,
-                    SimpleAlarms,
-                )
-            },
-            cast(type[SimulationInputs], SimpleInOut),
-            cast(type[SimulationValues], SimpleInOut),
-        ),
+        module.sensor_values_mqtt_mapping,
+        module.control_values_mqtt_mapping,
     )
     await connector.start()
     running = create_task(connector.run())
