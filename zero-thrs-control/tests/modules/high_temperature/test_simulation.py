@@ -48,7 +48,7 @@ async def test_high_temperature_simulation_inputs(
 ):
     with Fmu(high_temperature_path) as fmu:
         simulation = Simulation(
-            module.sensor_values_cls,
+            module.sensor_values_clss,
             module.simulation_outputs_cls,
             fmu,
             incorrect_simulation_inputs,
