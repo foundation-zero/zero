@@ -12,17 +12,19 @@ from tests.orchestration.simples import (
     SimpleSimulationOutputs,
 )
 from thrs.classes.control import Control, ControlResult
+from thrs.control.base import ModuleDescription
 from thrs.input_output.alarms import Alarm, BaseAlarms, Severity
 from thrs.input_output.base import CombinedValues, Stamped, ThrsValues
 from thrs.input_output.definitions.sensor import FlowSensor
+from thrs.orchestration.connector import (
+    DirectMqttMapping,
+    ModuleMqttMapping,
+    PartialMqttMapping,
+)
 from thrs.orchestration.module import (
     CombinedAlarms,
     CombinedControl,
     CombinedModule,
-    DirectMqttMapping,
-    ModuleDescription,
-    ModuleMqttMapping,
-    PartialMqttMapping,
 )
 
 
