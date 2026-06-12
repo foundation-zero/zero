@@ -11,7 +11,6 @@ from thrs.input_output.modules.consumers import (
 )
 from thrs.orchestration.simulation import Simulation
 from thrs.simulation.fmu import Fmu
-from thrs.simulation.io_mapping import ThrsModelIoMapping
 from thrs.simulation.models.fmu_paths import consumers_path
 
 
@@ -34,12 +33,9 @@ def incorrect_simulation_inputs(simulation_inputs, request):
 
 async def test_consumers_simulation_inputs(incorrect_simulation_inputs, control):
     with Fmu(consumers_path) as fmu:
-        mapping = ThrsModelIoMapping(
+        simulation = Simulation(
             ConsumersSensorValues,
             ConsumersSimulationOutputs,
-        )
-        simulation = Simulation(
-            mapping,
             fmu,
             incorrect_simulation_inputs,
             datetime.now(),

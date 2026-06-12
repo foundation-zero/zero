@@ -2,12 +2,21 @@ from datetime import datetime, timedelta
 
 from pytest import approx
 
+from thrs.input_output.modules.thrusters import (
+    ThrustersSensorValues,
+    ThrustersSimulationOutputs,
+)
 from thrs.orchestration.simulation import Simulation
 
 
-async def test_valve_movement(io_mapping, fmu, control, simulation_inputs):
+async def test_valve_movement(fmu, control, simulation_inputs):
     simulation = Simulation(
-        io_mapping, fmu, simulation_inputs, datetime.now(), timedelta(seconds=45)
+        ThrustersSensorValues,
+        ThrustersSimulationOutputs,
+        fmu,
+        simulation_inputs,
+        datetime.now(),
+        timedelta(seconds=45),
     )
 
     control_values = control.initial().values

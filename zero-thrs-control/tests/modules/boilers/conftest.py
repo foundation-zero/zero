@@ -27,7 +27,6 @@ from thrs.input_output.modules.boilers import (
 from thrs.orchestration.runner import Runner
 from thrs.orchestration.simulation import Simulation
 from thrs.simulation.fmu import Fmu
-from thrs.simulation.io_mapping import ThrsModelIoMapping
 from thrs.simulation.models.fmu_paths import boilers_path
 
 
@@ -63,18 +62,15 @@ def simulation_inputs():
 
 
 @fixture
-def io_mapping():
-    return ThrsModelIoMapping(
-        BoilersSensorValues,
-        BoilersSimulationOutputs,
-    )
-
-
-@fixture
-def simulation(io_mapping, simulation_inputs):
+def simulation(simulation_inputs):
     with Fmu(boilers_path) as fmu:
         yield Simulation(
-            io_mapping, fmu, simulation_inputs, datetime.now(), timedelta(seconds=1)
+            BoilersSensorValues,
+            BoilersSimulationOutputs,
+            fmu,
+            simulation_inputs,
+            datetime.now(),
+            timedelta(seconds=1),
         )
 
 

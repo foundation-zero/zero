@@ -12,7 +12,6 @@ from thrs.input_output.base import (
     SimulationValues,
     ThrsValues,
 )
-from thrs.simulation.io_mapping import CombinedIoMapping, IoMapping
 
 type ModuleClassMap = Mapping[str, type[ThrsValues]]
 
@@ -141,12 +140,6 @@ class CombinedModule[I: SimulationInputs, O: SimulationValues]:
         }
         self._simulation_inputs_cls = simulation_inputs_cls
         self._simulation_outputs_cls = simulation_outputs_cls
-
-    def io_mapping(self) -> IoMapping:
-        return CombinedIoMapping(
-            {module: desc.sensor_values_cls for module, desc in self._modules.items()},
-            self._simulation_outputs_cls,
-        )
 
     @property
     def modules(self) -> list[str]:

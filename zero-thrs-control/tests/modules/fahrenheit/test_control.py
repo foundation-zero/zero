@@ -13,7 +13,11 @@ from thrs.input_output.definitions.simulation import (
     Fahrenheit,
     TemperatureBoundary,
 )
-from thrs.input_output.modules.fahrenheit import FahrenheitSimulationInputs
+from thrs.input_output.modules.fahrenheit import (
+    FahrenheitSensorValues,
+    FahrenheitSimulationInputs,
+    FahrenheitSimulationOutputs,
+)
 from thrs.orchestration.simulation import Simulation
 from thrs.simulation.fmu import Fmu
 from thrs.simulation.models.fmu_paths import fahrenheit_path
@@ -192,7 +196,7 @@ async def test_waste_recovery(control: FahrenheitControl, simulation: Simulation
         )
 
 
-async def test_waste_cooling(io_mapping):
+async def test_waste_cooling():
     simulation_inputs = FahrenheitSimulationInputs(
         fahrenheit_cold_supply=TemperatureBoundary(temperature=Stamped.stamp(20.0)),
         fahrenheit_seawater_supply=Boundary(
@@ -222,7 +226,8 @@ async def test_waste_cooling(io_mapping):
 
     with Fmu(fahrenheit_path) as fmu:
         simulation = Simulation(
-            io_mapping,
+            FahrenheitSensorValues,
+            FahrenheitSimulationOutputs,
             fmu,
             simulation_inputs,
             datetime.fromtimestamp(0),

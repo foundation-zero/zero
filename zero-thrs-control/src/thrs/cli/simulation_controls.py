@@ -725,7 +725,12 @@ class SimulationControls:
     ) -> Generator[Simulation, None, None]:
         with Fmu(fmu_path) as fmu:
             yield Simulation(
-                modules.io_mapping(), fmu, inputs, datetime.now(), timedelta(seconds=1)
+                modules.sensor_values_cls,
+                modules.simulation_outputs_cls,
+                fmu,
+                inputs,
+                datetime.now(),
+                timedelta(seconds=1),
             )
 
     async def run(self, mode: Modes):

@@ -13,7 +13,6 @@ from thrs.input_output.modules.lt2 import (
 from thrs.orchestration.runner import Runner
 from thrs.orchestration.simulation import Simulation
 from thrs.simulation.fmu import Fmu
-from thrs.simulation.io_mapping import ThrsModelIoMapping
 from thrs.simulation.models.fmu_paths import lt2_path
 
 SEAWATER_TEMPERATURE = 20
@@ -131,16 +130,13 @@ def runner(control: Lt2Control, simulation, alarms: Lt2Alarms) -> Runner:
 
 
 @fixture
-def io_mapping():
-    return ThrsModelIoMapping(
-        Lt2SensorValues,
-        Lt2SimulationOutputs,
-    )
-
-
-@fixture
-def simulation(io_mapping, simulation_inputs):
+def simulation(simulation_inputs):
     with Fmu(lt2_path) as fmu:
         yield Simulation(
-            io_mapping, fmu, simulation_inputs, datetime.now(), timedelta(seconds=1)
+            Lt2SensorValues,
+            Lt2SimulationOutputs,
+            fmu,
+            simulation_inputs,
+            datetime.now(),
+            timedelta(seconds=1),
         )
