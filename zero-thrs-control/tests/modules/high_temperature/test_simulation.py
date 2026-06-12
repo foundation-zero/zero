@@ -5,7 +5,6 @@ from pytest import fixture
 
 from tests.helpers.simulation_inputs import simulator_input_field_setters
 from thrs.control.modules.consumers import ConsumersParameters
-from thrs.control.modules.high_temperature import HighTemperatureModule
 from thrs.control.modules.pcm import PcmParameters
 from thrs.control.modules.pvt import PvtParameters
 from thrs.control.modules.thrusters import ThrustersParameters
@@ -64,8 +63,7 @@ async def test_high_temperature_simulation_inputs(
                 )
 
 
-async def test_module_simulator_model():
-    module = HighTemperatureModule()
+async def test_module_simulator_model(module):
     params = CombinedValues(
         values={
             "thrusters": ThrustersParameters(),
