@@ -4,6 +4,7 @@ import pytest
 from pytest import fixture
 
 from tests.helpers.simulation_inputs import simulator_input_field_setters
+from tests.helpers.simulation_runner import SimulationTestRunner
 from thrs.control.modules.consumers import ConsumersParameters
 from thrs.control.modules.pcm import PcmParameters
 from thrs.control.modules.pvt import PvtParameters
@@ -12,7 +13,7 @@ from thrs.input_output.base import CombinedValues
 from thrs.input_output.modules.high_temperature import (
     HighTemperatureSimulationInputs,
 )
-from thrs.orchestration.runner import ModuleSimulatorModel, Runner
+from thrs.orchestration.runner import ModuleSimulatorModel
 from thrs.orchestration.simulation import Simulation
 from thrs.simulation.fmu import Fmu
 from thrs.simulation.models.fmu_paths import high_temperature_path
@@ -29,7 +30,7 @@ def incorrect_simulation_inputs(simulation_inputs, request):
     return inputs
 
 
-async def test_high_temperature_simulation_inputs(
+def test_high_temperature_simulation_inputs(
     incorrect_simulation_inputs, control, module
 ):
     with Fmu(high_temperature_path) as fmu:
@@ -44,12 +45,12 @@ async def test_high_temperature_simulation_inputs(
 
         with pytest.raises(Exception):
             for i in range(300):
-                await simulation.tick(
+                simulation.tick(
                     control.initial(datetime.now()).values,
                 )
 
 
-async def test_module_simulator_model(module):
+def test_module_simulator_model(module):
     params = CombinedValues(
         values={
             "thrusters": ThrustersParameters(),
@@ -65,7 +66,6 @@ async def test_module_simulator_model(module):
         simulation_inputs=inputs,
     )
     with model.simulation() as simulation:
-        simulation.transceive = simulation.tick  # type: ignore # TODO: Make this make sense
-        runner = Runner.from_module(module, params, simulation)  # type: ignore # TODO: Make this make sense
+        runner = SimulationTestRunner.from_module(module, params, simulation)
 
-        await runner.run(100)
+        runner.run(100)

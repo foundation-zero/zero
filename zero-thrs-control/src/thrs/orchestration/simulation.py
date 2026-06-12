@@ -89,9 +89,6 @@ class Simulation[
             else ThrsModelIoMapping(sensor_values_clss, simulation_outputs_cls)  # type: ignore
         )
 
-    async def start(self):
-        pass
-
     @property
     def start_time(self) -> datetime:
         return self._start_time
@@ -103,7 +100,7 @@ class Simulation[
     def time(self):
         return self._start_time + self._ticks * self._tick_duration
 
-    async def tick(self, control_values: C) -> SimulationResult[S, C, I, O]:
+    def tick(self, control_values: C) -> SimulationResult[S, C, I, O]:
         logging.debug("Running simulation tick")
         time = self.time()
 

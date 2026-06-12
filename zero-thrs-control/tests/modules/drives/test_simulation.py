@@ -21,13 +21,13 @@ def incorrect_simulation_inputs(simulation_inputs_inactive, request):
     return inputs
 
 
-async def test_simulation_step(control, simulation):
-    result = await simulation.tick(control.initial().values)
+def test_simulation_step(control, simulation):
+    result = simulation.tick(control.initial().values)
 
     assert isinstance(result.simulation_outputs, DrivesSimulationOutputs)
 
 
-async def test_drives_simulation_inputs(incorrect_simulation_inputs, control):
+def test_drives_simulation_inputs(incorrect_simulation_inputs, control):
     with Fmu(drives_path) as fmu:
         simulation = Simulation(
             DrivesSensorValues,
@@ -40,4 +40,4 @@ async def test_drives_simulation_inputs(incorrect_simulation_inputs, control):
 
         with pytest.raises(Exception):
             for i in range(300):
-                await simulation.tick(control.initial(datetime.now()).values)
+                simulation.tick(control.initial(datetime.now()).values)

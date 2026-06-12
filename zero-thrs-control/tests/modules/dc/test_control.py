@@ -1,19 +1,21 @@
 import pytest
 from pytest import approx
 
+from tests.helpers.simulation_runner import SimulationTestRunner
 from thrs.control.modules.dc import DcControl, DcParameters
 from thrs.input_output.base import Stamped
 from thrs.input_output.definitions.sensor import FlowSensor
 from thrs.input_output.definitions.simulation import Converter
 from thrs.input_output.modules.dc import DcSimulationInputs
 from thrs.orchestration.connector import ExecutionResult
-from thrs.orchestration.runner import Runner
 
 
-async def test_all_idle(runner: Runner, simulation_inputs_inactive: DcSimulationInputs):
-    runner._connector.update_simulation_inputs(simulation_inputs_inactive)  # type: ignore
+def test_all_idle(
+    runner: SimulationTestRunner, simulation_inputs_inactive: DcSimulationInputs
+):
+    runner._simulation.update_simulation_inputs(simulation_inputs_inactive)  # type: ignore
 
-    await runner.run(90)
+    runner.run(90)
     result = runner.last_tick_result
 
     assert isinstance(runner._control, DcControl)
@@ -30,14 +32,15 @@ async def test_all_idle(runner: Runner, simulation_inputs_inactive: DcSimulation
 @pytest.mark.skip(
     reason="This test is currently failing due to a change in the FMU. Needs to be updated."
 )
-async def test_only_brightloops_aft(
-    runner: Runner, simulation_inputs_brightloops_aft_active: DcSimulationInputs
+def test_only_brightloops_aft(
+    runner: SimulationTestRunner,
+    simulation_inputs_brightloops_aft_active: DcSimulationInputs,
 ):
-    runner._connector.update_simulation_inputs(  # type: ignore
+    runner._simulation.update_simulation_inputs(  # type: ignore
         simulation_inputs_brightloops_aft_active
     )
 
-    await runner.run(180)
+    runner.run(180)
     result = runner.last_tick_result
 
     assert isinstance(runner._control, DcControl)
@@ -59,8 +62,8 @@ async def test_only_brightloops_aft(
 @pytest.mark.skip(
     reason="This test is currently failing due to a change in the FMU. Needs to be updated."
 )
-async def test_only_one_brightloop(
-    runner: Runner, simulation_inputs_inactive: DcSimulationInputs
+def test_only_one_brightloop(
+    runner: SimulationTestRunner, simulation_inputs_inactive: DcSimulationInputs
 ):
     simulation_inputs_aft1_active = simulation_inputs_inactive.model_copy(
         update={
@@ -69,9 +72,9 @@ async def test_only_one_brightloop(
             )
         }
     )
-    runner._connector.update_simulation_inputs(simulation_inputs_aft1_active)  # type: ignore
+    runner._simulation.update_simulation_inputs(simulation_inputs_aft1_active)  # type: ignore
 
-    await runner.run(240)
+    runner.run(240)
     result = runner.last_tick_result
 
     assert isinstance(runner._control, DcControl)
@@ -90,7 +93,7 @@ async def test_only_one_brightloop(
     )
 
 
-async def test_recovery(runner: Runner):
+def test_recovery(runner: SimulationTestRunner):
     runner._control.update_parameters(
         DcParameters(
             recovery_temperature=45,
@@ -99,7 +102,7 @@ async def test_recovery(runner: Runner):
         )
     )
 
-    await runner.run(1200)
+    runner.run(1200)
     result = runner.last_tick_result
 
     assert isinstance(runner._control, DcControl)
@@ -146,7 +149,7 @@ async def test_recovery(runner: Runner):
     )
 
 
-async def test_heat_dump(runner: Runner):
+def test_heat_dump(runner: SimulationTestRunner):
     runner._control.update_parameters(
         DcParameters(
             recovery_temperature=50,
@@ -156,7 +159,7 @@ async def test_heat_dump(runner: Runner):
         )
     )
 
-    await runner.run(960)
+    runner.run(960)
     result = runner.last_tick_result
 
     assert isinstance(result, ExecutionResult)

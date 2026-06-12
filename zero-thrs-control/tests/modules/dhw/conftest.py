@@ -2,10 +2,10 @@ from datetime import datetime, timedelta
 
 from pytest import fixture
 
+from tests.helpers.simulation_runner import SimulationTestRunner
 from thrs.control.modules.dhw import (
     DhwAlarms,
     DhwControl,
-    DhwControlMode,
     DhwParameters,
     Tank,
     TanksController,
@@ -24,7 +24,6 @@ from thrs.input_output.modules.dhw import (
     DhwSimulationInputs,
     DhwSimulationOutputs,
 )
-from thrs.orchestration.runner import Runner
 from thrs.orchestration.simulation import Simulation
 from thrs.simulation.fmu import Fmu
 from thrs.simulation.models.fmu_paths import dhw_path
@@ -90,11 +89,8 @@ def parameters() -> DhwParameters:
 
 
 @fixture()
-def runner(
-    control: DhwControl, simulation, alarms: DhwAlarms
-) -> Runner[DhwSensorValues, DhwControlValues, DhwParameters, DhwControlMode]:
-    simulation.transceive = simulation.tick  # type: ignore # TODO: Make this make sense
-    return Runner(simulation, control, alarms)
+def runner(control: DhwControl, simulation, alarms: DhwAlarms) -> SimulationTestRunner:
+    return SimulationTestRunner(simulation, control, alarms)
 
 
 @fixture

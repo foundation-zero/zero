@@ -50,7 +50,7 @@ def test_yard_tags():
     compare_yard_tags(ThrustersSensorValues, ThrustersControlValues, {"thrusters_pcs"})
 
 
-async def test_set_module_temperature(control, simulation):
+def test_set_module_temperature(control, simulation):
     control_values = control.initial().values
 
     simulation._simulation_inputs.thrusters_thruster_aft.heat_flow.value = 0
@@ -66,7 +66,7 @@ async def test_set_module_temperature(control, simulation):
     # allow temp to stabilize
     result = None
     for i in range(500):
-        result = await simulation.tick(
+        result = simulation.tick(
             control_values,
         )
     assert result is not None

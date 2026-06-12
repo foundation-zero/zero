@@ -31,7 +31,7 @@ def incorrect_simulation_inputs(simulation_inputs, request):
     return inputs
 
 
-async def test_consumers_simulation_inputs(incorrect_simulation_inputs, control):
+def test_consumers_simulation_inputs(incorrect_simulation_inputs, control):
     with Fmu(consumers_path) as fmu:
         simulation = Simulation(
             ConsumersSensorValues,
@@ -44,6 +44,6 @@ async def test_consumers_simulation_inputs(incorrect_simulation_inputs, control)
 
         with pytest.raises(Exception):
             for i in range(300):
-                await simulation.tick(
+                simulation.tick(
                     control.initial(datetime.now()).values,
                 )
