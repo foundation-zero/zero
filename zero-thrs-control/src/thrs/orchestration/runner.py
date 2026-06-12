@@ -57,7 +57,7 @@ class ModuleSimulatorModel:
     def simulation(self):
         with Fmu(self.fmu_path) as fmu:
             yield Simulation(
-                self.module.sensor_values_cls,
+                self.module.sensor_values_clss,
                 self.module.simulation_outputs_cls,
                 fmu,
                 self.simulation_inputs,
