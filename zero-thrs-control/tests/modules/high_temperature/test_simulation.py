@@ -79,6 +79,7 @@ async def test_module_simulator_model(module):
         simulation_inputs=inputs,
     )
     with model.simulation() as simulation:
-        runner = Runner.from_module(module, params, simulation)
+        simulation.transceive = simulation.tick  # type: ignore # TODO: Make this make sense
+        runner = Runner.from_module(module, params, simulation)  # type: ignore # TODO: Make this make sense
 
         await runner.run(100)

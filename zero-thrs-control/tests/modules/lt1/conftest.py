@@ -135,4 +135,5 @@ def alarms() -> Lt1Alarms:
 
 @fixture()
 def runner(control: Lt1Control, simulation, alarms: Lt1Alarms) -> Runner:
+    simulation.transceive = simulation.tick  # type: ignore # TODO: Make this make sense
     return Runner(simulation, control, alarms)
