@@ -4,7 +4,7 @@ from pydantic import BaseModel, Field
 
 
 class MqttValue(BaseModel):
-    value: Annotated[bool, Field(serialization_alias="Value")]
+    value: Annotated[bool, Field(alias="Value")]
 
 
 class TemperatureReading(BaseModel):
