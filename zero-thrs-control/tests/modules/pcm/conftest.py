@@ -12,7 +12,6 @@ from thrs.input_output.modules.pcm import (
 )
 from thrs.orchestration.simulation import Simulation
 from thrs.simulation.fmu import Fmu
-from thrs.simulation.io_mapping import ThrsModelIoMapping
 from thrs.simulation.models.fmu_paths import pcm_path
 
 
@@ -35,16 +34,13 @@ def simulation_inputs():
 
 
 @fixture
-def io_mapping():
-    return ThrsModelIoMapping(
-        PcmSensorValues,
-        PcmSimulationOutputs,
-    )
-
-
-@fixture
-def simulation(io_mapping, simulation_inputs):
+def simulation(simulation_inputs):
     with Fmu(pcm_path) as fmu:
         yield Simulation(
-            io_mapping, fmu, simulation_inputs, datetime.now(), timedelta(seconds=1)
+            PcmSensorValues,
+            PcmSimulationOutputs,
+            fmu,
+            simulation_inputs,
+            datetime.now(),
+            timedelta(seconds=1),
         )

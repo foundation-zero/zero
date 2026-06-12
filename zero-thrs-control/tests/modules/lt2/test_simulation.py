@@ -12,7 +12,6 @@ from thrs.input_output.modules.lt2 import (
 )
 from thrs.orchestration.simulation import Simulation
 from thrs.simulation.fmu import Fmu
-from thrs.simulation.io_mapping import ThrsModelIoMapping
 from thrs.simulation.models.fmu_paths import lt2_path
 
 
@@ -31,12 +30,9 @@ async def test_simulation_step(control, simulation):
 
 async def test_lt2_simulation_inputs(incorrect_simulation_inputs):
     with Fmu(lt2_path) as fmu:
-        mapping = ThrsModelIoMapping(
+        simulation = Simulation(
             Lt2SensorValues,
             Lt2SimulationOutputs,
-        )
-        simulation = Simulation(
-            mapping,
             fmu,
             incorrect_simulation_inputs,
             datetime.now(),

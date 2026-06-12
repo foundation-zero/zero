@@ -21,16 +21,12 @@ from thrs.orchestration.collector import PolarsCollector
 from thrs.orchestration.runner import Runner, SimulatorModel
 from thrs.orchestration.simulation import Simulation
 from thrs.simulation.fmu import Fmu
-from thrs.simulation.io_mapping import (
-    ThrsModelIoMapping,
-    flatten_model_values,
-)
+from thrs.simulation.io_mapping import ThrsModelIoMapping, flatten_model_values
 from thrs.simulation.models.fmu_paths import thrusters_path
 
 
-async def test_interfacer(
-    simulation, fmu, io_mapping, simulation_inputs, control, alarms
-):
+async def test_interfacer(simulation, fmu, simulation_inputs, control, alarms):
+    io_mapping = ThrsModelIoMapping(ThrustersSensorValues, ThrustersSimulationOutputs)
     collector = PolarsCollector()
     runner = Runner(simulation, control, alarms)
     await runner.run(20, collector)
@@ -68,7 +64,7 @@ async def test_interfacer(
 
 
 async def test_computed_collection(
-    simulation: ThrustersSimulation, io_mapping, simulation_inputs, control, alarms
+    simulation: ThrustersSimulation, simulation_inputs, control, alarms
 ):
     collector = PolarsCollector()
     runner = Runner(simulation, control, alarms)  # TODO: Make this make sense
@@ -114,12 +110,9 @@ def incorrect_simulation_inputs(simulation_inputs, request):
 
 async def test_thrusters_simulation_inputs(incorrect_simulation_inputs, control):
     with Fmu(thrusters_path) as fmu:
-        mapping = ThrsModelIoMapping(
+        simulation = Simulation(
             ThrustersSensorValues,
             ThrustersSimulationOutputs,
-        )
-        simulation = Simulation(
-            mapping,
             fmu,
             incorrect_simulation_inputs,
             datetime.now(),

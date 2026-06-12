@@ -44,12 +44,12 @@ def incorrect_simulation_inputs(simulation_inputs, request):
 
 
 async def test_high_temperature_simulation_inputs(
-    incorrect_simulation_inputs, control, io_mapping
+    incorrect_simulation_inputs, control, module
 ):
     with Fmu(high_temperature_path) as fmu:
-        mapping = io_mapping
         simulation = Simulation(
-            mapping,
+            module.sensor_values_cls,
+            module.simulation_outputs_cls,
             fmu,
             incorrect_simulation_inputs,
             datetime.now(),

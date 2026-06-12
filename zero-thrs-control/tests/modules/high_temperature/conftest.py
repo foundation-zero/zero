@@ -93,13 +93,13 @@ def control(module, simulation):
 
 
 @fixture
-def io_mapping(module):
-    return module.io_mapping()
-
-
-@fixture
-def simulation(io_mapping, simulation_inputs):
+def simulation(module, simulation_inputs):
     with Fmu(high_temperature_path) as fmu:
         yield Simulation(
-            io_mapping, fmu, simulation_inputs, datetime.now(), timedelta(seconds=1)
+            module.sensor_values_cls,
+            module.simulation_outputs_cls,
+            fmu,
+            simulation_inputs,
+            datetime.now(),
+            timedelta(seconds=1),
         )

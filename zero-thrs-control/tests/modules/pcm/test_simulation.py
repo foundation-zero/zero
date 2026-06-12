@@ -11,7 +11,6 @@ from thrs.input_output.modules.pcm import (
 )
 from thrs.orchestration.simulation import Simulation
 from thrs.simulation.fmu import Fmu
-from thrs.simulation.io_mapping import ThrsModelIoMapping
 from thrs.simulation.models.fmu_paths import pcm_path
 
 
@@ -36,12 +35,9 @@ def incorrect_simulation_inputs(simulation_inputs, request):
 
 async def test_pcm_simulation_inputs(incorrect_simulation_inputs, control):
     with Fmu(pcm_path) as fmu:
-        mapping = ThrsModelIoMapping(
+        simulation = Simulation(
             PcmSensorValues,
             PcmSimulationOutputs,
-        )
-        simulation = Simulation(
-            mapping,
             fmu,
             incorrect_simulation_inputs,
             datetime.now(),
