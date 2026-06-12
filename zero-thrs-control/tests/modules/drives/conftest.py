@@ -2,6 +2,7 @@ from datetime import datetime, timedelta
 
 from pytest import fixture
 
+from tests.helpers.simulation_runner import SimulationTestRunner
 from thrs.control.modules.drives import DrivesAlarms, DrivesControl, DrivesParameters
 from thrs.input_output.base import Stamped
 from thrs.input_output.definitions.simulation import (
@@ -15,7 +16,6 @@ from thrs.input_output.modules.drives import (
     DrivesSimulationInputs,
     DrivesSimulationOutputs,
 )
-from thrs.orchestration.runner import Runner
 from thrs.orchestration.simulation import Simulation
 from thrs.simulation.fmu import Fmu
 from thrs.simulation.models.fmu_paths import drives_path
@@ -134,6 +134,7 @@ def alarms() -> DrivesAlarms:
 
 
 @fixture()
-def runner(control: DrivesControl, simulation, alarms: DrivesAlarms) -> Runner:
-    simulation.transceive = simulation.tick  # type: ignore # TODO: Make this make sense
-    return Runner(simulation, control, alarms)
+def runner(
+    control: DrivesControl, simulation, alarms: DrivesAlarms
+) -> SimulationTestRunner:
+    return SimulationTestRunner(simulation, control, alarms)

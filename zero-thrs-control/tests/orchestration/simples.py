@@ -53,7 +53,7 @@ class SimpleSimulation[
     async def start(self):
         pass
 
-    async def tick(self, control_values: S) -> SimulationResult[S, S, I, O]:
+    def tick(self, control_values: S) -> SimulationResult[S, S, I, O]:
         self.controls.append(control_values)
         return ExecutionResult(timestamp=datetime.now(), sensor_values=control_values)  # type: ignore # TODO: make this make sense
 
