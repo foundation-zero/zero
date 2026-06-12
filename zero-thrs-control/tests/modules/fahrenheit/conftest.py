@@ -16,7 +16,6 @@ from thrs.input_output.modules.fahrenheit import (
 )
 from thrs.orchestration.simulation import Simulation
 from thrs.simulation.fmu import Fmu
-from thrs.simulation.io_mapping import ThrsModelIoMapping
 from thrs.simulation.models.fmu_paths import fahrenheit_path
 
 
@@ -47,21 +46,18 @@ def simulation_inputs():
 
 
 @fixture
-def io_mapping():
-    return ThrsModelIoMapping(
-        FahrenheitSensorValues,
-        FahrenheitSimulationOutputs,
-    )
-
-
-@fixture
 def control(simulation):
     return FahrenheitControl(FahrenheitParameters(), simulation.time)
 
 
 @fixture
-def simulation(io_mapping, simulation_inputs):
+def simulation(simulation_inputs):
     with Fmu(fahrenheit_path) as fmu:
         yield Simulation(
-            io_mapping, fmu, simulation_inputs, datetime.now(), timedelta(seconds=1)
+            FahrenheitSensorValues,
+            FahrenheitSimulationOutputs,
+            fmu,
+            simulation_inputs,
+            datetime.now(),
+            timedelta(seconds=1),
         )

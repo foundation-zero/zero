@@ -17,7 +17,7 @@ from thrs.orchestration.connector import Connector, ExecutionResult
 from thrs.orchestration.module import CombinedModule
 from thrs.orchestration.simulation import Simulation, SimulationResult
 from thrs.simulation.fmu import Fmu
-from thrs.simulation.io_mapping import ThrsModelIoMapping, flatten_model_values
+from thrs.simulation.io_mapping import flatten_model_values
 
 
 @dataclass
@@ -36,10 +36,8 @@ class SimulatorModel:
     def simulation(self):
         with Fmu(self.fmu_path) as fmu:
             yield Simulation(
-                ThrsModelIoMapping(
-                    self.sensor_values_cls,
-                    self.simulation_outputs_cls,
-                ),
+                self.sensor_values_cls,
+                self.simulation_outputs_cls,
                 fmu,
                 self.simulation_inputs,
                 self.start_time,
@@ -59,7 +57,8 @@ class ModuleSimulatorModel:
     def simulation(self):
         with Fmu(self.fmu_path) as fmu:
             yield Simulation(
-                self.module.io_mapping(),
+                self.module.sensor_values_cls,
+                self.module.simulation_outputs_cls,
                 fmu,
                 self.simulation_inputs,
                 self.start_time,

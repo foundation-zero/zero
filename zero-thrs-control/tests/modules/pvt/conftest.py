@@ -16,7 +16,6 @@ from thrs.input_output.modules.pvt import (
 )
 from thrs.orchestration.simulation import Simulation
 from thrs.simulation.fmu import Fmu
-from thrs.simulation.io_mapping import ThrsModelIoMapping
 from thrs.simulation.models.fmu_paths import pvt_path
 
 
@@ -34,21 +33,18 @@ def simulation_inputs():
 
 
 @fixture
-def io_mapping():
-    return ThrsModelIoMapping(
-        PvtSensorValues,
-        PvtSimulationOutputs,
-    )
-
-
-@fixture
 def control(simulation):
     return PvtControl(PvtParameters(), simulation.time)
 
 
 @fixture
-def simulation(io_mapping, simulation_inputs):
+def simulation(simulation_inputs):
     with Fmu(pvt_path) as fmu:
         yield Simulation(
-            io_mapping, fmu, simulation_inputs, datetime.now(), timedelta(seconds=1)
+            PvtSensorValues,
+            PvtSimulationOutputs,
+            fmu,
+            simulation_inputs,
+            datetime.now(),
+            timedelta(seconds=1),
         )

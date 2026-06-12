@@ -159,7 +159,7 @@ class TestModuleNesting:
         assert combined_module.control_values_for_module("module1") == SimpleInOut
         assert combined_module.parameters_for_module("module1") == SimpleParameters
 
-    def test_io_mapping(self):
+    def test_sensor_values_cls(self):
         control_fn = Mock()
         alarms_fn = Mock()
 
@@ -178,8 +178,7 @@ class TestModuleNesting:
             modules, SimpleSimulationInputs, SimpleSimulationOutputs
         )
 
-        io_mapping = nesting.io_mapping()
-        assert io_mapping is not None
+        assert nesting.sensor_values_cls is not None
 
     def test_control(self):
         mock_control_instance = Mock(spec=Control)
