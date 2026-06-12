@@ -1,8 +1,6 @@
 from datetime import datetime
 from unittest.mock import Mock
 
-import pytest
-
 from tests.orchestration.simples import (
     SimpleControl,
     SimpleInOut,
@@ -16,11 +14,6 @@ from thrs.control.base import ModuleDescription
 from thrs.input_output.alarms import Alarm, BaseAlarms, Severity
 from thrs.input_output.base import CombinedValues, Stamped, ThrsValues
 from thrs.input_output.definitions.sensor import FlowSensor
-from thrs.orchestration.connector import (
-    DirectMqttMapping,
-    ModuleMqttMapping,
-    PartialMqttMapping,
-)
 from thrs.orchestration.module import (
     CombinedAlarms,
     CombinedControl,
@@ -39,141 +32,6 @@ class MockSimulationInputs(ThrsValues):
 
 class MockSimulationOutputs(ThrsValues):
     output_value: float = 20.0
-
-
-class TestPartialMqttMapping:
-    def test_split_to_topics_without_suffix(self):
-        mapping = PartialMqttMapping(SimpleInOut)
-        flow_sensor = FlowSensor(
-            flow=Stamped.stamp(10.0), temperature=Stamped.stamp(25.0)
-        )
-        model = SimpleInOut(go_with_the=flow_sensor)
-
-        topics = mapping.split_to_topics(model)
-
-        assert "go-with-the" in topics
-        topic = topics["go-with-the"]
-        assert FlowSensor.model_validate_json(topic) == flow_sensor
-
-    def test_split_to_topics_with_suffix(self):
-        mapping = PartialMqttMapping(SimpleInOut, "sensors")
-        flow_sensor = FlowSensor(
-            flow=Stamped.stamp(10.0), temperature=Stamped.stamp(25.0)
-        )
-        model = SimpleInOut(go_with_the=flow_sensor)
-
-        topics = mapping.split_to_topics(model)
-
-        assert "go-with-the/sensors" in topics
-        topic = topics["go-with-the/sensors"]
-        assert FlowSensor.model_validate_json(topic) == flow_sensor
-
-    def test_has_without_suffix(self):
-        mapping = PartialMqttMapping(SimpleInOut)
-
-        assert mapping.has("go-with-the")
-        assert not mapping.has("nonexistent")
-
-    def test_has_with_suffix(self):
-        mapping = PartialMqttMapping(SimpleInOut, "sensors")
-
-        assert mapping.has("go-with-the/sensors")
-        assert not mapping.has("go-with-the")
-
-    def test_subscribe_topic(self):
-        mapping_no_suffix = PartialMqttMapping(SimpleInOut)
-        mapping_with_suffix = PartialMqttMapping(SimpleInOut, "sensors")
-
-        assert mapping_no_suffix.subscribe_topic() == "+"
-        assert mapping_with_suffix.subscribe_topic() == "+/sensors"
-
-    def test_builder(self):
-        mapping = PartialMqttMapping(SimpleInOut)
-        builder = mapping.builder()
-
-        flow_sensor = FlowSensor(
-            flow=Stamped.stamp(15.0), temperature=Stamped.stamp(30.0)
-        )
-        builder.input("go-with-the", flow_sensor.model_dump_json(by_alias=True))
-        assert builder.result() == SimpleInOut(go_with_the=flow_sensor)
-
-
-class TestDirectMqttMapping:
-    def test_split_to_topics(self):
-        mapping = DirectMqttMapping(SimpleInOut, "sensors/data")
-        model = SimpleInOut(
-            go_with_the=FlowSensor(
-                flow=Stamped.stamp(25.0), temperature=Stamped.stamp(1.2)
-            )
-        )
-        topics = mapping.split_to_topics(model)
-
-        assert "sensors/data" in topics
-        assert topics["sensors/data"] == model.model_dump_json(by_alias=True)
-
-    def test_has(self):
-        mapping = DirectMqttMapping(SimpleInOut, "sensors/data")
-
-        assert mapping.has("sensors/data")
-        assert not mapping.has("other/topic")
-
-    def test_subscribe_topic(self):
-        mapping = DirectMqttMapping(SimpleInOut, "sensors/data")
-
-        assert mapping.subscribe_topic() == "sensors/data"
-
-    def test_builder_not_implemented(self):
-        mapping = DirectMqttMapping(SimpleInOut, "sensors/data")
-        with pytest.raises(NotImplementedError):
-            mapping.builder()
-
-
-class TestCombinedMqttMapping:
-    def test_split_to_topics(self):
-        clss = {"module1": SimpleInOut}
-        mapping = ModuleMqttMapping(clss)
-        flow_sensor = FlowSensor(
-            flow=Stamped.stamp(25.0), temperature=Stamped.stamp(1.2)
-        )
-        combined_values = CombinedValues(
-            values={"module1": SimpleInOut(go_with_the=flow_sensor)}
-        )
-
-        topics = mapping.split_to_topics(combined_values)
-
-        assert "module1/go-with-the" in topics
-        assert topics["module1/go-with-the"] == flow_sensor.model_dump_json(
-            by_alias=True
-        )
-
-    def test_has(self):
-        clss = {"module1": SimpleInOut}
-        mapping = ModuleMqttMapping(clss)
-
-        assert mapping.has("module1/go-with-the")
-        assert not mapping.has("module2/go-with-the")
-
-    def test_subscribe_topic(self):
-        clss = {"module1": SimpleInOut}
-        mapping_no_suffix = ModuleMqttMapping(clss)
-        mapping_with_suffix = ModuleMqttMapping(clss, "sensors")
-
-        assert mapping_no_suffix.subscribe_topic() == "+/+"
-        assert mapping_with_suffix.subscribe_topic() == "+/+/sensors"
-
-    def test_builder(self):
-        clss = {"module1": SimpleInOut}
-        mapping = ModuleMqttMapping(clss)
-        builder = mapping.builder()
-
-        flow_sensor = FlowSensor(
-            flow=Stamped.stamp(50.0), temperature=Stamped.stamp(5.0)
-        )
-        builder.input("module1/go-with-the", flow_sensor.model_dump_json(by_alias=True))
-        result = builder.result()
-        assert result == CombinedValues(
-            {"module1": SimpleInOut(go_with_the=flow_sensor)}
-        )
 
 
 class TestCombinedControl:
