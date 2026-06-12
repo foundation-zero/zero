@@ -28,6 +28,7 @@ from thrs.simulation.models.fmu_paths import thrusters_path
 async def test_interfacer(simulation, fmu, simulation_inputs, control, alarms):
     io_mapping = ThrsModelIoMapping(ThrustersSensorValues, ThrustersSimulationOutputs)
     collector = PolarsCollector()
+    simulation.transceive = simulation.tick  # type: ignore # TODO: Make this make sense
     runner = Runner(simulation, control, alarms)
     await runner.run(20, collector)
     frame = collector.result()
@@ -67,7 +68,8 @@ async def test_computed_collection(
     simulation: ThrustersSimulation, simulation_inputs, control, alarms
 ):
     collector = PolarsCollector()
-    runner = Runner(simulation, control, alarms)  # TODO: Make this make sense
+    simulation.transceive = simulation.tick  # type: ignore # TODO: Make this make sense
+    runner = Runner(simulation, control, alarms)  # type: ignore # TODO: Make this make sense
     await runner.run(20, collector)
     frame = collector.result()
     assert frame is not None
@@ -86,10 +88,11 @@ async def test_simulation(simulation_inputs, control, alarms):
     )
 
     with thrusters_model.simulation() as simulation:
+        simulation.transceive = simulation.tick  # type: ignore # TODO: Make this make sense
         runner = Runner.from_module(
             THRUSTERS_MODULE_DESCRIPTION,
             ThrustersParameters(),
-            simulation,  # TODO: Make this make sense
+            simulation,  # type: ignore # TODO: Make this make sense
         )
 
         collector = PolarsCollector()

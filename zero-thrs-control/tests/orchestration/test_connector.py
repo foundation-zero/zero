@@ -212,7 +212,7 @@ async def test_mqtt_connector(mqtt_client, mqtt_client2):
     await sleep(0)
 
     try:
-        first_result = await connector.tick(
+        first_result = await connector.transceive(
             CombinedValues(
                 values={
                     "simple": SimpleInOut(
@@ -230,7 +230,7 @@ async def test_mqtt_connector(mqtt_client, mqtt_client2):
             == 2
         )
         await sleep(0.005)
-        second_result = await connector.tick(
+        second_result = await connector.transceive(
             CombinedValues(
                 values={
                     "simple": SimpleInOut(
@@ -248,7 +248,7 @@ async def test_mqtt_connector(mqtt_client, mqtt_client2):
             == 2
         )
         await sleep(0.1)
-        third_result = await connector.tick(
+        third_result = await connector.transceive(
             CombinedValues(
                 {
                     "simple": SimpleInOut(
@@ -295,7 +295,7 @@ async def test_boat_connector_echoes_controls_to_sensors(mqtt_client):
     await sleep(0)
 
     try:
-        empty_result = await connector.tick(
+        empty_result = await connector.transceive(
             CombinedValues(
                 values={
                     "simple": SimpleInOut(
@@ -310,7 +310,7 @@ async def test_boat_connector_echoes_controls_to_sensors(mqtt_client):
 
         await sleep(0.005)
 
-        first_result = await connector.tick(
+        first_result = await connector.transceive(
             CombinedValues(
                 values={
                     "simple": SimpleInOut(
@@ -330,7 +330,7 @@ async def test_boat_connector_echoes_controls_to_sensors(mqtt_client):
 
         await sleep(0.1)
 
-        second_result = await connector.tick(
+        second_result = await connector.transceive(
             CombinedValues(
                 values={
                     "simple": SimpleInOut(

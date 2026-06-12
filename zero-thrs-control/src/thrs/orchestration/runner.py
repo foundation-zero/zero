@@ -101,7 +101,7 @@ class Runner[S: ThrsValues, C: ThrsValues, P: ThrsValues, M: ThrsValues]:
     async def run(self, n_ticks: int, collector: Collector | None = None) -> None:
         result = None
         for _ in range(n_ticks):
-            result = await self._connector.tick(self._control_values)
+            result = await self._connector.transceive(self._control_values)
             if isinstance(result, SimulationResult) and collector is not None:
                 collector.collect(
                     {
