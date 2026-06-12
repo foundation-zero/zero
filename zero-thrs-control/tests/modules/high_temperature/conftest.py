@@ -96,7 +96,7 @@ def control(module, simulation):
 def simulation(module, simulation_inputs):
     with Fmu(high_temperature_path) as fmu:
         yield Simulation(
-            module.sensor_values_cls,
+            module.sensor_values_clss,
             module.simulation_outputs_cls,
             fmu,
             simulation_inputs,

@@ -18,6 +18,7 @@ from thrs.input_output.fmu_mapping import (
     extract_non_fmu_values,
     included_in_fmu,
 )
+from thrs.orchestration.module import ModuleClassMap
 
 
 def flatten_model_values(model: ThrsValues, fmu_only: bool) -> dict[str, float]:
@@ -76,14 +77,10 @@ class CombinedIoMapping[I: SimulationInputs, O: SimulationValues](
 ):
     def __init__(
         self,
-        sensor_values_cls: type[ThrsValues],
+        sensor_values_clss: ModuleClassMap,
         simulation_outputs_cls: type[O],
     ):
-        self._sensor_values_clss = {
-            module: field.annotation
-            for module, field in sensor_values_cls.model_fields.items()
-            if field.annotation and issubclass(field.annotation, ThrsValues)
-        }
+        self._sensor_values_clss = sensor_values_clss
         self._simulation_outputs_cls = simulation_outputs_cls
 
     def generate_inputs(
@@ -147,16 +144,13 @@ class ThrsModelIoMapping[
         sensor_values_cls: type[S],
         simulation_outputs_cls: type[O],
     ):
-        class CombinedSensorValues(ThrsValues):
-            values: sensor_values_cls  # type: ignore  #TODO refactor
-
-        self._sub = CombinedIoMapping(CombinedSensorValues, simulation_outputs_cls)
+        self._sub = CombinedIoMapping({"": sensor_values_cls}, simulation_outputs_cls)
 
     def generate_inputs(
         self, control_values: C, simulation_inputs: I
     ) -> dict[str, Any]:
         return self._sub.generate_inputs(
-            CombinedValues({"values": control_values}), simulation_inputs
+            CombinedValues({"": control_values}), simulation_inputs
         )
 
     def construct_outputs(
@@ -169,4 +163,4 @@ class ThrsModelIoMapping[
         sensor_values, outputs, raw = self._sub.construct_outputs(
             fmu_inputs, fmu_outputs, simulation_inputs, time
         )
-        return cast(S, sensor_values.values["values"]), outputs, raw
+        return cast(S, sensor_values.values[""]), outputs, raw
