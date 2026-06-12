@@ -128,7 +128,7 @@ class RelaySwitchingTemperatureReader(TemperatureReader):
         Send MQTT message to activate or deactivate the Modbus reader.
         """
         payload = self._activate_json_path.update_or_create(
-            {}, MqttValue(value=activate).model_dump()
+            {}, MqttValue.model_construct(value=activate).model_dump(by_alias=True)
         )
         await self._mqtt.publish(self._activation_topic, json.dumps(payload), qos=1)
 
