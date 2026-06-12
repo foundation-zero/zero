@@ -29,7 +29,7 @@ class SimpleConnector(Connector):
     async def start(self):
         pass
 
-    async def tick(self, control_values):
+    async def transceive(self, control_values):
         self.controls.append(control_values)
         return ExecutionResult(timestamp=datetime.now(), sensor_values=control_values)
 

@@ -95,6 +95,7 @@ def runner(
 ) -> Runner[
     BoilersSensorValues, BoilersControlValues, BoilersParameters, BoilersControlMode
 ]:
+    simulation.transceive = simulation.tick  # type: ignore # TODO: Make this make sense
     return Runner(simulation, control, alarms)
 
 
