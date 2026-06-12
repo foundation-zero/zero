@@ -13,7 +13,6 @@ from thrs.input_output.definitions.control import HeatPump, Pump, Valve
 from thrs.input_output.definitions.controllers import (
     PidControllerValues,
     TanksControllerValues,
-    TankState,
 )
 from thrs.input_output.definitions.units import (
     Celsius,
@@ -22,6 +21,7 @@ from thrs.input_output.definitions.units import (
     LMin,
     Ratio,
     Seconds,
+    TankState,
     Tuning,
 )
 from thrs.input_output.modules.boilers import BoilersControlValues, BoilersSensorValues

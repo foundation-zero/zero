@@ -758,7 +758,9 @@ class SimulationControls:
                 self._control_client,
                 self._sensor_client,
                 self._topic_prefix,
-                modules,
+                modules.sensor_values_mqtt_mapping,
+                modules.control_values_mqtt_mapping,
+                modules.simulation_output_mqtt_mapping,
             )
             runner = Runner(connector, control, modules.alarms())  # type: ignore
 
