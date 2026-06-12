@@ -1,8 +1,11 @@
 import { stamp } from "@/modules/common/lib/utils";
 import { Stamped } from "@/modules/common/types";
 import {
+  BoilerTankState,
   ControlComponentType,
   ControlDefinitionMap,
+  ParameterDefinitionMap,
+  ParametersType,
   SensorComponentType,
   SensorDefinitionMap,
   ThrusterMode,
@@ -141,4 +144,37 @@ export const CONTROL_VALUES_FACTORY: ValueFactory<ControlDefinitionMap> = {
       setpoint: stamp(setpoint),
     }));
   },
+  [ControlComponentType.BoilersTanksController]: () => {
+    const states = [
+      BoilerTankState.Boosting,
+      BoilerTankState.Disabled,
+      BoilerTankState.InUse,
+      BoilerTankState.NeedsBoost,
+      BoilerTankState.NeedsFill,
+      BoilerTankState.Standby,
+    ];
+    const tank1State = useRandomizedState(states);
+    const tank2State = useRandomizedState(states);
+    const tank3State = useRandomizedState(states);
+    const timeToFill = useRandomizedNumber(0, 1000);
+
+    return computed(() => ({
+      tank1State: stamp(tank1State),
+      tank2State: stamp(tank2State),
+      tank3State: stamp(tank3State),
+      timeToFill: stamp(timeToFill),
+    }));
+  },
+};
+
+export const PARAMETER_VALUES_FACTORY: ValueFactory<ParameterDefinitionMap> = {
+  [ParametersType.Disabled]: () => useRandomizedBoolean(),
+  [ParametersType.Dutypoint]: () => useRandomizedNumber(0, 100),
+  [ParametersType.Enabled]: () => useRandomizedBoolean(),
+  [ParametersType.Flow]: () => useRandomizedNumber(0, 10),
+  [ParametersType.Level]: () => useRandomizedNumber(0, 100),
+  [ParametersType.Ratio]: () => useRandomizedRatio(),
+  [ParametersType.Temperature]: () => useRandomizedNumber(20, 100),
+  [ParametersType.Tuning]: () => computed(() => [1, 2, 3]),
+  [ParametersType.dT]: () => useRandomizedNumber(-20, 20),
 };

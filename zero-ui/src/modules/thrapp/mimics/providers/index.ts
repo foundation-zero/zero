@@ -3,7 +3,9 @@ import {
   ControlComponentType,
   ControlDefinitionMap,
   ControlDefinitions,
-  ParameterType,
+  ParameterDefinitionMap,
+  ParameterDefinitions,
+  ParametersType,
   PickKeys,
   SchemaDefinition,
   SensorComponentType,
@@ -18,7 +20,7 @@ export { default as GraphQLProvider } from "./GraphQLProvider.vue";
 export { default as MockProvider } from "./MockProvider.vue";
 
 export const getField = <
-  Type extends SensorComponentType | ControlComponentType | ParameterType,
+  Type extends SensorComponentType | ControlComponentType | ParametersType,
   Section extends "sensorValues" | "controlValues" | "parameters" = Type extends SensorComponentType
     ? "sensorValues"
     : Type extends ControlComponentType
@@ -39,7 +41,7 @@ export const getField = <
 ): ModuleField<Type, Module> => [type, module, field] as ModuleField<Type, Module>;
 
 export type ModuleField<
-  Type extends ControlComponentType | SensorComponentType | ParameterType,
+  Type extends ControlComponentType | SensorComponentType | ParametersType,
   Module extends keyof ThrsDefinitions = keyof ThrsDefinitions,
 > = [type: Type, module: Module, field: string];
 
@@ -50,6 +52,9 @@ export interface MimicDataProvider {
   getControlValue: <Type extends ControlComponentType, Module extends keyof ThrsDefinitions>(
     prop: ModuleField<Type, Module>,
   ) => Ref<ControlDefinitionMap[Type] | undefined>;
+  getParameterValue: <Type extends ParametersType, Module extends keyof ThrsDefinitions>(
+    prop: ModuleField<Type, Module>,
+  ) => Ref<ParameterDefinitionMap[Type] | undefined>;
   getComponentState: (
     state?: MaybeRef<MimicComponentState | undefined>,
   ) => Ref<MimicComponentState>;
@@ -75,6 +80,20 @@ export const getControlDefinition = <K extends keyof ThrsDefinitions>(module: K,
 
   if (!definition) {
     throw new Error(`No control definition found for field: ${field as string}`);
+  }
+
+  return definition;
+};
+
+export const getParameterDefinition = <K extends keyof ThrsDefinitions>(
+  module: K,
+  field: string,
+) => {
+  const definitions: ParameterDefinitions = DEFINITIONS[module].parameters;
+  const definition = definitions[field];
+
+  if (!definition) {
+    throw new Error(`No parameter definition found for field: ${field as string}`);
   }
 
   return definition;

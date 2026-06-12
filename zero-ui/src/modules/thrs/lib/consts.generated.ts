@@ -109,6 +109,10 @@ export const BOILERS_CONTROL_DEFINITION = toControlDefinition({
     componentType: ControlComponentType.Valve,
     valveType: ValveType.Switch,
   },
+  boilersTanksController: {
+    yardTag: "",
+    componentType: ControlComponentType.BoilersTanksController,
+  },
 });
 
 export const BOILERS_PARAMETER_DEFINITION = toParameterDefinition({

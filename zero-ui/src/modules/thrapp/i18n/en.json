@@ -5,14 +5,64 @@
       "showLegend": "Show legend",
       "legend": "Legend"
     },
+    "tooltips": {
+      "labels": {
+        "input": "Input",
+        "output": "Output",
+        "controls": "Controls",
+        "viewControls": "View controls",
+        "controlManually": "Control manually"
+      },
+      "sources": {
+        "minTemperature": "Boilers minimum temperature parameter",
+        "maxTemperature": "Boilers maximum temperature parameter",
+        "minLevel": "Boilers minimum tank level",
+        "maxLevel": "Boilers maximum tank level",
+        "capacity": "This component",
+        "tank1": "tank 1 enabled",
+        "tank2": "tank 2 enabled",
+        "tank3": "tank 3 enabled",
+        "tankState": "Tanks controller"
+      },
+      "items": {
+        "itemName": "Item",
+        "technicalName": "Technical name",
+        "state": "State",
+        "temperature": "Temperature",
+        "currentTemperature": "Current temperature",
+        "incomingTemperature": "Incoming temperature",
+        "minTemperature": "Min. temperature",
+        "maxTemperature": "Max. temperature",
+        "minLevel": "Minimum level",
+        "maxLevel": "Maximum level",
+        "filling": "Filling",
+        "levelSensor": "Level sensor",
+        "fill": "Fill",
+        "capacity": "Capacity",
+        "estimatedFillingTime": "Est. filling time",
+        "estimatedTimeToHeat": "Est. time to heat",
+        "tankController": "Tank controller",
+        "tank1": "Tank 1",
+        "tank2": "Tank 2",
+        "tank3": "Tank 3",
+        "boostReturnValve": "Boost return valve",
+        "boostSupplyValve": "Boost supply valve",
+        "supplyValve": "Supply valve",
+        "dischargeValve": "Discharge valve",
+        "automatedControl": "Automated control"
+      }
+    },
     "mimics": {
       "boilerTank": {
         "modes": {
-          "standby": "Standby",
-          "boosting": "Boosting",
-          "in-use": "In use",
+          "IN_USE": "In use",
+          "FILLING": "Filling",
+          "BOOSTING": "Boosting",
+          "DISABLED": "Disabled",
+          "NEEDS_BOOST": "Needs boost",
+          "NEEDS_FILL": "Needs fill",
+          "STANDBY": "Standby",
           "manual": "Manual",
-          "disabled": "Disabled",
           "alarm": "Alarm"
         }
       },

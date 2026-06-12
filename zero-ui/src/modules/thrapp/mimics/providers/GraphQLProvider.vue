@@ -4,6 +4,8 @@ import { useThrsHistory } from "@/modules/thrs/stores/history";
 import {
   ControlComponentType,
   ControlDefinitionMap,
+  ParameterDefinitionMap,
+  ParametersType,
   SensorComponentType,
   SensorDefinitionMap,
 } from "@/modules/thrs/types";
@@ -37,9 +39,20 @@ const getControlValue = <Type extends ControlComponentType, Module extends keyof
       ],
   );
 
+const getParameterValue = <Type extends ParametersType, Module extends keyof ThrsDefinitions>([
+  _type,
+  module,
+  field,
+]: ModuleField<Type, Module>): Ref<ParameterDefinitionMap[Type] | undefined> =>
+  computed(
+    () =>
+      data.value?.modules?.[module]?.parameters?.[field as keyof ThrsModules[Module]["parameters"]],
+  );
+
 createMimicDataProvider({
   getSensorValue,
   getControlValue,
+  getParameterValue,
   getComponentState: (state) => computed(() => unref(state) ?? MimicComponentState.Normal),
 });
 </script>

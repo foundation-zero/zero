@@ -1,11 +1,13 @@
 <script setup lang="ts">
 import { tScoped } from "@/modules/common/lib/utils";
+import { BoilerTankState } from "@/modules/thrs/types";
 import { computed } from "vue";
-import { BOILER_TANK_MODE_COLORS, BoilerTankModes } from ".";
+import { BOILER_TANK_MODE_COLORS } from ".";
 import { MimicComponentState } from "..";
 
-const props = withDefaults(defineProps<{ mode: BoilerTankModes; state?: MimicComponentState }>(), {
+const props = withDefaults(defineProps<{ mode?: BoilerTankState; state?: MimicComponentState }>(), {
   state: MimicComponentState.Normal,
+  mode: BoilerTankState.Standby,
 });
 
 const color = computed(() => {

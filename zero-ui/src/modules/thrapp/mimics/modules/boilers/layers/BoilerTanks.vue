@@ -1,42 +1,30 @@
 <script setup lang="ts">
-import { tScoped } from "@/modules/common/lib/utils.ts";
-import { SensorComponentType } from "@/modules/thrs/types/index.ts";
+import { MimicComponentType } from "@/modules/thrapp/types/index.ts";
 import BoilerTankInstance from "../../../instances/BoilerTankInstance.vue";
-import { getField } from "../../../providers";
+import { BOILERS_MIMIC_DATA } from "../data/index.ts";
 
-const t = tScoped("thrapp.mimics.boilers.boilerTanks");
+const boilerTanks = BOILERS_MIMIC_DATA[MimicComponentType.BoilerTank];
 </script>
 
 <template>
-  <g>
-    <BoilerTankInstance
-      x="355"
-      y="0"
-      :title="t('tank1Title')"
-      force-height
-      tag-id="1053"
-      :level="getField(SensorComponentType.Level, 'boilers', 'boilersLevelTank1')"
-      :temperature="getField(SensorComponentType.Temperature, 'boilers', 'boilersTemperatureTank1')"
-    />
+  <BoilerTankInstance
+    x="355"
+    y="0"
+    force-height
+    v-bind="boilerTanks['1053']"
+  />
 
-    <BoilerTankInstance
-      x="718"
-      y="0"
-      :title="t('tank2Title')"
-      force-height
-      tag-id="1054"
-      :level="getField(SensorComponentType.Level, 'boilers', 'boilersLevelTank2')"
-      :temperature="getField(SensorComponentType.Temperature, 'boilers', 'boilersTemperatureTank2')"
-    />
+  <BoilerTankInstance
+    x="718"
+    y="0"
+    force-height
+    v-bind="boilerTanks['1054']"
+  />
 
-    <BoilerTankInstance
-      x="1056"
-      y="0"
-      :title="t('tank3Title')"
-      force-height
-      tag-id="1055"
-      :level="getField(SensorComponentType.Level, 'boilers', 'boilersLevelTank3')"
-      :temperature="getField(SensorComponentType.Temperature, 'boilers', 'boilersTemperatureTank3')"
-    />
-  </g>
+  <BoilerTankInstance
+    x="1056"
+    y="0"
+    force-height
+    v-bind="boilerTanks['1055']"
+  />
 </template>

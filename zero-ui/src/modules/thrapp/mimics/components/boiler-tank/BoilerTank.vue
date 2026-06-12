@@ -1,12 +1,12 @@
 <script setup lang="ts">
 import { cn } from "@/modules/common/lib/utils";
+import { BoilerTankState } from "@/modules/thrs/types/index.ts";
 import { computed, HTMLAttributes, toRefs } from "vue";
 import {
   BOILER_TANK_HEIGHT,
   BOILER_TANK_LEVEL_LINE_OFFSET,
   BOILER_TANK_MODE_COLORS,
   BOILER_TANK_WIDTH,
-  BoilerTankModes,
 } from ".";
 import {
   createMimicComponentContext,
@@ -21,7 +21,7 @@ const props = withDefaults(
   defineProps<{
     class?: HTMLAttributes["class"];
     level: number;
-    mode: BoilerTankModes;
+    mode?: BoilerTankState;
     width?: number | string;
     height?: number | string;
     forceHeight?: boolean;
@@ -32,6 +32,7 @@ const props = withDefaults(
     width: () => BOILER_TANK_WIDTH,
     height: () => BOILER_TANK_HEIGHT,
     forceHeight: false,
+    mode: BoilerTankState.Standby,
   },
 );
 

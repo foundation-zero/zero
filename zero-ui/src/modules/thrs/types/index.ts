@@ -10,6 +10,23 @@ export type Ratio = number;
 
 export type SchemaDefinitions<T extends SchemaDefinition<unknown>> = Record<string, T>;
 
+export const enum BoilerTankState {
+  InUse = "IN_USE",
+  Filling = "FILLING",
+  Boosting = "BOOSTING",
+  Disabled = "DISABLED",
+  NeedsBoost = "NEEDS_BOOST",
+  NeedsFill = "NEEDS_FILL",
+  Standby = "STANDBY",
+}
+
+export type BoilerTankController = {
+  tank1State: Stamped<BoilerTankState>;
+  tank2State: Stamped<BoilerTankState>;
+  tank3State: Stamped<BoilerTankState>;
+  timeToFill: Stamped<number>;
+};
+
 export type PumpControl = {
   dutypoint: Stamped<number>;
   on: Stamped<boolean>;
@@ -33,6 +50,7 @@ export type ControlFields = {
   [ControlComponentType.Valve]: (keyof ValveControl)[];
   [ControlComponentType.Pcm]: (keyof PcmControl)[];
   [ControlComponentType.Heatpump]: (keyof HeatpumpControl)[];
+  [ControlComponentType.BoilersTanksController]: (keyof BoilerTankController)[];
 };
 
 export type SensorFields = {
@@ -121,7 +139,12 @@ export type SensorType =
   | LevelSensor
   | DeltaTSensor;
 
-export type ControlType = PumpControl | ValveControl;
+export type ControlType =
+  | PumpControl
+  | ValveControl
+  | PcmControl
+  | HeatpumpControl
+  | BoilerTankController;
 
 export type Sensors = Record<string, SensorType>;
 export type Controls = Record<string, ControlType>;
@@ -151,6 +174,7 @@ export const enum ControlComponentType {
   Valve = "valve",
   Pcm = "pcm",
   Heatpump = "heatpump",
+  BoilersTanksController = "boilersTanksController",
 }
 
 export const enum ValveType {
@@ -173,9 +197,15 @@ export type ValveControlDefinition = ControlDefinition<ControlComponentType.Valv
 
 export type PcmControlDefinition = ControlDefinition<ControlComponentType.Pcm>;
 export type HeatpumpControlDefinition = ControlDefinition<ControlComponentType.Heatpump>;
+export type BoilerTankControllerDefinition =
+  ControlDefinition<ControlComponentType.BoilersTanksController>;
 
 export type ControlDefinitions = SchemaDefinitions<
-  PumpControlDefinition | ValveControlDefinition | PcmControlDefinition | HeatpumpControlDefinition
+  | PumpControlDefinition
+  | ValveControlDefinition
+  | PcmControlDefinition
+  | HeatpumpControlDefinition
+  | BoilerTankControllerDefinition
 >;
 
 export type ControlDefinitionMap = {
@@ -183,6 +213,7 @@ export type ControlDefinitionMap = {
   [ControlComponentType.Valve]: ValveControl;
   [ControlComponentType.Pcm]: PcmControl;
   [ControlComponentType.Heatpump]: HeatpumpControl;
+  [ControlComponentType.BoilersTanksController]: BoilerTankController;
 };
 
 export type ExtractControlValues<T extends ControlDefinitions> = ExtractValues<

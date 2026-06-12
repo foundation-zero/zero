@@ -58,6 +58,12 @@ export const BOILERS_CONTROL_QUERY = `
   boilersSwitchHighTemperature {
     setpoint { value timestamp }
   }
+  boilersTanksController {
+    tank1State { value timestamp }
+    tank2State { value timestamp }
+    tank3State { value timestamp }
+    timeToFill { value timestamp }
+  }
 `;
 
 export const BOILERS_PARAMETERS_QUERY = `

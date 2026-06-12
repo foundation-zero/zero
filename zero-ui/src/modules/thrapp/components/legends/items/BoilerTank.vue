@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import { tScoped } from "@/modules/common/lib/utils.ts";
-import { SensorComponentType } from "@/modules/thrs/types";
+import { BOILERS_MIMIC_DATA } from "@/modules/thrapp/mimics/modules/boilers/data/index.ts";
+import { MimicComponentType } from "@/modules/thrapp/types/index.ts";
 import BoilerTankInstance from "../../../mimics/instances/BoilerTankInstance.vue";
-import { getField } from "../../../mimics/providers";
 import {
   LegendItem,
   LegendItemDescription,
@@ -17,14 +17,7 @@ const t = tScoped("thrapp.legends.boilerTank");
 <template>
   <LegendItem>
     <LegendItemPreview>
-      <BoilerTankInstance
-        :title="t('assetTitle')"
-        tag-id="1053"
-        :level="getField(SensorComponentType.Level, 'boilers', 'boilersLevelTank1')"
-        :temperature="
-          getField(SensorComponentType.Temperature, 'boilers', 'boilersTemperatureTank1')
-        "
-      />
+      <BoilerTankInstance v-bind="BOILERS_MIMIC_DATA[MimicComponentType.BoilerTank][1053]" />
     </LegendItemPreview>
     <LegendItemInfo class="gap-2">
       <LegendItemTitle>{{ t("title") }}</LegendItemTitle>

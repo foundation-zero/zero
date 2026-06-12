@@ -2,6 +2,8 @@
 import Label from "@/components/ui/label/Label.vue";
 import { Switch } from "@/components/ui/switch";
 import { BoilerLegend, LegendTrigger } from "@/modules/thrapp/components/legends";
+import { MimicTooltipProvider } from "@/modules/thrapp/components/tooltip";
+import NoopTooltipProvider from "@/modules/thrapp/components/tooltip/NoopTooltipProvider.vue";
 import BoilersModule from "@/modules/thrapp/mimics/modules/boilers/BoilersModule.vue";
 import { GraphQLProvider, MockProvider } from "@/modules/thrapp/mimics/providers";
 import { DEFINITIONS } from "@/modules/thrs/lib/consts";
@@ -29,14 +31,18 @@ const { t } = useI18n();
         </div>
 
         <LegendTrigger>
-          <BoilerLegend v-if="currentDefinition === 'boilers'" />
+          <NoopTooltipProvider>
+            <BoilerLegend v-if="currentDefinition === 'boilers'" />
+          </NoopTooltipProvider>
         </LegendTrigger>
       </aside>
 
-      <BoilersModule
-        v-if="currentDefinition === 'boilers'"
-        class="mx-auto my-auto max-h-[calc(100svh-14em)]"
-      />
+      <MimicTooltipProvider>
+        <BoilersModule
+          v-if="currentDefinition === 'boilers'"
+          class="mx-auto my-auto max-h-[calc(100svh-14em)]"
+        />
+      </MimicTooltipProvider>
     </section>
   </component>
 </template>
