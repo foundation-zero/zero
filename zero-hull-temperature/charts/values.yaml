@@ -19,7 +19,7 @@ modbus:
 hullTemperature:
   sendTopic: "hull-temperature/temperatures"
   intervalSeconds: 300
-  n: -1
+  "n": -1
   activateTopic: marpower/450000-amcs/Command
   activateJsonPath: $.KEB1_ACTIVATE_HULL_MEASUREMENT_ONOFF
 
