@@ -19,7 +19,7 @@ from thrs.input_output.model_builder import (
 )
 from thrs.orchestration.module import ModuleClassMap
 from thrs.simulation.fmu import Fmu
-from thrs.simulation.io_mapping import IoMapping
+from thrs.simulation.io_mapping import CombinedIoMapping, IoMapping, ThrsModelIoMapping
 from thrs.utils.string import hyphenize
 
 logger = logging.getLogger(__name__)
@@ -424,7 +424,8 @@ class Simulation[
 ]:
     def __init__(
         self,
-        io_mapping: IoMapping[S, C, I, O],
+        sensor_values_cls: type[ThrsValues],
+        simulation_outputs_cls: type[SimulationValues],
         fmu: Fmu,
         simulation_inputs: I,
         start_time: datetime,
@@ -435,7 +436,11 @@ class Simulation[
         self._tick_duration = tick_duration
         self._simulation_inputs = simulation_inputs
         self._fmu = fmu
-        self._io_mapping = io_mapping
+        self._io_mapping: IoMapping = (
+            CombinedIoMapping(sensor_values_cls, simulation_outputs_cls)  # type: ignore
+            if sensor_values_cls.__name__ == "CombinedSensorValues"  # type: ignore # TODO refactor this away
+            else ThrsModelIoMapping(sensor_values_cls, simulation_outputs_cls)
+        )
 
     async def start(self):
         pass

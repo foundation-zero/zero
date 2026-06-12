@@ -11,7 +11,6 @@ from thrs.input_output.modules.fahrenheit import (
 )
 from thrs.orchestration.simulation import Simulation
 from thrs.simulation.fmu import Fmu
-from thrs.simulation.io_mapping import ThrsModelIoMapping
 from thrs.simulation.models.fmu_paths import fahrenheit_path
 
 
@@ -26,12 +25,9 @@ def incorrect_simulation_inputs(simulation_inputs, request):
 
 async def test_thrusters_simulation_inputs(incorrect_simulation_inputs, control):
     with Fmu(fahrenheit_path) as fmu:
-        mapping = ThrsModelIoMapping(
+        simulation = Simulation(
             FahrenheitSensorValues,
             FahrenheitSimulationOutputs,
-        )
-        simulation = Simulation(
-            mapping,
             fmu,
             incorrect_simulation_inputs,
             datetime.now(),
