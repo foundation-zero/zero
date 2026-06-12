@@ -16,6 +16,8 @@
         "closed": "Closed"
       },
       "sources": {
+        "calculated": "Calculated",
+        "this": "This component",
         "minTemperature": "Boilers minimum temperature parameter",
         "maxTemperature": "Boilers maximum temperature parameter",
         "minLevel": "Boilers minimum tank level",
@@ -27,6 +29,9 @@
         "tankState": "Tanks controller"
       },
       "items": {
+        "error": "Error",
+        "measurement": "Measurement",
+        "actuator": "Actuator",
         "relativePosition": "Relative position",
         "absolutePosition": "Absolute position",
         "setpoint": "Setpoint",

@@ -113,6 +113,22 @@ export const BOILERS_CONTROL_DEFINITION = toControlDefinition({
     yardTag: "",
     componentType: ControlComponentType.BoilersTanksController,
   },
+  boilersPumpFlowController: {
+    yardTag: "",
+    componentType: ControlComponentType.PIDController,
+  },
+  boilersPumpTemperatureController: {
+    yardTag: "",
+    componentType: ControlComponentType.PIDController,
+  },
+  boilersLt1FlowController: {
+    yardTag: "",
+    componentType: ControlComponentType.PIDController,
+  },
+  boilersLt2FlowController: {
+    yardTag: "",
+    componentType: ControlComponentType.PIDController,
+  },
 });
 
 export const BOILERS_PARAMETER_DEFINITION = toParameterDefinition({

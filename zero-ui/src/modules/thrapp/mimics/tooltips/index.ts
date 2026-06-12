@@ -7,6 +7,9 @@ export { default as BoilerTankTooltip } from "./BoilerTankTooltip.vue";
 export const TOOLTIPS: Partial<Record<MimicComponentType, Component>> = {
   [MimicComponentType.BoilerTank]: defineAsyncComponent(() => import("./BoilerTankTooltip.vue")),
   [MimicComponentType.SwitchValve]: defineAsyncComponent(() => import("./SwitchValveTooltip.vue")),
+  [MimicComponentType.FlowControlValve]: defineAsyncComponent(
+    () => import("./FlowControlValveTooltip.vue"),
+  ),
 };
 
 export const useTranslations = () => ({

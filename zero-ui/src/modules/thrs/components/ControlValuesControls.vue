@@ -34,6 +34,7 @@ const COMPONENTS: Record<ControlComponentType, Component | null> = {
   [ControlComponentType.Pcm]: ValveControl,
   [ControlComponentType.Heatpump]: null,
   [ControlComponentType.BoilersTanksController]: null,
+  [ControlComponentType.PIDController]: null,
 };
 </script>
 <template>

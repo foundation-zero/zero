@@ -61,6 +61,7 @@ export type SensorFieldDefinitions = SensorFields<{
   };
   [MimicComponentType.FlowControlValve]: {
     valve: SensorComponentType.Valve;
+    measurement: SensorComponentType.Temperature;
   };
 }>;
 
@@ -78,7 +79,10 @@ export type ControlFieldDefinitions = ControlFields<{
   [MimicComponentType.SwitchValve]: {
     valve: ControlComponentType.Valve;
   };
-  [MimicComponentType.FlowControlValve]: EmptyObject;
+  [MimicComponentType.FlowControlValve]: {
+    valve: ControlComponentType.Valve;
+    controller: ControlComponentType.PIDController;
+  };
 }>;
 
 export type ParameterFieldDefinitions = ParameterFields<{
@@ -117,7 +121,9 @@ export type CustomFieldDefinitions = CustomFields<{
       controller?: ModuleField<ControlComponentType.BoilersTanksController>;
     };
   };
-  [MimicComponentType.FlowControlValve]: EmptyObject;
+  [MimicComponentType.FlowControlValve]: {
+    controllerName: string;
+  };
 }>;
 
 export type ExtractModuleFields<

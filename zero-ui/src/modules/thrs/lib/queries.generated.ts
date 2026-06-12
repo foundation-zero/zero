@@ -64,6 +64,42 @@ export const BOILERS_CONTROL_QUERY = `
     tank3State { value timestamp }
     timeToFill { value timestamp }
   }
+  boilersPumpFlowController {
+    setpoint { value timestamp }
+    measurement { value timestamp }
+    output { value timestamp }
+    error { value timestamp }
+    enabled { value timestamp }
+    tuning { value timestamp }
+    components { value timestamp }
+  }
+  boilersPumpTemperatureController {
+    setpoint { value timestamp }
+    measurement { value timestamp }
+    output { value timestamp }
+    error { value timestamp }
+    enabled { value timestamp }
+    tuning { value timestamp }
+    components { value timestamp }
+  }
+  boilersLt1FlowController {
+    setpoint { value timestamp }
+    measurement { value timestamp }
+    output { value timestamp }
+    error { value timestamp }
+    enabled { value timestamp }
+    tuning { value timestamp }
+    components { value timestamp }
+  }
+  boilersLt2FlowController {
+    setpoint { value timestamp }
+    measurement { value timestamp }
+    output { value timestamp }
+    error { value timestamp }
+    enabled { value timestamp }
+    tuning { value timestamp }
+    components { value timestamp }
+  }
 `;
 
 export const BOILERS_PARAMETERS_QUERY = `

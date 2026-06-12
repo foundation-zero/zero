@@ -1,19 +1,19 @@
 <script setup lang="ts">
 import { Button } from "@/components/ui/button";
-import { tScoped } from "@/modules/common/lib/utils";
 import { TooltipContent } from "@/modules/thrapp/components/tooltip";
 import { TooltipListItem, TooltipListItemTitle } from "@/modules/thrapp/components/tooltip-list";
+import { useTranslations } from "..";
 
-const tLabels = tScoped("thrapp.tooltips.labels");
-const tItems = tScoped("thrapp.tooltips.items");
+const { labels, items } = useTranslations();
+
 defineProps<{ tooltip?: TooltipContent }>();
 </script>
 
 <template>
   <TooltipListItem class="mt-3">
     <TooltipListItemTitle class="text-muted-foreground text-xs">
-      {{ tItems("automatedControl") }}
+      {{ items("automatedControl") }}
     </TooltipListItemTitle>
-    <Button size="sm">{{ tLabels("controlManually") }}</Button>
+    <Button size="sm">{{ labels("controlManually") }}</Button>
   </TooltipListItem>
 </template>

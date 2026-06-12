@@ -6,12 +6,12 @@ import {
   TooltipListHeader,
   TooltipListItem,
   TooltipListItemAction,
-  TooltipListItemSource,
   TooltipListItemTitle,
 } from "../../components/tooltip-list";
 import { MimicComponentType } from "../../types";
 import { YardTag } from "../components/yard-tag/index.ts";
 import SwitchValveInstance from "../instances/SwitchValveInstance.vue";
+import { FieldRenderer } from "../renderers/index.ts";
 import BoilerTankController from "./partials/BoilerTankController.vue";
 import BoilerTankOperator from "./partials/BoilerTankOperator.vue";
 import ComponentInfo from "./partials/ComponentInfo.vue";
@@ -39,7 +39,7 @@ const { sources, labels, items } = useTranslations();
     <TooltipList>
       <TooltipListHeader>{{ labels("input") }}</TooltipListHeader>
       <ValveSetpoint :valve="controls.valve">
-        <TooltipListItemSource external>{{ sources("tankState") }}</TooltipListItemSource>
+        <FieldRenderer.Source external>{{ sources("tankState") }}</FieldRenderer.Source>
       </ValveSetpoint>
     </TooltipList>
 

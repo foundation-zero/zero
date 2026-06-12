@@ -1,57 +1,66 @@
 <script setup lang="ts">
-import { tScoped } from "@/modules/common/lib/utils";
-import {
-  TooltipListItem,
-  TooltipListItemSource,
-  TooltipListItemTitle,
-} from "@/modules/thrapp/components/tooltip-list";
+import { TooltipListItem, TooltipListItemTitle } from "@/modules/thrapp/components/tooltip-list";
 import { ControlComponentType } from "@/modules/thrs/types";
-import { BoilerTankMode } from "../../components/boiler-tank";
-import { HeatPumpModes } from "../../components/heat-pump";
-import HeatPumpMode from "../../components/heat-pump/HeatPumpMode.vue";
-import { getMimicDataProvider, ModuleField } from "../../providers";
+import { ControlValue, ModuleField } from "../../providers";
+import { FieldRenderer } from "../../renderers/index.ts";
+import { useTranslations } from "../index.ts";
 
-const tItems = tScoped("thrapp.tooltips.items");
-const tSources = tScoped("thrapp.tooltips.sources");
+const { items, sources } = useTranslations();
 
-const { getControlValue } = getMimicDataProvider();
-
-const props = defineProps<{
+defineProps<{
   controller: ModuleField<ControlComponentType.BoilersTanksController>;
 }>();
-
-const controllerValues = getControlValue(props.controller);
 </script>
 
 <template>
-  <TooltipListItem>
-    <TooltipListItemTitle>
-      <slot>{{ tItems("tankController") }}</slot>
-    </TooltipListItemTitle>
-    <HeatPumpMode :mode="HeatPumpModes.Active" />
-  </TooltipListItem>
-  <TooltipListItem size="sm">
-    <TooltipListItemTitle>
-      {{ tItems("tank1") }}
-      <TooltipListItemSource external>1053</TooltipListItemSource>
-      <TooltipListItemSource url>{{ tSources("tank1") }}</TooltipListItemSource>
-    </TooltipListItemTitle>
-    <BoilerTankMode :mode="controllerValues?.tank1State.value" />
-  </TooltipListItem>
-  <TooltipListItem size="sm">
-    <TooltipListItemTitle>
-      {{ tItems("tank2") }}
-      <TooltipListItemSource external>1054</TooltipListItemSource>
-      <TooltipListItemSource url>{{ tSources("tank2") }}</TooltipListItemSource>
-    </TooltipListItemTitle>
-    <BoilerTankMode :mode="controllerValues?.tank2State.value" />
-  </TooltipListItem>
-  <TooltipListItem size="sm">
-    <TooltipListItemTitle>
-      {{ tItems("tank3") }}
-      <TooltipListItemSource external>1055</TooltipListItemSource>
-      <TooltipListItemSource url>{{ tSources("tank3") }}</TooltipListItemSource>
-    </TooltipListItemTitle>
-    <BoilerTankMode :mode="controllerValues?.tank3State.value" />
-  </TooltipListItem>
+  <ControlValue :source="controller">
+    <TooltipListItem>
+      <TooltipListItemTitle>
+        <slot>{{ items("tankController") }}</slot>
+      </TooltipListItemTitle>
+      <FieldRenderer.HeatPumpMode />
+    </TooltipListItem>
+  </ControlValue>
+
+  <ControlValue
+    :source="controller"
+    field="tank1State"
+  >
+    <TooltipListItem size="sm">
+      <TooltipListItemTitle>
+        {{ items("tank1") }}
+        <FieldRenderer.Source external>1053</FieldRenderer.Source>
+        <FieldRenderer.Source url>{{ sources("tank1") }}</FieldRenderer.Source>
+      </TooltipListItemTitle>
+      <FieldRenderer.BoilerTankMode />
+    </TooltipListItem>
+  </ControlValue>
+
+  <ControlValue
+    :source="controller"
+    field="tank2State"
+  >
+    <TooltipListItem size="sm">
+      <TooltipListItemTitle>
+        {{ items("tank2") }}
+        <FieldRenderer.Source external>1054</FieldRenderer.Source>
+        <FieldRenderer.Source url>{{ sources("tank2") }}</FieldRenderer.Source>
+      </TooltipListItemTitle>
+      <FieldRenderer.BoilerTankMode />
+    </TooltipListItem>
+  </ControlValue>
+
+  <ControlValue
+    :source="controller"
+    field="tank3State"
+  >
+    <TooltipListItem size="sm">
+      <TooltipListItemTitle>
+        {{ items("tank3") }}
+        <FieldRenderer.Source external>1055</FieldRenderer.Source>
+        <FieldRenderer.Source url>{{ sources("tank3") }}</FieldRenderer.Source>
+      </TooltipListItemTitle>
+      <FieldRenderer.BoilerTankMode />
+    </TooltipListItem>
+  </ControlValue>
 </template>

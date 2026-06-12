@@ -6,6 +6,7 @@ import {
   ControlDefinitionMap,
   ParameterDefinitionMap,
   ParametersType,
+  PID,
   SensorComponentType,
   SensorDefinitionMap,
   ThrusterMode,
@@ -163,6 +164,25 @@ export const CONTROL_VALUES_FACTORY: ValueFactory<ControlDefinitionMap> = {
       tank2State: stamp(tank2State),
       tank3State: stamp(tank3State),
       timeToFill: stamp(timeToFill),
+    }));
+  },
+  [ControlComponentType.PIDController]: () => {
+    const setpoint = useRandomizedNumber(0, 100);
+    const measurement = useRandomizedNumber(0, 100);
+    const output = useRandomizedNumber(0, 100);
+    const error = useRandomizedNumber(-50, 50);
+    const enabled = useRandomizedBoolean();
+    const tuning = computed<PID>(() => [1, 2, 3]);
+    const components = computed<PID>(() => [1, 2, 3]);
+
+    return computed(() => ({
+      setpoint: stamp(setpoint),
+      measurement: stamp(measurement),
+      output: stamp(output),
+      error: stamp(error),
+      enabled: stamp(enabled),
+      tuning: stamp(tuning),
+      components: stamp(components),
     }));
   },
 };

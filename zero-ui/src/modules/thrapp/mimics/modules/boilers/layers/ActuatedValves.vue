@@ -1,12 +1,11 @@
 <script setup lang="ts">
 import { MimicComponentType } from "@/modules/thrapp/types";
-import { SensorComponentType } from "@/modules/thrs/types";
 import { ComponentOrientation } from "../../../components";
 import { FlowControlValveInstance, SwitchValveInstance } from "../../../instances";
-import { getField } from "../../../providers";
 import { BOILERS_MIMIC_DATA } from "../data/index.ts";
 
 const switchValves = BOILERS_MIMIC_DATA[MimicComponentType.SwitchValve];
+const flowControlValves = BOILERS_MIMIC_DATA[MimicComponentType.FlowControlValve];
 </script>
 
 <template>
@@ -106,17 +105,15 @@ const switchValves = BOILERS_MIMIC_DATA[MimicComponentType.SwitchValve];
     <FlowControlValveInstance
       x="1046"
       y="473.2099609375"
-      tag-id="1064-08"
+      v-bind="flowControlValves['1064-08']"
       :orientation="ComponentOrientation.Up"
-      :valve="getField(SensorComponentType.Valve, 'boilers', 'boilersFlowcontrolLt1')"
     />
 
     <FlowControlValveInstance
       x="1046"
       y="635"
-      tag-id="1064-03"
+      v-bind="flowControlValves['1064-03']"
       :orientation="ComponentOrientation.Up"
-      :valve="getField(SensorComponentType.Valve, 'boilers', 'boilersFlowcontrolLt2')"
     />
   </g>
 </template>

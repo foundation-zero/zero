@@ -10,7 +10,6 @@ import { BOILER_TANK_DATA } from "./boiler-tanks";
 const tooltip = (tooltip: Partial<TooltipContent>): TooltipContent => ({
   title: "Switch valve",
   itemName: "2 way valve DN 25",
-  technicalName: "boilers-switch-tank1-boosting-return",
   ...tooltip,
 });
 

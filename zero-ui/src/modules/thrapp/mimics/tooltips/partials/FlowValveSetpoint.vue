@@ -25,7 +25,7 @@ defineProps<{ valve: ModuleField<ControlComponentType.Valve> }>();
         <slot />
       </TooltipListItemTitle>
       <TooltipListItemValue>
-        <FieldRenderer.ValveState />
+        <FieldRenderer.Percentage />
       </TooltipListItemValue>
     </TooltipListItem>
   </ControlValue>

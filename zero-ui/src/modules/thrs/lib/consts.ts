@@ -167,6 +167,15 @@ export const CONTROL_FIELDS: ControlFields = {
     "tank3State",
     "timeToFill",
   ],
+  [ControlComponentType.PIDController]: [
+    "setpoint",
+    "measurement",
+    "output",
+    "error",
+    "enabled",
+    "tuning",
+    "components",
+  ],
 };
 
 export const SENSOR_FIELDS: SensorFields = {

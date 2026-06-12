@@ -2,7 +2,7 @@
 import { cn } from "@/modules/common/lib/utils";
 import { SensorComponentType } from "@/modules/thrs/types";
 import { computed, type HTMLAttributes } from "vue";
-import { getSensorDefinition, ModuleField } from "../../mimics/providers";
+import { getSensorDefinition, injectFieldValueSource, ModuleField } from "../../mimics/providers";
 
 const props = defineProps<{
   class?: HTMLAttributes["class"];
@@ -11,9 +11,11 @@ const props = defineProps<{
   source?: ModuleField<SensorComponentType>;
 }>();
 
+const source = injectFieldValueSource(props.source);
+
 const definition = computed(() => {
-  if (!props.source) return null;
-  const [, moduleId, componentId] = props.source;
+  if (!source) return null;
+  const [, moduleId, componentId] = source;
   return getSensorDefinition(moduleId, componentId);
 });
 </script>
