@@ -1,8 +1,32 @@
-import { SensorComponentType } from "@/modules/thrs/types";
+import { ControlComponentType, ParametersType, SensorComponentType } from "@/modules/thrs/types";
 
+import { ExtractModuleFields, ParameterFieldDefinitions } from "@/modules/thrapp/types/fields";
 import { toFieldsMap } from "../..";
 import { MimicComponentType } from "../../../../types";
 import { getField } from "../../../providers";
+
+const controller = getField(
+  ControlComponentType.BoilersTanksController,
+  "boilers",
+  "boilersTanksController",
+);
+
+const boostingSupply = getField(
+  SensorComponentType.Temperature,
+  "boilers",
+  "boilersTemperatureBoostingSupply",
+);
+
+type BoilerTankParameters = ExtractModuleFields<
+  ParameterFieldDefinitions[MimicComponentType.BoilerTank]
+>;
+
+const parameters: BoilerTankParameters = {
+  minimumLevel: getField(ParametersType.Level, "boilers", "minimumTankLevel"),
+  maximumLevel: getField(ParametersType.Level, "boilers", "maximumTankLevel"),
+  minimumTemperature: getField(ParametersType.Temperature, "boilers", "minimumTankTemperature"),
+  maximumTemperature: getField(ParametersType.Temperature, "boilers", "maximumTankTemperature"),
+};
 
 export const BOILER_TANK_DATA = toFieldsMap({
   [MimicComponentType.BoilerTank]: {
@@ -10,9 +34,12 @@ export const BOILER_TANK_DATA = toFieldsMap({
       custom: {
         tankStateField: "tank1State",
       },
-      controls: {},
-      parameters: {},
+      controls: {
+        controller,
+      },
+      parameters,
       sensors: {
+        boostingSupply,
         level: getField(SensorComponentType.Level, "boilers", "boilersLevelTank1"),
         temperature: getField(
           SensorComponentType.Temperature,
@@ -43,9 +70,12 @@ export const BOILER_TANK_DATA = toFieldsMap({
       custom: {
         tankStateField: "tank2State",
       },
-      controls: {},
-      parameters: {},
+      controls: {
+        controller,
+      },
+      parameters,
       sensors: {
+        boostingSupply,
         level: getField(SensorComponentType.Level, "boilers", "boilersLevelTank2"),
         temperature: getField(
           SensorComponentType.Temperature,
@@ -76,9 +106,12 @@ export const BOILER_TANK_DATA = toFieldsMap({
       custom: {
         tankStateField: "tank3State",
       },
-      controls: {},
-      parameters: {},
+      controls: {
+        controller,
+      },
+      parameters,
       sensors: {
+        boostingSupply,
         level: getField(SensorComponentType.Level, "boilers", "boilersLevelTank3"),
         temperature: getField(
           SensorComponentType.Temperature,

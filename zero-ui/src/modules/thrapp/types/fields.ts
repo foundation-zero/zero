@@ -1,18 +1,13 @@
-import {
-  ControlComponentType,
-  ParametersType,
-  ParameterType,
-  SensorComponentType,
-} from "@/modules/thrs/types";
+import { ControlComponentType, ParametersType, SensorComponentType } from "@/modules/thrs/types";
 import { BoilerTankStateField, MimicComponentType } from ".";
 import { ModuleField } from "../mimics/providers";
 
 export type ComponentFields<
-  Type extends ControlComponentType | SensorComponentType | ParameterType,
+  Type extends ControlComponentType | SensorComponentType | ParametersType,
 > = Record<MimicComponentType, Record<string, Type>>;
 
 export type ComponentTypeFields<
-  Type extends ControlComponentType | SensorComponentType | ParameterType,
+  Type extends ControlComponentType | SensorComponentType | ParametersType,
   Fields extends ComponentFields<Type>,
 > = Fields;
 
@@ -24,8 +19,8 @@ export type SensorFields<Fields extends ComponentFields<SensorComponentType>> = 
 export type ControlFields<Fields extends ComponentFields<ControlComponentType>> =
   ComponentTypeFields<ControlComponentType, Fields>;
 
-export type ParameterFields<Fields extends ComponentFields<ParameterType>> = ComponentTypeFields<
-  ParameterType,
+export type ParameterFields<Fields extends ComponentFields<ParametersType>> = ComponentTypeFields<
+  ParametersType,
   Fields
 >;
 
@@ -40,6 +35,7 @@ export type SensorFieldDefinitions = SensorFields<{
     boostReturnValve: SensorComponentType.Valve;
     supplyValve: SensorComponentType.Valve;
     dischargeValve: SensorComponentType.Valve;
+    boostingSupply: SensorComponentType.Temperature;
   };
   [MimicComponentType.Pump]: {
     pump: SensorComponentType.Pump;
@@ -69,7 +65,9 @@ export type SensorFieldDefinitions = SensorFields<{
 }>;
 
 export type ControlFieldDefinitions = ControlFields<{
-  [MimicComponentType.BoilerTank]: EmptyObject;
+  [MimicComponentType.BoilerTank]: {
+    controller: ControlComponentType.BoilersTanksController;
+  };
   [MimicComponentType.Pump]: EmptyObject;
   [MimicComponentType.HeatExchanger]: EmptyObject;
   [MimicComponentType.PressureSensor]: EmptyObject;
@@ -77,12 +75,19 @@ export type ControlFieldDefinitions = ControlFields<{
   [MimicComponentType.FlowSensor]: EmptyObject;
   [MimicComponentType.ManualValve]: EmptyObject;
   [MimicComponentType.Asset]: EmptyObject;
-  [MimicComponentType.SwitchValve]: EmptyObject;
+  [MimicComponentType.SwitchValve]: {
+    valve: ControlComponentType.Valve;
+  };
   [MimicComponentType.FlowControlValve]: EmptyObject;
 }>;
 
 export type ParameterFieldDefinitions = ParameterFields<{
-  [MimicComponentType.BoilerTank]: EmptyObject;
+  [MimicComponentType.BoilerTank]: {
+    minimumLevel: ParametersType.Level;
+    maximumLevel: ParametersType.Level;
+    minimumTemperature: ParametersType.Temperature;
+    maximumTemperature: ParametersType.Temperature;
+  };
   [MimicComponentType.Pump]: EmptyObject;
   [MimicComponentType.HeatExchanger]: EmptyObject;
   [MimicComponentType.PressureSensor]: EmptyObject;
@@ -105,7 +110,13 @@ export type CustomFieldDefinitions = CustomFields<{
   [MimicComponentType.FlowSensor]: EmptyObject;
   [MimicComponentType.ManualValve]: EmptyObject;
   [MimicComponentType.Asset]: EmptyObject;
-  [MimicComponentType.SwitchValve]: EmptyObject;
+  [MimicComponentType.SwitchValve]: {
+    tank?: {
+      operator?: ExtractSensorFields<MimicComponentType.BoilerTank>["sensors"];
+      operatorName?: string;
+      controller?: ModuleField<ControlComponentType.BoilersTanksController>;
+    };
+  };
   [MimicComponentType.FlowControlValve]: EmptyObject;
 }>;
 

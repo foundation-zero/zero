@@ -19,7 +19,8 @@
     "temperature": "Temp",
     "flow": "Flow",
     "level": "Level",
-    "estimatedTime": "Est. time"
+    "estimatedTime": "Est. time",
+    "degrees": "°"
   },
   "apps": {
     "loads": "Loads",

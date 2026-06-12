@@ -11,7 +11,9 @@
         "output": "Output",
         "controls": "Controls",
         "viewControls": "View controls",
-        "controlManually": "Control manually"
+        "controlManually": "Control manually",
+        "open": "Open",
+        "closed": "Closed"
       },
       "sources": {
         "minTemperature": "Boilers minimum temperature parameter",
@@ -25,7 +27,11 @@
         "tankState": "Tanks controller"
       },
       "items": {
+        "relativePosition": "Relative position",
+        "absolutePosition": "Absolute position",
+        "setpoint": "Setpoint",
         "itemName": "Item",
+        "tankSelector": "Tank selector",
         "technicalName": "Technical name",
         "state": "State",
         "temperature": "Temperature",
