@@ -82,13 +82,14 @@ class TestPartialMqttMapping:
 
     def test_builder(self):
         mapping = PartialMqttMapping(SimpleInOut)
-        builder = mapping.builder()
 
         flow_sensor = FlowSensor(
             flow=Stamped.stamp(15.0), temperature=Stamped.stamp(30.0)
         )
-        builder.input("go-with-the", flow_sensor.model_dump_json(by_alias=True))
-        assert builder.result() == SimpleInOut(go_with_the=flow_sensor)
+        mapping.handle_message(
+            "go-with-the", flow_sensor.model_dump_json(by_alias=True)
+        )
+        assert mapping.result() == SimpleInOut(go_with_the=flow_sensor)
 
 
 class TestDirectMqttMapping:
@@ -115,10 +116,15 @@ class TestDirectMqttMapping:
 
         assert mapping.subscribe_topic() == "sensors/data"
 
-    def test_builder_not_implemented(self):
+    def test_builder(self):
         mapping = DirectMqttMapping(SimpleInOut, "sensors/data")
-        with pytest.raises(NotImplementedError):
-            mapping.builder()
+        model = SimpleInOut(
+            go_with_the=FlowSensor(
+                flow=Stamped.stamp(15.0), temperature=Stamped.stamp(30.0)
+            )
+        )
+        mapping.handle_message("sensors/data", model.model_dump_json(by_alias=True))
+        assert mapping.result() == model
 
 
 class ModulesValues(ThrsValues):
@@ -161,13 +167,14 @@ class TestCombinedMqttMapping:
     def test_builder(self):
         clss = {"module1": SimpleInOut}
         mapping = ModuleMqttMapping(clss)
-        builder = mapping.builder()
 
         flow_sensor = FlowSensor(
             flow=Stamped.stamp(50.0), temperature=Stamped.stamp(5.0)
         )
-        builder.input("module1/go-with-the", flow_sensor.model_dump_json(by_alias=True))
-        result = builder.result()
+        mapping.handle_message(
+            "module1/go-with-the", flow_sensor.model_dump_json(by_alias=True)
+        )
+        result = mapping.result()
         assert result == CombinedValues(
             {"module1": SimpleInOut(go_with_the=flow_sensor)}
         )

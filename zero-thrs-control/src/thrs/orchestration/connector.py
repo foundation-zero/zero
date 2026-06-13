@@ -5,15 +5,8 @@ from typing import Literal, Protocol
 
 from aiomqtt import Client, Topic
 
-from thrs.input_output.base import (
-    CombinedValues,
-    ThrsValues,
-)
-from thrs.input_output.model_builder import (
-    CombinedModelBuilder,
-    ModelBuilder,
-    PartialModelBuilder,
-)
+from thrs.input_output.base import CombinedValues, ThrsValues
+from thrs.input_output.model_builder import CombinedModelBuilder, PartialModelBuilder
 from thrs.orchestration.module import ModuleClassMap
 from thrs.orchestration.simulation import ExecutionResult, Simulation, SimulationResult
 from thrs.utils.string import hyphenize
@@ -26,11 +19,13 @@ class MqttMapping[M](Protocol):
 
     def split_to_topics(self, model: M) -> dict[str, str]: ...
 
-    def builder(self) -> ModelBuilder[M]: ...
-
     def has(self, topic: str) -> bool: ...
 
     def subscribe_topic(self) -> str: ...
+
+    def handle_message(self, topic: str, json: str | bytes): ...
+
+    def result(self) -> M | None: ...
 
 
 class PartialMqttMapping[M: ThrsValues](MqttMapping[M]):
@@ -40,6 +35,7 @@ class PartialMqttMapping[M: ThrsValues](MqttMapping[M]):
         self._cls = cls
         self._topic_suffix = topic_suffix
         self._keys = set(self._topic(key) for key in cls.model_fields.keys())
+        self._builder = PartialModelBuilder(self._cls)
 
     def split_to_topics(self, model: M) -> dict[str, str]:
         return {
@@ -60,18 +56,20 @@ class PartialMqttMapping[M: ThrsValues](MqttMapping[M]):
     def subscribe_topic(self) -> str:
         return f"+/{self._topic_suffix}" if self._topic_suffix else "+"
 
-    def builder(self) -> ModelBuilder[M]:
-        return PartialModelBuilder(self._cls)
+    def handle_message(self, topic: str, json: str | bytes):
+        self._builder.input(topic, json)
+
+    def result(self) -> M | None:
+        return self._builder.result()
 
 
 class DirectMqttMapping[M: ThrsValues](MqttMapping[M]):
-    """MQTT mapping that maps the entire model to a single topic
-
-    Currently doesn't support builder"""
+    """MQTT mapping that maps the entire model to a single topic"""
 
     def __init__(self, cls: type[M], topic: str):
         self._cls = cls
         self._topic = topic
+        self._value = None
 
     def split_to_topics(self, model: M) -> dict[str, str]:
         return {self._topic: model.model_dump_json(by_alias=True)}
@@ -82,8 +80,12 @@ class DirectMqttMapping[M: ThrsValues](MqttMapping[M]):
     def subscribe_topic(self) -> str:
         return self._topic
 
-    def builder(self) -> ModelBuilder[M]:
-        raise NotImplementedError()
+    def handle_message(self, topic: str, json: str | bytes):
+        if topic == self._topic:
+            self._value = self._cls.model_validate_json(json)
+
+    def result(self) -> M | None:
+        return self._value
 
 
 class ModuleMqttMapping(MqttMapping[CombinedValues]):
@@ -98,6 +100,7 @@ class ModuleMqttMapping(MqttMapping[CombinedValues]):
             for name, module_cls in clss.items()
         }
         self._topic_suffix = topic_suffix
+        self._builder = CombinedModelBuilder(self._clss)
 
     def split_to_topics(self, model: CombinedValues) -> dict[str, str]:
         return {
@@ -108,9 +111,6 @@ class ModuleMqttMapping(MqttMapping[CombinedValues]):
             .items()
         }
 
-    def builder(self) -> ModelBuilder[CombinedValues]:
-        return CombinedModelBuilder(self._clss)
-
     def has(self, topic: str) -> bool:
         module_name, key, *rest = topic.split("/")
         mapping: PartialMqttMapping | Literal[False] = self._plain_mappings.get(
@@ -120,6 +120,12 @@ class ModuleMqttMapping(MqttMapping[CombinedValues]):
 
     def subscribe_topic(self) -> str:
         return f"+/+/{self._topic_suffix}" if self._topic_suffix else "+/+"
+
+    def handle_message(self, topic: str, json: str | bytes):
+        self._builder.input(topic, json)
+
+    def result(self) -> CombinedValues | None:
+        return self._builder.result()
 
 
 class Connector[S, C](Protocol):
@@ -151,7 +157,6 @@ class MqttControlConnector(Connector[CombinedValues, CombinedValues]):
         )
 
         self._running = False
-        self._sensors_builder = self._sensor_values_mqtt_mapping.builder()
 
     async def _listen_to_sensors(self):
         async for message in self._mqtt_client.messages:
@@ -162,7 +167,7 @@ class MqttControlConnector(Connector[CombinedValues, CombinedValues]):
                 raise ValueError(
                     f"Expected string or bytes, got {type(message.payload)}"
                 )
-            self._sensors_builder.input(topic, message.payload)
+            self._sensor_values_mqtt_mapping.handle_message(topic, message.payload)
 
     async def _publish_by_mapping[T](
         self, client: Client, mapping: MqttMapping[T], value: T
@@ -207,7 +212,7 @@ class MqttControlConnector(Connector[CombinedValues, CombinedValues]):
             raise Exception(
                 "MqttControlConnector not running, run() should be called in a create_task()"
             )
-        sensors = self._sensors_builder.result()
+        sensors = self._sensor_values_mqtt_mapping.result()
         await self._send_control_values(control_values)
 
         return ExecutionResult(
