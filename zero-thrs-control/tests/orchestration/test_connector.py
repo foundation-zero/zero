@@ -1,9 +1,10 @@
 from asyncio import create_task, sleep
 from datetime import datetime
 from typing import cast
+from unittest import mock
 
 import pytest
-from aiomqtt import Client
+from aiomqtt import Client, Topic
 
 from tests.orchestration.simples import (
     SimpleAlarms,
@@ -35,7 +36,7 @@ settings = Config()  # type: ignore
 
 
 class TestPartialMqttMapping:
-    def test_split_to_topics_without_suffix(self):
+    def test_split_to_topics(self):
         mapping = PartialMqttMapping(SimpleInOut)
         flow_sensor = FlowSensor(
             flow=Stamped.stamp(10.0), temperature=Stamped.stamp(25.0)
@@ -48,37 +49,16 @@ class TestPartialMqttMapping:
         topic = topics["go-with-the"]
         assert FlowSensor.model_validate_json(topic) == flow_sensor
 
-    def test_split_to_topics_with_suffix(self):
-        mapping = PartialMqttMapping(SimpleInOut, "sensors")
-        flow_sensor = FlowSensor(
-            flow=Stamped.stamp(10.0), temperature=Stamped.stamp(25.0)
-        )
-        model = SimpleInOut(go_with_the=flow_sensor)
-
-        topics = mapping.split_to_topics(model)
-
-        assert "go-with-the/sensors" in topics
-        topic = topics["go-with-the/sensors"]
-        assert FlowSensor.model_validate_json(topic) == flow_sensor
-
-    def test_has_without_suffix(self):
+    def test_has(self):
         mapping = PartialMqttMapping(SimpleInOut)
 
         assert mapping.has("go-with-the")
         assert not mapping.has("nonexistent")
 
-    def test_has_with_suffix(self):
-        mapping = PartialMqttMapping(SimpleInOut, "sensors")
-
-        assert mapping.has("go-with-the/sensors")
-        assert not mapping.has("go-with-the")
-
     def test_subscribe_topic(self):
         mapping_no_suffix = PartialMqttMapping(SimpleInOut)
-        mapping_with_suffix = PartialMqttMapping(SimpleInOut, "sensors")
 
         assert mapping_no_suffix.subscribe_topic() == "+"
-        assert mapping_with_suffix.subscribe_topic() == "+/sensors"
 
     def test_builder(self):
         mapping = PartialMqttMapping(SimpleInOut)
@@ -159,10 +139,8 @@ class TestCombinedMqttMapping:
     def test_subscribe_topic(self):
         clss = {"module1": SimpleInOut}
         mapping_no_suffix = ModuleMqttMapping(clss)
-        mapping_with_suffix = ModuleMqttMapping(clss, "sensors")
 
         assert mapping_no_suffix.subscribe_topic() == "+/+"
-        assert mapping_with_suffix.subscribe_topic() == "+/+/sensors"
 
     def test_builder(self):
         clss = {"module1": SimpleInOut}
@@ -356,3 +334,82 @@ async def test_boat_connector_echoes_controls_to_sensors(mqtt_client):
         )
     finally:
         running.cancel()
+
+
+@pytest.fixture
+def mock_mqtt_client() -> mock.AsyncMock:
+    mock_mqtt_client = mock.AsyncMock(Client)
+
+    mock_mqtt_client.message_queue = []
+
+    async def return_messages():
+        for m in mock_mqtt_client.message_queue:
+            yield m
+
+    mock_mqtt_client.messages = return_messages()
+
+    return mock_mqtt_client
+
+
+async def test_mqttcontrol_connector_topic_suffix(mock_mqtt_client):
+    module = CombinedModule(
+        {
+            "simple": ModuleDescription(
+                SimpleInOut,
+                SimpleInOut,
+                SimpleParameters,
+                SimpleControl,
+                SimpleMode,
+                SimpleAlarms,
+            )
+        },
+        cast(type[SimulationInputs], SimpleInOut),
+        cast(type[SimulationValues], SimpleInOut),
+    )
+    connector = MqttControlConnector(
+        mock_mqtt_client,
+        "topic_prefix/simple",
+        module.sensor_values_clss,
+        module.control_values_clss,
+        "Command",
+    )
+
+    sensor_data = FlowSensor(flow=Stamped.stamp(1), temperature=Stamped.stamp(2))
+    control_values = CombinedValues(
+        values={"simple": SimpleInOut(go_with_the=sensor_data)}
+    )
+
+    # Fake running since we can't properly deal with mock_mqtt_client.messages
+    connector._running = True
+
+    empty_result = await connector.transceive(control_values)
+    assert not empty_result.sensor_values.values
+    assert mock_mqtt_client.publish.call_args_list == [
+        mock.call("topic_prefix/simple/simple/go-with-the/Command", mock.ANY, qos=1)
+    ]
+
+    # Fake receiving messages
+    mock_mqtt_client.message_queue = [
+        mock.Mock(
+            topic=Topic("topic_prefix/simple/simple/go-with-the"),
+            payload=sensor_data.model_dump_json(),
+        )
+    ]
+    await connector._listen_to_sensors()
+
+    first_result = await connector.transceive(
+        CombinedValues(
+            values={
+                "simple": SimpleInOut(
+                    go_with_the=FlowSensor(
+                        flow=Stamped.stamp(4), temperature=Stamped.stamp(8)
+                    )
+                )
+            }
+        )
+    )
+    assert isinstance(first_result.sensor_values.values["simple"], SimpleInOut)
+    assert first_result.sensor_values.values["simple"].go_with_the.flow.value == 1
+    assert (
+        first_result.sensor_values.values["simple"].go_with_the.temperature.value == 2
+    )
