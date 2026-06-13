@@ -31,9 +31,8 @@ class MqttMapping[M](Protocol):
 class PartialMqttMapping[M: ThrsValues](MqttMapping[M]):
     """MQTT mapping that maps each component in the model to a separate topic"""
 
-    def __init__(self, cls: type[M], topic_suffix: str | None = None):
+    def __init__(self, cls: type[M]):
         self._cls = cls
-        self._topic_suffix = topic_suffix
         self._keys = set(self._topic(key) for key in cls.model_fields.keys())
         self._builder = PartialModelBuilder(self._cls)
 
@@ -44,17 +43,13 @@ class PartialMqttMapping[M: ThrsValues](MqttMapping[M]):
         }
 
     def _topic(self, key: str) -> str:
-        return (
-            f"{hyphenize(key)}/{self._topic_suffix}"
-            if self._topic_suffix
-            else hyphenize(key)
-        )
+        return hyphenize(key)
 
     def has(self, topic: str) -> bool:
         return topic in self._keys
 
     def subscribe_topic(self) -> str:
-        return f"+/{self._topic_suffix}" if self._topic_suffix else "+"
+        return "+"
 
     def handle_message(self, topic: str, json: str | bytes):
         self._builder.input(topic, json)
@@ -93,13 +88,11 @@ class ModuleMqttMapping(MqttMapping[CombinedValues]):
 
     Delegates to PartialMqttMapping for each sub-model."""
 
-    def __init__(self, clss: ModuleClassMap, topic_suffix: str | None = None):
+    def __init__(self, clss: ModuleClassMap):
         self._clss = clss
         self._plain_mappings: Mapping[str, PartialMqttMapping] = {
-            name: PartialMqttMapping(module_cls, topic_suffix)
-            for name, module_cls in clss.items()
+            name: PartialMqttMapping(module_cls) for name, module_cls in clss.items()
         }
-        self._topic_suffix = topic_suffix
         self._builder = CombinedModelBuilder(self._clss)
 
     def split_to_topics(self, model: CombinedValues) -> dict[str, str]:
@@ -119,7 +112,7 @@ class ModuleMqttMapping(MqttMapping[CombinedValues]):
         return mapping and mapping.has("/".join([key, *rest]))
 
     def subscribe_topic(self) -> str:
-        return f"+/+/{self._topic_suffix}" if self._topic_suffix else "+/+"
+        return "+/+"
 
     def handle_message(self, topic: str, json: str | bytes):
         self._builder.input(topic, json)
@@ -151,10 +144,11 @@ class MqttControlConnector(Connector[CombinedValues, CombinedValues]):
         self._start_time = start_time or datetime.now()
         self._mqtt_client = mqtt_client
         self._topic_prefix = topic_prefix
-        self._sensor_values_mqtt_mapping = ModuleMqttMapping(sensor_values_clss)
-        self._control_values_mqtt_mapping = ModuleMqttMapping(
-            control_values_clss, control_topic_suffix
+        self._control_topic_suffix_str = (
+            f"/{control_topic_suffix}" if control_topic_suffix else ""
         )
+        self._sensor_values_mqtt_mapping = ModuleMqttMapping(sensor_values_clss)
+        self._control_values_mqtt_mapping = ModuleMqttMapping(control_values_clss)
 
         self._running = False
 
@@ -174,7 +168,9 @@ class MqttControlConnector(Connector[CombinedValues, CombinedValues]):
     ):
         payloads = mapping.split_to_topics(value)
         for topic_suffix, payload in payloads.items():
-            topic = f"{self._topic_prefix}/{topic_suffix}"
+            topic = (
+                f"{self._topic_prefix}/{topic_suffix}{self._control_topic_suffix_str}"
+            )
             await client.publish(
                 topic,
                 payload,
