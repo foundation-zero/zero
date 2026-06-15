@@ -11,6 +11,7 @@ from thrs.control.modules.thrusters import (
     ThrustersParameters,
 )
 from thrs.input_output.definitions.control import Valve
+from thrs.input_output.fmu_mapping import build_fmu_key_mapping
 from thrs.input_output.modules.thrusters import (
     ThrustersControlValues,
     ThrustersSensorValues,
@@ -21,12 +22,11 @@ from thrs.orchestration.collector import PolarsCollector
 from thrs.orchestration.runner import Runner, SimulatorModel
 from thrs.orchestration.simulation import Simulation
 from thrs.simulation.fmu import Fmu
-from thrs.simulation.io_mapping import ThrsModelIoMapping, flatten_model_values
+from thrs.simulation.io_mapping import flatten_model_values
 from thrs.simulation.models.fmu_paths import thrusters_path
 
 
-async def test_interfacer(simulation, fmu, simulation_inputs, control, alarms):
-    io_mapping = ThrsModelIoMapping(ThrustersSensorValues, ThrustersSimulationOutputs)
+async def test_runner(simulation, fmu, io_mapping, simulation_inputs, control, alarms):
     collector = PolarsCollector()
     simulation.transceive = simulation.tick  # type: ignore # TODO: Make this make sense
     runner = Runner(simulation, control, alarms)
@@ -48,13 +48,33 @@ async def test_interfacer(simulation, fmu, simulation_inputs, control, alarms):
 
     not_in_fmu = set(
         {
-            **flatten_model_values(ThrustersSensorValues.zero(), fmu_only=False),
-            **flatten_model_values(simulation_inputs, fmu_only=False),
+            **flatten_model_values(
+                ThrustersSensorValues.zero(),
+                fmu_key_mapping=build_fmu_key_mapping(
+                    ThrustersSensorValues, fmu_only=False
+                ),
+            ),
+            **flatten_model_values(
+                simulation_inputs,
+                fmu_key_mapping=build_fmu_key_mapping(
+                    type(simulation_inputs), fmu_only=False
+                ),
+            ),
         }
     ) - set(
         {
-            **flatten_model_values(ThrustersSensorValues.zero(), fmu_only=True),
-            **flatten_model_values(simulation_inputs, fmu_only=True),
+            **flatten_model_values(
+                ThrustersSensorValues.zero(),
+                fmu_key_mapping=build_fmu_key_mapping(
+                    ThrustersSensorValues, fmu_only=True
+                ),
+            ),
+            **flatten_model_values(
+                simulation_inputs,
+                fmu_key_mapping=build_fmu_key_mapping(
+                    type(simulation_inputs), fmu_only=True
+                ),
+            ),
         }
     )
 

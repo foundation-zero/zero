@@ -4,56 +4,33 @@ from datetime import datetime
 from functools import reduce
 from typing import Any, cast
 
-from pydantic.fields import FieldInfo
-
 from thrs.input_output.base import (
     CombinedValues,
     SimulationInputs,
     SimulationValues,
     ThrsValues,
 )
-from thrs.input_output.definitions.units import unit_for_annotation, unit_meta
 from thrs.input_output.fmu_mapping import (
+    build_fmu_key_mapping,
     build_outputs_from_fmu,
     extract_non_fmu_values,
-    included_in_fmu,
 )
 from thrs.orchestration.module import ModuleClassMap
 
 
-def flatten_model_values(model: ThrsValues, fmu_only: bool) -> dict[str, float]:
-    def _values_for_component(component_name, component):
-        def _name_for_field(field_name, field: FieldInfo):
-            meta = unit_meta(unit_for_annotation(field.annotation))  # type: ignore
-            if meta:
-                return f"{component_name}__{field_name}__{meta.modelica_name}"
-            else:
-                return f"{component_name}__{field_name}"
-
-        return {
-            _name_for_field(field_name, field): getattr(component, field_name).value
-            for field_name, field in {
-                **type(component).model_fields,
-                **type(component).model_computed_fields,
-            }.items()
-            if (included_in_fmu(field) if fmu_only else True)
-        }
-
+def flatten_model_values(
+    model: ThrsValues | CombinedValues, fmu_key_mapping: dict[str, tuple[str, str]]
+) -> dict[str, float]:
     if isinstance(model, CombinedValues):
-        vals = [
-            flatten_model_values(values, fmu_only) for values in model.values.values()
-        ]
-        return reduce(operator.ior, vals, {})
-    else:
-        vals = [
-            _values_for_component(component_name, getattr(model, component_name))
-            for component_name, component in {
-                **type(model).model_fields,
-                **type(model).model_computed_fields,
-            }.items()
-            if (included_in_fmu(component) if fmu_only else True)
-        ]
-        return reduce(operator.ior, vals, {})
+        return reduce(
+            operator.ior,
+            [flatten_model_values(v, fmu_key_mapping) for v in model.values.values()],
+            {},
+        )
+    return {
+        fmu_key: getattr(getattr(model, comp), field).value
+        for fmu_key, (comp, field) in fmu_key_mapping.items()
+    }
 
 
 class IoMapping[S, C, I, O](ABC):
@@ -83,6 +60,17 @@ class CombinedIoMapping[I: SimulationInputs, O: SimulationValues](
         self._sensor_values_clss = sensor_values_clss
         self._simulation_outputs_cls = simulation_outputs_cls
 
+        self._fmu_key_mapping_cache: dict[
+            type[ThrsValues], dict[str, tuple[str, str]]
+        ] = {}
+
+    def _fmu_key_mapping(
+        self, model_cls: type[ThrsValues]
+    ) -> dict[str, tuple[str, str]]:
+        if model_cls not in self._fmu_key_mapping_cache:
+            self._fmu_key_mapping_cache[model_cls] = build_fmu_key_mapping(model_cls)
+        return self._fmu_key_mapping_cache[model_cls]
+
     def generate_inputs(
         self,
         control_values: CombinedValues,
@@ -92,9 +80,13 @@ class CombinedIoMapping[I: SimulationInputs, O: SimulationValues](
             **{
                 key: value
                 for model in control_values.values.values()
-                for key, value in flatten_model_values(model, fmu_only=True).items()
+                for key, value in flatten_model_values(
+                    model, self._fmu_key_mapping(type(model))
+                ).items()
             },
-            **flatten_model_values(simulation_inputs, fmu_only=True),
+            **flatten_model_values(
+                simulation_inputs, self._fmu_key_mapping(type(simulation_inputs))
+            ),
         }
 
     def construct_outputs(

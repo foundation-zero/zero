@@ -9,6 +9,7 @@ from thrs.input_output.base import (
     Stamped,
     ThrsValues,
 )
+from thrs.input_output.definitions.units import unit_for_annotation, unit_meta
 
 
 def groupby(iterable, key):
@@ -25,6 +26,58 @@ def included_in_fmu(field: FieldInfo | ComputedFieldInfo) -> bool:
         if field.json_schema_extra and isinstance(field.json_schema_extra, dict)
         else True
     )  # type: ignore
+
+
+def _fmu_key_for_field(
+    component_name: str, field_name: str, field: FieldInfo | ComputedFieldInfo
+) -> str:
+    annotation = (
+        field.return_type if isinstance(field, ComputedFieldInfo) else field.annotation
+    )
+    meta = unit_meta(unit_for_annotation(annotation))  # type: ignore
+    if meta:
+        return f"{component_name}__{field_name}__{meta.modelica_name}"
+    return f"{component_name}__{field_name}"
+
+
+def build_fmu_key_mapping(
+    cls: type[ThrsValues], fmu_only: bool = True
+) -> dict[str, tuple[str, str]]:
+    """Return a dict mapping a Modelica name str to (component_name, field_name) for a ThrsValues model."""
+
+    component_classes = [
+        (
+            component_name,
+            component.annotation
+            if isinstance(component, FieldInfo)
+            else component.return_type,
+        )
+        for component_name, component in {
+            **cls.model_fields,
+            **cls.model_computed_fields,
+        }.items()
+        if fmu_only is False or included_in_fmu(component)
+    ]
+
+    component_fields = [
+        (component_name, field_name, field)
+        for component_name, component_cls in component_classes
+        for field_name, field in {
+            **component_cls.model_fields,  # type: ignore
+            **component_cls.model_computed_fields,  # type: ignore
+        }.items()
+        if fmu_only is False or included_in_fmu(field)
+    ]
+
+    mapping = {
+        _fmu_key_for_field(component_name, field_name, field): (
+            component_name,
+            field_name,
+        )
+        for component_name, field_name, field in component_fields
+    }
+
+    return mapping
 
 
 def extract_non_fmu_values(

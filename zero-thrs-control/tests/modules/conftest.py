@@ -2,6 +2,7 @@ import fmpy
 import polars as pl
 
 from thrs.input_output.base import ThrsValues
+from thrs.input_output.fmu_mapping import build_fmu_key_mapping
 from thrs.simulation.io_mapping import flatten_model_values
 
 SHEET_URL = "https://docs.google.com/spreadsheets/d/1YyfkKmqL8MZuJfStljTjhgFxawcco2cp2qCmBGFrR04/export?gid=990884182&format=csv"
@@ -9,7 +10,9 @@ SHEET_URL = "https://docs.google.com/spreadsheets/d/1YyfkKmqL8MZuJfStljTjhgFxawc
 
 def modelica_names_from_classes(classes: list[ThrsValues]) -> set[str]:
     return {
-        k for cls in classes for k in flatten_model_values(cls, fmu_only=True).keys()
+        k
+        for cls in classes
+        for k in flatten_model_values(cls, build_fmu_key_mapping(type(cls))).keys()
     }
 
 
