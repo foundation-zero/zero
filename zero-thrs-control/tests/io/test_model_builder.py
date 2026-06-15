@@ -72,7 +72,7 @@ def test_combined_model_builder():
     }"""
 
     builder = CombinedModelBuilder({"module1": SimpleInOut})
-    builder.input("module1/go-with-the", flow_message)
+    builder.input("module1/go_with_the", flow_message)
     result = builder.result()
     assert result is not None
     module1 = result.values["module1"]
