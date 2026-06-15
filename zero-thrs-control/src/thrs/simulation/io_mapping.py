@@ -19,7 +19,7 @@ from thrs.orchestration.module import ModuleClassMap
 
 
 def flatten_model_values(
-    model: ThrsValues | CombinedValues, fmu_key_mapping: dict[str, tuple[str, str]]
+    model: ThrsValues | CombinedValues, fmu_key_mapping: dict[tuple[str, str], str]
 ) -> dict[str, float]:
     if isinstance(model, CombinedValues):
         return reduce(
@@ -28,8 +28,8 @@ def flatten_model_values(
             {},
         )
     return {
-        fmu_key: getattr(getattr(model, comp), field).value
-        for fmu_key, (comp, field) in fmu_key_mapping.items()
+        fmu_key: getattr(getattr(model, component), field).value
+        for (component, field), fmu_key in fmu_key_mapping.items()
     }
 
 
@@ -61,12 +61,12 @@ class CombinedIoMapping[I: SimulationInputs, O: SimulationValues](
         self._simulation_outputs_cls = simulation_outputs_cls
 
         self._fmu_key_mapping_cache: dict[
-            type[ThrsValues], dict[str, tuple[str, str]]
+            type[ThrsValues], dict[tuple[str, str], str]
         ] = {}
 
     def _fmu_key_mapping(
         self, model_cls: type[ThrsValues]
-    ) -> dict[str, tuple[str, str]]:
+    ) -> dict[tuple[str, str], str]:
         if model_cls not in self._fmu_key_mapping_cache:
             self._fmu_key_mapping_cache[model_cls] = build_fmu_key_mapping(model_cls)
         return self._fmu_key_mapping_cache[model_cls]

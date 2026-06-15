@@ -42,8 +42,8 @@ def _fmu_key_for_field(
 
 def build_fmu_key_mapping(
     cls: type[ThrsValues], fmu_only: bool = True
-) -> dict[str, tuple[str, str]]:
-    """Return a dict mapping a Modelica name str to (component_name, field_name) for a ThrsValues model."""
+) -> dict[tuple[str, str], str]:
+    """Return a dict mapping a (component_name, field_name) tuple to a Modelica name str for a ThrsValues model."""
 
     component_classes = [
         (
@@ -70,9 +70,8 @@ def build_fmu_key_mapping(
     ]
 
     mapping = {
-        _fmu_key_for_field(component_name, field_name, field): (
-            component_name,
-            field_name,
+        (component_name, field_name): _fmu_key_for_field(
+            component_name, field_name, field
         )
         for component_name, field_name, field in component_fields
     }
