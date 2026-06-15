@@ -110,10 +110,18 @@ class ComponentMeta(BaseModel):
     included_in_fmu: bool = True
     component_type: str | None = None
     valve_type: Literal["shutoff", "switch", "mix", "flowcontrol"] | None = None
+    topic: str | None = None
 
 
 def component_meta(*args, **kwargs):
     return Field(json_schema_extra=ComponentMeta(*args, **kwargs).model_dump())
+
+
+def get_topic(field: FieldInfo) -> str | None:
+    if not field.json_schema_extra or not isinstance(field.json_schema_extra, dict):
+        return None
+
+    return field.json_schema_extra.get("topic")  # type: ignore
 
 
 @dataclass
