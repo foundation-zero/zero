@@ -53,7 +53,7 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green",
+                "color": "text",
                 "value": 0
               },
               {
@@ -99,6 +99,7 @@
             {
               "background": {
                 "color": {
+                  "field": "temp_46",
                   "fixed": "#D9D9D9"
                 }
               },
@@ -174,6 +175,7 @@
             {
               "background": {
                 "color": {
+                  "field": "temp_45",
                   "fixed": "#D9D9D9"
                 }
               },
@@ -250,6 +252,7 @@
             {
               "background": {
                 "color": {
+                  "field": "temp_44",
                   "fixed": "#D9D9D9"
                 }
               },
@@ -326,6 +329,7 @@
             {
               "background": {
                 "color": {
+                  "field": "temp_43",
                   "fixed": "#D9D9D9"
                 }
               },
@@ -400,6 +404,7 @@
             {
               "background": {
                 "color": {
+                  "field": "temp_42",
                   "fixed": "#D9D9D9"
                 }
               },
@@ -476,6 +481,7 @@
             {
               "background": {
                 "color": {
+                  "field": "temp_41",
                   "fixed": "#D9D9D9"
                 }
               },
@@ -551,6 +557,7 @@
             {
               "background": {
                 "color": {
+                  "field": "temp_40",
                   "fixed": "#D9D9D9"
                 }
               },
@@ -627,6 +634,7 @@
             {
               "background": {
                 "color": {
+                  "field": "temp_39",
                   "fixed": "#D9D9D9"
                 }
               },
@@ -702,6 +710,7 @@
             {
               "background": {
                 "color": {
+                  "field": "temp_38",
                   "fixed": "#D9D9D9"
                 }
               },
@@ -755,7 +764,7 @@
                 },
                 "size": 12,
                 "text": {
-                  "fixed": "94455001-39"
+                  "fixed": "94455001-38"
                 },
                 "valign": "middle"
               },
@@ -875,7 +884,7 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green",
+                "color": "text",
                 "value": 0
               },
               {
@@ -921,6 +930,7 @@
             {
               "background": {
                 "color": {
+                  "field": "temp_30",
                   "fixed": "#D9D9D9"
                 }
               },
@@ -995,6 +1005,7 @@
             {
               "background": {
                 "color": {
+                  "field": "temp_26",
                   "fixed": "#D9D9D9"
                 }
               },
@@ -1069,6 +1080,7 @@
             {
               "background": {
                 "color": {
+                  "field": "temp_31",
                   "fixed": "#D9D9D9"
                 }
               },
@@ -1143,6 +1155,7 @@
             {
               "background": {
                 "color": {
+                  "field": "temp_21",
                   "fixed": "#D9D9D9"
                 }
               },
@@ -1217,6 +1230,7 @@
             {
               "background": {
                 "color": {
+                  "field": "temp_17",
                   "fixed": "#D9D9D9"
                 }
               },
@@ -1292,6 +1306,7 @@
             {
               "background": {
                 "color": {
+                  "field": "temp_12",
                   "fixed": "#D9D9D9"
                 }
               },
@@ -1368,6 +1383,7 @@
             {
               "background": {
                 "color": {
+                  "field": "temp_6",
                   "fixed": "#D9D9D9"
                 }
               },
@@ -1444,6 +1460,7 @@
             {
               "background": {
                 "color": {
+                  "field": "temp_4",
                   "fixed": "#D9D9D9"
                 }
               },
@@ -1559,6 +1576,7 @@
             {
               "background": {
                 "color": {
+                  "field": "temp_27",
                   "fixed": "#D9D9D9"
                 }
               },
@@ -1633,6 +1651,7 @@
             {
               "background": {
                 "color": {
+                  "field": "temp_20",
                   "fixed": "#D9D9D9"
                 }
               },
@@ -1743,6 +1762,7 @@
             {
               "background": {
                 "color": {
+                  "field": "temp_16",
                   "fixed": "#D9D9D9"
                 }
               },
@@ -1781,6 +1801,7 @@
             {
               "background": {
                 "color": {
+                  "field": "temp_13",
                   "fixed": "#D9D9D9"
                 }
               },
@@ -1857,6 +1878,7 @@
             {
               "background": {
                 "color": {
+                  "field": "temp_7",
                   "fixed": "#D9D9D9"
                 }
               },
@@ -1933,6 +1955,7 @@
             {
               "background": {
                 "color": {
+                  "field": "temp_5",
                   "fixed": "#D9D9D9"
                 }
               },
@@ -2009,6 +2032,7 @@
             {
               "background": {
                 "color": {
+                  "field": "temp_2",
                   "fixed": "#D9D9D9"
                 }
               },
@@ -2085,6 +2109,7 @@
             {
               "background": {
                 "color": {
+                  "field": "temp_3",
                   "fixed": "#D9D9D9"
                 }
               },
@@ -2222,7 +2247,7 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green",
+                "color": "text",
                 "value": 0
               },
               {
@@ -2243,7 +2268,7 @@
       },
       "id": 3,
       "options": {
-        "inlineEditing": true,
+        "inlineEditing": false,
         "panZoom": false,
         "root": {
           "background": {
@@ -2268,6 +2293,7 @@
             {
               "background": {
                 "color": {
+                  "field": "temp_32",
                   "fixed": "#D9D9D9"
                 }
               },
@@ -2283,12 +2309,13 @@
                 },
                 "size": 16,
                 "text": {
-                  "field": "temp_30",
+                  "field": "temp_32",
                   "fixed": "",
                   "mode": "field"
                 },
                 "valign": "middle"
               },
+              "connections": [],
               "constraint": {
                 "horizontal": "left",
                 "vertical": "top"
@@ -2298,6 +2325,7 @@
               "placement": {
                 "height": 25,
                 "left": 385,
+                "rotation": 0,
                 "top": 121,
                 "width": 80
               },
@@ -2321,10 +2349,11 @@
                 },
                 "size": 12,
                 "text": {
-                  "fixed": "94455001-30"
+                  "fixed": "94455001-32"
                 },
                 "valign": "middle"
               },
+              "connections": [],
               "constraint": {
                 "horizontal": "left",
                 "vertical": "top"
@@ -2334,6 +2363,7 @@
               "placement": {
                 "height": 23,
                 "left": 375,
+                "rotation": 0,
                 "top": 146,
                 "width": 100
               },
@@ -2342,6 +2372,7 @@
             {
               "background": {
                 "color": {
+                  "field": "temp_28",
                   "fixed": "#D9D9D9"
                 }
               },
@@ -2357,7 +2388,7 @@
                 },
                 "size": 16,
                 "text": {
-                  "field": "temp_26",
+                  "field": "temp_28",
                   "fixed": "",
                   "mode": "field"
                 },
@@ -2372,6 +2403,7 @@
               "placement": {
                 "height": 25,
                 "left": 385,
+                "rotation": 0,
                 "top": 297,
                 "width": 80
               },
@@ -2395,7 +2427,7 @@
                 },
                 "size": 12,
                 "text": {
-                  "fixed": "94455001-26"
+                  "fixed": "94455001-28"
                 },
                 "valign": "middle"
               },
@@ -2408,6 +2440,7 @@
               "placement": {
                 "height": 23,
                 "left": 375,
+                "rotation": 0,
                 "top": 274,
                 "width": 100
               },
@@ -2416,6 +2449,7 @@
             {
               "background": {
                 "color": {
+                  "field": "temp_33",
                   "fixed": "#D9D9D9"
                 }
               },
@@ -2431,7 +2465,7 @@
                 },
                 "size": 16,
                 "text": {
-                  "field": "temp_31",
+                  "field": "temp_33",
                   "fixed": "",
                   "mode": "field"
                 },
@@ -2446,6 +2480,7 @@
               "placement": {
                 "height": 25,
                 "left": 475,
+                "rotation": 0,
                 "top": 121,
                 "width": 80
               },
@@ -2469,10 +2504,11 @@
                 },
                 "size": 12,
                 "text": {
-                  "fixed": "94455001-31"
+                  "fixed": "94455001-33"
                 },
                 "valign": "middle"
               },
+              "connections": [],
               "constraint": {
                 "horizontal": "left",
                 "vertical": "top"
@@ -2482,7 +2518,8 @@
               "placement": {
                 "height": 23,
                 "left": 465,
-                "top": 146,
+                "rotation": 0,
+                "top": 149,
                 "width": 100
               },
               "type": "text"
@@ -2490,6 +2527,7 @@
             {
               "background": {
                 "color": {
+                  "field": "temp_23",
                   "fixed": "#D9D9D9"
                 }
               },
@@ -2505,7 +2543,7 @@
                 },
                 "size": 16,
                 "text": {
-                  "field": "temp_21",
+                  "field": "temp_23",
                   "fixed": "",
                   "mode": "field"
                 },
@@ -2520,6 +2558,7 @@
               "placement": {
                 "height": 25,
                 "left": 785,
+                "rotation": 0,
                 "top": 108,
                 "width": 80
               },
@@ -2543,7 +2582,7 @@
                 },
                 "size": 12,
                 "text": {
-                  "fixed": "94455001-21"
+                  "fixed": "94455001-23"
                 },
                 "valign": "middle"
               },
@@ -2556,6 +2595,7 @@
               "placement": {
                 "height": 23,
                 "left": 775,
+                "rotation": 0,
                 "top": 133,
                 "width": 100
               },
@@ -2564,6 +2604,7 @@
             {
               "background": {
                 "color": {
+                  "field": "temp_19",
                   "fixed": "#D9D9D9"
                 }
               },
@@ -2579,7 +2620,7 @@
                 },
                 "size": 16,
                 "text": {
-                  "field": "temp_17",
+                  "field": "temp_19",
                   "fixed": "",
                   "mode": "field"
                 },
@@ -2595,6 +2636,7 @@
               "placement": {
                 "height": 25,
                 "left": 785,
+                "rotation": 0,
                 "top": 304,
                 "width": 80
               },
@@ -2618,7 +2660,7 @@
                 },
                 "size": 12,
                 "text": {
-                  "fixed": "94455001-17"
+                  "fixed": "94455001-19"
                 },
                 "valign": "middle"
               },
@@ -2631,6 +2673,7 @@
               "placement": {
                 "height": 23,
                 "left": 775,
+                "rotation": 0,
                 "top": 281,
                 "width": 100
               },
@@ -2639,6 +2682,7 @@
             {
               "background": {
                 "color": {
+                  "field": "temp_14",
                   "fixed": "#D9D9D9"
                 }
               },
@@ -2654,7 +2698,7 @@
                 },
                 "size": 16,
                 "text": {
-                  "field": "temp_12",
+                  "field": "temp_14",
                   "fixed": "",
                   "mode": "field"
                 },
@@ -2693,7 +2737,7 @@
                 },
                 "size": 12,
                 "text": {
-                  "fixed": "94455001-12"
+                  "fixed": "94455001-14"
                 },
                 "valign": "middle"
               },
@@ -2715,6 +2759,7 @@
             {
               "background": {
                 "color": {
+                  "field": "temp_8",
                   "fixed": "#D9D9D9"
                 }
               },
@@ -2730,7 +2775,7 @@
                 },
                 "size": 16,
                 "text": {
-                  "field": "temp_6",
+                  "field": "temp_8",
                   "fixed": "",
                   "mode": "field"
                 },
@@ -2769,7 +2814,7 @@
                 },
                 "size": 12,
                 "text": {
-                  "fixed": "94455001-6"
+                  "fixed": "94455001-8"
                 },
                 "valign": "middle"
               },
@@ -2791,6 +2836,7 @@
             {
               "background": {
                 "color": {
+                  "field": "temp_1",
                   "fixed": "#D9D9D9"
                 }
               },
@@ -2806,7 +2852,7 @@
                 },
                 "size": 16,
                 "text": {
-                  "field": "temp_4",
+                  "field": "temp_1",
                   "fixed": "",
                   "mode": "field"
                 },
@@ -2820,9 +2866,9 @@
               "name": "temp_38",
               "placement": {
                 "height": 25,
-                "left": 1257,
+                "left": 1297,
                 "rotation": 0,
-                "top": 158,
+                "top": 207,
                 "width": 80
               },
               "type": "metric-value"
@@ -2845,7 +2891,7 @@
                 },
                 "size": 12,
                 "text": {
-                  "fixed": "94455001-4"
+                  "fixed": "94455001-1"
                 },
                 "valign": "middle"
               },
@@ -2858,9 +2904,9 @@
               "name": "temp_38 label",
               "placement": {
                 "height": 23,
-                "left": 1247,
+                "left": 1287,
                 "rotation": 0,
-                "top": 183,
+                "top": 232,
                 "width": 100
               },
               "type": "text"
@@ -2906,6 +2952,7 @@
             {
               "background": {
                 "color": {
+                  "field": "temp_29",
                   "fixed": "#D9D9D9"
                 }
               },
@@ -2921,7 +2968,7 @@
                 },
                 "size": 16,
                 "text": {
-                  "field": "temp_27",
+                  "field": "temp_29",
                   "fixed": "",
                   "mode": "field"
                 },
@@ -2936,6 +2983,7 @@
               "placement": {
                 "height": 25,
                 "left": 475,
+                "rotation": 0,
                 "top": 298,
                 "width": 80
               },
@@ -2959,7 +3007,7 @@
                 },
                 "size": 12,
                 "text": {
-                  "fixed": "94455001-27"
+                  "fixed": "94455001-29"
                 },
                 "valign": "middle"
               },
@@ -2972,6 +3020,7 @@
               "placement": {
                 "height": 23,
                 "left": 465,
+                "rotation": 0,
                 "top": 273,
                 "width": 100
               },
@@ -2980,6 +3029,7 @@
             {
               "background": {
                 "color": {
+                  "field": "temp_22",
                   "fixed": "#D9D9D9"
                 }
               },
@@ -2995,7 +3045,7 @@
                 },
                 "size": 16,
                 "text": {
-                  "field": "temp_20",
+                  "field": "temp_22",
                   "fixed": "",
                   "mode": "field"
                 },
@@ -3010,6 +3060,7 @@
               "placement": {
                 "height": 25,
                 "left": 695,
+                "rotation": 0,
                 "top": 108,
                 "width": 80
               },
@@ -3033,7 +3084,7 @@
                 },
                 "size": 12,
                 "text": {
-                  "fixed": "94455001-20"
+                  "fixed": "94455001-22"
                 },
                 "valign": "middle"
               },
@@ -3046,6 +3097,7 @@
               "placement": {
                 "height": 23,
                 "left": 685,
+                "rotation": 0,
                 "top": 133,
                 "width": 100
               },
@@ -3069,7 +3121,7 @@
                 },
                 "size": 12,
                 "text": {
-                  "fixed": "94455001-16"
+                  "fixed": "94455001-18"
                 },
                 "valign": "middle"
               },
@@ -3082,6 +3134,7 @@
               "placement": {
                 "height": 23,
                 "left": 685,
+                "rotation": 0,
                 "top": 282,
                 "width": 100
               },
@@ -3090,6 +3143,7 @@
             {
               "background": {
                 "color": {
+                  "field": "temp_18",
                   "fixed": "#D9D9D9"
                 }
               },
@@ -3105,12 +3159,13 @@
                 },
                 "size": 16,
                 "text": {
-                  "field": "temp_16",
+                  "field": "temp_18",
                   "fixed": "",
                   "mode": "field"
                 },
                 "valign": "middle"
               },
+              "connections": [],
               "constraint": {
                 "horizontal": "left",
                 "vertical": "top"
@@ -3120,6 +3175,7 @@
               "placement": {
                 "height": 25,
                 "left": 695,
+                "rotation": 0,
                 "top": 305,
                 "width": 80
               },
@@ -3128,6 +3184,7 @@
             {
               "background": {
                 "color": {
+                  "field": "temp_15",
                   "fixed": "#D9D9D9"
                 }
               },
@@ -3143,7 +3200,7 @@
                 },
                 "size": 16,
                 "text": {
-                  "field": "temp_13",
+                  "field": "temp_15",
                   "fixed": "",
                   "mode": "field"
                 },
@@ -3182,7 +3239,7 @@
                 },
                 "size": 12,
                 "text": {
-                  "fixed": "94455001-13"
+                  "fixed": "94455001-15"
                 },
                 "valign": "middle"
               },
@@ -3204,8 +3261,9 @@
             {
               "background": {
                 "color": {
+                  "field": "temp_9",
                   "fixed": "#D9D9D9"
-                }
+                },
               },
               "border": {
                 "color": {
@@ -3219,7 +3277,7 @@
                 },
                 "size": 16,
                 "text": {
-                  "field": "temp_7",
+                  "field": "temp_9",
                   "fixed": "",
                   "mode": "field"
                 },
@@ -3258,7 +3316,7 @@
                 },
                 "size": 12,
                 "text": {
-                  "fixed": "94455001-7"
+                  "fixed": "94455001-9"
                 },
                 "valign": "middle"
               },
@@ -3280,6 +3338,7 @@
             {
               "background": {
                 "color": {
+                  "field": "temp_35",
                   "fixed": "#D9D9D9"
                 }
               },
@@ -3295,235 +3354,7 @@
                 },
                 "size": 16,
                 "text": {
-                  "field": "temp_5",
-                  "fixed": "",
-                  "mode": "field"
-                },
-                "valign": "middle"
-              },
-              "constraint": {
-                "horizontal": "left",
-                "vertical": "top"
-              },
-              "links": [],
-              "name": "Element 28",
-              "placement": {
-                "height": 25,
-                "left": 1347,
-                "rotation": 0,
-                "top": 158,
-                "width": 80
-              },
-              "type": "metric-value"
-            },
-            {
-              "background": {
-                "color": {
-                  "fixed": "transparent"
-                }
-              },
-              "border": {
-                "color": {
-                  "fixed": "dark-green"
-                }
-              },
-              "config": {
-                "align": "center",
-                "color": {
-                  "fixed": "rgb(204, 204, 220)"
-                },
-                "size": 12,
-                "text": {
-                  "fixed": "94455001-5"
-                },
-                "valign": "middle"
-              },
-              "constraint": {
-                "horizontal": "left",
-                "vertical": "top"
-              },
-              "links": [],
-              "name": "Element 29",
-              "placement": {
-                "height": 23,
-                "left": 1337,
-                "rotation": 0,
-                "top": 183,
-                "width": 100
-              },
-              "type": "text"
-            },
-            {
-              "background": {
-                "color": {
-                  "fixed": "#D9D9D9"
-                }
-              },
-              "border": {
-                "color": {
-                  "fixed": "dark-green"
-                }
-              },
-              "config": {
-                "align": "center",
-                "color": {
-                  "fixed": "#000000"
-                },
-                "size": 16,
-                "text": {
-                  "field": "temp_2",
-                  "fixed": "",
-                  "mode": "field"
-                },
-                "valign": "middle"
-              },
-              "constraint": {
-                "horizontal": "left",
-                "vertical": "top"
-              },
-              "links": [],
-              "name": "Element 30",
-              "placement": {
-                "height": 25,
-                "left": 1257,
-                "rotation": 0,
-                "top": 256,
-                "width": 80
-              },
-              "type": "metric-value"
-            },
-            {
-              "background": {
-                "color": {
-                  "fixed": "transparent"
-                }
-              },
-              "border": {
-                "color": {
-                  "fixed": "dark-green"
-                }
-              },
-              "config": {
-                "align": "center",
-                "color": {
-                  "fixed": "rgb(204, 204, 220)"
-                },
-                "size": 12,
-                "text": {
-                  "fixed": "94455001-2"
-                },
-                "valign": "middle"
-              },
-              "constraint": {
-                "horizontal": "left",
-                "vertical": "top"
-              },
-              "links": [],
-              "name": "Element 31",
-              "placement": {
-                "height": 23,
-                "left": 1247,
-                "rotation": 0,
-                "top": 233,
-                "width": 100
-              },
-              "type": "text"
-            },
-            {
-              "background": {
-                "color": {
-                  "fixed": "#D9D9D9"
-                }
-              },
-              "border": {
-                "color": {
-                  "fixed": "dark-green"
-                }
-              },
-              "config": {
-                "align": "center",
-                "color": {
-                  "fixed": "#000000"
-                },
-                "size": 16,
-                "text": {
-                  "field": "temp_3",
-                  "fixed": "",
-                  "mode": "field"
-                },
-                "valign": "middle"
-              },
-              "constraint": {
-                "horizontal": "left",
-                "vertical": "top"
-              },
-              "links": [],
-              "name": "Element 32",
-              "placement": {
-                "height": 25,
-                "left": 1347,
-                "rotation": 0,
-                "top": 257,
-                "width": 80
-              },
-              "type": "metric-value"
-            },
-            {
-              "background": {
-                "color": {
-                  "fixed": "transparent"
-                }
-              },
-              "border": {
-                "color": {
-                  "fixed": "dark-green"
-                }
-              },
-              "config": {
-                "align": "center",
-                "color": {
-                  "fixed": "rgb(204, 204, 220)"
-                },
-                "size": 12,
-                "text": {
-                  "fixed": "94455001-3"
-                },
-                "valign": "middle"
-              },
-              "constraint": {
-                "horizontal": "left",
-                "vertical": "top"
-              },
-              "links": [],
-              "name": "Element 33",
-              "placement": {
-                "height": 23,
-                "left": 1337,
-                "rotation": 0,
-                "top": 234,
-                "width": 100
-              },
-              "type": "text"
-            },
-            {
-              "background": {
-                "color": {
-                  "fixed": "#D9D9D9"
-                }
-              },
-              "border": {
-                "color": {
-                  "fixed": "dark-green"
-                }
-              },
-              "config": {
-                "align": "center",
-                "color": {
-                  "fixed": "#000000"
-                },
-                "size": 16,
-                "text": {
-                  "field": "temp_30",
+                  "field": "temp_35",
                   "fixed": "",
                   "mode": "field"
                 },
@@ -3538,6 +3369,7 @@
               "placement": {
                 "height": 25,
                 "left": 196,
+                "rotation": 0,
                 "top": 147,
                 "width": 80
               },
@@ -3561,7 +3393,7 @@
                 },
                 "size": 12,
                 "text": {
-                  "fixed": "94455001-30"
+                  "fixed": "94455001-35"
                 },
                 "valign": "middle"
               },
@@ -3574,6 +3406,7 @@
               "placement": {
                 "height": 23,
                 "left": 186,
+                "rotation": 0,
                 "top": 172,
                 "width": 100
               },
@@ -3582,6 +3415,7 @@
             {
               "background": {
                 "color": {
+                  "field": "temp_34",
                   "fixed": "#D9D9D9"
                 }
               },
@@ -3597,7 +3431,7 @@
                 },
                 "size": 16,
                 "text": {
-                  "field": "temp_26",
+                  "field": "temp_34",
                   "fixed": "",
                   "mode": "field"
                 },
@@ -3612,6 +3446,7 @@
               "placement": {
                 "height": 25,
                 "left": 196,
+                "rotation": 0,
                 "top": 268,
                 "width": 80
               },
@@ -3635,7 +3470,7 @@
                 },
                 "size": 12,
                 "text": {
-                  "fixed": "94455001-26"
+                  "fixed": "94455001-34"
                 },
                 "valign": "middle"
               },
@@ -3648,6 +3483,7 @@
               "placement": {
                 "height": 23,
                 "left": 186,
+                "rotation": 0,
                 "top": 245,
                 "width": 100
               },
@@ -3656,6 +3492,7 @@
             {
               "background": {
                 "color": {
+                  "field": "temp_24",
                   "fixed": "#D9D9D9"
                 }
               },
@@ -3671,7 +3508,7 @@
                 },
                 "size": 16,
                 "text": {
-                  "field": "temp_31",
+                  "field": "temp_24",
                   "fixed": "",
                   "mode": "field"
                 },
@@ -3686,6 +3523,7 @@
               "placement": {
                 "height": 25,
                 "left": 441,
+                "rotation": 0,
                 "top": 206,
                 "width": 80
               },
@@ -3709,7 +3547,7 @@
                 },
                 "size": 12,
                 "text": {
-                  "fixed": "94455001-31"
+                  "fixed": "94455001-24"
                 },
                 "valign": "middle"
               },
@@ -3722,6 +3560,7 @@
               "placement": {
                 "height": 23,
                 "left": 431,
+                "rotation": 0,
                 "top": 231,
                 "width": 100
               },
@@ -3730,6 +3569,7 @@
             {
               "background": {
                 "color": {
+                  "field": "temp_36",
                   "fixed": "#D9D9D9"
                 }
               },
@@ -3745,7 +3585,7 @@
                 },
                 "size": 16,
                 "text": {
-                  "field": "temp_31",
+                  "field": "temp_36",
                   "fixed": "",
                   "mode": "field"
                 },
@@ -3759,7 +3599,8 @@
               "name": "Element 40",
               "placement": {
                 "height": 25,
-                "left": 685,
+                "left": 666,
+                "rotation": 0,
                 "top": 206,
                 "width": 80
               },
@@ -3783,7 +3624,7 @@
                 },
                 "size": 12,
                 "text": {
-                  "fixed": "94455001-31"
+                  "fixed": "94455001-36"
                 },
                 "valign": "middle"
               },
@@ -3795,7 +3636,8 @@
               "name": "Element 41",
               "placement": {
                 "height": 23,
-                "left": 675,
+                "left": 656,
+                "rotation": 0,
                 "top": 231,
                 "width": 100
               },
@@ -3804,6 +3646,7 @@
             {
               "background": {
                 "color": {
+                  "field": "temp_10",
                   "fixed": "#D9D9D9"
                 }
               },
@@ -3819,7 +3662,7 @@
                 },
                 "size": 16,
                 "text": {
-                  "field": "temp_31",
+                  "field": "temp_10",
                   "fixed": "",
                   "mode": "field"
                 },
@@ -3833,7 +3676,8 @@
               "name": "Element 42",
               "placement": {
                 "height": 25,
-                "left": 1055,
+                "left": 1005,
+                "rotation": 0,
                 "top": 206,
                 "width": 80
               },
@@ -3857,7 +3701,7 @@
                 },
                 "size": 12,
                 "text": {
-                  "fixed": "94455001-31"
+                  "fixed": "94455001-10"
                 },
                 "valign": "middle"
               },
@@ -3869,7 +3713,8 @@
               "name": "Element 43",
               "placement": {
                 "height": 23,
-                "left": 1045,
+                "left": 995,
+                "rotation": 0,
                 "top": 231,
                 "width": 100
               },
@@ -3878,6 +3723,7 @@
             {
               "background": {
                 "color": {
+                  "field": "temp_25",
                   "fixed": "#D9D9D9"
                 }
               },
@@ -3893,7 +3739,7 @@
                 },
                 "size": 16,
                 "text": {
-                  "field": "temp_31",
+                  "field": "temp_25",
                   "fixed": "",
                   "mode": "field"
                 },
@@ -3908,6 +3754,7 @@
               "placement": {
                 "height": 25,
                 "left": 531,
+                "rotation": 0,
                 "top": 206,
                 "width": 80
               },
@@ -3931,7 +3778,7 @@
                 },
                 "size": 12,
                 "text": {
-                  "fixed": "94455001-31"
+                  "fixed": "94455001-25"
                 },
                 "valign": "middle"
               },
@@ -3944,6 +3791,7 @@
               "placement": {
                 "height": 23,
                 "left": 521,
+                "rotation": 0,
                 "top": 231,
                 "width": 100
               },
@@ -3952,6 +3800,7 @@
             {
               "background": {
                 "color": {
+                  "field": "temp_37",
                   "fixed": "#D9D9D9"
                 }
               },
@@ -3967,7 +3816,7 @@
                 },
                 "size": 16,
                 "text": {
-                  "field": "temp_31",
+                  "field": "temp_37",
                   "fixed": "",
                   "mode": "field"
                 },
@@ -3981,7 +3830,8 @@
               "name": "Element 46",
               "placement": {
                 "height": 25,
-                "left": 772,
+                "left": 753,
+                "rotation": 0,
                 "top": 206,
                 "width": 80
               },
@@ -4005,7 +3855,7 @@
                 },
                 "size": 12,
                 "text": {
-                  "fixed": "94455001-31"
+                  "fixed": "94455001-37"
                 },
                 "valign": "middle"
               },
@@ -4017,7 +3867,85 @@
               "name": "Element 47",
               "placement": {
                 "height": 23,
-                "left": 762,
+                "left": 743,
+                "rotation": 0,
+                "top": 231,
+                "width": 100
+              },
+              "type": "text"
+            },
+            {
+              "background": {
+                "color": {
+                  "field": "temp_11",
+                  "fixed": "#D9D9D9"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "center",
+                "color": {
+                  "fixed": "#000000"
+                },
+                "size": 16,
+                "text": {
+                  "field": "temp_11",
+                  "fixed": "",
+                  "mode": "field"
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "links": [],
+              "name": "Element 48",
+              "placement": {
+                "height": 25,
+                "left": 1095,
+                "rotation": 0,
+                "top": 206,
+                "width": 80
+              },
+              "type": "metric-value"
+            },
+            {
+              "background": {
+                "color": {
+                  "fixed": "transparent"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "center",
+                "color": {
+                  "fixed": "rgb(204, 204, 220)"
+                },
+                "size": 12,
+                "text": {
+                  "fixed": "94455001-11"
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "links": [],
+              "name": "Element 49",
+              "placement": {
+                "height": 23,
+                "left": 1085,
+                "rotation": 0,
                 "top": 231,
                 "width": 100
               },
