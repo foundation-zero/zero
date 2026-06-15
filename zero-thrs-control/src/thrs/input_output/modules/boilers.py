@@ -10,9 +10,7 @@ from thrs.input_output.base import (
     component_meta,
 )
 from thrs.input_output.definitions import control, controllers, sensor, simulation
-from thrs.input_output.definitions.units import (
-    WATER_HEAT_TRANSFER_CONVERSION,
-)
+from thrs.input_output.definitions.units import WATER_HEAT_TRANSFER_CONVERSION
 
 
 class BoilersSensorValues(ThrsValues):
@@ -192,7 +190,10 @@ class BoilersSensorValues(ThrsValues):
     lt1_flow_recovery: Annotated[
         sensor.FlowSensor,
         component_meta(
-            yard_tag="50001058-03", component_type="flow_sensor", included_in_fmu=False
+            yard_tag="50001058-03",
+            component_type="flow_sensor",
+            included_in_fmu=False,
+            topic="lt1/lt1_flow_recovery",
         ),
     ]
     lt1_temperature_recovery: Annotated[
@@ -201,6 +202,7 @@ class BoilersSensorValues(ThrsValues):
             yard_tag="50001038-16",
             component_type="temperature_sensor",
             included_in_fmu=False,
+            topic="lt1/lt1_temperature_recovery",
         ),
     ]
     lt1_temperature_recovery_return: Annotated[
@@ -209,18 +211,27 @@ class BoilersSensorValues(ThrsValues):
             yard_tag="50001038-59",
             component_type="temperature_sensor",
             included_in_fmu=False,
+            topic="lt1/lt1_temperature_recovery_return",
         ),
     ]
 
     @computed_field(
-        json_schema_extra=component_meta(included_in_fmu=False).json_schema_extra
+        json_schema_extra=component_meta(
+            component_type="delta_t",
+            included_in_fmu=False,
+            topic="control/boilers/lt1_delta",
+        ).json_schema_extra
     )
     @property
     def lt1_delta(
         self,
     ) -> Annotated[
         sensor.TemperatureDelta,
-        component_meta(component_type="delta_t", included_in_fmu=False),
+        component_meta(
+            component_type="delta_t",
+            included_in_fmu=False,
+            topic="control/boilers/lt1_delta",
+        ),
     ]:
         return sensor.TemperatureDelta.from_temperature_sensors(
             temperature_supply=self.lt1_temperature_recovery.temperature,
@@ -230,7 +241,10 @@ class BoilersSensorValues(ThrsValues):
     lt2_flow_recovery: Annotated[
         sensor.FlowSensor,
         component_meta(
-            yard_tag="50001058-04", component_type="flow_sensor", included_in_fmu=False
+            yard_tag="50001058-04",
+            component_type="flow_sensor",
+            included_in_fmu=False,
+            topic="lt2/lt2_flow_recovery",
         ),
     ]
     lt2_temperature_recovery: Annotated[
@@ -239,6 +253,7 @@ class BoilersSensorValues(ThrsValues):
             yard_tag="50001038-52",
             component_type="temperature_sensor",
             included_in_fmu=False,
+            topic="lt2/lt2_temperature_recovery",
         ),
     ]
     lt2_temperature_recovery_return: Annotated[
@@ -247,19 +262,19 @@ class BoilersSensorValues(ThrsValues):
             yard_tag="50001038-58",
             component_type="temperature_sensor",
             included_in_fmu=False,
+            topic="lt2/lt2_temperature_recovery_return",
         ),
     ]
 
     @computed_field(
-        json_schema_extra=component_meta(included_in_fmu=False).json_schema_extra
+        json_schema_extra=component_meta(
+            component_type="delta_t",
+            included_in_fmu=False,
+            topic="control/boilers/lt2_delta",
+        ).json_schema_extra
     )
     @property
-    def lt2_delta(
-        self,
-    ) -> Annotated[
-        sensor.TemperatureDelta,
-        component_meta(component_type="delta_t", included_in_fmu=False),
-    ]:
+    def lt2_delta(self) -> sensor.TemperatureDelta:
         return sensor.TemperatureDelta.from_temperature_sensors(
             temperature_supply=self.lt2_temperature_recovery.temperature,
             temperature_return=self.lt2_temperature_recovery_return.temperature,
@@ -268,7 +283,10 @@ class BoilersSensorValues(ThrsValues):
     consumers_flow_boosting: Annotated[
         sensor.FlowSensor,
         component_meta(
-            yard_tag="50001058-07", component_type="flow_sensor", included_in_fmu=False
+            yard_tag="50001058-07",
+            component_type="flow_sensor",
+            included_in_fmu=False,
+            topic="consumers/consumers_flow_boosting",
         ),
     ]
     consumers_temperature_boosting_supply: Annotated[
@@ -277,6 +295,7 @@ class BoilersSensorValues(ThrsValues):
             yard_tag="50001038-53",
             component_type="temperature_sensor",
             included_in_fmu=False,
+            topic="consumers/consumers_temperature_boosting_supply",
         ),
     ]
 
@@ -286,19 +305,19 @@ class BoilersSensorValues(ThrsValues):
             yard_tag="50001038-48",
             component_type="temperature_sensor",
             included_in_fmu=False,
+            topic="consumers/consumers_temperature_boosting_return",
         ),
     ]
 
     @computed_field(
-        json_schema_extra=component_meta(included_in_fmu=False).json_schema_extra
+        json_schema_extra=component_meta(
+            component_type="delta_t",
+            included_in_fmu=False,
+            topic="control/boilers/consumers_delta",
+        ).json_schema_extra
     )
     @property
-    def consumers_delta(
-        self,
-    ) -> Annotated[
-        sensor.TemperatureDelta,
-        component_meta(component_type="delta_t", included_in_fmu=False),
-    ]:
+    def consumers_delta(self) -> sensor.TemperatureDelta:
         return sensor.TemperatureDelta.from_temperature_sensors(
             temperature_supply=self.consumers_temperature_boosting_supply.temperature,
             temperature_return=self.consumers_temperature_boosting_return.temperature,
@@ -307,7 +326,10 @@ class BoilersSensorValues(ThrsValues):
     fahrenheit_flow_boilers: Annotated[
         sensor.FlowSensor,
         component_meta(
-            yard_tag="50001058-10", component_type="flow_sensor", included_in_fmu=False
+            yard_tag="50001058-10",
+            component_type="flow_sensor",
+            included_in_fmu=False,
+            topic="fahrenheit/fahrenheit_flow_boilers",
         ),
     ]
     fahrenheit_temperature_waste_return: Annotated[
@@ -316,6 +338,7 @@ class BoilersSensorValues(ThrsValues):
             yard_tag="50001038-38",
             component_type="temperature_sensor",
             included_in_fmu=False,
+            topic="fahrenheit/fahrenheit_temperature_waste_return",
         ),
     ]
 
@@ -325,6 +348,38 @@ class BoilersSensorValues(ThrsValues):
             yard_tag="50001038-56",
             component_type="temperature_sensor",
             included_in_fmu=False,
+            topic="fahrenheit/fahrenheit_temperature_boilers_return",
+        ),
+    ]
+
+    @computed_field(
+        json_schema_extra=component_meta(
+            component_type="delta_t",
+            included_in_fmu=False,
+            topic="control/boilers/fahrenheit_delta",
+        ).json_schema_extra
+    )
+    @property
+    def fahrenheit_delta(self) -> sensor.TemperatureDelta:
+        return sensor.TemperatureDelta.from_temperature_sensors(
+            temperature_supply=self.fahrenheit_temperature_waste_return.temperature,
+            temperature_return=self.fahrenheit_temperature_boilers_return.temperature,
+        )
+
+    freshwater_hotwater_flow: Annotated[
+        sensor.FlowSensor,
+        component_meta(
+            yard_tag="25001123-1",
+            included_in_fmu=False,
+            topic="freshwater/freshwater_hotwater_flow",
+        ),
+    ]
+    freshwater_hotwater_temperature: Annotated[
+        sensor.TemperatureSensor,
+        component_meta(
+            yard_tag="25001038-1",
+            included_in_fmu=False,
+            topic="freshwater/freshwater_hotwater_temperature",
         ),
     ]
 
@@ -332,35 +387,7 @@ class BoilersSensorValues(ThrsValues):
         json_schema_extra=component_meta(included_in_fmu=False).json_schema_extra
     )
     @property
-    def fahrenheit_delta(
-        self,
-    ) -> Annotated[
-        sensor.TemperatureDelta,
-        component_meta(component_type="delta_t", included_in_fmu=False),
-    ]:
-        return sensor.TemperatureDelta.from_temperature_sensors(
-            temperature_supply=self.fahrenheit_temperature_waste_return.temperature,
-            temperature_return=self.fahrenheit_temperature_boilers_return.temperature,
-        )
-
-    freshwater_hotwater_flow: Annotated[
-        sensor.FlowSensor, component_meta(yard_tag="25001123-1", included_in_fmu=False)
-    ]
-    freshwater_hotwater_temperature: Annotated[
-        sensor.TemperatureSensor,
-        component_meta(yard_tag="25001038-1", included_in_fmu=False),
-    ]
-
-    @computed_field(
-        json_schema_extra=component_meta(included_in_fmu=False).json_schema_extra
-    )
-    @property
-    def freshwater_flow_supply(
-        self,
-    ) -> Annotated[
-        sensor.CalculatedFlow,
-        component_meta(included_in_fmu=False),
-    ]:
+    def freshwater_flow_supply(self) -> sensor.CalculatedFlow:
         return sensor.CalculatedFlow(
             flow=Stamped.combine(
                 self.boilers_flow_lt1.flow,
@@ -372,7 +399,10 @@ class BoilersSensorValues(ThrsValues):
 
     @computed_field(
         json_schema_extra=component_meta(
-            yard_tag="41001001", component_type="hvac_exchanger", included_in_fmu=False
+            yard_tag="41001001",
+            component_type="hvac_exchanger",
+            included_in_fmu=False,
+            topic="control/boilers/boilers_hvac_exchanger",
         ).json_schema_extra
     )
     @property
@@ -386,7 +416,10 @@ class BoilersSensorValues(ThrsValues):
 
     @computed_field(
         json_schema_extra=component_meta(
-            yard_tag="50001035", component_type="heatpump", included_in_fmu=False
+            yard_tag="50001035",
+            component_type="heatpump",
+            included_in_fmu=False,
+            topic="control/boilers/boilers_heatpump",
         ).json_schema_extra
     )
     @property
@@ -400,7 +433,10 @@ class BoilersSensorValues(ThrsValues):
 
     @computed_field(
         json_schema_extra=component_meta(
-            yard_tag="50001004", component_type="heat_exchanger", included_in_fmu=False
+            yard_tag="50001004",
+            component_type="heat_exchanger",
+            included_in_fmu=False,
+            topic="control/boilers/boilers_fahrenheit_exchanger",
         ).json_schema_extra
     )
     @property
@@ -414,7 +450,10 @@ class BoilersSensorValues(ThrsValues):
 
     @computed_field(
         json_schema_extra=component_meta(
-            yard_tag="50001007", component_type="heat_exchanger", included_in_fmu=False
+            yard_tag="50001007",
+            component_type="heat_exchanger",
+            included_in_fmu=False,
+            topic="control/boilers/boilers_consumers_exchanger",
         ).json_schema_extra
     )
     @property
@@ -428,7 +467,10 @@ class BoilersSensorValues(ThrsValues):
 
     @computed_field(
         json_schema_extra=component_meta(
-            yard_tag="50001008", component_type="heat_exchanger", included_in_fmu=False
+            yard_tag="50001008",
+            component_type="heat_exchanger",
+            included_in_fmu=False,
+            topic="control/boilers/boilers_lt2_exchanger",
         ).json_schema_extra
     )
     @property
@@ -442,7 +484,10 @@ class BoilersSensorValues(ThrsValues):
 
     @computed_field(
         json_schema_extra=component_meta(
-            yard_tag="50001009", component_type="heat_exchanger", included_in_fmu=False
+            yard_tag="50001009",
+            component_type="heat_exchanger",
+            included_in_fmu=False,
+            topic="control/boilers/boilers_lt1_exchanger",
         ).json_schema_extra
     )
     @property
@@ -565,23 +610,35 @@ class BoilersControlValues(ThrsValues):
         ),
     ]
     boilers_tanks_controller: Annotated[
-        controllers.TanksControllerValues, component_meta(included_in_fmu=False)
+        controllers.TanksControllerValues,
+        component_meta(
+            included_in_fmu=False, topic="control/boilers/boilers_tanks_controller"
+        ),
     ]
     boilers_pump_flow_controller: Annotated[
         controllers.PidControllerValues,
-        component_meta(included_in_fmu=False),
+        component_meta(
+            included_in_fmu=False, topic="control/boilers/boilers_pump_flow_controller"
+        ),
     ]
     boilers_pump_temperature_controller: Annotated[
         controllers.PidControllerValues,
-        component_meta(included_in_fmu=False),
+        component_meta(
+            included_in_fmu=False,
+            topic="control/boilers/boilers_pump_temperature_controller",
+        ),
     ]
     boilers_lt1_flow_controller: Annotated[
         controllers.PidControllerValues,
-        component_meta(included_in_fmu=False),
+        component_meta(
+            included_in_fmu=False, topic="control/boilers/boilers_lt1_flow_controller"
+        ),
     ]
     boilers_lt2_flow_controller: Annotated[
         controllers.PidControllerValues,
-        component_meta(included_in_fmu=False),
+        component_meta(
+            included_in_fmu=False, topic="control/boilers/boilers_lt2_flow_controller"
+        ),
     ]
 
 
