@@ -7,12 +7,11 @@ from pydantic import TypeAdapter
 
 from thrs.input_output.base import CombinedValues, ThrsValues
 from thrs.orchestration.module import ModuleClassMap
-from thrs.utils.string import dash_to_snake
 
 
 class ModelBuilder[T](ABC):
     @abstractmethod
-    def input(self, topic: str, json: str | bytes): ...
+    def input(self, field: str, json: str | bytes): ...
 
     @abstractmethod
     def result(self) -> T | None: ...
@@ -32,8 +31,7 @@ class PartialModelBuilder[T: ThrsValues](ModelBuilder[T]):
         }
         self._complete_model = Future()
 
-    def input(self, topic: str, json: str | bytes):
-        field = dash_to_snake(topic)
+    def input(self, field: str, json: str | bytes):
         value = self._fields[field].validate_json(json)
         if self._value is not None:
             setattr(self._value, field, value)
@@ -56,9 +54,9 @@ class CombinedModelBuilder(ModelBuilder[CombinedValues]):
             name: PartialModelBuilder(module_cls) for name, module_cls in clss.items()
         }
 
-    def input(self, topic: str, json: str | bytes):
-        module_name, field, *rest = topic.split("/")
-        self._model_builders[module_name].input(field, json)
+    def input(self, field: str, json: str | bytes):
+        module_name, field_name, *rest = field.split("/")
+        self._model_builders[module_name].input(field_name, json)
 
     def result(self) -> CombinedValues | None:
         values: dict[str, ThrsValues] = {
