@@ -1,11 +1,12 @@
 import logging
 from collections.abc import Mapping
 from datetime import datetime
-from typing import Literal, Protocol
+from typing import Protocol
 
 from aiomqtt import Client, Topic
+from pydantic.fields import FieldInfo
 
-from thrs.input_output.base import CombinedValues, ThrsValues
+from thrs.input_output.base import CombinedValues, ThrsValues, get_topic
 from thrs.input_output.model_builder import CombinedModelBuilder, PartialModelBuilder
 from thrs.orchestration.module import ModuleClassMap
 from thrs.orchestration.simulation import ExecutionResult, Simulation, SimulationResult
@@ -19,9 +20,7 @@ class MqttMapping[M](Protocol):
 
     def split_to_topics(self, model: M) -> dict[str, str]: ...
 
-    def has(self, topic: str) -> bool: ...
-
-    def subscribe_topic(self) -> str: ...
+    def subscribe_topics(self) -> set[str]: ...
 
     def handle_message(self, topic: str, json: str | bytes): ...
 
@@ -31,28 +30,38 @@ class MqttMapping[M](Protocol):
 class PartialMqttMapping[M: ThrsValues](MqttMapping[M]):
     """MQTT mapping that maps each component in the model to a separate topic"""
 
-    def __init__(self, cls: type[M]):
+    def __init__(self, cls: type[M], topic_prefix: str, module_prefix: str):
         self._cls = cls
-        self._keys = set(self._topic(key) for key in cls.model_fields.keys())
+        self._topic_prefix = topic_prefix
+        self._module_prefix = module_prefix
+        self._subscribe_topics = {
+            f"{self._topic_prefix}/{
+                (get_topic(field) or f'{self._module_prefix}/+')
+            }": field_name
+            for field_name, field in cls.model_fields.items()
+        }
+        self.topic_to_field = {
+            self._topic(field_name, field): field_name
+            for field_name, field in cls.model_fields.items()
+        }
         self._builder = PartialModelBuilder(self._cls)
 
     def split_to_topics(self, model: M) -> dict[str, str]:
         return {
-            self._topic(key): getattr(model, key).model_dump_json(by_alias=True)
-            for key in type(model).model_fields.keys()
+            self._topic(key, field): getattr(model, key).model_dump_json(by_alias=True)
+            for key, field in self._cls.model_fields.items()
         }
 
-    def _topic(self, key: str) -> str:
-        return hyphenize(key)
+    def _topic(self, key: str, field: FieldInfo) -> str:
+        return f"{self._topic_prefix}/{
+            (get_topic(field) or f'{self._module_prefix}/{hyphenize(key)}')
+        }"
 
-    def has(self, topic: str) -> bool:
-        return topic in self._keys
-
-    def subscribe_topic(self) -> str:
-        return "+"
+    def subscribe_topics(self) -> set[str]:
+        return set(self._subscribe_topics.keys())
 
     def handle_message(self, topic: str, json: str | bytes):
-        self._builder.input(topic, json)
+        self._builder.input(self.topic_to_field[topic], json)
 
     def result(self) -> M | None:
         return self._builder.result()
@@ -61,19 +70,16 @@ class PartialMqttMapping[M: ThrsValues](MqttMapping[M]):
 class DirectMqttMapping[M: ThrsValues](MqttMapping[M]):
     """MQTT mapping that maps the entire model to a single topic"""
 
-    def __init__(self, cls: type[M], topic: str):
+    def __init__(self, cls: type[M], topic_prefix: str):
         self._cls = cls
-        self._topic = topic
+        self._topic = topic_prefix
         self._value = None
 
     def split_to_topics(self, model: M) -> dict[str, str]:
         return {self._topic: model.model_dump_json(by_alias=True)}
 
-    def has(self, topic: str) -> bool:
-        return topic == self._topic
-
-    def subscribe_topic(self) -> str:
-        return self._topic
+    def subscribe_topics(self) -> set[str]:
+        return set(self._topic)
 
     def handle_message(self, topic: str, json: str | bytes):
         if topic == self._topic:
@@ -88,34 +94,39 @@ class ModuleMqttMapping(MqttMapping[CombinedValues]):
 
     Delegates to PartialMqttMapping for each sub-model."""
 
-    def __init__(self, clss: ModuleClassMap):
+    def __init__(self, clss: ModuleClassMap, topic_prefix: str = ""):
         self._clss = clss
+        self._topic_prefix = topic_prefix
         self._plain_mappings: Mapping[str, PartialMqttMapping] = {
-            name: PartialMqttMapping(module_cls) for name, module_cls in clss.items()
+            name: PartialMqttMapping(module_cls, topic_prefix, name)
+            for name, module_cls in clss.items()
+        }
+        self._topic_mappings = {
+            topic: f"{name}/{field}"
+            for name in self._clss
+            for topic, field in self._plain_mappings[name].topic_to_field.items()
         }
         self._builder = CombinedModelBuilder(self._clss)
 
     def split_to_topics(self, model: CombinedValues) -> dict[str, str]:
         return {
-            f"{hyphenize(module)}/{key}": value
+            topic: value
             for module, model in model.values.items()
-            for key, value in self._plain_mappings[module]
+            for topic, value in self._plain_mappings[module]
             .split_to_topics(model)
             .items()
         }
 
-    def has(self, topic: str) -> bool:
-        module_name, key, *rest = topic.split("/")
-        mapping: PartialMqttMapping | Literal[False] = self._plain_mappings.get(
-            module_name, False
-        )
-        return mapping and mapping.has("/".join([key, *rest]))
-
-    def subscribe_topic(self) -> str:
-        return "+/+"
+    def subscribe_topics(self) -> set[str]:
+        return {
+            topic
+            for mapping in self._plain_mappings.values()
+            for topic in mapping.subscribe_topics()
+        }
 
     def handle_message(self, topic: str, json: str | bytes):
-        self._builder.input(topic, json)
+        field = self._topic_mappings[topic]
+        self._builder.input(field, json)
 
     def result(self) -> CombinedValues | None:
         return self._builder.result()
@@ -147,35 +158,37 @@ class MqttControlConnector(Connector[CombinedValues, CombinedValues]):
         self._control_topic_suffix_str = (
             f"/{control_topic_suffix}" if control_topic_suffix else ""
         )
-        self._sensor_values_mqtt_mapping = ModuleMqttMapping(sensor_values_clss)
-        self._control_values_mqtt_mapping = ModuleMqttMapping(control_values_clss)
+        self._sensor_values_mqtt_mapping = ModuleMqttMapping(
+            sensor_values_clss, topic_prefix
+        )
+        self._control_values_mqtt_mapping = ModuleMqttMapping(
+            control_values_clss, topic_prefix
+        )
 
         self._running = False
 
     async def _listen_to_sensors(self):
         async for message in self._mqtt_client.messages:
-            topic = self._clean_topic(message.topic)
-            if not self._sensor_values_mqtt_mapping.has(topic):
+            if not any(
+                message.topic.matches(topic)
+                for topic in self._sensor_values_mqtt_mapping.subscribe_topics()
+            ):
                 continue
             if not isinstance(message.payload, str | bytes):
                 raise ValueError(
                     f"Expected string or bytes, got {type(message.payload)}"
                 )
-            self._sensor_values_mqtt_mapping.handle_message(topic, message.payload)
+            self._sensor_values_mqtt_mapping.handle_message(
+                message.topic.value, message.payload
+            )
 
     async def _publish_by_mapping[T](
         self, client: Client, mapping: MqttMapping[T], value: T
     ):
         payloads = mapping.split_to_topics(value)
-        for topic_suffix, payload in payloads.items():
-            topic = (
-                f"{self._topic_prefix}/{topic_suffix}{self._control_topic_suffix_str}"
-            )
-            await client.publish(
-                topic,
-                payload,
-                qos=1,
-            )
+        for topic, payload in payloads.items():
+            topic = f"{topic}{self._control_topic_suffix_str}"
+            await client.publish(topic, payload, qos=1)
 
     def _clean_topic(self, topic: Topic) -> str:
         return topic.value.removeprefix(f"{self._topic_prefix}/")
@@ -189,10 +202,8 @@ class MqttControlConnector(Connector[CombinedValues, CombinedValues]):
         )
 
     async def start(self):
-        await self._mqtt_client.subscribe(
-            f"{self._topic_prefix}/{self._sensor_values_mqtt_mapping.subscribe_topic()}",
-            qos=1,
-        )
+        for topic in self._sensor_values_mqtt_mapping.subscribe_topics():
+            await self._mqtt_client.subscribe(topic, qos=1)
 
     async def run(self):
         self._running = True
@@ -236,22 +247,19 @@ class MqttSimulationConnector(Connector[CombinedValues, CombinedValues]):
         self._inner = inner
         self._mqtt_client = mqtt_client
         self._topic_prefix = topic_prefix
-        self._sensor_values_mqtt_mapping = ModuleMqttMapping(sensor_values_clss)
+        self._sensor_values_mqtt_mapping = ModuleMqttMapping(
+            sensor_values_clss, topic_prefix
+        )
         self._simulation_outputs_mqtt_mapping = DirectMqttMapping(
-            simulation_outputs_cls, "simulation/outputs"
+            simulation_outputs_cls, f"{topic_prefix}/simulation/outputs"
         )
 
     async def _publish_by_mapping[T](
         self, client: Client, mapping: MqttMapping[T], value: T
     ):
         payloads = mapping.split_to_topics(value)
-        for topic_suffix, payload in payloads.items():
-            topic = f"{self._topic_prefix}/{topic_suffix}"
-            await client.publish(
-                topic,
-                payload,
-                qos=1,
-            )
+        for topic, payload in payloads.items():
+            await client.publish(topic, payload, qos=1)
 
     async def _send_model(
         self, client: Client, model: ThrsValues, topic_suffix: str | None = None

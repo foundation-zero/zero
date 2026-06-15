@@ -21,9 +21,8 @@ from thrs.cli.simulation_controls import (
     StepMessage,
 )
 from thrs.input_output.base import SimulationInputs, SimulationValues, ThrsValues
-from thrs.input_output.model_builder import PartialModelBuilder
 from thrs.orchestration.config import Config
-from thrs.utils.string import dash_to_snake
+from thrs.orchestration.connector import PartialMqttMapping
 
 
 @dataclass
@@ -80,38 +79,39 @@ class MessageReceiver[T: ThrsValues]:
         return self._cls
 
     def matches(self, topic: Topic) -> bool:
-        return topic.matches(self.subscribe_topic)
+        return any(
+            topic.matches(subscribe_topic) for subscribe_topic in self.subscribe_topics
+        )
 
     @property
-    def subscribe_topic(self):
-        return self._topic
+    def subscribe_topics(self):
+        return {self._topic}
 
 
 class PartialMessageReceiver[T: ThrsValues](MessageReceiver[T]):
     def __init__(
-        self, cls: type[T], topic_prefix: str, topic_suffix: str | None = None
+        self,
+        cls: type[T],
+        topic_prefix: str,
+        module_name: str,
+        topic_suffix: str | None = None,
     ):
         super().__init__(cls, topic_prefix)
-        self._model_builder = PartialModelBuilder(cls)
-        self._topic_prefix = topic_prefix
+        self._mqtt_mapping = PartialMqttMapping(cls, topic_prefix, module_name)
         self._topic_suffix = topic_suffix
 
     def _parse_message(self, message: Message) -> T | None:
         if not isinstance(message.payload, str | bytes):
             raise ValueError(f"Expected string or bytes, got {type(message.payload)}")
-        key = message.topic.value.removeprefix(f"{self._topic_prefix}/")
+        topic = message.topic.value
         if self._topic_suffix:
-            key = key.removesuffix(f"/{self._topic_suffix}")
-        self._model_builder.input(dash_to_snake(key), message.payload)
-        return self._model_builder.result()
+            topic = topic.removesuffix(f"/{self._topic_suffix}")
+        self._mqtt_mapping.handle_message(message.topic.value, message.payload)
+        return self._mqtt_mapping.result()
 
     @property
-    def subscribe_topic(self):
-        return (
-            f"{self._topic_prefix}/+/{self._topic_suffix}"
-            if self._topic_suffix
-            else f"{self._topic_prefix}/+"
-        )
+    def subscribe_topics(self):
+        return self._mqtt_mapping.subscribe_topics()
 
 
 class SimulationStatusMessageReceiver(MessageReceiver[SimulationStatusMessage]):
@@ -119,7 +119,7 @@ class SimulationStatusMessageReceiver(MessageReceiver[SimulationStatusMessage]):
         parsed = self._parse_message(msg)
         if parsed is not None:
             for module in context.control_modules:
-                module.active = module.name in parsed.control_modules
+                module.active = module.module_name in parsed.control_modules
             await context.simulation.select_mode(parsed.mode)
 
         await super().handle(msg, context)
@@ -136,22 +136,27 @@ class ControlMessaging[
 ]:
     def __init__(
         self,
-        name: str,
+        module_name: str,
         sensor_values_cls: type[SensorValues],
         control_values_cls: type[ControlValues],
         parameters_cls: type[Parameters],
         mode_cls: type[Mode],
         mqtt_client: MqttClient,
     ):
-        self.name = name
+        self.module_name = module_name
         self._active = False
         self.sensor_values_cls = sensor_values_cls
         self.control_values_cls = control_values_cls
 
-        topic_prefix = f"{settings.mqtt_topic_prefix}/{name}"
-        self._sensor_values = PartialMessageReceiver(sensor_values_cls, topic_prefix)
+        topic_prefix = settings.mqtt_topic_prefix
+        self._sensor_values = PartialMessageReceiver(
+            sensor_values_cls, topic_prefix, module_name
+        )
         self._control_values = PartialMessageReceiver(
-            control_values_cls, topic_prefix, settings.mqtt_control_topic_suffix
+            control_values_cls,
+            topic_prefix,
+            module_name,
+            settings.mqtt_control_topic_suffix,
         )
 
         self._parameters = MessageReceiver(
@@ -182,7 +187,9 @@ class ControlMessaging[
     async def send_manual_controls(self, control_values: ControlValues):
         if not self._active:
             raise Exception("Cannot send manual controls to inactive module")
-        message = ManualControlMessage(module=self.name, control_values=control_values)
+        message = ManualControlMessage(
+            module=self.module_name, control_values=control_values
+        )
         await self._mqtt_client.publish(
             f"{settings.mqtt_topic_prefix}/{message.topic()}",
             message.model_dump_json(),
@@ -218,7 +225,7 @@ class ControlMessaging[
 
     async def set_parameters(self, parameters: Parameters):
         message = SetParametersMessage[Parameters](
-            module=self.name, parameters=parameters
+            module=self.module_name, parameters=parameters
         )
         await self._mqtt_client.publish(
             f"{settings.mqtt_topic_prefix}/{message.topic()}",
@@ -227,7 +234,7 @@ class ControlMessaging[
         )
 
     async def set_automation_mode(self, enabled: bool):
-        message = SetAutomationMessage(module=self.name, enabled=enabled)
+        message = SetAutomationMessage(module=self.module_name, enabled=enabled)
         await self._mqtt_client.publish(
             f"{settings.mqtt_topic_prefix}/{message.topic()}",
             message.model_dump_json(),
@@ -416,7 +423,11 @@ class Messaging:
         ]
 
     async def run(self) -> Coroutine[None, None, None]:
-        topics = set(receiver.subscribe_topic for receiver in self._all_receivers)
+        topics = set(
+            topic
+            for receiver in self._all_receivers
+            for topic in receiver.subscribe_topics
+        )
         await self._mqtt_client.subscribe(SimulationStatusMessage.subscribe_topic())
         await asyncio.sleep(0.2)  # Give status time to arrive first
         for topic in topics - {SimulationStatusMessage.subscribe_topic()}:
