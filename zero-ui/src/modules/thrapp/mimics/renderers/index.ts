@@ -1,8 +1,11 @@
 import { NumberFormatter } from "@/modules/common/lib/utils.ts";
 import { HTMLAttributes } from "vue";
 import BoilerTankMode from "./BoilerTankModeRenderer.vue";
+import DeltaT from "./DeltaTRenderer.vue";
 import FlowRate from "./FlowRateRenderer.vue";
+import HeatExchangerMode from "./HeatExchangerModeRenderer.vue";
 import HeatPumpMode from "./HeatPumpModeRenderer.vue";
+import Heat from "./HeatRenderer.vue";
 import Level from "./LevelRenderer.vue";
 import Number from "./NumberRenderer.vue";
 import Percentage from "./PercentageRenderer.vue";
@@ -30,4 +33,7 @@ export const FieldRenderer = {
   Level,
   TimeRemaining,
   Source,
+  DeltaT,
+  Heat,
+  HeatExchangerMode,
 };

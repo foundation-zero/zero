@@ -1,5 +1,6 @@
 import { ControlComponentType, ParametersType, SensorComponentType } from "@/modules/thrs/types";
 import { BoilerTankStateField, MimicComponentType } from ".";
+import { HeatExchangerPortOrientation } from "../mimics/components/heat-exchanger";
 import { ModuleField } from "../mimics/providers";
 
 export type ComponentFields<
@@ -53,6 +54,13 @@ export type SensorFieldDefinitions = SensorFields<{
     flow: SensorComponentType.Flow;
   };
   [MimicComponentType.ManualValve]: EmptyObject;
+  [MimicComponentType.ExchangeCircuit]: {
+    incoming: SensorComponentType.Temperature;
+    outgoing: SensorComponentType.Temperature;
+    flow: SensorComponentType.Flow;
+    deltaT: SensorComponentType.DeltaT;
+  };
+  [MimicComponentType.HotWaterCircuit]: EmptyObject;
   [MimicComponentType.Asset]: {
     heatExchanger: SensorComponentType.HeatExchanger;
   };
@@ -79,6 +87,8 @@ export type ControlFieldDefinitions = ControlFields<{
   [MimicComponentType.SwitchValve]: {
     valve: ControlComponentType.Valve;
   };
+  [MimicComponentType.ExchangeCircuit]: EmptyObject;
+  [MimicComponentType.HotWaterCircuit]: EmptyObject;
   [MimicComponentType.FlowControlValve]: {
     valve: ControlComponentType.Valve;
     controller: ControlComponentType.PIDController;
@@ -92,6 +102,8 @@ export type ParameterFieldDefinitions = ParameterFields<{
     minimumTemperature: ParametersType.Temperature;
     maximumTemperature: ParametersType.Temperature;
   };
+  [MimicComponentType.ExchangeCircuit]: EmptyObject;
+  [MimicComponentType.HotWaterCircuit]: EmptyObject;
   [MimicComponentType.Pump]: EmptyObject;
   [MimicComponentType.HeatExchanger]: EmptyObject;
   [MimicComponentType.PressureSensor]: EmptyObject;
@@ -108,7 +120,14 @@ export type CustomFieldDefinitions = CustomFields<{
     tankStateField: BoilerTankStateField;
   };
   [MimicComponentType.Pump]: EmptyObject;
-  [MimicComponentType.HeatExchanger]: EmptyObject;
+  [MimicComponentType.HeatExchanger]: {
+    sideA: HeatExchangerPortOrientation;
+    sideB: HeatExchangerPortOrientation;
+    circuit: ExtractSensorFields<MimicComponentType.ExchangeCircuit>["sensors"];
+    exchangeCircuit: ExtractSensorFields<MimicComponentType.ExchangeCircuit>["sensors"];
+  };
+  [MimicComponentType.ExchangeCircuit]: EmptyObject;
+  [MimicComponentType.HotWaterCircuit]: EmptyObject;
   [MimicComponentType.PressureSensor]: EmptyObject;
   [MimicComponentType.TemperatureSensor]: EmptyObject;
   [MimicComponentType.FlowSensor]: EmptyObject;

@@ -4,7 +4,9 @@ import { MimicComponentInstanceProps } from ".";
 import { HeatingState } from "../components";
 import { HeatExchangerPortOrientation } from "../components/heat-exchanger";
 
-import { SensorComponentType } from "@/modules/thrs/types/index.ts";
+import { SensorComponentType } from "@/modules/thrs/types";
+import { MimicTooltipTrigger, TooltipComponentContext } from "../../components/tooltip";
+import { MimicComponentType } from "../../types";
 import HeatExchanger from "../components/heat-exchanger/HeatExchanger.vue";
 import HeatExchangerPort from "../components/heat-exchanger/HeatExchangerPort.vue";
 import { getMimicDataProvider, ModuleField } from "../providers";
@@ -16,16 +18,15 @@ export type HeatExchangerInstanceProps = {
 };
 
 const props = withDefaults(
-  defineProps<MimicComponentInstanceProps & HeatExchangerInstanceProps>(),
-  {
-    sideA: HeatExchangerPortOrientation.Side,
-    sideB: HeatExchangerPortOrientation.Side,
-  },
+  defineProps<
+    MimicComponentInstanceProps & TooltipComponentContext<MimicComponentType.HeatExchanger>
+  >(),
+  {},
 );
 
 const { getSensorValue } = getMimicDataProvider();
 
-const heatExchanger = getSensorValue(props.heatExchanger);
+const heatExchanger = getSensorValue(props.sensors.heatExchanger);
 
 type HeatExchangerState = [sideA: HeatingState, sideB: HeatingState];
 
@@ -46,19 +47,24 @@ const exchangerState = computed(() => {
 </script>
 
 <template>
-  <HeatExchanger
-    v-bind="props"
-    :heating-state="exchangerState"
+  <MimicTooltipTrigger
+    :type="MimicComponentType.HeatExchanger"
+    :data="props"
   >
-    <HeatExchangerPort
-      side="a"
-      :state="portStates[0]"
-      :orientation="sideA"
-    />
-    <HeatExchangerPort
-      side="b"
-      :state="portStates[1]"
-      :orientation="sideB"
-    />
-  </HeatExchanger>
+    <HeatExchanger
+      v-bind="props"
+      :heating-state="exchangerState"
+    >
+      <HeatExchangerPort
+        side="a"
+        :state="portStates[0]"
+        :orientation="custom.sideA"
+      />
+      <HeatExchangerPort
+        side="b"
+        :state="portStates[1]"
+        :orientation="custom.sideB"
+      />
+    </HeatExchanger>
+  </MimicTooltipTrigger>
 </template>

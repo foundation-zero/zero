@@ -6,6 +6,11 @@
       "legend": "Legend"
     },
     "tooltips": {
+      "actions": {
+        "viewCircuitMimic": "View circuit mimic",
+        "viewControls": "View controls",
+        "controlManually": "Control manually"
+      },
       "labels": {
         "input": "Input",
         "output": "Output",
@@ -13,7 +18,11 @@
         "viewControls": "View controls",
         "controlManually": "Control manually",
         "open": "Open",
-        "closed": "Closed"
+        "closed": "Closed",
+        "mode": "Mode",
+        "heatExchange": "Heat exchange",
+        "thisCircuit": "This circuit",
+        "exchangeCircuit": "Exchange circuit"
       },
       "sources": {
         "calculated": "Calculated",
@@ -42,6 +51,7 @@
         "temperature": "Temperature",
         "currentTemperature": "Current temperature",
         "incomingTemperature": "Incoming temperature",
+        "outgoingTemperature": "Outgoing temperature",
         "minTemperature": "Min. temperature",
         "maxTemperature": "Max. temperature",
         "minLevel": "Minimum level",
@@ -60,7 +70,11 @@
         "boostSupplyValve": "Boost supply valve",
         "supplyValve": "Supply valve",
         "dischargeValve": "Discharge valve",
-        "automatedControl": "Automated control"
+        "automatedControl": "Automated control",
+        "exchanger": "Exchanger",
+        "heatExchange": "Heat exchange",
+        "deltaTemperature": "Delta temperature",
+        "flow": "Flow"
       }
     },
     "mimics": {
@@ -83,6 +97,13 @@
           "inactive": "Inactive",
           "manual": "Manual",
           "alarm": "Alarm"
+        }
+      },
+      "heatExchanger": {
+        "modes": {
+          "idle": "Idle",
+          "cooling-medium": "Cooling",
+          "heating-medium": "Heating"
         }
       },
       "boilers": {

@@ -18,16 +18,12 @@ const value = getFieldValue(toRef(props, "value"));
 <template>
   <span
     data-slot="field-value"
-    :class="cn('flex items-center', props.class)"
+    :class="cn('flex items-center', { 'gap-0.5': !dense }, props.class)"
   >
     <AnimatedNumber
       :to="value"
       :format="format"
     />
-    <span
-      v-if="unit"
-      :class="{ 'pl-0.5': !dense }"
-      >{{ unit }}</span
-    >
+    <span v-if="unit">{{ unit }}</span>
   </span>
 </template>

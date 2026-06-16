@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { formatNumber } from "@/modules/common/lib/utils.ts";
 import {
   TooltipListItem,
   TooltipListItemTitle,
@@ -26,9 +27,8 @@ defineProps<{
       <TooltipListItemTitle>
         <slot />
       </TooltipListItemTitle>
-      <TooltipListItemValue>
-        <FieldRenderer.HeatPumpMode />
-      </TooltipListItemValue>
+
+      <FieldRenderer.HeatPumpMode />
     </TooltipListItem>
   </ControlValue>
 
@@ -57,7 +57,7 @@ defineProps<{
         <FieldRenderer.Source url>boilers_filling_temperature</FieldRenderer.Source>
       </TooltipListItemTitle>
       <TooltipListItemValue>
-        <FieldRenderer.Temperature />
+        <FieldRenderer.Temperature :format="formatNumber(1)" />
       </TooltipListItemValue>
     </TooltipListItem>
   </ControlValue>
@@ -72,7 +72,7 @@ defineProps<{
         <FieldRenderer.Source :source="measurement" />
       </TooltipListItemTitle>
       <TooltipListItemValue>
-        <FieldRenderer.Temperature />
+        <FieldRenderer.Temperature :format="formatNumber(1)" />
       </TooltipListItemValue>
     </TooltipListItem>
   </SensorValue>
@@ -87,7 +87,7 @@ defineProps<{
         <FieldRenderer.Source>{{ sources("calculated") }}</FieldRenderer.Source>
       </TooltipListItemTitle>
       <TooltipListItemValue>
-        <FieldRenderer.FlowRate />
+        <FieldRenderer.FlowRate :format="formatNumber(1)" />
       </TooltipListItemValue>
     </TooltipListItem>
   </ControlValue>
