@@ -43,6 +43,3 @@ compile_fmus:
     just compile_fmu src/thrs/simulation/models/PCM_ModuleV8.fmu
     just compile_fmu src/thrs/simulation/models/PVT_ModuleV16.fmu
     just compile_fmu src/thrs/simulation/models/Thruster_Module_V19.fmu
-
-
-
