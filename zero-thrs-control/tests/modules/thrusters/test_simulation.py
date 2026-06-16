@@ -22,11 +22,12 @@ from thrs.orchestration.collector import PolarsCollector
 from thrs.orchestration.runner import Runner, SimulatorModel
 from thrs.orchestration.simulation import Simulation
 from thrs.simulation.fmu import Fmu
-from thrs.simulation.io_mapping import flatten_model_values
+from thrs.simulation.io_mapping import ThrsModelIoMapping, flatten_model_values
 from thrs.simulation.models.fmu_paths import thrusters_path
 
 
-async def test_runner(simulation, fmu, io_mapping, simulation_inputs, control, alarms):
+async def test_runner(simulation, fmu, simulation_inputs, control, alarms):
+    io_mapping = ThrsModelIoMapping(ThrustersSensorValues, ThrustersSimulationOutputs)
     collector = PolarsCollector()
     simulation.transceive = simulation.tick  # type: ignore # TODO: Make this make sense
     runner = Runner(simulation, control, alarms)

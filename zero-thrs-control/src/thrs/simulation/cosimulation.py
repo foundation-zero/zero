@@ -127,21 +127,23 @@ class CoSimulationMaster:
 
         for participant, coupling in zip(self._participants, self._compiled_couplings):
             # filter the inputs for the current participant
-            fmu_inputs = {
+            participant_inputs = {
                 key: value
                 for key, value in inputs.items()
                 if key in participant.fmu_key_input_mapping.values()
             }
 
-            # add the coupled inputs from the previous outputs
-            # NOTE: this overwrites any direct inputs with matching names
+            # inject previous outputs from other participants based on the coupling
             for dest_fmu_key, src_fmu_key in coupling.items():
-                fmu_inputs[dest_fmu_key] = self._previous_outputs[src_fmu_key]
+                if dest_fmu_key in participant_inputs:
+                    raise ValueError(
+                        f"Input '{dest_fmu_key}' for participant '{participant}' is being set both directly and via coupling from '{src_fmu_key}'."
+                    )
+                participant_inputs[dest_fmu_key] = self._previous_outputs[src_fmu_key]
 
-            fmu_outputs = participant.fmu.tick(fmu_inputs, duration)
-            current_outputs.update(fmu_outputs)
+            participant_outputs = participant.fmu.tick(participant_inputs, duration)
+            current_outputs.update(participant_outputs)
 
-        # Commit frames to history memory for the next loop's delay boundaries
         self._previous_outputs = current_outputs
         return current_outputs
 

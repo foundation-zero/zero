@@ -1,4 +1,5 @@
 from datetime import datetime, timedelta
+from typing import Any
 
 from thrs.control.modules.boilers import BoilersControl, BoilersParameters
 from thrs.control.modules.lt1 import Lt1Control, Lt1Parameters
@@ -28,7 +29,6 @@ from thrs.simulation.cosimulation import (
 )
 from thrs.simulation.fmu import Fmu
 from thrs.simulation.io_mapping import CombinedIoMapping
-from thrs.simulation.models.fmu_paths import boilers_path, lt1_path
 
 
 class Lt1BoilersSimulationInputs(SimulationInputs):
@@ -61,11 +61,44 @@ class Lt1BoilersSimulationOutputs(SimulationValues):
     boilers_freshwater_return: simulation.FlowBoundary
 
 
-def test_cosimulation():
+def test_cosimulation_input_routing():
+    class MockFmu(Fmu):
+        # This mock FMU ignores the inputs and always returns the same outputs, but it records the inputs it receives for assertions in the test.
+        def __init__(self, outputs: dict[str, Any]):
+            self.inputs: list[dict[str, Any]] = []
+            self._outputs = outputs
+
+        def tick(self, inputs: dict[str, Any], duration: timedelta) -> dict[str, Any]:
+            self.inputs.append(dict(inputs))
+            return self._outputs
+
+        def __enter__(self) -> "MockFmu":
+            return self
+
+        def __exit__(self, *_) -> bool:
+            return True
+
+        @property
+        def solver_time(self) -> float:
+            return 0.0
+
+    lt1_mock = MockFmu(
+        {
+            "lt1_flow_recovery__flow__l_min": 42.0,
+            "lt1_temperature_recovery__temperature__C": 35.0,
+        }
+    )
+    boilers_mock = MockFmu(
+        {
+            "boilers_flow_lt1__flow__l_min": 15.0,
+            "boilers_temperature_freshwater_supply__temperature__C": 55.0,
+        }
+    )
+
     lt1_boilers = CoSimulationMaster(
         [
             CoSimulationParticipant(
-                Fmu(lt1_path),
+                lt1_mock,
                 Lt1SensorValues,
                 Lt1ControlValues,
                 Lt1SimulationInputs,
@@ -81,10 +114,10 @@ def test_cosimulation():
                         "temperature",
                         30.0,
                     ),
-                ],  # TODO: no sensor for the supply flow of lt1 in boilers when low temp boosting!)
+                ],
             ),
             CoSimulationParticipant(
-                Fmu(boilers_path),
+                boilers_mock,
                 BoilersSensorValues,
                 BoilersControlValues,
                 BoilersSimulationInputs,
@@ -165,10 +198,31 @@ def test_cosimulation():
 
     inputs = io_mapping.generate_inputs(control_values, simulation_inputs)
 
-    with lt1_boilers as composite_fmu:
-        outputs = composite_fmu.tick(
-            inputs,
-            duration=timedelta(seconds=1),
-        )
+    lt1_input_keys = set(lt1_boilers._participants[0].fmu_key_input_mapping.values())
+    boilers_input_keys = set(
+        lt1_boilers._participants[1].fmu_key_input_mapping.values()
+    )
 
-        assert len(outputs) > 0
+    # First tick - couplings use initial values
+    lt1_boilers.tick(inputs, duration=timedelta(seconds=1))
+
+    # Each participant should only receive keys from its own input mapping
+    assert set(lt1_mock.inputs[0].keys()).issubset(lt1_input_keys)
+    assert set(boilers_mock.inputs[0].keys()).issubset(boilers_input_keys)
+
+    # The coupled inputs should carry the initial coupling values on first tick
+    assert lt1_mock.inputs[0]["lt1_boilers_supply__flow__l_min"] == 0.0
+    assert lt1_mock.inputs[0]["lt1_boilers_supply__temperature__C"] == 30.0
+    assert boilers_mock.inputs[0]["boilers_lt1_supply__flow__l_min"] == 0.0
+    assert boilers_mock.inputs[0]["boilers_lt1_supply__temperature__C"] == 30.0
+
+    # Second tick - couplings route outputs from the previous tick
+    lt1_boilers.tick(inputs, duration=timedelta(seconds=1))
+
+    # lt1 now receives the coupled values from boilers' first tick outputs
+    assert lt1_mock.inputs[1]["lt1_boilers_supply__flow__l_min"] == 15.0
+    assert lt1_mock.inputs[1]["lt1_boilers_supply__temperature__C"] == 55.0
+
+    # boilers now receives the coupled values from lt1's first tick outputs
+    assert boilers_mock.inputs[1]["boilers_lt1_supply__flow__l_min"] == 42.0
+    assert boilers_mock.inputs[1]["boilers_lt1_supply__temperature__C"] == 35.0
