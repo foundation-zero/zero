@@ -26,7 +26,7 @@
       "includeVars": false,
       "keepTime": true,
       "tags": [
-        "commisssioning"
+        "commissioning"
       ],
       "targetBlank": false,
       "title": "Dashboards",
@@ -6696,7 +6696,7 @@
   "refresh": "5s",
   "schemaVersion": 42,
   "tags": [
-    "commisssioning"
+    "commissioning"
   ],
   "templating": {
     "list": [
@@ -6721,6 +6721,6 @@
   "timepicker": {},
   "timezone": "browser",
   "title": "Bilge/Fifi",
-  "uid": "commisssioning-bilge-fifi",
+  "uid": "commissioning-bilge-fifi",
   "version": 1
 }
