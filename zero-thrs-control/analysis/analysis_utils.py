@@ -1,10 +1,9 @@
+import matplotlib.dates as mdates
+import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
-
-import seaborn as sns
-import matplotlib.pyplot as plt
-import matplotlib.dates as mdates
 import polars as pl
+import seaborn as sns
 
 
 def compute_heat(temp1, temp2, flow):
