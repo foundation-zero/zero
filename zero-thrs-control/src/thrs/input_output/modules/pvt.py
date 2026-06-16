@@ -7,6 +7,7 @@ from thrs.input_output.base import (
     SimulationValues,
     ThrsValues,
     component_meta,
+    computed_meta,
 )
 from thrs.input_output.definitions import control, sensor, simulation
 
@@ -402,14 +403,12 @@ class PvtSensorValues(ThrsValues):
     ]
 
     @computed_field(
-        json_schema_extra=component_meta(
+        json_schema_extra=computed_meta(
             component_type="calculated_temperature", included_in_fmu=False
-        ).json_schema_extra
+        )
     )
     @property
-    def pvt_max_temperature_main_fwd_strings(
-        self,
-    ) -> Annotated[sensor.CalculatedTemperature, component_meta(included_in_fmu=False)]:
+    def pvt_max_temperature_main_fwd_strings(self) -> sensor.CalculatedTemperature:
         return sensor.CalculatedTemperature.from_max_temperature(
             [
                 self.pvt_temperature_main_string_1_1_return,
@@ -432,15 +431,12 @@ class PvtSensorValues(ThrsValues):
         )
 
     @computed_field(
-        json_schema_extra=component_meta(included_in_fmu=False).json_schema_extra
+        json_schema_extra=computed_meta(
+            component_type="calculated_temperature", included_in_fmu=False
+        )
     )
     @property
-    def pvt_max_temperature_main_aft_strings(
-        self,
-    ) -> Annotated[
-        sensor.CalculatedTemperature,
-        component_meta(component_type="calculated_temperature", included_in_fmu=False),
-    ]:
+    def pvt_max_temperature_main_aft_strings(self) -> sensor.CalculatedTemperature:
         return sensor.CalculatedTemperature.from_max_temperature(
             [
                 self.pvt_temperature_main_string_7_1_return,
@@ -464,15 +460,12 @@ class PvtSensorValues(ThrsValues):
         )
 
     @computed_field(
-        json_schema_extra=component_meta(included_in_fmu=False).json_schema_extra
+        json_schema_extra=computed_meta(
+            component_type="calculated_temperature", included_in_fmu=False
+        )
     )
     @property
-    def pvt_max_temperature_owners_strings(
-        self,
-    ) -> Annotated[
-        sensor.CalculatedTemperature,
-        component_meta(component_type="calculated_temperature", included_in_fmu=False),
-    ]:
+    def pvt_max_temperature_owners_strings(self) -> sensor.CalculatedTemperature:
         return sensor.CalculatedTemperature.from_max_temperature(
             [
                 self.pvt_temperature_owners_string_1_return,

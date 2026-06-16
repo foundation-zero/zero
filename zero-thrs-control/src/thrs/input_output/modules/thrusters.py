@@ -10,6 +10,7 @@ from thrs.input_output.base import (
     Stamped,
     ThrsValues,
     component_meta,
+    computed_meta,
 )
 from thrs.input_output.definitions import simulation
 
@@ -115,14 +116,12 @@ class ThrustersSensorValues(ThrsValues):
     ]
 
     @computed_field(
-        json_schema_extra=component_meta(
+        json_schema_extra=computed_meta(
             component_type="calculated_temperature", included_in_fmu=False
-        ).json_schema_extra
+        )
     )
     @property
-    def thrusters_temperature_recovery(
-        self,
-    ) -> Annotated[sensor.CalculatedTemperature, component_meta(included_in_fmu=False)]:
+    def thrusters_temperature_recovery(self) -> sensor.CalculatedTemperature:
         total_flow = (
             self.thrusters_flow_aft.flow.value + self.thrusters_flow_fwd.flow.value
         )
