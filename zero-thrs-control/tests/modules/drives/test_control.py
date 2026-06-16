@@ -4,7 +4,7 @@ from tests.helpers.simulation_runner import SimulationTestRunner
 from thrs.control.modules.drives import DrivesControl, DrivesParameters
 from thrs.input_output.definitions.control import Valve
 from thrs.input_output.modules.drives import DrivesSimulationInputs
-from thrs.orchestration.connector import ExecutionResult
+from thrs.orchestration.simulation import SimulationResult
 
 
 def test_idle(
@@ -12,13 +12,12 @@ def test_idle(
 ):
     runner._simulation.update_simulation_inputs(simulation_inputs_inactive)  # type: ignore
 
-    runner.run(90)
-    result = runner.last_tick_result
+    result = runner.run(90)
 
     assert isinstance(runner._control, DrivesControl)
     assert runner._control.mode.is_idle
 
-    assert isinstance(result, ExecutionResult)
+    assert isinstance(result, SimulationResult)
     assert result.sensor_values.drives_flow_propdrive_aft1.flow.value == approx(
         0.0, abs=0.01
     )
@@ -43,13 +42,12 @@ def test_propulsion_all_active(
 ):
     runner._simulation.update_simulation_inputs(simulation_inputs_all_drives_active)  # type: ignore
 
-    runner.run(180)
-    result = runner.last_tick_result
+    result = runner.run(180)
 
     assert isinstance(runner._control, DrivesControl)
     assert runner._control.mode.is_propulsion
 
-    assert isinstance(result, ExecutionResult)
+    assert isinstance(result, SimulationResult)
     assert result.sensor_values.drives_flow_propdrive_aft1.flow.value == approx(
         15.0, abs=0.1
     )
@@ -85,13 +83,12 @@ def test_shorepower(
 ):
     runner._simulation.update_simulation_inputs(simulation_inputs_shorepower)  # type: ignore
 
-    runner.run(180)
-    result = runner.last_tick_result
+    result = runner.run(180)
 
     assert isinstance(runner._control, DrivesControl)
     assert runner._control.mode.is_shorepower
 
-    assert isinstance(result, ExecutionResult)
+    assert isinstance(result, SimulationResult)
     assert result.sensor_values.drives_flow_shorepower.flow.value == approx(
         20.0, abs=0.5
     )
@@ -112,10 +109,9 @@ def test_heat_dump(
         )
     )
 
-    runner.run(120)
-    result = runner.last_tick_result
+    result = runner.run(120)
 
-    assert isinstance(result, ExecutionResult)
+    assert isinstance(result, SimulationResult)
     assert result.sensor_values.drives_mix_recovery.position_rel.value == approx(
         Valve.MIXING_B_TO_AB, abs=0.01
     )
@@ -139,10 +135,9 @@ def test_heat_recovery(
         )
     )
 
-    runner.run(720)
-    result = runner.last_tick_result
+    result = runner.run(720)
 
-    assert isinstance(result, ExecutionResult)
+    assert isinstance(result, SimulationResult)
     assert result.sensor_values.drives_temperature_recovery.temperature.value == approx(
         50.0, abs=1
     )
@@ -158,13 +153,12 @@ def test_flow_balancing(
 ):
     runner._simulation.update_simulation_inputs(simulation_inputs_all_drives_active)  # type: ignore
 
-    runner.run(120)
-    result = runner.last_tick_result
+    result = runner.run(120)
 
     assert isinstance(runner._control, DrivesControl)
     assert runner._control.mode.is_propulsion
 
-    assert isinstance(result, ExecutionResult)
+    assert isinstance(result, SimulationResult)
     assert result.sensor_values.drives_flow_propdrive_aft1.flow.value == approx(
         15.0, abs=0.5
     )

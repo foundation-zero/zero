@@ -1,6 +1,6 @@
 from datetime import datetime
 
-from thrs.orchestration.collector import PolarsCollector
+from tests.helpers.collector import PolarsCollector
 
 
 def test_empty():

@@ -11,7 +11,7 @@ from thrs.orchestration.runner import Runner
 
 async def test_simulator():
     control = SimpleControl(SimpleParameters(), lambda: datetime.now())
-    connector = SimpleConnector(datetime.now())
+    connector = SimpleConnector()
     runner = Runner(connector, control, SimpleAlarms())
     await runner.run(3)
     assert len(connector.controls) == 3

@@ -92,10 +92,10 @@ class Runner[S: ThrsValues, C: ThrsValues, P: ThrsValues, M: ThrsValues]:
 
     async def run(self, n_ticks: int) -> None:
         for _ in range(n_ticks):
-            result = await self._connector.transceive(self._control_values)
-            self._control_values = self._control.control(result.sensor_values).values
+            sensor_values = await self._connector.transceive(self._control_values)
+            self._control_values = self._control.control(sensor_values).values
             alarms = self._alarms.check(
-                result.sensor_values, self._control_values, self._control.parameters
+                sensor_values, self._control_values, self._control.parameters
             )
             if alarms:
                 warnings.warn(
