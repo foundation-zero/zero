@@ -3,11 +3,28 @@ from base64 import b64encode
 from datetime import timedelta
 from tempfile import gettempdir
 from types import TracebackType
-from typing import Any, Callable, Iterable, Self, cast
+from typing import Any, Callable, Iterable, Protocol, Self, cast, runtime_checkable
 
 from fmpy import extract, read_model_description
 from fmpy.fmi2 import FMU2Slave
 from fmpy.model_description import ModelDescription
+
+
+@runtime_checkable
+class FmuLike(Protocol):
+    def tick(self, inputs: dict[str, Any], duration: timedelta) -> dict[str, Any]: ...
+
+    def __enter__(self) -> Self: ...
+
+    def __exit__(
+        self,
+        type_: type[BaseException] | None,
+        value: BaseException | None,
+        traceback: TracebackType | None,
+    ) -> bool: ...
+
+    @property
+    def solver_time(self) -> float: ...
 
 
 def _var_mapper(
