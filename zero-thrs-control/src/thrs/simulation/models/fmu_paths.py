@@ -1,10 +1,5 @@
 from pathlib import Path
 
-fahrenheit_path = str(Path(__file__).resolve().parent / "Fahrenheit_ModuleV4.fmu")
-boilers_path = str(Path(__file__).resolve().parent / "Boilers_ModuleV4_1.fmu")
-lt1_path = str(Path(__file__).resolve().parent / "LT1_ModuleV3_1.fmu")
-lt2_path = str(Path(__file__).resolve().parent / "LT2_ModuleV3_2.fmu")
-
 thrusters_path = str(Path(__file__).resolve().parent / "Thruster_Module_V19.fmu")
 pvt_path = str(Path(__file__).resolve().parent / "PVT_ModuleV16.fmu")
 consumers_path = str(Path(__file__).resolve().parent / "Consumer_ModuleV9.fmu")
