@@ -35,9 +35,19 @@
         "tank1": "tank 1 enabled",
         "tank2": "tank 2 enabled",
         "tank3": "tank 3 enabled",
-        "tankState": "Tanks controller"
+        "tankState": "Tanks controller",
+        "pumpTemperatureController": "Pump temperature controller",
+        "pumpFlowController": "Pump flow controller"
       },
       "items": {
+        "operationTime": "Operation time",
+        "totalRunningHours": "Total running hours",
+        "speed": "Speed",
+        "powerInput": "Power input",
+        "energyConsumption": "Energy consumption",
+        "pressure": "Pressure",
+        "relativeDutyPoint": "Relative duty point",
+        "onOff": "On-off",
         "error": "Error",
         "measurement": "Measurement",
         "actuator": "Actuator",

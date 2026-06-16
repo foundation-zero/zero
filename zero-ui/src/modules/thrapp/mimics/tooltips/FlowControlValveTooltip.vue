@@ -1,5 +1,10 @@
 <script setup lang="ts">
 import {
+  TooltipListItem,
+  TooltipListItemTitle,
+  TooltipListItemValue,
+} from "@/modules/thrapp/components/tooltip-list";
+import {
   TooltipList,
   TooltipListHeader,
   TooltipListItemAction,
@@ -8,17 +13,17 @@ import { MimicTooltip, TooltipComponentContext } from "../../components/tooltip/
 import { MimicComponentType } from "../../types/index.ts";
 import { YardTag } from "../components/yard-tag/index.ts";
 import FlowControlValveInstance from "../instances/FlowControlValveInstance.vue";
+import { ControlValue } from "../providers";
 import { FieldRenderer } from "../renderers/index.ts";
 import { useTranslations } from "./index.ts";
 import ComponentInfo from "./partials/ComponentInfo.vue";
-import FlowController from "./partials/FlowController.vue";
-import FlowValveSetpoint from "./partials/FlowValveSetpoint.vue";
 import ManualControl from "./partials/ManualControl.vue";
+import TemperatureController from "./partials/TemperatureController.vue";
 import ValvePosition from "./partials/ValvePosition.vue";
 
 const props = defineProps<TooltipComponentContext<MimicComponentType.FlowControlValve>>();
 
-const { labels } = useTranslations();
+const { labels, items } = useTranslations();
 </script>
 
 <template>
@@ -35,9 +40,20 @@ const { labels } = useTranslations();
 
     <TooltipList>
       <TooltipListHeader>{{ labels("input") }}</TooltipListHeader>
-      <FlowValveSetpoint :valve="controls.valve">
-        <FieldRenderer.Source external>{{ custom.controllerName }}</FieldRenderer.Source>
-      </FlowValveSetpoint>
+      <ControlValue
+        :source="controls.valve"
+        field="setpoint"
+      >
+        <TooltipListItem>
+          <TooltipListItemTitle>
+            {{ items("setpoint") }}
+            <FieldRenderer.Source external>{{ custom.controllerName }}</FieldRenderer.Source>
+          </TooltipListItemTitle>
+          <TooltipListItemValue>
+            <FieldRenderer.Percentage />
+          </TooltipListItemValue>
+        </TooltipListItem>
+      </ControlValue>
     </TooltipList>
 
     <TooltipList>
@@ -50,12 +66,13 @@ const { labels } = useTranslations();
         {{ labels("controls") }}
         <TooltipListItemAction>{{ labels("viewControls") }}</TooltipListItemAction>
       </TooltipListHeader>
-      <FlowController
+      <TemperatureController
         :controller="controls.controller"
         :measurement="sensors.measurement"
+        :setpoint-name="custom.setpointName"
       >
         <FieldRenderer.Source external>{{ custom.controllerName }}</FieldRenderer.Source>
-      </FlowController>
+      </TemperatureController>
     </TooltipList>
   </MimicTooltip>
 </template>

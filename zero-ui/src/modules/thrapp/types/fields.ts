@@ -39,7 +39,10 @@ export type SensorFieldDefinitions = SensorFields<{
     boostingSupply: SensorComponentType.Temperature;
   };
   [MimicComponentType.Pump]: {
+    pressure: SensorComponentType.Pressure;
     pump: SensorComponentType.Pump;
+    flowMeasurement: SensorComponentType.Flow;
+    temperatureMeasurement: SensorComponentType.Temperature;
   };
   [MimicComponentType.HeatExchanger]: {
     heatExchanger: SensorComponentType.HeatExchanger;
@@ -77,7 +80,11 @@ export type ControlFieldDefinitions = ControlFields<{
   [MimicComponentType.BoilerTank]: {
     controller: ControlComponentType.BoilersTanksController;
   };
-  [MimicComponentType.Pump]: EmptyObject;
+  [MimicComponentType.Pump]: {
+    flowController: ControlComponentType.PIDController;
+    temperatureController: ControlComponentType.PIDController;
+    pump: ControlComponentType.Pump;
+  };
   [MimicComponentType.HeatExchanger]: EmptyObject;
   [MimicComponentType.PressureSensor]: EmptyObject;
   [MimicComponentType.TemperatureSensor]: EmptyObject;
@@ -119,7 +126,10 @@ export type CustomFieldDefinitions = CustomFields<{
   [MimicComponentType.BoilerTank]: {
     tankStateField: BoilerTankStateField;
   };
-  [MimicComponentType.Pump]: EmptyObject;
+  [MimicComponentType.Pump]: {
+    flowSetpointName: string;
+    temperatureSetpointName: string;
+  };
   [MimicComponentType.HeatExchanger]: {
     sideA: HeatExchangerPortOrientation;
     sideB: HeatExchangerPortOrientation;
@@ -142,6 +152,7 @@ export type CustomFieldDefinitions = CustomFields<{
   };
   [MimicComponentType.FlowControlValve]: {
     controllerName: string;
+    setpointName: string;
   };
 }>;
 

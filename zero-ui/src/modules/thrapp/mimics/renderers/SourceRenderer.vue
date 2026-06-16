@@ -25,7 +25,7 @@ const definition = computed(() => {
     :class="
       cn(
         'text-disabled-foreground overflow-hidden text-sm font-medium text-ellipsis',
-        { underline: source || external || url, 'text-brand-dull': url },
+        { underline: (source && !$slots['default']) || external || url, 'text-brand-dull': url },
         props.class,
       )
     "

@@ -9,11 +9,17 @@ const props = withDefaults(defineProps<FieldRendererProps<number>>(), {
 
 const { units } = useTranslations();
 const seconds = (value: number) => formatInt(value % 60);
-const minutes = (value: number) => formatInt(Math.floor(value / 60));
+const minutes = (value: number) => formatInt(Math.floor((value % 3600) / 60));
+const hours = (value: number) => formatInt(Math.floor(value / 3600));
 </script>
 
 <template>
   <span class="flex items-center gap-1">
+    <FieldRenderer.Number
+      v-bind="props"
+      :unit="units('hours')"
+      :format="hours"
+    />
     <FieldRenderer.Number
       v-bind="props"
       :unit="units('minutes')"

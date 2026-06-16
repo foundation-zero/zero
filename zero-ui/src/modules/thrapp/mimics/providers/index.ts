@@ -91,7 +91,7 @@ export const getSensorDefinition = <K extends keyof ThrsDefinitions>(module: K, 
   const definition = definitions[field];
 
   if (!definition) {
-    throw new Error(`No sensor definition found for field: ${field as string}`);
+    console.error(`No sensor definition found for field: ${field as string}`);
   }
 
   return definition;
@@ -102,7 +102,7 @@ export const getControlDefinition = <K extends keyof ThrsDefinitions>(module: K,
   const definition = definitions[field];
 
   if (!definition) {
-    throw new Error(`No control definition found for field: ${field as string}`);
+    console.error(`No control definition found for field: ${field as string}`);
   }
 
   return definition;
@@ -116,7 +116,7 @@ export const getParameterDefinition = <K extends keyof ThrsDefinitions>(
   const definition = definitions[field];
 
   if (!definition) {
-    throw new Error(`No parameter definition found for field: ${field as string}`);
+    console.error(`No parameter definition found for field: ${field as string}`);
   }
 
   return definition;

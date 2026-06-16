@@ -7,17 +7,18 @@ import {
   TooltipListItem,
   TooltipListItemAction,
   TooltipListItemTitle,
+  TooltipListItemValue,
 } from "../../components/tooltip-list";
 import { MimicComponentType } from "../../types";
 import { YardTag } from "../components/yard-tag/index.ts";
 import SwitchValveInstance from "../instances/SwitchValveInstance.vue";
+import { ControlValue } from "../providers/index.ts";
 import { FieldRenderer } from "../renderers/index.ts";
 import BoilerTankController from "./partials/BoilerTankController.vue";
 import BoilerTankOperator from "./partials/BoilerTankOperator.vue";
 import ComponentInfo from "./partials/ComponentInfo.vue";
 import ManualControl from "./partials/ManualControl.vue";
 import ValvePosition from "./partials/ValvePosition.vue";
-import ValveSetpoint from "./partials/ValveSetpoint.vue";
 
 const props = defineProps<TooltipComponentContext<MimicComponentType.SwitchValve>>();
 
@@ -38,9 +39,20 @@ const { sources, labels, items } = useTranslations();
 
     <TooltipList>
       <TooltipListHeader>{{ labels("input") }}</TooltipListHeader>
-      <ValveSetpoint :valve="controls.valve">
-        <FieldRenderer.Source external>{{ sources("tankState") }}</FieldRenderer.Source>
-      </ValveSetpoint>
+      <ControlValue
+        :source="controls.valve"
+        field="setpoint"
+      >
+        <TooltipListItem>
+          <TooltipListItemTitle>
+            {{ items("setpoint") }}
+            <FieldRenderer.Source external>{{ sources("tankState") }}</FieldRenderer.Source>
+          </TooltipListItemTitle>
+          <TooltipListItemValue>
+            <FieldRenderer.ValveState />
+          </TooltipListItemValue>
+        </TooltipListItem>
+      </ControlValue>
     </TooltipList>
 
     <TooltipList>

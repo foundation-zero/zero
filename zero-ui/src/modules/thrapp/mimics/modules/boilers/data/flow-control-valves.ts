@@ -24,6 +24,7 @@ export const BOILER_FLOW_CONTROL_VALVE_DATA = toFieldsMap({
       },
       custom: {
         controllerName: "LT1_flow_controller",
+        setpointName: "boilers_filling_temperature",
       },
       parameters: {},
       sensors: {
@@ -50,6 +51,7 @@ export const BOILER_FLOW_CONTROL_VALVE_DATA = toFieldsMap({
       },
       custom: {
         controllerName: "LT2_flow_controller",
+        setpointName: "boilers_filling_temperature",
       },
       parameters: {},
       sensors: {

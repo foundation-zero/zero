@@ -13,7 +13,7 @@ const { units } = useTranslations();
 <template>
   <FieldRenderer.Number
     v-bind="props"
-    :unit="units('lpm')"
-  >
-  </FieldRenderer.Number>
+    class="gap-1"
+    :unit="units('bar')"
+  />
 </template>

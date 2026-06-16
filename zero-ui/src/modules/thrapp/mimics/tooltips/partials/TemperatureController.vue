@@ -6,7 +6,7 @@ import {
   TooltipListItemValue,
 } from "@/modules/thrapp/components/tooltip-list";
 import { ControlComponentType, SensorComponentType } from "@/modules/thrs/types";
-import { ControlValue, ModuleField } from "../../providers";
+import { ControlValue, ModuleField } from "../../providers/index.ts";
 import { FieldRenderer } from "../../renderers/index.ts";
 import { useTranslations } from "../index.ts";
 
@@ -14,7 +14,7 @@ const { items, sources } = useTranslations();
 
 defineProps<{
   controller: ModuleField<ControlComponentType.PIDController>;
-  measurement: ModuleField<SensorComponentType.Flow>;
+  measurement: ModuleField<SensorComponentType.Temperature>;
   setpointName: string;
 }>();
 </script>
@@ -58,7 +58,7 @@ defineProps<{
         <FieldRenderer.Source url>{{ setpointName }}</FieldRenderer.Source>
       </TooltipListItemTitle>
       <TooltipListItemValue>
-        <FieldRenderer.FlowRate :format="formatNumber(1)" />
+        <FieldRenderer.Temperature :format="formatNumber(1)" />
       </TooltipListItemValue>
     </TooltipListItem>
   </ControlValue>
@@ -73,7 +73,7 @@ defineProps<{
         <FieldRenderer.Source />
       </TooltipListItemTitle>
       <TooltipListItemValue>
-        <FieldRenderer.FlowRate :format="formatNumber(1)" />
+        <FieldRenderer.Temperature :format="formatNumber(1)" />
       </TooltipListItemValue>
     </TooltipListItem>
   </ControlValue>
@@ -88,7 +88,7 @@ defineProps<{
         <FieldRenderer.Source>{{ sources("calculated") }}</FieldRenderer.Source>
       </TooltipListItemTitle>
       <TooltipListItemValue>
-        <FieldRenderer.FlowRate :format="formatNumber(1)" />
+        <FieldRenderer.Temperature :format="formatNumber(1)" />
       </TooltipListItemValue>
     </TooltipListItem>
   </ControlValue>
