@@ -28,7 +28,11 @@ class MqttMapping[M](Protocol):
 
 
 class PartialMqttMapping[M: ThrsValues](MqttMapping[M]):
-    """MQTT mapping that maps each component in the model to a separate topic"""
+    """
+    MQTT mapping that maps each component in the model to a separate topic.
+
+    Those topics can either be part of a specific topic base or can be configured to be entirely different.
+    """
 
     def __init__(self, cls: type[M], topic_prefix: str, module_prefix: str):
         self._cls = cls
@@ -90,9 +94,12 @@ class DirectMqttMapping[M: ThrsValues](MqttMapping[M]):
 
 
 class ModuleMqttMapping(MqttMapping[CombinedValues]):
-    """MQTT mapping for modules
+    """
+    MQTT mapping for modules
 
-    Delegates to PartialMqttMapping for each sub-model."""
+    Accepts a `ModuleClassMap` instead of a single class.
+    Delegates to `PartialMqttMapping` for each sub-model.
+    """
 
     def __init__(self, clss: ModuleClassMap, topic_prefix: str = ""):
         self._clss = clss
