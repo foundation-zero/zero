@@ -50,7 +50,7 @@ def build_fmu_key_mapping(
             component_name,
             component.annotation
             if isinstance(component, FieldInfo)
-            else component.return_type,  ##TODO: return type of json_schema_extra?
+            else component.return_type,  ##TODO: return type or json_schema_extra?
         )
         for component_name, component in {
             **cls.model_fields,

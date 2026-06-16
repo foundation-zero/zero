@@ -100,8 +100,8 @@ def test_cosimulation_input_routing():
         [
             CoSimulationParticipant(
                 drives_mock,
-                DrivesSensorValues,
-                DrivesControlValues,
+                [DrivesSensorValues],
+                [DrivesControlValues],
                 DrivesSimulationInputs,
                 DrivesSimulationOutputs,
                 [
@@ -119,8 +119,8 @@ def test_cosimulation_input_routing():
             ),
             CoSimulationParticipant(
                 dhw_mock,
-                DhwSensorValues,
-                DhwControlValues,
+                [DhwSensorValues],
+                [DhwControlValues],
                 DhwSimulationInputs,
                 DhwSimulationOutputs,
                 [
@@ -202,7 +202,9 @@ def test_cosimulation_input_routing():
     inputs = io_mapping.generate_inputs(control_values, simulation_inputs)
 
     drives_input_keys = set(drives_dhw._participants[0].fmu_key_input_mapping.values())
-    dhw_input_keys = set(drives_dhw._participants[1].fmu_key_input_mapping.values())
+    dhw_input_keys = set(
+        drives_dhw._participants[1].fmu_key_input_mapping.values()
+    )
 
     # First tick - couplings use initial values
     drives_dhw.tick(inputs, duration=timedelta(seconds=1))
