@@ -34,7 +34,6 @@ compile_fmu file:
 
 compile_fmus:
     just compile_fmu src/thrs/simulation/models/XRGTestModel/FMUInterfaceTester_MECS_regular.fmu
-    just compile_fmu src/thrs/simulation/models/thruster_moduleV18.fmu
     just compile_fmu src/thrs/simulation/models/pvt_moduleV15_1.fmu
     just compile_fmu src/thrs/simulation/models/Consumer_ModuleV8_2.fmu
     just compile_fmu src/thrs/simulation/models/HT_SystemV13_2.fmu
@@ -52,7 +51,7 @@ compile_fmus:
     just compile_fmu src/thrs/simulation/models/HT_SystemV14.fmu
     just compile_fmu src/thrs/simulation/models/PCM_ModuleV8.fmu
     just compile_fmu src/thrs/simulation/models/PVT_ModuleV16.fmu
-    just compile_fmu src/thrs/simulation/models/Thruster_ModuleV19.fmu
+    just compile_fmu src/thrs/simulation/models/Thruster_Module_V19.fmu
 
 
 
