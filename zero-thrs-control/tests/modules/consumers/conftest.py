@@ -18,10 +18,10 @@ from thrs.simulation.models.fmu_paths import consumers_path
 @fixture
 def parameters():
     return ConsumersParameters(
-        boosting_enabled=True,
-        boosting_flow_ratio_setpoint=0.33,
-        fahrenheit_enabled=True,
-        fahrenheit_flow_ratio_setpoint=0.33,
+        dhw_enabled=True,
+        dhw_flow_ratio_setpoint=0.33,
+        adsorption_enabled=True,
+        adsorption_flow_ratio_setpoint=0.33,
     )
 
 
@@ -33,14 +33,14 @@ def control(parameters, simulation):
 @fixture
 def simulation_inputs():
     return ConsumersSimulationInputs(
-        consumers_fahrenheit_supply=Boundary(
+        consumers_adsorption_supply=Boundary(
             temperature=Stamped.stamp(60),
             flow=Stamped.stamp(42),
         ),
-        consumers_module_supply=Boundary(
+        consumers_pcm_supply=Boundary(
             temperature=Stamped.stamp(60), flow=Stamped.stamp(94)
         ),
-        consumers_boosting_supply=Boundary(
+        consumers_dhw_supply=Boundary(
             temperature=Stamped.stamp(40),
             flow=Stamped.stamp(29),
         ),
