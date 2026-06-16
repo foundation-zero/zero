@@ -31,8 +31,11 @@ class Fmu:
         self._temp_unzip_dir = os.path.join(
             tmp_dir, f"fmu_{b64encode(file.encode()).decode()}"
         )
-        if not os.path.exists(self._temp_unzip_dir):
-            os.mkdir(self._temp_unzip_dir)
+
+        if not os.path.exists(self._temp_unzip_dir) or os.path.getmtime(
+            file
+        ) > os.path.getmtime(self._temp_unzip_dir):
+            os.makedirs(self._temp_unzip_dir, exist_ok=True)
             extract(file, self._temp_unzip_dir)
 
         self._fmu_instance: FMU2Slave | None = None
