@@ -1,7 +1,7 @@
 import asyncio
-from datetime import timedelta
 import json
 import logging
+from datetime import timedelta
 from typing import Literal
 
 from pydantic import BaseModel
@@ -15,14 +15,14 @@ from pydantic_settings import (
 
 from zero_hull_temperature.addresses import PATH, TOPIC
 from zero_hull_temperature.mqtt import Temperatures
-from zero_hull_temperature.settings import ModbusSettings, MqttSettings
-from zero_hull_temperature.stub import Stub
 from zero_hull_temperature.reader import (
     RelaySwitchingTemperatureReader,
     TemperatureReader,
 )
+from zero_hull_temperature.settings import ModbusSettings, MqttSettings
+from zero_hull_temperature.stub import Stub
 
-logging.basicConfig(level=logging.INFO)
+logging.basicConfig(level=logging.INFO, format="%(asctime)s | %(levelname)-8s | %(message)s")
 
 
 class MqttSend(CliMutuallyExclusiveGroup):

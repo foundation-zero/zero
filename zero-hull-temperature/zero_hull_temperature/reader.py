@@ -1,15 +1,14 @@
 import asyncio
+import json
+import logging
 from contextlib import asynccontextmanager
 from datetime import timedelta
 from itertools import count
-import json
-import logging
 from typing import AsyncGenerator
 
-
-from pyModbusTCP.client import ModbusClient
 from aiomqtt import Client as MqttClient
 from jsonpath_ng import parse
+from pyModbusTCP.client import ModbusClient
 from tenacity import retry, stop_after_attempt, wait_fixed
 
 from zero_hull_temperature.addresses import PROBE_ADDRESSES, ProbeAddress
@@ -113,7 +112,9 @@ class RelaySwitchingTemperatureReader(TemperatureReader):
         """
         logging.info("Reading temperatures")
         temperatures = await self.read_temperatures()
+        logging.info("Temperatures read, sending")
         await self.send_temperatures(temperatures)
+        logging.info("Temperatures sent")
 
     async def run(self, interval: timedelta, n: int = -1):
         for i in count(start=1):
@@ -122,7 +123,6 @@ class RelaySwitchingTemperatureReader(TemperatureReader):
                 tg.create_task(asyncio.sleep(interval.total_seconds()))
             if i == n:
                 break
-
     async def _send_activate(self, activate: bool):
         """
         Send MQTT message to activate or deactivate the Modbus reader.
