@@ -1,0 +1,86 @@
+import json
+from contextlib import asynccontextmanager
+from itertools import groupby
+from typing import AsyncGenerator, List, Tuple
+
+from aiomqtt import Client as MqttClient
+from pyModbusTCP.client import ModbusClient
+from tenacity import retry, stop_after_attempt, wait_fixed
+
+from zero_termodinamica.addresses import ADDRESSES, Address
+from zero_termodinamica.settings import ModbusSettings, MqttSettings
+
+
+class ModbusToMQTTBridge:
+    def __init__(self, modbus: ModbusClient, mqtt: MqttClient):
+        self._mqtt = mqtt
+        self._modbus = modbus
+
+    @asynccontextmanager
+    @staticmethod
+    async def from_settings(
+        modbus_settings: ModbusSettings,
+        mqtt_settings: MqttSettings,
+    ) -> "AsyncGenerator[ModbusToMQTTBridge, None]":
+        """
+        Create a ModbusReader instance from Modbus settings.
+        """
+        modbus = ModbusClient(
+            host=modbus_settings.modbus_host, port=modbus_settings.modbus_port
+        )
+        async with mqtt_settings.mqtt_client() as mqtt:
+            yield ModbusToMQTTBridge(modbus, mqtt)
+
+    async def run(self) -> None:
+        # Read modbus
+        modbus_values = self.read_modbus()
+        # Scale values
+
+        # Form json
+        json_data = self.create_topics(modbus_values)
+        # Publish to MQTT
+        for topic, data in json_data:
+            await self.publish_to_mqtt(topic, data)
+
+    @retry(stop=stop_after_attempt(3), wait=wait_fixed(2))
+    def read_modbus(self) -> List[Tuple[Address, int]]:
+        try:
+            self._modbus.open()
+            result = []
+            for address in ADDRESSES:
+                value = self._modbus.read_holding_registers(address.register, 1)
+                if value:
+                    result.append((address, value))
+            return result
+        finally:
+            self._modbus.close()
+
+    def scale_values(
+        self, modbus_values: List[Tuple[Address, int]]
+    ) -> List[Tuple[Address, float]]:
+        return [
+            (address, self.scale_value(address, value))
+            for address, value in modbus_values
+        ]
+
+    def scale_value(self, address: Address, value: int) -> float:
+        if address.scale_factor is not None:
+            return float(value) * address.scale_factor
+        return float(value)
+
+    def create_topics(
+        self, modbus_values: List[Tuple[Address, int]]
+    ) -> List[Tuple[str, str]]:
+        result = []
+        for topic, values in groupby(modbus_values, key=lambda x: x[0].topic):
+            result.append((topic, self._create_json(list(values))))
+        return result
+
+    def _create_json(self, modbus_values: List[Tuple[Address, int]]) -> str:
+        result = {}
+        for address, value in modbus_values:
+            result[address.field_name] = value
+        return json.dumps(result)
+
+    async def publish_to_mqtt(self, topic: str, data: str) -> None:
+        await self._mqtt.publish(topic, data, qos=1)
