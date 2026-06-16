@@ -33,10 +33,10 @@ from thrs.simulation.models.fmu_paths import high_temperature_path
 @fixture
 def simulation_inputs():
     return HighTemperatureSimulationInputs(
-        thrusters_aft=Thruster(
+        thrusters_thruster_aft=Thruster(
             heat_flow=Stamped.stamp(9000), active=Stamped.stamp(True)
         ),
-        thrusters_fwd=Thruster(
+        thrusters_thruster_fwd=Thruster(
             heat_flow=Stamped.stamp(4300), active=Stamped.stamp(True)
         ),
         thrusters_seawater_supply=Boundary(
@@ -52,11 +52,11 @@ def simulation_inputs():
         pcm_freshwater_supply=Boundary(
             temperature=Stamped.stamp(40), flow=Stamped.stamp(0)
         ),
-        consumers_fahrenheit_supply=Boundary(
+        consumers_adsorption_supply=Boundary(
             temperature=Stamped.stamp(60),
             flow=Stamped.stamp(42),
         ),
-        consumers_boosting_supply=Boundary(
+        consumers_dhw_supply=Boundary(
             temperature=Stamped.stamp(40),
             flow=Stamped.stamp(29),
         ),
