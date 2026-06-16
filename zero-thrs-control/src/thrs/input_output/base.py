@@ -113,8 +113,12 @@ class ComponentMeta(BaseModel):
     topic: str | None = None
 
 
+def computed_meta(*args, **kwargs):
+    return ComponentMeta(*args, **kwargs).model_dump()
+
+
 def component_meta(*args, **kwargs):
-    return Field(json_schema_extra=ComponentMeta(*args, **kwargs).model_dump())
+    return Field(json_schema_extra=computed_meta(*args, **kwargs))
 
 
 def get_topic(field: FieldInfo) -> str | None:

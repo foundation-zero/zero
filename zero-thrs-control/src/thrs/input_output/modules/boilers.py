@@ -8,6 +8,7 @@ from thrs.input_output.base import (
     Stamped,
     ThrsValues,
     component_meta,
+    computed_meta,
 )
 from thrs.input_output.definitions import control, controllers, sensor, simulation
 from thrs.input_output.definitions.units import WATER_HEAT_TRANSFER_CONVERSION
@@ -216,23 +217,14 @@ class BoilersSensorValues(ThrsValues):
     ]
 
     @computed_field(
-        json_schema_extra=component_meta(
+        json_schema_extra=computed_meta(
             component_type="delta_t",
             included_in_fmu=False,
             topic="control/boilers/lt1_delta",
-        ).json_schema_extra
+        )
     )
     @property
-    def lt1_delta(
-        self,
-    ) -> Annotated[
-        sensor.TemperatureDelta,
-        component_meta(
-            component_type="delta_t",
-            included_in_fmu=False,
-            topic="control/boilers/lt1_delta",
-        ),
-    ]:
+    def lt1_delta(self) -> sensor.TemperatureDelta:
         return sensor.TemperatureDelta.from_temperature_sensors(
             temperature_supply=self.lt1_temperature_recovery.temperature,
             temperature_return=self.lt1_temperature_recovery_return.temperature,
@@ -267,11 +259,11 @@ class BoilersSensorValues(ThrsValues):
     ]
 
     @computed_field(
-        json_schema_extra=component_meta(
+        json_schema_extra=computed_meta(
             component_type="delta_t",
             included_in_fmu=False,
             topic="control/boilers/lt2_delta",
-        ).json_schema_extra
+        )
     )
     @property
     def lt2_delta(self) -> sensor.TemperatureDelta:
@@ -310,11 +302,11 @@ class BoilersSensorValues(ThrsValues):
     ]
 
     @computed_field(
-        json_schema_extra=component_meta(
+        json_schema_extra=computed_meta(
             component_type="delta_t",
             included_in_fmu=False,
             topic="control/boilers/consumers_delta",
-        ).json_schema_extra
+        )
     )
     @property
     def consumers_delta(self) -> sensor.TemperatureDelta:
@@ -353,11 +345,11 @@ class BoilersSensorValues(ThrsValues):
     ]
 
     @computed_field(
-        json_schema_extra=component_meta(
+        json_schema_extra=computed_meta(
             component_type="delta_t",
             included_in_fmu=False,
             topic="control/boilers/fahrenheit_delta",
-        ).json_schema_extra
+        )
     )
     @property
     def fahrenheit_delta(self) -> sensor.TemperatureDelta:
@@ -383,9 +375,7 @@ class BoilersSensorValues(ThrsValues):
         ),
     ]
 
-    @computed_field(
-        json_schema_extra=component_meta(included_in_fmu=False).json_schema_extra
-    )
+    @computed_field(json_schema_extra=computed_meta(included_in_fmu=False))
     @property
     def freshwater_flow_supply(self) -> sensor.CalculatedFlow:
         return sensor.CalculatedFlow(
@@ -398,12 +388,12 @@ class BoilersSensorValues(ThrsValues):
         )
 
     @computed_field(
-        json_schema_extra=component_meta(
+        json_schema_extra=computed_meta(
             yard_tag="41001001",
             component_type="hvac_exchanger",
             included_in_fmu=False,
             topic="control/boilers/boilers_hvac_exchanger",
-        ).json_schema_extra
+        )
     )
     @property
     def boilers_hvac_exchanger(self) -> sensor.HvacExchanger:
@@ -415,12 +405,12 @@ class BoilersSensorValues(ThrsValues):
         )
 
     @computed_field(
-        json_schema_extra=component_meta(
+        json_schema_extra=computed_meta(
             yard_tag="50001035",
             component_type="heatpump",
             included_in_fmu=False,
             topic="control/boilers/boilers_heatpump",
-        ).json_schema_extra
+        )
     )
     @property
     def boilers_heatpump(self) -> sensor.HeatPump:
@@ -432,12 +422,12 @@ class BoilersSensorValues(ThrsValues):
         )
 
     @computed_field(
-        json_schema_extra=component_meta(
+        json_schema_extra=computed_meta(
             yard_tag="50001004",
             component_type="heat_exchanger",
             included_in_fmu=False,
             topic="control/boilers/boilers_fahrenheit_exchanger",
-        ).json_schema_extra
+        )
     )
     @property
     def boilers_fahrenheit_exchanger(self) -> sensor.HeatExchanger:
@@ -449,12 +439,12 @@ class BoilersSensorValues(ThrsValues):
         )
 
     @computed_field(
-        json_schema_extra=component_meta(
+        json_schema_extra=computed_meta(
             yard_tag="50001007",
             component_type="heat_exchanger",
             included_in_fmu=False,
             topic="control/boilers/boilers_consumers_exchanger",
-        ).json_schema_extra
+        )
     )
     @property
     def boilers_consumers_exchanger(self) -> sensor.HeatExchanger:
@@ -466,12 +456,12 @@ class BoilersSensorValues(ThrsValues):
         )
 
     @computed_field(
-        json_schema_extra=component_meta(
+        json_schema_extra=computed_meta(
             yard_tag="50001008",
             component_type="heat_exchanger",
             included_in_fmu=False,
             topic="control/boilers/boilers_lt2_exchanger",
-        ).json_schema_extra
+        )
     )
     @property
     def boilers_lt2_exchanger(self) -> sensor.HeatExchanger:
@@ -483,12 +473,12 @@ class BoilersSensorValues(ThrsValues):
         )
 
     @computed_field(
-        json_schema_extra=component_meta(
+        json_schema_extra=computed_meta(
             yard_tag="50001009",
             component_type="heat_exchanger",
             included_in_fmu=False,
             topic="control/boilers/boilers_lt1_exchanger",
-        ).json_schema_extra
+        )
     )
     @property
     def boilers_lt1_exchanger(self) -> sensor.HeatExchanger:
@@ -652,9 +642,7 @@ class BoilersSimulationInputs(SimulationInputs):
     boilers_seawater_supply: simulation.TemperatureBoundary
     boilers_hotwater_demand: simulation.FlowBoundary
 
-    @computed_field(
-        json_schema_extra=component_meta(included_in_fmu=False).json_schema_extra
-    )
+    @computed_field(json_schema_extra=computed_meta(included_in_fmu=False))
     @property
     def lt1_flow_recovery(self) -> sensor.FlowSensor:
         return sensor.FlowSensor(
@@ -663,9 +651,9 @@ class BoilersSimulationInputs(SimulationInputs):
         )
 
     @computed_field(
-        json_schema_extra=component_meta(
+        json_schema_extra=computed_meta(
             included_in_fmu=False,
-        ).json_schema_extra
+        )
     )
     @property
     def lt1_temperature_recovery(self) -> sensor.TemperatureSensor:
@@ -674,9 +662,9 @@ class BoilersSimulationInputs(SimulationInputs):
         )
 
     @computed_field(
-        json_schema_extra=component_meta(
+        json_schema_extra=computed_meta(
             included_in_fmu=False,
-        ).json_schema_extra
+        )
     )
     @property
     def lt2_flow_recovery(self) -> sensor.FlowSensor:
@@ -686,9 +674,9 @@ class BoilersSimulationInputs(SimulationInputs):
         )
 
     @computed_field(
-        json_schema_extra=component_meta(
+        json_schema_extra=computed_meta(
             included_in_fmu=False,
-        ).json_schema_extra
+        )
     )
     @property
     def lt2_temperature_recovery(self) -> sensor.TemperatureSensor:
@@ -697,9 +685,9 @@ class BoilersSimulationInputs(SimulationInputs):
         )
 
     @computed_field(
-        json_schema_extra=component_meta(
+        json_schema_extra=computed_meta(
             included_in_fmu=False,
-        ).json_schema_extra
+        )
     )
     @property
     def consumers_flow_boosting(self) -> sensor.FlowSensor:
@@ -709,10 +697,10 @@ class BoilersSimulationInputs(SimulationInputs):
         )
 
     @computed_field(
-        json_schema_extra=component_meta(
+        json_schema_extra=computed_meta(
             included_in_fmu=False,
             component_type="temperature_sensor",
-        ).json_schema_extra
+        )
     )
     @property
     def consumers_temperature_boosting_supply(self) -> sensor.TemperatureSensor:
@@ -721,10 +709,10 @@ class BoilersSimulationInputs(SimulationInputs):
         )
 
     @computed_field(
-        json_schema_extra=component_meta(
+        json_schema_extra=computed_meta(
             included_in_fmu=False,
             component_type="flow_sensor",
-        ).json_schema_extra
+        )
     )
     @property
     def fahrenheit_flow_boilers(self) -> sensor.FlowSensor:
@@ -734,10 +722,10 @@ class BoilersSimulationInputs(SimulationInputs):
         )
 
     @computed_field(
-        json_schema_extra=component_meta(
+        json_schema_extra=computed_meta(
             included_in_fmu=False,
             component_type="temperature_sensor",
-        ).json_schema_extra
+        )
     )
     @property
     def fahrenheit_temperature_waste_return(self) -> sensor.TemperatureSensor:
@@ -756,10 +744,10 @@ class BoilersSimulationOutputs(SimulationValues):
     boilers_freshwater_return: simulation.FlowBoundary
 
     @computed_field(
-        json_schema_extra=component_meta(
+        json_schema_extra=computed_meta(
             included_in_fmu=False,
             component_type="temperature_sensor",
-        ).json_schema_extra
+        )
     )
     @property
     def lt1_temperature_recovery_return(self) -> sensor.TemperatureSensor:
@@ -768,10 +756,10 @@ class BoilersSimulationOutputs(SimulationValues):
         )
 
     @computed_field(
-        json_schema_extra=component_meta(
+        json_schema_extra=computed_meta(
             included_in_fmu=False,
             component_type="temperature_sensor",
-        ).json_schema_extra
+        )
     )
     @property
     def lt2_temperature_recovery_return(self) -> sensor.TemperatureSensor:
@@ -780,10 +768,10 @@ class BoilersSimulationOutputs(SimulationValues):
         )
 
     @computed_field(
-        json_schema_extra=component_meta(
+        json_schema_extra=computed_meta(
             included_in_fmu=False,
             component_type="temperature_sensor",
-        ).json_schema_extra
+        )
     )
     @property
     def fahrenheit_temperature_boilers_return(self) -> sensor.TemperatureSensor:
@@ -792,10 +780,10 @@ class BoilersSimulationOutputs(SimulationValues):
         )
 
     @computed_field(
-        json_schema_extra=component_meta(
+        json_schema_extra=computed_meta(
             included_in_fmu=False,
             component_type="temperature_sensor",
-        ).json_schema_extra
+        )
     )
     @property
     def consumers_temperature_boosting_return(self) -> sensor.TemperatureSensor:
@@ -804,10 +792,10 @@ class BoilersSimulationOutputs(SimulationValues):
         )
 
     @computed_field(
-        json_schema_extra=component_meta(
+        json_schema_extra=computed_meta(
             included_in_fmu=False,
             component_type="flow_sensor",
-        ).json_schema_extra
+        )
     )
     @property
     def freshwater_hotwater_flow(self) -> sensor.FlowSensor:
@@ -819,9 +807,9 @@ class BoilersSimulationOutputs(SimulationValues):
         )
 
     @computed_field(
-        json_schema_extra=component_meta(
+        json_schema_extra=computed_meta(
             included_in_fmu=False,
-        ).json_schema_extra
+        )
     )
     @property
     def freshwater_hotwater_temperature(self) -> sensor.TemperatureSensor:
