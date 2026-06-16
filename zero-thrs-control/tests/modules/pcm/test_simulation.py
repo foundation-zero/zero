@@ -18,12 +18,7 @@ from thrs.simulation.models.fmu_paths import pcm_path
     params=list(
         simulator_input_field_setters(
             PcmSimulationInputs,
-            ignore=[
-                (
-                    "pcm_producers_supply",
-                    "flow",
-                )  # Appears to just work, instead of break
-            ],
+            ignore=[],  # TODO: Figure out correct variables to ignore
         )
     )
 )

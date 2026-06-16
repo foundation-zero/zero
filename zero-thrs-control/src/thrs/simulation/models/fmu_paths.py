@@ -1,7 +1,6 @@
 from pathlib import Path
 
 consumers_path = str(Path(__file__).resolve().parent / "Consumer_ModuleV8_2.fmu")
-pcm_path = str(Path(__file__).resolve().parent / "pcm_moduleV7.fmu")
 high_temperature_path = str(Path(__file__).resolve().parent / "HT_SystemV13_2.fmu")
 fahrenheit_path = str(Path(__file__).resolve().parent / "Fahrenheit_ModuleV4.fmu")
 boilers_path = str(Path(__file__).resolve().parent / "Boilers_ModuleV4_1.fmu")
@@ -11,7 +10,7 @@ lt2_path = str(Path(__file__).resolve().parent / "LT2_ModuleV3_2.fmu")
 thrusters_path = str(Path(__file__).resolve().parent / "Thruster_Module_V19.fmu")
 pvt_path = str(Path(__file__).resolve().parent / "PVT_ModuleV16.fmu")
 # consumers_path = str(Path(__file__).resolve().parent / "Consumer_ModuleV9.fmu")
-# pcm_path = str(Path(__file__).resolve().parent / "PCM_ModuleV8.fmu")
+pcm_path = str(Path(__file__).resolve().parent / "PCM_ModuleV8.fmu")
 # high_temperature_path = str(Path(__file__).resolve().parent / "HT_SystemV14.fmu")
 adsorption_path = str(Path(__file__).resolve().parent / "Adsorption_Module.fmu")
 dhw_path = str(Path(__file__).resolve().parent / "DHW_Module.fmu")
