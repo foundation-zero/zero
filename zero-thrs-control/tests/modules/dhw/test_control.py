@@ -37,14 +37,14 @@ async def test_filling(runner: Runner, simulation_inputs: DhwSimulationInputs):
     assert result.sensor_values.dhw_flow_drives.flow.value > 0.1
     assert result.sensor_values.dhw_flow_dc.flow.value > 0.1
 
-    simulation_inputs_no_lt1 = simulation_inputs.model_copy(
+    simulation_inputs_no_drives = simulation_inputs.model_copy(
         update={
             "dhw_drives_supply": simulation_inputs.dhw_drives_supply.model_copy(
                 update={"flow": Stamped.stamp(0)}
             )
         }
     )
-    runner._connector.update_simulation_inputs(simulation_inputs_no_lt1)  # type: ignore
+    runner._connector.update_simulation_inputs(simulation_inputs_no_drives)  # type: ignore
 
     await runner.run(180)
     result = runner.last_tick_result
