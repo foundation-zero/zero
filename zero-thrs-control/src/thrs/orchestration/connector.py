@@ -245,13 +245,13 @@ class MqttControlConnector(Connector[CombinedValues, CombinedValues]):
 class MqttSimulationConnector(Connector[CombinedValues, CombinedValues]):
     def __init__(
         self,
-        inner: "Simulation",
+        simulation: "Simulation",
         mqtt_client: Client,
         topic_prefix: str,
         sensor_values_clss: ModuleClassMap,
         simulation_outputs_cls: type[ThrsValues],
     ):
-        self._inner = inner
+        self._simulation = simulation
         self._mqtt_client = mqtt_client
         self._topic_prefix = topic_prefix
         self._sensor_values_mqtt_mapping = ModuleMqttMapping(
@@ -302,7 +302,7 @@ class MqttSimulationConnector(Connector[CombinedValues, CombinedValues]):
         self, control_values: CombinedValues
     ) -> ExecutionResult[CombinedValues]:
         logging.debug("Executing simulation")
-        simulation_result = self._inner.tick(control_values)
+        simulation_result = self._simulation.tick(control_values)
         logging.debug("Simulation tick completed")
         await self._send_sensor_values(simulation_result)
 
@@ -318,10 +318,10 @@ class MqttSimulationConnector(Connector[CombinedValues, CombinedValues]):
 
     @property
     def start_time(self) -> datetime:
-        return self._inner.start_time
+        return self._simulation.start_time
 
     def time(self) -> datetime:
-        return self._inner.time()
+        return self._simulation.time()
 
 
 class MqttConnector(Connector[CombinedValues, CombinedValues]):
@@ -330,7 +330,7 @@ class MqttConnector(Connector[CombinedValues, CombinedValues]):
     # - MqttSimulationConnector handles simulation-side execution and publishing
     def __init__(
         self,
-        inner: "Simulation",
+        simulation: "Simulation",
         controller_client: Client,
         environment_client: Client,
         topic_prefix: str,
@@ -347,7 +347,7 @@ class MqttConnector(Connector[CombinedValues, CombinedValues]):
             control_topic_suffix=control_topic_suffix,
         )
         self._simulation_connector = MqttSimulationConnector(
-            inner=inner,
+            simulation=simulation,
             mqtt_client=environment_client,
             topic_prefix=topic_prefix,
             sensor_values_clss=sensor_values_clss,
