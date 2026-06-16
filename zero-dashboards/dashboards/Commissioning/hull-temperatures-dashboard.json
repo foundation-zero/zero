@@ -1784,7 +1784,7 @@
         "showAdvancedTypes": false,
         "tooltip": {
           "disableForOneClick": false,
-          "mode": "single"
+          "mode": "none"
         },
         "zoomToContent": false
       },
@@ -3277,7 +3277,7 @@
         "showAdvancedTypes": false,
         "tooltip": {
           "disableForOneClick": false,
-          "mode": "single"
+          "mode": "none"
         },
         "zoomToContent": false
       },
@@ -4238,7 +4238,7 @@
         "showAdvancedTypes": false,
         "tooltip": {
           "disableForOneClick": false,
-          "mode": "single"
+          "mode": "none"
         },
         "zoomToContent": false
       },
@@ -4395,7 +4395,16 @@
     "commissioning"
   ],
   "templating": {
-    "list": []
+    "list": [
+      {
+        "name": "datasource",
+        "options": [],
+        "query": "info8fcc-greptimedb-datasource",
+        "refresh": 1,
+        "regex": "",
+        "type": "datasource"
+      }
+    ]
   },
   "time": {
     "from": "now-5m",
