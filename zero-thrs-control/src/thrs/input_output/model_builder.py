@@ -10,6 +10,15 @@ from thrs.orchestration.module import ModuleClassMap
 
 
 class ModelBuilder[T](ABC):
+    """
+    ModelBuilders is used to build instances of a class
+
+    It accepts a class and one or more input calls. If those `input` calls give enough information
+    to create a instance of that class, `result` will return an instance.
+
+    Given more `input` calls the class will keep `result` updated.
+    """
+
     @abstractmethod
     def input(self, field: str, json: str | bytes): ...
 
@@ -21,6 +30,12 @@ class ModelBuilder[T](ABC):
 
 
 class PartialModelBuilder[T: ThrsValues](ModelBuilder[T]):
+    """
+    ModelBuilder that handles partial input.
+
+    Each input call is expected to set one field in the model.
+    """
+
     def __init__(self, cls: type[T]):
         self._cls = cls
         self._value: T | None = None
@@ -49,6 +64,12 @@ class PartialModelBuilder[T: ThrsValues](ModelBuilder[T]):
 
 
 class CombinedModelBuilder(ModelBuilder[CombinedValues]):
+    """
+    Model builder that handles multiple modules.
+
+    It builds a ModuleClassMap instead of a single class.
+    """
+
     def __init__(self, clss: ModuleClassMap):
         self._model_builders: Mapping[str, ModelBuilder[ThrsValues]] = {
             name: PartialModelBuilder(module_cls) for name, module_cls in clss.items()
