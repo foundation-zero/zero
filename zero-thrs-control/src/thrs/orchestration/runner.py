@@ -12,6 +12,7 @@ from thrs.input_output.base import (
     SimulationValues,
     ThrsValues,
 )
+from thrs.input_output.fmu_mapping import build_fmu_key_mapping
 from thrs.orchestration.collector import Collector
 from thrs.orchestration.connector import Connector, ExecutionResult
 from thrs.orchestration.module import CombinedModule
@@ -103,15 +104,31 @@ class Runner[S: ThrsValues, C: ThrsValues, P: ThrsValues, M: ThrsValues]:
         for _ in range(n_ticks):
             result = await self._connector.transceive(self._control_values)
             if isinstance(result, SimulationResult) and collector is not None:
-                collector.collect(
+                collector.collect(  # TODO: fix the fmu key mapping here, this is just a quick fix to get the tests working
                     {
-                        **flatten_model_values(result.sensor_values, fmu_only=False),
-                        **flatten_model_values(result.control_values, fmu_only=False),
                         **flatten_model_values(
-                            result.simulation_outputs, fmu_only=False
+                            result.sensor_values,
+                            build_fmu_key_mapping(
+                                type(result.sensor_values), fmu_only=False
+                            ),
                         ),
                         **flatten_model_values(
-                            result.simulation_inputs, fmu_only=False
+                            result.control_values,
+                            build_fmu_key_mapping(
+                                type(result.control_values), fmu_only=False
+                            ),
+                        ),
+                        **flatten_model_values(
+                            result.simulation_outputs,
+                            build_fmu_key_mapping(
+                                type(result.simulation_outputs), fmu_only=False
+                            ),
+                        ),
+                        **flatten_model_values(
+                            result.simulation_inputs,
+                            build_fmu_key_mapping(
+                                type(result.simulation_inputs), fmu_only=False
+                            ),
                         ),
                     },
                     str(self._control.mode),
