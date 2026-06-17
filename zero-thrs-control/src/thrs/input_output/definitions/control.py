@@ -2,8 +2,8 @@ from typing import Annotated, ClassVar
 
 from thrs.input_output.base import Stamped, ThrsValues, field_meta
 from thrs.input_output.definitions.units import (
+    AdsorptionChillerMode,
     Celsius,
-    FahrenheitMode,
     FreeCoolingMode,
     Kelvin,
     OnOff,
@@ -48,9 +48,9 @@ class Pcm(ThrsValues):
     on: Stamped[OnOff]
 
 
-class Fahrenheit(ThrsValues):
+class AdsorptionChiller(ThrsValues):
     enable: Stamped[OnOff]
-    mode: Stamped[FahrenheitMode]
+    mode: Stamped[AdsorptionChillerMode]
     cooling_setpoint: Stamped[Celsius]
     free_cooling_mode: Annotated[
         Stamped[FreeCoolingMode], field_meta(included_in_fmu=False)
@@ -74,4 +74,4 @@ class HeatPump(ThrsValues):
     temperature_setpoint: Stamped[Celsius]
 
 
-__all__ = ["Pump", "Valve", "Pcm", "Fahrenheit", "HeatPump"]
+__all__ = ["Pump", "Valve", "Pcm", "AdsorptionChiller", "HeatPump"]

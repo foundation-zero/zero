@@ -39,13 +39,13 @@ class DhwParameters(ThrsValues):
             description="Required delta T between boosting source and tank temperature"
         ),
     ] = 2
-    lt1_flowcontrol_minimum_setpoint: Annotated[
+    drives_flowcontrol_minimum_setpoint: Annotated[
         Ratio,
         Field(
             description="Minimum pump dutypoint to guarantee sufficient flow for a temperature measurement"
         ),
     ] = 0.1
-    lt2_flowcontrol_minimum_setpoint: Annotated[
+    dc_flowcontrol_minimum_setpoint: Annotated[
         Ratio,
         Field(
             description="Minimum pump dutypoint to guarantee sufficient flow for a temperature measurement"
@@ -59,8 +59,8 @@ class DhwParameters(ThrsValues):
     tank3_disabled: bool = False
     pump_temperature_tuning: Tuning = (-0.01, -0.001, 0.0)
     pump_flow_tuning: Tuning = (0.01, 0.001, 0.0)
-    lt2_flow_tuning: Tuning = (-0.01, -0.001, 0.0)
-    lt1_flow_tuning: Tuning = (-0.01, -0.001, 0.0)
+    dc_flow_tuning: Tuning = (-0.01, -0.001, 0.0)
+    drives_flow_tuning: Tuning = (-0.01, -0.001, 0.0)
 
     @model_validator(mode="after")
     def check_tank_setpoints(self):
@@ -570,17 +570,17 @@ class DhwControl(
         self._dhw_drives_flow_controller = PidController[Ratio, Celsius](
             self._current_values.dhw_flowcontrol_drives.setpoint.value,
             lambda: self._parameters.filling_temperature_setpoint,
-            lambda: self._parameters.lt1_flow_tuning,
+            lambda: self._parameters.drives_flow_tuning,
             self._time,
-            lambda: (self._parameters.lt1_flowcontrol_minimum_setpoint, 1.0),
+            lambda: (self._parameters.drives_flowcontrol_minimum_setpoint, 1.0),
         )
 
         self._dhw_dc_flow_controller = PidController[Ratio, Celsius](
             self._current_values.dhw_flowcontrol_dc.setpoint.value,
             lambda: self._parameters.filling_temperature_setpoint,
-            lambda: self._parameters.lt2_flow_tuning,
+            lambda: self._parameters.dc_flow_tuning,
             self._time,
-            lambda: (self._parameters.lt2_flowcontrol_minimum_setpoint, 1.0),
+            lambda: (self._parameters.dc_flowcontrol_minimum_setpoint, 1.0),
         )
 
         self._tanks_controller = TanksController(
@@ -662,7 +662,7 @@ class DhwControl(
 
         return ControlResult(self._time(), self._current_values)
 
-    def _lt1_sufficient_boosting_heat(self, sensor_values: DhwSensorValues) -> bool:
+    def _drives_sufficient_boosting_heat(self, sensor_values: DhwSensorValues) -> bool:
         if self._tanks_controller._boosting_tank is None:
             return False
 

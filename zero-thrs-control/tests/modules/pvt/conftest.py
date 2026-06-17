@@ -25,7 +25,7 @@ def simulation_inputs():
         pvt_main_fwd=HeatSource(heat_flow=Stamped.stamp(16000)),
         pvt_main_aft=HeatSource(heat_flow=Stamped.stamp(16000)),
         pvt_owners=HeatSource(heat_flow=Stamped.stamp(8000)),
-        pvt_module_supply=TemperatureBoundary(temperature=Stamped.stamp(50)),
+        pvt_pcm_supply=TemperatureBoundary(temperature=Stamped.stamp(50)),
         pvt_seawater_supply=Boundary(
             temperature=Stamped.stamp(32), flow=Stamped.stamp(64)
         ),
