@@ -3,7 +3,7 @@ from asyncio import create_task, sleep
 import pytest
 from aiomqtt import Client
 
-from thrs.cli.simulation_controls import (
+from thrs.cli.executers.control import (
     ParametersMessage,
     SimulationControls,
     SimulationInputMessage,
