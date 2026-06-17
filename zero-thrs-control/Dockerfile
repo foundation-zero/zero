@@ -40,7 +40,7 @@ RUN apt-get update && \
     apt-get install -y ca-certificates curl gnupg build-essential && \
     rm -rf /var/lib/apt/lists/*
 
-RUN fmpy compile /app/thrs/simulation/models/thruster_moduleV18.fmu
+RUN fmpy compile /app/thrs/simulation/models/Thruster_Module_V19.fmu
 
 USER 1001
 CMD ["python", "-m", "thrs.cli", "run", "thrusters"]
