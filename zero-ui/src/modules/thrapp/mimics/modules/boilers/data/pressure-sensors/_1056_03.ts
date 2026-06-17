@@ -1,0 +1,19 @@
+import { SensorComponentType } from "@/modules/thrs/types";
+import { toInstance } from "../../..";
+import { MimicComponentType } from "../../../../../types";
+
+import { getField } from "../../../../providers";
+import { tooltip } from "./shared";
+
+export default toInstance<MimicComponentType.PressureSensor>({
+  controls: {},
+  custom: {},
+  parameters: {},
+  sensors: {
+    pressure: getField(SensorComponentType.Pressure, "boilers", "boilersPressureBoosting"),
+  },
+  tooltip: tooltip({
+    yardTag: "1056-03",
+    technicalName: "boilers-pressure-1056-03",
+  }),
+});

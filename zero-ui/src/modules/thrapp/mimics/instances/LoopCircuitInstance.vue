@@ -1,8 +1,9 @@
 <script setup lang="ts">
 import AnimatedNumber from "@/modules/loads/components/animated-number/AnimatedNumber.vue";
-import { SensorComponentType } from "@/modules/thrs/types";
 import { useI18n } from "vue-i18n";
-import { MimicComponentInstanceProps, TitleProps } from ".";
+import { MimicComponentInstanceProps } from ".";
+import { MimicTooltipTrigger, TooltipComponentContext } from "../../components/tooltip";
+import { MimicComponentType } from "../../types";
 import { CircuitBox, CircuitBoxTitle } from "../components/circuit-box";
 import {
   ValueList,
@@ -10,52 +11,53 @@ import {
   ValueListFlowItem,
   ValueListItem,
 } from "../components/value-list";
-import { getMimicDataProvider, ModuleField } from "../providers";
+import { getMimicDataProvider } from "../providers";
 
 const { t } = useI18n();
 const props = defineProps<
   MimicComponentInstanceProps &
-    TitleProps & {
+    TooltipComponentContext<MimicComponentType.ExchangeCircuit> & {
       width?: number | string;
       height?: number | string;
       forceHeight?: boolean;
-      deltaT: ModuleField<SensorComponentType.DeltaT>;
-      flow: ModuleField<SensorComponentType.Flow>;
-      tIn: ModuleField<SensorComponentType.Temperature>;
-      tOut: ModuleField<SensorComponentType.Temperature>;
     }
 >();
 
 const { getSensorValue, getComponentState } = getMimicDataProvider();
 
-const deltaT = getSensorValue(props.deltaT);
-const tIn = getSensorValue(props.tIn);
-const tOut = getSensorValue(props.tOut);
-const flow = getSensorValue(props.flow);
+const deltaT = getSensorValue(props.sensors.deltaT);
+const tIn = getSensorValue(props.sensors.incoming);
+const tOut = getSensorValue(props.sensors.outgoing);
+const flow = getSensorValue(props.sensors.flow);
 const state = getComponentState();
 </script>
 
 <template>
-  <CircuitBox
-    v-bind="props"
-    :state="state"
+  <MimicTooltipTrigger
+    :type="MimicComponentType.ExchangeCircuit"
+    :data="props"
   >
-    <CircuitBoxTitle>{{ title }}</CircuitBoxTitle>
-    <ValueList>
-      <ValueListDeltaTItem :value="deltaT?.deltaT?.value" />
-      <ValueListItem>
-        <span class="text-muted-foreground text-2xs">{{ t("units.Tin") }}</span>
-        <span class="text-muted-foreground text-xs">
-          <AnimatedNumber :to="tIn?.temperature?.value" />{{ t("units.celsius") }}
-        </span>
-      </ValueListItem>
-      <ValueListItem>
-        <span class="text-muted-foreground text-2xs">{{ t("units.Tout") }}</span>
-        <span class="text-muted-foreground text-xs">
-          <AnimatedNumber :to="tOut?.temperature?.value" />{{ t("units.celsius") }}
-        </span>
-      </ValueListItem>
-      <ValueListFlowItem :value="flow?.flow?.value" />
-    </ValueList>
-  </CircuitBox>
+    <CircuitBox
+      v-bind="props"
+      :state="state"
+    >
+      <CircuitBoxTitle>{{ tooltip?.title }}</CircuitBoxTitle>
+      <ValueList>
+        <ValueListDeltaTItem :value="deltaT?.deltaT?.value" />
+        <ValueListItem>
+          <span class="text-muted-foreground text-2xs">{{ t("units.Tin") }}</span>
+          <span class="text-muted-foreground text-xs">
+            <AnimatedNumber :to="tIn?.temperature?.value" />{{ t("units.celsius") }}
+          </span>
+        </ValueListItem>
+        <ValueListItem>
+          <span class="text-muted-foreground text-2xs">{{ t("units.Tout") }}</span>
+          <span class="text-muted-foreground text-xs">
+            <AnimatedNumber :to="tOut?.temperature?.value" />{{ t("units.celsius") }}
+          </span>
+        </ValueListItem>
+        <ValueListFlowItem :value="flow?.flow?.value" />
+      </ValueList>
+    </CircuitBox>
+  </MimicTooltipTrigger>
 </template>

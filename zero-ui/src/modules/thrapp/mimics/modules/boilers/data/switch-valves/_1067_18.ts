@@ -1,9 +1,11 @@
 import { ControlComponentType, SensorComponentType } from "@/modules/thrs/types";
+import { toInstance } from "../../..";
+import { MimicComponentType } from "../../../../../types";
 
-import { tooltip, toSwitchValve } from ".";
 import { getField } from "../../../../providers";
+import { tooltip } from "./shared";
 
-export default toSwitchValve({
+export default toInstance<MimicComponentType.SwitchValve>({
   controls: {
     valve: getField(ControlComponentType.Valve, "boilers", "boilersSwitchHighTemperature"),
   },

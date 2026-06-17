@@ -1,7 +1,8 @@
 <script setup lang="ts">
-import { SensorComponentType } from "@/modules/thrs/types";
-import { computed, type Component } from "vue";
-import { MimicComponentInstanceProps, TitleProps } from ".";
+import { computed } from "vue";
+import { MimicComponentInstanceProps } from ".";
+import { MimicTooltipTrigger, TooltipComponentContext } from "../../components/tooltip";
+import { MimicComponentType } from "../../types";
 import { HeatPump, HeatPumpMode, HeatPumpModes, HeatPumpTitle } from "../components/heat-pump";
 import {
   ValueList,
@@ -10,24 +11,20 @@ import {
   ValueListSeparator,
 } from "../components/value-list";
 import { YardTag } from "../components/yard-tag";
-import { getMimicDataProvider, ModuleField } from "../providers";
+import { getMimicDataProvider } from "../providers";
 
 const props = defineProps<
   MimicComponentInstanceProps &
-    TitleProps & {
-      heatExchanger: ModuleField<SensorComponentType.HeatExchanger>;
-    } & {
-      icon: Component;
+    TooltipComponentContext<MimicComponentType.Asset> & {
       width?: number | string;
       height?: number | string;
       forceHeight?: boolean;
-      hideMode?: boolean;
     }
 >();
 
 const { getSensorValue, getComponentState } = getMimicDataProvider();
 
-const heatExchanger = getSensorValue(props.heatExchanger);
+const heatExchanger = getSensorValue(props.sensors.heatExchanger);
 const state = getComponentState();
 
 const mode = computed(() => {
@@ -37,28 +34,33 @@ const mode = computed(() => {
 </script>
 
 <template>
-  <HeatPump
-    v-bind="props"
-    :state="state"
+  <MimicTooltipTrigger
+    :type="MimicComponentType.Asset"
+    :data="props"
   >
-    <YardTag>{{ tagId }}</YardTag>
-    <HeatPumpTitle class="gap-1 py-1">
-      <component
-        :is="icon"
-        class="text-brand inline h-4 w-4"
-      />
-      {{ title }}
-    </HeatPumpTitle>
-    <HeatPumpMode
-      v-if="!hideMode"
-      :mode="mode"
+    <HeatPump
+      v-bind="props"
       :state="state"
-    />
-    <ValueList class="gap-0">
-      <ValueListSeparator />
-      <ValueListHeatPowerItem :value="heatExchanger?.heat?.value" />
-      <ValueListDeltaTItem :value="heatExchanger?.deltaT.value" />
-      <ValueListSeparator />
-    </ValueList>
-  </HeatPump>
+    >
+      <YardTag>{{ tooltip?.yardTag }}</YardTag>
+      <HeatPumpTitle class="gap-1 py-1">
+        <component
+          :is="custom.icon"
+          class="text-brand inline h-4 w-4"
+        />
+        {{ tooltip?.title }}
+      </HeatPumpTitle>
+      <HeatPumpMode
+        v-if="!custom.hideMode"
+        :mode="mode"
+        :state="state"
+      />
+      <ValueList class="gap-0">
+        <ValueListSeparator />
+        <ValueListHeatPowerItem :value="heatExchanger?.heat?.value" />
+        <ValueListDeltaTItem :value="heatExchanger?.deltaT.value" />
+        <ValueListSeparator />
+      </ValueList>
+    </HeatPump>
+  </MimicTooltipTrigger>
 </template>

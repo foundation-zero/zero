@@ -1,8 +1,6 @@
-import { toFieldsMap, toInstance } from "../../..";
+import { toFieldsMap } from "../../..";
 import { MimicComponentType } from "../../../../../types";
 import _1022 from "./_1022";
-
-export const toPump = toInstance<MimicComponentType.Pump>;
 
 export const BOILER_PUMP_DATA = toFieldsMap({
   [MimicComponentType.Pump]: {

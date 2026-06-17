@@ -1,7 +1,8 @@
 <script setup lang="ts">
-import { SensorComponentType } from "@/modules/thrs/types";
 import { RiArrowDownLine, RiArrowUpLine } from "@remixicon/vue";
-import { MimicComponentInstanceProps, TitleProps } from ".";
+import { MimicComponentInstanceProps } from ".";
+import { MimicTooltipTrigger, TooltipComponentContext } from "../../components/tooltip";
+import { MimicComponentType } from "../../types";
 import { CircuitBox, CircuitBoxTitle } from "../components/circuit-box";
 import {
   ValueList,
@@ -10,51 +11,52 @@ import {
   ValueListSeparator,
   ValueListTemperatureItem,
 } from "../components/value-list";
-import { getMimicDataProvider, ModuleField } from "../providers";
+import { getMimicDataProvider } from "../providers";
 
 const props = defineProps<
   MimicComponentInstanceProps &
-    TitleProps & {
+    TooltipComponentContext<MimicComponentType.HotWaterCircuit> & {
       width?: number | string;
       height?: number | string;
       forceHeight?: boolean;
-      flowIn: ModuleField<SensorComponentType.CalculatedFlow>;
-      tIn: ModuleField<SensorComponentType.Temperature>;
-      flowOut: ModuleField<SensorComponentType.Flow>;
-      tOut: ModuleField<SensorComponentType.Temperature>;
     }
 >();
 
 const { getSensorValue, getComponentState } = getMimicDataProvider();
-const flowIn = getSensorValue(props.flowIn);
-const tIn = getSensorValue(props.tIn);
-const flowOut = getSensorValue(props.flowOut);
-const tOut = getSensorValue(props.tOut);
+const flowIn = getSensorValue(props.sensors.flowIn);
+const tIn = getSensorValue(props.sensors.tIn);
+const flowOut = getSensorValue(props.sensors.flowOut);
+const tOut = getSensorValue(props.sensors.tOut);
 const state = getComponentState();
 </script>
 
 <template>
-  <CircuitBox
-    v-bind="props"
-    :state="state"
+  <MimicTooltipTrigger
+    :type="MimicComponentType.HotWaterCircuit"
+    :data="props"
   >
-    <CircuitBoxTitle>{{ title }}</CircuitBoxTitle>
-    <ValueList>
-      <ValueListSeparator />
-      <ValueListHeader>
-        <RiArrowUpLine class="text-muted-foreground size-3" />
-        In
-      </ValueListHeader>
-      <ValueListFlowItem :value="flowIn?.flow.value" />
-      <ValueListTemperatureItem :temperature="tIn?.temperature.value" />
-      <ValueListSeparator />
-      <ValueListHeader>
-        <RiArrowDownLine class="text-muted-foreground size-3" />
-        Out
-      </ValueListHeader>
-      <ValueListFlowItem :value="flowOut?.flow.value" />
-      <ValueListTemperatureItem :temperature="tOut?.temperature.value" />
-      <ValueListSeparator />
-    </ValueList>
-  </CircuitBox>
+    <CircuitBox
+      v-bind="props"
+      :state="state"
+    >
+      <CircuitBoxTitle>{{ tooltip?.title }}</CircuitBoxTitle>
+      <ValueList>
+        <ValueListSeparator />
+        <ValueListHeader>
+          <RiArrowUpLine class="text-muted-foreground size-3" />
+          In
+        </ValueListHeader>
+        <ValueListFlowItem :value="flowIn?.flow.value" />
+        <ValueListTemperatureItem :temperature="tIn?.temperature.value" />
+        <ValueListSeparator />
+        <ValueListHeader>
+          <RiArrowDownLine class="text-muted-foreground size-3" />
+          Out
+        </ValueListHeader>
+        <ValueListFlowItem :value="flowOut?.flow.value" />
+        <ValueListTemperatureItem :temperature="tOut?.temperature.value" />
+        <ValueListSeparator />
+      </ValueList>
+    </CircuitBox>
+  </MimicTooltipTrigger>
 </template>

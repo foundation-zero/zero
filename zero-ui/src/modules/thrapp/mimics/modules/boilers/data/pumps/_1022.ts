@@ -1,9 +1,10 @@
 import { ControlComponentType, SensorComponentType } from "@/modules/thrs/types";
+import { toInstance } from "../../..";
+import { MimicComponentType } from "../../../../../types";
 
-import { toPump } from ".";
 import { getField } from "../../../../providers";
 
-export default toPump({
+export default toInstance<MimicComponentType.Pump>({
   custom: {
     flowSetpointName: "heatpump_flow_parameter",
     temperatureSetpointName: "heatpump_temperature_parameter",

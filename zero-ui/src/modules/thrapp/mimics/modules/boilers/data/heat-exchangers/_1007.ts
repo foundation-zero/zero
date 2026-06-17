@@ -1,10 +1,12 @@
 import { SensorComponentType } from "@/modules/thrs/types";
+import { toInstance } from "../../..";
+import { MimicComponentType } from "../../../../../types";
 
-import { circuit, exchangeCircuit, toHeatExchanger, tooltip } from ".";
 import { HeatExchangerPortOrientation } from "../../../../components/heat-exchanger";
 import { getField } from "../../../../providers";
+import { circuit, exchangeCircuit, tooltip } from "./shared";
 
-export default toHeatExchanger({
+export default toInstance<MimicComponentType.HeatExchanger>({
   controls: {},
   custom: {
     sideA: HeatExchangerPortOrientation.Side,

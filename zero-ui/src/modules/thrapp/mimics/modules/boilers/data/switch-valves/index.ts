@@ -1,11 +1,5 @@
-import { ControlComponentType } from "@/modules/thrs/types";
-
-import { TooltipContent } from "@/modules/thrapp/components/tooltip";
-import { CustomFieldDefinitions } from "@/modules/thrapp/types/fields";
-import { toFieldsMap, toInstance } from "../../..";
+import { toFieldsMap } from "../../..";
 import { MimicComponentType } from "../../../../../types";
-import { getField } from "../../../../providers";
-import { BOILER_TANK_DATA } from "../boiler-tanks";
 import _1067_03 from "./_1067_03";
 import _1067_04 from "./_1067_04";
 import _1067_05 from "./_1067_05";
@@ -21,46 +15,6 @@ import _1067_14 from "./_1067_14";
 import _1067_16 from "./_1067_16";
 import _1067_17 from "./_1067_17";
 import _1067_18 from "./_1067_18";
-
-export const tooltip = (content: Partial<TooltipContent>): TooltipContent => ({
-  title: "Switch valve",
-  itemName: "2 way valve DN 25",
-  ...content,
-});
-
-export const controller = getField(
-  ControlComponentType.BoilersTanksController,
-  "boilers",
-  "boilersTanksController",
-);
-
-type SwitchValveCustom = CustomFieldDefinitions[MimicComponentType.SwitchValve]["tank"];
-
-export const tank1: SwitchValveCustom = {
-  controller,
-  get operator() {
-    return BOILER_TANK_DATA[MimicComponentType.BoilerTank]["1053"].sensors;
-  },
-  operatorName: "Tank 1 operator",
-};
-
-export const tank2: SwitchValveCustom = {
-  controller,
-  get operator() {
-    return BOILER_TANK_DATA[MimicComponentType.BoilerTank]["1054"].sensors;
-  },
-  operatorName: "Tank 2 operator",
-};
-
-export const tank3: SwitchValveCustom = {
-  controller,
-  get operator() {
-    return BOILER_TANK_DATA[MimicComponentType.BoilerTank]["1055"].sensors;
-  },
-  operatorName: "Tank 3 operator",
-};
-
-export const toSwitchValve = toInstance<MimicComponentType.SwitchValve>;
 
 export const BOILER_SWITCH_VALVE_DATA = toFieldsMap({
   [MimicComponentType.SwitchValve]: {

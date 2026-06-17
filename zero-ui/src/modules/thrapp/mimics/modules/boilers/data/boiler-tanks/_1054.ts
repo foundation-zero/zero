@@ -1,9 +1,11 @@
 import { SensorComponentType } from "@/modules/thrs/types";
+import { toInstance } from "../../..";
+import { MimicComponentType } from "../../../../../types";
 
-import { boostingSupply, controller, parameters, toBoilerTank } from ".";
 import { getField } from "../../../../providers";
+import { boostingSupply, controller, parameters } from "./shared";
 
-export default toBoilerTank({
+export default toInstance<MimicComponentType.BoilerTank>({
   custom: {
     tankStateField: "tank2State",
   },

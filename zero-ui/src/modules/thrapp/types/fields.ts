@@ -1,4 +1,5 @@
 import { ControlComponentType, ParametersType, SensorComponentType } from "@/modules/thrs/types";
+import { type Component } from "vue";
 import { BoilerTankStateField, MimicComponentType } from ".";
 import { HeatExchangerPortOrientation } from "../mimics/components/heat-exchanger";
 import { ModuleField } from "../mimics/providers";
@@ -63,7 +64,12 @@ export type SensorFieldDefinitions = SensorFields<{
     flow: SensorComponentType.Flow;
     deltaT: SensorComponentType.DeltaT;
   };
-  [MimicComponentType.HotWaterCircuit]: EmptyObject;
+  [MimicComponentType.HotWaterCircuit]: {
+    flowIn: SensorComponentType.CalculatedFlow;
+    flowOut: SensorComponentType.Flow;
+    tIn: SensorComponentType.Temperature;
+    tOut: SensorComponentType.Temperature;
+  };
   [MimicComponentType.Asset]: {
     heatExchanger: SensorComponentType.HeatExchanger;
   };
@@ -136,13 +142,25 @@ export type CustomFieldDefinitions = CustomFields<{
     circuit: ExtractSensorFields<MimicComponentType.ExchangeCircuit>["sensors"];
     exchangeCircuit: ExtractSensorFields<MimicComponentType.ExchangeCircuit>["sensors"];
   };
-  [MimicComponentType.ExchangeCircuit]: EmptyObject;
-  [MimicComponentType.HotWaterCircuit]: EmptyObject;
+  [MimicComponentType.ExchangeCircuit]: {
+    width?: number | string;
+    height?: number | string;
+    forceHeight?: boolean;
+  };
+  [MimicComponentType.HotWaterCircuit]: {
+    width?: number | string;
+    height?: number | string;
+  };
   [MimicComponentType.PressureSensor]: EmptyObject;
   [MimicComponentType.TemperatureSensor]: EmptyObject;
   [MimicComponentType.FlowSensor]: EmptyObject;
   [MimicComponentType.ManualValve]: EmptyObject;
-  [MimicComponentType.Asset]: EmptyObject;
+  [MimicComponentType.Asset]: {
+    icon: Component;
+    width?: number | string;
+    height?: number | string;
+    hideMode?: boolean;
+  };
   [MimicComponentType.SwitchValve]: {
     tank?: {
       operator?: ExtractSensorFields<MimicComponentType.BoilerTank>["sensors"];
