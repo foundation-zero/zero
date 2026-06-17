@@ -17,7 +17,7 @@ class Collector[R](Protocol):
 
 class PolarsCollector(Collector[pl.DataFrame]):
     def __init__(self):
-        self._data = None
+        self._data = []
         self._schema_overrides = None
 
     def collect(
@@ -26,50 +26,45 @@ class PolarsCollector(Collector[pl.DataFrame]):
         control_mode: str | None,
         time: datetime,
     ):
-        if self._data is None:
-            self._schema_overrides = {
-                "time": pl.Datetime(time_unit="us"),
-                "control_mode": pl.String,
+        self._data.append(
+            {
+                **values,
+                "time": time,
+                "control_mode": control_mode,
             }
-            for key, value in values.items():
-                if (
-                    key.endswith("__C")
-                    or key.endswith("__l_min")
-                    or key.endswith("__ratio")
-                    or key.endswith("__s")
-                    or key.endswith("__Hz")
-                    or key.endswith("__Bar")
-                    or key.endswith("__Watt")
-                ):
-                    self._schema_overrides[key] = pl.Float64
-                elif key.endswith("__bool"):
-                    self._schema_overrides[key] = pl.Boolean
-
-            self._data = pl.DataFrame(
-                {
-                    **values,
-                    "time": time,
-                    "control_mode": control_mode,
-                },
-                schema_overrides=self._schema_overrides,
-                strict=False,
-            )
-        else:
-            self._data.vstack(
-                pl.DataFrame(
-                    {
-                        **values,
-                        "time": time,
-                        "control_mode": control_mode,
-                    },
-                    schema_overrides=self._schema_overrides,
-                    strict=False,
-                ),
-                in_place=True,
-            )
+        )
 
     def result(self) -> None | pl.DataFrame:
-        if self._data is None:
+        if not self._data:
             return None
-        else:
-            return self._data.rechunk().clone()
+
+        all_keys = set().union(*(row.keys() for row in self._data))
+
+        normalized_data = [{**{k: None for k in all_keys}, **row} for row in self._data]
+
+        schema_overrides = {
+            **{
+                key: pl.Float64
+                for key in all_keys
+                if any(
+                    key.endswith(s)
+                    for s in [
+                        "__C",
+                        "__l_min",
+                        "__ratio",
+                        "__s",
+                        "__Hz",
+                        "__Bar",
+                        "__Watt",
+                    ]
+                )
+            },
+            **{key: pl.Boolean for key in all_keys if key.endswith("__bool")},
+            **{"time": pl.Datetime(time_unit="us"), "control_mode": pl.String},
+        }
+        return pl.from_dicts(
+            normalized_data,
+            schema_overrides=schema_overrides,
+            strict=False,
+            infer_schema_length=None,
+        )
