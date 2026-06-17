@@ -768,7 +768,6 @@ class SimulationControls:
             )
             runner = Runner(connector, control, modules.alarms())  # type: ignore
 
-            await connector.start()
             connector_task = create_task(connector.run())
             receive_task = create_task(
                 self._receive_controls(HANDLERS, context, modules)
@@ -787,7 +786,7 @@ class SimulationControls:
                     )
                 )
                 await self._run_simulation(
-                    mode, modules, context, connector, runner, cmds
+                    mode, modules, context, simulation, runner, cmds
                 )
             except Exception as e:
                 logger.error(f"SimulationControls run encountered an error: {e}")
@@ -800,7 +799,7 @@ class SimulationControls:
         mode: Modes,
         modules: CombinedModule,
         context: MessageContext,
-        connector: MqttConnector,
+        simulation: Simulation,
         runner: Runner,
         cmds: Queue[SimulationCtrlMessage],
     ):
@@ -811,7 +810,7 @@ class SimulationControls:
                 SimulationStatusMessage(
                     mode=mode,
                     status="available",
-                    simulation_time=connector.time(),
+                    simulation_time=simulation.time(),
                     control_modules=active_modules,
                 )
             )
@@ -824,7 +823,7 @@ class SimulationControls:
                     SimulationStatusMessage(
                         mode=mode,
                         status="running",
-                        simulation_time=connector.time(),
+                        simulation_time=simulation.time(),
                         control_modules=active_modules,
                     )
                 )
@@ -841,7 +840,7 @@ class SimulationControls:
                     SimulationStatusMessage(
                         mode=mode,
                         status="stepping",
-                        simulation_time=connector.time(),
+                        simulation_time=simulation.time(),
                         control_modules=active_modules,
                     )
                 )

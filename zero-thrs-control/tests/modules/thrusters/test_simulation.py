@@ -3,6 +3,7 @@ from datetime import datetime, timedelta
 import pytest
 from pytest import fixture
 
+from tests.helpers.collector import PolarsCollector
 from tests.helpers.simulation_inputs import simulator_input_field_setters
 from tests.helpers.simulation_runner import SimulationTestRunner
 from tests.modules.thrusters.conftest import ThrustersSimulation
@@ -19,7 +20,6 @@ from thrs.input_output.modules.thrusters import (
     ThrustersSimulationInputs,
     ThrustersSimulationOutputs,
 )
-from thrs.orchestration.collector import PolarsCollector
 from thrs.orchestration.runner import SimulatorModel
 from thrs.orchestration.simulation import Simulation
 from thrs.simulation.fmu import Fmu

@@ -5,7 +5,7 @@ from thrs.classes.control import Control, ControlResult
 from thrs.input_output.alarms import BaseAlarms
 from thrs.input_output.base import SimulationInputs, SimulationValues, ThrsValues
 from thrs.input_output.definitions.sensor import FlowSensor
-from thrs.orchestration.connector import Connector, ExecutionResult
+from thrs.orchestration.connector import Connector
 from thrs.orchestration.simulation import Simulation, SimulationResult
 
 
@@ -22,30 +22,18 @@ class SimpleSimulationOutputs(SimulationValues):
 
 
 class SimpleConnector(Connector):
-    def __init__(self, start_time):
+    def __init__(self):
         self.controls = []
-        self._start_time = start_time
 
-    async def start(self):
+    async def run(self):
         pass
 
     async def transceive(self, control_values):
         self.controls.append(control_values)
-        return ExecutionResult(timestamp=datetime.now(), sensor_values=control_values)
-
-    @property
-    def start_time(self):
-        return self._start_time
-
-    def time(self):
-        return datetime.now()
+        return control_values
 
 
-class SimpleSimulation[
-    S,
-    I: SimulationInputs,
-    O: SimulationValues,
-](Simulation[S, S, I, O]):
+class SimpleSimulation[S](Simulation[S, S, SimulationInputs, SimulationValues]):
     def __init__(self, start_time):
         self.controls = []
         self._start_time = start_time
@@ -53,9 +41,18 @@ class SimpleSimulation[
     async def start(self):
         pass
 
-    def tick(self, control_values: S) -> SimulationResult[S, S, I, O]:
+    def tick(
+        self, control_values: S
+    ) -> SimulationResult[S, S, SimulationInputs, SimulationValues]:
         self.controls.append(control_values)
-        return ExecutionResult(timestamp=datetime.now(), sensor_values=control_values)  # type: ignore # TODO: make this make sense
+        return SimulationResult(
+            timestamp=datetime.now(),
+            sensor_values=control_values,
+            control_values=control_values,
+            simulation_outputs=SimulationValues(),
+            simulation_inputs=SimulationInputs(),
+            raw={},
+        )
 
     @property
     def start_time(self):
