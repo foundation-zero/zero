@@ -23,18 +23,18 @@ async def test_valve_movement(fmu, control, simulation_inputs):
 
     result = await simulation.tick(control_values)
 
-    control_values.thrusters_shutoff_recovery.setpoint.value = 0
+    control_values.thrusters_switch_recovery.setpoint.value = 0
 
     result = await simulation.tick(control_values)
 
-    assert control_values.thrusters_shutoff_recovery.setpoint.value == 0
-    assert result.sensor_values.thrusters_shutoff_recovery.position_rel.value == approx(
+    assert control_values.thrusters_switch_recovery.setpoint.value == 0
+    assert result.sensor_values.thrusters_switch_recovery.position_rel.value == approx(
         0.5, abs=0.01
     )
 
     result = await simulation.tick(control_values)
 
-    assert control_values.thrusters_shutoff_recovery.setpoint.value == 0
-    assert result.sensor_values.thrusters_shutoff_recovery.position_rel.value == approx(
+    assert control_values.thrusters_switch_recovery.setpoint.value == 0
+    assert result.sensor_values.thrusters_switch_recovery.position_rel.value == approx(
         0, abs=0.01
     )

@@ -15,33 +15,33 @@ from fastapi.middleware.cors import CORSMiddleware
 from pydantic.fields import FieldInfo
 from strawberry.fastapi import GraphQLRouter
 
-import thrs.graphql.boilers as boilers
 import thrs.graphql.consumers as consumers
+import thrs.graphql.dhw as dhw
 import thrs.graphql.pcm as pcm
 import thrs.graphql.pvt as pvt
 import thrs.graphql.simulation as simulation
 import thrs.graphql.thrusters as thrusters
-from thrs.control.modules.boilers import BoilersControlMode, BoilersParameters
 from thrs.control.modules.consumers import ConsumersControlMode, ConsumersParameters
+from thrs.control.modules.dhw import DhwControlMode, DhwParameters
 from thrs.control.modules.pcm import PcmControlMode, PcmParameters
 from thrs.control.modules.pvt import PvtControlMode, PvtParameters
 from thrs.control.modules.thrusters import ThrustersControlMode, ThrustersParameters
 from thrs.graphql.base import (
-    BoilersMessaging,
     ConsumersMessaging,
+    DhwMessaging,
     FieldMutation,
     PcmMessaging,
     PvtMessaging,
     ThrsContext,
     ThrustersMessaging,
 )
-from thrs.graphql.boilers import (
-    BoilersModule,
-    BoilersMutations,
-)
 from thrs.graphql.consumers import (
     ConsumersModule,
     ConsumersMutations,
+)
+from thrs.graphql.dhw import (
+    DhwModule,
+    DhwMutations,
 )
 from thrs.graphql.helpers import ensure_input_type
 from thrs.graphql.messaging import ControlMessaging, Messaging, SimulationMessaging
@@ -62,11 +62,11 @@ from thrs.graphql.thrusters import (
     ThrustersModule,
     ThrustersMutations,
 )
-from thrs.input_output.modules.boilers import BoilersControlValues, BoilersSensorValues
 from thrs.input_output.modules.consumers import (
     ConsumersControlValues,
     ConsumersSensorValues,
 )
+from thrs.input_output.modules.dhw import DhwControlValues, DhwSensorValues
 from thrs.input_output.modules.pcm import (
     PcmControlValues,
     PcmSensorValues,
@@ -103,8 +103,8 @@ class ControlModules:
         return consumers.resolve_module(info.context.consumers_messaging)
 
     @strawberry.field
-    def boilers(self, info: strawberry.Info[ThrsContext]) -> BoilersModule:
-        return boilers.resolve_module(info.context.boilers_messaging)
+    def dhw(self, info: strawberry.Info[ThrsContext]) -> DhwModule:
+        return dhw.resolve_module(info.context.dhw_messaging)
 
 
 @strawberry.type
@@ -168,7 +168,7 @@ class Mutation(
     PvtMutations,
     PcmMutations,
     ConsumersMutations,
-    BoilersMutations,
+    DhwMutations,
     SimulationMutations,
 ):
     @strawberry.mutation
@@ -248,12 +248,12 @@ async def lifespan(app: FastAPI):
             ConsumersControlMode,
             mqtt,
         )
-        boilers_messaging: BoilersMessaging = ControlMessaging(
-            "boilers",
-            BoilersSensorValues,
-            BoilersControlValues,
-            BoilersParameters,
-            BoilersControlMode,
+        dhw_messaging: DhwMessaging = ControlMessaging(
+            "dhw",
+            DhwSensorValues,
+            DhwControlValues,
+            DhwParameters,
+            DhwControlMode,
             mqtt,
         )
         simulation_messaging: SimulationMessaging = SimulationMessaging(
@@ -266,7 +266,7 @@ async def lifespan(app: FastAPI):
                 pvt_messaging,
                 pcm_messaging,
                 consumers_messaging,
-                boilers_messaging,
+                dhw_messaging,
             ],
             simulation_messaging,
         )
@@ -283,7 +283,7 @@ async def lifespan(app: FastAPI):
         app.state.pvt_messaging = pvt_messaging
         app.state.pcm_messaging = pcm_messaging
         app.state.consumers_messaging = consumers_messaging
-        app.state.boilers_messaging = boilers_messaging
+        app.state.dhw_messaging = dhw_messaging
         app.state.simulation_messaging = simulation_messaging
         yield
         run_task.cancel()
@@ -320,8 +320,8 @@ def consumers_messaging() -> ConsumersMessaging:
     return app.state.consumers_messaging
 
 
-def boilers_messaging() -> BoilersMessaging:
-    return app.state.boilers_messaging
+def dhw_messaging() -> DhwMessaging:
+    return app.state.dhw_messaging
 
 
 def simulation_messaging() -> SimulationMessaging:
@@ -334,7 +334,7 @@ async def get_context(
     pvt_messaging: Annotated[PvtMessaging, Depends(pvt_messaging)],
     pcm_messaging: Annotated[PcmMessaging, Depends(pcm_messaging)],
     consumers_messaging: Annotated[ConsumersMessaging, Depends(consumers_messaging)],
-    boilers_messaging: Annotated[BoilersMessaging, Depends(boilers_messaging)],
+    dhw_messaging: Annotated[DhwMessaging, Depends(dhw_messaging)],
     simulation_messaging: Annotated[SimulationMessaging, Depends(simulation_messaging)],
 ):
     return ThrsContext(
@@ -343,7 +343,7 @@ async def get_context(
         pvt_messaging=pvt_messaging,
         pcm_messaging=pcm_messaging,
         consumers_messaging=consumers_messaging,
-        boilers_messaging=boilers_messaging,
+        dhw_messaging=dhw_messaging,
         simulation_messaging=simulation_messaging,
     )
 

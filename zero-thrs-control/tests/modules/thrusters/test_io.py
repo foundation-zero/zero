@@ -53,15 +53,15 @@ def test_yard_tags():
 async def test_set_module_temperature(control, simulation):
     control_values = control.initial().values
 
-    simulation._simulation_inputs.thrusters_aft.heat_flow.value = 0
-    simulation._simulation_inputs.thrusters_fwd.heat_flow.value = 0
-    simulation._simulation_inputs.thrusters_module_supply.temperature.value = 60
+    simulation._simulation_inputs.thrusters_thruster_aft.heat_flow.value = 0
+    simulation._simulation_inputs.thrusters_thruster_fwd.heat_flow.value = 0
+    simulation._simulation_inputs.thrusters_pcm_supply.temperature.value = 60
 
-    control_values.thrusters_pump_1.dutypoint.value = 1
+    control_values.thrusters_pump1.dutypoint.value = 1
     control_values.thrusters_mix_recovery.setpoint.value = Valve.MIXING_A_TO_AB
     control_values.thrusters_flowcontrol_aft.setpoint.value = Valve.OPEN
     control_values.thrusters_flowcontrol_fwd.setpoint.value = Valve.OPEN
-    control_values.thrusters_pump_1.on.value = True
+    control_values.thrusters_pump1.on.value = True
 
     # allow temp to stabilize
     result = None

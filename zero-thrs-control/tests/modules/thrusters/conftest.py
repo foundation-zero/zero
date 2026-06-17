@@ -36,16 +36,16 @@ type ThrustersSimulation = Simulation[
 @fixture
 def simulation_inputs():
     return ThrustersSimulationInputs(
-        thrusters_aft=Thruster(
+        thrusters_thruster_aft=Thruster(
             heat_flow=Stamped.stamp(9000), active=Stamped.stamp(True)
         ),
-        thrusters_fwd=Thruster(
+        thrusters_thruster_fwd=Thruster(
             heat_flow=Stamped.stamp(4300), active=Stamped.stamp(True)
         ),
         thrusters_seawater_supply=Boundary(
             temperature=Stamped.stamp(32), flow=Stamped.stamp(64)
         ),
-        thrusters_module_supply=TemperatureBoundary(temperature=Stamped.stamp(50)),
+        thrusters_pcm_supply=TemperatureBoundary(temperature=Stamped.stamp(50)),
         thrusters_pcs=Pcs(mode=Stamped.stamp(PcsMode.PROPULSION)),
     )
 

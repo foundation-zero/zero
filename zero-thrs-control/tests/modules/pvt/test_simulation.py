@@ -19,10 +19,7 @@ from thrs.simulation.models.fmu_paths import pvt_path
         simulator_input_field_setters(
             PvtSimulationInputs,
             ignore=[
-                "pvt_pump_failure_switch_main_fwd",
-                "pvt_pump_failure_switch_main_aft",
-                "pvt_pump_failure_switch_owners",
-                "pvt_module_supply",
+                "pvt_pcm_supply",
             ],  # Switches don't lend themselves to absurdation
         )
     )
