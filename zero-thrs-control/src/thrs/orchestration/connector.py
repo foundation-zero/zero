@@ -1,15 +1,14 @@
 import logging
 from collections.abc import Mapping
-from datetime import datetime
 from typing import Protocol
 
-from aiomqtt import Client, Topic
+from aiomqtt import Client
 from pydantic.fields import FieldInfo
 
 from thrs.input_output.base import CombinedValues, ThrsValues, get_topic
 from thrs.input_output.model_builder import CombinedModelBuilder, PartialModelBuilder
 from thrs.orchestration.module import ModuleClassMap
-from thrs.orchestration.simulation import ExecutionResult, Simulation, SimulationResult
+from thrs.orchestration.simulation import Simulation, SimulationResult
 from thrs.utils.string import hyphenize
 
 logger = logging.getLogger(__name__)
@@ -39,9 +38,7 @@ class PartialMqttMapping[M: ThrsValues](MqttMapping[M]):
         self._topic_prefix = topic_prefix
         self._module_prefix = module_prefix
         self._subscribe_topics = {
-            f"{self._topic_prefix}/{
-                (get_topic(field) or f'{self._module_prefix}/+')
-            }": field_name
+            self._topic("+", field): field_name
             for field_name, field in cls.model_fields.items()
         }
         self.topic_to_field = {
@@ -140,13 +137,8 @@ class ModuleMqttMapping(MqttMapping[CombinedValues]):
 
 
 class Connector[S, C](Protocol):
-    async def start(self): ...
-    async def transceive(self, control_values: C) -> ExecutionResult[S]: ...
-
-    @property
-    def start_time(self) -> datetime: ...
-
-    def time(self) -> datetime: ...
+    async def run(self): ...
+    async def transceive(self, control_values: C) -> S: ...
 
 
 class MqttControlConnector(Connector[CombinedValues, CombinedValues]):
@@ -157,9 +149,7 @@ class MqttControlConnector(Connector[CombinedValues, CombinedValues]):
         sensor_values_clss: ModuleClassMap,
         control_values_clss: ModuleClassMap,
         control_topic_suffix: str | None = None,
-        start_time: datetime | None = None,
     ):
-        self._start_time = start_time or datetime.now()
         self._mqtt_client = mqtt_client
         self._topic_prefix = topic_prefix
         self._control_topic_suffix_str = (
@@ -197,9 +187,6 @@ class MqttControlConnector(Connector[CombinedValues, CombinedValues]):
             topic = f"{topic}{self._control_topic_suffix_str}"
             await client.publish(topic, payload, qos=1)
 
-    def _clean_topic(self, topic: Topic) -> str:
-        return topic.value.removeprefix(f"{self._topic_prefix}/")
-
     async def _send_control_values(self, control_values: CombinedValues):
         logging.debug("Publishing control values")
         await self._publish_by_mapping(
@@ -208,20 +195,19 @@ class MqttControlConnector(Connector[CombinedValues, CombinedValues]):
             control_values,
         )
 
-    async def start(self):
+    async def _start(self):
         for topic in self._sensor_values_mqtt_mapping.subscribe_topics():
             await self._mqtt_client.subscribe(topic, qos=1)
 
     async def run(self):
         self._running = True
         try:
+            await self._start()
             await self._listen_to_sensors()
         finally:
             self._running = False
 
-    async def transceive(
-        self, control_values: CombinedValues
-    ) -> ExecutionResult[CombinedValues]:
+    async def transceive(self, control_values: CombinedValues) -> CombinedValues:
         if not self._running:
             raise Exception(
                 "MqttControlConnector not running, run() should be called in a create_task()"
@@ -229,17 +215,7 @@ class MqttControlConnector(Connector[CombinedValues, CombinedValues]):
         sensors = self._sensor_values_mqtt_mapping.result()
         await self._send_control_values(control_values)
 
-        return ExecutionResult(
-            timestamp=datetime.now(),
-            sensor_values=sensors if sensors else CombinedValues(values={}),
-        )
-
-    @property
-    def start_time(self) -> datetime:
-        return self._start_time
-
-    def time(self) -> datetime:
-        return datetime.now()
+        return sensors if sensors else CombinedValues(values={})
 
 
 class MqttSimulationConnector(Connector[CombinedValues, CombinedValues]):
@@ -268,26 +244,7 @@ class MqttSimulationConnector(Connector[CombinedValues, CombinedValues]):
         for topic, payload in payloads.items():
             await client.publish(topic, payload, qos=1)
 
-    async def _send_model(
-        self, client: Client, model: ThrsValues, topic_suffix: str | None = None
-    ):
-        for key in type(model).model_fields.keys():
-            value = getattr(model, key)
-            topic = (
-                f"{self._topic_prefix}/{hyphenize(key)}"
-                if topic_suffix is None
-                else f"{self._topic_prefix}/{hyphenize(key)}/{topic_suffix}"
-            )
-
-            await client.publish(
-                topic,
-                value.model_dump_json(),
-                qos=1,
-            )
-
-    async def _send_sensor_values(
-        self, execution_result: ExecutionResult[CombinedValues]
-    ):
+    async def _send_sensor_values(self, execution_result: SimulationResult):
         logging.debug("Publishing sensor values")
         await self._publish_by_mapping(
             self._mqtt_client,
@@ -295,33 +252,26 @@ class MqttSimulationConnector(Connector[CombinedValues, CombinedValues]):
             execution_result.sensor_values,
         )
 
-    async def start(self):
+    async def _send_simulation_output(self, simulation_result: SimulationResult):
+        logging.debug("Publishing simulation output values")
+        await self._publish_by_mapping(
+            self._mqtt_client,
+            self._simulation_outputs_mqtt_mapping,
+            simulation_result.simulation_outputs,
+        )
+
+    async def run(self):
         pass
 
-    async def transceive(
-        self, control_values: CombinedValues
-    ) -> ExecutionResult[CombinedValues]:
+    async def transceive(self, control_values: CombinedValues) -> CombinedValues:
         logging.debug("Executing simulation")
         simulation_result = self._simulation.tick(control_values)
+
         logging.debug("Simulation tick completed")
         await self._send_sensor_values(simulation_result)
+        await self._send_simulation_output(simulation_result)
 
-        if isinstance(simulation_result, SimulationResult):
-            logging.debug("Publishing simulation output values")
-            await self._publish_by_mapping(
-                self._mqtt_client,
-                self._simulation_outputs_mqtt_mapping,
-                simulation_result.simulation_outputs,
-            )
-
-        return simulation_result
-
-    @property
-    def start_time(self) -> datetime:
-        return self._simulation.start_time
-
-    def time(self) -> datetime:
-        return self._simulation.time()
+        return simulation_result.sensor_values
 
 
 class MqttConnector(Connector[CombinedValues, CombinedValues]):
@@ -354,21 +304,9 @@ class MqttConnector(Connector[CombinedValues, CombinedValues]):
             simulation_outputs_cls=simulation_outputs_cls,
         )
 
-    async def start(self):
-        await self._control_connector.start()
-
     async def run(self):
         await self._control_connector.run()
 
-    async def transceive(
-        self, control_values: CombinedValues
-    ) -> ExecutionResult[CombinedValues]:
+    async def transceive(self, control_values: CombinedValues) -> CombinedValues:
         await self._control_connector.transceive(control_values)
         return await self._simulation_connector.transceive(control_values)
-
-    @property
-    def start_time(self) -> datetime:
-        return self._simulation_connector.start_time
-
-    def time(self) -> datetime:
-        return self._simulation_connector.time()

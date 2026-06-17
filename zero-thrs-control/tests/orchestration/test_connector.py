@@ -168,7 +168,6 @@ async def test_mqtt_connector(mqtt_client, mqtt_client2):
         {"simple": SimpleInOut},
         SimpleInOut,
     )
-    await connector.start()
     running = create_task(connector.run())
     await sleep(0)
 
@@ -185,7 +184,7 @@ async def test_mqtt_connector(mqtt_client, mqtt_client2):
     try:
         first_result = await connector.transceive(control_values)
 
-        data = first_result.sensor_values.values["simple"]
+        data = first_result.values["simple"]
         assert isinstance(data, SimpleInOut)
         assert data.go_with_the.flow.value == 1
         assert data.go_with_the.temperature.value == 2
@@ -193,7 +192,7 @@ async def test_mqtt_connector(mqtt_client, mqtt_client2):
         await sleep(0.005)
         second_result = await connector.transceive(control_values)
 
-        data = second_result.sensor_values.values["simple"]
+        data = second_result.values["simple"]
         assert isinstance(data, SimpleInOut)
         assert data.go_with_the.flow.value == 1
         assert data.go_with_the.temperature.value == 2
@@ -201,7 +200,7 @@ async def test_mqtt_connector(mqtt_client, mqtt_client2):
         await sleep(0.1)
         third_result = await connector.transceive(control_values)
 
-        data = third_result.sensor_values.values["simple"]
+        data = third_result.values["simple"]
         assert isinstance(data, SimpleInOut)
         assert data.go_with_the.flow.value == 1
         assert data.go_with_the.temperature.value == 2
@@ -268,7 +267,7 @@ async def test_mqttcontrol_connector(mock_mqtt_client):
     empty_result = await connector.transceive(
         combined_values(sensor_value(1, 2), sensor_value(3, 4))
     )
-    assert not empty_result.sensor_values.values
+    assert not empty_result.values
 
     # Fake receiving messages
     await mock_mqtt_client.receive_messages(
@@ -283,7 +282,7 @@ async def test_mqttcontrol_connector(mock_mqtt_client):
         combined_values(sensor_value(4, 8), sensor_value(5, 9))
     )
 
-    data = first_result.sensor_values.values["module"]
+    data = first_result.values["module"]
     assert isinstance(data, ValuesWithTopics)
     assert data.go_with_the.flow.value == 1
     assert data.go_with_the.temperature.value == 2
@@ -303,7 +302,7 @@ async def test_mqttcontrol_connector(mock_mqtt_client):
         combined_values(sensor_value(16, 32), sensor_value(17, 33))
     )
 
-    data = second_result.sensor_values.values["module"]
+    data = second_result.values["module"]
     assert isinstance(data, ValuesWithTopics)
     assert data.go_with_the.flow.value == 4
     assert data.go_with_the.temperature.value == 8
