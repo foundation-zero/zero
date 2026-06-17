@@ -114,7 +114,7 @@ async def test_simulation_run_playback_rate(
         "thrs",
     )
 
-    await test_client.subscribe("thrs/thrusters/thrusters-temperature-aft-return")
+    await test_client.subscribe("thrs/thrusters/thrusters-temperature-aft")
 
     run_task = create_task(controls.run("thrusters"))
     try:
@@ -165,9 +165,9 @@ async def test_simulation_run_step(
 
     await controls.clear_previous()
 
-    await test_client.subscribe("thrs/thrusters/thrusters-pump-1")
+    await test_client.subscribe("thrs/thrusters/thrusters-pump1")
     await test_client.subscribe(
-        f"thrs/thrusters/thrusters-pump-1/{settings.mqtt_control_topic_suffix}"
+        f"thrs/thrusters/thrusters-pump1/{settings.mqtt_control_topic_suffix}"
     )
     await status_client.subscribe("thrs/simulation/status")
 
@@ -205,9 +205,9 @@ async def test_simulation_run_step(
 
         assert (
             msg1.topic.value
-            == f"thrs/thrusters/thrusters-pump-1/{settings.mqtt_control_topic_suffix}"
+            == f"thrs/thrusters/thrusters-pump1/{settings.mqtt_control_topic_suffix}"
         )
-        assert msg2.topic.value == "thrs/thrusters/thrusters-pump-1"
+        assert msg2.topic.value == "thrs/thrusters/thrusters-pump1"
 
         await controls_client.publish("thrs/simulation/step", '{"seconds": 2}', qos=1)
 
@@ -287,7 +287,7 @@ async def test_simulation_controls_automated_control(
         control_values = control_builder.result()
 
         assert control_values is not None
-        assert control_values.thrusters_shutoff_recovery.setpoint.value > 0
+        assert control_values.thrusters_switch_recovery.setpoint.value > 0
 
     finally:
         run_task.cancel()
@@ -389,7 +389,7 @@ async def test_simulation_controls_set_simulation_inputs(
         inputs_model = SimulationInputMessage[
             ThrustersSimulationInputs
         ].model_validate_json(simulation_inputs.payload)
-        assert inputs_model.inputs.thrusters_aft.heat_flow.value != 0.0  # type: ignore
+        assert inputs_model.inputs.thrusters_thruster_aft.heat_flow.value != 0.0  # type: ignore
 
         new_inputs = ThrustersSimulationInputs.zero()
         await controls_client.publish(
@@ -404,7 +404,7 @@ async def test_simulation_controls_set_simulation_inputs(
         inputs_model = SimulationInputMessage[
             ThrustersSimulationInputs
         ].model_validate_json(simulation_inputs.payload)
-        assert inputs_model.inputs.thrusters_aft.heat_flow.value == 0.0  # type: ignore
+        assert inputs_model.inputs.thrusters_thruster_aft.heat_flow.value == 0.0  # type: ignore
     finally:
         run_task.cancel()
 
@@ -455,7 +455,7 @@ async def test_simulation_controls_simulation_output(
         assert isinstance(simulation_output.payload, str | bytes)
         module_return_temperature = ThrustersSimulationOutputs.model_validate_json(
             simulation_output.payload
-        ).thrusters_module_return.temperature.value
+        ).thrusters_pcm_return.temperature.value
         assert isinstance(module_return_temperature, float)
         assert module_return_temperature > 0
 

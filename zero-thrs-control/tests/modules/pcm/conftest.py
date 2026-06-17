@@ -23,7 +23,7 @@ def control(simulation):
 @fixture
 def simulation_inputs():
     return PcmSimulationInputs(
-        pcm_producers_supply=Boundary(
+        pcm_thrusters_supply=Boundary(
             temperature=Stamped.stamp(70), flow=Stamped.stamp(80)
         ),
         pcm_consumers_supply=TemperatureBoundary(temperature=Stamped.stamp(60)),

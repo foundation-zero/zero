@@ -66,7 +66,7 @@ class Pcs(ThrsValues):
     ]
 
 
-class Fahrenheit(ThrsValues):
+class AdsorptionChiller(ThrsValues):
     free_cooling: Annotated[Stamped[OnOff], field_meta(included_in_fmu=False)]
 
 

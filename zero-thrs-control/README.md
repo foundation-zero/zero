@@ -29,7 +29,7 @@ Run the simulator with:
 poetry run python -m thrs.cli run <module>
 ```
 
-Where `<module>` can be one of: `thrusters`, `pvt`, `pcm`, `consumers`, `high_temperature` or `boilers`.
+Where `<module>` can be one of: `thrusters`, `pvt`, `pcm`, `consumers`, `high_temperature` or `dhw`.
 
 The UI is located in [zero-ui](../zero-ui) at [http://localhost:5173/thrs/hmi](http://localhost:5173/thrs/hmi).
 

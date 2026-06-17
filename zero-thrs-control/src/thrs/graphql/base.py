@@ -9,8 +9,8 @@ from strawberry.fastapi import BaseContext
 import thrs.input_output.definitions.control as control
 import thrs.input_output.definitions.controllers as controllers
 import thrs.input_output.definitions.sensor as sensor
-from thrs.control.modules.boilers import BoilersControlMode, BoilersParameters
 from thrs.control.modules.consumers import ConsumersControlMode, ConsumersParameters
+from thrs.control.modules.dhw import DhwControlMode, DhwParameters
 from thrs.control.modules.pcm import PcmControlMode, PcmParameters
 from thrs.control.modules.pvt import PvtControlMode, PvtParameters
 from thrs.control.modules.thrusters import ThrustersControlMode, ThrustersParameters
@@ -22,11 +22,11 @@ from thrs.graphql.helpers import (
 )
 from thrs.graphql.messaging import ControlMessaging, Messaging, SimulationMessaging
 from thrs.input_output.base import SimulationInputs, Stamped, ThrsValues
-from thrs.input_output.modules.boilers import BoilersControlValues, BoilersSensorValues
 from thrs.input_output.modules.consumers import (
     ConsumersControlValues,
     ConsumersSensorValues,
 )
+from thrs.input_output.modules.dhw import DhwControlValues, DhwSensorValues
 from thrs.input_output.modules.pcm import (
     PcmControlValues,
     PcmSensorValues,
@@ -70,11 +70,11 @@ type ConsumersMessaging = ControlMessaging[
     ConsumersControlMode,
 ]
 
-type BoilersMessaging = ControlMessaging[
-    BoilersSensorValues,
-    BoilersControlValues,
-    BoilersParameters,
-    BoilersControlMode,
+type DhwMessaging = ControlMessaging[
+    DhwSensorValues,
+    DhwControlValues,
+    DhwParameters,
+    DhwControlMode,
 ]
 
 
@@ -151,7 +151,7 @@ class ThrsContext(BaseContext):
     pvt_messaging: PvtMessaging
     pcm_messaging: PcmMessaging
     consumers_messaging: ConsumersMessaging
-    boilers_messaging: BoilersMessaging
+    dhw_messaging: DhwMessaging
     simulation_messaging: SimulationMessaging
 
 

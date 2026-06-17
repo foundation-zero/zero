@@ -20,21 +20,7 @@ from thrs.simulation.models.fmu_paths import high_temperature_path
 
 @fixture(
     params=list(
-        simulator_input_field_setters(
-            HighTemperatureSimulationInputs,
-            ignore=[
-                (
-                    "consumers_fahrenheit_supply",
-                    "flow",
-                ),  # Flows appear to just work, instead of break
-                ("pvt_pump_failure_switch_main_aft", "position_rel"),
-                ("pvt_pump_failure_switch_main_fwd", "position_rel"),
-                (
-                    "pvt_pump_failure_switch_owners",
-                    "position_rel",
-                ),  # TODO: figure out why this takes such a long time. Could be related to flow control.
-            ],
-        )
+        simulator_input_field_setters(HighTemperatureSimulationInputs, ignore=[])
     )
 )
 def incorrect_simulation_inputs(simulation_inputs, request):

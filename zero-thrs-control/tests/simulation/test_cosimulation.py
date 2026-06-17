@@ -1,8 +1,8 @@
 from datetime import datetime, timedelta
 from typing import Any
 
-from thrs.control.modules.boilers import BoilersControl, BoilersParameters
-from thrs.control.modules.lt1 import Lt1Control, Lt1Parameters
+from thrs.control.modules.dhw import DhwControl, DhwParameters
+from thrs.control.modules.drives import DrivesControl, DrivesParameters
 from thrs.input_output.base import (
     CombinedValues,
     SimulationInputs,
@@ -10,17 +10,17 @@ from thrs.input_output.base import (
     Stamped,
 )
 from thrs.input_output.definitions import simulation
-from thrs.input_output.modules.boilers import (
-    BoilersControlValues,
-    BoilersSensorValues,
-    BoilersSimulationInputs,
-    BoilersSimulationOutputs,
+from thrs.input_output.modules.dhw import (
+    DhwControlValues,
+    DhwSensorValues,
+    DhwSimulationInputs,
+    DhwSimulationOutputs,
 )
-from thrs.input_output.modules.lt1 import (
-    Lt1ControlValues,
-    Lt1SensorValues,
-    Lt1SimulationInputs,
-    Lt1SimulationOutputs,
+from thrs.input_output.modules.drives import (
+    DrivesControlValues,
+    DrivesSensorValues,
+    DrivesSimulationInputs,
+    DrivesSimulationOutputs,
 )
 from thrs.simulation.cosimulation import (
     CoSimulationMaster,
@@ -31,34 +31,34 @@ from thrs.simulation.fmu import Fmu
 from thrs.simulation.io_mapping import CombinedIoMapping
 
 
-class Lt1BoilersSimulationInputs(SimulationInputs):
-    lt1_oil_cooler_aft: simulation.HeatSource
-    lt1_oil_cooler_fwd: simulation.HeatSource
-    lt1_propdrive_aft1: simulation.PropulsionDrive
-    lt1_propdrive_aft2: simulation.PropulsionDrive
-    lt1_propdrive_fwd1: simulation.PropulsionDrive
-    lt1_propdrive_fwd2: simulation.PropulsionDrive
-    lt1_shorepower: simulation.Converter
-    lt1_seawater_supply: simulation.Boundary
-    boilers_lt2_supply: simulation.Boundary
-    boilers_fahrenheit_supply: simulation.Boundary
-    boilers_ht_supply: simulation.Boundary
-    boilers_freshwater_supply: simulation.OverpressureTemperatureBoundary
-    boilers_hvac_exchanger: simulation.HvacExchanger
-    boilers_seawater_supply: simulation.TemperatureBoundary
-    boilers_hotwater_demand: simulation.FlowBoundary
+class DrivesDhwSimulationInputs(SimulationInputs):
+    drives_oil_cooler_aft: simulation.HeatSource
+    drives_oil_cooler_fwd: simulation.HeatSource
+    drives_propdrive_aft1: simulation.PropulsionDrive
+    drives_propdrive_aft2: simulation.PropulsionDrive
+    drives_propdrive_fwd1: simulation.PropulsionDrive
+    drives_propdrive_fwd2: simulation.PropulsionDrive
+    drives_shorepower: simulation.Converter
+    drives_seawater_supply: simulation.Boundary
+    dhw_lt2_supply: simulation.Boundary
+    dhw_fahrenheit_supply: simulation.Boundary
+    dhw_ht_supply: simulation.Boundary
+    dhw_freshwater_supply: simulation.OverpressureTemperatureBoundary
+    dhw_hvac_exchanger: simulation.HvacExchanger
+    dhw_seawater_supply: simulation.TemperatureBoundary
+    dhw_hotwater_demand: simulation.FlowBoundary
 
 
-class Lt1BoilersSimulationOutputs(SimulationValues):
-    lt1_seawater_return: simulation.TemperatureBoundary
-    lt1_boilers_return: simulation.TemperatureBoundary
-    boilers_lt1_return: simulation.TemperatureBoundary
-    boilers_lt2_return: simulation.TemperatureBoundary
-    boilers_fahrenheit_return: simulation.TemperatureBoundary
-    boilers_ht_return: simulation.TemperatureBoundary
-    boilers_seawater_return: simulation.TemperatureBoundary
-    boilers_seawater_supply: simulation.FlowBoundary
-    boilers_freshwater_return: simulation.FlowBoundary
+class DrivesDhwSimulationOutputs(SimulationValues):
+    drives_seawater_return: simulation.TemperatureBoundary
+    drives_dhw_return: simulation.TemperatureBoundary
+    dhw_drives_return: simulation.TemperatureBoundary
+    dhw_lt2_return: simulation.TemperatureBoundary
+    dhw_fahrenheit_return: simulation.TemperatureBoundary
+    dhw_ht_return: simulation.TemperatureBoundary
+    dhw_seawater_return: simulation.TemperatureBoundary
+    dhw_seawater_supply: simulation.FlowBoundary
+    dhw_freshwater_return: simulation.FlowBoundary
 
 
 def test_cosimulation_input_routing():
@@ -82,54 +82,54 @@ def test_cosimulation_input_routing():
         def solver_time(self) -> float:
             return 0.0
 
-    lt1_mock = MockFmu(
+    drives_mock = MockFmu(
         {
-            "lt1_flow_recovery__flow__l_min": 42.0,
-            "lt1_temperature_recovery__temperature__C": 35.0,
+            "drives_flow_recovery__flow__l_min": 42.0,
+            "drives_temperature_recovery__temperature__C": 35.0,
         }
     )
-    boilers_mock = MockFmu(
+    dhw_mock = MockFmu(
         {
-            "boilers_flow_lt1__flow__l_min": 15.0,
-            "boilers_temperature_freshwater_supply__temperature__C": 55.0,
+            "dhw_flow_drives__flow__l_min": 15.0,
+            "dhw_temperature_freshwater_supply__temperature__C": 55.0,
         }
     )
 
-    lt1_boilers = CoSimulationMaster(
+    drives_dhw = CoSimulationMaster(
         [
             CoSimulationParticipant(
-                lt1_mock,
-                Lt1SensorValues,
-                Lt1ControlValues,
-                Lt1SimulationInputs,
-                Lt1SimulationOutputs,
+                drives_mock,
+                DrivesSensorValues,
+                DrivesControlValues,
+                DrivesSimulationInputs,
+                DrivesSimulationOutputs,
                 [
                     Coupling(
-                        "boilers_flow_lt1", "flow", "lt1_boilers_supply", "flow", 0.0
+                        "dhw_flow_drives", "flow", "drives_dhw_supply", "flow", 0.0
                     ),
                     Coupling(
-                        "boilers_temperature_freshwater_supply",
+                        "dhw_temperature_freshwater_supply",
                         "temperature",
-                        "lt1_boilers_supply",
+                        "drives_dhw_supply",
                         "temperature",
                         30.0,
                     ),
                 ],
             ),
             CoSimulationParticipant(
-                boilers_mock,
-                BoilersSensorValues,
-                BoilersControlValues,
-                BoilersSimulationInputs,
-                BoilersSimulationOutputs,
+                dhw_mock,
+                DhwSensorValues,
+                DhwControlValues,
+                DhwSimulationInputs,
+                DhwSimulationOutputs,
                 [
                     Coupling(
-                        "lt1_flow_recovery", "flow", "boilers_lt1_supply", "flow", 0.0
+                        "drives_flow_recovery", "flow", "dhw_drives_supply", "flow", 0.0
                     ),
                     Coupling(
-                        "lt1_temperature_recovery",
+                        "drives_temperature_recovery",
                         "temperature",
-                        "boilers_lt1_supply",
+                        "dhw_drives_supply",
                         "temperature",
                         30.0,
                     ),
@@ -139,90 +139,86 @@ def test_cosimulation_input_routing():
     )
 
     io_mapping = CombinedIoMapping[
-        Lt1BoilersSimulationInputs, Lt1BoilersSimulationOutputs
+        DrivesDhwSimulationInputs, DrivesDhwSimulationOutputs
     ](
-        {"lt1": Lt1SensorValues, "boilers": BoilersSensorValues},
-        Lt1BoilersSimulationOutputs,
+        {"drives": DrivesSensorValues, "dhw": DhwSensorValues},
+        DrivesDhwSimulationOutputs,
     )
 
     control_values = CombinedValues(
         values={
-            "lt1": Lt1Control(Lt1Parameters(), datetime.now).initial().values,
-            "boilers": BoilersControl(BoilersParameters(), datetime.now)
-            .initial()
-            .values,
+            "drives": DrivesControl(DrivesParameters(), datetime.now).initial().values,
+            "dhw": DhwControl(DhwParameters(), datetime.now).initial().values,
         }
     )
 
-    simulation_inputs = Lt1BoilersSimulationInputs(
-        boilers_lt2_supply=simulation.Boundary(
+    simulation_inputs = DrivesDhwSimulationInputs(
+        dhw_lt2_supply=simulation.Boundary(
             temperature=Stamped.stamp(60), flow=Stamped.stamp(60)
         ),
-        boilers_fahrenheit_supply=simulation.Boundary(
+        dhw_fahrenheit_supply=simulation.Boundary(
             temperature=Stamped.stamp(30), flow=Stamped.stamp(45)
         ),
-        boilers_ht_supply=simulation.Boundary(
+        dhw_ht_supply=simulation.Boundary(
             temperature=Stamped.stamp(70), flow=Stamped.stamp(0)
         ),
-        boilers_freshwater_supply=simulation.OverpressureTemperatureBoundary(
+        dhw_freshwater_supply=simulation.OverpressureTemperatureBoundary(
             temperature=Stamped.stamp(20), overpressure=Stamped.stamp(0.3)
         ),
-        boilers_hotwater_demand=simulation.FlowBoundary(flow=Stamped.stamp(40)),
-        boilers_hvac_exchanger=simulation.HvacExchanger(
+        dhw_hotwater_demand=simulation.FlowBoundary(flow=Stamped.stamp(40)),
+        dhw_hvac_exchanger=simulation.HvacExchanger(
             heat_flow=Stamped.stamp(1000), maximum_temperature=Stamped.stamp(50)
         ),
-        boilers_seawater_supply=simulation.TemperatureBoundary(
+        dhw_seawater_supply=simulation.TemperatureBoundary(
             temperature=Stamped.stamp(20)
         ),
-        lt1_oil_cooler_aft=simulation.HeatSource(heat_flow=Stamped.stamp(0)),
-        lt1_oil_cooler_fwd=simulation.HeatSource(heat_flow=Stamped.stamp(0)),
-        lt1_propdrive_aft1=simulation.PropulsionDrive(
+        drives_oil_cooler_aft=simulation.HeatSource(heat_flow=Stamped.stamp(0)),
+        drives_oil_cooler_fwd=simulation.HeatSource(heat_flow=Stamped.stamp(0)),
+        drives_propdrive_aft1=simulation.PropulsionDrive(
             heat_flow=Stamped.stamp(0), active=Stamped.stamp(False)
         ),
-        lt1_propdrive_aft2=simulation.PropulsionDrive(
+        drives_propdrive_aft2=simulation.PropulsionDrive(
             heat_flow=Stamped.stamp(0), active=Stamped.stamp(False)
         ),
-        lt1_propdrive_fwd1=simulation.PropulsionDrive(
+        drives_propdrive_fwd1=simulation.PropulsionDrive(
             heat_flow=Stamped.stamp(0), active=Stamped.stamp(False)
         ),
-        lt1_propdrive_fwd2=simulation.PropulsionDrive(
+        drives_propdrive_fwd2=simulation.PropulsionDrive(
             heat_flow=Stamped.stamp(0), active=Stamped.stamp(False)
         ),
-        lt1_shorepower=simulation.Converter(
+        drives_shorepower=simulation.Converter(
             heat_flow=Stamped.stamp(15000), active=Stamped.stamp(True)
         ),
-        lt1_seawater_supply=simulation.Boundary(
+        drives_seawater_supply=simulation.Boundary(
             temperature=Stamped.stamp(20.0), flow=Stamped.stamp(64)
         ),
     )
 
     inputs = io_mapping.generate_inputs(control_values, simulation_inputs)
 
-    lt1_input_keys = set(lt1_boilers._participants[0].fmu_key_input_mapping.values())
-    boilers_input_keys = set(
-        lt1_boilers._participants[1].fmu_key_input_mapping.values()
-    )
+    drives_input_keys = set(drives_dhw._participants[0].fmu_key_input_mapping.values())
+    dhw_input_keys = set(drives_dhw._participants[1].fmu_key_input_mapping.values())
 
     # First tick - couplings use initial values
-    lt1_boilers.tick(inputs, duration=timedelta(seconds=1))
+    drives_dhw.tick(inputs, duration=timedelta(seconds=1))
 
     # Each participant should only receive keys from its own input mapping
-    assert set(lt1_mock.inputs[0].keys()).issubset(lt1_input_keys)
-    assert set(boilers_mock.inputs[0].keys()).issubset(boilers_input_keys)
+    assert set(drives_mock.inputs[0].keys()).issubset(drives_input_keys)
+    assert set(dhw_mock.inputs[0].keys()).issubset(dhw_input_keys)
 
     # The coupled inputs should carry the initial coupling values on first tick
-    assert lt1_mock.inputs[0]["lt1_boilers_supply__flow__l_min"] == 0.0
-    assert lt1_mock.inputs[0]["lt1_boilers_supply__temperature__C"] == 30.0
-    assert boilers_mock.inputs[0]["boilers_lt1_supply__flow__l_min"] == 0.0
-    assert boilers_mock.inputs[0]["boilers_lt1_supply__temperature__C"] == 30.0
+    assert drives_mock.inputs[0]["drives_dhw_supply__flow__l_min"] == 0.0
+    assert drives_mock.inputs[0]["drives_dhw_supply__temperature__C"] == 30.0
+    assert dhw_mock.inputs[0]["dhw_drives_supply__flow__l_min"] == 0.0
+    assert dhw_mock.inputs[0]["dhw_drives_supply__temperature__C"] == 30.0
 
     # Second tick - couplings route outputs from the previous tick
-    lt1_boilers.tick(inputs, duration=timedelta(seconds=1))
+    drives_dhw.tick(inputs, duration=timedelta(seconds=1))
 
-    # lt1 now receives the coupled values from boilers' first tick outputs
-    assert lt1_mock.inputs[1]["lt1_boilers_supply__flow__l_min"] == 15.0
-    assert lt1_mock.inputs[1]["lt1_boilers_supply__temperature__C"] == 55.0
+    # drives now receives the coupled values from dhw' first tick outputs
+    assert drives_mock.inputs[1]["drives_dhw_supply__flow__l_min"] == 15.0
+    assert drives_mock.inputs[1]["drives_dhw_supply__temperature__C"] == 55.0
 
-    # boilers now receives the coupled values from lt1's first tick outputs
-    assert boilers_mock.inputs[1]["boilers_lt1_supply__flow__l_min"] == 42.0
-    assert boilers_mock.inputs[1]["boilers_lt1_supply__temperature__C"] == 35.0
+    # dhw now receives the coupled values from drives's first tick outputs
+    assert dhw_mock.inputs[1]["dhw_drives_supply__flow__l_min"] == 42.0
+    assert dhw_mock.inputs[1]["dhw_drives_supply__temperature__C"] == 35.0

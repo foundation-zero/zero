@@ -27,23 +27,21 @@ async def test_basic(control: ConsumersControl, simulation: ConsumersSimulation)
         result = await simulation.tick(control_values)
 
     total_flow = (
-        result.sensor_values.consumers_flow_boosting.flow.value
-        + result.sensor_values.consumers_flow_fahrenheit.flow.value
+        result.sensor_values.consumers_flow_dhw.flow.value
+        + result.sensor_values.consumers_flow_adsorption.flow.value
         + result.sensor_values.consumers_flow_bypass.flow.value
     )
-    assert result.sensor_values.consumers_flow_boosting.flow.value == approx(
-        total_flow * control._parameters.boosting_flow_ratio_setpoint, abs=1.0
+    assert result.sensor_values.consumers_flow_dhw.flow.value == approx(
+        total_flow * control._parameters.dhw_flow_ratio_setpoint, abs=1.0
     )
-    assert result.sensor_values.consumers_flow_fahrenheit.flow.value == approx(
-        total_flow * control._parameters.fahrenheit_flow_ratio_setpoint, abs=1.0
+    assert result.sensor_values.consumers_flow_adsorption.flow.value == approx(
+        total_flow * control._parameters.adsorption_flow_ratio_setpoint, abs=1.0
     )
 
 
-async def test_boosting_disabled(
-    control: ConsumersControl, simulation: ConsumersSimulation
-):
-    control._parameters.boosting_enabled = False
-    control._parameters.fahrenheit_flow_ratio_setpoint = 0.5
+async def test_dhw_disabled(control: ConsumersControl, simulation: ConsumersSimulation):
+    control._parameters.dhw_enabled = False
+    control._parameters.adsorption_flow_ratio_setpoint = 0.5
     result = await simulation.tick(
         control.control(ConsumersSensorValues.zero()).values,
     )
@@ -52,17 +50,17 @@ async def test_boosting_disabled(
         control_values = control.control(result.sensor_values).values
         result = await simulation.tick(control_values)
 
-    assert result.sensor_values.consumers_flow_boosting.flow.value == approx(0, abs=0.1)
-    assert result.sensor_values.consumers_flow_fahrenheit.flow.value == approx(
+    assert result.sensor_values.consumers_flow_dhw.flow.value == approx(0, abs=0.1)
+    assert result.sensor_values.consumers_flow_adsorption.flow.value == approx(
         result.sensor_values.consumers_flow_bypass.flow.value, abs=1.0
     )
 
 
-async def test_fahrenheit_disabled(
+async def test_adsorption_disabled(
     control: ConsumersControl, simulation: ConsumersSimulation
 ):
-    control._parameters.fahrenheit_enabled = False
-    control._parameters.boosting_flow_ratio_setpoint = 0.5
+    control._parameters.adsorption_enabled = False
+    control._parameters.dhw_flow_ratio_setpoint = 0.5
     result = await simulation.tick(
         control.control(ConsumersSensorValues.zero()).values,
     )
@@ -71,17 +69,17 @@ async def test_fahrenheit_disabled(
         control_values = control.control(result.sensor_values).values
         result = await simulation.tick(control_values)
 
-    assert result.sensor_values.consumers_flow_boosting.flow.value == approx(
+    assert result.sensor_values.consumers_flow_dhw.flow.value == approx(
         result.sensor_values.consumers_flow_bypass.flow.value, abs=1.0
     )
-    assert result.sensor_values.consumers_flow_fahrenheit.flow.value == approx(
+    assert result.sensor_values.consumers_flow_adsorption.flow.value == approx(
         0, abs=0.2
     )
 
 
 async def test_only_bypass(control: ConsumersControl, simulation: ConsumersSimulation):
-    control._parameters.boosting_enabled = False
-    control._parameters.fahrenheit_enabled = False
+    control._parameters.dhw_enabled = False
+    control._parameters.adsorption_enabled = False
     result = await simulation.tick(
         control.control(ConsumersSensorValues.zero()).values,
     )
@@ -90,10 +88,10 @@ async def test_only_bypass(control: ConsumersControl, simulation: ConsumersSimul
         control_values = control.control(result.sensor_values).values
         result = await simulation.tick(control_values)
 
-    assert result.sensor_values.consumers_flow_boosting.flow.value == approx(0, abs=0.2)
-    assert result.sensor_values.consumers_flow_fahrenheit.flow.value == approx(
+    assert result.sensor_values.consumers_flow_dhw.flow.value == approx(0, abs=0.2)
+    assert result.sensor_values.consumers_flow_adsorption.flow.value == approx(
         0, abs=0.2
     )
     assert result.sensor_values.consumers_flow_bypass.flow.value == approx(
-        result.simulation_outputs.consumers_module_return.flow.value, abs=0.1
+        result.simulation_outputs.consumers_pcm_return.flow.value, abs=0.1
     )

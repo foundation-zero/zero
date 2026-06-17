@@ -33,7 +33,7 @@ async def test_idle(control, simulation: PvtSimulation):
         control_values = control.control(result.sensor_values).values
         result = await simulation.tick(control_values)
 
-    assert result.simulation_outputs.pvt_module_return.flow.value == approx(0, abs=0.1)  # type: ignore
+    assert result.simulation_outputs.pvt_pcm_return.flow.value == approx(0, abs=0.1)  # type: ignore
 
 
 async def test_recovery(control, simulation):
@@ -68,16 +68,16 @@ async def test_recovery(control, simulation):
         result.sensor_values.pvt_flow_main_fwd_recovery.flow.value
         + result.sensor_values.pvt_flow_main_aft_recovery.flow.value
         + result.sensor_values.pvt_flow_owners_recovery.flow.value
-        == approx(result.simulation_outputs.pvt_module_return.flow.value, abs=1e-5)
+        == approx(result.simulation_outputs.pvt_pcm_return.flow.value, abs=1e-5)
     )
 
-    assert result.simulation_outputs.pvt_module_supply.flow.value == approx(
-        result.simulation_outputs.pvt_module_return.flow.value, abs=1e-5
+    assert result.simulation_outputs.pvt_pcm_supply.flow.value == approx(
+        result.simulation_outputs.pvt_pcm_return.flow.value, abs=1e-5
     )
 
 
 async def test_heat_dump(control, simulation: PvtSimulation):
-    simulation._simulation_inputs.pvt_module_supply.temperature = Stamped.stamp(
+    simulation._simulation_inputs.pvt_pcm_supply.temperature = Stamped.stamp(
         control.parameters.maximum_supply_temperature + 5
     )
     simulation._simulation_inputs.pvt_seawater_supply.flow = Stamped.stamp(100)
