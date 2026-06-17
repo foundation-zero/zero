@@ -202,6 +202,7 @@ class Tank:
     def full(self, parameters: DhwParameters) -> bool:
         if self._level is None:
             return False
+
         return self._level > parameters.maximum_tank_level
 
     def empty(self, parameters: DhwParameters) -> bool:
@@ -347,7 +348,13 @@ class TanksController:
     def _select_filling_tank(
         self, parameters: DhwParameters, sensor_values: DhwSensorValues
     ):
-        if self._filling_tank is not None and self._filling_tank.full(parameters):
+        time_to_fill = self.time_to_fill(sensor_values, parameters)
+        if (
+            time_to_fill is not None
+            and time_to_fill
+            < 180  # It takes 90s to close a valve. With approximately linear closing, that gives 180 seconds to full when closing
+            and self._filling_tank is not None
+        ):
             self._filling_tank.stop_filling(self._time)
 
             if self._filling_valves_closed(
