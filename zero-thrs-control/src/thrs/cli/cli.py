@@ -1,7 +1,7 @@
 import logging
 
-from pydantic_settings import BaseSettings, CliApp, CliSubCommand, SettingsConfigDict
-
+from pydantic_settings import (BaseSettings, CliApp, CliSubCommand,
+                               SettingsConfigDict)
 from thrs.cli.config.modes import CommConnectorMode, RunnerMode, SimulationMode
 from thrs.cli.runner.runnables.control import ControlRunnable
 from thrs.cli.runner.runnables.simulation import SimulationRunnable
@@ -96,4 +96,5 @@ class THRS_cli(BaseSettings, cli_kebab_case=True):
     control: CliSubCommand[ControlCmd]
 
     def cli_cmd(self) -> None:
+        CliApp.run_subcommand(self)
         CliApp.run_subcommand(self)
