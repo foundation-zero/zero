@@ -1,10 +1,9 @@
 <script setup lang="ts">
-import { RiTempHotLine } from "@remixicon/vue";
-import { computed } from "vue";
+import { RiSnowflakeLine } from "@remixicon/vue";
 import { MimicComponentInstanceProps } from ".";
 import { MimicTooltipTrigger, TooltipComponentContext } from "../../components/tooltip";
 import { MimicComponentType } from "../../types";
-import { HeatPump, HeatPumpMode, HeatPumpModes, HeatPumpTitle } from "../components/heat-pump";
+import { HeatPump, HeatPumpTitle } from "../components/heat-pump";
 import {
   ValueList,
   ValueListDeltaTItem,
@@ -16,7 +15,7 @@ import { getMimicDataProvider } from "../providers";
 
 const props = defineProps<
   MimicComponentInstanceProps &
-    TooltipComponentContext<MimicComponentType.HeatPump> & {
+    TooltipComponentContext<MimicComponentType.HVAC> & {
       width?: number | string;
       height?: number | string;
       forceHeight?: boolean;
@@ -27,16 +26,11 @@ const { getSensorValue, getComponentState } = getMimicDataProvider();
 
 const heatExchanger = getSensorValue(props.sensors.heatExchanger);
 const state = getComponentState();
-
-const mode = computed(() => {
-  if (heatExchanger.value?.heat.value !== 0) return HeatPumpModes.Active;
-  else return HeatPumpModes.Inactive;
-});
 </script>
 
 <template>
   <MimicTooltipTrigger
-    :type="MimicComponentType.HeatPump"
+    :type="MimicComponentType.HVAC"
     :data="props"
   >
     <HeatPump
@@ -45,13 +39,9 @@ const mode = computed(() => {
     >
       <YardTag>{{ tooltip?.yardTag }}</YardTag>
       <HeatPumpTitle class="gap-1 py-1">
-        <RiTempHotLine class="text-brand inline h-4 w-4" />
+        <RiSnowflakeLine class="text-brand inline h-4 w-4" />
         {{ tooltip?.title }}
       </HeatPumpTitle>
-      <HeatPumpMode
-        :mode="mode"
-        :state="state"
-      />
       <ValueList class="gap-0">
         <ValueListSeparator />
         <ValueListHeatPowerItem :value="heatExchanger?.heat?.value" />

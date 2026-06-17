@@ -3,7 +3,8 @@ import { BoilerTankController } from "@/modules/thrs/types";
 export const enum MimicComponentType {
   ExchangeCircuit = "ExchangeCircuit",
   HotWaterCircuit = "HotWaterCircuit",
-  Asset = "Asset",
+  HeatPump = "HeatPump",
+  HVAC = "HVAC",
   SwitchValve = "SwitchValve",
   FlowControlValve = "FlowControlValve",
   HeatExchanger = "HeatExchanger",

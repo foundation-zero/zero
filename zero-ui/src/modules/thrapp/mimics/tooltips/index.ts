@@ -20,7 +20,8 @@ export const TOOLTIPS: Partial<Record<MimicComponentType, Component>> = {
   [MimicComponentType.TemperatureSensor]: defineAsyncComponent(
     () => import("./TemperatureSensorTooltip.vue"),
   ),
-  [MimicComponentType.Asset]: defineAsyncComponent(() => import("./AssetTooltip.vue")),
+  [MimicComponentType.HVAC]: defineAsyncComponent(() => import("./HVACTooltip.vue")),
+  [MimicComponentType.HeatPump]: defineAsyncComponent(() => import("./HeatPumpTooltip.vue")),
   [MimicComponentType.HotWaterCircuit]: defineAsyncComponent(
     () => import("./HotWaterCircuitTooltip.vue"),
   ),

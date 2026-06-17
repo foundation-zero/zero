@@ -12,7 +12,7 @@ import {
 } from "../../legend";
 
 const t = tScoped("thrapp.legends.heatPump");
-const assets = BOILERS_MIMIC_DATA[MimicComponentType.Asset];
+const assets = BOILERS_MIMIC_DATA[MimicComponentType.HeatPump];
 </script>
 
 <template>

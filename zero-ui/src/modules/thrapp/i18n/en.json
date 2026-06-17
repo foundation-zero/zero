@@ -36,10 +36,16 @@
         "tank2": "tank 2 enabled",
         "tank3": "tank 3 enabled",
         "tankState": "Tanks controller",
+        "heatPumpController": "Heat pump controller",
         "pumpTemperatureController": "Pump temperature controller",
-        "pumpFlowController": "Pump flow controller"
+        "pumpFlowController": "Pump flow controller",
+        "heatPumpTemperatureParameter": "Heatpump temperature parameter",
+        "hvacController": "HVAC controller",
+        "hvacHeatFlow": "HVAC heatflow"
       },
       "items": {
+        "heatflow": "Heatflow",
+        "maximumTemperature": "Maximum temperature",
         "operationTime": "Operation time",
         "totalRunningHours": "Total running hours",
         "speed": "Speed",

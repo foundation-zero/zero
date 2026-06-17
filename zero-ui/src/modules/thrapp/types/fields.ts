@@ -1,5 +1,4 @@
 import { ControlComponentType, ParametersType, SensorComponentType } from "@/modules/thrs/types";
-import { type Component } from "vue";
 import { BoilerTankStateField, MimicComponentType } from ".";
 import { HeatExchangerPortOrientation } from "../mimics/components/heat-exchanger";
 import { ModuleField } from "../mimics/providers";
@@ -70,8 +69,17 @@ export type SensorFieldDefinitions = SensorFields<{
     tIn: SensorComponentType.Temperature;
     tOut: SensorComponentType.Temperature;
   };
-  [MimicComponentType.Asset]: {
+  [MimicComponentType.HeatPump]: {
     heatExchanger: SensorComponentType.HeatExchanger;
+    incoming: SensorComponentType.Temperature;
+    outgoing: SensorComponentType.Temperature;
+    measurement: SensorComponentType.Flow;
+  };
+  [MimicComponentType.HVAC]: {
+    heatExchanger: SensorComponentType.HeatExchanger;
+    incoming: SensorComponentType.Temperature;
+    outgoing: SensorComponentType.Temperature;
+    measurement: SensorComponentType.Flow;
   };
   [MimicComponentType.SwitchValve]: {
     valve: SensorComponentType.Valve;
@@ -96,7 +104,14 @@ export type ControlFieldDefinitions = ControlFields<{
   [MimicComponentType.TemperatureSensor]: EmptyObject;
   [MimicComponentType.FlowSensor]: EmptyObject;
   [MimicComponentType.ManualValve]: EmptyObject;
-  [MimicComponentType.Asset]: EmptyObject;
+  [MimicComponentType.HeatPump]: {
+    heatExchanger: ControlComponentType.Heatpump;
+    controller: ControlComponentType.PIDController;
+  };
+  [MimicComponentType.HVAC]: {
+    heatExchanger: ControlComponentType.Heatpump;
+    controller: ControlComponentType.PIDController;
+  };
   [MimicComponentType.SwitchValve]: {
     valve: ControlComponentType.Valve;
   };
@@ -123,7 +138,12 @@ export type ParameterFieldDefinitions = ParameterFields<{
   [MimicComponentType.TemperatureSensor]: EmptyObject;
   [MimicComponentType.FlowSensor]: EmptyObject;
   [MimicComponentType.ManualValve]: EmptyObject;
-  [MimicComponentType.Asset]: EmptyObject;
+  [MimicComponentType.HeatPump]: {
+    temperature: ParametersType.Temperature;
+  };
+  [MimicComponentType.HVAC]: {
+    temperature: ParametersType.Temperature;
+  };
   [MimicComponentType.SwitchValve]: EmptyObject;
   [MimicComponentType.FlowControlValve]: EmptyObject;
 }>;
@@ -155,11 +175,13 @@ export type CustomFieldDefinitions = CustomFields<{
   [MimicComponentType.TemperatureSensor]: EmptyObject;
   [MimicComponentType.FlowSensor]: EmptyObject;
   [MimicComponentType.ManualValve]: EmptyObject;
-  [MimicComponentType.Asset]: {
-    icon: Component;
-    width?: number | string;
-    height?: number | string;
-    hideMode?: boolean;
+  [MimicComponentType.HeatPump]: {
+    controllerName: string;
+    setpointName: string;
+  };
+  [MimicComponentType.HVAC]: {
+    controllerName: string;
+    setpointName: string;
   };
   [MimicComponentType.SwitchValve]: {
     tank?: {

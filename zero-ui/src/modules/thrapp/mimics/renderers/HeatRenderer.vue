@@ -14,6 +14,6 @@ const { units } = useTranslations();
   <FieldRenderer.Number
     v-bind="props"
     class="gap-1"
-    :unit="units('kilowatt')"
+    :unit="units('watts')"
   />
 </template>
