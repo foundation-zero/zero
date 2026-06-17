@@ -1,13 +1,13 @@
 import warnings
 
+from tests.helpers.collector import Collector
 from thrs.classes.control import Control
 from thrs.control.base import ModuleDescription
 from thrs.input_output.alarms import BaseAlarms
 from thrs.input_output.base import CombinedValues, ThrsValues
 from thrs.input_output.fmu_mapping import build_fmu_key_mapping
-from thrs.orchestration.collector import Collector
 from thrs.orchestration.module import CombinedModule
-from thrs.orchestration.simulation import ExecutionResult, Simulation, SimulationResult
+from thrs.orchestration.simulation import Simulation, SimulationResult
 from thrs.simulation.io_mapping import flatten_model_values
 
 
@@ -16,8 +16,6 @@ class SimulationTestRunner[S: ThrsValues, C: ThrsValues, P: ThrsValues, M: ThrsV
 
     Allows for a pluggable collector to collect execution results during the run.
     """
-
-    last_tick_result: ExecutionResult | None
 
     def __init__(
         self,
@@ -29,7 +27,6 @@ class SimulationTestRunner[S: ThrsValues, C: ThrsValues, P: ThrsValues, M: ThrsV
         self._simulation = simulation
         self._alarms = alarms
         self._control_values = self._control.initial().values
-        self.last_tick_result = None
 
     @staticmethod
     def from_module(
@@ -43,11 +40,13 @@ class SimulationTestRunner[S: ThrsValues, C: ThrsValues, P: ThrsValues, M: ThrsV
             module.alarms(),
         )
 
-    def run(self, n_ticks: int, collector: Collector | None = None) -> None:
+    def run(
+        self, n_ticks: int, collector: Collector | None = None
+    ) -> SimulationResult | None:
         result = None
         for _ in range(n_ticks):
             result = self._simulation.tick(self._control_values)
-            if isinstance(result, SimulationResult) and collector is not None:
+            if collector is not None:
                 collector.collect(  # TODO: fix the fmu key mapping here, this is just a quick fix to get the tests working
                     {
                         **flatten_model_values(
@@ -86,4 +85,4 @@ class SimulationTestRunner[S: ThrsValues, C: ThrsValues, P: ThrsValues, M: ThrsV
                 warnings.warn(
                     f"Alarms detected: {alarms}"
                 )  # TODO: properly handle alarms
-        self.last_tick_result = result
+        return result

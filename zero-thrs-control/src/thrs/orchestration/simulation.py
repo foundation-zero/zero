@@ -1,7 +1,7 @@
 import logging
 from dataclasses import dataclass
 from datetime import datetime, timedelta
-from typing import Any, Literal
+from typing import Any
 
 from thrs.input_output.base import SimulationInputs, SimulationValues, ThrsValues
 from thrs.orchestration.module import ModuleClassMap
@@ -12,55 +12,18 @@ logger = logging.getLogger(__name__)
 
 
 @dataclass
-class ExecutionResult[S]:
-    timestamp: datetime
-    sensor_values: S
-
-
-@dataclass
 class SimulationResult[
     S,
     C,
     I: SimulationInputs,
     O: SimulationValues,
-](ExecutionResult[S]):
+]:
+    timestamp: datetime
+    sensor_values: S
     control_values: C
     simulation_outputs: O
     simulation_inputs: I
     raw: dict[str, Any]
-    fmu: Fmu
-
-    def read_fmu_value(self, name: str) -> Any:
-        variable = next(
-            (
-                variable
-                for variable in self.fmu._model_description.modelVariables
-                if name == variable.name
-            ),
-            None,
-        )
-        if variable is None:
-            raise ValueError(f"Variable '{name}' not found in FMU model.")
-        return self.fmu._fmu_instance.getReal([variable.valueReference])[0]  # type: ignore
-
-    def find_fmu_variables(
-        self, name: str, match: Literal["include", "startswith"] = "include"
-    ) -> list[Any]:
-        return [
-            variable
-            for variable in self.fmu._model_description.modelVariables
-            if (
-                name in variable.name
-                if match == "include"
-                else variable.name.startswith(name)
-            )
-        ]
-
-    def summarize_fmu_values(self, name: str) -> dict[str, Any]:
-        variables = self.find_fmu_variables(f"{name}.summary", match="startswith")
-        return {
-            variable.name: self.read_fmu_value(variable.name) for variable in variables
-        }
 
 
 class Simulation[
@@ -119,7 +82,6 @@ class Simulation[
             simulation_outputs=simulation_outputs,
             simulation_inputs=simulation_inputs,
             raw=raw,
-            fmu=self._fmu,
         )
 
     def update_simulation_inputs(self, simulation_inputs: I):
