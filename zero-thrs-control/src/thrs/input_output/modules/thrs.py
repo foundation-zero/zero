@@ -489,7 +489,7 @@ participants = [
 
 thrs_cosimulation = CoSimulationMaster(participants)
 
-# need to pass relevant sensorvalues and controlvalues at master level? (high temp doesn't have high temp and low temp values.. )
-# do we need couplings per participant? or just pass a long list to the master
+# add ability to pass multiple control values and sensor values
+# do we need couplings per participant? or just pass a long list to the master.. or as annotations!?
 # need to deal with combinedmodule input mapping..? look up how the flatten was done for HighTemperatureModule
-# OR should we move the cosimulation master to the Simulation level, and deal with teh inputs in the IOmapping?
+# OR should we move the cosimulation master to the Simulation level, and deal with the inputs in the IOmapping?

@@ -32,7 +32,7 @@ def _fmu_key_for_field(
     component_name: str, field_name: str, field: FieldInfo | ComputedFieldInfo
 ) -> str:
     annotation = (
-        field.return_type if isinstance(field, ComputedFieldInfo) else field.annotation
+        field.json_schema_extra if isinstance(field, ComputedFieldInfo) else field.annotation
     )
     meta = unit_meta(unit_for_annotation(annotation))  # type: ignore
     if meta:
@@ -50,7 +50,7 @@ def build_fmu_key_mapping(
             component_name,
             component.annotation
             if isinstance(component, FieldInfo)
-            else component.return_type,  ##TODO: return type or json_schema_extra?
+            else component.json_schema_extra,
         )
         for component_name, component in {
             **cls.model_fields,
@@ -96,7 +96,7 @@ def extract_non_fmu_values(
             }
         # Otherwise, only return fields that are excluded
         component_type = (
-            sensor_component_field.return_type
+            sensor_component_field.json_schema_extra
             if isinstance(sensor_component_field, ComputedFieldInfo)
             else sensor_component_field.annotation
         )
