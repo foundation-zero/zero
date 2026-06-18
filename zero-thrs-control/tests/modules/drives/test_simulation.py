@@ -22,7 +22,7 @@ def incorrect_simulation_inputs(simulation_inputs_inactive, request):
 
 
 def test_simulation_step(control, simulation):
-    result = simulation.tick(control.initial().values)
+    result = simulation.tick(control.initial())
 
     assert isinstance(result.simulation_outputs, DrivesSimulationOutputs)
 
@@ -40,4 +40,4 @@ def test_drives_simulation_inputs(incorrect_simulation_inputs, control):
 
         with pytest.raises(Exception):
             for i in range(300):
-                simulation.tick(control.initial(datetime.now()).values)
+                simulation.tick(control.initial(datetime.now()))

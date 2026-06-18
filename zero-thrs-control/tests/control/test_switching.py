@@ -13,13 +13,7 @@ def test_switching_control():
     switching_control = SwitchingControl(manual_control, automated_control)
     assert switching_control.mode == SwitchingControlMode(automatic_mode=None)
     assert not switching_control.automatic
-    assert (
-        switching_control.control(SimpleInOut.zero()).values.go_with_the.flow.value
-        == 42.0
-    )
+    assert switching_control.control(SimpleInOut.zero()).go_with_the.flow.value == 42.0
     switching_control.switch_mode("automatic")
     assert switching_control.automatic
-    assert (
-        switching_control.control(SimpleInOut.zero()).values.go_with_the.flow.value
-        == 0.0
-    )
+    assert switching_control.control(SimpleInOut.zero()).go_with_the.flow.value == 0.0

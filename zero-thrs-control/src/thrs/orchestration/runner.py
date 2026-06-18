@@ -76,7 +76,7 @@ class Runner[S: ThrsValues, C: ThrsValues, P: ThrsValues, M: ThrsValues]:
         self._control = control
         self._connector = connector
         self._alarms = alarms
-        self._control_values = self._control.initial().values
+        self._control_values = self._control.initial()
 
     @staticmethod
     def from_module(
@@ -93,7 +93,7 @@ class Runner[S: ThrsValues, C: ThrsValues, P: ThrsValues, M: ThrsValues]:
     async def run(self, n_ticks: int) -> None:
         for _ in range(n_ticks):
             sensor_values = await self._connector.transceive(self._control_values)
-            self._control_values = self._control.control(sensor_values).values
+            self._control_values = self._control.control(sensor_values)
             alarms = self._alarms.check(
                 sensor_values, self._control_values, self._control.parameters
             )

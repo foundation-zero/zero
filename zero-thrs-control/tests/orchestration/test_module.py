@@ -9,16 +9,12 @@ from tests.orchestration.simples import (
     SimpleSimulationInputs,
     SimpleSimulationOutputs,
 )
-from thrs.classes.control import Control, ControlResult
+from thrs.classes.control import Control
 from thrs.control.base import ModuleDescription
 from thrs.input_output.alarms import Alarm, BaseAlarms, Severity
 from thrs.input_output.base import CombinedValues, Stamped, ThrsValues
 from thrs.input_output.definitions.sensor import FlowSensor
-from thrs.orchestration.module import (
-    CombinedAlarms,
-    CombinedControl,
-    CombinedModule,
-)
+from thrs.orchestration.module import CombinedAlarms, CombinedControl, CombinedModule
 
 
 class MockParametersModel(ThrsValues):
@@ -42,19 +38,16 @@ class TestCombinedControl:
         combined_control = CombinedControl(modules, time_fn)
         result = combined_control.initial()
 
-        assert isinstance(result.values, CombinedValues)
-        assert "module1" in result.values.values
+        assert isinstance(result, CombinedValues)
+        assert "module1" in result.values
 
     def test_control(self):
         time_fn = Mock(return_value=datetime.now())
         mock_control = Mock(spec=SimpleControl)
-        mock_control.control.return_value = ControlResult(
-            values=SimpleInOut(
-                go_with_the=FlowSensor(
-                    flow=Stamped.stamp(20.0), temperature=Stamped.stamp(30.0)
-                )
-            ),
-            timestamp=datetime.now(),
+        mock_control.control.return_value = SimpleInOut(
+            go_with_the=FlowSensor(
+                flow=Stamped.stamp(20.0), temperature=Stamped.stamp(30.0)
+            )
         )
 
         modules = {"module1": mock_control}
@@ -74,8 +67,8 @@ class TestCombinedControl:
 
         result = combined_control.control(sensor_values)
 
-        assert isinstance(result.values, CombinedValues)
-        assert "module1" in result.values.values
+        assert isinstance(result, CombinedValues)
+        assert "module1" in result.values
         mock_control.control.assert_called_once_with(sensor_values.values["module1"])
 
     def test_update_parameters(self):
