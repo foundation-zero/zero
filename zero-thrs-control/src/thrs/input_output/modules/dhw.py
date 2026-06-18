@@ -8,6 +8,7 @@ from thrs.input_output.base import (
     Stamped,
     ThrsValues,
     component_meta,
+    computed_meta,
 )
 from thrs.input_output.definitions import control, controllers, sensor, simulation
 from thrs.input_output.definitions.units import (
@@ -212,9 +213,7 @@ class DhwSensorValues(ThrsValues):
         ),
     ]
 
-    @computed_field(
-        json_schema_extra=component_meta(included_in_fmu=False).json_schema_extra
-    )
+    @computed_field(json_schema_extra=computed_meta(included_in_fmu=False))
     @property
     def drives_delta(
         self,
@@ -250,9 +249,7 @@ class DhwSensorValues(ThrsValues):
         ),
     ]
 
-    @computed_field(
-        json_schema_extra=component_meta(included_in_fmu=False).json_schema_extra
-    )
+    @computed_field(json_schema_extra=computed_meta(included_in_fmu=False))
     @property
     def dc_delta(
         self,
@@ -289,9 +286,7 @@ class DhwSensorValues(ThrsValues):
         ),
     ]
 
-    @computed_field(
-        json_schema_extra=component_meta(included_in_fmu=False).json_schema_extra
-    )
+    @computed_field(json_schema_extra=computed_meta(included_in_fmu=False))
     @property
     def consumers_delta(
         self,
@@ -328,9 +323,7 @@ class DhwSensorValues(ThrsValues):
         ),
     ]
 
-    @computed_field(
-        json_schema_extra=component_meta(included_in_fmu=False).json_schema_extra
-    )
+    @computed_field(json_schema_extra=computed_meta(included_in_fmu=False))
     @property
     def adsorption_delta(
         self,
@@ -351,9 +344,7 @@ class DhwSensorValues(ThrsValues):
         component_meta(yard_tag="25001038-1", included_in_fmu=False),
     ]
 
-    @computed_field(
-        json_schema_extra=component_meta(included_in_fmu=False).json_schema_extra
-    )
+    @computed_field(json_schema_extra=computed_meta(included_in_fmu=False))
     @property
     def freshwater_flow_supply(
         self,
@@ -370,9 +361,9 @@ class DhwSensorValues(ThrsValues):
         )
 
     @computed_field(
-        json_schema_extra=component_meta(
+        json_schema_extra=computed_meta(
             yard_tag="41001001", component_type="hvac_exchanger", included_in_fmu=False
-        ).json_schema_extra
+        )
     )
     @property
     def dhw_hvac_exchanger(self) -> sensor.HvacExchanger:
@@ -384,9 +375,9 @@ class DhwSensorValues(ThrsValues):
         )
 
     @computed_field(
-        json_schema_extra=component_meta(
+        json_schema_extra=computed_meta(
             yard_tag="50001035", component_type="heatpump", included_in_fmu=False
-        ).json_schema_extra
+        )
     )
     @property
     def dhw_heatpump(self) -> sensor.HeatPump:
@@ -398,9 +389,9 @@ class DhwSensorValues(ThrsValues):
         )
 
     @computed_field(
-        json_schema_extra=component_meta(
+        json_schema_extra=computed_meta(
             yard_tag="50001004", component_type="heat_exchanger", included_in_fmu=False
-        ).json_schema_extra
+        )
     )
     @property
     def dhw_fahrenheit_exchanger(self) -> sensor.HeatExchanger:
@@ -412,9 +403,9 @@ class DhwSensorValues(ThrsValues):
         )
 
     @computed_field(
-        json_schema_extra=component_meta(
+        json_schema_extra=computed_meta(
             yard_tag="50001007", component_type="heat_exchanger", included_in_fmu=False
-        ).json_schema_extra
+        )
     )
     @property
     def dhw_consumers_exchanger(self) -> sensor.HeatExchanger:
@@ -426,9 +417,9 @@ class DhwSensorValues(ThrsValues):
         )
 
     @computed_field(
-        json_schema_extra=component_meta(
+        json_schema_extra=computed_meta(
             yard_tag="50001008", component_type="heat_exchanger", included_in_fmu=False
-        ).json_schema_extra
+        )
     )
     @property
     def dhw_dc_exchanger(self) -> sensor.HeatExchanger:
@@ -440,9 +431,9 @@ class DhwSensorValues(ThrsValues):
         )
 
     @computed_field(
-        json_schema_extra=component_meta(
+        json_schema_extra=computed_meta(
             yard_tag="50001009", component_type="heat_exchanger", included_in_fmu=False
-        ).json_schema_extra
+        )
     )
     @property
     def dhw_drives_exchanger(self) -> sensor.HeatExchanger:
@@ -594,9 +585,7 @@ class DhwSimulationInputs(SimulationInputs):
     dhw_seawater_supply: simulation.TemperatureBoundary
     dhw_hotwater_demand: simulation.FlowBoundary
 
-    @computed_field(
-        json_schema_extra=component_meta(included_in_fmu=False).json_schema_extra
-    )
+    @computed_field(json_schema_extra=computed_meta(included_in_fmu=False))
     @property
     def drives_flow_recovery(self) -> sensor.FlowSensor:
         return sensor.FlowSensor(
@@ -604,22 +593,14 @@ class DhwSimulationInputs(SimulationInputs):
             temperature=cast(Stamped, self.dhw_drives_supply.temperature),
         )
 
-    @computed_field(
-        json_schema_extra=component_meta(
-            included_in_fmu=False,
-        ).json_schema_extra
-    )
+    @computed_field(json_schema_extra=computed_meta(included_in_fmu=False))
     @property
     def drives_temperature_recovery(self) -> sensor.TemperatureSensor:
         return sensor.TemperatureSensor(
             temperature=cast(Stamped, self.dhw_drives_supply.temperature)
         )
 
-    @computed_field(
-        json_schema_extra=component_meta(
-            included_in_fmu=False,
-        ).json_schema_extra
-    )
+    @computed_field(json_schema_extra=computed_meta(included_in_fmu=False))
     @property
     def dc_flow_recovery(self) -> sensor.FlowSensor:
         return sensor.FlowSensor(
@@ -627,22 +608,14 @@ class DhwSimulationInputs(SimulationInputs):
             temperature=cast(Stamped, self.dhw_dc_supply.temperature),
         )
 
-    @computed_field(
-        json_schema_extra=component_meta(
-            included_in_fmu=False,
-        ).json_schema_extra
-    )
+    @computed_field(json_schema_extra=computed_meta(included_in_fmu=False))
     @property
     def dc_temperature_recovery(self) -> sensor.TemperatureSensor:
         return sensor.TemperatureSensor(
             temperature=cast(Stamped, self.dhw_dc_supply.temperature)
         )
 
-    @computed_field(
-        json_schema_extra=component_meta(
-            included_in_fmu=False,
-        ).json_schema_extra
-    )
+    @computed_field(json_schema_extra=computed_meta(included_in_fmu=False))
     @property
     def consumers_flow_dhw(self) -> sensor.FlowSensor:
         return sensor.FlowSensor(
@@ -651,10 +624,10 @@ class DhwSimulationInputs(SimulationInputs):
         )
 
     @computed_field(
-        json_schema_extra=component_meta(
+        json_schema_extra=computed_meta(
             included_in_fmu=False,
             component_type="temperature_sensor",
-        ).json_schema_extra
+        )
     )
     @property
     def consumers_temperature_dhw_supply(self) -> sensor.TemperatureSensor:
@@ -663,10 +636,10 @@ class DhwSimulationInputs(SimulationInputs):
         )
 
     @computed_field(
-        json_schema_extra=component_meta(
+        json_schema_extra=computed_meta(
             included_in_fmu=False,
             component_type="flow_sensor",
-        ).json_schema_extra
+        )
     )
     @property
     def adsorption_flow_dhw(self) -> sensor.FlowSensor:
@@ -676,10 +649,10 @@ class DhwSimulationInputs(SimulationInputs):
         )
 
     @computed_field(
-        json_schema_extra=component_meta(
+        json_schema_extra=computed_meta(
             included_in_fmu=False,
             component_type="temperature_sensor",
-        ).json_schema_extra
+        )
     )
     @property
     def adsorption_temperature_waste_return(self) -> sensor.TemperatureSensor:
@@ -698,10 +671,10 @@ class DhwSimulationOutputs(SimulationValues):
     dhw_freshwater_return: simulation.Boundary
 
     @computed_field(
-        json_schema_extra=component_meta(
+        json_schema_extra=computed_meta(
             included_in_fmu=False,
             component_type="temperature_sensor",
-        ).json_schema_extra
+        )
     )
     @property
     def drives_temperature_recovery_return(self) -> sensor.TemperatureSensor:
@@ -710,10 +683,10 @@ class DhwSimulationOutputs(SimulationValues):
         )
 
     @computed_field(
-        json_schema_extra=component_meta(
+        json_schema_extra=computed_meta(
             included_in_fmu=False,
             component_type="temperature_sensor",
-        ).json_schema_extra
+        )
     )
     @property
     def dc_temperature_recovery_return(self) -> sensor.TemperatureSensor:
@@ -722,10 +695,10 @@ class DhwSimulationOutputs(SimulationValues):
         )
 
     @computed_field(
-        json_schema_extra=component_meta(
+        json_schema_extra=computed_meta(
             included_in_fmu=False,
             component_type="temperature_sensor",
-        ).json_schema_extra
+        )
     )
     @property
     def adsorption_temperature_dhw_return(self) -> sensor.TemperatureSensor:
@@ -734,10 +707,10 @@ class DhwSimulationOutputs(SimulationValues):
         )
 
     @computed_field(
-        json_schema_extra=component_meta(
+        json_schema_extra=computed_meta(
             included_in_fmu=False,
             component_type="temperature_sensor",
-        ).json_schema_extra
+        )
     )
     @property
     def consumers_temperature_dhw_return(self) -> sensor.TemperatureSensor:
@@ -746,10 +719,10 @@ class DhwSimulationOutputs(SimulationValues):
         )
 
     @computed_field(
-        json_schema_extra=component_meta(
+        json_schema_extra=computed_meta(
             included_in_fmu=False,
             component_type="flow_sensor",
-        ).json_schema_extra
+        )
     )
     @property
     def freshwater_hotwater_flow(self) -> sensor.FlowSensor:
@@ -758,11 +731,7 @@ class DhwSimulationOutputs(SimulationValues):
             temperature=cast(Stamped, self.dhw_freshwater_return.temperature),
         )
 
-    @computed_field(
-        json_schema_extra=component_meta(
-            included_in_fmu=False,
-        ).json_schema_extra
-    )
+    @computed_field(json_schema_extra=computed_meta(included_in_fmu=False))
     @property
     def freshwater_hotwater_temperature(self) -> sensor.TemperatureSensor:
         return sensor.TemperatureSensor(
