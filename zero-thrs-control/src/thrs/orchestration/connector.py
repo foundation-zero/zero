@@ -3,7 +3,7 @@ from collections.abc import Mapping
 from typing import Protocol
 
 from aiomqtt import Client
-from pydantic.fields import FieldInfo
+from pydantic.fields import ComputedFieldInfo, FieldInfo
 
 from thrs.input_output.base import CombinedValues, ThrsValues, get_topic
 from thrs.input_output.model_builder import CombinedModelBuilder, PartialModelBuilder
@@ -17,7 +17,16 @@ logger = logging.getLogger(__name__)
 class MqttMapping[M](Protocol):
     """Mapping between a model and MQTT topics"""
 
-    def split_to_topics(self, model: M) -> dict[str, str]: ...
+    def split_to_topics(self, model: M) -> dict[str, str]:
+        """Split model instance values to topics and payloads.
+
+        Args:
+            model: ThrsValues subclass with values to publish
+
+        Returns:
+            dict[str, str]: mapping with topics and their payloads to publish
+        """
+        ...
 
     def subscribe_topics(self) -> set[str]: ...
 
@@ -33,10 +42,20 @@ class PartialMqttMapping[M: ThrsValues](MqttMapping[M]):
     Those topics can either be part of a specific topic base or can be configured to be entirely different.
     """
 
-    def __init__(self, cls: type[M], topic_prefix: str, module_prefix: str):
+    def __init__(
+        self,
+        cls: type[M],
+        topic_prefix: str,
+        module_prefix: str,
+        topic_suffix: str | None = None,
+        *,
+        only_computed_fields: bool = False,
+    ):
         self._cls = cls
         self._topic_prefix = topic_prefix
         self._module_prefix = module_prefix
+        self._topic_suffix_str = f"/{topic_suffix}" if topic_suffix else ""
+        self._only_computed_fields = only_computed_fields
         self._subscribe_topics = {
             self._topic("+", field): field_name
             for field_name, field in cls.model_fields.items()
@@ -48,15 +67,18 @@ class PartialMqttMapping[M: ThrsValues](MqttMapping[M]):
         self._builder = PartialModelBuilder(self._cls)
 
     def split_to_topics(self, model: M) -> dict[str, str]:
+        fields = (
+            self._cls.model_computed_fields
+            if self._only_computed_fields
+            else self._cls.model_fields
+        )
         return {
             self._topic(key, field): getattr(model, key).model_dump_json(by_alias=True)
-            for key, field in self._cls.model_fields.items()
+            for key, field in fields.items()
         }
 
-    def _topic(self, key: str, field: FieldInfo) -> str:
-        return f"{self._topic_prefix}/{
-            (get_topic(field) or f'{self._module_prefix}/{hyphenize(key)}')
-        }"
+    def _topic(self, key: str, field: FieldInfo | ComputedFieldInfo) -> str:
+        return f"{self._topic_prefix}/{(get_topic(field) or f'{self._module_prefix}/{hyphenize(key)}')}{self._topic_suffix_str}"
 
     def subscribe_topics(self) -> set[str]:
         return set(self._subscribe_topics.keys())
@@ -98,11 +120,23 @@ class ModuleMqttMapping(MqttMapping[CombinedValues]):
     Delegates to `PartialMqttMapping` for each sub-model.
     """
 
-    def __init__(self, clss: ModuleClassMap, topic_prefix: str = ""):
+    def __init__(
+        self,
+        clss: ModuleClassMap,
+        topic_prefix: str = "",
+        topic_suffix: str | None = None,
+        only_computed_fields: bool = False,
+    ):
         self._clss = clss
         self._topic_prefix = topic_prefix
         self._plain_mappings: Mapping[str, PartialMqttMapping] = {
-            name: PartialMqttMapping(module_cls, topic_prefix, name)
+            name: PartialMqttMapping(
+                module_cls,
+                topic_prefix,
+                name,
+                topic_suffix,
+                only_computed_fields=only_computed_fields,
+            )
             for name, module_cls in clss.items()
         }
         self._topic_mappings = {
@@ -145,21 +179,21 @@ class MqttControlConnector(Connector[CombinedValues, CombinedValues]):
     def __init__(
         self,
         mqtt_client: Client,
-        topic_prefix: str,
+        devices_topic_prefix: str,
+        controller_topic_prefix: str,
         sensor_values_clss: ModuleClassMap,
         control_values_clss: ModuleClassMap,
         control_topic_suffix: str | None = None,
     ):
         self._mqtt_client = mqtt_client
-        self._topic_prefix = topic_prefix
-        self._control_topic_suffix_str = (
-            f"/{control_topic_suffix}" if control_topic_suffix else ""
-        )
         self._sensor_values_mqtt_mapping = ModuleMqttMapping(
-            sensor_values_clss, topic_prefix
+            sensor_values_clss, devices_topic_prefix
         )
         self._control_values_mqtt_mapping = ModuleMqttMapping(
-            control_values_clss, topic_prefix
+            control_values_clss, devices_topic_prefix, control_topic_suffix
+        )
+        self._computed_values_mqtt_mapping = ModuleMqttMapping(
+            sensor_values_clss, controller_topic_prefix, only_computed_fields=True
         )
 
         self._running = False
@@ -179,20 +213,24 @@ class MqttControlConnector(Connector[CombinedValues, CombinedValues]):
                 message.topic.value, message.payload
             )
 
-    async def _publish_by_mapping[T](
-        self, client: Client, mapping: MqttMapping[T], value: T
-    ):
+    async def _publish_by_mapping[T](self, mapping: MqttMapping[T], value: T):
         payloads = mapping.split_to_topics(value)
         for topic, payload in payloads.items():
-            topic = f"{topic}{self._control_topic_suffix_str}"
-            await client.publish(topic, payload, qos=1)
+            await self._mqtt_client.publish(topic, payload, qos=1)
 
     async def _send_control_values(self, control_values: CombinedValues):
         logging.debug("Publishing control values")
         await self._publish_by_mapping(
-            self._mqtt_client,
-            self._control_values_mqtt_mapping,
-            control_values,
+            self._control_values_mqtt_mapping, control_values
+        )
+
+    async def _send_computed_values(self, sensor_values: CombinedValues | None):
+        if sensor_values is None:
+            return
+
+        logging.debug("Publishing computed values")
+        await self._publish_by_mapping(
+            self._computed_values_mqtt_mapping, sensor_values
         )
 
     async def _start(self):
@@ -212,10 +250,11 @@ class MqttControlConnector(Connector[CombinedValues, CombinedValues]):
             raise Exception(
                 "MqttControlConnector not running, run() should be called in a create_task()"
             )
-        sensors = self._sensor_values_mqtt_mapping.result()
+        sensors_values = self._sensor_values_mqtt_mapping.result()
+        await self._send_computed_values(sensors_values)
         await self._send_control_values(control_values)
 
-        return sensors if sensors else CombinedValues(values={})
+        return sensors_values if sensors_values else CombinedValues(values={})
 
 
 class MqttSimulationConnector(Connector[CombinedValues, CombinedValues]):
@@ -223,18 +262,17 @@ class MqttSimulationConnector(Connector[CombinedValues, CombinedValues]):
         self,
         simulation: "Simulation",
         mqtt_client: Client,
-        topic_prefix: str,
+        devices_topic_prefix: str,
         sensor_values_clss: ModuleClassMap,
         simulation_outputs_cls: type[ThrsValues],
     ):
         self._simulation = simulation
         self._mqtt_client = mqtt_client
-        self._topic_prefix = topic_prefix
         self._sensor_values_mqtt_mapping = ModuleMqttMapping(
-            sensor_values_clss, topic_prefix
+            sensor_values_clss, devices_topic_prefix
         )
         self._simulation_outputs_mqtt_mapping = DirectMqttMapping(
-            simulation_outputs_cls, f"{topic_prefix}/simulation/outputs"
+            simulation_outputs_cls, f"{devices_topic_prefix}/simulation/outputs"
         )
 
     async def _publish_by_mapping[T](
@@ -283,7 +321,8 @@ class MqttConnector(Connector[CombinedValues, CombinedValues]):
         simulation: "Simulation",
         controller_client: Client,
         environment_client: Client,
-        topic_prefix: str,
+        devices_topic_prefix: str,
+        controller_topic_prefix: str,
         sensor_values_clss: ModuleClassMap,
         control_values_clss: ModuleClassMap,
         simulation_outputs_cls: type[ThrsValues],
@@ -291,7 +330,8 @@ class MqttConnector(Connector[CombinedValues, CombinedValues]):
     ):
         self._control_connector = MqttControlConnector(
             mqtt_client=controller_client,
-            topic_prefix=topic_prefix,
+            devices_topic_prefix=devices_topic_prefix,
+            controller_topic_prefix=controller_topic_prefix,
             sensor_values_clss=sensor_values_clss,
             control_values_clss=control_values_clss,
             control_topic_suffix=control_topic_suffix,
@@ -299,7 +339,7 @@ class MqttConnector(Connector[CombinedValues, CombinedValues]):
         self._simulation_connector = MqttSimulationConnector(
             simulation=simulation,
             mqtt_client=environment_client,
-            topic_prefix=topic_prefix,
+            devices_topic_prefix=devices_topic_prefix,
             sensor_values_clss=sensor_values_clss,
             simulation_outputs_cls=simulation_outputs_cls,
         )
