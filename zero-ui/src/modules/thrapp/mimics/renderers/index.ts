@@ -15,6 +15,7 @@ import Percentage from "./PercentageRenderer.vue";
 import PositionAbsolute from "./PositionAbsoluteRenderer.vue";
 import Power from "./PowerRenderer.vue";
 import Pressure from "./PressureRenderer.vue";
+import QuantityLiters from "./QuantityLitersRenderer.vue";
 import Source from "./SourceRenderer.vue";
 import Temperature from "./TemperatureRenderer.vue";
 import TimeRemaining from "./TimeRemainingRenderer.vue";
@@ -46,4 +47,5 @@ export const FieldRenderer = {
   Energy,
   Power,
   Frequency,
+  QuantityLiters,
 };

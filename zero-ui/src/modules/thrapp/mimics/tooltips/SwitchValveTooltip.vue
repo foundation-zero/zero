@@ -22,7 +22,7 @@ import ValvePosition from "./partials/ValvePosition.vue";
 
 const props = defineProps<TooltipComponentContext<MimicComponentType.SwitchValve>>();
 
-const { sources, labels, items } = useTranslations();
+const { labels, items } = useTranslations();
 </script>
 
 <template>
@@ -46,7 +46,7 @@ const { sources, labels, items } = useTranslations();
         <TooltipListItem>
           <TooltipListItemTitle>
             {{ items("setpoint") }}
-            <FieldRenderer.Source external>{{ sources("tankState") }}</FieldRenderer.Source>
+            <FieldRenderer.Source :source="custom.tank?.controller" />
           </TooltipListItemTitle>
           <TooltipListItemValue>
             <FieldRenderer.ValveState />

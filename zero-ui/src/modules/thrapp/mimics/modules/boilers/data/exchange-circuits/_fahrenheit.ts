@@ -6,7 +6,9 @@ import { tooltip } from "./shared";
 
 export default toInstance<MimicComponentType.ExchangeCircuit>({
   controls: {},
-  custom: {},
+  custom: {
+    circuitName: "Fahrenheit circuit",
+  },
   parameters: {},
   sensors: {
     deltaT: getField(SensorComponentType.DeltaT, "boilers", "fahrenheitDelta"),
@@ -20,6 +22,11 @@ export default toInstance<MimicComponentType.ExchangeCircuit>({
       SensorComponentType.Temperature,
       "boilers",
       "fahrenheitTemperatureBoilersReturn",
+    ),
+    heatExchanger: getField(
+      SensorComponentType.HeatExchanger,
+      "boilers",
+      "boilersFahrenheitExchanger",
     ),
   },
   tooltip: tooltip({

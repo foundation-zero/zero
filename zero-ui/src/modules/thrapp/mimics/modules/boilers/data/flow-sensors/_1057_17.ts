@@ -1,16 +1,26 @@
-import { SensorComponentType } from "@/modules/thrs/types";
+import { ControlComponentType, ParametersType, SensorComponentType } from "@/modules/thrs/types";
 import { toInstance } from "../../..";
 import { MimicComponentType } from "../../../../../types";
 
 import { getField } from "../../../../providers";
-import { tooltip } from "./shared";
+import { pump, tooltip } from "./shared";
 
 export default toInstance<MimicComponentType.FlowSensor>({
-  controls: {},
+  controls: {
+    pump,
+    controller: getField(ControlComponentType.PIDController, "boilers", "boilersLt2FlowController"),
+  },
   custom: {},
-  parameters: {},
+  parameters: {
+    flow: getField(ParametersType.Flow, "boilers", "lt2FlowcontrolMinimumSetpoint"),
+  },
   sensors: {
     flow: getField(SensorComponentType.Flow, "boilers", "boilersFlowLt2"),
+    temperature: getField(
+      SensorComponentType.Temperature,
+      "boilers",
+      "boilersTemperatureFreshwaterSupply",
+    ),
   },
   tooltip: tooltip({
     yardTag: "1057-17",

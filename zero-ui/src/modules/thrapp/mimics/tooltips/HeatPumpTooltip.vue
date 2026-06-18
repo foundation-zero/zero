@@ -46,9 +46,7 @@ const props = defineProps<TooltipComponentContext<MimicComponentType.HeatPump>>(
         <TooltipListItem>
           <TooltipListItemTitle>
             {{ items("onOff") }}
-            <FieldRenderer.Source external>
-              {{ sources("heatPumpController") }}
-            </FieldRenderer.Source>
+            <FieldRenderer.Source external> </FieldRenderer.Source>
           </TooltipListItemTitle>
           <TooltipListItemValue>
             <FieldRenderer.OnOff />
@@ -59,9 +57,7 @@ const props = defineProps<TooltipComponentContext<MimicComponentType.HeatPump>>(
         <TooltipListItem>
           <TooltipListItemTitle>
             {{ items("temperature") }}
-            <FieldRenderer.Source url>
-              {{ sources("heatPumpTemperatureParameter") }}
-            </FieldRenderer.Source>
+            <FieldRenderer.Source url />
           </TooltipListItemTitle>
           <TooltipListItemValue>
             <FieldRenderer.Temperature />
@@ -131,11 +127,9 @@ const props = defineProps<TooltipComponentContext<MimicComponentType.HeatPump>>(
       <TooltipListHeader>{{ labels("controls") }}</TooltipListHeader>
       <FlowController
         :controller="controls.controller"
-        :setpoint-name="custom.setpointName"
+        :setpoint="parameters.flow"
         :measurement="sensors.measurement"
-      >
-        {{ custom.controllerName }}
-      </FlowController>
+      />
     </TooltipList>
   </MimicTooltip>
 </template>

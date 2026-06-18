@@ -160,14 +160,14 @@ const { labels, actions, items, sources } = useTranslations();
       <FlowController
         :controller="controls.flowController"
         :measurement="sensors.flowMeasurement"
-        :setpoint-name="custom.flowSetpointName"
+        :setpoint="parameters.flow"
       >
         {{ sources("pumpFlowController") }}
       </FlowController>
       <TemperatureController
         :controller="controls.temperatureController"
         :measurement="sensors.temperatureMeasurement"
-        :setpoint-name="custom.temperatureSetpointName"
+        :setpoint="parameters.temperature"
       >
         {{ sources("pumpTemperatureController") }}
       </TemperatureController>

@@ -1,14 +1,11 @@
-import { ControlComponentType, SensorComponentType } from "@/modules/thrs/types";
+import { ControlComponentType, ParametersType, SensorComponentType } from "@/modules/thrs/types";
 import { toInstance } from "../../..";
 import { MimicComponentType } from "../../../../../types";
 
 import { getField } from "../../../../providers";
 
 export default toInstance<MimicComponentType.Pump>({
-  custom: {
-    flowSetpointName: "heatpump_flow_parameter",
-    temperatureSetpointName: "heatpump_temperature_parameter",
-  },
+  custom: {},
   controls: {
     flowController: getField(
       ControlComponentType.PIDController,
@@ -22,7 +19,10 @@ export default toInstance<MimicComponentType.Pump>({
     ),
     pump: getField(ControlComponentType.Pump, "boilers", "boilersPump"),
   },
-  parameters: {},
+  parameters: {
+    flow: getField(ParametersType.Flow, "boilers", "heatpumpFlowSetpoint"),
+    temperature: getField(ParametersType.Temperature, "boilers", "heatpumpTemperatureSetpoint"),
+  },
   sensors: {
     pump: getField(SensorComponentType.Pump, "boilers", "boilersPump"),
     pressure: getField(SensorComponentType.Pressure, "boilers", "boilersPressureBoosting"),

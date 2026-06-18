@@ -9,12 +9,10 @@ export default toInstance<MimicComponentType.HVAC>({
     heatExchanger: getField(ControlComponentType.Heatpump, "boilers", "boilersHeatpump"),
     controller: getField(ControlComponentType.PIDController, "boilers", "boilersLt1FlowController"),
   },
-  custom: {
-    controllerName: "HVAC controller",
-    setpointName: "Heatpump flow parameter",
-  },
+  custom: {},
   parameters: {
     temperature: getField(ParametersType.Temperature, "boilers", "htBoostingTemperatureSetpoint"),
+    flow: getField(ParametersType.Flow, "boilers", "lt1FlowcontrolMinimumSetpoint"),
   },
   sensors: {
     heatExchanger: getField(SensorComponentType.HeatExchanger, "boilers", "boilersHvacExchanger"),
@@ -28,7 +26,7 @@ export default toInstance<MimicComponentType.HVAC>({
       "boilers",
       "boilersTemperatureHvacExchangerReturn",
     ),
-    measurement: getField(SensorComponentType.Flow, "boilers", "boilersFlowBoosting"),
+    measurement: getField(SensorComponentType.Flow, "boilers", "boilersFlowLt1"),
   },
   tooltip: tooltip({
     title: "HVAC",

@@ -403,47 +403,47 @@ export const BOILERS_SENSOR_DEFINITION = toSensorDefinition({
     componentType: SensorComponentType.Temperature,
   },
   lt1Delta: {
-    yardTag: "N/A",
+    yardTag: "",
     componentType: SensorComponentType.DeltaT,
   },
   lt2Delta: {
-    yardTag: "N/A",
+    yardTag: "",
     componentType: SensorComponentType.DeltaT,
   },
   consumersDelta: {
-    yardTag: "N/A",
+    yardTag: "",
     componentType: SensorComponentType.DeltaT,
   },
   fahrenheitDelta: {
-    yardTag: "N/A",
+    yardTag: "",
     componentType: SensorComponentType.DeltaT,
   },
   freshwaterFlowSupply: {
-    yardTag: "N/A",
+    yardTag: "",
     componentType: SensorComponentType.CalculatedFlow,
   },
   boilersHvacExchanger: {
-    yardTag: "N/A",
+    yardTag: "",
     componentType: SensorComponentType.HeatExchanger,
   },
   boilersHeatpump: {
-    yardTag: "N/A",
+    yardTag: "",
     componentType: SensorComponentType.HeatExchanger,
   },
   boilersFahrenheitExchanger: {
-    yardTag: "N/A",
+    yardTag: "",
     componentType: SensorComponentType.HeatExchanger,
   },
   boilersConsumersExchanger: {
-    yardTag: "N/A",
+    yardTag: "",
     componentType: SensorComponentType.HeatExchanger,
   },
   boilersLt2Exchanger: {
-    yardTag: "N/A",
+    yardTag: "",
     componentType: SensorComponentType.HeatExchanger,
   },
   boilersLt1Exchanger: {
-    yardTag: "N/A",
+    yardTag: "",
     componentType: SensorComponentType.HeatExchanger,
   },
 });

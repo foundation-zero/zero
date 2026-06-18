@@ -127,11 +127,9 @@ const props = defineProps<TooltipComponentContext<MimicComponentType.HVAC>>();
       <TooltipListHeader>{{ labels("controls") }}</TooltipListHeader>
       <FlowController
         :controller="controls.controller"
-        :setpoint-name="custom.setpointName"
+        :setpoint="parameters.flow"
         :measurement="sensors.measurement"
-      >
-        {{ custom.controllerName }}
-      </FlowController>
+      />
     </TooltipList>
   </MimicTooltip>
 </template>

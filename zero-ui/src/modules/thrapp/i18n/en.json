@@ -44,6 +44,8 @@
         "hvacHeatFlow": "HVAC heatflow"
       },
       "items": {
+        "quantity": "Quantity",
+        "circuit": "Circuit",
         "heatflow": "Heatflow",
         "maximumTemperature": "Maximum temperature",
         "operationTime": "Operation time",

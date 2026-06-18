@@ -17,8 +17,8 @@ import { ControlValue } from "../providers";
 import { FieldRenderer } from "../renderers/index.ts";
 import { useTranslations } from "./index.ts";
 import ComponentInfo from "./partials/ComponentInfo.vue";
+import FlowController from "./partials/FlowController.vue";
 import ManualControl from "./partials/ManualControl.vue";
-import TemperatureController from "./partials/TemperatureController.vue";
 import ValvePosition from "./partials/ValvePosition.vue";
 
 const props = defineProps<TooltipComponentContext<MimicComponentType.FlowControlValve>>();
@@ -41,13 +41,13 @@ const { labels, items } = useTranslations();
     <TooltipList>
       <TooltipListHeader>{{ labels("input") }}</TooltipListHeader>
       <ControlValue
-        :source="controls.valve"
-        field="setpoint"
+        :source="controls.controller"
+        field="output"
       >
         <TooltipListItem>
           <TooltipListItemTitle>
             {{ items("setpoint") }}
-            <FieldRenderer.Source external>{{ custom.controllerName }}</FieldRenderer.Source>
+            <FieldRenderer.Source />
           </TooltipListItemTitle>
           <TooltipListItemValue>
             <FieldRenderer.Percentage />
@@ -66,13 +66,16 @@ const { labels, items } = useTranslations();
         {{ labels("controls") }}
         <TooltipListItemAction>{{ labels("viewControls") }}</TooltipListItemAction>
       </TooltipListHeader>
-      <TemperatureController
+      <FlowController
         :controller="controls.controller"
         :measurement="sensors.measurement"
-        :setpoint-name="custom.setpointName"
+        :actuator="controls.pump"
+        :setpoint="parameters.flow"
       >
-        <FieldRenderer.Source external>{{ custom.controllerName }}</FieldRenderer.Source>
-      </TemperatureController>
+        <template #actuator>
+          <FieldRenderer.Source :source="controls.pump" />
+        </template>
+      </FlowController>
     </TooltipList>
   </MimicTooltip>
 </template>

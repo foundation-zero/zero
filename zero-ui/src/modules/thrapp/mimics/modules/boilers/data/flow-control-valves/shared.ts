@@ -1,4 +1,6 @@
 import { TooltipContent } from "@/modules/thrapp/components/tooltip";
+import { getField } from "@/modules/thrapp/mimics/providers";
+import { ControlComponentType } from "@/modules/thrs/types";
 
 export const tooltip = (content: Partial<TooltipContent>): TooltipContent => ({
   title: "Flow Control valve",
@@ -6,4 +8,4 @@ export const tooltip = (content: Partial<TooltipContent>): TooltipContent => ({
   ...content,
 });
 
-export const setpointName = "boilers_filling_temperature";
+export const actuator = getField(ControlComponentType.Pump, "boilers", "boilersPump");

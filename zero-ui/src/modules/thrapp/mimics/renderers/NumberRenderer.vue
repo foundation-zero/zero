@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { cn } from "@/modules/common/lib/utils";
 import AnimatedNumber from "@/modules/loads/components/animated-number/AnimatedNumber.vue";
-import { toRef } from "vue";
+import { computed } from "vue";
 import { getFieldValue } from "../providers/index.ts";
 import { FieldRendererProps } from "./index.ts";
 
@@ -12,7 +12,8 @@ const props = defineProps<
   }
 >();
 
-const value = getFieldValue(toRef(props, "value"));
+const fieldValue = getFieldValue<number>();
+const value = computed(() => (props.value !== undefined ? props.value : fieldValue.value));
 </script>
 
 <template>

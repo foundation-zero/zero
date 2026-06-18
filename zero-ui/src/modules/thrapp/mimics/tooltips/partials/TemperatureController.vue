@@ -5,7 +5,8 @@ import {
   TooltipListItemTitle,
   TooltipListItemValue,
 } from "@/modules/thrapp/components/tooltip-list";
-import { ControlComponentType, SensorComponentType } from "@/modules/thrs/types";
+import { ControlComponentType, ParametersType, SensorComponentType } from "@/modules/thrs/types";
+import { snakeCase } from "lodash";
 import { ControlValue, ModuleField } from "../../providers/index.ts";
 import { FieldRenderer } from "../../renderers/index.ts";
 import { useTranslations } from "../index.ts";
@@ -15,7 +16,7 @@ const { items, sources } = useTranslations();
 defineProps<{
   controller: ModuleField<ControlComponentType.PIDController>;
   measurement: ModuleField<SensorComponentType.Temperature>;
-  setpointName: string;
+  setpoint: ModuleField<ParametersType.Temperature>;
 }>();
 </script>
 
@@ -26,7 +27,9 @@ defineProps<{
   >
     <TooltipListItem>
       <TooltipListItemTitle>
-        <slot />
+        <slot>
+          <FieldRenderer.Source external>{{ snakeCase(controller[2]) }}</FieldRenderer.Source>
+        </slot>
       </TooltipListItemTitle>
 
       <FieldRenderer.HeatPumpMode />
@@ -40,7 +43,9 @@ defineProps<{
     <TooltipListItem size="sm">
       <TooltipListItemTitle>
         {{ items("actuator") }}
-        <FieldRenderer.Source>{{ sources("this") }}</FieldRenderer.Source>
+        <slot name="actuator">
+          <FieldRenderer.Source>{{ sources("this") }}</FieldRenderer.Source>
+        </slot>
       </TooltipListItemTitle>
       <TooltipListItemValue>
         <FieldRenderer.Percentage />
@@ -55,7 +60,12 @@ defineProps<{
     <TooltipListItem size="sm">
       <TooltipListItemTitle>
         {{ items("setpoint") }}
-        <FieldRenderer.Source url>{{ setpointName }}</FieldRenderer.Source>
+        <slot name="setpoint">
+          <FieldRenderer.Source
+            url
+            :source="setpoint"
+          />
+        </slot>
       </TooltipListItemTitle>
       <TooltipListItemValue>
         <FieldRenderer.Temperature :format="formatNumber(1)" />
@@ -67,10 +77,13 @@ defineProps<{
     :source="controller"
     field="measurement"
   >
+    <!-- TODO: "This component" means that measurement sensor is currently selected sensor? -->
     <TooltipListItem size="sm">
       <TooltipListItemTitle>
         {{ items("measurement") }}
-        <FieldRenderer.Source />
+        <slot name="measurement">
+          <FieldRenderer.Source :source="measurement" />
+        </slot>
       </TooltipListItemTitle>
       <TooltipListItemValue>
         <FieldRenderer.Temperature :format="formatNumber(1)" />

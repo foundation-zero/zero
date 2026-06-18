@@ -1,23 +1,33 @@
 <script setup lang="ts">
 import { cn } from "@/modules/common/lib/utils";
-import { SensorComponentType } from "@/modules/thrs/types";
+import { ControlComponentType, ParametersType, SensorComponentType } from "@/modules/thrs/types";
+import { snakeCase } from "lodash";
 import { computed, type HTMLAttributes } from "vue";
-import { getSensorDefinition, injectFieldValueSource, ModuleField } from "../../mimics/providers";
+import {
+  getControlDefinition,
+  getSensorDefinition,
+  injectFieldValueSource,
+  ModuleField,
+} from "../../mimics/providers";
 
 const props = defineProps<{
   class?: HTMLAttributes["class"];
   url?: boolean;
   external?: boolean;
-  source?: ModuleField<SensorComponentType>;
+  source?: ModuleField<SensorComponentType | ControlComponentType | ParametersType>;
 }>();
 
-const source = injectFieldValueSource(props.source);
+const source = computed(() => props.source ?? injectFieldValueSource());
 
 const definition = computed(() => {
-  if (!source) return null;
-  const [, moduleId, componentId] = source;
-  return getSensorDefinition(moduleId, componentId);
+  if (!source.value) return null;
+  const [, moduleId, componentId] = source.value;
+  return getSensorDefinition(moduleId, componentId) ?? getControlDefinition(moduleId, componentId);
 });
+
+const sourceName = computed(() =>
+  definition.value?.yardTag.length ? definition.value.yardTag : source.value?.[2],
+);
 </script>
 
 <template>
@@ -31,8 +41,8 @@ const definition = computed(() => {
     "
   >
     <slot>
-      <template v-if="definition?.yardTag">
-        {{ definition.yardTag }}
+      <template v-if="sourceName">
+        {{ snakeCase(sourceName) }}
       </template>
     </slot>
   </span>
