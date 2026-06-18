@@ -35,9 +35,9 @@ class ModbusToMQTTBridge:
         # Read modbus
         modbus_values = self.read_modbus()
         # Scale values
-
+        scaled_values = self.scale_values(modbus_values)
         # Form json
-        json_data = self.create_topics(modbus_values)
+        json_data = self.create_topics(scaled_values)
         # Publish to MQTT
         for topic, data in json_data:
             await self.publish_to_mqtt(topic, data)
@@ -48,7 +48,7 @@ class ModbusToMQTTBridge:
             self._modbus.open()
             result = []
             for address in ADDRESSES:
-                value = self._modbus.read_holding_registers(address.register, 1)
+                value = self._modbus.read_holding_registers(address.register, 1)[0]
                 if value:
                     result.append((address, value))
             return result
@@ -64,19 +64,17 @@ class ModbusToMQTTBridge:
         ]
 
     def scale_value(self, address: Address, value: int) -> float:
-        if address.scale_factor is not None:
-            return float(value) * address.scale_factor
-        return float(value)
+        return float(value) * address.scale_factor
 
     def create_topics(
-        self, modbus_values: List[Tuple[Address, int]]
+        self, modbus_values: List[Tuple[Address, float]]
     ) -> List[Tuple[str, str]]:
         result = []
         for topic, values in groupby(modbus_values, key=lambda x: x[0].topic):
             result.append((topic, self._create_json(list(values))))
         return result
 
-    def _create_json(self, modbus_values: List[Tuple[Address, int]]) -> str:
+    def _create_json(self, modbus_values: List[Tuple[Address, float]]) -> str:
         result = {}
         for address, value in modbus_values:
             result[address.field_name] = value

@@ -2181,7 +2181,7 @@ class Address:
     register: int
     topic: str
     field_name: str
-    scale_factor: float | None
+    scale_factor: float = 1
 
 
 ADDRESSES = [
@@ -2189,7 +2189,6 @@ ADDRESSES = [
         register=address["address"],
         topic=f"termodinamica/{address['type']}{'/' + address['reg_split'] if address['reg_split'] is not None else ''}",
         field_name=address["variable_name"],
-        scale_factor=None,
     )
     for address in chain(
         chain.from_iterable(AC_ADRESSES.values()),
