@@ -11,9 +11,7 @@ from thrs.input_output.base import (
     computed_meta,
 )
 from thrs.input_output.definitions import control, controllers, sensor, simulation
-from thrs.input_output.definitions.units import (
-    WATER_HEAT_TRANSFER_CONVERSION,
-)
+from thrs.input_output.definitions.units import WATER_HEAT_TRANSFER_CONVERSION
 
 
 class DhwSensorValues(ThrsValues):
@@ -213,14 +211,11 @@ class DhwSensorValues(ThrsValues):
         ),
     ]
 
-    @computed_field(json_schema_extra=computed_meta(included_in_fmu=False))
+    @computed_field(
+        json_schema_extra=computed_meta(component_type="delta_t", included_in_fmu=False)
+    )
     @property
-    def drives_delta(
-        self,
-    ) -> Annotated[
-        sensor.TemperatureDelta,
-        component_meta(component_type="delta_t", included_in_fmu=False),
-    ]:
+    def drives_delta(self) -> sensor.TemperatureDelta:
         return sensor.TemperatureDelta.from_temperature_sensors(
             temperature_supply=self.drives_temperature_recovery.temperature,
             temperature_return=self.drives_temperature_recovery_return.temperature,
@@ -249,14 +244,11 @@ class DhwSensorValues(ThrsValues):
         ),
     ]
 
-    @computed_field(json_schema_extra=computed_meta(included_in_fmu=False))
+    @computed_field(
+        json_schema_extra=computed_meta(component_type="delta_t", included_in_fmu=False)
+    )
     @property
-    def dc_delta(
-        self,
-    ) -> Annotated[
-        sensor.TemperatureDelta,
-        component_meta(component_type="delta_t", included_in_fmu=False),
-    ]:
+    def dc_delta(self) -> sensor.TemperatureDelta:
         return sensor.TemperatureDelta.from_temperature_sensors(
             temperature_supply=self.dc_temperature_recovery.temperature,
             temperature_return=self.dc_temperature_recovery_return.temperature,
@@ -286,14 +278,11 @@ class DhwSensorValues(ThrsValues):
         ),
     ]
 
-    @computed_field(json_schema_extra=computed_meta(included_in_fmu=False))
+    @computed_field(
+        json_schema_extra=computed_meta(component_type="delta_t", included_in_fmu=False)
+    )
     @property
-    def consumers_delta(
-        self,
-    ) -> Annotated[
-        sensor.TemperatureDelta,
-        component_meta(component_type="delta_t", included_in_fmu=False),
-    ]:
+    def consumers_delta(self) -> sensor.TemperatureDelta:
         return sensor.TemperatureDelta.from_temperature_sensors(
             temperature_supply=self.consumers_temperature_dhw_supply.temperature,
             temperature_return=self.consumers_temperature_dhw_return.temperature,
@@ -323,14 +312,11 @@ class DhwSensorValues(ThrsValues):
         ),
     ]
 
-    @computed_field(json_schema_extra=computed_meta(included_in_fmu=False))
+    @computed_field(
+        json_schema_extra=computed_meta(component_type="delta_t", included_in_fmu=False)
+    )
     @property
-    def adsorption_delta(
-        self,
-    ) -> Annotated[
-        sensor.TemperatureDelta,
-        component_meta(component_type="delta_t", included_in_fmu=False),
-    ]:
+    def adsorption_delta(self) -> sensor.TemperatureDelta:
         return sensor.TemperatureDelta.from_temperature_sensors(
             temperature_supply=self.adsorption_temperature_waste_return.temperature,
             temperature_return=self.adsorption_temperature_dhw_return.temperature,
@@ -346,12 +332,7 @@ class DhwSensorValues(ThrsValues):
 
     @computed_field(json_schema_extra=computed_meta(included_in_fmu=False))
     @property
-    def freshwater_flow_supply(
-        self,
-    ) -> Annotated[
-        sensor.CalculatedFlow,
-        component_meta(included_in_fmu=False),
-    ]:
+    def freshwater_flow_supply(self) -> sensor.CalculatedFlow:
         return sensor.CalculatedFlow(
             flow=Stamped.combine(
                 self.dhw_flow_drives.flow,
@@ -558,20 +539,16 @@ class DhwControlValues(ThrsValues):
         controllers.TanksControllerValues, component_meta(included_in_fmu=False)
     ]
     dhw_pump_flow_controller: Annotated[
-        controllers.PidControllerValues,
-        component_meta(included_in_fmu=False),
+        controllers.PidControllerValues, component_meta(included_in_fmu=False)
     ]
     dhw_pump_temperature_controller: Annotated[
-        controllers.PidControllerValues,
-        component_meta(included_in_fmu=False),
+        controllers.PidControllerValues, component_meta(included_in_fmu=False)
     ]
     dhw_drives_flow_controller: Annotated[
-        controllers.PidControllerValues,
-        component_meta(included_in_fmu=False),
+        controllers.PidControllerValues, component_meta(included_in_fmu=False)
     ]
     dhw_dc_flow_controller: Annotated[
-        controllers.PidControllerValues,
-        component_meta(included_in_fmu=False),
+        controllers.PidControllerValues, component_meta(included_in_fmu=False)
     ]
 
 
@@ -625,8 +602,7 @@ class DhwSimulationInputs(SimulationInputs):
 
     @computed_field(
         json_schema_extra=computed_meta(
-            included_in_fmu=False,
-            component_type="temperature_sensor",
+            included_in_fmu=False, component_type="temperature_sensor"
         )
     )
     @property
@@ -637,8 +613,7 @@ class DhwSimulationInputs(SimulationInputs):
 
     @computed_field(
         json_schema_extra=computed_meta(
-            included_in_fmu=False,
-            component_type="flow_sensor",
+            included_in_fmu=False, component_type="flow_sensor"
         )
     )
     @property
@@ -650,8 +625,7 @@ class DhwSimulationInputs(SimulationInputs):
 
     @computed_field(
         json_schema_extra=computed_meta(
-            included_in_fmu=False,
-            component_type="temperature_sensor",
+            included_in_fmu=False, component_type="temperature_sensor"
         )
     )
     @property
@@ -672,8 +646,7 @@ class DhwSimulationOutputs(SimulationValues):
 
     @computed_field(
         json_schema_extra=computed_meta(
-            included_in_fmu=False,
-            component_type="temperature_sensor",
+            included_in_fmu=False, component_type="temperature_sensor"
         )
     )
     @property
@@ -684,8 +657,7 @@ class DhwSimulationOutputs(SimulationValues):
 
     @computed_field(
         json_schema_extra=computed_meta(
-            included_in_fmu=False,
-            component_type="temperature_sensor",
+            included_in_fmu=False, component_type="temperature_sensor"
         )
     )
     @property
@@ -696,8 +668,7 @@ class DhwSimulationOutputs(SimulationValues):
 
     @computed_field(
         json_schema_extra=computed_meta(
-            included_in_fmu=False,
-            component_type="temperature_sensor",
+            included_in_fmu=False, component_type="temperature_sensor"
         )
     )
     @property
@@ -708,8 +679,7 @@ class DhwSimulationOutputs(SimulationValues):
 
     @computed_field(
         json_schema_extra=computed_meta(
-            included_in_fmu=False,
-            component_type="temperature_sensor",
+            included_in_fmu=False, component_type="temperature_sensor"
         )
     )
     @property
@@ -720,8 +690,7 @@ class DhwSimulationOutputs(SimulationValues):
 
     @computed_field(
         json_schema_extra=computed_meta(
-            included_in_fmu=False,
-            component_type="flow_sensor",
+            included_in_fmu=False, component_type="flow_sensor"
         )
     )
     @property

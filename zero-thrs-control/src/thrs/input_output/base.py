@@ -4,15 +4,9 @@ from typing import Annotated, Any, Literal, Self, cast
 from warnings import warn
 
 import polars as pl
-from pydantic import (
-    BaseModel,
-    ConfigDict,
-    Field,
-    create_model,
-    field_validator,
-)
+from pydantic import BaseModel, ConfigDict, Field, create_model, field_validator
 from pydantic.alias_generators import to_pascal
-from pydantic.fields import FieldInfo
+from pydantic.fields import ComputedFieldInfo, FieldInfo
 
 from thrs.input_output.definitions.units import (
     PcsMode,
@@ -113,15 +107,15 @@ class ComponentMeta(BaseModel):
     topic: str | None = None
 
 
-def computed_meta(*args, **kwargs):
-    return ComponentMeta(*args, **kwargs).model_dump()
+def computed_meta(**kwargs):
+    return ComponentMeta(**kwargs).model_dump()
 
 
-def component_meta(*args, **kwargs):
-    return Field(json_schema_extra=computed_meta(*args, **kwargs))
+def component_meta(**kwargs):
+    return Field(json_schema_extra=computed_meta(**kwargs))
 
 
-def get_topic(field: FieldInfo) -> str | None:
+def get_topic(field: FieldInfo | ComputedFieldInfo) -> str | None:
     if not field.json_schema_extra or not isinstance(field.json_schema_extra, dict):
         return None
 
