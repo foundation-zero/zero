@@ -3,7 +3,7 @@ from typing import Annotated, Callable
 
 from pydantic import Field
 
-from thrs.classes.control import Control, ControlMode, ControlResult
+from thrs.classes.control import Control, ControlMode
 from thrs.control.base import ModuleDescription
 from thrs.control.controllers import (
     FlowDistributionController,
@@ -104,8 +104,8 @@ class ConsumersControl(
             ],
         )
 
-    def initial(self) -> ControlResult[ConsumersControlValues]:
-        return ControlResult(self._time(), _INITIAL_CONTROL_VALUES(self._time()))
+    def initial(self) -> ConsumersControlValues:
+        return _INITIAL_CONTROL_VALUES(self._time())
 
     def _control_flow_distribution(self, sensor_values: ConsumersSensorValues):
         actives = [
@@ -153,7 +153,7 @@ class ConsumersControl(
         elif not enabled and switch_valve.setpoint.value != Valve.CLOSED:
             switch_valve.setpoint = Stamped(value=Valve.CLOSED, timestamp=self._time())
 
-    def control(self, sensor_values: ConsumersSensorValues) -> ControlResult:
+    def control(self, sensor_values: ConsumersSensorValues):
         self._control_flow_distribution(sensor_values)
 
         self._control_switch_valve(
@@ -165,7 +165,7 @@ class ConsumersControl(
             self._parameters.adsorption_enabled,
         )
 
-        return ControlResult(self._time(), self._current_values)
+        return self._current_values
 
     def modes(self) -> list[str]:
         return []

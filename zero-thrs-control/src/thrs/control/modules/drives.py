@@ -3,7 +3,7 @@ from typing import Callable, Literal
 
 from transitions import Machine, State
 
-from thrs.classes.control import Control, ControlMode, ControlResult
+from thrs.classes.control import Control, ControlMode
 from thrs.control.base import ModuleDescription
 from thrs.control.controllers import FlowBalanceController, PidController
 from thrs.control.modules.thrusters import ThrustersControlMode
@@ -245,12 +245,10 @@ class DrivesControl(
         mode: str = self.state  # type: ignore
         return DrivesControlMode(mode=mode)
 
-    def initial(self) -> ControlResult[DrivesControlValues]:
-        return ControlResult(self._time(), _INITIAL_CONTROL_VALUES(self._time()))
+    def initial(self) -> DrivesControlValues:
+        return _INITIAL_CONTROL_VALUES(self._time())
 
-    def control(
-        self, sensor_values: DrivesSensorValues
-    ) -> ControlResult[DrivesControlValues]:
+    def control(self, sensor_values: DrivesSensorValues) -> DrivesControlValues:
         if not self.mode.is_propulsion:
             self._check_shorepower(sensor_values)  # type: ignore
         if not self.mode.is_shorepower:
@@ -265,7 +263,7 @@ class DrivesControl(
         elif self.mode.is_propulsion:
             self._control_flow_balance(sensor_values)
 
-        return ControlResult(self._time(), self._current_values)
+        return self._current_values
 
     def _shorepower_on(self, sensor_values: DrivesSensorValues) -> bool:
         return sensor_values.drives_shorepower.active.value

@@ -3,7 +3,7 @@ from typing import Callable
 
 from transitions import Machine, State
 
-from thrs.classes.control import Control, ControlMode, ControlResult
+from thrs.classes.control import Control, ControlMode
 from thrs.control.controllers import PidController
 from thrs.input_output.base import Stamped, ThrsValues
 from thrs.input_output.definitions import control, sensor
@@ -163,8 +163,8 @@ class ConvertersControl(
         mode: str = self.state  # type: ignore
         return ConvertersControlMode(mode=mode)
 
-    def initial(self) -> ControlResult[ConvertersControlValues]:
-        return ControlResult(self._time(), self.current_values)
+    def initial(self) -> ConvertersControlValues:
+        return self.current_values
 
     def _close_circuit(self):
         self.current_values.mix.setpoint = Stamped(
@@ -180,15 +180,13 @@ class ConvertersControl(
     def _converter_active(self, sensor_values: ConvertersSensorValues) -> bool:
         return any(converter.active.value for converter in sensor_values.converters)
 
-    def control(
-        self, sensor_values: ConvertersSensorValues
-    ) -> ControlResult[ConvertersControlValues]:
+    def control(self, sensor_values: ConvertersSensorValues) -> ConvertersControlValues:
         self._check_converters_active(sensor_values)  # type: ignore
         self._control_warmup_mix(sensor_values)
         self._control_switch_valves(sensor_values)
         self._control_flow(sensor_values)
 
-        return ControlResult(self._time(), self.current_values)
+        return self.current_values
 
     def _control_warmup_mix(self, sensor_values: ConvertersSensorValues):
         self.current_values.mix.setpoint = Stamped(

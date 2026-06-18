@@ -147,8 +147,8 @@ def test_cosimulation_input_routing():
 
     control_values = CombinedValues(
         values={
-            "drives": DrivesControl(DrivesParameters(), datetime.now).initial().values,
-            "dhw": DhwControl(DhwParameters(), datetime.now).initial().values,
+            "drives": DrivesControl(DrivesParameters(), datetime.now).initial(),
+            "dhw": DhwControl(DhwParameters(), datetime.now).initial(),
         }
     )
 

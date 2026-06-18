@@ -1,6 +1,6 @@
 from typing import Literal
 
-from thrs.classes.control import Control, ControlResult
+from thrs.classes.control import Control
 from thrs.control.manual import ManualControl
 from thrs.input_output.base import ThrsValues
 
@@ -28,7 +28,7 @@ class SwitchingControl[
         self._automatic_control = automatic
         self._mode: Literal["manual", "automatic"] = "manual"
 
-    def initial(self) -> ControlResult[ControlValues]:
+    def initial(self) -> ControlValues:
         return self._manual_control.initial()
 
     def control(self, sensor_values: SensorValues):

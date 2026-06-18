@@ -4,7 +4,7 @@ from typing import Callable, Literal
 from pydantic import model_validator
 from transitions import Machine, State
 
-from thrs.classes.control import Control, ControlMode, ControlResult
+from thrs.classes.control import Control, ControlMode
 from thrs.control.base import ModuleDescription
 from thrs.control.controllers import FlowBalanceController, PidController
 from thrs.input_output.alarms import BaseAlarms, Severity, alarm
@@ -296,12 +296,10 @@ class ThrustersControl(
         mode: str = self.state  # type: ignore
         return ThrustersControlMode(mode=mode)
 
-    def initial(self) -> ControlResult[ThrustersControlValues]:
-        return ControlResult(self._time(), _INITIAL_CONTROL_VALUES(self._time()))
+    def initial(self) -> ThrustersControlValues:
+        return _INITIAL_CONTROL_VALUES(self._time())
 
-    def control(
-        self, sensor_values: ThrustersSensorValues
-    ) -> ControlResult[ThrustersControlValues]:
+    def control(self, sensor_values: ThrustersSensorValues) -> ThrustersControlValues:
         self._check_pcs_mode(sensor_values)  # type: ignore
         self._check_overheat(sensor_values)  # type: ignore
         self._control_heat_dump(sensor_values)
@@ -313,7 +311,7 @@ class ThrustersControl(
 
         self._control_flow_balance(sensor_values)
 
-        return ControlResult(self._time(), self._current_values)
+        return self._current_values
 
     def _is_overheating(self, sensor_values: ThrustersSensorValues):
         return (

@@ -26,7 +26,7 @@ class SimulationTestRunner[S: ThrsValues, C: ThrsValues, P: ThrsValues, M: ThrsV
         self._control = control
         self._simulation = simulation
         self._alarms = alarms
-        self._control_values = self._control.initial().values
+        self._control_values = self._control.initial()
 
     @staticmethod
     def from_module(
@@ -77,7 +77,7 @@ class SimulationTestRunner[S: ThrsValues, C: ThrsValues, P: ThrsValues, M: ThrsV
                     str(self._control.mode),
                     result.timestamp,
                 )
-            self._control_values = self._control.control(result.sensor_values).values
+            self._control_values = self._control.control(result.sensor_values)
             alarms = self._alarms.check(
                 result.sensor_values, self._control_values, self._control.parameters
             )
