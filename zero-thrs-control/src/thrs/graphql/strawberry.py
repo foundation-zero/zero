@@ -271,7 +271,7 @@ def create_app(settings: Config):
                 ThrustersParameters,
                 ThrustersControlMode,
                 mqtt,
-                settings.mqtt_topic_prefix,
+                settings.mqtt_devices_topic_prefix,
             )
             pvt_messaging: PvtMessaging = ControlMessaging(
                 "pvt",
@@ -280,7 +280,7 @@ def create_app(settings: Config):
                 PvtParameters,
                 PvtControlMode,
                 mqtt,
-                settings.mqtt_topic_prefix,
+                settings.mqtt_devices_topic_prefix,
             )
             pcm_messaging: PcmMessaging = ControlMessaging(
                 "pcm",
@@ -289,7 +289,7 @@ def create_app(settings: Config):
                 PcmParameters,
                 PcmControlMode,
                 mqtt,
-                settings.mqtt_topic_prefix,
+                settings.mqtt_devices_topic_prefix,
             )
             consumers_messaging: ConsumersMessaging = ControlMessaging(
                 "consumers",
@@ -298,7 +298,7 @@ def create_app(settings: Config):
                 ConsumersParameters,
                 ConsumersControlMode,
                 mqtt,
-                settings.mqtt_topic_prefix,
+                settings.mqtt_devices_topic_prefix,
             )
             dhw_messaging: DhwMessaging = ControlMessaging(
                 "dhw",
@@ -307,10 +307,10 @@ def create_app(settings: Config):
                 DhwParameters,
                 DhwControlMode,
                 mqtt,
-                settings.mqtt_topic_prefix,
+                settings.mqtt_devices_topic_prefix,
             )
             simulation_messaging: SimulationMessaging = SimulationMessaging(
-                simulation.io_mapping, mqtt, settings.mqtt_topic_prefix
+                simulation.io_mapping, mqtt, settings.mqtt_devices_topic_prefix
             )
             messaging = Messaging(
                 mqtt,
@@ -322,7 +322,7 @@ def create_app(settings: Config):
                     dhw_messaging,
                 ],
                 simulation_messaging,
-                settings.mqtt_topic_prefix,
+                settings.mqtt_devices_topic_prefix,
             )
             run_task = create_task(await messaging.run())
 
