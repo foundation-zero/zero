@@ -4,7 +4,7 @@ from typing import Callable
 from pydantic import model_validator
 from transitions import Machine, State
 
-from thrs.classes.control import Control, ControlMode, ControlResult
+from thrs.classes.control import Control, ControlMode
 from thrs.control.base import ModuleDescription
 from thrs.control.controllers import PidController
 from thrs.input_output.alarms import BaseAlarms
@@ -200,17 +200,15 @@ class AdsorptionControl(
         mode: str = self.state  # type: ignore
         return AdsorptionControlMode(mode=mode)
 
-    def initial(self) -> ControlResult[AdsorptionControlValues]:
-        return ControlResult(self._time(), _INITIAL_CONTROL_VALUES(self._time()))
+    def initial(self) -> AdsorptionControlValues:
+        return _INITIAL_CONTROL_VALUES(self._time())
 
-    def control(
-        self, sensor_values: AdsorptionSensorValues
-    ) -> ControlResult[AdsorptionControlValues]:
+    def control(self, sensor_values: AdsorptionSensorValues) -> AdsorptionControlValues:
         self._update_adsorption_inputs(sensor_values)
         self._check_adsorption_status(sensor_values)  # type: ignore
         self._control_temperature_controllers(sensor_values)
 
-        return ControlResult(self._time(), self._current_values)
+        return self._current_values
 
     def _control_temperature_controllers(self, sensor_values: AdsorptionSensorValues):
         self._current_values.adsorption_mix_hot.setpoint = Stamped(

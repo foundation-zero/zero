@@ -1,7 +1,7 @@
 from datetime import datetime
 from typing import Callable, Mapping
 
-from thrs.classes.control import Control, ControlResult
+from thrs.classes.control import Control
 from thrs.control.base import ModuleDescription
 from thrs.control.manual import ManualControl
 from thrs.control.switching import SwitchingControl, SwitchingControlMode
@@ -27,37 +27,24 @@ class CombinedControl(
         time_fn: Callable[[], datetime],
     ):
         self._modules = {
-            name: SwitchingControl(
-                ManualControl(control.initial().values, time_fn), control
-            )
+            name: SwitchingControl(ManualControl(control.initial(), time_fn), control)
             for name, control in modules.items()
         }
         self._time_fn = time_fn
 
-    def initial(self) -> ControlResult[CombinedValues]:
-        return ControlResult(
-            values=CombinedValues(
-                values={
-                    name: module.initial().values
-                    for name, module in self._modules.items()
-                }
-            ),
-            timestamp=self._time_fn(),
+    def initial(self) -> CombinedValues:
+        return CombinedValues(
+            values={name: module.initial() for name, module in self._modules.items()}
         )
 
-    def control(self, sensor_values: CombinedValues) -> ControlResult[CombinedValues]:
+    def control(self, sensor_values: CombinedValues) -> CombinedValues:
         results = {
             name: module.control(sensors)
             if (sensors := sensor_values.values.get(name, None))
             else module.initial()
             for name, module in self._modules.items()
         }
-        return ControlResult(
-            timestamp=self._time_fn(),
-            values=CombinedValues(
-                values={name: result.values for name, result in results.items()}
-            ),
-        )
+        return CombinedValues(values={name: result for name, result in results.items()})
 
     @property
     def parameters(self) -> CombinedValues:

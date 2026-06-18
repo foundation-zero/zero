@@ -46,7 +46,7 @@ def test_high_temperature_simulation_inputs(
         with pytest.raises(Exception):
             for i in range(300):
                 simulation.tick(
-                    control.initial(datetime.now()).values,
+                    control.initial(datetime.now()),
                 )
 
 

@@ -4,7 +4,7 @@ from typing import Annotated, Callable
 from pydantic import Field, model_validator
 from transitions import Machine, State
 
-from thrs.classes.control import Control, ControlMode, ControlResult
+from thrs.classes.control import Control, ControlMode
 from thrs.control.base import ModuleDescription
 from thrs.control.controllers import PidController
 from thrs.input_output.alarms import BaseAlarms, Severity, alarm
@@ -646,12 +646,10 @@ class DhwControl(
         filling_mode: str = "idle" if not self._tanks_controller.filling else "filling"
         return DhwControlMode(boosting_mode=mode, filling_mode=filling_mode)
 
-    def initial(self) -> ControlResult[DhwControlValues]:
-        return ControlResult(self._time(), _INITIAL_CONTROL_VALUES(self._time()))
+    def initial(self) -> DhwControlValues:
+        return _INITIAL_CONTROL_VALUES(self._time())
 
-    def control(
-        self, sensor_values: DhwSensorValues
-    ) -> ControlResult[DhwControlValues]:
+    def control(self, sensor_values: DhwSensorValues) -> DhwControlValues:
         self._tanks_controller(sensor_values, self._parameters)
         self._try_boosting(sensor_values)  # type: ignore
         self._enable_filling_flow_control(sensor_values)
@@ -660,7 +658,7 @@ class DhwControl(
 
         self.update_controller_values(sensor_values)
 
-        return ControlResult(self._time(), self._current_values)
+        return self._current_values
 
     def _drives_sufficient_boosting_heat(self, sensor_values: DhwSensorValues) -> bool:
         if self._tanks_controller._boosting_tank is None:

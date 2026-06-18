@@ -1,7 +1,7 @@
 from datetime import datetime
 from typing import Callable
 
-from thrs.classes.control import Control, ControlResult
+from thrs.classes.control import Control
 from thrs.input_output.alarms import BaseAlarms
 from thrs.input_output.base import SimulationInputs, SimulationValues, ThrsValues
 from thrs.input_output.definitions.sensor import FlowSensor
@@ -75,11 +75,11 @@ class SimpleControl(Control[SimpleInOut, SimpleInOut, SimpleParameters, SimpleMo
         self._parameters = parameters
         self._time = time_fn
 
-    def initial(self) -> ControlResult[SimpleInOut]:
-        return ControlResult(self._time(), SimpleInOut.zero())
+    def initial(self) -> SimpleInOut:
+        return SimpleInOut.zero()
 
-    def control(self, sensor_values: SimpleInOut) -> ControlResult[SimpleInOut]:
-        return ControlResult(self._time(), sensor_values)
+    def control(self, sensor_values: SimpleInOut) -> SimpleInOut:
+        return sensor_values
 
     @staticmethod
     def modes() -> list[str]:

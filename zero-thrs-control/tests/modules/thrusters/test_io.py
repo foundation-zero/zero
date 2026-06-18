@@ -51,7 +51,7 @@ def test_yard_tags():
 
 
 def test_set_module_temperature(control, simulation):
-    control_values = control.initial().values
+    control_values = control.initial()
 
     simulation._simulation_inputs.thrusters_thruster_aft.heat_flow.value = 0
     simulation._simulation_inputs.thrusters_thruster_fwd.heat_flow.value = 0

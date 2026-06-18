@@ -44,5 +44,5 @@ def test_thrusters_simulation_inputs(incorrect_simulation_inputs, control):
         with pytest.raises(Exception):
             for i in range(100):
                 simulation.tick(
-                    control.initial(datetime.now()).values,
+                    control.initial(datetime.now()),
                 )

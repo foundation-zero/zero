@@ -1,7 +1,7 @@
 from datetime import datetime
 from typing import Callable
 
-from thrs.classes.control import Control, ControlMode, ControlResult
+from thrs.classes.control import Control, ControlMode
 from thrs.control.base import ModuleDescription
 from thrs.control.controllers import PidController
 from thrs.control.modules.converters import (
@@ -215,16 +215,16 @@ class DcControl(Control[DcSensorValues, DcControlValues, DcParameters, DcControl
             ugrids=self._ugrids_control.mode,
         )
 
-    def initial(self) -> ControlResult[DcControlValues]:
-        return ControlResult(self._time(), _INITIAL_CONTROL_VALUES(self._time()))
+    def initial(self) -> DcControlValues:
+        return _INITIAL_CONTROL_VALUES(self._time())
 
-    def control(self, sensor_values: DcSensorValues) -> ControlResult[DcControlValues]:
+    def control(self, sensor_values: DcSensorValues) -> DcControlValues:
         self._control_heat_dump(sensor_values)
         self._control_recovery_mix(sensor_values)
 
         self._control_groups(sensor_values)
 
-        return ControlResult(self._time(), self._current_values)
+        return self._current_values
 
     def _control_heat_dump(self, sensor_values: DcSensorValues):
         if self._heat_dump_controller.enabled():

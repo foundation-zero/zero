@@ -3,7 +3,7 @@ from typing import Annotated, Callable
 
 from pydantic import Field, model_validator
 
-from thrs.classes.control import Control, ControlMode, ControlResult
+from thrs.classes.control import Control, ControlMode
 from thrs.control.base import ModuleDescription
 from thrs.control.controllers import PidController
 from thrs.control.modules.pvt_group import (
@@ -215,8 +215,8 @@ class PvtControl(
             owners=self._owners_control.initial_mode,
         )
 
-    def initial(self) -> ControlResult[PvtControlValues]:
-        return ControlResult(self._time(), _INITIAL_CONTROL_VALUES(self._time()))
+    def initial(self) -> PvtControlValues:
+        return _INITIAL_CONTROL_VALUES(self._time())
 
     def update_parameters(self, parameters: PvtParameters):
         self._parameters = parameters
@@ -284,14 +284,12 @@ class PvtControl(
 
         self._update_group_control_values()
 
-    def control(
-        self, sensor_values: PvtSensorValues
-    ) -> ControlResult[PvtControlValues]:
+    def control(self, sensor_values: PvtSensorValues) -> PvtControlValues:
         self._control_heat_dump(sensor_values)
 
         self._control_groups(sensor_values)
 
-        return ControlResult(self._time(), self._current_values)
+        return self._current_values
 
 
 class PvtAlarms(BaseAlarms):
