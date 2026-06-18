@@ -4,7 +4,7 @@ from typing import Callable
 from pydantic import model_validator
 from transitions import Machine, State
 
-from thrs.classes.control import Control, ControlMode, ControlResult
+from thrs.classes.control import Control, ControlMode
 from thrs.control.controllers import PidController
 from thrs.input_output.base import Stamped, ThrsValues
 from thrs.input_output.definitions import control, sensor
@@ -147,8 +147,8 @@ class PvtGroupControl(
     def update_parameters(self, parameters: PvtGroupParameters):
         self._parameters = parameters
 
-    def initial(self) -> ControlResult[PvtGroupControlValues]:
-        return ControlResult(self._time(), self._current_values)
+    def initial(self) -> PvtGroupControlValues:
+        return self._current_values
 
     def _string_warm(self, sensor_values: PvtGroupSensorValues):
         return (
@@ -186,14 +186,12 @@ class PvtGroupControl(
     def _deactivate_pump(self, sensor_values: PvtGroupSensorValues):
         self._current_values.pump.on = Stamped(value=False, timestamp=self._time())
 
-    def control(
-        self, sensor_values: PvtGroupSensorValues
-    ) -> ControlResult[PvtGroupControlValues]:
+    def control(self, sensor_values: PvtGroupSensorValues) -> PvtGroupControlValues:
         self._check_temperatures(sensor_values)  # type: ignore
         self._control_warmup_mix(sensor_values)
         self._control_pump(sensor_values)
 
-        return ControlResult(self._time(), self._current_values)
+        return self._current_values
 
     def _control_warmup_mix(self, sensor_values: PvtGroupSensorValues):
         if self._warmup_mix_controller.enabled():

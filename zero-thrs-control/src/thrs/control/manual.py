@@ -1,7 +1,7 @@
 from datetime import datetime
 from typing import Callable
 
-from thrs.classes.control import Control, ControlResult
+from thrs.classes.control import Control
 from thrs.input_output.base import ThrsValues
 
 
@@ -36,11 +36,11 @@ class ManualControl[SensorValues: ThrsValues, ControlValues: ThrsValues](
     def manual_controls(self, control_values: ControlValues):
         self._control_values = control_values
 
-    def initial(self) -> ControlResult[ControlValues]:
-        return ControlResult(self._time_fn(), self._control_values)
+    def initial(self) -> ControlValues:
+        return self._control_values
 
-    def control(self, sensor_values: SensorValues) -> ControlResult[ControlValues]:
-        return ControlResult(self._time_fn(), self._control_values)
+    def control(self, sensor_values: SensorValues) -> ControlValues:
+        return self._control_values
 
     def update_parameters(self, parameters: EmptyParameters):
         pass

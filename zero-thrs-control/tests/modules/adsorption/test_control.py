@@ -32,8 +32,8 @@ def test_state_mode_switches(control: AdsorptionControl, simulation: Simulation)
         control._parameters.adsorption_cold_trigger + 1
     )
 
-    result = simulation.tick(control.initial().values)
-    control_values = control.control(result.sensor_values).values
+    result = simulation.tick(control.initial())
+    control_values = control.control(result.sensor_values)
 
     assert control.mode == AdsorptionControlMode(mode="idle")
     result = simulation.tick(control_values)
@@ -47,7 +47,7 @@ def test_state_mode_switches(control: AdsorptionControl, simulation: Simulation)
     )
 
     for i in range(10):
-        control_values = control.control(result.sensor_values).values
+        control_values = control.control(result.sensor_values)
         result = simulation.tick(control_values)
 
     assert control.mode == AdsorptionControlMode(mode="idle")
@@ -58,7 +58,7 @@ def test_state_mode_switches(control: AdsorptionControl, simulation: Simulation)
     )
 
     for i in range(10):
-        control_values = control.control(result.sensor_values).values
+        control_values = control.control(result.sensor_values)
         result = simulation.tick(control_values)
 
     assert control.mode == AdsorptionControlMode(mode="cooling")
@@ -69,7 +69,7 @@ def test_state_mode_switches(control: AdsorptionControl, simulation: Simulation)
     )
 
     for i in range(10):
-        control_values = control.control(result.sensor_values).values
+        control_values = control.control(result.sensor_values)
         result = simulation.tick(control_values)
 
     assert control.mode == AdsorptionControlMode(mode="cooling")
@@ -80,7 +80,7 @@ def test_state_mode_switches(control: AdsorptionControl, simulation: Simulation)
     )
 
     for i in range(10):
-        control_values = control.control(result.sensor_values).values
+        control_values = control.control(result.sensor_values)
         result = simulation.tick(control_values)
 
     assert control.mode == AdsorptionControlMode(mode="idle")
@@ -94,7 +94,7 @@ def test_state_mode_switches(control: AdsorptionControl, simulation: Simulation)
     )
 
     for i in range(10):
-        control_values = control.control(result.sensor_values).values
+        control_values = control.control(result.sensor_values)
         result = simulation.tick(control_values)
 
     assert control.mode == AdsorptionControlMode(mode="idle")
@@ -105,7 +105,7 @@ def test_state_mode_switches(control: AdsorptionControl, simulation: Simulation)
     )
 
     for i in range(10):
-        control_values = control.control(result.sensor_values).values
+        control_values = control.control(result.sensor_values)
         result = simulation.tick(control_values)
 
     assert control.mode == AdsorptionControlMode(mode="idle")
@@ -116,7 +116,7 @@ def test_state_mode_switches(control: AdsorptionControl, simulation: Simulation)
     )
 
     for i in range(10):
-        control_values = control.control(result.sensor_values).values
+        control_values = control.control(result.sensor_values)
         result = simulation.tick(control_values)
 
     assert control.mode == AdsorptionControlMode(mode="cooling")
@@ -127,7 +127,7 @@ def test_state_mode_switches(control: AdsorptionControl, simulation: Simulation)
     )
 
     for i in range(10):
-        control_values = control.control(result.sensor_values).values
+        control_values = control.control(result.sensor_values)
         result = simulation.tick(control_values)
 
     assert control.mode == AdsorptionControlMode(mode="cooling")
@@ -138,23 +138,23 @@ def test_state_mode_switches(control: AdsorptionControl, simulation: Simulation)
     )
 
     for i in range(10):
-        control_values = control.control(result.sensor_values).values
+        control_values = control.control(result.sensor_values)
         result = simulation.tick(control_values)
 
     assert control.mode == AdsorptionControlMode(mode="idle")
 
 
 def test_adsorption_cooling(control: AdsorptionControl, simulation: Simulation):
-    result = simulation.tick(control.initial().values)
+    result = simulation.tick(control.initial())
 
     for i in range(10):
-        control_values = control.control(result.sensor_values).values
+        control_values = control.control(result.sensor_values)
         result = simulation.tick(control_values)
 
     assert control.mode == AdsorptionControlMode(mode="cooling")
 
     for i in range(100):
-        control_values = control.control(result.sensor_values).values
+        control_values = control.control(result.sensor_values)
         result = simulation.tick(control_values)
 
     assert (
@@ -176,16 +176,16 @@ def test_waste_recovery(control: AdsorptionControl, simulation: Simulation):
     control._parameters.waste_recovery_temperature_setpoint = 40
     control._parameters.waste_cooling_temperature_setpoint = 60
 
-    result = simulation.tick(control.initial().values)
+    result = simulation.tick(control.initial())
 
     for i in range(100):
-        control_values = control.control(result.sensor_values).values
+        control_values = control.control(result.sensor_values)
         result = simulation.tick(control_values)
 
     assert control.mode == AdsorptionControlMode(mode="cooling")
 
     for i in range(5 * 60):
-        control_values = control.control(result.sensor_values).values
+        control_values = control.control(result.sensor_values)
         result = simulation.tick(control_values)
 
         assert (
@@ -235,16 +235,16 @@ def test_waste_cooling():
         )
         control = AdsorptionControl(parameters, simulation.time)
 
-        result = simulation.tick(control.initial().values)
+        result = simulation.tick(control.initial())
 
         for i in range(100):
-            control_values = control.control(result.sensor_values).values
+            control_values = control.control(result.sensor_values)
             result = simulation.tick(control_values)
 
         assert control.mode == AdsorptionControlMode(mode="cooling")
 
         for i in range(5 * 60):
-            control_values = control.control(result.sensor_values).values
+            control_values = control.control(result.sensor_values)
             result = simulation.tick(control_values)
 
             assert (

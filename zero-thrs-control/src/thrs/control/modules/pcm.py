@@ -3,7 +3,7 @@ from typing import Callable
 
 from transitions import Machine, State
 
-from thrs.classes.control import Control, ControlMode, ControlResult
+from thrs.classes.control import Control, ControlMode
 from thrs.control.base import ModuleDescription
 from thrs.control.controllers import FlowBalanceController, PidController
 from thrs.input_output.alarms import BaseAlarms
@@ -233,13 +233,13 @@ class PcmControl(
         mode: str = self.state  # type: ignore
         return PcmControlMode(mode=mode)
 
-    def initial(self) -> ControlResult[PcmControlValues]:
-        return ControlResult(self._time(), _INITIAL_CONTROL_VALUES(self._time()))
+    def initial(self) -> PcmControlValues:
+        return _INITIAL_CONTROL_VALUES(self._time())
 
     def update_parameters(self, parameters: PcmParameters):
         self._parameters = parameters
 
-    def control(self, sensor_values: PcmSensorValues) -> ControlResult:
+    def control(self, sensor_values: PcmSensorValues) -> PcmControlValues:
         self._try_supplying(sensor_values) if self.mode.is_idle else None  # type: ignore
         self._try_charging(sensor_values) if self.mode.is_idle else None  # type: ignore
 
@@ -252,7 +252,7 @@ class PcmControl(
 
         self._control_flow_balance(sensor_values)
 
-        return ControlResult(self._time(), self._current_values)
+        return self._current_values
 
     def _all_discharged(self, sensor_values: PcmSensorValues) -> bool:
         return not any(
