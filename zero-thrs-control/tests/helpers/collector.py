@@ -40,8 +40,6 @@ class PolarsCollector(Collector[pl.DataFrame]):
 
         all_keys = set().union(*(row.keys() for row in self._data))
 
-        normalized_data = [{**{k: None for k in all_keys}, **row} for row in self._data]
-
         schema_overrides = {
             **{
                 key: pl.Float64
@@ -63,7 +61,7 @@ class PolarsCollector(Collector[pl.DataFrame]):
             **{"time": pl.Datetime(time_unit="us"), "control_mode": pl.String},
         }
         return pl.from_dicts(
-            normalized_data,
+            self._data,
             schema_overrides=schema_overrides,
             strict=False,
             infer_schema_length=None,

@@ -332,7 +332,7 @@ class DhwSensorValues(ThrsValues):
 
     @computed_field(json_schema_extra=computed_meta(included_in_fmu=False))
     @property
-    def freshwater_flow_supply(self) -> sensor.CalculatedFlow:
+    def dhw_freshwater_flow_supply(self) -> sensor.CalculatedFlow:
         return sensor.CalculatedFlow(
             flow=Stamped.combine(
                 self.dhw_flow_drives.flow,
