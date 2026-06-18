@@ -50,26 +50,26 @@ spec:
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           env:
-            - name: RUN__MQTT_HOST
+            - name: MQTT_HOST
               value: {{ .Values.mqtt.host | quote }}
-            - name: RUN__MQTT_PORT
+            - name: MQTT_PORT
               value: {{ .Values.mqtt.port | quote }}
-            - name: RUN__MQTT_USERNAME
+            - name: MQTT_USERNAME
               value: {{ .Values.mqtt.username | quote }}
-            - name: RUN__MQTT_PASSWORD
+            - name: MQTT_PASSWORD
               valueFrom:
                 secretKeyRef:
                   name: {{ .Values.mqtt.existingSecret }}
                   key: {{ .Values.mqtt.existingSecretPasswordKey }}
-            - name: RUN__MODBUS_HOST
+            - name: MODBUS_HOST
               value: {{ .Values.modbus.host | quote }}
-            - name: RUN__MODBUS_PORT
+            - name: MODBUS_PORT
               value: {{ .Values.modbus.port | quote }}
-            - name: RUN__SEND_TOPIC
+            - name: SEND_TOPIC
               value: {{ .Values.termodinamica.sendTopic | quote }}
-            - name: RUN__SECONDS
+            - name: SECONDS
               value: {{ .Values.termodinamica.intervalSeconds | quote }}
-            - name: RUN__N
+            - name: N
               value: {{ .Values.termodinamica.n | toString | quote }}
           resources:
             {{- toYaml .Values.resources | nindent 12 }}

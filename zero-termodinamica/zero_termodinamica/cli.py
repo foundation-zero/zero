@@ -9,7 +9,7 @@ from pydantic_settings import (
     SettingsConfigDict,
 )
 
-from zero_termodinamica.reader import ModbusToMQTTBridge
+from zero_termodinamica.modbus_to_mqtt import ModbusToMQTTBridge
 from zero_termodinamica.settings import ModbusSettings, MqttSettings
 
 logging.basicConfig(
@@ -17,11 +17,16 @@ logging.basicConfig(
 )
 
 
-class RunCmd(ModbusSettings, MqttSettings):
-    send_topic: str
-    seconds: int
-    n: int = -1
+class BaseCommandSettings(BaseSettings):
+    model_config = SettingsConfigDict(
+        env_file=".env",
+        env_file_encoding="utf-8",
+        env_nested_delimiter="__",
+        env_prefix="",
+    )
 
+
+class RunCmd(BaseCommandSettings, ModbusSettings, MqttSettings):
     async def cli_cmd(self) -> None:
         async with ModbusToMQTTBridge.from_settings(self, self) as reader:
             await reader.run()
@@ -29,7 +34,10 @@ class RunCmd(ModbusSettings, MqttSettings):
 
 class ZeroTermodinamica(BaseSettings, cli_kebab_case=True):
     model_config = SettingsConfigDict(
-        env_file=".env", env_file_encoding="utf-8", env_nested_delimiter="__"
+        env_file=".env",
+        env_file_encoding="utf-8",
+        env_nested_delimiter="__",
+        env_prefix="",
     )
     run: CliSubCommand[RunCmd]
 
