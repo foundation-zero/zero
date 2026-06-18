@@ -25,6 +25,13 @@ export type ParameterFields<Fields extends ComponentFields<ParametersType>> = Co
   Fields
 >;
 
+export type SourceFields<
+  Fields extends Record<
+    MimicComponentType,
+    SensorComponentType | ControlComponentType | ParametersType | undefined
+  >,
+> = Fields;
+
 export type CustomFields<Fields extends Record<MimicComponentType, Record<string, unknown>>> =
   Fields;
 
@@ -40,23 +47,17 @@ export type SensorFieldDefinitions = SensorFields<{
   };
   [MimicComponentType.Pump]: {
     pressure: SensorComponentType.Pressure;
-    pump: SensorComponentType.Pump;
     flowMeasurement: SensorComponentType.Flow;
     temperatureMeasurement: SensorComponentType.Temperature;
   };
-  [MimicComponentType.HeatExchanger]: {
-    heatExchanger: SensorComponentType.HeatExchanger;
-  };
+  [MimicComponentType.HeatExchanger]: EmptyObject;
   [MimicComponentType.PressureSensor]: {
-    pressure: SensorComponentType.Pressure;
     flow: SensorComponentType.Flow;
   };
   [MimicComponentType.TemperatureSensor]: {
-    temperature: SensorComponentType.Temperature;
     measurement: SensorComponentType.Temperature;
   };
   [MimicComponentType.FlowSensor]: {
-    flow: SensorComponentType.Flow;
     temperature: SensorComponentType.Temperature;
   };
   [MimicComponentType.ManualValve]: EmptyObject;
@@ -85,11 +86,8 @@ export type SensorFieldDefinitions = SensorFields<{
     outgoing: SensorComponentType.Temperature;
     measurement: SensorComponentType.Flow;
   };
-  [MimicComponentType.SwitchValve]: {
-    valve: SensorComponentType.Valve;
-  };
+  [MimicComponentType.SwitchValve]: EmptyObject;
   [MimicComponentType.FlowControlValve]: {
-    valve: SensorComponentType.Valve;
     measurement: SensorComponentType.Flow;
   };
 }>;
@@ -212,6 +210,22 @@ export type CustomFieldDefinitions = CustomFields<{
   [MimicComponentType.FlowControlValve]: EmptyObject;
 }>;
 
+export type SourceFieldDefinitions = SourceFields<{
+  [MimicComponentType.Pump]: SensorComponentType.Pump;
+  [MimicComponentType.HeatExchanger]: SensorComponentType.HeatExchanger;
+  [MimicComponentType.PressureSensor]: SensorComponentType.Pressure;
+  [MimicComponentType.TemperatureSensor]: SensorComponentType.Temperature;
+  [MimicComponentType.FlowSensor]: SensorComponentType.Flow;
+  [MimicComponentType.ManualValve]: undefined;
+  [MimicComponentType.HeatPump]: SensorComponentType.HeatExchanger;
+  [MimicComponentType.HVAC]: SensorComponentType.HeatExchanger;
+  [MimicComponentType.SwitchValve]: SensorComponentType.Valve;
+  [MimicComponentType.FlowControlValve]: SensorComponentType.Valve;
+  [MimicComponentType.BoilerTank]: undefined;
+  [MimicComponentType.ExchangeCircuit]: undefined;
+  [MimicComponentType.HotWaterCircuit]: undefined;
+}>;
+
 export type ExtractModuleFields<
   Fields extends Record<string, SensorComponentType | ControlComponentType | ParametersType>,
 > = { [K in keyof Fields]: ModuleField<Fields[K]> };
@@ -219,7 +233,8 @@ export type ExtractModuleFields<
 export type ExtractComponentFields<Type extends MimicComponentType> = ExtractSensorFields<Type> &
   ExtractControlFields<Type> &
   ExtractParameterFields<Type> &
-  ExtractCustomFields<Type>;
+  ExtractCustomFields<Type> &
+  ExtractSourceFields<Type>;
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 const EMPTY_OBJECT = {};
@@ -239,4 +254,10 @@ export type ExtractParameterFields<Type extends MimicComponentType> = {
 
 export type ExtractCustomFields<Type extends MimicComponentType> = {
   custom: CustomFieldDefinitions[Type];
+};
+
+export type ExtractSourceFields<Type extends MimicComponentType> = {
+  source: SourceFieldDefinitions[Type] extends undefined
+    ? undefined
+    : ModuleField<SourceFieldDefinitions[Type]>;
 };

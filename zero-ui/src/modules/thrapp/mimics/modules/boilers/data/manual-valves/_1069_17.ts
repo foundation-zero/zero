@@ -6,6 +6,7 @@ export default toInstance<MimicComponentType.ManualValve>({
   controls: {},
   custom: {},
   parameters: {},
+  source: undefined,
   sensors: {},
   tooltip: tooltip({
     yardTag: "1069-17",

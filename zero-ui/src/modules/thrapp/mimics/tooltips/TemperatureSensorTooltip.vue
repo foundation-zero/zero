@@ -36,7 +36,7 @@ const { items, labels, sources } = useTranslations();
     <TooltipList>
       <TooltipListHeader>{{ labels("output") }}</TooltipListHeader>
       <SensorValue
-        :source="sensors.temperature"
+        :source="source"
         field="temperature"
       >
         <TooltipListItem>
@@ -64,7 +64,7 @@ const { items, labels, sources } = useTranslations();
           <FieldRenderer.Source :source="controls.pump" />
         </template>
         <template
-          v-if="sensors.measurement === sensors.temperature"
+          v-if="sensors.measurement === source"
           #measurement
         >
           <FieldRenderer.Source>{{ sources("this") }}</FieldRenderer.Source>

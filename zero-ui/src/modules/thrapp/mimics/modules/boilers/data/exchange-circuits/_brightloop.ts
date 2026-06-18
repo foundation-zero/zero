@@ -10,6 +10,7 @@ export default toInstance<MimicComponentType.ExchangeCircuit>({
     circuitName: "Brightloop circuit",
   },
   parameters: {},
+  source: undefined,
   sensors: {
     deltaT: getField(SensorComponentType.DeltaT, "boilers", "lt2Delta"),
     flow: getField(SensorComponentType.Flow, "boilers", "boilersFlowLt2"),

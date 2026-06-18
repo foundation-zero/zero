@@ -88,7 +88,7 @@ const { labels, actions, items, sources } = useTranslations();
         </TooltipListItem>
       </SensorValue>
       <SensorValue
-        :source="sensors.pump"
+        :source="source"
         field="flow"
       >
         <TooltipListItem>
@@ -117,7 +117,7 @@ const { labels, actions, items, sources } = useTranslations();
         </TooltipListItemValue>
       </TooltipListItem>
       <SensorValue
-        :source="sensors.pump"
+        :source="source"
         field="speed"
       >
         <TooltipListItem>
@@ -130,7 +130,7 @@ const { labels, actions, items, sources } = useTranslations();
         </TooltipListItem>
       </SensorValue>
       <SensorValue
-        :source="sensors.pump"
+        :source="source"
         field="opTime"
       >
         <TooltipListItem>

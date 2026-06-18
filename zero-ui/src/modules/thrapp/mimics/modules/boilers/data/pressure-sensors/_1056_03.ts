@@ -9,8 +9,8 @@ export default toInstance<MimicComponentType.PressureSensor>({
   controls,
   custom: {},
   parameters,
+  source: getField(SensorComponentType.Pressure, "boilers", "boilersPressureBoosting"),
   sensors: {
-    pressure: getField(SensorComponentType.Pressure, "boilers", "boilersPressureBoosting"),
     flow,
   },
   tooltip: tooltip({

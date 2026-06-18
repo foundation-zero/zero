@@ -9,13 +9,13 @@ export default toInstance<MimicComponentType.TemperatureSensor>({
   controls,
   custom: {},
   parameters,
+  source: getField(
+    SensorComponentType.Temperature,
+    "boilers",
+    "boilersTemperatureFahrenheitReturn",
+  ),
   sensors: {
     measurement,
-    temperature: getField(
-      SensorComponentType.Temperature,
-      "boilers",
-      "boilersTemperatureFahrenheitReturn",
-    ),
   },
   tooltip: tooltip({
     yardTag: "1038-51",

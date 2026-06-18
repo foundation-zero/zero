@@ -10,6 +10,7 @@ export default toInstance<MimicComponentType.ExchangeCircuit>({
     circuitName: "Drives circuit",
   },
   parameters: {},
+  source: undefined,
   sensors: {
     deltaT: getField(SensorComponentType.DeltaT, "boilers", "lt1Delta"),
     flow: getField(SensorComponentType.Flow, "boilers", "boilersFlowLt1"),

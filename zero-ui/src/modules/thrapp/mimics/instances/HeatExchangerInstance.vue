@@ -26,7 +26,7 @@ const props = withDefaults(
 
 const { getSensorValue } = getMimicDataProvider();
 
-const heatExchanger = getSensorValue(props.sensors.heatExchanger);
+const heatExchanger = getSensorValue(props.source);
 
 type HeatExchangerState = [sideA: HeatingState, sideB: HeatingState];
 

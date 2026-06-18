@@ -5,6 +5,7 @@ import { BoilerLegend, LegendTrigger } from "@/modules/thrapp/components/legends
 import { MimicTooltipProvider } from "@/modules/thrapp/components/tooltip";
 import NoopTooltipProvider from "@/modules/thrapp/components/tooltip/NoopTooltipProvider.vue";
 import BoilersModule from "@/modules/thrapp/mimics/modules/boilers/BoilersModule.vue";
+import { BOILERS_MIMIC_DATA } from "@/modules/thrapp/mimics/modules/boilers/data";
 import { GraphQLProvider, MockProvider } from "@/modules/thrapp/mimics/providers";
 import { DEFINITIONS } from "@/modules/thrs/lib/consts";
 import { computed, inject, Ref, ref } from "vue";
@@ -37,7 +38,7 @@ const { t } = useI18n();
         </LegendTrigger>
       </aside>
 
-      <MimicTooltipProvider>
+      <MimicTooltipProvider :source="BOILERS_MIMIC_DATA">
         <BoilersModule
           v-if="currentDefinition === 'boilers'"
           class="mx-auto my-auto max-h-[calc(100svh-14em)]"

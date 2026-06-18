@@ -17,8 +17,8 @@ export default toInstance<MimicComponentType.FlowControlValve>({
   parameters: {
     flow: getField(ParametersType.Flow, "boilers", "lt1FlowcontrolMinimumSetpoint"),
   },
+  source: getField(SensorComponentType.Valve, "boilers", "boilersFlowcontrolLt1"),
   sensors: {
-    valve: getField(SensorComponentType.Valve, "boilers", "boilersFlowcontrolLt1"),
     measurement: getField(SensorComponentType.Flow, "boilers", "boilersFlowLt1"),
   },
   tooltip: tooltip({

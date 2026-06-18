@@ -7,8 +7,8 @@ export default toInstance<MimicComponentType.TemperatureSensor>({
   controls,
   custom: {},
   parameters,
+  source: measurement,
   sensors: {
-    temperature: measurement,
     measurement,
   },
   tooltip: tooltip({

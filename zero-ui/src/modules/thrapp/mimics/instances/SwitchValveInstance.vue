@@ -12,7 +12,7 @@ const props = defineProps<
 >();
 
 const { getSensorValue, getComponentState } = getMimicDataProvider();
-const valve = getSensorValue(props.sensors.valve);
+const valve = getSensorValue(props.source);
 const state = getComponentState();
 </script>
 

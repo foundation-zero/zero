@@ -20,9 +20,8 @@ export default toInstance<MimicComponentType.HeatExchanger>({
     },
   },
   parameters: {},
-  sensors: {
-    heatExchanger: getField(SensorComponentType.HeatExchanger, "boilers", "boilersLt2Exchanger"),
-  },
+  source: getField(SensorComponentType.HeatExchanger, "boilers", "boilersLt2Exchanger"),
+  sensors: {},
   tooltip: tooltip({
     yardTag: "1008",
     technicalName: "boilersLt2Exchanger",

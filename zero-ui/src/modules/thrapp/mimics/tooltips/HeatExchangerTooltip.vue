@@ -38,7 +38,7 @@ const { labels, actions, items, sources } = useTranslations();
     </TooltipList>
 
     <SensorValue
-      :source="sensors.heatExchanger"
+      :source="source"
       field="heat"
     >
       <TooltipList>

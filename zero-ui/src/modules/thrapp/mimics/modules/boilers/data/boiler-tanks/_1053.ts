@@ -13,6 +13,7 @@ export default toInstance<MimicComponentType.BoilerTank>({
     controller,
   },
   parameters,
+  source: undefined,
   sensors: {
     boostingSupply,
     level: getField(SensorComponentType.Level, "boilers", "boilersLevelTank1"),

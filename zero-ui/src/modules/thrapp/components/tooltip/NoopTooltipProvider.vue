@@ -4,6 +4,9 @@ import { provideTooltipContext } from ".";
 
 provideTooltipContext({
   setTooltip() {},
+  findTooltipContext() {
+    return undefined;
+  },
   getData() {
     return null;
   },

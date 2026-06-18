@@ -11,9 +11,8 @@ export default toInstance<MimicComponentType.SwitchValve>({
   },
   custom: { tank: tank1 },
   parameters: {},
-  sensors: {
-    valve: getField(SensorComponentType.Valve, "boilers", "boilersSwitchTank1Empty"),
-  },
+  source: getField(SensorComponentType.Valve, "boilers", "boilersSwitchTank1Empty"),
+  sensors: {},
   tooltip: tooltip({
     yardTag: "1067-13",
     technicalName: "boilers-switch-tank-1-empty",

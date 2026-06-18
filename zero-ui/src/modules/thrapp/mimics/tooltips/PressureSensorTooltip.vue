@@ -37,7 +37,7 @@ const { items, labels } = useTranslations();
     <TooltipList>
       <TooltipListHeader>{{ labels("output") }}</TooltipListHeader>
       <SensorValue
-        :source="sensors.pressure"
+        :source="source"
         field="pressure"
       >
         <TooltipListItem>

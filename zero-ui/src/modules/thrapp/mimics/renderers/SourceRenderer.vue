@@ -3,12 +3,14 @@ import { cn } from "@/modules/common/lib/utils";
 import { ControlComponentType, ParametersType, SensorComponentType } from "@/modules/thrs/types";
 import { snakeCase } from "lodash";
 import { computed, type HTMLAttributes } from "vue";
+import { getTooltipContext } from "../../components/tooltip";
 import {
   getControlDefinition,
   getSensorDefinition,
   injectFieldValueSource,
   ModuleField,
 } from "../../mimics/providers";
+import { TOOLTIPS } from "../tooltips";
 
 const props = defineProps<{
   class?: HTMLAttributes["class"];
@@ -28,6 +30,19 @@ const definition = computed(() => {
 const sourceName = computed(() =>
   definition.value?.yardTag.length ? definition.value.yardTag : source.value?.[2],
 );
+
+const { setTooltip, findTooltipContext } = getTooltipContext();
+
+const tooltipContext = computed(() => (source.value ? findTooltipContext(source.value) : null));
+
+const openLink = () => {
+  const result = tooltipContext.value;
+  if (!result) return;
+
+  const [type, tooltip] = result;
+
+  setTooltip(tooltip, TOOLTIPS[type]);
+};
 </script>
 
 <template>
@@ -35,10 +50,14 @@ const sourceName = computed(() =>
     :class="
       cn(
         'text-disabled-foreground overflow-hidden text-sm font-medium text-ellipsis',
-        { underline: (source && !$slots['default']) || external || url, 'text-brand-dull': url },
+        {
+          'text-brand-dull': url,
+          'cursor-pointer underline': !!tooltipContext && !$slots['default'],
+        },
         props.class,
       )
     "
+    @click="openLink"
   >
     <slot>
       <template v-if="sourceName">

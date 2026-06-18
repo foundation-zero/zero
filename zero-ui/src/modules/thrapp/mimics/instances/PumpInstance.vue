@@ -12,7 +12,7 @@ const props = defineProps<
 >();
 
 const { getSensorValue, getComponentState } = getMimicDataProvider();
-const pump = getSensorValue(props.sensors.pump);
+const pump = getSensorValue(props.source);
 const state = getComponentState();
 
 const pumpState = computed(() => {

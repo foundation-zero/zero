@@ -9,9 +9,9 @@ export default toInstance<MimicComponentType.TemperatureSensor>({
   controls,
   custom: {},
   parameters,
+  source: getField(SensorComponentType.Temperature, "boilers", "boilersTemperatureTank3"),
   sensors: {
     measurement,
-    temperature: getField(SensorComponentType.Temperature, "boilers", "boilersTemperatureTank3"),
   },
   tooltip: tooltip({
     yardTag: "1038-27",

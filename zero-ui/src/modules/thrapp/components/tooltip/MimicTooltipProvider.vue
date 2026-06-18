@@ -2,9 +2,13 @@
 import { ResponsivePopup } from "@/modules/common/components/responsive-dialog";
 import { computed } from "vue";
 import { createTooltipContext, provideTooltipContext } from ".";
-import NoopTooltipProvider from "./NoopTooltipProvider.vue";
+import { MimicComponentFieldsMap } from "../../mimics/modules";
 
-const tooltipContext = createTooltipContext();
+const props = defineProps<{
+  source: Partial<MimicComponentFieldsMap>;
+}>();
+
+const tooltipContext = createTooltipContext(props.source);
 provideTooltipContext(tooltipContext);
 
 const { component, data, clear } = tooltipContext;
@@ -31,15 +35,14 @@ const isOpen = computed({
         {{ data?.tooltip?.title }}
       </h2>
     </template>
-    <NoopTooltipProvider>
-      <div class="max-md:px-4">
-        <component
-          :is="component"
-          v-if="component"
-          v-bind="data"
-        />
-      </div>
-    </NoopTooltipProvider>
+
+    <div class="max-md:px-4">
+      <component
+        :is="component"
+        v-if="component"
+        v-bind="data"
+      />
+    </div>
   </ResponsivePopup>
 
   <slot />

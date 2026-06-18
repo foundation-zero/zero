@@ -18,8 +18,8 @@ export default toInstance<MimicComponentType.FlowSensor>({
   parameters: {
     flow: getField(ParametersType.Flow, "boilers", "heatpumpFlowSetpoint"),
   },
+  source: getField(SensorComponentType.Flow, "boilers", "boilersFlowBoosting"),
   sensors: {
-    flow: getField(SensorComponentType.Flow, "boilers", "boilersFlowBoosting"),
     temperature: getField(
       SensorComponentType.Temperature,
       "boilers",

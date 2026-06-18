@@ -36,7 +36,7 @@ const { items, labels, sources } = useTranslations();
     <TooltipList>
       <TooltipListHeader>{{ labels("output") }}</TooltipListHeader>
       <SensorValue
-        :source="sensors.flow"
+        :source="source"
         field="flow"
       >
         <TooltipListItem>
@@ -58,7 +58,7 @@ const { items, labels, sources } = useTranslations();
         </TooltipListItemValue>
       </TooltipListItem>
       <SensorValue
-        :source="sensors.flow"
+        :source="source"
         field="temperature"
       >
         <TooltipListItem>
@@ -79,7 +79,7 @@ const { items, labels, sources } = useTranslations();
       </TooltipListHeader>
       <FlowController
         :controller="controls.controller"
-        :measurement="sensors.flow"
+        :measurement="source"
         :setpoint="parameters.flow"
       >
         <template #actuator>

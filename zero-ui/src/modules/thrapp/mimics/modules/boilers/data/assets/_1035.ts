@@ -13,6 +13,7 @@ export default toInstance<MimicComponentType.HeatPump>({
       "boilersPumpFlowController",
     ),
   },
+  source: getField(SensorComponentType.HeatExchanger, "boilers", "boilersHeatpump"),
   custom: {},
   parameters: {
     temperature: getField(ParametersType.Temperature, "boilers", "heatpumpTemperatureSetpoint"),

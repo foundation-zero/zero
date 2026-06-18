@@ -14,8 +14,8 @@ export default toInstance<MimicComponentType.FlowSensor>({
   parameters: {
     flow: getField(ParametersType.Flow, "boilers", "lt2FlowcontrolMinimumSetpoint"),
   },
+  source: getField(SensorComponentType.Flow, "boilers", "boilersFlowLt2"),
   sensors: {
-    flow: getField(SensorComponentType.Flow, "boilers", "boilersFlowLt2"),
     temperature: getField(
       SensorComponentType.Temperature,
       "boilers",

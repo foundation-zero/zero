@@ -7,6 +7,7 @@ export default toInstance<MimicComponentType.ManualValve>({
   custom: {},
   parameters: {},
   sensors: {},
+  source: undefined,
   tooltip: tooltip({
     yardTag: "1174-01",
     technicalName: "boilers-manual-valve-1174-01",

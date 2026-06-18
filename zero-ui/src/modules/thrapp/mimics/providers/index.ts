@@ -44,7 +44,7 @@ export const getField = <
 ): ModuleField<Type, Module> => [type, module, field] as ModuleField<Type, Module>;
 
 export type ModuleField<
-  Type extends ControlComponentType | SensorComponentType | ParametersType,
+  Type extends ControlComponentType | SensorComponentType | ParametersType | undefined,
   Module extends keyof ThrsDefinitions = keyof ThrsDefinitions,
 > = [type: Type, module: Module, field: string];
 

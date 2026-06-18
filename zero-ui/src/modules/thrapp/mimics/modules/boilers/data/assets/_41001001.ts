@@ -14,6 +14,7 @@ export default toInstance<MimicComponentType.HVAC>({
     temperature: getField(ParametersType.Temperature, "boilers", "htBoostingTemperatureSetpoint"),
     flow: getField(ParametersType.Flow, "boilers", "lt1FlowcontrolMinimumSetpoint"),
   },
+  source: getField(SensorComponentType.HeatExchanger, "boilers", "boilersHvacExchanger"),
   sensors: {
     heatExchanger: getField(SensorComponentType.HeatExchanger, "boilers", "boilersHvacExchanger"),
     incoming: getField(

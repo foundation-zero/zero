@@ -6,6 +6,7 @@ import { getField } from "../../../../providers";
 
 export default toInstance<MimicComponentType.Pump>({
   custom: {},
+  source: getField(SensorComponentType.Pump, "boilers", "boilersPump"),
   controls: {
     flowController: getField(
       ControlComponentType.PIDController,
@@ -24,7 +25,6 @@ export default toInstance<MimicComponentType.Pump>({
     temperature: getField(ParametersType.Temperature, "boilers", "heatpumpTemperatureSetpoint"),
   },
   sensors: {
-    pump: getField(SensorComponentType.Pump, "boilers", "boilersPump"),
     pressure: getField(SensorComponentType.Pressure, "boilers", "boilersPressureBoosting"),
     flowMeasurement: getField(SensorComponentType.Flow, "boilers", "boilersFlowBoosting"),
     temperatureMeasurement: getField(

@@ -57,7 +57,7 @@ const { labels, items } = useTranslations();
 
     <TooltipList>
       <TooltipListHeader>{{ labels("output") }}</TooltipListHeader>
-      <ValvePosition :valve="sensors.valve" />
+      <ValvePosition :valve="source" />
     </TooltipList>
 
     <TooltipList v-if="custom.tank">

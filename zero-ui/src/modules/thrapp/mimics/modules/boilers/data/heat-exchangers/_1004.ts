@@ -19,14 +19,9 @@ export default toInstance<MimicComponentType.HeatExchanger>({
       return BOILER_EXCHANGE_CIRCUIT_DATA[MimicComponentType.ExchangeCircuit].fahrenheit.sensors;
     },
   },
+  source: getField(SensorComponentType.HeatExchanger, "boilers", "boilersFahrenheitExchanger"),
   parameters: {},
-  sensors: {
-    heatExchanger: getField(
-      SensorComponentType.HeatExchanger,
-      "boilers",
-      "boilersFahrenheitExchanger",
-    ),
-  },
+  sensors: {},
   tooltip: tooltip({
     yardTag: "1004",
     technicalName: "Fahrenheit-HotWater-Exchanger",
