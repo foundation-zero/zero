@@ -30,8 +30,5 @@ class Stub:
 
     def run(self):
         self._modbus.start()
-        try:
-            while True:
-                time.sleep(1)
-        except KeyboardInterrupt:
-            self._modbus.stop()
+        while True:
+            time.sleep(1)

@@ -1,0 +1,24 @@
+set dotenv-load := true
+set dotenv-required := true
+
+default: run
+
+run *args:
+    poetry run python -m zero_termodinamica run {{ args }}
+
+run_stub *args:
+    poetry run python -m zero_termodinamica stub {{ args }}
+
+check: lint type_check test
+
+lint:
+    poetry run ruff check
+
+type_check:
+    poetry run pyright ./zero_termodinamica ./tests
+
+test *args:
+    poetry run pytest {{ args }}
+
+format:
+    poetry run ruff format --check src tests

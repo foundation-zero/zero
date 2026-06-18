@@ -1,4 +1,7 @@
+import asyncio
 import json
+import logging
+from asyncio import TaskGroup
 from contextlib import asynccontextmanager
 from itertools import groupby
 from typing import AsyncGenerator, List, Tuple
@@ -7,20 +10,29 @@ from aiomqtt import Client as MqttClient
 from pyModbusTCP.client import ModbusClient
 from tenacity import retry, stop_after_attempt, wait_fixed
 
-from zero_termodinamica.addresses import ADDRESSES, Address
+from zero_termodinamica.addresses import Address
 from zero_termodinamica.settings import ModbusSettings, MqttSettings
 
 
 class ModbusToMQTTBridge:
-    def __init__(self, modbus: ModbusClient, mqtt: MqttClient):
+    def __init__(
+        self,
+        modbus: ModbusClient,
+        mqtt: MqttClient,
+        addresses: List[Address],
+        probe_interval: float = 10.0,
+    ):
         self._mqtt = mqtt
         self._modbus = modbus
+        self.addresses = addresses
+        self.probe_interval = probe_interval
 
     @asynccontextmanager
     @staticmethod
     async def from_settings(
         modbus_settings: ModbusSettings,
         mqtt_settings: MqttSettings,
+        addresses: List[Address],
     ) -> "AsyncGenerator[ModbusToMQTTBridge, None]":
         """
         Create a ModbusReader instance from Modbus settings.
@@ -29,9 +41,17 @@ class ModbusToMQTTBridge:
             host=modbus_settings.modbus_host, port=modbus_settings.modbus_port
         )
         async with mqtt_settings.mqtt_client() as mqtt:
-            yield ModbusToMQTTBridge(modbus, mqtt)
+            yield ModbusToMQTTBridge(
+                modbus, mqtt, addresses, modbus_settings.modbus_probe_interval
+            )
 
     async def run(self) -> None:
+        while True:
+            async with TaskGroup() as tg:
+                tg.create_task(asyncio.sleep(self.probe_interval))
+                tg.create_task(self.run_once())
+
+    async def run_once(self) -> None:
         # Read modbus
         modbus_values = self.read_modbus()
         # Scale values
@@ -47,10 +67,14 @@ class ModbusToMQTTBridge:
         try:
             self._modbus.open()
             result = []
-            for address in ADDRESSES:
-                value = self._modbus.read_holding_registers(address.register, 1)[0]
-                if value:
-                    result.append((address, value))
+            for address in self.addresses:
+                value = self._modbus.read_holding_registers(address.register, 1)
+                if value and len(value) == 1:
+                    result.append((address, value[0]))
+                else:
+                    logging.warning(
+                        f"Received invalid value {value} from register {address.register}"
+                    )
             return result
         finally:
             self._modbus.close()

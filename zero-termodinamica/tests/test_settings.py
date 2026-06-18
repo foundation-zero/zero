@@ -11,7 +11,7 @@ def test_run_cmd_settings_from_env():
     os.environ["MQTT_PORT"] = "1883"
 
     try:
-        settings = RunCmd()
+        settings = RunCmd()  # pyright: ignore
         assert settings.modbus_host == "127.0.0.1"
         assert settings.modbus_port == 502
         assert settings.mqtt_host == "localhost"
