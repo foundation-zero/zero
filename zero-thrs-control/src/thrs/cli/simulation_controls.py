@@ -628,13 +628,15 @@ class SimulationControls:
         controls_client: MqttClient,
         control_client: MqttClient,
         sensor_client: MqttClient,
-        topic_prefix: str,
+        devices_topic_prefix: str,
+        controller_topic_prefix: str,
         control_topic_suffix: str,
     ):
         self._sensor_client = sensor_client
         self._control_client = control_client
         self._controls_client = controls_client
-        self._topic_prefix = topic_prefix
+        self._devices_topic_prefix = devices_topic_prefix
+        self._controller_topic_prefix = controller_topic_prefix
         self._control_topic_suffix = control_topic_suffix
 
     @staticmethod
@@ -649,7 +651,8 @@ class SimulationControls:
                 controls_client=controls_client,
                 control_client=control_client,
                 sensor_client=sensor_client,
-                topic_prefix=settings.mqtt_topic_prefix,
+                devices_topic_prefix=settings.mqtt_devices_topic_prefix,
+                controller_topic_prefix=settings.mqtt_controller_topic_prefix,
                 control_topic_suffix=settings.mqtt_control_topic_suffix,
             )
 
@@ -662,14 +665,14 @@ class SimulationControls:
         async for message in self._controls_client.messages:
             for handler in handlers:
                 if message.topic.matches(
-                    f"{self._topic_prefix}/{handler.subscribe_topic()}"
+                    f"{self._devices_topic_prefix}/{handler.subscribe_topic()}"
                 ) and isinstance(message.payload, str | bytes):
                     logger.debug(
                         f"Received message on topic {message.topic}, handling {handler}"
                     )
                     mqtt_context = MqttContext(
                         topic=message.topic.value.removeprefix(
-                            f"{self._topic_prefix}/"
+                            f"{self._devices_topic_prefix}/"
                         ),
                     )
                     resolved_handler = (
@@ -692,7 +695,7 @@ class SimulationControls:
                         message.payload,
                         context=MqttContext(
                             topic=message.topic.value.removeprefix(
-                                f"{self._topic_prefix}/"
+                                f"{self._devices_topic_prefix}/"
                             ),
                         ),
                     ).handle(context)
@@ -710,7 +713,10 @@ class SimulationControls:
             if msg_cls.retained():
                 for topic in msg_cls.clear_topics(all_modules):
                     await self._controls_client.publish(
-                        f"{self._topic_prefix}/{topic}", None, qos=1, retain=True
+                        f"{self._devices_topic_prefix}/{topic}",
+                        None,
+                        qos=1,
+                        retain=True,
                     )
 
     @contextmanager
@@ -730,7 +736,7 @@ class SimulationControls:
     async def run(self, mode: Modes):
         for handler in HANDLERS:
             await self._controls_client.subscribe(
-                f"{self._topic_prefix}/{handler.subscribe_topic()}", qos=1
+                f"{self._devices_topic_prefix}/{handler.subscribe_topic()}", qos=1
             )
 
         fmu_path, modules = MODES[mode]
@@ -745,7 +751,11 @@ class SimulationControls:
 
             cmds: Queue[SimulationCtrlMessage] = Queue()
             context = MessageContext(
-                cmds, control, self._controls_client, simulation, self._topic_prefix
+                cmds,
+                control,
+                self._controls_client,
+                simulation,
+                self._devices_topic_prefix,
             )
             for module in modules.modules:
                 await context.send(
@@ -756,7 +766,8 @@ class SimulationControls:
                 simulation,
                 self._control_client,
                 self._sensor_client,
-                self._topic_prefix,
+                self._devices_topic_prefix,
+                self._controller_topic_prefix,
                 modules.sensor_values_clss,
                 modules.control_values_clss,
                 modules.simulation_outputs_cls,

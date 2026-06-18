@@ -50,6 +50,7 @@ async def test_simulation_run_start_stop(
         control_client,
         sensors_client,
         "test_topic",
+        "zero/controller",
         "Command",
     )
 
@@ -111,6 +112,7 @@ async def test_simulation_run_playback_rate(
         control_client,
         sensors_client,
         "test_topic",
+        "zero/controller",
         "Command",
     )
 
@@ -162,6 +164,7 @@ async def test_simulation_run_step(
         control_client,
         sensors_client,
         "test_topic",
+        "zero/controller",
         "Command",
     )
 
@@ -259,6 +262,7 @@ async def test_simulation_controls_automated_control(
         control_client,
         sensors_client,
         "test_topic",
+        "zero/controller",
         "Command",
     )
 
@@ -320,6 +324,7 @@ async def test_simulation_controls_set_parameters(
         control_client,
         sensors_client,
         "test_topic",
+        "zero/controller",
         "Command",
     )
 
@@ -381,6 +386,7 @@ async def test_simulation_controls_set_simulation_inputs(
         control_client,
         sensors_client,
         "test_topic",
+        "zero/controller",
         "Command",
     )
 
@@ -438,6 +444,7 @@ async def test_simulation_controls_simulation_output(
         control_client,
         sensors_client,
         "test_topic",
+        "zero/controller",
         "Command",
     )
 
