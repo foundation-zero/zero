@@ -2,7 +2,7 @@
 import { tScoped } from "@/modules/common/lib/utils.ts";
 import { MimicComponentType } from "@/modules/thrapp/types";
 import HeatPumpInstance from "../../../mimics/instances/HeatPumpInstance.vue";
-import { BOILERS_MIMIC_DATA } from "../../../mimics/modules/boilers/data";
+import { DHW_MIMIC_DATA } from "../../../mimics/modules/dhw/data/index.ts";
 import {
   LegendItem,
   LegendItemDescription,
@@ -12,7 +12,7 @@ import {
 } from "../../legend";
 
 const t = tScoped("thrapp.legends.heatPump");
-const assets = BOILERS_MIMIC_DATA[MimicComponentType.HeatPump];
+const assets = DHW_MIMIC_DATA[MimicComponentType.HeatPump];
 </script>
 
 <template>

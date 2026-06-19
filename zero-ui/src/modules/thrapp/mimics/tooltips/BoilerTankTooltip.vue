@@ -13,7 +13,7 @@ import {
 } from "../../components/tooltip-list";
 
 import { MimicComponentType } from "../../types";
-import { BOILER_TANK_CAPACITY } from "../../utils/consts.ts";
+import { DHW_TANK_CAPACITY } from "../../utils/consts.ts";
 import { YardTag } from "../components/yard-tag";
 import BoilerTankInstance from "../instances/BoilerTankInstance.vue";
 import { ControlValue, getMimicDataProvider, ParameterValue } from "../providers";
@@ -32,7 +32,7 @@ const { getSensorValue } = getMimicDataProvider();
 
 const currentLevel = getSensorValue(sensors.level);
 const currentLevelPercentage = computed(
-  () => (currentLevel.value?.level.value ?? 0) / BOILER_TANK_CAPACITY,
+  () => (currentLevel.value?.level.value ?? 0) / DHW_TANK_CAPACITY,
 );
 </script>
 
@@ -161,7 +161,7 @@ const currentLevelPercentage = computed(
           <FieldRenderer.Source>{{ sources("capacity") }}</FieldRenderer.Source>
         </TooltipListItemTitle>
         <TooltipListItemValue>
-          <FieldRenderer.Level :value="BOILER_TANK_CAPACITY" />
+          <FieldRenderer.Level :value="DHW_TANK_CAPACITY" />
         </TooltipListItemValue>
       </TooltipListItem>
 

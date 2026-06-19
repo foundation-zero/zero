@@ -1,0 +1,102 @@
+<script setup lang="ts">
+import { MimicComponentType } from "@/modules/thrapp/types";
+import { ComponentOrientation } from "../../../components";
+import { ManualValveType } from "../../../components/manual-valve";
+import { ManualValveInstance } from "../../../instances";
+import { DHW_MIMIC_DATA } from "../data";
+
+const manualValves = DHW_MIMIC_DATA[MimicComponentType.ManualValve];
+</script>
+
+<template>
+  <g>
+    <ManualValveInstance
+      x="178.550048828125"
+      y="279.2099609375"
+      tag-id="1174-02"
+      v-bind="manualValves['1174-02']"
+      :type="ManualValveType.Switch"
+      :orientation="ComponentOrientation.Right"
+    />
+    <ManualValveInstance
+      x="58"
+      y="495"
+      tag-id="1069-17"
+      v-bind="manualValves['1069-17']"
+      :type="ManualValveType.Switch"
+      :orientation="ComponentOrientation.Left"
+    />
+    <ManualValveInstance
+      x="360.5"
+      y="358.2099609375"
+      tag-id="1169-01"
+      v-bind="manualValves['1169-01']"
+      :type="ManualValveType.Switch"
+      :orientation="ComponentOrientation.Right"
+    />
+    <ManualValveInstance
+      x="805"
+      y="636.5"
+      tag-id="1169-02"
+      v-bind="manualValves['1169-02']"
+      :type="ManualValveType.Switch"
+      :orientation="ComponentOrientation.Up"
+    />
+    <ManualValveInstance
+      x="323"
+      y="358.2099609375"
+      tag-id="1169-03"
+      v-bind="manualValves['1169-03']"
+      :type="ManualValveType.Switch"
+      :orientation="ComponentOrientation.Right"
+    />
+    <ManualValveInstance
+      x="180"
+      y="378.2099609375"
+      tag-id="1174-01"
+      v-bind="manualValves['1174-01']"
+      :type="ManualValveType.Switch"
+      :orientation="ComponentOrientation.Right"
+    />
+    <ManualValveInstance
+      x="27.5"
+      y="537.2099609375"
+      tag-id="1069-18"
+      v-bind="manualValves['1069-18']"
+      :type="ManualValveType.Switch"
+      :orientation="ComponentOrientation.Right"
+    />
+    <ManualValveInstance
+      x="117.5"
+      y="588"
+      tag-id="1069-10"
+      v-bind="manualValves['1069-10']"
+      :type="ManualValveType.Switch"
+      :orientation="ComponentOrientation.Right"
+    />
+    <ManualValveInstance
+      x="734"
+      y="350.7099609375"
+      tag-id="1168-06"
+      v-bind="manualValves['1168-06']"
+      :type="ManualValveType.Switch"
+      :orientation="ComponentOrientation.Up"
+    />
+    <ManualValveInstance
+      x="844"
+      y="474.7099609375"
+      tag-id="1168-05"
+      v-bind="manualValves['1168-05']"
+      :type="ManualValveType.Switch"
+      :orientation="ComponentOrientation.Up"
+    />
+    <ManualValveInstance
+      x="614"
+      y="473.2099609375"
+      tag-id="1168-04"
+      v-bind="manualValves['1168-04']"
+      :type="ManualValveType.Switch"
+      :orientation="ComponentOrientation.Up"
+    />
+  </g>
+</template>

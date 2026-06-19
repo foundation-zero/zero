@@ -94,7 +94,7 @@ export type SensorFieldDefinitions = SensorFields<{
 
 export type ControlFieldDefinitions = ControlFields<{
   [MimicComponentType.BoilerTank]: {
-    controller: ControlComponentType.BoilersTanksController;
+    controller: ControlComponentType.DhwTanksController;
   };
   [MimicComponentType.Pump]: {
     flowController: ControlComponentType.PIDController;
@@ -204,7 +204,7 @@ export type CustomFieldDefinitions = CustomFields<{
     tank?: {
       operator?: ExtractSensorFields<MimicComponentType.BoilerTank>["sensors"];
       operatorName?: string;
-      controller?: ModuleField<ControlComponentType.BoilersTanksController>;
+      controller?: ModuleField<ControlComponentType.DhwTanksController>;
     };
   };
   [MimicComponentType.FlowControlValve]: EmptyObject;

@@ -27,14 +27,14 @@ export type PvtAutomaticMode = {
   fwd: { mode: string };
   owners: { mode: string };
 };
-export type BoilersAutomaticMode = { boostingMode: string; fillingMode: string };
+export type DhwAutomaticMode = { boostingMode: string; fillingMode: string };
 export type ConsumersAutomaticMode = Record<string, never>;
 
 export type AutomaticMode =
   | ThrustersAutomaticMode
   | PcmAutomaticMode
   | PvtAutomaticMode
-  | BoilersAutomaticMode
+  | DhwAutomaticMode
   | ConsumersAutomaticMode;
 
 export type ControlMode<T extends AutomaticMode = AutomaticMode> = {
@@ -46,7 +46,7 @@ export type ControlModes = {
   thrusters: ThrustersAutomaticMode;
   pcm: PcmAutomaticMode;
   pvt: PvtAutomaticMode;
-  boilers: BoilersAutomaticMode;
+  dhw: DhwAutomaticMode;
   consumers: ConsumersAutomaticMode;
 };
 
@@ -107,7 +107,7 @@ export const CONTROL_QUERY = gql`
           automatic
         }
       }
-      boilers {
+      dhw {
         controlMode {
           automatic
           automaticMode {

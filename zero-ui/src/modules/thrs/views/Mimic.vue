@@ -4,8 +4,8 @@ import { Switch } from "@/components/ui/switch";
 import { BoilerLegend, LegendTrigger } from "@/modules/thrapp/components/legends";
 import { MimicTooltipProvider } from "@/modules/thrapp/components/tooltip";
 import NoopTooltipProvider from "@/modules/thrapp/components/tooltip/NoopTooltipProvider.vue";
-import BoilersModule from "@/modules/thrapp/mimics/modules/boilers/BoilersModule.vue";
-import { BOILERS_MIMIC_DATA } from "@/modules/thrapp/mimics/modules/boilers/data";
+import DhwModule from "@/modules/thrapp/mimics/modules/dhw/DhwModule.vue";
+import { DHW_MIMIC_DATA } from "@/modules/thrapp/mimics/modules/dhw/data";
 import { GraphQLProvider, MockProvider } from "@/modules/thrapp/mimics/providers";
 import { DEFINITIONS } from "@/modules/thrs/lib/consts";
 import { computed, inject, Ref, ref } from "vue";
@@ -33,14 +33,14 @@ const { t } = useI18n();
 
         <LegendTrigger>
           <NoopTooltipProvider>
-            <BoilerLegend v-if="currentDefinition === 'boilers'" />
+            <BoilerLegend v-if="currentDefinition === 'dhw'" />
           </NoopTooltipProvider>
         </LegendTrigger>
       </aside>
 
-      <MimicTooltipProvider :source="BOILERS_MIMIC_DATA">
-        <BoilersModule
-          v-if="currentDefinition === 'boilers'"
+      <MimicTooltipProvider :source="DHW_MIMIC_DATA">
+        <DhwModule
+          v-if="currentDefinition === 'dhw'"
           class="mx-auto my-auto max-h-[calc(100svh-14em)]"
         />
       </MimicTooltipProvider>

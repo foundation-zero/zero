@@ -2,7 +2,7 @@
 import { tScoped } from "@/modules/common/lib/utils";
 import { BoilerTankState } from "@/modules/thrs/types";
 import { computed } from "vue";
-import { BOILER_TANK_MODE_COLORS } from ".";
+import { DHW_TANK_MODE_COLORS } from ".";
 import { MimicComponentState } from "..";
 
 const props = withDefaults(defineProps<{ mode?: BoilerTankState; state?: MimicComponentState }>(), {
@@ -12,9 +12,9 @@ const props = withDefaults(defineProps<{ mode?: BoilerTankState; state?: MimicCo
 
 const color = computed(() => {
   if (props.state === MimicComponentState.Normal) {
-    return BOILER_TANK_MODE_COLORS[props.mode];
+    return DHW_TANK_MODE_COLORS[props.mode];
   } else {
-    return BOILER_TANK_MODE_COLORS[props.state];
+    return DHW_TANK_MODE_COLORS[props.state];
   }
 });
 

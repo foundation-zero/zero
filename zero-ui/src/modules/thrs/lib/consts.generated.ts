@@ -15,123 +15,123 @@ export const toSensorDefinition = <T extends SensorDefinitions>(input: T): T => 
 export const toParameterDefinition = <T extends ParameterDefinitions>(input: T): T => input;
 export const toSimulationDefinition = <T extends SimulationDefinitions>(input: T): T => input;
 
-export const BOILERS_CONTROL_DEFINITION = toControlDefinition({
-  boilersPump: {
+export const DHW_CONTROL_DEFINITION = toControlDefinition({
+  dhwPump: {
     yardTag: "50001022",
     componentType: ControlComponentType.Pump,
   },
-  boilersHeatpump: {
+  dhwHeatpump: {
     yardTag: "50001035",
     componentType: ControlComponentType.Heatpump,
   },
-  boilersFlowcontrolLt2: {
+  dhwFlowcontrolDc: {
     yardTag: "50001064-03",
     componentType: ControlComponentType.Valve,
     valveType: ValveType.FlowControl,
   },
-  boilersFlowcontrolLt1: {
+  dhwFlowcontrolDrives: {
     yardTag: "50001064-08",
     componentType: ControlComponentType.Valve,
     valveType: ValveType.FlowControl,
   },
-  boilersSwitchTank3Fill: {
+  dhwSwitchTank3Inlet: {
     yardTag: "50001067-03",
     componentType: ControlComponentType.Valve,
     valveType: ValveType.Switch,
   },
-  boilersSwitchTank3BoostingReturn: {
+  dhwSwitchTank3BoostingReturn: {
     yardTag: "50001067-04",
     componentType: ControlComponentType.Valve,
     valveType: ValveType.Switch,
   },
-  boilersSwitchTank3Empty: {
+  dhwSwitchTank3Outlet: {
     yardTag: "50001067-05",
     componentType: ControlComponentType.Valve,
     valveType: ValveType.Switch,
   },
-  boilersSwitchTank3BoostingSupply: {
+  dhwSwitchTank3BoostingSupply: {
     yardTag: "50001067-06",
     componentType: ControlComponentType.Valve,
     valveType: ValveType.Switch,
   },
-  boilersSwitchTank2Fill: {
+  dhwSwitchTank2Inlet: {
     yardTag: "50001067-07",
     componentType: ControlComponentType.Valve,
     valveType: ValveType.Switch,
   },
-  boilersSwitchTank2BoostingReturn: {
+  dhwSwitchTank2BoostingReturn: {
     yardTag: "50001067-08",
     componentType: ControlComponentType.Valve,
     valveType: ValveType.Switch,
   },
-  boilersSwitchTank2Empty: {
+  dhwSwitchTank2Outlet: {
     yardTag: "50001067-09",
     componentType: ControlComponentType.Valve,
     valveType: ValveType.Switch,
   },
-  boilersSwitchTank2BoostingSupply: {
+  dhwSwitchTank2BoostingSupply: {
     yardTag: "50001067-10",
     componentType: ControlComponentType.Valve,
     valveType: ValveType.Switch,
   },
-  boilersSwitchTank1Fill: {
+  dhwSwitchTank1Inlet: {
     yardTag: "50001067-11",
     componentType: ControlComponentType.Valve,
     valveType: ValveType.Switch,
   },
-  boilersSwitchTank1BoostingReturn: {
+  dhwSwitchTank1BoostingReturn: {
     yardTag: "50001067-12",
     componentType: ControlComponentType.Valve,
     valveType: ValveType.Switch,
   },
-  boilersSwitchTank1Empty: {
+  dhwSwitchTank1Outlet: {
     yardTag: "50001067-13",
     componentType: ControlComponentType.Valve,
     valveType: ValveType.Switch,
   },
-  boilersSwitchTank1BoostingSupply: {
+  dhwSwitchTank1BoostingSupply: {
     yardTag: "50001067-14",
     componentType: ControlComponentType.Valve,
     valveType: ValveType.Switch,
   },
-  boilersSwitchLowTemperature: {
+  dhwSwitchLowTemperature: {
     yardTag: "50001067-16",
     componentType: ControlComponentType.Valve,
     valveType: ValveType.Switch,
   },
-  boilersSwitchHeatpump: {
+  dhwSwitchHeatpump: {
     yardTag: "50001067-17",
     componentType: ControlComponentType.Valve,
     valveType: ValveType.Switch,
   },
-  boilersSwitchHighTemperature: {
+  dhwSwitchHighTemperature: {
     yardTag: "50001067-18",
     componentType: ControlComponentType.Valve,
     valveType: ValveType.Switch,
   },
-  boilersTanksController: {
+  dhwTanksController: {
     yardTag: "",
-    componentType: ControlComponentType.BoilersTanksController,
+    componentType: ControlComponentType.DhwTanksController,
   },
-  boilersPumpFlowController: {
-    yardTag: "",
-    componentType: ControlComponentType.PIDController,
-  },
-  boilersPumpTemperatureController: {
+  dhwPumpFlowController: {
     yardTag: "",
     componentType: ControlComponentType.PIDController,
   },
-  boilersLt1FlowController: {
+  dhwPumpTemperatureController: {
     yardTag: "",
     componentType: ControlComponentType.PIDController,
   },
-  boilersLt2FlowController: {
+  dhwDrivesFlowController: {
+    yardTag: "",
+    componentType: ControlComponentType.PIDController,
+  },
+  dhwDcFlowController: {
     yardTag: "",
     componentType: ControlComponentType.PIDController,
   },
 });
 
-export const BOILERS_PARAMETER_DEFINITION = toParameterDefinition({
+export const DHW_PARAMETER_DEFINITION = toParameterDefinition({
   heatpumpFlowSetpoint: {
     componentType: ParametersType.Flow,
   },
@@ -150,10 +150,10 @@ export const BOILERS_PARAMETER_DEFINITION = toParameterDefinition({
   boostingDelta: {
     componentType: ParametersType.dT,
   },
-  lt1FlowcontrolMinimumSetpoint: {
+  drivesFlowcontrolMinimumSetpoint: {
     componentType: ParametersType.Flow,
   },
-  lt2FlowcontrolMinimumSetpoint: {
+  dcFlowcontrolMinimumSetpoint: {
     componentType: ParametersType.Flow,
   },
   fillingTemperatureSetpoint: {
@@ -180,217 +180,217 @@ export const BOILERS_PARAMETER_DEFINITION = toParameterDefinition({
   pumpFlowTuning: {
     componentType: ParametersType.Tuning,
   },
-  lt2FlowTuning: {
+  dcFlowTuning: {
     componentType: ParametersType.Tuning,
   },
-  lt1FlowTuning: {
+  drivesFlowTuning: {
     componentType: ParametersType.Tuning,
   },
 });
 
-export const BOILERS_SENSOR_DEFINITION = toSensorDefinition({
-  boilersPump: {
+export const DHW_SENSOR_DEFINITION = toSensorDefinition({
+  dhwPump: {
     yardTag: "50001022",
     componentType: SensorComponentType.Pump,
   },
-  boilersTemperatureHvacExchangerReturn: {
+  dhwTemperatureHvacExchangerReturn: {
     yardTag: "50001038-25",
     componentType: SensorComponentType.Temperature,
   },
-  boilersTemperatureLt2Return: {
+  dhwTemperatureDcReturn: {
     yardTag: "50001038-26",
     componentType: SensorComponentType.Temperature,
   },
-  boilersTemperatureTank3: {
+  dhwTemperatureTank3: {
     yardTag: "50001038-27",
     componentType: SensorComponentType.Temperature,
   },
-  boilersTemperatureTank2: {
+  dhwTemperatureTank2: {
     yardTag: "50001038-44",
     componentType: SensorComponentType.Temperature,
   },
-  boilersTemperatureTank1: {
+  dhwTemperatureTank1: {
     yardTag: "50001038-45",
     componentType: SensorComponentType.Temperature,
   },
-  boilersTemperatureLt1Return: {
+  dhwTemperatureDrivesReturn: {
     yardTag: "50001038-46",
     componentType: SensorComponentType.Temperature,
   },
-  boilersTemperatureFreshwaterSupply: {
+  dhwTemperatureFreshwaterSupply: {
     yardTag: "50001038-47",
     componentType: SensorComponentType.Temperature,
   },
-  boilersTemperatureFahrenheitReturn: {
+  dhwTemperatureAdsorptionReturn: {
     yardTag: "50001038-51",
     componentType: SensorComponentType.Temperature,
   },
-  boilersTemperatureBoostingSupply: {
+  dhwTemperatureBoostingReturn: {
     yardTag: "50001038-65",
     componentType: SensorComponentType.Temperature,
   },
-  boilersTemperatureBoostingReturn: {
+  dhwTemperatureBoostingSupply: {
     yardTag: "50001038-66",
     componentType: SensorComponentType.Temperature,
   },
-  boilersLevelTank1: {
+  dhwLevelTank1: {
     yardTag: "50001056-01",
     componentType: SensorComponentType.Level,
   },
-  boilersLevelTank2: {
+  dhwLevelTank2: {
     yardTag: "50001056-02",
     componentType: SensorComponentType.Level,
   },
-  boilersLevelTank3: {
+  dhwLevelTank3: {
     yardTag: "50001056-03",
     componentType: SensorComponentType.Level,
   },
-  boilersFlowLt2: {
+  dhwFlowDc: {
     yardTag: "50001057-17",
     componentType: SensorComponentType.Flow,
   },
-  boilersFlowLt1: {
+  dhwFlowDrives: {
     yardTag: "50001057-24",
     componentType: SensorComponentType.Flow,
   },
-  boilersFlowBoosting: {
+  dhwFlowBoosting: {
     yardTag: "50001058-11",
     componentType: SensorComponentType.Flow,
   },
-  boilersFlowcontrolLt2: {
+  dhwFlowcontrolDc: {
     yardTag: "50001064-03",
     componentType: SensorComponentType.Valve,
     valveType: ValveType.FlowControl,
   },
-  boilersFlowcontrolLt1: {
+  dhwFlowcontrolDrives: {
     yardTag: "50001064-08",
     componentType: SensorComponentType.Valve,
     valveType: ValveType.FlowControl,
   },
-  boilersSwitchTank3Fill: {
+  dhwSwitchTank3Inlet: {
     yardTag: "50001067-03",
     componentType: SensorComponentType.Valve,
     valveType: ValveType.Switch,
   },
-  boilersSwitchTank3BoostingReturn: {
+  dhwSwitchTank3BoostingReturn: {
     yardTag: "50001067-04",
     componentType: SensorComponentType.Valve,
     valveType: ValveType.Switch,
   },
-  boilersSwitchTank3Empty: {
+  dhwSwitchTank3Outlet: {
     yardTag: "50001067-05",
     componentType: SensorComponentType.Valve,
     valveType: ValveType.Switch,
   },
-  boilersSwitchTank3BoostingSupply: {
+  dhwSwitchTank3BoostingSupply: {
     yardTag: "50001067-06",
     componentType: SensorComponentType.Valve,
     valveType: ValveType.Switch,
   },
-  boilersSwitchTank2Fill: {
+  dhwSwitchTank2Inlet: {
     yardTag: "50001067-07",
     componentType: SensorComponentType.Valve,
     valveType: ValveType.Switch,
   },
-  boilersSwitchTank2BoostingReturn: {
+  dhwSwitchTank2BoostingReturn: {
     yardTag: "50001067-08",
     componentType: SensorComponentType.Valve,
     valveType: ValveType.Switch,
   },
-  boilersSwitchTank2Empty: {
+  dhwSwitchTank2Outlet: {
     yardTag: "50001067-09",
     componentType: SensorComponentType.Valve,
     valveType: ValveType.Switch,
   },
-  boilersSwitchTank2BoostingSupply: {
+  dhwSwitchTank2BoostingSupply: {
     yardTag: "50001067-10",
     componentType: SensorComponentType.Valve,
     valveType: ValveType.Switch,
   },
-  boilersSwitchTank1Fill: {
+  dhwSwitchTank1Inlet: {
     yardTag: "50001067-11",
     componentType: SensorComponentType.Valve,
     valveType: ValveType.Switch,
   },
-  boilersSwitchTank1BoostingReturn: {
+  dhwSwitchTank1BoostingReturn: {
     yardTag: "50001067-12",
     componentType: SensorComponentType.Valve,
     valveType: ValveType.Switch,
   },
-  boilersSwitchTank1Empty: {
+  dhwSwitchTank1Outlet: {
     yardTag: "50001067-13",
     componentType: SensorComponentType.Valve,
     valveType: ValveType.Switch,
   },
-  boilersSwitchTank1BoostingSupply: {
+  dhwSwitchTank1BoostingSupply: {
     yardTag: "50001067-14",
     componentType: SensorComponentType.Valve,
     valveType: ValveType.Switch,
   },
-  boilersSwitchLowTemperature: {
+  dhwSwitchLowTemperature: {
     yardTag: "50001067-16",
     componentType: SensorComponentType.Valve,
     valveType: ValveType.Switch,
   },
-  boilersSwitchHeatpump: {
+  dhwSwitchHeatpump: {
     yardTag: "50001067-17",
     componentType: SensorComponentType.Valve,
     valveType: ValveType.Switch,
   },
-  boilersSwitchHighTemperature: {
+  dhwSwitchHighTemperature: {
     yardTag: "50001067-18",
     componentType: SensorComponentType.Valve,
     valveType: ValveType.Switch,
   },
-  boilersPressureBoosting: {
+  dhwPressure: {
     yardTag: "50001097-11",
     componentType: SensorComponentType.Pressure,
   },
-  lt1FlowRecovery: {
+  drivesFlowRecovery: {
     yardTag: "50001058-03",
     componentType: SensorComponentType.Flow,
   },
-  lt1TemperatureRecovery: {
+  drivesTemperatureRecovery: {
     yardTag: "50001038-16",
     componentType: SensorComponentType.Temperature,
   },
-  lt1TemperatureRecoveryReturn: {
+  drivesTemperatureRecoveryReturn: {
     yardTag: "50001038-59",
     componentType: SensorComponentType.Temperature,
   },
-  lt2FlowRecovery: {
+  dcFlowRecovery: {
     yardTag: "50001058-04",
     componentType: SensorComponentType.Flow,
   },
-  lt2TemperatureRecovery: {
+  dcTemperatureRecovery: {
     yardTag: "50001038-52",
     componentType: SensorComponentType.Temperature,
   },
-  lt2TemperatureRecoveryReturn: {
+  dcTemperatureRecoveryReturn: {
     yardTag: "50001038-58",
     componentType: SensorComponentType.Temperature,
   },
-  consumersFlowBoosting: {
+  consumersFlowDhw: {
     yardTag: "50001058-07",
     componentType: SensorComponentType.Flow,
   },
-  consumersTemperatureBoostingSupply: {
+  consumersTemperatureDhwSupply: {
     yardTag: "50001038-53",
     componentType: SensorComponentType.Temperature,
   },
-  consumersTemperatureBoostingReturn: {
+  consumersTemperatureDhwReturn: {
     yardTag: "50001038-48",
     componentType: SensorComponentType.Temperature,
   },
-  fahrenheitFlowBoilers: {
+  adsorptionFlowDhw: {
     yardTag: "50001058-10",
     componentType: SensorComponentType.Flow,
   },
-  fahrenheitTemperatureWasteReturn: {
+  adsorptionTemperatureWasteReturn: {
     yardTag: "50001038-38",
     componentType: SensorComponentType.Temperature,
   },
-  fahrenheitTemperatureBoilersReturn: {
+  adsorptionTemperatureDhwReturn: {
     yardTag: "50001038-56",
     componentType: SensorComponentType.Temperature,
   },
@@ -402,102 +402,102 @@ export const BOILERS_SENSOR_DEFINITION = toSensorDefinition({
     yardTag: "25001038-1",
     componentType: SensorComponentType.Temperature,
   },
-  lt1Delta: {
-    yardTag: "",
+  drivesDelta: {
+    yardTag: "N/A",
     componentType: SensorComponentType.DeltaT,
   },
-  lt2Delta: {
-    yardTag: "",
+  dcDelta: {
+    yardTag: "N/A",
     componentType: SensorComponentType.DeltaT,
   },
   consumersDelta: {
-    yardTag: "",
+    yardTag: "N/A",
     componentType: SensorComponentType.DeltaT,
   },
-  fahrenheitDelta: {
-    yardTag: "",
+  adsorptionDelta: {
+    yardTag: "N/A",
     componentType: SensorComponentType.DeltaT,
   },
   freshwaterFlowSupply: {
-    yardTag: "",
+    yardTag: "N/A",
     componentType: SensorComponentType.CalculatedFlow,
   },
-  boilersHvacExchanger: {
-    yardTag: "",
+  dhwHvacExchanger: {
+    yardTag: "N/A",
     componentType: SensorComponentType.HeatExchanger,
   },
-  boilersHeatpump: {
-    yardTag: "",
+  dhwHeatpump: {
+    yardTag: "N/A",
     componentType: SensorComponentType.HeatExchanger,
   },
-  boilersFahrenheitExchanger: {
-    yardTag: "",
+  dhwFahrenheitExchanger: {
+    yardTag: "N/A",
     componentType: SensorComponentType.HeatExchanger,
   },
-  boilersConsumersExchanger: {
-    yardTag: "",
+  dhwConsumersExchanger: {
+    yardTag: "N/A",
     componentType: SensorComponentType.HeatExchanger,
   },
-  boilersLt2Exchanger: {
-    yardTag: "",
+  dhwDcExchanger: {
+    yardTag: "N/A",
     componentType: SensorComponentType.HeatExchanger,
   },
-  boilersLt1Exchanger: {
-    yardTag: "",
+  dhwDrivesExchanger: {
+    yardTag: "N/A",
     componentType: SensorComponentType.HeatExchanger,
   },
 });
 
-export const BOILERS_SIMULATION_INPUTS = toSimulationDefinition({
-  boilersLt1Supply: {
+export const DHW_SIMULATION_INPUTS = toSimulationDefinition({
+  dhwDrivesSupply: {
     componentType: SimulationComponentType.Boundary,
   },
-  boilersLt2Supply: {
+  dhwDcSupply: {
     componentType: SimulationComponentType.Boundary,
   },
-  boilersFahrenheitSupply: {
+  dhwAdsorptionSupply: {
     componentType: SimulationComponentType.Boundary,
   },
-  boilersHtSupply: {
+  dhwHtSupply: {
     componentType: SimulationComponentType.Boundary,
   },
-  boilersFreshwaterSupply: {
+  dhwFreshwaterSupply: {
     componentType: SimulationComponentType.OverpressureTemperature,
   },
-  boilersSeawaterSupply: {
+  dhwSeawaterSupply: {
     componentType: SimulationComponentType.Temperature,
   },
-  boilersHotwaterDemand: {
+  dhwHotwaterDemand: {
     componentType: SimulationComponentType.Flow,
   },
 });
 
-export const BOILERS_SIMULATION_OUTPUTS = toSimulationDefinition({
-  boilersLt1Return: {
+export const DHW_SIMULATION_OUTPUTS = toSimulationDefinition({
+  dhwDrivesReturn: {
     componentType: SimulationComponentType.Temperature,
   },
-  boilersLt2Return: {
+  dhwDcReturn: {
     componentType: SimulationComponentType.Temperature,
   },
-  boilersFahrenheitReturn: {
+  dhwAdsorptionReturn: {
     componentType: SimulationComponentType.Temperature,
   },
-  boilersHtReturn: {
+  dhwHtReturn: {
     componentType: SimulationComponentType.Temperature,
   },
-  boilersSeawaterReturn: {
+  dhwSeawaterReturn: {
     componentType: SimulationComponentType.Temperature,
   },
-  boilersSeawaterSupply: {
+  dhwSeawaterSupply: {
     componentType: SimulationComponentType.Flow,
   },
-  boilersFreshwaterReturn: {
-    componentType: SimulationComponentType.Flow,
+  dhwFreshwaterReturn: {
+    componentType: SimulationComponentType.Boundary,
   },
 });
 
 export const CONSUMERS_CONTROL_DEFINITION = toControlDefinition({
-  consumersFlowcontrolFahrenheit: {
+  consumersFlowcontrolAdsorption: {
     yardTag: "50001061",
     componentType: ControlComponentType.Valve,
     valveType: ValveType.FlowControl,
@@ -507,17 +507,17 @@ export const CONSUMERS_CONTROL_DEFINITION = toControlDefinition({
     componentType: ControlComponentType.Valve,
     valveType: ValveType.FlowControl,
   },
-  consumersFlowcontrolBoosting: {
+  consumersFlowcontrolDhw: {
     yardTag: "50001065-01",
     componentType: ControlComponentType.Valve,
     valveType: ValveType.FlowControl,
   },
-  consumersSwitchFahrenheitExchanger: {
+  consumersSwitchAdsorption: {
     yardTag: "50001066-02",
     componentType: ControlComponentType.Valve,
     valveType: ValveType.Switch,
   },
-  consumersSwitchBoosting: {
+  consumersSwitchDhw: {
     yardTag: "50001067-15",
     componentType: ControlComponentType.Valve,
     valveType: ValveType.Switch,
@@ -525,51 +525,51 @@ export const CONSUMERS_CONTROL_DEFINITION = toControlDefinition({
 });
 
 export const CONSUMERS_PARAMETER_DEFINITION = toParameterDefinition({
-  boostingEnabled: {
+  dhwEnabled: {
     componentType: ParametersType.Enabled,
   },
-  boostingFlowRatioSetpoint: {
+  dhwFlowRatioSetpoint: {
     componentType: ParametersType.Flow,
   },
-  fahrenheitEnabled: {
+  adsorptionEnabled: {
     componentType: ParametersType.Enabled,
   },
-  fahrenheitFlowRatioSetpoint: {
+  adsorptionFlowRatioSetpoint: {
     componentType: ParametersType.Flow,
   },
-  boostingFlowBalanceTuning: {
+  dhwFlowBalanceTuning: {
     componentType: ParametersType.Tuning,
   },
   bypassFlowBalanceTuning: {
     componentType: ParametersType.Tuning,
   },
-  fahrenheitFlowBalanceTuning: {
+  adsorptionFlowBalanceTuning: {
     componentType: ParametersType.Tuning,
   },
 });
 
 export const CONSUMERS_SENSOR_DEFINITION = toSensorDefinition({
-  consumersTemperatureBoostingReturn: {
+  consumersTemperatureDhwReturn: {
     yardTag: "50001038-48",
     componentType: SensorComponentType.Temperature,
   },
-  consumersTemperatureFahrenheitReturn: {
+  consumersTemperatureAdsorptionReturn: {
     yardTag: "50001038-49",
     componentType: SensorComponentType.Temperature,
   },
-  consumersTemperatureBoostingSupply: {
+  consumersTemperatureDhwSupply: {
     yardTag: "50001038-53",
     componentType: SensorComponentType.Temperature,
   },
-  consumersTemperatureFahrenheitSupply: {
+  consumersTemperatureAdsorptionSupply: {
     yardTag: "50001038-54",
     componentType: SensorComponentType.Temperature,
   },
-  consumersFlowBoosting: {
+  consumersFlowDhw: {
     yardTag: "50001058-07",
     componentType: SensorComponentType.Flow,
   },
-  consumersFlowFahrenheit: {
+  consumersFlowAdsorption: {
     yardTag: "50001058-08",
     componentType: SensorComponentType.Flow,
   },
@@ -577,7 +577,7 @@ export const CONSUMERS_SENSOR_DEFINITION = toSensorDefinition({
     yardTag: "50001192",
     componentType: SensorComponentType.Flow,
   },
-  consumersFlowcontrolFahrenheit: {
+  consumersFlowcontrolAdsorption: {
     yardTag: "50001061",
     componentType: SensorComponentType.Valve,
     valveType: ValveType.FlowControl,
@@ -587,17 +587,17 @@ export const CONSUMERS_SENSOR_DEFINITION = toSensorDefinition({
     componentType: SensorComponentType.Valve,
     valveType: ValveType.FlowControl,
   },
-  consumersFlowcontrolBoosting: {
+  consumersFlowcontrolDhw: {
     yardTag: "50001065-01",
     componentType: SensorComponentType.Valve,
     valveType: ValveType.FlowControl,
   },
-  consumersSwitchFahrenheitExchanger: {
+  consumersSwitchAdsorption: {
     yardTag: "50001066-02",
     componentType: SensorComponentType.Valve,
     valveType: ValveType.Switch,
   },
-  consumersSwitchBoosting: {
+  consumersSwitchDhw: {
     yardTag: "50001067-15",
     componentType: SensorComponentType.Valve,
     valveType: ValveType.Switch,
@@ -605,34 +605,34 @@ export const CONSUMERS_SENSOR_DEFINITION = toSensorDefinition({
 });
 
 export const CONSUMERS_SIMULATION_INPUTS = toSimulationDefinition({
-  consumersFahrenheitSupply: {
+  consumersAdsorptionSupply: {
     componentType: SimulationComponentType.Boundary,
   },
-  consumersBoostingSupply: {
+  consumersDhwSupply: {
     componentType: SimulationComponentType.Boundary,
   },
-  consumersModuleSupply: {
+  consumersPcmSupply: {
     componentType: SimulationComponentType.Boundary,
   },
 });
 
 export const CONSUMERS_SIMULATION_OUTPUTS = toSimulationDefinition({
-  consumersFahrenheitReturn: {
+  consumersAdsorptionReturn: {
     componentType: SimulationComponentType.Temperature,
   },
-  consumersBoostingReturn: {
+  consumersDhwReturn: {
     componentType: SimulationComponentType.Temperature,
   },
-  consumersModuleReturn: {
+  consumersPcmReturn: {
     componentType: SimulationComponentType.Boundary,
   },
 });
 
 export const HIGH_TEMPERATURE_SIMULATION_INPUTS = toSimulationDefinition({
-  thrustersAft: {
+  thrustersThrusterAft: {
     componentType: SimulationComponentType.Thruster,
   },
-  thrustersFwd: {
+  thrustersThrusterFwd: {
     componentType: SimulationComponentType.Thruster,
   },
   thrustersSeawaterSupply: {
@@ -656,10 +656,10 @@ export const HIGH_TEMPERATURE_SIMULATION_INPUTS = toSimulationDefinition({
   pcmFreshwaterSupply: {
     componentType: SimulationComponentType.Boundary,
   },
-  consumersFahrenheitSupply: {
+  consumersDhwSupply: {
     componentType: SimulationComponentType.Boundary,
   },
-  consumersBoostingSupply: {
+  consumersAdsorptionSupply: {
     componentType: SimulationComponentType.Boundary,
   },
 });
@@ -668,34 +668,34 @@ export const HIGH_TEMPERATURE_SIMULATION_OUTPUTS = toSimulationDefinition({
   thrustersSeawaterReturn: {
     componentType: SimulationComponentType.Temperature,
   },
-  thrustersModuleSupply: {
+  thrustersPcmSupply: {
     componentType: SimulationComponentType.Flow,
   },
-  thrustersModuleReturn: {
+  thrustersPcmReturn: {
     componentType: SimulationComponentType.Boundary,
   },
-  pvtModuleReturn: {
+  pvtPcmReturn: {
     componentType: SimulationComponentType.Boundary,
   },
-  pvtModuleSupply: {
+  pvtPcmSupply: {
     componentType: SimulationComponentType.Flow,
   },
   pvtSeawaterReturn: {
     componentType: SimulationComponentType.Temperature,
   },
-  consumersFahrenheitReturn: {
+  consumersAdsorptionReturn: {
     componentType: SimulationComponentType.Temperature,
   },
-  consumersBoostingReturn: {
+  consumersDhwReturn: {
     componentType: SimulationComponentType.Temperature,
   },
-  consumersModuleReturn: {
+  consumersPcmReturn: {
     componentType: SimulationComponentType.Boundary,
   },
   pcmConsumersReturn: {
     componentType: SimulationComponentType.Boundary,
   },
-  pcmProducersReturn: {
+  pcmPvtReturn: {
     componentType: SimulationComponentType.Boundary,
   },
   pcmFreshwaterReturn: {
@@ -739,7 +739,7 @@ export const PCM_CONTROL_DEFINITION = toControlDefinition({
     valveType: ValveType.Switch,
   },
   pcmSwitchChargingSupply: {
-    yardTag: "50001090-01",
+    yardTag: "50001190-01",
     componentType: ControlComponentType.Valve,
     valveType: ValveType.Switch,
   },
@@ -803,19 +803,19 @@ export const PCM_SENSOR_DEFINITION = toSensorDefinition({
     yardTag: "50001038-55",
     componentType: SensorComponentType.Temperature,
   },
-  pcmTemperatureModule1Out: {
+  pcmTemperatureModule1: {
     yardTag: "50001038-60",
     componentType: SensorComponentType.Temperature,
   },
-  pcmTemperatureModule2Out: {
+  pcmTemperatureModule2: {
     yardTag: "50001038-33",
     componentType: SensorComponentType.Temperature,
   },
-  pcmTemperatureModule3Out: {
+  pcmTemperatureModule3: {
     yardTag: "50001038-34",
     componentType: SensorComponentType.Temperature,
   },
-  pcmTemperatureModule4Out: {
+  pcmTemperatureModule4: {
     yardTag: "50001038-35",
     componentType: SensorComponentType.Temperature,
   },
@@ -882,7 +882,7 @@ export const PCM_SENSOR_DEFINITION = toSensorDefinition({
     valveType: ValveType.Switch,
   },
   pcmSwitchChargingSupply: {
-    yardTag: "50001090-01",
+    yardTag: "50001190-01",
     componentType: SensorComponentType.Valve,
     valveType: ValveType.Switch,
   },
@@ -894,7 +894,7 @@ export const PCM_SENSOR_DEFINITION = toSensorDefinition({
 });
 
 export const PCM_SIMULATION_INPUTS = toSimulationDefinition({
-  pcmProducersSupply: {
+  pcmThrustersSupply: {
     componentType: SimulationComponentType.Boundary,
   },
   pcmConsumersSupply: {
@@ -909,7 +909,7 @@ export const PCM_SIMULATION_OUTPUTS = toSimulationDefinition({
   pcmConsumersReturn: {
     componentType: SimulationComponentType.Boundary,
   },
-  pcmProducersReturn: {
+  pcmPvtReturn: {
     componentType: SimulationComponentType.Boundary,
   },
   pcmFreshwaterReturn: {
@@ -1091,7 +1091,7 @@ export const PVT_SENSOR_DEFINITION = toSensorDefinition({
     yardTag: "50001097-05",
     componentType: SensorComponentType.Pressure,
   },
-  pvtPressureSupply: {
+  pvtPressureSystem: {
     yardTag: "50001097-06",
     componentType: SensorComponentType.Pressure,
   },
@@ -1407,7 +1407,7 @@ export const PVT_SIMULATION_INPUTS = toSimulationDefinition({
   pvtOwners: {
     componentType: SimulationComponentType.HeatSource,
   },
-  pvtModuleSupply: {
+  pvtPcmSupply: {
     componentType: SimulationComponentType.Temperature,
   },
   pvtSeawaterSupply: {
@@ -1416,10 +1416,10 @@ export const PVT_SIMULATION_INPUTS = toSimulationDefinition({
 });
 
 export const PVT_SIMULATION_OUTPUTS = toSimulationDefinition({
-  pvtModuleReturn: {
+  pvtPcmReturn: {
     componentType: SimulationComponentType.Boundary,
   },
-  pvtModuleSupply: {
+  pvtPcmSupply: {
     componentType: SimulationComponentType.Flow,
   },
   pvtSeawaterReturn: {
@@ -1456,10 +1456,10 @@ export const THRUSTERS_CONTROL_DEFINITION = toControlDefinition({
     componentType: ControlComponentType.Valve,
     valveType: ValveType.FlowControl,
   },
-  thrustersShutoffRecovery: {
+  thrustersSwitchRecovery: {
     yardTag: "50001066-03",
     componentType: ControlComponentType.Valve,
-    valveType: ValveType.Shutoff,
+    valveType: ValveType.Switch,
   },
   thrustersSwitchAft: {
     yardTag: "50001091-01",
@@ -1527,11 +1527,11 @@ export const THRUSTERS_SENSOR_DEFINITION = toSensorDefinition({
     yardTag: "50001195",
     componentType: SensorComponentType.Pump,
   },
-  thrustersTemperatureAftReturn: {
+  thrustersTemperatureAft: {
     yardTag: "50001038-01",
     componentType: SensorComponentType.Temperature,
   },
-  thrustersTemperatureFwdReturn: {
+  thrustersTemperatureFwd: {
     yardTag: "50001038-02",
     componentType: SensorComponentType.Temperature,
   },
@@ -1571,10 +1571,10 @@ export const THRUSTERS_SENSOR_DEFINITION = toSensorDefinition({
     componentType: SensorComponentType.Valve,
     valveType: ValveType.FlowControl,
   },
-  thrustersShutoffRecovery: {
+  thrustersSwitchRecovery: {
     yardTag: "50001066-03",
     componentType: SensorComponentType.Valve,
-    valveType: ValveType.Shutoff,
+    valveType: ValveType.Switch,
   },
   thrustersSwitchAft: {
     yardTag: "50001091-01",
@@ -1590,19 +1590,19 @@ export const THRUSTERS_SENSOR_DEFINITION = toSensorDefinition({
     yardTag: "50001218-01",
     componentType: SensorComponentType.Flow,
   },
-  thrustersPressurePump: {
+  thrustersPressureDischarge: {
     yardTag: "50001097-01",
     componentType: SensorComponentType.Pressure,
   },
-  thrustersPressureRelief: {
+  thrustersPressureSystem: {
     yardTag: "50001097-02",
     componentType: SensorComponentType.Pressure,
   },
-  thrustersAft: {
+  thrustersThrusterAft: {
     yardTag: "15001001",
     componentType: SensorComponentType.Thruster,
   },
-  thrustersFwd: {
+  thrustersThrusterFwd: {
     yardTag: "15001002",
     componentType: SensorComponentType.Thruster,
   },
@@ -1613,16 +1613,16 @@ export const THRUSTERS_SENSOR_DEFINITION = toSensorDefinition({
 });
 
 export const THRUSTERS_SIMULATION_INPUTS = toSimulationDefinition({
-  thrustersAft: {
+  thrustersThrusterAft: {
     componentType: SimulationComponentType.Thruster,
   },
-  thrustersFwd: {
+  thrustersThrusterFwd: {
     componentType: SimulationComponentType.Thruster,
   },
   thrustersSeawaterSupply: {
     componentType: SimulationComponentType.Boundary,
   },
-  thrustersModuleSupply: {
+  thrustersPcmSupply: {
     componentType: SimulationComponentType.Temperature,
   },
   thrustersPcs: {
@@ -1634,10 +1634,10 @@ export const THRUSTERS_SIMULATION_OUTPUTS = toSimulationDefinition({
   thrustersSeawaterReturn: {
     componentType: SimulationComponentType.Temperature,
   },
-  thrustersModuleSupply: {
+  thrustersPcmSupply: {
     componentType: SimulationComponentType.Flow,
   },
-  thrustersModuleReturn: {
+  thrustersPcmReturn: {
     componentType: SimulationComponentType.Boundary,
   },
 });

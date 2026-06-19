@@ -1,4 +1,4 @@
-import { BoilerTankController } from "@/modules/thrs/types";
+import { DhwTankController } from "@/modules/thrs/types";
 
 export const enum MimicComponentType {
   ExchangeCircuit = "ExchangeCircuit",
@@ -16,4 +16,4 @@ export const enum MimicComponentType {
   ManualValve = "ManualValve",
 }
 
-export type BoilerTankStateField = keyof Omit<BoilerTankController, "timeToFill">;
+export type BoilerTankStateField = keyof Omit<DhwTankController, "timeToFill">;

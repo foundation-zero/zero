@@ -6,7 +6,7 @@
       "pcm": "PCM",
       "pvt": "PVT",
       "consumers": "Consumers",
-      "boilers": "Boilers"
+      "dhw": "Dhw"
     },
     "title": "HMI",
     "views": {
@@ -70,7 +70,7 @@
           "pcm": "{mode}",
           "consumers": "{mode}",
           "pvt": "aft: {aftMode} / fwd: {fwdMode} / owners: {ownersMode}",
-          "boilers": "boosting: {boostingMode} / filling: {fillingMode}"
+          "dhw": "boosting: {boostingMode} / filling: {fillingMode}"
         }
       },
       "clearChartHistory": {
