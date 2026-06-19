@@ -10,15 +10,20 @@
     "liters": "L",
     "lpm": "L/min",
     "watts": "W",
+    "joules": "J",
     "kilowatt": "kW",
     "deltaT": "ΔT",
     "Tin": "Tin",
     "Tout": "Tout",
-    "minutes": "min",
+    "hours": "h",
+    "minutes": "m",
+    "seconds": "s",
     "temperature": "Temp",
     "flow": "Flow",
     "level": "Level",
-    "estimatedTime": "Est. time"
+    "estimatedTime": "Est. time",
+    "degrees": "°",
+    "hertz": "Hz"
   },
   "apps": {
     "loads": "Loads",

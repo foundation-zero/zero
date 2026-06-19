@@ -161,6 +161,21 @@ export const CONTROL_FIELDS: ControlFields = {
   [ControlComponentType.Valve]: ["setpoint"],
   [ControlComponentType.Pcm]: ["on"],
   [ControlComponentType.Heatpump]: ["dutypoint", "on"],
+  [ControlComponentType.BoilersTanksController]: [
+    "tank1State",
+    "tank2State",
+    "tank3State",
+    "timeToFill",
+  ],
+  [ControlComponentType.PIDController]: [
+    "setpoint",
+    "measurement",
+    "output",
+    "error",
+    "enabled",
+    "tuning",
+    "components",
+  ],
 };
 
 export const SENSOR_FIELDS: SensorFields = {

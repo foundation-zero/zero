@@ -1,11 +1,11 @@
 <script setup lang="ts">
-import { tScoped } from "@/modules/common/lib/utils.ts";
-import { SensorComponentType } from "@/modules/thrs/types/index.ts";
-import { RiSnowflakeLine, RiTempHotLine } from "@remixicon/vue";
+import { MimicComponentType } from "@/modules/thrapp/types";
 import HeatPumpInstance from "../../../instances/HeatPumpInstance.vue";
-import { getField } from "../../../providers/index.ts";
+import HVACInstance from "../../../instances/HVACInstance.vue";
+import { BOILERS_MIMIC_DATA } from "../data";
 
-const t = tScoped("thrapp.mimics.boilers.assets");
+const heatpumps = BOILERS_MIMIC_DATA[MimicComponentType.HeatPump];
+const hvacs = BOILERS_MIMIC_DATA[MimicComponentType.HVAC];
 </script>
 
 <template>
@@ -16,25 +16,16 @@ const t = tScoped("thrapp.mimics.boilers.assets");
       :width="200"
       :height="164"
       force-height
-      tag-id="1035"
-      :title="t('heatPumpTitle')"
-      :icon="RiTempHotLine"
-      :heat-exchanger="getField(SensorComponentType.HeatExchanger, 'boilers', 'boilersHeatpump')"
+      v-bind="heatpumps['1035']"
     />
 
-    <HeatPumpInstance
+    <HVACInstance
       x="670"
       y="400"
       :width="150"
       :height="140"
       force-height
-      tag-id="41001001"
-      :title="t('hvacTitle')"
-      hide-mode
-      :icon="RiSnowflakeLine"
-      :heat-exchanger="
-        getField(SensorComponentType.HeatExchanger, 'boilers', 'boilersHvacExchanger')
-      "
+      v-bind="hvacs['41001001']"
     />
   </g>
 </template>

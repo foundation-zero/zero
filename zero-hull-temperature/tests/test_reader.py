@@ -81,6 +81,7 @@ async def test_mqtt_sending(mqtt_client, mqtt_client2, mqtt_client3, modbus_sett
     server_mqtt = mqtt_client2
     test_client = mqtt_client3
 
+    await test_client.subscribe("test/topic")
     await test_client.subscribe("hull-temperature/temperatures")
 
     stub = Stub(
@@ -99,6 +100,9 @@ async def test_mqtt_sending(mqtt_client, mqtt_client2, mqtt_client3, modbus_sett
 
     try:
         await reader.step()
+        switch_message = await anext(test_client.messages)
+        assert switch_message.topic.matches("test/topic")
+        assert switch_message.payload == b'{"path": {"Value": true}}'
 
         message = await anext(test_client.messages)
         assert message.topic.matches("hull-temperature/temperatures")

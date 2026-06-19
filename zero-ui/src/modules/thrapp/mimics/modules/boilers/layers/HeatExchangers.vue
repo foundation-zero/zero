@@ -1,57 +1,40 @@
 <script setup lang="ts">
-import { SensorComponentType } from "@/modules/thrs/types";
+import { MimicComponentType } from "@/modules/thrapp/types";
 import { ComponentOrientation } from "../../../components";
-import { HeatExchangerPortOrientation } from "../../../components/heat-exchanger";
 import { HeatExchangerInstance } from "../../../instances";
-import { getField } from "../../../providers";
+import { BOILERS_MIMIC_DATA } from "../data";
+
+const heatExchangers = BOILERS_MIMIC_DATA[MimicComponentType.HeatExchanger];
 </script>
 
 <template>
-  <g>
-    <HeatExchangerInstance
-      x="33"
-      y="435"
-      tag-id="1007"
-      :heat-exchanger="
-        getField(SensorComponentType.HeatExchanger, 'boilers', 'boilersConsumersExchanger')
-      "
-      :orientation="ComponentOrientation.Down"
-      :side-a="HeatExchangerPortOrientation.Side"
-      :side-b="HeatExchangerPortOrientation.Top"
-    />
-    <HeatExchangerInstance
-      x="718.5"
-      y="641"
-      tag-id="1009"
-      :heat-exchanger="
-        getField(SensorComponentType.HeatExchanger, 'boilers', 'boilersLt1Exchanger')
-      "
-      :orientation="ComponentOrientation.Down"
-      :side-a="HeatExchangerPortOrientation.Side"
-      :side-b="HeatExchangerPortOrientation.Top"
-    />
+  <HeatExchangerInstance
+    x="33"
+    y="435"
+    tag-id="1007"
+    v-bind="heatExchangers['1007']"
+    :orientation="ComponentOrientation.Down"
+  />
+  <HeatExchangerInstance
+    x="718.5"
+    y="641"
+    tag-id="1009"
+    v-bind="heatExchangers['1009']"
+    :orientation="ComponentOrientation.Down"
+  />
 
-    <HeatExchangerInstance
-      x="470"
-      y="480.5"
-      tag-id="1008"
-      :heat-exchanger="
-        getField(SensorComponentType.HeatExchanger, 'boilers', 'boilersLt2Exchanger')
-      "
-      :orientation="ComponentOrientation.Down"
-      :side-a="HeatExchangerPortOrientation.Side"
-      :side-b="HeatExchangerPortOrientation.Top"
-    />
-    <HeatExchangerInstance
-      x="964.5"
-      y="480.5"
-      tag-id="1004"
-      :heat-exchanger="
-        getField(SensorComponentType.HeatExchanger, 'boilers', 'boilersFahrenheitExchanger')
-      "
-      :orientation="ComponentOrientation.Down"
-      :side-a="HeatExchangerPortOrientation.Side"
-      :side-b="HeatExchangerPortOrientation.Top"
-    />
-  </g>
+  <HeatExchangerInstance
+    x="470"
+    y="480.5"
+    tag-id="1008"
+    v-bind="heatExchangers['1008']"
+    :orientation="ComponentOrientation.Down"
+  />
+  <HeatExchangerInstance
+    x="964.5"
+    y="480.5"
+    tag-id="1004"
+    v-bind="heatExchangers['1004']"
+    :orientation="ComponentOrientation.Down"
+  />
 </template>

@@ -64,7 +64,7 @@ class Stub:
                 data = json.loads(payload)
                 result = next(iter(self._json_path.find(data)), None)
                 if result:
-                    value = MqttValue.model_validate(result.value).value
+                    value = MqttValue.model_validate(result.value, by_alias=True).value
                     if value:
                         await asyncio.sleep(TIME_TO_WAKE)
                         await self.enable_modbus()

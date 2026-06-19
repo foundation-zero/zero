@@ -1,17 +1,18 @@
 <script setup lang="ts">
-import { SensorComponentType } from "@/modules/thrs/types/index.ts";
 import { computed } from "vue";
 import { MimicComponentInstanceProps } from ".";
+import { MimicTooltipTrigger, TooltipComponentContext } from "../../components/tooltip";
+import { MimicComponentType } from "../../types";
 import { PumpState } from "../components/pump";
 import Pump from "../components/pump/Pump.vue";
-import { ModuleField, getMimicDataProvider } from "../providers";
+import { getMimicDataProvider } from "../providers";
 
 const props = defineProps<
-  MimicComponentInstanceProps & { pump: ModuleField<SensorComponentType.Pump> }
+  MimicComponentInstanceProps & TooltipComponentContext<MimicComponentType.Pump>
 >();
 
 const { getSensorValue, getComponentState } = getMimicDataProvider();
-const pump = getSensorValue(props.pump);
+const pump = getSensorValue(props.source);
 const state = getComponentState();
 
 const pumpState = computed(() => {
@@ -21,9 +22,14 @@ const pumpState = computed(() => {
 </script>
 
 <template>
-  <Pump
-    v-bind="props"
-    :pump-state="pumpState"
-    :state="state"
-  />
+  <MimicTooltipTrigger
+    :type="MimicComponentType.Pump"
+    :data="props"
+  >
+    <Pump
+      v-bind="props"
+      :pump-state="pumpState"
+      :state="state"
+    />
+  </MimicTooltipTrigger>
 </template>
