@@ -366,7 +366,7 @@ class DcAlarms(BaseAlarms):
     pass
 
 
-LT2_MODULE_DESCRIPTION = ModuleDescription(
+DC_MODULE_DESCRIPTION = ModuleDescription(
     DcSensorValues,
     DcControlValues,
     DcParameters,
