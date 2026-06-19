@@ -18,10 +18,10 @@ from thrs.simulation.models.fmu_paths import pcm_path
 def test_pcm_sheet_names():
     missing_in_py, missing_in_sheet = compare_modelica_names(
         ["PCM"],
-        PcmSensorValues.zero(),
-        PcmControlValues.zero(),
-        PcmSimulationInputs.zero(),
-        PcmSimulationOutputs.zero(),
+        PcmSensorValues,
+        PcmControlValues,
+        PcmSimulationInputs,
+        PcmSimulationOutputs,
     )
 
     assert not missing_in_py, f"Missing in Python: {missing_in_py}"
@@ -32,10 +32,10 @@ def test_pcm_fmu_names():
     missing_in_py, missing_in_fmu = compare_fmu_to_classes(
         pcm_path,
         [
-            PcmSensorValues.zero(),
-            PcmControlValues.zero(),
-            PcmSimulationInputs.zero(),
-            PcmSimulationOutputs.zero(),
+            PcmSensorValues,
+            PcmControlValues,
+            PcmSimulationInputs,
+            PcmSimulationOutputs,
         ],
     )
 

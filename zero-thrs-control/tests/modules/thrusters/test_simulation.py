@@ -58,7 +58,7 @@ def test_runner(simulation, fmu, simulation_inputs, control, alarms):
             **flatten_model_values(
                 simulation_inputs,
                 fmu_key_mapping=build_fmu_key_mapping(
-                    type(simulation_inputs), fmu_only=False
+                    ThrustersSimulationInputs, fmu_only=False
                 ),
             ),
         }
@@ -73,7 +73,7 @@ def test_runner(simulation, fmu, simulation_inputs, control, alarms):
             **flatten_model_values(
                 simulation_inputs,
                 fmu_key_mapping=build_fmu_key_mapping(
-                    type(simulation_inputs), fmu_only=True
+                    ThrustersSimulationInputs, fmu_only=True
                 ),
             ),
         }
