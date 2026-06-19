@@ -4,11 +4,11 @@ import { SensorComponentType } from "@/modules/thrs/types";
 import { useI18n } from "vue-i18n";
 import { MimicComponentInstanceProps } from ".";
 import { Label } from "../components/label";
-import { getMimicDataProvider } from "../providers";
+import { getMimicDataProvider, ModuleField } from "../providers";
 
 const props = defineProps<
   MimicComponentInstanceProps & {
-    pressure: import("../providers").ModuleField<SensorComponentType.Pressure>;
+    pressure: ModuleField<SensorComponentType.Pressure>;
   }
 >();
 

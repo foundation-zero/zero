@@ -1,28 +1,32 @@
 <script setup lang="ts">
-import { SensorComponentType } from "@/modules/thrs/types/index.ts";
+import { MimicComponentInstanceProps } from ".";
+import { MimicTooltipTrigger, TooltipComponentContext } from "../../components/tooltip";
+import { MimicComponentType } from "../../types";
 import ActuatedValve from "../components/actuated-valve/ActuatedValve.vue";
 import MixValve from "../components/actuated-valve/MixValve.vue";
 import TwoWayValve from "../components/actuated-valve/TwoWayValve.vue";
-import { getMimicDataProvider, ModuleField } from "../providers/index.ts";
-import { MimicComponentInstanceProps } from "./index.ts";
+import { getMimicDataProvider } from "../providers";
 
 const props = defineProps<
-  MimicComponentInstanceProps & {
-    valve: ModuleField<SensorComponentType.Valve>;
-  }
+  MimicComponentInstanceProps & TooltipComponentContext<MimicComponentType.FlowControlValve>
 >();
 
 const { getSensorValue, getComponentState } = getMimicDataProvider();
-const valve = getSensorValue(props.valve);
+const valve = getSensorValue(props.source);
 const state = getComponentState();
 </script>
 
 <template>
-  <ActuatedValve
-    v-bind="props"
-    :state="state"
+  <MimicTooltipTrigger
+    :type="MimicComponentType.FlowControlValve"
+    :data="props"
   >
-    <TwoWayValve :flow="valve?.positionRel.value ?? 0" />
-    <MixValve />
-  </ActuatedValve>
+    <ActuatedValve
+      v-bind="props"
+      :state="state"
+    >
+      <TwoWayValve :flow="valve?.positionRel.value ?? 0" />
+      <MixValve />
+    </ActuatedValve>
+  </MimicTooltipTrigger>
 </template>

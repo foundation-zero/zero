@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import { tScoped } from "@/modules/common/lib/utils.ts";
-import { SensorComponentType } from "@/modules/thrs/types";
+import { MimicComponentType } from "@/modules/thrapp/types";
 import { LoopCircuitInstance } from "../../../mimics/instances";
-import { getField } from "../../../mimics/providers";
+import { BOILERS_MIMIC_DATA } from "../../../mimics/modules/boilers/data";
 import {
   LegendItem,
   LegendItemDescription,
@@ -12,22 +12,13 @@ import {
 } from "../../legend";
 
 const t = tScoped("thrapp.legends.otherMimic");
+const circuits = BOILERS_MIMIC_DATA[MimicComponentType.ExchangeCircuit];
 </script>
 
 <template>
   <LegendItem>
     <LegendItemPreview>
-      <LoopCircuitInstance
-        :title="t('assetTitle')"
-        :delta-t="getField(SensorComponentType.DeltaT, 'boilers', 'consumersDelta')"
-        :flow="getField(SensorComponentType.Flow, 'boilers', 'consumersFlowBoosting')"
-        :t-in="
-          getField(SensorComponentType.Temperature, 'boilers', 'consumersTemperatureBoostingSupply')
-        "
-        :t-out="
-          getField(SensorComponentType.Temperature, 'boilers', 'consumersTemperatureBoostingReturn')
-        "
-      />
+      <LoopCircuitInstance v-bind="circuits['highTempLoop']" />
     </LegendItemPreview>
     <LegendItemInfo class="gap-2">
       <LegendItemTitle>{{ t("title") }}</LegendItemTitle>

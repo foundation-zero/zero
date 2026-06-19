@@ -8,13 +8,13 @@
  * FIGMA_URL: https://www.figma.com/design/DDNAUHsV56fQMTh3Ej76gL/App-screens---On-board-monitoring?node-id=7149:66096
  */
 
-import { tScoped } from "@/modules/common/lib/utils.ts";
-import { SensorComponentType } from "@/modules/thrs/types/index.ts";
+import { MimicComponentType } from "@/modules/thrapp/types";
 import HotWaterCircuitInstance from "../../../instances/HotWaterCircuitInstance.vue";
 import { LoopCircuitInstance } from "../../../instances/index.ts";
-import { getField } from "../../../providers";
+import { BOILERS_MIMIC_DATA } from "../data";
 
-const t = tScoped("thrapp.mimics.boilers.circuitBoxes");
+const circuits = BOILERS_MIMIC_DATA[MimicComponentType.ExchangeCircuit];
+const hotWaterCircuits = BOILERS_MIMIC_DATA[MimicComponentType.HotWaterCircuit];
 </script>
 
 <template>
@@ -23,62 +23,32 @@ const t = tScoped("thrapp.mimics.boilers.circuitBoxes");
       x="0"
       y="25"
       force-height
-      :title="t('highTempLoopTitle')"
-      :delta-t="getField(SensorComponentType.DeltaT, 'boilers', 'consumersDelta')"
-      :flow="getField(SensorComponentType.Flow, 'boilers', 'consumersFlowBoosting')"
-      :t-in="
-        getField(SensorComponentType.Temperature, 'boilers', 'consumersTemperatureBoostingSupply')
-      "
-      :t-out="
-        getField(SensorComponentType.Temperature, 'boilers', 'consumersTemperatureBoostingReturn')
-      "
+      v-bind="circuits['highTempLoop']"
     />
     <LoopCircuitInstance
       x="397"
       y="728"
       force-height
-      :title="t('brightloopTitle')"
-      :delta-t="getField(SensorComponentType.DeltaT, 'boilers', 'lt2Delta')"
-      :flow="getField(SensorComponentType.Flow, 'boilers', 'boilersFlowLt2')"
-      :t-in="getField(SensorComponentType.Temperature, 'boilers', 'lt2TemperatureRecovery')"
-      :t-out="getField(SensorComponentType.Temperature, 'boilers', 'lt2TemperatureRecoveryReturn')"
+      v-bind="circuits['brightloop']"
     />
     <LoopCircuitInstance
       x="650"
       y="728"
       force-height
-      :title="t('drivesTitle')"
-      :delta-t="getField(SensorComponentType.DeltaT, 'boilers', 'lt1Delta')"
-      :flow="getField(SensorComponentType.Flow, 'boilers', 'boilersFlowLt1')"
-      :t-in="getField(SensorComponentType.Temperature, 'boilers', 'lt1TemperatureRecovery')"
-      :t-out="getField(SensorComponentType.Temperature, 'boilers', 'lt1TemperatureRecoveryReturn')"
+      v-bind="circuits['drives']"
     />
     <LoopCircuitInstance
       x="903"
       y="728"
       force-height
-      :title="t('fahrenheitTitle')"
-      :delta-t="getField(SensorComponentType.DeltaT, 'boilers', 'fahrenheitDelta')"
-      :flow="getField(SensorComponentType.Flow, 'boilers', 'fahrenheitFlowBoilers')"
-      :t-in="
-        getField(SensorComponentType.Temperature, 'boilers', 'fahrenheitTemperatureWasteReturn')
-      "
-      :t-out="
-        getField(SensorComponentType.Temperature, 'boilers', 'fahrenheitTemperatureBoilersReturn')
-      "
+      v-bind="circuits['fahrenheit']"
     />
     <HotWaterCircuitInstance
       x="1215"
       y="455"
       force-height
       height="300"
-      :title="t('domesticHotWaterTitle')"
-      :flow-in="getField(SensorComponentType.CalculatedFlow, 'boilers', 'freshwaterFlowSupply')"
-      :flow-out="getField(SensorComponentType.Flow, 'boilers', 'freshwaterHotwaterFlow')"
-      :t-in="
-        getField(SensorComponentType.Temperature, 'boilers', 'boilersTemperatureFreshwaterSupply')
-      "
-      :t-out="getField(SensorComponentType.Temperature, 'boilers', 'freshwaterHotwaterTemperature')"
+      v-bind="hotWaterCircuits['domestic']"
     />
   </g>
 </template>

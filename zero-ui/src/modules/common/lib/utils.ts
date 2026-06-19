@@ -145,6 +145,11 @@ export const formatNumber =
 
 export const getNumberSign = (value: number) => (value >= 0 ? "+" : "");
 
+export const formatRatio =
+  (digits: number): NumberFormatter =>
+  (value: number, locale: string = "en-US") =>
+    formatNumber(digits)(value * 100, locale);
+
 export const formatInt = formatNumber(0);
 export const formatFixed = (digits: number, value: number, locale: string = "en-US") =>
   formatNumber(digits)(value, locale);

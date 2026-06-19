@@ -5,14 +5,107 @@
       "showLegend": "Show legend",
       "legend": "Legend"
     },
+    "tooltips": {
+      "actions": {
+        "viewCircuitMimic": "View circuit mimic",
+        "viewControls": "View controls",
+        "controlManually": "Control manually"
+      },
+      "labels": {
+        "input": "Input",
+        "output": "Output",
+        "controls": "Controls",
+        "viewControls": "View controls",
+        "controlManually": "Control manually",
+        "open": "Open",
+        "closed": "Closed",
+        "mode": "Mode",
+        "heatExchange": "Heat exchange",
+        "thisCircuit": "This circuit",
+        "exchangeCircuit": "Exchange circuit"
+      },
+      "sources": {
+        "calculated": "Calculated",
+        "this": "This component",
+        "minTemperature": "Boilers minimum temperature parameter",
+        "maxTemperature": "Boilers maximum temperature parameter",
+        "minLevel": "Boilers minimum tank level",
+        "maxLevel": "Boilers maximum tank level",
+        "capacity": "This component",
+        "tank1": "tank 1 enabled",
+        "tank2": "tank 2 enabled",
+        "tank3": "tank 3 enabled",
+        "tankState": "Tanks controller",
+        "heatPumpController": "Heat pump controller",
+        "pumpTemperatureController": "Pump temperature controller",
+        "pumpFlowController": "Pump flow controller",
+        "heatPumpTemperatureParameter": "Heatpump temperature parameter",
+        "hvacController": "HVAC controller",
+        "hvacHeatFlow": "HVAC heatflow"
+      },
+      "items": {
+        "quantity": "Quantity",
+        "circuit": "Circuit",
+        "heatflow": "Heatflow",
+        "maximumTemperature": "Maximum temperature",
+        "operationTime": "Operation time",
+        "totalRunningHours": "Total running hours",
+        "speed": "Speed",
+        "powerInput": "Power input",
+        "energyConsumption": "Energy consumption",
+        "pressure": "Pressure",
+        "relativeDutyPoint": "Relative duty point",
+        "onOff": "On-off",
+        "error": "Error",
+        "measurement": "Measurement",
+        "actuator": "Actuator",
+        "relativePosition": "Relative position",
+        "absolutePosition": "Absolute position",
+        "setpoint": "Setpoint",
+        "itemName": "Item",
+        "tankSelector": "Tank selector",
+        "technicalName": "Technical name",
+        "state": "State",
+        "temperature": "Temperature",
+        "currentTemperature": "Current temperature",
+        "incomingTemperature": "Incoming temperature",
+        "outgoingTemperature": "Outgoing temperature",
+        "minTemperature": "Min. temperature",
+        "maxTemperature": "Max. temperature",
+        "minLevel": "Minimum level",
+        "maxLevel": "Maximum level",
+        "filling": "Filling",
+        "levelSensor": "Level sensor",
+        "fill": "Fill",
+        "capacity": "Capacity",
+        "estimatedFillingTime": "Est. filling time",
+        "estimatedTimeToHeat": "Est. time to heat",
+        "tankController": "Tank controller",
+        "tank1": "Tank 1",
+        "tank2": "Tank 2",
+        "tank3": "Tank 3",
+        "boostReturnValve": "Boost return valve",
+        "boostSupplyValve": "Boost supply valve",
+        "supplyValve": "Supply valve",
+        "dischargeValve": "Discharge valve",
+        "automatedControl": "Automated control",
+        "exchanger": "Exchanger",
+        "heatExchange": "Heat exchange",
+        "deltaTemperature": "Delta temperature",
+        "flow": "Flow"
+      }
+    },
     "mimics": {
       "boilerTank": {
         "modes": {
-          "standby": "Standby",
-          "boosting": "Boosting",
-          "in-use": "In use",
+          "IN_USE": "In use",
+          "FILLING": "Filling",
+          "BOOSTING": "Boosting",
+          "DISABLED": "Disabled",
+          "NEEDS_BOOST": "Needs boost",
+          "NEEDS_FILL": "Needs fill",
+          "STANDBY": "Standby",
           "manual": "Manual",
-          "disabled": "Disabled",
           "alarm": "Alarm"
         }
       },
@@ -22,6 +115,13 @@
           "inactive": "Inactive",
           "manual": "Manual",
           "alarm": "Alarm"
+        }
+      },
+      "heatExchanger": {
+        "modes": {
+          "idle": "Idle",
+          "cooling-medium": "Cooling",
+          "heating-medium": "Heating"
         }
       },
       "boilers": {

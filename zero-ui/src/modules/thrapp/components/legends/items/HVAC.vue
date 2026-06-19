@@ -1,9 +1,8 @@
 <script setup lang="ts">
 import { tScoped } from "@/modules/common/lib/utils.ts";
-import { SensorComponentType } from "@/modules/thrs/types";
-import { RiSnowflakeLine } from "@remixicon/vue";
-import HeatPumpInstance from "../../../mimics/instances/HeatPumpInstance.vue";
-import { getField } from "../../../mimics/providers";
+import { MimicComponentType } from "@/modules/thrapp/types";
+import HVACInstance from "../../../mimics/instances/HVACInstance.vue";
+import { BOILERS_MIMIC_DATA } from "../../../mimics/modules/boilers/data";
 import {
   LegendItem,
   LegendItemDescription,
@@ -13,19 +12,16 @@ import {
 } from "../../legend";
 
 const t = tScoped("thrapp.legends.hvac");
+const assets = BOILERS_MIMIC_DATA[MimicComponentType.HVAC];
 </script>
 
 <template>
   <LegendItem class="min-h-27">
     <LegendItemPreview>
-      <HeatPumpInstance
+      <HVACInstance
         :force-height="false"
         tag-id="41001001"
-        :title="t('assetTitle')"
-        :icon="RiSnowflakeLine"
-        :heat-exchanger="
-          getField(SensorComponentType.HeatExchanger, 'boilers', 'boilersHvacExchanger')
-        "
+        v-bind="assets['41001001']"
       />
     </LegendItemPreview>
     <LegendItemInfo class="gap-2">

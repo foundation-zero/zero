@@ -1,13 +1,10 @@
 <script setup lang="ts">
-import { SensorComponentType } from "@/modules/thrs/types";
+import { BoilerTankState, ControlComponentType } from "@/modules/thrs/types";
 import { computed } from "vue";
-import { MimicComponentInstanceProps, TitleProps } from ".";
-import {
-  BoilerTank,
-  BoilerTankMode,
-  BoilerTankModes,
-  BoilerTankTitle,
-} from "../components/boiler-tank";
+import { MimicComponentInstanceProps } from ".";
+import { MimicTooltipTrigger, TooltipComponentContext } from "../../components/tooltip";
+import { MimicComponentType } from "../../types";
+import { BoilerTank, BoilerTankMode, BoilerTankTitle } from "../components/boiler-tank";
 import {
   ValueList,
   ValueListFillLevelItem,
@@ -15,56 +12,60 @@ import {
   ValueListTimeItem,
 } from "../components/value-list";
 import YardTag from "../components/yard-tag/YardTag.vue";
-import { getMimicDataProvider, ModuleField } from "../providers";
-import { useRandomizedNumber, useRandomizedState } from "../providers/mock-helpers.ts";
+import { getField, getMimicDataProvider } from "../providers";
 
 const props = defineProps<
-  MimicComponentInstanceProps &
-    TitleProps & {
-      width?: number | string;
-      height?: number | string;
-      forceHeight?: boolean;
-      level: ModuleField<SensorComponentType.Level>;
-      temperature: ModuleField<SensorComponentType.Temperature>;
-    }
+  MimicComponentInstanceProps & {
+    width?: number | string;
+    height?: number | string;
+    forceHeight?: boolean;
+  } & TooltipComponentContext<MimicComponentType.BoilerTank>
 >();
 
-const { getSensorValue, getComponentState } = getMimicDataProvider();
+const { getSensorValue, getComponentState, getControlValue } = getMimicDataProvider();
 
-const level = getSensorValue(props.level);
+const level = getSensorValue(props.sensors.level);
 const fillLevel = computed(() => (level.value?.level.value ?? 0) / 2.75);
-const temperature = getSensorValue(props.temperature);
-
-const fillTime = useRandomizedNumber(0, 60);
-const mode = useRandomizedState([
-  BoilerTankModes.InUse,
-  BoilerTankModes.Boosting,
-  BoilerTankModes.Standby,
-]);
+const temperature = getSensorValue(props.sensors.temperature);
 
 const state = getComponentState();
+
+const controller = getControlValue(
+  getField(ControlComponentType.BoilersTanksController, "boilers", "boilersTanksController"),
+);
+const mode = computed(() => controller.value?.[props.custom.tankStateField].value);
+const fillTime = computed(() => controller.value?.timeToFill.value);
 </script>
 
 <template>
-  <BoilerTank
-    v-bind="props"
-    :level="fillLevel"
-    :mode="mode"
-    :state="state"
+  <MimicTooltipTrigger
+    :type="MimicComponentType.BoilerTank"
+    :data="props"
   >
-    <YardTag>{{ tagId }}</YardTag>
-    <BoilerTankTitle>{{ title }}</BoilerTankTitle>
-    <BoilerTankMode
+    <BoilerTank
+      :force-height="forceHeight"
+      :width="width"
+      :height="height"
+      :x="x"
+      :y="y"
+      :level="fillLevel"
       :mode="mode"
       :state="state"
-    />
-    <ValueList class="gap-0">
-      <ValueListTemperatureItem :temperature="temperature?.temperature.value" />
-      <ValueListFillLevelItem :value="fillLevel" />
-      <ValueListTimeItem
-        v-if="mode === BoilerTankModes.Boosting"
-        :value="fillTime"
+    >
+      <YardTag>{{ tooltip?.yardTag }}</YardTag>
+      <BoilerTankTitle>{{ tooltip?.title }}</BoilerTankTitle>
+      <BoilerTankMode
+        :mode="mode"
+        :state="state"
       />
-    </ValueList>
-  </BoilerTank>
+      <ValueList class="gap-0">
+        <ValueListTemperatureItem :temperature="temperature?.temperature.value" />
+        <ValueListFillLevelItem :value="fillLevel" />
+        <ValueListTimeItem
+          v-if="mode === BoilerTankState.Filling"
+          :value="fillTime"
+        />
+      </ValueList>
+    </BoilerTank>
+  </MimicTooltipTrigger>
 </template>

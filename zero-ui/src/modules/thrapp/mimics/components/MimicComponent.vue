@@ -41,6 +41,11 @@ const { stateColor, strokeWidth } = provideMimicComponentContext(
     aria-hidden="true"
     :class="cn('', props.class)"
   >
+    <rect
+      width="100%"
+      height="100%"
+      fill="transparent"
+    />
     <g
       :style="rotationStyle"
       class="origin-center transition-transform duration-300"

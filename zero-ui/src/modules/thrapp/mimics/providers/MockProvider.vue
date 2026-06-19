@@ -3,13 +3,26 @@ import { ThrsDefinitions, ThrsModules } from "@/modules/thrs/lib/consts.types";
 import {
   ControlComponentType,
   ControlDefinitionMap,
+  ParameterDefinitionMap,
+  ParametersType,
   SensorComponentType,
   SensorDefinitionMap,
 } from "@/modules/thrs/types";
 import { Ref } from "vue";
-import { createMimicDataProvider, getControlDefinition, getSensorDefinition, ModuleField } from ".";
+import {
+  createMimicDataProvider,
+  getControlDefinition,
+  getParameterDefinition,
+  getSensorDefinition,
+  ModuleField,
+} from ".";
 import { MimicComponentState } from "../components";
-import { CONTROL_VALUES_FACTORY, SENSOR_VALUES_FACTORY, useRandomizedState } from "./mock-helpers";
+import {
+  CONTROL_VALUES_FACTORY,
+  PARAMETER_VALUES_FACTORY,
+  SENSOR_VALUES_FACTORY,
+  useRandomizedState,
+} from "./mock-helpers";
 
 const getSensorValue = <Type extends SensorComponentType, Module extends keyof ThrsDefinitions>([
   _type,
@@ -29,9 +42,19 @@ const getControlValue = <Type extends ControlComponentType, Module extends keyof
   return CONTROL_VALUES_FACTORY[componentType]() as Ref<ControlDefinitionMap[Type] | undefined>;
 };
 
+const getParameterValue = <Type extends ParametersType, Module extends keyof ThrsDefinitions>([
+  _type,
+  module,
+  field,
+]: ModuleField<Type, Module>): Ref<ParameterDefinitionMap[Type] | undefined> => {
+  const { componentType } = getParameterDefinition(module, field);
+  return PARAMETER_VALUES_FACTORY[componentType]() as Ref<ParameterDefinitionMap[Type] | undefined>;
+};
+
 createMimicDataProvider({
   getSensorValue,
   getControlValue,
+  getParameterValue,
   getComponentState: () =>
     useRandomizedState([
       MimicComponentState.Normal,
