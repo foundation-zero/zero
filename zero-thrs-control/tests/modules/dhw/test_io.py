@@ -25,10 +25,10 @@ from thrs.simulation.models.fmu_paths import dhw_path
 def test_dhw_sheet_names():
     missing_in_py, missing_in_sheet = compare_modelica_names(
         ["DHW"],
-        DhwSensorValues.zero(),
-        DhwControlValues.zero(),
-        DhwSimulationInputs.zero(),
-        DhwSimulationOutputs.zero(),
+        DhwSensorValues,
+        DhwControlValues,
+        DhwSimulationInputs,
+        DhwSimulationOutputs,
     )
 
     assert not missing_in_py, f"Missing in Python: {missing_in_py}"
@@ -39,10 +39,10 @@ def test_dhw_fmu_names():
     missing_in_py, missing_in_fmu = compare_fmu_to_classes(
         dhw_path,
         [
-            DhwSensorValues.zero(),
-            DhwControlValues.zero(),
-            DhwSimulationInputs.zero(),
-            DhwSimulationOutputs.zero(),
+            DhwSensorValues,
+            DhwControlValues,
+            DhwSimulationInputs,
+            DhwSimulationOutputs,
         ],
     )
 

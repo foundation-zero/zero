@@ -18,10 +18,10 @@ from thrs.simulation.models.fmu_paths import dc_path
 def test_dc_sheet_names():
     missing_in_py, missing_in_sheet = compare_modelica_names(
         "DC",
-        DcSensorValues.zero(),
-        DcControlValues.zero(),
-        DcSimulationInputs.zero(),
-        DcSimulationOutputs.zero(),
+        DcSensorValues,
+        DcControlValues,
+        DcSimulationInputs,
+        DcSimulationOutputs,
     )
 
     assert not missing_in_py, f"Missing in Python: {missing_in_py}"
@@ -32,10 +32,10 @@ def test_dc_fmu_names():
     missing_in_py, missing_in_fmu = compare_fmu_to_classes(
         dc_path,
         [
-            DcSensorValues.zero(),
-            DcControlValues.zero(),
-            DcSimulationInputs.zero(),
-            DcSimulationOutputs.zero(),
+            DcSensorValues,
+            DcControlValues,
+            DcSimulationInputs,
+            DcSimulationOutputs,
         ],
     )
 
