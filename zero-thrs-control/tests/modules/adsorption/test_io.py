@@ -18,10 +18,10 @@ from thrs.simulation.models.fmu_paths import adsorption_path
 def test_adsorption_sheet_names():
     missing_in_py, missing_in_sheet = compare_modelica_names(
         ["Adsorption"],
-        AdsorptionSensorValues.zero(),
-        AdsorptionControlValues.zero(),
-        AdsorptionSimulationInputs.zero(),
-        AdsorptionSimulationOutputs.zero(),
+        AdsorptionSensorValues,
+        AdsorptionControlValues,
+        AdsorptionSimulationInputs,
+        AdsorptionSimulationOutputs,
     )
 
     assert not missing_in_py, f"Missing in Python: {missing_in_py}"
@@ -32,10 +32,10 @@ def test_adsorption_fmu_names():
     missing_in_py, missing_in_fmu = compare_fmu_to_classes(
         adsorption_path,
         [
-            AdsorptionSensorValues.zero(),
-            AdsorptionControlValues.zero(),
-            AdsorptionSimulationInputs.zero(),
-            AdsorptionSimulationOutputs.zero(),
+            AdsorptionSensorValues,
+            AdsorptionControlValues,
+            AdsorptionSimulationInputs,
+            AdsorptionSimulationOutputs,
         ],
     )
 

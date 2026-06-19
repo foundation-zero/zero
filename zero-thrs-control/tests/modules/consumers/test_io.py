@@ -18,10 +18,10 @@ from thrs.simulation.models.fmu_paths import consumers_path
 def test_consumers_sheet_names():
     missing_in_py, missing_in_sheet = compare_modelica_names(
         ["Consumers"],
-        ConsumersSensorValues.zero(),
-        ConsumersControlValues.zero(),
-        ConsumersSimulationInputs.zero(),
-        ConsumersSimulationOutputs.zero(),
+        ConsumersSensorValues,
+        ConsumersControlValues,
+        ConsumersSimulationInputs,
+        ConsumersSimulationOutputs,
     )
 
     assert not missing_in_py, f"Missing in Python: {missing_in_py}"
@@ -32,10 +32,10 @@ def test_consumers_fmu_names():
     missing_in_py, missing_in_fmu = compare_fmu_to_classes(
         consumers_path,
         [
-            ConsumersSensorValues.zero(),
-            ConsumersControlValues.zero(),
-            ConsumersSimulationInputs.zero(),
-            ConsumersSimulationOutputs.zero(),
+            ConsumersSensorValues,
+            ConsumersControlValues,
+            ConsumersSimulationInputs,
+            ConsumersSimulationOutputs,
         ],
     )
 

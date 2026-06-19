@@ -3,25 +3,20 @@ import polars as pl
 
 from thrs.input_output.base import ThrsValues
 from thrs.input_output.fmu_mapping import build_fmu_key_mapping
-from thrs.simulation.io_mapping import flatten_model_values
 
 SHEET_URL = "https://docs.google.com/spreadsheets/d/1YyfkKmqL8MZuJfStljTjhgFxawcco2cp2qCmBGFrR04/export?gid=990884182&format=csv"
 
 
-def modelica_names_from_classes(classes: list[ThrsValues]) -> set[str]:
-    return {
-        k
-        for cls in classes
-        for k in flatten_model_values(cls, build_fmu_key_mapping(type(cls))).keys()
-    }
+def modelica_names_from_classes(classes: list[type[ThrsValues]]) -> set[str]:
+    return {k for cls in classes for k in build_fmu_key_mapping(cls).values()}
 
 
 def compare_modelica_names(
     module_name: str | list[str],
-    sensor_values: ThrsValues,
-    control_values: ThrsValues,
-    simulation_inputs: ThrsValues,
-    simulation_outputs: ThrsValues,
+    sensor_values: type[ThrsValues],
+    control_values: type[ThrsValues],
+    simulation_inputs: type[ThrsValues],
+    simulation_outputs: type[ThrsValues],
 ):
     """
     Compare the Modelica names in the Python code with the Modelica names in the Google Sheet.
@@ -56,7 +51,7 @@ def compare_modelica_names(
     return missing_in_py, missing_in_sheet
 
 
-def compare_fmu_to_classes(filename, classes: list[ThrsValues]):
+def compare_fmu_to_classes(filename, classes: list[type[ThrsValues]]):
     model_description = fmpy.read_model_description(filename)
 
     fmu_keys = set(

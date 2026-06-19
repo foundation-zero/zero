@@ -18,10 +18,10 @@ from thrs.simulation.models.fmu_paths import drives_path
 def test_drives_sheet_names():
     missing_in_py, missing_in_sheet = compare_modelica_names(
         "Drives",
-        DrivesSensorValues.zero(),
-        DrivesControlValues.zero(),
-        DrivesSimulationInputs.zero(),
-        DrivesSimulationOutputs.zero(),
+        DrivesSensorValues,
+        DrivesControlValues,
+        DrivesSimulationInputs,
+        DrivesSimulationOutputs,
     )
 
     assert not missing_in_py, f"Missing in Python: {missing_in_py}"
@@ -32,10 +32,10 @@ def test_drives_fmu_names():
     missing_in_py, missing_in_fmu = compare_fmu_to_classes(
         drives_path,
         [
-            DrivesSensorValues.zero(),
-            DrivesControlValues.zero(),
-            DrivesSimulationInputs.zero(),
-            DrivesSimulationOutputs.zero(),
+            DrivesSensorValues,
+            DrivesControlValues,
+            DrivesSimulationInputs,
+            DrivesSimulationOutputs,
         ],
     )
 
