@@ -22,7 +22,7 @@ class RunCmd(ModbusSettings, MqttSettings):
             await reader.run()
 
 
-class StubCmd(ModbusSettings, MqttSettings):
+class StubCmd(ModbusSettings):
     default_value: int = 20
 
     def cli_cmd(self) -> None:

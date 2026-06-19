@@ -1,5 +1,4 @@
 set dotenv-load := true
-set dotenv-required := true
 
 default: run
 
