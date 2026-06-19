@@ -20,7 +20,7 @@ export const enum BoilerTankState {
   Standby = "STANDBY",
 }
 
-export type BoilerTankController = {
+export type DhwTankController = {
   tank1State: Stamped<BoilerTankState>;
   tank2State: Stamped<BoilerTankState>;
   tank3State: Stamped<BoilerTankState>;
@@ -60,7 +60,7 @@ export type ControlFields = {
   [ControlComponentType.Valve]: (keyof ValveControl)[];
   [ControlComponentType.Pcm]: (keyof PcmControl)[];
   [ControlComponentType.Heatpump]: (keyof HeatpumpControl)[];
-  [ControlComponentType.BoilersTanksController]: (keyof BoilerTankController)[];
+  [ControlComponentType.DhwTanksController]: (keyof DhwTankController)[];
   [ControlComponentType.PIDController]: (keyof PIDController)[];
 };
 
@@ -155,7 +155,7 @@ export type ControlType =
   | ValveControl
   | PcmControl
   | HeatpumpControl
-  | BoilerTankController
+  | DhwTankController
   | PIDController;
 
 export type Sensors = Record<string, SensorType>;
@@ -186,7 +186,7 @@ export const enum ControlComponentType {
   Valve = "valve",
   Pcm = "pcm",
   Heatpump = "heatpump",
-  BoilersTanksController = "boilersTanksController",
+  DhwTanksController = "dhwTanksController",
   PIDController = "pidController",
 }
 
@@ -210,8 +210,8 @@ export type ValveControlDefinition = ControlDefinition<ControlComponentType.Valv
 
 export type PcmControlDefinition = ControlDefinition<ControlComponentType.Pcm>;
 export type HeatpumpControlDefinition = ControlDefinition<ControlComponentType.Heatpump>;
-export type BoilerTankControllerDefinition =
-  ControlDefinition<ControlComponentType.BoilersTanksController>;
+export type DhwTankControllerDefinition =
+  ControlDefinition<ControlComponentType.DhwTanksController>;
 export type PIDControllerDefinition = ControlDefinition<ControlComponentType.PIDController>;
 
 export type ControlDefinitions = SchemaDefinitions<
@@ -219,7 +219,7 @@ export type ControlDefinitions = SchemaDefinitions<
   | ValveControlDefinition
   | PcmControlDefinition
   | HeatpumpControlDefinition
-  | BoilerTankControllerDefinition
+  | DhwTankControllerDefinition
   | PIDControllerDefinition
 >;
 
@@ -228,7 +228,7 @@ export type ControlDefinitionMap = {
   [ControlComponentType.Valve]: ValveControl;
   [ControlComponentType.Pcm]: PcmControl;
   [ControlComponentType.Heatpump]: HeatpumpControl;
-  [ControlComponentType.BoilersTanksController]: BoilerTankController;
+  [ControlComponentType.DhwTanksController]: DhwTankController;
   [ControlComponentType.PIDController]: PIDController;
 };
 

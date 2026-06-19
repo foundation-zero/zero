@@ -54,9 +54,10 @@ Our design system includes comprehensive documentation for:
 ### Modules
 
 - **[Modules Overview](/mimics/modules/)** - Composed mimic scene documentation
-- **[Boilers Scene](/mimics/modules/boilers-module)** - Initial documentation page for the BoilersModule composition
+- **[Dhw Scene](/mimics/modules/dhw-module)** - Initial documentation page for the DhwModule composition
 
 Each component comes with:
+
 - Multiple visual variants for different use cases
 - Comprehensive accessibility features
 - TypeScript support with full type definitions

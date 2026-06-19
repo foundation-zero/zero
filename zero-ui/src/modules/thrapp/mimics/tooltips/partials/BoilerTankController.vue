@@ -8,7 +8,7 @@ import { useTranslations } from "../index.ts";
 const { items, sources } = useTranslations();
 
 defineProps<{
-  controller: ModuleField<ControlComponentType.BoilersTanksController>;
+  controller: ModuleField<ControlComponentType.DhwTanksController>;
 }>();
 </script>
 

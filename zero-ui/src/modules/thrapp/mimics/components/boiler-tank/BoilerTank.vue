@@ -3,10 +3,10 @@ import { cn } from "@/modules/common/lib/utils";
 import { BoilerTankState } from "@/modules/thrs/types/index.ts";
 import { computed, HTMLAttributes, toRefs } from "vue";
 import {
-  BOILER_TANK_HEIGHT,
-  BOILER_TANK_LEVEL_LINE_OFFSET,
-  BOILER_TANK_MODE_COLORS,
-  BOILER_TANK_WIDTH,
+  DHW_TANK_HEIGHT,
+  DHW_TANK_LEVEL_LINE_OFFSET,
+  DHW_TANK_MODE_COLORS,
+  DHW_TANK_WIDTH,
 } from ".";
 import {
   createMimicComponentContext,
@@ -29,8 +29,8 @@ const props = withDefaults(
   }>(),
   {
     state: MimicComponentState.Normal,
-    width: () => BOILER_TANK_WIDTH,
-    height: () => BOILER_TANK_HEIGHT,
+    width: () => DHW_TANK_WIDTH,
+    height: () => DHW_TANK_HEIGHT,
     forceHeight: false,
     mode: BoilerTankState.Standby,
   },
@@ -42,9 +42,9 @@ const { strokeWidth } = provideMimicComponentContext(createMimicComponentContext
 
 const color = computed(() => {
   if (state.value === MimicComponentState.Normal) {
-    return BOILER_TANK_MODE_COLORS[props.mode];
+    return DHW_TANK_MODE_COLORS[props.mode];
   } else {
-    return BOILER_TANK_MODE_COLORS[state.value];
+    return DHW_TANK_MODE_COLORS[state.value];
   }
 });
 </script>
@@ -67,7 +67,7 @@ const color = computed(() => {
           transform: `translateY(${100 - Math.min(100, level)}%)`,
         }"
       >
-        <BoilerTankLevel :y="-BOILER_TANK_LEVEL_LINE_OFFSET" />
+        <BoilerTankLevel :y="-DHW_TANK_LEVEL_LINE_OFFSET" />
       </g>
 
       <BoilerTankLevelIndicator

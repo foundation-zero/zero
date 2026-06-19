@@ -4,7 +4,7 @@ Scenes represent composed mimic layouts that bring together multiple components 
 
 ## Available Scenes
 
-- [Boilers Scene](/mimics/modules/boilers-module) - Initial documentation page for the BoilersScene composition
+- [Dhw Scene](/mimics/modules/dhw-module) - Initial documentation page for the DhwScene composition
 
 ## Purpose
 
