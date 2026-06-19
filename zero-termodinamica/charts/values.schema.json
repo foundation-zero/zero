@@ -2,11 +2,11 @@
   "$schema": "https://json-schema.org/draft-07/schema#",
   "title": "Values",
   "type": "object",
-  "required": ["mqtt", "modbus", "termodinamica"],
+  "required": ["mqtt", "modbus"],
   "properties": {
     "mqtt": {
       "type": "object",
-      "required": ["host", "port", "existingSecret"],
+      "required": ["host", "port"],
       "properties": {
         "host": {
           "type": "string",
@@ -45,33 +45,6 @@
           "description": "Modbus TCP port.",
           "minimum": 1,
           "maximum": 65535
-        }
-      }
-    },
-    "termodinamica": {
-      "type": "object",
-      "required": ["sendTopic", "intervalSeconds"],
-      "properties": {
-        "sendTopic": {
-          "type": "string",
-          "description": "MQTT topic where temperature payloads are published."
-        },
-        "intervalSeconds": {
-          "type": "integer",
-          "description": "Polling interval for sending temperature updates.",
-          "minimum": 1
-        },
-        "n": {
-          "type": "integer",
-          "description": "Number of iterations before exit. Use -1 to run forever."
-        },
-        "activateTopic": {
-          "type": "string",
-          "description": "MQTT topic used to toggle the relay/multiplexer before reading."
-        },
-        "activateJsonPath": {
-          "type": "string",
-          "description": "JSONPath where the boolean activation value is written in the payload."
         }
       }
     },

@@ -47,6 +47,7 @@ class ModbusToMQTTBridge:
 
     async def run(self) -> None:
         while True:
+            logging.info("Probing modbus")
             async with TaskGroup() as tg:
                 tg.create_task(asyncio.sleep(self.probe_interval))
                 tg.create_task(self.run_once())

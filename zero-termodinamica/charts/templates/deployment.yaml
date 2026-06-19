@@ -33,7 +33,7 @@ spec:
         fsGroup: 1001
       containers:
         - name: termodinamica
-          command: ["python", "-m", "zero_termodinamica", "run"]
+          args: ["run"]
           securityContext:
             allowPrivilegeEscalation: false
             capabilities:
@@ -54,23 +54,23 @@ spec:
               value: {{ .Values.mqtt.host | quote }}
             - name: MQTT_PORT
               value: {{ .Values.mqtt.port | quote }}
+            {{- if .Values.mqtt.username }}
             - name: MQTT_USERNAME
               value: {{ .Values.mqtt.username | quote }}
+            {{- end }}
+            {{- if .Values.mqtt.existingSecret }}
             - name: MQTT_PASSWORD
               valueFrom:
                 secretKeyRef:
                   name: {{ .Values.mqtt.existingSecret }}
                   key: {{ .Values.mqtt.existingSecretPasswordKey }}
+            {{- end }}
             - name: MODBUS_HOST
               value: {{ .Values.modbus.host | quote }}
             - name: MODBUS_PORT
               value: {{ .Values.modbus.port | quote }}
-            - name: SEND_TOPIC
-              value: {{ .Values.termodinamica.sendTopic | quote }}
-            - name: SECONDS
-              value: {{ .Values.termodinamica.intervalSeconds | quote }}
-            - name: N
-              value: {{ .Values.termodinamica.n | toString | quote }}
+            - name: MODBUS_PROBE_INTERVAL
+              value: {{ .Values.modbus.probe_interval | quote }}
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
           volumeMounts:

@@ -15,11 +15,7 @@ mqtt:
 modbus:
   host: ""
   port: 502
-
-termodinamica:
-  sendTopic: "termodinamica/"
-  intervalSeconds: 300
-  "n": -1
+  probe_interval: 10
 
 resources: {}
 

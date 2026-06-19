@@ -1,0 +1,16 @@
+image:
+  repository: localhost/zero-thermodinamica
+  tag: latest
+
+# Run mqtt in docker container
+mqtt:
+  host: "host.docker.internal"
+  port: 1883
+  username: ""
+  existingSecret: ""
+
+# Run stub locally
+modbus:
+  host: "host.docker.internal"
+  port: 5020
+  probe_interval: 2
