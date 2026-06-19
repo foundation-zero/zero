@@ -2,7 +2,7 @@
 import { tScoped } from "@/modules/common/lib/utils.ts";
 import { MimicComponentType } from "@/modules/thrapp/types";
 import { LoopCircuitInstance } from "../../../mimics/instances";
-import { BOILERS_MIMIC_DATA } from "../../../mimics/modules/boilers/data";
+import { DHW_MIMIC_DATA } from "../../../mimics/modules/dhw/data";
 import {
   LegendItem,
   LegendItemDescription,
@@ -12,7 +12,7 @@ import {
 } from "../../legend";
 
 const t = tScoped("thrapp.legends.otherMimic");
-const circuits = BOILERS_MIMIC_DATA[MimicComponentType.ExchangeCircuit];
+const circuits = DHW_MIMIC_DATA[MimicComponentType.ExchangeCircuit];
 </script>
 
 <template>

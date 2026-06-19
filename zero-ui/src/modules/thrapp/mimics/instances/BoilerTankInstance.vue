@@ -31,7 +31,7 @@ const temperature = getSensorValue(props.sensors.temperature);
 const state = getComponentState();
 
 const controller = getControlValue(
-  getField(ControlComponentType.BoilersTanksController, "boilers", "boilersTanksController"),
+  getField(ControlComponentType.DhwTanksController, "dhw", "dhwTanksController"),
 );
 const mode = computed(() => controller.value?.[props.custom.tankStateField].value);
 const fillTime = computed(() => controller.value?.timeToFill.value);

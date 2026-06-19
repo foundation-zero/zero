@@ -145,7 +145,7 @@ export const CONTROL_VALUES_FACTORY: ValueFactory<ControlDefinitionMap> = {
       setpoint: stamp(setpoint),
     }));
   },
-  [ControlComponentType.BoilersTanksController]: () => {
+  [ControlComponentType.DhwTanksController]: () => {
     const states = [
       BoilerTankState.Boosting,
       BoilerTankState.Disabled,

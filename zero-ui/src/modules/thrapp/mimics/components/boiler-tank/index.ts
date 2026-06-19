@@ -7,12 +7,12 @@ export { default as BoilerTankLevel } from "./BoilerTankLevel.vue";
 export { default as BoilerTankLevelIndicator } from "./BoilerTankLevelIndicator.vue";
 export { default as BoilerTankMode } from "./BoilerTankMode.vue";
 
-export const BOILER_TANK_WIDTH = 204;
-export const BOILER_TANK_HEIGHT = 148;
-export const BOILER_TANK_LEVEL_WAVE_HEIGHT = 21;
-export const BOILER_TANK_LEVEL_LINE_OFFSET = 13;
+export const DHW_TANK_WIDTH = 204;
+export const DHW_TANK_HEIGHT = 148;
+export const DHW_TANK_LEVEL_WAVE_HEIGHT = 21;
+export const DHW_TANK_LEVEL_LINE_OFFSET = 13;
 
-export const BOILER_TANK_MODE_COLORS: Record<BoilerTankState | MimicComponentState, string> = {
+export const DHW_TANK_MODE_COLORS: Record<BoilerTankState | MimicComponentState, string> = {
   [BoilerTankState.InUse]: "var(--constructive)",
   [BoilerTankState.Boosting]: "var(--heating-medium)",
   [BoilerTankState.Standby]: "var(--muted-foreground)",

@@ -1,18 +1,16 @@
 <script setup lang="ts">
 import {
-  BOILER_TANK_HEIGHT,
-  BOILER_TANK_LEVEL_LINE_OFFSET,
-  BOILER_TANK_LEVEL_WAVE_HEIGHT,
-  BOILER_TANK_WIDTH,
+  DHW_TANK_HEIGHT,
+  DHW_TANK_LEVEL_LINE_OFFSET,
+  DHW_TANK_LEVEL_WAVE_HEIGHT,
+  DHW_TANK_WIDTH,
 } from ".";
 import { createSizeAndViewbox } from "..";
 </script>
 
 <template>
   <svg
-    v-bind="
-      createSizeAndViewbox(BOILER_TANK_WIDTH, BOILER_TANK_HEIGHT + BOILER_TANK_LEVEL_WAVE_HEIGHT)
-    "
+    v-bind="createSizeAndViewbox(DHW_TANK_WIDTH, DHW_TANK_HEIGHT + DHW_TANK_LEVEL_WAVE_HEIGHT)"
     fill="none"
     xmlns="http://www.w3.org/2000/svg"
   >
@@ -24,8 +22,8 @@ import { createSizeAndViewbox } from "..";
           />
           <rect
             width="100%"
-            :height="BOILER_TANK_HEIGHT"
-            :y="BOILER_TANK_LEVEL_WAVE_HEIGHT"
+            :height="DHW_TANK_HEIGHT"
+            :y="DHW_TANK_LEVEL_WAVE_HEIGHT"
           />
         </g>
       </mask>
@@ -33,15 +31,15 @@ import { createSizeAndViewbox } from "..";
     <rect
       width="100%"
       class="fill-brand-a-500"
-      :height="BOILER_TANK_HEIGHT + BOILER_TANK_LEVEL_WAVE_HEIGHT"
+      :height="DHW_TANK_HEIGHT + DHW_TANK_LEVEL_WAVE_HEIGHT"
       mask="url(#boiler-wave-mask)"
       fill-opacity="0.25"
     />
     <line
       x1="0"
       x2="100%"
-      :y1="BOILER_TANK_LEVEL_LINE_OFFSET"
-      :y2="BOILER_TANK_LEVEL_LINE_OFFSET"
+      :y1="DHW_TANK_LEVEL_LINE_OFFSET"
+      :y2="DHW_TANK_LEVEL_LINE_OFFSET"
       class="stroke-cooling-medium"
       stroke-dasharray="2 2"
     />

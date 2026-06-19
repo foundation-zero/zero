@@ -74,19 +74,19 @@ pnpm run generate-graphql-queries CONSUMERS_PARAMETER_DEFINITION CONSUMERS_PARAM
 pnpm run generate-graphql-queries CONSUMERS_SIMULATION_INPUTS CONSUMERS_SIMULATION_INPUTS_QUERY
 pnpm run generate-graphql-queries CONSUMERS_SIMULATION_OUTPUTS CONSUMERS_SIMULATION_OUTPUTS_QUERY
 
-# BOILERS module
-echo "📋 Extracting BOILERS definitions..."
-pnpm run extract-schema-values BOILERS_CONTROL_DEFINITION BoilersControlValuesType
-pnpm run extract-schema-values BOILERS_SENSOR_DEFINITION BoilersSensorValuesType
-pnpm run extract-schema-values BOILERS_PARAMETER_DEFINITION BoilersParametersType
-pnpm run extract-schema-values BOILERS_SIMULATION_INPUTS BoilersSimulationInputsType
-pnpm run extract-schema-values BOILERS_SIMULATION_OUTPUTS BoilersSimulationOutputsType
+# DHW module
+echo "📋 Extracting DHW definitions..."
+pnpm run extract-schema-values DHW_CONTROL_DEFINITION DhwControlValuesType
+pnpm run extract-schema-values DHW_SENSOR_DEFINITION DhwSensorValuesType
+pnpm run extract-schema-values DHW_PARAMETER_DEFINITION DhwParametersType
+pnpm run extract-schema-values DHW_SIMULATION_INPUTS DhwSimulationInputsType
+pnpm run extract-schema-values DHW_SIMULATION_OUTPUTS DhwSimulationOutputsType
 
-echo "📋 Generating BOILERS GraphQL queries..."
-pnpm run generate-graphql-queries BOILERS_CONTROL_DEFINITION BOILERS_CONTROL_QUERY
-pnpm run generate-graphql-queries BOILERS_SENSOR_DEFINITION BOILERS_SENSOR_QUERY
-pnpm run generate-graphql-queries BOILERS_PARAMETER_DEFINITION BOILERS_PARAMETERS_QUERY
-pnpm run generate-graphql-queries BOILERS_SIMULATION_INPUTS BOILERS_SIMULATION_INPUTS_QUERY
-pnpm run generate-graphql-queries BOILERS_SIMULATION_OUTPUTS BOILERS_SIMULATION_OUTPUTS_QUERY
+echo "📋 Generating DHW GraphQL queries..."
+pnpm run generate-graphql-queries DHW_CONTROL_DEFINITION DHW_CONTROL_QUERY
+pnpm run generate-graphql-queries DHW_SENSOR_DEFINITION DHW_SENSOR_QUERY
+pnpm run generate-graphql-queries DHW_PARAMETER_DEFINITION DHW_PARAMETERS_QUERY
+pnpm run generate-graphql-queries DHW_SIMULATION_INPUTS DHW_SIMULATION_INPUTS_QUERY
+pnpm run generate-graphql-queries DHW_SIMULATION_OUTPUTS DHW_SIMULATION_OUTPUTS_QUERY
 
 echo "✅ All schema extractions and GraphQL query generations completed!"

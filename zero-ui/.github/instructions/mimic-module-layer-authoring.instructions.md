@@ -1,5 +1,5 @@
 ---
-description: "Use when authoring or updating layers for a mimic module (e.g. boilers, chiller, cabin). Covers the full layer-by-layer alignment workflow using Figma MCP as the design source of truth, coordinate conversion, component sizing, label nudging, and the mandatory todo + validation cycle."
+description: "Use when authoring or updating layers for a mimic module (e.g. dhw, chiller, cabin). Covers the full layer-by-layer alignment workflow using Figma MCP as the design source of truth, coordinate conversion, component sizing, label nudging, and the mandatory todo + validation cycle."
 name: "Mimic Module Layer Authoring"
 applyTo: "src/modules/**/mimics/modules/**/*.vue"
 ---
@@ -31,7 +31,7 @@ moduleY = figmaAbsoluteY - moduleOriginY
 
 Where `moduleOriginX` and `moduleOriginY` are the absolute canvas coordinates of the module's root frame in Figma. Establish these at the start of each session by fetching the module frame's position from Figma. Document the offset in session notes for reuse across all layers.
 
-Example for the boilers module (absoluteX = -501, absoluteY = 1714):
+Example for the dhw module (absoluteX = -501, absoluteY = 1714):
 
 ```
 moduleX = figmaAbsoluteX + 501

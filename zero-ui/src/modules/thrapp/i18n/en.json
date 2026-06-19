@@ -124,7 +124,7 @@
           "heating-medium": "Heating"
         }
       },
-      "boilers": {
+      "dhw": {
         "assets": {
           "heatPumpTitle": "Heat pump",
           "hvacTitle": "HVAC"
@@ -138,8 +138,8 @@
           "highTempLoopTitle": "High temp loop",
           "brightloopTitle": "Brightloop",
           "drivesTitle": "Drives",
-          "fahrenheitTitle": "Fahrenheit",
-          "domesticHotWaterTitle": "Domestic hot water"
+          "fahrenheitTitle": "Adsorption",
+          "domesticHotWaterTitle": "Fresh Water system"
         }
       }
     },
