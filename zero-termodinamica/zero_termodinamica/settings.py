@@ -47,5 +47,7 @@ class ModbusSettings(BaseSettings):
     def modbus_client(self):
         return ModbusClient(self.modbus_host, self.modbus_port)
 
-    def modbus_server(self):
-        return ModbusServer(self.modbus_host, self.modbus_port, no_block=True)
+    def modbus_server(self, data_handler):
+        return ModbusServer(
+            self.modbus_host, self.modbus_port, no_block=True, data_hdl=data_handler
+        )

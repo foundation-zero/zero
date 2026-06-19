@@ -4,7 +4,7 @@ from unittest.mock import AsyncMock, MagicMock
 
 import pytest
 
-from zero_termodinamica.addresses import Address
+from zero_termodinamica.addresses import Address, ModbusUnit, MQTTTopic
 from zero_termodinamica.modbus_to_mqtt import ModbusToMQTTBridge
 
 
@@ -16,12 +16,25 @@ async def test_run_once_success():
     mock_mqtt = AsyncMock()
 
     # Simple address for testing
-    address = Address(
-        register=200, topic="test/topic", field_name="PWR", scale_factor=1.0
-    )
-    addresses = [address]
+    modbus_units = [
+        ModbusUnit(
+            unit_id=1,
+            topics=[
+                MQTTTopic(
+                    topic="test/topic",
+                    fields=[
+                        Address(
+                            register=200,
+                            field_name="PWR",
+                            scale_factor=1.0,
+                        )
+                    ],
+                )
+            ],
+        )
+    ]
 
-    bridge = ModbusToMQTTBridge(mock_modbus, mock_mqtt, addresses)
+    bridge = ModbusToMQTTBridge(mock_modbus, mock_mqtt, modbus_units)
 
     # Setup mock returns: Modbus returns 1 for the register
     mock_modbus.read_holding_registers.return_value = [1]
@@ -40,12 +53,30 @@ async def test_run_once_multiple_addresses_scaling():
     mock_mqtt = AsyncMock()
 
     # Two addresses on the same topic with different scaling
-    addresses = [
-        Address(register=200, topic="test/topic", field_name="PWR", scale_factor=1.0),
-        Address(register=201, topic="test/topic", field_name="TEMP", scale_factor=0.1),
+    modbus_units = [
+        ModbusUnit(
+            unit_id=1,
+            topics=[
+                MQTTTopic(
+                    topic="test/topic",
+                    fields=[
+                        Address(
+                            register=200,
+                            field_name="PWR",
+                            scale_factor=1.0,
+                        ),
+                        Address(
+                            register=201,
+                            field_name="TEMP",
+                            scale_factor=0.1,
+                        ),
+                    ],
+                )
+            ],
+        )
     ]
 
-    bridge = ModbusToMQTTBridge(mock_modbus, mock_mqtt, addresses)
+    bridge = ModbusToMQTTBridge(mock_modbus, mock_mqtt, modbus_units)
 
     # Setup mock returns
     def read_side_effect(register, count):
@@ -75,12 +106,26 @@ async def test_run_once_multiple_topics():
     # Mock MqttClient
     mock_mqtt = AsyncMock()
 
-    addresses = [
-        Address(register=200, topic="topic/1", field_name="VAL1"),
-        Address(register=300, topic="topic/2", field_name="VAL2"),
+    modbus_units = [
+        ModbusUnit(
+            unit_id=1,
+            topics=[
+                MQTTTopic(
+                    topic="topic/1",
+                    fields=[
+                        Address(register=200, field_name="VAL1"),
+                    ],
+                ),
+                MQTTTopic(
+                    topic="topic/2",
+                    fields=[
+                        Address(register=300, field_name="VAL2"),
+                    ],
+                ),
+            ],
+        )
     ]
-
-    bridge = ModbusToMQTTBridge(mock_modbus, mock_mqtt, addresses)
+    bridge = ModbusToMQTTBridge(mock_modbus, mock_mqtt, modbus_units)
 
     def read_side_effect(register, count):
         if register == 200:
@@ -114,13 +159,22 @@ async def test_run_multiple_cycles():
     mock_mqtt = AsyncMock()
 
     # Simple address for testing
-    address = Address(
-        register=200, topic="test/topic", field_name="PWR", scale_factor=1.0
-    )
-    addresses = [address]
+    modbus_units = [
+        ModbusUnit(
+            unit_id=1,
+            topics=[
+                MQTTTopic(
+                    topic="test/topic",
+                    fields=[Address(register=200, field_name="PWR", scale_factor=1.0)],
+                )
+            ],
+        )
+    ]
 
     # probe_interval=0.5s, run for 1s -> expect exactly 2 cycles
-    bridge = ModbusToMQTTBridge(mock_modbus, mock_mqtt, addresses, probe_interval=0.5)
+    bridge = ModbusToMQTTBridge(
+        mock_modbus, mock_mqtt, modbus_units, probe_interval=0.5
+    )
 
     # Setup mock returns: Modbus returns 1 for the register
     mock_modbus.read_holding_registers.return_value = [1]

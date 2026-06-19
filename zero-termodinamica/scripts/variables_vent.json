@@ -1,2922 +1,3279 @@
 {
-    "01": [
-        {
-            "register_name": "REG_SPLIT_01_READ_AIR_FLOW",
-            "address": 50,
-            "description": "Unit AirFlow reading",
-            "reg_split": "01",
-            "variable_name": "AIR_FLOW",
-            "type": "vent"
-        },
-        {
-            "register_name": "REG_SPLIT_01_READ_SP_AIR_FLOW",
-            "address": 51,
-            "description": "Unit AirFlow Set Point",
-            "reg_split": "01",
-            "variable_name": "SP_AIR_FLOW",
-            "type": "vent"
-        },
-        {
-            "register_name": "REG_SPLIT_01_READ_CO2_LEV",
-            "address": 52,
-            "description": "Unit CO2 Level reading",
-            "reg_split": "01",
-            "variable_name": "CO2_LEV",
-            "type": "vent"
-        },
-        {
-            "register_name": "REG_SPLIT_01_READ_SP_CO2",
-            "address": 53,
-            "description": "Unit CO2 Set Point",
-            "reg_split": "01",
-            "variable_name": "SP_CO2",
-            "type": "vent"
-        },
-        {
-            "register_name": "REG_SPLIT_01_READ_HUMI_LEV",
-            "address": 54,
-            "description": "Unit Humidity Level reading",
-            "reg_split": "01",
-            "variable_name": "HUMI_LEV",
-            "type": "vent"
-        },
-        {
-            "register_name": "REG_SPLIT_01_READ_SP_HUMI",
-            "address": 55,
-            "description": "Unit Humidity Set Point",
-            "reg_split": "01",
-            "variable_name": "SP_HUMI",
-            "type": "vent"
-        },
-        {
-            "register_name": "REG_SPLIT_01_READ_CO2_LEV_2",
-            "address": 56,
-            "description": "Unit CO2 Level reading sensor 2 (when available)",
-            "reg_split": "01",
-            "variable_name": "CO2_LEV_2",
-            "type": "vent"
-        },
-        {
-            "register_name": "REG_SPLIT_01_READ_SP_CO2_2",
-            "address": 57,
-            "description": "Unit CO2 Set Point sensor 2 (when available)",
-            "reg_split": "01",
-            "variable_name": "SP_CO2_2",
-            "type": "vent"
-        },
-        {
-            "register_name": "REG_SPLIT_01_READ_HUMI_LEV_2",
-            "address": 58,
-            "description": "Unit Humidity Level reading sensor 2 (when available)",
-            "reg_split": "01",
-            "variable_name": "HUMI_LEV_2",
-            "type": "vent"
-        },
-        {
-            "register_name": "REG_SPLIT_01_READ_SP_HUMI_2",
-            "address": 59,
-            "description": "Unit Humidity Set Point sensor 2 (when available)",
-            "reg_split": "01",
-            "variable_name": "SP_HUMI_2",
-            "type": "vent"
-        },
-        {
-            "register_name": "REG_SPLIT_01_READ_ERRORS",
-            "address": 60,
-            "description": "Errors (TBD)",
-            "reg_split": "01",
-            "variable_name": "ERRORS",
-            "type": "vent"
-        }
-    ],
-    "02": [
-        {
-            "register_name": "REG_SPLIT_02_READ_AIR_FLOW",
-            "address": 70,
-            "description": "Unit AirFlow reading",
-            "reg_split": "02",
-            "variable_name": "AIR_FLOW",
-            "type": "vent"
-        },
-        {
-            "register_name": "REG_SPLIT_02_READ_SP_AIR_FLOW",
-            "address": 71,
-            "description": "Unit AirFlow Set Point",
-            "reg_split": "02",
-            "variable_name": "SP_AIR_FLOW",
-            "type": "vent"
-        },
-        {
-            "register_name": "REG_SPLIT_02_READ_CO2_LEV",
-            "address": 72,
-            "description": "Unit CO2 Level reading",
-            "reg_split": "02",
-            "variable_name": "CO2_LEV",
-            "type": "vent"
-        },
-        {
-            "register_name": "REG_SPLIT_02_READ_SP_CO2",
-            "address": 73,
-            "description": "Unit CO2 Set Point",
-            "reg_split": "02",
-            "variable_name": "SP_CO2",
-            "type": "vent"
-        },
-        {
-            "register_name": "REG_SPLIT_02_READ_HUMI_LEV",
-            "address": 74,
-            "description": "Unit Humidity Level reading",
-            "reg_split": "02",
-            "variable_name": "HUMI_LEV",
-            "type": "vent"
-        },
-        {
-            "register_name": "REG_SPLIT_02_READ_SP_HUMI",
-            "address": 75,
-            "description": "Unit Humidity Set Point",
-            "reg_split": "02",
-            "variable_name": "SP_HUMI",
-            "type": "vent"
-        },
-        {
-            "register_name": "REG_SPLIT_02_READ_CO2_LEV_2",
-            "address": 76,
-            "description": "Unit CO2 Level reading sensor 2 (when available)",
-            "reg_split": "02",
-            "variable_name": "CO2_LEV_2",
-            "type": "vent"
-        },
-        {
-            "register_name": "REG_SPLIT_02_READ_SP_CO2_2",
-            "address": 77,
-            "description": "Unit CO2 Set Point sensor 2 (when available)",
-            "reg_split": "02",
-            "variable_name": "SP_CO2_2",
-            "type": "vent"
-        },
-        {
-            "register_name": "REG_SPLIT_02_READ_HUMI_LEV_2",
-            "address": 78,
-            "description": "Unit Humidity Level reading sensor 2 (when available)",
-            "reg_split": "02",
-            "variable_name": "HUMI_LEV_2",
-            "type": "vent"
-        },
-        {
-            "register_name": "REG_SPLIT_02_READ_SP_HUMI_2",
-            "address": 79,
-            "description": "Unit Humidity Set Point sensor 2 (when available)",
-            "reg_split": "02",
-            "variable_name": "SP_HUMI_2",
-            "type": "vent"
-        },
-        {
-            "register_name": "REG_SPLIT_02_READ_ERRORS",
-            "address": 80,
-            "description": "Errors (TBD)",
-            "reg_split": "02",
-            "variable_name": "ERRORS",
-            "type": "vent"
-        }
-    ],
-    "03": [
-        {
-            "register_name": "REG_SPLIT_03_READ_AIR_FLOW",
-            "address": 90,
-            "description": "Unit AirFlow reading",
-            "reg_split": "03",
-            "variable_name": "AIR_FLOW",
-            "type": "vent"
-        },
-        {
-            "register_name": "REG_SPLIT_03_READ_SP_AIR_FLOW",
-            "address": 91,
-            "description": "Unit AirFlow Set Point",
-            "reg_split": "03",
-            "variable_name": "SP_AIR_FLOW",
-            "type": "vent"
-        },
-        {
-            "register_name": "REG_SPLIT_03_READ_CO2_LEV",
-            "address": 92,
-            "description": "Unit CO2 Level reading",
-            "reg_split": "03",
-            "variable_name": "CO2_LEV",
-            "type": "vent"
-        },
-        {
-            "register_name": "REG_SPLIT_03_READ_SP_CO2",
-            "address": 93,
-            "description": "Unit CO2 Set Point",
-            "reg_split": "03",
-            "variable_name": "SP_CO2",
-            "type": "vent"
-        },
-        {
-            "register_name": "REG_SPLIT_03_READ_HUMI_LEV",
-            "address": 94,
-            "description": "Unit Humidity Level reading",
-            "reg_split": "03",
-            "variable_name": "HUMI_LEV",
-            "type": "vent"
-        },
-        {
-            "register_name": "REG_SPLIT_03_READ_SP_HUMI",
-            "address": 95,
-            "description": "Unit Humidity Set Point",
-            "reg_split": "03",
-            "variable_name": "SP_HUMI",
-            "type": "vent"
-        },
-        {
-            "register_name": "REG_SPLIT_03_READ_CO2_LEV_2",
-            "address": 96,
-            "description": "Unit CO2 Level reading sensor 2 (when available)",
-            "reg_split": "03",
-            "variable_name": "CO2_LEV_2",
-            "type": "vent"
-        },
-        {
-            "register_name": "REG_SPLIT_03_READ_SP_CO2_2",
-            "address": 97,
-            "description": "Unit CO2 Set Point sensor 2 (when available)",
-            "reg_split": "03",
-            "variable_name": "SP_CO2_2",
-            "type": "vent"
-        },
-        {
-            "register_name": "REG_SPLIT_03_READ_HUMI_LEV_2",
-            "address": 98,
-            "description": "Unit Humidity Level reading sensor 2 (when available)",
-            "reg_split": "03",
-            "variable_name": "HUMI_LEV_2",
-            "type": "vent"
-        },
-        {
-            "register_name": "REG_SPLIT_03_READ_SP_HUMI_2",
-            "address": 99,
-            "description": "Unit Humidity Set Point sensor 2 (when available)",
-            "reg_split": "03",
-            "variable_name": "SP_HUMI_2",
-            "type": "vent"
-        },
-        {
-            "register_name": "REG_SPLIT_03_READ_ERRORS",
-            "address": 100,
-            "description": "Errors (TBD)",
-            "reg_split": "03",
-            "variable_name": "ERRORS",
-            "type": "vent"
-        }
-    ],
-    "04": [
-        {
-            "register_name": "REG_SPLIT_04_READ_AIR_FLOW",
-            "address": 110,
-            "description": "Unit AirFlow reading",
-            "reg_split": "04",
-            "variable_name": "AIR_FLOW",
-            "type": "vent"
-        },
-        {
-            "register_name": "REG_SPLIT_04_READ_SP_AIR_FLOW",
-            "address": 111,
-            "description": "Unit AirFlow Set Point",
-            "reg_split": "04",
-            "variable_name": "SP_AIR_FLOW",
-            "type": "vent"
-        },
-        {
-            "register_name": "REG_SPLIT_04_READ_CO2_LEV",
-            "address": 112,
-            "description": "Unit CO2 Level reading",
-            "reg_split": "04",
-            "variable_name": "CO2_LEV",
-            "type": "vent"
-        },
-        {
-            "register_name": "REG_SPLIT_04_READ_SP_CO2",
-            "address": 113,
-            "description": "Unit CO2 Set Point",
-            "reg_split": "04",
-            "variable_name": "SP_CO2",
-            "type": "vent"
-        },
-        {
-            "register_name": "REG_SPLIT_04_READ_HUMI_LEV",
-            "address": 114,
-            "description": "Unit Humidity Level reading",
-            "reg_split": "04",
-            "variable_name": "HUMI_LEV",
-            "type": "vent"
-        },
-        {
-            "register_name": "REG_SPLIT_04_READ_SP_HUMI",
-            "address": 115,
-            "description": "Unit Humidity Set Point",
-            "reg_split": "04",
-            "variable_name": "SP_HUMI",
-            "type": "vent"
-        },
-        {
-            "register_name": "REG_SPLIT_04_READ_CO2_LEV_2",
-            "address": 116,
-            "description": "Unit CO2 Level reading sensor 2 (when available)",
-            "reg_split": "04",
-            "variable_name": "CO2_LEV_2",
-            "type": "vent"
-        },
-        {
-            "register_name": "REG_SPLIT_04_READ_SP_CO2_2",
-            "address": 117,
-            "description": "Unit CO2 Set Point sensor 2 (when available)",
-            "reg_split": "04",
-            "variable_name": "SP_CO2_2",
-            "type": "vent"
-        },
-        {
-            "register_name": "REG_SPLIT_04_READ_HUMI_LEV_2",
-            "address": 118,
-            "description": "Unit Humidity Level reading sensor 2 (when available)",
-            "reg_split": "04",
-            "variable_name": "HUMI_LEV_2",
-            "type": "vent"
-        },
-        {
-            "register_name": "REG_SPLIT_04_READ_SP_HUMI_2",
-            "address": 119,
-            "description": "Unit Humidity Set Point sensor 2 (when available)",
-            "reg_split": "04",
-            "variable_name": "SP_HUMI_2",
-            "type": "vent"
-        },
-        {
-            "register_name": "REG_SPLIT_04_READ_ERRORS",
-            "address": 120,
-            "description": "Errors (TBD)",
-            "reg_split": "04",
-            "variable_name": "ERRORS",
-            "type": "vent"
-        }
-    ],
-    "05": [
-        {
-            "register_name": "REG_SPLIT_05_READ_AIR_FLOW",
-            "address": 130,
-            "description": "Unit AirFlow reading",
-            "reg_split": "05",
-            "variable_name": "AIR_FLOW",
-            "type": "vent"
-        },
-        {
-            "register_name": "REG_SPLIT_05_READ_SP_AIR_FLOW",
-            "address": 131,
-            "description": "Unit AirFlow Set Point",
-            "reg_split": "05",
-            "variable_name": "SP_AIR_FLOW",
-            "type": "vent"
-        },
-        {
-            "register_name": "REG_SPLIT_05_READ_CO2_LEV",
-            "address": 132,
-            "description": "Unit CO2 Level reading",
-            "reg_split": "05",
-            "variable_name": "CO2_LEV",
-            "type": "vent"
-        },
-        {
-            "register_name": "REG_SPLIT_05_READ_SP_CO2",
-            "address": 133,
-            "description": "Unit CO2 Set Point",
-            "reg_split": "05",
-            "variable_name": "SP_CO2",
-            "type": "vent"
-        },
-        {
-            "register_name": "REG_SPLIT_05_READ_HUMI_LEV",
-            "address": 134,
-            "description": "Unit Humidity Level reading",
-            "reg_split": "05",
-            "variable_name": "HUMI_LEV",
-            "type": "vent"
-        },
-        {
-            "register_name": "REG_SPLIT_05_READ_SP_HUMI",
-            "address": 135,
-            "description": "Unit Humidity Set Point",
-            "reg_split": "05",
-            "variable_name": "SP_HUMI",
-            "type": "vent"
-        },
-        {
-            "register_name": "REG_SPLIT_05_READ_CO2_LEV_2",
-            "address": 136,
-            "description": "Unit CO2 Level reading sensor 2 (when available)",
-            "reg_split": "05",
-            "variable_name": "CO2_LEV_2",
-            "type": "vent"
-        },
-        {
-            "register_name": "REG_SPLIT_05_READ_SP_CO2_2",
-            "address": 137,
-            "description": "Unit CO2 Set Point sensor 2 (when available)",
-            "reg_split": "05",
-            "variable_name": "SP_CO2_2",
-            "type": "vent"
-        },
-        {
-            "register_name": "REG_SPLIT_05_READ_HUMI_LEV_2",
-            "address": 138,
-            "description": "Unit Humidity Level reading sensor 2 (when available)",
-            "reg_split": "05",
-            "variable_name": "HUMI_LEV_2",
-            "type": "vent"
-        },
-        {
-            "register_name": "REG_SPLIT_05_READ_SP_HUMI_2",
-            "address": 139,
-            "description": "Unit Humidity Set Point sensor 2 (when available)",
-            "reg_split": "05",
-            "variable_name": "SP_HUMI_2",
-            "type": "vent"
-        },
-        {
-            "register_name": "REG_SPLIT_05_READ_ERRORS",
-            "address": 140,
-            "description": "Errors (TBD)",
-            "reg_split": "05",
-            "variable_name": "ERRORS",
-            "type": "vent"
-        }
-    ],
-    "06": [
-        {
-            "register_name": "REG_SPLIT_06_READ_AIR_FLOW",
-            "address": 150,
-            "description": "Unit AirFlow reading",
-            "reg_split": "06",
-            "variable_name": "AIR_FLOW",
-            "type": "vent"
-        },
-        {
-            "register_name": "REG_SPLIT_06_READ_SP_AIR_FLOW",
-            "address": 151,
-            "description": "Unit AirFlow Set Point",
-            "reg_split": "06",
-            "variable_name": "SP_AIR_FLOW",
-            "type": "vent"
-        },
-        {
-            "register_name": "REG_SPLIT_06_READ_CO2_LEV",
-            "address": 152,
-            "description": "Unit CO2 Level reading",
-            "reg_split": "06",
-            "variable_name": "CO2_LEV",
-            "type": "vent"
-        },
-        {
-            "register_name": "REG_SPLIT_06_READ_SP_CO2",
-            "address": 153,
-            "description": "Unit CO2 Set Point",
-            "reg_split": "06",
-            "variable_name": "SP_CO2",
-            "type": "vent"
-        },
-        {
-            "register_name": "REG_SPLIT_06_READ_HUMI_LEV",
-            "address": 154,
-            "description": "Unit Humidity Level reading",
-            "reg_split": "06",
-            "variable_name": "HUMI_LEV",
-            "type": "vent"
-        },
-        {
-            "register_name": "REG_SPLIT_06_READ_SP_HUMI",
-            "address": 155,
-            "description": "Unit Humidity Set Point",
-            "reg_split": "06",
-            "variable_name": "SP_HUMI",
-            "type": "vent"
-        },
-        {
-            "register_name": "REG_SPLIT_06_READ_CO2_LEV_2",
-            "address": 156,
-            "description": "Unit CO2 Level reading sensor 2 (when available)",
-            "reg_split": "06",
-            "variable_name": "CO2_LEV_2",
-            "type": "vent"
-        },
-        {
-            "register_name": "REG_SPLIT_06_READ_SP_CO2_2",
-            "address": 157,
-            "description": "Unit CO2 Set Point sensor 2 (when available)",
-            "reg_split": "06",
-            "variable_name": "SP_CO2_2",
-            "type": "vent"
-        },
-        {
-            "register_name": "REG_SPLIT_06_READ_HUMI_LEV_2",
-            "address": 158,
-            "description": "Unit Humidity Level reading sensor 2 (when available)",
-            "reg_split": "06",
-            "variable_name": "HUMI_LEV_2",
-            "type": "vent"
-        },
-        {
-            "register_name": "REG_SPLIT_06_READ_SP_HUMI_2",
-            "address": 159,
-            "description": "Unit Humidity Set Point sensor 2 (when available)",
-            "reg_split": "06",
-            "variable_name": "SP_HUMI_2",
-            "type": "vent"
-        },
-        {
-            "register_name": "REG_SPLIT_06_READ_ERRORS",
-            "address": 160,
-            "description": "Errors (TBD)",
-            "reg_split": "06",
-            "variable_name": "ERRORS",
-            "type": "vent"
-        }
-    ],
-    "07": [
-        {
-            "register_name": "REG_SPLIT_07_READ_AIR_FLOW",
-            "address": 170,
-            "description": "Unit AirFlow reading",
-            "reg_split": "07",
-            "variable_name": "AIR_FLOW",
-            "type": "vent"
-        },
-        {
-            "register_name": "REG_SPLIT_07_READ_SP_AIR_FLOW",
-            "address": 171,
-            "description": "Unit AirFlow Set Point",
-            "reg_split": "07",
-            "variable_name": "SP_AIR_FLOW",
-            "type": "vent"
-        },
-        {
-            "register_name": "REG_SPLIT_07_READ_CO2_LEV",
-            "address": 172,
-            "description": "Unit CO2 Level reading",
-            "reg_split": "07",
-            "variable_name": "CO2_LEV",
-            "type": "vent"
-        },
-        {
-            "register_name": "REG_SPLIT_07_READ_SP_CO2",
-            "address": 173,
-            "description": "Unit CO2 Set Point",
-            "reg_split": "07",
-            "variable_name": "SP_CO2",
-            "type": "vent"
-        },
-        {
-            "register_name": "REG_SPLIT_07_READ_HUMI_LEV",
-            "address": 174,
-            "description": "Unit Humidity Level reading",
-            "reg_split": "07",
-            "variable_name": "HUMI_LEV",
-            "type": "vent"
-        },
-        {
-            "register_name": "REG_SPLIT_07_READ_SP_HUMI",
-            "address": 175,
-            "description": "Unit Humidity Set Point",
-            "reg_split": "07",
-            "variable_name": "SP_HUMI",
-            "type": "vent"
-        },
-        {
-            "register_name": "REG_SPLIT_07_READ_CO2_LEV_2",
-            "address": 176,
-            "description": "Unit CO2 Level reading sensor 2 (when available)",
-            "reg_split": "07",
-            "variable_name": "CO2_LEV_2",
-            "type": "vent"
-        },
-        {
-            "register_name": "REG_SPLIT_07_READ_SP_CO2_2",
-            "address": 177,
-            "description": "Unit CO2 Set Point sensor 2 (when available)",
-            "reg_split": "07",
-            "variable_name": "SP_CO2_2",
-            "type": "vent"
-        },
-        {
-            "register_name": "REG_SPLIT_07_READ_HUMI_LEV_2",
-            "address": 178,
-            "description": "Unit Humidity Level reading sensor 2 (when available)",
-            "reg_split": "07",
-            "variable_name": "HUMI_LEV_2",
-            "type": "vent"
-        },
-        {
-            "register_name": "REG_SPLIT_07_READ_SP_HUMI_2",
-            "address": 179,
-            "description": "Unit Humidity Set Point sensor 2 (when available)",
-            "reg_split": "07",
-            "variable_name": "SP_HUMI_2",
-            "type": "vent"
-        },
-        {
-            "register_name": "REG_SPLIT_07_READ_ERRORS",
-            "address": 180,
-            "description": "Errors (TBD)",
-            "reg_split": "07",
-            "variable_name": "ERRORS",
-            "type": "vent"
-        }
-    ],
-    "08": [
-        {
-            "register_name": "REG_SPLIT_08_READ_AIR_FLOW",
-            "address": 190,
-            "description": "Unit AirFlow reading",
-            "reg_split": "08",
-            "variable_name": "AIR_FLOW",
-            "type": "vent"
-        },
-        {
-            "register_name": "REG_SPLIT_08_READ_SP_AIR_FLOW",
-            "address": 191,
-            "description": "Unit AirFlow Set Point",
-            "reg_split": "08",
-            "variable_name": "SP_AIR_FLOW",
-            "type": "vent"
-        },
-        {
-            "register_name": "REG_SPLIT_08_READ_CO2_LEV",
-            "address": 192,
-            "description": "Unit CO2 Level reading",
-            "reg_split": "08",
-            "variable_name": "CO2_LEV",
-            "type": "vent"
-        },
-        {
-            "register_name": "REG_SPLIT_08_READ_SP_CO2",
-            "address": 193,
-            "description": "Unit CO2 Set Point",
-            "reg_split": "08",
-            "variable_name": "SP_CO2",
-            "type": "vent"
-        },
-        {
-            "register_name": "REG_SPLIT_08_READ_HUMI_LEV",
-            "address": 194,
-            "description": "Unit Humidity Level reading",
-            "reg_split": "08",
-            "variable_name": "HUMI_LEV",
-            "type": "vent"
-        },
-        {
-            "register_name": "REG_SPLIT_08_READ_SP_HUMI",
-            "address": 195,
-            "description": "Unit Humidity Set Point",
-            "reg_split": "08",
-            "variable_name": "SP_HUMI",
-            "type": "vent"
-        },
-        {
-            "register_name": "REG_SPLIT_08_READ_CO2_LEV_2",
-            "address": 196,
-            "description": "Unit CO2 Level reading sensor 2 (when available)",
-            "reg_split": "08",
-            "variable_name": "CO2_LEV_2",
-            "type": "vent"
-        },
-        {
-            "register_name": "REG_SPLIT_08_READ_SP_CO2_2",
-            "address": 197,
-            "description": "Unit CO2 Set Point sensor 2 (when available)",
-            "reg_split": "08",
-            "variable_name": "SP_CO2_2",
-            "type": "vent"
-        },
-        {
-            "register_name": "REG_SPLIT_08_READ_HUMI_LEV_2",
-            "address": 198,
-            "description": "Unit Humidity Level reading sensor 2 (when available)",
-            "reg_split": "08",
-            "variable_name": "HUMI_LEV_2",
-            "type": "vent"
-        },
-        {
-            "register_name": "REG_SPLIT_08_READ_SP_HUMI_2",
-            "address": 199,
-            "description": "Unit Humidity Set Point sensor 2 (when available)",
-            "reg_split": "08",
-            "variable_name": "SP_HUMI_2",
-            "type": "vent"
-        },
-        {
-            "register_name": "REG_SPLIT_08_READ_ERRORS",
-            "address": 200,
-            "description": "Errors (TBD)",
-            "reg_split": "08",
-            "variable_name": "ERRORS",
-            "type": "vent"
-        }
-    ],
-    "09": [
-        {
-            "register_name": "REG_SPLIT_09_READ_AIR_FLOW",
-            "address": 210,
-            "description": "Unit AirFlow reading",
-            "reg_split": "09",
-            "variable_name": "AIR_FLOW",
-            "type": "vent"
-        },
-        {
-            "register_name": "REG_SPLIT_09_READ_SP_AIR_FLOW",
-            "address": 211,
-            "description": "Unit AirFlow Set Point",
-            "reg_split": "09",
-            "variable_name": "SP_AIR_FLOW",
-            "type": "vent"
-        },
-        {
-            "register_name": "REG_SPLIT_09_READ_CO2_LEV",
-            "address": 212,
-            "description": "Unit CO2 Level reading",
-            "reg_split": "09",
-            "variable_name": "CO2_LEV",
-            "type": "vent"
-        },
-        {
-            "register_name": "REG_SPLIT_09_READ_SP_CO2",
-            "address": 213,
-            "description": "Unit CO2 Set Point",
-            "reg_split": "09",
-            "variable_name": "SP_CO2",
-            "type": "vent"
-        },
-        {
-            "register_name": "REG_SPLIT_09_READ_HUMI_LEV",
-            "address": 214,
-            "description": "Unit Humidity Level reading",
-            "reg_split": "09",
-            "variable_name": "HUMI_LEV",
-            "type": "vent"
-        },
-        {
-            "register_name": "REG_SPLIT_09_READ_SP_HUMI",
-            "address": 215,
-            "description": "Unit Humidity Set Point",
-            "reg_split": "09",
-            "variable_name": "SP_HUMI",
-            "type": "vent"
-        },
-        {
-            "register_name": "REG_SPLIT_09_READ_CO2_LEV_2",
-            "address": 216,
-            "description": "Unit CO2 Level reading sensor 2 (when available)",
-            "reg_split": "09",
-            "variable_name": "CO2_LEV_2",
-            "type": "vent"
-        },
-        {
-            "register_name": "REG_SPLIT_09_READ_SP_CO2_2",
-            "address": 217,
-            "description": "Unit CO2 Set Point sensor 2 (when available)",
-            "reg_split": "09",
-            "variable_name": "SP_CO2_2",
-            "type": "vent"
-        },
-        {
-            "register_name": "REG_SPLIT_09_READ_HUMI_LEV_2",
-            "address": 218,
-            "description": "Unit Humidity Level reading sensor 2 (when available)",
-            "reg_split": "09",
-            "variable_name": "HUMI_LEV_2",
-            "type": "vent"
-        },
-        {
-            "register_name": "REG_SPLIT_09_READ_SP_HUMI_2",
-            "address": 219,
-            "description": "Unit Humidity Set Point sensor 2 (when available)",
-            "reg_split": "09",
-            "variable_name": "SP_HUMI_2",
-            "type": "vent"
-        },
-        {
-            "register_name": "REG_SPLIT_09_READ_ERRORS",
-            "address": 220,
-            "description": "Errors (TBD)",
-            "reg_split": "09",
-            "variable_name": "ERRORS",
-            "type": "vent"
-        }
-    ],
-    "10": [
-        {
-            "register_name": "REG_SPLIT_10_READ_AIR_FLOW",
-            "address": 230,
-            "description": "Unit AirFlow reading",
-            "reg_split": "10",
-            "variable_name": "AIR_FLOW",
-            "type": "vent"
-        },
-        {
-            "register_name": "REG_SPLIT_10_READ_SP_AIR_FLOW",
-            "address": 231,
-            "description": "Unit AirFlow Set Point",
-            "reg_split": "10",
-            "variable_name": "SP_AIR_FLOW",
-            "type": "vent"
-        },
-        {
-            "register_name": "REG_SPLIT_10_READ_CO2_LEV",
-            "address": 232,
-            "description": "Unit CO2 Level reading",
-            "reg_split": "10",
-            "variable_name": "CO2_LEV",
-            "type": "vent"
-        },
-        {
-            "register_name": "REG_SPLIT_10_READ_SP_CO2",
-            "address": 233,
-            "description": "Unit CO2 Set Point",
-            "reg_split": "10",
-            "variable_name": "SP_CO2",
-            "type": "vent"
-        },
-        {
-            "register_name": "REG_SPLIT_10_READ_HUMI_LEV",
-            "address": 234,
-            "description": "Unit Humidity Level reading",
-            "reg_split": "10",
-            "variable_name": "HUMI_LEV",
-            "type": "vent"
-        },
-        {
-            "register_name": "REG_SPLIT_10_READ_SP_HUMI",
-            "address": 235,
-            "description": "Unit Humidity Set Point",
-            "reg_split": "10",
-            "variable_name": "SP_HUMI",
-            "type": "vent"
-        },
-        {
-            "register_name": "REG_SPLIT_10_READ_CO2_LEV_2",
-            "address": 236,
-            "description": "Unit CO2 Level reading sensor 2 (when available)",
-            "reg_split": "10",
-            "variable_name": "CO2_LEV_2",
-            "type": "vent"
-        },
-        {
-            "register_name": "REG_SPLIT_10_READ_SP_CO2_2",
-            "address": 237,
-            "description": "Unit CO2 Set Point sensor 2 (when available)",
-            "reg_split": "10",
-            "variable_name": "SP_CO2_2",
-            "type": "vent"
-        },
-        {
-            "register_name": "REG_SPLIT_10_READ_HUMI_LEV_2",
-            "address": 238,
-            "description": "Unit Humidity Level reading sensor 2 (when available)",
-            "reg_split": "10",
-            "variable_name": "HUMI_LEV_2",
-            "type": "vent"
-        },
-        {
-            "register_name": "REG_SPLIT_10_READ_SP_HUMI_2",
-            "address": 239,
-            "description": "Unit Humidity Set Point sensor 2 (when available)",
-            "reg_split": "10",
-            "variable_name": "SP_HUMI_2",
-            "type": "vent"
-        },
-        {
-            "register_name": "REG_SPLIT_10_READ_ERRORS",
-            "address": 240,
-            "description": "Errors (TBD)",
-            "reg_split": "10",
-            "variable_name": "ERRORS",
-            "type": "vent"
-        }
-    ],
-    "11": [
-        {
-            "register_name": "REG_SPLIT_11_READ_AIR_FLOW",
-            "address": 250,
-            "description": "Unit AirFlow reading",
-            "reg_split": "11",
-            "variable_name": "AIR_FLOW",
-            "type": "vent"
-        },
-        {
-            "register_name": "REG_SPLIT_11_READ_SP_AIR_FLOW",
-            "address": 251,
-            "description": "Unit AirFlow Set Point",
-            "reg_split": "11",
-            "variable_name": "SP_AIR_FLOW",
-            "type": "vent"
-        },
-        {
-            "register_name": "REG_SPLIT_11_READ_CO2_LEV",
-            "address": 252,
-            "description": "Unit CO2 Level reading",
-            "reg_split": "11",
-            "variable_name": "CO2_LEV",
-            "type": "vent"
-        },
-        {
-            "register_name": "REG_SPLIT_11_READ_SP_CO2",
-            "address": 253,
-            "description": "Unit CO2 Set Point",
-            "reg_split": "11",
-            "variable_name": "SP_CO2",
-            "type": "vent"
-        },
-        {
-            "register_name": "REG_SPLIT_11_READ_HUMI_LEV",
-            "address": 254,
-            "description": "Unit Humidity Level reading",
-            "reg_split": "11",
-            "variable_name": "HUMI_LEV",
-            "type": "vent"
-        },
-        {
-            "register_name": "REG_SPLIT_11_READ_SP_HUMI",
-            "address": 255,
-            "description": "Unit Humidity Set Point",
-            "reg_split": "11",
-            "variable_name": "SP_HUMI",
-            "type": "vent"
-        },
-        {
-            "register_name": "REG_SPLIT_11_READ_CO2_LEV_2",
-            "address": 256,
-            "description": "Unit CO2 Level reading sensor 2 (when available)",
-            "reg_split": "11",
-            "variable_name": "CO2_LEV_2",
-            "type": "vent"
-        },
-        {
-            "register_name": "REG_SPLIT_11_READ_SP_CO2_2",
-            "address": 257,
-            "description": "Unit CO2 Set Point sensor 2 (when available)",
-            "reg_split": "11",
-            "variable_name": "SP_CO2_2",
-            "type": "vent"
-        },
-        {
-            "register_name": "REG_SPLIT_11_READ_HUMI_LEV_2",
-            "address": 258,
-            "description": "Unit Humidity Level reading sensor 2 (when available)",
-            "reg_split": "11",
-            "variable_name": "HUMI_LEV_2",
-            "type": "vent"
-        },
-        {
-            "register_name": "REG_SPLIT_11_READ_SP_HUMI_2",
-            "address": 259,
-            "description": "Unit Humidity Set Point sensor 2 (when available)",
-            "reg_split": "11",
-            "variable_name": "SP_HUMI_2",
-            "type": "vent"
-        },
-        {
-            "register_name": "REG_SPLIT_11_READ_ERRORS",
-            "address": 260,
-            "description": "Errors (TBD)",
-            "reg_split": "11",
-            "variable_name": "ERRORS",
-            "type": "vent"
-        }
-    ],
-    "12": [
-        {
-            "register_name": "REG_SPLIT_12_READ_AIR_FLOW",
-            "address": 270,
-            "description": "Unit AirFlow reading",
-            "reg_split": "12",
-            "variable_name": "AIR_FLOW",
-            "type": "vent"
-        },
-        {
-            "register_name": "REG_SPLIT_12_READ_SP_AIR_FLOW",
-            "address": 271,
-            "description": "Unit AirFlow Set Point",
-            "reg_split": "12",
-            "variable_name": "SP_AIR_FLOW",
-            "type": "vent"
-        },
-        {
-            "register_name": "REG_SPLIT_12_READ_CO2_LEV",
-            "address": 272,
-            "description": "Unit CO2 Level reading",
-            "reg_split": "12",
-            "variable_name": "CO2_LEV",
-            "type": "vent"
-        },
-        {
-            "register_name": "REG_SPLIT_12_READ_SP_CO2",
-            "address": 273,
-            "description": "Unit CO2 Set Point",
-            "reg_split": "12",
-            "variable_name": "SP_CO2",
-            "type": "vent"
-        },
-        {
-            "register_name": "REG_SPLIT_12_READ_HUMI_LEV",
-            "address": 274,
-            "description": "Unit Humidity Level reading",
-            "reg_split": "12",
-            "variable_name": "HUMI_LEV",
-            "type": "vent"
-        },
-        {
-            "register_name": "REG_SPLIT_12_READ_SP_HUMI",
-            "address": 275,
-            "description": "Unit Humidity Set Point",
-            "reg_split": "12",
-            "variable_name": "SP_HUMI",
-            "type": "vent"
-        },
-        {
-            "register_name": "REG_SPLIT_12_READ_CO2_LEV_2",
-            "address": 276,
-            "description": "Unit CO2 Level reading sensor 2 (when available)",
-            "reg_split": "12",
-            "variable_name": "CO2_LEV_2",
-            "type": "vent"
-        },
-        {
-            "register_name": "REG_SPLIT_12_READ_SP_CO2_2",
-            "address": 277,
-            "description": "Unit CO2 Set Point sensor 2 (when available)",
-            "reg_split": "12",
-            "variable_name": "SP_CO2_2",
-            "type": "vent"
-        },
-        {
-            "register_name": "REG_SPLIT_12_READ_HUMI_LEV_2",
-            "address": 278,
-            "description": "Unit Humidity Level reading sensor 2 (when available)",
-            "reg_split": "12",
-            "variable_name": "HUMI_LEV_2",
-            "type": "vent"
-        },
-        {
-            "register_name": "REG_SPLIT_12_READ_SP_HUMI_2",
-            "address": 279,
-            "description": "Unit Humidity Set Point sensor 2 (when available)",
-            "reg_split": "12",
-            "variable_name": "SP_HUMI_2",
-            "type": "vent"
-        },
-        {
-            "register_name": "REG_SPLIT_12_READ_ERRORS",
-            "address": 280,
-            "description": "Errors (TBD)",
-            "reg_split": "12",
-            "variable_name": "ERRORS",
-            "type": "vent"
-        }
-    ],
-    "13": [
-        {
-            "register_name": "REG_SPLIT_13_READ_AIR_FLOW",
-            "address": 290,
-            "description": "Unit AirFlow reading",
-            "reg_split": "13",
-            "variable_name": "AIR_FLOW",
-            "type": "vent"
-        },
-        {
-            "register_name": "REG_SPLIT_13_READ_SP_AIR_FLOW",
-            "address": 291,
-            "description": "Unit AirFlow Set Point",
-            "reg_split": "13",
-            "variable_name": "SP_AIR_FLOW",
-            "type": "vent"
-        },
-        {
-            "register_name": "REG_SPLIT_13_READ_CO2_LEV",
-            "address": 292,
-            "description": "Unit CO2 Level reading",
-            "reg_split": "13",
-            "variable_name": "CO2_LEV",
-            "type": "vent"
-        },
-        {
-            "register_name": "REG_SPLIT_13_READ_SP_CO2",
-            "address": 293,
-            "description": "Unit CO2 Set Point",
-            "reg_split": "13",
-            "variable_name": "SP_CO2",
-            "type": "vent"
-        },
-        {
-            "register_name": "REG_SPLIT_13_READ_HUMI_LEV",
-            "address": 294,
-            "description": "Unit Humidity Level reading",
-            "reg_split": "13",
-            "variable_name": "HUMI_LEV",
-            "type": "vent"
-        },
-        {
-            "register_name": "REG_SPLIT_13_READ_SP_HUMI",
-            "address": 295,
-            "description": "Unit Humidity Set Point",
-            "reg_split": "13",
-            "variable_name": "SP_HUMI",
-            "type": "vent"
-        },
-        {
-            "register_name": "REG_SPLIT_13_READ_CO2_LEV_2",
-            "address": 296,
-            "description": "Unit CO2 Level reading sensor 2 (when available)",
-            "reg_split": "13",
-            "variable_name": "CO2_LEV_2",
-            "type": "vent"
-        },
-        {
-            "register_name": "REG_SPLIT_13_READ_SP_CO2_2",
-            "address": 297,
-            "description": "Unit CO2 Set Point sensor 2 (when available)",
-            "reg_split": "13",
-            "variable_name": "SP_CO2_2",
-            "type": "vent"
-        },
-        {
-            "register_name": "REG_SPLIT_13_READ_HUMI_LEV_2",
-            "address": 298,
-            "description": "Unit Humidity Level reading sensor 2 (when available)",
-            "reg_split": "13",
-            "variable_name": "HUMI_LEV_2",
-            "type": "vent"
-        },
-        {
-            "register_name": "REG_SPLIT_13_READ_SP_HUMI_2",
-            "address": 299,
-            "description": "Unit Humidity Set Point sensor 2 (when available)",
-            "reg_split": "13",
-            "variable_name": "SP_HUMI_2",
-            "type": "vent"
-        },
-        {
-            "register_name": "REG_SPLIT_13_READ_ERRORS",
-            "address": 300,
-            "description": "Errors (TBD)",
-            "reg_split": "13",
-            "variable_name": "ERRORS",
-            "type": "vent"
-        }
-    ],
-    "14": [
-        {
-            "register_name": "REG_SPLIT_14_READ_AIR_FLOW",
-            "address": 310,
-            "description": "Unit AirFlow reading",
-            "reg_split": "14",
-            "variable_name": "AIR_FLOW",
-            "type": "vent"
-        },
-        {
-            "register_name": "REG_SPLIT_14_READ_SP_AIR_FLOW",
-            "address": 311,
-            "description": "Unit AirFlow Set Point",
-            "reg_split": "14",
-            "variable_name": "SP_AIR_FLOW",
-            "type": "vent"
-        },
-        {
-            "register_name": "REG_SPLIT_14_READ_CO2_LEV",
-            "address": 312,
-            "description": "Unit CO2 Level reading",
-            "reg_split": "14",
-            "variable_name": "CO2_LEV",
-            "type": "vent"
-        },
-        {
-            "register_name": "REG_SPLIT_14_READ_SP_CO2",
-            "address": 313,
-            "description": "Unit CO2 Set Point",
-            "reg_split": "14",
-            "variable_name": "SP_CO2",
-            "type": "vent"
-        },
-        {
-            "register_name": "REG_SPLIT_14_READ_HUMI_LEV",
-            "address": 314,
-            "description": "Unit Humidity Level reading",
-            "reg_split": "14",
-            "variable_name": "HUMI_LEV",
-            "type": "vent"
-        },
-        {
-            "register_name": "REG_SPLIT_14_READ_SP_HUMI",
-            "address": 315,
-            "description": "Unit Humidity Set Point",
-            "reg_split": "14",
-            "variable_name": "SP_HUMI",
-            "type": "vent"
-        },
-        {
-            "register_name": "REG_SPLIT_14_READ_CO2_LEV_2",
-            "address": 316,
-            "description": "Unit CO2 Level reading sensor 2 (when available)",
-            "reg_split": "14",
-            "variable_name": "CO2_LEV_2",
-            "type": "vent"
-        },
-        {
-            "register_name": "REG_SPLIT_14_READ_SP_CO2_2",
-            "address": 317,
-            "description": "Unit CO2 Set Point sensor 2 (when available)",
-            "reg_split": "14",
-            "variable_name": "SP_CO2_2",
-            "type": "vent"
-        },
-        {
-            "register_name": "REG_SPLIT_14_READ_HUMI_LEV_2",
-            "address": 318,
-            "description": "Unit Humidity Level reading sensor 2 (when available)",
-            "reg_split": "14",
-            "variable_name": "HUMI_LEV_2",
-            "type": "vent"
-        },
-        {
-            "register_name": "REG_SPLIT_14_READ_SP_HUMI_2",
-            "address": 319,
-            "description": "Unit Humidity Set Point sensor 2 (when available)",
-            "reg_split": "14",
-            "variable_name": "SP_HUMI_2",
-            "type": "vent"
-        },
-        {
-            "register_name": "REG_SPLIT_14_READ_ERRORS",
-            "address": 320,
-            "description": "Errors (TBD)",
-            "reg_split": "14",
-            "variable_name": "ERRORS",
-            "type": "vent"
-        }
-    ],
-    "15": [
-        {
-            "register_name": "REG_SPLIT_15_READ_AIR_FLOW",
-            "address": 330,
-            "description": "Unit AirFlow reading",
-            "reg_split": "15",
-            "variable_name": "AIR_FLOW",
-            "type": "vent"
-        },
-        {
-            "register_name": "REG_SPLIT_15_READ_SP_AIR_FLOW",
-            "address": 331,
-            "description": "Unit AirFlow Set Point",
-            "reg_split": "15",
-            "variable_name": "SP_AIR_FLOW",
-            "type": "vent"
-        },
-        {
-            "register_name": "REG_SPLIT_15_READ_CO2_LEV",
-            "address": 332,
-            "description": "Unit CO2 Level reading",
-            "reg_split": "15",
-            "variable_name": "CO2_LEV",
-            "type": "vent"
-        },
-        {
-            "register_name": "REG_SPLIT_15_READ_SP_CO2",
-            "address": 333,
-            "description": "Unit CO2 Set Point",
-            "reg_split": "15",
-            "variable_name": "SP_CO2",
-            "type": "vent"
-        },
-        {
-            "register_name": "REG_SPLIT_15_READ_HUMI_LEV",
-            "address": 334,
-            "description": "Unit Humidity Level reading",
-            "reg_split": "15",
-            "variable_name": "HUMI_LEV",
-            "type": "vent"
-        },
-        {
-            "register_name": "REG_SPLIT_15_READ_SP_HUMI",
-            "address": 335,
-            "description": "Unit Humidity Set Point",
-            "reg_split": "15",
-            "variable_name": "SP_HUMI",
-            "type": "vent"
-        },
-        {
-            "register_name": "REG_SPLIT_15_READ_CO2_LEV_2",
-            "address": 336,
-            "description": "Unit CO2 Level reading sensor 2 (when available)",
-            "reg_split": "15",
-            "variable_name": "CO2_LEV_2",
-            "type": "vent"
-        },
-        {
-            "register_name": "REG_SPLIT_15_READ_SP_CO2_2",
-            "address": 337,
-            "description": "Unit CO2 Set Point sensor 2 (when available)",
-            "reg_split": "15",
-            "variable_name": "SP_CO2_2",
-            "type": "vent"
-        },
-        {
-            "register_name": "REG_SPLIT_15_READ_HUMI_LEV_2",
-            "address": 338,
-            "description": "Unit Humidity Level reading sensor 2 (when available)",
-            "reg_split": "15",
-            "variable_name": "HUMI_LEV_2",
-            "type": "vent"
-        },
-        {
-            "register_name": "REG_SPLIT_15_READ_SP_HUMI_2",
-            "address": 339,
-            "description": "Unit Humidity Set Point sensor 2 (when available)",
-            "reg_split": "15",
-            "variable_name": "SP_HUMI_2",
-            "type": "vent"
-        },
-        {
-            "register_name": "REG_SPLIT_15_READ_ERRORS",
-            "address": 340,
-            "description": "Errors (TBD)",
-            "reg_split": "15",
-            "variable_name": "ERRORS",
-            "type": "vent"
-        }
-    ],
-    "16": [
-        {
-            "register_name": "REG_SPLIT_16_READ_AIR_FLOW",
-            "address": 350,
-            "description": "Unit AirFlow reading",
-            "reg_split": "16",
-            "variable_name": "AIR_FLOW",
-            "type": "vent"
-        },
-        {
-            "register_name": "REG_SPLIT_16_READ_SP_AIR_FLOW",
-            "address": 351,
-            "description": "Unit AirFlow Set Point",
-            "reg_split": "16",
-            "variable_name": "SP_AIR_FLOW",
-            "type": "vent"
-        },
-        {
-            "register_name": "REG_SPLIT_16_READ_CO2_LEV",
-            "address": 352,
-            "description": "Unit CO2 Level reading",
-            "reg_split": "16",
-            "variable_name": "CO2_LEV",
-            "type": "vent"
-        },
-        {
-            "register_name": "REG_SPLIT_16_READ_SP_CO2",
-            "address": 353,
-            "description": "Unit CO2 Set Point",
-            "reg_split": "16",
-            "variable_name": "SP_CO2",
-            "type": "vent"
-        },
-        {
-            "register_name": "REG_SPLIT_16_READ_HUMI_LEV",
-            "address": 354,
-            "description": "Unit Humidity Level reading",
-            "reg_split": "16",
-            "variable_name": "HUMI_LEV",
-            "type": "vent"
-        },
-        {
-            "register_name": "REG_SPLIT_16_READ_SP_HUMI",
-            "address": 355,
-            "description": "Unit Humidity Set Point",
-            "reg_split": "16",
-            "variable_name": "SP_HUMI",
-            "type": "vent"
-        },
-        {
-            "register_name": "REG_SPLIT_16_READ_CO2_LEV_2",
-            "address": 356,
-            "description": "Unit CO2 Level reading sensor 2 (when available)",
-            "reg_split": "16",
-            "variable_name": "CO2_LEV_2",
-            "type": "vent"
-        },
-        {
-            "register_name": "REG_SPLIT_16_READ_SP_CO2_2",
-            "address": 357,
-            "description": "Unit CO2 Set Point sensor 2 (when available)",
-            "reg_split": "16",
-            "variable_name": "SP_CO2_2",
-            "type": "vent"
-        },
-        {
-            "register_name": "REG_SPLIT_16_READ_HUMI_LEV_2",
-            "address": 358,
-            "description": "Unit Humidity Level reading sensor 2 (when available)",
-            "reg_split": "16",
-            "variable_name": "HUMI_LEV_2",
-            "type": "vent"
-        },
-        {
-            "register_name": "REG_SPLIT_16_READ_SP_HUMI_2",
-            "address": 359,
-            "description": "Unit Humidity Set Point sensor 2 (when available)",
-            "reg_split": "16",
-            "variable_name": "SP_HUMI_2",
-            "type": "vent"
-        },
-        {
-            "register_name": "REG_SPLIT_16_READ_ERRORS",
-            "address": 360,
-            "description": "Errors (TBD)",
-            "reg_split": "16",
-            "variable_name": "ERRORS",
-            "type": "vent"
-        }
-    ],
-    "17": [
-        {
-            "register_name": "REG_SPLIT_17_READ_AIR_FLOW",
-            "address": 370,
-            "description": "Unit AirFlow reading",
-            "reg_split": "17",
-            "variable_name": "AIR_FLOW",
-            "type": "vent"
-        },
-        {
-            "register_name": "REG_SPLIT_17_READ_SP_AIR_FLOW",
-            "address": 371,
-            "description": "Unit AirFlow Set Point",
-            "reg_split": "17",
-            "variable_name": "SP_AIR_FLOW",
-            "type": "vent"
-        },
-        {
-            "register_name": "REG_SPLIT_17_READ_CO2_LEV",
-            "address": 372,
-            "description": "Unit CO2 Level reading",
-            "reg_split": "17",
-            "variable_name": "CO2_LEV",
-            "type": "vent"
-        },
-        {
-            "register_name": "REG_SPLIT_17_READ_SP_CO2",
-            "address": 373,
-            "description": "Unit CO2 Set Point",
-            "reg_split": "17",
-            "variable_name": "SP_CO2",
-            "type": "vent"
-        },
-        {
-            "register_name": "REG_SPLIT_17_READ_HUMI_LEV",
-            "address": 374,
-            "description": "Unit Humidity Level reading",
-            "reg_split": "17",
-            "variable_name": "HUMI_LEV",
-            "type": "vent"
-        },
-        {
-            "register_name": "REG_SPLIT_17_READ_SP_HUMI",
-            "address": 375,
-            "description": "Unit Humidity Set Point",
-            "reg_split": "17",
-            "variable_name": "SP_HUMI",
-            "type": "vent"
-        },
-        {
-            "register_name": "REG_SPLIT_17_READ_CO2_LEV_2",
-            "address": 376,
-            "description": "Unit CO2 Level reading sensor 2 (when available)",
-            "reg_split": "17",
-            "variable_name": "CO2_LEV_2",
-            "type": "vent"
-        },
-        {
-            "register_name": "REG_SPLIT_17_READ_SP_CO2_2",
-            "address": 377,
-            "description": "Unit CO2 Set Point sensor 2 (when available)",
-            "reg_split": "17",
-            "variable_name": "SP_CO2_2",
-            "type": "vent"
-        },
-        {
-            "register_name": "REG_SPLIT_17_READ_HUMI_LEV_2",
-            "address": 378,
-            "description": "Unit Humidity Level reading sensor 2 (when available)",
-            "reg_split": "17",
-            "variable_name": "HUMI_LEV_2",
-            "type": "vent"
-        },
-        {
-            "register_name": "REG_SPLIT_17_READ_SP_HUMI_2",
-            "address": 379,
-            "description": "Unit Humidity Set Point sensor 2 (when available)",
-            "reg_split": "17",
-            "variable_name": "SP_HUMI_2",
-            "type": "vent"
-        },
-        {
-            "register_name": "REG_SPLIT_17_READ_ERRORS",
-            "address": 380,
-            "description": "Errors (TBD)",
-            "reg_split": "17",
-            "variable_name": "ERRORS",
-            "type": "vent"
-        }
-    ],
-    "18": [
-        {
-            "register_name": "REG_SPLIT_18_READ_AIR_FLOW",
-            "address": 390,
-            "description": "Unit AirFlow reading",
-            "reg_split": "18",
-            "variable_name": "AIR_FLOW",
-            "type": "vent"
-        },
-        {
-            "register_name": "REG_SPLIT_18_READ_SP_AIR_FLOW",
-            "address": 391,
-            "description": "Unit AirFlow Set Point",
-            "reg_split": "18",
-            "variable_name": "SP_AIR_FLOW",
-            "type": "vent"
-        },
-        {
-            "register_name": "REG_SPLIT_18_READ_CO2_LEV",
-            "address": 392,
-            "description": "Unit CO2 Level reading",
-            "reg_split": "18",
-            "variable_name": "CO2_LEV",
-            "type": "vent"
-        },
-        {
-            "register_name": "REG_SPLIT_18_READ_SP_CO2",
-            "address": 393,
-            "description": "Unit CO2 Set Point",
-            "reg_split": "18",
-            "variable_name": "SP_CO2",
-            "type": "vent"
-        },
-        {
-            "register_name": "REG_SPLIT_18_READ_HUMI_LEV",
-            "address": 394,
-            "description": "Unit Humidity Level reading",
-            "reg_split": "18",
-            "variable_name": "HUMI_LEV",
-            "type": "vent"
-        },
-        {
-            "register_name": "REG_SPLIT_18_READ_SP_HUMI",
-            "address": 395,
-            "description": "Unit Humidity Set Point",
-            "reg_split": "18",
-            "variable_name": "SP_HUMI",
-            "type": "vent"
-        },
-        {
-            "register_name": "REG_SPLIT_18_READ_CO2_LEV_2",
-            "address": 396,
-            "description": "Unit CO2 Level reading sensor 2 (when available)",
-            "reg_split": "18",
-            "variable_name": "CO2_LEV_2",
-            "type": "vent"
-        },
-        {
-            "register_name": "REG_SPLIT_18_READ_SP_CO2_2",
-            "address": 397,
-            "description": "Unit CO2 Set Point sensor 2 (when available)",
-            "reg_split": "18",
-            "variable_name": "SP_CO2_2",
-            "type": "vent"
-        },
-        {
-            "register_name": "REG_SPLIT_18_READ_HUMI_LEV_2",
-            "address": 398,
-            "description": "Unit Humidity Level reading sensor 2 (when available)",
-            "reg_split": "18",
-            "variable_name": "HUMI_LEV_2",
-            "type": "vent"
-        },
-        {
-            "register_name": "REG_SPLIT_18_READ_SP_HUMI_2",
-            "address": 399,
-            "description": "Unit Humidity Set Point sensor 2 (when available)",
-            "reg_split": "18",
-            "variable_name": "SP_HUMI_2",
-            "type": "vent"
-        },
-        {
-            "register_name": "REG_SPLIT_18_READ_ERRORS",
-            "address": 400,
-            "description": "Errors (TBD)",
-            "reg_split": "18",
-            "variable_name": "ERRORS",
-            "type": "vent"
-        }
-    ],
-    "19": [
-        {
-            "register_name": "REG_SPLIT_19_READ_AIR_FLOW",
-            "address": 410,
-            "description": "Unit AirFlow reading",
-            "reg_split": "19",
-            "variable_name": "AIR_FLOW",
-            "type": "vent"
-        },
-        {
-            "register_name": "REG_SPLIT_19_READ_SP_AIR_FLOW",
-            "address": 411,
-            "description": "Unit AirFlow Set Point",
-            "reg_split": "19",
-            "variable_name": "SP_AIR_FLOW",
-            "type": "vent"
-        },
-        {
-            "register_name": "REG_SPLIT_19_READ_CO2_LEV",
-            "address": 412,
-            "description": "Unit CO2 Level reading",
-            "reg_split": "19",
-            "variable_name": "CO2_LEV",
-            "type": "vent"
-        },
-        {
-            "register_name": "REG_SPLIT_19_READ_SP_CO2",
-            "address": 413,
-            "description": "Unit CO2 Set Point",
-            "reg_split": "19",
-            "variable_name": "SP_CO2",
-            "type": "vent"
-        },
-        {
-            "register_name": "REG_SPLIT_19_READ_HUMI_LEV",
-            "address": 414,
-            "description": "Unit Humidity Level reading",
-            "reg_split": "19",
-            "variable_name": "HUMI_LEV",
-            "type": "vent"
-        },
-        {
-            "register_name": "REG_SPLIT_19_READ_SP_HUMI",
-            "address": 415,
-            "description": "Unit Humidity Set Point",
-            "reg_split": "19",
-            "variable_name": "SP_HUMI",
-            "type": "vent"
-        },
-        {
-            "register_name": "REG_SPLIT_19_READ_CO2_LEV_2",
-            "address": 416,
-            "description": "Unit CO2 Level reading sensor 2 (when available)",
-            "reg_split": "19",
-            "variable_name": "CO2_LEV_2",
-            "type": "vent"
-        },
-        {
-            "register_name": "REG_SPLIT_19_READ_SP_CO2_2",
-            "address": 417,
-            "description": "Unit CO2 Set Point sensor 2 (when available)",
-            "reg_split": "19",
-            "variable_name": "SP_CO2_2",
-            "type": "vent"
-        },
-        {
-            "register_name": "REG_SPLIT_19_READ_HUMI_LEV_2",
-            "address": 418,
-            "description": "Unit Humidity Level reading sensor 2 (when available)",
-            "reg_split": "19",
-            "variable_name": "HUMI_LEV_2",
-            "type": "vent"
-        },
-        {
-            "register_name": "REG_SPLIT_19_READ_SP_HUMI_2",
-            "address": 419,
-            "description": "Unit Humidity Set Point sensor 2 (when available)",
-            "reg_split": "19",
-            "variable_name": "SP_HUMI_2",
-            "type": "vent"
-        },
-        {
-            "register_name": "REG_SPLIT_19_READ_ERRORS",
-            "address": 420,
-            "description": "Errors (TBD)",
-            "reg_split": "19",
-            "variable_name": "ERRORS",
-            "type": "vent"
-        }
-    ],
-    "20": [
-        {
-            "register_name": "REG_SPLIT_20_READ_AIR_FLOW",
-            "address": 430,
-            "description": "Unit AirFlow reading",
-            "reg_split": "20",
-            "variable_name": "AIR_FLOW",
-            "type": "vent"
-        },
-        {
-            "register_name": "REG_SPLIT_20_READ_SP_AIR_FLOW",
-            "address": 431,
-            "description": "Unit AirFlow Set Point",
-            "reg_split": "20",
-            "variable_name": "SP_AIR_FLOW",
-            "type": "vent"
-        },
-        {
-            "register_name": "REG_SPLIT_20_READ_CO2_LEV",
-            "address": 432,
-            "description": "Unit CO2 Level reading",
-            "reg_split": "20",
-            "variable_name": "CO2_LEV",
-            "type": "vent"
-        },
-        {
-            "register_name": "REG_SPLIT_20_READ_SP_CO2",
-            "address": 433,
-            "description": "Unit CO2 Set Point",
-            "reg_split": "20",
-            "variable_name": "SP_CO2",
-            "type": "vent"
-        },
-        {
-            "register_name": "REG_SPLIT_20_READ_HUMI_LEV",
-            "address": 434,
-            "description": "Unit Humidity Level reading",
-            "reg_split": "20",
-            "variable_name": "HUMI_LEV",
-            "type": "vent"
-        },
-        {
-            "register_name": "REG_SPLIT_20_READ_SP_HUMI",
-            "address": 435,
-            "description": "Unit Humidity Set Point",
-            "reg_split": "20",
-            "variable_name": "SP_HUMI",
-            "type": "vent"
-        },
-        {
-            "register_name": "REG_SPLIT_20_READ_CO2_LEV_2",
-            "address": 436,
-            "description": "Unit CO2 Level reading sensor 2 (when available)",
-            "reg_split": "20",
-            "variable_name": "CO2_LEV_2",
-            "type": "vent"
-        },
-        {
-            "register_name": "REG_SPLIT_20_READ_SP_CO2_2",
-            "address": 437,
-            "description": "Unit CO2 Set Point sensor 2 (when available)",
-            "reg_split": "20",
-            "variable_name": "SP_CO2_2",
-            "type": "vent"
-        },
-        {
-            "register_name": "REG_SPLIT_20_READ_HUMI_LEV_2",
-            "address": 438,
-            "description": "Unit Humidity Level reading sensor 2 (when available)",
-            "reg_split": "20",
-            "variable_name": "HUMI_LEV_2",
-            "type": "vent"
-        },
-        {
-            "register_name": "REG_SPLIT_20_READ_SP_HUMI_2",
-            "address": 439,
-            "description": "Unit Humidity Set Point sensor 2 (when available)",
-            "reg_split": "20",
-            "variable_name": "SP_HUMI_2",
-            "type": "vent"
-        },
-        {
-            "register_name": "REG_SPLIT_20_READ_ERRORS",
-            "address": 440,
-            "description": "Errors (TBD)",
-            "reg_split": "20",
-            "variable_name": "ERRORS",
-            "type": "vent"
-        }
-    ],
-    "21": [
-        {
-            "register_name": "REG_SPLIT_21_READ_AIR_FLOW",
-            "address": 450,
-            "description": "Unit AirFlow reading",
-            "reg_split": "21",
-            "variable_name": "AIR_FLOW",
-            "type": "vent"
-        },
-        {
-            "register_name": "REG_SPLIT_21_READ_SP_AIR_FLOW",
-            "address": 451,
-            "description": "Unit AirFlow Set Point",
-            "reg_split": "21",
-            "variable_name": "SP_AIR_FLOW",
-            "type": "vent"
-        },
-        {
-            "register_name": "REG_SPLIT_21_READ_CO2_LEV",
-            "address": 452,
-            "description": "Unit CO2 Level reading",
-            "reg_split": "21",
-            "variable_name": "CO2_LEV",
-            "type": "vent"
-        },
-        {
-            "register_name": "REG_SPLIT_21_READ_SP_CO2",
-            "address": 453,
-            "description": "Unit CO2 Set Point",
-            "reg_split": "21",
-            "variable_name": "SP_CO2",
-            "type": "vent"
-        },
-        {
-            "register_name": "REG_SPLIT_21_READ_HUMI_LEV",
-            "address": 454,
-            "description": "Unit Humidity Level reading",
-            "reg_split": "21",
-            "variable_name": "HUMI_LEV",
-            "type": "vent"
-        },
-        {
-            "register_name": "REG_SPLIT_21_READ_SP_HUMI",
-            "address": 455,
-            "description": "Unit Humidity Set Point",
-            "reg_split": "21",
-            "variable_name": "SP_HUMI",
-            "type": "vent"
-        },
-        {
-            "register_name": "REG_SPLIT_21_READ_CO2_LEV_2",
-            "address": 456,
-            "description": "Unit CO2 Level reading sensor 2 (when available)",
-            "reg_split": "21",
-            "variable_name": "CO2_LEV_2",
-            "type": "vent"
-        },
-        {
-            "register_name": "REG_SPLIT_21_READ_SP_CO2_2",
-            "address": 457,
-            "description": "Unit CO2 Set Point sensor 2 (when available)",
-            "reg_split": "21",
-            "variable_name": "SP_CO2_2",
-            "type": "vent"
-        },
-        {
-            "register_name": "REG_SPLIT_21_READ_HUMI_LEV_2",
-            "address": 458,
-            "description": "Unit Humidity Level reading sensor 2 (when available)",
-            "reg_split": "21",
-            "variable_name": "HUMI_LEV_2",
-            "type": "vent"
-        },
-        {
-            "register_name": "REG_SPLIT_21_READ_SP_HUMI_2",
-            "address": 459,
-            "description": "Unit Humidity Set Point sensor 2 (when available)",
-            "reg_split": "21",
-            "variable_name": "SP_HUMI_2",
-            "type": "vent"
-        },
-        {
-            "register_name": "REG_SPLIT_21_READ_ERRORS",
-            "address": 460,
-            "description": "Errors (TBD)",
-            "reg_split": "21",
-            "variable_name": "ERRORS",
-            "type": "vent"
-        }
-    ],
-    "22": [
-        {
-            "register_name": "REG_SPLIT_22_READ_AIR_FLOW",
-            "address": 470,
-            "description": "Unit AirFlow reading",
-            "reg_split": "22",
-            "variable_name": "AIR_FLOW",
-            "type": "vent"
-        },
-        {
-            "register_name": "REG_SPLIT_22_READ_SP_AIR_FLOW",
-            "address": 471,
-            "description": "Unit AirFlow Set Point",
-            "reg_split": "22",
-            "variable_name": "SP_AIR_FLOW",
-            "type": "vent"
-        },
-        {
-            "register_name": "REG_SPLIT_22_READ_CO2_LEV",
-            "address": 472,
-            "description": "Unit CO2 Level reading",
-            "reg_split": "22",
-            "variable_name": "CO2_LEV",
-            "type": "vent"
-        },
-        {
-            "register_name": "REG_SPLIT_22_READ_SP_CO2",
-            "address": 473,
-            "description": "Unit CO2 Set Point",
-            "reg_split": "22",
-            "variable_name": "SP_CO2",
-            "type": "vent"
-        },
-        {
-            "register_name": "REG_SPLIT_22_READ_HUMI_LEV",
-            "address": 474,
-            "description": "Unit Humidity Level reading",
-            "reg_split": "22",
-            "variable_name": "HUMI_LEV",
-            "type": "vent"
-        },
-        {
-            "register_name": "REG_SPLIT_22_READ_SP_HUMI",
-            "address": 475,
-            "description": "Unit Humidity Set Point",
-            "reg_split": "22",
-            "variable_name": "SP_HUMI",
-            "type": "vent"
-        },
-        {
-            "register_name": "REG_SPLIT_22_READ_CO2_LEV_2",
-            "address": 476,
-            "description": "Unit CO2 Level reading sensor 2 (when available)",
-            "reg_split": "22",
-            "variable_name": "CO2_LEV_2",
-            "type": "vent"
-        },
-        {
-            "register_name": "REG_SPLIT_22_READ_SP_CO2_2",
-            "address": 477,
-            "description": "Unit CO2 Set Point sensor 2 (when available)",
-            "reg_split": "22",
-            "variable_name": "SP_CO2_2",
-            "type": "vent"
-        },
-        {
-            "register_name": "REG_SPLIT_22_READ_HUMI_LEV_2",
-            "address": 478,
-            "description": "Unit Humidity Level reading sensor 2 (when available)",
-            "reg_split": "22",
-            "variable_name": "HUMI_LEV_2",
-            "type": "vent"
-        },
-        {
-            "register_name": "REG_SPLIT_22_READ_SP_HUMI_2",
-            "address": 479,
-            "description": "Unit Humidity Set Point sensor 2 (when available)",
-            "reg_split": "22",
-            "variable_name": "SP_HUMI_2",
-            "type": "vent"
-        },
-        {
-            "register_name": "REG_SPLIT_22_READ_ERRORS",
-            "address": 480,
-            "description": "Errors (TBD)",
-            "reg_split": "22",
-            "variable_name": "ERRORS",
-            "type": "vent"
-        }
-    ],
-    "23": [
-        {
-            "register_name": "REG_SPLIT_23_READ_AIR_FLOW",
-            "address": 490,
-            "description": "Unit AirFlow reading",
-            "reg_split": "23",
-            "variable_name": "AIR_FLOW",
-            "type": "vent"
-        },
-        {
-            "register_name": "REG_SPLIT_23_READ_SP_AIR_FLOW",
-            "address": 491,
-            "description": "Unit AirFlow Set Point",
-            "reg_split": "23",
-            "variable_name": "SP_AIR_FLOW",
-            "type": "vent"
-        },
-        {
-            "register_name": "REG_SPLIT_23_READ_CO2_LEV",
-            "address": 492,
-            "description": "Unit CO2 Level reading",
-            "reg_split": "23",
-            "variable_name": "CO2_LEV",
-            "type": "vent"
-        },
-        {
-            "register_name": "REG_SPLIT_23_READ_SP_CO2",
-            "address": 493,
-            "description": "Unit CO2 Set Point",
-            "reg_split": "23",
-            "variable_name": "SP_CO2",
-            "type": "vent"
-        },
-        {
-            "register_name": "REG_SPLIT_23_READ_HUMI_LEV",
-            "address": 494,
-            "description": "Unit Humidity Level reading",
-            "reg_split": "23",
-            "variable_name": "HUMI_LEV",
-            "type": "vent"
-        },
-        {
-            "register_name": "REG_SPLIT_23_READ_SP_HUMI",
-            "address": 495,
-            "description": "Unit Humidity Set Point",
-            "reg_split": "23",
-            "variable_name": "SP_HUMI",
-            "type": "vent"
-        },
-        {
-            "register_name": "REG_SPLIT_23_READ_CO2_LEV_2",
-            "address": 496,
-            "description": "Unit CO2 Level reading sensor 2 (when available)",
-            "reg_split": "23",
-            "variable_name": "CO2_LEV_2",
-            "type": "vent"
-        },
-        {
-            "register_name": "REG_SPLIT_23_READ_SP_CO2_2",
-            "address": 497,
-            "description": "Unit CO2 Set Point sensor 2 (when available)",
-            "reg_split": "23",
-            "variable_name": "SP_CO2_2",
-            "type": "vent"
-        },
-        {
-            "register_name": "REG_SPLIT_23_READ_HUMI_LEV_2",
-            "address": 498,
-            "description": "Unit Humidity Level reading sensor 2 (when available)",
-            "reg_split": "23",
-            "variable_name": "HUMI_LEV_2",
-            "type": "vent"
-        },
-        {
-            "register_name": "REG_SPLIT_23_READ_SP_HUMI_2",
-            "address": 499,
-            "description": "Unit Humidity Set Point sensor 2 (when available)",
-            "reg_split": "23",
-            "variable_name": "SP_HUMI_2",
-            "type": "vent"
-        },
-        {
-            "register_name": "REG_SPLIT_23_READ_ERRORS",
-            "address": 500,
-            "description": "Errors (TBD)",
-            "reg_split": "23",
-            "variable_name": "ERRORS",
-            "type": "vent"
-        }
-    ],
-    "24": [
-        {
-            "register_name": "REG_SPLIT_24_READ_AIR_FLOW",
-            "address": 510,
-            "description": "Unit AirFlow reading",
-            "reg_split": "24",
-            "variable_name": "AIR_FLOW",
-            "type": "vent"
-        },
-        {
-            "register_name": "REG_SPLIT_24_READ_SP_AIR_FLOW",
-            "address": 511,
-            "description": "Unit AirFlow Set Point",
-            "reg_split": "24",
-            "variable_name": "SP_AIR_FLOW",
-            "type": "vent"
-        },
-        {
-            "register_name": "REG_SPLIT_24_READ_CO2_LEV",
-            "address": 512,
-            "description": "Unit CO2 Level reading",
-            "reg_split": "24",
-            "variable_name": "CO2_LEV",
-            "type": "vent"
-        },
-        {
-            "register_name": "REG_SPLIT_24_READ_SP_CO2",
-            "address": 513,
-            "description": "Unit CO2 Set Point",
-            "reg_split": "24",
-            "variable_name": "SP_CO2",
-            "type": "vent"
-        },
-        {
-            "register_name": "REG_SPLIT_24_READ_HUMI_LEV",
-            "address": 514,
-            "description": "Unit Humidity Level reading",
-            "reg_split": "24",
-            "variable_name": "HUMI_LEV",
-            "type": "vent"
-        },
-        {
-            "register_name": "REG_SPLIT_24_READ_SP_HUMI",
-            "address": 515,
-            "description": "Unit Humidity Set Point",
-            "reg_split": "24",
-            "variable_name": "SP_HUMI",
-            "type": "vent"
-        },
-        {
-            "register_name": "REG_SPLIT_24_READ_CO2_LEV_2",
-            "address": 516,
-            "description": "Unit CO2 Level reading sensor 2 (when available)",
-            "reg_split": "24",
-            "variable_name": "CO2_LEV_2",
-            "type": "vent"
-        },
-        {
-            "register_name": "REG_SPLIT_24_READ_SP_CO2_2",
-            "address": 517,
-            "description": "Unit CO2 Set Point sensor 2 (when available)",
-            "reg_split": "24",
-            "variable_name": "SP_CO2_2",
-            "type": "vent"
-        },
-        {
-            "register_name": "REG_SPLIT_24_READ_HUMI_LEV_2",
-            "address": 518,
-            "description": "Unit Humidity Level reading sensor 2 (when available)",
-            "reg_split": "24",
-            "variable_name": "HUMI_LEV_2",
-            "type": "vent"
-        },
-        {
-            "register_name": "REG_SPLIT_24_READ_SP_HUMI_2",
-            "address": 519,
-            "description": "Unit Humidity Set Point sensor 2 (when available)",
-            "reg_split": "24",
-            "variable_name": "SP_HUMI_2",
-            "type": "vent"
-        },
-        {
-            "register_name": "REG_SPLIT_24_READ_ERRORS",
-            "address": 520,
-            "description": "Errors (TBD)",
-            "reg_split": "24",
-            "variable_name": "ERRORS",
-            "type": "vent"
-        }
-    ],
-    "25": [
-        {
-            "register_name": "REG_SPLIT_25_READ_AIR_FLOW",
-            "address": 530,
-            "description": "Unit AirFlow reading",
-            "reg_split": "25",
-            "variable_name": "AIR_FLOW",
-            "type": "vent"
-        },
-        {
-            "register_name": "REG_SPLIT_25_READ_SP_AIR_FLOW",
-            "address": 531,
-            "description": "Unit AirFlow Set Point",
-            "reg_split": "25",
-            "variable_name": "SP_AIR_FLOW",
-            "type": "vent"
-        },
-        {
-            "register_name": "REG_SPLIT_25_READ_CO2_LEV",
-            "address": 532,
-            "description": "Unit CO2 Level reading",
-            "reg_split": "25",
-            "variable_name": "CO2_LEV",
-            "type": "vent"
-        },
-        {
-            "register_name": "REG_SPLIT_25_READ_SP_CO2",
-            "address": 533,
-            "description": "Unit CO2 Set Point",
-            "reg_split": "25",
-            "variable_name": "SP_CO2",
-            "type": "vent"
-        },
-        {
-            "register_name": "REG_SPLIT_25_READ_HUMI_LEV",
-            "address": 534,
-            "description": "Unit Humidity Level reading",
-            "reg_split": "25",
-            "variable_name": "HUMI_LEV",
-            "type": "vent"
-        },
-        {
-            "register_name": "REG_SPLIT_25_READ_SP_HUMI",
-            "address": 535,
-            "description": "Unit Humidity Set Point",
-            "reg_split": "25",
-            "variable_name": "SP_HUMI",
-            "type": "vent"
-        },
-        {
-            "register_name": "REG_SPLIT_25_READ_CO2_LEV_2",
-            "address": 536,
-            "description": "Unit CO2 Level reading sensor 2 (when available)",
-            "reg_split": "25",
-            "variable_name": "CO2_LEV_2",
-            "type": "vent"
-        },
-        {
-            "register_name": "REG_SPLIT_25_READ_SP_CO2_2",
-            "address": 537,
-            "description": "Unit CO2 Set Point sensor 2 (when available)",
-            "reg_split": "25",
-            "variable_name": "SP_CO2_2",
-            "type": "vent"
-        },
-        {
-            "register_name": "REG_SPLIT_25_READ_HUMI_LEV_2",
-            "address": 538,
-            "description": "Unit Humidity Level reading sensor 2 (when available)",
-            "reg_split": "25",
-            "variable_name": "HUMI_LEV_2",
-            "type": "vent"
-        },
-        {
-            "register_name": "REG_SPLIT_25_READ_SP_HUMI_2",
-            "address": 539,
-            "description": "Unit Humidity Set Point sensor 2 (when available)",
-            "reg_split": "25",
-            "variable_name": "SP_HUMI_2",
-            "type": "vent"
-        },
-        {
-            "register_name": "REG_SPLIT_25_READ_ERRORS",
-            "address": 540,
-            "description": "Errors (TBD)",
-            "reg_split": "25",
-            "variable_name": "ERRORS",
-            "type": "vent"
-        }
-    ],
-    "26": [
-        {
-            "register_name": "REG_SPLIT_26_READ_AIR_FLOW",
-            "address": 550,
-            "description": "Unit AirFlow reading",
-            "reg_split": "26",
-            "variable_name": "AIR_FLOW",
-            "type": "vent"
-        },
-        {
-            "register_name": "REG_SPLIT_26_READ_SP_AIR_FLOW",
-            "address": 551,
-            "description": "Unit AirFlow Set Point",
-            "reg_split": "26",
-            "variable_name": "SP_AIR_FLOW",
-            "type": "vent"
-        },
-        {
-            "register_name": "REG_SPLIT_26_READ_CO2_LEV",
-            "address": 552,
-            "description": "Unit CO2 Level reading",
-            "reg_split": "26",
-            "variable_name": "CO2_LEV",
-            "type": "vent"
-        },
-        {
-            "register_name": "REG_SPLIT_26_READ_SP_CO2",
-            "address": 553,
-            "description": "Unit CO2 Set Point",
-            "reg_split": "26",
-            "variable_name": "SP_CO2",
-            "type": "vent"
-        },
-        {
-            "register_name": "REG_SPLIT_26_READ_HUMI_LEV",
-            "address": 554,
-            "description": "Unit Humidity Level reading",
-            "reg_split": "26",
-            "variable_name": "HUMI_LEV",
-            "type": "vent"
-        },
-        {
-            "register_name": "REG_SPLIT_26_READ_SP_HUMI",
-            "address": 555,
-            "description": "Unit Humidity Set Point",
-            "reg_split": "26",
-            "variable_name": "SP_HUMI",
-            "type": "vent"
-        },
-        {
-            "register_name": "REG_SPLIT_26_READ_CO2_LEV_2",
-            "address": 556,
-            "description": "Unit CO2 Level reading sensor 2 (when available)",
-            "reg_split": "26",
-            "variable_name": "CO2_LEV_2",
-            "type": "vent"
-        },
-        {
-            "register_name": "REG_SPLIT_26_READ_SP_CO2_2",
-            "address": 557,
-            "description": "Unit CO2 Set Point sensor 2 (when available)",
-            "reg_split": "26",
-            "variable_name": "SP_CO2_2",
-            "type": "vent"
-        },
-        {
-            "register_name": "REG_SPLIT_26_READ_HUMI_LEV_2",
-            "address": 558,
-            "description": "Unit Humidity Level reading sensor 2 (when available)",
-            "reg_split": "26",
-            "variable_name": "HUMI_LEV_2",
-            "type": "vent"
-        },
-        {
-            "register_name": "REG_SPLIT_26_READ_SP_HUMI_2",
-            "address": 559,
-            "description": "Unit Humidity Set Point sensor 2 (when available)",
-            "reg_split": "26",
-            "variable_name": "SP_HUMI_2",
-            "type": "vent"
-        },
-        {
-            "register_name": "REG_SPLIT_26_READ_ERRORS",
-            "address": 560,
-            "description": "Errors (TBD)",
-            "reg_split": "26",
-            "variable_name": "ERRORS",
-            "type": "vent"
-        }
-    ],
-    "27": [
-        {
-            "register_name": "REG_SPLIT_27_READ_AIR_FLOW",
-            "address": 570,
-            "description": "Unit AirFlow reading",
-            "reg_split": "27",
-            "variable_name": "AIR_FLOW",
-            "type": "vent"
-        },
-        {
-            "register_name": "REG_SPLIT_27_READ_SP_AIR_FLOW",
-            "address": 571,
-            "description": "Unit AirFlow Set Point",
-            "reg_split": "27",
-            "variable_name": "SP_AIR_FLOW",
-            "type": "vent"
-        },
-        {
-            "register_name": "REG_SPLIT_27_READ_CO2_LEV",
-            "address": 572,
-            "description": "Unit CO2 Level reading",
-            "reg_split": "27",
-            "variable_name": "CO2_LEV",
-            "type": "vent"
-        },
-        {
-            "register_name": "REG_SPLIT_27_READ_SP_CO2",
-            "address": 573,
-            "description": "Unit CO2 Set Point",
-            "reg_split": "27",
-            "variable_name": "SP_CO2",
-            "type": "vent"
-        },
-        {
-            "register_name": "REG_SPLIT_27_READ_HUMI_LEV",
-            "address": 574,
-            "description": "Unit Humidity Level reading",
-            "reg_split": "27",
-            "variable_name": "HUMI_LEV",
-            "type": "vent"
-        },
-        {
-            "register_name": "REG_SPLIT_27_READ_SP_HUMI",
-            "address": 575,
-            "description": "Unit Humidity Set Point",
-            "reg_split": "27",
-            "variable_name": "SP_HUMI",
-            "type": "vent"
-        },
-        {
-            "register_name": "REG_SPLIT_27_READ_CO2_LEV_2",
-            "address": 576,
-            "description": "Unit CO2 Level reading sensor 2 (when available)",
-            "reg_split": "27",
-            "variable_name": "CO2_LEV_2",
-            "type": "vent"
-        },
-        {
-            "register_name": "REG_SPLIT_27_READ_SP_CO2_2",
-            "address": 577,
-            "description": "Unit CO2 Set Point sensor 2 (when available)",
-            "reg_split": "27",
-            "variable_name": "SP_CO2_2",
-            "type": "vent"
-        },
-        {
-            "register_name": "REG_SPLIT_27_READ_HUMI_LEV_2",
-            "address": 578,
-            "description": "Unit Humidity Level reading sensor 2 (when available)",
-            "reg_split": "27",
-            "variable_name": "HUMI_LEV_2",
-            "type": "vent"
-        },
-        {
-            "register_name": "REG_SPLIT_27_READ_SP_HUMI_2",
-            "address": 579,
-            "description": "Unit Humidity Set Point sensor 2 (when available)",
-            "reg_split": "27",
-            "variable_name": "SP_HUMI_2",
-            "type": "vent"
-        },
-        {
-            "register_name": "REG_SPLIT_27_READ_ERRORS",
-            "address": 580,
-            "description": "Errors (TBD)",
-            "reg_split": "27",
-            "variable_name": "ERRORS",
-            "type": "vent"
-        }
-    ],
-    "28": [
-        {
-            "register_name": "REG_SPLIT_28_READ_AIR_FLOW",
-            "address": 590,
-            "description": "Unit AirFlow reading",
-            "reg_split": "28",
-            "variable_name": "AIR_FLOW",
-            "type": "vent"
-        },
-        {
-            "register_name": "REG_SPLIT_28_READ_SP_AIR_FLOW",
-            "address": 591,
-            "description": "Unit AirFlow Set Point",
-            "reg_split": "28",
-            "variable_name": "SP_AIR_FLOW",
-            "type": "vent"
-        },
-        {
-            "register_name": "REG_SPLIT_28_READ_CO2_LEV",
-            "address": 592,
-            "description": "Unit CO2 Level reading",
-            "reg_split": "28",
-            "variable_name": "CO2_LEV",
-            "type": "vent"
-        },
-        {
-            "register_name": "REG_SPLIT_28_READ_SP_CO2",
-            "address": 593,
-            "description": "Unit CO2 Set Point",
-            "reg_split": "28",
-            "variable_name": "SP_CO2",
-            "type": "vent"
-        },
-        {
-            "register_name": "REG_SPLIT_28_READ_HUMI_LEV",
-            "address": 594,
-            "description": "Unit Humidity Level reading",
-            "reg_split": "28",
-            "variable_name": "HUMI_LEV",
-            "type": "vent"
-        },
-        {
-            "register_name": "REG_SPLIT_28_READ_SP_HUMI",
-            "address": 595,
-            "description": "Unit Humidity Set Point",
-            "reg_split": "28",
-            "variable_name": "SP_HUMI",
-            "type": "vent"
-        },
-        {
-            "register_name": "REG_SPLIT_28_READ_CO2_LEV_2",
-            "address": 596,
-            "description": "Unit CO2 Level reading sensor 2 (when available)",
-            "reg_split": "28",
-            "variable_name": "CO2_LEV_2",
-            "type": "vent"
-        },
-        {
-            "register_name": "REG_SPLIT_28_READ_SP_CO2_2",
-            "address": 597,
-            "description": "Unit CO2 Set Point sensor 2 (when available)",
-            "reg_split": "28",
-            "variable_name": "SP_CO2_2",
-            "type": "vent"
-        },
-        {
-            "register_name": "REG_SPLIT_28_READ_HUMI_LEV_2",
-            "address": 598,
-            "description": "Unit Humidity Level reading sensor 2 (when available)",
-            "reg_split": "28",
-            "variable_name": "HUMI_LEV_2",
-            "type": "vent"
-        },
-        {
-            "register_name": "REG_SPLIT_28_READ_SP_HUMI_2",
-            "address": 599,
-            "description": "Unit Humidity Set Point sensor 2 (when available)",
-            "reg_split": "28",
-            "variable_name": "SP_HUMI_2",
-            "type": "vent"
-        },
-        {
-            "register_name": "REG_SPLIT_28_READ_ERRORS",
-            "address": 600,
-            "description": "Errors (TBD)",
-            "reg_split": "28",
-            "variable_name": "ERRORS",
-            "type": "vent"
-        }
-    ],
-    "29": [
-        {
-            "register_name": "REG_SPLIT_29_READ_AIR_FLOW",
-            "address": 610,
-            "description": "Unit AirFlow reading",
-            "reg_split": "29",
-            "variable_name": "AIR_FLOW",
-            "type": "vent"
-        },
-        {
-            "register_name": "REG_SPLIT_29_READ_SP_AIR_FLOW",
-            "address": 611,
-            "description": "Unit AirFlow Set Point",
-            "reg_split": "29",
-            "variable_name": "SP_AIR_FLOW",
-            "type": "vent"
-        },
-        {
-            "register_name": "REG_SPLIT_29_READ_CO2_LEV",
-            "address": 612,
-            "description": "Unit CO2 Level reading",
-            "reg_split": "29",
-            "variable_name": "CO2_LEV",
-            "type": "vent"
-        },
-        {
-            "register_name": "REG_SPLIT_29_READ_SP_CO2",
-            "address": 613,
-            "description": "Unit CO2 Set Point",
-            "reg_split": "29",
-            "variable_name": "SP_CO2",
-            "type": "vent"
-        },
-        {
-            "register_name": "REG_SPLIT_29_READ_HUMI_LEV",
-            "address": 614,
-            "description": "Unit Humidity Level reading",
-            "reg_split": "29",
-            "variable_name": "HUMI_LEV",
-            "type": "vent"
-        },
-        {
-            "register_name": "REG_SPLIT_29_READ_SP_HUMI",
-            "address": 615,
-            "description": "Unit Humidity Set Point",
-            "reg_split": "29",
-            "variable_name": "SP_HUMI",
-            "type": "vent"
-        },
-        {
-            "register_name": "REG_SPLIT_29_READ_CO2_LEV_2",
-            "address": 616,
-            "description": "Unit CO2 Level reading sensor 2 (when available)",
-            "reg_split": "29",
-            "variable_name": "CO2_LEV_2",
-            "type": "vent"
-        },
-        {
-            "register_name": "REG_SPLIT_29_READ_SP_CO2_2",
-            "address": 617,
-            "description": "Unit CO2 Set Point sensor 2 (when available)",
-            "reg_split": "29",
-            "variable_name": "SP_CO2_2",
-            "type": "vent"
-        },
-        {
-            "register_name": "REG_SPLIT_29_READ_HUMI_LEV_2",
-            "address": 618,
-            "description": "Unit Humidity Level reading sensor 2 (when available)",
-            "reg_split": "29",
-            "variable_name": "HUMI_LEV_2",
-            "type": "vent"
-        },
-        {
-            "register_name": "REG_SPLIT_29_READ_SP_HUMI_2",
-            "address": 619,
-            "description": "Unit Humidity Set Point sensor 2 (when available)",
-            "reg_split": "29",
-            "variable_name": "SP_HUMI_2",
-            "type": "vent"
-        },
-        {
-            "register_name": "REG_SPLIT_29_READ_ERRORS",
-            "address": 620,
-            "description": "Errors (TBD)",
-            "reg_split": "29",
-            "variable_name": "ERRORS",
-            "type": "vent"
-        }
-    ],
-    "30": [
-        {
-            "register_name": "REG_SPLIT_30_READ_AIR_FLOW",
-            "address": 630,
-            "description": "Unit AirFlow reading",
-            "reg_split": "30",
-            "variable_name": "AIR_FLOW",
-            "type": "vent"
-        },
-        {
-            "register_name": "REG_SPLIT_30_READ_SP_AIR_FLOW",
-            "address": 631,
-            "description": "Unit AirFlow Set Point",
-            "reg_split": "30",
-            "variable_name": "SP_AIR_FLOW",
-            "type": "vent"
-        },
-        {
-            "register_name": "REG_SPLIT_30_READ_CO2_LEV",
-            "address": 632,
-            "description": "Unit CO2 Level reading",
-            "reg_split": "30",
-            "variable_name": "CO2_LEV",
-            "type": "vent"
-        },
-        {
-            "register_name": "REG_SPLIT_30_READ_SP_CO2",
-            "address": 633,
-            "description": "Unit CO2 Set Point",
-            "reg_split": "30",
-            "variable_name": "SP_CO2",
-            "type": "vent"
-        },
-        {
-            "register_name": "REG_SPLIT_30_READ_HUMI_LEV",
-            "address": 634,
-            "description": "Unit Humidity Level reading",
-            "reg_split": "30",
-            "variable_name": "HUMI_LEV",
-            "type": "vent"
-        },
-        {
-            "register_name": "REG_SPLIT_30_READ_SP_HUMI",
-            "address": 635,
-            "description": "Unit Humidity Set Point",
-            "reg_split": "30",
-            "variable_name": "SP_HUMI",
-            "type": "vent"
-        },
-        {
-            "register_name": "REG_SPLIT_30_READ_CO2_LEV_2",
-            "address": 636,
-            "description": "Unit CO2 Level reading sensor 2 (when available)",
-            "reg_split": "30",
-            "variable_name": "CO2_LEV_2",
-            "type": "vent"
-        },
-        {
-            "register_name": "REG_SPLIT_30_READ_SP_CO2_2",
-            "address": 637,
-            "description": "Unit CO2 Set Point sensor 2 (when available)",
-            "reg_split": "30",
-            "variable_name": "SP_CO2_2",
-            "type": "vent"
-        },
-        {
-            "register_name": "REG_SPLIT_30_READ_HUMI_LEV_2",
-            "address": 638,
-            "description": "Unit Humidity Level reading sensor 2 (when available)",
-            "reg_split": "30",
-            "variable_name": "HUMI_LEV_2",
-            "type": "vent"
-        },
-        {
-            "register_name": "REG_SPLIT_30_READ_SP_HUMI_2",
-            "address": 639,
-            "description": "Unit Humidity Set Point sensor 2 (when available)",
-            "reg_split": "30",
-            "variable_name": "SP_HUMI_2",
-            "type": "vent"
-        },
-        {
-            "register_name": "REG_SPLIT_30_READ_ERRORS",
-            "address": 640,
-            "description": "Errors (TBD)",
-            "reg_split": "30",
-            "variable_name": "ERRORS",
-            "type": "vent"
-        }
-    ],
-    "31": [
-        {
-            "register_name": "REG_SPLIT_31_READ_AIR_FLOW",
-            "address": 650,
-            "description": "Unit AirFlow reading",
-            "reg_split": "31",
-            "variable_name": "AIR_FLOW",
-            "type": "vent"
-        },
-        {
-            "register_name": "REG_SPLIT_31_READ_SP_AIR_FLOW",
-            "address": 651,
-            "description": "Unit AirFlow Set Point",
-            "reg_split": "31",
-            "variable_name": "SP_AIR_FLOW",
-            "type": "vent"
-        },
-        {
-            "register_name": "REG_SPLIT_31_READ_CO2_LEV",
-            "address": 652,
-            "description": "Unit CO2 Level reading",
-            "reg_split": "31",
-            "variable_name": "CO2_LEV",
-            "type": "vent"
-        },
-        {
-            "register_name": "REG_SPLIT_31_READ_SP_CO2",
-            "address": 653,
-            "description": "Unit CO2 Set Point",
-            "reg_split": "31",
-            "variable_name": "SP_CO2",
-            "type": "vent"
-        },
-        {
-            "register_name": "REG_SPLIT_31_READ_HUMI_LEV",
-            "address": 654,
-            "description": "Unit Humidity Level reading",
-            "reg_split": "31",
-            "variable_name": "HUMI_LEV",
-            "type": "vent"
-        },
-        {
-            "register_name": "REG_SPLIT_31_READ_SP_HUMI",
-            "address": 655,
-            "description": "Unit Humidity Set Point",
-            "reg_split": "31",
-            "variable_name": "SP_HUMI",
-            "type": "vent"
-        },
-        {
-            "register_name": "REG_SPLIT_31_READ_CO2_LEV_2",
-            "address": 656,
-            "description": "Unit CO2 Level reading sensor 2 (when available)",
-            "reg_split": "31",
-            "variable_name": "CO2_LEV_2",
-            "type": "vent"
-        },
-        {
-            "register_name": "REG_SPLIT_31_READ_SP_CO2_2",
-            "address": 657,
-            "description": "Unit CO2 Set Point sensor 2 (when available)",
-            "reg_split": "31",
-            "variable_name": "SP_CO2_2",
-            "type": "vent"
-        },
-        {
-            "register_name": "REG_SPLIT_31_READ_HUMI_LEV_2",
-            "address": 658,
-            "description": "Unit Humidity Level reading sensor 2 (when available)",
-            "reg_split": "31",
-            "variable_name": "HUMI_LEV_2",
-            "type": "vent"
-        },
-        {
-            "register_name": "REG_SPLIT_31_READ_SP_HUMI_2",
-            "address": 659,
-            "description": "Unit Humidity Set Point sensor 2 (when available)",
-            "reg_split": "31",
-            "variable_name": "SP_HUMI_2",
-            "type": "vent"
-        },
-        {
-            "register_name": "REG_SPLIT_31_READ_ERRORS",
-            "address": 660,
-            "description": "Errors (TBD)",
-            "reg_split": "31",
-            "variable_name": "ERRORS",
-            "type": "vent"
-        }
-    ],
-    "None": [
-        {
-            "register_name": "REG_BRIDGE_STATUS_FLAGS",
-            "address": 0,
-            "description": "Reserver Register \u201cBridge Status Flags\u201d \n",
-            "reg_split": null,
-            "variable_name": null,
-            "type": "ac_misc"
-        },
-        {
-            "register_name": "REG_DIAG_ALL_SPLIT_WRITE_MODE",
-            "address": 1,
-            "description": "ALL Unit DVS Mode setting: Auto, Design, Manual",
-            "reg_split": null,
-            "variable_name": null,
-            "type": "ac_misc"
-        },
-        {
-            "register_name": "REG_DIAG_ALL_SPLIT_WRITE_AIRFLOW_SP",
-            "address": 2,
-            "description": "ALL Unit Air Flow SetPoint (used in manual mode) (m3/h)",
-            "reg_split": null,
-            "variable_name": null,
-            "type": "ac_misc"
-        },
-        {
-            "register_name": "REG_DIAG_ALL_SPLIT_WRITE_CO2_SP",
-            "address": 3,
-            "description": "ALL Unit CO2 SetPoint",
-            "reg_split": null,
-            "variable_name": null,
-            "type": "ac_misc"
-        },
-        {
-            "register_name": "REG_DIAG_ALL_SPLIT_WRITE_HUMI_SP",
-            "address": 4,
-            "description": "ALL Unit Humidity SetPoint",
-            "reg_split": null,
-            "variable_name": null,
-            "type": "ac_misc"
-        },
-        {
-            "register_name": "REG_DIAG_ALL_SPLIT_WRITE_UPDATE",
-            "address": 5,
-            "description": "All Unit Update flag",
-            "reg_split": null,
-            "variable_name": null,
-            "type": "ac_misc"
-        },
-        {
-            "register_name": "REG_DIAG_SPLIT_WRITE_SELECTION",
-            "address": 10,
-            "description": "Diag Slave Unit Selection Write Address:",
-            "reg_split": null,
-            "variable_name": null,
-            "type": "ac_misc"
-        },
-        {
-            "register_name": "REG_DIAG_SPLIT_WRITE_MODE",
-            "address": 11,
-            "description": "Unit Mode Selection: Auto, Design, Manual",
-            "reg_split": null,
-            "variable_name": null,
-            "type": "ac_misc"
-        },
-        {
-            "register_name": "REG_DIAG_SPLIT_WRITE_AIR_FLOW_SP",
-            "address": 12,
-            "description": "Unit Air Flow SetPoint (used in manual mode)(m3/h)",
-            "reg_split": null,
-            "variable_name": null,
-            "type": "ac_misc"
-        },
-        {
-            "register_name": "REG_DIAG_SPLIT_WRITE_CO2_SP",
-            "address": 13,
-            "description": "Unit CO2 level set point",
-            "reg_split": null,
-            "variable_name": null,
-            "type": "ac_misc"
-        },
-        {
-            "register_name": "REG_DIAG_SPLIT_WRITE_HUMI_SP",
-            "address": 14,
-            "description": "Unit Humidity Set Point",
-            "reg_split": null,
-            "variable_name": null,
-            "type": "ac_misc"
-        },
-        {
-            "register_name": "REG_DIAG_SPLIT_WRITE_MAX_ERR_REG_CO2",
-            "address": 15,
-            "description": "Max Error Regulation CO2",
-            "reg_split": null,
-            "variable_name": null,
-            "type": "ac_misc"
-        },
-        {
-            "register_name": "REG_DIAG_SPLIT_WRITE_MAX_ERR_REG_HUMI",
-            "address": 16,
-            "description": "Max Error Regulation Humi",
-            "reg_split": null,
-            "variable_name": null,
-            "type": "ac_misc"
-        },
-        {
-            "register_name": "REG_DIAG_SPLIT_WRITE_CO2_SP_2",
-            "address": 17,
-            "description": "Unit CO2 level set point, sensor 2 (when available)",
-            "reg_split": null,
-            "variable_name": null,
-            "type": "ac_misc"
-        },
-        {
-            "register_name": "REG_DIAG_SPLIT_WRITE_HUMI_SP_2",
-            "address": 18,
-            "description": "Unit Humidity Set Point, sensor 2 (when available)",
-            "reg_split": null,
-            "variable_name": null,
-            "type": "ac_misc"
-        },
-        {
-            "register_name": "REG_BRIDGE_STATUS_FLAGS",
-            "address": 65535,
-            "description": "Reserver Register \u201cBridge Status Flags\u201d \n",
-            "reg_split": null,
-            "variable_name": null,
-            "type": "ac_misc"
-        }
-    ]
+  "01": [
+    {
+      "register_name": "REG_SPLIT_01_READ_AIR_FLOW",
+      "address": 50,
+      "description": "Unit AirFlow reading",
+      "unit_id": 33,
+      "reg_split": "01",
+      "variable_name": "AIR_FLOW",
+      "type": "vent"
+    },
+    {
+      "register_name": "REG_SPLIT_01_READ_SP_AIR_FLOW",
+      "address": 51,
+      "description": "Unit AirFlow Set Point",
+      "unit_id": 33,
+      "reg_split": "01",
+      "variable_name": "SP_AIR_FLOW",
+      "type": "vent"
+    },
+    {
+      "register_name": "REG_SPLIT_01_READ_CO2_LEV",
+      "address": 52,
+      "description": "Unit CO2 Level reading",
+      "unit_id": 33,
+      "reg_split": "01",
+      "variable_name": "CO2_LEV",
+      "type": "vent"
+    },
+    {
+      "register_name": "REG_SPLIT_01_READ_SP_CO2",
+      "address": 53,
+      "description": "Unit CO2 Set Point",
+      "unit_id": 33,
+      "reg_split": "01",
+      "variable_name": "SP_CO2",
+      "type": "vent"
+    },
+    {
+      "register_name": "REG_SPLIT_01_READ_HUMI_LEV",
+      "address": 54,
+      "description": "Unit Humidity Level reading",
+      "unit_id": 33,
+      "reg_split": "01",
+      "variable_name": "HUMI_LEV",
+      "type": "vent"
+    },
+    {
+      "register_name": "REG_SPLIT_01_READ_SP_HUMI",
+      "address": 55,
+      "description": "Unit Humidity Set Point",
+      "unit_id": 33,
+      "reg_split": "01",
+      "variable_name": "SP_HUMI",
+      "type": "vent"
+    },
+    {
+      "register_name": "REG_SPLIT_01_READ_CO2_LEV_2",
+      "address": 56,
+      "description": "Unit CO2 Level reading sensor 2 (when available)",
+      "unit_id": 33,
+      "reg_split": "01",
+      "variable_name": "CO2_LEV_2",
+      "type": "vent"
+    },
+    {
+      "register_name": "REG_SPLIT_01_READ_SP_CO2_2",
+      "address": 57,
+      "description": "Unit CO2 Set Point sensor 2 (when available)",
+      "unit_id": 33,
+      "reg_split": "01",
+      "variable_name": "SP_CO2_2",
+      "type": "vent"
+    },
+    {
+      "register_name": "REG_SPLIT_01_READ_HUMI_LEV_2",
+      "address": 58,
+      "description": "Unit Humidity Level reading sensor 2 (when available)",
+      "unit_id": 33,
+      "reg_split": "01",
+      "variable_name": "HUMI_LEV_2",
+      "type": "vent"
+    },
+    {
+      "register_name": "REG_SPLIT_01_READ_SP_HUMI_2",
+      "address": 59,
+      "description": "Unit Humidity Set Point sensor 2 (when available)",
+      "unit_id": 33,
+      "reg_split": "01",
+      "variable_name": "SP_HUMI_2",
+      "type": "vent"
+    },
+    {
+      "register_name": "REG_SPLIT_01_READ_ERRORS",
+      "address": 60,
+      "description": "Errors (TBD)",
+      "unit_id": 33,
+      "reg_split": "01",
+      "variable_name": "ERRORS",
+      "type": "vent"
+    }
+  ],
+  "02": [
+    {
+      "register_name": "REG_SPLIT_02_READ_AIR_FLOW",
+      "address": 70,
+      "description": "Unit AirFlow reading",
+      "unit_id": 33,
+      "reg_split": "02",
+      "variable_name": "AIR_FLOW",
+      "type": "vent"
+    },
+    {
+      "register_name": "REG_SPLIT_02_READ_SP_AIR_FLOW",
+      "address": 71,
+      "description": "Unit AirFlow Set Point",
+      "unit_id": 33,
+      "reg_split": "02",
+      "variable_name": "SP_AIR_FLOW",
+      "type": "vent"
+    },
+    {
+      "register_name": "REG_SPLIT_02_READ_CO2_LEV",
+      "address": 72,
+      "description": "Unit CO2 Level reading",
+      "unit_id": 33,
+      "reg_split": "02",
+      "variable_name": "CO2_LEV",
+      "type": "vent"
+    },
+    {
+      "register_name": "REG_SPLIT_02_READ_SP_CO2",
+      "address": 73,
+      "description": "Unit CO2 Set Point",
+      "unit_id": 33,
+      "reg_split": "02",
+      "variable_name": "SP_CO2",
+      "type": "vent"
+    },
+    {
+      "register_name": "REG_SPLIT_02_READ_HUMI_LEV",
+      "address": 74,
+      "description": "Unit Humidity Level reading",
+      "unit_id": 33,
+      "reg_split": "02",
+      "variable_name": "HUMI_LEV",
+      "type": "vent"
+    },
+    {
+      "register_name": "REG_SPLIT_02_READ_SP_HUMI",
+      "address": 75,
+      "description": "Unit Humidity Set Point",
+      "unit_id": 33,
+      "reg_split": "02",
+      "variable_name": "SP_HUMI",
+      "type": "vent"
+    },
+    {
+      "register_name": "REG_SPLIT_02_READ_CO2_LEV_2",
+      "address": 76,
+      "description": "Unit CO2 Level reading sensor 2 (when available)",
+      "unit_id": 33,
+      "reg_split": "02",
+      "variable_name": "CO2_LEV_2",
+      "type": "vent"
+    },
+    {
+      "register_name": "REG_SPLIT_02_READ_SP_CO2_2",
+      "address": 77,
+      "description": "Unit CO2 Set Point sensor 2 (when available)",
+      "unit_id": 33,
+      "reg_split": "02",
+      "variable_name": "SP_CO2_2",
+      "type": "vent"
+    },
+    {
+      "register_name": "REG_SPLIT_02_READ_HUMI_LEV_2",
+      "address": 78,
+      "description": "Unit Humidity Level reading sensor 2 (when available)",
+      "unit_id": 33,
+      "reg_split": "02",
+      "variable_name": "HUMI_LEV_2",
+      "type": "vent"
+    },
+    {
+      "register_name": "REG_SPLIT_02_READ_SP_HUMI_2",
+      "address": 79,
+      "description": "Unit Humidity Set Point sensor 2 (when available)",
+      "unit_id": 33,
+      "reg_split": "02",
+      "variable_name": "SP_HUMI_2",
+      "type": "vent"
+    },
+    {
+      "register_name": "REG_SPLIT_02_READ_ERRORS",
+      "address": 80,
+      "description": "Errors (TBD)",
+      "unit_id": 33,
+      "reg_split": "02",
+      "variable_name": "ERRORS",
+      "type": "vent"
+    }
+  ],
+  "03": [
+    {
+      "register_name": "REG_SPLIT_03_READ_AIR_FLOW",
+      "address": 90,
+      "description": "Unit AirFlow reading",
+      "unit_id": 33,
+      "reg_split": "03",
+      "variable_name": "AIR_FLOW",
+      "type": "vent"
+    },
+    {
+      "register_name": "REG_SPLIT_03_READ_SP_AIR_FLOW",
+      "address": 91,
+      "description": "Unit AirFlow Set Point",
+      "unit_id": 33,
+      "reg_split": "03",
+      "variable_name": "SP_AIR_FLOW",
+      "type": "vent"
+    },
+    {
+      "register_name": "REG_SPLIT_03_READ_CO2_LEV",
+      "address": 92,
+      "description": "Unit CO2 Level reading",
+      "unit_id": 33,
+      "reg_split": "03",
+      "variable_name": "CO2_LEV",
+      "type": "vent"
+    },
+    {
+      "register_name": "REG_SPLIT_03_READ_SP_CO2",
+      "address": 93,
+      "description": "Unit CO2 Set Point",
+      "unit_id": 33,
+      "reg_split": "03",
+      "variable_name": "SP_CO2",
+      "type": "vent"
+    },
+    {
+      "register_name": "REG_SPLIT_03_READ_HUMI_LEV",
+      "address": 94,
+      "description": "Unit Humidity Level reading",
+      "unit_id": 33,
+      "reg_split": "03",
+      "variable_name": "HUMI_LEV",
+      "type": "vent"
+    },
+    {
+      "register_name": "REG_SPLIT_03_READ_SP_HUMI",
+      "address": 95,
+      "description": "Unit Humidity Set Point",
+      "unit_id": 33,
+      "reg_split": "03",
+      "variable_name": "SP_HUMI",
+      "type": "vent"
+    },
+    {
+      "register_name": "REG_SPLIT_03_READ_CO2_LEV_2",
+      "address": 96,
+      "description": "Unit CO2 Level reading sensor 2 (when available)",
+      "unit_id": 33,
+      "reg_split": "03",
+      "variable_name": "CO2_LEV_2",
+      "type": "vent"
+    },
+    {
+      "register_name": "REG_SPLIT_03_READ_SP_CO2_2",
+      "address": 97,
+      "description": "Unit CO2 Set Point sensor 2 (when available)",
+      "unit_id": 33,
+      "reg_split": "03",
+      "variable_name": "SP_CO2_2",
+      "type": "vent"
+    },
+    {
+      "register_name": "REG_SPLIT_03_READ_HUMI_LEV_2",
+      "address": 98,
+      "description": "Unit Humidity Level reading sensor 2 (when available)",
+      "unit_id": 33,
+      "reg_split": "03",
+      "variable_name": "HUMI_LEV_2",
+      "type": "vent"
+    },
+    {
+      "register_name": "REG_SPLIT_03_READ_SP_HUMI_2",
+      "address": 99,
+      "description": "Unit Humidity Set Point sensor 2 (when available)",
+      "unit_id": 33,
+      "reg_split": "03",
+      "variable_name": "SP_HUMI_2",
+      "type": "vent"
+    },
+    {
+      "register_name": "REG_SPLIT_03_READ_ERRORS",
+      "address": 100,
+      "description": "Errors (TBD)",
+      "unit_id": 33,
+      "reg_split": "03",
+      "variable_name": "ERRORS",
+      "type": "vent"
+    }
+  ],
+  "04": [
+    {
+      "register_name": "REG_SPLIT_04_READ_AIR_FLOW",
+      "address": 110,
+      "description": "Unit AirFlow reading",
+      "unit_id": 33,
+      "reg_split": "04",
+      "variable_name": "AIR_FLOW",
+      "type": "vent"
+    },
+    {
+      "register_name": "REG_SPLIT_04_READ_SP_AIR_FLOW",
+      "address": 111,
+      "description": "Unit AirFlow Set Point",
+      "unit_id": 33,
+      "reg_split": "04",
+      "variable_name": "SP_AIR_FLOW",
+      "type": "vent"
+    },
+    {
+      "register_name": "REG_SPLIT_04_READ_CO2_LEV",
+      "address": 112,
+      "description": "Unit CO2 Level reading",
+      "unit_id": 33,
+      "reg_split": "04",
+      "variable_name": "CO2_LEV",
+      "type": "vent"
+    },
+    {
+      "register_name": "REG_SPLIT_04_READ_SP_CO2",
+      "address": 113,
+      "description": "Unit CO2 Set Point",
+      "unit_id": 33,
+      "reg_split": "04",
+      "variable_name": "SP_CO2",
+      "type": "vent"
+    },
+    {
+      "register_name": "REG_SPLIT_04_READ_HUMI_LEV",
+      "address": 114,
+      "description": "Unit Humidity Level reading",
+      "unit_id": 33,
+      "reg_split": "04",
+      "variable_name": "HUMI_LEV",
+      "type": "vent"
+    },
+    {
+      "register_name": "REG_SPLIT_04_READ_SP_HUMI",
+      "address": 115,
+      "description": "Unit Humidity Set Point",
+      "unit_id": 33,
+      "reg_split": "04",
+      "variable_name": "SP_HUMI",
+      "type": "vent"
+    },
+    {
+      "register_name": "REG_SPLIT_04_READ_CO2_LEV_2",
+      "address": 116,
+      "description": "Unit CO2 Level reading sensor 2 (when available)",
+      "unit_id": 33,
+      "reg_split": "04",
+      "variable_name": "CO2_LEV_2",
+      "type": "vent"
+    },
+    {
+      "register_name": "REG_SPLIT_04_READ_SP_CO2_2",
+      "address": 117,
+      "description": "Unit CO2 Set Point sensor 2 (when available)",
+      "unit_id": 33,
+      "reg_split": "04",
+      "variable_name": "SP_CO2_2",
+      "type": "vent"
+    },
+    {
+      "register_name": "REG_SPLIT_04_READ_HUMI_LEV_2",
+      "address": 118,
+      "description": "Unit Humidity Level reading sensor 2 (when available)",
+      "unit_id": 33,
+      "reg_split": "04",
+      "variable_name": "HUMI_LEV_2",
+      "type": "vent"
+    },
+    {
+      "register_name": "REG_SPLIT_04_READ_SP_HUMI_2",
+      "address": 119,
+      "description": "Unit Humidity Set Point sensor 2 (when available)",
+      "unit_id": 33,
+      "reg_split": "04",
+      "variable_name": "SP_HUMI_2",
+      "type": "vent"
+    },
+    {
+      "register_name": "REG_SPLIT_04_READ_ERRORS",
+      "address": 120,
+      "description": "Errors (TBD)",
+      "unit_id": 33,
+      "reg_split": "04",
+      "variable_name": "ERRORS",
+      "type": "vent"
+    }
+  ],
+  "05": [
+    {
+      "register_name": "REG_SPLIT_05_READ_AIR_FLOW",
+      "address": 130,
+      "description": "Unit AirFlow reading",
+      "unit_id": 33,
+      "reg_split": "05",
+      "variable_name": "AIR_FLOW",
+      "type": "vent"
+    },
+    {
+      "register_name": "REG_SPLIT_05_READ_SP_AIR_FLOW",
+      "address": 131,
+      "description": "Unit AirFlow Set Point",
+      "unit_id": 33,
+      "reg_split": "05",
+      "variable_name": "SP_AIR_FLOW",
+      "type": "vent"
+    },
+    {
+      "register_name": "REG_SPLIT_05_READ_CO2_LEV",
+      "address": 132,
+      "description": "Unit CO2 Level reading",
+      "unit_id": 33,
+      "reg_split": "05",
+      "variable_name": "CO2_LEV",
+      "type": "vent"
+    },
+    {
+      "register_name": "REG_SPLIT_05_READ_SP_CO2",
+      "address": 133,
+      "description": "Unit CO2 Set Point",
+      "unit_id": 33,
+      "reg_split": "05",
+      "variable_name": "SP_CO2",
+      "type": "vent"
+    },
+    {
+      "register_name": "REG_SPLIT_05_READ_HUMI_LEV",
+      "address": 134,
+      "description": "Unit Humidity Level reading",
+      "unit_id": 33,
+      "reg_split": "05",
+      "variable_name": "HUMI_LEV",
+      "type": "vent"
+    },
+    {
+      "register_name": "REG_SPLIT_05_READ_SP_HUMI",
+      "address": 135,
+      "description": "Unit Humidity Set Point",
+      "unit_id": 33,
+      "reg_split": "05",
+      "variable_name": "SP_HUMI",
+      "type": "vent"
+    },
+    {
+      "register_name": "REG_SPLIT_05_READ_CO2_LEV_2",
+      "address": 136,
+      "description": "Unit CO2 Level reading sensor 2 (when available)",
+      "unit_id": 33,
+      "reg_split": "05",
+      "variable_name": "CO2_LEV_2",
+      "type": "vent"
+    },
+    {
+      "register_name": "REG_SPLIT_05_READ_SP_CO2_2",
+      "address": 137,
+      "description": "Unit CO2 Set Point sensor 2 (when available)",
+      "unit_id": 33,
+      "reg_split": "05",
+      "variable_name": "SP_CO2_2",
+      "type": "vent"
+    },
+    {
+      "register_name": "REG_SPLIT_05_READ_HUMI_LEV_2",
+      "address": 138,
+      "description": "Unit Humidity Level reading sensor 2 (when available)",
+      "unit_id": 33,
+      "reg_split": "05",
+      "variable_name": "HUMI_LEV_2",
+      "type": "vent"
+    },
+    {
+      "register_name": "REG_SPLIT_05_READ_SP_HUMI_2",
+      "address": 139,
+      "description": "Unit Humidity Set Point sensor 2 (when available)",
+      "unit_id": 33,
+      "reg_split": "05",
+      "variable_name": "SP_HUMI_2",
+      "type": "vent"
+    },
+    {
+      "register_name": "REG_SPLIT_05_READ_ERRORS",
+      "address": 140,
+      "description": "Errors (TBD)",
+      "unit_id": 33,
+      "reg_split": "05",
+      "variable_name": "ERRORS",
+      "type": "vent"
+    }
+  ],
+  "06": [
+    {
+      "register_name": "REG_SPLIT_06_READ_AIR_FLOW",
+      "address": 150,
+      "description": "Unit AirFlow reading",
+      "unit_id": 33,
+      "reg_split": "06",
+      "variable_name": "AIR_FLOW",
+      "type": "vent"
+    },
+    {
+      "register_name": "REG_SPLIT_06_READ_SP_AIR_FLOW",
+      "address": 151,
+      "description": "Unit AirFlow Set Point",
+      "unit_id": 33,
+      "reg_split": "06",
+      "variable_name": "SP_AIR_FLOW",
+      "type": "vent"
+    },
+    {
+      "register_name": "REG_SPLIT_06_READ_CO2_LEV",
+      "address": 152,
+      "description": "Unit CO2 Level reading",
+      "unit_id": 33,
+      "reg_split": "06",
+      "variable_name": "CO2_LEV",
+      "type": "vent"
+    },
+    {
+      "register_name": "REG_SPLIT_06_READ_SP_CO2",
+      "address": 153,
+      "description": "Unit CO2 Set Point",
+      "unit_id": 33,
+      "reg_split": "06",
+      "variable_name": "SP_CO2",
+      "type": "vent"
+    },
+    {
+      "register_name": "REG_SPLIT_06_READ_HUMI_LEV",
+      "address": 154,
+      "description": "Unit Humidity Level reading",
+      "unit_id": 33,
+      "reg_split": "06",
+      "variable_name": "HUMI_LEV",
+      "type": "vent"
+    },
+    {
+      "register_name": "REG_SPLIT_06_READ_SP_HUMI",
+      "address": 155,
+      "description": "Unit Humidity Set Point",
+      "unit_id": 33,
+      "reg_split": "06",
+      "variable_name": "SP_HUMI",
+      "type": "vent"
+    },
+    {
+      "register_name": "REG_SPLIT_06_READ_CO2_LEV_2",
+      "address": 156,
+      "description": "Unit CO2 Level reading sensor 2 (when available)",
+      "unit_id": 33,
+      "reg_split": "06",
+      "variable_name": "CO2_LEV_2",
+      "type": "vent"
+    },
+    {
+      "register_name": "REG_SPLIT_06_READ_SP_CO2_2",
+      "address": 157,
+      "description": "Unit CO2 Set Point sensor 2 (when available)",
+      "unit_id": 33,
+      "reg_split": "06",
+      "variable_name": "SP_CO2_2",
+      "type": "vent"
+    },
+    {
+      "register_name": "REG_SPLIT_06_READ_HUMI_LEV_2",
+      "address": 158,
+      "description": "Unit Humidity Level reading sensor 2 (when available)",
+      "unit_id": 33,
+      "reg_split": "06",
+      "variable_name": "HUMI_LEV_2",
+      "type": "vent"
+    },
+    {
+      "register_name": "REG_SPLIT_06_READ_SP_HUMI_2",
+      "address": 159,
+      "description": "Unit Humidity Set Point sensor 2 (when available)",
+      "unit_id": 33,
+      "reg_split": "06",
+      "variable_name": "SP_HUMI_2",
+      "type": "vent"
+    },
+    {
+      "register_name": "REG_SPLIT_06_READ_ERRORS",
+      "address": 160,
+      "description": "Errors (TBD)",
+      "unit_id": 33,
+      "reg_split": "06",
+      "variable_name": "ERRORS",
+      "type": "vent"
+    }
+  ],
+  "07": [
+    {
+      "register_name": "REG_SPLIT_07_READ_AIR_FLOW",
+      "address": 170,
+      "description": "Unit AirFlow reading",
+      "unit_id": 33,
+      "reg_split": "07",
+      "variable_name": "AIR_FLOW",
+      "type": "vent"
+    },
+    {
+      "register_name": "REG_SPLIT_07_READ_SP_AIR_FLOW",
+      "address": 171,
+      "description": "Unit AirFlow Set Point",
+      "unit_id": 33,
+      "reg_split": "07",
+      "variable_name": "SP_AIR_FLOW",
+      "type": "vent"
+    },
+    {
+      "register_name": "REG_SPLIT_07_READ_CO2_LEV",
+      "address": 172,
+      "description": "Unit CO2 Level reading",
+      "unit_id": 33,
+      "reg_split": "07",
+      "variable_name": "CO2_LEV",
+      "type": "vent"
+    },
+    {
+      "register_name": "REG_SPLIT_07_READ_SP_CO2",
+      "address": 173,
+      "description": "Unit CO2 Set Point",
+      "unit_id": 33,
+      "reg_split": "07",
+      "variable_name": "SP_CO2",
+      "type": "vent"
+    },
+    {
+      "register_name": "REG_SPLIT_07_READ_HUMI_LEV",
+      "address": 174,
+      "description": "Unit Humidity Level reading",
+      "unit_id": 33,
+      "reg_split": "07",
+      "variable_name": "HUMI_LEV",
+      "type": "vent"
+    },
+    {
+      "register_name": "REG_SPLIT_07_READ_SP_HUMI",
+      "address": 175,
+      "description": "Unit Humidity Set Point",
+      "unit_id": 33,
+      "reg_split": "07",
+      "variable_name": "SP_HUMI",
+      "type": "vent"
+    },
+    {
+      "register_name": "REG_SPLIT_07_READ_CO2_LEV_2",
+      "address": 176,
+      "description": "Unit CO2 Level reading sensor 2 (when available)",
+      "unit_id": 33,
+      "reg_split": "07",
+      "variable_name": "CO2_LEV_2",
+      "type": "vent"
+    },
+    {
+      "register_name": "REG_SPLIT_07_READ_SP_CO2_2",
+      "address": 177,
+      "description": "Unit CO2 Set Point sensor 2 (when available)",
+      "unit_id": 33,
+      "reg_split": "07",
+      "variable_name": "SP_CO2_2",
+      "type": "vent"
+    },
+    {
+      "register_name": "REG_SPLIT_07_READ_HUMI_LEV_2",
+      "address": 178,
+      "description": "Unit Humidity Level reading sensor 2 (when available)",
+      "unit_id": 33,
+      "reg_split": "07",
+      "variable_name": "HUMI_LEV_2",
+      "type": "vent"
+    },
+    {
+      "register_name": "REG_SPLIT_07_READ_SP_HUMI_2",
+      "address": 179,
+      "description": "Unit Humidity Set Point sensor 2 (when available)",
+      "unit_id": 33,
+      "reg_split": "07",
+      "variable_name": "SP_HUMI_2",
+      "type": "vent"
+    },
+    {
+      "register_name": "REG_SPLIT_07_READ_ERRORS",
+      "address": 180,
+      "description": "Errors (TBD)",
+      "unit_id": 33,
+      "reg_split": "07",
+      "variable_name": "ERRORS",
+      "type": "vent"
+    }
+  ],
+  "08": [
+    {
+      "register_name": "REG_SPLIT_08_READ_AIR_FLOW",
+      "address": 190,
+      "description": "Unit AirFlow reading",
+      "unit_id": 33,
+      "reg_split": "08",
+      "variable_name": "AIR_FLOW",
+      "type": "vent"
+    },
+    {
+      "register_name": "REG_SPLIT_08_READ_SP_AIR_FLOW",
+      "address": 191,
+      "description": "Unit AirFlow Set Point",
+      "unit_id": 33,
+      "reg_split": "08",
+      "variable_name": "SP_AIR_FLOW",
+      "type": "vent"
+    },
+    {
+      "register_name": "REG_SPLIT_08_READ_CO2_LEV",
+      "address": 192,
+      "description": "Unit CO2 Level reading",
+      "unit_id": 33,
+      "reg_split": "08",
+      "variable_name": "CO2_LEV",
+      "type": "vent"
+    },
+    {
+      "register_name": "REG_SPLIT_08_READ_SP_CO2",
+      "address": 193,
+      "description": "Unit CO2 Set Point",
+      "unit_id": 33,
+      "reg_split": "08",
+      "variable_name": "SP_CO2",
+      "type": "vent"
+    },
+    {
+      "register_name": "REG_SPLIT_08_READ_HUMI_LEV",
+      "address": 194,
+      "description": "Unit Humidity Level reading",
+      "unit_id": 33,
+      "reg_split": "08",
+      "variable_name": "HUMI_LEV",
+      "type": "vent"
+    },
+    {
+      "register_name": "REG_SPLIT_08_READ_SP_HUMI",
+      "address": 195,
+      "description": "Unit Humidity Set Point",
+      "unit_id": 33,
+      "reg_split": "08",
+      "variable_name": "SP_HUMI",
+      "type": "vent"
+    },
+    {
+      "register_name": "REG_SPLIT_08_READ_CO2_LEV_2",
+      "address": 196,
+      "description": "Unit CO2 Level reading sensor 2 (when available)",
+      "unit_id": 33,
+      "reg_split": "08",
+      "variable_name": "CO2_LEV_2",
+      "type": "vent"
+    },
+    {
+      "register_name": "REG_SPLIT_08_READ_SP_CO2_2",
+      "address": 197,
+      "description": "Unit CO2 Set Point sensor 2 (when available)",
+      "unit_id": 33,
+      "reg_split": "08",
+      "variable_name": "SP_CO2_2",
+      "type": "vent"
+    },
+    {
+      "register_name": "REG_SPLIT_08_READ_HUMI_LEV_2",
+      "address": 198,
+      "description": "Unit Humidity Level reading sensor 2 (when available)",
+      "unit_id": 33,
+      "reg_split": "08",
+      "variable_name": "HUMI_LEV_2",
+      "type": "vent"
+    },
+    {
+      "register_name": "REG_SPLIT_08_READ_SP_HUMI_2",
+      "address": 199,
+      "description": "Unit Humidity Set Point sensor 2 (when available)",
+      "unit_id": 33,
+      "reg_split": "08",
+      "variable_name": "SP_HUMI_2",
+      "type": "vent"
+    },
+    {
+      "register_name": "REG_SPLIT_08_READ_ERRORS",
+      "address": 200,
+      "description": "Errors (TBD)",
+      "unit_id": 33,
+      "reg_split": "08",
+      "variable_name": "ERRORS",
+      "type": "vent"
+    }
+  ],
+  "09": [
+    {
+      "register_name": "REG_SPLIT_09_READ_AIR_FLOW",
+      "address": 210,
+      "description": "Unit AirFlow reading",
+      "unit_id": 33,
+      "reg_split": "09",
+      "variable_name": "AIR_FLOW",
+      "type": "vent"
+    },
+    {
+      "register_name": "REG_SPLIT_09_READ_SP_AIR_FLOW",
+      "address": 211,
+      "description": "Unit AirFlow Set Point",
+      "unit_id": 33,
+      "reg_split": "09",
+      "variable_name": "SP_AIR_FLOW",
+      "type": "vent"
+    },
+    {
+      "register_name": "REG_SPLIT_09_READ_CO2_LEV",
+      "address": 212,
+      "description": "Unit CO2 Level reading",
+      "unit_id": 33,
+      "reg_split": "09",
+      "variable_name": "CO2_LEV",
+      "type": "vent"
+    },
+    {
+      "register_name": "REG_SPLIT_09_READ_SP_CO2",
+      "address": 213,
+      "description": "Unit CO2 Set Point",
+      "unit_id": 33,
+      "reg_split": "09",
+      "variable_name": "SP_CO2",
+      "type": "vent"
+    },
+    {
+      "register_name": "REG_SPLIT_09_READ_HUMI_LEV",
+      "address": 214,
+      "description": "Unit Humidity Level reading",
+      "unit_id": 33,
+      "reg_split": "09",
+      "variable_name": "HUMI_LEV",
+      "type": "vent"
+    },
+    {
+      "register_name": "REG_SPLIT_09_READ_SP_HUMI",
+      "address": 215,
+      "description": "Unit Humidity Set Point",
+      "unit_id": 33,
+      "reg_split": "09",
+      "variable_name": "SP_HUMI",
+      "type": "vent"
+    },
+    {
+      "register_name": "REG_SPLIT_09_READ_CO2_LEV_2",
+      "address": 216,
+      "description": "Unit CO2 Level reading sensor 2 (when available)",
+      "unit_id": 33,
+      "reg_split": "09",
+      "variable_name": "CO2_LEV_2",
+      "type": "vent"
+    },
+    {
+      "register_name": "REG_SPLIT_09_READ_SP_CO2_2",
+      "address": 217,
+      "description": "Unit CO2 Set Point sensor 2 (when available)",
+      "unit_id": 33,
+      "reg_split": "09",
+      "variable_name": "SP_CO2_2",
+      "type": "vent"
+    },
+    {
+      "register_name": "REG_SPLIT_09_READ_HUMI_LEV_2",
+      "address": 218,
+      "description": "Unit Humidity Level reading sensor 2 (when available)",
+      "unit_id": 33,
+      "reg_split": "09",
+      "variable_name": "HUMI_LEV_2",
+      "type": "vent"
+    },
+    {
+      "register_name": "REG_SPLIT_09_READ_SP_HUMI_2",
+      "address": 219,
+      "description": "Unit Humidity Set Point sensor 2 (when available)",
+      "unit_id": 33,
+      "reg_split": "09",
+      "variable_name": "SP_HUMI_2",
+      "type": "vent"
+    },
+    {
+      "register_name": "REG_SPLIT_09_READ_ERRORS",
+      "address": 220,
+      "description": "Errors (TBD)",
+      "unit_id": 33,
+      "reg_split": "09",
+      "variable_name": "ERRORS",
+      "type": "vent"
+    }
+  ],
+  "10": [
+    {
+      "register_name": "REG_SPLIT_10_READ_AIR_FLOW",
+      "address": 230,
+      "description": "Unit AirFlow reading",
+      "unit_id": 33,
+      "reg_split": "10",
+      "variable_name": "AIR_FLOW",
+      "type": "vent"
+    },
+    {
+      "register_name": "REG_SPLIT_10_READ_SP_AIR_FLOW",
+      "address": 231,
+      "description": "Unit AirFlow Set Point",
+      "unit_id": 33,
+      "reg_split": "10",
+      "variable_name": "SP_AIR_FLOW",
+      "type": "vent"
+    },
+    {
+      "register_name": "REG_SPLIT_10_READ_CO2_LEV",
+      "address": 232,
+      "description": "Unit CO2 Level reading",
+      "unit_id": 33,
+      "reg_split": "10",
+      "variable_name": "CO2_LEV",
+      "type": "vent"
+    },
+    {
+      "register_name": "REG_SPLIT_10_READ_SP_CO2",
+      "address": 233,
+      "description": "Unit CO2 Set Point",
+      "unit_id": 33,
+      "reg_split": "10",
+      "variable_name": "SP_CO2",
+      "type": "vent"
+    },
+    {
+      "register_name": "REG_SPLIT_10_READ_HUMI_LEV",
+      "address": 234,
+      "description": "Unit Humidity Level reading",
+      "unit_id": 33,
+      "reg_split": "10",
+      "variable_name": "HUMI_LEV",
+      "type": "vent"
+    },
+    {
+      "register_name": "REG_SPLIT_10_READ_SP_HUMI",
+      "address": 235,
+      "description": "Unit Humidity Set Point",
+      "unit_id": 33,
+      "reg_split": "10",
+      "variable_name": "SP_HUMI",
+      "type": "vent"
+    },
+    {
+      "register_name": "REG_SPLIT_10_READ_CO2_LEV_2",
+      "address": 236,
+      "description": "Unit CO2 Level reading sensor 2 (when available)",
+      "unit_id": 33,
+      "reg_split": "10",
+      "variable_name": "CO2_LEV_2",
+      "type": "vent"
+    },
+    {
+      "register_name": "REG_SPLIT_10_READ_SP_CO2_2",
+      "address": 237,
+      "description": "Unit CO2 Set Point sensor 2 (when available)",
+      "unit_id": 33,
+      "reg_split": "10",
+      "variable_name": "SP_CO2_2",
+      "type": "vent"
+    },
+    {
+      "register_name": "REG_SPLIT_10_READ_HUMI_LEV_2",
+      "address": 238,
+      "description": "Unit Humidity Level reading sensor 2 (when available)",
+      "unit_id": 33,
+      "reg_split": "10",
+      "variable_name": "HUMI_LEV_2",
+      "type": "vent"
+    },
+    {
+      "register_name": "REG_SPLIT_10_READ_SP_HUMI_2",
+      "address": 239,
+      "description": "Unit Humidity Set Point sensor 2 (when available)",
+      "unit_id": 33,
+      "reg_split": "10",
+      "variable_name": "SP_HUMI_2",
+      "type": "vent"
+    },
+    {
+      "register_name": "REG_SPLIT_10_READ_ERRORS",
+      "address": 240,
+      "description": "Errors (TBD)",
+      "unit_id": 33,
+      "reg_split": "10",
+      "variable_name": "ERRORS",
+      "type": "vent"
+    }
+  ],
+  "11": [
+    {
+      "register_name": "REG_SPLIT_11_READ_AIR_FLOW",
+      "address": 250,
+      "description": "Unit AirFlow reading",
+      "unit_id": 33,
+      "reg_split": "11",
+      "variable_name": "AIR_FLOW",
+      "type": "vent"
+    },
+    {
+      "register_name": "REG_SPLIT_11_READ_SP_AIR_FLOW",
+      "address": 251,
+      "description": "Unit AirFlow Set Point",
+      "unit_id": 33,
+      "reg_split": "11",
+      "variable_name": "SP_AIR_FLOW",
+      "type": "vent"
+    },
+    {
+      "register_name": "REG_SPLIT_11_READ_CO2_LEV",
+      "address": 252,
+      "description": "Unit CO2 Level reading",
+      "unit_id": 33,
+      "reg_split": "11",
+      "variable_name": "CO2_LEV",
+      "type": "vent"
+    },
+    {
+      "register_name": "REG_SPLIT_11_READ_SP_CO2",
+      "address": 253,
+      "description": "Unit CO2 Set Point",
+      "unit_id": 33,
+      "reg_split": "11",
+      "variable_name": "SP_CO2",
+      "type": "vent"
+    },
+    {
+      "register_name": "REG_SPLIT_11_READ_HUMI_LEV",
+      "address": 254,
+      "description": "Unit Humidity Level reading",
+      "unit_id": 33,
+      "reg_split": "11",
+      "variable_name": "HUMI_LEV",
+      "type": "vent"
+    },
+    {
+      "register_name": "REG_SPLIT_11_READ_SP_HUMI",
+      "address": 255,
+      "description": "Unit Humidity Set Point",
+      "unit_id": 33,
+      "reg_split": "11",
+      "variable_name": "SP_HUMI",
+      "type": "vent"
+    },
+    {
+      "register_name": "REG_SPLIT_11_READ_CO2_LEV_2",
+      "address": 256,
+      "description": "Unit CO2 Level reading sensor 2 (when available)",
+      "unit_id": 33,
+      "reg_split": "11",
+      "variable_name": "CO2_LEV_2",
+      "type": "vent"
+    },
+    {
+      "register_name": "REG_SPLIT_11_READ_SP_CO2_2",
+      "address": 257,
+      "description": "Unit CO2 Set Point sensor 2 (when available)",
+      "unit_id": 33,
+      "reg_split": "11",
+      "variable_name": "SP_CO2_2",
+      "type": "vent"
+    },
+    {
+      "register_name": "REG_SPLIT_11_READ_HUMI_LEV_2",
+      "address": 258,
+      "description": "Unit Humidity Level reading sensor 2 (when available)",
+      "unit_id": 33,
+      "reg_split": "11",
+      "variable_name": "HUMI_LEV_2",
+      "type": "vent"
+    },
+    {
+      "register_name": "REG_SPLIT_11_READ_SP_HUMI_2",
+      "address": 259,
+      "description": "Unit Humidity Set Point sensor 2 (when available)",
+      "unit_id": 33,
+      "reg_split": "11",
+      "variable_name": "SP_HUMI_2",
+      "type": "vent"
+    },
+    {
+      "register_name": "REG_SPLIT_11_READ_ERRORS",
+      "address": 260,
+      "description": "Errors (TBD)",
+      "unit_id": 33,
+      "reg_split": "11",
+      "variable_name": "ERRORS",
+      "type": "vent"
+    }
+  ],
+  "12": [
+    {
+      "register_name": "REG_SPLIT_12_READ_AIR_FLOW",
+      "address": 270,
+      "description": "Unit AirFlow reading",
+      "unit_id": 33,
+      "reg_split": "12",
+      "variable_name": "AIR_FLOW",
+      "type": "vent"
+    },
+    {
+      "register_name": "REG_SPLIT_12_READ_SP_AIR_FLOW",
+      "address": 271,
+      "description": "Unit AirFlow Set Point",
+      "unit_id": 33,
+      "reg_split": "12",
+      "variable_name": "SP_AIR_FLOW",
+      "type": "vent"
+    },
+    {
+      "register_name": "REG_SPLIT_12_READ_CO2_LEV",
+      "address": 272,
+      "description": "Unit CO2 Level reading",
+      "unit_id": 33,
+      "reg_split": "12",
+      "variable_name": "CO2_LEV",
+      "type": "vent"
+    },
+    {
+      "register_name": "REG_SPLIT_12_READ_SP_CO2",
+      "address": 273,
+      "description": "Unit CO2 Set Point",
+      "unit_id": 33,
+      "reg_split": "12",
+      "variable_name": "SP_CO2",
+      "type": "vent"
+    },
+    {
+      "register_name": "REG_SPLIT_12_READ_HUMI_LEV",
+      "address": 274,
+      "description": "Unit Humidity Level reading",
+      "unit_id": 33,
+      "reg_split": "12",
+      "variable_name": "HUMI_LEV",
+      "type": "vent"
+    },
+    {
+      "register_name": "REG_SPLIT_12_READ_SP_HUMI",
+      "address": 275,
+      "description": "Unit Humidity Set Point",
+      "unit_id": 33,
+      "reg_split": "12",
+      "variable_name": "SP_HUMI",
+      "type": "vent"
+    },
+    {
+      "register_name": "REG_SPLIT_12_READ_CO2_LEV_2",
+      "address": 276,
+      "description": "Unit CO2 Level reading sensor 2 (when available)",
+      "unit_id": 33,
+      "reg_split": "12",
+      "variable_name": "CO2_LEV_2",
+      "type": "vent"
+    },
+    {
+      "register_name": "REG_SPLIT_12_READ_SP_CO2_2",
+      "address": 277,
+      "description": "Unit CO2 Set Point sensor 2 (when available)",
+      "unit_id": 33,
+      "reg_split": "12",
+      "variable_name": "SP_CO2_2",
+      "type": "vent"
+    },
+    {
+      "register_name": "REG_SPLIT_12_READ_HUMI_LEV_2",
+      "address": 278,
+      "description": "Unit Humidity Level reading sensor 2 (when available)",
+      "unit_id": 33,
+      "reg_split": "12",
+      "variable_name": "HUMI_LEV_2",
+      "type": "vent"
+    },
+    {
+      "register_name": "REG_SPLIT_12_READ_SP_HUMI_2",
+      "address": 279,
+      "description": "Unit Humidity Set Point sensor 2 (when available)",
+      "unit_id": 33,
+      "reg_split": "12",
+      "variable_name": "SP_HUMI_2",
+      "type": "vent"
+    },
+    {
+      "register_name": "REG_SPLIT_12_READ_ERRORS",
+      "address": 280,
+      "description": "Errors (TBD)",
+      "unit_id": 33,
+      "reg_split": "12",
+      "variable_name": "ERRORS",
+      "type": "vent"
+    }
+  ],
+  "13": [
+    {
+      "register_name": "REG_SPLIT_13_READ_AIR_FLOW",
+      "address": 290,
+      "description": "Unit AirFlow reading",
+      "unit_id": 33,
+      "reg_split": "13",
+      "variable_name": "AIR_FLOW",
+      "type": "vent"
+    },
+    {
+      "register_name": "REG_SPLIT_13_READ_SP_AIR_FLOW",
+      "address": 291,
+      "description": "Unit AirFlow Set Point",
+      "unit_id": 33,
+      "reg_split": "13",
+      "variable_name": "SP_AIR_FLOW",
+      "type": "vent"
+    },
+    {
+      "register_name": "REG_SPLIT_13_READ_CO2_LEV",
+      "address": 292,
+      "description": "Unit CO2 Level reading",
+      "unit_id": 33,
+      "reg_split": "13",
+      "variable_name": "CO2_LEV",
+      "type": "vent"
+    },
+    {
+      "register_name": "REG_SPLIT_13_READ_SP_CO2",
+      "address": 293,
+      "description": "Unit CO2 Set Point",
+      "unit_id": 33,
+      "reg_split": "13",
+      "variable_name": "SP_CO2",
+      "type": "vent"
+    },
+    {
+      "register_name": "REG_SPLIT_13_READ_HUMI_LEV",
+      "address": 294,
+      "description": "Unit Humidity Level reading",
+      "unit_id": 33,
+      "reg_split": "13",
+      "variable_name": "HUMI_LEV",
+      "type": "vent"
+    },
+    {
+      "register_name": "REG_SPLIT_13_READ_SP_HUMI",
+      "address": 295,
+      "description": "Unit Humidity Set Point",
+      "unit_id": 33,
+      "reg_split": "13",
+      "variable_name": "SP_HUMI",
+      "type": "vent"
+    },
+    {
+      "register_name": "REG_SPLIT_13_READ_CO2_LEV_2",
+      "address": 296,
+      "description": "Unit CO2 Level reading sensor 2 (when available)",
+      "unit_id": 33,
+      "reg_split": "13",
+      "variable_name": "CO2_LEV_2",
+      "type": "vent"
+    },
+    {
+      "register_name": "REG_SPLIT_13_READ_SP_CO2_2",
+      "address": 297,
+      "description": "Unit CO2 Set Point sensor 2 (when available)",
+      "unit_id": 33,
+      "reg_split": "13",
+      "variable_name": "SP_CO2_2",
+      "type": "vent"
+    },
+    {
+      "register_name": "REG_SPLIT_13_READ_HUMI_LEV_2",
+      "address": 298,
+      "description": "Unit Humidity Level reading sensor 2 (when available)",
+      "unit_id": 33,
+      "reg_split": "13",
+      "variable_name": "HUMI_LEV_2",
+      "type": "vent"
+    },
+    {
+      "register_name": "REG_SPLIT_13_READ_SP_HUMI_2",
+      "address": 299,
+      "description": "Unit Humidity Set Point sensor 2 (when available)",
+      "unit_id": 33,
+      "reg_split": "13",
+      "variable_name": "SP_HUMI_2",
+      "type": "vent"
+    },
+    {
+      "register_name": "REG_SPLIT_13_READ_ERRORS",
+      "address": 300,
+      "description": "Errors (TBD)",
+      "unit_id": 33,
+      "reg_split": "13",
+      "variable_name": "ERRORS",
+      "type": "vent"
+    }
+  ],
+  "14": [
+    {
+      "register_name": "REG_SPLIT_14_READ_AIR_FLOW",
+      "address": 310,
+      "description": "Unit AirFlow reading",
+      "unit_id": 33,
+      "reg_split": "14",
+      "variable_name": "AIR_FLOW",
+      "type": "vent"
+    },
+    {
+      "register_name": "REG_SPLIT_14_READ_SP_AIR_FLOW",
+      "address": 311,
+      "description": "Unit AirFlow Set Point",
+      "unit_id": 33,
+      "reg_split": "14",
+      "variable_name": "SP_AIR_FLOW",
+      "type": "vent"
+    },
+    {
+      "register_name": "REG_SPLIT_14_READ_CO2_LEV",
+      "address": 312,
+      "description": "Unit CO2 Level reading",
+      "unit_id": 33,
+      "reg_split": "14",
+      "variable_name": "CO2_LEV",
+      "type": "vent"
+    },
+    {
+      "register_name": "REG_SPLIT_14_READ_SP_CO2",
+      "address": 313,
+      "description": "Unit CO2 Set Point",
+      "unit_id": 33,
+      "reg_split": "14",
+      "variable_name": "SP_CO2",
+      "type": "vent"
+    },
+    {
+      "register_name": "REG_SPLIT_14_READ_HUMI_LEV",
+      "address": 314,
+      "description": "Unit Humidity Level reading",
+      "unit_id": 33,
+      "reg_split": "14",
+      "variable_name": "HUMI_LEV",
+      "type": "vent"
+    },
+    {
+      "register_name": "REG_SPLIT_14_READ_SP_HUMI",
+      "address": 315,
+      "description": "Unit Humidity Set Point",
+      "unit_id": 33,
+      "reg_split": "14",
+      "variable_name": "SP_HUMI",
+      "type": "vent"
+    },
+    {
+      "register_name": "REG_SPLIT_14_READ_CO2_LEV_2",
+      "address": 316,
+      "description": "Unit CO2 Level reading sensor 2 (when available)",
+      "unit_id": 33,
+      "reg_split": "14",
+      "variable_name": "CO2_LEV_2",
+      "type": "vent"
+    },
+    {
+      "register_name": "REG_SPLIT_14_READ_SP_CO2_2",
+      "address": 317,
+      "description": "Unit CO2 Set Point sensor 2 (when available)",
+      "unit_id": 33,
+      "reg_split": "14",
+      "variable_name": "SP_CO2_2",
+      "type": "vent"
+    },
+    {
+      "register_name": "REG_SPLIT_14_READ_HUMI_LEV_2",
+      "address": 318,
+      "description": "Unit Humidity Level reading sensor 2 (when available)",
+      "unit_id": 33,
+      "reg_split": "14",
+      "variable_name": "HUMI_LEV_2",
+      "type": "vent"
+    },
+    {
+      "register_name": "REG_SPLIT_14_READ_SP_HUMI_2",
+      "address": 319,
+      "description": "Unit Humidity Set Point sensor 2 (when available)",
+      "unit_id": 33,
+      "reg_split": "14",
+      "variable_name": "SP_HUMI_2",
+      "type": "vent"
+    },
+    {
+      "register_name": "REG_SPLIT_14_READ_ERRORS",
+      "address": 320,
+      "description": "Errors (TBD)",
+      "unit_id": 33,
+      "reg_split": "14",
+      "variable_name": "ERRORS",
+      "type": "vent"
+    }
+  ],
+  "15": [
+    {
+      "register_name": "REG_SPLIT_15_READ_AIR_FLOW",
+      "address": 330,
+      "description": "Unit AirFlow reading",
+      "unit_id": 33,
+      "reg_split": "15",
+      "variable_name": "AIR_FLOW",
+      "type": "vent"
+    },
+    {
+      "register_name": "REG_SPLIT_15_READ_SP_AIR_FLOW",
+      "address": 331,
+      "description": "Unit AirFlow Set Point",
+      "unit_id": 33,
+      "reg_split": "15",
+      "variable_name": "SP_AIR_FLOW",
+      "type": "vent"
+    },
+    {
+      "register_name": "REG_SPLIT_15_READ_CO2_LEV",
+      "address": 332,
+      "description": "Unit CO2 Level reading",
+      "unit_id": 33,
+      "reg_split": "15",
+      "variable_name": "CO2_LEV",
+      "type": "vent"
+    },
+    {
+      "register_name": "REG_SPLIT_15_READ_SP_CO2",
+      "address": 333,
+      "description": "Unit CO2 Set Point",
+      "unit_id": 33,
+      "reg_split": "15",
+      "variable_name": "SP_CO2",
+      "type": "vent"
+    },
+    {
+      "register_name": "REG_SPLIT_15_READ_HUMI_LEV",
+      "address": 334,
+      "description": "Unit Humidity Level reading",
+      "unit_id": 33,
+      "reg_split": "15",
+      "variable_name": "HUMI_LEV",
+      "type": "vent"
+    },
+    {
+      "register_name": "REG_SPLIT_15_READ_SP_HUMI",
+      "address": 335,
+      "description": "Unit Humidity Set Point",
+      "unit_id": 33,
+      "reg_split": "15",
+      "variable_name": "SP_HUMI",
+      "type": "vent"
+    },
+    {
+      "register_name": "REG_SPLIT_15_READ_CO2_LEV_2",
+      "address": 336,
+      "description": "Unit CO2 Level reading sensor 2 (when available)",
+      "unit_id": 33,
+      "reg_split": "15",
+      "variable_name": "CO2_LEV_2",
+      "type": "vent"
+    },
+    {
+      "register_name": "REG_SPLIT_15_READ_SP_CO2_2",
+      "address": 337,
+      "description": "Unit CO2 Set Point sensor 2 (when available)",
+      "unit_id": 33,
+      "reg_split": "15",
+      "variable_name": "SP_CO2_2",
+      "type": "vent"
+    },
+    {
+      "register_name": "REG_SPLIT_15_READ_HUMI_LEV_2",
+      "address": 338,
+      "description": "Unit Humidity Level reading sensor 2 (when available)",
+      "unit_id": 33,
+      "reg_split": "15",
+      "variable_name": "HUMI_LEV_2",
+      "type": "vent"
+    },
+    {
+      "register_name": "REG_SPLIT_15_READ_SP_HUMI_2",
+      "address": 339,
+      "description": "Unit Humidity Set Point sensor 2 (when available)",
+      "unit_id": 33,
+      "reg_split": "15",
+      "variable_name": "SP_HUMI_2",
+      "type": "vent"
+    },
+    {
+      "register_name": "REG_SPLIT_15_READ_ERRORS",
+      "address": 340,
+      "description": "Errors (TBD)",
+      "unit_id": 33,
+      "reg_split": "15",
+      "variable_name": "ERRORS",
+      "type": "vent"
+    }
+  ],
+  "16": [
+    {
+      "register_name": "REG_SPLIT_16_READ_AIR_FLOW",
+      "address": 350,
+      "description": "Unit AirFlow reading",
+      "unit_id": 33,
+      "reg_split": "16",
+      "variable_name": "AIR_FLOW",
+      "type": "vent"
+    },
+    {
+      "register_name": "REG_SPLIT_16_READ_SP_AIR_FLOW",
+      "address": 351,
+      "description": "Unit AirFlow Set Point",
+      "unit_id": 33,
+      "reg_split": "16",
+      "variable_name": "SP_AIR_FLOW",
+      "type": "vent"
+    },
+    {
+      "register_name": "REG_SPLIT_16_READ_CO2_LEV",
+      "address": 352,
+      "description": "Unit CO2 Level reading",
+      "unit_id": 33,
+      "reg_split": "16",
+      "variable_name": "CO2_LEV",
+      "type": "vent"
+    },
+    {
+      "register_name": "REG_SPLIT_16_READ_SP_CO2",
+      "address": 353,
+      "description": "Unit CO2 Set Point",
+      "unit_id": 33,
+      "reg_split": "16",
+      "variable_name": "SP_CO2",
+      "type": "vent"
+    },
+    {
+      "register_name": "REG_SPLIT_16_READ_HUMI_LEV",
+      "address": 354,
+      "description": "Unit Humidity Level reading",
+      "unit_id": 33,
+      "reg_split": "16",
+      "variable_name": "HUMI_LEV",
+      "type": "vent"
+    },
+    {
+      "register_name": "REG_SPLIT_16_READ_SP_HUMI",
+      "address": 355,
+      "description": "Unit Humidity Set Point",
+      "unit_id": 33,
+      "reg_split": "16",
+      "variable_name": "SP_HUMI",
+      "type": "vent"
+    },
+    {
+      "register_name": "REG_SPLIT_16_READ_CO2_LEV_2",
+      "address": 356,
+      "description": "Unit CO2 Level reading sensor 2 (when available)",
+      "unit_id": 33,
+      "reg_split": "16",
+      "variable_name": "CO2_LEV_2",
+      "type": "vent"
+    },
+    {
+      "register_name": "REG_SPLIT_16_READ_SP_CO2_2",
+      "address": 357,
+      "description": "Unit CO2 Set Point sensor 2 (when available)",
+      "unit_id": 33,
+      "reg_split": "16",
+      "variable_name": "SP_CO2_2",
+      "type": "vent"
+    },
+    {
+      "register_name": "REG_SPLIT_16_READ_HUMI_LEV_2",
+      "address": 358,
+      "description": "Unit Humidity Level reading sensor 2 (when available)",
+      "unit_id": 33,
+      "reg_split": "16",
+      "variable_name": "HUMI_LEV_2",
+      "type": "vent"
+    },
+    {
+      "register_name": "REG_SPLIT_16_READ_SP_HUMI_2",
+      "address": 359,
+      "description": "Unit Humidity Set Point sensor 2 (when available)",
+      "unit_id": 33,
+      "reg_split": "16",
+      "variable_name": "SP_HUMI_2",
+      "type": "vent"
+    },
+    {
+      "register_name": "REG_SPLIT_16_READ_ERRORS",
+      "address": 360,
+      "description": "Errors (TBD)",
+      "unit_id": 33,
+      "reg_split": "16",
+      "variable_name": "ERRORS",
+      "type": "vent"
+    }
+  ],
+  "17": [
+    {
+      "register_name": "REG_SPLIT_17_READ_AIR_FLOW",
+      "address": 370,
+      "description": "Unit AirFlow reading",
+      "unit_id": 33,
+      "reg_split": "17",
+      "variable_name": "AIR_FLOW",
+      "type": "vent"
+    },
+    {
+      "register_name": "REG_SPLIT_17_READ_SP_AIR_FLOW",
+      "address": 371,
+      "description": "Unit AirFlow Set Point",
+      "unit_id": 33,
+      "reg_split": "17",
+      "variable_name": "SP_AIR_FLOW",
+      "type": "vent"
+    },
+    {
+      "register_name": "REG_SPLIT_17_READ_CO2_LEV",
+      "address": 372,
+      "description": "Unit CO2 Level reading",
+      "unit_id": 33,
+      "reg_split": "17",
+      "variable_name": "CO2_LEV",
+      "type": "vent"
+    },
+    {
+      "register_name": "REG_SPLIT_17_READ_SP_CO2",
+      "address": 373,
+      "description": "Unit CO2 Set Point",
+      "unit_id": 33,
+      "reg_split": "17",
+      "variable_name": "SP_CO2",
+      "type": "vent"
+    },
+    {
+      "register_name": "REG_SPLIT_17_READ_HUMI_LEV",
+      "address": 374,
+      "description": "Unit Humidity Level reading",
+      "unit_id": 33,
+      "reg_split": "17",
+      "variable_name": "HUMI_LEV",
+      "type": "vent"
+    },
+    {
+      "register_name": "REG_SPLIT_17_READ_SP_HUMI",
+      "address": 375,
+      "description": "Unit Humidity Set Point",
+      "unit_id": 33,
+      "reg_split": "17",
+      "variable_name": "SP_HUMI",
+      "type": "vent"
+    },
+    {
+      "register_name": "REG_SPLIT_17_READ_CO2_LEV_2",
+      "address": 376,
+      "description": "Unit CO2 Level reading sensor 2 (when available)",
+      "unit_id": 33,
+      "reg_split": "17",
+      "variable_name": "CO2_LEV_2",
+      "type": "vent"
+    },
+    {
+      "register_name": "REG_SPLIT_17_READ_SP_CO2_2",
+      "address": 377,
+      "description": "Unit CO2 Set Point sensor 2 (when available)",
+      "unit_id": 33,
+      "reg_split": "17",
+      "variable_name": "SP_CO2_2",
+      "type": "vent"
+    },
+    {
+      "register_name": "REG_SPLIT_17_READ_HUMI_LEV_2",
+      "address": 378,
+      "description": "Unit Humidity Level reading sensor 2 (when available)",
+      "unit_id": 33,
+      "reg_split": "17",
+      "variable_name": "HUMI_LEV_2",
+      "type": "vent"
+    },
+    {
+      "register_name": "REG_SPLIT_17_READ_SP_HUMI_2",
+      "address": 379,
+      "description": "Unit Humidity Set Point sensor 2 (when available)",
+      "unit_id": 33,
+      "reg_split": "17",
+      "variable_name": "SP_HUMI_2",
+      "type": "vent"
+    },
+    {
+      "register_name": "REG_SPLIT_17_READ_ERRORS",
+      "address": 380,
+      "description": "Errors (TBD)",
+      "unit_id": 33,
+      "reg_split": "17",
+      "variable_name": "ERRORS",
+      "type": "vent"
+    }
+  ],
+  "18": [
+    {
+      "register_name": "REG_SPLIT_18_READ_AIR_FLOW",
+      "address": 390,
+      "description": "Unit AirFlow reading",
+      "unit_id": 33,
+      "reg_split": "18",
+      "variable_name": "AIR_FLOW",
+      "type": "vent"
+    },
+    {
+      "register_name": "REG_SPLIT_18_READ_SP_AIR_FLOW",
+      "address": 391,
+      "description": "Unit AirFlow Set Point",
+      "unit_id": 33,
+      "reg_split": "18",
+      "variable_name": "SP_AIR_FLOW",
+      "type": "vent"
+    },
+    {
+      "register_name": "REG_SPLIT_18_READ_CO2_LEV",
+      "address": 392,
+      "description": "Unit CO2 Level reading",
+      "unit_id": 33,
+      "reg_split": "18",
+      "variable_name": "CO2_LEV",
+      "type": "vent"
+    },
+    {
+      "register_name": "REG_SPLIT_18_READ_SP_CO2",
+      "address": 393,
+      "description": "Unit CO2 Set Point",
+      "unit_id": 33,
+      "reg_split": "18",
+      "variable_name": "SP_CO2",
+      "type": "vent"
+    },
+    {
+      "register_name": "REG_SPLIT_18_READ_HUMI_LEV",
+      "address": 394,
+      "description": "Unit Humidity Level reading",
+      "unit_id": 33,
+      "reg_split": "18",
+      "variable_name": "HUMI_LEV",
+      "type": "vent"
+    },
+    {
+      "register_name": "REG_SPLIT_18_READ_SP_HUMI",
+      "address": 395,
+      "description": "Unit Humidity Set Point",
+      "unit_id": 33,
+      "reg_split": "18",
+      "variable_name": "SP_HUMI",
+      "type": "vent"
+    },
+    {
+      "register_name": "REG_SPLIT_18_READ_CO2_LEV_2",
+      "address": 396,
+      "description": "Unit CO2 Level reading sensor 2 (when available)",
+      "unit_id": 33,
+      "reg_split": "18",
+      "variable_name": "CO2_LEV_2",
+      "type": "vent"
+    },
+    {
+      "register_name": "REG_SPLIT_18_READ_SP_CO2_2",
+      "address": 397,
+      "description": "Unit CO2 Set Point sensor 2 (when available)",
+      "unit_id": 33,
+      "reg_split": "18",
+      "variable_name": "SP_CO2_2",
+      "type": "vent"
+    },
+    {
+      "register_name": "REG_SPLIT_18_READ_HUMI_LEV_2",
+      "address": 398,
+      "description": "Unit Humidity Level reading sensor 2 (when available)",
+      "unit_id": 33,
+      "reg_split": "18",
+      "variable_name": "HUMI_LEV_2",
+      "type": "vent"
+    },
+    {
+      "register_name": "REG_SPLIT_18_READ_SP_HUMI_2",
+      "address": 399,
+      "description": "Unit Humidity Set Point sensor 2 (when available)",
+      "unit_id": 33,
+      "reg_split": "18",
+      "variable_name": "SP_HUMI_2",
+      "type": "vent"
+    },
+    {
+      "register_name": "REG_SPLIT_18_READ_ERRORS",
+      "address": 400,
+      "description": "Errors (TBD)",
+      "unit_id": 33,
+      "reg_split": "18",
+      "variable_name": "ERRORS",
+      "type": "vent"
+    }
+  ],
+  "19": [
+    {
+      "register_name": "REG_SPLIT_19_READ_AIR_FLOW",
+      "address": 410,
+      "description": "Unit AirFlow reading",
+      "unit_id": 33,
+      "reg_split": "19",
+      "variable_name": "AIR_FLOW",
+      "type": "vent"
+    },
+    {
+      "register_name": "REG_SPLIT_19_READ_SP_AIR_FLOW",
+      "address": 411,
+      "description": "Unit AirFlow Set Point",
+      "unit_id": 33,
+      "reg_split": "19",
+      "variable_name": "SP_AIR_FLOW",
+      "type": "vent"
+    },
+    {
+      "register_name": "REG_SPLIT_19_READ_CO2_LEV",
+      "address": 412,
+      "description": "Unit CO2 Level reading",
+      "unit_id": 33,
+      "reg_split": "19",
+      "variable_name": "CO2_LEV",
+      "type": "vent"
+    },
+    {
+      "register_name": "REG_SPLIT_19_READ_SP_CO2",
+      "address": 413,
+      "description": "Unit CO2 Set Point",
+      "unit_id": 33,
+      "reg_split": "19",
+      "variable_name": "SP_CO2",
+      "type": "vent"
+    },
+    {
+      "register_name": "REG_SPLIT_19_READ_HUMI_LEV",
+      "address": 414,
+      "description": "Unit Humidity Level reading",
+      "unit_id": 33,
+      "reg_split": "19",
+      "variable_name": "HUMI_LEV",
+      "type": "vent"
+    },
+    {
+      "register_name": "REG_SPLIT_19_READ_SP_HUMI",
+      "address": 415,
+      "description": "Unit Humidity Set Point",
+      "unit_id": 33,
+      "reg_split": "19",
+      "variable_name": "SP_HUMI",
+      "type": "vent"
+    },
+    {
+      "register_name": "REG_SPLIT_19_READ_CO2_LEV_2",
+      "address": 416,
+      "description": "Unit CO2 Level reading sensor 2 (when available)",
+      "unit_id": 33,
+      "reg_split": "19",
+      "variable_name": "CO2_LEV_2",
+      "type": "vent"
+    },
+    {
+      "register_name": "REG_SPLIT_19_READ_SP_CO2_2",
+      "address": 417,
+      "description": "Unit CO2 Set Point sensor 2 (when available)",
+      "unit_id": 33,
+      "reg_split": "19",
+      "variable_name": "SP_CO2_2",
+      "type": "vent"
+    },
+    {
+      "register_name": "REG_SPLIT_19_READ_HUMI_LEV_2",
+      "address": 418,
+      "description": "Unit Humidity Level reading sensor 2 (when available)",
+      "unit_id": 33,
+      "reg_split": "19",
+      "variable_name": "HUMI_LEV_2",
+      "type": "vent"
+    },
+    {
+      "register_name": "REG_SPLIT_19_READ_SP_HUMI_2",
+      "address": 419,
+      "description": "Unit Humidity Set Point sensor 2 (when available)",
+      "unit_id": 33,
+      "reg_split": "19",
+      "variable_name": "SP_HUMI_2",
+      "type": "vent"
+    },
+    {
+      "register_name": "REG_SPLIT_19_READ_ERRORS",
+      "address": 420,
+      "description": "Errors (TBD)",
+      "unit_id": 33,
+      "reg_split": "19",
+      "variable_name": "ERRORS",
+      "type": "vent"
+    }
+  ],
+  "20": [
+    {
+      "register_name": "REG_SPLIT_20_READ_AIR_FLOW",
+      "address": 430,
+      "description": "Unit AirFlow reading",
+      "unit_id": 33,
+      "reg_split": "20",
+      "variable_name": "AIR_FLOW",
+      "type": "vent"
+    },
+    {
+      "register_name": "REG_SPLIT_20_READ_SP_AIR_FLOW",
+      "address": 431,
+      "description": "Unit AirFlow Set Point",
+      "unit_id": 33,
+      "reg_split": "20",
+      "variable_name": "SP_AIR_FLOW",
+      "type": "vent"
+    },
+    {
+      "register_name": "REG_SPLIT_20_READ_CO2_LEV",
+      "address": 432,
+      "description": "Unit CO2 Level reading",
+      "unit_id": 33,
+      "reg_split": "20",
+      "variable_name": "CO2_LEV",
+      "type": "vent"
+    },
+    {
+      "register_name": "REG_SPLIT_20_READ_SP_CO2",
+      "address": 433,
+      "description": "Unit CO2 Set Point",
+      "unit_id": 33,
+      "reg_split": "20",
+      "variable_name": "SP_CO2",
+      "type": "vent"
+    },
+    {
+      "register_name": "REG_SPLIT_20_READ_HUMI_LEV",
+      "address": 434,
+      "description": "Unit Humidity Level reading",
+      "unit_id": 33,
+      "reg_split": "20",
+      "variable_name": "HUMI_LEV",
+      "type": "vent"
+    },
+    {
+      "register_name": "REG_SPLIT_20_READ_SP_HUMI",
+      "address": 435,
+      "description": "Unit Humidity Set Point",
+      "unit_id": 33,
+      "reg_split": "20",
+      "variable_name": "SP_HUMI",
+      "type": "vent"
+    },
+    {
+      "register_name": "REG_SPLIT_20_READ_CO2_LEV_2",
+      "address": 436,
+      "description": "Unit CO2 Level reading sensor 2 (when available)",
+      "unit_id": 33,
+      "reg_split": "20",
+      "variable_name": "CO2_LEV_2",
+      "type": "vent"
+    },
+    {
+      "register_name": "REG_SPLIT_20_READ_SP_CO2_2",
+      "address": 437,
+      "description": "Unit CO2 Set Point sensor 2 (when available)",
+      "unit_id": 33,
+      "reg_split": "20",
+      "variable_name": "SP_CO2_2",
+      "type": "vent"
+    },
+    {
+      "register_name": "REG_SPLIT_20_READ_HUMI_LEV_2",
+      "address": 438,
+      "description": "Unit Humidity Level reading sensor 2 (when available)",
+      "unit_id": 33,
+      "reg_split": "20",
+      "variable_name": "HUMI_LEV_2",
+      "type": "vent"
+    },
+    {
+      "register_name": "REG_SPLIT_20_READ_SP_HUMI_2",
+      "address": 439,
+      "description": "Unit Humidity Set Point sensor 2 (when available)",
+      "unit_id": 33,
+      "reg_split": "20",
+      "variable_name": "SP_HUMI_2",
+      "type": "vent"
+    },
+    {
+      "register_name": "REG_SPLIT_20_READ_ERRORS",
+      "address": 440,
+      "description": "Errors (TBD)",
+      "unit_id": 33,
+      "reg_split": "20",
+      "variable_name": "ERRORS",
+      "type": "vent"
+    }
+  ],
+  "21": [
+    {
+      "register_name": "REG_SPLIT_21_READ_AIR_FLOW",
+      "address": 450,
+      "description": "Unit AirFlow reading",
+      "unit_id": 33,
+      "reg_split": "21",
+      "variable_name": "AIR_FLOW",
+      "type": "vent"
+    },
+    {
+      "register_name": "REG_SPLIT_21_READ_SP_AIR_FLOW",
+      "address": 451,
+      "description": "Unit AirFlow Set Point",
+      "unit_id": 33,
+      "reg_split": "21",
+      "variable_name": "SP_AIR_FLOW",
+      "type": "vent"
+    },
+    {
+      "register_name": "REG_SPLIT_21_READ_CO2_LEV",
+      "address": 452,
+      "description": "Unit CO2 Level reading",
+      "unit_id": 33,
+      "reg_split": "21",
+      "variable_name": "CO2_LEV",
+      "type": "vent"
+    },
+    {
+      "register_name": "REG_SPLIT_21_READ_SP_CO2",
+      "address": 453,
+      "description": "Unit CO2 Set Point",
+      "unit_id": 33,
+      "reg_split": "21",
+      "variable_name": "SP_CO2",
+      "type": "vent"
+    },
+    {
+      "register_name": "REG_SPLIT_21_READ_HUMI_LEV",
+      "address": 454,
+      "description": "Unit Humidity Level reading",
+      "unit_id": 33,
+      "reg_split": "21",
+      "variable_name": "HUMI_LEV",
+      "type": "vent"
+    },
+    {
+      "register_name": "REG_SPLIT_21_READ_SP_HUMI",
+      "address": 455,
+      "description": "Unit Humidity Set Point",
+      "unit_id": 33,
+      "reg_split": "21",
+      "variable_name": "SP_HUMI",
+      "type": "vent"
+    },
+    {
+      "register_name": "REG_SPLIT_21_READ_CO2_LEV_2",
+      "address": 456,
+      "description": "Unit CO2 Level reading sensor 2 (when available)",
+      "unit_id": 33,
+      "reg_split": "21",
+      "variable_name": "CO2_LEV_2",
+      "type": "vent"
+    },
+    {
+      "register_name": "REG_SPLIT_21_READ_SP_CO2_2",
+      "address": 457,
+      "description": "Unit CO2 Set Point sensor 2 (when available)",
+      "unit_id": 33,
+      "reg_split": "21",
+      "variable_name": "SP_CO2_2",
+      "type": "vent"
+    },
+    {
+      "register_name": "REG_SPLIT_21_READ_HUMI_LEV_2",
+      "address": 458,
+      "description": "Unit Humidity Level reading sensor 2 (when available)",
+      "unit_id": 33,
+      "reg_split": "21",
+      "variable_name": "HUMI_LEV_2",
+      "type": "vent"
+    },
+    {
+      "register_name": "REG_SPLIT_21_READ_SP_HUMI_2",
+      "address": 459,
+      "description": "Unit Humidity Set Point sensor 2 (when available)",
+      "unit_id": 33,
+      "reg_split": "21",
+      "variable_name": "SP_HUMI_2",
+      "type": "vent"
+    },
+    {
+      "register_name": "REG_SPLIT_21_READ_ERRORS",
+      "address": 460,
+      "description": "Errors (TBD)",
+      "unit_id": 33,
+      "reg_split": "21",
+      "variable_name": "ERRORS",
+      "type": "vent"
+    }
+  ],
+  "22": [
+    {
+      "register_name": "REG_SPLIT_22_READ_AIR_FLOW",
+      "address": 470,
+      "description": "Unit AirFlow reading",
+      "unit_id": 33,
+      "reg_split": "22",
+      "variable_name": "AIR_FLOW",
+      "type": "vent"
+    },
+    {
+      "register_name": "REG_SPLIT_22_READ_SP_AIR_FLOW",
+      "address": 471,
+      "description": "Unit AirFlow Set Point",
+      "unit_id": 33,
+      "reg_split": "22",
+      "variable_name": "SP_AIR_FLOW",
+      "type": "vent"
+    },
+    {
+      "register_name": "REG_SPLIT_22_READ_CO2_LEV",
+      "address": 472,
+      "description": "Unit CO2 Level reading",
+      "unit_id": 33,
+      "reg_split": "22",
+      "variable_name": "CO2_LEV",
+      "type": "vent"
+    },
+    {
+      "register_name": "REG_SPLIT_22_READ_SP_CO2",
+      "address": 473,
+      "description": "Unit CO2 Set Point",
+      "unit_id": 33,
+      "reg_split": "22",
+      "variable_name": "SP_CO2",
+      "type": "vent"
+    },
+    {
+      "register_name": "REG_SPLIT_22_READ_HUMI_LEV",
+      "address": 474,
+      "description": "Unit Humidity Level reading",
+      "unit_id": 33,
+      "reg_split": "22",
+      "variable_name": "HUMI_LEV",
+      "type": "vent"
+    },
+    {
+      "register_name": "REG_SPLIT_22_READ_SP_HUMI",
+      "address": 475,
+      "description": "Unit Humidity Set Point",
+      "unit_id": 33,
+      "reg_split": "22",
+      "variable_name": "SP_HUMI",
+      "type": "vent"
+    },
+    {
+      "register_name": "REG_SPLIT_22_READ_CO2_LEV_2",
+      "address": 476,
+      "description": "Unit CO2 Level reading sensor 2 (when available)",
+      "unit_id": 33,
+      "reg_split": "22",
+      "variable_name": "CO2_LEV_2",
+      "type": "vent"
+    },
+    {
+      "register_name": "REG_SPLIT_22_READ_SP_CO2_2",
+      "address": 477,
+      "description": "Unit CO2 Set Point sensor 2 (when available)",
+      "unit_id": 33,
+      "reg_split": "22",
+      "variable_name": "SP_CO2_2",
+      "type": "vent"
+    },
+    {
+      "register_name": "REG_SPLIT_22_READ_HUMI_LEV_2",
+      "address": 478,
+      "description": "Unit Humidity Level reading sensor 2 (when available)",
+      "unit_id": 33,
+      "reg_split": "22",
+      "variable_name": "HUMI_LEV_2",
+      "type": "vent"
+    },
+    {
+      "register_name": "REG_SPLIT_22_READ_SP_HUMI_2",
+      "address": 479,
+      "description": "Unit Humidity Set Point sensor 2 (when available)",
+      "unit_id": 33,
+      "reg_split": "22",
+      "variable_name": "SP_HUMI_2",
+      "type": "vent"
+    },
+    {
+      "register_name": "REG_SPLIT_22_READ_ERRORS",
+      "address": 480,
+      "description": "Errors (TBD)",
+      "unit_id": 33,
+      "reg_split": "22",
+      "variable_name": "ERRORS",
+      "type": "vent"
+    }
+  ],
+  "23": [
+    {
+      "register_name": "REG_SPLIT_23_READ_AIR_FLOW",
+      "address": 490,
+      "description": "Unit AirFlow reading",
+      "unit_id": 33,
+      "reg_split": "23",
+      "variable_name": "AIR_FLOW",
+      "type": "vent"
+    },
+    {
+      "register_name": "REG_SPLIT_23_READ_SP_AIR_FLOW",
+      "address": 491,
+      "description": "Unit AirFlow Set Point",
+      "unit_id": 33,
+      "reg_split": "23",
+      "variable_name": "SP_AIR_FLOW",
+      "type": "vent"
+    },
+    {
+      "register_name": "REG_SPLIT_23_READ_CO2_LEV",
+      "address": 492,
+      "description": "Unit CO2 Level reading",
+      "unit_id": 33,
+      "reg_split": "23",
+      "variable_name": "CO2_LEV",
+      "type": "vent"
+    },
+    {
+      "register_name": "REG_SPLIT_23_READ_SP_CO2",
+      "address": 493,
+      "description": "Unit CO2 Set Point",
+      "unit_id": 33,
+      "reg_split": "23",
+      "variable_name": "SP_CO2",
+      "type": "vent"
+    },
+    {
+      "register_name": "REG_SPLIT_23_READ_HUMI_LEV",
+      "address": 494,
+      "description": "Unit Humidity Level reading",
+      "unit_id": 33,
+      "reg_split": "23",
+      "variable_name": "HUMI_LEV",
+      "type": "vent"
+    },
+    {
+      "register_name": "REG_SPLIT_23_READ_SP_HUMI",
+      "address": 495,
+      "description": "Unit Humidity Set Point",
+      "unit_id": 33,
+      "reg_split": "23",
+      "variable_name": "SP_HUMI",
+      "type": "vent"
+    },
+    {
+      "register_name": "REG_SPLIT_23_READ_CO2_LEV_2",
+      "address": 496,
+      "description": "Unit CO2 Level reading sensor 2 (when available)",
+      "unit_id": 33,
+      "reg_split": "23",
+      "variable_name": "CO2_LEV_2",
+      "type": "vent"
+    },
+    {
+      "register_name": "REG_SPLIT_23_READ_SP_CO2_2",
+      "address": 497,
+      "description": "Unit CO2 Set Point sensor 2 (when available)",
+      "unit_id": 33,
+      "reg_split": "23",
+      "variable_name": "SP_CO2_2",
+      "type": "vent"
+    },
+    {
+      "register_name": "REG_SPLIT_23_READ_HUMI_LEV_2",
+      "address": 498,
+      "description": "Unit Humidity Level reading sensor 2 (when available)",
+      "unit_id": 33,
+      "reg_split": "23",
+      "variable_name": "HUMI_LEV_2",
+      "type": "vent"
+    },
+    {
+      "register_name": "REG_SPLIT_23_READ_SP_HUMI_2",
+      "address": 499,
+      "description": "Unit Humidity Set Point sensor 2 (when available)",
+      "unit_id": 33,
+      "reg_split": "23",
+      "variable_name": "SP_HUMI_2",
+      "type": "vent"
+    },
+    {
+      "register_name": "REG_SPLIT_23_READ_ERRORS",
+      "address": 500,
+      "description": "Errors (TBD)",
+      "unit_id": 33,
+      "reg_split": "23",
+      "variable_name": "ERRORS",
+      "type": "vent"
+    }
+  ],
+  "24": [
+    {
+      "register_name": "REG_SPLIT_24_READ_AIR_FLOW",
+      "address": 510,
+      "description": "Unit AirFlow reading",
+      "unit_id": 33,
+      "reg_split": "24",
+      "variable_name": "AIR_FLOW",
+      "type": "vent"
+    },
+    {
+      "register_name": "REG_SPLIT_24_READ_SP_AIR_FLOW",
+      "address": 511,
+      "description": "Unit AirFlow Set Point",
+      "unit_id": 33,
+      "reg_split": "24",
+      "variable_name": "SP_AIR_FLOW",
+      "type": "vent"
+    },
+    {
+      "register_name": "REG_SPLIT_24_READ_CO2_LEV",
+      "address": 512,
+      "description": "Unit CO2 Level reading",
+      "unit_id": 33,
+      "reg_split": "24",
+      "variable_name": "CO2_LEV",
+      "type": "vent"
+    },
+    {
+      "register_name": "REG_SPLIT_24_READ_SP_CO2",
+      "address": 513,
+      "description": "Unit CO2 Set Point",
+      "unit_id": 33,
+      "reg_split": "24",
+      "variable_name": "SP_CO2",
+      "type": "vent"
+    },
+    {
+      "register_name": "REG_SPLIT_24_READ_HUMI_LEV",
+      "address": 514,
+      "description": "Unit Humidity Level reading",
+      "unit_id": 33,
+      "reg_split": "24",
+      "variable_name": "HUMI_LEV",
+      "type": "vent"
+    },
+    {
+      "register_name": "REG_SPLIT_24_READ_SP_HUMI",
+      "address": 515,
+      "description": "Unit Humidity Set Point",
+      "unit_id": 33,
+      "reg_split": "24",
+      "variable_name": "SP_HUMI",
+      "type": "vent"
+    },
+    {
+      "register_name": "REG_SPLIT_24_READ_CO2_LEV_2",
+      "address": 516,
+      "description": "Unit CO2 Level reading sensor 2 (when available)",
+      "unit_id": 33,
+      "reg_split": "24",
+      "variable_name": "CO2_LEV_2",
+      "type": "vent"
+    },
+    {
+      "register_name": "REG_SPLIT_24_READ_SP_CO2_2",
+      "address": 517,
+      "description": "Unit CO2 Set Point sensor 2 (when available)",
+      "unit_id": 33,
+      "reg_split": "24",
+      "variable_name": "SP_CO2_2",
+      "type": "vent"
+    },
+    {
+      "register_name": "REG_SPLIT_24_READ_HUMI_LEV_2",
+      "address": 518,
+      "description": "Unit Humidity Level reading sensor 2 (when available)",
+      "unit_id": 33,
+      "reg_split": "24",
+      "variable_name": "HUMI_LEV_2",
+      "type": "vent"
+    },
+    {
+      "register_name": "REG_SPLIT_24_READ_SP_HUMI_2",
+      "address": 519,
+      "description": "Unit Humidity Set Point sensor 2 (when available)",
+      "unit_id": 33,
+      "reg_split": "24",
+      "variable_name": "SP_HUMI_2",
+      "type": "vent"
+    },
+    {
+      "register_name": "REG_SPLIT_24_READ_ERRORS",
+      "address": 520,
+      "description": "Errors (TBD)",
+      "unit_id": 33,
+      "reg_split": "24",
+      "variable_name": "ERRORS",
+      "type": "vent"
+    }
+  ],
+  "25": [
+    {
+      "register_name": "REG_SPLIT_25_READ_AIR_FLOW",
+      "address": 530,
+      "description": "Unit AirFlow reading",
+      "unit_id": 33,
+      "reg_split": "25",
+      "variable_name": "AIR_FLOW",
+      "type": "vent"
+    },
+    {
+      "register_name": "REG_SPLIT_25_READ_SP_AIR_FLOW",
+      "address": 531,
+      "description": "Unit AirFlow Set Point",
+      "unit_id": 33,
+      "reg_split": "25",
+      "variable_name": "SP_AIR_FLOW",
+      "type": "vent"
+    },
+    {
+      "register_name": "REG_SPLIT_25_READ_CO2_LEV",
+      "address": 532,
+      "description": "Unit CO2 Level reading",
+      "unit_id": 33,
+      "reg_split": "25",
+      "variable_name": "CO2_LEV",
+      "type": "vent"
+    },
+    {
+      "register_name": "REG_SPLIT_25_READ_SP_CO2",
+      "address": 533,
+      "description": "Unit CO2 Set Point",
+      "unit_id": 33,
+      "reg_split": "25",
+      "variable_name": "SP_CO2",
+      "type": "vent"
+    },
+    {
+      "register_name": "REG_SPLIT_25_READ_HUMI_LEV",
+      "address": 534,
+      "description": "Unit Humidity Level reading",
+      "unit_id": 33,
+      "reg_split": "25",
+      "variable_name": "HUMI_LEV",
+      "type": "vent"
+    },
+    {
+      "register_name": "REG_SPLIT_25_READ_SP_HUMI",
+      "address": 535,
+      "description": "Unit Humidity Set Point",
+      "unit_id": 33,
+      "reg_split": "25",
+      "variable_name": "SP_HUMI",
+      "type": "vent"
+    },
+    {
+      "register_name": "REG_SPLIT_25_READ_CO2_LEV_2",
+      "address": 536,
+      "description": "Unit CO2 Level reading sensor 2 (when available)",
+      "unit_id": 33,
+      "reg_split": "25",
+      "variable_name": "CO2_LEV_2",
+      "type": "vent"
+    },
+    {
+      "register_name": "REG_SPLIT_25_READ_SP_CO2_2",
+      "address": 537,
+      "description": "Unit CO2 Set Point sensor 2 (when available)",
+      "unit_id": 33,
+      "reg_split": "25",
+      "variable_name": "SP_CO2_2",
+      "type": "vent"
+    },
+    {
+      "register_name": "REG_SPLIT_25_READ_HUMI_LEV_2",
+      "address": 538,
+      "description": "Unit Humidity Level reading sensor 2 (when available)",
+      "unit_id": 33,
+      "reg_split": "25",
+      "variable_name": "HUMI_LEV_2",
+      "type": "vent"
+    },
+    {
+      "register_name": "REG_SPLIT_25_READ_SP_HUMI_2",
+      "address": 539,
+      "description": "Unit Humidity Set Point sensor 2 (when available)",
+      "unit_id": 33,
+      "reg_split": "25",
+      "variable_name": "SP_HUMI_2",
+      "type": "vent"
+    },
+    {
+      "register_name": "REG_SPLIT_25_READ_ERRORS",
+      "address": 540,
+      "description": "Errors (TBD)",
+      "unit_id": 33,
+      "reg_split": "25",
+      "variable_name": "ERRORS",
+      "type": "vent"
+    }
+  ],
+  "26": [
+    {
+      "register_name": "REG_SPLIT_26_READ_AIR_FLOW",
+      "address": 550,
+      "description": "Unit AirFlow reading",
+      "unit_id": 33,
+      "reg_split": "26",
+      "variable_name": "AIR_FLOW",
+      "type": "vent"
+    },
+    {
+      "register_name": "REG_SPLIT_26_READ_SP_AIR_FLOW",
+      "address": 551,
+      "description": "Unit AirFlow Set Point",
+      "unit_id": 33,
+      "reg_split": "26",
+      "variable_name": "SP_AIR_FLOW",
+      "type": "vent"
+    },
+    {
+      "register_name": "REG_SPLIT_26_READ_CO2_LEV",
+      "address": 552,
+      "description": "Unit CO2 Level reading",
+      "unit_id": 33,
+      "reg_split": "26",
+      "variable_name": "CO2_LEV",
+      "type": "vent"
+    },
+    {
+      "register_name": "REG_SPLIT_26_READ_SP_CO2",
+      "address": 553,
+      "description": "Unit CO2 Set Point",
+      "unit_id": 33,
+      "reg_split": "26",
+      "variable_name": "SP_CO2",
+      "type": "vent"
+    },
+    {
+      "register_name": "REG_SPLIT_26_READ_HUMI_LEV",
+      "address": 554,
+      "description": "Unit Humidity Level reading",
+      "unit_id": 33,
+      "reg_split": "26",
+      "variable_name": "HUMI_LEV",
+      "type": "vent"
+    },
+    {
+      "register_name": "REG_SPLIT_26_READ_SP_HUMI",
+      "address": 555,
+      "description": "Unit Humidity Set Point",
+      "unit_id": 33,
+      "reg_split": "26",
+      "variable_name": "SP_HUMI",
+      "type": "vent"
+    },
+    {
+      "register_name": "REG_SPLIT_26_READ_CO2_LEV_2",
+      "address": 556,
+      "description": "Unit CO2 Level reading sensor 2 (when available)",
+      "unit_id": 33,
+      "reg_split": "26",
+      "variable_name": "CO2_LEV_2",
+      "type": "vent"
+    },
+    {
+      "register_name": "REG_SPLIT_26_READ_SP_CO2_2",
+      "address": 557,
+      "description": "Unit CO2 Set Point sensor 2 (when available)",
+      "unit_id": 33,
+      "reg_split": "26",
+      "variable_name": "SP_CO2_2",
+      "type": "vent"
+    },
+    {
+      "register_name": "REG_SPLIT_26_READ_HUMI_LEV_2",
+      "address": 558,
+      "description": "Unit Humidity Level reading sensor 2 (when available)",
+      "unit_id": 33,
+      "reg_split": "26",
+      "variable_name": "HUMI_LEV_2",
+      "type": "vent"
+    },
+    {
+      "register_name": "REG_SPLIT_26_READ_SP_HUMI_2",
+      "address": 559,
+      "description": "Unit Humidity Set Point sensor 2 (when available)",
+      "unit_id": 33,
+      "reg_split": "26",
+      "variable_name": "SP_HUMI_2",
+      "type": "vent"
+    },
+    {
+      "register_name": "REG_SPLIT_26_READ_ERRORS",
+      "address": 560,
+      "description": "Errors (TBD)",
+      "unit_id": 33,
+      "reg_split": "26",
+      "variable_name": "ERRORS",
+      "type": "vent"
+    }
+  ],
+  "27": [
+    {
+      "register_name": "REG_SPLIT_27_READ_AIR_FLOW",
+      "address": 570,
+      "description": "Unit AirFlow reading",
+      "unit_id": 33,
+      "reg_split": "27",
+      "variable_name": "AIR_FLOW",
+      "type": "vent"
+    },
+    {
+      "register_name": "REG_SPLIT_27_READ_SP_AIR_FLOW",
+      "address": 571,
+      "description": "Unit AirFlow Set Point",
+      "unit_id": 33,
+      "reg_split": "27",
+      "variable_name": "SP_AIR_FLOW",
+      "type": "vent"
+    },
+    {
+      "register_name": "REG_SPLIT_27_READ_CO2_LEV",
+      "address": 572,
+      "description": "Unit CO2 Level reading",
+      "unit_id": 33,
+      "reg_split": "27",
+      "variable_name": "CO2_LEV",
+      "type": "vent"
+    },
+    {
+      "register_name": "REG_SPLIT_27_READ_SP_CO2",
+      "address": 573,
+      "description": "Unit CO2 Set Point",
+      "unit_id": 33,
+      "reg_split": "27",
+      "variable_name": "SP_CO2",
+      "type": "vent"
+    },
+    {
+      "register_name": "REG_SPLIT_27_READ_HUMI_LEV",
+      "address": 574,
+      "description": "Unit Humidity Level reading",
+      "unit_id": 33,
+      "reg_split": "27",
+      "variable_name": "HUMI_LEV",
+      "type": "vent"
+    },
+    {
+      "register_name": "REG_SPLIT_27_READ_SP_HUMI",
+      "address": 575,
+      "description": "Unit Humidity Set Point",
+      "unit_id": 33,
+      "reg_split": "27",
+      "variable_name": "SP_HUMI",
+      "type": "vent"
+    },
+    {
+      "register_name": "REG_SPLIT_27_READ_CO2_LEV_2",
+      "address": 576,
+      "description": "Unit CO2 Level reading sensor 2 (when available)",
+      "unit_id": 33,
+      "reg_split": "27",
+      "variable_name": "CO2_LEV_2",
+      "type": "vent"
+    },
+    {
+      "register_name": "REG_SPLIT_27_READ_SP_CO2_2",
+      "address": 577,
+      "description": "Unit CO2 Set Point sensor 2 (when available)",
+      "unit_id": 33,
+      "reg_split": "27",
+      "variable_name": "SP_CO2_2",
+      "type": "vent"
+    },
+    {
+      "register_name": "REG_SPLIT_27_READ_HUMI_LEV_2",
+      "address": 578,
+      "description": "Unit Humidity Level reading sensor 2 (when available)",
+      "unit_id": 33,
+      "reg_split": "27",
+      "variable_name": "HUMI_LEV_2",
+      "type": "vent"
+    },
+    {
+      "register_name": "REG_SPLIT_27_READ_SP_HUMI_2",
+      "address": 579,
+      "description": "Unit Humidity Set Point sensor 2 (when available)",
+      "unit_id": 33,
+      "reg_split": "27",
+      "variable_name": "SP_HUMI_2",
+      "type": "vent"
+    },
+    {
+      "register_name": "REG_SPLIT_27_READ_ERRORS",
+      "address": 580,
+      "description": "Errors (TBD)",
+      "unit_id": 33,
+      "reg_split": "27",
+      "variable_name": "ERRORS",
+      "type": "vent"
+    }
+  ],
+  "28": [
+    {
+      "register_name": "REG_SPLIT_28_READ_AIR_FLOW",
+      "address": 590,
+      "description": "Unit AirFlow reading",
+      "unit_id": 33,
+      "reg_split": "28",
+      "variable_name": "AIR_FLOW",
+      "type": "vent"
+    },
+    {
+      "register_name": "REG_SPLIT_28_READ_SP_AIR_FLOW",
+      "address": 591,
+      "description": "Unit AirFlow Set Point",
+      "unit_id": 33,
+      "reg_split": "28",
+      "variable_name": "SP_AIR_FLOW",
+      "type": "vent"
+    },
+    {
+      "register_name": "REG_SPLIT_28_READ_CO2_LEV",
+      "address": 592,
+      "description": "Unit CO2 Level reading",
+      "unit_id": 33,
+      "reg_split": "28",
+      "variable_name": "CO2_LEV",
+      "type": "vent"
+    },
+    {
+      "register_name": "REG_SPLIT_28_READ_SP_CO2",
+      "address": 593,
+      "description": "Unit CO2 Set Point",
+      "unit_id": 33,
+      "reg_split": "28",
+      "variable_name": "SP_CO2",
+      "type": "vent"
+    },
+    {
+      "register_name": "REG_SPLIT_28_READ_HUMI_LEV",
+      "address": 594,
+      "description": "Unit Humidity Level reading",
+      "unit_id": 33,
+      "reg_split": "28",
+      "variable_name": "HUMI_LEV",
+      "type": "vent"
+    },
+    {
+      "register_name": "REG_SPLIT_28_READ_SP_HUMI",
+      "address": 595,
+      "description": "Unit Humidity Set Point",
+      "unit_id": 33,
+      "reg_split": "28",
+      "variable_name": "SP_HUMI",
+      "type": "vent"
+    },
+    {
+      "register_name": "REG_SPLIT_28_READ_CO2_LEV_2",
+      "address": 596,
+      "description": "Unit CO2 Level reading sensor 2 (when available)",
+      "unit_id": 33,
+      "reg_split": "28",
+      "variable_name": "CO2_LEV_2",
+      "type": "vent"
+    },
+    {
+      "register_name": "REG_SPLIT_28_READ_SP_CO2_2",
+      "address": 597,
+      "description": "Unit CO2 Set Point sensor 2 (when available)",
+      "unit_id": 33,
+      "reg_split": "28",
+      "variable_name": "SP_CO2_2",
+      "type": "vent"
+    },
+    {
+      "register_name": "REG_SPLIT_28_READ_HUMI_LEV_2",
+      "address": 598,
+      "description": "Unit Humidity Level reading sensor 2 (when available)",
+      "unit_id": 33,
+      "reg_split": "28",
+      "variable_name": "HUMI_LEV_2",
+      "type": "vent"
+    },
+    {
+      "register_name": "REG_SPLIT_28_READ_SP_HUMI_2",
+      "address": 599,
+      "description": "Unit Humidity Set Point sensor 2 (when available)",
+      "unit_id": 33,
+      "reg_split": "28",
+      "variable_name": "SP_HUMI_2",
+      "type": "vent"
+    },
+    {
+      "register_name": "REG_SPLIT_28_READ_ERRORS",
+      "address": 600,
+      "description": "Errors (TBD)",
+      "unit_id": 33,
+      "reg_split": "28",
+      "variable_name": "ERRORS",
+      "type": "vent"
+    }
+  ],
+  "29": [
+    {
+      "register_name": "REG_SPLIT_29_READ_AIR_FLOW",
+      "address": 610,
+      "description": "Unit AirFlow reading",
+      "unit_id": 33,
+      "reg_split": "29",
+      "variable_name": "AIR_FLOW",
+      "type": "vent"
+    },
+    {
+      "register_name": "REG_SPLIT_29_READ_SP_AIR_FLOW",
+      "address": 611,
+      "description": "Unit AirFlow Set Point",
+      "unit_id": 33,
+      "reg_split": "29",
+      "variable_name": "SP_AIR_FLOW",
+      "type": "vent"
+    },
+    {
+      "register_name": "REG_SPLIT_29_READ_CO2_LEV",
+      "address": 612,
+      "description": "Unit CO2 Level reading",
+      "unit_id": 33,
+      "reg_split": "29",
+      "variable_name": "CO2_LEV",
+      "type": "vent"
+    },
+    {
+      "register_name": "REG_SPLIT_29_READ_SP_CO2",
+      "address": 613,
+      "description": "Unit CO2 Set Point",
+      "unit_id": 33,
+      "reg_split": "29",
+      "variable_name": "SP_CO2",
+      "type": "vent"
+    },
+    {
+      "register_name": "REG_SPLIT_29_READ_HUMI_LEV",
+      "address": 614,
+      "description": "Unit Humidity Level reading",
+      "unit_id": 33,
+      "reg_split": "29",
+      "variable_name": "HUMI_LEV",
+      "type": "vent"
+    },
+    {
+      "register_name": "REG_SPLIT_29_READ_SP_HUMI",
+      "address": 615,
+      "description": "Unit Humidity Set Point",
+      "unit_id": 33,
+      "reg_split": "29",
+      "variable_name": "SP_HUMI",
+      "type": "vent"
+    },
+    {
+      "register_name": "REG_SPLIT_29_READ_CO2_LEV_2",
+      "address": 616,
+      "description": "Unit CO2 Level reading sensor 2 (when available)",
+      "unit_id": 33,
+      "reg_split": "29",
+      "variable_name": "CO2_LEV_2",
+      "type": "vent"
+    },
+    {
+      "register_name": "REG_SPLIT_29_READ_SP_CO2_2",
+      "address": 617,
+      "description": "Unit CO2 Set Point sensor 2 (when available)",
+      "unit_id": 33,
+      "reg_split": "29",
+      "variable_name": "SP_CO2_2",
+      "type": "vent"
+    },
+    {
+      "register_name": "REG_SPLIT_29_READ_HUMI_LEV_2",
+      "address": 618,
+      "description": "Unit Humidity Level reading sensor 2 (when available)",
+      "unit_id": 33,
+      "reg_split": "29",
+      "variable_name": "HUMI_LEV_2",
+      "type": "vent"
+    },
+    {
+      "register_name": "REG_SPLIT_29_READ_SP_HUMI_2",
+      "address": 619,
+      "description": "Unit Humidity Set Point sensor 2 (when available)",
+      "unit_id": 33,
+      "reg_split": "29",
+      "variable_name": "SP_HUMI_2",
+      "type": "vent"
+    },
+    {
+      "register_name": "REG_SPLIT_29_READ_ERRORS",
+      "address": 620,
+      "description": "Errors (TBD)",
+      "unit_id": 33,
+      "reg_split": "29",
+      "variable_name": "ERRORS",
+      "type": "vent"
+    }
+  ],
+  "30": [
+    {
+      "register_name": "REG_SPLIT_30_READ_AIR_FLOW",
+      "address": 630,
+      "description": "Unit AirFlow reading",
+      "unit_id": 33,
+      "reg_split": "30",
+      "variable_name": "AIR_FLOW",
+      "type": "vent"
+    },
+    {
+      "register_name": "REG_SPLIT_30_READ_SP_AIR_FLOW",
+      "address": 631,
+      "description": "Unit AirFlow Set Point",
+      "unit_id": 33,
+      "reg_split": "30",
+      "variable_name": "SP_AIR_FLOW",
+      "type": "vent"
+    },
+    {
+      "register_name": "REG_SPLIT_30_READ_CO2_LEV",
+      "address": 632,
+      "description": "Unit CO2 Level reading",
+      "unit_id": 33,
+      "reg_split": "30",
+      "variable_name": "CO2_LEV",
+      "type": "vent"
+    },
+    {
+      "register_name": "REG_SPLIT_30_READ_SP_CO2",
+      "address": 633,
+      "description": "Unit CO2 Set Point",
+      "unit_id": 33,
+      "reg_split": "30",
+      "variable_name": "SP_CO2",
+      "type": "vent"
+    },
+    {
+      "register_name": "REG_SPLIT_30_READ_HUMI_LEV",
+      "address": 634,
+      "description": "Unit Humidity Level reading",
+      "unit_id": 33,
+      "reg_split": "30",
+      "variable_name": "HUMI_LEV",
+      "type": "vent"
+    },
+    {
+      "register_name": "REG_SPLIT_30_READ_SP_HUMI",
+      "address": 635,
+      "description": "Unit Humidity Set Point",
+      "unit_id": 33,
+      "reg_split": "30",
+      "variable_name": "SP_HUMI",
+      "type": "vent"
+    },
+    {
+      "register_name": "REG_SPLIT_30_READ_CO2_LEV_2",
+      "address": 636,
+      "description": "Unit CO2 Level reading sensor 2 (when available)",
+      "unit_id": 33,
+      "reg_split": "30",
+      "variable_name": "CO2_LEV_2",
+      "type": "vent"
+    },
+    {
+      "register_name": "REG_SPLIT_30_READ_SP_CO2_2",
+      "address": 637,
+      "description": "Unit CO2 Set Point sensor 2 (when available)",
+      "unit_id": 33,
+      "reg_split": "30",
+      "variable_name": "SP_CO2_2",
+      "type": "vent"
+    },
+    {
+      "register_name": "REG_SPLIT_30_READ_HUMI_LEV_2",
+      "address": 638,
+      "description": "Unit Humidity Level reading sensor 2 (when available)",
+      "unit_id": 33,
+      "reg_split": "30",
+      "variable_name": "HUMI_LEV_2",
+      "type": "vent"
+    },
+    {
+      "register_name": "REG_SPLIT_30_READ_SP_HUMI_2",
+      "address": 639,
+      "description": "Unit Humidity Set Point sensor 2 (when available)",
+      "unit_id": 33,
+      "reg_split": "30",
+      "variable_name": "SP_HUMI_2",
+      "type": "vent"
+    },
+    {
+      "register_name": "REG_SPLIT_30_READ_ERRORS",
+      "address": 640,
+      "description": "Errors (TBD)",
+      "unit_id": 33,
+      "reg_split": "30",
+      "variable_name": "ERRORS",
+      "type": "vent"
+    }
+  ],
+  "31": [
+    {
+      "register_name": "REG_SPLIT_31_READ_AIR_FLOW",
+      "address": 650,
+      "description": "Unit AirFlow reading",
+      "unit_id": 33,
+      "reg_split": "31",
+      "variable_name": "AIR_FLOW",
+      "type": "vent"
+    },
+    {
+      "register_name": "REG_SPLIT_31_READ_SP_AIR_FLOW",
+      "address": 651,
+      "description": "Unit AirFlow Set Point",
+      "unit_id": 33,
+      "reg_split": "31",
+      "variable_name": "SP_AIR_FLOW",
+      "type": "vent"
+    },
+    {
+      "register_name": "REG_SPLIT_31_READ_CO2_LEV",
+      "address": 652,
+      "description": "Unit CO2 Level reading",
+      "unit_id": 33,
+      "reg_split": "31",
+      "variable_name": "CO2_LEV",
+      "type": "vent"
+    },
+    {
+      "register_name": "REG_SPLIT_31_READ_SP_CO2",
+      "address": 653,
+      "description": "Unit CO2 Set Point",
+      "unit_id": 33,
+      "reg_split": "31",
+      "variable_name": "SP_CO2",
+      "type": "vent"
+    },
+    {
+      "register_name": "REG_SPLIT_31_READ_HUMI_LEV",
+      "address": 654,
+      "description": "Unit Humidity Level reading",
+      "unit_id": 33,
+      "reg_split": "31",
+      "variable_name": "HUMI_LEV",
+      "type": "vent"
+    },
+    {
+      "register_name": "REG_SPLIT_31_READ_SP_HUMI",
+      "address": 655,
+      "description": "Unit Humidity Set Point",
+      "unit_id": 33,
+      "reg_split": "31",
+      "variable_name": "SP_HUMI",
+      "type": "vent"
+    },
+    {
+      "register_name": "REG_SPLIT_31_READ_CO2_LEV_2",
+      "address": 656,
+      "description": "Unit CO2 Level reading sensor 2 (when available)",
+      "unit_id": 33,
+      "reg_split": "31",
+      "variable_name": "CO2_LEV_2",
+      "type": "vent"
+    },
+    {
+      "register_name": "REG_SPLIT_31_READ_SP_CO2_2",
+      "address": 657,
+      "description": "Unit CO2 Set Point sensor 2 (when available)",
+      "unit_id": 33,
+      "reg_split": "31",
+      "variable_name": "SP_CO2_2",
+      "type": "vent"
+    },
+    {
+      "register_name": "REG_SPLIT_31_READ_HUMI_LEV_2",
+      "address": 658,
+      "description": "Unit Humidity Level reading sensor 2 (when available)",
+      "unit_id": 33,
+      "reg_split": "31",
+      "variable_name": "HUMI_LEV_2",
+      "type": "vent"
+    },
+    {
+      "register_name": "REG_SPLIT_31_READ_SP_HUMI_2",
+      "address": 659,
+      "description": "Unit Humidity Set Point sensor 2 (when available)",
+      "unit_id": 33,
+      "reg_split": "31",
+      "variable_name": "SP_HUMI_2",
+      "type": "vent"
+    },
+    {
+      "register_name": "REG_SPLIT_31_READ_ERRORS",
+      "address": 660,
+      "description": "Errors (TBD)",
+      "unit_id": 33,
+      "reg_split": "31",
+      "variable_name": "ERRORS",
+      "type": "vent"
+    }
+  ],
+  "None": [
+    {
+      "register_name": "REG_BRIDGE_STATUS_FLAGS",
+      "address": 0,
+      "description": "Reserver Register \u201cBridge Status Flags\u201d \n",
+      "unit_id": 33,
+      "reg_split": null,
+      "variable_name": null,
+      "type": "ac_misc"
+    },
+    {
+      "register_name": "REG_DIAG_ALL_SPLIT_WRITE_MODE",
+      "address": 1,
+      "description": "ALL Unit DVS Mode setting: Auto, Design, Manual",
+      "unit_id": 33,
+      "reg_split": null,
+      "variable_name": null,
+      "type": "ac_misc"
+    },
+    {
+      "register_name": "REG_DIAG_ALL_SPLIT_WRITE_AIRFLOW_SP",
+      "address": 2,
+      "description": "ALL Unit Air Flow SetPoint (used in manual mode) (m3/h)",
+      "unit_id": 33,
+      "reg_split": null,
+      "variable_name": null,
+      "type": "ac_misc"
+    },
+    {
+      "register_name": "REG_DIAG_ALL_SPLIT_WRITE_CO2_SP",
+      "address": 3,
+      "description": "ALL Unit CO2 SetPoint",
+      "unit_id": 33,
+      "reg_split": null,
+      "variable_name": null,
+      "type": "ac_misc"
+    },
+    {
+      "register_name": "REG_DIAG_ALL_SPLIT_WRITE_HUMI_SP",
+      "address": 4,
+      "description": "ALL Unit Humidity SetPoint",
+      "unit_id": 33,
+      "reg_split": null,
+      "variable_name": null,
+      "type": "ac_misc"
+    },
+    {
+      "register_name": "REG_DIAG_ALL_SPLIT_WRITE_UPDATE",
+      "address": 5,
+      "description": "All Unit Update flag",
+      "unit_id": 33,
+      "reg_split": null,
+      "variable_name": null,
+      "type": "ac_misc"
+    },
+    {
+      "register_name": "REG_DIAG_SPLIT_WRITE_SELECTION",
+      "address": 10,
+      "description": "Diag Slave Unit Selection Write Address:",
+      "unit_id": 33,
+      "reg_split": null,
+      "variable_name": null,
+      "type": "ac_misc"
+    },
+    {
+      "register_name": "REG_DIAG_SPLIT_WRITE_MODE",
+      "address": 11,
+      "description": "Unit Mode Selection: Auto, Design, Manual",
+      "unit_id": 33,
+      "reg_split": null,
+      "variable_name": null,
+      "type": "ac_misc"
+    },
+    {
+      "register_name": "REG_DIAG_SPLIT_WRITE_AIR_FLOW_SP",
+      "address": 12,
+      "description": "Unit Air Flow SetPoint (used in manual mode)(m3/h)",
+      "unit_id": 33,
+      "reg_split": null,
+      "variable_name": null,
+      "type": "ac_misc"
+    },
+    {
+      "register_name": "REG_DIAG_SPLIT_WRITE_CO2_SP",
+      "address": 13,
+      "description": "Unit CO2 level set point",
+      "unit_id": 33,
+      "reg_split": null,
+      "variable_name": null,
+      "type": "ac_misc"
+    },
+    {
+      "register_name": "REG_DIAG_SPLIT_WRITE_HUMI_SP",
+      "address": 14,
+      "description": "Unit Humidity Set Point",
+      "unit_id": 33,
+      "reg_split": null,
+      "variable_name": null,
+      "type": "ac_misc"
+    },
+    {
+      "register_name": "REG_DIAG_SPLIT_WRITE_MAX_ERR_REG_CO2",
+      "address": 15,
+      "description": "Max Error Regulation CO2",
+      "unit_id": 33,
+      "reg_split": null,
+      "variable_name": null,
+      "type": "ac_misc"
+    },
+    {
+      "register_name": "REG_DIAG_SPLIT_WRITE_MAX_ERR_REG_HUMI",
+      "address": 16,
+      "description": "Max Error Regulation Humi",
+      "unit_id": 33,
+      "reg_split": null,
+      "variable_name": null,
+      "type": "ac_misc"
+    },
+    {
+      "register_name": "REG_DIAG_SPLIT_WRITE_CO2_SP_2",
+      "address": 17,
+      "description": "Unit CO2 level set point, sensor 2 (when available)",
+      "unit_id": 33,
+      "reg_split": null,
+      "variable_name": null,
+      "type": "ac_misc"
+    },
+    {
+      "register_name": "REG_DIAG_SPLIT_WRITE_HUMI_SP_2",
+      "address": 18,
+      "description": "Unit Humidity Set Point, sensor 2 (when available)",
+      "unit_id": 33,
+      "reg_split": null,
+      "variable_name": null,
+      "type": "ac_misc"
+    },
+    {
+      "register_name": "REG_BRIDGE_STATUS_FLAGS",
+      "address": 65535,
+      "description": "Reserver Register \u201cBridge Status Flags\u201d \n",
+      "unit_id": 33,
+      "reg_split": null,
+      "variable_name": null,
+      "type": "ac_misc"
+    }
+  ]
 }

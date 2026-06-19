@@ -1,16 +1,17 @@
 import asyncio
 import json
 import logging
+from ast import mod
 from asyncio import TaskGroup
 from contextlib import asynccontextmanager
 from itertools import groupby
-from typing import AsyncGenerator, List, Tuple
+from typing import AsyncGenerator, Dict, List, Tuple
 
 from aiomqtt import Client as MqttClient
 from pyModbusTCP.client import ModbusClient
 from tenacity import retry, stop_after_attempt, wait_fixed
 
-from zero_termodinamica.addresses import Address
+from zero_termodinamica.addresses import Address, ModbusUnit
 from zero_termodinamica.settings import ModbusSettings, MqttSettings
 
 
@@ -19,12 +20,12 @@ class ModbusToMQTTBridge:
         self,
         modbus: ModbusClient,
         mqtt: MqttClient,
-        addresses: List[Address],
+        modbus_units: List[ModbusUnit],
         probe_interval: float = 10.0,
     ):
         self._mqtt = mqtt
         self._modbus = modbus
-        self.addresses = addresses
+        self.modbus_units = modbus_units
         self.probe_interval = probe_interval
 
     @asynccontextmanager
@@ -32,17 +33,18 @@ class ModbusToMQTTBridge:
     async def from_settings(
         modbus_settings: ModbusSettings,
         mqtt_settings: MqttSettings,
-        addresses: List[Address],
+        modbus_units: List[ModbusUnit],
     ) -> "AsyncGenerator[ModbusToMQTTBridge, None]":
         """
         Create a ModbusReader instance from Modbus settings.
         """
+
         modbus = ModbusClient(
             host=modbus_settings.modbus_host, port=modbus_settings.modbus_port
         )
         async with mqtt_settings.mqtt_client() as mqtt:
             yield ModbusToMQTTBridge(
-                modbus, mqtt, addresses, modbus_settings.modbus_probe_interval
+                modbus, mqtt, modbus_units, modbus_settings.modbus_probe_interval
             )
 
     async def run(self) -> None:
@@ -53,22 +55,27 @@ class ModbusToMQTTBridge:
                 tg.create_task(self.run_once())
 
     async def run_once(self) -> None:
-        # Read modbus
-        modbus_values = self.read_modbus()
-        # Scale values
-        scaled_values = self.scale_values(modbus_values)
-        # Form json
-        json_data = self.create_topics(scaled_values)
-        # Publish to MQTT
-        for topic, data in json_data:
-            await self.publish_to_mqtt(topic, data)
+        for unit in self.modbus_units:
+            print(f"Probing unit {self.modbus_units}")
+            for topic in unit.topics:
+                # Read modbus
+                modbus_values = self.read_modbus(unit.unit_id, topic.fields)
+                # Scale values
+                scaled_values = self.scale_values(modbus_values)
+                # Form json
+                json_data = self.create_json(scaled_values)
+                # Publish to MQTT
+                await self.publish_to_mqtt(topic.topic, json_data)
 
     @retry(stop=stop_after_attempt(3), wait=wait_fixed(2))
-    def read_modbus(self) -> List[Tuple[Address, int]]:
+    def read_modbus(
+        self, unit_id: int, addresses: List[Address]
+    ) -> List[Tuple[Address, int]]:
         try:
             self._modbus.open()
+            self._modbus.unit_id = unit_id
             result = []
-            for address in self.addresses:
+            for address in addresses:
                 value = self._modbus.read_holding_registers(address.register, 1)
                 if value and len(value) == 1:
                     result.append((address, value[0]))
@@ -91,15 +98,7 @@ class ModbusToMQTTBridge:
     def scale_value(self, address: Address, value: int) -> float:
         return float(value) * address.scale_factor
 
-    def create_topics(
-        self, modbus_values: List[Tuple[Address, float]]
-    ) -> List[Tuple[str, str]]:
-        result = []
-        for topic, values in groupby(modbus_values, key=lambda x: x[0].topic):
-            result.append((topic, self._create_json(list(values))))
-        return result
-
-    def _create_json(self, modbus_values: List[Tuple[Address, float]]) -> str:
+    def create_json(self, modbus_values: List[Tuple[Address, float]]) -> str:
         result = {}
         for address, value in modbus_values:
             result[address.field_name] = value
