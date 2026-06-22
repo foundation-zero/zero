@@ -237,7 +237,9 @@ class ControlMessaging[
     def wait_for_control_mode(
         self, automatic: bool, *_args, timeout: float
     ) -> Coroutine[None, None, ControlModeMessage]:
-        return self._control_mode.wait_for(lambda m: m.mode == automatic, timeout)
+        return self._control_mode.wait_for(
+            lambda m: m.mode.automatic == automatic, timeout
+        )
 
     @property
     def control_mode(self) -> ControlModeMessage | None:
