@@ -56,7 +56,6 @@ class ModbusToMQTTBridge:
 
     async def run_once(self) -> None:
         for unit in self.modbus_units:
-            print(f"Probing unit {self.modbus_units}")
             for topic in unit.topics:
                 # Read modbus
                 modbus_values = self.read_modbus(unit.unit_id, topic.fields)
