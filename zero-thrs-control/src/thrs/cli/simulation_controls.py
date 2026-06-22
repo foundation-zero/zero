@@ -78,7 +78,6 @@ from thrs.simulation.models.fmu_paths import (
 
 logger = logging.getLogger(__name__)
 
-settings = Config()  # type: ignore
 
 SEAWATER_TEMPERATURE = 20.0
 
@@ -192,7 +191,7 @@ INPUTS = {
 
 type Modes = Literal["thrusters", "pvt", "pcm", "consumers", "high_temperature", "dhw"]
 
-MODES: dict[Modes, tuple[str, CombinedModule, str]] = {
+MODES: dict[Modes, tuple[str, CombinedModule]] = {
     "thrusters": (
         thrusters_path,
         CombinedModule(
@@ -202,7 +201,6 @@ MODES: dict[Modes, tuple[str, CombinedModule, str]] = {
             ThrustersSimulationInputs,
             ThrustersSimulationOutputs,
         ),
-        settings.mqtt_control_topic_suffix,
     ),
     "pvt": (
         pvt_path,
@@ -211,7 +209,6 @@ MODES: dict[Modes, tuple[str, CombinedModule, str]] = {
             PvtSimulationInputs,
             PvtSimulationOutputs,
         ),
-        settings.mqtt_control_topic_suffix,
     ),
     "pcm": (
         pcm_path,
@@ -220,7 +217,6 @@ MODES: dict[Modes, tuple[str, CombinedModule, str]] = {
             PcmSimulationInputs,
             PcmSimulationOutputs,
         ),
-        settings.mqtt_control_topic_suffix,
     ),
     "consumers": (
         consumers_path,
@@ -229,7 +225,6 @@ MODES: dict[Modes, tuple[str, CombinedModule, str]] = {
             ConsumersSimulationInputs,
             ConsumersSimulationOutputs,
         ),
-        settings.mqtt_control_topic_suffix,
     ),
     "high_temperature": (
         high_temperature_path,
@@ -243,7 +238,6 @@ MODES: dict[Modes, tuple[str, CombinedModule, str]] = {
             HighTemperatureSimulationInputs,
             HighTemperatureSimulationOutputs,
         ),
-        settings.mqtt_control_topic_suffix,
     ),
     "dhw": (
         dhw_path,
@@ -252,7 +246,6 @@ MODES: dict[Modes, tuple[str, CombinedModule, str]] = {
             DhwSimulationInputs,
             DhwSimulationOutputs,
         ),
-        settings.mqtt_control_topic_suffix,
     ),
 }
 
@@ -636,11 +629,13 @@ class SimulationControls:
         control_client: MqttClient,
         sensor_client: MqttClient,
         topic_prefix: str,
+        control_topic_suffix: str,
     ):
         self._sensor_client = sensor_client
         self._control_client = control_client
         self._controls_client = controls_client
         self._topic_prefix = topic_prefix
+        self._control_topic_suffix = control_topic_suffix
 
     @staticmethod
     @asynccontextmanager
@@ -655,6 +650,7 @@ class SimulationControls:
                 control_client=control_client,
                 sensor_client=sensor_client,
                 topic_prefix=settings.mqtt_topic_prefix,
+                control_topic_suffix=settings.mqtt_control_topic_suffix,
             )
 
     async def _receive_controls(
@@ -706,7 +702,7 @@ class SimulationControls:
         all_modules = list(
             set(
                 module
-                for _fmu_path, nesting, _control_topic_suffix in MODES.values()
+                for _fmu_path, nesting in MODES.values()
                 for module in nesting.modules
             )
         )
@@ -737,7 +733,7 @@ class SimulationControls:
                 f"{self._topic_prefix}/{handler.subscribe_topic()}", qos=1
             )
 
-        fmu_path, modules, control_topic_suffix = MODES[mode]
+        fmu_path, modules = MODES[mode]
         simulation_inputs = INPUTS[mode]
 
         with self._simulation(fmu_path, modules, simulation_inputs) as simulation:
@@ -764,7 +760,7 @@ class SimulationControls:
                 modules.sensor_values_clss,
                 modules.control_values_clss,
                 modules.simulation_outputs_cls,
-                control_topic_suffix,
+                self._control_topic_suffix,
             )
             runner = Runner(connector, control, modules.alarms())  # type: ignore
 
