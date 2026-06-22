@@ -6,7 +6,6 @@
 #     "pydantic",
 # ]
 # ///
-import json
 from pathlib import Path
 from typing import List
 
@@ -17,6 +16,8 @@ SCRIPTS_FOLDER = Path(__file__).parent
 EXCEL_PATH = SCRIPTS_FOLDER / "../docs/Vent en AC lijst Termodynamica.xls"
 
 
+# Copy of:
+# from zero_termodinamica.addresses import Address, ModbusUnit
 class Address(BaseModel):
     register: int
     field_name: str
@@ -24,11 +25,15 @@ class Address(BaseModel):
     scale_factor: float = 1
 
 
+# Copy of:
+# from zero_termodinamica.addresses import MQTTTopic
 class MQTTTopic(BaseModel):
     topic: str
     fields: List[Address]
 
 
+# Copy of:
+# from zero_termodinamica.addresses import ModbusUnit
 class ModbusUnit(BaseModel):
     unit_id: int
     topics: List[MQTTTopic]

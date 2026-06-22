@@ -1,11 +1,9 @@
 import asyncio
 import json
 import logging
-from ast import mod
 from asyncio import TaskGroup
 from contextlib import asynccontextmanager
-from itertools import groupby
-from typing import AsyncGenerator, Dict, List, Tuple
+from typing import AsyncGenerator, List, Tuple
 
 from aiomqtt import Client as MqttClient
 from pyModbusTCP.client import ModbusClient
@@ -66,7 +64,7 @@ class ModbusToMQTTBridge:
                 self._modbus.unit_id = unit.unit_id
                 for topic in unit.topics:
                     # Read modbus
-                    modbus_values = self.read_modbus(unit.unit_id, topic.fields)
+                    modbus_values = self.read_modbus(topic.fields)
                     # Scale values
                     scaled_values = self.scale_values(modbus_values)
                     # Form json
@@ -77,11 +75,11 @@ class ModbusToMQTTBridge:
             self._modbus.close()
 
     @retry(stop=stop_after_attempt(3), wait=wait_fixed(2))
-    def read_modbus(
-        self, unit_id: int, addresses: List[Address]
-    ) -> List[Tuple[Address, int]]:
+    def read_modbus(self, addresses: List[Address]) -> List[Tuple[Address, int]]:
         result = []
+        has_fault = False
         for address in addresses:
+            # Hardcoded at 1. In the future this could be done from the Address class (parsed from IO list)
             value = self._modbus.read_holding_registers(address.register, 1)
             if value and len(value) == 1:
                 result.append((address, value[0]))
@@ -89,6 +87,11 @@ class ModbusToMQTTBridge:
                 logging.warning(
                     f"Received invalid value {value} from register {address.register}"
                 )
+                has_fault = True
+        if has_fault:
+            # Try all registers (instead of failing) to get logging, but dont process None values
+            result = []
+
         return result
 
     def scale_values(
