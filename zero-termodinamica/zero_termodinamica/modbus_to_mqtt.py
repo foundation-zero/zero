@@ -55,36 +55,41 @@ class ModbusToMQTTBridge:
                 tg.create_task(self.run_once())
 
     async def run_once(self) -> None:
-        for unit in self.modbus_units:
-            for topic in unit.topics:
-                # Read modbus
-                modbus_values = self.read_modbus(unit.unit_id, topic.fields)
-                # Scale values
-                scaled_values = self.scale_values(modbus_values)
-                # Form json
-                json_data = self.create_json(scaled_values)
-                # Publish to MQTT
-                await self.publish_to_mqtt(topic.topic, json_data)
+        try:
+            success = self._modbus.open()
+            if not success:
+                logging.warning(
+                    f"Failed to open modbus connection to {self._modbus.host}:{self._modbus.port} - {self._modbus.last_error_as_txt}"
+                )
+                return
+            for unit in self.modbus_units:
+                self._modbus.unit_id = unit.unit_id
+                for topic in unit.topics:
+                    # Read modbus
+                    modbus_values = self.read_modbus(unit.unit_id, topic.fields)
+                    # Scale values
+                    scaled_values = self.scale_values(modbus_values)
+                    # Form json
+                    json_data = self.create_json(scaled_values)
+                    # Publish to MQTT
+                    await self.publish_to_mqtt(topic.topic, json_data)
+        finally:
+            self._modbus.close()
 
     @retry(stop=stop_after_attempt(3), wait=wait_fixed(2))
     def read_modbus(
         self, unit_id: int, addresses: List[Address]
     ) -> List[Tuple[Address, int]]:
-        try:
-            self._modbus.open()
-            self._modbus.unit_id = unit_id
-            result = []
-            for address in addresses:
-                value = self._modbus.read_holding_registers(address.register, 1)
-                if value and len(value) == 1:
-                    result.append((address, value[0]))
-                else:
-                    logging.warning(
-                        f"Received invalid value {value} from register {address.register}"
-                    )
-            return result
-        finally:
-            self._modbus.close()
+        result = []
+        for address in addresses:
+            value = self._modbus.read_holding_registers(address.register, 1)
+            if value and len(value) == 1:
+                result.append((address, value[0]))
+            else:
+                logging.warning(
+                    f"Received invalid value {value} from register {address.register}"
+                )
+        return result
 
     def scale_values(
         self, modbus_values: List[Tuple[Address, int]]
