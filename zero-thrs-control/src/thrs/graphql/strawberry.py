@@ -10,7 +10,7 @@ from typing import (
 
 import strawberry
 from aiomqtt import Client as MqttClient
-from fastapi import Depends, FastAPI
+from fastapi import Depends, FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic.fields import FieldInfo
 from strawberry.fastapi import GraphQLRouter
@@ -212,120 +212,32 @@ class Mutation(
         await expect_status
 
 
-@asynccontextmanager
-async def lifespan(app: FastAPI):
-    settings = Config()  # type: ignore
-    async with MqttClient(settings.mqtt_host, settings.mqtt_port) as mqtt:
-        thrusters_messaging: ThrustersMessaging = ControlMessaging(
-            "thrusters",
-            ThrustersSensorValues,
-            ThrustersControlValues,
-            ThrustersParameters,
-            ThrustersControlMode,
-            mqtt,
-        )
-        pvt_messaging: PvtMessaging = ControlMessaging(
-            "pvt",
-            PvtSensorValues,
-            PvtControlValues,
-            PvtParameters,
-            PvtControlMode,
-            mqtt,
-        )
-        pcm_messaging: PcmMessaging = ControlMessaging(
-            "pcm",
-            PcmSensorValues,
-            PcmControlValues,
-            PcmParameters,
-            PcmControlMode,
-            mqtt,
-        )
-        consumers_messaging: ConsumersMessaging = ControlMessaging(
-            "consumers",
-            ConsumersSensorValues,
-            ConsumersControlValues,
-            ConsumersParameters,
-            ConsumersControlMode,
-            mqtt,
-        )
-        dhw_messaging: DhwMessaging = ControlMessaging(
-            "dhw",
-            DhwSensorValues,
-            DhwControlValues,
-            DhwParameters,
-            DhwControlMode,
-            mqtt,
-        )
-        simulation_messaging: SimulationMessaging = SimulationMessaging(
-            simulation.io_mapping, mqtt
-        )
-        messaging = Messaging(
-            mqtt,
-            [
-                thrusters_messaging,
-                pvt_messaging,
-                pcm_messaging,
-                consumers_messaging,
-                dhw_messaging,
-            ],
-            simulation_messaging,
-        )
-        run_task = create_task(await messaging.run())
-
-        def _finish(task: Task):
-            if err := task.exception():
-                logger.critical("Messaging failed", exc_info=err)
-                sys.exit(1)
-
-        run_task.add_done_callback(_finish)
-        app.state.messaging = messaging
-        app.state.thrusters_messaging = thrusters_messaging
-        app.state.pvt_messaging = pvt_messaging
-        app.state.pcm_messaging = pcm_messaging
-        app.state.consumers_messaging = consumers_messaging
-        app.state.dhw_messaging = dhw_messaging
-        app.state.simulation_messaging = simulation_messaging
-        yield
-        run_task.cancel()
+def messaging(request: Request) -> Messaging:
+    return request.app.state.messaging
 
 
-app = FastAPI(lifespan=lifespan)
-
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=["*"],
-    allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
-)
+def thrusters_messaging(request: Request) -> ThrustersMessaging:
+    return request.app.state.thrusters_messaging
 
 
-def messaging() -> Messaging:
-    return app.state.messaging
+def pvt_messaging(request: Request) -> PvtMessaging:
+    return request.app.state.pvt_messaging
 
 
-def thrusters_messaging() -> ThrustersMessaging:
-    return app.state.thrusters_messaging
+def pcm_messaging(request: Request) -> PcmMessaging:
+    return request.app.state.pcm_messaging
 
 
-def pvt_messaging() -> PvtMessaging:
-    return app.state.pvt_messaging
+def consumers_messaging(request: Request) -> ConsumersMessaging:
+    return request.app.state.consumers_messaging
 
 
-def pcm_messaging() -> PcmMessaging:
-    return app.state.pcm_messaging
+def dhw_messaging(request: Request) -> DhwMessaging:
+    return request.app.state.dhw_messaging
 
 
-def consumers_messaging() -> ConsumersMessaging:
-    return app.state.consumers_messaging
-
-
-def dhw_messaging() -> DhwMessaging:
-    return app.state.dhw_messaging
-
-
-def simulation_messaging() -> SimulationMessaging:
-    return app.state.simulation_messaging
+def simulation_messaging(request: Request) -> SimulationMessaging:
+    return request.app.state.simulation_messaging
 
 
 async def get_context(
@@ -348,11 +260,108 @@ async def get_context(
     )
 
 
-schema = strawberry.Schema(query=Query, mutation=Mutation)
+def create_app(settings: Config):
+    @asynccontextmanager
+    async def lifespan(app: FastAPI):
+        async with MqttClient(settings.mqtt_host, settings.mqtt_port) as mqtt:
+            thrusters_messaging: ThrustersMessaging = ControlMessaging(
+                "thrusters",
+                ThrustersSensorValues,
+                ThrustersControlValues,
+                ThrustersParameters,
+                ThrustersControlMode,
+                mqtt,
+                settings.mqtt_topic_prefix,
+            )
+            pvt_messaging: PvtMessaging = ControlMessaging(
+                "pvt",
+                PvtSensorValues,
+                PvtControlValues,
+                PvtParameters,
+                PvtControlMode,
+                mqtt,
+                settings.mqtt_topic_prefix,
+            )
+            pcm_messaging: PcmMessaging = ControlMessaging(
+                "pcm",
+                PcmSensorValues,
+                PcmControlValues,
+                PcmParameters,
+                PcmControlMode,
+                mqtt,
+                settings.mqtt_topic_prefix,
+            )
+            consumers_messaging: ConsumersMessaging = ControlMessaging(
+                "consumers",
+                ConsumersSensorValues,
+                ConsumersControlValues,
+                ConsumersParameters,
+                ConsumersControlMode,
+                mqtt,
+                settings.mqtt_topic_prefix,
+            )
+            dhw_messaging: DhwMessaging = ControlMessaging(
+                "dhw",
+                DhwSensorValues,
+                DhwControlValues,
+                DhwParameters,
+                DhwControlMode,
+                mqtt,
+                settings.mqtt_topic_prefix,
+            )
+            simulation_messaging: SimulationMessaging = SimulationMessaging(
+                simulation.io_mapping, mqtt, settings.mqtt_topic_prefix
+            )
+            messaging = Messaging(
+                mqtt,
+                [
+                    thrusters_messaging,
+                    pvt_messaging,
+                    pcm_messaging,
+                    consumers_messaging,
+                    dhw_messaging,
+                ],
+                simulation_messaging,
+                settings.mqtt_topic_prefix,
+            )
+            run_task = create_task(await messaging.run())
 
-graphql_app = GraphQLRouter(
-    schema,
-    context_getter=get_context,
-)
+            def _finish(task: Task):
+                if err := task.exception():
+                    logger.critical("Messaging failed", exc_info=err)
+                    sys.exit(1)
 
-app.include_router(graphql_app, prefix="/graphql")
+            run_task.add_done_callback(_finish)
+            app.state.messaging = messaging
+            app.state.thrusters_messaging = thrusters_messaging
+            app.state.pvt_messaging = pvt_messaging
+            app.state.pcm_messaging = pcm_messaging
+            app.state.consumers_messaging = consumers_messaging
+            app.state.dhw_messaging = dhw_messaging
+            app.state.simulation_messaging = simulation_messaging
+            yield
+            run_task.cancel()
+
+    app = FastAPI(lifespan=lifespan)
+
+    app.add_middleware(
+        CORSMiddleware,
+        allow_origins=["*"],
+        allow_credentials=True,
+        allow_methods=["*"],
+        allow_headers=["*"],
+    )
+
+    schema = strawberry.Schema(query=Query, mutation=Mutation)
+
+    graphql_app = GraphQLRouter(
+        schema,
+        context_getter=get_context,
+    )
+
+    app.include_router(graphql_app, prefix="/graphql")
+
+    return app
+
+
+app = create_app(Config())  # type: ignore

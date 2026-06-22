@@ -17,7 +17,6 @@ from thrs.input_output.base import (
     component_meta,
 )
 from thrs.input_output.definitions.sensor import FlowSensor
-from thrs.orchestration.config import Config
 from thrs.orchestration.connector import (
     DirectMqttMapping,
     ModuleMqttMapping,
@@ -25,8 +24,6 @@ from thrs.orchestration.connector import (
     MqttControlConnector,
     PartialMqttMapping,
 )
-
-settings = Config()  # type: ignore
 
 
 class ValuesWithTopics(ThrsValues):
@@ -149,7 +146,7 @@ class TestCombinedMqttMapping:
         )
 
 
-async def _mqtt_client():
+async def _mqtt_client(settings):
     async with Client(settings.mqtt_host, settings.mqtt_port) as client:
         yield client
 
