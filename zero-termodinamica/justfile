@@ -14,7 +14,7 @@ lint:
     poetry run ruff check
 
 type_check:
-    poetry run pyright ./zero_termodinamica ./tests
+    poetry run pyright ./src ./tests
 
 test *args:
     poetry run pytest {{ args }}

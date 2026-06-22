@@ -40,6 +40,7 @@ class ModbusUnit(BaseModel):
 
 
 def select_reg_split(df: pl.DataFrame, topic_prefix: str) -> List[MQTTTopic]:
+    """Reg split is a repeating """
     print(f"Select reg split: topic {topic_prefix} received {df.shape[0]} rows")
     df = df.filter(pl.col("register_name").str.contains(r"REG_SPLIT_\d\d")).filter(
         ~pl.col("register_name").str.contains("_FREE")
@@ -48,9 +49,9 @@ def select_reg_split(df: pl.DataFrame, topic_prefix: str) -> List[MQTTTopic]:
     df = (
         df.select(["register_name", "address", "description"])
         .with_columns(
-            pl.col("register_name").str.extract("REG_SPLIT_(\d+)").alias("reg_split"),
+            pl.col("register_name").str.extract(r"REG_SPLIT_(\d+)").alias("reg_split"),
             pl.col("register_name")
-            .str.extract("REG_SPLIT_\d+_(.*)", 1)
+            .str.extract(r"REG_SPLIT_\d+_(.*)", 1)
             .str.replace("READ_", "")
             .str.replace(" ", "")
             .alias("field_name"),

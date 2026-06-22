@@ -2,7 +2,7 @@
 !README.md
 !poetry.lock
 !pyproject.toml
-!zero_termodinamica/
+!src/
 !modbus_units.json
 
 # Python

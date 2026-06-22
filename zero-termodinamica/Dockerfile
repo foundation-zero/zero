@@ -32,7 +32,7 @@ COPY --chown=1001:1001 --from=builder ${VIRTUAL_ENV} ${VIRTUAL_ENV}
 
 WORKDIR /app
 
-COPY --chown=1001:1001 zero_termodinamica/ zero_termodinamica/
+COPY --chown=1001:1001 ./src/zero_termodinamica/ zero_termodinamica/
 COPY --chown=1001:1001 ./modbus_units.json /app/
 
 USER 1001

@@ -6,7 +6,7 @@ authors = [
     { name = "Floris Smit", email = "floris.smit@sy-zero.com" }
 ]
 requires-python = ">= 3.13.1,<4.0"
-packages = [{ include = "zero_termodinamica"}]
+packages = [{ include = "zero_termodinamica", from = "src" }]
 dependencies = [
     "aiomqtt (>=2.4.0,<3.0.0)",
     "pydantic (>=2.11.7,<3.0.0)",
@@ -35,6 +35,9 @@ pytest = "^8.4.1"
 
 [tool.ruff]
 fix = true
+
+[tool.ruff.lint]
+select = ["E4", "E7", "E9", "F", "W", "I"]
 
 [tool.pytest.ini_options]
 asyncio_default_fixture_loop_scope = "function"
