@@ -260,6 +260,11 @@ async def get_context(
     )
 
 
+schema = strawberry.Schema(query=Query, mutation=Mutation)
+
+graphql_app = GraphQLRouter(schema, context_getter=get_context)
+
+
 def create_app(settings: Config):
     @asynccontextmanager
     async def lifespan(app: FastAPI):
@@ -357,16 +362,6 @@ def create_app(settings: Config):
         allow_headers=["*"],
     )
 
-    schema = strawberry.Schema(query=Query, mutation=Mutation)
-
-    graphql_app = GraphQLRouter(
-        schema,
-        context_getter=get_context,
-    )
-
     app.include_router(graphql_app, prefix="/graphql")
 
     return app
-
-
-app = create_app(Config())  # type: ignore

@@ -47,4 +47,4 @@ CMD ["python", "-m", "thrs.cli", "run", "thrusters"]
 
 FROM prod-base AS control
 USER 1001
-CMD ["uvicorn", "thrs.graphql.strawberry:app", "--port", "5102", "--host", "0.0.0.0"]
+CMD ["uvicorn", "thrs.graphql.asgi:app", "--port", "5102", "--host", "0.0.0.0"]
