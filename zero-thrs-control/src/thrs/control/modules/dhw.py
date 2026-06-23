@@ -55,9 +55,7 @@ class DhwParameters(ThrsValues):
     ] = 0.1
     filling_temperature_setpoint: Celsius = 40
     minimum_tank_level: Liter = 30
-    maximum_tank_level: Annotated[Liter, Field(le=275)] = (
-        260
-    )
+    maximum_tank_level: Annotated[Liter, Field(le=275)] = 260
     tank1_disabled: bool = False
     tank2_disabled: bool = False
     tank3_disabled: bool = False
@@ -208,6 +206,7 @@ class Tank:
             return False
         return self._temperature < parameters.minimum_tank_temperature
 
+    @property
     def full(self) -> bool:
         return self._full
 
@@ -350,8 +349,8 @@ class TanksController:
             if not self._filling_tank.full:
                 time_to_fill = self.time_to_fill(sensor_values, parameters)
                 if (
-                    time_to_fill and time_to_fill < 180
-                ):  # It takes 90s to close a valve. With approximately linear closing, that gives 180 seconds to full when closing
+                    time_to_fill and time_to_fill < 90
+                ):  # It takes 90s to close a valve. Flow is decreasing as the tank is filling and as the valve is closing, so 90s should be safe
                     self._filling_tank.stop_filling(self._time)
 
             elif self._inlets_closed(

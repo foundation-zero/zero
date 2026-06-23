@@ -9,7 +9,6 @@ from thrs.input_output.alarms import Alarm, BaseAlarms
 from thrs.input_output.base import (
     CombinedValues,
     SimulationInputs,
-    SimulationValues,
     ThrsValues,
 )
 
@@ -106,7 +105,7 @@ class CombinedAlarms(BaseAlarms[CombinedValues, CombinedValues, CombinedValues])
         ]
 
 
-class CombinedModule[I: SimulationInputs, O: SimulationValues]:
+class CombinedModule[I: SimulationInputs, O: ThrsValues]:
     """Combination of multiple modules into a single control/simulation unit
 
     Also contains the MQTT mapping for the combined modules.

@@ -3,7 +3,7 @@ from typing import Callable
 
 from thrs.classes.control import Control
 from thrs.input_output.alarms import BaseAlarms
-from thrs.input_output.base import SimulationInputs, SimulationValues, ThrsValues
+from thrs.input_output.base import SimulationInputs, ThrsValues
 from thrs.input_output.definitions.sensor import FlowSensor
 from thrs.orchestration.connector import Connector
 from thrs.orchestration.simulation import Simulation, SimulationResult
@@ -17,7 +17,7 @@ class SimpleSimulationInputs(SimulationInputs):
     pass
 
 
-class SimpleSimulationOutputs(SimulationValues):
+class SimpleSimulationOutputs(ThrsValues):
     pass
 
 
@@ -33,7 +33,7 @@ class SimpleConnector(Connector):
         return control_values
 
 
-class SimpleSimulation[S](Simulation[S, S, SimulationInputs, SimulationValues]):
+class SimpleSimulation(Simulation[SimpleInOut, SimpleInOut, SimpleSimulationInputs, SimpleSimulationOutputs]):
     def __init__(self, start_time):
         self.controls = []
         self._start_time = start_time
@@ -42,15 +42,15 @@ class SimpleSimulation[S](Simulation[S, S, SimulationInputs, SimulationValues]):
         pass
 
     def tick(
-        self, control_values: S
-    ) -> SimulationResult[S, S, SimulationInputs, SimulationValues]:
+        self, control_values: SimpleInOut
+    ) -> SimulationResult[SimpleInOut, SimpleInOut, SimpleSimulationInputs, SimpleSimulationOutputs]:
         self.controls.append(control_values)
         return SimulationResult(
             timestamp=datetime.now(),
             sensor_values=control_values,
             control_values=control_values,
-            simulation_outputs=SimulationValues(),
-            simulation_inputs=SimulationInputs(),
+            simulation_outputs=SimpleSimulationOutputs(),
+            simulation_inputs=SimpleSimulationInputs(),
             raw={},
         )
 
