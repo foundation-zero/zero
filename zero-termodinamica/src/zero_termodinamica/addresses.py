@@ -26,6 +26,3 @@ def read_modbus_units() -> List[ModbusUnit]:
     json_path = Path(__file__).parent / "../../modbus_units.json"
     with open(json_path, "r", encoding="utf-8") as f:
         return TypeAdapter(list[ModbusUnit]).validate_python(json.loads(f.read()))
-
-
-MODBUS_UNITS = read_modbus_units()

@@ -4,43 +4,26 @@
 #     "fastexcel",
 #     "polars",
 #     "pydantic",
+#     "zero-termodinamica",
 # ]
+#
+# [tool.uv.sources]
+# zero-termodinamica = { path = "../" }
 # ///
 from pathlib import Path
 from typing import List
 
 import polars as pl
-from pydantic import BaseModel, TypeAdapter
+from pydantic import TypeAdapter
+
+from zero_termodinamica.addresses import Address, ModbusUnit, MQTTTopic
 
 SCRIPTS_FOLDER = Path(__file__).parent
 EXCEL_PATH = SCRIPTS_FOLDER / "../docs/Vent en AC lijst Termodynamica.xls"
 
 
-# Copy of:
-# from zero_termodinamica.addresses import Address, ModbusUnit
-class Address(BaseModel):
-    register: int
-    field_name: str
-    description: str | None = None
-    scale_factor: float = 1
-
-
-# Copy of:
-# from zero_termodinamica.addresses import MQTTTopic
-class MQTTTopic(BaseModel):
-    topic: str
-    fields: List[Address]
-
-
-# Copy of:
-# from zero_termodinamica.addresses import ModbusUnit
-class ModbusUnit(BaseModel):
-    unit_id: int
-    topics: List[MQTTTopic]
-
-
 def select_reg_split(df: pl.DataFrame, topic_prefix: str) -> List[MQTTTopic]:
-    """Reg split is a repeating """
+    """Reg split is a repeating"""
     print(f"Select reg split: topic {topic_prefix} received {df.shape[0]} rows")
     df = df.filter(pl.col("register_name").str.contains(r"REG_SPLIT_\d\d")).filter(
         ~pl.col("register_name").str.contains("_FREE")
@@ -56,7 +39,7 @@ def select_reg_split(df: pl.DataFrame, topic_prefix: str) -> List[MQTTTopic]:
             .str.replace(" ", "")
             .alias("field_name"),
         )
-        .sort("reg_split")
+        .sort("reg_split", "address")
     )
 
     result: List[MQTTTopic] = []

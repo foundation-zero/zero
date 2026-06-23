@@ -6,7 +6,7 @@ from pydantic_settings import (
     CliSubCommand,
 )
 
-from zero_termodinamica.addresses import MODBUS_UNITS
+from zero_termodinamica.addresses import read_modbus_units
 from zero_termodinamica.modbus_to_mqtt import ModbusToMQTTBridge
 from zero_termodinamica.settings import ModbusSettings, MqttSettings
 from zero_termodinamica.stub import Stub
@@ -18,7 +18,9 @@ logging.basicConfig(
 
 class RunCmd(ModbusSettings, MqttSettings):
     async def cli_cmd(self) -> None:
-        async with ModbusToMQTTBridge.from_settings(self, self, MODBUS_UNITS) as reader:
+        async with ModbusToMQTTBridge.from_settings(
+            self, self, read_modbus_units()
+        ) as reader:
             await reader.run()
 
 
@@ -26,7 +28,7 @@ class StubCmd(ModbusSettings):
     default_value: int = 20
 
     def cli_cmd(self) -> None:
-        stub = Stub.from_settings(self, MODBUS_UNITS, self.default_value)
+        stub = Stub.from_settings(self, read_modbus_units(), self.default_value)
         stub.run()
 
 
