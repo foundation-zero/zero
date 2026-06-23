@@ -81,7 +81,16 @@ const FIELD_MAPPINGS: AllFieldMappings = {
     Valve: ["setpoint"],
     Pcm: ["on"],
     Heatpump: ["temperatureSetpoint", "on"],
-    PidController: ["setpoint"],
+    PIDController: [
+      "setpoint",
+      "measurement",
+      "output",
+      "error",
+      "enabled",
+      "tuning",
+      "components",
+    ],
+    DhwTanksController: ["tank1State", "tank2State", "tank3State", "timeToFill"],
   },
 
   // Sensor component fields
@@ -98,7 +107,6 @@ const FIELD_MAPPINGS: AllFieldMappings = {
     DeltaT: ["deltaT"],
     HeatExchanger: ["heat", "deltaT"],
     CalculatedFlow: ["flow"],
-    PidController: ["setpoint"],
   },
 
   // Simulation component fields

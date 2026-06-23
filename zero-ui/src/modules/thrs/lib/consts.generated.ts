@@ -15,6 +15,138 @@ export const toSensorDefinition = <T extends SensorDefinitions>(input: T): T => 
 export const toParameterDefinition = <T extends ParameterDefinitions>(input: T): T => input;
 export const toSimulationDefinition = <T extends SimulationDefinitions>(input: T): T => input;
 
+export const CONSUMERS_CONTROL_DEFINITION = toControlDefinition({
+  consumersFlowcontrolAdsorption: {
+    yardTag: "50001061",
+    componentType: ControlComponentType.Valve,
+    valveType: ValveType.FlowControl,
+  },
+  consumersFlowcontrolBypass: {
+    yardTag: "50001062-01",
+    componentType: ControlComponentType.Valve,
+    valveType: ValveType.FlowControl,
+  },
+  consumersFlowcontrolDhw: {
+    yardTag: "50001065-01",
+    componentType: ControlComponentType.Valve,
+    valveType: ValveType.FlowControl,
+  },
+  consumersSwitchAdsorption: {
+    yardTag: "50001066-02",
+    componentType: ControlComponentType.Valve,
+    valveType: ValveType.Switch,
+  },
+  consumersSwitchDhw: {
+    yardTag: "50001067-15",
+    componentType: ControlComponentType.Valve,
+    valveType: ValveType.Switch,
+  },
+});
+
+export const CONSUMERS_PARAMETER_DEFINITION = toParameterDefinition({
+  dhwEnabled: {
+    componentType: ParametersType.Enabled,
+  },
+  dhwFlowRatioSetpoint: {
+    componentType: ParametersType.Flow,
+  },
+  adsorptionEnabled: {
+    componentType: ParametersType.Enabled,
+  },
+  adsorptionFlowRatioSetpoint: {
+    componentType: ParametersType.Flow,
+  },
+  dhwFlowBalanceTuning: {
+    componentType: ParametersType.Tuning,
+  },
+  bypassFlowBalanceTuning: {
+    componentType: ParametersType.Tuning,
+  },
+  adsorptionFlowBalanceTuning: {
+    componentType: ParametersType.Tuning,
+  },
+});
+
+export const CONSUMERS_SENSOR_DEFINITION = toSensorDefinition({
+  consumersTemperatureDhwReturn: {
+    yardTag: "50001038-48",
+    componentType: SensorComponentType.Temperature,
+  },
+  consumersTemperatureAdsorptionReturn: {
+    yardTag: "50001038-49",
+    componentType: SensorComponentType.Temperature,
+  },
+  consumersTemperatureDhwSupply: {
+    yardTag: "50001038-53",
+    componentType: SensorComponentType.Temperature,
+  },
+  consumersTemperatureAdsorptionSupply: {
+    yardTag: "50001038-54",
+    componentType: SensorComponentType.Temperature,
+  },
+  consumersFlowDhw: {
+    yardTag: "50001058-07",
+    componentType: SensorComponentType.Flow,
+  },
+  consumersFlowAdsorption: {
+    yardTag: "50001058-08",
+    componentType: SensorComponentType.Flow,
+  },
+  consumersFlowBypass: {
+    yardTag: "50001192",
+    componentType: SensorComponentType.Flow,
+  },
+  consumersFlowcontrolAdsorption: {
+    yardTag: "50001061",
+    componentType: SensorComponentType.Valve,
+    valveType: ValveType.FlowControl,
+  },
+  consumersFlowcontrolBypass: {
+    yardTag: "50001062-01",
+    componentType: SensorComponentType.Valve,
+    valveType: ValveType.FlowControl,
+  },
+  consumersFlowcontrolDhw: {
+    yardTag: "50001065-01",
+    componentType: SensorComponentType.Valve,
+    valveType: ValveType.FlowControl,
+  },
+  consumersSwitchAdsorption: {
+    yardTag: "50001066-02",
+    componentType: SensorComponentType.Valve,
+    valveType: ValveType.Switch,
+  },
+  consumersSwitchDhw: {
+    yardTag: "50001067-15",
+    componentType: SensorComponentType.Valve,
+    valveType: ValveType.Switch,
+  },
+});
+
+export const CONSUMERS_SIMULATION_INPUTS = toSimulationDefinition({
+  consumersAdsorptionSupply: {
+    componentType: SimulationComponentType.Boundary,
+  },
+  consumersDhwSupply: {
+    componentType: SimulationComponentType.Boundary,
+  },
+  consumersPcmSupply: {
+    componentType: SimulationComponentType.Boundary,
+  },
+});
+
+export const CONSUMERS_SIMULATION_OUTPUTS = toSimulationDefinition({
+  consumersAdsorptionReturn: {
+    componentType: SimulationComponentType.Temperature,
+  },
+  consumersDhwReturn: {
+    componentType: SimulationComponentType.Temperature,
+  },
+  consumersPcmReturn: {
+    componentType: SimulationComponentType.Boundary,
+  },
+});
+
 export const DHW_CONTROL_DEFINITION = toControlDefinition({
   dhwPump: {
     yardTag: "50001022",
@@ -110,23 +242,23 @@ export const DHW_CONTROL_DEFINITION = toControlDefinition({
     valveType: ValveType.Switch,
   },
   dhwTanksController: {
-    yardTag: "",
+    yardTag: "N/A",
     componentType: ControlComponentType.DhwTanksController,
   },
   dhwPumpFlowController: {
-    yardTag: "",
+    yardTag: "N/A",
     componentType: ControlComponentType.PIDController,
   },
   dhwPumpTemperatureController: {
-    yardTag: "",
+    yardTag: "N/A",
     componentType: ControlComponentType.PIDController,
   },
   dhwDrivesFlowController: {
-    yardTag: "",
+    yardTag: "N/A",
     componentType: ControlComponentType.PIDController,
   },
   dhwDcFlowController: {
-    yardTag: "",
+    yardTag: "N/A",
     componentType: ControlComponentType.PIDController,
   },
 });
@@ -496,138 +628,6 @@ export const DHW_SIMULATION_OUTPUTS = toSimulationDefinition({
   },
 });
 
-export const CONSUMERS_CONTROL_DEFINITION = toControlDefinition({
-  consumersFlowcontrolAdsorption: {
-    yardTag: "50001061",
-    componentType: ControlComponentType.Valve,
-    valveType: ValveType.FlowControl,
-  },
-  consumersFlowcontrolBypass: {
-    yardTag: "50001062-01",
-    componentType: ControlComponentType.Valve,
-    valveType: ValveType.FlowControl,
-  },
-  consumersFlowcontrolDhw: {
-    yardTag: "50001065-01",
-    componentType: ControlComponentType.Valve,
-    valveType: ValveType.FlowControl,
-  },
-  consumersSwitchAdsorption: {
-    yardTag: "50001066-02",
-    componentType: ControlComponentType.Valve,
-    valveType: ValveType.Switch,
-  },
-  consumersSwitchDhw: {
-    yardTag: "50001067-15",
-    componentType: ControlComponentType.Valve,
-    valveType: ValveType.Switch,
-  },
-});
-
-export const CONSUMERS_PARAMETER_DEFINITION = toParameterDefinition({
-  dhwEnabled: {
-    componentType: ParametersType.Enabled,
-  },
-  dhwFlowRatioSetpoint: {
-    componentType: ParametersType.Flow,
-  },
-  adsorptionEnabled: {
-    componentType: ParametersType.Enabled,
-  },
-  adsorptionFlowRatioSetpoint: {
-    componentType: ParametersType.Flow,
-  },
-  dhwFlowBalanceTuning: {
-    componentType: ParametersType.Tuning,
-  },
-  bypassFlowBalanceTuning: {
-    componentType: ParametersType.Tuning,
-  },
-  adsorptionFlowBalanceTuning: {
-    componentType: ParametersType.Tuning,
-  },
-});
-
-export const CONSUMERS_SENSOR_DEFINITION = toSensorDefinition({
-  consumersTemperatureDhwReturn: {
-    yardTag: "50001038-48",
-    componentType: SensorComponentType.Temperature,
-  },
-  consumersTemperatureAdsorptionReturn: {
-    yardTag: "50001038-49",
-    componentType: SensorComponentType.Temperature,
-  },
-  consumersTemperatureDhwSupply: {
-    yardTag: "50001038-53",
-    componentType: SensorComponentType.Temperature,
-  },
-  consumersTemperatureAdsorptionSupply: {
-    yardTag: "50001038-54",
-    componentType: SensorComponentType.Temperature,
-  },
-  consumersFlowDhw: {
-    yardTag: "50001058-07",
-    componentType: SensorComponentType.Flow,
-  },
-  consumersFlowAdsorption: {
-    yardTag: "50001058-08",
-    componentType: SensorComponentType.Flow,
-  },
-  consumersFlowBypass: {
-    yardTag: "50001192",
-    componentType: SensorComponentType.Flow,
-  },
-  consumersFlowcontrolAdsorption: {
-    yardTag: "50001061",
-    componentType: SensorComponentType.Valve,
-    valveType: ValveType.FlowControl,
-  },
-  consumersFlowcontrolBypass: {
-    yardTag: "50001062-01",
-    componentType: SensorComponentType.Valve,
-    valveType: ValveType.FlowControl,
-  },
-  consumersFlowcontrolDhw: {
-    yardTag: "50001065-01",
-    componentType: SensorComponentType.Valve,
-    valveType: ValveType.FlowControl,
-  },
-  consumersSwitchAdsorption: {
-    yardTag: "50001066-02",
-    componentType: SensorComponentType.Valve,
-    valveType: ValveType.Switch,
-  },
-  consumersSwitchDhw: {
-    yardTag: "50001067-15",
-    componentType: SensorComponentType.Valve,
-    valveType: ValveType.Switch,
-  },
-});
-
-export const CONSUMERS_SIMULATION_INPUTS = toSimulationDefinition({
-  consumersAdsorptionSupply: {
-    componentType: SimulationComponentType.Boundary,
-  },
-  consumersDhwSupply: {
-    componentType: SimulationComponentType.Boundary,
-  },
-  consumersPcmSupply: {
-    componentType: SimulationComponentType.Boundary,
-  },
-});
-
-export const CONSUMERS_SIMULATION_OUTPUTS = toSimulationDefinition({
-  consumersAdsorptionReturn: {
-    componentType: SimulationComponentType.Temperature,
-  },
-  consumersDhwReturn: {
-    componentType: SimulationComponentType.Temperature,
-  },
-  consumersPcmReturn: {
-    componentType: SimulationComponentType.Boundary,
-  },
-});
-
 export const HIGH_TEMPERATURE_SIMULATION_INPUTS = toSimulationDefinition({
   thrustersThrusterAft: {
     componentType: SimulationComponentType.Thruster,
@@ -897,11 +897,11 @@ export const PCM_SIMULATION_INPUTS = toSimulationDefinition({
   pcmThrustersSupply: {
     componentType: SimulationComponentType.Boundary,
   },
-  pcmConsumersSupply: {
-    componentType: SimulationComponentType.Temperature,
-  },
   pcmFreshwaterSupply: {
     componentType: SimulationComponentType.Boundary,
+  },
+  pcmConsumersSupply: {
+    componentType: SimulationComponentType.Temperature,
   },
 });
 
