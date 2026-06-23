@@ -157,7 +157,7 @@ class CombinedModule[I: SimulationInputs, O: SimulationValues]:
         return self._modules[module].control_values_cls
 
     def parameters_for_module(self, module: str) -> type[ThrsValues]:
-        return self._modules[module].parameters_cls
+        return self._modules[module].parameters_type
 
     def control(
         self, parameters: CombinedValues, time_fn: Callable[[], datetime]

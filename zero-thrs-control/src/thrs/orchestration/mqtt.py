@@ -4,9 +4,11 @@ from abc import abstractmethod
 from asyncio import Queue
 from dataclasses import dataclass
 from typing import (
+    TYPE_CHECKING,
     Annotated,
     Any,
 )
+
 from aiomqtt import Client as MqttClient
 from pydantic import (
     Field,
@@ -14,14 +16,15 @@ from pydantic import (
     model_validator,
 )
 
-from thrs.orchestration.module import CombinedControl
+from src.thrs.orchestration.module import CombinedControl
 from thrs.input_output.base import (
     SimulationInputs,
     SimulationValues,
     ThrsValues,
 )
-from thrs.orchestration.executor import SimulationExecutor
 
+if TYPE_CHECKING:
+    from src.thrs.cli.runner.messaging import SimulationCtrlMessage
 
 @dataclass
 class MqttContext:
@@ -43,12 +46,12 @@ class MessageContext[
     cmds: Queue["SimulationCtrlMessage"]
     control: CombinedControl
     client: MqttClient
-    executor: SimulationExecutor[
-        SensorValues,
-        ControlValues,
-        Inputs,
-        Outputs,
-    ]
+    # executor: SimulationExecutor[
+    #     SensorValues,
+    #     ControlValues,
+    #     Inputs,
+    #     Outputs,
+    # ]
     topic_prefix: str
 
     async def send(self, message: "OutgoingMessage"):
@@ -112,4 +115,3 @@ class OutgoingMessage(ThrsValues):
     @classmethod
     def clear_topics(cls, control_modules: list[str]) -> list[str]:
         return [cls.subscribe_topic()]
-

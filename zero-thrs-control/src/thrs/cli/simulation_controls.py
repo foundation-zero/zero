@@ -19,6 +19,9 @@ from pydantic import (
     model_validator,
 )
 
+from src.thrs.orchestration.connectors.mqtt_connector import MqttConnector
+from src.thrs.orchestration.runner_depricated import Runner
+from src.thrs.orchestration.simulation_depricated import Simulation
 from thrs.control.modules.consumers import CONSUMERS_MODULE_DESCRIPTION
 from thrs.control.modules.dhw import DHW_MODULE_DESCRIPTION
 from thrs.control.modules.pcm import PCM_MODULE_DESCRIPTION
@@ -62,10 +65,7 @@ from thrs.input_output.modules.thrusters import (
     ThrustersSimulationOutputs,
 )
 from thrs.orchestration.config import Config
-from thrs.orchestration.connector import MqttConnector
 from thrs.orchestration.module import CombinedControl, CombinedModule
-from thrs.orchestration.runner import Runner
-from thrs.orchestration.simulation import Simulation
 from thrs.simulation.fmu import Fmu
 from thrs.simulation.models.fmu_paths import (
     consumers_path,
@@ -618,7 +618,7 @@ class SetSimulationInputsMessage[Inputs: SimulationInputs](IncomingMessage):
         await context.send(SimulationInputMessage(inputs=self.inputs))
 
 
-HANDLERS = [
+DIRECTIVES: list[type[IncomingMessage]] = [
     PlayMessage,
     StepMessage,
     PauseMessage,
@@ -732,7 +732,7 @@ class SimulationControls:
             )
 
     async def run(self, mode: Modes):
-        for handler in HANDLERS:
+        for handler in DIRECTIVES:
             await self._controls_client.subscribe(
                 f"{self._topic_prefix}/{handler.subscribe_topic()}", qos=1
             )
@@ -746,11 +746,11 @@ class SimulationControls:
                 for module in modules.modules
             }
             control = modules.control(CombinedValues(parameters), simulation.time)
-
             cmds: Queue[SimulationCtrlMessage] = Queue()
             context = MessageContext(
                 cmds, control, self._controls_client, simulation, self._topic_prefix
             )
+
             for module in modules.modules:
                 await context.send(
                     ControlModeMessage(module=module, mode=control.mode_for(module))
@@ -770,7 +770,7 @@ class SimulationControls:
 
             connector_task = create_task(connector.run())
             receive_task = create_task(
-                self._receive_controls(HANDLERS, context, modules)
+                self._receive_controls(DIRECTIVES, context, modules)
             )
             try:
                 for module in modules.modules:

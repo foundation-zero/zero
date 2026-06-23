@@ -58,6 +58,8 @@ class ThrsValues(BaseModel):
     def yard_tag(cls, field_name: str) -> str:
         return cast(dict, cls.model_fields[field_name].json_schema_extra)["yard_tag"]
 
+    def __hash__(self) -> int:
+        return hash(self.model_dump_json())
 
 class Stamped[T](ThrsValues):
     value: T

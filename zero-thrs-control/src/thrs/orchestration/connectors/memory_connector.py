@@ -1,6 +1,6 @@
 from typing import Any, Callable
 
-from thrs.orchestration.connectors.connector import CommConnector
+from src.thrs.orchestration.connectors.base import CommConnector
 
 
 class MemoryConnector(CommConnector):

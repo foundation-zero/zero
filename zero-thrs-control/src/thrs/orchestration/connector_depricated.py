@@ -8,7 +8,8 @@ from pydantic.fields import FieldInfo
 from thrs.input_output.base import CombinedValues, ThrsValues, get_topic
 from thrs.input_output.model_builder import CombinedModelBuilder, PartialModelBuilder
 from thrs.orchestration.module import ModuleClassMap
-from thrs.orchestration.simulation import Simulation, SimulationResult
+
+# from thrs.orchestration.simulation import Simulation, SimulationResult
 from thrs.utils.string import hyphenize
 
 logger = logging.getLogger(__name__)

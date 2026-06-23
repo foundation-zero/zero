@@ -25,7 +25,15 @@ class ModuleDescription[
     ):
         self.sensor_values_cls = sensor_values_cls
         self.control_values_cls = control_values_cls
-        self.parameters_cls = parameters_cls
+        self.parameters_type = parameters_cls
         self.control_mode_cls = control_mode_cls
         self.control = control
         self.alarms = alarms
+
+    @property
+    def input_values_type(self) -> ThrsValues:
+        return self.sensor_values_cls
+
+    @property
+    def output_values_type(self) -> ThrsValues:
+        return self.control_values_cls

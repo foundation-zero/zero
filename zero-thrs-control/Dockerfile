@@ -43,7 +43,7 @@ RUN apt-get update && \
 RUN fmpy compile /app/thrs/simulation/models/Thruster_Module_V19.fmu
 
 USER 1001
-ENTRYPOINT [ "python", "-m", "thrs.cli", "run"]
+ENTRYPOINT [ "python", "-m", "thrs.cli", "simulators", "--simulation-modes"]
 
 FROM prod-base AS control
 USER 1001

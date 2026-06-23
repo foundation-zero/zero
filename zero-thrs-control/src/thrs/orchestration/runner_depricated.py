@@ -12,9 +12,7 @@ from thrs.input_output.base import (
     SimulationValues,
     ThrsValues,
 )
-from thrs.orchestration.connector import Connector
 from thrs.orchestration.module import CombinedModule
-from thrs.orchestration.simulation import Simulation
 from thrs.simulation.fmu import Fmu
 
 
@@ -32,15 +30,16 @@ class SimulatorModel:
 
     @contextmanager
     def simulation(self):
-        with Fmu(self.fmu_path) as fmu:
-            yield Simulation(
-                self.sensor_values_cls,
-                self.simulation_outputs_cls,
-                fmu,
-                self.simulation_inputs,
-                self.start_time,
-                self.tick_duration,
-            )
+        pass # TODO: Maapater depricate this, use ModuleSimulatorModel instead
+        # with Fmu(self.fmu_path) as fmu:
+        #     yield Simulation(
+        #         self.sensor_values_cls,
+        #         self.simulation_outputs_cls,
+        #         fmu,
+        #         self.simulation_inputs,
+        #         self.start_time,
+        #         self.tick_duration,
+        #     )
 
 
 @dataclass
@@ -53,15 +52,16 @@ class ModuleSimulatorModel:
 
     @contextmanager
     def simulation(self):
-        with Fmu(self.fmu_path) as fmu:
-            yield Simulation(
-                self.module.sensor_values_clss,
-                self.module.simulation_outputs_cls,
-                fmu,
-                self.simulation_inputs,
-                self.start_time,
-                self.tick_duration,
-            )
+        pass # TODO: Maapater depricate this, use ModuleSimulatorModel instead
+        # with Fmu(self.fmu_path) as fmu:
+        #     yield Simulation(
+        #         self.module.sensor_values_clss,
+        #         self.module.simulation_outputs_cls,
+        #         fmu,
+        #         self.simulation_inputs,
+        #         self.start_time,
+        #         self.tick_duration,
+        #     )
 
 
 class Runner[S: ThrsValues, C: ThrsValues, P: ThrsValues, M: ThrsValues]:
@@ -69,7 +69,10 @@ class Runner[S: ThrsValues, C: ThrsValues, P: ThrsValues, M: ThrsValues]:
 
     def __init__(
         self,
-        connector: Connector[S, C],
+        # TODO: Maapater depricate this, use ModuleSimulatorModel instead
+
+        connector,
+        # connector: Connector[S, C],
         control: Control[S, C, P, M],
         alarms: BaseAlarms[S, C, P],
     ):
@@ -82,7 +85,9 @@ class Runner[S: ThrsValues, C: ThrsValues, P: ThrsValues, M: ThrsValues]:
     def from_module(
         module: ModuleDescription[S, C, P, M] | CombinedModule,
         initial_control_parameters: P | CombinedValues,
-        connector: Connector[S, C],
+        # TODO: Maapater depricate this, use ModuleSimulatorModel instead
+        # connector: Connector[S, C],
+        connector
     ) -> "Runner":
         return Runner(
             connector,
