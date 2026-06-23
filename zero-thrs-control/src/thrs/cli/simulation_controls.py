@@ -13,6 +13,7 @@ from typing import (
 )
 
 from aiomqtt import Client as MqttClient
+from aiomqtt import Message
 from pydantic import (
     Field,
     ValidationInfo,
@@ -275,11 +276,10 @@ class MessageContext[
         Inputs,
         Outputs,
     ]
-    topic_prefix: str
 
-    async def send(self, message: "OutgoingMessage"):
+    async def send(self, topic_prefix: str, message: "OutgoingMessage"):
         await self.client.publish(
-            f"{self.topic_prefix}/{message.topic()}",
+            f"{topic_prefix}/{message.topic()}",
             message.model_dump_json(),
             qos=1,
             retain=message.retained(),
@@ -309,7 +309,7 @@ class IncomingMessage(ThrsValues):
         return self.subscribe_topic()
 
     @abstractmethod
-    async def handle(self, context: MessageContext): ...
+    async def handle(self, topic_prefix: str, context: MessageContext): ...
 
 
 class IncomingModuleMessage(IncomingMessage):
@@ -348,7 +348,7 @@ class SimulationStatusMessage(OutgoingMessage):
 
     @staticmethod
     def subscribe_topic() -> str:
-        return "simulation/status"
+        return "status"
 
     @staticmethod
     def retained() -> bool:
@@ -400,23 +400,26 @@ class SimulationInputMessage[Inputs: ThrsValues](OutgoingMessage):
 
     @staticmethod
     def subscribe_topic() -> str:
-        return "simulation/inputs"
+        return "inputs"
 
     @staticmethod
     def retained() -> bool:
         return True
 
 
-OUTGOING_MESSAGES = [
+SIMULATION_OUTGOING_MESSAGES = [
     SimulationStatusMessage,
+    SimulationInputMessage,
+]
+
+CONTROLLER_OUTGOING_MESSAGES = [
     ControlModeMessage,
     ParametersMessage,
-    SimulationInputMessage,
 ]
 
 
 class SimulationCtrlMessage(IncomingMessage):
-    async def handle(self, context: MessageContext):
+    async def handle(self, topic_prefix: str, context: MessageContext):
         await context.cmds.put(self)
 
 
@@ -439,7 +442,7 @@ class PlayMessage(SimulationCtrlMessage):
 
     @staticmethod
     def subscribe_topic() -> str:
-        return "simulation/play"
+        return "play"
 
 
 class StepMessage(SimulationCtrlMessage):
@@ -461,7 +464,7 @@ class StepMessage(SimulationCtrlMessage):
 
     @staticmethod
     def subscribe_topic() -> str:
-        return "simulation/step"
+        return "step"
 
 
 class PauseMessage(SimulationCtrlMessage):
@@ -481,7 +484,7 @@ class PauseMessage(SimulationCtrlMessage):
 
     @staticmethod
     def subscribe_topic() -> str:
-        return "simulation/pause"
+        return "pause"
 
 
 class ManualControlMessage[ControlValues: ThrsValues](IncomingModuleMessage):
@@ -510,6 +513,7 @@ class ManualControlMessage[ControlValues: ThrsValues](IncomingModuleMessage):
 
     async def handle(
         self,
+        topic_prefix: str,
         context: MessageContext[
             ThrsValues, ControlValues, SimulationInputs, SimulationValues
         ],
@@ -541,13 +545,14 @@ class SetAutomationMessage(IncomingModuleMessage):
     def topic(self):
         return f"{self.module}/controls/set_automation"
 
-    async def handle(self, context: MessageContext):
+    async def handle(self, topic_prefix: str, context: MessageContext):
         context.control.set_automation_mode(self.module, self.enabled)
         await context.send(
+            topic_prefix,
             ControlModeMessage(
                 module=self.module,
                 mode=context.control.mode_for(self.module),
-            )
+            ),
         )
 
 
@@ -575,13 +580,16 @@ class SetParametersMessage[Parameters: ThrsValues](IncomingModuleMessage):
     def topic(self):
         return f"{self.module}/controls/set_parameters"
 
-    async def handle(self, context: MessageContext[Any, Any, Any, Any]):
+    async def handle(
+        self, topic_prefix: str, context: MessageContext[Any, Any, Any, Any]
+    ):
         context.control.update_parameters_for(self.module, self.parameters)
         await context.send(
+            topic_prefix,
             ParametersMessage(
                 parameters=context.control.parameters.values[self.module],
                 module=self.module,
-            )
+            ),
         )
 
 
@@ -604,21 +612,24 @@ class SetSimulationInputsMessage[Inputs: SimulationInputs](IncomingMessage):
 
     @staticmethod
     def subscribe_topic() -> str:
-        return "simulation/set_inputs"
+        return "set_inputs"
 
-    async def handle(self, context: MessageContext):
+    async def handle(self, topic_prefix: str, context: MessageContext):
         context.simulation.update_simulation_inputs(self.inputs)
-        await context.send(SimulationInputMessage(inputs=self.inputs))
+        await context.send(topic_prefix, SimulationInputMessage(inputs=self.inputs))
 
 
-HANDLERS = [
+SIMULATION_HANDLERS = [
     PlayMessage,
     StepMessage,
     PauseMessage,
+    SetSimulationInputsMessage,
+]
+
+CONTROLLER_HANDLERS = [
     ManualControlMessage,
     SetAutomationMessage,
     SetParametersMessage,
-    SetSimulationInputsMessage,
 ]
 
 
@@ -630,6 +641,7 @@ class SimulationControls:
         sensor_client: MqttClient,
         devices_topic_prefix: str,
         controller_topic_prefix: str,
+        simulation_topic_prefix: str,
         control_topic_suffix: str,
     ):
         self._sensor_client = sensor_client
@@ -637,6 +649,7 @@ class SimulationControls:
         self._controls_client = controls_client
         self._devices_topic_prefix = devices_topic_prefix
         self._controller_topic_prefix = controller_topic_prefix
+        self._simulation_topic_prefix = simulation_topic_prefix
         self._control_topic_suffix = control_topic_suffix
 
     @staticmethod
@@ -653,53 +666,71 @@ class SimulationControls:
                 sensor_client=sensor_client,
                 devices_topic_prefix=settings.mqtt_devices_topic_prefix,
                 controller_topic_prefix=settings.mqtt_controller_topic_prefix,
+                simulation_topic_prefix=settings.mqtt_simulation_topic_prefix,
                 control_topic_suffix=settings.mqtt_control_topic_suffix,
             )
 
+    async def _handle_message(
+        self,
+        message: Message,
+        handlers: list[type[IncomingMessage]],
+        topic_prefix: str,
+        context: MessageContext,
+        modules: CombinedModule,
+    ) -> bool:
+        for handler in handlers:
+            if message.topic.matches(
+                f"{topic_prefix}/{handler.subscribe_topic()}"
+            ) and isinstance(message.payload, str | bytes):
+                logger.debug(
+                    f"Received message on topic {message.topic}, handling {handler}"
+                )
+                mqtt_context = MqttContext(
+                    topic=message.topic.value.removeprefix(f"{topic_prefix}/"),
+                )
+                resolved_handler = (
+                    handler.resolve(
+                        modules.control_values_for_module(mqtt_context.module),
+                        modules.parameters_for_module(mqtt_context.module),
+                        modules.simulation_inputs_cls,
+                        modules.simulation_outputs_cls,
+                    )
+                    if mqtt_context.module in modules.modules
+                    else handler.resolve(
+                        ThrsValues,
+                        ThrsValues,
+                        modules.simulation_inputs_cls,
+                        modules.simulation_outputs_cls,
+                    )
+                )
+
+                await resolved_handler.model_validate_json(
+                    message.payload, context=mqtt_context
+                ).handle(topic_prefix, context)
+                return True
+        return False
+
     async def _receive_controls(
         self,
-        handlers: list[type[IncomingMessage]],
+        simulation_handlers: list[type[IncomingMessage]],
+        controller_handlers: list[type[IncomingMessage]],
+        simulation_topic_prefix: str,
+        controller_topic_prefix: str,
         context: MessageContext,
         modules: CombinedModule,
     ):
         async for message in self._controls_client.messages:
-            for handler in handlers:
-                if message.topic.matches(
-                    f"{self._devices_topic_prefix}/{handler.subscribe_topic()}"
-                ) and isinstance(message.payload, str | bytes):
-                    logger.debug(
-                        f"Received message on topic {message.topic}, handling {handler}"
-                    )
-                    mqtt_context = MqttContext(
-                        topic=message.topic.value.removeprefix(
-                            f"{self._devices_topic_prefix}/"
-                        ),
-                    )
-                    resolved_handler = (
-                        handler.resolve(
-                            modules.control_values_for_module(mqtt_context.module),
-                            modules.parameters_for_module(mqtt_context.module),
-                            modules.simulation_inputs_cls,
-                            modules.simulation_outputs_cls,
-                        )
-                        if mqtt_context.module in modules.modules
-                        else handler.resolve(
-                            ThrsValues,
-                            ThrsValues,
-                            modules.simulation_inputs_cls,
-                            modules.simulation_outputs_cls,
-                        )
-                    )
-
-                    await resolved_handler.model_validate_json(
-                        message.payload,
-                        context=MqttContext(
-                            topic=message.topic.value.removeprefix(
-                                f"{self._devices_topic_prefix}/"
-                            ),
-                        ),
-                    ).handle(context)
-                    break
+            handled = await self._handle_message(
+                message, simulation_handlers, simulation_topic_prefix, context, modules
+            )
+            if not handled:
+                await self._handle_message(
+                    message,
+                    controller_handlers,
+                    controller_topic_prefix,
+                    context,
+                    modules,
+                )
 
     async def clear_previous(self):
         all_modules = list(
@@ -709,11 +740,20 @@ class SimulationControls:
                 for module in nesting.modules
             )
         )
-        for msg_cls in OUTGOING_MESSAGES:
+        for msg_cls in SIMULATION_OUTGOING_MESSAGES:
             if msg_cls.retained():
                 for topic in msg_cls.clear_topics(all_modules):
                     await self._controls_client.publish(
-                        f"{self._devices_topic_prefix}/{topic}",
+                        f"{self._simulation_topic_prefix}/{topic}",
+                        None,
+                        qos=1,
+                        retain=True,
+                    )
+        for msg_cls in CONTROLLER_OUTGOING_MESSAGES:
+            if msg_cls.retained():
+                for topic in msg_cls.clear_topics(all_modules):
+                    await self._controls_client.publish(
+                        f"{self._controller_topic_prefix}/{topic}",
                         None,
                         qos=1,
                         retain=True,
@@ -734,9 +774,13 @@ class SimulationControls:
             )
 
     async def run(self, mode: Modes):
-        for handler in HANDLERS:
+        for handler in SIMULATION_HANDLERS:
             await self._controls_client.subscribe(
-                f"{self._devices_topic_prefix}/{handler.subscribe_topic()}", qos=1
+                f"{self._simulation_topic_prefix}/{handler.subscribe_topic()}", qos=1
+            )
+        for handler in CONTROLLER_HANDLERS:
+            await self._controls_client.subscribe(
+                f"{self._controller_topic_prefix}/{handler.subscribe_topic()}", qos=1
             )
 
         fmu_path, modules = MODES[mode]
@@ -750,16 +794,11 @@ class SimulationControls:
             control = modules.control(CombinedValues(parameters), simulation.time)
 
             cmds: Queue[SimulationCtrlMessage] = Queue()
-            context = MessageContext(
-                cmds,
-                control,
-                self._controls_client,
-                simulation,
-                self._devices_topic_prefix,
-            )
+            context = MessageContext(cmds, control, self._controls_client, simulation)
             for module in modules.modules:
                 await context.send(
-                    ControlModeMessage(module=module, mode=control.mode_for(module))
+                    self._controller_topic_prefix,
+                    ControlModeMessage(module=module, mode=control.mode_for(module)),
                 )
 
             connector = MqttConnector(
@@ -768,6 +807,7 @@ class SimulationControls:
                 self._sensor_client,
                 self._devices_topic_prefix,
                 self._controller_topic_prefix,
+                self._simulation_topic_prefix,
                 modules.sensor_values_clss,
                 modules.control_values_clss,
                 modules.simulation_outputs_cls,
@@ -777,20 +817,29 @@ class SimulationControls:
 
             connector_task = create_task(connector.run())
             receive_task = create_task(
-                self._receive_controls(HANDLERS, context, modules)
+                self._receive_controls(
+                    SIMULATION_HANDLERS,
+                    CONTROLLER_HANDLERS,
+                    self._simulation_topic_prefix,
+                    self._controller_topic_prefix,
+                    context,
+                    modules,
+                )
             )
             try:
                 for module in modules.modules:
                     await context.send(
+                        self._controller_topic_prefix,
                         ParametersMessage(
                             module=module,
                             parameters=control.parameters.values[module],
-                        )
+                        ),
                     )
                 await context.send(
+                    self._simulation_topic_prefix,
                     SimulationInputMessage(
                         inputs=cast(ThrustersSimulationInputs, simulation_inputs)
-                    )
+                    ),
                 )
                 await self._run_simulation(
                     mode, modules, context, simulation, runner, cmds
@@ -814,12 +863,13 @@ class SimulationControls:
         active_modules = modules.modules
         while True:
             await context.send(
+                self._simulation_topic_prefix,
                 SimulationStatusMessage(
                     mode=mode,
                     status="available",
                     simulation_time=simulation.time(),
                     control_modules=active_modules,
-                )
+                ),
             )
             cmd = await cmds.get()
             if isinstance(cmd, PlayMessage):
@@ -827,12 +877,13 @@ class SimulationControls:
                     context.simulation.tick_duration.total_seconds() / cmd.playback_rate
                 )
                 await context.send(
+                    self._simulation_topic_prefix,
                     SimulationStatusMessage(
                         mode=mode,
                         status="running",
                         simulation_time=simulation.time(),
                         control_modules=active_modules,
-                    )
+                    ),
                 )
                 logging.debug(
                     f"Starting simulation with tick interval of {sleep_duration} seconds"
@@ -844,12 +895,13 @@ class SimulationControls:
                 logger.debug("Simulation paused")
             elif isinstance(cmd, StepMessage):
                 await context.send(
+                    self._simulation_topic_prefix,
                     SimulationStatusMessage(
                         mode=mode,
                         status="stepping",
                         simulation_time=simulation.time(),
                         control_modules=active_modules,
-                    )
+                    ),
                 )
 
                 ticks = max(

@@ -49,20 +49,21 @@ async def test_simulation_run_start_stop(
         controls_client,
         control_client,
         sensors_client,
-        "test_topic",
-        "zero/controller",
+        "test_devices_topic",
+        "test_controller_topic",
+        "test_simulation_topic",
         "Command",
     )
 
     await controls.clear_previous()
 
-    await test_client.subscribe("test_topic/thrusters/+")
-    await status_client.subscribe("test_topic/simulation/status")
+    await test_client.subscribe("test_devices_topic/thrusters/+")
+    await status_client.subscribe("test_simulation_topic/status")
 
     run_task = create_task(controls.run("thrusters"))
     try:
         available = await anext(status_client.messages)
-        assert available.topic.value == "test_topic/simulation/status"
+        assert available.topic.value == "test_simulation_topic/status"
         assert isinstance(available.payload, str | bytes)
         assert (
             SimulationStatusMessage.model_validate_json(available.payload).status
@@ -70,7 +71,7 @@ async def test_simulation_run_start_stop(
         )
         assert len(test_client.messages) == 0
 
-        await controls_client.publish("test_topic/simulation/play", "{}", qos=1)
+        await controls_client.publish("test_simulation_topic/play", "{}", qos=1)
         running = await anext(status_client.messages)
         assert isinstance(running.payload, str | bytes)
         assert (
@@ -80,7 +81,8 @@ async def test_simulation_run_start_stop(
         await sleep(5.1)
         assert len(test_client.messages) > 0
         amount_before_pause = len(test_client.messages)
-        await controls_client.publish("test_topic/simulation/pause", "{}", qos=1)
+        await controls_client.publish("test_simulation_topic/pause", "{}", qos=1)
+        await sleep(5.1)
         available = await anext(status_client.messages)
         assert isinstance(available.payload, str | bytes)
         assert (
@@ -111,35 +113,38 @@ async def test_simulation_run_playback_rate(
         controls_client,
         control_client,
         sensors_client,
-        "test_topic",
-        "zero/controller",
+        "test_devices_topic",
+        "test_controller_topic",
+        "test_simulation_topic",
         "Command",
     )
 
-    await test_client.subscribe("test_topic/thrusters/thrusters-temperature-aft")
+    await test_client.subscribe(
+        "test_devices_topic/thrusters/thrusters-temperature-aft"
+    )
 
     run_task = create_task(controls.run("thrusters"))
     try:
         await sleep(0.1)  # Wait for controls to listen for play
         await controls_client.publish(
-            "test_topic/simulation/play", '{ "playback_rate": 1 }', qos=1
+            "test_simulation_topic/play", '{ "playback_rate": 1 }', qos=1
         )
         await anext(test_client.messages)
         await anext(test_client.messages)  # Wait for first messages
 
         await sleep(5.1)
-        await controls_client.publish("test_topic/simulation/pause", "{}", qos=1)
+        await controls_client.publish("test_simulation_topic/pause", "{}", qos=1)
         assert len(test_client.messages) == 5
         while len(test_client.messages) != 0:
             await anext(test_client.messages)  # Drain the messages
 
         await controls_client.publish(
-            "test_topic/simulation/play", '{ "playback_rate": 2 }', qos=1
+            "test_simulation_topic/play", '{ "playback_rate": 2 }', qos=1
         )
         await anext(test_client.messages)
         await anext(test_client.messages)  # Wait for first messages
         await sleep(5.1)
-        await controls_client.publish("test_topic/simulation/pause", "{}", qos=1)
+        await controls_client.publish("test_simulation_topic/pause", "{}", qos=1)
         assert len(test_client.messages) == 10
     finally:
         run_task.cancel()
@@ -163,23 +168,24 @@ async def test_simulation_run_step(
         controls_client,
         control_client,
         sensors_client,
-        "test_topic",
-        "zero/controller",
+        "test_devices_topic",
+        "test_controller_topic",
+        "test_simulation_topic",
         "Command",
     )
 
     await controls.clear_previous()
 
-    await test_client.subscribe("test_topic/thrusters/thrusters-pump1")
+    await test_client.subscribe("test_devices_topic/thrusters/thrusters-pump1")
     await test_client.subscribe(
-        f"test_topic/thrusters/thrusters-pump1/{settings.mqtt_control_topic_suffix}"
+        f"test_devices_topic/thrusters/thrusters-pump1/{settings.mqtt_control_topic_suffix}"
     )
-    await status_client.subscribe("test_topic/simulation/status")
+    await status_client.subscribe("test_simulation_topic/status")
 
     run_task = create_task(controls.run("thrusters"))
     try:
         available = await anext(status_client.messages)
-        assert available.topic.value == "test_topic/simulation/status"
+        assert available.topic.value == "test_simulation_topic/status"
         assert isinstance(available.payload, str | bytes)
         assert (
             SimulationStatusMessage.model_validate_json(available.payload).status
@@ -188,11 +194,11 @@ async def test_simulation_run_step(
         await sleep(0.1)  # Wait for controls to listen for step
 
         await controls_client.publish(
-            "test_topic/simulation/step", '{"seconds": 1}', qos=1
+            "test_simulation_topic/step", '{"seconds": 1}', qos=1
         )
 
         stepping = await anext(status_client.messages)
-        assert stepping.topic.value == "test_topic/simulation/status"
+        assert stepping.topic.value == "test_simulation_topic/status"
         assert isinstance(stepping.payload, str | bytes)
         assert (
             SimulationStatusMessage.model_validate_json(stepping.payload).status
@@ -203,7 +209,7 @@ async def test_simulation_run_step(
         msg2 = await anext(test_client.messages)
 
         available = await anext(status_client.messages)
-        assert available.topic.value == "test_topic/simulation/status"
+        assert available.topic.value == "test_simulation_topic/status"
         assert isinstance(available.payload, str | bytes)
         assert (
             SimulationStatusMessage.model_validate_json(available.payload).status
@@ -212,16 +218,16 @@ async def test_simulation_run_step(
 
         assert (
             msg1.topic.value
-            == f"test_topic/thrusters/thrusters-pump1/{settings.mqtt_control_topic_suffix}"
+            == f"test_devices_topic/thrusters/thrusters-pump1/{settings.mqtt_control_topic_suffix}"
         )
-        assert msg2.topic.value == "test_topic/thrusters/thrusters-pump1"
+        assert msg2.topic.value == "test_devices_topic/thrusters/thrusters-pump1"
 
         await controls_client.publish(
-            "test_topic/simulation/step", '{"seconds": 2}', qos=1
+            "test_simulation_topic/step", '{"seconds": 2}', qos=1
         )
 
         stepping = await anext(status_client.messages)
-        assert stepping.topic.value == "test_topic/simulation/status"
+        assert stepping.topic.value == "test_simulation_topic/status"
         assert isinstance(stepping.payload, str | bytes)
         assert (
             SimulationStatusMessage.model_validate_json(stepping.payload).status
@@ -229,7 +235,7 @@ async def test_simulation_run_step(
         )
 
         available = await anext(status_client.messages)
-        assert available.topic.value == "test_topic/simulation/status"
+        assert available.topic.value == "test_simulation_topic/status"
         assert isinstance(available.payload, str | bytes)
         assert (
             SimulationStatusMessage.model_validate_json(available.payload).status
@@ -261,23 +267,24 @@ async def test_simulation_controls_automated_control(
         controls_client,
         control_client,
         sensors_client,
-        "test_topic",
-        "zero/controller",
+        "test_devices_topic",
+        "test_controller_topic",
+        "test_simulation_topic",
         "Command",
     )
 
     await controls.clear_previous()
 
     await test_client.subscribe(
-        f"test_topic/thrusters/+/{settings.mqtt_control_topic_suffix}"
+        f"test_devices_topic/thrusters/+/{settings.mqtt_control_topic_suffix}"
     )
-    await status_client.subscribe("test_topic/simulation/status")
+    await status_client.subscribe("test_simulation_topic/status")
 
     run_task = create_task(controls.run("thrusters"))
 
     try:
         available = await anext(status_client.messages)
-        assert available.topic.value == "test_topic/simulation/status"
+        assert available.topic.value == "test_simulation_topic/status"
         assert isinstance(available.payload, str | bytes)
         assert (
             SimulationStatusMessage.model_validate_json(available.payload).status
@@ -285,10 +292,12 @@ async def test_simulation_controls_automated_control(
         )
         assert len(test_client.messages) == 0
         await controls_client.publish(
-            "test_topic/thrusters/controls/set_automation", '{"enabled": true}', qos=1
+            "test_controller_topic/thrusters/controls/set_automation",
+            '{"enabled": true}',
+            qos=1,
         )
 
-        await controls_client.publish("test_topic/simulation/play", "{}", qos=1)
+        await controls_client.publish("test_simulation_topic/play", "{}", qos=1)
         _running = await anext(status_client.messages)
         await sleep(5.1)
 
@@ -323,27 +332,31 @@ async def test_simulation_controls_set_parameters(
         controls_client,
         control_client,
         sensors_client,
-        "test_topic",
-        "zero/controller",
+        "test_devices_topic",
+        "test_controller_topic",
+        "test_simulation_topic",
         "Command",
     )
 
     await controls.clear_previous()
 
-    await test_client.subscribe("test_topic/thrusters/config/parameters")
-    await status_client.subscribe("test_topic/simulation/status")
+    await test_client.subscribe("test_controller_topic/thrusters/config/parameters")
+    await status_client.subscribe("test_simulation_topic/status")
 
     run_task = create_task(controls.run("thrusters"))
     try:
         available = await anext(status_client.messages)
-        assert available.topic.value == "test_topic/simulation/status"
+        assert available.topic.value == "test_simulation_topic/status"
         assert isinstance(available.payload, str | bytes)
         assert (
             SimulationStatusMessage.model_validate_json(available.payload).status
             == "available"
         )
         parameters = await anext(test_client.messages)
-        assert parameters.topic.value == "test_topic/thrusters/config/parameters"
+        assert (
+            parameters.topic.value
+            == "test_controller_topic/thrusters/config/parameters"
+        )
         assert isinstance(parameters.payload, str | bytes)
         params_model = ParametersMessage[ThrustersParameters].model_validate_json(
             parameters.payload
@@ -354,7 +367,7 @@ async def test_simulation_controls_set_parameters(
 
         new_parameters = ThrustersParameters(cooling_flow=999)
         await controls_client.publish(
-            "test_topic/thrusters/controls/set_parameters",
+            "test_controller_topic/thrusters/controls/set_parameters",
             ParametersMessage(
                 parameters=new_parameters, module="thrusters"
             ).model_dump_json(),
@@ -362,7 +375,10 @@ async def test_simulation_controls_set_parameters(
         )
 
         parameters = await anext(test_client.messages)
-        assert parameters.topic.value == "test_topic/thrusters/config/parameters"
+        assert (
+            parameters.topic.value
+            == "test_controller_topic/thrusters/config/parameters"
+        )
         assert isinstance(parameters.payload, str | bytes)
         params_model = ParametersMessage[ThrustersParameters].model_validate_json(
             parameters.payload
@@ -385,27 +401,28 @@ async def test_simulation_controls_set_simulation_inputs(
         controls_client,
         control_client,
         sensors_client,
-        "test_topic",
-        "zero/controller",
+        "test_devices_topic",
+        "test_controller_topic",
+        "test_simulation_topic",
         "Command",
     )
 
     await controls.clear_previous()
 
-    await test_client.subscribe("test_topic/simulation/inputs")
-    await status_client.subscribe("test_topic/simulation/status")
+    await test_client.subscribe("test_simulation_topic/inputs")
+    await status_client.subscribe("test_simulation_topic/status")
 
     run_task = create_task(controls.run("thrusters"))
     try:
         available = await anext(status_client.messages)
-        assert available.topic.value == "test_topic/simulation/status"
+        assert available.topic.value == "test_simulation_topic/status"
         assert isinstance(available.payload, str | bytes)
         assert (
             SimulationStatusMessage.model_validate_json(available.payload).status
             == "available"
         )
         simulation_inputs = await anext(test_client.messages)
-        assert simulation_inputs.topic.value == "test_topic/simulation/inputs"
+        assert simulation_inputs.topic.value == "test_simulation_topic/inputs"
         assert isinstance(simulation_inputs.payload, str | bytes)
         inputs_model = SimulationInputMessage[
             ThrustersSimulationInputs
@@ -414,13 +431,13 @@ async def test_simulation_controls_set_simulation_inputs(
 
         new_inputs = ThrustersSimulationInputs.zero()
         await controls_client.publish(
-            "test_topic/simulation/set_inputs",
+            "test_simulation_topic/set_inputs",
             SimulationInputMessage(inputs=new_inputs).model_dump_json(),
             qos=1,
         )
 
         simulation_inputs = await anext(test_client.messages)
-        assert simulation_inputs.topic.value == "test_topic/simulation/inputs"
+        assert simulation_inputs.topic.value == "test_simulation_topic/inputs"
         assert isinstance(simulation_inputs.payload, str | bytes)
         inputs_model = SimulationInputMessage[
             ThrustersSimulationInputs
@@ -443,20 +460,21 @@ async def test_simulation_controls_simulation_output(
         controls_client,
         control_client,
         sensors_client,
-        "test_topic",
-        "zero/controller",
+        "test_devices_topic",
+        "test_controller_topic",
+        "test_simulation_topic",
         "Command",
     )
 
     await controls.clear_previous()
 
-    await test_client.subscribe("test_topic/simulation/outputs")
-    await status_client.subscribe("test_topic/simulation/status")
+    await test_client.subscribe("test_simulation_topic/outputs")
+    await status_client.subscribe("test_simulation_topic/status")
 
     run_task = create_task(controls.run("thrusters"))
     try:
         available = await anext(status_client.messages)
-        assert available.topic.value == "test_topic/simulation/status"
+        assert available.topic.value == "test_simulation_topic/status"
         assert isinstance(available.payload, str | bytes)
         assert (
             SimulationStatusMessage.model_validate_json(available.payload).status
@@ -464,7 +482,7 @@ async def test_simulation_controls_simulation_output(
         )
         assert len(test_client.messages) == 0
 
-        await controls_client.publish("test_topic/simulation/play", "{}", qos=1)
+        await controls_client.publish("test_simulation_topic/play", "{}", qos=1)
         running = await anext(status_client.messages)
         assert isinstance(running.payload, str | bytes)
         assert (
@@ -474,7 +492,7 @@ async def test_simulation_controls_simulation_output(
         await sleep(5.1)
 
         simulation_output = await anext(test_client.messages)
-        assert simulation_output.topic.value == "test_topic/simulation/outputs"
+        assert simulation_output.topic.value == "test_simulation_topic/outputs"
         assert isinstance(simulation_output.payload, str | bytes)
         module_return_temperature = ThrustersSimulationOutputs.model_validate_json(
             simulation_output.payload
