@@ -15,6 +15,7 @@ sources:
       - "prop-test/#"
       - "domestic/+"
       - "hull-temperature/temperatures"
+      - "termodinamica/#"
     user: "${MQTT_USER}"
     password: "${MQTT_PASSWORD}"
     max_packet_size: 163840
