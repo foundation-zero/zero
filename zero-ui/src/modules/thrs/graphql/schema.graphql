@@ -147,11 +147,11 @@ type DhwControlValuesType {
   dhwSwitchLowTemperature: ControlValveType! @jsonSchemaDirective(yardTag: "50001067-16", componentType: "valve", valveType: "switch")
   dhwSwitchHeatpump: ControlValveType! @jsonSchemaDirective(yardTag: "50001067-17", componentType: "valve", valveType: "switch")
   dhwSwitchHighTemperature: ControlValveType! @jsonSchemaDirective(yardTag: "50001067-18", componentType: "valve", valveType: "switch")
-  dhwTanksController: ControllerTanksControllerValuesType! @jsonSchemaDirective(yardTag: "", componentType: null, valveType: null)
-  dhwPumpFlowController: ControllerPidControllerValuesType! @jsonSchemaDirective(yardTag: "", componentType: null, valveType: null)
-  dhwPumpTemperatureController: ControllerPidControllerValuesType! @jsonSchemaDirective(yardTag: "", componentType: null, valveType: null)
-  dhwDrivesFlowController: ControllerPidControllerValuesType! @jsonSchemaDirective(yardTag: "", componentType: null, valveType: null)
-  dhwDcFlowController: ControllerPidControllerValuesType! @jsonSchemaDirective(yardTag: "", componentType: null, valveType: null)
+  dhwTanksController: ControllerTanksControllerValuesType! @jsonSchemaDirective(yardTag: "", componentType: "tank_controller", valveType: null)
+  dhwPumpFlowController: ControllerPidControllerValuesType! @jsonSchemaDirective(yardTag: "", componentType: "pid_controller", valveType: null)
+  dhwPumpTemperatureController: ControllerPidControllerValuesType! @jsonSchemaDirective(yardTag: "", componentType: "pid_controller", valveType: null)
+  dhwDrivesFlowController: ControllerPidControllerValuesType! @jsonSchemaDirective(yardTag: "", componentType: "pid_controller", valveType: null)
+  dhwDcFlowController: ControllerPidControllerValuesType! @jsonSchemaDirective(yardTag: "", componentType: "pid_controller", valveType: null)
 }
 
 type DhwParametersType {
