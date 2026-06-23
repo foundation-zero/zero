@@ -44,8 +44,7 @@ async def test_filling_flow(runner, simulation_inputs):
     )
     runner._simulation.update_simulation_inputs(simulation_inputs_no_drives)
 
-    runner.run(60)
-    result = runner.last_tick_result
+    result, control_values = runner.run(60)
 
     assert not runner._control._dhw_drives_flow_controller.enabled()
     assert runner._control._dhw_dc_flow_controller.enabled()
@@ -71,14 +70,14 @@ def test_filling_level(runner, simulation_inputs, overpressure):
     runner._simulation.update_simulation_inputs(simulation_inputs_no_consumption)
 
     # run until tank1 start filling
-    result, control_values = runner.run_until(
+    result, _ = runner.run_until(
         lambda result,
         control_values: control_values.dhw_tanks_controller.tank1_state.value
         == TankState.FILLING.value
     )
 
     # run until tank1 is full
-    result, control_values = runner.run_until(
+    result, _ = runner.run_until(
         lambda result,
         control_values: control_values.dhw_tanks_controller.tank1_state.value
         != TankState.FILLING.value
@@ -97,7 +96,7 @@ def test_boosting_transitions(
         runner._control.parameters.model_copy(update={"maximum_tank_level": 10})
     )
 
-    result = runner.run(120)
+    result, _ = runner.run(120)
 
     assert isinstance(runner._control, DhwControl) and isinstance(
         runner._control._tanks_controller, TanksController

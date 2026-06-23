@@ -33,7 +33,11 @@ class SimpleConnector(Connector):
         return control_values
 
 
-class SimpleSimulation(Simulation[SimpleInOut, SimpleInOut, SimpleSimulationInputs, SimpleSimulationOutputs]):
+class SimpleSimulation(
+    Simulation[
+        SimpleInOut, SimpleInOut, SimpleSimulationInputs, SimpleSimulationOutputs
+    ]
+):
     def __init__(self, start_time):
         self.controls = []
         self._start_time = start_time
@@ -43,7 +47,9 @@ class SimpleSimulation(Simulation[SimpleInOut, SimpleInOut, SimpleSimulationInpu
 
     def tick(
         self, control_values: SimpleInOut
-    ) -> SimulationResult[SimpleInOut, SimpleInOut, SimpleSimulationInputs, SimpleSimulationOutputs]:
+    ) -> SimulationResult[
+        SimpleInOut, SimpleInOut, SimpleSimulationInputs, SimpleSimulationOutputs
+    ]:
         self.controls.append(control_values)
         return SimulationResult(
             timestamp=datetime.now(),

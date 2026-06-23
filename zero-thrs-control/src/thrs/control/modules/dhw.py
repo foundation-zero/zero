@@ -339,7 +339,7 @@ class TanksController:
                 (tank for tank in self.available_tanks if tank.standby(parameters)),
                 None,
             )
-            if self._tank_in_use is not None:
+            if self._tank_in_use:
                 self._tank_in_use.use(self._time)
 
     def _select_filling_tank(
@@ -458,7 +458,6 @@ class TanksController:
                         else (
                             TankState.NEEDS_BOOST
                             if tank.boostable(parameters)
-                            # TODO: keep needs boost and needs fill?
                             else (
                                 TankState.NEEDS_FILL
                                 if tank.fillable(parameters)

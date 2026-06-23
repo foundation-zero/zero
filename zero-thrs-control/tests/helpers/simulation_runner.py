@@ -35,6 +35,7 @@ class SimulationTestRunner[
         self._simulation = simulation
         self._alarms = alarms
         self._control_values = self._control.initial()
+        self.last_tick_result: SimulationResult | None = None
 
     @staticmethod
     def from_module(
