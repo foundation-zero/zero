@@ -43,3 +43,6 @@ compile_fmus:
     just compile_fmu src/thrs/simulation/models/PCM_ModuleV8.fmu
     just compile_fmu src/thrs/simulation/models/PVT_ModuleV16.fmu
     just compile_fmu src/thrs/simulation/models/Thruster_Module_V19.fmu
+
+generate_schema:
+    poetry run strawberry export-schema thrs.graphql.strawberry --output ../zero-ui/src/modules/thrs/graphql/schema.graphql

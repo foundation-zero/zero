@@ -1,3 +1,101 @@
+export const CONSUMERS_CONTROL_QUERY = `
+  consumersFlowcontrolAdsorption {
+    setpoint { value timestamp }
+  }
+  consumersFlowcontrolBypass {
+    setpoint { value timestamp }
+  }
+  consumersFlowcontrolDhw {
+    setpoint { value timestamp }
+  }
+  consumersSwitchAdsorption {
+    setpoint { value timestamp }
+  }
+  consumersSwitchDhw {
+    setpoint { value timestamp }
+  }
+`;
+
+export const CONSUMERS_PARAMETERS_QUERY = `
+  dhwEnabled
+  dhwFlowRatioSetpoint
+  adsorptionEnabled
+  adsorptionFlowRatioSetpoint
+  dhwFlowBalanceTuning
+  bypassFlowBalanceTuning
+  adsorptionFlowBalanceTuning
+`;
+
+export const CONSUMERS_SENSOR_QUERY = `
+  consumersTemperatureDhwReturn {
+    temperature { value timestamp }
+  }
+  consumersTemperatureAdsorptionReturn {
+    temperature { value timestamp }
+  }
+  consumersTemperatureDhwSupply {
+    temperature { value timestamp }
+  }
+  consumersTemperatureAdsorptionSupply {
+    temperature { value timestamp }
+  }
+  consumersFlowDhw {
+    flow { value timestamp }
+    temperature { value timestamp }
+  }
+  consumersFlowAdsorption {
+    flow { value timestamp }
+    temperature { value timestamp }
+  }
+  consumersFlowBypass {
+    flow { value timestamp }
+    temperature { value timestamp }
+  }
+  consumersFlowcontrolAdsorption {
+    positionRel { value timestamp }
+  }
+  consumersFlowcontrolBypass {
+    positionRel { value timestamp }
+  }
+  consumersFlowcontrolDhw {
+    positionRel { value timestamp }
+  }
+  consumersSwitchAdsorption {
+    positionRel { value timestamp }
+  }
+  consumersSwitchDhw {
+    positionRel { value timestamp }
+  }
+`;
+
+export const CONSUMERS_SIMULATION_INPUTS_QUERY = `
+  consumersAdsorptionSupply {
+    temperature { value timestamp }
+    flow { value timestamp }
+  }
+  consumersDhwSupply {
+    temperature { value timestamp }
+    flow { value timestamp }
+  }
+  consumersPcmSupply {
+    temperature { value timestamp }
+    flow { value timestamp }
+  }
+`;
+
+export const CONSUMERS_SIMULATION_OUTPUTS_QUERY = `
+  consumersAdsorptionReturn {
+    temperature { value timestamp }
+  }
+  consumersDhwReturn {
+    temperature { value timestamp }
+  }
+  consumersPcmReturn {
+    temperature { value timestamp }
+    flow { value timestamp }
+  }
+`;
+
 export const DHW_CONTROL_QUERY = `
   dhwPump {
     dutypoint { value timestamp }
@@ -376,104 +474,6 @@ export const DHW_SIMULATION_OUTPUTS_QUERY = `
   }
 `;
 
-export const CONSUMERS_CONTROL_QUERY = `
-  consumersFlowcontrolAdsorption {
-    setpoint { value timestamp }
-  }
-  consumersFlowcontrolBypass {
-    setpoint { value timestamp }
-  }
-  consumersFlowcontrolDhw {
-    setpoint { value timestamp }
-  }
-  consumersSwitchAdsorption {
-    setpoint { value timestamp }
-  }
-  consumersSwitchDhw {
-    setpoint { value timestamp }
-  }
-`;
-
-export const CONSUMERS_PARAMETERS_QUERY = `
-  dhwEnabled
-  dhwFlowRatioSetpoint
-  adsorptionEnabled
-  adsorptionFlowRatioSetpoint
-  dhwFlowBalanceTuning
-  bypassFlowBalanceTuning
-  adsorptionFlowBalanceTuning
-`;
-
-export const CONSUMERS_SENSOR_QUERY = `
-  consumersTemperatureDhwReturn {
-    temperature { value timestamp }
-  }
-  consumersTemperatureAdsorptionReturn {
-    temperature { value timestamp }
-  }
-  consumersTemperatureDhwSupply {
-    temperature { value timestamp }
-  }
-  consumersTemperatureAdsorptionSupply {
-    temperature { value timestamp }
-  }
-  consumersFlowDhw {
-    flow { value timestamp }
-    temperature { value timestamp }
-  }
-  consumersFlowAdsorption {
-    flow { value timestamp }
-    temperature { value timestamp }
-  }
-  consumersFlowBypass {
-    flow { value timestamp }
-    temperature { value timestamp }
-  }
-  consumersFlowcontrolAdsorption {
-    positionRel { value timestamp }
-  }
-  consumersFlowcontrolBypass {
-    positionRel { value timestamp }
-  }
-  consumersFlowcontrolDhw {
-    positionRel { value timestamp }
-  }
-  consumersSwitchAdsorption {
-    positionRel { value timestamp }
-  }
-  consumersSwitchDhw {
-    positionRel { value timestamp }
-  }
-`;
-
-export const CONSUMERS_SIMULATION_INPUTS_QUERY = `
-  consumersAdsorptionSupply {
-    temperature { value timestamp }
-    flow { value timestamp }
-  }
-  consumersDhwSupply {
-    temperature { value timestamp }
-    flow { value timestamp }
-  }
-  consumersPcmSupply {
-    temperature { value timestamp }
-    flow { value timestamp }
-  }
-`;
-
-export const CONSUMERS_SIMULATION_OUTPUTS_QUERY = `
-  consumersAdsorptionReturn {
-    temperature { value timestamp }
-  }
-  consumersDhwReturn {
-    temperature { value timestamp }
-  }
-  consumersPcmReturn {
-    temperature { value timestamp }
-    flow { value timestamp }
-  }
-`;
-
 export const HIGH_TEMPERATURE_SIMULATION_INPUTS_QUERY = `
   thrustersThrusterAft {
     heatFlow { value timestamp }
@@ -693,12 +693,12 @@ export const PCM_SIMULATION_INPUTS_QUERY = `
     temperature { value timestamp }
     flow { value timestamp }
   }
-  pcmConsumersSupply {
-    temperature { value timestamp }
-  }
   pcmFreshwaterSupply {
     temperature { value timestamp }
     flow { value timestamp }
+  }
+  pcmConsumersSupply {
+    temperature { value timestamp }
   }
 `;
 

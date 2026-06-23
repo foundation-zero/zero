@@ -104,6 +104,8 @@ const CONTROL_TYPE_MAP: Record<string, string> = {
   pump: "Pump",
   valve: "Valve",
   heatpump: "Heatpump",
+  pid_controller: "PIDController",
+  tank_controller: "DhwTanksController",
 };
 
 const VALVE_TYPE_MAP: Record<string, string> = {
@@ -242,10 +244,8 @@ function processControlField(
   fieldType: string,
   directiveArgs: DirectiveArgs,
 ): ExtractedValue | null {
-  if (!directiveArgs.yardTag) return null;
-
   const entry: ExtractedValue = {
-    yardTag: directiveArgs.yardTag,
+    yardTag: directiveArgs.yardTag || "N/A",
     fieldType: fieldType,
   };
 
