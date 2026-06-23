@@ -4,7 +4,7 @@ set dotenv-required := true
 default: run
 
 run_api:
-    poetry run fastapi dev src/thrs/graphql/strawberry.py
+    poetry run fastapi dev src/thrs/graphql/asgi.py
 
 run_control module='thrusters':
     poetry run python -m thrs.cli run {{ module }}
