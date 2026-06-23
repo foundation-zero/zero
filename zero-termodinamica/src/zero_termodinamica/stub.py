@@ -14,7 +14,7 @@ class MultiUnitDataHandler(DataHandler):
         self.data = {}
         for unit in data:
             self.data[unit.unit_id] = {
-                addr.register: default_value
+                addr.modbus_register: default_value
                 for topic in unit.topics
                 for addr in topic.fields
             }

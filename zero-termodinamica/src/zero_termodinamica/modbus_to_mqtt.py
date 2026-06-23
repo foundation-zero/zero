@@ -80,12 +80,12 @@ class ModbusToMQTTBridge:
         has_fault = False
         for address in addresses:
             # Hardcoded at 1. In the future this could be done from the Address class (parsed from IO list)
-            value = self._modbus.read_holding_registers(address.register, 1)
+            value = self._modbus.read_holding_registers(address.modbus_register, 1)
             if value and len(value) == 1:
                 result.append((address, value[0]))
             else:
                 logging.warning(
-                    f"Received invalid value {value} from register {address.register}"
+                    f"Received invalid value {value} from register {address.modbus_register}"
                 )
                 has_fault = True
         if has_fault:

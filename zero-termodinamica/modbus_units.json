@@ -6,49 +6,49 @@
         "topic": "termodinamica/ac/01",
         "fields": [
           {
-            "register": 200,
+            "modbus_register": 200,
             "field_name": "PWR",
             "description": "Unit Power On/Off 0=OFF 1=ON",
             "scale_factor": 1.0
           },
           {
-            "register": 201,
+            "modbus_register": 201,
             "field_name": "SP_ROOM",
             "description": "Unit SetPoint: (hundredths of degrees Celsius) es: 2350 = 23.50 °C -> Range: 18..30°C\"",
             "scale_factor": 1.0
           },
           {
-            "register": 202,
+            "modbus_register": 202,
             "field_name": "FAN_SPEED",
             "description": "Unit Fan Speed (with Syxthsense): 1=Vel.Night; 2=Vel.1; 3=Vel.2; 4=Vel.3; 5=Vel.4; 7=Vel.5; 8=Vel.6; 9=Vel.Auto Unit Fan Speed (in other case): 1=Vel.Night; 2=Vel.1; 3=Vel.2; 4=Vel.3; 5=Vel.4; 6=Vel.5; 7=Vel.6; 8=Vel.7; 9=Vel.Auto",
             "scale_factor": 1.0
           },
           {
-            "register": 203,
+            "modbus_register": 203,
             "field_name": "AIR_IN",
             "description": "Unit Input Air Temperature: (hundredths of degrees Celsius) es: 2350 = 23.50 °C",
             "scale_factor": 1.0
           },
           {
-            "register": 204,
+            "modbus_register": 204,
             "field_name": "STATUS",
             "description": "Diagnostic Split Comunication Status: Bit 0=Unit not connected on the bus; Bit 1=Unit connected on the bus; Bit 2=Unit connected on the bus but offline; Bit 3=Unit in error.",
             "scale_factor": 1.0
           },
           {
-            "register": 205,
+            "modbus_register": 205,
             "field_name": "AHU_MODE",
             "description": "AHU State 16 = Ventilation 32=Automatic ",
             "scale_factor": 1.0
           },
           {
-            "register": 206,
+            "modbus_register": 206,
             "field_name": "HEATER_PWR",
             "description": "Heater State 0 = OFF; 1 = ON ",
             "scale_factor": 1.0
           },
           {
-            "register": 207,
+            "modbus_register": 207,
             "field_name": "HUMI",
             "description": "Humidity 0..100% ",
             "scale_factor": 1.0
@@ -59,49 +59,49 @@
         "topic": "termodinamica/ac/02",
         "fields": [
           {
-            "register": 210,
+            "modbus_register": 210,
             "field_name": "PWR",
             "description": "Unit Power On/Off 0=OFF 1=ON",
             "scale_factor": 1.0
           },
           {
-            "register": 211,
+            "modbus_register": 211,
             "field_name": "SP_ROOM",
             "description": "Unit SetPoint: (hundredths of degrees Celsius) es: 2350 = 23.50 °C -> Range: 18..30°C\"",
             "scale_factor": 1.0
           },
           {
-            "register": 212,
+            "modbus_register": 212,
             "field_name": "FAN_SPEED",
             "description": "Unit Fan Speed: 1=Vel.Night; 2=Vel.1; 3=Vel.2; 4=Vel.3; 5=Vel.4; 7=Vel.5; 8=Vel.6; 9=Vel.Auto",
             "scale_factor": 1.0
           },
           {
-            "register": 213,
+            "modbus_register": 213,
             "field_name": "AIR_IN",
             "description": "Unit Input Air Temperature: (hundredths of degrees Celsius) es: 2350 = 23.50 °C",
             "scale_factor": 1.0
           },
           {
-            "register": 214,
+            "modbus_register": 214,
             "field_name": "STATUS",
             "description": "Diagnostic Split Comunication Status: Bit 0=Unit not connected on the bus; Bit 1=Unit connected on the bus; Bit 2=Unit connected on the bus but offline; Bit 3=Unit in error.",
             "scale_factor": 1.0
           },
           {
-            "register": 215,
+            "modbus_register": 215,
             "field_name": "AHU_MODE",
             "description": "AHU State 16 = Ventilation 32=Automatic ",
             "scale_factor": 1.0
           },
           {
-            "register": 216,
+            "modbus_register": 216,
             "field_name": "HEATER_PWR",
             "description": "Heater State 0 = OFF; 1 = ON ",
             "scale_factor": 1.0
           },
           {
-            "register": 217,
+            "modbus_register": 217,
             "field_name": "HUMI",
             "description": "Humidity 0..100% ",
             "scale_factor": 1.0
@@ -112,49 +112,49 @@
         "topic": "termodinamica/ac/03",
         "fields": [
           {
-            "register": 220,
+            "modbus_register": 220,
             "field_name": "PWR",
             "description": "Unit Power On/Off 0=OFF 1=ON",
             "scale_factor": 1.0
           },
           {
-            "register": 221,
+            "modbus_register": 221,
             "field_name": "SP_ROOM",
             "description": "Unit SetPoint: (hundredths of degrees Celsius) es: 2350 = 23.50 °C -> Range: 18..30°C\"",
             "scale_factor": 1.0
           },
           {
-            "register": 222,
+            "modbus_register": 222,
             "field_name": "FAN_SPEED",
             "description": "Unit Fan Speed (with Syxthsense): 1=Vel.Night; 2=Vel.1; 3=Vel.2; 4=Vel.3; 5=Vel.4; 7=Vel.5; 8=Vel.6; 9=Vel.Auto Unit Fan Speed (in other case): 1=Vel.Night; 2=Vel.1; 3=Vel.2; 4=Vel.3; 5=Vel.4; 6=Vel.5; 7=Vel.6; 8=Vel.7; 9=Vel.Auto",
             "scale_factor": 1.0
           },
           {
-            "register": 223,
+            "modbus_register": 223,
             "field_name": "AIR_IN",
             "description": "Unit Input Air Temperature: (hundredths of degrees Celsius) es: 2350 = 23.50 °C",
             "scale_factor": 1.0
           },
           {
-            "register": 224,
+            "modbus_register": 224,
             "field_name": "STATUS",
             "description": "Diagnostic Split Comunication Status: Bit 0=Unit not connected on the bus; Bit 1=Unit connected on the bus; Bit 2=Unit connected on the bus but offline; Bit 3=Unit in error.",
             "scale_factor": 1.0
           },
           {
-            "register": 225,
+            "modbus_register": 225,
             "field_name": "AHU_MODE",
             "description": "AHU State 16 = Ventilation 32=Automatic ",
             "scale_factor": 1.0
           },
           {
-            "register": 226,
+            "modbus_register": 226,
             "field_name": "HEATER_PWR",
             "description": "Heater State 0 = OFF; 1 = ON ",
             "scale_factor": 1.0
           },
           {
-            "register": 227,
+            "modbus_register": 227,
             "field_name": "HUMI",
             "description": "Humidity 0..100% ",
             "scale_factor": 1.0
@@ -165,49 +165,49 @@
         "topic": "termodinamica/ac/04",
         "fields": [
           {
-            "register": 230,
+            "modbus_register": 230,
             "field_name": "PWR",
             "description": "Unit Power On/Off 0=OFF 1=ON",
             "scale_factor": 1.0
           },
           {
-            "register": 231,
+            "modbus_register": 231,
             "field_name": "SP_ROOM",
             "description": "Unit SetPoint: (hundredths of degrees Celsius) es: 2350 = 23.50 °C -> Range: 18..30°C\"",
             "scale_factor": 1.0
           },
           {
-            "register": 232,
+            "modbus_register": 232,
             "field_name": "FAN_SPEED",
             "description": "Unit Fan Speed (with Syxthsense): 1=Vel.Night; 2=Vel.1; 3=Vel.2; 4=Vel.3; 5=Vel.4; 7=Vel.5; 8=Vel.6; 9=Vel.Auto Unit Fan Speed (in other case): 1=Vel.Night; 2=Vel.1; 3=Vel.2; 4=Vel.3; 5=Vel.4; 6=Vel.5; 7=Vel.6; 8=Vel.7; 9=Vel.Auto",
             "scale_factor": 1.0
           },
           {
-            "register": 233,
+            "modbus_register": 233,
             "field_name": "AIR_IN",
             "description": "Unit Input Air Temperature: (hundredths of degrees Celsius) es: 2350 = 23.50 °C",
             "scale_factor": 1.0
           },
           {
-            "register": 234,
+            "modbus_register": 234,
             "field_name": "STATUS",
             "description": "Diagnostic Split Comunication Status: Bit 0=Unit not connected on the bus; Bit 1=Unit connected on the bus; Bit 2=Unit connected on the bus but offline; Bit 3=Unit in error.",
             "scale_factor": 1.0
           },
           {
-            "register": 235,
+            "modbus_register": 235,
             "field_name": "AHU_MODE",
             "description": "AHU State 16 = Ventilation 32=Automatic ",
             "scale_factor": 1.0
           },
           {
-            "register": 236,
+            "modbus_register": 236,
             "field_name": "HEATER_PWR",
             "description": "Heater State 0 = OFF; 1 = ON ",
             "scale_factor": 1.0
           },
           {
-            "register": 237,
+            "modbus_register": 237,
             "field_name": "HUMI",
             "description": "Humidity 0..100% ",
             "scale_factor": 1.0
@@ -218,49 +218,49 @@
         "topic": "termodinamica/ac/05",
         "fields": [
           {
-            "register": 240,
+            "modbus_register": 240,
             "field_name": "PWR",
             "description": "Unit Power On/Off 0=OFF 1=ON",
             "scale_factor": 1.0
           },
           {
-            "register": 241,
+            "modbus_register": 241,
             "field_name": "SP_ROOM",
             "description": "Unit SetPoint: (hundredths of degrees Celsius) es: 2350 = 23.50 °C -> Range: 18..30°C\"",
             "scale_factor": 1.0
           },
           {
-            "register": 242,
+            "modbus_register": 242,
             "field_name": "FAN_SPEED",
             "description": "Unit Fan Speed (with Syxthsense): 1=Vel.Night; 2=Vel.1; 3=Vel.2; 4=Vel.3; 5=Vel.4; 7=Vel.5; 8=Vel.6; 9=Vel.Auto Unit Fan Speed (in other case): 1=Vel.Night; 2=Vel.1; 3=Vel.2; 4=Vel.3; 5=Vel.4; 6=Vel.5; 7=Vel.6; 8=Vel.7; 9=Vel.Auto",
             "scale_factor": 1.0
           },
           {
-            "register": 243,
+            "modbus_register": 243,
             "field_name": "AIR_IN",
             "description": "Unit Input Air Temperature: (hundredths of degrees Celsius) es: 2350 = 23.50 °C",
             "scale_factor": 1.0
           },
           {
-            "register": 244,
+            "modbus_register": 244,
             "field_name": "STATUS",
             "description": "Diagnostic Split Comunication Status: Bit 0=Unit not connected on the bus; Bit 1=Unit connected on the bus; Bit 2=Unit connected on the bus but offline; Bit 3=Unit in error.",
             "scale_factor": 1.0
           },
           {
-            "register": 245,
+            "modbus_register": 245,
             "field_name": "AHU_MODE",
             "description": "AHU State 16 = Ventilation 32=Automatic ",
             "scale_factor": 1.0
           },
           {
-            "register": 246,
+            "modbus_register": 246,
             "field_name": "HEATER_PWR",
             "description": "Heater State 0 = OFF; 1 = ON ",
             "scale_factor": 1.0
           },
           {
-            "register": 247,
+            "modbus_register": 247,
             "field_name": "HUMI",
             "description": "Humidity 0..100% ",
             "scale_factor": 1.0
@@ -271,49 +271,49 @@
         "topic": "termodinamica/ac/06",
         "fields": [
           {
-            "register": 250,
+            "modbus_register": 250,
             "field_name": "PWR",
             "description": "Unit Power On/Off 0=OFF 1=ON",
             "scale_factor": 1.0
           },
           {
-            "register": 251,
+            "modbus_register": 251,
             "field_name": "SP_ROOM",
             "description": "Unit SetPoint: (hundredths of degrees Celsius) es: 2350 = 23.50 °C -> Range: 18..30°C\"",
             "scale_factor": 1.0
           },
           {
-            "register": 252,
+            "modbus_register": 252,
             "field_name": "FAN_SPEED",
             "description": "Unit Fan Speed (with Syxthsense): 1=Vel.Night; 2=Vel.1; 3=Vel.2; 4=Vel.3; 5=Vel.4; 7=Vel.5; 8=Vel.6; 9=Vel.Auto Unit Fan Speed (in other case): 1=Vel.Night; 2=Vel.1; 3=Vel.2; 4=Vel.3; 5=Vel.4; 6=Vel.5; 7=Vel.6; 8=Vel.7; 9=Vel.Auto",
             "scale_factor": 1.0
           },
           {
-            "register": 253,
+            "modbus_register": 253,
             "field_name": "AIR_IN",
             "description": "Unit Input Air Temperature: (hundredths of degrees Celsius) es: 2350 = 23.50 °C",
             "scale_factor": 1.0
           },
           {
-            "register": 254,
+            "modbus_register": 254,
             "field_name": "STATUS",
             "description": "Diagnostic Split Comunication Status: Bit 0=Unit not connected on the bus; Bit 1=Unit connected on the bus; Bit 2=Unit connected on the bus but offline; Bit 3=Unit in error.",
             "scale_factor": 1.0
           },
           {
-            "register": 255,
+            "modbus_register": 255,
             "field_name": "AHU_MODE",
             "description": "AHU State 16 = Ventilation 32=Automatic ",
             "scale_factor": 1.0
           },
           {
-            "register": 256,
+            "modbus_register": 256,
             "field_name": "HEATER_PWR",
             "description": "Heater State 0 = OFF; 1 = ON ",
             "scale_factor": 1.0
           },
           {
-            "register": 257,
+            "modbus_register": 257,
             "field_name": "HUMI",
             "description": "Humidity 0..100% ",
             "scale_factor": 1.0
@@ -324,49 +324,49 @@
         "topic": "termodinamica/ac/07",
         "fields": [
           {
-            "register": 260,
+            "modbus_register": 260,
             "field_name": "PWR",
             "description": "Unit Power On/Off 0=OFF 1=ON",
             "scale_factor": 1.0
           },
           {
-            "register": 261,
+            "modbus_register": 261,
             "field_name": "SP_ROOM",
             "description": "Unit SetPoint: (hundredths of degrees Celsius) es: 2350 = 23.50 °C -> Range: 18..30°C\"",
             "scale_factor": 1.0
           },
           {
-            "register": 262,
+            "modbus_register": 262,
             "field_name": "FAN_SPEED",
             "description": "Unit Fan Speed (with Syxthsense): 1=Vel.Night; 2=Vel.1; 3=Vel.2; 4=Vel.3; 5=Vel.4; 7=Vel.5; 8=Vel.6; 9=Vel.Auto Unit Fan Speed (in other case): 1=Vel.Night; 2=Vel.1; 3=Vel.2; 4=Vel.3; 5=Vel.4; 6=Vel.5; 7=Vel.6; 8=Vel.7; 9=Vel.Auto",
             "scale_factor": 1.0
           },
           {
-            "register": 263,
+            "modbus_register": 263,
             "field_name": "AIR_IN",
             "description": "Unit Input Air Temperature: (hundredths of degrees Celsius) es: 2350 = 23.50 °C",
             "scale_factor": 1.0
           },
           {
-            "register": 264,
+            "modbus_register": 264,
             "field_name": "STATUS",
             "description": "Diagnostic Split Comunication Status: Bit 0=Unit not connected on the bus; Bit 1=Unit connected on the bus; Bit 2=Unit connected on the bus but offline; Bit 3=Unit in error.",
             "scale_factor": 1.0
           },
           {
-            "register": 265,
+            "modbus_register": 265,
             "field_name": "AHU_MODE",
             "description": "AHU State 16 = Ventilation 32=Automatic ",
             "scale_factor": 1.0
           },
           {
-            "register": 266,
+            "modbus_register": 266,
             "field_name": "HEATER_PWR",
             "description": "Heater State 0 = OFF; 1 = ON ",
             "scale_factor": 1.0
           },
           {
-            "register": 267,
+            "modbus_register": 267,
             "field_name": "HUMI",
             "description": "Humidity 0..100% ",
             "scale_factor": 1.0
@@ -377,49 +377,49 @@
         "topic": "termodinamica/ac/08",
         "fields": [
           {
-            "register": 270,
+            "modbus_register": 270,
             "field_name": "PWR",
             "description": "Unit Power On/Off 0=OFF 1=ON",
             "scale_factor": 1.0
           },
           {
-            "register": 271,
+            "modbus_register": 271,
             "field_name": "SP_ROOM",
             "description": "Unit SetPoint: (hundredths of degrees Celsius) es: 2350 = 23.50 °C -> Range: 18..30°C\"",
             "scale_factor": 1.0
           },
           {
-            "register": 272,
+            "modbus_register": 272,
             "field_name": "FAN_SPEED",
             "description": "Unit Fan Speed (with Syxthsense): 1=Vel.Night; 2=Vel.1; 3=Vel.2; 4=Vel.3; 5=Vel.4; 7=Vel.5; 8=Vel.6; 9=Vel.Auto Unit Fan Speed (in other case): 1=Vel.Night; 2=Vel.1; 3=Vel.2; 4=Vel.3; 5=Vel.4; 6=Vel.5; 7=Vel.6; 8=Vel.7; 9=Vel.Auto",
             "scale_factor": 1.0
           },
           {
-            "register": 273,
+            "modbus_register": 273,
             "field_name": "AIR_IN",
             "description": "Unit Input Air Temperature: (hundredths of degrees Celsius) es: 2350 = 23.50 °C",
             "scale_factor": 1.0
           },
           {
-            "register": 274,
+            "modbus_register": 274,
             "field_name": "STATUS",
             "description": "Diagnostic Split Comunication Status: Bit 0=Unit not connected on the bus; Bit 1=Unit connected on the bus; Bit 2=Unit connected on the bus but offline; Bit 3=Unit in error.",
             "scale_factor": 1.0
           },
           {
-            "register": 275,
+            "modbus_register": 275,
             "field_name": "AHU_MODE",
             "description": "AHU State 16 = Ventilation 32=Automatic ",
             "scale_factor": 1.0
           },
           {
-            "register": 276,
+            "modbus_register": 276,
             "field_name": "HEATER_PWR",
             "description": "Heater State 0 = OFF; 1 = ON ",
             "scale_factor": 1.0
           },
           {
-            "register": 277,
+            "modbus_register": 277,
             "field_name": "HUMI",
             "description": "Humidity 0..100% ",
             "scale_factor": 1.0
@@ -430,49 +430,49 @@
         "topic": "termodinamica/ac/09",
         "fields": [
           {
-            "register": 280,
+            "modbus_register": 280,
             "field_name": "PWR",
             "description": "Unit Power On/Off 0=OFF 1=ON",
             "scale_factor": 1.0
           },
           {
-            "register": 281,
+            "modbus_register": 281,
             "field_name": "SP_ROOM",
             "description": "Unit SetPoint: (hundredths of degrees Celsius) es: 2350 = 23.50 °C -> Range: 18..30°C\"",
             "scale_factor": 1.0
           },
           {
-            "register": 282,
+            "modbus_register": 282,
             "field_name": "FAN_SPEED",
             "description": "Unit Fan Speed (with Syxthsense): 1=Vel.Night; 2=Vel.1; 3=Vel.2; 4=Vel.3; 5=Vel.4; 7=Vel.5; 8=Vel.6; 9=Vel.Auto Unit Fan Speed (in other case): 1=Vel.Night; 2=Vel.1; 3=Vel.2; 4=Vel.3; 5=Vel.4; 6=Vel.5; 7=Vel.6; 8=Vel.7; 9=Vel.Auto",
             "scale_factor": 1.0
           },
           {
-            "register": 283,
+            "modbus_register": 283,
             "field_name": "AIR_IN",
             "description": "Unit Input Air Temperature: (hundredths of degrees Celsius) es: 2350 = 23.50 °C",
             "scale_factor": 1.0
           },
           {
-            "register": 284,
+            "modbus_register": 284,
             "field_name": "STATUS",
             "description": "Diagnostic Split Comunication Status: Bit 0=Unit not connected on the bus; Bit 1=Unit connected on the bus; Bit 2=Unit connected on the bus but offline; Bit 3=Unit in error.",
             "scale_factor": 1.0
           },
           {
-            "register": 285,
+            "modbus_register": 285,
             "field_name": "AHU_MODE",
             "description": "AHU State 16 = Ventilation 32=Automatic ",
             "scale_factor": 1.0
           },
           {
-            "register": 286,
+            "modbus_register": 286,
             "field_name": "HEATER_PWR",
             "description": "Heater State 0 = OFF; 1 = ON ",
             "scale_factor": 1.0
           },
           {
-            "register": 287,
+            "modbus_register": 287,
             "field_name": "HUMI",
             "description": "Humidity 0..100% ",
             "scale_factor": 1.0
@@ -483,49 +483,49 @@
         "topic": "termodinamica/ac/10",
         "fields": [
           {
-            "register": 290,
+            "modbus_register": 290,
             "field_name": "PWR",
             "description": "Unit Power On/Off 0=OFF 1=ON",
             "scale_factor": 1.0
           },
           {
-            "register": 291,
+            "modbus_register": 291,
             "field_name": "SP_ROOM",
             "description": "Unit SetPoint: (hundredths of degrees Celsius) es: 2350 = 23.50 °C -> Range: 18..30°C\"",
             "scale_factor": 1.0
           },
           {
-            "register": 292,
+            "modbus_register": 292,
             "field_name": "FAN_SPEED",
             "description": "Unit Fan Speed (with Syxthsense): 1=Vel.Night; 2=Vel.1; 3=Vel.2; 4=Vel.3; 5=Vel.4; 7=Vel.5; 8=Vel.6; 9=Vel.Auto Unit Fan Speed (in other case): 1=Vel.Night; 2=Vel.1; 3=Vel.2; 4=Vel.3; 5=Vel.4; 6=Vel.5; 7=Vel.6; 8=Vel.7; 9=Vel.Auto",
             "scale_factor": 1.0
           },
           {
-            "register": 293,
+            "modbus_register": 293,
             "field_name": "AIR_IN",
             "description": "Unit Input Air Temperature: (hundredths of degrees Celsius) es: 2350 = 23.50 °C",
             "scale_factor": 1.0
           },
           {
-            "register": 294,
+            "modbus_register": 294,
             "field_name": "STATUS",
             "description": "Diagnostic Split Comunication Status: Bit 0=Unit not connected on the bus; Bit 1=Unit connected on the bus; Bit 2=Unit connected on the bus but offline; Bit 3=Unit in error.",
             "scale_factor": 1.0
           },
           {
-            "register": 295,
+            "modbus_register": 295,
             "field_name": "AHU_MODE",
             "description": "AHU State 16 = Ventilation 32=Automatic ",
             "scale_factor": 1.0
           },
           {
-            "register": 296,
+            "modbus_register": 296,
             "field_name": "HEATER_PWR",
             "description": "Heater State 0 = OFF; 1 = ON ",
             "scale_factor": 1.0
           },
           {
-            "register": 297,
+            "modbus_register": 297,
             "field_name": "HUMI",
             "description": "Humidity 0..100% ",
             "scale_factor": 1.0
@@ -536,49 +536,49 @@
         "topic": "termodinamica/ac/11",
         "fields": [
           {
-            "register": 300,
+            "modbus_register": 300,
             "field_name": "PWR",
             "description": "Unit Power On/Off 0=OFF 1=ON",
             "scale_factor": 1.0
           },
           {
-            "register": 301,
+            "modbus_register": 301,
             "field_name": "SP_ROOM",
             "description": "Unit SetPoint: (hundredths of degrees Celsius) es: 2350 = 23.50 °C -> Range: 18..30°C\"",
             "scale_factor": 1.0
           },
           {
-            "register": 302,
+            "modbus_register": 302,
             "field_name": "FAN_SPEED",
             "description": "Unit Fan Speed (with Syxthsense): 1=Vel.Night; 2=Vel.1; 3=Vel.2; 4=Vel.3; 5=Vel.4; 7=Vel.5; 8=Vel.6; 9=Vel.Auto Unit Fan Speed (in other case): 1=Vel.Night; 2=Vel.1; 3=Vel.2; 4=Vel.3; 5=Vel.4; 6=Vel.5; 7=Vel.6; 8=Vel.7; 9=Vel.Auto",
             "scale_factor": 1.0
           },
           {
-            "register": 303,
+            "modbus_register": 303,
             "field_name": "AIR_IN",
             "description": "Unit Input Air Temperature: (hundredths of degrees Celsius) es: 2350 = 23.50 °C",
             "scale_factor": 1.0
           },
           {
-            "register": 304,
+            "modbus_register": 304,
             "field_name": "STATUS",
             "description": "Diagnostic Split Comunication Status: Bit 0=Unit not connected on the bus; Bit 1=Unit connected on the bus; Bit 2=Unit connected on the bus but offline; Bit 3=Unit in error.",
             "scale_factor": 1.0
           },
           {
-            "register": 305,
+            "modbus_register": 305,
             "field_name": "AHU_MODE",
             "description": "AHU State 16 = Ventilation 32=Automatic ",
             "scale_factor": 1.0
           },
           {
-            "register": 306,
+            "modbus_register": 306,
             "field_name": "HEATER_PWR",
             "description": "Heater State 0 = OFF; 1 = ON ",
             "scale_factor": 1.0
           },
           {
-            "register": 307,
+            "modbus_register": 307,
             "field_name": "HUMI",
             "description": "Humidity 0..100% ",
             "scale_factor": 1.0
@@ -589,49 +589,49 @@
         "topic": "termodinamica/ac/12",
         "fields": [
           {
-            "register": 310,
+            "modbus_register": 310,
             "field_name": "PWR",
             "description": "Unit Power On/Off 0=OFF 1=ON",
             "scale_factor": 1.0
           },
           {
-            "register": 311,
+            "modbus_register": 311,
             "field_name": "SP_ROOM",
             "description": "Unit SetPoint: (hundredths of degrees Celsius) es: 2350 = 23.50 °C -> Range: 18..30°C\"",
             "scale_factor": 1.0
           },
           {
-            "register": 312,
+            "modbus_register": 312,
             "field_name": "FAN_SPEED",
             "description": "Unit Fan Speed (with Syxthsense): 1=Vel.Night; 2=Vel.1; 3=Vel.2; 4=Vel.3; 5=Vel.4; 7=Vel.5; 8=Vel.6; 9=Vel.Auto Unit Fan Speed (in other case): 1=Vel.Night; 2=Vel.1; 3=Vel.2; 4=Vel.3; 5=Vel.4; 6=Vel.5; 7=Vel.6; 8=Vel.7; 9=Vel.Auto",
             "scale_factor": 1.0
           },
           {
-            "register": 313,
+            "modbus_register": 313,
             "field_name": "AIR_IN",
             "description": "Unit Input Air Temperature: (hundredths of degrees Celsius) es: 2350 = 23.50 °C",
             "scale_factor": 1.0
           },
           {
-            "register": 314,
+            "modbus_register": 314,
             "field_name": "STATUS",
             "description": "Diagnostic Split Comunication Status: Bit 0=Unit not connected on the bus; Bit 1=Unit connected on the bus; Bit 2=Unit connected on the bus but offline; Bit 3=Unit in error.",
             "scale_factor": 1.0
           },
           {
-            "register": 315,
+            "modbus_register": 315,
             "field_name": "AHU_MODE",
             "description": "AHU State 16 = Ventilation 32=Automatic ",
             "scale_factor": 1.0
           },
           {
-            "register": 316,
+            "modbus_register": 316,
             "field_name": "HEATER_PWR",
             "description": "Heater State 0 = OFF; 1 = ON ",
             "scale_factor": 1.0
           },
           {
-            "register": 317,
+            "modbus_register": 317,
             "field_name": "HUMI",
             "description": "Humidity 0..100% ",
             "scale_factor": 1.0
@@ -642,49 +642,49 @@
         "topic": "termodinamica/ac/13",
         "fields": [
           {
-            "register": 320,
+            "modbus_register": 320,
             "field_name": "PWR",
             "description": "Unit Power On/Off 0=OFF 1=ON",
             "scale_factor": 1.0
           },
           {
-            "register": 321,
+            "modbus_register": 321,
             "field_name": "SP_ROOM",
             "description": "Unit SetPoint: (hundredths of degrees Celsius) es: 2350 = 23.50 °C -> Range: 18..30°C\"",
             "scale_factor": 1.0
           },
           {
-            "register": 322,
+            "modbus_register": 322,
             "field_name": "FAN_SPEED",
             "description": "Unit Fan Speed (with Syxthsense): 1=Vel.Night; 2=Vel.1; 3=Vel.2; 4=Vel.3; 5=Vel.4; 7=Vel.5; 8=Vel.6; 9=Vel.Auto Unit Fan Speed (in other case): 1=Vel.Night; 2=Vel.1; 3=Vel.2; 4=Vel.3; 5=Vel.4; 6=Vel.5; 7=Vel.6; 8=Vel.7; 9=Vel.Auto",
             "scale_factor": 1.0
           },
           {
-            "register": 323,
+            "modbus_register": 323,
             "field_name": "AIR_IN",
             "description": "Unit Input Air Temperature: (hundredths of degrees Celsius) es: 2350 = 23.50 °C",
             "scale_factor": 1.0
           },
           {
-            "register": 324,
+            "modbus_register": 324,
             "field_name": "STATUS",
             "description": "Diagnostic Split Comunication Status: Bit 0=Unit not connected on the bus; Bit 1=Unit connected on the bus; Bit 2=Unit connected on the bus but offline; Bit 3=Unit in error.",
             "scale_factor": 1.0
           },
           {
-            "register": 325,
+            "modbus_register": 325,
             "field_name": "AHU_MODE",
             "description": "AHU State 16 = Ventilation 32=Automatic ",
             "scale_factor": 1.0
           },
           {
-            "register": 326,
+            "modbus_register": 326,
             "field_name": "HEATER_PWR",
             "description": "Heater State 0 = OFF; 1 = ON ",
             "scale_factor": 1.0
           },
           {
-            "register": 327,
+            "modbus_register": 327,
             "field_name": "HUMI",
             "description": "Humidity 0..100% ",
             "scale_factor": 1.0
@@ -695,49 +695,49 @@
         "topic": "termodinamica/ac/14",
         "fields": [
           {
-            "register": 330,
+            "modbus_register": 330,
             "field_name": "PWR",
             "description": "Unit Power On/Off 0=OFF 1=ON",
             "scale_factor": 1.0
           },
           {
-            "register": 331,
+            "modbus_register": 331,
             "field_name": "SP_ROOM",
             "description": "Unit SetPoint: (hundredths of degrees Celsius) es: 2350 = 23.50 °C -> Range: 18..30°C\"",
             "scale_factor": 1.0
           },
           {
-            "register": 332,
+            "modbus_register": 332,
             "field_name": "FAN_SPEED",
             "description": "Unit Fan Speed (with Syxthsense): 1=Vel.Night; 2=Vel.1; 3=Vel.2; 4=Vel.3; 5=Vel.4; 7=Vel.5; 8=Vel.6; 9=Vel.Auto Unit Fan Speed (in other case): 1=Vel.Night; 2=Vel.1; 3=Vel.2; 4=Vel.3; 5=Vel.4; 6=Vel.5; 7=Vel.6; 8=Vel.7; 9=Vel.Auto",
             "scale_factor": 1.0
           },
           {
-            "register": 333,
+            "modbus_register": 333,
             "field_name": "AIR_IN",
             "description": "Unit Input Air Temperature: (hundredths of degrees Celsius) es: 2350 = 23.50 °C",
             "scale_factor": 1.0
           },
           {
-            "register": 334,
+            "modbus_register": 334,
             "field_name": "STATUS",
             "description": "Diagnostic Split Comunication Status: Bit 0=Unit not connected on the bus; Bit 1=Unit connected on the bus; Bit 2=Unit connected on the bus but offline; Bit 3=Unit in error.",
             "scale_factor": 1.0
           },
           {
-            "register": 335,
+            "modbus_register": 335,
             "field_name": "AHU_MODE",
             "description": "AHU State 16 = Ventilation 32=Automatic ",
             "scale_factor": 1.0
           },
           {
-            "register": 336,
+            "modbus_register": 336,
             "field_name": "HEATER_PWR",
             "description": "Heater State 0 = OFF; 1 = ON ",
             "scale_factor": 1.0
           },
           {
-            "register": 337,
+            "modbus_register": 337,
             "field_name": "HUMI",
             "description": "Humidity 0..100% ",
             "scale_factor": 1.0
@@ -748,49 +748,49 @@
         "topic": "termodinamica/ac/15",
         "fields": [
           {
-            "register": 340,
+            "modbus_register": 340,
             "field_name": "PWR",
             "description": "Unit Power On/Off 0=OFF 1=ON",
             "scale_factor": 1.0
           },
           {
-            "register": 341,
+            "modbus_register": 341,
             "field_name": "SP_ROOM",
             "description": "Unit SetPoint: (hundredths of degrees Celsius) es: 2350 = 23.50 °C -> Range: 18..30°C\"",
             "scale_factor": 1.0
           },
           {
-            "register": 342,
+            "modbus_register": 342,
             "field_name": "FAN_SPEED",
             "description": "Unit Fan Speed (with Syxthsense): 1=Vel.Night; 2=Vel.1; 3=Vel.2; 4=Vel.3; 5=Vel.4; 7=Vel.5; 8=Vel.6; 9=Vel.Auto Unit Fan Speed (in other case): 1=Vel.Night; 2=Vel.1; 3=Vel.2; 4=Vel.3; 5=Vel.4; 6=Vel.5; 7=Vel.6; 8=Vel.7; 9=Vel.Auto",
             "scale_factor": 1.0
           },
           {
-            "register": 343,
+            "modbus_register": 343,
             "field_name": "AIR_IN",
             "description": "Unit Input Air Temperature: (hundredths of degrees Celsius) es: 2350 = 23.50 °C",
             "scale_factor": 1.0
           },
           {
-            "register": 344,
+            "modbus_register": 344,
             "field_name": "STATUS",
             "description": "Diagnostic Split Comunication Status: Bit 0=Unit not connected on the bus; Bit 1=Unit connected on the bus; Bit 2=Unit connected on the bus but offline; Bit 3=Unit in error.",
             "scale_factor": 1.0
           },
           {
-            "register": 345,
+            "modbus_register": 345,
             "field_name": "AHU_MODE",
             "description": "AHU State 16 = Ventilation 32=Automatic ",
             "scale_factor": 1.0
           },
           {
-            "register": 346,
+            "modbus_register": 346,
             "field_name": "HEATER_PWR",
             "description": "Heater State 0 = OFF; 1 = ON ",
             "scale_factor": 1.0
           },
           {
-            "register": 347,
+            "modbus_register": 347,
             "field_name": "HUMI",
             "description": "Humidity 0..100% ",
             "scale_factor": 1.0
@@ -801,49 +801,49 @@
         "topic": "termodinamica/ac/16",
         "fields": [
           {
-            "register": 350,
+            "modbus_register": 350,
             "field_name": "PWR",
             "description": "Unit Power On/Off 0=OFF 1=ON",
             "scale_factor": 1.0
           },
           {
-            "register": 351,
+            "modbus_register": 351,
             "field_name": "SP_ROOM",
             "description": "Unit SetPoint: (hundredths of degrees Celsius) es: 2350 = 23.50 °C -> Range: 18..30°C\"",
             "scale_factor": 1.0
           },
           {
-            "register": 352,
+            "modbus_register": 352,
             "field_name": "FAN_SPEED",
             "description": "Unit Fan Speed (with Syxthsense): 1=Vel.Night; 2=Vel.1; 3=Vel.2; 4=Vel.3; 5=Vel.4; 7=Vel.5; 8=Vel.6; 9=Vel.Auto Unit Fan Speed (in other case): 1=Vel.Night; 2=Vel.1; 3=Vel.2; 4=Vel.3; 5=Vel.4; 6=Vel.5; 7=Vel.6; 8=Vel.7; 9=Vel.Auto",
             "scale_factor": 1.0
           },
           {
-            "register": 353,
+            "modbus_register": 353,
             "field_name": "AIR_IN",
             "description": "Unit Input Air Temperature: (hundredths of degrees Celsius) es: 2350 = 23.50 °C",
             "scale_factor": 1.0
           },
           {
-            "register": 354,
+            "modbus_register": 354,
             "field_name": "STATUS",
             "description": "Diagnostic Split Comunication Status: Bit 0=Unit not connected on the bus; Bit 1=Unit connected on the bus; Bit 2=Unit connected on the bus but offline; Bit 3=Unit in error.",
             "scale_factor": 1.0
           },
           {
-            "register": 355,
+            "modbus_register": 355,
             "field_name": "AHU_MODE",
             "description": "AHU State 16 = Ventilation 32=Automatic ",
             "scale_factor": 1.0
           },
           {
-            "register": 356,
+            "modbus_register": 356,
             "field_name": "HEATER_PWR",
             "description": "Heater State 0 = OFF; 1 = ON ",
             "scale_factor": 1.0
           },
           {
-            "register": 357,
+            "modbus_register": 357,
             "field_name": "HUMI",
             "description": "Humidity 0..100% ",
             "scale_factor": 1.0
@@ -854,49 +854,49 @@
         "topic": "termodinamica/ac/17",
         "fields": [
           {
-            "register": 360,
+            "modbus_register": 360,
             "field_name": "PWR",
             "description": "Unit Power On/Off 0=OFF 1=ON",
             "scale_factor": 1.0
           },
           {
-            "register": 361,
+            "modbus_register": 361,
             "field_name": "SP_ROOM",
             "description": "Unit SetPoint: (hundredths of degrees Celsius) es: 2350 = 23.50 °C -> Range: 18..30°C\"",
             "scale_factor": 1.0
           },
           {
-            "register": 362,
+            "modbus_register": 362,
             "field_name": "FAN_SPEED",
             "description": "Unit Fan Speed (with Syxthsense): 1=Vel.Night; 2=Vel.1; 3=Vel.2; 4=Vel.3; 5=Vel.4; 7=Vel.5; 8=Vel.6; 9=Vel.Auto Unit Fan Speed (in other case): 1=Vel.Night; 2=Vel.1; 3=Vel.2; 4=Vel.3; 5=Vel.4; 6=Vel.5; 7=Vel.6; 8=Vel.7; 9=Vel.Auto",
             "scale_factor": 1.0
           },
           {
-            "register": 363,
+            "modbus_register": 363,
             "field_name": "AIR_IN",
             "description": "Unit Input Air Temperature: (hundredths of degrees Celsius) es: 2350 = 23.50 °C",
             "scale_factor": 1.0
           },
           {
-            "register": 364,
+            "modbus_register": 364,
             "field_name": "STATUS",
             "description": "Diagnostic Split Comunication Status: Bit 0=Unit not connected on the bus; Bit 1=Unit connected on the bus; Bit 2=Unit connected on the bus but offline; Bit 3=Unit in error.",
             "scale_factor": 1.0
           },
           {
-            "register": 365,
+            "modbus_register": 365,
             "field_name": "AHU_MODE",
             "description": "AHU State 16 = Ventilation 32=Automatic ",
             "scale_factor": 1.0
           },
           {
-            "register": 366,
+            "modbus_register": 366,
             "field_name": "HEATER_PWR",
             "description": "Heater State 0 = OFF; 1 = ON ",
             "scale_factor": 1.0
           },
           {
-            "register": 367,
+            "modbus_register": 367,
             "field_name": "HUMI",
             "description": "Humidity 0..100% ",
             "scale_factor": 1.0
@@ -907,49 +907,49 @@
         "topic": "termodinamica/ac/18",
         "fields": [
           {
-            "register": 370,
+            "modbus_register": 370,
             "field_name": "PWR",
             "description": "Unit Power On/Off 0=OFF 1=ON",
             "scale_factor": 1.0
           },
           {
-            "register": 371,
+            "modbus_register": 371,
             "field_name": "SP_ROOM",
             "description": "Unit SetPoint: (hundredths of degrees Celsius) es: 2350 = 23.50 °C -> Range: 18..30°C\"",
             "scale_factor": 1.0
           },
           {
-            "register": 372,
+            "modbus_register": 372,
             "field_name": "FAN_SPEED",
             "description": "Unit Fan Speed (with Syxthsense): 1=Vel.Night; 2=Vel.1; 3=Vel.2; 4=Vel.3; 5=Vel.4; 7=Vel.5; 8=Vel.6; 9=Vel.Auto Unit Fan Speed (in other case): 1=Vel.Night; 2=Vel.1; 3=Vel.2; 4=Vel.3; 5=Vel.4; 6=Vel.5; 7=Vel.6; 8=Vel.7; 9=Vel.Auto",
             "scale_factor": 1.0
           },
           {
-            "register": 373,
+            "modbus_register": 373,
             "field_name": "AIR_IN",
             "description": "Unit Input Air Temperature: (hundredths of degrees Celsius) es: 2350 = 23.50 °C",
             "scale_factor": 1.0
           },
           {
-            "register": 374,
+            "modbus_register": 374,
             "field_name": "STATUS",
             "description": "Diagnostic Split Comunication Status: Bit 0=Unit not connected on the bus; Bit 1=Unit connected on the bus; Bit 2=Unit connected on the bus but offline; Bit 3=Unit in error.",
             "scale_factor": 1.0
           },
           {
-            "register": 375,
+            "modbus_register": 375,
             "field_name": "AHU_MODE",
             "description": "AHU State 16 = Ventilation 32=Automatic ",
             "scale_factor": 1.0
           },
           {
-            "register": 376,
+            "modbus_register": 376,
             "field_name": "HEATER_PWR",
             "description": "Heater State 0 = OFF; 1 = ON ",
             "scale_factor": 1.0
           },
           {
-            "register": 377,
+            "modbus_register": 377,
             "field_name": "HUMI",
             "description": "Humidity 0..100% ",
             "scale_factor": 1.0
@@ -960,49 +960,49 @@
         "topic": "termodinamica/ac/19",
         "fields": [
           {
-            "register": 380,
+            "modbus_register": 380,
             "field_name": "PWR",
             "description": "Unit Power On/Off 0=OFF 1=ON",
             "scale_factor": 1.0
           },
           {
-            "register": 381,
+            "modbus_register": 381,
             "field_name": "SP_ROOM",
             "description": "Unit SetPoint: (hundredths of degrees Celsius) es: 2350 = 23.50 °C -> Range: 18..30°C\"",
             "scale_factor": 1.0
           },
           {
-            "register": 382,
+            "modbus_register": 382,
             "field_name": "FAN_SPEED",
             "description": "Unit Fan Speed (with Syxthsense): 1=Vel.Night; 2=Vel.1; 3=Vel.2; 4=Vel.3; 5=Vel.4; 7=Vel.5; 8=Vel.6; 9=Vel.Auto Unit Fan Speed (in other case): 1=Vel.Night; 2=Vel.1; 3=Vel.2; 4=Vel.3; 5=Vel.4; 6=Vel.5; 7=Vel.6; 8=Vel.7; 9=Vel.Auto",
             "scale_factor": 1.0
           },
           {
-            "register": 383,
+            "modbus_register": 383,
             "field_name": "AIR_IN",
             "description": "Unit Input Air Temperature: (hundredths of degrees Celsius) es: 2350 = 23.50 °C",
             "scale_factor": 1.0
           },
           {
-            "register": 384,
+            "modbus_register": 384,
             "field_name": "STATUS",
             "description": "Diagnostic Split Comunication Status: Bit 0=Unit not connected on the bus; Bit 1=Unit connected on the bus; Bit 2=Unit connected on the bus but offline; Bit 3=Unit in error.",
             "scale_factor": 1.0
           },
           {
-            "register": 385,
+            "modbus_register": 385,
             "field_name": "AHU_MODE",
             "description": "AHU State 16 = Ventilation 32=Automatic ",
             "scale_factor": 1.0
           },
           {
-            "register": 386,
+            "modbus_register": 386,
             "field_name": "HEATER_PWR",
             "description": "Heater State 0 = OFF; 1 = ON ",
             "scale_factor": 1.0
           },
           {
-            "register": 387,
+            "modbus_register": 387,
             "field_name": "HUMI",
             "description": "Humidity 0..100% ",
             "scale_factor": 1.0
@@ -1013,49 +1013,49 @@
         "topic": "termodinamica/ac/20",
         "fields": [
           {
-            "register": 390,
+            "modbus_register": 390,
             "field_name": "PWR",
             "description": "Unit Power On/Off 0=OFF 1=ON",
             "scale_factor": 1.0
           },
           {
-            "register": 391,
+            "modbus_register": 391,
             "field_name": "SP_ROOM",
             "description": "Unit SetPoint: (hundredths of degrees Celsius) es: 2350 = 23.50 °C -> Range: 18..30°C\"",
             "scale_factor": 1.0
           },
           {
-            "register": 392,
+            "modbus_register": 392,
             "field_name": "FAN_SPEED",
             "description": "Unit Fan Speed (with Syxthsense): 1=Vel.Night; 2=Vel.1; 3=Vel.2; 4=Vel.3; 5=Vel.4; 7=Vel.5; 8=Vel.6; 9=Vel.Auto Unit Fan Speed (in other case): 1=Vel.Night; 2=Vel.1; 3=Vel.2; 4=Vel.3; 5=Vel.4; 6=Vel.5; 7=Vel.6; 8=Vel.7; 9=Vel.Auto",
             "scale_factor": 1.0
           },
           {
-            "register": 393,
+            "modbus_register": 393,
             "field_name": "AIR_IN",
             "description": "Unit Input Air Temperature: (hundredths of degrees Celsius) es: 2350 = 23.50 °C",
             "scale_factor": 1.0
           },
           {
-            "register": 394,
+            "modbus_register": 394,
             "field_name": "STATUS",
             "description": "Diagnostic Split Comunication Status: Bit 0=Unit not connected on the bus; Bit 1=Unit connected on the bus; Bit 2=Unit connected on the bus but offline; Bit 3=Unit in error.",
             "scale_factor": 1.0
           },
           {
-            "register": 395,
+            "modbus_register": 395,
             "field_name": "AHU_MODE",
             "description": "AHU State 16 = Ventilation 32=Automatic ",
             "scale_factor": 1.0
           },
           {
-            "register": 396,
+            "modbus_register": 396,
             "field_name": "HEATER_PWR",
             "description": "Heater State 0 = OFF; 1 = ON ",
             "scale_factor": 1.0
           },
           {
-            "register": 397,
+            "modbus_register": 397,
             "field_name": "HUMI",
             "description": "Humidity 0..100% ",
             "scale_factor": 1.0
@@ -1066,49 +1066,49 @@
         "topic": "termodinamica/ac/21",
         "fields": [
           {
-            "register": 400,
+            "modbus_register": 400,
             "field_name": "PWR",
             "description": "Unit Power On/Off 0=OFF 1=ON",
             "scale_factor": 1.0
           },
           {
-            "register": 401,
+            "modbus_register": 401,
             "field_name": "SP_ROOM",
             "description": "Unit SetPoint: (hundredths of degrees Celsius) es: 2350 = 23.50 °C -> Range: 18..30°C\"",
             "scale_factor": 1.0
           },
           {
-            "register": 402,
+            "modbus_register": 402,
             "field_name": "FAN_SPEED",
             "description": "Unit Fan Speed (with Syxthsense): 1=Vel.Night; 2=Vel.1; 3=Vel.2; 4=Vel.3; 5=Vel.4; 7=Vel.5; 8=Vel.6; 9=Vel.Auto Unit Fan Speed (in other case): 1=Vel.Night; 2=Vel.1; 3=Vel.2; 4=Vel.3; 5=Vel.4; 6=Vel.5; 7=Vel.6; 8=Vel.7; 9=Vel.Auto",
             "scale_factor": 1.0
           },
           {
-            "register": 403,
+            "modbus_register": 403,
             "field_name": "AIR_IN",
             "description": "Unit Input Air Temperature: (hundredths of degrees Celsius) es: 2350 = 23.50 °C",
             "scale_factor": 1.0
           },
           {
-            "register": 404,
+            "modbus_register": 404,
             "field_name": "STATUS",
             "description": "Diagnostic Split Comunication Status: Bit 0=Unit not connected on the bus; Bit 1=Unit connected on the bus; Bit 2=Unit connected on the bus but offline; Bit 3=Unit in error.",
             "scale_factor": 1.0
           },
           {
-            "register": 405,
+            "modbus_register": 405,
             "field_name": "AHU_MODE",
             "description": "AHU State 16 = Ventilation 32=Automatic ",
             "scale_factor": 1.0
           },
           {
-            "register": 406,
+            "modbus_register": 406,
             "field_name": "HEATER_PWR",
             "description": "Heater State 0 = OFF; 1 = ON ",
             "scale_factor": 1.0
           },
           {
-            "register": 407,
+            "modbus_register": 407,
             "field_name": "HUMI",
             "description": "Humidity 0..100% ",
             "scale_factor": 1.0
@@ -1119,49 +1119,49 @@
         "topic": "termodinamica/ac/22",
         "fields": [
           {
-            "register": 410,
+            "modbus_register": 410,
             "field_name": "PWR",
             "description": "Unit Power On/Off 0=OFF 1=ON",
             "scale_factor": 1.0
           },
           {
-            "register": 411,
+            "modbus_register": 411,
             "field_name": "SP_ROOM",
             "description": "Unit SetPoint: (hundredths of degrees Celsius) es: 2350 = 23.50 °C -> Range: 18..30°C\"",
             "scale_factor": 1.0
           },
           {
-            "register": 412,
+            "modbus_register": 412,
             "field_name": "FAN_SPEED",
             "description": "Unit Fan Speed (with Syxthsense): 1=Vel.Night; 2=Vel.1; 3=Vel.2; 4=Vel.3; 5=Vel.4; 7=Vel.5; 8=Vel.6; 9=Vel.Auto Unit Fan Speed (in other case): 1=Vel.Night; 2=Vel.1; 3=Vel.2; 4=Vel.3; 5=Vel.4; 6=Vel.5; 7=Vel.6; 8=Vel.7; 9=Vel.Auto",
             "scale_factor": 1.0
           },
           {
-            "register": 413,
+            "modbus_register": 413,
             "field_name": "AIR_IN",
             "description": "Unit Input Air Temperature: (hundredths of degrees Celsius) es: 2350 = 23.50 °C",
             "scale_factor": 1.0
           },
           {
-            "register": 414,
+            "modbus_register": 414,
             "field_name": "STATUS",
             "description": "Diagnostic Split Comunication Status: Bit 0=Unit not connected on the bus; Bit 1=Unit connected on the bus; Bit 2=Unit connected on the bus but offline; Bit 3=Unit in error.",
             "scale_factor": 1.0
           },
           {
-            "register": 415,
+            "modbus_register": 415,
             "field_name": "AHU_MODE",
             "description": "AHU State 16 = Ventilation 32=Automatic ",
             "scale_factor": 1.0
           },
           {
-            "register": 416,
+            "modbus_register": 416,
             "field_name": "HEATER_PWR",
             "description": "Heater State 0 = OFF; 1 = ON ",
             "scale_factor": 1.0
           },
           {
-            "register": 417,
+            "modbus_register": 417,
             "field_name": "HUMI",
             "description": "Humidity 0..100% ",
             "scale_factor": 1.0
@@ -1172,49 +1172,49 @@
         "topic": "termodinamica/ac/23",
         "fields": [
           {
-            "register": 420,
+            "modbus_register": 420,
             "field_name": "PWR",
             "description": "Unit Power On/Off 0=OFF 1=ON",
             "scale_factor": 1.0
           },
           {
-            "register": 421,
+            "modbus_register": 421,
             "field_name": "SP_ROOM",
             "description": "Unit SetPoint: (hundredths of degrees Celsius) es: 2350 = 23.50 °C -> Range: 18..30°C\"",
             "scale_factor": 1.0
           },
           {
-            "register": 422,
+            "modbus_register": 422,
             "field_name": "FAN_SPEED",
             "description": "Unit Fan Speed (with Syxthsense): 1=Vel.Night; 2=Vel.1; 3=Vel.2; 4=Vel.3; 5=Vel.4; 7=Vel.5; 8=Vel.6; 9=Vel.Auto Unit Fan Speed (in other case): 1=Vel.Night; 2=Vel.1; 3=Vel.2; 4=Vel.3; 5=Vel.4; 6=Vel.5; 7=Vel.6; 8=Vel.7; 9=Vel.Auto",
             "scale_factor": 1.0
           },
           {
-            "register": 423,
+            "modbus_register": 423,
             "field_name": "AIR_IN",
             "description": "Unit Input Air Temperature: (hundredths of degrees Celsius) es: 2350 = 23.50 °C",
             "scale_factor": 1.0
           },
           {
-            "register": 424,
+            "modbus_register": 424,
             "field_name": "STATUS",
             "description": "Diagnostic Split Comunication Status: Bit 0=Unit not connected on the bus; Bit 1=Unit connected on the bus; Bit 2=Unit connected on the bus but offline; Bit 3=Unit in error.",
             "scale_factor": 1.0
           },
           {
-            "register": 425,
+            "modbus_register": 425,
             "field_name": "AHU_MODE",
             "description": "AHU State 16 = Ventilation 32=Automatic ",
             "scale_factor": 1.0
           },
           {
-            "register": 426,
+            "modbus_register": 426,
             "field_name": "HEATER_PWR",
             "description": "Heater State 0 = OFF; 1 = ON ",
             "scale_factor": 1.0
           },
           {
-            "register": 427,
+            "modbus_register": 427,
             "field_name": "HUMI",
             "description": "Humidity 0..100% ",
             "scale_factor": 1.0
@@ -1225,49 +1225,49 @@
         "topic": "termodinamica/ac/24",
         "fields": [
           {
-            "register": 430,
+            "modbus_register": 430,
             "field_name": "PWR",
             "description": "Unit Power On/Off 0=OFF 1=ON",
             "scale_factor": 1.0
           },
           {
-            "register": 431,
+            "modbus_register": 431,
             "field_name": "SP_ROOM",
             "description": "Unit SetPoint: (hundredths of degrees Celsius) es: 2350 = 23.50 °C -> Range: 18..30°C\"",
             "scale_factor": 1.0
           },
           {
-            "register": 432,
+            "modbus_register": 432,
             "field_name": "FAN_SPEED",
             "description": "Unit Fan Speed (with Syxthsense): 1=Vel.Night; 2=Vel.1; 3=Vel.2; 4=Vel.3; 5=Vel.4; 7=Vel.5; 8=Vel.6; 9=Vel.Auto Unit Fan Speed (in other case): 1=Vel.Night; 2=Vel.1; 3=Vel.2; 4=Vel.3; 5=Vel.4; 6=Vel.5; 7=Vel.6; 8=Vel.7; 9=Vel.Auto",
             "scale_factor": 1.0
           },
           {
-            "register": 433,
+            "modbus_register": 433,
             "field_name": "AIR_IN",
             "description": "Unit Input Air Temperature: (hundredths of degrees Celsius) es: 2350 = 23.50 °C",
             "scale_factor": 1.0
           },
           {
-            "register": 434,
+            "modbus_register": 434,
             "field_name": "STATUS",
             "description": "Diagnostic Split Comunication Status: Bit 0=Unit not connected on the bus; Bit 1=Unit connected on the bus; Bit 2=Unit connected on the bus but offline; Bit 3=Unit in error.",
             "scale_factor": 1.0
           },
           {
-            "register": 435,
+            "modbus_register": 435,
             "field_name": "AHU_MODE",
             "description": "AHU State 16 = Ventilation 32=Automatic ",
             "scale_factor": 1.0
           },
           {
-            "register": 436,
+            "modbus_register": 436,
             "field_name": "HEATER_PWR",
             "description": "Heater State 0 = OFF; 1 = ON ",
             "scale_factor": 1.0
           },
           {
-            "register": 437,
+            "modbus_register": 437,
             "field_name": "HUMI",
             "description": "Humidity 0..100% ",
             "scale_factor": 1.0
@@ -1278,49 +1278,49 @@
         "topic": "termodinamica/ac/25",
         "fields": [
           {
-            "register": 440,
+            "modbus_register": 440,
             "field_name": "PWR",
             "description": "Unit Power On/Off 0=OFF 1=ON",
             "scale_factor": 1.0
           },
           {
-            "register": 441,
+            "modbus_register": 441,
             "field_name": "SP_ROOM",
             "description": "Unit SetPoint: (hundredths of degrees Celsius) es: 2350 = 23.50 °C -> Range: 18..30°C\"",
             "scale_factor": 1.0
           },
           {
-            "register": 442,
+            "modbus_register": 442,
             "field_name": "FAN_SPEED",
             "description": "Unit Fan Speed (with Syxthsense): 1=Vel.Night; 2=Vel.1; 3=Vel.2; 4=Vel.3; 5=Vel.4; 7=Vel.5; 8=Vel.6; 9=Vel.Auto Unit Fan Speed (in other case): 1=Vel.Night; 2=Vel.1; 3=Vel.2; 4=Vel.3; 5=Vel.4; 6=Vel.5; 7=Vel.6; 8=Vel.7; 9=Vel.Auto",
             "scale_factor": 1.0
           },
           {
-            "register": 443,
+            "modbus_register": 443,
             "field_name": "AIR_IN",
             "description": "Unit Input Air Temperature: (hundredths of degrees Celsius) es: 2350 = 23.50 °C",
             "scale_factor": 1.0
           },
           {
-            "register": 444,
+            "modbus_register": 444,
             "field_name": "STATUS",
             "description": "Diagnostic Split Comunication Status: Bit 0=Unit not connected on the bus; Bit 1=Unit connected on the bus; Bit 2=Unit connected on the bus but offline; Bit 3=Unit in error.",
             "scale_factor": 1.0
           },
           {
-            "register": 445,
+            "modbus_register": 445,
             "field_name": "AHU_MODE",
             "description": "AHU State 16 = Ventilation 32=Automatic ",
             "scale_factor": 1.0
           },
           {
-            "register": 446,
+            "modbus_register": 446,
             "field_name": "HEATER_PWR",
             "description": "Heater State 0 = OFF; 1 = ON ",
             "scale_factor": 1.0
           },
           {
-            "register": 447,
+            "modbus_register": 447,
             "field_name": "HUMI",
             "description": "Humidity 0..100% ",
             "scale_factor": 1.0
@@ -1331,49 +1331,49 @@
         "topic": "termodinamica/ac/26",
         "fields": [
           {
-            "register": 450,
+            "modbus_register": 450,
             "field_name": "PWR",
             "description": "Unit Power On/Off 0=OFF 1=ON",
             "scale_factor": 1.0
           },
           {
-            "register": 451,
+            "modbus_register": 451,
             "field_name": "SP_ROOM",
             "description": "Unit SetPoint: (hundredths of degrees Celsius) es: 2350 = 23.50 °C -> Range: 18..30°C\"",
             "scale_factor": 1.0
           },
           {
-            "register": 452,
+            "modbus_register": 452,
             "field_name": "FAN_SPEED",
             "description": "Unit Fan Speed (with Syxthsense): 1=Vel.Night; 2=Vel.1; 3=Vel.2; 4=Vel.3; 5=Vel.4; 7=Vel.5; 8=Vel.6; 9=Vel.Auto Unit Fan Speed (in other case): 1=Vel.Night; 2=Vel.1; 3=Vel.2; 4=Vel.3; 5=Vel.4; 6=Vel.5; 7=Vel.6; 8=Vel.7; 9=Vel.Auto",
             "scale_factor": 1.0
           },
           {
-            "register": 453,
+            "modbus_register": 453,
             "field_name": "AIR_IN",
             "description": "Unit Input Air Temperature: (hundredths of degrees Celsius) es: 2350 = 23.50 °C",
             "scale_factor": 1.0
           },
           {
-            "register": 454,
+            "modbus_register": 454,
             "field_name": "STATUS",
             "description": "Diagnostic Split Comunication Status: Bit 0=Unit not connected on the bus; Bit 1=Unit connected on the bus; Bit 2=Unit connected on the bus but offline; Bit 3=Unit in error.",
             "scale_factor": 1.0
           },
           {
-            "register": 455,
+            "modbus_register": 455,
             "field_name": "AHU_MODE",
             "description": "AHU State 16 = Ventilation 32=Automatic ",
             "scale_factor": 1.0
           },
           {
-            "register": 456,
+            "modbus_register": 456,
             "field_name": "HEATER_PWR",
             "description": "Heater State 0 = OFF; 1 = ON ",
             "scale_factor": 1.0
           },
           {
-            "register": 457,
+            "modbus_register": 457,
             "field_name": "HUMI",
             "description": "Humidity 0..100% ",
             "scale_factor": 1.0
@@ -1384,49 +1384,49 @@
         "topic": "termodinamica/ac/27",
         "fields": [
           {
-            "register": 460,
+            "modbus_register": 460,
             "field_name": "PWR",
             "description": "Unit Power On/Off 0=OFF 1=ON",
             "scale_factor": 1.0
           },
           {
-            "register": 461,
+            "modbus_register": 461,
             "field_name": "SP_ROOM",
             "description": "Unit SetPoint: (hundredths of degrees Celsius) es: 2350 = 23.50 °C -> Range: 18..30°C\"",
             "scale_factor": 1.0
           },
           {
-            "register": 462,
+            "modbus_register": 462,
             "field_name": "FAN_SPEED",
             "description": "Unit Fan Speed (with Syxthsense): 1=Vel.Night; 2=Vel.1; 3=Vel.2; 4=Vel.3; 5=Vel.4; 7=Vel.5; 8=Vel.6; 9=Vel.Auto Unit Fan Speed (in other case): 1=Vel.Night; 2=Vel.1; 3=Vel.2; 4=Vel.3; 5=Vel.4; 6=Vel.5; 7=Vel.6; 8=Vel.7; 9=Vel.Auto",
             "scale_factor": 1.0
           },
           {
-            "register": 463,
+            "modbus_register": 463,
             "field_name": "AIR_IN",
             "description": "Unit Input Air Temperature: (hundredths of degrees Celsius) es: 2350 = 23.50 °C",
             "scale_factor": 1.0
           },
           {
-            "register": 464,
+            "modbus_register": 464,
             "field_name": "STATUS",
             "description": "Diagnostic Split Comunication Status: Bit 0=Unit not connected on the bus; Bit 1=Unit connected on the bus; Bit 2=Unit connected on the bus but offline; Bit 3=Unit in error.",
             "scale_factor": 1.0
           },
           {
-            "register": 465,
+            "modbus_register": 465,
             "field_name": "AHU_MODE",
             "description": "AHU State 16 = Ventilation 32=Automatic ",
             "scale_factor": 1.0
           },
           {
-            "register": 466,
+            "modbus_register": 466,
             "field_name": "HEATER_PWR",
             "description": "Heater State 0 = OFF; 1 = ON ",
             "scale_factor": 1.0
           },
           {
-            "register": 467,
+            "modbus_register": 467,
             "field_name": "HUMI",
             "description": "Humidity 0..100% ",
             "scale_factor": 1.0
@@ -1437,49 +1437,49 @@
         "topic": "termodinamica/ac/28",
         "fields": [
           {
-            "register": 470,
+            "modbus_register": 470,
             "field_name": "PWR",
             "description": "Unit Power On/Off 0=OFF 1=ON",
             "scale_factor": 1.0
           },
           {
-            "register": 471,
+            "modbus_register": 471,
             "field_name": "SP_ROOM",
             "description": "Unit SetPoint: (hundredths of degrees Celsius) es: 2350 = 23.50 °C -> Range: 18..30°C\"",
             "scale_factor": 1.0
           },
           {
-            "register": 472,
+            "modbus_register": 472,
             "field_name": "FAN_SPEED",
             "description": "Unit Fan Speed (with Syxthsense): 1=Vel.Night; 2=Vel.1; 3=Vel.2; 4=Vel.3; 5=Vel.4; 7=Vel.5; 8=Vel.6; 9=Vel.Auto Unit Fan Speed (in other case): 1=Vel.Night; 2=Vel.1; 3=Vel.2; 4=Vel.3; 5=Vel.4; 6=Vel.5; 7=Vel.6; 8=Vel.7; 9=Vel.Auto",
             "scale_factor": 1.0
           },
           {
-            "register": 473,
+            "modbus_register": 473,
             "field_name": "AIR_IN",
             "description": "Unit Input Air Temperature: (hundredths of degrees Celsius) es: 2350 = 23.50 °C",
             "scale_factor": 1.0
           },
           {
-            "register": 474,
+            "modbus_register": 474,
             "field_name": "STATUS",
             "description": "Diagnostic Split Comunication Status: Bit 0=Unit not connected on the bus; Bit 1=Unit connected on the bus; Bit 2=Unit connected on the bus but offline; Bit 3=Unit in error.",
             "scale_factor": 1.0
           },
           {
-            "register": 475,
+            "modbus_register": 475,
             "field_name": "AHU_MODE",
             "description": "AHU State 16 = Ventilation 32=Automatic ",
             "scale_factor": 1.0
           },
           {
-            "register": 476,
+            "modbus_register": 476,
             "field_name": "HEATER_PWR",
             "description": "Heater State 0 = OFF; 1 = ON ",
             "scale_factor": 1.0
           },
           {
-            "register": 477,
+            "modbus_register": 477,
             "field_name": "HUMI",
             "description": "Humidity 0..100% ",
             "scale_factor": 1.0
@@ -1490,49 +1490,49 @@
         "topic": "termodinamica/ac/29",
         "fields": [
           {
-            "register": 480,
+            "modbus_register": 480,
             "field_name": "PWR",
             "description": "Unit Power On/Off 0=OFF 1=ON",
             "scale_factor": 1.0
           },
           {
-            "register": 481,
+            "modbus_register": 481,
             "field_name": "SP_ROOM",
             "description": "Unit SetPoint: (hundredths of degrees Celsius) es: 2350 = 23.50 °C -> Range: 18..30°C\"",
             "scale_factor": 1.0
           },
           {
-            "register": 482,
+            "modbus_register": 482,
             "field_name": "FAN_SPEED",
             "description": "Unit Fan Speed (with Syxthsense): 1=Vel.Night; 2=Vel.1; 3=Vel.2; 4=Vel.3; 5=Vel.4; 7=Vel.5; 8=Vel.6; 9=Vel.Auto Unit Fan Speed (in other case): 1=Vel.Night; 2=Vel.1; 3=Vel.2; 4=Vel.3; 5=Vel.4; 6=Vel.5; 7=Vel.6; 8=Vel.7; 9=Vel.Auto",
             "scale_factor": 1.0
           },
           {
-            "register": 483,
+            "modbus_register": 483,
             "field_name": "AIR_IN",
             "description": "Unit Input Air Temperature: (hundredths of degrees Celsius) es: 2350 = 23.50 °C",
             "scale_factor": 1.0
           },
           {
-            "register": 484,
+            "modbus_register": 484,
             "field_name": "STATUS",
             "description": "Diagnostic Split Comunication Status: Bit 0=Unit not connected on the bus; Bit 1=Unit connected on the bus; Bit 2=Unit connected on the bus but offline; Bit 3=Unit in error.",
             "scale_factor": 1.0
           },
           {
-            "register": 485,
+            "modbus_register": 485,
             "field_name": "AHU_MODE",
             "description": "AHU State 16 = Ventilation 32=Automatic ",
             "scale_factor": 1.0
           },
           {
-            "register": 486,
+            "modbus_register": 486,
             "field_name": "HEATER_PWR",
             "description": "Heater State 0 = OFF; 1 = ON ",
             "scale_factor": 1.0
           },
           {
-            "register": 487,
+            "modbus_register": 487,
             "field_name": "HUMI",
             "description": "Humidity 0..100% ",
             "scale_factor": 1.0
@@ -1543,49 +1543,49 @@
         "topic": "termodinamica/ac/30",
         "fields": [
           {
-            "register": 490,
+            "modbus_register": 490,
             "field_name": "PWR",
             "description": "Unit Power On/Off 0=OFF 1=ON",
             "scale_factor": 1.0
           },
           {
-            "register": 491,
+            "modbus_register": 491,
             "field_name": "SP_ROOM",
             "description": "Unit SetPoint: (hundredths of degrees Celsius) es: 2350 = 23.50 °C -> Range: 18..30°C\"",
             "scale_factor": 1.0
           },
           {
-            "register": 492,
+            "modbus_register": 492,
             "field_name": "FAN_SPEED",
             "description": "Unit Fan Speed (with Syxthsense): 1=Vel.Night; 2=Vel.1; 3=Vel.2; 4=Vel.3; 5=Vel.4; 7=Vel.5; 8=Vel.6; 9=Vel.Auto Unit Fan Speed (in other case): 1=Vel.Night; 2=Vel.1; 3=Vel.2; 4=Vel.3; 5=Vel.4; 6=Vel.5; 7=Vel.6; 8=Vel.7; 9=Vel.Auto",
             "scale_factor": 1.0
           },
           {
-            "register": 493,
+            "modbus_register": 493,
             "field_name": "AIR_IN",
             "description": "Unit Input Air Temperature: (hundredths of degrees Celsius) es: 2350 = 23.50 °C",
             "scale_factor": 1.0
           },
           {
-            "register": 494,
+            "modbus_register": 494,
             "field_name": "STATUS",
             "description": "Diagnostic Split Comunication Status: Bit 0=Unit not connected on the bus; Bit 1=Unit connected on the bus; Bit 2=Unit connected on the bus but offline; Bit 3=Unit in error.",
             "scale_factor": 1.0
           },
           {
-            "register": 495,
+            "modbus_register": 495,
             "field_name": "AHU_MODE",
             "description": "AHU State 16 = Ventilation 32=Automatic ",
             "scale_factor": 1.0
           },
           {
-            "register": 496,
+            "modbus_register": 496,
             "field_name": "HEATER_PWR",
             "description": "Heater State 0 = OFF; 1 = ON ",
             "scale_factor": 1.0
           },
           {
-            "register": 497,
+            "modbus_register": 497,
             "field_name": "HUMI",
             "description": "Humidity 0..100% ",
             "scale_factor": 1.0
@@ -1596,49 +1596,49 @@
         "topic": "termodinamica/ac/31",
         "fields": [
           {
-            "register": 500,
+            "modbus_register": 500,
             "field_name": "PWR",
             "description": "Unit Power On/Off 0=OFF 1=ON",
             "scale_factor": 1.0
           },
           {
-            "register": 501,
+            "modbus_register": 501,
             "field_name": "SP_ROOM",
             "description": "Unit SetPoint: (hundredths of degrees Celsius) es: 2350 = 23.50 °C -> Range: 18..30°C\"",
             "scale_factor": 1.0
           },
           {
-            "register": 502,
+            "modbus_register": 502,
             "field_name": "FAN_SPEED",
             "description": "Unit Fan Speed (with Syxthsense): 1=Vel.Night; 2=Vel.1; 3=Vel.2; 4=Vel.3; 5=Vel.4; 7=Vel.5; 8=Vel.6; 9=Vel.Auto Unit Fan Speed (in other case): 1=Vel.Night; 2=Vel.1; 3=Vel.2; 4=Vel.3; 5=Vel.4; 6=Vel.5; 7=Vel.6; 8=Vel.7; 9=Vel.Auto",
             "scale_factor": 1.0
           },
           {
-            "register": 503,
+            "modbus_register": 503,
             "field_name": "AIR_IN",
             "description": "Unit Input Air Temperature: (hundredths of degrees Celsius) es: 2350 = 23.50 °C",
             "scale_factor": 1.0
           },
           {
-            "register": 504,
+            "modbus_register": 504,
             "field_name": "STATUS",
             "description": "Diagnostic Split Comunication Status: Bit 0=Unit not connected on the bus; Bit 1=Unit connected on the bus; Bit 2=Unit connected on the bus but offline; Bit 3=Unit in error.",
             "scale_factor": 1.0
           },
           {
-            "register": 505,
+            "modbus_register": 505,
             "field_name": "AHU_MODE",
             "description": "AHU State 16 = Ventilation 32=Automatic ",
             "scale_factor": 1.0
           },
           {
-            "register": 506,
+            "modbus_register": 506,
             "field_name": "HEATER_PWR",
             "description": "Heater State 0 = OFF; 1 = ON ",
             "scale_factor": 1.0
           },
           {
-            "register": 507,
+            "modbus_register": 507,
             "field_name": "HUMI",
             "description": "Humidity 0..100% ",
             "scale_factor": 1.0
@@ -1649,85 +1649,85 @@
         "topic": "termodinamica/ac-misc",
         "fields": [
           {
-            "register": 140,
+            "modbus_register": 140,
             "field_name": "ENGINE_BOX_COMPRESSOR_SPEED ",
             "description": "Engine Box Inverter Compressor Speed: (percentage) Range: 0..100% es. 500 = 50.0%",
             "scale_factor": 1.0
           },
           {
-            "register": 141,
+            "modbus_register": 141,
             "field_name": "ENGINE_BOX_WATER_PUMP_SPEED ",
             "description": "Engine Box Inverter Water Pump Speed: (percentage) Range: 0..100% es. 500 = 50.0%",
             "scale_factor": 1.0
           },
           {
-            "register": 142,
+            "modbus_register": 142,
             "field_name": "CURRENT_REQ_PRESSURE ",
             "description": "Engine Box Max Air Handler Required Pressure: (thousandths of Bar) es: 22543 = 22.543 Bar",
             "scale_factor": 1.0
           },
           {
-            "register": 145,
+            "modbus_register": 145,
             "field_name": "ENGINE_BOX_T_SEA_WATER ",
             "description": "Engine Box Sea Water Temperature: (hundredths of degrees Celsius) es: 2350 = 23.50 °C",
             "scale_factor": 1.0
           },
           {
-            "register": 149,
+            "modbus_register": 149,
             "field_name": "ENGINE_BOX_P_GAS ",
             "description": "Engine Box Gas Pressure: (thousandths of Bar) es: 22543 = 22.543 Bar",
             "scale_factor": 1.0
           },
           {
-            "register": 150,
+            "modbus_register": 150,
             "field_name": "ENGINE_BOX_P_LIQUID ",
             "description": "Engine Box Liquid Pressure: (thousandths of Bar) es: 22543 = 22.543 Bar",
             "scale_factor": 1.0
           },
           {
-            "register": 151,
+            "modbus_register": 151,
             "field_name": "ENGINE_BOX_P_CONDENSER ",
             "description": "Engine Box Condenser Pressure: (thousandths of Bar) es: 22543 = 22.543 Bar",
             "scale_factor": 1.0
           },
           {
-            "register": 155,
+            "modbus_register": 155,
             "field_name": "ENGINE_BOX_COMPRESSOR2_SPEED ",
             "description": "Engine Box Inverter Compressor2 Speed: (percentage) Range: 0..100% es. 500 = 50.0%",
             "scale_factor": 1.0
           },
           {
-            "register": 182,
+            "modbus_register": 182,
             "field_name": "WATT_AC_COMPRESSOR_1 ",
             "description": "Instantaneous absorption control of the AC compressor 1 (1=0,01 Watt)",
             "scale_factor": 1.0
           },
           {
-            "register": 183,
+            "modbus_register": 183,
             "field_name": "WATT_AC_COMPRESSOR_2 ",
             "description": "Instantaneous absorption control of the AC compressor 2 (1=0,01 Watt)",
             "scale_factor": 1.0
           },
           {
-            "register": 184,
+            "modbus_register": 184,
             "field_name": "WATT_SEA_WATER_PUMP ",
             "description": "Instantaneous absorption control of the AC Sea Water Pump (1=0,01 Watt)",
             "scale_factor": 1.0
           },
           {
-            "register": 185,
+            "modbus_register": 185,
             "field_name": "AC_COMPRESSOR_1 ",
             "description": "Instantaneous absorption control of the AC compressor 1 (1=0,01 Ampere)",
             "scale_factor": 1.0
           },
           {
-            "register": 186,
+            "modbus_register": 186,
             "field_name": "AC_COMPRESSOR_2 ",
             "description": "Instantaneous absorption control of the AC compressor 2 (1=0,01 Ampere)",
             "scale_factor": 1.0
           },
           {
-            "register": 187,
+            "modbus_register": 187,
             "field_name": "SEA_WATER_PUMP ",
             "description": "Instantaneous absorption control of the AC Sea Water Pump (1=0,01 Ampere)",
             "scale_factor": 1.0

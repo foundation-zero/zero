@@ -50,7 +50,7 @@ def select_reg_split(df: pl.DataFrame, topic_prefix: str) -> List[MQTTTopic]:
                 topic=f"{topic_prefix}/{reg_split}",
                 fields=[
                     Address(
-                        register=d["address"],
+                        modbus_register=d["address"],
                         field_name=d["field_name"],
                         description=d["description"],
                     )
@@ -108,7 +108,7 @@ def load_flat_topic(
     for row in df.iter_rows(named=True):
         result.append(
             Address(
-                register=row["address"],
+                modbus_register=row["address"],
                 field_name=row["field_name"],
                 description=row["description"],
             )

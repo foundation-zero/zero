@@ -6,7 +6,7 @@ from pydantic import BaseModel, TypeAdapter
 
 
 class Address(BaseModel):
-    register: int
+    modbus_register: int
     field_name: str
     description: str | None = None
     scale_factor: float = 1

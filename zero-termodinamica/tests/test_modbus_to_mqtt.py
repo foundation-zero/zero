@@ -24,7 +24,7 @@ async def test_run_once_success():
                     topic="test/topic",
                     fields=[
                         Address(
-                            register=200,
+                            modbus_register=200,
                             field_name="PWR",
                             scale_factor=1.0,
                         )
@@ -61,12 +61,12 @@ async def test_run_once_multiple_addresses_scaling():
                     topic="test/topic",
                     fields=[
                         Address(
-                            register=200,
+                            modbus_register=200,
                             field_name="PWR",
                             scale_factor=1.0,
                         ),
                         Address(
-                            register=201,
+                            modbus_register=201,
                             field_name="TEMP",
                             scale_factor=0.1,
                         ),
@@ -79,10 +79,10 @@ async def test_run_once_multiple_addresses_scaling():
     bridge = ModbusToMQTTBridge(mock_modbus, mock_mqtt, modbus_units)
 
     # Setup mock returns
-    def read_side_effect(register, count):
-        if register == 200:
+    def read_side_effect(modbus_register, count):
+        if modbus_register == 200:
             return [1]
-        if register == 201:
+        if modbus_register == 201:
             return [235]
         return None
 
@@ -113,13 +113,13 @@ async def test_run_once_multiple_topics():
                 MQTTTopic(
                     topic="topic/1",
                     fields=[
-                        Address(register=200, field_name="VAL1"),
+                        Address(modbus_register=200, field_name="VAL1"),
                     ],
                 ),
                 MQTTTopic(
                     topic="topic/2",
                     fields=[
-                        Address(register=300, field_name="VAL2"),
+                        Address(modbus_register=300, field_name="VAL2"),
                     ],
                 ),
             ],
@@ -127,10 +127,10 @@ async def test_run_once_multiple_topics():
     ]
     bridge = ModbusToMQTTBridge(mock_modbus, mock_mqtt, modbus_units)
 
-    def read_side_effect(register, count):
-        if register == 200:
+    def read_side_effect(modbus_register, count):
+        if modbus_register == 200:
             return [10]
-        if register == 300:
+        if modbus_register == 300:
             return [20]
         return None
 
@@ -165,7 +165,9 @@ async def test_run_multiple_cycles():
             topics=[
                 MQTTTopic(
                     topic="test/topic",
-                    fields=[Address(register=200, field_name="PWR", scale_factor=1.0)],
+                    fields=[
+                        Address(modbus_register=200, field_name="PWR", scale_factor=1.0)
+                    ],
                 )
             ],
         )

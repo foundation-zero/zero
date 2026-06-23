@@ -8,6 +8,9 @@ run *args:
 run_stub *args:
     poetry run python -m zero_termodinamica stub {{ args }}
 
+refresh_io:
+    uv run --script ./scripts/io_list_to_json.py
+
 check: lint type_check test
 
 lint:
