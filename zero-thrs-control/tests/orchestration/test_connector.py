@@ -186,6 +186,7 @@ async def test_mqtt_connector(mqtt_client, mqtt_client2):
         mqtt_client2,
         "test_devices_topic_prefix",
         "test_controller_topic_prefix",
+        "test_simulation_topic_prefix",
         {"simple": SimpleInOut},
         {"simple": SimpleInOut},
         SimpleInOut,

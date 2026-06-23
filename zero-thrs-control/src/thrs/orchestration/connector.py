@@ -216,6 +216,7 @@ class MqttControlConnector(Connector[CombinedValues, CombinedValues]):
     async def _publish_by_mapping[T](self, mapping: MqttMapping[T], value: T):
         payloads = mapping.split_to_topics(value)
         for topic, payload in payloads.items():
+            logging.debug("Publishing on %s", topic)
             await self._mqtt_client.publish(topic, payload, qos=1)
 
     async def _send_control_values(self, control_values: CombinedValues):
@@ -263,6 +264,7 @@ class MqttSimulationConnector(Connector[CombinedValues, CombinedValues]):
         simulation: "Simulation",
         mqtt_client: Client,
         devices_topic_prefix: str,
+        simulation_topic_prefix: str,
         sensor_values_clss: ModuleClassMap,
         simulation_outputs_cls: type[ThrsValues],
     ):
@@ -272,20 +274,18 @@ class MqttSimulationConnector(Connector[CombinedValues, CombinedValues]):
             sensor_values_clss, devices_topic_prefix
         )
         self._simulation_outputs_mqtt_mapping = DirectMqttMapping(
-            simulation_outputs_cls, f"{devices_topic_prefix}/simulation/outputs"
+            simulation_outputs_cls, f"{simulation_topic_prefix}/outputs"
         )
 
-    async def _publish_by_mapping[T](
-        self, client: Client, mapping: MqttMapping[T], value: T
-    ):
+    async def _publish_by_mapping[T](self, mapping: MqttMapping[T], value: T):
         payloads = mapping.split_to_topics(value)
         for topic, payload in payloads.items():
-            await client.publish(topic, payload, qos=1)
+            logging.debug("Publishing on %s", topic)
+            await self._mqtt_client.publish(topic, payload, qos=1)
 
     async def _send_sensor_values(self, execution_result: SimulationResult):
         logging.debug("Publishing sensor values")
         await self._publish_by_mapping(
-            self._mqtt_client,
             self._sensor_values_mqtt_mapping,
             execution_result.sensor_values,
         )
@@ -293,7 +293,6 @@ class MqttSimulationConnector(Connector[CombinedValues, CombinedValues]):
     async def _send_simulation_output(self, simulation_result: SimulationResult):
         logging.debug("Publishing simulation output values")
         await self._publish_by_mapping(
-            self._mqtt_client,
             self._simulation_outputs_mqtt_mapping,
             simulation_result.simulation_outputs,
         )
@@ -323,6 +322,7 @@ class MqttConnector(Connector[CombinedValues, CombinedValues]):
         environment_client: Client,
         devices_topic_prefix: str,
         controller_topic_prefix: str,
+        simulation_topic_prefix: str,
         sensor_values_clss: ModuleClassMap,
         control_values_clss: ModuleClassMap,
         simulation_outputs_cls: type[ThrsValues],
@@ -340,6 +340,7 @@ class MqttConnector(Connector[CombinedValues, CombinedValues]):
             simulation=simulation,
             mqtt_client=environment_client,
             devices_topic_prefix=devices_topic_prefix,
+            simulation_topic_prefix=simulation_topic_prefix,
             sensor_values_clss=sensor_values_clss,
             simulation_outputs_cls=simulation_outputs_cls,
         )
