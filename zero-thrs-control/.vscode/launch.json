@@ -32,7 +32,7 @@
       "module": "fastapi",
       "args": [
         "dev",
-        "src/thrs/graphql/strawberry.py"
+        "src/thrs/graphql/asgi.py"
       ],
       "console": "integratedTerminal",
       "justMyCode": false,
