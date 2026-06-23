@@ -138,28 +138,30 @@ class ControlMessaging[
         parameters_cls: type[Parameters],
         mode_cls: type[Mode],
         mqtt_client: MqttClient,
-        amcs_topic_prefix: str,
+        devices_topic_prefix: str,
+        controller_topic_prefix: str,
     ):
         self.module_name = module_name
         self._active = False
         self.sensor_values_cls = sensor_values_cls
         self.control_values_cls = control_values_cls
 
-        self._amcs_topic_prefix = amcs_topic_prefix
+        self._devices_topic_prefix = devices_topic_prefix
+        self._controller_topic_prefix = controller_topic_prefix
         self._sensor_values = PartialMessageReceiver(
-            sensor_values_cls, self._amcs_topic_prefix, module_name
+            sensor_values_cls, self._devices_topic_prefix, module_name
         )
         self._control_values = PartialMessageReceiver(
-            control_values_cls, self._amcs_topic_prefix, module_name
+            control_values_cls, self._devices_topic_prefix, module_name
         )
 
         self._parameters = MessageReceiver(
             ParametersMessage[parameters_cls],
-            f"{self._amcs_topic_prefix}/{ParametersMessage.subscribe_topic()}",
+            f"{self._controller_topic_prefix}/{ParametersMessage.subscribe_topic()}",
         )
         self._control_mode = MessageReceiver(
             ControlModeMessage[mode_cls],
-            f"{self._amcs_topic_prefix}/{ControlModeMessage.subscribe_topic()}",
+            f"{self._controller_topic_prefix}/{ControlModeMessage.subscribe_topic()}",
         )
         self._mqtt_client = mqtt_client
 
@@ -187,7 +189,7 @@ class ControlMessaging[
             module=self.module_name, control_values=control_values
         )
         await self._mqtt_client.publish(
-            f"{self._amcs_topic_prefix}/{message.topic()}",
+            f"{self._controller_topic_prefix}/{message.topic()}",
             message.model_dump_json(),
             qos=1,
         )
@@ -224,7 +226,7 @@ class ControlMessaging[
             module=self.module_name, parameters=parameters
         )
         await self._mqtt_client.publish(
-            f"{self._amcs_topic_prefix}/{message.topic()}",
+            f"{self._controller_topic_prefix}/{message.topic()}",
             message.model_dump_json(),
             qos=1,
         )
@@ -232,7 +234,7 @@ class ControlMessaging[
     async def set_automation_mode(self, enabled: bool):
         message = SetAutomationMessage(module=self.module_name, enabled=enabled)
         await self._mqtt_client.publish(
-            f"{self._amcs_topic_prefix}/{message.topic()}",
+            f"{self._controller_topic_prefix}/{message.topic()}",
             message.model_dump_json(),
             qos=1,
         )
@@ -281,20 +283,20 @@ class SimulationMessaging:
         self,
         mapping: dict[str, tuple[type[SimulationInputs], type[SimulationValues]]],
         mqtt_client: MqttClient,
-        topic_prefix: str,
+        simulation_topic_prefix: str,
     ):
         self._mode = None
         self._mapping = mapping
         self._mqtt_client = mqtt_client
         self._simulation_inputs = RawMessageReceiver(
             SimulationInputMessage[SimulationInputs],
-            f"{topic_prefix}/{SimulationInputMessage.subscribe_topic()}",
+            f"{simulation_topic_prefix}/{SimulationInputMessage.subscribe_topic()}",
         )
         self._simulation_outputs = RawMessageReceiver(
-            SimulationValues, f"{topic_prefix}/simulation/outputs"
+            SimulationValues, f"{simulation_topic_prefix}/outputs"
         )
         self._simulation_inputs_cls = None
-        self._amcs_topic_prefix = topic_prefix
+        self._simulation_topic_prefix = simulation_topic_prefix
 
     @property
     def receivers(self):
@@ -311,11 +313,11 @@ class SimulationMessaging:
 
         inputs = MessageReceiver(
             SimulationInputMessage[simulation_inputs_cls],
-            f"{self._amcs_topic_prefix}/{SimulationInputMessage.subscribe_topic()}",
+            f"{self._simulation_topic_prefix}/{SimulationInputMessage.subscribe_topic()}",
         )
         outputs = MessageReceiver(
             simulation_outputs_cls,
-            f"{self._amcs_topic_prefix}/simulation/outputs",
+            f"{self._simulation_topic_prefix}/outputs",
         )
         await self._try_reprocess(inputs, self._simulation_inputs)
         await self._try_reprocess(outputs, self._simulation_outputs)
@@ -373,7 +375,7 @@ class SimulationMessaging:
             )
         message = SetSimulationInputsMessage[self._simulation_inputs_cls](inputs=inputs)
         await self._mqtt_client.publish(
-            f"{self._amcs_topic_prefix}/{message.topic()}",
+            f"{self._simulation_topic_prefix}/{message.topic()}",
             message.model_dump_json(),
             qos=1,
         )
@@ -385,16 +387,16 @@ class Messaging:
         mqtt_client: MqttClient,
         control_modules: list[ControlMessaging],
         simulation: SimulationMessaging,
-        amcs_topic_prefix: str,
+        simulation_topic_prefix: str,
     ):
         self._mqtt_client = mqtt_client
         self._control_modules = control_modules
         self._simulation = simulation
         self._simulation_status = SimulationStatusMessageReceiver(
             SimulationStatusMessage,
-            f"{amcs_topic_prefix}/{SimulationStatusMessage.subscribe_topic()}",
+            f"{simulation_topic_prefix}/{SimulationStatusMessage.subscribe_topic()}",
         )
-        self._amcs_topic_prefix = amcs_topic_prefix
+        self._simulation_topic_prefix = simulation_topic_prefix
 
     @property
     def _all_receivers(self):
@@ -454,7 +456,7 @@ class Messaging:
     async def play_simulation(self, playback_rate: float):
         message = PlayMessage(playback_rate=playback_rate)
         await self._mqtt_client.publish(
-            f"{self._amcs_topic_prefix}/{message.topic()}",
+            f"{self._simulation_topic_prefix}/{message.topic()}",
             message.model_dump_json(),
             qos=1,
         )
@@ -462,7 +464,7 @@ class Messaging:
     async def pause_simulation(self):
         message = PauseMessage()
         await self._mqtt_client.publish(
-            f"{self._amcs_topic_prefix}/{message.topic()}",
+            f"{self._simulation_topic_prefix}/{message.topic()}",
             message.model_dump_json(),
             qos=1,
         )
@@ -470,7 +472,7 @@ class Messaging:
     async def step_simulation(self, seconds: float):
         message = StepMessage(seconds=seconds)
         await self._mqtt_client.publish(
-            f"{self._amcs_topic_prefix}/{message.topic()}",
+            f"{self._simulation_topic_prefix}/{message.topic()}",
             message.model_dump_json(),
             qos=1,
         )

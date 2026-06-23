@@ -476,14 +476,17 @@ async def test_query_simulation_inputs_actual(
         ThrustersParameters,
         ThrustersControlMode,
         mqtt_client,
-        "test_topic",
+        "test_devices_topic",
+        "test_controller_topic",
     )
     simulation_msg = SimulationMessaging(
         simulation.io_mapping,
         mqtt_client,
-        "test_topic",
+        "test_simulation_topic",
     )
-    msg = Messaging(mqtt_client, [thrusters_msg], simulation_msg, "test_topic")
+    msg = Messaging(
+        mqtt_client, [thrusters_msg], simulation_msg, "test_simulation_topic"
+    )
     app.dependency_overrides[messaging] = lambda: msg
     app.dependency_overrides[thrusters_messaging] = lambda: thrusters_msg
     app.dependency_overrides[pvt_messaging] = override_pvt_messaging
@@ -492,21 +495,21 @@ async def test_query_simulation_inputs_actual(
     app.dependency_overrides[dhw_messaging] = override_dhw_messaging
     app.dependency_overrides[simulation_messaging] = lambda: simulation_msg
 
-    await mqtt_client2.publish("test_topic/simulation/inputs", None, qos=1, retain=True)
-    await mqtt_client2.publish("test_topic/simulation/status", None, qos=1, retain=True)
+    await mqtt_client2.publish("test_simulation_topic/inputs", None, qos=1, retain=True)
+    await mqtt_client2.publish("test_simulation_topic/status", None, qos=1, retain=True)
 
     run_task = create_task(await msg.run())
     try:
         # Simulation should be able to handle some time skew between status and inputs
         await mqtt_client2.publish(
-            "test_topic/simulation/inputs",
+            "test_simulation_topic/inputs",
             SimulationInputMessage[ThrustersSimulationInputs](
                 inputs=ThrustersSimulationInputs.zero()
             ).model_dump_json(),
         )
         await sleep(0.1)
         await mqtt_client2.publish(
-            "test_topic/simulation/status",
+            "test_simulation_topic/status",
             SimulationStatusMessage(
                 mode="thrusters",
                 status="available",
