@@ -51,7 +51,7 @@ poetry install
 Start the API with:
 
 ```bash
-poetry run fastapi dev src/thrs/graphql/strawberry.py
+poetry run fastapi dev src/thrs/graphql/asgi.py
 ```
 
 ### Exporting the Schema
