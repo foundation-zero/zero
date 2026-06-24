@@ -6,7 +6,7 @@ import { tooltip } from "./shared";
 
 export default toInstance<MimicComponentType.HeatPump>({
   controls: {
-    heatExchanger: getField(ControlComponentType.Heatpump, "dhw", "dhwHeatpump"),
+    heatpump: getField(ControlComponentType.Heatpump, "dhw", "dhwHeatpump"),
     controller: getField(ControlComponentType.PIDController, "dhw", "dhwPumpFlowController"),
   },
   source: getField(SensorComponentType.HeatExchanger, "dhw", "dhwHeatpump"),
@@ -16,9 +16,8 @@ export default toInstance<MimicComponentType.HeatPump>({
     flow: getField(ParametersType.Flow, "dhw", "heatpumpFlowSetpoint"),
   },
   sensors: {
-    heatExchanger: getField(SensorComponentType.HeatExchanger, "dhw", "dhwHeatpump"),
-    incoming: getField(SensorComponentType.Temperature, "dhw", "dhwTemperatureBoostingSupply"),
-    outgoing: getField(SensorComponentType.Temperature, "dhw", "dhwTemperatureBoostingReturn"),
+    incoming: getField(SensorComponentType.Temperature, "dhw", "dhwTemperatureBoostingReturn"),
+    outgoing: getField(SensorComponentType.Temperature, "dhw", "dhwTemperatureBoostingSupply"),
     measurement: getField(SensorComponentType.Flow, "dhw", "dhwFlowBoosting"),
   },
   tooltip: tooltip({

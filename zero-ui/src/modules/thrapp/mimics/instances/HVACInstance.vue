@@ -24,7 +24,7 @@ const props = defineProps<
 
 const { getSensorValue, getComponentState } = getMimicDataProvider();
 
-const heatExchanger = getSensorValue(props.sensors.heatExchanger);
+const heatExchanger = getSensorValue(props.source);
 const state = getComponentState();
 </script>
 

@@ -10,7 +10,7 @@ import { MimicTooltip, TooltipComponentContext } from "../../components/tooltip/
 import { MimicComponentType } from "../../types/index.ts";
 import { YardTag } from "../components/yard-tag/index.ts";
 import HeatPumpInstance from "../instances/HeatPumpInstance.vue";
-import { ControlValue, ParameterValue, SensorValue } from "../providers/index.ts";
+import { ControlValue, SensorValue } from "../providers/index.ts";
 import { FieldRenderer } from "../renderers/index.ts";
 import { useTranslations } from "./index.ts";
 import ComponentInfo from "./partials/ComponentInfo.vue";
@@ -40,7 +40,7 @@ const props = defineProps<TooltipComponentContext<MimicComponentType.HeatPump>>(
     <TooltipList>
       <TooltipListHeader>{{ labels("input") }}</TooltipListHeader>
       <ControlValue
-        :source="controls.heatExchanger"
+        :source="controls.heatpump"
         field="on"
       >
         <TooltipListItem>
@@ -53,7 +53,10 @@ const props = defineProps<TooltipComponentContext<MimicComponentType.HeatPump>>(
           </TooltipListItemValue>
         </TooltipListItem>
       </ControlValue>
-      <ParameterValue :source="parameters.temperature">
+      <ControlValue
+        :source="controls.heatpump"
+        field="temperatureSetpoint"
+      >
         <TooltipListItem>
           <TooltipListItemTitle>
             {{ items("temperature") }}
@@ -63,13 +66,13 @@ const props = defineProps<TooltipComponentContext<MimicComponentType.HeatPump>>(
             <FieldRenderer.Temperature />
           </TooltipListItemValue>
         </TooltipListItem>
-      </ParameterValue>
+      </ControlValue>
     </TooltipList>
 
     <TooltipList>
       <TooltipListHeader>{{ labels("heatExchange") }}</TooltipListHeader>
       <SensorValue
-        :source="sensors.heatExchanger"
+        :source="source"
         field="heat"
       >
         <TooltipListItem>
@@ -83,7 +86,7 @@ const props = defineProps<TooltipComponentContext<MimicComponentType.HeatPump>>(
         </TooltipListItem>
       </SensorValue>
       <SensorValue
-        :source="sensors.heatExchanger"
+        :source="source"
         field="deltaT"
       >
         <TooltipListItem>

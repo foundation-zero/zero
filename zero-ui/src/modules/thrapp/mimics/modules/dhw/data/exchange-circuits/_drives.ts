@@ -7,7 +7,7 @@ import { tooltip } from "./shared";
 export default toInstance<MimicComponentType.ExchangeCircuit>({
   controls: {},
   custom: {
-    circuitName: "Drives circuit",
+    circuitName: "Drives & shore",
   },
   parameters: {},
   source: undefined,
@@ -19,7 +19,7 @@ export default toInstance<MimicComponentType.ExchangeCircuit>({
     heatExchanger: getField(SensorComponentType.HeatExchanger, "dhw", "dhwDrivesExchanger"),
   },
   tooltip: tooltip({
-    title: "Drives",
+    title: "Drives & shore",
     technicalName: "drives",
   }),
 });

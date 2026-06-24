@@ -4,8 +4,9 @@ import { Switch } from "@/components/ui/switch";
 import { BoilerLegend, LegendTrigger } from "@/modules/thrapp/components/legends";
 import { MimicTooltipProvider } from "@/modules/thrapp/components/tooltip";
 import NoopTooltipProvider from "@/modules/thrapp/components/tooltip/NoopTooltipProvider.vue";
-import DhwModule from "@/modules/thrapp/mimics/modules/dhw/DhwModule.vue";
 import { DHW_MIMIC_DATA } from "@/modules/thrapp/mimics/modules/dhw/data";
+import DhwModule from "@/modules/thrapp/mimics/modules/dhw/DhwModule.vue";
+import GridPattern from "@/modules/thrapp/mimics/modules/GridPattern.vue";
 import { GraphQLProvider, MockProvider } from "@/modules/thrapp/mimics/providers";
 import { DEFINITIONS } from "@/modules/thrs/lib/consts";
 import { computed, inject, Ref, ref } from "vue";
@@ -21,10 +22,11 @@ const { t } = useI18n();
 <template>
   <component :is="provider">
     <section
-      class="flex h-full justify-around gap-x-4 max-lg:flex-col-reverse portrait:flex-col-reverse"
+      class="relative flex h-full justify-around gap-x-4 max-lg:flex-col-reverse portrait:flex-col-reverse"
     >
+      <GridPattern class="absolute top-0 right-0 bottom-0 left-0 h-full w-full" />
       <aside
-        class="flex w-full flex-row-reverse items-center justify-between landscape:lg:w-62.5 landscape:lg:flex-col landscape:lg:items-start"
+        class="z-1 flex w-full flex-row-reverse items-center justify-between landscape:lg:w-62.5 landscape:lg:flex-col landscape:lg:items-start"
       >
         <div class="flex items-center gap-3">
           <Switch v-model="demoMode" />
@@ -41,7 +43,7 @@ const { t } = useI18n();
       <MimicTooltipProvider :source="DHW_MIMIC_DATA">
         <DhwModule
           v-if="currentDefinition === 'dhw'"
-          class="mx-auto my-auto max-h-[calc(100svh-14em)]"
+          class="z-1 mx-auto my-auto max-h-[calc(100svh-14em)]"
         />
       </MimicTooltipProvider>
     </section>

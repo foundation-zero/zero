@@ -23,13 +23,14 @@ const props = defineProps<
     }
 >();
 
-const { getSensorValue, getComponentState } = getMimicDataProvider();
+const { getSensorValue, getComponentState, getControlValue } = getMimicDataProvider();
 
-const heatExchanger = getSensorValue(props.sensors.heatExchanger);
+const heatExchanger = getSensorValue(props.source);
+const heatpump = getControlValue(props.controls.heatpump);
 const state = getComponentState();
 
 const mode = computed(() => {
-  if (heatExchanger.value?.heat.value !== 0) return HeatPumpModes.Active;
+  if (heatpump.value?.on.value) return HeatPumpModes.Active;
   else return HeatPumpModes.Inactive;
 });
 </script>

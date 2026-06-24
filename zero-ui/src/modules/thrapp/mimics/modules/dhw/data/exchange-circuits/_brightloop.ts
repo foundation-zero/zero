@@ -7,7 +7,7 @@ import { tooltip } from "./shared";
 export default toInstance<MimicComponentType.ExchangeCircuit>({
   controls: {},
   custom: {
-    circuitName: "Brightloop circuit",
+    circuitName: "DC Converters",
   },
   parameters: {},
   source: undefined,
@@ -19,7 +19,7 @@ export default toInstance<MimicComponentType.ExchangeCircuit>({
     heatExchanger: getField(SensorComponentType.HeatExchanger, "dhw", "dhwDcExchanger"),
   },
   tooltip: tooltip({
-    title: "Brightloop",
+    title: "DC Converters",
     technicalName: "brightloop",
   }),
 });

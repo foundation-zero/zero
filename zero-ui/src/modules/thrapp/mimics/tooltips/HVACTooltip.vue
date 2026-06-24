@@ -69,7 +69,7 @@ const props = defineProps<TooltipComponentContext<MimicComponentType.HVAC>>();
     <TooltipList>
       <TooltipListHeader>{{ labels("heatExchange") }}</TooltipListHeader>
       <SensorValue
-        :source="sensors.heatExchanger"
+        :source="source"
         field="heat"
       >
         <TooltipListItem>
@@ -83,7 +83,7 @@ const props = defineProps<TooltipComponentContext<MimicComponentType.HVAC>>();
         </TooltipListItem>
       </SensorValue>
       <SensorValue
-        :source="sensors.heatExchanger"
+        :source="source"
         field="deltaT"
       >
         <TooltipListItem>

@@ -12,16 +12,17 @@ export default toInstance<MimicComponentType.HeatExchanger>({
   custom: {
     sideA: HeatExchangerPortOrientation.Side,
     sideB: HeatExchangerPortOrientation.Top,
-    get circuit() {
-      return DHW_EXCHANGE_CIRCUIT_DATA[MimicComponentType.ExchangeCircuit].drives.sensors;
-    },
     get exchangeCircuit() {
       return DHW_EXCHANGE_CIRCUIT_DATA[MimicComponentType.ExchangeCircuit].drives.sensors;
     },
   },
   parameters: {},
   source: getField(SensorComponentType.HeatExchanger, "dhw", "dhwDrivesExchanger"),
-  sensors: {},
+  sensors: {
+    incoming: getField(SensorComponentType.Temperature, "dhw", "dhwTemperatureHvacExchangerReturn"),
+    outgoing: getField(SensorComponentType.Temperature, "dhw", "dhwTemperatureDrivesReturn"),
+    flow: getField(SensorComponentType.Flow, "dhw", "dhwFlowDrives"),
+  },
   tooltip: tooltip({
     yardTag: "1009",
     technicalName: "dhwDrivesExchanger",
