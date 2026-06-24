@@ -278,6 +278,7 @@ def create_app(settings: Config):
                 mqtt,
                 settings.mqtt_devices_topic_prefix,
                 settings.mqtt_controller_topic_prefix,
+                settings.mqtt_control_topic_suffix,
             )
             pvt_messaging: PvtMessaging = ControlMessaging(
                 "pvt",
@@ -288,6 +289,7 @@ def create_app(settings: Config):
                 mqtt,
                 settings.mqtt_devices_topic_prefix,
                 settings.mqtt_controller_topic_prefix,
+                settings.mqtt_control_topic_suffix,
             )
             pcm_messaging: PcmMessaging = ControlMessaging(
                 "pcm",
@@ -298,6 +300,7 @@ def create_app(settings: Config):
                 mqtt,
                 settings.mqtt_devices_topic_prefix,
                 settings.mqtt_controller_topic_prefix,
+                settings.mqtt_control_topic_suffix,
             )
             consumers_messaging: ConsumersMessaging = ControlMessaging(
                 "consumers",
@@ -308,6 +311,7 @@ def create_app(settings: Config):
                 mqtt,
                 settings.mqtt_devices_topic_prefix,
                 settings.mqtt_controller_topic_prefix,
+                settings.mqtt_control_topic_suffix,
             )
             dhw_messaging: DhwMessaging = ControlMessaging(
                 "dhw",
@@ -318,6 +322,7 @@ def create_app(settings: Config):
                 mqtt,
                 settings.mqtt_devices_topic_prefix,
                 settings.mqtt_controller_topic_prefix,
+                settings.mqtt_control_topic_suffix,
             )
             simulation_messaging: SimulationMessaging = SimulationMessaging(
                 simulation.io_mapping, mqtt, settings.mqtt_simulation_topic_prefix
