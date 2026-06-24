@@ -1650,85 +1650,85 @@
         "fields": [
           {
             "modbus_register": 140,
-            "field_name": "ENGINE_BOX_COMPRESSOR_SPEED ",
+            "field_name": "ENGINE_BOX_COMPRESSOR_SPEED",
             "description": "Engine Box Inverter Compressor Speed: (percentage) Range: 0..100% es. 500 = 50.0%",
             "scale_factor": 1.0
           },
           {
             "modbus_register": 141,
-            "field_name": "ENGINE_BOX_WATER_PUMP_SPEED ",
+            "field_name": "ENGINE_BOX_WATER_PUMP_SPEED",
             "description": "Engine Box Inverter Water Pump Speed: (percentage) Range: 0..100% es. 500 = 50.0%",
             "scale_factor": 1.0
           },
           {
             "modbus_register": 142,
-            "field_name": "CURRENT_REQ_PRESSURE ",
+            "field_name": "CURRENT_REQ_PRESSURE",
             "description": "Engine Box Max Air Handler Required Pressure: (thousandths of Bar) es: 22543 = 22.543 Bar",
             "scale_factor": 1.0
           },
           {
             "modbus_register": 145,
-            "field_name": "ENGINE_BOX_T_SEA_WATER ",
+            "field_name": "ENGINE_BOX_T_SEA_WATER",
             "description": "Engine Box Sea Water Temperature: (hundredths of degrees Celsius) es: 2350 = 23.50 °C",
             "scale_factor": 1.0
           },
           {
             "modbus_register": 149,
-            "field_name": "ENGINE_BOX_P_GAS ",
+            "field_name": "ENGINE_BOX_P_GAS",
             "description": "Engine Box Gas Pressure: (thousandths of Bar) es: 22543 = 22.543 Bar",
             "scale_factor": 1.0
           },
           {
             "modbus_register": 150,
-            "field_name": "ENGINE_BOX_P_LIQUID ",
+            "field_name": "ENGINE_BOX_P_LIQUID",
             "description": "Engine Box Liquid Pressure: (thousandths of Bar) es: 22543 = 22.543 Bar",
             "scale_factor": 1.0
           },
           {
             "modbus_register": 151,
-            "field_name": "ENGINE_BOX_P_CONDENSER ",
+            "field_name": "ENGINE_BOX_P_CONDENSER",
             "description": "Engine Box Condenser Pressure: (thousandths of Bar) es: 22543 = 22.543 Bar",
             "scale_factor": 1.0
           },
           {
             "modbus_register": 155,
-            "field_name": "ENGINE_BOX_COMPRESSOR2_SPEED ",
+            "field_name": "ENGINE_BOX_COMPRESSOR2_SPEED",
             "description": "Engine Box Inverter Compressor2 Speed: (percentage) Range: 0..100% es. 500 = 50.0%",
             "scale_factor": 1.0
           },
           {
             "modbus_register": 182,
-            "field_name": "WATT_AC_COMPRESSOR_1 ",
+            "field_name": "WATT_AC_COMPRESSOR_1",
             "description": "Instantaneous absorption control of the AC compressor 1 (1=0,01 Watt)",
             "scale_factor": 1.0
           },
           {
             "modbus_register": 183,
-            "field_name": "WATT_AC_COMPRESSOR_2 ",
+            "field_name": "WATT_AC_COMPRESSOR_2",
             "description": "Instantaneous absorption control of the AC compressor 2 (1=0,01 Watt)",
             "scale_factor": 1.0
           },
           {
             "modbus_register": 184,
-            "field_name": "WATT_SEA_WATER_PUMP ",
+            "field_name": "WATT_SEA_WATER_PUMP",
             "description": "Instantaneous absorption control of the AC Sea Water Pump (1=0,01 Watt)",
             "scale_factor": 1.0
           },
           {
             "modbus_register": 185,
-            "field_name": "AC_COMPRESSOR_1 ",
+            "field_name": "AC_COMPRESSOR_1",
             "description": "Instantaneous absorption control of the AC compressor 1 (1=0,01 Ampere)",
             "scale_factor": 1.0
           },
           {
             "modbus_register": 186,
-            "field_name": "AC_COMPRESSOR_2 ",
+            "field_name": "AC_COMPRESSOR_2",
             "description": "Instantaneous absorption control of the AC compressor 2 (1=0,01 Ampere)",
             "scale_factor": 1.0
           },
           {
             "modbus_register": 187,
-            "field_name": "SEA_WATER_PUMP ",
+            "field_name": "SEA_WATER_PUMP",
             "description": "Instantaneous absorption control of the AC Sea Water Pump (1=0,01 Ampere)",
             "scale_factor": 1.0
           }

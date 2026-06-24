@@ -61,8 +61,6 @@ def select_reg_split(df: pl.DataFrame, topic_prefix: str) -> List[MQTTTopic]:
             )
         )
 
-    # sorted_result = dict(sorted(result, key=lambda x: int(x[0])))
-
     return result
 
 
@@ -101,6 +99,7 @@ def load_flat_topic(
     ).with_columns(
         pl.col("register_name")
         .str.replace("|".join(field_name_strip), "")
+        .str.strip_chars()
         .alias("field_name"),
     )
     print(f"load flat topic {topic} with {len(df)} registers")
@@ -118,8 +117,6 @@ def load_flat_topic(
 
 
 if __name__ == "__main__":
-    # load_registers(EXCEL_PATH, sheet_name="Vent", unit_id=33)  # Need to check slave id
-    # load_registers(EXCEL_PATH, sheet_name="AC", unit_id=32)
     modbus_units = [
         load_ac_modbus_unit(excel_path=EXCEL_PATH, unit_id=32),
     ]
