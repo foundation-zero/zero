@@ -540,7 +540,7 @@ class DhwControlValues(ThrsValues):
         component_meta(
             component_type="tank_controller",
             included_in_fmu=False,
-            topic="controller/dhw/dhw_tanks_controller",
+            topic="controller/dhw/dhw-tanks-controller",
         ),
     ]
     dhw_pump_flow_controller: Annotated[
@@ -548,7 +548,7 @@ class DhwControlValues(ThrsValues):
         component_meta(
             component_type="pid_controller",
             included_in_fmu=False,
-            topic="controller/dhw/dhw_pump_flow_controller",
+            topic="controller/dhw/dhw-pump-flow-controller",
         ),
     ]
     dhw_pump_temperature_controller: Annotated[
@@ -556,7 +556,7 @@ class DhwControlValues(ThrsValues):
         component_meta(
             component_type="pid_controller",
             included_in_fmu=False,
-            topic="controller/dhw/dhw_pump_temperature_controller",
+            topic="controller/dhw/dhw-pump-temperature-controller",
         ),
     ]
     dhw_drives_flow_controller: Annotated[
@@ -564,7 +564,7 @@ class DhwControlValues(ThrsValues):
         component_meta(
             component_type="pid_controller",
             included_in_fmu=False,
-            topic="controller/dhw/dhw_drives_flow_controller",
+            topic="controller/dhw/dhw-drives-flow-controller",
         ),
     ]
     dhw_dc_flow_controller: Annotated[
@@ -572,7 +572,7 @@ class DhwControlValues(ThrsValues):
         component_meta(
             component_type="pid_controller",
             included_in_fmu=False,
-            topic="controller/dhw/dhw_dc_flow_controller",
+            topic="controller/dhw/dhw-dc-flow-controller",
         ),
     ]
 

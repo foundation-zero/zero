@@ -90,7 +90,7 @@ export default defineConfig({
         text: "Modules",
         items: [
           { text: "Overview", link: "/mimics/modules/" },
-          { text: "Dhw Module", link: "/mimics/modules/dhw-module" },
+          { text: "DHW Module", link: "/mimics/modules/dhw-module" },
         ],
       },
     ],

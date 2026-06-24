@@ -6,7 +6,7 @@
       "pcm": "PCM",
       "pvt": "PVT",
       "consumers": "Consumers",
-      "dhw": "Dhw"
+      "dhw": "DHW"
     },
     "title": "HMI",
     "views": {

@@ -4,7 +4,7 @@ Scenes represent composed mimic layouts that bring together multiple components 
 
 ## Available Scenes
 
-- [Dhw Scene](/mimics/modules/dhw-module) - Initial documentation page for the DhwScene composition
+- [DHW Scene](/mimics/modules/dhw-module) - Initial documentation page for the DhwScene composition
 
 ## Purpose
 
