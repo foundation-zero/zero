@@ -12,7 +12,11 @@ from thrs.input_output.base import (
     SimulationValues,
     ThrsValues,
 )
-from thrs.orchestration.connector import Connector
+from thrs.orchestration.connector import (
+    Connector,
+    MqttConnector,
+    MqttSimulationConnector,
+)
 from thrs.orchestration.module import CombinedModule
 from thrs.orchestration.simulation import Simulation
 from thrs.simulation.fmu import Fmu
@@ -69,12 +73,14 @@ class Runner[S: ThrsValues, C: ThrsValues, P: ThrsValues, M: ThrsValues]:
 
     def __init__(
         self,
-        connector: Connector[S, C],
+        control_connector: MqttConnector,
+        simulation_connector: MqttSimulationConnector | None,
         control: Control[S, C, P, M],
         alarms: BaseAlarms[S, C, P],
     ):
         self._control = control
-        self._connector = connector
+        self._control_connector = control_connector
+        self._simulation_connector = simulation_connector
         self._alarms = alarms
         self._control_values = self._control.initial()
 
@@ -92,10 +98,20 @@ class Runner[S: ThrsValues, C: ThrsValues, P: ThrsValues, M: ThrsValues]:
 
     async def run(self, n_ticks: int) -> None:
         for _ in range(n_ticks):
-            sensor_values = await self._connector.transceive(self._control_values)
-            self._control_values = self._control.control(sensor_values)
+            sensor_values = await self._control_connector.transceive(
+                self._control_values  # type:ignore
+            )
+            if self._simulation_connector:
+                # If there is a simulation, we run it and use its sensor values
+                sensor_values = await self._simulation_connector.transceive(
+                    self._control_values  # type:ignore
+                )
+
+            self._control_values = self._control.control(sensor_values)  # type:ignore
             alarms = self._alarms.check(
-                sensor_values, self._control_values, self._control.parameters
+                sensor_values,  # type:ignore
+                self._control_values,  # type:ignore
+                self._control.parameters,
             )
             if alarms:
                 warnings.warn(

@@ -175,7 +175,7 @@ class Connector[S, C](Protocol):
     async def transceive(self, control_values: C) -> S: ...
 
 
-class MqttControlConnector(Connector[CombinedValues, CombinedValues]):
+class MqttConnector(Connector[CombinedValues, CombinedValues]):
     def __init__(
         self,
         mqtt_client: Client,
@@ -309,45 +309,3 @@ class MqttSimulationConnector(Connector[CombinedValues, CombinedValues]):
         await self._send_simulation_output(simulation_result)
 
         return simulation_result.sensor_values
-
-
-class MqttConnector(Connector[CombinedValues, CombinedValues]):
-    # Compatibility wrapper composed from split connectors:
-    # - MqttControlConnector handles controller-side MQTT I/O
-    # - MqttSimulationConnector handles simulation-side execution and publishing
-    def __init__(
-        self,
-        simulation: "Simulation",
-        controller_client: Client,
-        environment_client: Client,
-        devices_topic_prefix: str,
-        controller_topic_prefix: str,
-        simulation_topic_prefix: str,
-        sensor_values_clss: ModuleClassMap,
-        control_values_clss: ModuleClassMap,
-        simulation_outputs_cls: type[ThrsValues],
-        control_topic_suffix: str | None = None,
-    ):
-        self._control_connector = MqttControlConnector(
-            mqtt_client=controller_client,
-            devices_topic_prefix=devices_topic_prefix,
-            controller_topic_prefix=controller_topic_prefix,
-            sensor_values_clss=sensor_values_clss,
-            control_values_clss=control_values_clss,
-            control_topic_suffix=control_topic_suffix,
-        )
-        self._simulation_connector = MqttSimulationConnector(
-            simulation=simulation,
-            mqtt_client=environment_client,
-            devices_topic_prefix=devices_topic_prefix,
-            simulation_topic_prefix=simulation_topic_prefix,
-            sensor_values_clss=sensor_values_clss,
-            simulation_outputs_cls=simulation_outputs_cls,
-        )
-
-    async def run(self):
-        await self._control_connector.run()
-
-    async def transceive(self, control_values: CombinedValues) -> CombinedValues:
-        await self._control_connector.transceive(control_values)
-        return await self._simulation_connector.transceive(control_values)
