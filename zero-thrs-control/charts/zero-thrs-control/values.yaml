@@ -28,7 +28,7 @@ control:
     className: tailscale
 
 simulation:
-  enabled: true
+  enabled: false
   image:
     repository: europe-west1-docker.pkg.dev/common-449414/common/zero-thrs-simulation
     # This sets the pull policy for images.
