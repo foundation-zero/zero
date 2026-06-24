@@ -157,6 +157,10 @@
         "label": "Flow",
         "unit": "L/min"
       },
+      "maximumTemperature": {
+        "label": "Maximum temperature",
+        "unit": "°C"
+      },
       "temperature": {
         "label": "Temperature",
         "unit": "°C"
