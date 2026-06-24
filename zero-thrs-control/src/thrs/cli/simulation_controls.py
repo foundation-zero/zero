@@ -63,7 +63,10 @@ from thrs.input_output.modules.thrusters import (
     ThrustersSimulationOutputs,
 )
 from thrs.orchestration.config import Config
-from thrs.orchestration.connector import MqttConnector
+from thrs.orchestration.connector import (
+    MqttConnector,
+    MqttSimulationConnector,
+)
 from thrs.orchestration.module import CombinedControl, CombinedModule
 from thrs.orchestration.runner import Runner
 from thrs.orchestration.simulation import Simulation
@@ -801,21 +804,31 @@ class SimulationControls:
                     ControlModeMessage(module=module, mode=control.mode_for(module)),
                 )
 
-            connector = MqttConnector(
-                simulation,
-                self._control_client,
-                self._sensor_client,
-                self._devices_topic_prefix,
-                self._controller_topic_prefix,
-                self._simulation_topic_prefix,
-                modules.sensor_values_clss,
-                modules.control_values_clss,
-                modules.simulation_outputs_cls,
-                self._control_topic_suffix,
+            control_connector = MqttConnector(
+                mqtt_client=self._control_client,
+                devices_topic_prefix=self._devices_topic_prefix,
+                controller_topic_prefix=self._controller_topic_prefix,
+                sensor_values_clss=modules.sensor_values_clss,
+                control_values_clss=modules.control_values_clss,
+                control_topic_suffix=self._control_topic_suffix,
             )
-            runner = Runner(connector, control, modules.alarms())  # type: ignore
+            simulation_connector = MqttSimulationConnector(
+                simulation=simulation,
+                mqtt_client=self._sensor_client,
+                devices_topic_prefix=self._devices_topic_prefix,
+                simulation_topic_prefix=self._simulation_topic_prefix,
+                sensor_values_clss=modules.sensor_values_clss,
+                simulation_outputs_cls=modules.simulation_outputs_cls,
+            )
 
-            connector_task = create_task(connector.run())
+            runner = Runner(
+                control_connector,
+                simulation_connector,
+                control,  # type: ignore
+                modules.alarms(),  # type: ignore
+            )
+
+            connector_task = create_task(control_connector.run())
             receive_task = create_task(
                 self._receive_controls(
                     SIMULATION_HANDLERS,

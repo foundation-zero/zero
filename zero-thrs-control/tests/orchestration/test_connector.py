@@ -21,7 +21,7 @@ from thrs.orchestration.connector import (
     DirectMqttMapping,
     ModuleMqttMapping,
     MqttConnector,
-    MqttControlConnector,
+    MqttSimulationConnector,
     PartialMqttMapping,
 )
 
@@ -170,24 +170,18 @@ class TestCombinedMqttMapping:
         )
 
 
-async def _mqtt_client(settings):
+@pytest.fixture
+async def mqtt_client(settings):
     async with Client(settings.mqtt_host, settings.mqtt_port) as client:
         yield client
 
 
-mqtt_client = pytest.fixture(_mqtt_client)
-mqtt_client2 = pytest.fixture(_mqtt_client)
-
-
-async def test_mqtt_connector(mqtt_client, mqtt_client2):
-    connector = MqttConnector(
+async def test_mqtt_simulation_connector(mqtt_client):
+    connector = MqttSimulationConnector(
         SimpleSimulation(datetime.now()),
         mqtt_client,
-        mqtt_client2,
         "test_devices_topic_prefix",
-        "test_controller_topic_prefix",
         "test_simulation_topic_prefix",
-        {"simple": SimpleInOut},
         {"simple": SimpleInOut},
         SimpleInOut,
     )
@@ -236,7 +230,7 @@ def mock_mqtt_client() -> mock.AsyncMock:
     mock_mqtt_client = mock.AsyncMock(Client)
 
     async def receive_messages(
-        connector: MqttControlConnector, messages: dict[str, ThrsValues]
+        connector: MqttConnector, messages: dict[str, ThrsValues]
     ):
         async def return_messages():
             for topic, payload in messages.items():
@@ -272,7 +266,7 @@ async def test_mqttcontrol_connector(mock_mqtt_client):
      - that the suffixes are correct
      - That sending and receiving (in order) is correct
     """
-    connector = MqttControlConnector(
+    connector = MqttConnector(
         mock_mqtt_client,
         "devices_topic_prefix",
         "controller_topic_prefix",
