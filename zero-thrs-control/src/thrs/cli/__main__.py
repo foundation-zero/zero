@@ -1,10 +1,10 @@
 from pydantic_settings import CliApp
 
-from .cli import THRS_cli
+from .cli import ThrsCli
 
 
 def run_app():
-    CliApp.run(THRS_cli)
+    CliApp.run(ThrsCli)
 
 
 if __name__ == "__main__":

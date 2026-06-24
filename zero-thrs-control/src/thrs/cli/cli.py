@@ -20,7 +20,9 @@ settings = Config()  # type: ignore
 
 
 class RunCmd(Config):
-    mode: CliPositionalArg[Modes] # For now, keep it as previous structure, but we can change it to a subcommand in the future.
+    mode: CliPositionalArg[
+        Modes
+    ]  # For now, keep it as previous structure, but we can change it to a subcommand in the future.
 
     async def cli_cmd(self) -> None:
         logger.info("Running THRS Simulation and control...")
@@ -30,7 +32,7 @@ class RunCmd(Config):
             await controls.run(self.mode)
 
 
-class THRS_cli(BaseSettings, cli_kebab_case=True):
+class ThrsCli(BaseSettings, cli_kebab_case=True):
     model_config = SettingsConfigDict(
         env_file=".env",
         env_file_encoding="utf-8",
