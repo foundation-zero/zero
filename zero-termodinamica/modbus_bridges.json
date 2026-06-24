@@ -7,13 +7,13 @@
         "modbus_fields": [
           {
             "modbus_register": 200,
-            "field_name": "pwr",
+            "field_name": "power",
             "description": "Unit Power On/Off 0=OFF 1=ON",
             "scale_factor": 1.0
           },
           {
             "modbus_register": 201,
-            "field_name": "sp_room",
+            "field_name": "setpoint_room_temperature",
             "description": "Unit SetPoint: (hundredths of degrees Celsius) es: 2350 = 23.50 °C -> Range: 18..30°C\"",
             "scale_factor": 1.0
           },
@@ -25,7 +25,7 @@
           },
           {
             "modbus_register": 203,
-            "field_name": "air_in",
+            "field_name": "air_temperature_in",
             "description": "Unit Input Air Temperature: (hundredths of degrees Celsius) es: 2350 = 23.50 °C",
             "scale_factor": 1.0
           },
@@ -43,13 +43,13 @@
           },
           {
             "modbus_register": 206,
-            "field_name": "heater_pwr",
+            "field_name": "heater_power",
             "description": "Heater State 0 = OFF; 1 = ON ",
             "scale_factor": 1.0
           },
           {
             "modbus_register": 207,
-            "field_name": "humi",
+            "field_name": "humidity",
             "description": "Humidity 0..100% ",
             "scale_factor": 1.0
           }
@@ -70,13 +70,13 @@
         "modbus_fields": [
           {
             "modbus_register": 210,
-            "field_name": "pwr",
+            "field_name": "power",
             "description": "Unit Power On/Off 0=OFF 1=ON",
             "scale_factor": 1.0
           },
           {
             "modbus_register": 211,
-            "field_name": "sp_room",
+            "field_name": "setpoint_room_temperature",
             "description": "Unit SetPoint: (hundredths of degrees Celsius) es: 2350 = 23.50 °C -> Range: 18..30°C\"",
             "scale_factor": 1.0
           },
@@ -88,7 +88,7 @@
           },
           {
             "modbus_register": 213,
-            "field_name": "air_in",
+            "field_name": "air_temperature_in",
             "description": "Unit Input Air Temperature: (hundredths of degrees Celsius) es: 2350 = 23.50 °C",
             "scale_factor": 1.0
           },
@@ -106,13 +106,13 @@
           },
           {
             "modbus_register": 216,
-            "field_name": "heater_pwr",
+            "field_name": "heater_power",
             "description": "Heater State 0 = OFF; 1 = ON ",
             "scale_factor": 1.0
           },
           {
             "modbus_register": 217,
-            "field_name": "humi",
+            "field_name": "humidity",
             "description": "Humidity 0..100% ",
             "scale_factor": 1.0
           }
@@ -133,13 +133,13 @@
         "modbus_fields": [
           {
             "modbus_register": 220,
-            "field_name": "pwr",
+            "field_name": "power",
             "description": "Unit Power On/Off 0=OFF 1=ON",
             "scale_factor": 1.0
           },
           {
             "modbus_register": 221,
-            "field_name": "sp_room",
+            "field_name": "setpoint_room_temperature",
             "description": "Unit SetPoint: (hundredths of degrees Celsius) es: 2350 = 23.50 °C -> Range: 18..30°C\"",
             "scale_factor": 1.0
           },
@@ -151,7 +151,7 @@
           },
           {
             "modbus_register": 223,
-            "field_name": "air_in",
+            "field_name": "air_temperature_in",
             "description": "Unit Input Air Temperature: (hundredths of degrees Celsius) es: 2350 = 23.50 °C",
             "scale_factor": 1.0
           },
@@ -169,13 +169,13 @@
           },
           {
             "modbus_register": 226,
-            "field_name": "heater_pwr",
+            "field_name": "heater_power",
             "description": "Heater State 0 = OFF; 1 = ON ",
             "scale_factor": 1.0
           },
           {
             "modbus_register": 227,
-            "field_name": "humi",
+            "field_name": "humidity",
             "description": "Humidity 0..100% ",
             "scale_factor": 1.0
           }
@@ -196,13 +196,13 @@
         "modbus_fields": [
           {
             "modbus_register": 230,
-            "field_name": "pwr",
+            "field_name": "power",
             "description": "Unit Power On/Off 0=OFF 1=ON",
             "scale_factor": 1.0
           },
           {
             "modbus_register": 231,
-            "field_name": "sp_room",
+            "field_name": "setpoint_room_temperature",
             "description": "Unit SetPoint: (hundredths of degrees Celsius) es: 2350 = 23.50 °C -> Range: 18..30°C\"",
             "scale_factor": 1.0
           },
@@ -214,7 +214,7 @@
           },
           {
             "modbus_register": 233,
-            "field_name": "air_in",
+            "field_name": "air_temperature_in",
             "description": "Unit Input Air Temperature: (hundredths of degrees Celsius) es: 2350 = 23.50 °C",
             "scale_factor": 1.0
           },
@@ -232,13 +232,13 @@
           },
           {
             "modbus_register": 236,
-            "field_name": "heater_pwr",
+            "field_name": "heater_power",
             "description": "Heater State 0 = OFF; 1 = ON ",
             "scale_factor": 1.0
           },
           {
             "modbus_register": 237,
-            "field_name": "humi",
+            "field_name": "humidity",
             "description": "Humidity 0..100% ",
             "scale_factor": 1.0
           }
@@ -259,13 +259,13 @@
         "modbus_fields": [
           {
             "modbus_register": 240,
-            "field_name": "pwr",
+            "field_name": "power",
             "description": "Unit Power On/Off 0=OFF 1=ON",
             "scale_factor": 1.0
           },
           {
             "modbus_register": 241,
-            "field_name": "sp_room",
+            "field_name": "setpoint_room_temperature",
             "description": "Unit SetPoint: (hundredths of degrees Celsius) es: 2350 = 23.50 °C -> Range: 18..30°C\"",
             "scale_factor": 1.0
           },
@@ -277,7 +277,7 @@
           },
           {
             "modbus_register": 243,
-            "field_name": "air_in",
+            "field_name": "air_temperature_in",
             "description": "Unit Input Air Temperature: (hundredths of degrees Celsius) es: 2350 = 23.50 °C",
             "scale_factor": 1.0
           },
@@ -295,13 +295,13 @@
           },
           {
             "modbus_register": 246,
-            "field_name": "heater_pwr",
+            "field_name": "heater_power",
             "description": "Heater State 0 = OFF; 1 = ON ",
             "scale_factor": 1.0
           },
           {
             "modbus_register": 247,
-            "field_name": "humi",
+            "field_name": "humidity",
             "description": "Humidity 0..100% ",
             "scale_factor": 1.0
           }
@@ -322,13 +322,13 @@
         "modbus_fields": [
           {
             "modbus_register": 250,
-            "field_name": "pwr",
+            "field_name": "power",
             "description": "Unit Power On/Off 0=OFF 1=ON",
             "scale_factor": 1.0
           },
           {
             "modbus_register": 251,
-            "field_name": "sp_room",
+            "field_name": "setpoint_room_temperature",
             "description": "Unit SetPoint: (hundredths of degrees Celsius) es: 2350 = 23.50 °C -> Range: 18..30°C\"",
             "scale_factor": 1.0
           },
@@ -340,7 +340,7 @@
           },
           {
             "modbus_register": 253,
-            "field_name": "air_in",
+            "field_name": "air_temperature_in",
             "description": "Unit Input Air Temperature: (hundredths of degrees Celsius) es: 2350 = 23.50 °C",
             "scale_factor": 1.0
           },
@@ -358,13 +358,13 @@
           },
           {
             "modbus_register": 256,
-            "field_name": "heater_pwr",
+            "field_name": "heater_power",
             "description": "Heater State 0 = OFF; 1 = ON ",
             "scale_factor": 1.0
           },
           {
             "modbus_register": 257,
-            "field_name": "humi",
+            "field_name": "humidity",
             "description": "Humidity 0..100% ",
             "scale_factor": 1.0
           }
@@ -385,13 +385,13 @@
         "modbus_fields": [
           {
             "modbus_register": 260,
-            "field_name": "pwr",
+            "field_name": "power",
             "description": "Unit Power On/Off 0=OFF 1=ON",
             "scale_factor": 1.0
           },
           {
             "modbus_register": 261,
-            "field_name": "sp_room",
+            "field_name": "setpoint_room_temperature",
             "description": "Unit SetPoint: (hundredths of degrees Celsius) es: 2350 = 23.50 °C -> Range: 18..30°C\"",
             "scale_factor": 1.0
           },
@@ -403,7 +403,7 @@
           },
           {
             "modbus_register": 263,
-            "field_name": "air_in",
+            "field_name": "air_temperature_in",
             "description": "Unit Input Air Temperature: (hundredths of degrees Celsius) es: 2350 = 23.50 °C",
             "scale_factor": 1.0
           },
@@ -421,13 +421,13 @@
           },
           {
             "modbus_register": 266,
-            "field_name": "heater_pwr",
+            "field_name": "heater_power",
             "description": "Heater State 0 = OFF; 1 = ON ",
             "scale_factor": 1.0
           },
           {
             "modbus_register": 267,
-            "field_name": "humi",
+            "field_name": "humidity",
             "description": "Humidity 0..100% ",
             "scale_factor": 1.0
           }
@@ -448,13 +448,13 @@
         "modbus_fields": [
           {
             "modbus_register": 270,
-            "field_name": "pwr",
+            "field_name": "power",
             "description": "Unit Power On/Off 0=OFF 1=ON",
             "scale_factor": 1.0
           },
           {
             "modbus_register": 271,
-            "field_name": "sp_room",
+            "field_name": "setpoint_room_temperature",
             "description": "Unit SetPoint: (hundredths of degrees Celsius) es: 2350 = 23.50 °C -> Range: 18..30°C\"",
             "scale_factor": 1.0
           },
@@ -466,7 +466,7 @@
           },
           {
             "modbus_register": 273,
-            "field_name": "air_in",
+            "field_name": "air_temperature_in",
             "description": "Unit Input Air Temperature: (hundredths of degrees Celsius) es: 2350 = 23.50 °C",
             "scale_factor": 1.0
           },
@@ -484,13 +484,13 @@
           },
           {
             "modbus_register": 276,
-            "field_name": "heater_pwr",
+            "field_name": "heater_power",
             "description": "Heater State 0 = OFF; 1 = ON ",
             "scale_factor": 1.0
           },
           {
             "modbus_register": 277,
-            "field_name": "humi",
+            "field_name": "humidity",
             "description": "Humidity 0..100% ",
             "scale_factor": 1.0
           }
@@ -511,13 +511,13 @@
         "modbus_fields": [
           {
             "modbus_register": 280,
-            "field_name": "pwr",
+            "field_name": "power",
             "description": "Unit Power On/Off 0=OFF 1=ON",
             "scale_factor": 1.0
           },
           {
             "modbus_register": 281,
-            "field_name": "sp_room",
+            "field_name": "setpoint_room_temperature",
             "description": "Unit SetPoint: (hundredths of degrees Celsius) es: 2350 = 23.50 °C -> Range: 18..30°C\"",
             "scale_factor": 1.0
           },
@@ -529,7 +529,7 @@
           },
           {
             "modbus_register": 283,
-            "field_name": "air_in",
+            "field_name": "air_temperature_in",
             "description": "Unit Input Air Temperature: (hundredths of degrees Celsius) es: 2350 = 23.50 °C",
             "scale_factor": 1.0
           },
@@ -547,13 +547,13 @@
           },
           {
             "modbus_register": 286,
-            "field_name": "heater_pwr",
+            "field_name": "heater_power",
             "description": "Heater State 0 = OFF; 1 = ON ",
             "scale_factor": 1.0
           },
           {
             "modbus_register": 287,
-            "field_name": "humi",
+            "field_name": "humidity",
             "description": "Humidity 0..100% ",
             "scale_factor": 1.0
           }
@@ -574,13 +574,13 @@
         "modbus_fields": [
           {
             "modbus_register": 290,
-            "field_name": "pwr",
+            "field_name": "power",
             "description": "Unit Power On/Off 0=OFF 1=ON",
             "scale_factor": 1.0
           },
           {
             "modbus_register": 291,
-            "field_name": "sp_room",
+            "field_name": "setpoint_room_temperature",
             "description": "Unit SetPoint: (hundredths of degrees Celsius) es: 2350 = 23.50 °C -> Range: 18..30°C\"",
             "scale_factor": 1.0
           },
@@ -592,7 +592,7 @@
           },
           {
             "modbus_register": 293,
-            "field_name": "air_in",
+            "field_name": "air_temperature_in",
             "description": "Unit Input Air Temperature: (hundredths of degrees Celsius) es: 2350 = 23.50 °C",
             "scale_factor": 1.0
           },
@@ -610,13 +610,13 @@
           },
           {
             "modbus_register": 296,
-            "field_name": "heater_pwr",
+            "field_name": "heater_power",
             "description": "Heater State 0 = OFF; 1 = ON ",
             "scale_factor": 1.0
           },
           {
             "modbus_register": 297,
-            "field_name": "humi",
+            "field_name": "humidity",
             "description": "Humidity 0..100% ",
             "scale_factor": 1.0
           }
@@ -637,13 +637,13 @@
         "modbus_fields": [
           {
             "modbus_register": 300,
-            "field_name": "pwr",
+            "field_name": "power",
             "description": "Unit Power On/Off 0=OFF 1=ON",
             "scale_factor": 1.0
           },
           {
             "modbus_register": 301,
-            "field_name": "sp_room",
+            "field_name": "setpoint_room_temperature",
             "description": "Unit SetPoint: (hundredths of degrees Celsius) es: 2350 = 23.50 °C -> Range: 18..30°C\"",
             "scale_factor": 1.0
           },
@@ -655,7 +655,7 @@
           },
           {
             "modbus_register": 303,
-            "field_name": "air_in",
+            "field_name": "air_temperature_in",
             "description": "Unit Input Air Temperature: (hundredths of degrees Celsius) es: 2350 = 23.50 °C",
             "scale_factor": 1.0
           },
@@ -673,13 +673,13 @@
           },
           {
             "modbus_register": 306,
-            "field_name": "heater_pwr",
+            "field_name": "heater_power",
             "description": "Heater State 0 = OFF; 1 = ON ",
             "scale_factor": 1.0
           },
           {
             "modbus_register": 307,
-            "field_name": "humi",
+            "field_name": "humidity",
             "description": "Humidity 0..100% ",
             "scale_factor": 1.0
           }
@@ -700,13 +700,13 @@
         "modbus_fields": [
           {
             "modbus_register": 310,
-            "field_name": "pwr",
+            "field_name": "power",
             "description": "Unit Power On/Off 0=OFF 1=ON",
             "scale_factor": 1.0
           },
           {
             "modbus_register": 311,
-            "field_name": "sp_room",
+            "field_name": "setpoint_room_temperature",
             "description": "Unit SetPoint: (hundredths of degrees Celsius) es: 2350 = 23.50 °C -> Range: 18..30°C\"",
             "scale_factor": 1.0
           },
@@ -718,7 +718,7 @@
           },
           {
             "modbus_register": 313,
-            "field_name": "air_in",
+            "field_name": "air_temperature_in",
             "description": "Unit Input Air Temperature: (hundredths of degrees Celsius) es: 2350 = 23.50 °C",
             "scale_factor": 1.0
           },
@@ -736,13 +736,13 @@
           },
           {
             "modbus_register": 316,
-            "field_name": "heater_pwr",
+            "field_name": "heater_power",
             "description": "Heater State 0 = OFF; 1 = ON ",
             "scale_factor": 1.0
           },
           {
             "modbus_register": 317,
-            "field_name": "humi",
+            "field_name": "humidity",
             "description": "Humidity 0..100% ",
             "scale_factor": 1.0
           }
@@ -763,13 +763,13 @@
         "modbus_fields": [
           {
             "modbus_register": 320,
-            "field_name": "pwr",
+            "field_name": "power",
             "description": "Unit Power On/Off 0=OFF 1=ON",
             "scale_factor": 1.0
           },
           {
             "modbus_register": 321,
-            "field_name": "sp_room",
+            "field_name": "setpoint_room_temperature",
             "description": "Unit SetPoint: (hundredths of degrees Celsius) es: 2350 = 23.50 °C -> Range: 18..30°C\"",
             "scale_factor": 1.0
           },
@@ -781,7 +781,7 @@
           },
           {
             "modbus_register": 323,
-            "field_name": "air_in",
+            "field_name": "air_temperature_in",
             "description": "Unit Input Air Temperature: (hundredths of degrees Celsius) es: 2350 = 23.50 °C",
             "scale_factor": 1.0
           },
@@ -799,13 +799,13 @@
           },
           {
             "modbus_register": 326,
-            "field_name": "heater_pwr",
+            "field_name": "heater_power",
             "description": "Heater State 0 = OFF; 1 = ON ",
             "scale_factor": 1.0
           },
           {
             "modbus_register": 327,
-            "field_name": "humi",
+            "field_name": "humidity",
             "description": "Humidity 0..100% ",
             "scale_factor": 1.0
           }
@@ -826,13 +826,13 @@
         "modbus_fields": [
           {
             "modbus_register": 330,
-            "field_name": "pwr",
+            "field_name": "power",
             "description": "Unit Power On/Off 0=OFF 1=ON",
             "scale_factor": 1.0
           },
           {
             "modbus_register": 331,
-            "field_name": "sp_room",
+            "field_name": "setpoint_room_temperature",
             "description": "Unit SetPoint: (hundredths of degrees Celsius) es: 2350 = 23.50 °C -> Range: 18..30°C\"",
             "scale_factor": 1.0
           },
@@ -844,7 +844,7 @@
           },
           {
             "modbus_register": 333,
-            "field_name": "air_in",
+            "field_name": "air_temperature_in",
             "description": "Unit Input Air Temperature: (hundredths of degrees Celsius) es: 2350 = 23.50 °C",
             "scale_factor": 1.0
           },
@@ -862,13 +862,13 @@
           },
           {
             "modbus_register": 336,
-            "field_name": "heater_pwr",
+            "field_name": "heater_power",
             "description": "Heater State 0 = OFF; 1 = ON ",
             "scale_factor": 1.0
           },
           {
             "modbus_register": 337,
-            "field_name": "humi",
+            "field_name": "humidity",
             "description": "Humidity 0..100% ",
             "scale_factor": 1.0
           }
@@ -889,13 +889,13 @@
         "modbus_fields": [
           {
             "modbus_register": 340,
-            "field_name": "pwr",
+            "field_name": "power",
             "description": "Unit Power On/Off 0=OFF 1=ON",
             "scale_factor": 1.0
           },
           {
             "modbus_register": 341,
-            "field_name": "sp_room",
+            "field_name": "setpoint_room_temperature",
             "description": "Unit SetPoint: (hundredths of degrees Celsius) es: 2350 = 23.50 °C -> Range: 18..30°C\"",
             "scale_factor": 1.0
           },
@@ -907,7 +907,7 @@
           },
           {
             "modbus_register": 343,
-            "field_name": "air_in",
+            "field_name": "air_temperature_in",
             "description": "Unit Input Air Temperature: (hundredths of degrees Celsius) es: 2350 = 23.50 °C",
             "scale_factor": 1.0
           },
@@ -925,13 +925,13 @@
           },
           {
             "modbus_register": 346,
-            "field_name": "heater_pwr",
+            "field_name": "heater_power",
             "description": "Heater State 0 = OFF; 1 = ON ",
             "scale_factor": 1.0
           },
           {
             "modbus_register": 347,
-            "field_name": "humi",
+            "field_name": "humidity",
             "description": "Humidity 0..100% ",
             "scale_factor": 1.0
           }
@@ -952,13 +952,13 @@
         "modbus_fields": [
           {
             "modbus_register": 350,
-            "field_name": "pwr",
+            "field_name": "power",
             "description": "Unit Power On/Off 0=OFF 1=ON",
             "scale_factor": 1.0
           },
           {
             "modbus_register": 351,
-            "field_name": "sp_room",
+            "field_name": "setpoint_room_temperature",
             "description": "Unit SetPoint: (hundredths of degrees Celsius) es: 2350 = 23.50 °C -> Range: 18..30°C\"",
             "scale_factor": 1.0
           },
@@ -970,7 +970,7 @@
           },
           {
             "modbus_register": 353,
-            "field_name": "air_in",
+            "field_name": "air_temperature_in",
             "description": "Unit Input Air Temperature: (hundredths of degrees Celsius) es: 2350 = 23.50 °C",
             "scale_factor": 1.0
           },
@@ -988,13 +988,13 @@
           },
           {
             "modbus_register": 356,
-            "field_name": "heater_pwr",
+            "field_name": "heater_power",
             "description": "Heater State 0 = OFF; 1 = ON ",
             "scale_factor": 1.0
           },
           {
             "modbus_register": 357,
-            "field_name": "humi",
+            "field_name": "humidity",
             "description": "Humidity 0..100% ",
             "scale_factor": 1.0
           }
@@ -1015,13 +1015,13 @@
         "modbus_fields": [
           {
             "modbus_register": 360,
-            "field_name": "pwr",
+            "field_name": "power",
             "description": "Unit Power On/Off 0=OFF 1=ON",
             "scale_factor": 1.0
           },
           {
             "modbus_register": 361,
-            "field_name": "sp_room",
+            "field_name": "setpoint_room_temperature",
             "description": "Unit SetPoint: (hundredths of degrees Celsius) es: 2350 = 23.50 °C -> Range: 18..30°C\"",
             "scale_factor": 1.0
           },
@@ -1033,7 +1033,7 @@
           },
           {
             "modbus_register": 363,
-            "field_name": "air_in",
+            "field_name": "air_temperature_in",
             "description": "Unit Input Air Temperature: (hundredths of degrees Celsius) es: 2350 = 23.50 °C",
             "scale_factor": 1.0
           },
@@ -1051,13 +1051,13 @@
           },
           {
             "modbus_register": 366,
-            "field_name": "heater_pwr",
+            "field_name": "heater_power",
             "description": "Heater State 0 = OFF; 1 = ON ",
             "scale_factor": 1.0
           },
           {
             "modbus_register": 367,
-            "field_name": "humi",
+            "field_name": "humidity",
             "description": "Humidity 0..100% ",
             "scale_factor": 1.0
           }
@@ -1078,13 +1078,13 @@
         "modbus_fields": [
           {
             "modbus_register": 370,
-            "field_name": "pwr",
+            "field_name": "power",
             "description": "Unit Power On/Off 0=OFF 1=ON",
             "scale_factor": 1.0
           },
           {
             "modbus_register": 371,
-            "field_name": "sp_room",
+            "field_name": "setpoint_room_temperature",
             "description": "Unit SetPoint: (hundredths of degrees Celsius) es: 2350 = 23.50 °C -> Range: 18..30°C\"",
             "scale_factor": 1.0
           },
@@ -1096,7 +1096,7 @@
           },
           {
             "modbus_register": 373,
-            "field_name": "air_in",
+            "field_name": "air_temperature_in",
             "description": "Unit Input Air Temperature: (hundredths of degrees Celsius) es: 2350 = 23.50 °C",
             "scale_factor": 1.0
           },
@@ -1114,13 +1114,13 @@
           },
           {
             "modbus_register": 376,
-            "field_name": "heater_pwr",
+            "field_name": "heater_power",
             "description": "Heater State 0 = OFF; 1 = ON ",
             "scale_factor": 1.0
           },
           {
             "modbus_register": 377,
-            "field_name": "humi",
+            "field_name": "humidity",
             "description": "Humidity 0..100% ",
             "scale_factor": 1.0
           }
@@ -1141,13 +1141,13 @@
         "modbus_fields": [
           {
             "modbus_register": 380,
-            "field_name": "pwr",
+            "field_name": "power",
             "description": "Unit Power On/Off 0=OFF 1=ON",
             "scale_factor": 1.0
           },
           {
             "modbus_register": 381,
-            "field_name": "sp_room",
+            "field_name": "setpoint_room_temperature",
             "description": "Unit SetPoint: (hundredths of degrees Celsius) es: 2350 = 23.50 °C -> Range: 18..30°C\"",
             "scale_factor": 1.0
           },
@@ -1159,7 +1159,7 @@
           },
           {
             "modbus_register": 383,
-            "field_name": "air_in",
+            "field_name": "air_temperature_in",
             "description": "Unit Input Air Temperature: (hundredths of degrees Celsius) es: 2350 = 23.50 °C",
             "scale_factor": 1.0
           },
@@ -1177,13 +1177,13 @@
           },
           {
             "modbus_register": 386,
-            "field_name": "heater_pwr",
+            "field_name": "heater_power",
             "description": "Heater State 0 = OFF; 1 = ON ",
             "scale_factor": 1.0
           },
           {
             "modbus_register": 387,
-            "field_name": "humi",
+            "field_name": "humidity",
             "description": "Humidity 0..100% ",
             "scale_factor": 1.0
           }
@@ -1204,13 +1204,13 @@
         "modbus_fields": [
           {
             "modbus_register": 390,
-            "field_name": "pwr",
+            "field_name": "power",
             "description": "Unit Power On/Off 0=OFF 1=ON",
             "scale_factor": 1.0
           },
           {
             "modbus_register": 391,
-            "field_name": "sp_room",
+            "field_name": "setpoint_room_temperature",
             "description": "Unit SetPoint: (hundredths of degrees Celsius) es: 2350 = 23.50 °C -> Range: 18..30°C\"",
             "scale_factor": 1.0
           },
@@ -1222,7 +1222,7 @@
           },
           {
             "modbus_register": 393,
-            "field_name": "air_in",
+            "field_name": "air_temperature_in",
             "description": "Unit Input Air Temperature: (hundredths of degrees Celsius) es: 2350 = 23.50 °C",
             "scale_factor": 1.0
           },
@@ -1240,13 +1240,13 @@
           },
           {
             "modbus_register": 396,
-            "field_name": "heater_pwr",
+            "field_name": "heater_power",
             "description": "Heater State 0 = OFF; 1 = ON ",
             "scale_factor": 1.0
           },
           {
             "modbus_register": 397,
-            "field_name": "humi",
+            "field_name": "humidity",
             "description": "Humidity 0..100% ",
             "scale_factor": 1.0
           }
@@ -1267,13 +1267,13 @@
         "modbus_fields": [
           {
             "modbus_register": 400,
-            "field_name": "pwr",
+            "field_name": "power",
             "description": "Unit Power On/Off 0=OFF 1=ON",
             "scale_factor": 1.0
           },
           {
             "modbus_register": 401,
-            "field_name": "sp_room",
+            "field_name": "setpoint_room_temperature",
             "description": "Unit SetPoint: (hundredths of degrees Celsius) es: 2350 = 23.50 °C -> Range: 18..30°C\"",
             "scale_factor": 1.0
           },
@@ -1285,7 +1285,7 @@
           },
           {
             "modbus_register": 403,
-            "field_name": "air_in",
+            "field_name": "air_temperature_in",
             "description": "Unit Input Air Temperature: (hundredths of degrees Celsius) es: 2350 = 23.50 °C",
             "scale_factor": 1.0
           },
@@ -1303,13 +1303,13 @@
           },
           {
             "modbus_register": 406,
-            "field_name": "heater_pwr",
+            "field_name": "heater_power",
             "description": "Heater State 0 = OFF; 1 = ON ",
             "scale_factor": 1.0
           },
           {
             "modbus_register": 407,
-            "field_name": "humi",
+            "field_name": "humidity",
             "description": "Humidity 0..100% ",
             "scale_factor": 1.0
           }
@@ -1330,13 +1330,13 @@
         "modbus_fields": [
           {
             "modbus_register": 410,
-            "field_name": "pwr",
+            "field_name": "power",
             "description": "Unit Power On/Off 0=OFF 1=ON",
             "scale_factor": 1.0
           },
           {
             "modbus_register": 411,
-            "field_name": "sp_room",
+            "field_name": "setpoint_room_temperature",
             "description": "Unit SetPoint: (hundredths of degrees Celsius) es: 2350 = 23.50 °C -> Range: 18..30°C\"",
             "scale_factor": 1.0
           },
@@ -1348,7 +1348,7 @@
           },
           {
             "modbus_register": 413,
-            "field_name": "air_in",
+            "field_name": "air_temperature_in",
             "description": "Unit Input Air Temperature: (hundredths of degrees Celsius) es: 2350 = 23.50 °C",
             "scale_factor": 1.0
           },
@@ -1366,13 +1366,13 @@
           },
           {
             "modbus_register": 416,
-            "field_name": "heater_pwr",
+            "field_name": "heater_power",
             "description": "Heater State 0 = OFF; 1 = ON ",
             "scale_factor": 1.0
           },
           {
             "modbus_register": 417,
-            "field_name": "humi",
+            "field_name": "humidity",
             "description": "Humidity 0..100% ",
             "scale_factor": 1.0
           }
@@ -1393,13 +1393,13 @@
         "modbus_fields": [
           {
             "modbus_register": 420,
-            "field_name": "pwr",
+            "field_name": "power",
             "description": "Unit Power On/Off 0=OFF 1=ON",
             "scale_factor": 1.0
           },
           {
             "modbus_register": 421,
-            "field_name": "sp_room",
+            "field_name": "setpoint_room_temperature",
             "description": "Unit SetPoint: (hundredths of degrees Celsius) es: 2350 = 23.50 °C -> Range: 18..30°C\"",
             "scale_factor": 1.0
           },
@@ -1411,7 +1411,7 @@
           },
           {
             "modbus_register": 423,
-            "field_name": "air_in",
+            "field_name": "air_temperature_in",
             "description": "Unit Input Air Temperature: (hundredths of degrees Celsius) es: 2350 = 23.50 °C",
             "scale_factor": 1.0
           },
@@ -1429,13 +1429,13 @@
           },
           {
             "modbus_register": 426,
-            "field_name": "heater_pwr",
+            "field_name": "heater_power",
             "description": "Heater State 0 = OFF; 1 = ON ",
             "scale_factor": 1.0
           },
           {
             "modbus_register": 427,
-            "field_name": "humi",
+            "field_name": "humidity",
             "description": "Humidity 0..100% ",
             "scale_factor": 1.0
           }
@@ -1456,13 +1456,13 @@
         "modbus_fields": [
           {
             "modbus_register": 430,
-            "field_name": "pwr",
+            "field_name": "power",
             "description": "Unit Power On/Off 0=OFF 1=ON",
             "scale_factor": 1.0
           },
           {
             "modbus_register": 431,
-            "field_name": "sp_room",
+            "field_name": "setpoint_room_temperature",
             "description": "Unit SetPoint: (hundredths of degrees Celsius) es: 2350 = 23.50 °C -> Range: 18..30°C\"",
             "scale_factor": 1.0
           },
@@ -1474,7 +1474,7 @@
           },
           {
             "modbus_register": 433,
-            "field_name": "air_in",
+            "field_name": "air_temperature_in",
             "description": "Unit Input Air Temperature: (hundredths of degrees Celsius) es: 2350 = 23.50 °C",
             "scale_factor": 1.0
           },
@@ -1492,13 +1492,13 @@
           },
           {
             "modbus_register": 436,
-            "field_name": "heater_pwr",
+            "field_name": "heater_power",
             "description": "Heater State 0 = OFF; 1 = ON ",
             "scale_factor": 1.0
           },
           {
             "modbus_register": 437,
-            "field_name": "humi",
+            "field_name": "humidity",
             "description": "Humidity 0..100% ",
             "scale_factor": 1.0
           }
@@ -1519,13 +1519,13 @@
         "modbus_fields": [
           {
             "modbus_register": 440,
-            "field_name": "pwr",
+            "field_name": "power",
             "description": "Unit Power On/Off 0=OFF 1=ON",
             "scale_factor": 1.0
           },
           {
             "modbus_register": 441,
-            "field_name": "sp_room",
+            "field_name": "setpoint_room_temperature",
             "description": "Unit SetPoint: (hundredths of degrees Celsius) es: 2350 = 23.50 °C -> Range: 18..30°C\"",
             "scale_factor": 1.0
           },
@@ -1537,7 +1537,7 @@
           },
           {
             "modbus_register": 443,
-            "field_name": "air_in",
+            "field_name": "air_temperature_in",
             "description": "Unit Input Air Temperature: (hundredths of degrees Celsius) es: 2350 = 23.50 °C",
             "scale_factor": 1.0
           },
@@ -1555,13 +1555,13 @@
           },
           {
             "modbus_register": 446,
-            "field_name": "heater_pwr",
+            "field_name": "heater_power",
             "description": "Heater State 0 = OFF; 1 = ON ",
             "scale_factor": 1.0
           },
           {
             "modbus_register": 447,
-            "field_name": "humi",
+            "field_name": "humidity",
             "description": "Humidity 0..100% ",
             "scale_factor": 1.0
           }
@@ -1582,13 +1582,13 @@
         "modbus_fields": [
           {
             "modbus_register": 450,
-            "field_name": "pwr",
+            "field_name": "power",
             "description": "Unit Power On/Off 0=OFF 1=ON",
             "scale_factor": 1.0
           },
           {
             "modbus_register": 451,
-            "field_name": "sp_room",
+            "field_name": "setpoint_room_temperature",
             "description": "Unit SetPoint: (hundredths of degrees Celsius) es: 2350 = 23.50 °C -> Range: 18..30°C\"",
             "scale_factor": 1.0
           },
@@ -1600,7 +1600,7 @@
           },
           {
             "modbus_register": 453,
-            "field_name": "air_in",
+            "field_name": "air_temperature_in",
             "description": "Unit Input Air Temperature: (hundredths of degrees Celsius) es: 2350 = 23.50 °C",
             "scale_factor": 1.0
           },
@@ -1618,13 +1618,13 @@
           },
           {
             "modbus_register": 456,
-            "field_name": "heater_pwr",
+            "field_name": "heater_power",
             "description": "Heater State 0 = OFF; 1 = ON ",
             "scale_factor": 1.0
           },
           {
             "modbus_register": 457,
-            "field_name": "humi",
+            "field_name": "humidity",
             "description": "Humidity 0..100% ",
             "scale_factor": 1.0
           }
@@ -1645,13 +1645,13 @@
         "modbus_fields": [
           {
             "modbus_register": 460,
-            "field_name": "pwr",
+            "field_name": "power",
             "description": "Unit Power On/Off 0=OFF 1=ON",
             "scale_factor": 1.0
           },
           {
             "modbus_register": 461,
-            "field_name": "sp_room",
+            "field_name": "setpoint_room_temperature",
             "description": "Unit SetPoint: (hundredths of degrees Celsius) es: 2350 = 23.50 °C -> Range: 18..30°C\"",
             "scale_factor": 1.0
           },
@@ -1663,7 +1663,7 @@
           },
           {
             "modbus_register": 463,
-            "field_name": "air_in",
+            "field_name": "air_temperature_in",
             "description": "Unit Input Air Temperature: (hundredths of degrees Celsius) es: 2350 = 23.50 °C",
             "scale_factor": 1.0
           },
@@ -1681,13 +1681,13 @@
           },
           {
             "modbus_register": 466,
-            "field_name": "heater_pwr",
+            "field_name": "heater_power",
             "description": "Heater State 0 = OFF; 1 = ON ",
             "scale_factor": 1.0
           },
           {
             "modbus_register": 467,
-            "field_name": "humi",
+            "field_name": "humidity",
             "description": "Humidity 0..100% ",
             "scale_factor": 1.0
           }
@@ -1708,13 +1708,13 @@
         "modbus_fields": [
           {
             "modbus_register": 470,
-            "field_name": "pwr",
+            "field_name": "power",
             "description": "Unit Power On/Off 0=OFF 1=ON",
             "scale_factor": 1.0
           },
           {
             "modbus_register": 471,
-            "field_name": "sp_room",
+            "field_name": "setpoint_room_temperature",
             "description": "Unit SetPoint: (hundredths of degrees Celsius) es: 2350 = 23.50 °C -> Range: 18..30°C\"",
             "scale_factor": 1.0
           },
@@ -1726,7 +1726,7 @@
           },
           {
             "modbus_register": 473,
-            "field_name": "air_in",
+            "field_name": "air_temperature_in",
             "description": "Unit Input Air Temperature: (hundredths of degrees Celsius) es: 2350 = 23.50 °C",
             "scale_factor": 1.0
           },
@@ -1744,13 +1744,13 @@
           },
           {
             "modbus_register": 476,
-            "field_name": "heater_pwr",
+            "field_name": "heater_power",
             "description": "Heater State 0 = OFF; 1 = ON ",
             "scale_factor": 1.0
           },
           {
             "modbus_register": 477,
-            "field_name": "humi",
+            "field_name": "humidity",
             "description": "Humidity 0..100% ",
             "scale_factor": 1.0
           }
@@ -1771,13 +1771,13 @@
         "modbus_fields": [
           {
             "modbus_register": 480,
-            "field_name": "pwr",
+            "field_name": "power",
             "description": "Unit Power On/Off 0=OFF 1=ON",
             "scale_factor": 1.0
           },
           {
             "modbus_register": 481,
-            "field_name": "sp_room",
+            "field_name": "setpoint_room_temperature",
             "description": "Unit SetPoint: (hundredths of degrees Celsius) es: 2350 = 23.50 °C -> Range: 18..30°C\"",
             "scale_factor": 1.0
           },
@@ -1789,7 +1789,7 @@
           },
           {
             "modbus_register": 483,
-            "field_name": "air_in",
+            "field_name": "air_temperature_in",
             "description": "Unit Input Air Temperature: (hundredths of degrees Celsius) es: 2350 = 23.50 °C",
             "scale_factor": 1.0
           },
@@ -1807,13 +1807,13 @@
           },
           {
             "modbus_register": 486,
-            "field_name": "heater_pwr",
+            "field_name": "heater_power",
             "description": "Heater State 0 = OFF; 1 = ON ",
             "scale_factor": 1.0
           },
           {
             "modbus_register": 487,
-            "field_name": "humi",
+            "field_name": "humidity",
             "description": "Humidity 0..100% ",
             "scale_factor": 1.0
           }
@@ -1834,13 +1834,13 @@
         "modbus_fields": [
           {
             "modbus_register": 490,
-            "field_name": "pwr",
+            "field_name": "power",
             "description": "Unit Power On/Off 0=OFF 1=ON",
             "scale_factor": 1.0
           },
           {
             "modbus_register": 491,
-            "field_name": "sp_room",
+            "field_name": "setpoint_room_temperature",
             "description": "Unit SetPoint: (hundredths of degrees Celsius) es: 2350 = 23.50 °C -> Range: 18..30°C\"",
             "scale_factor": 1.0
           },
@@ -1852,7 +1852,7 @@
           },
           {
             "modbus_register": 493,
-            "field_name": "air_in",
+            "field_name": "air_temperature_in",
             "description": "Unit Input Air Temperature: (hundredths of degrees Celsius) es: 2350 = 23.50 °C",
             "scale_factor": 1.0
           },
@@ -1870,13 +1870,13 @@
           },
           {
             "modbus_register": 496,
-            "field_name": "heater_pwr",
+            "field_name": "heater_power",
             "description": "Heater State 0 = OFF; 1 = ON ",
             "scale_factor": 1.0
           },
           {
             "modbus_register": 497,
-            "field_name": "humi",
+            "field_name": "humidity",
             "description": "Humidity 0..100% ",
             "scale_factor": 1.0
           }
@@ -1897,13 +1897,13 @@
         "modbus_fields": [
           {
             "modbus_register": 500,
-            "field_name": "pwr",
+            "field_name": "power",
             "description": "Unit Power On/Off 0=OFF 1=ON",
             "scale_factor": 1.0
           },
           {
             "modbus_register": 501,
-            "field_name": "sp_room",
+            "field_name": "setpoint_room_temperature",
             "description": "Unit SetPoint: (hundredths of degrees Celsius) es: 2350 = 23.50 °C -> Range: 18..30°C\"",
             "scale_factor": 1.0
           },
@@ -1915,7 +1915,7 @@
           },
           {
             "modbus_register": 503,
-            "field_name": "air_in",
+            "field_name": "air_temperature_in",
             "description": "Unit Input Air Temperature: (hundredths of degrees Celsius) es: 2350 = 23.50 °C",
             "scale_factor": 1.0
           },
@@ -1933,13 +1933,13 @@
           },
           {
             "modbus_register": 506,
-            "field_name": "heater_pwr",
+            "field_name": "heater_power",
             "description": "Heater State 0 = OFF; 1 = ON ",
             "scale_factor": 1.0
           },
           {
             "modbus_register": 507,
-            "field_name": "humi",
+            "field_name": "humidity",
             "description": "Humidity 0..100% ",
             "scale_factor": 1.0
           }

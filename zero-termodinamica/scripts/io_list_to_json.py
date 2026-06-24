@@ -60,6 +60,10 @@ def select_nested_ac_topics(df: pl.DataFrame, topic_prefix: str) -> List[MqttTop
             .str.replace("READ_", "")
             .str.replace(" ", "")
             .str.to_lowercase()
+            .str.replace("pwr", "power")
+            .str.replace("humi", "humidity")
+            .str.replace("air_in", "air_temperature_in")
+            .str.replace("sp_room", "setpoint_room_temperature")
             .alias("field_name"),
         )
         # "AIR_IN", "SP_ROOM" are temperatures in 0.01 C
