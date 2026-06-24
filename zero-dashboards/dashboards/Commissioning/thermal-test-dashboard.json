@@ -63,9 +63,614 @@
       "type": "text"
     },
     {
+      "collapsed": false,
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 2
+      },
+      "id": 25,
+      "panels": [],
+      "title": "Power consumption - current values",
+      "type": "row"
+    },
+    {
       "datasource": {
         "type": "info8fcc-greptimedb-datasource",
-        "uid": "PBAD09CF7391C3C43"
+        "uid": "${datasource}"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "custom": {
+            "align": "auto",
+            "cellOptions": {
+              "type": "auto"
+            },
+            "footer": {
+              "reducers": []
+            },
+            "inspect": false
+          },
+          "decimals": 1,
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": 0
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          },
+          "unit": "watt"
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byRegexp",
+              "options": "/on_off/"
+            },
+            "properties": [
+              {
+                "id": "mappings",
+                "value": [
+                  {
+                    "options": {
+                      "0": {
+                        "index": 0,
+                        "text": "Off"
+                      },
+                      "1": {
+                        "index": 1,
+                        "text": "On"
+                      }
+                    },
+                    "type": "value"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byRegexp",
+              "options": "/[T|t]emperature/"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "celsius"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byRegexp",
+              "options": "/[H|h]umidity/"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "percent"
+              }
+            ]
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 32,
+        "w": 24,
+        "x": 0,
+        "y": 3
+      },
+      "id": 11,
+      "options": {
+        "cellHeight": "sm",
+        "showHeader": true
+      },
+      "pluginVersion": "12.3.0",
+      "targets": [
+        {
+          "datasource": {
+            "type": "info8fcc-greptimedb-datasource",
+            "uid": "${datasource}"
+          },
+          "editorType": "sql",
+          "format": 1,
+          "hide": false,
+          "meta": {
+            "builderOptions": {
+              "columns": [],
+              "database": "",
+              "limit": 1000,
+              "meta": {},
+              "mode": "list",
+              "queryType": "table",
+              "table": ""
+            }
+          },
+          "pluginVersion": "2.1.4",
+          "queryType": "table",
+          "rawSql": "SELECT DISTINCT ON (source_type)\r\n  timestamp                                                         AS time,\r\n  source_type                                                       AS source_type,\r\n  watt_ac_compressor_1                                              AS watt_compressor_1,\r\n  watt_ac_compressor_2                                              AS watt_compressor_2,\r\n  watt_sea_water_pump                                               AS watt_sea_water_pump,\r\n  watt_ac_compressor_1 + watt_ac_compressor_2 + watt_sea_water_pump AS total_watt\r\nFROM public.termodinamica__ac_misc\r\nWHERE $__timeFilter(timestamp)\r\nORDER BY source_type, timestamp DESC\r\n",
+          "refId": "A"
+        }
+      ],
+      "title": "Power consumption",
+      "transformations": [
+        {
+          "id": "organize",
+          "options": {
+            "excludeByName": {},
+            "includeByName": {},
+            "indexByName": {},
+            "renameByName": {
+              "fan_speed": "Fan speed",
+              "heater_on_off": "Heater On/Off",
+              "humitidy": "Humidity",
+              "on_off": "On/Off",
+              "source_type": "Source",
+              "status": "Status",
+              "temperature": "Temperature",
+              "temperature_setpoint": "Temperature setpoint",
+              "time": "Timestamp",
+              "total_watt": "Total",
+              "watt_ac_compressor_1": "",
+              "watt_ac_compressor_2": "",
+              "watt_compressor_1": "Compressor 1",
+              "watt_compressor_2": "Compressor 2",
+              "watt_sea_water_pump": "Sea water pump"
+            }
+          }
+        }
+      ],
+      "type": "table"
+    },
+    {
+      "collapsed": false,
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 35
+      },
+      "id": 21,
+      "panels": [],
+      "title": "Power consumption - graphs",
+      "type": "row"
+    },
+    {
+      "datasource": {
+        "type": "info8fcc-greptimedb-datasource",
+        "uid": "${datasource}"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisBorderShow": false,
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "barWidthFactor": 0.6,
+            "drawStyle": "line",
+            "fillOpacity": 0,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "insertNulls": false,
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "auto",
+            "showValues": false,
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": 0
+              }
+            ]
+          },
+          "unit": "watt"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 12,
+        "w": 24,
+        "x": 0,
+        "y": 36
+      },
+      "id": 12,
+      "options": {
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "right",
+          "showLegend": true
+        },
+        "tooltip": {
+          "hideZeros": false,
+          "mode": "multi",
+          "sort": "none"
+        }
+      },
+      "pluginVersion": "12.3.0",
+      "targets": [
+        {
+          "datasource": {
+            "type": "info8fcc-greptimedb-datasource",
+            "uid": "${datasource}"
+          },
+          "editorType": "sql",
+          "format": 1,
+          "meta": {
+            "builderOptions": {
+              "columns": [],
+              "database": "",
+              "limit": 1000,
+              "meta": {},
+              "mode": "list",
+              "queryType": "table",
+              "table": ""
+            }
+          },
+          "pluginVersion": "2.1.4",
+          "queryType": "table",
+          "rawSql": "SELECT\r\n  timestamp            AS time,\r\n  source_type          AS source_type,\r\n  watt_ac_compressor_1 AS watt_compressor_1\r\nFROM public.termodinamica__ac_misc\r\nWHERE $__timeFilter(timestamp)\r\nORDER BY source_type\r\n",
+          "refId": "A"
+        }
+      ],
+      "title": "Compressor 1",
+      "transformations": [
+        {
+          "id": "organize",
+          "options": {
+            "excludeByName": {},
+            "includeByName": {},
+            "indexByName": {},
+            "renameByName": {
+              "source_type": "",
+              "temperature": "",
+              "time": "",
+              "watt_compressor_1": " "
+            }
+          }
+        },
+        {
+          "id": "partitionByValues",
+          "options": {
+            "fields": [
+              "source_type"
+            ],
+            "keepFields": false,
+            "naming": {
+              "asLabels": true
+            }
+          }
+        }
+      ],
+      "type": "timeseries"
+    },
+    {
+      "datasource": {
+        "type": "info8fcc-greptimedb-datasource",
+        "uid": "${datasource}"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisBorderShow": false,
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "barWidthFactor": 0.6,
+            "drawStyle": "line",
+            "fillOpacity": 0,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "insertNulls": false,
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "auto",
+            "showValues": false,
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": 0
+              }
+            ]
+          },
+          "unit": "watt"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 12,
+        "w": 24,
+        "x": 0,
+        "y": 48
+      },
+      "id": 23,
+      "options": {
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "right",
+          "showLegend": true
+        },
+        "tooltip": {
+          "hideZeros": false,
+          "mode": "multi",
+          "sort": "none"
+        }
+      },
+      "pluginVersion": "12.3.0",
+      "targets": [
+        {
+          "datasource": {
+            "type": "info8fcc-greptimedb-datasource",
+            "uid": "${datasource}"
+          },
+          "editorType": "sql",
+          "format": 1,
+          "meta": {
+            "builderOptions": {
+              "columns": [],
+              "database": "",
+              "limit": 1000,
+              "meta": {},
+              "mode": "list",
+              "queryType": "table",
+              "table": ""
+            }
+          },
+          "pluginVersion": "2.1.4",
+          "queryType": "table",
+          "rawSql": "SELECT\r\n  timestamp            AS time,\r\n  source_type          AS source_type,\r\n  watt_ac_compressor_2 AS watt_compressor_2\r\nFROM public.termodinamica__ac_misc\r\nWHERE $__timeFilter(timestamp)\r\nORDER BY source_type\r\n",
+          "refId": "A"
+        }
+      ],
+      "title": "Compressor 2",
+      "transformations": [
+        {
+          "id": "organize",
+          "options": {
+            "excludeByName": {},
+            "includeByName": {},
+            "indexByName": {},
+            "renameByName": {
+              "source_type": "",
+              "temperature": "",
+              "time": "",
+              "watt_compressor_1": " ",
+              "watt_compressor_2": " "
+            }
+          }
+        },
+        {
+          "id": "partitionByValues",
+          "options": {
+            "fields": [
+              "source_type"
+            ],
+            "keepFields": false,
+            "naming": {
+              "asLabels": true
+            }
+          }
+        }
+      ],
+      "type": "timeseries"
+    },
+    {
+      "datasource": {
+        "type": "info8fcc-greptimedb-datasource",
+        "uid": "${datasource}"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisBorderShow": false,
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "barWidthFactor": 0.6,
+            "drawStyle": "line",
+            "fillOpacity": 0,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "insertNulls": false,
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "auto",
+            "showValues": false,
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": 0
+              }
+            ]
+          },
+          "unit": "watt"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 12,
+        "w": 24,
+        "x": 0,
+        "y": 60
+      },
+      "id": 24,
+      "options": {
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "right",
+          "showLegend": true
+        },
+        "tooltip": {
+          "hideZeros": false,
+          "mode": "multi",
+          "sort": "none"
+        }
+      },
+      "pluginVersion": "12.3.0",
+      "targets": [
+        {
+          "datasource": {
+            "type": "info8fcc-greptimedb-datasource",
+            "uid": "${datasource}"
+          },
+          "editorType": "sql",
+          "format": 1,
+          "meta": {
+            "builderOptions": {
+              "columns": [],
+              "database": "",
+              "limit": 1000,
+              "meta": {},
+              "mode": "list",
+              "queryType": "table",
+              "table": ""
+            }
+          },
+          "pluginVersion": "2.1.4",
+          "queryType": "table",
+          "rawSql": "SELECT\r\n  timestamp           AS time,\r\n  source_type         AS source_type,\r\n  watt_sea_water_pump AS sea_water_pump\r\nFROM public.termodinamica__ac_misc\r\nWHERE $__timeFilter(timestamp)\r\nORDER BY source_type\r\n",
+          "refId": "A"
+        }
+      ],
+      "title": "Sea water pump",
+      "transformations": [
+        {
+          "id": "organize",
+          "options": {
+            "excludeByName": {},
+            "includeByName": {},
+            "indexByName": {},
+            "renameByName": {
+              "sea_water_pump": " ",
+              "source_type": "",
+              "temperature": "",
+              "time": "",
+              "watt_compressor_1": " ",
+              "watt_compressor_2": " "
+            }
+          }
+        },
+        {
+          "id": "partitionByValues",
+          "options": {
+            "fields": [
+              "source_type"
+            ],
+            "keepFields": false,
+            "naming": {
+              "asLabels": true
+            }
+          }
+        }
+      ],
+      "type": "timeseries"
+    },
+    {
+      "collapsed": false,
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 72
+      },
+      "id": 18,
+      "panels": [],
+      "title": "Temperature & humidity - current values",
+      "type": "row"
+    },
+    {
+      "datasource": {
+        "type": "info8fcc-greptimedb-datasource",
+        "uid": "${datasource}"
       },
       "fieldConfig": {
         "defaults": {
@@ -127,7 +732,7 @@
           {
             "matcher": {
               "id": "byRegexp",
-              "options": "/temperature/"
+              "options": "/[T|t]emperature/"
             },
             "properties": [
               {
@@ -139,7 +744,7 @@
           {
             "matcher": {
               "id": "byRegexp",
-              "options": "/humidity/"
+              "options": "/[H|h]umidity/"
             },
             "properties": [
               {
@@ -151,12 +756,12 @@
         ]
       },
       "gridPos": {
-        "h": 13,
+        "h": 32,
         "w": 24,
         "x": 0,
-        "y": 2
+        "y": 73
       },
-      "id": 11,
+      "id": 20,
       "options": {
         "cellHeight": "sm",
         "showHeader": true
@@ -164,8 +769,13 @@
       "pluginVersion": "12.3.0",
       "targets": [
         {
+          "datasource": {
+            "type": "info8fcc-greptimedb-datasource",
+            "uid": "${datasource}"
+          },
           "editorType": "sql",
           "format": 1,
+          "hide": false,
           "meta": {
             "builderOptions": {
               "columns": [],
@@ -179,23 +789,51 @@
           },
           "pluginVersion": "2.1.4",
           "queryType": "table",
-          "rawSql": "SELECT DISTINC ON (\"ROOM\")\r\n  timestamp    AS time,\r\n  \"ROOM\"       AS room,\r\n  \"PWR\"        AS on_off,\r\n  \"HEATER_PWR\" AS heater_on_off,\r\n  \"FAN_SPEED\"  AS fan_speed,\r\n  \"SP_ROOM\"    AS temperature_setpoint,\r\n  \"AIR_IN\"     AS temperature,\r\n  \"HUMI\"       AS humitidy,\r\n  \"STATUS\"     AS status\r\nFROM public.\"termodynamic__ac\"\r\nWHERE $__timeFilter(timestamp)\r\nORDER BY \"ROOM\", timestamp DESC",
+          "rawSql": "SELECT DISTINCT ON (source_type)\r\n  timestamp   AS time,\r\n  source_type AS source_type,\r\n  pwr         AS on_off,\r\n  heater_pwr  AS heater_on_off,\r\n  fan_speed   AS fan_speed,\r\n  sp_room     AS temperature_setpoint,\r\n  air_in      AS temperature,\r\n  humi        AS humitidy,\r\n  status      AS status\r\nFROM public.termodinamica__ac\r\nWHERE $__timeFilter(timestamp)\r\nORDER BY source_type, timestamp DESC\r\n",
           "refId": "A"
         }
       ],
-      "title": "",
+      "title": "Temperature & humidity",
       "transformations": [
         {
           "id": "organize",
-          "options": {}
+          "options": {
+            "excludeByName": {},
+            "includeByName": {},
+            "indexByName": {},
+            "renameByName": {
+              "fan_speed": "Fan speed",
+              "heater_on_off": "Heater On/Off",
+              "humitidy": "Humidity",
+              "on_off": "On/Off",
+              "source_type": "Source",
+              "status": "Status",
+              "temperature": "Temperature",
+              "temperature_setpoint": "Temperature setpoint",
+              "time": "Timestamp"
+            }
+          }
         }
       ],
       "type": "table"
     },
     {
+      "collapsed": false,
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 105
+      },
+      "id": 17,
+      "panels": [],
+      "title": "Temperature - graphs",
+      "type": "row"
+    },
+    {
       "datasource": {
         "type": "info8fcc-greptimedb-datasource",
-        "uid": "PBAD09CF7391C3C43"
+        "uid": "${datasource}"
       },
       "fieldConfig": {
         "defaults": {
@@ -243,10 +881,6 @@
               {
                 "color": "green",
                 "value": 0
-              },
-              {
-                "color": "red",
-                "value": 80
               }
             ]
           },
@@ -258,25 +892,29 @@
         "h": 12,
         "w": 24,
         "x": 0,
-        "y": 15
+        "y": 106
       },
-      "id": 12,
+      "id": 22,
       "options": {
         "legend": {
           "calcs": [],
           "displayMode": "list",
-          "placement": "bottom",
+          "placement": "right",
           "showLegend": true
         },
         "tooltip": {
           "hideZeros": false,
-          "mode": "single",
+          "mode": "multi",
           "sort": "none"
         }
       },
       "pluginVersion": "12.3.0",
       "targets": [
         {
+          "datasource": {
+            "type": "info8fcc-greptimedb-datasource",
+            "uid": "${datasource}"
+          },
           "editorType": "sql",
           "format": 1,
           "meta": {
@@ -292,17 +930,40 @@
           },
           "pluginVersion": "2.1.4",
           "queryType": "table",
-          "rawSql": "SELECT\r\n  timestamp    AS time,\r\n  \"ROOM\"       AS room,\r\n  \"AIR_IN\"     AS temperature\r\nFROM public.\"termodynamic__ac\"\r\nWHERE $__timeFilter(timestamp)\r\nORDER BY \"ROOM\", timestamp",
+          "rawSql": "SELECT\r\n  timestamp   AS time,\r\n  source_type AS source_type,\r\n  air_in      AS temperature\r\nFROM public.termodinamica__ac\r\nWHERE $__timeFilter(timestamp)\r\nORDER BY source_type",
           "refId": "A"
         }
       ],
-      "title": "Temperatures",
+      "title": "Actual temperature",
+      "transformations": [
+        {
+          "id": "organize",
+          "options": {
+            "excludeByName": {},
+            "includeByName": {},
+            "indexByName": {},
+            "renameByName": {
+              "temperature": " ",
+              "time": ""
+            }
+          }
+        },
+        {
+          "id": "partitionByValues",
+          "options": {
+            "fields": [
+              "source_type"
+            ],
+            "keepFields": false
+          }
+        }
+      ],
       "type": "timeseries"
     },
     {
       "datasource": {
         "type": "info8fcc-greptimedb-datasource",
-        "uid": "PBAD09CF7391C3C43"
+        "uid": "${datasource}"
       },
       "fieldConfig": {
         "defaults": {
@@ -350,10 +1011,6 @@
               {
                 "color": "green",
                 "value": 0
-              },
-              {
-                "color": "red",
-                "value": 80
               }
             ]
           },
@@ -365,25 +1022,29 @@
         "h": 12,
         "w": 24,
         "x": 0,
-        "y": 27
+        "y": 118
       },
-      "id": 14,
+      "id": 19,
       "options": {
         "legend": {
           "calcs": [],
           "displayMode": "list",
-          "placement": "bottom",
+          "placement": "right",
           "showLegend": true
         },
         "tooltip": {
           "hideZeros": false,
-          "mode": "single",
+          "mode": "multi",
           "sort": "none"
         }
       },
       "pluginVersion": "12.3.0",
       "targets": [
         {
+          "datasource": {
+            "type": "info8fcc-greptimedb-datasource",
+            "uid": "${datasource}"
+          },
           "editorType": "sql",
           "format": 1,
           "meta": {
@@ -399,17 +1060,53 @@
           },
           "pluginVersion": "2.1.4",
           "queryType": "table",
-          "rawSql": "SELECT\r\n  timestamp    AS time,\r\n  \"ROOM\"       AS room,\r\n  \"SP_ROOM\"    AS temperature_setpoint\r\nFROM public.\"termodynamic__ac\"\r\nWHERE $__timeFilter(timestamp)\r\nORDER BY \"ROOM\", timestamp",
+          "rawSql": "SELECT\r\n  timestamp   AS time,\r\n  source_type AS source_type,\r\n  sp_room     AS temperature\r\nFROM public.termodinamica__ac\r\nWHERE $__timeFilter(timestamp)\r\nORDER BY source_type",
           "refId": "A"
         }
       ],
       "title": "Temperature setpoint",
+      "transformations": [
+        {
+          "id": "organize",
+          "options": {
+            "excludeByName": {},
+            "includeByName": {},
+            "indexByName": {},
+            "renameByName": {
+              "temperature": " ",
+              "time": ""
+            }
+          }
+        },
+        {
+          "id": "partitionByValues",
+          "options": {
+            "fields": [
+              "source_type"
+            ],
+            "keepFields": false
+          }
+        }
+      ],
       "type": "timeseries"
+    },
+    {
+      "collapsed": false,
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 130
+      },
+      "id": 16,
+      "panels": [],
+      "title": "Humidity - graph",
+      "type": "row"
     },
     {
       "datasource": {
         "type": "info8fcc-greptimedb-datasource",
-        "uid": "PBAD09CF7391C3C43"
+        "uid": "${datasource}"
       },
       "fieldConfig": {
         "defaults": {
@@ -472,25 +1169,29 @@
         "h": 12,
         "w": 24,
         "x": 0,
-        "y": 39
+        "y": 131
       },
       "id": 13,
       "options": {
         "legend": {
           "calcs": [],
           "displayMode": "list",
-          "placement": "bottom",
+          "placement": "right",
           "showLegend": true
         },
         "tooltip": {
           "hideZeros": false,
-          "mode": "single",
+          "mode": "multi",
           "sort": "none"
         }
       },
       "pluginVersion": "12.3.0",
       "targets": [
         {
+          "datasource": {
+            "type": "info8fcc-greptimedb-datasource",
+            "uid": "${datasource}"
+          },
           "editorType": "sql",
           "format": 1,
           "meta": {
@@ -506,11 +1207,34 @@
           },
           "pluginVersion": "2.1.4",
           "queryType": "table",
-          "rawSql": "SELECT\r\n  timestamp    AS time,\r\n  \"ROOM\"       AS room,\r\n  \"HUMI\"       AS humitidy\r\nFROM public.\"termodynamic__ac\"\r\nWHERE $__timeFilter(timestamp)\r\nORDER BY \"ROOM\", timestamp",
+          "rawSql": "SELECT\r\n  timestamp   AS time,\r\n  source_type AS source_type,\r\n  humi        AS humitidy\r\nFROM public.termodinamica__ac\r\nWHERE $__timeFilter(timestamp)\r\nORDER BY source_type",
           "refId": "A"
         }
       ],
-      "title": "Humidity",
+      "title": "",
+      "transformations": [
+        {
+          "id": "organize",
+          "options": {
+            "excludeByName": {},
+            "includeByName": {},
+            "indexByName": {},
+            "renameByName": {
+              "humitidy": " ",
+              "source_type": ""
+            }
+          }
+        },
+        {
+          "id": "partitionByValues",
+          "options": {
+            "fields": [
+              "source_type"
+            ],
+            "keepFields": false
+          }
+        }
+      ],
       "type": "timeseries"
     }
   ],
