@@ -362,12 +362,12 @@ class DhwSensorValues(ThrsValues):
     )
     @property
     def dhw_heatpump(self) -> sensor.HeatPump:
-        if (
-            self.dhw_switch_heatpump.position_rel.value == control.Valve.OPEN
-            and self.dhw_switch_high_temperature.position_rel.value
-            < (control.Valve.CLOSED + 0.01)
-            and self.dhw_switch_low_temperature.position_rel.value
-            < (control.Valve.CLOSED + 0.01)
+        if sensor.valves_open_closed(
+            open_valves=[self.dhw_switch_heatpump],
+            closed_valves=[
+                self.dhw_switch_high_temperature,
+                self.dhw_switch_low_temperature,
+            ],
         ):
             return sensor.HeatPump.from_sensors(
                 temperature_supply=self.dhw_temperature_boosting_return.temperature,
@@ -399,12 +399,12 @@ class DhwSensorValues(ThrsValues):
     )
     @property
     def dhw_consumers_exchanger(self) -> sensor.HeatExchanger:
-        if (
-            self.dhw_switch_high_temperature.position_rel.value == control.Valve.OPEN
-            and self.dhw_switch_heatpump.position_rel.value
-            < (control.Valve.CLOSED + 0.01)
-            and self.dhw_switch_low_temperature.position_rel.value
-            < (control.Valve.CLOSED + 0.01)
+        if sensor.valves_open_closed(
+            open_valves=[self.dhw_switch_high_temperature],
+            closed_valves=[
+                self.dhw_switch_heatpump,
+                self.dhw_switch_low_temperature,
+            ],
         ):
             return sensor.HeatExchanger.from_sensors(
                 temperature_supply=self.dhw_temperature_boosting_supply.temperature,
@@ -436,12 +436,31 @@ class DhwSensorValues(ThrsValues):
     )
     @property
     def dhw_drives_exchanger(self) -> sensor.HeatExchanger:
-        return sensor.HeatExchanger.from_sensors(
-            temperature_supply=self.dhw_temperature_freshwater_supply.temperature,
-            temperature_return=self.dhw_temperature_drives_return.temperature,
-            flow=self.dhw_flow_drives.flow,
-            heat_transfer_conversion=WATER_HEAT_TRANSFER_CONVERSION,
-        )
+        if sensor.valves_open_closed(
+            open_valves=[], closed_valves=[self.dhw_switch_low_temperature]
+        ):
+            return sensor.HeatExchanger.from_sensors(
+                temperature_supply=self.dhw_temperature_freshwater_supply.temperature,
+                temperature_return=self.dhw_temperature_drives_return.temperature,
+                flow=self.dhw_flow_drives.flow,
+                heat_transfer_conversion=WATER_HEAT_TRANSFER_CONVERSION,
+            )
+        if sensor.valves_open_closed(
+            open_valves=[self.dhw_switch_low_temperature],
+            closed_valves=[
+                self.dhw_switch_heatpump,
+                self.dhw_switch_high_temperature,
+                self.dhw_flowcontrol_drives,
+            ],
+        ):
+            return sensor.HeatExchanger.from_sensors(
+                temperature_supply=self.dhw_temperature_boosting_supply.temperature,
+                temperature_return=self.dhw_temperature_drives_return.temperature,
+                flow=self.dhw_flow_boosting.flow,
+                heat_transfer_conversion=WATER_HEAT_TRANSFER_CONVERSION,
+            )
+        else:
+            return sensor.HeatExchanger(delta_t=Stamped.stamp(0), heat=Stamped.stamp(0))
 
 
 class DhwControlValues(ThrsValues):
