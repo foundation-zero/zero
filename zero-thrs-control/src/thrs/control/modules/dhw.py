@@ -28,6 +28,8 @@ from thrs.input_output.modules.dhw import DhwControlValues, DhwSensorValues
 
 
 class DhwParameters(ThrsValues):
+    heatpump_boosting_enabled: bool = True
+    ht_boosting_enabled: bool = True
     heatpump_flow_setpoint: LMin = 25
     heatpump_temperature_setpoint: Celsius = 65
     ht_boosting_temperature_setpoint: Celsius = 65
@@ -527,22 +529,30 @@ class DhwControl(
                 "source": ["idle", "boosting_heatpump"],
                 "dest": "boosting_high_temperature",
                 "conditions": lambda sensor_values: self._tanks_controller.boosting
-                and self._ht_sufficient_boosting_heat(sensor_values),
+                and self._ht_sufficient_boosting_heat(sensor_values)
+                and self._parameters.heatpump_boosting_enabled,
             },
             {
                 "trigger": "_try_boosting",
                 "source": ["idle", "boosting_high_temperature"],
                 "dest": "boosting_heatpump",
                 "conditions": lambda sensor_values: self._tanks_controller.boosting
-                and not self._ht_sufficient_boosting_heat(
-                    sensor_values
-                ),  # TODO: Should be extended with a assessment of whether using electricity for boosting is desireable. Alternatively, this should be controlled by a high-level controller that can enable or disable heatpump boosting.
+                and not self._ht_sufficient_boosting_heat(sensor_values)
+                and self._parameters.ht_boosting_enabled,  # TODO: Should be extended with a assessment of whether using electricity for boosting is desireable. Alternatively, this should be controlled by a high-level controller that can enable or disable heatpump boosting.
             },
             {
                 "trigger": "_try_boosting",
-                "source": ["boosting_heatpump", "boosting_high_temperature"],
+                "source": ["boosting_heatpump"],
                 "dest": "idle",
-                "conditions": lambda sensor_values: not self._tanks_controller.boosting,
+                "conditions": lambda sensor_values: not self._tanks_controller.boosting
+                or not self._parameters.heatpump_boosting_enabled,
+            },
+            {
+                "trigger": "_try_boosting",
+                "source": ["boosting_high_temperature"],
+                "dest": "idle",
+                "conditions": lambda sensor_values: not self._tanks_controller.boosting
+                or not self._parameters.ht_boosting_enabled,
             },
         ]
 
