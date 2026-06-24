@@ -96,7 +96,9 @@ class PartialMessageReceiver[T: ThrsValues](MessageReceiver[T]):
         topic_suffix: str | None = None,
     ):
         super().__init__(cls, topic_prefix)
-        self._mqtt_mapping = PartialMqttMapping(cls, topic_prefix, module_name)
+        self._mqtt_mapping = PartialMqttMapping(
+            cls, topic_prefix, module_name, topic_suffix
+        )
         self._topic_suffix = topic_suffix
 
     def _parse_message(self, message: Message) -> T | None:
@@ -140,6 +142,7 @@ class ControlMessaging[
         mqtt_client: MqttClient,
         devices_topic_prefix: str,
         controller_topic_prefix: str,
+        control_topic_suffix: str | None = None,
     ):
         self.module_name = module_name
         self._active = False
@@ -149,10 +152,15 @@ class ControlMessaging[
         self._devices_topic_prefix = devices_topic_prefix
         self._controller_topic_prefix = controller_topic_prefix
         self._sensor_values = PartialMessageReceiver(
-            sensor_values_cls, self._devices_topic_prefix, module_name
+            sensor_values_cls,
+            self._devices_topic_prefix,
+            module_name,
         )
         self._control_values = PartialMessageReceiver(
-            control_values_cls, self._devices_topic_prefix, module_name
+            control_values_cls,
+            self._devices_topic_prefix,
+            module_name,
+            control_topic_suffix,
         )
 
         self._parameters = MessageReceiver(
