@@ -16,7 +16,7 @@ class MultiUnitDataHandler(DataHandler):
             self.data[unit.unit_id] = {
                 addr.modbus_register: default_value
                 for topic in unit.topics
-                for addr in topic.fields
+                for addr in topic.modbus_fields
             }
 
     def read_h_regs(self, address, count, srv_info):

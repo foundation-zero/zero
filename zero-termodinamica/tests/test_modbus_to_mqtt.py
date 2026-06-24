@@ -4,7 +4,7 @@ from unittest.mock import AsyncMock, MagicMock
 
 import pytest
 
-from zero_termodinamica.io import Address, ModbusUnit, MQTTTopic
+from zero_termodinamica.io import Address, LiteralField, ModbusUnit, MQTTTopic
 from zero_termodinamica.modbus_to_mqtt import ModbusToMQTTBridge
 
 
@@ -22,7 +22,7 @@ async def test_run_once_success():
             topics=[
                 MQTTTopic(
                     topic="test/topic",
-                    fields=[
+                    modbus_fields=[
                         Address(
                             modbus_register=200,
                             field_name="PWR",
@@ -59,7 +59,7 @@ async def test_run_once_multiple_addresses_scaling():
             topics=[
                 MQTTTopic(
                     topic="test/topic",
-                    fields=[
+                    modbus_fields=[
                         Address(
                             modbus_register=200,
                             field_name="PWR",
@@ -112,13 +112,13 @@ async def test_run_once_multiple_topics():
             topics=[
                 MQTTTopic(
                     topic="topic/1",
-                    fields=[
+                    modbus_fields=[
                         Address(modbus_register=200, field_name="VAL1"),
                     ],
                 ),
                 MQTTTopic(
                     topic="topic/2",
-                    fields=[
+                    modbus_fields=[
                         Address(modbus_register=300, field_name="VAL2"),
                     ],
                 ),
@@ -152,6 +152,50 @@ async def test_run_once_multiple_topics():
 
 
 @pytest.mark.asyncio
+async def test_run_once_with_literal_fields():
+    # Mock ModbusClient
+    mock_modbus = MagicMock()
+    # Mock MqttClient
+    mock_mqtt = AsyncMock()
+
+    modbus_units = [
+        ModbusUnit(
+            unit_id=1,
+            topics=[
+                MQTTTopic(
+                    topic="test/topic",
+                    modbus_fields=[
+                        Address(
+                            modbus_register=200,
+                            field_name="PWR",
+                            scale_factor=1.0,
+                        )
+                    ],
+                    extra_fields=[
+                        LiteralField(field_name="room", value="Galley"),
+                        LiteralField(field_name="reg_split", value=18),
+                    ],
+                )
+            ],
+        )
+    ]
+
+    bridge = ModbusToMQTTBridge(mock_modbus, mock_mqtt, modbus_units)
+
+    # Setup mock return: Modbus returns 1
+    mock_modbus.read_holding_registers.return_value = [1]
+
+    await bridge.run_once()
+
+    # Check if mqtt publish was called with correct data including literal fields
+    args, kwargs = mock_mqtt.publish.call_args
+    assert args[0] == "test/topic"
+    data = json.loads(args[1])
+    assert data == {"room": "Galley", "reg_split": 18, "PWR": 1.0}
+    assert kwargs["qos"] == 1
+
+
+@pytest.mark.asyncio
 async def test_run_multiple_cycles():
     # Mock ModbusClient
     mock_modbus = MagicMock()
@@ -165,7 +209,7 @@ async def test_run_multiple_cycles():
             topics=[
                 MQTTTopic(
                     topic="test/topic",
-                    fields=[
+                    modbus_fields=[
                         Address(modbus_register=200, field_name="PWR", scale_factor=1.0)
                     ],
                 )

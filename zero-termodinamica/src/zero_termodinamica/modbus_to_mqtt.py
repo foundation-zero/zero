@@ -9,7 +9,7 @@ from aiomqtt import Client as MqttClient
 from pyModbusTCP.client import ModbusClient
 from tenacity import retry, stop_after_attempt, wait_fixed
 
-from zero_termodinamica.io import Address, ModbusUnit
+from zero_termodinamica.io import Address, LiteralField, ModbusUnit
 from zero_termodinamica.settings import ModbusSettings, MqttSettings
 
 
@@ -64,11 +64,11 @@ class ModbusToMQTTBridge:
                 self._modbus.unit_id = unit.unit_id
                 for topic in unit.topics:
                     # Read modbus
-                    modbus_values = self.read_modbus(topic.fields)
+                    modbus_values = self.read_modbus(topic.modbus_fields)
                     # Scale values
                     scaled_values = self.scale_values(modbus_values)
                     # Form json
-                    json_data = self.create_json(scaled_values)
+                    json_data = self.create_json(scaled_values, topic.extra_fields)
                     # Publish to MQTT
                     await self.publish_to_mqtt(topic.topic, json_data)
         finally:
@@ -105,8 +105,12 @@ class ModbusToMQTTBridge:
     def scale_value(self, address: Address, value: int) -> float:
         return float(value) * address.scale_factor
 
-    def create_json(self, modbus_values: List[Tuple[Address, float]]) -> str:
-        result = {}
+    def create_json(
+        self,
+        modbus_values: List[Tuple[Address, float]],
+        extra_fields: List[LiteralField],
+    ) -> str:
+        result = {f.field_name: f.value for f in extra_fields}
         for address, value in modbus_values:
             result[address.field_name] = value
         return json.dumps(result)

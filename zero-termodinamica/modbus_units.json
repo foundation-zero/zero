@@ -4,7 +4,7 @@
     "topics": [
       {
         "topic": "termodinamica/ac/01",
-        "fields": [
+        "modbus_fields": [
           {
             "modbus_register": 200,
             "field_name": "PWR",
@@ -15,7 +15,7 @@
             "modbus_register": 201,
             "field_name": "SP_ROOM",
             "description": "Unit SetPoint: (hundredths of degrees Celsius) es: 2350 = 23.50 °C -> Range: 18..30°C\"",
-            "scale_factor": 1.0
+            "scale_factor": 0.01
           },
           {
             "modbus_register": 202,
@@ -27,7 +27,7 @@
             "modbus_register": 203,
             "field_name": "AIR_IN",
             "description": "Unit Input Air Temperature: (hundredths of degrees Celsius) es: 2350 = 23.50 °C",
-            "scale_factor": 1.0
+            "scale_factor": 0.01
           },
           {
             "modbus_register": 204,
@@ -53,11 +53,21 @@
             "description": "Humidity 0..100% ",
             "scale_factor": 1.0
           }
+        ],
+        "extra_fields": [
+          {
+            "field_name": "reg_split",
+            "value": "01"
+          },
+          {
+            "field_name": "room",
+            "value": "Tech room"
+          }
         ]
       },
       {
         "topic": "termodinamica/ac/02",
-        "fields": [
+        "modbus_fields": [
           {
             "modbus_register": 210,
             "field_name": "PWR",
@@ -68,7 +78,7 @@
             "modbus_register": 211,
             "field_name": "SP_ROOM",
             "description": "Unit SetPoint: (hundredths of degrees Celsius) es: 2350 = 23.50 °C -> Range: 18..30°C\"",
-            "scale_factor": 1.0
+            "scale_factor": 0.01
           },
           {
             "modbus_register": 212,
@@ -80,7 +90,7 @@
             "modbus_register": 213,
             "field_name": "AIR_IN",
             "description": "Unit Input Air Temperature: (hundredths of degrees Celsius) es: 2350 = 23.50 °C",
-            "scale_factor": 1.0
+            "scale_factor": 0.01
           },
           {
             "modbus_register": 214,
@@ -106,11 +116,21 @@
             "description": "Humidity 0..100% ",
             "scale_factor": 1.0
           }
+        ],
+        "extra_fields": [
+          {
+            "field_name": "reg_split",
+            "value": "02"
+          },
+          {
+            "field_name": "room",
+            "value": "Lounge"
+          }
         ]
       },
       {
         "topic": "termodinamica/ac/03",
-        "fields": [
+        "modbus_fields": [
           {
             "modbus_register": 220,
             "field_name": "PWR",
@@ -121,7 +141,7 @@
             "modbus_register": 221,
             "field_name": "SP_ROOM",
             "description": "Unit SetPoint: (hundredths of degrees Celsius) es: 2350 = 23.50 °C -> Range: 18..30°C\"",
-            "scale_factor": 1.0
+            "scale_factor": 0.01
           },
           {
             "modbus_register": 222,
@@ -133,7 +153,7 @@
             "modbus_register": 223,
             "field_name": "AIR_IN",
             "description": "Unit Input Air Temperature: (hundredths of degrees Celsius) es: 2350 = 23.50 °C",
-            "scale_factor": 1.0
+            "scale_factor": 0.01
           },
           {
             "modbus_register": 224,
@@ -159,11 +179,21 @@
             "description": "Humidity 0..100% ",
             "scale_factor": 1.0
           }
+        ],
+        "extra_fields": [
+          {
+            "field_name": "reg_split",
+            "value": "03"
+          },
+          {
+            "field_name": "room",
+            "value": "Guest cabin (Aft SB)"
+          }
         ]
       },
       {
         "topic": "termodinamica/ac/04",
-        "fields": [
+        "modbus_fields": [
           {
             "modbus_register": 230,
             "field_name": "PWR",
@@ -174,7 +204,7 @@
             "modbus_register": 231,
             "field_name": "SP_ROOM",
             "description": "Unit SetPoint: (hundredths of degrees Celsius) es: 2350 = 23.50 °C -> Range: 18..30°C\"",
-            "scale_factor": 1.0
+            "scale_factor": 0.01
           },
           {
             "modbus_register": 232,
@@ -186,7 +216,7 @@
             "modbus_register": 233,
             "field_name": "AIR_IN",
             "description": "Unit Input Air Temperature: (hundredths of degrees Celsius) es: 2350 = 23.50 °C",
-            "scale_factor": 1.0
+            "scale_factor": 0.01
           },
           {
             "modbus_register": 234,
@@ -212,11 +242,21 @@
             "description": "Humidity 0..100% ",
             "scale_factor": 1.0
           }
+        ],
+        "extra_fields": [
+          {
+            "field_name": "reg_split",
+            "value": "04"
+          },
+          {
+            "field_name": "room",
+            "value": "Bathroom (Aft SB)"
+          }
         ]
       },
       {
         "topic": "termodinamica/ac/05",
-        "fields": [
+        "modbus_fields": [
           {
             "modbus_register": 240,
             "field_name": "PWR",
@@ -227,7 +267,7 @@
             "modbus_register": 241,
             "field_name": "SP_ROOM",
             "description": "Unit SetPoint: (hundredths of degrees Celsius) es: 2350 = 23.50 °C -> Range: 18..30°C\"",
-            "scale_factor": 1.0
+            "scale_factor": 0.01
           },
           {
             "modbus_register": 242,
@@ -239,7 +279,7 @@
             "modbus_register": 243,
             "field_name": "AIR_IN",
             "description": "Unit Input Air Temperature: (hundredths of degrees Celsius) es: 2350 = 23.50 °C",
-            "scale_factor": 1.0
+            "scale_factor": 0.01
           },
           {
             "modbus_register": 244,
@@ -265,11 +305,21 @@
             "description": "Humidity 0..100% ",
             "scale_factor": 1.0
           }
+        ],
+        "extra_fields": [
+          {
+            "field_name": "reg_split",
+            "value": "05"
+          },
+          {
+            "field_name": "room",
+            "value": "Guest cabin (PS)"
+          }
         ]
       },
       {
         "topic": "termodinamica/ac/06",
-        "fields": [
+        "modbus_fields": [
           {
             "modbus_register": 250,
             "field_name": "PWR",
@@ -280,7 +330,7 @@
             "modbus_register": 251,
             "field_name": "SP_ROOM",
             "description": "Unit SetPoint: (hundredths of degrees Celsius) es: 2350 = 23.50 °C -> Range: 18..30°C\"",
-            "scale_factor": 1.0
+            "scale_factor": 0.01
           },
           {
             "modbus_register": 252,
@@ -292,7 +342,7 @@
             "modbus_register": 253,
             "field_name": "AIR_IN",
             "description": "Unit Input Air Temperature: (hundredths of degrees Celsius) es: 2350 = 23.50 °C",
-            "scale_factor": 1.0
+            "scale_factor": 0.01
           },
           {
             "modbus_register": 254,
@@ -318,11 +368,21 @@
             "description": "Humidity 0..100% ",
             "scale_factor": 1.0
           }
+        ],
+        "extra_fields": [
+          {
+            "field_name": "reg_split",
+            "value": "06"
+          },
+          {
+            "field_name": "room",
+            "value": "Master bathroom cabin (PS)"
+          }
         ]
       },
       {
         "topic": "termodinamica/ac/07",
-        "fields": [
+        "modbus_fields": [
           {
             "modbus_register": 260,
             "field_name": "PWR",
@@ -333,7 +393,7 @@
             "modbus_register": 261,
             "field_name": "SP_ROOM",
             "description": "Unit SetPoint: (hundredths of degrees Celsius) es: 2350 = 23.50 °C -> Range: 18..30°C\"",
-            "scale_factor": 1.0
+            "scale_factor": 0.01
           },
           {
             "modbus_register": 262,
@@ -345,7 +405,7 @@
             "modbus_register": 263,
             "field_name": "AIR_IN",
             "description": "Unit Input Air Temperature: (hundredths of degrees Celsius) es: 2350 = 23.50 °C",
-            "scale_factor": 1.0
+            "scale_factor": 0.01
           },
           {
             "modbus_register": 264,
@@ -371,11 +431,21 @@
             "description": "Humidity 0..100% ",
             "scale_factor": 1.0
           }
+        ],
+        "extra_fields": [
+          {
+            "field_name": "reg_split",
+            "value": "07"
+          },
+          {
+            "field_name": "room",
+            "value": "Master cabin (PS)"
+          }
         ]
       },
       {
         "topic": "termodinamica/ac/08",
-        "fields": [
+        "modbus_fields": [
           {
             "modbus_register": 270,
             "field_name": "PWR",
@@ -386,7 +456,7 @@
             "modbus_register": 271,
             "field_name": "SP_ROOM",
             "description": "Unit SetPoint: (hundredths of degrees Celsius) es: 2350 = 23.50 °C -> Range: 18..30°C\"",
-            "scale_factor": 1.0
+            "scale_factor": 0.01
           },
           {
             "modbus_register": 272,
@@ -398,7 +468,7 @@
             "modbus_register": 273,
             "field_name": "AIR_IN",
             "description": "Unit Input Air Temperature: (hundredths of degrees Celsius) es: 2350 = 23.50 °C",
-            "scale_factor": 1.0
+            "scale_factor": 0.01
           },
           {
             "modbus_register": 274,
@@ -424,11 +494,21 @@
             "description": "Humidity 0..100% ",
             "scale_factor": 1.0
           }
+        ],
+        "extra_fields": [
+          {
+            "field_name": "reg_split",
+            "value": "08"
+          },
+          {
+            "field_name": "room",
+            "value": "Master cabin (SB)"
+          }
         ]
       },
       {
         "topic": "termodinamica/ac/09",
-        "fields": [
+        "modbus_fields": [
           {
             "modbus_register": 280,
             "field_name": "PWR",
@@ -439,7 +519,7 @@
             "modbus_register": 281,
             "field_name": "SP_ROOM",
             "description": "Unit SetPoint: (hundredths of degrees Celsius) es: 2350 = 23.50 °C -> Range: 18..30°C\"",
-            "scale_factor": 1.0
+            "scale_factor": 0.01
           },
           {
             "modbus_register": 282,
@@ -451,7 +531,7 @@
             "modbus_register": 283,
             "field_name": "AIR_IN",
             "description": "Unit Input Air Temperature: (hundredths of degrees Celsius) es: 2350 = 23.50 °C",
-            "scale_factor": 1.0
+            "scale_factor": 0.01
           },
           {
             "modbus_register": 284,
@@ -477,11 +557,21 @@
             "description": "Humidity 0..100% ",
             "scale_factor": 1.0
           }
+        ],
+        "extra_fields": [
+          {
+            "field_name": "reg_split",
+            "value": "09"
+          },
+          {
+            "field_name": "room",
+            "value": "Guest cabin (SB)"
+          }
         ]
       },
       {
         "topic": "termodinamica/ac/10",
-        "fields": [
+        "modbus_fields": [
           {
             "modbus_register": 290,
             "field_name": "PWR",
@@ -492,7 +582,7 @@
             "modbus_register": 291,
             "field_name": "SP_ROOM",
             "description": "Unit SetPoint: (hundredths of degrees Celsius) es: 2350 = 23.50 °C -> Range: 18..30°C\"",
-            "scale_factor": 1.0
+            "scale_factor": 0.01
           },
           {
             "modbus_register": 292,
@@ -504,7 +594,7 @@
             "modbus_register": 293,
             "field_name": "AIR_IN",
             "description": "Unit Input Air Temperature: (hundredths of degrees Celsius) es: 2350 = 23.50 °C",
-            "scale_factor": 1.0
+            "scale_factor": 0.01
           },
           {
             "modbus_register": 294,
@@ -530,11 +620,21 @@
             "description": "Humidity 0..100% ",
             "scale_factor": 1.0
           }
+        ],
+        "extra_fields": [
+          {
+            "field_name": "reg_split",
+            "value": "10"
+          },
+          {
+            "field_name": "room",
+            "value": "Office area (Fwd)"
+          }
         ]
       },
       {
         "topic": "termodinamica/ac/11",
-        "fields": [
+        "modbus_fields": [
           {
             "modbus_register": 300,
             "field_name": "PWR",
@@ -545,7 +645,7 @@
             "modbus_register": 301,
             "field_name": "SP_ROOM",
             "description": "Unit SetPoint: (hundredths of degrees Celsius) es: 2350 = 23.50 °C -> Range: 18..30°C\"",
-            "scale_factor": 1.0
+            "scale_factor": 0.01
           },
           {
             "modbus_register": 302,
@@ -557,7 +657,7 @@
             "modbus_register": 303,
             "field_name": "AIR_IN",
             "description": "Unit Input Air Temperature: (hundredths of degrees Celsius) es: 2350 = 23.50 °C",
-            "scale_factor": 1.0
+            "scale_factor": 0.01
           },
           {
             "modbus_register": 304,
@@ -583,11 +683,21 @@
             "description": "Humidity 0..100% ",
             "scale_factor": 1.0
           }
+        ],
+        "extra_fields": [
+          {
+            "field_name": "reg_split",
+            "value": "11"
+          },
+          {
+            "field_name": "room",
+            "value": "Guest cabin (Fr.42 Mid PS)"
+          }
         ]
       },
       {
         "topic": "termodinamica/ac/12",
-        "fields": [
+        "modbus_fields": [
           {
             "modbus_register": 310,
             "field_name": "PWR",
@@ -598,7 +708,7 @@
             "modbus_register": 311,
             "field_name": "SP_ROOM",
             "description": "Unit SetPoint: (hundredths of degrees Celsius) es: 2350 = 23.50 °C -> Range: 18..30°C\"",
-            "scale_factor": 1.0
+            "scale_factor": 0.01
           },
           {
             "modbus_register": 312,
@@ -610,7 +720,7 @@
             "modbus_register": 313,
             "field_name": "AIR_IN",
             "description": "Unit Input Air Temperature: (hundredths of degrees Celsius) es: 2350 = 23.50 °C",
-            "scale_factor": 1.0
+            "scale_factor": 0.01
           },
           {
             "modbus_register": 314,
@@ -636,11 +746,21 @@
             "description": "Humidity 0..100% ",
             "scale_factor": 1.0
           }
+        ],
+        "extra_fields": [
+          {
+            "field_name": "reg_split",
+            "value": "12"
+          },
+          {
+            "field_name": "room",
+            "value": "Mission Room"
+          }
         ]
       },
       {
         "topic": "termodinamica/ac/13",
-        "fields": [
+        "modbus_fields": [
           {
             "modbus_register": 320,
             "field_name": "PWR",
@@ -651,7 +771,7 @@
             "modbus_register": 321,
             "field_name": "SP_ROOM",
             "description": "Unit SetPoint: (hundredths of degrees Celsius) es: 2350 = 23.50 °C -> Range: 18..30°C\"",
-            "scale_factor": 1.0
+            "scale_factor": 0.01
           },
           {
             "modbus_register": 322,
@@ -663,7 +783,7 @@
             "modbus_register": 323,
             "field_name": "AIR_IN",
             "description": "Unit Input Air Temperature: (hundredths of degrees Celsius) es: 2350 = 23.50 °C",
-            "scale_factor": 1.0
+            "scale_factor": 0.01
           },
           {
             "modbus_register": 324,
@@ -689,11 +809,21 @@
             "description": "Humidity 0..100% ",
             "scale_factor": 1.0
           }
+        ],
+        "extra_fields": [
+          {
+            "field_name": "reg_split",
+            "value": "13"
+          },
+          {
+            "field_name": "room",
+            "value": "Laundry"
+          }
         ]
       },
       {
         "topic": "termodinamica/ac/14",
-        "fields": [
+        "modbus_fields": [
           {
             "modbus_register": 330,
             "field_name": "PWR",
@@ -704,7 +834,7 @@
             "modbus_register": 331,
             "field_name": "SP_ROOM",
             "description": "Unit SetPoint: (hundredths of degrees Celsius) es: 2350 = 23.50 °C -> Range: 18..30°C\"",
-            "scale_factor": 1.0
+            "scale_factor": 0.01
           },
           {
             "modbus_register": 332,
@@ -716,7 +846,7 @@
             "modbus_register": 333,
             "field_name": "AIR_IN",
             "description": "Unit Input Air Temperature: (hundredths of degrees Celsius) es: 2350 = 23.50 °C",
-            "scale_factor": 1.0
+            "scale_factor": 0.01
           },
           {
             "modbus_register": 334,
@@ -742,11 +872,21 @@
             "description": "Humidity 0..100% ",
             "scale_factor": 1.0
           }
+        ],
+        "extra_fields": [
+          {
+            "field_name": "reg_split",
+            "value": "14"
+          },
+          {
+            "field_name": "room",
+            "value": "Captain cabin"
+          }
         ]
       },
       {
         "topic": "termodinamica/ac/15",
-        "fields": [
+        "modbus_fields": [
           {
             "modbus_register": 340,
             "field_name": "PWR",
@@ -757,7 +897,7 @@
             "modbus_register": 341,
             "field_name": "SP_ROOM",
             "description": "Unit SetPoint: (hundredths of degrees Celsius) es: 2350 = 23.50 °C -> Range: 18..30°C\"",
-            "scale_factor": 1.0
+            "scale_factor": 0.01
           },
           {
             "modbus_register": 342,
@@ -769,7 +909,7 @@
             "modbus_register": 343,
             "field_name": "AIR_IN",
             "description": "Unit Input Air Temperature: (hundredths of degrees Celsius) es: 2350 = 23.50 °C",
-            "scale_factor": 1.0
+            "scale_factor": 0.01
           },
           {
             "modbus_register": 344,
@@ -795,11 +935,21 @@
             "description": "Humidity 0..100% ",
             "scale_factor": 1.0
           }
+        ],
+        "extra_fields": [
+          {
+            "field_name": "reg_split",
+            "value": "15"
+          },
+          {
+            "field_name": "room",
+            "value": "Crew area (Fwd)"
+          }
         ]
       },
       {
         "topic": "termodinamica/ac/16",
-        "fields": [
+        "modbus_fields": [
           {
             "modbus_register": 350,
             "field_name": "PWR",
@@ -810,7 +960,7 @@
             "modbus_register": 351,
             "field_name": "SP_ROOM",
             "description": "Unit SetPoint: (hundredths of degrees Celsius) es: 2350 = 23.50 °C -> Range: 18..30°C\"",
-            "scale_factor": 1.0
+            "scale_factor": 0.01
           },
           {
             "modbus_register": 352,
@@ -822,7 +972,7 @@
             "modbus_register": 353,
             "field_name": "AIR_IN",
             "description": "Unit Input Air Temperature: (hundredths of degrees Celsius) es: 2350 = 23.50 °C",
-            "scale_factor": 1.0
+            "scale_factor": 0.01
           },
           {
             "modbus_register": 354,
@@ -848,11 +998,21 @@
             "description": "Humidity 0..100% ",
             "scale_factor": 1.0
           }
+        ],
+        "extra_fields": [
+          {
+            "field_name": "reg_split",
+            "value": "16"
+          },
+          {
+            "field_name": "room",
+            "value": "Crew cabin (Fwd PS)"
+          }
         ]
       },
       {
         "topic": "termodinamica/ac/17",
-        "fields": [
+        "modbus_fields": [
           {
             "modbus_register": 360,
             "field_name": "PWR",
@@ -863,7 +1023,7 @@
             "modbus_register": 361,
             "field_name": "SP_ROOM",
             "description": "Unit SetPoint: (hundredths of degrees Celsius) es: 2350 = 23.50 °C -> Range: 18..30°C\"",
-            "scale_factor": 1.0
+            "scale_factor": 0.01
           },
           {
             "modbus_register": 362,
@@ -875,7 +1035,7 @@
             "modbus_register": 363,
             "field_name": "AIR_IN",
             "description": "Unit Input Air Temperature: (hundredths of degrees Celsius) es: 2350 = 23.50 °C",
-            "scale_factor": 1.0
+            "scale_factor": 0.01
           },
           {
             "modbus_register": 364,
@@ -901,11 +1061,21 @@
             "description": "Humidity 0..100% ",
             "scale_factor": 1.0
           }
+        ],
+        "extra_fields": [
+          {
+            "field_name": "reg_split",
+            "value": "17"
+          },
+          {
+            "field_name": "room",
+            "value": "Watersport storage"
+          }
         ]
       },
       {
         "topic": "termodinamica/ac/18",
-        "fields": [
+        "modbus_fields": [
           {
             "modbus_register": 370,
             "field_name": "PWR",
@@ -916,7 +1086,7 @@
             "modbus_register": 371,
             "field_name": "SP_ROOM",
             "description": "Unit SetPoint: (hundredths of degrees Celsius) es: 2350 = 23.50 °C -> Range: 18..30°C\"",
-            "scale_factor": 1.0
+            "scale_factor": 0.01
           },
           {
             "modbus_register": 372,
@@ -928,7 +1098,7 @@
             "modbus_register": 373,
             "field_name": "AIR_IN",
             "description": "Unit Input Air Temperature: (hundredths of degrees Celsius) es: 2350 = 23.50 °C",
-            "scale_factor": 1.0
+            "scale_factor": 0.01
           },
           {
             "modbus_register": 374,
@@ -954,11 +1124,21 @@
             "description": "Humidity 0..100% ",
             "scale_factor": 1.0
           }
+        ],
+        "extra_fields": [
+          {
+            "field_name": "reg_split",
+            "value": "18"
+          },
+          {
+            "field_name": "room",
+            "value": "Galley"
+          }
         ]
       },
       {
         "topic": "termodinamica/ac/19",
-        "fields": [
+        "modbus_fields": [
           {
             "modbus_register": 380,
             "field_name": "PWR",
@@ -969,7 +1149,7 @@
             "modbus_register": 381,
             "field_name": "SP_ROOM",
             "description": "Unit SetPoint: (hundredths of degrees Celsius) es: 2350 = 23.50 °C -> Range: 18..30°C\"",
-            "scale_factor": 1.0
+            "scale_factor": 0.01
           },
           {
             "modbus_register": 382,
@@ -981,7 +1161,7 @@
             "modbus_register": 383,
             "field_name": "AIR_IN",
             "description": "Unit Input Air Temperature: (hundredths of degrees Celsius) es: 2350 = 23.50 °C",
-            "scale_factor": 1.0
+            "scale_factor": 0.01
           },
           {
             "modbus_register": 384,
@@ -1007,11 +1187,21 @@
             "description": "Humidity 0..100% ",
             "scale_factor": 1.0
           }
+        ],
+        "extra_fields": [
+          {
+            "field_name": "reg_split",
+            "value": "19"
+          },
+          {
+            "field_name": "room",
+            "value": "Crew mess"
+          }
         ]
       },
       {
         "topic": "termodinamica/ac/20",
-        "fields": [
+        "modbus_fields": [
           {
             "modbus_register": 390,
             "field_name": "PWR",
@@ -1022,7 +1212,7 @@
             "modbus_register": 391,
             "field_name": "SP_ROOM",
             "description": "Unit SetPoint: (hundredths of degrees Celsius) es: 2350 = 23.50 °C -> Range: 18..30°C\"",
-            "scale_factor": 1.0
+            "scale_factor": 0.01
           },
           {
             "modbus_register": 392,
@@ -1034,7 +1224,7 @@
             "modbus_register": 393,
             "field_name": "AIR_IN",
             "description": "Unit Input Air Temperature: (hundredths of degrees Celsius) es: 2350 = 23.50 °C",
-            "scale_factor": 1.0
+            "scale_factor": 0.01
           },
           {
             "modbus_register": 394,
@@ -1060,11 +1250,21 @@
             "description": "Humidity 0..100% ",
             "scale_factor": 1.0
           }
+        ],
+        "extra_fields": [
+          {
+            "field_name": "reg_split",
+            "value": "20"
+          },
+          {
+            "field_name": "room",
+            "value": "Crew cabin (Aft)"
+          }
         ]
       },
       {
         "topic": "termodinamica/ac/21",
-        "fields": [
+        "modbus_fields": [
           {
             "modbus_register": 400,
             "field_name": "PWR",
@@ -1075,7 +1275,7 @@
             "modbus_register": 401,
             "field_name": "SP_ROOM",
             "description": "Unit SetPoint: (hundredths of degrees Celsius) es: 2350 = 23.50 °C -> Range: 18..30°C\"",
-            "scale_factor": 1.0
+            "scale_factor": 0.01
           },
           {
             "modbus_register": 402,
@@ -1087,7 +1287,7 @@
             "modbus_register": 403,
             "field_name": "AIR_IN",
             "description": "Unit Input Air Temperature: (hundredths of degrees Celsius) es: 2350 = 23.50 °C",
-            "scale_factor": 1.0
+            "scale_factor": 0.01
           },
           {
             "modbus_register": 404,
@@ -1113,11 +1313,21 @@
             "description": "Humidity 0..100% ",
             "scale_factor": 1.0
           }
+        ],
+        "extra_fields": [
+          {
+            "field_name": "reg_split",
+            "value": "21"
+          },
+          {
+            "field_name": "room",
+            "value": "Crew cabin (Mid SB)"
+          }
         ]
       },
       {
         "topic": "termodinamica/ac/22",
-        "fields": [
+        "modbus_fields": [
           {
             "modbus_register": 410,
             "field_name": "PWR",
@@ -1128,7 +1338,7 @@
             "modbus_register": 411,
             "field_name": "SP_ROOM",
             "description": "Unit SetPoint: (hundredths of degrees Celsius) es: 2350 = 23.50 °C -> Range: 18..30°C\"",
-            "scale_factor": 1.0
+            "scale_factor": 0.01
           },
           {
             "modbus_register": 412,
@@ -1140,7 +1350,7 @@
             "modbus_register": 413,
             "field_name": "AIR_IN",
             "description": "Unit Input Air Temperature: (hundredths of degrees Celsius) es: 2350 = 23.50 °C",
-            "scale_factor": 1.0
+            "scale_factor": 0.01
           },
           {
             "modbus_register": 414,
@@ -1166,11 +1376,21 @@
             "description": "Humidity 0..100% ",
             "scale_factor": 1.0
           }
+        ],
+        "extra_fields": [
+          {
+            "field_name": "reg_split",
+            "value": "22"
+          },
+          {
+            "field_name": "room",
+            "value": "Crew cabin (SB)"
+          }
         ]
       },
       {
         "topic": "termodinamica/ac/23",
-        "fields": [
+        "modbus_fields": [
           {
             "modbus_register": 420,
             "field_name": "PWR",
@@ -1181,7 +1401,7 @@
             "modbus_register": 421,
             "field_name": "SP_ROOM",
             "description": "Unit SetPoint: (hundredths of degrees Celsius) es: 2350 = 23.50 °C -> Range: 18..30°C\"",
-            "scale_factor": 1.0
+            "scale_factor": 0.01
           },
           {
             "modbus_register": 422,
@@ -1193,7 +1413,7 @@
             "modbus_register": 423,
             "field_name": "AIR_IN",
             "description": "Unit Input Air Temperature: (hundredths of degrees Celsius) es: 2350 = 23.50 °C",
-            "scale_factor": 1.0
+            "scale_factor": 0.01
           },
           {
             "modbus_register": 424,
@@ -1219,11 +1439,21 @@
             "description": "Humidity 0..100% ",
             "scale_factor": 1.0
           }
+        ],
+        "extra_fields": [
+          {
+            "field_name": "reg_split",
+            "value": "23"
+          },
+          {
+            "field_name": "room",
+            "value": "Main deckhouse"
+          }
         ]
       },
       {
         "topic": "termodinamica/ac/24",
-        "fields": [
+        "modbus_fields": [
           {
             "modbus_register": 430,
             "field_name": "PWR",
@@ -1234,7 +1464,7 @@
             "modbus_register": 431,
             "field_name": "SP_ROOM",
             "description": "Unit SetPoint: (hundredths of degrees Celsius) es: 2350 = 23.50 °C -> Range: 18..30°C\"",
-            "scale_factor": 1.0
+            "scale_factor": 0.01
           },
           {
             "modbus_register": 432,
@@ -1246,7 +1476,7 @@
             "modbus_register": 433,
             "field_name": "AIR_IN",
             "description": "Unit Input Air Temperature: (hundredths of degrees Celsius) es: 2350 = 23.50 °C",
-            "scale_factor": 1.0
+            "scale_factor": 0.01
           },
           {
             "modbus_register": 434,
@@ -1272,11 +1502,21 @@
             "description": "Humidity 0..100% ",
             "scale_factor": 1.0
           }
+        ],
+        "extra_fields": [
+          {
+            "field_name": "reg_split",
+            "value": "24"
+          },
+          {
+            "field_name": "room",
+            "value": "Aft area"
+          }
         ]
       },
       {
         "topic": "termodinamica/ac/25",
-        "fields": [
+        "modbus_fields": [
           {
             "modbus_register": 440,
             "field_name": "PWR",
@@ -1287,7 +1527,7 @@
             "modbus_register": 441,
             "field_name": "SP_ROOM",
             "description": "Unit SetPoint: (hundredths of degrees Celsius) es: 2350 = 23.50 °C -> Range: 18..30°C\"",
-            "scale_factor": 1.0
+            "scale_factor": 0.01
           },
           {
             "modbus_register": 442,
@@ -1299,7 +1539,7 @@
             "modbus_register": 443,
             "field_name": "AIR_IN",
             "description": "Unit Input Air Temperature: (hundredths of degrees Celsius) es: 2350 = 23.50 °C",
-            "scale_factor": 1.0
+            "scale_factor": 0.01
           },
           {
             "modbus_register": 444,
@@ -1325,11 +1565,21 @@
             "description": "Humidity 0..100% ",
             "scale_factor": 1.0
           }
+        ],
+        "extra_fields": [
+          {
+            "field_name": "reg_split",
+            "value": "25"
+          },
+          {
+            "field_name": "room",
+            "value": "Aft area (Slave)"
+          }
         ]
       },
       {
         "topic": "termodinamica/ac/26",
-        "fields": [
+        "modbus_fields": [
           {
             "modbus_register": 450,
             "field_name": "PWR",
@@ -1340,7 +1590,7 @@
             "modbus_register": 451,
             "field_name": "SP_ROOM",
             "description": "Unit SetPoint: (hundredths of degrees Celsius) es: 2350 = 23.50 °C -> Range: 18..30°C\"",
-            "scale_factor": 1.0
+            "scale_factor": 0.01
           },
           {
             "modbus_register": 452,
@@ -1352,7 +1602,7 @@
             "modbus_register": 453,
             "field_name": "AIR_IN",
             "description": "Unit Input Air Temperature: (hundredths of degrees Celsius) es: 2350 = 23.50 °C",
-            "scale_factor": 1.0
+            "scale_factor": 0.01
           },
           {
             "modbus_register": 454,
@@ -1378,11 +1628,21 @@
             "description": "Humidity 0..100% ",
             "scale_factor": 1.0
           }
+        ],
+        "extra_fields": [
+          {
+            "field_name": "reg_split",
+            "value": "26"
+          },
+          {
+            "field_name": "room",
+            "value": "Office area (Fwd)"
+          }
         ]
       },
       {
         "topic": "termodinamica/ac/27",
-        "fields": [
+        "modbus_fields": [
           {
             "modbus_register": 460,
             "field_name": "PWR",
@@ -1393,7 +1653,7 @@
             "modbus_register": 461,
             "field_name": "SP_ROOM",
             "description": "Unit SetPoint: (hundredths of degrees Celsius) es: 2350 = 23.50 °C -> Range: 18..30°C\"",
-            "scale_factor": 1.0
+            "scale_factor": 0.01
           },
           {
             "modbus_register": 462,
@@ -1405,7 +1665,7 @@
             "modbus_register": 463,
             "field_name": "AIR_IN",
             "description": "Unit Input Air Temperature: (hundredths of degrees Celsius) es: 2350 = 23.50 °C",
-            "scale_factor": 1.0
+            "scale_factor": 0.01
           },
           {
             "modbus_register": 464,
@@ -1431,11 +1691,21 @@
             "description": "Humidity 0..100% ",
             "scale_factor": 1.0
           }
+        ],
+        "extra_fields": [
+          {
+            "field_name": "reg_split",
+            "value": "27"
+          },
+          {
+            "field_name": "room",
+            "value": "Guest cabin (Fr.42 Mid PS)"
+          }
         ]
       },
       {
         "topic": "termodinamica/ac/28",
-        "fields": [
+        "modbus_fields": [
           {
             "modbus_register": 470,
             "field_name": "PWR",
@@ -1446,7 +1716,7 @@
             "modbus_register": 471,
             "field_name": "SP_ROOM",
             "description": "Unit SetPoint: (hundredths of degrees Celsius) es: 2350 = 23.50 °C -> Range: 18..30°C\"",
-            "scale_factor": 1.0
+            "scale_factor": 0.01
           },
           {
             "modbus_register": 472,
@@ -1458,7 +1728,7 @@
             "modbus_register": 473,
             "field_name": "AIR_IN",
             "description": "Unit Input Air Temperature: (hundredths of degrees Celsius) es: 2350 = 23.50 °C",
-            "scale_factor": 1.0
+            "scale_factor": 0.01
           },
           {
             "modbus_register": 474,
@@ -1484,11 +1754,21 @@
             "description": "Humidity 0..100% ",
             "scale_factor": 1.0
           }
+        ],
+        "extra_fields": [
+          {
+            "field_name": "reg_split",
+            "value": "28"
+          },
+          {
+            "field_name": "room",
+            "value": "Guest cabin (FR.55 Aft PS)"
+          }
         ]
       },
       {
         "topic": "termodinamica/ac/29",
-        "fields": [
+        "modbus_fields": [
           {
             "modbus_register": 480,
             "field_name": "PWR",
@@ -1499,7 +1779,7 @@
             "modbus_register": 481,
             "field_name": "SP_ROOM",
             "description": "Unit SetPoint: (hundredths of degrees Celsius) es: 2350 = 23.50 °C -> Range: 18..30°C\"",
-            "scale_factor": 1.0
+            "scale_factor": 0.01
           },
           {
             "modbus_register": 482,
@@ -1511,7 +1791,7 @@
             "modbus_register": 483,
             "field_name": "AIR_IN",
             "description": "Unit Input Air Temperature: (hundredths of degrees Celsius) es: 2350 = 23.50 °C",
-            "scale_factor": 1.0
+            "scale_factor": 0.01
           },
           {
             "modbus_register": 484,
@@ -1537,11 +1817,21 @@
             "description": "Humidity 0..100% ",
             "scale_factor": 1.0
           }
+        ],
+        "extra_fields": [
+          {
+            "field_name": "reg_split",
+            "value": "29"
+          },
+          {
+            "field_name": "room",
+            "value": "Navcom"
+          }
         ]
       },
       {
         "topic": "termodinamica/ac/30",
-        "fields": [
+        "modbus_fields": [
           {
             "modbus_register": 490,
             "field_name": "PWR",
@@ -1552,7 +1842,7 @@
             "modbus_register": 491,
             "field_name": "SP_ROOM",
             "description": "Unit SetPoint: (hundredths of degrees Celsius) es: 2350 = 23.50 °C -> Range: 18..30°C\"",
-            "scale_factor": 1.0
+            "scale_factor": 0.01
           },
           {
             "modbus_register": 492,
@@ -1564,7 +1854,7 @@
             "modbus_register": 493,
             "field_name": "AIR_IN",
             "description": "Unit Input Air Temperature: (hundredths of degrees Celsius) es: 2350 = 23.50 °C",
-            "scale_factor": 1.0
+            "scale_factor": 0.01
           },
           {
             "modbus_register": 494,
@@ -1590,11 +1880,21 @@
             "description": "Humidity 0..100% ",
             "scale_factor": 1.0
           }
+        ],
+        "extra_fields": [
+          {
+            "field_name": "reg_split",
+            "value": "30"
+          },
+          {
+            "field_name": "room",
+            "value": "HM10 Backup Cooling Panels"
+          }
         ]
       },
       {
         "topic": "termodinamica/ac/31",
-        "fields": [
+        "modbus_fields": [
           {
             "modbus_register": 500,
             "field_name": "PWR",
@@ -1605,7 +1905,7 @@
             "modbus_register": 501,
             "field_name": "SP_ROOM",
             "description": "Unit SetPoint: (hundredths of degrees Celsius) es: 2350 = 23.50 °C -> Range: 18..30°C\"",
-            "scale_factor": 1.0
+            "scale_factor": 0.01
           },
           {
             "modbus_register": 502,
@@ -1617,7 +1917,7 @@
             "modbus_register": 503,
             "field_name": "AIR_IN",
             "description": "Unit Input Air Temperature: (hundredths of degrees Celsius) es: 2350 = 23.50 °C",
-            "scale_factor": 1.0
+            "scale_factor": 0.01
           },
           {
             "modbus_register": 504,
@@ -1643,11 +1943,21 @@
             "description": "Humidity 0..100% ",
             "scale_factor": 1.0
           }
+        ],
+        "extra_fields": [
+          {
+            "field_name": "reg_split",
+            "value": "31"
+          },
+          {
+            "field_name": "room",
+            "value": "Crew cabin (Fwd SB)"
+          }
         ]
       },
       {
         "topic": "termodinamica/ac-misc",
-        "fields": [
+        "modbus_fields": [
           {
             "modbus_register": 140,
             "field_name": "ENGINE_BOX_COMPRESSOR_SPEED",
@@ -1658,37 +1968,37 @@
             "modbus_register": 141,
             "field_name": "ENGINE_BOX_WATER_PUMP_SPEED",
             "description": "Engine Box Inverter Water Pump Speed: (percentage) Range: 0..100% es. 500 = 50.0%",
-            "scale_factor": 1.0
+            "scale_factor": 0.01
           },
           {
             "modbus_register": 142,
             "field_name": "CURRENT_REQ_PRESSURE",
             "description": "Engine Box Max Air Handler Required Pressure: (thousandths of Bar) es: 22543 = 22.543 Bar",
-            "scale_factor": 1.0
+            "scale_factor": 0.001
           },
           {
             "modbus_register": 145,
             "field_name": "ENGINE_BOX_T_SEA_WATER",
             "description": "Engine Box Sea Water Temperature: (hundredths of degrees Celsius) es: 2350 = 23.50 °C",
-            "scale_factor": 1.0
+            "scale_factor": 0.01
           },
           {
             "modbus_register": 149,
             "field_name": "ENGINE_BOX_P_GAS",
             "description": "Engine Box Gas Pressure: (thousandths of Bar) es: 22543 = 22.543 Bar",
-            "scale_factor": 1.0
+            "scale_factor": 0.001
           },
           {
             "modbus_register": 150,
             "field_name": "ENGINE_BOX_P_LIQUID",
             "description": "Engine Box Liquid Pressure: (thousandths of Bar) es: 22543 = 22.543 Bar",
-            "scale_factor": 1.0
+            "scale_factor": 0.001
           },
           {
             "modbus_register": 151,
             "field_name": "ENGINE_BOX_P_CONDENSER",
             "description": "Engine Box Condenser Pressure: (thousandths of Bar) es: 22543 = 22.543 Bar",
-            "scale_factor": 1.0
+            "scale_factor": 0.001
           },
           {
             "modbus_register": 155,
@@ -1700,39 +2010,40 @@
             "modbus_register": 182,
             "field_name": "WATT_AC_COMPRESSOR_1",
             "description": "Instantaneous absorption control of the AC compressor 1 (1=0,01 Watt)",
-            "scale_factor": 1.0
+            "scale_factor": 0.01
           },
           {
             "modbus_register": 183,
             "field_name": "WATT_AC_COMPRESSOR_2",
             "description": "Instantaneous absorption control of the AC compressor 2 (1=0,01 Watt)",
-            "scale_factor": 1.0
+            "scale_factor": 0.01
           },
           {
             "modbus_register": 184,
             "field_name": "WATT_SEA_WATER_PUMP",
             "description": "Instantaneous absorption control of the AC Sea Water Pump (1=0,01 Watt)",
-            "scale_factor": 1.0
+            "scale_factor": 0.01
           },
           {
             "modbus_register": 185,
             "field_name": "AC_COMPRESSOR_1",
             "description": "Instantaneous absorption control of the AC compressor 1 (1=0,01 Ampere)",
-            "scale_factor": 1.0
+            "scale_factor": 0.01
           },
           {
             "modbus_register": 186,
             "field_name": "AC_COMPRESSOR_2",
             "description": "Instantaneous absorption control of the AC compressor 2 (1=0,01 Ampere)",
-            "scale_factor": 1.0
+            "scale_factor": 0.01
           },
           {
             "modbus_register": 187,
             "field_name": "SEA_WATER_PUMP",
             "description": "Instantaneous absorption control of the AC Sea Water Pump (1=0,01 Ampere)",
-            "scale_factor": 1.0
+            "scale_factor": 0.01
           }
-        ]
+        ],
+        "extra_fields": []
       }
     ]
   }

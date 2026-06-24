@@ -1,8 +1,13 @@
 import json
 from pathlib import Path
-from typing import List
+from typing import Any, List
 
 from pydantic import BaseModel, TypeAdapter
+
+
+class LiteralField(BaseModel):
+    field_name: str
+    value: Any
 
 
 class Address(BaseModel):
@@ -14,7 +19,8 @@ class Address(BaseModel):
 
 class MQTTTopic(BaseModel):
     topic: str
-    fields: List[Address]
+    modbus_fields: List[Address]
+    extra_fields: List[LiteralField] = []
 
 
 class ModbusUnit(BaseModel):
