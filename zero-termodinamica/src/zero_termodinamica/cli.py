@@ -6,7 +6,7 @@ from pydantic_settings import (
     CliSubCommand,
 )
 
-from zero_termodinamica.addresses import read_modbus_units
+from zero_termodinamica.io import read_modbus_units
 from zero_termodinamica.modbus_to_mqtt import ModbusToMQTTBridge
 from zero_termodinamica.settings import ModbusSettings, MqttSettings
 from zero_termodinamica.stub import Stub

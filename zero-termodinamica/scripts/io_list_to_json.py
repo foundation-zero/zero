@@ -1,22 +1,10 @@
-# /// script
-# requires-python = ">=3.13"
-# dependencies = [
-#     "fastexcel",
-#     "polars",
-#     "pydantic",
-#     "zero-termodinamica",
-# ]
-#
-# [tool.uv.sources]
-# zero-termodinamica = { path = "../" }
-# ///
 from pathlib import Path
 from typing import List
 
 import polars as pl
 from pydantic import TypeAdapter
 
-from zero_termodinamica.addresses import Address, ModbusUnit, MQTTTopic
+from zero_termodinamica.io import Address, ModbusUnit, MQTTTopic
 
 SCRIPTS_FOLDER = Path(__file__).parent
 EXCEL_PATH = SCRIPTS_FOLDER / "../docs/Vent en AC lijst Termodynamica.xls"

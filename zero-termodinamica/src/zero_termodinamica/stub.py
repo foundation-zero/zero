@@ -4,7 +4,7 @@ from typing import List
 from pyModbusTCP.constants import EXP_NONE, EXP_SLAVE_DEVICE_FAILURE
 from pyModbusTCP.server import DataHandler, ModbusServer
 
-from zero_termodinamica.addresses import ModbusUnit
+from zero_termodinamica.io import ModbusUnit
 from zero_termodinamica.settings import ModbusSettings
 
 

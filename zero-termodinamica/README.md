@@ -4,13 +4,17 @@ Service that reads termodinamica sensor data from a Modbus TCP device and publis
 
 ## Overview
 
-The application reads modbus from a Modbus TCP adapter. After reading, it publishes the results as a JSON payload to a configurable MQTT topic.
+The application reads modbus from a Modbus TCP adapter. After reading, it publishes the results as a JSON payload to a configurable MQTT topic. The ingest consists of two parts:
+- Parsing IO list --> `scripts/io_list_to_json.py`
+- Reading Modbus & publishing to mqtt --> the main application
+
+The script produces a json file (`modbus_units.json`) that can be loaded in by the application to read specific modbus registers and bundle & publish them as json.
 
 ## Requirements
 
-- Just
+- just
 - Python >= 3.13.1
-- A Modbus TCP server exposing the termodinamica sensor data
+- poetry
 - An MQTT broker
 
 ## Installation
@@ -39,6 +43,7 @@ just run_stub --help
 Start MQTT Server, run the stub, and then the main application:
 
 ```bash
+# Run message broker from root
 docker compose --profile data-collection up -d vernemq
 just run_stub
 # Open new terminal

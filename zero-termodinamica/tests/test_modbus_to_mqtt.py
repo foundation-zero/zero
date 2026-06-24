@@ -4,7 +4,7 @@ from unittest.mock import AsyncMock, MagicMock
 
 import pytest
 
-from zero_termodinamica.addresses import Address, ModbusUnit, MQTTTopic
+from zero_termodinamica.io import Address, ModbusUnit, MQTTTopic
 from zero_termodinamica.modbus_to_mqtt import ModbusToMQTTBridge
 
 

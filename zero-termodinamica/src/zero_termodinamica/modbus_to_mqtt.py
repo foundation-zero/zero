@@ -9,7 +9,7 @@ from aiomqtt import Client as MqttClient
 from pyModbusTCP.client import ModbusClient
 from tenacity import retry, stop_after_attempt, wait_fixed
 
-from zero_termodinamica.addresses import Address, ModbusUnit
+from zero_termodinamica.io import Address, ModbusUnit
 from zero_termodinamica.settings import ModbusSettings, MqttSettings
 
 
