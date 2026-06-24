@@ -252,7 +252,7 @@ class Tank:
             self._inlet.setpoint = Stamped(value=Valve.CLOSED, timestamp=time())
 
     def fillable(self, parameters: DhwParameters) -> bool:
-        return not self._disabled and not self._full and self.outlet_closed()
+        return (not self._disabled) and (not self._full) and self.outlet_closed()
 
     def use(self, time: Callable[[], datetime]):
         self._full = False
@@ -264,11 +264,9 @@ class Tank:
             self._outlet.setpoint = Stamped(value=Valve.CLOSED, timestamp=time())
 
     def outlet_closed(self) -> bool:
-        return (
-            self._outlet_position < (Valve.CLOSED + 0.001)
-            if self._outlet_position is not None
-            else False
-        )
+        if self._outlet_position is None:
+            return False
+        return self._outlet_position < (Valve.CLOSED + 0.001)
 
 
 class TanksController:
@@ -443,31 +441,19 @@ class TanksController:
         self._select_boosting_tank(parameters, sensor_values)
 
     def tank_state(self, tank: Tank, parameters: DhwParameters) -> TankState:
-        return (
-            TankState.FILLING
-            if tank is self._filling_tank
-            else (
-                TankState.BOOSTING
-                if tank is self._boosting_tank
-                else (
-                    TankState.IN_USE
-                    if tank is self._tank_in_use
-                    else (
-                        TankState.DISABLED
-                        if tank.disabled
-                        else (
-                            TankState.NEEDS_BOOST
-                            if tank.boostable(parameters)
-                            else (
-                                TankState.NEEDS_FILL
-                                if tank.fillable(parameters)
-                                else (TankState.STANDBY)
-                            )
-                        )
-                    )
-                )
-            )
-        )
+        if tank is self._filling_tank:
+            return TankState.FILLING
+        if tank is self._boosting_tank:
+            return TankState.BOOSTING
+        if tank is self._tank_in_use:
+            return TankState.IN_USE
+        if tank.disabled:
+            return TankState.DISABLED
+        if tank.boostable(parameters):
+            return TankState.NEEDS_BOOST
+        if tank.fillable(parameters):
+            return TankState.NEEDS_FILL
+        return TankState.STANDBY
 
     def values(
         self, sensor_values: DhwSensorValues, parameters: DhwParameters
