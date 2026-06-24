@@ -138,7 +138,7 @@
           "highTempLoopTitle": "High temp loop",
           "brightloopTitle": "Brightloop",
           "drivesTitle": "Drives",
-          "fahrenheitTitle": "Adsorption",
+          "adsorptionTitle": "Adsorption",
           "domesticHotWaterTitle": "Fresh Water System"
         }
       }

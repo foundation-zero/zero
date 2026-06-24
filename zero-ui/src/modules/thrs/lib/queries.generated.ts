@@ -201,6 +201,8 @@ export const DHW_CONTROL_QUERY = `
 `;
 
 export const DHW_PARAMETERS_QUERY = `
+  heatpumpBoostingEnabled
+  htBoostingEnabled
   heatpumpFlowSetpoint
   heatpumpTemperatureSetpoint
   htBoostingTemperatureSetpoint
@@ -402,7 +404,7 @@ export const DHW_SENSOR_QUERY = `
     heat { value timestamp }
     deltaT { value timestamp }
   }
-  dhwFahrenheitExchanger {
+  dhwAdsorptionExchanger {
     heat { value timestamp }
     deltaT { value timestamp }
   }
@@ -446,6 +448,10 @@ export const DHW_SIMULATION_INPUTS_QUERY = `
   }
   dhwHotwaterDemand {
     flow { value timestamp }
+  }
+  dhwHvacExchanger {
+    heatFlow { value timestamp }
+    maximumTemperature { value timestamp }
   }
 `;
 

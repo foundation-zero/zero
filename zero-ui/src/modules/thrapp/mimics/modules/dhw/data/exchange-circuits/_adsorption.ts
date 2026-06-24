@@ -16,7 +16,7 @@ export default toInstance<MimicComponentType.ExchangeCircuit>({
     flow: getField(SensorComponentType.Flow, "dhw", "adsorptionFlowDhw"),
     incoming: getField(SensorComponentType.Temperature, "dhw", "adsorptionTemperatureWasteReturn"),
     outgoing: getField(SensorComponentType.Temperature, "dhw", "adsorptionTemperatureDhwReturn"),
-    heatExchanger: getField(SensorComponentType.HeatExchanger, "dhw", "dhwFahrenheitExchanger"),
+    heatExchanger: getField(SensorComponentType.HeatExchanger, "dhw", "dhwAdsorptionExchanger"),
   },
   tooltip: tooltip({
     title: "Adsorption",

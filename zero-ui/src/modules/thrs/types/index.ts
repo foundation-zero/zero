@@ -83,6 +83,8 @@ export type SimulationFields = {
   [SimulationComponentType.Pcs]: (keyof PcsSimulation)[];
   [SimulationComponentType.Boundary]: (keyof BoundarySimulation)[];
   [SimulationComponentType.HeatSource]: (keyof HeatSourceSimulation)[];
+  [SimulationComponentType.Flow]: (keyof FlowSimulation)[];
+  [SimulationComponentType.HvacExchanger]: (keyof HvacExchangerSimulation)[];
 };
 
 export type PumpSensor = {
@@ -411,6 +413,11 @@ export type HeatSourceSimulation = {
   heatFlow: Stamped<number>;
 };
 
+export type HvacExchangerSimulation = {
+  heatFlow: Stamped<number>;
+  maximumTemperature: Stamped<number>;
+};
+
 export type PcsSimulation = ModeSelector<ThrusterMode>;
 
 export const enum SimulationComponentType {
@@ -421,6 +428,7 @@ export const enum SimulationComponentType {
   Flow = "flow",
   Pcs = "pcs",
   HeatSource = "heatSource",
+  HvacExchanger = "hvacExchanger",
 }
 
 export type SimulationDefinition<T extends SimulationComponentType = SimulationComponentType> =
@@ -446,6 +454,7 @@ export type SimulationDefinitionMap = {
   [SimulationComponentType.Flow]: FlowSimulation;
   [SimulationComponentType.Pcs]: PcsSimulation;
   [SimulationComponentType.HeatSource]: HeatSourceSimulation;
+  [SimulationComponentType.HvacExchanger]: HvacExchangerSimulation;
 };
 
 export type ExtractSimulationValues<T extends SimulationDefinitions> = ExtractValues<

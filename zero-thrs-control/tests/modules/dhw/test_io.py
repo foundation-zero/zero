@@ -9,7 +9,7 @@ from tests.modules.conftest import (
     compare_yard_tags,
 )
 from thrs.input_output.base import Stamped
-from thrs.input_output.definitions import sensor
+from thrs.input_output.definitions import control, sensor
 from thrs.input_output.definitions.units import WATER_HEAT_TRANSFER_CONVERSION
 from thrs.input_output.fmu_mapping import included_in_fmu
 from thrs.input_output.modules.dhw import (
@@ -75,10 +75,10 @@ def test_dhw_hvac_exchanger_computed_field():
     values = DhwSensorValues.zero().model_copy(
         update={
             "dhw_temperature_hvac_exchanger_return": sensor.TemperatureSensor(
-                temperature=Stamped.stamp(t_supply)
+                temperature=Stamped.stamp(t_return)
             ),
             "dhw_temperature_adsorption_return": sensor.TemperatureSensor(
-                temperature=Stamped.stamp(t_return)
+                temperature=Stamped.stamp(t_supply)
             ),
             "dhw_flow_dc": sensor.FlowSensor(
                 flow=Stamped.stamp(flow),
@@ -94,29 +94,35 @@ def test_dhw_hvac_exchanger_computed_field():
 
 
 def test_dhw_heatpump_computed_field():
-    t_supply = 55.0
-    t_return = 35.0
+    t_supply = 35.0
+    t_return = 55.0
     flow = 20.0
 
     values = DhwSensorValues.zero().model_copy(
         update={
             "dhw_temperature_boosting_return": sensor.TemperatureSensor(
-                temperature=Stamped.stamp(t_supply)
+                temperature=Stamped.stamp(t_return)
             ),
             "dhw_temperature_boosting_supply": sensor.TemperatureSensor(
-                temperature=Stamped.stamp(t_return)
+                temperature=Stamped.stamp(t_supply)
             ),
             "dhw_flow_boosting": sensor.FlowSensor(
                 flow=Stamped.stamp(flow),
                 temperature=Stamped.stamp(0.0),
+            ),
+            "dhw_switch_heatpump": sensor.Valve(
+                position_rel=Stamped.stamp(control.Valve.OPEN)
+            ),
+            "dhw_switch_high_temperature": sensor.Valve(
+                position_rel=Stamped.stamp(control.Valve.CLOSED)
             ),
         }
     )
 
     heatpump = values.dhw_heatpump
     assert isinstance(heatpump, sensor.HeatPump)
-    assert heatpump.delta_t.value == approx(-20.0)
-    assert heatpump.heat.value == approx(20.0 * -20.0 * WATER_HEAT_TRANSFER_CONVERSION)
+    assert heatpump.delta_t.value == approx(20.0)
+    assert heatpump.heat.value == approx(20.0 * 20.0 * WATER_HEAT_TRANSFER_CONVERSION)
 
 
 def test_computed_field_timestamp_uses_oldest():

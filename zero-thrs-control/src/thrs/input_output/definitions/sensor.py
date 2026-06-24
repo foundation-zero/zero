@@ -1,6 +1,7 @@
 from typing import Self
 
 from thrs.input_output.base import Stamped, ThrsValues
+from thrs.input_output.definitions import control
 from thrs.input_output.definitions.units import (
     Bar,
     Celsius,
@@ -110,6 +111,15 @@ class HeatExchanger(HeatTransferDevice):
 
 class Valve(ThrsValues):
     position_rel: Stamped[Ratio]
+
+
+def valves_open_closed(open_valves: list[Valve], closed_valves: list[Valve]) -> bool:
+    return all(
+        valve.position_rel.value == control.Valve.OPEN for valve in open_valves
+    ) and all(
+        valve.position_rel.value < (control.Valve.CLOSED + 0.01)
+        for valve in closed_valves
+    )
 
 
 class PressureSensor(ThrsValues):

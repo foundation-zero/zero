@@ -264,6 +264,12 @@ export const DHW_CONTROL_DEFINITION = toControlDefinition({
 });
 
 export const DHW_PARAMETER_DEFINITION = toParameterDefinition({
+  heatpumpBoostingEnabled: {
+    componentType: ParametersType.Enabled,
+  },
+  htBoostingEnabled: {
+    componentType: ParametersType.Enabled,
+  },
   heatpumpFlowSetpoint: {
     componentType: ParametersType.Flow,
   },
@@ -562,7 +568,7 @@ export const DHW_SENSOR_DEFINITION = toSensorDefinition({
     yardTag: "N/A",
     componentType: SensorComponentType.HeatExchanger,
   },
-  dhwFahrenheitExchanger: {
+  dhwAdsorptionExchanger: {
     yardTag: "N/A",
     componentType: SensorComponentType.HeatExchanger,
   },
@@ -601,6 +607,9 @@ export const DHW_SIMULATION_INPUTS = toSimulationDefinition({
   },
   dhwHotwaterDemand: {
     componentType: SimulationComponentType.Flow,
+  },
+  dhwHvacExchanger: {
+    componentType: SimulationComponentType.HvacExchanger,
   },
 });
 
