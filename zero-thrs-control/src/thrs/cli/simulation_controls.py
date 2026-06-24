@@ -65,7 +65,6 @@ from thrs.input_output.modules.thrusters import (
 from thrs.orchestration.config import Config
 from thrs.orchestration.connector import (
     MqttConnector,
-    MqttSimulationConnector,
 )
 from thrs.orchestration.module import CombinedControl, CombinedModule
 from thrs.orchestration.runner import Runner
@@ -810,25 +809,30 @@ class SimulationControls:
                 controller_topic_prefix=self._controller_topic_prefix,
                 sensor_values_clss=modules.sensor_values_clss,
                 control_values_clss=modules.control_values_clss,
+                controller_values_clss={},  # Nothing yet, but we want to send controller values here at some point
                 control_topic_suffix=self._control_topic_suffix,
             )
-            simulation_connector = MqttSimulationConnector(
-                simulation=simulation,
+            simulation_connector = MqttConnector(
                 mqtt_client=self._sensor_client,
                 devices_topic_prefix=self._devices_topic_prefix,
-                simulation_topic_prefix=self._simulation_topic_prefix,
-                sensor_values_clss=modules.sensor_values_clss,
-                simulation_outputs_cls=modules.simulation_outputs_cls,
+                controller_topic_prefix=self._simulation_topic_prefix,
+                sensor_values_clss={},  # It actually does not listen to mqtt for these but gets them directly from the runner
+                control_values_clss=modules.sensor_values_clss,
+                controller_values_clss={mode: modules.simulation_outputs_cls},
+                sensor_topic_suffix=self._control_topic_suffix,
             )
 
             runner = Runner(
                 control_connector,
+                mode,
+                simulation,
                 simulation_connector,
                 control,  # type: ignore
                 modules.alarms(),  # type: ignore
             )
 
-            connector_task = create_task(control_connector.run())
+            control_connector_task = create_task(control_connector.run())
+            simulation_connector_task = create_task(simulation_connector.run())
             receive_task = create_task(
                 self._receive_controls(
                     SIMULATION_HANDLERS,
@@ -858,9 +862,10 @@ class SimulationControls:
                     mode, modules, context, simulation, runner, cmds
                 )
             except Exception as e:
-                logger.error(f"SimulationControls run encountered an error: {e}")
+                logger.exception(f"SimulationControls run encountered an error: {e}")
             finally:
-                connector_task.cancel()
+                control_connector_task.cancel()
+                simulation_connector_task.cancel()
                 receive_task.cancel()
 
     async def _run_simulation(

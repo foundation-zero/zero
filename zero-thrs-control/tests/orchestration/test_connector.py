@@ -1,6 +1,4 @@
 import json
-from asyncio import create_task, sleep
-from datetime import datetime
 from typing import Annotated
 from unittest import mock
 
@@ -8,7 +6,7 @@ import pytest
 from aiomqtt import Client, Topic
 from pydantic import computed_field
 
-from tests.orchestration.simples import SimpleInOut, SimpleSimulation
+from tests.orchestration.simples import SimpleInOut
 from thrs.input_output.base import (
     CombinedValues,
     Stamped,
@@ -21,7 +19,6 @@ from thrs.orchestration.connector import (
     DirectMqttMapping,
     ModuleMqttMapping,
     MqttConnector,
-    MqttSimulationConnector,
     PartialMqttMapping,
 )
 
@@ -176,55 +173,6 @@ async def mqtt_client(settings):
         yield client
 
 
-async def test_mqtt_simulation_connector(mqtt_client):
-    connector = MqttSimulationConnector(
-        SimpleSimulation(datetime.now()),
-        mqtt_client,
-        "test_devices_topic_prefix",
-        "test_simulation_topic_prefix",
-        {"simple": SimpleInOut},
-        SimpleInOut,
-    )
-    running = create_task(connector.run())
-    await sleep(0)
-
-    control_values = CombinedValues(
-        values={
-            "simple": SimpleInOut(
-                go_with_the=FlowSensor(
-                    flow=Stamped.stamp(1), temperature=Stamped.stamp(2)
-                )
-            )
-        }
-    )
-
-    try:
-        first_result = await connector.transceive(control_values)
-
-        data = first_result.values["simple"]
-        assert isinstance(data, SimpleInOut)
-        assert data.go_with_the.flow.value == 1
-        assert data.go_with_the.temperature.value == 2
-
-        await sleep(0.005)
-        second_result = await connector.transceive(control_values)
-
-        data = second_result.values["simple"]
-        assert isinstance(data, SimpleInOut)
-        assert data.go_with_the.flow.value == 1
-        assert data.go_with_the.temperature.value == 2
-
-        await sleep(0.1)
-        third_result = await connector.transceive(control_values)
-
-        data = third_result.values["simple"]
-        assert isinstance(data, SimpleInOut)
-        assert data.go_with_the.flow.value == 1
-        assert data.go_with_the.temperature.value == 2
-    finally:
-        running.cancel()
-
-
 @pytest.fixture
 def mock_mqtt_client() -> mock.AsyncMock:
     mock_mqtt_client = mock.AsyncMock(Client)
@@ -272,6 +220,7 @@ async def test_mqttcontrol_connector(mock_mqtt_client):
         "controller_topic_prefix",
         {"module": ValuesWithTopics},
         {"module": ValuesWithTopics},
+        {"module": ValuesWithTopics},
         "Command",
     )
 
@@ -280,7 +229,8 @@ async def test_mqttcontrol_connector(mock_mqtt_client):
 
     # Act
     empty_result = await connector.transceive(
-        combined_values(sensor_value(1, 2), sensor_value(3, 4))
+        combined_values(sensor_value(1, 2), sensor_value(3, 4)),
+        combined_values(sensor_value(1, 2), sensor_value(3, 4)),
     )
     assert not empty_result.values
 
@@ -294,7 +244,8 @@ async def test_mqttcontrol_connector(mock_mqtt_client):
     )
 
     first_result = await connector.transceive(
-        combined_values(sensor_value(4, 8), sensor_value(5, 9))
+        combined_values(sensor_value(4, 8), sensor_value(5, 9)),
+        combined_values(sensor_value(4, 8), sensor_value(5, 9)),
     )
 
     data = first_result.values["module"]
@@ -314,7 +265,8 @@ async def test_mqttcontrol_connector(mock_mqtt_client):
     )
 
     second_result = await connector.transceive(
-        combined_values(sensor_value(16, 32), sensor_value(17, 33))
+        combined_values(sensor_value(16, 32), sensor_value(17, 33)),
+        combined_values(sensor_value(16, 32), sensor_value(17, 33)),
     )
 
     data = second_result.values["module"]
@@ -327,10 +279,16 @@ async def test_mqttcontrol_connector(mock_mqtt_client):
     assert mock_mqtt_client.publish.call_args_list == [
         mock.call("devices_topic_prefix/module/go-with-the/Command", mock.ANY, qos=1),
         mock.call("devices_topic_prefix/flow-topic/Command", mock.ANY, qos=1),
+        mock.call("controller_topic_prefix/module/go-with-the", mock.ANY, qos=1),
+        mock.call("controller_topic_prefix/flow-topic", mock.ANY, qos=1),
         mock.call("controller_topic_prefix/flow-delta", mock.ANY, qos=1),
         mock.call("devices_topic_prefix/module/go-with-the/Command", mock.ANY, qos=1),
         mock.call("devices_topic_prefix/flow-topic/Command", mock.ANY, qos=1),
+        mock.call("controller_topic_prefix/module/go-with-the", mock.ANY, qos=1),
+        mock.call("controller_topic_prefix/flow-topic", mock.ANY, qos=1),
         mock.call("controller_topic_prefix/flow-delta", mock.ANY, qos=1),
         mock.call("devices_topic_prefix/module/go-with-the/Command", mock.ANY, qos=1),
         mock.call("devices_topic_prefix/flow-topic/Command", mock.ANY, qos=1),
+        mock.call("controller_topic_prefix/module/go-with-the", mock.ANY, qos=1),
+        mock.call("controller_topic_prefix/flow-topic", mock.ANY, qos=1),
     ]

@@ -8,7 +8,6 @@ from pydantic.fields import ComputedFieldInfo, FieldInfo
 from thrs.input_output.base import CombinedValues, ThrsValues, get_topic
 from thrs.input_output.model_builder import CombinedModelBuilder, PartialModelBuilder
 from thrs.orchestration.module import ModuleClassMap
-from thrs.orchestration.simulation import Simulation, SimulationResult
 from thrs.utils.string import hyphenize
 
 logger = logging.getLogger(__name__)
@@ -170,12 +169,12 @@ class ModuleMqttMapping(MqttMapping[CombinedValues]):
         return self._builder.result()
 
 
-class Connector[S, C](Protocol):
+class Connector[S, C, M](Protocol):
     async def run(self): ...
-    async def transceive(self, control_values: C) -> S: ...
+    async def transceive(self, control_values: C, controller_values: M) -> S: ...
 
 
-class MqttConnector(Connector[CombinedValues, CombinedValues]):
+class MqttConnector(Connector[CombinedValues, CombinedValues, CombinedValues]):
     def __init__(
         self,
         mqtt_client: Client,
@@ -183,11 +182,13 @@ class MqttConnector(Connector[CombinedValues, CombinedValues]):
         controller_topic_prefix: str,
         sensor_values_clss: ModuleClassMap,
         control_values_clss: ModuleClassMap,
+        controller_values_clss: ModuleClassMap,
         control_topic_suffix: str | None = None,
+        sensor_topic_suffix: str | None = None,
     ):
         self._mqtt_client = mqtt_client
         self._sensor_values_mqtt_mapping = ModuleMqttMapping(
-            sensor_values_clss, devices_topic_prefix
+            sensor_values_clss, devices_topic_prefix, sensor_topic_suffix
         )
         self._control_values_mqtt_mapping = ModuleMqttMapping(
             control_values_clss, devices_topic_prefix, control_topic_suffix
@@ -195,7 +196,9 @@ class MqttConnector(Connector[CombinedValues, CombinedValues]):
         self._computed_values_mqtt_mapping = ModuleMqttMapping(
             sensor_values_clss, controller_topic_prefix, only_computed_fields=True
         )
-
+        self._controller_values_mqtt_mapping = ModuleMqttMapping(
+            controller_values_clss, controller_topic_prefix
+        )
         self._running = False
 
     async def _listen_to_sensors(self):
@@ -234,6 +237,12 @@ class MqttConnector(Connector[CombinedValues, CombinedValues]):
             self._computed_values_mqtt_mapping, sensor_values
         )
 
+    async def _send_controller_values(self, controller_values: CombinedValues):
+        logging.debug("Publishing controller values")
+        await self._publish_by_mapping(
+            self._controller_values_mqtt_mapping, controller_values
+        )
+
     async def _start(self):
         for topic in self._sensor_values_mqtt_mapping.subscribe_topics():
             await self._mqtt_client.subscribe(topic, qos=1)
@@ -246,7 +255,9 @@ class MqttConnector(Connector[CombinedValues, CombinedValues]):
         finally:
             self._running = False
 
-    async def transceive(self, control_values: CombinedValues) -> CombinedValues:
+    async def transceive(
+        self, control_values: CombinedValues, controller_values: CombinedValues
+    ) -> CombinedValues:
         if not self._running:
             raise Exception(
                 "MqttControlConnector not running, run() should be called in a create_task()"
@@ -254,58 +265,6 @@ class MqttConnector(Connector[CombinedValues, CombinedValues]):
         sensors_values = self._sensor_values_mqtt_mapping.result()
         await self._send_computed_values(sensors_values)
         await self._send_control_values(control_values)
+        await self._send_controller_values(controller_values)
 
         return sensors_values if sensors_values else CombinedValues(values={})
-
-
-class MqttSimulationConnector(Connector[CombinedValues, CombinedValues]):
-    def __init__(
-        self,
-        simulation: "Simulation",
-        mqtt_client: Client,
-        devices_topic_prefix: str,
-        simulation_topic_prefix: str,
-        sensor_values_clss: ModuleClassMap,
-        simulation_outputs_cls: type[ThrsValues],
-    ):
-        self._simulation = simulation
-        self._mqtt_client = mqtt_client
-        self._sensor_values_mqtt_mapping = ModuleMqttMapping(
-            sensor_values_clss, devices_topic_prefix
-        )
-        self._simulation_outputs_mqtt_mapping = DirectMqttMapping(
-            simulation_outputs_cls, f"{simulation_topic_prefix}/outputs"
-        )
-
-    async def _publish_by_mapping[T](self, mapping: MqttMapping[T], value: T):
-        payloads = mapping.split_to_topics(value)
-        for topic, payload in payloads.items():
-            logging.debug("Publishing on %s", topic)
-            await self._mqtt_client.publish(topic, payload, qos=1)
-
-    async def _send_sensor_values(self, execution_result: SimulationResult):
-        logging.debug("Publishing sensor values")
-        await self._publish_by_mapping(
-            self._sensor_values_mqtt_mapping,
-            execution_result.sensor_values,
-        )
-
-    async def _send_simulation_output(self, simulation_result: SimulationResult):
-        logging.debug("Publishing simulation output values")
-        await self._publish_by_mapping(
-            self._simulation_outputs_mqtt_mapping,
-            simulation_result.simulation_outputs,
-        )
-
-    async def run(self):
-        pass
-
-    async def transceive(self, control_values: CombinedValues) -> CombinedValues:
-        logging.debug("Executing simulation")
-        simulation_result = self._simulation.tick(control_values)
-
-        logging.debug("Simulation tick completed")
-        await self._send_sensor_values(simulation_result)
-        await self._send_simulation_output(simulation_result)
-
-        return simulation_result.sensor_values

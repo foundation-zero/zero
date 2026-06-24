@@ -28,8 +28,8 @@ class SimpleConnector(Connector):
     async def run(self):
         pass
 
-    async def transceive(self, control_values):
-        self.controls.append(control_values)
+    async def transceive(self, control_values, controller_values):
+        self.controls.append((control_values, controller_values))
         return control_values
 
 
