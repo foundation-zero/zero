@@ -59,6 +59,7 @@ def select_nested_ac_topics(df: pl.DataFrame, topic_prefix: str) -> List[MqttTop
             .str.extract(r"REG_SPLIT_\d+_(.*)", 1)
             .str.replace("READ_", "")
             .str.replace(" ", "")
+            .str.to_lowercase()
             .alias("field_name"),
         )
         # "AIR_IN", "SP_ROOM" are temperatures in 0.01 C
@@ -135,18 +136,19 @@ def load_ac_misc_topic(
             pl.col("register_name")
             .str.replace("|".join(field_name_strip), "")
             .str.strip_chars()
+            .str.to_lowercase()
             .alias("field_name"),
         )
         .with_columns(
             pl.when(
                 pl.col("field_name").str.contains_any(
-                    ["AC_COMPRESSOR", "SP_ROOM", "WAT", "SEA_WATER_PUMP"]
+                    ["ac_compressor", "sp_room", "wat", "sea_water_pump"]
                 )
             )
             .then(0.01)
             .when(
                 pl.col("field_name").str.contains_any(
-                    ["CURRENT_REQ_PRESSURE", "ENGINE_BOX_T_SEA_WATER", "ENGINE_BOX_P"]
+                    ["current_req_pressure", "engine_box_t_sea_water", "engine_box_p"]
                 )
             )
             .then(0.001)
