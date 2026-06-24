@@ -449,6 +449,10 @@ export const DHW_SIMULATION_INPUTS_QUERY = `
   dhwHotwaterDemand {
     flow { value timestamp }
   }
+  dhwHvacExchanger {
+    heatFlow { value timestamp }
+    maximumTemperature { value timestamp }
+  }
 `;
 
 export const DHW_SIMULATION_OUTPUTS_QUERY = `

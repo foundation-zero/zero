@@ -608,6 +608,9 @@ export const DHW_SIMULATION_INPUTS = toSimulationDefinition({
   dhwHotwaterDemand: {
     componentType: SimulationComponentType.Flow,
   },
+  dhwHvacExchanger: {
+    componentType: SimulationComponentType.HvacExchanger,
+  },
 });
 
 export const DHW_SIMULATION_OUTPUTS = toSimulationDefinition({

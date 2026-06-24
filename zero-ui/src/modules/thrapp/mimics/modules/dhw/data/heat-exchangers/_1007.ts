@@ -20,10 +20,10 @@ export default toInstance<MimicComponentType.HeatExchanger>({
     },
   },
   parameters: {},
-  source: getField(SensorComponentType.HeatExchanger, "dhw", "dhwFahrenheitExchanger"),
+  source: getField(SensorComponentType.HeatExchanger, "dhw", "dhwAdsorptionExchanger"),
   sensors: {},
   tooltip: tooltip({
     yardTag: "1007",
-    technicalName: "Fahrenheit-HotWater-Exchanger",
+    technicalName: "Adsorption-HotWater-Exchanger",
   }),
 });

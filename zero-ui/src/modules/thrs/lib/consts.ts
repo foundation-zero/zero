@@ -197,6 +197,8 @@ export const SIMULATION_FIELDS: SimulationFields = {
   [SimulationComponentType.Thruster]: ["active", "heatFlow"],
   [SimulationComponentType.Boundary]: ["temperature", "flow"],
   [SimulationComponentType.HeatSource]: ["heatFlow"],
+  [SimulationComponentType.Flow]: ["flow"],
+  [SimulationComponentType.HvacExchanger]: ["heatFlow", "maximumTemperature"],
 };
 
 export const toQueries = <

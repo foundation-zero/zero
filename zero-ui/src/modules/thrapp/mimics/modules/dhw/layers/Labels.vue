@@ -229,7 +229,7 @@ import { getField } from "../../../providers/index.ts";
       y="158"
       tag-id="1038-65"
       :temperature="
-        getField(SensorComponentType.Temperature, 'dhw', 'dhwTemperatureBoostingSupply')
+        getField(SensorComponentType.Temperature, 'dhw', 'dhwTemperatureBoostingReturn')
       "
     />
     <TemperatureLabelInstance
@@ -267,7 +267,7 @@ import { getField } from "../../../providers/index.ts";
       y="517"
       tag-id="1038-66"
       :temperature="
-        getField(SensorComponentType.Temperature, 'dhw', 'dhwTemperatureBoostingReturn')
+        getField(SensorComponentType.Temperature, 'dhw', 'dhwTemperatureBoostingSupply')
       "
     />
     <TemperatureLabelInstance
@@ -314,7 +314,7 @@ import { getField } from "../../../providers/index.ts";
       x="955"
       y="425"
       tag-id="1004"
-      :heat-exchanger="getField(SensorComponentType.HeatExchanger, 'dhw', 'dhwFahrenheitExchanger')"
+      :heat-exchanger="getField(SensorComponentType.HeatExchanger, 'dhw', 'dhwAdsorptionExchanger')"
     />
     <HeatExchangerLabelInstance
       x="710"
