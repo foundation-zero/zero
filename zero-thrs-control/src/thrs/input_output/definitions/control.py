@@ -4,8 +4,8 @@ from thrs.input_output.base import Stamped, ThrsValues, field_meta
 from thrs.input_output.definitions.units import (
     AdsorptionChillerMode,
     Celsius,
+    DeltaT,
     FreeCoolingMode,
-    Kelvin,
     OnOff,
     Ratio,
     TankControlMode,
@@ -62,8 +62,8 @@ class AdsorptionChiller(ThrsValues):
     available_cold_temperature: Stamped[Celsius]
     cold_minimum: Stamped[Celsius]
     hot_minimum: Stamped[Celsius]
-    cold_hysteresis: Stamped[Kelvin]
-    hot_hysteresis: Stamped[Kelvin]
+    cold_hysteresis: Stamped[DeltaT]
+    hot_hysteresis: Stamped[DeltaT]
     tank_control_mode: Annotated[
         Stamped[TankControlMode], field_meta(included_in_fmu=False)
     ]

@@ -6,8 +6,8 @@ from thrs.input_output.definitions.units import (
     Bar,
     Celsius,
     Charged,
+    DeltaT,
     Hz,
-    Kelvin,
     Liter,
     LMin,
     NoError,
@@ -60,7 +60,7 @@ class CalculatedFlow(ThrsValues):
 
 
 class TemperatureDelta(ThrsValues):
-    delta_t: Stamped[Kelvin]
+    delta_t: Stamped[DeltaT]
 
     @classmethod
     def from_temperature_sensors(
@@ -75,7 +75,7 @@ class TemperatureDelta(ThrsValues):
 
 
 class HeatTransferDevice(ThrsValues):
-    delta_t: Stamped[Kelvin]
+    delta_t: Stamped[DeltaT]
     heat: Stamped[Watt]
 
     @classmethod
@@ -200,7 +200,7 @@ class AdsorptionChiller(ThrsValues):
 class PowerSensor(ThrsValues):
     flow: Stamped[LMin]
     power: Stamped[Watt]
-    delta_t: Stamped[Kelvin]
+    delta_t: Stamped[DeltaT]
     temperature_warm: Stamped[Celsius]
     temperature_cold: Stamped[Celsius]
 

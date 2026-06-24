@@ -16,7 +16,7 @@ from thrs.input_output.definitions.controllers import (
 )
 from thrs.input_output.definitions.units import (
     Celsius,
-    Kelvin,
+    DeltaT,
     Liter,
     LMin,
     Ratio,
@@ -36,7 +36,7 @@ class DhwParameters(ThrsValues):
     minimum_tank_temperature: Celsius = 55
     maximum_tank_temperature: Celsius = 60
     boosting_delta: Annotated[
-        Kelvin,
+        DeltaT,
         Field(
             description="Required delta T between boosting source and tank temperature"
         ),

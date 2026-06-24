@@ -349,8 +349,8 @@ class DhwSensorValues(ThrsValues):
     @property
     def dhw_hvac_exchanger(self) -> sensor.HvacExchanger:
         return sensor.HvacExchanger.from_sensors(
-            temperature_supply=self.dhw_temperature_hvac_exchanger_return.temperature,
-            temperature_return=self.dhw_temperature_adsorption_return.temperature,
+            temperature_supply=self.dhw_temperature_adsorption_return.temperature,
+            temperature_return=self.dhw_temperature_hvac_exchanger_return.temperature,
             flow=self.dhw_flow_dc.flow,
             heat_transfer_conversion=WATER_HEAT_TRANSFER_CONVERSION,
         )
@@ -370,8 +370,8 @@ class DhwSensorValues(ThrsValues):
             ],
         ):
             return sensor.HeatPump.from_sensors(
-                temperature_supply=self.dhw_temperature_boosting_return.temperature,
-                temperature_return=self.dhw_temperature_boosting_supply.temperature,
+                temperature_supply=self.dhw_temperature_boosting_supply.temperature,
+                temperature_return=self.dhw_temperature_boosting_return.temperature,
                 flow=self.dhw_flow_boosting.flow,
                 heat_transfer_conversion=WATER_HEAT_TRANSFER_CONVERSION,
             )
