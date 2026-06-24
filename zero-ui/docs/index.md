@@ -54,7 +54,7 @@ Our design system includes comprehensive documentation for:
 ### Modules
 
 - **[Modules Overview](/mimics/modules/)** - Composed mimic scene documentation
-- **[Dhw Scene](/mimics/modules/dhw-module)** - Initial documentation page for the DhwModule composition
+- **[DHW Scene](/mimics/modules/dhw-module)** - Initial documentation page for the DhwModule composition
 
 Each component comes with:
 

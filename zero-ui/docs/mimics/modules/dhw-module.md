@@ -1,4 +1,4 @@
-# Dhw Module
+# DHW Module
 
 Documentation page for the DhwModule mimic composition.
 

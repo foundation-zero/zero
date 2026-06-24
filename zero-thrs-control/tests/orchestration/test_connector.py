@@ -28,9 +28,9 @@ from thrs.orchestration.connector import (
 
 class ValuesWithTopics(ThrsValues):
     go_with_the: FlowSensor
-    go_with_the_topic: Annotated[FlowSensor, component_meta(topic="flow_topic")]
+    go_with_the_topic: Annotated[FlowSensor, component_meta(topic="flow-topic")]
 
-    @computed_field(json_schema_extra=computed_meta(topic="flow_delta"))
+    @computed_field(json_schema_extra=computed_meta(topic="flow-delta"))
     @property
     def flow_delta(self) -> TemperatureDelta:
         return TemperatureDelta.from_temperature_sensors(
@@ -55,10 +55,10 @@ class TestPartialMqttMapping:
         topics = mapping.split_to_topics(model)
 
         assert "base/module/go-with-the" in topics
-        assert "base/flow_topic" in topics
+        assert "base/flow-topic" in topics
         topic = topics["base/module/go-with-the"]
         assert FlowSensor.model_validate_json(topic) == flow_sensor
-        topic2 = topics["base/flow_topic"]
+        topic2 = topics["base/flow-topic"]
         assert FlowSensor.model_validate_json(topic2) == flow_sensor2
 
     def test_split_to_topics_computed(self):
@@ -77,8 +77,8 @@ class TestPartialMqttMapping:
 
         topics = mapping.split_to_topics(model)
 
-        assert "base/flow_delta" in topics
-        topic = topics["base/flow_delta"]
+        assert "base/flow-delta" in topics
+        topic = topics["base/flow-delta"]
         assert json.loads(topic) == {"DeltaT": {"Value": 2.0, "TimeStamp": mock.ANY}}
 
     def test_subscribe_topic(self):
@@ -86,7 +86,7 @@ class TestPartialMqttMapping:
 
         assert mapping_no_suffix.subscribe_topics() == {
             "base/module/+",
-            "base/flow_topic",
+            "base/flow-topic",
         }
 
     def test_builder(self):
@@ -295,7 +295,7 @@ async def test_mqttcontrol_connector(mock_mqtt_client):
         connector,
         {
             "devices_topic_prefix/module/go-with-the": sensor_value(1, 2),
-            "devices_topic_prefix/flow_topic": sensor_value(3, 4),
+            "devices_topic_prefix/flow-topic": sensor_value(3, 4),
         },
     )
 
@@ -315,7 +315,7 @@ async def test_mqttcontrol_connector(mock_mqtt_client):
         connector,
         {
             "devices_topic_prefix/module/go-with-the": sensor_value(4, 8),
-            "devices_topic_prefix/flow_topic": sensor_value(5, 9),
+            "devices_topic_prefix/flow-topic": sensor_value(5, 9),
         },
     )
 
@@ -332,11 +332,11 @@ async def test_mqttcontrol_connector(mock_mqtt_client):
 
     assert mock_mqtt_client.publish.call_args_list == [
         mock.call("devices_topic_prefix/module/go-with-the/Command", mock.ANY, qos=1),
-        mock.call("devices_topic_prefix/flow_topic/Command", mock.ANY, qos=1),
-        mock.call("controller_topic_prefix/flow_delta", mock.ANY, qos=1),
+        mock.call("devices_topic_prefix/flow-topic/Command", mock.ANY, qos=1),
+        mock.call("controller_topic_prefix/flow-delta", mock.ANY, qos=1),
         mock.call("devices_topic_prefix/module/go-with-the/Command", mock.ANY, qos=1),
-        mock.call("devices_topic_prefix/flow_topic/Command", mock.ANY, qos=1),
-        mock.call("controller_topic_prefix/flow_delta", mock.ANY, qos=1),
+        mock.call("devices_topic_prefix/flow-topic/Command", mock.ANY, qos=1),
+        mock.call("controller_topic_prefix/flow-delta", mock.ANY, qos=1),
         mock.call("devices_topic_prefix/module/go-with-the/Command", mock.ANY, qos=1),
-        mock.call("devices_topic_prefix/flow_topic/Command", mock.ANY, qos=1),
+        mock.call("devices_topic_prefix/flow-topic/Command", mock.ANY, qos=1),
     ]
