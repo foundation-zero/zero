@@ -45,7 +45,7 @@ class ModbusSettings(BaseSettings):
     modbus_probe_interval: int = 10
 
     def modbus_client(self):
-        return ModbusClient(self.modbus_host, self.modbus_port)
+        return ModbusClient(self.modbus_host, self.modbus_port, auto_open=False)
 
     def modbus_server(self, data_handler):
         return ModbusServer(

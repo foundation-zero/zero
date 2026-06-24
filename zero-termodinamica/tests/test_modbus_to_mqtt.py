@@ -4,7 +4,7 @@ from unittest.mock import AsyncMock, MagicMock
 
 import pytest
 
-from zero_termodinamica.io import Address, LiteralField, ModbusUnit, MQTTTopic
+from zero_termodinamica.io import Address, LiteralField, ModbusUnit, MqttTopic
 from zero_termodinamica.modbus_to_mqtt import ModbusToMQTTBridge
 
 
@@ -20,7 +20,7 @@ async def test_run_once_success():
         ModbusUnit(
             unit_id=1,
             topics=[
-                MQTTTopic(
+                MqttTopic(
                     topic="test/topic",
                     modbus_fields=[
                         Address(
@@ -57,7 +57,7 @@ async def test_run_once_multiple_addresses_scaling():
         ModbusUnit(
             unit_id=1,
             topics=[
-                MQTTTopic(
+                MqttTopic(
                     topic="test/topic",
                     modbus_fields=[
                         Address(
@@ -110,13 +110,13 @@ async def test_run_once_multiple_topics():
         ModbusUnit(
             unit_id=1,
             topics=[
-                MQTTTopic(
+                MqttTopic(
                     topic="topic/1",
                     modbus_fields=[
                         Address(modbus_register=200, field_name="VAL1"),
                     ],
                 ),
-                MQTTTopic(
+                MqttTopic(
                     topic="topic/2",
                     modbus_fields=[
                         Address(modbus_register=300, field_name="VAL2"),
@@ -162,7 +162,7 @@ async def test_run_once_with_literal_fields():
         ModbusUnit(
             unit_id=1,
             topics=[
-                MQTTTopic(
+                MqttTopic(
                     topic="test/topic",
                     modbus_fields=[
                         Address(
@@ -207,7 +207,7 @@ async def test_run_multiple_cycles():
         ModbusUnit(
             unit_id=1,
             topics=[
-                MQTTTopic(
+                MqttTopic(
                     topic="test/topic",
                     modbus_fields=[
                         Address(modbus_register=200, field_name="PWR", scale_factor=1.0)

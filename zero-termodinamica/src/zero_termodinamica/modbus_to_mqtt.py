@@ -23,8 +23,8 @@ class ModbusToMQTTBridge:
     ):
         self._mqtt = mqtt
         self._modbus = modbus
-        self.modbus_units = modbus_units
-        self.probe_interval = probe_interval
+        self._modbus_units = modbus_units
+        self._probe_interval = probe_interval
 
     @asynccontextmanager
     @staticmethod
@@ -49,7 +49,7 @@ class ModbusToMQTTBridge:
         while True:
             logging.info("Probing modbus")
             async with TaskGroup() as tg:
-                tg.create_task(asyncio.sleep(self.probe_interval))
+                tg.create_task(asyncio.sleep(self._probe_interval))
                 tg.create_task(self.run_once())
 
     async def run_once(self) -> None:
@@ -60,16 +60,12 @@ class ModbusToMQTTBridge:
                     f"Failed to open modbus connection to {self._modbus.host}:{self._modbus.port} - {self._modbus.last_error_as_txt}"
                 )
                 return
-            for unit in self.modbus_units:
+            for unit in self._modbus_units:
                 self._modbus.unit_id = unit.unit_id
                 for topic in unit.topics:
-                    # Read modbus
                     modbus_values = self.read_modbus(topic.modbus_fields)
-                    # Scale values
                     scaled_values = self.scale_values(modbus_values)
-                    # Form json
                     json_data = self.create_json(scaled_values, topic.extra_fields)
-                    # Publish to MQTT
                     await self.publish_to_mqtt(topic.topic, json_data)
         finally:
             self._modbus.close()
@@ -79,7 +75,7 @@ class ModbusToMQTTBridge:
         result = []
         has_fault = False
         for address in addresses:
-            # Hardcoded at 1. In the future this could be done from the Address class (parsed from IO list)
+            # Hardcoded at 1 register. In the future this could be done from the Address class (parsed from IO list) (or in blocks smartly derived from the addresses)
             value = self._modbus.read_holding_registers(address.modbus_register, 1)
             if value and len(value) == 1:
                 result.append((address, value[0]))
@@ -110,9 +106,10 @@ class ModbusToMQTTBridge:
         modbus_values: List[Tuple[Address, float]],
         extra_fields: List[LiteralField],
     ) -> str:
-        result = {f.field_name: f.value for f in extra_fields}
-        for address, value in modbus_values:
-            result[address.field_name] = value
+        extra_fields_dict = {f.field_name: f.value for f in extra_fields}
+        modbus_fields = {address.field_name: value for address, value in modbus_values}
+        result = {**extra_fields_dict, **modbus_fields}
+
         return json.dumps(result)
 
     async def publish_to_mqtt(self, topic: str, data: str) -> None:

@@ -4,7 +4,7 @@ from typing import List
 import polars as pl
 from pydantic import TypeAdapter
 
-from zero_termodinamica.io import Address, LiteralField, ModbusUnit, MQTTTopic
+from zero_termodinamica.io import Address, LiteralField, ModbusUnit, MqttTopic
 
 SCRIPTS_FOLDER = Path(__file__).parent
 EXCEL_PATH = SCRIPTS_FOLDER / "../docs/Vent en AC lijst Termodynamica.xls"
@@ -44,7 +44,7 @@ REG_ROOM_MAPPING = {
 }
 
 
-def select_nested_ac_topics(df: pl.DataFrame, topic_prefix: str) -> List[MQTTTopic]:
+def select_nested_ac_topics(df: pl.DataFrame, topic_prefix: str) -> List[MqttTopic]:
     """Ac topics on termondamica/ac/[split_id] are nested topics with the same schema."""
     print(f"Select reg split: topic {topic_prefix} received {df.shape[0]} rows")
     df = df.filter(pl.col("register_name").str.contains(r"REG_SPLIT_\d\d")).filter(
@@ -71,12 +71,12 @@ def select_nested_ac_topics(df: pl.DataFrame, topic_prefix: str) -> List[MQTTTop
         .sort("reg_split", "address")
     )
 
-    result: List[MQTTTopic] = []
+    result: List[MqttTopic] = []
     for name, data in df.group_by("reg_split"):
         reg_split = str(name[0])
         room = REG_ROOM_MAPPING[reg_split]
         result.append(
-            MQTTTopic(
+            MqttTopic(
                 topic=f"{topic_prefix}/{reg_split}",
                 modbus_fields=[
                     Address(
@@ -128,7 +128,7 @@ def load_ac_misc_topic(
     topic: str,
     register_name_filter: List[str],
     field_name_strip: List[str],
-) -> MQTTTopic:
+) -> MqttTopic:
     df = (
         df.filter(pl.col("register_name").str.contains_any(register_name_filter))
         .with_columns(
@@ -166,7 +166,7 @@ def load_ac_misc_topic(
             )
         )
 
-    return MQTTTopic(topic=topic, modbus_fields=result)
+    return MqttTopic(topic=topic, modbus_fields=result)
 
 
 if __name__ == "__main__":
@@ -174,7 +174,7 @@ if __name__ == "__main__":
         load_ac_modbus_unit(excel_path=EXCEL_PATH, unit_id=32),
     ]
 
-    result_filename = SCRIPTS_FOLDER / "../modbus_units.json"
+    result_filename = SCRIPTS_FOLDER / "../modbus_bridges.json"
     with open(result_filename, "w", encoding="utf-8") as f:
         json_bytes = TypeAdapter(list[ModbusUnit]).dump_json(modbus_units, indent=2)
         f.write(json_bytes.decode("utf-8"))

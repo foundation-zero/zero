@@ -17,7 +17,7 @@ class Address(BaseModel):
     scale_factor: float = 1
 
 
-class MQTTTopic(BaseModel):
+class MqttTopic(BaseModel):
     topic: str
     modbus_fields: List[Address]
     extra_fields: List[LiteralField] = []
@@ -25,10 +25,10 @@ class MQTTTopic(BaseModel):
 
 class ModbusUnit(BaseModel):
     unit_id: int
-    topics: List[MQTTTopic]
+    topics: List[MqttTopic]
 
 
 def read_modbus_units() -> List[ModbusUnit]:
-    json_path = Path(__file__).parent / "../../modbus_units.json"
+    json_path = Path(__file__).parent / "../../modbus_bridges.json"
     with open(json_path, "r", encoding="utf-8") as f:
         return TypeAdapter(list[ModbusUnit]).validate_python(json.loads(f.read()))

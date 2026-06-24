@@ -1,3 +1,4 @@
+import logging
 import time
 from typing import List
 
@@ -22,7 +23,7 @@ class MultiUnitDataHandler(DataHandler):
     def read_h_regs(self, address, count, srv_info):
         unit_id = srv_info.recv_frame.mbap.unit_id
         if unit_id not in self.data:
-            print(f"Unit ID {unit_id} not found")
+            logging.warning(f"Unit ID {unit_id} not found")
             return DataHandler.Return(exp_code=EXP_SLAVE_DEVICE_FAILURE)
 
         unit_registers = self.data[unit_id]
@@ -30,10 +31,10 @@ class MultiUnitDataHandler(DataHandler):
             value = unit_registers[address]
             return DataHandler.Return(EXP_NONE, data=[value])
         except ValueError:
-            print(f"Invalid address: {address}")
+            logging.warning(f"Invalid address: {address}")
             return DataHandler.Return(exp_code=EXP_SLAVE_DEVICE_FAILURE)
         except IndexError:
-            print(f"Address out of range: {address}")
+            logging.warning(f"Address out of range: {address}")
             return DataHandler.Return(exp_code=EXP_SLAVE_DEVICE_FAILURE)
 
 

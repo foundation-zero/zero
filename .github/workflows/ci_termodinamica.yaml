@@ -2,7 +2,7 @@ name: "Termodinamica: Test and push Docker image"
 on:
   pull_request:
     paths:
-      - zero-ter/**
+      - zero-termodinamica/**
       - .github/workflows/ci_termodinamica.yaml
   release:
     types: [released]
@@ -10,7 +10,7 @@ on:
     branches:
       - main
     paths:
-      - zero-ter/**
+      - zero-termodinamica/**
       - .github/workflows/ci_termodinamica.yaml
 
 env:
