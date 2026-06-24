@@ -362,12 +362,21 @@ class DhwSensorValues(ThrsValues):
     )
     @property
     def dhw_heatpump(self) -> sensor.HeatPump:
-        return sensor.HeatPump.from_sensors(
-            temperature_supply=self.dhw_temperature_boosting_return.temperature,
-            temperature_return=self.dhw_temperature_boosting_supply.temperature,
-            flow=self.dhw_flow_boosting.flow,
-            heat_transfer_conversion=WATER_HEAT_TRANSFER_CONVERSION,
-        )
+        if (
+            self.dhw_switch_heatpump.position_rel.value == control.Valve.OPEN
+            and self.dhw_switch_high_temperature.position_rel.value
+            < (control.Valve.CLOSED + 0.01)
+            and self.dhw_switch_low_temperature.position_rel.value
+            < (control.Valve.CLOSED + 0.01)
+        ):
+            return sensor.HeatPump.from_sensors(
+                temperature_supply=self.dhw_temperature_boosting_return.temperature,
+                temperature_return=self.dhw_temperature_boosting_supply.temperature,
+                flow=self.dhw_flow_boosting.flow,
+                heat_transfer_conversion=WATER_HEAT_TRANSFER_CONVERSION,
+            )
+        else:
+            return sensor.HeatPump(delta_t=Stamped.stamp(0), heat=Stamped.stamp(0))
 
     @computed_field(
         json_schema_extra=computed_meta(
@@ -390,12 +399,21 @@ class DhwSensorValues(ThrsValues):
     )
     @property
     def dhw_consumers_exchanger(self) -> sensor.HeatExchanger:
-        return sensor.HeatExchanger.from_sensors(
-            temperature_supply=self.dhw_temperature_boosting_supply.temperature,
-            temperature_return=self.dhw_temperature_boosting_return.temperature,
-            flow=self.dhw_flow_boosting.flow,
-            heat_transfer_conversion=WATER_HEAT_TRANSFER_CONVERSION,
-        )
+        if (
+            self.dhw_switch_high_temperature.position_rel.value == control.Valve.OPEN
+            and self.dhw_switch_heatpump.position_rel.value
+            < (control.Valve.CLOSED + 0.01)
+            and self.dhw_switch_low_temperature.position_rel.value
+            < (control.Valve.CLOSED + 0.01)
+        ):
+            return sensor.HeatExchanger.from_sensors(
+                temperature_supply=self.dhw_temperature_boosting_supply.temperature,
+                temperature_return=self.dhw_temperature_boosting_return.temperature,
+                flow=self.dhw_flow_boosting.flow,
+                heat_transfer_conversion=WATER_HEAT_TRANSFER_CONVERSION,
+            )
+        else:
+            return sensor.HeatExchanger(delta_t=Stamped.stamp(0), heat=Stamped.stamp(0))
 
     @computed_field(
         json_schema_extra=computed_meta(
