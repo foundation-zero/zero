@@ -155,6 +155,8 @@ type DhwControlValuesType {
 }
 
 type DhwParametersType {
+  heatpumpBoostingEnabled: Boolean!
+  htBoostingEnabled: Boolean!
   heatpumpFlowSetpoint: Float!
   heatpumpTemperatureSetpoint: Float!
   htBoostingTemperatureSetpoint: Float!
@@ -242,7 +244,7 @@ type DhwSensorValuesType {
   freshwaterFlowSupply: SensorCalculatedFlowType!
   dhwHvacExchanger: SensorHvacExchangerType!
   dhwHeatpump: SensorHeatPumpType!
-  dhwFahrenheitExchanger: SensorHeatExchangerType!
+  dhwAdsorptionExchanger: SensorHeatExchangerType!
   dhwConsumersExchanger: SensorHeatExchangerType!
   dhwDcExchanger: SensorHeatExchangerType!
   dhwDrivesExchanger: SensorHeatExchangerType!
@@ -443,6 +445,8 @@ type Mutation {
   consumersControlSetConsumersSwitchAdsorption(component: ValveInputType!): ConsumersControlValuesType!
   consumersControlSetConsumersSwitchDhw(component: ValveInputType!): ConsumersControlValuesType!
   dhwSetAutomationMode(automatic: Boolean!): Boolean!
+  dhwParameterSetHeatpumpBoostingEnabled(value: Boolean!): DhwParametersType!
+  dhwParameterSetHtBoostingEnabled(value: Boolean!): DhwParametersType!
   dhwParameterSetHeatpumpFlowSetpoint(value: Float!): DhwParametersType!
   dhwParameterSetHeatpumpTemperatureSetpoint(value: Float!): DhwParametersType!
   dhwParameterSetHtBoostingTemperatureSetpoint(value: Float!): DhwParametersType!
