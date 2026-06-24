@@ -8,7 +8,6 @@ class Collector[R](Protocol):
     def collect(
         self,
         values: dict[str, float],
-        control_mode: str | None,
         time: datetime,
     ): ...
 
@@ -16,6 +15,8 @@ class Collector[R](Protocol):
 
 
 class PolarsCollector(Collector[pl.DataFrame]):
+    _schema_overrides: dict[str, type[pl.DataType] | pl.DataType] | None
+
     def __init__(self):
         self._data = []
         self._schema_overrides = None
@@ -23,16 +24,9 @@ class PolarsCollector(Collector[pl.DataFrame]):
     def collect(
         self,
         values: dict[str, Any],
-        control_mode: str | None,
         time: datetime,
     ):
-        self._data.append(
-            {
-                **values,
-                "time": time,
-                "control_mode": control_mode,
-            }
-        )
+        self._data.append({**values, "time": time})
 
     def result(self) -> None | pl.DataFrame:
         if not self._data:
@@ -58,7 +52,7 @@ class PolarsCollector(Collector[pl.DataFrame]):
                 )
             },
             **{key: pl.Boolean for key in all_keys if key.endswith("__bool")},
-            **{"time": pl.Datetime(time_unit="us"), "control_mode": pl.String},
+            **{"time": pl.Datetime(time_unit="us")},
         }
         return pl.from_dicts(
             self._data,

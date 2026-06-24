@@ -29,18 +29,14 @@ class ManualControl[SensorValues: ThrsValues, ControlValues: ThrsValues](
     def parameters(self) -> EmptyParameters:
         return EmptyParameters()
 
-    @property
-    def mode(self) -> EmptyMode:
-        return EmptyMode()
-
     def manual_controls(self, control_values: ControlValues):
         self._control_values = control_values
 
-    def initial(self) -> ControlValues:
-        return self._control_values
+    def initial(self) -> tuple[ControlValues, EmptyMode]:
+        return (self._control_values, EmptyMode())
 
-    def control(self, sensor_values: SensorValues) -> ControlValues:
-        return self._control_values
+    def control(self, sensor_values: SensorValues) -> tuple[ControlValues, EmptyMode]:
+        return (self._control_values, EmptyMode())
 
     def update_parameters(self, parameters: EmptyParameters):
         pass

@@ -25,7 +25,6 @@ from thrs.control.modules.dhw import DHW_MODULE_DESCRIPTION
 from thrs.control.modules.pcm import PCM_MODULE_DESCRIPTION
 from thrs.control.modules.pvt import PVT_MODULE_DESCRIPTION
 from thrs.control.modules.thrusters import THRUSTERS_MODULE_DESCRIPTION
-from thrs.control.switching import SwitchingControlMode
 from thrs.input_output.base import (
     CombinedValues,
     SimulationInputs,
@@ -357,26 +356,6 @@ class SimulationStatusMessage(OutgoingMessage):
         return True
 
 
-class ControlModeMessage[ControlMode](OutgoingMessage):
-    module: str
-    mode: SwitchingControlMode[ControlMode]
-
-    @staticmethod
-    def subscribe_topic() -> str:
-        return "+/controls/status"
-
-    def topic(self) -> str:
-        return f"{self.module}/controls/status"
-
-    @classmethod
-    def clear_topics(cls, control_modules: list[str]) -> list[str]:
-        return [f"{module}/controls/status" for module in control_modules]
-
-    @staticmethod
-    def retained() -> bool:
-        return True
-
-
 class ParametersMessage[Parameters: ThrsValues](OutgoingMessage):
     parameters: Parameters
     module: str
@@ -415,7 +394,6 @@ SIMULATION_OUTGOING_MESSAGES = [
 ]
 
 CONTROLLER_OUTGOING_MESSAGES = [
-    ControlModeMessage,
     ParametersMessage,
 ]
 
@@ -549,13 +527,6 @@ class SetAutomationMessage(IncomingModuleMessage):
 
     async def handle(self, topic_prefix: str, context: MessageContext):
         context.control.set_automation_mode(self.module, self.enabled)
-        await context.send(
-            topic_prefix,
-            ControlModeMessage(
-                module=self.module,
-                mode=context.control.mode_for(self.module),
-            ),
-        )
 
 
 class SetParametersMessage[Parameters: ThrsValues](IncomingModuleMessage):
@@ -797,11 +768,6 @@ class SimulationControls:
 
             cmds: Queue[SimulationCtrlMessage] = Queue()
             context = MessageContext(cmds, control, self._controls_client, simulation)
-            for module in modules.modules:
-                await context.send(
-                    self._controller_topic_prefix,
-                    ControlModeMessage(module=module, mode=control.mode_for(module)),
-                )
 
             control_connector = MqttConnector(
                 mqtt_client=self._control_client,
@@ -809,14 +775,18 @@ class SimulationControls:
                 controller_topic_prefix=self._controller_topic_prefix,
                 sensor_values_clss=modules.sensor_values_clss,
                 control_values_clss=modules.control_values_clss,
-                controller_values_clss={},  # Nothing yet, but we want to send controller values here at some point
+                controller_values_clss={
+                    mode: ThrsValues()  # type:ignore  # Nothing yet, but we want to send controller values here at some point
+                },
                 control_topic_suffix=self._control_topic_suffix,
             )
             simulation_connector = MqttConnector(
                 mqtt_client=self._sensor_client,
                 devices_topic_prefix=self._devices_topic_prefix,
                 controller_topic_prefix=self._simulation_topic_prefix,
-                sensor_values_clss={},  # It actually does not listen to mqtt for these but gets them directly from the runner
+                sensor_values_clss={
+                    mode: ThrsValues()  # type:ignore # It actually does not listen to mqtt for these but gets them directly from the runner
+                },
                 control_values_clss=modules.sensor_values_clss,
                 controller_values_clss={mode: modules.simulation_outputs_cls},
                 sensor_topic_suffix=self._control_topic_suffix,

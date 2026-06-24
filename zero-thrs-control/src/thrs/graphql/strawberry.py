@@ -21,11 +21,17 @@ import thrs.graphql.pcm as pcm
 import thrs.graphql.pvt as pvt
 import thrs.graphql.simulation as simulation
 import thrs.graphql.thrusters as thrusters
-from thrs.control.modules.consumers import ConsumersControlMode, ConsumersParameters
-from thrs.control.modules.dhw import DhwControlMode, DhwParameters
-from thrs.control.modules.pcm import PcmControlMode, PcmParameters
-from thrs.control.modules.pvt import PvtControlMode, PvtParameters
-from thrs.control.modules.thrusters import ThrustersControlMode, ThrustersParameters
+from thrs.control.modules.consumers import (
+    ConsumersControllerValues,
+    ConsumersParameters,
+)
+from thrs.control.modules.dhw import DhwControllerValues, DhwParameters
+from thrs.control.modules.pcm import PcmControllerValues, PcmParameters
+from thrs.control.modules.pvt import PvtControllerValues, PvtParameters
+from thrs.control.modules.thrusters import (
+    ThrustersControllerValues,
+    ThrustersParameters,
+)
 from thrs.graphql.base import (
     ConsumersMessaging,
     DhwMessaging,
@@ -274,7 +280,7 @@ def create_app(settings: Config):
                 ThrustersSensorValues,
                 ThrustersControlValues,
                 ThrustersParameters,
-                ThrustersControlMode,
+                ThrustersControllerValues,
                 mqtt,
                 settings.mqtt_devices_topic_prefix,
                 settings.mqtt_controller_topic_prefix,
@@ -285,7 +291,7 @@ def create_app(settings: Config):
                 PvtSensorValues,
                 PvtControlValues,
                 PvtParameters,
-                PvtControlMode,
+                PvtControllerValues,
                 mqtt,
                 settings.mqtt_devices_topic_prefix,
                 settings.mqtt_controller_topic_prefix,
@@ -296,7 +302,7 @@ def create_app(settings: Config):
                 PcmSensorValues,
                 PcmControlValues,
                 PcmParameters,
-                PcmControlMode,
+                PcmControllerValues,
                 mqtt,
                 settings.mqtt_devices_topic_prefix,
                 settings.mqtt_controller_topic_prefix,
@@ -307,7 +313,7 @@ def create_app(settings: Config):
                 ConsumersSensorValues,
                 ConsumersControlValues,
                 ConsumersParameters,
-                ConsumersControlMode,
+                ConsumersControllerValues,
                 mqtt,
                 settings.mqtt_devices_topic_prefix,
                 settings.mqtt_controller_topic_prefix,
@@ -318,7 +324,7 @@ def create_app(settings: Config):
                 DhwSensorValues,
                 DhwControlValues,
                 DhwParameters,
-                DhwControlMode,
+                DhwControllerValues,
                 mqtt,
                 settings.mqtt_devices_topic_prefix,
                 settings.mqtt_controller_topic_prefix,

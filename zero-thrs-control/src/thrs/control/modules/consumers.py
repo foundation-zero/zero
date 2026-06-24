@@ -3,7 +3,7 @@ from typing import Annotated, Callable
 
 from pydantic import Field
 
-from thrs.classes.control import Control, ControlMode
+from thrs.classes.control import Control
 from thrs.control.base import ModuleDescription
 from thrs.control.controllers import (
     FlowDistributionController,
@@ -49,8 +49,8 @@ def _INITIAL_CONTROL_VALUES(timestamp: datetime) -> ConsumersControlValues:
     )
 
 
-class ConsumersControlMode(ControlMode):
-    pass
+class ConsumersControllerValues(ThrsValues):
+    dummy: int = 0
 
 
 class ConsumersControl(
@@ -58,7 +58,7 @@ class ConsumersControl(
         ConsumersSensorValues,
         ConsumersControlValues,
         ConsumersParameters,
-        ConsumersControlMode,
+        ConsumersControllerValues,
     ]
 ):
     def __init__(
@@ -104,8 +104,8 @@ class ConsumersControl(
             ],
         )
 
-    def initial(self) -> ConsumersControlValues:
-        return _INITIAL_CONTROL_VALUES(self._time())
+    def initial(self) -> tuple[ConsumersControlValues, ConsumersControllerValues]:
+        return (_INITIAL_CONTROL_VALUES(self._time()), ConsumersControllerValues())
 
     def _control_flow_distribution(self, sensor_values: ConsumersSensorValues):
         actives = [
@@ -153,7 +153,9 @@ class ConsumersControl(
         elif not enabled and switch_valve.setpoint.value != Valve.CLOSED:
             switch_valve.setpoint = Stamped(value=Valve.CLOSED, timestamp=self._time())
 
-    def control(self, sensor_values: ConsumersSensorValues):
+    def control(
+        self, sensor_values: ConsumersSensorValues
+    ) -> tuple[ConsumersControlValues, ConsumersControllerValues]:
         self._control_flow_distribution(sensor_values)
 
         self._control_switch_valve(
@@ -165,17 +167,10 @@ class ConsumersControl(
             self._parameters.adsorption_enabled,
         )
 
-        return self._current_values
+        return (self._current_values, ConsumersControllerValues())
 
     def modes(self) -> list[str]:
         return []
-
-    def initial_mode(self) -> ConsumersControlMode:
-        return ConsumersControlMode()
-
-    @property
-    def mode(self) -> ConsumersControlMode:
-        return ConsumersControlMode()
 
     @property
     def parameters(self) -> ConsumersParameters:
@@ -194,6 +189,6 @@ CONSUMERS_MODULE_DESCRIPTION = ModuleDescription(
     ConsumersControlValues,
     ConsumersParameters,
     ConsumersControl,
-    ConsumersControlMode,
+    ConsumersControllerValues,
     ConsumersAlarms,
 )

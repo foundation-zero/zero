@@ -6,6 +6,8 @@ from tests.modules.conftest import (
     compare_modelica_names,
     compare_yard_tags,
 )
+from tests.modules.thrusters.conftest import ThrustersSimulation
+from thrs.control.modules.thrusters import ThrustersControl
 from thrs.input_output.definitions.control import Valve
 from thrs.input_output.modules.thrusters import (
     ThrustersControlValues,
@@ -50,12 +52,14 @@ def test_yard_tags():
     compare_yard_tags(ThrustersSensorValues, ThrustersControlValues, {"thrusters_pcs"})
 
 
-def test_set_module_temperature(control, simulation):
-    control_values = control.initial()
+def test_set_module_temperature(
+    control: ThrustersControl, simulation: ThrustersSimulation
+):
+    control_values, controller_values = control.initial()
 
-    simulation._simulation_inputs.thrusters_thruster_aft.heat_flow.value = 0
-    simulation._simulation_inputs.thrusters_thruster_fwd.heat_flow.value = 0
-    simulation._simulation_inputs.thrusters_pcm_supply.temperature.value = 60
+    simulation._simulation_inputs.thrusters_thruster_aft.heat_flow.value = 0  # type: ignore
+    simulation._simulation_inputs.thrusters_thruster_fwd.heat_flow.value = 0  # type: ignore
+    simulation._simulation_inputs.thrusters_pcm_supply.temperature.value = 60  # type: ignore
 
     control_values.thrusters_pump1.dutypoint.value = 1
     control_values.thrusters_mix_recovery.setpoint.value = Valve.MIXING_A_TO_AB

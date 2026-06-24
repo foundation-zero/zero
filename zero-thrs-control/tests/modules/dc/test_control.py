@@ -15,12 +15,12 @@ def test_all_idle(
 ):
     runner._simulation.update_simulation_inputs(simulation_inputs_inactive)  # type: ignore
 
-    result, _ = runner.run(90)
+    result, _, controller_values = runner.run(90)
 
     assert isinstance(runner._control, DcControl)
-    assert runner._control.mode.brightloops_aft.is_idle
-    assert runner._control.mode.brightloops_fwd.is_idle
-    assert runner._control.mode.ugrids.is_idle
+    assert controller_values.control_mode.brightloops_aft.is_idle
+    assert controller_values.control_mode.brightloops_fwd.is_idle
+    assert controller_values.control_mode.ugrids.is_idle
 
     assert isinstance(result, SimulationResult)
     for _, sensor in result.sensor_values:
@@ -39,12 +39,12 @@ def test_only_brightloops_aft(
         simulation_inputs_brightloops_aft_active
     )
 
-    result, _ = runner.run(180)
+    result, _, controller_values = runner.run(180)
 
     assert isinstance(runner._control, DcControl)
-    assert runner._control.mode.brightloops_aft.is_recovery
-    assert runner._control.mode.brightloops_fwd.is_idle
-    assert runner._control.mode.ugrids.is_idle
+    assert controller_values.control_mode.brightloops_aft.is_recovery
+    assert controller_values.control_mode.brightloops_fwd.is_idle
+    assert controller_values.control_mode.ugrids.is_idle
 
     assert isinstance(result, SimulationResult)
     assert result.sensor_values.dc_flow_aft1.flow.value == approx(5, abs=0.1)
@@ -72,12 +72,12 @@ def test_only_one_brightloop(
     )
     runner._simulation.update_simulation_inputs(simulation_inputs_aft1_active)  # type: ignore
 
-    result, _ = runner.run(240)
+    result, _, controller_values = runner.run(240)
 
     assert isinstance(runner._control, DcControl)
-    assert runner._control.mode.brightloops_aft.is_recovery
-    assert runner._control.mode.brightloops_fwd.is_idle
-    assert runner._control.mode.ugrids.is_idle
+    assert controller_values.control_mode.brightloops_aft.is_recovery
+    assert controller_values.control_mode.brightloops_fwd.is_idle
+    assert controller_values.control_mode.ugrids.is_idle
 
     assert isinstance(result, SimulationResult)
     assert result.sensor_values.dc_flow_aft1.flow.value == approx(5, abs=0.1)
@@ -99,12 +99,12 @@ def test_recovery(runner: SimulationTestRunner):
         )
     )
 
-    result, _ = runner.run(1200)
+    result, _, controller_values = runner.run(1200)
 
     assert isinstance(runner._control, DcControl)
-    assert runner._control.mode.brightloops_aft.is_recovery
-    assert runner._control.mode.brightloops_fwd.is_recovery
-    assert runner._control.mode.ugrids.is_recovery
+    assert controller_values.control_mode.brightloops_aft.is_recovery
+    assert controller_values.control_mode.brightloops_fwd.is_recovery
+    assert controller_values.control_mode.ugrids.is_recovery
 
     assert isinstance(result, SimulationResult)
     assert (
@@ -155,7 +155,7 @@ def test_heat_dump(runner: SimulationTestRunner):
         )
     )
 
-    result, _ = runner.run(960)
+    result, _, controller_values = runner.run(960)
 
     assert isinstance(result, SimulationResult)
     assert result.sensor_values.dc_temperature_recovery.temperature.value == approx(

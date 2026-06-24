@@ -5,7 +5,7 @@ from thrs.control.manual import ManualControl
 from thrs.input_output.base import ThrsValues
 
 
-class SwitchingControlMode[M](ThrsValues):
+class SwitchingControllerValues[M: ThrsValues](ThrsValues):
     automatic_mode: M | None
 
     @property
@@ -17,25 +17,49 @@ class SwitchingControl[
     SensorValues: ThrsValues,
     ControlValues: ThrsValues,
     ControlParameters: ThrsValues,
-    ControlMode,
-](Control[SensorValues, ControlValues, ControlParameters, ControlMode]):
+    ControllerValues: ThrsValues,
+](
+    Control[
+        SensorValues,
+        ControlValues,
+        ControlParameters,
+        SwitchingControllerValues[ControllerValues],
+    ]
+):
     def __init__(
         self,
         manual: ManualControl[SensorValues, ControlValues],
-        automatic: Control[SensorValues, ControlValues, ControlParameters, ControlMode],
+        automatic: Control[
+            SensorValues, ControlValues, ControlParameters, ControllerValues
+        ],
     ):
         self._manual_control = manual
         self._automatic_control = automatic
         self._mode: Literal["manual", "automatic"] = "manual"
 
-    def initial(self) -> ControlValues:
-        return self._manual_control.initial()
+    def initial(
+        self,
+    ) -> tuple[ControlValues, SwitchingControllerValues[ControllerValues]]:
+        return (
+            self._manual_control.initial()[0],
+            SwitchingControllerValues(automatic_mode=None),
+        )
 
-    def control(self, sensor_values: SensorValues):
+    def control(
+        self, sensor_values: SensorValues
+    ) -> tuple[ControlValues, SwitchingControllerValues[ControllerValues]]:
         if self._mode == "manual":
-            return self._manual_control.control(sensor_values)
+            control_values, _ = self._manual_control.control(sensor_values)
+            controller_values = SwitchingControllerValues(automatic_mode=None)
         else:
-            return self._automatic_control.control(sensor_values)
+            control_values, controller_values = self._automatic_control.control(
+                sensor_values
+            )
+            controller_values = SwitchingControllerValues(
+                automatic_mode=controller_values
+            )
+
+        return control_values, controller_values
 
     def switch_mode(self, mode: Literal["manual", "automatic"]):
         self._mode = mode
@@ -50,18 +74,6 @@ class SwitchingControl[
     @staticmethod
     def modes() -> list[str]:
         return ["manual", "automatic"]
-
-    @staticmethod
-    def initial_mode() -> str:
-        return "manual"
-
-    @property
-    def mode(self) -> SwitchingControlMode[ControlMode]:
-        return (
-            SwitchingControlMode(automatic_mode=None)
-            if self._mode == "manual"
-            else SwitchingControlMode(automatic_mode=self._automatic_control.mode)
-        )
 
     @property
     def automatic(self) -> bool:

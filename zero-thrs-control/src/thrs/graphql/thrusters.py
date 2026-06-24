@@ -1,9 +1,13 @@
 import strawberry
 
-from thrs.control.modules.thrusters import ThrustersControlMode, ThrustersParameters
+from thrs.control.modules.thrusters import (
+    ThrustersControllerValues,
+    ThrustersControlMode,
+    ThrustersParameters,
+)
 from thrs.graphql.base import (
     ControlModule,
-    SwitchingControlModeType,
+    SwitchingControllerValuesType,
     ThrsContext,
     ThrustersMessaging,
     add_automation_mode_mutation,
@@ -23,13 +27,14 @@ ThrustersSensorValuesType = pydantic_to_strawberry_type(ThrustersSensorValues)
 ThrustersControlValuesType = pydantic_to_strawberry_type(ThrustersControlValues)
 ThrustersParametersType = pydantic_to_strawberry_type(ThrustersParameters)
 ThrustersControlModeType = pydantic_to_strawberry_type(ThrustersControlMode)
+ThrustersControllerValuesType = pydantic_to_strawberry_type(ThrustersControllerValues)
 
 
 ThrustersModule = ControlModule[
     ThrustersSensorValuesType,
     ThrustersControlValuesType,
     ThrustersParametersType,
-    ThrustersControlModeType,
+    ThrustersControllerValuesType,
 ]
 
 
@@ -46,10 +51,11 @@ def resolve_module(
         parameters=optional_pydantic_to_graphql(
             ThrustersParametersType, module.parameters
         ),
-        control_mode=SwitchingControlModeType.from_pydantic(
-            ThrustersControlModeType, module.control_mode.mode
+        controller_values=optional_pydantic_to_graphql(
+            SwitchingControllerValuesType[ThrustersControllerValuesType],
+            module.controller_values,
         )
-        if module.control_mode
+        if module.controller_values
         else None,
     )
 

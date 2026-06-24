@@ -134,21 +134,14 @@ class PvtGroupControl(
     def modes(self) -> list[str]:
         return list(self._state_machine.states.keys())
 
-    @property
-    def initial_mode(self) -> PvtGroupControlMode:
-        initial_mode: str = self._state_machine.initial  # type: ignore
-        return PvtGroupControlMode(mode=initial_mode)
-
-    @property
-    def mode(self) -> PvtGroupControlMode:
-        mode: str = self.state  # type: ignore
-        return PvtGroupControlMode(mode=mode)
-
     def update_parameters(self, parameters: PvtGroupParameters):
         self._parameters = parameters
 
-    def initial(self) -> PvtGroupControlValues:
-        return self._current_values
+    def initial(self) -> tuple[PvtGroupControlValues, PvtGroupControlMode]:
+        return (
+            self._current_values,
+            PvtGroupControlMode(mode="idle"),
+        )
 
     def _string_warm(self, sensor_values: PvtGroupSensorValues):
         return (
@@ -186,12 +179,19 @@ class PvtGroupControl(
     def _deactivate_pump(self, sensor_values: PvtGroupSensorValues):
         self._current_values.pump.on = Stamped(value=False, timestamp=self._time())
 
-    def control(self, sensor_values: PvtGroupSensorValues) -> PvtGroupControlValues:
+    def control(
+        self, sensor_values: PvtGroupSensorValues
+    ) -> tuple[PvtGroupControlValues, PvtGroupControlMode]:
         self._check_temperatures(sensor_values)  # type: ignore
         self._control_warmup_mix(sensor_values)
         self._control_pump(sensor_values)
 
-        return self._current_values
+        mode: str = self.state  # type: ignore
+
+        return (
+            self._current_values,
+            PvtGroupControlMode(mode=mode),
+        )
 
     def _control_warmup_mix(self, sensor_values: PvtGroupSensorValues):
         if self._warmup_mix_controller.enabled():

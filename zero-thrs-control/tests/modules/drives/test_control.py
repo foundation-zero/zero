@@ -12,10 +12,10 @@ def test_idle(
 ):
     runner._simulation.update_simulation_inputs(simulation_inputs_inactive)  # type: ignore
 
-    result, _ = runner.run(90)
+    result, _, controller_values = runner.run(90)
 
     assert isinstance(runner._control, DrivesControl)
-    assert runner._control.mode.is_idle
+    assert controller_values.control_mode.is_idle
 
     assert isinstance(result, SimulationResult)
     assert result.sensor_values.drives_flow_propdrive_aft1.flow.value == approx(
@@ -42,10 +42,10 @@ def test_propulsion_all_active(
 ):
     runner._simulation.update_simulation_inputs(simulation_inputs_all_drives_active)  # type: ignore
 
-    result, _ = runner.run(180)
+    result, _, controller_values = runner.run(180)
 
     assert isinstance(runner._control, DrivesControl)
-    assert runner._control.mode.is_propulsion
+    assert controller_values.control_mode.is_propulsion
 
     assert isinstance(result, SimulationResult)
     assert result.sensor_values.drives_flow_propdrive_aft1.flow.value == approx(
@@ -83,10 +83,10 @@ def test_shorepower(
 ):
     runner._simulation.update_simulation_inputs(simulation_inputs_shorepower)  # type: ignore
 
-    result, _ = runner.run(180)
+    result, _, controller_values = runner.run(180)
 
     assert isinstance(runner._control, DrivesControl)
-    assert runner._control.mode.is_shorepower
+    assert controller_values.control_mode.is_shorepower
 
     assert isinstance(result, SimulationResult)
     assert result.sensor_values.drives_flow_shorepower.flow.value == approx(
@@ -109,7 +109,7 @@ def test_heat_dump(
         )
     )
 
-    result, _ = runner.run(120)
+    result, *_ = runner.run(120)
 
     assert isinstance(result, SimulationResult)
     assert result.sensor_values.drives_mix_recovery.position_rel.value == approx(
@@ -135,7 +135,7 @@ def test_heat_recovery(
         )
     )
 
-    result, _ = runner.run(720)
+    result, *_ = runner.run(720)
 
     assert isinstance(result, SimulationResult)
     assert result.sensor_values.drives_temperature_recovery.temperature.value == approx(
@@ -153,10 +153,10 @@ def test_flow_balancing(
 ):
     runner._simulation.update_simulation_inputs(simulation_inputs_all_drives_active)  # type: ignore
 
-    result, _ = runner.run(120)
+    result, _, controller_values = runner.run(120)
 
     assert isinstance(runner._control, DrivesControl)
-    assert runner._control.mode.is_propulsion
+    assert controller_values.control_mode.is_propulsion
 
     assert isinstance(result, SimulationResult)
     assert result.sensor_values.drives_flow_propdrive_aft1.flow.value == approx(

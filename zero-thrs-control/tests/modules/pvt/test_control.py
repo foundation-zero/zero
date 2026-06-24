@@ -26,11 +26,11 @@ def test_idle(control, simulation: PvtSimulation):
     simulation._simulation_inputs.pvt_owners.heat_flow = Stamped.stamp(0)
 
     result = simulation.tick(
-        control.control(PvtSensorValues.zero()),
+        control.control(PvtSensorValues.zero())[0],
     )
 
     for i in range(30):
-        control_values = control.control(result.sensor_values)
+        control_values, controller_values = control.control(result.sensor_values)
         result = simulation.tick(control_values)
 
     assert result.simulation_outputs.pvt_pcm_return.flow.value == approx(0, abs=0.1)  # type: ignore
@@ -38,14 +38,16 @@ def test_idle(control, simulation: PvtSimulation):
 
 def test_recovery(control, simulation):
     result = simulation.tick(
-        control.control(PvtSensorValues.zero()),
+        control.control(PvtSensorValues.zero())[0],
     )
 
+    controller_values = None
     for i in range(13 * 60):  # Need about 13 minutes to reach stable state
-        control_values = control.control(result.sensor_values)
+        control_values, controller_values = control.control(result.sensor_values)
         result = simulation.tick(control_values)
 
-    assert control.mode == PvtControlMode(
+    assert controller_values
+    assert controller_values.control_mode == PvtControlMode(
         aft=PvtGroupControlMode(mode="recovery"),
         fwd=PvtGroupControlMode(mode="recovery"),
         owners=PvtGroupControlMode(mode="recovery"),
@@ -84,7 +86,7 @@ def test_heat_dump(control, simulation: PvtSimulation):
     simulation._simulation_inputs.pvt_seawater_supply.temperature = Stamped.stamp(10)
 
     result = simulation.tick(
-        control.control(PvtSensorValues.zero()),
+        control.control(PvtSensorValues.zero())[0],
     )
 
     # Create flow to preheat
@@ -92,7 +94,7 @@ def test_heat_dump(control, simulation: PvtSimulation):
         result.sensor_values.pvt_temperature_supply.temperature.value
         <= control.parameters.maximum_supply_temperature
     ):
-        control_values = control.control(result.sensor_values)
+        control_values, controller_values = control.control(result.sensor_values)
         control_values.pvt_mix_main_aft.setpoint.value = Valve.MIXING_A_TO_AB
         control_values.pvt_pump_main_aft.on.value = True
         control_values.pvt_pump_main_aft.dutypoint.value = 1
@@ -107,7 +109,7 @@ def test_heat_dump(control, simulation: PvtSimulation):
         result = simulation.tick(control_values)
 
     for i in range(100):
-        control_values = control.control(result.sensor_values)
+        control_values, controller_values = control.control(result.sensor_values)
         result = simulation.tick(control_values)
         assert result.sensor_values.pvt_temperature_supply.temperature.value == approx(
             control._parameters.maximum_supply_temperature, abs=3

@@ -72,32 +72,28 @@ class SimpleParameters(ThrsValues):
     pass
 
 
-class SimpleMode(ThrsValues):
+class SimpleControllerValues(ThrsValues):
     pass
 
 
-class SimpleControl(Control[SimpleInOut, SimpleInOut, SimpleParameters, SimpleMode]):
+class SimpleControl(
+    Control[SimpleInOut, SimpleInOut, SimpleParameters, SimpleControllerValues]
+):
     def __init__(self, parameters: SimpleParameters, time_fn: Callable[[], datetime]):
         self._parameters = parameters
         self._time = time_fn
 
-    def initial(self) -> SimpleInOut:
-        return SimpleInOut.zero()
+    def initial(self) -> tuple[SimpleInOut, SimpleControllerValues]:
+        return (SimpleInOut.zero(), SimpleControllerValues())
 
-    def control(self, sensor_values: SimpleInOut) -> SimpleInOut:
-        return sensor_values
+    def control(
+        self, sensor_values: SimpleInOut
+    ) -> tuple[SimpleInOut, SimpleControllerValues]:
+        return (sensor_values, SimpleControllerValues())
 
     @staticmethod
     def modes() -> list[str]:
         return []
-
-    @staticmethod
-    def initial_mode() -> str:
-        return ""
-
-    @property
-    def mode(self) -> SimpleMode | None:
-        return None
 
     @property
     def parameters(self) -> SimpleParameters:

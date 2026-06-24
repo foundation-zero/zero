@@ -25,11 +25,11 @@ async def test_filling_flow(runner, simulation_inputs):
     )
     runner._simulation.update_simulation_inputs(simulation_inputs_no_consumption)
 
-    result, control_values = runner.run(30)
+    result, control_values, controller_values = runner.run(30)
 
     # filling flows
-    assert control_values.dhw_drives_flow_controller.enabled
-    assert control_values.dhw_dc_flow_controller.enabled
+    assert controller_values.dhw_drives_flow_controller.enabled
+    assert controller_values.dhw_dc_flow_controller.enabled
 
     assert result.sensor_values.dhw_flow_drives.flow.value > 0.1
     assert result.sensor_values.dhw_flow_dc.flow.value > 0.1
@@ -44,7 +44,7 @@ async def test_filling_flow(runner, simulation_inputs):
     )
     runner._simulation.update_simulation_inputs(simulation_inputs_no_drives)
 
-    result, control_values = runner.run(60)
+    result, control_values, controller_values = runner.run(60)
 
     assert not runner._control._dhw_drives_flow_controller.enabled()
     assert runner._control._dhw_dc_flow_controller.enabled()
@@ -70,16 +70,18 @@ def test_filling_level(runner, simulation_inputs, overpressure):
     runner._simulation.update_simulation_inputs(simulation_inputs_no_consumption)
 
     # run until tank1 start filling
-    result, _ = runner.run_until(
+    result, *_ = runner.run_until(
         lambda result,
-        control_values: control_values.dhw_tanks_controller.tank1_state.value
+        control_values,
+        controller_values: controller_values.dhw_tanks_controller.tank1_state.value
         == TankState.FILLING.value
     )
 
     # run until tank1 is full
-    result, _ = runner.run_until(
+    result, *_ = runner.run_until(
         lambda result,
-        control_values: control_values.dhw_tanks_controller.tank1_state.value
+        control_values,
+        controller_values: controller_values.dhw_tanks_controller.tank1_state.value
         != TankState.FILLING.value
     )
 
@@ -96,13 +98,13 @@ def test_boosting_transitions(
         runner._control.parameters.model_copy(update={"maximum_tank_level": 10})
     )
 
-    result, _ = runner.run(120)
+    result, _, controller_values = runner.run(120)
 
     assert isinstance(runner._control, DhwControl) and isinstance(
         runner._control._tanks_controller, TanksController
     )
     assert runner._control._tanks_controller.boosting
-    assert runner._control.mode.is_boosting_high_temperature
+    assert controller_values.control_mode.is_boosting_high_temperature
     assert isinstance(result, SimulationResult)
     assert result.sensor_values.dhw_flow_boosting.flow.value > 0.1
     assert (
@@ -119,10 +121,10 @@ def test_boosting_transitions(
         }
     )
     runner._simulation.update_simulation_inputs(simulation_inputs_no_ht)
-    result, _ = runner.run(120)
+    result, _, controller_values = runner.run(120)
 
     assert runner._control._tanks_controller.boosting
-    assert runner._control.mode.is_boosting_heatpump
+    assert controller_values.control_mode.is_boosting_heatpump
     assert isinstance(result, SimulationResult)
     assert result.sensor_values.dhw_flow_boosting.flow.value == approx(25, abs=0.2)
     assert (
@@ -134,9 +136,9 @@ def test_boosting_transitions(
     runner._control.update_parameters(
         runner._control.parameters.copy(update={"maximum_tank_temperature": 10})
     )
-    result, _ = runner.run(120)
+    result, _, controller_values = runner.run(120)
 
     assert not runner._control._tanks_controller.boosting
-    assert runner._control.mode.is_boosting_idle
+    assert controller_values.control_mode.is_boosting_idle
     assert isinstance(result, SimulationResult)
     assert result.sensor_values.dhw_flow_boosting.flow.value == approx(0.0, abs=0.1)

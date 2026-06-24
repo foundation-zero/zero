@@ -20,12 +20,12 @@ class ModuleDescription[
         control_values_cls: type[C],
         parameters_cls: type[P],
         control: Callable[[P, Callable[[], datetime]], Control[S, C, P, M]],
-        control_mode_cls: type[M],
+        controller_values_cls: type[M],
         alarms: Callable[[], BaseAlarms[S, C, P]],
     ):
         self.sensor_values_cls = sensor_values_cls
         self.control_values_cls = control_values_cls
         self.parameters_cls = parameters_cls
-        self.control_mode_cls = control_mode_cls
+        self.controller_values_cls = controller_values_cls
         self.control = control
         self.alarms = alarms

@@ -4,7 +4,7 @@ from typing import Callable, Mapping
 from thrs.classes.control import Control
 from thrs.control.base import ModuleDescription
 from thrs.control.manual import ManualControl
-from thrs.control.switching import SwitchingControl, SwitchingControlMode
+from thrs.control.switching import SwitchingControl
 from thrs.input_output.alarms import Alarm, BaseAlarms
 from thrs.input_output.base import (
     CombinedValues,
@@ -26,43 +26,39 @@ class CombinedControl(
         time_fn: Callable[[], datetime],
     ):
         self._modules = {
-            name: SwitchingControl(ManualControl(control.initial(), time_fn), control)
+            name: SwitchingControl(
+                ManualControl(control.initial()[0], time_fn), control
+            )
             for name, control in modules.items()
         }
         self._time_fn = time_fn
 
-    def initial(self) -> CombinedValues:
-        return CombinedValues(
-            values={name: module.initial() for name, module in self._modules.items()}
-        )
+    def initial(self) -> tuple[CombinedValues, CombinedValues]:
+        return self.control(CombinedValues({}))
 
-    def control(self, sensor_values: CombinedValues) -> CombinedValues:
-        results = {
-            name: module.control(sensors)
-            if (sensors := sensor_values.values.get(name, None))
-            else module.initial()
-            for name, module in self._modules.items()
-        }
-        return CombinedValues(values={name: result for name, result in results.items()})
+    def control(
+        self, sensor_values: CombinedValues
+    ) -> tuple[CombinedValues, CombinedValues]:
+        combined_control_values = CombinedValues({})
+        combined_controller_values = CombinedValues({})
+
+        for name, module in self._modules.items():
+            sensors = sensor_values.values.get(name, None)
+            if sensors:
+                control_value, controller_values = module.control(sensors)
+            else:
+                control_value, controller_values = module.initial()
+
+            combined_control_values.values[name] = control_value
+            combined_controller_values.values[name] = controller_values
+
+        return (combined_control_values, combined_controller_values)
 
     @property
     def parameters(self) -> CombinedValues:
         return CombinedValues(
             values={name: module.parameters for name, module in self._modules.items()}
         )
-
-    @staticmethod
-    def initial_mode():
-        return ""
-
-    @property
-    def mode(self) -> CombinedValues | None:
-        return CombinedValues(
-            values={name: module.mode for name, module in self._modules.items()}
-        )
-
-    def mode_for(self, module: str) -> SwitchingControlMode[ThrsValues]:
-        return self._modules[module].mode
 
     def update_parameters(self, parameters: CombinedValues):
         for name, params in parameters.values.items():
@@ -124,20 +120,15 @@ class CombinedModule[I: SimulationInputs, O: ThrsValues]:
         self.control_values_clss: ModuleClassMap = {
             module: desc.control_values_cls for module, desc in modules.items()
         }
-        self._simulation_inputs_cls = simulation_inputs_cls
-        self._simulation_outputs_cls = simulation_outputs_cls
+        self.controller_values_clss: ModuleClassMap = {
+            module: desc.controller_values_cls for module, desc in modules.items()
+        }
+        self.simulation_inputs_cls = simulation_inputs_cls
+        self.simulation_outputs_cls = simulation_outputs_cls
 
     @property
     def modules(self) -> list[str]:
         return list(self._modules.keys())
-
-    @property
-    def simulation_inputs_cls(self) -> type[I]:
-        return self._simulation_inputs_cls
-
-    @property
-    def simulation_outputs_cls(self) -> type[O]:
-        return self._simulation_outputs_cls
 
     def control_values_for_module(self, module: str) -> type[ThrsValues]:
         return self._modules[module].control_values_cls

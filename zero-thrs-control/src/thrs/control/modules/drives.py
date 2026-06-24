@@ -6,7 +6,6 @@ from transitions import Machine, State
 from thrs.classes.control import Control, ControlMode
 from thrs.control.base import ModuleDescription
 from thrs.control.controllers import FlowBalanceController, PidController
-from thrs.control.modules.thrusters import ThrustersControlMode
 from thrs.input_output.alarms import BaseAlarms
 from thrs.input_output.base import Stamped, ThrsValues
 from thrs.input_output.definitions.control import Pump, Valve
@@ -28,6 +27,10 @@ class DrivesControlMode(ControlMode):
     @property
     def is_propulsion(self) -> bool:
         return self.mode == "propulsion"
+
+
+class DrivesControllerValues(ThrsValues):
+    control_mode: DrivesControlMode
 
 
 class DrivesParameters(ThrsValues):
@@ -88,7 +91,10 @@ def _INITIAL_CONTROL_VALUES(timestamp: datetime) -> DrivesControlValues:
 
 class DrivesControl(
     Control[
-        DrivesSensorValues, DrivesControlValues, DrivesParameters, DrivesControlMode
+        DrivesSensorValues,
+        DrivesControlValues,
+        DrivesParameters,
+        DrivesControllerValues,
     ]
 ):
     def __init__(
@@ -146,16 +152,16 @@ class DrivesControl(
                 "trigger": "_check_shorepower",
                 "source": "shorepower",
                 "dest": "idle",
-                "conditions": lambda sensor_values: not self._shorepower_on(
-                    sensor_values
+                "conditions": lambda sensor_values: (
+                    not self._shorepower_on(sensor_values)
                 ),
             },
             {
                 "trigger": "_check_thrusters",
                 "source": "propulsion",
                 "dest": "idle",
-                "conditions": lambda sensor_values: not self._propdrive_active(
-                    sensor_values
+                "conditions": lambda sensor_values: (
+                    not self._propdrive_active(sensor_values)
                 ),
             },
         ]
@@ -169,9 +175,11 @@ class DrivesControl(
 
         self._heat_dump_controller = PidController[Ratio, Celsius](
             initial=self._current_values.drives_mix_exchanger.setpoint.value,
-            setpoint=lambda: self._parameters.propulsion_maximum_supply_temperature
-            if self.mode.is_propulsion
-            else self._parameters.shorepower_maximum_supply_temperature,
+            setpoint=lambda: (
+                self._parameters.propulsion_maximum_supply_temperature
+                if self.state == "propulsion"  # type: ignore
+                else self._parameters.shorepower_maximum_supply_temperature
+            ),
             tuning=lambda: self._parameters.heat_dump_tuning,
             time_fn=self._time,
         )
@@ -235,35 +243,36 @@ class DrivesControl(
     def modes(self) -> list[str]:
         return list(self._state_machine.states.keys())
 
-    @property
-    def initial_mode(self) -> ThrustersControlMode:
+    def initial(self) -> tuple[DrivesControlValues, DrivesControllerValues]:
         initial_mode: str = self._state_machine.initial  # type: ignore
-        return ThrustersControlMode(mode=initial_mode)
+        control_mode = DrivesControlMode(mode=initial_mode)
 
-    @property
-    def mode(self) -> DrivesControlMode:
-        mode: str = self.state  # type: ignore
-        return DrivesControlMode(mode=mode)
+        return (
+            _INITIAL_CONTROL_VALUES(self._time()),
+            DrivesControllerValues(control_mode=control_mode),
+        )
 
-    def initial(self) -> DrivesControlValues:
-        return _INITIAL_CONTROL_VALUES(self._time())
-
-    def control(self, sensor_values: DrivesSensorValues) -> DrivesControlValues:
-        if not self.mode.is_propulsion:
+    def control(
+        self, sensor_values: DrivesSensorValues
+    ) -> tuple[DrivesControlValues, DrivesControllerValues]:
+        if not DrivesControlMode(mode=self.state).is_propulsion:  # type: ignore
             self._check_shorepower(sensor_values)  # type: ignore
-        if not self.mode.is_shorepower:
+        if not DrivesControlMode(mode=self.state).is_shorepower:  # type: ignore
             self._check_thrusters(sensor_values)  # type: ignore
         self._control_heat_dump(sensor_values)
         self._control_flow_balance(sensor_values)
         self._control_pump_shorepower(sensor_values)
         self._control_recovery_mix(sensor_values)
 
-        if self.mode.is_shorepower:
+        if DrivesControlMode(mode=self.state).is_shorepower:  # type: ignore
             self._control_pump_shorepower(sensor_values)
-        elif self.mode.is_propulsion:
+        elif DrivesControlMode(mode=self.state).is_propulsion:  # type: ignore
             self._control_flow_balance(sensor_values)
 
-        return self._current_values
+        mode: str = self.state  # type: ignore
+        control_mode = DrivesControlMode(mode=mode)
+
+        return (self._current_values, DrivesControllerValues(control_mode=control_mode))
 
     def _shorepower_on(self, sensor_values: DrivesSensorValues) -> bool:
         return sensor_values.drives_shorepower.active.value
@@ -433,6 +442,6 @@ DRIVES_MODULE_DESCRIPTION = ModuleDescription(
     DrivesControlValues,
     DrivesParameters,
     DrivesControl,
-    DrivesControlMode,
+    DrivesControllerValues,
     DrivesAlarms,
 )

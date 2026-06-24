@@ -1,11 +1,11 @@
 import strawberry
 
-from thrs.control.modules.pvt import PvtControlMode, PvtParameters
+from thrs.control.modules.pvt import PvtControllerValues, PvtControlMode, PvtParameters
 from thrs.control.modules.pvt_group import PvtGroupControlMode
 from thrs.graphql.base import (
     ControlModule,
     PvtMessaging,
-    SwitchingControlModeType,
+    SwitchingControllerValuesType,
     ThrsContext,
     add_automation_mode_mutation,
     add_control_mutations,
@@ -25,13 +25,14 @@ PvtControlValuesType = pydantic_to_strawberry_type(PvtControlValues)
 PvtParametersType = pydantic_to_strawberry_type(PvtParameters)
 PvtGroupControlModeType = pydantic_to_strawberry_type(PvtGroupControlMode)
 PvtControlModeType = pydantic_to_strawberry_type(PvtControlMode)
+PvtControllerValuesType = pydantic_to_strawberry_type(PvtControllerValues)
 
 
 PvtModule = ControlModule[
     PvtSensorValuesType,
     PvtControlValuesType,
     PvtParametersType,
-    PvtControlModeType,
+    PvtControllerValuesType,
 ]
 
 
@@ -45,16 +46,11 @@ def resolve_module(
         control_values=optional_pydantic_to_graphql(
             PvtControlValuesType, module.control_values
         ),
-        parameters=(
-            PvtParametersType.from_pydantic(module.parameters)
-            if module.parameters
-            else None
+        parameters=optional_pydantic_to_graphql(PvtParametersType, module.parameters),
+        controller_values=optional_pydantic_to_graphql(
+            SwitchingControllerValuesType[PvtControllerValuesType],
+            module.controller_values,
         ),
-        control_mode=SwitchingControlModeType.from_pydantic(
-            PvtControlModeType, module.control_mode.mode
-        )
-        if module.control_mode
-        else None,
     )
 
 

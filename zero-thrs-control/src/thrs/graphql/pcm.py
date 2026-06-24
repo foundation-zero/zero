@@ -1,10 +1,10 @@
 import strawberry
 
-from thrs.control.modules.pcm import PcmControlMode, PcmParameters
+from thrs.control.modules.pcm import PcmControllerValues, PcmControlMode, PcmParameters
 from thrs.graphql.base import (
     ControlModule,
     PcmMessaging,
-    SwitchingControlModeType,
+    SwitchingControllerValuesType,
     add_automation_mode_mutation,
     add_control_mutations,
     add_parameter_mutations,
@@ -22,13 +22,14 @@ PcmSensorValuesType = pydantic_to_strawberry_type(PcmSensorValues)
 PcmControlValuesType = pydantic_to_strawberry_type(PcmControlValues)
 PcmParametersType = pydantic_to_strawberry_type(PcmParameters)
 PcmControlModeType = pydantic_to_strawberry_type(PcmControlMode)
+PcmControllerValuesType = pydantic_to_strawberry_type(PcmControllerValues)
 
 
 PcmModule = ControlModule[
     PcmSensorValuesType,
     PcmControlValuesType,
     PcmParametersType,
-    PcmControlModeType,
+    PcmControllerValuesType,
 ]
 
 
@@ -42,16 +43,11 @@ def resolve_module(
         control_values=optional_pydantic_to_graphql(
             PcmControlValuesType, module.control_values
         ),
-        parameters=(
-            PcmParametersType.from_pydantic(module.parameters)
-            if module.parameters
-            else None
+        parameters=optional_pydantic_to_graphql(PcmParametersType, module.parameters),
+        controller_values=optional_pydantic_to_graphql(
+            SwitchingControllerValuesType[PcmControllerValuesType],
+            module.controller_values,
         ),
-        control_mode=SwitchingControlModeType.from_pydantic(
-            PcmControlModeType, module.control_mode.mode
-        )
-        if module.control_mode
-        else None,
     )
 
 

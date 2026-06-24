@@ -19,7 +19,7 @@ def test_valve_movement(fmu, control, simulation_inputs):
         timedelta(seconds=45),
     )
 
-    control_values = control.initial()
+    control_values, controller_values = control.initial()
 
     result = simulation.tick(control_values)
 

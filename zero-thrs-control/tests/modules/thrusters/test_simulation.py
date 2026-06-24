@@ -81,7 +81,7 @@ def test_runner(simulation, fmu, simulation_inputs, control, alarms):
 
     assert (
         set(frame.columns)
-        == set(mock_fmu_outputs.keys()) | {"time", "control_mode"} | not_in_fmu
+        == set(mock_fmu_outputs.keys()) | {"time", "control_mode__mode"} | not_in_fmu
     )
 
 
@@ -137,7 +137,7 @@ def test_thrusters_simulation_inputs(incorrect_simulation_inputs, control):
             timedelta(seconds=5),
         )
 
-        control_values = control.initial()
+        control_values, controller_values = control.initial()
 
         control_values.thrusters_pump1.dutypoint.value = 1
         control_values.thrusters_mix_recovery.setpoint.value = Valve.MIXING_A_TO_AB

@@ -1,6 +1,6 @@
 from dataclasses import dataclass
 from inspect import isclass
-from typing import Callable, Coroutine
+from typing import Any, Callable, Coroutine, get_args
 
 import strawberry
 from pydantic.fields import FieldInfo
@@ -9,12 +9,18 @@ from strawberry.fastapi import BaseContext
 import thrs.input_output.definitions.control as control
 import thrs.input_output.definitions.controllers as controllers
 import thrs.input_output.definitions.sensor as sensor
-from thrs.control.modules.consumers import ConsumersControlMode, ConsumersParameters
-from thrs.control.modules.dhw import DhwControlMode, DhwParameters
-from thrs.control.modules.pcm import PcmControlMode, PcmParameters
-from thrs.control.modules.pvt import PvtControlMode, PvtParameters
-from thrs.control.modules.thrusters import ThrustersControlMode, ThrustersParameters
-from thrs.control.switching import SwitchingControlMode
+from thrs.control.modules.consumers import (
+    ConsumersControllerValues,
+    ConsumersParameters,
+)
+from thrs.control.modules.dhw import DhwControllerValues, DhwParameters
+from thrs.control.modules.pcm import PcmControllerValues, PcmParameters
+from thrs.control.modules.pvt import PvtControllerValues, PvtParameters
+from thrs.control.modules.thrusters import (
+    ThrustersControllerValues,
+    ThrustersParameters,
+)
+from thrs.control.switching import SwitchingControllerValues
 from thrs.graphql.helpers import (
     JsonSchemaDirective,
     ensure_input_type,
@@ -44,14 +50,14 @@ type ThrustersMessaging = ControlMessaging[
     ThrustersSensorValues,
     ThrustersControlValues,
     ThrustersParameters,
-    ThrustersControlMode,
+    ThrustersControllerValues,
 ]
 
 type PvtMessaging = ControlMessaging[
     PvtSensorValues,
     PvtControlValues,
     PvtParameters,
-    PvtControlMode,
+    PvtControllerValues,
 ]
 
 
@@ -59,7 +65,7 @@ type PcmMessaging = ControlMessaging[
     PcmSensorValues,
     PcmControlValues,
     PcmParameters,
-    PcmControlMode,
+    PcmControllerValues,
 ]
 
 
@@ -67,14 +73,14 @@ type ConsumersMessaging = ControlMessaging[
     ConsumersSensorValues,
     ConsumersControlValues,
     ConsumersParameters,
-    ConsumersControlMode,
+    ConsumersControllerValues,
 ]
 
 type DhwMessaging = ControlMessaging[
     DhwSensorValues,
     DhwControlValues,
     DhwParameters,
-    DhwControlMode,
+    DhwControllerValues,
 ]
 
 
@@ -115,15 +121,19 @@ convert_module(controllers, "Controller")
 
 # TODO: check if this can't just be based on the pydantic model directly
 @strawberry.type
-class SwitchingControlModeType[Mode]:
-    automatic_mode: Mode | None
+class SwitchingControllerValuesType[ControllerValuesType: ThrsValues]:
+    automatic_mode: ControllerValuesType | None
 
     @classmethod
     def from_pydantic(
-        cls, type, mode: SwitchingControlMode[Mode]
-    ) -> "SwitchingControlModeType[Mode]":
+        cls,
+        ControllerValuesType: SwitchingControllerValues[ControllerValuesType],
+        extra: dict[str, Any],
+    ) -> "SwitchingControllerValuesType[ControllerValuesType]":
         return cls(
-            automatic_mode=optional_pydantic_to_graphql(type, mode.automatic_mode)
+            automatic_mode=optional_pydantic_to_graphql(
+                get_args(extra["original_type"])[0], ControllerValuesType.automatic_mode
+            )
         )
 
     @strawberry.field
@@ -136,12 +146,12 @@ class ControlModule[
     SensorValuesType,
     ControlValuesType,
     ParametersType,
-    Mode,
+    ControllerValuesType,
 ]:
     sensor_values: SensorValuesType | None
     control_values: ControlValuesType | None
     parameters: ParametersType | None
-    control_mode: SwitchingControlModeType[Mode] | None = None  # type: ignore
+    controller_values: SwitchingControllerValuesType[ControllerValuesType] | None = None  # type: ignore
 
 
 @dataclass
@@ -327,7 +337,7 @@ def add_automation_mode_mutation(
         ) -> bool:
             mod = messaging(info.context)
             await mod.set_automation_mode(automatic)
-            await mod.wait_for_control_mode(automatic, timeout=2)
+            await mod.wait_for_controller_values(automatic, timeout=2)
             return True
 
         mutation = strawberry.mutation(set_automation_mode)

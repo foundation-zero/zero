@@ -8,7 +8,6 @@ from aiomqtt import Client as MqttClient
 from aiomqtt import Message, Topic
 
 from thrs.cli.simulation_controls import (
-    ControlModeMessage,
     ManualControlMessage,
     ParametersMessage,
     PauseMessage,
@@ -20,6 +19,7 @@ from thrs.cli.simulation_controls import (
     SimulationStatusMessage,
     StepMessage,
 )
+from thrs.control.switching import SwitchingControllerValues
 from thrs.input_output.base import SimulationInputs, SimulationValues, ThrsValues
 from thrs.orchestration.connector import PartialMqttMapping
 
@@ -130,7 +130,7 @@ class ControlMessaging[
     SensorValues: ThrsValues,
     ControlValues: ThrsValues,
     Parameters: ThrsValues,
-    Mode: ThrsValues,
+    ControllerValues: ThrsValues,
 ]:
     def __init__(
         self,
@@ -138,7 +138,7 @@ class ControlMessaging[
         sensor_values_cls: type[SensorValues],
         control_values_cls: type[ControlValues],
         parameters_cls: type[Parameters],
-        mode_cls: type[Mode],
+        controller_values_cls: type[ControllerValues],
         mqtt_client: MqttClient,
         devices_topic_prefix: str,
         controller_topic_prefix: str,
@@ -167,9 +167,10 @@ class ControlMessaging[
             ParametersMessage[parameters_cls],
             f"{self._controller_topic_prefix}/{ParametersMessage.subscribe_topic()}",
         )
-        self._control_mode = MessageReceiver(
-            ControlModeMessage[mode_cls],
-            f"{self._controller_topic_prefix}/{ControlModeMessage.subscribe_topic()}",
+        self._controller_values = PartialMessageReceiver(
+            SwitchingControllerValues[controller_values_cls],
+            self._controller_topic_prefix,
+            module_name,
         )
         self._mqtt_client = mqtt_client
 
@@ -179,7 +180,7 @@ class ControlMessaging[
             self._sensor_values,
             self._control_values,
             self._parameters,
-            self._control_mode,
+            self._controller_values,
         ]
 
     @property
@@ -226,6 +227,10 @@ class ControlMessaging[
         return self._control_values.last
 
     @property
+    def controller_values(self) -> SwitchingControllerValues[ControllerValues] | None:
+        return self._controller_values.last
+
+    @property
     def parameters(self) -> Parameters | None:
         return self._parameters.last.parameters if self._parameters.last else None
 
@@ -247,16 +252,12 @@ class ControlMessaging[
             qos=1,
         )
 
-    def wait_for_control_mode(
+    def wait_for_controller_values(
         self, automatic: bool, *_args, timeout: float
-    ) -> Coroutine[None, None, ControlModeMessage]:
-        return self._control_mode.wait_for(
-            lambda m: m.mode.automatic == automatic, timeout
+    ) -> Coroutine[None, None, SwitchingControllerValues[ControllerValues]]:
+        return self._controller_values.wait_for(
+            lambda m: bool(m.automatic_mode) == automatic, timeout
         )
-
-    @property
-    def control_mode(self) -> ControlModeMessage | None:
-        return self._control_mode.last
 
 
 class RawMessageReceiver[T: ThrsValues](MessageReceiver[T]):

@@ -153,18 +153,9 @@ class ConvertersControl(
     def modes(self) -> list[str]:
         return list(self._state_machine.states.keys())
 
-    @property
-    def initial_mode(self) -> ConvertersControlMode:
+    def initial(self) -> tuple[ConvertersControlValues, ConvertersControlMode]:
         initial_mode: str = self._state_machine.initial  # type: ignore
-        return ConvertersControlMode(mode=initial_mode)
-
-    @property
-    def mode(self) -> ConvertersControlMode:
-        mode: str = self.state  # type: ignore
-        return ConvertersControlMode(mode=mode)
-
-    def initial(self) -> ConvertersControlValues:
-        return self.current_values
+        return (self.current_values, ConvertersControlMode(mode=initial_mode))
 
     def _close_circuit(self):
         self.current_values.mix.setpoint = Stamped(
@@ -180,13 +171,16 @@ class ConvertersControl(
     def _converter_active(self, sensor_values: ConvertersSensorValues) -> bool:
         return any(converter.active.value for converter in sensor_values.converters)
 
-    def control(self, sensor_values: ConvertersSensorValues) -> ConvertersControlValues:
+    def control(
+        self, sensor_values: ConvertersSensorValues
+    ) -> tuple[ConvertersControlValues, ConvertersControlMode]:
         self._check_converters_active(sensor_values)  # type: ignore
         self._control_warmup_mix(sensor_values)
         self._control_switch_valves(sensor_values)
         self._control_flow(sensor_values)
+        mode: str = self.state  # type: ignore
 
-        return self.current_values
+        return (self.current_values, ConvertersControlMode(mode=mode))
 
     def _control_warmup_mix(self, sensor_values: ConvertersSensorValues):
         self.current_values.mix.setpoint = Stamped(

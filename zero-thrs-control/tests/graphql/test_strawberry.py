@@ -8,18 +8,18 @@ from aiomqtt import Client as MqttClient
 from fastapi import FastAPI
 from fastapi.testclient import TestClient
 
-from thrs.cli.simulation_controls import (
-    ControlModeMessage,
-    SimulationInputMessage,
-    SimulationStatusMessage,
-)
+from thrs.cli.simulation_controls import SimulationInputMessage, SimulationStatusMessage
 from thrs.control.modules.consumers import ConsumersParameters
 from thrs.control.modules.dhw import DhwParameters
 from thrs.control.modules.pcm import PcmParameters
-from thrs.control.modules.pvt import PvtControlMode, PvtParameters
+from thrs.control.modules.pvt import PvtControllerValues, PvtControlMode, PvtParameters
 from thrs.control.modules.pvt_group import PvtGroupControlMode
-from thrs.control.modules.thrusters import ThrustersControlMode, ThrustersParameters
-from thrs.control.switching import SwitchingControlMode
+from thrs.control.modules.thrusters import (
+    ThrustersControllerValues,
+    ThrustersControlMode,
+    ThrustersParameters,
+)
+from thrs.control.switching import SwitchingControllerValues
 from thrs.graphql import simulation
 from thrs.graphql.base import ThrustersMessaging
 from thrs.graphql.helpers import UnstampedInput
@@ -112,15 +112,16 @@ async def override_thrusters_messaging():
     mock.sensor_values = ThrustersSensorValues.zero()
     mock.control_values = ThrustersControlValues.zero()
     mock.parameters = ThrustersParameters()
-    mock.control_mode = ControlModeMessage(
-        module="thrusters",
-        mode=SwitchingControlMode(automatic_mode=ThrustersControlMode(mode="idle")),
+    mock.controller_values = SwitchingControllerValues(
+        automatic_mode=ThrustersControllerValues(
+            control_mode=ThrustersControlMode(mode="idle")
+        )
     )
 
     async def wait(condition, *_args, timeout):
         return None
 
-    mock.wait_for_control_mode.side_effect = wait
+    mock.wait_for_controller_values.side_effect = wait
     mock.wait_for_control_values.side_effect = wait
     mock.wait_for_parameters.side_effect = wait
     return mock
@@ -131,21 +132,20 @@ async def override_pvt_messaging():
     mock.sensor_values = PvtSensorValues.zero()
     mock.control_values = PvtControlValues.zero()
     mock.parameters = PvtParameters()
-    mock.control_mode = ControlModeMessage(
-        module="pvt",
-        mode=SwitchingControlMode(
-            automatic_mode=PvtControlMode(
+    mock.controller_values = SwitchingControllerValues(
+        automatic_mode=PvtControllerValues(
+            control_mode=PvtControlMode(
                 aft=PvtGroupControlMode(mode="idle"),
                 fwd=PvtGroupControlMode(mode="idle"),
                 owners=PvtGroupControlMode(mode="idle"),
             )
-        ),
+        )
     )
 
     async def wait(condition, *_args, timeout):
         return None
 
-    mock.wait_for_control_mode.side_effect = wait
+    mock.wait_for_controller_values.side_effect = wait
     mock.wait_for_control_values.side_effect = wait
     mock.wait_for_parameters.side_effect = wait
     return mock
@@ -156,14 +156,12 @@ async def override_pcm_messaging():
     mock.sensor_values = PcmSensorValues.zero()
     mock.control_values = PcmControlValues.zero()
     mock.parameters = PcmParameters()
-    mock.control_mode = ControlModeMessage(
-        module="pcm", mode=SwitchingControlMode(automatic_mode=None)
-    )
+    mock.controller_values = SwitchingControllerValues(automatic_mode=None)
 
     async def wait(condition, *_args, timeout):
         return None
 
-    mock.wait_for_control_mode.side_effect = wait
+    mock.wait_for_controller_values.side_effect = wait
     mock.wait_for_control_values.side_effect = wait
     mock.wait_for_parameters.side_effect = wait
     return mock
@@ -174,14 +172,12 @@ async def override_consumers_messaging():
     mock.sensor_values = ConsumersSensorValues.zero()
     mock.control_values = ConsumersControlValues.zero()
     mock.parameters = ConsumersParameters()
-    mock.control_mode = ControlModeMessage(
-        module="consumers", mode=SwitchingControlMode(automatic_mode=None)
-    )
+    mock.controller_values = SwitchingControllerValues(automatic_mode=None)
 
     async def wait(condition, *_args, timeout):
         return None
 
-    mock.wait_for_control_mode.side_effect = wait
+    mock.wait_for_controller_values.side_effect = wait
     mock.wait_for_control_values.side_effect = wait
     mock.wait_for_parameters.side_effect = wait
     return mock
@@ -192,14 +188,12 @@ async def override_dhw_messaging():
     mock.sensor_values = DhwSensorValues.zero()
     mock.control_values = DhwControlValues.zero()
     mock.parameters = DhwParameters()
-    mock.control_mode = ControlModeMessage(
-        module="dhw", mode=SwitchingControlMode(automatic_mode=None)
-    )
+    mock.controller_values = SwitchingControllerValues(automatic_mode=None)
 
     async def wait(condition, *_args, timeout):
         return None
 
-    mock.wait_for_control_mode.side_effect = wait
+    mock.wait_for_controller_values.side_effect = wait
     mock.wait_for_control_values.side_effect = wait
     mock.wait_for_parameters.side_effect = wait
     return mock
@@ -356,35 +350,42 @@ async def test_query_control_mode(app, test_client):
             "query": """{
                 modules {
                     thrusters {
-                        controlMode {
+                        controllerValues {
                             automatic
                             automaticMode {
-                                mode
+                                controlMode {
+                                    mode
+                                }
                             }
                         }
                     }
                     pvt {
-                        controlMode {
+                        controllerValues {
                             automatic
                             automaticMode {
-                                fwd {
-                                    mode
-                                }
-                                aft {
-                                    mode
-                                }
-                                owners {
-                                    mode
+                                controlMode {
+                                    fwd {
+                                        mode
+                                    }
+                                    aft {
+                                        mode
+                                    }
+                                    owners {
+                                        mode
+                                    }
                                 }
                             }
                         }
                     }
                     pcm {
-                        controlMode {
+                        controllerValues {
                             automatic
                             automaticMode{
-                                mode}
+                                controlMode {
+                                    mode
+                                }
                             }
+                        }
                     }
                 }
             }"""
@@ -395,23 +396,27 @@ async def test_query_control_mode(app, test_client):
         "data": {
             "modules": {
                 "thrusters": {
-                    "controlMode": {
+                    "controllerValues": {
                         "automatic": True,
-                        "automaticMode": {"mode": "idle"},
+                        "automaticMode": {
+                            "controlMode": {"mode": "idle"},
+                        },
                     },
                 },
                 "pvt": {
-                    "controlMode": {
+                    "controllerValues": {
                         "automatic": True,
                         "automaticMode": {
-                            "fwd": {"mode": "idle"},
-                            "aft": {"mode": "idle"},
-                            "owners": {"mode": "idle"},
+                            "controlMode": {
+                                "fwd": {"mode": "idle"},
+                                "aft": {"mode": "idle"},
+                                "owners": {"mode": "idle"},
+                            }
                         },
                     },
                 },
                 "pcm": {
-                    "controlMode": {
+                    "controllerValues": {
                         "automatic": False,
                         "automaticMode": None,
                     },
@@ -474,7 +479,7 @@ async def test_query_simulation_inputs_actual(
         ThrustersSensorValues,
         ThrustersControlValues,
         ThrustersParameters,
-        ThrustersControlMode,
+        ThrustersControllerValues,
         mqtt_client,
         "test_devices_topic",
         "test_controller_topic",
@@ -623,7 +628,7 @@ def test_query_control_automation_mode(app, test_client):
             "query": """query {
             modules {
                 thrusters {
-                    controlMode {
+                    controllerValues {
                         automatic
                     }
                 }
@@ -634,7 +639,7 @@ def test_query_control_automation_mode(app, test_client):
 
     assert response.status_code == 200
     assert response.json() == {
-        "data": {"modules": {"thrusters": {"controlMode": {"automatic": True}}}}
+        "data": {"modules": {"thrusters": {"controllerValues": {"automatic": True}}}}
     }
 
 

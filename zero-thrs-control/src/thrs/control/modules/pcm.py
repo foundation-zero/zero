@@ -81,8 +81,12 @@ class PcmControlMode(ControlMode):
         return self.mode == "boosting"
 
 
+class PcmControllerValues(ThrsValues):
+    control_mode: PcmControlMode
+
+
 class PcmControl(
-    Control[PcmSensorValues, PcmControlValues, PcmParameters, PcmControlMode]
+    Control[PcmSensorValues, PcmControlValues, PcmParameters, PcmControllerValues]
 ):
     def __init__(
         self, parameters: PcmParameters, time_fn: Callable[[], datetime]
@@ -135,8 +139,10 @@ class PcmControl(
                 "trigger": "_check_supplying_conditions",
                 "source": "supplying",
                 "dest": "idle",
-                "conditions": lambda sensor_values: not self._parameters.supplying_enabled
-                or self._all_discharged(sensor_values),
+                "conditions": lambda sensor_values: (
+                    not self._parameters.supplying_enabled
+                    or self._all_discharged(sensor_values)
+                ),
             },
             {
                 "trigger": "_try_charging",
@@ -151,8 +157,10 @@ class PcmControl(
                 "trigger": "_check_charging_conditions",
                 "source": "charging",
                 "dest": "idle",
-                "conditions": lambda sensor_values: not self._parameters.charging_enabled
-                or not self._sufficient_dt(sensor_values),
+                "conditions": lambda sensor_values: (
+                    not self._parameters.charging_enabled
+                    or not self._sufficient_dt(sensor_values)
+                ),
             },
         ]
 
@@ -223,36 +231,41 @@ class PcmControl(
     def modes(self) -> list[str]:
         return list(self._state_machine.states.keys())
 
-    @property
-    def initial_mode(self) -> PcmControlMode:
+    def initial(self) -> tuple[PcmControlValues, PcmControllerValues]:
         initial_mode: str = self._state_machine.initial  # type: ignore
-        return PcmControlMode(mode=initial_mode)
+        control_mode = PcmControlMode(mode=initial_mode)
 
-    @property
-    def mode(self) -> PcmControlMode:
-        mode: str = self.state  # type: ignore
-        return PcmControlMode(mode=mode)
-
-    def initial(self) -> PcmControlValues:
-        return _INITIAL_CONTROL_VALUES(self._time())
+        return (
+            _INITIAL_CONTROL_VALUES(self._time()),
+            PcmControllerValues(control_mode=control_mode),
+        )
 
     def update_parameters(self, parameters: PcmParameters):
         self._parameters = parameters
 
-    def control(self, sensor_values: PcmSensorValues) -> PcmControlValues:
-        self._try_supplying(sensor_values) if self.mode.is_idle else None  # type: ignore
-        self._try_charging(sensor_values) if self.mode.is_idle else None  # type: ignore
+    def control(
+        self, sensor_values: PcmSensorValues
+    ) -> tuple[PcmControlValues, PcmControllerValues]:
+        self._try_supplying(sensor_values) if PcmControlMode(  # type: ignore
+            mode=self.state  # type: ignore
+        ).is_idle else None
+        self._try_charging(sensor_values) if PcmControlMode(  # type: ignore
+            mode=self.state  # type: ignore
+        ).is_idle else None
 
-        if self.mode.is_charging:
+        if PcmControlMode(mode=self.state).is_charging:  # type: ignore
             self._set_charging_flow_setpoints(sensor_values)
             self._check_charging_conditions(sensor_values)  # type: ignore
-        elif self.mode.is_supplying:
+        elif PcmControlMode(mode=self.state).is_supplying:  # type: ignore
             self._set_supplying_flow_setpoints(sensor_values)
             self._check_supplying_conditions(sensor_values)  # type: ignore
 
         self._control_flow_balance(sensor_values)
 
-        return self._current_values
+        mode: str = self.state  # type: ignore
+        control_mode = PcmControlMode(mode=mode)
+
+        return (self._current_values, PcmControllerValues(control_mode=control_mode))
 
     def _all_discharged(self, sensor_values: PcmSensorValues) -> bool:
         return not any(
@@ -427,6 +440,6 @@ PCM_MODULE_DESCRIPTION = ModuleDescription(
     PcmControlValues,
     PcmParameters,
     PcmControl,
-    PcmControlMode,
+    PcmControllerValues,
     PcmAlarms,
 )

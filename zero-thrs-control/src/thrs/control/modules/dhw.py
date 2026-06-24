@@ -8,7 +8,8 @@ from thrs.classes.control import Control, ControlMode
 from thrs.control.base import ModuleDescription
 from thrs.control.controllers import PidController
 from thrs.input_output.alarms import BaseAlarms, Severity, alarm
-from thrs.input_output.base import Stamped, ThrsValues
+from thrs.input_output.base import Stamped, ThrsValues, component_meta
+from thrs.input_output.definitions import controllers
 from thrs.input_output.definitions.control import HeatPump, Pump, Valve
 from thrs.input_output.definitions.controllers import (
     PidControllerValues,
@@ -25,6 +26,72 @@ from thrs.input_output.definitions.units import (
     Tuning,
 )
 from thrs.input_output.modules.dhw import DhwControlValues, DhwSensorValues
+
+
+class DhwControlMode(ControlMode):
+    boosting_mode: str
+    filling_mode: str
+
+    @property
+    def is_boosting_idle(self) -> bool:
+        return self.boosting_mode == "idle"
+
+    @property
+    def is_boosting_low_temperature(self) -> bool:
+        return self.boosting_mode == "boosting_low_temperature"
+
+    @property
+    def is_boosting_high_temperature(self) -> bool:
+        return self.boosting_mode == "boosting_high_temperature"
+
+    @property
+    def is_boosting_heatpump(self) -> bool:
+        return self.boosting_mode == "boosting_heatpump"
+
+
+class DhwControllerValues(ThrsValues):
+    control_mode: DhwControlMode
+
+    dhw_tanks_controller: Annotated[
+        controllers.TanksControllerValues,
+        component_meta(
+            component_type="tank_controller",
+            included_in_fmu=False,
+            topic="controller/dhw/dhw-tanks-controller",
+        ),
+    ]
+    dhw_pump_flow_controller: Annotated[
+        controllers.PidControllerValues,
+        component_meta(
+            component_type="pid_controller",
+            included_in_fmu=False,
+            topic="controller/dhw/dhw-pump-flow-controller",
+        ),
+    ]
+    dhw_pump_temperature_controller: Annotated[
+        controllers.PidControllerValues,
+        component_meta(
+            component_type="pid_controller",
+            included_in_fmu=False,
+            topic="controller/dhw/dhw-pump-temperature-controller",
+        ),
+    ]
+    dhw_drives_flow_controller: Annotated[
+        controllers.PidControllerValues,
+        component_meta(
+            component_type="pid_controller",
+            included_in_fmu=False,
+            topic="controller/dhw/dhw-drives-flow-controller",
+        ),
+    ]
+    dhw_dc_flow_controller: Annotated[
+        controllers.PidControllerValues,
+        component_meta(
+            component_type="pid_controller",
+            included_in_fmu=False,
+            topic="controller/dhw/dhw-dc-flow-controller",
+        ),
+    ]
 
 
 class DhwParameters(ThrsValues):
@@ -132,6 +199,12 @@ def _INITIAL_CONTROL_VALUES(timestamp: datetime) -> DhwControlValues:
         dhw_switch_high_temperature=Valve(
             setpoint=Stamped(value=0.0, timestamp=timestamp)
         ),
+    )
+
+
+def _INITIAL_CONTROLLER_VALUES(timestamp: datetime) -> DhwControllerValues:
+    return DhwControllerValues(
+        control_mode=DhwControlMode(boosting_mode="idle", filling_mode="idle"),
         dhw_tanks_controller=TanksControllerValues(
             tank1_state=Stamped(value=TankState.NEEDS_FILL, timestamp=timestamp),
             tank2_state=Stamped(value=TankState.NEEDS_FILL, timestamp=timestamp),
@@ -380,9 +453,9 @@ class TanksController:
             if boostable_tanks:
                 self._boosting_tank = max(  # prioritize hottest tank for boosting #TODO this might not be want you want, as one tank might sit full for a long time (with the other two alternating)
                     boostable_tanks,
-                    key=lambda tank: tank.temperature
-                    if tank.temperature is not None
-                    else 0,
+                    key=lambda tank: (
+                        tank.temperature if tank.temperature is not None else 0
+                    ),
                 )
                 self._boosting_tank.boost(self._time)
 
@@ -476,38 +549,14 @@ class TanksController:
         )
 
 
-class DhwControlMode(ControlMode):
-    boosting_mode: str
-    filling_mode: str
-
-    @property
-    def is_boosting_idle(self) -> bool:
-        return self.boosting_mode == "idle"
-
-    @property
-    def is_boosting_low_temperature(self) -> bool:
-        return self.boosting_mode == "boosting_low_temperature"
-
-    @property
-    def is_boosting_high_temperature(self) -> bool:
-        return self.boosting_mode == "boosting_high_temperature"
-
-    @property
-    def is_boosting_heatpump(self) -> bool:
-        return self.boosting_mode == "boosting_heatpump"
-
-
 class DhwControl(
-    Control[DhwSensorValues, DhwControlValues, DhwParameters, DhwControlMode]
+    Control[DhwSensorValues, DhwControlValues, DhwParameters, DhwControllerValues]
 ):
     def __init__(
         self, parameters: DhwParameters, time_fn: Callable[[], datetime]
     ) -> None:
         self._parameters = parameters
         self._time = time_fn
-        self._current_values = _INITIAL_CONTROL_VALUES(self._time()).model_copy(
-            deep=True
-        )
 
         self._states = [
             State(
@@ -584,6 +633,8 @@ class DhwControl(
             initial="idle",
         )
 
+        self._current_values, self._current_controller_values = self.initial()
+
         self._pump_temperature_controller = PidController[Ratio, Celsius](
             self._current_values.dhw_pump.dutypoint.value,
             0,
@@ -640,19 +691,21 @@ class DhwControl(
         )
 
     def update_controller_values(self, sensor_values: DhwSensorValues):
-        self._current_values.dhw_tanks_controller = self._tanks_controller.values(
-            sensor_values=sensor_values, parameters=self._parameters
+        self._current_controller_values.dhw_tanks_controller = (
+            self._tanks_controller.values(
+                sensor_values=sensor_values, parameters=self._parameters
+            )
         )
-        self._current_values.dhw_drives_flow_controller = (
+        self._current_controller_values.dhw_drives_flow_controller = (
             self._dhw_drives_flow_controller.values()
         )
-        self._current_values.dhw_dc_flow_controller = (
+        self._current_controller_values.dhw_dc_flow_controller = (
             self._dhw_dc_flow_controller.values()
         )
-        self._current_values.dhw_pump_flow_controller = (
+        self._current_controller_values.dhw_pump_flow_controller = (
             self._pump_flow_controller.values()
         )
-        self._current_values.dhw_pump_temperature_controller = (
+        self._current_controller_values.dhw_pump_temperature_controller = (
             self._pump_temperature_controller.values()
         )
 
@@ -666,21 +719,19 @@ class DhwControl(
     def modes(self) -> list[str]:
         return list(self._state_machine.states.keys())
 
-    @property
-    def initial_mode(self) -> DhwControlMode:
+    def initial(self) -> tuple[DhwControlValues, DhwControllerValues]:
         initial_mode: str = self._state_machine.initial  # type: ignore
-        return DhwControlMode(boosting_mode=initial_mode, filling_mode="idle")
+        controller_values = _INITIAL_CONTROLLER_VALUES(self._time())
+        controller_values.control_mode.boosting_mode = initial_mode
 
-    @property
-    def mode(self) -> DhwControlMode:
-        mode: str = self.state  # type: ignore
-        filling_mode: str = "idle" if not self._tanks_controller.filling else "filling"
-        return DhwControlMode(boosting_mode=mode, filling_mode=filling_mode)
+        return (
+            _INITIAL_CONTROL_VALUES(self._time()).model_copy(deep=True),
+            controller_values.model_copy(deep=True),
+        )
 
-    def initial(self) -> DhwControlValues:
-        return _INITIAL_CONTROL_VALUES(self._time())
-
-    def control(self, sensor_values: DhwSensorValues) -> DhwControlValues:
+    def control(
+        self, sensor_values: DhwSensorValues
+    ) -> tuple[DhwControlValues, DhwControllerValues]:
         self._tanks_controller(sensor_values, self._parameters)
         self._try_boosting(sensor_values)  # type: ignore
         self._enable_filling_flow_control(sensor_values)
@@ -689,7 +740,12 @@ class DhwControl(
 
         self.update_controller_values(sensor_values)
 
-        return self._current_values
+        mode: str = self.state  # type: ignore
+        filling_mode: str = "idle" if not self._tanks_controller.filling else "filling"
+        control_mode = DhwControlMode(boosting_mode=mode, filling_mode=filling_mode)
+        self._current_controller_values.control_mode = control_mode
+
+        return (self._current_values, self._current_controller_values)
 
     def _drives_sufficient_boosting_heat(self, sensor_values: DhwSensorValues) -> bool:
         if self._tanks_controller._boosting_tank is None:
@@ -1082,6 +1138,6 @@ DHW_MODULE_DESCRIPTION = ModuleDescription(
     DhwControlValues,
     DhwParameters,
     DhwControl,
-    DhwControlMode,
+    DhwControllerValues,
     DhwAlarms,
 )

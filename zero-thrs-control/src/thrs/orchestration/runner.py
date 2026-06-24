@@ -82,13 +82,13 @@ class Runner[S, C, P, M]:
         self._simulation = simulation
         self._simulation_connector = simulation_connector
         self._alarms = alarms
-        self._control_values = self._control.initial()
+        self._control_values, self._controller_values = self._control.initial()
 
     async def run(self, n_ticks: int) -> None:
         for _ in range(n_ticks):
             sensor_values = await self._control_connector.transceive(
                 self._control_values,  # type: ignore
-                CombinedValues({}),  # type: ignore
+                self._controller_values,  # type: ignore
             )
             if self._simulation_connector and self._simulation:
                 logging.debug("Executing simulation")
@@ -107,7 +107,9 @@ class Runner[S, C, P, M]:
                     ),
                 )
 
-            self._control_values = self._control.control(sensor_values)  # type: ignore
+            self._control_values, self._controller_values = self._control.control(
+                sensor_values
+            )  # type: ignore
             alarms = self._alarms.check(
                 sensor_values,  # type: ignore
                 self._control_values,  # type: ignore

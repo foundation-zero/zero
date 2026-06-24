@@ -1,10 +1,10 @@
 import strawberry
 
-from thrs.control.modules.dhw import DhwControlMode, DhwParameters
+from thrs.control.modules.dhw import DhwControllerValues, DhwControlMode, DhwParameters
 from thrs.graphql.base import (
     ControlModule,
     DhwMessaging,
-    SwitchingControlModeType,
+    SwitchingControllerValuesType,
     add_automation_mode_mutation,
     add_control_mutations,
     add_parameter_mutations,
@@ -21,13 +21,14 @@ DhwSensorValuesType = pydantic_to_strawberry_type(
 DhwControlValuesType = pydantic_to_strawberry_type(DhwControlValues)
 DhwParametersType = pydantic_to_strawberry_type(DhwParameters)
 DhwControlModeType = pydantic_to_strawberry_type(DhwControlMode)
+DhwControllerValuesType = pydantic_to_strawberry_type(DhwControllerValues)
 
 
 DhwModule = ControlModule[
     DhwSensorValuesType,
     DhwControlValuesType,
     DhwParametersType,
-    DhwControlModeType,
+    DhwControllerValuesType,
 ]
 
 
@@ -42,11 +43,10 @@ def resolve_module(
             DhwControlValuesType, module.control_values
         ),
         parameters=optional_pydantic_to_graphql(DhwParametersType, module.parameters),
-        control_mode=SwitchingControlModeType.from_pydantic(
-            DhwControlModeType, module.control_mode.mode
-        )
-        if module.control_mode
-        else None,
+        controller_values=optional_pydantic_to_graphql(
+            SwitchingControllerValuesType[DhwControllerValuesType],
+            module.controller_values,
+        ),
     )
 
 

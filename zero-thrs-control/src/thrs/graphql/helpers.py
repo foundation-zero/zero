@@ -115,7 +115,9 @@ def optional_pydantic_to_graphql(graphql_type: type, pydantic_value):
     """
     if pydantic_value is None:
         return None
-    return graphql_type.from_pydantic(pydantic_value)
+    return graphql_type.from_pydantic(
+        pydantic_value, extra={"original_type": graphql_type}
+    )
 
 
 def dedataframed_pydantic_to_strawberry_type(cls: type[SimulationValues]) -> type:

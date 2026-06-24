@@ -29,6 +29,10 @@ class ThrustersControlMode(ControlMode):
         return self.mode == "recovery"
 
 
+class ThrustersControllerValues(ThrsValues):
+    control_mode: ThrustersControlMode
+
+
 class ThrustersParameters(ThrsValues):
     maximum_supply_temperature: Celsius = 75
     cooling_temperature: Celsius = 38
@@ -104,7 +108,7 @@ class ThrustersControl(
         ThrustersSensorValues,
         ThrustersControlValues,
         ThrustersParameters,
-        ThrustersControlMode,
+        ThrustersControllerValues,
     ]
 ):
     def __init__(
@@ -171,7 +175,9 @@ class ThrustersControl(
                 "trigger": "_check_pcs_mode",
                 "source": ["cooling"],
                 "dest": None,
-                "conditions": lambda sensor_values: False,  # stay in cooling until manually changed
+                "conditions": lambda sensor_values: (
+                    False
+                ),  # stay in cooling until manually changed
             },
             {
                 "trigger": "_check_pcs_mode",
@@ -207,9 +213,11 @@ class ThrustersControl(
 
         self._heat_dump_controller = PidController[Ratio, Celsius](
             self._current_values.thrusters_mix_exchanger.setpoint.value,
-            lambda: self._parameters.maximum_supply_temperature
-            if self.mode.is_recovery
-            else self._parameters.cooling_temperature,
+            lambda: (
+                self._parameters.maximum_supply_temperature
+                if self.state == "recovery"  # type: ignore
+                else self._parameters.cooling_temperature
+            ),
             lambda: self._parameters.heat_dump_tuning,
             self._time,
         )
@@ -286,32 +294,36 @@ class ThrustersControl(
     def modes(self) -> list[str]:
         return list(self._state_machine.states.keys())
 
-    @property
-    def initial_mode(self) -> ThrustersControlMode:
+    def initial(self) -> tuple[ThrustersControlValues, ThrustersControllerValues]:
         initial_mode: str = self._state_machine.initial  # type: ignore
-        return ThrustersControlMode(mode=initial_mode)
+        control_mode = ThrustersControlMode(mode=initial_mode)
 
-    @property
-    def mode(self) -> ThrustersControlMode:
-        mode: str = self.state  # type: ignore
-        return ThrustersControlMode(mode=mode)
+        return (
+            _INITIAL_CONTROL_VALUES(self._time()),
+            ThrustersControllerValues(control_mode=control_mode),
+        )
 
-    def initial(self) -> ThrustersControlValues:
-        return _INITIAL_CONTROL_VALUES(self._time())
-
-    def control(self, sensor_values: ThrustersSensorValues) -> ThrustersControlValues:
+    def control(
+        self, sensor_values: ThrustersSensorValues
+    ) -> tuple[ThrustersControlValues, ThrustersControllerValues]:
         self._check_pcs_mode(sensor_values)  # type: ignore
         self._check_overheat(sensor_values)  # type: ignore
         self._control_heat_dump(sensor_values)
 
-        if self.mode.is_recovery:
+        mode: str = self.state  # type: ignore
+        control_mode = ThrustersControlMode(mode=mode)
+
+        if control_mode.is_recovery:
             self._check_overheat(sensor_values)  # type: ignore
             self._set_recovery_flow_setpoints(sensor_values)
             self._control_warmup_mix(sensor_values)
 
         self._control_flow_balance(sensor_values)
 
-        return self._current_values
+        return (
+            self._current_values,
+            ThrustersControllerValues(control_mode=control_mode),
+        )
 
     def _is_overheating(self, sensor_values: ThrustersSensorValues):
         return (
@@ -530,6 +542,6 @@ THRUSTERS_MODULE_DESCRIPTION = ModuleDescription(
     ThrustersControlValues,
     ThrustersParameters,
     ThrustersControl,
-    ThrustersControlMode,
+    ThrustersControllerValues,
     ThrustersAlarms,
 )

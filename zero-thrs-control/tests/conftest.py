@@ -2,7 +2,6 @@ import os
 
 import pytest
 
-from thrs.graphql.strawberry import create_app
 from thrs.orchestration.config import Config
 
 
@@ -18,4 +17,6 @@ def settings():
 
 @pytest.fixture(scope="session")
 def app(settings):
+    from thrs.graphql.strawberry import create_app
+
     return create_app(settings)

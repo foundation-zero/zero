@@ -3,8 +3,8 @@ from unittest.mock import Mock
 
 from tests.orchestration.simples import (
     SimpleControl,
+    SimpleControllerValues,
     SimpleInOut,
-    SimpleMode,
     SimpleParameters,
     SimpleSimulationInputs,
     SimpleSimulationOutputs,
@@ -36,18 +36,26 @@ class TestCombinedControl:
         modules = {"module1": SimpleControl(SimpleParameters(), time_fn)}
 
         combined_control = CombinedControl(modules, time_fn)
-        result = combined_control.initial()
+        control_values, controller_values = combined_control.initial()
 
-        assert isinstance(result, CombinedValues)
-        assert "module1" in result.values
+        assert isinstance(control_values, CombinedValues)
+        assert "module1" in control_values.values
+        assert isinstance(controller_values, CombinedValues)
+        assert "module1" in controller_values.values
 
     def test_control(self):
         time_fn = Mock(return_value=datetime.now())
-        mock_control = Mock(spec=SimpleControl)
-        mock_control.control.return_value = SimpleInOut(
-            go_with_the=FlowSensor(
-                flow=Stamped.stamp(20.0), temperature=Stamped.stamp(30.0)
-            )
+        mock_control = Mock(
+            spec=SimpleControl,
+            initial=Mock(return_value=(SimpleInOut.zero(), SimpleControllerValues())),
+        )
+        mock_control.control.return_value = (
+            SimpleInOut(
+                go_with_the=FlowSensor(
+                    flow=Stamped.stamp(20.0), temperature=Stamped.stamp(30.0)
+                )
+            ),
+            SimpleControllerValues(),
         )
 
         modules = {"module1": mock_control}
@@ -65,14 +73,19 @@ class TestCombinedControl:
             }
         )
 
-        result = combined_control.control(sensor_values)
+        control_values, controller_values = combined_control.control(sensor_values)
 
-        assert isinstance(result, CombinedValues)
-        assert "module1" in result.values
+        assert isinstance(control_values, CombinedValues)
+        assert "module1" in control_values.values
+        assert isinstance(controller_values, CombinedValues)
+        assert "module1" in controller_values.values
         mock_control.control.assert_called_once_with(sensor_values.values["module1"])
 
     def test_update_parameters(self):
-        mock_control = Mock(spec=SimpleControl)
+        mock_control = Mock(
+            spec=SimpleControl,
+            initial=Mock(return_value=(SimpleInOut.zero(), SimpleControllerValues())),
+        )
 
         modules = {"module1": mock_control}
         time_fn = Mock(return_value=datetime.now())
@@ -136,7 +149,7 @@ class TestModuleNesting:
             SimpleInOut,
             SimpleParameters,
             control_fn,
-            SimpleMode,
+            SimpleControllerValues,
             alarms_fn,
         )
 
@@ -161,7 +174,7 @@ class TestModuleNesting:
             SimpleInOut,
             SimpleParameters,
             control_fn,
-            SimpleMode,
+            SimpleControllerValues,
             alarms_fn,
         )
 
@@ -174,7 +187,10 @@ class TestModuleNesting:
         assert nesting.sensor_values_clss is not None
 
     def test_control(self):
-        mock_control_instance = Mock(spec=Control)
+        mock_control_instance = Mock(
+            spec=Control,
+            initial=Mock(return_value=(SimpleInOut.zero(), SimpleControllerValues())),
+        )
         control_fn = Mock(return_value=mock_control_instance)
         alarms_fn = Mock()
 
@@ -183,7 +199,7 @@ class TestModuleNesting:
             SimpleInOut,
             SimpleParameters,
             control_fn,
-            SimpleMode,
+            SimpleControllerValues,
             alarms_fn,
         )
 
@@ -212,7 +228,7 @@ class TestModuleNesting:
             SimpleInOut,
             SimpleParameters,
             control_fn,
-            SimpleMode,
+            SimpleControllerValues,
             alarms_fn,
         )
 

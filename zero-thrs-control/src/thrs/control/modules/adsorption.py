@@ -92,12 +92,16 @@ class AdsorptionControlMode(ControlMode):
     mode: str
 
 
+class AdsorptionControllerValues(ThrsValues):
+    control_mode: AdsorptionControlMode
+
+
 class AdsorptionControl(
     Control[
         AdsorptionSensorValues,
         AdsorptionControlValues,
         AdsorptionParameters,
-        AdsorptionControlMode,
+        AdsorptionControllerValues,
     ]
 ):
     def __init__(
@@ -134,21 +138,27 @@ class AdsorptionControl(
                 "trigger": "_check_adsorption_status",
                 "source": ["idle", "free_cooling"],
                 "dest": "cooling",
-                "conditions": lambda sensor_values: sensor_values.adsorption_chiller.operating.value
-                and not sensor_values.adsorption_chiller.free_cooling.value,  # TODO: check if we need to add error condition
+                "conditions": lambda sensor_values: (
+                    sensor_values.adsorption_chiller.operating.value
+                    and not sensor_values.adsorption_chiller.free_cooling.value
+                ),  # TODO: check if we need to add error condition
             },
             {
                 "trigger": "_check_adsorption_status",
                 "source": ["cooling", "free_cooling"],
                 "dest": "idle",
-                "conditions": lambda sensor_values: not sensor_values.adsorption_chiller.operating.value,  # TODO: check if we need to add error condition
+                "conditions": lambda sensor_values: (
+                    not sensor_values.adsorption_chiller.operating.value
+                ),  # TODO: check if we need to add error condition
             },
             {
                 "trigger": "_check_free_cooling",
                 "source": ["idle", "cooling"],
                 "dest": "free_cooling",
-                "conditions": lambda sensor_values: sensor_values.adsorption_chiller.operating.value
-                and sensor_values.adsorption_chiller.free_cooling.value,
+                "conditions": lambda sensor_values: (
+                    sensor_values.adsorption_chiller.operating.value
+                    and sensor_values.adsorption_chiller.free_cooling.value
+                ),
             },
         ]
 
@@ -190,25 +200,28 @@ class AdsorptionControl(
     def modes(self) -> list[str]:
         return list(self._state_machine.states.keys())
 
-    @property
-    def initial_mode(self) -> AdsorptionControlMode:
+    def initial(self) -> tuple[AdsorptionControlValues, AdsorptionControllerValues]:
         initial_mode: str = self._state_machine.initial  # type: ignore
-        return AdsorptionControlMode(mode=initial_mode)
 
-    @property
-    def mode(self) -> AdsorptionControlMode:
-        mode: str = self.state  # type: ignore
-        return AdsorptionControlMode(mode=mode)
+        return (
+            _INITIAL_CONTROL_VALUES(self._time()),
+            AdsorptionControllerValues(
+                control_mode=AdsorptionControlMode(mode=initial_mode)
+            ),
+        )
 
-    def initial(self) -> AdsorptionControlValues:
-        return _INITIAL_CONTROL_VALUES(self._time())
-
-    def control(self, sensor_values: AdsorptionSensorValues) -> AdsorptionControlValues:
+    def control(
+        self, sensor_values: AdsorptionSensorValues
+    ) -> tuple[AdsorptionControlValues, AdsorptionControllerValues]:
         self._update_adsorption_inputs(sensor_values)
         self._check_adsorption_status(sensor_values)  # type: ignore
         self._control_temperature_controllers(sensor_values)
+        mode: str = self.state  # type: ignore
 
-        return self._current_values
+        return (
+            self._current_values,
+            AdsorptionControllerValues(control_mode=AdsorptionControlMode(mode=mode)),
+        )
 
     def _control_temperature_controllers(self, sensor_values: AdsorptionSensorValues):
         self._current_values.adsorption_mix_hot.setpoint = Stamped(
@@ -321,6 +334,6 @@ ADSORPTION_MODULE_DESCRIPTION = ModuleDescription(
     AdsorptionControlValues,
     AdsorptionParameters,
     AdsorptionControl,
-    AdsorptionControlMode,
+    AdsorptionControllerValues,
     AdsorptionAlarms,
 )
