@@ -241,7 +241,7 @@ type DhwSensorValuesType {
   dcDelta: SensorTemperatureDeltaType!
   consumersDelta: SensorTemperatureDeltaType!
   adsorptionDelta: SensorTemperatureDeltaType!
-  freshwaterFlowSupply: SensorCalculatedFlowType!
+  dhwFreshwaterFlowSupply: SensorCalculatedFlowType!
   dhwHvacExchanger: SensorHvacExchangerType!
   dhwHeatpump: SensorHeatPumpType!
   dhwAdsorptionExchanger: SensorHeatExchangerType!

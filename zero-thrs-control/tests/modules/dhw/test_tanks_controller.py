@@ -9,11 +9,12 @@ def test_selection_all_full_all_hot(
 ):
     # none in use -> one in use, none filling, none boosting
     sensor_values.dhw_temperature_tank1.temperature.value = 60
-    sensor_values.dhw_level_tank1.level.value = 270
     sensor_values.dhw_temperature_tank2.temperature.value = 60
-    sensor_values.dhw_level_tank2.level.value = 270
     sensor_values.dhw_temperature_tank3.temperature.value = 60
-    sensor_values.dhw_level_tank3.level.value = 270
+
+    # set _full as it does not depend on the tank level but on whether the tank has been filled
+    for tank in tanks_controller._tanks:
+        tank._full = True
 
     tanks_controller(sensor_values, parameters)
 
@@ -29,11 +30,13 @@ def test_selection_all_full_one_hot(
 ):
     # none in use -> one in use, none filling, one boosting
     sensor_values.dhw_temperature_tank1.temperature.value = 60
-    sensor_values.dhw_level_tank1.level.value = 270
     sensor_values.dhw_temperature_tank2.temperature.value = 0
-    sensor_values.dhw_level_tank2.level.value = 270
     sensor_values.dhw_temperature_tank3.temperature.value = 10
-    sensor_values.dhw_level_tank3.level.value = 270
+
+    # set _full as it does not depend on the tank level but on whether the tank has been filled
+    for tank in tanks_controller._tanks:
+        tank._full = True
+
     tanks_controller(sensor_values, parameters)
 
     assert tanks_controller._tank_in_use is tanks_controller._tanks[0]
@@ -48,11 +51,13 @@ def test_all_full_none_hot(
 ):
     # none in use -> none in use, none filling, one boosting
     sensor_values.dhw_temperature_tank1.temperature.value = 0
-    sensor_values.dhw_level_tank1.level.value = 270
     sensor_values.dhw_temperature_tank2.temperature.value = 0
-    sensor_values.dhw_level_tank2.level.value = 270
     sensor_values.dhw_temperature_tank3.temperature.value = 0
-    sensor_values.dhw_level_tank3.level.value = 270
+
+    # set _full as it does not depend on the tank level but on whether the tank has been filled
+    for tank in tanks_controller._tanks:
+        tank._full = True
+
     tanks_controller(sensor_values, parameters)
 
     assert tanks_controller._tank_in_use is None
@@ -67,11 +72,9 @@ def test_none_full(
 ):
     # none full -> one filling, none boosting, none in use
     sensor_values.dhw_temperature_tank1.temperature.value = 60
-    sensor_values.dhw_level_tank1.level.value = 10
     sensor_values.dhw_temperature_tank2.temperature.value = 60
-    sensor_values.dhw_level_tank2.level.value = 10
     sensor_values.dhw_temperature_tank3.temperature.value = 60
-    sensor_values.dhw_level_tank3.level.value = 10
+
     tanks_controller(sensor_values, parameters)
 
     assert tanks_controller._tank_in_use is None
@@ -86,11 +89,12 @@ def test_one_full_one_hot(
 ):
     # none in use -> one in use, one filling, none boosting
     sensor_values.dhw_temperature_tank1.temperature.value = 0
-    sensor_values.dhw_level_tank1.level.value = 10
     sensor_values.dhw_temperature_tank2.temperature.value = 0
-    sensor_values.dhw_level_tank2.level.value = 10
     sensor_values.dhw_temperature_tank3.temperature.value = 60
-    sensor_values.dhw_level_tank3.level.value = 270
+
+    # set _full as it does not depend on the tank level but on whether the tank has been filled
+    tanks_controller._tanks[2]._full = True
+
     tanks_controller(sensor_values, parameters)
 
     assert tanks_controller._tank_in_use is tanks_controller._tanks[2]
@@ -105,11 +109,13 @@ def test_two_full_one_hot(
 ):
     # none in use -> one in use, one filling, one boosting
     sensor_values.dhw_temperature_tank1.temperature.value = 0
-    sensor_values.dhw_level_tank1.level.value = 10
     sensor_values.dhw_temperature_tank2.temperature.value = 60
-    sensor_values.dhw_level_tank2.level.value = 270
     sensor_values.dhw_temperature_tank3.temperature.value = 0
-    sensor_values.dhw_level_tank3.level.value = 270
+
+    # set _full as it does not depend on the tank level but on whether the tank has been filled
+    tanks_controller._tanks[1]._full = True
+    tanks_controller._tanks[2]._full = True
+
     tanks_controller(sensor_values, parameters)
 
     assert tanks_controller._tank_in_use is tanks_controller._tanks[1]
@@ -129,6 +135,11 @@ def test_becomes_empty(
     sensor_values.dhw_level_tank2.level.value = 270
     sensor_values.dhw_temperature_tank3.temperature.value = 60
     sensor_values.dhw_level_tank3.level.value = 270
+
+    # set _full as it does not depend on the tank level but on whether the tank has been filled
+    for tank in tanks_controller._tanks:
+        tank._full = True
+
     tanks_controller(sensor_values, parameters)
 
     assert tanks_controller._tank_in_use is tanks_controller._tanks[0]
@@ -141,6 +152,7 @@ def test_becomes_empty(
     sensor_values.dhw_level_tank2.level.value = 270
     sensor_values.dhw_temperature_tank3.temperature.value = 60
     sensor_values.dhw_level_tank3.level.value = 270
+
     tanks_controller(sensor_values, parameters)
 
     assert tanks_controller._tank_in_use is tanks_controller._tanks[1]
@@ -160,6 +172,11 @@ def test_becomes_cold(
     sensor_values.dhw_level_tank2.level.value = 270
     sensor_values.dhw_temperature_tank3.temperature.value = 60
     sensor_values.dhw_level_tank3.level.value = 270
+
+    # set _full as it does not depend on the tank level but on whether the tank has been filled
+    for tank in tanks_controller._tanks:
+        tank._full = True
+
     tanks_controller(sensor_values, parameters)
 
     assert tanks_controller._tank_in_use is tanks_controller._tanks[0]
@@ -167,11 +184,9 @@ def test_becomes_cold(
     assert tanks_controller._boosting_tank is None
 
     sensor_values.dhw_temperature_tank1.temperature.value = 60
-    sensor_values.dhw_level_tank1.level.value = 270
     sensor_values.dhw_temperature_tank2.temperature.value = 0
-    sensor_values.dhw_level_tank2.level.value = 270
     sensor_values.dhw_temperature_tank3.temperature.value = 60
-    sensor_values.dhw_level_tank3.level.value = 270
+
     tanks_controller(sensor_values, parameters)
 
     assert tanks_controller._tank_in_use is tanks_controller._tanks[0]

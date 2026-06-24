@@ -3,7 +3,7 @@ from dataclasses import dataclass
 from datetime import datetime, timedelta
 from typing import Any
 
-from thrs.input_output.base import SimulationInputs, SimulationValues, ThrsValues
+from thrs.input_output.base import SimulationInputs, ThrsValues
 from thrs.orchestration.module import ModuleClassMap
 from thrs.simulation.fmu import Fmu
 from thrs.simulation.io_mapping import CombinedIoMapping, IoMapping, ThrsModelIoMapping
@@ -13,10 +13,10 @@ logger = logging.getLogger(__name__)
 
 @dataclass
 class SimulationResult[
-    S,
-    C,
+    S: ThrsValues,
+    C: ThrsValues,
     I: SimulationInputs,
-    O: SimulationValues,
+    O: ThrsValues,
 ]:
     timestamp: datetime
     sensor_values: S
@@ -27,15 +27,15 @@ class SimulationResult[
 
 
 class Simulation[
-    S,
-    C,
+    S: ThrsValues,
+    C: ThrsValues,
     I: SimulationInputs,
-    O: SimulationValues,
+    O: ThrsValues,
 ]:
     def __init__(
         self,
         sensor_values_clss: ModuleClassMap | type[ThrsValues],
-        simulation_outputs_cls: type[SimulationValues],
+        simulation_outputs_cls: type[ThrsValues],
         fmu: Fmu,
         simulation_inputs: I,
         start_time: datetime,

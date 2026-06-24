@@ -6,6 +6,7 @@ from tests.helpers.simulation_runner import SimulationTestRunner
 from thrs.control.modules.dhw import (
     DhwAlarms,
     DhwControl,
+    DhwControlMode,
     DhwParameters,
     Tank,
     TanksController,
@@ -50,20 +51,22 @@ def simulation_inputs():
         ),
         dhw_freshwater_supply=OverpressureTemperatureBoundary(
             temperature=Stamped.stamp(20),
-            overpressure=Stamped.stamp(0.5),
+            overpressure=Stamped.stamp(0.1),
         ),
         dhw_hvac_exchanger=HvacExchanger(
-            heat_flow=Stamped.stamp(300), maximum_temperature=Stamped.stamp(36)
+            heat_flow=Stamped.stamp(300), maximum_temperature=Stamped.stamp(35)
         ),
         dhw_seawater_supply=TemperatureBoundary(temperature=Stamped.stamp(32)),
-        dhw_hotwater_demand=FlowBoundary(flow=Stamped.stamp(40)),
+        dhw_hotwater_demand=FlowBoundary(flow=Stamped.stamp(20)),
     )
 
 
 @fixture
 def simulation(simulation_inputs):
     with Fmu(dhw_path) as fmu:
-        yield Simulation(
+        yield Simulation[
+            DhwSensorValues, DhwControlValues, DhwSimulationInputs, DhwSimulationOutputs
+        ](
             DhwSensorValues,
             DhwSimulationOutputs,
             fmu,
@@ -89,7 +92,20 @@ def parameters() -> DhwParameters:
 
 
 @fixture()
-def runner(control: DhwControl, simulation, alarms: DhwAlarms) -> SimulationTestRunner:
+def runner(
+    control: DhwControl,
+    simulation: Simulation[
+        DhwSensorValues, DhwControlValues, DhwSimulationInputs, DhwSimulationOutputs
+    ],
+    alarms: DhwAlarms,
+) -> SimulationTestRunner[
+    DhwSensorValues,
+    DhwControlValues,
+    DhwSimulationInputs,
+    DhwSimulationOutputs,
+    DhwParameters,
+    DhwControlMode,
+]:
     return SimulationTestRunner(simulation, control, alarms)
 
 
@@ -103,22 +119,22 @@ def tanks_controller(parameters) -> TanksController:
     control_values = DhwControlValues.zero()
     return TanksController(
         tank1=Tank(
-            fill_valve=control_values.dhw_switch_tank1_inlet,
-            empty_valve=control_values.dhw_switch_tank1_outlet,
+            inlet=control_values.dhw_switch_tank1_inlet,
+            outlet=control_values.dhw_switch_tank1_outlet,
             boosting_supply_valve=control_values.dhw_switch_tank1_boosting_supply,
             boosting_return_valve=control_values.dhw_switch_tank1_boosting_return,
             disabled=parameters.tank1_disabled,
         ),
         tank2=Tank(
-            fill_valve=control_values.dhw_switch_tank2_inlet,
-            empty_valve=control_values.dhw_switch_tank2_outlet,
+            inlet=control_values.dhw_switch_tank2_inlet,
+            outlet=control_values.dhw_switch_tank2_outlet,
             boosting_supply_valve=control_values.dhw_switch_tank2_boosting_supply,
             boosting_return_valve=control_values.dhw_switch_tank2_boosting_return,
             disabled=parameters.tank2_disabled,
         ),
         tank3=Tank(
-            fill_valve=control_values.dhw_switch_tank3_inlet,
-            empty_valve=control_values.dhw_switch_tank3_outlet,
+            inlet=control_values.dhw_switch_tank3_inlet,
+            outlet=control_values.dhw_switch_tank3_outlet,
             boosting_supply_valve=control_values.dhw_switch_tank3_boosting_supply,
             boosting_return_valve=control_values.dhw_switch_tank3_boosting_return,
             disabled=parameters.tank3_disabled,
