@@ -333,7 +333,9 @@ services:
     environment: &thrs_env
       MQTT_HOST: vernemq
       MQTT_PORT: 1883
-      MQTT_TOPIC_PREFIX: thrs
+      MQTT_DEVICES_TOPIC_PREFIX: devices_topic
+      MQTT_CONTROLLER_TOPIC_PREFIX: controller_topic
+      MQTT_SIMULATION_TOPIC_PREFIX: simulation_topic
       MQTT_CONTROL_TOPIC_SUFFIX: Command
     depends_on:
       vernemq:
