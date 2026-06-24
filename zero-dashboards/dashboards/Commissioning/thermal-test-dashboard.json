@@ -316,12 +316,7 @@
       "options": {
         "cellHeight": "sm",
         "showHeader": true,
-        "sortBy": [
-          {
-            "desc": false,
-            "displayName": "topic"
-          }
-        ]
+        "sortBy": []
       },
       "pluginVersion": "12.3.0",
       "targets": [
@@ -1850,7 +1845,7 @@
           },
           "pluginVersion": "2.1.4",
           "queryType": "table",
-          "rawSql": "SELECT\r\n  timestamp           AS time,\r\n  topic               AS topic,\r\n  watt_sea_water_pump AS sea_water_pump\r\nFROM public.termodinamica__ac_misc\r\nWHERE $__timeFilter(timestamp)\r\nORDER BY topic\r\n",
+          "rawSql": "SELECT\r\n  timestamp           AS time,\r\n  topic               AS topic,\r\n  watt_sea_water_pump AS watt_sea_water_pump\r\nFROM public.termodinamica__ac_misc\r\nWHERE $__timeFilter(timestamp)\r\nORDER BY topic\r\n",
           "refId": "A"
         }
       ],
