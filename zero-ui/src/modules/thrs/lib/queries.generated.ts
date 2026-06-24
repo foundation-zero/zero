@@ -393,7 +393,7 @@ export const DHW_SENSOR_QUERY = `
   adsorptionDelta {
     deltaT { value timestamp }
   }
-  freshwaterFlowSupply {
+  dhwFreshwaterFlowSupply {
     flow { value timestamp }
   }
   dhwHvacExchanger {

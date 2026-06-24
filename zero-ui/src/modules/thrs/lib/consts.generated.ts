@@ -556,7 +556,7 @@ export const DHW_SENSOR_DEFINITION = toSensorDefinition({
     yardTag: "N/A",
     componentType: SensorComponentType.DeltaT,
   },
-  freshwaterFlowSupply: {
+  dhwFreshwaterFlowSupply: {
     yardTag: "N/A",
     componentType: SensorComponentType.CalculatedFlow,
   },
