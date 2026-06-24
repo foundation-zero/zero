@@ -96,7 +96,137 @@
             "inspect": false
           },
           "decimals": 1,
-          "mappings": [],
+          "mappings": [
+            {
+              "options": {
+                "termodinamica/ac/1": {
+                  "index": 0,
+                  "text": "[1] Tech room"
+                },
+                "termodinamica/ac/10": {
+                  "index": 9,
+                  "text": "[10] Office area (Fwd)"
+                },
+                "termodinamica/ac/11": {
+                  "index": 10,
+                  "text": "[11] Guest cabin (Fr.42 Mid PS)"
+                },
+                "termodinamica/ac/12": {
+                  "index": 11,
+                  "text": "[12] Mission Room"
+                },
+                "termodinamica/ac/13": {
+                  "index": 12,
+                  "text": "[13] Laundry"
+                },
+                "termodinamica/ac/14": {
+                  "index": 13,
+                  "text": "[14] Captain cabin"
+                },
+                "termodinamica/ac/15": {
+                  "index": 14,
+                  "text": "[15] Crew area (Fwd)"
+                },
+                "termodinamica/ac/16": {
+                  "index": 15,
+                  "text": "[16] Crew cabin (Fwd PS)"
+                },
+                "termodinamica/ac/17": {
+                  "index": 16,
+                  "text": "[17] Watersport storage"
+                },
+                "termodinamica/ac/18": {
+                  "index": 17,
+                  "text": "[18] Galley"
+                },
+                "termodinamica/ac/19": {
+                  "index": 18,
+                  "text": "[19] Crew mess"
+                },
+                "termodinamica/ac/2": {
+                  "index": 1,
+                  "text": "[2] Lounge"
+                },
+                "termodinamica/ac/20": {
+                  "index": 19,
+                  "text": "[20] Crew cabin (Aft)"
+                },
+                "termodinamica/ac/21": {
+                  "index": 20,
+                  "text": "[21] Crew cabin (Mid SB)"
+                },
+                "termodinamica/ac/22": {
+                  "index": 21,
+                  "text": "[22] Crew cabin (SB)"
+                },
+                "termodinamica/ac/23": {
+                  "index": 22,
+                  "text": "[23] Main deckhouse"
+                },
+                "termodinamica/ac/24": {
+                  "index": 23,
+                  "text": "[24] Aft area"
+                },
+                "termodinamica/ac/25": {
+                  "index": 24,
+                  "text": "[25] Aft area (Slave)"
+                },
+                "termodinamica/ac/26": {
+                  "index": 25,
+                  "text": "[26] Office area (Fwd)"
+                },
+                "termodinamica/ac/27": {
+                  "index": 26,
+                  "text": "[27] Guest cabin (Fr.42 Mid PS)"
+                },
+                "termodinamica/ac/28": {
+                  "index": 27,
+                  "text": "[28] Guest cabin (FR.55 Aft PS)"
+                },
+                "termodinamica/ac/29": {
+                  "index": 28,
+                  "text": "[29] Navcom"
+                },
+                "termodinamica/ac/3": {
+                  "index": 2,
+                  "text": "[3] Guest cabin (Aft SB)"
+                },
+                "termodinamica/ac/30": {
+                  "index": 29,
+                  "text": "[30] HM10 Backup Cooling Panels"
+                },
+                "termodinamica/ac/31": {
+                  "index": 30,
+                  "text": "[31] Crew cabin (Fwd SB)"
+                },
+                "termodinamica/ac/4": {
+                  "index": 3,
+                  "text": "[4] Bathroom (Aft SB)"
+                },
+                "termodinamica/ac/5": {
+                  "index": 4,
+                  "text": "[5] Guest cabin (PS)"
+                },
+                "termodinamica/ac/6": {
+                  "index": 5,
+                  "text": "[6] Master bathroom cabin (PS)"
+                },
+                "termodinamica/ac/7": {
+                  "index": 6,
+                  "text": "[7] Master cabin (PS)"
+                },
+                "termodinamica/ac/8": {
+                  "index": 7,
+                  "text": "[8] Master cabin (SB)"
+                },
+                "termodinamica/ac/9": {
+                  "index": 8,
+                  "text": "[9] Guest cabin (SB)"
+                }
+              },
+              "type": "value"
+            }
+          ],
           "thresholds": {
             "mode": "absolute",
             "steps": [
@@ -109,8 +239,7 @@
                 "value": 80
               }
             ]
-          },
-          "unit": "watt"
+          }
         },
         "overrides": [
           {
@@ -162,6 +291,18 @@
                 "value": "percent"
               }
             ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "topic"
+            },
+            "properties": [
+              {
+                "id": "custom.width",
+                "value": 278
+              }
+            ]
           }
         ]
       },
@@ -171,10 +312,16 @@
         "x": 0,
         "y": 3
       },
-      "id": 11,
+      "id": 20,
       "options": {
         "cellHeight": "sm",
-        "showHeader": true
+        "showHeader": true,
+        "sortBy": [
+          {
+            "desc": false,
+            "displayName": "topic"
+          }
+        ]
       },
       "pluginVersion": "12.3.0",
       "targets": [
@@ -199,13 +346,14 @@
           },
           "pluginVersion": "2.1.4",
           "queryType": "table",
-          "rawSql": "SELECT DISTINCT ON (source_type)\r\n  timestamp                                                         AS time,\r\n  source_type                                                       AS source_type,\r\n  watt_ac_compressor_1                                              AS watt_compressor_1,\r\n  watt_ac_compressor_2                                              AS watt_compressor_2,\r\n  watt_sea_water_pump                                               AS watt_sea_water_pump,\r\n  watt_ac_compressor_1 + watt_ac_compressor_2 + watt_sea_water_pump AS total_watt\r\nFROM public.termodinamica__ac_misc\r\nWHERE $__timeFilter(timestamp)\r\nORDER BY source_type, timestamp DESC\r\n",
+          "rawSql": "SELECT DISTINCT ON (topic)\r\n  timestamp            AS time,\r\n  topic                AS topic,\r\n  watt_ac_compressor_1 AS watt_compressor_1,\r\n  watt_ac_compressor_2 AS watt_compressor_2,\r\n  watt_sea_water_pump  AS watt_sea_water_pump\r\nFROM public.termodinamica__ac_misc\r\nWHERE $__timeFilter(timestamp)\r\nORDER BY topic, timestamp DESC\r\n",
           "refId": "A"
         }
       ],
-      "title": "Power consumption",
+      "title": "Temperature & humidity",
       "transformations": [
         {
+          "disabled": true,
           "id": "organize",
           "options": {
             "excludeByName": {},
@@ -221,12 +369,7 @@
               "temperature": "Temperature",
               "temperature_setpoint": "Temperature setpoint",
               "time": "Timestamp",
-              "total_watt": "Total",
-              "watt_ac_compressor_1": "",
-              "watt_ac_compressor_2": "",
-              "watt_compressor_1": "Compressor 1",
-              "watt_compressor_2": "Compressor 2",
-              "watt_sea_water_pump": "Sea water pump"
+              "topic": "Room"
             }
           }
         }
@@ -302,10 +445,383 @@
           },
           "unit": "watt"
         },
-        "overrides": []
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "watt_compressor_1 termodinamica/ac/1"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "[1] Tech room"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "watt_compressor_1 termodinamica/ac/2"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "[2] Lounge"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "watt_compressor_1 termodinamica/ac/3"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "[3] Guest cabin (Aft SB)"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "watt_compressor_1 termodinamica/ac/4"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "[4] Bathroom (Aft SB)"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "watt_compressor_1 termodinamica/ac/5"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "[5] Guest cabin (PS)"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "watt_compressor_1 termodinamica/ac/6"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "[6] Master bathroom cabin (PS)"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "watt_compressor_1 termodinamica/ac/7"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "[7] Master cabin (PS)"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "watt_compressor_1 termodinamica/ac/8"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "[8] Master cabin (SB)"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "watt_compressor_1 termodinamica/ac/9"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "[9] Guest cabin (SB)"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "watt_compressor_1 termodinamica/ac/10"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "[10] Office area (Fwd)"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "watt_compressor_1 termodinamica/ac/11"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "[11] Guest cabin (Fr.42 Mid PS)"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "watt_compressor_1 termodinamica/ac/12"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "[12] Mission Room"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "watt_compressor_1 termodinamica/ac/13"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "[13] Laundry"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "watt_compressor_1 termodinamica/ac/14"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "[14] Captain cabin"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "watt_compressor_1 termodinamica/ac/15"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "[15] Crew area (Fwd)"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "watt_compressor_1 termodinamica/ac/16"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "[16] Crew cabin (Fwd PS)"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "watt_compressor_1 termodinamica/ac/17"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "[17] Watersport storage"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "watt_compressor_1 termodinamica/ac/18"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "[18] Galley"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "watt_compressor_1 termodinamica/ac/19"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "[19] Crew mess"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "watt_compressor_1 termodinamica/ac/20"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "[20] Crew cabin (Aft)"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "watt_compressor_1 termodinamica/ac/21"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "[21] Crew cabin (Mid SB)"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "watt_compressor_1 termodinamica/ac/22"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "[22] Crew cabin (SB)"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "watt_compressor_1 termodinamica/ac/23"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "[23] Main deckhouse"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "watt_compressor_1 termodinamica/ac/24"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "[24] Aft area"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "watt_compressor_1 termodinamica/ac/25"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "[25] Aft area (Slave)"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "watt_compressor_1 termodinamica/ac/26"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "[26] Office area (Fwd)"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "watt_compressor_1 termodinamica/ac/27"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "[27] Guest cabin (Fr.42 Mid PS)"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "watt_compressor_1 termodinamica/ac/28"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "[28] Guest cabin (FR.55 Aft PS)"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "watt_compressor_1 termodinamica/ac/29"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "[29] Navcom"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "watt_compressor_1 termodinamica/ac/30"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "[30] HM10 Backup Cooling Panels"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "watt_compressor_1 termodinamica/ac/31"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "[31] Crew cabin (Fwd SB)"
+              }
+            ]
+          }
+        ]
       },
       "gridPos": {
-        "h": 12,
+        "h": 21,
         "w": 24,
         "x": 0,
         "y": 36
@@ -346,31 +862,17 @@
           },
           "pluginVersion": "2.1.4",
           "queryType": "table",
-          "rawSql": "SELECT\r\n  timestamp            AS time,\r\n  source_type          AS source_type,\r\n  watt_ac_compressor_1 AS watt_compressor_1\r\nFROM public.termodinamica__ac_misc\r\nWHERE $__timeFilter(timestamp)\r\nORDER BY source_type\r\n",
+          "rawSql": "SELECT\r\n  timestamp            AS time,\r\n  topic                AS topic,\r\n  watt_ac_compressor_1 AS watt_compressor_1\r\nFROM public.termodinamica__ac_misc\r\nWHERE $__timeFilter(timestamp)\r\nORDER BY topic\r\n",
           "refId": "A"
         }
       ],
       "title": "Compressor 1",
       "transformations": [
         {
-          "id": "organize",
-          "options": {
-            "excludeByName": {},
-            "includeByName": {},
-            "indexByName": {},
-            "renameByName": {
-              "source_type": "",
-              "temperature": "",
-              "time": "",
-              "watt_compressor_1": " "
-            }
-          }
-        },
-        {
           "id": "partitionByValues",
           "options": {
             "fields": [
-              "source_type"
+              "topic"
             ],
             "keepFields": false,
             "naming": {
@@ -437,13 +939,386 @@
           },
           "unit": "watt"
         },
-        "overrides": []
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "watt_compressor_2 termodinamica/ac/1"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "[1] Tech room"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "watt_compressor_2 termodinamica/ac/2"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "[2] Lounge"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "watt_compressor_2 termodinamica/ac/3"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "[3] Guest cabin (Aft SB)"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "watt_compressor_2 termodinamica/ac/4"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "[4] Bathroom (Aft SB)"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "watt_compressor_2 termodinamica/ac/5"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "[5] Guest cabin (PS)"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "watt_compressor_2 termodinamica/ac/6"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "[6] Master bathroom cabin (PS)"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "watt_compressor_2 termodinamica/ac/7"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "[7] Master cabin (PS)"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "watt_compressor_2 termodinamica/ac/8"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "[8] Master cabin (SB)"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "watt_compressor_2 termodinamica/ac/9"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "[9] Guest cabin (SB)"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "watt_compressor_2 termodinamica/ac/10"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "[10] Office area (Fwd)"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "watt_compressor_2 termodinamica/ac/11"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "[11] Guest cabin (Fr.42 Mid PS)"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "watt_compressor_2 termodinamica/ac/12"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "[12] Mission Room"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "watt_compressor_2 termodinamica/ac/13"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "[13] Laundry"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "watt_compressor_2 termodinamica/ac/14"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "[14] Captain cabin"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "watt_compressor_2 termodinamica/ac/15"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "[15] Crew area (Fwd)"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "watt_compressor_2 termodinamica/ac/16"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "[16] Crew cabin (Fwd PS)"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "watt_compressor_2 termodinamica/ac/17"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "[17] Watersport storage"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "watt_compressor_2 termodinamica/ac/18"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "[18] Galley"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "watt_compressor_2 termodinamica/ac/19"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "[19] Crew mess"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "watt_compressor_2 termodinamica/ac/20"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "[20] Crew cabin (Aft)"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "watt_compressor_2 termodinamica/ac/21"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "[21] Crew cabin (Mid SB)"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "watt_compressor_2 termodinamica/ac/22"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "[22] Crew cabin (SB)"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "watt_compressor_2 termodinamica/ac/23"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "[23] Main deckhouse"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "watt_compressor_2 termodinamica/ac/24"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "[24] Aft area"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "watt_compressor_2 termodinamica/ac/25"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "[25] Aft area (Slave)"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "watt_compressor_2 termodinamica/ac/26"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "[26] Office area (Fwd)"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "watt_compressor_2 termodinamica/ac/27"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "[27] Guest cabin (Fr.42 Mid PS)"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "watt_compressor_2 termodinamica/ac/28"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "[28] Guest cabin (FR.55 Aft PS)"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "watt_compressor_2 termodinamica/ac/29"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "[29] Navcom"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "watt_compressor_2 termodinamica/ac/30"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "[30] HM10 Backup Cooling Panels"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "watt_compressor_2 termodinamica/ac/31"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "[31] Crew cabin (Fwd SB)"
+              }
+            ]
+          }
+        ]
       },
       "gridPos": {
-        "h": 12,
+        "h": 21,
         "w": 24,
         "x": 0,
-        "y": 48
+        "y": 57
       },
       "id": 23,
       "options": {
@@ -481,32 +1356,17 @@
           },
           "pluginVersion": "2.1.4",
           "queryType": "table",
-          "rawSql": "SELECT\r\n  timestamp            AS time,\r\n  source_type          AS source_type,\r\n  watt_ac_compressor_2 AS watt_compressor_2\r\nFROM public.termodinamica__ac_misc\r\nWHERE $__timeFilter(timestamp)\r\nORDER BY source_type\r\n",
+          "rawSql": "SELECT\r\n  timestamp            AS time,\r\n  topic                AS topic,\r\n  watt_ac_compressor_2 AS watt_compressor_2\r\nFROM public.termodinamica__ac_misc\r\nWHERE $__timeFilter(timestamp)\r\nORDER BY topic\r\n",
           "refId": "A"
         }
       ],
       "title": "Compressor 2",
       "transformations": [
         {
-          "id": "organize",
-          "options": {
-            "excludeByName": {},
-            "includeByName": {},
-            "indexByName": {},
-            "renameByName": {
-              "source_type": "",
-              "temperature": "",
-              "time": "",
-              "watt_compressor_1": " ",
-              "watt_compressor_2": " "
-            }
-          }
-        },
-        {
           "id": "partitionByValues",
           "options": {
             "fields": [
-              "source_type"
+              "topic"
             ],
             "keepFields": false,
             "naming": {
@@ -573,13 +1433,386 @@
           },
           "unit": "watt"
         },
-        "overrides": []
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "watt_sea_water_pump termodinamica/ac/1"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "[1] Tech room"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "watt_sea_water_pump termodinamica/ac/2"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "[2] Lounge"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "watt_sea_water_pump termodinamica/ac/3"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "[3] Guest cabin (Aft SB)"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "watt_sea_water_pump termodinamica/ac/4"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "[4] Bathroom (Aft SB)"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "watt_sea_water_pump termodinamica/ac/5"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "[5] Guest cabin (PS)"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "watt_sea_water_pump termodinamica/ac/6"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "[6] Master bathroom cabin (PS)"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "watt_sea_water_pump termodinamica/ac/7"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "[7] Master cabin (PS)"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "watt_sea_water_pump termodinamica/ac/8"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "[8] Master cabin (SB)"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "watt_sea_water_pump termodinamica/ac/9"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "[9] Guest cabin (SB)"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "watt_sea_water_pump termodinamica/ac/10"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "[10] Office area (Fwd)"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "watt_sea_water_pump termodinamica/ac/11"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "[11] Guest cabin (Fr.42 Mid PS)"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "watt_sea_water_pump termodinamica/ac/12"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "[12] Mission Room"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "watt_sea_water_pump termodinamica/ac/13"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "[13] Laundry"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "watt_sea_water_pump termodinamica/ac/14"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "[14] Captain cabin"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "watt_sea_water_pump termodinamica/ac/15"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "[15] Crew area (Fwd)"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "watt_sea_water_pump termodinamica/ac/16"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "[16] Crew cabin (Fwd PS)"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "watt_sea_water_pump termodinamica/ac/17"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "[17] Watersport storage"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "watt_sea_water_pump termodinamica/ac/18"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "[18] Galley"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "watt_sea_water_pump termodinamica/ac/19"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "[19] Crew mess"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "watt_sea_water_pump termodinamica/ac/20"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "[20] Crew cabin (Aft)"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "watt_sea_water_pump termodinamica/ac/21"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "[21] Crew cabin (Mid SB)"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "watt_sea_water_pump termodinamica/ac/22"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "[22] Crew cabin (SB)"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "watt_sea_water_pump termodinamica/ac/23"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "[23] Main deckhouse"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "watt_sea_water_pump termodinamica/ac/24"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "[24] Aft area"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "watt_sea_water_pump termodinamica/ac/25"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "[25] Aft area (Slave)"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "watt_sea_water_pump termodinamica/ac/26"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "[26] Office area (Fwd)"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "watt_sea_water_pump termodinamica/ac/27"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "[27] Guest cabin (Fr.42 Mid PS)"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "watt_sea_water_pump termodinamica/ac/28"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "[28] Guest cabin (FR.55 Aft PS)"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "watt_sea_water_pump termodinamica/ac/29"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "[29] Navcom"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "watt_sea_water_pump termodinamica/ac/30"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "[30] HM10 Backup Cooling Panels"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "watt_sea_water_pump termodinamica/ac/31"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "[31] Crew cabin (Fwd SB)"
+              }
+            ]
+          }
+        ]
       },
       "gridPos": {
-        "h": 12,
+        "h": 21,
         "w": 24,
         "x": 0,
-        "y": 60
+        "y": 78
       },
       "id": 24,
       "options": {
@@ -617,33 +1850,17 @@
           },
           "pluginVersion": "2.1.4",
           "queryType": "table",
-          "rawSql": "SELECT\r\n  timestamp           AS time,\r\n  source_type         AS source_type,\r\n  watt_sea_water_pump AS sea_water_pump\r\nFROM public.termodinamica__ac_misc\r\nWHERE $__timeFilter(timestamp)\r\nORDER BY source_type\r\n",
+          "rawSql": "SELECT\r\n  timestamp           AS time,\r\n  topic               AS topic,\r\n  watt_sea_water_pump AS sea_water_pump\r\nFROM public.termodinamica__ac_misc\r\nWHERE $__timeFilter(timestamp)\r\nORDER BY topic\r\n",
           "refId": "A"
         }
       ],
       "title": "Sea water pump",
       "transformations": [
         {
-          "id": "organize",
-          "options": {
-            "excludeByName": {},
-            "includeByName": {},
-            "indexByName": {},
-            "renameByName": {
-              "sea_water_pump": " ",
-              "source_type": "",
-              "temperature": "",
-              "time": "",
-              "watt_compressor_1": " ",
-              "watt_compressor_2": " "
-            }
-          }
-        },
-        {
           "id": "partitionByValues",
           "options": {
             "fields": [
-              "source_type"
+              "topic"
             ],
             "keepFields": false,
             "naming": {
@@ -660,7 +1877,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 72
+        "y": 99
       },
       "id": 18,
       "panels": [],
@@ -687,7 +1904,137 @@
             },
             "inspect": false
           },
-          "mappings": [],
+          "mappings": [
+            {
+              "options": {
+                "termodinamica/ac/1": {
+                  "index": 0,
+                  "text": "[1] Tech room"
+                },
+                "termodinamica/ac/10": {
+                  "index": 9,
+                  "text": "[10] Office area (Fwd)"
+                },
+                "termodinamica/ac/11": {
+                  "index": 10,
+                  "text": "[11] Guest cabin (Fr.42 Mid PS)"
+                },
+                "termodinamica/ac/12": {
+                  "index": 11,
+                  "text": "[12] Mission Room"
+                },
+                "termodinamica/ac/13": {
+                  "index": 12,
+                  "text": "[13] Laundry"
+                },
+                "termodinamica/ac/14": {
+                  "index": 13,
+                  "text": "[14] Captain cabin"
+                },
+                "termodinamica/ac/15": {
+                  "index": 14,
+                  "text": "[15] Crew area (Fwd)"
+                },
+                "termodinamica/ac/16": {
+                  "index": 15,
+                  "text": "[16] Crew cabin (Fwd PS)"
+                },
+                "termodinamica/ac/17": {
+                  "index": 16,
+                  "text": "[17] Watersport storage"
+                },
+                "termodinamica/ac/18": {
+                  "index": 17,
+                  "text": "[18] Galley"
+                },
+                "termodinamica/ac/19": {
+                  "index": 18,
+                  "text": "[19] Crew mess"
+                },
+                "termodinamica/ac/2": {
+                  "index": 1,
+                  "text": "[2] Lounge"
+                },
+                "termodinamica/ac/20": {
+                  "index": 19,
+                  "text": "[20] Crew cabin (Aft)"
+                },
+                "termodinamica/ac/21": {
+                  "index": 20,
+                  "text": "[21] Crew cabin (Mid SB)"
+                },
+                "termodinamica/ac/22": {
+                  "index": 21,
+                  "text": "[22] Crew cabin (SB)"
+                },
+                "termodinamica/ac/23": {
+                  "index": 22,
+                  "text": "[23] Main deckhouse"
+                },
+                "termodinamica/ac/24": {
+                  "index": 23,
+                  "text": "[24] Aft area"
+                },
+                "termodinamica/ac/25": {
+                  "index": 24,
+                  "text": "[25] Aft area (Slave)"
+                },
+                "termodinamica/ac/26": {
+                  "index": 25,
+                  "text": "[26] Office area (Fwd)"
+                },
+                "termodinamica/ac/27": {
+                  "index": 26,
+                  "text": "[27] Guest cabin (Fr.42 Mid PS)"
+                },
+                "termodinamica/ac/28": {
+                  "index": 27,
+                  "text": "[28] Guest cabin (FR.55 Aft PS)"
+                },
+                "termodinamica/ac/29": {
+                  "index": 28,
+                  "text": "[29] Navcom"
+                },
+                "termodinamica/ac/3": {
+                  "index": 2,
+                  "text": "[3] Guest cabin (Aft SB)"
+                },
+                "termodinamica/ac/30": {
+                  "index": 29,
+                  "text": "[30] HM10 Backup Cooling Panels"
+                },
+                "termodinamica/ac/31": {
+                  "index": 30,
+                  "text": "[31] Crew cabin (Fwd SB)"
+                },
+                "termodinamica/ac/4": {
+                  "index": 3,
+                  "text": "[4] Bathroom (Aft SB)"
+                },
+                "termodinamica/ac/5": {
+                  "index": 4,
+                  "text": "[5] Guest cabin (PS)"
+                },
+                "termodinamica/ac/6": {
+                  "index": 5,
+                  "text": "[6] Master bathroom cabin (PS)"
+                },
+                "termodinamica/ac/7": {
+                  "index": 6,
+                  "text": "[7] Master cabin (PS)"
+                },
+                "termodinamica/ac/8": {
+                  "index": 7,
+                  "text": "[8] Master cabin (SB)"
+                },
+                "termodinamica/ac/9": {
+                  "index": 8,
+                  "text": "[9] Guest cabin (SB)"
+                }
+              },
+              "type": "value"
+            }
+          ],
           "thresholds": {
             "mode": "absolute",
             "steps": [
@@ -759,12 +2106,13 @@
         "h": 32,
         "w": 24,
         "x": 0,
-        "y": 73
+        "y": 100
       },
-      "id": 20,
+      "id": 26,
       "options": {
         "cellHeight": "sm",
-        "showHeader": true
+        "showHeader": true,
+        "sortBy": []
       },
       "pluginVersion": "12.3.0",
       "targets": [
@@ -789,13 +2137,14 @@
           },
           "pluginVersion": "2.1.4",
           "queryType": "table",
-          "rawSql": "SELECT DISTINCT ON (source_type)\r\n  timestamp   AS time,\r\n  source_type AS source_type,\r\n  pwr         AS on_off,\r\n  heater_pwr  AS heater_on_off,\r\n  fan_speed   AS fan_speed,\r\n  sp_room     AS temperature_setpoint,\r\n  air_in      AS temperature,\r\n  humi        AS humitidy,\r\n  status      AS status\r\nFROM public.termodinamica__ac\r\nWHERE $__timeFilter(timestamp)\r\nORDER BY source_type, timestamp DESC\r\n",
+          "rawSql": "SELECT DISTINCT ON (topic)\r\n  timestamp   AS time,\r\n  topic       AS topic,\r\n  pwr         AS on_off,\r\n  heater_pwr  AS heater_on_off,\r\n  fan_speed   AS fan_speed,\r\n  sp_room     AS temperature_setpoint,\r\n  air_in      AS temperature,\r\n  humi        AS humitidy,\r\n  status      AS status\r\nFROM public.termodinamica__ac\r\nWHERE $__timeFilter(timestamp)\r\nORDER BY topic, timestamp DESC\r\n",
           "refId": "A"
         }
       ],
       "title": "Temperature & humidity",
       "transformations": [
         {
+          "disabled": true,
           "id": "organize",
           "options": {
             "excludeByName": {},
@@ -810,7 +2159,8 @@
               "status": "Status",
               "temperature": "Temperature",
               "temperature_setpoint": "Temperature setpoint",
-              "time": "Timestamp"
+              "time": "Timestamp",
+              "topic": "Room"
             }
           }
         }
@@ -823,7 +2173,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 105
+        "y": 132
       },
       "id": 17,
       "panels": [],
@@ -886,13 +2236,386 @@
           },
           "unit": "celsius"
         },
-        "overrides": []
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "temperature termodinamica/ac/1"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "[1] Tech room"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "temperature termodinamica/ac/2"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "[2] Lounge"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "temperature termodinamica/ac/3"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "[3] Guest cabin (Aft SB)"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "temperature termodinamica/ac/4"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "[4] Bathroom (Aft SB)"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "temperature termodinamica/ac/5"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "[5] Guest cabin (PS)"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "temperature termodinamica/ac/6"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "[6] Master bathroom cabin (PS)"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "temperature termodinamica/ac/7"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "[7] Master cabin (PS)"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "temperature termodinamica/ac/8"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "[8] Master cabin (SB)"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "temperature termodinamica/ac/9"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "[9] Guest cabin (SB)"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "temperature termodinamica/ac/10"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "[10] Office area (Fwd)"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "temperature termodinamica/ac/11"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "[11] Guest cabin (Fr.42 Mid PS)"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "temperature termodinamica/ac/12"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "[12] Mission Room"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "temperature termodinamica/ac/13"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "[13] Laundry"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "temperature termodinamica/ac/14"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "[14] Captain cabin"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "temperature termodinamica/ac/15"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "[15] Crew area (Fwd)"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "temperature termodinamica/ac/16"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "[16] Crew cabin (Fwd PS)"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "temperature termodinamica/ac/17"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "[17] Watersport storage"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "temperature termodinamica/ac/18"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "[18] Galley"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "temperature termodinamica/ac/19"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "[19] Crew mess"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "temperature termodinamica/ac/20"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "[20] Crew cabin (Aft)"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "temperature termodinamica/ac/21"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "[21] Crew cabin (Mid SB)"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "temperature termodinamica/ac/22"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "[22] Crew cabin (SB)"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "temperature termodinamica/ac/23"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "[23] Main deckhouse"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "temperature termodinamica/ac/24"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "[24] Aft area"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "temperature termodinamica/ac/25"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "[25] Aft area (Slave)"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "temperature termodinamica/ac/26"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "[26] Office area (Fwd)"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "temperature termodinamica/ac/27"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "[27] Guest cabin (Fr.42 Mid PS)"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "temperature termodinamica/ac/28"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "[28] Guest cabin (FR.55 Aft PS)"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "temperature termodinamica/ac/29"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "[29] Navcom"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "temperature termodinamica/ac/30"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "[30] HM10 Backup Cooling Panels"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "temperature termodinamica/ac/31"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "[31] Crew cabin (Fwd SB)"
+              }
+            ]
+          }
+        ]
       },
       "gridPos": {
-        "h": 12,
+        "h": 21,
         "w": 24,
         "x": 0,
-        "y": 106
+        "y": 133
       },
       "id": 22,
       "options": {
@@ -930,31 +2653,22 @@
           },
           "pluginVersion": "2.1.4",
           "queryType": "table",
-          "rawSql": "SELECT\r\n  timestamp   AS time,\r\n  source_type AS source_type,\r\n  air_in      AS temperature\r\nFROM public.termodinamica__ac\r\nWHERE $__timeFilter(timestamp)\r\nORDER BY source_type",
+          "rawSql": "SELECT\r\n  timestamp AS time,\r\n  topic     AS topic,\r\n  air_in    AS temperature\r\nFROM public.termodinamica__ac\r\nWHERE $__timeFilter(timestamp)\r\nORDER BY topic",
           "refId": "A"
         }
       ],
       "title": "Actual temperature",
       "transformations": [
         {
-          "id": "organize",
-          "options": {
-            "excludeByName": {},
-            "includeByName": {},
-            "indexByName": {},
-            "renameByName": {
-              "temperature": " ",
-              "time": ""
-            }
-          }
-        },
-        {
           "id": "partitionByValues",
           "options": {
             "fields": [
-              "source_type"
+              "topic"
             ],
-            "keepFields": false
+            "keepFields": false,
+            "naming": {
+              "asLabels": true
+            }
           }
         }
       ],
@@ -1016,13 +2730,386 @@
           },
           "unit": "celsius"
         },
-        "overrides": []
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "temperature termodinamica/ac/1"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "[1] Tech room"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "temperature termodinamica/ac/2"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "[2] Lounge"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "temperature termodinamica/ac/3"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "[3] Guest cabin (Aft SB)"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "temperature termodinamica/ac/4"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "[4] Bathroom (Aft SB)"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "temperature termodinamica/ac/5"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "[5] Guest cabin (PS)"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "temperature termodinamica/ac/6"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "[6] Master bathroom cabin (PS)"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "temperature termodinamica/ac/7"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "[7] Master cabin (PS)"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "temperature termodinamica/ac/8"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "[8] Master cabin (SB)"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "temperature termodinamica/ac/9"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "[9] Guest cabin (SB)"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "temperature termodinamica/ac/10"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "[10] Office area (Fwd)"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "temperature termodinamica/ac/11"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "[11] Guest cabin (Fr.42 Mid PS)"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "temperature termodinamica/ac/12"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "[12] Mission Room"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "temperature termodinamica/ac/13"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "[13] Laundry"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "temperature termodinamica/ac/14"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "[14] Captain cabin"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "temperature termodinamica/ac/15"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "[15] Crew area (Fwd)"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "temperature termodinamica/ac/16"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "[16] Crew cabin (Fwd PS)"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "temperature termodinamica/ac/17"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "[17] Watersport storage"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "temperature termodinamica/ac/18"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "[18] Galley"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "temperature termodinamica/ac/19"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "[19] Crew mess"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "temperature termodinamica/ac/20"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "[20] Crew cabin (Aft)"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "temperature termodinamica/ac/21"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "[21] Crew cabin (Mid SB)"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "temperature termodinamica/ac/22"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "[22] Crew cabin (SB)"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "temperature termodinamica/ac/23"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "[23] Main deckhouse"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "temperature termodinamica/ac/24"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "[24] Aft area"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "temperature termodinamica/ac/25"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "[25] Aft area (Slave)"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "temperature termodinamica/ac/26"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "[26] Office area (Fwd)"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "temperature termodinamica/ac/27"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "[27] Guest cabin (Fr.42 Mid PS)"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "temperature termodinamica/ac/28"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "[28] Guest cabin (FR.55 Aft PS)"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "temperature termodinamica/ac/29"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "[29] Navcom"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "temperature termodinamica/ac/30"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "[30] HM10 Backup Cooling Panels"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "temperature termodinamica/ac/31"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "[31] Crew cabin (Fwd SB)"
+              }
+            ]
+          }
+        ]
       },
       "gridPos": {
-        "h": 12,
+        "h": 21,
         "w": 24,
         "x": 0,
-        "y": 118
+        "y": 154
       },
       "id": 19,
       "options": {
@@ -1060,29 +3147,17 @@
           },
           "pluginVersion": "2.1.4",
           "queryType": "table",
-          "rawSql": "SELECT\r\n  timestamp   AS time,\r\n  source_type AS source_type,\r\n  sp_room     AS temperature\r\nFROM public.termodinamica__ac\r\nWHERE $__timeFilter(timestamp)\r\nORDER BY source_type",
+          "rawSql": "SELECT\r\n  timestamp AS time,\r\n  topic     AS topic,\r\n  sp_room   AS temperature\r\nFROM public.termodinamica__ac\r\nWHERE $__timeFilter(timestamp)\r\nORDER BY topic",
           "refId": "A"
         }
       ],
       "title": "Temperature setpoint",
       "transformations": [
         {
-          "id": "organize",
-          "options": {
-            "excludeByName": {},
-            "includeByName": {},
-            "indexByName": {},
-            "renameByName": {
-              "temperature": " ",
-              "time": ""
-            }
-          }
-        },
-        {
           "id": "partitionByValues",
           "options": {
             "fields": [
-              "source_type"
+              "topic"
             ],
             "keepFields": false
           }
@@ -1096,7 +3171,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 130
+        "y": 175
       },
       "id": 16,
       "panels": [],
@@ -1163,13 +3238,386 @@
           },
           "unit": "percent"
         },
-        "overrides": []
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "humidity termodinamica/ac/1"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "[1] Tech room"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "humidity termodinamica/ac/2"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "[2] Lounge"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "humidity termodinamica/ac/3"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "[3] Guest cabin (Aft SB)"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "humidity termodinamica/ac/4"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "[4] Bathroom (Aft SB)"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "humidity termodinamica/ac/5"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "[5] Guest cabin (PS)"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "humidity termodinamica/ac/6"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "[6] Master bathroom cabin (PS)"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "humidity termodinamica/ac/7"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "[7] Master cabin (PS)"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "humidity termodinamica/ac/8"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "[8] Master cabin (SB)"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "humidity termodinamica/ac/9"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "[9] Guest cabin (SB)"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "humidity termodinamica/ac/10"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "[10] Office area (Fwd)"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "humidity termodinamica/ac/11"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "[11] Guest cabin (Fr.42 Mid PS)"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "humidity termodinamica/ac/12"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "[12] Mission Room"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "humidity termodinamica/ac/13"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "[13] Laundry"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "humidity termodinamica/ac/14"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "[14] Captain cabin"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "humidity termodinamica/ac/15"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "[15] Crew area (Fwd)"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "humidity termodinamica/ac/16"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "[16] Crew cabin (Fwd PS)"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "humidity termodinamica/ac/17"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "[17] Watersport storage"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "humidity termodinamica/ac/18"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "[18] Galley"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "humidity termodinamica/ac/19"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "[19] Crew mess"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "humidity termodinamica/ac/20"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "[20] Crew cabin (Aft)"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "humidity termodinamica/ac/21"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "[21] Crew cabin (Mid SB)"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "humidity termodinamica/ac/22"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "[22] Crew cabin (SB)"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "humidity termodinamica/ac/23"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "[23] Main deckhouse"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "humidity termodinamica/ac/24"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "[24] Aft area"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "humidity termodinamica/ac/25"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "[25] Aft area (Slave)"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "humidity termodinamica/ac/26"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "[26] Office area (Fwd)"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "humidity termodinamica/ac/27"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "[27] Guest cabin (Fr.42 Mid PS)"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "humidity termodinamica/ac/28"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "[28] Guest cabin (FR.55 Aft PS)"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "humidity termodinamica/ac/29"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "[29] Navcom"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "humidity termodinamica/ac/30"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "[30] HM10 Backup Cooling Panels"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "humidity termodinamica/ac/31"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "[31] Crew cabin (Fwd SB)"
+              }
+            ]
+          }
+        ]
       },
       "gridPos": {
-        "h": 12,
+        "h": 21,
         "w": 24,
         "x": 0,
-        "y": 131
+        "y": 176
       },
       "id": 13,
       "options": {
@@ -1207,29 +3655,17 @@
           },
           "pluginVersion": "2.1.4",
           "queryType": "table",
-          "rawSql": "SELECT\r\n  timestamp   AS time,\r\n  source_type AS source_type,\r\n  humi        AS humitidy\r\nFROM public.termodinamica__ac\r\nWHERE $__timeFilter(timestamp)\r\nORDER BY source_type",
+          "rawSql": "SELECT\r\n  timestamp AS time,\r\n  topic     AS topic,\r\n  humi      AS humidity\r\nFROM public.termodinamica__ac\r\nWHERE $__timeFilter(timestamp)\r\nORDER BY topic",
           "refId": "A"
         }
       ],
-      "title": "",
+      "title": "Humidity",
       "transformations": [
-        {
-          "id": "organize",
-          "options": {
-            "excludeByName": {},
-            "includeByName": {},
-            "indexByName": {},
-            "renameByName": {
-              "humitidy": " ",
-              "source_type": ""
-            }
-          }
-        },
         {
           "id": "partitionByValues",
           "options": {
             "fields": [
-              "source_type"
+              "topic"
             ],
             "keepFields": false
           }
@@ -1260,8 +3696,8 @@
     ]
   },
   "time": {
-    "from": "now-5m",
-    "to": "now"
+    "from": "2026-06-24T04:54:37.000Z",
+    "to": "2026-06-24T10:08:45.000Z"
   },
   "timepicker": {},
   "timezone": "browser",
