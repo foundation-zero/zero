@@ -7,6 +7,7 @@ from datetime import datetime, timedelta
 from typing import (
     Annotated,
     Any,
+    Dict,
     Generator,
     Literal,
     cast,
@@ -19,6 +20,7 @@ from pydantic import (
     model_validator,
 )
 
+from src.thrs.control.base import ModuleDescription
 from src.thrs.orchestration.connectors.mqtt_connector import MqttConnector
 from src.thrs.orchestration.runner_depricated import Runner
 from src.thrs.orchestration.simulation_depricated import Simulation
@@ -737,7 +739,35 @@ class SimulationControls:
                 f"{self._topic_prefix}/{handler.subscribe_topic()}", qos=1
             )
 
-        fmu_path, modules, control_topic_suffix = MODES[mode]
+
+# MODES: dict[Modes, tuple[str, CombinedModule, str]] = {
+#     "thrusters": (
+#         thrusters_path,
+#         CombinedModule(
+#             {
+#                 "thrusters": THRUSTERS_MODULE_DESCRIPTION,
+#             },
+#             ThrustersSimulationInputs,
+#             ThrustersSimulationOutputs,
+#         ),
+#         settings.mqtt_control_topic_suffix,
+#     ),
+
+
+        # CombinedModule(
+        #     {
+        #         "thrusters": THRUSTERS_MODULE_DESCRIPTION,
+        #     },
+        #     ThrustersSimulationInputs,
+        #     ThrustersSimulationOutputs,
+        # ),
+        # modules: dict[str, ModuleDescription],
+        # simulation_inputs_cls: type[I],
+        # simulation_outputs_cls: type[O],
+    
+        modules: dict[str, ModuleDescription]
+
+        fmu_path, modules, control_topic_suffix = MODES[mode] # Modules = ModuleDescription
         simulation_inputs = INPUTS[mode]
 
         with self._simulation(fmu_path, modules, simulation_inputs) as simulation:

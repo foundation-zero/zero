@@ -53,34 +53,49 @@ class SimulationModuleDefinition(ModuleDefinition):
     control_values: type[ThrsValues]
     sensor_values_type: type[ThrsValues]
     fmu_path: str
+    control_module_descriptions: dict[ControlMode, ModuleDescription]
 
 
 @dataclass
 class ControlModuleDefinition(ModuleDefinition):
-    module_description: ModuleDescription
+    control_module_descriptions: dict[ControlMode, ModuleDescription]
 
 
 control_module_definitions: Dict[ControlMode, ControlModuleDefinition] = {
     ControlMode.ADSORPTION: ControlModuleDefinition(
-        module_description=ADSORPTION_MODULE_DESCRIPTION,
+        control_module_descriptions={ControlMode.ADSORPTION: ADSORPTION_MODULE_DESCRIPTION},
         topic_base="/thrs/control/adsorption/",
     ),
     ControlMode.CONSUMERS: ControlModuleDefinition(
-        module_description=CONSUMERS_MODULE_DESCRIPTION,
+        control_module_descriptions={ControlMode.CONSUMERS: CONSUMERS_MODULE_DESCRIPTION},
         topic_base="/thrs/control/consumers/",
     ),
     ControlMode.PCM: ControlModuleDefinition(
-        module_description=PCM_MODULE_DESCRIPTION, topic_base="/thrs/control/pcm/"
+        control_module_descriptions={ControlMode.PCM: PCM_MODULE_DESCRIPTION},
+        topic_base="/thrs/control/pcm/",
     ),
     ControlMode.PVT: ControlModuleDefinition(
-        module_description=PVT_MODULE_DESCRIPTION, topic_base="/thrs/control/pvt/"
+        control_module_descriptions={ControlMode.PVT: PVT_MODULE_DESCRIPTION},
+        topic_base="/thrs/control/pvt/",
     ),
     ControlMode.DHW: ControlModuleDefinition(
-        module_description=DHW_MODULE_DESCRIPTION, topic_base="/thrs/control/dhw/"
+        control_module_descriptions={ControlMode.DHW: DHW_MODULE_DESCRIPTION},
+        topic_base="/thrs/control/dhw/",
     ),
     ControlMode.THRUSTER: ControlModuleDefinition(
-        module_description=THRUSTERS_MODULE_DESCRIPTION,
+        control_module_descriptions={ControlMode.THRUSTER: THRUSTERS_MODULE_DESCRIPTION},
         topic_base="/thrs/control/thrusters/",
+    ),
+    ControlMode.HT: ControlModuleDefinition(
+        control_module_descriptions={
+            {
+                ControlMode.THRUSTER: THRUSTERS_MODULE_DESCRIPTION,
+                ControlMode.PVT: PVT_MODULE_DESCRIPTION,
+                ControlMode.PCM: PCM_MODULE_DESCRIPTION,
+                ControlMode.CONSUMERS: CONSUMERS_MODULE_DESCRIPTION,
+            },
+        },
+        topic_base="/thrs/control/ht/",
     ),
     # TODO Maapater: Unused?
     # ControlMode.CONVERTERS: ControlModuleDefinition(CONVERTERS_MODULE_DESCRIPTION),
@@ -99,6 +114,7 @@ simulation_module_definitions: Dict[SimulationMode, SimulationModuleDefinition] 
         ConsumersControlValues,
         ConsumersSensorValues,
         fmu_paths.consumers_path,
+        {ControlMode.CONSUMERS: CONSUMERS_MODULE_DESCRIPTION},
     ),
     SimulationMode.DHW: SimulationModuleDefinition(
         "/thrs/simulation/dhw/",
@@ -107,6 +123,7 @@ simulation_module_definitions: Dict[SimulationMode, SimulationModuleDefinition] 
         DhwControlValues,
         DhwSensorValues,
         fmu_paths.dhw_path,
+        {ControlMode.DHW: DHW_MODULE_DESCRIPTION},
     ),
     # SimulationMode.HT: SimulationModuleDefinition(
     # topic_base="/thrs/simulation/ht/",
@@ -123,6 +140,7 @@ simulation_module_definitions: Dict[SimulationMode, SimulationModuleDefinition] 
         PcmControlValues,
         PcmSensorValues,
         fmu_paths.pcm_path,
+        {ControlMode.PCM: PCM_MODULE_DESCRIPTION},
     ),
     SimulationMode.PVT: SimulationModuleDefinition(
         "/thrs/simulation/pvt/",
@@ -131,6 +149,7 @@ simulation_module_definitions: Dict[SimulationMode, SimulationModuleDefinition] 
         PvtControlValues,
         PvtSensorValues,
         fmu_paths.pvt_path,
+        {ControlMode.PVT: PVT_MODULE_DESCRIPTION},
     ),
     SimulationMode.THRUSTER: SimulationModuleDefinition(
         "/thrs/simulation/thrusters/",
@@ -139,6 +158,7 @@ simulation_module_definitions: Dict[SimulationMode, SimulationModuleDefinition] 
         ThrustersControlValues,
         ThrustersSensorValues,
         fmu_paths.thrusters_path,
+        {ControlMode.THRUSTER: THRUSTERS_MODULE_DESCRIPTION},
     ),
     # # TODO Maapater Unused?
     # SimulationMode.ADSORPTION: SimulationModuleDefinition(
@@ -146,6 +166,14 @@ simulation_module_definitions: Dict[SimulationMode, SimulationModuleDefinition] 
     #     [],
     #     fmu_paths.adsorption_path,
     #     "/../../",  # settings.mqtt_control_topic_suffix?
+    # {
+    #         {
+    #             ControlMode.THRUSTER: THRUSTERS_MODULE_DESCRIPTION,
+    #             ControlMode.PVT: PVT_MODULE_DESCRIPTION,
+    #             ControlMode.PCM: PCM_MODULE_DESCRIPTION,
+    #             ControlMode.CONSUMERS: CONSUMERS_MODULE_DESCRIPTION,
+    #         },
+    # }
     # ),
     # SimulationMode.DC: SimulationModuleDefinition(
     #     [],

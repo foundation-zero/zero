@@ -12,7 +12,7 @@ from src.thrs.input_output.base import CombinedValues, ThrsValues
 from src.thrs.orchestration import module
 from src.thrs.orchestration.connectors.mqtt.mapping import PartialMqttMapping
 from src.thrs.orchestration.mqtt import MessageContext
-from thrs.classes.control import Control
+from thrs.classes.control import Control, ControlMode
 from thrs.orchestration.connectors.base import CommConnector
 
 if TYPE_CHECKING:
@@ -43,6 +43,10 @@ class ControlRunnable(Runnable):
         self.control_parameters_type: type[ThrsValues] = (
             module_definition.module_description.parameters_type
         )  # Control parameters
+        
+        self.control_parameters: dict[ControlMode, ThrsValues] = {}
+        for control_mode, m in module_definition.control_module_descriptions.items():
+            self.control_parameters[control_mode] = m.parameters_type()
 
         # TODO Maapater: Start Mqtt issue
         # TODO Maapater: (1) input/output/parameters convert to MqttMapping, (2) use mqtt mapping to subscribe to topics and send values
@@ -65,16 +69,6 @@ class ControlRunnable(Runnable):
         self.init_control()
         self.init_message_context()
 
-        # TODO Maapater Receive will fill CMDS queue
-        # cmds queue should be read by SimRunnable.
-        # self._receive_task = create_task(
-        #         self._receive_controls(DIRECTIVES, self._message_context, modules)
-        #     )
-
-    # TODO Maapater Receive 
-    # async def __aexit__(self, *args: Any) -> None:
-    #     self._receive_task.cancel()
-    #     await asyncio.gather(self._receive_task, return_exceptions=True)
 
     def init_control(self):
         self._control = Control(

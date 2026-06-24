@@ -61,7 +61,7 @@ class Simulation[
         return self._tick_duration
 
     def time(self):
-        return self._start_time + self._ticks * self._tick_duration
+        return self._start_time + self._ticks * self._tick_duration # TODO: Maapater What happens when tick_duration is change during simulation?
 
     def tick(self, control_values: C) -> SimulationResult[S, C, I, O]:
         logging.debug("Running simulation tick")

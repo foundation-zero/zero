@@ -57,9 +57,9 @@ class SimulationRunnable(Runnable):
 
         # TODO Maapater: Start Mqtt issue
         # TODO Maapater: (1) input/output/parameters convert to MqttMapping, (2) use mqtt mapping to subscribe to topics and send values
-        self.input_topic = f"{simulation_model_definition.topic_base}/input"  # TODO Maapater: This is wrong
-        self.output_topic = f"{simulation_model_definition.topic_base}/output"  # TODO Maapater: This is wrong
-        self.sensor_topic = f"{simulation_model_definition.topic_base}/sensor"  # TODO Maapater: This is wrong
+        self.input_topic = f"{simulation_model_definition.topic_base}/input"  # TODO Maapater: This should be changed
+        self.output_topic = f"{simulation_model_definition.topic_base}/output"  # TODO Maapater: This should be changed
+        self.sensor_topic = f"{simulation_model_definition.topic_base}/sensor"  # TODO Maapater: This should be changed
 
         self.input_mqtt_mapping = PartialMqttMapping(cls=
             simulation_model_definition.input_values,  topic_prefix=self.input_topic,module_prefix="?"
@@ -70,6 +70,8 @@ class SimulationRunnable(Runnable):
         self.sensor_mqtt_mapping = PartialMqttMapping(
             cls=simulation_model_definition.sensor_values_type, topic_prefix=self.sensor_topic,module_prefix="?"
         )
+
+        # TODO: Maapater: Simulation values read/publish to MQTT topics, but how to map them to the simulation model?
 
         # TODO: maapater: IO Mapping nog nodig?
         self._io_mapping: IoMapping = (
