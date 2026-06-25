@@ -5,6 +5,9 @@ default: run
 run *args:
     poetry run python -m zero_termodinamica run {{ args }}
 
+run_rtu *args:
+    poetry run python -m zero_termodinamica run-rtu {{ args }}
+
 run_stub *args:
     poetry run python -m zero_termodinamica stub {{ args }}
 

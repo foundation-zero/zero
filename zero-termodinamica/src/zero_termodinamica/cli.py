@@ -7,8 +7,13 @@ from pydantic_settings import (
 )
 
 from zero_termodinamica.io import read_modbus_units
+from zero_termodinamica.modbus_rtu_to_mqtt import ModbusRtuToMqttBridge
 from zero_termodinamica.modbus_to_mqtt import ModbusToMQTTBridge
-from zero_termodinamica.settings import ModbusSettings, MqttSettings
+from zero_termodinamica.settings import (
+    ModbusSerialSettings,
+    ModbusSettings,
+    MqttSettings,
+)
 from zero_termodinamica.stub import Stub
 
 logging.basicConfig(
@@ -32,9 +37,18 @@ class StubCmd(ModbusSettings):
         stub.run()
 
 
+class RunRTUCmd(ModbusSerialSettings, MqttSettings):
+    async def cli_cmd(self) -> None:
+        async with ModbusRtuToMqttBridge.from_settings(
+            self, self, read_modbus_units()
+        ) as reader:
+            await reader.run()
+
+
 class ZeroTermodinamica(BaseSettings, cli_kebab_case=True):
     run: CliSubCommand[RunCmd]
     stub: CliSubCommand[StubCmd]
+    run_rtu: CliSubCommand[RunRTUCmd]
 
     def cli_cmd(self) -> None:
         try:

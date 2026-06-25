@@ -109,10 +109,61 @@ def test_run_cmd_from_args():
             ],
             cli_exit_on_error=False,
         )
-
         mock_run_command.assert_called_once()
         instance = mock_run_command.call_args.args[0]
         assert instance.modbus_host == "10.0.0.1"
         assert instance.modbus_port == 503
-        assert instance.mqtt_host == "mqtt.local"
-        assert instance.mqtt_port == 1884
+
+
+def test_run_rtu_cmd_from_args():
+    """Test that ZeroTermodinamica.run-rtu calls RunRTUCmd.cli_cmd with expected arguments."""
+    with patch("zero_termodinamica.cli.RunRTUCmd.cli_cmd") as mock_run_rtu_command:
+        CliApp.run(
+            ZeroTermodinamica,
+            [
+                "run-rtu",
+                "--modbus-serial-port",
+                "/dev/ttyUSB0",
+                "--baudrate",
+                "9600",
+                "--mqtt-host",
+                "mqtt.local",
+                "--mqtt-port",
+                "1884",
+            ],
+            cli_exit_on_error=False,
+        )
+
+        mock_run_rtu_command.assert_called_once()
+        instance = mock_run_rtu_command.call_args.args[0]
+        assert instance.modbus_serial_port == "/dev/ttyUSB0"
+        assert instance.baudrate == 9600
+
+
+def test_run_rtu_cmd_from_env():
+    """Test that ZeroTermodinamica run-rtu command picks up settings from env."""
+    os.environ["MODBUS_SERIAL_PORT"] = "/dev/ttyUSB0"
+    os.environ["BAUDRATE"] = "9600"
+    os.environ["MQTT_HOST"] = "localhost"
+    os.environ["MQTT_PORT"] = "1883"
+
+    try:
+        with patch("zero_termodinamica.cli.RunRTUCmd.cli_cmd") as mock_run_rtu_command:
+            CliApp.run(
+                ZeroTermodinamica,
+                ["run-rtu"],
+                cli_exit_on_error=False,
+            )
+
+            mock_run_rtu_command.assert_called_once()
+            instance = mock_run_rtu_command.call_args.args[0]
+            assert instance.modbus_serial_port == "/dev/ttyUSB0"
+            assert instance.baudrate == 9600
+            assert instance.mqtt_host == "localhost"
+            assert instance.mqtt_port == 1883
+
+    finally:
+        # Cleanup
+        for key in ["MODBUS_SERIAL_PORT", "BAUDRATE", "MQTT_HOST", "MQTT_PORT"]:
+            if key in os.environ:
+                del os.environ[key]

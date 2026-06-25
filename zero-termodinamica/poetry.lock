@@ -446,11 +446,14 @@ version = "3.13.1"
 description = "A fully featured modbus protocol stack in python"
 optional = false
 python-versions = ">=3.10.0"
-groups = ["dev"]
+groups = ["main", "dev"]
 files = [
     {file = "pymodbus-3.13.1-py3-none-any.whl", hash = "sha256:820167a9c6a13d698d7ff49e8420f8fbbdd8fec3f75aacd46a35f4ab9a000144"},
     {file = "pymodbus-3.13.1.tar.gz", hash = "sha256:7a74ea0a4eb4895f518b34de32915ba4fde216576e09deaf735a279a9281af4f"},
 ]
+
+[package.dependencies]
+pyserial = {version = ">=3.5", optional = true, markers = "extra == \"serial\""}
 
 [package.extras]
 all = ["pymodbus[development,documentation,serial,simulator]"]
@@ -513,6 +516,21 @@ typing-extensions = ">=4.1"
 all = ["nodejs-wheel-binaries", "twine (>=3.4.1)"]
 dev = ["twine (>=3.4.1)"]
 nodejs = ["nodejs-wheel-binaries"]
+
+[[package]]
+name = "pyserial"
+version = "3.5"
+description = "Python Serial Port Extension"
+optional = false
+python-versions = "*"
+groups = ["main"]
+files = [
+    {file = "pyserial-3.5-py2.py3-none-any.whl", hash = "sha256:c4451db6ba391ca6ca299fb3ec7bae67a5c55dde170964c7a14ceefec02f2cf0"},
+    {file = "pyserial-3.5.tar.gz", hash = "sha256:3c77e014170dfffbd816e6ffc205e9842efb10be9f58ec16d3e8675b4925cddb"},
+]
+
+[package.extras]
+cp2110 = ["hidapi"]
 
 [[package]]
 name = "pytest"
@@ -727,4 +745,4 @@ files = [
 [metadata]
 lock-version = "2.1"
 python-versions = ">= 3.13.1,<4.0"
-content-hash = "0672866bc1342eb298ae4adfcadce8efc8bc26db803b0244660e541848474a0d"
+content-hash = "2b520ba3793b53d8a163e1ba668512061c9db9742f9dc74fa70096735e696674"

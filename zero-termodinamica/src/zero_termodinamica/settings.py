@@ -6,6 +6,7 @@ from pydantic_settings import (
     BaseSettings,
     SettingsConfigDict,
 )
+from pymodbus.client import AsyncModbusSerialClient
 from pyModbusTCP.client import ModbusClient
 from pyModbusTCP.server import ModbusServer
 
@@ -50,4 +51,25 @@ class ModbusSettings(BaseSettings):
     def modbus_server(self, data_handler):
         return ModbusServer(
             self.modbus_host, self.modbus_port, no_block=True, data_hdl=data_handler
+        )
+
+
+class ModbusSerialSettings(BaseSettings):
+    model_config = model_config
+
+    modbus_probe_interval: int = 10
+
+    modbus_serial_port: str
+    baudrate: int = 56700
+    bytesize: int = 8
+    parity: str = "N"
+    stopbits: int = 1
+
+    def modbus_client(self):
+        return AsyncModbusSerialClient(
+            port=self.modbus_serial_port,
+            baudrate=self.baudrate,
+            bytesize=self.bytesize,
+            parity=self.parity,
+            stopbits=self.stopbits,
         )
