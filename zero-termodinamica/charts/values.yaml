@@ -1,0 +1,34 @@
+replicaCount: 1
+
+image:
+  repository: europe-west1-docker.pkg.dev/common-449414/common/zero-termodinamica
+  pullPolicy: IfNotPresent
+  tag: ""
+
+mqtt:
+  host: ""
+  port: 1883
+  username: hull-temperature
+  existingSecret: ""
+  existingSecretPasswordKey: password
+
+modbus:
+  host: ""
+  port: 502
+  probe_interval: 10
+
+resources: {}
+
+imagePullSecrets: []
+
+nameOverride: ""
+fullnameOverride: ""
+
+podAnnotations: {}
+podLabels: {}
+
+nodeSelector: {}
+
+tolerations: []
+
+affinity: {}
