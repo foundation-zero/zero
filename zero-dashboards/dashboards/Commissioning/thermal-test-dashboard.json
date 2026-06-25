@@ -407,7 +407,7 @@
           {
             "matcher": {
               "id": "byRegexp",
-              "options": "/on_off/"
+              "options": "/On\\/Off/"
             },
             "properties": [
               {
@@ -471,6 +471,10 @@
               {
                 "id": "custom.width",
                 "value": 300
+              },
+              {
+                "id": "custom.align",
+                "value": "left"
               }
             ]
           },
@@ -483,6 +487,10 @@
               {
                 "id": "custom.width",
                 "value": 210
+              },
+              {
+                "id": "custom.align",
+                "value": "left"
               }
             ]
           }
