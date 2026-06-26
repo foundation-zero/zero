@@ -1,5 +1,6 @@
 x-thrs-thruster-simulation-th-template: &thrs_sim_template
-  image: zero-thrs-simulation
+  image: zero-thrs-simulation:local
+  pull_policy: never
   build:
     context: ./zero-thrs-control
     dockerfile: Dockerfile
