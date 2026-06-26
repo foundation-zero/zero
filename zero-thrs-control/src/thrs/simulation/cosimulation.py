@@ -1,9 +1,9 @@
 import dataclasses
+from contextlib import ExitStack
 from dataclasses import dataclass
 from datetime import timedelta
 from functools import reduce
 from operator import or_
-from types import TracebackType
 from typing import Any, Self
 
 from thrs.input_output.base import SimulationInputs, SimulationValues, ThrsValues
@@ -60,7 +60,7 @@ class CoSimulationParticipant[
                 )
 
 
-class CoSimulationMaster:
+class CoSimulationMaster(ExitStack):
     """Connect multiple FMU, behaving like a single FMU."""
 
     def __init__(self, participants: list[CoSimulationParticipant]):
@@ -75,6 +75,7 @@ class CoSimulationMaster:
 
         self._set_initial_conditions()
         self._compile_couplings()
+        super().__init__()
 
     def _set_initial_conditions(self):
         self._previous_outputs = {
@@ -110,36 +111,39 @@ class CoSimulationMaster:
         ]
 
     def __enter__(self) -> Self:
-        return self
+        super().__enter__()
 
-    def __exit__(
-        self,
-        type_: type[BaseException] | None,
-        value: BaseException | None,
-        traceback: TracebackType | None,
-    ) -> bool:
-        for participant in self._participants:
-            participant.fmu.__exit__(type_, value, traceback)
-        return True
+        try:
+            for participant in self._participants:
+                self.enter_context(participant.fmu)
+        except Exception:
+            super().__exit__(None, None, None)
+            raise
+
+        return self
 
     def tick(self, inputs: dict[str, Any], duration: timedelta) -> dict[str, Any]:
         current_outputs: dict[str, Any] = {}
 
         for participant, coupling in zip(self._participants, self._compiled_couplings):
             # filter the inputs for the current participant
-            participant_inputs = {
+            direct_inputs = {
                 key: value
                 for key, value in inputs.items()
                 if key in participant.fmu_key_input_mapping.values()
             }
 
-            # inject previous outputs from other participants based on the coupling
-            for dest_fmu_key, src_fmu_key in coupling.items():
-                if dest_fmu_key in participant_inputs:
-                    raise ValueError(
-                        f"Input '{dest_fmu_key}' for participant '{participant}' is being set both directly and via coupling from '{src_fmu_key}'."
-                    )
-                participant_inputs[dest_fmu_key] = self._previous_outputs[src_fmu_key]
+            inputs_from_coupling = {
+                dest_fmu_key: self._previous_outputs[src_fmu_key]
+                for dest_fmu_key, src_fmu_key in coupling.items()
+            }
+
+            if duplicate_keys := set(direct_inputs) & set(inputs_from_coupling):
+                raise ValueError(
+                    f"Input keys {duplicate_keys} for participant '{participant}' are being set both directly and via coupling."
+                )
+
+            participant_inputs = {**direct_inputs, **inputs_from_coupling}
 
             participant_outputs = participant.fmu.tick(participant_inputs, duration)
             current_outputs.update(participant_outputs)
