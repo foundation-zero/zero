@@ -499,7 +499,7 @@
           },
           "pluginVersion": "2.1.4",
           "queryType": "table",
-          "rawSql": "SELECT DISTINCT ON (room)\r\n  timestamp   AS time,\r\n  room        AS room,\r\n  pwr         AS on_off,\r\n  heater_pwr  AS heater_on_off,\r\n  fan_speed   AS fan_speed,\r\n  sp_room     AS temperature_setpoint,\r\n  air_in      AS temperature,\r\n  humi        AS humitidy,\r\n  status      AS status\r\nFROM public.termodinamica__ac\r\nWHERE $__timeFilter(timestamp)\r\nORDER BY room, timestamp DESC\r\n",
+          "rawSql": "SELECT DISTINCT ON (room)\r\n  timestamp   AS time,\r\n  room        AS room,\r\n  power         AS on_off,\r\n  heater_power  AS heater_on_off,\r\n  fan_speed   AS fan_speed,\r\n  setpoint_room_temperature     AS temperature_setpoint,\r\n  air_temperature_in      AS temperature,\r\n  humidity,\r\n  status      AS status\r\nFROM public.termodinamica__ac\r\nWHERE $__timeFilter(timestamp)\r\nORDER BY room, timestamp DESC\r\n",
           "refId": "A"
         }
       ],
@@ -652,7 +652,7 @@
           },
           "pluginVersion": "2.1.4",
           "queryType": "table",
-          "rawSql": "SELECT\r\n  timestamp AS time,\r\n  room      AS room,\r\n  air_in    AS temperature\r\nFROM public.termodinamica__ac\r\nWHERE $__timeFilter(timestamp)\r\nORDER BY room",
+          "rawSql": "SELECT\r\n  timestamp AS time,\r\n  room      AS room,\r\n  air_temperature_in    AS temperature\r\nFROM public.termodinamica__ac\r\nWHERE $__timeFilter(timestamp)\r\nORDER BY room",
           "refId": "A"
         }
       ],
@@ -784,7 +784,7 @@
           },
           "pluginVersion": "2.1.4",
           "queryType": "table",
-          "rawSql": "SELECT\r\n  timestamp AS time,\r\n  room      AS room,\r\n  sp_room   AS temperature\r\nFROM public.termodinamica__ac\r\nWHERE $__timeFilter(timestamp)\r\nORDER BY room",
+          "rawSql": "SELECT\r\n  timestamp AS time,\r\n  room      AS room,\r\n  setpoint_room_temperature   AS temperature\r\nFROM public.termodinamica__ac\r\nWHERE $__timeFilter(timestamp)\r\nORDER BY room",
           "refId": "A"
         }
       ],
@@ -931,7 +931,7 @@
           },
           "pluginVersion": "2.1.4",
           "queryType": "table",
-          "rawSql": "SELECT\r\n  timestamp AS time,\r\n  room      AS room,\r\n  humi      AS humidity\r\nFROM public.termodinamica__ac\r\nWHERE $__timeFilter(timestamp)\r\nORDER BY room",
+          "rawSql": "SELECT\r\n  timestamp AS time,\r\n  room      AS room,\r\n  humidity\r\nFROM public.termodinamica__ac\r\nWHERE $__timeFilter(timestamp)\r\nORDER BY room",
           "refId": "A"
         }
       ],
