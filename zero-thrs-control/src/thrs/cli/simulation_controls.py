@@ -913,8 +913,6 @@ class SimulationControls:
                     )
 
     async def run(self, mode: Modes):
-        logger.info(f"Starting simulation in mode: {mode}")
-
         for handler in SIMULATION_HANDLERS:
             await self._controls_client.subscribe(
                 f"{self._simulation_topic_prefix}/{handler.subscribe_topic()}", qos=1

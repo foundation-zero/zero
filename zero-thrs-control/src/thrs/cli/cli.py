@@ -25,8 +25,6 @@ class RunCmd(Config):
     ]  # For now, keep it as previous structure, but we can change it to a subcommand in the future.
 
     async def cli_cmd(self) -> None:
-        logger.info("Running THRS Simulation and control...")
-
         async with SimulationControls.from_settings(settings) as controls:
             await controls.clear_previous()
             await controls.run(self.mode)
