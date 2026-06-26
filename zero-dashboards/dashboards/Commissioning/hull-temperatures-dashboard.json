@@ -37,12 +37,38 @@
   ],
   "panels": [
     {
+      "fieldConfig": {
+        "defaults": {},
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 2,
+        "w": 24,
+        "x": 0,
+        "y": 0
+      },
+      "id": 10,
+      "options": {
+        "code": {
+          "language": "plaintext",
+          "showLineNumbers": false,
+          "showMiniMap": false
+        },
+        "content": "<center>\r\n  <h1>Hull temperatures</h1>\r\n</center>\r\n",
+        "mode": "html"
+      },
+      "pluginVersion": "12.3.0",
+      "title": "",
+      "transparent": true,
+      "type": "text"
+    },
+    {
       "collapsed": false,
       "gridPos": {
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 0
+        "y": 2
       },
       "id": 6,
       "panels": [],
@@ -52,7 +78,7 @@
     {
       "datasource": {
         "type": "info8fcc-greptimedb-datasource",
-        "uid": "PBAD09CF7391C3C43"
+        "uid": "${datasource}"
       },
       "fieldConfig": {
         "defaults": {
@@ -83,7 +109,7 @@
         "h": 12,
         "w": 24,
         "x": 0,
-        "y": 1
+        "y": 3
       },
       "id": 3,
       "options": {
@@ -1793,7 +1819,7 @@
         {
           "datasource": {
             "type": "info8fcc-greptimedb-datasource",
-            "uid": "PBAD09CF7391C3C43"
+            "uid": "${datasource}"
           },
           "editorType": "sql",
           "format": 1,
@@ -1820,7 +1846,7 @@
     {
       "datasource": {
         "type": "info8fcc-greptimedb-datasource",
-        "uid": "PBAD09CF7391C3C43"
+        "uid": "${datasource}"
       },
       "fieldConfig": {
         "defaults": {
@@ -1884,7 +1910,7 @@
         "h": 14,
         "w": 24,
         "x": 0,
-        "y": 13
+        "y": 15
       },
       "id": 8,
       "options": {
@@ -1903,6 +1929,10 @@
       "pluginVersion": "12.3.0",
       "targets": [
         {
+          "datasource": {
+            "type": "info8fcc-greptimedb-datasource",
+            "uid": "${datasource}"
+          },
           "editorType": "sql",
           "format": 1,
           "meta": {
@@ -1940,7 +1970,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 27
+        "y": 29
       },
       "id": 5,
       "panels": [],
@@ -1950,7 +1980,7 @@
     {
       "datasource": {
         "type": "info8fcc-greptimedb-datasource",
-        "uid": "PBAD09CF7391C3C43"
+        "uid": "${datasource}"
       },
       "fieldConfig": {
         "defaults": {
@@ -1981,7 +2011,7 @@
         "h": 12,
         "w": 24,
         "x": 0,
-        "y": 28
+        "y": 30
       },
       "id": 2,
       "options": {
@@ -3286,7 +3316,7 @@
         {
           "datasource": {
             "type": "info8fcc-greptimedb-datasource",
-            "uid": "PBAD09CF7391C3C43"
+            "uid": "${datasource}"
           },
           "editorType": "sql",
           "format": 1,
@@ -3313,7 +3343,7 @@
     {
       "datasource": {
         "type": "info8fcc-greptimedb-datasource",
-        "uid": "PBAD09CF7391C3C43"
+        "uid": "${datasource}"
       },
       "fieldConfig": {
         "defaults": {
@@ -3377,7 +3407,7 @@
         "h": 12,
         "w": 24,
         "x": 0,
-        "y": 40
+        "y": 42
       },
       "id": 9,
       "options": {
@@ -3396,6 +3426,10 @@
       "pluginVersion": "12.3.0",
       "targets": [
         {
+          "datasource": {
+            "type": "info8fcc-greptimedb-datasource",
+            "uid": "${datasource}"
+          },
           "editorType": "sql",
           "format": 1,
           "meta": {
@@ -3433,7 +3467,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 52
+        "y": 54
       },
       "id": 4,
       "panels": [],
@@ -3443,7 +3477,7 @@
     {
       "datasource": {
         "type": "info8fcc-greptimedb-datasource",
-        "uid": "PBAD09CF7391C3C43"
+        "uid": "${datasource}"
       },
       "fieldConfig": {
         "defaults": {
@@ -3474,7 +3508,7 @@
         "h": 12,
         "w": 24,
         "x": 0,
-        "y": 53
+        "y": 55
       },
       "id": 1,
       "options": {
@@ -4247,7 +4281,7 @@
         {
           "datasource": {
             "type": "info8fcc-greptimedb-datasource",
-            "uid": "PBAD09CF7391C3C43"
+            "uid": "${datasource}"
           },
           "editorType": "sql",
           "format": 1,
@@ -4274,7 +4308,7 @@
     {
       "datasource": {
         "type": "info8fcc-greptimedb-datasource",
-        "uid": "PBAD09CF7391C3C43"
+        "uid": "${datasource}"
       },
       "fieldConfig": {
         "defaults": {
@@ -4338,7 +4372,7 @@
         "h": 12,
         "w": 24,
         "x": 0,
-        "y": 65
+        "y": 67
       },
       "id": 7,
       "options": {
@@ -4357,6 +4391,10 @@
       "pluginVersion": "12.3.0",
       "targets": [
         {
+          "datasource": {
+            "type": "info8fcc-greptimedb-datasource",
+            "uid": "${datasource}"
+          },
           "editorType": "sql",
           "format": 1,
           "meta": {
