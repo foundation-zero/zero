@@ -361,24 +361,33 @@ services:
       vernemq:
         condition: service_healthy
 
+  thrs-thruster-simulation-th-high-temperature:
+    <<: *thrs_sim_template
+    command: ["high_temperature"]
+
   thrs-thruster-simulation-th-thrusters:
     <<: *thrs_sim_template
+    profiles: ["thrs-extra"]
     command: ["thrusters"]
 
   thrs-thruster-simulation-th-pvt:
     <<: *thrs_sim_template
+    profiles: ["thrs-extra"]
     command: ["pvt"]
 
   thrs-thruster-simulation-th-pcm:
     <<: *thrs_sim_template
+    profiles: ["thrs-extra"]
     command: ["pcm"]
 
   thrs-thruster-simulation-th-consumers:
     <<: *thrs_sim_template
+    profiles: ["thrs-extra"]
     command: ["consumers"]
 
   thrs-thruster-simulation-th-dhw:
     <<: *thrs_sim_template
+    profiles: ["thrs-extra"]
     command: ["dhw"]
 
 volumes:
