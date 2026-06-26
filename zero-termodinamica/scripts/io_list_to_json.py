@@ -68,7 +68,11 @@ def select_nested_ac_topics(df: pl.DataFrame, topic_prefix: str) -> List[MqttTop
         )
         # "AIR_IN", "SP_ROOM" are temperatures in 0.01 C
         .with_columns(
-            pl.when(pl.col("field_name").str.contains_any(["AIR_IN", "SP_ROOM"]))
+            pl.when(
+                pl.col("field_name").str.contains_any(
+                    ["air_temperature_in", "setpoint_room_temperature"]
+                )
+            )
             .then(0.01)
             .otherwise(1.0)  # Default scaling factor if no cases match
             .alias("scale_factor")

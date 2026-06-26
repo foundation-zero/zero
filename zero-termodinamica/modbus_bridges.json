@@ -15,7 +15,7 @@
             "modbus_register": 201,
             "field_name": "setpoint_room_temperature",
             "description": "Unit SetPoint: (hundredths of degrees Celsius) es: 2350 = 23.50 °C -> Range: 18..30°C\"",
-            "scale_factor": 1.0
+            "scale_factor": 0.01
           },
           {
             "modbus_register": 202,
@@ -27,7 +27,7 @@
             "modbus_register": 203,
             "field_name": "air_temperature_in",
             "description": "Unit Input Air Temperature: (hundredths of degrees Celsius) es: 2350 = 23.50 °C",
-            "scale_factor": 1.0
+            "scale_factor": 0.01
           },
           {
             "modbus_register": 204,
@@ -78,7 +78,7 @@
             "modbus_register": 211,
             "field_name": "setpoint_room_temperature",
             "description": "Unit SetPoint: (hundredths of degrees Celsius) es: 2350 = 23.50 °C -> Range: 18..30°C\"",
-            "scale_factor": 1.0
+            "scale_factor": 0.01
           },
           {
             "modbus_register": 212,
@@ -90,7 +90,7 @@
             "modbus_register": 213,
             "field_name": "air_temperature_in",
             "description": "Unit Input Air Temperature: (hundredths of degrees Celsius) es: 2350 = 23.50 °C",
-            "scale_factor": 1.0
+            "scale_factor": 0.01
           },
           {
             "modbus_register": 214,
@@ -141,7 +141,7 @@
             "modbus_register": 221,
             "field_name": "setpoint_room_temperature",
             "description": "Unit SetPoint: (hundredths of degrees Celsius) es: 2350 = 23.50 °C -> Range: 18..30°C\"",
-            "scale_factor": 1.0
+            "scale_factor": 0.01
           },
           {
             "modbus_register": 222,
@@ -153,7 +153,7 @@
             "modbus_register": 223,
             "field_name": "air_temperature_in",
             "description": "Unit Input Air Temperature: (hundredths of degrees Celsius) es: 2350 = 23.50 °C",
-            "scale_factor": 1.0
+            "scale_factor": 0.01
           },
           {
             "modbus_register": 224,
@@ -204,7 +204,7 @@
             "modbus_register": 231,
             "field_name": "setpoint_room_temperature",
             "description": "Unit SetPoint: (hundredths of degrees Celsius) es: 2350 = 23.50 °C -> Range: 18..30°C\"",
-            "scale_factor": 1.0
+            "scale_factor": 0.01
           },
           {
             "modbus_register": 232,
@@ -216,7 +216,7 @@
             "modbus_register": 233,
             "field_name": "air_temperature_in",
             "description": "Unit Input Air Temperature: (hundredths of degrees Celsius) es: 2350 = 23.50 °C",
-            "scale_factor": 1.0
+            "scale_factor": 0.01
           },
           {
             "modbus_register": 234,
@@ -267,7 +267,7 @@
             "modbus_register": 241,
             "field_name": "setpoint_room_temperature",
             "description": "Unit SetPoint: (hundredths of degrees Celsius) es: 2350 = 23.50 °C -> Range: 18..30°C\"",
-            "scale_factor": 1.0
+            "scale_factor": 0.01
           },
           {
             "modbus_register": 242,
@@ -279,7 +279,7 @@
             "modbus_register": 243,
             "field_name": "air_temperature_in",
             "description": "Unit Input Air Temperature: (hundredths of degrees Celsius) es: 2350 = 23.50 °C",
-            "scale_factor": 1.0
+            "scale_factor": 0.01
           },
           {
             "modbus_register": 244,
@@ -330,7 +330,7 @@
             "modbus_register": 251,
             "field_name": "setpoint_room_temperature",
             "description": "Unit SetPoint: (hundredths of degrees Celsius) es: 2350 = 23.50 °C -> Range: 18..30°C\"",
-            "scale_factor": 1.0
+            "scale_factor": 0.01
           },
           {
             "modbus_register": 252,
@@ -342,7 +342,7 @@
             "modbus_register": 253,
             "field_name": "air_temperature_in",
             "description": "Unit Input Air Temperature: (hundredths of degrees Celsius) es: 2350 = 23.50 °C",
-            "scale_factor": 1.0
+            "scale_factor": 0.01
           },
           {
             "modbus_register": 254,
@@ -393,7 +393,7 @@
             "modbus_register": 261,
             "field_name": "setpoint_room_temperature",
             "description": "Unit SetPoint: (hundredths of degrees Celsius) es: 2350 = 23.50 °C -> Range: 18..30°C\"",
-            "scale_factor": 1.0
+            "scale_factor": 0.01
           },
           {
             "modbus_register": 262,
@@ -405,7 +405,7 @@
             "modbus_register": 263,
             "field_name": "air_temperature_in",
             "description": "Unit Input Air Temperature: (hundredths of degrees Celsius) es: 2350 = 23.50 °C",
-            "scale_factor": 1.0
+            "scale_factor": 0.01
           },
           {
             "modbus_register": 264,
@@ -456,7 +456,7 @@
             "modbus_register": 271,
             "field_name": "setpoint_room_temperature",
             "description": "Unit SetPoint: (hundredths of degrees Celsius) es: 2350 = 23.50 °C -> Range: 18..30°C\"",
-            "scale_factor": 1.0
+            "scale_factor": 0.01
           },
           {
             "modbus_register": 272,
@@ -468,7 +468,7 @@
             "modbus_register": 273,
             "field_name": "air_temperature_in",
             "description": "Unit Input Air Temperature: (hundredths of degrees Celsius) es: 2350 = 23.50 °C",
-            "scale_factor": 1.0
+            "scale_factor": 0.01
           },
           {
             "modbus_register": 274,
@@ -519,7 +519,7 @@
             "modbus_register": 281,
             "field_name": "setpoint_room_temperature",
             "description": "Unit SetPoint: (hundredths of degrees Celsius) es: 2350 = 23.50 °C -> Range: 18..30°C\"",
-            "scale_factor": 1.0
+            "scale_factor": 0.01
           },
           {
             "modbus_register": 282,
@@ -531,7 +531,7 @@
             "modbus_register": 283,
             "field_name": "air_temperature_in",
             "description": "Unit Input Air Temperature: (hundredths of degrees Celsius) es: 2350 = 23.50 °C",
-            "scale_factor": 1.0
+            "scale_factor": 0.01
           },
           {
             "modbus_register": 284,
@@ -582,7 +582,7 @@
             "modbus_register": 291,
             "field_name": "setpoint_room_temperature",
             "description": "Unit SetPoint: (hundredths of degrees Celsius) es: 2350 = 23.50 °C -> Range: 18..30°C\"",
-            "scale_factor": 1.0
+            "scale_factor": 0.01
           },
           {
             "modbus_register": 292,
@@ -594,7 +594,7 @@
             "modbus_register": 293,
             "field_name": "air_temperature_in",
             "description": "Unit Input Air Temperature: (hundredths of degrees Celsius) es: 2350 = 23.50 °C",
-            "scale_factor": 1.0
+            "scale_factor": 0.01
           },
           {
             "modbus_register": 294,
@@ -645,7 +645,7 @@
             "modbus_register": 301,
             "field_name": "setpoint_room_temperature",
             "description": "Unit SetPoint: (hundredths of degrees Celsius) es: 2350 = 23.50 °C -> Range: 18..30°C\"",
-            "scale_factor": 1.0
+            "scale_factor": 0.01
           },
           {
             "modbus_register": 302,
@@ -657,7 +657,7 @@
             "modbus_register": 303,
             "field_name": "air_temperature_in",
             "description": "Unit Input Air Temperature: (hundredths of degrees Celsius) es: 2350 = 23.50 °C",
-            "scale_factor": 1.0
+            "scale_factor": 0.01
           },
           {
             "modbus_register": 304,
@@ -708,7 +708,7 @@
             "modbus_register": 311,
             "field_name": "setpoint_room_temperature",
             "description": "Unit SetPoint: (hundredths of degrees Celsius) es: 2350 = 23.50 °C -> Range: 18..30°C\"",
-            "scale_factor": 1.0
+            "scale_factor": 0.01
           },
           {
             "modbus_register": 312,
@@ -720,7 +720,7 @@
             "modbus_register": 313,
             "field_name": "air_temperature_in",
             "description": "Unit Input Air Temperature: (hundredths of degrees Celsius) es: 2350 = 23.50 °C",
-            "scale_factor": 1.0
+            "scale_factor": 0.01
           },
           {
             "modbus_register": 314,
@@ -771,7 +771,7 @@
             "modbus_register": 321,
             "field_name": "setpoint_room_temperature",
             "description": "Unit SetPoint: (hundredths of degrees Celsius) es: 2350 = 23.50 °C -> Range: 18..30°C\"",
-            "scale_factor": 1.0
+            "scale_factor": 0.01
           },
           {
             "modbus_register": 322,
@@ -783,7 +783,7 @@
             "modbus_register": 323,
             "field_name": "air_temperature_in",
             "description": "Unit Input Air Temperature: (hundredths of degrees Celsius) es: 2350 = 23.50 °C",
-            "scale_factor": 1.0
+            "scale_factor": 0.01
           },
           {
             "modbus_register": 324,
@@ -834,7 +834,7 @@
             "modbus_register": 331,
             "field_name": "setpoint_room_temperature",
             "description": "Unit SetPoint: (hundredths of degrees Celsius) es: 2350 = 23.50 °C -> Range: 18..30°C\"",
-            "scale_factor": 1.0
+            "scale_factor": 0.01
           },
           {
             "modbus_register": 332,
@@ -846,7 +846,7 @@
             "modbus_register": 333,
             "field_name": "air_temperature_in",
             "description": "Unit Input Air Temperature: (hundredths of degrees Celsius) es: 2350 = 23.50 °C",
-            "scale_factor": 1.0
+            "scale_factor": 0.01
           },
           {
             "modbus_register": 334,
@@ -897,7 +897,7 @@
             "modbus_register": 341,
             "field_name": "setpoint_room_temperature",
             "description": "Unit SetPoint: (hundredths of degrees Celsius) es: 2350 = 23.50 °C -> Range: 18..30°C\"",
-            "scale_factor": 1.0
+            "scale_factor": 0.01
           },
           {
             "modbus_register": 342,
@@ -909,7 +909,7 @@
             "modbus_register": 343,
             "field_name": "air_temperature_in",
             "description": "Unit Input Air Temperature: (hundredths of degrees Celsius) es: 2350 = 23.50 °C",
-            "scale_factor": 1.0
+            "scale_factor": 0.01
           },
           {
             "modbus_register": 344,
@@ -960,7 +960,7 @@
             "modbus_register": 351,
             "field_name": "setpoint_room_temperature",
             "description": "Unit SetPoint: (hundredths of degrees Celsius) es: 2350 = 23.50 °C -> Range: 18..30°C\"",
-            "scale_factor": 1.0
+            "scale_factor": 0.01
           },
           {
             "modbus_register": 352,
@@ -972,7 +972,7 @@
             "modbus_register": 353,
             "field_name": "air_temperature_in",
             "description": "Unit Input Air Temperature: (hundredths of degrees Celsius) es: 2350 = 23.50 °C",
-            "scale_factor": 1.0
+            "scale_factor": 0.01
           },
           {
             "modbus_register": 354,
@@ -1023,7 +1023,7 @@
             "modbus_register": 361,
             "field_name": "setpoint_room_temperature",
             "description": "Unit SetPoint: (hundredths of degrees Celsius) es: 2350 = 23.50 °C -> Range: 18..30°C\"",
-            "scale_factor": 1.0
+            "scale_factor": 0.01
           },
           {
             "modbus_register": 362,
@@ -1035,7 +1035,7 @@
             "modbus_register": 363,
             "field_name": "air_temperature_in",
             "description": "Unit Input Air Temperature: (hundredths of degrees Celsius) es: 2350 = 23.50 °C",
-            "scale_factor": 1.0
+            "scale_factor": 0.01
           },
           {
             "modbus_register": 364,
@@ -1086,7 +1086,7 @@
             "modbus_register": 371,
             "field_name": "setpoint_room_temperature",
             "description": "Unit SetPoint: (hundredths of degrees Celsius) es: 2350 = 23.50 °C -> Range: 18..30°C\"",
-            "scale_factor": 1.0
+            "scale_factor": 0.01
           },
           {
             "modbus_register": 372,
@@ -1098,7 +1098,7 @@
             "modbus_register": 373,
             "field_name": "air_temperature_in",
             "description": "Unit Input Air Temperature: (hundredths of degrees Celsius) es: 2350 = 23.50 °C",
-            "scale_factor": 1.0
+            "scale_factor": 0.01
           },
           {
             "modbus_register": 374,
@@ -1149,7 +1149,7 @@
             "modbus_register": 381,
             "field_name": "setpoint_room_temperature",
             "description": "Unit SetPoint: (hundredths of degrees Celsius) es: 2350 = 23.50 °C -> Range: 18..30°C\"",
-            "scale_factor": 1.0
+            "scale_factor": 0.01
           },
           {
             "modbus_register": 382,
@@ -1161,7 +1161,7 @@
             "modbus_register": 383,
             "field_name": "air_temperature_in",
             "description": "Unit Input Air Temperature: (hundredths of degrees Celsius) es: 2350 = 23.50 °C",
-            "scale_factor": 1.0
+            "scale_factor": 0.01
           },
           {
             "modbus_register": 384,
@@ -1212,7 +1212,7 @@
             "modbus_register": 391,
             "field_name": "setpoint_room_temperature",
             "description": "Unit SetPoint: (hundredths of degrees Celsius) es: 2350 = 23.50 °C -> Range: 18..30°C\"",
-            "scale_factor": 1.0
+            "scale_factor": 0.01
           },
           {
             "modbus_register": 392,
@@ -1224,7 +1224,7 @@
             "modbus_register": 393,
             "field_name": "air_temperature_in",
             "description": "Unit Input Air Temperature: (hundredths of degrees Celsius) es: 2350 = 23.50 °C",
-            "scale_factor": 1.0
+            "scale_factor": 0.01
           },
           {
             "modbus_register": 394,
@@ -1275,7 +1275,7 @@
             "modbus_register": 401,
             "field_name": "setpoint_room_temperature",
             "description": "Unit SetPoint: (hundredths of degrees Celsius) es: 2350 = 23.50 °C -> Range: 18..30°C\"",
-            "scale_factor": 1.0
+            "scale_factor": 0.01
           },
           {
             "modbus_register": 402,
@@ -1287,7 +1287,7 @@
             "modbus_register": 403,
             "field_name": "air_temperature_in",
             "description": "Unit Input Air Temperature: (hundredths of degrees Celsius) es: 2350 = 23.50 °C",
-            "scale_factor": 1.0
+            "scale_factor": 0.01
           },
           {
             "modbus_register": 404,
@@ -1338,7 +1338,7 @@
             "modbus_register": 411,
             "field_name": "setpoint_room_temperature",
             "description": "Unit SetPoint: (hundredths of degrees Celsius) es: 2350 = 23.50 °C -> Range: 18..30°C\"",
-            "scale_factor": 1.0
+            "scale_factor": 0.01
           },
           {
             "modbus_register": 412,
@@ -1350,7 +1350,7 @@
             "modbus_register": 413,
             "field_name": "air_temperature_in",
             "description": "Unit Input Air Temperature: (hundredths of degrees Celsius) es: 2350 = 23.50 °C",
-            "scale_factor": 1.0
+            "scale_factor": 0.01
           },
           {
             "modbus_register": 414,
@@ -1401,7 +1401,7 @@
             "modbus_register": 421,
             "field_name": "setpoint_room_temperature",
             "description": "Unit SetPoint: (hundredths of degrees Celsius) es: 2350 = 23.50 °C -> Range: 18..30°C\"",
-            "scale_factor": 1.0
+            "scale_factor": 0.01
           },
           {
             "modbus_register": 422,
@@ -1413,7 +1413,7 @@
             "modbus_register": 423,
             "field_name": "air_temperature_in",
             "description": "Unit Input Air Temperature: (hundredths of degrees Celsius) es: 2350 = 23.50 °C",
-            "scale_factor": 1.0
+            "scale_factor": 0.01
           },
           {
             "modbus_register": 424,
@@ -1464,7 +1464,7 @@
             "modbus_register": 431,
             "field_name": "setpoint_room_temperature",
             "description": "Unit SetPoint: (hundredths of degrees Celsius) es: 2350 = 23.50 °C -> Range: 18..30°C\"",
-            "scale_factor": 1.0
+            "scale_factor": 0.01
           },
           {
             "modbus_register": 432,
@@ -1476,7 +1476,7 @@
             "modbus_register": 433,
             "field_name": "air_temperature_in",
             "description": "Unit Input Air Temperature: (hundredths of degrees Celsius) es: 2350 = 23.50 °C",
-            "scale_factor": 1.0
+            "scale_factor": 0.01
           },
           {
             "modbus_register": 434,
@@ -1527,7 +1527,7 @@
             "modbus_register": 441,
             "field_name": "setpoint_room_temperature",
             "description": "Unit SetPoint: (hundredths of degrees Celsius) es: 2350 = 23.50 °C -> Range: 18..30°C\"",
-            "scale_factor": 1.0
+            "scale_factor": 0.01
           },
           {
             "modbus_register": 442,
@@ -1539,7 +1539,7 @@
             "modbus_register": 443,
             "field_name": "air_temperature_in",
             "description": "Unit Input Air Temperature: (hundredths of degrees Celsius) es: 2350 = 23.50 °C",
-            "scale_factor": 1.0
+            "scale_factor": 0.01
           },
           {
             "modbus_register": 444,
@@ -1590,7 +1590,7 @@
             "modbus_register": 451,
             "field_name": "setpoint_room_temperature",
             "description": "Unit SetPoint: (hundredths of degrees Celsius) es: 2350 = 23.50 °C -> Range: 18..30°C\"",
-            "scale_factor": 1.0
+            "scale_factor": 0.01
           },
           {
             "modbus_register": 452,
@@ -1602,7 +1602,7 @@
             "modbus_register": 453,
             "field_name": "air_temperature_in",
             "description": "Unit Input Air Temperature: (hundredths of degrees Celsius) es: 2350 = 23.50 °C",
-            "scale_factor": 1.0
+            "scale_factor": 0.01
           },
           {
             "modbus_register": 454,
@@ -1653,7 +1653,7 @@
             "modbus_register": 461,
             "field_name": "setpoint_room_temperature",
             "description": "Unit SetPoint: (hundredths of degrees Celsius) es: 2350 = 23.50 °C -> Range: 18..30°C\"",
-            "scale_factor": 1.0
+            "scale_factor": 0.01
           },
           {
             "modbus_register": 462,
@@ -1665,7 +1665,7 @@
             "modbus_register": 463,
             "field_name": "air_temperature_in",
             "description": "Unit Input Air Temperature: (hundredths of degrees Celsius) es: 2350 = 23.50 °C",
-            "scale_factor": 1.0
+            "scale_factor": 0.01
           },
           {
             "modbus_register": 464,
@@ -1716,7 +1716,7 @@
             "modbus_register": 471,
             "field_name": "setpoint_room_temperature",
             "description": "Unit SetPoint: (hundredths of degrees Celsius) es: 2350 = 23.50 °C -> Range: 18..30°C\"",
-            "scale_factor": 1.0
+            "scale_factor": 0.01
           },
           {
             "modbus_register": 472,
@@ -1728,7 +1728,7 @@
             "modbus_register": 473,
             "field_name": "air_temperature_in",
             "description": "Unit Input Air Temperature: (hundredths of degrees Celsius) es: 2350 = 23.50 °C",
-            "scale_factor": 1.0
+            "scale_factor": 0.01
           },
           {
             "modbus_register": 474,
@@ -1779,7 +1779,7 @@
             "modbus_register": 481,
             "field_name": "setpoint_room_temperature",
             "description": "Unit SetPoint: (hundredths of degrees Celsius) es: 2350 = 23.50 °C -> Range: 18..30°C\"",
-            "scale_factor": 1.0
+            "scale_factor": 0.01
           },
           {
             "modbus_register": 482,
@@ -1791,7 +1791,7 @@
             "modbus_register": 483,
             "field_name": "air_temperature_in",
             "description": "Unit Input Air Temperature: (hundredths of degrees Celsius) es: 2350 = 23.50 °C",
-            "scale_factor": 1.0
+            "scale_factor": 0.01
           },
           {
             "modbus_register": 484,
@@ -1842,7 +1842,7 @@
             "modbus_register": 491,
             "field_name": "setpoint_room_temperature",
             "description": "Unit SetPoint: (hundredths of degrees Celsius) es: 2350 = 23.50 °C -> Range: 18..30°C\"",
-            "scale_factor": 1.0
+            "scale_factor": 0.01
           },
           {
             "modbus_register": 492,
@@ -1854,7 +1854,7 @@
             "modbus_register": 493,
             "field_name": "air_temperature_in",
             "description": "Unit Input Air Temperature: (hundredths of degrees Celsius) es: 2350 = 23.50 °C",
-            "scale_factor": 1.0
+            "scale_factor": 0.01
           },
           {
             "modbus_register": 494,
@@ -1905,7 +1905,7 @@
             "modbus_register": 501,
             "field_name": "setpoint_room_temperature",
             "description": "Unit SetPoint: (hundredths of degrees Celsius) es: 2350 = 23.50 °C -> Range: 18..30°C\"",
-            "scale_factor": 1.0
+            "scale_factor": 0.01
           },
           {
             "modbus_register": 502,
@@ -1917,7 +1917,7 @@
             "modbus_register": 503,
             "field_name": "air_temperature_in",
             "description": "Unit Input Air Temperature: (hundredths of degrees Celsius) es: 2350 = 23.50 °C",
-            "scale_factor": 1.0
+            "scale_factor": 0.01
           },
           {
             "modbus_register": 504,
