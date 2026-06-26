@@ -7,21 +7,21 @@ from typing import Callable, Coroutine, Literal
 from aiomqtt import Client as MqttClient
 from aiomqtt import Message, Topic
 
-from thrs.cli.simulation_controls import (
+from thrs.input_output.base import SimulationInputs, SimulationValues, ThrsValues
+from thrs.orchestration.connector import PartialMqttMapping
+from thrs.runtime.messages import (
     ControlModeMessage,
     ManualControlMessage,
     ParametersMessage,
-    PauseMessage,
-    PlayMessage,
     SetAutomationMessage,
     SetParametersMessage,
     SetSimulationInputsMessage,
     SimulationInputMessage,
+    SimulationPauseMessage,
+    SimulationPlayMessage,
     SimulationStatusMessage,
-    StepMessage,
+    SimulationStepMessage,
 )
-from thrs.input_output.base import SimulationInputs, SimulationValues, ThrsValues
-from thrs.orchestration.connector import PartialMqttMapping
 
 
 @dataclass
@@ -390,7 +390,6 @@ class SimulationMessaging:
             qos=1,
         )
 
-
 class Messaging:
     def __init__(
         self,
@@ -464,7 +463,7 @@ class Messaging:
         return None
 
     async def play_simulation(self, playback_rate: float):
-        message = PlayMessage(playback_rate=playback_rate)
+        message = SimulationPlayMessage(playback_rate=playback_rate)
         await self._mqtt_client.publish(
             f"{self._simulation_topic_prefix}/{message.topic()}",
             message.model_dump_json(),
@@ -472,7 +471,7 @@ class Messaging:
         )
 
     async def pause_simulation(self):
-        message = PauseMessage()
+        message = SimulationPauseMessage()
         await self._mqtt_client.publish(
             f"{self._simulation_topic_prefix}/{message.topic()}",
             message.model_dump_json(),
@@ -480,7 +479,7 @@ class Messaging:
         )
 
     async def step_simulation(self, seconds: float):
-        message = StepMessage(seconds=seconds)
+        message = SimulationStepMessage(seconds=seconds)
         await self._mqtt_client.publish(
             f"{self._simulation_topic_prefix}/{message.topic()}",
             message.model_dump_json(),
