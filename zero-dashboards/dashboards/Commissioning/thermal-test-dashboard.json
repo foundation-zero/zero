@@ -86,7 +86,7 @@
             "mode": "thresholds"
           },
           "custom": {
-            "align": "auto",
+            "align": "center",
             "cellOptions": {
               "type": "auto"
             },
@@ -109,56 +109,19 @@
                 "value": 80
               }
             ]
-          }
+          },
+          "unit": "watt"
         },
         "overrides": [
           {
             "matcher": {
-              "id": "byRegexp",
-              "options": "/on_off/"
+              "id": "byName",
+              "options": "Timestamp"
             },
             "properties": [
               {
-                "id": "mappings",
-                "value": [
-                  {
-                    "options": {
-                      "0": {
-                        "index": 0,
-                        "text": "Off"
-                      },
-                      "1": {
-                        "index": 1,
-                        "text": "On"
-                      }
-                    },
-                    "type": "value"
-                  }
-                ]
-              }
-            ]
-          },
-          {
-            "matcher": {
-              "id": "byRegexp",
-              "options": "/[T|t]emperature/"
-            },
-            "properties": [
-              {
-                "id": "unit",
-                "value": "celsius"
-              }
-            ]
-          },
-          {
-            "matcher": {
-              "id": "byRegexp",
-              "options": "/[H|h]umidity/"
-            },
-            "properties": [
-              {
-                "id": "unit",
-                "value": "percent"
+                "id": "custom.align",
+                "value": "left"
               }
             ]
           }
