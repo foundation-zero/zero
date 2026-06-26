@@ -61,6 +61,10 @@ class ModbusRtuToMqttBridge:
                 tg.create_task(self.run_once())
 
     async def run_once(self) -> None:
+        await self._modbus.connect()
+        if not self._modbus.connected:
+            logging.warning("Modbus not connected")
+            return
         for unit in self._modbus_units:
             for topic in unit.topics:
                 modbus_values = await self.read_modbus(
@@ -69,6 +73,7 @@ class ModbusRtuToMqttBridge:
                 scaled_values = self.scale_values(modbus_values)
                 json_data = self.create_json(scaled_values, topic.extra_fields)
                 await self.publish_to_mqtt(topic.topic, json_data)
+        self._modbus.close()
 
     @retry(stop=stop_after_attempt(3), wait=wait_fixed(2))
     async def read_modbus(
