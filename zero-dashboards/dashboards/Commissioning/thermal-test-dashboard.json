@@ -25,9 +25,7 @@
       "icon": "external link",
       "includeVars": false,
       "keepTime": false,
-      "tags": [
-        "commissioning"
-      ],
+      "tags": ["commissioning"],
       "targetBlank": false,
       "title": "Dashboards",
       "tooltip": "",
@@ -177,7 +175,7 @@
             "renameByName": {
               "fan_speed": "Fan speed",
               "heater_on_off": "Heater On/Off",
-              "humitidy": "Humidity",
+              "humidity": "Humidity",
               "on_off": "On/Off",
               "source_type": "Source",
               "status": "Status",
@@ -264,11 +262,7 @@
       "id": 12,
       "options": {
         "legend": {
-          "calcs": [
-            "min",
-            "max",
-            "mean"
-          ],
+          "calcs": ["min", "max", "mean"],
           "displayMode": "table",
           "placement": "right",
           "showLegend": true
@@ -514,7 +508,7 @@
             "renameByName": {
               "fan_speed": "Fan speed",
               "heater_on_off": "Heater On/Off",
-              "humitidy": "Humidity",
+              "humidity": "Humidity",
               "on_off": "On/Off",
               "room": "Room",
               "source_type": "Source",
@@ -672,9 +666,7 @@
         {
           "id": "partitionByValues",
           "options": {
-            "fields": [
-              "room"
-            ],
+            "fields": ["room"],
             "keepFields": false,
             "naming": {
               "asLabels": true
@@ -805,9 +797,7 @@
         {
           "id": "partitionByValues",
           "options": {
-            "fields": [
-              "room"
-            ],
+            "fields": ["room"],
             "keepFields": false
           }
         }
@@ -951,9 +941,7 @@
         {
           "id": "partitionByValues",
           "options": {
-            "fields": [
-              "room"
-            ],
+            "fields": ["room"],
             "keepFields": false
           }
         }
@@ -963,9 +951,7 @@
   ],
   "preload": false,
   "schemaVersion": 42,
-  "tags": [
-    "commissioning"
-  ],
+  "tags": ["commissioning"],
   "templating": {
     "list": [
       {
