@@ -82,7 +82,7 @@ class PcmControlMode(ControlMode):
 
 
 class PcmControllerState(ThrsValues):
-    pass
+    parameters: PcmParameters
 
 
 class PcmControl(
@@ -244,7 +244,10 @@ class PcmControl(
         return PcmControlMode(mode=mode)
 
     def initial(self) -> tuple[PcmControlValues, PcmControllerState]:
-        return (_INITIAL_CONTROL_VALUES(self._time()), PcmControllerState())
+        return (
+            _INITIAL_CONTROL_VALUES(self._time()),
+            PcmControllerState(parameters=self._parameters),
+        )
 
     def update_parameters(self, parameters: PcmParameters):
         self._parameters = parameters
@@ -264,7 +267,10 @@ class PcmControl(
 
         self._control_flow_balance(sensor_values)
 
-        return (self._current_values, PcmControllerState())
+        return (
+            self._current_values,
+            PcmControllerState(parameters=self._parameters),
+        )
 
     def _all_discharged(self, sensor_values: PcmSensorValues) -> bool:
         return not any(

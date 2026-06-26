@@ -606,10 +606,10 @@ class ParametersMessage[Parameters: ThrsValues](OutgoingMessage):
 
     @staticmethod
     def subscribe_topic() -> str:
-        return "+/config/parameters"
+        return "+/parameters"
 
     def topic(self) -> str:
-        return f"{self.module}/config/parameters"
+        return f"{self.module}/parameters"
 
     @classmethod
     def clear_topics(cls, control_modules: list[str]) -> list[str]:
@@ -639,7 +639,6 @@ SIMULATION_OUTGOING_MESSAGES = [
 
 CONTROLLER_OUTGOING_MESSAGES = [
     ControlModeMessage,
-    ParametersMessage,
 ]
 
 
@@ -800,22 +799,15 @@ class SetParametersMessage[Parameters: ThrsValues](IncomingModuleMessage):
 
     @staticmethod
     def subscribe_topic() -> str:
-        return "+/controls/set_parameters"
+        return "+/parameters/set"
 
     def topic(self):
-        return f"{self.module}/controls/set_parameters"
+        return f"{self.module}/parameters/set"
 
     async def handle(
         self, topic_prefix: str, context: MessageContext[Any, Any, Any, Any]
     ):
         context.control.update_parameters_for(self.module, self.parameters)
-        await context.send(
-            topic_prefix,
-            ParametersMessage(
-                parameters=context.control.parameters.values[self.module],
-                module=self.module,
-            ),
-        )
 
 
 class SetSimulationInputsMessage[Inputs: SimulationInputs](IncomingMessage):
@@ -1080,14 +1072,6 @@ class SimulationControls:
                 )
             )
             try:
-                for module in control_module.modules:
-                    await context.send(
-                        self._controller_topic_prefix,
-                        ParametersMessage(
-                            module=module,
-                            parameters=control.parameters.values[module],
-                        ),
-                    )
                 if simulation:
                     await context.send(
                         self._simulation_topic_prefix,

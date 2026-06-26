@@ -24,6 +24,25 @@
       "console": "integratedTerminal",
       "justMyCode": false,
       "cwd": "${workspaceFolder}",
+      "env": {
+        "LOG_LEVEL": "DEBUG"
+      }
+    },
+    {
+      "name": "THRS: Debug simulation dhw",
+      "type": "debugpy",
+      "request": "launch",
+      "module": "thrs.cli",
+      "args": [
+        "run",
+        "dhw"
+      ],
+      "console": "integratedTerminal",
+      "justMyCode": false,
+      "cwd": "${workspaceFolder}",
+      "env": {
+        "LOG_LEVEL": "DEBUG"
+      }
     },
     {
       "name": "THRS: Debug graphql api",

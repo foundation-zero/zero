@@ -295,7 +295,7 @@ def add_parameter_mutations(
                 if parameters is None:
                     raise Exception("No parameters available to update")
                 setattr(parameters, name, value)
-                expect = mod.wait_for_parameters(
+                expect = mod.wait_for_controller_state(
                     lambda parameters: getattr(parameters, name) == value, timeout=2
                 )
                 await mod.set_parameters(parameters)

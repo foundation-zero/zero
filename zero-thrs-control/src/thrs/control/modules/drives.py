@@ -30,10 +30,6 @@ class DrivesControlMode(ControlMode):
         return self.mode == "propulsion"
 
 
-class DrivesControllerState(ThrsValues):
-    pass
-
-
 class DrivesParameters(ThrsValues):
     shorepower_maximum_supply_temperature: Celsius = 35
     propulsion_maximum_supply_temperature: Celsius = 60
@@ -45,6 +41,10 @@ class DrivesParameters(ThrsValues):
     heat_dump_tuning: Tuning = (0.05, 0.01, 0)
     aft_flow_balance_tuning: Tuning = (0.01, 0.001, 0)
     fwd_flow_balance_tuning: Tuning = (0.01, 0.001, 0)
+
+
+class DrivesControllerState(ThrsValues):
+    parameters: DrivesParameters
 
 
 def _INITIAL_CONTROL_VALUES(timestamp: datetime) -> DrivesControlValues:
@@ -254,7 +254,10 @@ class DrivesControl(
         return DrivesControlMode(mode=mode)
 
     def initial(self) -> tuple[DrivesControlValues, DrivesControllerState]:
-        return (_INITIAL_CONTROL_VALUES(self._time()), DrivesControllerState())
+        return (
+            _INITIAL_CONTROL_VALUES(self._time()),
+            DrivesControllerState(parameters=self._parameters),
+        )
 
     def control(
         self, sensor_values: DrivesSensorValues
@@ -273,7 +276,10 @@ class DrivesControl(
         elif self.mode.is_propulsion:
             self._control_flow_balance(sensor_values)
 
-        return (self._current_values, DrivesControllerState())
+        return (
+            self._current_values,
+            DrivesControllerState(parameters=self._parameters),
+        )
 
     def _shorepower_on(self, sensor_values: DrivesSensorValues) -> bool:
         return sensor_values.drives_shorepower.active.value

@@ -28,29 +28,6 @@ from thrs.input_output.modules.dhw import DhwControlValues, DhwSensorValues
 from thrs.orchestration.module import ModuleDescription
 
 
-class DhwControllerState(ThrsValues):
-    dhw_tanks_controller: Annotated[
-        controllers.TanksControllerValues,
-        component_meta(component_type="tank_controller", included_in_fmu=False),
-    ]
-    dhw_pump_flow_controller: Annotated[
-        controllers.PidControllerValues,
-        component_meta(component_type="pid_controller", included_in_fmu=False),
-    ]
-    dhw_pump_temperature_controller: Annotated[
-        controllers.PidControllerValues,
-        component_meta(component_type="pid_controller", included_in_fmu=False),
-    ]
-    dhw_drives_flow_controller: Annotated[
-        controllers.PidControllerValues,
-        component_meta(component_type="pid_controller", included_in_fmu=False),
-    ]
-    dhw_dc_flow_controller: Annotated[
-        controllers.PidControllerValues,
-        component_meta(component_type="pid_controller", included_in_fmu=False),
-    ]
-
-
 class DhwParameters(ThrsValues):
     heatpump_boosting_enabled: bool = True
     ht_boosting_enabled: bool = True
@@ -99,6 +76,31 @@ class DhwParameters(ThrsValues):
                 "Maximum tank level must be greater than minimum tank level"
             )
         return self
+
+
+class DhwControllerState(ThrsValues):
+    parameters: DhwParameters
+
+    dhw_tanks_controller: Annotated[
+        controllers.TanksControllerValues,
+        component_meta(component_type="tank_controller", included_in_fmu=False),
+    ]
+    dhw_pump_flow_controller: Annotated[
+        controllers.PidControllerValues,
+        component_meta(component_type="pid_controller", included_in_fmu=False),
+    ]
+    dhw_pump_temperature_controller: Annotated[
+        controllers.PidControllerValues,
+        component_meta(component_type="pid_controller", included_in_fmu=False),
+    ]
+    dhw_drives_flow_controller: Annotated[
+        controllers.PidControllerValues,
+        component_meta(component_type="pid_controller", included_in_fmu=False),
+    ]
+    dhw_dc_flow_controller: Annotated[
+        controllers.PidControllerValues,
+        component_meta(component_type="pid_controller", included_in_fmu=False),
+    ]
 
 
 def _zero_pid(timestamp: datetime) -> PidControllerValues:
@@ -159,8 +161,11 @@ def _INITIAL_CONTROL_VALUES(timestamp: datetime) -> DhwControlValues:
     )
 
 
-def _INITIAL_CONTROLLER_STATE(timestamp: datetime) -> DhwControllerState:
+def _INITIAL_CONTROLLER_STATE(
+    parameters: DhwParameters, timestamp: datetime
+) -> DhwControllerState:
     return DhwControllerState(
+        parameters=parameters,
         dhw_tanks_controller=TanksControllerValues(
             tank1_state=Stamped(value=TankState.NEEDS_FILL, timestamp=timestamp),
             tank2_state=Stamped(value=TankState.NEEDS_FILL, timestamp=timestamp),
@@ -540,7 +545,7 @@ class DhwControl(
     ) -> None:
         self._parameters = parameters
         self._time = time_fn
-        self._current_values, self._current_controller_state = self.initial()
+        self._current_values, _ = self.initial()
 
         self._states = [
             State(
@@ -672,23 +677,24 @@ class DhwControl(
             time_fn=self._time,
         )
 
-    def update_controller_state(self, sensor_values: DhwSensorValues):
-        self._current_controller_state.dhw_tanks_controller = (
-            self._tanks_controller.values(
-                sensor_values=sensor_values, parameters=self._parameters
-            )
-        )
-        self._current_controller_state.dhw_drives_flow_controller = (
-            self._dhw_drives_flow_controller.values()
-        )
-        self._current_controller_state.dhw_dc_flow_controller = (
-            self._dhw_dc_flow_controller.values()
-        )
-        self._current_controller_state.dhw_pump_flow_controller = (
-            self._pump_flow_controller.values()
-        )
-        self._current_controller_state.dhw_pump_temperature_controller = (
-            self._pump_temperature_controller.values()
+    def update_controller_state(
+        self,
+        sensor_values: DhwSensorValues,
+        parameters: DhwParameters,
+    ) -> DhwControllerState:
+        return DhwControllerState(
+            parameters=parameters,
+            dhw_tanks_controller=(
+                self._tanks_controller.values(
+                    sensor_values=sensor_values, parameters=parameters
+                )
+            ),
+            dhw_drives_flow_controller=(self._dhw_drives_flow_controller.values()),
+            dhw_dc_flow_controller=(self._dhw_dc_flow_controller.values()),
+            dhw_pump_flow_controller=(self._pump_flow_controller.values()),
+            dhw_pump_temperature_controller=(
+                self._pump_temperature_controller.values()
+            ),
         )
 
     @property
@@ -713,7 +719,7 @@ class DhwControl(
         return DhwControlMode(boosting_mode=mode, filling_mode=filling_mode)
 
     def initial(self) -> tuple[DhwControlValues, DhwControllerState]:
-        controller_state = _INITIAL_CONTROLLER_STATE(self._time())
+        controller_state = _INITIAL_CONTROLLER_STATE(self._parameters, self._time())
 
         return (
             _INITIAL_CONTROL_VALUES(self._time()).model_copy(deep=True),
@@ -729,9 +735,11 @@ class DhwControl(
         self._control_filling_flow(sensor_values)
         self._control_boosting_flow(sensor_values)
 
-        self.update_controller_state(sensor_values)
+        current_controller_state = self.update_controller_state(
+            sensor_values, self._parameters
+        )
 
-        return (self._current_values, self._current_controller_state)
+        return (self._current_values, current_controller_state)
 
     def _drives_sufficient_boosting_heat(self, sensor_values: DhwSensorValues) -> bool:
         if self._tanks_controller._boosting_tank is None:

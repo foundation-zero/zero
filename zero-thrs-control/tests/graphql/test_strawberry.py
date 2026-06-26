@@ -13,13 +13,17 @@ from thrs.cli.simulation_controls import (
     SimulationInputMessage,
     SimulationStatusMessage,
 )
-from thrs.control.modules.consumers import ConsumersParameters
-from thrs.control.modules.dhw import DhwParameters
-from thrs.control.modules.pcm import PcmParameters
-from thrs.control.modules.pvt import PvtControlMode, PvtParameters
+from thrs.control.modules.consumers import (
+    ConsumersControllerState,
+    ConsumersParameters,
+)
+from thrs.control.modules.dhw import DhwControllerState, DhwParameters
+from thrs.control.modules.pcm import PcmControllerState, PcmParameters
+from thrs.control.modules.pvt import PvtControllerState, PvtControlMode, PvtParameters
 from thrs.control.modules.pvt_group import PvtGroupControlMode
 from thrs.control.modules.thrusters import (
     THRUSTERS_MODULE_DESCRIPTION,
+    ThrustersControllerState,
     ThrustersControlMode,
     ThrustersParameters,
 )
@@ -138,6 +142,7 @@ async def thrusters_messaging_mock():
     mock.sensor_values = ThrustersSensorValues.zero()
     mock.control_values = ThrustersControlValues.zero()
     mock.parameters = ThrustersParameters()
+    mock.controller_state = ThrustersControllerState.zero()
     mock.control_mode = ControlModeMessage(
         module="thrusters",
         mode=SwitchingControlMode(automatic_mode=ThrustersControlMode(mode="idle")),
@@ -148,7 +153,7 @@ async def thrusters_messaging_mock():
 
     mock.wait_for_control_mode.side_effect = wait
     mock.wait_for_control_values.side_effect = wait
-    mock.wait_for_parameters.side_effect = wait
+    mock.wait_for_controller_state.side_effect = wait
     return mock
 
 
@@ -158,6 +163,7 @@ async def pvt_messaging_mock():
     mock.sensor_values = PvtSensorValues.zero()
     mock.control_values = PvtControlValues.zero()
     mock.parameters = PvtParameters()
+    mock.controller_state = PvtControllerState.zero()
     mock.control_mode = ControlModeMessage(
         module="pvt",
         mode=SwitchingControlMode(
@@ -174,7 +180,7 @@ async def pvt_messaging_mock():
 
     mock.wait_for_control_mode.side_effect = wait
     mock.wait_for_control_values.side_effect = wait
-    mock.wait_for_parameters.side_effect = wait
+    mock.wait_for_controller_state.side_effect = wait
     return mock
 
 
@@ -184,6 +190,7 @@ async def pcm_messaging_mock():
     mock.sensor_values = PcmSensorValues.zero()
     mock.control_values = PcmControlValues.zero()
     mock.parameters = PcmParameters()
+    mock.controller_state = PcmControllerState.zero()
     mock.control_mode = ControlModeMessage(
         module="pcm", mode=SwitchingControlMode(automatic_mode=None)
     )
@@ -193,7 +200,7 @@ async def pcm_messaging_mock():
 
     mock.wait_for_control_mode.side_effect = wait
     mock.wait_for_control_values.side_effect = wait
-    mock.wait_for_parameters.side_effect = wait
+    mock.wait_for_controller_state.side_effect = wait
     return mock
 
 
@@ -203,6 +210,7 @@ async def consumers_messaging_mock():
     mock.sensor_values = ConsumersSensorValues.zero()
     mock.control_values = ConsumersControlValues.zero()
     mock.parameters = ConsumersParameters()
+    mock.controller_state = ConsumersControllerState.zero()
     mock.control_mode = ControlModeMessage(
         module="consumers", mode=SwitchingControlMode(automatic_mode=None)
     )
@@ -212,7 +220,7 @@ async def consumers_messaging_mock():
 
     mock.wait_for_control_mode.side_effect = wait
     mock.wait_for_control_values.side_effect = wait
-    mock.wait_for_parameters.side_effect = wait
+    mock.wait_for_controller_state.side_effect = wait
     return mock
 
 
@@ -222,6 +230,7 @@ async def dhw_messaging_mock():
     mock.sensor_values = DhwSensorValues.zero()
     mock.control_values = DhwControlValues.zero()
     mock.parameters = DhwParameters()
+    mock.controller_state = DhwControllerState.zero()
     mock.control_mode = ControlModeMessage(
         module="dhw", mode=SwitchingControlMode(automatic_mode=None)
     )
@@ -231,7 +240,7 @@ async def dhw_messaging_mock():
 
     mock.wait_for_control_mode.side_effect = wait
     mock.wait_for_control_values.side_effect = wait
-    mock.wait_for_parameters.side_effect = wait
+    mock.wait_for_controller_state.side_effect = wait
     return mock
 
 

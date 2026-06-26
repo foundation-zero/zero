@@ -8,6 +8,7 @@ from thrs.input_output.base import (
     CombinedValues,
     SimulationInputs,
     SimulationValues,
+    Stamped,
     ThrsValues,
 )
 from thrs.input_output.fmu_mapping import (
@@ -28,8 +29,9 @@ def flatten_model_values(
             {},
         )
     return {
-        fmu_key: getattr(getattr(model, component), field).value
+        fmu_key: data.value if isinstance(data, Stamped) else data
         for (component, field), fmu_key in fmu_key_mapping.items()
+        if (data := getattr(getattr(model, component), field))
     }
 
 

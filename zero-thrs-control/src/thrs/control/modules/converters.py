@@ -31,7 +31,7 @@ class ConvertersParameters(ThrsValues):
 
 
 class ConvertersControllerState(ThrsValues):
-    pass
+    parameters: ConvertersParameters
 
 
 class ConvertersSensorValues(ThrsValues):
@@ -169,7 +169,10 @@ class ConvertersControl(
         return ConvertersControlMode(mode=mode)
 
     def initial(self) -> tuple[ConvertersControlValues, ConvertersControllerState]:
-        return (self.current_values, ConvertersControllerState())
+        return (
+            self.current_values,
+            ConvertersControllerState(parameters=self._parameters),
+        )
 
     def _close_circuit(self):
         self.current_values.mix.setpoint = Stamped(
@@ -193,7 +196,10 @@ class ConvertersControl(
         self._control_switch_valves(sensor_values)
         self._control_flow(sensor_values)
 
-        return (self.current_values, ConvertersControllerState())
+        return (
+            self.current_values,
+            ConvertersControllerState(parameters=self._parameters),
+        )
 
     def _control_warmup_mix(self, sensor_values: ConvertersSensorValues):
         self.current_values.mix.setpoint = Stamped(

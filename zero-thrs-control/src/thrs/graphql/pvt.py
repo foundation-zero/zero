@@ -1,6 +1,6 @@
 import strawberry
 
-from thrs.control.modules.pvt import PvtControlMode, PvtParameters
+from thrs.control.modules.pvt import PvtControllerState, PvtControlMode, PvtParameters
 from thrs.control.modules.pvt_group import PvtGroupControlMode
 from thrs.graphql.base import (
     ControlModule,
@@ -25,11 +25,7 @@ PvtControlValuesType = pydantic_to_strawberry_type(PvtControlValues)
 PvtParametersType = pydantic_to_strawberry_type(PvtParameters)
 PvtGroupControlModeType = pydantic_to_strawberry_type(PvtGroupControlMode)
 PvtControlModeType = pydantic_to_strawberry_type(PvtControlMode)
-
-
-@strawberry.type()
-class PvtControllerStateType:
-    _empty: None = None
+PvtControllerStateType = pydantic_to_strawberry_type(PvtControllerState)
 
 
 PvtModule = ControlModule[
@@ -57,7 +53,9 @@ def resolve_module(
         )
         if module.control_mode
         else None,
-        controller_state=PvtControllerStateType(),
+        controller_state=optional_pydantic_to_graphql(
+            PvtControllerStateType, module.controller_state
+        ),
     )
 
 

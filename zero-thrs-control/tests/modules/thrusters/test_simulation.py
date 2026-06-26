@@ -11,6 +11,7 @@ from tests.modules.thrusters.conftest import ThrustersSimulation
 from thrs.control.modules.thrusters import (
     THRUSTERS_MODULE_DESCRIPTION,
     ThrustersControl,
+    ThrustersControllerState,
     ThrustersParameters,
 )
 from thrs.input_output.definitions.control import Valve
@@ -53,6 +54,12 @@ def test_runner(simulation, fmu, simulation_inputs, control, alarms):
                 ThrustersSensorValues.zero(),
                 fmu_key_mapping=build_fmu_key_mapping(
                     ThrustersSensorValues, fmu_only=False
+                ),
+            ),
+            **flatten_model_values(
+                ThrustersControllerState.zero(),
+                fmu_key_mapping=build_fmu_key_mapping(
+                    ThrustersControllerState, fmu_only=False
                 ),
             ),
             **flatten_model_values(

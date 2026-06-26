@@ -54,7 +54,7 @@ type ConsumersControlValuesType {
 }
 
 type ConsumersControllerStateType {
-  Empty: Void
+  parameters: ConsumersParametersType!
 }
 
 type ConsumersParametersType {
@@ -209,6 +209,7 @@ type DhwControlValuesType {
 }
 
 type DhwControllerStateType {
+  parameters: DhwParametersType!
   dhwTanksController: ControllerTanksControllerValuesType! @jsonSchemaDirective(yardTag: "", componentType: "tank_controller", valveType: null)
   dhwPumpFlowController: ControllerPidControllerValuesType! @jsonSchemaDirective(yardTag: "", componentType: "pid_controller", valveType: null)
   dhwPumpTemperatureController: ControllerPidControllerValuesType! @jsonSchemaDirective(yardTag: "", componentType: "pid_controller", valveType: null)
@@ -659,7 +660,7 @@ type PcmControlValuesType {
 }
 
 type PcmControllerStateType {
-  Empty: Void
+  parameters: PcmParametersType!
 }
 
 input PcmInputType {
@@ -786,7 +787,7 @@ type PvtControlValuesType {
 }
 
 type PvtControllerStateType {
-  Empty: Void
+  parameters: PvtParametersType!
 }
 
 type PvtGroupControlModeType {
@@ -1062,7 +1063,7 @@ type ThrustersControlValuesType {
 }
 
 type ThrustersControllerStateType {
-  Empty: Void
+  parameters: ThrustersParametersType!
 }
 
 type ThrustersParametersType {

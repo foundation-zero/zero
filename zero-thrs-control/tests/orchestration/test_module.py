@@ -50,7 +50,12 @@ class TestCombinedControl:
         time_fn = Mock(return_value=datetime.now())
         mock_control = Mock(
             spec=SimpleControl,
-            initial=Mock(return_value=(SimpleInOut.zero(), SimpleControllerState())),
+            initial=Mock(
+                return_value=(
+                    SimpleInOut.zero(),
+                    SimpleControllerState(parameters=SimpleParameters()),
+                )
+            ),
         )
         mock_control.control.return_value = (
             SimpleInOut(
@@ -58,7 +63,7 @@ class TestCombinedControl:
                     flow=Stamped.stamp(20.0), temperature=Stamped.stamp(30.0)
                 )
             ),
-            SimpleControllerState(),
+            SimpleControllerState(parameters=SimpleParameters()),
         )
 
         modules = {"module1": mock_control}
@@ -87,7 +92,12 @@ class TestCombinedControl:
     def test_update_parameters(self):
         mock_control = Mock(
             spec=SimpleControl,
-            initial=Mock(return_value=(SimpleInOut.zero(), SimpleControllerState())),
+            initial=Mock(
+                return_value=(
+                    SimpleInOut.zero(),
+                    SimpleControllerState(parameters=SimpleParameters()),
+                )
+            ),
         )
 
         modules = {"module1": mock_control}
@@ -188,7 +198,12 @@ class TestModuleNesting:
     def test_control(self):
         mock_control_instance = Mock(
             spec=Control,
-            initial=Mock(return_value=(SimpleInOut.zero(), SimpleControllerState())),
+            initial=Mock(
+                return_value=(
+                    SimpleInOut.zero(),
+                    SimpleControllerState(parameters=SimpleParameters()),
+                )
+            ),
         )
         control_fn = Mock(return_value=mock_control_instance)
         alarms_fn = Mock()
