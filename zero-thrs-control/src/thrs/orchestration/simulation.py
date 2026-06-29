@@ -4,7 +4,7 @@ from datetime import datetime, timedelta
 from types import TracebackType
 from typing import Any, Self
 
-from thrs.input_output.base import SimulationInputs, ThrsValues
+from thrs.input_output.base import SimulationInputs, SimulationValues, ThrsValues
 from thrs.orchestration.module import ModuleClassMap
 from thrs.simulation.fmu import Fmu
 from thrs.simulation.io_mapping import CombinedIoMapping, IoMapping, ThrsModelIoMapping
@@ -28,10 +28,10 @@ class SimulationResult[
 
 
 class Simulation[
-    S: ThrsValues,
-    C: ThrsValues,
+    S,
+    C,
     I: SimulationInputs,
-    O: ThrsValues,
+    O: SimulationValues,
 ]:
     def __init__(
         self,
