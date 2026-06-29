@@ -106,10 +106,10 @@ def test_cosimulation_input_routing():
                 DrivesSimulationOutputs,
                 [
                     Coupling(
-                        "dhw_flow_drives", "flow", "drives_dhw_supply", "flow", 0.0
+                        "dhw_drives_exchanger", "flow", "drives_dhw_supply", "flow", 0.0
                     ),
                     Coupling(
-                        "dhw_temperature_freshwater_supply",
+                        "dhw_drives_exchanger",
                         "temperature",
                         "drives_dhw_supply",
                         "temperature",
@@ -125,10 +125,10 @@ def test_cosimulation_input_routing():
                 DhwSimulationOutputs,
                 [
                     Coupling(
-                        "drives_flow_recovery", "flow", "dhw_drives_supply", "flow", 0.0
+                        "drives_dhw_exchanger", "flow", "dhw_drives_supply", "flow", 0.0
                     ),
                     Coupling(
-                        "drives_temperature_recovery",
+                        "drives_dhw_exchanger",
                         "temperature",
                         "dhw_drives_supply",
                         "temperature",

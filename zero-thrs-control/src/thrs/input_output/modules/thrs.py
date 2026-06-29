@@ -143,97 +143,6 @@ class ThrsSimulationOutputs(
     pass
 
 
-couplings = [
-    # consumers to dhw
-    Coupling("consumers_flow_dhw", "flow", "dhw_adsorption_supply", "flow", 0.0),
-    Coupling(
-        "consumers_temperature_dhw_supply",
-        "temperature",
-        "dhw_ht_supply",
-        "temperature",
-        30.0,
-    ),
-    # dhw to consumers
-    Coupling(
-        "dhw_ht_supply", "flow", "consumers_dhw_supply", "flow", 0.0
-    ),  # no datapoint here - depends on valve positions  #rename to consumers?
-    Coupling(
-        "dhw_ht_supply", "temperature", "consumers_dhw_supply", "temperature", 30.0
-    ),  # no datapoint here - depends on valve positions  #rename to consumers?
-    # consumers to adsorption
-    Coupling("consumers_flow_adsorption", "flow", "adsorption_ht_supply", "flow", 0.0),
-    Coupling(
-        "consumers_temperature_adsorption_supply",
-        "temperature",
-        "adsorption_ht_supply",
-        "temperature",
-        30.0,
-    ),
-    # adsorption to consumers
-    Coupling(
-        "adsorption_flow_ht", "flow", "consumers_adsorption_supply", "flow", 0.0
-    ),  # rename to ht to consumers?
-    Coupling(
-        "adsorption_temperature_ht_supply",
-        "temperature",
-        "consumers_adsorption_supply",
-        "temperature",
-        30.0,
-    ),  # rename ht to consumers?
-    # dhw to adsorption
-    Coupling("dhw_flow_dc", "flow", "adsorption_dhw_supply", "flow", 0.0),
-    Coupling(
-        "dhw_temperature_freshwater_supply",
-        "temperature",
-        "adsorption_dhw_supply",
-        "temperature",
-        30.0,
-    ),
-    # adsorption to dhw
-    Coupling("adsorption_flow_dhw", "flow", "dhw_adsorption_supply", "flow", 0.0),
-    Coupling(
-        "adsorption_temperature_waste_return",
-        "temperature",
-        "dhw_adsorption_supply",
-        "temperature",
-        30.0,
-    ),
-    # dhw to dc
-    Coupling("dhw_flow_dc", "flow", "dc_dhw_supply", "flow", 0.0),
-    Coupling(
-        "dhw_temperature_hvac_exchanger_return",
-        "temperature",
-        "dc_dhw_supply",
-        "temperature",
-        30.0,
-    ),
-    # dc to dhw
-    Coupling("dc_flow_recovery", "flow", "dhw_dc_supply", "flow", 0.0),
-    Coupling(
-        "dc_temperature_recovery", "temperature", "dhw_dc_supply", "temperature", 30.0
-    ),
-    # dhw to drives
-    Coupling(
-        "dhw_flow_drives", "flow", "drives_dhw_supply", "flow", 0.0
-    ),  # no datapoint here - depends on valve positions
-    Coupling(
-        "dhw_temperature_freshwater_supply",
-        "temperature",
-        "drives_dhw_supply",
-        "temperature",
-        30.0,
-    ),  # no datapoint here - depends on valve positions
-    # drives to dhw
-    Coupling("drives_flow_recovery", "flow", "dhw_drives_supply", "flow", 0.0),
-    Coupling(
-        "drives_temperature_recovery",
-        "temperature",
-        "dhw_drives_supply",
-        "temperature",
-        30.0,
-    ),
-]
-
 participants = [
     CoSimulationParticipant(
         Fmu(high_temperature_path),
@@ -322,10 +231,10 @@ participants = [
         [
             # consumers to dhw
             Coupling(
-                "consumers_flow_dhw", "flow", "dhw_adsorption_supply", "flow", 0.0
+                "consumers_dhw_exchanger", "flow", "dhw_adsorption_supply", "flow", 0.0
             ),
             Coupling(
-                "consumers_temperature_dhw_supply",
+                "consumers_dhw_exchanger",
                 "temperature",
                 "dhw_ht_supply",
                 "temperature",
@@ -333,28 +242,28 @@ participants = [
             ),
             # adsorption to dhw
             Coupling(
-                "adsorption_flow_dhw", "flow", "dhw_adsorption_supply", "flow", 0.0
+                "adsorption_dhw_exchanger", "flow", "dhw_adsorption_supply", "flow", 0.0
             ),
             Coupling(
-                "adsorption_temperature_waste_return",
+                "adsorption_dhw_exchanger",
                 "temperature",
                 "dhw_adsorption_supply",
                 "temperature",
                 30.0,
             ),
             # dc to dhw
-            Coupling("dc_flow_recovery", "flow", "dhw_dc_supply", "flow", 0.0),
+            Coupling("dc_dhw_exchanger", "flow", "dhw_dc_supply", "flow", 0.0),
             Coupling(
-                "dc_temperature_recovery",
+                "dc_dhw_exchanger",
                 "temperature",
                 "dhw_dc_supply",
                 "temperature",
                 30.0,
             ),
             # drives to dhw
-            Coupling("drives_flow_recovery", "flow", "dhw_drives_supply", "flow", 0.0),
+            Coupling("drives_dhw_exchanger", "flow", "dhw_drives_supply", "flow", 0.0),
             Coupling(
-                "drives_temperature_recovery",
+                "drives_dhw_exchanger",
                 "temperature",
                 "dhw_drives_supply",
                 "temperature",
@@ -370,9 +279,9 @@ participants = [
         DcSimulationOutputs,
         [
             # dhw to dc
-            Coupling("dhw_flow_dc", "flow", "dc_dhw_supply", "flow", 0.0),
+            Coupling("dhw_dc_exchanger", "flow", "dc_dhw_supply", "flow", 0.0),
             Coupling(
-                "dhw_temperature_hvac_exchanger_return",
+                "dhw_dc_exchanger",
                 "temperature",
                 "dc_dhw_supply",
                 "temperature",
@@ -386,10 +295,11 @@ participants = [
         [DrivesControlValues],
         DrivesSimulationInputs,
         DrivesSimulationOutputs,
-        [  # dhw to drives
-            Coupling("dhw_flow_drives", "flow", "drives_dhw_supply", "flow", 0.0),
+        [
+            # dhw to drives
+            Coupling("dhw_drives_exchanger", "flow", "drives_dhw_supply", "flow", 0.0),
             Coupling(
-                "dhw_temperature_freshwater_supply",
+                "dhw_drives_exchanger",
                 "temperature",
                 "drives_dhw_supply",
                 "temperature",
