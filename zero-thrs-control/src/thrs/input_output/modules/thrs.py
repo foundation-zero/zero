@@ -1,9 +1,7 @@
-from typing import Annotated, cast
+from typing import Annotated
 
-from pydantic import computed_field
-
-from thrs.input_output.base import SimulationInputs, Stamped, component_meta
-from thrs.input_output.definitions import sensor, simulation
+from thrs.input_output.base import SimulationInputs, component_meta
+from thrs.input_output.definitions import simulation
 from thrs.input_output.modules.adsorption import (
     AdsorptionControlValues,
     AdsorptionSensorValues,
@@ -68,17 +66,22 @@ from thrs.simulation.models.fmu_paths import (
 
 
 class ThrsSimulationInputs(SimulationInputs):
+    # thrusters
     thrusters_thruster_aft: simulation.Thruster
     thrusters_thruster_fwd: simulation.Thruster
     thrusters_seawater_supply: simulation.Boundary
     thrusters_pcs: simulation.Pcs
+    # pvt
     pvt_main_fwd: simulation.HeatSource
     pvt_main_aft: simulation.HeatSource
     pvt_owners: simulation.HeatSource
     pvt_seawater_supply: simulation.Boundary
+    # pcm
     pcm_freshwater_supply: simulation.Boundary
+    # consumers
     consumers_dhw_supply: simulation.Boundary
     consumers_adsorption_supply: simulation.Boundary
+    # adsorption
     adsorption_cooling_supply: simulation.TemperatureBoundary
     adsorption_seawater_supply: simulation.Boundary
     adsorption_available_hot_temperature: Annotated[
@@ -93,110 +96,18 @@ class ThrsSimulationInputs(SimulationInputs):
     adsorption_chiller: Annotated[
         simulation.AdsorptionChiller, component_meta(included_in_fmu=False)
     ]
-    adsorption_ht_supply: simulation.Boundary  # TODO: change to consumers
+    adsorption_consumers_supply: simulation.Boundary
     adsorption_dhw_supply: simulation.Boundary
+    # dhw
     dhw_drives_supply: simulation.Boundary
     dhw_dc_supply: simulation.Boundary
     dhw_adsorption_supply: simulation.Boundary
-    dhw_ht_supply: simulation.Boundary  # TODO: change to consumers
+    dhw_consumers_supply: simulation.Boundary
     dhw_freshwater_supply: simulation.OverpressureTemperatureBoundary
     dhw_hvac_exchanger: simulation.HvacExchanger
     dhw_seawater_supply: simulation.TemperatureBoundary
     dhw_hotwater_demand: simulation.FlowBoundary
-
-    @computed_field(
-        json_schema_extra=component_meta(included_in_fmu=False).json_schema_extra
-    )
-    @property
-    def drives_flow_recovery(self) -> sensor.FlowSensor:
-        return sensor.FlowSensor(
-            flow=cast(Stamped, self.dhw_drives_supply.flow),
-            temperature=cast(Stamped, self.dhw_drives_supply.temperature),
-        )
-
-    @computed_field(
-        json_schema_extra=component_meta(
-            included_in_fmu=False,
-        ).json_schema_extra
-    )
-    @property
-    def drives_temperature_recovery(self) -> sensor.TemperatureSensor:
-        return sensor.TemperatureSensor(
-            temperature=cast(Stamped, self.dhw_drives_supply.temperature)
-        )
-
-    @computed_field(
-        json_schema_extra=component_meta(
-            included_in_fmu=False,
-        ).json_schema_extra
-    )
-    @property
-    def dc_flow_recovery(self) -> sensor.FlowSensor:
-        return sensor.FlowSensor(
-            flow=cast(Stamped, self.dhw_dc_supply.flow),
-            temperature=cast(Stamped, self.dhw_dc_supply.temperature),
-        )
-
-    @computed_field(
-        json_schema_extra=component_meta(
-            included_in_fmu=False,
-        ).json_schema_extra
-    )
-    @property
-    def dc_temperature_recovery(self) -> sensor.TemperatureSensor:
-        return sensor.TemperatureSensor(
-            temperature=cast(Stamped, self.dhw_dc_supply.temperature)
-        )
-
-    @computed_field(
-        json_schema_extra=component_meta(
-            included_in_fmu=False,
-        ).json_schema_extra
-    )
-    @property
-    def consumers_flow_dhw(self) -> sensor.FlowSensor:
-        return sensor.FlowSensor(
-            flow=cast(Stamped, self.dhw_ht_supply.flow),
-            temperature=cast(Stamped, self.dhw_ht_supply.temperature),
-        )
-
-    @computed_field(
-        json_schema_extra=component_meta(
-            included_in_fmu=False,
-            component_type="temperature_sensor",
-        ).json_schema_extra
-    )
-    @property
-    def consumers_temperature_dhw_supply(self) -> sensor.TemperatureSensor:
-        return sensor.TemperatureSensor(
-            temperature=cast(Stamped, self.dhw_ht_supply.temperature)
-        )
-
-    @computed_field(
-        json_schema_extra=component_meta(
-            included_in_fmu=False,
-            component_type="flow_sensor",
-        ).json_schema_extra
-    )
-    @property
-    def adsorption_flow_dhw(self) -> sensor.FlowSensor:
-        return sensor.FlowSensor(
-            flow=cast(Stamped, self.dhw_adsorption_supply.flow),
-            temperature=cast(Stamped, self.dhw_adsorption_supply.temperature),
-        )
-
-    @computed_field(
-        json_schema_extra=component_meta(
-            included_in_fmu=False,
-            component_type="temperature_sensor",
-        ).json_schema_extra
-    )
-    @property
-    def adsorption_temperature_waste_return(self) -> sensor.TemperatureSensor:
-        return sensor.TemperatureSensor(
-            temperature=cast(Stamped, self.dhw_adsorption_supply.temperature)
-        )
-
+    # dc
     dc_brightloop_fwd1: simulation.Converter
     dc_brightloop_fwd2: simulation.Converter
     dc_ugrid1: simulation.Converter
@@ -207,6 +118,7 @@ class ThrsSimulationInputs(SimulationInputs):
     dc_brightloop_aft4: simulation.Converter
     dc_seawater_supply: simulation.Boundary
     dc_dhw_supply: simulation.Boundary
+    # drives
     drives_oil_cooler_aft: simulation.HeatSource
     drives_oil_cooler_fwd: simulation.HeatSource
     drives_propdrive_aft1: simulation.PropulsionDrive

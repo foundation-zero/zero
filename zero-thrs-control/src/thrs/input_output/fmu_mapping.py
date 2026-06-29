@@ -32,7 +32,9 @@ def _fmu_key_for_field(
     component_name: str, field_name: str, field: FieldInfo | ComputedFieldInfo
 ) -> str:
     annotation = (
-        field.json_schema_extra if isinstance(field, ComputedFieldInfo) else field.annotation
+        field.json_schema_extra
+        if isinstance(field, ComputedFieldInfo)
+        else field.annotation
     )
     meta = unit_meta(unit_for_annotation(annotation))  # type: ignore
     if meta:

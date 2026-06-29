@@ -39,17 +39,19 @@ class CoSimulationParticipant:
         self.fmu_key_input_mapping = reduce(
             operator.ior,
             [
-                 build_fmu_key_mapping(cls, fmu_only=False)
-                 for cls in self.control_values_clss + [self.simulation_inputs_cls]
+                build_fmu_key_mapping(cls, fmu_only=False)
+                for cls in self.control_values_clss + [self.simulation_inputs_cls]
             ],
-            {})
+            {},
+        )
         self.fmu_key_output_mapping = reduce(
             operator.ior,
             [
-                 build_fmu_key_mapping(cls, fmu_only=False)
-                 for cls in self.sensor_values_clss + [self.simulation_outputs_cls]
+                build_fmu_key_mapping(cls, fmu_only=False)
+                for cls in self.sensor_values_clss + [self.simulation_outputs_cls]
             ],
-            {})
+            {},
+        )
 
         for coupling in self.couplings:
             if (
@@ -90,10 +92,12 @@ class CoSimulationMaster(ExitStack):
 
     def _compile_couplings(self):
         def _src_fmu_key(coupling):
-            src_fmu_key = self.total_fmu_key_output_mapping.get((
-                coupling.src_component,
-                coupling.src_field,
-            ))
+            src_fmu_key = self.total_fmu_key_output_mapping.get(
+                (
+                    coupling.src_component,
+                    coupling.src_field,
+                )
+            )
             if src_fmu_key is None:
                 raise ValueError(
                     f"The coupling source {coupling.src_component}.{coupling.src_field} is not found in any participant's output mapping."
