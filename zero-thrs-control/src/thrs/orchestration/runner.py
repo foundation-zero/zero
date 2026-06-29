@@ -13,7 +13,6 @@ from thrs.input_output.base import (
     ThrsValues,
 )
 from thrs.orchestration.connector import Connector
-from thrs.orchestration.module import CombinedModule
 from thrs.orchestration.simulation import Simulation
 from thrs.simulation.fmu import Fmu
 
@@ -36,27 +35,6 @@ class SimulatorModel:
             yield Simulation(
                 self.sensor_values_cls,
                 self.simulation_outputs_cls,
-                fmu,
-                self.simulation_inputs,
-                self.start_time,
-                self.tick_duration,
-            )
-
-
-@dataclass
-class ModuleSimulatorModel:
-    fmu_path: str
-    module: CombinedModule
-    simulation_inputs: SimulationInputs
-    start_time: datetime = datetime.now()
-    tick_duration: timedelta = timedelta(seconds=1)
-
-    @contextmanager
-    def simulation(self):
-        with Fmu(self.fmu_path) as fmu:
-            yield Simulation(
-                self.module.sensor_values_clss,
-                self.module.simulation_outputs_cls,
                 fmu,
                 self.simulation_inputs,
                 self.start_time,

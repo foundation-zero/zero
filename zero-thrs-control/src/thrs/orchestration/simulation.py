@@ -45,6 +45,7 @@ class Simulation[
         self._ticks = 0
         self._tick_duration = tick_duration
         self._simulation_inputs = simulation_inputs
+        self._simulation_outputs_cls = simulation_outputs_cls
         self._fmu = fmu
         self._io_mapping: IoMapping = (
             CombinedIoMapping(sensor_values_clss, simulation_outputs_cls)  # type: ignore
@@ -86,3 +87,11 @@ class Simulation[
 
     def update_simulation_inputs(self, simulation_inputs: I):
         self._simulation_inputs = simulation_inputs
+
+    @property
+    def inputs_cls(self) -> type[SimulationInputs]:
+        return type(self._simulation_inputs)
+
+    @property
+    def outputs_cls(self) -> type[ThrsValues]:
+        return self._simulation_outputs_cls

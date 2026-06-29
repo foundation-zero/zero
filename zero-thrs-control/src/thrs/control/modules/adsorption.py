@@ -5,7 +5,6 @@ from pydantic import model_validator
 from transitions import Machine, State
 
 from thrs.classes.control import Control, ControlMode
-from thrs.control.base import ModuleDescription
 from thrs.control.controllers import PidController
 from thrs.input_output.alarms import BaseAlarms
 from thrs.input_output.base import Stamped, ThrsValues
@@ -23,6 +22,7 @@ from thrs.input_output.modules.adsorption import (
     AdsorptionControlValues,
     AdsorptionSensorValues,
 )
+from thrs.orchestration.module import ModuleDescription
 
 
 class AdsorptionParameters(ThrsValues):

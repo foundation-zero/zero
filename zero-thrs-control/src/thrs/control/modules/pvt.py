@@ -4,7 +4,6 @@ from typing import Annotated, Callable
 from pydantic import Field, model_validator
 
 from thrs.classes.control import Control, ControlMode
-from thrs.control.base import ModuleDescription
 from thrs.control.controllers import PidController
 from thrs.control.modules.pvt_group import (
     PvtGroupControl,
@@ -18,6 +17,7 @@ from thrs.input_output.base import Stamped, ThrsValues
 from thrs.input_output.definitions.control import Pump, Valve
 from thrs.input_output.definitions.units import Celsius, Ratio, Tuning
 from thrs.input_output.modules.pvt import PvtControlValues, PvtSensorValues
+from thrs.orchestration.module import ModuleDescription
 
 
 class PvtControlMode(ControlMode):

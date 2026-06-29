@@ -4,13 +4,13 @@ from typing import Callable
 from transitions import Machine, State
 
 from thrs.classes.control import Control, ControlMode
-from thrs.control.base import ModuleDescription
 from thrs.control.controllers import FlowBalanceController, PidController
 from thrs.input_output.alarms import BaseAlarms
 from thrs.input_output.base import Stamped, ThrsValues
 from thrs.input_output.definitions.control import Pcm, Pump, Valve
 from thrs.input_output.definitions.units import Celsius, LMin, Ratio, Tuning
 from thrs.input_output.modules.pcm import PcmControlValues, PcmSensorValues
+from thrs.orchestration.module import ModuleDescription
 
 
 class PcmParameters(ThrsValues):

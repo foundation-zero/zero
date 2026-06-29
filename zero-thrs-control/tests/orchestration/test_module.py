@@ -6,15 +6,17 @@ from tests.orchestration.simples import (
     SimpleInOut,
     SimpleMode,
     SimpleParameters,
-    SimpleSimulationInputs,
-    SimpleSimulationOutputs,
 )
 from thrs.classes.control import Control
-from thrs.control.base import ModuleDescription
 from thrs.input_output.alarms import Alarm, BaseAlarms, Severity
 from thrs.input_output.base import CombinedValues, Stamped, ThrsValues
 from thrs.input_output.definitions.sensor import FlowSensor
-from thrs.orchestration.module import CombinedAlarms, CombinedControl, CombinedModule
+from thrs.orchestration.module import (
+    CombinedAlarms,
+    CombinedControl,
+    CombinedModule,
+    ModuleDescription,
+)
 
 
 class MockParametersModel(ThrsValues):
@@ -142,13 +144,9 @@ class TestModuleNesting:
 
         modules = {"module1": module_desc}
 
-        combined_module = CombinedModule(
-            modules, SimpleSimulationInputs, SimpleSimulationOutputs
-        )
+        combined_module = CombinedModule(modules)
 
         assert combined_module.modules == ["module1"]
-        assert combined_module.simulation_inputs_cls == SimpleSimulationInputs
-        assert combined_module.simulation_outputs_cls == SimpleSimulationOutputs
         assert combined_module.control_values_for_module("module1") == SimpleInOut
         assert combined_module.parameters_for_module("module1") == SimpleParameters
 
@@ -167,9 +165,7 @@ class TestModuleNesting:
 
         modules = {"module1": module_desc}
 
-        nesting = CombinedModule(
-            modules, SimpleSimulationInputs, SimpleSimulationOutputs
-        )
+        nesting = CombinedModule(modules)
 
         assert nesting.sensor_values_clss is not None
 
@@ -189,9 +185,7 @@ class TestModuleNesting:
 
         modules = {"module1": module_desc}
 
-        nesting = CombinedModule(
-            modules, SimpleSimulationInputs, SimpleSimulationOutputs
-        )
+        nesting = CombinedModule(modules)
 
         parameters = CombinedValues(values={"module1": SimpleParameters()})
 
@@ -218,9 +212,7 @@ class TestModuleNesting:
 
         modules = {"module1": module_desc}
 
-        nesting = CombinedModule(
-            modules, SimpleSimulationInputs, SimpleSimulationOutputs
-        )
+        nesting = CombinedModule(modules)
 
         alarms = nesting.alarms()
 

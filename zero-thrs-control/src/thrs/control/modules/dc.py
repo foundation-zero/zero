@@ -2,7 +2,6 @@ from datetime import datetime
 from typing import Callable
 
 from thrs.classes.control import Control, ControlMode
-from thrs.control.base import ModuleDescription
 from thrs.control.controllers import PidController
 from thrs.control.modules.converters import (
     ConvertersControl,
@@ -16,6 +15,7 @@ from thrs.input_output.base import Stamped, ThrsValues
 from thrs.input_output.definitions.control import Pump, Valve
 from thrs.input_output.definitions.units import Celsius, LMin, Ratio, Tuning
 from thrs.input_output.modules.dc import DcControlValues, DcSensorValues
+from thrs.orchestration.module import ModuleDescription
 
 
 class DcControlMode(ControlMode):

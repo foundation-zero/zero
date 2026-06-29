@@ -3,11 +3,10 @@ from typing import Callable
 
 from tests.helpers.collector import Collector
 from thrs.classes.control import Control
-from thrs.control.base import ModuleDescription
 from thrs.input_output.alarms import BaseAlarms
 from thrs.input_output.base import CombinedValues, SimulationInputs, ThrsValues
 from thrs.input_output.fmu_mapping import build_fmu_key_mapping
-from thrs.orchestration.module import CombinedModule
+from thrs.orchestration.module import CombinedModule, ModuleDescription
 from thrs.orchestration.simulation import Simulation, SimulationResult
 from thrs.simulation.io_mapping import flatten_model_values
 

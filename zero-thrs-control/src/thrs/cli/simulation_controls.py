@@ -1,13 +1,12 @@
 import logging
 from abc import abstractmethod
 from asyncio import Queue, TaskGroup, create_task, sleep
-from contextlib import asynccontextmanager, contextmanager
+from contextlib import asynccontextmanager
 from dataclasses import dataclass
 from datetime import datetime, timedelta
 from typing import (
     Annotated,
     Any,
-    Generator,
     Literal,
     cast,
 )
@@ -59,6 +58,7 @@ from thrs.input_output.modules.high_temperature import (
 from thrs.input_output.modules.pcm import PcmSimulationInputs, PcmSimulationOutputs
 from thrs.input_output.modules.pvt import PvtSimulationInputs, PvtSimulationOutputs
 from thrs.input_output.modules.thrusters import (
+    ThrustersSensorValues,
     ThrustersSimulationInputs,
     ThrustersSimulationOutputs,
 )
@@ -84,7 +84,7 @@ logger = logging.getLogger(__name__)
 
 SEAWATER_TEMPERATURE = 20.0
 
-INPUTS = {
+SIMULATION_INPUTS = {
     "thrusters": ThrustersSimulationInputs(
         thrusters_thruster_aft=Thruster(
             heat_flow=Stamped.stamp(9000.0), active=Stamped.stamp(True)
@@ -192,62 +192,108 @@ INPUTS = {
 }
 
 
-type Modes = Literal["thrusters", "pvt", "pcm", "consumers", "high_temperature", "dhw"]
+type LockstepModes = Literal[
+    "thrusters", "pvt", "pcm", "consumers", "high_temperature", "dhw"
+]
 
-MODES: dict[Modes, tuple[str, CombinedModule]] = {
-    "thrusters": (
-        thrusters_path,
-        CombinedModule(
+
+@dataclass
+class LockstepMode:
+    name: LockstepModes
+    control_module: CombinedModule
+    simulation: Simulation
+
+
+MODES: dict[str, LockstepMode] = {
+    "thrusters": LockstepMode(
+        name="thrusters",
+        control_module=CombinedModule(
             {
                 "thrusters": THRUSTERS_MODULE_DESCRIPTION,
             },
-            ThrustersSimulationInputs,
+        ),
+        simulation=Simulation(
+            ThrustersSensorValues,
             ThrustersSimulationOutputs,
+            Fmu(thrusters_path),
+            SIMULATION_INPUTS["thrusters"],
+            datetime.now(),
+            timedelta(seconds=1),
         ),
     ),
-    "pvt": (
-        pvt_path,
-        CombinedModule(
+    "pvt": LockstepMode(
+        name="pvt",
+        control_module=CombinedModule(
             {"pvt": PVT_MODULE_DESCRIPTION},
+        ),
+        simulation=Simulation(
             PvtSimulationInputs,
             PvtSimulationOutputs,
+            Fmu(pvt_path),
+            SIMULATION_INPUTS["pvt"],
+            datetime.now(),
+            timedelta(seconds=1),
         ),
     ),
-    "pcm": (
-        pcm_path,
-        CombinedModule(
+    "pcm": LockstepMode(
+        name="pcm",
+        control_module=CombinedModule(
             {"pcm": PCM_MODULE_DESCRIPTION},
+        ),
+        simulation=Simulation(
             PcmSimulationInputs,
             PcmSimulationOutputs,
+            Fmu(pcm_path),
+            SIMULATION_INPUTS["pcm"],
+            datetime.now(),
+            timedelta(seconds=1),
         ),
     ),
-    "consumers": (
-        consumers_path,
-        CombinedModule(
+    "consumers": LockstepMode(
+        name="consumers",
+        control_module=CombinedModule(
             {"consumers": CONSUMERS_MODULE_DESCRIPTION},
+        ),
+        simulation=Simulation(
             ConsumersSimulationInputs,
             ConsumersSimulationOutputs,
+            Fmu(consumers_path),
+            SIMULATION_INPUTS["consumers"],
+            datetime.now(),
+            timedelta(seconds=1),
         ),
     ),
-    "high_temperature": (
-        high_temperature_path,
-        CombinedModule(
+    "high_temperature": LockstepMode(
+        name="high_temperature",
+        control_module=CombinedModule(
             {
                 "thrusters": THRUSTERS_MODULE_DESCRIPTION,
                 "pvt": PVT_MODULE_DESCRIPTION,
                 "pcm": PCM_MODULE_DESCRIPTION,
                 "consumers": CONSUMERS_MODULE_DESCRIPTION,
             },
+        ),
+        simulation=Simulation(
             HighTemperatureSimulationInputs,
             HighTemperatureSimulationOutputs,
+            Fmu(high_temperature_path),
+            SIMULATION_INPUTS["high_temperature"],
+            datetime.now(),
+            timedelta(seconds=1),
         ),
     ),
-    "dhw": (
-        dhw_path,
-        CombinedModule(
+    "dhw": LockstepMode(
+        name="dhw",
+        control_module=CombinedModule(
             {"dhw": DHW_MODULE_DESCRIPTION},
+        ),
+        simulation=Simulation(
             DhwSimulationInputs,
             DhwSimulationOutputs,
+            Fmu(dhw_path),
+            SIMULATION_INPUTS["dhw"],
+            datetime.now(),
+            timedelta(seconds=1),
         ),
     ),
 }
@@ -295,7 +341,7 @@ class IncomingMessage(ThrsValues):
         ControlValues: ThrsValues,
         Parameters: ThrsValues,
         Inputs: SimulationInputs,
-        Outputs: SimulationValues,
+        Outputs: ThrsValues,
     ](
         control_values: type[ControlValues],
         parameters: type[Parameters],
@@ -679,6 +725,7 @@ class SimulationControls:
         topic_prefix: str,
         context: MessageContext,
         modules: CombinedModule,
+        simulation: Simulation,
     ) -> bool:
         for handler in handlers:
             if message.topic.matches(
@@ -694,15 +741,15 @@ class SimulationControls:
                     handler.resolve(
                         modules.control_values_for_module(mqtt_context.module),
                         modules.parameters_for_module(mqtt_context.module),
-                        modules.simulation_inputs_cls,
-                        modules.simulation_outputs_cls,
+                        simulation.inputs_cls,
+                        simulation.outputs_cls,
                     )
                     if mqtt_context.module in modules.modules
                     else handler.resolve(
                         ThrsValues,
                         ThrsValues,
-                        modules.simulation_inputs_cls,
-                        modules.simulation_outputs_cls,
+                        simulation.inputs_cls,
+                        simulation.outputs_cls,
                     )
                 )
 
@@ -720,10 +767,16 @@ class SimulationControls:
         controller_topic_prefix: str,
         context: MessageContext,
         modules: CombinedModule,
+        simulation: Simulation,
     ):
         async for message in self._controls_client.messages:
             handled = await self._handle_message(
-                message, simulation_handlers, simulation_topic_prefix, context, modules
+                message,
+                simulation_handlers,
+                simulation_topic_prefix,
+                context,
+                modules,
+                simulation,
             )
             if not handled:
                 await self._handle_message(
@@ -732,14 +785,15 @@ class SimulationControls:
                     controller_topic_prefix,
                     context,
                     modules,
+                    simulation,
                 )
 
     async def clear_previous(self):
         all_modules = list(
             set(
                 module
-                for _fmu_path, nesting in MODES.values()
-                for module in nesting.modules
+                for mode in MODES.values()
+                for module in mode.control_module.modules
             )
         )
         for msg_cls in SIMULATION_OUTGOING_MESSAGES:
@@ -761,21 +815,21 @@ class SimulationControls:
                         retain=True,
                     )
 
-    @contextmanager
-    def _simulation(
-        self, fmu_path: str, modules: CombinedModule, inputs: SimulationInputs
-    ) -> Generator[Simulation, None, None]:
-        with Fmu(fmu_path) as fmu:
-            yield Simulation(
-                modules.sensor_values_clss,
-                modules.simulation_outputs_cls,
-                fmu,
-                inputs,
-                datetime.now(),
-                timedelta(seconds=1),
-            )
+    # @contextmanager
+    # def _simulation(
+    #     self, fmu_path: str, modules: CombinedModule, inputs: SimulationInputs
+    # ) -> Generator[Simulation, None, None]:
+    #     with Fmu(fmu_path) as fmu:
+    #         yield Simulation(
+    #             modules.sensor_values_clss,
+    #             modules.simulation_outputs_cls,
+    #             fmu,
+    #             inputs,
+    #             datetime.now(),
+    #             timedelta(seconds=1),
+    #         )
 
-    async def run(self, mode: Modes):
+    async def run(self, mode: LockstepModes):
         for handler in SIMULATION_HANDLERS:
             await self._controls_client.subscribe(
                 f"{self._simulation_topic_prefix}/{handler.subscribe_topic()}", qos=1
@@ -785,100 +839,102 @@ class SimulationControls:
                 f"{self._controller_topic_prefix}/{handler.subscribe_topic()}", qos=1
             )
 
-        fmu_path, modules = MODES[mode]
-        simulation_inputs = INPUTS[mode]
+        lock_step_mode = MODES[mode]
+        control_module = lock_step_mode.control_module
+        simulation = lock_step_mode.simulation
+        simulation_inputs = SIMULATION_INPUTS[mode]
 
-        with self._simulation(fmu_path, modules, simulation_inputs) as simulation:
-            parameters = {
-                module: modules.parameters_for_module(module)()
-                for module in modules.modules
-            }
-            control = modules.control(CombinedValues(parameters), simulation.time)
+        parameters = {
+            module: control_module.parameters_for_module(module)()
+            for module in control_module.modules
+        }
+        control = control_module.control(CombinedValues(parameters), simulation.time)
 
-            cmds: Queue[SimulationCtrlMessage] = Queue()
-            context = MessageContext(cmds, control, self._controls_client, simulation)
-            for module in modules.modules:
-                await context.send(
-                    self._controller_topic_prefix,
-                    ControlModeMessage(module=module, mode=control.mode_for(module)),
-                )
-
-            control_connector = MqttConnector(
-                mqtt_client=self._control_client,
-                devices_topic_prefix=self._devices_topic_prefix,
-                controller_topic_prefix=self._controller_topic_prefix,
-                sensor_values_clss=modules.sensor_values_clss,
-                control_values_clss=modules.control_values_clss,
-                controller_values_clss={},  # Nothing yet, but we want to send controller values here at some point
-                control_topic_suffix=self._control_topic_suffix,
-            )
-            simulation_connector = MqttConnector(
-                mqtt_client=self._sensor_client,
-                devices_topic_prefix=self._devices_topic_prefix,
-                controller_topic_prefix=self._simulation_topic_prefix,
-                sensor_values_clss={},  # It actually does not listen to mqtt for these but gets them directly from the runner
-                control_values_clss=modules.sensor_values_clss,
-                controller_values_clss={mode: modules.simulation_outputs_cls},
-                sensor_topic_suffix=self._control_topic_suffix,
+        cmds: Queue[SimulationCtrlMessage] = Queue()
+        context = MessageContext(cmds, control, self._controls_client, simulation)
+        for module in control_module.modules:
+            await context.send(
+                self._controller_topic_prefix,
+                ControlModeMessage(module=module, mode=control.mode_for(module)),
             )
 
-            runner = Runner(
-                control_connector,
-                mode,
+        control_connector = MqttConnector(
+            mqtt_client=self._control_client,
+            devices_topic_prefix=self._devices_topic_prefix,
+            controller_topic_prefix=self._controller_topic_prefix,
+            sensor_values_clss=control_module.sensor_values_clss,
+            control_values_clss=control_module.control_values_clss,
+            controller_values_clss={},  # Nothing yet, but we want to send controller values here at some point
+            control_topic_suffix=self._control_topic_suffix,
+        )
+        simulation_connector = MqttConnector(
+            mqtt_client=self._sensor_client,
+            devices_topic_prefix=self._devices_topic_prefix,
+            controller_topic_prefix=self._simulation_topic_prefix,
+            sensor_values_clss={},  # It actually does not listen to mqtt for these but gets them directly from the runner
+            control_values_clss=control_module.sensor_values_clss,
+            controller_values_clss={mode: simulation.outputs_cls},
+            sensor_topic_suffix=self._control_topic_suffix,
+        )
+
+        runner = Runner(
+            control_connector,
+            mode,
+            simulation,
+            simulation_connector,
+            control,
+            control_module.alarms(),
+        )
+
+        control_connector_task = create_task(control_connector.run())
+        simulation_connector_task = create_task(simulation_connector.run())
+        receive_task = create_task(
+            self._receive_controls(
+                SIMULATION_HANDLERS,
+                CONTROLLER_HANDLERS,
+                self._simulation_topic_prefix,
+                self._controller_topic_prefix,
+                context,
+                control_module,
                 simulation,
-                simulation_connector,
-                control,  # type: ignore
-                modules.alarms(),  # type: ignore
             )
-
-            control_connector_task = create_task(control_connector.run())
-            simulation_connector_task = create_task(simulation_connector.run())
-            receive_task = create_task(
-                self._receive_controls(
-                    SIMULATION_HANDLERS,
-                    CONTROLLER_HANDLERS,
-                    self._simulation_topic_prefix,
-                    self._controller_topic_prefix,
-                    context,
-                    modules,
-                )
-            )
-            try:
-                for module in modules.modules:
-                    await context.send(
-                        self._controller_topic_prefix,
-                        ParametersMessage(
-                            module=module,
-                            parameters=control.parameters.values[module],
-                        ),
-                    )
+        )
+        try:
+            for module in control_module.modules:
                 await context.send(
-                    self._simulation_topic_prefix,
-                    SimulationInputMessage(
-                        inputs=cast(ThrustersSimulationInputs, simulation_inputs)
+                    self._controller_topic_prefix,
+                    ParametersMessage(
+                        module=module,
+                        parameters=control.parameters.values[module],
                     ),
                 )
-                await self._run_simulation(
-                    mode, modules, context, simulation, runner, cmds
-                )
-            except Exception as e:
-                logger.exception(f"SimulationControls run encountered an error: {e}")
-            finally:
-                control_connector_task.cancel()
-                simulation_connector_task.cancel()
-                receive_task.cancel()
+            await context.send(
+                self._simulation_topic_prefix,
+                SimulationInputMessage(
+                    inputs=cast(ThrustersSimulationInputs, simulation_inputs)
+                ),
+            )
+            await self._run_simulation(
+                mode, control_module, context, simulation, runner, cmds
+            )
+        except Exception as e:
+            logger.exception(f"SimulationControls run encountered an error: {e}")
+        finally:
+            control_connector_task.cancel()
+            simulation_connector_task.cancel()
+            receive_task.cancel()
 
     async def _run_simulation(
         self,
-        mode: Modes,
-        modules: CombinedModule,
+        mode: LockstepModes,
+        control_module: CombinedModule,
         context: MessageContext,
         simulation: Simulation,
         runner: Runner,
         cmds: Queue[SimulationCtrlMessage],
     ):
         logging.debug("Simulation control loop started")
-        active_modules = modules.modules
+        active_modules = control_module.modules
         while True:
             await context.send(
                 self._simulation_topic_prefix,
