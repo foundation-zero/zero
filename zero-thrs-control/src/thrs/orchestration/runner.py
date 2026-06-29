@@ -1,10 +1,10 @@
+import logging
 import warnings
 from contextlib import contextmanager
 from dataclasses import dataclass
 from datetime import datetime, timedelta
 
 from thrs.classes.control import Control
-from thrs.control.base import ModuleDescription
 from thrs.input_output.alarms import BaseAlarms
 from thrs.input_output.base import (
     CombinedValues,
@@ -12,11 +12,7 @@ from thrs.input_output.base import (
     SimulationValues,
     ThrsValues,
 )
-from thrs.orchestration.connector import (
-    Connector,
-    MqttConnector,
-    MqttSimulationConnector,
-)
+from thrs.orchestration.connector import Connector
 from thrs.orchestration.module import CombinedModule
 from thrs.orchestration.simulation import Simulation
 from thrs.simulation.fmu import Fmu
@@ -68,50 +64,54 @@ class ModuleSimulatorModel:
             )
 
 
-class Runner[S: ThrsValues, C: ThrsValues, P: ThrsValues, M: ThrsValues]:
+class Runner[S, C, P, M]:
     """Runs a module for a number of ticks."""
 
     def __init__(
         self,
-        control_connector: MqttConnector,
-        simulation_connector: MqttSimulationConnector | None,
+        control_connector: Connector[S, C, M],
+        simulation_module_name: str,
+        simulation: Simulation | None,
+        simulation_connector: Connector[C, S, CombinedValues] | None,
         control: Control[S, C, P, M],
         alarms: BaseAlarms[S, C, P],
     ):
         self._control = control
         self._control_connector = control_connector
+        self._simulation_module_name = simulation_module_name
+        self._simulation = simulation
         self._simulation_connector = simulation_connector
         self._alarms = alarms
         self._control_values = self._control.initial()
 
-    @staticmethod
-    def from_module(
-        module: ModuleDescription[S, C, P, M] | CombinedModule,
-        initial_control_parameters: P | CombinedValues,
-        connector: Connector[S, C],
-    ) -> "Runner":
-        return Runner(
-            connector,
-            module.control(initial_control_parameters, connector.time),  # type:ignore
-            module.alarms(),  # type:ignore
-        )
-
     async def run(self, n_ticks: int) -> None:
         for _ in range(n_ticks):
             sensor_values = await self._control_connector.transceive(
-                self._control_values  # type:ignore
+                self._control_values,  # type: ignore
+                CombinedValues({}),  # type: ignore
             )
-            if self._simulation_connector:
+            if self._simulation_connector and self._simulation:
+                logging.debug("Executing simulation")
+                simulation_result = self._simulation.tick(self._control_values)
+
                 # If there is a simulation, we run it and use its sensor values
-                sensor_values = await self._simulation_connector.transceive(
-                    self._control_values  # type:ignore
+                sensor_values = simulation_result.sensor_values
+
+                # But also send them to mqtt
+                await self._simulation_connector.transceive(
+                    simulation_result.sensor_values,
+                    CombinedValues(  # type: ignore
+                        {
+                            self._simulation_module_name: simulation_result.simulation_outputs
+                        }
+                    ),
                 )
 
-            self._control_values = self._control.control(sensor_values)  # type:ignore
+            self._control_values = self._control.control(sensor_values)  # type: ignore
             alarms = self._alarms.check(
-                sensor_values,  # type:ignore
-                self._control_values,  # type:ignore
-                self._control.parameters,
+                sensor_values,  # type: ignore
+                self._control_values,  # type: ignore
+                self._control.parameters,  # type: ignore
             )
             if alarms:
                 warnings.warn(

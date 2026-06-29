@@ -10,11 +10,11 @@ from thrs.cli.simulation_controls import (
     SimulationStatusMessage,
 )
 from thrs.control.modules.thrusters import ThrustersParameters
+from thrs.input_output.definitions.simulation import TemperatureBoundary
 from thrs.input_output.model_builder import PartialModelBuilder
 from thrs.input_output.modules.thrusters import (
     ThrustersControlValues,
     ThrustersSimulationInputs,
-    ThrustersSimulationOutputs,
 )
 from thrs.orchestration.config import Config
 from thrs.utils.string import dash_to_snake
@@ -468,7 +468,9 @@ async def test_simulation_controls_simulation_output(
 
     await controls.clear_previous()
 
-    await test_client.subscribe("test_simulation_topic/outputs")
+    await test_client.subscribe(
+        "test_simulation_topic/thrusters/thrusters-seawater-return"
+    )
     await status_client.subscribe("test_simulation_topic/status")
 
     run_task = create_task(controls.run("thrusters"))
@@ -483,6 +485,7 @@ async def test_simulation_controls_simulation_output(
         assert len(test_client.messages) == 0
 
         await controls_client.publish("test_simulation_topic/play", "{}", qos=1)
+
         running = await anext(status_client.messages)
         assert isinstance(running.payload, str | bytes)
         assert (
@@ -492,11 +495,14 @@ async def test_simulation_controls_simulation_output(
         await sleep(5.1)
 
         simulation_output = await anext(test_client.messages)
-        assert simulation_output.topic.value == "test_simulation_topic/outputs"
+        assert (
+            simulation_output.topic.value
+            == "test_simulation_topic/thrusters/thrusters-seawater-return"
+        )
         assert isinstance(simulation_output.payload, str | bytes)
-        module_return_temperature = ThrustersSimulationOutputs.model_validate_json(
+        module_return_temperature = TemperatureBoundary.model_validate_json(
             simulation_output.payload
-        ).thrusters_pcm_return.temperature.value
+        ).temperature.value
         assert isinstance(module_return_temperature, float)
         assert module_return_temperature > 0
 
