@@ -30,6 +30,12 @@ class Boundary(ThrsValues):
     flow: Stamp[LMin]
 
 
+class ExchangerBoundary(ThrsValues):
+    flow: Stamp[LMin]
+    temperature_supply: Stamp[Celsius]
+    temperature_return: Stamp[Celsius]
+
+
 class OverpressureTemperatureBoundary(ThrsValues):
     temperature: Stamp[Celsius]
     overpressure: Stamp[Overpressure]

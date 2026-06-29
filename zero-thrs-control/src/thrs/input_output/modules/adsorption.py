@@ -155,5 +155,5 @@ class AdsorptionSimulationInputs(SimulationInputs):
 class AdsorptionSimulationOutputs(SimulationValues):
     adsorption_cooling_return: simulation.Boundary
     adsorption_seawater_return: simulation.TemperatureBoundary
-    adsorption_dhw_return: simulation.TemperatureBoundary
-    adsorption_ht_return: simulation.TemperatureBoundary
+    adsorption_dhw_exchanger: simulation.ExchangerBoundary
+    adsorption_consumers_exchanger: simulation.ExchangerBoundary

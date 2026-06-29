@@ -112,6 +112,6 @@ class ConsumersSimulationInputs(SimulationInputs):
 
 
 class ConsumersSimulationOutputs(SimulationValues):
-    consumers_adsorption_return: simulation.TemperatureBoundary
-    consumers_dhw_return: simulation.TemperatureBoundary
+    consumers_adsorption_exchanger: simulation.ExchangerBoundary
+    consumers_dhw_exchanger: simulation.ExchangerBoundary
     consumers_pcm_return: simulation.Boundary

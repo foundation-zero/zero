@@ -690,10 +690,10 @@ class DhwSimulationInputs(SimulationInputs):
 
 
 class DhwSimulationOutputs(SimulationValues):
-    dhw_drives_return: simulation.TemperatureBoundary
-    dhw_dc_return: simulation.TemperatureBoundary
-    dhw_adsorption_return: simulation.TemperatureBoundary
-    dhw_ht_return: simulation.TemperatureBoundary
+    dhw_drives_exchanger: simulation.ExchangerBoundary
+    dhw_dc_exchanger: simulation.ExchangerBoundary
+    dhw_adsorption_exchanger: simulation.ExchangerBoundary
+    dhw_consumers_exchanger: simulation.ExchangerBoundary
     dhw_seawater_return: simulation.TemperatureBoundary
     dhw_seawater_supply: simulation.FlowBoundary
     dhw_freshwater_return: simulation.Boundary
@@ -706,7 +706,7 @@ class DhwSimulationOutputs(SimulationValues):
     @property
     def drives_temperature_recovery_return(self) -> sensor.TemperatureSensor:
         return sensor.TemperatureSensor(
-            temperature=cast(Stamped, self.dhw_drives_return.temperature)
+            temperature=cast(Stamped, self.dhw_drives_exchanger.temperature_supply)
         )
 
     @computed_field(
@@ -717,7 +717,7 @@ class DhwSimulationOutputs(SimulationValues):
     @property
     def dc_temperature_recovery_return(self) -> sensor.TemperatureSensor:
         return sensor.TemperatureSensor(
-            temperature=cast(Stamped, self.dhw_dc_return.temperature)
+            temperature=cast(Stamped, self.dhw_dc_exchanger.temperature_return)
         )
 
     @computed_field(
@@ -728,7 +728,7 @@ class DhwSimulationOutputs(SimulationValues):
     @property
     def adsorption_temperature_dhw_return(self) -> sensor.TemperatureSensor:
         return sensor.TemperatureSensor(
-            temperature=cast(Stamped, self.dhw_adsorption_return.temperature)
+            temperature=cast(Stamped, self.dhw_adsorption_exchanger.temperature_return)
         )
 
     @computed_field(
@@ -739,7 +739,7 @@ class DhwSimulationOutputs(SimulationValues):
     @property
     def consumers_temperature_dhw_return(self) -> sensor.TemperatureSensor:
         return sensor.TemperatureSensor(
-            temperature=cast(Stamped, self.dhw_ht_return.temperature)
+            temperature=cast(Stamped, self.dhw_consumers_exchanger.temperature_return)
         )
 
     @computed_field(
@@ -758,7 +758,5 @@ class DhwSimulationOutputs(SimulationValues):
     @property
     def freshwater_hotwater_temperature(self) -> sensor.TemperatureSensor:
         return sensor.TemperatureSensor(
-            temperature=Stamped.stamp(
-                0
-            )  # TODO: Add hot water temperature as output to the FMU
+            temperature=cast(Stamped, self.dhw_freshwater_return.temperature)
         )
