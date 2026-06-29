@@ -1,13 +1,13 @@
 import logging
 from abc import abstractmethod
 from asyncio import Queue, TaskGroup, create_task, sleep
-from contextlib import asynccontextmanager, contextmanager
+from contextlib import asynccontextmanager, nullcontext
 from dataclasses import dataclass
 from datetime import datetime, timedelta
 from typing import (
     Annotated,
     Any,
-    Generator,
+    Callable,
     Literal,
     cast,
 )
@@ -192,9 +192,25 @@ INPUTS = {
 }
 
 
-type Modes = Literal["thrusters", "pvt", "pcm", "consumers", "high_temperature", "dhw"]
+type Modes = Literal[
+    "boat", "thrusters", "pvt", "pcm", "consumers", "high_temperature", "dhw"
+]
 
-MODES: dict[Modes, tuple[str, CombinedModule]] = {
+MODES: dict[Modes, tuple[str | None, CombinedModule]] = {
+    "boat": (
+        None,
+        CombinedModule(
+            {
+                "thrusters": THRUSTERS_MODULE_DESCRIPTION,
+                "pvt": PVT_MODULE_DESCRIPTION,
+                "pcm": PCM_MODULE_DESCRIPTION,
+                "consumers": CONSUMERS_MODULE_DESCRIPTION,
+                "dhw": DHW_MODULE_DESCRIPTION,
+            },
+            None,
+            None,
+        ),
+    ),
     "thrusters": (
         thrusters_path,
         CombinedModule(
@@ -272,12 +288,15 @@ class MessageContext[
     cmds: "Queue[SimulationCtrlMessage]"
     control: CombinedControl
     client: MqttClient
-    simulation: Simulation[
-        SensorValues,
-        ControlValues,
-        Inputs,
-        Outputs,
-    ]
+    simulation: (
+        Simulation[
+            SensorValues,
+            ControlValues,
+            Inputs,
+            Outputs,
+        ]
+        | None
+    )
 
     async def send(self, topic_prefix: str, message: "OutgoingMessage"):
         await self.client.publish(
@@ -299,9 +318,9 @@ class IncomingMessage(ThrsValues):
     ](
         control_values: type[ControlValues],
         parameters: type[Parameters],
-        simulation_inputs: type[Inputs],
-        simulation_outputs: type[Outputs],
-    ) -> "type[IncomingMessage]": ...
+        simulation_inputs: type[Inputs] | None,
+        simulation_outputs: type[Outputs] | None,
+    ) -> "type[IncomingMessage] | None": ...
 
     @staticmethod
     @abstractmethod
@@ -437,9 +456,9 @@ class PlayMessage(SimulationCtrlMessage):
     ](
         control_values: type[ControlValues],
         parameters: type[Parameters],
-        simulation_inputs: type[Inputs],
-        simulation_outputs: type[Outputs],
-    ) -> "type[IncomingMessage]":
+        simulation_inputs: type[Inputs] | None,
+        simulation_outputs: type[Outputs] | None,
+    ) -> "type[IncomingMessage] | None":
         return PlayMessage
 
     @staticmethod
@@ -459,9 +478,9 @@ class StepMessage(SimulationCtrlMessage):
     ](
         control_values: type[ControlValues],
         parameters: type[Parameters],
-        simulation_inputs: type[Inputs],
-        simulation_outputs: type[Outputs],
-    ) -> "type[IncomingMessage]":
+        simulation_inputs: type[Inputs] | None,
+        simulation_outputs: type[Outputs] | None,
+    ) -> "type[IncomingMessage] | None":
         return StepMessage
 
     @staticmethod
@@ -479,9 +498,9 @@ class PauseMessage(SimulationCtrlMessage):
     ](
         control_values: type[ControlValues],
         parameters: type[Parameters],
-        simulation_inputs: type[Inputs],
-        simulation_outputs: type[Outputs],
-    ) -> "type[IncomingMessage]":
+        simulation_inputs: type[Inputs] | None,
+        simulation_outputs: type[Outputs] | None,
+    ) -> "type[IncomingMessage] | None":
         return PauseMessage
 
     @staticmethod
@@ -501,9 +520,9 @@ class ManualControlMessage[ControlValues: ThrsValues](IncomingModuleMessage):
     ](
         control_values: type[LControlValues],
         parameters: type[Parameters],
-        simulation_inputs: type[Inputs],
-        simulation_outputs: type[Outputs],
-    ) -> "type[IncomingMessage]":
+        simulation_inputs: type[Inputs] | None,
+        simulation_outputs: type[Outputs] | None,
+    ) -> "type[IncomingMessage] | None":
         return ManualControlMessage[control_values]
 
     @staticmethod
@@ -535,9 +554,9 @@ class SetAutomationMessage(IncomingModuleMessage):
     ](
         control_values: type[ControlValues],
         parameters: type[Parameters],
-        simulation_inputs: type[Inputs],
-        simulation_outputs: type[Outputs],
-    ) -> "type[IncomingMessage]":
+        simulation_inputs: type[Inputs] | None,
+        simulation_outputs: type[Outputs] | None,
+    ) -> "type[IncomingMessage] | None":
         return SetAutomationMessage
 
     @staticmethod
@@ -570,9 +589,9 @@ class SetParametersMessage[Parameters: ThrsValues](IncomingModuleMessage):
     ](
         control_values: type[ControlValues],
         parameters: type[LParameters],
-        simulation_inputs: type[Inputs],
-        simulation_outputs: type[Outputs],
-    ) -> "type[IncomingMessage]":
+        simulation_inputs: type[Inputs] | None,
+        simulation_outputs: type[Outputs] | None,
+    ) -> "type[IncomingMessage] | None":
         return SetParametersMessage[parameters]
 
     @staticmethod
@@ -607,9 +626,12 @@ class SetSimulationInputsMessage[Inputs: SimulationInputs](IncomingMessage):
     ](
         control_values: type[ControlValues],
         parameters: type[Parameters],
-        simulation_inputs: type[LInputs],
-        simulation_outputs: type[Outputs],
-    ) -> "type[IncomingMessage]":
+        simulation_inputs: type[LInputs] | None,
+        simulation_outputs: type[Outputs] | None,
+    ) -> "type[IncomingMessage] | None":
+        if simulation_inputs is None:
+            return None
+
         return SetSimulationInputsMessage[simulation_inputs]
 
     @staticmethod
@@ -617,8 +639,9 @@ class SetSimulationInputsMessage[Inputs: SimulationInputs](IncomingMessage):
         return "set_inputs"
 
     async def handle(self, topic_prefix: str, context: MessageContext):
-        context.simulation.update_simulation_inputs(self.inputs)
-        await context.send(topic_prefix, SimulationInputMessage(inputs=self.inputs))
+        if context.simulation:
+            context.simulation.update_simulation_inputs(self.inputs)
+            await context.send(topic_prefix, SimulationInputMessage(inputs=self.inputs))
 
 
 SIMULATION_HANDLERS = [
@@ -706,9 +729,10 @@ class SimulationControls:
                     )
                 )
 
-                await resolved_handler.model_validate_json(
-                    message.payload, context=mqtt_context
-                ).handle(topic_prefix, context)
+                if resolved_handler:
+                    await resolved_handler.model_validate_json(
+                        message.payload, context=mqtt_context
+                    ).handle(topic_prefix, context)
                 return True
         return False
 
@@ -761,20 +785,6 @@ class SimulationControls:
                         retain=True,
                     )
 
-    @contextmanager
-    def _simulation(
-        self, fmu_path: str, modules: CombinedModule, inputs: SimulationInputs
-    ) -> Generator[Simulation, None, None]:
-        with Fmu(fmu_path) as fmu:
-            yield Simulation(
-                modules.sensor_values_clss,
-                modules.simulation_outputs_cls,
-                fmu,
-                inputs,
-                datetime.now(),
-                timedelta(seconds=1),
-            )
-
     async def run(self, mode: Modes):
         for handler in SIMULATION_HANDLERS:
             await self._controls_client.subscribe(
@@ -788,12 +798,44 @@ class SimulationControls:
         fmu_path, modules = MODES[mode]
         simulation_inputs = INPUTS[mode]
 
-        with self._simulation(fmu_path, modules, simulation_inputs) as simulation:
+        fmu = Fmu(fmu_path) if fmu_path else nullcontext()
+
+        with fmu as fmu:
+            tick_duration = timedelta(seconds=1)
+
+            if fmu and modules.simulation_outputs_cls:
+                simulation = Simulation(
+                    modules.sensor_values_clss,
+                    modules.simulation_outputs_cls,
+                    fmu,
+                    simulation_inputs,
+                    datetime.now(),
+                    tick_duration,
+                )
+                time_func = simulation.time
+
+                simulation_connector = MqttConnector(
+                    mqtt_client=self._sensor_client,
+                    devices_topic_prefix=self._devices_topic_prefix,
+                    controller_topic_prefix=self._simulation_topic_prefix,
+                    sensor_values_clss={},  # It actually does not listen to mqtt for these but gets them directly from the runner
+                    control_values_clss=modules.sensor_values_clss,
+                    controller_values_clss={mode: modules.simulation_outputs_cls},
+                    sensor_topic_suffix=self._control_topic_suffix,
+                )
+                simulation_connector_task = create_task(simulation_connector.run())
+
+            else:
+                simulation = None
+                time_func = datetime.now
+                simulation_connector = None
+                simulation_connector_task = None
+
             parameters = {
                 module: modules.parameters_for_module(module)()
                 for module in modules.modules
             }
-            control = modules.control(CombinedValues(parameters), simulation.time)
+            control = modules.control(CombinedValues(parameters), time_func)
 
             cmds: Queue[SimulationCtrlMessage] = Queue()
             context = MessageContext(cmds, control, self._controls_client, simulation)
@@ -812,15 +854,6 @@ class SimulationControls:
                 controller_values_clss={},  # Nothing yet, but we want to send controller values here at some point
                 control_topic_suffix=self._control_topic_suffix,
             )
-            simulation_connector = MqttConnector(
-                mqtt_client=self._sensor_client,
-                devices_topic_prefix=self._devices_topic_prefix,
-                controller_topic_prefix=self._simulation_topic_prefix,
-                sensor_values_clss={},  # It actually does not listen to mqtt for these but gets them directly from the runner
-                control_values_clss=modules.sensor_values_clss,
-                controller_values_clss={mode: modules.simulation_outputs_cls},
-                sensor_topic_suffix=self._control_topic_suffix,
-            )
 
             runner = Runner(
                 control_connector,
@@ -832,7 +865,6 @@ class SimulationControls:
             )
 
             control_connector_task = create_task(control_connector.run())
-            simulation_connector_task = create_task(simulation_connector.run())
             receive_task = create_task(
                 self._receive_controls(
                     SIMULATION_HANDLERS,
@@ -852,20 +884,22 @@ class SimulationControls:
                             parameters=control.parameters.values[module],
                         ),
                     )
-                await context.send(
-                    self._simulation_topic_prefix,
-                    SimulationInputMessage(
-                        inputs=cast(ThrustersSimulationInputs, simulation_inputs)
-                    ),
-                )
+                if simulation:
+                    await context.send(
+                        self._simulation_topic_prefix,
+                        SimulationInputMessage(
+                            inputs=cast(ThrustersSimulationInputs, simulation_inputs)
+                        ),
+                    )
                 await self._run_simulation(
-                    mode, modules, context, simulation, runner, cmds
+                    mode, modules, context, time_func, tick_duration, runner, cmds
                 )
             except Exception as e:
                 logger.exception(f"SimulationControls run encountered an error: {e}")
             finally:
                 control_connector_task.cancel()
-                simulation_connector_task.cancel()
+                if simulation_connector_task:
+                    simulation_connector_task.cancel()
                 receive_task.cancel()
 
     async def _run_simulation(
@@ -873,7 +907,8 @@ class SimulationControls:
         mode: Modes,
         modules: CombinedModule,
         context: MessageContext,
-        simulation: Simulation,
+        time_func: Callable[[], datetime],
+        tick_duration: timedelta,
         runner: Runner,
         cmds: Queue[SimulationCtrlMessage],
     ):
@@ -885,21 +920,19 @@ class SimulationControls:
                 SimulationStatusMessage(
                     mode=mode,
                     status="available",
-                    simulation_time=simulation.time(),
+                    simulation_time=time_func(),
                     control_modules=active_modules,
                 ),
             )
             cmd = await cmds.get()
             if isinstance(cmd, PlayMessage):
-                sleep_duration = (
-                    context.simulation.tick_duration.total_seconds() / cmd.playback_rate
-                )
+                sleep_duration = tick_duration.total_seconds() / cmd.playback_rate
                 await context.send(
                     self._simulation_topic_prefix,
                     SimulationStatusMessage(
                         mode=mode,
                         status="running",
-                        simulation_time=simulation.time(),
+                        simulation_time=time_func(),
                         control_modules=active_modules,
                     ),
                 )
@@ -917,14 +950,14 @@ class SimulationControls:
                     SimulationStatusMessage(
                         mode=mode,
                         status="stepping",
-                        simulation_time=simulation.time(),
+                        simulation_time=time_func(),
                         control_modules=active_modules,
                     ),
                 )
 
                 ticks = max(
                     1,
-                    int(cmd.seconds / context.simulation.tick_duration.total_seconds()),
+                    int(cmd.seconds / tick_duration.total_seconds()),
                 )
                 logging.debug(f"Stepping simulation by {ticks} ticks")
                 await runner.run(ticks)

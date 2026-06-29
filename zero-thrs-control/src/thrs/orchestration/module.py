@@ -114,8 +114,8 @@ class CombinedModule[I: SimulationInputs, O: ThrsValues]:
     def __init__(
         self,
         modules: dict[str, ModuleDescription],
-        simulation_inputs_cls: type[I],
-        simulation_outputs_cls: type[O],
+        simulation_inputs_cls: type[I] | None,
+        simulation_outputs_cls: type[O] | None,
     ):
         self._modules = modules
         self.sensor_values_clss: ModuleClassMap = {
@@ -132,11 +132,11 @@ class CombinedModule[I: SimulationInputs, O: ThrsValues]:
         return list(self._modules.keys())
 
     @property
-    def simulation_inputs_cls(self) -> type[I]:
+    def simulation_inputs_cls(self) -> type[I] | None:
         return self._simulation_inputs_cls
 
     @property
-    def simulation_outputs_cls(self) -> type[O]:
+    def simulation_outputs_cls(self) -> type[O] | None:
         return self._simulation_outputs_cls
 
     def control_values_for_module(self, module: str) -> type[ThrsValues]:
