@@ -1,6 +1,5 @@
 import logging
 import warnings
-from contextlib import contextmanager
 from dataclasses import dataclass
 from datetime import datetime, timedelta
 
@@ -29,17 +28,15 @@ class SimulatorModel:
     start_time: datetime = datetime.now()
     tick_duration: timedelta = timedelta(seconds=1)
 
-    @contextmanager
-    def simulation(self):
-        with Fmu(self.fmu_path) as fmu:
-            yield Simulation(
-                self.sensor_values_cls,
-                self.simulation_outputs_cls,
-                fmu,
-                self.simulation_inputs,
-                self.start_time,
-                self.tick_duration,
-            )
+    def simulation(self) -> Simulation:
+        return Simulation(
+            self.sensor_values_cls,
+            self.simulation_outputs_cls,
+            Fmu(self.fmu_path),
+            self.simulation_inputs,
+            self.start_time,
+            self.tick_duration,
+        )
 
 
 class Runner[S, C, P, M]:
@@ -65,7 +62,7 @@ class Runner[S, C, P, M]:
     async def run(self, n_ticks: int) -> None:
         for _ in range(n_ticks):
             sensor_values = await self._control_connector.transceive(
-                self._control_values,  # type: ignore
+                self._control_values,
                 CombinedValues({}),  # type: ignore
             )
             if self._simulation_connector and self._simulation:

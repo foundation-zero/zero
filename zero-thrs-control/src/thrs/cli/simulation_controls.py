@@ -93,7 +93,7 @@ SIMULATION_INPUTS = {
             heat_flow=Stamped.stamp(4300.0), active=Stamped.stamp(True)
         ),
         thrusters_seawater_supply=Boundary(
-            temperature=Stamped.stamp(32.0), flow=Stamped.stamp(64.0)
+            temperature=Stamped.stamp(SEAWATER_TEMPERATURE), flow=Stamped.stamp(64.0)
         ),
         thrusters_pcm_supply=TemperatureBoundary(temperature=Stamped.stamp(40.0)),
         thrusters_pcs=Pcs(mode=Stamped.stamp(PcsMode.PROPULSION)),
@@ -213,7 +213,7 @@ MODES: dict[str, LockstepMode] = {
             },
         ),
         simulation=Simulation(
-            ThrustersSensorValues,
+            {"thrusters": ThrustersSensorValues},
             ThrustersSimulationOutputs,
             Fmu(thrusters_path),
             SIMULATION_INPUTS["thrusters"],
@@ -815,20 +815,6 @@ class SimulationControls:
                         retain=True,
                     )
 
-    # @contextmanager
-    # def _simulation(
-    #     self, fmu_path: str, modules: CombinedModule, inputs: SimulationInputs
-    # ) -> Generator[Simulation, None, None]:
-    #     with Fmu(fmu_path) as fmu:
-    #         yield Simulation(
-    #             modules.sensor_values_clss,
-    #             modules.simulation_outputs_cls,
-    #             fmu,
-    #             inputs,
-    #             datetime.now(),
-    #             timedelta(seconds=1),
-    #         )
-
     async def run(self, mode: LockstepModes):
         for handler in SIMULATION_HANDLERS:
             await self._controls_client.subscribe(
@@ -841,88 +827,89 @@ class SimulationControls:
 
         lock_step_mode = MODES[mode]
         control_module = lock_step_mode.control_module
-        simulation = lock_step_mode.simulation
         simulation_inputs = SIMULATION_INPUTS[mode]
-
-        parameters = {
-            module: control_module.parameters_for_module(module)()
-            for module in control_module.modules
-        }
-        control = control_module.control(CombinedValues(parameters), simulation.time)
-
-        cmds: Queue[SimulationCtrlMessage] = Queue()
-        context = MessageContext(cmds, control, self._controls_client, simulation)
-        for module in control_module.modules:
-            await context.send(
-                self._controller_topic_prefix,
-                ControlModeMessage(module=module, mode=control.mode_for(module)),
+        with lock_step_mode.simulation as simulation:
+            parameters = {
+                module: control_module.parameters_for_module(module)()
+                for module in control_module.modules
+            }
+            control = control_module.control(
+                CombinedValues(parameters), simulation.time
             )
 
-        control_connector = MqttConnector(
-            mqtt_client=self._control_client,
-            devices_topic_prefix=self._devices_topic_prefix,
-            controller_topic_prefix=self._controller_topic_prefix,
-            sensor_values_clss=control_module.sensor_values_clss,
-            control_values_clss=control_module.control_values_clss,
-            controller_values_clss={},  # Nothing yet, but we want to send controller values here at some point
-            control_topic_suffix=self._control_topic_suffix,
-        )
-        simulation_connector = MqttConnector(
-            mqtt_client=self._sensor_client,
-            devices_topic_prefix=self._devices_topic_prefix,
-            controller_topic_prefix=self._simulation_topic_prefix,
-            sensor_values_clss={},  # It actually does not listen to mqtt for these but gets them directly from the runner
-            control_values_clss=control_module.sensor_values_clss,
-            controller_values_clss={mode: simulation.outputs_cls},
-            sensor_topic_suffix=self._control_topic_suffix,
-        )
-
-        runner = Runner(
-            control_connector,
-            mode,
-            simulation,
-            simulation_connector,
-            control,
-            control_module.alarms(),
-        )
-
-        control_connector_task = create_task(control_connector.run())
-        simulation_connector_task = create_task(simulation_connector.run())
-        receive_task = create_task(
-            self._receive_controls(
-                SIMULATION_HANDLERS,
-                CONTROLLER_HANDLERS,
-                self._simulation_topic_prefix,
-                self._controller_topic_prefix,
-                context,
-                control_module,
-                simulation,
-            )
-        )
-        try:
+            cmds: Queue[SimulationCtrlMessage] = Queue()
+            context = MessageContext(cmds, control, self._controls_client, simulation)
             for module in control_module.modules:
                 await context.send(
                     self._controller_topic_prefix,
-                    ParametersMessage(
-                        module=module,
-                        parameters=control.parameters.values[module],
+                    ControlModeMessage(module=module, mode=control.mode_for(module)),
+                )
+
+            control_connector = MqttConnector(
+                mqtt_client=self._control_client,
+                devices_topic_prefix=self._devices_topic_prefix,
+                controller_topic_prefix=self._controller_topic_prefix,
+                sensor_values_clss=control_module.sensor_values_clss,
+                control_values_clss=control_module.control_values_clss,
+                controller_values_clss={},  # Nothing yet, but we want to send controller values here at some point
+                control_topic_suffix=self._control_topic_suffix,
+            )
+            simulation_connector = MqttConnector(
+                mqtt_client=self._sensor_client,
+                devices_topic_prefix=self._devices_topic_prefix,
+                controller_topic_prefix=self._simulation_topic_prefix,
+                sensor_values_clss={},  # It actually does not listen to mqtt for these but gets them directly from the runner
+                control_values_clss=control_module.sensor_values_clss,
+                controller_values_clss={mode: simulation.outputs_cls},
+                sensor_topic_suffix=self._control_topic_suffix,
+            )
+
+            runner = Runner(
+                control_connector,
+                mode,
+                simulation,
+                simulation_connector,
+                control,
+                control_module.alarms(),
+            )
+
+            control_connector_task = create_task(control_connector.run())
+            simulation_connector_task = create_task(simulation_connector.run())
+            receive_task = create_task(
+                self._receive_controls(
+                    SIMULATION_HANDLERS,
+                    CONTROLLER_HANDLERS,
+                    self._simulation_topic_prefix,
+                    self._controller_topic_prefix,
+                    context,
+                    control_module,
+                    simulation,
+                )
+            )
+            try:
+                for module in control_module.modules:
+                    await context.send(
+                        self._controller_topic_prefix,
+                        ParametersMessage(
+                            module=module,
+                            parameters=control.parameters.values[module],
+                        ),
+                    )
+                await context.send(
+                    self._simulation_topic_prefix,
+                    SimulationInputMessage(
+                        inputs=cast(ThrustersSimulationInputs, simulation_inputs)
                     ),
                 )
-            await context.send(
-                self._simulation_topic_prefix,
-                SimulationInputMessage(
-                    inputs=cast(ThrustersSimulationInputs, simulation_inputs)
-                ),
-            )
-            await self._run_simulation(
-                mode, control_module, context, simulation, runner, cmds
-            )
-        except Exception as e:
-            logger.exception(f"SimulationControls run encountered an error: {e}")
-        finally:
-            control_connector_task.cancel()
-            simulation_connector_task.cancel()
-            receive_task.cancel()
+                await self._run_simulation(
+                    mode, control_module, context, simulation, runner, cmds
+                )
+            except Exception as e:
+                logger.exception(f"SimulationControls run encountered an error: {e}")
+            finally:
+                control_connector_task.cancel()
+                simulation_connector_task.cancel()
+                receive_task.cancel()
 
     async def _run_simulation(
         self,
