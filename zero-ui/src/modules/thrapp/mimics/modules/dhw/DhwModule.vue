@@ -5,6 +5,7 @@ import BoilerTanks from "./layers/BoilerTanks.vue";
 import Bypasses from "./layers/Bypasses.vue";
 import CircuitBoxes from "./layers/CircuitBoxes.vue";
 import DirectionArrows from "./layers/DirectionArrows.vue";
+import Flows from "./layers/Flows.vue";
 import FlowSensors from "./layers/FlowSensors.vue";
 import HeatExchangers from "./layers/HeatExchangers.vue";
 import Labels from "./layers/Labels.vue";
@@ -26,6 +27,7 @@ import TemperatureSensors from "./layers/TemperatureSensors.vue";
   >
     <Bypasses />
     <Pipes />
+    <Flows />
     <HeatExchangers />
     <ActuatedValves />
     <ManualValves />

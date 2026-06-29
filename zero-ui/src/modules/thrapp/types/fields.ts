@@ -50,7 +50,11 @@ export type SensorFieldDefinitions = SensorFields<{
     flowMeasurement: SensorComponentType.Flow;
     temperatureMeasurement: SensorComponentType.Temperature;
   };
-  [MimicComponentType.HeatExchanger]: EmptyObject;
+  [MimicComponentType.HeatExchanger]: {
+    incoming: SensorComponentType.Temperature;
+    outgoing: SensorComponentType.Temperature;
+    flow: SensorComponentType.Flow;
+  };
   [MimicComponentType.PressureSensor]: {
     flow: SensorComponentType.Flow;
   };
@@ -75,13 +79,11 @@ export type SensorFieldDefinitions = SensorFields<{
     tOut: SensorComponentType.Temperature;
   };
   [MimicComponentType.HeatPump]: {
-    heatExchanger: SensorComponentType.HeatExchanger;
     incoming: SensorComponentType.Temperature;
     outgoing: SensorComponentType.Temperature;
     measurement: SensorComponentType.Flow;
   };
   [MimicComponentType.HVAC]: {
-    heatExchanger: SensorComponentType.HeatExchanger;
     incoming: SensorComponentType.Temperature;
     outgoing: SensorComponentType.Temperature;
     measurement: SensorComponentType.Flow;
@@ -116,11 +118,10 @@ export type ControlFieldDefinitions = ControlFields<{
   };
   [MimicComponentType.ManualValve]: EmptyObject;
   [MimicComponentType.HeatPump]: {
-    heatExchanger: ControlComponentType.Heatpump;
+    heatpump: ControlComponentType.Heatpump;
     controller: ControlComponentType.PIDController;
   };
   [MimicComponentType.HVAC]: {
-    heatExchanger: ControlComponentType.Heatpump;
     controller: ControlComponentType.PIDController;
   };
   [MimicComponentType.SwitchValve]: {
@@ -181,7 +182,6 @@ export type CustomFieldDefinitions = CustomFields<{
   [MimicComponentType.HeatExchanger]: {
     sideA: HeatExchangerPortOrientation;
     sideB: HeatExchangerPortOrientation;
-    circuit: ExtractSensorFields<MimicComponentType.ExchangeCircuit>["sensors"];
     exchangeCircuit: ExtractSensorFields<MimicComponentType.ExchangeCircuit>["sensors"];
   };
   [MimicComponentType.ExchangeCircuit]: {

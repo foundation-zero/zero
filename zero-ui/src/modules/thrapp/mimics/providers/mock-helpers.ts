@@ -133,10 +133,10 @@ export const CONTROL_VALUES_FACTORY: ValueFactory<ControlDefinitionMap> = {
   },
   [ControlComponentType.Heatpump]: () => {
     const on = useRandomizedBoolean();
-    const dutypoint = useRandomizedNumber(0, 100);
+    const temperatureSetpoint = useRandomizedNumber(0, 100);
     return computed(() => ({
       on: stamp(on),
-      dutypoint: stamp(dutypoint),
+      temperatureSetpoint: stamp(temperatureSetpoint),
     }));
   },
   [ControlComponentType.Valve]: () => {

@@ -51,7 +51,7 @@ export type PcmControl = {
 };
 
 export type HeatpumpControl = {
-  dutypoint: Stamped<number>;
+  temperatureSetpoint: Stamped<number>;
   on: Stamped<boolean>;
 };
 

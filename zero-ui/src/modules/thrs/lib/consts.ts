@@ -160,7 +160,7 @@ export const CONTROL_FIELDS: ControlFields = {
   [ControlComponentType.Pump]: ["dutypoint", "on"],
   [ControlComponentType.Valve]: ["setpoint"],
   [ControlComponentType.Pcm]: ["on"],
-  [ControlComponentType.Heatpump]: ["dutypoint", "on"],
+  [ControlComponentType.Heatpump]: ["temperatureSetpoint", "on"],
   [ControlComponentType.DhwTanksController]: [
     "tank1State",
     "tank2State",

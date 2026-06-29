@@ -73,7 +73,21 @@ const { labels, actions, items, sources } = useTranslations();
       <TooltipListHeader>
         {{ labels("thisCircuit") }}
       </TooltipListHeader>
-      <Circuit :sensors="custom.circuit" />
+      <SensorValue
+        :source="source"
+        field="deltaT"
+      >
+        <TooltipListItem>
+          <TooltipListItemTitle>
+            {{ items("deltaTemperature") }}
+            <FieldRenderer.Source>{{ sources("calculated") }}</FieldRenderer.Source>
+          </TooltipListItemTitle>
+          <TooltipListItemValue>
+            <FieldRenderer.DeltaT />
+          </TooltipListItemValue>
+        </TooltipListItem>
+      </SensorValue>
+      <Circuit :sensors="sensors" />
     </TooltipList>
 
     <TooltipList>
@@ -81,6 +95,20 @@ const { labels, actions, items, sources } = useTranslations();
         {{ labels("exchangeCircuit") }}
         <TooltipListItemAction>{{ actions("viewCircuitMimic") }}</TooltipListItemAction>
       </TooltipListHeader>
+      <SensorValue
+        :source="custom.exchangeCircuit.deltaT"
+        field="deltaT"
+      >
+        <TooltipListItem>
+          <TooltipListItemTitle>
+            {{ items("deltaTemperature") }}
+            <FieldRenderer.Source>{{ sources("calculated") }}</FieldRenderer.Source>
+          </TooltipListItemTitle>
+          <TooltipListItemValue>
+            <FieldRenderer.DeltaT />
+          </TooltipListItemValue>
+        </TooltipListItem>
+      </SensorValue>
       <Circuit :sensors="custom.exchangeCircuit" />
     </TooltipList>
   </MimicTooltip>

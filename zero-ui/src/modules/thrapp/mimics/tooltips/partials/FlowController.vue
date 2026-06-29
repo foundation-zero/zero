@@ -68,7 +68,7 @@ defineProps<{
         </slot>
       </TooltipListItemTitle>
       <TooltipListItemValue>
-        <FieldRenderer.FlowRate :format="formatNumber(1)" />
+        <FieldRenderer.Temperature :format="formatNumber(1)" />
       </TooltipListItemValue>
     </TooltipListItem>
   </ControlValue>
@@ -86,7 +86,7 @@ defineProps<{
         </slot>
       </TooltipListItemTitle>
       <TooltipListItemValue>
-        <FieldRenderer.FlowRate :format="formatNumber(1)" />
+        <FieldRenderer.Temperature :format="formatNumber(1)" />
       </TooltipListItemValue>
     </TooltipListItem>
   </ControlValue>
@@ -101,7 +101,7 @@ defineProps<{
         <FieldRenderer.Source>{{ sources("calculated") }}</FieldRenderer.Source>
       </TooltipListItemTitle>
       <TooltipListItemValue>
-        <FieldRenderer.FlowRate :format="formatNumber(1)" />
+        <FieldRenderer.Temperature :format="formatNumber(1)" />
       </TooltipListItemValue>
     </TooltipListItem>
   </ControlValue>
