@@ -129,7 +129,7 @@ const props = defineProps<TooltipComponentContext<MimicComponentType.HeatPump>>(
     <TooltipList>
       <TooltipListHeader>{{ labels("controls") }}</TooltipListHeader>
       <FlowController
-        :controller="controls.controller"
+        :controller="controllerState.controller"
         :setpoint="parameters.flow"
         :measurement="sensors.measurement"
       />

@@ -1,6 +1,11 @@
 <script setup lang="ts">
 import { cn } from "@/modules/common/lib/utils";
-import { ControlComponentType, ParametersType, SensorComponentType } from "@/modules/thrs/types";
+import {
+  ControlComponentType,
+  ControllerStateComponentType,
+  ParametersType,
+  SensorComponentType,
+} from "@/modules/thrs/types";
 import { snakeCase } from "lodash";
 import { computed, type HTMLAttributes } from "vue";
 import { getTooltipContext } from "../../components/tooltip";
@@ -16,7 +21,9 @@ const props = defineProps<{
   class?: HTMLAttributes["class"];
   url?: boolean;
   external?: boolean;
-  source?: ModuleField<SensorComponentType | ControlComponentType | ParametersType>;
+  source?: ModuleField<
+    SensorComponentType | ControlComponentType | ParametersType | ControllerStateComponentType
+  >;
 }>();
 
 const source = computed(() => props.source ?? injectFieldValueSource());

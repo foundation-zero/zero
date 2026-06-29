@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { BoilerTankState, ControlComponentType } from "@/modules/thrs/types";
+import { BoilerTankState, ControllerStateComponentType } from "@/modules/thrs/types";
 import { computed } from "vue";
 import { MimicComponentInstanceProps } from ".";
 import { MimicTooltipTrigger, TooltipComponentContext } from "../../components/tooltip";
@@ -22,7 +22,7 @@ const props = defineProps<
   } & TooltipComponentContext<MimicComponentType.BoilerTank>
 >();
 
-const { getSensorValue, getComponentState, getControlValue } = getMimicDataProvider();
+const { getSensorValue, getComponentState, getControllerState } = getMimicDataProvider();
 
 const level = getSensorValue(props.sensors.level);
 const fillLevel = computed(() => (level.value?.level.value ?? 0) / 2.75);
@@ -30,8 +30,8 @@ const temperature = getSensorValue(props.sensors.temperature);
 
 const state = getComponentState();
 
-const controller = getControlValue(
-  getField(ControlComponentType.DhwTanksController, "dhw", "dhwTanksController"),
+const controller = getControllerState(
+  getField(ControllerStateComponentType.DhwTanksController, "dhw", "dhwTanksController"),
 );
 const mode = computed(() => controller.value?.[props.custom.tankStateField].value);
 const fillTime = computed(() => controller.value?.timeToFill.value);

@@ -132,12 +132,13 @@ class ControlMessaging[
     ControlValues: ThrsValues,
     Parameters: ThrsValues,
     Mode: ThrsValues,
+    ControllerState: ThrsValues,
 ]:
     def __init__(
         self,
         module_name: str,
         module_description: ModuleDescription[
-            SensorValues, ControlValues, Parameters, Mode
+            SensorValues, ControlValues, Parameters, Mode, ControllerState
         ],
         mqtt_client: MqttClient,
         devices_topic_prefix: str,
@@ -171,6 +172,11 @@ class ControlMessaging[
             ControlModeMessage[module_description.control_mode_cls],
             f"{self._controller_topic_prefix}/{ControlModeMessage.subscribe_topic()}",
         )
+        self._controller_state = PartialMessageReceiver(
+            module_description.controller_state_cls,
+            self._controller_topic_prefix,
+            module_name,
+        )
         self._mqtt_client = mqtt_client
 
     @property
@@ -180,6 +186,7 @@ class ControlMessaging[
             self._control_values,
             self._parameters,
             self._control_mode,
+            self._controller_state,
         ]
 
     @property
@@ -224,6 +231,10 @@ class ControlMessaging[
     @property
     def control_values(self) -> ControlValues | None:
         return self._control_values.last
+
+    @property
+    def controller_state(self) -> ControllerState | None:
+        return self._controller_state.last
 
     @property
     def parameters(self) -> Parameters | None:

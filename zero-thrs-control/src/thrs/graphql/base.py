@@ -9,14 +9,30 @@ from strawberry.fastapi import BaseContext
 import thrs.input_output.definitions.control as control
 import thrs.input_output.definitions.controllers as controllers
 import thrs.input_output.definitions.sensor as sensor
-from thrs.control.modules.adsorption import AdsorptionControlMode, AdsorptionParameters
-from thrs.control.modules.consumers import ConsumersControlMode, ConsumersParameters
-from thrs.control.modules.dc import DcControlMode, DcParameters
-from thrs.control.modules.dhw import DhwControlMode, DhwParameters
-from thrs.control.modules.drives import DrivesControlMode, DrivesParameters
-from thrs.control.modules.pcm import PcmControlMode, PcmParameters
-from thrs.control.modules.pvt import PvtControlMode, PvtParameters
-from thrs.control.modules.thrusters import ThrustersControlMode, ThrustersParameters
+from thrs.control.modules.adsorption import (
+    AdsorptionControllerState,
+    AdsorptionControlMode,
+    AdsorptionParameters,
+)
+from thrs.control.modules.consumers import (
+    ConsumersControllerState,
+    ConsumersControlMode,
+    ConsumersParameters,
+)
+from thrs.control.modules.dc import DcControllerState, DcControlMode, DcParameters
+from thrs.control.modules.dhw import DhwControllerState, DhwControlMode, DhwParameters
+from thrs.control.modules.drives import (
+    DrivesControllerState,
+    DrivesControlMode,
+    DrivesParameters,
+)
+from thrs.control.modules.pcm import PcmControllerState, PcmControlMode, PcmParameters
+from thrs.control.modules.pvt import PvtControllerState, PvtControlMode, PvtParameters
+from thrs.control.modules.thrusters import (
+    ThrustersControllerState,
+    ThrustersControlMode,
+    ThrustersParameters,
+)
 from thrs.control.switching import SwitchingControlMode
 from thrs.graphql.helpers import (
     JsonSchemaDirective,
@@ -54,6 +70,7 @@ type ThrustersMessaging = ControlMessaging[
     ThrustersControlValues,
     ThrustersParameters,
     ThrustersControlMode,
+    ThrustersControllerState,
 ]
 
 type PvtMessaging = ControlMessaging[
@@ -61,6 +78,7 @@ type PvtMessaging = ControlMessaging[
     PvtControlValues,
     PvtParameters,
     PvtControlMode,
+    PvtControllerState,
 ]
 
 
@@ -69,6 +87,7 @@ type PcmMessaging = ControlMessaging[
     PcmControlValues,
     PcmParameters,
     PcmControlMode,
+    PcmControllerState,
 ]
 
 
@@ -77,6 +96,7 @@ type ConsumersMessaging = ControlMessaging[
     ConsumersControlValues,
     ConsumersParameters,
     ConsumersControlMode,
+    ConsumersControllerState,
 ]
 
 type AdsorptionMessaging = ControlMessaging[
@@ -84,6 +104,7 @@ type AdsorptionMessaging = ControlMessaging[
     AdsorptionControlValues,
     AdsorptionParameters,
     AdsorptionControlMode,
+    AdsorptionControllerState,
 ]
 
 type DrivesMessaging = ControlMessaging[
@@ -91,6 +112,7 @@ type DrivesMessaging = ControlMessaging[
     DrivesControlValues,
     DrivesParameters,
     DrivesControlMode,
+    DrivesControllerState,
 ]
 
 type DcMessaging = ControlMessaging[
@@ -98,6 +120,7 @@ type DcMessaging = ControlMessaging[
     DcControlValues,
     DcParameters,
     DcControlMode,
+    DcControllerState,
 ]
 
 type DhwMessaging = ControlMessaging[
@@ -105,6 +128,7 @@ type DhwMessaging = ControlMessaging[
     DhwControlValues,
     DhwParameters,
     DhwControlMode,
+    DhwControllerState,
 ]
 
 
@@ -167,11 +191,13 @@ class ControlModule[
     ControlValuesType,
     ParametersType,
     Mode,
+    ControllerStateType,
 ]:
     sensor_values: SensorValuesType | None
     control_values: ControlValuesType | None
     parameters: ParametersType | None
     control_mode: SwitchingControlModeType[Mode] | None = None  # type: ignore
+    controller_state: ControllerStateType | None
 
 
 @dataclass

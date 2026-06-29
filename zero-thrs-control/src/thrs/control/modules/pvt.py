@@ -26,6 +26,10 @@ class PvtControlMode(ControlMode):
     owners: PvtGroupControlMode
 
 
+class PvtControllerState(ThrsValues):
+    pass
+
+
 class PvtParameters(ThrsValues):
     maximum_supply_temperature: Annotated[Celsius, Field(le=90)] = 80
     recovery_temperature: Celsius = 70
@@ -146,7 +150,13 @@ def owners_pvt_group_parameters(pvt_parameters: PvtParameters) -> PvtGroupParame
 
 
 class PvtControl(
-    Control[PvtSensorValues, PvtControlValues, PvtParameters, PvtControlMode]
+    Control[
+        PvtSensorValues,
+        PvtControlValues,
+        PvtParameters,
+        PvtControlMode,
+        PvtControllerState,
+    ]
 ):
     def __init__(
         self, parameters: PvtParameters, time_fn: Callable[[], datetime]
@@ -215,8 +225,8 @@ class PvtControl(
             owners=self._owners_control.initial_mode,
         )
 
-    def initial(self) -> PvtControlValues:
-        return _INITIAL_CONTROL_VALUES(self._time())
+    def initial(self) -> tuple[PvtControlValues, PvtControllerState]:
+        return (_INITIAL_CONTROL_VALUES(self._time()), PvtControllerState())
 
     def update_parameters(self, parameters: PvtParameters):
         self._parameters = parameters
@@ -248,7 +258,7 @@ class PvtControl(
         self._current_values.pvt_mix_owners = owners_control_values.mix
 
     def _control_groups(self, sensor_values: PvtSensorValues):
-        main_fwd_control_values = self._main_fwd_control.control(
+        main_fwd_control_values, _ = self._main_fwd_control.control(
             PvtGroupSensorValues(
                 pump=sensor_values.pvt_pump_main_fwd,
                 temperature_supply=sensor_values.pvt_temperature_main_fwd_supply,
@@ -258,7 +268,7 @@ class PvtControl(
                 max_temperature_strings=sensor_values.pvt_max_temperature_main_fwd_strings,
             )
         )
-        main_aft_control_values = self._main_aft_control.control(
+        main_aft_control_values, _ = self._main_aft_control.control(
             PvtGroupSensorValues(
                 pump=sensor_values.pvt_pump_main_aft,
                 temperature_supply=sensor_values.pvt_temperature_main_aft_supply,
@@ -268,7 +278,7 @@ class PvtControl(
                 max_temperature_strings=sensor_values.pvt_max_temperature_main_aft_strings,
             )
         )
-        owners_control_values = self._owners_control.control(
+        owners_control_values, _ = self._owners_control.control(
             PvtGroupSensorValues(
                 pump=sensor_values.pvt_pump_owners,
                 temperature_supply=sensor_values.pvt_temperature_owners_supply,
@@ -283,12 +293,14 @@ class PvtControl(
             main_fwd_control_values, main_aft_control_values, owners_control_values
         )
 
-    def control(self, sensor_values: PvtSensorValues) -> PvtControlValues:
+    def control(
+        self, sensor_values: PvtSensorValues
+    ) -> tuple[PvtControlValues, PvtControllerState]:
         self._control_heat_dump(sensor_values)
 
         self._control_groups(sensor_values)
 
-        return self._current_values
+        return (self._current_values, PvtControllerState())
 
 
 class PvtAlarms(BaseAlarms):
@@ -301,5 +313,6 @@ PVT_MODULE_DESCRIPTION = ModuleDescription(
     PvtParameters,
     PvtControl,
     PvtControlMode,
+    PvtControllerState,
     PvtAlarms,
 )

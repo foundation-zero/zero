@@ -15,7 +15,7 @@ def test_all_idle(
 ):
     runner._simulation.update_simulation_inputs(simulation_inputs_inactive)  # type: ignore
 
-    result, _ = runner.run(90)
+    result, _, _ = runner.run(90)
 
     assert isinstance(runner._control, DcControl)
     assert runner._control.mode.brightloops_aft.is_idle
@@ -39,7 +39,7 @@ def test_only_brightloops_aft(
         simulation_inputs_brightloops_aft_active
     )
 
-    result, _ = runner.run(180)
+    result, _, _ = runner.run(180)
 
     assert isinstance(runner._control, DcControl)
     assert runner._control.mode.brightloops_aft.is_recovery
@@ -72,7 +72,7 @@ def test_only_one_brightloop(
     )
     runner._simulation.update_simulation_inputs(simulation_inputs_aft1_active)  # type: ignore
 
-    result, _ = runner.run(240)
+    result, _, _ = runner.run(240)
 
     assert isinstance(runner._control, DcControl)
     assert runner._control.mode.brightloops_aft.is_recovery
@@ -99,7 +99,7 @@ def test_recovery(runner: SimulationTestRunner):
         )
     )
 
-    result, _ = runner.run(1200)
+    result, _, _ = runner.run(1200)
 
     assert isinstance(runner._control, DcControl)
     assert runner._control.mode.brightloops_aft.is_recovery
@@ -155,7 +155,7 @@ def test_heat_dump(runner: SimulationTestRunner):
         )
     )
 
-    result, _ = runner.run(960)
+    result, _, _ = runner.run(960)
 
     assert isinstance(result, SimulationResult)
     assert result.sensor_values.dc_temperature_recovery.temperature.value == approx(

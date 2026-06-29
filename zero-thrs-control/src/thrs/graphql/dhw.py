@@ -1,6 +1,6 @@
 import strawberry
 
-from thrs.control.modules.dhw import DhwControlMode, DhwParameters
+from thrs.control.modules.dhw import DhwControllerState, DhwControlMode, DhwParameters
 from thrs.graphql.base import (
     ControlModule,
     DhwMessaging,
@@ -21,6 +21,7 @@ DhwSensorValuesType = pydantic_to_strawberry_type(
 DhwControlValuesType = pydantic_to_strawberry_type(DhwControlValues)
 DhwParametersType = pydantic_to_strawberry_type(DhwParameters)
 DhwControlModeType = pydantic_to_strawberry_type(DhwControlMode)
+DhwControllerStateType = pydantic_to_strawberry_type(DhwControllerState)
 
 
 DhwModule = ControlModule[
@@ -28,6 +29,7 @@ DhwModule = ControlModule[
     DhwControlValuesType,
     DhwParametersType,
     DhwControlModeType,
+    DhwControllerStateType,
 ]
 
 
@@ -47,6 +49,9 @@ def resolve_module(
         )
         if module.control_mode
         else None,
+        controller_state=optional_pydantic_to_graphql(
+            DhwControllerStateType, module.controller_state
+        ),
     )
 
 

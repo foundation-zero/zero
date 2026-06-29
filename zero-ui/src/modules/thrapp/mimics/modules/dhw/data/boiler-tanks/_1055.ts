@@ -9,7 +9,8 @@ export default toInstance<MimicComponentType.BoilerTank>({
   custom: {
     tankStateField: "tank3State",
   },
-  controls: {
+  controls: {},
+  controllerState: {
     controller,
   },
   parameters,

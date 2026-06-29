@@ -10,7 +10,7 @@ from thrs.input_output.base import (
     component_meta,
     computed_meta,
 )
-from thrs.input_output.definitions import control, controllers, sensor, simulation
+from thrs.input_output.definitions import control, sensor, simulation
 from thrs.input_output.definitions.units import WATER_HEAT_TRANSFER_CONVERSION
 
 
@@ -570,46 +570,6 @@ class DhwControlValues(ThrsValues):
         control.Valve,
         component_meta(
             yard_tag="50001067-18", component_type="valve", valve_type="switch"
-        ),
-    ]
-    dhw_tanks_controller: Annotated[
-        controllers.TanksControllerValues,
-        component_meta(
-            component_type="tank_controller",
-            included_in_fmu=False,
-            topic="controller/dhw/dhw-tanks-controller",
-        ),
-    ]
-    dhw_pump_flow_controller: Annotated[
-        controllers.PidControllerValues,
-        component_meta(
-            component_type="pid_controller",
-            included_in_fmu=False,
-            topic="controller/dhw/dhw-pump-flow-controller",
-        ),
-    ]
-    dhw_pump_temperature_controller: Annotated[
-        controllers.PidControllerValues,
-        component_meta(
-            component_type="pid_controller",
-            included_in_fmu=False,
-            topic="controller/dhw/dhw-pump-temperature-controller",
-        ),
-    ]
-    dhw_drives_flow_controller: Annotated[
-        controllers.PidControllerValues,
-        component_meta(
-            component_type="pid_controller",
-            included_in_fmu=False,
-            topic="controller/dhw/dhw-drives-flow-controller",
-        ),
-    ]
-    dhw_dc_flow_controller: Annotated[
-        controllers.PidControllerValues,
-        component_meta(
-            component_type="pid_controller",
-            included_in_fmu=False,
-            topic="controller/dhw/dhw-dc-flow-controller",
         ),
     ]
 

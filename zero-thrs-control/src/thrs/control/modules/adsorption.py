@@ -92,12 +92,17 @@ class AdsorptionControlMode(ControlMode):
     mode: str
 
 
+class AdsorptionControllerState(ThrsValues):
+    pass
+
+
 class AdsorptionControl(
     Control[
         AdsorptionSensorValues,
         AdsorptionControlValues,
         AdsorptionParameters,
         AdsorptionControlMode,
+        AdsorptionControllerState,
     ]
 ):
     def __init__(
@@ -200,15 +205,20 @@ class AdsorptionControl(
         mode: str = self.state  # type: ignore
         return AdsorptionControlMode(mode=mode)
 
-    def initial(self) -> AdsorptionControlValues:
-        return _INITIAL_CONTROL_VALUES(self._time())
+    def initial(self) -> tuple[AdsorptionControlValues, AdsorptionControllerState]:
+        return (
+            _INITIAL_CONTROL_VALUES(self._time()),
+            AdsorptionControllerState(),
+        )
 
-    def control(self, sensor_values: AdsorptionSensorValues) -> AdsorptionControlValues:
+    def control(
+        self, sensor_values: AdsorptionSensorValues
+    ) -> tuple[AdsorptionControlValues, AdsorptionControllerState]:
         self._update_adsorption_inputs(sensor_values)
         self._check_adsorption_status(sensor_values)  # type: ignore
         self._control_temperature_controllers(sensor_values)
 
-        return self._current_values
+        return (self._current_values, AdsorptionControllerState())
 
     def _control_temperature_controllers(self, sensor_values: AdsorptionSensorValues):
         self._current_values.adsorption_mix_hot.setpoint = Stamped(
@@ -322,5 +332,6 @@ ADSORPTION_MODULE_DESCRIPTION = ModuleDescription(
     AdsorptionParameters,
     AdsorptionControl,
     AdsorptionControlMode,
+    AdsorptionControllerState,
     AdsorptionAlarms,
 )

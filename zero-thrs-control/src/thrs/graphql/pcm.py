@@ -24,11 +24,17 @@ PcmParametersType = pydantic_to_strawberry_type(PcmParameters)
 PcmControlModeType = pydantic_to_strawberry_type(PcmControlMode)
 
 
+@strawberry.type()
+class PcmControllerStateType:
+    _empty: None = None
+
+
 PcmModule = ControlModule[
     PcmSensorValuesType,
     PcmControlValuesType,
     PcmParametersType,
     PcmControlModeType,
+    PcmControllerStateType,
 ]
 
 
@@ -42,16 +48,13 @@ def resolve_module(
         control_values=optional_pydantic_to_graphql(
             PcmControlValuesType, module.control_values
         ),
-        parameters=(
-            PcmParametersType.from_pydantic(module.parameters)
-            if module.parameters
-            else None
-        ),
+        parameters=optional_pydantic_to_graphql(PcmParametersType, module.parameters),
         control_mode=SwitchingControlModeType.from_pydantic(
             PcmControlModeType, module.control_mode.mode
         )
         if module.control_mode
         else None,
+        controller_state=PcmControllerStateType(),
     )
 
 

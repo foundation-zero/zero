@@ -9,6 +9,7 @@ export default toInstance<MimicComponentType.SwitchValve>({
   controls: {
     valve: getField(ControlComponentType.Valve, "dhw", "dhwSwitchHeatpump"),
   },
+  controllerState: {},
   custom: {},
   parameters: {},
   source: getField(SensorComponentType.Valve, "dhw", "dhwSwitchHeatpump"),

@@ -36,6 +36,7 @@ const OUTPUT_PATH = path.join(__dirname, "../src/modules/thrs/lib/queries.genera
 
 type ComponentTypeEnum =
   | "ControlComponentType"
+  | "ControllerStateComponentType"
   | "SensorComponentType"
   | "SimulationComponentType"
   | "ParametersType";
@@ -56,6 +57,7 @@ interface ComponentFieldMappings {
 
 interface AllFieldMappings {
   ControlComponentType: ComponentFieldMappings;
+  ControllerStateComponentType: ComponentFieldMappings;
   SensorComponentType: ComponentFieldMappings;
   SimulationComponentType: ComponentFieldMappings;
   ParametersType: ComponentFieldMappings;
@@ -77,6 +79,14 @@ interface Config {
 const FIELD_MAPPINGS: AllFieldMappings = {
   // Control component fields
   ControlComponentType: {
+    Pump: ["dutypoint", "on"],
+    Valve: ["setpoint"],
+    Pcm: ["on"],
+    Heatpump: ["temperatureSetpoint", "on"],
+  },
+
+  // Control component fields
+  ControllerStateComponentType: {
     Pump: ["dutypoint", "on"],
     Valve: ["setpoint"],
     Pcm: ["on"],
@@ -189,18 +199,12 @@ function extractDefinitions(constsContent: string, constName: string): Definitio
   const fieldPattern = /(\w+):\s*\{([^}]*)\}/g;
   const fieldMatches = definitionContent.matchAll(fieldPattern);
 
-  let hasFields = false;
   for (const fieldMatch of fieldMatches) {
-    hasFields = true;
     const fieldName = fieldMatch[1];
     const fieldContent = fieldMatch[2];
 
     const fieldDef = parseFieldDefinition(fieldName, fieldContent);
     definitions[fieldName] = fieldDef;
-  }
-
-  if (!hasFields) {
-    throw new Error(`No field definitions found in ${constName}`);
   }
 
   return definitions;
@@ -350,18 +354,11 @@ function main(): void {
     const definitions = extractDefinitions(constsContent, config.inputConstName);
 
     const fieldCount = Object.keys(definitions).length;
-    if (fieldCount === 0) {
-      throw new Error(`No definitions found in ${config.inputConstName}`);
-    }
 
     console.log(`✓ Found ${fieldCount} fields:`, Object.keys(definitions));
 
     // Generate query string
     const queryString = generateQuery(definitions);
-
-    if (!queryString.trim()) {
-      throw new Error("Generated query is empty");
-    }
 
     // Update queries file
     updateQueriesFile(queryString, config.outputQueryName);

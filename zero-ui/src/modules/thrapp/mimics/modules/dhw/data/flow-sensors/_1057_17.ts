@@ -1,4 +1,8 @@
-import { ControlComponentType, ParametersType, SensorComponentType } from "@/modules/thrs/types";
+import {
+  ControllerStateComponentType,
+  ParametersType,
+  SensorComponentType,
+} from "@/modules/thrs/types";
 import { toInstance } from "../../..";
 import { MimicComponentType } from "../../../../../types";
 
@@ -8,7 +12,9 @@ import { pump, tooltip } from "./shared";
 export default toInstance<MimicComponentType.FlowSensor>({
   controls: {
     pump,
-    controller: getField(ControlComponentType.PIDController, "dhw", "dhwDcFlowController"),
+  },
+  controllerState: {
+    controller: getField(ControllerStateComponentType.PIDController, "dhw", "dhwDcFlowController"),
   },
   custom: {},
   parameters: {

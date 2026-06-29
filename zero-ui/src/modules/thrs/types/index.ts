@@ -60,8 +60,11 @@ export type ControlFields = {
   [ControlComponentType.Valve]: (keyof ValveControl)[];
   [ControlComponentType.Pcm]: (keyof PcmControl)[];
   [ControlComponentType.Heatpump]: (keyof HeatpumpControl)[];
-  [ControlComponentType.DhwTanksController]: (keyof DhwTankController)[];
-  [ControlComponentType.PIDController]: (keyof PIDController)[];
+};
+
+export type ControllerStateFields = {
+  [ControllerStateComponentType.DhwTanksController]: (keyof DhwTankController)[];
+  [ControllerStateComponentType.PIDController]: (keyof PIDController)[];
 };
 
 export type SensorFields = {
@@ -152,16 +155,11 @@ export type SensorType =
   | LevelSensor
   | DeltaTSensor;
 
-export type ControlType =
-  | PumpControl
-  | ValveControl
-  | PcmControl
-  | HeatpumpControl
-  | DhwTankController
-  | PIDController;
-
+export type ControlType = PumpControl | ValveControl | PcmControl | HeatpumpControl;
+export type ControllerStateType = DhwTankController | PIDController;
 export type Sensors = Record<string, SensorType>;
 export type Controls = Record<string, ControlType>;
+export type ControllerState = Record<string, ControllerStateType>;
 
 export const enum ThrusterMode {
   Off = "OFF",
@@ -188,8 +186,6 @@ export const enum ControlComponentType {
   Valve = "valve",
   Pcm = "pcm",
   Heatpump = "heatpump",
-  DhwTanksController = "dhwTanksController",
-  PIDController = "pidController",
 }
 
 export const enum ValveType {
@@ -212,17 +208,9 @@ export type ValveControlDefinition = ControlDefinition<ControlComponentType.Valv
 
 export type PcmControlDefinition = ControlDefinition<ControlComponentType.Pcm>;
 export type HeatpumpControlDefinition = ControlDefinition<ControlComponentType.Heatpump>;
-export type DhwTankControllerDefinition =
-  ControlDefinition<ControlComponentType.DhwTanksController>;
-export type PIDControllerDefinition = ControlDefinition<ControlComponentType.PIDController>;
 
 export type ControlDefinitions = SchemaDefinitions<
-  | PumpControlDefinition
-  | ValveControlDefinition
-  | PcmControlDefinition
-  | HeatpumpControlDefinition
-  | DhwTankControllerDefinition
-  | PIDControllerDefinition
+  PumpControlDefinition | ValveControlDefinition | PcmControlDefinition | HeatpumpControlDefinition
 >;
 
 export type ControlDefinitionMap = {
@@ -230,13 +218,39 @@ export type ControlDefinitionMap = {
   [ControlComponentType.Valve]: ValveControl;
   [ControlComponentType.Pcm]: PcmControl;
   [ControlComponentType.Heatpump]: HeatpumpControl;
-  [ControlComponentType.DhwTanksController]: DhwTankController;
-  [ControlComponentType.PIDController]: PIDController;
 };
 
 export type ExtractControlValues<T extends ControlDefinitions> = ExtractValues<
   T,
   ControlDefinitionMap
+>;
+
+export const enum ControllerStateComponentType {
+  DhwTanksController = "dhwTanksController",
+  PIDController = "pidController",
+}
+
+export type ControllerStateDefinition<
+  T extends ControllerStateComponentType = ControllerStateComponentType,
+> = SchemaDefinition<T>;
+
+export type DhwTankControllerDefinition =
+  ControllerStateDefinition<ControllerStateComponentType.DhwTanksController>;
+export type PIDControllerDefinition =
+  ControllerStateDefinition<ControllerStateComponentType.PIDController>;
+
+export type ControllerStateDefinitions = SchemaDefinitions<
+  DhwTankControllerDefinition | PIDControllerDefinition
+>;
+
+export type ControllerStateDefinitionMap = {
+  [ControllerStateComponentType.DhwTanksController]: DhwTankController;
+  [ControllerStateComponentType.PIDController]: PIDController;
+};
+
+export type ExtractControllerState<T extends ControllerStateDefinitions> = ExtractValues<
+  T,
+  ControllerStateDefinitionMap
 >;
 
 export const enum SensorComponentType {
@@ -258,16 +272,19 @@ export type THRSModule<TDefinition extends ModuleDefinition = ModuleDefinition> 
   sensorValues: ExtractSensorValues<TDefinition["sensorValues"]>;
   controlValues: ExtractControlValues<TDefinition["controlValues"]>;
   parameters: ExtractParameterValues<TDefinition["parameters"]>;
+  controllerState: ExtractControllerState<TDefinition["controllerState"]>;
 };
 
 export type ModuleDefinition<
   TSensors extends SensorDefinitions = SensorDefinitions,
   TControls extends ControlDefinitions = ControlDefinitions,
   TParameters extends ParameterDefinitions = ParameterDefinitions,
+  TControllerState extends ControllerStateDefinitions = ControllerStateDefinitions,
 > = {
   sensorValues: TSensors;
   controlValues: TControls;
   parameters: TParameters;
+  controllerState: TControllerState;
 };
 
 export type SensorDefinition<T extends SensorComponentType = SensorComponentType> =

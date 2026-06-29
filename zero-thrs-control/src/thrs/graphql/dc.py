@@ -24,11 +24,17 @@ DcParametersType = pydantic_to_strawberry_type(DcParameters)
 DcControlModeType = pydantic_to_strawberry_type(DcControlMode)
 
 
+@strawberry.type()
+class DcControllerStateType:
+    _empty: None = None
+
+
 DcModule = ControlModule[
     DcSensorValuesType,
     DcControlValuesType,
     DcParametersType,
     DcControlModeType,
+    DcControllerStateType,
 ]
 
 
@@ -48,6 +54,9 @@ def resolve_module(
         )
         if module.control_mode
         else None,
+        controller_state=optional_pydantic_to_graphql(
+            DcControllerStateType, module.controller_state
+        ),
     )
 
 

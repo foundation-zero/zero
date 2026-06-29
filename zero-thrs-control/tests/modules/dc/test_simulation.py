@@ -23,7 +23,7 @@ def incorrect_simulation_inputs(simulation_inputs, request):
 
 
 def test_simulation_step(control, simulation):
-    result = simulation.tick(control.initial())
+    result = simulation.tick(control.initial()[0])
 
     assert isinstance(result.simulation_outputs, DcSimulationOutputs)
 

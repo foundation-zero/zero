@@ -3,10 +3,11 @@ import { toInstance } from "../../..";
 import { MimicComponentType } from "../../../../../types";
 
 import { getField } from "../../../../providers";
-import { controls, flow, parameters, tooltip } from "./shared";
+import { controllerState, controls, flow, parameters, tooltip } from "./shared";
 
 export default toInstance<MimicComponentType.PressureSensor>({
   controls,
+  controllerState,
   custom: {},
   parameters,
   source: getField(SensorComponentType.Pressure, "dhw", "dhwPressure"),

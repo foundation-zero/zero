@@ -1,7 +1,6 @@
-import { ControlComponentType } from "@/modules/thrs/types";
-
 import { TooltipContent } from "@/modules/thrapp/components/tooltip";
 import { CustomFieldDefinitions } from "@/modules/thrapp/types/fields";
+import { ControllerStateComponentType } from "@/modules/thrs/types";
 import { MimicComponentType } from "../../../../../types";
 import { getField } from "../../../../providers";
 import { DHW_TANK_DATA } from "../boiler-tanks";
@@ -13,7 +12,7 @@ export const tooltip = (content: Partial<TooltipContent>): TooltipContent => ({
 });
 
 export const controller = getField(
-  ControlComponentType.DhwTanksController,
+  ControllerStateComponentType.DhwTanksController,
   "dhw",
   "dhwTanksController",
 );

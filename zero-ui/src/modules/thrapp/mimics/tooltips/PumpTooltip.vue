@@ -158,14 +158,14 @@ const { labels, actions, items, sources } = useTranslations();
         <TooltipListItemAction>{{ actions("viewControls") }}</TooltipListItemAction>
       </TooltipListHeader>
       <FlowController
-        :controller="controls.flowController"
+        :controller="controllerState.flowController"
         :measurement="sensors.flowMeasurement"
         :setpoint="parameters.flow"
       >
         {{ sources("pumpFlowController") }}
       </FlowController>
       <TemperatureController
-        :controller="controls.temperatureController"
+        :controller="controllerState.temperatureController"
         :measurement="sensors.temperatureMeasurement"
         :setpoint="parameters.temperature"
       >

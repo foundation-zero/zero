@@ -53,12 +53,17 @@ class ConsumersControlMode(ControlMode):
     pass
 
 
+class ConsumersControllerState(ThrsValues):
+    pass
+
+
 class ConsumersControl(
     Control[
         ConsumersSensorValues,
         ConsumersControlValues,
         ConsumersParameters,
         ConsumersControlMode,
+        ConsumersControllerState,
     ]
 ):
     def __init__(
@@ -104,8 +109,8 @@ class ConsumersControl(
             ],
         )
 
-    def initial(self) -> ConsumersControlValues:
-        return _INITIAL_CONTROL_VALUES(self._time())
+    def initial(self) -> tuple[ConsumersControlValues, ConsumersControllerState]:
+        return (_INITIAL_CONTROL_VALUES(self._time()), ConsumersControllerState())
 
     def _control_flow_distribution(self, sensor_values: ConsumersSensorValues):
         actives = [
@@ -153,7 +158,9 @@ class ConsumersControl(
         elif not enabled and switch_valve.setpoint.value != Valve.CLOSED:
             switch_valve.setpoint = Stamped(value=Valve.CLOSED, timestamp=self._time())
 
-    def control(self, sensor_values: ConsumersSensorValues):
+    def control(
+        self, sensor_values: ConsumersSensorValues
+    ) -> tuple[ConsumersControlValues, ConsumersControllerState]:
         self._control_flow_distribution(sensor_values)
 
         self._control_switch_valve(
@@ -165,7 +172,7 @@ class ConsumersControl(
             self._parameters.adsorption_enabled,
         )
 
-        return self._current_values
+        return (self._current_values, ConsumersControllerState())
 
     def modes(self) -> list[str]:
         return []
@@ -195,5 +202,6 @@ CONSUMERS_MODULE_DESCRIPTION = ModuleDescription(
     ConsumersParameters,
     ConsumersControl,
     ConsumersControlMode,
+    ConsumersControllerState,
     ConsumersAlarms,
 )

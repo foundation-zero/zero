@@ -13,7 +13,6 @@ import { MimicTooltip, TooltipComponentContext } from "../../components/tooltip/
 import { MimicComponentType } from "../../types/index.ts";
 import { YardTag } from "../components/yard-tag/index.ts";
 import FlowControlValveInstance from "../instances/FlowControlValveInstance.vue";
-import { ControlValue } from "../providers";
 import { FieldRenderer } from "../renderers/index.ts";
 import { useTranslations } from "./index.ts";
 import ComponentInfo from "./partials/ComponentInfo.vue";
@@ -40,8 +39,8 @@ const { labels, items } = useTranslations();
 
     <TooltipList>
       <TooltipListHeader>{{ labels("input") }}</TooltipListHeader>
-      <ControlValue
-        :source="controls.controller"
+      <ControllerStateValue
+        :source="controllerState.controller"
         field="output"
       >
         <TooltipListItem>
@@ -53,7 +52,7 @@ const { labels, items } = useTranslations();
             <FieldRenderer.Percentage />
           </TooltipListItemValue>
         </TooltipListItem>
-      </ControlValue>
+      </ControllerStateValue>
     </TooltipList>
 
     <TooltipList>
@@ -67,7 +66,7 @@ const { labels, items } = useTranslations();
         <TooltipListItemAction>{{ labels("viewControls") }}</TooltipListItemAction>
       </TooltipListHeader>
       <FlowController
-        :controller="controls.controller"
+        :controller="controllerState.controller"
         :measurement="sensors.measurement"
         :actuator="controls.pump"
         :setpoint="parameters.flow"

@@ -26,11 +26,17 @@ AdsorptionParametersType = pydantic_to_strawberry_type(AdsorptionParameters)
 AdsorptionControlModeType = pydantic_to_strawberry_type(AdsorptionControlMode)
 
 
+@strawberry.type()
+class AdsorptionControllerStateType:
+    _empty: None = None
+
+
 AdsorptionModule = ControlModule[
     AdsorptionSensorValuesType,
     AdsorptionControlValuesType,
     AdsorptionParametersType,
     AdsorptionControlModeType,
+    AdsorptionControllerStateType,
 ]
 
 
@@ -52,6 +58,9 @@ def resolve_module(
         )
         if module.control_mode
         else None,
+        controller_state=optional_pydantic_to_graphql(
+            AdsorptionControllerStateType, module.controller_state
+        ),
     )
 
 

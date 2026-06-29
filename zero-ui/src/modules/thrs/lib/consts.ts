@@ -1,6 +1,8 @@
 import {
   ControlComponentType,
   ControlFields,
+  ControllerStateComponentType,
+  ControllerStateFields,
   ModuleDefinition,
   SensorComponentType,
   SensorFields,
@@ -14,6 +16,7 @@ import {
   ADSORPTION_SIMULATION_INPUTS,
   ADSORPTION_SIMULATION_OUTPUTS,
   CONSUMERS_CONTROL_DEFINITION,
+  CONSUMERS_CONTROLLER_STATE,
   CONSUMERS_PARAMETER_DEFINITION,
   CONSUMERS_SENSOR_DEFINITION,
   CONSUMERS_SIMULATION_INPUTS,
@@ -21,6 +24,7 @@ import {
   DC_SIMULATION_INPUTS,
   DC_SIMULATION_OUTPUTS,
   DHW_CONTROL_DEFINITION,
+  DHW_CONTROLLER_STATE,
   DHW_PARAMETER_DEFINITION,
   DHW_SENSOR_DEFINITION,
   DHW_SIMULATION_INPUTS,
@@ -30,16 +34,19 @@ import {
   HIGH_TEMPERATURE_SIMULATION_INPUTS,
   HIGH_TEMPERATURE_SIMULATION_OUTPUTS,
   PCM_CONTROL_DEFINITION,
+  PCM_CONTROLLER_STATE,
   PCM_PARAMETER_DEFINITION,
   PCM_SENSOR_DEFINITION,
   PCM_SIMULATION_INPUTS,
   PCM_SIMULATION_OUTPUTS,
   PVT_CONTROL_DEFINITION,
+  PVT_CONTROLLER_STATE,
   PVT_PARAMETER_DEFINITION,
   PVT_SENSOR_DEFINITION,
   PVT_SIMULATION_INPUTS,
   PVT_SIMULATION_OUTPUTS,
   THRUSTERS_CONTROL_DEFINITION,
+  THRUSTERS_CONTROLLER_STATE,
   THRUSTERS_PARAMETER_DEFINITION,
   THRUSTERS_SENSOR_DEFINITION,
   THRUSTERS_SIMULATION_INPUTS,
@@ -53,11 +60,13 @@ import {
 } from "./consts.types";
 import {
   CONSUMERS_CONTROL_QUERY,
+  CONSUMERS_CONTROLLER_STATE_QUERY,
   CONSUMERS_PARAMETERS_QUERY,
   CONSUMERS_SENSOR_QUERY,
   CONSUMERS_SIMULATION_INPUTS_QUERY,
   CONSUMERS_SIMULATION_OUTPUTS_QUERY,
   DHW_CONTROL_QUERY,
+  DHW_CONTROLLER_STATE_QUERY,
   DHW_PARAMETERS_QUERY,
   DHW_SENSOR_QUERY,
   DHW_SIMULATION_INPUTS_QUERY,
@@ -65,16 +74,19 @@ import {
   HIGH_TEMPERATURE_SIMULATION_INPUTS_QUERY,
   HIGH_TEMPERATURE_SIMULATION_OUTPUTS_QUERY,
   PCM_CONTROL_QUERY,
+  PCM_CONTROLLER_STATE_QUERY,
   PCM_PARAMETERS_QUERY,
   PCM_SENSOR_QUERY,
   PCM_SIMULATION_INPUTS_QUERY,
   PCM_SIMULATION_OUTPUTS_QUERY,
   PVT_CONTROL_QUERY,
+  PVT_CONTROLLER_STATE_QUERY,
   PVT_PARAMETERS_QUERY,
   PVT_SENSOR_QUERY,
   PVT_SIMULATION_INPUTS_QUERY,
   PVT_SIMULATION_OUTPUTS_QUERY,
   THRUSTERS_CONTROL_QUERY,
+  THRUSTERS_CONTROLLER_STATE_QUERY,
   THRUSTERS_PARAMETERS_QUERY,
   THRUSTERS_SENSOR_QUERY,
   THRUSTERS_SIMULATION_INPUTS_QUERY,
@@ -118,26 +130,31 @@ export const DEFINITIONS = toDefinitions({
     sensorValues: THRUSTERS_SENSOR_DEFINITION,
     controlValues: THRUSTERS_CONTROL_DEFINITION,
     parameters: THRUSTERS_PARAMETER_DEFINITION,
+    controllerState: THRUSTERS_CONTROLLER_STATE,
   },
   pcm: {
     sensorValues: PCM_SENSOR_DEFINITION,
     controlValues: PCM_CONTROL_DEFINITION,
     parameters: PCM_PARAMETER_DEFINITION,
+    controllerState: PCM_CONTROLLER_STATE,
   },
   pvt: {
     sensorValues: PVT_SENSOR_DEFINITION,
     controlValues: PVT_CONTROL_DEFINITION,
     parameters: PVT_PARAMETER_DEFINITION,
+    controllerState: PVT_CONTROLLER_STATE,
   },
   consumers: {
     sensorValues: CONSUMERS_SENSOR_DEFINITION,
     controlValues: CONSUMERS_CONTROL_DEFINITION,
     parameters: CONSUMERS_PARAMETER_DEFINITION,
+    controllerState: CONSUMERS_CONTROLLER_STATE,
   },
   dhw: {
     sensorValues: DHW_SENSOR_DEFINITION,
     controlValues: DHW_CONTROL_DEFINITION,
     parameters: DHW_PARAMETER_DEFINITION,
+    controllerState: DHW_CONTROLLER_STATE,
   },
 });
 
@@ -173,13 +190,16 @@ export const CONTROL_FIELDS: ControlFields = {
   [ControlComponentType.Valve]: ["setpoint"],
   [ControlComponentType.Pcm]: ["on"],
   [ControlComponentType.Heatpump]: ["temperatureSetpoint", "on"],
-  [ControlComponentType.DhwTanksController]: [
+};
+
+export const CONTROLLER_STATE_FIELDS: ControllerStateFields = {
+  [ControllerStateComponentType.DhwTanksController]: [
     "tank1State",
     "tank2State",
     "tank3State",
     "timeToFill",
   ],
-  [ControlComponentType.PIDController]: [
+  [ControllerStateComponentType.PIDController]: [
     "setpoint",
     "measurement",
     "output",
@@ -225,26 +245,31 @@ export const QUERIES = toQueries({
     controlValues: THRUSTERS_CONTROL_QUERY,
     parameters: THRUSTERS_PARAMETERS_QUERY,
     sensorValues: THRUSTERS_SENSOR_QUERY,
+    controllerState: THRUSTERS_CONTROLLER_STATE_QUERY,
   },
   pcm: {
     controlValues: PCM_CONTROL_QUERY,
     parameters: PCM_PARAMETERS_QUERY,
     sensorValues: PCM_SENSOR_QUERY,
+    controllerState: PCM_CONTROLLER_STATE_QUERY,
   },
   pvt: {
     controlValues: PVT_CONTROL_QUERY,
     parameters: PVT_PARAMETERS_QUERY,
     sensorValues: PVT_SENSOR_QUERY,
+    controllerState: PVT_CONTROLLER_STATE_QUERY,
   },
   consumers: {
     controlValues: CONSUMERS_CONTROL_QUERY,
     parameters: CONSUMERS_PARAMETERS_QUERY,
     sensorValues: CONSUMERS_SENSOR_QUERY,
+    controllerState: CONSUMERS_CONTROLLER_STATE_QUERY,
   },
   dhw: {
     controlValues: DHW_CONTROL_QUERY,
     parameters: DHW_PARAMETERS_QUERY,
     sensorValues: DHW_SENSOR_QUERY,
+    controllerState: DHW_CONTROLLER_STATE_QUERY,
   },
 });
 
@@ -301,6 +326,9 @@ export const QUERY_ALL = gql`
         parameters {
           ${THRUSTERS_PARAMETERS_QUERY}
         }
+        controllerState {
+          Empty
+        }
       }
       pcm {
         sensorValues {
@@ -311,6 +339,9 @@ export const QUERY_ALL = gql`
         }
         parameters {
           ${PCM_PARAMETERS_QUERY}
+        }
+        controllerState {
+          Empty
         }
       }
       pvt {
@@ -323,6 +354,9 @@ export const QUERY_ALL = gql`
         parameters {
           ${PVT_PARAMETERS_QUERY}
         }
+        controllerState {
+          Empty
+        }
       }
       consumers {
         sensorValues {
@@ -334,6 +368,9 @@ export const QUERY_ALL = gql`
         parameters {
           ${CONSUMERS_PARAMETERS_QUERY}
         }
+        controllerState {
+          Empty
+        }
       }
       dhw {
         sensorValues {
@@ -344,6 +381,9 @@ export const QUERY_ALL = gql`
         }
         parameters {
           ${DHW_PARAMETERS_QUERY}
+        }
+        controllerState {
+          ${DHW_CONTROLLER_STATE_QUERY}
         }
       }
     }

@@ -18,6 +18,7 @@ class ModuleDescription[
     C: ThrsValues,
     P: ThrsValues,
     M: ThrsValues,
+    CV: ThrsValues,
 ]:
     """Description of a module with sensor values, control values, control parameters and control mode models and the control & alarm logic"""
 
@@ -26,20 +27,28 @@ class ModuleDescription[
         sensor_values_cls: type[S],
         control_values_cls: type[C],
         parameters_cls: type[P],
-        control: Callable[[P, Callable[[], datetime]], Control[S, C, P, M]],
+        control: Callable[[P, Callable[[], datetime]], Control[S, C, P, M, CV]],
         control_mode_cls: type[M],
+        controller_state_cls: type[CV],
         alarms: Callable[[], BaseAlarms[S, C, P]],
     ):
         self.sensor_values_cls = sensor_values_cls
         self.control_values_cls = control_values_cls
         self.parameters_cls = parameters_cls
         self.control_mode_cls = control_mode_cls
+        self.controller_state_cls = controller_state_cls
         self.control = control
         self.alarms = alarms
 
 
 class CombinedControl(
-    Control[CombinedValues, CombinedValues, CombinedValues, CombinedValues]
+    Control[
+        CombinedValues,
+        CombinedValues,
+        CombinedValues,
+        CombinedValues,
+        CombinedValues,
+    ]
 ):
     """Combination of multiple controls into one control module"""
 
@@ -49,24 +58,33 @@ class CombinedControl(
         time_fn: Callable[[], datetime],
     ):
         self._modules = {
-            name: SwitchingControl(ManualControl(control.initial(), time_fn), control)
+            name: SwitchingControl(
+                ManualControl(control.initial()[0], time_fn), control
+            )
             for name, control in modules.items()
         }
         self._time_fn = time_fn
 
-    def initial(self) -> CombinedValues:
-        return CombinedValues(
-            values={name: module.initial() for name, module in self._modules.items()}
-        )
+    def initial(self) -> tuple[CombinedValues, CombinedValues]:
+        return self.control(CombinedValues({}))
 
-    def control(self, sensor_values: CombinedValues) -> CombinedValues:
-        results = {
-            name: module.control(sensors)
-            if (sensors := sensor_values.values.get(name, None))
-            else module.initial()
-            for name, module in self._modules.items()
-        }
-        return CombinedValues(values={name: result for name, result in results.items()})
+    def control(
+        self, sensor_values: CombinedValues
+    ) -> tuple[CombinedValues, CombinedValues]:
+        combined_control_values = CombinedValues({})
+        combined_controller_state = CombinedValues({})
+
+        for name, module in self._modules.items():
+            sensors = sensor_values.values.get(name, None)
+            if sensors:
+                control_value, controller_state = module.control(sensors)
+            else:
+                control_value, controller_state = module.initial()
+
+            combined_control_values.values[name] = control_value
+            combined_controller_state.values[name] = controller_state
+
+        return (combined_control_values, combined_controller_state)
 
     @property
     def parameters(self) -> CombinedValues:
@@ -141,6 +159,9 @@ class CombinedModule:
         }
         self.control_values_clss: ModuleClassMap = {
             module: desc.control_values_cls for module, desc in modules.items()
+        }
+        self.controller_state_clss: ModuleClassMap = {
+            module: desc.controller_state_cls for module, desc in modules.items()
         }
 
     @property

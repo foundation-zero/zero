@@ -6,6 +6,7 @@ from tests.helpers.simulation_runner import SimulationTestRunner
 from thrs.control.modules.dhw import (
     DhwAlarms,
     DhwControl,
+    DhwControllerState,
     DhwControlMode,
     DhwParameters,
     Tank,
@@ -105,6 +106,7 @@ def runner(
     DhwSimulationOutputs,
     DhwParameters,
     DhwControlMode,
+    DhwControllerState,
 ]:
     return SimulationTestRunner(simulation, control, alarms)
 

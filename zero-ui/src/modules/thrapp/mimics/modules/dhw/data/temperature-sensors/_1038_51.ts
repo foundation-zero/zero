@@ -3,10 +3,11 @@ import { toInstance } from "../../..";
 import { MimicComponentType } from "../../../../../types";
 
 import { getField } from "../../../../providers";
-import { controls, measurement, parameters, tooltip } from "./shared";
+import { controllerState, controls, measurement, parameters, tooltip } from "./shared";
 
 export default toInstance<MimicComponentType.TemperatureSensor>({
   controls,
+  controllerState,
   custom: {},
   parameters,
   source: getField(SensorComponentType.Temperature, "dhw", "dhwTemperatureAdsorptionReturn"),

@@ -1,9 +1,15 @@
 import { TooltipContent } from "@/modules/thrapp/components/tooltip";
 
-import { ControlComponentType, ParametersType, SensorComponentType } from "@/modules/thrs/types";
+import {
+  ControlComponentType,
+  ControllerStateComponentType,
+  ParametersType,
+  SensorComponentType,
+} from "@/modules/thrs/types";
 
 import {
   ControlFieldDefinitions,
+  ControllerStateFieldDefinitions,
   ExtractModuleFields,
   ParameterFieldDefinitions,
 } from "@/modules/thrapp/types/fields";
@@ -17,7 +23,7 @@ export const tooltip = (content: Partial<TooltipContent>): TooltipContent => ({
 });
 
 export const controller = getField(
-  ControlComponentType.PIDController,
+  ControllerStateComponentType.PIDController,
   "dhw",
   "dhwPumpTemperatureController",
 );
@@ -34,9 +40,16 @@ export type TemperatureSensorParameters = ExtractModuleFields<
   ParameterFieldDefinitions[MimicComponentType.TemperatureSensor]
 >;
 
+export type TemperatureSensorControllerState = ExtractModuleFields<
+  ControllerStateFieldDefinitions[MimicComponentType.TemperatureSensor]
+>;
+
 export const controls: TemperatureSensorControls = {
-  controller,
   pump: actuator,
+};
+
+export const controllerState: TemperatureSensorControllerState = {
+  controller,
 };
 
 export const parameters: TemperatureSensorParameters = {
