@@ -13,7 +13,6 @@ from thrs.input_output.base import CombinedValues
 from thrs.input_output.modules.high_temperature import (
     HighTemperatureSimulationInputs,
 )
-from thrs.orchestration.runner import ModuleSimulatorModel
 from thrs.orchestration.simulation import Simulation
 from thrs.simulation.fmu import Fmu
 from thrs.simulation.models.fmu_paths import high_temperature_path
@@ -60,12 +59,17 @@ def test_module_simulator_model(module):
         }
     )
     inputs = HighTemperatureSimulationInputs.zero()
-    model = ModuleSimulatorModel(
-        fmu_path=high_temperature_path,
-        module=module,
-        simulation_inputs=inputs,
-    )
-    with model.simulation() as simulation:
+
+    with Fmu(high_temperature_path) as fmu:
+        simulation = Simulation(
+            module.sensor_values_clss,
+            module.simulation_outputs_cls,
+            fmu,
+            inputs,
+            datetime.now(),
+            timedelta(seconds=1),
+        )
+
         runner = SimulationTestRunner.from_module(module, params, simulation)
 
         runner.run(100)
