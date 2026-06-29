@@ -8,7 +8,7 @@ from tests.orchestration.simples import (
     SimpleSimulation,
     SimpleSimulationOutputs,
 )
-from thrs.orchestration.runner import Runner
+from thrs.orchestration.runners import Runner
 
 
 async def test_simulator():
@@ -19,7 +19,7 @@ async def test_simulator():
     runner = Runner(
         connector, "simple", simulation, simulation_connector, control, SimpleAlarms()
     )  # type: ignore
-    await runner.run(3)
+    await runner.run_old_combined_sim_ctrl(3)
     assert len(connector.controls) == 3
     assert connector.controls[0][0].go_with_the.flow.value == 0
     assert connector.controls[0][0].go_with_the.temperature.value == 0

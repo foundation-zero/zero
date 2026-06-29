@@ -3,31 +3,44 @@ import logging
 from pydantic_settings import (
     BaseSettings,
     CliApp,
-    CliPositionalArg,
     CliSubCommand,
     SettingsConfigDict,
 )
 
-from thrs.cli.simulation_controls import (
-    Modes,
-    SimulationControls,
-)
 from thrs.orchestration.config import Config
 from thrs.orchestration.log import setup_logging
+from thrs.runtime.descriptions.simulation import Mode, Modes
+from thrs.runtime.runtime import Runtime
 
 logger: logging.Logger = logging.getLogger(__name__)
 settings = Config()  # type: ignore
 
 
-class RunCmd(Config):
-    mode: CliPositionalArg[
-        Modes
-    ]  # For now, keep it as previous structure, but we can change it to a subcommand in the future.
+class ControlCmd(Config):
+    mode: Modes
 
     async def cli_cmd(self) -> None:
-        async with SimulationControls.from_settings(settings) as controls:
-            await controls.clear_previous()
-            await controls.run(self.mode)
+        async with Runtime.setup_for_control(settings, self.mode) as runtime:
+            await runtime.start()
+            await runtime.loop.play(1)
+
+
+class SimulatorCmd(Config):
+    mode: Modes
+
+    async def cli_cmd(self) -> None:
+        async with Runtime.setup_for_simulation(settings, self.mode) as runtime:
+            await runtime.start()
+            await runtime.loop.play(1)
+
+
+class LockstepCmd(Config):
+    mode: Modes
+
+    async def cli_cmd(self) -> None:
+        async with Runtime.setup_for_lockstep(settings, self.mode) as runtime:
+            await runtime.clear_previous()
+            await runtime.start()
 
 
 class ThrsCli(BaseSettings, cli_kebab_case=True):
@@ -38,10 +51,14 @@ class ThrsCli(BaseSettings, cli_kebab_case=True):
         extra="allow",
     )
 
-    run: CliSubCommand[RunCmd]
+    lockstep: CliSubCommand[LockstepCmd]
+    simulator: CliSubCommand[SimulatorCmd]
+    control: CliSubCommand[ControlCmd]
 
     def cli_cmd(self) -> None:
         setup_logging()
+        logger.debug("Running THRS control...")
+
         try:
             CliApp.run_subcommand(self)
         except KeyboardInterrupt:

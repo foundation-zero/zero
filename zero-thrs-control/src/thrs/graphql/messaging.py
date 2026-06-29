@@ -7,22 +7,16 @@ from typing import Callable, Coroutine, Literal
 from aiomqtt import Client as MqttClient
 from aiomqtt import Message, Topic
 
-from thrs.cli.simulation_controls import (
-    ControlModeMessage,
-    ManualControlMessage,
-    ParametersMessage,
+from thrs.input_output.base import SimulationInputs, SimulationValues, ThrsValues
+from thrs.orchestration.connector import PartialMqttMapping
+from thrs.orchestration.module import ModuleDescription
+from thrs.runtime.messages import (
     PauseMessage,
     PlayMessage,
-    SetAutomationMessage,
-    SetParametersMessage,
-    SetSimulationInputsMessage,
     SimulationInputMessage,
     SimulationStatusMessage,
     StepMessage,
 )
-from thrs.input_output.base import SimulationInputs, SimulationValues, ThrsValues
-from thrs.orchestration.connector import PartialMqttMapping
-from thrs.orchestration.module import ModuleDescription
 
 
 @dataclass
