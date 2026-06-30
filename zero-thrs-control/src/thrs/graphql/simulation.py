@@ -6,13 +6,22 @@ from thrs.graphql.helpers import (
     optional_pydantic_to_graphql,
 )
 from thrs.graphql.messaging import SimulationMessaging
+from thrs.input_output.modules.adsorption import (
+    AdsorptionSimulationInputs,
+    AdsorptionSimulationOutputs,
+)
 from thrs.input_output.modules.consumers import (
     ConsumersSimulationInputs,
     ConsumersSimulationOutputs,
 )
+from thrs.input_output.modules.dc import DcSimulationInputs, DcSimulationOutputs
 from thrs.input_output.modules.dhw import (
     DhwSimulationInputs,
     DhwSimulationOutputs,
+)
+from thrs.input_output.modules.drives import (
+    DrivesSimulationInputs,
+    DrivesSimulationOutputs,
 )
 from thrs.input_output.modules.high_temperature import (
     HighTemperatureSimulationInputs,
@@ -30,11 +39,14 @@ io_mapping = {
     "pcm": (PcmSimulationInputs, PcmSimulationOutputs),
     "pvt": (PvtSimulationInputs, PvtSimulationOutputs),
     "consumers": (ConsumersSimulationInputs, ConsumersSimulationOutputs),
+    "adsorption": (AdsorptionSimulationInputs, AdsorptionSimulationOutputs),
+    "drives": (DrivesSimulationInputs, DrivesSimulationOutputs),
+    "dc": (DcSimulationInputs, DcSimulationOutputs),
+    "dhw": (DhwSimulationInputs, DhwSimulationOutputs),
     "high_temperature": (
         HighTemperatureSimulationInputs,
         HighTemperatureSimulationOutputs,
     ),
-    "dhw": (DhwSimulationInputs, DhwSimulationOutputs),
 }
 
 inputs_strawberry_type_mapping = {
@@ -108,13 +120,31 @@ def resolve_outputs(
     lambda context: context.simulation_messaging,
 )
 @add_simulation_input_mutations(
-    "high_temperature",
+    "adsorption",
+    io_mapping,
+    inputs_strawberry_type_mapping,
+    lambda context: context.simulation_messaging,
+)
+@add_simulation_input_mutations(
+    "drives",
+    io_mapping,
+    inputs_strawberry_type_mapping,
+    lambda context: context.simulation_messaging,
+)
+@add_simulation_input_mutations(
+    "dc",
     io_mapping,
     inputs_strawberry_type_mapping,
     lambda context: context.simulation_messaging,
 )
 @add_simulation_input_mutations(
     "dhw",
+    io_mapping,
+    inputs_strawberry_type_mapping,
+    lambda context: context.simulation_messaging,
+)
+@add_simulation_input_mutations(
+    "high_temperature",
     io_mapping,
     inputs_strawberry_type_mapping,
     lambda context: context.simulation_messaging,

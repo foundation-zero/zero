@@ -9,8 +9,11 @@ from strawberry.fastapi import BaseContext
 import thrs.input_output.definitions.control as control
 import thrs.input_output.definitions.controllers as controllers
 import thrs.input_output.definitions.sensor as sensor
+from thrs.control.modules.adsorption import AdsorptionControlMode, AdsorptionParameters
 from thrs.control.modules.consumers import ConsumersControlMode, ConsumersParameters
+from thrs.control.modules.dc import DcControlMode, DcParameters
 from thrs.control.modules.dhw import DhwControlMode, DhwParameters
+from thrs.control.modules.drives import DrivesControlMode, DrivesParameters
 from thrs.control.modules.pcm import PcmControlMode, PcmParameters
 from thrs.control.modules.pvt import PvtControlMode, PvtParameters
 from thrs.control.modules.thrusters import ThrustersControlMode, ThrustersParameters
@@ -22,11 +25,17 @@ from thrs.graphql.helpers import (
 )
 from thrs.graphql.messaging import ControlMessaging, Messaging, SimulationMessaging
 from thrs.input_output.base import SimulationInputs, Stamped, ThrsValues
+from thrs.input_output.modules.adsorption import (
+    AdsorptionControlValues,
+    AdsorptionSensorValues,
+)
 from thrs.input_output.modules.consumers import (
     ConsumersControlValues,
     ConsumersSensorValues,
 )
+from thrs.input_output.modules.dc import DcControlValues, DcSensorValues
 from thrs.input_output.modules.dhw import DhwControlValues, DhwSensorValues
+from thrs.input_output.modules.drives import DrivesControlValues, DrivesSensorValues
 from thrs.input_output.modules.pcm import (
     PcmControlValues,
     PcmSensorValues,
@@ -68,6 +77,27 @@ type ConsumersMessaging = ControlMessaging[
     ConsumersControlValues,
     ConsumersParameters,
     ConsumersControlMode,
+]
+
+type AdsorptionMessaging = ControlMessaging[
+    AdsorptionSensorValues,
+    AdsorptionControlValues,
+    AdsorptionParameters,
+    AdsorptionControlMode,
+]
+
+type DrivesMessaging = ControlMessaging[
+    DrivesSensorValues,
+    DrivesControlValues,
+    DrivesParameters,
+    DrivesControlMode,
+]
+
+type DcMessaging = ControlMessaging[
+    DcSensorValues,
+    DcControlValues,
+    DcParameters,
+    DcControlMode,
 ]
 
 type DhwMessaging = ControlMessaging[

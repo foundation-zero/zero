@@ -8,7 +8,6 @@ from thrs.input_output.alarms import BaseAlarms
 from thrs.input_output.base import (
     CombinedValues,
     SimulationInputs,
-    SimulationValues,
     ThrsValues,
 )
 from thrs.orchestration.connector import Connector
@@ -21,7 +20,7 @@ class SimulatorModel:
     fmu_path: str
     sensor_values_cls: type[ThrsValues]
     control_values_cls: type[ThrsValues]
-    simulation_outputs_cls: type[SimulationValues]
+    simulation_outputs_cls: type[ThrsValues]
     control_cls: type[Control]
     alarms: BaseAlarms
     simulation_inputs: SimulationInputs
