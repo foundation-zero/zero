@@ -1,0 +1,94 @@
+name: "Fiber optics: Test and push Docker image"
+on:
+  pull_request:
+    paths:
+      - zero-fiber-optics/**
+      - .github/workflows/ci_fiber_optics.yaml
+  release:
+    types: [released]
+  push:
+    branches:
+      - main
+    paths:
+      - zero-fiber-optics/**
+      - .github/workflows/ci_fiber_optics.yaml
+
+env:
+  IMAGE: "europe-west1-docker.pkg.dev/common-449414/common/zero-fiber-optics"
+
+jobs:
+  test:
+    timeout-minutes: 10
+    runs-on: ubuntu-latest
+    outputs:
+      image_tag: ${{ steps.image_tag.outputs.image_tag }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: "0"
+
+      - name: Set up Rust
+        uses: actions-rust-lang/setup-rust-toolchain@v1
+        with:
+          toolchain: stable 
+          components: clippy, rustfmt
+
+      - name: Run tests
+        run: cargo test --all --all-features --locked
+        working-directory: zero-fiber-optics
+
+      - name: Run clippy
+        run: cargo clippy --all --all-features --locked
+        working-directory: zero-fiber-optics
+
+      - name: Determine image tag
+        id: image_tag
+        run: |
+          if [ "${{ github.event_name }}" = "release" ]; then
+            VERSION="${{ github.event.release.tag_name }}"
+          elif [ "${{ github.ref_type }}" = "tag" ]; then
+            VERSION="${{ github.ref_name }}"
+          else
+            VERSION_BASE=$(grep '^version = ' Cargo.toml | head -1 | sed -E 's/version = "(.*)"/\1/')
+            SHORT_SHA=$(git rev-parse --short=7 HEAD)
+            VERSION="${VERSION_BASE}-${SHORT_SHA}"
+          fi
+
+          echo "Using image tag: $VERSION"
+          echo "image_tag=$VERSION" >> $GITHUB_OUTPUT
+        working-directory: zero-fiber-optics
+
+  docker-push:
+    timeout-minutes: 10
+    runs-on: ubuntu-latest
+    needs: test
+    permissions:
+      contents: "read"
+      id-token: "write"
+    steps:
+      - uses: actions/checkout@v4
+      # Set up in https://github.com/foundation-zero/gcp-common
+      - id: auth
+        name: Authenticate with Google Cloud
+        uses: google-github-actions/auth@v2
+        with:
+          token_format: access_token
+          project_id: ${{ secrets.GCP_COMMON_PROJECT_ID }}
+          workload_identity_provider: ${{ secrets.GCP_COMMON_WORKLOAD_IDENTITY_PROVIDER }}
+          service_account: ${{ secrets.GCP_COMMON_SERVICE_ACCOUNT }}
+          access_token_lifetime: 600s
+      - name: Login to Artifact Registry
+        uses: docker/login-action@v3
+        with:
+          registry: europe-west1-docker.pkg.dev
+          username: oauth2accesstoken
+          password: ${{ steps.auth.outputs.access_token }}
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+      - name: Build and push
+        uses: docker/build-push-action@v6
+        with:
+          context: zero-fiber-optics
+          push: true
+          platforms: linux/amd64,linux/arm64
+          tags: ${{ env.IMAGE }}:${{ needs.test.outputs.image_tag }}

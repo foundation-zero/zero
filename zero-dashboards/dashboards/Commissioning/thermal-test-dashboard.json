@@ -25,7 +25,9 @@
       "icon": "external link",
       "includeVars": false,
       "keepTime": false,
-      "tags": ["commissioning"],
+      "tags": [
+        "commissioning"
+      ],
       "targetBlank": false,
       "title": "Dashboards",
       "tooltip": "",
@@ -262,7 +264,11 @@
       "id": 12,
       "options": {
         "legend": {
-          "calcs": ["min", "max", "mean"],
+          "calcs": [
+            "min",
+            "max",
+            "mean"
+          ],
           "displayMode": "table",
           "placement": "right",
           "showLegend": true
@@ -704,7 +710,7 @@
           },
           "pluginVersion": "2.1.4",
           "queryType": "table",
-          "rawSql": "SELECT\r\n  timestamp AS time,\r\n  room      AS room,\r\n  air_temperature_in    AS temperature\r\nFROM public.termodinamica__ac\r\nWHERE $__timeFilter(timestamp)\r\nORDER BY room",
+          "rawSql": "SELECT\r\n  timestamp                      AS time,\r\n  room                           AS room,\r\n  CASE\r\n    WHEN ${hide_invalid} = FALSE OR air_temperature_in > 0\r\n    THEN air_temperature_in\r\n    ELSE NULL\r\n  END                            AS temperature\r\nFROM public.termodinamica__ac\r\nWHERE $__timeFilter(timestamp)\r\nORDER BY room",
           "refId": "A"
         }
       ],
@@ -724,7 +730,9 @@
         {
           "id": "partitionByValues",
           "options": {
-            "fields": ["room"],
+            "fields": [
+              "room"
+            ],
             "keepFields": false,
             "naming": {
               "asLabels": true
@@ -834,7 +842,7 @@
           },
           "pluginVersion": "2.1.4",
           "queryType": "table",
-          "rawSql": "SELECT\r\n  timestamp AS time,\r\n  room      AS room,\r\n  setpoint_room_temperature   AS temperature\r\nFROM public.termodinamica__ac\r\nWHERE $__timeFilter(timestamp)\r\nORDER BY room",
+          "rawSql": "SELECT\r\n  timestamp                            AS time,\r\n  room                                 AS room,\r\n  CASE\r\n    WHEN ${hide_invalid} = FALSE OR setpoint_room_temperature > 0\r\n    THEN setpoint_room_temperature\r\n    ELSE NULL\r\n  END                                  AS temperature\r\nFROM public.termodinamica__ac\r\nWHERE $__timeFilter(timestamp)\r\nORDER BY room",
           "refId": "A"
         }
       ],
@@ -855,7 +863,9 @@
         {
           "id": "partitionByValues",
           "options": {
-            "fields": ["room"],
+            "fields": [
+              "room"
+            ],
             "keepFields": false
           }
         }
@@ -979,7 +989,7 @@
           },
           "pluginVersion": "2.1.4",
           "queryType": "table",
-          "rawSql": "SELECT\r\n  timestamp AS time,\r\n  room      AS room,\r\n  humidity\r\nFROM public.termodinamica__ac\r\nWHERE $__timeFilter(timestamp)\r\nORDER BY room",
+          "rawSql": "SELECT\r\n  timestamp            AS time,\r\n  room                 AS room,\r\n  CASE\r\n    WHEN ${hide_invalid} = FALSE OR humidity > 0\r\n    THEN humidity\r\n    ELSE NULL\r\n  END                  AS humidity\r\nFROM public.termodinamica__ac\r\nWHERE $__timeFilter(timestamp)\r\nORDER BY room",
           "refId": "A"
         }
       ],
@@ -999,7 +1009,9 @@
         {
           "id": "partitionByValues",
           "options": {
-            "fields": ["room"],
+            "fields": [
+              "room"
+            ],
             "keepFields": false
           }
         }
@@ -1009,7 +1021,9 @@
   ],
   "preload": false,
   "schemaVersion": 42,
-  "tags": ["commissioning"],
+  "tags": [
+    "commissioning"
+  ],
   "templating": {
     "list": [
       {
@@ -1023,6 +1037,26 @@
         "refresh": 1,
         "regex": "",
         "type": "datasource"
+      },
+      {
+        "current": {
+          "text": "true",
+          "value": "true"
+        },
+        "description": "Hide invalid sensor values from the graphs (to improve scaling)",
+        "label": "Hide invalid values",
+        "name": "hide_invalid",
+        "options": [
+          {
+            "text": "true",
+            "value": "true"
+          },
+          {
+            "text": "false",
+            "value": "false"
+          }
+        ],
+        "type": "switch"
       }
     ]
   },
