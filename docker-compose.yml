@@ -1,4 +1,4 @@
-x-thrs-thruster-simulation-th-template: &thrs_sim_template
+x-thrs-thruster-simulation-template: &thrs_sim_template
   image: zero-thrs-simulation:local
   pull_policy: never
   build:
@@ -361,33 +361,33 @@ services:
       vernemq:
         condition: service_healthy
 
-  thrs-thruster-simulation-th-thrusters:
+  thrs-thruster-simulation-thrusters:
     <<: *thrs_sim_template
+    profiles: ["thrs-extra"]
     command: ["thrusters"]
     
-  thrs-thruster-simulation-th-high-temperature:
+  thrs-thruster-simulation-high-temperature:
     <<: *thrs_sim_template
     profiles: ["thrs-extra"]
     command: ["high_temperature"]
 
-  thrs-thruster-simulation-th-pvt:
+  thrs-thruster-simulation-pvt:
     <<: *thrs_sim_template
     profiles: ["thrs-extra"]
     command: ["pvt"]
 
-  thrs-thruster-simulation-th-pcm:
+  thrs-thruster-simulation-pcm:
     <<: *thrs_sim_template
     profiles: ["thrs-extra"]
     command: ["pcm"]
 
-  thrs-thruster-simulation-th-consumers:
+  thrs-thruster-simulation-consumers:
     <<: *thrs_sim_template
     profiles: ["thrs-extra"]
     command: ["consumers"]
 
-  thrs-thruster-simulation-th-dhw:
+  thrs-thruster-simulation-dhw:
     <<: *thrs_sim_template
-    profiles: ["thrs-extra"]
     command: ["dhw"]
 
 volumes:
