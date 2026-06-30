@@ -20,8 +20,11 @@ from pydantic import (
     model_validator,
 )
 
+from thrs.control.modules.adsorption import ADSORPTION_MODULE_DESCRIPTION
 from thrs.control.modules.consumers import CONSUMERS_MODULE_DESCRIPTION
+from thrs.control.modules.dc import DC_MODULE_DESCRIPTION
 from thrs.control.modules.dhw import DHW_MODULE_DESCRIPTION
+from thrs.control.modules.drives import DRIVES_MODULE_DESCRIPTION
 from thrs.control.modules.pcm import PCM_MODULE_DESCRIPTION
 from thrs.control.modules.pvt import PVT_MODULE_DESCRIPTION
 from thrs.control.modules.thrusters import THRUSTERS_MODULE_DESCRIPTION
@@ -34,23 +37,35 @@ from thrs.input_output.base import (
     ThrsValues,
 )
 from thrs.input_output.definitions.simulation import (
+    AdsorptionChiller,
     Boundary,
+    Converter,
     FlowBoundary,
     HeatSource,
     HvacExchanger,
     OverpressureTemperatureBoundary,
     Pcs,
+    PropulsionDrive,
     TemperatureBoundary,
     Thruster,
 )
 from thrs.input_output.definitions.units import PcsMode
+from thrs.input_output.modules.adsorption import (
+    AdsorptionSimulationInputs,
+    AdsorptionSimulationOutputs,
+)
 from thrs.input_output.modules.consumers import (
     ConsumersSimulationInputs,
     ConsumersSimulationOutputs,
 )
+from thrs.input_output.modules.dc import DcSimulationInputs, DcSimulationOutputs
 from thrs.input_output.modules.dhw import (
     DhwSimulationInputs,
     DhwSimulationOutputs,
+)
+from thrs.input_output.modules.drives import (
+    DrivesSimulationInputs,
+    DrivesSimulationOutputs,
 )
 from thrs.input_output.modules.high_temperature import (
     HighTemperatureSimulationInputs,
@@ -71,8 +86,11 @@ from thrs.orchestration.runner import Runner
 from thrs.orchestration.simulation import Simulation
 from thrs.simulation.fmu import Fmu
 from thrs.simulation.models.fmu_paths import (
+    adsorption_path,
     consumers_path,
+    dc_path,
     dhw_path,
+    drives_path,
     high_temperature_path,
     pcm_path,
     pvt_path,
@@ -93,7 +111,7 @@ INPUTS = {
             heat_flow=Stamped.stamp(4300.0), active=Stamped.stamp(True)
         ),
         thrusters_seawater_supply=Boundary(
-            temperature=Stamped.stamp(32.0), flow=Stamped.stamp(64.0)
+            temperature=Stamped.stamp(SEAWATER_TEMPERATURE), flow=Stamped.stamp(64.0)
         ),
         thrusters_pcm_supply=TemperatureBoundary(temperature=Stamped.stamp(40.0)),
         thrusters_pcs=Pcs(mode=Stamped.stamp(PcsMode.PROPULSION)),
@@ -128,6 +146,79 @@ INPUTS = {
         consumers_pcm_supply=Boundary(
             temperature=Stamped.stamp(60.0), flow=Stamped.stamp(10.0)
         ),
+    ),
+    "adsorption": AdsorptionSimulationInputs(
+        adsorption_cooling_supply=TemperatureBoundary(temperature=Stamped.stamp(20.0)),
+        adsorption_seawater_supply=Boundary(
+            temperature=Stamped.stamp(SEAWATER_TEMPERATURE), flow=Stamped.stamp(64.0)
+        ),
+        adsorption_available_cold_temperature=TemperatureBoundary(
+            temperature=Stamped.stamp(20.0)
+        ),
+        adsorption_available_hot_temperature=TemperatureBoundary(
+            temperature=Stamped.stamp(65.0)
+        ),
+        adsorption_available_seawater_temperature=TemperatureBoundary(
+            temperature=Stamped.stamp(SEAWATER_TEMPERATURE)
+        ),
+        adsorption_chiller=AdsorptionChiller(free_cooling=Stamped.stamp(False)),
+        adsorption_ht_supply=Boundary(
+            temperature=Stamped.stamp(60.0), flow=Stamped.stamp(42.0)
+        ),
+        adsorption_dhw_supply=Boundary(
+            temperature=Stamped.stamp(40.0), flow=Stamped.stamp(45.0)
+        ),
+    ),
+    "drives": DrivesSimulationInputs(
+        drives_oil_cooler_aft=HeatSource(heat_flow=Stamped.stamp(0)),
+        drives_oil_cooler_fwd=HeatSource(heat_flow=Stamped.stamp(0)),
+        drives_propdrive_aft1=PropulsionDrive(
+            heat_flow=Stamped.stamp(0), active=Stamped.stamp(False)
+        ),
+        drives_propdrive_aft2=PropulsionDrive(
+            heat_flow=Stamped.stamp(0), active=Stamped.stamp(False)
+        ),
+        drives_propdrive_fwd1=PropulsionDrive(
+            heat_flow=Stamped.stamp(0), active=Stamped.stamp(False)
+        ),
+        drives_propdrive_fwd2=PropulsionDrive(
+            heat_flow=Stamped.stamp(0), active=Stamped.stamp(False)
+        ),
+        drives_shorepower=Converter(
+            heat_flow=Stamped.stamp(0), active=Stamped.stamp(False)
+        ),
+        drives_seawater_supply=Boundary(
+            temperature=Stamped.stamp(SEAWATER_TEMPERATURE), flow=Stamped.stamp(64)
+        ),
+        drives_dhw_supply=Boundary(
+            temperature=Stamped.stamp(20), flow=Stamped.stamp(29)
+        ),
+    ),
+    "dc": DcSimulationInputs(
+        dc_brightloop_fwd1=Converter(
+            heat_flow=Stamped.stamp(0), active=Stamped.stamp(False)
+        ),
+        dc_brightloop_fwd2=Converter(
+            heat_flow=Stamped.stamp(0), active=Stamped.stamp(False)
+        ),
+        dc_ugrid1=Converter(heat_flow=Stamped.stamp(0), active=Stamped.stamp(False)),
+        dc_ugrid2=Converter(heat_flow=Stamped.stamp(0), active=Stamped.stamp(False)),
+        dc_brightloop_aft1=Converter(
+            heat_flow=Stamped.stamp(0), active=Stamped.stamp(False)
+        ),
+        dc_brightloop_aft2=Converter(
+            heat_flow=Stamped.stamp(0), active=Stamped.stamp(False)
+        ),
+        dc_brightloop_aft3=Converter(
+            heat_flow=Stamped.stamp(0), active=Stamped.stamp(False)
+        ),
+        dc_brightloop_aft4=Converter(
+            heat_flow=Stamped.stamp(0), active=Stamped.stamp(False)
+        ),
+        dc_seawater_supply=Boundary(
+            temperature=Stamped.stamp(SEAWATER_TEMPERATURE), flow=Stamped.stamp(64)
+        ),
+        dc_dhw_supply=Boundary(temperature=Stamped.stamp(35), flow=Stamped.stamp(20)),
     ),
     "high_temperature": HighTemperatureSimulationInputs(
         thrusters_thruster_aft=Thruster(
@@ -193,7 +284,16 @@ INPUTS = {
 
 
 type Modes = Literal[
-    "boat", "thrusters", "pvt", "pcm", "consumers", "high_temperature", "dhw"
+    "thrusters",
+    "pvt",
+    "pcm",
+    "consumers",
+    "adsorption",
+    "drives",
+    "dc",
+    "high_temperature",
+    "dhw",
+    "boat",
 ]
 
 MODES: dict[Modes, tuple[str | None, CombinedModule]] = {
@@ -205,6 +305,9 @@ MODES: dict[Modes, tuple[str | None, CombinedModule]] = {
                 "pvt": PVT_MODULE_DESCRIPTION,
                 "pcm": PCM_MODULE_DESCRIPTION,
                 "consumers": CONSUMERS_MODULE_DESCRIPTION,
+                "adsorption": ADSORPTION_MODULE_DESCRIPTION,
+                "drives": DRIVES_MODULE_DESCRIPTION,
+                "dc": DC_MODULE_DESCRIPTION,
                 "dhw": DHW_MODULE_DESCRIPTION,
             },
             None,
@@ -243,6 +346,30 @@ MODES: dict[Modes, tuple[str | None, CombinedModule]] = {
             {"consumers": CONSUMERS_MODULE_DESCRIPTION},
             ConsumersSimulationInputs,
             ConsumersSimulationOutputs,
+        ),
+    ),
+    "adsorption": (
+        adsorption_path,
+        CombinedModule(
+            {"adsorption": ADSORPTION_MODULE_DESCRIPTION},
+            AdsorptionSimulationInputs,
+            AdsorptionSimulationOutputs,
+        ),
+    ),
+    "drives": (
+        drives_path,
+        CombinedModule(
+            {"drives": DRIVES_MODULE_DESCRIPTION},
+            DrivesSimulationInputs,
+            DrivesSimulationOutputs,
+        ),
+    ),
+    "dc": (
+        dc_path,
+        CombinedModule(
+            {"dc": DC_MODULE_DESCRIPTION},
+            DcSimulationInputs,
+            DcSimulationOutputs,
         ),
     ),
     "high_temperature": (
