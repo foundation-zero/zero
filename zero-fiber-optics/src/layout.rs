@@ -1,4 +1,5 @@
 use heck::ToKebabCase;
+use serde_json::{Map, Number, Value};
 use std::collections::{HashMap, HashSet};
 
 use crate::config::Port;
@@ -36,6 +37,31 @@ pub fn topic_segment(topic_map: &TopicMap, name: &str) -> String {
         .get(name)
         .cloned()
         .unwrap_or_else(|| name.to_kebab_case())
+}
+
+/// Build a JSON object payload for one parsed packet.
+///
+/// Keys follow the same topic-segment resolution used for MQTT variables:
+/// topic-map override first, then kebab-case fallback.
+pub fn packet_payload(
+    variables: &[Variable<'_>],
+    topic_map: &TopicMap,
+) -> anyhow::Result<Map<String, Value>> {
+    variables
+        .iter()
+        .map(|var| {
+            let key = topic_segment(topic_map, var.key);
+            let value = match &var.value {
+                VariableValue::Number(v) => {
+                    let n = Number::from_f64(*v)
+                        .ok_or_else(|| anyhow::anyhow!("non-finite numeric value for '{}'", key))?;
+                    Value::Number(n)
+                }
+                VariableValue::Boolean(v) => Value::Bool(*v),
+            };
+            Ok((key, value))
+        })
+        .collect()
 }
 
 impl Layout {
@@ -154,5 +180,37 @@ mod tests {
 
         let layout = Layout::from_port(&port);
         let _ = layout.key("Unknown");
+    }
+
+    #[test]
+    fn packet_payload_uses_topic_segments_and_values() {
+        let mut topic_map = TopicMap::new();
+        topic_map.insert("PacketCounter".to_string(), "packet-counter".to_string());
+
+        let variables = vec![
+            Variable {
+                key: "PacketCounter",
+                value: VariableValue::Number(5.0),
+            },
+            Variable {
+                key: "LinkUp",
+                value: VariableValue::Boolean(true),
+            },
+        ];
+
+        let payload = packet_payload(&variables, &topic_map).expect("payload should serialize");
+        assert_eq!(payload["packet-counter"].as_f64(), Some(5.0));
+        assert_eq!(payload["link-up"], Value::Bool(true));
+    }
+
+    #[test]
+    fn packet_payload_rejects_non_finite_numbers() {
+        let topic_map = TopicMap::new();
+        let variables = vec![Variable {
+            key: "Value",
+            value: VariableValue::Number(f64::NAN),
+        }];
+
+        assert!(packet_payload(&variables, &topic_map).is_err());
     }
 }

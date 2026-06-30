@@ -7,96 +7,82 @@ use crate::layout::{topic_segment, TopicMap};
 
 /// Dynamically build an AsyncAPI 3.0.0 schema from the loaded configuration.
 ///
-/// Each variable (and each bit of a bit-register variable) becomes a channel
-/// under `{prefix}/{channel_name}/{topic_segment}`, where `topic_segment` is
-/// looked up in `topic_map` and falls back to the snake_case variable / bit name.
+/// Each port channel publishes one packet object under `{prefix}/{channel_name}`.
+/// Object properties are keyed by resolved topic segment (override first, kebab-case fallback).
 pub fn build_schema(config: &UdpChannels, prefix: &str, topic_map: &TopicMap) -> AsyncApiSpec {
     let mut channels = IndexMap::new();
     let mut operations = IndexMap::new();
     let mut messages = IndexMap::new();
 
     for port in &config.ports {
+        let topic = format!("{}/{}", prefix, port.channel);
+        let message_id = message_name(&port.channel, "packet");
+        let mut properties = IndexMap::new();
+        let mut required = Vec::new();
+
         for var in &port.variables {
             let topic_seg = topic_segment(topic_map, &var.name);
-            let topic = format!("{}/{}/{}", prefix, port.channel, topic_seg);
-            let message_id = message_name(&port.channel, &topic_seg);
-            let payload = scalar_schema(
-                var_type_to_schema_type(&var.var_type),
-                payload_description(var.units.as_deref()),
-            );
-
-            channels.insert(
-                topic.clone(),
-                Channel {
-                    address: Some(topic.clone()),
-                    messages: Some(IndexMap::from([(
-                        message_id.clone(),
-                        MessageRef::Reference {
-                            reference: format!("#/components/messages/{}", message_id),
-                        },
-                    )])),
-                    parameters: None,
-                },
-            );
-            operations.insert(
-                operation_name("receive", &port.channel, &topic_seg),
-                receive_operation(&topic, &message_id),
-            );
-            messages.insert(
-                message_id.clone(),
-                Message {
-                    name: Some(message_id),
-                    title: None,
-                    summary: None,
-                    description: payload_description(var.units.as_deref()),
-                    content_type: Some("application/json".to_string()),
-                    payload: Some(payload),
-                },
+            if !required.contains(&topic_seg) {
+                required.push(topic_seg.clone());
+            }
+            properties.insert(
+                topic_seg,
+                Box::new(scalar_schema(
+                    var_type_to_schema_type(&var.var_type),
+                    payload_description(var.units.as_deref()),
+                )),
             );
 
             // Expand individual bits for bit-register variables
             if var.var_type.ends_with("BitBoolRegister") {
                 for bit in &var.bits {
                     let bit_seg = topic_segment(topic_map, &bit.name);
-                    let bit_topic = format!("{}/{}/{}", prefix, port.channel, bit_seg);
-                    let bit_message_name = message_name(&port.channel, &bit_seg);
-                    channels.insert(
-                        bit_topic.clone(),
-                        Channel {
-                            address: Some(bit_topic.clone()),
-                            messages: Some(IndexMap::from([(
-                                bit_message_name.clone(),
-                                MessageRef::Reference {
-                                    reference: format!(
-                                        "#/components/messages/{}",
-                                        bit_message_name
-                                    ),
-                                },
-                            )])),
-                            parameters: None,
-                        },
-                    );
-                    operations.insert(
-                        operation_name("receive", &port.channel, &bit_seg),
-                        receive_operation(&bit_topic, &bit_message_name),
-                    );
-                    messages.insert(
-                        bit_message_name.clone(),
-                        Message {
-                            name: Some(bit_message_name),
-                            title: None,
-                            summary: None,
-                            description: Some(format!("Bit {} of {}", bit.num, var.name)),
-                            content_type: Some("application/json".to_string()),
-                            payload: Some(scalar_schema(
-                                "boolean",
-                                Some(format!("Bit {} of {}", bit.num, var.name)),
-                            )),
-                        },
+                    if !required.contains(&bit_seg) {
+                        required.push(bit_seg.clone());
+                    }
+                    properties.insert(
+                        bit_seg,
+                        Box::new(scalar_schema(
+                            "boolean",
+                            Some(format!("Bit {} of {}", bit.num, var.name)),
+                        )),
                     );
                 }
             }
         }
+
+        channels.insert(
+            topic.clone(),
+            Channel {
+                address: Some(topic.clone()),
+                messages: Some(IndexMap::from([(
+                    message_id.clone(),
+                    MessageRef::Reference {
+                        reference: format!("#/components/messages/{}", message_id),
+                    },
+                )])),
+                parameters: None,
+            },
+        );
+        operations.insert(
+            operation_name("receive", &port.channel, "packet"),
+            receive_operation(&topic, &message_id),
+        );
+        messages.insert(
+            message_id.clone(),
+            Message {
+                name: Some(message_id),
+                title: None,
+                summary: None,
+                description: Some(format!("Packet payload for channel {}", port.channel)),
+                content_type: Some("application/json".to_string()),
+                payload: Some(object_schema(
+                    properties,
+                    required,
+                    Some(format!("Packet payload for channel {}", port.channel)),
+                )),
+            },
+        );
     }
 
     AsyncApiSpec {
@@ -133,6 +119,28 @@ fn scalar_schema(schema_type: &str, description: Option<String>) -> Schema {
         schema_type: Some(serde_json::json!(schema_type)),
         properties: None,
         required: None,
+        description,
+        title: None,
+        enum_values: None,
+        const_value: None,
+        items: None,
+        additional_properties: None,
+        one_of: None,
+        any_of: None,
+        all_of: None,
+        additional: IndexMap::new(),
+    }))
+}
+
+fn object_schema(
+    properties: IndexMap<String, Box<Schema>>,
+    required: Vec<String>,
+    description: Option<String>,
+) -> Schema {
+    Schema::Object(Box::new(SchemaObject {
+        schema_type: Some(serde_json::json!("object")),
+        properties: Some(properties),
+        required: Some(required),
         description,
         title: None,
         enum_values: None,
@@ -194,7 +202,7 @@ mod tests {
     }
 
     #[test]
-    fn build_schema_creates_channels_with_overrides_and_bits() {
+    fn build_schema_creates_packet_channel_with_object_payload() {
         let cfg = UdpChannels {
             ip: "127.0.0.1".to_string(),
             ports: vec![Port {
@@ -229,35 +237,41 @@ mod tests {
 
         let schema = build_schema(&cfg, "telemetry", &topic_map);
         let channels = schema.channels.expect("schema should contain channels");
-        assert!(channels.contains_key("telemetry/FiberA/power-watts"));
-        assert!(channels.contains_key("telemetry/FiberA/flags"));
-        assert!(channels.contains_key("telemetry/FiberA/alarm-active"));
-        assert!(channels.contains_key("telemetry/FiberA/link-up"));
+        assert!(channels.contains_key("telemetry/FiberA"));
+        assert_eq!(channels.len(), 1);
 
         let components = schema.components.expect("schema should contain components");
         let messages = components.messages.expect("schema should contain messages");
-
-        let power_msg = messages
-            .get("FiberA_power_watts")
-            .expect("power message should exist");
-        let power_payload = serde_json::to_value(power_msg.payload.as_ref().expect("payload expected"))
+        let packet_msg = messages
+            .get("FiberA_packet")
+            .expect("packet message should exist");
+        let payload = serde_json::to_value(packet_msg.payload.as_ref().expect("payload expected"))
             .expect("payload should serialize");
-        assert_eq!(power_payload["type"], Value::String("number".to_string()));
-        assert_eq!(power_payload["description"], Value::String("Units: W".to_string()));
 
-        let alarm_msg = messages
-            .get("FiberA_alarm_active")
-            .expect("alarm message should exist");
-        let alarm_payload = serde_json::to_value(alarm_msg.payload.as_ref().expect("payload expected"))
-            .expect("payload should serialize");
-        assert_eq!(alarm_payload["type"], Value::String("boolean".to_string()));
-        assert!(alarm_payload["description"]
-            .as_str()
-            .unwrap_or_default()
-            .contains("Bit 0 of Flags"));
+        assert_eq!(payload["type"], Value::String("object".to_string()));
+        assert_eq!(
+            payload["properties"]["power-watts"]["type"],
+            Value::String("number".to_string())
+        );
+        assert_eq!(
+            payload["properties"]["flags"]["type"],
+            Value::String("integer".to_string())
+        );
+        assert_eq!(
+            payload["properties"]["alarm-active"]["type"],
+            Value::String("boolean".to_string())
+        );
+        assert_eq!(
+            payload["properties"]["link-up"]["type"],
+            Value::String("boolean".to_string())
+        );
+        assert_eq!(
+            payload["properties"]["power-watts"]["description"],
+            Value::String("Units: W".to_string())
+        );
 
         let operations = schema.operations.expect("schema should contain operations");
-        assert!(operations.contains_key("receive_FiberA_power_watts"));
+        assert!(operations.contains_key("receive_FiberA_packet"));
     }
 
     #[test]

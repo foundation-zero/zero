@@ -1,4 +1,4 @@
-use crate::layout::{topic_segment, TopicMap, Variable, VariableValue};
+use crate::layout::{packet_payload, TopicMap, Variable};
 use rumqttc::{AsyncClient, MqttOptions, QoS};
 use std::time::Duration;
 
@@ -43,18 +43,12 @@ impl MqttHandler {
         variables: &[Variable<'_>],
         topic_map: &TopicMap,
     ) -> anyhow::Result<()> {
-        for var in variables {
-            let seg = topic_segment(topic_map, var.key);
-            let topic = format!("{}/{}/{}", self.prefix, channel, seg);
-            let payload = match &var.value {
-                VariableValue::Number(v) => v.to_string(),
-                VariableValue::Boolean(v) => v.to_string(),
-            };
+        let topic = format!("{}/{}", self.prefix, channel);
+        let payload = serde_json::to_string(&packet_payload(variables, topic_map)?)?;
 
-            self.client
-                .publish(topic, QoS::AtLeastOnce, false, payload)
-                .await?;
-        }
+        self.client
+            .publish(topic, QoS::AtLeastOnce, false, payload)
+            .await?;
         Ok(())
     }
 }
