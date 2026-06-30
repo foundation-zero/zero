@@ -31,11 +31,14 @@ export type TooltipComponentContext<Type extends MimicComponentType = MimicCompo
 export type TooltipContext = {
   data: Ref<TooltipComponentContext | null>;
   component: Ref<Component | null>;
+  dialog: Ref<Component | null>;
   disabled?: boolean;
   setTooltip: <Type extends MimicComponentType>(
     context: TooltipComponentContext<Type>,
     component?: Component,
   ) => void;
+  setDialog(component: Component): void;
+  closeDialog(): void;
   findTooltipContext: (
     source: ModuleField<
       SensorComponentType | ControlComponentType | ParametersType | ControllerStateComponentType
@@ -52,6 +55,7 @@ export const createTooltipContext = (
   sourceData: Partial<MimicComponentFieldsMap>,
 ): TooltipContext => {
   const component = ref<Component | null>(null);
+  const dialog = ref<Component | null>(null);
   const data = ref<TooltipComponentContext | null>(null);
 
   const setTooltip = <Type extends MimicComponentType>(
@@ -92,13 +96,25 @@ export const createTooltipContext = (
   const clear = () => {
     data.value = null;
     component.value = null;
+    dialog.value = null;
+  };
+
+  const setDialog = (comp: Component) => {
+    dialog.value = markRaw(comp);
+  };
+
+  const closeDialog = () => {
+    dialog.value = null;
   };
 
   return {
     data,
     component,
+    dialog,
     findTooltipContext,
     setTooltip,
+    setDialog,
+    closeDialog,
     getData,
     clear,
   };

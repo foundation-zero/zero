@@ -1,5 +1,15 @@
 {
   "thrapp": {
+    "dialogs": {
+      "manualMode": {
+        "warning": "Attention: system in manual mode",
+        "title": "Switch to manual mode",
+        "description": "Enter password to unlock",
+        "confirm": "OK",
+        "cancel": "Cancel | Cancel ({count}) | Cancel ({count})",
+        "password": "Password"
+      }
+    },
     "labels": {
       "demoMode": "Demo mode",
       "showLegend": "Show legend",
@@ -9,7 +19,8 @@
       "actions": {
         "viewCircuitMimic": "View circuit mimic",
         "viewControls": "View controls",
-        "controlManually": "Control manually"
+        "controlManually": "Control manually",
+        "controlAutomatically": "Switch to auto mode"
       },
       "labels": {
         "input": "Input",

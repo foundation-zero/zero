@@ -1,5 +1,6 @@
 import { tScoped } from "@/modules/common/lib/utils.ts";
 import { Component, defineAsyncComponent } from "vue";
+import { useI18n } from "vue-i18n";
 import { MimicComponentType } from "../../types/index.ts";
 
 export const TOOLTIPS: Partial<Record<MimicComponentType, Component>> = {
@@ -36,4 +37,5 @@ export const useTranslations = () => ({
   items: tScoped("thrapp.tooltips.items"),
   labels: tScoped("thrapp.tooltips.labels"),
   sources: tScoped("thrapp.tooltips.sources"),
+  t: useI18n().t,
 });
