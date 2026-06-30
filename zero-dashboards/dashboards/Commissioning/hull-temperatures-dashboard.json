@@ -1948,7 +1948,7 @@
           },
           "pluginVersion": "2.1.4",
           "queryType": "table",
-          "rawSql": "SELECT\r\n    timestamp                   AS time,\r\n    \"temperatures__94455001-35\" AS temp_35,\r\n    \"temperatures__94455001-34\" AS temp_34,\r\n    \"temperatures__94455001-32\" AS temp_32,\r\n    \"temperatures__94455001-33\" AS temp_33,\r\n    \"temperatures__94455001-28\" AS temp_28,\r\n    \"temperatures__94455001-29\" AS temp_29,\r\n    \"temperatures__94455001-24\" AS temp_24,\r\n    \"temperatures__94455001-25\" AS temp_25,\r\n    \"temperatures__94455001-36\" AS temp_36,\r\n    \"temperatures__94455001-37\" AS temp_37,\r\n    \"temperatures__94455001-22\" AS temp_22,\r\n    \"temperatures__94455001-23\" AS temp_23,\r\n    \"temperatures__94455001-18\" AS temp_18,\r\n    \"temperatures__94455001-19\" AS temp_19,\r\n    \"temperatures__94455001-14\" AS temp_14,\r\n    \"temperatures__94455001-15\" AS temp_15,\r\n    \"temperatures__94455001-8\" AS temp_8,\r\n    \"temperatures__94455001-9\" AS temp_9,\r\n    \"temperatures__94455001-10\" AS temp_10,\r\n    \"temperatures__94455001-11\" AS temp_11,\r\n    \"temperatures__94455001-1\" AS temp_1\r\nFROM public.hull_temperature__temperatures\r\nWHERE $__timeFilter(timestamp)",
+          "rawSql": "SELECT\r\n    timestamp                   AS time,\r\n    \"temperatures__94455001-35\" AS temp_35,\r\n    \"temperatures__94455001-34\" AS temp_34,\r\n    \"temperatures__94455001-32\" AS temp_32,\r\n    \"temperatures__94455001-33\" AS temp_33,\r\n    \"temperatures__94455001-28\" AS temp_28,\r\n    \"temperatures__94455001-29\" AS temp_29,\r\n    \"temperatures__94455001-24\" AS temp_24,\r\n    \"temperatures__94455001-25\" AS temp_25,\r\n    CASE WHEN ${hide_invalid} THEN NULL ELSE \"temperatures__94455001-36\" END AS temp_36,\r\n    \"temperatures__94455001-37\" AS temp_37,\r\n    \"temperatures__94455001-22\" AS temp_22,\r\n    \"temperatures__94455001-23\" AS temp_23,\r\n    CASE WHEN ${hide_invalid} THEN NULL ELSE \"temperatures__94455001-18\" END AS temp_18,\r\n    \"temperatures__94455001-19\" AS temp_19,\r\n    \"temperatures__94455001-14\" AS temp_14,\r\n    CASE WHEN ${hide_invalid} THEN NULL ELSE \"temperatures__94455001-15\" END AS temp_15,\r\n    \"temperatures__94455001-8\" AS temp_8,\r\n    CASE WHEN ${hide_invalid} THEN NULL ELSE \"temperatures__94455001-9\" END AS temp_9,\r\n    \"temperatures__94455001-10\" AS temp_10,\r\n    \"temperatures__94455001-11\" AS temp_11,\r\n    CASE WHEN ${hide_invalid} THEN NULL ELSE \"temperatures__94455001-1\" END AS temp_1\r\nFROM public.hull_temperature__temperatures\r\nWHERE $__timeFilter(timestamp)",
           "refId": "A"
         }
       ],
@@ -3445,7 +3445,7 @@
           },
           "pluginVersion": "2.1.4",
           "queryType": "table",
-          "rawSql": "SELECT\r\n    timestamp                   AS time,\r\n    \"temperatures__94455001-30\" AS temp_30,\r\n    \"temperatures__94455001-31\" AS temp_31,\r\n    \"temperatures__94455001-26\" AS temp_26,\r\n    \"temperatures__94455001-27\" AS temp_27,\r\n    \"temperatures__94455001-20\" AS temp_20,\r\n    \"temperatures__94455001-21\" AS temp_21,\r\n    \"temperatures__94455001-16\" AS temp_16,\r\n    \"temperatures__94455001-17\" AS temp_17,\r\n    \"temperatures__94455001-12\" AS temp_12,\r\n    \"temperatures__94455001-13\" AS temp_13,\r\n    \"temperatures__94455001-6\" AS temp_6,\r\n    \"temperatures__94455001-7\" AS temp_7,\r\n    \"temperatures__94455001-4\" AS temp_4,\r\n    \"temperatures__94455001-5\" AS temp_5,\r\n    \"temperatures__94455001-2\" AS temp_2,\r\n    \"temperatures__94455001-3\" AS temp_3\r\nFROM public.hull_temperature__temperatures\r\nWHERE $__timeFilter(timestamp)",
+          "rawSql": "SELECT\r\n    timestamp                   AS time,\r\n    \"temperatures__94455001-30\" AS temp_30,\r\n    \"temperatures__94455001-31\" AS temp_31,\r\n    \"temperatures__94455001-26\" AS temp_26,\r\n    \"temperatures__94455001-27\" AS temp_27,\r\n    \"temperatures__94455001-20\" AS temp_20,\r\n    \"temperatures__94455001-21\" AS temp_21,\r\n    \"temperatures__94455001-16\" AS temp_16,\r\n    \"temperatures__94455001-17\" AS temp_17,\r\n    \"temperatures__94455001-12\" AS temp_12,\r\n    \"temperatures__94455001-13\" AS temp_13,\r\n    \"temperatures__94455001-6\" AS temp_6,\r\n    CASE WHEN ${hide_invalid} THEN NULL ELSE \"temperatures__94455001-7\" END AS temp_7,\r\n    \"temperatures__94455001-4\" AS temp_4,\r\n    \"temperatures__94455001-5\" AS temp_5,\r\n    \"temperatures__94455001-2\" AS temp_2,\r\n    \"temperatures__94455001-3\" AS temp_3\r\nFROM public.hull_temperature__temperatures\r\nWHERE $__timeFilter(timestamp)",
           "refId": "A"
         }
       ],
@@ -4441,6 +4441,26 @@
         "refresh": 1,
         "regex": "",
         "type": "datasource"
+      },
+      {
+        "current": {
+          "text": "true",
+          "value": "true"
+        },
+        "description": "Hide sensors that give invalid values from the graphs (to improve scaling)",
+        "label": "Hide invalid sensors",
+        "name": "hide_invalid",
+        "options": [
+          {
+            "text": "true",
+            "value": "true"
+          },
+          {
+            "text": "false",
+            "value": "false"
+          }
+        ],
+        "type": "switch"
       }
     ]
   },
