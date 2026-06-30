@@ -2005,7 +2005,7 @@
       },
       "id": 2,
       "options": {
-        "inlineEditing": true,
+        "inlineEditing": false,
         "panZoom": false,
         "root": {
           "background": {
@@ -2060,8 +2060,9 @@
               "name": "temp_46",
               "placement": {
                 "height": 25,
-                "left": 385,
-                "top": 121,
+                "left": 425,
+                "rotation": 0,
+                "top": 58,
                 "width": 80
               },
               "type": "metric-value"
@@ -2096,8 +2097,9 @@
               "name": "temp_46 label",
               "placement": {
                 "height": 23,
-                "left": 375,
-                "top": 146,
+                "left": 415,
+                "rotation": 0,
+                "top": 35,
                 "width": 100
               },
               "type": "text"
@@ -2135,8 +2137,9 @@
               "name": "temp_45",
               "placement": {
                 "height": 25,
-                "left": 385,
-                "top": 297,
+                "left": 425,
+                "rotation": 0,
+                "top": 358,
                 "width": 80
               },
               "type": "metric-value"
@@ -2171,8 +2174,9 @@
               "name": "temp_45 label",
               "placement": {
                 "height": 23,
-                "left": 375,
-                "top": 274,
+                "left": 415,
+                "rotation": 0,
+                "top": 383,
                 "width": 100
               },
               "type": "text"
@@ -2210,8 +2214,8 @@
               "name": "temp_44",
               "placement": {
                 "height": 25,
-                "left": 475,
-                "top": 121,
+                "left": 425,
+                "top": 108,
                 "width": 80
               },
               "type": "metric-value"
@@ -2246,8 +2250,8 @@
               "name": "temp_44 label",
               "placement": {
                 "height": 23,
-                "left": 465,
-                "top": 146,
+                "left": 415,
+                "top": 133,
                 "width": 100
               },
               "type": "text"
@@ -2285,8 +2289,8 @@
               "name": "temp_42",
               "placement": {
                 "height": 25,
-                "left": 785,
-                "top": 108,
+                "left": 712,
+                "top": 97,
                 "width": 80
               },
               "type": "metric-value"
@@ -2321,8 +2325,8 @@
               "name": "temp_42 label",
               "placement": {
                 "height": 23,
-                "left": 775,
-                "top": 133,
+                "left": 702,
+                "top": 122,
                 "width": 100
               },
               "type": "text"
@@ -2361,8 +2365,8 @@
               "name": "temp_41",
               "placement": {
                 "height": 25,
-                "left": 785,
-                "top": 304,
+                "left": 712,
+                "top": 322,
                 "width": 80
               },
               "type": "metric-value"
@@ -2397,8 +2401,8 @@
               "name": "temp_41 label",
               "placement": {
                 "height": 23,
-                "left": 775,
-                "top": 281,
+                "left": 702,
+                "top": 299,
                 "width": 100
               },
               "type": "text"
@@ -2436,9 +2440,9 @@
               "name": "temp_40",
               "placement": {
                 "height": 25,
-                "left": 1005,
+                "left": 1036,
                 "rotation": 0,
-                "top": 132,
+                "top": 71,
                 "width": 80
               },
               "type": "metric-value"
@@ -2473,9 +2477,9 @@
               "name": "temp_40 label",
               "placement": {
                 "height": 23,
-                "left": 995,
+                "left": 1026,
                 "rotation": 0,
-                "top": 157,
+                "top": 47,
                 "width": 100
               },
               "type": "text"
@@ -2513,9 +2517,9 @@
               "name": "temp_39",
               "placement": {
                 "height": 25,
-                "left": 1005,
+                "left": 1036,
                 "rotation": 0,
-                "top": 286,
+                "top": 346,
                 "width": 80
               },
               "type": "metric-value"
@@ -2550,9 +2554,9 @@
               "name": "temp_39 label",
               "placement": {
                 "height": 23,
-                "left": 995,
+                "left": 1026,
                 "rotation": 0,
-                "top": 263,
+                "top": 372,
                 "width": 100
               },
               "type": "text"
@@ -2590,9 +2594,8 @@
               "name": "temp_38",
               "placement": {
                 "height": 25,
-                "left": 1257,
-                "rotation": 0,
-                "top": 158,
+                "left": 1297,
+                "top": 109,
                 "width": 80
               },
               "type": "metric-value"
@@ -2628,9 +2631,8 @@
               "name": "temp_38 label",
               "placement": {
                 "height": 23,
-                "left": 1247,
-                "rotation": 0,
-                "top": 183,
+                "left": 1287,
+                "top": 86,
                 "width": 100
               },
               "type": "text"
@@ -2706,8 +2708,8 @@
               "name": "Element 18",
               "placement": {
                 "height": 25,
-                "left": 475,
-                "top": 298,
+                "left": 425,
+                "top": 307,
                 "width": 80
               },
               "type": "metric-value"
@@ -2742,8 +2744,8 @@
               "name": "Element 19",
               "placement": {
                 "height": 23,
-                "left": 465,
-                "top": 273,
+                "left": 415,
+                "top": 282,
                 "width": 100
               },
               "type": "text"
@@ -2781,8 +2783,8 @@
               "name": "Element 20",
               "placement": {
                 "height": 25,
-                "left": 695,
-                "top": 108,
+                "left": 712,
+                "top": 50,
                 "width": 80
               },
               "type": "metric-value"
@@ -2817,8 +2819,8 @@
               "name": "Element 21",
               "placement": {
                 "height": 23,
-                "left": 685,
-                "top": 133,
+                "left": 702,
+                "top": 27,
                 "width": 100
               },
               "type": "text"
@@ -2853,8 +2855,9 @@
               "name": "Element 22",
               "placement": {
                 "height": 23,
-                "left": 685,
-                "top": 282,
+                "left": 702,
+                "rotation": 0,
+                "top": 389,
                 "width": 100
               },
               "type": "text"
@@ -2892,8 +2895,9 @@
               "name": "Element 23",
               "placement": {
                 "height": 25,
-                "left": 695,
-                "top": 305,
+                "left": 712,
+                "rotation": 0,
+                "top": 364,
                 "width": 80
               },
               "type": "metric-value"
@@ -2931,9 +2935,8 @@
               "name": "Element 24",
               "placement": {
                 "height": 25,
-                "left": 1095,
-                "rotation": 0,
-                "top": 132,
+                "left": 1036,
+                "top": 121,
                 "width": 80
               },
               "type": "metric-value"
@@ -2968,9 +2971,8 @@
               "name": "Element 25",
               "placement": {
                 "height": 23,
-                "left": 1085,
-                "rotation": 0,
-                "top": 157,
+                "left": 1026,
+                "top": 146,
                 "width": 100
               },
               "type": "text"
@@ -3008,9 +3010,8 @@
               "name": "Element 26",
               "placement": {
                 "height": 25,
-                "left": 1095,
-                "rotation": 0,
-                "top": 286,
+                "left": 1036,
+                "top": 294,
                 "width": 80
               },
               "type": "metric-value"
@@ -3045,9 +3046,8 @@
               "name": "Element 27",
               "placement": {
                 "height": 23,
-                "left": 1085,
-                "rotation": 0,
-                "top": 262,
+                "left": 1026,
+                "top": 270,
                 "width": 100
               },
               "type": "text"
@@ -3085,8 +3085,7 @@
               "name": "Element 28",
               "placement": {
                 "height": 25,
-                "left": 1347,
-                "rotation": 0,
+                "left": 1297,
                 "top": 158,
                 "width": 80
               },
@@ -3122,8 +3121,7 @@
               "name": "Element 29",
               "placement": {
                 "height": 23,
-                "left": 1337,
-                "rotation": 0,
+                "left": 1287,
                 "top": 183,
                 "width": 100
               },
@@ -3162,9 +3160,9 @@
               "name": "Element 30",
               "placement": {
                 "height": 25,
-                "left": 1257,
+                "left": 1297,
                 "rotation": 0,
-                "top": 256,
+                "top": 308,
                 "width": 80
               },
               "type": "metric-value"
@@ -3199,9 +3197,9 @@
               "name": "Element 31",
               "placement": {
                 "height": 23,
-                "left": 1247,
+                "left": 1287,
                 "rotation": 0,
-                "top": 233,
+                "top": 335,
                 "width": 100
               },
               "type": "text"
@@ -3239,9 +3237,8 @@
               "name": "Element 32",
               "placement": {
                 "height": 25,
-                "left": 1347,
-                "rotation": 0,
-                "top": 257,
+                "left": 1297,
+                "top": 258,
                 "width": 80
               },
               "type": "metric-value"
@@ -3276,9 +3273,8 @@
               "name": "Element 33",
               "placement": {
                 "height": 23,
-                "left": 1337,
-                "rotation": 0,
-                "top": 234,
+                "left": 1287,
+                "top": 235,
                 "width": 100
               },
               "type": "text"
