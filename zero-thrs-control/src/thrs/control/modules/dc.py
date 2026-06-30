@@ -244,48 +244,29 @@ class DcControl(Control[DcSensorValues, DcControlValues, DcParameters, DcControl
                 timestamp=self._time(),
             )
 
-    def _update_group_control_values(self):
-        self._current_values.dc_pump_aft = (
-            self._brightloops_aft_control.current_values.pump
-        )
-        self._current_values.dc_pump_fwd = (
-            self._brightloops_fwd_control.current_values.pump
-        )
-        self._current_values.dc_pump_ugrid = self._ugrids_control.current_values.pump
-        self._current_values.dc_mix_aft = (
-            self._brightloops_aft_control.current_values.mix
-        )
-        self._current_values.dc_mix_fwd = (
-            self._brightloops_fwd_control.current_values.mix
-        )
-        self._current_values.dc_mix_ugrid = self._ugrids_control.current_values.mix
-        self._current_values.dc_switch_aft1 = (
-            self._brightloops_aft_control.current_values.switches[0]
-        )
-        self._current_values.dc_switch_aft2 = (
-            self._brightloops_aft_control.current_values.switches[1]
-        )
-        self._current_values.dc_switch_aft3 = (
-            self._brightloops_aft_control.current_values.switches[2]
-        )
-        self._current_values.dc_switch_aft4 = (
-            self._brightloops_aft_control.current_values.switches[3]
-        )
-        self._current_values.dc_switch_fwd1 = (
-            self._brightloops_fwd_control.current_values.switches[0]
-        )
-        self._current_values.dc_switch_fwd2 = (
-            self._brightloops_fwd_control.current_values.switches[1]
-        )
-        self._current_values.dc_switch_ugrid1 = (
-            self._ugrids_control.current_values.switches[0]
-        )
-        self._current_values.dc_switch_ugrid2 = (
-            self._ugrids_control.current_values.switches[1]
-        )
+    def _update_group_control_values(
+        self,
+        brightloops_aft_control_values: ConvertersControlValues,
+        brightloops_fwd_control_values: ConvertersControlValues,
+        ugrids_control_values: ConvertersControlValues,
+    ):
+        self._current_values.dc_pump_aft = brightloops_aft_control_values.pump
+        self._current_values.dc_pump_fwd = brightloops_fwd_control_values.pump
+        self._current_values.dc_pump_ugrid = ugrids_control_values.pump
+        self._current_values.dc_mix_aft = brightloops_aft_control_values.mix
+        self._current_values.dc_mix_fwd = brightloops_fwd_control_values.mix
+        self._current_values.dc_mix_ugrid = ugrids_control_values.mix
+        self._current_values.dc_switch_aft1 = brightloops_aft_control_values.switches[0]
+        self._current_values.dc_switch_aft2 = brightloops_aft_control_values.switches[1]
+        self._current_values.dc_switch_aft3 = brightloops_aft_control_values.switches[2]
+        self._current_values.dc_switch_aft4 = brightloops_aft_control_values.switches[3]
+        self._current_values.dc_switch_fwd1 = brightloops_fwd_control_values.switches[0]
+        self._current_values.dc_switch_fwd2 = brightloops_fwd_control_values.switches[1]
+        self._current_values.dc_switch_ugrid1 = ugrids_control_values.switches[0]
+        self._current_values.dc_switch_ugrid2 = ugrids_control_values.switches[1]
 
     def _control_groups(self, sensor_values: DcSensorValues):
-        self._brightloops_aft_control.control(
+        brightloops_aft_control_values = self._brightloops_aft_control.control(
             ConvertersSensorValues(
                 pump=sensor_values.dc_pump_aft,
                 temperature_supply=sensor_values.dc_temperature_aft_supply,
@@ -319,7 +300,7 @@ class DcControl(Control[DcSensorValues, DcControlValues, DcParameters, DcControl
             )
         )
 
-        self._brightloops_fwd_control.control(
+        brightloops_fwd_control_values = self._brightloops_fwd_control.control(
             ConvertersSensorValues(
                 pump=sensor_values.dc_pump_fwd,
                 temperature_supply=sensor_values.dc_temperature_fwd_supply,
@@ -339,7 +320,7 @@ class DcControl(Control[DcSensorValues, DcControlValues, DcParameters, DcControl
             )
         )
 
-        self._ugrids_control.control(
+        ugrids_control_values = self._ugrids_control.control(
             ConvertersSensorValues(
                 pump=sensor_values.dc_pump_ugrid,
                 temperature_supply=sensor_values.dc_temperature_ugrid_supply,
@@ -359,7 +340,11 @@ class DcControl(Control[DcSensorValues, DcControlValues, DcParameters, DcControl
             )
         )
 
-        self._update_group_control_values()
+        self._update_group_control_values(
+            brightloops_aft_control_values,
+            brightloops_fwd_control_values,
+            ugrids_control_values,
+        )
 
 
 class DcAlarms(BaseAlarms):
