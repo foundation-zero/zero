@@ -18,7 +18,11 @@ from thrs.control.modules.dhw import DhwParameters
 from thrs.control.modules.pcm import PcmParameters
 from thrs.control.modules.pvt import PvtControlMode, PvtParameters
 from thrs.control.modules.pvt_group import PvtGroupControlMode
-from thrs.control.modules.thrusters import ThrustersControlMode, ThrustersParameters
+from thrs.control.modules.thrusters import (
+    THRUSTERS_MODULE_DESCRIPTION,
+    ThrustersControlMode,
+    ThrustersParameters,
+)
 from thrs.control.switching import SwitchingControlMode
 from thrs.graphql import simulation
 from thrs.graphql.base import ThrustersMessaging
@@ -471,10 +475,7 @@ async def test_query_simulation_inputs_actual(
 ):
     thrusters_msg: ThrustersMessaging = ControlMessaging(
         "thrusters",
-        ThrustersSensorValues,
-        ThrustersControlValues,
-        ThrustersParameters,
-        ThrustersControlMode,
+        THRUSTERS_MODULE_DESCRIPTION,
         mqtt_client,
         "test_devices_topic",
         "test_controller_topic",

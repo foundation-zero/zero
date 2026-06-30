@@ -21,16 +21,18 @@ import thrs.graphql.pcm as pcm
 import thrs.graphql.pvt as pvt
 import thrs.graphql.simulation as simulation
 import thrs.graphql.thrusters as thrusters
-from thrs.control.modules.adsorption import AdsorptionControlMode, AdsorptionParameters
-from thrs.control.modules.consumers import ConsumersControlMode, ConsumersParameters
-from thrs.control.modules.dhw import DhwControlMode, DhwParameters
-from thrs.control.modules.drives import DrivesControlMode, DrivesParameters
-from thrs.control.modules.pcm import PcmControlMode, PcmParameters
-from thrs.control.modules.pvt import PvtControlMode, PvtParameters
-from thrs.control.modules.thrusters import ThrustersControlMode, ThrustersParameters
+from thrs.control.modules.adsorption import ADSORPTION_MODULE_DESCRIPTION
+from thrs.control.modules.consumers import CONSUMERS_MODULE_DESCRIPTION
+from thrs.control.modules.dc import DC_MODULE_DESCRIPTION
+from thrs.control.modules.dhw import DHW_MODULE_DESCRIPTION
+from thrs.control.modules.drives import DRIVES_MODULE_DESCRIPTION
+from thrs.control.modules.pcm import PCM_MODULE_DESCRIPTION
+from thrs.control.modules.pvt import PVT_MODULE_DESCRIPTION
+from thrs.control.modules.thrusters import THRUSTERS_MODULE_DESCRIPTION
 from thrs.graphql.base import (
     AdsorptionMessaging,
     ConsumersMessaging,
+    DcMessaging,
     DhwMessaging,
     DrivesMessaging,
     FieldMutation,
@@ -39,55 +41,18 @@ from thrs.graphql.base import (
     ThrsContext,
     ThrustersMessaging,
 )
-from thrs.graphql.consumers import (
-    ConsumersModule,
-    ConsumersMutations,
-)
-from thrs.graphql.dhw import (
-    DhwModule,
-    DhwMutations,
-)
+from thrs.graphql.consumers import ConsumersModule, ConsumersMutations
+from thrs.graphql.dhw import DhwModule, DhwMutations
 from thrs.graphql.helpers import ensure_input_type
 from thrs.graphql.messaging import ControlMessaging, Messaging, SimulationMessaging
-from thrs.graphql.pcm import (
-    PcmModule,
-    PcmMutations,
-)
-from thrs.graphql.pvt import (
-    PvtModule,
-    PvtMutations,
-)
+from thrs.graphql.pcm import PcmModule, PcmMutations
+from thrs.graphql.pvt import PvtModule, PvtMutations
 from thrs.graphql.simulation import (
     SimulationInputsType,
     SimulationMutations,
     SimulationOutputsType,
 )
-from thrs.graphql.thrusters import (
-    ThrustersModule,
-    ThrustersMutations,
-)
-from thrs.input_output.modules.adsorption import (
-    AdsorptionControlValues,
-    AdsorptionSensorValues,
-)
-from thrs.input_output.modules.consumers import (
-    ConsumersControlValues,
-    ConsumersSensorValues,
-)
-from thrs.input_output.modules.dhw import DhwControlValues, DhwSensorValues
-from thrs.input_output.modules.drives import DrivesControlValues, DrivesSensorValues
-from thrs.input_output.modules.pcm import (
-    PcmControlValues,
-    PcmSensorValues,
-)
-from thrs.input_output.modules.pvt import (
-    PvtControlValues,
-    PvtSensorValues,
-)
-from thrs.input_output.modules.thrusters import (
-    ThrustersControlValues,
-    ThrustersSensorValues,
-)
+from thrs.graphql.thrusters import ThrustersModule, ThrustersMutations
 from thrs.orchestration.config import Config
 
 logger = logging.getLogger(__name__)
@@ -280,10 +245,7 @@ def create_app(settings: Config):
         async with MqttClient(settings.mqtt_host, settings.mqtt_port) as mqtt:
             thrusters_messaging: ThrustersMessaging = ControlMessaging(
                 "thrusters",
-                ThrustersSensorValues,
-                ThrustersControlValues,
-                ThrustersParameters,
-                ThrustersControlMode,
+                THRUSTERS_MODULE_DESCRIPTION,
                 mqtt,
                 settings.mqtt_devices_topic_prefix,
                 settings.mqtt_controller_topic_prefix,
@@ -291,10 +253,7 @@ def create_app(settings: Config):
             )
             pvt_messaging: PvtMessaging = ControlMessaging(
                 "pvt",
-                PvtSensorValues,
-                PvtControlValues,
-                PvtParameters,
-                PvtControlMode,
+                PVT_MODULE_DESCRIPTION,
                 mqtt,
                 settings.mqtt_devices_topic_prefix,
                 settings.mqtt_controller_topic_prefix,
@@ -302,10 +261,7 @@ def create_app(settings: Config):
             )
             pcm_messaging: PcmMessaging = ControlMessaging(
                 "pcm",
-                PcmSensorValues,
-                PcmControlValues,
-                PcmParameters,
-                PcmControlMode,
+                PCM_MODULE_DESCRIPTION,
                 mqtt,
                 settings.mqtt_devices_topic_prefix,
                 settings.mqtt_controller_topic_prefix,
@@ -313,10 +269,7 @@ def create_app(settings: Config):
             )
             consumers_messaging: ConsumersMessaging = ControlMessaging(
                 "consumers",
-                ConsumersSensorValues,
-                ConsumersControlValues,
-                ConsumersParameters,
-                ConsumersControlMode,
+                CONSUMERS_MODULE_DESCRIPTION,
                 mqtt,
                 settings.mqtt_devices_topic_prefix,
                 settings.mqtt_controller_topic_prefix,
@@ -324,10 +277,7 @@ def create_app(settings: Config):
             )
             adsorption_messaging: AdsorptionMessaging = ControlMessaging(
                 "adsorption",
-                AdsorptionSensorValues,
-                AdsorptionControlValues,
-                AdsorptionParameters,
-                AdsorptionControlMode,
+                ADSORPTION_MODULE_DESCRIPTION,
                 mqtt,
                 settings.mqtt_devices_topic_prefix,
                 settings.mqtt_controller_topic_prefix,
@@ -335,21 +285,15 @@ def create_app(settings: Config):
             )
             drives_messaging: DrivesMessaging = ControlMessaging(
                 "drives",
-                DrivesSensorValues,
-                DrivesControlValues,
-                DrivesParameters,
-                DrivesControlMode,
+                DRIVES_MODULE_DESCRIPTION,
                 mqtt,
                 settings.mqtt_devices_topic_prefix,
                 settings.mqtt_controller_topic_prefix,
                 settings.mqtt_control_topic_suffix,
             )
-            dc_messaging: DrivesMessaging = ControlMessaging(
+            dc_messaging: DcMessaging = ControlMessaging(
                 "dc",
-                DrivesSensorValues,
-                DrivesControlValues,
-                DrivesParameters,
-                DrivesControlMode,
+                DC_MODULE_DESCRIPTION,
                 mqtt,
                 settings.mqtt_devices_topic_prefix,
                 settings.mqtt_controller_topic_prefix,
@@ -357,10 +301,7 @@ def create_app(settings: Config):
             )
             dhw_messaging: DhwMessaging = ControlMessaging(
                 "dhw",
-                DhwSensorValues,
-                DhwControlValues,
-                DhwParameters,
-                DhwControlMode,
+                DHW_MODULE_DESCRIPTION,
                 mqtt,
                 settings.mqtt_devices_topic_prefix,
                 settings.mqtt_controller_topic_prefix,
