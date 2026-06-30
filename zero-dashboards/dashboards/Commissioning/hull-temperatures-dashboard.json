@@ -3555,7 +3555,7 @@
                 "height": 25,
                 "left": 250,
                 "rotation": 0,
-                "top": 143,
+                "top": 73,
                 "width": 80
               },
               "type": "metric-value"
@@ -3591,7 +3591,8 @@
               "placement": {
                 "height": 23,
                 "left": 240,
-                "top": 168,
+                "rotation": 0,
+                "top": 51,
                 "width": 100
               },
               "type": "text"
@@ -3631,7 +3632,7 @@
                 "height": 25,
                 "left": 250,
                 "rotation": 0,
-                "top": 273,
+                "top": 341,
                 "width": 80
               },
               "type": "metric-value"
@@ -3668,7 +3669,7 @@
                 "height": 23,
                 "left": 240,
                 "rotation": 0,
-                "top": 250,
+                "top": 366,
                 "width": 100
               },
               "type": "text"
@@ -3708,7 +3709,7 @@
                 "height": 25,
                 "left": 497,
                 "rotation": 0,
-                "top": 111,
+                "top": 51,
                 "width": 80
               },
               "type": "metric-value"
@@ -3745,7 +3746,7 @@
                 "height": 23,
                 "left": 487,
                 "rotation": 0,
-                "top": 136,
+                "top": 28,
                 "width": 100
               },
               "type": "text"
@@ -3784,7 +3785,8 @@
               "placement": {
                 "height": 25,
                 "left": 497,
-                "top": 297,
+                "rotation": 0,
+                "top": 364,
                 "width": 80
               },
               "type": "metric-value"
@@ -3820,7 +3822,8 @@
               "placement": {
                 "height": 23,
                 "left": 487,
-                "top": 274,
+                "rotation": 0,
+                "top": 389,
                 "width": 100
               },
               "type": "text"
@@ -3860,7 +3863,7 @@
                 "height": 25,
                 "left": 817,
                 "rotation": 0,
-                "top": 108,
+                "top": 51,
                 "width": 80
               },
               "type": "metric-value"
@@ -3897,7 +3900,7 @@
                 "height": 23,
                 "left": 807,
                 "rotation": 0,
-                "top": 133,
+                "top": 28,
                 "width": 100
               },
               "type": "text"
@@ -3937,7 +3940,8 @@
               "placement": {
                 "height": 25,
                 "left": 817,
-                "top": 296,
+                "rotation": 0,
+                "top": 364,
                 "width": 80
               },
               "type": "metric-value"
@@ -3973,7 +3977,8 @@
               "placement": {
                 "height": 23,
                 "left": 807,
-                "top": 273,
+                "rotation": 0,
+                "top": 389,
                 "width": 100
               },
               "type": "text"
@@ -4013,7 +4018,7 @@
                 "height": 25,
                 "left": 1066,
                 "rotation": 0,
-                "top": 146,
+                "top": 74,
                 "width": 80
               },
               "type": "metric-value"
@@ -4050,7 +4055,7 @@
                 "height": 23,
                 "left": 1056,
                 "rotation": 0,
-                "top": 171,
+                "top": 50,
                 "width": 100
               },
               "type": "text"
@@ -4089,7 +4094,8 @@
               "placement": {
                 "height": 25,
                 "left": 1066,
-                "top": 273,
+                "rotation": 0,
+                "top": 341,
                 "width": 80
               },
               "type": "metric-value"
@@ -4126,7 +4132,7 @@
                 "height": 23,
                 "left": 1056,
                 "rotation": 0,
-                "top": 250,
+                "top": 366,
                 "width": 100
               },
               "type": "text"
