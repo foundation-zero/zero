@@ -302,10 +302,10 @@ type Modes = Literal[
 class Mode:
     name: Modes
     control_module: CombinedModule
-    simulation: Simulation | None
+    simulation_getter: Callable[[], Simulation | None]
 
 
-MODES: dict[str, Mode] = {
+MODE_CONFIGS: dict[str, Mode] = {
     "thrusters": Mode(
         name="thrusters",
         control_module=CombinedModule(
@@ -313,7 +313,7 @@ MODES: dict[str, Mode] = {
                 "thrusters": THRUSTERS_MODULE_DESCRIPTION,
             },
         ),
-        simulation=Simulation(
+        simulation_getter=lambda: Simulation(
             {"thrusters": ThrustersSensorValues},
             ThrustersSimulationOutputs,
             Fmu(thrusters_path),
@@ -327,7 +327,7 @@ MODES: dict[str, Mode] = {
         control_module=CombinedModule(
             {"pvt": PVT_MODULE_DESCRIPTION},
         ),
-        simulation=Simulation(
+        simulation_getter=lambda: Simulation(
             PvtSimulationInputs,
             PvtSimulationOutputs,
             Fmu(pvt_path),
@@ -341,7 +341,7 @@ MODES: dict[str, Mode] = {
         control_module=CombinedModule(
             {"pcm": PCM_MODULE_DESCRIPTION},
         ),
-        simulation=Simulation(
+        simulation_getter=lambda: Simulation(
             PcmSimulationInputs,
             PcmSimulationOutputs,
             Fmu(pcm_path),
@@ -355,7 +355,7 @@ MODES: dict[str, Mode] = {
         control_module=CombinedModule(
             {"consumers": CONSUMERS_MODULE_DESCRIPTION},
         ),
-        simulation=Simulation(
+        simulation_getter=lambda: Simulation(
             ConsumersSimulationInputs,
             ConsumersSimulationOutputs,
             Fmu(consumers_path),
@@ -369,7 +369,7 @@ MODES: dict[str, Mode] = {
         control_module=CombinedModule(
             {"adsorption": ADSORPTION_MODULE_DESCRIPTION},
         ),
-        simulation=Simulation(
+        simulation_getter=lambda: Simulation(
             AdsorptionSimulationInputs,
             AdsorptionSimulationOutputs,
             Fmu(adsorption_path),
@@ -383,7 +383,7 @@ MODES: dict[str, Mode] = {
         control_module=CombinedModule(
             {"drives": DRIVES_MODULE_DESCRIPTION},
         ),
-        simulation=Simulation(
+        simulation_getter=lambda: Simulation(
             DrivesSimulationInputs,
             DrivesSimulationOutputs,
             Fmu(drives_path),
@@ -397,7 +397,7 @@ MODES: dict[str, Mode] = {
         control_module=CombinedModule(
             {"dc": DC_MODULE_DESCRIPTION},
         ),
-        simulation=Simulation(
+        simulation_getter=lambda: Simulation(
             DcSimulationInputs,
             DcSimulationOutputs,
             Fmu(dc_path),
@@ -411,7 +411,7 @@ MODES: dict[str, Mode] = {
         control_module=CombinedModule(
             {"dhw": DHW_MODULE_DESCRIPTION},
         ),
-        simulation=Simulation(
+        simulation_getter=lambda: Simulation(
             DhwSimulationInputs,
             DhwSimulationOutputs,
             Fmu(dhw_path),
@@ -430,7 +430,7 @@ MODES: dict[str, Mode] = {
                 "consumers": CONSUMERS_MODULE_DESCRIPTION,
             },
         ),
-        simulation=Simulation(
+        simulation_getter=lambda: Simulation(
             HighTemperatureSimulationInputs,
             HighTemperatureSimulationOutputs,
             Fmu(high_temperature_path),
@@ -453,7 +453,7 @@ MODES: dict[str, Mode] = {
                 "dhw": DHW_MODULE_DESCRIPTION,
             }
         ),
-        simulation=None,
+        simulation_getter=lambda: None,
     ),
 }
 
@@ -959,7 +959,7 @@ class SimulationControls:
         all_modules = list(
             set(
                 module
-                for mode in MODES.values()
+                for mode in MODE_CONFIGS.values()
                 for module in mode.control_module.modules
             )
         )
@@ -982,7 +982,7 @@ class SimulationControls:
                         retain=True,
                     )
 
-    async def run(self, mode: Modes):
+    async def run(self, mode_name: Modes):
         for handler in SIMULATION_HANDLERS:
             await self._controls_client.subscribe(
                 f"{self._simulation_topic_prefix}/{handler.subscribe_topic()}", qos=1
@@ -992,10 +992,10 @@ class SimulationControls:
                 f"{self._controller_topic_prefix}/{handler.subscribe_topic()}", qos=1
             )
 
-        lock_step_mode = MODES[mode]
-        simulation_inputs = SIMULATION_INPUTS[mode]
-        control_module = lock_step_mode.control_module
-        simulation = lock_step_mode.simulation
+        mode = MODE_CONFIGS[mode_name]
+        simulation_inputs = SIMULATION_INPUTS[mode_name]
+        control_module = mode.control_module
+        simulation = mode.simulation_getter()
 
         simulation_context = simulation if simulation else nullcontext()
         with simulation_context:
@@ -1006,7 +1006,7 @@ class SimulationControls:
                     controller_topic_prefix=self._simulation_topic_prefix,
                     sensor_values_clss={},  # It actually does not listen to mqtt for these but gets them directly from the runner
                     control_values_clss=control_module.sensor_values_clss,
-                    controller_values_clss={mode: simulation.outputs_cls},
+                    controller_values_clss={mode.name: simulation.outputs_cls},
                     sensor_topic_suffix=self._control_topic_suffix,
                 )
 
@@ -1047,7 +1047,7 @@ class SimulationControls:
 
             runner = Runner(
                 control_connector,
-                mode,
+                mode.name,
                 simulation,
                 simulation_connector,
                 control,
@@ -1083,7 +1083,7 @@ class SimulationControls:
                     ),
                 )
                 await self._run_simulation(
-                    mode,
+                    mode.name,
                     control_module,
                     context,
                     time_func,
