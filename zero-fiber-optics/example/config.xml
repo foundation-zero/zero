@@ -1,0 +1,11 @@
+<?xml version='1.0'?>
+<UDPChannels ip='0.0.0.0'>
+    <port numport='50000' channel='ExampleChannel' frequency='20' mode='Receive'>
+        <Var num='0' type='UnSignedInt32' name='PacketCounter'/>
+        <Var num='1' type='SignedInt16' factor='10' name='Angle'/>
+        <Var num='2' type='8BitBoolRegister' name='StatusFlags'>
+            <bit num='0'>SystemEnabled</bit>
+            <bit num='1'>ErrorCondition</bit>
+        </Var>
+    </port>
+</UDPChannels>
