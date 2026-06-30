@@ -20,6 +20,7 @@ from thrs.cli.simulation_controls import (
     SimulationStatusMessage,
     StepMessage,
 )
+from thrs.control.base import ModuleDescription
 from thrs.input_output.base import SimulationInputs, SimulationValues, ThrsValues
 from thrs.orchestration.connector import PartialMqttMapping
 
@@ -135,10 +136,9 @@ class ControlMessaging[
     def __init__(
         self,
         module_name: str,
-        sensor_values_cls: type[SensorValues],
-        control_values_cls: type[ControlValues],
-        parameters_cls: type[Parameters],
-        mode_cls: type[Mode],
+        module_description: ModuleDescription[
+            SensorValues, ControlValues, Parameters, Mode
+        ],
         mqtt_client: MqttClient,
         devices_topic_prefix: str,
         controller_topic_prefix: str,
@@ -146,29 +146,29 @@ class ControlMessaging[
     ):
         self.module_name = module_name
         self._active = False
-        self.sensor_values_cls = sensor_values_cls
-        self.control_values_cls = control_values_cls
+        self.sensor_values_cls = module_description.sensor_values_cls
+        self.control_values_cls = module_description.control_values_cls
 
         self._devices_topic_prefix = devices_topic_prefix
         self._controller_topic_prefix = controller_topic_prefix
         self._sensor_values = PartialMessageReceiver(
-            sensor_values_cls,
+            module_description.sensor_values_cls,
             self._devices_topic_prefix,
             module_name,
         )
         self._control_values = PartialMessageReceiver(
-            control_values_cls,
+            module_description.control_values_cls,
             self._devices_topic_prefix,
             module_name,
             control_topic_suffix,
         )
 
         self._parameters = MessageReceiver(
-            ParametersMessage[parameters_cls],
+            ParametersMessage[module_description.parameters_cls],
             f"{self._controller_topic_prefix}/{ParametersMessage.subscribe_topic()}",
         )
         self._control_mode = MessageReceiver(
-            ControlModeMessage[mode_cls],
+            ControlModeMessage[module_description.control_mode_cls],
             f"{self._controller_topic_prefix}/{ControlModeMessage.subscribe_topic()}",
         )
         self._mqtt_client = mqtt_client
