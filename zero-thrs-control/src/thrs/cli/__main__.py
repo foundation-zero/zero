@@ -4,7 +4,7 @@ import sys
 from argparse import ArgumentParser
 
 from thrs.cli.simulation_controls import (
-    MODE_CONFIGS,
+    MODES,
     SimulationControls,
 )
 from thrs.orchestration.config import Config
@@ -30,7 +30,7 @@ async def main():
     run_cmd = subparser.add_parser("run", help="Run the THRS simulation and control")
     run_cmd.add_argument(
         "type",
-        choices=MODE_CONFIGS.keys(),
+        choices=[mode.name for mode in MODES],
         help="Type of simulation to run",
     )
     run_cmd.set_defaults(func=run)

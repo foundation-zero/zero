@@ -305,8 +305,8 @@ class Mode:
     simulation_getter: Callable[[], Simulation | None]
 
 
-MODE_CONFIGS: dict[str, Mode] = {
-    "thrusters": Mode(
+MODES: list[Mode] = [
+    Mode(
         name="thrusters",
         control_module=CombinedModule(
             {
@@ -322,7 +322,7 @@ MODE_CONFIGS: dict[str, Mode] = {
             timedelta(seconds=1),
         ),
     ),
-    "pvt": Mode(
+    Mode(
         name="pvt",
         control_module=CombinedModule(
             {"pvt": PVT_MODULE_DESCRIPTION},
@@ -336,7 +336,7 @@ MODE_CONFIGS: dict[str, Mode] = {
             timedelta(seconds=1),
         ),
     ),
-    "pcm": Mode(
+    Mode(
         name="pcm",
         control_module=CombinedModule(
             {"pcm": PCM_MODULE_DESCRIPTION},
@@ -350,7 +350,7 @@ MODE_CONFIGS: dict[str, Mode] = {
             timedelta(seconds=1),
         ),
     ),
-    "consumers": Mode(
+    Mode(
         name="consumers",
         control_module=CombinedModule(
             {"consumers": CONSUMERS_MODULE_DESCRIPTION},
@@ -364,7 +364,7 @@ MODE_CONFIGS: dict[str, Mode] = {
             timedelta(seconds=1),
         ),
     ),
-    "adsorption": Mode(
+    Mode(
         name="adsorption",
         control_module=CombinedModule(
             {"adsorption": ADSORPTION_MODULE_DESCRIPTION},
@@ -378,7 +378,7 @@ MODE_CONFIGS: dict[str, Mode] = {
             timedelta(seconds=1),
         ),
     ),
-    "drives": Mode(
+    Mode(
         name="drives",
         control_module=CombinedModule(
             {"drives": DRIVES_MODULE_DESCRIPTION},
@@ -392,7 +392,7 @@ MODE_CONFIGS: dict[str, Mode] = {
             timedelta(seconds=1),
         ),
     ),
-    "dc": Mode(
+    Mode(
         name="dc",
         control_module=CombinedModule(
             {"dc": DC_MODULE_DESCRIPTION},
@@ -406,7 +406,7 @@ MODE_CONFIGS: dict[str, Mode] = {
             timedelta(seconds=1),
         ),
     ),
-    "dhw": Mode(
+    Mode(
         name="dhw",
         control_module=CombinedModule(
             {"dhw": DHW_MODULE_DESCRIPTION},
@@ -420,7 +420,7 @@ MODE_CONFIGS: dict[str, Mode] = {
             timedelta(seconds=1),
         ),
     ),
-    "high_temperature": Mode(
+    Mode(
         name="high_temperature",
         control_module=CombinedModule(
             {
@@ -439,7 +439,7 @@ MODE_CONFIGS: dict[str, Mode] = {
             timedelta(seconds=1),
         ),
     ),
-    "boat": Mode(
+    Mode(
         name="boat",
         control_module=CombinedModule(
             {
@@ -455,7 +455,7 @@ MODE_CONFIGS: dict[str, Mode] = {
         ),
         simulation_getter=lambda: None,
     ),
-}
+]
 
 
 @dataclass
@@ -957,11 +957,7 @@ class SimulationControls:
 
     async def clear_previous(self):
         all_modules = list(
-            set(
-                module
-                for mode in MODE_CONFIGS.values()
-                for module in mode.control_module.modules
-            )
+            set(module for mode in MODES for module in mode.control_module.modules)
         )
         for msg_cls in SIMULATION_OUTGOING_MESSAGES:
             if msg_cls.retained():
@@ -992,7 +988,7 @@ class SimulationControls:
                 f"{self._controller_topic_prefix}/{handler.subscribe_topic()}", qos=1
             )
 
-        mode = MODE_CONFIGS[mode_name]
+        mode = next(mode for mode in MODES if mode.name == mode_name)
         simulation_inputs = SIMULATION_INPUTS[mode_name]
         control_module = mode.control_module
         simulation = mode.simulation_getter()
