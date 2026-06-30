@@ -9,7 +9,6 @@ from typing import (
     Any,
     Callable,
     Literal,
-    cast,
 )
 
 from aiomqtt import Client as MqttClient
@@ -989,7 +988,6 @@ class SimulationControls:
             )
 
         mode = next(mode for mode in MODES if mode.name == mode_name)
-        simulation_inputs = SIMULATION_INPUTS[mode_name]
         control_module = mode.control_module
         simulation = mode.simulation_getter()
 
@@ -1072,12 +1070,11 @@ class SimulationControls:
                             parameters=control.parameters.values[module],
                         ),
                     )
-                await context.send(
-                    self._simulation_topic_prefix,
-                    SimulationInputMessage(
-                        inputs=cast(ThrustersSimulationInputs, simulation_inputs)
-                    ),
-                )
+                if simulation:
+                    await context.send(
+                        self._simulation_topic_prefix,
+                        SimulationInputMessage(inputs=simulation.simulation_inputs),
+                    )
                 await self._run_simulation(
                     mode.name,
                     control_module,

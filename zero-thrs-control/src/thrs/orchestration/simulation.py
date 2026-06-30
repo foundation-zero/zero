@@ -36,7 +36,7 @@ class Simulation[
     def __init__(
         self,
         sensor_values_clss: ModuleClassMap | type[ThrsValues],
-        simulation_outputs_cls: type[ThrsValues],
+        simulation_outputs_cls: type[O],
         fmu: Fmu,
         simulation_inputs: I,
         start_time: datetime,
@@ -102,9 +102,13 @@ class Simulation[
         self._simulation_inputs = simulation_inputs
 
     @property
-    def inputs_cls(self) -> type[SimulationInputs]:
+    def inputs_cls(self) -> type[I]:
         return type(self._simulation_inputs)
 
     @property
-    def outputs_cls(self) -> type[ThrsValues]:
+    def simulation_inputs(self) -> I:
+        return self._simulation_inputs
+
+    @property
+    def outputs_cls(self) -> type[O]:
         return self._simulation_outputs_cls
