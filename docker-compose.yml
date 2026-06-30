@@ -349,7 +349,7 @@ services:
       dockerfile: Dockerfile
       target: simulation
     profiles:
-      - thrs-extra
+      - thrs
     environment: &thrs_env
         MQTT_HOST: vernemq
         MQTT_PORT: 1883
@@ -384,7 +384,7 @@ services:
 
   thrs-thruster-simulation-dhw:
     <<: *thrs_simulation
-    profiles: ["thrs"]
+    profiles: ["thrs-extra"]
     command: ["dhw"]
 
 volumes:
