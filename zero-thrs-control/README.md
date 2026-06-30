@@ -23,10 +23,6 @@ CFLAGS="-std=gnu17" poetry run fmpy compile <path-to-fmu-file>
 
 ## Simulator
 
-Simulator deploy on Singel consist of multiple (6 at this point) `Deployments`, one for each `type` of simulation (e.g., thrusters, PVT).
-This is done, because FMU requires control signals to stay alive for a long time. Simulations tend to be used one per time, which will cause the others to crash at some point due those do not receive their control signals.
-Having 1 deployment run all simulations, would cause the only deployment to crash if the other simulations are not being used. Therefore, each simulation `type` runs as its own `Deployment`.
-
 Run the simulator with:
 
 ```bash
