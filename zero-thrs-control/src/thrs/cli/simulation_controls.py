@@ -293,6 +293,7 @@ type Modes = Literal[
     "dc",
     "high_temperature",
     "dhw",
+    "boat",
 ]
 
 MODES: dict[Modes, tuple[str | None, CombinedModule]] = {
@@ -304,6 +305,9 @@ MODES: dict[Modes, tuple[str | None, CombinedModule]] = {
                 "pvt": PVT_MODULE_DESCRIPTION,
                 "pcm": PCM_MODULE_DESCRIPTION,
                 "consumers": CONSUMERS_MODULE_DESCRIPTION,
+                "adsorption": ADSORPTION_MODULE_DESCRIPTION,
+                "drives": DRIVES_MODULE_DESCRIPTION,
+                "dc": DC_MODULE_DESCRIPTION,
                 "dhw": DHW_MODULE_DESCRIPTION,
             },
             None,
