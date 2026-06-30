@@ -50,19 +50,27 @@ from thrs.input_output.definitions.simulation import (
 )
 from thrs.input_output.definitions.units import PcsMode
 from thrs.input_output.modules.adsorption import (
+    AdsorptionSensorValues,
     AdsorptionSimulationInputs,
     AdsorptionSimulationOutputs,
 )
 from thrs.input_output.modules.consumers import (
+    ConsumersSensorValues,
     ConsumersSimulationInputs,
     ConsumersSimulationOutputs,
 )
-from thrs.input_output.modules.dc import DcSimulationInputs, DcSimulationOutputs
+from thrs.input_output.modules.dc import (
+    DcSensorValues,
+    DcSimulationInputs,
+    DcSimulationOutputs,
+)
 from thrs.input_output.modules.dhw import (
+    DhwSensorValues,
     DhwSimulationInputs,
     DhwSimulationOutputs,
 )
 from thrs.input_output.modules.drives import (
+    DrivesSensorValues,
     DrivesSimulationInputs,
     DrivesSimulationOutputs,
 )
@@ -70,8 +78,16 @@ from thrs.input_output.modules.high_temperature import (
     HighTemperatureSimulationInputs,
     HighTemperatureSimulationOutputs,
 )
-from thrs.input_output.modules.pcm import PcmSimulationInputs, PcmSimulationOutputs
-from thrs.input_output.modules.pvt import PvtSimulationInputs, PvtSimulationOutputs
+from thrs.input_output.modules.pcm import (
+    PcmSensorValues,
+    PcmSimulationInputs,
+    PcmSimulationOutputs,
+)
+from thrs.input_output.modules.pvt import (
+    PvtSensorValues,
+    PvtSimulationInputs,
+    PvtSimulationOutputs,
+)
 from thrs.input_output.modules.thrusters import (
     ThrustersSensorValues,
     ThrustersSimulationInputs,
@@ -327,7 +343,7 @@ MODES: list[Mode] = [
             {"pvt": PVT_MODULE_DESCRIPTION},
         ),
         simulation_getter=lambda: Simulation(
-            PvtSimulationInputs,
+            {"pvt": PvtSensorValues},
             PvtSimulationOutputs,
             Fmu(pvt_path),
             SIMULATION_INPUTS["pvt"],
@@ -341,7 +357,7 @@ MODES: list[Mode] = [
             {"pcm": PCM_MODULE_DESCRIPTION},
         ),
         simulation_getter=lambda: Simulation(
-            PcmSimulationInputs,
+            {"pcm": PcmSensorValues},
             PcmSimulationOutputs,
             Fmu(pcm_path),
             SIMULATION_INPUTS["pcm"],
@@ -355,7 +371,7 @@ MODES: list[Mode] = [
             {"consumers": CONSUMERS_MODULE_DESCRIPTION},
         ),
         simulation_getter=lambda: Simulation(
-            ConsumersSimulationInputs,
+            {"consumers": ConsumersSensorValues},
             ConsumersSimulationOutputs,
             Fmu(consumers_path),
             SIMULATION_INPUTS["consumers"],
@@ -369,7 +385,7 @@ MODES: list[Mode] = [
             {"adsorption": ADSORPTION_MODULE_DESCRIPTION},
         ),
         simulation_getter=lambda: Simulation(
-            AdsorptionSimulationInputs,
+            {"adsorption": AdsorptionSensorValues},
             AdsorptionSimulationOutputs,
             Fmu(adsorption_path),
             SIMULATION_INPUTS["adsorption"],
@@ -383,7 +399,7 @@ MODES: list[Mode] = [
             {"drives": DRIVES_MODULE_DESCRIPTION},
         ),
         simulation_getter=lambda: Simulation(
-            DrivesSimulationInputs,
+            {"drives": DrivesSensorValues},
             DrivesSimulationOutputs,
             Fmu(drives_path),
             SIMULATION_INPUTS["drives"],
@@ -397,7 +413,7 @@ MODES: list[Mode] = [
             {"dc": DC_MODULE_DESCRIPTION},
         ),
         simulation_getter=lambda: Simulation(
-            DcSimulationInputs,
+            {"dc": DcSensorValues},
             DcSimulationOutputs,
             Fmu(dc_path),
             SIMULATION_INPUTS["dc"],
@@ -411,7 +427,7 @@ MODES: list[Mode] = [
             {"dhw": DHW_MODULE_DESCRIPTION},
         ),
         simulation_getter=lambda: Simulation(
-            DhwSimulationInputs,
+            {"dhw": DhwSensorValues},
             DhwSimulationOutputs,
             Fmu(dhw_path),
             SIMULATION_INPUTS["dhw"],
@@ -430,7 +446,7 @@ MODES: list[Mode] = [
             },
         ),
         simulation_getter=lambda: Simulation(
-            HighTemperatureSimulationInputs,
+            {"high_temperature": HighTemperatureSimulationInputs},
             HighTemperatureSimulationOutputs,
             Fmu(high_temperature_path),
             SIMULATION_INPUTS["high_temperature"],

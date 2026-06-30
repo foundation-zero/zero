@@ -20,9 +20,9 @@ from thrs.cli.simulation_controls import (
     SimulationStatusMessage,
     StepMessage,
 )
-from thrs.control.base import ModuleDescription
 from thrs.input_output.base import SimulationInputs, SimulationValues, ThrsValues
 from thrs.orchestration.connector import PartialMqttMapping
+from thrs.orchestration.module import ModuleDescription
 
 
 @dataclass
