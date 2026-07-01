@@ -51,7 +51,7 @@ class DirectiveHandling:
     def handler(self, loop: Loop):
         return DirectiveHandler(self._messaging, loop, self._topic_prefix)
 
-    def hooks(self) -> LoopHooks:
+    def status_hooks(self) -> LoopHooks:
         return LoopHooks(
             available=partial(self.send_status, status="available"),
             running=partial(self.send_status, status="running"),

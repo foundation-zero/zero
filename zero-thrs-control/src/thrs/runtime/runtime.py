@@ -7,7 +7,7 @@ from aiomqtt import Client as MqttClient
 
 from thrs.input_output.base import CombinedValues
 from thrs.orchestration.config import Config
-from thrs.orchestration.connector import MqttConnector
+from thrs.orchestration.connector import ConnectorListeningMode, MqttConnector
 from thrs.orchestration.module import CombinedControl
 from thrs.runtime.descriptions.simulation import MODES, Mode, Modes
 from thrs.runtime.directives import DirectiveHandling
@@ -44,14 +44,17 @@ class Runtime:
             raise ValueError("simulation must be defined for simulation mode")
         async with MqttClient(config.mqtt_host, config.mqtt_port) as simulation_client:
             connector = MqttConnector(
-                simulation_client,
-                config.mqtt_devices_topic_prefix,
-                config.mqtt_controller_topic_prefix,
+                mqtt_client=simulation_client,
+                listening_mode=ConnectorListeningMode.CONTROLS,
+                devices_topic_prefix=config.mqtt_devices_topic_prefix,
+                controller_topic_prefix=config.mqtt_controller_topic_prefix,
                 sensor_values_clss={},  # simulation gets sensor values from the simulation
                 control_values_clss=mode.control_module.control_values_clss,
                 controller_state_clss={},
                 simulation_outputs_clss=simulation.outputs_cls,
+                control_topic_suffix=config.mqtt_control_topic_suffix,
                 sensor_topic_suffix=config.mqtt_control_topic_suffix,
+                simulation_topic_prefix=config.mqtt_simulation_topic_prefix,
             )
             yield Runtime(
                 SimulationRunner(connector, simulation),
@@ -75,12 +78,16 @@ class Runtime:
         ):
             control_connector = MqttConnector(
                 mqtt_client=control_client,
+                listening_mode=ConnectorListeningMode.NONE,
                 devices_topic_prefix=config.mqtt_devices_topic_prefix,
                 controller_topic_prefix=config.mqtt_controller_topic_prefix,
                 sensor_values_clss=mode.control_module.sensor_values_clss,
                 control_values_clss=mode.control_module.control_values_clss,
                 controller_state_clss={},  # Nothing yet, but we want to send controller values here at some point
+                simulation_outputs_clss=simulation.outputs_cls,
                 control_topic_suffix=config.mqtt_control_topic_suffix,
+                sensor_topic_suffix=config.mqtt_control_topic_suffix,
+                simulation_topic_prefix=config.mqtt_simulation_topic_prefix,
             )
 
             parameters = {
@@ -133,12 +140,16 @@ class Runtime:
         async with MqttClient(config.mqtt_host, config.mqtt_port) as control_client:
             control_connector = MqttConnector(
                 mqtt_client=control_client,
+                listening_mode=ConnectorListeningMode.SENSORS,
                 devices_topic_prefix=config.mqtt_devices_topic_prefix,
                 controller_topic_prefix=config.mqtt_controller_topic_prefix,
                 sensor_values_clss=mode.control_module.sensor_values_clss,
                 control_values_clss=mode.control_module.control_values_clss,
                 controller_state_clss={},  # Nothing yet, but we want to send controller values here at some point
+                simulation_outputs_clss={},
                 control_topic_suffix=config.mqtt_control_topic_suffix,
+                sensor_topic_suffix=config.mqtt_control_topic_suffix,
+                simulation_topic_prefix=config.mqtt_simulation_topic_prefix,
             )
 
             parameters = {
@@ -157,6 +168,7 @@ class Runtime:
             yield Runtime(runner, timedelta(seconds=1), connectors=[control_connector])
 
     async def start(self):
+        """Start the runtime, including the loop and any directive handling if present. Hooks are used to send status messages for directive handling."""
         async with TaskGroup() as tg:
             for connector in self._connectors:
                 tg.create_task(connector.run())
@@ -167,15 +179,19 @@ class Runtime:
             if self._directive_handling is not None:
                 await self._directive_handling.handler(self._loop).register()
                 tg.create_task(self._directive_handling.run())
-            hooks = (
-                self._directive_handling.hooks()
+
+            # Hooks are used to send status messages for directive handling if it is present, otherwise empty hooks are used
+            status_hooks = (
+                self._directive_handling.status_hooks()
                 if self._directive_handling is not None
                 else EMPTY_HOOKS
             )
+
+            # Start the loop, with possible hooks for directive handling
             tg.create_task(
                 self._loop.loop(
                     self._runner,
-                    hooks,
+                    status_hooks,
                 )
             )
 
