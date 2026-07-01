@@ -1,5 +1,31 @@
 directive @jsonSchemaDirective(yardTag: String = null, componentType: String = null, valveType: String = null) on FIELD_DEFINITION
 
+input AdsorptionChillerInputType {
+  freeCooling: Boolean!
+}
+
+type AdsorptionChillerSimulationType {
+  freeCooling: BoolStampedType!
+}
+
+type AdsorptionSimulationInputsType {
+  adsorptionCoolingSupply: TemperatureBoundarySimulationType!
+  adsorptionSeawaterSupply: BoundarySimulationType!
+  adsorptionAvailableHotTemperature: TemperatureBoundarySimulationType! @jsonSchemaDirective(yardTag: "", componentType: null, valveType: null)
+  adsorptionAvailableColdTemperature: TemperatureBoundarySimulationType! @jsonSchemaDirective(yardTag: "", componentType: null, valveType: null)
+  adsorptionAvailableSeawaterTemperature: TemperatureBoundarySimulationType! @jsonSchemaDirective(yardTag: "", componentType: null, valveType: null)
+  adsorptionChiller: AdsorptionChillerSimulationType! @jsonSchemaDirective(yardTag: "", componentType: null, valveType: null)
+  adsorptionHtSupply: BoundarySimulationType!
+  adsorptionDhwSupply: BoundarySimulationType!
+}
+
+type AdsorptionSimulationOutputsType {
+  adsorptionCoolingReturn: BoundarySimulationType!
+  adsorptionSeawaterReturn: TemperatureBoundarySimulationType!
+  adsorptionDhwReturn: TemperatureBoundarySimulationType!
+  adsorptionHtReturn: TemperatureBoundarySimulationType!
+}
+
 type BoolStampedType {
   value: Boolean!
   timestamp: DateTime!
@@ -119,8 +145,36 @@ type ControllerTanksControllerValuesType {
   timeToFill: FloatOptionalStampedType!
 }
 
+input ConverterInputType {
+  heatFlow: Float!
+  active: Boolean!
+}
+
+type ConverterSimulationType {
+  heatFlow: FloatStampedType!
+  active: BoolStampedType!
+}
+
 """Date with time (isoformat)"""
 scalar DateTime
+
+type DcSimulationInputsType {
+  dcBrightloopFwd1: ConverterSimulationType!
+  dcBrightloopFwd2: ConverterSimulationType!
+  dcUgrid1: ConverterSimulationType!
+  dcUgrid2: ConverterSimulationType!
+  dcBrightloopAft1: ConverterSimulationType!
+  dcBrightloopAft2: ConverterSimulationType!
+  dcBrightloopAft3: ConverterSimulationType!
+  dcBrightloopAft4: ConverterSimulationType!
+  dcSeawaterSupply: BoundarySimulationType!
+  dcDhwSupply: BoundarySimulationType!
+}
+
+type DcSimulationOutputsType {
+  dcSeawaterReturn: TemperatureBoundarySimulationType!
+  dcDhwReturn: TemperatureBoundarySimulationType!
+}
 
 type DhwControlModeType {
   boostingMode: String!
@@ -281,6 +335,23 @@ type DhwSimulationOutputsType {
   dhwSeawaterReturn: TemperatureBoundarySimulationType!
   dhwSeawaterSupply: FlowBoundarySimulationType!
   dhwFreshwaterReturn: BoundarySimulationType!
+}
+
+type DrivesSimulationInputsType {
+  drivesOilCoolerAft: HeatSourceSimulationType!
+  drivesOilCoolerFwd: HeatSourceSimulationType!
+  drivesPropdriveAft1: PropulsionDriveSimulationType!
+  drivesPropdriveAft2: PropulsionDriveSimulationType!
+  drivesPropdriveFwd1: PropulsionDriveSimulationType!
+  drivesPropdriveFwd2: PropulsionDriveSimulationType!
+  drivesShorepower: ConverterSimulationType!
+  drivesSeawaterSupply: BoundarySimulationType!
+  drivesDhwSupply: BoundarySimulationType!
+}
+
+type DrivesSimulationOutputsType {
+  drivesSeawaterReturn: TemperatureBoundarySimulationType!
+  drivesDhwReturn: TemperatureBoundarySimulationType!
 }
 
 type FloatListStampedType {
@@ -489,14 +560,6 @@ type Mutation {
   dhwControlSetDhwPumpTemperatureController(component: PidControllerValuesInputType!): DhwControlValuesType!
   dhwControlSetDhwDrivesFlowController(component: PidControllerValuesInputType!): DhwControlValuesType!
   dhwControlSetDhwDcFlowController(component: PidControllerValuesInputType!): DhwControlValuesType!
-  dhwSimulationSetDhwDrivesSupply(component: BoundaryInputType!): DhwSimulationInputsType!
-  dhwSimulationSetDhwDcSupply(component: BoundaryInputType!): DhwSimulationInputsType!
-  dhwSimulationSetDhwAdsorptionSupply(component: BoundaryInputType!): DhwSimulationInputsType!
-  dhwSimulationSetDhwHtSupply(component: BoundaryInputType!): DhwSimulationInputsType!
-  dhwSimulationSetDhwFreshwaterSupply(component: OverpressureTemperatureBoundaryInputType!): DhwSimulationInputsType!
-  dhwSimulationSetDhwHvacExchanger(component: HvacExchangerInputType!): DhwSimulationInputsType!
-  dhwSimulationSetDhwSeawaterSupply(component: TemperatureBoundaryInputType!): DhwSimulationInputsType!
-  dhwSimulationSetDhwHotwaterDemand(component: FlowBoundaryInputType!): DhwSimulationInputsType!
   highTemperatureSimulationSetThrustersThrusterAft(component: ThrusterInputType!): HighTemperatureSimulationInputsType!
   highTemperatureSimulationSetThrustersThrusterFwd(component: ThrusterInputType!): HighTemperatureSimulationInputsType!
   highTemperatureSimulationSetThrustersSeawaterSupply(component: BoundaryInputType!): HighTemperatureSimulationInputsType!
@@ -508,6 +571,41 @@ type Mutation {
   highTemperatureSimulationSetPcmFreshwaterSupply(component: BoundaryInputType!): HighTemperatureSimulationInputsType!
   highTemperatureSimulationSetConsumersDhwSupply(component: BoundaryInputType!): HighTemperatureSimulationInputsType!
   highTemperatureSimulationSetConsumersAdsorptionSupply(component: BoundaryInputType!): HighTemperatureSimulationInputsType!
+  dhwSimulationSetDhwDrivesSupply(component: BoundaryInputType!): DhwSimulationInputsType!
+  dhwSimulationSetDhwDcSupply(component: BoundaryInputType!): DhwSimulationInputsType!
+  dhwSimulationSetDhwAdsorptionSupply(component: BoundaryInputType!): DhwSimulationInputsType!
+  dhwSimulationSetDhwHtSupply(component: BoundaryInputType!): DhwSimulationInputsType!
+  dhwSimulationSetDhwFreshwaterSupply(component: OverpressureTemperatureBoundaryInputType!): DhwSimulationInputsType!
+  dhwSimulationSetDhwHvacExchanger(component: HvacExchangerInputType!): DhwSimulationInputsType!
+  dhwSimulationSetDhwSeawaterSupply(component: TemperatureBoundaryInputType!): DhwSimulationInputsType!
+  dhwSimulationSetDhwHotwaterDemand(component: FlowBoundaryInputType!): DhwSimulationInputsType!
+  dcSimulationSetDcBrightloopFwd1(component: ConverterInputType!): DcSimulationInputsType!
+  dcSimulationSetDcBrightloopFwd2(component: ConverterInputType!): DcSimulationInputsType!
+  dcSimulationSetDcUgrid1(component: ConverterInputType!): DcSimulationInputsType!
+  dcSimulationSetDcUgrid2(component: ConverterInputType!): DcSimulationInputsType!
+  dcSimulationSetDcBrightloopAft1(component: ConverterInputType!): DcSimulationInputsType!
+  dcSimulationSetDcBrightloopAft2(component: ConverterInputType!): DcSimulationInputsType!
+  dcSimulationSetDcBrightloopAft3(component: ConverterInputType!): DcSimulationInputsType!
+  dcSimulationSetDcBrightloopAft4(component: ConverterInputType!): DcSimulationInputsType!
+  dcSimulationSetDcSeawaterSupply(component: BoundaryInputType!): DcSimulationInputsType!
+  dcSimulationSetDcDhwSupply(component: BoundaryInputType!): DcSimulationInputsType!
+  drivesSimulationSetDrivesOilCoolerAft(component: HeatSourceInputType!): DrivesSimulationInputsType!
+  drivesSimulationSetDrivesOilCoolerFwd(component: HeatSourceInputType!): DrivesSimulationInputsType!
+  drivesSimulationSetDrivesPropdriveAft1(component: PropulsionDriveInputType!): DrivesSimulationInputsType!
+  drivesSimulationSetDrivesPropdriveAft2(component: PropulsionDriveInputType!): DrivesSimulationInputsType!
+  drivesSimulationSetDrivesPropdriveFwd1(component: PropulsionDriveInputType!): DrivesSimulationInputsType!
+  drivesSimulationSetDrivesPropdriveFwd2(component: PropulsionDriveInputType!): DrivesSimulationInputsType!
+  drivesSimulationSetDrivesShorepower(component: ConverterInputType!): DrivesSimulationInputsType!
+  drivesSimulationSetDrivesSeawaterSupply(component: BoundaryInputType!): DrivesSimulationInputsType!
+  drivesSimulationSetDrivesDhwSupply(component: BoundaryInputType!): DrivesSimulationInputsType!
+  adsorptionSimulationSetAdsorptionCoolingSupply(component: TemperatureBoundaryInputType!): AdsorptionSimulationInputsType!
+  adsorptionSimulationSetAdsorptionSeawaterSupply(component: BoundaryInputType!): AdsorptionSimulationInputsType!
+  adsorptionSimulationSetAdsorptionAvailableHotTemperature(component: TemperatureBoundaryInputType!): AdsorptionSimulationInputsType!
+  adsorptionSimulationSetAdsorptionAvailableColdTemperature(component: TemperatureBoundaryInputType!): AdsorptionSimulationInputsType!
+  adsorptionSimulationSetAdsorptionAvailableSeawaterTemperature(component: TemperatureBoundaryInputType!): AdsorptionSimulationInputsType!
+  adsorptionSimulationSetAdsorptionChiller(component: AdsorptionChillerInputType!): AdsorptionSimulationInputsType!
+  adsorptionSimulationSetAdsorptionHtSupply(component: BoundaryInputType!): AdsorptionSimulationInputsType!
+  adsorptionSimulationSetAdsorptionDhwSupply(component: BoundaryInputType!): AdsorptionSimulationInputsType!
   consumersSimulationSetConsumersAdsorptionSupply(component: BoundaryInputType!): ConsumersSimulationInputsType!
   consumersSimulationSetConsumersDhwSupply(component: BoundaryInputType!): ConsumersSimulationInputsType!
   consumersSimulationSetConsumersPcmSupply(component: BoundaryInputType!): ConsumersSimulationInputsType!
@@ -652,6 +750,16 @@ input PidControllerValuesInputType {
   enabled: Boolean!
   tuning: [Float!]!
   components: [Float!]!
+}
+
+input PropulsionDriveInputType {
+  heatFlow: Float!
+  active: Boolean!
+}
+
+type PropulsionDriveSimulationType {
+  heatFlow: FloatStampedType!
+  active: BoolStampedType!
 }
 
 input PumpInputType {
@@ -889,9 +997,9 @@ type SensorValveType {
   positionRel: FloatStampedType!
 }
 
-union SimulationInputsType = ThrustersSimulationInputsType | PcmSimulationInputsType | PvtSimulationInputsType | ConsumersSimulationInputsType | HighTemperatureSimulationInputsType | DhwSimulationInputsType
+union SimulationInputsType = ThrustersSimulationInputsType | PcmSimulationInputsType | PvtSimulationInputsType | ConsumersSimulationInputsType | AdsorptionSimulationInputsType | DrivesSimulationInputsType | DcSimulationInputsType | DhwSimulationInputsType | HighTemperatureSimulationInputsType
 
-union SimulationOutputsType = ThrustersSimulationOutputsType | PcmSimulationOutputsType | PvtSimulationOutputsType | ConsumersSimulationOutputsType | HighTemperatureSimulationOutputsType | DhwSimulationOutputsType
+union SimulationOutputsType = ThrustersSimulationOutputsType | PcmSimulationOutputsType | PvtSimulationOutputsType | ConsumersSimulationOutputsType | AdsorptionSimulationOutputsType | DrivesSimulationOutputsType | DcSimulationOutputsType | DhwSimulationOutputsType | HighTemperatureSimulationOutputsType
 
 type SimulationState {
   time: DateTime!

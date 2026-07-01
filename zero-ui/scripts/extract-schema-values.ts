@@ -97,6 +97,7 @@ const SIMULATION_TYPE_MAP: Record<string, string> = {
   FlowBoundarySimulationType: "Flow",
   PcsSimulationType: "Pcs",
   HeatSourceSimulationType: "HeatSource",
+  HvacExchangerSimulationType: "HvacExchanger",
 };
 
 const CONTROL_TYPE_MAP: Record<string, string> = {

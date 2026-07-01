@@ -59,6 +59,21 @@ pnpm run generate-graphql-queries PCM_PARAMETER_DEFINITION PCM_PARAMETERS_QUERY
 pnpm run generate-graphql-queries PCM_SIMULATION_INPUTS PCM_SIMULATION_INPUTS_QUERY
 pnpm run generate-graphql-queries PCM_SIMULATION_OUTPUTS PCM_SIMULATION_OUTPUTS_QUERY
 
+# ADSORPTION module
+echo "📋 Extracting ADSORPTION definitions..."
+pnpm run extract-schema-values ADSORPTION_CONTROL_DEFINITION AdsorptionControlValuesType
+pnpm run extract-schema-values ADSORPTION_SENSOR_DEFINITION AdsorptionSensorValuesType
+pnpm run extract-schema-values ADSORPTION_PARAMETER_DEFINITION AdsorptionParametersType
+pnpm run extract-schema-values ADSORPTION_SIMULATION_INPUTS AdsorptionSimulationInputsType
+pnpm run extract-schema-values ADSORPTION_SIMULATION_OUTPUTS AdsorptionSimulationOutputsType
+
+echo "📋 Generating ADSORPTION GraphQL queries..."
+pnpm run generate-graphql-queries ADSORPTION_CONTROL_DEFINITION ADSORPTION_CONTROL_QUERY
+pnpm run generate-graphql-queries ADSORPTION_SENSOR_DEFINITION ADSORPTION_SENSOR_QUERY
+pnpm run generate-graphql-queries ADSORPTION_PARAMETER_DEFINITION ADSORPTION_PARAMETERS_QUERY
+pnpm run generate-graphql-queries ADSORPTION_SIMULATION_INPUTS ADSORPTION_SIMULATION_INPUTS_QUERY
+pnpm run generate-graphql-queries ADSORPTION_SIMULATION_OUTPUTS ADSORPTION_SIMULATION_OUTPUTS_QUERY
+
 # CONSUMERS module
 echo "📋 Extracting CONSUMERS definitions..."
 pnpm run extract-schema-values CONSUMERS_CONTROL_DEFINITION ConsumersControlValuesType
@@ -74,6 +89,21 @@ pnpm run generate-graphql-queries CONSUMERS_PARAMETER_DEFINITION CONSUMERS_PARAM
 pnpm run generate-graphql-queries CONSUMERS_SIMULATION_INPUTS CONSUMERS_SIMULATION_INPUTS_QUERY
 pnpm run generate-graphql-queries CONSUMERS_SIMULATION_OUTPUTS CONSUMERS_SIMULATION_OUTPUTS_QUERY
 
+# DC module
+echo "📋 Extracting DC definitions..."
+pnpm run extract-schema-values DC_CONTROL_DEFINITION DcControlValuesType
+pnpm run extract-schema-values DC_SENSOR_DEFINITION DcSensorValuesType
+pnpm run extract-schema-values DC_PARAMETER_DEFINITION DcParametersType
+pnpm run extract-schema-values DC_SIMULATION_INPUTS DcSimulationInputsType
+pnpm run extract-schema-values DC_SIMULATION_OUTPUTS DcSimulationOutputsType
+
+echo "📋 Generating DC GraphQL queries..."
+pnpm run generate-graphql-queries DC_CONTROL_DEFINITION DC_CONTROL_QUERY
+pnpm run generate-graphql-queries DC_SENSOR_DEFINITION DC_SENSOR_QUERY
+pnpm run generate-graphql-queries DC_PARAMETER_DEFINITION DC_PARAMETERS_QUERY
+pnpm run generate-graphql-queries DC_SIMULATION_INPUTS DC_SIMULATION_INPUTS_QUERY
+pnpm run generate-graphql-queries DC_SIMULATION_OUTPUTS DC_SIMULATION_OUTPUTS_QUERY
+
 # DHW module
 echo "📋 Extracting DHW definitions..."
 pnpm run extract-schema-values DHW_CONTROL_DEFINITION DhwControlValuesType
@@ -88,5 +118,20 @@ pnpm run generate-graphql-queries DHW_SENSOR_DEFINITION DHW_SENSOR_QUERY
 pnpm run generate-graphql-queries DHW_PARAMETER_DEFINITION DHW_PARAMETERS_QUERY
 pnpm run generate-graphql-queries DHW_SIMULATION_INPUTS DHW_SIMULATION_INPUTS_QUERY
 pnpm run generate-graphql-queries DHW_SIMULATION_OUTPUTS DHW_SIMULATION_OUTPUTS_QUERY
+
+# DRIVES module
+echo "📋 Extracting DRIVES definitions..."
+pnpm run extract-schema-values DRIVES_CONTROL_DEFINITION DrivesControlValuesType
+pnpm run extract-schema-values DRIVES_SENSOR_DEFINITION DrivesSensorValuesType
+pnpm run extract-schema-values DRIVES_PARAMETER_DEFINITION DrivesParametersType
+pnpm run extract-schema-values DRIVES_SIMULATION_INPUTS DrivesSimulationInputsType
+pnpm run extract-schema-values DRIVES_SIMULATION_OUTPUTS DrivesSimulationOutputsType
+
+echo "📋 Generating DRIVES GraphQL queries..."
+pnpm run generate-graphql-queries DRIVES_CONTROL_DEFINITION DRIVES_CONTROL_QUERY
+pnpm run generate-graphql-queries DRIVES_SENSOR_DEFINITION DRIVES_SENSOR_QUERY
+pnpm run generate-graphql-queries DRIVES_PARAMETER_DEFINITION DRIVES_PARAMETERS_QUERY
+pnpm run generate-graphql-queries DRIVES_SIMULATION_INPUTS DRIVES_SIMULATION_INPUTS_QUERY
+pnpm run generate-graphql-queries DRIVES_SIMULATION_OUTPUTS DRIVES_SIMULATION_OUTPUTS_QUERY
 
 echo "✅ All schema extractions and GraphQL query generations completed!"

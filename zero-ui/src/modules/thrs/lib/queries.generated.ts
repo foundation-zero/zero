@@ -1,3 +1,62 @@
+export const ADSORPTION_CONTROL_QUERY = `
+
+`;
+
+export const ADSORPTION_CONTROLLER_VALUES_QUERY = `
+
+`;
+
+export const ADSORPTION_PARAMETERS_QUERY = `
+
+`;
+
+export const ADSORPTION_SENSOR_QUERY = `
+
+`;
+
+export const ADSORPTION_SIMULATION_INPUTS_QUERY = `
+  adsorptionCoolingSupply {
+    temperature { value timestamp }
+  }
+  adsorptionSeawaterSupply {
+    temperature { value timestamp }
+    flow { value timestamp }
+  }
+  adsorptionAvailableHotTemperature {
+    temperature { value timestamp }
+  }
+  adsorptionAvailableColdTemperature {
+    temperature { value timestamp }
+  }
+  adsorptionAvailableSeawaterTemperature {
+    temperature { value timestamp }
+  }
+  adsorptionHtSupply {
+    temperature { value timestamp }
+    flow { value timestamp }
+  }
+  adsorptionDhwSupply {
+    temperature { value timestamp }
+    flow { value timestamp }
+  }
+`;
+
+export const ADSORPTION_SIMULATION_OUTPUTS_QUERY = `
+  adsorptionCoolingReturn {
+    temperature { value timestamp }
+    flow { value timestamp }
+  }
+  adsorptionSeawaterReturn {
+    temperature { value timestamp }
+  }
+  adsorptionDhwReturn {
+    temperature { value timestamp }
+  }
+  adsorptionHtReturn {
+    temperature { value timestamp }
+  }
+`;
+
 export const CONSUMERS_CONTROL_QUERY = `
   consumersFlowcontrolAdsorption {
     setpoint { value timestamp }
@@ -93,6 +152,42 @@ export const CONSUMERS_SIMULATION_OUTPUTS_QUERY = `
   consumersPcmReturn {
     temperature { value timestamp }
     flow { value timestamp }
+  }
+`;
+
+export const DC_CONTROL_QUERY = `
+
+`;
+
+export const DC_CONTROLLER_VALUES_QUERY = `
+
+`;
+
+export const DC_PARAMETERS_QUERY = `
+
+`;
+
+export const DC_SENSOR_QUERY = `
+
+`;
+
+export const DC_SIMULATION_INPUTS_QUERY = `
+  dcSeawaterSupply {
+    temperature { value timestamp }
+    flow { value timestamp }
+  }
+  dcDhwSupply {
+    temperature { value timestamp }
+    flow { value timestamp }
+  }
+`;
+
+export const DC_SIMULATION_OUTPUTS_QUERY = `
+  dcSeawaterReturn {
+    temperature { value timestamp }
+  }
+  dcDhwReturn {
+    temperature { value timestamp }
   }
 `;
 
@@ -443,15 +538,15 @@ export const DHW_SIMULATION_INPUTS_QUERY = `
     temperature { value timestamp }
     overpressure { value timestamp }
   }
+  dhwHvacExchanger {
+    heatFlow { value timestamp }
+    maximumTemperature { value timestamp }
+  }
   dhwSeawaterSupply {
     temperature { value timestamp }
   }
   dhwHotwaterDemand {
     flow { value timestamp }
-  }
-  dhwHvacExchanger {
-    heatFlow { value timestamp }
-    maximumTemperature { value timestamp }
   }
 `;
 
@@ -477,6 +572,48 @@ export const DHW_SIMULATION_OUTPUTS_QUERY = `
   dhwFreshwaterReturn {
     temperature { value timestamp }
     flow { value timestamp }
+  }
+`;
+
+export const DRIVES_CONTROL_QUERY = `
+
+`;
+
+export const DRIVES_CONTROLLER_VALUES_QUERY = `
+
+`;
+
+export const DRIVES_PARAMETERS_QUERY = `
+
+`;
+
+export const DRIVES_SENSOR_QUERY = `
+
+`;
+
+export const DRIVES_SIMULATION_INPUTS_QUERY = `
+  drivesOilCoolerAft {
+    heatFlow { value timestamp }
+  }
+  drivesOilCoolerFwd {
+    heatFlow { value timestamp }
+  }
+  drivesSeawaterSupply {
+    temperature { value timestamp }
+    flow { value timestamp }
+  }
+  drivesDhwSupply {
+    temperature { value timestamp }
+    flow { value timestamp }
+  }
+`;
+
+export const DRIVES_SIMULATION_OUTPUTS_QUERY = `
+  drivesSeawaterReturn {
+    temperature { value timestamp }
+  }
+  drivesDhwReturn {
+    temperature { value timestamp }
   }
 `;
 
