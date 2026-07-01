@@ -52,7 +52,7 @@ class LockstepRunner[
             )
             await self._control_connector.send_sensor_values(sim_result)
             await self._control_connector.send_computed_values(sim_result.sensor_values)
-            await self._simulation_connector.send_simulation_outputs(sim_result)
+            await self._simulation_connector.send_simulation_values(sim_result)
             self._control_values, self._controller_state = self._control.control(
                 sim_result.sensor_values
             )
@@ -87,7 +87,7 @@ class ControlRunner[S, C, P, M, CS](Runner):
         5. Check for alarms
         """
         for _ in range(n_ticks):
-            sensor_values = await self._connector.get_sensor_values_from_mqtt()
+            sensor_values = await self._connector.get_sensor_values()
 
             await self._connector.send_computed_values(sensor_values)
 
@@ -120,7 +120,7 @@ class SimulationRunner[S, C, I: SimulationInputs, O: SimulationValues](Runner):
         2. Tick simulation with control values
         3. Send sensor values to MQTT"""
         for _ in range(n_ticks):
-            control_values = await self._connector.get_control_values_from_mqtt()
+            control_values = await self._connector.get_control_values()
             sim_result = self._simulation.tick(control_values)
             await self._connector.send_sensor_values(sim_result)
-            await self._connector.send_simulation_outputs(sim_result)
+            await self._connector.send_simulation_values(sim_result)

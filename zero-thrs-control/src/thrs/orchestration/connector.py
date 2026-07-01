@@ -180,21 +180,16 @@ class ModuleMqttMapping(MqttMapping[CombinedValues]):
 
 class Connector[S, C](Protocol):
     async def run(self): ...
-    async def tick_simulation(self, control_values: C) -> S: ...
-    async def send_control(self, control_values: C) -> S: ...
-    async def get_sensor_values_from_mqtt(
+    async def send_control(self, control_values: C) -> None: ...
+    async def get_sensor_values(
         self,
-    ) -> S: ...  # Used by ControlRunner, only available in MqttControlConnector (not in MqttSimulationConnector)
-    async def get_sensor_values_from_sim_tick(
-        self,
-    ) -> S: ...  # Used by SimulationRunner, only available in MqttSimulationConnector (not in MqttControlConnector)
+    ) -> S: ...
 
-    async def get_control_values_from_control(self) -> S: ...  # Used by ControlRunner
-    async def get_control_values_from_mqtt(self) -> S: ...  # Used by SimulationRunner
+    async def get_control_values(self) -> C: ...
 
     async def send_computed_values(self, sensors_values: S) -> None: ...
     async def send_sensor_values(self, simulation_result: SimulationResult) -> None: ...
-    async def send_simulation_outputs(
+    async def send_simulation_values(
         self, simulation_result: SimulationResult
     ) -> None: ...
 
@@ -208,7 +203,7 @@ class MqttConnector(Connector[CombinedValues, CombinedValues]):
         sensor_values_clss: ModuleClassMap,
         control_values_clss: ModuleClassMap,
         controller_state_clss: ModuleClassMap,
-        simulation_outputs_clss: type[SimulationValues],
+        simulation_outputs_clss: type[SimulationValues] | None = None,
         control_topic_suffix: str | None = None,
         sensor_topic_suffix: str | None = None,
         simulation_topic_prefix: str | None = None,
@@ -226,8 +221,10 @@ class MqttConnector(Connector[CombinedValues, CombinedValues]):
         self._controller_state_mqtt_mapping = ModuleMqttMapping(
             controller_state_clss, controller_topic_prefix
         )
-        self._simulation_outputs_mqtt_mapping = DirectMqttMapping(
-            simulation_outputs_clss, simulation_topic_prefix or ""
+        self._simulation_outputs_mqtt_mapping = (
+            DirectMqttMapping(simulation_outputs_clss, simulation_topic_prefix or "")
+            if simulation_outputs_clss is not None
+            else None
         )
         self._running = False
 
@@ -258,7 +255,7 @@ class MqttConnector(Connector[CombinedValues, CombinedValues]):
             logging.debug("Publishing on %s", topic)
             await self._mqtt_client.publish(topic, payload, qos=1)
 
-    async def _send_control_values(self, control_values: CombinedValues):
+    async def _send_control(self, control_values: CombinedValues):
         logging.debug("Publishing control values")
         await self._publish_by_mapping(
             self._control_values_mqtt_mapping, control_values
@@ -271,6 +268,8 @@ class MqttConnector(Connector[CombinedValues, CombinedValues]):
         )
 
     async def _send_simulation_outputs(self, simulation_result: SimulationResult):
+        if not self._simulation_outputs_mqtt_mapping:
+            raise Exception("Simulation outputs mapping not configured")
         logging.debug("Publishing simulation outputs")
         await self._publish_by_mapping(
             self._simulation_outputs_mqtt_mapping, simulation_result.simulation_outputs
@@ -303,18 +302,13 @@ class MqttConnector(Connector[CombinedValues, CombinedValues]):
         finally:
             self._running = False
 
-    async def tick_simulation(self, control_values: CombinedValues) -> CombinedValues:
-        raise NotImplementedError(
-            "MqttControlConnector does not support ticking simulation, use MqttSimulationConnector instead"
-        )
-
     async def send_computed_values(self, sensors_values: CombinedValues) -> None:
         self._guard_running()
         await self._send_computed_values(sensors_values)
 
-    async def send_control_values(self, control_values: CombinedValues) -> None:
+    async def send_control(self, control_values: CombinedValues) -> None:
         self._guard_running()
-        await self._send_control_values(control_values)
+        await self._send_control(control_values)
 
     async def send_sensor_values(self, simulation_result: SimulationResult):
         self._guard_running()
@@ -326,12 +320,12 @@ class MqttConnector(Connector[CombinedValues, CombinedValues]):
         logging.debug("Publishing simulation outputs")
         await self._send_simulation_outputs(simulation_result)
 
-    async def get_sensor_values_from_mqtt(self) -> CombinedValues:
+    async def get_sensor_values(self) -> CombinedValues:
         self._guard_running()
         sensors_values = self._sensor_values_mqtt_mapping.result()
         return sensors_values if sensors_values else CombinedValues(values={})
 
-    async def get_sensor_values_from_sim_tick(self) -> CombinedValues:
-        raise NotImplementedError(
-            "MqttControlConnector does not support getting sensor values from simulation tick"
-        )
+    async def get_control_values(self) -> CombinedValues:
+        self._guard_running()
+        control_values = self._control_values_mqtt_mapping.result()
+        return control_values if control_values else CombinedValues(values={})
