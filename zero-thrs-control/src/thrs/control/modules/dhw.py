@@ -5,7 +5,6 @@ from pydantic import Field, model_validator
 from transitions import Machine, State
 
 from thrs.classes.control import Control, ControlMode
-from thrs.control.base import ModuleDescription
 from thrs.control.controllers import PidController
 from thrs.input_output.alarms import BaseAlarms, Severity, alarm
 from thrs.input_output.base import Stamped, ThrsValues
@@ -25,6 +24,7 @@ from thrs.input_output.definitions.units import (
     Tuning,
 )
 from thrs.input_output.modules.dhw import DhwControlValues, DhwSensorValues
+from thrs.orchestration.module import ModuleDescription
 
 
 class DhwParameters(ThrsValues):

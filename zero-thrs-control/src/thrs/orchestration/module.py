@@ -2,23 +2,46 @@ from datetime import datetime
 from typing import Callable, Mapping
 
 from thrs.classes.control import Control
-from thrs.control.base import ModuleDescription
 from thrs.control.manual import ManualControl
 from thrs.control.switching import SwitchingControl, SwitchingControlMode
 from thrs.input_output.alarms import Alarm, BaseAlarms
 from thrs.input_output.base import (
     CombinedValues,
-    SimulationInputs,
     ThrsValues,
 )
 
 type ModuleClassMap = Mapping[str, type[ThrsValues]]
 
 
+class ModuleDescription[
+    S: ThrsValues,
+    C: ThrsValues,
+    P: ThrsValues,
+    M: ThrsValues,
+]:
+    """Description of a module with sensor values, control values, control parameters and control mode models and the control & alarm logic"""
+
+    def __init__(
+        self,
+        sensor_values_cls: type[S],
+        control_values_cls: type[C],
+        parameters_cls: type[P],
+        control: Callable[[P, Callable[[], datetime]], Control[S, C, P, M]],
+        control_mode_cls: type[M],
+        alarms: Callable[[], BaseAlarms[S, C, P]],
+    ):
+        self.sensor_values_cls = sensor_values_cls
+        self.control_values_cls = control_values_cls
+        self.parameters_cls = parameters_cls
+        self.control_mode_cls = control_mode_cls
+        self.control = control
+        self.alarms = alarms
+
+
 class CombinedControl(
     Control[CombinedValues, CombinedValues, CombinedValues, CombinedValues]
 ):
-    """Combination of sub controls for combined modules"""
+    """Combination of multiple controls into one control module"""
 
     def __init__(
         self,
@@ -79,7 +102,7 @@ class CombinedControl(
 
 
 class CombinedAlarms(BaseAlarms[CombinedValues, CombinedValues, CombinedValues]):
-    """Combination of sub alarms for combined modules"""
+    """Combination of multiple alarms into one alarm module"""
 
     def __init__(
         self, modules: Mapping[str, BaseAlarms[ThrsValues, ThrsValues, ThrsValues]]
@@ -105,17 +128,12 @@ class CombinedAlarms(BaseAlarms[CombinedValues, CombinedValues, CombinedValues])
         ]
 
 
-class CombinedModule[I: SimulationInputs, O: ThrsValues]:
-    """Combination of multiple modules into a single control/simulation unit
-
-    Also contains the MQTT mapping for the combined modules.
-    """
+class CombinedModule:
+    """Combination of multiple control modules into a single control module"""
 
     def __init__(
         self,
         modules: dict[str, ModuleDescription],
-        simulation_inputs_cls: type[I] | None,
-        simulation_outputs_cls: type[O] | None,
     ):
         self._modules = modules
         self.sensor_values_clss: ModuleClassMap = {
@@ -124,20 +142,10 @@ class CombinedModule[I: SimulationInputs, O: ThrsValues]:
         self.control_values_clss: ModuleClassMap = {
             module: desc.control_values_cls for module, desc in modules.items()
         }
-        self._simulation_inputs_cls = simulation_inputs_cls
-        self._simulation_outputs_cls = simulation_outputs_cls
 
     @property
     def modules(self) -> list[str]:
         return list(self._modules.keys())
-
-    @property
-    def simulation_inputs_cls(self) -> type[I] | None:
-        return self._simulation_inputs_cls
-
-    @property
-    def simulation_outputs_cls(self) -> type[O] | None:
-        return self._simulation_outputs_cls
 
     def control_values_for_module(self, module: str) -> type[ThrsValues]:
         return self._modules[module].control_values_cls

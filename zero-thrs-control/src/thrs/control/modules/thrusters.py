@@ -5,7 +5,6 @@ from pydantic import model_validator
 from transitions import Machine, State
 
 from thrs.classes.control import Control, ControlMode
-from thrs.control.base import ModuleDescription
 from thrs.control.controllers import FlowBalanceController, PidController
 from thrs.input_output.alarms import BaseAlarms, Severity, alarm
 from thrs.input_output.base import Stamped, ThrsValues
@@ -15,6 +14,7 @@ from thrs.input_output.modules.thrusters import (
     ThrustersControlValues,
     ThrustersSensorValues,
 )
+from thrs.orchestration.module import ModuleDescription
 
 
 class ThrustersControlMode(ControlMode):

@@ -33,7 +33,7 @@ class Runner[S, C, P, M]:
     async def run(self, n_ticks: int) -> None:
         for _ in range(n_ticks):
             sensor_values = await self._control_connector.transceive(
-                self._control_values,  # type: ignore
+                self._control_values,
                 CombinedValues({}),  # type: ignore
             )
             if self._simulation_connector and self._simulation:

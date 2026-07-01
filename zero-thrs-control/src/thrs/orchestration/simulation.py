@@ -1,7 +1,8 @@
 import logging
 from dataclasses import dataclass
 from datetime import datetime, timedelta
-from typing import Any
+from types import TracebackType
+from typing import Any, Self
 
 from thrs.input_output.base import SimulationInputs, ThrsValues
 from thrs.orchestration.module import ModuleClassMap
@@ -35,7 +36,7 @@ class Simulation[
     def __init__(
         self,
         sensor_values_clss: ModuleClassMap | type[ThrsValues],
-        simulation_outputs_cls: type[ThrsValues],
+        simulation_outputs_cls: type[O],
         fmu: Fmu,
         simulation_inputs: I,
         start_time: datetime,
@@ -45,12 +46,25 @@ class Simulation[
         self._ticks = 0
         self._tick_duration = tick_duration
         self._simulation_inputs = simulation_inputs
+        self._simulation_outputs_cls = simulation_outputs_cls
         self._fmu = fmu
         self._io_mapping: IoMapping = (
             CombinedIoMapping(sensor_values_clss, simulation_outputs_cls)  # type: ignore
             if isinstance(sensor_values_clss, dict)
             else ThrsModelIoMapping(sensor_values_clss, simulation_outputs_cls)  # type: ignore
         )
+
+    def __enter__(self) -> Self:
+        self._fmu.__enter__()
+        return self
+
+    def __exit__(
+        self,
+        type_: type[BaseException] | None,
+        value: BaseException | None,
+        traceback: TracebackType | None,
+    ) -> bool | None:
+        return self._fmu.__exit__(type_, value, traceback)
 
     @property
     def start_time(self) -> datetime:
@@ -86,3 +100,15 @@ class Simulation[
 
     def update_simulation_inputs(self, simulation_inputs: I):
         self._simulation_inputs = simulation_inputs
+
+    @property
+    def inputs_cls(self) -> type[I]:
+        return type(self._simulation_inputs)
+
+    @property
+    def simulation_inputs(self) -> I:
+        return self._simulation_inputs
+
+    @property
+    def outputs_cls(self) -> type[O]:
+        return self._simulation_outputs_cls

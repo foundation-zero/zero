@@ -20,10 +20,14 @@ from thrs.input_output.definitions.simulation import (
     Thruster,
 )
 from thrs.input_output.definitions.units import PcsMode
+from thrs.input_output.modules.consumers import ConsumersSensorValues
 from thrs.input_output.modules.high_temperature import (
     HighTemperatureSimulationInputs,
     HighTemperatureSimulationOutputs,
 )
+from thrs.input_output.modules.pcm import PcmSensorValues
+from thrs.input_output.modules.pvt import PvtSensorValues
+from thrs.input_output.modules.thrusters import ThrustersSensorValues
 from thrs.orchestration.module import CombinedModule
 from thrs.orchestration.simulation import Simulation
 from thrs.simulation.fmu import Fmu
@@ -72,8 +76,6 @@ def module():
             "pcm": PCM_MODULE_DESCRIPTION,
             "consumers": CONSUMERS_MODULE_DESCRIPTION,
         },
-        HighTemperatureSimulationInputs,
-        HighTemperatureSimulationOutputs,
     )
 
 
@@ -93,11 +95,16 @@ def control(module, simulation):
 
 
 @fixture
-def simulation(module, simulation_inputs):
+def simulation(simulation_inputs):
     with Fmu(high_temperature_path) as fmu:
         yield Simulation(
-            module.sensor_values_clss,
-            module.simulation_outputs_cls,
+            {
+                "thrusters": ThrustersSensorValues,
+                "pvt": PvtSensorValues,
+                "pcm": PcmSensorValues,
+                "consumers": ConsumersSensorValues,
+            },
+            HighTemperatureSimulationOutputs,
             fmu,
             simulation_inputs,
             datetime.now(),

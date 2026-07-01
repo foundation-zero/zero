@@ -4,7 +4,6 @@ from typing import Callable, Literal
 from transitions import Machine, State
 
 from thrs.classes.control import Control, ControlMode
-from thrs.control.base import ModuleDescription
 from thrs.control.controllers import FlowBalanceController, PidController
 from thrs.control.modules.thrusters import ThrustersControlMode
 from thrs.input_output.alarms import BaseAlarms
@@ -12,6 +11,7 @@ from thrs.input_output.base import Stamped, ThrsValues
 from thrs.input_output.definitions.control import Pump, Valve
 from thrs.input_output.definitions.units import Celsius, LMin, Ratio, Tuning
 from thrs.input_output.modules.drives import DrivesControlValues, DrivesSensorValues
+from thrs.orchestration.module import ModuleDescription
 
 
 class DrivesControlMode(ControlMode):

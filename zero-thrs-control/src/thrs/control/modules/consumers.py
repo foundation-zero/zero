@@ -4,7 +4,6 @@ from typing import Annotated, Callable
 from pydantic import Field
 
 from thrs.classes.control import Control, ControlMode
-from thrs.control.base import ModuleDescription
 from thrs.control.controllers import (
     FlowDistributionController,
     PidController,
@@ -17,6 +16,7 @@ from thrs.input_output.modules.consumers import (
     ConsumersControlValues,
     ConsumersSensorValues,
 )
+from thrs.orchestration.module import ModuleDescription
 
 
 class ConsumersParameters(ThrsValues):

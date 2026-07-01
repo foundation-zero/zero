@@ -4,15 +4,14 @@ import pytest
 from pytest import fixture
 
 from tests.helpers.simulation_inputs import simulator_input_field_setters
-from tests.helpers.simulation_runner import SimulationTestRunner
-from thrs.control.modules.consumers import ConsumersParameters
-from thrs.control.modules.pcm import PcmParameters
-from thrs.control.modules.pvt import PvtParameters
-from thrs.control.modules.thrusters import ThrustersParameters
-from thrs.input_output.base import CombinedValues
+from thrs.input_output.modules.consumers import ConsumersSensorValues
 from thrs.input_output.modules.high_temperature import (
     HighTemperatureSimulationInputs,
+    HighTemperatureSimulationOutputs,
 )
+from thrs.input_output.modules.pcm import PcmSensorValues
+from thrs.input_output.modules.pvt import PvtSensorValues
+from thrs.input_output.modules.thrusters import ThrustersSensorValues
 from thrs.orchestration.simulation import Simulation
 from thrs.simulation.fmu import Fmu
 from thrs.simulation.models.fmu_paths import high_temperature_path
@@ -30,12 +29,17 @@ def incorrect_simulation_inputs(simulation_inputs, request):
 
 
 def test_high_temperature_simulation_inputs(
-    incorrect_simulation_inputs, control, module
+    control, simulation, incorrect_simulation_inputs
 ):
     with Fmu(high_temperature_path) as fmu:
         simulation = Simulation(
-            module.sensor_values_clss,
-            module.simulation_outputs_cls,
+            {
+                "thrusters": ThrustersSensorValues,
+                "pvt": PvtSensorValues,
+                "pcm": PcmSensorValues,
+                "consumers": ConsumersSensorValues,
+            },
+            HighTemperatureSimulationOutputs,
             fmu,
             incorrect_simulation_inputs,
             datetime.now(),
@@ -47,29 +51,3 @@ def test_high_temperature_simulation_inputs(
                 simulation.tick(
                     control.initial(datetime.now()),
                 )
-
-
-def test_module_simulator_model(module):
-    params = CombinedValues(
-        values={
-            "thrusters": ThrustersParameters(),
-            "pvt": PvtParameters(),
-            "pcm": PcmParameters(),
-            "consumers": ConsumersParameters(),
-        }
-    )
-    inputs = HighTemperatureSimulationInputs.zero()
-
-    with Fmu(high_temperature_path) as fmu:
-        simulation = Simulation(
-            module.sensor_values_clss,
-            module.simulation_outputs_cls,
-            fmu,
-            inputs,
-            datetime.now(),
-            timedelta(seconds=1),
-        )
-
-        runner = SimulationTestRunner.from_module(module, params, simulation)
-
-        runner.run(100)
