@@ -101,18 +101,29 @@ class ThrustersSensorValues(ThrsValues):
     thrusters_thruster_aft: Annotated[
         sensor.Thruster,
         component_meta(
-            yard_tag="15001001", component_type="thruster", included_in_fmu=False
+            yard_tag="15001001",
+            component_type="thruster",
+            included_in_fmu=False,
+            topic_override="dummy-pcs/thruster-aft-active",
         ),
     ]
     thrusters_thruster_fwd: Annotated[
         sensor.Thruster,
         component_meta(
-            yard_tag="15001002", component_type="thruster", included_in_fmu=False
+            yard_tag="15001002",
+            component_type="thruster",
+            included_in_fmu=False,
+            topic_override="dummy-pcs/thruster-fwd-active",
         ),
     ]
     thrusters_pcs: Annotated[
         sensor.Pcs,
-        component_meta(yard_tag="1500", component_type="pcs", included_in_fmu=False),
+        component_meta(
+            yard_tag="1500",
+            component_type="pcs",
+            included_in_fmu=False,
+            topic_override="dummy-pcs/pcs-mode",
+        ),
     ]
 
     @computed_field(
