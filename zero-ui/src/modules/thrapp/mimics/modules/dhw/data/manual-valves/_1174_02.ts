@@ -4,6 +4,7 @@ import { tooltip } from "./shared";
 
 export default toInstance<MimicComponentType.ManualValve>({
   controls: {},
+  controllerState: {},
   custom: {},
   parameters: {},
   sensors: {},

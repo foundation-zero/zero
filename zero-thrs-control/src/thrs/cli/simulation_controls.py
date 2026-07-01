@@ -1014,9 +1014,11 @@ class SimulationControls:
                     mqtt_client=self._sensor_client,
                     devices_topic_prefix=self._devices_topic_prefix,
                     controller_topic_prefix=self._simulation_topic_prefix,
-                    sensor_values_clss={},  # It actually does not listen to mqtt for these but gets them directly from the runner
+                    sensor_values_clss={
+                        mode.name: ThrsValues()  # type:ignore # It actually does not listen to mqtt for these but gets them directly from the runner
+                    },
                     control_values_clss=control_module.sensor_values_clss,
-                    controller_values_clss={mode.name: simulation.outputs_cls},
+                    controller_state_clss={mode.name: simulation.outputs_cls},
                     sensor_topic_suffix=self._control_topic_suffix,
                 )
 
@@ -1051,7 +1053,7 @@ class SimulationControls:
                 controller_topic_prefix=self._controller_topic_prefix,
                 sensor_values_clss=control_module.sensor_values_clss,
                 control_values_clss=control_module.control_values_clss,
-                controller_values_clss={},  # Nothing yet, but we want to send controller values here at some point
+                controller_state_clss=control_module.controller_state_clss,
                 control_topic_suffix=self._control_topic_suffix,
             )
 

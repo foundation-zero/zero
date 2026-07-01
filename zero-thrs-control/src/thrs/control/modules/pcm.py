@@ -81,8 +81,18 @@ class PcmControlMode(ControlMode):
         return self.mode == "boosting"
 
 
+class PcmControllerState(ThrsValues):
+    pass
+
+
 class PcmControl(
-    Control[PcmSensorValues, PcmControlValues, PcmParameters, PcmControlMode]
+    Control[
+        PcmSensorValues,
+        PcmControlValues,
+        PcmParameters,
+        PcmControlMode,
+        PcmControllerState,
+    ]
 ):
     def __init__(
         self, parameters: PcmParameters, time_fn: Callable[[], datetime]
@@ -233,13 +243,15 @@ class PcmControl(
         mode: str = self.state  # type: ignore
         return PcmControlMode(mode=mode)
 
-    def initial(self) -> PcmControlValues:
-        return _INITIAL_CONTROL_VALUES(self._time())
+    def initial(self) -> tuple[PcmControlValues, PcmControllerState]:
+        return (_INITIAL_CONTROL_VALUES(self._time()), PcmControllerState())
 
     def update_parameters(self, parameters: PcmParameters):
         self._parameters = parameters
 
-    def control(self, sensor_values: PcmSensorValues) -> PcmControlValues:
+    def control(
+        self, sensor_values: PcmSensorValues
+    ) -> tuple[PcmControlValues, PcmControllerState]:
         self._try_supplying(sensor_values) if self.mode.is_idle else None  # type: ignore
         self._try_charging(sensor_values) if self.mode.is_idle else None  # type: ignore
 
@@ -252,7 +264,7 @@ class PcmControl(
 
         self._control_flow_balance(sensor_values)
 
-        return self._current_values
+        return (self._current_values, PcmControllerState())
 
     def _all_discharged(self, sensor_values: PcmSensorValues) -> bool:
         return not any(
@@ -428,5 +440,6 @@ PCM_MODULE_DESCRIPTION = ModuleDescription(
     PcmParameters,
     PcmControl,
     PcmControlMode,
+    PcmControllerState,
     PcmAlarms,
 )

@@ -78,7 +78,7 @@ const { items, labels, sources } = useTranslations();
         <TooltipListItemAction>{{ labels("viewControls") }}</TooltipListItemAction>
       </TooltipListHeader>
       <FlowController
-        :controller="controls.controller"
+        :controller="controllerState.controller"
         :measurement="source"
         :setpoint="parameters.flow"
       >

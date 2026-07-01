@@ -9,6 +9,7 @@ import { tooltip } from "./shared";
 
 export default toInstance<MimicComponentType.HeatExchanger>({
   controls: {},
+  controllerState: {},
   custom: {
     sideA: HeatExchangerPortOrientation.Side,
     sideB: HeatExchangerPortOrientation.Top,

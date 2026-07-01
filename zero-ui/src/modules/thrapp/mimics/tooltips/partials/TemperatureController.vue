@@ -5,23 +5,27 @@ import {
   TooltipListItemTitle,
   TooltipListItemValue,
 } from "@/modules/thrapp/components/tooltip-list";
-import { ControlComponentType, ParametersType, SensorComponentType } from "@/modules/thrs/types";
+import {
+  ControllerStateComponentType,
+  ParametersType,
+  SensorComponentType,
+} from "@/modules/thrs/types";
 import { snakeCase } from "lodash";
-import { ControlValue, ModuleField } from "../../providers/index.ts";
+import { ControllerStateValue, ModuleField } from "../../providers/index.ts";
 import { FieldRenderer } from "../../renderers/index.ts";
 import { useTranslations } from "../index.ts";
 
 const { items, sources } = useTranslations();
 
 defineProps<{
-  controller: ModuleField<ControlComponentType.PIDController>;
+  controller: ModuleField<ControllerStateComponentType.PIDController>;
   measurement: ModuleField<SensorComponentType.Temperature>;
   setpoint: ModuleField<ParametersType.Temperature>;
 }>();
 </script>
 
 <template>
-  <ControlValue
+  <ControllerStateValue
     :source="controller"
     field="enabled"
   >
@@ -34,9 +38,9 @@ defineProps<{
 
       <FieldRenderer.HeatPumpMode />
     </TooltipListItem>
-  </ControlValue>
+  </ControllerStateValue>
 
-  <ControlValue
+  <ControllerStateValue
     :source="controller"
     field="output"
   >
@@ -51,9 +55,9 @@ defineProps<{
         <FieldRenderer.Percentage />
       </TooltipListItemValue>
     </TooltipListItem>
-  </ControlValue>
+  </ControllerStateValue>
 
-  <ControlValue
+  <ControllerStateValue
     :source="controller"
     field="setpoint"
   >
@@ -71,9 +75,9 @@ defineProps<{
         <FieldRenderer.Temperature :format="formatNumber(1)" />
       </TooltipListItemValue>
     </TooltipListItem>
-  </ControlValue>
+  </ControllerStateValue>
 
-  <ControlValue
+  <ControllerStateValue
     :source="controller"
     field="measurement"
   >
@@ -89,9 +93,9 @@ defineProps<{
         <FieldRenderer.Temperature :format="formatNumber(1)" />
       </TooltipListItemValue>
     </TooltipListItem>
-  </ControlValue>
+  </ControllerStateValue>
 
-  <ControlValue
+  <ControllerStateValue
     :source="controller"
     field="error"
   >
@@ -104,5 +108,5 @@ defineProps<{
         <FieldRenderer.Temperature :format="formatNumber(1)" />
       </TooltipListItemValue>
     </TooltipListItem>
-  </ControlValue>
+  </ControllerStateValue>
 </template>

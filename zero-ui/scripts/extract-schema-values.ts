@@ -43,7 +43,7 @@ const CONSTS_PATH = path.join(__dirname, "../src/modules/thrs/lib/consts.generat
 // Types
 // ============================================================================
 
-type DefinitionType = "control" | "sensor" | "parameter" | "simulation";
+type DefinitionType = "control" | "sensor" | "parameter" | "simulation" | "controllerState";
 
 interface DirectiveArgs {
   yardTag?: string;
@@ -101,12 +101,15 @@ const SIMULATION_TYPE_MAP: Record<string, string> = {
 };
 
 const CONTROL_TYPE_MAP: Record<string, string> = {
-  pcm: "Pcm",
-  pump: "Pump",
-  valve: "Valve",
-  heatpump: "Heatpump",
-  pid_controller: "PIDController",
-  tank_controller: "DhwTanksController",
+  ControlPcmType: "Pcm",
+  ControlPumpType: "Pump",
+  ControlValveType: "Valve",
+  ControlHeatPumpType: "Heatpump",
+};
+
+const CONTROLLER_VALUE_TYPE_MAP: Record<string, string> = {
+  ControllerPidControllerValuesType: "PIDController",
+  ControllerTanksControllerValuesType: "DhwTanksController",
 };
 
 const VALVE_TYPE_MAP: Record<string, string> = {
@@ -141,13 +144,16 @@ function parseArguments(): Config {
 function inferDefinitionType(typeName: string): DefinitionType {
   const lowerTypeName = typeName.toLowerCase();
 
-  if (lowerTypeName.includes("control")) return "control";
-  if (lowerTypeName.includes("sensor")) return "sensor";
+  if (lowerTypeName.includes("controlvalues")) return "control";
+  if (lowerTypeName.includes("sensorvalues")) return "sensor";
   if (lowerTypeName.includes("parameter")) return "parameter";
   if (lowerTypeName.includes("simulation")) return "simulation";
+  if (lowerTypeName.includes("controllerstate")) return "controllerState";
 
   console.error(`❌ Cannot infer definition type from TYPE_NAME: ${typeName}`);
-  console.error("   TYPE_NAME should contain 'Control', 'Sensor', 'Parameter', or 'Simulation'");
+  console.error(
+    "   TYPE_NAME should contain 'Control', 'Sensor', 'Parameter', 'ControllerState' or 'Simulation'",
+  );
   return process.exit(1) as never;
 }
 
@@ -161,19 +167,6 @@ function inferDefinitionType(typeName: string): DefinitionType {
 function getTypeName(type: TypeNode): string {
   if (type.kind === "NonNullType" || type.kind === "ListType") {
     return getTypeName(type.type);
-  }
-  return type.name.value;
-}
-
-/**
- * Reconstruct the full type string including NonNull (!) and List ([]) modifiers
- */
-function getTypeString(type: TypeNode): string {
-  if (type.kind === "NonNullType") {
-    return `${getTypeString(type.type)}!`;
-  }
-  if (type.kind === "ListType") {
-    return `[${getTypeString(type.type)}]`;
   }
   return type.name.value;
 }
@@ -203,11 +196,17 @@ function inferParameterType(fieldName: string, fieldType: string): string | null
     `Cannot infer parameter type from field name: ${fieldName} and type: ${fieldType}`,
   );
 }
+function inferControlComponentType(fieldType: string): string | null {
+  return CONTROL_TYPE_MAP[fieldType] || null;
+}
 
 function inferSimulationComponentType(fieldType: string): string | null {
   return SIMULATION_TYPE_MAP[fieldType] || null;
 }
 
+function inferControllerComponentType(fieldType: string): string | null {
+  return CONTROLLER_VALUE_TYPE_MAP[fieldType] || null;
+}
 // ============================================================================
 // Field Processing
 // ============================================================================
@@ -227,14 +226,21 @@ function extractDirectiveArgs(field: FieldDefinitionNode): DirectiveArgs {
   return args;
 }
 
-function processParameterField(fieldName: string, fieldTypeString: string): ExtractedValue | null {
+function processParameterField(
+  fieldName: string,
+  fieldTypeString: string,
+  _directiveArgs: DirectiveArgs,
+): ExtractedValue | null {
   const parameterType = inferParameterType(fieldName, fieldTypeString);
   if (!parameterType) return null;
 
   return { componentType: parameterType };
 }
 
-function processSimulationField(fieldType: string): ExtractedValue | null {
+function processSimulationField(
+  fieldType: string,
+  _directiveArgs: DirectiveArgs,
+): ExtractedValue | null {
   const simulationComponentType = inferSimulationComponentType(fieldType);
   if (!simulationComponentType) return null;
 
@@ -250,11 +256,12 @@ function processControlField(
     fieldType: fieldType,
   };
 
-  if (directiveArgs.componentType) {
-    entry.componentType = directiveArgs.componentType;
+  const componentType = inferControlComponentType(fieldType);
+  if (componentType) {
+    entry.componentType = componentType;
   }
 
-  if (entry.componentType === "valve" && directiveArgs.valveType) {
+  if (entry.componentType === "Valve" && directiveArgs.valveType) {
     entry.valveType = directiveArgs.valveType;
   }
 
@@ -282,30 +289,47 @@ function processSensorField(
   return entry;
 }
 
+function processControllerField(
+  fieldType: string,
+  _directiveArgs: DirectiveArgs,
+): ExtractedValue | null {
+  const entry: ExtractedValue = {
+    fieldType: fieldType,
+  };
+
+  const componentType = inferControllerComponentType(fieldType);
+  if (componentType) {
+    entry.componentType = componentType;
+  }
+
+  return entry;
+}
+
 function processField(
   field: FieldDefinitionNode,
   definitionType: DefinitionType,
 ): ExtractedValue | null {
   const fieldName = field.name.value;
   const fieldType = getTypeName(field.type);
-  const fieldTypeString = getTypeString(field.type);
+  const directiveArgs = extractDirectiveArgs(field);
+
+  if (fieldType == "Void") return null;
 
   switch (definitionType) {
     case "parameter":
-      return processParameterField(fieldName, fieldTypeString);
+      return processParameterField(fieldName, fieldType, directiveArgs);
 
     case "simulation":
-      return processSimulationField(fieldType);
+      return processSimulationField(fieldType, directiveArgs);
 
-    case "control": {
-      const directiveArgs = extractDirectiveArgs(field);
+    case "control":
       return processControlField(fieldType, directiveArgs);
-    }
 
-    case "sensor": {
-      const directiveArgs = extractDirectiveArgs(field);
+    case "sensor":
       return processSensorField(fieldType, directiveArgs);
-    }
+
+    case "controllerState":
+      return processControllerField(fieldType, directiveArgs);
   }
 }
 
@@ -382,6 +406,7 @@ function getWrapperFunction(definitionType: DefinitionType): string {
     sensor: "toSensorDefinition",
     parameter: "toParameterDefinition",
     simulation: "toSimulationDefinition",
+    controllerState: "toControllerStateDefinition",
   };
   return wrapperMap[definitionType];
 }
@@ -400,10 +425,11 @@ function generatePropertyLines(value: ExtractedValue, definitionType: Definition
   } else if (definitionType === "simulation" && value.componentType) {
     props.push(`componentType: SimulationComponentType.${value.componentType}`);
   } else if (definitionType === "control" && value.componentType) {
-    const mappedType = CONTROL_TYPE_MAP[value.componentType] || value.componentType;
-    props.push(`componentType: ControlComponentType.${mappedType}`);
+    props.push(`componentType: ControlComponentType.${value.componentType}`);
   } else if (definitionType === "sensor" && value.componentType) {
     props.push(`componentType: SensorComponentType.${value.componentType}`);
+  } else if (definitionType === "controllerState" && value.componentType) {
+    props.push(`componentType: ControllerStateComponentType.${value.componentType}`);
   }
 
   // Add valveType if applicable
@@ -424,7 +450,8 @@ function generateObjectString(values: ExtractedValues, config: Config): string {
     .join(",\n");
 
   const wrapperFunction = getWrapperFunction(config.definitionType);
-  return `export const ${config.constName} = ${wrapperFunction}({\n${entries},\n});`;
+  const entries_string = entries.length > 0 ? `\n${entries},\n` : "";
+  return `export const ${config.constName} = ${wrapperFunction}({${entries_string}});`;
 }
 
 function updateConstsFile(constsContent: string, newObjectString: string, config: Config): string {
@@ -463,10 +490,6 @@ function updateConstsFile(constsContent: string, newObjectString: string, config
 // ============================================================================
 
 function writeUpdatedConstants(extractedValues: ExtractedValues, config: Config): void {
-  if (Object.keys(extractedValues).length === 0) {
-    throw new Error(`No fields found in ${config.typeName}`);
-  }
-
   console.log(
     `✓ Found ${Object.keys(extractedValues).length} ${config.definitionType} values:`,
     Object.keys(extractedValues),

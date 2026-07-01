@@ -12,7 +12,7 @@ def test_idle(
 ):
     runner._simulation.update_simulation_inputs(simulation_inputs_inactive)  # type: ignore
 
-    result, _ = runner.run(90)
+    result, _, _ = runner.run(90)
 
     assert isinstance(runner._control, DrivesControl)
     assert runner._control.mode.is_idle
@@ -42,7 +42,7 @@ def test_propulsion_all_active(
 ):
     runner._simulation.update_simulation_inputs(simulation_inputs_all_drives_active)  # type: ignore
 
-    result, _ = runner.run(180)
+    result, _, _ = runner.run(180)
 
     assert isinstance(runner._control, DrivesControl)
     assert runner._control.mode.is_propulsion
@@ -83,7 +83,7 @@ def test_shorepower(
 ):
     runner._simulation.update_simulation_inputs(simulation_inputs_shorepower)  # type: ignore
 
-    result, _ = runner.run(180)
+    result, _, _ = runner.run(180)
 
     assert isinstance(runner._control, DrivesControl)
     assert runner._control.mode.is_shorepower
@@ -109,7 +109,7 @@ def test_heat_dump(
         )
     )
 
-    result, _ = runner.run(120)
+    result, *_ = runner.run(120)
 
     assert isinstance(result, SimulationResult)
     assert result.sensor_values.drives_mix_recovery.position_rel.value == approx(
@@ -135,7 +135,7 @@ def test_heat_recovery(
         )
     )
 
-    result, _ = runner.run(720)
+    result, *_ = runner.run(720)
 
     assert isinstance(result, SimulationResult)
     assert result.sensor_values.drives_temperature_recovery.temperature.value == approx(
@@ -153,7 +153,7 @@ def test_flow_balancing(
 ):
     runner._simulation.update_simulation_inputs(simulation_inputs_all_drives_active)  # type: ignore
 
-    result, _ = runner.run(120)
+    result, _, _ = runner.run(120)
 
     assert isinstance(runner._control, DrivesControl)
     assert runner._control.mode.is_propulsion

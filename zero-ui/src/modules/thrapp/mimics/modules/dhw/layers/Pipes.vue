@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { BoilerTankState, ControlComponentType } from "@/modules/thrs/types";
+import { BoilerTankState, ControllerStateComponentType } from "@/modules/thrs/types";
 import { computed } from "vue";
 import { getField, getMimicDataProvider } from "../../../providers";
 
@@ -12,10 +12,10 @@ import { getField, getMimicDataProvider } from "../../../providers";
  * FIGMA_URL: https://www.figma.com/design/DDNAUHsV56fQMTh3Ej76gL/App-screens---On-board-monitoring?node-id=6941:67600
  */
 
-const { getControlValue } = getMimicDataProvider();
+const { getControllerState } = getMimicDataProvider();
 
-const controller = getControlValue(
-  getField(ControlComponentType.DhwTanksController, "dhw", "dhwTanksController"),
+const controller = getControllerState(
+  getField(ControllerStateComponentType.DhwTanksController, "dhw", "dhwTanksController"),
 );
 
 const isCircuitActive = computed(() => {

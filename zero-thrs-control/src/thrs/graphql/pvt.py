@@ -27,11 +27,17 @@ PvtGroupControlModeType = pydantic_to_strawberry_type(PvtGroupControlMode)
 PvtControlModeType = pydantic_to_strawberry_type(PvtControlMode)
 
 
+@strawberry.type()
+class PvtControllerStateType:
+    _empty: None = None
+
+
 PvtModule = ControlModule[
     PvtSensorValuesType,
     PvtControlValuesType,
     PvtParametersType,
     PvtControlModeType,
+    PvtControllerStateType,
 ]
 
 
@@ -45,16 +51,13 @@ def resolve_module(
         control_values=optional_pydantic_to_graphql(
             PvtControlValuesType, module.control_values
         ),
-        parameters=(
-            PvtParametersType.from_pydantic(module.parameters)
-            if module.parameters
-            else None
-        ),
+        parameters=optional_pydantic_to_graphql(PvtParametersType, module.parameters),
         control_mode=SwitchingControlModeType.from_pydantic(
             PvtControlModeType, module.control_mode.mode
         )
         if module.control_mode
         else None,
+        controller_state=PvtControllerStateType(),
     )
 
 

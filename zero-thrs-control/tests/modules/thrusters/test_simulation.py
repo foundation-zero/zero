@@ -137,7 +137,7 @@ def test_thrusters_simulation_inputs(incorrect_simulation_inputs, control):
             timedelta(seconds=5),
         )
 
-        control_values = control.initial()
+        control_values, _ = control.initial()
 
         control_values.thrusters_pump1.dutypoint.value = 1
         control_values.thrusters_mix_recovery.setpoint.value = Valve.MIXING_A_TO_AB

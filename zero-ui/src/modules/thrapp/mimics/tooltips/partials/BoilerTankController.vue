@@ -1,28 +1,28 @@
 <script setup lang="ts">
 import { TooltipListItem, TooltipListItemTitle } from "@/modules/thrapp/components/tooltip-list";
-import { ControlComponentType } from "@/modules/thrs/types";
-import { ControlValue, ModuleField } from "../../providers";
+import { ControllerStateComponentType } from "@/modules/thrs/types";
+import { ControllerStateValue, ModuleField } from "../../providers";
 import { FieldRenderer } from "../../renderers/index.ts";
 import { useTranslations } from "../index.ts";
 
 const { items, sources } = useTranslations();
 
 defineProps<{
-  controller: ModuleField<ControlComponentType.DhwTanksController>;
+  controller: ModuleField<ControllerStateComponentType.DhwTanksController>;
 }>();
 </script>
 
 <template>
-  <ControlValue :source="controller">
+  <ControllerStateValue :source="controller">
     <TooltipListItem>
       <TooltipListItemTitle>
         <slot>{{ items("tankController") }}</slot>
       </TooltipListItemTitle>
       <FieldRenderer.HeatPumpMode />
     </TooltipListItem>
-  </ControlValue>
+  </ControllerStateValue>
 
-  <ControlValue
+  <ControllerStateValue
     :source="controller"
     field="tank1State"
   >
@@ -34,9 +34,9 @@ defineProps<{
       </TooltipListItemTitle>
       <FieldRenderer.BoilerTankMode />
     </TooltipListItem>
-  </ControlValue>
+  </ControllerStateValue>
 
-  <ControlValue
+  <ControllerStateValue
     :source="controller"
     field="tank2State"
   >
@@ -48,9 +48,9 @@ defineProps<{
       </TooltipListItemTitle>
       <FieldRenderer.BoilerTankMode />
     </TooltipListItem>
-  </ControlValue>
+  </ControllerStateValue>
 
-  <ControlValue
+  <ControllerStateValue
     :source="controller"
     field="tank3State"
   >
@@ -62,5 +62,5 @@ defineProps<{
       </TooltipListItemTitle>
       <FieldRenderer.BoilerTankMode />
     </TooltipListItem>
-  </ControlValue>
+  </ControllerStateValue>
 </template>

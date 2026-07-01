@@ -83,6 +83,9 @@ class PartialMqttMapping[M: ThrsValues](MqttMapping[M]):
         return set(self._subscribe_topics.keys())
 
     def handle_message(self, topic: str, json: str | bytes):
+        if topic not in self.topic_to_field:
+            return
+
         self._builder.input(self.topic_to_field[topic], json)
 
     def result(self) -> M | None:
@@ -169,9 +172,9 @@ class ModuleMqttMapping(MqttMapping[CombinedValues]):
         return self._builder.result()
 
 
-class Connector[S, C, M](Protocol):
+class Connector[S, C, CV](Protocol):
     async def run(self): ...
-    async def transceive(self, control_values: C, controller_values: M) -> S: ...
+    async def transceive(self, control_values: C, controller_state: CV) -> S: ...
 
 
 class MqttConnector(Connector[CombinedValues, CombinedValues, CombinedValues]):
@@ -182,7 +185,7 @@ class MqttConnector(Connector[CombinedValues, CombinedValues, CombinedValues]):
         controller_topic_prefix: str,
         sensor_values_clss: ModuleClassMap,
         control_values_clss: ModuleClassMap,
-        controller_values_clss: ModuleClassMap,
+        controller_state_clss: ModuleClassMap,
         control_topic_suffix: str | None = None,
         sensor_topic_suffix: str | None = None,
     ):
@@ -196,8 +199,8 @@ class MqttConnector(Connector[CombinedValues, CombinedValues, CombinedValues]):
         self._computed_values_mqtt_mapping = ModuleMqttMapping(
             sensor_values_clss, controller_topic_prefix, only_computed_fields=True
         )
-        self._controller_values_mqtt_mapping = ModuleMqttMapping(
-            controller_values_clss, controller_topic_prefix
+        self._controller_state_mqtt_mapping = ModuleMqttMapping(
+            controller_state_clss, controller_topic_prefix
         )
         self._running = False
 
@@ -237,10 +240,10 @@ class MqttConnector(Connector[CombinedValues, CombinedValues, CombinedValues]):
             self._computed_values_mqtt_mapping, sensor_values
         )
 
-    async def _send_controller_values(self, controller_values: CombinedValues):
+    async def _send_controller_state(self, controller_state: CombinedValues):
         logging.debug("Publishing controller values")
         await self._publish_by_mapping(
-            self._controller_values_mqtt_mapping, controller_values
+            self._controller_state_mqtt_mapping, controller_state
         )
 
     async def _start(self):
@@ -256,7 +259,7 @@ class MqttConnector(Connector[CombinedValues, CombinedValues, CombinedValues]):
             self._running = False
 
     async def transceive(
-        self, control_values: CombinedValues, controller_values: CombinedValues
+        self, control_values: CombinedValues, controller_state: CombinedValues
     ) -> CombinedValues:
         if not self._running:
             raise Exception(
@@ -265,6 +268,6 @@ class MqttConnector(Connector[CombinedValues, CombinedValues, CombinedValues]):
         sensors_values = self._sensor_values_mqtt_mapping.result()
         await self._send_computed_values(sensors_values)
         await self._send_control_values(control_values)
-        await self._send_controller_values(controller_values)
+        await self._send_controller_state(controller_state)
 
         return sensors_values if sensors_values else CombinedValues(values={})

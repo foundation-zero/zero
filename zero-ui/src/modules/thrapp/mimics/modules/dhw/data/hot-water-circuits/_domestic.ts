@@ -6,6 +6,7 @@ import { tooltip } from "./shared";
 
 export default toInstance<MimicComponentType.HotWaterCircuit>({
   controls: {},
+  controllerState: {},
   custom: {},
   parameters: {},
   source: undefined,

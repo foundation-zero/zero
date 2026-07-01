@@ -30,6 +30,10 @@ class ConvertersParameters(ThrsValues):
     pump_tuning: Tuning
 
 
+class ConvertersControllerState(ThrsValues):
+    pass
+
+
 class ConvertersSensorValues(ThrsValues):
     pump: sensor.Pump
     temperature_supply: sensor.TemperatureSensor
@@ -73,6 +77,7 @@ class ConvertersControl(
         ConvertersControlValues,
         ConvertersParameters,
         ConvertersControlMode,
+        ConvertersControllerState,
     ]
 ):
     def __init__(
@@ -163,8 +168,8 @@ class ConvertersControl(
         mode: str = self.state  # type: ignore
         return ConvertersControlMode(mode=mode)
 
-    def initial(self) -> ConvertersControlValues:
-        return self.current_values
+    def initial(self) -> tuple[ConvertersControlValues, ConvertersControllerState]:
+        return (self.current_values, ConvertersControllerState())
 
     def _close_circuit(self):
         self.current_values.mix.setpoint = Stamped(
@@ -180,13 +185,15 @@ class ConvertersControl(
     def _converter_active(self, sensor_values: ConvertersSensorValues) -> bool:
         return any(converter.active.value for converter in sensor_values.converters)
 
-    def control(self, sensor_values: ConvertersSensorValues) -> ConvertersControlValues:
+    def control(
+        self, sensor_values: ConvertersSensorValues
+    ) -> tuple[ConvertersControlValues, ConvertersControllerState]:
         self._check_converters_active(sensor_values)  # type: ignore
         self._control_warmup_mix(sensor_values)
         self._control_switch_valves(sensor_values)
         self._control_flow(sensor_values)
 
-        return self.current_values
+        return (self.current_values, ConvertersControllerState())
 
     def _control_warmup_mix(self, sensor_values: ConvertersSensorValues):
         self.current_values.mix.setpoint = Stamped(

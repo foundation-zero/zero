@@ -28,8 +28,8 @@ class SimpleConnector(Connector):
     async def run(self):
         pass
 
-    async def transceive(self, control_values, controller_values):
-        self.controls.append((control_values, controller_values))
+    async def transceive(self, control_values, controller_state):
+        self.controls.append((control_values, controller_state))
         return control_values
 
 
@@ -76,16 +76,26 @@ class SimpleMode(ThrsValues):
     pass
 
 
-class SimpleControl(Control[SimpleInOut, SimpleInOut, SimpleParameters, SimpleMode]):
+class SimpleControllerState(ThrsValues):
+    pass
+
+
+class SimpleControl(
+    Control[
+        SimpleInOut, SimpleInOut, SimpleParameters, SimpleMode, SimpleControllerState
+    ]
+):
     def __init__(self, parameters: SimpleParameters, time_fn: Callable[[], datetime]):
         self._parameters = parameters
         self._time = time_fn
 
-    def initial(self) -> SimpleInOut:
-        return SimpleInOut.zero()
+    def initial(self) -> tuple[SimpleInOut, SimpleControllerState]:
+        return (SimpleInOut.zero(), SimpleControllerState())
 
-    def control(self, sensor_values: SimpleInOut) -> SimpleInOut:
-        return sensor_values
+    def control(
+        self, sensor_values: SimpleInOut
+    ) -> tuple[SimpleInOut, SimpleControllerState]:
+        return (sensor_values, SimpleControllerState())
 
     @staticmethod
     def modes() -> list[str]:

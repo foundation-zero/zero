@@ -1,7 +1,7 @@
 from typing import Literal
 
 from thrs.classes.control import Control
-from thrs.control.manual import ManualControl
+from thrs.control.manual import EmptyControllerState, ManualControl
 from thrs.input_output.base import ThrsValues
 
 
@@ -18,22 +18,45 @@ class SwitchingControl[
     ControlValues: ThrsValues,
     ControlParameters: ThrsValues,
     ControlMode,
-](Control[SensorValues, ControlValues, ControlParameters, ControlMode]):
+    ControllerState: ThrsValues,
+](
+    Control[
+        SensorValues,
+        ControlValues,
+        ControlParameters,
+        ControlMode,
+        ControllerState,
+    ]
+):
     def __init__(
         self,
         manual: ManualControl[SensorValues, ControlValues],
-        automatic: Control[SensorValues, ControlValues, ControlParameters, ControlMode],
+        automatic: Control[
+            SensorValues,
+            ControlValues,
+            ControlParameters,
+            ControlMode,
+            ControllerState,
+        ],
     ):
         self._manual_control = manual
         self._automatic_control = automatic
         self._mode: Literal["manual", "automatic"] = "manual"
 
-    def initial(self) -> ControlValues:
-        return self._manual_control.initial()
+    def initial(
+        self,
+    ) -> tuple[ControlValues, ControllerState]:
+        return (
+            self._manual_control.initial()[0],
+            self._automatic_control.initial()[1],
+        )
 
-    def control(self, sensor_values: SensorValues):
+    def control(
+        self, sensor_values: SensorValues
+    ) -> tuple[ControlValues, ControllerState]:
         if self._mode == "manual":
-            return self._manual_control.control(sensor_values)
+            control_values, _ = self._manual_control.control(sensor_values)
+            return control_values, EmptyControllerState()  # type: ignore
         else:
             return self._automatic_control.control(sensor_values)
 

@@ -5,6 +5,7 @@ export { default as NoopTooltipProvider } from "./NoopTooltipProvider.vue";
 
 import {
   ControlComponentType,
+  ControllerStateComponentType,
   ParametersType,
   SensorComponentType,
 } from "@/modules/thrs/types/index.ts";
@@ -36,7 +37,9 @@ export type TooltipContext = {
     component?: Component,
   ) => void;
   findTooltipContext: (
-    source: ModuleField<SensorComponentType | ControlComponentType | ParametersType>,
+    source: ModuleField<
+      SensorComponentType | ControlComponentType | ParametersType | ControllerStateComponentType
+    >,
   ) => [MimicComponentType, TooltipComponentContext] | undefined;
   getData: <Type extends MimicComponentType>() => TooltipComponentContext<Type> | null;
   clear(): void;
@@ -62,7 +65,9 @@ export const createTooltipContext = (
   };
 
   const findTooltipContext = (
-    source: ModuleField<SensorComponentType | ControlComponentType | ParametersType>,
+    source: ModuleField<
+      SensorComponentType | ControlComponentType | ParametersType | ControllerStateComponentType
+    >,
   ): [MimicComponentType, TooltipComponentContext] | undefined => {
     const typesData = Object.entries(sourceData) as [
       MimicComponentType,

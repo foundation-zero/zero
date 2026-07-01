@@ -3,10 +3,16 @@ import { getField } from "@/modules/thrapp/mimics/providers";
 import { MimicComponentType } from "@/modules/thrapp/types";
 import {
   ControlFieldDefinitions,
+  ControllerStateFieldDefinitions,
   ExtractModuleFields,
   ParameterFieldDefinitions,
 } from "@/modules/thrapp/types/fields";
-import { ControlComponentType, ParametersType, SensorComponentType } from "@/modules/thrs/types";
+import {
+  ControlComponentType,
+  ControllerStateComponentType,
+  ParametersType,
+  SensorComponentType,
+} from "@/modules/thrs/types";
 
 export const tooltip = (content: Partial<TooltipContent>): TooltipContent => ({
   title: "Pressure sensor",
@@ -15,7 +21,7 @@ export const tooltip = (content: Partial<TooltipContent>): TooltipContent => ({
 });
 
 export const controller = getField(
-  ControlComponentType.PIDController,
+  ControllerStateComponentType.PIDController,
   "dhw",
   "dhwPumpFlowController",
 );
@@ -33,12 +39,16 @@ export type PressureSensorControls = ExtractModuleFields<
 export type PressureSensorParameters = ExtractModuleFields<
   ParameterFieldDefinitions[MimicComponentType.PressureSensor]
 >;
+export type PressureSensorControllerState = ExtractModuleFields<
+  ControllerStateFieldDefinitions[MimicComponentType.TemperatureSensor]
+>;
 
 export const controls: PressureSensorControls = {
-  controller,
   pump,
 };
-
+export const controllerState: PressureSensorControllerState = {
+  controller,
+};
 export const parameters: PressureSensorParameters = {
   flow: setpoint,
 };

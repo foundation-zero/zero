@@ -19,11 +19,11 @@ type ConsumersSimulation = Simulation[
 
 def test_basic(control: ConsumersControl, simulation: ConsumersSimulation):
     result = simulation.tick(
-        control.control(ConsumersSensorValues.zero()),
+        control.control(ConsumersSensorValues.zero())[0],
     )
 
     for i in range(180):
-        control_values = control.control(result.sensor_values)
+        control_values, _ = control.control(result.sensor_values)
         result = simulation.tick(control_values)
 
     total_flow = (
@@ -43,11 +43,11 @@ async def test_dhw_disabled(control: ConsumersControl, simulation: ConsumersSimu
     control._parameters.dhw_enabled = False
     control._parameters.adsorption_flow_ratio_setpoint = 0.5
     result = simulation.tick(
-        control.control(ConsumersSensorValues.zero()),
+        control.control(ConsumersSensorValues.zero())[0],
     )
 
     for i in range(180):
-        control_values = control.control(result.sensor_values)
+        control_values, _ = control.control(result.sensor_values)
         result = simulation.tick(control_values)
 
     assert result.sensor_values.consumers_flow_dhw.flow.value == approx(0, abs=0.1)
@@ -62,11 +62,11 @@ def test_adsorption_disabled(
     control._parameters.adsorption_enabled = False
     control._parameters.dhw_flow_ratio_setpoint = 0.5
     result = simulation.tick(
-        control.control(ConsumersSensorValues.zero()),
+        control.control(ConsumersSensorValues.zero())[0],
     )
 
     for i in range(180):
-        control_values = control.control(result.sensor_values)
+        control_values, _ = control.control(result.sensor_values)
         result = simulation.tick(control_values)
 
     assert result.sensor_values.consumers_flow_dhw.flow.value == approx(
@@ -81,11 +81,11 @@ def test_only_bypass(control: ConsumersControl, simulation: ConsumersSimulation)
     control._parameters.dhw_enabled = False
     control._parameters.adsorption_enabled = False
     result = simulation.tick(
-        control.control(ConsumersSensorValues.zero()),
+        control.control(ConsumersSensorValues.zero())[0],
     )
 
     for i in range(180):
-        control_values = control.control(result.sensor_values)
+        control_values, _ = control.control(result.sensor_values)
         result = simulation.tick(control_values)
 
     assert result.sensor_values.consumers_flow_dhw.flow.value == approx(0, abs=0.2)

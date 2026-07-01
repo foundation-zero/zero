@@ -4,6 +4,8 @@ import {
   BoilerTankState,
   ControlComponentType,
   ControlDefinitionMap,
+  ControllerStateComponentType,
+  ControllerStateDefinitionMap,
   ParameterDefinitionMap,
   ParametersType,
   PID,
@@ -145,7 +147,9 @@ export const CONTROL_VALUES_FACTORY: ValueFactory<ControlDefinitionMap> = {
       setpoint: stamp(setpoint),
     }));
   },
-  [ControlComponentType.DhwTanksController]: () => {
+};
+export const CONTROLLER_VALUE_VALUES_FACTORY: ValueFactory<ControllerStateDefinitionMap> = {
+  [ControllerStateComponentType.DhwTanksController]: () => {
     const states = [
       BoilerTankState.Boosting,
       BoilerTankState.Disabled,
@@ -166,7 +170,7 @@ export const CONTROL_VALUES_FACTORY: ValueFactory<ControlDefinitionMap> = {
       timeToFill: stamp(timeToFill),
     }));
   },
-  [ControlComponentType.PIDController]: () => {
+  [ControllerStateComponentType.PIDController]: () => {
     const setpoint = useRandomizedNumber(0, 100);
     const measurement = useRandomizedNumber(0, 100);
     const output = useRandomizedNumber(0, 100);

@@ -1,14 +1,27 @@
-import { ControlComponentType, ParametersType, SensorComponentType } from "@/modules/thrs/types";
+import {
+  ControlComponentType,
+  ControllerStateComponentType,
+  ParametersType,
+  SensorComponentType,
+} from "@/modules/thrs/types";
 import { BoilerTankStateField, MimicComponentType } from ".";
 import { HeatExchangerPortOrientation } from "../mimics/components/heat-exchanger";
 import { ModuleField } from "../mimics/providers";
 
 export type ComponentFields<
-  Type extends ControlComponentType | SensorComponentType | ParametersType,
+  Type extends
+    | ControlComponentType
+    | SensorComponentType
+    | ParametersType
+    | ControllerStateComponentType,
 > = Record<MimicComponentType, Record<string, Type>>;
 
 export type ComponentTypeFields<
-  Type extends ControlComponentType | SensorComponentType | ParametersType,
+  Type extends
+    | ControlComponentType
+    | SensorComponentType
+    | ParametersType
+    | ControllerStateComponentType,
   Fields extends ComponentFields<Type>,
 > = Fields;
 
@@ -19,6 +32,9 @@ export type SensorFields<Fields extends ComponentFields<SensorComponentType>> = 
 
 export type ControlFields<Fields extends ComponentFields<ControlComponentType>> =
   ComponentTypeFields<ControlComponentType, Fields>;
+
+export type ControllerStateFields<Fields extends ComponentFields<ControllerStateComponentType>> =
+  ComponentTypeFields<ControllerStateComponentType, Fields>;
 
 export type ParameterFields<Fields extends ComponentFields<ParametersType>> = ComponentTypeFields<
   ParametersType,
@@ -95,35 +111,25 @@ export type SensorFieldDefinitions = SensorFields<{
 }>;
 
 export type ControlFieldDefinitions = ControlFields<{
-  [MimicComponentType.BoilerTank]: {
-    controller: ControlComponentType.DhwTanksController;
-  };
+  [MimicComponentType.BoilerTank]: EmptyObject;
   [MimicComponentType.Pump]: {
-    flowController: ControlComponentType.PIDController;
-    temperatureController: ControlComponentType.PIDController;
     pump: ControlComponentType.Pump;
   };
   [MimicComponentType.HeatExchanger]: EmptyObject;
   [MimicComponentType.PressureSensor]: {
-    controller: ControlComponentType.PIDController;
     pump: ControlComponentType.Pump;
   };
   [MimicComponentType.TemperatureSensor]: {
-    controller: ControlComponentType.PIDController;
     pump: ControlComponentType.Pump;
   };
   [MimicComponentType.FlowSensor]: {
-    controller: ControlComponentType.PIDController;
     pump: ControlComponentType.Pump;
   };
   [MimicComponentType.ManualValve]: EmptyObject;
   [MimicComponentType.HeatPump]: {
     heatpump: ControlComponentType.Heatpump;
-    controller: ControlComponentType.PIDController;
   };
-  [MimicComponentType.HVAC]: {
-    controller: ControlComponentType.PIDController;
-  };
+  [MimicComponentType.HVAC]: EmptyObject;
   [MimicComponentType.SwitchValve]: {
     valve: ControlComponentType.Valve;
   };
@@ -132,7 +138,39 @@ export type ControlFieldDefinitions = ControlFields<{
   [MimicComponentType.FlowControlValve]: {
     pump: ControlComponentType.Pump;
     valve: ControlComponentType.Valve;
-    controller: ControlComponentType.PIDController;
+  };
+}>;
+
+export type ControllerStateFieldDefinitions = ControllerStateFields<{
+  [MimicComponentType.BoilerTank]: {
+    controller: ControllerStateComponentType.DhwTanksController;
+  };
+  [MimicComponentType.Pump]: {
+    flowController: ControllerStateComponentType.PIDController;
+    temperatureController: ControllerStateComponentType.PIDController;
+  };
+  [MimicComponentType.HeatExchanger]: EmptyObject;
+  [MimicComponentType.PressureSensor]: {
+    controller: ControllerStateComponentType.PIDController;
+  };
+  [MimicComponentType.TemperatureSensor]: {
+    controller: ControllerStateComponentType.PIDController;
+  };
+  [MimicComponentType.FlowSensor]: {
+    controller: ControllerStateComponentType.PIDController;
+  };
+  [MimicComponentType.ManualValve]: EmptyObject;
+  [MimicComponentType.HeatPump]: {
+    controller: ControllerStateComponentType.PIDController;
+  };
+  [MimicComponentType.HVAC]: {
+    controller: ControllerStateComponentType.PIDController;
+  };
+  [MimicComponentType.SwitchValve]: EmptyObject;
+  [MimicComponentType.ExchangeCircuit]: EmptyObject;
+  [MimicComponentType.HotWaterCircuit]: EmptyObject;
+  [MimicComponentType.FlowControlValve]: {
+    controller: ControllerStateComponentType.PIDController;
   };
 }>;
 
@@ -204,7 +242,7 @@ export type CustomFieldDefinitions = CustomFields<{
     tank?: {
       operator?: ExtractSensorFields<MimicComponentType.BoilerTank>["sensors"];
       operatorName?: string;
-      controller?: ModuleField<ControlComponentType.DhwTanksController>;
+      controller?: ModuleField<ControllerStateComponentType.DhwTanksController>;
     };
   };
   [MimicComponentType.FlowControlValve]: EmptyObject;
@@ -227,14 +265,18 @@ export type SourceFieldDefinitions = SourceFields<{
 }>;
 
 export type ExtractModuleFields<
-  Fields extends Record<string, SensorComponentType | ControlComponentType | ParametersType>,
+  Fields extends Record<
+    string,
+    SensorComponentType | ControlComponentType | ParametersType | ControllerStateComponentType
+  >,
 > = { [K in keyof Fields]: ModuleField<Fields[K]> };
 
 export type ExtractComponentFields<Type extends MimicComponentType> = ExtractSensorFields<Type> &
   ExtractControlFields<Type> &
   ExtractParameterFields<Type> &
   ExtractCustomFields<Type> &
-  ExtractSourceFields<Type>;
+  ExtractSourceFields<Type> &
+  ExtractControllerStateFields<Type>;
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 const EMPTY_OBJECT = {};
@@ -246,6 +288,9 @@ export type ExtractSensorFields<Type extends MimicComponentType> = {
 
 export type ExtractControlFields<Type extends MimicComponentType> = {
   controls: ExtractModuleFields<ControlFieldDefinitions[Type]>;
+};
+export type ExtractControllerStateFields<Type extends MimicComponentType> = {
+  controllerState: ExtractModuleFields<ControllerStateFieldDefinitions[Type]>;
 };
 
 export type ExtractParameterFields<Type extends MimicComponentType> = {

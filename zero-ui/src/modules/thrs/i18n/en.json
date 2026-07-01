@@ -90,6 +90,7 @@
       "parameters": "Parameters",
       "sensors": "Sensors",
       "controlParameters": "Control parameters",
+      "controllerState": "Controller values",
       "controlMode": "Control mode",
       "setValues": "Set values",
       "start": "Start",

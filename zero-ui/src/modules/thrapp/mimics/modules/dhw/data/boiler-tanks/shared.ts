@@ -1,11 +1,15 @@
-import { ControlComponentType, ParametersType, SensorComponentType } from "@/modules/thrs/types";
+import {
+  ControllerStateComponentType,
+  ParametersType,
+  SensorComponentType,
+} from "@/modules/thrs/types";
 
 import { ExtractModuleFields, ParameterFieldDefinitions } from "@/modules/thrapp/types/fields";
 import { MimicComponentType } from "../../../../../types";
 import { getField } from "../../../../providers";
 
 export const controller = getField(
-  ControlComponentType.DhwTanksController,
+  ControllerStateComponentType.DhwTanksController,
   "dhw",
   "dhwTanksController",
 );

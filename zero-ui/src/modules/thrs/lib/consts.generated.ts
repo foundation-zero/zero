@@ -1,6 +1,8 @@
 import {
   ControlComponentType,
   ControlDefinitions,
+  ControllerStateComponentType,
+  ControllerStateDefinitions,
   ParameterDefinitions,
   ParametersType,
   SensorComponentType,
@@ -14,8 +16,12 @@ export const toControlDefinition = <T extends ControlDefinitions>(input: T): T =
 export const toSensorDefinition = <T extends SensorDefinitions>(input: T): T => input;
 export const toParameterDefinition = <T extends ParameterDefinitions>(input: T): T => input;
 export const toSimulationDefinition = <T extends SimulationDefinitions>(input: T): T => input;
+export const toControllerStateDefinition = <T extends ControllerStateDefinitions>(input: T): T =>
+  input;
 
 export const ADSORPTION_CONTROL_DEFINITION = toControlDefinition({});
+
+export const ADSORPTION_CONTROLLER_STATE = toControllerStateDefinition({});
 
 export const ADSORPTION_PARAMETER_DEFINITION = toParameterDefinition({});
 
@@ -87,6 +93,8 @@ export const CONSUMERS_CONTROL_DEFINITION = toControlDefinition({
     valveType: ValveType.Switch,
   },
 });
+
+export const CONSUMERS_CONTROLLER_STATE = toControllerStateDefinition({});
 
 export const CONSUMERS_PARAMETER_DEFINITION = toParameterDefinition({
   dhwEnabled: {
@@ -193,6 +201,8 @@ export const CONSUMERS_SIMULATION_OUTPUTS = toSimulationDefinition({
 });
 
 export const DC_CONTROL_DEFINITION = toControlDefinition({});
+
+export const DC_CONTROLLER_STATE = toControllerStateDefinition({});
 
 export const DC_PARAMETER_DEFINITION = toParameterDefinition({});
 
@@ -310,25 +320,23 @@ export const DHW_CONTROL_DEFINITION = toControlDefinition({
     componentType: ControlComponentType.Valve,
     valveType: ValveType.Switch,
   },
+});
+
+export const DHW_CONTROLLER_STATE = toControllerStateDefinition({
   dhwTanksController: {
-    yardTag: "N/A",
-    componentType: ControlComponentType.DhwTanksController,
+    componentType: ControllerStateComponentType.DhwTanksController,
   },
   dhwPumpFlowController: {
-    yardTag: "N/A",
-    componentType: ControlComponentType.PIDController,
+    componentType: ControllerStateComponentType.PIDController,
   },
   dhwPumpTemperatureController: {
-    yardTag: "N/A",
-    componentType: ControlComponentType.PIDController,
+    componentType: ControllerStateComponentType.PIDController,
   },
   dhwDrivesFlowController: {
-    yardTag: "N/A",
-    componentType: ControlComponentType.PIDController,
+    componentType: ControllerStateComponentType.PIDController,
   },
   dhwDcFlowController: {
-    yardTag: "N/A",
-    componentType: ControlComponentType.PIDController,
+    componentType: ControllerStateComponentType.PIDController,
   },
 });
 
@@ -708,6 +716,8 @@ export const DHW_SIMULATION_OUTPUTS = toSimulationDefinition({
 
 export const DRIVES_CONTROL_DEFINITION = toControlDefinition({});
 
+export const DRIVES_CONTROLLER_STATE = toControllerStateDefinition({});
+
 export const DRIVES_PARAMETER_DEFINITION = toParameterDefinition({});
 
 export const DRIVES_SENSOR_DEFINITION = toSensorDefinition({});
@@ -861,6 +871,8 @@ export const PCM_CONTROL_DEFINITION = toControlDefinition({
     componentType: ControlComponentType.Pcm,
   },
 });
+
+export const PCM_CONTROLLER_STATE = toControllerStateDefinition({});
 
 export const PCM_PARAMETER_DEFINITION = toParameterDefinition({
   pcmDischargeFlow: {
@@ -1074,6 +1086,8 @@ export const PVT_CONTROL_DEFINITION = toControlDefinition({
     valveType: ValveType.Mix,
   },
 });
+
+export const PVT_CONTROLLER_STATE = toControllerStateDefinition({});
 
 export const PVT_PARAMETER_DEFINITION = toParameterDefinition({
   maximumSupplyTemperature: {
@@ -1580,6 +1594,8 @@ export const THRUSTERS_CONTROL_DEFINITION = toControlDefinition({
     valveType: ValveType.Switch,
   },
 });
+
+export const THRUSTERS_CONTROLLER_STATE = toControllerStateDefinition({});
 
 export const THRUSTERS_PARAMETER_DEFINITION = toParameterDefinition({
   maximumSupplyTemperature: {

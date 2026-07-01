@@ -24,6 +24,10 @@ class DcControlMode(ControlMode):
     ugrids: ConvertersControlMode
 
 
+class DcControllerState(ThrsValues):
+    pass
+
+
 class DcParameters(ThrsValues):
     maximum_supply_temperature: Celsius = 63
     recovery_temperature: Celsius = 60
@@ -112,7 +116,11 @@ def ugrids_parameters(dc_parameters: DcParameters) -> ConvertersParameters:
     )
 
 
-class DcControl(Control[DcSensorValues, DcControlValues, DcParameters, DcControlMode]):
+class DcControl(
+    Control[
+        DcSensorValues, DcControlValues, DcParameters, DcControlMode, DcControllerState
+    ]
+):
     def __init__(
         self, parameters: DcParameters, time_fn: Callable[[], datetime]
     ) -> None:
@@ -215,16 +223,18 @@ class DcControl(Control[DcSensorValues, DcControlValues, DcParameters, DcControl
             ugrids=self._ugrids_control.mode,
         )
 
-    def initial(self) -> DcControlValues:
-        return _INITIAL_CONTROL_VALUES(self._time())
+    def initial(self) -> tuple[DcControlValues, DcControllerState]:
+        return (_INITIAL_CONTROL_VALUES(self._time()), DcControllerState())
 
-    def control(self, sensor_values: DcSensorValues) -> DcControlValues:
+    def control(
+        self, sensor_values: DcSensorValues
+    ) -> tuple[DcControlValues, DcControllerState]:
         self._control_heat_dump(sensor_values)
         self._control_recovery_mix(sensor_values)
 
         self._control_groups(sensor_values)
 
-        return self._current_values
+        return (self._current_values, DcControllerState())
 
     def _control_heat_dump(self, sensor_values: DcSensorValues):
         if self._heat_dump_controller.enabled():
@@ -266,7 +276,7 @@ class DcControl(Control[DcSensorValues, DcControlValues, DcParameters, DcControl
         self._current_values.dc_switch_ugrid2 = ugrids_control_values.switches[1]
 
     def _control_groups(self, sensor_values: DcSensorValues):
-        brightloops_aft_control_values = self._brightloops_aft_control.control(
+        brightloops_aft_control_values, _ = self._brightloops_aft_control.control(
             ConvertersSensorValues(
                 pump=sensor_values.dc_pump_aft,
                 temperature_supply=sensor_values.dc_temperature_aft_supply,
@@ -300,7 +310,7 @@ class DcControl(Control[DcSensorValues, DcControlValues, DcParameters, DcControl
             )
         )
 
-        brightloops_fwd_control_values = self._brightloops_fwd_control.control(
+        brightloops_fwd_control_values, _ = self._brightloops_fwd_control.control(
             ConvertersSensorValues(
                 pump=sensor_values.dc_pump_fwd,
                 temperature_supply=sensor_values.dc_temperature_fwd_supply,
@@ -308,7 +318,10 @@ class DcControl(Control[DcSensorValues, DcControlValues, DcParameters, DcControl
                 pressure=sensor_values.dc_pressure_fwd,
                 mix=sensor_values.dc_mix_fwd,
                 flows=[sensor_values.dc_flow_fwd1, sensor_values.dc_flow_fwd2],
-                switches=[sensor_values.dc_switch_fwd1, sensor_values.dc_switch_fwd2],
+                switches=[
+                    sensor_values.dc_switch_fwd1,
+                    sensor_values.dc_switch_fwd2,
+                ],
                 converters=[
                     sensor_values.dc_brightloop_fwd1,
                     sensor_values.dc_brightloop_fwd2,
@@ -320,7 +333,7 @@ class DcControl(Control[DcSensorValues, DcControlValues, DcParameters, DcControl
             )
         )
 
-        ugrids_control_values = self._ugrids_control.control(
+        ugrids_control_values, _ = self._ugrids_control.control(
             ConvertersSensorValues(
                 pump=sensor_values.dc_pump_ugrid,
                 temperature_supply=sensor_values.dc_temperature_ugrid_supply,
@@ -357,5 +370,6 @@ DC_MODULE_DESCRIPTION = ModuleDescription(
     DcParameters,
     DcControl,
     DcControlMode,
+    DcControllerState,
     DcAlarms,
 )

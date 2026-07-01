@@ -29,6 +29,10 @@ class ThrustersControlMode(ControlMode):
         return self.mode == "recovery"
 
 
+class ThrustersControllerState(ThrsValues):
+    pass
+
+
 class ThrustersParameters(ThrsValues):
     maximum_supply_temperature: Celsius = 75
     cooling_temperature: Celsius = 38
@@ -105,6 +109,7 @@ class ThrustersControl(
         ThrustersControlValues,
         ThrustersParameters,
         ThrustersControlMode,
+        ThrustersControllerState,
     ]
 ):
     def __init__(
@@ -296,10 +301,12 @@ class ThrustersControl(
         mode: str = self.state  # type: ignore
         return ThrustersControlMode(mode=mode)
 
-    def initial(self) -> ThrustersControlValues:
-        return _INITIAL_CONTROL_VALUES(self._time())
+    def initial(self) -> tuple[ThrustersControlValues, ThrustersControllerState]:
+        return (_INITIAL_CONTROL_VALUES(self._time()), ThrustersControllerState())
 
-    def control(self, sensor_values: ThrustersSensorValues) -> ThrustersControlValues:
+    def control(
+        self, sensor_values: ThrustersSensorValues
+    ) -> tuple[ThrustersControlValues, ThrustersControllerState]:
         self._check_pcs_mode(sensor_values)  # type: ignore
         self._check_overheat(sensor_values)  # type: ignore
         self._control_heat_dump(sensor_values)
@@ -311,7 +318,7 @@ class ThrustersControl(
 
         self._control_flow_balance(sensor_values)
 
-        return self._current_values
+        return (self._current_values, ThrustersControllerState())
 
     def _is_overheating(self, sensor_values: ThrustersSensorValues):
         return (
@@ -531,5 +538,6 @@ THRUSTERS_MODULE_DESCRIPTION = ModuleDescription(
     ThrustersParameters,
     ThrustersControl,
     ThrustersControlMode,
+    ThrustersControllerState,
     ThrustersAlarms,
 )

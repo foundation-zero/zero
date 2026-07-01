@@ -53,6 +53,10 @@ type ConsumersControlValuesType {
   consumersSwitchDhw: ControlValveType! @jsonSchemaDirective(yardTag: "50001067-15", componentType: "valve", valveType: "switch")
 }
 
+type ConsumersControllerStateType {
+  Empty: Void
+}
+
 type ConsumersParametersType {
   dhwEnabled: Boolean!
   dhwFlowRatioSetpoint: Float!
@@ -78,14 +82,15 @@ type ConsumersSensorValuesType {
   consumersSwitchDhw: SensorValveType! @jsonSchemaDirective(yardTag: "50001067-15", componentType: "valve", valveType: "switch")
 }
 
-type ConsumersSensorValuesTypeConsumersControlValuesTypeConsumersParametersTypeConsumersControlModeTypeControlModule {
+type ConsumersSensorValuesTypeConsumersControlValuesTypeConsumersParametersTypeConsumersControlModeTypeConsumersControllerStateTypeControlModule {
   sensorValues: ConsumersSensorValuesType
   controlValues: ConsumersControlValuesType
   parameters: ConsumersParametersType
-  controlMode: ConsumersSensorValuesTypeConsumersControlValuesTypeConsumersParametersTypeConsumersControlModeTypeSwitchingControlModeType
+  controlMode: ConsumersSensorValuesTypeConsumersControlValuesTypeConsumersParametersTypeConsumersControlModeTypeConsumersControllerStateTypeSwitchingControlModeType
+  controllerState: ConsumersControllerStateType
 }
 
-type ConsumersSensorValuesTypeConsumersControlValuesTypeConsumersParametersTypeConsumersControlModeTypeSwitchingControlModeType {
+type ConsumersSensorValuesTypeConsumersControlValuesTypeConsumersParametersTypeConsumersControlModeTypeConsumersControllerStateTypeSwitchingControlModeType {
   automaticMode: ConsumersControlModeType
   automatic: Boolean!
 }
@@ -108,11 +113,11 @@ type ControlHeatPumpType {
 }
 
 type ControlModules {
-  thrusters: ThrustersSensorValuesTypeThrustersControlValuesTypeThrustersParametersTypeThrustersControlModeTypeControlModule!
-  pvt: PvtSensorValuesTypePvtControlValuesTypePvtParametersTypePvtControlModeTypeControlModule!
-  pcm: PcmSensorValuesTypePcmControlValuesTypePcmParametersTypePcmControlModeTypeControlModule!
-  consumers: ConsumersSensorValuesTypeConsumersControlValuesTypeConsumersParametersTypeConsumersControlModeTypeControlModule!
-  dhw: DhwSensorValuesTypeDhwControlValuesTypeDhwParametersTypeDhwControlModeTypeControlModule!
+  thrusters: ThrustersSensorValuesTypeThrustersControlValuesTypeThrustersParametersTypeThrustersControlModeTypeThrustersControllerStateTypeControlModule!
+  pvt: PvtSensorValuesTypePvtControlValuesTypePvtParametersTypePvtControlModeTypePvtControllerStateTypeControlModule!
+  pcm: PcmSensorValuesTypePcmControlValuesTypePcmParametersTypePcmControlModeTypePcmControllerStateTypeControlModule!
+  consumers: ConsumersSensorValuesTypeConsumersControlValuesTypeConsumersParametersTypeConsumersControlModeTypeConsumersControllerStateTypeControlModule!
+  dhw: DhwSensorValuesTypeDhwControlValuesTypeDhwParametersTypeDhwControlModeTypeDhwControllerStateTypeControlModule!
 }
 
 type ControlPcmType {
@@ -201,6 +206,9 @@ type DhwControlValuesType {
   dhwSwitchLowTemperature: ControlValveType! @jsonSchemaDirective(yardTag: "50001067-16", componentType: "valve", valveType: "switch")
   dhwSwitchHeatpump: ControlValveType! @jsonSchemaDirective(yardTag: "50001067-17", componentType: "valve", valveType: "switch")
   dhwSwitchHighTemperature: ControlValveType! @jsonSchemaDirective(yardTag: "50001067-18", componentType: "valve", valveType: "switch")
+}
+
+type DhwControllerStateType {
   dhwTanksController: ControllerTanksControllerValuesType! @jsonSchemaDirective(yardTag: "", componentType: "tank_controller", valveType: null)
   dhwPumpFlowController: ControllerPidControllerValuesType! @jsonSchemaDirective(yardTag: "", componentType: "pid_controller", valveType: null)
   dhwPumpTemperatureController: ControllerPidControllerValuesType! @jsonSchemaDirective(yardTag: "", componentType: "pid_controller", valveType: null)
@@ -304,14 +312,15 @@ type DhwSensorValuesType {
   dhwDrivesExchanger: SensorHeatExchangerType!
 }
 
-type DhwSensorValuesTypeDhwControlValuesTypeDhwParametersTypeDhwControlModeTypeControlModule {
+type DhwSensorValuesTypeDhwControlValuesTypeDhwParametersTypeDhwControlModeTypeDhwControllerStateTypeControlModule {
   sensorValues: DhwSensorValuesType
   controlValues: DhwControlValuesType
   parameters: DhwParametersType
-  controlMode: DhwSensorValuesTypeDhwControlValuesTypeDhwParametersTypeDhwControlModeTypeSwitchingControlModeType
+  controlMode: DhwSensorValuesTypeDhwControlValuesTypeDhwParametersTypeDhwControlModeTypeDhwControllerStateTypeSwitchingControlModeType
+  controllerState: DhwControllerStateType
 }
 
-type DhwSensorValuesTypeDhwControlValuesTypeDhwParametersTypeDhwControlModeTypeSwitchingControlModeType {
+type DhwSensorValuesTypeDhwControlValuesTypeDhwParametersTypeDhwControlModeTypeDhwControllerStateTypeSwitchingControlModeType {
   automaticMode: DhwControlModeType
   automatic: Boolean!
 }
@@ -555,11 +564,6 @@ type Mutation {
   dhwControlSetDhwSwitchLowTemperature(component: ValveInputType!): DhwControlValuesType!
   dhwControlSetDhwSwitchHeatpump(component: ValveInputType!): DhwControlValuesType!
   dhwControlSetDhwSwitchHighTemperature(component: ValveInputType!): DhwControlValuesType!
-  dhwControlSetDhwTanksController(component: TanksControllerValuesInputType!): DhwControlValuesType!
-  dhwControlSetDhwPumpFlowController(component: PidControllerValuesInputType!): DhwControlValuesType!
-  dhwControlSetDhwPumpTemperatureController(component: PidControllerValuesInputType!): DhwControlValuesType!
-  dhwControlSetDhwDrivesFlowController(component: PidControllerValuesInputType!): DhwControlValuesType!
-  dhwControlSetDhwDcFlowController(component: PidControllerValuesInputType!): DhwControlValuesType!
   highTemperatureSimulationSetThrustersThrusterAft(component: ThrusterInputType!): HighTemperatureSimulationInputsType!
   highTemperatureSimulationSetThrustersThrusterFwd(component: ThrusterInputType!): HighTemperatureSimulationInputsType!
   highTemperatureSimulationSetThrustersSeawaterSupply(component: BoundaryInputType!): HighTemperatureSimulationInputsType!
@@ -654,6 +658,10 @@ type PcmControlValuesType {
   pcmModule1: ControlPcmType! @jsonSchemaDirective(yardTag: "50001049", componentType: "pcm", valveType: null)
 }
 
+type PcmControllerStateType {
+  Empty: Void
+}
+
 input PcmInputType {
   on: Boolean!
 }
@@ -698,14 +706,15 @@ type PcmSensorValuesType {
   pcmSwitchConsumers: SensorValveType! @jsonSchemaDirective(yardTag: "50001071-02", componentType: "valve", valveType: "switch")
 }
 
-type PcmSensorValuesTypePcmControlValuesTypePcmParametersTypePcmControlModeTypeControlModule {
+type PcmSensorValuesTypePcmControlValuesTypePcmParametersTypePcmControlModeTypePcmControllerStateTypeControlModule {
   sensorValues: PcmSensorValuesType
   controlValues: PcmControlValuesType
   parameters: PcmParametersType
-  controlMode: PcmSensorValuesTypePcmControlValuesTypePcmParametersTypePcmControlModeTypeSwitchingControlModeType
+  controlMode: PcmSensorValuesTypePcmControlValuesTypePcmParametersTypePcmControlModeTypePcmControllerStateTypeSwitchingControlModeType
+  controllerState: PcmControllerStateType
 }
 
-type PcmSensorValuesTypePcmControlValuesTypePcmParametersTypePcmControlModeTypeSwitchingControlModeType {
+type PcmSensorValuesTypePcmControlValuesTypePcmParametersTypePcmControlModeTypePcmControllerStateTypeSwitchingControlModeType {
   automaticMode: PcmControlModeType
   automatic: Boolean!
 }
@@ -742,16 +751,6 @@ type PcsSimulationType {
   mode: PcsModeStampedType!
 }
 
-input PidControllerValuesInputType {
-  setpoint: Float!
-  measurement: Float
-  output: Float
-  error: Float
-  enabled: Boolean!
-  tuning: [Float!]!
-  components: [Float!]!
-}
-
 input PropulsionDriveInputType {
   heatFlow: Float!
   active: Boolean!
@@ -784,6 +783,10 @@ type PvtControlValuesType {
   pvtSwitchMainAft: ControlValveType! @jsonSchemaDirective(yardTag: "50001067-02", componentType: "valve", valveType: "switch")
   pvtSwitchOwners: ControlValveType! @jsonSchemaDirective(yardTag: "50001069-01", componentType: "valve", valveType: "switch")
   pvtMixExchanger: ControlValveType! @jsonSchemaDirective(yardTag: "50001047-02", componentType: "valve", valveType: "mix")
+}
+
+type PvtControllerStateType {
+  Empty: Void
 }
 
 type PvtGroupControlModeType {
@@ -904,14 +907,15 @@ type PvtSensorValuesType {
   pvtTemperatureOwnersString6Supply: SensorTemperatureSensorType! @jsonSchemaDirective(yardTag: "50009005-45", componentType: "temperature_sensor", valveType: null)
 }
 
-type PvtSensorValuesTypePvtControlValuesTypePvtParametersTypePvtControlModeTypeControlModule {
+type PvtSensorValuesTypePvtControlValuesTypePvtParametersTypePvtControlModeTypePvtControllerStateTypeControlModule {
   sensorValues: PvtSensorValuesType
   controlValues: PvtControlValuesType
   parameters: PvtParametersType
-  controlMode: PvtSensorValuesTypePvtControlValuesTypePvtParametersTypePvtControlModeTypeSwitchingControlModeType
+  controlMode: PvtSensorValuesTypePvtControlValuesTypePvtParametersTypePvtControlModeTypePvtControllerStateTypeSwitchingControlModeType
+  controllerState: PvtControllerStateType
 }
 
-type PvtSensorValuesTypePvtControlValuesTypePvtParametersTypePvtControlModeTypeSwitchingControlModeType {
+type PvtSensorValuesTypePvtControlValuesTypePvtParametersTypePvtControlModeTypePvtControllerStateTypeSwitchingControlModeType {
   automaticMode: PvtControlModeType
   automatic: Boolean!
 }
@@ -1023,13 +1027,6 @@ type TankStateStampedType {
   timestamp: DateTime!
 }
 
-input TanksControllerValuesInputType {
-  tank1State: TankState!
-  tank2State: TankState!
-  tank3State: TankState!
-  timeToFill: Float
-}
-
 input TemperatureBoundaryInputType {
   temperature: Float!
 }
@@ -1062,6 +1059,10 @@ type ThrustersControlValuesType {
   thrustersSwitchRecovery: ControlValveType! @jsonSchemaDirective(yardTag: "50001066-03", componentType: "valve", valveType: "switch")
   thrustersSwitchAft: ControlValveType! @jsonSchemaDirective(yardTag: "50001091-01", componentType: "valve", valveType: "switch")
   thrustersSwitchFwd: ControlValveType! @jsonSchemaDirective(yardTag: "50001091-02", componentType: "valve", valveType: "switch")
+}
+
+type ThrustersControllerStateType {
+  Empty: Void
 }
 
 type ThrustersParametersType {
@@ -1105,14 +1106,15 @@ type ThrustersSensorValuesType {
   thrustersPcs: SensorPcsType! @jsonSchemaDirective(yardTag: "1500", componentType: "pcs", valveType: null)
 }
 
-type ThrustersSensorValuesTypeThrustersControlValuesTypeThrustersParametersTypeThrustersControlModeTypeControlModule {
+type ThrustersSensorValuesTypeThrustersControlValuesTypeThrustersParametersTypeThrustersControlModeTypeThrustersControllerStateTypeControlModule {
   sensorValues: ThrustersSensorValuesType
   controlValues: ThrustersControlValuesType
   parameters: ThrustersParametersType
-  controlMode: ThrustersSensorValuesTypeThrustersControlValuesTypeThrustersParametersTypeThrustersControlModeTypeSwitchingControlModeType
+  controlMode: ThrustersSensorValuesTypeThrustersControlValuesTypeThrustersParametersTypeThrustersControlModeTypeThrustersControllerStateTypeSwitchingControlModeType
+  controllerState: ThrustersControllerStateType
 }
 
-type ThrustersSensorValuesTypeThrustersControlValuesTypeThrustersParametersTypeThrustersControlModeTypeSwitchingControlModeType {
+type ThrustersSensorValuesTypeThrustersControlValuesTypeThrustersParametersTypeThrustersControlModeTypeThrustersControllerStateTypeSwitchingControlModeType {
   automaticMode: ThrustersControlModeType
   automatic: Boolean!
 }

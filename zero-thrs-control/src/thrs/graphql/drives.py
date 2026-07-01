@@ -26,11 +26,17 @@ DrivesParametersType = pydantic_to_strawberry_type(DrivesParameters)
 DrivesControlModeType = pydantic_to_strawberry_type(DrivesControlMode)
 
 
+@strawberry.type()
+class DrivesControllerStateType:
+    _empty: None = None
+
+
 DrivesModule = ControlModule[
     DrivesSensorValuesType,
     DrivesControlValuesType,
     DrivesParametersType,
     DrivesControlModeType,
+    DrivesControllerStateType,
 ]
 
 
@@ -52,6 +58,9 @@ def resolve_module(
         )
         if module.control_mode
         else None,
+        controller_state=optional_pydantic_to_graphql(
+            DrivesControllerStateType, module.controller_state
+        ),
     )
 
 

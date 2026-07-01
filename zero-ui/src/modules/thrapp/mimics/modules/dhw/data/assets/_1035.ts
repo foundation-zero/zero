@@ -1,4 +1,9 @@
-import { ControlComponentType, ParametersType, SensorComponentType } from "@/modules/thrs/types";
+import {
+  ControlComponentType,
+  ControllerStateComponentType,
+  ParametersType,
+  SensorComponentType,
+} from "@/modules/thrs/types";
 import { toInstance } from "../../..";
 import { MimicComponentType } from "../../../../../types";
 import { getField } from "../../../../providers";
@@ -7,7 +12,13 @@ import { tooltip } from "./shared";
 export default toInstance<MimicComponentType.HeatPump>({
   controls: {
     heatpump: getField(ControlComponentType.Heatpump, "dhw", "dhwHeatpump"),
-    controller: getField(ControlComponentType.PIDController, "dhw", "dhwPumpFlowController"),
+  },
+  controllerState: {
+    controller: getField(
+      ControllerStateComponentType.PIDController,
+      "dhw",
+      "dhwPumpFlowController",
+    ),
   },
   source: getField(SensorComponentType.HeatExchanger, "dhw", "dhwHeatpump"),
   custom: {},

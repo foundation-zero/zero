@@ -56,7 +56,7 @@ const { items, labels, sources } = useTranslations();
         <TooltipListItemAction>{{ labels("viewControls") }}</TooltipListItemAction>
       </TooltipListHeader>
       <TemperatureController
-        :controller="controls.controller"
+        :controller="controllerState.controller"
         :measurement="sensors.measurement"
         :setpoint="parameters.temperature"
       >

@@ -6,6 +6,7 @@ import { tooltip } from "./shared";
 
 export default toInstance<MimicComponentType.ExchangeCircuit>({
   controls: {},
+  controllerState: {},
   custom: {
     circuitName: "Drives & shore",
   },

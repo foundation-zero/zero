@@ -16,7 +16,7 @@ import { MimicComponentType } from "../../types";
 import { DHW_TANK_CAPACITY } from "../../utils/consts.ts";
 import { YardTag } from "../components/yard-tag";
 import BoilerTankInstance from "../instances/BoilerTankInstance.vue";
-import { ControlValue, getMimicDataProvider, ParameterValue } from "../providers";
+import { getMimicDataProvider, ParameterValue } from "../providers";
 import SensorValue from "../providers/SensorValue.vue";
 import { FieldRenderer } from "../renderers/index.ts";
 import BoilerTankController from "./partials/BoilerTankController.vue";
@@ -25,7 +25,7 @@ import ComponentInfo from "./partials/ComponentInfo.vue";
 import ManualControl from "./partials/ManualControl.vue";
 
 const props = defineProps<TooltipComponentContext<MimicComponentType.BoilerTank>>();
-const { sensors, parameters, controls, custom, tooltip } = props;
+const { sensors, parameters, custom, tooltip } = props;
 
 const { sources, labels, items } = useTranslations();
 const { getSensorValue } = getMimicDataProvider();
@@ -50,8 +50,8 @@ const currentLevelPercentage = computed(
 
     <TooltipList>
       <TooltipListHeader>{{ labels("input") }}</TooltipListHeader>
-      <ControlValue
-        :source="controls.controller"
+      <ControllerStateValue
+        :source="controllerState.controller"
         :field="custom.tankStateField"
       >
         <TooltipListItem>
@@ -61,7 +61,7 @@ const currentLevelPercentage = computed(
           </TooltipListItemTitle>
           <FieldRenderer.BoilerTankMode />
         </TooltipListItem>
-      </ControlValue>
+      </ControllerStateValue>
     </TooltipList>
 
     <TooltipList>
@@ -189,13 +189,13 @@ const currentLevelPercentage = computed(
         </TooltipListItem>
       </ParameterValue>
 
-      <ControlValue
-        :source="controls.controller"
+      <ControllerStateValue
+        :source="controllerState.controller"
         :field="custom.tankStateField"
       >
         <template #default="{ value }">
-          <ControlValue
-            :source="controls.controller"
+          <ControllerStateValue
+            :source="controllerState.controller"
             field="timeToFill"
           >
             <TooltipListItem v-if="value === BoilerTankState.Filling">
@@ -204,13 +204,13 @@ const currentLevelPercentage = computed(
                 <FieldRenderer.TimeRemaining />
               </TooltipListItemValue>
             </TooltipListItem>
-          </ControlValue>
+          </ControllerStateValue>
         </template>
         <!-- <TooltipListItem>
         <TooltipListItemTitle>{{ items("estimatedTimeToHeat") }}</TooltipListItemTitle>
         <TooltipListItemTimeRemaining :value="0" />
       </TooltipListItem> -->
-      </ControlValue>
+      </ControllerStateValue>
     </TooltipList>
 
     <TooltipList>
@@ -218,7 +218,7 @@ const currentLevelPercentage = computed(
         {{ labels("controls") }}
         <TooltipListItemAction>{{ labels("viewControls") }}</TooltipListItemAction>
       </TooltipListHeader>
-      <BoilerTankController :controller="controls.controller" />
+      <BoilerTankController :controller="controllerState.controller" />
       <BoilerTankOperator :sensors="sensors" />
     </TooltipList>
   </MimicTooltip>

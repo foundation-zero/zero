@@ -2,7 +2,7 @@ export const ADSORPTION_CONTROL_QUERY = `
 
 `;
 
-export const ADSORPTION_CONTROLLER_VALUES_QUERY = `
+export const ADSORPTION_CONTROLLER_STATE_QUERY = `
 
 `;
 
@@ -73,6 +73,10 @@ export const CONSUMERS_CONTROL_QUERY = `
   consumersSwitchDhw {
     setpoint { value timestamp }
   }
+`;
+
+export const CONSUMERS_CONTROLLER_STATE_QUERY = `
+
 `;
 
 export const CONSUMERS_PARAMETERS_QUERY = `
@@ -159,7 +163,7 @@ export const DC_CONTROL_QUERY = `
 
 `;
 
-export const DC_CONTROLLER_VALUES_QUERY = `
+export const DC_CONTROLLER_STATE_QUERY = `
 
 `;
 
@@ -251,6 +255,9 @@ export const DHW_CONTROL_QUERY = `
   dhwSwitchHighTemperature {
     setpoint { value timestamp }
   }
+`;
+
+export const DHW_CONTROLLER_STATE_QUERY = `
   dhwTanksController {
     tank1State { value timestamp }
     tank2State { value timestamp }
@@ -579,7 +586,7 @@ export const DRIVES_CONTROL_QUERY = `
 
 `;
 
-export const DRIVES_CONTROLLER_VALUES_QUERY = `
+export const DRIVES_CONTROLLER_STATE_QUERY = `
 
 `;
 
@@ -739,6 +746,10 @@ export const PCM_CONTROL_QUERY = `
   }
 `;
 
+export const PCM_CONTROLLER_STATE_QUERY = `
+
+`;
+
 export const PCM_PARAMETERS_QUERY = `
   pcmDischargeFlow
   pcmChargeFlow
@@ -894,6 +905,10 @@ export const PVT_CONTROL_QUERY = `
   pvtMixExchanger {
     setpoint { value timestamp }
   }
+`;
+
+export const PVT_CONTROLLER_STATE_QUERY = `
+
 `;
 
 export const PVT_PARAMETERS_QUERY = `
@@ -1292,6 +1307,10 @@ export const THRUSTERS_CONTROL_QUERY = `
   thrustersSwitchFwd {
     setpoint { value timestamp }
   }
+`;
+
+export const THRUSTERS_CONTROLLER_STATE_QUERY = `
+
 `;
 
 export const THRUSTERS_PARAMETERS_QUERY = `

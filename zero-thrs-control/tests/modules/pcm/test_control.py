@@ -23,11 +23,11 @@ def test_idle(control: PcmControl, simulation: PcmSimulation):
     control._parameters.supplying_enabled = False
 
     result = simulation.tick(
-        control.control(PcmSensorValues.zero()),
+        control.control(PcmSensorValues.zero())[0],
     )
 
     for i in range(100):
-        control_values = control.control(result.sensor_values)
+        control_values, _ = control.control(result.sensor_values)
         result = simulation.tick(control_values)
 
     pcm_flow = (
@@ -48,13 +48,13 @@ def test_idle(control: PcmControl, simulation: PcmSimulation):
 
 def test_charging(control: PcmControl, simulation: PcmSimulation):
     result = simulation.tick(
-        control.control(PcmSensorValues.zero()),
+        control.control(PcmSensorValues.zero())[0],
     )
 
     control.to_charging(result.sensor_values)  # type: ignore
 
     for i in range(200):
-        control_values = control.control(result.sensor_values)
+        control_values, _ = control.control(result.sensor_values)
 
         control_values.pcm_switch_consumers.setpoint.value = 0.4  # close consumers switch partly to force flow past PCM #TODO: implement realistic pressure drop on consumers
         result = simulation.tick(control_values)
@@ -89,7 +89,7 @@ def test_charging(control: PcmControl, simulation: PcmSimulation):
         result.sensor_values.pcm_temperature_module2.temperature.value = (
             result.sensor_values.pcm_temperature_producers_return.temperature.value
         )
-        control_values = control.control(result.sensor_values)
+        control_values, _ = control.control(result.sensor_values)
         control_values.pcm_switch_consumers.setpoint.value = 0.4  # close consumers switch partly to force flow past PCM #TODO: implement realistic pressure drop on consumers
         result = simulation.tick(control_values)
 
@@ -107,14 +107,14 @@ def test_charging(control: PcmControl, simulation: PcmSimulation):
 
 def test_supplying(control: PcmControl, simulation: PcmSimulation):
     result = simulation.tick(
-        control.control(PcmSensorValues.zero()),
+        control.control(PcmSensorValues.zero())[0],
     )
 
     control._parameters.charging_enabled = False
     control.to_supplying(result.sensor_values)  # type: ignore
 
     for i in range(100):
-        control_values = control.control(result.sensor_values)
+        control_values, _ = control.control(result.sensor_values)
         result = simulation.tick(control_values)
 
     assert (
@@ -145,7 +145,7 @@ def test_supplying(control: PcmControl, simulation: PcmSimulation):
     for i in range(100):
         result.sensor_values.pcm_module1.charged.value = False
         result.sensor_values.pcm_module2.charged.value = False
-        control_values = control.control(result.sensor_values)
+        control_values, _ = control.control(result.sensor_values)
         result = simulation.tick(control_values)
 
     pcm_flow = (
@@ -164,7 +164,7 @@ def test_supplying(control: PcmControl, simulation: PcmSimulation):
         result.sensor_values.pcm_module2.charged.value = False
         result.sensor_values.pcm_module3.charged.value = False
         result.sensor_values.pcm_module4.charged.value = False
-        control_values = control.control(result.sensor_values)
+        control_values, _ = control.control(result.sensor_values)
         result = simulation.tick(control_values)
 
     pcm_flow = (
@@ -183,14 +183,14 @@ def test_supplying(control: PcmControl, simulation: PcmSimulation):
 
 def test_mode_switches(control: PcmControl, simulation: PcmSimulation):
     simulation._simulation_inputs.pcm_thrusters_supply.temperature = Stamped.stamp(30)
-    result = simulation.tick(
-        control.control(PcmSensorValues.zero()),
-    )
+
+    control_values, _ = control.control(PcmSensorValues.zero())
+    result = simulation.tick(control_values)
 
     assert control.mode == PcmControlMode(mode="idle")
 
     for i in range(30):
-        control_values = control.control(result.sensor_values)
+        control_values, _ = control.control(result.sensor_values)
         result = simulation.tick(control_values)
 
     assert control.mode == PcmControlMode(mode="supplying")
@@ -200,7 +200,7 @@ def test_mode_switches(control: PcmControl, simulation: PcmSimulation):
         result.sensor_values.pcm_module2.charged.value = False
         result.sensor_values.pcm_module3.charged.value = False
         result.sensor_values.pcm_module4.charged.value = True
-        control_values = control.control(result.sensor_values)
+        control_values, _ = control.control(result.sensor_values)
         result = simulation.tick(control_values)
 
     assert control.mode == PcmControlMode(mode="supplying")
@@ -210,7 +210,7 @@ def test_mode_switches(control: PcmControl, simulation: PcmSimulation):
         result.sensor_values.pcm_module2.charged.value = False
         result.sensor_values.pcm_module3.charged.value = False
         result.sensor_values.pcm_module4.charged.value = False
-        control_values = control.control(result.sensor_values)
+        control_values, _ = control.control(result.sensor_values)
         result = simulation.tick(control_values)
 
     assert control.mode == PcmControlMode(mode="idle")
@@ -221,7 +221,7 @@ def test_mode_switches(control: PcmControl, simulation: PcmSimulation):
         result.sensor_values.pcm_module2.charged.value = False
         result.sensor_values.pcm_module3.charged.value = False
         result.sensor_values.pcm_module4.charged.value = False
-        control_values = control.control(result.sensor_values)
+        control_values, _ = control.control(result.sensor_values)
         result = simulation.tick(control_values)
 
     assert control.mode == PcmControlMode(mode="charging")
@@ -232,7 +232,7 @@ def test_mode_switches(control: PcmControl, simulation: PcmSimulation):
         result.sensor_values.pcm_module2.charged.value = False
         result.sensor_values.pcm_module3.charged.value = False
         result.sensor_values.pcm_module4.charged.value = False
-        control_values = control.control(result.sensor_values)
+        control_values, _ = control.control(result.sensor_values)
         result = simulation.tick(control_values)
 
     assert control.mode == PcmControlMode(mode="idle")
