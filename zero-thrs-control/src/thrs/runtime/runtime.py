@@ -1,4 +1,4 @@
-from asyncio import TaskGroup
+from asyncio import TaskGroup, sleep
 from contextlib import asynccontextmanager
 from datetime import datetime, timedelta
 from typing import AsyncGenerator
@@ -22,10 +22,12 @@ class Runtime:
         runner: Runner,
         tick_duration: timedelta,
         directive_handling: DirectiveHandling | None = None,
+        connectors: list[MqttConnector] | None = None,
     ):
         self._loop = Loop(tick_duration)
         self._runner = runner
         self._directive_handling = directive_handling
+        self._connectors = connectors or []
 
     @staticmethod
     def _lookup_mode(mode: Modes) -> Mode:
@@ -52,7 +54,9 @@ class Runtime:
                 sensor_topic_suffix=config.mqtt_control_topic_suffix,
             )
             yield Runtime(
-                SimulationRunner(connector, simulation), simulation.tick_duration, None
+                SimulationRunner(connector, simulation),
+                simulation.tick_duration,
+                connectors=[connector],
             )
 
     @asynccontextmanager
@@ -113,7 +117,12 @@ class Runtime:
                 simulation.time,
                 config.mqtt_controller_topic_prefix,
             )
-            yield Runtime(runner, simulation.tick_duration, directive_handling)
+            yield Runtime(
+                runner,
+                simulation.tick_duration,
+                directive_handling,
+                connectors=[control_connector, simulation_connector],
+            )
 
     @asynccontextmanager
     @staticmethod
@@ -145,10 +154,16 @@ class Runtime:
                 connector=control_connector,
                 alarms=mode.control_module.alarms(),
             )
-            yield Runtime(runner, timedelta(seconds=1))
+            yield Runtime(runner, timedelta(seconds=1), connectors=[control_connector])
 
     async def start(self):
         async with TaskGroup() as tg:
+            for connector in self._connectors:
+                tg.create_task(connector.run())
+
+            # await sleep(
+            #     0.1
+            # )  # Wait a bit for the connectors to be ready before starting the runner and directive handling
             if self._directive_handling is not None:
                 await self._directive_handling.handler(self._loop).register()
                 tg.create_task(self._directive_handling.run())
