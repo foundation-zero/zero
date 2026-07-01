@@ -192,15 +192,11 @@ class Connector[S, C](Protocol):
     async def get_control_values_from_control(self) -> S: ...  # Used by ControlRunner
     async def get_control_values_from_mqtt(self) -> S: ...  # Used by SimulationRunner
 
-    async def send_computed_values(
-        self, sensors_values: CombinedValues
-    ) -> CombinedValues: ...
-    async def send_sensor_values(
-        self, control_values: ThrsValues
-    ) -> CombinedValues: ...
+    async def send_computed_values(self, sensors_values: S) -> None: ...
+    async def send_sensor_values(self, simulation_result: SimulationResult) -> None: ...
     async def send_simulation_outputs(
-        self, simulation_outputs: ThrsValues
-    ) -> CombinedValues: ...
+        self, simulation_result: SimulationResult
+    ) -> None: ...
 
 
 class MqttConnector(Connector[CombinedValues, CombinedValues]):

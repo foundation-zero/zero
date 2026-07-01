@@ -1,8 +1,7 @@
 from abc import abstractmethod
 from dataclasses import dataclass
 from datetime import datetime
-from queue import Queue
-from typing import Annotated, Any, Callable, Coroutine, Literal
+from typing import Annotated, Any, Awaitable, Callable, Literal, cast
 
 from aiomqtt import Client as MqttClient
 from pydantic import Field, ValidationInfo, model_validator
@@ -18,10 +17,16 @@ class MqttContext:
     def module(self) -> str:
         return self.topic.split("/")[0]
 
+
 class Messaging:
     def __init__(self, client: MqttClient):
         self._client = client
-        self._handlers: list[tuple[type[IncomingMessage], Callable[[IncomingMessage], Coroutine[None, None, None]]]] = []
+        self._handlers: list[
+            tuple[
+                type[IncomingMessage],
+                Callable[[IncomingMessage], Awaitable[None]],
+            ]
+        ] = []
 
     async def send(self, topic_prefix: str, message: "OutgoingMessage"):
         await self._client.publish(
@@ -31,9 +36,20 @@ class Messaging:
             retain=message.retained(),
         )
 
-    async def register[T: "IncomingMessage"](self, topic_prefix: str, message: T, handler: Callable[[T], Coroutine[None, None, None]]):
-        await self._client.subscribe(f"{topic_prefix}/{message.subscribe_topic()}", qos=1)
-        self._handlers.append((type(message), handler))
+    async def register[T: "IncomingMessage"](
+        self,
+        topic_prefix: str,
+        message: type[T],
+        handler: Callable[[T], Awaitable[None]],
+    ):
+        await self._client.subscribe(
+            f"{topic_prefix}/{message.subscribe_topic()}", qos=1
+        )
+
+        async def _wrapped(msg: IncomingMessage) -> None:
+            await handler(cast(T, msg))
+
+        self._handlers.append((type(message), _wrapped))
 
     async def run(self):
         async for msg in self._client.messages:
@@ -47,7 +63,7 @@ class Messaging:
     async def clear(self, topic_prefix: str, messages: "list[type[OutgoingMessage]]"):
         for message in messages:
             await self._client.publish(
-                f"{topic_prefix}/{message.topic()}",
+                f"{topic_prefix}/{message.subscribe_topic()}",
                 b"",
                 qos=1,
                 retain=True,
@@ -75,9 +91,6 @@ class IncomingMessage(ThrsValues):
 
     def topic(self) -> str:
         return self.subscribe_topic()
-
-    @abstractmethod
-    async def handle(self, topic_prefix: str, context: MessageContext): ...
 
 
 class IncomingModuleMessage(IncomingMessage):
@@ -107,7 +120,9 @@ class OutgoingMessage(ThrsValues):
     def clear_topics(cls, control_modules: list[str]) -> list[str]:
         return [cls.subscribe_topic()]
 
+
 type SimulationStatus = Literal["available", "running", "stepping"]
+
 
 class SimulationStatusMessage(OutgoingMessage):
     mode: str
@@ -136,12 +151,7 @@ class SimulationInputMessage[Inputs: ThrsValues](OutgoingMessage):
         return True
 
 
-class SimulationCtrlMessage(IncomingMessage):
-    async def handle(self, topic_prefix: str, context: MessageContext):
-        await context.cmds.put(self)
-
-
-class PlayMessage(SimulationCtrlMessage):
+class PlayMessage(IncomingMessage):
     playback_rate: Annotated[float, Field(ge=0.25, le=10)] = 1.0
 
     @staticmethod
@@ -163,7 +173,7 @@ class PlayMessage(SimulationCtrlMessage):
         return "play"
 
 
-class StepMessage(SimulationCtrlMessage):
+class StepMessage(IncomingMessage):
     seconds: Annotated[float, Field(ge=0)]
 
     @staticmethod
@@ -185,7 +195,7 @@ class StepMessage(SimulationCtrlMessage):
         return "step"
 
 
-class PauseMessage(SimulationCtrlMessage):
+class PauseMessage(IncomingMessage):
     @staticmethod
     def resolve[
         ControlValues: ThrsValues,
@@ -203,7 +213,3 @@ class PauseMessage(SimulationCtrlMessage):
     @staticmethod
     def subscribe_topic() -> str:
         return "pause"
-
-
-
-
