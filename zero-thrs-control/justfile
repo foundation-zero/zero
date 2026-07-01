@@ -29,20 +29,41 @@ test_io *args:
 format:
     poetry run ruff format --check src tests
 
+build_fmu_compile_container:
+    docker build . --tag fmu_compile_image --target fmu_compile
+
+compile_fmu_for_linux file: build_fmu_compile_container
+    -docker rm fmu_compile
+    docker run -it --name fmu_compile --entrypoint /bin/bash fmu_compile_image -c "export FILE=\"{{ file }}\"; export CFLAGS=\"-std=gnu17 -include unistd.h\"; fmpy compile \"/\${FILE/src/app}\""
+    bash -c "export FILE={{ file }}; docker cp fmu_compile:/\${FILE/src/app} {{ file }}"
+
+compile_fmus_for_linux: \
+    (compile_fmu_for_linux "src/thrs/simulation/models/XRGTestModel/FMUInterfaceTester_MECS_regular.fmu") \
+    (compile_fmu_for_linux "src/thrs/simulation/models/Adsorption_Module.fmu") \
+    (compile_fmu_for_linux "src/thrs/simulation/models/Consumer_ModuleV9.fmu") \
+    (compile_fmu_for_linux "src/thrs/simulation/models/DC_Module.fmu") \
+    (compile_fmu_for_linux "src/thrs/simulation/models/DHW_Module.fmu") \
+    (compile_fmu_for_linux "src/thrs/simulation/models/Drives_Module.fmu") \
+    (compile_fmu_for_linux "src/thrs/simulation/models/HT_SystemV14.fmu") \
+    (compile_fmu_for_linux "src/thrs/simulation/models/PCM_ModuleV8.fmu") \
+    (compile_fmu_for_linux "src/thrs/simulation/models/PVT_ModuleV16.fmu") \
+    (compile_fmu_for_linux "src/thrs/simulation/models/Thruster_Module_V19.fmu")
+
 compile_fmu file:
     CFLAGS="-std=gnu17 -include unistd.h" poetry run fmpy compile {{ file }}
 
-compile_fmus:
-    just compile_fmu src/thrs/simulation/models/XRGTestModel/FMUInterfaceTester_MECS_regular.fmu
-    just compile_fmu src/thrs/simulation/models/Adsorption_Module.fmu
-    just compile_fmu src/thrs/simulation/models/Consumer_ModuleV9.fmu
-    just compile_fmu src/thrs/simulation/models/DC_Module.fmu
-    just compile_fmu src/thrs/simulation/models/DHW_Module.fmu
-    just compile_fmu src/thrs/simulation/models/Drives_Module.fmu
-    just compile_fmu src/thrs/simulation/models/HT_SystemV14.fmu
-    just compile_fmu src/thrs/simulation/models/PCM_ModuleV8.fmu
-    just compile_fmu src/thrs/simulation/models/PVT_ModuleV16.fmu
-    just compile_fmu src/thrs/simulation/models/Thruster_Module_V19.fmu
+[parallel]
+compile_fmus: \
+    (compile_fmu "src/thrs/simulation/models/XRGTestModel/FMUInterfaceTester_MECS_regular.fmu") \
+    (compile_fmu "src/thrs/simulation/models/Adsorption_Module.fmu") \
+    (compile_fmu "src/thrs/simulation/models/Consumer_ModuleV9.fmu") \
+    (compile_fmu "src/thrs/simulation/models/DC_Module.fmu") \
+    (compile_fmu "src/thrs/simulation/models/DHW_Module.fmu") \
+    (compile_fmu "src/thrs/simulation/models/Drives_Module.fmu") \
+    (compile_fmu "src/thrs/simulation/models/HT_SystemV14.fmu") \
+    (compile_fmu "src/thrs/simulation/models/PCM_ModuleV8.fmu") \
+    (compile_fmu "src/thrs/simulation/models/PVT_ModuleV16.fmu") \
+    (compile_fmu "src/thrs/simulation/models/Thruster_Module_V19.fmu")
 
 generate_schema:
     poetry run strawberry export-schema thrs.graphql.strawberry --output ../zero-ui/src/modules/thrs/graphql/schema.graphql
