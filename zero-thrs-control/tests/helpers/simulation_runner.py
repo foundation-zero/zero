@@ -4,7 +4,12 @@ from typing import Callable
 from tests.helpers.collector import Collector
 from thrs.classes.control import Control
 from thrs.input_output.alarms import BaseAlarms
-from thrs.input_output.base import CombinedValues, SimulationInputs, ThrsValues
+from thrs.input_output.base import (
+    CombinedValues,
+    SimulationInputs,
+    SimulationValues,
+    ThrsValues,
+)
 from thrs.input_output.fmu_mapping import build_fmu_key_mapping
 from thrs.orchestration.module import CombinedModule, ModuleDescription
 from thrs.orchestration.simulation import Simulation, SimulationResult
@@ -12,13 +17,13 @@ from thrs.simulation.io_mapping import flatten_model_values
 
 
 class SimulationTestRunner[
-    S: ThrsValues,
-    C: ThrsValues,
+    S,
+    C,
     I: SimulationInputs,
-    O: ThrsValues,
-    P: ThrsValues,
-    M: ThrsValues,
-    CV: ThrsValues,
+    O: SimulationValues,
+    P,
+    M,
+    CS,
 ]:
     """Runs a module for a number of ticks
 
@@ -28,8 +33,8 @@ class SimulationTestRunner[
     def __init__(
         self,
         simulation: Simulation[S, C, I, O],
-        control: Control[S, C, P, M, CV],
-        alarms: BaseAlarms,
+        control: Control[S, C, P, M, CS],
+        alarms: BaseAlarms[S, C, P],
     ):
         self._control = control
         self._simulation = simulation
@@ -103,16 +108,16 @@ class SimulationTestRunner[
 
     def run(
         self, n_ticks: int, collector: Collector | None = None
-    ) -> tuple[SimulationResult | None, C, CV]:
+    ) -> tuple[SimulationResult | None, C, CS]:
         for _ in range(n_ticks):
             self.tick(collector)
         return self.last_tick_result, self._control_values, self._controller_state
 
     def run_until(
         self,
-        condition: Callable[[SimulationResult | None, C, CV], bool],
+        condition: Callable[[SimulationResult | None, C, CS], bool],
         collector: Collector | None = None,
-    ) -> tuple[SimulationResult | None, C, CV]:
+    ) -> tuple[SimulationResult | None, C, CS]:
         while not condition(
             self.last_tick_result, self._control_values, self._controller_state
         ):

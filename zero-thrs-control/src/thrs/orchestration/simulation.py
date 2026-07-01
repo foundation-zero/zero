@@ -14,8 +14,8 @@ logger = logging.getLogger(__name__)
 
 @dataclass
 class SimulationResult[
-    S: ThrsValues,
-    C: ThrsValues,
+    S,
+    C,
     I: SimulationInputs,
     O: ThrsValues,
 ]:

@@ -9,7 +9,7 @@ from pydantic_settings import (
 
 from thrs.orchestration.config import Config
 from thrs.orchestration.log import setup_logging
-from thrs.runtime.descriptions.simulation import Mode, Modes
+from thrs.runtime.descriptions.simulation import Modes
 from thrs.runtime.runtime import Runtime
 
 logger: logging.Logger = logging.getLogger(__name__)

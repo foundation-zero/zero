@@ -1,5 +1,3 @@
-
-
 from dataclasses import dataclass
 from datetime import datetime, timedelta
 from typing import (
@@ -367,4 +365,3 @@ MODES: list[Mode] = [
         setup_simulation=lambda: None,
     ),
 ]
-

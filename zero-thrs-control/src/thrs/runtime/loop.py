@@ -1,7 +1,7 @@
 from asyncio import FIRST_COMPLETED, Queue, TaskGroup, create_task, sleep, wait
 from dataclasses import dataclass
 from datetime import timedelta
-from typing import Callable, Coroutine, Never, assert_never, cast
+from typing import Awaitable, Callable, Coroutine, Never, assert_never, cast
 
 from thrs.runtime.runners import Runner
 
@@ -16,7 +16,7 @@ class Second[T]:
     result: T
 
 
-type Hook = Callable[["Loop"], Coroutine[None, None, None]]
+type Hook = Callable[["Loop"], Awaitable[None]]
 
 
 @dataclass
@@ -26,29 +26,32 @@ class LoopHooks:
     stepping: Hook
 
 
-EMPTY_HOOKS = LoopHooks(lambda _: None, lambda _: None, lambda _: None)
+async def empty_hook(_: "Loop"):
+    pass
+
+
+EMPTY_HOOKS = LoopHooks(empty_hook, empty_hook, empty_hook)
 
 
 class Loop:
-    def __init__(self, tick_duration: timedelta, hooks=EMPTY_HOOKS):
+    def __init__(self, tick_duration: timedelta):
         self._playing = False
         self._playback_rate = 1.0
         self._pauses = Queue()
         self._plays: Queue[float] = Queue()
         self._steps: Queue[float] = Queue()
         self._tick_duration = tick_duration
-        self._hooks = hooks
 
-    async def loop(self, runner: Runner):
+    async def loop(self, runner: Runner, hooks: LoopHooks = EMPTY_HOOKS):
         while True:
-            await self._hooks.available(self)
+            await hooks.available(self)
             result = await self.wait_either(self._plays.get(), self._steps.get())
             match result:
                 case First(playback_rate):
                     self._playing = True
                     self._playback_rate = playback_rate
                     sleep_duration = self._tick_duration.total_seconds() / playback_rate
-                    await self._hooks.running(self)
+                    await hooks.running(self)
                     while self._pauses.empty():
                         async with TaskGroup() as tg:
                             tg.create_task(sleep(sleep_duration))
@@ -56,7 +59,7 @@ class Loop:
                     self._pauses.get_nowait()
                     self._playing = False
                 case Second(seconds):
-                    await self._hooks.stepping(self)
+                    await hooks.stepping(self)
                     ticks = max(
                         1,
                         int(seconds / self._tick_duration.total_seconds()),
