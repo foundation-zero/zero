@@ -13,6 +13,7 @@ import {
 } from "@/modules/thrs/types";
 import { computed, Ref, toRefs, unref } from "vue";
 import { createMimicDataProvider, ModuleField } from ".";
+import { useAutomaticMode } from "../../state";
 import { MimicComponentState } from "../components";
 
 const { data } = toRefs(useThrsHistory());
@@ -63,13 +64,21 @@ const getControllerState = <
         field as keyof ThrsModules[Module]["controllerState"]
       ],
   );
+const isAutomaticMode = useAutomaticMode();
 
 createMimicDataProvider({
   getSensorValue,
   getControlValue,
   getParameterValue,
   getControllerState,
-  getComponentState: (state) => computed(() => unref(state) ?? MimicComponentState.Normal),
+  getComponentState: (state) =>
+    computed(() => {
+      if (!isAutomaticMode.value) {
+        return MimicComponentState.Manual;
+      } else {
+        return unref(state) ?? MimicComponentState.Normal;
+      }
+    }),
 });
 </script>
 

@@ -64,6 +64,7 @@
       },
       "controlActions": {
         "automatedControl": "Automated control",
+        "manualControl": "Manual control",
         "off": "Off",
         "modes": {
           "thrusters": "{mode}",

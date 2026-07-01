@@ -14,6 +14,9 @@ provideTooltipContext({
   clear() {},
   component: ref(null),
   data: ref(null),
+  dialog: ref(null),
+  setDialog() {},
+  closeDialog() {},
 });
 </script>
 
