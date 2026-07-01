@@ -21,17 +21,19 @@ class ControlCmd(Config):
 
     async def cli_cmd(self) -> None:
         async with Runtime.setup_for_control(settings, self.mode) as runtime:
-            await runtime.start()
             await runtime.loop.play(1)
+            logger.info("Running control")
+            await runtime.start()
 
 
-class SimulatorCmd(Config):
+class SimulationCmd(Config):
     mode: Modes
 
     async def cli_cmd(self) -> None:
         async with Runtime.setup_for_simulation(settings, self.mode) as runtime:
-            await runtime.start()
             await runtime.loop.play(1)
+            logger.info("Running simulation")
+            await runtime.start()
 
 
 class LockstepCmd(Config):
@@ -40,6 +42,7 @@ class LockstepCmd(Config):
     async def cli_cmd(self) -> None:
         async with Runtime.setup_for_lockstep(settings, self.mode) as runtime:
             await runtime.clear_previous()
+            logger.info("Running lockstep")
             await runtime.start()
 
 
@@ -52,12 +55,11 @@ class ThrsCli(BaseSettings, cli_kebab_case=True):
     )
 
     lockstep: CliSubCommand[LockstepCmd]
-    simulator: CliSubCommand[SimulatorCmd]
+    simulation: CliSubCommand[SimulationCmd]
     control: CliSubCommand[ControlCmd]
 
     def cli_cmd(self) -> None:
         setup_logging()
-        logger.debug("Running THRS control...")
 
         try:
             CliApp.run_subcommand(self)
