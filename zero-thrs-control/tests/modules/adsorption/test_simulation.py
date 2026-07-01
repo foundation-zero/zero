@@ -23,7 +23,7 @@ def incorrect_simulation_inputs(simulation_inputs, request):
     return inputs
 
 
-def test_thrusters_simulation_inputs(incorrect_simulation_inputs, control):
+def test_adsorption_simulation_inputs(incorrect_simulation_inputs, control):
     with Fmu(adsorption_path) as fmu:
         simulation = Simulation(
             AdsorptionSensorValues,
