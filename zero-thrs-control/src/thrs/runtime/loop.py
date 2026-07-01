@@ -1,9 +1,12 @@
+import logging
 from asyncio import FIRST_COMPLETED, Queue, TaskGroup, create_task, sleep, wait
 from dataclasses import dataclass
 from datetime import timedelta
 from typing import Awaitable, Callable, Coroutine, Never, assert_never, cast
 
 from thrs.runtime.runners import Runner
+
+logger: logging.Logger = logging.getLogger(__name__)
 
 
 @dataclass
@@ -44,14 +47,18 @@ class Loop:
 
     async def loop(self, runner: Runner, hooks: LoopHooks = EMPTY_HOOKS):
         while True:
+            logger.debug("Send status directive: available")
             await hooks.available(self)
+            logger.debug("Loop waiting for directive...")
             result = await self.wait_either(self._plays.get(), self._steps.get())
+            logger.debug("Loop received directive: %s", result)
             match result:
                 case First(playback_rate):
                     self._playing = True
                     self._playback_rate = playback_rate
                     sleep_duration = self._tick_duration.total_seconds() / playback_rate
                     await hooks.running(self)
+
                     while self._pauses.empty():
                         async with TaskGroup() as tg:
                             tg.create_task(sleep(sleep_duration))

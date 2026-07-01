@@ -51,7 +51,9 @@ class LockstepRunner[
                 self._control_values
             )
             await self._control_connector.send_sensor_values(sim_result)
-            await self._control_connector.send_computed_values(sim_result.sensor_values)
+            await self._control_connector.send_computed_sensor_values(
+                sim_result.sensor_values
+            )
             await self._simulation_connector.send_simulation_values(sim_result)
             self._control_values, self._controller_state = self._control.control(
                 sim_result.sensor_values
@@ -89,20 +91,23 @@ class ControlRunner[S, C, P, M, CS](Runner):
         for _ in range(n_ticks):
             sensor_values = await self._connector.get_sensor_values()
 
-            await self._connector.send_computed_values(sensor_values)
+            # Computed values are added (using a builder()) to sensor values when they are received from mqtt and
+            # should therefore be exposed to MQTT.
+            self._connector.send_computed_sensor_values(sensor_values)
 
             self._control_values, self._controller_state = self._control.control(
                 sensor_values
             )
             await self._connector.send_control(self._control_values)
 
-            alarms = self._alarms.check(
-                sensor_values, self._control_values, self._control.parameters
-            )
-            if alarms:
-                warnings.warn(
-                    f"Alarms detected: {alarms}"
-                )  # TODO: properly handle alarms
+            self._check_alarms(sensor_values)
+
+    def _check_alarms(self, sensor_values):
+        alarms = self._alarms.check(
+            sensor_values, self._control_values, self._control.parameters
+        )
+        if alarms:
+            warnings.warn(f"Alarms detected: {alarms}")  # TODO: properly handle alarms
 
 
 class SimulationRunner[S, C, I: SimulationInputs, O: SimulationValues](Runner):
@@ -118,7 +123,9 @@ class SimulationRunner[S, C, I: SimulationInputs, O: SimulationValues](Runner):
         """Run simulation only, without control.
         1. Get control values from MQTT
         2. Tick simulation with control values
-        3. Send sensor values to MQTT"""
+        3. Send sensor values to MQTT
+        4. Send simulation outputs to MQTT"""
+
         for _ in range(n_ticks):
             control_values = await self._connector.get_control_values()
             sim_result = self._simulation.tick(control_values)
