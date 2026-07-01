@@ -154,6 +154,7 @@ class DrivesSensorValues(ThrsValues):
             yard_tag="45002079",  # TODO: figure out correct yard tag. We do expect separate signal from each Aradex
             component_type="propulsion_drive",
             included_in_fmu=False,
+            topic_override="dummy-pms/esi_active",
         ),
     ]
     drives_propdrive_aft2: Annotated[
@@ -162,6 +163,7 @@ class DrivesSensorValues(ThrsValues):
             yard_tag="45002079",  # TODO: figure out correct yard tag. We do expect separate signal from each Aradex
             component_type="propulsion_drive",
             included_in_fmu=False,
+            topic_override="dummy-pcs/aradex-aft2-active",
         ),
     ]
     drives_propdrive_fwd1: Annotated[
@@ -170,6 +172,7 @@ class DrivesSensorValues(ThrsValues):
             yard_tag="45002080",  # TODO: figure out correct yard tag. We do expect separate signal from each Aradex
             component_type="propulsion_drive",
             included_in_fmu=False,
+            topic_override="dummy-pcs/aradex-fwd1-active",
         ),
     ]
     drives_propdrive_fwd2: Annotated[
@@ -178,6 +181,7 @@ class DrivesSensorValues(ThrsValues):
             yard_tag="45002080",  # TODO: figure out correct yard tag. We do expect separate signal from each Aradex
             component_type="propulsion_drive",
             included_in_fmu=False,
+            topic_override="dummy-pcs/aradex-fwd2-active",
         ),
     ]
     drives_shorepower: Annotated[
@@ -186,6 +190,7 @@ class DrivesSensorValues(ThrsValues):
             yard_tag="45002001",
             component_type="shore_power_converter",
             included_in_fmu=False,
+            topic_override="dummy-pcs/shorepower-active",
         ),
     ]
 
