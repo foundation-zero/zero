@@ -15,6 +15,51 @@ export const toSensorDefinition = <T extends SensorDefinitions>(input: T): T => 
 export const toParameterDefinition = <T extends ParameterDefinitions>(input: T): T => input;
 export const toSimulationDefinition = <T extends SimulationDefinitions>(input: T): T => input;
 
+export const ADSORPTION_CONTROL_DEFINITION = toControlDefinition({});
+
+export const ADSORPTION_PARAMETER_DEFINITION = toParameterDefinition({});
+
+export const ADSORPTION_SENSOR_DEFINITION = toSensorDefinition({});
+
+export const ADSORPTION_SIMULATION_INPUTS = toSimulationDefinition({
+  adsorptionCoolingSupply: {
+    componentType: SimulationComponentType.Temperature,
+  },
+  adsorptionSeawaterSupply: {
+    componentType: SimulationComponentType.Boundary,
+  },
+  adsorptionAvailableHotTemperature: {
+    componentType: SimulationComponentType.Temperature,
+  },
+  adsorptionAvailableColdTemperature: {
+    componentType: SimulationComponentType.Temperature,
+  },
+  adsorptionAvailableSeawaterTemperature: {
+    componentType: SimulationComponentType.Temperature,
+  },
+  adsorptionHtSupply: {
+    componentType: SimulationComponentType.Boundary,
+  },
+  adsorptionDhwSupply: {
+    componentType: SimulationComponentType.Boundary,
+  },
+});
+
+export const ADSORPTION_SIMULATION_OUTPUTS = toSimulationDefinition({
+  adsorptionCoolingReturn: {
+    componentType: SimulationComponentType.Boundary,
+  },
+  adsorptionSeawaterReturn: {
+    componentType: SimulationComponentType.Temperature,
+  },
+  adsorptionDhwReturn: {
+    componentType: SimulationComponentType.Temperature,
+  },
+  adsorptionHtReturn: {
+    componentType: SimulationComponentType.Temperature,
+  },
+});
+
 export const CONSUMERS_CONTROL_DEFINITION = toControlDefinition({
   consumersFlowcontrolAdsorption: {
     yardTag: "50001061",
@@ -144,6 +189,30 @@ export const CONSUMERS_SIMULATION_OUTPUTS = toSimulationDefinition({
   },
   consumersPcmReturn: {
     componentType: SimulationComponentType.Boundary,
+  },
+});
+
+export const DC_CONTROL_DEFINITION = toControlDefinition({});
+
+export const DC_PARAMETER_DEFINITION = toParameterDefinition({});
+
+export const DC_SENSOR_DEFINITION = toSensorDefinition({});
+
+export const DC_SIMULATION_INPUTS = toSimulationDefinition({
+  dcSeawaterSupply: {
+    componentType: SimulationComponentType.Boundary,
+  },
+  dcDhwSupply: {
+    componentType: SimulationComponentType.Boundary,
+  },
+});
+
+export const DC_SIMULATION_OUTPUTS = toSimulationDefinition({
+  dcSeawaterReturn: {
+    componentType: SimulationComponentType.Temperature,
+  },
+  dcDhwReturn: {
+    componentType: SimulationComponentType.Temperature,
   },
 });
 
@@ -602,14 +671,14 @@ export const DHW_SIMULATION_INPUTS = toSimulationDefinition({
   dhwFreshwaterSupply: {
     componentType: SimulationComponentType.OverpressureTemperature,
   },
+  dhwHvacExchanger: {
+    componentType: SimulationComponentType.HvacExchanger,
+  },
   dhwSeawaterSupply: {
     componentType: SimulationComponentType.Temperature,
   },
   dhwHotwaterDemand: {
     componentType: SimulationComponentType.Flow,
-  },
-  dhwHvacExchanger: {
-    componentType: SimulationComponentType.HvacExchanger,
   },
 });
 
@@ -634,6 +703,36 @@ export const DHW_SIMULATION_OUTPUTS = toSimulationDefinition({
   },
   dhwFreshwaterReturn: {
     componentType: SimulationComponentType.Boundary,
+  },
+});
+
+export const DRIVES_CONTROL_DEFINITION = toControlDefinition({});
+
+export const DRIVES_PARAMETER_DEFINITION = toParameterDefinition({});
+
+export const DRIVES_SENSOR_DEFINITION = toSensorDefinition({});
+
+export const DRIVES_SIMULATION_INPUTS = toSimulationDefinition({
+  drivesOilCoolerAft: {
+    componentType: SimulationComponentType.HeatSource,
+  },
+  drivesOilCoolerFwd: {
+    componentType: SimulationComponentType.HeatSource,
+  },
+  drivesSeawaterSupply: {
+    componentType: SimulationComponentType.Boundary,
+  },
+  drivesDhwSupply: {
+    componentType: SimulationComponentType.Boundary,
+  },
+});
+
+export const DRIVES_SIMULATION_OUTPUTS = toSimulationDefinition({
+  drivesSeawaterReturn: {
+    componentType: SimulationComponentType.Temperature,
+  },
+  drivesDhwReturn: {
+    componentType: SimulationComponentType.Temperature,
   },
 });
 

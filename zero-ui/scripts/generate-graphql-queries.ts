@@ -118,6 +118,7 @@ const FIELD_MAPPINGS: AllFieldMappings = {
     Flow: ["flow"],
     Pcs: ["mode"],
     HeatSource: ["heatFlow"],
+    HvacExchanger: ["heatFlow", "maximumTemperature"],
   },
 
   // Parameter fields (parameters are flat values, no nested fields)
