@@ -47,7 +47,8 @@ class Runtime:
                 config.mqtt_controller_topic_prefix,
                 sensor_values_clss={},  # simulation gets sensor values from the simulation
                 control_values_clss=mode.control_module.control_values_clss,
-                controller_values_clss={mode.name: simulation.outputs_cls},
+                controller_state_clss={},
+                simulation_outputs_clss=simulation.outputs_cls,
                 sensor_topic_suffix=config.mqtt_control_topic_suffix,
             )
             yield Runtime(
@@ -74,7 +75,7 @@ class Runtime:
                 controller_topic_prefix=config.mqtt_controller_topic_prefix,
                 sensor_values_clss=mode.control_module.sensor_values_clss,
                 control_values_clss=mode.control_module.control_values_clss,
-                controller_values_clss={},  # Nothing yet, but we want to send controller values here at some point
+                controller_state_clss={},  # Nothing yet, but we want to send controller values here at some point
                 control_topic_suffix=config.mqtt_control_topic_suffix,
             )
 
@@ -93,7 +94,8 @@ class Runtime:
                 controller_topic_prefix=config.mqtt_controller_topic_prefix,
                 sensor_values_clss={},  # simulation gets sensor values from the simulation
                 control_values_clss=mode.control_module.control_values_clss,
-                controller_values_clss={mode.name: simulation.outputs_cls},
+                controller_state_clss={},
+                simulation_outputs_clss=simulation.outputs_cls,
                 sensor_topic_suffix=config.mqtt_control_topic_suffix,
             )
             runner = LockstepRunner(
@@ -126,7 +128,7 @@ class Runtime:
                 controller_topic_prefix=config.mqtt_controller_topic_prefix,
                 sensor_values_clss=mode.control_module.sensor_values_clss,
                 control_values_clss=mode.control_module.control_values_clss,
-                controller_values_clss={},  # Nothing yet, but we want to send controller values here at some point
+                controller_state_clss={},  # Nothing yet, but we want to send controller values here at some point
                 control_topic_suffix=config.mqtt_control_topic_suffix,
             )
 
