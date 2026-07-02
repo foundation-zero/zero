@@ -20,7 +20,8 @@
         "viewCircuitMimic": "View circuit mimic",
         "viewControls": "View controls",
         "controlManually": "Control manually",
-        "controlAutomatically": "Switch to auto mode"
+        "controlAutomatically": "Switch to auto mode",
+        "confirm": "Confirm"
       },
       "labels": {
         "input": "Input",

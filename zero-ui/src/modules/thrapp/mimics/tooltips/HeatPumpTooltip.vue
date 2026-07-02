@@ -9,13 +9,15 @@ import {
 import { MimicTooltip, TooltipComponentContext } from "../../components/tooltip/index.ts";
 import { MimicComponentType } from "../../types/index.ts";
 import { YardTag } from "../components/yard-tag/index.ts";
+import { FieldEditor } from "../editors/index.ts";
 import HeatPumpInstance from "../instances/HeatPumpInstance.vue";
-import { ControlValue, SensorValue } from "../providers/index.ts";
+import { ControlValue, ControlValueForm, SensorValue } from "../providers/index.ts";
 import { FieldRenderer } from "../renderers/index.ts";
 import { useTranslations } from "./index.ts";
 import ComponentInfo from "./partials/ComponentInfo.vue";
 import FlowController from "./partials/FlowController.vue";
 import ManualControl from "./partials/ManualControl.vue";
+import SubmitControlForm from "./partials/SubmitControlForm.vue";
 
 const { items, labels, sources } = useTranslations();
 
@@ -39,34 +41,43 @@ const props = defineProps<TooltipComponentContext<MimicComponentType.HeatPump>>(
 
     <TooltipList>
       <TooltipListHeader>{{ labels("input") }}</TooltipListHeader>
-      <ControlValue
-        :source="controls.heatpump"
-        field="on"
-      >
-        <TooltipListItem>
-          <TooltipListItemTitle>
-            {{ items("onOff") }}
-            <FieldRenderer.Source external> </FieldRenderer.Source>
-          </TooltipListItemTitle>
-          <TooltipListItemValue>
-            <FieldRenderer.OnOff />
-          </TooltipListItemValue>
-        </TooltipListItem>
-      </ControlValue>
-      <ControlValue
-        :source="controls.heatpump"
-        field="temperatureSetpoint"
-      >
-        <TooltipListItem>
-          <TooltipListItemTitle>
-            {{ items("temperature") }}
-            <FieldRenderer.Source url />
-          </TooltipListItemTitle>
-          <TooltipListItemValue>
-            <FieldRenderer.Temperature />
-          </TooltipListItemValue>
-        </TooltipListItem>
-      </ControlValue>
+      <ControlValueForm :source="controls.heatpump">
+        <ControlValue
+          :source="controls.heatpump"
+          field="on"
+        >
+          <TooltipListItem>
+            <TooltipListItemTitle>
+              {{ items("onOff") }}
+              <FieldRenderer.Source>{{ sources("this") }}</FieldRenderer.Source>
+            </TooltipListItemTitle>
+
+            <FieldEditor.Auto>
+              <TooltipListItemValue>
+                <FieldRenderer.Auto />
+              </TooltipListItemValue>
+            </FieldEditor.Auto>
+          </TooltipListItem>
+        </ControlValue>
+        <ControlValue
+          :source="controls.heatpump"
+          field="temperatureSetpoint"
+        >
+          <TooltipListItem>
+            <TooltipListItemTitle>
+              {{ items("temperature") }}
+              <FieldRenderer.Source>{{ sources("this") }}</FieldRenderer.Source>
+            </TooltipListItemTitle>
+            <FieldEditor.Auto>
+              <TooltipListItemValue>
+                <FieldRenderer.Auto />
+              </TooltipListItemValue>
+            </FieldEditor.Auto>
+          </TooltipListItem>
+        </ControlValue>
+
+        <SubmitControlForm />
+      </ControlValueForm>
     </TooltipList>
 
     <TooltipList>
@@ -81,7 +92,7 @@ const props = defineProps<TooltipComponentContext<MimicComponentType.HeatPump>>(
             <FieldRenderer.Source>{{ sources("calculated") }}</FieldRenderer.Source>
           </TooltipListItemTitle>
           <TooltipListItemValue>
-            <FieldRenderer.Heat />
+            <FieldRenderer.Auto />
           </TooltipListItemValue>
         </TooltipListItem>
       </SensorValue>
@@ -94,7 +105,7 @@ const props = defineProps<TooltipComponentContext<MimicComponentType.HeatPump>>(
             {{ items("deltaTemperature") }}
           </TooltipListItemTitle>
           <TooltipListItemValue>
-            <FieldRenderer.DeltaT />
+            <FieldRenderer.Auto />
           </TooltipListItemValue>
         </TooltipListItem>
       </SensorValue>
@@ -107,7 +118,7 @@ const props = defineProps<TooltipComponentContext<MimicComponentType.HeatPump>>(
             {{ items("incomingTemperature") }}
           </TooltipListItemTitle>
           <TooltipListItemValue>
-            <FieldRenderer.Temperature />
+            <FieldRenderer.Auto />
           </TooltipListItemValue>
         </TooltipListItem>
       </SensorValue>
@@ -120,7 +131,7 @@ const props = defineProps<TooltipComponentContext<MimicComponentType.HeatPump>>(
             {{ items("outgoingTemperature") }}
           </TooltipListItemTitle>
           <TooltipListItemValue>
-            <FieldRenderer.Temperature />
+            <FieldRenderer.Auto />
           </TooltipListItemValue>
         </TooltipListItem>
       </SensorValue>

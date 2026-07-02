@@ -21,6 +21,7 @@ import { MimicComponentState } from "../components/index.ts";
 
 export { default as ControllerStateValue } from "./ControllerStateValue.vue";
 export { default as ControlValue } from "./ControlValue.vue";
+export { default as ControlValueForm } from "./ControlValueForm.vue";
 export { default as GraphQLProvider } from "./GraphQLProvider.vue";
 export { default as MockProvider } from "./MockProvider.vue";
 export { default as ParameterValue } from "./ParameterValue.vue";
@@ -93,6 +94,10 @@ export const [getMimicDataProvider, createMimicDataProvider] =
   createContext<MimicDataProvider>("MimicProvider");
 
 export const provideFieldValue = <T>(value: Ref<T>) => provide("FieldValue", value);
+export const provideFieldValueField = (field?: string) => provide("FieldValueField", field);
+export const injectFieldValueField = <T extends string = string>() =>
+  inject<T | undefined>("FieldValueField");
+
 export const provideFieldValueSource = <
   T extends
     | SensorComponentType
@@ -102,6 +107,7 @@ export const provideFieldValueSource = <
 >(
   value: ModuleField<T>,
 ) => provide("FieldValueSource", value);
+
 export const injectFieldValueSource = <
   T extends
     | SensorComponentType

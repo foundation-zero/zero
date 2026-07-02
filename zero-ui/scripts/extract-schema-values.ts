@@ -252,7 +252,7 @@ function processControlField(
   directiveArgs: DirectiveArgs,
 ): ExtractedValue | null {
   const entry: ExtractedValue = {
-    yardTag: directiveArgs.yardTag || "N/A",
+    yardTag: directiveArgs.yardTag || "",
     fieldType: fieldType,
   };
 
@@ -273,7 +273,7 @@ function processSensorField(
   directiveArgs: DirectiveArgs,
 ): ExtractedValue | null {
   const entry: ExtractedValue = {
-    yardTag: directiveArgs.yardTag ?? "N/A",
+    yardTag: directiveArgs.yardTag ?? "",
     fieldType: fieldType,
   };
 

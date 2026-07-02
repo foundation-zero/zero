@@ -59,6 +59,11 @@ export const validationStatusToNumber: Record<ValidationStatus, number> = {
   [ValidationStatus.UNKNOWN]: 0,
 };
 
+export const capitalizeFirst = (a: string) => {
+  const f = a.substring(0, 1).toUpperCase();
+  return `${f}${a.substring(1)}`;
+};
+
 export const compareByValidationStatus = (a: ValidationStatus, b: ValidationStatus) =>
   validationStatusToNumber[a] - validationStatusToNumber[b];
 

@@ -618,47 +618,47 @@ export const DHW_SENSOR_DEFINITION = toSensorDefinition({
     componentType: SensorComponentType.Temperature,
   },
   drivesDelta: {
-    yardTag: "N/A",
+    yardTag: "",
     componentType: SensorComponentType.DeltaT,
   },
   dcDelta: {
-    yardTag: "N/A",
+    yardTag: "",
     componentType: SensorComponentType.DeltaT,
   },
   consumersDelta: {
-    yardTag: "N/A",
+    yardTag: "",
     componentType: SensorComponentType.DeltaT,
   },
   adsorptionDelta: {
-    yardTag: "N/A",
+    yardTag: "",
     componentType: SensorComponentType.DeltaT,
   },
   dhwFreshwaterFlowSupply: {
-    yardTag: "N/A",
+    yardTag: "",
     componentType: SensorComponentType.CalculatedFlow,
   },
   dhwHvacExchanger: {
-    yardTag: "N/A",
+    yardTag: "",
     componentType: SensorComponentType.HeatExchanger,
   },
   dhwHeatpump: {
-    yardTag: "N/A",
+    yardTag: "",
     componentType: SensorComponentType.HeatExchanger,
   },
   dhwAdsorptionExchanger: {
-    yardTag: "N/A",
+    yardTag: "",
     componentType: SensorComponentType.HeatExchanger,
   },
   dhwConsumersExchanger: {
-    yardTag: "N/A",
+    yardTag: "",
     componentType: SensorComponentType.HeatExchanger,
   },
   dhwDcExchanger: {
-    yardTag: "N/A",
+    yardTag: "",
     componentType: SensorComponentType.HeatExchanger,
   },
   dhwDrivesExchanger: {
-    yardTag: "N/A",
+    yardTag: "",
     componentType: SensorComponentType.HeatExchanger,
   },
 });

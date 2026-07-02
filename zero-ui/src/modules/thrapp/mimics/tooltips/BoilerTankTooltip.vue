@@ -16,7 +16,7 @@ import { MimicComponentType } from "../../types";
 import { DHW_TANK_CAPACITY } from "../../utils/consts.ts";
 import { YardTag } from "../components/yard-tag";
 import BoilerTankInstance from "../instances/BoilerTankInstance.vue";
-import { getMimicDataProvider, ParameterValue } from "../providers";
+import { ControllerStateValue, getMimicDataProvider, ParameterValue } from "../providers";
 import SensorValue from "../providers/SensorValue.vue";
 import { FieldRenderer } from "../renderers/index.ts";
 import BoilerTankController from "./partials/BoilerTankController.vue";

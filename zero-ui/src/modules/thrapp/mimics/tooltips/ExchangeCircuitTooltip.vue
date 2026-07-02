@@ -15,7 +15,6 @@ import { FieldRenderer } from "../renderers/index.ts";
 import { useTranslations } from "./index.ts";
 import Circuit from "./partials/Circuit.vue";
 import ComponentInfo from "./partials/ComponentInfo.vue";
-import ManualControl from "./partials/ManualControl.vue";
 
 const props = defineProps<TooltipComponentContext<MimicComponentType.ExchangeCircuit>>();
 
@@ -34,7 +33,6 @@ const { labels, items, actions } = useTranslations();
 
     <TooltipList class="border-b-0">
       <ComponentInfo :tooltip="tooltip" />
-      <ManualControl />
     </TooltipList>
 
     <TooltipList>

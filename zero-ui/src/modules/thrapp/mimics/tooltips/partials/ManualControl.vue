@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { Button } from "@/components/ui/button";
 import { ManualModeToggleDialog } from "@/modules/thrapp/components/manual-mode-toggle";
-import { getTooltipContext, TooltipContent } from "@/modules/thrapp/components/tooltip";
+import { getTooltipContext } from "@/modules/thrapp/components/tooltip";
 import { TooltipListItem, TooltipListItemTitle } from "@/modules/thrapp/components/tooltip-list";
 import { useAutomaticMode } from "@/modules/thrapp/state";
 import { useTranslations } from "..";
@@ -11,8 +11,6 @@ const { t, items, actions } = useTranslations();
 const { setDialog } = getTooltipContext();
 
 const automaticMode = useAutomaticMode();
-
-defineProps<{ tooltip?: TooltipContent }>();
 
 const enableAutomaticControl = async () => {
   automaticMode.value = true;
