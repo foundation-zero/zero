@@ -5,12 +5,12 @@ image:
   pullPolicy: IfNotPresent
   tag: ""
 
-configPath: /app/config.xml
+configPath: /app/example/config.xml
 
 mqtt:
   host: ""
   port: 1883
-  prefix: telemetry
+  prefix: fiber-optics
   username: fiber-optics
   existingSecret: ""
   existingSecretPasswordKey: password
