@@ -64,7 +64,7 @@ class ModbusRtuToMqttBridge:
         await self._modbus.connect()
         if not self._modbus.connected:
             logging.warning("Modbus not connected")
-            return
+            self._modbus.close()
         for unit in self._modbus_units:
             for topic in unit.topics:
                 modbus_values = await self.read_modbus(
@@ -90,9 +90,11 @@ class ModbusRtuToMqttBridge:
                 result.append((address, value))
             except ModbusException as exc:
                 logging.error(f"ERROR: exception in pymodbus {exc}")
+                self._modbus.close()
                 raise exc
             if rr.isError():
                 logging.error("ERROR: pymodbus returned an error!")
+                self._modbus.close()
                 raise ModbusException(value)
 
         return result

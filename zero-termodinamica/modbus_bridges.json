@@ -628,7 +628,7 @@
           },
           {
             "field_name": "room",
-            "value": "Office area (Fwd)"
+            "value": "Office area (Fwd)-10"
           }
         ]
       },
@@ -691,7 +691,7 @@
           },
           {
             "field_name": "room",
-            "value": "Guest cabin (Fr.42 Mid PS)"
+            "value": "Guest cabin (Fr.42 Mid PS)-11"
           }
         ]
       },
@@ -1636,7 +1636,7 @@
           },
           {
             "field_name": "room",
-            "value": "Office area (Fwd)"
+            "value": "Office area (Fwd)-26"
           }
         ]
       },
@@ -1699,7 +1699,7 @@
           },
           {
             "field_name": "room",
-            "value": "Guest cabin (Fr.42 Mid PS)"
+            "value": "Guest cabin (Fr.42 Mid PS)-27"
           }
         ]
       },

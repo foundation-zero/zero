@@ -1,4 +1,5 @@
 import logging
+import time
 
 from pydantic_settings import (
     BaseSettings,
@@ -39,10 +40,22 @@ class StubCmd(ModbusSettings):
 
 class RunRTUCmd(ModbusSerialSettings, MqttSettings):
     async def cli_cmd(self) -> None:
-        async with ModbusRtuToMqttBridge.from_settings(
-            self, self, read_modbus_units()
-        ) as reader:
-            await reader.run()
+        while True:
+            try:
+                async with ModbusRtuToMqttBridge.from_settings(
+                    self, self, read_modbus_units()
+                ) as reader:
+                    await reader.run()
+            except KeyboardInterrupt:
+                break
+            except ExceptionGroup as eg:
+                # Recursively extracts all individual nested exceptions
+                for error in eg.exceptions:
+                    print(f"Error: {type(error).__name__} - {error}")
+            except Exception as e:
+                logging.error(f"Error: {e}")
+
+            time.sleep(60)
 
 
 class ZeroTermodinamica(BaseSettings, cli_kebab_case=True):
