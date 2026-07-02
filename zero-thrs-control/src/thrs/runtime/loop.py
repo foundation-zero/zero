@@ -1,8 +1,13 @@
 import logging
-from asyncio import FIRST_COMPLETED, Queue, TaskGroup, create_task, sleep, wait
+from asyncio import (
+    Queue,
+    QueueEmpty,
+    TaskGroup,
+    sleep,
+)
 from dataclasses import dataclass
 from datetime import timedelta
-from typing import Awaitable, Callable, Coroutine, Never, assert_never, cast
+from typing import Awaitable, Callable
 
 from thrs.runtime.runners import Runner
 
@@ -10,13 +15,18 @@ logger: logging.Logger = logging.getLogger(__name__)
 
 
 @dataclass
-class First[T]:
-    result: T
+class Play:
+    playback_rate: float
 
 
 @dataclass
-class Second[T]:
-    result: T
+class Pause:
+    pass
+
+
+@dataclass
+class Step:
+    seconds: float
 
 
 type Hook = Callable[["Loop"], Awaitable[None]]
@@ -40,9 +50,7 @@ class Loop:
     def __init__(self, tick_duration: timedelta):
         self._playing = False
         self._playback_rate = 1.0
-        self._pauses = Queue()
-        self._plays: Queue[float] = Queue()
-        self._steps: Queue[float] = Queue()
+        self._commands = Queue[Play | Pause | Step]()
         self._tick_duration = tick_duration
 
     async def loop(self, runner: Runner, hooks: LoopHooks = EMPTY_HOOKS):
@@ -50,21 +58,29 @@ class Loop:
 
         while True:
             await hooks.available(self)
-            result = await self.wait_either(self._plays.get(), self._steps.get())
+            result = await self._commands.get()
             match result:
-                case First(playback_rate):
+                case Play(playback_rate):
                     self._playing = True
                     self._playback_rate = playback_rate
                     sleep_duration = self._tick_duration.total_seconds() / playback_rate
                     await hooks.running(self)
 
-                    while self._pauses.empty():
+                    while True:
                         async with TaskGroup() as tg:
                             tg.create_task(sleep(sleep_duration))
                             tg.create_task(runner.run(1))
-                    self._pauses.get_nowait()
-                    self._playing = False
-                case Second(seconds):
+
+                        try:
+                            command = self._commands.get_nowait()
+                            if isinstance(command, Pause):
+                                self._playing = False
+                                break
+                            else:
+                                pass  # continue running
+                        except QueueEmpty:
+                            pass
+                case Step(seconds):
                     await hooks.stepping(self)
                     ticks = max(
                         1,
@@ -74,28 +90,12 @@ class Loop:
 
     async def play(self, playback_rate: float):
         logger.debug("Loop play requested: %s", playback_rate)
-        await self._plays.put(playback_rate)
+        await self._commands.put(Play(playback_rate))
 
     async def pause(self):
         logger.debug("Loop pause requested")
-        await self._pauses.put(None)
+        await self._commands.put(Pause())
 
     async def step(self, seconds: float):
         logger.debug("Loop step requested: %s", seconds)
-        await self._steps.put(seconds)
-
-    @staticmethod
-    async def wait_either[A, B](
-        a: Coroutine[None, None, A], b: Coroutine[None, None, B]
-    ) -> First[A] | Second[B]:
-        a_task, b_task = create_task(a), create_task(b)
-        dones, _waiting = await wait([a_task, b_task], return_when=FIRST_COMPLETED)
-        result = dones.pop()
-        if result == a_task:
-            return First(a_task.result())
-        elif result == b_task:
-            return Second(b_task.result())
-        else:
-            assert_never(
-                cast(Never, result)
-            )  # Type checker isn't smart enough to know that result == a_task matches all Task[A]s (or same for result == b_task)
+        await self._commands.put(Step(seconds))
