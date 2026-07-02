@@ -46,12 +46,11 @@ class Loop:
         self._tick_duration = tick_duration
 
     async def loop(self, runner: Runner, hooks: LoopHooks = EMPTY_HOOKS):
+        logger.debug("Loop started")
+
         while True:
-            logger.debug("Send status directive: available")
             await hooks.available(self)
-            logger.debug("Loop waiting for directive...")
             result = await self.wait_either(self._plays.get(), self._steps.get())
-            logger.debug("Loop received directive: %s", result)
             match result:
                 case First(playback_rate):
                     self._playing = True
@@ -74,12 +73,15 @@ class Loop:
                     await runner.run(ticks)
 
     async def play(self, playback_rate: float):
+        logger.debug("Loop play requested: %s", playback_rate)
         await self._plays.put(playback_rate)
 
     async def pause(self):
+        logger.debug("Loop pause requested")
         await self._pauses.put(None)
 
     async def step(self, seconds: float):
+        logger.debug("Loop step requested: %s", seconds)
         await self._steps.put(seconds)
 
     @staticmethod

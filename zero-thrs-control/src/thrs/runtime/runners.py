@@ -93,7 +93,7 @@ class ControlRunner[S, C, P, M, CS](Runner):
 
             # Computed values are added (using a builder()) to sensor values when they are received from mqtt and
             # should therefore be exposed to MQTT.
-            self._connector.send_computed_sensor_values(sensor_values)
+            await self._connector.send_computed_sensor_values(sensor_values)
 
             self._control_values, self._controller_state = self._control.control(
                 sensor_values
