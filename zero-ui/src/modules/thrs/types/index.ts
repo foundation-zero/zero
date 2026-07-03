@@ -55,6 +55,12 @@ export type HeatpumpControl = {
   on: Stamped<boolean>;
 };
 
+export type ControlValueFields =
+  | keyof PumpControl
+  | keyof ValveControl
+  | keyof PcmControl
+  | keyof HeatpumpControl;
+
 export type ControlFields = {
   [ControlComponentType.Pump]: (keyof PumpControl)[];
   [ControlComponentType.Valve]: (keyof ValveControl)[];
@@ -66,6 +72,18 @@ export type ControllerStateFields = {
   [ControllerStateComponentType.DhwTanksController]: (keyof DhwTankController)[];
   [ControllerStateComponentType.PIDController]: (keyof PIDController)[];
 };
+
+export type SensorValueFields =
+  | keyof PumpSensor
+  | keyof TemperatureSensor
+  | keyof FlowSensor
+  | keyof PressureSensor
+  | keyof ThrusterSensor
+  | keyof PcsSensor
+  | keyof LevelSensor
+  | keyof DeltaTSensor
+  | keyof HeatExchangerSensor
+  | keyof Valve;
 
 export type SensorFields = {
   [SensorComponentType.Flow]: (keyof FlowSensor)[];
@@ -156,6 +174,7 @@ export type SensorType =
   | DeltaTSensor;
 
 export type ControlType = PumpControl | ValveControl | PcmControl | HeatpumpControl;
+
 export type ControllerStateType = DhwTankController | PIDController;
 export type Sensors = Record<string, SensorType>;
 export type Controls = Record<string, ControlType>;

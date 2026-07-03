@@ -10,13 +10,15 @@ import {
 import { MimicTooltip, TooltipComponentContext } from "../../components/tooltip/index.ts";
 import { MimicComponentType } from "../../types/index.ts";
 import { YardTag } from "../components/yard-tag/index.ts";
+import { FieldEditor } from "../editors/index.ts";
 import PumpInstance from "../instances/PumpInstance.vue";
-import { ControlValue, SensorValue } from "../providers/index.ts";
+import { ControlValue, ControlValueForm, SensorValue } from "../providers/index.ts";
 import { FieldRenderer } from "../renderers/index.ts";
 import { useTranslations } from "./index.ts";
 import ComponentInfo from "./partials/ComponentInfo.vue";
 import FlowController from "./partials/FlowController.vue";
 import ManualControl from "./partials/ManualControl.vue";
+import SubmitControlForm from "./partials/SubmitControlForm.vue";
 import TemperatureController from "./partials/TemperatureController.vue";
 
 const props = defineProps<TooltipComponentContext<MimicComponentType.Pump>>();
@@ -38,38 +40,43 @@ const { labels, actions, items, sources } = useTranslations();
 
     <TooltipList>
       <TooltipListHeader>{{ labels("input") }}</TooltipListHeader>
-      <ControlValue
-        :source="controls.pump"
-        field="dutypoint"
-      >
-        <TooltipListItem>
-          <TooltipListItemTitle>
-            {{ items("relativeDutyPoint") }}
-            <FieldRenderer.Source external>{{
-              sources("pumpFlowController")
-            }}</FieldRenderer.Source>
-          </TooltipListItemTitle>
-          <TooltipListItemValue>
-            <FieldRenderer.Percentage />
-          </TooltipListItemValue>
-        </TooltipListItem>
-      </ControlValue>
-      <ControlValue
-        :source="controls.pump"
-        field="on"
-      >
-        <TooltipListItem>
-          <TooltipListItemTitle>
-            {{ items("onOff") }}
-            <FieldRenderer.Source external>
-              {{ sources("pumpFlowController") }}
-            </FieldRenderer.Source>
-          </TooltipListItemTitle>
-          <TooltipListItemValue>
-            <FieldRenderer.OnOff />
-          </TooltipListItemValue>
-        </TooltipListItem>
-      </ControlValue>
+      <ControlValueForm :source="controls.pump">
+        <ControlValue
+          :source="controls.pump"
+          field="dutypoint"
+        >
+          <TooltipListItem>
+            <TooltipListItemTitle>
+              {{ items("relativeDutyPoint") }}
+              <FieldRenderer.Source>{{ sources("this") }}</FieldRenderer.Source>
+            </TooltipListItemTitle>
+            <FieldEditor.Auto>
+              <TooltipListItemValue>
+                <FieldRenderer.Auto />
+              </TooltipListItemValue>
+            </FieldEditor.Auto>
+          </TooltipListItem>
+        </ControlValue>
+        <ControlValue
+          :source="controls.pump"
+          field="on"
+        >
+          <TooltipListItem>
+            <TooltipListItemTitle>
+              {{ items("onOff") }}
+              <FieldRenderer.Source>
+                {{ sources("this") }}
+              </FieldRenderer.Source>
+            </TooltipListItemTitle>
+            <FieldEditor.Auto>
+              <TooltipListItemValue>
+                <FieldRenderer.OnOff />
+              </TooltipListItemValue>
+            </FieldEditor.Auto>
+          </TooltipListItem>
+        </ControlValue>
+        <SubmitControlForm />
+      </ControlValueForm>
     </TooltipList>
 
     <TooltipList>
