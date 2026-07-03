@@ -56,7 +56,8 @@ class SwitchingControl[
     ) -> tuple[ControlValues, ControllerState]:
         if self._mode == "manual":
             control_values, _ = self._manual_control.control(sensor_values)
-            return control_values, EmptyControllerState()  # type: ignore
+            _, controller_state = self._automatic_control.initial()
+            return control_values, controller_state
         else:
             return self._automatic_control.control(sensor_values)
 
