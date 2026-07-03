@@ -1,3 +1,4 @@
+import logging
 import os
 from base64 import b64encode
 from datetime import timedelta
@@ -36,6 +37,7 @@ def _var_mapper(
     }
     return lambda names: [_var_name_to_ref[name] for name in names]
 
+logger = logging.getLogger(__name__)
 
 class Fmu:
     def __init__(
@@ -48,6 +50,8 @@ class Fmu:
         self._temp_unzip_dir = os.path.join(
             tmp_dir, f"fmu_{b64encode(file.encode()).decode()}"
         )
+
+        logger.debug("Using FMU: %s", file)
 
         if not os.path.exists(self._temp_unzip_dir) or os.path.getmtime(
             file

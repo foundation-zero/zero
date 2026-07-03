@@ -1,7 +1,5 @@
-import asyncio
 import logging
 from collections.abc import AsyncIterator, Mapping
-from enum import Enum
 from typing import Protocol
 
 from aiomqtt import Client, Message
@@ -9,34 +7,14 @@ from pydantic.fields import ComputedFieldInfo, FieldInfo
 
 from thrs.input_output.base import (
     CombinedValues,
-    SimulationValues,
     ThrsValues,
     get_topic,
 )
 from thrs.input_output.model_builder import CombinedModelBuilder, PartialModelBuilder
 from thrs.orchestration.module import ModuleClassMap
-from thrs.orchestration.simulation import SimulationResult
 from thrs.utils.string import hyphenize
 
 logger = logging.getLogger(__name__)
-
-
-class ConnectorListeningMode(Enum):
-    SENSORS = 1
-    CONTROLS = 2
-    NONE = 3
-
-
-class NoneMessageIterator(AsyncIterator[Message]):
-    """Async iterator that never yields anything. Behaves like an
-    infinite, empty MQTT listener without doing actual work"""
-
-    def __aiter__(self) -> AsyncIterator[Message]:
-        return self
-
-    async def __anext__(self) -> Message:
-        await asyncio.Event().wait()  # blocks forever, cancelable
-        raise AssertionError("unreachable")
 
 
 class MqttMapping[M](Protocol):
@@ -200,95 +178,62 @@ class ModuleMqttMapping(MqttMapping[CombinedValues]):
 
 class Connector[S, C](Protocol):
     async def run(self): ...
-    async def send_control(self, control_values: C) -> None: ...
-    async def get_sensor_values(
-        self,
-    ) -> S: ...
-
-    async def get_control_values(self) -> C: ...
-
-    async def send_computed_sensor_values(self, sensors_values: S) -> None: ...
-    async def send_sensor_values(self, simulation_result: SimulationResult) -> None: ...
-    async def send_simulation_values(
-        self, simulation_result: SimulationResult
-    ) -> None: ...
+    async def get_input_values(self) -> S: ...
+    async def send_output(self, values: C) -> None: ...
+    async def send_computed_input(self, computed_values: S) -> None: ...
+    async def send_controller_state(self, values: CombinedValues) -> None: ...
 
 
 class MqttConnector(Connector[CombinedValues, CombinedValues]):
     def __init__(
         self,
         mqtt_client: Client,
-        listening_mode: ConnectorListeningMode,
         devices_topic_prefix: str,
-        controller_topic_prefix: str,
-        sensor_values_clss: ModuleClassMap,
-        control_values_clss: ModuleClassMap,
-        controller_state_clss: ModuleClassMap,
-        simulation_outputs_clss: type[SimulationValues] | None = None,
-        control_topic_suffix: str | None = None,
-        sensor_topic_suffix: str | None = None,
-        simulation_topic_prefix: str | None = None,
+        controller_state_output_clss: ModuleClassMap,
+        input_values_clss: ModuleClassMap,
+        output_values_clss: ModuleClassMap,
+        controller_state_output_topic_prefix: str,
+        output_topic_suffix: str | None = None,
+        input_topic_suffix: str | None = None,
     ):
+        self.controller_state_output_clss = controller_state_output_clss
+
         self._mqtt_client = mqtt_client
-        self._listening_mode = listening_mode
-        self._sensor_values_mqtt_mapping = ModuleMqttMapping(
-            sensor_values_clss, devices_topic_prefix, sensor_topic_suffix
+        self._input_values_mqtt_mapping = ModuleMqttMapping(
+            input_values_clss, devices_topic_prefix, input_topic_suffix
         )
-        self._control_values_mqtt_mapping = ModuleMqttMapping(
-            control_values_clss, devices_topic_prefix, control_topic_suffix
+        self._output_values_mqtt_mapping = ModuleMqttMapping(
+            output_values_clss, devices_topic_prefix, output_topic_suffix
         )
         self._computed_values_mqtt_mapping = ModuleMqttMapping(
-            sensor_values_clss, controller_topic_prefix, only_computed_fields=True
+            input_values_clss,
+            controller_state_output_topic_prefix,
+            only_computed_fields=True,
         )
         self._controller_state_mqtt_mapping = ModuleMqttMapping(
-            controller_state_clss, controller_topic_prefix
-        )
-        self._simulation_outputs_mqtt_mapping = (
-            DirectMqttMapping(simulation_outputs_clss, simulation_topic_prefix or "")
-            if simulation_outputs_clss is not None
-            else None
+            controller_state_output_clss, controller_state_output_topic_prefix
         )
         self._running = False
-
-    async def _subscribe_mapped_topics(self, mapping: ModuleMqttMapping | None):
-        if mapping is None:
-            return
-
-        for topic in mapping.subscribe_topics():
-            await self._mqtt_client.subscribe(topic, qos=1)
 
     async def run(self):
         """Run the connector, subscribing and listening to MQTT messages - handling them according to the mapping."""
         self._running = True
         try:
-            mapping: ModuleMqttMapping | None = self._get_module_mapping_for_listener()
-
-            await self._subscribe_mapped_topics(mapping)
-            await self._listen_to(mapping)
+            await self._subscribe_mapped_topics(self._input_values_mqtt_mapping)
+            await self._listen_for_input_values(self._input_values_mqtt_mapping)
         finally:
             self._running = False
 
-    def _get_module_mapping_for_listener(self) -> None:
-        """Start listening to MQTT messages, listening mode controls
-        whether to listen to sensor values or control values."""
-        match self._listening_mode:
-            case ConnectorListeningMode.SENSORS:
-                return self._sensor_values_mqtt_mapping
-            case ConnectorListeningMode.CONTROLS:
-                return self._control_values_mqtt_mapping
-            case ConnectorListeningMode.NONE:
-                return None
-            case _: # Future failsafe, in case new listening modes are added and not handled here
-                raise ValueError(f"Unsupported listening mode: {self._listening_mode}. Please add a case for it in {self._get_module_mapping_for_listener.__qualname__}")
+    async def _subscribe_mapped_topics(self, mapping: ModuleMqttMapping):
+        for topic in mapping.subscribe_topics():
+            await self._mqtt_client.subscribe(topic, qos=1)
 
-    async def _listen_to(self, mapping: "MqttMapping | None") -> None:
+    async def _listen_for_input_values(self, mapping: ModuleMqttMapping) -> None:
         """Listen to MQTT messages and handle them according to the mapping."""
-        message_iterator = self._get_message_iterator(mapping)
+
+        message_iterator: AsyncIterator[Message] = self._mqtt_client.messages
 
         async for message in message_iterator:
-            if mapping is None:
-                continue
-
             if not any(
                 message.topic.matches(topic) for topic in mapping.subscribe_topics()
             ):
@@ -301,90 +246,45 @@ class MqttConnector(Connector[CombinedValues, CombinedValues]):
 
             mapping.handle_message(message.topic.value, message.payload)
 
-    def _get_message_iterator(self, mapping):
-        """Get the message iterator for the MQTT client, or a NoneMessageIterator if no mapping is provided to ensure an equal working interface."""
-        message_iterator: AsyncIterator[Message] = self._mqtt_client.messages
-
-        if mapping is None:
-            message_iterator = NoneMessageIterator()
-        return message_iterator
-
     def _guard_running(self):
         if not self._running:
             raise Exception(
-                "MqttControlConnector not running, run() should be called in a create_task()"
+                "MqttConnector not running, run() should be called in a create_task()"
             )
 
     async def _publish_by_mapping[T](self, mapping: MqttMapping[T], value: T):
+        self._guard_running()
+
         payloads = mapping.split_to_topics(value)
         for topic, payload in payloads.items():
             logging.debug("Publishing on %s", topic)
             await self._mqtt_client.publish(topic, payload, qos=1)
 
-    async def _send_control(self, control_values: CombinedValues):
-        logging.debug("Publishing control values")
-        await self._publish_by_mapping(
-            self._control_values_mqtt_mapping, control_values
-        )
+    async def _send_output(self, output_values: CombinedValues):
+        logging.debug("Publishing values")
+        await self._publish_by_mapping(self._output_values_mqtt_mapping, output_values)
 
-    async def _send_sensor_values(self, simulation_result: SimulationResult):
-        logging.debug("Publishing sensor values")
+    async def _send_input_computed_values(self, computed_values: CombinedValues):
+        logging.debug("Publishing computed values")
         await self._publish_by_mapping(
-            self._sensor_values_mqtt_mapping, simulation_result.sensor_values
-        )
-
-    async def _send_simulation_outputs(self, simulation_result: SimulationResult):
-        if not self._simulation_outputs_mqtt_mapping:
-            raise Exception("Simulation outputs mapping not configured")
-        logging.debug("Publishing simulation outputs")
-        await self._publish_by_mapping(
-            self._simulation_outputs_mqtt_mapping, simulation_result.simulation_outputs
-        )
-
-    async def _send_computed_sensor_values(self, sensor_values: CombinedValues | None):
-        if sensor_values is None:
-            return
-
-        logging.debug("Publishing computed sensor values")
-        await self._publish_by_mapping(
-            self._computed_values_mqtt_mapping, sensor_values
+            self._computed_values_mqtt_mapping, computed_values
         )
 
     async def _send_controller_state(self, controller_state: CombinedValues):
-        logging.debug("Publishing controller values")
+        logging.debug("Publishing controller state values")
         await self._publish_by_mapping(
             self._controller_state_mqtt_mapping, controller_state
         )
 
-    async def _get_control_values_from_mqtt(self) -> CombinedValues | None:
-        return (
-            self._control_values_mqtt_mapping.result()
-        )  # TODO: Maapater, does this work?
+    async def get_input_values(self) -> CombinedValues:
+        input_values = self._input_values_mqtt_mapping.result()
+        return input_values if input_values else CombinedValues(values={})
 
-    async def send_computed_sensor_values(self, sensors_values: CombinedValues) -> None:
-        self._guard_running()
-        await self._send_computed_sensor_values(sensors_values)
+    async def send_output(self, values: CombinedValues) -> None:
+        await self._send_output(values)
 
-    async def send_control(self, control_values: CombinedValues) -> None:
-        self._guard_running()
-        await self._send_control(control_values)
+    async def send_computed_input(self, values: CombinedValues) -> None:
+        await self._send_input_computed_values(values)
 
-    async def send_sensor_values(self, simulation_result: SimulationResult):
-        self._guard_running()
-        logging.debug("Publishing sensor values")
-        await self._send_sensor_values(simulation_result)
-
-    async def send_simulation_values(self, simulation_result: SimulationResult):
-        self._guard_running()
-        logging.debug("Publishing simulation outputs")
-        await self._send_simulation_outputs(simulation_result)
-
-    async def get_sensor_values(self) -> CombinedValues:
-        self._guard_running()
-        sensors_values = self._sensor_values_mqtt_mapping.result()
-        return sensors_values if sensors_values else CombinedValues(values={})
-
-    async def get_control_values(self) -> CombinedValues:
-        self._guard_running()
-        control_values = self._control_values_mqtt_mapping.result()
-        return control_values if control_values else CombinedValues(values={})
+    async def send_controller_state(self, values: CombinedValues) -> None:
+        await self._send_controller_state(values)
