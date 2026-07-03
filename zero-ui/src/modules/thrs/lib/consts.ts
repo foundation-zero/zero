@@ -327,7 +327,9 @@ export const QUERY_ALL = gql`
           ${THRUSTERS_PARAMETERS_QUERY}
         }
         controllerState {
-          Empty
+          parameters {
+            ${THRUSTERS_PARAMETERS_QUERY}
+          }
         }
       }
       pcm {
@@ -341,7 +343,9 @@ export const QUERY_ALL = gql`
           ${PCM_PARAMETERS_QUERY}
         }
         controllerState {
-          Empty
+          parameters {
+            ${PCM_PARAMETERS_QUERY}
+          }
         }
       }
       pvt {
@@ -355,7 +359,9 @@ export const QUERY_ALL = gql`
           ${PVT_PARAMETERS_QUERY}
         }
         controllerState {
-          Empty
+          parameters {
+            ${PVT_PARAMETERS_QUERY}
+          }
         }
       }
       consumers {
@@ -369,7 +375,9 @@ export const QUERY_ALL = gql`
           ${CONSUMERS_PARAMETERS_QUERY}
         }
         controllerState {
-          Empty
+            parameters {
+            ${CONSUMERS_PARAMETERS_QUERY}
+          }
         }
       }
       dhw {
@@ -383,6 +391,9 @@ export const QUERY_ALL = gql`
           ${DHW_PARAMETERS_QUERY}
         }
         controllerState {
+          parameters {
+            ${DHW_PARAMETERS_QUERY}
+          }
           ${DHW_CONTROLLER_STATE_QUERY}
         }
       }

@@ -77,7 +77,7 @@ class SimpleMode(ThrsValues):
 
 
 class SimpleControllerState(ThrsValues):
-    pass
+    parameters: SimpleParameters
 
 
 class SimpleControl(
@@ -90,12 +90,15 @@ class SimpleControl(
         self._time = time_fn
 
     def initial(self) -> tuple[SimpleInOut, SimpleControllerState]:
-        return (SimpleInOut.zero(), SimpleControllerState())
+        return (
+            SimpleInOut.zero(),
+            SimpleControllerState(parameters=self._parameters),
+        )
 
     def control(
         self, sensor_values: SimpleInOut
     ) -> tuple[SimpleInOut, SimpleControllerState]:
-        return (sensor_values, SimpleControllerState())
+        return (sensor_values, SimpleControllerState(parameters=self._parameters))
 
     @staticmethod
     def modes() -> list[str]:
@@ -108,10 +111,6 @@ class SimpleControl(
     @property
     def mode(self) -> SimpleMode | None:
         return None
-
-    @property
-    def parameters(self) -> SimpleParameters:
-        return SimpleParameters()
 
     def update_parameters(self, parameters: SimpleParameters):
         pass

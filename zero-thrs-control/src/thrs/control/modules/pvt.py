@@ -26,10 +26,6 @@ class PvtControlMode(ControlMode):
     owners: PvtGroupControlMode
 
 
-class PvtControllerState(ThrsValues):
-    pass
-
-
 class PvtParameters(ThrsValues):
     maximum_supply_temperature: Annotated[Celsius, Field(le=90)] = 80
     recovery_temperature: Celsius = 70
@@ -70,6 +66,10 @@ class PvtParameters(ThrsValues):
                 "Warmup temperature must be greater than minimum return temperature"
             )
         return self
+
+
+class PvtControllerState(ThrsValues):
+    parameters: PvtParameters
 
 
 def _INITIAL_CONTROL_VALUES(timestamp: datetime) -> PvtControlValues:
@@ -202,10 +202,6 @@ class PvtControl(
         )
 
     @property
-    def parameters(self) -> PvtParameters:
-        return self._parameters
-
-    @property
     def mode(self) -> PvtControlMode:
         return PvtControlMode(
             fwd=self._main_fwd_control.mode,
@@ -226,7 +222,10 @@ class PvtControl(
         )
 
     def initial(self) -> tuple[PvtControlValues, PvtControllerState]:
-        return (_INITIAL_CONTROL_VALUES(self._time()), PvtControllerState())
+        return (
+            _INITIAL_CONTROL_VALUES(self._time()),
+            PvtControllerState(parameters=self._parameters),
+        )
 
     def update_parameters(self, parameters: PvtParameters):
         self._parameters = parameters
@@ -300,7 +299,10 @@ class PvtControl(
 
         self._control_groups(sensor_values)
 
-        return (self._current_values, PvtControllerState())
+        return (
+            self._current_values,
+            PvtControllerState(parameters=self._parameters),
+        )
 
 
 class PvtAlarms(BaseAlarms):

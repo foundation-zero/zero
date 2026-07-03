@@ -7,6 +7,7 @@ import polars as pl
 from pydantic import BaseModel, ConfigDict, Field, create_model, field_validator
 from pydantic.alias_generators import to_pascal
 from pydantic.fields import ComputedFieldInfo, FieldInfo
+from pydantic_core import PydanticUndefined
 
 from thrs.input_output.definitions.units import (
     PcsMode,
@@ -34,7 +35,9 @@ class ThrsValues(BaseModel):
             if issubclass(component, ThrsValues):
                 return component(
                     **{
-                        field_name: Stamped.stamp(_zero_value(field))
+                        field_name: field.default
+                        if field.default is not PydanticUndefined
+                        else Stamped.stamp(_zero_value(field))
                         for field_name, field in component.model_fields.items()
                     }
                 )

@@ -29,7 +29,7 @@ class SimulationTestRunner[
         self,
         simulation: Simulation[S, C, I, O],
         control: Control[S, C, P, M, CV],
-        alarms: BaseAlarms,
+        alarms: BaseAlarms[S, C, CV],
     ):
         self._control = control
         self._simulation = simulation
@@ -94,7 +94,7 @@ class SimulationTestRunner[
             result.sensor_values
         )
         alarms = self._alarms.check(
-            result.sensor_values, self._control_values, self._control.parameters
+            result.sensor_values, self._control_values, self._controller_state
         )
         if alarms:
             warnings.warn(f"Alarms detected: {alarms}")  # TODO: properly handle alarms

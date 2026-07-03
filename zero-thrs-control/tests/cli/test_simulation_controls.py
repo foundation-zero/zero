@@ -340,11 +340,14 @@ async def test_simulation_controls_set_parameters(
 
     await controls.clear_previous()
 
-    await test_client.subscribe("test_controller_topic/thrusters/config/parameters")
+    await test_client.subscribe("test_controller_topic/thrusters/parameters")
     await status_client.subscribe("test_simulation_topic/status")
 
     run_task = create_task(controls.run("thrusters"))
     try:
+        await sleep(0.1)  # Wait for controls to listen for play
+        await controls_client.publish("test_simulation_topic/play", "{}", qos=1)
+
         available = await anext(status_client.messages)
         assert available.topic.value == "test_simulation_topic/status"
         assert isinstance(available.payload, str | bytes)
@@ -353,21 +356,13 @@ async def test_simulation_controls_set_parameters(
             == "available"
         )
         parameters = await anext(test_client.messages)
-        assert (
-            parameters.topic.value
-            == "test_controller_topic/thrusters/config/parameters"
-        )
+        assert parameters.topic.value == "test_controller_topic/thrusters/parameters"
         assert isinstance(parameters.payload, str | bytes)
-        params_model = ParametersMessage[ThrustersParameters].model_validate_json(
-            parameters.payload
-        )
-        assert params_model == ParametersMessage(
-            parameters=ThrustersParameters(), module="thrusters"
-        )
-
+        params_model = ThrustersParameters.model_validate_json(parameters.payload)
+        assert params_model == ThrustersParameters()
         new_parameters = ThrustersParameters(cooling_flow=999)
         await controls_client.publish(
-            "test_controller_topic/thrusters/controls/set_parameters",
+            "test_controller_topic/thrusters/parameters/set",
             ParametersMessage(
                 parameters=new_parameters, module="thrusters"
             ).model_dump_json(),
@@ -375,15 +370,10 @@ async def test_simulation_controls_set_parameters(
         )
 
         parameters = await anext(test_client.messages)
-        assert (
-            parameters.topic.value
-            == "test_controller_topic/thrusters/config/parameters"
-        )
+        assert parameters.topic.value == "test_controller_topic/thrusters/parameters"
         assert isinstance(parameters.payload, str | bytes)
-        params_model = ParametersMessage[ThrustersParameters].model_validate_json(
-            parameters.payload
-        )
-        assert params_model.parameters == new_parameters
+        params_model = ThrustersParameters.model_validate_json(parameters.payload)
+        assert params_model == new_parameters
     finally:
         run_task.cancel()
 

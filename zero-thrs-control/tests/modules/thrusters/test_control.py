@@ -112,7 +112,7 @@ def test_recovery(control: ThrustersControl, simulation: ThrustersSimulation):
 
 def test_recovery_mixing(control: ThrustersControl, simulation: ThrustersSimulation):
     simulation._simulation_inputs.thrusters_pcm_supply.temperature = Stamped.stamp(
-        control.parameters.recovery_temperature
+        control._parameters.recovery_temperature
     )
 
     result = simulation.tick(control.initial()[0])
@@ -122,7 +122,7 @@ def test_recovery_mixing(control: ThrustersControl, simulation: ThrustersSimulat
         result.sensor_values.thrusters_temperature_recovery.temperature.value is None
         or (
             result.sensor_values.thrusters_temperature_recovery.temperature.value
-            < control.parameters.warmup_temperature
+            < control._parameters.warmup_temperature
         )
     ):
         control_values, _ = control.control(result.sensor_values)
@@ -203,7 +203,7 @@ def test_recovery_temperature(
         assert (
             result.sensor_values.thrusters_temperature_recovery.temperature.value
             == approx(
-                control.parameters.recovery_temperature,
+                control._parameters.recovery_temperature,
                 abs=2,  # TODO: tune control to decrease error margin and warm-up time
             )
         )
@@ -229,7 +229,7 @@ def test_recovery_single_thruster(
         assert (
             result.sensor_values.thrusters_temperature_recovery.temperature.value
             == approx(
-                control.parameters.recovery_temperature,
+                control._parameters.recovery_temperature,
                 abs=5,  # TODO: tune control to decrease error margin and warm-up time
             )
         )
@@ -270,10 +270,10 @@ def test_flow_cooling(control: ThrustersControl, simulation: ThrustersSimulation
         result = simulation.tick(control_values)
         assert control.mode == ThrustersControlMode(mode="cooling")
         assert result.sensor_values.thrusters_flow_aft.flow.value == approx(
-            control.parameters.cooling_flow, abs=1
+            control._parameters.cooling_flow, abs=1
         )
         assert result.sensor_values.thrusters_flow_fwd.flow.value == approx(
-            control.parameters.cooling_flow, abs=1
+            control._parameters.cooling_flow, abs=1
         )
 
 
@@ -296,7 +296,7 @@ def test_flow_cooling_single_thruster(
 
         assert result.sensor_values.thrusters_flow_aft.flow.value == approx(0, abs=0.1)
         assert result.sensor_values.thrusters_flow_fwd.flow.value == approx(
-            control.parameters.cooling_flow, abs=1
+            control._parameters.cooling_flow, abs=1
         )
 
 
@@ -330,19 +330,19 @@ def test_cooldown(control: ThrustersControl, simulation: ThrustersSimulation):
             control_values.thrusters_mix_recovery.setpoint.value == Valve.MIXING_B_TO_AB
         )
         assert control._flow_balance_controller.get_setpoints() == [
-            control.parameters.cooling_flow,
-            control.parameters.cooling_flow,
+            control._parameters.cooling_flow,
+            control._parameters.cooling_flow,
         ]
 
     assert control.mode == ThrustersControlMode(mode="idle")
 
     assert (
         result.sensor_values.thrusters_temperature_aft.temperature.value
-        < control.parameters.cooling_temperature
+        < control._parameters.cooling_temperature
     )
     assert (
         result.sensor_values.thrusters_temperature_fwd.temperature.value
-        < control.parameters.cooling_temperature
+        < control._parameters.cooling_temperature
     )
 
     assert control_values.thrusters_pump1.dutypoint.value == 0.0

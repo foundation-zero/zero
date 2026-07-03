@@ -32,10 +32,6 @@ class ManualControl[SensorValues: ThrsValues, ControlValues: ThrsValues](
         self._time_fn = time_fn
 
     @property
-    def parameters(self) -> EmptyParameters:
-        return EmptyParameters()
-
-    @property
     def mode(self) -> EmptyMode:
         return EmptyMode()
 

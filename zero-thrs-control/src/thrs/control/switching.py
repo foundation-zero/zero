@@ -1,7 +1,7 @@
 from typing import Literal
 
 from thrs.classes.control import Control
-from thrs.control.manual import EmptyControllerState, ManualControl
+from thrs.control.manual import ManualControl
 from thrs.input_output.base import ThrsValues
 
 
@@ -56,16 +56,12 @@ class SwitchingControl[
     ) -> tuple[ControlValues, ControllerState]:
         if self._mode == "manual":
             control_values, _ = self._manual_control.control(sensor_values)
-            return control_values, EmptyControllerState()  # type: ignore
+            return control_values, self._automatic_control.initial()[1]
         else:
             return self._automatic_control.control(sensor_values)
 
     def switch_mode(self, mode: Literal["manual", "automatic"]):
         self._mode = mode
-
-    @property
-    def parameters(self) -> ControlParameters:
-        return self._automatic_control.parameters
 
     def update_parameters(self, parameters: ControlParameters):
         self._automatic_control.update_parameters(parameters)

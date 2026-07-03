@@ -54,7 +54,7 @@ class ConsumersControlMode(ControlMode):
 
 
 class ConsumersControllerState(ThrsValues):
-    pass
+    parameters: ConsumersParameters
 
 
 class ConsumersControl(
@@ -110,7 +110,10 @@ class ConsumersControl(
         )
 
     def initial(self) -> tuple[ConsumersControlValues, ConsumersControllerState]:
-        return (_INITIAL_CONTROL_VALUES(self._time()), ConsumersControllerState())
+        return (
+            _INITIAL_CONTROL_VALUES(self._time()),
+            ConsumersControllerState(parameters=self._parameters),
+        )
 
     def _control_flow_distribution(self, sensor_values: ConsumersSensorValues):
         actives = [
@@ -172,7 +175,10 @@ class ConsumersControl(
             self._parameters.adsorption_enabled,
         )
 
-        return (self._current_values, ConsumersControllerState())
+        return (
+            self._current_values,
+            ConsumersControllerState(parameters=self._parameters),
+        )
 
     def modes(self) -> list[str]:
         return []
@@ -183,10 +189,6 @@ class ConsumersControl(
     @property
     def mode(self) -> ConsumersControlMode:
         return ConsumersControlMode()
-
-    @property
-    def parameters(self) -> ConsumersParameters:
-        return self._parameters
 
     def update_parameters(self, parameters: ConsumersParameters):
         self._parameters = parameters

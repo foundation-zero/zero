@@ -10,7 +10,6 @@ from aiomqtt import Message, Topic
 from thrs.cli.simulation_controls import (
     ControlModeMessage,
     ManualControlMessage,
-    ParametersMessage,
     PauseMessage,
     PlayMessage,
     SetAutomationMessage,
@@ -164,10 +163,6 @@ class ControlMessaging[
             control_topic_suffix,
         )
 
-        self._parameters = MessageReceiver(
-            ParametersMessage[module_description.parameters_cls],
-            f"{self._controller_topic_prefix}/{ParametersMessage.subscribe_topic()}",
-        )
         self._control_mode = MessageReceiver(
             ControlModeMessage[module_description.control_mode_cls],
             f"{self._controller_topic_prefix}/{ControlModeMessage.subscribe_topic()}",
@@ -184,7 +179,6 @@ class ControlMessaging[
         return [
             self._sensor_values,
             self._control_values,
-            self._parameters,
             self._control_mode,
             self._controller_state,
         ]
@@ -214,14 +208,17 @@ class ControlMessaging[
     ) -> Coroutine[None, None, ControlValues]:
         return self._control_values.wait_for(condition, timeout)
 
-    def wait_for_parameters(
+    def wait_for_controller_state(
         self, condition: Callable[[Parameters], bool], *_args, timeout: float
     ) -> Coroutine[None, None, Parameters]:
         async def _afterwards(wait):
             return (await wait).parameters
 
         return _afterwards(
-            self._parameters.wait_for(lambda msg: condition(msg.parameters), timeout)
+            self._controller_state.wait_for(
+                lambda msg: condition(msg.parameters),  # type: ignore
+                timeout,
+            )
         )
 
     @property
@@ -238,7 +235,11 @@ class ControlMessaging[
 
     @property
     def parameters(self) -> Parameters | None:
-        return self._parameters.last.parameters if self._parameters.last else None
+        return (
+            self._controller_state.last.parameters  # type: ignore
+            if self._controller_state.last
+            else None
+        )
 
     async def set_parameters(self, parameters: Parameters):
         message = SetParametersMessage[Parameters](

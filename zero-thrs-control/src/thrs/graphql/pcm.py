@@ -1,6 +1,6 @@
 import strawberry
 
-from thrs.control.modules.pcm import PcmControlMode, PcmParameters
+from thrs.control.modules.pcm import PcmControllerState, PcmControlMode, PcmParameters
 from thrs.graphql.base import (
     ControlModule,
     PcmMessaging,
@@ -22,11 +22,7 @@ PcmSensorValuesType = pydantic_to_strawberry_type(PcmSensorValues)
 PcmControlValuesType = pydantic_to_strawberry_type(PcmControlValues)
 PcmParametersType = pydantic_to_strawberry_type(PcmParameters)
 PcmControlModeType = pydantic_to_strawberry_type(PcmControlMode)
-
-
-@strawberry.type()
-class PcmControllerStateType:
-    _empty: None = None
+PcmControllerStateType = pydantic_to_strawberry_type(PcmControllerState)
 
 
 PcmModule = ControlModule[
@@ -54,7 +50,9 @@ def resolve_module(
         )
         if module.control_mode
         else None,
-        controller_state=PcmControllerStateType(),
+        controller_state=optional_pydantic_to_graphql(
+            PcmControllerStateType, module.controller_state
+        ),
     )
 
 

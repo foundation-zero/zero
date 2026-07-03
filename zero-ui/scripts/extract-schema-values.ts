@@ -290,9 +290,14 @@ function processSensorField(
 }
 
 function processControllerField(
+  fieldName: string,
   fieldType: string,
   _directiveArgs: DirectiveArgs,
 ): ExtractedValue | null {
+  if (fieldName == "parameters") {
+    return null;
+  }
+
   const entry: ExtractedValue = {
     fieldType: fieldType,
   };
@@ -329,7 +334,7 @@ function processField(
       return processSensorField(fieldType, directiveArgs);
 
     case "controllerState":
-      return processControllerField(fieldType, directiveArgs);
+      return processControllerField(fieldName, fieldType, directiveArgs);
   }
 }
 

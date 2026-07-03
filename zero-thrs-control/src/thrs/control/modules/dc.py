@@ -24,10 +24,6 @@ class DcControlMode(ControlMode):
     ugrids: ConvertersControlMode
 
 
-class DcControllerState(ThrsValues):
-    pass
-
-
 class DcParameters(ThrsValues):
     maximum_supply_temperature: Celsius = 63
     recovery_temperature: Celsius = 60
@@ -43,6 +39,10 @@ class DcParameters(ThrsValues):
     brightloops_fwd_pump_tuning: Tuning = (0.01, 0.001, 0)
     brightloops_aft_pump_tuning: Tuning = (0.01, 0.001, 0)
     ugrids_pump_tuning: Tuning = (0.01, 0.001, 0)
+
+
+class DcControllerState(ThrsValues):
+    parameters: DcParameters
 
 
 def _INITIAL_CONTROL_VALUES(timestamp: datetime) -> DcControlValues:
@@ -189,10 +189,6 @@ class DcControl(
             time_fn=self._time,
         )
 
-    @property
-    def parameters(self) -> DcParameters:
-        return self._parameters
-
     def update_parameters(self, parameters: DcParameters):
         self._parameters = parameters
         self._brightloops_aft_control.update_parameters(
@@ -224,7 +220,10 @@ class DcControl(
         )
 
     def initial(self) -> tuple[DcControlValues, DcControllerState]:
-        return (_INITIAL_CONTROL_VALUES(self._time()), DcControllerState())
+        return (
+            _INITIAL_CONTROL_VALUES(self._time()),
+            DcControllerState(parameters=self._parameters),
+        )
 
     def control(
         self, sensor_values: DcSensorValues
@@ -234,7 +233,10 @@ class DcControl(
 
         self._control_groups(sensor_values)
 
-        return (self._current_values, DcControllerState())
+        return (
+            self._current_values,
+            DcControllerState(parameters=self._parameters),
+        )
 
     def _control_heat_dump(self, sensor_values: DcSensorValues):
         if self._heat_dump_controller.enabled():

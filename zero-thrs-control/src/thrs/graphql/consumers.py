@@ -1,6 +1,7 @@
 import strawberry
 
 from thrs.control.modules.consumers import (
+    ConsumersControllerState,
     ConsumersParameters,
 )
 from thrs.graphql.base import (
@@ -23,15 +24,11 @@ from thrs.input_output.modules.consumers import (
 ConsumersSensorValuesType = pydantic_to_strawberry_type(ConsumersSensorValues)
 ConsumersControlValuesType = pydantic_to_strawberry_type(ConsumersControlValues)
 ConsumersParametersType = pydantic_to_strawberry_type(ConsumersParameters)
+ConsumersControllerStateType = pydantic_to_strawberry_type(ConsumersControllerState)
 
 
 @strawberry.type()
 class ConsumersControlModeType:
-    _empty: None = None
-
-
-@strawberry.type()
-class ConsumersControllerStateType:
     _empty: None = None
 
 
