@@ -1,6 +1,7 @@
+from dataclasses import dataclass
 import logging
 from collections.abc import Mapping
-from typing import Protocol
+from typing import Awaitable, Callable, Protocol, Self
 
 from aiomqtt import Client
 from pydantic.fields import ComputedFieldInfo, FieldInfo
@@ -13,19 +14,8 @@ from thrs.utils.string import hyphenize
 logger = logging.getLogger(__name__)
 
 
-class MqttMapping[M](Protocol):
-    """Mapping between a model and MQTT topics"""
-
-    def split_to_topics(self, model: M) -> dict[str, str]:
-        """Split model instance values to topics and payloads.
-
-        Args:
-            model: ThrsValues subclass with values to publish
-
-        Returns:
-            dict[str, str]: mapping with topics and their payloads to publish
-        """
-        ...
+class MqttReceiveMapping[M](Protocol):
+    """Mapping between a model and MQTT topics to receive messages"""
 
     def subscribe_topics(self) -> set[str]: ...
 
@@ -34,7 +24,13 @@ class MqttMapping[M](Protocol):
     def result(self) -> M | None: ...
 
 
-class PartialMqttMapping[M: ThrsValues](MqttMapping[M]):
+class MqttSendMapping[M](Protocol):
+    """Mapping between a model and MQTT topics to send messages"""
+
+    def split_to_topics(self, model: M) -> dict[str, str]: ...
+
+
+class PartialMqttMapping[M: ThrsValues](MqttReceiveMapping[M], MqttSendMapping[M]):
     """
     MQTT mapping that maps each component in the model to a separate topic.
 
@@ -92,7 +88,7 @@ class PartialMqttMapping[M: ThrsValues](MqttMapping[M]):
         return self._builder.result()
 
 
-class DirectMqttMapping[M: ThrsValues](MqttMapping[M]):
+class DirectMqttMapping[M: ThrsValues](MqttReceiveMapping[M], MqttSendMapping[M]):
     """MQTT mapping that maps the entire model to a single topic"""
 
     def __init__(self, cls: type[M], topic_prefix: str):
@@ -114,7 +110,7 @@ class DirectMqttMapping[M: ThrsValues](MqttMapping[M]):
         return self._value
 
 
-class ModuleMqttMapping(MqttMapping[CombinedValues]):
+class ModuleMqttMapping(MqttReceiveMapping[CombinedValues]):
     """
     MQTT mapping for modules
 
@@ -177,6 +173,115 @@ class Connector[S, C, CV](Protocol):
     async def transceive(self, control_values: C, controller_state: CV) -> S: ...
 
 
+type Publisher[T] = Callable[[T], Awaitable[None]]
+
+
+class Channels[T](Protocol):
+    @classmethod
+    def register(
+        cls,
+        private_token: "type[_PrivateToken]",
+        connector: "MqttConnector",
+        description: T,
+    ) -> Self: ...
+
+
+class _PrivateToken:
+    pass
+
+
+@dataclass
+class ControlChannelsDescription:
+    sensor_values_clss: ModuleClassMap
+    sensor_values_topic_prefix: str
+    control_values_clss: ModuleClassMap
+    control_values_topic_prefix: str
+    control_values_topic_suffix: str | None = None
+    # parameters, controller values etc.
+
+
+class ControlChannels(Channels[ControlChannelsDescription]):
+    def __init__(
+        self,
+        private_token: type[_PrivateToken],
+        sensor_values_mapping: ModuleMqttMapping,
+        send_control_values: Publisher[CombinedValues],
+        # etc
+    ):
+        self.get_sensor_values = sensor_values_mapping.result
+        self.send_control_values = send_control_values
+
+    @classmethod
+    def register(
+        cls,
+        _private_token: type[_PrivateToken],
+        connector: "MqttConnector",
+        description: ControlChannelsDescription,
+    ) -> "ControlChannels":
+        sensor_values_mapping = ModuleMqttMapping(
+            description.sensor_values_clss,
+            description.sensor_values_topic_prefix,
+        )
+        connector.register_listener(sensor_values_mapping)
+        return ControlChannels(
+            _PrivateToken,
+            sensor_values_mapping,
+            connector.create_publisher(
+                ModuleMqttMapping(
+                    description.control_values_clss,
+                    description.control_values_topic_prefix,
+                    description.control_values_topic_suffix,
+                ),
+            ),
+        )
+
+
+@dataclass
+class SimulationChannelsDescription:
+    sensor_values_clss: ModuleClassMap
+    sensor_values_topic_prefix: str
+    control_values_clss: ModuleClassMap
+    control_values_topic_prefix: str
+    control_values_topic_suffix: str | None = None
+    # simulation inputs, simulation outputs
+
+
+class SimulationChannels(Channels[SimulationChannelsDescription]):
+    def __init__(
+        self,
+        private_token: type[_PrivateToken],
+        send_sensor_values: Publisher[CombinedValues],
+        control_values_mapping: ModuleMqttMapping,
+        # etc
+    ):
+        self.send_sensor_values = send_sensor_values
+        self.get_control_values = control_values_mapping.result
+
+    @classmethod
+    def register(
+        cls,
+        _private_token: type[_PrivateToken],
+        connector: "MqttConnector",
+        description: SimulationChannelsDescription,
+    ) -> "SimulationChannels":
+        control_values_mapping = ModuleMqttMapping(
+            description.control_values_clss,
+            description.control_values_topic_prefix,
+            description.control_values_topic_suffix,
+        )
+        connector.register_listener(control_values_mapping)
+        return SimulationChannels(
+            _PrivateToken,
+            connector.create_publisher(
+                ModuleMqttMapping(
+                    description.sensor_values_clss,
+                    description.sensor_values_topic_prefix,
+                ),
+            ),
+            control_values_mapping,
+        )
+
+
 class MqttConnector(Connector[CombinedValues, CombinedValues, CombinedValues]):
     def __init__(
         self,
@@ -203,23 +308,39 @@ class MqttConnector(Connector[CombinedValues, CombinedValues, CombinedValues]):
             controller_state_clss, controller_topic_prefix
         )
         self._running = False
+        self._listeners: list[MqttReceiveMapping[object]] = []
 
-    async def _listen_to_sensors(self):
+    def register_listener(self, receiver: MqttReceiveMapping[object]) -> None:
+        self._listeners.append(receiver)
+
+    def create_publisher[T](
+        self, sender: MqttSendMapping[T]
+    ) -> Callable[[T], Awaitable[None]]:
+        async def _publish(value: T):
+            await self._publish_by_mapping(sender, value)
+
+        return _publish
+
+    async def _listen(self):
         async for message in self._mqtt_client.messages:
-            if not any(
-                message.topic.matches(topic)
-                for topic in self._sensor_values_mqtt_mapping.subscribe_topics()
-            ):
+            mapping = next(
+                (
+                    mapping
+                    for mapping in self._listeners
+                    for topic in mapping.subscribe_topics()
+                    if message.topic.matches(topic)
+                ),
+                None,
+            )
+            if mapping is None:
                 continue
             if not isinstance(message.payload, str | bytes):
                 raise ValueError(
                     f"Expected string or bytes, got {type(message.payload)}"
                 )
-            self._sensor_values_mqtt_mapping.handle_message(
-                message.topic.value, message.payload
-            )
+            mapping.handle_message(message.topic.value, message.payload)
 
-    async def _publish_by_mapping[T](self, mapping: MqttMapping[T], value: T):
+    async def _publish_by_mapping[T](self, mapping: MqttSendMapping[T], value: T):
         payloads = mapping.split_to_topics(value)
         for topic, payload in payloads.items():
             logging.debug("Publishing on %s", topic)
@@ -247,27 +368,14 @@ class MqttConnector(Connector[CombinedValues, CombinedValues, CombinedValues]):
         )
 
     async def _start(self):
-        for topic in self._sensor_values_mqtt_mapping.subscribe_topics():
-            await self._mqtt_client.subscribe(topic, qos=1)
+        for mapping in self._listeners:
+            for topic in mapping.subscribe_topics():
+                await self._mqtt_client.subscribe(topic, qos=1)
 
-    async def run(self):
-        self._running = True
-        try:
-            await self._start()
-            await self._listen_to_sensors()
-        finally:
-            self._running = False
-
-    async def transceive(
-        self, control_values: CombinedValues, controller_state: CombinedValues
-    ) -> CombinedValues:
-        if not self._running:
-            raise Exception(
-                "MqttControlConnector not running, run() should be called in a create_task()"
-            )
-        sensors_values = self._sensor_values_mqtt_mapping.result()
-        await self._send_computed_values(sensors_values)
-        await self._send_control_values(control_values)
-        await self._send_controller_state(controller_state)
-
-        return sensors_values if sensors_values else CombinedValues(values={})
+    async def run[T](
+        self, channels_type: type[Channels[T]], description: T
+    ) -> Channels[T]:
+        await self._start()
+        channels = channels_type.register(self, description)
+        await self._listen()
+        return channels
