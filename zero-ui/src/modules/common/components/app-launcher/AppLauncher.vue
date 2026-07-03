@@ -22,6 +22,10 @@ const APPS: App[] = [
     link: "/thrs",
   },
   {
+    name: "thrapp",
+    link: "/thrapp",
+  },
+  {
     name: "domestic",
     link: "/domestic",
   },

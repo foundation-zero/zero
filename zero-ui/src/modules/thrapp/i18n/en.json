@@ -1,5 +1,10 @@
 {
   "thrapp": {
+    "views": {
+      "mimics": {
+        "title": "Mimic"
+      }
+    },
     "dialogs": {
       "manualMode": {
         "warning": "Attention: system in manual mode",

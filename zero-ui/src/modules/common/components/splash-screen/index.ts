@@ -52,6 +52,17 @@ export const SPLASH_APP_LINKS: SplashAppLink[] = [
     iconBackground: "color-mix(in srgb, var(--warning) 16%, transparent)",
   },
   {
+    id: "thrapp",
+    nameKey: "views.splash.apps.thrapp.title",
+    descriptionKey: "views.splash.apps.thrapp.description",
+    to: "/thrapp",
+    icon: RiTempHotLine,
+    glow: "color-mix(in srgb, var(--warning-dull) 38%, transparent)",
+    border: "var(--warning-dull)",
+    shadow: "var(--warning-dull)",
+    iconBackground: "color-mix(in srgb, var(--warning) 16%, transparent)",
+  },
+  {
     id: "domestic",
     nameKey: "views.splash.apps.domestic.title",
     descriptionKey: "views.splash.apps.domestic.description",
