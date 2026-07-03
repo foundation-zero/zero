@@ -5,6 +5,10 @@ from loads.api.schema import Base, ReferenceValues
 from loads.config import Settings
 from loads.registry import VARIABLES
 
+LEGACY_VARIABLE_ID_ALIASES = {  # TODO: remove these aliases once the database is updated to use the new variable_ids
+    "storm-jib-tack-load": "mast-storm-jib-load",
+}
+
 
 @pytest.mark.asyncio
 async def test_declarative_base_matches_db(settings: Settings, sessionmanager):
@@ -45,7 +49,10 @@ async def test_reference_values_variable_ids_in_registry(sessionmanager):
     async with sessionmanager.session() as session:
         query = select(ReferenceValues.variable_id).distinct()
         result = await session.execute(query)
-        db_variable_ids = set(result.scalars().all())
+        db_variable_ids = {
+            LEGACY_VARIABLE_ID_ALIASES.get(variable_id, variable_id)
+            for variable_id in result.scalars().all()
+        }
         registry_variable_ids = set(VARIABLES.keys())
         missing_variables = db_variable_ids - registry_variable_ids
         assert not missing_variables, (

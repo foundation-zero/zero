@@ -78,6 +78,32 @@ def _build_sail_system_alarm_definitions(
                 f"No variable definition found for alarm {alarm} with id: {id}", e
             )
 
+    threshold_fields: dict[str, str] = {
+        field: threshold_meta.threshold_for
+        for field, field_info in model.model_fields.items()
+        if (threshold_meta := model.extract_variable_meta(field, field_info.metadata))
+        and threshold_meta.type == "alarm_threshold"
+        and threshold_meta.threshold_for is not None
+    }
+
+    def _lookup_threshold_getter(
+        alarm_field: str, alarm_for: str
+    ) -> Callable[[LoadsModel], float | None]:
+        threshold_field = next(
+            (
+                field
+                for field, threshold_for in threshold_fields.items()
+                if threshold_for == alarm_for
+            ),
+            None,
+        )
+        if threshold_field is None:
+            return lambda _model_instance: None
+        return partial(
+            lambda field, model_instance: getattr(model_instance, field),
+            threshold_field,
+        )
+
     return [
         AlarmDefinition(
             id=f"{function_id}-alarm",
@@ -87,16 +113,24 @@ def _build_sail_system_alarm_definitions(
                 lambda field, model_instance: getattr(model_instance, field), field
             ),
             get_actual=actual_definition.get_actual,
-            get_threshold=lambda model_instance: model_instance.relief_load,  # type: ignore[attr-defined]
+            get_threshold=threshold_getter,
             actual_definition=actual_definition,
         )
         for field, field_info in model.model_fields.items()
         if (variable_meta := model.extract_variable_meta(field, field_info.metadata))
         and variable_meta.is_alarm
+        and variable_meta.alarm_for
+        and variable_meta.alarm_for_field
         and (
             actual_definition := _lookup_variable_definition(
                 field,
                 f"{function_id}-{variable_meta.alarm_for_field}",
+            )
+        )
+        and (
+            threshold_getter := _lookup_threshold_getter(
+                field,
+                variable_meta.alarm_for,
             )
         )
     ]
@@ -115,9 +149,8 @@ SAIL_SYSTEM_MODELS: list[type[LoadsModel]] = [
     sail_system.BladeTweakerSb,
     sail_system.CodeZeroTack,
     sail_system.A2Tack,
-    sail_system.StormJibTack,
     sail_system.MainHeadstayCombined,
-    sail_system.HeadsailLocks,
+    sail_system.Mast,
     sail_system.MainCheckstay,
     sail_system.MainCunningham,
     sail_system.MainHalyard,
@@ -131,7 +164,6 @@ SAIL_SYSTEM_MODELS: list[type[LoadsModel]] = [
     sail_system.MizzenCheckstay,
     sail_system.MizzenCunningham,
     sail_system.MizzenHalyard,
-    sail_system.MizzenHeadsailLocks,
     sail_system.MizzenHeadsailTackAdjuster,
     sail_system.MizzenOuthaul,
     sail_system.MizzenPreventer,

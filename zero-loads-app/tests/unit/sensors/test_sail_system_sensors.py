@@ -6,6 +6,7 @@ from pydantic import Field
 from loads.sensors.base import LoadsModel
 from loads.sensors.sail_system import (
     Load,
+    MaxLoad,
     Position,
     RelativePosition,
 )
@@ -73,3 +74,24 @@ def test_load_bounds():
     )
     assert sensor.override_load == -5.0
     assert sensor.load == 10.0
+
+
+def test_nested_alias_uses_strictest_bounds():
+    class OverrideMaxLoadSensor(LoadsModel, ABC):
+        max_load: Annotated[
+            MaxLoad,
+            Field(ge=0, le=8, validation_alias="max_load"),
+        ]
+
+    assert (
+        OverrideMaxLoadSensor.extract_minimum(
+            OverrideMaxLoadSensor.model_fields["max_load"].metadata
+        )
+        == 0
+    )
+    assert (
+        OverrideMaxLoadSensor.extract_maximum(
+            OverrideMaxLoadSensor.model_fields["max_load"].metadata
+        )
+        == 8
+    )

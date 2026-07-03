@@ -74,7 +74,7 @@ async def test_graphql(async_client: AsyncClient, override_dependency):
                         },
                         "variable": {
                             "id": "main-runner-ps-load",
-                            "name": "Runner PS",
+                            "name": "Runner PT",
                             "unit": "tonne",
                             "scaleMin": 0.0,
                             "scaleMax": 29.0,
@@ -269,9 +269,10 @@ async def test_sail_system_actual(async_client: AsyncClient, mqtt_client_send):
     await mqtt_client_send.publish(
         PrimaryWinchPs.TOPIC,
         """{
-            "ow_ActLoad_10kg": 420,
-            "ow_RelfLoad_10kg": 500,
-            "ox_LoadAlarm": false
+            "st_Load/i_Load": 420,
+            "st_Load/x_Failure": false,
+            "st_Load/x_MaxLimitReached": false,
+            "st_Load/i_MaxLoadSetting": 500
         }""",
     )
     await asyncio.sleep(0.1)
@@ -313,12 +314,20 @@ async def test_alarms(async_client: AsyncClient, mqtt_client_send):
     await mqtt_client_send.publish(
         MainCheckstay.TOPIC,
         """{
-            "relative_position_dummy": 500,
-            "i_ActualLoadPs": 420,
-            "i_ActualLoadSb": 400,
-            "ow_ActLoad_10kg": 500,
-            "ow_RelfLoad_10kg": 400,
-            "ox_LoadAlarm": true
+            "st_position/i_Position_permille": 500,
+            "st_position/x_MaxLimitReached": false,
+            "st_position/x_MinLimitReached": false,
+            "st_Load/i_Load": 500,
+            "st_Load/x_Failure": false,
+            "st_Load/x_MaxLimitReached": true,
+            "st_Load/i_MaxLoad": 400,
+            "st_LoadPs/i_Load": 420,
+            "st_LoadPs/i_MaxLoad": 450,
+            "st_LoadPs/x_MaxLimitReached": false,
+            "st_LoadSb/i_Load": 500,
+            "st_LoadSb/x_Failure": false,
+            "st_LoadSb/i_MaxLoad": 400,
+            "st_LoadSb/x_MaxLimitReached": true
         }""",
     )
     await asyncio.sleep(0.1)
@@ -351,12 +360,12 @@ async def test_alarms(async_client: AsyncClient, mqtt_client_send):
             "alarms": [
                 {
                     "id": "main-checkstay-alarm",
-                    "name": "Main Checkstay Alarm",
+                    "name": "Checkstay SB Load Alarm",
                     "active": True,
                     "thresholdValue": 4.0,
                     "actualValue": 5.0,
                     "actual": {
-                        "id": "main-checkstay-deflector-load",
+                        "id": "main-checkstay-sb-load",
                         "variable": {
                             "unit": "tonne",
                         },
@@ -372,12 +381,20 @@ async def test_active_alarms(async_client: AsyncClient, mqtt_client_send):
     await mqtt_client_send.publish(
         MainCheckstay.TOPIC,
         """{
-            "relative_position_dummy": 500,
-            "i_ActualLoadPs": 420,
-            "i_ActualLoadSb": 400,
-            "ow_ActLoad_10kg": 500,
-            "ow_RelfLoad_10kg": 400,
-            "ox_LoadAlarm": true
+            "st_position/i_Position_permille": 500,
+            "st_position/x_MaxLimitReached": false,
+            "st_position/x_MinLimitReached": false,
+            "st_Load/i_Load": 500,
+            "st_Load/x_Failure": false,
+            "st_Load/x_MaxLimitReached": true,
+            "st_Load/i_MaxLoad": 400,
+            "st_LoadPs/i_Load": 420,
+            "st_LoadPs/i_MaxLoad": 450,
+            "st_LoadPs/x_MaxLimitReached": false,
+            "st_LoadSb/i_Load": 500,
+            "st_LoadSb/x_Failure": false,
+            "st_LoadSb/i_MaxLoad": 400,
+            "st_LoadSb/x_MaxLimitReached": true
         }""",
     )
     await asyncio.sleep(0.1)
