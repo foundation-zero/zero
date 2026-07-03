@@ -42,6 +42,7 @@ class SwitchingControl[
         self._manual_control = manual
         self._automatic_control = automatic
         self._mode: Literal["manual", "automatic"] = "manual"
+        _, self._last_controller_state = self.initial()
 
     def initial(
         self,
@@ -56,9 +57,12 @@ class SwitchingControl[
     ) -> tuple[ControlValues, ControllerState]:
         if self._mode == "manual":
             control_values, _ = self._manual_control.control(sensor_values)
-            return control_values, EmptyControllerState()  # type: ignore
+            return control_values, self._last_controller_state
         else:
-            return self._automatic_control.control(sensor_values)
+            control_values, self._last_controller_state = (
+                self._automatic_control.control(sensor_values)
+            )
+            return control_values, self._last_controller_state
 
     def switch_mode(self, mode: Literal["manual", "automatic"]):
         self._mode = mode
