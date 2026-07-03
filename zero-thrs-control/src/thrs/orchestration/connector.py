@@ -1,6 +1,6 @@
-from dataclasses import dataclass
 import logging
 from collections.abc import Mapping
+from dataclasses import dataclass
 from typing import Awaitable, Callable, Protocol, Self
 
 from aiomqtt import Client
@@ -174,11 +174,6 @@ class ModuleMqttMapping(MqttReceiveMapping[CombinedValues]):
         return self._builder.result()
 
 
-class Connector[S, C, CV](Protocol):
-    async def run(self): ...
-    async def transceive(self, control_values: C, controller_state: CV) -> S: ...
-
-
 type Publisher[T] = Callable[[T], Awaitable[None]]
 
 
@@ -308,7 +303,7 @@ class SimulationChannels[I: SimulationInputs, O: SimulationValues](
         )
 
 
-class MqttConnector(Connector[CombinedValues, CombinedValues, CombinedValues]):
+class MqttConnector:
     def __init__(self, mqtt_client: Client):
         self._mqtt_client = mqtt_client
         self._listeners: list[MqttReceiveMapping[object]] = []
