@@ -4,6 +4,7 @@ from typing import Protocol
 from thrs.classes.control import Control
 from thrs.input_output.alarms import BaseAlarms
 from thrs.input_output.base import (
+    CombinedValues,
     SimulationInputs,
     SimulationValues,
 )
@@ -34,6 +35,7 @@ class LockstepRunner[
         simulation: Simulation[S, C, I, O],
         simulation_connector: Connector[C, S],
         alarms: BaseAlarms[S, C, P],
+        mode_name: str,
     ):
         self._control = control
         self._control_connector = control_connector
@@ -42,19 +44,24 @@ class LockstepRunner[
         self._simulation_connector = simulation_connector
         self._alarms = alarms
         self._control_values, self._controller_state = self._control.initial()
+        self._mode_name = mode_name  # TODO: Remove this 'mode_name' parameter when 'CombinedValues' is removed as controller_state type
 
     async def run(self, n_ticks: int) -> None:
         """Run simulation and control together."""
         for _ in range(n_ticks):
-            await self._control_connector.send_control(self._control_values)
+            await self._control_connector.send_output(self._control_values)
+
             sim_result: SimulationResult[S, C, I, O] = self._simulation.tick(
                 self._control_values
             )
-            await self._control_connector.send_sensor_values(sim_result)
-            await self._control_connector.send_computed_sensor_values(
+            await self._simulation_connector.send_computed_input(
                 sim_result.sensor_values
             )
-            await self._simulation_connector.send_simulation_values(sim_result)
+            await self._simulation_connector.send_output(sim_result.sensor_values)
+            await self._simulation_connector.send_controller_state(
+                CombinedValues(values={self._mode_name: sim_result.simulation_outputs})
+            )
+
             self._control_values, self._controller_state = self._control.control(
                 sim_result.sensor_values
             )
@@ -89,16 +96,18 @@ class ControlRunner[S, C, P, M, CS](Runner):
         5. Check for alarms
         """
         for _ in range(n_ticks):
-            sensor_values = await self._connector.get_sensor_values()
+            sensor_values = await self._connector.get_input_values()
 
             # Computed values are added (using a builder()) to sensor values when they are received from mqtt and
             # should therefore be exposed to MQTT.
-            await self._connector.send_computed_sensor_values(sensor_values)
+            await self._connector.send_computed_input(sensor_values)
 
             self._control_values, self._controller_state = self._control.control(
                 sensor_values
             )
-            await self._connector.send_control(self._control_values)
+
+            await self._connector.send_output(self._control_values)
+            await self._connector.send_controller_state(self._controller_state)
 
             self._check_alarms(sensor_values)
 
@@ -115,9 +124,11 @@ class SimulationRunner[S, C, I: SimulationInputs, O: SimulationValues](Runner):
         self,
         connector: Connector[C, S],
         simulation: Simulation[S, C, I, O],
+        mode_name: str,  # TODO: Remove this 'mode_name' parameter when 'CombinedValues' is removed as controller_state type
     ):
         self._connector = connector
         self._simulation = simulation
+        self._mode_name = mode_name
 
     async def run(self, n_ticks: int) -> None:
         """Run simulation only, without control.
@@ -127,7 +138,12 @@ class SimulationRunner[S, C, I: SimulationInputs, O: SimulationValues](Runner):
         4. Send simulation outputs to MQTT"""
 
         for _ in range(n_ticks):
-            control_values = await self._connector.get_control_values()
+            control_values = await self._connector.get_input_values()
             sim_result = self._simulation.tick(control_values)
-            await self._connector.send_sensor_values(sim_result)
-            await self._connector.send_simulation_values(sim_result)
+            await self._connector.send_output(
+                sim_result.sensor_values
+            )  # Simulator creates sensor_values, so treat them as output values
+
+            await self._connector.send_controller_state(
+                CombinedValues(values={self._mode_name: sim_result.simulation_outputs})
+            )

@@ -1,4 +1,4 @@
-from asyncio import TaskGroup, sleep
+from asyncio import TaskGroup
 from contextlib import asynccontextmanager
 from datetime import datetime, timedelta
 from typing import AsyncGenerator
@@ -7,13 +7,18 @@ from aiomqtt import Client as MqttClient
 
 from thrs.input_output.base import CombinedValues
 from thrs.orchestration.config import Config
-from thrs.orchestration.connector import ConnectorListeningMode, MqttConnector
+from thrs.orchestration.connector import MqttConnector
 from thrs.orchestration.module import CombinedControl
 from thrs.runtime.descriptions.simulation import MODES, Mode, Modes
 from thrs.runtime.directives import DirectiveHandling
 from thrs.runtime.loop import EMPTY_HOOKS, Loop
 from thrs.runtime.messages import Messaging
-from thrs.runtime.runners import ControlRunner, LockstepRunner, Runner, SimulationRunner
+from thrs.runtime.runners import (
+    ControlRunner,
+    LockstepRunner,
+    Runner,
+    SimulationRunner,
+)
 
 
 class Runtime:
@@ -42,22 +47,20 @@ class Runtime:
         simulation = mode.setup_simulation()
         if simulation is None:
             raise ValueError("simulation must be defined for simulation mode")
+
         async with MqttClient(config.mqtt_host, config.mqtt_port) as simulation_client:
             connector = MqttConnector(
                 mqtt_client=simulation_client,
-                listening_mode=ConnectorListeningMode.CONTROLS,
                 devices_topic_prefix=config.mqtt_devices_topic_prefix,
-                controller_topic_prefix=config.mqtt_controller_topic_prefix,
-                sensor_values_clss={},  # simulation gets sensor values from the simulation
-                control_values_clss=mode.control_module.control_values_clss,
-                controller_state_clss={},
-                simulation_outputs_clss=simulation.outputs_cls,
-                control_topic_suffix=config.mqtt_control_topic_suffix,
-                sensor_topic_suffix=config.mqtt_control_topic_suffix,
-                simulation_topic_prefix=config.mqtt_simulation_topic_prefix,
+                controller_state_output_topic_prefix=config.mqtt_controller_topic_prefix,
+                input_values_clss=mode.control_module.control_values_clss,  # simulation gets sensor values from the simulation
+                output_values_clss=mode.control_module.sensor_values_clss,
+                controller_state_output_clss={mode.name: simulation.outputs_cls},
+                output_topic_suffix=None,
+                input_topic_suffix=config.mqtt_control_topic_suffix,
             )
             yield Runtime(
-                SimulationRunner(connector, simulation),
+                SimulationRunner(connector, simulation, mode.name),
                 simulation.tick_duration,
                 connectors=[connector],
             )
@@ -78,16 +81,13 @@ class Runtime:
         ):
             control_connector = MqttConnector(
                 mqtt_client=control_client,
-                listening_mode=ConnectorListeningMode.NONE,
                 devices_topic_prefix=config.mqtt_devices_topic_prefix,
-                controller_topic_prefix=config.mqtt_controller_topic_prefix,
-                sensor_values_clss=mode.control_module.sensor_values_clss,
-                control_values_clss=mode.control_module.control_values_clss,
-                controller_state_clss={},  # Nothing yet, but we want to send controller values here at some point
-                simulation_outputs_clss=simulation.outputs_cls,
-                control_topic_suffix=config.mqtt_control_topic_suffix,
-                sensor_topic_suffix=config.mqtt_control_topic_suffix,
-                simulation_topic_prefix=config.mqtt_simulation_topic_prefix,
+                controller_state_output_topic_prefix=config.mqtt_controller_topic_prefix,
+                input_values_clss=mode.control_module.sensor_values_clss,
+                output_values_clss=mode.control_module.control_values_clss,
+                controller_state_output_clss=mode.control_module.controller_state_clss,  # Nothing yet, but we want to send controller values here at some point
+                output_topic_suffix=config.mqtt_control_topic_suffix,
+                input_topic_suffix=None,
             )
 
             parameters = {
@@ -102,12 +102,12 @@ class Runtime:
             simulation_connector = MqttConnector(
                 mqtt_client=simulation_client,
                 devices_topic_prefix=config.mqtt_devices_topic_prefix,
-                controller_topic_prefix=config.mqtt_controller_topic_prefix,
-                sensor_values_clss={},  # simulation gets sensor values from the simulation
-                control_values_clss=mode.control_module.control_values_clss,
-                controller_state_clss={},
-                simulation_outputs_clss=simulation.outputs_cls,
-                sensor_topic_suffix=config.mqtt_control_topic_suffix,
+                controller_state_output_topic_prefix=config.mqtt_controller_topic_prefix,
+                input_values_clss={},  # simulation gets sensor values from the controller inside, not from MQTT
+                output_values_clss=mode.control_module.control_values_clss,
+                controller_state_output_clss={mode.name: simulation.outputs_cls},
+                input_topic_suffix=config.mqtt_control_topic_suffix,
+                output_topic_suffix=None,
             )
             runner = LockstepRunner(
                 control=control,
@@ -116,6 +116,7 @@ class Runtime:
                 simulation=simulation,
                 simulation_connector=simulation_connector,
                 alarms=mode.control_module.alarms(),
+                mode_name=mode.name,
             )
 
             directive_handling = DirectiveHandling(
@@ -140,16 +141,13 @@ class Runtime:
         async with MqttClient(config.mqtt_host, config.mqtt_port) as control_client:
             control_connector = MqttConnector(
                 mqtt_client=control_client,
-                listening_mode=ConnectorListeningMode.SENSORS,
                 devices_topic_prefix=config.mqtt_devices_topic_prefix,
-                controller_topic_prefix=config.mqtt_controller_topic_prefix,
-                sensor_values_clss=mode.control_module.sensor_values_clss,
-                control_values_clss=mode.control_module.control_values_clss,
-                controller_state_clss={},  # Nothing yet, but we want to send controller values here at some point
-                simulation_outputs_clss={},
-                control_topic_suffix=config.mqtt_control_topic_suffix,
-                sensor_topic_suffix=config.mqtt_control_topic_suffix,
-                simulation_topic_prefix=config.mqtt_simulation_topic_prefix,
+                controller_state_output_topic_prefix=config.mqtt_controller_topic_prefix,
+                input_values_clss=mode.control_module.sensor_values_clss,
+                output_values_clss=mode.control_module.control_values_clss,
+                controller_state_output_clss=mode.control_module.controller_state_clss,
+                output_topic_suffix=config.mqtt_control_topic_suffix,
+                input_topic_suffix=None,
             )
 
             parameters = {
