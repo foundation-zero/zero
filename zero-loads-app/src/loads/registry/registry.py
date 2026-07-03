@@ -89,14 +89,21 @@ def _build_sail_system_alarm_definitions(
     def _lookup_threshold_getter(
         alarm_field: str, alarm_for: str
     ) -> Callable[[LoadsModel], float | None]:
-        threshold_field = next(
-            (
-                field
-                for field, threshold_for in threshold_fields.items()
-                if threshold_for == alarm_for
-            ),
-            None,
-        )
+        threshold_candidates = [
+            field
+            for field, threshold_for in threshold_fields.items()
+            if threshold_for == alarm_for
+        ]
+
+        if len(threshold_candidates) <= 1:
+            threshold_field = threshold_candidates[0] if threshold_candidates else None
+        else:
+            raise ValueError(
+                f"Ambiguous threshold mapping for alarm field '{alarm_field}' "
+                f"(alarm_for='{alarm_for}') in {model.__name__}: "
+                f"candidates={threshold_candidates}"
+            )
+
         if threshold_field is None:
             return lambda _model_instance: None
         return partial(
@@ -113,7 +120,10 @@ def _build_sail_system_alarm_definitions(
                 lambda field, model_instance: getattr(model_instance, field), field
             ),
             get_actual=actual_definition.get_actual,
-            get_threshold=threshold_getter,
+            get_threshold=_lookup_threshold_getter(
+                field,
+                variable_meta.alarm_for,
+            ),
             actual_definition=actual_definition,
         )
         for field, field_info in model.model_fields.items()
@@ -125,12 +135,6 @@ def _build_sail_system_alarm_definitions(
             actual_definition := _lookup_variable_definition(
                 field,
                 f"{function_id}-{variable_meta.alarm_for_field}",
-            )
-        )
-        and (
-            threshold_getter := _lookup_threshold_getter(
-                field,
-                variable_meta.alarm_for,
             )
         )
     ]

@@ -84,6 +84,7 @@ export const MAIN_SAIL_GROUP = group(
   "Main sail",
   PositionId.Main,
   "main-sheet-load",
+  "main-traveller-load",
   "main-traveller-relative-position",
   "main-vang-load",
   "main-vang-relative-position",
@@ -97,13 +98,13 @@ export const MAIN_SAIL_GROUP = group(
 export const MAIN_LOCKS_GROUP = group(
   "Locks",
   PositionId.Main,
-  "main-halyard-lock-full",
-  "main-halyard-lock-1",
-  "main-halyard-lock-2",
-  "main-halyard-lock-3",
-  "main-halyard-boom-lock-1",
-  "main-halyard-boom-lock-2",
-  "main-halyard-boom-lock-3",
+  "mast-main-lock-full",
+  "mast-main-lock-1",
+  "mast-main-lock-2",
+  "mast-main-lock-3",
+  "mast-main-boom-lock-1",
+  "mast-main-boom-lock-2",
+  "mast-main-boom-lock-3",
 );
 
 export const MIZZEN_MAST_GROUP = group(
@@ -138,11 +139,11 @@ export const MIZZEN_SAIL_GROUP = group(
 export const MIZZEN_LOCKS_GROUP = group(
   "Locks",
   PositionId.Mizzen,
-  "mizzen-halyard-lock-full",
-  "mizzen-halyard-lock-1",
-  "mizzen-halyard-lock-2",
-  "mizzen-halyard-boom-lock-1",
-  "mizzen-halyard-boom-lock-2",
+  "mast-mizzen-lock-full",
+  "mast-mizzen-lock-1",
+  "mast-mizzen-lock-2",
+  "mast-mizzen-boom-lock-1",
+  "mast-mizzen-boom-lock-2",
 );
 
 export const MIZZEN_JIB_GROUP = group(
@@ -166,7 +167,7 @@ export const MIZZEN_STAYSAIL_GROUP = group(
 export const MIZZEN_HEADSAIL_LOCKS_GROUP = group(
   "Locks",
   PositionId.Mizzen,
-  "mizzen-headsail-locks-lock",
+  "mast-lock-mizzen-headsail",
 );
 
 export const TRISAIL_GROUP = group(
@@ -183,8 +184,8 @@ export const TRISAIL_GROUP = group(
 export const TRISAIL_LOCKS_GROUP = group(
   "Locks",
   PositionId.Main,
-  "main-halyard-lock-3",
-  "main-halyard-boom-lock-3",
+  "mast-main-lock-3",
+  "mast-main-boom-lock-3",
 );
 
 export const BLADE_GROUP = group(
@@ -218,11 +219,7 @@ export const OUTBOARD_LEAD_GROUP = group(
   "primary-winch-sb-load",
 );
 
-export const STAYSAIL_LOCKS_GROUP = group(
-  "Locks",
-  PositionId.ForeInner,
-  "headsail-locks-lock-staysail",
-);
+export const STAYSAIL_LOCKS_GROUP = group("Locks", PositionId.ForeInner, "mast-lock-staysail");
 
 export const A3_GROUP = group(
   "A3",
@@ -242,11 +239,7 @@ export const CODE_ZERO_GROUP = group(
   "primary-winch-sb-load",
 );
 
-export const CODE_ZERO_LOCKS_GROUP = group(
-  "Locks",
-  PositionId.ForeOuter,
-  "headsail-locks-lock-a3c0",
-);
+export const CODE_ZERO_LOCKS_GROUP = group("Locks", PositionId.ForeOuter, "mast-lock-a3c0");
 
 export const A2_GROUP = group(
   "A2",
@@ -256,20 +249,16 @@ export const A2_GROUP = group(
   "primary-winch-sb-load",
 );
 
-export const A2_LOCKS_GROUP = group("Locks", PositionId.ForeOuter, "headsail-locks-lock-a2");
+export const A2_LOCKS_GROUP = group("Locks", PositionId.ForeOuter, "mast-lock-a2");
 export const STORM_JIB_GROUP = group(
   "Storm Jib",
   PositionId.ForeInner,
-  "storm-jib-tack-load",
+  "mast-storm-jib-load",
   "primary-winch-ps-load",
   "primary-winch-sb-load",
 );
 
-export const STORM_JIB_LOCKS_GROUP = group(
-  "Locks",
-  PositionId.ForeInner,
-  "headsail-locks-lock-stormjib",
-);
+export const STORM_JIB_LOCKS_GROUP = group("Locks", PositionId.ForeInner, "mast-lock-stormjib");
 
 export const OVERVIEW = dashboard(
   DashboardType.Static,
