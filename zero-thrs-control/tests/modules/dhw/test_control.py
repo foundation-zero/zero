@@ -4,6 +4,7 @@ from pytest import approx
 from tests.helpers.simulation_runner import SimulationTestRunner
 from thrs.control.modules.dhw import (
     DhwControl,
+    DhwParameters,
     TanksController,
 )
 from thrs.input_output.base import Stamped
@@ -86,25 +87,26 @@ def test_filling_level(runner, simulation_inputs, overpressure):
     )
 
     assert result.sensor_values.dhw_level_tank1.level.value == approx(
-        runner._control.parameters.maximum_tank_level, abs=10
+        runner._control._parameters.maximum_tank_level, abs=10
     )
 
 
 def test_boosting_transitions(
     runner: SimulationTestRunner, simulation_inputs: DhwSimulationInputs
 ):
+    assert isinstance(runner._control, DhwControl) and isinstance(
+        runner._control._tanks_controller, TanksController
+    )
+
     # all tanks full and ht available
     runner._control.update_parameters(
-        runner._control.parameters.model_copy(
+        runner._control._parameters.model_copy(
             update={"maximum_tank_level": 10, "minimum_tank_level": 10}
         )
     )
 
     result, _, _ = runner.run(120)
 
-    assert isinstance(runner._control, DhwControl) and isinstance(
-        runner._control._tanks_controller, TanksController
-    )
     assert runner._control._tanks_controller.boosting
     assert runner._control.mode.is_boosting_high_temperature
     assert isinstance(result, SimulationResult)
@@ -136,7 +138,7 @@ def test_boosting_transitions(
 
     # all tanks at temperature
     runner._control.update_parameters(
-        runner._control.parameters.copy(
+        runner._control._parameters.model_copy(
             update={"maximum_tank_temperature": 10, "minimum_tank_temperature": 10}
         )
     )

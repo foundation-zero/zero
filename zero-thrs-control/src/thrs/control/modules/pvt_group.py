@@ -129,10 +129,6 @@ class PvtGroupControl(
         )
 
     @property
-    def parameters(self) -> PvtGroupParameters:
-        return self._parameters
-
-    @property
     def current_values(self) -> PvtGroupControlValues:
         return self._current_values
 

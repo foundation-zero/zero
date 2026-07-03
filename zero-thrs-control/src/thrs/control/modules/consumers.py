@@ -190,10 +190,6 @@ class ConsumersControl(
     def mode(self) -> ConsumersControlMode:
         return ConsumersControlMode()
 
-    @property
-    def parameters(self) -> ConsumersParameters:
-        return self._parameters
-
     def update_parameters(self, parameters: ConsumersParameters):
         self._parameters = parameters
 

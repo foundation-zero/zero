@@ -226,10 +226,6 @@ class PcmControl(
             self._time,
         )
 
-    @property
-    def parameters(self) -> PcmParameters:
-        return self._parameters
-
     def modes(self) -> list[str]:
         return list(self._state_machine.states.keys())
 
@@ -326,7 +322,7 @@ class PcmControl(
         self._flow_balance_controller.set_active_valves(charged_modules)
         self._flow_balance_controller.set_setpoints(
             [
-                self.parameters.pcm_discharge_flow if charged else 0.0
+                self._parameters.pcm_discharge_flow if charged else 0.0
                 for charged in charged_modules
             ]
         )
@@ -339,7 +335,7 @@ class PcmControl(
                 sensor_values.pcm_temperature_producers_return.temperature.value
                 - temp_out
             )
-            > self.parameters.minimum_charging_dt
+            > self._parameters.minimum_charging_dt
             for temp_out in [
                 sensor_values.pcm_temperature_module1.temperature.value,
                 sensor_values.pcm_temperature_module2.temperature.value,
@@ -351,7 +347,7 @@ class PcmControl(
         self._flow_balance_controller.set_active_valves(charging_modules)
         self._flow_balance_controller.set_setpoints(
             [
-                self.parameters.pcm_charge_flow if charging else 0.0
+                self._parameters.pcm_charge_flow if charging else 0.0
                 for charging in charging_modules
             ]
         )

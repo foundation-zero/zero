@@ -112,10 +112,6 @@ class SimpleControl(
     def mode(self) -> SimpleMode | None:
         return None
 
-    @property
-    def parameters(self) -> SimpleParameters:
-        return SimpleParameters()
-
     def update_parameters(self, parameters: SimpleParameters):
         pass
 

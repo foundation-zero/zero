@@ -202,10 +202,6 @@ class PvtControl(
         )
 
     @property
-    def parameters(self) -> PvtParameters:
-        return self._parameters
-
-    @property
     def mode(self) -> PvtControlMode:
         return PvtControlMode(
             fwd=self._main_fwd_control.mode,

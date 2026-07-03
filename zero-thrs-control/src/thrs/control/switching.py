@@ -63,10 +63,6 @@ class SwitchingControl[
     def switch_mode(self, mode: Literal["manual", "automatic"]):
         self._mode = mode
 
-    @property
-    def parameters(self) -> ControlParameters:
-        return self._automatic_control.parameters
-
     def update_parameters(self, parameters: ControlParameters):
         self._automatic_control.update_parameters(parameters)
 

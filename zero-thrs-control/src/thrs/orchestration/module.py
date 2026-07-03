@@ -86,12 +86,6 @@ class CombinedControl(
 
         return (combined_control_values, combined_controller_state)
 
-    @property
-    def parameters(self) -> CombinedValues:
-        return CombinedValues(
-            values={name: module.parameters for name, module in self._modules.items()}
-        )
-
     @staticmethod
     def initial_mode():
         return ""
@@ -131,7 +125,7 @@ class CombinedAlarms(BaseAlarms[CombinedValues, CombinedValues, CombinedValues])
         self,
         sensor_values: CombinedValues,
         control_values: CombinedValues,
-        parameters: CombinedValues,
+        controller_state: CombinedValues,
     ) -> list[Alarm]:
         if not sensor_values.values:
             return []
@@ -141,7 +135,7 @@ class CombinedAlarms(BaseAlarms[CombinedValues, CombinedValues, CombinedValues])
             for alarm in module.check(
                 sensor_values.values[name],
                 control_values.values[name],
-                parameters.values[name],
+                controller_state.values[name],
             )
         ]
 

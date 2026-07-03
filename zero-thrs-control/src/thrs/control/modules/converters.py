@@ -148,10 +148,6 @@ class ConvertersControl(
             initial="idle",
         )
 
-    @property
-    def parameters(self) -> ConvertersParameters:
-        return self._parameters
-
     def update_parameters(self, parameters: ConvertersParameters):
         self._parameters = parameters
 

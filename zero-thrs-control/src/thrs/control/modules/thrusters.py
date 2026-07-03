@@ -281,10 +281,6 @@ class ThrustersControl(
             self._time,
         )
 
-    @property
-    def parameters(self) -> ThrustersParameters:
-        return self._parameters
-
     def update_parameters(self, parameters: ThrustersParameters):
         self._parameters = parameters
 
@@ -532,7 +528,7 @@ class ThrustersAlarms(BaseAlarms):
         self,
         sensor_values: ThrustersSensorValues,
         control_values: ThrustersControlValues,
-        parameters: ThrustersParameters,
+        controller_state: ThrustersControllerState,
     ) -> str | None:
         if sensor_values.thrusters_temperature_supply.temperature.value > 95:
             return "Thrusters supply temperature above 95 °C"

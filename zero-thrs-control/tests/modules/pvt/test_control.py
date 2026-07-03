@@ -53,15 +53,15 @@ def test_recovery(control: PvtControl, simulation):
 
     assert (
         result.sensor_values.pvt_temperature_main_aft_return.temperature.value
-        == approx(control.parameters.recovery_temperature, abs=1)
+        == approx(control._parameters.recovery_temperature, abs=1)
     )
     assert (
         result.sensor_values.pvt_temperature_main_fwd_return.temperature.value
-        == approx(control.parameters.recovery_temperature, abs=1)
+        == approx(control._parameters.recovery_temperature, abs=1)
     )
     assert (
         result.sensor_values.pvt_temperature_owners_return.temperature.value
-        == approx(control.parameters.recovery_temperature, abs=1)
+        == approx(control._parameters.recovery_temperature, abs=1)
     )
 
     assert (
@@ -76,9 +76,9 @@ def test_recovery(control: PvtControl, simulation):
     )
 
 
-def test_heat_dump(control, simulation: PvtSimulation):
+def test_heat_dump(control: PvtControl, simulation: PvtSimulation):
     simulation._simulation_inputs.pvt_pcm_supply.temperature = Stamped.stamp(
-        control.parameters.maximum_supply_temperature + 5
+        control._parameters.maximum_supply_temperature + 5
     )
     simulation._simulation_inputs.pvt_seawater_supply.flow = Stamped.stamp(100)
     simulation._simulation_inputs.pvt_seawater_supply.temperature = Stamped.stamp(10)
@@ -90,7 +90,7 @@ def test_heat_dump(control, simulation: PvtSimulation):
     # Create flow to preheat
     while (
         result.sensor_values.pvt_temperature_supply.temperature.value
-        <= control.parameters.maximum_supply_temperature
+        <= control._parameters.maximum_supply_temperature
     ):
         control_values, _ = control.control(result.sensor_values)
         control_values.pvt_mix_main_aft.setpoint.value = Valve.MIXING_A_TO_AB

@@ -185,10 +185,6 @@ class AdsorptionControl(
             self._time,
         )
 
-    @property
-    def parameters(self) -> AdsorptionParameters:
-        return self._parameters
-
     def update_parameters(self, parameters: AdsorptionParameters) -> None:
         self._parameters = parameters
 

@@ -697,10 +697,6 @@ class DhwControl(
             ),
         )
 
-    @property
-    def parameters(self) -> DhwParameters:
-        return self._parameters
-
     def update_parameters(self, parameters: DhwParameters):
         self._parameters = parameters
 
@@ -957,13 +953,13 @@ class DhwAlarms(BaseAlarms):
         self,
         sensor_values: DhwSensorValues,
         control_values: DhwControlValues,
-        parameters: DhwParameters,
+        controller_state: DhwControllerState,
     ) -> str | None:
         return self._check_tank_temperature(
             1,
             sensor_values.dhw_temperature_tank1.temperature.value,
             DhwSensorValues.yard_tag("dhw_temperature_tank1"),
-            parameters.maximum_tank_temperature,
+            controller_state.parameters.maximum_tank_temperature,
             2,
         )
 
@@ -972,13 +968,13 @@ class DhwAlarms(BaseAlarms):
         self,
         sensor_values: DhwSensorValues,
         control_values: DhwControlValues,
-        parameters: DhwParameters,
+        controller_state: DhwControllerState,
     ) -> str | None:
         return self._check_tank_temperature(
             2,
             sensor_values.dhw_temperature_tank2.temperature.value,
             DhwSensorValues.yard_tag("dhw_temperature_tank2"),
-            parameters.maximum_tank_temperature,
+            controller_state.parameters.maximum_tank_temperature,
             2,
         )
 
@@ -987,13 +983,13 @@ class DhwAlarms(BaseAlarms):
         self,
         sensor_values: DhwSensorValues,
         control_values: DhwControlValues,
-        parameters: DhwParameters,
+        controller_state: DhwControllerState,
     ) -> str | None:
         return self._check_tank_temperature(
             3,
             sensor_values.dhw_temperature_tank3.temperature.value,
             DhwSensorValues.yard_tag("dhw_temperature_tank3"),
-            parameters.maximum_tank_temperature,
+            controller_state.parameters.maximum_tank_temperature,
             2,
         )
 
@@ -1002,13 +998,13 @@ class DhwAlarms(BaseAlarms):
         self,
         sensor_values: DhwSensorValues,
         control_values: DhwControlValues,
-        parameters: DhwParameters,
+        controller_state: DhwControllerState,
     ) -> str | None:
         return self._check_tank_temperature(
             1,
             sensor_values.dhw_temperature_tank1.temperature.value,
             DhwSensorValues.yard_tag("dhw_temperature_tank1"),
-            parameters.maximum_tank_temperature,
+            controller_state.parameters.maximum_tank_temperature,
             5,
         )
 
@@ -1017,13 +1013,13 @@ class DhwAlarms(BaseAlarms):
         self,
         sensor_values: DhwSensorValues,
         control_values: DhwControlValues,
-        parameters: DhwParameters,
+        controller_state: DhwControllerState,
     ) -> str | None:
         return self._check_tank_temperature(
             2,
             sensor_values.dhw_temperature_tank2.temperature.value,
             DhwSensorValues.yard_tag("dhw_temperature_tank2"),
-            parameters.maximum_tank_temperature,
+            controller_state.parameters.maximum_tank_temperature,
             5,
         )
 
@@ -1032,13 +1028,13 @@ class DhwAlarms(BaseAlarms):
         self,
         sensor_values: DhwSensorValues,
         control_values: DhwControlValues,
-        parameters: DhwParameters,
+        controller_state: DhwControllerState,
     ) -> str | None:
         return self._check_tank_temperature(
             3,
             sensor_values.dhw_temperature_tank3.temperature.value,
             DhwSensorValues.yard_tag("dhw_temperature_tank3"),
-            parameters.maximum_tank_temperature,
+            controller_state.parameters.maximum_tank_temperature,
             5,
         )
 
@@ -1047,7 +1043,7 @@ class DhwAlarms(BaseAlarms):
         self,
         sensor_values: DhwSensorValues,
         control_values: DhwControlValues,
-        parameters: DhwParameters,
+        controller_state: DhwControllerState,
     ) -> str | None:
         return self._check_tank_level(
             1,
@@ -1061,7 +1057,7 @@ class DhwAlarms(BaseAlarms):
         self,
         sensor_values: DhwSensorValues,
         control_values: DhwControlValues,
-        parameters: DhwParameters,
+        controller_state: DhwControllerState,
     ) -> str | None:
         return self._check_tank_level(
             2,
@@ -1075,7 +1071,7 @@ class DhwAlarms(BaseAlarms):
         self,
         sensor_values: DhwSensorValues,
         control_values: DhwControlValues,
-        parameters: DhwParameters,
+        controller_state: DhwControllerState,
     ) -> str | None:
         return self._check_tank_level(
             3,
@@ -1089,7 +1085,7 @@ class DhwAlarms(BaseAlarms):
         self,
         sensor_values: DhwSensorValues,
         control_values: DhwControlValues,
-        parameters: DhwParameters,
+        controller_state: DhwControllerState,
     ) -> str | None:
         return self._check_tank_level(
             1,
@@ -1103,7 +1099,7 @@ class DhwAlarms(BaseAlarms):
         self,
         sensor_values: DhwSensorValues,
         control_values: DhwControlValues,
-        parameters: DhwParameters,
+        controller_state: DhwControllerState,
     ) -> str | None:
         return self._check_tank_level(
             2,
@@ -1117,7 +1113,7 @@ class DhwAlarms(BaseAlarms):
         self,
         sensor_values: DhwSensorValues,
         control_values: DhwControlValues,
-        parameters: DhwParameters,
+        controller_state: DhwControllerState,
     ) -> str | None:
         return self._check_tank_level(
             3,

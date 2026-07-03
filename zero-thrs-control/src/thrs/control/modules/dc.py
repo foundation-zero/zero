@@ -189,10 +189,6 @@ class DcControl(
             time_fn=self._time,
         )
 
-    @property
-    def parameters(self) -> DcParameters:
-        return self._parameters
-
     def update_parameters(self, parameters: DcParameters):
         self._parameters = parameters
         self._brightloops_aft_control.update_parameters(

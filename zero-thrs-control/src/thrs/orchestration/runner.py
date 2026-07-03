@@ -59,7 +59,7 @@ class Runner[S, C, P, M, CV]:
             alarms = self._alarms.check(
                 sensor_values,  # type: ignore
                 self._control_values,  # type: ignore
-                self._control.parameters,  # type: ignore
+                self._controller_state,  # type: ignore
             )
             if alarms:
                 warnings.warn(

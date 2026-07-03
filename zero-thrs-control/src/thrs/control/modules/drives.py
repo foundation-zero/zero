@@ -233,10 +233,6 @@ class DrivesControl(
             self._time,
         )
 
-    @property
-    def parameters(self) -> DrivesParameters:
-        return self._parameters
-
     def update_parameters(self, parameters: DrivesParameters):
         self._parameters = parameters
 

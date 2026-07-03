@@ -70,16 +70,16 @@ def test_charging(control: PcmControl, simulation: PcmSimulation):
     )  # type: ignore
 
     assert result.sensor_values.pcm_flow_module1.flow.value == approx(
-        control.parameters.pcm_charge_flow, abs=0.5
+        control._parameters.pcm_charge_flow, abs=0.5
     )
     assert result.sensor_values.pcm_flow_module2.flow.value == approx(
-        control.parameters.pcm_charge_flow, abs=0.5
+        control._parameters.pcm_charge_flow, abs=0.5
     )
     assert result.sensor_values.pcm_flow_module3.flow.value == approx(
-        control.parameters.pcm_charge_flow, abs=0.5
+        control._parameters.pcm_charge_flow, abs=0.5
     )
     assert result.sensor_values.pcm_flow_module4.flow.value == approx(
-        control.parameters.pcm_charge_flow, abs=0.5
+        control._parameters.pcm_charge_flow, abs=0.5
     )
 
     for i in range(100):
@@ -98,10 +98,10 @@ def test_charging(control: PcmControl, simulation: PcmSimulation):
     assert result.sensor_values.pcm_flow_module2.flow.value == approx(0, abs=0.1)
 
     assert result.sensor_values.pcm_flow_module3.flow.value == approx(
-        control.parameters.pcm_charge_flow, abs=0.5
+        control._parameters.pcm_charge_flow, abs=0.5
     )
     assert result.sensor_values.pcm_flow_module4.flow.value == approx(
-        control.parameters.pcm_charge_flow, abs=0.5
+        control._parameters.pcm_charge_flow, abs=0.5
     )
 
 
@@ -140,7 +140,7 @@ def test_supplying(control: PcmControl, simulation: PcmSimulation):
         result.simulation_outputs.pcm_pvt_return.flow.value, abs=0.1
     )  # type: ignore
 
-    assert pcm_flow == approx(4 * control.parameters.pcm_charge_flow, abs=0.5)
+    assert pcm_flow == approx(4 * control._parameters.pcm_charge_flow, abs=0.5)
 
     for i in range(100):
         result.sensor_values.pcm_module1.charged.value = False
@@ -157,7 +157,7 @@ def test_supplying(control: PcmControl, simulation: PcmSimulation):
 
     assert result.sensor_values.pcm_flow_module1.flow.value == approx(0, abs=0.01)
     assert result.sensor_values.pcm_flow_module2.flow.value == approx(0, abs=0.01)
-    assert pcm_flow == approx(2 * control.parameters.pcm_charge_flow, abs=0.5)
+    assert pcm_flow == approx(2 * control._parameters.pcm_charge_flow, abs=0.5)
 
     for i in range(100):
         result.sensor_values.pcm_module1.charged.value = False
