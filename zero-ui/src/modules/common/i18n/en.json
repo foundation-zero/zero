@@ -28,6 +28,7 @@
   "apps": {
     "loads": "Loads",
     "thrs": "THRS",
+    "thrapp": "THRAPP",
     "domestic": "Domestic Control",
     "grafana": "Grafana"
   },
@@ -98,6 +99,10 @@
         "thrs": {
           "title": "THRS",
           "description": "Thermal heat recovery monitoring, controls, simulation, and parameter tuning."
+        },
+        "thrapp": {
+          "title": "THRAPP",
+          "description": "Thermal heat recovery monitoring, controls, mimics and parameter tuning."
         },
         "domestic": {
           "title": "Domestic",
