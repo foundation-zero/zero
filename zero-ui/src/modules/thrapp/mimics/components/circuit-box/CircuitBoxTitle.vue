@@ -9,7 +9,7 @@ const props = defineProps<{ class?: HTMLAttributes["class"] }>();
   <header
     :class="
       cn(
-        'text-foreground font-headers flex items-center font-bold tracking-wider uppercase',
+        'text-foreground font-headers flex flex-nowrap items-center font-bold tracking-wider text-nowrap text-ellipsis whitespace-nowrap uppercase',
         props.class,
       )
     "

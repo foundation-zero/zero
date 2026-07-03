@@ -31,8 +31,10 @@ const { strokeWidth, stateColor } = createMimicComponentContext(state);
       height="100%"
     >
       <div
-        :class="cn('bg-background h-full w-full transition-all', props.class)"
+        :class="cn('bg-background w-full transition-all', props.class)"
         :style="{
+          height: `${height}px`,
+          width: `${width}px`,
           'border-color': stateColor,
           'border-width': `${strokeWidth}px`,
         }"
