@@ -336,7 +336,7 @@ async def test_alarms(async_client: AsyncClient, mqtt_client_send):
         json={
             "query": """
             query {
-                alarms(alarms: ["main-checkstay-alarm"]) {
+                alarms(alarms: ["main-checkstay-deflector-load-alarm"]) {
                     id
                     name
                     thresholdValue
@@ -359,13 +359,13 @@ async def test_alarms(async_client: AsyncClient, mqtt_client_send):
         "data": {
             "alarms": [
                 {
-                    "id": "main-checkstay-alarm",
-                    "name": "Checkstay SB Load Alarm",
+                    "id": "main-checkstay-deflector-load-alarm",
+                    "name": "Checkstay Deflector Load Alarm",
                     "active": True,
                     "thresholdValue": 4.0,
                     "actualValue": 5.0,
                     "actual": {
-                        "id": "main-checkstay-sb-load",
+                        "id": "main-checkstay-deflector-load",
                         "variable": {
                             "unit": "tonne",
                         },
@@ -419,7 +419,13 @@ async def test_active_alarms(async_client: AsyncClient, mqtt_client_send):
         "data": {
             "alarms": [
                 {
-                    "id": "main-checkstay-alarm",
+                    "id": "main-checkstay-deflector-load-alarm",
+                    "active": True,
+                    "thresholdValue": 4.0,
+                    "actualValue": 5.0,
+                },
+                {
+                    "id": "main-checkstay-sb-load-alarm",
                     "active": True,
                     "thresholdValue": 4.0,
                     "actualValue": 5.0,

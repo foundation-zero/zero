@@ -481,7 +481,7 @@ class Mast(LoadsModel, ABC):
 
 class MainCheckstay(LoadsModel, ABC):
     TOPIC = "sail-systems/f0203-main-checkstay-deflector"
-    relative_position: Annotated[
+    deflector_relative_position: Annotated[
         RelativePosition,
         VariableMeta(
             name="deflector-relative-position",
@@ -490,49 +490,48 @@ class MainCheckstay(LoadsModel, ABC):
             scale_max_label="in",
         ),
     ]
-    max_position_alarm: Annotated[
+    deflector_max_position_alarm: Annotated[
         MaxPositionAlarm,
         VariableMeta(alarm_for="deflector_relative_position"),
     ]
-    min_position_alarm: Annotated[
+    deflector_min_position_alarm: Annotated[
         MinPositionAlarm,
         VariableMeta(alarm_for="deflector_relative_position"),
     ]
-
-    load: Annotated[
+    deflector_load: Annotated[
         Load,
         Field(ge=0, le=8),
         VariableMeta(
             name="deflector-load", display_name="Deflector", scale_min=0, scale_max=8
         ),
     ]
-    load_failure: Annotated[
+    deflector_load_failure: Annotated[
         LoadFailure,
         Field(validation_alias="st_Load/x_Failure"),
         VariableMeta(
             name="deflector-load-failure",
-            display_name="Deflector Load Failure",
+            display_name="Checkstay Deflector Load Failure",
             alarm_for="deflector_load",
         ),
     ]
-    load_alarm: Annotated[
+    deflector_load_alarm: Annotated[
         LoadAlarm,
         Field(validation_alias="st_Load/x_MaxLimitReached"),
         VariableMeta(
             name="deflector-load-alarm",
-            display_name="Deflector Load Alarm",
+            display_name="Checkstay Deflector Load Alarm",
             alarm_for="deflector_load",
         ),
     ]
-    max_load: Annotated[
+    deflector_max_load: Annotated[
         MaxLoad,
         Field(validation_alias="st_Load/i_MaxLoad", ge=0, le=8),
         VariableMeta(
             name="deflector-max-load",
-            display_name="Deflector Max Load",
+            display_name="Checkstay Deflector Max Load",
             scale_min=0,
             scale_max=8,
-            threshold_for="load_alarm",
+            threshold_for="deflector_load_alarm",
         ),
     ]
 
@@ -758,7 +757,7 @@ class MainTraveller(LoadsModel, ABC):
 
 class MizzenCheckstay(LoadsModel, ABC):
     TOPIC = "sail-systems/f0503-mizzen-checkstay-deflector"
-    relative_position: Annotated[
+    deflector_relative_position: Annotated[
         RelativePosition,
         VariableMeta(
             name="deflector-relative-position",
@@ -767,7 +766,7 @@ class MizzenCheckstay(LoadsModel, ABC):
             scale_max_label="in",
         ),
     ]
-    max_position_alarm: Annotated[
+    deflector_max_position_alarm: Annotated[
         MaxPositionAlarm,
         Field(validation_alias="st_position/x_MaxLimitReached"),
         VariableMeta(
@@ -776,7 +775,7 @@ class MizzenCheckstay(LoadsModel, ABC):
             alarm_for="deflector_relative_position",
         ),
     ]
-    min_position_alarm: Annotated[
+    deflector_min_position_alarm: Annotated[
         MinPositionAlarm,
         Field(validation_alias="st_position/x_MinLimitReached"),
         VariableMeta(
@@ -786,14 +785,14 @@ class MizzenCheckstay(LoadsModel, ABC):
         ),
     ]
 
-    load: Annotated[
+    deflector_load: Annotated[
         Load,
         Field(ge=0, le=1),
         VariableMeta(
             name="deflector-load", display_name="Deflector", scale_min=0, scale_max=1
         ),
     ]
-    load_failure: Annotated[
+    deflector_load_failure: Annotated[
         LoadFailure,
         Field(validation_alias="st_Load/x_Failure"),
         VariableMeta(
@@ -802,7 +801,7 @@ class MizzenCheckstay(LoadsModel, ABC):
             alarm_for="deflector_load",
         ),
     ]
-    load_alarm: Annotated[
+    deflector_load_alarm: Annotated[
         LoadAlarm,
         Field(validation_alias="st_Load/x_MaxLimitReached"),
         VariableMeta(
@@ -811,7 +810,7 @@ class MizzenCheckstay(LoadsModel, ABC):
             alarm_for="deflector_load",
         ),
     ]
-    max_load: Annotated[
+    deflector_max_load: Annotated[
         MaxLoad,
         Field(validation_alias="st_Load/i_MaxLoadSetting", ge=0, le=8),
         VariableMeta(
