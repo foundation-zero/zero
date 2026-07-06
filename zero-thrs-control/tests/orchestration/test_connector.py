@@ -15,7 +15,7 @@ from thrs.input_output.base import (
     computed_meta,
 )
 from thrs.input_output.definitions.sensor import FlowSensor, TemperatureDelta
-from thrs.orchestration.connector import (
+from thrs.orchestration.comms import (
     DirectMqttMapping,
     ModuleMqttMapping,
     MqttConnector,
@@ -186,7 +186,7 @@ def mock_mqtt_client() -> mock.AsyncMock:
 
         mock_mqtt_client.messages = return_messages()
 
-        await connector._listen_to_sensors()
+        await connector._listen()
 
     mock_mqtt_client.receive_messages = receive_messages
 

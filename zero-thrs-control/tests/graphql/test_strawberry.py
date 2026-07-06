@@ -23,11 +23,15 @@ from thrs.control.modules.thrusters import (
     ThrustersControlMode,
     ThrustersParameters,
 )
-from thrs.control.switching import SwitchingControlMode
+from thrs.control.switching import AutomationMode, SwitchingControlMode
 from thrs.graphql import simulation
 from thrs.graphql.base import ThrustersMessaging
 from thrs.graphql.helpers import UnstampedInput
-from thrs.graphql.messaging import ControlMessaging, Messaging, SimulationMessaging
+from thrs.graphql.messaging import (
+    ControlMessaging,
+    DirectiveMessaging,
+    SimulationMessaging,
+)
 from thrs.graphql.strawberry import (
     consumers_messaging,
     dhw_messaging,
@@ -56,6 +60,15 @@ from thrs.input_output.modules.thrusters import (
     ThrustersSensorValues,
     ThrustersSimulationInputs,
     ThrustersSimulationOutputs,
+)
+from thrs.orchestration.comms import (
+    ControlApiChannels,
+    ControlApiChannelsDescription,
+    DirectivesApiChannels,
+    DirectivesApiChannelsDescription,
+    MqttConnector,
+    SimulationApiChannels,
+    SimulationApiChannelsDescription,
 )
 
 
@@ -237,7 +250,7 @@ async def dhw_messaging_mock():
 
 @pytest.fixture
 async def messaging_mock():
-    mock = Mock(Messaging)
+    mock = Mock(DirectiveMessaging)
     mock.simulation_status = SimulationStatusMessage(
         mode="thrusters",
         status="available",
@@ -255,7 +268,6 @@ async def messaging_mock():
 @pytest.fixture
 async def simulation_messaging_mock():
     mock = Mock(SimulationMessaging)
-    mock.mode = "thrusters"
     mock.simulation_inputs = ThrustersSimulationInputs.zero()
     mock.simulation_outputs = ThrustersSimulationOutputs.zero()
 
@@ -466,20 +478,59 @@ mqtt_client2 = pytest.fixture(_mqtt_client)
 async def test_query_simulation_inputs_actual(
     app, test_client, mqtt_client, mqtt_client2
 ):
+    control_connector = MqttConnector(mqtt_client)
+    control_channels = ControlApiChannels._register(
+        control_connector,
+        ControlApiChannelsDescription(
+            module_name="thrusters",
+            devices_topic_prefix="test_devices_topic",
+            controller_topic_prefix="test_controller_topic",
+            sensor_values_cls=THRUSTERS_MODULE_DESCRIPTION.sensor_values_cls,
+            control_values_cls=THRUSTERS_MODULE_DESCRIPTION.control_values_cls,
+            controller_state_cls=THRUSTERS_MODULE_DESCRIPTION.controller_state_cls,
+            parameters_cls=THRUSTERS_MODULE_DESCRIPTION.parameters_cls,
+            control_modes_cls=THRUSTERS_MODULE_DESCRIPTION.control_mode_cls,
+            automation_mode_cls=AutomationMode,
+            control_values_topic_suffix="",
+            controller_topic_suffix="",
+        ),
+    )
+
     thrusters_msg: ThrustersMessaging = ControlMessaging(
         "thrusters",
         THRUSTERS_MODULE_DESCRIPTION,
-        mqtt_client,
-        "test_devices_topic",
-        "test_controller_topic",
+        control_channels,
     )
     simulation_msg = SimulationMessaging(
-        simulation.io_mapping,
-        mqtt_client,
-        "test_simulation_topic",
+        SimulationApiChannels._register(
+            control_connector,
+            SimulationApiChannelsDescription(
+                controller_topic_prefix="test_simulation_topic",
+                controller_topic_suffix="set",
+                simulation_inputs_cls=tuple(
+                    dict.fromkeys(
+                        inputs for inputs, _ in simulation.io_mapping.values()
+                    )
+                ),
+                simulation_outputs_cls=tuple(
+                    dict.fromkeys(
+                        outputs for _, outputs in simulation.io_mapping.values()
+                    )
+                ),
+            ),
+        ),
     )
-    msg = Messaging(
-        mqtt_client, [thrusters_msg], simulation_msg, "test_simulation_topic"
+    directives_channels = DirectivesApiChannels._register(
+        control_connector,
+        DirectivesApiChannelsDescription(
+            controller_topic_prefix="test_simulation_topic",
+        ),
+    )
+    msg = DirectiveMessaging(
+        [thrusters_msg],
+        simulation_msg,
+        directives_channels,
+        control_connector,
     )
     app.dependency_overrides[messaging] = lambda: msg
     app.dependency_overrides[thrusters_messaging] = lambda: thrusters_msg

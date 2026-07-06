@@ -1,7 +1,7 @@
 from abc import ABC, abstractmethod
 from asyncio import Future, gather
 from collections.abc import Mapping
-from typing import Any
+from typing import Any, cast
 
 from pydantic import TypeAdapter
 
@@ -63,7 +63,7 @@ class PartialModelBuilder[T: ThrsValues](ModelBuilder[T]):
         return await self._complete_model
 
 
-class CombinedModelBuilder(ModelBuilder[CombinedValues]):
+class CombinedModelBuilder[T: CombinedValues](ModelBuilder[T]):
     """
     Model builder that handles multiple modules.
 
@@ -79,19 +79,19 @@ class CombinedModelBuilder(ModelBuilder[CombinedValues]):
         module_name, field_name, *rest = field.split("/")
         self._model_builders[module_name].input(field_name, json)
 
-    def result(self) -> CombinedValues | None:
+    def result(self) -> T | None:
         values: dict[str, ThrsValues] = {
             name: res
             for name, builder in self._model_builders.items()
             if (res := builder.result())
         }
         if set(values.keys()) == set(self._model_builders.keys()):
-            return CombinedValues(values=values)
+            return cast(T, CombinedValues(values=values))
         else:
             return None
 
-    async def wait_for_result(self) -> CombinedValues:
+    async def wait_for_result(self) -> T:
         results = await gather(
             *(builder.wait_for_result() for builder in self._model_builders.values())
         )
-        return CombinedValues(dict(zip(self._model_builders.keys(), results)))
+        return cast(T, CombinedValues(dict(zip(self._model_builders.keys(), results))))

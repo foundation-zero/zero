@@ -37,7 +37,9 @@ def _var_mapper(
     }
     return lambda names: [_var_name_to_ref[name] for name in names]
 
+
 logger = logging.getLogger(__name__)
+
 
 class Fmu:
     def __init__(
