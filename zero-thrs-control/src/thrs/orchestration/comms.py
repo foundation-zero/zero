@@ -317,12 +317,7 @@ class ModuleMqttMapping[T: CombinedValues](MqttReceiveMapping[T]):
 
 type Publisher[T] = Callable[[T], Awaitable[None]]
 
-
-class Channels(Protocol):
-    pass
-
-
-class ControlChannels(Channels):
+class ControlChannels:
     def __init__(
         self,
         connector: "MqttConnector",
@@ -416,7 +411,7 @@ class SimulationChannels[
     C: ThrsValues,
     I: SimulationInputs,
     O: SimulationValues,
-](Channels):
+]:
     def __init__(
         self,
         connector: "MqttConnector",
@@ -473,7 +468,7 @@ class ControlApiChannels[
     P: ThrsValues,
     M: ThrsValues,
     CS: ThrsValues,
-](Channels):
+]:
     def __init__(
         self,
         connector: "MqttConnector",
@@ -567,7 +562,7 @@ class ControlApiChannels[
         self.wait_for_control_modes = control_modes_mapping.wait_for
 
 
-class SimulationApiChannels[I: SimulationInputs, O: SimulationValues](Channels):
+class SimulationApiChannels[I: SimulationInputs, O: SimulationValues]:
     def __init__(
         self,
         connector: "MqttConnector",
@@ -606,7 +601,7 @@ class SimulationApiChannels[I: SimulationInputs, O: SimulationValues](Channels):
         )
 
 
-class DirectivesChannels(Channels):
+class DirectivesChannels:
     def __init__(self, connector: "MqttConnector", config: "Config") -> None:
         self._connector = connector
         play_mapping = DirectMqttMapping(
@@ -643,7 +638,7 @@ class DirectivesChannels(Channels):
         )
 
 
-class DirectivesApiChannels(Channels):
+class DirectivesApiChannels:
     def __init__(self, connector: "MqttConnector", config: "Config") -> None:
         status_topic = f"{config.mqtt_controller_topic_prefix}/{SimulationStatusMessage.subscribe_topic()}"
         simulation_status_mapping = DirectMqttMapping(
