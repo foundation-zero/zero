@@ -17,12 +17,10 @@ from thrs.orchestration.module import CombinedControl
 from thrs.runtime.descriptions.simulation import MODES, Mode, Modes
 from thrs.runtime.directives import DirectiveHandling
 from thrs.runtime.loop import EMPTY_HOOKS, Loop
-from thrs.runtime.runners import (
-    ControlRunner,
-    LockstepRunner,
-    Runner,
-    SimulationRunner,
-)
+from thrs.runtime.runners.base import Runner
+from thrs.runtime.runners.control import ControlRunner
+from thrs.runtime.runners.lockstep import LockstepRunner
+from thrs.runtime.runners.simulator import SimulationRunner
 
 
 class Runtime:

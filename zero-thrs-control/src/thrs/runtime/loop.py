@@ -9,7 +9,7 @@ from dataclasses import dataclass
 from datetime import timedelta
 from typing import Awaitable, Callable
 
-from thrs.runtime.runners import Runner
+from thrs.runtime.runners.base import Runner
 
 logger: logging.Logger = logging.getLogger(__name__)
 
