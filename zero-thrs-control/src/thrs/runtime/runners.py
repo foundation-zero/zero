@@ -17,7 +17,6 @@ class Runner(Protocol):
 
 class LockstepRunner[
     S: CombinedValues,
-    C: CombinedValues,
     P: CombinedValues,
     M: CombinedValues,
     I: SimulationInputs,
@@ -31,7 +30,7 @@ class LockstepRunner[
         control: CombinedControl,
         control_channels: ControlChannels[S, P],
         simulation_module_name: str,
-        simulation: Simulation[S, C, I, O],
+        simulation: Simulation[S, CombinedValues, I, O],
         simulation_channels: SimulationChannels[I, O],
         alarms: CombinedAlarms,
     ):

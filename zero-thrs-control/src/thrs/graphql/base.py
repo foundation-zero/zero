@@ -73,7 +73,7 @@ type ThrustersMessaging = ControlMessaging[
     ThrustersSensorValues,
     ThrustersControlValues,
     ThrustersParameters,
-    SwitchingControlMode[ThrustersControlMode],
+    ThrustersControlMode,
     ThrustersControllerState,
 ]
 
@@ -81,7 +81,7 @@ type PvtMessaging = ControlMessaging[
     PvtSensorValues,
     PvtControlValues,
     PvtParameters,
-    SwitchingControlMode[PvtControlMode],
+    PvtControlMode,
     PvtControllerState,
 ]
 
@@ -90,7 +90,7 @@ type PcmMessaging = ControlMessaging[
     PcmSensorValues,
     PcmControlValues,
     PcmParameters,
-    SwitchingControlMode[PcmControlMode],
+    PcmControlMode,
     PcmControllerState,
 ]
 
@@ -99,7 +99,7 @@ type ConsumersMessaging = ControlMessaging[
     ConsumersSensorValues,
     ConsumersControlValues,
     ConsumersParameters,
-    SwitchingControlMode[ConsumersControlMode],
+    ConsumersControlMode,
     ConsumersControllerState,
 ]
 
@@ -107,7 +107,7 @@ type AdsorptionMessaging = ControlMessaging[
     AdsorptionSensorValues,
     AdsorptionControlValues,
     AdsorptionParameters,
-    SwitchingControlMode[AdsorptionControlMode],
+    AdsorptionControlMode,
     AdsorptionControllerState,
 ]
 
@@ -115,7 +115,7 @@ type DrivesMessaging = ControlMessaging[
     DrivesSensorValues,
     DrivesControlValues,
     DrivesParameters,
-    SwitchingControlMode[DrivesControlMode],
+    DrivesControlMode,
     DrivesControllerState,
 ]
 
@@ -123,7 +123,7 @@ type DcMessaging = ControlMessaging[
     DcSensorValues,
     DcControlValues,
     DcParameters,
-    SwitchingControlMode[DcControlMode],
+    DcControlMode,
     DcControllerState,
 ]
 
@@ -131,7 +131,7 @@ type DhwMessaging = ControlMessaging[
     DhwSensorValues,
     DhwControlValues,
     DhwParameters,
-    SwitchingControlMode[DhwControlMode],
+    DhwControlMode,
     DhwControllerState,
 ]
 

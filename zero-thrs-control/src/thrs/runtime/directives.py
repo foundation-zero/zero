@@ -66,6 +66,3 @@ class DirectiveHandling:
             simulation_time=self._time_fn(),
         )
         await self._channels.send_simulation_status(msg)
-
-    async def run(self):
-        return
