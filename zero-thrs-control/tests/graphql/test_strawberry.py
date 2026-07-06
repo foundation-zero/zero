@@ -458,6 +458,7 @@ mqtt_client = pytest.fixture(_mqtt_client)
 mqtt_client2 = pytest.fixture(_mqtt_client)
 
 
+@pytest.mark.mqtt
 async def test_query_simulation_inputs_actual(
     app, test_client, mqtt_client, mqtt_client2, settings
 ):

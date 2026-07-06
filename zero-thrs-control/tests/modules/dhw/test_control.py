@@ -134,7 +134,9 @@ def test_boosting_transitions(
 
     # all tanks at temperature
     runner._control.update_parameters(
-        runner._control.parameters.copy(update={"maximum_tank_temperature": 10})
+        runner._control.parameters.model_copy(
+            update={"maximum_tank_temperature": 10}
+        )
     )
     result, _, _ = runner.run(120)
 

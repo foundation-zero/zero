@@ -24,13 +24,25 @@ class SimpleSimulationOutputs(ThrsValues):
 class SimpleConnector(Connector):
     def __init__(self):
         self.controls = []
+        self._last_output = None
 
     async def run(self):
         pass
 
-    async def transceive(self, control_values, controller_state):
-        self.controls.append((control_values, controller_state))
-        return control_values
+    async def get_input_values(self):
+        return SimpleInOut.zero()
+
+    async def send_output(self, values):
+        self._last_output = values
+        self.controls.append((values, None))
+
+    async def send_computed_input(self, _computed_values):
+        pass
+
+    async def send_controller_state(self, values):
+        if self.controls:
+            output, _ = self.controls[-1]
+            self.controls[-1] = (output, values)
 
 
 class SimpleSimulation(

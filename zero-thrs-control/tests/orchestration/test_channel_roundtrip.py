@@ -26,6 +26,8 @@ from thrs.orchestration.config import Config
 from thrs.orchestration.module import CombinedModule, ModuleDescription
 from thrs.runtime.messages import SimulationStatusMessage
 
+pytestmark = pytest.mark.mqtt
+
 
 class DemoSensorValues(ThrsValues):
     value: float = 0.0

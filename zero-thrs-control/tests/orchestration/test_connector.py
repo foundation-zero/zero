@@ -116,7 +116,7 @@ class TestDirectMqttMapping:
     def test_subscribe_topic(self):
         mapping = DirectMqttMapping(SimpleInOut, "sensors/data")
 
-        assert mapping.subscribe_topics() == set("sensors/data")
+        assert mapping.subscribe_topics() == {"sensors/data"}
 
     def test_builder(self):
         mapping = DirectMqttMapping(SimpleInOut, "sensors/data")
@@ -132,7 +132,7 @@ class TestDirectMqttMapping:
 class TestCombinedMqttMapping:
     def test_split_to_topics(self):
         clss = {"module1": SimpleInOut}
-        mapping = ModuleMqttMapping(clss)
+        mapping = ModuleMqttMapping(clss, PartialMqttMapping)
         flow_sensor = FlowSensor(
             flow=Stamped.stamp(25.0), temperature=Stamped.stamp(1.2)
         )
@@ -149,13 +149,13 @@ class TestCombinedMqttMapping:
 
     def test_subscribe_topic(self):
         clss = {"module1": SimpleInOut}
-        mapping_no_suffix = ModuleMqttMapping(clss)
+        mapping_no_suffix = ModuleMqttMapping(clss, PartialMqttMapping)
 
         assert mapping_no_suffix.subscribe_topics() == {"/module1/+"}
 
     def test_builder(self):
         clss = {"module1": SimpleInOut}
-        mapping = ModuleMqttMapping(clss)
+        mapping = ModuleMqttMapping(clss, PartialMqttMapping)
 
         flow_sensor = FlowSensor(
             flow=Stamped.stamp(50.0), temperature=Stamped.stamp(5.0)
@@ -188,7 +188,7 @@ def mock_mqtt_client() -> mock.AsyncMock:
 
         mock_mqtt_client.messages = return_messages()
 
-        await connector._listen()
+        await connector._listen_for_input_values(connector._input_values_mqtt_mapping)
 
     mock_mqtt_client.receive_messages = receive_messages
 
@@ -207,90 +207,98 @@ def combined_values(sensor1: FlowSensor, sensor2: FlowSensor):
     )
 
 
-async def test_mqttcontrol_connector(mock_mqtt_client):
-    """Check MqttControlConnector
-
-    We are checking:
-     - if splitting into different topics work
-     - that the topics are correct.
-     - that the suffixes are correct
-     - That sending and receiving (in order) is correct
-    """
-    connector = MqttConnector(
-        mock_mqtt_client,
-        "devices_topic_prefix",
-        "controller_topic_prefix",
-        {"module": ValuesWithTopics},
-        {"module": ValuesWithTopics},
-        {"module": ValuesWithTopics},
-        "Command",
+async def test_mqtt_connector_publisher_uses_mapping(mock_mqtt_client):
+    connector = MqttConnector(mock_mqtt_client)
+    publisher = connector._create_publisher(
+        ModuleMqttMapping(
+            {"module": ValuesWithTopics},
+            PartialMqttMapping,
+            "devices_topic_prefix",
+            "Command",
+        )
     )
 
-    # Fake running since we can't properly deal with mock_mqtt_client.messages
-    connector._running = True
+    first_values = combined_values(sensor_value(1, 2), sensor_value(3, 4))
+    second_values = combined_values(sensor_value(4, 8), sensor_value(5, 9))
+    third_values = combined_values(sensor_value(16, 32), sensor_value(17, 33))
 
-    # Act
-    empty_result = await connector.transceive(
-        combined_values(sensor_value(1, 2), sensor_value(3, 4)),
-        combined_values(sensor_value(1, 2), sensor_value(3, 4)),
-    )
-    assert not empty_result.values
+    await publisher(first_values)
+    await publisher(second_values)
+    await publisher(third_values)
 
-    # Fake receiving messages
-    await mock_mqtt_client.receive_messages(
-        connector,
-        {
-            "devices_topic_prefix/module/go-with-the": sensor_value(1, 2),
-            "devices_topic_prefix/flow-topic": sensor_value(3, 4),
-        },
-    )
-
-    first_result = await connector.transceive(
-        combined_values(sensor_value(4, 8), sensor_value(5, 9)),
-        combined_values(sensor_value(4, 8), sensor_value(5, 9)),
-    )
-
-    data = first_result.values["module"]
-    assert isinstance(data, ValuesWithTopics)
-    assert data.go_with_the.flow.value == 1
-    assert data.go_with_the.temperature.value == 2
-    assert data.go_with_the_topic.flow.value == 3
-    assert data.go_with_the_topic.temperature.value == 4
-
-    # Fake receiving messages
-    await mock_mqtt_client.receive_messages(
-        connector,
-        {
-            "devices_topic_prefix/module/go-with-the": sensor_value(4, 8),
-            "devices_topic_prefix/flow-topic": sensor_value(5, 9),
-        },
-    )
-
-    second_result = await connector.transceive(
-        combined_values(sensor_value(16, 32), sensor_value(17, 33)),
-        combined_values(sensor_value(16, 32), sensor_value(17, 33)),
-    )
-
-    data = second_result.values["module"]
-    assert isinstance(data, ValuesWithTopics)
-    assert data.go_with_the.flow.value == 4
-    assert data.go_with_the.temperature.value == 8
-    assert data.go_with_the_topic.flow.value == 5
-    assert data.go_with_the_topic.temperature.value == 9
+    published_topics = {call.args[0] for call in mock_mqtt_client.publish.call_args_list}
+    assert published_topics == {
+        "devices_topic_prefix/module/go-with-the/Command",
+        "devices_topic_prefix/flow-topic/Command",
+    }
 
     assert mock_mqtt_client.publish.call_args_list == [
-        mock.call("devices_topic_prefix/module/go-with-the/Command", mock.ANY, qos=1),
-        mock.call("devices_topic_prefix/flow-topic/Command", mock.ANY, qos=1),
-        mock.call("controller_topic_prefix/module/go-with-the", mock.ANY, qos=1),
-        mock.call("controller_topic_prefix/flow-topic", mock.ANY, qos=1),
-        mock.call("controller_topic_prefix/flow-delta", mock.ANY, qos=1),
-        mock.call("devices_topic_prefix/module/go-with-the/Command", mock.ANY, qos=1),
-        mock.call("devices_topic_prefix/flow-topic/Command", mock.ANY, qos=1),
-        mock.call("controller_topic_prefix/module/go-with-the", mock.ANY, qos=1),
-        mock.call("controller_topic_prefix/flow-topic", mock.ANY, qos=1),
-        mock.call("controller_topic_prefix/flow-delta", mock.ANY, qos=1),
-        mock.call("devices_topic_prefix/module/go-with-the/Command", mock.ANY, qos=1),
-        mock.call("devices_topic_prefix/flow-topic/Command", mock.ANY, qos=1),
-        mock.call("controller_topic_prefix/module/go-with-the", mock.ANY, qos=1),
-        mock.call("controller_topic_prefix/flow-topic", mock.ANY, qos=1),
+        mock.call(
+            "devices_topic_prefix/module/go-with-the/Command",
+            mock.ANY,
+            qos=1,
+            retain=False,
+        ),
+        mock.call(
+            "devices_topic_prefix/flow-topic/Command",
+            mock.ANY,
+            qos=1,
+            retain=False,
+        ),
+        mock.call(
+            "devices_topic_prefix/module/go-with-the/Command",
+            mock.ANY,
+            qos=1,
+            retain=False,
+        ),
+        mock.call(
+            "devices_topic_prefix/flow-topic/Command",
+            mock.ANY,
+            qos=1,
+            retain=False,
+        ),
+        mock.call(
+            "devices_topic_prefix/module/go-with-the/Command",
+            mock.ANY,
+            qos=1,
+            retain=False,
+        ),
+        mock.call(
+            "devices_topic_prefix/flow-topic/Command",
+            mock.ANY,
+            qos=1,
+            retain=False,
+        ),
     ]
+    assert mock_mqtt_client.publish.await_count == 6
+    assert all("flow-delta" not in call.args[0] for call in mock_mqtt_client.publish.call_args_list)
+
+    calls = mock_mqtt_client.publish.call_args_list
+    assert len(calls) == 6
+    for call in calls:
+        assert call.kwargs["qos"] == 1
+        assert call.kwargs["retain"] is False
+
+    payloads = [FlowSensor.model_validate_json(call.args[1]) for call in calls]
+    expected_values = [
+        (1, 2),
+        (3, 4),
+        (4, 8),
+        (5, 9),
+        (16, 32),
+        (17, 33),
+    ]
+    for payload, (flow, temperature) in zip(payloads, expected_values):
+        assert payload.flow.value == flow
+        assert payload.temperature.value == temperature
+
+    payload_json = [json.loads(call.args[1]) for call in calls]
+    assert payload_json[0] == {
+        "Flow": {"Value": 1, "TimeStamp": mock.ANY},
+        "Temperature": {"Value": 2, "TimeStamp": mock.ANY},
+    }
+    assert payload_json[1] == {
+        "Flow": {"Value": 3, "TimeStamp": mock.ANY},
+        "Temperature": {"Value": 4, "TimeStamp": mock.ANY},
+    }
+

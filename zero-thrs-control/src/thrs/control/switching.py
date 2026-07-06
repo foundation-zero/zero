@@ -65,8 +65,8 @@ class SwitchingControl[
         else:
             return self._automatic_control.control(sensor_values)
 
-    def switch_mode(self, mode: AutomationMode):
-        self._mode = mode.mode
+    def switch_mode(self, mode: AutomationMode | Literal["manual", "automatic"]):
+        self._mode = mode.mode if isinstance(mode, AutomationMode) else mode
 
     @property
     def parameters(self) -> ControlParameters:

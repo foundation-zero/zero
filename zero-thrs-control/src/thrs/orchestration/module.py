@@ -132,6 +132,11 @@ class CombinedControl(
             expected_mode = cast(AutomationMode, mode)
             self._modules[module].switch_mode(expected_mode)
 
+    def set_automation_mode(self, module: str, automatic: bool):
+        self._modules[module].switch_mode(
+            AutomationMode(mode="automatic" if automatic else "manual")
+        )
+
 
 class CombinedAlarms(BaseAlarms[CombinedValues, CombinedValues, CombinedValues]):
     """Combination of multiple alarms into one alarm module"""

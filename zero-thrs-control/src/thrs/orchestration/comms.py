@@ -7,10 +7,12 @@ from typing import (
     Callable,
     Coroutine,
     Protocol,
+    TypeVarTuple,
     cast,
 )
 
 from aiomqtt import Client
+from paho.mqtt.client import topic_matches_sub
 from pydantic import TypeAdapter
 from pydantic.fields import ComputedFieldInfo, FieldInfo
 
@@ -293,7 +295,7 @@ class ModuleMqttMapping[T: CombinedValues](MqttReceiveMapping[T]):
 
     def handle_message(self, topic: str, json: str | bytes):
         for mapping in self._mappings.values():
-            if topic in mapping.subscribe_topics():
+            if any(topic_matches_sub(subscribed_topic, topic) for subscribed_topic in mapping.subscribe_topics()):
                 mapping.handle_message(topic, json)
 
     def result(self) -> T | None:
@@ -319,6 +321,31 @@ class ModuleMqttMapping[T: CombinedValues](MqttReceiveMapping[T]):
 type Publisher[T] = Callable[[T], Awaitable[None]]
 
 
+
+class Connector(Protocol):
+    """Compatibility protocol used by tests and legacy code paths."""
+
+    async def run(self): ...
+
+    async def get_input_values(self): ...
+
+    async def send_output(self, values): ...
+
+    async def send_computed_input(self, computed_values): ...
+
+    async def send_controller_state(self, values): ...
+
+
+class Channels[D, C](Protocol):
+    @classmethod
+    def _register(
+        cls,
+        connector: "MqttConnector",
+        description: D,
+    ) -> C: ...
+
+
+Ts = TypeVarTuple("Ts")
 class ControlChannels:
     def __init__(
         self,
