@@ -341,7 +341,7 @@ services:
       vernemq:
         condition: service_healthy
 
-  thrs-thruster-simulation-thrusters: &thrs_simulation
+  thrs-simulation-thrusters: &thrs_simulation
     image: zero-thrs-simulation:local
     pull_policy: never
     build:
@@ -360,32 +360,32 @@ services:
     depends_on:
       vernemq:
         condition: service_healthy
-    command: ["thrusters"]
+    command: ["lockstep", "--mode=thrusters"]
     
-  thrs-thruster-simulation-high-temperature:
+  thrs-simulation-high-temperature:
     <<: *thrs_simulation
     profiles: ["thrs-extra"]
-    command: ["high_temperature"]
+    command: ["lockstep", "--mode=high-temperature"]
 
-  thrs-thruster-simulation-pvt:
+  thrs-simulation-pvt:
     <<: *thrs_simulation
     profiles: ["thrs-extra"]
-    command: ["pvt"]
+    command: ["lockstep", "--mode=pvt"]
 
-  thrs-thruster-simulation-pcm:
+  thrs-simulation-pcm:
     <<: *thrs_simulation
     profiles: ["thrs-extra"]
-    command: ["pcm"]
+    command: ["lockstep", "--mode=pcm"]
 
-  thrs-thruster-simulation-consumers:
+  thrs-simulation-consumers:
     <<: *thrs_simulation
     profiles: ["thrs-extra"]
-    command: ["consumers"]
+    command: ["lockstep", "--mode=consumers"]
 
-  thrs-thruster-simulation-dhw:
+  thrs-simulation-dhw:
     <<: *thrs_simulation
     profiles: ["thrs-extra"]
-    command: ["dhw"]
+    command: ["lockstep", "--mode=dhw"]
 
 volumes:
   db_data:
