@@ -78,34 +78,31 @@ def _build_sail_system_alarm_definitions(
                 f"No variable definition found for alarm {alarm} with id: {id}", e
             )
 
-    threshold_fields: dict[str, str] = {
-        field: threshold_meta.threshold_for
-        for field, field_info in model.model_fields.items()
-        if (threshold_meta := model.extract_variable_meta(field, field_info.metadata))
-        and threshold_meta.type == "alarm_threshold"
-        and threshold_meta.threshold_for is not None
-    }
-
     def _lookup_threshold_getter(
-        alarm_field: str, alarm_for: str
+        alarm_field: str,
     ) -> Callable[[LoadsModel], float | None]:
-        threshold_candidates = [
+        thresholds = [
             field
-            for field, threshold_for in threshold_fields.items()
-            if threshold_for == alarm_for
+            for field, field_info in model.model_fields.items()
+            if (
+                threshold_meta := model.extract_variable_meta(
+                    field, field_info.metadata
+                )
+            )
+            and threshold_meta.type == "alarm_threshold"
+            and threshold_meta.threshold_for is not None
+            and threshold_meta.threshold_for == alarm_field
         ]
 
-        if len(threshold_candidates) <= 1:
-            threshold_field = threshold_candidates[0] if threshold_candidates else None
-        else:
+        if len(thresholds) > 1:
             raise ValueError(
-                f"Ambiguous threshold mapping for alarm field '{alarm_field}' "
-                f"(alarm_for='{alarm_for}') in {model.__name__}: "
-                f"candidates={threshold_candidates}"
+                f"Multiple thresholds for alarm field '{alarm_field}' "
+                f"in {model.__name__}: "
+                f"thresholds={thresholds}"
             )
 
-        if threshold_field is None:
-            return lambda _model_instance: None
+        threshold_field = thresholds[0] if thresholds else None
+
         return partial(
             lambda field, model_instance: getattr(model_instance, field),
             threshold_field,
@@ -113,22 +110,18 @@ def _build_sail_system_alarm_definitions(
 
     return [
         AlarmDefinition(
-            id=f"{function_id}-alarm",
+            id=f"{function_id}-{variable_meta.alarm_for_field}-alarm",
             name=model.field_display_name(field, field_info.metadata),
             topic=model.TOPIC,
             get_active=partial(
                 lambda field, model_instance: getattr(model_instance, field), field
             ),
             get_actual=actual_definition.get_actual,
-            get_threshold=_lookup_threshold_getter(
-                field,
-                variable_meta.alarm_for,
-            ),
+            get_threshold=_lookup_threshold_getter(field),
             actual_definition=actual_definition,
         )
         for field, field_info in model.model_fields.items()
         if (variable_meta := model.extract_variable_meta(field, field_info.metadata))
-        and variable_meta.is_alarm
         and variable_meta.alarm_for
         and variable_meta.alarm_for_field
         and (

@@ -42,13 +42,13 @@ Load: TypeAlias = Annotated[  # Needed to be able to override Field constraints 
 
 MaxLoad: TypeAlias = Annotated[
     BaseMaxLoad,
-    Field(ge=0, le=20, validation_alias="st_Load/i_MaxLoadSetting"),
+    Field(ge=0, validation_alias="st_Load/i_MaxLoadSetting"),
     BeforeValidator(decakilogram_to_tonne),
     ScalingMeta(
         conversion=decakilogram_to_tonne,
         inverse_conversion=tonne_to_decakilogram,
     ),
-    VariableMeta(threshold_for="load"),
+    VariableMeta(threshold_for="load_alarm"),
 ]
 
 LoadFailure: TypeAlias = Annotated[
@@ -182,7 +182,7 @@ class BladeCunningham(LoadsModel, ABC):
         RelativePosition,
         Field(
             validation_alias="st_positionPs/i_Position_permille"
-        ),  # TODO: taking ps as default, but avg pos should be added
+        ),  # TODO: taking ps as default, t avg pos should be added
         VariableMeta(
             display_name="Cunningham",
             scale_min_label="out",
@@ -475,7 +475,7 @@ class Mast(LoadsModel, ABC):
     storm_jib_max_load: Annotated[
         MaxLoad,
         Field(validation_alias="StormSailFurlerLoad/i_MaxLoadSetting"),
-        VariableMeta(threshold_for="storm_jib_load"),
+        VariableMeta(threshold_for="storm_jib_load_alarm"),
     ]
 
 
@@ -532,7 +532,7 @@ class MainCheckstay(LoadsModel, ABC):
             display_name="Deflector Max Load",
             scale_min=0,
             scale_max=8,
-            threshold_for="deflector_load",
+            threshold_for="load_alarm",
         ),
     ]
 
@@ -560,7 +560,7 @@ class MainCheckstay(LoadsModel, ABC):
             display_name="Checkstay PT Max Load",
             scale_min=0,
             scale_max=15,
-            threshold_for="ps_load",
+            threshold_for="load_ps_alarm",
         ),
     ]
     load_ps_alarm: Annotated[
@@ -587,7 +587,7 @@ class MainCheckstay(LoadsModel, ABC):
             display_name="Checkstay SB Max Load",
             scale_min=0,
             scale_max=15,
-            threshold_for="sb_load",
+            threshold_for="load_sb_alarm",
         ),
     ]
     load_sb_alarm: Annotated[
@@ -819,7 +819,7 @@ class MizzenCheckstay(LoadsModel, ABC):
             display_name="Deflector Max Load",
             scale_min=0,
             scale_max=8,
-            threshold_for="deflector_load",
+            threshold_for="load_alarm",
         ),
     ]
 
@@ -847,7 +847,7 @@ class MizzenCheckstay(LoadsModel, ABC):
             display_name="Checkstay PS Max Load",
             scale_min=0,
             scale_max=2.7,
-            threshold_for="ps_load",
+            threshold_for="load_ps_alarm",
         ),
     ]
     load_ps_alarm: Annotated[
@@ -874,7 +874,7 @@ class MizzenCheckstay(LoadsModel, ABC):
             display_name="Checkstay SB Max Load",
             scale_min=0,
             scale_max=2.7,
-            threshold_for="sb_load",
+            threshold_for="load_sb_alarm",
         ),
     ]
     load_sb_alarm: Annotated[
