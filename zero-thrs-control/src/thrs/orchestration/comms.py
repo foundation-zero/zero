@@ -105,8 +105,19 @@ class PartialMqttMapping[M: ThrsValues](MqttMapping[M]):
         self._update_event = Event()
 
     @staticmethod
-    def only_computed_fields[T: ThrsValues](*args, **kwargs) -> "PartialMqttMapping[T]":
-        return PartialMqttMapping(*args, only_computed_fields=True, **kwargs)
+    def only_computed_fields[T: ThrsValues](
+        message_type: type[T],
+        topic_prefix: str,
+        module_name: str,
+        topic_suffix: str | None = None,
+    ) -> "PartialMqttMapping[T]":
+        return PartialMqttMapping(
+            message_type,
+            topic_prefix,
+            module_name,
+            topic_suffix,
+            only_computed_fields=True,
+        )
 
     def split_to_topics(self, model: M) -> dict[str, str]:
         fields = (

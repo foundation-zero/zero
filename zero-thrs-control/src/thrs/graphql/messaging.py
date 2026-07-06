@@ -1,6 +1,6 @@
 from typing import Callable, Coroutine, Literal, cast
 
-from thrs.control.switching import AutomationMode
+from thrs.control.switching import AutomationMode, SwitchingControlMode
 from thrs.input_output.base import (
     SimulationInputs,
     SimulationValues,
@@ -99,22 +99,22 @@ class ControlMessaging[
 
     def wait_for_control_mode(
         self, automatic: bool, *_args, timeout: float
-    ) -> Coroutine[None, None, Mode]:
+    ) -> Coroutine[None, None, SwitchingControlMode[Mode]]:
         async def _wait():
             mode = await self._channels.wait_for_control_modes(
                 lambda m: bool(getattr(m, "automatic", False)) == automatic,
                 timeout,
             )
-            return cast(Mode, mode)
+            return cast(SwitchingControlMode[Mode], mode)
 
         return _wait()
 
     @property
-    def control_mode(self) -> Mode | None:
+    def control_mode(self) -> SwitchingControlMode[Mode] | None:
         mode = self._channels.get_control_modes()
         if mode is None:
             return None
-        return cast(Mode, mode)
+        return cast(SwitchingControlMode[Mode], mode)
 
 
 class SimulationMessaging:
