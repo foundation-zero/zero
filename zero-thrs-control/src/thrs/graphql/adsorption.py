@@ -54,7 +54,7 @@ def resolve_module(
             AdsorptionParametersType, module.parameters
         ),
         control_mode=SwitchingControlModeType.from_pydantic(
-            AdsorptionControlModeType, module.control_mode.mode
+            AdsorptionControlModeType, module.control_mode
         )
         if module.control_mode
         else None,
