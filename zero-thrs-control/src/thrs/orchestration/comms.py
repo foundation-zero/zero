@@ -295,7 +295,10 @@ class ModuleMqttMapping[T: CombinedValues](MqttReceiveMapping[T]):
 
     def handle_message(self, topic: str, json: str | bytes):
         for mapping in self._mappings.values():
-            if any(topic_matches_sub(subscribed_topic, topic) for subscribed_topic in mapping.subscribe_topics()):
+            if any(
+                topic_matches_sub(subscribed_topic, topic)
+                for subscribed_topic in mapping.subscribe_topics()
+            ):
                 mapping.handle_message(topic, json)
 
     def result(self) -> T | None:
@@ -319,7 +322,6 @@ class ModuleMqttMapping[T: CombinedValues](MqttReceiveMapping[T]):
 
 
 type Publisher[T] = Callable[[T], Awaitable[None]]
-
 
 
 class Connector(Protocol):
@@ -346,6 +348,8 @@ class Channels[D, C](Protocol):
 
 
 Ts = TypeVarTuple("Ts")
+
+
 class ControlChannels:
     def __init__(
         self,

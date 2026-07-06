@@ -52,4 +52,3 @@ def pytest_runtest_setup(item):
     port = int(os.environ.get("MQTT_PORT", "1883"))
     if not _mqtt_is_available(host, port):
         pytest.skip(f"MQTT broker not available at {host}:{port}")
-

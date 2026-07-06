@@ -69,8 +69,12 @@ async def test_lockstep_runner_ticks_and_publishes_channels():
     assert control.control.call_count == 3
     assert alarms.check.call_count == 3
 
-    simulation.tick.assert_has_calls([call(control_values), call(control_values), call(control_values)])
-    control.control.assert_has_calls([call(control_values), call(control_values), call(control_values)])
+    simulation.tick.assert_has_calls(
+        [call(control_values), call(control_values), call(control_values)]
+    )
+    control.control.assert_has_calls(
+        [call(control_values), call(control_values), call(control_values)]
+    )
     alarms.check.assert_has_calls(
         [
             call(control_values, control_values, parameters),
@@ -107,4 +111,3 @@ async def test_lockstep_runner_ticks_and_publishes_channels():
     control_channels.send_manual_control.assert_has_awaits(
         [call(control_values), call(control_values), call(control_values)]
     )
-

@@ -188,8 +188,6 @@ def mock_mqtt_client() -> mock.AsyncMock:
 
         mock_mqtt_client.messages = return_messages()
 
-        await connector._listen_for_input_values(connector._input_values_mqtt_mapping)
-
     mock_mqtt_client.receive_messages = receive_messages
 
     return mock_mqtt_client
@@ -226,7 +224,9 @@ async def test_mqtt_connector_publisher_uses_mapping(mock_mqtt_client):
     await publisher(second_values)
     await publisher(third_values)
 
-    published_topics = {call.args[0] for call in mock_mqtt_client.publish.call_args_list}
+    published_topics = {
+        call.args[0] for call in mock_mqtt_client.publish.call_args_list
+    }
     assert published_topics == {
         "devices_topic_prefix/module/go-with-the/Command",
         "devices_topic_prefix/flow-topic/Command",
@@ -271,7 +271,10 @@ async def test_mqtt_connector_publisher_uses_mapping(mock_mqtt_client):
         ),
     ]
     assert mock_mqtt_client.publish.await_count == 6
-    assert all("flow-delta" not in call.args[0] for call in mock_mqtt_client.publish.call_args_list)
+    assert all(
+        "flow-delta" not in call.args[0]
+        for call in mock_mqtt_client.publish.call_args_list
+    )
 
     calls = mock_mqtt_client.publish.call_args_list
     assert len(calls) == 6
@@ -301,4 +304,3 @@ async def test_mqtt_connector_publisher_uses_mapping(mock_mqtt_client):
         "Flow": {"Value": 3, "TimeStamp": mock.ANY},
         "Temperature": {"Value": 4, "TimeStamp": mock.ANY},
     }
-

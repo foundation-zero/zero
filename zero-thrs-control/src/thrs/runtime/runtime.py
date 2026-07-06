@@ -66,7 +66,7 @@ class Runtime:
             yield Runtime(
                 SimulationRunner(channels, simulation),
                 simulation.tick_duration,
-                connector_runs=[connector.run()],
+                connector_runs=[await connector.run()],
             )
 
     @asynccontextmanager
@@ -131,9 +131,9 @@ class Runtime:
                 simulation.tick_duration,
                 directive_handling,
                 connector_runs=[
-                    control_connector.run(),
-                    simulation_connector.run(),
-                    directive_connector.run(),
+                    await control_connector.run(),
+                    await simulation_connector.run(),
+                    await directive_connector.run(),
                 ],
             )
 
@@ -145,9 +145,7 @@ class Runtime:
         mode = Runtime._lookup_mode(selected_mode)
         async with MqttClient(config.mqtt_host, config.mqtt_port) as control_client:
             connector = MqttConnector(control_client)
-            control_channels = ControlChannels[CombinedValues, CombinedValues](
-                connector, config, mode.control_module
-            )
+            control_channels = ControlChannels(connector, config, mode.control_module)
 
             parameters = {
                 module: mode.control_module.parameters_for_module(module)()
@@ -163,7 +161,7 @@ class Runtime:
                 alarms=mode.control_module.alarms(),
             )
             yield Runtime(
-                runner, timedelta(seconds=1), connector_runs=[connector.run()]
+                runner, timedelta(seconds=1), connector_runs=[await connector.run()]
             )
 
     async def start(self):
